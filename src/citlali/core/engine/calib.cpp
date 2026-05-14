@@ -3,6 +3,9 @@
 #include <citlali/core/engine/calib.h>
 #include <citlali/core/utils/toltec_io.h>
 
+#include <cmath>
+#include <stdexcept>
+
 namespace engine {
 
 void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_filenames, std::vector<std::string> &interfaces) {
@@ -167,6 +170,7 @@ void Calib::get_hwpr(const std::string &filepath, bool sim_obs) {
 void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
     // flux conversion is per detector
     flux_conversion_factor.resize(n_dets);
+    mean_flux_conversion_factor.clear();
 
     // default is mJy/beam (apt should always be in mJy/beam)
     if (units == "mJy/beam") {
@@ -219,21 +223,21 @@ void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
     // get mean flux conversion factor from all unflagged detectors
     for (Eigen::Index i=0; i<n_arrays; ++i) {
         auto array = arrays[i];
-        // start indices for current array
-        Eigen::Index start = std::get<0>(array_limits[array]);
-        // end indices for current array
-        Eigen::Index end = std::get<1>(array_limits[array]);
         // number of good detectors
         Eigen::Index n_good_dets = 0;
         // name of array
         std::string name = array_name_map[array];
         // loop through detectors in current array
-        for (Eigen::Index j=start; j<end; ++j) {
+        for (const auto &j: array_detector_indices[array]) {
             // if good
-            if (apt["flag"](j)!=1) {
+            if (apt["flag"](j)==0) {
                 mean_flux_conversion_factor[name] += flux_conversion_factor(j);
                 n_good_dets++;
             }
+        }
+        if (n_good_dets <= 0) {
+            throw std::runtime_error(
+                "cannot calculate mean flux conversion factor: array has no unflagged detectors");
         }
         // calculate mean flux conversion factor
         mean_flux_conversion_factor[name] = mean_flux_conversion_factor[name]/n_good_dets;
@@ -243,10 +247,59 @@ void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
 void Calib::setup() {
     // get number of detectors
     n_dets = apt["uid"].size();
-    // get number of networks
-    n_nws = ((apt["nw"].tail(n_dets - 1) - apt["nw"].head(n_dets - 1)).array() > 0).count() + 1;
-    // get number of arrays
-    n_arrays = ((apt["array"].tail(n_dets - 1) - apt["array"].head(n_dets - 1)).array() > 0).count() + 1;
+
+    if (n_dets <= 0) {
+        throw std::runtime_error("APT table has no detectors");
+    }
+
+    const std::vector<std::string> setup_keys = {
+        "uid", "nw", "array", "fg", "flag", "a_fwhm", "b_fwhm", "angle"
+    };
+    for (const auto &key: setup_keys) {
+        auto it = apt.find(key);
+        if (it == apt.end()) {
+            throw std::runtime_error("APT table is missing required setup column " + key);
+        }
+        if (it->second.size() != n_dets) {
+            throw std::runtime_error("APT column " + key + " length does not match uid length");
+        }
+    }
+
+    auto read_index = [&](const std::string &key, Eigen::Index i) {
+        const double value = apt[key](i);
+        const double rounded = std::round(value);
+        if (!std::isfinite(value) || std::abs(value - rounded) > 1e-6) {
+            throw std::runtime_error("APT column " + key + " contains a non-integer group id");
+        }
+        return static_cast<Eigen::Index>(rounded);
+    };
+
+    auto validate_contiguous = [&](const auto &groups, const std::string &key) {
+        for (const auto &[group_id, indices]: groups) {
+            if (indices.empty()) {
+                throw std::runtime_error("APT " + key + " group has no detector indices");
+            }
+            for (std::size_t i=1; i<indices.size(); ++i) {
+                if (indices[i] != indices[i - 1] + 1) {
+                    throw std::runtime_error(
+                        "APT rows for " + key + " group are not contiguous; sort the APT before reduction");
+                }
+            }
+        }
+    };
+
+    nw_detector_indices.clear();
+    array_detector_indices.clear();
+    for (Eigen::Index i=0; i<n_dets; ++i) {
+        nw_detector_indices[read_index("nw", i)].push_back(i);
+        array_detector_indices[read_index("array", i)].push_back(i);
+    }
+    validate_contiguous(nw_detector_indices, "nw");
+    validate_contiguous(array_detector_indices, "array");
+
+    // get number of networks and arrays
+    n_nws = nw_detector_indices.size();
+    n_arrays = array_detector_indices.size();
 
     // stores nw number
     nws.setZero(n_nws);
@@ -256,20 +309,11 @@ void Calib::setup() {
     // set up network values
     nw_limits.clear();
     nw_fwhms.clear();
+    nw_pas.clear();
     nw_beam_areas.clear();
 
-    Eigen::Index nw_i = apt["nw"](0);
-    nw_limits[nw_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
-
-    // loop through apt table networks, get highest index for current networks
-    for (Eigen::Index i=0; i<apt["nw"].size(); ++i) {
-        if (apt["nw"](i) == nw_i) {
-            std::get<1>(nw_limits[nw_i]) = i + 1;
-        }
-        else {
-            nw_i = apt["nw"](i);
-            nw_limits[nw_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
-        }
+    for (const auto &[key, indices]: nw_detector_indices) {
+        nw_limits[key] = std::tuple<Eigen::Index, Eigen::Index>{indices.front(), indices.back() + 1};
     }
 
     // get average fwhms for networks
@@ -279,24 +323,20 @@ void Calib::setup() {
         j++;
         nw_fwhms[key] = std::tuple<double,double>{0, 0};
 
-        // nw a fwhm
-        auto nw_a_fwhm = apt["a_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]),
-                                                std::get<1>(nw_limits[key])-1));
-        // nw b fwhm
-        auto nw_b_fwhm = apt["b_fwhm"](Eigen::seq(std::get<0>(nw_limits[key]),
-                                                  std::get<1>(nw_limits[key])-1));
         // number of good detectors
-        Eigen::Index n_good_det = (apt["flag"](Eigen::seq(std::get<0>(nw_limits[key]),
-                                                         std::get<1>(nw_limits[key])-1)).array()==0).count();
+        Eigen::Index n_good_det = 0;
 
         // remove flagged dets
-        Eigen::Index k = std::get<0>(nw_limits[key]);
-        for (Eigen::Index i=0; i<nw_a_fwhm.size(); ++i) {
-            if (apt["flag"](k)!=1) {
-                std::get<0>(nw_fwhms[key]) = std::get<0>(nw_fwhms[key]) + nw_a_fwhm(i);
-                std::get<1>(nw_fwhms[key]) = std::get<1>(nw_fwhms[key]) + nw_b_fwhm(i);
+        for (const auto &idx: nw_detector_indices[key]) {
+            if (apt["flag"](idx)==0) {
+                std::get<0>(nw_fwhms[key]) = std::get<0>(nw_fwhms[key]) + apt["a_fwhm"](idx);
+                std::get<1>(nw_fwhms[key]) = std::get<1>(nw_fwhms[key]) + apt["b_fwhm"](idx);
+                n_good_det++;
             }
-            k++;
+        }
+
+        if (n_good_det <= 0) {
+            throw std::runtime_error("APT nw group has no unflagged detectors");
         }
 
         std::get<0>(nw_fwhms[key]) = std::get<0>(nw_fwhms[key])/n_good_det;
@@ -314,20 +354,8 @@ void Calib::setup() {
     array_pas.clear();
     array_beam_areas.clear();
 
-    Eigen::Index arr_i = apt["array"](0);
-    array_limits[arr_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 0};
-
-    j = 0;
-    // loop through apt table arrays, get highest index for current array
-    for (Eigen::Index i=0; i<apt["array"].size(); ++i) {
-        if (apt["array"](i) == arr_i) {
-            std::get<1>(array_limits[arr_i]) = i+1;
-        }
-        else {
-            arr_i = apt["array"](i);
-            j += 1;
-            array_limits[arr_i] = std::tuple<Eigen::Index, Eigen::Index>{i, 0};
-        }
+    for (const auto &[key, indices]: array_detector_indices) {
+        array_limits[key] = std::tuple<Eigen::Index, Eigen::Index>{indices.front(), indices.back() + 1};
     }
 
     // get average fwhms for arrays
@@ -337,29 +365,22 @@ void Calib::setup() {
         arrays(j) = key;
         j++;
         array_fwhms[key] = std::tuple<double,double>{0, 0};
-
-        // array a fwhm
-        auto array_a_fwhm = apt["a_fwhm"](Eigen::seq(std::get<0>(array_limits[key]),
-                                                  std::get<1>(array_limits[key])-1));
-        // array b fwhm
-        auto array_b_fwhm = apt["b_fwhm"](Eigen::seq(std::get<0>(array_limits[key]),
-                                                  std::get<1>(array_limits[key])-1));
-        // array rotation/position angle
-        auto array_pa = apt["angle"](Eigen::seq(std::get<0>(array_limits[key]),
-                                                     std::get<1>(array_limits[key])-1));
+        array_pas[key] = 0;
         // number of good detectors
-        Eigen::Index n_good_det = (apt["flag"](Eigen::seq(std::get<0>(array_limits[key]),
-                                                         std::get<1>(array_limits[key])-1)).array()==0).count();
+        Eigen::Index n_good_det = 0;
 
         // remove flagged dets
-        Eigen::Index k = std::get<0>(array_limits[key]);
-        for (Eigen::Index i=0; i<array_a_fwhm.size(); ++i) {
-            if (apt["flag"](k)!=1) {
-                std::get<0>(array_fwhms[key]) = std::get<0>(array_fwhms[key]) + array_a_fwhm(i);
-                std::get<1>(array_fwhms[key]) = std::get<1>(array_fwhms[key]) + array_b_fwhm(i);
-                array_pas[key] = array_pas[key] + array_pa(i);
+        for (const auto &idx: array_detector_indices[key]) {
+            if (apt["flag"](idx)==0) {
+                std::get<0>(array_fwhms[key]) = std::get<0>(array_fwhms[key]) + apt["a_fwhm"](idx);
+                std::get<1>(array_fwhms[key]) = std::get<1>(array_fwhms[key]) + apt["b_fwhm"](idx);
+                array_pas[key] = array_pas[key] + apt["angle"](idx);
+                n_good_det++;
             }
-            k++;
+        }
+
+        if (n_good_det <= 0) {
+            throw std::runtime_error("APT array group has no unflagged detectors");
         }
 
         // average fwhms and PA

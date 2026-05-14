@@ -54,6 +54,7 @@ public:
 
     // vector of upper and lower indices of each nw/array
     std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> nw_limits, array_limits;
+    std::map<Eigen::Index, std::vector<Eigen::Index>> nw_detector_indices, array_detector_indices;
 
     // average fwhms
     std::map<Eigen::Index, std::tuple<double, double>> nw_fwhms, array_fwhms;

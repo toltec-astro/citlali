@@ -618,6 +618,12 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         }
     }
 
+    if (!std::isfinite(max_t0) || !std::isfinite(min_tn) || max_t0 > min_tn) {
+        throw std::runtime_error(fmt::format(
+            "no common time overlap across input timestreams: max_start={} min_end={}",
+            max_t0, min_tn));
+    }
+
     // size of smallest data time vector
     Eigen::Index min_size = nw_ts[0].size();
 
@@ -630,8 +636,12 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
         // if closest index is smaller than max start time
         // incrememnt index until it is larger or equal
-        while (nw_ts[i][si] < max_t0) {
+        while (si < nw_ts[i].size() && nw_ts[i][si] < max_t0) {
             si++;
+        }
+        if (si >= nw_ts[i].size()) {
+            throw std::runtime_error(fmt::format(
+                "failed to find aligned start sample for interface index {}", i));
         }
         // pushback start index on start index vector
         engine().start_indices.push_back(si);
@@ -640,8 +650,12 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         auto e = (abs(nw_ts[i].array() - min_tn)).minCoeff(&ei);
         // if closest index is larger than min end time
         // incrememnt index until it is smaller or equal
-        while (nw_ts[i][ei] > min_tn) {
+        while (ei >= 0 && nw_ts[i][ei] > min_tn) {
             ei--;
+        }
+        if (ei < 0 || ei < si) {
+            throw std::runtime_error(fmt::format(
+                "failed to find aligned end sample for interface index {}", i));
         }
         // pushback end index on end index vector
         engine().end_indices.push_back(ei);
@@ -653,6 +667,11 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         auto si = engine().start_indices[i];
         // end indices
         auto ei = engine().end_indices[i];
+        if (ei < si) {
+            throw std::runtime_error(fmt::format(
+                "invalid aligned sample range for interface index {}: start={} end={}",
+                i, si, ei));
+        }
 
         // if smallest length, update min_size
         if ((ei - si + 1) < min_size) {
@@ -668,8 +687,11 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
         // if closest index is smaller than max start time
         // incrememnt index until it is larger or equal
-        while (engine().calib.hwpr_recvt(si) < max_t0) {
+        while (si < engine().calib.hwpr_recvt.size() && engine().calib.hwpr_recvt(si) < max_t0) {
             si++;
+        }
+        if (si >= engine().calib.hwpr_recvt.size()) {
+            throw std::runtime_error("failed to find aligned HWPR start sample");
         }
         // pushback start index on hwpr start index vector
         engine().hwpr_start_indices = si;
@@ -678,8 +700,11 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         auto e = (abs(engine().calib.hwpr_recvt.array() - min_tn)).minCoeff(&ei);
         // if closest index is larger than min end time
         // incrememnt index until it is smaller or equal
-        while (engine().calib.hwpr_recvt(ei) > min_tn) {
+        while (ei >= 0 && engine().calib.hwpr_recvt(ei) > min_tn) {
             ei--;
+        }
+        if (ei < 0 || ei < si) {
+            throw std::runtime_error("failed to find aligned HWPR end sample");
         }
         // pushback end index on hwpr end index vector
         engine().hwpr_end_indices = ei;
@@ -688,6 +713,10 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         if ((ei - si + 1) < min_size) {
             min_size = ei - si + 1;
         }
+    }
+
+    if (min_size <= 0) {
+        throw std::runtime_error("aligned common timestream length is not positive");
     }
 
     // size of telescope data
@@ -841,6 +870,13 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
 
     // get hwpr times if not ignored
     if (engine().calib.run_hwpr) {
+        if (engine().calib.hwpr_recvt.size() == 0 || engine().calib.hwpr_angle.size() == 0) {
+            throw std::runtime_error("HWPR is enabled but HWP time/angle data are empty");
+        }
+        if (engine().calib.hwpr_recvt.size() != engine().calib.hwpr_angle.size()) {
+            throw std::runtime_error(
+                "HWPR time and angle vectors have different lengths before gap alignment");
+        }
         logger->debug("calculating hwpr time");
         // hwpr gets added alongside networks
         nw_times.push_back(engine().calib.hwpr_recvt);
@@ -857,6 +893,10 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
 
     // get global max init and min final times and indices
     for (Eigen::Index i = 0; i < nw_times.size(); ++i) {
+        if (nw_times[i].size() == 0) {
+            throw std::runtime_error(fmt::format(
+                "empty time vector for interface index {} in align_timestreams_gaps", i));
+        }
         double initial_time = nw_times[i](0);
         double final_time = nw_times[i](nw_times[i].size() - 1);
 
@@ -877,7 +917,16 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
         std::exit(EXIT_FAILURE);
     }
     double dt = 1.0 / fsmp_ref;
+    if (!std::isfinite(max_init_time) || !std::isfinite(min_final_time) || max_init_time > min_final_time) {
+        throw std::runtime_error(fmt::format(
+            "no common time overlap across input timestreams with gap interpolation: max_start={} min_end={}",
+            max_init_time, min_final_time));
+    }
     Eigen::Index n_samples = static_cast<int>((min_final_time - max_init_time) / dt) + 1;
+    if (n_samples <= 0) {
+        throw std::runtime_error(fmt::format(
+            "invalid common sample count in align_timestreams_gaps: {}", n_samples));
+    }
     Eigen::VectorXd t_common = Eigen::VectorXd::LinSpaced(n_samples, max_init_time, max_init_time + dt * (n_samples - 1));
     double tol = dt / 2.0;
 

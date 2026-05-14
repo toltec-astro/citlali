@@ -8,6 +8,8 @@
 
 #include <tula/datatable.h>
 #include <unordered_map>
+#include <stdexcept>
+#include <utility>
 
 #include <citlali/core/engine/io.h>
 
@@ -454,34 +456,75 @@ auto KidsDataProc::load_rawobs_gaps(const RawObs &rawobs, const Eigen::Index sca
 
     std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> result;
 
+    if (scan_indices(2, scan) < 0 || scan_indices(3, scan) >= t_common.size() ||
+        scan_indices(3, scan) < scan_indices(2, scan)) {
+        throw std::runtime_error(fmt::format(
+            "invalid gap scan time window for scan {}: start={} end={} t_common.size={}",
+            scan, scan_indices(2, scan), scan_indices(3, scan), t_common.size()));
+    }
     double t0 = t_common(scan_indices(2, scan));
     double t1 = t_common(scan_indices(3, scan));
 
-    int i = 0;
-    for (const auto &data_item : rawobs.kidsdata()) {
+    auto find_sample_range = [&](const auto &time, Eigen::Index stream_index) {
+        if (time.size() == 0) {
+            throw std::runtime_error(fmt::format(
+                "empty KIDs time vector for stream {} while loading scan {}", stream_index, scan));
+        }
+
         Eigen::Index i_start = 0;
-        while (i_start < times[i].size()) {
-            double t = times[i](i_start);
+        while (i_start < time.size()) {
+            double t = time(i_start);
             if (t >= t0 - tol) {
                 if (t > t0 + tol) {
+                    if (i_start == 0) {
+                        throw std::runtime_error(fmt::format(
+                            "no KIDs sample within start tolerance for stream {} scan {}", stream_index, scan));
+                    }
                     i_start--;
                 }
                 break;
             }
             ++i_start;
         }
+        if (i_start >= time.size()) {
+            throw std::runtime_error(fmt::format(
+                "failed to find KIDs scan start for stream {} scan {}", stream_index, scan));
+        }
 
         Eigen::Index i_end = i_start;
-        while (i_end < times[i].size()) {
-            double t = times[i](i_end);
+        while (i_end < time.size()) {
+            double t = time(i_end);
             if (t >= t1 - tol) {
                 if (t > t1 + tol) {
+                    if (i_end == 0) {
+                        throw std::runtime_error(fmt::format(
+                            "no KIDs sample within end tolerance for stream {} scan {}", stream_index, scan));
+                    }
                     i_end--;
                 }
                 break;
             }
             ++i_end;
         }
+        if (i_end >= time.size()) {
+            throw std::runtime_error(fmt::format(
+                "failed to find KIDs scan end for stream {} scan {}", stream_index, scan));
+        }
+        if (i_end < i_start) {
+            throw std::runtime_error(fmt::format(
+                "invalid KIDs sample range for stream {} scan {}: start={} end={}",
+                stream_index, scan, i_start, i_end));
+        }
+
+        return std::pair<Eigen::Index, Eigen::Index>{i_start, i_end};
+    };
+
+    int i = 0;
+    for (const auto &data_item : rawobs.kidsdata()) {
+        if (i >= static_cast<int>(times.size())) {
+            throw std::runtime_error("rawobs KIDs stream count exceeds time-vector count");
+        }
+        auto [i_start, i_end] = find_sample_range(times[i], i);
 
         // get slice of data for current scan
         auto slice = tula::container_utils::Slice<int>{i_start, i_end + 1,
@@ -505,8 +548,68 @@ auto KidsDataProc::populate_rtc_gaps(LoadedType &loaded, Eigen::DenseBase<Derive
     // resize data
     Eigen::MatrixXd data(n_pts, n_det);
 
+    if (scan_indices(2, scan) < 0 || scan_indices(3, scan) >= t_common.size() ||
+        scan_indices(3, scan) < scan_indices(2, scan)) {
+        throw std::runtime_error(fmt::format(
+            "invalid gap scan time window for scan {}: start={} end={} t_common.size={}",
+            scan, scan_indices(2, scan), scan_indices(3, scan), t_common.size()));
+    }
     double t0 = t_common(scan_indices(2, scan));
     double t1 = t_common(scan_indices(3, scan));
+
+    auto find_sample_range = [&](const auto &time, Eigen::Index stream_index) {
+        if (time.size() == 0) {
+            throw std::runtime_error(fmt::format(
+                "empty KIDs time vector for stream {} while populating scan {}", stream_index, scan));
+        }
+
+        Eigen::Index i_start = 0;
+        while (i_start < time.size()) {
+            double t = time(i_start);
+            if (t >= t0 - tol) {
+                if (t > t0 + tol) {
+                    if (i_start == 0) {
+                        throw std::runtime_error(fmt::format(
+                            "no KIDs sample within start tolerance for stream {} scan {}", stream_index, scan));
+                    }
+                    i_start--;
+                }
+                break;
+            }
+            ++i_start;
+        }
+        if (i_start >= time.size()) {
+            throw std::runtime_error(fmt::format(
+                "failed to find KIDs scan start for stream {} scan {}", stream_index, scan));
+        }
+
+        Eigen::Index i_end = i_start;
+        while (i_end < time.size()) {
+            double t = time(i_end);
+            if (t >= t1 - tol) {
+                if (t > t1 + tol) {
+                    if (i_end == 0) {
+                        throw std::runtime_error(fmt::format(
+                            "no KIDs sample within end tolerance for stream {} scan {}", stream_index, scan));
+                    }
+                    i_end--;
+                }
+                break;
+            }
+            ++i_end;
+        }
+        if (i_end >= time.size()) {
+            throw std::runtime_error(fmt::format(
+                "failed to find KIDs scan end for stream {} scan {}", stream_index, scan));
+        }
+        if (i_end < i_start) {
+            throw std::runtime_error(fmt::format(
+                "invalid KIDs sample range for stream {} scan {}: start={} end={}",
+                stream_index, scan, i_start, i_end));
+        }
+
+        return std::pair<Eigen::Index, Eigen::Index>{i_start, i_end};
+    };
 
     Eigen::Index i = 0, j = 0;
     // loop through raw timestream objects
@@ -532,29 +635,10 @@ auto KidsDataProc::populate_rtc_gaps(LoadedType &loaded, Eigen::DenseBase<Derive
             block = result.data.qs.data;
         }
 
-        Eigen::Index i_start = 0;
-        while (i_start < times[j].size()) {
-            double t = times[j](i_start);
-            if (t >= t0 - tol) {
-                 if (t > t0 + tol) {
-                    i_start--;
-                }
-                break;
-            }
-            ++i_start;
+        if (j >= static_cast<Eigen::Index>(times.size()) || j >= static_cast<Eigen::Index>(masks.size())) {
+            throw std::runtime_error("loaded KIDs stream count exceeds time or mask vector count");
         }
-
-        Eigen::Index i_end = i_start;
-        while (i_end < times[j].size()) {
-            double t = times[j](i_end);
-            if (t >= t1 - tol) {
-                if (t > t1 + tol) {
-                    i_end--;
-                }
-                break;
-            }
-            ++i_end;
-        }
+        auto [i_start, i_end] = find_sample_range(times[j], j);
 
         block = engine_utils::interp_data(t_common.segment(scan_indices(2,scan), n_pts),
                                           masks[j].segment(scan_indices(2,scan), n_pts),

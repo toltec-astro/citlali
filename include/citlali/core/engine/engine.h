@@ -953,6 +953,10 @@ void Engine::get_mapmaking_config(CT &config) {
         // get jinc filter shape params
         for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
             auto jinc_shape_vec = config.template get_typed<std::vector<double>>(std::tuple{"mapmaking","jinc_filter","shape_params",arr_name});
+            if (jinc_shape_vec.size() != 3) {
+                invalid_keys.push_back({"mapmaking","jinc_filter","shape_params",arr_name});
+                jinc_shape_vec.resize(3, 0.0);
+            }
             jinc_mm.shape_params[arr_index] = Eigen::Map<Eigen::VectorXd>(jinc_shape_vec.data(),jinc_shape_vec.size());
         }
         // optional: sub-pixel sampling for jinc kernel
@@ -1261,7 +1265,7 @@ void Engine::get_beammap_config(CT &config) {
     if (config.template has_typed<double>(std::tuple{"beammap","priors","alignment_common_support_quantile"})) {
         get_config_value(config, beammap_priors_alignment_common_support_quantile, missing_keys, invalid_keys,
                          std::tuple{"beammap","priors","alignment_common_support_quantile"},
-                         {}, {0.0, 0.45});
+                         {}, {0.0}, {0.45});
     }
     if (config.template has_typed<int>(std::tuple{"beammap","priors","alignment_min_matches"})) {
         get_config_value(config, beammap_priors_alignment_min_matches, missing_keys, invalid_keys,
@@ -1287,18 +1291,41 @@ void Engine::get_beammap_config(CT &config) {
         beammap_priors_enabled = false;
     }
 
+    auto get_fixed_beammap_vector = [&](const std::vector<std::string> &path,
+                                        std::size_t expected_size) {
+        std::vector<double> values;
+        if (path.size() == 2) {
+            values = config.template get_typed<std::vector<double>>(std::make_tuple(path[0], path[1]));
+        }
+        else {
+            values = config.template get_typed<std::vector<double>>(std::make_tuple(path[0], path[1], path[2]));
+        }
+        if (values.size() != expected_size) {
+            invalid_keys.push_back(path);
+            values.resize(expected_size, 0.0);
+        }
+        return values;
+    };
+
+    const std::size_t n_toltec_arrays = toltec_io.array_name_map.size();
     // lower fwhm limit
-    auto lower_fwhm_arcsec_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","array_lower_fwhm_arcsec"});
+    auto lower_fwhm_arcsec_vec = get_fixed_beammap_vector({"beammap","flagging","array_lower_fwhm_arcsec"},
+                                                          n_toltec_arrays);
     // upper fwhm limit
-    auto upper_fwhm_arcsec_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","array_upper_fwhm_arcsec"});
+    auto upper_fwhm_arcsec_vec = get_fixed_beammap_vector({"beammap","flagging","array_upper_fwhm_arcsec"},
+                                                          n_toltec_arrays);
     // lower signal-to-noise limit
-    auto lower_sig2noise_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","array_lower_sig2noise"});
+    auto lower_sig2noise_vec = get_fixed_beammap_vector({"beammap","flagging","array_lower_sig2noise"},
+                                                        n_toltec_arrays);
     // upper signal-to-noise limit
-    auto upper_sig2noise_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","array_upper_sig2noise"});
+    auto upper_sig2noise_vec = get_fixed_beammap_vector({"beammap","flagging","array_upper_sig2noise"},
+                                                        n_toltec_arrays);
     // maximum allowed distance limit
-    auto max_dist_arcsec_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","array_max_dist_arcsec"});
+    auto max_dist_arcsec_vec = get_fixed_beammap_vector({"beammap","flagging","array_max_dist_arcsec"},
+                                                        n_toltec_arrays);
     // per-array post-derotation network geometry cut
-    auto network_robust_z_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","array_network_robust_z"});
+    auto network_robust_z_vec = get_fixed_beammap_vector({"beammap","flagging","array_network_robust_z"},
+                                                         n_toltec_arrays);
     beammap_flag_max_prior_d2 = 0.0;
     if (config.template has_typed<double>(std::tuple{"beammap","flagging","max_prior_d2"})) {
         get_config_value(config, beammap_flag_max_prior_d2, missing_keys, invalid_keys,
@@ -1325,14 +1352,14 @@ void Engine::get_beammap_config(CT &config) {
     }
 
     // sensitivity factors
-    auto sens_factors_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","flagging","sens_factors"});
+    auto sens_factors_vec = get_fixed_beammap_vector({"beammap","flagging","sens_factors"}, 2);
     lower_sens_factor = sens_factors_vec[0];
     upper_sens_factor = sens_factors_vec[1];
 
     // upper and lower frequencies over which to calculate sensitivity
     sens_psd_limits_Hz.resize(2);
     // get psd limits for sens from config
-    auto sens_psd_limits_Hz_vec = config.template get_typed<std::vector<double>>(std::tuple{"beammap","sens_psd_limits_Hz"});
+    auto sens_psd_limits_Hz_vec = get_fixed_beammap_vector({"beammap","sens_psd_limits_Hz"}, 2);
     // map sens limits back to Eigen vector
     sens_psd_limits_Hz = (Eigen::Map<Eigen::VectorXd>(sens_psd_limits_Hz_vec.data(), sens_psd_limits_Hz_vec.size()));
 
@@ -1960,10 +1987,11 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         // add jinc shape params
         if (map_method=="jinc") {
             add_netcdf_var(fo, "JINC_R", jinc_mm.r_max);
-            for (const auto &[key,val]: toltec_io.array_name_map) {
-                add_netcdf_var(fo, "JINC_A_"+val, jinc_mm.shape_params[calib.arrays(key)][0]);
-                add_netcdf_var(fo, "JINC_B_"+val, jinc_mm.shape_params[calib.arrays(key)][0]);
-                add_netcdf_var(fo, "JINC_C_"+val, jinc_mm.shape_params[calib.arrays(key)][0]);
+            for (const auto &arr: calib.arrays) {
+                auto name = toltec_io.array_name_map[arr];
+                add_netcdf_var(fo, "JINC_A_"+name, jinc_mm.shape_params[arr][0]);
+                add_netcdf_var(fo, "JINC_B_"+name, jinc_mm.shape_params[arr][1]);
+                add_netcdf_var(fo, "JINC_C_"+name, jinc_mm.shape_params[arr][2]);
             }
         }
 
