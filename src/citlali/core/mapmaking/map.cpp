@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <sstream>
 #include <stdexcept>
 
@@ -787,13 +788,13 @@ bool MapBuffer::find_sources(Eigen::Index map_index) {
     // if weight is less than threshold, set to zero, otherwise set to one
     Eigen::MatrixXd cov_bool = (weight[map_index].array() < weight_threshold).select(zeros,ones);
 
-    // swap the sign of the signal map
+    Eigen::MatrixXd source_signal = signal[map_index];
     if (source_finder_mode=="negative") {
-        signal[map_index] = -signal[map_index];
+        source_signal = -source_signal;
     }
 
     // s/n map
-    Eigen::MatrixXd sig2noise = sqrt(weight[map_index].array())*signal[map_index].array();
+    Eigen::MatrixXd sig2noise = sqrt(weight[map_index].array())*source_signal.array();
 
     // find pixels equal or above source sigma
     std::vector<int> row_index, col_index;
@@ -834,30 +835,34 @@ bool MapBuffer::find_sources(Eigen::Index map_index) {
     std::vector<int> row_source_index, col_source_index;
     for (unsigned int i=0; i<row_index.size(); ++i) {
         double extremum;
-        if (source_finder_mode=="both" && signal[map_index](row_index[i],col_index[i]) < 0.0) {
-            extremum = signal[map_index](row_index[i],col_index[i]);
+        const Eigen::Index row0 = std::max<Eigen::Index>(0, row_index[i] - 1);
+        const Eigen::Index row1 = std::min<Eigen::Index>(n_rows - 1, row_index[i] + 1);
+        const Eigen::Index col0 = std::max<Eigen::Index>(0, col_index[i] - 1);
+        const Eigen::Index col1 = std::min<Eigen::Index>(n_cols - 1, col_index[i] + 1);
+        if (source_finder_mode=="both" && source_signal(row_index[i],col_index[i]) < 0.0) {
+            extremum = source_signal(row_index[i],col_index[i]);
             // find minimum within index box
-            for (Eigen::Index j=row_index[i]-1; j<row_index[i]+2; ++j) {
-                for (Eigen::Index k=col_index[i]-1; k<col_index[i]+2; ++k) {
-                    if (signal[map_index](j,k) < extremum) {
-                        extremum = signal[map_index](j,k);
+            for (Eigen::Index j=row0; j<=row1; ++j) {
+                for (Eigen::Index k=col0; k<=col1; ++k) {
+                    if (source_signal(j,k) < extremum) {
+                        extremum = source_signal(j,k);
                     }
                 }
             }
         }
         else {
-            extremum = signal[map_index](row_index[i],col_index[i]);
+            extremum = source_signal(row_index[i],col_index[i]);
             // find maximum within index box
-            for (Eigen::Index j=row_index[i]-1; j<row_index[i]+2; ++j) {
-                for (Eigen::Index k=col_index[i]-1; k<col_index[i]+2; ++k) {
-                    if (signal[map_index](j,k) > extremum) {
-                        extremum = signal[map_index](j,k);
+            for (Eigen::Index j=row0; j<=row1; ++j) {
+                for (Eigen::Index k=col0; k<=col1; ++k) {
+                    if (source_signal(j,k) > extremum) {
+                        extremum = source_signal(j,k);
                     }
                 }
             }
         }
         // only keep the hot pixel if it is the extremum
-        if (signal[map_index](row_index[i],col_index[i]) == extremum) {
+        if (source_signal(row_index[i],col_index[i]) == extremum) {
             row_source_index.push_back(row_index[i]);
             col_source_index.push_back(col_index[i]);
         }
@@ -894,8 +899,8 @@ bool MapBuffer::find_sources(Eigen::Index map_index) {
             if (row_source_index[row_dist_index[i]] == -1 || col_source_index[col_dist_index[i]] == -1) {
                 continue;
             }
-            double f1 = signal[map_index](row_source_index[row_dist_index[i]],col_source_index[row_dist_index[i]]);
-            double f2 = signal[map_index](row_source_index[col_dist_index[i]],col_source_index[col_dist_index[i]]);
+            double f1 = source_signal(row_source_index[row_dist_index[i]],col_source_index[row_dist_index[i]]);
+            double f2 = source_signal(row_source_index[col_dist_index[i]],col_source_index[col_dist_index[i]]);
             // determine if same sign and which sign
             if (f1 < 0.0 && f2 < 0.0) {
                 // negative case
@@ -948,11 +953,6 @@ bool MapBuffer::find_sources(Eigen::Index map_index) {
     // if no sources found
     if (n_sources[map_index] == 0) {
         return false;
-    }
-
-    // flip signal map
-    if (source_finder_mode=="negative") {
-        signal[map_index] = -signal[map_index];
     }
 
     return true;

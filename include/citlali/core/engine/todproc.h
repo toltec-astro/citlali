@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdexcept>
+
 #include <unsupported/Eigen/CXX11/Tensor>
 
 #include <tula/eigen.h>
@@ -597,6 +599,13 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
     // get hwpr timing
     if (engine().calib.run_hwpr) {
+        if (engine().calib.hwpr_recvt.size() == 0 || engine().calib.hwpr_angle.size() == 0) {
+            throw std::runtime_error("HWPR is enabled but HWP time/angle data are empty");
+        }
+        if (engine().calib.hwpr_recvt.size() != engine().calib.hwpr_angle.size()) {
+            throw std::runtime_error(
+                "HWPR time and angle vectors have different lengths before no-gap alignment");
+        }
         // if hwpr init time is larger than max start time, replace global max start time
         Eigen::Index hwpr_ts_n_pts = engine().calib.hwpr_recvt.size();
         if (engine().calib.hwpr_recvt(0) > max_t0) {
@@ -685,8 +694,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     Eigen::Matrix<Eigen::Index,1,1> nd;
     nd << engine().telescope.tel_data["TelTime"].size();
 
-    // shortest data time vector
-    Eigen::VectorXd xi = nw_ts[max_t0_i].head(min_size);
+    // shortest common data time vector
+    Eigen::VectorXd xi = nw_ts[max_t0_i].segment(engine().start_indices[max_t0_i], min_size);
 
     // interpolate telescope data
     for (const auto &tel_it : engine().telescope.tel_data) {
@@ -711,10 +720,12 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
     // interpolate hwpr data
     if (engine().calib.run_hwpr) {
+        Eigen::Matrix<Eigen::Index,1,1> hwpr_nd;
+        hwpr_nd << engine().calib.hwpr_recvt.size();
         Eigen::VectorXd yd = engine().calib.hwpr_angle;
         // vector to store interpolated outputs in
         Eigen::VectorXd yi(min_size);
-        mlinterp::interp(nd.data(), min_size, // nd, ni
+        mlinterp::interp(hwpr_nd.data(), min_size, // nd, ni
                          yd.data(), yi.data(), // yd, yi
                          engine().calib.hwpr_recvt.data(), xi.data()); // xd, xi
 

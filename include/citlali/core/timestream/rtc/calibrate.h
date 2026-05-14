@@ -2,6 +2,7 @@
 
 #include <map>
 #include <string>
+#include <stdexcept>
 #include <Eigen/Core>
 
 #include <citlali/core/utils/constants.h>
@@ -175,13 +176,19 @@ auto Calibration::calc_tau(Eigen::DenseBase<Derived> &elev, double tau_225_GHz) 
 template <TCDataKind tcdata_kind, class calib_t>
 void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, calib_t &calib) {
 
+    if (calib.flux_conversion_factor.size() < in.scans.data.cols()) {
+        throw std::runtime_error(
+            "calibrate_tod flux_conversion_factor is shorter than detector count");
+    }
+    if (calib.apt["flxscale"].size() < in.scans.data.cols()) {
+        throw std::runtime_error(
+            "calibrate_tod APT flxscale column is shorter than detector count");
+    }
+
     // loop through detectors
     for (Eigen::Index i=0; i<in.scans.data.cols(); ++i) {
-        // current array index in apt table
-        Eigen::Index array_index = calib.apt["array"](i);
-
         // flux conversion factor for non-mJy/beam units
-        in.fcf.data(i) = calib.flux_conversion_factor(array_index);
+        in.fcf.data(i) = calib.flux_conversion_factor(i);
 
         // data x flxscale x factor
         in.scans.data.col(i) = in.scans.data.col(i).array()*in.fcf.data(i)*calib.apt["flxscale"](i);
