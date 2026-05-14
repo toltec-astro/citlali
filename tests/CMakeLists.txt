@@ -11,6 +11,7 @@ target_sources(citlali_test
     PRIVATE
         main.cpp
         test_utils.cpp
+        test_tiled_accumulator.cpp
     )
 target_link_libraries(citlali_test
     PRIVATE
