@@ -191,7 +191,8 @@ void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
         }
     }
 
-    // convert to uK/beam
+    // convert to Rayleigh-Jeans uK brightness temperature.
+    // mJy/beam is first converted to Jy/sr using the Gaussian beam solid angle.
     else if (units == "uK") {
         engine_utils::toltecIO toltec_io;
         for (Eigen::Index i=0; i<n_dets; ++i) {

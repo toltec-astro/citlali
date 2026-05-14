@@ -85,7 +85,7 @@ Highest-risk changed areas:
 | ID | Severity | Confidence | Evidence | Problem | Recommended fix | Test |
 | --- | --- | --- | --- | --- | --- | --- |
 | F-001 | P1 | High | `src/citlali/core/engine/calib.cpp:167`, `include/citlali/core/timestream/rtc/calibrate.h:181` | `calc_flux_calibration()` created per-detector factors, but `calibrate_tod()` read them by array id. | Use detector index and validate vector length. | Synthetic multi-array APT with distinct FWHMs. |
-| F-002 | P1 | High | `include/citlali/core/utils/utils.h:77`, `src/citlali/core/engine/calib.cpp:201`, `include/citlali/core/engine/engine.h:1825` | `mJy_beam_to_uK()` ignored beam area and callers mixed FWHM units. | Define FWHM in arcsec, include beam solid angle, use one helper consistently. | Analytic `dB/dT * Omega_beam` checks. |
+| F-002 | P1 | High | `include/citlali/core/utils/utils.h:77`, `src/citlali/core/engine/calib.cpp:201`, `include/citlali/core/engine/engine.h:1825` | `mJy_beam_to_uK()` ignored beam area and callers mixed FWHM units. | Define FWHM in arcsec, include beam solid angle, use one helper consistently. | Analytic RJ `2 k_B nu^2 / c^2 * Omega_beam` checks. |
 | F-003 | P1 | High | `src/citlali/core/mapmaking/map.cpp:790`, `:827`, `:871`, `:948`, `:953` | Negative source finding negated maps in place and early-returned without restoring sign. | Use non-mutating local signal or guaranteed restoration. | Negative-mode no-detection map remains unchanged. |
 | F-004 | P2 | High | `src/citlali/core/mapmaking/map.cpp:840`, `:851` | Source finder searched edge neighborhoods without bounds checks. | Clamp neighbor windows. | Edge hot-pixel map under ASan or no-crash test. |
 | F-005 | P1 | High | `include/citlali/core/engine/todproc.h:684`, `:712`, `:717` | No-gap HWPR interpolation reused telescope length for HWP arrays. | Use `hwpr_recvt.size()` and validate HWP angle/time lengths. | Telescope and HWP streams with different lengths. |
@@ -107,10 +107,39 @@ Highest-risk changed areas:
 - Whether `runtime.interp_over_gaps=false` is supported with HWPR/polarimetry.
 - Scientific acceptability of random-noise spike replacement.
 
+### Domain Review Resolutions - 2026-05-14
+
+- `uK` is now defined as monochromatic Rayleigh-Jeans brightness temperature.
+  The conversion uses the array nominal center frequency and converts
+  `mJy/beam` to intensity per steradian with the Gaussian beam solid angle.
+  Bandpasses are not needed for this convention. Future finite-band color
+  corrections should use files under `data/bandpasses/`.
+- Tangent-plane sign conventions still need a focused maintainer review. The
+  current code uses positive internal map longitude/x toward increasing column
+  index, while FITS `CDELT1` is negative for sky-display convention
+  (`src/citlali/core/mapmaking/map.cpp:96`). The highest-risk sign assumptions
+  are detector `x_t/y_t` rotation in
+  `include/citlali/core/utils/pointing.h:27`, RA/Dec and galactic tangent-plane
+  rotation in `include/citlali/core/utils/pointing.h:33`, beammap prior
+  derotation/sign flips in `include/citlali/core/engine/beammap.h:1892`, and
+  polarimetry angle construction in
+  `include/citlali/core/mapmaking/naive_mm.h:247`.
+- Beammap-generated APTs remain in raw KIDs data order so detector columns and
+  APT rows stay aligned. The current safe policy is to validate contiguous
+  network and array groups, keep explicit detector index lists for statistics,
+  and fail if an external or generated APT violates that invariant.
+- `runtime.interp_over_gaps=false` is now rejected during config parsing. The
+  no-gap alignment code remains present but is not a supported runtime path.
+- Despike replacement values are temporary fill values for continuity through
+  filtering. Replacement regions remain flagged and mapmaking skips flagged
+  samples. The random-like replacement is now deterministically seeded from the
+  detector and flagged-region indices, removing run-to-run random-device
+  variation.
+
 ## Highest-Value Tests
 
 1. Calibration unit tests for `mJy/beam`, `MJy/sr`, `uK`, and `Jy/pixel`.
-2. Analytic `mJy/beam` to `uK` checks for all TolTEC bands.
+2. Analytic `mJy/beam` to RJ `uK` checks for all TolTEC bands.
 3. Source finder tests for negative mode and edge pixels.
 4. HWPR no-gap alignment with different telescope/HWP sample counts.
 5. Config validation tests for fixed-vector lengths and quantile bounds.
@@ -122,10 +151,29 @@ Highest-risk changed areas:
 
 ## Quick Wins
 
-- Fix detector-indexed flux conversion.
-- Standardize `mJy_beam_to_uK()` on FWHM arcsec and include beam area.
-- Make source finding non-mutating and edge-safe.
-- Fix HWPR interpolation length in no-gap alignment.
-- Correct JINC metadata indices.
-- Add fixed-length config validation.
-- Remove tracked `.DS_Store` and `__pycache__/*.pyc`.
+Closed:
+
+- Fixed detector-indexed flux conversion.
+- Standardized `mJy_beam_to_uK()` on FWHM arcsec, Gaussian beam solid angle,
+  and the confirmed Rayleigh-Jeans brightness-temperature convention.
+- Made source finding non-mutating and edge-safe.
+- Fixed and bounds-checked HWPR alignment, then made
+  `runtime.interp_over_gaps=false` an unsupported config error.
+- Corrected JINC metadata indices.
+- Added fixed-length config validation.
+- Validated contiguous APT grouping, added explicit detector index lists for
+  statistics, and rejected all-flagged groups.
+- Added overlap and bounds checks for gap-aware time alignment and scan
+  extraction.
+- Kept despike fill samples flagged and made replacement noise deterministic.
+- Removed tracked `.DS_Store` and `__pycache__/*.pyc`, with ignore rules to keep
+  them out of future commits.
+
+Remaining:
+
+- Add focused tests for the closed fixes, especially calibration conversions,
+  config validation, APT grouping, time-overlap failures, JINC metadata, and
+  despike reproducibility.
+- Run a focused maintainer review of the remaining sign-convention assumptions.
+- Add finite-band color-correction support only if maintainers decide the
+  monochromatic RJ convention is insufficient.

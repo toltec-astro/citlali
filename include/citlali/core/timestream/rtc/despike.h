@@ -3,9 +3,9 @@
 #include <boost/random.hpp>
 
 #include <algorithm>
+#include <cstdint>
 #include <cmath>
 #include <limits>
-#include <random>
 #include <vector>
 #include <Eigen/Core>
 
@@ -1032,14 +1032,16 @@ template<typename DerivedA, typename DerivedB, typename apt_t>
 void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBase<DerivedB> &flags,
                               apt_t &apt, Eigen::Index start_det) {
 
-    // declare random number generator
-    thread_local boost::random::mt19937 eng;
-    thread_local bool seeded = false;
-    if (!seeded) {
-        std::random_device rd;
-        eng.seed(static_cast<boost::random::mt19937::result_type>(rd()));
-        seeded = true;
-    }
+    auto replacement_seed = [](Eigen::Index det_index, Eigen::Index region_start, Eigen::Index region_end) {
+        std::uint32_t seed = 0x9e3779b9u;
+        auto mix = [&](std::uint32_t value) {
+            seed ^= value + 0x9e3779b9u + (seed << 6) + (seed >> 2);
+        };
+        mix(static_cast<std::uint32_t>(det_index + 1));
+        mix(static_cast<std::uint32_t>(region_start + 1));
+        mix(static_cast<std::uint32_t>(region_end + 1));
+        return static_cast<boost::random::mt19937::result_type>(seed);
+    };
 
     Eigen::Index n_dets = flags.cols();
     Eigen::Index n_pts = flags.rows();
@@ -1251,11 +1253,17 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     logger->trace("std_dev_ff {}",std_dev_ff);
 
                     double mean_std_dev = (std_dev_ff.array().sqrt()).sum() / det_count;
+                    if (!std::isfinite(mean_std_dev) || mean_std_dev < 0.0) {
+                        mean_std_dev = 0.0;
+                    }
 
-                    // add noise to the fake signal
+                    // Add deterministic random-like fill for filtering continuity only.
+                    // The replaced samples remain flagged below and are skipped by mapmaking.
                     //mean_std_dev *= apt["responsivity"](det + start_det); // not used
 
                     // boost random number generator
+                    boost::random::mt19937 eng(
+                        replacement_seed(det + start_det, si_flags(j), ei_flags(j)));
                     boost::random::normal_distribution<> rands{0, mean_std_dev};
 
                     Eigen::VectorXd error =
@@ -1274,6 +1282,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     logger->trace("mean std dev {}", mean_std_dev);
 
                     scans.col(det).segment(si_flags(j), n_flags) = fake;
+                    // Keep replacement samples flagged so fill values cannot enter maps directly.
                     flags.col(det).segment(si_flags(j), n_flags).setOnes();
                 } // flagged regions
             } // if it has spikes

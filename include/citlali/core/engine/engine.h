@@ -1484,6 +1484,10 @@ void Engine::get_citlali_config(CT &config) {
     // interp over gaps in align_timestream
     get_config_value(config, interp_over_gaps, missing_keys, invalid_keys,
                      std::tuple{"runtime","interp_over_gaps"});
+    if (!interp_over_gaps) {
+        logger->error("runtime.interp_over_gaps=false is unsupported; set runtime.interp_over_gaps: true");
+        std::exit(EXIT_FAILURE);
+    }
 
     /* get timestream config */
     get_timestream_config(config);
@@ -1845,9 +1849,12 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
         // add unit conversions
         if (rtcproc.run_calibrate) {
+            add_netcdf_var<std::string>(fo, "UNITCONV.UK_CONVENTION", "Rayleigh-Jeans brightness temperature");
+            add_netcdf_var<std::string>(fo, "UNITCONV.UK_BASIS",
+                                        "monochromatic array center frequency; mJy/beam uses Gaussian beam solid angle to Jy/sr");
             for (const auto &val: calib.arrays) {
                 auto name = toltec_io.array_name_map[val];
-                // conversion to uK
+                // conversion to Rayleigh-Jeans uK brightness temperature
                 auto fwhm = (std::get<0>(calib.array_fwhms[val]) + std::get<1>(calib.array_fwhms[val]))/2;
                 auto mJy_beam_to_uK = engine_utils::mJy_beam_to_uK(1, toltec_io.array_freq_map[val], fwhm);
 
@@ -1861,7 +1868,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
                     add_netcdf_var(fo, "to_mJy_beam_"+name, 1);
                     // conversion to MJy/sr
                     add_netcdf_var(fo, "to_MJy_sr_"+name, 1/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
-                    // conversion to uK
+                    // conversion to Rayleigh-Jeans uK
                     add_netcdf_var(fo, "to_uK_"+name, mJy_beam_to_uK);
                     // conversion to Jy/pixel
                     add_netcdf_var(fo, "to_Jy_pixel_"+name, mJy_beam_to_Jy_px);
@@ -1871,7 +1878,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
                     add_netcdf_var(fo, "to_mJy_beam_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC);
                     // conversion to MJy/Sr
                     add_netcdf_var(fo, "to_MJy_sr_"+name, 1);
-                    // conversion to uK
+                    // conversion to Rayleigh-Jeans uK
                     add_netcdf_var(fo, "to_uK_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_uK);
                     // conversion to Jy/pixel
                     add_netcdf_var(fo, "to_Jy_pixel_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_Jy_px);
@@ -1881,7 +1888,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
                     add_netcdf_var(fo, "to_mJy_beam_"+name, 1/mJy_beam_to_uK);
                     // conversion to MJy/sr
                     add_netcdf_var(fo, "to_MJy_sr_"+name, 1/mJy_beam_to_uK/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
-                    // conversion to uK
+                    // conversion to Rayleigh-Jeans uK
                     add_netcdf_var(fo, "to_uK_"+name, 1);
                     // conversion to Jy/pixel
                     add_netcdf_var(fo, "to_Jy_pixel_"+name, (1/mJy_beam_to_uK)*mJy_beam_to_Jy_px);
@@ -1891,7 +1898,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
                     add_netcdf_var(fo, "to_mJy_beam_"+name, 1/mJy_beam_to_Jy_px);
                     // conversion to MJy/sr
                     add_netcdf_var(fo, "to_MJy_sr_"+name, (1/mJy_beam_to_Jy_px)/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
-                    // conversion to uK
+                    // conversion to Rayleigh-Jeans uK
                     add_netcdf_var(fo, "to_uK_"+name, mJy_beam_to_uK/mJy_beam_to_Jy_px);
                     // conversion to Jy/pixel
                     add_netcdf_var(fo, "to_Jy_pixel_"+name, 1);
@@ -3527,7 +3534,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     try {
     logger->debug("adding unit conversions");
 
-    // conversion to uK
+    // conversion to Rayleigh-Jeans uK brightness temperature
     auto fwhm = (std::get<0>(calib.array_fwhms[calib.arrays(i)]) + std::get<1>(calib.array_fwhms[calib.arrays(i)]))/2;
     auto mJy_beam_to_uK = engine_utils::mJy_beam_to_uK(1, toltec_io.array_freq_map[calib.arrays(i)], fwhm);
 
@@ -3535,6 +3542,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     auto beam_area_rad = 2.*pi*pow(fwhm*FWHM_TO_STD*ASEC_TO_RAD,2);
     // get Jy/pixel
     auto mJy_beam_to_Jy_px = 1e-3/beam_area_rad*pow(mb->pixel_size_rad,2);
+
+    fits_io->at(i).pfits->pHDU().addKey("UKCONV", "RJ", "uK convention: Rayleigh-Jeans brightness temperature");
+    fits_io->at(i).pfits->pHDU().addKey("UKBASIS", "Jy/sr", "uK basis: monochromatic intensity per steradian");
 
     auto get_tel_header_scalar = [&](const std::string &key, double fallback) {
         auto it = telescope.tel_header.find(key);
@@ -3589,8 +3599,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
             add_double_key("to_MJy/sr",
                            1/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
                            "Conversion to MJy/sr");
-            // conversion to uK
-            add_double_key("to_uK", mJy_beam_to_uK, "Conversion to uK");
+            // conversion to Rayleigh-Jeans uK
+            add_double_key("to_uK", mJy_beam_to_uK, "Conversion to Rayleigh-Jeans uK");
             // conversion to Jy/pixel
             add_double_key("to_Jy/pixel", mJy_beam_to_Jy_px, "Conversion to Jy/pixel");
         }
@@ -3601,10 +3611,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
                            "Conversion to mJy/beam");
             // conversion to MJy/Sr
             fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", 1, "Conversion to MJy/sr");
-            // conversion to uK
+            // conversion to Rayleigh-Jeans uK
             add_double_key("to_uK",
                            calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_uK,
-                           "Conversion to uK");
+                           "Conversion to Rayleigh-Jeans uK");
             // conversion to Jy/pixel
             add_double_key("to_Jy/pixel",
                            calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_Jy_px,
@@ -3617,8 +3627,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
             add_double_key("to_MJy/sr",
                            1/mJy_beam_to_uK/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
                            "Conversion to MJy/sr");
-            // conversion to uK
-            fits_io->at(i).pfits->pHDU().addKey("to_uK", 1, "Conversion to uK");
+            // conversion to Rayleigh-Jeans uK
+            fits_io->at(i).pfits->pHDU().addKey("to_uK", 1, "Conversion to Rayleigh-Jeans uK");
             // conversion to Jy/pixel
             add_double_key("to_Jy/pixel", (1/mJy_beam_to_uK)*mJy_beam_to_Jy_px, "Conversion to Jy/pixel");
         }
@@ -3629,8 +3639,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
             add_double_key("to_MJy/sr",
                            (1/mJy_beam_to_Jy_px)/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
                            "Conversion to MJy/sr");
-            // conversion to uK
-            add_double_key("to_uK", mJy_beam_to_uK/mJy_beam_to_Jy_px, "Conversion to uK");
+            // conversion to Rayleigh-Jeans uK
+            add_double_key("to_uK", mJy_beam_to_uK/mJy_beam_to_Jy_px, "Conversion to Rayleigh-Jeans uK");
             // conversion to Jy/pixel
             fits_io->at(i).pfits->pHDU().addKey("to_Jy/pixel", 1, "Conversion to Jy/pixel");
         }

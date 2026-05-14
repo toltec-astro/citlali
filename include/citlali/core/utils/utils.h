@@ -5,6 +5,7 @@
 #include <numeric>
 #include <algorithm>
 #include <complex>
+#include <stdexcept>
 //#include <png.h>
 
 #include <fftw3.h>
@@ -74,18 +75,17 @@ static const double planck_nu(const double freq_Hz, const double T_K) {
     return 2.*h_J_s*pow(freq_Hz,3)/pow(c_m_s,2)/(exp((h_J_s*freq_Hz)/(kB_J_K*T_K)) - 1.);
 }
 
-// convert flux in mJy/beam to uK_CMB using a Gaussian beam FWHM in arcsec
+// convert beam-normalized flux density to Rayleigh-Jeans brightness temperature.
+// The Gaussian FWHM is in arcsec; it is used only to convert mJy/beam to Jy/sr.
 static const double mJy_beam_to_uK(const double flux_mjy_beam, const double freq_Hz, const double fwhm_arcsec) {
-    // planck function at T_CMB
-    auto planck = planck_nu(freq_Hz, T_cmb_K);
-    // exponent term (h x nu)/(k_B x T_cmb)
-    auto h_nu_k_T = (h_J_s*freq_Hz)/(kB_J_K*T_cmb_K);
-    // beam area in steradians
-    auto beam_area_rad = 2.*pi*pow(fwhm_arcsec*FWHM_TO_STD*ASEC_TO_RAD,2);
-    // conversion from K to mJy/beam
-    auto K_to_mJy_beam = planck*exp(h_nu_k_T)/(exp(h_nu_k_T)-1)*h_nu_k_T/pow(T_cmb_K,2)*1e26*1e3*beam_area_rad;
-    // flux in mJy/beam converted to uK
-    return 1e6*flux_mjy_beam/K_to_mJy_beam;
+    if (freq_Hz <= 0.0 || fwhm_arcsec <= 0.0) {
+        throw std::runtime_error("mJy_beam_to_uK requires positive frequency and FWHM");
+    }
+
+    const double beam_area_sr = 2.*pi*pow(fwhm_arcsec*FWHM_TO_STD*ASEC_TO_RAD,2);
+    const double intensity_jy_sr = flux_mjy_beam*1e-3/beam_area_sr;
+    const double temp_K = intensity_jy_sr*1e-26*pow(c_m_s,2)/(2.*kB_J_K*pow(freq_Hz,2));
+    return 1e6*temp_K;
 }
 
 // get current date/time, format is YYYY-MM-DD.HH:mm:ss

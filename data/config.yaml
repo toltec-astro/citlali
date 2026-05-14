@@ -102,7 +102,7 @@ mapmaking: # mapmaking parameters
   crval2_J2000: 0 # ref value 2 (ignored if 0)
   tan_ra: 0 # tangent plane ra (ignored for now)
   tan_dec: 0 # tangent plane dec (ignored for now)
-  cunit: mJy/beam # units (mJy/beam, MJy/sr, uK, Jy/pixel.  apt table flux conversion default is mJy/beam)
+  cunit: mJy/beam # units (mJy/beam, MJy/sr, uK, Jy/pixel. uK is Rayleigh-Jeans brightness temperature; apt table flux conversion default is mJy/beam)
   grouping: auto # mapmaking grouping (auto, detector, nw, array, fg)
   method: naive # mapmaking algorithm (naive, jinc, maximum_likelihood)
   pixel_axes: radec # reference frame (radec or altaz)
@@ -122,7 +122,7 @@ mapmaking: # mapmaking parameters
     tolerance: 1e-20 # tolerance
 runtime: # parameters to control how citlali runs
   verbose: true # extra debug output in terminal (same as -l debug).  adds summary files to obsnum/logs/ directory.
-  interp_over_gaps: true # find and interpolate over gaps in the timestreams
+  interp_over_gaps: true # required true; find and interpolate over gaps in the timestreams
   meta:
     version: tolteca... # extra info from tolteca
   n_threads: 1 # number of threads to use
