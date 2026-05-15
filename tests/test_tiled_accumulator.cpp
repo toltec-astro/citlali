@@ -37,4 +37,39 @@ TEST(mapmaking, tiled_accumulator_rejects_invalid_indices) {
     EXPECT_THROW(acc.merge_into(wrong_shape), std::runtime_error);
 }
 
+TEST(mapmaking, tiled_noise_accumulator_merges_touched_tiles) {
+    std::vector<Eigen::Tensor<double, 3>> target;
+    target.emplace_back(5, 7, 3);
+    target.emplace_back(5, 7, 3);
+    target[0].setZero();
+    target[1].setZero();
+
+    mapmaking::TiledNoiseAccumulator acc(2);
+    acc.reset(target.size(), 5, 7, 3);
+    acc.add(0, 0, 0, 0, 1.5);
+    acc.add(0, 1, 1, 2, 2.0);
+    acc.add(0, 1, 1, 2, 3.0);
+    acc.add(1, 4, 6, 1, -2.0);
+
+    acc.merge_into(target);
+
+    EXPECT_DOUBLE_EQ(target[0](0, 0, 0), 1.5);
+    EXPECT_DOUBLE_EQ(target[0](1, 1, 2), 5.0);
+    EXPECT_DOUBLE_EQ(target[1](4, 6, 1), -2.0);
+}
+
+TEST(mapmaking, tiled_noise_accumulator_rejects_invalid_indices) {
+    mapmaking::TiledNoiseAccumulator acc(4);
+    acc.reset(1, 3, 3, 2);
+
+    EXPECT_THROW(acc.add(1, 0, 0, 0, 1.0), std::runtime_error);
+    EXPECT_THROW(acc.add(0, 3, 0, 0, 1.0), std::runtime_error);
+    EXPECT_THROW(acc.add(0, 0, 3, 0, 1.0), std::runtime_error);
+    EXPECT_THROW(acc.add(0, 0, 0, 2, 1.0), std::runtime_error);
+
+    std::vector<Eigen::Tensor<double, 3>> wrong_shape;
+    wrong_shape.emplace_back(2, 3, 2);
+    EXPECT_THROW(acc.merge_into(wrong_shape), std::runtime_error);
+}
+
 }  // namespace

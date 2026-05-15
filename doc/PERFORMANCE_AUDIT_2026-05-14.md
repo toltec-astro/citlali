@@ -124,7 +124,45 @@ not. After rebuilding the performance branch with native release flags, the
 map products matched `gw_dev` exactly and wall time returned close to the
 baseline.
 
-Next validation should move from `P-001` only to the `P-002` noise-map path:
-keep naive mapmaking and OpenMP fixed, enable noise maps with a small
-`n_noise_maps` first, compare products against `gw_dev`, and then repeat with
-the standard production noise count if the small case is clean.
+The small-noise `P-002` validation was then run with identical generated
+Citlali configs:
+
+- `redu09`: performance branch at `5f639e82`, Citlali
+  `v4.0.0-353-g5f639e82`, noise maps enabled with `n_noise_maps: 5`,
+  wall time `3m39.877138032s`.
+- `redu10`: `gw_dev` at `68093fc4`, Citlali `v4.0.0-350-g68093fc4`,
+  noise maps enabled with `n_noise_maps: 5`, wall time
+  `3m28.932295901s`.
+
+For obs and coadd FITS products across `a1100`, `a1400`, and `a2000`,
+coverage masks were identical. Science and noise-product image differences
+were floating-point roundoff only; the largest signal-map max absolute
+difference was `3.55e-15`, and the largest checked FITS max absolute
+difference was `2.84e-14`. Histogram netCDF products were exactly equal.
+Mapdiag and PSD netCDF products differed only at roundoff. Coadd empirical
+weight scales were identical: `0.488468900326375`, `0.509016124292622`, and
+`0.542209831503308`.
+
+This validates the tiled naive accumulator for the tested standard
+single-observation naive case with five noise realizations. It does not show a
+whole-pipeline wall-clock speedup in this run. Targeted timers were added after
+this validation so the next Unity run can separate naive accumulation time from
+the rest of the reduction:
+
+- `populate_maps_naive total`
+- `populate_maps_naive accumulate`
+- `populate_maps_naive merge`
+
+The next structural work should address the `P-002`/`P-003` noise-map and
+noise-product lifecycle directly. Repeat the comparison with the standard
+production noise count before treating that path as fully validated.
+
+First `P-002` implementation step after the `redu09`/`redu10` validation:
+`TiledNoiseAccumulator` was added and the naive mapmaker now accumulates noise
+realizations into touched tiles instead of copying, zeroing, and merging a full
+noise cube for every `populate_maps_naive()` call. The final resident
+`MapBuffer::noise` cube and output format are unchanged. This is expected to
+reduce per-call temporary memory traffic and merge work when each time chunk
+touches a sparse subset of the output map, but it still keeps the full
+realization cube resident for downstream empirical products, PSDs, filtering,
+and optional realization writes.
