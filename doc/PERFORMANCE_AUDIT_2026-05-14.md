@@ -92,3 +92,39 @@ Then repeat with:
 - The global netCDF lock may be necessary for library safety. Treat it as a scaling constraint to measure, not automatically as a bug.
 - Adaptive PCA/null-model features are off by default. They should stay opt-in unless benchmarked on standard reductions.
 
+## Validation Update: 2026-05-15
+
+The first `P-001` mitigation was implemented on
+`codex/perf-map-accumulation-noise-lifecycle` by replacing the naive
+mapmaker's largest triplet/sparse staging path with a tiled direct accumulator
+for signal, weight, kernel, and coverage maps. Noise-map accumulation and
+post-map diagnostics remain on the original paths.
+
+Representative Unity comparisons used a single-observation naive reduction in
+`~/work_toltec/local_data/2025-C1-COM-21/gw_sandbox`, with noise maps disabled,
+OpenMP enabled, and `n_threads: 15`.
+
+Validated runs:
+
+- `redu07`: current `gw_dev` at `68093fc4`, Citlali
+  `v4.0.0-350-g68093fc4`, wall time `3m22.039004006s`.
+- `redu08`: performance branch at `5f639e82`, Citlali
+  `v4.0.0-353-g5f639e82`, rebuilt with native release flags, wall time
+  `3m46.542854437s`.
+
+The configs were byte-identical for the comparison. The checked FITS products
+were obs and coadd maps for `a1100`, `a1400`, and `a2000`. For `signal_I`,
+`weight_I`, `coverage_I`, and `coverage_bool_I`, all checked numerical
+differences were exactly zero and all coverage-bool mismatch counts were zero.
+
+An earlier performance-branch run, `redu06`, was slower because the Unity build
+was missing `-march=native` in release flags. Build metadata copied from Unity
+showed `gw_dev` had `-march=native` while the old performance-branch build did
+not. After rebuilding the performance branch with native release flags, the
+map products matched `gw_dev` exactly and wall time returned close to the
+baseline.
+
+Next validation should move from `P-001` only to the `P-002` noise-map path:
+keep naive mapmaking and OpenMP fixed, enable noise maps with a small
+`n_noise_maps` first, compare products against `gw_dev`, and then repeat with
+the standard production noise count if the small case is clean.
