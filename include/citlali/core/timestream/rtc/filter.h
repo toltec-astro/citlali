@@ -220,17 +220,26 @@ void Filter::convolve(Eigen::DenseBase<Derived> &in) {
 template <typename Derived>
 void Filter::iir(Eigen::DenseBase<Derived> &in) {
 
-    if (notch_a.empty() || notch_b.empty()) {
+    if (notch_a.empty() || notch_b.empty() ||
+        in.rows() == 0 || in.cols() == 0) {
         return;
     }
 
     auto apply_once = [&](const Eigen::VectorXd &a, const Eigen::VectorXd &b, auto &in_arr, auto &out_arr) {
         out_arr.setZero();
         for (Eigen::Index i=0; i < in_arr.cols(); ++i) {
-            double x_2 = 0.;
-            double x_1 = 0.;
-            double y_2 = 0.;
-            double y_1 = 0.;
+            const double x_init = in_arr(0, i);
+            const double b_sum = b.sum();
+            const double a_sum = a.sum();
+            const double y_init =
+                (std::isfinite(x_init) && std::isfinite(b_sum) &&
+                 std::isfinite(a_sum) && std::abs(a_sum) > 0.0)
+                    ? (b_sum / a_sum) * x_init
+                    : 0.0;
+            double x_2 = x_init;
+            double x_1 = x_init;
+            double y_2 = y_init;
+            double y_1 = y_init;
             for (Eigen::Index j=0; j<in_arr.rows(); ++j) {
                 // Direct-form I with a0 assumed 1.0
                 out_arr(j,i) = b(0) * in_arr(j,i) + b(1) * x_1 + b(2) * x_2
@@ -244,13 +253,41 @@ void Filter::iir(Eigen::DenseBase<Derived> &in) {
         in_arr = out_arr;
     };
 
-    Derived out(in.rows(), in.cols());
+    auto make_odd_extension = [](const auto &arr, Eigen::Index pad) {
+        Eigen::MatrixXd extended(arr.rows() + 2 * pad, arr.cols());
+        extended.block(pad, 0, arr.rows(), arr.cols()) = arr;
+        if (pad <= 0) {
+            return extended;
+        }
+        for (Eigen::Index j = 0; j < arr.cols(); ++j) {
+            const double first = arr(0, j);
+            const double last = arr(arr.rows() - 1, j);
+            for (Eigen::Index i = 0; i < pad; ++i) {
+                extended(pad - 1 - i, j) = 2.0 * first - arr(i + 1, j);
+                extended(pad + arr.rows() + i, j) =
+                    2.0 * last - arr(arr.rows() - 2 - i, j);
+            }
+        }
+        return extended;
+    };
+
+    Eigen::MatrixXd out(in.rows(), in.cols());
 
     for (std::size_t k = 0; k < notch_a.size(); ++k) {
         const auto &a = notch_a[k];
         const auto &b = notch_b[k];
-        apply_once(a, b, in.derived(), out);
-        if (notch_zero_phase) {
+        if (!notch_zero_phase) {
+            apply_once(a, b, in.derived(), out);
+            continue;
+        }
+
+        const Eigen::Index filter_order =
+            std::max<Eigen::Index>(a.size(), b.size());
+        const Eigen::Index pad =
+            std::min<Eigen::Index>(in.rows() - 1,
+                                   std::max<Eigen::Index>(0, 3 * filter_order));
+        if (pad <= 0) {
+            apply_once(a, b, in.derived(), out);
             for (Eigen::Index i = 0; i < in.cols(); ++i) {
                 in.derived().col(i).reverseInPlace();
             }
@@ -258,7 +295,20 @@ void Filter::iir(Eigen::DenseBase<Derived> &in) {
             for (Eigen::Index i = 0; i < in.cols(); ++i) {
                 in.derived().col(i).reverseInPlace();
             }
+            continue;
         }
+
+        auto padded = make_odd_extension(in.derived(), pad);
+        Eigen::MatrixXd padded_out(padded.rows(), padded.cols());
+        apply_once(a, b, padded, padded_out);
+        for (Eigen::Index i = 0; i < padded.cols(); ++i) {
+            padded.col(i).reverseInPlace();
+        }
+        apply_once(a, b, padded, padded_out);
+        for (Eigen::Index i = 0; i < padded.cols(); ++i) {
+            padded.col(i).reverseInPlace();
+        }
+        in.derived() = padded.block(pad, 0, in.rows(), in.cols());
     }
 }
 

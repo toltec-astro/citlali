@@ -43,6 +43,39 @@ TEST(timestream_filter, notch_settle_samples_increase_for_narrower_widths) {
     EXPECT_GT(narrow, broad);
 }
 
+TEST(timestream_filter, zero_phase_notch_preserves_constant_timestream) {
+    timestream::Filter filter;
+    filter.notch_zero_phase = true;
+    filter.w0s = {11.03, 15.23, 13.23, 2.71};
+    filter.qs = {
+        11.03 / 0.25,
+        15.23 / 0.30,
+        13.23 / 0.25,
+        2.71 / 0.20,
+    };
+    filter.make_notch_filter(122.0703125);
+
+    Eigen::MatrixXd data = Eigen::MatrixXd::Constant(512, 3, 1.0);
+    filter.iir(data);
+
+    EXPECT_LT((data.array() - 1.0).abs().maxCoeff(), 1e-10);
+}
+
+TEST(timestream_filter, zero_phase_notch_preserves_constant_edges) {
+    timestream::Filter filter;
+    filter.notch_zero_phase = true;
+    filter.w0s = {2.71};
+    filter.qs = {2.71 / 0.20};
+    filter.make_notch_filter(122.0703125);
+
+    Eigen::MatrixXd data = Eigen::MatrixXd::Constant(64, 2, 3.5);
+    filter.iir(data);
+
+    EXPECT_NEAR(data(0, 0), 3.5, 1e-10);
+    EXPECT_NEAR(data(data.rows() - 1, 0), 3.5, 1e-10);
+    EXPECT_LT((data.array() - 3.5).abs().maxCoeff(), 1e-10);
+}
+
 /*
 class UtilsTest : public Test {
 public:
