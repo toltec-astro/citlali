@@ -18,6 +18,7 @@
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/utils/pointing.h>
 
+#include <tula/logging.h>
 
 using timestream::TCData;
 
@@ -341,6 +342,7 @@ template<class map_buffer_t, typename Derived, typename apt_t>
 void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
                         std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb, bool run_noise) {
+    tula::logging::scoped_timeit total_timer{"populate_maps_jinc total"};
 
     const bool use_omb = !omb.noise.empty();
     const bool use_cmb = !cmb.noise.empty() && !use_omb;
@@ -432,72 +434,78 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     };
 
     auto &omb_copy = scratch.omb_copy;
-    omb_copy.n_rows = omb.n_rows;
-    omb_copy.n_cols = omb.n_cols;
-
-    if (run_omb) {
-        ensure_zero_matrix_vec(omb_copy.signal, static_cast<Eigen::Index>(omb.signal.size()), omb.n_rows, omb.n_cols);
-        ensure_zero_matrix_vec(omb_copy.weight, static_cast<Eigen::Index>(omb.weight.size()), omb.n_rows, omb.n_cols);
-        if (!omb.grid_weight.empty()) {
-            ensure_zero_matrix_vec(omb_copy.grid_weight, static_cast<Eigen::Index>(omb.grid_weight.size()),
-                                   omb.n_rows, omb.n_cols);
-        }
-        if (run_coverage) {
-            ensure_zero_matrix_vec(omb_copy.coverage, static_cast<Eigen::Index>(omb.coverage.size()), omb.n_rows, omb.n_cols);
-        }
-        if (run_kernel) {
-            ensure_zero_matrix_vec(omb_copy.kernel, static_cast<Eigen::Index>(omb.kernel.size()), omb.n_rows, omb.n_cols);
-        }
-    }
-    if (use_omb && !direct_noise_accum) {
-        ensure_zero_noise_vec(omb_copy.noise, omb.noise);
-    }
-
     auto &cmb_copy = scratch.cmb_copy;
-    if (use_cmb) {
-        cmb_copy.n_rows = cmb.n_rows;
-        cmb_copy.n_cols = cmb.n_cols;
-        if (!direct_noise_accum) {
-            ensure_zero_noise_vec(cmb_copy.noise, cmb.noise);
-        }
-    }
-    if (direct_noise_accum) {
-        std::vector<Eigen::Tensor<double, 3>>().swap(omb_copy.noise);
-        std::vector<Eigen::Tensor<double, 3>>().swap(cmb_copy.noise);
-    }
-
     map_buffer_t *nmb_copy = nullptr;
-
-    if (run_noise && !direct_noise_accum) {
-        nmb_copy = use_cmb ? &cmb_copy : (use_omb ? &omb_copy : nullptr);
-    }
-
     std::vector<TouchBounds> omb_bounds;
-    if (run_omb) {
-        omb_bounds.reserve(omb.signal.size());
-        for (Eigen::Index ii = 0; ii < static_cast<Eigen::Index>(omb.signal.size()); ++ii) {
-            omb_bounds.emplace_back(omb.n_rows, omb.n_cols);
-        }
-    }
-
     std::vector<TouchBounds> nmb_bounds;
-    if (run_noise && !direct_noise_accum && nmb != nullptr && nmb_copy != nullptr) {
-        nmb_bounds.reserve(nmb->noise.size());
-        for (Eigen::Index ii = 0; ii < static_cast<Eigen::Index>(nmb->noise.size()); ++ii) {
-            nmb_bounds.emplace_back(nmb->n_rows, nmb->n_cols);
+
+    {
+        tula::logging::scoped_timeit setup_timer{"populate_maps_jinc setup"};
+
+        omb_copy.n_rows = omb.n_rows;
+        omb_copy.n_cols = omb.n_cols;
+
+        if (run_omb) {
+            ensure_zero_matrix_vec(omb_copy.signal, static_cast<Eigen::Index>(omb.signal.size()), omb.n_rows, omb.n_cols);
+            ensure_zero_matrix_vec(omb_copy.weight, static_cast<Eigen::Index>(omb.weight.size()), omb.n_rows, omb.n_cols);
+            if (!omb.grid_weight.empty()) {
+                ensure_zero_matrix_vec(omb_copy.grid_weight, static_cast<Eigen::Index>(omb.grid_weight.size()),
+                                       omb.n_rows, omb.n_cols);
+            }
+            if (run_coverage) {
+                ensure_zero_matrix_vec(omb_copy.coverage, static_cast<Eigen::Index>(omb.coverage.size()), omb.n_rows, omb.n_cols);
+            }
+            if (run_kernel) {
+                ensure_zero_matrix_vec(omb_copy.kernel, static_cast<Eigen::Index>(omb.kernel.size()), omb.n_rows, omb.n_cols);
+            }
+        }
+        if (use_omb && !direct_noise_accum) {
+            ensure_zero_noise_vec(omb_copy.noise, omb.noise);
+        }
+
+        if (use_cmb) {
+            cmb_copy.n_rows = cmb.n_rows;
+            cmb_copy.n_cols = cmb.n_cols;
+            if (!direct_noise_accum) {
+                ensure_zero_noise_vec(cmb_copy.noise, cmb.noise);
+            }
+        }
+        if (direct_noise_accum) {
+            std::vector<Eigen::Tensor<double, 3>>().swap(omb_copy.noise);
+            std::vector<Eigen::Tensor<double, 3>>().swap(cmb_copy.noise);
+        }
+
+        if (run_noise && !direct_noise_accum) {
+            nmb_copy = use_cmb ? &cmb_copy : (use_omb ? &omb_copy : nullptr);
+        }
+
+        if (run_omb) {
+            omb_bounds.reserve(omb.signal.size());
+            for (Eigen::Index ii = 0; ii < static_cast<Eigen::Index>(omb.signal.size()); ++ii) {
+                omb_bounds.emplace_back(omb.n_rows, omb.n_cols);
+            }
+        }
+
+        if (run_noise && !direct_noise_accum && nmb != nullptr && nmb_copy != nullptr) {
+            nmb_bounds.reserve(nmb->noise.size());
+            for (Eigen::Index ii = 0; ii < static_cast<Eigen::Index>(nmb->noise.size()); ++ii) {
+                nmb_bounds.emplace_back(nmb->n_rows, nmb->n_cols);
+            }
         }
     }
 
-    // parallelize over detectors
-    for (Eigen::Index i=0; i<n_dets; ++i) {
-        // skip fg = -1 if in polarization mode
-        const bool run_det = !(run_polarization && apt["fg"](i)==-1);
-        if (!run_det) {
-            continue;
-        }
+    {
+        tula::logging::scoped_timeit accumulate_timer{"populate_maps_jinc accumulate"};
+        // parallelize over detectors
+        for (Eigen::Index i=0; i<n_dets; ++i) {
+            // skip fg = -1 if in polarization mode
+            const bool run_det = !(run_polarization && apt["fg"](i)==-1);
+            if (!run_det) {
+                continue;
+            }
 
-        // skip completely flagged detectors
-        if (apt["flag"](i)==0 && (in.flags.data.col(i).array()==false).any()) {
+            // skip completely flagged detectors
+            if (apt["flag"](i)==0 && (in.flags.data.col(i).array()==false).any()) {
             // get detector positions from apt table if not in detector mapmaking mode
             auto det_index = i;
 
@@ -727,7 +735,10 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         }
     }
 
+    }
+
     {
+        tula::logging::scoped_timeit merge_timer{"populate_maps_jinc merge"};
         std::scoped_lock<std::mutex> lk(*jinc_mutex);
         if (run_omb) {
             for (size_t i = 0; i < omb.signal.size(); ++i) {
@@ -787,6 +798,7 @@ template<class map_buffer_t, typename Derived, typename apt_t>
 void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
                         std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb, bool run_noise) {
+    tula::logging::scoped_timeit total_timer{"populate_maps_jinc_parallel total"};
 
     const bool use_omb = !omb.noise.empty();
     const bool use_cmb = !cmb.noise.empty() && !use_omb;
@@ -964,15 +976,17 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
     std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
     map_out_vec.resize(map_in_vec.size());
 
-    // parallelize over detectors
-    //for (Eigen::Index i=0; i<n_dets; ++i) {
-    grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
-        reset_jinc_debug_breadcrumb();
-        // skip fg = -1 if in polarization mode
-        const bool run_det = !(run_polarization && apt["fg"](i)==-1);
-        if (!run_det) {
-            return 0;
-        }
+    {
+        tula::logging::scoped_timeit accumulate_timer{"populate_maps_jinc_parallel accumulate"};
+        // parallelize over detectors
+        //for (Eigen::Index i=0; i<n_dets; ++i) {
+        grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
+            reset_jinc_debug_breadcrumb();
+            // skip fg = -1 if in polarization mode
+            const bool run_det = !(run_polarization && apt["fg"](i)==-1);
+            if (!run_det) {
+                return 0;
+            }
 
         // skip completely flagged detectors
         if (apt["flag"](i)==0 && (in.flags.data.col(i).array()==false).any()) {
@@ -1216,8 +1230,9 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                 }
             }
         }
-        return 0;
-    });
+            return 0;
+        });
+    }
 
     if (run_noise) {
         nmb = nullptr;

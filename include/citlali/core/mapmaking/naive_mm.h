@@ -3,10 +3,11 @@
 #include <thread>
 #include <mutex>
 
+#include <Eigen/Sparse>
+
 #include <citlali/core/timestream/timestream.h>
 
 #include <citlali/core/mapmaking/map.h>
-#include <citlali/core/mapmaking/tiled_accumulator.h>
 #include <citlali/core/utils/pointing.h>
 #include <tula/logging.h>
 
@@ -39,6 +40,14 @@ public:
         {2,pi/2},
         {3,3*pi/4}
     };
+
+    template <typename Derived>
+    void add_sparse_to_dense(std::vector<Eigen::Triplet<double>> &triplets, Eigen::DenseBase<Derived> &dense_matrix) {
+        Eigen::SparseMatrix<double> sparse_matrix(dense_matrix.rows(),dense_matrix.cols());
+        sparse_matrix.setFromTriplets(triplets.begin(), triplets.end());
+        dense_matrix += sparse_matrix;
+        std::vector<Eigen::Triplet<double>>().swap(triplets);
+    }
 
     // run polarization?
     bool run_polarization;
@@ -90,8 +99,9 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                                         bool run_omb, bool run_noise) {
     tula::logging::scoped_timeit total_timer{"populate_maps_naive total"};
 
-    TiledMapAccumulator signals, weights, kernels, coverages;
-    TiledMapAccumulator cmb_signals, cmb_weights, cmb_kernels, cmb_coverages;
+    typedef Eigen::Triplet<double> T;
+    std::vector<std::vector<T>> signals, weights, kernels, coverages;
+    std::vector<std::vector<T>> cmb_signals, cmb_weights, cmb_kernels, cmb_coverages;
 
     const bool use_cmb = !cmb.noise.empty();
     const bool use_omb = !omb.noise.empty();
@@ -100,26 +110,26 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
     const bool run_hwpr = in.hwpr_angle.data.size()!=0;
 
     if (run_omb) {
-        signals.reset(omb.signal.size(), omb.n_rows, omb.n_cols);
-        weights.reset(omb.signal.size(), omb.n_rows, omb.n_cols);
+        signals.resize(omb.signal.size());
+        weights.resize(omb.signal.size());
 
         if (run_kernel) {
-            kernels.reset(omb.signal.size(), omb.n_rows, omb.n_cols);
+            kernels.resize(omb.signal.size());
         }
         if (run_coverage) {
-            coverages.reset(omb.signal.size(), omb.n_rows, omb.n_cols);
+            coverages.resize(omb.signal.size());
         }
     }
 
     if (run_polarization && !cmb.signal.empty()) {
-        cmb_signals.reset(cmb.signal.size(), cmb.n_rows, cmb.n_cols);
-        cmb_weights.reset(cmb.signal.size(), cmb.n_rows, cmb.n_cols);
+        cmb_signals.resize(cmb.signal.size());
+        cmb_weights.resize(cmb.signal.size());
 
         if (run_kernel) {
-            cmb_kernels.reset(cmb.signal.size(), cmb.n_rows, cmb.n_cols);
+            cmb_kernels.resize(cmb.signal.size());
         }
         if (run_coverage) {
-            cmb_coverages.reset(cmb.signal.size(), cmb.n_rows, cmb.n_cols);
+            cmb_coverages.resize(cmb.signal.size());
         }
     }
 
@@ -248,20 +258,20 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                             if ((omb_ir >= 0) && (omb_ir < omb.n_rows) && (omb_ic >= 0) && (omb_ic < omb.n_cols)) {
                                 // populate signal map
                                 signal = in.scans.data(j,i)*in.weights.data(i);
-                                signals.add(map_index, omb_ir, omb_ic, signal);
+                                signals[map_index].push_back(T(omb_ir,omb_ic,signal));
 
                                 // populate weight map
-                                weights.add(map_index, omb_ir, omb_ic, in.weights.data(i));
+                                weights[map_index].push_back(T(omb_ir,omb_ic,in.weights.data(i)));
 
                                 // populate kernel map
                                 if (run_kernel) {
                                     kernel = in.kernel.data(j,i)*in.weights.data(i);
-                                    kernels.add(map_index, omb_ir, omb_ic, kernel);
+                                    kernels[map_index].push_back(T(omb_ir,omb_ic,kernel));
                                 }
 
                                 // populate coverage map
                                 if (run_coverage) {
-                                    coverages.add(map_index, omb_ir, omb_ic, 1./d_fsmp);
+                                    coverages[map_index].push_back(T(omb_ir,omb_ic,1./d_fsmp));
                                 }
 
                                 if (run_polarization) {
@@ -269,13 +279,13 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                                     allocate_pointing(omb_copy, in.weights.data(i), cos_2angle, sin_2angle, map_index, omb_ir, omb_ic);
 
                                     // update signal map Q and U
-                                    signals.add(q_index, omb_ir, omb_ic, signal*cos_2angle);
-                                    signals.add(u_index, omb_ir, omb_ic, signal*sin_2angle);
+                                    signals[q_index].push_back(T(omb_ir,omb_ic,signal*cos_2angle));
+                                    signals[u_index].push_back(T(omb_ir,omb_ic,signal*sin_2angle));
 
                                     // update kernel map Q and U
                                     if (run_kernel) {
-                                        kernels.add(q_index, omb_ir, omb_ic, kernel*cos_2angle);
-                                        kernels.add(u_index, omb_ir, omb_ic, kernel*sin_2angle);
+                                        kernels[q_index].push_back(T(omb_ir,omb_ic,kernel*cos_2angle));
+                                        kernels[u_index].push_back(T(omb_ir,omb_ic,kernel*sin_2angle));
                                     }
                                 }
                             }
@@ -289,33 +299,33 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                             if ((cmb_ir >= 0) && (cmb_ir < cmb.n_rows) && (cmb_ic >= 0) && (cmb_ic < cmb.n_cols)) {
                                 // populate signal map
                                 signal = in.scans.data(j,i)*in.weights.data(i);
-                                cmb_signals.add(map_index, cmb_ir, cmb_ic, signal);
+                                cmb_signals[map_index].push_back(T(cmb_ir,cmb_ic,signal));
 
                                 // populate weight map
-                                cmb_weights.add(map_index, cmb_ir, cmb_ic, in.weights.data(i));
+                                cmb_weights[map_index].push_back(T(cmb_ir,cmb_ic,in.weights.data(i)));
 
                                 // populate kernel map
                                 if (run_kernel) {
                                     kernel = in.kernel.data(j,i)*in.weights.data(i);
-                                    cmb_kernels.add(map_index, cmb_ir, cmb_ic, kernel);
+                                    cmb_kernels[map_index].push_back(T(cmb_ir,cmb_ic,kernel));
                                 }
 
                                 // populate coverage map
                                 if (run_coverage) {
-                                    cmb_coverages.add(map_index, cmb_ir, cmb_ic, 1./d_fsmp);
+                                    cmb_coverages[map_index].push_back(T(cmb_ir,cmb_ic,1./d_fsmp));
                                 }
 
                                 // calculate pointing matrix
                                 allocate_pointing(cmb_copy, in.weights.data(i), cos_2angle, sin_2angle, map_index, cmb_ir, cmb_ic);
 
                                 // update signal map Q and U
-                                cmb_signals.add(q_index, cmb_ir, cmb_ic, signal*cos_2angle);
-                                cmb_signals.add(u_index, cmb_ir, cmb_ic, signal*sin_2angle);
+                                cmb_signals[q_index].push_back(T(cmb_ir,cmb_ic,signal*cos_2angle));
+                                cmb_signals[u_index].push_back(T(cmb_ir,cmb_ic,signal*sin_2angle));
 
                                 // update kernel map Q and U
                                 if (run_kernel) {
-                                    cmb_kernels.add(q_index, cmb_ir, cmb_ic, kernel*cos_2angle);
-                                    cmb_kernels.add(u_index, cmb_ir, cmb_ic, kernel*sin_2angle);
+                                    cmb_kernels[q_index].push_back(T(cmb_ir,cmb_ic,kernel*cos_2angle));
+                                    cmb_kernels[u_index].push_back(T(cmb_ir,cmb_ic,kernel*sin_2angle));
                                 }
                             }
                         }
@@ -372,15 +382,17 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
         tula::logging::scoped_timeit merge_timer{"populate_maps_naive merge"};
         std::scoped_lock<std::mutex> lk(*naive_mutex);
         if (run_omb) {
-            signals.merge_into(omb.signal);
-            weights.merge_into(omb.weight);
+            for (int i=0; i<omb.signal.size(); ++i) {
+                add_sparse_to_dense(signals[i],omb.signal[i]);
+                add_sparse_to_dense(weights[i],omb.weight[i]);
 
-            if (run_kernel) {
-                kernels.merge_into(omb.kernel);
-            }
+                if (run_kernel) {
+                    add_sparse_to_dense(kernels[i],omb.kernel[i]);
+                }
 
-            if (run_coverage) {
-                coverages.merge_into(omb.coverage);
+                if (run_coverage) {
+                    add_sparse_to_dense(coverages[i],omb.coverage[i]);
+                }
             }
             if (!omb.pointing.empty()) {
                 for (int i=0; i<omb.pointing.size(); ++i) {
@@ -390,15 +402,17 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
         }
 
         if (run_polarization && !cmb.signal.empty()) {
-            cmb_signals.merge_into(cmb.signal);
-            cmb_weights.merge_into(cmb.weight);
+            for (int i=0; i<cmb.signal.size(); ++i) {
+                add_sparse_to_dense(cmb_signals[i],cmb.signal[i]);
+                add_sparse_to_dense(cmb_weights[i],cmb.weight[i]);
 
-            if (run_kernel) {
-                cmb_kernels.merge_into(cmb.kernel);
-            }
+                if (run_kernel) {
+                    add_sparse_to_dense(cmb_kernels[i],cmb.kernel[i]);
+                }
 
-            if (run_coverage) {
-                cmb_coverages.merge_into(cmb.coverage);
+                if (run_coverage) {
+                    add_sparse_to_dense(cmb_coverages[i],cmb.coverage[i]);
+                }
             }
         }
 

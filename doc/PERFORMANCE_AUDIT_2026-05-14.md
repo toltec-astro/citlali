@@ -227,8 +227,46 @@ wrong direction for the standard noise count:
 Decision: the tiled-noise prototype is not a good default path for this
 standard case. It preserves numerical results, but it slows the reduction by
 about 58 seconds, or roughly 28 percent, while merge time remains negligible
-relative to the detector/sample accumulation loop. The branch has therefore
-removed `TiledNoiseAccumulator` and restored the prior full scratch-buffer
-noise accumulation behavior. The useful timers and the 2-D tiled map
-accumulator remain. The next structural performance work should target reuse of
-per-detector sample-to-map work rather than the noise-map merge step.
+relative to the detector/sample accumulation loop. The branch therefore removed
+`TiledNoiseAccumulator` and restored the prior full scratch-buffer noise
+accumulation behavior.
+
+The cleanup was validated with another standard 25-noise-map run:
+
+- `redu15`: performance branch at `75c44812`, Citlali
+  `v4.0.0-356-g75c44812`, same generated Citlali config as `redu14`, wall
+  time `3m41.028757068s`.
+
+`redu15` matched the `gw_dev` control at roundoff: coverage masks were
+identical, the largest signal-map max absolute difference was `3.55e-15`, the
+largest checked FITS max absolute difference was `2.84e-14`, histogram and
+stats netCDF products were exact, PSD/mapdiag differences were roundoff-scale,
+and coadd empirical weight scales matched exactly. Removing tiled-noise
+accumulation recovered most of the slowdown (`redu13` was `4m28.969s`), but the
+branch was still about 10 seconds slower than `gw_dev` (`redu14` was
+`3m30.785s`).
+
+Final decision for the scalar tiled map accumulator: remove it from the naive
+path as well. It is numerically safe, but the tested reductions do not show a
+wall-clock benefit, and carrying a known small slowdown forward would obscure
+future structural measurements. The branch restores naive mapmaking to the
+prior sparse-triplet accumulation/merge behavior while keeping
+`populate_maps_naive total`, `populate_maps_naive accumulate`, and
+`populate_maps_naive merge` timers.
+
+Jinc mapmaking is a separate case. It already accumulates dense jinc footprint
+blocks into scratch maps, so the scalar `TiledMapAccumulator` is not the right
+primitive. A future jinc optimization should use a block-aware tile accumulator
+or a precomputed sample-footprint plan if timing supports it. The branch now
+adds coarse jinc timers:
+
+- `populate_maps_jinc total`
+- `populate_maps_jinc setup`
+- `populate_maps_jinc accumulate`
+- `populate_maps_jinc merge`
+- `populate_maps_jinc_parallel total`
+- `populate_maps_jinc_parallel accumulate`
+
+The next Unity jinc run should use these labels to decide whether the dominant
+cost is scratch setup/zeroing, detector/sample footprint accumulation, final
+merge, or the beammap parallel direct-update path.
