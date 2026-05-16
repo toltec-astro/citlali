@@ -286,3 +286,27 @@ mathematically equivalent because `in.noise.data(nn,i)` is constant across
 samples for a detector/noise realization. A simple work estimate keeps the
 existing per-sample path when the template's map-sized write would not be
 cheaper than per-sample footprint splatting.
+
+That serial jinc template path was validated by `redu18`, using Citlali
+`v4.0.0-358-gb0ba0c58` and the same generated config as `redu17`. Full process
+time dropped from `10m8.453s` to `5m40.969s`. The timer split moved as intended:
+
+- `populate_maps_jinc total`: 124 calls, sum `2056.529s`, mean `16.585s`
+- `populate_maps_jinc accumulate`: 124 calls, sum `2046.610s`, mean `16.505s`
+- `populate_maps_jinc setup`: 124 calls, sum `6.080s`, mean `0.049s`
+- `populate_maps_jinc merge`: 124 calls, sum `3.821s`, mean `0.031s`
+
+Product comparison against `redu17` over shared `coverage_bool_I` regions found
+zero coverage-mask mismatches in the checked FITS maps. Signal maps and noise
+products differed only at roundoff; the largest signal-map max absolute
+difference was `2.66e-15`, the largest `noise_variance_I` max absolute
+difference was `3.0e-15`, and the largest checked FITS max absolute difference
+was `3.41e-13` in `coverage_I`.
+
+The detector-template optimization has now also been ported to
+`populate_maps_jinc_parallel` for detector-grouped OMB noise maps, which is the
+standard beammap jinc path. This new parallel path is intentionally narrower
+than the serial path: coadd noise and non-detector grouping continue to use the
+existing per-sample noise accumulation. It is not yet Unity-validated. The next
+beammap jinc run should compare against the previous jinc control and check
+both products and `populate_maps_jinc_parallel accumulate` timing.
