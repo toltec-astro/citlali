@@ -2,6 +2,7 @@
 
 #include <thread>
 #include <mutex>
+#include <unordered_set>
 
 #include <Eigen/Sparse>
 
@@ -136,6 +137,8 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
     map_buffer_t omb_copy, cmb_copy;
     // pointer to map buffer with noise maps
     map_buffer_t *nmb = nullptr, *nmb_copy = nullptr;
+    std::vector<std::vector<Eigen::Index>> nmb_touched_pixels;
+    std::vector<std::unordered_set<Eigen::Index>> nmb_touched_pixel_sets;
 
     omb_copy.n_rows = omb.n_rows;
     omb_copy.n_cols = omb.n_cols;
@@ -147,13 +150,33 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
         nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
         if (nmb != nullptr) {
             nmb_copy = use_cmb ? &cmb_copy : &omb_copy;
-            nmb_copy->noise = nmb->noise;
-
-            for (Eigen::Index i=0; i<nmb_copy->noise.size(); ++i) {
-                nmb_copy->noise[i].setZero();
+            nmb_copy->noise.resize(nmb->noise.size());
+            nmb_touched_pixels.resize(nmb->noise.size());
+            nmb_touched_pixel_sets.resize(nmb->noise.size());
+            for (size_t i=0; i<nmb->noise.size(); ++i) {
+                const auto &ref = nmb->noise[i];
+                auto &scratch = nmb_copy->noise[i];
+                if (scratch.dimension(0) != ref.dimension(0) ||
+                    scratch.dimension(1) != ref.dimension(1) ||
+                    scratch.dimension(2) != ref.dimension(2)) {
+                    scratch.resize(ref.dimension(0), ref.dimension(1), ref.dimension(2));
+                }
             }
         }
     }
+
+    // Scratch noise tensors are not fully zeroed; initialize each touched
+    // pixel once and merge only those pixels after accumulation.
+    auto touch_noise_pixel = [&](Eigen::Index noise_map_index, Eigen::Index row, Eigen::Index col) {
+        auto idx = static_cast<size_t>(noise_map_index);
+        Eigen::Index pix = row + col * nmb->n_rows;
+        if (nmb_touched_pixel_sets[idx].insert(pix).second) {
+            nmb_touched_pixels[idx].push_back(pix);
+            for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
+                nmb_copy->noise[idx](row,col,nn) = 0.0;
+            }
+        }
+    };
 
     // step to skip to reach next stokes param
     int step = omb.pointing.size();
@@ -351,6 +374,11 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                                       //  allocate_pointing(cmb_copy, in.weights.data(i), cos_2angle, sin_2angle, map_index, nmb_ir, nmb_ic);
                                     //}
                                 //}
+                                touch_noise_pixel(map_index, nmb_ir, nmb_ic);
+                                if (run_polarization) {
+                                    touch_noise_pixel(q_index, nmb_ir, nmb_ic);
+                                    touch_noise_pixel(u_index, nmb_ir, nmb_ic);
+                                }
                                 // loop through noise maps
                                 for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
                                     // randomizing on dets
@@ -417,8 +445,20 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
         }
 
         if (run_noise && nmb != nullptr && nmb_copy != nullptr) {
-            for (Eigen::Index i=0; i<nmb->noise.size(); ++i) {
-                nmb->noise[i] += nmb_copy->noise[i];
+            const Eigen::Index plane_size = nmb->n_rows * nmb->n_cols;
+            for (size_t i=0; i<nmb->noise.size(); ++i) {
+                const auto &pixels = nmb_touched_pixels[i];
+                if (pixels.empty()) {
+                    continue;
+                }
+                auto *dst = nmb->noise[i].data();
+                auto *src = nmb_copy->noise[i].data();
+                for (const auto pix: pixels) {
+                    for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
+                        const Eigen::Index offset = pix + nn * plane_size;
+                        dst[offset] += src[offset];
+                    }
+                }
             }
         }
 

@@ -328,3 +328,33 @@ These timers should be checked on the next representative Unity reduction with
 noise maps enabled. They do not gate or skip any products; they only expose the
 relative cost of normalization, PSD/histogram generation, median diagnostics,
 and empirical noise-product calculations.
+
+The first run with those post-map timers was `redu19`, using Citlali
+`v4.0.0-360-gcb252bdf`, the same generated config as `redu14` and `redu15`,
+`method: naive`, and `n_noise_maps: 25`. Product comparison against the
+`gw_dev` control `redu14` was roundoff-clean: coverage masks were identical,
+the largest signal-map max absolute difference was `3.55e-15`, and the largest
+checked FITS max absolute difference was `2.84e-14` in coadd
+`noise_variance_I`.
+
+`redu19` showed the post-map products are not a meaningful bottleneck for this
+small map:
+
+- `MapBuffer::normalize_maps`: total `0.035s`
+- `MapBuffer::calc_map_psd`: total `0.891s`
+- `MapBuffer::calc_map_hist`: total `0.281s`
+- `MapBuffer::calc_noise_products total`: total `0.211s`
+
+The remaining naive-mapmaking merge cost was more interesting:
+
+- `populate_maps_naive merge`: 124 calls, sum `47.664s`, mean `0.384s`
+- merge timer wall union: `46.693s`
+
+This means the timer is mostly serialized work, not overlapping wait. The
+dominant suspect is the full noise-cube merge: for this run the coadd noise
+cube is about `0.115 GB`, and the old path added that whole cube into the
+shared map buffer once per scan. The performance branch now has an unvalidated
+naive noise merge change: per-scan scratch noise maps lazily initialize only
+pixels touched by that scan, track those touched pixels, and merge only those
+pixels into the shared noise cube. This should be most useful when the
+configured map area is much larger than the scan/array footprint.
