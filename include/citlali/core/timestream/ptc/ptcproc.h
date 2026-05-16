@@ -11,6 +11,7 @@
 #include <map>
 #include <numeric>
 #include <random>
+#include <tuple>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -1086,20 +1087,25 @@ void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 template <class calib_type>
 void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKind::PTC, Eigen::MatrixXd> &out,
                   calib_type &calib, std::string pixel_axes, std::string map_grouping) {
+    tula::logging::scoped_timeit total_timer{"PTCProc::run total"};
 
     Eigen::Index n_pts = in.scans.data.rows();
     Eigen::Index n_dets = in.scans.data.cols();
 
     // subtract mean from data and kernel, optionally masking the source region
-    if (run_clean && mask_radius_arcsec > 0) {
-        auto mean_flags = mask_region(in, calib, pixel_axes, map_grouping, n_pts, n_dets, 0);
-        subtract_mean(in, &mean_flags);
-    }
-    else {
-        subtract_mean(in);
+    {
+        tula::logging::scoped_timeit subtract_timer{"PTCProc::run subtract_mean"};
+        if (run_clean && mask_radius_arcsec > 0) {
+            auto mean_flags = mask_region(in, calib, pixel_axes, map_grouping, n_pts, n_dets, 0);
+            subtract_mean(in, &mean_flags);
+        }
+        else {
+            subtract_mean(in);
+        }
     }
 
     if (run_clean) {
+        tula::logging::scoped_timeit clean_timer{"PTCProc::clean total"};
         logger->info("cleaning");
         // Use a local copy so per-pass state does not leak across concurrent run() calls.
         auto cleaner_local = cleaner;
@@ -1186,6 +1192,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
 
             if (group == "corr_nw" && cleaner_local.corr_grouping.enabled) {
+                tula::logging::scoped_timeit corr_timer{"PTCProc::clean corr_nw total"};
                     Eigen::VectorXi corr_group_ids_scan = Eigen::VectorXi::Constant(in.scans.data.cols(), -1);
                     std::vector<CorrNWDiagSummary> corr_summary_scan;
                     corr_summary_scan.reserve(static_cast<std::size_t>(calib.n_nws));
@@ -1215,7 +1222,11 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                             out_kernel_block = in_kernel_block;
                         }
 
-                        auto corr_groups = cleaner_local.get_corr_groups(in_scans_block, masked_flags, apt_flags);
+                        timestream::Cleaner::CorrGroupingResult corr_groups;
+                        {
+                            tula::logging::scoped_timeit corr_group_timer{"PTCProc::clean corr_nw get_groups"};
+                            corr_groups = cleaner_local.get_corr_groups(in_scans_block, masked_flags, apt_flags);
+                        }
                         logger->info("cleaning corr_nw {} groups={} grouped={} ungrouped={} candidates={} used={} step={}",
                                      key, corr_groups.n_groups_final, corr_groups.n_det_grouped, corr_groups.n_det_ungrouped,
                                      corr_groups.n_det_candidates, corr_groups.n_det_used, corr_groups.sample_step);
@@ -1278,8 +1289,15 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                                 continue;
                             }
 
-                            auto [evals, evecs] = cleaner_local.calc_eig_values<timestream::Cleaner::SpectraBackend>(
-                                in_scans_sub, flags_sub, apt_flags_sub, cleaner_local.n_eig_to_cut[arr_index](indx));
+                            Eigen::VectorXd evals;
+                            Eigen::MatrixXd evecs;
+                            {
+                                tula::logging::scoped_timeit eig_timer{"PTCProc::clean calc_eig_values"};
+                                std::tie(evals, evecs) =
+                                    cleaner_local.calc_eig_values<timestream::Cleaner::SpectraBackend>(
+                                        in_scans_sub, flags_sub, apt_flags_sub,
+                                        cleaner_local.n_eig_to_cut[arr_index](indx));
+                            }
                             Eigen::Index forced_limit_index = get_forced_limit_index_safe(
                                 in_scans_sub, flags_sub, apt_flags_sub, group, nw_index, arr_index);
 
@@ -1293,10 +1311,13 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                                 }
                             }
 
-                            cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
-                                in_scans_sub, flags_sub, evals, evecs, out_scans_sub,
-                                cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index,
-                                group, nw_index, arr_index);
+                            {
+                                tula::logging::scoped_timeit remove_timer{"PTCProc::clean remove_eig_values"};
+                                cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+                                    in_scans_sub, flags_sub, evals, evecs, out_scans_sub,
+                                    cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index,
+                                    group, nw_index, arr_index);
+                            }
                             scatter_cols(out_scans_block, out_scans_sub, cols);
 
                             if (in.kernel.data.size()!=0) {
@@ -1304,10 +1325,13 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                                 auto out_kernel_block = out.kernel.data.block(0, start_index, n_pts, n_dets);
                                 auto in_kernel_sub = extract_scans_cols(in_kernel_block, cols);
                                 auto out_kernel_sub = in_kernel_sub;
-                                cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
-                                    in_kernel_sub, flags_sub, evals, evecs, out_kernel_sub,
-                                    cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index,
-                                    group, nw_index, arr_index);
+                                {
+                                    tula::logging::scoped_timeit kernel_timer{"PTCProc::clean kernel remove_eig_values"};
+                                    cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+                                        in_kernel_sub, flags_sub, evals, evecs, out_kernel_sub,
+                                        cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index,
+                                        group, nw_index, arr_index);
+                                }
                                 scatter_cols(out_kernel_block, out_kernel_sub, cols);
                             }
                         }
@@ -1320,12 +1344,15 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             }
 
             // use all detectors for cleaning
-            if (effective_group == "all") {
-                grp_limits[0] = std::make_tuple(0,in.scans.data.cols());
-            }
-            else {
-                // get group limits
-                grp_limits = get_grouping(effective_group, calib, in.scans.data.cols());
+            {
+                tula::logging::scoped_timeit grouping_timer{"PTCProc::clean get_grouping"};
+                if (effective_group == "all") {
+                    grp_limits[0] = std::make_tuple(0,in.scans.data.cols());
+                }
+                else {
+                    // get group limits
+                    grp_limits = get_grouping(effective_group, calib, in.scans.data.cols());
+                }
             }
             // loop through cleaning groups
             for (auto const& [key, val] : grp_limits) {
@@ -1352,13 +1379,16 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> masked_flags;
 
                 // mask region if radius is >0
-                if (mask_radius_arcsec > 0) {
-                    // samples that were masked will be flagged
-                    masked_flags = mask_region(in, calib, pixel_axes, map_grouping, n_pts, n_dets, start_index);
-                }
-                // otherwise just use input flags
-                else {
-                    masked_flags = in.flags.data.block(0, start_index, n_pts, n_dets);
+                {
+                    tula::logging::scoped_timeit mask_timer{"PTCProc::clean mask_flags"};
+                    if (mask_radius_arcsec > 0) {
+                        // samples that were masked will be flagged
+                        masked_flags = mask_region(in, calib, pixel_axes, map_grouping, n_pts, n_dets, start_index);
+                    }
+                    // otherwise just use input flags
+                    else {
+                        masked_flags = in.flags.data.block(0, start_index, n_pts, n_dets);
+                    }
                 }
 
                 auto in_scans_block = in.scans.data.block(0, start_index, n_pts, n_dets);
@@ -1381,8 +1411,14 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                     }
                     // calculate eigenvalues and eigenvalues
                     const auto eig_t0 = std::chrono::steady_clock::now();
-                    auto [evals, evecs] = cleaner_local.calc_eig_values<timestream::Cleaner::SpectraBackend>(
-                        in_scans_block, masked_flags, apt_flags, solve_n_eig);
+                    Eigen::VectorXd evals;
+                    Eigen::MatrixXd evecs;
+                    {
+                        tula::logging::scoped_timeit eig_timer{"PTCProc::clean calc_eig_values"};
+                        std::tie(evals, evecs) =
+                            cleaner_local.calc_eig_values<timestream::Cleaner::SpectraBackend>(
+                                in_scans_block, masked_flags, apt_flags, solve_n_eig);
+                    }
                     const auto eig_t1 = std::chrono::steady_clock::now();
                     const double eig_solve_msec =
                         std::chrono::duration<double, std::milli>(eig_t1 - eig_t0).count();
@@ -1390,6 +1426,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                         in_scans_block, masked_flags, apt_flags, effective_group, key, arr_index);
                     timestream::Cleaner::AdaptiveSelectorResult adaptive_result;
                     if (adaptive_selector_for_group) {
+                        tula::logging::scoped_timeit adaptive_timer{"PTCProc::clean adaptive_select"};
                         adaptive_result = cleaner_local.select_adaptive_cut(
                             in_scans_block, masked_flags, apt_flags, evecs,
                             baseline_k, effective_group, key, arr_index);
@@ -1422,12 +1459,14 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                     }
                     else if (adaptive_selector_for_group && adaptive_result.used) {
                         k_to_apply = adaptive_result.chosen_k;
+                        tula::logging::scoped_timeit remove_timer{"PTCProc::clean remove_eig_values"};
                         cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
                             in_scans_block, masked_flags, evals, evecs, out_scans_block,
                             k_to_apply, forced_limit_index,
                             effective_group, nw_index, arr_index);
                     }
                     else {
+                        tula::logging::scoped_timeit remove_timer{"PTCProc::clean remove_eig_values"};
                         cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
                             in_scans_block, masked_flags, evals, evecs, out_scans_block,
                             baseline_k, forced_limit_index,
@@ -1476,10 +1515,13 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                             auto out_kernel_block = in.kernel.data.block(0, start_index, n_pts, n_dets);
 
                             // remove eigenvalues from the kernel and reconstruct the tod
-                            cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
-                                in_kernel_block, masked_flags, evals, evecs, out_kernel_block,
-                                k_to_apply, forced_limit_index,
-                                effective_group, nw_index, arr_index);
+                            {
+                                tula::logging::scoped_timeit kernel_timer{"PTCProc::clean kernel remove_eig_values"};
+                                cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+                                    in_kernel_block, masked_flags, evals, evecs, out_kernel_block,
+                                    k_to_apply, forced_limit_index,
+                                    effective_group, nw_index, arr_index);
+                            }
                     }
                 }
                 // otherwise just copy the data
@@ -1507,6 +1549,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             logger->warn("processed_time_chunk.flagging.second_pass_local enabled but clean.enabled=false; skipping PTC second-pass residual flagging");
         }
         else {
+            tula::logging::scoped_timeit second_pass_timer{"PTCProc::second_pass_local"};
             apply_second_pass_local(out, calib);
         }
     }
@@ -2178,6 +2221,7 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
 template <typename apt_type, class tel_type>
 void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_type &apt, tel_type &telescope) {
+    tula::logging::scoped_timeit total_timer{"PTCProc::calc_weights total"};
     // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
     const auto scan_index_1based = static_cast<long long>(in.index.data) + 1;
@@ -2186,56 +2230,62 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
     in.weights.data = Eigen::VectorXd::Zero(n_dets);
 
     // approximate weighting
-    if (weighting_type == "approximate") {
-        logger->debug("calculating weights using detector sensitivities");
-        // unit conversion x flux calibration factor x 1/exp(-tau)
-        double conversion_factor;
+    {
+        tula::logging::scoped_timeit base_timer{"PTCProc::calc_weights base"};
+        if (weighting_type == "approximate") {
+            logger->debug("calculating weights using detector sensitivities");
+            // unit conversion x flux calibration factor x 1/exp(-tau)
+            double conversion_factor;
 
-        // loop through detectors and calculate weights
-        for (Eigen::Index i=0; i<n_dets; ++i) {
-            // current detector index
-            Eigen::Index det_index = i;
-            if (apt["flag"](det_index)!=0) {
-                in.weights.data(i) = 0;
-                continue;
-            }
-            // if flux calibrated, get flux conversion factor
-            if (in.status.calibrated) {
-                conversion_factor = in.fcf.data(i);
-            }
-            // otherwise fcf is unity
-            else {
-                conversion_factor = 1;
-            }
-            // make sure flux conversion is not zero (otherwise weight=0)
-            if (conversion_factor*apt["sens"](det_index)!=0) {
-                // calculate weights while applying flux calibration
-                in.weights.data(i) = pow(sqrt(telescope.d_fsmp)*apt["sens"](det_index)*conversion_factor,-2.0);
-            }
-            else {
-                in.weights.data(i) = 0;
+            // loop through detectors and calculate weights
+            for (Eigen::Index i=0; i<n_dets; ++i) {
+                // current detector index
+                Eigen::Index det_index = i;
+                if (apt["flag"](det_index)!=0) {
+                    in.weights.data(i) = 0;
+                    continue;
+                }
+                // if flux calibrated, get flux conversion factor
+                if (in.status.calibrated) {
+                    conversion_factor = in.fcf.data(i);
+                }
+                // otherwise fcf is unity
+                else {
+                    conversion_factor = 1;
+                }
+                // make sure flux conversion is not zero (otherwise weight=0)
+                if (conversion_factor*apt["sens"](det_index)!=0) {
+                    // calculate weights while applying flux calibration
+                    in.weights.data(i) = pow(sqrt(telescope.d_fsmp)*apt["sens"](det_index)*conversion_factor,-2.0);
+                }
+                else {
+                    in.weights.data(i) = 0;
+                }
             }
         }
-    }
-    // use full weighting
-    else if (weighting_type == "full"){
-        logger->debug("calculating weights using timestream variance");
-        const bool use_source_weight_mask =
-            mask_radius_arcsec > 0.0 &&
-            fruit_loops_source_valid.size() > 0 &&
-            fruit_loops_source_lat.size() == fruit_loops_source_valid.size() &&
-            fruit_loops_source_lon.size() == fruit_loops_source_valid.size();
-        const double source_mask_radius_rad = mask_radius_arcsec * ASEC_TO_RAD;
+        // use full weighting
+        else if (weighting_type == "full"){
+            logger->debug("calculating weights using timestream variance");
+            const bool use_source_weight_mask =
+                mask_radius_arcsec > 0.0 &&
+                fruit_loops_source_valid.size() > 0 &&
+                fruit_loops_source_lat.size() == fruit_loops_source_valid.size() &&
+                fruit_loops_source_lon.size() == fruit_loops_source_valid.size();
+            const double source_mask_radius_rad = mask_radius_arcsec * ASEC_TO_RAD;
 
-        if (use_source_weight_mask) {
-            logger->info("calculating full weights with source mask (radius {} arcsec) for scan {}",
-                         mask_radius_arcsec, scan_index_1based);
-        }
+            if (use_source_weight_mask) {
+                logger->info("calculating full weights with source mask (radius {} arcsec) for scan {}",
+                             mask_radius_arcsec, scan_index_1based);
+            }
 
-        // loop through detectors
-        for (Eigen::Index i=0; i<n_dets; ++i) {
-            // only calculate weights if detector is unflagged
-            if (apt["flag"](i)==0) {
+            // loop through detectors
+            for (Eigen::Index i=0; i<n_dets; ++i) {
+                // only calculate weights if detector is unflagged
+                if (apt["flag"](i)!=0) {
+                    in.weights.data(i) = 0;
+                    continue;
+                }
+
                 // make Eigen::Maps for each detector's scan
                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
                     in.scans.data.col(i).data(), in.scans.data.rows());
@@ -2273,6 +2323,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                 else {
                     det_std_dev = engine_utils::calc_std_dev(scans, base_flags);
                 }
+
                 // if stddev is not zero
                 if (det_std_dev !=0) {
                     // weight = 1/(stddev)^2
@@ -2283,22 +2334,18 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                     in.weights.data(i) = 0;
                 }
             }
-            // otherwise weight = 0 (not included in maps)
-            else {
-                in.weights.data(i) = 0;
-            }
         }
-    }
-    // constant weighting
-    else if (weighting_type == "const") {
-        for (Eigen::Index i=0; i<n_dets; ++i) {
-            // only calculate weights if detector is unflagged
-            if (apt["flag"](i)==0) {
-                in.weights.data(i) = 1;
-            }
-            // otherwise set to zero
-            else {
-                in.weights.data(i) = 0;
+        // constant weighting
+        else if (weighting_type == "const") {
+            for (Eigen::Index i=0; i<n_dets; ++i) {
+                // only calculate weights if detector is unflagged
+                if (apt["flag"](i)==0) {
+                    in.weights.data(i) = 1;
+                }
+                // otherwise set to zero
+                else {
+                    in.weights.data(i) = 0;
+                }
             }
         }
     }
@@ -2336,6 +2383,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
     }
 
     if (weight_corr_penalty.enabled) {
+        tula::logging::scoped_timeit corr_timer{"PTCProc::calc_weights corr_penalty"};
         auto clamp01 = [](double v) {
             return std::clamp(v, 0.0, 1.0);
         };
@@ -2769,6 +2817,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
     }
 
     if (busy_row_suppression.enabled) {
+        tula::logging::scoped_timeit busy_timer{"PTCProc::calc_weights busy_row_suppression"};
         std::unordered_map<Eigen::Index, const SecondPassDiagSummary *> second_pass_by_nw;
         const auto second_pass_it = second_pass_summary_by_scan.find(in.index.data);
         if (second_pass_it != second_pass_summary_by_scan.end()) {
@@ -2863,6 +2912,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 
 template <typename calib_t>
 auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib, std::string map_grouping) {
+    tula::logging::scoped_timeit total_timer{"PTCProc::reset_weights total"};
 
     // make a copy of the calib class for flagging
     calib_t calib_scan = calib;
@@ -3544,6 +3594,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 template <typename calib_t>
 void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std::string filepath,
                                     calib_t &calib, Eigen::Index scan_row_index) {
+    tula::logging::scoped_timeit total_timer{"PTCProc::append_diag_to_netcdf total"};
     using netCDF::NcDim;
     using netCDF::NcFile;
     using netCDF::NcVar;

@@ -20,6 +20,8 @@
 #include <Eigen/Eigenvalues>
 #include <Spectra/SymEigsSolver.h>
 
+#include <tula/logging.h>
+
 #include <citlali/core/utils/utils.h>
 
 namespace timestream {
@@ -1904,34 +1906,42 @@ auto Cleaner::select_adaptive_cut(const Eigen::DenseBase<DerivedA> &scans,
 template <Cleaner::EigenSolverBackend backend, typename DerivedA, typename DerivedB, typename DerivedC>
 auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eigen::DenseBase<DerivedB> &flags,
                               Eigen::DenseBase<DerivedC> &apt_flags, const Eigen::Index group_n_eig) {
+    tula::logging::scoped_timeit total_timer{"Cleaner::calc_eig_values total"};
 
     // dimensions
     Eigen::Index n_dets = scans.cols();
 
     // make copy of flags
-    Eigen::MatrixXd f = abs(flags.derived().template cast<double> ().array() - 1);
+    Eigen::MatrixXd f;
+    {
+        tula::logging::scoped_timeit flags_timer{"Cleaner::calc_eig_values flags"};
+        f = abs(flags.derived().template cast<double> ().array() - 1);
 
-    // zero out flagged detectors in apt table.  we need to do this because we want
-    // to make maps of all detectors when in detector mode so the timestreams cannot
-    // be completely flagged.
-    for (Eigen::Index i=0; i<n_dets; i++) {
-        if (apt_flags.derived()(i)!=0) {
-            f.col(i).setZero();
+        // zero out flagged detectors in apt table.  we need to do this because we want
+        // to make maps of all detectors when in detector mode so the timestreams cannot
+        // be completely flagged.
+        for (Eigen::Index i=0; i<n_dets; i++) {
+            if (apt_flags.derived()(i)!=0) {
+                f.col(i).setZero();
+            }
         }
     }
 
     // container for covariance matrix
     Eigen::MatrixXd pca_cov(n_dets, n_dets);
 
-    // number of unflagged samples
-    auto denom = (f.adjoint() * f).array() - 1;
+    {
+        tula::logging::scoped_timeit cov_timer{"Cleaner::calc_eig_values covariance"};
+        // number of unflagged samples
+        auto denom = (f.adjoint() * f).array() - 1;
 
-    // multiply scans by flags to remove flagged signal
-    auto det = (scans.derived().array()*f.array()).matrix();
+        // multiply scans by flags to remove flagged signal
+        auto det = (scans.derived().array()*f.array()).matrix();
 
-    // calculate the covariance matrix with safe denominator handling
-    Eigen::MatrixXd numer = det.adjoint() * det;
-    pca_cov = (denom.array() > 0).select(numer.array() / denom.array(), 0.0);
+        // calculate the covariance matrix with safe denominator handling
+        Eigen::MatrixXd numer = det.adjoint() * det;
+        pca_cov = (denom.array() > 0).select(numer.array() / denom.array(), 0.0);
+    }
 
     /*Eigen::VectorXd avg_corrs(n_dets);
     avg_corrs.setZero();
@@ -2010,9 +2020,12 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         Spectra::DenseSymMatProd<double> op(pca_cov);
         Spectra::SymEigsSolver<Spectra::DenseSymMatProd<double>> eigs(op, n_ev, n_cv);
 
-        eigs.init();
-        // largest eigenvalues first
-        int n_conv = eigs.compute(Spectra::SortRule::LargestAlge);
+        {
+            tula::logging::scoped_timeit solve_timer{"Cleaner::calc_eig_values spectra solve"};
+            eigs.init();
+            // largest eigenvalues first
+            eigs.compute(Spectra::SortRule::LargestAlge);
+        }
 
         // retrieve results
         evals = Eigen::VectorXd::Zero(n_dets);
@@ -2020,6 +2033,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
         // copy the eigenvalues and eigenvectors
         if (eigs.info() == Spectra::CompInfo::Successful) {
+            tula::logging::scoped_timeit copy_timer{"Cleaner::calc_eig_values result copy"};
             Eigen::VectorXd evals_sub = eigs.eigenvalues();
             Eigen::MatrixXd evecs_sub = eigs.eigenvectors();
 
@@ -2041,6 +2055,7 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     }
 
     else if constexpr (backend == EigenBackend) {
+        tula::logging::scoped_timeit solve_timer{"Cleaner::calc_eig_values eigen solve"};
         // use Eigen's eigen solver
         Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solution(pca_cov);
 
@@ -2066,6 +2081,7 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
                                 Eigen::DenseBase<DerivedA> &cleaned_scans, const Eigen::Index group_n_eig,
                                 const Eigen::Index forced_limit_index, const std::string &group_name,
                                 const Eigen::Index nw_index, const Eigen::Index arr_index) {
+    tula::logging::scoped_timeit total_timer{"Cleaner::remove_eig_values total"};
 
     // number of detectors
     Eigen::Index n_dets = scans.cols();
@@ -2117,19 +2133,22 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
     logger->debug("removing {} largest eigenvalue(s) grouping={} network={} array={}",
                   limit_index, group_name, nw_index, arr_index);
 
-    // keep flagged samples out of the mode projection and subtraction.
-    Eigen::MatrixXd good = (flags.derived().template cast<double>().array() == 0.0)
-                               .template cast<double>()
-                               .matrix();
-    const auto evecs_cut = evecs.derived().leftCols(limit_index);
-    Eigen::MatrixXd proj = (scans.derived().array() * good.array()).matrix() * evecs_cut;
-    Eigen::MatrixXd model = proj * evecs_cut.adjoint();
-    Eigen::MatrixXd cleaned = scans.derived() - (model.array() * good.array()).matrix();
-    if (cleaned_scans.derived().data() == scans.derived().data()) {
-        cleaned_scans.derived() = std::move(cleaned);
-    }
-    else {
-        cleaned_scans.derived().noalias() = cleaned;
+    {
+        tula::logging::scoped_timeit projection_timer{"Cleaner::remove_eig_values projection"};
+        // keep flagged samples out of the mode projection and subtraction.
+        Eigen::MatrixXd good = (flags.derived().template cast<double>().array() == 0.0)
+                                   .template cast<double>()
+                                   .matrix();
+        const auto evecs_cut = evecs.derived().leftCols(limit_index);
+        Eigen::MatrixXd proj = (scans.derived().array() * good.array()).matrix() * evecs_cut;
+        Eigen::MatrixXd model = proj * evecs_cut.adjoint();
+        Eigen::MatrixXd cleaned = scans.derived() - (model.array() * good.array()).matrix();
+        if (cleaned_scans.derived().data() == scans.derived().data()) {
+            cleaned_scans.derived() = std::move(cleaned);
+        }
+        else {
+            cleaned_scans.derived().noalias() = cleaned;
+        }
     }
 }
 

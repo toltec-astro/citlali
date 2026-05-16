@@ -454,3 +454,36 @@ This change is still useful for larger maps or higher scan concurrency because
 it removes a long serial critical section, but the next standard-use
 performance work should attack sparse triplet creation/compression or reduce
 the need to materialize triplets for the naive nearest-pixel case.
+
+## PTC timing pass
+
+After `redu23`, the next large standard-use runtime bucket is no longer the
+map merge lock. The scan-level timing points instead to processed-time-chunk
+work, with PTC cleaning and weight calculation needing finer attribution before
+making scientific or structural changes.
+
+The next unvalidated branch change adds scoped timers around PTC boundaries and
+PCA helper internals only. It is intended to answer where the standard PCA path
+spends time:
+
+- `PTCProc::run total`
+- `PTCProc::run subtract_mean`
+- `PTCProc::clean total`
+- `PTCProc::clean get_grouping`
+- `PTCProc::clean mask_flags`
+- `PTCProc::clean calc_eig_values`
+- `Cleaner::calc_eig_values flags`
+- `Cleaner::calc_eig_values covariance`
+- `Cleaner::calc_eig_values spectra solve`
+- `Cleaner::calc_eig_values result copy`
+- `PTCProc::clean remove_eig_values`
+- `Cleaner::remove_eig_values projection`
+- `PTCProc::calc_weights total`
+- `PTCProc::calc_weights base`
+- `PTCProc::calc_weights corr_penalty`
+- `PTCProc::calc_weights busy_row_suppression`
+- `PTCProc::append_diag_to_netcdf total`
+
+Recommended next run: use the same `148481`, naive, 25-noise-map config as
+`redu23`, call it `redu24`, compare products against `redu23`, and parse the
+new PTC timers before changing PCA math or data layout.
