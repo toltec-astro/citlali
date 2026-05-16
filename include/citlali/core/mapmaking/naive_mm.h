@@ -92,7 +92,6 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
 
     TiledMapAccumulator signals, weights, kernels, coverages;
     TiledMapAccumulator cmb_signals, cmb_weights, cmb_kernels, cmb_coverages;
-    TiledNoiseAccumulator noises;
 
     const bool use_cmb = !cmb.noise.empty();
     const bool use_omb = !omb.noise.empty();
@@ -126,7 +125,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
 
     map_buffer_t omb_copy, cmb_copy;
     // pointer to map buffer with noise maps
-    map_buffer_t *nmb = nullptr;
+    map_buffer_t *nmb = nullptr, *nmb_copy = nullptr;
 
     omb_copy.n_rows = omb.n_rows;
     omb_copy.n_cols = omb.n_cols;
@@ -137,7 +136,12 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
     if (run_noise) {
         nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
         if (nmb != nullptr) {
-            noises.reset(nmb->noise.size(), nmb->n_rows, nmb->n_cols, nmb->n_noise);
+            nmb_copy = use_cmb ? &cmb_copy : &omb_copy;
+            nmb_copy->noise = nmb->noise;
+
+            for (Eigen::Index i=0; i<nmb_copy->noise.size(); ++i) {
+                nmb_copy->noise[i].setZero();
+            }
         }
     }
 
@@ -317,7 +321,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                         }
 
                         // check if noise maps requested
-                        if (run_noise && nmb != nullptr) {
+                        if (run_noise && nmb != nullptr && nmb_copy != nullptr) {
                             // if coaddition is enabled
                             if (use_cmb) {
                                 nmb_ir = static_cast<Eigen::Index>(std::llround(cmb_irow(j)));
@@ -347,13 +351,13 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                                         noise_v = in.noise.data(nn)*in.scans.data(j,i)*in.weights.data(i);
                                     }
                                     // add noise value to current noise map
-                                    noises.add(map_index, nmb_ir, nmb_ic, nn, noise_v);
+                                    nmb_copy->noise[map_index](nmb_ir,nmb_ic,nn) += noise_v;
 
                                     if (run_polarization) {
                                         // update noise map Q
-                                        noises.add(q_index, nmb_ir, nmb_ic, nn, noise_v*cos_2angle);
+                                        nmb_copy->noise[q_index](nmb_ir,nmb_ic,nn) += noise_v*cos_2angle;
                                         // update noise map U
-                                        noises.add(u_index, nmb_ir, nmb_ic, nn, noise_v*sin_2angle);
+                                        nmb_copy->noise[u_index](nmb_ir,nmb_ic,nn) += noise_v*sin_2angle;
                                     }
                                 }
                             }
@@ -398,8 +402,10 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
             }
         }
 
-        if (run_noise && nmb != nullptr) {
-            noises.merge_into(nmb->noise);
+        if (run_noise && nmb != nullptr && nmb_copy != nullptr) {
+            for (Eigen::Index i=0; i<nmb->noise.size(); ++i) {
+                nmb->noise[i] += nmb_copy->noise[i];
+            }
         }
 
         if (!cmb.pointing.empty() && run_omb) {
@@ -410,6 +416,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
     }
 
     nmb = nullptr;
+    nmb_copy = nullptr;
 }
 
 template<class map_buffer_t, typename Derived, typename apt_t>

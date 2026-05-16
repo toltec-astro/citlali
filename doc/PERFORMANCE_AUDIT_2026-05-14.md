@@ -157,12 +157,78 @@ The next structural work should address the `P-002`/`P-003` noise-map and
 noise-product lifecycle directly. Repeat the comparison with the standard
 production noise count before treating that path as fully validated.
 
-First `P-002` implementation step after the `redu09`/`redu10` validation:
-`TiledNoiseAccumulator` was added and the naive mapmaker now accumulates noise
-realizations into touched tiles instead of copying, zeroing, and merging a full
-noise cube for every `populate_maps_naive()` call. The final resident
-`MapBuffer::noise` cube and output format are unchanged. This is expected to
-reduce per-call temporary memory traffic and merge work when each time chunk
-touches a sparse subset of the output map, but it still keeps the full
-realization cube resident for downstream empirical products, PSDs, filtering,
-and optional realization writes.
+A first `P-002` implementation prototype added a `TiledNoiseAccumulator` so
+the naive mapmaker could accumulate noise realizations into touched tiles
+instead of copying, zeroing, and merging a full noise cube for every
+`populate_maps_naive()` call. The final resident `MapBuffer::noise` cube and
+output format were unchanged. The intent was to reduce per-call temporary
+memory traffic and merge work when each time chunk touched a sparse subset of
+the output map, while still keeping the full realization cube resident for
+downstream empirical products, PSDs, filtering, and optional realization
+writes.
+
+The first tiled-noise run was then validated against the existing `gw_dev`
+control:
+
+- `redu10`: `gw_dev` at `68093fc4`, Citlali `v4.0.0-350-g68093fc4`,
+  noise maps enabled with `n_noise_maps: 5`, wall time
+  `3m28.932295901s`.
+- `redu11`: performance branch at `8ee78c30`, Citlali
+  `v4.0.0-355-g8ee78c30`, same generated Citlali config, wall time
+  `3m38.200127022s`.
+
+For obs and coadd FITS products across `a1100`, `a1400`, and `a2000`,
+coverage masks were identical. Science maps, weights, coverage, formal
+weights, noise variance, and S/N products differed only at roundoff. The
+largest signal-map max absolute difference was `5.33e-15`, and the largest
+checked FITS max absolute difference was `2.13e-14`. Histogram netCDF products
+were exactly equal. Mapdiag and PSD differences were roundoff-scale, with one
+summed scalar `map_coverage_sum` differing by `4.66e-10`. Coadd empirical
+weight scales were identical: `0.488468900326375`, `0.509016124292622`, and
+`0.542209831503308`.
+
+The new timers showed the bottleneck is not the merge step for this small
+five-noise-map case:
+
+- `populate_maps_naive total`: 124 calls, sum `423.871s`, mean `3.418s`.
+- `populate_maps_naive accumulate`: 124 calls, sum `422.394s`, mean `3.406s`.
+- `populate_maps_naive merge`: 124 calls, sum `1.431s`, mean `0.0115s`.
+
+Interpretation: the tiled noise accumulator is scientifically clean for the
+tested five-noise-map case, but it does not produce a whole-pipeline speedup in
+this small-noise run. The next performance target should be the
+detector/sample accumulation loop itself, while the standard `n_noise_maps: 25`
+comparison should still be run to expose memory-pressure effects hidden by the
+small case.
+
+The standard 25-noise-map comparison was then run:
+
+- `redu13`: performance branch at `8ee78c30`, Citlali
+  `v4.0.0-355-g8ee78c30`, noise maps enabled with `n_noise_maps: 25`, wall
+  time `4m28.969160386s`.
+- `redu14`: `gw_dev` at `68093fc4`, Citlali `v4.0.0-350-g68093fc4`,
+  same generated Citlali config, wall time `3m30.785061426s`.
+
+Coverage masks were identical for all checked obs and coadd FITS products
+across `a1100`, `a1400`, and `a2000`. Map products again differed only at
+roundoff. The largest signal-map max absolute difference was `5.33e-15`, the
+largest checked FITS max absolute difference was `4.26e-14`, netCDF mapdiag,
+histogram, and PSD differences were roundoff-scale, and coadd empirical weight
+scales matched exactly: `0.350383961423778`, `0.370406096095144`, and
+`0.393315916421293`.
+
+The targeted timers showed that the tiled-noise prototype moved time in the
+wrong direction for the standard noise count:
+
+- `populate_maps_naive total`: 124 calls, sum `1160.820s`, mean `9.361s`.
+- `populate_maps_naive accumulate`: 124 calls, sum `1155.568s`, mean `9.319s`.
+- `populate_maps_naive merge`: 124 calls, sum `4.851s`, mean `0.0391s`.
+
+Decision: the tiled-noise prototype is not a good default path for this
+standard case. It preserves numerical results, but it slows the reduction by
+about 58 seconds, or roughly 28 percent, while merge time remains negligible
+relative to the detector/sample accumulation loop. The branch has therefore
+removed `TiledNoiseAccumulator` and restored the prior full scratch-buffer
+noise accumulation behavior. The useful timers and the 2-D tiled map
+accumulator remain. The next structural performance work should target reuse of
+per-detector sample-to-map work rather than the noise-map merge step.
