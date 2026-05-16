@@ -487,3 +487,27 @@ spends time:
 Recommended next run: use the same `148481`, naive, 25-noise-map config as
 `redu23`, call it `redu24`, compare products against `redu23`, and parse the
 new PTC timers before changing PCA math or data layout.
+
+`redu24` validated that the timing-only change was product-safe. The generated
+YAML matched `redu23`, `coverage_bool_I` had zero mismatches, the largest FITS
+difference was `1.7e-13` in coadd `noise_variance_I`, and non-RTC netCDF
+sidecars differed only at roundoff except for the expected `ptcdiag` version
+string. Runtime was within normal variation at `3m24.063s`.
+
+The new timers identify PTC covariance construction as the dominant local
+bottleneck:
+
+- `PTCProc::clean total`: `1211.330s` summed over scans.
+- `Cleaner::calc_eig_values total`: `1157.534s`.
+- `Cleaner::calc_eig_values covariance`: `972.518s`.
+- `Cleaner::calc_eig_values spectra solve`: `139.571s`.
+- `Cleaner::remove_eig_values total`: `51.071s`.
+
+The next unvalidated branch change compacts standard PCA covariance formation
+to detectors that can participate in the solve: APT-good detectors with more
+than one unflagged time sample. Eigenvectors are scattered back to the original
+detector indexing before returning from `Cleaner::calc_eig_values`, so the
+downstream cleaning and diagnostic code still receives full-size arrays.
+Recommended next run: use the same `148481`, naive, 25-noise-map config, call it
+`redu25`, compare products against `redu24`, and check whether
+`Cleaner::calc_eig_values covariance` drops.
