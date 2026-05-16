@@ -267,6 +267,22 @@ adds coarse jinc timers:
 - `populate_maps_jinc_parallel total`
 - `populate_maps_jinc_parallel accumulate`
 
-The next Unity jinc run should use these labels to decide whether the dominant
-cost is scratch setup/zeroing, detector/sample footprint accumulation, final
-merge, or the beammap parallel direct-update path.
+The first Unity jinc run with these timers was `redu17`, using Citlali
+`v4.0.0-357-gfe862127`, `method: jinc`, `parallel_policy: omp`,
+`n_threads: 15`, and `n_noise_maps: 25`. The full process time was
+`10m8.453s`. The timer split was decisive:
+
+- `populate_maps_jinc total`: 124 calls, sum `5812.034s`, mean `46.871s`
+- `populate_maps_jinc accumulate`: 124 calls, sum `5802.822s`, mean `46.797s`
+- `populate_maps_jinc setup`: 124 calls, sum `5.346s`, mean `0.043s`
+- `populate_maps_jinc merge`: 124 calls, sum `3.847s`, mean `0.031s`
+
+This means the jinc bottleneck is the detector/sample accumulation body, not
+scratch setup or merge. The next structural change therefore targets standard
+noise-map accumulation directly: for the usual `nmb == omb` path, each
+detector's jinc-gridded signal contribution is accumulated once into a
+detector-local template, then scaled into each noise realization. This is
+mathematically equivalent because `in.noise.data(nn,i)` is constant across
+samples for a detector/noise realization. A simple work estimate keeps the
+existing per-sample path when the template's map-sized write would not be
+cheaper than per-sample footprint splatting.

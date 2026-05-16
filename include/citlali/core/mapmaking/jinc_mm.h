@@ -399,6 +399,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     struct ScratchBuffers {
         map_buffer_t omb_copy;
         map_buffer_t cmb_copy;
+        Eigen::MatrixXd detector_noise_template;
     };
     thread_local ScratchBuffers scratch;
 
@@ -547,6 +548,26 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             // cosine and sine of angles
             double angle, cos_2angle, sin_2angle;
 
+            const double per_sample_noise_work =
+                static_cast<double>(n_pts) * static_cast<double>(mat_rows) * static_cast<double>(mat_cols);
+            const double detector_template_work = nmb != nullptr
+                ? static_cast<double>(nmb->n_rows) * static_cast<double>(nmb->n_cols)
+                : 0.0;
+            // Noise factors are constant across samples for a detector, so
+            // reuse the detector's gridded signal contribution when that is
+            // cheaper than splatting every footprint into every realization.
+            const bool use_detector_noise_template =
+                run_omb && run_noise && !direct_noise_accum && nmb == &omb && nmb_copy != nullptr &&
+                per_sample_noise_work > detector_template_work;
+            auto &detector_noise_template = scratch.detector_noise_template;
+            TouchBounds detector_noise_bounds(nmb != nullptr ? nmb->n_rows : 0, nmb != nullptr ? nmb->n_cols : 0);
+            if (use_detector_noise_template) {
+                if (detector_noise_template.rows() != nmb->n_rows || detector_noise_template.cols() != nmb->n_cols) {
+                    detector_noise_template.resize(nmb->n_rows, nmb->n_cols);
+                }
+                detector_noise_template.setZero();
+            }
+
             // loop through the samples
             for (Eigen::Index j=0; j<n_pts; ++j) {
                 // check if sample is flagged, ignore if so
@@ -615,7 +636,13 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             auto wt_block = omb_copy.weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
 
                             // populate signal map
-                            sig_block += (mat_block * in.weights.data(i) * in.scans.data(j,i)).eval();
+                            signal = in.scans.data(j,i) * in.weights.data(i);
+                            auto signal_block = (mat_block * in.weights.data(i) * in.scans.data(j,i)).eval();
+                            sig_block += signal_block;
+                            if (use_detector_noise_template) {
+                                auto noise_template_block = detector_noise_template.block(lower_row,lower_col,size_rows,size_cols);
+                                noise_template_block += signal_block;
+                            }
 
                             // memo-style gridding denominator
                             grid_wt_block.array() += (mat_block.array() * in.weights.data(i));
@@ -636,11 +663,14 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             }
 
                             omb_bounds[static_cast<size_t>(map_index)].update(lower_row, upper_row, lower_col, upper_col);
+                            if (use_detector_noise_template) {
+                                detector_noise_bounds.update(lower_row, upper_row, lower_col, upper_col);
+                            }
                         }
                     }
 
                     // check if noise maps requested
-                    if (run_noise) {
+                    if (run_noise && !use_detector_noise_template) {
                         // if coaddition is enabled
                         if (use_cmb) {
                             nmb_ir = static_cast<Eigen::Index>(std::llround(cmb_irow(j)));
@@ -731,6 +761,27 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                         }
                     }
                 }
+            }
+
+            if (use_detector_noise_template && detector_noise_bounds.touched) {
+                int size_rows = detector_noise_bounds.row_max - detector_noise_bounds.row_min + 1;
+                int size_cols = detector_noise_bounds.col_max - detector_noise_bounds.col_min + 1;
+                const auto signal_template_block =
+                    detector_noise_template.block(detector_noise_bounds.row_min, detector_noise_bounds.col_min,
+                                                  size_rows, size_cols);
+                for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
+                    noise_v = nmb->randomize_dets ? in.noise.data(nn,i) : in.noise.data(nn);
+                    Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(
+                        nmb_copy->noise[map_index].data() + nn * nmb->n_rows * nmb->n_cols,
+                        nmb->n_rows, nmb->n_cols);
+                    auto noise_block = noise_matrix.block(detector_noise_bounds.row_min, detector_noise_bounds.col_min,
+                                                          size_rows, size_cols);
+                    noise_block += (signal_template_block * noise_v).eval();
+                }
+                nmb_bounds[static_cast<size_t>(map_index)].update(detector_noise_bounds.row_min,
+                                                                  detector_noise_bounds.row_max,
+                                                                  detector_noise_bounds.col_min,
+                                                                  detector_noise_bounds.col_max);
             }
         }
     }
