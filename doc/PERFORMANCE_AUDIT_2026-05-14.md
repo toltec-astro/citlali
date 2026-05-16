@@ -363,10 +363,35 @@ process time stayed flat at `218.485s`, `populate_maps_naive merge` increased
 slightly to `48.473s`, and `populate_maps_naive accumulate` increased to
 `306.260s`.
 
-The current unvalidated performance-branch change replaces the per-pixel hash
+The second attempt, `e5494b12` / `redu21`, replaced the per-pixel hash
 bookkeeping with monotonic touched rectangles per noise map. Scratch tensors
 lazily zero newly exposed rectangular bands before accumulation, and the merge
 adds only the final touched rectangle for each map/noise plane as contiguous
-Eigen blocks. This should be most useful when the configured map area is much
-larger than the scan/array footprint, while avoiding the scattered
-`unordered_set` overhead seen in `redu20`.
+Eigen blocks. The generated config was identical to `redu20`. Product
+comparison was again roundoff-clean: zero coverage-mask mismatches against
+`redu20`, `redu19`, and `redu14`, and largest checked FITS differences at
+`2.84e-14`. The targeted merge timer improved, but the whole process did not:
+
+- `populate_maps_naive merge`: `42.596s` sum, down from `47.664s` in
+  `redu19`.
+- `populate_maps_naive accumulate`: `267.652s` sum, up from `255.678s` in
+  `redu19`, but down from `306.260s` in `redu20`.
+- `populate_maps_naive total`: `311.418s` sum, down from `318.740s` in
+  `redu19`.
+- `Citlali Process`: `3m42.633s`, slower than the `redu19`/`redu20` whole-run
+  times near `3m38.5s`.
+
+Interpretation: the bounded block merge is numerically safe and improves the
+specific merge path, but this compact map is not the large-empty-map case where
+it should dominate end-to-end runtime.
+
+The current unvalidated performance-branch change targets the next structural
+bottleneck in the same standard naive/noise run: the detector/sample noise
+accumulation body. Instead of writing each valid sample into every noise
+realization, `populate_maps_naive` now builds a sparse nearest-pixel weighted
+signal template per detector and scales that detector template into each noise
+realization afterward. This preserves the final resident noise cube and output
+format while removing the `n_noise_maps` loop from the per-sample hot path.
+The next Unity run should use the same `148481` config, compare against
+`redu21`/`redu19` over `coverage_bool_I`, and check `populate_maps_naive
+accumulate`, `merge`, and whole-process timing.

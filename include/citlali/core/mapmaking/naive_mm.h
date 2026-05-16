@@ -238,6 +238,31 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
         bounds.col_max = new_col_max;
     };
 
+    auto add_noise_template = [&](Eigen::Index noise_map_index, Eigen::Index det_index,
+                                  const std::vector<T> &noise_template) {
+        if (noise_template.empty()) {
+            return;
+        }
+
+        Eigen::SparseMatrix<double> sparse_template(nmb->n_rows,nmb->n_cols);
+        sparse_template.setFromTriplets(noise_template.begin(), noise_template.end());
+
+        auto &noise_map = nmb_copy->noise[static_cast<size_t>(noise_map_index)];
+        for (Eigen::Index outer=0; outer<sparse_template.outerSize(); ++outer) {
+            for (Eigen::SparseMatrix<double>::InnerIterator it(sparse_template, outer); it; ++it) {
+                const auto row = static_cast<Eigen::Index>(it.row());
+                const auto col = static_cast<Eigen::Index>(it.col());
+                const auto template_value = it.value();
+
+                touch_noise_pixel(noise_map_index, row, col);
+                for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
+                    const double noise_factor = nmb->randomize_dets ? in.noise.data(nn,det_index) : in.noise.data(nn);
+                    noise_map(row,col,nn) += noise_factor * template_value;
+                }
+            }
+        }
+    };
+
     // step to skip to reach next stokes param
     int step = omb.pointing.size();
 
@@ -257,8 +282,8 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
     Eigen::Index n_pts = in.scans.data.rows();
     Eigen::Index n_dets = in.scans.data.cols();
 
-    // signal, kernel and noise map values
-    double signal, kernel, noise_v;
+    // signal and kernel map values
+    double signal, kernel;
 
     // noise map indices
     Eigen::Index nmb_ir, nmb_ic;
@@ -288,6 +313,17 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                 // indices for Q and U maps
                 int q_index = map_index + step;
                 int u_index = map_index + 2 * step;
+
+                std::vector<T> noise_template;
+                std::vector<T> noise_q_template;
+                std::vector<T> noise_u_template;
+                if (run_noise && nmb != nullptr && nmb_copy != nullptr) {
+                    noise_template.reserve(static_cast<size_t>(n_pts));
+                    if (run_polarization) {
+                        noise_q_template.reserve(static_cast<size_t>(n_pts));
+                        noise_u_template.reserve(static_cast<size_t>(n_pts));
+                    }
+                }
 
                 // array index
                 Eigen::Index array_index = apt["array"](i);
@@ -428,38 +464,22 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
 
                             // coadd into current noise map
                             if ((nmb_ir >= 0) && (nmb_ir < nmb->n_rows) && (nmb_ic >= 0) && (nmb_ic < nmb->n_cols)) {
-                                //if (run_polarization) {
-                                    //if (use_cmb) {
-                                        // calculate pointing matrix for cmb
-                                      //  allocate_pointing(cmb_copy, in.weights.data(i), cos_2angle, sin_2angle, map_index, nmb_ir, nmb_ic);
-                                    //}
-                                //}
-                                touch_noise_pixel(map_index, nmb_ir, nmb_ic);
+                                const double noise_signal = in.scans.data(j,i)*in.weights.data(i);
+                                noise_template.push_back(T(nmb_ir,nmb_ic,noise_signal));
                                 if (run_polarization) {
-                                    touch_noise_pixel(q_index, nmb_ir, nmb_ic);
-                                    touch_noise_pixel(u_index, nmb_ir, nmb_ic);
-                                }
-                                // loop through noise maps
-                                for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
-                                    // randomizing on dets
-                                    if (nmb->randomize_dets) {
-                                        noise_v = in.noise.data(nn,i)*in.scans.data(j,i)*in.weights.data(i);
-                                    }
-                                    else {
-                                        noise_v = in.noise.data(nn)*in.scans.data(j,i)*in.weights.data(i);
-                                    }
-                                    // add noise value to current noise map
-                                    nmb_copy->noise[map_index](nmb_ir,nmb_ic,nn) += noise_v;
-
-                                    if (run_polarization) {
-                                        // update noise map Q
-                                        nmb_copy->noise[q_index](nmb_ir,nmb_ic,nn) += noise_v*cos_2angle;
-                                        // update noise map U
-                                        nmb_copy->noise[u_index](nmb_ir,nmb_ic,nn) += noise_v*sin_2angle;
-                                    }
+                                    noise_q_template.push_back(T(nmb_ir,nmb_ic,noise_signal*cos_2angle));
+                                    noise_u_template.push_back(T(nmb_ir,nmb_ic,noise_signal*sin_2angle));
                                 }
                             }
                         }
+                    }
+                }
+
+                if (run_noise && nmb != nullptr && nmb_copy != nullptr) {
+                    add_noise_template(map_index, i, noise_template);
+                    if (run_polarization) {
+                        add_noise_template(q_index, i, noise_q_template);
+                        add_noise_template(u_index, i, noise_u_template);
                     }
                 }
             }
