@@ -503,11 +503,155 @@ bottleneck:
 - `Cleaner::calc_eig_values spectra solve`: `139.571s`.
 - `Cleaner::remove_eig_values total`: `51.071s`.
 
-The next unvalidated branch change compacts standard PCA covariance formation
-to detectors that can participate in the solve: APT-good detectors with more
-than one unflagged time sample. Eigenvectors are scattered back to the original
-detector indexing before returning from `Cleaner::calc_eig_values`, so the
-downstream cleaning and diagnostic code still receives full-size arrays.
-Recommended next run: use the same `148481`, naive, 25-noise-map config, call it
-`redu25`, compare products against `redu24`, and check whether
-`Cleaner::calc_eig_values covariance` drops.
+The next branch change, `9a7e9203` / `redu25`, compacted standard PCA
+covariance formation to detectors that can participate in the solve: APT-good
+detectors with more than one unflagged time sample. Eigenvectors are scattered
+back to the original detector indexing before returning from
+`Cleaner::calc_eig_values`, so downstream cleaning and diagnostic code still
+receives full-size arrays.
+
+`redu25` used Citlali `v4.0.0-367-g9a7e9203`; its generated config and input
+file list matched `redu24`. Product comparisons against `redu24` were clean
+within floating-point noise for this structural change:
+
+- zero `coverage_bool_I` mismatches in all checked FITS maps
+- largest FITS max absolute difference `1.707e-08` in coadd
+  `noise_variance_I`, with relative max difference about `1.4e-11`
+- signal-map max absolute differences were about `3e-10` to `8e-10`, also
+  about `1e-11` relative
+- non-RTC netCDF sidecars differed only at tiny roundoff scale, except for the
+  expected `ptcdiag VERSION` string
+
+The reduction wall time improved from `3m24.063s` in `redu24` to `3m10.154s`
+in `redu25`, a `13.91s` (`6.82%`) end-to-end win on the compact `148481`,
+naive, 25-noise-map benchmark. The local PTC timers moved much more strongly:
+
+- `PTCProc::clean total`: `1211.330s` -> `772.960s` (`-36.19%`)
+- `Cleaner::calc_eig_values total`: `1157.534s` -> `717.838s` (`-37.99%`)
+- `Cleaner::calc_eig_values covariance`: `972.518s` -> `588.727s` (`-39.46%`)
+- `Cleaner::calc_eig_values spectra solve`: `139.571s` -> `86.466s`
+  (`-38.05%`)
+
+The active detector count explains the gain: the benchmark has `5444`
+detectors in the PTC diagnostic, but only `4701` are APT-good and the compact
+PCA active count per scan has median `4178.5`, mean `4147.34`, and max `4250`.
+The median active fraction is about `0.768`, so covariance construction works
+on roughly `0.59` of the original detector-pair area. This is now a validated
+standard-use win and should stay in the perf branch.
+
+## Fruitloops compatibility and performance assessment
+
+This assessment is static only; fruitloops has not yet been benchmarked on this
+branch. Based on the code paths, the current perf-branch updates are expected
+to be compatible with fruitloops, with one important validation gap: fruitloops
+changes the time stream before PTC cleaning and before noise-map accumulation,
+so it still needs a head-to-head fruitloops product comparison before merge.
+
+The standard Lali and Pointing engines subtract the loaded fruitloops map from
+the PTC stream, run PTC cleaning, calculate source-subtracted weights, populate
+noise maps, add the map back, and then either keep those source-subtracted
+weights or recompute weights after add-back. That flow appears in
+`include/citlali/core/engine/lali.h` and `include/citlali/core/engine/pointing.h`.
+The active-detector PCA compaction is consistent with that flow because its
+active set depends on APT flags and sample flags, not on the signal amplitudes
+introduced or removed by fruitloops. Source-mask weighting also remains in the
+same place as before: the fruitloops source position vectors are used only when
+full weights are calculated.
+
+The naive noise-map changes should also propagate directly to fruitloops. In
+fruitloops mode, the noise-only pass calls `populate_maps_naive` with
+`run_omb=false` and `run_noise=true`; the detector-template noise path works in
+that mode because it builds the per-detector sparse template from the
+source-subtracted PTC samples and scales it into each noise realization after
+the sample loop.
+
+The jinc detector-template optimization is less complete for fruitloops. The
+current jinc detector-template path requires `run_omb=true` and an observation
+noise buffer. Fruitloops intentionally calls the first noise pass with
+`run_omb=false`, so jinc fruitloops noise maps can still fall back to the
+per-sample, per-noise-realization path. Extending the jinc detector-template
+approach to the `run_omb=false`, `run_noise=true` case is the most targeted
+fruitloops-specific speed opportunity from this pass.
+
+Other fruitloops savings worth considering, ordered by expected value:
+
+1. Cache loaded coadd fruitloops maps per iteration. For `coadd/raw` and
+   `coadd/filtered`, every observation in an iteration reads the same coadd
+   map directory through `TCProc::load_mb`. A per-iteration cache keyed by path,
+   grouping, pixel axes, and pixel size should avoid repeated FITS reads and
+   repeated peak/source-vector scans in multi-observation fruitloops reductions.
+2. Avoid disk round-trips between fruitloops iterations when `save_all_iters`
+   is false. The CLI still writes raw obs and coadd map products each iteration
+   and then reads the previous iteration from disk. Keeping the previous
+   iteration map buffer in memory, or writing only the products needed for the
+   next map-to-TOD pass, would reduce I/O. This is a larger architectural
+   change because current fruitloops uses files as the handoff boundary.
+3. Add an actual convergence criterion. The CLI has a `fruit_loops_converged`
+   variable in the loop condition, but no code currently sets it. Any reduction
+   with `max_iters > 1` runs every configured iteration. A scientifically
+   reviewed convergence test on map changes or source flux stability could save
+   full iterations, but this is science-facing and should not be added as a
+   performance-only shortcut.
+4. Benchmark interpolation mode. Fruitloops map-to-TOD supports `nearest`,
+   `bilinear`, `jinc`, and legacy truncation. Jinc interpolation is much more
+   expensive per sample because it evaluates a kernel footprint for each
+   selected sample. Switching modes is a science choice, but the benchmark
+   should report it explicitly because the performance effect can be large.
+
+Recommended fruitloops validation case: use the same observation and config
+family as the current benchmark, enable fruitloops with at least two iterations,
+noise maps enabled, and compare this branch against `gw_dev` over the
+coverage-bool regions. Run both naive and jinc if fruitloops users commonly use
+both.
+
+## Coadd and Wiener-filtering performance assessment
+
+The current `148481` benchmark does not show coadd post-processing as a major
+runtime bucket. The timed coadd diagnostics in `redu24` were small compared
+with PTC cleaning and mapmaking. That does not rule out coadd costs on larger
+survey-style reductions, because coadd memory and noise-product work scale with
+map area, number of maps, and `n_noise`.
+
+The coadd implementation itself is straightforward dense block accumulation:
+for each map it adds obs weights, weighted obs signals, optional kernels,
+coverage, and each noise realization into the coadd buffer. For one observation
+or compact maps, this is unlikely to be the next big fish. For many observations
+with large coadd maps and many noise realizations, the noise loop in coadd can
+become meaningful, but it should be timed before changing architecture.
+
+Wiener filtering has a much larger potential cost profile than raw coadd. It
+filters every requested science map and, if noise maps are enabled, every noise
+realization for that map. With 25 noise maps this is already 25 FFT-heavy noise
+filter operations per science map; with larger map sizes, this can dominate.
+The OpenMP Wiener implementation has per-thread FFTW context reuse and
+parallelizes noise filtering across noise realizations. The non-OpenMP
+implementation still allocates FFTW buffers and plans inside several hot
+operations. The CMake option itself defaults to `OFF`, while the
+`unity_release` user preset sets `CITLALI_USE_WIENER_FILTER_OMP=ON`. Production
+builds should therefore explicitly use the preset or otherwise preserve/set
+that cache option if Wiener filtering is part of a standard workflow.
+
+Likely savings, ordered by confidence:
+
+1. Verify and standardize the OpenMP Wiener build. The CMake option defaults to
+   `OFF`, even though `unity_release` sets it to `ON`, so the Unity/gw_dev build
+   workflow matters. If production is not using the OMP path, enabling it is
+   probably the easiest large win for filtered reductions.
+2. Add end-to-end timers around `Engine::run_wiener_filter`: template
+   construction, science-map filter, noise filtering, noise products, and
+   partial output. The Wiener core logs per-map internals, but the outer loop
+   lacks the same compact stage timing we now rely on for mapmaking/PTC.
+3. Treat filtered noise maps as the cost driver. Any attempt to reduce Wiener
+   runtime by filtering fewer noise realizations, approximating filtered noise
+   products analytically, or reusing variance products is science-facing and
+   needs domain review. It could save a lot, but it changes uncertainty
+   propagation.
+4. Avoid unnecessary filtered diagnostics/output. After filtered coadds, the CLI
+   recomputes empirical noise products, PSDs, histograms, median error, median
+   RMS, optional source finding, and output. These are legitimate products, but
+   they should be gated by user need in large exploratory runs.
+
+Recommended filtered/coadd benchmark: run the current observation with
+map-filtering enabled and 25 noise maps, once with the production build and
+once with `CITLALI_USE_WIENER_FILTER_OMP=ON` if that is not already enabled.
+Use the new stage timers before attempting a filtering rewrite.
