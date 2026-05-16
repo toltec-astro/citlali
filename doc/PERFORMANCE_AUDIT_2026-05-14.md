@@ -415,11 +415,11 @@ This is the first tested standard-naive/noise optimization on this branch that
 shows both roundoff-clean products and a clear end-to-end win on the `148481`
 benchmark.
 
-The current unvalidated worktree change targets the remaining
-`populate_maps_naive merge` cost. Sparse triplet compression now happens before
-the global merge mutex is acquired, keeping only the final shared dense-map
-additions, pointing-matrix additions, and noise-cube additions under lock. The
-timer split was also expanded:
+The next structural change, `74e60edf` / `redu23`, targeted the remaining
+`populate_maps_naive merge` contention. Sparse triplet compression now happens
+before the global merge mutex is acquired, keeping only the final shared
+dense-map additions, pointing-matrix additions, and noise-cube additions under
+lock. The timer split was also expanded:
 
 - `populate_maps_naive merge prepare`: sparse triplet compression outside the
   lock.
@@ -428,7 +428,29 @@ timer split was also expanded:
   pointing additions while locked.
 - `populate_maps_naive merge noise`: noise-cube additions while locked.
 
-The next Unity run should use the same `148481` config, compare against
-`redu22` over `coverage_bool_I`, and check whether total process time improves
-or whether the newly exposed prepare/locked split only moves cost between
-timer labels.
+`redu23` used Citlali `v4.0.0-364-g74e60edf`; its generated config was
+identical to `redu22`. Product comparisons against `redu22` were roundoff-clean:
+zero `coverage_bool_I` mismatches in all checked FITS maps, largest checked
+FITS difference `2.84e-14` in `coverage_I`, largest coadd noise variance
+difference `2.13e-14`, and non-RTC netCDF sidecars (`mapdiag`, `hist`, `psd`,
+`ptcdiag`, `stats`) differed only at roundoff.
+
+The timing shows that this change did what it was designed to do inside the
+critical section, but it did not produce an end-to-end win on the compact
+`148481` benchmark:
+
+- `Citlali Process`: `3m27.862s`, essentially flat relative to `3m26.752s` in
+  `redu22`.
+- `populate_maps_naive merge`: `39.563s` sum, essentially flat relative to
+  `39.523s` in `redu22`.
+- `populate_maps_naive merge prepare`: `36.817s` sum outside the lock.
+- `populate_maps_naive merge locked`: `2.656s` sum under the lock.
+- `populate_maps_naive merge maps`: `0.313s` sum.
+- `populate_maps_naive merge noise`: `2.335s` sum.
+
+Interpretation: the global mutex is no longer the main merge bottleneck for
+this benchmark; sparse triplet compression itself dominates the merge timer.
+This change is still useful for larger maps or higher scan concurrency because
+it removes a long serial critical section, but the next standard-use
+performance work should attack sparse triplet creation/compression or reduce
+the need to materialize triplets for the naive nearest-pixel case.
