@@ -353,8 +353,20 @@ The remaining naive-mapmaking merge cost was more interesting:
 This means the timer is mostly serialized work, not overlapping wait. The
 dominant suspect is the full noise-cube merge: for this run the coadd noise
 cube is about `0.115 GB`, and the old path added that whole cube into the
-shared map buffer once per scan. The performance branch now has an unvalidated
-naive noise merge change: per-scan scratch noise maps lazily initialize only
-pixels touched by that scan, track those touched pixels, and merge only those
-pixels into the shared noise cube. This should be most useful when the
-configured map area is much larger than the scan/array footprint.
+shared map buffer once per scan.
+
+The first attempted fix, `c9847b4c` / `redu20`, tracked individual touched
+pixels and merged only those pixels. It was numerically clean against `redu19`
+and `redu14`: coverage masks matched, and the largest checked FITS difference
+remained at roundoff scale (`2.84e-14`). It was not a speed win. The full
+process time stayed flat at `218.485s`, `populate_maps_naive merge` increased
+slightly to `48.473s`, and `populate_maps_naive accumulate` increased to
+`306.260s`.
+
+The current unvalidated performance-branch change replaces the per-pixel hash
+bookkeeping with monotonic touched rectangles per noise map. Scratch tensors
+lazily zero newly exposed rectangular bands before accumulation, and the merge
+adds only the final touched rectangle for each map/noise plane as contiguous
+Eigen blocks. This should be most useful when the configured map area is much
+larger than the scan/array footprint, while avoiding the scattered
+`unordered_set` overhead seen in `redu20`.

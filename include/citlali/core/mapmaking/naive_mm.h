@@ -1,8 +1,8 @@
 #pragma once
 
+#include <algorithm>
 #include <thread>
 #include <mutex>
-#include <unordered_set>
 
 #include <Eigen/Sparse>
 
@@ -137,8 +137,14 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
     map_buffer_t omb_copy, cmb_copy;
     // pointer to map buffer with noise maps
     map_buffer_t *nmb = nullptr, *nmb_copy = nullptr;
-    std::vector<std::vector<Eigen::Index>> nmb_touched_pixels;
-    std::vector<std::unordered_set<Eigen::Index>> nmb_touched_pixel_sets;
+    struct NoiseMapBounds {
+        bool touched = false;
+        Eigen::Index row_min = 0;
+        Eigen::Index row_max = -1;
+        Eigen::Index col_min = 0;
+        Eigen::Index col_max = -1;
+    };
+    std::vector<NoiseMapBounds> nmb_bounds;
 
     omb_copy.n_rows = omb.n_rows;
     omb_copy.n_cols = omb.n_cols;
@@ -151,8 +157,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
         if (nmb != nullptr) {
             nmb_copy = use_cmb ? &cmb_copy : &omb_copy;
             nmb_copy->noise.resize(nmb->noise.size());
-            nmb_touched_pixels.resize(nmb->noise.size());
-            nmb_touched_pixel_sets.resize(nmb->noise.size());
+            nmb_bounds.resize(nmb->noise.size());
             for (size_t i=0; i<nmb->noise.size(); ++i) {
                 const auto &ref = nmb->noise[i];
                 auto &scratch = nmb_copy->noise[i];
@@ -165,17 +170,72 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
         }
     }
 
-    // Scratch noise tensors are not fully zeroed; initialize each touched
-    // pixel once and merge only those pixels after accumulation.
+    auto zero_noise_block = [&](size_t noise_map_index, Eigen::Index row_start,
+                                Eigen::Index row_count, Eigen::Index col_start,
+                                Eigen::Index col_count) {
+        if (row_count <= 0 || col_count <= 0) {
+            return;
+        }
+        const Eigen::Index plane_size = nmb->n_rows * nmb->n_cols;
+        auto *base = nmb_copy->noise[noise_map_index].data();
+        for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
+            Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> plane(
+                base + nn * plane_size, nmb->n_rows, nmb->n_cols);
+            plane.block(row_start, col_start, row_count, col_count).setZero();
+        }
+    };
+
+    // Scratch noise tensors are not fully zeroed.  Each map keeps a monotonic
+    // touched rectangle; newly exposed bands are zeroed before accumulation,
+    // and only the final rectangle is merged back into the shared map.
     auto touch_noise_pixel = [&](Eigen::Index noise_map_index, Eigen::Index row, Eigen::Index col) {
         auto idx = static_cast<size_t>(noise_map_index);
-        Eigen::Index pix = row + col * nmb->n_rows;
-        if (nmb_touched_pixel_sets[idx].insert(pix).second) {
-            nmb_touched_pixels[idx].push_back(pix);
-            for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
-                nmb_copy->noise[idx](row,col,nn) = 0.0;
-            }
+        auto &bounds = nmb_bounds[idx];
+
+        if (!bounds.touched) {
+            bounds.touched = true;
+            bounds.row_min = row;
+            bounds.row_max = row;
+            bounds.col_min = col;
+            bounds.col_max = col;
+            zero_noise_block(idx, row, 1, col, 1);
+            return;
         }
+
+        const Eigen::Index new_row_min = std::min(bounds.row_min, row);
+        const Eigen::Index new_row_max = std::max(bounds.row_max, row);
+        const Eigen::Index new_col_min = std::min(bounds.col_min, col);
+        const Eigen::Index new_col_max = std::max(bounds.col_max, col);
+
+        if (new_row_min == bounds.row_min && new_row_max == bounds.row_max &&
+            new_col_min == bounds.col_min && new_col_max == bounds.col_max) {
+            return;
+        }
+
+        const Eigen::Index new_col_count = new_col_max - new_col_min + 1;
+        if (new_row_min < bounds.row_min) {
+            zero_noise_block(idx, new_row_min, bounds.row_min - new_row_min,
+                             new_col_min, new_col_count);
+        }
+        if (new_row_max > bounds.row_max) {
+            zero_noise_block(idx, bounds.row_max + 1, new_row_max - bounds.row_max,
+                             new_col_min, new_col_count);
+        }
+
+        const Eigen::Index old_row_count = bounds.row_max - bounds.row_min + 1;
+        if (new_col_min < bounds.col_min) {
+            zero_noise_block(idx, bounds.row_min, old_row_count,
+                             new_col_min, bounds.col_min - new_col_min);
+        }
+        if (new_col_max > bounds.col_max) {
+            zero_noise_block(idx, bounds.row_min, old_row_count,
+                             bounds.col_max + 1, new_col_max - bounds.col_max);
+        }
+
+        bounds.row_min = new_row_min;
+        bounds.row_max = new_row_max;
+        bounds.col_min = new_col_min;
+        bounds.col_max = new_col_max;
     };
 
     // step to skip to reach next stokes param
@@ -447,17 +507,21 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
         if (run_noise && nmb != nullptr && nmb_copy != nullptr) {
             const Eigen::Index plane_size = nmb->n_rows * nmb->n_cols;
             for (size_t i=0; i<nmb->noise.size(); ++i) {
-                const auto &pixels = nmb_touched_pixels[i];
-                if (pixels.empty()) {
+                const auto &bounds = nmb_bounds[i];
+                if (!bounds.touched) {
                     continue;
                 }
-                auto *dst = nmb->noise[i].data();
-                auto *src = nmb_copy->noise[i].data();
-                for (const auto pix: pixels) {
-                    for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
-                        const Eigen::Index offset = pix + nn * plane_size;
-                        dst[offset] += src[offset];
-                    }
+                const Eigen::Index row_count = bounds.row_max - bounds.row_min + 1;
+                const Eigen::Index col_count = bounds.col_max - bounds.col_min + 1;
+                auto *dst_base = nmb->noise[i].data();
+                const auto *src_base = nmb_copy->noise[i].data();
+                for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
+                    Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> dst(
+                        dst_base + nn * plane_size, nmb->n_rows, nmb->n_cols);
+                    Eigen::Map<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> src(
+                        src_base + nn * plane_size, nmb->n_rows, nmb->n_cols);
+                    dst.block(bounds.row_min, bounds.col_min, row_count, col_count) +=
+                        src.block(bounds.row_min, bounds.col_min, row_count, col_count);
                 }
             }
         }
