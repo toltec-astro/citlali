@@ -4,6 +4,7 @@
 
 #include <Eigen/Sparse>
 #include <spdlog/spdlog.h>
+#include <tula/logging.h>
 
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/utils/toltec_io.h>
@@ -185,6 +186,8 @@ void MapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::ve
 }
 
 void MapBuffer::normalize_maps() {
+    tula::logging::scoped_timeit timer{"MapBuffer::normalize_maps"};
+
     // vectors for maps
     map_in_vec.resize(signal.size());
     std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
@@ -330,6 +333,8 @@ void MapBuffer::zero_out_maps(Eigen::Index i, Eigen::Index j, int index, int ste
 }
 
 void MapBuffer::normalize_polarized_maps() {
+    tula::logging::scoped_timeit timer{"MapBuffer::normalize_polarized_maps"};
+
     int step = pointing.size();
     for (Eigen::Index index = 0; index < pointing.size(); ++index) {
         Eigen::MatrixXd m(3, 3);
@@ -376,6 +381,8 @@ std::tuple<double, Eigen::MatrixXd, Eigen::Index, Eigen::Index> MapBuffer::calc_
 
 // loop through maps
 void MapBuffer::calc_map_psd() {
+    tula::logging::scoped_timeit timer{"MapBuffer::calc_map_psd"};
+
     // clear psd vectors
     std::vector<Eigen::VectorXd>().swap(psds);
     std::vector<Eigen::VectorXd>().swap(psd_freqs);
@@ -475,6 +482,8 @@ void MapBuffer::calc_map_psd() {
 }
 
 void MapBuffer::calc_map_hist() {
+    tula::logging::scoped_timeit timer{"MapBuffer::calc_map_hist"};
+
     // clear vectors
     std::vector<Eigen::VectorXd>().swap(hists);
     std::vector<Eigen::VectorXd>().swap(hist_bins);
@@ -522,6 +531,8 @@ void MapBuffer::calc_map_hist() {
 }
 
 void MapBuffer::calc_median_err() {
+    tula::logging::scoped_timeit timer{"MapBuffer::calc_median_err"};
+
     // resize mean errors
     median_err.setZero(weight.size());
     for (Eigen::Index i=0; i<weight.size(); ++i) {
@@ -545,6 +556,8 @@ void MapBuffer::calc_median_err() {
 }
 
 void MapBuffer::calc_median_rms() {
+    tula::logging::scoped_timeit timer{"MapBuffer::calc_median_rms"};
+
     // average filtered rms vector
     median_rms.setZero(noise.size());
 
@@ -587,6 +600,8 @@ void MapBuffer::clear_noise_products() {
 }
 
 void MapBuffer::calc_noise_products(bool apply_empirical_weight_scale, bool mean_subtract) {
+    tula::logging::scoped_timeit timer{"MapBuffer::calc_noise_products total"};
+
     clear_noise_products();
 
     const Eigen::Index n_maps = static_cast<Eigen::Index>(weight.size());
@@ -615,6 +630,8 @@ void MapBuffer::calc_noise_products(bool apply_empirical_weight_scale, bool mean
 }
 
 void MapBuffer::calc_noise_products(Eigen::Index i, bool apply_empirical_weight_scale, bool mean_subtract) {
+    tula::logging::scoped_timeit timer{"MapBuffer::calc_noise_products map"};
+
     const Eigen::Index n_maps = static_cast<Eigen::Index>(weight.size());
     if (i < 0 || i >= n_maps || i >= static_cast<Eigen::Index>(noise.size()) || n_noise <= 0) {
         return;

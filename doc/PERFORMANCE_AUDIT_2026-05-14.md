@@ -310,3 +310,21 @@ than the serial path: coadd noise and non-detector grouping continue to use the
 existing per-sample noise accumulation. It is not yet Unity-validated. The next
 beammap jinc run should compare against the previous jinc control and check
 both products and `populate_maps_jinc_parallel accumulate` timing.
+
+On 2026-05-16, lightweight timers were also added around centralized
+`MapBuffer` post-map product methods on the performance branch. The goal is to
+quantify P-003/P-002 before changing behavior:
+
+- `MapBuffer::normalize_maps`
+- `MapBuffer::normalize_polarized_maps`
+- `MapBuffer::calc_map_psd`
+- `MapBuffer::calc_map_hist`
+- `MapBuffer::calc_median_err`
+- `MapBuffer::calc_median_rms`
+- `MapBuffer::calc_noise_products total`
+- `MapBuffer::calc_noise_products map`
+
+These timers should be checked on the next representative Unity reduction with
+noise maps enabled. They do not gate or skip any products; they only expose the
+relative cost of normalization, PSD/histogram generation, median diagnostics,
+and empirical noise-product calculations.
