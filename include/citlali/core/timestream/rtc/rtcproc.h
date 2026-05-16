@@ -141,6 +141,24 @@ public:
     };
     RTCLineAuditOptions line_audit;
 
+    struct RTCLineAuditSharedCandidate {
+        double freq_hz = std::numeric_limits<double>::quiet_NaN();
+        int detector_count = 0;
+        double detector_frac = std::numeric_limits<double>::quiet_NaN();
+        double median_prominence = std::numeric_limits<double>::quiet_NaN();
+        double max_prominence = std::numeric_limits<double>::quiet_NaN();
+        double width_hz = std::numeric_limits<double>::quiet_NaN();
+        double line_power_frac = std::numeric_limits<double>::quiet_NaN();
+        double common_mode_freq_hz = std::numeric_limits<double>::quiet_NaN();
+        double common_mode_prominence = std::numeric_limits<double>::quiet_NaN();
+        double notch_score = std::numeric_limits<double>::quiet_NaN();
+        bool recommend_notch = false;
+        bool applied_notch = false;
+        double applied_freq_hz = std::numeric_limits<double>::quiet_NaN();
+        double applied_width_hz = std::numeric_limits<double>::quiet_NaN();
+        int applied_support_network_count = 0;
+    };
+
     struct RTCLineAuditDiagSummary {
         int n_det_used = 0;
         double shared_freq_hz = std::numeric_limits<double>::quiet_NaN();
@@ -165,6 +183,7 @@ public:
         double detector_candidate_line_power_frac = std::numeric_limits<double>::quiet_NaN();
         double detector_candidate_cluster_detector_frac = std::numeric_limits<double>::quiet_NaN();
         bool detector_candidate_recommend_flag = false;
+        std::vector<RTCLineAuditSharedCandidate> shared_candidates;
     };
 
     struct FilterEdgeGuardOptions {
@@ -233,6 +252,7 @@ public:
         double line_audit_detector_candidate_line_power_frac = std::numeric_limits<double>::quiet_NaN();
         double line_audit_detector_candidate_cluster_detector_frac = std::numeric_limits<double>::quiet_NaN();
         bool line_audit_detector_candidate_recommend_flag = false;
+        std::vector<RTCLineAuditSharedCandidate> line_audit_shared_candidates;
         RTCLineAuditDiagSummary post_line_audit;
         TransientEvent step_event;
         double median_step_score = std::numeric_limits<double>::quiet_NaN();
@@ -1999,6 +2019,7 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
         row.line_audit_detector_candidate_cluster_detector_frac =
             diag.detector_candidate_cluster_detector_frac;
         row.line_audit_detector_candidate_recommend_flag = diag.detector_candidate_recommend_flag;
+        row.line_audit_shared_candidates = diag.shared_candidates;
     };
 
     auto median_of = [&](std::vector<double> values) -> double {
@@ -2587,12 +2608,33 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
             }
             return a.median_prominence > b.median_prominence;
         };
-        const SharedCluster *best_shared = nullptr;
+        std::sort(shared_clusters.begin(), shared_clusters.end(), better_shared);
+
+        auto shared_candidate_from_cluster = [](const SharedCluster &cluster) {
+            RTCLineAuditSharedCandidate candidate;
+            candidate.freq_hz = cluster.center_hz;
+            candidate.detector_count = cluster.detector_count;
+            candidate.detector_frac = cluster.detector_frac;
+            candidate.median_prominence = cluster.median_prominence;
+            candidate.max_prominence = cluster.max_prominence;
+            candidate.width_hz = cluster.median_width_hz;
+            candidate.line_power_frac = cluster.median_line_power_frac;
+            candidate.common_mode_freq_hz = cluster.common_mode_freq_hz;
+            candidate.common_mode_prominence = cluster.common_mode_prominence;
+            candidate.notch_score = cluster.notch_score;
+            candidate.recommend_notch = cluster.recommend_notch;
+            return candidate;
+        };
+
+        line_row.shared_candidates.clear();
+        line_row.shared_candidates.reserve(shared_clusters.size());
         for (const auto &cluster : shared_clusters) {
-            if (best_shared == nullptr || better_shared(cluster, *best_shared)) {
-                best_shared = &cluster;
+            if (cluster.recommend_notch) {
+                line_row.shared_candidates.push_back(shared_candidate_from_cluster(cluster));
             }
         }
+        const SharedCluster *best_shared =
+            shared_clusters.empty() ? nullptr : &shared_clusters.front();
         if (best_shared != nullptr) {
             line_row.shared_freq_hz = best_shared->center_hz;
             line_row.shared_detector_count = best_shared->detector_count;
@@ -2659,7 +2701,7 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
 
         if (line_row.shared_recommend_notch || line_row.detector_candidate_recommend_flag) {
             logger->info(
-                "rtc_line_audit scan {} nw {}: n_det_used={} shared_freq_hz={} det_count={} det_frac={} shared_prom={} cm_prom={} recommend_notch={} detector_uid={} detector_freq_hz={} detector_prom={} recommend_bad_detector={}",
+                "rtc_line_audit scan {} nw {}: n_det_used={} shared_freq_hz={} det_count={} det_frac={} shared_prom={} cm_prom={} recommend_notch={} recommended_shared_clusters={} detector_uid={} detector_freq_hz={} detector_prom={} recommend_bad_detector={}",
                 scan_id + 1,
                 nw,
                 line_row.n_det_used,
@@ -2669,6 +2711,7 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
                 line_row.shared_median_prominence,
                 line_row.shared_common_mode_prominence,
                 line_row.shared_recommend_notch,
+                line_row.shared_candidates.size(),
                 line_row.detector_candidate_uid,
                 line_row.detector_candidate_freq_hz,
                 line_row.detector_candidate_prominence,
@@ -2761,6 +2804,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
         diag.detector_candidate_cluster_detector_frac =
             row.line_audit_detector_candidate_cluster_detector_frac;
         diag.detector_candidate_recommend_flag = row.line_audit_detector_candidate_recommend_flag;
+        diag.shared_candidates = row.line_audit_shared_candidates;
         return diag;
     };
     auto assign_legacy_line_audit = [](RTCNetworkDiagSummary &row,
@@ -2790,6 +2834,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
         row.line_audit_detector_candidate_cluster_detector_frac =
             diag.detector_candidate_cluster_detector_frac;
         row.line_audit_detector_candidate_recommend_flag = diag.detector_candidate_recommend_flag;
+        row.line_audit_shared_candidates = diag.shared_candidates;
     };
     auto get_line_audit_diag = [&](const RTCNetworkDiagSummary &row) {
         return post_filter_stage ? row.post_line_audit : legacy_line_audit_diag(row);
@@ -2804,23 +2849,50 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
         }
     };
 
-    std::vector<NetworkCandidate> candidates;
-    candidates.reserve(nw_it->second.size());
-    for (const auto &row : nw_it->second) {
-        const auto diag = get_line_audit_diag(row);
-        if (!diag.shared_recommend_notch ||
-            !std::isfinite(diag.shared_freq_hz) ||
-            diag.shared_freq_hz <= 0.0) {
-            continue;
+    auto push_network_candidate = [](std::vector<NetworkCandidate> &candidates,
+                                     Eigen::Index nw,
+                                     const RTCLineAuditSharedCandidate &shared) {
+        if (!shared.recommend_notch ||
+            !std::isfinite(shared.freq_hz) ||
+            shared.freq_hz <= 0.0) {
+            return false;
         }
         NetworkCandidate candidate;
-        candidate.nw = row.nw;
-        candidate.freq_hz = diag.shared_freq_hz;
-        candidate.width_hz = diag.shared_width_hz;
-        candidate.detector_frac = diag.shared_detector_frac;
-        candidate.common_mode_prominence = diag.shared_common_mode_prominence;
-        candidate.notch_score = diag.shared_notch_score;
+        candidate.nw = nw;
+        candidate.freq_hz = shared.freq_hz;
+        candidate.width_hz = shared.width_hz;
+        candidate.detector_frac = shared.detector_frac;
+        candidate.common_mode_prominence = shared.common_mode_prominence;
+        candidate.notch_score = shared.notch_score;
         candidates.push_back(candidate);
+        return true;
+    };
+
+    std::vector<NetworkCandidate> candidates;
+    candidates.reserve(nw_it->second.size() * 2);
+    for (const auto &row : nw_it->second) {
+        const auto diag = get_line_audit_diag(row);
+        bool added_multi_candidate = false;
+        for (const auto &shared : diag.shared_candidates) {
+            added_multi_candidate =
+                push_network_candidate(candidates, row.nw, shared) || added_multi_candidate;
+        }
+        if (added_multi_candidate) {
+            continue;
+        }
+        RTCLineAuditSharedCandidate legacy_candidate;
+        legacy_candidate.freq_hz = diag.shared_freq_hz;
+        legacy_candidate.detector_count = diag.shared_detector_count;
+        legacy_candidate.detector_frac = diag.shared_detector_frac;
+        legacy_candidate.median_prominence = diag.shared_median_prominence;
+        legacy_candidate.max_prominence = diag.shared_max_prominence;
+        legacy_candidate.width_hz = diag.shared_width_hz;
+        legacy_candidate.line_power_frac = diag.shared_line_power_frac;
+        legacy_candidate.common_mode_freq_hz = diag.shared_common_mode_freq_hz;
+        legacy_candidate.common_mode_prominence = diag.shared_common_mode_prominence;
+        legacy_candidate.notch_score = diag.shared_notch_score;
+        legacy_candidate.recommend_notch = diag.shared_recommend_notch;
+        push_network_candidate(candidates, row.nw, legacy_candidate);
     }
 
     for (auto &row : nw_it->second) {
@@ -2830,6 +2902,12 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
         diag.shared_applied_freq_hz = nan;
         diag.shared_applied_width_hz = nan;
         diag.shared_applied_support_network_count = 0;
+        for (auto &shared : diag.shared_candidates) {
+            shared.applied_notch = false;
+            shared.applied_freq_hz = nan;
+            shared.applied_width_hz = nan;
+            shared.applied_support_network_count = 0;
+        }
         set_line_audit_diag(row, diag);
     }
 
@@ -2966,19 +3044,35 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
     for (auto &row : nw_it->second) {
         auto diag = get_line_audit_diag(row);
         diag.n_applied_notches = static_cast<int>(applied_clusters.size());
-        if (!std::isfinite(diag.shared_freq_hz) || diag.shared_freq_hz <= 0.0) {
-            set_line_audit_diag(row, diag);
-            continue;
-        }
-        const AppliedCluster *best_match = nullptr;
-        double best_delta = std::numeric_limits<double>::infinity();
-        for (const auto &cluster : applied_clusters) {
-            const double delta = std::abs(cluster.center_hz - diag.shared_freq_hz);
-            if (delta <= cluster_tol_hz && delta < best_delta) {
-                best_delta = delta;
-                best_match = &cluster;
+        auto find_applied_cluster = [&](double freq_hz) -> const AppliedCluster * {
+            if (!std::isfinite(freq_hz) || freq_hz <= 0.0) {
+                return nullptr;
             }
+            const AppliedCluster *best_match = nullptr;
+            double best_delta = std::numeric_limits<double>::infinity();
+            for (const auto &cluster : applied_clusters) {
+                const double delta = std::abs(cluster.center_hz - freq_hz);
+                if (delta <= cluster_tol_hz && delta < best_delta) {
+                    best_delta = delta;
+                    best_match = &cluster;
+                }
+            }
+            return best_match;
+        };
+
+        for (auto &shared : diag.shared_candidates) {
+            const auto *match = find_applied_cluster(shared.freq_hz);
+            if (match == nullptr) {
+                continue;
+            }
+            shared.applied_notch = true;
+            shared.applied_freq_hz = match->center_hz;
+            shared.applied_width_hz = match->width_hz;
+            shared.applied_support_network_count =
+                static_cast<int>(match->support_network_count);
         }
+
+        const AppliedCluster *best_match = find_applied_cluster(diag.shared_freq_hz);
         if (best_match != nullptr) {
             diag.shared_applied_notch = true;
             diag.shared_applied_freq_hz = best_match->center_hz;
