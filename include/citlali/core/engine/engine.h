@@ -2140,6 +2140,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.PRE_FILTER_ENABLED", rtcproc.line_audit.pre_filter_enabled);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_ENABLED", rtcproc.line_audit.post_filter_enabled);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_SHARED_NOTCHES", rtcproc.line_audit.post_filter_apply_shared_notches);
+            add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_ITERATIONS", rtcproc.line_audit.post_filter_apply_iterations);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MIN_HZ", rtcproc.line_audit.post_filter_line_min_hz);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MAX_HZ", rtcproc.line_audit.post_filter_line_max_hz);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_SHARED_NOTCHES", rtcproc.line_audit.apply_shared_notches);
@@ -2397,6 +2398,7 @@ void Engine::create_tod_files() {
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.PRE_FILTER_ENABLED", rtcproc.line_audit.pre_filter_enabled);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_ENABLED", rtcproc.line_audit.post_filter_enabled);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_SHARED_NOTCHES", rtcproc.line_audit.post_filter_apply_shared_notches);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_ITERATIONS", rtcproc.line_audit.post_filter_apply_iterations);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MIN_HZ", rtcproc.line_audit.post_filter_line_min_hz);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MAX_HZ", rtcproc.line_audit.post_filter_line_max_hz);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_SHARED_NOTCHES", rtcproc.line_audit.apply_shared_notches);
@@ -5917,6 +5919,7 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.PRE_FILTER_ENABLED", rtcproc.line_audit.pre_filter_enabled);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_ENABLED", rtcproc.line_audit.post_filter_enabled);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_SHARED_NOTCHES", rtcproc.line_audit.post_filter_apply_shared_notches);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_ITERATIONS", rtcproc.line_audit.post_filter_apply_iterations);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MIN_HZ", rtcproc.line_audit.post_filter_line_min_hz);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MAX_HZ", rtcproc.line_audit.post_filter_line_max_hz);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_SHARED_NOTCHES", rtcproc.line_audit.apply_shared_notches);

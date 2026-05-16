@@ -276,6 +276,7 @@ timestream: # timestream reduction parameters
       pre_filter_enabled: true # run the audit/notch pass before the normal RTC filter chain
       post_filter_enabled: false # run a second audit pass after lowpass/filtering/downsampling on the output chunk
       post_filter_apply_shared_notches: false # apply shared-line notches during the post-filter audit pass
+      post_filter_apply_iterations: 1 # number of post-filter audit/apply passes; values >1 allow newly exposed residual line families to be notched
       post_filter_line_min_hz: 1.0 # lower frequency bound used by the post-filter audit pass; NaN inherits line_min_hz
       post_filter_line_max_hz: 25.0 # upper frequency bound used by the post-filter audit pass; NaN inherits line_max_hz
       apply_shared_notches: false # if true, cluster shared-notch recommendations across networks and apply temporary RTC notches before the normal RTC filter chain
