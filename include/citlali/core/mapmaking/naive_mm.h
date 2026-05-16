@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <thread>
 #include <mutex>
+#include <utility>
 
 #include <Eigen/Sparse>
 
@@ -41,14 +42,6 @@ public:
         {2,pi/2},
         {3,3*pi/4}
     };
-
-    template <typename Derived>
-    void add_sparse_to_dense(std::vector<Eigen::Triplet<double>> &triplets, Eigen::DenseBase<Derived> &dense_matrix) {
-        Eigen::SparseMatrix<double> sparse_matrix(dense_matrix.rows(),dense_matrix.cols());
-        sparse_matrix.setFromTriplets(triplets.begin(), triplets.end());
-        dense_matrix += sparse_matrix;
-        std::vector<Eigen::Triplet<double>>().swap(triplets);
-    }
 
     // run polarization?
     bool run_polarization;
@@ -486,69 +479,123 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
         }
     }
 
+    auto compress_triplet_maps = [](std::vector<std::vector<T>> &triplet_maps,
+                                    Eigen::Index n_rows, Eigen::Index n_cols) {
+        std::vector<Eigen::SparseMatrix<double>> sparse_maps;
+        sparse_maps.reserve(triplet_maps.size());
+        for (auto &triplets: triplet_maps) {
+            Eigen::SparseMatrix<double> sparse_map(n_rows,n_cols);
+            sparse_map.setFromTriplets(triplets.begin(), triplets.end());
+            std::vector<T>().swap(triplets);
+            sparse_maps.emplace_back(std::move(sparse_map));
+        }
+        return sparse_maps;
+    };
+
     {
         tula::logging::scoped_timeit merge_timer{"populate_maps_naive merge"};
-        std::scoped_lock<std::mutex> lk(*naive_mutex);
-        if (run_omb) {
-            for (int i=0; i<omb.signal.size(); ++i) {
-                add_sparse_to_dense(signals[i],omb.signal[i]);
-                add_sparse_to_dense(weights[i],omb.weight[i]);
 
-                if (run_kernel) {
-                    add_sparse_to_dense(kernels[i],omb.kernel[i]);
-                }
+        std::vector<Eigen::SparseMatrix<double>> sparse_signals, sparse_weights, sparse_kernels, sparse_coverages;
+        std::vector<Eigen::SparseMatrix<double>> sparse_cmb_signals, sparse_cmb_weights, sparse_cmb_kernels, sparse_cmb_coverages;
 
-                if (run_coverage) {
-                    add_sparse_to_dense(coverages[i],omb.coverage[i]);
-                }
-            }
-            if (!omb.pointing.empty()) {
-                for (int i=0; i<omb.pointing.size(); ++i) {
-                    omb.pointing[i] += omb_copy.pointing[i];
-                }
-            }
-        }
-
-        if (run_polarization && !cmb.signal.empty()) {
-            for (int i=0; i<cmb.signal.size(); ++i) {
-                add_sparse_to_dense(cmb_signals[i],cmb.signal[i]);
-                add_sparse_to_dense(cmb_weights[i],cmb.weight[i]);
-
-                if (run_kernel) {
-                    add_sparse_to_dense(cmb_kernels[i],cmb.kernel[i]);
-                }
+        {
+            tula::logging::scoped_timeit prepare_timer{"populate_maps_naive merge prepare"};
+            if (run_omb) {
+                sparse_signals = compress_triplet_maps(signals,omb.n_rows,omb.n_cols);
+                sparse_weights = compress_triplet_maps(weights,omb.n_rows,omb.n_cols);
 
                 if (run_coverage) {
-                    add_sparse_to_dense(cmb_coverages[i],cmb.coverage[i]);
+                    sparse_coverages = compress_triplet_maps(coverages,omb.n_rows,omb.n_cols);
+                }
+                if (run_kernel) {
+                    sparse_kernels = compress_triplet_maps(kernels,omb.n_rows,omb.n_cols);
+                }
+            }
+
+            if (run_polarization && !cmb.signal.empty()) {
+                sparse_cmb_signals = compress_triplet_maps(cmb_signals,cmb.n_rows,cmb.n_cols);
+                sparse_cmb_weights = compress_triplet_maps(cmb_weights,cmb.n_rows,cmb.n_cols);
+
+                if (run_coverage) {
+                    sparse_cmb_coverages = compress_triplet_maps(cmb_coverages,cmb.n_rows,cmb.n_cols);
+                }
+                if (run_kernel) {
+                    sparse_cmb_kernels = compress_triplet_maps(cmb_kernels,cmb.n_rows,cmb.n_cols);
                 }
             }
         }
 
-        if (run_noise && nmb != nullptr && nmb_copy != nullptr) {
-            const Eigen::Index plane_size = nmb->n_rows * nmb->n_cols;
-            for (size_t i=0; i<nmb->noise.size(); ++i) {
-                const auto &bounds = nmb_bounds[i];
-                if (!bounds.touched) {
-                    continue;
+        {
+            tula::logging::scoped_timeit locked_timer{"populate_maps_naive merge locked"};
+            std::scoped_lock<std::mutex> lk(*naive_mutex);
+
+            {
+                tula::logging::scoped_timeit maps_timer{"populate_maps_naive merge maps"};
+                if (run_omb) {
+                    for (size_t i=0; i<omb.signal.size(); ++i) {
+                        omb.signal[i] += sparse_signals[i];
+                        omb.weight[i] += sparse_weights[i];
+
+                        if (run_kernel) {
+                            omb.kernel[i] += sparse_kernels[i];
+                        }
+
+                        if (run_coverage) {
+                            omb.coverage[i] += sparse_coverages[i];
+                        }
+                    }
+                    if (!omb.pointing.empty()) {
+                        for (size_t i=0; i<omb.pointing.size(); ++i) {
+                            omb.pointing[i] += omb_copy.pointing[i];
+                        }
+                    }
                 }
-                const Eigen::Index row_count = bounds.row_max - bounds.row_min + 1;
-                const Eigen::Index col_count = bounds.col_max - bounds.col_min + 1;
-                auto *dst_base = nmb->noise[i].data();
-                const auto *src_base = nmb_copy->noise[i].data();
-                for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
-                    Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> dst(
-                        dst_base + nn * plane_size, nmb->n_rows, nmb->n_cols);
-                    Eigen::Map<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> src(
-                        src_base + nn * plane_size, nmb->n_rows, nmb->n_cols);
-                    dst.block(bounds.row_min, bounds.col_min, row_count, col_count) +=
-                        src.block(bounds.row_min, bounds.col_min, row_count, col_count);
+
+                if (run_polarization && !cmb.signal.empty()) {
+                    for (size_t i=0; i<cmb.signal.size(); ++i) {
+                        cmb.signal[i] += sparse_cmb_signals[i];
+                        cmb.weight[i] += sparse_cmb_weights[i];
+
+                        if (run_kernel) {
+                            cmb.kernel[i] += sparse_cmb_kernels[i];
+                        }
+
+                        if (run_coverage) {
+                            cmb.coverage[i] += sparse_cmb_coverages[i];
+                        }
+                    }
+                }
+
+                if (!cmb.pointing.empty() && run_omb) {
+                    for (size_t i=0; i<cmb.pointing.size(); ++i) {
+                        cmb.pointing[i] += cmb_copy.pointing[i];
+                    }
                 }
             }
-        }
 
-        if (!cmb.pointing.empty() && run_omb) {
-            for (int i=0; i<cmb.pointing.size(); ++i) {
-                cmb.pointing[i] += cmb_copy.pointing[i];
+            {
+                tula::logging::scoped_timeit noise_timer{"populate_maps_naive merge noise"};
+                if (run_noise && nmb != nullptr && nmb_copy != nullptr) {
+                    const Eigen::Index plane_size = nmb->n_rows * nmb->n_cols;
+                    for (size_t i=0; i<nmb->noise.size(); ++i) {
+                        const auto &bounds = nmb_bounds[i];
+                        if (!bounds.touched) {
+                            continue;
+                        }
+                        const Eigen::Index row_count = bounds.row_max - bounds.row_min + 1;
+                        const Eigen::Index col_count = bounds.col_max - bounds.col_min + 1;
+                        auto *dst_base = nmb->noise[i].data();
+                        const auto *src_base = nmb_copy->noise[i].data();
+                        for (Eigen::Index nn=0; nn<nmb->n_noise; ++nn) {
+                            Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> dst(
+                                dst_base + nn * plane_size, nmb->n_rows, nmb->n_cols);
+                            Eigen::Map<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> src(
+                                src_base + nn * plane_size, nmb->n_rows, nmb->n_cols);
+                            dst.block(bounds.row_min, bounds.col_min, row_count, col_count) +=
+                                src.block(bounds.row_min, bounds.col_min, row_count, col_count);
+                        }
+                    }
+                }
             }
         }
     }

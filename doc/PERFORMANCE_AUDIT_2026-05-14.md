@@ -385,13 +385,50 @@ Interpretation: the bounded block merge is numerically safe and improves the
 specific merge path, but this compact map is not the large-empty-map case where
 it should dominate end-to-end runtime.
 
-The current unvalidated performance-branch change targets the next structural
-bottleneck in the same standard naive/noise run: the detector/sample noise
-accumulation body. Instead of writing each valid sample into every noise
-realization, `populate_maps_naive` now builds a sparse nearest-pixel weighted
-signal template per detector and scales that detector template into each noise
-realization afterward. This preserves the final resident noise cube and output
-format while removing the `n_noise_maps` loop from the per-sample hot path.
+The next structural change, `ad6591f4` / `redu22`, targeted the
+detector/sample noise accumulation body in the same standard naive/noise run.
+Instead of writing each valid sample into every noise realization,
+`populate_maps_naive` builds a sparse nearest-pixel weighted-signal template
+per detector and scales that detector template into each noise realization
+afterward. This preserves the final resident noise cube and output format while
+removing the `n_noise_maps` loop from the per-sample hot path.
+
+`redu22` used Citlali `v4.0.0-363-gad6591f4`; its generated config was
+identical to `redu21`. Product comparisons against `redu21`, `redu19`, and
+`redu14` were roundoff-clean: zero `coverage_bool_I` mismatches in all checked
+FITS maps, largest checked FITS difference `3.55e-14` in coadd
+`noise_variance_I`, and map sidecar netCDFs (`mapdiag`, `hist`, `psd`,
+`stats`) differed only at roundoff. A broad netCDF comparison also shows
+`rtcdiag` differences, but those diagnostics are outside this mapmaker change
+and were not used as validation evidence.
+
+The timing moved in the intended direction:
+
+- `Citlali Process`: `3m26.752s`, down from `3m38.546s` in `redu19` and
+  `3m42.633s` in `redu21`.
+- `populate_maps_naive accumulate`: `206.491s` sum, down from `255.678s` in
+  `redu19` and `267.652s` in `redu21`.
+- `populate_maps_naive merge`: `39.523s` sum, down from `47.664s` in `redu19`
+  and `42.596s` in `redu21`.
+
+This is the first tested standard-naive/noise optimization on this branch that
+shows both roundoff-clean products and a clear end-to-end win on the `148481`
+benchmark.
+
+The current unvalidated worktree change targets the remaining
+`populate_maps_naive merge` cost. Sparse triplet compression now happens before
+the global merge mutex is acquired, keeping only the final shared dense-map
+additions, pointing-matrix additions, and noise-cube additions under lock. The
+timer split was also expanded:
+
+- `populate_maps_naive merge prepare`: sparse triplet compression outside the
+  lock.
+- `populate_maps_naive merge locked`: lock wait plus all shared-map updates.
+- `populate_maps_naive merge maps`: signal, weight, kernel, coverage, and
+  pointing additions while locked.
+- `populate_maps_naive merge noise`: noise-cube additions while locked.
+
 The next Unity run should use the same `148481` config, compare against
-`redu21`/`redu19` over `coverage_bool_I`, and check `populate_maps_naive
-accumulate`, `merge`, and whole-process timing.
+`redu22` over `coverage_bool_I`, and check whether total process time improves
+or whether the newly exposed prepare/locked split only moves cost between
+timer labels.
