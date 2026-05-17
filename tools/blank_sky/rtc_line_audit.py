@@ -74,6 +74,7 @@ def _masked_welch_psd(
     segment_sec: float,
     min_segment_sec: float,
     overlap_frac: float,
+    min_windows: int = 2,
 ) -> tuple[np.ndarray | None, np.ndarray | None, int]:
     x = np.asarray(x, dtype=float).reshape(-1)
     valid = np.asarray(valid, dtype=bool).reshape(-1)
@@ -81,11 +82,22 @@ def _masked_welch_psd(
         return None, None, 0
 
     fs = 1.0 / dt_sec
+    runs = _contiguous_runs(valid)
+    longest_run = max((i1 - i0 for i0, i1 in runs), default=0)
     nperseg = max(16, int(round(float(segment_sec) * fs)))
     min_seg_n = max(16, int(round(float(min_segment_sec) * fs)))
     if nperseg < min_seg_n:
         nperseg = min_seg_n
-    hop = max(1, int(round(nperseg * max(0.05, 1.0 - float(overlap_frac)))))
+    if longest_run < min_seg_n:
+        return None, None, 0
+    hop_frac = max(0.05, 1.0 - float(overlap_frac))
+    if int(round(longest_run)) > 0:
+        denom = 1.0 + hop_frac * max(0, int(min_windows) - 1)
+        max_nperseg_for_windows = int(np.floor(float(longest_run) / denom)) if denom > 0 else nperseg
+        if max_nperseg_for_windows >= min_seg_n and nperseg > max_nperseg_for_windows:
+            nperseg = max_nperseg_for_windows
+    nperseg = min(nperseg, int(longest_run))
+    hop = max(1, int(round(nperseg * hop_frac)))
 
     win = np.hanning(nperseg)
     win_norm = float(fs * np.sum(win * win))
@@ -94,7 +106,7 @@ def _masked_welch_psd(
 
     acc = None
     n_used = 0
-    for i0, i1 in _contiguous_runs(valid):
+    for i0, i1 in runs:
         seg_len = i1 - i0
         if seg_len < min_seg_n:
             continue
@@ -305,6 +317,7 @@ def _audit_file(nc_file: Path, outdir: Path, args: argparse.Namespace) -> tuple[
                         segment_sec=float(args.segment_sec),
                         min_segment_sec=float(args.min_segment_sec),
                         overlap_frac=float(args.overlap_frac),
+                        min_windows=int(args.min_windows),
                     )
                     if freq is None or psd is None or n_win < int(args.min_windows):
                         continue
@@ -341,6 +354,7 @@ def _audit_file(nc_file: Path, outdir: Path, args: argparse.Namespace) -> tuple[
                     segment_sec=float(args.segment_sec),
                     min_segment_sec=float(args.min_segment_sec),
                     overlap_frac=float(args.overlap_frac),
+                    min_windows=int(args.min_windows),
                 )
                 cm_peaks = []
                 if cm_freq is not None and cm_psd is not None and cm_nwin >= int(args.min_windows):
