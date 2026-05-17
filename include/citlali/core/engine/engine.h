@@ -2140,6 +2140,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.PRE_FILTER_ENABLED", rtcproc.line_audit.pre_filter_enabled);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_ENABLED", rtcproc.line_audit.post_filter_enabled);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_SHARED_NOTCHES", rtcproc.line_audit.post_filter_apply_shared_notches);
+            add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_DETECTOR_NOTCHES", rtcproc.line_audit.post_filter_apply_detector_notches);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_ITERATIONS", rtcproc.line_audit.post_filter_apply_iterations);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MIN_HZ", rtcproc.line_audit.post_filter_line_min_hz);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MAX_HZ", rtcproc.line_audit.post_filter_line_max_hz);
@@ -2152,6 +2153,12 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MAX_WIDTH_HZ", rtcproc.line_audit.apply_max_width_hz);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MAX_NOTCHES", rtcproc.line_audit.apply_max_notches);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_CLUSTER_TOL_HZ", rtcproc.line_audit.apply_cluster_tol_hz);
+            add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MIN_PROMINENCE", rtcproc.line_audit.detector_notch_min_prominence);
+            add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MIN_LINE_POWER_FRAC", rtcproc.line_audit.detector_notch_min_line_power_frac);
+            add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MAX_NOTCHES", rtcproc.line_audit.detector_notch_max_notches);
+            add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_WIDTH_SCALE", rtcproc.line_audit.detector_notch_width_scale);
+            add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MIN_WIDTH_HZ", rtcproc.line_audit.detector_notch_min_width_hz);
+            add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MAX_WIDTH_HZ", rtcproc.line_audit.detector_notch_max_width_hz);
         }
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
@@ -2398,6 +2405,7 @@ void Engine::create_tod_files() {
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.PRE_FILTER_ENABLED", rtcproc.line_audit.pre_filter_enabled);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_ENABLED", rtcproc.line_audit.post_filter_enabled);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_SHARED_NOTCHES", rtcproc.line_audit.post_filter_apply_shared_notches);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_DETECTOR_NOTCHES", rtcproc.line_audit.post_filter_apply_detector_notches);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_ITERATIONS", rtcproc.line_audit.post_filter_apply_iterations);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MIN_HZ", rtcproc.line_audit.post_filter_line_min_hz);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MAX_HZ", rtcproc.line_audit.post_filter_line_max_hz);
@@ -2410,6 +2418,12 @@ void Engine::create_tod_files() {
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MAX_WIDTH_HZ", rtcproc.line_audit.apply_max_width_hz);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MAX_NOTCHES", rtcproc.line_audit.apply_max_notches);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_CLUSTER_TOL_HZ", rtcproc.line_audit.apply_cluster_tol_hz);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MIN_PROMINENCE", rtcproc.line_audit.detector_notch_min_prominence);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MIN_LINE_POWER_FRAC", rtcproc.line_audit.detector_notch_min_line_power_frac);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MAX_NOTCHES", rtcproc.line_audit.detector_notch_max_notches);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_WIDTH_SCALE", rtcproc.line_audit.detector_notch_width_scale);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MIN_WIDTH_HZ", rtcproc.line_audit.detector_notch_min_width_hz);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MAX_WIDTH_HZ", rtcproc.line_audit.detector_notch_max_width_hz);
     }
 
     const Eigen::Index n_tod_output_scans_for_stream =
@@ -2649,6 +2663,20 @@ void Engine::create_tod_files() {
                         "sample index of the strongest per-detector impulsive event; -2147483647 means unavailable");
         add_rtc_det_int("rtc_impulsive_event_kind",
                         "0=raw-sample peak, 1=delta peak, -2147483647 means unavailable");
+        add_rtc_det_int("rtc_detector_notch_n_applied",
+                        "per-detector count of post-filter detector-local RTC notches applied");
+        add_rtc_det_double("rtc_detector_notch_primary_freq_hz",
+                           "frequency of the strongest detector-local post-filter RTC notch applied");
+        add_rtc_det_double("rtc_detector_notch_primary_width_hz",
+                           "bandwidth of the strongest detector-local post-filter RTC notch applied");
+        add_rtc_det_double("rtc_detector_notch_primary_prominence",
+                           "PSD prominence of the strongest detector-local post-filter RTC notch applied");
+        add_rtc_det_double("rtc_detector_notch_primary_line_power_frac",
+                           "line-power fraction of the strongest detector-local post-filter RTC notch applied");
+        add_rtc_det_double("rtc_detector_notch_rms_before",
+                           "robust RMS of the detector RTC timestream before detector-local post-filter notching");
+        add_rtc_det_double("rtc_detector_notch_rms_after",
+                           "robust RMS of the detector RTC timestream after detector-local post-filter notching");
 
         netCDF::NcDim n_nws_rtcdiag_dim = fo.addDim("n_nws_rtcdiag", calib.n_nws);
         netCDF::NcVar nw_ids_v = fo.addVar("rtc_diag_network_ids", netCDF::ncInt, n_nws_rtcdiag_dim);
@@ -5919,6 +5947,7 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.PRE_FILTER_ENABLED", rtcproc.line_audit.pre_filter_enabled);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_ENABLED", rtcproc.line_audit.post_filter_enabled);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_SHARED_NOTCHES", rtcproc.line_audit.post_filter_apply_shared_notches);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_DETECTOR_NOTCHES", rtcproc.line_audit.post_filter_apply_detector_notches);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_ITERATIONS", rtcproc.line_audit.post_filter_apply_iterations);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MIN_HZ", rtcproc.line_audit.post_filter_line_min_hz);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MAX_HZ", rtcproc.line_audit.post_filter_line_max_hz);
@@ -5931,6 +5960,12 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MAX_WIDTH_HZ", rtcproc.line_audit.apply_max_width_hz);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MAX_NOTCHES", rtcproc.line_audit.apply_max_notches);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_CLUSTER_TOL_HZ", rtcproc.line_audit.apply_cluster_tol_hz);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MIN_PROMINENCE", rtcproc.line_audit.detector_notch_min_prominence);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MIN_LINE_POWER_FRAC", rtcproc.line_audit.detector_notch_min_line_power_frac);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MAX_NOTCHES", rtcproc.line_audit.detector_notch_max_notches);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_WIDTH_SCALE", rtcproc.line_audit.detector_notch_width_scale);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MIN_WIDTH_HZ", rtcproc.line_audit.detector_notch_min_width_hz);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MAX_WIDTH_HZ", rtcproc.line_audit.detector_notch_max_width_hz);
     add_netcdf_var(fo, "CONFIG.INV_VAR.WINDOW_SEC", rtcproc.remove_bad_dets_window_sec);
 
     for (auto const &x : calib.apt) {
@@ -6027,6 +6062,20 @@ void Engine::create_rtcdiag_file() {
                     "sample index of the strongest per-detector impulsive event; -2147483647 means unavailable");
     add_rtc_det_int("rtc_impulsive_event_kind",
                     "0=raw-sample peak, 1=delta peak, -2147483647 means unavailable");
+    add_rtc_det_int("rtc_detector_notch_n_applied",
+                    "per-detector count of post-filter detector-local RTC notches applied");
+    add_rtc_det_double("rtc_detector_notch_primary_freq_hz",
+                       "frequency of the strongest detector-local post-filter RTC notch applied");
+    add_rtc_det_double("rtc_detector_notch_primary_width_hz",
+                       "bandwidth of the strongest detector-local post-filter RTC notch applied");
+    add_rtc_det_double("rtc_detector_notch_primary_prominence",
+                       "PSD prominence of the strongest detector-local post-filter RTC notch applied");
+    add_rtc_det_double("rtc_detector_notch_primary_line_power_frac",
+                       "line-power fraction of the strongest detector-local post-filter RTC notch applied");
+    add_rtc_det_double("rtc_detector_notch_rms_before",
+                       "robust RMS of the detector RTC timestream before detector-local post-filter notching");
+    add_rtc_det_double("rtc_detector_notch_rms_after",
+                       "robust RMS of the detector RTC timestream after detector-local post-filter notching");
     add_rtc_det_double("rtc_invvar_window_valid_fraction",
                        "fraction of remove_bad_dets diagnostic windows with enough unflagged samples to estimate inverse variance in the RTC timestream");
     add_rtc_det_double("rtc_invvar_window_median",
