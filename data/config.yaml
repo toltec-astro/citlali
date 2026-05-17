@@ -251,8 +251,8 @@ timestream: # timestream reduction parameters
         mask_pre_window_sec: 0.03 # pre-event duration of the applied impulsive coincidence mask window
         mask_post_window_sec: 0.03 # post-event duration of the applied impulsive coincidence mask window
         max_flagged_fraction: 0.10 # reject the proposed mask if it would newly flag more than this fraction of good detector-samples in the network
-    line_audit: # optional pre-filter RTC narrowband line audit and shared-line actuation
-      enabled: false # analyze flagged RTC chunks for shared narrow lines and detector-local periodic offenders before RTC filtering
+    line_audit: # optional staged RTC narrowband line audit and shared-line actuation
+      enabled: false # analyze flagged RTC chunks for shared narrow lines and detector-local periodic offenders
       line_min_hz: 1.0 # lower frequency bound of the RTC line search
       line_max_hz: 60.0 # upper frequency bound of the RTC line search
       segment_sec: 4.0 # Welch segment duration used for masked RTC PSD estimation
@@ -273,6 +273,12 @@ timestream: # timestream reduction parameters
       detector_min_prominence: 12.0 # minimum detector-level prominence for a detector-local RTC line candidate
       detector_min_line_power_frac: 0.10 # minimum detector-level line-power fraction for a detector-local RTC line candidate
       bad_detector_max_cluster_frac: 0.10 # maximum shared-cluster detector fraction allowed for a detector-local RTC line candidate
+      pre_filter_enabled: true # run the audit/notch pass before the normal RTC filter chain
+      post_filter_enabled: false # run a second audit pass after lowpass/filtering/downsampling on the output chunk
+      post_filter_apply_shared_notches: false # apply shared-line notches during the post-filter audit pass
+      post_filter_apply_iterations: 1 # number of post-filter audit/apply passes; values >1 allow newly exposed residual line families to be notched
+      post_filter_line_min_hz: 1.0 # lower frequency bound used by the post-filter audit pass; NaN inherits line_min_hz
+      post_filter_line_max_hz: 25.0 # upper frequency bound used by the post-filter audit pass; NaN inherits line_max_hz
       apply_shared_notches: false # if true, cluster shared-notch recommendations across networks and apply temporary RTC notches before the normal RTC filter chain
       apply_min_support_networks: 2 # minimum number of networks supporting one shared-line family before applying a chunk-level RTC notch
       apply_min_detector_frac: 0.90 # minimum detector fraction required when promoting a single-network, strong-common-mode family to an applied RTC notch
