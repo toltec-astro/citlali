@@ -199,6 +199,7 @@ def _audit_scan_networks(
                 segment_sec=cfg.segment_sec,
                 min_segment_sec=cfg.min_segment_sec,
                 overlap_frac=cfg.overlap_frac,
+                min_windows=cfg.min_windows,
             )
             if freq is None or psd is None or n_win < cfg.min_windows:
                 continue
@@ -234,6 +235,7 @@ def _audit_scan_networks(
             segment_sec=cfg.segment_sec,
             min_segment_sec=cfg.min_segment_sec,
             overlap_frac=cfg.overlap_frac,
+            min_windows=cfg.min_windows,
         )
         cm_peaks = []
         if cm_freq is not None and cm_psd is not None and cm_nwin >= cfg.min_windows:
@@ -405,6 +407,7 @@ def _detector_peaks(
         segment_sec=cfg.segment_sec,
         min_segment_sec=cfg.min_segment_sec,
         overlap_frac=cfg.overlap_frac,
+        min_windows=cfg.min_windows,
     )
     if freq is None or psd is None or nwin < cfg.min_windows:
         return []

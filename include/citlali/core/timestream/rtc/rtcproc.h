@@ -2188,6 +2188,12 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
             return result;
         }
         const double fs_hz = 1.0 / dt_sec;
+        const auto valid_runs = contiguous_runs(valid_mask);
+        Eigen::Index longest_run = 0;
+        for (const auto &[i0, i1] : valid_runs) {
+            longest_run = std::max<Eigen::Index>(longest_run, i1 - i0);
+        }
+
         Eigen::Index nperseg =
             std::max<Eigen::Index>(16, static_cast<Eigen::Index>(std::llround(audit.segment_sec * fs_hz)));
         const Eigen::Index min_seg_n =
@@ -2195,8 +2201,26 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
         if (nperseg < min_seg_n) {
             nperseg = min_seg_n;
         }
+        if (longest_run < min_seg_n) {
+            return result;
+        }
+
+        const double hop_frac = std::max(0.05, 1.0 - audit.overlap_frac);
+        if (audit.min_windows > 1) {
+            const double denom =
+                1.0 + hop_frac * static_cast<double>(std::max<Eigen::Index>(0, audit.min_windows - 1));
+            if (denom > 0.0) {
+                const Eigen::Index max_nperseg_for_windows =
+                    static_cast<Eigen::Index>(std::floor(static_cast<double>(longest_run) / denom));
+                if (max_nperseg_for_windows >= min_seg_n && nperseg > max_nperseg_for_windows) {
+                    nperseg = max_nperseg_for_windows;
+                }
+            }
+        }
+        nperseg = std::min(nperseg, longest_run);
+
         const Eigen::Index hop = std::max<Eigen::Index>(
-            1, static_cast<Eigen::Index>(std::llround(nperseg * std::max(0.05, 1.0 - audit.overlap_frac))));
+            1, static_cast<Eigen::Index>(std::llround(nperseg * hop_frac)));
 
         Eigen::VectorXd window = Eigen::VectorXd::Zero(nperseg);
         if (nperseg > 1) {
@@ -2217,7 +2241,7 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
         Eigen::FFT<double> fft;
         fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
         fft.SetFlag(Eigen::FFT<double>::Unscaled);
-        for (const auto &[i0, i1] : contiguous_runs(valid_mask)) {
+        for (const auto &[i0, i1] : valid_runs) {
             const Eigen::Index seg_len = i1 - i0;
             if (seg_len < min_seg_n) {
                 continue;
