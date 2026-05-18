@@ -295,7 +295,7 @@ timestream: # timestream reduction parameters
       detector_notch_width_scale: 1.0 # multiplier applied to detector-local line widths before building post-filter notches
       detector_notch_min_width_hz: 0.25 # lower clamp on detector-local post-filter notch bandwidth
       detector_notch_max_width_hz: 1.50 # upper clamp on detector-local post-filter notch bandwidth
-      detector_notch_context_samples: 0 # extra outer samples per side to load for detector-local post-filter notch PSD selection (does not increase flagged edge guard)
+      detector_notch_context_samples: 0 # extra outer samples per side to load for detector-local post-filter notch PSD selection (does not shrink the science scan or increase flagged edge guard)
     output:
       enabled: false # enable or disable rtc TOD output
       indices: all # chunk indices to write: "all" or [1,3,7] (1-based)

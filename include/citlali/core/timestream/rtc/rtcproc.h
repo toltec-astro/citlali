@@ -1365,13 +1365,6 @@ inline void RTCProc::configure_filter_edge_guard(double fs_hz) {
         guard = combine_samples(guard, static_cast<Eigen::Index>(downsampler.factor - 1));
     }
 
-    const Eigen::Index detector_notch_context =
-        (line_audit.enabled &&
-         line_audit.post_filter_enabled &&
-         line_audit.post_filter_apply_detector_notches)
-            ? std::max<Eigen::Index>(0, line_audit.detector_notch_context_samples)
-            : 0;
-
     guard = std::max(guard, filter_edge_guard.min_samples);
     guard += filter_edge_guard.extra_samples;
     if (filter_edge_guard.max_samples > 0) {
@@ -1380,8 +1373,7 @@ inline void RTCProc::configure_filter_edge_guard(double fs_hz) {
     guard = std::max<Eigen::Index>(0, guard);
 
     filter_edge_guard.guard_samples = guard;
-    filter_edge_guard.context_samples =
-        std::max(std::max(base_context, guard), detector_notch_context);
+    filter_edge_guard.context_samples = std::max(base_context, guard);
 }
 
 template <typename tc_t>
