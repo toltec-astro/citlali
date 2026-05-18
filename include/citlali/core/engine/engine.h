@@ -164,6 +164,9 @@ struct beammapControls {
     // detector-map sample weighting policy
     std::string beammap_detector_weighting_mode = "const";
 
+    // optional coarse beammap performance timing for production bottleneck studies
+    bool beammap_performance_timing_enabled = false;
+
     // optional circular residual support for beammap Gaussian fits, in nominal FWHM units
     double beammap_fit_radius_fwhm = 0.0;
 
@@ -1098,6 +1101,12 @@ void Engine::get_beammap_config(CT &config) {
         get_config_value(config, beammap_detector_weighting_mode, missing_keys, invalid_keys,
                          std::tuple{"beammap","detector_weighting","mode"},
                          {"const", "ptc", "ptc_after_iter0"});
+    }
+
+    beammap_performance_timing_enabled = false;
+    if (config.template has_typed<bool>(std::tuple{"beammap","performance_timing","enabled"})) {
+        get_config_value(config, beammap_performance_timing_enabled, missing_keys, invalid_keys,
+                         std::tuple{"beammap","performance_timing","enabled"});
     }
 
     beammap_fit_radius_fwhm = 0.0;

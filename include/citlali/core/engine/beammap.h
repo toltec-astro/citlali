@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <cstdlib>
+#include <chrono>
 #include <limits>
 #include <cmath>
 #include <algorithm>
@@ -46,6 +47,62 @@ public:
         double dy_arcsec = 0.0;
         Eigen::Index n_matches = 0;
         double rms_arcsec = std::numeric_limits<double>::quiet_NaN();
+    };
+
+    struct BeammapPerfStats {
+        using clock_t = std::chrono::steady_clock;
+
+        mutable std::mutex mutex;
+        std::map<std::string, double> elapsed_ms;
+        std::map<std::string, Eigen::Index> counts;
+
+        static clock_t::time_point now() {
+            return clock_t::now();
+        }
+
+        static double elapsed(clock_t::time_point start) {
+            return std::chrono::duration<double, std::milli>(clock_t::now() - start).count();
+        }
+
+        void add(const std::string &label, double value_ms) {
+            std::lock_guard<std::mutex> lock(mutex);
+            elapsed_ms[label] += value_ms;
+            counts[label]++;
+        }
+
+        double seconds(const std::string &label) const {
+            std::lock_guard<std::mutex> lock(mutex);
+            auto it = elapsed_ms.find(label);
+            return it == elapsed_ms.end() ? 0.0 : it->second / 1000.0;
+        }
+
+        Eigen::Index count(const std::string &label) const {
+            std::lock_guard<std::mutex> lock(mutex);
+            auto it = counts.find(label);
+            return it == counts.end() ? 0 : it->second;
+        }
+
+        std::map<std::string, double> elapsed_snapshot() const {
+            std::lock_guard<std::mutex> lock(mutex);
+            return elapsed_ms;
+        }
+
+        std::map<std::string, Eigen::Index> count_snapshot() const {
+            std::lock_guard<std::mutex> lock(mutex);
+            return counts;
+        }
+
+        void merge_from(const BeammapPerfStats &other) {
+            const auto other_elapsed = other.elapsed_snapshot();
+            const auto other_counts = other.count_snapshot();
+            std::lock_guard<std::mutex> lock(mutex);
+            for (const auto &entry : other_elapsed) {
+                elapsed_ms[entry.first] += entry.second;
+            }
+            for (const auto &entry : other_counts) {
+                counts[entry.first] += entry.second;
+            }
+        }
     };
 
     bool beammap_soft_priors_loaded = false;
@@ -2573,10 +2630,67 @@ void Beammap::run_loop() {
             beammap_scan_band_mask_max_flagged_fraction);
     }
 
+    BeammapPerfStats beammap_perf_total;
+    auto log_beammap_perf = [&](const std::string &label, const BeammapPerfStats &stats) {
+        auto s = [&](const std::string &key) { return stats.seconds(key); };
+        logger->info(
+            "beammap perf {}: wall_s={:.3f} setup_s={:.3f} ptc_loop_wall_s={:.3f} "
+            "map_pass_wall_s={:.3f} fit_maps_wall_s={:.3f} convergence_wall_s={:.3f} "
+            "ptc_io_s={:.3f} | scan_sum_s source_subtract={:.3f} ptc_run={:.3f} "
+            "source_add={:.3f} remove_bad_dets={:.3f} rfi_mask={:.3f} "
+            "calc_weights={:.3f} reset_weights={:.3f} chunk_summary={:.3f} diagnostics={:.3f} "
+            "| map_s zero={:.3f} accumulate_wall={:.3f} accumulate_scan_sum={:.3f} "
+            "normalize={:.3f} scan_band_mask={:.3f} | fit_sum_s weighted_peak={:.3f} "
+            "prior_init={:.3f} gaussian={:.3f}",
+            label,
+            s("iter.wall"),
+            s("setup.wall"),
+            s("ptc_loop.wall"),
+            s("map_pass.wall"),
+            s("fit_maps.wall"),
+            s("convergence.wall"),
+            s("ptc_diag_write.wall") + s("ptc_tod_write.wall"),
+            s("source_subtract.sum"),
+            s("ptc_run.sum"),
+            s("source_add.sum"),
+            s("remove_bad_dets.sum"),
+            s("rfi_mask.sum"),
+            s("calc_weights.sum"),
+            s("reset_weights.sum"),
+            s("chunk_summary.sum"),
+            s("diagnostics_stats.sum"),
+            s("map_zero.sum"),
+            s("map_accumulate.wall"),
+            s("map_accumulate_scan.sum"),
+            s("map_normalize.sum"),
+            s("scan_band_mask.wall"),
+            s("fit_weighted_peak.sum"),
+            s("fit_prior_init.sum"),
+            s("fit_gaussian.sum"));
+    };
+    if (beammap_performance_timing_enabled) {
+        logger->info(
+            "beammap performance timing enabled; wall_s fields are elapsed wall time, "
+            "scan_sum_s fields are summed over scans and can exceed wall time under parallel execution");
+    }
+
     // iterative loop
     while (keep_going) {
+        const int iter_index = current_iter;
+        BeammapPerfStats iter_perf;
+        const auto iter_perf_start = BeammapPerfStats::now();
+        auto time_stage = [&](const std::string &label, auto &&fn) {
+            if (!beammap_performance_timing_enabled) {
+                fn();
+                return;
+            }
+            const auto stage_start = BeammapPerfStats::now();
+            fn();
+            iter_perf.add(label, BeammapPerfStats::elapsed(stage_start));
+        };
         logger->info("starting iter {}", current_iter);
 
+        const auto setup_perf_start = BeammapPerfStats::now();
         // copy ptcs
         ptcs = ptcs0;
         // copy calibs
@@ -2600,6 +2714,9 @@ void Beammap::run_loop() {
                 }
             }
         }
+        if (beammap_performance_timing_enabled) {
+            iter_perf.add("setup.wall", BeammapPerfStats::elapsed(setup_perf_start));
+        }
 
         // progress bar
         tula::logging::progressbar pb(
@@ -2607,43 +2724,54 @@ void Beammap::run_loop() {
 
 
         // cleaning (separate from mapmaking loop due to jinc mapmaking parallelization)
+        const auto ptc_loop_perf_start = BeammapPerfStats::now();
         grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
             if (run_mapmaking) {
                 if (current_iter > 0) {
                     if (!ptcproc.run_fruit_loops) {
-                        // if not running fruit loops use source fit
-                        logger->info("subtracting gaussian from tod");
-                        // subtract gaussian
-                        ptcproc.add_gaussian<timestream::TCProc::SourceType::NegativeGaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping,
-                                                                                               calib.apt,omb.pixel_size_rad, omb.n_rows, omb.n_cols);
+                        time_stage("source_subtract.sum", [&]() {
+                            // if not running fruit loops use source fit
+                            logger->info("subtracting gaussian from tod");
+                            // subtract gaussian
+                            ptcproc.add_gaussian<timestream::TCProc::SourceType::NegativeGaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping,
+                                                                                                   calib.apt,omb.pixel_size_rad, omb.n_rows, omb.n_cols);
+                        });
                     }
                     else {
-                        logger->info("subtracting map from tod");
-                        // subtract map
-                        ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(omb, ptcs[i], calib, ptcs[i].map_indices.data, telescope.pixel_axes,
-                                                                                        map_grouping);
+                        time_stage("source_subtract.sum", [&]() {
+                            logger->info("subtracting map from tod");
+                            // subtract map
+                            ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(omb, ptcs[i], calib, ptcs[i].map_indices.data, telescope.pixel_axes,
+                                                                                            map_grouping);
+                        });
                     }
                 }
             }
 
             // clean the maps
-            logger->info("processed time chunk processing for scan {}", i + 1);
-            ptcproc.run(ptcs[i], ptcs[i], calib_scans[i], telescope.pixel_axes, map_grouping);
+            time_stage("ptc_run.sum", [&]() {
+                logger->info("processed time chunk processing for scan {}", i + 1);
+                ptcproc.run(ptcs[i], ptcs[i], calib_scans[i], telescope.pixel_axes, map_grouping);
+            });
 
             if (run_mapmaking) {
                 if (current_iter > 0) {
                     // if not running fruit loops use source fit
                     if (!ptcproc.run_fruit_loops) {
-                        logger->info("adding gaussian to tod");
-                        // add gaussian back
-                        ptcproc.add_gaussian<timestream::TCProc::SourceType::Gaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
-                                                                                       omb.pixel_size_rad,omb.n_rows, omb.n_cols);
+                        time_stage("source_add.sum", [&]() {
+                            logger->info("adding gaussian to tod");
+                            // add gaussian back
+                            ptcproc.add_gaussian<timestream::TCProc::SourceType::Gaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
+                                                                                           omb.pixel_size_rad,omb.n_rows, omb.n_cols);
+                        });
                     }
                     else {
-                        logger->info("adding map to tod");
-                        // add map back
-                        ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(omb, ptcs[i], calib, ptcs[i].map_indices.data, telescope.pixel_axes,
-                                                                                map_grouping);
+                        time_stage("source_add.sum", [&]() {
+                            logger->info("adding map to tod");
+                            // add map back
+                            ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(omb, ptcs[i], calib, ptcs[i].map_indices.data, telescope.pixel_axes,
+                                                                                    map_grouping);
+                        });
                     }
                 }
             }
@@ -2656,11 +2784,21 @@ void Beammap::run_loop() {
             }
             else {
                 // remove outliers after clean
-                calib_scans[i] = ptcproc.remove_bad_dets(ptcs[i], calib_scans[i], map_grouping);
+                time_stage("remove_bad_dets.sum", [&]() {
+                    calib_scans[i] = ptcproc.remove_bad_dets(ptcs[i], calib_scans[i], map_grouping);
+                });
             }
 
             if (map_grouping == "detector") {
-                auto rfi_summary = apply_rfi_sample_mask(ptcs[i]);
+                auto rfi_summary = [&]() {
+                    if (!beammap_performance_timing_enabled) {
+                        return apply_rfi_sample_mask(ptcs[i]);
+                    }
+                    const auto rfi_perf_start = BeammapPerfStats::now();
+                    auto summary = apply_rfi_sample_mask(ptcs[i]);
+                    iter_perf.add("rfi_mask.sum", BeammapPerfStats::elapsed(rfi_perf_start));
+                    return summary;
+                }();
                 if (beammap_rfi_mask_enabled) {
                     if (rfi_summary.n_samples_flagged > 0 || rfi_summary.n_det_rejected > 0) {
                         logger->info("beammap rfi mask scan {}: masked {} samples across {}/{} detectors ({} rejected by max_flagged_fraction={})",
@@ -2681,8 +2819,12 @@ void Beammap::run_loop() {
                 if (use_ptc_weights) {
                     logger->info("calculating detector-mode PTC weights for scan {} (mode={})",
                                  ptcs[i].index.data + 1, beammap_detector_weighting_mode);
-                    ptcproc.calc_weights(ptcs[i], calib.apt, telescope);
-                    calib_scans[i] = ptcproc.reset_weights(ptcs[i], calib_scans[i], map_grouping);
+                    time_stage("calc_weights.sum", [&]() {
+                        ptcproc.calc_weights(ptcs[i], calib.apt, telescope);
+                    });
+                    time_stage("reset_weights.sum", [&]() {
+                        calib_scans[i] = ptcproc.reset_weights(ptcs[i], calib_scans[i], map_grouping);
+                    });
                 }
                 else {
                     // Constant weights remain the safest default for bright beammaps.
@@ -2693,49 +2835,64 @@ void Beammap::run_loop() {
             else {
                 // calculate weights
                 logger->info("calculating weights for scan {}", ptcs[i].index.data + 1);
-                ptcproc.calc_weights(ptcs[i], calib.apt, telescope);
+                time_stage("calc_weights.sum", [&]() {
+                    ptcproc.calc_weights(ptcs[i], calib.apt, telescope);
+                });
 
                 // reset weights to median
-                calib_scans[i] = ptcproc.reset_weights(ptcs[i], calib_scans[i], map_grouping);
+                time_stage("reset_weights.sum", [&]() {
+                    calib_scans[i] = ptcproc.reset_weights(ptcs[i], calib_scans[i], map_grouping);
+                });
             }
 
             // write out chunk summary
             if (verbose_mode && current_iter==beammap_tod_output_iter) {
-                logger->debug("writing chunk summary");
-                write_chunk_summary(ptcs[i]);
+                time_stage("chunk_summary.sum", [&]() {
+                    logger->debug("writing chunk summary");
+                    write_chunk_summary(ptcs[i]);
+                });
             }
 
             // calc stats
-            logger->debug("calculating stats");
-            diagnostics.calc_stats(ptcs[i]);
+            time_stage("diagnostics_stats.sum", [&]() {
+                logger->debug("calculating stats");
+                diagnostics.calc_stats(ptcs[i]);
+            });
 
             return 0;
         });
+        if (beammap_performance_timing_enabled) {
+            iter_perf.add("ptc_loop.wall", BeammapPerfStats::elapsed(ptc_loop_perf_start));
+        }
 
         // write ptc timestreams
         if (current_iter == beammap_tod_output_iter) {
             if (!ptcdiag_filename.empty()) {
-                logger->info("writing ptc diagnostics sidecar chunks");
-                for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
-                    ptcproc.append_diag_to_netcdf(ptcs[i], ptcdiag_filename, calib_scans[i], ptcs[i].index.data);
-                    if (!(run_tod_output && !tod_filename.empty() &&
-                          (tod_output_type == "ptc" || tod_output_type == "both"))) {
-                        ptcproc.clear_cached_diagnostics(ptcs[i].index.data);
+                time_stage("ptc_diag_write.wall", [&]() {
+                    logger->info("writing ptc diagnostics sidecar chunks");
+                    for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
+                        ptcproc.append_diag_to_netcdf(ptcs[i], ptcdiag_filename, calib_scans[i], ptcs[i].index.data);
+                        if (!(run_tod_output && !tod_filename.empty() &&
+                              (tod_output_type == "ptc" || tod_output_type == "both"))) {
+                            ptcproc.clear_cached_diagnostics(ptcs[i].index.data);
+                        }
                     }
-                }
+                });
             }
             if (run_tod_output && !tod_filename.empty()) {
                 if (tod_output_type == "ptc" || tod_output_type == "both") {
-                    logger->info("writing processed time chunk");
-                    for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
-                        const auto ptc_scan_row = tod_output_scan_row(i, "ptc");
-                        if (ptc_scan_row < 0) {
-                            continue;
+                    time_stage("ptc_tod_write.wall", [&]() {
+                        logger->info("writing processed time chunk");
+                        for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
+                            const auto ptc_scan_row = tod_output_scan_row(i, "ptc");
+                            if (ptc_scan_row < 0) {
+                                continue;
+                            }
+                            ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc"], map_grouping, telescope.pixel_axes,
+                                                     ptcs[i].pointing_offsets_arcsec.data, calib_scans[i], true, ptc_scan_row);
+                            ptcproc.clear_cached_diagnostics(ptcs[i].index.data);
                         }
-                        ptcproc.append_to_netcdf(ptcs[i], tod_filename["ptc"], map_grouping, telescope.pixel_axes,
-                                                 ptcs[i].pointing_offsets_arcsec.data, calib_scans[i], true, ptc_scan_row);
-                        ptcproc.clear_cached_diagnostics(ptcs[i].index.data);
-                    }
+                    });
                 }
             }
         }
@@ -2744,6 +2901,7 @@ void Beammap::run_loop() {
 
         if (run_mapmaking) {
             auto run_mapmaking_pass = [&](bool update_progress) {
+                const auto map_pass_perf_start = BeammapPerfStats::now();
                 if (map_method == "jinc" &&
                     static_cast<Eigen::Index>(omb.grid_weight.size()) != n_maps) {
                     logger->info("allocating jinc grid_weight maps: current={} expected={}",
@@ -2754,6 +2912,7 @@ void Beammap::run_loop() {
                 }
 
                 // set maps to zero for each pass
+                const auto map_zero_perf_start = BeammapPerfStats::now();
                 for (Eigen::Index i = 0; i < n_maps; ++i) {
                     omb.signal[i].setZero();
                     omb.weight[i].setZero();
@@ -2785,16 +2944,22 @@ void Beammap::run_loop() {
                         }
                     }
                 }
+                if (beammap_performance_timing_enabled) {
+                    iter_perf.add("map_zero.sum", BeammapPerfStats::elapsed(map_zero_perf_start));
+                }
 
                 logger->info("running mapmaking");
 
+                const auto map_accumulate_perf_start = BeammapPerfStats::now();
                 if (map_grouping == "detector") {
                     bool run_omb = true;
                     for (auto &ptc : ptcs) {
                         if (map_method == "naive") {
-                            naive_mm.populate_maps_naive_parallel(ptc, omb, cmb, ptc.map_indices.data,
-                                                                  telescope.pixel_axes, calib.apt,
-                                                                  telescope.d_fsmp, run_omb, run_noise);
+                            time_stage("map_accumulate_scan.sum", [&]() {
+                                naive_mm.populate_maps_naive_parallel(ptc, omb, cmb, ptc.map_indices.data,
+                                                                      telescope.pixel_axes, calib.apt,
+                                                                      telescope.d_fsmp, run_omb, run_noise);
+                            });
                         }
                         else if (map_method == "jinc") {
                             if (logger->should_log(spdlog::level::trace)) {
@@ -2837,9 +3002,11 @@ void Beammap::run_loop() {
                                     array_counts[1],
                                     array_counts[2]);
                             }
-                            jinc_mm.populate_maps_jinc_parallel(ptc, omb, cmb, ptc.map_indices.data,
-                                                                telescope.pixel_axes, calib.apt,
-                                                                telescope.d_fsmp, run_omb, run_noise);
+                            time_stage("map_accumulate_scan.sum", [&]() {
+                                jinc_mm.populate_maps_jinc_parallel(ptc, omb, cmb, ptc.map_indices.data,
+                                                                    telescope.pixel_axes, calib.apt,
+                                                                    telescope.d_fsmp, run_omb, run_noise);
+                            });
                         }
                         if (update_progress) {
                             pb.count(telescope.scan_indices.cols(), 1);
@@ -2850,14 +3017,18 @@ void Beammap::run_loop() {
                     grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
                         bool run_omb = true;
                         if (map_method == "naive") {
-                            naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
-                                                        telescope.pixel_axes, calib.apt, telescope.d_fsmp,
-                                                        run_omb, run_noise);
+                            time_stage("map_accumulate_scan.sum", [&]() {
+                                naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+                                                            telescope.pixel_axes, calib.apt, telescope.d_fsmp,
+                                                            run_omb, run_noise);
+                            });
                         }
                         else if (map_method == "jinc") {
-                            jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
-                                                       telescope.pixel_axes, calib.apt, telescope.d_fsmp,
-                                                       run_omb, run_noise);
+                            time_stage("map_accumulate_scan.sum", [&]() {
+                                jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
+                                                           telescope.pixel_axes, calib.apt, telescope.d_fsmp,
+                                                           run_omb, run_noise);
+                            });
                         }
                         if (update_progress) {
                             pb.count(telescope.scan_indices.cols(), 1);
@@ -2865,15 +3036,27 @@ void Beammap::run_loop() {
                         return 0;
                     });
                 }
+                if (beammap_performance_timing_enabled) {
+                    iter_perf.add("map_accumulate.wall", BeammapPerfStats::elapsed(map_accumulate_perf_start));
+                }
 
                 logger->info("normalizing maps");
-                omb.normalize_maps(false);
+                time_stage("map_normalize.sum", [&]() {
+                    omb.normalize_maps(false);
+                });
+                if (beammap_performance_timing_enabled) {
+                    iter_perf.add("map_pass.wall", BeammapPerfStats::elapsed(map_pass_perf_start));
+                }
             };
 
             run_mapmaking_pass(true);
 
             if (beammap_scan_band_mask_enabled && map_grouping == "detector" && current_iter == 0) {
+                const auto scan_band_perf_start = BeammapPerfStats::now();
                 auto scan_band_summary = apply_scan_band_mask(omb);
+                if (beammap_performance_timing_enabled) {
+                    iter_perf.add("scan_band_mask.wall", BeammapPerfStats::elapsed(scan_band_perf_start));
+                }
                 if (scan_band_summary.n_samples_flagged > 0) {
                     logger->info(
                         "beammap scan-band mask summary: flagged {} samples in {} rows across {} detectors ({} rejected by max_flagged_fraction={}); rebuilding maps",
@@ -2916,10 +3099,13 @@ void Beammap::run_loop() {
             logger->info("fitting maps");
             logger->info("beammap fit diagnostics enabled");
             if (beammap_priors_enabled && beammap_soft_priors_loaded && map_grouping == "detector") {
-                update_prior_frame_estimates();
+                time_stage("fit_prior_update.wall", [&]() {
+                    update_prior_frame_estimates();
+                });
             }
             // Run beammap fits sequentially. This avoids allocator/covariance instability
             // observed with parallel Ceres fits on some systems.
+            const auto fit_maps_perf_start = BeammapPerfStats::now();
             for (Eigen::Index i = 0; i < n_maps; ++i) {
                 logger->trace("beammap fit checkpoint: map={} begin converged={}", i, converged(i));
 
@@ -3004,7 +3190,16 @@ void Beammap::run_loop() {
                                 Eigen::Index peak_row = -1;
                                 Eigen::Index peak_col = -1;
                                 double peak_snr = -std::numeric_limits<double>::infinity();
-                                if (find_map_weighted_peak(i, peak_row, peak_col, peak_snr) &&
+                                bool found_weighted_peak = false;
+                                if (beammap_performance_timing_enabled) {
+                                    const auto peak_perf_start = BeammapPerfStats::now();
+                                    found_weighted_peak = find_map_weighted_peak(i, peak_row, peak_col, peak_snr);
+                                    iter_perf.add("fit_weighted_peak.sum", BeammapPerfStats::elapsed(peak_perf_start));
+                                }
+                                else {
+                                    found_weighted_peak = find_map_weighted_peak(i, peak_row, peak_col, peak_snr);
+                                }
+                                if (found_weighted_peak &&
                                     peak_row >= 0 && peak_col >= 0 && std::isfinite(peak_snr)) {
                                     const double prev_snr = seed_s * std::sqrt(seed_w);
                                     const double dr = static_cast<double>(peak_row) - prev_row;
@@ -3081,7 +3276,16 @@ void Beammap::run_loop() {
                         }
                     }
                     if (!init_from_prev && can_try_prior) {
-                        if (choose_prior_guided_init(i, init_row, init_col)) {
+                        bool prior_init_ok = false;
+                        if (beammap_performance_timing_enabled) {
+                            const auto prior_init_perf_start = BeammapPerfStats::now();
+                            prior_init_ok = choose_prior_guided_init(i, init_row, init_col);
+                            iter_perf.add("fit_prior_init.sum", BeammapPerfStats::elapsed(prior_init_perf_start));
+                        }
+                        else {
+                            prior_init_ok = choose_prior_guided_init(i, init_row, init_col);
+                        }
+                        if (prior_init_ok) {
                             init_from_prior = true;
                             init_mode = FitInitMode::Prior;
                             iter_init_prior++;
@@ -3128,9 +3332,13 @@ void Beammap::run_loop() {
                     // fit the maps
                     logger->trace("beammap fit checkpoint: map={} call fit_to_gaussian", i);
                     engine_utils::mapFitter::FitDiagnostics fit_diag;
+                    const auto gaussian_fit_perf_start = BeammapPerfStats::now();
                     auto [det_params, det_perror, good_fit] =
                         map_fitter.fit_to_gaussian<engine_utils::mapFitter::beammap>(omb.signal[i], omb.weight[i],
                                                                                      init_fwhm, init_row, init_col, &fit_diag);
+                    if (beammap_performance_timing_enabled) {
+                        iter_perf.add("fit_gaussian.sum", BeammapPerfStats::elapsed(gaussian_fit_perf_start));
+                    }
                     logger->trace("beammap fit checkpoint: map={} fit_to_gaussian returned good_fit={}", i, good_fit);
 
                     if (!(det_params.array().isFinite().all() && det_perror.array().isFinite().all())) {
@@ -3248,6 +3456,9 @@ void Beammap::run_loop() {
 
                 logger->trace("beammap fit checkpoint: map={} end good_fit={}", i, good_fits(i));
             }
+            if (beammap_performance_timing_enabled) {
+                iter_perf.add("fit_maps.wall", BeammapPerfStats::elapsed(fit_maps_perf_start));
+            }
 
             logger->info("beammap init summary (iter {}): previous={} prior={} blind={} skipped={} prev_rejected_by_peak={}",
                          current_iter, iter_init_prev, iter_init_prior, iter_init_blind, iter_init_skip,
@@ -3283,6 +3494,7 @@ void Beammap::run_loop() {
         }
 
         // increment loop iteration
+        const auto convergence_perf_start = BeammapPerfStats::now();
         current_iter++;
 
         if (current_iter < beammap_iter_max) {
@@ -3341,6 +3553,15 @@ void Beammap::run_loop() {
             logger->info("max iteration reached");
             keep_going = false;
         }
+        if (beammap_performance_timing_enabled) {
+            iter_perf.add("convergence.wall", BeammapPerfStats::elapsed(convergence_perf_start));
+            iter_perf.add("iter.wall", BeammapPerfStats::elapsed(iter_perf_start));
+            beammap_perf_total.merge_from(iter_perf);
+            log_beammap_perf("iter " + std::to_string(iter_index), iter_perf);
+        }
+    }
+    if (beammap_performance_timing_enabled) {
+        log_beammap_perf("cumulative", beammap_perf_total);
     }
 }
 
@@ -4253,6 +4474,8 @@ void Beammap::log_final_network_qc_summary() {
 
 template <mapmaking::MapType map_type>
 void Beammap::output() {
+    const auto output_perf_start = BeammapPerfStats::now();
+
     // pointer to map buffer
     mapmaking::MapBuffer* mb = nullptr;
     // pointer to data file fits vector
@@ -5112,5 +5335,10 @@ void Beammap::output() {
             logger->debug("writing map diagnostics");
             write_mapdiag<map_type>(mb, dir_name);
         }
+    }
+    if (beammap_performance_timing_enabled) {
+        logger->info("beammap perf output map_type={} wall_s={:.3f}",
+                     static_cast<int>(map_type),
+                     BeammapPerfStats::elapsed(output_perf_start) / 1000.0);
     }
 }
