@@ -185,7 +185,7 @@ void MapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::ve
     wcs.cunit.insert(wcs.cunit.end(),{"Hz",""});
 }
 
-void MapBuffer::normalize_maps() {
+void MapBuffer::normalize_maps(bool release_grid_weight) {
     tula::logging::scoped_timeit timer{"MapBuffer::normalize_maps"};
 
     // vectors for maps
@@ -273,7 +273,7 @@ void MapBuffer::normalize_maps() {
         return 0;
     });
 
-    if (use_grid_weight) {
+    if (use_grid_weight && release_grid_weight) {
         std::vector<Eigen::MatrixXd>().swap(grid_weight);
     }
 }

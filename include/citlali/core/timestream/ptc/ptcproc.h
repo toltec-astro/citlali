@@ -1227,9 +1227,9 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                             tula::logging::scoped_timeit corr_group_timer{"PTCProc::clean corr_nw get_groups"};
                             corr_groups = cleaner_local.get_corr_groups(in_scans_block, masked_flags, apt_flags);
                         }
-                        logger->info("cleaning corr_nw {} groups={} grouped={} ungrouped={} candidates={} used={} step={}",
-                                     key, corr_groups.n_groups_final, corr_groups.n_det_grouped, corr_groups.n_det_ungrouped,
-                                     corr_groups.n_det_candidates, corr_groups.n_det_used, corr_groups.sample_step);
+                        logger->trace("cleaning corr_nw {} groups={} grouped={} ungrouped={} candidates={} used={} step={}",
+                                      key, corr_groups.n_groups_final, corr_groups.n_det_grouped, corr_groups.n_det_ungrouped,
+                                      corr_groups.n_det_candidates, corr_groups.n_det_used, corr_groups.sample_step);
                         corr_summary_scan.push_back(CorrNWDiagSummary{
                             .nw = nw_index,
                             .n_det_input = corr_groups.n_det_input,
@@ -2201,7 +2201,7 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         summaries.push_back(summary);
 
         if (!candidate_clusters.empty()) {
-            logger->info(
+            logger->trace(
                 "PTC second pass scan {} nw {} candidate_clusters={} accepted_clusters={} busy_veto={} newly_flagged_fraction={} top_candidate_peak_score={} top_candidate_n_detectors={}",
                 static_cast<long long>(in.index.data) + 1, static_cast<long long>(nw_index),
                 static_cast<long long>(summary.n_candidate_clusters),
@@ -2274,7 +2274,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
             const double source_mask_radius_rad = mask_radius_arcsec * ASEC_TO_RAD;
 
             if (use_source_weight_mask) {
-                logger->info("calculating full weights with source mask (radius {} arcsec) for scan {}",
+                logger->trace("calculating full weights with source mask (radius {} arcsec) for scan {}",
                              mask_radius_arcsec, scan_index_1based);
             }
 
@@ -2806,7 +2806,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                 .penalty_factor = penalty_factor,
             });
 
-            logger->info(
+            logger->trace(
                 "weight corr_penalty scan={} nw={} dets_in={} candidates={} used={} weighted={} "
                 "pair_med_abs_corr={} cm_el_abs_corr={} cm_low_mid_ratio={} severity={} factor={}",
                 scan_index_1based, nw, n_det_group, n_candidates, n_used, n_weighted,
@@ -3043,7 +3043,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
                 }
                 j++;
             }
-            logger->info(
+            logger->trace(
                 "weight audit call={} scan={} array={} idx_range=[{}, {}) "
                 "group_dets={} apt_unflagged={} apt_flagged={} "
                 "positive_unflagged={} nonpositive_unflagged={} nonfinite_weights={} "
@@ -3052,7 +3052,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
                 n_group_dets, n_unflagged, n_group_dets - n_unflagged, n_good_dets,
                 n_nonpositive_unflagged, n_nonfinite_weights, med_wt, lower_limit,
                 upper_limit);
-            logger->info(
+            logger->trace(
                 "weight flags call={} scan={} array={} outlier_resets={} "
                 "below_limit={}/{} above_limit={}/{}",
                 reset_call_id, scan_index_1based, key, outliers, n_dets_low,

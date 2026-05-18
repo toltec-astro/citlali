@@ -93,13 +93,9 @@ auto mapFitter::ceres_fit(const Model &model,
                           const Eigen::DenseBase<Derived> &limits,
                           bool use_ceres_covariance) {
     auto flush_logger = [&]() {
-        if (logger) {
+        if (logger && logger->should_log(spdlog::level::trace)) {
             logger->flush();
         }
-    };
-    auto log_and_flush_info = [&](const std::string &msg) {
-        logger->info(msg);
-        flush_logger();
     };
     auto log_and_flush_warn = [&](const std::string &msg) {
         logger->warn(msg);
@@ -148,7 +144,7 @@ auto mapFitter::ceres_fit(const Model &model,
     const auto z_stats = matrix_stats(z_data);
     const auto sigma_stats = matrix_stats(sigma);
 
-    logger->info(
+    logger->trace(
         "ceres_fit preflight: xy={}x{} z={}x{} sigma={}x{} values={} expected={} params={} model_params={} limits={}x{} "
         "ptrs xy={} z={} sigma={} init={} limits={} finite xy={}/{} z={}/{} sigma={}/{} sigma_pos={} "
         "ranges xy=[{}, {}] z=[{}, {}] sigma=[{}, {}]",
@@ -200,22 +196,22 @@ auto mapFitter::ceres_fit(const Model &model,
     fitter->ydata = &_y;
     fitter->sigma = &_s;
 
-    logger->info("ceres_fit begin: values={} params={} fit_angle={} sigma_nonzero={}/{}",
+    logger->trace("ceres_fit begin: values={} params={} fit_angle={} sigma_nonzero={}/{}",
                  z_data.size(), init_params.size(), fit_angle,
                  (_s.array() > 0).count(), _s.size());
     flush_logger();
 
     // define cost function
-    logger->info("ceres_fit checkpoint: constructing AutoDiffCostFunction values={}", fitter->values());
+    logger->trace("ceres_fit checkpoint: constructing AutoDiffCostFunction values={}", fitter->values());
     flush_logger();
     CostFunction* cost_function =
         new AutoDiffCostFunction<Fitter, Fitter::ValuesAtCompileTime, Fitter::InputsAtCompileTime>(fitter, fitter->values());
-    logger->info("ceres_fit checkpoint: AutoDiffCostFunction constructed ptr={}", static_cast<const void*>(cost_function));
+    logger->trace("ceres_fit checkpoint: AutoDiffCostFunction constructed ptr={}", static_cast<const void*>(cost_function));
     flush_logger();
 
     // parameter vector
     Eigen::VectorXd params(init_params);
-    logger->info("ceres_fit checkpoint: params copied size={} init=[{:.6g}, {:.6g}, {:.6g}, {:.6g}, {:.6g}, {:.6g}]",
+    logger->trace("ceres_fit checkpoint: params copied size={} init=[{:.6g}, {:.6g}, {:.6g}, {:.6g}, {:.6g}, {:.6g}]",
                  params.size(),
                  params.size() > 0 ? params(0) : 0.0,
                  params.size() > 1 ? params(1) : 0.0,
@@ -225,33 +221,33 @@ auto mapFitter::ceres_fit(const Model &model,
                  params.size() > 5 ? params(5) : 0.0);
     flush_logger();
     for (int i = 0; i < limits.rows(); ++i) {
-        logger->info("ceres_fit bounds preflight[{}]=[{}, {}] init={}",
+        logger->trace("ceres_fit bounds preflight[{}]=[{}, {}] init={}",
                      i, limits(i, 0), limits(i, 1), params(i));
     }
     flush_logger();
-    logger->info("ceres_fit checkpoint: Problem construct start");
+    logger->trace("ceres_fit checkpoint: Problem construct start");
     flush_logger();
     ceres::Problem problem;
-    logger->info("ceres_fit checkpoint: Problem construct done ptr={}", static_cast<const void*>(&problem));
+    logger->trace("ceres_fit checkpoint: Problem construct done ptr={}", static_cast<const void*>(&problem));
     flush_logger();
 
     // including CauchyLoss(0.5) leads to large covariances.
-    logger->info("ceres_fit checkpoint: AddResidualBlock start");
+    logger->trace("ceres_fit checkpoint: AddResidualBlock start");
     flush_logger();
     problem.AddResidualBlock(cost_function, nullptr, params.data());
-    logger->info("ceres_fit checkpoint: AddResidualBlock done");
+    logger->trace("ceres_fit checkpoint: AddResidualBlock done");
     flush_logger();
     //problem->AddResidualBlock(cost_function, new ceres::CauchyLoss(0.5), params.data());
 
     // set limits
-    logger->info("ceres_fit checkpoint: SetParameterBounds start rows={}", limits.rows());
+    logger->trace("ceres_fit checkpoint: SetParameterBounds start rows={}", limits.rows());
     flush_logger();
     for (int i=0; i<limits.rows(); ++i) {
-        logger->debug("ceres_fit bounds[{}]=[{}, {}]", i, limits(i,0), limits(i,1));
+        logger->trace("ceres_fit bounds[{}]=[{}, {}]", i, limits(i,0), limits(i,1));
         problem.SetParameterLowerBound(params.data(), i, limits(i,0));
         problem.SetParameterUpperBound(params.data(), i, limits(i,1));
     }
-    logger->info("ceres_fit checkpoint: SetParameterBounds done");
+    logger->trace("ceres_fit checkpoint: SetParameterBounds done");
     flush_logger();
 
     // vector to store indices of parameters to keep constant
@@ -260,19 +256,19 @@ auto mapFitter::ceres_fit(const Model &model,
         sspv.push_back(limits.rows()-1);
         // mark parameter as constant
         if (sspv.size() > 0 ){
-            logger->info("ceres_fit checkpoint: SubsetParameterization start constant_index={}", sspv.front());
+            logger->trace("ceres_fit checkpoint: SubsetParameterization start constant_index={}", sspv.front());
             flush_logger();
             ceres::SubsetParameterization *pcssp
                     = new ceres::SubsetParameterization(limits.rows(), sspv);
-            logger->info("ceres_fit checkpoint: SubsetParameterization constructed ptr={}", static_cast<const void*>(pcssp));
+            logger->trace("ceres_fit checkpoint: SubsetParameterization constructed ptr={}", static_cast<const void*>(pcssp));
             flush_logger();
             problem.SetParameterization(params.data(), pcssp);
-            logger->info("ceres_fit angle fixed via subset parameterization");
+            logger->trace("ceres_fit angle fixed via subset parameterization");
             flush_logger();
         }
     }
 
-    logger->info("ceres_fit checkpoint: residual pre-eval start values={}", fitter->values());
+    logger->trace("ceres_fit checkpoint: residual pre-eval start values={}", fitter->values());
     flush_logger();
     std::vector<double> residuals(static_cast<std::size_t>(fitter->values()), 0.0);
     const bool residual_ok = (*fitter)(params.data(), residuals.data());
@@ -286,7 +282,7 @@ auto mapFitter::ceres_fit(const Model &model,
             residual_sumsq += r * r;
         }
     }
-    logger->info("ceres_fit checkpoint: residual pre-eval done ok={} finite={}/{} abs_max={} rms={}",
+    logger->trace("ceres_fit checkpoint: residual pre-eval done ok={} finite={}/{} abs_max={} rms={}",
                  residual_ok, residual_finite, residuals.size(), residual_abs_max,
                  residual_finite > 0 ? std::sqrt(residual_sumsq / static_cast<double>(residual_finite)) :
                      std::numeric_limits<double>::quiet_NaN());
@@ -311,12 +307,14 @@ auto mapFitter::ceres_fit(const Model &model,
     // output info
     Solver::Summary summary;
     // run the fit
-    logger->info("ceres_fit solve start");
+    logger->trace("ceres_fit solve start");
     flush_logger();
     Solve(options, &problem, &summary);
-    logger->info("ceres_fit solve done: usable={} brief={}",
-                 summary.IsSolutionUsable(), summary.BriefReport());
-    flush_logger();
+    if (logger->should_log(spdlog::level::trace)) {
+        logger->trace("ceres_fit solve done: usable={} brief={}",
+                      summary.IsSolutionUsable(), summary.BriefReport());
+        flush_logger();
+    }
     if (!summary.IsSolutionUsable()) {
         logger->warn("ceres_fit full report:\n{}", summary.FullReport());
     }
@@ -341,9 +339,9 @@ auto mapFitter::ceres_fit(const Model &model,
             // populate covariance block
             covariance_blocks.push_back(std::make_pair(params.data(), params.data()));
             // compute covariance
-            logger->info("ceres_fit covariance start");
+            logger->trace("ceres_fit covariance start");
             auto covariance_result = covariance.Compute(covariance_blocks, &problem);
-            logger->info("ceres_fit covariance done: success={}", covariance_result);
+            logger->trace("ceres_fit covariance done: success={}", covariance_result);
 
             // if covariance calculation suceeded
             if (covariance_result) {
@@ -360,7 +358,7 @@ auto mapFitter::ceres_fit(const Model &model,
             }
         } else {
             // Fallback: linearized covariance from J^T J at the solution.
-            logger->info("ceres_fit covariance disabled; using linearized uncertainty estimate");
+            logger->trace("ceres_fit covariance disabled; using linearized uncertainty estimate");
             ceres::Problem::EvaluateOptions eval_options;
             eval_options.apply_loss_function = false;
             eval_options.num_threads = 1;

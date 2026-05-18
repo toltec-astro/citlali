@@ -354,6 +354,23 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
 
+    const bool detector_grouping = omb.map_grouping == "detector";
+    Eigen::VectorXd shared_omb_irow, shared_omb_icol;
+    Eigen::VectorXd shared_cmb_irow, shared_cmb_icol;
+    if (detector_grouping) {
+        // calc_det_pointing intentionally ignores detector offsets for detector
+        // maps, so every detector in a scan shares the same pixel trajectory.
+        auto [lat, lon] = engine_utils::calc_det_pointing(
+            in.tel_data.data, 0.0, 0.0, pixel_axes, in.pointing_offsets_arcsec.data,
+            omb.map_grouping);
+        shared_omb_irow = lat.array() / omb.pixel_size_rad + (omb.n_rows - 1) / 2.;
+        shared_omb_icol = lon.array() / omb.pixel_size_rad + (omb.n_cols - 1) / 2.;
+        if (!cmb.noise.empty()) {
+            shared_cmb_irow = lat.array() / cmb.pixel_size_rad + (cmb.n_rows - 1) / 2.;
+            shared_cmb_icol = lon.array() / cmb.pixel_size_rad + (cmb.n_cols - 1) / 2.;
+        }
+    }
+
     // pointer to map buffer with noise maps
     map_buffer_t *nmb = nullptr;
     if (run_noise) {
@@ -521,19 +538,30 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             Eigen::Index mat_rows_center = (mat_rows - 1.)/2.;
             Eigen::Index mat_cols_center = (mat_cols - 1.)/2.;
 
-            // get detector pointing
-            auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
-                                                              pixel_axes, in.pointing_offsets_arcsec.data, omb.map_grouping);
+            Eigen::VectorXd omb_irow_local, omb_icol_local;
+            Eigen::VectorXd cmb_irow_local, cmb_icol_local;
+            const Eigen::VectorXd *omb_irow = &shared_omb_irow;
+            const Eigen::VectorXd *omb_icol = &shared_omb_icol;
+            const Eigen::VectorXd *cmb_irow = &shared_cmb_irow;
+            const Eigen::VectorXd *cmb_icol = &shared_cmb_icol;
+            if (!detector_grouping) {
+                // get detector pointing
+                auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
+                                                                  pixel_axes, in.pointing_offsets_arcsec.data, omb.map_grouping);
 
-            // get map buffer row and col indices for lat and lon vectors
-            Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows - 1)/2.;
-            Eigen::VectorXd omb_icol = lon.array()/omb.pixel_size_rad + (omb.n_cols - 1)/2.;
+                // get map buffer row and col indices for lat and lon vectors
+                omb_irow_local = lat.array()/omb.pixel_size_rad + (omb.n_rows - 1)/2.;
+                omb_icol_local = lon.array()/omb.pixel_size_rad + (omb.n_cols - 1)/2.;
+                omb_irow = &omb_irow_local;
+                omb_icol = &omb_icol_local;
 
-            Eigen::VectorXd cmb_irow, cmb_icol;
-            if (use_cmb) {
-                // get coadded map buffer row and col indices for lat and lon vectors
-                cmb_irow = lat.array()/cmb.pixel_size_rad + (cmb.n_rows - 1)/2.;
-                cmb_icol = lon.array()/cmb.pixel_size_rad + (cmb.n_cols - 1)/2.;
+                if (use_cmb) {
+                    // get coadded map buffer row and col indices for lat and lon vectors
+                    cmb_irow_local = lat.array()/cmb.pixel_size_rad + (cmb.n_rows - 1)/2.;
+                    cmb_icol_local = lon.array()/cmb.pixel_size_rad + (cmb.n_cols - 1)/2.;
+                    cmb_irow = &cmb_irow_local;
+                    cmb_icol = &cmb_icol_local;
+                }
             }
 
             // signal map value
@@ -572,8 +600,8 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             for (Eigen::Index j=0; j<n_pts; ++j) {
                 // check if sample is flagged, ignore if so
                 if (!in.flags.data(j,i)) {
-                    Eigen::Index omb_ir = static_cast<Eigen::Index>(std::llround(omb_irow(j)));
-                    Eigen::Index omb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
+                    Eigen::Index omb_ir = static_cast<Eigen::Index>(std::llround((*omb_irow)(j)));
+                    Eigen::Index omb_ic = static_cast<Eigen::Index>(std::llround((*omb_icol)(j)));
                     int subpix_idx = 0;
                     if (use_subpix) {
                         auto subpix_index = [&](double d) {
@@ -586,8 +614,8 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             }
                             return idx;
                         };
-                        double drow = omb_irow(j) - static_cast<double>(omb_ir);
-                        double dcol = omb_icol(j) - static_cast<double>(omb_ic);
+                        double drow = (*omb_irow)(j) - static_cast<double>(omb_ir);
+                        double dcol = (*omb_icol)(j) - static_cast<double>(omb_ic);
                         int sr = subpix_index(drow);
                         int sc = subpix_index(dcol);
                         subpix_idx = sr * subpixel_n + sc;
@@ -673,14 +701,14 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                     if (run_noise && !use_detector_noise_template) {
                         // if coaddition is enabled
                         if (use_cmb) {
-                            nmb_ir = static_cast<Eigen::Index>(std::llround(cmb_irow(j)));
-                            nmb_ic = static_cast<Eigen::Index>(std::llround(cmb_icol(j)));
+                            nmb_ir = static_cast<Eigen::Index>(std::llround((*cmb_irow)(j)));
+                            nmb_ic = static_cast<Eigen::Index>(std::llround((*cmb_icol)(j)));
                         }
 
                         // else make noise maps for obs
                         else {
-                            nmb_ir = static_cast<Eigen::Index>(std::llround(omb_irow(j)));
-                            nmb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
+                            nmb_ir = static_cast<Eigen::Index>(std::llround((*omb_irow)(j)));
+                            nmb_ic = static_cast<Eigen::Index>(std::llround((*omb_icol)(j)));
                         }
 
                         // make sure pixel is in the map
@@ -697,10 +725,10 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                     }
                                     return idx;
                                 };
-                                double drow = use_cmb ? (cmb_irow(j) - static_cast<double>(nmb_ir))
-                                                      : (omb_irow(j) - static_cast<double>(nmb_ir));
-                                double dcol = use_cmb ? (cmb_icol(j) - static_cast<double>(nmb_ic))
-                                                      : (omb_icol(j) - static_cast<double>(nmb_ic));
+                                double drow = use_cmb ? ((*cmb_irow)(j) - static_cast<double>(nmb_ir))
+                                                      : ((*omb_irow)(j) - static_cast<double>(nmb_ir));
+                                double dcol = use_cmb ? ((*cmb_icol)(j) - static_cast<double>(nmb_ic))
+                                                      : ((*omb_icol)(j) - static_cast<double>(nmb_ic));
                                 int sr = subpix_index(drow);
                                 int sc = subpix_index(dcol);
                                 nmb_subpix_idx = sr * subpixel_n + sc;
@@ -860,6 +888,23 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
     // dimensions of data
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
+
+    const bool detector_grouping = omb.map_grouping == "detector";
+    Eigen::VectorXd shared_omb_irow, shared_omb_icol;
+    Eigen::VectorXd shared_cmb_irow, shared_cmb_icol;
+    if (detector_grouping) {
+        // calc_det_pointing intentionally ignores detector offsets for detector
+        // maps, so every detector in a scan shares the same pixel trajectory.
+        auto [lat, lon] = engine_utils::calc_det_pointing(
+            in.tel_data.data, 0.0, 0.0, pixel_axes, in.pointing_offsets_arcsec.data,
+            omb.map_grouping);
+        shared_omb_irow = lat.array() / omb.pixel_size_rad + (omb.n_rows - 1) / 2.;
+        shared_omb_icol = lon.array() / omb.pixel_size_rad + (omb.n_cols - 1) / 2.;
+        if (!cmb.noise.empty()) {
+            shared_cmb_irow = lat.array() / cmb.pixel_size_rad + (cmb.n_rows - 1) / 2.;
+            shared_cmb_icol = lon.array() / cmb.pixel_size_rad + (cmb.n_cols - 1) / 2.;
+        }
+    }
 
     // pointer to map buffer with noise maps
     map_buffer_t *nmb = nullptr;
@@ -1085,19 +1130,30 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
             Eigen::Index mat_rows_center = (mat_rows - 1.)/2.;
             Eigen::Index mat_cols_center = (mat_cols - 1.)/2.;
 
-            // get detector pointing
-            auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
-                                                              pixel_axes, in.pointing_offsets_arcsec.data, omb.map_grouping);
+            Eigen::VectorXd omb_irow_local, omb_icol_local;
+            Eigen::VectorXd cmb_irow_local, cmb_icol_local;
+            const Eigen::VectorXd *omb_irow = &shared_omb_irow;
+            const Eigen::VectorXd *omb_icol = &shared_omb_icol;
+            const Eigen::VectorXd *cmb_irow = &shared_cmb_irow;
+            const Eigen::VectorXd *cmb_icol = &shared_cmb_icol;
+            if (!detector_grouping) {
+                // get detector pointing
+                auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
+                                                                  pixel_axes, in.pointing_offsets_arcsec.data, omb.map_grouping);
 
-            // get map buffer row and col indices for lat and lon vectors
-            Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows - 1)/2.;
-            Eigen::VectorXd omb_icol = lon.array()/omb.pixel_size_rad + (omb.n_cols - 1)/2.;
+                // get map buffer row and col indices for lat and lon vectors
+                omb_irow_local = lat.array()/omb.pixel_size_rad + (omb.n_rows - 1)/2.;
+                omb_icol_local = lon.array()/omb.pixel_size_rad + (omb.n_cols - 1)/2.;
+                omb_irow = &omb_irow_local;
+                omb_icol = &omb_icol_local;
 
-            Eigen::VectorXd cmb_irow, cmb_icol;
-            if (use_cmb) {
-                // get coadded map buffer row and col indices for lat and lon vectors
-                cmb_irow = lat.array()/cmb.pixel_size_rad + (cmb.n_rows - 1)/2.;
-                cmb_icol = lon.array()/cmb.pixel_size_rad + (cmb.n_cols - 1)/2.;
+                if (use_cmb) {
+                    // get coadded map buffer row and col indices for lat and lon vectors
+                    cmb_irow_local = lat.array()/cmb.pixel_size_rad + (cmb.n_rows - 1)/2.;
+                    cmb_icol_local = lon.array()/cmb.pixel_size_rad + (cmb.n_cols - 1)/2.;
+                    cmb_irow = &cmb_irow_local;
+                    cmb_icol = &cmb_icol_local;
+                }
             }
 
             // signal map value
@@ -1138,8 +1194,8 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
             for (Eigen::Index j=0; j<n_pts; ++j) {
                 // check if sample is flagged, ignore if so
                 if (!in.flags.data(j,i)) {
-                    Eigen::Index omb_ir = static_cast<Eigen::Index>(std::llround(omb_irow(j)));
-                    Eigen::Index omb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
+                    Eigen::Index omb_ir = static_cast<Eigen::Index>(std::llround((*omb_irow)(j)));
+                    Eigen::Index omb_ic = static_cast<Eigen::Index>(std::llround((*omb_icol)(j)));
                     int subpix_idx = 0;
                     if (use_subpix) {
                         auto subpix_index = [&](double d) {
@@ -1152,8 +1208,8 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                             }
                             return idx;
                         };
-                        double drow = omb_irow(j) - static_cast<double>(omb_ir);
-                        double dcol = omb_icol(j) - static_cast<double>(omb_ic);
+                        double drow = (*omb_irow)(j) - static_cast<double>(omb_ir);
+                        double dcol = (*omb_icol)(j) - static_cast<double>(omb_ic);
                         int sr = subpix_index(drow);
                         int sc = subpix_index(dcol);
                         subpix_idx = sr * subpixel_n + sc;
@@ -1253,14 +1309,14 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                     if (run_noise && !use_detector_noise_template) {
                         // if coaddition is enabled
                         if (use_cmb) {
-                            nmb_ir = static_cast<Eigen::Index>(std::llround(cmb_irow(j)));
-                            nmb_ic = static_cast<Eigen::Index>(std::llround(cmb_icol(j)));
+                            nmb_ir = static_cast<Eigen::Index>(std::llround((*cmb_irow)(j)));
+                            nmb_ic = static_cast<Eigen::Index>(std::llround((*cmb_icol)(j)));
                         }
 
                         // else make noise maps for obs
                         else {
-                            nmb_ir = static_cast<Eigen::Index>(std::llround(omb_irow(j)));
-                            nmb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
+                            nmb_ir = static_cast<Eigen::Index>(std::llround((*omb_irow)(j)));
+                            nmb_ic = static_cast<Eigen::Index>(std::llround((*omb_icol)(j)));
                         }
 
                         // make sure pixel is in the map
@@ -1277,10 +1333,10 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                                     }
                                     return idx;
                                 };
-                                double drow = use_cmb ? (cmb_irow(j) - static_cast<double>(nmb_ir))
-                                                      : (omb_irow(j) - static_cast<double>(nmb_ir));
-                                double dcol = use_cmb ? (cmb_icol(j) - static_cast<double>(nmb_ic))
-                                                      : (omb_icol(j) - static_cast<double>(nmb_ic));
+                                double drow = use_cmb ? ((*cmb_irow)(j) - static_cast<double>(nmb_ir))
+                                                      : ((*omb_irow)(j) - static_cast<double>(nmb_ir));
+                                double dcol = use_cmb ? ((*cmb_icol)(j) - static_cast<double>(nmb_ic))
+                                                      : ((*omb_icol)(j) - static_cast<double>(nmb_ic));
                                 int sr = subpix_index(drow);
                                 int sc = subpix_index(dcol);
                                 nmb_subpix_idx = sr * subpixel_n + sc;

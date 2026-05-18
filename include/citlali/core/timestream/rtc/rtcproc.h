@@ -127,6 +127,7 @@ public:
         bool pre_filter_enabled = true;
         bool post_filter_enabled = false;
         bool post_filter_apply_shared_notches = false;
+        bool post_filter_apply_detector_notches = false;
         Eigen::Index post_filter_apply_iterations = 1;
         double post_filter_line_min_hz = std::numeric_limits<double>::quiet_NaN();
         double post_filter_line_max_hz = std::numeric_limits<double>::quiet_NaN();
@@ -139,6 +140,12 @@ public:
         double apply_max_width_hz = 1.50;
         Eigen::Index apply_max_notches = 3;
         double apply_cluster_tol_hz = 0.25;
+        double detector_notch_min_prominence = 8.0;
+        double detector_notch_min_line_power_frac = 0.0;
+        Eigen::Index detector_notch_max_notches = 3;
+        double detector_notch_width_scale = 1.0;
+        double detector_notch_min_width_hz = 0.25;
+        double detector_notch_max_width_hz = 1.50;
     };
     RTCLineAuditOptions line_audit;
 
@@ -226,6 +233,13 @@ public:
         double impulsive_event_score = std::numeric_limits<double>::quiet_NaN();
         int impulsive_event_sample = kTransientFillInt;
         int impulsive_event_kind = kTransientFillInt;
+        int detector_notch_n_applied = 0;
+        double detector_notch_primary_freq_hz = std::numeric_limits<double>::quiet_NaN();
+        double detector_notch_primary_width_hz = std::numeric_limits<double>::quiet_NaN();
+        double detector_notch_primary_prominence = std::numeric_limits<double>::quiet_NaN();
+        double detector_notch_primary_line_power_frac = std::numeric_limits<double>::quiet_NaN();
+        double detector_notch_rms_before = std::numeric_limits<double>::quiet_NaN();
+        double detector_notch_rms_after = std::numeric_limits<double>::quiet_NaN();
     };
 
     struct RTCNetworkDiagSummary {
@@ -364,6 +378,11 @@ public:
     Eigen::Index apply_rtc_line_audit_shared_notches(tc_t &, double fs_hz,
                                                      const RTCLineAuditOptions &,
                                                      bool post_filter_stage = false);
+
+    // optionally apply detector-local zero-phase notches after the shared-line pass
+    template <typename tc_t>
+    Eigen::Index apply_rtc_line_audit_detector_notches(tc_t &, double fs_hz,
+                                                       const RTCLineAuditOptions &);
 
     // configure and apply a standard flag guard around filtered scan edges
     void configure_filter_edge_guard(double fs_hz);
@@ -724,6 +743,10 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             get_config_value(config, line_audit.post_filter_apply_shared_notches, missing_keys, invalid_keys,
                              std::tuple{"timestream","raw_time_chunk","line_audit","post_filter_apply_shared_notches"});
         }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","post_filter_apply_detector_notches"})) {
+            get_config_value(config, line_audit.post_filter_apply_detector_notches, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","post_filter_apply_detector_notches"});
+        }
         if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","post_filter_apply_iterations"})) {
             get_config_value(config, line_audit.post_filter_apply_iterations, missing_keys, invalid_keys,
                              std::tuple{"timestream","raw_time_chunk","line_audit","post_filter_apply_iterations"},
@@ -783,6 +806,36 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                              std::tuple{"timestream","raw_time_chunk","line_audit","apply_cluster_tol_hz"},
                              {}, {0.0});
         }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","detector_notch_min_prominence"})) {
+            get_config_value(config, line_audit.detector_notch_min_prominence, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","detector_notch_min_prominence"},
+                             {}, {1.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","detector_notch_min_line_power_frac"})) {
+            get_config_value(config, line_audit.detector_notch_min_line_power_frac, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","detector_notch_min_line_power_frac"},
+                             {}, {0.0}, {1.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","detector_notch_max_notches"})) {
+            get_config_value(config, line_audit.detector_notch_max_notches, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","detector_notch_max_notches"},
+                             {}, {0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","detector_notch_width_scale"})) {
+            get_config_value(config, line_audit.detector_notch_width_scale, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","detector_notch_width_scale"},
+                             {}, {0.01});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","detector_notch_min_width_hz"})) {
+            get_config_value(config, line_audit.detector_notch_min_width_hz, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","detector_notch_min_width_hz"},
+                             {}, {0.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","detector_notch_max_width_hz"})) {
+            get_config_value(config, line_audit.detector_notch_max_width_hz, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","detector_notch_max_width_hz"},
+                             {}, {0.0});
+        }
         if (line_audit.apply_max_width_hz < line_audit.apply_min_width_hz) {
             logger->error(
                 "timestream.raw_time_chunk.line_audit.apply_max_width_hz ({}) must be >= apply_min_width_hz ({})",
@@ -790,8 +843,15 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 line_audit.apply_min_width_hz);
             std::exit(EXIT_FAILURE);
         }
+        if (line_audit.detector_notch_max_width_hz < line_audit.detector_notch_min_width_hz) {
+            logger->error(
+                "timestream.raw_time_chunk.line_audit.detector_notch_max_width_hz ({}) must be >= detector_notch_min_width_hz ({})",
+                line_audit.detector_notch_max_width_hz,
+                line_audit.detector_notch_min_width_hz);
+            std::exit(EXIT_FAILURE);
+        }
         logger->info(
-            "raw_time_chunk.line_audit configured: enabled={} line_min_hz={} line_max_hz={} segment_sec={} min_segment_sec={} overlap_frac={} continuum_radius_bins={} prominence_thresh={} cm_prominence_thresh={} min_good_frac={} min_windows={} max_peaks_per_detector={} max_det={} min_det_for_network={} cluster_tol_hz={} notch_min_detector_frac={} notch_min_detectors={} notch_min_cm_prominence={} detector_min_prominence={} detector_min_line_power_frac={} bad_detector_max_cluster_frac={} pre_filter_enabled={} post_filter_enabled={} post_filter_apply_shared_notches={} post_filter_apply_iterations={} post_filter_line_min_hz={} post_filter_line_max_hz={} apply_shared_notches={} apply_min_support_networks={} apply_min_detector_frac={} apply_min_common_mode_prominence={} apply_width_scale={} apply_min_width_hz={} apply_max_width_hz={} apply_max_notches={} apply_cluster_tol_hz={}",
+            "raw_time_chunk.line_audit configured: enabled={} line_min_hz={} line_max_hz={} segment_sec={} min_segment_sec={} overlap_frac={} continuum_radius_bins={} prominence_thresh={} cm_prominence_thresh={} min_good_frac={} min_windows={} max_peaks_per_detector={} max_det={} min_det_for_network={} cluster_tol_hz={} notch_min_detector_frac={} notch_min_detectors={} notch_min_cm_prominence={} detector_min_prominence={} detector_min_line_power_frac={} bad_detector_max_cluster_frac={} pre_filter_enabled={} post_filter_enabled={} post_filter_apply_shared_notches={} post_filter_apply_detector_notches={} post_filter_apply_iterations={} post_filter_line_min_hz={} post_filter_line_max_hz={} apply_shared_notches={} apply_min_support_networks={} apply_min_detector_frac={} apply_min_common_mode_prominence={} apply_width_scale={} apply_min_width_hz={} apply_max_width_hz={} apply_max_notches={} apply_cluster_tol_hz={} detector_notch_min_prominence={} detector_notch_min_line_power_frac={} detector_notch_max_notches={} detector_notch_width_scale={} detector_notch_min_width_hz={} detector_notch_max_width_hz={}",
             line_audit.enabled,
             line_audit.line_min_hz,
             line_audit.line_max_hz,
@@ -816,6 +876,7 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             line_audit.pre_filter_enabled,
             line_audit.post_filter_enabled,
             line_audit.post_filter_apply_shared_notches,
+            line_audit.post_filter_apply_detector_notches,
             line_audit.post_filter_apply_iterations,
             line_audit.post_filter_line_min_hz,
             line_audit.post_filter_line_max_hz,
@@ -827,7 +888,13 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             line_audit.apply_min_width_hz,
             line_audit.apply_max_width_hz,
             line_audit.apply_max_notches,
-            line_audit.apply_cluster_tol_hz);
+            line_audit.apply_cluster_tol_hz,
+            line_audit.detector_notch_min_prominence,
+            line_audit.detector_notch_min_line_power_frac,
+            line_audit.detector_notch_max_notches,
+            line_audit.detector_notch_width_scale,
+            line_audit.detector_notch_min_width_hz,
+            line_audit.detector_notch_max_width_hz);
     }
 
     // run polarization?
@@ -1725,6 +1792,38 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         }
     }
     rtc_detector_summary_by_scan[out.index.data] = std::move(rtc_diag_seed);
+    if (post_line_audit.enabled && post_line_audit.post_filter_apply_detector_notches) {
+        const auto n_detector_notches =
+            apply_rtc_line_audit_detector_notches(out, post_filter_fs_hz, post_line_audit);
+        if (n_detector_notches > 0) {
+            out.status.tod_filtered = true;
+            Eigen::Index detector_guard_samples = 0;
+            if (filter_edge_guard.apply_dynamic_notch) {
+                const Eigen::Index guard_notch_count =
+                    (post_line_audit.detector_notch_max_notches > 0)
+                        ? std::min<Eigen::Index>(post_line_audit.detector_notch_max_notches,
+                                                 n_detector_notches)
+                        : n_detector_notches;
+                detector_guard_samples =
+                    guard_notch_count *
+                    timestream::Filter::notch_settle_samples_for_width(
+                        post_filter_fs_hz,
+                        post_line_audit.detector_notch_min_width_hz,
+                        filter_edge_guard.iir_settle_attenuation);
+                detector_guard_samples =
+                    std::max(detector_guard_samples, filter_edge_guard.min_samples);
+                detector_guard_samples += filter_edge_guard.extra_samples;
+                if (filter_edge_guard.max_samples > 0) {
+                    detector_guard_samples =
+                        std::min(detector_guard_samples, filter_edge_guard.max_samples);
+                }
+                detector_guard_samples = std::max<Eigen::Index>(0, detector_guard_samples);
+            }
+            if (detector_guard_samples > 0) {
+                apply_filter_edge_guard(out, 0, out.scans.data.rows(), detector_guard_samples);
+            }
+        }
+    }
     if (!line_audit.enabled) {
         rtc_network_summary_by_scan.erase(out.index.data);
     }
@@ -3215,6 +3314,541 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
     return static_cast<Eigen::Index>(applied_clusters.size());
 }
 
+template <typename tc_t>
+Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
+                                                            double fs_hz,
+                                                            const RTCLineAuditOptions &audit) {
+    if (!audit.enabled || !audit.post_filter_apply_detector_notches ||
+        !std::isfinite(fs_hz) || fs_hz <= 0.0) {
+        return 0;
+    }
+
+    const Eigen::Index scan_id = in.index.data;
+    const Eigen::Index n_pts = in.scans.data.rows();
+    const Eigen::Index n_dets = in.scans.data.cols();
+    if (n_pts < 16 || n_dets <= 0) {
+        return 0;
+    }
+
+    const bool has_kernel =
+        run_kernel &&
+        in.kernel.data.rows() == n_pts &&
+        in.kernel.data.cols() == n_dets;
+    if (run_kernel && !has_kernel) {
+        logger->warn(
+            "rtc_line_audit detector notch skipped for scan {} because kernel dimensions do not match RTC data",
+            scan_id + 1);
+        return 0;
+    }
+
+    const double nan = std::numeric_limits<double>::quiet_NaN();
+    constexpr double two_pi = 6.283185307179586476925286766559;
+    const double nyquist_hz = 0.5 * fs_hz;
+
+    auto median_of = [&](std::vector<double> values) -> double {
+        values.erase(
+            std::remove_if(values.begin(), values.end(), [](double v) { return !std::isfinite(v); }),
+            values.end());
+        if (values.empty()) {
+            return nan;
+        }
+        const auto mid = values.size() / 2;
+        std::nth_element(values.begin(),
+                         values.begin() + static_cast<std::ptrdiff_t>(mid),
+                         values.end());
+        double med = values[mid];
+        if ((values.size() % 2) == 0) {
+            auto lo = std::max_element(values.begin(),
+                                       values.begin() + static_cast<std::ptrdiff_t>(mid));
+            med = 0.5 * (med + *lo);
+        }
+        return med;
+    };
+
+    auto contiguous_runs = [&](const Eigen::Array<bool, Eigen::Dynamic, 1> &valid_mask) {
+        std::vector<std::pair<Eigen::Index, Eigen::Index>> runs;
+        Eigen::Index i = 0;
+        while (i < valid_mask.size()) {
+            if (valid_mask(i)) {
+                Eigen::Index j = i + 1;
+                while (j < valid_mask.size() && valid_mask(j)) {
+                    ++j;
+                }
+                runs.emplace_back(i, j);
+                i = j;
+            }
+            else {
+                ++i;
+            }
+        }
+        return runs;
+    };
+
+    auto rolling_median = [&](const std::vector<double> &values, Eigen::Index radius) {
+        std::vector<double> out(values.size(), nan);
+        radius = std::max<Eigen::Index>(1, radius);
+        for (Eigen::Index i = 0; i < static_cast<Eigen::Index>(values.size()); ++i) {
+            const Eigen::Index j0 = std::max<Eigen::Index>(0, i - radius);
+            const Eigen::Index j1 =
+                std::min<Eigen::Index>(static_cast<Eigen::Index>(values.size()), i + radius + 1);
+            std::vector<double> window;
+            window.reserve(static_cast<std::size_t>(j1 - j0));
+            for (Eigen::Index j = j0; j < j1; ++j) {
+                const double v = values[static_cast<std::size_t>(j)];
+                if (std::isfinite(v)) {
+                    window.push_back(v);
+                }
+            }
+            out[static_cast<std::size_t>(i)] = median_of(std::move(window));
+        }
+        return out;
+    };
+
+    auto robust_center = [&](const Eigen::VectorXd &x,
+                             const Eigen::Array<bool, Eigen::Dynamic, 1> &valid) {
+        std::vector<double> good;
+        good.reserve(static_cast<std::size_t>(x.size()));
+        for (Eigen::Index i = 0; i < x.size(); ++i) {
+            if (valid(i) && std::isfinite(x(i))) {
+                good.push_back(x(i));
+            }
+        }
+        return median_of(std::move(good));
+    };
+
+    auto robust_rms = [&](const Eigen::VectorXd &x,
+                          const Eigen::Array<bool, Eigen::Dynamic, 1> &valid) {
+        std::vector<double> good;
+        good.reserve(static_cast<std::size_t>(x.size()));
+        for (Eigen::Index i = 0; i < x.size(); ++i) {
+            if (valid(i) && std::isfinite(x(i))) {
+                good.push_back(x(i));
+            }
+        }
+        const double center = median_of(good);
+        if (!std::isfinite(center) || good.size() < 2) {
+            return nan;
+        }
+        double ss = 0.0;
+        Eigen::Index count = 0;
+        for (const double v : good) {
+            const double dv = v - center;
+            ss += dv * dv;
+            ++count;
+        }
+        return (count > 1) ? std::sqrt(ss / static_cast<double>(count - 1)) : nan;
+    };
+
+    struct PsdResult {
+        std::vector<double> freq_hz;
+        std::vector<double> psd;
+        int n_windows = 0;
+    };
+
+    auto masked_welch_psd = [&](const Eigen::VectorXd &x,
+                                const Eigen::Array<bool, Eigen::Dynamic, 1> &valid_mask) {
+        PsdResult result;
+        if (x.size() != valid_mask.size() || x.size() < 16) {
+            return result;
+        }
+
+        const auto valid_runs = contiguous_runs(valid_mask);
+        Eigen::Index longest_run = 0;
+        for (const auto &[i0, i1] : valid_runs) {
+            longest_run = std::max<Eigen::Index>(longest_run, i1 - i0);
+        }
+
+        Eigen::Index nperseg =
+            std::max<Eigen::Index>(16, static_cast<Eigen::Index>(std::llround(audit.segment_sec * fs_hz)));
+        const Eigen::Index min_seg_n =
+            std::max<Eigen::Index>(16, static_cast<Eigen::Index>(std::llround(audit.min_segment_sec * fs_hz)));
+        if (nperseg < min_seg_n) {
+            nperseg = min_seg_n;
+        }
+        if (longest_run < min_seg_n) {
+            return result;
+        }
+
+        const double hop_frac = std::max(0.05, 1.0 - audit.overlap_frac);
+        if (audit.min_windows > 1) {
+            const double denom =
+                1.0 + hop_frac * static_cast<double>(std::max<Eigen::Index>(0, audit.min_windows - 1));
+            if (denom > 0.0) {
+                const Eigen::Index max_nperseg_for_windows =
+                    static_cast<Eigen::Index>(std::floor(static_cast<double>(longest_run) / denom));
+                if (max_nperseg_for_windows >= min_seg_n && nperseg > max_nperseg_for_windows) {
+                    nperseg = max_nperseg_for_windows;
+                }
+            }
+        }
+        nperseg = std::min(nperseg, longest_run);
+        if (nperseg < min_seg_n) {
+            return result;
+        }
+
+        const Eigen::Index hop = std::max<Eigen::Index>(
+            1, static_cast<Eigen::Index>(std::llround(nperseg * hop_frac)));
+        Eigen::VectorXd window = Eigen::VectorXd::Zero(nperseg);
+        for (Eigen::Index i = 0; i < nperseg; ++i) {
+            window(i) = (nperseg > 1)
+                ? 0.5 * (1.0 - std::cos(two_pi * static_cast<double>(i) /
+                                          static_cast<double>(nperseg - 1)))
+                : 1.0;
+        }
+        const double win_norm = fs_hz * window.array().square().sum();
+        if (!std::isfinite(win_norm) || win_norm <= 0.0) {
+            return result;
+        }
+
+        Eigen::VectorXd accum;
+        Eigen::FFT<double> fft;
+        fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
+        fft.SetFlag(Eigen::FFT<double>::Unscaled);
+        for (const auto &[i0, i1] : valid_runs) {
+            const Eigen::Index seg_len = i1 - i0;
+            if (seg_len < min_seg_n) {
+                continue;
+            }
+            std::vector<Eigen::Index> starts;
+            if (seg_len < nperseg) {
+                starts.push_back(i0);
+            }
+            else {
+                for (Eigen::Index s = i0; s <= i1 - nperseg; s += hop) {
+                    starts.push_back(s);
+                }
+                if (!starts.empty() && starts.back() != (i1 - nperseg)) {
+                    starts.push_back(i1 - nperseg);
+                }
+            }
+            for (const auto s : starts) {
+                const Eigen::Index e = std::min<Eigen::Index>(i1, s + nperseg);
+                Eigen::VectorXd chunk = x.segment(s, e - s);
+                if (chunk.size() < min_seg_n) {
+                    continue;
+                }
+                const double med = median_of(std::vector<double>(chunk.data(), chunk.data() + chunk.size()));
+                if (chunk.size() < nperseg) {
+                    Eigen::VectorXd padded = Eigen::VectorXd::Zero(nperseg);
+                    if (std::isfinite(med)) {
+                        padded.head(chunk.size()) = chunk.array() - med;
+                    }
+                    else {
+                        padded.head(chunk.size()) = chunk;
+                    }
+                    chunk = std::move(padded);
+                }
+                else {
+                    chunk = chunk.head(nperseg);
+                    if (std::isfinite(med)) {
+                        chunk.array() -= med;
+                    }
+                }
+                Eigen::VectorXd chunk_windowed = chunk.cwiseProduct(window);
+                Eigen::VectorXcd spec;
+                fft.fwd(spec, chunk_windowed);
+                Eigen::VectorXd psd = spec.array().abs2() / win_norm;
+                if (psd.size() > 2) {
+                    psd.segment(1, psd.size() - 2) *= 2.0;
+                }
+                if (accum.size() == 0) {
+                    accum = Eigen::VectorXd::Zero(psd.size());
+                }
+                accum += psd;
+                ++result.n_windows;
+            }
+        }
+        if (result.n_windows <= 0 || accum.size() == 0) {
+            return result;
+        }
+        result.freq_hz.resize(static_cast<std::size_t>(accum.size()));
+        result.psd.resize(static_cast<std::size_t>(accum.size()));
+        for (Eigen::Index k = 0; k < accum.size(); ++k) {
+            result.freq_hz[static_cast<std::size_t>(k)] =
+                static_cast<double>(k) * fs_hz / static_cast<double>(nperseg);
+            result.psd[static_cast<std::size_t>(k)] =
+                accum(k) / static_cast<double>(result.n_windows);
+        }
+        return result;
+    };
+
+    struct DetectorPeak {
+        double freq_hz = std::numeric_limits<double>::quiet_NaN();
+        double prominence = std::numeric_limits<double>::quiet_NaN();
+        double width_hz = std::numeric_limits<double>::quiet_NaN();
+        double line_power_frac = std::numeric_limits<double>::quiet_NaN();
+        double applied_width_hz = std::numeric_limits<double>::quiet_NaN();
+    };
+
+    auto find_line_peaks = [&](const std::vector<double> &freq_hz,
+                               const std::vector<double> &psd) {
+        std::vector<DetectorPeak> peaks;
+        if (freq_hz.size() != psd.size() || freq_hz.size() < 8) {
+            return peaks;
+        }
+
+        std::vector<double> good_freq;
+        std::vector<double> good_psd;
+        good_freq.reserve(freq_hz.size());
+        good_psd.reserve(psd.size());
+        for (std::size_t i = 0; i < freq_hz.size(); ++i) {
+            const double f = freq_hz[i];
+            const double p = psd[i];
+            if (!std::isfinite(f) || !std::isfinite(p) || p <= 0.0) {
+                continue;
+            }
+            if (audit.line_min_hz > 0.0 && f < audit.line_min_hz) {
+                continue;
+            }
+            if (audit.line_max_hz > 0.0 && f > audit.line_max_hz) {
+                continue;
+            }
+            if (f <= 0.0 || f >= nyquist_hz) {
+                continue;
+            }
+            good_freq.push_back(f);
+            good_psd.push_back(p);
+        }
+        if (good_freq.size() < 8) {
+            return peaks;
+        }
+
+        auto continuum = rolling_median(good_psd, audit.continuum_radius_bins);
+        double continuum_fallback = median_of(good_psd);
+        if (!std::isfinite(continuum_fallback) || continuum_fallback <= 0.0) {
+            continuum_fallback = 1.0;
+        }
+        std::vector<double> prominence(good_psd.size(), nan);
+        for (std::size_t i = 0; i < good_psd.size(); ++i) {
+            double base = continuum[i];
+            if (!std::isfinite(base) || base <= 0.0) {
+                base = continuum_fallback;
+            }
+            prominence[i] = good_psd[i] / base;
+        }
+
+        double total_power = 0.0;
+        for (std::size_t k = 1; k < good_freq.size(); ++k) {
+            const double df = good_freq[k] - good_freq[k - 1];
+            total_power += 0.5 * (good_psd[k] + good_psd[k - 1]) * df;
+        }
+
+        for (std::size_t i = 1; i + 1 < good_freq.size(); ++i) {
+            if (!std::isfinite(prominence[i]) ||
+                prominence[i] < audit.detector_notch_min_prominence) {
+                continue;
+            }
+            if (prominence[i] < prominence[i - 1] || prominence[i] < prominence[i + 1]) {
+                continue;
+            }
+            const double target = 1.0 + 0.5 * std::max(prominence[i] - 1.0, 0.0);
+            std::size_t j0 = i;
+            while (j0 > 0 && prominence[j0 - 1] >= target) {
+                --j0;
+            }
+            std::size_t j1 = i;
+            while (j1 + 1 < good_freq.size() && prominence[j1 + 1] >= target) {
+                ++j1;
+            }
+            const double min_bin_width =
+                (good_freq.size() > 1) ? std::max(good_freq[1] - good_freq[0], 1.0e-6) : 1.0e-6;
+            const double width_hz = std::max(good_freq[j1] - good_freq[j0], min_bin_width);
+            double line_power = 0.0;
+            for (std::size_t k = j0 + 1; k <= j1; ++k) {
+                const double df = good_freq[k] - good_freq[k - 1];
+                const double base0 = continuum[std::min<std::size_t>(k - 1, continuum.size() - 1)];
+                const double base1 = continuum[std::min<std::size_t>(k, continuum.size() - 1)];
+                const double local0 = std::max(good_psd[k - 1] - base0, 0.0);
+                const double local1 = std::max(good_psd[k] - base1, 0.0);
+                line_power += 0.5 * (local0 + local1) * df;
+            }
+
+            DetectorPeak peak;
+            peak.freq_hz = good_freq[i];
+            peak.prominence = prominence[i];
+            peak.width_hz = width_hz;
+            peak.line_power_frac = (total_power > 0.0) ? (line_power / total_power) : nan;
+            if (audit.detector_notch_min_line_power_frac > 0.0 &&
+                (!std::isfinite(peak.line_power_frac) ||
+                 peak.line_power_frac < audit.detector_notch_min_line_power_frac)) {
+                continue;
+            }
+            peaks.push_back(peak);
+        }
+        std::sort(peaks.begin(), peaks.end(), [](const auto &a, const auto &b) {
+            const double a_power = std::isfinite(a.line_power_frac) ? a.line_power_frac : -1.0;
+            const double b_power = std::isfinite(b.line_power_frac) ? b.line_power_frac : -1.0;
+            if (a_power != b_power) {
+                return a_power > b_power;
+            }
+            if (a.prominence != b.prominence) {
+                return a.prominence > b.prominence;
+            }
+            return a.freq_hz < b.freq_hz;
+        });
+        return peaks;
+    };
+
+    auto filter_column = [&](const Eigen::MatrixXd &data,
+                             Eigen::Index det,
+                             Filter &notch_filter,
+                             Eigen::MatrixXd &filtered_column) {
+        if (det < 0 || det >= data.cols() || data.rows() != n_pts) {
+            return false;
+        }
+        if (!data.col(det).allFinite()) {
+            return false;
+        }
+        filtered_column = data.col(det);
+        notch_filter.iir(filtered_column);
+        return filtered_column.allFinite();
+    };
+
+    auto &det_summary = rtc_detector_summary_by_scan[scan_id];
+    if (det_summary.size() != static_cast<std::size_t>(n_dets)) {
+        det_summary.assign(static_cast<std::size_t>(n_dets), RTCDetectorDiagSummary{});
+    }
+    for (Eigen::Index det = 0; det < n_dets; ++det) {
+        det_summary[static_cast<std::size_t>(det)].det = det;
+    }
+
+    Eigen::Index total_notches = 0;
+    Eigen::Index touched_dets = 0;
+    Eigen::Index max_notches_per_det = 0;
+    std::vector<double> primary_freqs;
+
+    for (Eigen::Index det = 0; det < n_dets; ++det) {
+        auto &diag = det_summary[static_cast<std::size_t>(det)];
+        diag.detector_notch_n_applied = 0;
+        diag.detector_notch_primary_freq_hz = nan;
+        diag.detector_notch_primary_width_hz = nan;
+        diag.detector_notch_primary_prominence = nan;
+        diag.detector_notch_primary_line_power_frac = nan;
+        diag.detector_notch_rms_before = nan;
+        diag.detector_notch_rms_after = nan;
+
+        if (!in.scans.data.col(det).allFinite()) {
+            continue;
+        }
+        if (has_kernel && !in.kernel.data.col(det).allFinite()) {
+            continue;
+        }
+
+        Eigen::Array<bool, Eigen::Dynamic, 1> valid(n_pts);
+        Eigen::Index n_valid = 0;
+        for (Eigen::Index i = 0; i < n_pts; ++i) {
+            valid(i) = std::isfinite(in.scans.data(i, det)) && !in.flags.data(i, det);
+            if (valid(i)) {
+                ++n_valid;
+            }
+        }
+        const double good_frac =
+            static_cast<double>(n_valid) / static_cast<double>(std::max<Eigen::Index>(n_pts, 1));
+        if (!std::isfinite(good_frac) || good_frac < audit.min_good_frac) {
+            continue;
+        }
+
+        Eigen::VectorXd signal = in.scans.data.col(det);
+        const double center = robust_center(signal, valid);
+        if (!std::isfinite(center)) {
+            continue;
+        }
+        Eigen::VectorXd centered = Eigen::VectorXd::Zero(n_pts);
+        for (Eigen::Index i = 0; i < n_pts; ++i) {
+            if (valid(i) && std::isfinite(signal(i))) {
+                centered(i) = signal(i) - center;
+            }
+        }
+
+        auto psd = masked_welch_psd(centered, valid);
+        if (psd.n_windows < audit.min_windows) {
+            continue;
+        }
+        auto peaks = find_line_peaks(psd.freq_hz, psd.psd);
+        if (peaks.empty()) {
+            continue;
+        }
+        if (audit.detector_notch_max_notches > 0 &&
+            static_cast<Eigen::Index>(peaks.size()) > audit.detector_notch_max_notches) {
+            peaks.resize(static_cast<std::size_t>(audit.detector_notch_max_notches));
+        }
+
+        Filter detector_notch_filter;
+        detector_notch_filter.notch_zero_phase = true;
+        std::vector<DetectorPeak> applied_peaks;
+        applied_peaks.reserve(peaks.size());
+        for (auto peak : peaks) {
+            if (!std::isfinite(peak.freq_hz) || peak.freq_hz <= 0.0 || peak.freq_hz >= nyquist_hz) {
+                continue;
+            }
+            double width_hz = peak.width_hz;
+            if (!std::isfinite(width_hz) || width_hz <= 0.0) {
+                width_hz = audit.detector_notch_min_width_hz;
+            }
+            width_hz *= audit.detector_notch_width_scale;
+            width_hz = std::max(width_hz, audit.detector_notch_min_width_hz);
+            width_hz = std::min(width_hz, audit.detector_notch_max_width_hz);
+            width_hz = std::min(width_hz, std::max(0.05, 0.5 * peak.freq_hz));
+            if (!std::isfinite(width_hz) || width_hz <= 0.0) {
+                continue;
+            }
+            peak.applied_width_hz = width_hz;
+            detector_notch_filter.w0s.push_back(peak.freq_hz);
+            detector_notch_filter.qs.push_back(peak.freq_hz / width_hz);
+            applied_peaks.push_back(peak);
+        }
+        if (applied_peaks.empty()) {
+            continue;
+        }
+
+        detector_notch_filter.make_notch_filter(fs_hz);
+        Eigen::MatrixXd filtered_scan_col;
+        Eigen::MatrixXd filtered_kernel_col;
+        if (!filter_column(in.scans.data, det, detector_notch_filter, filtered_scan_col)) {
+            continue;
+        }
+        if (has_kernel &&
+            !filter_column(in.kernel.data, det, detector_notch_filter, filtered_kernel_col)) {
+            logger->warn(
+                "rtc_line_audit detector notch skipped for scan {} det {} because kernel filtering failed",
+                scan_id + 1,
+                det);
+            continue;
+        }
+
+        diag.detector_notch_rms_before = robust_rms(in.scans.data.col(det), valid);
+        in.scans.data.col(det) = filtered_scan_col.col(0);
+        if (has_kernel) {
+            in.kernel.data.col(det) = filtered_kernel_col.col(0);
+        }
+        diag.detector_notch_rms_after = robust_rms(in.scans.data.col(det), valid);
+
+        diag.detector_notch_n_applied = static_cast<int>(applied_peaks.size());
+        diag.detector_notch_primary_freq_hz = applied_peaks.front().freq_hz;
+        diag.detector_notch_primary_width_hz = applied_peaks.front().applied_width_hz;
+        diag.detector_notch_primary_prominence = applied_peaks.front().prominence;
+        diag.detector_notch_primary_line_power_frac = applied_peaks.front().line_power_frac;
+        total_notches += static_cast<Eigen::Index>(applied_peaks.size());
+        max_notches_per_det =
+            std::max<Eigen::Index>(max_notches_per_det, static_cast<Eigen::Index>(applied_peaks.size()));
+        ++touched_dets;
+        primary_freqs.push_back(applied_peaks.front().freq_hz);
+    }
+
+    if (total_notches > 0) {
+        logger->info(
+            "rtc_line_audit apply_detector_notches scan {}: dets={} total_notches={} max_notches_per_det={} primary_freq_median_hz={} zero_phase=true kernel_filtered={}",
+            scan_id + 1,
+            touched_dets,
+            total_notches,
+            max_notches_per_det,
+            median_of(std::move(primary_freqs)),
+            has_kernel);
+    }
+
+    return total_notches;
+}
+
 template <typename calib_t>
 void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib,
                                       bool recompute_step_metrics,
@@ -4686,6 +5320,20 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
                       [](const auto &row) { return row.impulsive_event_sample; });
         write_det_int("rtc_impulsive_event_kind",
                       [](const auto &row) { return row.impulsive_event_kind; });
+        write_det_int("rtc_detector_notch_n_applied",
+                      [](const auto &row) { return row.detector_notch_n_applied; });
+        write_det_double("rtc_detector_notch_primary_freq_hz",
+                         [](const auto &row) { return row.detector_notch_primary_freq_hz; });
+        write_det_double("rtc_detector_notch_primary_width_hz",
+                         [](const auto &row) { return row.detector_notch_primary_width_hz; });
+        write_det_double("rtc_detector_notch_primary_prominence",
+                         [](const auto &row) { return row.detector_notch_primary_prominence; });
+        write_det_double("rtc_detector_notch_primary_line_power_frac",
+                         [](const auto &row) { return row.detector_notch_primary_line_power_frac; });
+        write_det_double("rtc_detector_notch_rms_before",
+                         [](const auto &row) { return row.detector_notch_rms_before; });
+        write_det_double("rtc_detector_notch_rms_after",
+                         [](const auto &row) { return row.detector_notch_rms_after; });
         write_window_int("rtc_invvar_window_n_total",
                          [](const auto &row) { return row.n_total_windows; });
         write_window_int("rtc_invvar_window_n_valid",

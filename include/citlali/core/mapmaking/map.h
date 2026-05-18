@@ -171,7 +171,7 @@ public:
                     std::vector<std::vector<std::string>> &, std::string, std::string);
 
     // normalize accumulated maps and finalize inverse-variance weights
-    void normalize_maps();
+    void normalize_maps(bool release_grid_weight = true);
     void calculate_stokes(std::vector<Eigen::MatrixXd>&, const Eigen::MatrixXd&,
                           Eigen::Index, Eigen::Index, int, int);
     void calculate_stokes(std::vector<Eigen::Tensor<double,3>>&, const Eigen::MatrixXd&,

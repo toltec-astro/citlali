@@ -777,6 +777,12 @@ void Beammap::loop_pipeline() {
     // run iterative stage
     run_loop();
 
+    // Beammap jinc reductions reuse grid_weight on every iteration; release it
+    // after the final normalized maps are available.
+    if (!omb.grid_weight.empty()) {
+        std::vector<Eigen::MatrixXd>().swap(omb.grid_weight);
+    }
+
     // write map summary
     if (verbose_mode) {
         write_map_summary(omb);
@@ -2412,7 +2418,7 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
         }
     }
     if (candidates.empty()) {
-        logger->debug("beammap priors init map={} no candidates above min_snr={} (med={} sigma={} wt_med={})",
+        logger->trace("beammap priors init map={} no candidates above min_snr={} (med={} sigma={} wt_med={})",
                       map_index, beammap_priors_min_snr, sig_med, sig_sigma, wt_med);
         set_prior_diag(prior_n_candidates_col, 0.0);
         set_prior_diag(prior_n_candidates_keep_col, 0.0);
@@ -2529,7 +2535,7 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
     set_prior_diag(prior_slot_y_col, best_slot_y);
     set_prior_diag(prior_slot_sx_col, best_slot_sx);
     set_prior_diag(prior_slot_sy_col, best_slot_sy);
-    logger->debug(
+    logger->trace(
         "beammap priors init map={} det={} array={} nw={} row={} col={} snr={} d2={} slot={} lambda={} max_d2={}",
         map_index, map_index, array, nw, init_row, init_col, best_snr, best_d2,
         best_slot, prior_score_lambda, prior_max_d2);
@@ -2791,44 +2797,46 @@ void Beammap::run_loop() {
                                                                   telescope.d_fsmp, run_omb, run_noise);
                         }
                         else if (map_method == "jinc") {
-                            std::array<Eigen::Index, 3> array_counts = {0, 0, 0};
-                            for (Eigen::Index det = 0; det < ptc.scans.data.cols(); ++det) {
-                                auto array_index = static_cast<int>(calib.apt["array"](det));
-                                if (array_index >= 0 && array_index < static_cast<int>(array_counts.size())) {
-                                    array_counts[static_cast<size_t>(array_index)]++;
+                            if (logger->should_log(spdlog::level::trace)) {
+                                std::array<Eigen::Index, 3> array_counts = {0, 0, 0};
+                                for (Eigen::Index det = 0; det < ptc.scans.data.cols(); ++det) {
+                                    auto array_index = static_cast<int>(calib.apt["array"](det));
+                                    if (array_index >= 0 && array_index < static_cast<int>(array_counts.size())) {
+                                        array_counts[static_cast<size_t>(array_index)]++;
+                                    }
                                 }
-                            }
-                            Eigen::Index map_min = -1;
-                            Eigen::Index map_max = -1;
-                            if (ptc.map_indices.data.size() > 0) {
-                                map_min = ptc.map_indices.data.minCoeff();
-                                map_max = ptc.map_indices.data.maxCoeff();
-                            }
-                            std::ostringstream kernel_dims;
-                            for (int array_index = 0; array_index < 3; ++array_index) {
-                                auto it = jinc_mm.jinc_weights_mat.find(array_index);
-                                if (it == jinc_mm.jinc_weights_mat.end()) {
-                                    continue;
+                                Eigen::Index map_min = -1;
+                                Eigen::Index map_max = -1;
+                                if (ptc.map_indices.data.size() > 0) {
+                                    map_min = ptc.map_indices.data.minCoeff();
+                                    map_max = ptc.map_indices.data.maxCoeff();
                                 }
-                                if (kernel_dims.tellp() > 0) {
-                                    kernel_dims << ", ";
+                                std::ostringstream kernel_dims;
+                                for (int array_index = 0; array_index < 3; ++array_index) {
+                                    auto it = jinc_mm.jinc_weights_mat.find(array_index);
+                                    if (it == jinc_mm.jinc_weights_mat.end()) {
+                                        continue;
+                                    }
+                                    if (kernel_dims.tellp() > 0) {
+                                        kernel_dims << ", ";
+                                    }
+                                    kernel_dims << "a" << array_index << "="
+                                                << it->second.rows() << "x" << it->second.cols();
                                 }
-                                kernel_dims << "a" << array_index << "="
-                                            << it->second.rows() << "x" << it->second.cols();
+                                logger->trace(
+                                    "beammap jinc preflight: n_dets={} n_pts={} n_maps={} map_index_range=[{}, {}] "
+                                    "subpixel_n={} kernel_dims=[{}] array_counts=[{},{},{}]",
+                                    ptc.scans.data.cols(),
+                                    ptc.scans.data.rows(),
+                                    omb.signal.size(),
+                                    map_min,
+                                    map_max,
+                                    jinc_mm.subpixel_n,
+                                    kernel_dims.str(),
+                                    array_counts[0],
+                                    array_counts[1],
+                                    array_counts[2]);
                             }
-                            logger->info(
-                                "beammap jinc preflight: n_dets={} n_pts={} n_maps={} map_index_range=[{}, {}] "
-                                "subpixel_n={} kernel_dims=[{}] array_counts=[{},{},{}]",
-                                ptc.scans.data.cols(),
-                                ptc.scans.data.rows(),
-                                omb.signal.size(),
-                                map_min,
-                                map_max,
-                                jinc_mm.subpixel_n,
-                                kernel_dims.str(),
-                                array_counts[0],
-                                array_counts[1],
-                                array_counts[2]);
                             jinc_mm.populate_maps_jinc_parallel(ptc, omb, cmb, ptc.map_indices.data,
                                                                 telescope.pixel_axes, calib.apt,
                                                                 telescope.d_fsmp, run_omb, run_noise);
@@ -2859,7 +2867,7 @@ void Beammap::run_loop() {
                 }
 
                 logger->info("normalizing maps");
-                omb.normalize_maps();
+                omb.normalize_maps(false);
             };
 
             run_mapmaking_pass(true);
@@ -2913,7 +2921,7 @@ void Beammap::run_loop() {
             // Run beammap fits sequentially. This avoids allocator/covariance instability
             // observed with parallel Ceres fits on some systems.
             for (Eigen::Index i = 0; i < n_maps; ++i) {
-                logger->info("beammap fit checkpoint: map={} begin converged={}", i, converged(i));
+                logger->trace("beammap fit checkpoint: map={} begin converged={}", i, converged(i));
 
                 if (omb.signal[i].rows() != omb.n_rows || omb.signal[i].cols() != omb.n_cols ||
                     omb.weight[i].rows() != omb.n_rows || omb.weight[i].cols() != omb.n_cols) {
@@ -2924,15 +2932,17 @@ void Beammap::run_loop() {
                     std::exit(EXIT_FAILURE);
                 }
 
-                const auto &sig = omb.signal[i];
-                const auto &wt = omb.weight[i];
-                const Eigen::Index n_pix = sig.size();
-                const Eigen::Index sig_finite = sig.array().isFinite().count();
-                const Eigen::Index wt_finite = wt.array().isFinite().count();
-                const Eigen::Index wt_pos = (wt.array() > 0.0).count();
-                logger->info("beammap fit map={} stats: sig_finite={}/{} wt_finite={}/{} wt_pos={}/{} sig[min,max]=({}, {}) wt[min,max]=({}, {})",
-                             i, sig_finite, n_pix, wt_finite, n_pix, wt_pos, n_pix,
-                             sig.minCoeff(), sig.maxCoeff(), wt.minCoeff(), wt.maxCoeff());
+                if (logger->should_log(spdlog::level::trace)) {
+                    const auto &sig = omb.signal[i];
+                    const auto &wt = omb.weight[i];
+                    const Eigen::Index n_pix = sig.size();
+                    const Eigen::Index sig_finite = sig.array().isFinite().count();
+                    const Eigen::Index wt_finite = wt.array().isFinite().count();
+                    const Eigen::Index wt_pos = (wt.array() > 0.0).count();
+                    logger->trace("beammap fit map={} stats: sig_finite={}/{} wt_finite={}/{} wt_pos={}/{} sig[min,max]=({}, {}) wt[min,max]=({}, {})",
+                                  i, sig_finite, n_pix, wt_finite, n_pix, wt_pos, n_pix,
+                                  sig.minCoeff(), sig.maxCoeff(), wt.minCoeff(), wt.maxCoeff());
+                }
 
                 // only fit if not converged
                 if (!converged(i)) {
@@ -3112,16 +3122,16 @@ void Beammap::run_loop() {
                             prior_diag_values(i, prior_init_mode_col) = 0.0;
                         }
                     }
-                    logger->debug("beammap fit map={} init mode={} row={} col={}",
+                    logger->trace("beammap fit map={} init mode={} row={} col={}",
                                   i, init_from_prev ? "previous" : (init_from_prior ? "prior" : "blind"),
                                   init_row, init_col);
                     // fit the maps
-                    logger->info("beammap fit checkpoint: map={} call fit_to_gaussian", i);
+                    logger->trace("beammap fit checkpoint: map={} call fit_to_gaussian", i);
                     engine_utils::mapFitter::FitDiagnostics fit_diag;
                     auto [det_params, det_perror, good_fit] =
                         map_fitter.fit_to_gaussian<engine_utils::mapFitter::beammap>(omb.signal[i], omb.weight[i],
                                                                                      init_fwhm, init_row, init_col, &fit_diag);
-                    logger->info("beammap fit checkpoint: map={} fit_to_gaussian returned good_fit={}", i, good_fit);
+                    logger->trace("beammap fit checkpoint: map={} fit_to_gaussian returned good_fit={}", i, good_fit);
 
                     if (!(det_params.array().isFinite().all() && det_perror.array().isFinite().all())) {
                         det_params.setZero();
@@ -3236,7 +3246,7 @@ void Beammap::run_loop() {
                     perrors.row(i) = perror0.row(i);
                 }
 
-                logger->info("beammap fit checkpoint: map={} end good_fit={}", i, good_fits(i));
+                logger->trace("beammap fit checkpoint: map={} end good_fit={}", i, good_fits(i));
             }
 
             logger->info("beammap init summary (iter {}): previous={} prior={} blind={} skipped={} prev_rejected_by_peak={}",
@@ -5044,7 +5054,7 @@ void Beammap::output() {
                             }
 
                             pb.count(n_flag_maps, 1);
-                            logger->debug("adding split map for detector {} flag={}", i, flag_value);
+                            logger->trace("adding split map for detector {} flag={}", i, flag_value);
                             write_maps(split_f_io, split_n_io, mb, i);
 
                             if (map_grouping == "detector") {
@@ -5052,7 +5062,7 @@ void Beammap::output() {
                                     const Eigen::Index map_index = arrays_to_maps(i);
                                     const Eigen::Index k = hdu_layer.at(map_index);
 
-                                    logger->debug("adding split beammap header keys");
+                                    logger->trace("adding split beammap header keys");
                                     for (auto const &key : calib.apt_header_keys) {
                                         if (key != "flag2") {
                                             try {

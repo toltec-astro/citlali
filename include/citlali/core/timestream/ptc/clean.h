@@ -2176,7 +2176,7 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
         limit_index = std::min<Eigen::Index>(limit_index, n_dets - 1);
     }
 
-    logger->debug("removing {} largest eigenvalue(s) grouping={} network={} array={}",
+    logger->trace("removing {} largest eigenvalue(s) grouping={} network={} array={}",
                   limit_index, group_name, nw_index, arr_index);
 
     {
