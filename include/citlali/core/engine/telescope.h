@@ -44,8 +44,11 @@ public:
     // tau at 225 GHZ
     double tau_225_GHz;
 
-    // number of samples to remove for inner scans
-    Eigen::Index inner_scans_chunk;
+    // legacy filter context used for inner-scan boundary trimming
+    Eigen::Index inner_scans_chunk = 0;
+
+    // larger context to load outside each science scan for filters/PSD estimates
+    Eigen::Index outer_scans_chunk = 0;
 
     // scan indices matrix (4 x nscans)
     Eigen::MatrixXI scan_indices;

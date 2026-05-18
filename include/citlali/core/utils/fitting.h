@@ -16,6 +16,46 @@
 
 namespace engine_utils {
 
+inline double vector_median_copy(std::vector<double> values) {
+    if (values.empty()) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+    const auto mid = values.begin() + static_cast<std::ptrdiff_t>(values.size() / 2);
+    std::nth_element(values.begin(), mid, values.end());
+    if (values.size() % 2 != 0) {
+        return *mid;
+    }
+    const auto lower = std::max_element(values.begin(), mid);
+    return (*lower + *mid) / 2.0;
+}
+
+inline double vector_stddev(const std::vector<double> &values) {
+    if (values.empty()) {
+        return 0.0;
+    }
+    double sum = 0.0;
+    Eigen::Index n = 0;
+    for (const double v : values) {
+        if (std::isfinite(v)) {
+            sum += v;
+            ++n;
+        }
+    }
+    if (n <= 0) {
+        return 0.0;
+    }
+    const double mean = sum / static_cast<double>(n);
+    double sumsq = 0.0;
+    for (const double v : values) {
+        if (std::isfinite(v)) {
+            const double d = v - mean;
+            sumsq += d * d;
+        }
+    }
+    const double denom = static_cast<double>(n > 1 ? n - 1 : n);
+    return std::sqrt(sumsq / denom);
+}
+
 class mapFitter {
 public:
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
@@ -110,7 +150,7 @@ auto mapFitter::ceres_fit(const Model &model,
         };
         Stats stats;
         for (Eigen::Index i = 0; i < m.size(); ++i) {
-            const double v = *(m.derived().data() + i);
+            const double v = m.derived().coeff(i);
             if (std::isfinite(v)) {
                 if (stats.finite == 0) {
                     stats.min = v;
@@ -467,6 +507,15 @@ template <mapFitter::FitMode fit_mode, typename Derived>
 auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseBase<Derived> &weight,
                                 double init_fwhm, double init_row, double init_col, FitDiagnostics *diag) {
 
+    if (logger) {
+        logger->info("fit_to_gaussian entry: mode={} signal={}x{} weight={}x{} init_fwhm={} init_row={} init_col={} bbox_pix={} radius_pix={} fit_radius_fwhm={}",
+                     fit_mode == FitMode::beammap ? "beammap" : "pointing",
+                     signal.rows(), signal.cols(), weight.rows(), weight.cols(),
+                     init_fwhm, init_row, init_col, bounding_box_pix,
+                     fitting_region_pix, beammap_fit_radius_fwhm);
+        logger->flush();
+    }
+
     if (signal.rows() <= 0 || signal.cols() <= 0 ||
         weight.rows() != signal.rows() || weight.cols() != signal.cols()) {
         Eigen::VectorXd p = Eigen::VectorXd::Zero(n_params);
@@ -744,16 +793,10 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
     double support_weight_median = 1.0;
     if constexpr (fit_mode == FitMode::beammap) {
         if (support_signal_values.size() >= 2) {
-            Eigen::Map<Eigen::VectorXd> support_signal_vec(
-                support_signal_values.data(),
-                static_cast<Eigen::Index>(support_signal_values.size()));
-            map_sigma = engine_utils::calc_std_dev(support_signal_vec);
+            map_sigma = vector_stddev(support_signal_values);
         }
         if (!support_weight_values.empty()) {
-            Eigen::Map<Eigen::VectorXd> support_weight_vec(
-                support_weight_values.data(),
-                static_cast<Eigen::Index>(support_weight_values.size()));
-            support_weight_median = tula::alg::median(support_weight_vec);
+            support_weight_median = vector_median_copy(support_weight_values);
             if (!std::isfinite(support_weight_median) ||
                 support_weight_median <= std::numeric_limits<double>::epsilon()) {
                 support_weight_median = 1.0;
@@ -818,6 +861,20 @@ auto mapFitter::fit_to_gaussian(Eigen::DenseBase<Derived> &signal, Eigen::DenseB
         Eigen::VectorXd p = Eigen::VectorXd::Zero(n_params);
         Eigen::VectorXd e = Eigen::VectorXd::Zero(n_params);
         return std::tuple<Eigen::VectorXd, Eigen::VectorXd, bool>(p, e, false);
+    }
+
+    if (logger) {
+        logger->info("fit_to_gaussian pre-ceres: mode={} bbox=[{}:{},{}:{}] cutout={}x{} sigma_pos={} map_sigma={} support_weight_median={} init=[{}, {}, {}, {}, {}, {}] limits_amp=[{}, {}] limits_x=[{}, {}] limits_y=[{}, {}]",
+                     fit_mode == FitMode::beammap ? "beammap" : "pointing",
+                     lower_row, upper_row, lower_col, upper_col,
+                     n_rows, n_cols, (_sigma.array() > 0.0).count(),
+                     map_sigma, support_weight_median,
+                     init_params(0), init_params(1), init_params(2),
+                     init_params(3), init_params(4), init_params(5),
+                     limits(0, 0), limits(0, 1),
+                     limits(1, 0), limits(1, 1),
+                     limits(2, 0), limits(2, 1));
+        logger->flush();
     }
 
     if (diag != nullptr) {

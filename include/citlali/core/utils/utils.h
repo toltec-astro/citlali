@@ -6,6 +6,9 @@
 #include <algorithm>
 #include <complex>
 #include <stdexcept>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 //#include <png.h>
 
 #include <fftw3.h>
@@ -59,6 +62,10 @@ static const int get_phys_memory() { // note: this value is in KB!
     FILE* file = fopen("/proc/self/status", "r");
     int result = -1;
     char line[128];
+
+    if (file == nullptr) {
+        return result;
+    }
 
     while (fgets(line, 128, file) != NULL){
         if (strncmp(line, "VmRSS:", 6) == 0){

@@ -694,6 +694,14 @@ void Engine::get_rtc_config(CT &config) {
 
     rtcproc.configure_filter_edge_guard(telescope.fsmp);
     telescope.inner_scans_chunk = rtcproc.filter_edge_guard.context_samples;
+    telescope.outer_scans_chunk = telescope.inner_scans_chunk;
+    if (rtcproc.line_audit.enabled &&
+        rtcproc.line_audit.post_filter_enabled &&
+        rtcproc.line_audit.post_filter_apply_detector_notches) {
+        telescope.outer_scans_chunk = std::max<Eigen::Index>(
+            telescope.outer_scans_chunk,
+            std::max<Eigen::Index>(0, rtcproc.line_audit.detector_notch_context_samples));
+    }
 
     // ignore hwpr?
     get_config_value(config, calib.ignore_hwpr, missing_keys, invalid_keys,
@@ -2080,6 +2088,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var<std::string>(fo, "CONFIG.TODFILTER.EDGE_GUARD.COMBINE", rtcproc.filter_edge_guard.combine);
         add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.CONTEXT_SAMPLES", rtcproc.filter_edge_guard.context_samples);
         add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.GUARD_SAMPLES", rtcproc.filter_edge_guard.guard_samples);
+        add_netcdf_var(fo, "CONFIG.TOD.OUTER_CONTEXT_SAMPLES", telescope.outer_scans_chunk);
         add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.MIN_SAMPLES", rtcproc.filter_edge_guard.min_samples);
         add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.EXTRA_SAMPLES", rtcproc.filter_edge_guard.extra_samples);
         add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.MAX_SAMPLES", rtcproc.filter_edge_guard.max_samples);
@@ -2168,6 +2177,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_WIDTH_SCALE", rtcproc.line_audit.detector_notch_width_scale);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MIN_WIDTH_HZ", rtcproc.line_audit.detector_notch_min_width_hz);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MAX_WIDTH_HZ", rtcproc.line_audit.detector_notch_max_width_hz);
+            add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_CONTEXT_SAMPLES", rtcproc.line_audit.detector_notch_context_samples);
         }
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
@@ -2433,6 +2443,7 @@ void Engine::create_tod_files() {
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_WIDTH_SCALE", rtcproc.line_audit.detector_notch_width_scale);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MIN_WIDTH_HZ", rtcproc.line_audit.detector_notch_min_width_hz);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MAX_WIDTH_HZ", rtcproc.line_audit.detector_notch_max_width_hz);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_CONTEXT_SAMPLES", rtcproc.line_audit.detector_notch_context_samples);
     }
 
     const Eigen::Index n_tod_output_scans_for_stream =
@@ -3393,7 +3404,12 @@ void Engine::cli_summary() {
     totalPhysMem *= memInfo.mem_unit;
 
     logger->info("total physical memory available {} GB", (totalPhysMem/1024)/1e7);*/
-    logger->info("physical memory used {} GB", engine_utils::get_phys_memory()/1e7);
+    auto phys_memory_kb = engine_utils::get_phys_memory();
+    if (phys_memory_kb >= 0) {
+        logger->info("physical memory used {} GB", phys_memory_kb / 1e7);
+    } else {
+        logger->debug("physical memory used unavailable on this platform");
+    }
 }
 
 template <TCDataKind tc_t>
@@ -3432,6 +3448,8 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     f << "-TOD filter edge guard enabled: " << rtcproc.filter_edge_guard.enabled << "\n";
     f << "-TOD filter edge guard context samples: " << rtcproc.filter_edge_guard.context_samples << "\n";
     f << "-TOD filter edge guard samples per edge: " << rtcproc.filter_edge_guard.guard_samples << "\n";
+    f << "-TOD loaded outer context samples: " << telescope.outer_scans_chunk << "\n";
+    f << "-RTC detector notch context samples: " << rtcproc.line_audit.detector_notch_context_samples << "\n";
     f << "-Downsampled: " << in.status.downsampled << "\n";
     f << "-Cleaned: " << in.status.cleaned << "\n";
 
@@ -4033,6 +4051,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTER.EDGE_GUARD.COMBINE", rtcproc.filter_edge_guard.combine, "TOD filter edge guard combine rule");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTER.EDGE_GUARD.CONTEXT_SAMPLES", static_cast<int>(rtcproc.filter_edge_guard.context_samples), "TOD filter context samples");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTER.EDGE_GUARD.GUARD_SAMPLES", static_cast<int>(rtcproc.filter_edge_guard.guard_samples), "TOD filter guarded samples per edge");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TOD.OUTER_CONTEXT_SAMPLES", static_cast<int>(telescope.outer_scans_chunk), "TOD loaded outer context samples");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DOWNSAMPLED", rtcproc.run_downsample, "Downsampled");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CALIBRATED", rtcproc.run_calibrate, "Calibrated");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION", rtcproc.run_extinction, "Extinction corrected");
@@ -5875,6 +5894,7 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var<std::string>(fo, "CONFIG.TODFILTER.EDGE_GUARD.COMBINE", rtcproc.filter_edge_guard.combine);
     add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.CONTEXT_SAMPLES", rtcproc.filter_edge_guard.context_samples);
     add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.GUARD_SAMPLES", rtcproc.filter_edge_guard.guard_samples);
+    add_netcdf_var(fo, "CONFIG.TOD.OUTER_CONTEXT_SAMPLES", telescope.outer_scans_chunk);
     add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.MIN_SAMPLES", rtcproc.filter_edge_guard.min_samples);
     add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.EXTRA_SAMPLES", rtcproc.filter_edge_guard.extra_samples);
     add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.MAX_SAMPLES", rtcproc.filter_edge_guard.max_samples);
@@ -5975,6 +5995,7 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_WIDTH_SCALE", rtcproc.line_audit.detector_notch_width_scale);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MIN_WIDTH_HZ", rtcproc.line_audit.detector_notch_min_width_hz);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MAX_WIDTH_HZ", rtcproc.line_audit.detector_notch_max_width_hz);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_CONTEXT_SAMPLES", rtcproc.line_audit.detector_notch_context_samples);
     add_netcdf_var(fo, "CONFIG.INV_VAR.WINDOW_SEC", rtcproc.remove_bad_dets_window_sec);
 
     for (auto const &x : calib.apt) {

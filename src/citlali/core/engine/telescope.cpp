@@ -515,18 +515,31 @@ void Telescope::calc_scan_indices() {
         throw std::runtime_error("cannot calculate scan indices: all scans were rejected as too short");
     }
 
-    // set up the 3rd and 4th scan indices rows so that we don't lose data
-    // during lowpassing inner_scans_chunk is zero if lowpassing is not enabled
-    scan_indices.row(2) = scan_indices.row(0).array() - inner_scans_chunk;
-    scan_indices.row(3) = scan_indices.row(1).array() + inner_scans_chunk;
+    const Eigen::Index inner_context = std::max<Eigen::Index>(0, inner_scans_chunk);
+    const Eigen::Index outer_context =
+        std::max<Eigen::Index>(inner_context, outer_scans_chunk);
+    const Eigen::Index n_total_samples = require_tel_series("Hold").size();
 
-    // set first and last outer scan positions to the same as inner scans
-    scan_indices(2,0) = scan_indices(0,0);
-    scan_indices(3,n_scans-1) = scan_indices(1,n_scans-1);
+    // Rows 0/1 define the science scan. Rows 2/3 define the larger data span
+    // loaded around it for filters/PSD estimates. Keep these contexts separate:
+    // large detector-notch PSD context must not shrink the science scan.
+    for (Eigen::Index i = 0; i < n_scans; ++i) {
+        scan_indices(2, i) =
+            std::max<Eigen::Index>(0, scan_indices(0, i) - outer_context);
+        scan_indices(3, i) =
+            std::min<Eigen::Index>(n_total_samples - 1, scan_indices(1, i) + outer_context);
+    }
 
-    // add/subtract the filter length from first/last inner scan positions
-    scan_indices(0,0) = scan_indices(0,0) + inner_scans_chunk;
-    scan_indices(1,n_scans-1) = scan_indices(1,n_scans-1) - inner_scans_chunk;
+    // When no pre/post samples exist at the observation boundary, keep the
+    // legacy inner edge trim tied to the filter edge context only.
+    if (inner_context > 0) {
+        scan_indices(0, 0) =
+            std::min<Eigen::Index>(scan_indices(0, 0) + inner_context,
+                                   scan_indices(1, 0));
+        scan_indices(1, n_scans - 1) =
+            std::max<Eigen::Index>(scan_indices(0, n_scans - 1),
+                                   scan_indices(1, n_scans - 1) - inner_context);
+    }
 
     logger->info("scan_indices {}",scan_indices);
 }
