@@ -2159,6 +2159,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_WIDTH_SCALE", rtcproc.line_audit.detector_notch_width_scale);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MIN_WIDTH_HZ", rtcproc.line_audit.detector_notch_min_width_hz);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MAX_WIDTH_HZ", rtcproc.line_audit.detector_notch_max_width_hz);
+            add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_CONTEXT_SAMPLES", rtcproc.line_audit.detector_notch_context_samples);
         }
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
@@ -2424,6 +2425,7 @@ void Engine::create_tod_files() {
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_WIDTH_SCALE", rtcproc.line_audit.detector_notch_width_scale);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MIN_WIDTH_HZ", rtcproc.line_audit.detector_notch_min_width_hz);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MAX_WIDTH_HZ", rtcproc.line_audit.detector_notch_max_width_hz);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_CONTEXT_SAMPLES", rtcproc.line_audit.detector_notch_context_samples);
     }
 
     const Eigen::Index n_tod_output_scans_for_stream =
@@ -5966,6 +5968,7 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_WIDTH_SCALE", rtcproc.line_audit.detector_notch_width_scale);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MIN_WIDTH_HZ", rtcproc.line_audit.detector_notch_min_width_hz);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_MAX_WIDTH_HZ", rtcproc.line_audit.detector_notch_max_width_hz);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_CONTEXT_SAMPLES", rtcproc.line_audit.detector_notch_context_samples);
     add_netcdf_var(fo, "CONFIG.INV_VAR.WINDOW_SEC", rtcproc.remove_bad_dets_window_sec);
 
     for (auto const &x : calib.apt) {

@@ -146,6 +146,7 @@ public:
         double detector_notch_width_scale = 1.0;
         double detector_notch_min_width_hz = 0.25;
         double detector_notch_max_width_hz = 1.50;
+        Eigen::Index detector_notch_context_samples = 0;
     };
     RTCLineAuditOptions line_audit;
 
@@ -838,6 +839,11 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                              std::tuple{"timestream","raw_time_chunk","line_audit","detector_notch_max_width_hz"},
                              {}, {0.0});
         }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","detector_notch_context_samples"})) {
+            get_config_value(config, line_audit.detector_notch_context_samples, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","detector_notch_context_samples"},
+                             {}, {0});
+        }
         if (line_audit.apply_max_width_hz < line_audit.apply_min_width_hz) {
             logger->error(
                 "timestream.raw_time_chunk.line_audit.apply_max_width_hz ({}) must be >= apply_min_width_hz ({})",
@@ -853,7 +859,7 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             std::exit(EXIT_FAILURE);
         }
         logger->info(
-            "raw_time_chunk.line_audit configured: enabled={} line_min_hz={} line_max_hz={} segment_sec={} min_segment_sec={} overlap_frac={} continuum_radius_bins={} prominence_thresh={} cm_prominence_thresh={} min_good_frac={} min_windows={} max_peaks_per_detector={} max_det={} min_det_for_network={} cluster_tol_hz={} notch_min_detector_frac={} notch_min_detectors={} notch_min_cm_prominence={} detector_min_prominence={} detector_min_line_power_frac={} bad_detector_max_cluster_frac={} pre_filter_enabled={} post_filter_enabled={} post_filter_apply_shared_notches={} post_filter_apply_detector_notches={} post_filter_apply_iterations={} post_filter_line_min_hz={} post_filter_line_max_hz={} apply_shared_notches={} apply_min_support_networks={} apply_min_detector_frac={} apply_min_common_mode_prominence={} apply_width_scale={} apply_min_width_hz={} apply_max_width_hz={} apply_max_notches={} apply_cluster_tol_hz={} detector_notch_min_prominence={} detector_notch_min_line_power_frac={} detector_notch_max_notches={} detector_notch_width_scale={} detector_notch_min_width_hz={} detector_notch_max_width_hz={}",
+            "raw_time_chunk.line_audit configured: enabled={} line_min_hz={} line_max_hz={} segment_sec={} min_segment_sec={} overlap_frac={} continuum_radius_bins={} prominence_thresh={} cm_prominence_thresh={} min_good_frac={} min_windows={} max_peaks_per_detector={} max_det={} min_det_for_network={} cluster_tol_hz={} notch_min_detector_frac={} notch_min_detectors={} notch_min_cm_prominence={} detector_min_prominence={} detector_min_line_power_frac={} bad_detector_max_cluster_frac={} pre_filter_enabled={} post_filter_enabled={} post_filter_apply_shared_notches={} post_filter_apply_detector_notches={} post_filter_apply_iterations={} post_filter_line_min_hz={} post_filter_line_max_hz={} apply_shared_notches={} apply_min_support_networks={} apply_min_detector_frac={} apply_min_common_mode_prominence={} apply_width_scale={} apply_min_width_hz={} apply_max_width_hz={} apply_max_notches={} apply_cluster_tol_hz={} detector_notch_min_prominence={} detector_notch_min_line_power_frac={} detector_notch_max_notches={} detector_notch_width_scale={} detector_notch_min_width_hz={} detector_notch_max_width_hz={} detector_notch_context_samples={}",
             line_audit.enabled,
             line_audit.line_min_hz,
             line_audit.line_max_hz,
@@ -896,7 +902,8 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             line_audit.detector_notch_max_notches,
             line_audit.detector_notch_width_scale,
             line_audit.detector_notch_min_width_hz,
-            line_audit.detector_notch_max_width_hz);
+            line_audit.detector_notch_max_width_hz,
+            line_audit.detector_notch_context_samples);
     }
 
     // run polarization?
@@ -1358,6 +1365,13 @@ inline void RTCProc::configure_filter_edge_guard(double fs_hz) {
         guard = combine_samples(guard, static_cast<Eigen::Index>(downsampler.factor - 1));
     }
 
+    const Eigen::Index detector_notch_context =
+        (line_audit.enabled &&
+         line_audit.post_filter_enabled &&
+         line_audit.post_filter_apply_detector_notches)
+            ? std::max<Eigen::Index>(0, line_audit.detector_notch_context_samples)
+            : 0;
+
     guard = std::max(guard, filter_edge_guard.min_samples);
     guard += filter_edge_guard.extra_samples;
     if (filter_edge_guard.max_samples > 0) {
@@ -1366,7 +1380,8 @@ inline void RTCProc::configure_filter_edge_guard(double fs_hz) {
     guard = std::max<Eigen::Index>(0, guard);
 
     filter_edge_guard.guard_samples = guard;
-    filter_edge_guard.context_samples = std::max(base_context, guard);
+    filter_edge_guard.context_samples =
+        std::max(std::max(base_context, guard), detector_notch_context);
 }
 
 template <typename tc_t>
