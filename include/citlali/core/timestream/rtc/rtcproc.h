@@ -379,10 +379,12 @@ public:
                                                      const RTCLineAuditOptions &,
                                                      bool post_filter_stage = false);
 
-    // optionally apply detector-local zero-phase notches after the shared-line pass
+    // optionally apply detector-local zero-phase notches from the available scan context
     template <typename tc_t>
     Eigen::Index apply_rtc_line_audit_detector_notches(tc_t &, double fs_hz,
-                                                       const RTCLineAuditOptions &);
+                                                       const RTCLineAuditOptions &,
+                                                       Eigen::Index diag_start_sample = 0,
+                                                       Eigen::Index diag_n_samples = -1);
 
     // configure and apply a standard flag guard around filtered scan edges
     void configure_filter_edge_guard(double fs_hz);
@@ -1630,6 +1632,85 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
 
     apply_filter_edge_guard(in, si, sl);
 
+    RTCLineAuditOptions post_line_audit = line_audit;
+    post_line_audit.enabled = line_audit.enabled && line_audit.post_filter_enabled;
+    post_line_audit.apply_shared_notches = line_audit.post_filter_apply_shared_notches;
+    if (std::isfinite(line_audit.post_filter_line_min_hz)) {
+        post_line_audit.line_min_hz = line_audit.post_filter_line_min_hz;
+    }
+    if (std::isfinite(line_audit.post_filter_line_max_hz)) {
+        post_line_audit.line_max_hz = line_audit.post_filter_line_max_hz;
+    }
+
+    auto seed_rtc_detector_diag = [&](Eigen::Index scan_id, Eigen::Index n_dets) {
+        std::vector<RTCDetectorDiagSummary> existing;
+        auto &summary = rtc_detector_summary_by_scan[scan_id];
+        if (summary.size() == static_cast<std::size_t>(n_dets)) {
+            existing = summary;
+        }
+        summary.assign(static_cast<std::size_t>(n_dets), RTCDetectorDiagSummary{});
+        for (Eigen::Index det = 0; det < n_dets; ++det) {
+            auto &row = summary[static_cast<std::size_t>(det)];
+            row.det = det;
+            if (det < static_cast<Eigen::Index>(despiker.last_detector_diag.size())) {
+                static_cast<DespikeDetectorDiagSummary &>(row) =
+                    despiker.last_detector_diag[static_cast<std::size_t>(det)];
+            }
+            if (existing.size() == static_cast<std::size_t>(n_dets)) {
+                const auto &old = existing[static_cast<std::size_t>(det)];
+                row.detector_notch_n_applied = old.detector_notch_n_applied;
+                row.detector_notch_primary_freq_hz = old.detector_notch_primary_freq_hz;
+                row.detector_notch_primary_width_hz = old.detector_notch_primary_width_hz;
+                row.detector_notch_primary_prominence = old.detector_notch_primary_prominence;
+                row.detector_notch_primary_line_power_frac = old.detector_notch_primary_line_power_frac;
+                row.detector_notch_rms_before = old.detector_notch_rms_before;
+                row.detector_notch_rms_after = old.detector_notch_rms_after;
+            }
+        }
+    };
+
+    if (post_line_audit.enabled && post_line_audit.post_filter_apply_detector_notches) {
+        seed_rtc_detector_diag(in.index.data, in.scans.data.cols());
+        const auto n_detector_notches =
+            apply_rtc_line_audit_detector_notches(in, telescope.fsmp, post_line_audit, si, sl);
+        if (n_detector_notches > 0) {
+            in.status.tod_filtered = true;
+            Eigen::Index detector_guard_samples = 0;
+            if (filter_edge_guard.apply_dynamic_notch) {
+                const Eigen::Index guard_notch_count =
+                    (post_line_audit.detector_notch_max_notches > 0)
+                        ? std::min<Eigen::Index>(post_line_audit.detector_notch_max_notches,
+                                                 n_detector_notches)
+                        : n_detector_notches;
+                detector_guard_samples =
+                    guard_notch_count *
+                    timestream::Filter::notch_settle_samples_for_width(
+                        telescope.fsmp,
+                        post_line_audit.detector_notch_min_width_hz,
+                        filter_edge_guard.iir_settle_attenuation);
+                detector_guard_samples =
+                    std::max(detector_guard_samples, filter_edge_guard.min_samples);
+                detector_guard_samples += filter_edge_guard.extra_samples;
+                if (filter_edge_guard.max_samples > 0) {
+                    detector_guard_samples =
+                        std::min(detector_guard_samples, filter_edge_guard.max_samples);
+                }
+                detector_guard_samples = std::max<Eigen::Index>(0, detector_guard_samples);
+            }
+            if (detector_guard_samples > 0) {
+                const Eigen::Index pre_context = std::max<Eigen::Index>(0, si);
+                const Eigen::Index post_context =
+                    std::max<Eigen::Index>(0, in.scans.data.rows() - (si + sl));
+                const Eigen::Index missing_guard = std::max<Eigen::Index>(
+                    std::max<Eigen::Index>(0, detector_guard_samples - pre_context),
+                    std::max<Eigen::Index>(0, detector_guard_samples - post_context));
+                if (missing_guard > 0) {
+                    apply_filter_edge_guard(in, si, sl, missing_guard);
+                }
+            }
+        }
+    }
+
     if (run_downsample) {
         logger->debug("downsampling data");
         // get the block of out scans that corresponds to the inner scan indices
@@ -1727,15 +1808,6 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     // copy noise
     out.noise.data = in.noise.data;
 
-    RTCLineAuditOptions post_line_audit = line_audit;
-    post_line_audit.enabled = line_audit.enabled && line_audit.post_filter_enabled;
-    post_line_audit.apply_shared_notches = line_audit.post_filter_apply_shared_notches;
-    if (std::isfinite(line_audit.post_filter_line_min_hz)) {
-        post_line_audit.line_min_hz = line_audit.post_filter_line_min_hz;
-    }
-    if (std::isfinite(line_audit.post_filter_line_max_hz)) {
-        post_line_audit.line_max_hz = line_audit.post_filter_line_max_hz;
-    }
     double post_filter_fs_hz = telescope.fsmp;
     if (run_downsample && downsampler.factor > 1) {
         post_filter_fs_hz /= static_cast<double>(downsampler.factor);
@@ -1781,49 +1853,9 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         }
     }
 
-    // preserve per-detector despike summaries for the final RTC output write.
-    std::vector<RTCDetectorDiagSummary> rtc_diag_seed(static_cast<std::size_t>(out.scans.data.cols()));
-    for (Eigen::Index det = 0; det < out.scans.data.cols(); ++det) {
-        auto &row = rtc_diag_seed[static_cast<std::size_t>(det)];
-        row.det = det;
-        if (det < static_cast<Eigen::Index>(despiker.last_detector_diag.size())) {
-            static_cast<DespikeDetectorDiagSummary &>(row) =
-                despiker.last_detector_diag[static_cast<std::size_t>(det)];
-        }
-    }
-    rtc_detector_summary_by_scan[out.index.data] = std::move(rtc_diag_seed);
-    if (post_line_audit.enabled && post_line_audit.post_filter_apply_detector_notches) {
-        const auto n_detector_notches =
-            apply_rtc_line_audit_detector_notches(out, post_filter_fs_hz, post_line_audit);
-        if (n_detector_notches > 0) {
-            out.status.tod_filtered = true;
-            Eigen::Index detector_guard_samples = 0;
-            if (filter_edge_guard.apply_dynamic_notch) {
-                const Eigen::Index guard_notch_count =
-                    (post_line_audit.detector_notch_max_notches > 0)
-                        ? std::min<Eigen::Index>(post_line_audit.detector_notch_max_notches,
-                                                 n_detector_notches)
-                        : n_detector_notches;
-                detector_guard_samples =
-                    guard_notch_count *
-                    timestream::Filter::notch_settle_samples_for_width(
-                        post_filter_fs_hz,
-                        post_line_audit.detector_notch_min_width_hz,
-                        filter_edge_guard.iir_settle_attenuation);
-                detector_guard_samples =
-                    std::max(detector_guard_samples, filter_edge_guard.min_samples);
-                detector_guard_samples += filter_edge_guard.extra_samples;
-                if (filter_edge_guard.max_samples > 0) {
-                    detector_guard_samples =
-                        std::min(detector_guard_samples, filter_edge_guard.max_samples);
-                }
-                detector_guard_samples = std::max<Eigen::Index>(0, detector_guard_samples);
-            }
-            if (detector_guard_samples > 0) {
-                apply_filter_edge_guard(out, 0, out.scans.data.rows(), detector_guard_samples);
-            }
-        }
-    }
+    // Preserve per-detector despike summaries for the final RTC output write while
+    // retaining detector-local notch diagnostics selected from the outer scan.
+    seed_rtc_detector_diag(out.index.data, out.scans.data.cols());
     if (!line_audit.enabled) {
         rtc_network_summary_by_scan.erase(out.index.data);
     }
@@ -3317,7 +3349,9 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
 template <typename tc_t>
 Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
                                                             double fs_hz,
-                                                            const RTCLineAuditOptions &audit) {
+                                                            const RTCLineAuditOptions &audit,
+                                                            Eigen::Index diag_start_sample,
+                                                            Eigen::Index diag_n_samples) {
     if (!audit.enabled || !audit.post_filter_apply_detector_notches ||
         !std::isfinite(fs_hz) || fs_hz <= 0.0) {
         return 0;
@@ -3328,6 +3362,19 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
     const Eigen::Index n_dets = in.scans.data.cols();
     if (n_pts < 16 || n_dets <= 0) {
         return 0;
+    }
+
+    diag_start_sample = std::max<Eigen::Index>(0, diag_start_sample);
+    if (diag_start_sample >= n_pts) {
+        diag_start_sample = 0;
+    }
+    if (diag_n_samples < 0) {
+        diag_n_samples = n_pts - diag_start_sample;
+    }
+    diag_n_samples = std::min<Eigen::Index>(diag_n_samples, n_pts - diag_start_sample);
+    if (diag_n_samples <= 0) {
+        diag_start_sample = 0;
+        diag_n_samples = n_pts;
     }
 
     const bool has_kernel =
@@ -3417,10 +3464,20 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
     };
 
     auto robust_rms = [&](const Eigen::VectorXd &x,
-                          const Eigen::Array<bool, Eigen::Dynamic, 1> &valid) {
+                          const Eigen::Array<bool, Eigen::Dynamic, 1> &valid,
+                          Eigen::Index start_sample,
+                          Eigen::Index n_samples) {
         std::vector<double> good;
-        good.reserve(static_cast<std::size_t>(x.size()));
-        for (Eigen::Index i = 0; i < x.size(); ++i) {
+        start_sample = std::max<Eigen::Index>(0, start_sample);
+        if (start_sample >= x.size()) {
+            return nan;
+        }
+        n_samples = std::min<Eigen::Index>(n_samples, x.size() - start_sample);
+        if (n_samples <= 0) {
+            return nan;
+        }
+        good.reserve(static_cast<std::size_t>(n_samples));
+        for (Eigen::Index i = start_sample; i < start_sample + n_samples; ++i) {
             if (valid(i) && std::isfinite(x(i))) {
                 good.push_back(x(i));
             }
@@ -3654,13 +3711,27 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
                 (good_freq.size() > 1) ? std::max(good_freq[1] - good_freq[0], 1.0e-6) : 1.0e-6;
             const double width_hz = std::max(good_freq[j1] - good_freq[j0], min_bin_width);
             double line_power = 0.0;
-            for (std::size_t k = j0 + 1; k <= j1; ++k) {
-                const double df = good_freq[k] - good_freq[k - 1];
-                const double base0 = continuum[std::min<std::size_t>(k - 1, continuum.size() - 1)];
-                const double base1 = continuum[std::min<std::size_t>(k, continuum.size() - 1)];
-                const double local0 = std::max(good_psd[k - 1] - base0, 0.0);
-                const double local1 = std::max(good_psd[k] - base1, 0.0);
-                line_power += 0.5 * (local0 + local1) * df;
+            auto continuum_at = [&](std::size_t k) {
+                double base = continuum[std::min<std::size_t>(k, continuum.size() - 1)];
+                if (!std::isfinite(base) || base <= 0.0) {
+                    base = continuum_fallback;
+                }
+                return base;
+            };
+            if (j0 == j1) {
+                const double df_left = (i > 0) ? (good_freq[i] - good_freq[i - 1]) : min_bin_width;
+                const double df_right =
+                    (i + 1 < good_freq.size()) ? (good_freq[i + 1] - good_freq[i]) : min_bin_width;
+                const double df = std::max(0.5 * (df_left + df_right), min_bin_width);
+                line_power = std::max(good_psd[i] - continuum_at(i), 0.0) * df;
+            }
+            else {
+                for (std::size_t k = j0 + 1; k <= j1; ++k) {
+                    const double df = good_freq[k] - good_freq[k - 1];
+                    const double local0 = std::max(good_psd[k - 1] - continuum_at(k - 1), 0.0);
+                    const double local1 = std::max(good_psd[k] - continuum_at(k), 0.0);
+                    line_power += 0.5 * (local0 + local1) * df;
+                }
             }
 
             DetectorPeak peak;
@@ -3816,12 +3887,14 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
             continue;
         }
 
-        diag.detector_notch_rms_before = robust_rms(in.scans.data.col(det), valid);
+        diag.detector_notch_rms_before =
+            robust_rms(in.scans.data.col(det), valid, diag_start_sample, diag_n_samples);
         in.scans.data.col(det) = filtered_scan_col.col(0);
         if (has_kernel) {
             in.kernel.data.col(det) = filtered_kernel_col.col(0);
         }
-        diag.detector_notch_rms_after = robust_rms(in.scans.data.col(det), valid);
+        diag.detector_notch_rms_after =
+            robust_rms(in.scans.data.col(det), valid, diag_start_sample, diag_n_samples);
 
         diag.detector_notch_n_applied = static_cast<int>(applied_peaks.size());
         diag.detector_notch_primary_freq_hz = applied_peaks.front().freq_hz;
