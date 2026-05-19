@@ -116,6 +116,7 @@ timestream: # timestream reduction parameters
       fwhm_arcsec: 0 # manually specify fwhm for gaussian/airy kernel (ignored if 0)
       image_ext_name: signal # extention name if FITS file
       type: gaussian # how to make kernel (gaussian, airy, fits)
+      use_wcs_reprojection: true # if type=fits, reproject kernel image using FITS WCS onto Citlali map pixel scale before sampling
     flux_calibration: # flux calibration
       enabled: false # enable or disable flux calibration
     extinction_correction: # extinction correction (per sample, tau for each band calculated from fit to atm models)

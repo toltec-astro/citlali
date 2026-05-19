@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <cmath>
+#include <cctype>
 
 #include <boost/math/special_functions/bessel.hpp>
 
@@ -17,9 +19,24 @@ public:
 
     std::string filepath, type;
     std::vector<std::string> img_ext_names;
+    bool use_wcs_reprojection = true;
 
     // input kernel images
     std::vector<Eigen::MatrixXd> images;
+    std::vector<Eigen::MatrixXd> reprojected_images;
+
+    struct KernelWcs {
+        bool has_wcs = false;
+        double crpix1_pix = 0.0;
+        double crpix2_pix = 0.0;
+        double crval1_rad = 0.0;
+        double crval2_rad = 0.0;
+        double cdelt1_rad = 0.0;
+        double cdelt2_rad = 0.0;
+    };
+    std::vector<KernelWcs> image_wcs;
+    bool reprojection_ready = false;
+    double reproj_pixel_size_rad = -1.0;
 
     // sigma and fwhm from config
     double sigma_rad, fwhm_rad;
@@ -48,10 +65,114 @@ public:
     template<typename apt_t, typename Derived>
     void create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string &,
                                  apt_t &, double, Eigen::DenseBase<Derived> &);
+
+    double unit_to_rad(std::string unit) {
+        for (auto &c: unit) {
+            c = static_cast<char>(std::tolower(c));
+        }
+        if (unit == "rad" || unit == "radian" || unit == "radians") {
+            return 1.0;
+        }
+        if (unit == "deg" || unit == "degree" || unit == "degrees") {
+            return DEG_TO_RAD;
+        }
+        if (unit == "arcsec") {
+            return ASEC_TO_RAD;
+        }
+        if (unit == "arcmin") {
+            return 60.0 * ASEC_TO_RAD;
+        }
+        return DEG_TO_RAD;
+    }
+
+    double bilinear_sample(const Eigen::MatrixXd &img, double row, double col) {
+        if (img.rows() <= 1 || img.cols() <= 1) {
+            return 0.0;
+        }
+        if (row < 0.0 || col < 0.0 || row > static_cast<double>(img.rows() - 1) ||
+            col > static_cast<double>(img.cols() - 1)) {
+            return 0.0;
+        }
+        auto r0 = static_cast<Eigen::Index>(std::floor(row));
+        auto c0 = static_cast<Eigen::Index>(std::floor(col));
+        auto r1 = std::min<Eigen::Index>(r0 + 1, img.rows() - 1);
+        auto c1 = std::min<Eigen::Index>(c0 + 1, img.cols() - 1);
+        double fr = row - static_cast<double>(r0);
+        double fc = col - static_cast<double>(c0);
+        double v00 = img(r0, c0);
+        double v01 = img(r0, c1);
+        double v10 = img(r1, c0);
+        double v11 = img(r1, c1);
+        return (1.0 - fr) * (1.0 - fc) * v00 +
+               (1.0 - fr) * fc * v01 +
+               fr * (1.0 - fc) * v10 +
+               fr * fc * v11;
+    }
+
+    double nearest_sample(const Eigen::MatrixXd &img, double row, double col) {
+        auto ir = static_cast<Eigen::Index>(std::llround(row));
+        auto ic = static_cast<Eigen::Index>(std::llround(col));
+        if (ir < 0 || ic < 0 || ir >= img.rows() || ic >= img.cols()) {
+            return 0.0;
+        }
+        return img(ir, ic);
+    }
+
+    auto reproject_image_to_target(const Eigen::MatrixXd &src, const KernelWcs &wcs, double target_pixel_size_rad) {
+        if (!wcs.has_wcs || target_pixel_size_rad <= 0) {
+            return src;
+        }
+
+        auto src_drow = std::abs(wcs.cdelt2_rad);
+        auto src_dcol = std::abs(wcs.cdelt1_rad);
+        if (src_drow <= 0 || src_dcol <= 0) {
+            return src;
+        }
+
+        auto n_rows = std::max<Eigen::Index>(1, static_cast<Eigen::Index>(std::llround(
+            static_cast<double>(src.rows()) * src_drow / target_pixel_size_rad)));
+        auto n_cols = std::max<Eigen::Index>(1, static_cast<Eigen::Index>(std::llround(
+            static_cast<double>(src.cols()) * src_dcol / target_pixel_size_rad)));
+
+        Eigen::MatrixXd out(n_rows, n_cols);
+        out.setZero();
+
+        double row0 = (static_cast<double>(n_rows) - 1.0) / 2.0;
+        double col0 = (static_cast<double>(n_cols) - 1.0) / 2.0;
+
+        for (Eigen::Index r = 0; r < n_rows; ++r) {
+            double lat = (static_cast<double>(r) - row0) * target_pixel_size_rad;
+            for (Eigen::Index c = 0; c < n_cols; ++c) {
+                double lon = (static_cast<double>(c) - col0) * target_pixel_size_rad;
+                double src_col = (lon - wcs.crval1_rad) / wcs.cdelt1_rad + wcs.crpix1_pix;
+                double src_row = (lat - wcs.crval2_rad) / wcs.cdelt2_rad + wcs.crpix2_pix;
+                out(r, c) = bilinear_sample(src, src_row, src_col);
+            }
+        }
+        return out;
+    }
+
+    void ensure_reprojected_images(double target_pixel_size_rad) {
+        if (reprojection_ready && std::abs(reproj_pixel_size_rad - target_pixel_size_rad) <= 1e-18) {
+            return;
+        }
+        reprojected_images.clear();
+        for (Eigen::Index i = 0; i < images.size(); ++i) {
+            reprojected_images.push_back(reproject_image_to_target(images[i], image_wcs[i], target_pixel_size_rad));
+        }
+        reprojection_ready = true;
+        reproj_pixel_size_rad = target_pixel_size_rad;
+    }
 };
 
 void Kernel::setup(Eigen::Index n_maps, std::string pixel_axes) {
     if (type == "fits") {
+        images.clear();
+        image_wcs.clear();
+        reprojected_images.clear();
+        reprojection_ready = false;
+        reproj_pixel_size_rad = -1.0;
+
         if (img_ext_names.size()!=n_maps && img_ext_names.size()!=1) {
             logger->error("mismatch for number of kernel images");
             std::exit(EXIT_FAILURE);
@@ -60,6 +181,47 @@ void Kernel::setup(Eigen::Index n_maps, std::string pixel_axes) {
         fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(filepath, pixel_axes);
         for (auto & img_ext_name : img_ext_names) {
             images.push_back(fits_io.get_hdu(img_ext_name));
+
+            KernelWcs wcs;
+            try {
+                CCfits::ExtHDU& hdu = fits_io.pfits->extension(img_ext_name);
+                double crpix1 = 0.0, crpix2 = 0.0, crval1 = 0.0, crval2 = 0.0, cdelt1 = 0.0, cdelt2 = 0.0;
+                std::string cunit1 = "deg", cunit2 = "deg";
+                hdu.readKey("CRPIX1", crpix1);
+                hdu.readKey("CRPIX2", crpix2);
+                hdu.readKey("CRVAL1", crval1);
+                hdu.readKey("CRVAL2", crval2);
+                hdu.readKey("CDELT1", cdelt1);
+                hdu.readKey("CDELT2", cdelt2);
+                try {
+                    hdu.readKey("CUNIT1", cunit1);
+                } catch (...) {}
+                try {
+                    hdu.readKey("CUNIT2", cunit2);
+                } catch (...) {}
+
+                auto s1 = unit_to_rad(cunit1);
+                auto s2 = unit_to_rad(cunit2);
+
+                wcs.crpix1_pix = crpix1 - 1.0;
+                wcs.crpix2_pix = crpix2 - 1.0;
+                wcs.crval1_rad = crval1 * s1;
+                wcs.crval2_rad = crval2 * s2;
+                wcs.cdelt1_rad = cdelt1 * s1;
+                wcs.cdelt2_rad = cdelt2 * s2;
+                wcs.has_wcs = (std::abs(wcs.cdelt1_rad) > 0 && std::abs(wcs.cdelt2_rad) > 0);
+
+                // fitsIO::get_hdu flips x for non-altaz; mirror WCS to match internal matrix orientation.
+                if (pixel_axes != "altaz") {
+                    auto nx = static_cast<double>(images.back().cols());
+                    auto old_crpix1 = wcs.crpix1_pix;
+                    wcs.crpix1_pix = (nx - 1.0) - old_crpix1;
+                    wcs.cdelt1_rad *= -1.0;
+                }
+            } catch (...) {
+                wcs.has_wcs = false;
+            }
+            image_wcs.push_back(wcs);
         }
     }
 }
@@ -210,6 +372,10 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
     Eigen::Index n_pts = in.scans.data.rows();
 
     in.kernel.data.resize(n_pts,n_dets);
+    in.kernel.data.setZero();
+    if (use_wcs_reprojection) {
+        ensure_reprojected_images(pixel_size_rad);
+    }
 
     Eigen::Index map_index = 0;
 
@@ -223,18 +389,20 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
             map_index = map_indices(i);
         }
 
+        const auto &img = use_wcs_reprojection ? reprojected_images[map_index] : images[map_index];
+        double row0 = (static_cast<double>(img.rows()) - 1.0) / 2.0;
+        double col0 = (static_cast<double>(img.cols()) - 1.0) / 2.0;
+
         // get map buffer row and col indices for lat and lon vectors
-        Eigen::VectorXd irows = lat.array()/pixel_size_rad + (images[map_index].rows())/2.;
-        Eigen::VectorXd icols = lon.array()/pixel_size_rad + (images[map_index].cols())/2.;
+        Eigen::VectorXd irows = lat.array()/pixel_size_rad + row0;
+        Eigen::VectorXd icols = lon.array()/pixel_size_rad + col0;
 
         for (Eigen::Index j = 0; j<n_pts; ++j) {
-            // row and col pixel for kernel image
-            Eigen::Index ir = irows(j);
-            Eigen::Index ic = icols(j);
-
-            // check if current sample is on the image and add to the timestream
-            if ((ir >= 0) && (ir < images[map_index].rows()) && (ic >= 0) && (ic < images[map_index].cols())) {
-                in.kernel.data(j,i) = images[map_index](ir,ic);
+            if (use_wcs_reprojection) {
+                in.kernel.data(j,i) = bilinear_sample(img, irows(j), icols(j));
+            }
+            else {
+                in.kernel.data(j,i) = nearest_sample(img, irows(j), icols(j));
             }
         }
     }

@@ -116,6 +116,8 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
 
         // if kernel type is FITS input
         if (kernel.type == "fits") {
+            get_config_value(config, kernel.use_wcs_reprojection, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","kernel","use_wcs_reprojection"},{},{true});
             // get extension name vector
             auto img_ext_name_node = config.get_node(std::tuple{"timestream","raw_time_chunk","kernel", "image_ext_names"});
             // get images
