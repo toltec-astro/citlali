@@ -174,12 +174,14 @@ public:
     // populate maps with a time chunk (signal, kernel, coverage, and noise)
     template<class map_buffer_t, typename Derived, typename apt_t>
     void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
-                            Eigen::DenseBase<Derived> &, std::string &, apt_t &, double, bool, bool);
+                            Eigen::DenseBase<Derived> &, std::string &, apt_t &, double, bool, bool,
+                            const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr);
 
     // populate maps with a time chunk (signal, kernel, coverage, and noise)
     template<class map_buffer_t, typename Derived, typename apt_t>
     void populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
-                                     Eigen::DenseBase<Derived> &, std::string &, apt_t &, double, bool, bool);
+                                     Eigen::DenseBase<Derived> &, std::string &, apt_t &, double, bool, bool,
+                                     const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr);
 };
 
 auto JincMapmaker::jinc_func(double r, double a, double b, double c, double r_max, double l_d) {
@@ -340,7 +342,8 @@ void JincMapmaker::allocate_pointing(map_buffer_t &mb, double weight, double cos
 template<class map_buffer_t, typename Derived, typename apt_t>
 void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
-                        std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb, bool run_noise) {
+                        std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb, bool run_noise,
+                        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
 
     const bool use_omb = !omb.noise.empty();
     const bool use_cmb = !cmb.noise.empty() && !use_omb;
@@ -503,6 +506,10 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
             // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
+            if (active_maps != nullptr &&
+                (map_index < 0 || map_index >= active_maps->size() || !(*active_maps)(map_index))) {
+                continue;
+            }
             Eigen::Index array_index = apt["array"](det_index);
             const bool use_subpix = (subpixel_n > 1) && (jinc_weights_mat_subpix.count(array_index) > 0);
             const auto *subpix_vec = use_subpix ? &jinc_weights_mat_subpix.at(array_index) : nullptr;
@@ -786,7 +793,8 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 template<class map_buffer_t, typename Derived, typename apt_t>
 void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
-                        std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb, bool run_noise) {
+                        std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb, bool run_noise,
+                        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
 
     const bool use_omb = !omb.noise.empty();
     const bool use_cmb = !cmb.noise.empty() && !use_omb;
@@ -984,6 +992,10 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
 
             // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
+            if (active_maps != nullptr &&
+                (map_index < 0 || map_index >= active_maps->size() || !(*active_maps)(map_index))) {
+                return 0;
+            }
             Eigen::Index array_index = apt["array"](det_index);
             update_jinc_debug_breadcrumb("detector-preflight", det_index, det_uid, -1, map_index,
                                          array_index, -1, -1, -1);

@@ -184,13 +184,30 @@ void MapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::ve
     wcs.cunit.insert(wcs.cunit.end(),{"Hz",""});
 }
 
-void MapBuffer::normalize_maps() {
+void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
     // vectors for maps
-    map_in_vec.resize(signal.size());
-    std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
-    map_out_vec.resize(signal.size());
-
     const bool use_grid_weight = grid_weight.size() == signal.size();
+    if (active_maps == nullptr) {
+        map_in_vec.resize(signal.size());
+        std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
+    }
+    else {
+        map_in_vec.clear();
+        map_in_vec.reserve(signal.size());
+        for (Eigen::Index i = 0; i < static_cast<Eigen::Index>(signal.size()); ++i) {
+            if (i < active_maps->size() && (*active_maps)(i)) {
+                map_in_vec.push_back(static_cast<int>(i));
+            }
+        }
+    }
+    map_out_vec.resize(map_in_vec.size());
+
+    if (map_in_vec.empty()) {
+        if (use_grid_weight) {
+            std::vector<Eigen::MatrixXd>().swap(grid_weight);
+        }
+        return;
+    }
 
     // normalize science and kernel mpas
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {

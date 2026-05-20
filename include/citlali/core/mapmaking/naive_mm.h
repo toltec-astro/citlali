@@ -58,12 +58,14 @@ public:
     // populate maps with a time chunk (signal, kernel, coverage, and noise)
     template<class map_buffer_t, typename Derived, typename apt_t>
     void populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
-                             Eigen::DenseBase<Derived> &, std::string &, apt_t &, double, bool, bool);
+                             Eigen::DenseBase<Derived> &, std::string &, apt_t &, double, bool, bool,
+                             const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr);
 
     // populate maps with a time chunk (signal, kernel, coverage, and noise)
     template<class map_buffer_t, typename Derived, typename apt_t>
     void populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
-                                      Eigen::DenseBase<Derived> &, std::string &, apt_t &, double, bool, bool);
+                                      Eigen::DenseBase<Derived> &, std::string &, apt_t &, double, bool, bool,
+                                      const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr);
 };
 
 template <class map_buffer_t>
@@ -95,7 +97,8 @@ template<class map_buffer_t, typename Derived, typename apt_t>
 void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, map_buffer_t &omb,
                                         map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
                                         std::string &pixel_axes, apt_t &apt, double d_fsmp,
-                                        bool run_omb, bool run_noise) {
+                                        bool run_omb, bool run_noise,
+                                        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
 
     typedef Eigen::Triplet<double> T;
     std::vector<std::vector<T>> signals, weights, kernels, coverages;
@@ -205,6 +208,10 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
         if (apt["flag"](i)==0 && (in.flags.data.col(i).array()==0).any() && run_det) {
             // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
+            if (active_maps != nullptr &&
+                (map_index < 0 || map_index >= active_maps->size() || !(*active_maps)(map_index))) {
+                continue;
+            }
 
             // indices for Q and U maps
             int q_index = map_index + step;
@@ -439,7 +446,8 @@ template<class map_buffer_t, typename Derived, typename apt_t>
 void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, map_buffer_t &omb,
                                                  map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
                                                  std::string &pixel_axes, apt_t &apt, double d_fsmp,
-                                                 bool run_omb, bool run_noise) {
+                                                 bool run_omb, bool run_noise,
+                                                 const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
 
     const bool use_cmb = !cmb.noise.empty();
     const bool use_omb = !omb.noise.empty();
@@ -477,7 +485,7 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
 
     if (!unique_map_indices) {
         logger->warn("populate_maps_naive_parallel requires unique map indices; falling back to populate_maps_naive");
-        populate_maps_naive(in, omb, cmb, map_indices, pixel_axes, apt, d_fsmp, run_omb, run_noise);
+        populate_maps_naive(in, omb, cmb, map_indices, pixel_axes, apt, d_fsmp, run_omb, run_noise, active_maps);
         return;
     }
 
@@ -515,6 +523,10 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
         if (apt["flag"](i)==0 && (in.flags.data.col(i).array()==0).any() && run_det) {
             // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
+            if (active_maps != nullptr &&
+                (map_index < 0 || map_index >= active_maps->size() || !(*active_maps)(map_index))) {
+                return 0;
+            }
 
             // indices for Q and U maps
             int q_index = map_index + step;
