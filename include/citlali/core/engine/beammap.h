@@ -2640,7 +2640,7 @@ void Beammap::run_loop() {
             "source_add={:.3f} remove_bad_dets={:.3f} rfi_mask={:.3f} "
             "calc_weights={:.3f} reset_weights={:.3f} chunk_summary={:.3f} diagnostics={:.3f} "
             "| map_s zero={:.3f} accumulate_wall={:.3f} accumulate_scan_sum={:.3f} "
-            "detector_parallel={:.3f} normalize={:.3f} scan_band_mask={:.3f} | fit_sum_s weighted_peak={:.3f} "
+            "normalize={:.3f} scan_band_mask={:.3f} | fit_sum_s weighted_peak={:.3f} "
             "prior_init={:.3f} gaussian={:.3f}",
             label,
             s("iter.wall"),
@@ -2662,7 +2662,6 @@ void Beammap::run_loop() {
             s("map_zero.sum"),
             s("map_accumulate.wall"),
             s("map_accumulate_scan.sum"),
-            s("map_accumulate_detector_parallel.wall"),
             s("map_normalize.sum"),
             s("scan_band_mask.wall"),
             s("fit_weighted_peak.sum"),
@@ -2954,86 +2953,63 @@ void Beammap::run_loop() {
                 const auto map_accumulate_perf_start = BeammapPerfStats::now();
                 if (map_grouping == "detector") {
                     bool run_omb = true;
-                    if (map_method == "jinc") {
-                        bool used_detector_parallel_jinc = false;
-                        time_stage("map_accumulate_detector_parallel.wall", [&]() {
-                            used_detector_parallel_jinc =
-                                jinc_mm.populate_detector_maps_jinc_scans_parallel(
-                                    ptcs, omb, cmb, telescope.pixel_axes, calib.apt,
-                                    telescope.d_fsmp, run_omb, run_noise);
-                        });
-                        if (used_detector_parallel_jinc) {
-                            logger->info("used detector-parallel jinc accumulation across {} scans", ptcs.size());
-                            if (update_progress) {
-                                pb.count(telescope.scan_indices.cols(), telescope.scan_indices.cols());
-                            }
+                    for (auto &ptc : ptcs) {
+                        if (map_method == "naive") {
+                            time_stage("map_accumulate_scan.sum", [&]() {
+                                naive_mm.populate_maps_naive_parallel(ptc, omb, cmb, ptc.map_indices.data,
+                                                                      telescope.pixel_axes, calib.apt,
+                                                                      telescope.d_fsmp, run_omb, run_noise);
+                            });
                         }
-                        else {
-                            logger->info("detector-parallel jinc accumulation unavailable; using per-scan jinc path");
-                            for (auto &ptc : ptcs) {
-                                if (logger->should_log(spdlog::level::trace)) {
-                                    std::array<Eigen::Index, 3> array_counts = {0, 0, 0};
-                                    for (Eigen::Index det = 0; det < ptc.scans.data.cols(); ++det) {
-                                        auto array_index = static_cast<int>(calib.apt["array"](det));
-                                        if (array_index >= 0 && array_index < static_cast<int>(array_counts.size())) {
-                                            array_counts[static_cast<size_t>(array_index)]++;
-                                        }
+                        else if (map_method == "jinc") {
+                            if (logger->should_log(spdlog::level::trace)) {
+                                std::array<Eigen::Index, 3> array_counts = {0, 0, 0};
+                                for (Eigen::Index det = 0; det < ptc.scans.data.cols(); ++det) {
+                                    auto array_index = static_cast<int>(calib.apt["array"](det));
+                                    if (array_index >= 0 && array_index < static_cast<int>(array_counts.size())) {
+                                        array_counts[static_cast<size_t>(array_index)]++;
                                     }
-                                    Eigen::Index map_min = -1;
-                                    Eigen::Index map_max = -1;
-                                    if (ptc.map_indices.data.size() > 0) {
-                                        map_min = ptc.map_indices.data.minCoeff();
-                                        map_max = ptc.map_indices.data.maxCoeff();
-                                    }
-                                    std::ostringstream kernel_dims;
-                                    for (int array_index = 0; array_index < 3; ++array_index) {
-                                        auto it = jinc_mm.jinc_weights_mat.find(array_index);
-                                        if (it == jinc_mm.jinc_weights_mat.end()) {
-                                            continue;
-                                        }
-                                        if (kernel_dims.tellp() > 0) {
-                                            kernel_dims << ", ";
-                                        }
-                                        kernel_dims << "a" << array_index << "="
-                                                    << it->second.rows() << "x" << it->second.cols();
-                                    }
-                                    logger->trace(
-                                        "beammap jinc preflight: n_dets={} n_pts={} n_maps={} map_index_range=[{}, {}] "
-                                        "subpixel_n={} kernel_dims=[{}] array_counts=[{},{},{}]",
-                                        ptc.scans.data.cols(),
-                                        ptc.scans.data.rows(),
-                                        omb.signal.size(),
-                                        map_min,
-                                        map_max,
-                                        jinc_mm.subpixel_n,
-                                        kernel_dims.str(),
-                                        array_counts[0],
-                                        array_counts[1],
-                                        array_counts[2]);
                                 }
-                                time_stage("map_accumulate_scan.sum", [&]() {
-                                    jinc_mm.populate_maps_jinc_parallel(ptc, omb, cmb, ptc.map_indices.data,
-                                                                        telescope.pixel_axes, calib.apt,
-                                                                        telescope.d_fsmp, run_omb, run_noise);
-                                });
-                                if (update_progress) {
-                                    pb.count(telescope.scan_indices.cols(), 1);
+                                Eigen::Index map_min = -1;
+                                Eigen::Index map_max = -1;
+                                if (ptc.map_indices.data.size() > 0) {
+                                    map_min = ptc.map_indices.data.minCoeff();
+                                    map_max = ptc.map_indices.data.maxCoeff();
                                 }
+                                std::ostringstream kernel_dims;
+                                for (int array_index = 0; array_index < 3; ++array_index) {
+                                    auto it = jinc_mm.jinc_weights_mat.find(array_index);
+                                    if (it == jinc_mm.jinc_weights_mat.end()) {
+                                        continue;
+                                    }
+                                    if (kernel_dims.tellp() > 0) {
+                                        kernel_dims << ", ";
+                                    }
+                                    kernel_dims << "a" << array_index << "="
+                                                << it->second.rows() << "x" << it->second.cols();
+                                }
+                                logger->trace(
+                                    "beammap jinc preflight: n_dets={} n_pts={} n_maps={} map_index_range=[{}, {}] "
+                                    "subpixel_n={} kernel_dims=[{}] array_counts=[{},{},{}]",
+                                    ptc.scans.data.cols(),
+                                    ptc.scans.data.rows(),
+                                    omb.signal.size(),
+                                    map_min,
+                                    map_max,
+                                    jinc_mm.subpixel_n,
+                                    kernel_dims.str(),
+                                    array_counts[0],
+                                    array_counts[1],
+                                    array_counts[2]);
                             }
+                            time_stage("map_accumulate_scan.sum", [&]() {
+                                jinc_mm.populate_maps_jinc_parallel(ptc, omb, cmb, ptc.map_indices.data,
+                                                                    telescope.pixel_axes, calib.apt,
+                                                                    telescope.d_fsmp, run_omb, run_noise);
+                            });
                         }
-                    }
-                    else {
-                        for (auto &ptc : ptcs) {
-                            if (map_method == "naive") {
-                                time_stage("map_accumulate_scan.sum", [&]() {
-                                    naive_mm.populate_maps_naive_parallel(ptc, omb, cmb, ptc.map_indices.data,
-                                                                          telescope.pixel_axes, calib.apt,
-                                                                          telescope.d_fsmp, run_omb, run_noise);
-                                });
-                            }
-                            if (update_progress) {
-                                pb.count(telescope.scan_indices.cols(), 1);
-                            }
+                        if (update_progress) {
+                            pb.count(telescope.scan_indices.cols(), 1);
                         }
                     }
                 }
