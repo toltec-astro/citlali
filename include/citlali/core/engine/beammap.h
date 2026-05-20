@@ -2685,10 +2685,12 @@ void Beammap::run_loop() {
             "beammap performance timing enabled; wall_s fields are elapsed wall time, "
             "scan_sum_s fields are summed over scans and can exceed wall time under parallel execution");
     }
+    ptcproc.reset_pca_stability_diagnostics();
 
     // iterative loop
     while (keep_going) {
         const int iter_index = current_iter;
+        ptcproc.pca_stability_current_iter = current_iter;
         BeammapPerfStats iter_perf;
         const auto iter_perf_start = BeammapPerfStats::now();
         auto time_stage = [&](const std::string &label, auto &&fn) {
@@ -2873,6 +2875,7 @@ void Beammap::run_loop() {
 
             return 0;
         });
+        ptcproc.log_pca_stability_summary(current_iter);
         if (beammap_performance_timing_enabled) {
             iter_perf.add("ptc_loop.wall", BeammapPerfStats::elapsed(ptc_loop_perf_start));
         }

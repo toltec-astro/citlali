@@ -7,15 +7,19 @@
 #include <complex>
 #include <cstdint>
 #include <exception>
+#include <memory>
 #include <limits>
 #include <map>
+#include <mutex>
 #include <numeric>
 #include <random>
+#include <string>
 #include <tuple>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
+#include <Eigen/SVD>
 #include <unsupported/Eigen/FFT>
 
 #include <tula/logging.h>
@@ -210,6 +214,76 @@ public:
     std::map<Eigen::Index, std::vector<SecondPassDiagSummary>> second_pass_summary_by_scan;
     std::map<Eigen::Index, Eigen::Matrix<signed char, Eigen::Dynamic, Eigen::Dynamic>> second_pass_added_flags_by_scan;
 
+    struct PCAStabilityDiagnosticsOptions {
+        bool enabled = false;
+        int max_modes = 8;
+    };
+
+    struct PCAStabilityKey {
+        Eigen::Index scan = -1;
+        Eigen::Index pass = -1;
+        std::string group;
+        Eigen::Index group_key = -1;
+        Eigen::Index arr = -1;
+        Eigen::Index subgroup = -1;
+
+        bool operator<(const PCAStabilityKey &other) const {
+            return std::tie(scan, pass, group, group_key, arr, subgroup) <
+                   std::tie(other.scan, other.pass, other.group, other.group_key, other.arr, other.subgroup);
+        }
+    };
+
+    struct PCAStabilityBasis {
+        int iter = -1;
+        Eigen::Index applied_k = 0;
+        Eigen::Index n_pts = 0;
+        Eigen::VectorXi det_indices;
+        Eigen::VectorXd evals;
+        Eigen::MatrixXd evecs;
+    };
+
+    struct PCAStabilityAggregate {
+        Eigen::Index n_seen = 0;
+        Eigen::Index n_missing_previous = 0;
+        Eigen::Index n_membership_changed = 0;
+        Eigen::Index n_zero_modes = 0;
+        Eigen::Index n_compared = 0;
+        Eigen::Index n_cleaned_delta = 0;
+        Eigen::Index n_eval_compare = 0;
+        double sum_cleaned_delta_rel = 0.0;
+        double max_cleaned_delta_rel = 0.0;
+        double sum_max_principal_angle_deg = 0.0;
+        double max_principal_angle_deg = 0.0;
+        double sum_min_subspace_cos = 0.0;
+        double min_subspace_cos = std::numeric_limits<double>::infinity();
+        double sum_eval_frac_rms = 0.0;
+        double max_eval_frac_rms = 0.0;
+    };
+
+    PCAStabilityDiagnosticsOptions pca_stability_diagnostics;
+    int pca_stability_current_iter = 0;
+    std::map<PCAStabilityKey, PCAStabilityBasis> pca_stability_basis_cache;
+    std::map<int, PCAStabilityAggregate> pca_stability_aggregates;
+    std::shared_ptr<std::mutex> pca_stability_mutex = std::make_shared<std::mutex>();
+
+    void reset_pca_stability_diagnostics();
+    void log_pca_stability_summary(int iter);
+
+    Eigen::Index pca_stability_effective_k(
+        timestream::Cleaner &, const Eigen::VectorXd &, const Eigen::MatrixXd &,
+        Eigen::Index, Eigen::Index, Eigen::Index);
+
+    template <typename DerivedScans, typename DerivedFlags>
+    Eigen::MatrixXd pca_stability_clean_with_basis(
+        const Eigen::DenseBase<DerivedScans> &, const Eigen::DenseBase<DerivedFlags> &,
+        const Eigen::MatrixXd &, Eigen::Index);
+
+    template <typename DerivedScans, typename DerivedFlags>
+    void record_pca_stability(
+        const PCAStabilityKey &, const Eigen::DenseBase<DerivedScans> &,
+        const Eigen::DenseBase<DerivedFlags> &, const Eigen::VectorXd &,
+        const Eigen::MatrixXd &, const Eigen::VectorXi &, Eigen::Index);
+
     // get config file
     template <typename config_t>
     void get_config(config_t &, std::vector<std::vector<std::string>> &,
@@ -247,6 +321,236 @@ public:
                           pointing_offset_t &, calib_t &, bool apply_det_offsets = false,
                           Eigen::Index scan_row_index = -1);
 };
+
+inline void PTCProc::reset_pca_stability_diagnostics() {
+    if (!pca_stability_diagnostics.enabled) {
+        return;
+    }
+    std::lock_guard<std::mutex> lock(*pca_stability_mutex);
+    pca_stability_basis_cache.clear();
+    pca_stability_aggregates.clear();
+}
+
+inline Eigen::Index PTCProc::pca_stability_effective_k(
+    timestream::Cleaner &cleaner_local, const Eigen::VectorXd &evals, const Eigen::MatrixXd &evecs,
+    Eigen::Index group_n_eig, Eigen::Index forced_limit_index, Eigen::Index n_dets) {
+    Eigen::Index limit_index = 0;
+    if (forced_limit_index >= 0) {
+        limit_index = forced_limit_index;
+    }
+    else if (cleaner_local.stddev_limit > 0) {
+        Eigen::Index n_ev_available = n_dets;
+        if (cleaner_local.adaptive_mode_selection_enabled()) {
+            if (cleaner_local.adaptive_mode_selection_max_modes() > 0) {
+                n_ev_available = std::min<Eigen::Index>(
+                    cleaner_local.adaptive_mode_selection_max_modes(), n_dets - 1);
+            }
+            else {
+                n_ev_available = n_dets - 1;
+            }
+        }
+        else if (cleaner_local.n_calc > 0) {
+            n_ev_available = std::min<Eigen::Index>(cleaner_local.n_calc, n_dets - 1);
+        }
+        else if (group_n_eig == 0) {
+            n_ev_available = n_dets - 1;
+        }
+        else {
+            n_ev_available = std::min<Eigen::Index>(group_n_eig, n_dets - 1);
+        }
+        n_ev_available = std::max<Eigen::Index>(0, std::min<Eigen::Index>(n_ev_available, evals.size()));
+        limit_index = (n_ev_available > 0)
+            ? cleaner_local.get_stddev_index(evals.head(n_ev_available))
+            : Eigen::Index{0};
+    }
+    else {
+        limit_index = group_n_eig;
+    }
+    limit_index = std::max<Eigen::Index>(0, std::min<Eigen::Index>(limit_index, evecs.cols()));
+    limit_index = std::min<Eigen::Index>(limit_index, std::max<Eigen::Index>(0, n_dets - 1));
+    return limit_index;
+}
+
+template <typename DerivedScans, typename DerivedFlags>
+Eigen::MatrixXd PTCProc::pca_stability_clean_with_basis(
+    const Eigen::DenseBase<DerivedScans> &scans, const Eigen::DenseBase<DerivedFlags> &flags,
+    const Eigen::MatrixXd &evecs, Eigen::Index k) {
+    k = std::max<Eigen::Index>(0, std::min<Eigen::Index>(k, evecs.cols()));
+    if (k <= 0) {
+        return scans.derived();
+    }
+    Eigen::MatrixXd good = (flags.derived().template cast<double>().array() == 0.0)
+                               .template cast<double>()
+                               .matrix();
+    const auto evecs_cut = evecs.leftCols(k);
+    Eigen::MatrixXd proj = (scans.derived().array() * good.array()).matrix() * evecs_cut;
+    Eigen::MatrixXd model = proj * evecs_cut.adjoint();
+    return scans.derived() - (model.array() * good.array()).matrix();
+}
+
+template <typename DerivedScans, typename DerivedFlags>
+void PTCProc::record_pca_stability(
+    const PCAStabilityKey &key, const Eigen::DenseBase<DerivedScans> &scans,
+    const Eigen::DenseBase<DerivedFlags> &flags, const Eigen::VectorXd &evals,
+    const Eigen::MatrixXd &evecs, const Eigen::VectorXi &det_indices, Eigen::Index applied_k) {
+    if (!pca_stability_diagnostics.enabled) {
+        return;
+    }
+    tula::logging::scoped_timeit diag_timer{"PTCProc::pca_stability_diagnostics"};
+
+    const int iter = pca_stability_current_iter;
+    const Eigen::Index max_modes = std::max<Eigen::Index>(1, pca_stability_diagnostics.max_modes);
+    const Eigen::Index store_k = std::max<Eigen::Index>(
+        0, std::min<Eigen::Index>({applied_k, max_modes, evecs.cols()}));
+    const Eigen::Index store_eval_k = std::max<Eigen::Index>(
+        0, std::min<Eigen::Index>(max_modes, evals.size()));
+
+    PCAStabilityBasis current;
+    current.iter = iter;
+    current.applied_k = std::max<Eigen::Index>(0, applied_k);
+    current.n_pts = scans.rows();
+    current.det_indices = det_indices;
+    current.evals = evals.head(store_eval_k);
+    current.evecs = evecs.leftCols(store_k);
+
+    PCAStabilityBasis previous;
+    bool have_previous = false;
+    {
+        std::lock_guard<std::mutex> lock(*pca_stability_mutex);
+        auto &aggregate = pca_stability_aggregates[iter];
+        aggregate.n_seen++;
+        const auto previous_it = pca_stability_basis_cache.find(key);
+        if (previous_it == pca_stability_basis_cache.end()) {
+            aggregate.n_missing_previous++;
+            pca_stability_basis_cache[key] = std::move(current);
+            return;
+        }
+        previous = previous_it->second;
+        pca_stability_basis_cache[key] = current;
+        have_previous = true;
+    }
+
+    if (!have_previous) {
+        return;
+    }
+
+    const bool same_membership =
+        previous.det_indices.size() == det_indices.size() &&
+        (previous.det_indices.size() == 0 ||
+         (previous.det_indices.array() == det_indices.array()).all());
+    if (!same_membership || previous.evecs.rows() != current.evecs.rows() ||
+        previous.n_pts != scans.rows()) {
+        std::lock_guard<std::mutex> lock(*pca_stability_mutex);
+        pca_stability_aggregates[iter].n_membership_changed++;
+        return;
+    }
+
+    const Eigen::Index k_compare = std::max<Eigen::Index>(
+        0, std::min<Eigen::Index>({
+            max_modes, applied_k, previous.applied_k, current.evecs.cols(), previous.evecs.cols()}));
+    if (k_compare <= 0) {
+        std::lock_guard<std::mutex> lock(*pca_stability_mutex);
+        pca_stability_aggregates[iter].n_zero_modes++;
+        return;
+    }
+
+    const Eigen::MatrixXd overlap =
+        previous.evecs.leftCols(k_compare).transpose() * current.evecs.leftCols(k_compare);
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd(overlap);
+    const auto singular_values = svd.singularValues();
+    const double min_cos = singular_values.size() > 0
+        ? std::clamp(singular_values.minCoeff(), 0.0, 1.0)
+        : std::numeric_limits<double>::quiet_NaN();
+    const double max_angle_deg = std::isfinite(min_cos)
+        ? std::acos(min_cos) * 180.0 / M_PI
+        : std::numeric_limits<double>::quiet_NaN();
+
+    double eval_frac_rms = std::numeric_limits<double>::quiet_NaN();
+    const Eigen::Index k_eval = std::min<Eigen::Index>({k_compare, previous.evals.size(), current.evals.size()});
+    if (k_eval > 0) {
+        constexpr double eps = 1e-300;
+        const Eigen::ArrayXd denom = previous.evals.head(k_eval).array().abs().cwiseMax(eps);
+        const Eigen::ArrayXd frac = (current.evals.head(k_eval).array() - previous.evals.head(k_eval).array()) / denom;
+        eval_frac_rms = std::sqrt(frac.square().mean());
+    }
+
+    constexpr double eps = 1e-300;
+    const Eigen::MatrixXd current_clean =
+        pca_stability_clean_with_basis(scans, flags, current.evecs, k_compare);
+    const Eigen::MatrixXd previous_clean =
+        pca_stability_clean_with_basis(scans, flags, previous.evecs, k_compare);
+    const double current_norm = current_clean.norm();
+    const double cleaned_delta_rel =
+        (current_clean - previous_clean).norm() / std::max(current_norm, eps);
+
+    {
+        std::lock_guard<std::mutex> lock(*pca_stability_mutex);
+        auto &aggregate = pca_stability_aggregates[iter];
+        aggregate.n_compared++;
+        if (std::isfinite(cleaned_delta_rel)) {
+            aggregate.n_cleaned_delta++;
+            aggregate.sum_cleaned_delta_rel += cleaned_delta_rel;
+            aggregate.max_cleaned_delta_rel = std::max(aggregate.max_cleaned_delta_rel, cleaned_delta_rel);
+        }
+        if (std::isfinite(min_cos) && std::isfinite(max_angle_deg)) {
+            aggregate.sum_min_subspace_cos += min_cos;
+            aggregate.min_subspace_cos = std::min(aggregate.min_subspace_cos, min_cos);
+            aggregate.sum_max_principal_angle_deg += max_angle_deg;
+            aggregate.max_principal_angle_deg = std::max(aggregate.max_principal_angle_deg, max_angle_deg);
+        }
+        if (std::isfinite(eval_frac_rms)) {
+            aggregate.n_eval_compare++;
+            aggregate.sum_eval_frac_rms += eval_frac_rms;
+            aggregate.max_eval_frac_rms = std::max(aggregate.max_eval_frac_rms, eval_frac_rms);
+        }
+    }
+}
+
+inline void PTCProc::log_pca_stability_summary(int iter) {
+    if (!pca_stability_diagnostics.enabled) {
+        return;
+    }
+    PCAStabilityAggregate aggregate;
+    {
+        std::lock_guard<std::mutex> lock(*pca_stability_mutex);
+        const auto it = pca_stability_aggregates.find(iter);
+        if (it == pca_stability_aggregates.end()) {
+            logger->info("PTC PCA stability iter {}: no PCA groups recorded", iter);
+            return;
+        }
+        aggregate = it->second;
+    }
+
+    const auto mean_or_nan = [](double sum, Eigen::Index n) {
+        return n > 0 ? sum / static_cast<double>(n) : std::numeric_limits<double>::quiet_NaN();
+    };
+    const double mean_delta = mean_or_nan(aggregate.sum_cleaned_delta_rel, aggregate.n_cleaned_delta);
+    const double mean_angle = mean_or_nan(aggregate.sum_max_principal_angle_deg, aggregate.n_compared);
+    const double mean_cos = mean_or_nan(aggregate.sum_min_subspace_cos, aggregate.n_compared);
+    const double min_cos = std::isfinite(aggregate.min_subspace_cos)
+        ? aggregate.min_subspace_cos
+        : std::numeric_limits<double>::quiet_NaN();
+    const double mean_eval = mean_or_nan(aggregate.sum_eval_frac_rms, aggregate.n_eval_compare);
+
+    logger->info(
+        "PTC PCA stability iter {}: seen={} compared={} missing_prev={} membership_changed={} zero_modes={} "
+        "cleaned_delta_rel mean={:.6g} max={:.6g} principal_angle_deg mean={:.6g} max={:.6g} "
+        "subspace_cos mean={:.6g} min={:.6g} eval_frac_rms mean={:.6g} max={:.6g}",
+        iter,
+        aggregate.n_seen,
+        aggregate.n_compared,
+        aggregate.n_missing_previous,
+        aggregate.n_membership_changed,
+        aggregate.n_zero_modes,
+        mean_delta,
+        aggregate.max_cleaned_delta_rel,
+        mean_angle,
+        aggregate.max_principal_angle_deg,
+        mean_cos,
+        min_cos,
+        mean_eval,
+        aggregate.max_eval_frac_rms);
+}
 
 // get config file
 template <typename config_t>
@@ -640,6 +944,31 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     // run clean?
     get_config_value(config, run_clean, missing_keys, invalid_keys,
                      std::tuple{"timestream","processed_time_chunk","clean", "enabled"});
+
+    if (config.template has_typed<bool>(std::tuple{"beammap","pca_stability_diagnostics","enabled"})) {
+        get_config_value(config, pca_stability_diagnostics.enabled, missing_keys, invalid_keys,
+                         std::tuple{"beammap","pca_stability_diagnostics","enabled"});
+    }
+    if (config.template has_typed<int>(std::tuple{"beammap","pca_stability_diagnostics","max_modes"})) {
+        get_config_value(config, pca_stability_diagnostics.max_modes, missing_keys, invalid_keys,
+                         std::tuple{"beammap","pca_stability_diagnostics","max_modes"},{},{1});
+    }
+    if (config.template has_typed<bool>(
+            std::tuple{"timestream","processed_time_chunk","clean","pca_stability_diagnostics","enabled"})) {
+        get_config_value(config, pca_stability_diagnostics.enabled, missing_keys, invalid_keys,
+                         std::tuple{"timestream","processed_time_chunk","clean","pca_stability_diagnostics","enabled"});
+    }
+    if (config.template has_typed<int>(
+            std::tuple{"timestream","processed_time_chunk","clean","pca_stability_diagnostics","max_modes"})) {
+        get_config_value(config, pca_stability_diagnostics.max_modes, missing_keys, invalid_keys,
+                         std::tuple{"timestream","processed_time_chunk","clean","pca_stability_diagnostics","max_modes"},{},{1});
+    }
+    if (pca_stability_diagnostics.enabled) {
+        logger->info("PTC PCA stability diagnostics enabled: max_modes={}", pca_stability_diagnostics.max_modes);
+        if (!run_clean) {
+            logger->warn("PTC PCA stability diagnostics enabled but processed_time_chunk.clean.enabled=false; no PCA groups will be recorded");
+        }
+    }
 
     if (run_clean) {
         // get cleaning grouping vector
@@ -1318,6 +1647,27 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                                     cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index,
                                     group, nw_index, arr_index);
                             }
+                            if (pca_stability_diagnostics.enabled) {
+                                Eigen::VectorXi det_indices(static_cast<Eigen::Index>(cols.size()));
+                                for (Eigen::Index c = 0; c < static_cast<Eigen::Index>(cols.size()); ++c) {
+                                    det_indices(c) = static_cast<int>(
+                                        start_index + cols[static_cast<std::size_t>(c)]);
+                                }
+                                const Eigen::Index applied_k = pca_stability_effective_k(
+                                    cleaner_local, evals, evecs,
+                                    cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index,
+                                    in_scans_sub.cols());
+                                record_pca_stability(
+                                    PCAStabilityKey{
+                                        .scan = in.index.data,
+                                        .pass = indx,
+                                        .group = group,
+                                        .group_key = nw_index,
+                                        .arr = arr_index,
+                                        .subgroup = gidx,
+                                    },
+                                    in_scans_sub, flags_sub, evals, evecs, det_indices, applied_k);
+                            }
                             scatter_cols(out_scans_block, out_scans_sub, cols);
 
                             if (in.kernel.data.size()!=0) {
@@ -1506,6 +1856,26 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                             .candidate_eval_msec = adaptive_result.candidate_eval_msec,
                             .total_msec = total_selector_msec,
                         });
+                    }
+
+                    if (pca_stability_diagnostics.enabled) {
+                        Eigen::VectorXi det_indices(n_dets);
+                        for (Eigen::Index d = 0; d < n_dets; ++d) {
+                            det_indices(d) = static_cast<int>(start_index + d);
+                        }
+                        const Eigen::Index applied_k = pca_stability_effective_k(
+                            cleaner_local, evals, evecs, k_to_apply, forced_limit_index,
+                            in_scans_block.cols());
+                        record_pca_stability(
+                            PCAStabilityKey{
+                                .scan = in.index.data,
+                                .pass = indx,
+                                .group = effective_group,
+                                .group_key = key,
+                                .arr = arr_index,
+                                .subgroup = -1,
+                            },
+                            in_scans_block, masked_flags, evals, evecs, det_indices, applied_k);
                     }
 
                     if (in.kernel.data.size()!=0) {
