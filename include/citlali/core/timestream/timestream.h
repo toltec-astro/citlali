@@ -290,8 +290,12 @@ public:
 
     // tod output
     bool run_tod_output, write_evals;
-    // compact rtc TOD output mode (float signal, byte flags, no per-detector pointing/kernel vars)
+    // compact TOD output mode (float signal, byte flags, no per-detector pointing/kernel vars)
     bool tod_output_mini = false;
+    // include the loaded outer scan context in the TOD output instead of only the inner science scan
+    bool tod_output_outer = false;
+    // minimum context samples per side to load when writing *_outer TOD output
+    Eigen::Index tod_output_outer_context_samples = 0;
 
     // run fruit loops
     bool run_fruit_loops;
@@ -411,7 +415,7 @@ public:
     template <TCDataKind tcdata_t, class calib_t, typename pointing_offset_t>
     void append_base_to_netcdf(netCDF::NcFile &, TCData<tcdata_t, Eigen::MatrixXd> &, std::string,
                                std::string &, pointing_offset_t &, calib_t &, bool apply_det_offsets = false,
-                               Eigen::Index scan_row_index = -1);
+                               Eigen::Index scan_row_index = -1, bool output_outer_scan = false);
 };
 
 template <class calib_t>
@@ -2049,7 +2053,7 @@ auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, 
 template <TCDataKind tcdata_t, class calib_t, typename pointing_offset_t>
 void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::MatrixXd> &in, std::string map_grouping,
                                    std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, calib_t &calib,
-                                   bool apply_det_offsets, Eigen::Index scan_row_index) {
+                                   bool apply_det_offsets, Eigen::Index scan_row_index, bool output_outer_scan) {
     using netCDF::NcDim;
     using netCDF::NcFile;
     using netCDF::NcType;
@@ -2218,13 +2222,24 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
 
     // if not on first scan, grab last scan and add size of current scan
     if (scan_row > 0) {
-        // start indices for data
-        std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(scan_row-1), 0};
-        // size for data
-        std::vector<std::size_t> scan_indices_size = {1, 2};
-        fo.getVar("scan_indices").getVar(scan_indices_start_index, scan_indices_size, scan_indices.data());
+        if (output_outer_scan) {
+            Eigen::VectorXi previous_raw_scan_indices(4);
+            std::vector<std::size_t> raw_scan_indices_start_index = {TULA_SIZET(scan_row-1), 0};
+            std::vector<std::size_t> raw_scan_indices_size = {1, 4};
+            fo.getVar("raw_scan_indices").getVar(
+                raw_scan_indices_start_index, raw_scan_indices_size, previous_raw_scan_indices.data());
+            scan_indices(0) = previous_raw_scan_indices(3) + 1;
+            scan_indices(1) = scan_indices(0) + in.scans.data.rows() - 1;
+        }
+        else {
+            // start indices for data
+            std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(scan_row-1), 0};
+            // size for data
+            std::vector<std::size_t> scan_indices_size = {1, 2};
+            fo.getVar("scan_indices").getVar(scan_indices_start_index, scan_indices_size, scan_indices.data());
 
-        scan_indices = scan_indices.array() + in.scans.data.rows();
+            scan_indices = scan_indices.array() + in.scans.data.rows();
+        }
     }
 
     // otherwise, use size of this scan
@@ -2233,8 +2248,26 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
         scan_indices(1) = in.scans.data.rows() - 1;
     }
 
-    raw_scan_indices << static_cast<int>(scan_indices(0)), static_cast<int>(scan_indices(1)),
-                        static_cast<int>(scan_indices(0)), static_cast<int>(scan_indices(1));
+    if (output_outer_scan && in.scan_indices.data.size() >= 4) {
+        const Eigen::Index outer_start = static_cast<Eigen::Index>(scan_indices(0));
+        const Eigen::Index outer_end = static_cast<Eigen::Index>(scan_indices(1));
+        const Eigen::Index inner_offset =
+            std::max<Eigen::Index>(0, in.scan_indices.data(0) - in.scan_indices.data(2));
+        const Eigen::Index inner_len =
+            std::max<Eigen::Index>(0, in.scan_indices.data(1) - in.scan_indices.data(0) + 1);
+        const Eigen::Index inner_start =
+            std::min<Eigen::Index>(outer_end, outer_start + inner_offset);
+        const Eigen::Index inner_end =
+            std::min<Eigen::Index>(outer_end, inner_start + std::max<Eigen::Index>(0, inner_len - 1));
+        raw_scan_indices << static_cast<int>(inner_start), static_cast<int>(inner_end),
+                            static_cast<int>(outer_start), static_cast<int>(outer_end);
+        scan_indices(0) = inner_start;
+        scan_indices(1) = inner_end;
+    }
+    else {
+        raw_scan_indices << static_cast<int>(scan_indices(0)), static_cast<int>(scan_indices(1)),
+                            static_cast<int>(scan_indices(0)), static_cast<int>(scan_indices(1));
+    }
 
     // add current raw scan indices row (output timebase)
     std::vector<std::size_t> raw_scan_indices_start_index = {TULA_SIZET(scan_row), 0};

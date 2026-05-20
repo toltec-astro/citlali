@@ -765,6 +765,11 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
 
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
+        TCData<TCDataKind::RTC,Eigen::MatrixXd> rtc_outer_output;
+        const auto rtc_scan_row = tod_output_scan_row(rtcdata.index.data, "rtc");
+        const bool write_this_rtc = write_rtc && rtc_scan_row >= 0;
+        auto *rtc_outer_output_ptr =
+            (write_this_rtc && rtcproc.tod_output_outer) ? &rtc_outer_output : nullptr;
 
         {
             std::lock_guard<std::mutex> lk(*scans_done_mutex);
@@ -774,7 +779,8 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
 
         // run rtcproc
         logger->info("raw time chunk processing for scan {}", rtcdata.index.data + 1);
-        auto map_indices = rtcproc.run(rtcdata, ptcdata, calib, telescope, omb.pixel_size_rad, map_grouping);
+        auto map_indices = rtcproc.run(rtcdata, ptcdata, calib, telescope, omb.pixel_size_rad, map_grouping,
+                                       rtc_outer_output_ptr);
 
         if (map_grouping!="detector") {
             // remove flagged detectors
@@ -797,12 +803,18 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
         }
 
         // write rtc timestreams
-        const auto rtc_scan_row = tod_output_scan_row(rtcdata.index.data, "rtc");
-        if (write_rtc && rtc_scan_row >= 0) {
+        if (write_this_rtc) {
             rtc_writer->wait_turn(rtc_scan_row);
-            logger->info("writing raw time chunk");
-            rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
-                                     ptcdata.pointing_offsets_arcsec.data, calib_scan, true, rtc_scan_row);
+            if (rtcproc.tod_output_outer) {
+                logger->info("writing outer raw time chunk");
+                rtcproc.append_to_netcdf(rtc_outer_output, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
+                                         rtc_outer_output.pointing_offsets_arcsec.data, calib, true, rtc_scan_row);
+            }
+            else {
+                logger->info("writing raw time chunk");
+                rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
+                                         ptcdata.pointing_offsets_arcsec.data, calib_scan, true, rtc_scan_row);
+            }
             rtc_writer->advance();
         }
         if (write_rtc || write_rtcdiag) {
@@ -2902,6 +2914,26 @@ void Beammap::run_loop() {
         if (run_mapmaking) {
             auto run_mapmaking_pass = [&](bool update_progress) {
                 const auto map_pass_perf_start = BeammapPerfStats::now();
+                Eigen::Matrix<bool, Eigen::Dynamic, 1> active_maps;
+                const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps_ptr = nullptr;
+                Eigen::Index n_active_maps = n_maps;
+                if (map_grouping == "detector" && converged.size() == n_maps) {
+                    const Eigen::Index n_converged = (converged.array() == true).count();
+                    if (n_converged > 0 && n_converged < n_maps) {
+                        active_maps.resize(n_maps);
+                        n_active_maps = 0;
+                        for (Eigen::Index i = 0; i < n_maps; ++i) {
+                            active_maps(i) = !converged(i);
+                            if (active_maps(i)) {
+                                ++n_active_maps;
+                            }
+                        }
+                        active_maps_ptr = &active_maps;
+                        logger->info("beammap detector mapmaking: remaking {}/{} unconverged maps",
+                                     n_active_maps, n_maps);
+                    }
+                }
+
                 if (map_method == "jinc" &&
                     static_cast<Eigen::Index>(omb.grid_weight.size()) != n_maps) {
                     logger->info("allocating jinc grid_weight maps: current={} expected={}",
@@ -2914,6 +2946,9 @@ void Beammap::run_loop() {
                 // set maps to zero for each pass
                 const auto map_zero_perf_start = BeammapPerfStats::now();
                 for (Eigen::Index i = 0; i < n_maps; ++i) {
+                    if (active_maps_ptr != nullptr && !(*active_maps_ptr)(i)) {
+                        continue;
+                    }
                     omb.signal[i].setZero();
                     omb.weight[i].setZero();
                     if (!omb.grid_weight.empty()) {
@@ -2958,7 +2993,8 @@ void Beammap::run_loop() {
                             time_stage("map_accumulate_scan.sum", [&]() {
                                 naive_mm.populate_maps_naive_parallel(ptc, omb, cmb, ptc.map_indices.data,
                                                                       telescope.pixel_axes, calib.apt,
-                                                                      telescope.d_fsmp, run_omb, run_noise);
+                                                                      telescope.d_fsmp, run_omb, run_noise,
+                                                                      active_maps_ptr);
                             });
                         }
                         else if (map_method == "jinc") {
@@ -3005,7 +3041,8 @@ void Beammap::run_loop() {
                             time_stage("map_accumulate_scan.sum", [&]() {
                                 jinc_mm.populate_maps_jinc_parallel(ptc, omb, cmb, ptc.map_indices.data,
                                                                     telescope.pixel_axes, calib.apt,
-                                                                    telescope.d_fsmp, run_omb, run_noise);
+                                                                    telescope.d_fsmp, run_omb, run_noise,
+                                                                    active_maps_ptr);
                             });
                         }
                         if (update_progress) {
@@ -3042,7 +3079,7 @@ void Beammap::run_loop() {
 
                 logger->info("normalizing maps");
                 time_stage("map_normalize.sum", [&]() {
-                    omb.normalize_maps(false);
+                    omb.normalize_maps(active_maps_ptr, false);
                 });
                 if (beammap_performance_timing_enabled) {
                     iter_perf.add("map_pass.wall", BeammapPerfStats::elapsed(map_pass_perf_start));
