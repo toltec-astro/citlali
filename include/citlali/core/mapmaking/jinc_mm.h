@@ -913,6 +913,8 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
             shared_cmb_icol = lon.array() / cmb.pixel_size_rad + (cmb.n_cols - 1) / 2.;
         }
     }
+    const bool use_detector_footprint_cache =
+        detector_grouping && run_omb && !run_noise && !run_polarization;
 
     // pointer to map buffer with noise maps
     map_buffer_t *nmb = nullptr;
@@ -1096,6 +1098,109 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
     };
 
     validate_global_preflight();
+    if (use_detector_footprint_cache) {
+        auto validate_map_dims = [&](const char *stage, const auto &maps) {
+            for (size_t ii = 0; ii < maps.size(); ++ii) {
+                if (maps[ii].rows() != omb.n_rows || maps[ii].cols() != omb.n_cols) {
+                    std::ostringstream oss;
+                    oss << "map=" << ii << " dims=" << matrix_dims(maps[ii])
+                        << " expected=" << omb.n_rows << "x" << omb.n_cols;
+                    fail_validation(stage, oss.str());
+                }
+            }
+        };
+        validate_map_dims("detector-footprint-cache signal", omb.signal);
+        validate_map_dims("detector-footprint-cache weight", omb.weight);
+        validate_map_dims("detector-footprint-cache grid_weight", omb.grid_weight);
+        if (run_coverage) {
+            validate_map_dims("detector-footprint-cache coverage", omb.coverage);
+        }
+        if (run_kernel) {
+            validate_map_dims("detector-footprint-cache kernel", omb.kernel);
+        }
+    }
+
+    struct CachedJincFootprint {
+        bool valid = false;
+        int subpix_idx = 0;
+        int lower_row = 0;
+        int lower_col = 0;
+        int jinc_lower_row = 0;
+        int jinc_lower_col = 0;
+        int size_rows = 0;
+        int size_cols = 0;
+    };
+
+    std::map<Eigen::Index, std::vector<CachedJincFootprint>> detector_footprint_cache;
+    if (use_detector_footprint_cache) {
+        tula::logging::scoped_timeit cache_timer{"populate_maps_jinc_parallel detector footprint cache"};
+        auto subpix_index = [&](double d) {
+            int idx = static_cast<int>(std::floor((d + 0.5) * subpixel_n));
+            if (idx < 0) {
+                idx = 0;
+            }
+            else if (idx >= subpixel_n) {
+                idx = subpixel_n - 1;
+            }
+            return idx;
+        };
+
+        for (const auto &jinc_entry: jinc_weights_mat) {
+            const Eigen::Index array_index = jinc_entry.first;
+            const auto &jinc_mat = jinc_entry.second;
+            const auto sq_it = jinc_weights_sq_mat.find(array_index);
+            if (sq_it == jinc_weights_sq_mat.end() ||
+                sq_it->second.rows() != jinc_mat.rows() ||
+                sq_it->second.cols() != jinc_mat.cols()) {
+                continue;
+            }
+
+            const int mat_rows = static_cast<int>(jinc_mat.rows());
+            const int mat_cols = static_cast<int>(jinc_mat.cols());
+            const int mat_rows_center = static_cast<int>((mat_rows - 1.) / 2.);
+            const int mat_cols_center = static_cast<int>((mat_cols - 1.) / 2.);
+            auto &footprints = detector_footprint_cache[array_index];
+            footprints.resize(static_cast<size_t>(n_pts));
+
+            for (Eigen::Index j = 0; j < n_pts; ++j) {
+                const auto omb_ir = static_cast<int>(std::llround(shared_omb_irow(j)));
+                const auto omb_ic = static_cast<int>(std::llround(shared_omb_icol(j)));
+                if (omb_ir < 0 || omb_ir >= omb.n_rows || omb_ic < 0 || omb_ic >= omb.n_cols) {
+                    continue;
+                }
+
+                auto &fp = footprints[static_cast<size_t>(j)];
+                if (subpixel_n > 1) {
+                    const double drow = shared_omb_irow(j) - static_cast<double>(omb_ir);
+                    const double dcol = shared_omb_icol(j) - static_cast<double>(omb_ic);
+                    fp.subpix_idx = subpix_index(drow) * subpixel_n + subpix_index(dcol);
+                }
+
+                int lower_row = omb_ir - mat_rows_center;
+                int upper_row = omb_ir + mat_rows - 1 - mat_rows_center;
+                int lower_col = omb_ic - mat_cols_center;
+                int upper_col = omb_ic + mat_cols - 1 - mat_cols_center;
+
+                fp.jinc_lower_row = std::abs(std::min(0, lower_row));
+                fp.jinc_lower_col = std::abs(std::min(0, lower_col));
+
+                lower_row = std::max(0, lower_row);
+                upper_row = std::min(static_cast<int>(omb.n_rows - 1), upper_row);
+                lower_col = std::max(0, lower_col);
+                upper_col = std::min(static_cast<int>(omb.n_cols - 1), upper_col);
+
+                fp.size_rows = upper_row - lower_row + 1;
+                fp.size_cols = upper_col - lower_col + 1;
+                if (fp.size_rows <= 0 || fp.size_cols <= 0) {
+                    continue;
+                }
+                fp.lower_row = lower_row;
+                fp.lower_col = lower_col;
+                fp.valid = true;
+            }
+        }
+    }
+    const auto &detector_footprint_cache_read = detector_footprint_cache;
 
     // placeholder vectors of size ndet for grppi maps
     std::vector<int> map_in_vec, map_out_vec;
@@ -1137,10 +1242,62 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
             const bool use_subpix = (subpixel_n > 1) && (jinc_weights_mat_subpix.count(array_index) > 0);
             const auto *subpix_vec = use_subpix ? &jinc_weights_mat_subpix.at(array_index) : nullptr;
             const auto *subpix_sq_vec = use_subpix ? &jinc_weights_sq_mat_subpix.at(array_index) : nullptr;
-            Eigen::Index mat_rows = jinc_weights_mat[array_index].rows();
-            Eigen::Index mat_cols = jinc_weights_mat[array_index].cols();
+            const auto &jinc_mat_base = jinc_weights_mat[array_index];
+            const auto &jinc_sq_mat_base = jinc_weights_sq_mat[array_index];
+            Eigen::Index mat_rows = jinc_mat_base.rows();
+            Eigen::Index mat_cols = jinc_mat_base.cols();
             Eigen::Index mat_rows_center = (mat_rows - 1.)/2.;
             Eigen::Index mat_cols_center = (mat_cols - 1.)/2.;
+
+            if (use_detector_footprint_cache) {
+                auto fp_it = detector_footprint_cache_read.find(array_index);
+                if (fp_it != detector_footprint_cache_read.end()) {
+                    const auto &footprints = fp_it->second;
+                    const double det_weight = in.weights.data(i);
+                    for (Eigen::Index j=0; j<n_pts; ++j) {
+                        if (in.flags.data(j,i)) {
+                            continue;
+                        }
+                        const auto &fp = footprints[static_cast<size_t>(j)];
+                        if (!fp.valid) {
+                            continue;
+                        }
+
+                        const auto &jinc_mat = use_subpix ? subpix_vec->at(fp.subpix_idx) : jinc_mat_base;
+                        const auto &jinc_sq_mat = use_subpix ? subpix_sq_vec->at(fp.subpix_idx) : jinc_sq_mat_base;
+                        const auto mat_block =
+                            jinc_mat.block(fp.jinc_lower_row, fp.jinc_lower_col, fp.size_rows, fp.size_cols);
+                        const auto mat_sq_block =
+                            jinc_sq_mat.block(fp.jinc_lower_row, fp.jinc_lower_col, fp.size_rows, fp.size_cols);
+
+                        const double signal = in.scans.data(j,i) * det_weight;
+                        auto sig_block = omb.signal[map_index].block(fp.lower_row, fp.lower_col,
+                                                                      fp.size_rows, fp.size_cols);
+                        sig_block += (mat_block * signal).eval();
+
+                        auto grid_wt_block = omb.grid_weight[map_index].block(fp.lower_row, fp.lower_col,
+                                                                              fp.size_rows, fp.size_cols);
+                        grid_wt_block.array() += (mat_block.array() * det_weight);
+
+                        auto wt_block = omb.weight[map_index].block(fp.lower_row, fp.lower_col,
+                                                                    fp.size_rows, fp.size_cols);
+                        wt_block.array() += (mat_sq_block.array() * det_weight);
+
+                        if (run_coverage) {
+                            auto cov_block = omb.coverage[map_index].block(fp.lower_row, fp.lower_col,
+                                                                           fp.size_rows, fp.size_cols);
+                            cov_block.array() += (mat_sq_block.array() / d_fsmp);
+                        }
+
+                        if (run_kernel) {
+                            auto ker_block = omb.kernel[map_index].block(fp.lower_row, fp.lower_col,
+                                                                         fp.size_rows, fp.size_cols);
+                            ker_block += mat_block * det_weight * in.kernel.data(j,i);
+                        }
+                    }
+                    return 0;
+                }
+            }
 
             Eigen::VectorXd omb_irow_local, omb_icol_local;
             Eigen::VectorXd cmb_irow_local, cmb_icol_local;
