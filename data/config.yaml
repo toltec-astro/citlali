@@ -280,6 +280,10 @@ timestream: # timestream reduction parameters
       post_filter_apply_iterations: 1 # number of post-filter audit/apply passes; values >1 allow newly exposed residual line families to be notched
       post_filter_line_min_hz: 1.0 # lower frequency bound used by the post-filter audit pass; NaN inherits line_min_hz
       post_filter_line_max_hz: 25.0 # upper frequency bound used by the post-filter audit pass; NaN inherits line_max_hz
+      fixed_notch_enabled: false # apply a fixed, census-derived zero-phase notch set before the residual dynamic line audit
+      fixed_notch_freqs_hz: [] # fixed notch center frequencies in Hz; intended for stable array-wide/network-wide line families
+      fixed_notch_widths_hz: [0.25] # fixed notch full bandwidths in Hz; length 1 applies to all fixed_notch_freqs_hz
+      fixed_notch_exclusion_half_width_hz: 0.25 # dynamic audit ignores candidates within this half-width of each fixed notch center
       apply_shared_notches: false # if true, cluster shared-notch recommendations across networks and apply temporary RTC notches before the normal RTC filter chain
       apply_min_support_networks: 2 # minimum number of networks supporting one shared-line family before applying a chunk-level RTC notch
       apply_min_detector_frac: 0.90 # minimum detector fraction required when promoting a single-network, strong-common-mode family to an applied RTC notch

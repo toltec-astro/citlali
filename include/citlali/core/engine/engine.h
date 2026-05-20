@@ -2170,6 +2170,10 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_ITERATIONS", rtcproc.line_audit.post_filter_apply_iterations);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MIN_HZ", rtcproc.line_audit.post_filter_line_min_hz);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MAX_HZ", rtcproc.line_audit.post_filter_line_max_hz);
+            add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.FIXED_NOTCH_ENABLED", rtcproc.line_audit.fixed_notch_enabled);
+            add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.FIXED_NOTCH_COUNT", static_cast<int>(rtcproc.line_audit.fixed_notch_freqs_hz.size()));
+            add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.FIXED_NOTCH_WIDTH_COUNT", static_cast<int>(rtcproc.line_audit.fixed_notch_widths_hz.size()));
+            add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.FIXED_NOTCH_EXCLUSION_HALF_WIDTH_HZ", rtcproc.line_audit.fixed_notch_exclusion_half_width_hz);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_SHARED_NOTCHES", rtcproc.line_audit.apply_shared_notches);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_SUPPORT_NETWORKS", rtcproc.line_audit.apply_min_support_networks);
             add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_DETECTOR_FRAC", rtcproc.line_audit.apply_min_detector_frac);
@@ -2436,6 +2440,10 @@ void Engine::create_tod_files() {
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_ITERATIONS", rtcproc.line_audit.post_filter_apply_iterations);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MIN_HZ", rtcproc.line_audit.post_filter_line_min_hz);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MAX_HZ", rtcproc.line_audit.post_filter_line_max_hz);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.FIXED_NOTCH_ENABLED", rtcproc.line_audit.fixed_notch_enabled);
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.FIXED_NOTCH_COUNT", static_cast<int>(rtcproc.line_audit.fixed_notch_freqs_hz.size()));
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.FIXED_NOTCH_WIDTH_COUNT", static_cast<int>(rtcproc.line_audit.fixed_notch_widths_hz.size()));
+        add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.FIXED_NOTCH_EXCLUSION_HALF_WIDTH_HZ", rtcproc.line_audit.fixed_notch_exclusion_half_width_hz);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_SHARED_NOTCHES", rtcproc.line_audit.apply_shared_notches);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_SUPPORT_NETWORKS", rtcproc.line_audit.apply_min_support_networks);
         add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_DETECTOR_FRAC", rtcproc.line_audit.apply_min_detector_frac);
@@ -3466,6 +3474,8 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     f << "-TOD filter edge guard samples per edge: " << rtcproc.filter_edge_guard.guard_samples << "\n";
     f << "-TOD loaded outer context samples: " << telescope.outer_scans_chunk << "\n";
     f << "-RTC detector notch context samples: " << rtcproc.line_audit.detector_notch_context_samples << "\n";
+    f << "-RTC fixed line-audit notch enabled: " << rtcproc.line_audit.fixed_notch_enabled << "\n";
+    f << "-RTC fixed line-audit notch count: " << rtcproc.line_audit.fixed_notch_freqs_hz.size() << "\n";
     f << "-Downsampled: " << in.status.downsampled << "\n";
     f << "-Cleaned: " << in.status.cleaned << "\n";
 
@@ -5997,6 +6007,10 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_APPLY_ITERATIONS", rtcproc.line_audit.post_filter_apply_iterations);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MIN_HZ", rtcproc.line_audit.post_filter_line_min_hz);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.POST_FILTER_LINE_MAX_HZ", rtcproc.line_audit.post_filter_line_max_hz);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.FIXED_NOTCH_ENABLED", rtcproc.line_audit.fixed_notch_enabled);
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.FIXED_NOTCH_COUNT", static_cast<int>(rtcproc.line_audit.fixed_notch_freqs_hz.size()));
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.FIXED_NOTCH_WIDTH_COUNT", static_cast<int>(rtcproc.line_audit.fixed_notch_widths_hz.size()));
+    add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.FIXED_NOTCH_EXCLUSION_HALF_WIDTH_HZ", rtcproc.line_audit.fixed_notch_exclusion_half_width_hz);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_SHARED_NOTCHES", rtcproc.line_audit.apply_shared_notches);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_SUPPORT_NETWORKS", rtcproc.line_audit.apply_min_support_networks);
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.APPLY_MIN_DETECTOR_FRAC", rtcproc.line_audit.apply_min_detector_frac);

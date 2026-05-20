@@ -131,6 +131,10 @@ public:
         Eigen::Index post_filter_apply_iterations = 1;
         double post_filter_line_min_hz = std::numeric_limits<double>::quiet_NaN();
         double post_filter_line_max_hz = std::numeric_limits<double>::quiet_NaN();
+        bool fixed_notch_enabled = false;
+        std::vector<double> fixed_notch_freqs_hz;
+        std::vector<double> fixed_notch_widths_hz{0.25};
+        double fixed_notch_exclusion_half_width_hz = 0.25;
         bool apply_shared_notches = false;
         Eigen::Index apply_min_support_networks = 2;
         double apply_min_detector_frac = 0.90;
@@ -374,6 +378,18 @@ public:
     template <typename tc_t, typename calib_t>
     void capture_rtc_line_audit(tc_t &, calib_t &, Eigen::Index start_sample, Eigen::Index n_samples,
                                 const RTCLineAuditOptions &, bool post_filter_stage = false);
+
+    double rtc_line_audit_fixed_notch_width_hz(const RTCLineAuditOptions &, std::size_t) const;
+
+    bool rtc_line_audit_frequency_excluded_by_fixed_notch(double, const RTCLineAuditOptions &) const;
+
+    Eigen::Index count_rtc_line_audit_fixed_notches(double, const RTCLineAuditOptions &,
+                                                    double *min_width_hz = nullptr) const;
+
+    // optionally apply a fixed census-derived RTC notch set before the residual dynamic audit
+    template <typename tc_t>
+    Eigen::Index apply_rtc_line_audit_fixed_notches(tc_t &, double fs_hz,
+                                                    const RTCLineAuditOptions &);
 
     // optionally apply chunk-level shared-line notches from the RTC line audit
     template <typename tc_t>
@@ -772,6 +788,23 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                              std::tuple{"timestream","raw_time_chunk","line_audit","post_filter_line_max_hz"},
                              {}, {0.0});
         }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","fixed_notch_enabled"})) {
+            get_config_value(config, line_audit.fixed_notch_enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","fixed_notch_enabled"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","fixed_notch_freqs_hz"})) {
+            line_audit.fixed_notch_freqs_hz = config.template get_typed<std::vector<double>>(
+                std::tuple{"timestream","raw_time_chunk","line_audit","fixed_notch_freqs_hz"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","fixed_notch_widths_hz"})) {
+            line_audit.fixed_notch_widths_hz = config.template get_typed<std::vector<double>>(
+                std::tuple{"timestream","raw_time_chunk","line_audit","fixed_notch_widths_hz"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","fixed_notch_exclusion_half_width_hz"})) {
+            get_config_value(config, line_audit.fixed_notch_exclusion_half_width_hz, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","fixed_notch_exclusion_half_width_hz"},
+                             {}, {0.0});
+        }
         if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","apply_shared_notches"})) {
             get_config_value(config, line_audit.apply_shared_notches, missing_keys, invalid_keys,
                              std::tuple{"timestream","raw_time_chunk","line_audit","apply_shared_notches"});
@@ -865,8 +898,39 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 line_audit.detector_notch_min_width_hz);
             std::exit(EXIT_FAILURE);
         }
+        if (line_audit.fixed_notch_widths_hz.empty()) {
+            line_audit.fixed_notch_widths_hz.push_back(0.25);
+        }
+        if (line_audit.fixed_notch_enabled) {
+            if (line_audit.fixed_notch_freqs_hz.empty()) {
+                logger->error(
+                    "timestream.raw_time_chunk.line_audit.fixed_notch_enabled is true but fixed_notch_freqs_hz is empty");
+                std::exit(EXIT_FAILURE);
+            }
+            if (line_audit.fixed_notch_widths_hz.size() == 1 &&
+                line_audit.fixed_notch_freqs_hz.size() > 1) {
+                line_audit.fixed_notch_widths_hz.resize(
+                    line_audit.fixed_notch_freqs_hz.size(),
+                    line_audit.fixed_notch_widths_hz.front());
+            }
+            if (line_audit.fixed_notch_widths_hz.size() != line_audit.fixed_notch_freqs_hz.size()) {
+                logger->error(
+                    "timestream.raw_time_chunk.line_audit.fixed_notch_widths_hz must have length 1 or match fixed_notch_freqs_hz");
+                std::exit(EXIT_FAILURE);
+            }
+            for (std::size_t i = 0; i < line_audit.fixed_notch_freqs_hz.size(); ++i) {
+                if (!std::isfinite(line_audit.fixed_notch_freqs_hz[i]) ||
+                    line_audit.fixed_notch_freqs_hz[i] <= 0.0 ||
+                    !std::isfinite(line_audit.fixed_notch_widths_hz[i]) ||
+                    line_audit.fixed_notch_widths_hz[i] <= 0.0) {
+                    logger->error(
+                        "timestream.raw_time_chunk.line_audit fixed notch frequencies and widths must be finite and > 0");
+                    std::exit(EXIT_FAILURE);
+                }
+            }
+        }
         logger->info(
-            "raw_time_chunk.line_audit configured: enabled={} line_min_hz={} line_max_hz={} segment_sec={} min_segment_sec={} overlap_frac={} continuum_radius_bins={} prominence_thresh={} cm_prominence_thresh={} min_good_frac={} min_windows={} max_peaks_per_detector={} max_det={} min_det_for_network={} cluster_tol_hz={} notch_min_detector_frac={} notch_min_detectors={} notch_min_cm_prominence={} detector_min_prominence={} detector_min_line_power_frac={} bad_detector_max_cluster_frac={} pre_filter_enabled={} post_filter_enabled={} post_filter_apply_shared_notches={} post_filter_apply_detector_notches={} post_filter_apply_iterations={} post_filter_line_min_hz={} post_filter_line_max_hz={} apply_shared_notches={} apply_min_support_networks={} apply_min_detector_frac={} apply_min_common_mode_prominence={} apply_width_scale={} apply_min_width_hz={} apply_max_width_hz={} apply_max_notches={} apply_cluster_tol_hz={} detector_notch_min_prominence={} detector_notch_min_line_power_frac={} detector_notch_max_notches={} detector_notch_width_scale={} detector_notch_min_width_hz={} detector_notch_max_width_hz={} detector_notch_context_samples={}",
+            "raw_time_chunk.line_audit configured: enabled={} line_min_hz={} line_max_hz={} segment_sec={} min_segment_sec={} overlap_frac={} continuum_radius_bins={} prominence_thresh={} cm_prominence_thresh={} min_good_frac={} min_windows={} max_peaks_per_detector={} max_det={} min_det_for_network={} cluster_tol_hz={} notch_min_detector_frac={} notch_min_detectors={} notch_min_cm_prominence={} detector_min_prominence={} detector_min_line_power_frac={} bad_detector_max_cluster_frac={} pre_filter_enabled={} post_filter_enabled={} post_filter_apply_shared_notches={} post_filter_apply_detector_notches={} post_filter_apply_iterations={} post_filter_line_min_hz={} post_filter_line_max_hz={} fixed_notch_enabled={} fixed_notch_count={} fixed_notch_exclusion_half_width_hz={} apply_shared_notches={} apply_min_support_networks={} apply_min_detector_frac={} apply_min_common_mode_prominence={} apply_width_scale={} apply_min_width_hz={} apply_max_width_hz={} apply_max_notches={} apply_cluster_tol_hz={} detector_notch_min_prominence={} detector_notch_min_line_power_frac={} detector_notch_max_notches={} detector_notch_width_scale={} detector_notch_min_width_hz={} detector_notch_max_width_hz={} detector_notch_context_samples={}",
             line_audit.enabled,
             line_audit.line_min_hz,
             line_audit.line_max_hz,
@@ -895,6 +959,9 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             line_audit.post_filter_apply_iterations,
             line_audit.post_filter_line_min_hz,
             line_audit.post_filter_line_max_hz,
+            line_audit.fixed_notch_enabled,
+            line_audit.fixed_notch_freqs_hz.size(),
+            line_audit.fixed_notch_exclusion_half_width_hz,
             line_audit.apply_shared_notches,
             line_audit.apply_min_support_networks,
             line_audit.apply_min_detector_frac,
@@ -1356,6 +1423,21 @@ inline void RTCProc::configure_filter_edge_guard(double fs_hz) {
     if (run_tod_filter && run_tod_notch && filter_edge_guard.apply_notch) {
         guard = combine_samples(guard, filter.notch_settle_samples(fs_hz, filter_edge_guard.iir_settle_attenuation));
     }
+    if (line_audit.enabled && line_audit.pre_filter_enabled &&
+        line_audit.fixed_notch_enabled && filter_edge_guard.apply_dynamic_notch) {
+        double min_fixed_width_hz = std::numeric_limits<double>::quiet_NaN();
+        const Eigen::Index n_fixed_sections =
+            count_rtc_line_audit_fixed_notches(fs_hz, line_audit, &min_fixed_width_hz);
+        if (n_fixed_sections > 0 &&
+            std::isfinite(min_fixed_width_hz) &&
+            min_fixed_width_hz > 0.0) {
+            guard = combine_samples(
+                guard,
+                n_fixed_sections *
+                    timestream::Filter::notch_settle_samples_for_width(
+                        fs_hz, min_fixed_width_hz, filter_edge_guard.iir_settle_attenuation));
+        }
+    }
     if (line_audit.enabled && line_audit.apply_shared_notches && filter_edge_guard.apply_dynamic_notch) {
         const Eigen::Index n_dynamic_sections =
             line_audit.apply_max_notches > 0 ? line_audit.apply_max_notches : 1;
@@ -1428,6 +1510,134 @@ void RTCProc::apply_filter_edge_guard(tc_t &in,
     in.status.filter_edge_guard_flagged_samples = static_cast<int>(guarded_rows * in.flags.data.cols());
     in.status.filter_edge_guard_flagged_frac =
         static_cast<double>(guarded_rows) / static_cast<double>(n_samples);
+}
+
+inline double RTCProc::rtc_line_audit_fixed_notch_width_hz(const RTCLineAuditOptions &audit,
+                                                           std::size_t i) const {
+    if (audit.fixed_notch_widths_hz.empty()) {
+        return 0.25;
+    }
+    if (i < audit.fixed_notch_widths_hz.size()) {
+        return audit.fixed_notch_widths_hz[i];
+    }
+    return audit.fixed_notch_widths_hz.back();
+}
+
+inline bool RTCProc::rtc_line_audit_frequency_excluded_by_fixed_notch(
+    double freq_hz,
+    const RTCLineAuditOptions &audit) const {
+    if (!audit.fixed_notch_enabled || !std::isfinite(freq_hz) || freq_hz <= 0.0) {
+        return false;
+    }
+    for (std::size_t i = 0; i < audit.fixed_notch_freqs_hz.size(); ++i) {
+        const double center_hz = audit.fixed_notch_freqs_hz[i];
+        const double width_hz = rtc_line_audit_fixed_notch_width_hz(audit, i);
+        if (!std::isfinite(center_hz) || center_hz <= 0.0 ||
+            !std::isfinite(width_hz) || width_hz <= 0.0) {
+            continue;
+        }
+        double half_width_hz = 0.5 * width_hz;
+        if (std::isfinite(audit.fixed_notch_exclusion_half_width_hz) &&
+            audit.fixed_notch_exclusion_half_width_hz > 0.0) {
+            half_width_hz =
+                std::max(half_width_hz, audit.fixed_notch_exclusion_half_width_hz);
+        }
+        if (std::abs(freq_hz - center_hz) <= half_width_hz) {
+            return true;
+        }
+    }
+    return false;
+}
+
+inline Eigen::Index RTCProc::count_rtc_line_audit_fixed_notches(
+    double fs_hz,
+    const RTCLineAuditOptions &audit,
+    double *min_width_hz) const {
+    if (min_width_hz != nullptr) {
+        *min_width_hz = std::numeric_limits<double>::quiet_NaN();
+    }
+    if (!audit.fixed_notch_enabled || !std::isfinite(fs_hz) || fs_hz <= 0.0) {
+        return 0;
+    }
+    const double nyquist_hz = 0.5 * fs_hz;
+    Eigen::Index count = 0;
+    double min_width = std::numeric_limits<double>::infinity();
+    for (std::size_t i = 0; i < audit.fixed_notch_freqs_hz.size(); ++i) {
+        const double freq_hz = audit.fixed_notch_freqs_hz[i];
+        const double width_hz = rtc_line_audit_fixed_notch_width_hz(audit, i);
+        if (!std::isfinite(freq_hz) || freq_hz <= 0.0 || freq_hz >= nyquist_hz ||
+            !std::isfinite(width_hz) || width_hz <= 0.0) {
+            continue;
+        }
+        ++count;
+        min_width = std::min(min_width, width_hz);
+    }
+    if (min_width_hz != nullptr && count > 0) {
+        *min_width_hz = min_width;
+    }
+    return count;
+}
+
+template <typename tc_t>
+Eigen::Index RTCProc::apply_rtc_line_audit_fixed_notches(
+    tc_t &in,
+    double fs_hz,
+    const RTCLineAuditOptions &audit) {
+    if (!audit.enabled || !audit.fixed_notch_enabled ||
+        !std::isfinite(fs_hz) || fs_hz <= 0.0) {
+        return 0;
+    }
+
+    const double nyquist_hz = 0.5 * fs_hz;
+    Filter fixed_notch_filter;
+    fixed_notch_filter.notch_zero_phase = true;
+
+    struct FixedAppliedNotch {
+        double freq_hz = std::numeric_limits<double>::quiet_NaN();
+        double width_hz = std::numeric_limits<double>::quiet_NaN();
+    };
+    std::vector<FixedAppliedNotch> applied_notches;
+    applied_notches.reserve(audit.fixed_notch_freqs_hz.size());
+
+    for (std::size_t i = 0; i < audit.fixed_notch_freqs_hz.size(); ++i) {
+        const double freq_hz = audit.fixed_notch_freqs_hz[i];
+        const double width_hz = rtc_line_audit_fixed_notch_width_hz(audit, i);
+        if (!std::isfinite(freq_hz) || freq_hz <= 0.0 ||
+            !std::isfinite(width_hz) || width_hz <= 0.0) {
+            continue;
+        }
+        if (freq_hz >= nyquist_hz) {
+            logger->warn(
+                "rtc_line_audit fixed_notch scan {} skipped freq_hz={} at/above Nyquist {}",
+                in.index.data + 1,
+                freq_hz,
+                nyquist_hz);
+            continue;
+        }
+        fixed_notch_filter.w0s.push_back(freq_hz);
+        fixed_notch_filter.qs.push_back(freq_hz / width_hz);
+        applied_notches.push_back({freq_hz, width_hz});
+    }
+
+    if (applied_notches.empty()) {
+        return 0;
+    }
+
+    fixed_notch_filter.make_notch_filter(fs_hz);
+    fixed_notch_filter.iir(in.scans.data);
+    if (run_kernel) {
+        fixed_notch_filter.iir(in.kernel.data);
+    }
+
+    for (const auto &notch : applied_notches) {
+        logger->info(
+            "rtc_line_audit apply_fixed_notch scan {}: center_hz={} width_hz={} zero_phase=true",
+            in.index.data + 1,
+            notch.freq_hz,
+            notch.width_hz);
+    }
+
+    return static_cast<Eigen::Index>(applied_notches.size());
 }
 
 template <class calib_t>
@@ -1596,9 +1806,11 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
 
     Eigen::Index n_applied_line_audit_notches = 0;
     if (line_audit.enabled && line_audit.pre_filter_enabled) {
+        n_applied_line_audit_notches +=
+            apply_rtc_line_audit_fixed_notches(in, telescope.fsmp, line_audit);
         capture_rtc_line_audit(in, calib, si, sl, line_audit, false);
         if (line_audit.apply_shared_notches) {
-            n_applied_line_audit_notches =
+            n_applied_line_audit_notches +=
                 apply_rtc_line_audit_shared_notches(in, telescope.fsmp, line_audit, false);
         }
     }
@@ -2484,6 +2696,9 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
                 continue;
             }
             if (audit.line_max_hz > 0.0 && f > audit.line_max_hz) {
+                continue;
+            }
+            if (rtc_line_audit_frequency_excluded_by_fixed_notch(f, audit)) {
                 continue;
             }
             good_freq.push_back(f);
@@ -3680,6 +3895,9 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
                 continue;
             }
             if (f <= 0.0 || f >= nyquist_hz) {
+                continue;
+            }
+            if (rtc_line_audit_frequency_excluded_by_fixed_notch(f, audit)) {
                 continue;
             }
             good_freq.push_back(f);
