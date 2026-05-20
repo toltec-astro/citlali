@@ -299,7 +299,8 @@ timestream: # timestream reduction parameters
     output:
       enabled: false # enable or disable rtc TOD output
       indices: all # chunk indices to write: "all" or [1,3,7] (1-based)
-      mode: full # RTC TOD output mode: full or mini (mini uses float32 signal, byte flags, no per-det pointing/kernel)
+      mode: full # RTC TOD output mode: full, mini, full_outer, or mini_outer (mini uses float32 signal, byte flags, no per-det pointing/kernel; *_outer includes loaded outer scan context)
+      outer_context_samples: 0 # minimum samples per side to include when mode is full_outer or mini_outer
   processed_time_chunk:
     clean: # remove (hopefully) the atmospheric signal
       enabled: false # enable or disable cleaning

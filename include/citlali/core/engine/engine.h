@@ -692,6 +692,11 @@ void Engine::get_rtc_config(CT &config) {
     rtcproc.configure_filter_edge_guard(telescope.fsmp);
     telescope.inner_scans_chunk = rtcproc.filter_edge_guard.context_samples;
     telescope.outer_scans_chunk = telescope.inner_scans_chunk;
+    if (rtcproc.tod_output_outer) {
+        telescope.outer_scans_chunk = std::max<Eigen::Index>(
+            telescope.outer_scans_chunk,
+            std::max<Eigen::Index>(0, rtcproc.tod_output_outer_context_samples));
+    }
     if (rtcproc.line_audit.enabled &&
         rtcproc.line_audit.post_filter_enabled &&
         rtcproc.line_audit.post_filter_apply_detector_notches) {
@@ -736,16 +741,27 @@ void Engine::get_timestream_config(CT &config) {
     get_config_value(config, run_tod_output_rtc, missing_keys, invalid_keys,
                      std::tuple{"timestream","raw_time_chunk","output","enabled"});
     rtcproc.tod_output_mini = false;
+    rtcproc.tod_output_outer = false;
+    rtcproc.tod_output_outer_context_samples = 0;
     if (run_tod_output_rtc && config.has(std::tuple{"timestream","raw_time_chunk","output","mode"})) {
         std::string rtc_output_mode = "full";
         get_config_value(config, rtc_output_mode, missing_keys, invalid_keys,
-                         std::tuple{"timestream","raw_time_chunk","output","mode"}, {"full","mini"});
-        rtcproc.tod_output_mini = (rtc_output_mode == "mini");
+                         std::tuple{"timestream","raw_time_chunk","output","mode"},
+                         {"full","mini","full_outer","mini_outer"});
+        rtcproc.tod_output_mini = (rtc_output_mode == "mini" || rtc_output_mode == "mini_outer");
+        rtcproc.tod_output_outer = (rtc_output_mode == "full_outer" || rtc_output_mode == "mini_outer");
+    }
+    if (run_tod_output_rtc && config.has(std::tuple{"timestream","raw_time_chunk","output","outer_context_samples"})) {
+        get_config_value(config, rtcproc.tod_output_outer_context_samples, missing_keys, invalid_keys,
+                         std::tuple{"timestream","raw_time_chunk","output","outer_context_samples"},
+                         {}, {0});
     }
     // output ptc
     get_config_value(config, run_tod_output_ptc, missing_keys, invalid_keys,
                      std::tuple{"timestream","processed_time_chunk","output","enabled"});
     ptcproc.tod_output_mini = false;
+    ptcproc.tod_output_outer = false;
+    ptcproc.tod_output_outer_context_samples = 0;
     if (run_tod_output_ptc && config.has(std::tuple{"timestream","processed_time_chunk","output","mode"})) {
         std::string ptc_output_mode = "full";
         get_config_value(config, ptc_output_mode, missing_keys, invalid_keys,
@@ -2080,6 +2096,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.CONTEXT_SAMPLES", rtcproc.filter_edge_guard.context_samples);
         add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.GUARD_SAMPLES", rtcproc.filter_edge_guard.guard_samples);
         add_netcdf_var(fo, "CONFIG.TOD.OUTER_CONTEXT_SAMPLES", telescope.outer_scans_chunk);
+        add_netcdf_var(fo, "CONFIG.TOD.OUTPUT_OUTER_CONTEXT_SAMPLES", rtcproc.tod_output_outer_context_samples);
         add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.MIN_SAMPLES", rtcproc.filter_edge_guard.min_samples);
         add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.EXTRA_SAMPLES", rtcproc.filter_edge_guard.extra_samples);
         add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.MAX_SAMPLES", rtcproc.filter_edge_guard.max_samples);
@@ -2441,6 +2458,8 @@ void Engine::create_tod_files() {
         (prod_t == engine_utils::toltecIO::rtc_timestream) ? n_tod_output_scans_rtc : n_tod_output_scans_ptc;
     const bool tod_output_mini =
         (prod_t == engine_utils::toltecIO::rtc_timestream) ? rtcproc.tod_output_mini : ptcproc.tod_output_mini;
+    const bool tod_output_outer =
+        (prod_t == engine_utils::toltecIO::rtc_timestream) ? rtcproc.tod_output_outer : ptcproc.tod_output_outer;
 
     netCDF::NcDim n_pts_dim = fo.addDim("n_pts");
     netCDF::NcDim n_raw_scan_indices_dim = fo.addDim("n_raw_scan_indices", telescope.scan_indices.rows());
@@ -2456,7 +2475,11 @@ void Engine::create_tod_files() {
     // raw file scan indices
     netCDF::NcVar raw_scan_indices_v = fo.addVar("raw_scan_indices",netCDF::ncInt, raw_scans_dims);
     raw_scan_indices_v.putAtt("units","N/A");
-    raw_scan_indices_v.putAtt("comment","indices in output timebase; outer=inner (output stores inner scans only)");
+    raw_scan_indices_v.putAtt(
+        "comment",
+        tod_output_outer
+            ? "indices in output timebase: inner_start, inner_end, outer_start, outer_end"
+            : "indices in output timebase; outer=inner (output stores inner scans only)");
     std::vector<int> raw_scan_init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
                                    static_cast<std::size_t>(telescope.scan_indices.rows()), -2147483647);
     raw_scan_indices_v.putVar(raw_scan_init.data());
@@ -3378,7 +3401,9 @@ void Engine::cli_summary() {
     if (run_tod_output) {
         if (tod_output_type == "rtc" || tod_output_type == "both") {
             logger->info("RTC TOD output scans: {}", n_tod_output_scans_rtc);
-            logger->info("RTC TOD output mode: {}", rtcproc.tod_output_mini ? "mini" : "full");
+            logger->info("RTC TOD output mode: {}{}",
+                         rtcproc.tod_output_mini ? "mini" : "full",
+                         rtcproc.tod_output_outer ? "_outer" : "");
         }
         if (tod_output_type == "ptc" || tod_output_type == "both") {
             logger->info("PTC TOD output scans: {}", n_tod_output_scans_ptc);
@@ -5886,6 +5911,7 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.CONTEXT_SAMPLES", rtcproc.filter_edge_guard.context_samples);
     add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.GUARD_SAMPLES", rtcproc.filter_edge_guard.guard_samples);
     add_netcdf_var(fo, "CONFIG.TOD.OUTER_CONTEXT_SAMPLES", telescope.outer_scans_chunk);
+    add_netcdf_var(fo, "CONFIG.TOD.OUTPUT_OUTER_CONTEXT_SAMPLES", rtcproc.tod_output_outer_context_samples);
     add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.MIN_SAMPLES", rtcproc.filter_edge_guard.min_samples);
     add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.EXTRA_SAMPLES", rtcproc.filter_edge_guard.extra_samples);
     add_netcdf_var(fo, "CONFIG.TODFILTER.EDGE_GUARD.MAX_SAMPLES", rtcproc.filter_edge_guard.max_samples);

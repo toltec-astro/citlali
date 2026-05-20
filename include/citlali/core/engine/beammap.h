@@ -708,6 +708,11 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
 
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
+        TCData<TCDataKind::RTC,Eigen::MatrixXd> rtc_outer_output;
+        const auto rtc_scan_row = tod_output_scan_row(rtcdata.index.data, "rtc");
+        const bool write_this_rtc = write_rtc && rtc_scan_row >= 0;
+        auto *rtc_outer_output_ptr =
+            (write_this_rtc && rtcproc.tod_output_outer) ? &rtc_outer_output : nullptr;
 
         {
             std::lock_guard<std::mutex> lk(*scans_done_mutex);
@@ -717,7 +722,8 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
 
         // run rtcproc
         logger->info("raw time chunk processing for scan {}", rtcdata.index.data + 1);
-        auto map_indices = rtcproc.run(rtcdata, ptcdata, calib, telescope, omb.pixel_size_rad, map_grouping);
+        auto map_indices = rtcproc.run(rtcdata, ptcdata, calib, telescope, omb.pixel_size_rad, map_grouping,
+                                       rtc_outer_output_ptr);
 
         if (map_grouping!="detector") {
             // remove flagged detectors
@@ -740,12 +746,18 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
         }
 
         // write rtc timestreams
-        const auto rtc_scan_row = tod_output_scan_row(rtcdata.index.data, "rtc");
-        if (write_rtc && rtc_scan_row >= 0) {
+        if (write_this_rtc) {
             rtc_writer->wait_turn(rtc_scan_row);
-            logger->info("writing raw time chunk");
-            rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
-                                     ptcdata.pointing_offsets_arcsec.data, calib_scan, true, rtc_scan_row);
+            if (rtcproc.tod_output_outer) {
+                logger->info("writing outer raw time chunk");
+                rtcproc.append_to_netcdf(rtc_outer_output, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
+                                         rtc_outer_output.pointing_offsets_arcsec.data, calib, true, rtc_scan_row);
+            }
+            else {
+                logger->info("writing raw time chunk");
+                rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
+                                         ptcdata.pointing_offsets_arcsec.data, calib_scan, true, rtc_scan_row);
+            }
             rtc_writer->advance();
         }
         if (write_rtc || write_rtcdiag) {

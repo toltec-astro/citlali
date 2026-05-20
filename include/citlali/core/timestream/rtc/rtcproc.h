@@ -353,7 +353,8 @@ public:
     // run the main processing
     template<typename calib_t, typename telescope_t>
     auto run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
-             calib_t &, telescope_t &, double, std::string);
+             calib_t &, telescope_t &, double, std::string,
+             TCData<TCDataKind::RTC, Eigen::MatrixXd> *tod_outer_output = nullptr);
 
     // remove nearby tones
     template <typename calib_t>
@@ -422,6 +423,12 @@ public:
     // append time chunk to tod netcdf file
     template <typename calib_t, typename pointing_offset_t>
     void append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
+                          pointing_offset_t &, calib_t &, bool apply_det_offsets = false,
+                          Eigen::Index scan_row_index = -1);
+
+    // append loaded outer RTC time chunk to tod netcdf file
+    template <typename calib_t, typename pointing_offset_t>
+    void append_to_netcdf(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
                           pointing_offset_t &, calib_t &, bool apply_det_offsets = false,
                           Eigen::Index scan_row_index = -1);
 };
@@ -1484,7 +1491,8 @@ auto RTCProc::calc_map_indices(calib_t &calib, std::string map_grouping) {
 
 template<class calib_t, typename telescope_t>
 auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKind::PTC, Eigen::MatrixXd> &out,
-                  calib_t &calib, telescope_t &telescope, double pixel_size_rad, std::string map_grouping) {
+                  calib_t &calib, telescope_t &telescope, double pixel_size_rad, std::string map_grouping,
+                  TCData<TCDataKind::RTC, Eigen::MatrixXd> *tod_outer_output) {
 
     // number of points in scan
     Eigen::Index n_pts = in.scans.data.rows();
@@ -1716,6 +1724,10 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 }
             }
         }
+    }
+
+    if (tod_outer_output != nullptr) {
+        *tod_outer_output = in;
     }
 
     if (run_downsample) {
@@ -5844,6 +5856,31 @@ void RTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
         fo.close();
 
         logger->info("rtc diagnostics sidecar chunk written to {}", filepath);
+    } catch (NcException &e) {
+        logger->error("{}", e.what());
+    }
+}
+
+template <typename calib_t, typename pointing_offset_t>
+void RTCProc::append_to_netcdf(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string filepath, std::string map_grouping,
+                               std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, calib_t &calib,
+                               bool apply_det_offsets, Eigen::Index scan_row_index) {
+    using netCDF::NcFile;
+    using namespace netCDF::exceptions;
+
+    try {
+        predefs::suppress_hdf5_diagnostics_for_this_thread();
+        std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
+        NcFile fo(filepath, netCDF::NcFile::write);
+
+        append_base_to_netcdf(fo, in, map_grouping, pixel_axes, pointing_offsets_arcsec, calib, apply_det_offsets,
+                              scan_row_index, true);
+
+        fo.sync();
+        fo.close();
+
+        logger->info("outer tod chunk written to {}", filepath);
+
     } catch (NcException &e) {
         logger->error("{}", e.what());
     }
