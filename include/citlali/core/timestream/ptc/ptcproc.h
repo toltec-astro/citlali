@@ -17,6 +17,7 @@
 #include <tuple>
 #include <unordered_map>
 #include <unordered_set>
+#include <utility>
 #include <vector>
 
 #include <Eigen/SVD>
@@ -219,6 +220,11 @@ public:
         int max_modes = 8;
     };
 
+    struct PCAFreezeOptions {
+        bool enabled = false;
+        int after_iter = 4;
+    };
+
     struct PCAStabilityKey {
         Eigen::Index scan = -1;
         Eigen::Index pass = -1;
@@ -260,14 +266,30 @@ public:
         double max_eval_frac_rms = 0.0;
     };
 
+    struct PCAFreezeAggregate {
+        Eigen::Index n_groups_applied = 0;
+        Eigen::Index n_groups_missing = 0;
+        Eigen::Index n_groups_invalid = 0;
+        Eigen::Index n_dets_cleaned = 0;
+    };
+
     PCAStabilityDiagnosticsOptions pca_stability_diagnostics;
+    PCAFreezeOptions pca_freeze;
     int pca_stability_current_iter = 0;
     std::map<PCAStabilityKey, PCAStabilityBasis> pca_stability_basis_cache;
     std::map<int, PCAStabilityAggregate> pca_stability_aggregates;
+    std::map<int, PCAFreezeAggregate> pca_freeze_aggregates;
     std::shared_ptr<std::mutex> pca_stability_mutex = std::make_shared<std::mutex>();
 
+    bool pca_basis_tracking_enabled() const;
+    bool pca_freeze_active() const;
     void reset_pca_stability_diagnostics();
     void log_pca_stability_summary(int iter);
+    void log_pca_freeze_summary(int iter);
+    bool get_cached_pca_basis(const PCAStabilityKey &, PCAStabilityBasis &) const;
+    std::vector<std::pair<PCAStabilityKey, PCAStabilityBasis>>
+    get_cached_pca_bases_for_group(const PCAStabilityKey &) const;
+    void record_pca_freeze_usage(Eigen::Index, Eigen::Index, Eigen::Index, Eigen::Index);
 
     Eigen::Index pca_stability_effective_k(
         timestream::Cleaner &, const Eigen::VectorXd &, const Eigen::MatrixXd &,
@@ -322,13 +344,85 @@ public:
                           Eigen::Index scan_row_index = -1);
 };
 
+inline bool PTCProc::pca_basis_tracking_enabled() const {
+    return pca_stability_diagnostics.enabled || pca_freeze.enabled;
+}
+
+inline bool PTCProc::pca_freeze_active() const {
+    return pca_freeze.enabled && pca_stability_current_iter > pca_freeze.after_iter;
+}
+
 inline void PTCProc::reset_pca_stability_diagnostics() {
-    if (!pca_stability_diagnostics.enabled) {
+    if (!pca_basis_tracking_enabled()) {
         return;
     }
     std::lock_guard<std::mutex> lock(*pca_stability_mutex);
     pca_stability_basis_cache.clear();
     pca_stability_aggregates.clear();
+    pca_freeze_aggregates.clear();
+}
+
+inline bool PTCProc::get_cached_pca_basis(const PCAStabilityKey &key, PCAStabilityBasis &basis) const {
+    std::lock_guard<std::mutex> lock(*pca_stability_mutex);
+    const auto it = pca_stability_basis_cache.find(key);
+    if (it == pca_stability_basis_cache.end()) {
+        return false;
+    }
+    basis = it->second;
+    return true;
+}
+
+inline std::vector<std::pair<PTCProc::PCAStabilityKey, PTCProc::PCAStabilityBasis>>
+PTCProc::get_cached_pca_bases_for_group(const PCAStabilityKey &prefix) const {
+    std::vector<std::pair<PCAStabilityKey, PCAStabilityBasis>> bases;
+    std::lock_guard<std::mutex> lock(*pca_stability_mutex);
+    for (const auto &[key, basis] : pca_stability_basis_cache) {
+        if (key.scan == prefix.scan &&
+            key.pass == prefix.pass &&
+            key.group == prefix.group &&
+            key.group_key == prefix.group_key &&
+            key.arr == prefix.arr) {
+            bases.emplace_back(key, basis);
+        }
+    }
+    return bases;
+}
+
+inline void PTCProc::record_pca_freeze_usage(
+    Eigen::Index n_groups_applied, Eigen::Index n_groups_missing, Eigen::Index n_groups_invalid,
+    Eigen::Index n_dets_cleaned) {
+    if (!pca_freeze.enabled) {
+        return;
+    }
+    std::lock_guard<std::mutex> lock(*pca_stability_mutex);
+    auto &aggregate = pca_freeze_aggregates[pca_stability_current_iter];
+    aggregate.n_groups_applied += n_groups_applied;
+    aggregate.n_groups_missing += n_groups_missing;
+    aggregate.n_groups_invalid += n_groups_invalid;
+    aggregate.n_dets_cleaned += n_dets_cleaned;
+}
+
+inline void PTCProc::log_pca_freeze_summary(int iter) {
+    if (!pca_freeze.enabled || iter <= pca_freeze.after_iter) {
+        return;
+    }
+    PCAFreezeAggregate aggregate;
+    {
+        std::lock_guard<std::mutex> lock(*pca_stability_mutex);
+        const auto it = pca_freeze_aggregates.find(iter);
+        if (it == pca_freeze_aggregates.end()) {
+            logger->info("PTC PCA freeze iter {}: no cached PCA groups applied", iter);
+            return;
+        }
+        aggregate = it->second;
+    }
+    logger->info(
+        "PTC PCA freeze iter {}: applied_groups={} missing_groups={} invalid_groups={} cleaned_dets={}",
+        iter,
+        aggregate.n_groups_applied,
+        aggregate.n_groups_missing,
+        aggregate.n_groups_invalid,
+        aggregate.n_dets_cleaned);
 }
 
 inline Eigen::Index PTCProc::pca_stability_effective_k(
@@ -393,17 +487,16 @@ void PTCProc::record_pca_stability(
     const PCAStabilityKey &key, const Eigen::DenseBase<DerivedScans> &scans,
     const Eigen::DenseBase<DerivedFlags> &flags, const Eigen::VectorXd &evals,
     const Eigen::MatrixXd &evecs, const Eigen::VectorXi &det_indices, Eigen::Index applied_k) {
-    if (!pca_stability_diagnostics.enabled) {
+    if (!pca_basis_tracking_enabled()) {
         return;
     }
-    tula::logging::scoped_timeit diag_timer{"PTCProc::pca_stability_diagnostics"};
 
     const int iter = pca_stability_current_iter;
     const Eigen::Index max_modes = std::max<Eigen::Index>(1, pca_stability_diagnostics.max_modes);
     const Eigen::Index store_k = std::max<Eigen::Index>(
-        0, std::min<Eigen::Index>({applied_k, max_modes, evecs.cols()}));
+        0, std::min<Eigen::Index>(applied_k, evecs.cols()));
     const Eigen::Index store_eval_k = std::max<Eigen::Index>(
-        0, std::min<Eigen::Index>(max_modes, evals.size()));
+        0, std::min<Eigen::Index>(std::max<Eigen::Index>(max_modes, store_k), evals.size()));
 
     PCAStabilityBasis current;
     current.iter = iter;
@@ -417,11 +510,15 @@ void PTCProc::record_pca_stability(
     bool have_previous = false;
     {
         std::lock_guard<std::mutex> lock(*pca_stability_mutex);
-        auto &aggregate = pca_stability_aggregates[iter];
-        aggregate.n_seen++;
+        if (pca_stability_diagnostics.enabled) {
+            auto &aggregate = pca_stability_aggregates[iter];
+            aggregate.n_seen++;
+        }
         const auto previous_it = pca_stability_basis_cache.find(key);
         if (previous_it == pca_stability_basis_cache.end()) {
-            aggregate.n_missing_previous++;
+            if (pca_stability_diagnostics.enabled) {
+                pca_stability_aggregates[iter].n_missing_previous++;
+            }
             pca_stability_basis_cache[key] = std::move(current);
             return;
         }
@@ -430,7 +527,7 @@ void PTCProc::record_pca_stability(
         have_previous = true;
     }
 
-    if (!have_previous) {
+    if (!pca_stability_diagnostics.enabled || !have_previous) {
         return;
     }
 
@@ -967,6 +1064,30 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         logger->info("PTC PCA stability diagnostics enabled: max_modes={}", pca_stability_diagnostics.max_modes);
         if (!run_clean) {
             logger->warn("PTC PCA stability diagnostics enabled but processed_time_chunk.clean.enabled=false; no PCA groups will be recorded");
+        }
+    }
+    if (config.template has_typed<bool>(std::tuple{"beammap","pca_freeze","enabled"})) {
+        get_config_value(config, pca_freeze.enabled, missing_keys, invalid_keys,
+                         std::tuple{"beammap","pca_freeze","enabled"});
+    }
+    if (config.template has_typed<int>(std::tuple{"beammap","pca_freeze","after_iter"})) {
+        get_config_value(config, pca_freeze.after_iter, missing_keys, invalid_keys,
+                         std::tuple{"beammap","pca_freeze","after_iter"},{},{0});
+    }
+    if (config.template has_typed<bool>(
+            std::tuple{"timestream","processed_time_chunk","clean","pca_freeze","enabled"})) {
+        get_config_value(config, pca_freeze.enabled, missing_keys, invalid_keys,
+                         std::tuple{"timestream","processed_time_chunk","clean","pca_freeze","enabled"});
+    }
+    if (config.template has_typed<int>(
+            std::tuple{"timestream","processed_time_chunk","clean","pca_freeze","after_iter"})) {
+        get_config_value(config, pca_freeze.after_iter, missing_keys, invalid_keys,
+                         std::tuple{"timestream","processed_time_chunk","clean","pca_freeze","after_iter"},{},{0});
+    }
+    if (pca_freeze.enabled) {
+        logger->info("PTC PCA freeze enabled: after_iter={}", pca_freeze.after_iter);
+        if (!run_clean) {
+            logger->warn("PTC PCA freeze enabled but processed_time_chunk.clean.enabled=false; no PCA groups will be cached or reused");
         }
     }
 
@@ -1551,26 +1672,6 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                             out_kernel_block = in_kernel_block;
                         }
 
-                        timestream::Cleaner::CorrGroupingResult corr_groups;
-                        {
-                            tula::logging::scoped_timeit corr_group_timer{"PTCProc::clean corr_nw get_groups"};
-                            corr_groups = cleaner_local.get_corr_groups(in_scans_block, masked_flags, apt_flags);
-                        }
-                        logger->trace("cleaning corr_nw {} groups={} grouped={} ungrouped={} candidates={} used={} step={}",
-                                      key, corr_groups.n_groups_final, corr_groups.n_det_grouped, corr_groups.n_det_ungrouped,
-                                      corr_groups.n_det_candidates, corr_groups.n_det_used, corr_groups.sample_step);
-                        corr_summary_scan.push_back(CorrNWDiagSummary{
-                            .nw = nw_index,
-                            .n_det_input = corr_groups.n_det_input,
-                            .n_det_candidates = corr_groups.n_det_candidates,
-                            .n_det_used = corr_groups.n_det_used,
-                            .n_det_grouped = corr_groups.n_det_grouped,
-                            .n_det_ungrouped = corr_groups.n_det_ungrouped,
-                            .n_groups_raw = corr_groups.n_groups_raw,
-                            .n_groups_final = corr_groups.n_groups_final,
-                            .sample_step = corr_groups.sample_step,
-                        });
-
                         auto extract_scans_cols = [&](const auto &m, const std::vector<Eigen::Index> &cols) {
                             Eigen::MatrixXd out_m(m.rows(), static_cast<Eigen::Index>(cols.size()));
                             for (Eigen::Index c = 0; c < static_cast<Eigen::Index>(cols.size()); ++c) {
@@ -1599,6 +1700,109 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                                 dst.col(cols[static_cast<std::size_t>(c)]) = src.col(c);
                             }
                         };
+
+                        if (pca_freeze_active()) {
+                            const auto frozen_bases = get_cached_pca_bases_for_group(
+                                PCAStabilityKey{
+                                    .scan = in.index.data,
+                                    .pass = indx,
+                                    .group = group,
+                                    .group_key = nw_index,
+                                    .arr = arr_index,
+                                    .subgroup = -1,
+                                });
+                            Eigen::Index n_applied = 0;
+                            Eigen::Index n_invalid = 0;
+                            Eigen::Index n_dets_cleaned = 0;
+
+                            for (const auto &[basis_key, basis] : frozen_bases) {
+                                if (basis.det_indices.size() < 2 || basis.evecs.rows() != basis.det_indices.size() ||
+                                    basis.evecs.cols() <= 0 || basis.applied_k <= 0) {
+                                    n_invalid++;
+                                    continue;
+                                }
+
+                                std::vector<Eigen::Index> cols;
+                                cols.reserve(static_cast<std::size_t>(basis.det_indices.size()));
+                                bool valid_membership = true;
+                                for (Eigen::Index d = 0; d < basis.det_indices.size(); ++d) {
+                                    const Eigen::Index local_col =
+                                        static_cast<Eigen::Index>(basis.det_indices(d)) - start_index;
+                                    if (local_col < 0 || local_col >= n_dets) {
+                                        valid_membership = false;
+                                        break;
+                                    }
+                                    cols.push_back(local_col);
+                                }
+                                if (!valid_membership || static_cast<Eigen::Index>(cols.size()) != basis.evecs.rows()) {
+                                    n_invalid++;
+                                    continue;
+                                }
+
+                                auto in_scans_sub = extract_scans_cols(in_scans_block, cols);
+                                auto flags_sub = extract_flag_cols(masked_flags, cols);
+                                auto out_scans_sub =
+                                    pca_stability_clean_with_basis(in_scans_sub, flags_sub, basis.evecs, basis.applied_k);
+                                scatter_cols(out_scans_block, out_scans_sub, cols);
+
+                                if (in.kernel.data.size()!=0) {
+                                    auto in_kernel_block = in.kernel.data.block(0, start_index, n_pts, n_dets);
+                                    auto out_kernel_block = out.kernel.data.block(0, start_index, n_pts, n_dets);
+                                    auto in_kernel_sub = extract_scans_cols(in_kernel_block, cols);
+                                    auto out_kernel_sub =
+                                        pca_stability_clean_with_basis(in_kernel_sub, flags_sub, basis.evecs, basis.applied_k);
+                                    scatter_cols(out_kernel_block, out_kernel_sub, cols);
+                                }
+
+                                for (const auto &local_col : cols) {
+                                    corr_group_ids_scan(start_index + local_col) = basis_key.subgroup;
+                                }
+                                n_applied++;
+                                n_dets_cleaned += static_cast<Eigen::Index>(cols.size());
+                            }
+
+                            if (n_applied > 0) {
+                                logger->debug("PTC PCA freeze corr_nw scan={} nw={} groups={} dets={} invalid={}",
+                                              in.index.data, nw_index, n_applied, n_dets_cleaned, n_invalid);
+                                corr_summary_scan.push_back(CorrNWDiagSummary{
+                                    .nw = nw_index,
+                                    .n_det_input = n_dets,
+                                    .n_det_candidates = n_dets,
+                                    .n_det_used = n_dets_cleaned,
+                                    .n_det_grouped = n_dets_cleaned,
+                                    .n_det_ungrouped = std::max<Eigen::Index>(0, n_dets - n_dets_cleaned),
+                                    .n_groups_raw = n_applied + n_invalid,
+                                    .n_groups_final = n_applied,
+                                    .sample_step = 1,
+                                });
+                                record_pca_freeze_usage(n_applied, 0, n_invalid, n_dets_cleaned);
+                                continue;
+                            }
+
+                            record_pca_freeze_usage(0, 1, n_invalid, 0);
+                            logger->warn("PTC PCA freeze missing usable corr_nw basis for scan={} nw={}; falling back to normal PCA",
+                                         in.index.data, nw_index);
+                        }
+
+                        timestream::Cleaner::CorrGroupingResult corr_groups;
+                        {
+                            tula::logging::scoped_timeit corr_group_timer{"PTCProc::clean corr_nw get_groups"};
+                            corr_groups = cleaner_local.get_corr_groups(in_scans_block, masked_flags, apt_flags);
+                        }
+                        logger->trace("cleaning corr_nw {} groups={} grouped={} ungrouped={} candidates={} used={} step={}",
+                                      key, corr_groups.n_groups_final, corr_groups.n_det_grouped, corr_groups.n_det_ungrouped,
+                                      corr_groups.n_det_candidates, corr_groups.n_det_used, corr_groups.sample_step);
+                        corr_summary_scan.push_back(CorrNWDiagSummary{
+                            .nw = nw_index,
+                            .n_det_input = corr_groups.n_det_input,
+                            .n_det_candidates = corr_groups.n_det_candidates,
+                            .n_det_used = corr_groups.n_det_used,
+                            .n_det_grouped = corr_groups.n_det_grouped,
+                            .n_det_ungrouped = corr_groups.n_det_ungrouped,
+                            .n_groups_raw = corr_groups.n_groups_raw,
+                            .n_groups_final = corr_groups.n_groups_final,
+                            .sample_step = corr_groups.sample_step,
+                        });
 
                         for (Eigen::Index gidx = 0; gidx < static_cast<Eigen::Index>(corr_groups.groups.size()); ++gidx) {
                             const auto &cols = corr_groups.groups[static_cast<std::size_t>(gidx)];
@@ -1647,7 +1851,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                                     cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index,
                                     group, nw_index, arr_index);
                             }
-                            if (pca_stability_diagnostics.enabled) {
+                            if (pca_basis_tracking_enabled()) {
                                 Eigen::VectorXi det_indices(static_cast<Eigen::Index>(cols.size()));
                                 for (Eigen::Index c = 0; c < static_cast<Eigen::Index>(cols.size()); ++c) {
                                     det_indices(c) = static_cast<int>(
@@ -1750,6 +1954,51 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 // check if any good flags
                 if ((apt_flags.array()==0).any()) {
                     logger->info("cleaning {} {}", effective_group, key);
+                    if (pca_freeze_active()) {
+                        PCAStabilityBasis frozen_basis;
+                        const bool found_basis = get_cached_pca_basis(
+                            PCAStabilityKey{
+                                .scan = in.index.data,
+                                .pass = indx,
+                                .group = effective_group,
+                                .group_key = key,
+                                .arr = arr_index,
+                                .subgroup = -1,
+                            },
+                            frozen_basis);
+                        bool valid_basis = found_basis;
+                        if (found_basis) {
+                            valid_basis = frozen_basis.det_indices.size() == n_dets &&
+                                          frozen_basis.evecs.rows() == n_dets &&
+                                          frozen_basis.evecs.cols() > 0 &&
+                                          frozen_basis.applied_k > 0;
+                            for (Eigen::Index d = 0; valid_basis && d < n_dets; ++d) {
+                                valid_basis = frozen_basis.det_indices(d) == static_cast<int>(start_index + d);
+                            }
+                        }
+
+                        if (valid_basis) {
+                            out_scans_block =
+                                pca_stability_clean_with_basis(in_scans_block, masked_flags,
+                                                               frozen_basis.evecs, frozen_basis.applied_k);
+                            if (in.kernel.data.size()!=0) {
+                                auto in_kernel_block = in.kernel.data.block(0, start_index, n_pts, n_dets);
+                                auto out_kernel_block = out.kernel.data.block(0, start_index, n_pts, n_dets);
+                                out_kernel_block =
+                                    pca_stability_clean_with_basis(in_kernel_block, masked_flags,
+                                                                   frozen_basis.evecs, frozen_basis.applied_k);
+                            }
+                            record_pca_freeze_usage(1, 0, 0, n_dets);
+                            logger->debug("PTC PCA freeze {} scan={} key={} dets={}",
+                                          effective_group, in.index.data, key, n_dets);
+                            continue;
+                        }
+
+                        record_pca_freeze_usage(0, found_basis ? 0 : 1, found_basis ? 1 : 0, 0);
+                        logger->warn("PTC PCA freeze missing usable {} basis for scan={} key={}; falling back to normal PCA",
+                                     effective_group, in.index.data, key);
+                    }
+
                     const Eigen::Index baseline_k = cleaner_local.n_eig_to_cut[arr_index](indx);
                     Eigen::Index solve_n_eig = baseline_k;
                     if (adaptive_selector_for_group) {
@@ -1858,7 +2107,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                         });
                     }
 
-                    if (pca_stability_diagnostics.enabled) {
+                    if (pca_basis_tracking_enabled()) {
                         Eigen::VectorXi det_indices(n_dets);
                         for (Eigen::Index d = 0; d < n_dets; ++d) {
                             det_indices(d) = static_cast<int>(start_index + d);

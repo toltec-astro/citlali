@@ -2876,6 +2876,7 @@ void Beammap::run_loop() {
             return 0;
         });
         ptcproc.log_pca_stability_summary(current_iter);
+        ptcproc.log_pca_freeze_summary(current_iter);
         if (beammap_performance_timing_enabled) {
             iter_perf.add("ptc_loop.wall", BeammapPerfStats::elapsed(ptc_loop_perf_start));
         }
