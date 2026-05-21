@@ -131,6 +131,14 @@ public:
         Eigen::Index post_filter_apply_iterations = 1;
         double post_filter_line_min_hz = std::numeric_limits<double>::quiet_NaN();
         double post_filter_line_max_hz = std::numeric_limits<double>::quiet_NaN();
+        bool ptc_model_protected_enabled = false;
+        bool ptc_require_model_subtracted = true;
+        bool ptc_apply_fixed_notches = false;
+        bool ptc_apply_shared_notches = false;
+        bool ptc_apply_detector_notches = false;
+        Eigen::Index ptc_apply_iterations = 1;
+        double ptc_line_min_hz = std::numeric_limits<double>::quiet_NaN();
+        double ptc_line_max_hz = std::numeric_limits<double>::quiet_NaN();
         bool fixed_notch_enabled = false;
         std::vector<double> fixed_notch_freqs_hz;
         std::vector<double> fixed_notch_widths_hz{0.25};
@@ -788,6 +796,41 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                              std::tuple{"timestream","raw_time_chunk","line_audit","post_filter_line_max_hz"},
                              {}, {0.0});
         }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","ptc_model_protected_enabled"})) {
+            get_config_value(config, line_audit.ptc_model_protected_enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","ptc_model_protected_enabled"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","ptc_require_model_subtracted"})) {
+            get_config_value(config, line_audit.ptc_require_model_subtracted, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","ptc_require_model_subtracted"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","ptc_apply_fixed_notches"})) {
+            get_config_value(config, line_audit.ptc_apply_fixed_notches, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","ptc_apply_fixed_notches"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","ptc_apply_shared_notches"})) {
+            get_config_value(config, line_audit.ptc_apply_shared_notches, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","ptc_apply_shared_notches"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","ptc_apply_detector_notches"})) {
+            get_config_value(config, line_audit.ptc_apply_detector_notches, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","ptc_apply_detector_notches"});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","ptc_apply_iterations"})) {
+            get_config_value(config, line_audit.ptc_apply_iterations, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","ptc_apply_iterations"},
+                             {}, {1});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","ptc_line_min_hz"})) {
+            get_config_value(config, line_audit.ptc_line_min_hz, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","ptc_line_min_hz"},
+                             {}, {0.0});
+        }
+        if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","ptc_line_max_hz"})) {
+            get_config_value(config, line_audit.ptc_line_max_hz, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","line_audit","ptc_line_max_hz"},
+                             {}, {0.0});
+        }
         if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","fixed_notch_enabled"})) {
             get_config_value(config, line_audit.fixed_notch_enabled, missing_keys, invalid_keys,
                              std::tuple{"timestream","raw_time_chunk","line_audit","fixed_notch_enabled"});
@@ -891,6 +934,15 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 line_audit.apply_min_width_hz);
             std::exit(EXIT_FAILURE);
         }
+        if (std::isfinite(line_audit.ptc_line_min_hz) &&
+            std::isfinite(line_audit.ptc_line_max_hz) &&
+            line_audit.ptc_line_max_hz < line_audit.ptc_line_min_hz) {
+            logger->error(
+                "timestream.raw_time_chunk.line_audit.ptc_line_max_hz ({}) must be >= ptc_line_min_hz ({})",
+                line_audit.ptc_line_max_hz,
+                line_audit.ptc_line_min_hz);
+            std::exit(EXIT_FAILURE);
+        }
         if (line_audit.detector_notch_max_width_hz < line_audit.detector_notch_min_width_hz) {
             logger->error(
                 "timestream.raw_time_chunk.line_audit.detector_notch_max_width_hz ({}) must be >= detector_notch_min_width_hz ({})",
@@ -930,7 +982,7 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             }
         }
         logger->info(
-            "raw_time_chunk.line_audit configured: enabled={} line_min_hz={} line_max_hz={} segment_sec={} min_segment_sec={} overlap_frac={} continuum_radius_bins={} prominence_thresh={} cm_prominence_thresh={} min_good_frac={} min_windows={} max_peaks_per_detector={} max_det={} min_det_for_network={} cluster_tol_hz={} notch_min_detector_frac={} notch_min_detectors={} notch_min_cm_prominence={} detector_min_prominence={} detector_min_line_power_frac={} bad_detector_max_cluster_frac={} pre_filter_enabled={} post_filter_enabled={} post_filter_apply_shared_notches={} post_filter_apply_detector_notches={} post_filter_apply_iterations={} post_filter_line_min_hz={} post_filter_line_max_hz={} fixed_notch_enabled={} fixed_notch_count={} fixed_notch_exclusion_half_width_hz={} apply_shared_notches={} apply_min_support_networks={} apply_min_detector_frac={} apply_min_common_mode_prominence={} apply_width_scale={} apply_min_width_hz={} apply_max_width_hz={} apply_max_notches={} apply_cluster_tol_hz={} detector_notch_min_prominence={} detector_notch_min_line_power_frac={} detector_notch_max_notches={} detector_notch_width_scale={} detector_notch_min_width_hz={} detector_notch_max_width_hz={} detector_notch_context_samples={}",
+            "raw_time_chunk.line_audit configured: enabled={} line_min_hz={} line_max_hz={} segment_sec={} min_segment_sec={} overlap_frac={} continuum_radius_bins={} prominence_thresh={} cm_prominence_thresh={} min_good_frac={} min_windows={} max_peaks_per_detector={} max_det={} min_det_for_network={} cluster_tol_hz={} notch_min_detector_frac={} notch_min_detectors={} notch_min_cm_prominence={} detector_min_prominence={} detector_min_line_power_frac={} bad_detector_max_cluster_frac={} pre_filter_enabled={} post_filter_enabled={} post_filter_apply_shared_notches={} post_filter_apply_detector_notches={} post_filter_apply_iterations={} post_filter_line_min_hz={} post_filter_line_max_hz={} ptc_model_protected_enabled={} ptc_require_model_subtracted={} ptc_apply_fixed_notches={} ptc_apply_shared_notches={} ptc_apply_detector_notches={} ptc_apply_iterations={} ptc_line_min_hz={} ptc_line_max_hz={} fixed_notch_enabled={} fixed_notch_count={} fixed_notch_exclusion_half_width_hz={} apply_shared_notches={} apply_min_support_networks={} apply_min_detector_frac={} apply_min_common_mode_prominence={} apply_width_scale={} apply_min_width_hz={} apply_max_width_hz={} apply_max_notches={} apply_cluster_tol_hz={} detector_notch_min_prominence={} detector_notch_min_line_power_frac={} detector_notch_max_notches={} detector_notch_width_scale={} detector_notch_min_width_hz={} detector_notch_max_width_hz={} detector_notch_context_samples={}",
             line_audit.enabled,
             line_audit.line_min_hz,
             line_audit.line_max_hz,
@@ -959,6 +1011,14 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             line_audit.post_filter_apply_iterations,
             line_audit.post_filter_line_min_hz,
             line_audit.post_filter_line_max_hz,
+            line_audit.ptc_model_protected_enabled,
+            line_audit.ptc_require_model_subtracted,
+            line_audit.ptc_apply_fixed_notches,
+            line_audit.ptc_apply_shared_notches,
+            line_audit.ptc_apply_detector_notches,
+            line_audit.ptc_apply_iterations,
+            line_audit.ptc_line_min_hz,
+            line_audit.ptc_line_max_hz,
             line_audit.fixed_notch_enabled,
             line_audit.fixed_notch_freqs_hz.size(),
             line_audit.fixed_notch_exclusion_half_width_hz,

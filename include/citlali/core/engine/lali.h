@@ -303,6 +303,8 @@ auto Lali::run() -> run_stage_t {
                                                                             map_grouping);
         }
 
+        apply_model_protected_ptc_line_audit(ptcdata, calib_scan, use_fruit_noise_weights);
+
         // run cleaning
         logger->info("processed time chunk processing for scan {}", ptcdata.index.data + 1);
         ptcproc.run(ptcdata, ptcdata, calib, telescope.pixel_axes, map_grouping);

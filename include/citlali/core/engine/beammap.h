@@ -2612,8 +2612,11 @@ void Beammap::run_loop() {
             [&](const auto &msg) { logger->info("{}", msg); }, 100, "PTC progress ");
 
 
+        auto ptc_line_audit_mutex = std::make_shared<std::mutex>();
+
         // cleaning (separate from mapmaking loop due to jinc mapmaking parallelization)
         grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
+            bool model_subtracted_for_ptc_line_audit = false;
             if (run_mapmaking) {
                 if (current_iter > 0) {
                     if (!ptcproc.run_fruit_loops) {
@@ -2628,8 +2631,15 @@ void Beammap::run_loop() {
                         // subtract map
                         ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(omb, ptcs[i], calib, ptcs[i].map_indices.data, telescope.pixel_axes,
                                                                                         map_grouping);
+                        model_subtracted_for_ptc_line_audit = true;
                     }
                 }
+            }
+
+            {
+                std::lock_guard<std::mutex> lock(*ptc_line_audit_mutex);
+                apply_model_protected_ptc_line_audit(
+                    ptcs[i], calib_scans[i], model_subtracted_for_ptc_line_audit);
             }
 
             // clean the maps
