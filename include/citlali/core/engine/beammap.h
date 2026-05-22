@@ -217,6 +217,8 @@ public:
     void configure_ptc_source_mask_from_previous_fit();
     double calc_map_support_stddev(Eigen::Index map_index, bool exclude_fit_core = false) const;
     double calc_beammap_convergence_delta(Eigen::Index map_index) const;
+    void init_empirical_template_calibration_columns();
+    void calc_empirical_template_calibration();
 
     // flag detectors
     void set_apt_flags();
@@ -429,6 +431,8 @@ void Beammap::setup() {
     calib.apt_meta["final_prior_d2"].push_back("units: N/A");
     calib.apt_meta["final_prior_d2"].push_back(
         "nearest-slot Mahalanobis d^2 for final detector position in the soft-prior frame");
+
+    init_empirical_template_calibration_columns();
 
     // bitwise flag
     calib.apt_meta["flag2"].push_back("units: N/A");
@@ -1200,6 +1204,516 @@ double Beammap::calc_beammap_convergence_delta(Eigen::Index map_index) const {
         return std::numeric_limits<double>::infinity();
     }
     return std::sqrt(diff2_sum / prev2_sum);
+}
+
+void Beammap::init_empirical_template_calibration_columns() {
+    auto add_column = [&](const std::string &name,
+                          const std::string &unit,
+                          const std::string &description,
+                          double fill_value) {
+        calib.apt[name] = Eigen::VectorXd::Constant(calib.n_dets, fill_value);
+        calib.apt_header_units[name] = unit;
+        if (std::find(calib.apt_header_keys.begin(), calib.apt_header_keys.end(), name) ==
+            calib.apt_header_keys.end()) {
+            calib.apt_header_keys.push_back(name);
+        }
+        calib.apt_header_description[name] = description;
+        calib.apt_meta[name].push_back("units: " + unit);
+        calib.apt_meta[name].push_back(description);
+    };
+
+    add_column("cal_amp", "xs",
+               "amplitude used for beammap flux calibration; empirical template when valid, Gaussian fallback otherwise",
+               std::numeric_limits<double>::quiet_NaN());
+    add_column("cal_amp_method", "N/A",
+               "calibration amplitude method code (0 Gaussian fallback, 1 empirical template)",
+               0.0);
+    add_column("template_amp", "xs",
+               "empirical array-template matched amplitude with fitted local offset",
+               std::numeric_limits<double>::quiet_NaN());
+    add_column("template_offset", "xs",
+               "local offset fitted with empirical array-template amplitude",
+               std::numeric_limits<double>::quiet_NaN());
+    add_column("template_resid_rms", "xs",
+               "weighted residual RMS for empirical-template amplitude fit",
+               std::numeric_limits<double>::quiet_NaN());
+    add_column("template_npix", "pix",
+               "number of pixels used for empirical-template amplitude fit",
+               0.0);
+    add_column("template_amp_over_fit_amp", "N/A",
+               "ratio of empirical-template matched amplitude to Gaussian fit amplitude",
+               std::numeric_limits<double>::quiet_NaN());
+    add_column("cal_amp_over_fit_amp", "N/A",
+               "ratio of calibration amplitude to Gaussian fit amplitude",
+               std::numeric_limits<double>::quiet_NaN());
+    add_column("map_peak_amp", "xs",
+               "baseline-subtracted local map peak within 8 arcsec of Gaussian fit center",
+               std::numeric_limits<double>::quiet_NaN());
+    add_column("map_peak_amp_over_fit_amp", "N/A",
+               "ratio of local map peak amplitude to Gaussian fit amplitude",
+               std::numeric_limits<double>::quiet_NaN());
+    calib.apt_meta["cal_amp_method"].push_back("0: Gaussian fit amplitude fallback");
+    calib.apt_meta["cal_amp_method"].push_back("1: empirical array-template matched amplitude");
+}
+
+void Beammap::calc_empirical_template_calibration() {
+    auto ensure_column = [&](const std::string &name, double fill_value) {
+        if (calib.apt.find(name) == calib.apt.end() ||
+            calib.apt[name].size() != calib.n_dets) {
+            calib.apt[name] = Eigen::VectorXd::Constant(calib.n_dets, fill_value);
+        }
+        else {
+            calib.apt[name].setConstant(fill_value);
+        }
+    };
+
+    ensure_column("cal_amp", std::numeric_limits<double>::quiet_NaN());
+    ensure_column("cal_amp_method", 0.0);
+    ensure_column("template_amp", std::numeric_limits<double>::quiet_NaN());
+    ensure_column("template_offset", std::numeric_limits<double>::quiet_NaN());
+    ensure_column("template_resid_rms", std::numeric_limits<double>::quiet_NaN());
+    ensure_column("template_npix", 0.0);
+    ensure_column("template_amp_over_fit_amp", std::numeric_limits<double>::quiet_NaN());
+    ensure_column("cal_amp_over_fit_amp", std::numeric_limits<double>::quiet_NaN());
+    ensure_column("map_peak_amp", std::numeric_limits<double>::quiet_NaN());
+    ensure_column("map_peak_amp_over_fit_amp", std::numeric_limits<double>::quiet_NaN());
+
+    const Eigen::Index n_fallback = std::min<Eigen::Index>(n_maps, std::min(calib.n_dets, params.rows()));
+    if (params.cols() > 0) {
+        for (Eigen::Index i = 0; i < n_fallback; ++i) {
+            const double fit_amp = params(i, 0);
+            calib.apt["cal_amp"](i) = fit_amp;
+            calib.apt["cal_amp_method"](i) = 0.0;
+            if (std::isfinite(fit_amp) && fit_amp > 0.0) {
+                calib.apt["cal_amp_over_fit_amp"](i) = 1.0;
+            }
+        }
+    }
+
+    if (map_grouping != "detector" ||
+        static_cast<Eigen::Index>(omb.signal.size()) != n_maps ||
+        static_cast<Eigen::Index>(omb.weight.size()) != n_maps ||
+        omb.pixel_size_rad <= 0.0) {
+        return;
+    }
+
+    const double pix_to_arcsec = RAD_TO_ASEC * omb.pixel_size_rad;
+    if (!std::isfinite(pix_to_arcsec) || pix_to_arcsec <= 0.0) {
+        return;
+    }
+
+    const Eigen::Index template_radius_pix =
+        std::max<Eigen::Index>(8, static_cast<Eigen::Index>(std::ceil(40.0 / pix_to_arcsec)));
+    const Eigen::Index match_radius_pix =
+        std::max<Eigen::Index>(4, static_cast<Eigen::Index>(std::ceil(35.0 / pix_to_arcsec)));
+    const Eigen::Index peak_radius_pix =
+        std::max<Eigen::Index>(2, static_cast<Eigen::Index>(std::ceil(8.0 / pix_to_arcsec)));
+    const Eigen::Index template_peak_radius_pix =
+        std::max<Eigen::Index>(1, static_cast<Eigen::Index>(std::ceil(4.0 / pix_to_arcsec)));
+    const Eigen::Index side = 2 * template_radius_pix + 1;
+    const Eigen::Index center = template_radius_pix;
+    constexpr Eigen::Index min_template_detectors = 25;
+    constexpr Eigen::Index max_template_detectors = 500;
+    constexpr double min_template_snr = 20.0;
+    constexpr double min_template_value = 0.015;
+
+    auto median_vector = [](std::vector<double> values) -> double {
+        values.erase(std::remove_if(values.begin(), values.end(),
+                                    [](double v) { return !std::isfinite(v); }),
+                     values.end());
+        if (values.empty()) {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+        Eigen::Map<Eigen::VectorXd> vec(values.data(), static_cast<Eigen::Index>(values.size()));
+        return tula::alg::median(vec);
+    };
+
+    auto bilinear_sample = [](const Eigen::MatrixXd &map, double row, double col) -> double {
+        if (!std::isfinite(row) || !std::isfinite(col)) {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+        const Eigen::Index r0 = static_cast<Eigen::Index>(std::floor(row));
+        const Eigen::Index c0 = static_cast<Eigen::Index>(std::floor(col));
+        const Eigen::Index r1 = r0 + 1;
+        const Eigen::Index c1 = c0 + 1;
+        if (r0 < 0 || c0 < 0 || r1 >= map.rows() || c1 >= map.cols()) {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+        const double v00 = map(r0, c0);
+        const double v01 = map(r0, c1);
+        const double v10 = map(r1, c0);
+        const double v11 = map(r1, c1);
+        if (!std::isfinite(v00) || !std::isfinite(v01) ||
+            !std::isfinite(v10) || !std::isfinite(v11)) {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+        const double fr = row - static_cast<double>(r0);
+        const double fc = col - static_cast<double>(c0);
+        const double v0 = (1.0 - fc) * v00 + fc * v01;
+        const double v1 = (1.0 - fc) * v10 + fc * v11;
+        return (1.0 - fr) * v0 + fr * v1;
+    };
+
+    auto edge_baseline = [&](const Eigen::MatrixXd &map, double row0, double col0) -> double {
+        std::vector<double> edge;
+        edge.reserve(static_cast<std::size_t>(4 * side));
+        for (Eigen::Index k = -template_radius_pix; k <= template_radius_pix; ++k) {
+            edge.push_back(bilinear_sample(map, row0 - template_radius_pix, col0 + k));
+            edge.push_back(bilinear_sample(map, row0 + template_radius_pix, col0 + k));
+            edge.push_back(bilinear_sample(map, row0 + k, col0 - template_radius_pix));
+            edge.push_back(bilinear_sample(map, row0 + k, col0 + template_radius_pix));
+        }
+        return median_vector(std::move(edge));
+    };
+
+    auto local_peak = [&](const Eigen::MatrixXd &map, double row0, double col0, double baseline) -> double {
+        double peak = -std::numeric_limits<double>::infinity();
+        for (Eigen::Index dr = -peak_radius_pix; dr <= peak_radius_pix; ++dr) {
+            for (Eigen::Index dc = -peak_radius_pix; dc <= peak_radius_pix; ++dc) {
+                if (dr * dr + dc * dc > peak_radius_pix * peak_radius_pix) {
+                    continue;
+                }
+                const double value = bilinear_sample(map, row0 + dr, col0 + dc);
+                if (std::isfinite(value)) {
+                    peak = std::max(peak, value - baseline);
+                }
+            }
+        }
+        return std::isfinite(peak) ? peak : std::numeric_limits<double>::quiet_NaN();
+    };
+
+    auto extract_normalized_cut = [&](Eigen::Index map_index,
+                                      Eigen::MatrixXd &cut,
+                                      double &peak_amp) -> bool {
+        if (map_index < 0 || map_index >= n_maps ||
+            map_index >= params.rows() || params.cols() < 3) {
+            return false;
+        }
+        const double amp = params(map_index, 0);
+        const double col0 = params(map_index, 1);
+        const double row0 = params(map_index, 2);
+        if (!std::isfinite(amp) || amp <= 0.0 ||
+            !std::isfinite(row0) || !std::isfinite(col0)) {
+            return false;
+        }
+        const double baseline = edge_baseline(omb.signal[map_index], row0, col0);
+        if (!std::isfinite(baseline)) {
+            return false;
+        }
+        peak_amp = local_peak(omb.signal[map_index], row0, col0, baseline);
+        if (!std::isfinite(peak_amp) || peak_amp <= 0.0) {
+            return false;
+        }
+        cut.resize(side, side);
+        cut.setConstant(std::numeric_limits<double>::quiet_NaN());
+        for (Eigen::Index rr = 0; rr < side; ++rr) {
+            const Eigen::Index dr = rr - center;
+            for (Eigen::Index cc = 0; cc < side; ++cc) {
+                const Eigen::Index dc = cc - center;
+                const double value = bilinear_sample(omb.signal[map_index], row0 + dr, col0 + dc);
+                if (std::isfinite(value)) {
+                    cut(rr, cc) = (value - baseline) / peak_amp;
+                }
+            }
+        }
+        return true;
+    };
+
+    struct TemplateCandidate {
+        Eigen::Index map_index = -1;
+        double shape_score = std::numeric_limits<double>::infinity();
+        double snr = 0.0;
+    };
+
+    struct ArrayTemplate {
+        bool valid = false;
+        Eigen::MatrixXd shape;
+        Eigen::Index n_detectors = 0;
+    };
+
+    std::map<int, ArrayTemplate> templates;
+
+    for (Eigen::Index arr_i = 0; arr_i < calib.n_arrays; ++arr_i) {
+        const int array = static_cast<int>(calib.arrays(arr_i));
+        std::vector<double> a_values;
+        std::vector<double> b_values;
+        for (Eigen::Index i = 0; i < n_maps; ++i) {
+            if (i >= calib.n_dets || calib.apt["flag"](i) != 0 || !good_fits(i)) {
+                continue;
+            }
+            if (static_cast<int>(std::lround(calib.apt["array"](i))) != array) {
+                continue;
+            }
+            if (!std::isfinite(calib.apt["a_fwhm"](i)) || !std::isfinite(calib.apt["b_fwhm"](i)) ||
+                calib.apt["a_fwhm"](i) <= 0.0 || calib.apt["b_fwhm"](i) <= 0.0) {
+                continue;
+            }
+            a_values.push_back(calib.apt["a_fwhm"](i));
+            b_values.push_back(calib.apt["b_fwhm"](i));
+        }
+        const double med_a = median_vector(a_values);
+        const double med_b = median_vector(b_values);
+        if (!std::isfinite(med_a) || !std::isfinite(med_b) || med_a <= 0.0 || med_b <= 0.0) {
+            continue;
+        }
+
+        std::vector<TemplateCandidate> candidates;
+        for (Eigen::Index i = 0; i < n_maps; ++i) {
+            if (i >= calib.n_dets || calib.apt["flag"](i) != 0 || !good_fits(i)) {
+                continue;
+            }
+            if (static_cast<int>(std::lround(calib.apt["array"](i))) != array) {
+                continue;
+            }
+            if (fit_diag_bound_nhit.size() == n_maps && fit_diag_bound_nhit(i) > 0) {
+                continue;
+            }
+            const double rms = calc_map_support_stddev(i, true);
+            const double snr = (std::isfinite(rms) && rms > 0.0 && std::isfinite(params(i, 0)))
+                                   ? params(i, 0) / rms
+                                   : 0.0;
+            if (!std::isfinite(snr) || snr < min_template_snr) {
+                continue;
+            }
+            const double a = calib.apt["a_fwhm"](i);
+            const double b = calib.apt["b_fwhm"](i);
+            if (!std::isfinite(a) || !std::isfinite(b) || a <= 0.0 || b <= 0.0) {
+                continue;
+            }
+            const double shape_score = std::abs(a - med_a) / med_a + std::abs(b - med_b) / med_b;
+            candidates.push_back({i, shape_score, snr});
+        }
+
+        std::sort(candidates.begin(), candidates.end(),
+                  [](const TemplateCandidate &lhs, const TemplateCandidate &rhs) {
+                      if (lhs.shape_score == rhs.shape_score) {
+                          return lhs.snr > rhs.snr;
+                      }
+                      return lhs.shape_score < rhs.shape_score;
+                  });
+        if (static_cast<Eigen::Index>(candidates.size()) > max_template_detectors) {
+            candidates.resize(static_cast<std::size_t>(max_template_detectors));
+        }
+
+        std::vector<Eigen::MatrixXd> cuts;
+        cuts.reserve(candidates.size());
+        for (const auto &candidate : candidates) {
+            Eigen::MatrixXd cut;
+            double peak_amp = std::numeric_limits<double>::quiet_NaN();
+            if (extract_normalized_cut(candidate.map_index, cut, peak_amp)) {
+                cuts.push_back(std::move(cut));
+            }
+        }
+
+        if (static_cast<Eigen::Index>(cuts.size()) < min_template_detectors) {
+            logger->warn(
+                "beammap empirical template skipped for array={} candidates={} usable={} min_required={}",
+                toltec_io.array_name_map[array], candidates.size(), cuts.size(), min_template_detectors);
+            continue;
+        }
+
+        Eigen::MatrixXd templ(side, side);
+        templ.setConstant(std::numeric_limits<double>::quiet_NaN());
+        std::vector<double> values;
+        values.reserve(cuts.size());
+        for (Eigen::Index rr = 0; rr < side; ++rr) {
+            for (Eigen::Index cc = 0; cc < side; ++cc) {
+                values.clear();
+                for (const auto &cut : cuts) {
+                    const double value = cut(rr, cc);
+                    if (std::isfinite(value)) {
+                        values.push_back(value);
+                    }
+                }
+                if (!values.empty()) {
+                    templ(rr, cc) = median_vector(values);
+                }
+            }
+        }
+
+        double template_peak = -std::numeric_limits<double>::infinity();
+        for (Eigen::Index rr = 0; rr < side; ++rr) {
+            const Eigen::Index dr = rr - center;
+            for (Eigen::Index cc = 0; cc < side; ++cc) {
+                const Eigen::Index dc = cc - center;
+                if (dr * dr + dc * dc > template_peak_radius_pix * template_peak_radius_pix) {
+                    continue;
+                }
+                const double value = templ(rr, cc);
+                if (std::isfinite(value)) {
+                    template_peak = std::max(template_peak, value);
+                }
+            }
+        }
+        if (!std::isfinite(template_peak) || template_peak <= 0.0) {
+            logger->warn("beammap empirical template skipped for array={} due to invalid template peak={}",
+                         toltec_io.array_name_map[array], template_peak);
+            continue;
+        }
+        templ.array() /= template_peak;
+        templates[array] = {true, std::move(templ), static_cast<Eigen::Index>(cuts.size())};
+        logger->info("beammap empirical template built for array={} using {} detectors",
+                     toltec_io.array_name_map[array], cuts.size());
+    }
+
+    auto solve_template = [&](Eigen::Index map_index,
+                              const Eigen::MatrixXd &templ,
+                              double &amp,
+                              double &offset,
+                              double &resid_rms,
+                              Eigen::Index &npix) -> bool {
+        amp = std::numeric_limits<double>::quiet_NaN();
+        offset = std::numeric_limits<double>::quiet_NaN();
+        resid_rms = std::numeric_limits<double>::quiet_NaN();
+        npix = 0;
+        if (map_index < 0 || map_index >= n_maps ||
+            map_index >= params.rows() || params.cols() < 3) {
+            return false;
+        }
+        const double col0 = params(map_index, 1);
+        const double row0 = params(map_index, 2);
+        if (!std::isfinite(row0) || !std::isfinite(col0)) {
+            return false;
+        }
+        const double baseline = edge_baseline(omb.signal[map_index], row0, col0);
+        if (!std::isfinite(baseline)) {
+            return false;
+        }
+        const double peak_amp = local_peak(omb.signal[map_index], row0, col0, baseline);
+        if (std::isfinite(peak_amp)) {
+            calib.apt["map_peak_amp"](map_index) = peak_amp;
+            if (std::isfinite(params(map_index, 0)) && params(map_index, 0) > 0.0) {
+                calib.apt["map_peak_amp_over_fit_amp"](map_index) = peak_amp / params(map_index, 0);
+            }
+        }
+
+        std::vector<double> y;
+        std::vector<double> t;
+        std::vector<double> w;
+        y.reserve(static_cast<std::size_t>(side * side));
+        t.reserve(static_cast<std::size_t>(side * side));
+        w.reserve(static_cast<std::size_t>(side * side));
+
+        for (Eigen::Index rr = 0; rr < side; ++rr) {
+            const Eigen::Index dr = rr - center;
+            for (Eigen::Index cc = 0; cc < side; ++cc) {
+                const Eigen::Index dc = cc - center;
+                if (dr * dr + dc * dc > match_radius_pix * match_radius_pix) {
+                    continue;
+                }
+                const double template_value = templ(rr, cc);
+                if (!std::isfinite(template_value) || std::abs(template_value) <= min_template_value) {
+                    continue;
+                }
+                const double row = row0 + static_cast<double>(dr);
+                const double col = col0 + static_cast<double>(dc);
+                const double signal_value = bilinear_sample(omb.signal[map_index], row, col);
+                const double weight_value = bilinear_sample(omb.weight[map_index], row, col);
+                if (!std::isfinite(signal_value) || !std::isfinite(weight_value) || weight_value <= 0.0) {
+                    continue;
+                }
+                y.push_back(signal_value - baseline);
+                t.push_back(template_value);
+                w.push_back(weight_value);
+            }
+        }
+
+        npix = static_cast<Eigen::Index>(y.size());
+        if (npix < 30) {
+            return false;
+        }
+
+        std::vector<double> w_sorted = w;
+        std::sort(w_sorted.begin(), w_sorted.end());
+        const std::size_t q95_index =
+            std::min<std::size_t>(w_sorted.size() - 1,
+                                  static_cast<std::size_t>(std::floor(0.95 * (w_sorted.size() - 1))));
+        const double w_cap = w_sorted[q95_index];
+
+        double sw = 0.0;
+        double st = 0.0;
+        double sy = 0.0;
+        double stt = 0.0;
+        double sty = 0.0;
+        for (std::size_t k = 0; k < y.size(); ++k) {
+            const double wk = (std::isfinite(w_cap) && w_cap > 0.0) ? std::min(w[k], w_cap) : w[k];
+            sw += wk;
+            st += wk * t[k];
+            sy += wk * y[k];
+            stt += wk * t[k] * t[k];
+            sty += wk * t[k] * y[k];
+        }
+        const double det = stt * sw - st * st;
+        if (!std::isfinite(det) || std::abs(det) <= std::numeric_limits<double>::epsilon()) {
+            return false;
+        }
+        amp = (sty * sw - sy * st) / det;
+        offset = (stt * sy - st * sty) / det;
+        if (!std::isfinite(amp) || !std::isfinite(offset) || amp <= 0.0) {
+            return false;
+        }
+
+        double resid2_sum = 0.0;
+        double weight_sum = 0.0;
+        for (std::size_t k = 0; k < y.size(); ++k) {
+            const double wk = (std::isfinite(w_cap) && w_cap > 0.0) ? std::min(w[k], w_cap) : w[k];
+            const double resid = y[k] - (amp * t[k] + offset);
+            resid2_sum += wk * resid * resid;
+            weight_sum += wk;
+        }
+        if (weight_sum > 0.0) {
+            resid_rms = std::sqrt(resid2_sum / weight_sum);
+        }
+        return std::isfinite(resid_rms);
+    };
+
+    Eigen::Index n_template_amp = 0;
+    Eigen::Index n_template_fallback = 0;
+    for (Eigen::Index i = 0; i < n_maps; ++i) {
+        if (i >= calib.n_dets) {
+            continue;
+        }
+        const int array = static_cast<int>(std::lround(calib.apt["array"](i)));
+        const double fit_amp = params(i, 0);
+        calib.apt["cal_amp"](i) = fit_amp;
+        calib.apt["cal_amp_method"](i) = 0.0;
+        if (std::isfinite(fit_amp) && fit_amp > 0.0) {
+            calib.apt["cal_amp_over_fit_amp"](i) = 1.0;
+        }
+
+        auto templ_it = templates.find(array);
+        if (templ_it == templates.end() || !templ_it->second.valid) {
+            n_template_fallback++;
+            continue;
+        }
+        double template_amp = std::numeric_limits<double>::quiet_NaN();
+        double template_offset = std::numeric_limits<double>::quiet_NaN();
+        double template_resid_rms = std::numeric_limits<double>::quiet_NaN();
+        Eigen::Index template_npix = 0;
+        if (!solve_template(i, templ_it->second.shape, template_amp, template_offset,
+                            template_resid_rms, template_npix)) {
+            n_template_fallback++;
+            continue;
+        }
+
+        calib.apt["template_amp"](i) = template_amp;
+        calib.apt["template_offset"](i) = template_offset;
+        calib.apt["template_resid_rms"](i) = template_resid_rms;
+        calib.apt["template_npix"](i) = static_cast<double>(template_npix);
+        if (std::isfinite(fit_amp) && fit_amp > 0.0) {
+            calib.apt["template_amp_over_fit_amp"](i) = template_amp / fit_amp;
+        }
+
+        calib.apt["cal_amp"](i) = template_amp;
+        calib.apt["cal_amp_method"](i) = 1.0;
+        if (std::isfinite(fit_amp) && fit_amp > 0.0) {
+            calib.apt["cal_amp_over_fit_amp"](i) = template_amp / fit_amp;
+        }
+        n_template_amp++;
+    }
+
+    logger->info("beammap empirical-template calibration amplitudes: template={} fallback={}",
+                 n_template_amp, n_template_fallback);
 }
 
 Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PTC,Eigen::MatrixXd> &ptc) {
@@ -3796,6 +4310,10 @@ void Beammap::set_apt_flags() {
     // print number of flagged detectors
     logger->info("{} detectors were flagged", n_flagged_dets.load());
 
+    // Derive the calibration amplitude from an empirical array template where
+    // possible.  The Gaussian fit amplitude remains in amp for morphology/QC.
+    calc_empirical_template_calibration();
+
     // calculate fcf
     logger->debug("calculating flux conversion factors");
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
@@ -3803,7 +4321,14 @@ void Beammap::set_apt_flags() {
         auto array_index = calib.apt["array"](i);
         std::string array_name = toltec_io.array_name_map[array_index];
 
-        const double amp = params(i,0);
+        const double template_cal_amp =
+            (calib.apt.count("cal_amp") > 0 && calib.apt["cal_amp"].size() == calib.n_dets)
+                ? calib.apt["cal_amp"](i)
+                : std::numeric_limits<double>::quiet_NaN();
+        const double amp =
+            (std::isfinite(template_cal_amp) && template_cal_amp > 0.0)
+                ? template_cal_amp
+                : params(i,0);
         // calc flux scale (always in mJy/beam)
         if (calib.apt["flag"](i) == 0 && std::isfinite(amp) && amp > 0.0) {
             const double flxscale = beammap_fluxes_mJy_beam[array_name] / amp;
@@ -4481,6 +5006,16 @@ void Beammap::output() {
                 "flag2",
                 "amp",
                 "amp_err",
+                "cal_amp",
+                "cal_amp_method",
+                "template_amp",
+                "template_offset",
+                "template_resid_rms",
+                "template_npix",
+                "template_amp_over_fit_amp",
+                "cal_amp_over_fit_amp",
+                "map_peak_amp",
+                "map_peak_amp_over_fit_amp",
                 "fit_sig2noise",
                 "map_rms",
                 "map_sig2noise",
@@ -4645,6 +5180,16 @@ void Beammap::output() {
             fit_qc_table.col(col++) = flag2.cast<double>();
             fit_qc_table.col(col++) = apt_or_zero("amp");
             fit_qc_table.col(col++) = apt_or_zero("amp_err");
+            fit_qc_table.col(col++) = apt_or_zero("cal_amp");
+            fit_qc_table.col(col++) = apt_or_zero("cal_amp_method");
+            fit_qc_table.col(col++) = apt_or_zero("template_amp");
+            fit_qc_table.col(col++) = apt_or_zero("template_offset");
+            fit_qc_table.col(col++) = apt_or_zero("template_resid_rms");
+            fit_qc_table.col(col++) = apt_or_zero("template_npix");
+            fit_qc_table.col(col++) = apt_or_zero("template_amp_over_fit_amp");
+            fit_qc_table.col(col++) = apt_or_zero("cal_amp_over_fit_amp");
+            fit_qc_table.col(col++) = apt_or_zero("map_peak_amp");
+            fit_qc_table.col(col++) = apt_or_zero("map_peak_amp_over_fit_amp");
             fit_qc_table.col(col++) = fit_sig2noise;
             fit_qc_table.col(col++) = map_rms;
             fit_qc_table.col(col++) = map_sig2noise;
@@ -4780,6 +5325,16 @@ void Beammap::output() {
                 {"flag2", "N/A"},
                 {"amp", get_unit("amp", omb.sig_unit)},
                 {"amp_err", get_unit("amp_err", omb.sig_unit)},
+                {"cal_amp", get_unit("cal_amp", omb.sig_unit)},
+                {"cal_amp_method", "N/A"},
+                {"template_amp", get_unit("template_amp", omb.sig_unit)},
+                {"template_offset", get_unit("template_offset", omb.sig_unit)},
+                {"template_resid_rms", get_unit("template_resid_rms", omb.sig_unit)},
+                {"template_npix", "pix"},
+                {"template_amp_over_fit_amp", "N/A"},
+                {"cal_amp_over_fit_amp", "N/A"},
+                {"map_peak_amp", get_unit("map_peak_amp", omb.sig_unit)},
+                {"map_peak_amp_over_fit_amp", "N/A"},
                 {"fit_sig2noise", "N/A"},
                 {"map_rms", omb.sig_unit},
                 {"map_sig2noise", "N/A"},
@@ -4858,6 +5413,16 @@ void Beammap::output() {
                 {"flag2", "bitwise detector quality flag"},
                 {"amp", get_description("amp", "fitted beam amplitude")},
                 {"amp_err", get_description("amp_err", "fitted beam amplitude uncertainty")},
+                {"cal_amp", get_description("cal_amp", "amplitude used for beammap flux calibration")},
+                {"cal_amp_method", get_description("cal_amp_method", "calibration amplitude method code")},
+                {"template_amp", get_description("template_amp", "empirical-template matched amplitude")},
+                {"template_offset", get_description("template_offset", "empirical-template fitted local offset")},
+                {"template_resid_rms", get_description("template_resid_rms", "empirical-template residual RMS")},
+                {"template_npix", get_description("template_npix", "number of pixels used by empirical-template amplitude fit")},
+                {"template_amp_over_fit_amp", get_description("template_amp_over_fit_amp", "empirical-template amplitude divided by Gaussian fit amplitude")},
+                {"cal_amp_over_fit_amp", get_description("cal_amp_over_fit_amp", "calibration amplitude divided by Gaussian fit amplitude")},
+                {"map_peak_amp", get_description("map_peak_amp", "local map peak near Gaussian fit center")},
+                {"map_peak_amp_over_fit_amp", get_description("map_peak_amp_over_fit_amp", "local map peak divided by Gaussian fit amplitude")},
                 {"fit_sig2noise", "fitted amplitude divided by fitted amplitude uncertainty"},
                 {"map_rms", "standard deviation of positive-weight detector map pixels, excluding fitted source core when possible"},
                 {"map_sig2noise", "fitted amplitude divided by support-only detector map rms"},
@@ -4938,6 +5503,8 @@ void Beammap::output() {
             fit_qc_meta["flag2"].push_back("Position=32");
             fit_qc_meta["flag2"].push_back("PriorDist=64");
             fit_qc_meta["flag2"].push_back("NetworkPos=128");
+            fit_qc_meta["cal_amp_method"].push_back("0: Gaussian fit amplitude fallback");
+            fit_qc_meta["cal_amp_method"].push_back("1: empirical array-template matched amplitude");
             fit_qc_meta["fit_bound_code"].push_back("bit 0: amp lower");
             fit_qc_meta["fit_bound_code"].push_back("bit 1: amp upper");
             fit_qc_meta["fit_bound_code"].push_back("bit 2: x lower");
