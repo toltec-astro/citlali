@@ -143,6 +143,9 @@ struct beammapControls {
     // beammap tolerance
     double beammap_iter_tolerance;
 
+    // beammap convergence aperture radius
+    double beammap_convergence_radius_arcsec = 10.0;
+
     // subtract reference detector
     bool beammap_subtract_reference;
 
@@ -1202,6 +1205,12 @@ void Engine::get_beammap_config(CT &config) {
     // beammap iteration tolerance
     get_config_value(config, beammap_iter_tolerance, missing_keys, invalid_keys,
                      std::tuple{"beammap","iter_tolerance"});
+    beammap_convergence_radius_arcsec = 10.0;
+    if (config.template has_typed<double>(std::tuple{"beammap","convergence_radius_arcsec"})) {
+        get_config_value(config, beammap_convergence_radius_arcsec, missing_keys, invalid_keys,
+                         std::tuple{"beammap","convergence_radius_arcsec"},
+                         {}, {0.0});
+    }
     // beammap reference detector
     get_config_value(config, beammap_reference_det, missing_keys, invalid_keys,
                      std::tuple{"beammap","reference_det"});
@@ -2083,6 +2092,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
                 add_netcdf_var(fo, "HEADER.SOURCE.FLUX_MJYPERSR_"+name, beammap_fluxes_MJy_Sr[name]);
             }
             add_netcdf_var(fo, "BEAMMAP.ITER_TOLERANCE", beammap_iter_tolerance);
+            add_netcdf_var(fo, "BEAMMAP.CONVERGENCE_RADIUS_ARCSEC", beammap_convergence_radius_arcsec);
             add_netcdf_var(fo, "BEAMMAP.ITER_MAX", beammap_iter_max);
             add_netcdf_var(fo, "BEAMMAP.IS_DEROTATED", beammap_derotate);
 
@@ -3962,6 +3972,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         add_double_key("HEADER.SOURCE.FLUX_MJYPERSR", beammap_fluxes_MJy_Sr[name], "Source flux (MJy/sr)");
 
         add_double_key("BEAMMAP.ITER_TOLERANCE", beammap_iter_tolerance, "Beammap iteration tolerance");
+        add_double_key("BEAMMAP.CONVERGENCE_RADIUS_ARCSEC", beammap_convergence_radius_arcsec,
+                       "Beammap convergence aperture radius (arcsec)");
         fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.ITER_MAX", beammap_iter_max, "Beammap max iterations");
         fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.IS_DEROTATED", beammap_derotate, "Beammap derotated");
         // add reference detector information

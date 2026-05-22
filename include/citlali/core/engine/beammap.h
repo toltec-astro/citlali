@@ -216,6 +216,7 @@ public:
     bool choose_prior_guided_init(Eigen::Index map_index, double &init_row, double &init_col);
     void configure_ptc_source_mask_from_previous_fit();
     double calc_map_support_stddev(Eigen::Index map_index, bool exclude_fit_core = false) const;
+    double calc_beammap_convergence_delta(Eigen::Index map_index) const;
 
     // flag detectors
     void set_apt_flags();
@@ -1088,6 +1089,117 @@ double Beammap::calc_map_support_stddev(Eigen::Index map_index, bool exclude_fit
 
     Eigen::Map<Eigen::VectorXd> vec(values.data(), static_cast<Eigen::Index>(values.size()));
     return engine_utils::calc_std_dev(vec);
+}
+
+double Beammap::calc_beammap_convergence_delta(Eigen::Index map_index) const {
+    if (map_index < 0 ||
+        map_index >= static_cast<Eigen::Index>(omb.signal.size()) ||
+        map_index >= static_cast<Eigen::Index>(omb_copy.signal.size())) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+    if (beammap_convergence_radius_arcsec <= 0.0 || omb.pixel_size_rad <= 0.0) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+
+    const auto &prev_sig = omb_copy.signal[map_index];
+    const auto &cur_sig = omb.signal[map_index];
+    if (prev_sig.rows() <= 0 || prev_sig.cols() <= 0 ||
+        cur_sig.rows() != prev_sig.rows() || cur_sig.cols() != prev_sig.cols()) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+
+    const bool have_prev_wt =
+        map_index < static_cast<Eigen::Index>(omb_copy.weight.size()) &&
+        omb_copy.weight[map_index].rows() == prev_sig.rows() &&
+        omb_copy.weight[map_index].cols() == prev_sig.cols();
+    const bool have_cur_wt =
+        map_index < static_cast<Eigen::Index>(omb.weight.size()) &&
+        omb.weight[map_index].rows() == cur_sig.rows() &&
+        omb.weight[map_index].cols() == cur_sig.cols();
+
+    auto choose_center = [&](const Eigen::MatrixXd &fit_params,
+                             double &center_row, double &center_col) {
+        if (map_index >= fit_params.rows() || fit_params.cols() < 3) {
+            return false;
+        }
+        const double col = fit_params(map_index, 1);
+        const double row = fit_params(map_index, 2);
+        if (!std::isfinite(row) || !std::isfinite(col)) {
+            return false;
+        }
+        center_row = row;
+        center_col = col;
+        return true;
+    };
+
+    double center_row = std::numeric_limits<double>::quiet_NaN();
+    double center_col = std::numeric_limits<double>::quiet_NaN();
+    if (!choose_center(params, center_row, center_col) &&
+        !choose_center(p0, center_row, center_col)) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+
+    const double radius_pix = beammap_convergence_radius_arcsec * ASEC_TO_RAD / omb.pixel_size_rad;
+    const double radius2 = radius_pix * radius_pix;
+    const Eigen::Index row_min = std::max<Eigen::Index>(
+        0, static_cast<Eigen::Index>(std::floor(center_row - radius_pix)));
+    const Eigen::Index row_max = std::min<Eigen::Index>(
+        prev_sig.rows() - 1, static_cast<Eigen::Index>(std::ceil(center_row + radius_pix)));
+    const Eigen::Index col_min = std::max<Eigen::Index>(
+        0, static_cast<Eigen::Index>(std::floor(center_col - radius_pix)));
+    const Eigen::Index col_max = std::min<Eigen::Index>(
+        prev_sig.cols() - 1, static_cast<Eigen::Index>(std::ceil(center_col + radius_pix)));
+
+    if (row_min > row_max || col_min > col_max) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+
+    double diff2_sum = 0.0;
+    double prev2_sum = 0.0;
+    Eigen::Index n_pix = 0;
+    for (Eigen::Index row = row_min; row <= row_max; ++row) {
+        for (Eigen::Index col = col_min; col <= col_max; ++col) {
+            const double dr = static_cast<double>(row) - center_row;
+            const double dc = static_cast<double>(col) - center_col;
+            if (dr * dr + dc * dc > radius2) {
+                continue;
+            }
+            const double prev = prev_sig(row, col);
+            const double cur = cur_sig(row, col);
+            if (!std::isfinite(prev) || !std::isfinite(cur)) {
+                continue;
+            }
+            if (have_prev_wt) {
+                const double wt = omb_copy.weight[map_index](row, col);
+                if (!std::isfinite(wt) || wt <= 0.0) {
+                    continue;
+                }
+            }
+            if (have_cur_wt) {
+                const double wt = omb.weight[map_index](row, col);
+                if (!std::isfinite(wt) || wt <= 0.0) {
+                    continue;
+                }
+            }
+            const double diff = cur - prev;
+            diff2_sum += diff * diff;
+            prev2_sum += prev * prev;
+            ++n_pix;
+        }
+    }
+
+    if (n_pix < std::max<Eigen::Index>(8, map_fitter.n_params + 1)) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+
+    const double eps = std::numeric_limits<double>::epsilon();
+    if (prev2_sum <= eps) {
+        if (diff2_sum <= eps) {
+            return 0.0;
+        }
+        return std::numeric_limits<double>::infinity();
+    }
+    return std::sqrt(diff2_sum / prev2_sum);
 }
 
 Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PTC,Eigen::MatrixXd> &ptc) {
@@ -2595,9 +2707,13 @@ void Beammap::run_loop() {
         }
         configure_ptc_source_mask_from_previous_fit();
 
-        // copy signal for convergence test
-        if (ptcproc.run_fruit_loops) {
+        // copy previous-iteration maps for source-aperture convergence tests
+        if (run_mapmaking && beammap_iter_tolerance > 0.0 && current_iter > 0) {
             omb_copy.signal = omb.signal;
+            omb_copy.weight = omb.weight;
+        }
+
+        if (ptcproc.run_fruit_loops) {
             // calc mean rms
             if (current_iter == 1) {
                 // use obs map buffer
@@ -3330,24 +3446,17 @@ void Beammap::run_loop() {
             }
             else if (current_iter > 1) {
                 // only do convergence test if tolerance is above zero, otherwise run all iterations
-                if (beammap_iter_tolerance > 0) {
+                if (run_mapmaking && beammap_iter_tolerance > 0) {
                     // loop through maps and check if it is converged
-                    logger->info("checking convergence");
+                    logger->info("checking convergence in fitted-source aperture radius={} arcsec",
+                                 beammap_convergence_radius_arcsec);
+                    Eigen::VectorXd convergence_delta =
+                        Eigen::VectorXd::Constant(n_maps, std::numeric_limits<double>::quiet_NaN());
                     grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
                         if (!converged(i)) {
-                            // get relative change from last iteration
-                            Eigen::ArrayXd diff;
-                            if (!ptcproc.run_fruit_loops) {
-                                diff = abs((params.row(i).array() - p0.row(i).array())/p0.row(i).array());
-                            }
-                            else {
-                                auto denom = omb_copy.signal[i].array().abs();
-                                diff = (omb_copy.signal[i].array() - omb.signal[i].array()).abs();
-                                diff = (denom > 0).select(diff / denom, diff);
-                            }
-                            // if a variable is constant, make sure no nans are present
-                            auto d = (diff.array()).isNaN().select(0,diff);
-                            if ((d.array() <= beammap_iter_tolerance).all()) {
+                            const double delta = calc_beammap_convergence_delta(i);
+                            convergence_delta(i) = delta;
+                            if (std::isfinite(delta) && delta <= beammap_iter_tolerance) {
                                 // set as converged
                                 converged(i) = true;
                                 // set convergence iteration
@@ -3357,7 +3466,23 @@ void Beammap::run_loop() {
                         return 0;
                     });
 
-                    logger->info("{} maps converged on iter {}", (converged.array() == true).count(), current_iter);
+                    Eigen::Index n_delta_finite = 0;
+                    Eigen::Index n_delta_invalid = 0;
+                    double max_delta = 0.0;
+                    for (Eigen::Index i = 0; i < convergence_delta.size(); ++i) {
+                        if (std::isfinite(convergence_delta(i))) {
+                            n_delta_finite++;
+                            max_delta = std::max(max_delta, convergence_delta(i));
+                        }
+                        else if (!converged(i)) {
+                            n_delta_invalid++;
+                        }
+                    }
+
+                    logger->info(
+                        "{} maps converged on iter {} (finite_metrics={} invalid_metrics={} max_delta={})",
+                        (converged.array() == true).count(), current_iter,
+                        n_delta_finite, n_delta_invalid, max_delta);
 
                     // stop if all maps converged
                     if ((converged.array() == true).all()) {
@@ -4594,6 +4719,7 @@ void Beammap::output() {
             fit_qc_meta["map_grouping"] = map_grouping;
             fit_qc_meta["beammap_iter_max"] = beammap_iter_max;
             fit_qc_meta["beammap_iter_tolerance"] = beammap_iter_tolerance;
+            fit_qc_meta["beammap_convergence_radius_arcsec"] = beammap_convergence_radius_arcsec;
             fit_qc_meta["reference_detector_subtracted"] = beammap_subtract_reference;
             fit_qc_meta["reference_det"] = beammap_reference_det_found;
             fit_qc_meta["rfi_mask_enabled"] = beammap_rfi_mask_enabled;
