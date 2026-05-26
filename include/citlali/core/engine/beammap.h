@@ -3235,6 +3235,9 @@ void Beammap::run_loop() {
                     omb.calc_median_rms();
                 }
             }
+            if (current_iter > 0) {
+                ptcproc.configure_fruit_loops_adaptive_gate(omb, calib, map_grouping, false);
+            }
         }
 
         // progress bar
