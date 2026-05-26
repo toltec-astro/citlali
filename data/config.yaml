@@ -431,8 +431,16 @@ timestream: # timestream reduction parameters
     enabled: false # enable or disable fruit loops algorithm (this overrides beammap source fitting if in beammap mode)
     path: null # path for maps.  If null use maps that were generated in previous iter.  If path, use maps in that redu dir.
     type: obsnum/raw # how to apply maps.  options are 'obsnum/raw' and 'obsnum/filtered' (looks for obsnum dir) or 'coadd/raw' or 'coadd/filtered' (same map for all obsnums)
-    sig2noise_limit: 0 # limit on signal-to-noise of pixels to include (ignored if noise maps are disabled or none are found in path)
-    array_flux_limit: [0,0,0] # limit on signal flux density of pixels to include for each array (in map units)
+    sig2noise_limit: 0 # limit on signal-to-noise of pixels to include (0 disables; ignored if noise maps are disabled or none are found in path)
+    array_flux_limit: [0,0,0] # limit on signal flux density of pixels to include for each array (0 disables; in map units)
+    peak_fraction_limit: 0.0 # include pixels above this fraction of the per-map calibration amplitude (0 disables)
+    local_snr_floor: 0.0 # include pixels above this multiple of the local annular map sigma (0 disables)
+    local_sigma_inner_radius_arcsec: 10.0 # minimum inner radius of the local sigma annulus
+    local_sigma_outer_radius_arcsec: 35.0 # minimum outer radius of the local sigma annulus
+    local_sigma_inner_fwhm: 1.5 # inner annulus radius is at least this many fitted FWHM
+    local_sigma_outer_fwhm: 4.0 # outer annulus radius is at least this many fitted FWHM
+    local_sigma_edge_guard_arcsec: 5.0 # exclude pixels this close to the map edge when estimating local sigma
+    local_sigma_min_pixels: 50 # minimum annulus pixels required for a local sigma estimate
     mode: upper # how to decide on pixel to include with upper: pix >= limit, lower: pix <= limit, and both: abs(pix) >= abs(limit)
     center_keep_radius_arcsec: 0.0 # exempt the central map region from coverage_cut masking when loading fruit-loops templates
     interp_mode_override: auto # auto|nearest|bilinear|jinc|trunc ; trunc reproduces legacy integer-cast map sampling

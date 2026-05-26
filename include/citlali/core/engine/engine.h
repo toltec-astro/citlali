@@ -2478,6 +2478,12 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS", ptcproc.run_fruit_loops);
         add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path);
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise);
+        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.PEAKFRAC", ptcproc.fruit_loops_peak_fraction_limit);
+        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSNR", ptcproc.fruit_loops_local_snr_floor);
+        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_INNER", ptcproc.fruit_loops_local_sigma_inner_radius_arcsec);
+        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_OUTER", ptcproc.fruit_loops_local_sigma_outer_radius_arcsec);
+        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_EDGE", ptcproc.fruit_loops_local_sigma_edge_guard_arcsec);
+        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_MINPIX", ptcproc.fruit_loops_local_sigma_min_pixels);
         for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
             double flux_limit = 0.0;
             if (ptcproc.run_fruit_loops) {
@@ -4530,6 +4536,19 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path, "Fruit loops path");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.TYPE", ptcproc.fruit_loops_type, "Fruit loops type");
     add_double_key("CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise, "Fruit loops S/N");
+    add_double_key("CONFIG.FRUITLOOPS.PEAKFRAC", ptcproc.fruit_loops_peak_fraction_limit,
+                   "Fruit loops peak fraction");
+    add_double_key("CONFIG.FRUITLOOPS.LOCALSNR", ptcproc.fruit_loops_local_snr_floor,
+                   "Fruit loops local sigma S/N floor");
+    add_double_key("CONFIG.FRUITLOOPS.LOCALSIG_INNER", ptcproc.fruit_loops_local_sigma_inner_radius_arcsec,
+                   "Fruit loops local sigma inner annulus");
+    add_double_key("CONFIG.FRUITLOOPS.LOCALSIG_OUTER", ptcproc.fruit_loops_local_sigma_outer_radius_arcsec,
+                   "Fruit loops local sigma outer annulus");
+    add_double_key("CONFIG.FRUITLOOPS.LOCALSIG_EDGE", ptcproc.fruit_loops_local_sigma_edge_guard_arcsec,
+                   "Fruit loops local sigma edge guard");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.LOCALSIG_MINPIX",
+                                        ptcproc.fruit_loops_local_sigma_min_pixels,
+                                        "Fruit loops local sigma minimum pixels");
     {
         double flux_limit = 0.0;
         if (ptcproc.run_fruit_loops) {
@@ -5675,6 +5694,12 @@ void Engine::create_ptcdiag_file() {
     add_netcdf_var(fo, "CONFIG.FRUITLOOPS", ptcproc.run_fruit_loops);
     add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path);
     add_netcdf_var(fo, "CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.PEAKFRAC", ptcproc.fruit_loops_peak_fraction_limit);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSNR", ptcproc.fruit_loops_local_snr_floor);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_INNER", ptcproc.fruit_loops_local_sigma_inner_radius_arcsec);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_OUTER", ptcproc.fruit_loops_local_sigma_outer_radius_arcsec);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_EDGE", ptcproc.fruit_loops_local_sigma_edge_guard_arcsec);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_MINPIX", ptcproc.fruit_loops_local_sigma_min_pixels);
 
     auto add_det_double = [&](const std::string &name, const std::string &comment) {
         netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, det_dims);

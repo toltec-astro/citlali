@@ -595,6 +595,53 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         // fruit loops flux density limit
         auto fruit_loops_flux_vec = config.template get_typed<std::vector<double>>(std::tuple{"timestream","fruit_loops","array_flux_limit"});
         fruit_loops_flux = Eigen::Map<Eigen::VectorXd>(fruit_loops_flux_vec.data(), fruit_loops_flux_vec.size());
+
+        auto read_optional_double = [&](double &value, const auto &key, double default_value,
+                                        std::initializer_list<double> bounds = {}) {
+            if (config.template has_typed<double>(key)) {
+                get_config_value(config, value, missing_keys, invalid_keys, key,
+                                 std::vector<double>{}, std::vector<double>(bounds));
+            }
+            else {
+                value = default_value;
+            }
+        };
+        auto read_optional_int = [&](int &value, const auto &key, int default_value,
+                                     std::initializer_list<int> bounds = {}) {
+            if (config.template has_typed<int>(key)) {
+                get_config_value(config, value, missing_keys, invalid_keys, key,
+                                 std::vector<int>{}, std::vector<int>(bounds));
+            }
+            else {
+                value = default_value;
+            }
+        };
+
+        read_optional_double(fruit_loops_peak_fraction_limit,
+                             std::tuple{"timestream","fruit_loops","peak_fraction_limit"},
+                             0.0, {0.0});
+        read_optional_double(fruit_loops_local_snr_floor,
+                             std::tuple{"timestream","fruit_loops","local_snr_floor"},
+                             0.0, {0.0});
+        read_optional_double(fruit_loops_local_sigma_inner_radius_arcsec,
+                             std::tuple{"timestream","fruit_loops","local_sigma_inner_radius_arcsec"},
+                             10.0, {0.0});
+        read_optional_double(fruit_loops_local_sigma_outer_radius_arcsec,
+                             std::tuple{"timestream","fruit_loops","local_sigma_outer_radius_arcsec"},
+                             35.0, {0.0});
+        read_optional_double(fruit_loops_local_sigma_inner_fwhm,
+                             std::tuple{"timestream","fruit_loops","local_sigma_inner_fwhm"},
+                             1.5, {0.0});
+        read_optional_double(fruit_loops_local_sigma_outer_fwhm,
+                             std::tuple{"timestream","fruit_loops","local_sigma_outer_fwhm"},
+                             4.0, {0.0});
+        read_optional_double(fruit_loops_local_sigma_edge_guard_arcsec,
+                             std::tuple{"timestream","fruit_loops","local_sigma_edge_guard_arcsec"},
+                             5.0, {0.0});
+        read_optional_int(fruit_loops_local_sigma_min_pixels,
+                          std::tuple{"timestream","fruit_loops","local_sigma_min_pixels"},
+                          50, {1});
+
         if (config.template has_typed<double>(std::tuple{"timestream","fruit_loops","center_keep_radius_arcsec"})) {
             get_config_value(config, fruit_loops_center_keep_radius_arcsec, missing_keys, invalid_keys,
                              std::tuple{"timestream","fruit_loops","center_keep_radius_arcsec"}, {}, {0.0});

@@ -10,6 +10,7 @@
 #include <limits>
 #include <cctype>
 #include <cmath>
+#include <numeric>
 #include <string_view>
 
 #include <boost/math/special_functions/bessel.hpp>
@@ -311,6 +312,19 @@ public:
     double fruit_loops_sig2noise = 0;
     // flux density cut for fruit loops algorithm
     Eigen::VectorXd fruit_loops_flux;
+    // fractional and local-noise cuts for adaptive fruit loops source support
+    double fruit_loops_peak_fraction_limit = 0.0;
+    double fruit_loops_local_snr_floor = 0.0;
+    double fruit_loops_local_sigma_inner_radius_arcsec = 10.0;
+    double fruit_loops_local_sigma_outer_radius_arcsec = 35.0;
+    double fruit_loops_local_sigma_inner_fwhm = 1.5;
+    double fruit_loops_local_sigma_outer_fwhm = 4.0;
+    double fruit_loops_local_sigma_edge_guard_arcsec = 5.0;
+    int fruit_loops_local_sigma_min_pixels = 50;
+    Eigen::VectorXd fruit_loops_local_sigma_map;
+    Eigen::VectorXi fruit_loops_local_sigma_npix;
+    Eigen::VectorXd fruit_loops_amp_ref;
+    Eigen::VectorXd fruit_loops_adaptive_threshold;
     // preserve a central map region from coverage-cut masking when loading
     // fruit loops templates
     double fruit_loops_center_keep_radius_arcsec = 0.0;
@@ -428,6 +442,10 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     fruit_loops_source_lat.resize(0);
     fruit_loops_source_lon.resize(0);
     fruit_loops_source_valid.resize(0);
+    fruit_loops_local_sigma_map.resize(0);
+    fruit_loops_local_sigma_npix.resize(0);
+    fruit_loops_amp_ref.resize(0);
+    fruit_loops_adaptive_threshold.resize(0);
 
     if (expected_map_grouping.empty()) {
         logger->error("expected map grouping not provided for fruit loops map loading");
@@ -1079,7 +1097,24 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     fruit_loops_source_valid = Eigen::VectorXi::Zero(tod_mb.signal.size());
     const double row_offset = (tod_mb.n_rows - 1) / 2.0;
     const double col_offset = (tod_mb.n_cols - 1) / 2.0;
+    auto apt_position_value = [&](const std::string &key, Eigen::Index index) {
+        auto it = calib.apt.find(key);
+        if (it == calib.apt.end() || index < 0 || index >= it->second.size()) {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+        return it->second(index);
+    };
     for (Eigen::Index i = 0; i < static_cast<Eigen::Index>(tod_mb.signal.size()); ++i) {
+        if (grouping == "detector") {
+            const double x_arcsec = apt_position_value("x_t", i);
+            const double y_arcsec = apt_position_value("y_t", i);
+            if (std::isfinite(x_arcsec) && std::isfinite(y_arcsec)) {
+                fruit_loops_source_lat(i) = y_arcsec * ASEC_TO_RAD;
+                fruit_loops_source_lon(i) = x_arcsec * ASEC_TO_RAD;
+                fruit_loops_source_valid(i) = 1;
+                continue;
+            }
+        }
         double peak_val = -std::numeric_limits<double>::infinity();
         Eigen::Index peak_row = 0;
         Eigen::Index peak_col = 0;
@@ -1102,6 +1137,221 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 (static_cast<double>(peak_col) - col_offset) * tod_mb.pixel_size_rad;
             fruit_loops_source_valid(i) = 1;
         }
+    }
+
+    const bool use_adaptive_threshold =
+        fruit_loops_peak_fraction_limit > 0.0 || fruit_loops_local_snr_floor > 0.0;
+    if (use_adaptive_threshold) {
+        const auto n_maps = static_cast<Eigen::Index>(tod_mb.signal.size());
+        const double fill = std::numeric_limits<double>::quiet_NaN();
+        fruit_loops_local_sigma_map = Eigen::VectorXd::Constant(n_maps, fill);
+        fruit_loops_local_sigma_npix = Eigen::VectorXi::Zero(n_maps);
+        fruit_loops_amp_ref = Eigen::VectorXd::Constant(n_maps, fill);
+        fruit_loops_adaptive_threshold = Eigen::VectorXd::Constant(n_maps, fill);
+
+        const double pix_arcsec = tod_mb.pixel_size_rad * RAD_TO_ASEC;
+        const double edge_guard_pix =
+            (pix_arcsec > 0.0)
+                ? fruit_loops_local_sigma_edge_guard_arcsec / pix_arcsec
+                : 0.0;
+        const Eigen::Index edge_guard =
+            std::max<Eigen::Index>(0, static_cast<Eigen::Index>(std::ceil(edge_guard_pix)));
+
+        auto median_of = [](std::vector<double> values) {
+            if (values.empty()) {
+                return std::numeric_limits<double>::quiet_NaN();
+            }
+            const auto mid_index = values.size() / 2;
+            auto mid = values.begin() + static_cast<std::ptrdiff_t>(mid_index);
+            std::nth_element(values.begin(), mid, values.end());
+            double med = *mid;
+            if (values.size() % 2 == 0 && mid_index > 0) {
+                auto lo = values.begin() + static_cast<std::ptrdiff_t>(mid_index - 1);
+                std::nth_element(values.begin(), lo, mid);
+                med = 0.5 * (med + *lo);
+            }
+            return med;
+        };
+
+        auto robust_sigma = [&](const std::vector<double> &values) {
+            if (values.size() < static_cast<std::size_t>(fruit_loops_local_sigma_min_pixels)) {
+                return std::numeric_limits<double>::quiet_NaN();
+            }
+            const double med = median_of(values);
+            if (!std::isfinite(med)) {
+                return std::numeric_limits<double>::quiet_NaN();
+            }
+            std::vector<double> deviations;
+            deviations.reserve(values.size());
+            for (const auto value : values) {
+                deviations.push_back(std::abs(value - med));
+            }
+            double sigma = 1.4826 * median_of(std::move(deviations));
+            if (!std::isfinite(sigma) || sigma <= 0.0) {
+                const double mean =
+                    std::accumulate(values.begin(), values.end(), 0.0) /
+                    static_cast<double>(values.size());
+                double var = 0.0;
+                for (const auto value : values) {
+                    const double dv = value - mean;
+                    var += dv * dv;
+                }
+                sigma = std::sqrt(var / static_cast<double>(values.size()));
+            }
+            return (std::isfinite(sigma) && sigma > 0.0)
+                       ? sigma
+                       : std::numeric_limits<double>::quiet_NaN();
+        };
+
+        auto apt_value = [&](const std::string &key, Eigen::Index index) {
+            auto it = calib.apt.find(key);
+            if (it == calib.apt.end() || index < 0 || index >= it->second.size()) {
+                return std::numeric_limits<double>::quiet_NaN();
+            }
+            const double value = it->second(index);
+            return (std::isfinite(value) && value > 0.0)
+                       ? value
+                       : std::numeric_limits<double>::quiet_NaN();
+        };
+
+        Eigen::Index n_valid_thresholds = 0;
+        Eigen::Index n_valid_sigma = 0;
+        Eigen::Index n_valid_amp = 0;
+        for (Eigen::Index i = 0; i < n_maps; ++i) {
+            if (fruit_loops_source_valid(i) == 0 || pix_arcsec <= 0.0) {
+                continue;
+            }
+            const double center_row = fruit_loops_source_lat(i) / tod_mb.pixel_size_rad + row_offset;
+            const double center_col = fruit_loops_source_lon(i) / tod_mb.pixel_size_rad + col_offset;
+            if (!std::isfinite(center_row) || !std::isfinite(center_col)) {
+                continue;
+            }
+
+            double fwhm_arcsec = std::numeric_limits<double>::quiet_NaN();
+            if (grouping == "detector") {
+                const double a_fwhm = apt_value("a_fwhm", i);
+                const double b_fwhm = apt_value("b_fwhm", i);
+                if (std::isfinite(a_fwhm) && std::isfinite(b_fwhm)) {
+                    fwhm_arcsec = std::max(a_fwhm, b_fwhm);
+                }
+                else if (std::isfinite(a_fwhm)) {
+                    fwhm_arcsec = a_fwhm;
+                }
+                else if (std::isfinite(b_fwhm)) {
+                    fwhm_arcsec = b_fwhm;
+                }
+            }
+            if (!std::isfinite(fwhm_arcsec) || fwhm_arcsec <= 0.0) {
+                fwhm_arcsec = 0.0;
+            }
+
+            double inner_arcsec = std::max(
+                fruit_loops_local_sigma_inner_radius_arcsec,
+                fruit_loops_local_sigma_inner_fwhm * fwhm_arcsec);
+            double outer_arcsec = std::max(
+                fruit_loops_local_sigma_outer_radius_arcsec,
+                fruit_loops_local_sigma_outer_fwhm * fwhm_arcsec);
+            if (!(outer_arcsec > inner_arcsec)) {
+                outer_arcsec = inner_arcsec + std::max(5.0, fwhm_arcsec);
+            }
+
+            std::vector<double> annulus_values;
+            annulus_values.reserve(static_cast<std::size_t>(tod_mb.n_rows * tod_mb.n_cols / 8));
+            const Eigen::Index row_begin = std::min(edge_guard, tod_mb.n_rows);
+            const Eigen::Index row_end = std::max(row_begin, tod_mb.n_rows - edge_guard);
+            const Eigen::Index col_begin = std::min(edge_guard, tod_mb.n_cols);
+            const Eigen::Index col_end = std::max(col_begin, tod_mb.n_cols - edge_guard);
+            for (Eigen::Index row = row_begin; row < row_end; ++row) {
+                const double drow = (static_cast<double>(row) - center_row) * pix_arcsec;
+                for (Eigen::Index col = col_begin; col < col_end; ++col) {
+                    if (i < static_cast<Eigen::Index>(tod_mb.weight.size())) {
+                        const double weight = tod_mb.weight[i](row, col);
+                        if (!std::isfinite(weight) || weight <= 0.0) {
+                            continue;
+                        }
+                    }
+                    const double signal = tod_mb.signal[i](row, col);
+                    if (!std::isfinite(signal)) {
+                        continue;
+                    }
+                    const double dcol = (static_cast<double>(col) - center_col) * pix_arcsec;
+                    const double radius_arcsec = std::sqrt(drow * drow + dcol * dcol);
+                    if (radius_arcsec >= inner_arcsec && radius_arcsec <= outer_arcsec) {
+                        annulus_values.push_back(signal);
+                    }
+                }
+            }
+
+            fruit_loops_local_sigma_npix(i) =
+                static_cast<int>(std::min<std::size_t>(
+                    annulus_values.size(), static_cast<std::size_t>(std::numeric_limits<int>::max())));
+            const double sigma = robust_sigma(annulus_values);
+            if (std::isfinite(sigma) && sigma > 0.0) {
+                fruit_loops_local_sigma_map(i) = sigma;
+                n_valid_sigma++;
+            }
+
+            double amp_ref = std::numeric_limits<double>::quiet_NaN();
+            if (grouping == "detector") {
+                for (const auto &key : {"cal_amp", "template_amp", "amp", "map_peak_amp"}) {
+                    amp_ref = apt_value(key, i);
+                    if (std::isfinite(amp_ref) && amp_ref > 0.0) {
+                        break;
+                    }
+                }
+            }
+            if (!std::isfinite(amp_ref) || amp_ref <= 0.0) {
+                const double peak_radius_arcsec = std::max(5.0, inner_arcsec);
+                double local_peak = -std::numeric_limits<double>::infinity();
+                for (Eigen::Index row = 0; row < tod_mb.n_rows; ++row) {
+                    const double drow = (static_cast<double>(row) - center_row) * pix_arcsec;
+                    for (Eigen::Index col = 0; col < tod_mb.n_cols; ++col) {
+                        const double signal = tod_mb.signal[i](row, col);
+                        if (!std::isfinite(signal)) {
+                            continue;
+                        }
+                        const double dcol = (static_cast<double>(col) - center_col) * pix_arcsec;
+                        if (std::sqrt(drow * drow + dcol * dcol) <= peak_radius_arcsec &&
+                            signal > local_peak) {
+                            local_peak = signal;
+                        }
+                    }
+                }
+                if (std::isfinite(local_peak) && local_peak > 0.0) {
+                    amp_ref = local_peak;
+                }
+            }
+            if (std::isfinite(amp_ref) && amp_ref > 0.0) {
+                fruit_loops_amp_ref(i) = amp_ref;
+                n_valid_amp++;
+            }
+
+            double threshold = std::numeric_limits<double>::quiet_NaN();
+            if (fruit_loops_peak_fraction_limit > 0.0 &&
+                std::isfinite(amp_ref) && amp_ref > 0.0) {
+                threshold = fruit_loops_peak_fraction_limit * amp_ref;
+            }
+            if (fruit_loops_local_snr_floor > 0.0 &&
+                std::isfinite(sigma) && sigma > 0.0) {
+                const double snr_threshold = fruit_loops_local_snr_floor * sigma;
+                threshold = std::isfinite(threshold)
+                                ? std::max(threshold, snr_threshold)
+                                : snr_threshold;
+            }
+            if (std::isfinite(threshold) && threshold > 0.0) {
+                fruit_loops_adaptive_threshold(i) = threshold;
+                n_valid_thresholds++;
+            }
+        }
+
+        logger->info("fruit loops adaptive gate: peak_fraction={} local_snr_floor={} "
+                     "local_sigma_annulus=[{}={}, {}={}] arcsec edge_guard={} arcsec "
+                     "valid_thresholds={}/{} valid_sigma={} valid_amp={}",
+                     fruit_loops_peak_fraction_limit, fruit_loops_local_snr_floor,
+                     "inner", fruit_loops_local_sigma_inner_radius_arcsec,
+                     "outer", fruit_loops_local_sigma_outer_radius_arcsec,
+                     fruit_loops_local_sigma_edge_guard_arcsec, n_valid_thresholds, n_maps,
+                     n_valid_sigma, n_valid_amp);
     }
     // clear weight maps to save memory
     std::vector<Eigen::MatrixXd>().swap(tod_mb.weight);
@@ -1417,6 +1667,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
 
     bool warned_rms = false;
     bool warned_flux = false;
+    bool warned_adaptive = false;
 
     double row_offset = fruit_loops_legacy_center ? (mb.n_rows / 2.0) : ((mb.n_rows - 1) / 2.0);
     double col_offset = fruit_loops_legacy_center ? (mb.n_cols / 2.0) : ((mb.n_cols - 1) / 2.0);
@@ -1498,6 +1749,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                     // check whether we should include pixel
                     bool run_pix_s2n = false;
                     bool run_pix_flux = false;
+                    bool run_pix_adaptive = false;
 
                     double rms = std::numeric_limits<double>::quiet_NaN();
                     bool have_rms = false;
@@ -1526,7 +1778,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                     bool have_flux = false;
                     if (fruit_loops_flux.size() == calib.arrays.size()) {
                         flux_limit = fruit_loops_flux(array_pos);
-                        have_flux = true;
+                        have_flux = std::isfinite(flux_limit) && std::abs(flux_limit) > 0.0;
                     }
                     else if (array_id < fruit_loops_flux.size()) {
                         if (!warned_flux) {
@@ -1535,7 +1787,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                             warned_flux = true;
                         }
                         flux_limit = fruit_loops_flux(array_id);
-                        have_flux = true;
+                        have_flux = std::isfinite(flux_limit) && std::abs(flux_limit) > 0.0;
                     }
                     else if (!warned_flux) {
                         logger->warn("fruit_loops_flux size ({}) insufficient for array {}; disabling flux gate",
@@ -1543,21 +1795,39 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                         warned_flux = true;
                     }
 
+                    double adaptive_limit = std::numeric_limits<double>::quiet_NaN();
+                    bool have_adaptive = false;
+                    if (fruit_loops_adaptive_threshold.size() == static_cast<Eigen::Index>(mb.signal.size()) &&
+                        map_index < fruit_loops_adaptive_threshold.size()) {
+                        adaptive_limit = fruit_loops_adaptive_threshold(map_index);
+                        have_adaptive = std::isfinite(adaptive_limit) && adaptive_limit > 0.0;
+                    }
+                    else if ((fruit_loops_peak_fraction_limit > 0.0 ||
+                              fruit_loops_local_snr_floor > 0.0) &&
+                             !warned_adaptive) {
+                        logger->warn("fruit loops adaptive threshold unavailable; disabling adaptive gate");
+                        warned_adaptive = true;
+                    }
+
+                    const bool have_s2n = have_rms && std::abs(fruit_loops_sig2noise) > 0.0;
                     if (fruit_mode == "upper") {
-                        run_pix_s2n = have_rms && (signal / rms >= fruit_loops_sig2noise);
+                        run_pix_s2n = have_s2n && (signal / rms >= fruit_loops_sig2noise);
                         run_pix_flux = have_flux && (signal >= flux_limit);
+                        run_pix_adaptive = have_adaptive && (signal >= adaptive_limit);
                     }
                     else if (fruit_mode == "lower") {
-                        run_pix_s2n = have_rms && (signal / rms <= fruit_loops_sig2noise);
+                        run_pix_s2n = have_s2n && (signal / rms <= fruit_loops_sig2noise);
                         run_pix_flux = have_flux && (signal <= flux_limit);
+                        run_pix_adaptive = have_adaptive && (signal <= -std::abs(adaptive_limit));
                     }
                     else if (fruit_mode == "both") {
-                        run_pix_s2n = have_rms && (std::abs(signal / rms) >= std::abs(fruit_loops_sig2noise));
+                        run_pix_s2n = have_s2n && (std::abs(signal / rms) >= std::abs(fruit_loops_sig2noise));
                         run_pix_flux = have_flux && (std::abs(signal) >= std::abs(flux_limit));
+                        run_pix_adaptive = have_adaptive && (std::abs(signal) >= adaptive_limit);
                     }
 
                     // if signal flux is higher than S/N limit or flux limit
-                    if (run_pix_s2n || run_pix_flux) {
+                    if (run_pix_s2n || run_pix_flux || run_pix_adaptive) {
                         // add/subtract signal pixel from signal timestream
                         in.scans.data(j,i) += factor * signal;
                         // add/subtract kernel pixel from kernel timestream
