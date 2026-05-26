@@ -3348,12 +3348,6 @@ void Beammap::run_loop() {
                 calib_scans[i] = ptcproc.reset_weights(ptcs[i], calib_scans[i], map_grouping);
             }
 
-            // write out chunk summary
-            if (verbose_mode && current_iter==beammap_tod_output_iter) {
-                logger->debug("writing chunk summary");
-                write_chunk_summary(ptcs[i]);
-            }
-
             // calc stats
             logger->debug("calculating stats");
             diagnostics.calc_stats(ptcs[i]);
@@ -3361,10 +3355,21 @@ void Beammap::run_loop() {
             return 0;
         });
 
-        // write ptc timestreams
-        if (current_iter == beammap_tod_output_iter) {
+        auto clear_beammap_ptc_diagnostics = [&]() {
+            for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
+                ptcproc.clear_cached_diagnostics(ptcs[i].index.data);
+            }
+        };
+
+        auto write_beammap_ptc_products = [&](int output_iter) {
+            if (verbose_mode) {
+                logger->debug("writing chunk summaries for beammap PTC iteration {}", output_iter);
+                for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
+                    write_chunk_summary(ptcs[i]);
+                }
+            }
             if (!ptcdiag_filename.empty()) {
-                logger->info("writing ptc diagnostics sidecar chunks");
+                logger->info("writing ptc diagnostics sidecar chunks for beammap iteration {}", output_iter);
                 for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
                     ptcproc.append_diag_to_netcdf(ptcs[i], ptcdiag_filename, calib_scans[i], ptcs[i].index.data);
                     if (!(run_tod_output && !tod_filename.empty() &&
@@ -3375,7 +3380,7 @@ void Beammap::run_loop() {
             }
             if (run_tod_output && !tod_filename.empty()) {
                 if (tod_output_type == "ptc" || tod_output_type == "both") {
-                    logger->info("writing processed time chunk");
+                    logger->info("writing processed time chunk for beammap iteration {}", output_iter);
                     for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
                         const auto ptc_scan_row = tod_output_scan_row(i, "ptc");
                         if (ptc_scan_row < 0) {
@@ -3387,7 +3392,7 @@ void Beammap::run_loop() {
                     }
                 }
             }
-        }
+        };
 
         logger->info("starting mapmaking");
 
@@ -3952,6 +3957,8 @@ void Beammap::run_loop() {
             logger->info("number of good fits {}/{}", good_fits.cast<double>().sum(), n_maps);
         }
 
+        const int completed_iter = current_iter;
+
         // increment loop iteration
         current_iter++;
 
@@ -4019,6 +4026,17 @@ void Beammap::run_loop() {
         else {
             logger->info("max iteration reached");
             keep_going = false;
+        }
+
+        const bool beammap_iter_is_final = !keep_going;
+        const bool write_beammap_ptc_this_iter =
+            (beammap_tod_output_iter < 0 && beammap_iter_is_final) ||
+            (beammap_tod_output_iter >= 0 && completed_iter == beammap_tod_output_iter);
+        if (write_beammap_ptc_this_iter) {
+            write_beammap_ptc_products(completed_iter);
+        }
+        else {
+            clear_beammap_ptc_diagnostics();
         }
     }
 }

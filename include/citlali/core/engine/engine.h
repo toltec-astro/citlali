@@ -204,8 +204,8 @@ struct beammapControls {
     bool beammap_priors_alignment_fit_rotation = true;
     double beammap_priors_alignment_max_rotation_deg = 8.0;
 
-    // iteration to write out ptcdata
-    int beammap_tod_output_iter = 0;
+    // iteration to write out beammap PTC data; -1 means final attempted iteration
+    int beammap_tod_output_iter = -1;
 
     // upper and lower limits of psd for sensitivity calc
     Eigen::VectorXd sens_psd_limits_Hz;
@@ -1535,16 +1535,10 @@ void Engine::get_beammap_config(CT &config) {
     // map sens limits back to Eigen vector
     sens_psd_limits_Hz = (Eigen::Map<Eigen::VectorXd>(sens_psd_limits_Hz_vec.data(), sens_psd_limits_Hz_vec.size()));
 
-    // if no tolerance is specified, write out max iteration tod
-    if (run_tod_output) {
-        if (beammap_iter_tolerance <=0) {
-            beammap_tod_output_iter = (beammap_iter_max > 0) ? (beammap_iter_max - 1) : 0;
-        }
-        // otherwise write out first iteration tod
-        else {
-            beammap_tod_output_iter = 0;
-        }
-    }
+    // Beammap PTC TOD/diagnostics are written after the convergence decision.
+    // The default is the actual last attempted iteration, including early
+    // convergence, so the saved PTC reflects the final cleaning state.
+    beammap_tod_output_iter = -1;
 }
 
 template<typename CT>
