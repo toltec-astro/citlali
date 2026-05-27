@@ -3390,6 +3390,23 @@ void Beammap::run_loop() {
             if (run_tod_output && !tod_filename.empty()) {
                 if (tod_output_type == "ptc" || tod_output_type == "both") {
                     logger->info("writing processed time chunk for beammap iteration {}", output_iter);
+                    auto ptc_filename_it = tod_filename.find("ptc");
+                    if (ptc_filename_it != tod_filename.end() && !ptc_filename_it->second.empty()) {
+                        try {
+                            netCDF::NcFile ptc_tod_file(ptc_filename_it->second, netCDF::NcFile::write);
+                            netCDF::NcVar fruit_iter_var = ptc_tod_file.getVar("FRUITLOOPS_ITER");
+                            if (!fruit_iter_var.isNull()) {
+                                fruit_iter_var.putVar(&output_iter);
+                            }
+                            else {
+                                logger->warn("PTC TOD file {} has no FRUITLOOPS_ITER variable",
+                                             ptc_filename_it->second);
+                            }
+                        } catch (const std::exception &e) {
+                            logger->warn("failed to update PTC TOD FRUITLOOPS_ITER in {}: {}",
+                                         ptc_filename_it->second, e.what());
+                        }
+                    }
                     for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
                         const auto ptc_scan_row = tod_output_scan_row(i, "ptc");
                         if (ptc_scan_row < 0) {
@@ -5050,6 +5067,19 @@ void Beammap::output() {
                 "map_rms",
                 "map_sig2noise",
                 "n_weight_pos",
+                "fruitloops_source_x_t",
+                "fruitloops_source_y_t",
+                "fruitloops_local_sigma",
+                "fruitloops_local_sigma_npix",
+                "fruitloops_amp_ref",
+                "fruitloops_peak_threshold",
+                "fruitloops_snr_threshold",
+                "fruitloops_adaptive_threshold",
+                "fruitloops_support_radius_arcsec",
+                "fruitloops_support_npix",
+                "fruitloops_support_signal_sum",
+                "fruitloops_support_x_span_arcsec",
+                "fruitloops_support_y_span_arcsec",
                 "rfi_masked_samples",
                 "rfi_masked_scans",
                 "scan_band_masked_samples",
@@ -5197,6 +5227,153 @@ void Beammap::output() {
             Eigen::VectorXd fit_low_b_fwhm = (sigma_to_fwhm_arcsec * fit_diag_lower_limits.col(4).array()).matrix();
             Eigen::VectorXd fit_high_b_fwhm = (sigma_to_fwhm_arcsec * fit_diag_upper_limits.col(4).array()).matrix();
 
+            const double fill_double = std::numeric_limits<double>::quiet_NaN();
+            auto fruitloops_or_nan = [&](const Eigen::VectorXd &values,
+                                         double scale = 1.0) -> Eigen::VectorXd {
+                Eigen::VectorXd out = Eigen::VectorXd::Constant(calib.n_dets, fill_double);
+                if (values.size() == calib.n_dets) {
+                    out = (scale * values.array()).matrix();
+                }
+                return out;
+            };
+            auto fruitloops_int_or_nan = [&](const Eigen::VectorXi &values) -> Eigen::VectorXd {
+                Eigen::VectorXd out = Eigen::VectorXd::Constant(calib.n_dets, fill_double);
+                if (values.size() == calib.n_dets) {
+                    out = values.cast<double>();
+                }
+                return out;
+            };
+
+            Eigen::VectorXd fruitloops_source_x_t =
+                fruitloops_or_nan(ptcproc.fruit_loops_source_lon, RAD_TO_ASEC);
+            Eigen::VectorXd fruitloops_source_y_t =
+                fruitloops_or_nan(ptcproc.fruit_loops_source_lat, RAD_TO_ASEC);
+            Eigen::VectorXd fruitloops_local_sigma =
+                fruitloops_or_nan(ptcproc.fruit_loops_local_sigma_map);
+            Eigen::VectorXd fruitloops_local_sigma_npix =
+                fruitloops_int_or_nan(ptcproc.fruit_loops_local_sigma_npix);
+            Eigen::VectorXd fruitloops_amp_ref =
+                fruitloops_or_nan(ptcproc.fruit_loops_amp_ref);
+            Eigen::VectorXd fruitloops_adaptive_threshold =
+                fruitloops_or_nan(ptcproc.fruit_loops_adaptive_threshold);
+            Eigen::VectorXd fruitloops_support_radius_arcsec =
+                fruitloops_or_nan(ptcproc.fruit_loops_adaptive_support_radius_rad, RAD_TO_ASEC);
+            Eigen::VectorXd fruitloops_peak_threshold =
+                Eigen::VectorXd::Constant(calib.n_dets, fill_double);
+            Eigen::VectorXd fruitloops_snr_threshold =
+                Eigen::VectorXd::Constant(calib.n_dets, fill_double);
+            Eigen::VectorXd fruitloops_support_npix =
+                Eigen::VectorXd::Constant(calib.n_dets, fill_double);
+            Eigen::VectorXd fruitloops_support_signal_sum =
+                Eigen::VectorXd::Constant(calib.n_dets, fill_double);
+            Eigen::VectorXd fruitloops_support_x_span_arcsec =
+                Eigen::VectorXd::Constant(calib.n_dets, fill_double);
+            Eigen::VectorXd fruitloops_support_y_span_arcsec =
+                Eigen::VectorXd::Constant(calib.n_dets, fill_double);
+
+            for (Eigen::Index i = 0; i < calib.n_dets; ++i) {
+                const double amp_ref = fruitloops_amp_ref(i);
+                if (ptcproc.fruit_loops_peak_fraction_limit > 0.0 &&
+                    std::isfinite(amp_ref) && amp_ref > 0.0) {
+                    fruitloops_peak_threshold(i) =
+                        ptcproc.fruit_loops_peak_fraction_limit * amp_ref;
+                }
+                const double sigma = fruitloops_local_sigma(i);
+                if (ptcproc.fruit_loops_local_snr_floor > 0.0 &&
+                    std::isfinite(sigma) && sigma > 0.0) {
+                    fruitloops_snr_threshold(i) =
+                        ptcproc.fruit_loops_local_snr_floor * sigma;
+                }
+
+                if (i >= static_cast<Eigen::Index>(omb.signal.size()) ||
+                    i >= static_cast<Eigen::Index>(omb.weight.size()) ||
+                    omb.signal[i].rows() != omb.n_rows ||
+                    omb.signal[i].cols() != omb.n_cols ||
+                    omb.weight[i].rows() != omb.n_rows ||
+                    omb.weight[i].cols() != omb.n_cols) {
+                    continue;
+                }
+                const double threshold = fruitloops_adaptive_threshold(i);
+                if (!std::isfinite(threshold) || threshold <= 0.0) {
+                    continue;
+                }
+                if (ptcproc.fruit_loops_source_valid.size() != calib.n_dets ||
+                    ptcproc.fruit_loops_source_valid(i) == 0 ||
+                    !std::isfinite(ptcproc.fruit_loops_source_lat(i)) ||
+                    !std::isfinite(ptcproc.fruit_loops_source_lon(i))) {
+                    continue;
+                }
+
+                const double center_row =
+                    ptcproc.fruit_loops_source_lat(i) / omb.pixel_size_rad +
+                    (omb.n_rows - 1) / 2.0;
+                const double center_col =
+                    ptcproc.fruit_loops_source_lon(i) / omb.pixel_size_rad +
+                    (omb.n_cols - 1) / 2.0;
+                if (!std::isfinite(center_row) || !std::isfinite(center_col)) {
+                    continue;
+                }
+
+                double support_radius_pix = std::numeric_limits<double>::infinity();
+                const double support_radius_rad =
+                    (ptcproc.fruit_loops_adaptive_support_radius_rad.size() == calib.n_dets)
+                        ? ptcproc.fruit_loops_adaptive_support_radius_rad(i)
+                        : fill_double;
+                if (std::isfinite(support_radius_rad) && support_radius_rad > 0.0) {
+                    support_radius_pix = support_radius_rad / omb.pixel_size_rad;
+                }
+
+                Eigen::Index npix = 0;
+                double signal_sum = 0.0;
+                double min_x = std::numeric_limits<double>::infinity();
+                double max_x = -std::numeric_limits<double>::infinity();
+                double min_y = std::numeric_limits<double>::infinity();
+                double max_y = -std::numeric_limits<double>::infinity();
+                for (Eigen::Index row = 0; row < omb.n_rows; ++row) {
+                    const double drow_pix = static_cast<double>(row) - center_row;
+                    for (Eigen::Index col = 0; col < omb.n_cols; ++col) {
+                        const double weight = omb.weight[i](row, col);
+                        const double signal = omb.signal[i](row, col);
+                        if (!std::isfinite(weight) || weight <= 0.0 ||
+                            !std::isfinite(signal)) {
+                            continue;
+                        }
+                        const double dcol_pix = static_cast<double>(col) - center_col;
+                        if (std::sqrt(drow_pix * drow_pix + dcol_pix * dcol_pix) >
+                            support_radius_pix) {
+                            continue;
+                        }
+                        bool include_pixel = false;
+                        if (ptcproc.fruit_mode == "upper") {
+                            include_pixel = signal >= threshold;
+                        }
+                        else if (ptcproc.fruit_mode == "lower") {
+                            include_pixel = signal <= -std::abs(threshold);
+                        }
+                        else {
+                            include_pixel = std::abs(signal) >= threshold;
+                        }
+                        if (!include_pixel) {
+                            continue;
+                        }
+                        const double x_arcsec = dcol_pix * pix_to_arcsec;
+                        const double y_arcsec = drow_pix * pix_to_arcsec;
+                        min_x = std::min(min_x, x_arcsec);
+                        max_x = std::max(max_x, x_arcsec);
+                        min_y = std::min(min_y, y_arcsec);
+                        max_y = std::max(max_y, y_arcsec);
+                        signal_sum += signal;
+                        ++npix;
+                    }
+                }
+                fruitloops_support_npix(i) = static_cast<double>(npix);
+                fruitloops_support_signal_sum(i) = signal_sum;
+                if (npix > 0) {
+                    fruitloops_support_x_span_arcsec(i) = max_x - min_x;
+                    fruitloops_support_y_span_arcsec(i) = max_y - min_y;
+                }
+            }
+
             Eigen::MatrixXd fit_qc_table(calib.n_dets, fit_qc_header.size());
             Eigen::Index col = 0;
             fit_qc_table.col(col++) = apt_or_zero("uid");
@@ -5224,6 +5401,19 @@ void Beammap::output() {
             fit_qc_table.col(col++) = map_rms;
             fit_qc_table.col(col++) = map_sig2noise;
             fit_qc_table.col(col++) = n_weight_pos;
+            fit_qc_table.col(col++) = fruitloops_source_x_t;
+            fit_qc_table.col(col++) = fruitloops_source_y_t;
+            fit_qc_table.col(col++) = fruitloops_local_sigma;
+            fit_qc_table.col(col++) = fruitloops_local_sigma_npix;
+            fit_qc_table.col(col++) = fruitloops_amp_ref;
+            fit_qc_table.col(col++) = fruitloops_peak_threshold;
+            fit_qc_table.col(col++) = fruitloops_snr_threshold;
+            fit_qc_table.col(col++) = fruitloops_adaptive_threshold;
+            fit_qc_table.col(col++) = fruitloops_support_radius_arcsec;
+            fit_qc_table.col(col++) = fruitloops_support_npix;
+            fit_qc_table.col(col++) = fruitloops_support_signal_sum;
+            fit_qc_table.col(col++) = fruitloops_support_x_span_arcsec;
+            fit_qc_table.col(col++) = fruitloops_support_y_span_arcsec;
             fit_qc_table.col(col++) = apt_or_zero("rfi_masked_samples");
             fit_qc_table.col(col++) = apt_or_zero("rfi_masked_scans");
             fit_qc_table.col(col++) = apt_or_zero("scan_band_masked_samples");
@@ -5369,6 +5559,19 @@ void Beammap::output() {
                 {"map_rms", omb.sig_unit},
                 {"map_sig2noise", "N/A"},
                 {"n_weight_pos", "pix"},
+                {"fruitloops_source_x_t", "arcsec"},
+                {"fruitloops_source_y_t", "arcsec"},
+                {"fruitloops_local_sigma", omb.sig_unit},
+                {"fruitloops_local_sigma_npix", "pix"},
+                {"fruitloops_amp_ref", omb.sig_unit},
+                {"fruitloops_peak_threshold", omb.sig_unit},
+                {"fruitloops_snr_threshold", omb.sig_unit},
+                {"fruitloops_adaptive_threshold", omb.sig_unit},
+                {"fruitloops_support_radius_arcsec", "arcsec"},
+                {"fruitloops_support_npix", "pix"},
+                {"fruitloops_support_signal_sum", omb.sig_unit},
+                {"fruitloops_support_x_span_arcsec", "arcsec"},
+                {"fruitloops_support_y_span_arcsec", "arcsec"},
                 {"rfi_masked_samples", "samples"},
                 {"rfi_masked_scans", "scans"},
                 {"scan_band_masked_samples", "samples"},
@@ -5457,6 +5660,19 @@ void Beammap::output() {
                 {"map_rms", "standard deviation of positive-weight detector map pixels, excluding fitted source core when possible"},
                 {"map_sig2noise", "fitted amplitude divided by support-only detector map rms"},
                 {"n_weight_pos", "number of detector-map pixels with positive weight"},
+                {"fruitloops_source_x_t", "source-support x center used by adaptive fruit loops feedback"},
+                {"fruitloops_source_y_t", "source-support y center used by adaptive fruit loops feedback"},
+                {"fruitloops_local_sigma", "local annulus robust sigma used by adaptive fruit loops feedback"},
+                {"fruitloops_local_sigma_npix", "number of local-annulus pixels used for fruit loops local sigma"},
+                {"fruitloops_amp_ref", "amplitude reference used by adaptive fruit loops feedback"},
+                {"fruitloops_peak_threshold", "peak-fraction threshold component for adaptive fruit loops feedback"},
+                {"fruitloops_snr_threshold", "local-S/N threshold component for adaptive fruit loops feedback"},
+                {"fruitloops_adaptive_threshold", "final adaptive threshold used for fruit loops map feedback"},
+                {"fruitloops_support_radius_arcsec", "radial source-support limit used by adaptive fruit loops feedback"},
+                {"fruitloops_support_npix", "number of final-map positive-weight pixels passing adaptive fruit loops threshold and support cuts"},
+                {"fruitloops_support_signal_sum", "sum of final-map signal over pixels passing adaptive fruit loops threshold and support cuts"},
+                {"fruitloops_support_x_span_arcsec", "x span of final-map pixels passing adaptive fruit loops threshold and support cuts"},
+                {"fruitloops_support_y_span_arcsec", "y span of final-map pixels passing adaptive fruit loops threshold and support cuts"},
                 {"rfi_masked_samples", "number of timestream samples masked by beammap rfi_mask"},
                 {"rfi_masked_scans", "number of scans with at least one sample masked by beammap rfi_mask"},
                 {"scan_band_masked_samples", "number of timestream samples masked by beammap scan_band_mask"},
