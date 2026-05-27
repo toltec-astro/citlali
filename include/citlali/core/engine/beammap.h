@@ -2412,24 +2412,22 @@ void Beammap::configure_ptc_source_mask_from_previous_fit() {
         return;
     }
 
-    if (ptcproc.run_fruit_loops &&
+    const bool have_existing_fruit_centers =
+        ptcproc.run_fruit_loops &&
         ptcproc.fruit_loops_source_valid.size() == n_maps &&
-        (ptcproc.fruit_loops_source_valid.array() != 0).any()) {
-        logger->info(
-            "beammap source-aware PTC masking using existing fruit-loops source centers "
-            "for {}/{} detector maps on iter {} (mask_radius={} arcsec)",
-            (ptcproc.fruit_loops_source_valid.array() != 0).count(),
-            n_maps,
-            current_iter,
-            ptcproc.mask_radius_arcsec);
-        return;
-    }
-
-    ptcproc.fruit_loops_source_lat.resize(0);
-    ptcproc.fruit_loops_source_lon.resize(0);
-    ptcproc.fruit_loops_source_valid.resize(0);
+        (ptcproc.fruit_loops_source_valid.array() != 0).any();
 
     if (current_iter <= 0) {
+        if (have_existing_fruit_centers) {
+            logger->info(
+                "beammap source-aware PTC masking using existing fruit-loops source centers "
+                "for iter {} before any beammap fits (mask_radius={} arcsec)",
+                current_iter, ptcproc.mask_radius_arcsec);
+            return;
+        }
+        ptcproc.fruit_loops_source_lat.resize(0);
+        ptcproc.fruit_loops_source_lon.resize(0);
+        ptcproc.fruit_loops_source_valid.resize(0);
         logger->info(
             "beammap source-aware PTC masking inactive on iter {}: no previous fits yet (mask_radius={} arcsec)",
             current_iter, ptcproc.mask_radius_arcsec);
@@ -2437,10 +2435,21 @@ void Beammap::configure_ptc_source_mask_from_previous_fit() {
     }
 
     if (p0.rows() != n_maps || p0.cols() < 3 || good_fits.size() != n_maps) {
-        logger->warn(
-            "beammap source-aware PTC masking skipped on iter {}: previous-fit state is incomplete "
-            "(p0={}x{}, good_fits={})",
-            current_iter, p0.rows(), p0.cols(), good_fits.size());
+        if (have_existing_fruit_centers) {
+            logger->warn(
+                "beammap source-aware PTC masking kept existing fruit-loops source centers "
+                "on iter {} because previous-fit state is incomplete (p0={}x{}, good_fits={})",
+                current_iter, p0.rows(), p0.cols(), good_fits.size());
+        }
+        else {
+            ptcproc.fruit_loops_source_lat.resize(0);
+            ptcproc.fruit_loops_source_lon.resize(0);
+            ptcproc.fruit_loops_source_valid.resize(0);
+            logger->warn(
+                "beammap source-aware PTC masking skipped on iter {}: previous-fit state is incomplete "
+                "(p0={}x{}, good_fits={})",
+                current_iter, p0.rows(), p0.cols(), good_fits.size());
+        }
         return;
     }
 

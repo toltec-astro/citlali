@@ -321,10 +321,13 @@ public:
     double fruit_loops_local_sigma_outer_fwhm = 4.0;
     double fruit_loops_local_sigma_edge_guard_arcsec = 5.0;
     int fruit_loops_local_sigma_min_pixels = 50;
+    double fruit_loops_adaptive_support_radius_arcsec = 12.0;
+    double fruit_loops_adaptive_support_radius_fwhm = 1.5;
     Eigen::VectorXd fruit_loops_local_sigma_map;
     Eigen::VectorXi fruit_loops_local_sigma_npix;
     Eigen::VectorXd fruit_loops_amp_ref;
     Eigen::VectorXd fruit_loops_adaptive_threshold;
+    Eigen::VectorXd fruit_loops_adaptive_support_radius_rad;
     // preserve a central map region from coverage-cut masking when loading
     // fruit loops templates
     double fruit_loops_center_keep_radius_arcsec = 0.0;
@@ -1159,6 +1162,7 @@ void TCProc::configure_fruit_loops_adaptive_gate(mb_t &mb, calib_t &calib,
         fruit_loops_local_sigma_npix.resize(0);
         fruit_loops_amp_ref.resize(0);
         fruit_loops_adaptive_threshold.resize(0);
+        fruit_loops_adaptive_support_radius_rad.resize(0);
         return;
     }
 
@@ -1167,6 +1171,7 @@ void TCProc::configure_fruit_loops_adaptive_gate(mb_t &mb, calib_t &calib,
     fruit_loops_local_sigma_npix = Eigen::VectorXi::Zero(n_maps);
     fruit_loops_amp_ref = Eigen::VectorXd::Constant(n_maps, fill);
     fruit_loops_adaptive_threshold = Eigen::VectorXd::Constant(n_maps, fill);
+    fruit_loops_adaptive_support_radius_rad = Eigen::VectorXd::Constant(n_maps, fill);
 
     const double pix_arcsec = mb.pixel_size_rad * RAD_TO_ASEC;
     if (!std::isfinite(pix_arcsec) || pix_arcsec <= 0.0 ||
@@ -1409,16 +1414,31 @@ void TCProc::configure_fruit_loops_adaptive_gate(mb_t &mb, calib_t &calib,
             fruit_loops_adaptive_threshold(i) = threshold;
             n_valid_thresholds++;
         }
+
+        double support_radius_arcsec = fruit_loops_adaptive_support_radius_arcsec;
+        if (fruit_loops_adaptive_support_radius_fwhm > 0.0 &&
+            std::isfinite(fwhm_arcsec) && fwhm_arcsec > 0.0) {
+            support_radius_arcsec = std::max(
+                support_radius_arcsec,
+                fruit_loops_adaptive_support_radius_fwhm * fwhm_arcsec);
+        }
+        if (std::isfinite(support_radius_arcsec) && support_radius_arcsec > 0.0) {
+            fruit_loops_adaptive_support_radius_rad(i) =
+                support_radius_arcsec * ASEC_TO_RAD;
+        }
     }
 
     logger->info("fruit loops adaptive gate: peak_fraction={} local_snr_floor={} "
                  "local_sigma_annulus=[{}={}, {}={}] arcsec edge_guard={} arcsec "
+                 "support_radius_min={} arcsec support_radius_fwhm={} "
                  "valid_thresholds={}/{} valid_sigma={} valid_amp={}",
                  fruit_loops_peak_fraction_limit, fruit_loops_local_snr_floor,
                  "inner", fruit_loops_local_sigma_inner_radius_arcsec,
                  "outer", fruit_loops_local_sigma_outer_radius_arcsec,
-                 fruit_loops_local_sigma_edge_guard_arcsec, n_valid_thresholds, n_maps,
-                 n_valid_sigma, n_valid_amp);
+                 fruit_loops_local_sigma_edge_guard_arcsec,
+                 fruit_loops_adaptive_support_radius_arcsec,
+                 fruit_loops_adaptive_support_radius_fwhm,
+                 n_valid_thresholds, n_maps, n_valid_sigma, n_valid_amp);
 }
 
 inline double TCProc::fruit_loops_jinc_func(double r, double a, double b, double c,
@@ -1753,6 +1773,33 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
             std::exit(EXIT_FAILURE);
         }
 
+        double adaptive_support_radius_rad = std::numeric_limits<double>::quiet_NaN();
+        bool use_adaptive_support = false;
+        bool have_adaptive_support_center = false;
+        double adaptive_support_lat = 0.0;
+        double adaptive_support_lon = 0.0;
+        if (fruit_loops_adaptive_support_radius_rad.size() ==
+                static_cast<Eigen::Index>(mb.signal.size()) &&
+            map_index < fruit_loops_adaptive_support_radius_rad.size()) {
+            adaptive_support_radius_rad =
+                fruit_loops_adaptive_support_radius_rad(map_index);
+            use_adaptive_support =
+                std::isfinite(adaptive_support_radius_rad) &&
+                adaptive_support_radius_rad > 0.0;
+        }
+        if (use_adaptive_support &&
+            fruit_loops_source_valid.size() == static_cast<Eigen::Index>(mb.signal.size()) &&
+            map_index < fruit_loops_source_valid.size() &&
+            fruit_loops_source_valid(map_index) != 0 &&
+            map_index < fruit_loops_source_lat.size() &&
+            map_index < fruit_loops_source_lon.size()) {
+            adaptive_support_lat = fruit_loops_source_lat(map_index);
+            adaptive_support_lon = fruit_loops_source_lon(map_index);
+            have_adaptive_support_center =
+                std::isfinite(adaptive_support_lat) &&
+                std::isfinite(adaptive_support_lon);
+        }
+
         // check if detector is not flagged
         if (calib.apt["flag"](i) == 0 && (in.flags.data.col(i).array() == 0).any()) {
             double az_off = calib.apt["x_t"](i);
@@ -1874,20 +1921,37 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                     }
 
                     const bool have_s2n = have_rms && std::abs(fruit_loops_sig2noise) > 0.0;
+                    bool run_adaptive_support = true;
+                    if (use_adaptive_support) {
+                        run_adaptive_support = false;
+                        if (have_adaptive_support_center) {
+                            const double dlat = lat(j) - adaptive_support_lat;
+                            const double dlon = lon(j) - adaptive_support_lon;
+                            run_adaptive_support =
+                                std::sqrt(dlat * dlat + dlon * dlon) <=
+                                adaptive_support_radius_rad;
+                        }
+                    }
                     if (fruit_mode == "upper") {
                         run_pix_s2n = have_s2n && (signal / rms >= fruit_loops_sig2noise);
                         run_pix_flux = have_flux && (signal >= flux_limit);
-                        run_pix_adaptive = have_adaptive && (signal >= adaptive_limit);
+                        run_pix_adaptive =
+                            have_adaptive && run_adaptive_support &&
+                            (signal >= adaptive_limit);
                     }
                     else if (fruit_mode == "lower") {
                         run_pix_s2n = have_s2n && (signal / rms <= fruit_loops_sig2noise);
                         run_pix_flux = have_flux && (signal <= flux_limit);
-                        run_pix_adaptive = have_adaptive && (signal <= -std::abs(adaptive_limit));
+                        run_pix_adaptive =
+                            have_adaptive && run_adaptive_support &&
+                            (signal <= -std::abs(adaptive_limit));
                     }
                     else if (fruit_mode == "both") {
                         run_pix_s2n = have_s2n && (std::abs(signal / rms) >= std::abs(fruit_loops_sig2noise));
                         run_pix_flux = have_flux && (std::abs(signal) >= std::abs(flux_limit));
-                        run_pix_adaptive = have_adaptive && (std::abs(signal) >= adaptive_limit);
+                        run_pix_adaptive =
+                            have_adaptive && run_adaptive_support &&
+                            (std::abs(signal) >= adaptive_limit);
                     }
 
                     // if signal flux is higher than S/N limit or flux limit

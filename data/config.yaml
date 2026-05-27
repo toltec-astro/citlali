@@ -441,6 +441,8 @@ timestream: # timestream reduction parameters
     local_sigma_outer_fwhm: 4.0 # outer annulus radius is at least this many fitted FWHM
     local_sigma_edge_guard_arcsec: 5.0 # exclude pixels this close to the map edge when estimating local sigma
     local_sigma_min_pixels: 50 # minimum annulus pixels required for a local sigma estimate
+    adaptive_support_radius_arcsec: 12.0 # adaptive threshold only applies within at least this radius of the fitted/source center (0 disables)
+    adaptive_support_radius_fwhm: 1.5 # adaptive support radius is also at least this many fitted FWHM (0 disables)
     mode: upper # how to decide on pixel to include with upper: pix >= limit, lower: pix <= limit, and both: abs(pix) >= abs(limit)
     center_keep_radius_arcsec: 0.0 # exempt the central map region from coverage_cut masking when loading fruit-loops templates
     interp_mode_override: auto # auto|nearest|bilinear|jinc|trunc ; trunc reproduces legacy integer-cast map sampling

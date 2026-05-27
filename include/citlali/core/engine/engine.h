@@ -2478,6 +2478,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_OUTER", ptcproc.fruit_loops_local_sigma_outer_radius_arcsec);
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_EDGE", ptcproc.fruit_loops_local_sigma_edge_guard_arcsec);
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_MINPIX", ptcproc.fruit_loops_local_sigma_min_pixels);
+        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.ADAPT_SUPPORT_RAD", ptcproc.fruit_loops_adaptive_support_radius_arcsec);
+        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.ADAPT_SUPPORT_FWHM", ptcproc.fruit_loops_adaptive_support_radius_fwhm);
         for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
             double flux_limit = 0.0;
             if (ptcproc.run_fruit_loops) {
@@ -4543,6 +4545,12 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.LOCALSIG_MINPIX",
                                         ptcproc.fruit_loops_local_sigma_min_pixels,
                                         "Fruit loops local sigma minimum pixels");
+    add_double_key("CONFIG.FRUITLOOPS.ADAPT_SUPPORT_RAD",
+                   ptcproc.fruit_loops_adaptive_support_radius_arcsec,
+                   "Fruit loops adaptive support radius");
+    add_double_key("CONFIG.FRUITLOOPS.ADAPT_SUPPORT_FWHM",
+                   ptcproc.fruit_loops_adaptive_support_radius_fwhm,
+                   "Fruit loops adaptive support FWHM factor");
     {
         double flux_limit = 0.0;
         if (ptcproc.run_fruit_loops) {
@@ -5694,6 +5702,8 @@ void Engine::create_ptcdiag_file() {
     add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_OUTER", ptcproc.fruit_loops_local_sigma_outer_radius_arcsec);
     add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_EDGE", ptcproc.fruit_loops_local_sigma_edge_guard_arcsec);
     add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_MINPIX", ptcproc.fruit_loops_local_sigma_min_pixels);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.ADAPT_SUPPORT_RAD", ptcproc.fruit_loops_adaptive_support_radius_arcsec);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.ADAPT_SUPPORT_FWHM", ptcproc.fruit_loops_adaptive_support_radius_fwhm);
 
     auto add_det_double = [&](const std::string &name, const std::string &comment) {
         netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, det_dims);

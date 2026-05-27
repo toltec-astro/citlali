@@ -641,6 +641,12 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         read_optional_int(fruit_loops_local_sigma_min_pixels,
                           std::tuple{"timestream","fruit_loops","local_sigma_min_pixels"},
                           50, {1});
+        read_optional_double(fruit_loops_adaptive_support_radius_arcsec,
+                             std::tuple{"timestream","fruit_loops","adaptive_support_radius_arcsec"},
+                             12.0, {0.0});
+        read_optional_double(fruit_loops_adaptive_support_radius_fwhm,
+                             std::tuple{"timestream","fruit_loops","adaptive_support_radius_fwhm"},
+                             1.5, {0.0});
 
         if (config.template has_typed<double>(std::tuple{"timestream","fruit_loops","center_keep_radius_arcsec"})) {
             get_config_value(config, fruit_loops_center_keep_radius_arcsec, missing_keys, invalid_keys,
