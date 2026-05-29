@@ -5091,14 +5091,17 @@ void Beammap::process_apt() {
                 return std::find(set.begin(), set.end(), nw) != set.end();
             };
 
+            using IndexVector = Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1>;
             auto gather_from_nws = [&](const std::vector<Eigen::Index> &ref_nws,
                                        Eigen::VectorXd &x_t, Eigen::VectorXd &y_t,
-                                       Eigen::VectorXd &det_indices) -> bool {
+                                       IndexVector &det_indices) -> bool {
                 Eigen::Index n_match = 0;
                 for (Eigen::Index i = 0; i < calib.n_dets; ++i) {
                     if (calib.apt["flag"](i) == 0) {
                         auto nw = static_cast<Eigen::Index>(calib.apt["nw"](i));
-                        if (nw_in_set(nw, ref_nws)) {
+                        const double x = calib.apt["x_t"](i);
+                        const double y = calib.apt["y_t"](i);
+                        if (nw_in_set(nw, ref_nws) && std::isfinite(x) && std::isfinite(y)) {
                             n_match++;
                         }
                     }
@@ -5114,9 +5117,11 @@ void Beammap::process_apt() {
                 for (Eigen::Index i = 0; i < calib.n_dets; ++i) {
                     if (calib.apt["flag"](i) == 0) {
                         auto nw = static_cast<Eigen::Index>(calib.apt["nw"](i));
-                        if (nw_in_set(nw, ref_nws)) {
-                            x_t(k) = calib.apt["x_t"](i);
-                            y_t(k) = calib.apt["y_t"](i);
+                        const double x = calib.apt["x_t"](i);
+                        const double y = calib.apt["y_t"](i);
+                        if (nw_in_set(nw, ref_nws) && std::isfinite(x) && std::isfinite(y)) {
+                            x_t(k) = x;
+                            y_t(k) = y;
                             det_indices(k) = i;
                             k++;
                         }
@@ -5125,7 +5130,8 @@ void Beammap::process_apt() {
                 return true;
             };
 
-            Eigen::VectorXd x_t, y_t, det_indices, dist;
+            Eigen::VectorXd x_t, y_t, dist;
+            IndexVector det_indices;
             double med_x_t = 0.0;
             double med_y_t = 0.0;
 
@@ -5144,16 +5150,25 @@ void Beammap::process_apt() {
 
             if (!have_ref) {
                 logger->warn("no robust reference from nw=3 or nw=2,3,4; using all unflagged detectors");
-                Eigen::Index n_unflagged = (calib.apt["flag"].array() == 0).count();
+                Eigen::Index n_unflagged = 0;
+                for (Eigen::Index i = 0; i < calib.n_dets; ++i) {
+                    if (calib.apt["flag"](i) == 0 &&
+                        std::isfinite(calib.apt["x_t"](i)) &&
+                        std::isfinite(calib.apt["y_t"](i))) {
+                        n_unflagged++;
+                    }
+                }
                 if (n_unflagged > 0) {
                     x_t.resize(n_unflagged);
                     y_t.resize(n_unflagged);
                     det_indices.resize(n_unflagged);
                     Eigen::Index k = 0;
                     for (Eigen::Index i = 0; i < calib.n_dets; ++i) {
-                        if (calib.apt["flag"](i) == 0) {
-                            x_t(k) = calib.apt["x_t"](i);
-                            y_t(k) = calib.apt["y_t"](i);
+                        const double x = calib.apt["x_t"](i);
+                        const double y = calib.apt["y_t"](i);
+                        if (calib.apt["flag"](i) == 0 && std::isfinite(x) && std::isfinite(y)) {
+                            x_t(k) = x;
+                            y_t(k) = y;
                             det_indices(k) = i;
                             k++;
                         }
@@ -5165,16 +5180,31 @@ void Beammap::process_apt() {
             if (!have_ref) {
                 logger->warn("all detectors are flagged; disabling reference subtraction");
             } else {
+                logger->info("beammap reference candidate count: {}", x_t.size());
                 med_x_t = tula::alg::median(x_t);
                 med_y_t = tula::alg::median(y_t);
 
-                dist = pow(x_t.array() - med_x_t,2) + pow(y_t.array() - med_y_t,2);
-                dist.minCoeff(&beammap_reference_det_found);
-                beammap_reference_det_found = static_cast<Eigen::Index>(det_indices(beammap_reference_det_found));
+                if (!std::isfinite(med_x_t) || !std::isfinite(med_y_t)) {
+                    logger->warn("beammap reference median is non-finite ({},{}); disabling reference subtraction",
+                                 med_x_t, med_y_t);
+                    beammap_reference_det_found = -99;
+                } else {
+                    dist = (x_t.array() - med_x_t).square().matrix() +
+                           (y_t.array() - med_y_t).square().matrix();
+                    Eigen::Index nearest_candidate = -1;
+                    dist.minCoeff(&nearest_candidate);
+                    if (nearest_candidate >= 0 && nearest_candidate < det_indices.size()) {
+                        beammap_reference_det_found = det_indices(nearest_candidate);
 
-                // set reference x_t and y_t to the median location
-                ref_det_x_t = med_x_t;
-                ref_det_y_t = med_y_t;
+                        // set reference x_t and y_t to the median location
+                        ref_det_x_t = med_x_t;
+                        ref_det_y_t = med_y_t;
+                    } else {
+                        logger->warn("beammap reference nearest candidate index {} is invalid; disabling reference subtraction",
+                                     nearest_candidate);
+                        beammap_reference_det_found = -99;
+                    }
+                }
             }
         }
         if (beammap_reference_det_found >= 0 && beammap_reference_det_found < calib.n_dets) {
