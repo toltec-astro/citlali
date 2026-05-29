@@ -3499,17 +3499,27 @@ void Beammap::run_loop() {
             pointing_offsets["az"] = make_sampled_offset("az");
             pointing_offsets["alt"] = make_sampled_offset("alt");
 
-            auto scan_distances_for_detector = [&](double x_arcsec, double y_arcsec,
+            auto scan_distances_for_detector = [&](Eigen::Index det, double source_x_arcsec,
+                                                   double source_y_arcsec,
                                                    std::vector<double> &distances_arcsec) {
                 Eigen::Index best_scan = (n_scans - 1) / 2;
                 distances_arcsec.assign(static_cast<std::size_t>(n_scans),
                                         std::numeric_limits<double>::quiet_NaN());
-                if (!std::isfinite(x_arcsec) || !std::isfinite(y_arcsec)) {
+                if (!std::isfinite(source_x_arcsec) || !std::isfinite(source_y_arcsec) ||
+                    det < 0 || det >= calib.n_dets ||
+                    det >= calib.apt["x_t"].size() || det >= calib.apt["y_t"].size() ||
+                    !std::isfinite(calib.apt["x_t"](det)) ||
+                    !std::isfinite(calib.apt["y_t"](det))) {
                     return best_scan;
                 }
                 double best_d2 = std::numeric_limits<double>::infinity();
+                const double source_x_rad = source_x_arcsec * ASEC_TO_RAD;
+                const double source_y_rad = source_y_arcsec * ASEC_TO_RAD;
+                // Use the detector pointing that built the map, then find where
+                // that pointing passes closest to the fitted source location.
                 auto [lat, lon] = engine_utils::calc_det_pointing(
-                    sampled_tel_data, x_arcsec, y_arcsec, telescope.pixel_axes,
+                    sampled_tel_data, calib.apt["x_t"](det), calib.apt["y_t"](det),
+                    telescope.pixel_axes,
                     pointing_offsets, map_grouping, true);
 
                 std::vector<double> best_d2_by_scan(static_cast<std::size_t>(n_scans),
@@ -3518,8 +3528,8 @@ void Beammap::run_loop() {
                     if (sample_i >= lat.size() || sample_i >= lon.size()) {
                         continue;
                     }
-                    const double y = lat(sample_i);
-                    const double x = lon(sample_i);
+                    const double y = lat(sample_i) - source_y_rad;
+                    const double x = lon(sample_i) - source_x_rad;
                     if (!std::isfinite(x) || !std::isfinite(y)) {
                         continue;
                     }
@@ -3612,7 +3622,7 @@ void Beammap::run_loop() {
                 }
                 std::vector<double> distances_arcsec;
                 const Eigen::Index center_scan = scan_distances_for_detector(
-                    x_arcsec, y_arcsec, distances_arcsec);
+                    det, x_arcsec, y_arcsec, distances_arcsec);
                 det_center_scan_index[static_cast<std::size_t>(det)] = static_cast<int>(center_scan + 1);
                 center_scan_counts[center_scan]++;
                 if (center_scan >= 0 && center_scan < n_scans &&
