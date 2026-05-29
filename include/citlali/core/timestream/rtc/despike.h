@@ -1061,11 +1061,6 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
     for (Eigen::Index det = 0; det < n_dets; det++) {
         if (apt["flag"](det + start_det)==0) {
             if (spike_free(det)) {
-                // keep original flag structure (do not morph regions)
-                // and the first and last samples
-                flags(0, det) = flags(1, det);
-                flags(n_pts - 1, det) = flags(n_pts - 2, det);
-
                 // find the start and end index for each flagged region
                 std::vector<int> si_flags_vec;
                 std::vector<int> ei_flags_vec;
@@ -1109,6 +1104,20 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     //but use flat level if flagged at endpoints
                     Eigen::Index n_flags = ei_flags(j) - si_flags(j) + 1;
                     Eigen::VectorXd lin_offset(n_flags);
+                    double fallback_level = 0.0;
+                    for (Eigen::Index sample = 0; sample < n_pts; ++sample) {
+                        if (std::isfinite(scans_ref(sample, det))) {
+                            fallback_level = scans_ref(sample, det);
+                            break;
+                        }
+                    }
+                    auto sanitize_fill = [&](Eigen::VectorXd &v) {
+                        for (Eigen::Index sample = 0; sample < v.size(); ++sample) {
+                            if (!std::isfinite(v(sample))) {
+                                v(sample) = fallback_level;
+                            }
+                        }
+                    };
 
                     if (si_flags(j) == 0 && ei_flags(j) == n_pts - 1) {
                         lin_offset.setConstant(scans_ref(0, det));
@@ -1139,23 +1148,45 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     logger->trace("xx {}", xx);
                     logger->trace("yy {}", yy);
                     logger->trace("lin_offset {}", lin_offset);
+                    sanitize_fill(lin_offset);
 
                     // all non-flagged detectors repeat for all detectors without spikes
                     // count up spike-free detectors and store their values
-                    int det_count = 0;
-                    if (use_all_det) {
-                        det_count = (apt["flag"].segment(start_det,n_dets).array()==0).count();
-                    }
-                    else {
-                        for (Eigen::Index ii=0;ii<n_dets;ii++) {
-                            if (!spike_free(ii) && apt["flag"](ii + start_det)==0) {
-                                det_count++;
+                    std::vector<Eigen::Index> donor_dets;
+                    std::vector<double> donor_responsivities;
+                    donor_dets.reserve(static_cast<std::size_t>(n_dets));
+                    donor_responsivities.reserve(static_cast<std::size_t>(n_dets));
+                    for (Eigen::Index ii=0; ii<n_dets; ii++) {
+                        if (ii == det || apt["flag"](ii + start_det)!=0) {
+                            continue;
+                        }
+                        if (!use_all_det && spike_free(ii)) {
+                            continue;
+                        }
+                        const double responsivity = apt["responsivity"](ii + start_det);
+                        if (!std::isfinite(responsivity) || std::abs(responsivity) <= 1.e-12) {
+                            continue;
+                        }
+                        bool finite_region = true;
+                        for (Eigen::Index sample = 0; sample < n_flags; ++sample) {
+                            const auto sample_index = si_flags(j) + sample;
+                            if (flags(sample_index, ii) ||
+                                !std::isfinite(scans_ref(sample_index, ii))) {
+                                finite_region = false;
+                                break;
                             }
                         }
+                        if (finite_region) {
+                            donor_dets.push_back(ii);
+                            donor_responsivities.push_back(responsivity);
+                        }
                     }
+                    const int det_count = static_cast<int>(donor_dets.size());
 
                     logger->trace("det_count {}", det_count);
                     if (det_count == 0) {
+                        scans.col(det).segment(si_flags(j), n_flags) = lin_offset;
+                        flags.col(det).segment(si_flags(j), n_flags).setOnes();
                         continue;
                     }
 
@@ -1164,14 +1195,11 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     Eigen::VectorXd res(det_count);
 
                     logger->trace("si {}", si_flags);
-                    int c = 0;
-                    for (Eigen::Index ii = 0; ii < n_dets; ii++) {
-                        if ((use_all_det || !spike_free(ii)) && apt["flag"](ii + start_det)==0) {
-                            detm.col(c) =
-                                scans_ref.block(si_flags(j), ii, n_flags, 1);
-                            res(c) = apt["responsivity"](ii + start_det);
-                            c++;
-                        }
+                    for (Eigen::Index c = 0; c < det_count; ++c) {
+                        const Eigen::Index ii = donor_dets[static_cast<std::size_t>(c)];
+                        detm.col(c) =
+                            scans_ref.block(si_flags(j), ii, n_flags, 1);
+                        res(c) = donor_responsivities[static_cast<std::size_t>(c)];
                     }
 
                     detm.transposeInPlace();
@@ -1276,6 +1304,11 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
                     Eigen::VectorXd fake =
                         (sky_model.array() + error.array()) * apt["responsivity"](det + start_det) +
                         lin_offset.array();
+                    for (Eigen::Index sample = 0; sample < fake.size(); ++sample) {
+                        if (!std::isfinite(fake(sample))) {
+                            fake(sample) = lin_offset(sample);
+                        }
+                    }
 
                     logger->trace("fake {}", fake);
 

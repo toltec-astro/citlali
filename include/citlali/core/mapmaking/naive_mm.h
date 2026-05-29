@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 #include <thread>
 #include <mutex>
 
@@ -247,7 +248,11 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
             // loop through the samples
             for (Eigen::Index j=0; j<n_pts; ++j) {
                 // check if sample is flagged, ignore if so
-                if (!in.flags.data(j,i)) {
+                if (!in.flags.data(j,i) &&
+                    std::isfinite(in.scans.data(j,i)) &&
+                    i < in.weights.data.size() &&
+                    std::isfinite(in.weights.data(i)) &&
+                    in.weights.data(i) > 0.0) {
                     Eigen::Index omb_ir = static_cast<Eigen::Index>(std::llround(omb_irow(j)));
                     Eigen::Index omb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
 
@@ -562,7 +567,11 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
             // loop through the samples
             for (Eigen::Index j=0; j<n_pts; ++j) {
                 // check if sample is flagged, ignore if so
-                if (!in.flags.data(j,i)) {
+                if (!in.flags.data(j,i) &&
+                    std::isfinite(in.scans.data(j,i)) &&
+                    i < in.weights.data.size() &&
+                    std::isfinite(in.weights.data(i)) &&
+                    in.weights.data(i) > 0.0) {
                     Eigen::Index omb_ir = static_cast<Eigen::Index>(std::llround(omb_irow(j)));
                     Eigen::Index omb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
 

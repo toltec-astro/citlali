@@ -259,6 +259,7 @@ public:
         Eigen::Index nw = -1;
         Eigen::Index n_det_input = 0;
         Eigen::Index n_det_used = 0;
+        Eigen::Index impulsive_n_det_used = 0;
         int line_audit_n_det_used = 0;
         double line_audit_shared_freq_hz = std::numeric_limits<double>::quiet_NaN();
         int line_audit_shared_detector_count = 0;
@@ -1530,11 +1531,11 @@ void RTCProc::apply_filter_edge_guard(tc_t &in,
                                       Eigen::Index start_sample,
                                       Eigen::Index n_samples,
                                       Eigen::Index guard_samples_override) {
-    in.status.filter_edge_guarded = false;
-    in.status.filter_edge_guard_pre_samples = 0;
-    in.status.filter_edge_guard_post_samples = 0;
-    in.status.filter_edge_guard_flagged_samples = 0;
-    in.status.filter_edge_guard_flagged_frac = std::numeric_limits<double>::quiet_NaN();
+    const bool prev_guarded = in.status.filter_edge_guarded;
+    const int prev_pre_samples = in.status.filter_edge_guard_pre_samples;
+    const int prev_post_samples = in.status.filter_edge_guard_post_samples;
+    const int prev_flagged_samples = in.status.filter_edge_guard_flagged_samples;
+    const double prev_flagged_frac = in.status.filter_edge_guard_flagged_frac;
 
     const Eigen::Index guard_samples =
         guard_samples_override >= 0 ? guard_samples_override : filter_edge_guard.guard_samples;
@@ -1564,12 +1565,17 @@ void RTCProc::apply_filter_edge_guard(tc_t &in,
     }
 
     const Eigen::Index guarded_rows = pre + post;
-    in.status.filter_edge_guarded = guarded_rows > 0;
-    in.status.filter_edge_guard_pre_samples = static_cast<int>(pre);
-    in.status.filter_edge_guard_post_samples = static_cast<int>(post);
-    in.status.filter_edge_guard_flagged_samples = static_cast<int>(guarded_rows * in.flags.data.cols());
-    in.status.filter_edge_guard_flagged_frac =
+    in.status.filter_edge_guarded = prev_guarded || guarded_rows > 0;
+    in.status.filter_edge_guard_pre_samples =
+        std::max(prev_pre_samples, static_cast<int>(pre));
+    in.status.filter_edge_guard_post_samples =
+        std::max(prev_post_samples, static_cast<int>(post));
+    in.status.filter_edge_guard_flagged_samples =
+        std::max(prev_flagged_samples, static_cast<int>(guarded_rows * in.flags.data.cols()));
+    const double flagged_frac =
         static_cast<double>(guarded_rows) / static_cast<double>(n_samples);
+    in.status.filter_edge_guard_flagged_frac =
+        std::isfinite(prev_flagged_frac) ? std::max(prev_flagged_frac, flagged_frac) : flagged_frac;
 }
 
 inline double RTCProc::rtc_line_audit_fixed_notch_width_hz(const RTCLineAuditOptions &audit,
@@ -2823,11 +2829,27 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
                 total_power += 0.5 * (good_psd[k] + good_psd[k - 1]) * df;
             }
             double line_power = 0.0;
-            for (std::size_t k = j0 + 1; k <= j1; ++k) {
-                const double df = good_freq[k] - good_freq[k - 1];
-                const double local0 = std::max(good_psd[k - 1] - continuum[std::min<std::size_t>(k - 1, continuum.size() - 1)], 0.0);
-                const double local1 = std::max(good_psd[k] - continuum[std::min<std::size_t>(k, continuum.size() - 1)], 0.0);
-                line_power += 0.5 * (local0 + local1) * df;
+            auto continuum_at = [&](std::size_t k) {
+                double base = continuum[std::min<std::size_t>(k, continuum.size() - 1)];
+                if (!std::isfinite(base) || base <= 0.0) {
+                    base = continuum_fallback;
+                }
+                return base;
+            };
+            if (j0 == j1) {
+                const double df_left = (i > 0) ? (good_freq[i] - good_freq[i - 1]) : min_bin_width;
+                const double df_right =
+                    (i + 1 < good_freq.size()) ? (good_freq[i + 1] - good_freq[i]) : min_bin_width;
+                const double df = std::max(0.5 * (df_left + df_right), min_bin_width);
+                line_power = std::max(good_psd[i] - continuum_at(i), 0.0) * df;
+            }
+            else {
+                for (std::size_t k = j0 + 1; k <= j1; ++k) {
+                    const double df = good_freq[k] - good_freq[k - 1];
+                    const double local0 = std::max(good_psd[k - 1] - continuum_at(k - 1), 0.0);
+                    const double local1 = std::max(good_psd[k] - continuum_at(k), 0.0);
+                    line_power += 0.5 * (local0 + local1) * df;
+                }
             }
 
             LinePeak peak;
@@ -3040,7 +3062,7 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
         while (i < detector_peaks.size()) {
             std::size_t j = i + 1;
             while (j < detector_peaks.size() &&
-                   std::abs(detector_peaks[j].freq_hz - detector_peaks[j - 1].freq_hz) <= tol_hz) {
+                   std::abs(detector_peaks[j].freq_hz - detector_peaks[i].freq_hz) <= tol_hz) {
                 ++j;
             }
 
@@ -3455,7 +3477,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
     while (i < candidates.size()) {
         std::size_t j = i + 1;
         while (j < candidates.size() &&
-               std::abs(candidates[j].freq_hz - candidates[j - 1].freq_hz) <= cluster_tol_hz) {
+               std::abs(candidates[j].freq_hz - candidates[i].freq_hz) <= cluster_tol_hz) {
             ++j;
         }
 
@@ -4717,7 +4739,6 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     }
 
     std::vector<RTCNetworkDiagSummary> nw_summary;
-    const double min_good_frac = network_step_mask.min_good_frac;
     const double step_score_thresh = network_step_mask.step_score_thresh;
     const double cluster_tol_samples = std::max(
         2.0,
@@ -4737,12 +4758,15 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         row.nw = nw;
         row.n_det_input = end - start;
         row.n_det_used = 0;
+        row.impulsive_n_det_used = 0;
         row.cm_low_mid_ratio = nan;
         row.cm_peak_freq_Hz = nan;
         row.cm_peak_prominence = nan;
 
         Eigen::MatrixXd centered = Eigen::MatrixXd::Zero(n_pts, std::max<Eigen::Index>(end - start, 0));
-        Eigen::Index n_used = 0;
+        Eigen::Index n_step_used = 0;
+        Eigen::Index n_impulsive_used = 0;
+        Eigen::Index n_centered_used = 0;
         std::vector<double> step_scores;
         std::vector<double> step_samples_active;
         std::vector<double> impulsive_scores;
@@ -4763,7 +4787,9 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             }
             const double good_frac = static_cast<double>(n_valid) /
                                      static_cast<double>(std::max<Eigen::Index>(n_pts, 1));
-            if (good_frac < min_good_frac) {
+            const bool use_for_step = good_frac >= network_step_mask.min_good_frac;
+            const bool use_for_impulsive = good_frac >= impulsive_coincidence.min_good_frac;
+            if (!use_for_step && !use_for_impulsive) {
                 continue;
             }
             auto [center, scale] = robust_center_scale(in.scans.data.col(det), valid);
@@ -4772,18 +4798,25 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             }
             for (Eigen::Index i = 0; i < n_pts; ++i) {
                 if (valid(i) && std::isfinite(in.scans.data(i, det))) {
-                    centered(i, n_used) = in.scans.data(i, det) - center;
+                    centered(i, n_centered_used) = in.scans.data(i, det) - center;
                 }
             }
+            ++n_centered_used;
             const auto &det_row = det_summary[static_cast<std::size_t>(det)];
-            if (det_row.step_event.valid()) {
+            if (use_for_step) {
+                ++n_step_used;
+            }
+            if (use_for_step && det_row.step_event.valid()) {
                 step_scores.push_back(det_row.step_event.score);
                 if (det_row.step_event.score >= step_score_thresh &&
                     det_row.step_event.sample != fill_int) {
                     step_samples_active.push_back(static_cast<double>(det_row.step_event.sample));
                 }
             }
-            if (det_row.impulsive_event.valid()) {
+            if (use_for_impulsive) {
+                ++n_impulsive_used;
+            }
+            if (use_for_impulsive && det_row.impulsive_event.valid()) {
                 impulsive_scores.push_back(det_row.impulsive_event.score);
                 if (det_row.impulsive_event.score >= impulsive_coincidence.event_score_thresh &&
                     det_row.impulsive_event.sample != fill_int) {
@@ -4791,10 +4824,10 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                         static_cast<double>(det_row.impulsive_event.sample));
                 }
             }
-            ++n_used;
         }
 
-        row.n_det_used = n_used;
+        row.n_det_used = n_step_used;
+        row.impulsive_n_det_used = n_impulsive_used;
         if (recompute_step_metrics || prev_it == prev_nw_summary.end()) {
             row.median_step_score = nan;
             row.max_step_score = nan;
@@ -4835,7 +4868,7 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             row.impulsive_det_frac = nan;
             row.impulsive_alignment_frac = nan;
             row.dominant_impulsive_sample = fill_int;
-            if (n_used >= impulsive_coincidence.min_det_used && !impulsive_scores.empty()) {
+            if (n_impulsive_used >= impulsive_coincidence.min_det_used && !impulsive_scores.empty()) {
                 row.median_impulsive_score = median_of(impulsive_scores);
                 row.max_impulsive_score = *std::max_element(impulsive_scores.begin(), impulsive_scores.end());
                 const auto n_active = static_cast<double>(impulsive_samples_active.size());
@@ -4848,14 +4881,14 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             }
         }
 
-        if (n_used >= 1 && n_pts >= 16 && std::isfinite(fs_hz) && fs_hz > 0.0) {
-            centered.conservativeResize(Eigen::NoChange, n_used);
+        if (n_centered_used >= 1 && n_pts >= 16 && std::isfinite(fs_hz) && fs_hz > 0.0) {
+            centered.conservativeResize(Eigen::NoChange, n_centered_used);
             Eigen::VectorXd cm(n_pts);
             std::vector<double> scratch;
-            scratch.reserve(static_cast<std::size_t>(n_used));
+            scratch.reserve(static_cast<std::size_t>(n_centered_used));
             for (Eigen::Index i = 0; i < n_pts; ++i) {
                 scratch.clear();
-                for (Eigen::Index j = 0; j < n_used; ++j) {
+                for (Eigen::Index j = 0; j < n_centered_used; ++j) {
                     scratch.push_back(centered(i, j));
                 }
                 cm(i) = median_of(scratch);
@@ -5164,6 +5197,8 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
 
         const auto start_det = std::get<0>(grp_it->second);
         const auto end_det = std::get<1>(grp_it->second);
+        const Eigen::Index impulsive_det_used =
+            row.impulsive_n_det_used > 0 ? row.impulsive_n_det_used : row.n_det_used;
 
         if (have_detector_summary) {
             std::vector<std::pair<Eigen::Index, double>> active_events;
@@ -5183,7 +5218,7 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
                     static_cast<Eigen::Index>(det_row.impulsive_event_sample),
                     det_row.impulsive_event_score);
             }
-            if (row.n_det_used < impulsive_coincidence.min_det_used || active_events.empty()) {
+            if (impulsive_det_used < impulsive_coincidence.min_det_used || active_events.empty()) {
                 continue;
             }
 
@@ -5199,7 +5234,7 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
                 static_cast<Eigen::Index>(active_events.size());
             const double det_frac =
                 static_cast<double>(total_active_count) /
-                static_cast<double>(std::max<Eigen::Index>(row.n_det_used, 1));
+                static_cast<double>(std::max<Eigen::Index>(impulsive_det_used, 1));
             double network_max_score = std::numeric_limits<double>::quiet_NaN();
             for (const auto &event : active_events) {
                 network_max_score = std::isfinite(network_max_score)
@@ -5250,7 +5285,7 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
             continue;
         }
 
-        if (row.n_det_used < impulsive_coincidence.min_det_used ||
+        if (impulsive_det_used < impulsive_coincidence.min_det_used ||
             row.dominant_impulsive_sample == kTransientFillInt ||
             !std::isfinite(row.max_impulsive_score) ||
             row.max_impulsive_score < impulsive_coincidence.event_score_thresh) {
@@ -5287,7 +5322,7 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
         std::size_t j = i;
         while (j + 1 < order.size() &&
                static_cast<double>(candidates[order[j + 1]].center_sample -
-                                   candidates[order[j]].center_sample) <= cluster_tol_samples) {
+                                   candidates[order[i]].center_sample) <= cluster_tol_samples) {
             ++j;
         }
         std::vector<Eigen::Index> cluster_networks;
@@ -5527,10 +5562,8 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         if (calib.apt["duplicate_tone"](det_index) && calib_scan.apt["flag"](det_index)==0) {
             n_nearby_tones++;
             // increment number of nearby tones
-            if (map_grouping!="detector") {
-                in.flags.data.col(i).setOnes();
-            }
-            else {
+            in.flags.data.col(i).setOnes();
+            if (map_grouping=="detector") {
                 calib_scan.apt["flag"](det_index) = 1;
             }
         }
@@ -5797,6 +5830,8 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
                          [](const auto &row) { return static_cast<int>(row.n_det_input); });
             write_nw_int("rtc_network_n_det_used",
                          [](const auto &row) { return static_cast<int>(row.n_det_used); });
+            write_nw_int("rtc_network_impulsive_n_det_used",
+                         [](const auto &row) { return static_cast<int>(row.impulsive_n_det_used); });
             auto legacy_line_audit_diag = [](const auto &row) {
                 RTCLineAuditDiagSummary diag;
                 diag.n_det_used = row.line_audit_n_det_used;

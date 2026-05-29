@@ -2267,9 +2267,11 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                 conversion_factor = 1;
             }
             // make sure flux conversion is not zero (otherwise weight=0)
-            if (conversion_factor*apt["sens"](det_index)!=0) {
+            const double denom = conversion_factor * apt["sens"](det_index);
+            const double weight_scale = std::sqrt(telescope.d_fsmp) * denom;
+            if (std::isfinite(weight_scale) && weight_scale != 0.0) {
                 // calculate weights while applying flux calibration
-                in.weights.data(i) = pow(sqrt(telescope.d_fsmp)*apt["sens"](det_index)*conversion_factor,-2.0);
+                in.weights.data(i) = pow(weight_scale,-2.0);
             }
             else {
                 in.weights.data(i) = 0;
@@ -2333,7 +2335,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                     det_std_dev = engine_utils::calc_std_dev(scans, base_flags);
                 }
                 // if stddev is not zero
-                if (det_std_dev !=0) {
+                if (std::isfinite(det_std_dev) && det_std_dev > 0.0) {
                     // weight = 1/(stddev)^2
                     in.weights.data(i) = pow(det_std_dev,-2);
                 }
@@ -2968,7 +2970,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
                 // count unflagged detectors
                 if (calib.apt["flag"](j)==0) {
                     n_unflagged++;
-                    if (grp_weights(m) > 0) {
+                    if (std::isfinite(grp_weights(m)) && grp_weights(m) > 0) {
                         n_good_dets++;
                     } else {
                         n_nonpositive_unflagged++;
@@ -2988,20 +2990,34 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
                 j = std::get<0>(grp_limits[key]);
                 Eigen::Index k = 0;
                 for (Eigen::Index m=0; m<grp_weights.size(); ++m) {
-                    if (calib.apt["flag"](j)==0 && grp_weights(m)>0) {
+                    if (calib.apt["flag"](j)==0 &&
+                        std::isfinite(grp_weights(m)) && grp_weights(m)>0) {
                         good_wt(k) = grp_weights(m);
                         k++;
                     }
                     j++;
                 }
             }
-            // otherwise just use all detectors
+            // otherwise leave the group without a median; non-finite medians make
+            // the threshold cuts non-deterministic.
             else {
-                good_wt = grp_weights;
+                good_wt.resize(0);
             }
 
+            if (good_wt.size() <= 0) {
+                logger->warn(
+                    "weight audit call={} scan={} array={} skipped: no finite positive unflagged weights",
+                    reset_call_id, scan_index_1based, key);
+                continue;
+            }
             // get median weight
             auto med_wt = tula::alg::median(good_wt);
+            if (!std::isfinite(med_wt) || med_wt <= 0.0) {
+                logger->warn(
+                    "weight audit call={} scan={} array={} skipped: non-finite median weight",
+                    reset_call_id, scan_index_1based, key);
+                continue;
+            }
             const auto lower_limit =
                 lower_weight_factor != 0 ? lower_weight_factor * med_wt : 0.0;
             const auto upper_limit =
@@ -3028,10 +3044,8 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
                 if (calib.apt["flag"](j)==0) {
                     // flag those below limit
                     if ((in.weights.data(j) < (lower_weight_factor*med_wt)) && lower_weight_factor!=0) {
-                        if (map_grouping!="detector") {
-                            in.flags.data.col(j).setOnes();
-                        }
-                        else {
+                        in.flags.data.col(j).setOnes();
+                        if (map_grouping=="detector") {
                             calib_scan.apt["flag"](j) = 1;
                         }
                         in.n_dets_low++;
@@ -3040,10 +3054,8 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
 
                     // flag those above limit
                     if ((in.weights.data(j) > (upper_weight_factor*med_wt)) && upper_weight_factor!=0) {
-                        if (map_grouping!="detector") {
-                            in.flags.data.col(j).setOnes();
-                        }
-                        else {
+                        in.flags.data.col(j).setOnes();
+                        if (map_grouping=="detector") {
                             calib_scan.apt["flag"](j) = 1;
                         }
                         in.n_dets_high++;

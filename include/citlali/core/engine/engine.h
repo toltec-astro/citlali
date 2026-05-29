@@ -3168,7 +3168,9 @@ void Engine::create_tod_files() {
         add_rtc_nw_int("rtc_network_n_det_input",
                        "input detector count in each RTC network block");
         add_rtc_nw_int("rtc_network_n_det_used",
-                       "detectors with >= 80% valid samples and finite robust scale used for RTC diagnostics");
+                       "detectors passing the step-mask valid-sample threshold and finite robust scale");
+        add_rtc_nw_int("rtc_network_impulsive_n_det_used",
+                       "detectors passing the impulsive-coincidence valid-sample threshold and finite robust scale");
         add_rtc_nw_int("rtc_network_line_audit_n_det_used",
                        "detectors analyzed by the pre-filter RTC line audit in each network block");
         add_rtc_nw_double("rtc_network_line_audit_shared_freq_hz",
@@ -6639,7 +6641,9 @@ void Engine::create_rtcdiag_file() {
     add_rtc_nw_int("rtc_network_n_det_input",
                    "input detector count in each RTC network block");
     add_rtc_nw_int("rtc_network_n_det_used",
-                   "detectors with sufficient valid samples and finite robust scale used for RTC diagnostics");
+                   "detectors passing the step-mask valid-sample threshold and finite robust scale");
+    add_rtc_nw_int("rtc_network_impulsive_n_det_used",
+                   "detectors passing the impulsive-coincidence valid-sample threshold and finite robust scale");
     add_rtc_nw_int("rtc_network_line_audit_n_det_used",
                    "detectors analyzed by the pre-filter RTC line audit in each network block");
     add_rtc_nw_double("rtc_network_line_audit_shared_freq_hz",

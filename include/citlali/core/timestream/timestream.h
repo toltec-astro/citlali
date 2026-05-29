@@ -2317,6 +2317,8 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
 
                 Eigen::VectorXd det_std_dev(n_good_dets);
                 Eigen::VectorXI dets(n_good_dets);
+                std::vector<double> finite_inv_vars;
+                finite_inv_vars.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(n_good_dets, 0)));
                 Eigen::Index k = 0;
 
                 // collect standard deviation from good detectors
@@ -2368,8 +2370,9 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                         }
 
                         // convert to 1/variance so it is a weight
-                        if (det_std_dev(k) !=0) {
+                        if (std::isfinite(det_std_dev(k)) && det_std_dev(k) > 0.0) {
                             det_std_dev(k) = std::pow(det_std_dev(k),-2);
+                            finite_inv_vars.push_back(det_std_dev(k));
                         }
                         else {
                             det_std_dev(k) = 0;
@@ -2380,8 +2383,20 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                     }
                 }
 
-                // get median standard deviation
-                double median_std_dev = tula::alg::median(det_std_dev);
+                if (finite_inv_vars.empty()) {
+                    logger->warn("array {} iter {}: skipped inv var cut; no finite positive detector variances", key, n_iter);
+                    break;
+                }
+
+                Eigen::Map<Eigen::VectorXd> finite_inv_var_map(
+                    finite_inv_vars.data(),
+                    static_cast<Eigen::Index>(finite_inv_vars.size()));
+                // get median inverse variance
+                double median_std_dev = tula::alg::median(finite_inv_var_map);
+                if (!std::isfinite(median_std_dev) || median_std_dev <= 0.0) {
+                    logger->warn("array {} iter {}: skipped inv var cut; median inverse variance is {}", key, n_iter, median_std_dev);
+                    break;
+                }
 
                 int n_dets_low = 0;
                 int n_dets_high = 0;

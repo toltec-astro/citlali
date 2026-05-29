@@ -3339,7 +3339,7 @@ void Beammap::run_loop() {
                 if (use_ptc_weights) {
                     logger->info("calculating detector-mode PTC weights for scan {} (mode={})",
                                  ptcs[i].index.data + 1, beammap_detector_weighting_mode);
-                    ptcproc.calc_weights(ptcs[i], calib.apt, telescope);
+                    ptcproc.calc_weights(ptcs[i], calib_scans[i].apt, telescope);
                     calib_scans[i] = ptcproc.reset_weights(ptcs[i], calib_scans[i], map_grouping);
                 }
                 else {
@@ -3351,7 +3351,7 @@ void Beammap::run_loop() {
             else {
                 // calculate weights
                 logger->info("calculating weights for scan {}", ptcs[i].index.data + 1);
-                ptcproc.calc_weights(ptcs[i], calib.apt, telescope);
+                ptcproc.calc_weights(ptcs[i], calib_scans[i].apt, telescope);
 
                 // reset weights to median
                 calib_scans[i] = ptcproc.reset_weights(ptcs[i], calib_scans[i], map_grouping);
@@ -4016,10 +4016,12 @@ void Beammap::run_loop() {
 
                 if (map_grouping == "detector") {
                     bool run_omb = true;
-                    for (auto &ptc : ptcs) {
+                    for (std::size_t scan_vec_idx = 0; scan_vec_idx < ptcs.size(); ++scan_vec_idx) {
+                        auto &ptc = ptcs[scan_vec_idx];
+                        auto &scan_apt = calib_scans[scan_vec_idx].apt;
                         if (map_method == "naive") {
                             naive_mm.populate_maps_naive_parallel(ptc, omb, cmb, ptc.map_indices.data,
-                                                                  telescope.pixel_axes, calib.apt,
+                                                                  telescope.pixel_axes, scan_apt,
                                                                   telescope.d_fsmp, run_omb, run_noise,
                                                                   active_maps_ptr);
                         }
@@ -4063,7 +4065,7 @@ void Beammap::run_loop() {
                                 array_counts[1],
                                 array_counts[2]);
                             jinc_mm.populate_maps_jinc_parallel(ptc, omb, cmb, ptc.map_indices.data,
-                                                                telescope.pixel_axes, calib.apt,
+                                                                telescope.pixel_axes, scan_apt,
                                                                 telescope.d_fsmp, run_omb, run_noise,
                                                                 active_maps_ptr);
                         }
@@ -4077,12 +4079,12 @@ void Beammap::run_loop() {
                         bool run_omb = true;
                         if (map_method == "naive") {
                             naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
-                                                        telescope.pixel_axes, calib.apt, telescope.d_fsmp,
+                                                        telescope.pixel_axes, calib_scans[i].apt, telescope.d_fsmp,
                                                         run_omb, run_noise);
                         }
                         else if (map_method == "jinc") {
                             jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
-                                                       telescope.pixel_axes, calib.apt, telescope.d_fsmp,
+                                                       telescope.pixel_axes, calib_scans[i].apt, telescope.d_fsmp,
                                                        run_omb, run_noise);
                         }
                         if (update_progress) {

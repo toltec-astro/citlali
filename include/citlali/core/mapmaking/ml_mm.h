@@ -91,6 +91,12 @@ void MLMapmaker::populate_maps_ml(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
                     if (in.flags.data(j,i)) {
                         continue;
                     }
+                    if (!std::isfinite(in.scans.data(j,i)) ||
+                        i >= in.weights.data.size() ||
+                        !std::isfinite(in.weights.data(i)) ||
+                        in.weights.data(i) <= 0.0) {
+                        continue;
+                    }
                     Eigen::Index omb_ir = static_cast<Eigen::Index>(std::llround(omb_irow(j)));
                     Eigen::Index omb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
                     if ((omb_ir < 0) || (omb_ir >= omb.n_rows) || (omb_ic < 0) || (omb_ic >= omb.n_cols)) {

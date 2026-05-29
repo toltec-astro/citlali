@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 #include <cstdio>
 #include <sstream>
 #include <stdexcept>
@@ -549,7 +550,11 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             // loop through the samples
             for (Eigen::Index j=0; j<n_pts; ++j) {
                 // check if sample is flagged, ignore if so
-                if (!in.flags.data(j,i)) {
+                if (!in.flags.data(j,i) &&
+                    std::isfinite(in.scans.data(j,i)) &&
+                    i < in.weights.data.size() &&
+                    std::isfinite(in.weights.data(i)) &&
+                    in.weights.data(i) > 0.0) {
                     Eigen::Index omb_ir = static_cast<Eigen::Index>(std::llround(omb_irow(j)));
                     Eigen::Index omb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
                     int subpix_idx = 0;
@@ -1039,7 +1044,11 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
             // loop through the samples
             for (Eigen::Index j=0; j<n_pts; ++j) {
                 // check if sample is flagged, ignore if so
-                if (!in.flags.data(j,i)) {
+                if (!in.flags.data(j,i) &&
+                    std::isfinite(in.scans.data(j,i)) &&
+                    i < in.weights.data.size() &&
+                    std::isfinite(in.weights.data(i)) &&
+                    in.weights.data(i) > 0.0) {
                     Eigen::Index omb_ir = static_cast<Eigen::Index>(std::llround(omb_irow(j)));
                     Eigen::Index omb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
                     int subpix_idx = 0;

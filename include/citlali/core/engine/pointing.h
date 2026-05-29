@@ -371,13 +371,13 @@ auto Pointing::run(KidsProc &kidsproc) {
 
         // remove duplicate tones
         if (!telescope.sim_obs) {
-            calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib, map_grouping);
+            calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib_scan, map_grouping);
         }
 
         if (write_rtcdiag) {
             rtcdiag_writer->wait_turn(ptcdata.index.data);
             logger->info("writing rtc diagnostics sidecar chunk");
-            rtcproc.append_diag_to_netcdf(ptcdata, rtcdiag_filename, calib, ptcdata.index.data);
+            rtcproc.append_diag_to_netcdf(ptcdata, rtcdiag_filename, calib_scan, ptcdata.index.data);
             rtcdiag_writer->advance();
         }
 
@@ -411,7 +411,7 @@ auto Pointing::run(KidsProc &kidsproc) {
                 logger, "ptc before fruitloops map subtraction", ptcdata.kernel.data, ptcdata.index.data);
             logger->info("subtracting map from tod");
             // subtract map
-            ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(ptcproc.tod_mb, ptcdata, calib,
+            ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(ptcproc.tod_mb, ptcdata, calib_scan,
                                                                             map_indices, telescope.pixel_axes,
                                                                             map_grouping);
             timestream::log_kernel_matrix_diag(
@@ -422,7 +422,7 @@ auto Pointing::run(KidsProc &kidsproc) {
 
         // run cleaning
         logger->info("processed time chunk processing for scan {}", ptcdata.index.data + 1);
-        ptcproc.run(ptcdata, ptcdata, calib, telescope.pixel_axes, map_grouping);
+        ptcproc.run(ptcdata, ptcdata, calib_scan, telescope.pixel_axes, map_grouping);
         timestream::log_kernel_matrix_diag(
             logger, "ptc after processed time chunk cleaning", ptcdata.kernel.data, ptcdata.index.data);
 
@@ -431,10 +431,10 @@ auto Pointing::run(KidsProc &kidsproc) {
             // calculate weights
             logger->info("calculating weights for scan {} (fruit loops noise-only pass)",
                          ptcdata.index.data + 1);
-            ptcproc.calc_weights(ptcdata, calib.apt, telescope);
+            ptcproc.calc_weights(ptcdata, calib_scan.apt, telescope);
 
             // reset weights to median
-            ptcproc.reset_weights(ptcdata, calib, map_grouping);
+            calib_scan = ptcproc.reset_weights(ptcdata, calib_scan, map_grouping);
 
             // populate maps
             if (run_mapmaking) {
@@ -442,16 +442,16 @@ auto Pointing::run(KidsProc &kidsproc) {
                 logger->info("populating noise maps");
                 if (map_method=="naive") {
                     naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
-                                                 calib.apt, telescope.d_fsmp, run_omb, run_noise);
+                                                 calib_scan.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
                 else if (map_method=="jinc") {
                     jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
-                                               calib.apt, telescope.d_fsmp, run_omb, run_noise);
+                                               calib_scan.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
             }
             logger->info("adding map to tod");
             // add map back
-            ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(ptcproc.tod_mb, ptcdata, calib,
+            ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(ptcproc.tod_mb, ptcdata, calib_scan,
                                                                     map_indices, telescope.pixel_axes,
                                                                     map_grouping);
             timestream::log_kernel_matrix_diag(
@@ -473,17 +473,17 @@ auto Pointing::run(KidsProc &kidsproc) {
             else {
                 logger->info("calculating weights for scan {}", ptcdata.index.data + 1);
             }
-            ptcproc.calc_weights(ptcdata, calib.apt, telescope);
+            ptcproc.calc_weights(ptcdata, calib_scan.apt, telescope);
 
             // reset weights to median
-            calib_scan = ptcproc.reset_weights(ptcdata, calib, map_grouping);
+            calib_scan = ptcproc.reset_weights(ptcdata, calib_scan, map_grouping);
         }
 
         // write ptc timestreams
         if (write_ptcdiag) {
             ptcdiag_writer->wait_turn(ptcdata.index.data);
             logger->info("writing ptc diagnostics sidecar chunk");
-            ptcproc.append_diag_to_netcdf(ptcdata, ptcdiag_filename, calib, ptcdata.index.data);
+            ptcproc.append_diag_to_netcdf(ptcdata, ptcdiag_filename, calib_scan, ptcdata.index.data);
             ptcdiag_writer->advance();
         }
 
@@ -492,7 +492,7 @@ auto Pointing::run(KidsProc &kidsproc) {
             ptc_writer->wait_turn(ptc_scan_row);
             logger->info("writing processed time chunk");
             ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc"], map_grouping, telescope.pixel_axes,
-                                     ptcdata.pointing_offsets_arcsec.data, calib, false, ptc_scan_row);
+                                     ptcdata.pointing_offsets_arcsec.data, calib_scan, false, ptc_scan_row);
             ptc_writer->advance();
         }
         if (write_ptc || write_ptcdiag) {
@@ -525,11 +525,11 @@ auto Pointing::run(KidsProc &kidsproc) {
             logger->info("populating maps");
             if (map_method=="naive") {
                 naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
-                                             calib.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
+                                             calib_scan.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
             else if (map_method=="jinc") {
                 jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
-                                           calib.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
+                                           calib_scan.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
         }
         // increment number of completed scans
