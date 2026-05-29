@@ -711,7 +711,7 @@ void Engine::setup_tod_output_chunk_selection() {
             }
 
             logger->info(
-                "{} TOD output selection mode uniform_plus_source_crossing: n_uniform={} n_source_dense={} source_scan={} source_min_distance_arcsec={} selected={}",
+                "{} TOD output selection mode uniform_plus_source_crossing: n_uniform={} n_source_dense={} source_scan={} source_min_distance_arcsec={:.3f} selected={}",
                 stream_name,
                 n_uniform,
                 n_source_dense,
@@ -3785,7 +3785,7 @@ void Engine::cli_summary() {
                                                omb.kernel.size() + omb.coverage.size() +
                                                omb.grid_weight.size())/1e9;
 
-    logger->info("estimated size of map buffer {} GB", omb_size);
+    logger->info("estimated size of map buffer {:.2f} GB", omb_size);
 
     mb_size_total = mb_size_total + omb_size;
 
@@ -3799,7 +3799,7 @@ void Engine::cli_summary() {
                                                    cmb.kernel.size() + cmb.coverage.size() +
                                                    cmb.grid_weight.size())/1e9;
 
-        logger->info("estimated size of coadd buffer {} GB", cmb_size);
+        logger->info("estimated size of coadd buffer {:.2f} GB", cmb_size);
 
         mb_size_total = mb_size_total + cmb_size;
 
@@ -3808,7 +3808,7 @@ void Engine::cli_summary() {
             logger->info("coadd map buffer noise maps: {}", cmb.n_noise);
             // make a rough estimate of memory usage for coadd noise maps
             double nmb_size = 8*cmb.n_rows*cmb.n_cols*cmb.noise.size()*cmb.n_noise/1e9;
-            logger->info("estimated size of noise buffer {} GB", nmb_size);
+            logger->info("estimated size of noise buffer {:.2f} GB", nmb_size);
             mb_size_total = mb_size_total + nmb_size;
         }
     }
@@ -3818,12 +3818,12 @@ void Engine::cli_summary() {
             logger->info("observation map buffer noise maps: {}", omb.n_noise);
             // make a rough estimate of memory usage for obs noise maps
             double nmb_size = 8*omb.n_rows*omb.n_cols*omb.noise.size()*omb.n_noise/1e9;
-            logger->info("estimated size of noise buffer {} GB", nmb_size);
+            logger->info("estimated size of noise buffer {:.2f} GB", nmb_size);
             mb_size_total = mb_size_total + nmb_size;
         }
     }
 
-    logger->info("estimated size of all maps {} GB", mb_size_total);
+    logger->info("estimated size of all maps {:.2f} GB", mb_size_total);
     logger->info("number of scans: {}",telescope.scan_indices.cols());
     if (run_tod_output) {
         if (tod_output_type == "rtc" || tod_output_type == "both") {
@@ -3849,7 +3849,7 @@ void Engine::cli_summary() {
     logger->info("total physical memory available {} GB", (totalPhysMem/1024)/1e7);*/
     auto phys_memory_kb = engine_utils::get_phys_memory();
     if (phys_memory_kb >= 0) {
-        logger->info("physical memory used {} GB", phys_memory_kb / 1e7);
+        logger->info("physical memory used {:.2f} GB", static_cast<double>(phys_memory_kb) / 1e7);
     } else {
         logger->debug("physical memory used unavailable on this platform");
     }
@@ -7167,10 +7167,10 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                              map_label, i + 1, n_maps);
                 mb.calc_noise_products(i, apply_scale);
                 if (i < mb.noise_weight_median_ratio.size()) {
-                    logger->info("noise products: median(w_formal*var)={} scale={} noise_s2n_sigma={}",
-                                 static_cast<float>(mb.noise_weight_median_ratio(i)),
-                                 static_cast<float>(mb.noise_weight_scale(i)),
-                                 static_cast<float>(mb.noise_s2n_sigma(i)));
+                    logger->info("noise products: median(w_formal*var)={:.4g} scale={:.4g} noise_s2n_sigma={:.4g}",
+                                 mb.noise_weight_median_ratio(i),
+                                 mb.noise_weight_scale(i),
+                                 mb.noise_s2n_sigma(i));
                 }
                 mb.calc_median_err();
                 mb.calc_median_rms();

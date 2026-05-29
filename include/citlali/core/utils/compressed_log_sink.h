@@ -118,7 +118,6 @@ inline void attach_reduction_gzip_sink(
 inline std::string enable_reduction_gzip_logs(const std::string &redu_dir) {
     auto path = (std::filesystem::path(redu_dir) / "citlali.log.gz").string();
     attach_reduction_gzip_sink(spdlog::get("citlali_logger"), path);
-    attach_reduction_gzip_sink(spdlog::get("console"), path);
     return path;
 }
 

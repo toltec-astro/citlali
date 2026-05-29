@@ -348,7 +348,7 @@ void log_kernel_matrix_diag(const std::shared_ptr<spdlog::logger> &logger,
             ? static_cast<double>(diag.n_negative) / static_cast<double>(diag.n_finite)
             : std::numeric_limits<double>::quiet_NaN();
     logger->info(
-        "kernel_tod_diag stage='{}' scan={} shape={}x{} sampled={}/{} finite={}/{} neg={} neg_frac={} pos={} min={} max={} mean={} rms={} absmax={}",
+        "kernel_tod_diag stage='{}' scan={} shape={}x{} sampled={}/{} finite={}/{} neg={} neg_frac={:.4f} pos={} min={:.4g} max={:.4g} mean={:.4g} rms={:.4g} absmax={:.4g}",
         stage,
         scan_index,
         matrix.rows(),
@@ -438,7 +438,7 @@ inline void log_kernel_map_diag(
             : std::numeric_limits<double>::quiet_NaN();
 
     logger->info(
-        "kernel_map_diag stage='{}' maps={} active={} center_finite={} center_neg={} center_neg_frac={} center_pos={} center_zero={} center_min={} center_max={} center_mean={} worst_center_map={}",
+        "kernel_map_diag stage='{}' maps={} active={} center_finite={} center_neg={} center_neg_frac={:.4f} center_pos={} center_zero={} center_min={:.4g} center_max={:.4g} center_mean={:.4g} worst_center_map={}",
         stage,
         kernel_maps.size(),
         n_active,
@@ -1611,9 +1611,9 @@ void TCProc::configure_fruit_loops_adaptive_gate(mb_t &mb, calib_t &calib,
         }
     }
 
-    logger->info("fruit loops adaptive gate: peak_fraction={} local_snr_floor={} "
-                 "local_sigma_annulus=[{}={}, {}={}] arcsec edge_guard={} arcsec "
-                 "support_radius_min={} arcsec support_radius_fwhm={} "
+    logger->info("fruit loops adaptive gate: peak_fraction={:.4f} local_snr_floor={:.4g} "
+                 "local_sigma_annulus=[{}={:.3f}, {}={:.3f}] arcsec edge_guard={:.3f} arcsec "
+                 "support_radius_min={:.3f} arcsec support_radius_fwhm={:.4g} "
                  "valid_thresholds={}/{} valid_sigma={} valid_amp={}",
                  fruit_loops_peak_fraction_limit, fruit_loops_local_snr_floor,
                  "inner", fruit_loops_local_sigma_inner_radius_arcsec,

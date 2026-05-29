@@ -853,9 +853,8 @@ void WienerFilter::calc_denominator() {
                         const double step_s = elapsed_s - last_log_s;
                         last_log_s = elapsed_s;
 
-                        logger->info("{} iteration(s) complete. rel_update={} tail_frac={} elapsed_s={} step_s={}",
-                                     kk, static_cast<float>(rel_update), static_cast<float>(tail_frac),
-                                     static_cast<float>(elapsed_s), static_cast<float>(step_s));
+                        logger->info("{} iteration(s) complete. rel_update={:.4g} tail_frac={:.4f} elapsed_s={:.2f} step_s={:.2f}",
+                                     kk, rel_update, tail_frac, elapsed_s, step_s);
 
                         ++checks_done;
                         if (rel_update < denom_rel_tol && tail_frac < tail_frac_tol) {

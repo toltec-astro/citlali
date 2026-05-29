@@ -371,8 +371,8 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     const bool direct_noise_accum =
         run_noise && nmb != nullptr && noise_cube_gb >= direct_noise_accum_threshold_gb;
     if (direct_noise_accum && logger) {
-        logger->info("jinc noise cube is {} GB; using locked direct accumulation instead of full scratch copy",
-                     static_cast<float>(noise_cube_gb));
+        logger->info("jinc noise cube is {:.2f} GB; using locked direct accumulation instead of full scratch copy",
+                     noise_cube_gb);
     }
 
     struct TouchBounds {

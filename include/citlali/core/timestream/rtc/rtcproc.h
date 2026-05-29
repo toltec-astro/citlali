@@ -522,7 +522,7 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         }
         if (network_step_mask.enabled) {
             logger->info(
-                "raw_time_chunk.flagging.network_step_mask enabled: step_window_sec={} step_score_thresh={} min_good_frac={} min_det_used={} min_step_det_frac={} min_alignment_frac={} cluster_tol_sec={} mask_half_width_sec={} max_flagged_fraction={}",
+                "raw_time_chunk.flagging.network_step_mask enabled: step_window_sec={:.4g} step_score_thresh={:.4g} min_good_frac={:.4f} min_det_used={} min_step_det_frac={:.4f} min_alignment_frac={:.4f} cluster_tol_sec={:.4g} mask_half_width_sec={:.4g} max_flagged_fraction={:.4f}",
                 network_step_mask.step_window_sec,
                 network_step_mask.step_score_thresh,
                 network_step_mask.min_good_frac,
@@ -646,7 +646,7 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                              {}, {0.0}, {1.0});
         }
         logger->info(
-            "raw_time_chunk.flagging.impulsive_coincidence configured: enabled={} min_good_frac={} event_score_thresh={} min_det_used={} min_impulsive_det_frac={} min_alignment_frac={} min_networks_aligned={} high_score_override_thresh={} high_score_min_networks_aligned={} cluster_tol_sec={} mask_pre_window_sec={} mask_post_window_sec={} max_flagged_fraction={}",
+            "raw_time_chunk.flagging.impulsive_coincidence configured: enabled={} min_good_frac={:.4f} event_score_thresh={:.4g} min_det_used={} min_impulsive_det_frac={:.4f} min_alignment_frac={:.4f} min_networks_aligned={} high_score_override_thresh={:.4g} high_score_min_networks_aligned={} cluster_tol_sec={:.4g} mask_pre_window_sec={:.4g} mask_post_window_sec={:.4g} max_flagged_fraction={:.4f}",
             impulsive_coincidence.enabled,
             impulsive_coincidence.min_good_frac,
             impulsive_coincidence.event_score_thresh,
@@ -1152,7 +1152,7 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                     despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale =
                         legacy_candidate_sigma_scale / despiker.local_residual.sigma_scale;
                     logger->warn(
-                        "raw_time_chunk.despike.local_residual.compact_raw_gate.candidate_sigma_scale is deprecated; interpreting legacy value {} as candidate_rel_sigma_scale={} using sigma_scale={}",
+                        "raw_time_chunk.despike.local_residual.compact_raw_gate.candidate_sigma_scale is deprecated; interpreting legacy value {:.4g} as candidate_rel_sigma_scale={:.4g} using sigma_scale={:.4g}",
                         legacy_candidate_sigma_scale,
                         despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale,
                         despiker.local_residual.sigma_scale);
@@ -1205,7 +1205,7 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         }
         if (despiker.local_residual.enabled) {
             logger->info(
-                "raw_time_chunk.despike.local_residual enabled: legacy_enabled={} window_sec={} sigma_scale={} delta_sigma_scale={} compact_raw_gate(enabled={} candidate_rel_sigma_scale={} candidate_sigma_scale_eff={} window_sec={} half_peak_frac={} max_width_sec={} max_step_shift_z={}) compact_delta_gate(enabled={} window_sec={} half_peak_frac={} max_width_sec={} max_step_shift_z={})",
+                "raw_time_chunk.despike.local_residual enabled: legacy_enabled={} window_sec={:.4g} sigma_scale={:.4g} delta_sigma_scale={:.4g} compact_raw_gate(enabled={} candidate_rel_sigma_scale={:.4g} candidate_sigma_scale_eff={:.4g} window_sec={:.4g} half_peak_frac={:.4f} max_width_sec={:.4g} max_step_shift_z={:.4g}) compact_delta_gate(enabled={} window_sec={:.4g} half_peak_frac={:.4f} max_width_sec={:.4g} max_step_shift_z={:.4g})",
                 despiker.run_legacy,
                 despiker.local_residual.window_sec,
                 despiker.local_residual.sigma_scale,
@@ -1674,7 +1674,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_fixed_notches(
         }
         if (freq_hz >= nyquist_hz) {
             logger->warn(
-                "rtc_line_audit fixed_notch scan {} skipped freq_hz={} at/above Nyquist {}",
+                "rtc_line_audit fixed_notch scan {} skipped freq_hz={:.4f} at/above Nyquist {:.4f}",
                 in.index.data + 1,
                 freq_hz,
                 nyquist_hz);
@@ -1697,7 +1697,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_fixed_notches(
 
     for (const auto &notch : applied_notches) {
         logger->info(
-            "rtc_line_audit apply_fixed_notch scan {}: center_hz={} width_hz={} zero_phase=true",
+            "rtc_line_audit apply_fixed_notch scan {}: center_hz={:.4f} width_hz={:.4f} zero_phase=true",
             in.index.data + 1,
             notch.freq_hz,
             notch.width_hz);
@@ -2228,8 +2228,8 @@ void RTCProc::remove_flagged_dets(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         }
     }
 
-    logger->info("removed {} detectors flagged in APT table ({}%)",n_flagged,
-                (static_cast<float>(n_flagged)/static_cast<float>(n_dets))*100);
+    logger->info("removed {} detectors flagged in APT table ({:.2f}%)",n_flagged,
+                (static_cast<double>(n_flagged)/static_cast<double>(n_dets))*100.0);
 }
 
 template <typename calib_t>
@@ -3234,7 +3234,7 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
 
         if (line_row.shared_recommend_notch || line_row.detector_candidate_recommend_flag) {
             logger->info(
-                "rtc_line_audit scan {} nw {}: n_det_used={} shared_freq_hz={} det_count={} det_frac={} shared_prom={} cm_prom={} recommend_notch={} recommended_shared_clusters={} detector_uid={} detector_freq_hz={} detector_prom={} recommend_bad_detector={}",
+                "rtc_line_audit scan {} nw {}: n_det_used={} shared_freq_hz={:.4f} det_count={} det_frac={:.4f} shared_prom={:.4g} cm_prom={:.4g} recommend_notch={} recommended_shared_clusters={} detector_uid={} detector_freq_hz={:.4f} detector_prom={:.4g} recommend_bad_detector={}",
                 scan_id + 1,
                 nw,
                 line_row.n_det_used,
@@ -3666,7 +3666,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
 
     for (const auto &cluster : applied_clusters) {
         logger->info(
-            "rtc_line_audit apply_shared_notch scan {}: center_hz={} width_hz={} support_networks={} max_detector_frac={} max_cm_prominence={}",
+            "rtc_line_audit apply_shared_notch scan {}: center_hz={:.4f} width_hz={:.4f} support_networks={} max_detector_frac={:.4f} max_cm_prominence={:.4g}",
             scan_id + 1,
             cluster.center_hz,
             cluster.width_hz,
@@ -4245,7 +4245,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
 
     if (total_notches > 0) {
         logger->info(
-            "rtc_line_audit apply_detector_notches scan {}: dets={} total_notches={} max_notches_per_det={} primary_freq_median_hz={} zero_phase=true kernel_filtered={}",
+            "rtc_line_audit apply_detector_notches scan {}: dets={} total_notches={} max_notches_per_det={} primary_freq_median_hz={:.4f} zero_phase=true kernel_filtered={}",
             scan_id + 1,
             touched_dets,
             total_notches,
@@ -5057,7 +5057,7 @@ void RTCProc::apply_network_step_mask(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         if (network_step_mask.max_flagged_fraction > 0.0 &&
             flagged_fraction > network_step_mask.max_flagged_fraction) {
             logger->info(
-                "network_step_mask rejected for scan {} nw {}: dominant_sample={} window_samples={} proposed_fraction={} exceeds max_flagged_fraction={}",
+                "network_step_mask rejected for scan {} nw {}: dominant_sample={} window_samples={} proposed_fraction={:.4f} exceeds max_flagged_fraction={:.4f}",
                 scan_id + 1,
                 row.nw,
                 row.dominant_step_sample,
@@ -5077,7 +5077,7 @@ void RTCProc::apply_network_step_mask(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         row.step_mask_flagged_fraction = flagged_fraction;
 
         logger->info(
-            "network_step_mask applied for scan {} nw {}: dominant_sample={} window=[{}, {}] n_det_masked={} newly_flagged={} flagged_fraction={}",
+            "network_step_mask applied for scan {} nw {}: dominant_sample={} window=[{}, {}] n_det_masked={} newly_flagged={} flagged_fraction={:.4f}",
             scan_id + 1,
             row.nw,
             row.dominant_step_sample,
@@ -5490,7 +5490,7 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
             flagged_fraction > impulsive_coincidence.max_flagged_fraction) {
             row.impulsive_mask_rejected_max_fraction = true;
             logger->info(
-                "impulsive_coincidence_mask rejected for scan {} nw {}: dominant_sample={} center_sample={} local_trigger={} cross_network_trigger={} high_score_override_trigger={} cluster_networks={} cluster_peak_score={} override_score={} override_network_peak={} cluster_active={} total_active={} window_samples={} proposed_fraction={} exceeds max_flagged_fraction={}",
+                "impulsive_coincidence_mask rejected for scan {} nw {}: dominant_sample={} center_sample={} local_trigger={} cross_network_trigger={} high_score_override_trigger={} cluster_networks={} cluster_peak_score={:.4g} override_score={:.4g} override_network_peak={} cluster_active={} total_active={} window_samples={} proposed_fraction={:.4f} exceeds max_flagged_fraction={:.4f}",
                 scan_id + 1,
                 row.nw,
                 row.dominant_impulsive_sample,
@@ -5521,7 +5521,7 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
         row.impulsive_mask_flagged_fraction = flagged_fraction;
 
         logger->info(
-            "impulsive_coincidence_mask applied for scan {} nw {}: dominant_sample={} center_sample={} local_trigger={} cross_network_trigger={} high_score_override_trigger={} cluster_networks={} cluster_peak_score={} override_score={} override_network_peak={} cluster_active={} total_active={} window=[{}, {}] n_det_masked={} newly_flagged={} flagged_fraction={}",
+            "impulsive_coincidence_mask applied for scan {} nw {}: dominant_sample={} center_sample={} local_trigger={} cross_network_trigger={} high_score_override_trigger={} cluster_networks={} cluster_peak_score={:.4g} override_score={:.4g} override_network_peak={} cluster_active={} total_active={} window=[{}, {}] n_det_masked={} newly_flagged={} flagged_fraction={:.4f}",
             scan_id + 1,
             nw,
             row.dominant_impulsive_sample,
@@ -5569,8 +5569,8 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         }
     }
 
-    logger->info("removed {}/{} ({}%) unflagged tones closer than {} kHz", n_nearby_tones, n_dets,
-                (static_cast<float>(n_nearby_tones)/static_cast<float>(n_dets))*100, delta_f_min_Hz/1000);
+    logger->info("removed {}/{} ({:.2f}%) unflagged tones closer than {:.4g} kHz", n_nearby_tones, n_dets,
+                (static_cast<double>(n_nearby_tones)/static_cast<double>(n_dets))*100.0, delta_f_min_Hz/1000.0);
 
     // set up scan calib
     calib_scan.setup();

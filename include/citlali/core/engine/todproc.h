@@ -52,7 +52,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
         std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
         std::vector<std::string> missing_keys;
-        logger->info("check TOD proc config\n{}", config);
+        logger->debug("check TOD proc config\n{}", config);
         // check for runtime config node
         if (!config.has("runtime")) {
             missing_keys.push_back("runtime");
@@ -1503,12 +1503,12 @@ void TimeOrderedDataProc<EngineType>::allocate_nmb(map_buffer_t &nmb) {
     const double nmb_size_gb =
         8.0 * static_cast<double>(nmb.n_rows) * static_cast<double>(nmb.n_cols) *
         static_cast<double>(engine().n_maps) * static_cast<double>(nmb.n_noise) / 1e9;
-    engine().logger->info("allocating {} noise realization cube: rows={} cols={} maps={} n_noise={} estimated_size={} GB",
+    engine().logger->info("allocating {} noise realization cube: rows={} cols={} maps={} n_noise={} estimated_size={:.2f} GB",
                           nmb.name, static_cast<long long>(nmb.n_rows),
                           static_cast<long long>(nmb.n_cols),
                           static_cast<long long>(engine().n_maps),
                           static_cast<long long>(nmb.n_noise),
-                          static_cast<float>(nmb_size_gb));
+                          nmb_size_gb);
 
     // resize noise maps (n_maps, [n_rows, n_cols, n_noise])
     for (Eigen::Index i=0; i<engine().n_maps; ++i) {

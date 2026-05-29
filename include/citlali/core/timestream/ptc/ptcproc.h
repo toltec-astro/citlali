@@ -819,7 +819,7 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 get_config_value(config, cleaner.corr_grouping.clean_residual, missing_keys, invalid_keys,
                                  std::tuple{"timestream","processed_time_chunk","clean","corr_grouping","clean_residual"});
             }
-            logger->info("clean.corr_grouping enabled: metric={} corr_min={} min_overlap={} min_good_frac={} min_group_size={} max_samples={} clean_residual={}",
+            logger->info("clean.corr_grouping enabled: metric={} corr_min={:.4f} min_overlap={} min_good_frac={:.4f} min_group_size={} max_samples={} clean_residual={}",
                          cleaner.corr_grouping.metric, cleaner.corr_grouping.corr_min, cleaner.corr_grouping.min_overlap,
                          cleaner.corr_grouping.min_good_frac, cleaner.corr_grouping.min_group_size,
                          cleaner.corr_grouping.max_samples, cleaner.corr_grouping.clean_residual);
@@ -869,7 +869,7 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                     }
                 }
             }
-            logger->info("clean.null_model enabled: n_surrogates={} quantile={} min_good_frac={} max_modes={} max_samples={} seed={}",
+            logger->info("clean.null_model enabled: n_surrogates={} quantile={:.4f} min_good_frac={:.4f} max_modes={} max_samples={} seed={}",
                          cleaner.null_model.n_surrogates, cleaner.null_model.quantile,
                          cleaner.null_model.min_good_frac, cleaner.null_model.max_modes,
                          cleaner.null_model.max_samples, cleaner.null_model.seed);
@@ -942,7 +942,7 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 }
             }
             logger->info(
-                "clean.marchenko_pastur enabled: min_good_frac={} max_modes={} max_samples={} band_low_Hz={} band_high_Hz={} clip_z={} bulk_keep_frac={} q_grid_size={}",
+                "clean.marchenko_pastur enabled: min_good_frac={:.4f} max_modes={} max_samples={} band_low_Hz={:.4g} band_high_Hz={:.4g} clip_z={:.4g} bulk_keep_frac={:.4f} q_grid_size={}",
                 cleaner.marchenko_pastur.min_good_frac, cleaner.marchenko_pastur.max_modes,
                 cleaner.marchenko_pastur.max_samples, cleaner.marchenko_pastur.band_low_Hz,
                 cleaner.marchenko_pastur.band_high_Hz, cleaner.marchenko_pastur.clip_z,
@@ -1098,7 +1098,7 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
 
     if (second_pass_local.enabled) {
         logger->info(
-            "processed_time_chunk.flagging.second_pass_local enabled: min_spike_sigma={} min_good_frac={} baseline_window_sec={} raw_window_sec={} delta_window_sec={} merge_within_detector_sec={} cluster_events_sec={} min_cluster_detectors={} high_score_cluster_override={} max_auto_flag_clusters_per_network={}",
+            "processed_time_chunk.flagging.second_pass_local enabled: min_spike_sigma={:.4g} min_good_frac={:.4f} baseline_window_sec={:.4g} raw_window_sec={:.4g} delta_window_sec={:.4g} merge_within_detector_sec={:.4g} cluster_events_sec={:.4g} min_cluster_detectors={} high_score_cluster_override={:.4g} max_auto_flag_clusters_per_network={}",
             second_pass_local.min_spike_sigma, second_pass_local.min_good_frac,
             second_pass_local.baseline_window_sec, second_pass_local.raw_window_sec,
             second_pass_local.delta_window_sec, second_pass_local.merge_within_detector_sec,
@@ -1234,7 +1234,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 out.evecs.data.emplace_back();
             }
             else if (want_eigs && !warned_eigs) {
-                logger->warn("n_calc=0; skipping eval/evec output");
+                logger->debug("n_calc=0; skipping eval/evec output");
                 warned_eigs = true;
             }
 
@@ -2218,7 +2218,7 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
         if (!candidate_clusters.empty()) {
             logger->info(
-                "PTC second pass scan {} nw {} candidate_clusters={} accepted_clusters={} busy_veto={} newly_flagged_fraction={} top_candidate_peak_score={} top_candidate_n_detectors={}",
+                "PTC second pass scan {} nw {} candidate_clusters={} accepted_clusters={} busy_veto={} newly_flagged_fraction={:.4f} top_candidate_peak_score={:.4g} top_candidate_n_detectors={}",
                 static_cast<long long>(in.index.data) + 1, static_cast<long long>(nw_index),
                 static_cast<long long>(summary.n_candidate_clusters),
                 static_cast<long long>(summary.n_accepted_clusters),
@@ -2289,7 +2289,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         const double source_mask_radius_rad = mask_radius_arcsec * ASEC_TO_RAD;
 
         if (use_source_weight_mask) {
-            logger->info("calculating full weights with source mask (radius {} arcsec) for scan {}",
+            logger->info("calculating full weights with source mask (radius {:.3f} arcsec) for scan {}",
                          mask_radius_arcsec, scan_index_1based);
         }
 
@@ -3068,7 +3068,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
                 "weight audit call={} scan={} array={} idx_range=[{}, {}) "
                 "group_dets={} apt_unflagged={} apt_flagged={} "
                 "positive_unflagged={} nonpositive_unflagged={} nonfinite_weights={} "
-                "median_weight={} lower_limit={} upper_limit={}",
+                "median_weight={:.4g} lower_limit={:.4g} upper_limit={:.4g}",
                 reset_call_id, scan_index_1based, key, group_start, group_end,
                 n_group_dets, n_unflagged, n_group_dets - n_unflagged, n_good_dets,
                 n_nonpositive_unflagged, n_nonfinite_weights, med_wt, lower_limit,
@@ -3542,7 +3542,7 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
         if (write_evals) {
             if (cleaner.n_calc <= 0 || in.evals.data.empty()) {
-                logger->warn("n_calc=0 or evals empty; skipping eval/evec output");
+                logger->debug("n_calc=0 or evals empty; skipping eval/evec output");
                 // sync file to make sure it gets updated
                 fo.sync();
                 // close file

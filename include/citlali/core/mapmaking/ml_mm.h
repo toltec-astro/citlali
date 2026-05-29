@@ -115,7 +115,7 @@ void MLMapmaker::populate_maps_ml(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         }
 
         Eigen::Index n_pts = static_cast<Eigen::Index>(b_vals.size());
-        logger->info("start {} end {} valid_n_pts {} n_pixels {} n_rows {}", start, end, n_pts, n_pixels, in.scans.data.rows());
+        logger->debug("ML pointing rows: start={} end={} valid_n_pts={} n_pixels={} n_rows={}", start, end, n_pts, n_pixels, in.scans.data.rows());
         if (n_pts == 0) {
             logger->warn("no unflagged in-bounds samples for array {}; skipping ML solve", array);
             continue;
@@ -146,21 +146,21 @@ void MLMapmaker::populate_maps_ml(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
         // solve for signal map
         auto signal_x = cg.solve(b).eval();
         logger->info("signal iterations {}",cg.iterations());
-        logger->info("signal error {}",cg.error());
+        logger->info("signal error {:.4g}", cg.error());
 
         Eigen::VectorXd kernel_x;
         if (run_kernel) {
             // solve for kernel map
             kernel_x = cg.solve(b2).eval();
             logger->info("kernel iterations {}",cg.iterations());
-            logger->info("kernel error {}",cg.error());
+            logger->info("kernel error {:.4g}", cg.error());
         }
 
         Eigen::VectorXd ones = Eigen::VectorXd::Ones(n_pts);
         // solve for weight map
         auto weight_x = cg.solve(ones).eval();
         logger->info("weight iterations {}",cg.iterations());
-        logger->info("weight error {}",cg.error());
+        logger->info("weight error {:.4g}", cg.error());
 
         // protect shared map accumulation when scans are processed concurrently.
         {
@@ -172,11 +172,11 @@ void MLMapmaker::populate_maps_ml(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
             omb.weight[map_index] += Eigen::Map<const Eigen::MatrixXd>(weight_x.data(),omb.n_rows, omb.n_cols);
         }
 
-        logger->info("signal[{}] {}",map_index,omb.signal[map_index]);
+        logger->debug("signal[{}] {}",map_index,omb.signal[map_index]);
         if (run_kernel) {
-            logger->info("kernel[{}] {}",map_index,omb.kernel[map_index]);
+            logger->debug("kernel[{}] {}",map_index,omb.kernel[map_index]);
         }
-        logger->info("weight[{}] {}",map_index,omb.weight[map_index]);
+        logger->debug("weight[{}] {}",map_index,omb.weight[map_index]);
     }
 
     // free fftw vectors

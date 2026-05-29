@@ -905,7 +905,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                         sigest = sigest_lim;
                     }
                     if (!std::isfinite(sigest) || sigest <= 0.) {
-                        logger->warn("despike detector {} has non-finite/zero sigma estimate ({}); skipping decay-based expansion",
+                        logger->warn("despike detector {} has non-finite/zero sigma estimate ({:.4g}); skipping decay-based expansion",
                                      det, sigest);
                         continue;
                     }

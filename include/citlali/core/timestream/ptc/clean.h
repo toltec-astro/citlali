@@ -1270,7 +1270,7 @@ auto Cleaner::get_marchenko_pastur_index(const Eigen::DenseBase<DerivedA> &scans
             dt_sec > 0.0 && !allow_banded_cov) {
             logger->debug(
                 "marchenko_pastur: skipping band-limited covariance due to gappy flags "
-                "(min_good_frac={} med_good_frac={})",
+                "(min_good_frac={:.4f} med_good_frac={:.4f})",
                 min_good_frac_final, med_good_frac_final);
         }
 
@@ -1374,7 +1374,7 @@ auto Cleaner::get_marchenko_pastur_index(const Eigen::DenseBase<DerivedA> &scans
 
         logger->debug(
             "marchenko_pastur: n_det_input={} n_det_used={} n_modes={} n_pts={} step={} "
-            "n_eff_mp={} min_good_frac={} med_good_frac={} k={} q_fit={} lambda_plus={} top_over_edge={}",
+            "n_eff_mp={:.4g} min_good_frac={:.4f} med_good_frac={:.4f} k={} q_fit={:.4g} lambda_plus={:.4g} top_over_edge={:.4g}",
             n_dets, n_final, n_modes, n_pts, sample_step, n_eff_mp, min_good_frac_final, med_good_frac_final,
             k_mp, fit.q_fit, fit.lambda_plus, fit.top_over_edge);
         return k_mp;
@@ -1798,7 +1798,7 @@ auto Cleaner::select_adaptive_cut(const Eigen::DenseBase<DerivedA> &scans,
 
             if (adaptive_selector.log_candidates) {
                 logger->debug(
-                    "adaptive_selector candidate grouping={} key={} array={} k={} det_used={} time_used={} step={} valid_frac={} med_abs_corr={} cm_low_mid_ratio={} tail4_binom_z={} top_mode_frac={} eval_ms={}",
+                    "adaptive_selector candidate grouping={} key={} array={} k={} det_used={} time_used={} step={} valid_frac={:.4f} med_abs_corr={:.4g} cm_low_mid_ratio={:.4g} tail4_binom_z={:.4g} top_mode_frac={:.4f} eval_ms={:.2f}",
                     group_name, group_key, arr_index, diag.k, diag.n_det_used, diag.n_time_used,
                     diag.sample_step, finite_or_nan(diag.valid_frac), finite_or_nan(diag.med_abs_corr),
                     finite_or_nan(diag.cm_low_mid_ratio), finite_or_nan(diag.tail4_binom_z),

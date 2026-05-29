@@ -1546,7 +1546,7 @@ void Beammap::calc_empirical_template_calibration() {
             }
         }
         if (!std::isfinite(template_peak) || template_peak <= 0.0) {
-            logger->warn("beammap empirical template skipped for array={} due to invalid template peak={}",
+            logger->warn("beammap empirical template skipped for array={} due to invalid template peak={:.4g}",
                          toltec_io.array_name_map[array], template_peak);
             continue;
         }
@@ -2131,7 +2131,7 @@ Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer 
             }
             summary.n_det_rejected++;
             logger->debug(
-                "beammap scan-band mask det={} rejected: proposed rows={} samples={} flagged_fraction={} exceeds limit={}",
+                "beammap scan-band mask det={} rejected: proposed rows={} samples={} flagged_fraction={:.4f} exceeds limit={:.4f}",
                 det, n_bad_rows, proposed_flags.size(), flagged_fraction, max_flagged_fraction);
             continue;
         }
@@ -2160,7 +2160,7 @@ Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer 
         }
 
         logger->info(
-            "beammap scan-band mask det={} array={} nw={} rows={} samples={} flagged_fraction={} top_rows={} bottom_rows={}",
+            "beammap scan-band mask det={} array={} nw={} rows={} samples={} flagged_fraction={:.4f} top_rows={} bottom_rows={}",
             det,
             static_cast<int>(calib.apt["array"](det)),
             static_cast<int>(calib.apt["nw"](det)),
@@ -2421,7 +2421,7 @@ void Beammap::configure_ptc_source_mask_from_previous_fit() {
         if (have_existing_fruit_centers) {
             logger->info(
                 "beammap source-aware PTC masking using existing fruit-loops source centers "
-                "for iter {} before any beammap fits (mask_radius={} arcsec)",
+                "for iter {} before any beammap fits (mask_radius={:.3f} arcsec)",
                 current_iter, ptcproc.mask_radius_arcsec);
             return;
         }
@@ -2429,7 +2429,7 @@ void Beammap::configure_ptc_source_mask_from_previous_fit() {
         ptcproc.fruit_loops_source_lon.resize(0);
         ptcproc.fruit_loops_source_valid.resize(0);
         logger->info(
-            "beammap source-aware PTC masking inactive on iter {}: no previous fits yet (mask_radius={} arcsec)",
+            "beammap source-aware PTC masking inactive on iter {}: no previous fits yet (mask_radius={:.3f} arcsec)",
             current_iter, ptcproc.mask_radius_arcsec);
         return;
     }
@@ -2474,7 +2474,7 @@ void Beammap::configure_ptc_source_mask_from_previous_fit() {
 
     logger->info(
         "beammap source-aware PTC masking using previous-fit centers for {}/{} detector maps "
-        "on iter {} (mask_radius={} arcsec)",
+        "on iter {} (mask_radius={:.3f} arcsec)",
         n_valid, n_maps, current_iter, ptcproc.mask_radius_arcsec);
 }
 
@@ -3059,7 +3059,7 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
         }
     }
     if (candidates.empty()) {
-        logger->debug("beammap priors init map={} no candidates above min_snr={} (med={} sigma={} wt_med={})",
+        logger->debug("beammap priors init map={} no candidates above min_snr={:.4g} (med={:.4g} sigma={:.4g} wt_med={:.4g})",
                       map_index, beammap_priors_min_snr, sig_med, sig_sigma, wt_med);
         set_prior_diag(prior_n_candidates_col, 0.0);
         set_prior_diag(prior_n_candidates_keep_col, 0.0);
@@ -3195,7 +3195,7 @@ void Beammap::run_loop() {
     boost::random::uniform_int_distribution<> rands{0,1};
 
     if (beammap_rfi_mask_enabled && map_grouping == "detector") {
-        logger->info("beammap rfi mask enabled: block_size={} min_good={} sigma_threshold={} sigma_floor={} dilate_blocks={} max_flagged_fraction={}",
+        logger->info("beammap rfi mask enabled: block_size={} min_good={} sigma_threshold={:.4g} sigma_floor={:.4g} dilate_blocks={} max_flagged_fraction={:.4f}",
                      beammap_rfi_mask_block_size_samples,
                      beammap_rfi_mask_min_good_samples,
                      beammap_rfi_mask_sigma_threshold,
@@ -3205,7 +3205,7 @@ void Beammap::run_loop() {
     }
     if (beammap_scan_band_mask_enabled && map_grouping == "detector") {
         logger->info(
-            "beammap scan-band mask enabled: edge_rows={} min_row_pixels={} min_contiguous_rows={} row_median_sigma_threshold={} row_sigma_ratio_threshold={} max_flagged_fraction={}",
+            "beammap scan-band mask enabled: edge_rows={} min_row_pixels={} min_contiguous_rows={} row_median_sigma_threshold={:.4g} row_sigma_ratio_threshold={:.4g} max_flagged_fraction={:.4f}",
             beammap_scan_band_mask_edge_rows,
             beammap_scan_band_mask_min_row_pixels,
             beammap_scan_band_mask_min_contiguous_rows,
@@ -3321,7 +3321,7 @@ void Beammap::run_loop() {
                 auto rfi_summary = apply_rfi_sample_mask(ptcs[i]);
                 if (beammap_rfi_mask_enabled) {
                     if (rfi_summary.n_samples_flagged > 0 || rfi_summary.n_det_rejected > 0) {
-                        logger->info("beammap rfi mask scan {}: masked {} samples across {}/{} detectors ({} rejected by max_flagged_fraction={})",
+                        logger->info("beammap rfi mask scan {}: masked {} samples across {}/{} detectors ({} rejected by max_flagged_fraction={:.4f})",
                                      ptcs[i].index.data + 1,
                                      rfi_summary.n_samples_flagged,
                                      rfi_summary.n_det_flagged,
@@ -4213,7 +4213,7 @@ void Beammap::run_loop() {
                                                ? calib.apt["y_t"](map_index)
                                                : std::numeric_limits<double>::quiet_NaN();
                         logger->info(
-                            "beammap normalize support detail iter={} rank={} map={} uid={} array={} nw={} x_t={} y_t={} masked={} no_accum={} bad_grid_with_accum={} threshold={} raw_signal_nonzero={} adjacent_holes={} support_threshold={} max_raw_signal={} max_neighbor_weight={} max_neighbor_rc=({}, {}) max_neighbor_cause={}",
+                            "beammap normalize support detail iter={} rank={} map={} uid={} array={} nw={} x_t={:.3f} y_t={:.3f} masked={} no_accum={} bad_grid_with_accum={} threshold={} raw_signal_nonzero={} adjacent_holes={} support_threshold={:.4g} max_raw_signal={:.4g} max_neighbor_weight={:.4g} max_neighbor_rc=({}, {}) max_neighbor_cause={}",
                             current_iter,
                             rank + 1,
                             map_index,
@@ -4244,7 +4244,7 @@ void Beammap::run_loop() {
                 auto scan_band_summary = apply_scan_band_mask(omb);
                 if (scan_band_summary.n_samples_flagged > 0) {
                     logger->info(
-                        "beammap scan-band mask summary: flagged {} samples in {} rows across {} detectors ({} rejected by max_flagged_fraction={}); rebuilding maps",
+                        "beammap scan-band mask summary: flagged {} samples in {} rows across {} detectors ({} rejected by max_flagged_fraction={:.4f}); rebuilding maps",
                         scan_band_summary.n_samples_flagged,
                         scan_band_summary.n_rows_flagged,
                         scan_band_summary.n_det_flagged,
@@ -4254,7 +4254,7 @@ void Beammap::run_loop() {
                 }
                 else {
                     logger->info(
-                        "beammap scan-band mask summary: no edge bands flagged ({} detectors rejected by max_flagged_fraction={})",
+                        "beammap scan-band mask summary: no edge bands flagged ({} detectors rejected by max_flagged_fraction={:.4f})",
                         scan_band_summary.n_det_rejected,
                         beammap_scan_band_mask_max_flagged_fraction);
                 }
@@ -4289,7 +4289,7 @@ void Beammap::run_loop() {
             // Run beammap fits sequentially. This avoids allocator/covariance instability
             // observed with parallel Ceres fits on some systems.
             for (Eigen::Index i = 0; i < n_maps; ++i) {
-                logger->info("beammap fit checkpoint: map={} begin converged={}", i, converged(i));
+                logger->debug("beammap fit checkpoint: map={} begin converged={}", i, converged(i));
 
                 if (omb.signal[i].rows() != omb.n_rows || omb.signal[i].cols() != omb.n_cols ||
                     omb.weight[i].rows() != omb.n_rows || omb.weight[i].cols() != omb.n_cols) {
@@ -4306,9 +4306,9 @@ void Beammap::run_loop() {
                 const Eigen::Index sig_finite = sig.array().isFinite().count();
                 const Eigen::Index wt_finite = wt.array().isFinite().count();
                 const Eigen::Index wt_pos = (wt.array() > 0.0).count();
-                logger->info("beammap fit map={} stats: sig_finite={}/{} wt_finite={}/{} wt_pos={}/{} sig[min,max]=({}, {}) wt[min,max]=({}, {})",
-                             i, sig_finite, n_pix, wt_finite, n_pix, wt_pos, n_pix,
-                             sig.minCoeff(), sig.maxCoeff(), wt.minCoeff(), wt.maxCoeff());
+                logger->debug("beammap fit map={} stats: sig_finite={}/{} wt_finite={}/{} wt_pos={}/{} sig[min,max]=({:.6g}, {:.6g}) wt[min,max]=({:.6g}, {:.6g})",
+                              i, sig_finite, n_pix, wt_finite, n_pix, wt_pos, n_pix,
+                              sig.minCoeff(), sig.maxCoeff(), wt.minCoeff(), wt.maxCoeff());
 
                 // only fit if not converged
                 if (!converged(i)) {
@@ -4488,16 +4488,16 @@ void Beammap::run_loop() {
                             prior_diag_values(i, prior_init_mode_col) = 0.0;
                         }
                     }
-                    logger->debug("beammap fit map={} init mode={} row={} col={}",
+                    logger->debug("beammap fit map={} init mode={} row={:.3f} col={:.3f}",
                                   i, init_from_prev ? "previous" : (init_from_prior ? "prior" : "blind"),
                                   init_row, init_col);
                     // fit the maps
-                    logger->info("beammap fit checkpoint: map={} call fit_to_gaussian", i);
+                    logger->debug("beammap fit checkpoint: map={} call fit_to_gaussian", i);
                     engine_utils::mapFitter::FitDiagnostics fit_diag;
                     auto [det_params, det_perror, good_fit] =
                         map_fitter.fit_to_gaussian<engine_utils::mapFitter::beammap>(omb.signal[i], omb.weight[i],
                                                                                      init_fwhm, init_row, init_col, &fit_diag);
-                    logger->info("beammap fit checkpoint: map={} fit_to_gaussian returned good_fit={}", i, good_fit);
+                    logger->debug("beammap fit checkpoint: map={} fit_to_gaussian returned good_fit={}", i, good_fit);
 
                     if (!(det_params.array().isFinite().all() && det_perror.array().isFinite().all())) {
                         det_params.setZero();
@@ -4612,7 +4612,7 @@ void Beammap::run_loop() {
                     perrors.row(i) = perror0.row(i);
                 }
 
-                logger->info("beammap fit checkpoint: map={} end good_fit={}", i, good_fits(i));
+                logger->debug("beammap fit checkpoint: map={} end good_fit={}", i, good_fits(i));
             }
 
             logger->info("beammap init summary (iter {}): previous={} prior={} blind={} skipped={} prev_rejected_by_peak={}",
@@ -4645,7 +4645,7 @@ void Beammap::run_loop() {
                 logger->info("beammap fit bound summary (iter {}): any_hit={}/{}",
                              current_iter, iter_bound_any, n_maps);
             }
-            logger->info("number of good fits {}/{}", good_fits.cast<double>().sum(), n_maps);
+            logger->info("number of good fits {}/{}", static_cast<long long>(good_fits.cast<int>().sum()), n_maps);
         }
 
         const int completed_iter = current_iter;
@@ -4663,7 +4663,7 @@ void Beammap::run_loop() {
                 // only do convergence test if tolerance is above zero, otherwise run all iterations
                 if (run_mapmaking && beammap_iter_tolerance > 0) {
                     // loop through maps and check if it is converged
-                    logger->info("checking convergence in fitted-source aperture radius={} arcsec",
+                    logger->info("checking convergence in fitted-source aperture radius={:.3f} arcsec",
                                  beammap_convergence_radius_arcsec);
                     Eigen::VectorXd convergence_delta =
                         Eigen::VectorXd::Constant(n_maps, std::numeric_limits<double>::quiet_NaN());
@@ -5222,15 +5222,15 @@ void Beammap::process_apt() {
         if (beammap_reference_det_found >= 0 && beammap_reference_det_found < calib.n_dets) {
             double ref_det_actual_x_t = calib.apt["x_t"](beammap_reference_det_found);
             double ref_det_actual_y_t = calib.apt["y_t"](beammap_reference_det_found);
-            logger->info("using reference median ({},{}) arcsec; nearest detector {} at ({},{}) arcsec",
-                         static_cast<float>(ref_det_x_t), static_cast<float>(ref_det_y_t),
+            logger->info("using reference median ({:.3f},{:.3f}) arcsec; nearest detector {} at ({:.3f},{:.3f}) arcsec",
+                         ref_det_x_t, ref_det_y_t,
                          beammap_reference_det_found,
-                         static_cast<float>(ref_det_actual_x_t), static_cast<float>(ref_det_actual_y_t));
+                         ref_det_actual_x_t, ref_det_actual_y_t);
             // record resolved reference detector for metadata; keep config value unchanged
             calib.apt_meta["reference_det"] = beammap_reference_det_found;
         } else {
-            logger->warn("reference detector is invalid; leaving reference offsets at ({},{}) arcsec",
-                         static_cast<float>(ref_det_x_t), static_cast<float>(ref_det_y_t));
+            logger->warn("reference detector is invalid; leaving reference offsets at ({:.3f},{:.3f}) arcsec",
+                         ref_det_x_t, ref_det_y_t);
         }
     }
     else {
@@ -5302,7 +5302,7 @@ void Beammap::process_apt() {
     Eigen::VectorXd derot_elev_rad = calib.apt["derot_elev"];
     const double max_abs_elev = derot_elev_rad.array().abs().maxCoeff();
     if (std::isfinite(max_abs_elev) && max_abs_elev > 2.0 * pi + 0.1) {
-        logger->warn("derot_elev appears to be in degrees (max |elev|={}); converting to radians", max_abs_elev);
+        logger->warn("derot_elev appears to be in degrees (max |elev|={:.4g}); converting to radians", max_abs_elev);
         derot_elev_rad *= DEG_TO_RAD;
     }
 
