@@ -16,6 +16,11 @@ beammap: # beammap controls (node required, but options ignored if not beammappi
     max_flagged_fraction: 0.35 # skip masking for a detector if proposed mask exceeds this fraction of its good samples
   detector_weighting:
     mode: const # detector map weights: const, ptc, or ptc_after_iter0
+  detector_tod_output: # optional detector-specific PTC TOD sidecar for beammap inspection
+    enabled: false # write a compact detector/slot-major PTC file independent of processed_time_chunk.output
+    subdir_name: source_crossing_tod # raw/ subdirectory for the detector-specific TOD sidecar; use null for raw/
+    n_uniform: 10 # number of selected scans uniformly spanning the raster for each detector
+    n_source_dense: 10 # number of selected scans centered on each detector's fitted source-crossing scan
   fitting:
     fit_radius_fwhm: 0.0 # circular residual support radius for beammap Gaussian fits, in nominal FWHM units (ignored if <=0)
   scan_band_mask: # optional edge-band masking for coherent bad scan legs in detector-grouped beammaps
