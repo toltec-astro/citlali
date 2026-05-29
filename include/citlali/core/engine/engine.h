@@ -16,6 +16,7 @@
 #include <omp.h>
 #include <fstream>
 #include <limits>
+#include <sstream>
 
 #include <Eigen/Core>
 
@@ -45,6 +46,7 @@
 #include <citlali/core/utils/toltec_io.h>
 #include <citlali/core/utils/gauss_models.h>
 #include <citlali/core/utils/fitting.h>
+#include <citlali/core/utils/pointing.h>
 
 #include <citlali/core/engine/config.h>
 #include <citlali/core/engine/calib.h>
@@ -308,6 +310,12 @@ public:
     bool tod_output_chunk_select_enabled_ptc = false;
     std::vector<Eigen::Index> tod_output_chunks_rtc;
     std::vector<Eigen::Index> tod_output_chunks_ptc;
+    std::string tod_output_selection_mode_rtc = "indices";
+    std::string tod_output_selection_mode_ptc = "indices";
+    int tod_output_uniform_count_rtc = 10;
+    int tod_output_uniform_count_ptc = 10;
+    int tod_output_source_dense_count_rtc = 10;
+    int tod_output_source_dense_count_ptc = 10;
     Eigen::VectorXI tod_scan_to_output_scan_rtc;
     Eigen::VectorXI tod_scan_to_output_scan_ptc;
     Eigen::Index n_tod_output_scans_rtc = 0;
@@ -585,10 +593,136 @@ void Engine::obsnum_setup() {
 
 void Engine::setup_tod_output_chunk_selection() {
     const Eigen::Index n_scans = telescope.scan_indices.cols();
+    auto vector_to_string = [](const std::vector<Eigen::Index> &values) {
+        std::ostringstream os;
+        os << "[";
+        for (std::size_t i = 0; i < values.size(); ++i) {
+            if (i != 0) {
+                os << ", ";
+            }
+            os << values[i];
+        }
+        os << "]";
+        return os.str();
+    };
+
+    auto build_uniform_plus_source_crossing_chunks =
+        [&](const std::string &stream_name, int n_uniform, int n_source_dense) {
+            std::set<Eigen::Index> selected_0based;
+            std::vector<Eigen::Index> selected_1based;
+            if (n_scans <= 0) {
+                return selected_1based;
+            }
+
+            n_uniform = std::max(0, n_uniform);
+            n_source_dense = std::max(0, n_source_dense);
+
+            if (n_uniform == 1) {
+                selected_0based.insert((n_scans - 1) / 2);
+            }
+            else if (n_uniform > 1) {
+                for (int i = 0; i < n_uniform; ++i) {
+                    const double frac = static_cast<double>(i) /
+                                        static_cast<double>(n_uniform - 1);
+                    Eigen::Index scan_index =
+                        static_cast<Eigen::Index>(std::lround(frac * (n_scans - 1)));
+                    scan_index = std::clamp<Eigen::Index>(scan_index, 0, n_scans - 1);
+                    selected_0based.insert(scan_index);
+                }
+            }
+
+            Eigen::Index source_scan = (n_scans - 1) / 2;
+            double best_scan_d2 = std::numeric_limits<double>::infinity();
+            try {
+                auto tel_data_copy = telescope.tel_data;
+                std::map<std::string, Eigen::VectorXd> pointing_offsets;
+                Eigen::Index n_tel = 0;
+                if (!tel_data_copy.empty()) {
+                    n_tel = tel_data_copy.begin()->second.size();
+                }
+                auto make_offset = [&](const std::string &axis) -> Eigen::VectorXd {
+                    auto it = pointing_offsets_arcsec.find(axis);
+                    if (it != pointing_offsets_arcsec.end() && it->second.size() == n_tel) {
+                        return it->second;
+                    }
+                    return Eigen::VectorXd::Zero(n_tel);
+                };
+                pointing_offsets["az"] = make_offset("az");
+                pointing_offsets["alt"] = make_offset("alt");
+
+                auto [lat, lon] = engine_utils::calc_det_pointing(
+                    tel_data_copy, 0.0, 0.0, telescope.pixel_axes, pointing_offsets,
+                    map_grouping, true);
+
+                for (Eigen::Index scan_index = 0; scan_index < n_scans; ++scan_index) {
+                    const Eigen::Index start =
+                        std::max<Eigen::Index>(0, telescope.scan_indices(0, scan_index));
+                    const Eigen::Index end =
+                        std::min<Eigen::Index>(lat.size() - 1, telescope.scan_indices(1, scan_index));
+                    if (end < start || lon.size() <= end) {
+                        continue;
+                    }
+                    double scan_best_d2 = std::numeric_limits<double>::infinity();
+                    for (Eigen::Index sample = start; sample <= end; ++sample) {
+                        const double y = lat(sample);
+                        const double x = lon(sample);
+                        if (!std::isfinite(x) || !std::isfinite(y)) {
+                            continue;
+                        }
+                        const double d2 = x * x + y * y;
+                        if (d2 < scan_best_d2) {
+                            scan_best_d2 = d2;
+                        }
+                    }
+                    if (scan_best_d2 < best_scan_d2) {
+                        best_scan_d2 = scan_best_d2;
+                        source_scan = scan_index;
+                    }
+                }
+            }
+            catch (const std::exception &e) {
+                logger->warn(
+                    "{} TOD uniform_plus_source_crossing selection could not calculate source-crossing scan ({}); using scan {}",
+                    stream_name, e.what(), source_scan + 1);
+            }
+
+            if (n_source_dense > 0) {
+                Eigen::Index first_dense =
+                    source_scan - static_cast<Eigen::Index>((n_source_dense - 1) / 2);
+                first_dense = std::clamp<Eigen::Index>(
+                    first_dense, 0, std::max<Eigen::Index>(0, n_scans - n_source_dense));
+                const Eigen::Index last_dense =
+                    std::min<Eigen::Index>(n_scans - 1,
+                                           first_dense + static_cast<Eigen::Index>(n_source_dense) - 1);
+                for (Eigen::Index scan_index = first_dense; scan_index <= last_dense; ++scan_index) {
+                    selected_0based.insert(scan_index);
+                }
+            }
+
+            selected_1based.reserve(selected_0based.size());
+            for (const auto scan_index : selected_0based) {
+                selected_1based.push_back(scan_index + 1);
+            }
+
+            logger->info(
+                "{} TOD output selection mode uniform_plus_source_crossing: n_uniform={} n_source_dense={} source_scan={} source_min_distance_arcsec={} selected={}",
+                stream_name,
+                n_uniform,
+                n_source_dense,
+                source_scan + 1,
+                std::isfinite(best_scan_d2) ? std::sqrt(best_scan_d2) * RAD_TO_ASEC
+                                            : std::numeric_limits<double>::quiet_NaN(),
+                vector_to_string(selected_1based));
+            return selected_1based;
+        };
+
     auto setup_one = [&](const std::string &stream_name,
                          bool output_enabled,
                          bool select_enabled,
                          const std::vector<Eigen::Index> &chunks_1based,
+                         const std::string &selection_mode,
+                         int uniform_count,
+                         int source_dense_count,
                          Eigen::VectorXI &scan_to_output,
                          Eigen::Index &n_output_scans) {
         scan_to_output.resize(n_scans);
@@ -600,7 +734,28 @@ void Engine::setup_tod_output_chunk_selection() {
             return;
         }
 
-        if (!select_enabled || chunks_1based.empty()) {
+        std::vector<Eigen::Index> effective_chunks = chunks_1based;
+        bool effective_select_enabled = select_enabled;
+        if (selection_mode == "all") {
+            effective_select_enabled = false;
+            effective_chunks.clear();
+        }
+        else if (selection_mode == "uniform_plus_source_crossing") {
+            effective_select_enabled = true;
+            effective_chunks = build_uniform_plus_source_crossing_chunks(
+                stream_name, uniform_count, source_dense_count);
+            if (effective_chunks.empty()) {
+                logger->error("{} TOD output selection mode uniform_plus_source_crossing selected no chunks",
+                              stream_name);
+                std::exit(EXIT_FAILURE);
+            }
+        }
+        else if (selection_mode != "indices") {
+            logger->error("{} TOD output selection mode '{}' is invalid", stream_name, selection_mode);
+            std::exit(EXIT_FAILURE);
+        }
+
+        if (!effective_select_enabled || effective_chunks.empty()) {
             for (Eigen::Index i = 0; i < n_scans; ++i) {
                 scan_to_output(i) = i;
             }
@@ -611,7 +766,7 @@ void Engine::setup_tod_output_chunk_selection() {
         }
 
         std::set<Eigen::Index> selected_chunks;
-        for (const auto chunk_1based : chunks_1based) {
+        for (const auto chunk_1based : effective_chunks) {
             if (chunk_1based < 1 || chunk_1based > n_scans) {
                 logger->error("{} TOD output indices contain {} but valid scan range is [1, {}]",
                               stream_name, chunk_1based, n_scans);
@@ -640,8 +795,10 @@ void Engine::setup_tod_output_chunk_selection() {
     }
     else {
         setup_one("RTC", run_tod_output_rtc, tod_output_chunk_select_enabled_rtc, tod_output_chunks_rtc,
+                  tod_output_selection_mode_rtc, tod_output_uniform_count_rtc, tod_output_source_dense_count_rtc,
                   tod_scan_to_output_scan_rtc, n_tod_output_scans_rtc);
         setup_one("PTC", run_tod_output_ptc, tod_output_chunk_select_enabled_ptc, tod_output_chunks_ptc,
+                  tod_output_selection_mode_ptc, tod_output_uniform_count_ptc, tod_output_source_dense_count_ptc,
                   tod_scan_to_output_scan_ptc, n_tod_output_scans_ptc);
     }
 
@@ -988,6 +1145,70 @@ void Engine::get_timestream_config(CT &config) {
                              "timestream.raw_time_chunk.output.indices", rtc_chunk_select_enabled, rtc_output_chunks);
     parse_tod_output_indices(std::tuple{"timestream","processed_time_chunk","output","indices"}, run_tod_output_ptc,
                              "timestream.processed_time_chunk.output.indices", ptc_chunk_select_enabled, ptc_output_chunks);
+
+    auto read_tod_selection_count = [&](const auto &key, const std::string &config_path,
+                                        int &value) {
+        if (!config.template has_typed<int>(key)) {
+            return;
+        }
+        value = config.template get_typed<int>(key);
+        if (value < 0) {
+            logger->error("{} must be non-negative. Found {}", config_path, value);
+            std::exit(EXIT_FAILURE);
+        }
+    };
+
+    auto parse_tod_selection_mode = [&](const auto &mode_key,
+                                        const auto &n_uniform_key,
+                                        const auto &n_source_dense_key,
+                                        bool output_enabled,
+                                        const std::string &mode_path,
+                                        const std::string &n_uniform_path,
+                                        const std::string &n_source_dense_path,
+                                        std::string &mode,
+                                        int &n_uniform,
+                                        int &n_source_dense) {
+        mode = "indices";
+        n_uniform = 10;
+        n_source_dense = 10;
+        if (!output_enabled) {
+            return;
+        }
+        if (config.has(mode_key)) {
+            get_config_value(config, mode, missing_keys, invalid_keys, mode_key,
+                             {"indices", "all", "uniform_plus_source_crossing"});
+        }
+        read_tod_selection_count(n_uniform_key, n_uniform_path, n_uniform);
+        read_tod_selection_count(n_source_dense_key, n_source_dense_path, n_source_dense);
+        if (mode == "uniform_plus_source_crossing" && n_uniform + n_source_dense <= 0) {
+            logger->error("{} selects uniform_plus_source_crossing but {} + {} is zero",
+                          mode_path, n_uniform_path, n_source_dense_path);
+            std::exit(EXIT_FAILURE);
+        }
+    };
+
+    parse_tod_selection_mode(
+        std::tuple{"timestream","raw_time_chunk","output","selection","mode"},
+        std::tuple{"timestream","raw_time_chunk","output","selection","n_uniform"},
+        std::tuple{"timestream","raw_time_chunk","output","selection","n_source_dense"},
+        run_tod_output_rtc,
+        "timestream.raw_time_chunk.output.selection.mode",
+        "timestream.raw_time_chunk.output.selection.n_uniform",
+        "timestream.raw_time_chunk.output.selection.n_source_dense",
+        tod_output_selection_mode_rtc,
+        tod_output_uniform_count_rtc,
+        tod_output_source_dense_count_rtc);
+    parse_tod_selection_mode(
+        std::tuple{"timestream","processed_time_chunk","output","selection","mode"},
+        std::tuple{"timestream","processed_time_chunk","output","selection","n_uniform"},
+        std::tuple{"timestream","processed_time_chunk","output","selection","n_source_dense"},
+        run_tod_output_ptc,
+        "timestream.processed_time_chunk.output.selection.mode",
+        "timestream.processed_time_chunk.output.selection.n_uniform",
+        "timestream.processed_time_chunk.output.selection.n_source_dense",
+        tod_output_selection_mode_ptc,
+        tod_output_uniform_count_ptc,
+        tod_output_source_dense_count_ptc);
 
     tod_output_chunk_select_enabled_rtc = rtc_chunk_select_enabled;
     tod_output_chunk_select_enabled_ptc = ptc_chunk_select_enabled;
