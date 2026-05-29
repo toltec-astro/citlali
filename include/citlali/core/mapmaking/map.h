@@ -1,5 +1,6 @@
 #pragma once
 
+#include <limits>
 #include <string>
 
 #include <Eigen/Core>
@@ -86,6 +87,26 @@ public:
 
     // optional memo-style gridding denominator used before finalizing inverse-variance weights
     std::vector<Eigen::MatrixXd> grid_weight;
+
+    struct NormalizeSupportDiag {
+        Eigen::Index map_index = -1;
+        Eigen::Index n_total = 0;
+        Eigen::Index n_retained = 0;
+        Eigen::Index n_masked = 0;
+        Eigen::Index n_masked_no_accum_weight = 0;
+        Eigen::Index n_masked_bad_grid_weight_with_accum_weight = 0;
+        Eigen::Index n_masked_by_support_threshold = 0;
+        Eigen::Index n_masked_raw_signal_nonzero = 0;
+        Eigen::Index n_masked_adjacent_support = 0;
+        double support_weight_threshold = std::numeric_limits<double>::quiet_NaN();
+        double max_masked_abs_raw_signal = std::numeric_limits<double>::quiet_NaN();
+        double max_masked_neighbor_weight = std::numeric_limits<double>::quiet_NaN();
+        Eigen::Index max_neighbor_row = -1;
+        Eigen::Index max_neighbor_col = -1;
+        int max_neighbor_cause = 0; // 1=no accum weight, 2=bad grid weight, 3=support threshold
+        bool use_grid_weight = false;
+    };
+    std::vector<NormalizeSupportDiag> normalize_support_diag;
 
     // noise maps (n_rows, n_cols, n_noise) of length n_maps
     std::vector<Eigen::Tensor<double,3>> noise;

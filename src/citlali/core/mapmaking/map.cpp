@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 #include <sstream>
 #include <stdexcept>
 
@@ -187,6 +188,7 @@ void MapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::ve
 void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
     // vectors for maps
     const bool use_grid_weight = grid_weight.size() == signal.size();
+    normalize_support_diag.assign(signal.size(), NormalizeSupportDiag{});
     if (active_maps == nullptr) {
         map_in_vec.resize(signal.size());
         std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
@@ -216,16 +218,118 @@ void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *act
 
         auto apply_weight_threshold = [&](Eigen::MatrixXd &weight_map) {
             mask = (weight_map.array() > 0.0).template cast<double>();
+            double weight_threshold = 0.0;
             if (cov_cut > 0.0) {
                 // Use a softer support floor than the science coverage cut so
                 // low-level kernel wings survive while unsupported edge pixels
                 // are still removed before normalization.
                 double support_cov_cut = cov_cut / 10.0;
-                double weight_threshold = engine_utils::find_weight_threshold(weight_map, support_cov_cut);
+                weight_threshold = engine_utils::find_weight_threshold(weight_map, support_cov_cut);
                 if (weight_threshold > 0.0) {
                     mask *= (weight_map.array() >= weight_threshold).template cast<double>();
                 }
             }
+            return weight_threshold;
+        };
+
+        auto classify_masked_cause = [](bool has_accum_weight,
+                                        bool has_valid_grid_weight,
+                                        bool use_grid_weight,
+                                        bool was_pre_threshold_supported) {
+            if (!has_accum_weight) {
+                return 1;
+            }
+            if (use_grid_weight && !has_valid_grid_weight) {
+                return 2;
+            }
+            if (was_pre_threshold_supported) {
+                return 3;
+            }
+            return 0;
+        };
+
+        auto record_support_diag = [&](const Eigen::MatrixXd &raw_signal,
+                                       const Eigen::ArrayXXd &accum_weight_valid,
+                                       const Eigen::ArrayXXd &grid_weight_valid,
+                                       const Eigen::ArrayXXd &pre_threshold_support,
+                                       double support_weight_threshold,
+                                       bool diag_use_grid_weight) {
+            NormalizeSupportDiag diag;
+            diag.map_index = i;
+            diag.n_total = n_rows * n_cols;
+            diag.use_grid_weight = diag_use_grid_weight;
+            diag.support_weight_threshold = support_weight_threshold;
+            diag.n_retained = (mask > 0.0).count();
+            diag.n_masked = (mask <= 0.0).count();
+            diag.n_masked_no_accum_weight =
+                ((mask <= 0.0) && (accum_weight_valid <= 0.0)).count();
+            diag.n_masked_bad_grid_weight_with_accum_weight =
+                ((mask <= 0.0) && (accum_weight_valid > 0.0) &&
+                 (grid_weight_valid <= 0.0)).count();
+            diag.n_masked_by_support_threshold =
+                ((mask <= 0.0) && (pre_threshold_support > 0.0)).count();
+            diag.n_masked_raw_signal_nonzero =
+                ((mask <= 0.0) && raw_signal.array().isFinite() &&
+                 (raw_signal.array().abs() > 0.0)).count();
+
+            const bool inspect_neighbors =
+                diag.n_masked > 0 && diag.n_retained > 0 &&
+                (diag.n_masked_bad_grid_weight_with_accum_weight > 0 ||
+                 diag.n_masked_by_support_threshold > 0 ||
+                 diag.n_masked_raw_signal_nonzero > 0);
+
+            if (inspect_neighbors) {
+                double max_abs_raw_signal = 0.0;
+                double max_neighbor_weight = -1.0;
+                for (Eigen::Index row = 0; row < n_rows; ++row) {
+                    for (Eigen::Index col = 0; col < n_cols; ++col) {
+                        if (mask(row, col) > 0.0) {
+                            continue;
+                        }
+                        if (std::isfinite(raw_signal(row, col))) {
+                            max_abs_raw_signal =
+                                std::max(max_abs_raw_signal, std::abs(raw_signal(row, col)));
+                        }
+
+                        double neighbor_weight = -1.0;
+                        if (row > 0 && mask(row - 1, col) > 0.0) {
+                            neighbor_weight =
+                                std::max(neighbor_weight, finalized_weight(row - 1, col));
+                        }
+                        if ((row + 1) < n_rows && mask(row + 1, col) > 0.0) {
+                            neighbor_weight =
+                                std::max(neighbor_weight, finalized_weight(row + 1, col));
+                        }
+                        if (col > 0 && mask(row, col - 1) > 0.0) {
+                            neighbor_weight =
+                                std::max(neighbor_weight, finalized_weight(row, col - 1));
+                        }
+                        if ((col + 1) < n_cols && mask(row, col + 1) > 0.0) {
+                            neighbor_weight =
+                                std::max(neighbor_weight, finalized_weight(row, col + 1));
+                        }
+                        if (neighbor_weight > 0.0) {
+                            diag.n_masked_adjacent_support++;
+                            if (neighbor_weight > max_neighbor_weight) {
+                                max_neighbor_weight = neighbor_weight;
+                                diag.max_neighbor_row = row;
+                                diag.max_neighbor_col = col;
+                                diag.max_neighbor_cause =
+                                    classify_masked_cause(accum_weight_valid(row, col) > 0.0,
+                                                          grid_weight_valid(row, col) > 0.0,
+                                                          diag_use_grid_weight,
+                                                          pre_threshold_support(row, col) > 0.0);
+                            }
+                        }
+                    }
+                }
+                diag.max_masked_abs_raw_signal = max_abs_raw_signal;
+                if (max_neighbor_weight >= 0.0) {
+                    diag.max_masked_neighbor_weight = max_neighbor_weight;
+                }
+            }
+
+            normalize_support_diag[i] = diag;
         };
 
         if (use_grid_weight) {
@@ -234,11 +338,20 @@ void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *act
             const auto accum_weight_valid = weight[i].array().isFinite() && (weight[i].array() > 0.0);
             const auto valid_support = denom_valid && accum_weight_valid;
             const Eigen::ArrayXXd safe_denom = denom_valid.select(denom.array(), 1.0);
+            const Eigen::MatrixXd raw_signal = signal[i];
 
             finalized_weight =
                 ((denom.array().square() / weight[i].array().max(1e-30)) *
                  valid_support.template cast<double>()).matrix();
-            apply_weight_threshold(finalized_weight);
+            const Eigen::ArrayXXd pre_threshold_support =
+                (finalized_weight.array() > 0.0).template cast<double>();
+            const double support_weight_threshold = apply_weight_threshold(finalized_weight);
+            record_support_diag(raw_signal,
+                                accum_weight_valid.template cast<double>(),
+                                denom_valid.template cast<double>(),
+                                pre_threshold_support,
+                                support_weight_threshold,
+                                true);
 
             signal[i] = ((signal[i].array() / safe_denom) * mask).matrix();
 
@@ -257,10 +370,19 @@ void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *act
             weight[i] = (finalized_weight.array() * mask).matrix();
         }
         else {
+            const Eigen::MatrixXd raw_signal = signal[i];
             finalized_weight =
                 (weight[i].array().isFinite() && (weight[i].array() > 0.0))
                     .select(weight[i].array(), 0.0).matrix();
-            apply_weight_threshold(finalized_weight);
+            const Eigen::ArrayXXd pre_threshold_support =
+                (finalized_weight.array() > 0.0).template cast<double>();
+            const double support_weight_threshold = apply_weight_threshold(finalized_weight);
+            record_support_diag(raw_signal,
+                                pre_threshold_support,
+                                Eigen::ArrayXXd::Ones(n_rows, n_cols),
+                                pre_threshold_support,
+                                support_weight_threshold,
+                                false);
             const Eigen::ArrayXXd safe_weight = (finalized_weight.array() > 0.0)
                                                     .select(finalized_weight.array(), 1.0);
 
