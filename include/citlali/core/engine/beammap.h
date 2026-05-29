@@ -3571,6 +3571,13 @@ void Beammap::run_loop() {
 
                 logger->info("normalizing maps");
                 omb.normalize_maps(active_maps_ptr);
+                if (rtcproc.run_kernel) {
+                    timestream::log_kernel_map_diag(
+                        logger,
+                        "beammap iter " + std::to_string(current_iter) + " after normalize",
+                        omb.kernel,
+                        active_maps_ptr);
+                }
             };
 
             run_mapmaking_pass(true);
@@ -5844,6 +5851,10 @@ void Beammap::output() {
 
                 if (!mb->kernel.empty()) {
                     step++;
+                    timestream::log_kernel_map_diag(
+                        logger,
+                        "map output " + dir_name + " before write",
+                        mb->kernel);
                 }
                 if (!mb->coverage.empty()) {
                     step++;
@@ -5899,6 +5910,12 @@ void Beammap::output() {
             };
 
             if (split_by_flag_mode) {
+                if (!mb->kernel.empty()) {
+                    timestream::log_kernel_map_diag(
+                        logger,
+                        "map output " + dir_name + " split-by-flag before write",
+                        mb->kernel);
+                }
                 std::set<int> split_values(beammap_split_flag_values.begin(), beammap_split_flag_values.end());
                 Eigen::Index n_selected_maps = 0;
                 for (Eigen::Index i = 0; i < n_maps; ++i) {

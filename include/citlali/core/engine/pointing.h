@@ -407,11 +407,15 @@ auto Pointing::run(KidsProc &kidsproc) {
 
         // if running fruit loops and a map has been read in
         if (use_fruit_noise_weights) {
+            timestream::log_kernel_matrix_diag(
+                logger, "ptc before fruitloops map subtraction", ptcdata.kernel.data, ptcdata.index.data);
             logger->info("subtracting map from tod");
             // subtract map
             ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(ptcproc.tod_mb, ptcdata, calib,
                                                                             map_indices, telescope.pixel_axes,
                                                                             map_grouping);
+            timestream::log_kernel_matrix_diag(
+                logger, "ptc after fruitloops map subtraction", ptcdata.kernel.data, ptcdata.index.data);
         }
 
         apply_model_protected_ptc_line_audit(ptcdata, calib_scan, use_fruit_noise_weights);
@@ -419,6 +423,8 @@ auto Pointing::run(KidsProc &kidsproc) {
         // run cleaning
         logger->info("processed time chunk processing for scan {}", ptcdata.index.data + 1);
         ptcproc.run(ptcdata, ptcdata, calib, telescope.pixel_axes, map_grouping);
+        timestream::log_kernel_matrix_diag(
+            logger, "ptc after processed time chunk cleaning", ptcdata.kernel.data, ptcdata.index.data);
 
         // if running fruit loops and a map has been read in
         if (use_fruit_noise_weights) {
@@ -448,6 +454,8 @@ auto Pointing::run(KidsProc &kidsproc) {
             ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(ptcproc.tod_mb, ptcdata, calib,
                                                                     map_indices, telescope.pixel_axes,
                                                                     map_grouping);
+            timestream::log_kernel_matrix_diag(
+                logger, "ptc after fruitloops map addback", ptcdata.kernel.data, ptcdata.index.data);
         }
 
         // remove outliers after cleaning

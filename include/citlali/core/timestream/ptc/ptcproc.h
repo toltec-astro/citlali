@@ -1143,6 +1143,8 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     Eigen::Index n_pts = in.scans.data.rows();
     Eigen::Index n_dets = in.scans.data.cols();
 
+    log_kernel_matrix_diag(logger, "ptc run input", in.kernel.data, in.index.data);
+
     // subtract mean from data and kernel, optionally masking the source region
     if (run_clean && mask_radius_arcsec > 0) {
         auto mean_flags = mask_region(in, calib, pixel_axes, map_grouping, n_pts, n_dets, 0);
@@ -1151,6 +1153,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     else {
         subtract_mean(in);
     }
+    log_kernel_matrix_diag(logger, "ptc after subtract_mean", in.kernel.data, in.index.data);
 
     if (run_clean) {
         logger->info("cleaning");
@@ -1369,6 +1372,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                     corr_nw_summary_by_scan[in.index.data] = std::move(corr_summary_scan);
                     indx++;
                     out.status.cleaned = true;
+                    log_kernel_matrix_diag(logger, "ptc after clean group=corr_nw", out.kernel.data, in.index.data);
                     continue;
             }
 
@@ -1549,6 +1553,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             indx++;
             // set as cleaned
             out.status.cleaned = true;
+            log_kernel_matrix_diag(logger, "ptc after clean group=" + effective_group, out.kernel.data, in.index.data);
         }
         if (!adaptive_summary_scan.empty()) {
             adaptive_selector_summary_by_scan[in.index.data] = std::move(adaptive_summary_scan);
@@ -1563,6 +1568,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             apply_second_pass_local(out, calib);
         }
     }
+    log_kernel_matrix_diag(logger, "ptc run output", out.kernel.data, in.index.data);
 }
 
 template <class calib_type>

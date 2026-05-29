@@ -12,6 +12,7 @@
 #include <cmath>
 #include <numeric>
 #include <string_view>
+#include <vector>
 
 #include <boost/math/special_functions/bessel.hpp>
 
@@ -269,6 +270,188 @@ struct TCData<kind_, std::enable_if_t<tula::enum_utils::is_compound_v<kind_>>>
     const variant_t &variant() const { return *this; }
     static constexpr auto kind() { return kind_; }
 };
+
+struct KernelMatrixDiag {
+    Eigen::Index n_total = 0;
+    Eigen::Index n_sampled = 0;
+    Eigen::Index n_finite = 0;
+    Eigen::Index n_negative = 0;
+    Eigen::Index n_positive = 0;
+    double min = std::numeric_limits<double>::quiet_NaN();
+    double max = std::numeric_limits<double>::quiet_NaN();
+    double mean = std::numeric_limits<double>::quiet_NaN();
+    double rms = std::numeric_limits<double>::quiet_NaN();
+    double abs_max = std::numeric_limits<double>::quiet_NaN();
+};
+
+template <typename Derived>
+KernelMatrixDiag summarize_kernel_matrix(const Eigen::MatrixBase<Derived> &matrix,
+                                         Eigen::Index max_samples = 250000) {
+    KernelMatrixDiag diag;
+    diag.n_total = matrix.size();
+    if (diag.n_total <= 0 || matrix.rows() <= 0 || matrix.cols() <= 0) {
+        return diag;
+    }
+    const Eigen::Index stride =
+        (max_samples > 0 && diag.n_total > max_samples)
+            ? std::max<Eigen::Index>(1, (diag.n_total + max_samples - 1) / max_samples)
+            : 1;
+    double sum = 0.0;
+    double sumsq = 0.0;
+    double abs_max = 0.0;
+    for (Eigen::Index idx = 0; idx < diag.n_total; idx += stride) {
+        const Eigen::Index r = idx % matrix.rows();
+        const Eigen::Index c = idx / matrix.rows();
+        const double v = static_cast<double>(matrix(r, c));
+        ++diag.n_sampled;
+        if (!std::isfinite(v)) {
+            continue;
+        }
+        if (diag.n_finite == 0) {
+            diag.min = v;
+            diag.max = v;
+        }
+        else {
+            diag.min = std::min(diag.min, v);
+            diag.max = std::max(diag.max, v);
+        }
+        if (v < 0.0) {
+            ++diag.n_negative;
+        }
+        else if (v > 0.0) {
+            ++diag.n_positive;
+        }
+        abs_max = std::max(abs_max, std::abs(v));
+        sum += v;
+        sumsq += v * v;
+        ++diag.n_finite;
+    }
+    if (diag.n_finite > 0) {
+        diag.mean = sum / static_cast<double>(diag.n_finite);
+        diag.rms = std::sqrt(sumsq / static_cast<double>(diag.n_finite));
+        diag.abs_max = abs_max;
+    }
+    return diag;
+}
+
+template <typename Derived>
+void log_kernel_matrix_diag(const std::shared_ptr<spdlog::logger> &logger,
+                            const std::string &stage,
+                            const Eigen::MatrixBase<Derived> &matrix,
+                            Eigen::Index scan_index = -1) {
+    if (!logger || matrix.size() == 0) {
+        return;
+    }
+    const auto diag = summarize_kernel_matrix(matrix);
+    const double negative_frac =
+        diag.n_finite > 0
+            ? static_cast<double>(diag.n_negative) / static_cast<double>(diag.n_finite)
+            : std::numeric_limits<double>::quiet_NaN();
+    logger->info(
+        "kernel_tod_diag stage='{}' scan={} shape={}x{} sampled={}/{} finite={}/{} neg={} neg_frac={} pos={} min={} max={} mean={} rms={} absmax={}",
+        stage,
+        scan_index,
+        matrix.rows(),
+        matrix.cols(),
+        diag.n_sampled,
+        diag.n_total,
+        diag.n_finite,
+        diag.n_sampled,
+        diag.n_negative,
+        negative_frac,
+        diag.n_positive,
+        diag.min,
+        diag.max,
+        diag.mean,
+        diag.rms,
+        diag.abs_max);
+}
+
+inline void log_kernel_map_diag(
+    const std::shared_ptr<spdlog::logger> &logger,
+    const std::string &stage,
+    const std::vector<Eigen::MatrixXd> &kernel_maps,
+    const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr) {
+    if (!logger || kernel_maps.empty()) {
+        return;
+    }
+    Eigen::Index n_active = 0;
+    Eigen::Index n_center_finite = 0;
+    Eigen::Index n_center_negative = 0;
+    Eigen::Index n_center_positive = 0;
+    Eigen::Index n_center_zero = 0;
+    Eigen::Index worst_center_map = -1;
+    double center_min = std::numeric_limits<double>::quiet_NaN();
+    double center_max = std::numeric_limits<double>::quiet_NaN();
+    double center_sum = 0.0;
+
+    for (Eigen::Index i = 0; i < static_cast<Eigen::Index>(kernel_maps.size()); ++i) {
+        if (active_maps != nullptr && (i >= active_maps->size() || !(*active_maps)(i))) {
+            continue;
+        }
+        const auto &map = kernel_maps[static_cast<std::size_t>(i)];
+        if (map.size() == 0) {
+            continue;
+        }
+        ++n_active;
+        const Eigen::Index center_row =
+            std::clamp<Eigen::Index>(static_cast<Eigen::Index>(std::llround((map.rows() - 1) / 2.0)),
+                                     0, map.rows() - 1);
+        const Eigen::Index center_col =
+            std::clamp<Eigen::Index>(static_cast<Eigen::Index>(std::llround((map.cols() - 1) / 2.0)),
+                                     0, map.cols() - 1);
+        const double center = map(center_row, center_col);
+        if (std::isfinite(center)) {
+            if (n_center_finite == 0) {
+                center_min = center;
+                center_max = center;
+                worst_center_map = i;
+            }
+            else {
+                if (center < center_min) {
+                    center_min = center;
+                    worst_center_map = i;
+                }
+                center_max = std::max(center_max, center);
+            }
+            if (center < 0.0) {
+                ++n_center_negative;
+            }
+            else if (center > 0.0) {
+                ++n_center_positive;
+            }
+            else {
+                ++n_center_zero;
+            }
+            center_sum += center;
+            ++n_center_finite;
+        }
+    }
+
+    const double center_mean =
+        n_center_finite > 0
+            ? center_sum / static_cast<double>(n_center_finite)
+            : std::numeric_limits<double>::quiet_NaN();
+    const double center_negative_frac =
+        n_center_finite > 0
+            ? static_cast<double>(n_center_negative) / static_cast<double>(n_center_finite)
+            : std::numeric_limits<double>::quiet_NaN();
+
+    logger->info(
+        "kernel_map_diag stage='{}' maps={} active={} center_finite={} center_neg={} center_neg_frac={} center_pos={} center_zero={} center_min={} center_max={} center_mean={} worst_center_map={}",
+        stage,
+        kernel_maps.size(),
+        n_active,
+        n_center_finite,
+        n_center_negative,
+        center_negative_frac,
+        n_center_positive,
+        n_center_zero,
+        center_min,
+        center_max,
+        center_mean,
+        worst_center_map);
+}
 
 // class for tod processing
 class TCProc {

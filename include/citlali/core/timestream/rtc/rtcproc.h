@@ -1824,6 +1824,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         }
 
         in.status.kernel_generated = true;
+        log_kernel_matrix_diag(logger, "rtc after kernel create", in.kernel.data, in.index.data);
     }
 
     // run despiking
@@ -1873,6 +1874,10 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             n_applied_line_audit_notches +=
                 apply_rtc_line_audit_shared_notches(in, telescope.fsmp, line_audit, false);
         }
+        if (run_kernel && n_applied_line_audit_notches > 0) {
+            log_kernel_matrix_diag(logger, "rtc after pre-filter line audit notches",
+                                   in.kernel.data, in.index.data);
+        }
     }
 
     bool ran_tod_filter_stage = false;
@@ -1898,6 +1903,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 logger->debug("applying notch filter to kernel");
                 filter.iir(in.kernel.data);
             }
+            log_kernel_matrix_diag(logger, "rtc after tod filter", in.kernel.data, in.index.data);
         }
         ran_tod_filter_stage = true;
     }
@@ -1909,6 +1915,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         if (run_kernel) {
             logger->debug("applying iir highpass filter to kernel");
             filter.iir_highpass(in.kernel.data, telescope.fsmp);
+            log_kernel_matrix_diag(logger, "rtc after highpass filter", in.kernel.data, in.index.data);
         }
         ran_tod_filter_stage = true;
     }
@@ -1918,6 +1925,9 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     }
 
     apply_filter_edge_guard(in, si, sl);
+    if (run_kernel) {
+        log_kernel_matrix_diag(logger, "rtc after primary edge guard", in.kernel.data, in.index.data);
+    }
 
     RTCLineAuditOptions post_line_audit = line_audit;
     post_line_audit.enabled = line_audit.enabled && line_audit.post_filter_enabled;
@@ -1962,6 +1972,10 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             apply_rtc_line_audit_detector_notches(in, telescope.fsmp, post_line_audit, si, sl);
         if (n_detector_notches > 0) {
             in.status.tod_filtered = true;
+            if (run_kernel) {
+                log_kernel_matrix_diag(logger, "rtc after detector line audit notches",
+                                       in.kernel.data, in.index.data);
+            }
             Eigen::Index detector_guard_samples = 0;
             if (filter_edge_guard.apply_dynamic_notch) {
                 const Eigen::Index guard_notch_count =
@@ -2055,6 +2069,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 in.kernel.data.block(si, 0, sl, in.kernel.data.cols());
 
             downsampler.downsample(in_kernel, out.kernel.data);
+            log_kernel_matrix_diag(logger, "rtc output inner after downsample", out.kernel.data, in.index.data);
         }
 
         in.status.downsampled = true;
@@ -2068,6 +2083,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         // copy kernel
         if (run_kernel) {
             out.kernel.data = in.kernel.data.block(si, 0, sl, in.kernel.data.cols());
+            log_kernel_matrix_diag(logger, "rtc output inner copy", out.kernel.data, in.index.data);
         }
         // copy telescope data
         for (auto const& x: in.tel_data.data) {
