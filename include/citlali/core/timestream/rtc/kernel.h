@@ -75,12 +75,12 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
     double sigma = sigma_rad;
 
     for (Eigen::Index i=0; i<n_dets; ++i) {
-        // calc tangent plane pointing
-        const bool use_detector_pointing_for_kernel = map_grouping == "detector";
+        // calc tangent plane pointing in the map frame.  For detector maps the
+        // kernel is a transfer-function probe at the map origin, so detector
+        // offsets are intentionally not applied here.
         auto [lat, lon] = engine_utils::calc_det_pointing(
             in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
-            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping,
-            use_detector_pointing_for_kernel);
+            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
 
         // distance to source to truncate it
         auto dist = ((lat.array()).pow(2) + (lon.array()).pow(2)).sqrt();
@@ -123,12 +123,12 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
     double sigma_lon = sigma_rad;
 
     for (Eigen::Index i=0; i<n_dets; ++i) {
-        // calc tangent plane pointing
-        const bool use_detector_pointing_for_kernel = map_grouping == "detector";
+        // calc tangent plane pointing in the map frame.  For detector maps the
+        // kernel is a transfer-function probe at the map origin, so detector
+        // offsets are intentionally not applied here.
         auto [lat, lon] = engine_utils::calc_det_pointing(
             in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
-            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping,
-            use_detector_pointing_for_kernel);
+            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
 
         // distance to source to truncate it
         auto dist = ((lat.array()).pow(2) + (lon.array()).pow(2)).sqrt();
@@ -181,12 +181,12 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
 
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
-        // calc tangent plane pointing
-        const bool use_detector_pointing_for_kernel = map_grouping == "detector";
+        // calc tangent plane pointing in the map frame.  For detector maps the
+        // kernel is a transfer-function probe at the map origin, so detector
+        // offsets are intentionally not applied here.
         auto [lat, lon] = engine_utils::calc_det_pointing(
             in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
-            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping,
-            use_detector_pointing_for_kernel);
+            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
 
         // distance to source to truncate it
         auto dist = ((lat.array()).pow(2) + (lon.array()).pow(2)).sqrt();
@@ -201,7 +201,14 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
 
         for (Eigen::Index j=0; j<n_pts; ++j) {
             if (dist(j) <= sigma_limit*fwhm) {
-                in.kernel.data(j,i) = pow(2*boost::math::cyl_bessel_j(1,factor*dist(j))/(factor*dist(j)),2);
+                const double x = factor * dist(j);
+                if (std::abs(x) < 1e-12) {
+                    in.kernel.data(j,i) = 1.0;
+                }
+                else {
+                    in.kernel.data(j,i) =
+                        pow(2 * boost::math::cyl_bessel_j(1, x) / x, 2);
+                }
             }
             else {
                 in.kernel.data(j,i) = 0;
@@ -224,12 +231,12 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
 
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
-        // calc tangent plane pointing
-        const bool use_detector_pointing_for_kernel = map_grouping == "detector";
+        // calc tangent plane pointing in the map frame.  For detector maps the
+        // kernel is a transfer-function probe at the map origin, so detector
+        // offsets are intentionally not applied here.
         auto [lat, lon] = engine_utils::calc_det_pointing(
             in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
-            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping,
-            use_detector_pointing_for_kernel);
+            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
 
         if (images.size() > 1) {
             map_index = map_indices(i);

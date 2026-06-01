@@ -1924,6 +1924,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                      mb.kernel.size(), mb.signal.size());
         run_kernel = false;
     }
+    const bool detector_map_kernel_feedback = run_kernel && map_grouping == "detector";
     // if mean rms is filled use S/N limit
     bool run_noise = mb.median_rms.size() != 0;
 
@@ -2040,6 +2041,37 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                 }
 
                 if (on_image) {
+                    auto sample_kernel_value = [&]() {
+                        double kernel_value = 0.0;
+                        if (fruit_loops_interp_mode == "jinc") {
+                            kernel_value = sample_map_jinc(mb.kernel[map_index], array_id,
+                                                           map_row, map_col);
+                        }
+                        else if (fruit_loops_interp_mode == "trunc") {
+                            kernel_value = mb.kernel[map_index](trunc_ir, trunc_ic);
+                        }
+                        else if (fruit_loops_interp_mode == "nearest") {
+                            const auto ir = std::clamp(static_cast<Eigen::Index>(std::llround(map_row)),
+                                                       Eigen::Index{0}, mb.n_rows - 1);
+                            const auto ic = std::clamp(static_cast<Eigen::Index>(std::llround(map_col)),
+                                                       Eigen::Index{0}, mb.n_cols - 1);
+                            kernel_value = mb.kernel[map_index](ir, ic);
+                        }
+                        else {
+                            kernel_value = sample_map_bilinear(mb.kernel[map_index], map_row,
+                                                               map_col);
+                        }
+                        return std::pair<bool, double>{std::isfinite(kernel_value), kernel_value};
+                    };
+
+                    double kernel_value = 0.0;
+                    bool have_kernel_value = false;
+                    if (detector_map_kernel_feedback) {
+                        auto sampled_kernel = sample_kernel_value();
+                        have_kernel_value = sampled_kernel.first;
+                        kernel_value = sampled_kernel.second;
+                    }
+
                     // check whether we should include pixel
                     bool run_pix_s2n = false;
                     bool run_pix_flux = false;
@@ -2141,29 +2173,24 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                     if (run_pix_s2n || run_pix_flux || run_pix_adaptive) {
                         // add/subtract signal pixel from signal timestream
                         in.scans.data(j,i) += factor * signal;
-                        // add/subtract kernel pixel from kernel timestream
-                        if (run_kernel) {
-                            double kernel_value;
-                            if (fruit_loops_interp_mode == "jinc") {
-                                kernel_value = sample_map_jinc(mb.kernel[map_index], array_id,
-                                                               map_row, map_col);
+                        // In non-detector maps the signal and kernel support
+                        // are co-centered, so keep the historical behavior:
+                        // only feed back the kernel where the signal model is
+                        // being fed back.
+                        if (run_kernel && !detector_map_kernel_feedback) {
+                            auto sampled_kernel = sample_kernel_value();
+                            if (sampled_kernel.first) {
+                                in.kernel.data(j,i) += factor * sampled_kernel.second;
                             }
-                            else if (fruit_loops_interp_mode == "trunc") {
-                                kernel_value = mb.kernel[map_index](trunc_ir, trunc_ic);
-                            }
-                            else if (fruit_loops_interp_mode == "nearest") {
-                                const auto ir = std::clamp(static_cast<Eigen::Index>(std::llround(map_row)),
-                                                           Eigen::Index{0}, mb.n_rows - 1);
-                                const auto ic = std::clamp(static_cast<Eigen::Index>(std::llround(map_col)),
-                                                           Eigen::Index{0}, mb.n_cols - 1);
-                                kernel_value = mb.kernel[map_index](ir, ic);
-                            }
-                            else {
-                                kernel_value = sample_map_bilinear(mb.kernel[map_index], map_row,
-                                                                   map_col);
-                            }
-                            in.kernel.data(j,i) += factor * kernel_value;
                         }
+                    }
+
+                    // The signal and diagnostic kernel maps may be centered on
+                    // different locations in detector beammaps.  Protect the
+                    // kernel model through fruit loops using its own map
+                    // support rather than gating it on selected signal pixels.
+                    if (detector_map_kernel_feedback && have_kernel_value) {
+                        in.kernel.data(j,i) += factor * kernel_value;
                     }
                 }
             }
