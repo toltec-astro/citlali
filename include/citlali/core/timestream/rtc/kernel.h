@@ -76,8 +76,11 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
 
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // calc tangent plane pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
-                                                          pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
+        const bool use_detector_pointing_for_kernel = map_grouping == "detector";
+        auto [lat, lon] = engine_utils::calc_det_pointing(
+            in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
+            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping,
+            use_detector_pointing_for_kernel);
 
         // distance to source to truncate it
         auto dist = ((lat.array()).pow(2) + (lon.array()).pow(2)).sqrt();
@@ -121,8 +124,11 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
 
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // calc tangent plane pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
-                                                          pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
+        const bool use_detector_pointing_for_kernel = map_grouping == "detector";
+        auto [lat, lon] = engine_utils::calc_det_pointing(
+            in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
+            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping,
+            use_detector_pointing_for_kernel);
 
         // distance to source to truncate it
         auto dist = ((lat.array()).pow(2) + (lon.array()).pow(2)).sqrt();
@@ -176,8 +182,11 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // calc tangent plane pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
-                                                          pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
+        const bool use_detector_pointing_for_kernel = map_grouping == "detector";
+        auto [lat, lon] = engine_utils::calc_det_pointing(
+            in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
+            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping,
+            use_detector_pointing_for_kernel);
 
         // distance to source to truncate it
         auto dist = ((lat.array()).pow(2) + (lon.array()).pow(2)).sqrt();
@@ -216,8 +225,11 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
         // calc tangent plane pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
-                                                          pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
+        const bool use_detector_pointing_for_kernel = map_grouping == "detector";
+        auto [lat, lon] = engine_utils::calc_det_pointing(
+            in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
+            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping,
+            use_detector_pointing_for_kernel);
 
         if (images.size() > 1) {
             map_index = map_indices(i);

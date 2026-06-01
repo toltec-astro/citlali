@@ -1530,7 +1530,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                         // check if any good flags
                             logger->debug("cleaning kernel");
                             auto in_kernel_block = in.kernel.data.block(0, start_index, n_pts, n_dets);
-                            auto out_kernel_block = in.kernel.data.block(0, start_index, n_pts, n_dets);
+                            auto out_kernel_block = out.kernel.data.block(0, start_index, n_pts, n_dets);
 
                             // remove eigenvalues from the kernel and reconstruct the tod
                             cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
