@@ -4123,6 +4123,14 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                 }
 
                 logger->info("normalizing maps");
+                if (rtcproc.run_kernel && !omb.grid_weight.empty()) {
+                    timestream::log_kernel_map_diag(
+                        logger,
+                        "beammap iter " + std::to_string(current_iter) + " before normalize",
+                        omb.kernel,
+                        active_maps_ptr,
+                        &omb.grid_weight);
+                }
                 omb.normalize_maps(active_maps_ptr);
                 if (rtcproc.run_kernel) {
                     timestream::log_kernel_map_diag(

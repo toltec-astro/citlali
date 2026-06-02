@@ -371,19 +371,41 @@ inline void log_kernel_map_diag(
     const std::shared_ptr<spdlog::logger> &logger,
     const std::string &stage,
     const std::vector<Eigen::MatrixXd> &kernel_maps,
-    const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr) {
+    const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr,
+    const std::vector<Eigen::MatrixXd> *grid_weight_maps = nullptr) {
     if (!logger || kernel_maps.empty()) {
         return;
     }
+    const bool have_grid_weight =
+        grid_weight_maps != nullptr &&
+        grid_weight_maps->size() == kernel_maps.size();
     Eigen::Index n_active = 0;
     Eigen::Index n_center_finite = 0;
     Eigen::Index n_center_negative = 0;
     Eigen::Index n_center_positive = 0;
     Eigen::Index n_center_zero = 0;
     Eigen::Index worst_center_map = -1;
+    Eigen::Index n_peak_finite = 0;
+    Eigen::Index n_peak_positive = 0;
+    Eigen::Index worst_peak_map = -1;
+    Eigen::Index best_peak_map = -1;
     double center_min = std::numeric_limits<double>::quiet_NaN();
     double center_max = std::numeric_limits<double>::quiet_NaN();
     double center_sum = 0.0;
+    double peak_min = std::numeric_limits<double>::quiet_NaN();
+    double peak_max = std::numeric_limits<double>::quiet_NaN();
+    double peak_sum = 0.0;
+    std::vector<double> peak_values;
+    Eigen::Index n_grid_peak_finite = 0;
+    Eigen::Index n_grid_peak_positive = 0;
+    Eigen::Index worst_grid_peak_map = -1;
+    Eigen::Index best_grid_peak_map = -1;
+    double grid_peak_min = std::numeric_limits<double>::quiet_NaN();
+    double grid_peak_max = std::numeric_limits<double>::quiet_NaN();
+    double grid_peak_sum = 0.0;
+    std::vector<double> grid_peak_values;
+    std::vector<double> grid_peak_raw_values;
+    std::vector<double> grid_peak_denom_values;
 
     for (Eigen::Index i = 0; i < static_cast<Eigen::Index>(kernel_maps.size()); ++i) {
         if (active_maps != nullptr && (i >= active_maps->size() || !(*active_maps)(i))) {
@@ -426,6 +448,102 @@ inline void log_kernel_map_diag(
             center_sum += center;
             ++n_center_finite;
         }
+
+        double map_peak = -std::numeric_limits<double>::infinity();
+        bool have_peak = false;
+        for (Eigen::Index row = 0; row < map.rows(); ++row) {
+            for (Eigen::Index col = 0; col < map.cols(); ++col) {
+                const double value = map(row, col);
+                if (!std::isfinite(value)) {
+                    continue;
+                }
+                if (!have_peak || value > map_peak) {
+                    map_peak = value;
+                    have_peak = true;
+                }
+            }
+        }
+        if (have_peak) {
+            if (n_peak_finite == 0) {
+                peak_min = map_peak;
+                peak_max = map_peak;
+                worst_peak_map = i;
+                best_peak_map = i;
+            }
+            else {
+                if (map_peak < peak_min) {
+                    peak_min = map_peak;
+                    worst_peak_map = i;
+                }
+                if (map_peak > peak_max) {
+                    peak_max = map_peak;
+                    best_peak_map = i;
+                }
+            }
+            if (map_peak > 0.0) {
+                ++n_peak_positive;
+            }
+            peak_sum += map_peak;
+            peak_values.push_back(map_peak);
+            ++n_peak_finite;
+        }
+
+        if (have_grid_weight) {
+            const auto &denom = (*grid_weight_maps)[static_cast<std::size_t>(i)];
+            if (denom.rows() == map.rows() && denom.cols() == map.cols()) {
+                double map_grid_peak = -std::numeric_limits<double>::infinity();
+                double raw_at_grid_peak = std::numeric_limits<double>::quiet_NaN();
+                double denom_at_grid_peak = std::numeric_limits<double>::quiet_NaN();
+                bool have_grid_peak = false;
+                for (Eigen::Index row = 0; row < map.rows(); ++row) {
+                    for (Eigen::Index col = 0; col < map.cols(); ++col) {
+                        const double raw_value = map(row, col);
+                        const double denom_value = denom(row, col);
+                        if (!std::isfinite(raw_value) ||
+                            !std::isfinite(denom_value) ||
+                            std::abs(denom_value) <= 1e-8) {
+                            continue;
+                        }
+                        const double norm_value = raw_value / denom_value;
+                        if (!std::isfinite(norm_value)) {
+                            continue;
+                        }
+                        if (!have_grid_peak || norm_value > map_grid_peak) {
+                            map_grid_peak = norm_value;
+                            raw_at_grid_peak = raw_value;
+                            denom_at_grid_peak = denom_value;
+                            have_grid_peak = true;
+                        }
+                    }
+                }
+                if (have_grid_peak) {
+                    if (n_grid_peak_finite == 0) {
+                        grid_peak_min = map_grid_peak;
+                        grid_peak_max = map_grid_peak;
+                        worst_grid_peak_map = i;
+                        best_grid_peak_map = i;
+                    }
+                    else {
+                        if (map_grid_peak < grid_peak_min) {
+                            grid_peak_min = map_grid_peak;
+                            worst_grid_peak_map = i;
+                        }
+                        if (map_grid_peak > grid_peak_max) {
+                            grid_peak_max = map_grid_peak;
+                            best_grid_peak_map = i;
+                        }
+                    }
+                    if (map_grid_peak > 0.0) {
+                        ++n_grid_peak_positive;
+                    }
+                    grid_peak_sum += map_grid_peak;
+                    grid_peak_values.push_back(map_grid_peak);
+                    grid_peak_raw_values.push_back(raw_at_grid_peak);
+                    grid_peak_denom_values.push_back(denom_at_grid_peak);
+                    ++n_grid_peak_finite;
+                }
+            }
+        }
     }
 
     const double center_mean =
@@ -436,9 +554,47 @@ inline void log_kernel_map_diag(
         n_center_finite > 0
             ? static_cast<double>(n_center_negative) / static_cast<double>(n_center_finite)
             : std::numeric_limits<double>::quiet_NaN();
+    const double peak_mean =
+        n_peak_finite > 0
+            ? peak_sum / static_cast<double>(n_peak_finite)
+            : std::numeric_limits<double>::quiet_NaN();
+    const double peak_positive_frac =
+        n_peak_finite > 0
+            ? static_cast<double>(n_peak_positive) / static_cast<double>(n_peak_finite)
+            : std::numeric_limits<double>::quiet_NaN();
+    auto percentile = [](std::vector<double> values, double q) {
+        if (values.empty()) {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+        std::sort(values.begin(), values.end());
+        const double pos = q * static_cast<double>(values.size() - 1);
+        const auto lo = static_cast<std::size_t>(std::floor(pos));
+        const auto hi = static_cast<std::size_t>(std::ceil(pos));
+        if (lo == hi) {
+            return values[lo];
+        }
+        const double frac = pos - static_cast<double>(lo);
+        return values[lo] * (1.0 - frac) + values[hi] * frac;
+    };
+    const double peak_p10 = percentile(peak_values, 0.10);
+    const double peak_p50 = percentile(peak_values, 0.50);
+    const double peak_p90 = percentile(peak_values, 0.90);
+    const double grid_peak_mean =
+        n_grid_peak_finite > 0
+            ? grid_peak_sum / static_cast<double>(n_grid_peak_finite)
+            : std::numeric_limits<double>::quiet_NaN();
+    const double grid_peak_positive_frac =
+        n_grid_peak_finite > 0
+            ? static_cast<double>(n_grid_peak_positive) / static_cast<double>(n_grid_peak_finite)
+            : std::numeric_limits<double>::quiet_NaN();
+    const double grid_peak_p10 = percentile(grid_peak_values, 0.10);
+    const double grid_peak_p50 = percentile(grid_peak_values, 0.50);
+    const double grid_peak_p90 = percentile(grid_peak_values, 0.90);
+    const double grid_peak_raw_p50 = percentile(grid_peak_raw_values, 0.50);
+    const double grid_peak_denom_p50 = percentile(grid_peak_denom_values, 0.50);
 
     logger->info(
-        "kernel_map_diag stage='{}' maps={} active={} center_finite={} center_neg={} center_neg_frac={:.4f} center_pos={} center_zero={} center_min={:.4g} center_max={:.4g} center_mean={:.4g} worst_center_map={}",
+        "kernel_map_diag stage='{}' maps={} active={} center_finite={} center_neg={} center_neg_frac={:.4f} center_pos={} center_zero={} center_min={:.4g} center_max={:.4g} center_mean={:.4g} worst_center_map={} peak_finite={} peak_pos={} peak_pos_frac={:.4f} peak_min={:.4g} peak_p10={:.4g} peak_median={:.4g} peak_p90={:.4g} peak_max={:.4g} peak_mean={:.4g} worst_peak_map={} best_peak_map={} grid_peak_finite={} grid_peak_pos={} grid_peak_pos_frac={:.4f} grid_peak_min={:.4g} grid_peak_p10={:.4g} grid_peak_median={:.4g} grid_peak_p90={:.4g} grid_peak_max={:.4g} grid_peak_mean={:.4g} grid_peak_raw_median={:.4g} grid_peak_denom_median={:.4g} worst_grid_peak_map={} best_grid_peak_map={}",
         stage,
         kernel_maps.size(),
         n_active,
@@ -450,7 +606,31 @@ inline void log_kernel_map_diag(
         center_min,
         center_max,
         center_mean,
-        worst_center_map);
+        worst_center_map,
+        n_peak_finite,
+        n_peak_positive,
+        peak_positive_frac,
+        peak_min,
+        peak_p10,
+        peak_p50,
+        peak_p90,
+        peak_max,
+        peak_mean,
+        worst_peak_map,
+        best_peak_map,
+        n_grid_peak_finite,
+        n_grid_peak_positive,
+        grid_peak_positive_frac,
+        grid_peak_min,
+        grid_peak_p10,
+        grid_peak_p50,
+        grid_peak_p90,
+        grid_peak_max,
+        grid_peak_mean,
+        grid_peak_raw_p50,
+        grid_peak_denom_p50,
+        worst_grid_peak_map,
+        best_grid_peak_map);
 }
 
 // class for tod processing
