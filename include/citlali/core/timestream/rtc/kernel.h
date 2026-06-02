@@ -28,6 +28,19 @@ public:
     // map grouping
     std::string map_grouping;
 
+    // Optional detector-map source centers in map-frame radians.  Beammap
+    // iteration 0 leaves these empty so the kernel is centered; later
+    // iterations can populate them from previous fitted source locations.
+    Eigen::VectorXd source_lat;
+    Eigen::VectorXd source_lon;
+    Eigen::VectorXi source_valid;
+
+    void clear_source_centers();
+    void set_source_centers(const Eigen::VectorXd &, const Eigen::VectorXd &,
+                            const Eigen::VectorXi &);
+    bool has_source_centers() const;
+    bool source_center_for_map(Eigen::Index, double &, double &) const;
+
     // initial setup
     void setup(Eigen::Index);
 
@@ -62,6 +75,51 @@ void Kernel::setup(Eigen::Index n_maps) {
     }
 }
 
+inline void Kernel::clear_source_centers() {
+    source_lat.resize(0);
+    source_lon.resize(0);
+    source_valid.resize(0);
+}
+
+inline void Kernel::set_source_centers(const Eigen::VectorXd &lat,
+                                       const Eigen::VectorXd &lon,
+                                       const Eigen::VectorXi &valid) {
+    source_lat = lat;
+    source_lon = lon;
+    source_valid = valid;
+}
+
+inline bool Kernel::has_source_centers() const {
+    return map_grouping == "detector" &&
+           source_valid.size() > 0 &&
+           source_lat.size() == source_valid.size() &&
+           source_lon.size() == source_valid.size() &&
+           (source_valid.array() != 0).any();
+}
+
+inline bool Kernel::source_center_for_map(Eigen::Index map_index,
+                                          double &lat,
+                                          double &lon) const {
+    lat = 0.0;
+    lon = 0.0;
+    if (map_grouping != "detector" ||
+        map_index < 0 ||
+        map_index >= source_valid.size() ||
+        map_index >= source_lat.size() ||
+        map_index >= source_lon.size() ||
+        source_valid(map_index) == 0) {
+        return false;
+    }
+    const double src_lat = source_lat(map_index);
+    const double src_lon = source_lon(map_index);
+    if (!std::isfinite(src_lat) || !std::isfinite(src_lon)) {
+        return false;
+    }
+    lat = src_lat;
+    lon = src_lon;
+    return true;
+}
+
 template<typename apt_t>
 void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes, apt_t &apt) {
 
@@ -75,15 +133,20 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
     double sigma = sigma_rad;
 
     for (Eigen::Index i=0; i<n_dets; ++i) {
-        // calc tangent plane pointing in the map frame.  For detector maps the
-        // kernel is a transfer-function probe at the map origin, so detector
-        // offsets are intentionally not applied here.
+        double source_lat_rad = 0.0;
+        double source_lon_rad = 0.0;
+        source_center_for_map(i, source_lat_rad, source_lon_rad);
+
+        // calc tangent plane pointing for a unit source kernel.  Detector
+        // beammaps use fitted map-frame source centers when available; iter 0
+        // and non-detector maps keep the source at the map center.
         auto [lat, lon] = engine_utils::calc_det_pointing(
             in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
             pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
 
         // distance to source to truncate it
-        auto dist = ((lat.array()).pow(2) + (lon.array()).pow(2)).sqrt();
+        auto dist = ((lat.array() - source_lat_rad).pow(2) +
+                     (lon.array() - source_lon_rad).pow(2)).sqrt();
 
         // calculate stddev from apt table if config stddev <=0
         if (sigma_rad <= 0) {
@@ -115,23 +178,26 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
 
     // get parameters for current detector
     double amp = 1.0;
-    double off_lat = 0.0;
-    double off_lon = 0.0;
 
     // beam standard deviations
     double sigma_lat = sigma_rad;
     double sigma_lon = sigma_rad;
 
     for (Eigen::Index i=0; i<n_dets; ++i) {
-        // calc tangent plane pointing in the map frame.  For detector maps the
-        // kernel is a transfer-function probe at the map origin, so detector
-        // offsets are intentionally not applied here.
+        double source_lat_rad = 0.0;
+        double source_lon_rad = 0.0;
+        source_center_for_map(i, source_lat_rad, source_lon_rad);
+
+        // calc tangent plane pointing for a unit source kernel.  Detector
+        // beammaps use fitted map-frame source centers when available; iter 0
+        // and non-detector maps keep the source at the map center.
         auto [lat, lon] = engine_utils::calc_det_pointing(
             in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
             pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
 
         // distance to source to truncate it
-        auto dist = ((lat.array()).pow(2) + (lon.array()).pow(2)).sqrt();
+        auto dist = ((lat.array() - source_lat_rad).pow(2) +
+                     (lon.array() - source_lon_rad).pow(2)).sqrt();
 
         // calculate stddev from apt table if config stddev <=0
         if (sigma_rad <= 0) {
@@ -157,9 +223,9 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
         for (Eigen::Index j=0; j<n_pts; ++j) {
             // truncate within radius
             if (dist(j) <= sigma_limit_det) {
-                in.kernel.data(j,i) = amp*exp(pow(lon(j) - off_lon, 2) * a +
-                                     (lon(j) - off_lon) * (lat(j) - off_lat) * b +
-                                     pow(lat(j) - off_lat, 2) * c);
+                in.kernel.data(j,i) = amp*exp(pow(lon(j) - source_lon_rad, 2) * a +
+                                     (lon(j) - source_lon_rad) * (lat(j) - source_lat_rad) * b +
+                                     pow(lat(j) - source_lat_rad, 2) * c);
             }
             else {
                 in.kernel.data(j,i) = 0;
@@ -181,15 +247,20 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
 
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
-        // calc tangent plane pointing in the map frame.  For detector maps the
-        // kernel is a transfer-function probe at the map origin, so detector
-        // offsets are intentionally not applied here.
+        double source_lat_rad = 0.0;
+        double source_lon_rad = 0.0;
+        source_center_for_map(i, source_lat_rad, source_lon_rad);
+
+        // calc tangent plane pointing for a unit source kernel.  Detector
+        // beammaps use fitted map-frame source centers when available; iter 0
+        // and non-detector maps keep the source at the map center.
         auto [lat, lon] = engine_utils::calc_det_pointing(
             in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
             pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
 
         // distance to source to truncate it
-        auto dist = ((lat.array()).pow(2) + (lon.array()).pow(2)).sqrt();
+        auto dist = ((lat.array() - source_lat_rad).pow(2) +
+                     (lon.array() - source_lon_rad).pow(2)).sqrt();
 
         // get fwhm from apt if config file fwhm is <= 0
         if (fwhm_rad <= 0) {
@@ -231,22 +302,28 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
 
     // loop through detectors
     for (Eigen::Index i=0; i<n_dets; ++i) {
-        // calc tangent plane pointing in the map frame.  For detector maps the
-        // kernel is a transfer-function probe at the map origin, so detector
-        // offsets are intentionally not applied here.
+        const Eigen::Index source_map_index =
+            (i >= 0 && i < map_indices.size()) ? map_indices(i) : i;
+        double source_lat_rad = 0.0;
+        double source_lon_rad = 0.0;
+        source_center_for_map(source_map_index, source_lat_rad, source_lon_rad);
+
+        // calc tangent plane pointing for a unit source kernel.  Detector
+        // beammaps use fitted map-frame source centers when available; iter 0
+        // and non-detector maps keep the source at the map center.
         auto [lat, lon] = engine_utils::calc_det_pointing(
             in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
             pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
 
         if (images.size() > 1) {
-            map_index = map_indices(i);
+            map_index = source_map_index;
         }
 
         // get map buffer row and col indices for lat and lon vectors
         const double row_center = (images[map_index].rows() - 1) / 2.0;
         const double col_center = (images[map_index].cols() - 1) / 2.0;
-        Eigen::VectorXd irows = lat.array()/pixel_size_rad + row_center;
-        Eigen::VectorXd icols = lon.array()/pixel_size_rad + col_center;
+        Eigen::VectorXd irows = (lat.array() - source_lat_rad)/pixel_size_rad + row_center;
+        Eigen::VectorXd icols = (lon.array() - source_lon_rad)/pixel_size_rad + col_center;
 
         for (Eigen::Index j = 0; j<n_pts; ++j) {
             // row and col pixel for kernel image

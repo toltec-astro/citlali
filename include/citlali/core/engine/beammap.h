@@ -177,17 +177,19 @@ public:
 
     // timestream grppi pipeline
     template <class KidsProc, class RawObs>
-    void timestream_pipeline(KidsProc &, RawObs &);
+    void timestream_pipeline(KidsProc &, RawObs &, bool write_outputs = true);
 
     // run the raw time chunk processing
     template <class KidsProc>
-    auto run_timestream(KidsProc &);
+    auto run_timestream(KidsProc &, bool write_outputs = true);
 
     // run the loop pipeline
-    void loop_pipeline();
+    template <class KidsProc, class RawObs>
+    void loop_pipeline(KidsProc &, RawObs &);
 
     // run the iterative stage
-    void run_loop();
+    template <class KidsProc, class RawObs>
+    void run_loop(KidsProc &, RawObs &);
 
     // robust sample-level masking for short RFI bursts in detector beammaps
     RFIMaskScanSummary apply_rfi_sample_mask(TCData<TCDataKind::PTC,Eigen::MatrixXd> &);
@@ -214,7 +216,7 @@ public:
                           double *slot_sy_arcsec = nullptr) const;
     void update_prior_frame_estimates();
     bool choose_prior_guided_init(Eigen::Index map_index, double &init_row, double &init_col);
-    void configure_ptc_source_mask_from_previous_fit();
+    void configure_detector_source_centers_from_previous_fit();
     double calc_map_support_stddev(Eigen::Index map_index, bool exclude_fit_core = false) const;
     double calc_beammap_convergence_delta(Eigen::Index map_index) const;
     void init_empirical_template_calibration_columns();
@@ -552,6 +554,7 @@ void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     }
 
     // run timestream pipeline
+    rtcproc.kernel.clear_source_centers();
     timestream_pipeline(kidsproc, rawobs);
 
     // placeholder vectors of size nscans for grppi maps
@@ -565,11 +568,11 @@ void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     det_out_vec.resize(n_maps);
 
     // run iterative pipeline
-    loop_pipeline();
+    loop_pipeline(kidsproc, rawobs);
 }
 
 template <class KidsProc, class RawObs>
-void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs, bool write_outputs) {
     using input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
     // initialize number of completed scans
     n_scans_done = 0;
@@ -623,11 +626,11 @@ void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             return {};
         },
         // run the raw time chunk processing
-        run_timestream(kidsproc));
+        run_timestream(kidsproc, write_outputs));
 }
 
 template <class KidsProc>
-auto Beammap::run_timestream(KidsProc &kidsproc) {
+auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
     auto scans_done_mutex = std::make_shared<std::mutex>();
 
     struct OrderedWriter {
@@ -645,9 +648,9 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
         }
     };
 
-    const bool write_rtc = run_tod_output && !tod_filename.empty() &&
+    const bool write_rtc = write_outputs && run_tod_output && !tod_filename.empty() &&
         (tod_output_type == "rtc" || tod_output_type == "both");
-    const bool write_rtcdiag = !rtcdiag_filename.empty();
+    const bool write_rtcdiag = write_outputs && !rtcdiag_filename.empty();
     auto rtc_writer = write_rtc ? std::make_shared<OrderedWriter>() : nullptr;
     auto rtcdiag_writer = write_rtcdiag ? std::make_shared<OrderedWriter>() : nullptr;
 
@@ -765,9 +768,7 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
             }
             rtc_writer->advance();
         }
-        if (write_rtc || write_rtcdiag) {
-            rtcproc.clear_cached_diagnostics(ptcdata.index.data);
-        }
+        rtcproc.clear_cached_diagnostics(ptcdata.index.data);
 
         // store indices for each ptcdata
         ptcdata.map_indices.data = std::move(map_indices);
@@ -790,9 +791,11 @@ auto Beammap::run_timestream(KidsProc &kidsproc) {
     return farm;
 }
 
-void Beammap::loop_pipeline() {
+template <class KidsProc, class RawObs>
+void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     // run iterative stage
-    run_loop();
+    run_loop(kidsproc, rawobs);
+    ptcproc.fruit_loops_kernel_feedback_enabled = true;
 
     // write map summary
     if (verbose_mode) {
@@ -2404,52 +2407,36 @@ bool Beammap::find_map_weighted_peak(Eigen::Index map_index, Eigen::Index &best_
     return scan(false);
 }
 
-void Beammap::configure_ptc_source_mask_from_previous_fit() {
-    if (map_grouping != "detector" || ptcproc.mask_radius_arcsec <= 0.0) {
+void Beammap::configure_detector_source_centers_from_previous_fit() {
+    if (map_grouping != "detector") {
         ptcproc.fruit_loops_source_lat.resize(0);
         ptcproc.fruit_loops_source_lon.resize(0);
         ptcproc.fruit_loops_source_valid.resize(0);
+        rtcproc.kernel.clear_source_centers();
         return;
     }
 
-    const bool have_existing_fruit_centers =
-        ptcproc.run_fruit_loops &&
-        ptcproc.fruit_loops_source_valid.size() == n_maps &&
-        (ptcproc.fruit_loops_source_valid.array() != 0).any();
-
     if (current_iter <= 0) {
-        if (have_existing_fruit_centers) {
-            logger->info(
-                "beammap source-aware PTC masking using existing fruit-loops source centers "
-                "for iter {} before any beammap fits (mask_radius={:.3f} arcsec)",
-                current_iter, ptcproc.mask_radius_arcsec);
-            return;
-        }
         ptcproc.fruit_loops_source_lat.resize(0);
         ptcproc.fruit_loops_source_lon.resize(0);
         ptcproc.fruit_loops_source_valid.resize(0);
+        rtcproc.kernel.clear_source_centers();
         logger->info(
-            "beammap source-aware PTC masking inactive on iter {}: no previous fits yet (mask_radius={:.3f} arcsec)",
+            "beammap detector source centers unavailable on iter {}: no previous fits yet "
+            "(ptc_mask_radius={:.3f} arcsec)",
             current_iter, ptcproc.mask_radius_arcsec);
         return;
     }
 
     if (p0.rows() != n_maps || p0.cols() < 3 || good_fits.size() != n_maps) {
-        if (have_existing_fruit_centers) {
-            logger->warn(
-                "beammap source-aware PTC masking kept existing fruit-loops source centers "
-                "on iter {} because previous-fit state is incomplete (p0={}x{}, good_fits={})",
-                current_iter, p0.rows(), p0.cols(), good_fits.size());
-        }
-        else {
-            ptcproc.fruit_loops_source_lat.resize(0);
-            ptcproc.fruit_loops_source_lon.resize(0);
-            ptcproc.fruit_loops_source_valid.resize(0);
-            logger->warn(
-                "beammap source-aware PTC masking skipped on iter {}: previous-fit state is incomplete "
-                "(p0={}x{}, good_fits={})",
-                current_iter, p0.rows(), p0.cols(), good_fits.size());
-        }
+        ptcproc.fruit_loops_source_lat.resize(0);
+        ptcproc.fruit_loops_source_lon.resize(0);
+        ptcproc.fruit_loops_source_valid.resize(0);
+        rtcproc.kernel.clear_source_centers();
+        logger->warn(
+            "beammap detector source centers unavailable on iter {}: previous-fit state is incomplete "
+            "(p0={}x{}, good_fits={})",
+            current_iter, p0.rows(), p0.cols(), good_fits.size());
         return;
     }
 
@@ -2473,9 +2460,18 @@ void Beammap::configure_ptc_source_mask_from_previous_fit() {
     }
 
     logger->info(
-        "beammap source-aware PTC masking using previous-fit centers for {}/{} detector maps "
-        "on iter {} (mask_radius={:.3f} arcsec)",
+        "beammap detector source centers using previous-fit centers for {}/{} detector maps "
+        "on iter {} (ptc_mask_radius={:.3f} arcsec)",
         n_valid, n_maps, current_iter, ptcproc.mask_radius_arcsec);
+
+    if (rtcproc.run_kernel) {
+        rtcproc.kernel.set_source_centers(ptcproc.fruit_loops_source_lat,
+                                          ptcproc.fruit_loops_source_lon,
+                                          ptcproc.fruit_loops_source_valid);
+        logger->info(
+            "beammap detector kernel placement using previous-fit centers for {}/{} detector maps on iter {}",
+            n_valid, n_maps, current_iter);
+    }
 }
 
 double Beammap::get_prior_derot_elev_rad() const {
@@ -3184,7 +3180,8 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
 }
 
 
-void Beammap::run_loop() {
+template <class KidsProc, class RawObs>
+void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
     // variable to control iteration
     bool keep_going = true;
 
@@ -3218,6 +3215,20 @@ void Beammap::run_loop() {
     while (keep_going) {
         logger->info("starting iter {}", current_iter);
 
+        configure_detector_source_centers_from_previous_fit();
+        const bool detector_kernel_source_centers_active =
+            map_grouping == "detector" &&
+            rtcproc.run_kernel &&
+            rtcproc.kernel.has_source_centers();
+        const bool rerun_source_aware_rtc =
+            current_iter == 1 && detector_kernel_source_centers_active;
+        if (rerun_source_aware_rtc) {
+            logger->info(
+                "beammap iter {} rerunning RTC with previous-fit detector source centers; regular RTC TOD output disabled for this internal pass",
+                current_iter);
+            timestream_pipeline(kidsproc, rawobs, false);
+        }
+
         // copy ptcs
         ptcs = ptcs0;
         // copy calibs
@@ -3228,7 +3239,14 @@ void Beammap::run_loop() {
             rfi_mask_samples_flagged.setZero();
             rfi_mask_scans_flagged.setZero();
         }
-        configure_ptc_source_mask_from_previous_fit();
+        const bool skip_centered_kernel_map_feedback =
+            rerun_source_aware_rtc;
+        ptcproc.fruit_loops_kernel_feedback_enabled = !skip_centered_kernel_map_feedback;
+        if (skip_centered_kernel_map_feedback) {
+            logger->info(
+                "beammap detector kernel map feedback disabled on iter {} while building the first source-aware kernel map",
+                current_iter);
+        }
 
         // copy previous-iteration maps for source-aperture convergence tests
         if (run_mapmaking && beammap_iter_tolerance > 0.0 && current_iter > 0) {

@@ -523,6 +523,9 @@ public:
     bool fruit_loops_legacy_center = false;
     // if true, recompute weights after map add-back (pre-Mar-2026 behavior)
     bool fruit_loops_recompute_weights_after_addback = false;
+    // internal guard used by beammap detector kernels when the source-centered
+    // kernel placement first becomes available after iteration 0.
+    bool fruit_loops_kernel_feedback_enabled = true;
     // current map grouping, used by helpers that need detector pointing
     std::string active_map_grouping = "array";
     // jinc interpolation settings copied from the active mapmaker config
@@ -1285,24 +1288,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     fruit_loops_source_valid = Eigen::VectorXi::Zero(tod_mb.signal.size());
     const double row_offset = (tod_mb.n_rows - 1) / 2.0;
     const double col_offset = (tod_mb.n_cols - 1) / 2.0;
-    auto apt_position_value = [&](const std::string &key, Eigen::Index index) {
-        auto it = calib.apt.find(key);
-        if (it == calib.apt.end() || index < 0 || index >= it->second.size()) {
-            return std::numeric_limits<double>::quiet_NaN();
-        }
-        return it->second(index);
-    };
     for (Eigen::Index i = 0; i < static_cast<Eigen::Index>(tod_mb.signal.size()); ++i) {
-        if (grouping == "detector") {
-            const double x_arcsec = apt_position_value("x_t", i);
-            const double y_arcsec = apt_position_value("y_t", i);
-            if (std::isfinite(x_arcsec) && std::isfinite(y_arcsec)) {
-                fruit_loops_source_lat(i) = y_arcsec * ASEC_TO_RAD;
-                fruit_loops_source_lon(i) = x_arcsec * ASEC_TO_RAD;
-                fruit_loops_source_valid(i) = 1;
-                continue;
-            }
-        }
         double peak_val = -std::numeric_limits<double>::infinity();
         Eigen::Index peak_row = 0;
         Eigen::Index peak_col = 0;
@@ -1918,7 +1904,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
     }
 
     // run kernel through fruit loops
-    bool run_kernel = in.kernel.data.size() !=0;
+    bool run_kernel = fruit_loops_kernel_feedback_enabled && in.kernel.data.size() !=0;
     if (run_kernel && mb.kernel.size() != mb.signal.size()) {
         logger->warn("kernel map count ({}) does not match signal map count ({}); disabling kernel subtraction",
                      mb.kernel.size(), mb.signal.size());
@@ -2589,27 +2575,6 @@ bool TCProc::resolve_mask_center_rad(const TCData<tcdata_t, Eigen::MatrixXd> &in
             if (std::isfinite(lat) && std::isfinite(lon)) {
                 source_lat = lat;
                 source_lon = lon;
-                return true;
-            }
-        }
-    }
-
-    if (map_grouping == "detector") {
-        auto x_it = calib.apt.find("x_t_raw");
-        auto y_it = calib.apt.find("y_t_raw");
-        if (x_it == calib.apt.end() || y_it == calib.apt.end()) {
-            x_it = calib.apt.find("x_t");
-            y_it = calib.apt.find("y_t");
-        }
-        if (x_it != calib.apt.end() && y_it != calib.apt.end() &&
-            det_index >= 0 &&
-            det_index < x_it->second.size() &&
-            det_index < y_it->second.size()) {
-            const double x_arcsec = x_it->second(det_index);
-            const double y_arcsec = y_it->second(det_index);
-            if (std::isfinite(x_arcsec) && std::isfinite(y_arcsec)) {
-                source_lat = y_arcsec * ASEC_TO_RAD;
-                source_lon = x_arcsec * ASEC_TO_RAD;
                 return true;
             }
         }
