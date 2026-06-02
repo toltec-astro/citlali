@@ -2443,8 +2443,12 @@ void Beammap::configure_detector_source_centers_from_previous_fit() {
     ptcproc.fruit_loops_source_lat = Eigen::VectorXd::Zero(n_maps);
     ptcproc.fruit_loops_source_lon = Eigen::VectorXd::Zero(n_maps);
     ptcproc.fruit_loops_source_valid = Eigen::VectorXi::Zero(n_maps);
+    Eigen::VectorXd kernel_source_a_fwhm_rad = Eigen::VectorXd::Zero(n_maps);
+    Eigen::VectorXd kernel_source_b_fwhm_rad = Eigen::VectorXd::Zero(n_maps);
 
     Eigen::Index n_valid = 0;
+    Eigen::Index n_valid_fwhm = 0;
+    std::vector<double> fwhm_arcsec_values;
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         if (!good_fits(i) ||
             !std::isfinite(p0(i, 0)) || p0(i, 0) <= 0.0 ||
@@ -2457,6 +2461,19 @@ void Beammap::configure_detector_source_centers_from_previous_fit() {
             (p0(i, 1) - (omb.n_cols - 1) / 2.0) * omb.pixel_size_rad;
         ptcproc.fruit_loops_source_valid(i) = 1;
         n_valid++;
+
+        if (p0.cols() > 4 &&
+            std::isfinite(p0(i, 3)) && p0(i, 3) > 0.0 &&
+            std::isfinite(p0(i, 4)) && p0(i, 4) > 0.0) {
+            kernel_source_a_fwhm_rad(i) = STD_TO_FWHM * omb.pixel_size_rad * p0(i, 3);
+            kernel_source_b_fwhm_rad(i) = STD_TO_FWHM * omb.pixel_size_rad * p0(i, 4);
+            const double mean_fwhm_arcsec =
+                RAD_TO_ASEC * (kernel_source_a_fwhm_rad(i) + kernel_source_b_fwhm_rad(i)) / 2.0;
+            if (std::isfinite(mean_fwhm_arcsec) && mean_fwhm_arcsec > 0.0) {
+                fwhm_arcsec_values.push_back(mean_fwhm_arcsec);
+                n_valid_fwhm++;
+            }
+        }
     }
 
     logger->info(
@@ -2465,12 +2482,19 @@ void Beammap::configure_detector_source_centers_from_previous_fit() {
         n_valid, n_maps, current_iter, ptcproc.mask_radius_arcsec);
 
     if (rtcproc.run_kernel) {
+        double median_fwhm_arcsec = std::numeric_limits<double>::quiet_NaN();
+        if (!fwhm_arcsec_values.empty()) {
+            std::sort(fwhm_arcsec_values.begin(), fwhm_arcsec_values.end());
+            median_fwhm_arcsec = fwhm_arcsec_values[fwhm_arcsec_values.size() / 2];
+        }
         rtcproc.kernel.set_source_centers(ptcproc.fruit_loops_source_lat,
                                           ptcproc.fruit_loops_source_lon,
-                                          ptcproc.fruit_loops_source_valid);
+                                          ptcproc.fruit_loops_source_valid,
+                                          kernel_source_a_fwhm_rad,
+                                          kernel_source_b_fwhm_rad);
         logger->info(
-            "beammap detector kernel placement using previous-fit centers for {}/{} detector maps on iter {}",
-            n_valid, n_maps, current_iter);
+            "beammap detector kernel placement using previous-fit centers for {}/{} detector maps on iter {}; fitted kernel FWHM available for {}/{} maps (median={:.3f} arcsec)",
+            n_valid, n_maps, current_iter, n_valid_fwhm, n_maps, median_fwhm_arcsec);
     }
 }
 

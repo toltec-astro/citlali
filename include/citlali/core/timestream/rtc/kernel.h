@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <limits>
 #include <string>
 
 #include <boost/math/special_functions/bessel.hpp>
@@ -33,13 +34,19 @@ public:
     // iterations can populate them from previous fitted source locations.
     Eigen::VectorXd source_lat;
     Eigen::VectorXd source_lon;
+    Eigen::VectorXd source_a_fwhm_rad;
+    Eigen::VectorXd source_b_fwhm_rad;
     Eigen::VectorXi source_valid;
 
     void clear_source_centers();
     void set_source_centers(const Eigen::VectorXd &, const Eigen::VectorXd &,
                             const Eigen::VectorXi &);
+    void set_source_centers(const Eigen::VectorXd &, const Eigen::VectorXd &,
+                            const Eigen::VectorXi &, const Eigen::VectorXd &,
+                            const Eigen::VectorXd &);
     bool has_source_centers() const;
     bool source_center_for_map(Eigen::Index, double &, double &) const;
+    bool source_fwhm_for_map(Eigen::Index, double &, double &) const;
 
     // initial setup
     void setup(Eigen::Index);
@@ -78,6 +85,8 @@ void Kernel::setup(Eigen::Index n_maps) {
 inline void Kernel::clear_source_centers() {
     source_lat.resize(0);
     source_lon.resize(0);
+    source_a_fwhm_rad.resize(0);
+    source_b_fwhm_rad.resize(0);
     source_valid.resize(0);
 }
 
@@ -87,6 +96,20 @@ inline void Kernel::set_source_centers(const Eigen::VectorXd &lat,
     source_lat = lat;
     source_lon = lon;
     source_valid = valid;
+    source_a_fwhm_rad.resize(0);
+    source_b_fwhm_rad.resize(0);
+}
+
+inline void Kernel::set_source_centers(const Eigen::VectorXd &lat,
+                                       const Eigen::VectorXd &lon,
+                                       const Eigen::VectorXi &valid,
+                                       const Eigen::VectorXd &a_fwhm_rad,
+                                       const Eigen::VectorXd &b_fwhm_rad) {
+    source_lat = lat;
+    source_lon = lon;
+    source_valid = valid;
+    source_a_fwhm_rad = a_fwhm_rad;
+    source_b_fwhm_rad = b_fwhm_rad;
 }
 
 inline bool Kernel::has_source_centers() const {
@@ -120,6 +143,29 @@ inline bool Kernel::source_center_for_map(Eigen::Index map_index,
     return true;
 }
 
+inline bool Kernel::source_fwhm_for_map(Eigen::Index map_index,
+                                        double &a_fwhm_rad,
+                                        double &b_fwhm_rad) const {
+    a_fwhm_rad = std::numeric_limits<double>::quiet_NaN();
+    b_fwhm_rad = std::numeric_limits<double>::quiet_NaN();
+    if (map_grouping != "detector" ||
+        map_index < 0 ||
+        map_index >= source_valid.size() ||
+        map_index >= source_a_fwhm_rad.size() ||
+        map_index >= source_b_fwhm_rad.size() ||
+        source_valid(map_index) == 0) {
+        return false;
+    }
+    const double a = source_a_fwhm_rad(map_index);
+    const double b = source_b_fwhm_rad(map_index);
+    if (!std::isfinite(a) || !std::isfinite(b) || a <= 0.0 || b <= 0.0) {
+        return false;
+    }
+    a_fwhm_rad = a;
+    b_fwhm_rad = b;
+    return true;
+}
+
 template<typename apt_t>
 void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes, apt_t &apt) {
 
@@ -150,7 +196,14 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
 
         // calculate stddev from apt table if config stddev <=0
         if (sigma_rad <= 0) {
-            sigma = FWHM_TO_STD * ASEC_TO_RAD*(apt["a_fwhm"](i) + apt["b_fwhm"](i))/2;
+            double source_a_fwhm = 0.0;
+            double source_b_fwhm = 0.0;
+            if (source_fwhm_for_map(i, source_a_fwhm, source_b_fwhm)) {
+                sigma = FWHM_TO_STD * (source_a_fwhm + source_b_fwhm) / 2.0;
+            }
+            else {
+                sigma = FWHM_TO_STD * ASEC_TO_RAD*(apt["a_fwhm"](i) + apt["b_fwhm"](i))/2;
+            }
         }
 
         // loop through samples and calculate
@@ -201,8 +254,16 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
 
         // calculate stddev from apt table if config stddev <=0
         if (sigma_rad <= 0) {
-            sigma_lat = FWHM_TO_STD * ASEC_TO_RAD * apt["b_fwhm"](i);
-            sigma_lon = FWHM_TO_STD * ASEC_TO_RAD * apt["a_fwhm"](i);
+            double source_a_fwhm = 0.0;
+            double source_b_fwhm = 0.0;
+            if (source_fwhm_for_map(i, source_a_fwhm, source_b_fwhm)) {
+                sigma_lat = FWHM_TO_STD * source_b_fwhm;
+                sigma_lon = FWHM_TO_STD * source_a_fwhm;
+            }
+            else {
+                sigma_lat = FWHM_TO_STD * ASEC_TO_RAD * apt["b_fwhm"](i);
+                sigma_lon = FWHM_TO_STD * ASEC_TO_RAD * apt["a_fwhm"](i);
+            }
         }
 
         // rotation angle
@@ -264,7 +325,14 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
 
         // get fwhm from apt if config file fwhm is <= 0
         if (fwhm_rad <= 0) {
-            fwhm = ASEC_TO_RAD*(apt["a_fwhm"](i) + apt["b_fwhm"](i))/2;
+            double source_a_fwhm = 0.0;
+            double source_b_fwhm = 0.0;
+            if (source_fwhm_for_map(i, source_a_fwhm, source_b_fwhm)) {
+                fwhm = (source_a_fwhm + source_b_fwhm) / 2.0;
+            }
+            else {
+                fwhm = ASEC_TO_RAD*(apt["a_fwhm"](i) + apt["b_fwhm"](i))/2;
+            }
         }
 
         // airy pattern factor
