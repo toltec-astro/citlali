@@ -148,6 +148,11 @@ struct beammapControls {
     // beammap convergence aperture radius
     double beammap_convergence_radius_arcsec = 10.0;
 
+    // detector-beammap iteration phase controls
+    bool beammap_phase_split_enabled = true;
+    int beammap_locator_iter = 0;
+    int beammap_measurement_start_iter = 1;
+
     // subtract reference detector
     bool beammap_subtract_reference;
 
@@ -1438,6 +1443,42 @@ void Engine::get_beammap_config(CT &config) {
                          std::tuple{"beammap","convergence_radius_arcsec"},
                          {}, {0.0});
     }
+
+    beammap_phase_split_enabled = true;
+    beammap_locator_iter = 0;
+    beammap_measurement_start_iter = 1;
+    if (config.template has_typed<bool>(std::tuple{"beammap","phase_strategy","enabled"})) {
+        get_config_value(config, beammap_phase_split_enabled, missing_keys, invalid_keys,
+                         std::tuple{"beammap","phase_strategy","enabled"});
+    }
+    if (config.template has_typed<int>(std::tuple{"beammap","phase_strategy","locator_iter"})) {
+        get_config_value(config, beammap_locator_iter, missing_keys, invalid_keys,
+                         std::tuple{"beammap","phase_strategy","locator_iter"},
+                         {}, {0});
+    }
+    if (config.template has_typed<int>(std::tuple{"beammap","phase_strategy","measurement_start_iter"})) {
+        get_config_value(config, beammap_measurement_start_iter, missing_keys, invalid_keys,
+                         std::tuple{"beammap","phase_strategy","measurement_start_iter"},
+                         {}, {1});
+    }
+    if (beammap_locator_iter != 0) {
+        logger->warn(
+            "beammap.phase_strategy.locator_iter={} requested, but the locator pass must be iter 0; using 0",
+            beammap_locator_iter);
+        beammap_locator_iter = 0;
+    }
+    if (beammap_measurement_start_iter <= beammap_locator_iter) {
+        logger->warn(
+            "beammap.phase_strategy.measurement_start_iter={} must be after locator_iter={}; using {}",
+            beammap_measurement_start_iter, beammap_locator_iter, beammap_locator_iter + 1);
+        beammap_measurement_start_iter = beammap_locator_iter + 1;
+    }
+    if (beammap_iter_max <= beammap_measurement_start_iter) {
+        logger->warn(
+            "beammap.iter_max={} will not run a measurement pass with measurement_start_iter={}",
+            beammap_iter_max, beammap_measurement_start_iter);
+    }
+
     // beammap reference detector
     get_config_value(config, beammap_reference_det, missing_keys, invalid_keys,
                      std::tuple{"beammap","reference_det"});
@@ -2338,6 +2379,9 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             add_netcdf_var(fo, "BEAMMAP.ITER_TOLERANCE", beammap_iter_tolerance);
             add_netcdf_var(fo, "BEAMMAP.CONVERGENCE_RADIUS_ARCSEC", beammap_convergence_radius_arcsec);
             add_netcdf_var(fo, "BEAMMAP.ITER_MAX", beammap_iter_max);
+            add_netcdf_var(fo, "BEAMMAP.PHASE_SPLIT_ENABLED", beammap_phase_split_enabled);
+            add_netcdf_var(fo, "BEAMMAP.LOCATOR_ITER", beammap_locator_iter);
+            add_netcdf_var(fo, "BEAMMAP.MEASUREMENT_START_ITER", beammap_measurement_start_iter);
             add_netcdf_var(fo, "BEAMMAP.IS_DEROTATED", beammap_derotate);
 
             // add reference detector information
@@ -4229,6 +4273,12 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         add_double_key("BEAMMAP.CONVERGENCE_RADIUS_ARCSEC", beammap_convergence_radius_arcsec,
                        "Beammap convergence aperture radius (arcsec)");
         fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.ITER_MAX", beammap_iter_max, "Beammap max iterations");
+        fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.PHASE_SPLIT_ENABLED", beammap_phase_split_enabled,
+                                            "Beammap locator/measurement phases enabled");
+        fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.LOCATOR_ITER", beammap_locator_iter,
+                                            "Beammap locator iteration");
+        fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.MEASUREMENT_START_ITER", beammap_measurement_start_iter,
+                                            "Beammap first measurement iteration");
         fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.IS_DEROTATED", beammap_derotate, "Beammap derotated");
         // add reference detector information
         if (beammap_subtract_reference) {

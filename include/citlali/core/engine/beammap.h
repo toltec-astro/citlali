@@ -198,6 +198,11 @@ public:
     ScanBandMaskSummary apply_scan_band_mask(mapmaking::MapBuffer &);
 
     // optional prior-assisted peak initialization
+    bool is_beammap_locator_iter(Eigen::Index iter) const;
+    bool is_beammap_measurement_iter(Eigen::Index iter) const;
+    bool is_beammap_first_measurement_iter(Eigen::Index iter) const;
+    bool has_completed_beammap_measurement_iter(Eigen::Index iter) const;
+    std::string beammap_iter_phase_name(Eigen::Index iter) const;
     std::filesystem::path resolve_soft_priors_filepath() const;
     bool load_soft_priors();
     bool find_map_weighted_peak(Eigen::Index map_index, Eigen::Index &best_row,
@@ -321,6 +326,10 @@ void Beammap::setup() {
 
     // add project id to meta data
     calib.apt_meta["project_id"] = telescope.project_id;
+
+    calib.apt_meta["beammap_phase_split_enabled"] = beammap_phase_split_enabled;
+    calib.apt_meta["beammap_locator_iter"] = beammap_locator_iter;
+    calib.apt_meta["beammap_measurement_start_iter"] = beammap_measurement_start_iter;
 
     // add input source flux
     for (const auto &beammap_flux: beammap_fluxes_mJy_beam) {
@@ -2177,6 +2186,50 @@ Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer 
     return summary;
 }
 
+bool Beammap::is_beammap_locator_iter(Eigen::Index iter) const {
+    if (!beammap_phase_split_enabled) {
+        return iter <= 0;
+    }
+    return iter == static_cast<Eigen::Index>(beammap_locator_iter);
+}
+
+bool Beammap::is_beammap_measurement_iter(Eigen::Index iter) const {
+    if (!beammap_phase_split_enabled) {
+        return iter > 0;
+    }
+    return iter >= static_cast<Eigen::Index>(beammap_measurement_start_iter);
+}
+
+bool Beammap::is_beammap_first_measurement_iter(Eigen::Index iter) const {
+    if (!beammap_phase_split_enabled) {
+        return iter == 1;
+    }
+    return iter == static_cast<Eigen::Index>(beammap_measurement_start_iter);
+}
+
+bool Beammap::has_completed_beammap_measurement_iter(Eigen::Index iter) const {
+    if (!beammap_phase_split_enabled) {
+        return iter > 1;
+    }
+    return iter > static_cast<Eigen::Index>(beammap_measurement_start_iter);
+}
+
+std::string Beammap::beammap_iter_phase_name(Eigen::Index iter) const {
+    if (!beammap_phase_split_enabled) {
+        return "legacy";
+    }
+    if (is_beammap_locator_iter(iter)) {
+        return "locator";
+    }
+    if (is_beammap_first_measurement_iter(iter)) {
+        return "measurement_start";
+    }
+    if (is_beammap_measurement_iter(iter)) {
+        return "measurement";
+    }
+    return "pre_measurement";
+}
+
 std::filesystem::path Beammap::resolve_soft_priors_filepath() const {
     namespace fs = std::filesystem;
 
@@ -2416,15 +2469,15 @@ void Beammap::configure_detector_source_centers_from_previous_fit() {
         return;
     }
 
-    if (current_iter <= 0) {
+    if (!is_beammap_measurement_iter(current_iter)) {
         ptcproc.fruit_loops_source_lat.resize(0);
         ptcproc.fruit_loops_source_lon.resize(0);
         ptcproc.fruit_loops_source_valid.resize(0);
         rtcproc.kernel.clear_source_centers();
         logger->info(
-            "beammap detector source centers unavailable on iter {}: no previous fits yet "
+            "beammap detector source centers unavailable on iter {} phase={}: locator pass has no previous fits "
             "(ptc_mask_radius={:.3f} arcsec)",
-            current_iter, ptcproc.mask_radius_arcsec);
+            current_iter, beammap_iter_phase_name(current_iter), ptcproc.mask_radius_arcsec);
         return;
     }
 
@@ -2514,11 +2567,15 @@ double Beammap::get_prior_derot_elev_rad() const {
 }
 
 double Beammap::effective_prior_max_d2() const {
-    return (current_iter <= 0) ? beammap_priors_max_d2_iter0 : beammap_priors_max_d2_after_iter0;
+    return is_beammap_measurement_iter(current_iter)
+               ? beammap_priors_max_d2_after_iter0
+               : beammap_priors_max_d2_iter0;
 }
 
 double Beammap::effective_prior_score_lambda() const {
-    return (current_iter <= 0) ? beammap_priors_score_lambda_iter0 : beammap_priors_score_lambda_after_iter0;
+    return is_beammap_measurement_iter(current_iter)
+               ? beammap_priors_score_lambda_after_iter0
+               : beammap_priors_score_lambda_iter0;
 }
 
 bool Beammap::observed_to_prior_frame(int array, double x_raw_arcsec, double y_raw_arcsec,
@@ -2641,7 +2698,7 @@ void Beammap::update_prior_frame_estimates() {
     }
 
     Eigen::Index n_prev = 0;
-    if (current_iter > 0 && p0.rows() == n_maps && p0.cols() > 2) {
+    if (is_beammap_measurement_iter(current_iter) && p0.rows() == n_maps && p0.cols() > 2) {
         for (Eigen::Index i = 0; i < n_maps; ++i) {
             if (i < good_fits.size() && !good_fits(i)) {
                 continue;
@@ -2705,7 +2762,8 @@ void Beammap::update_prior_frame_estimates() {
     }
 
     Eigen::Index n_alignment_matches = 0;
-    if (beammap_priors_align_after_iter0 && current_iter > 0 && p0.rows() == n_maps && p0.cols() > 2) {
+    if (beammap_priors_align_after_iter0 && is_beammap_measurement_iter(current_iter) &&
+        p0.rows() == n_maps && p0.cols() > 2) {
         struct PriorPair {
             double obs_x = 0.0;
             double obs_y = 0.0;
@@ -3237,7 +3295,13 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
 
     // iterative loop
     while (keep_going) {
-        logger->info("starting iter {}", current_iter);
+        const bool locator_iter = is_beammap_locator_iter(current_iter);
+        const bool measurement_iter = is_beammap_measurement_iter(current_iter);
+        const bool first_measurement_iter = is_beammap_first_measurement_iter(current_iter);
+        logger->info(
+            "starting iter {} phase={} locator_iter={} measurement_start_iter={}",
+            current_iter, beammap_iter_phase_name(current_iter),
+            beammap_locator_iter, beammap_measurement_start_iter);
 
         configure_detector_source_centers_from_previous_fit();
         const bool detector_kernel_source_centers_active =
@@ -3245,7 +3309,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
             rtcproc.run_kernel &&
             rtcproc.kernel.has_source_centers();
         const bool rerun_source_aware_rtc =
-            current_iter == 1 && detector_kernel_source_centers_active;
+            first_measurement_iter && detector_kernel_source_centers_active;
         if (rerun_source_aware_rtc) {
             logger->info(
                 "beammap iter {} rerunning RTC with previous-fit detector source centers; regular RTC TOD output disabled for this internal pass",
@@ -3273,20 +3337,20 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
         }
 
         // copy previous-iteration maps for source-aperture convergence tests
-        if (run_mapmaking && beammap_iter_tolerance > 0.0 && current_iter > 0) {
+        if (run_mapmaking && beammap_iter_tolerance > 0.0 && measurement_iter) {
             omb_copy.signal = omb.signal;
             omb_copy.weight = omb.weight;
         }
 
         if (ptcproc.run_fruit_loops) {
             // calc mean rms
-            if (current_iter == 1) {
+            if (first_measurement_iter) {
                 // use obs map buffer
                 if (!omb.noise.empty()) {
                     omb.calc_median_rms();
                 }
             }
-            if (current_iter > 0) {
+            if (measurement_iter) {
                 ptcproc.configure_fruit_loops_adaptive_gate(omb, calib, map_grouping, false);
             }
         }
@@ -3302,7 +3366,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
         grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
             bool model_subtracted_for_ptc_line_audit = false;
             if (run_mapmaking) {
-                if (current_iter > 0) {
+                if (measurement_iter) {
                     if (!ptcproc.run_fruit_loops) {
                         // if not running fruit loops use source fit
                         logger->info("subtracting gaussian from tod");
@@ -3331,7 +3395,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
             ptcproc.run(ptcs[i], ptcs[i], calib_scans[i], telescope.pixel_axes, map_grouping);
 
             if (run_mapmaking) {
-                if (current_iter > 0) {
+                if (measurement_iter) {
                     // if not running fruit loops use source fit
                     if (!ptcproc.run_fruit_loops) {
                         logger->info("adding gaussian to tod");
@@ -3348,11 +3412,12 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                 }
             }
 
-            // For detector-grouped beammaps, keep the first pass permissive so
+            // For detector-grouped beammaps, keep the locator pass permissive so
             // bright-source scans are less likely to be rejected before we have
             // any source-location estimate to feed back into later iterations.
-            if (map_grouping == "detector" && current_iter == 0) {
-                logger->info("skipping remove_bad_dets on iter 0 for beammap detector scan {}", ptcs[i].index.data + 1);
+            if (map_grouping == "detector" && locator_iter) {
+                logger->info("skipping remove_bad_dets on beammap locator iter {} for detector scan {}",
+                             current_iter, ptcs[i].index.data + 1);
             }
             else {
                 // remove outliers after clean
@@ -3377,7 +3442,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                 }
                 const bool use_ptc_weights =
                     beammap_detector_weighting_mode == "ptc" ||
-                    (beammap_detector_weighting_mode == "ptc_after_iter0" && current_iter > 0);
+                    (beammap_detector_weighting_mode == "ptc_after_iter0" && measurement_iter);
                 if (use_ptc_weights) {
                     logger->info("calculating detector-mode PTC weights for scan {} (mode={})",
                                  ptcs[i].index.data + 1, beammap_detector_weighting_mode);
@@ -4290,7 +4355,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
 
             run_mapmaking_pass(true);
 
-            if (beammap_scan_band_mask_enabled && map_grouping == "detector" && current_iter == 0) {
+            if (beammap_scan_band_mask_enabled && map_grouping == "detector" && locator_iter) {
                 auto scan_band_summary = apply_scan_band_mask(omb);
                 if (scan_band_summary.n_samples_flagged > 0) {
                     logger->info(
@@ -4400,7 +4465,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                     auto init_mode = FitInitMode::Blind;
                     const bool can_try_prior =
                         beammap_priors_enabled && beammap_soft_priors_loaded && map_grouping == "detector";
-                    if (current_iter > 0 &&
+                    if (measurement_iter &&
                         good_fits(i) &&
                         p0.cols() > 2 &&
                         std::isfinite(p0(i,0)) && p0(i,0) > 0.0 &&
@@ -4709,7 +4774,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                 logger->info("all maps converged");
                 keep_going = false;
             }
-            else if (current_iter > 1) {
+            else if (has_completed_beammap_measurement_iter(current_iter)) {
                 // only do convergence test if tolerance is above zero, otherwise run all iterations
                 if (run_mapmaking && beammap_iter_tolerance > 0) {
                     // loop through maps and check if it is converged
@@ -6230,6 +6295,9 @@ void Beammap::output() {
             fit_qc_meta["beammap_iter_max"] = beammap_iter_max;
             fit_qc_meta["beammap_iter_tolerance"] = beammap_iter_tolerance;
             fit_qc_meta["beammap_convergence_radius_arcsec"] = beammap_convergence_radius_arcsec;
+            fit_qc_meta["beammap_phase_split_enabled"] = beammap_phase_split_enabled;
+            fit_qc_meta["beammap_locator_iter"] = beammap_locator_iter;
+            fit_qc_meta["beammap_measurement_start_iter"] = beammap_measurement_start_iter;
             fit_qc_meta["reference_detector_subtracted"] = beammap_subtract_reference;
             fit_qc_meta["reference_det"] = beammap_reference_det_found;
             fit_qc_meta["rfi_mask_enabled"] = beammap_rfi_mask_enabled;

@@ -5,6 +5,10 @@ beammap: # beammap controls (node required, but options ignored if not beammappi
   reference_det: -99 # reference detector index for APT positions (if <0 and enabled, use median of nw=3; fallback nw=2,3,4)
   iter_tolerance: 0.0 # tolerance for iterations (if 0 all iterations are performed, tod output will be for last iteration)
   convergence_radius_arcsec: 10.0 # fitted-source aperture radius for map-based iteration convergence
+  phase_strategy: # detector-beammap iteration strategy
+    enabled: true # split detector beammaps into an initial locator pass and source-aware measurement passes
+    locator_iter: 0 # iteration used only to find each detector's source location
+    measurement_start_iter: 1 # first iteration that uses previous-fit source locations for PTC/kernel processing
   sens_psd_limits_Hz: [0,0] # lower and upper limits for psd in sensitivity calculation
   rfi_mask: # optional robust masking of short high-variance timestream bursts in detector-grouped beammaps
     enabled: false # enable or disable sample-level masking before mapmaking

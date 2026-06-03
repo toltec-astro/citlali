@@ -125,8 +125,12 @@ void Pointing::setup() {
     ppt_meta["mjd"] = engine_utils::unix_to_modified_julian_date(telescope.tel_data["TelTime"].mean());
 
     // mean observing geometry
-    ppt_meta["MEAN_EL"] = RAD_TO_DEG * get_tel_data_mean("TelElAct", 0.0);
-    ppt_meta["MEAN_AZ"] = RAD_TO_DEG * get_tel_data_mean("TelAzAct", 0.0);
+    const double mean_tel_el_rad = get_tel_data_mean("TelElAct", 0.0);
+    const double mean_tel_az_rad = get_tel_data_mean("TelAzAct", 0.0);
+    const double mean_source_el_rad = get_tel_data_mean("SourceEl", mean_tel_el_rad);
+    ppt_meta["MEAN_EL"] = RAD_TO_DEG * mean_tel_el_rad;
+    ppt_meta["MEAN_AZ"] = RAD_TO_DEG * mean_tel_az_rad;
+    ppt_meta["MEAN_SOURCE_EL"] = RAD_TO_DEG * mean_source_el_rad;
 
     // reference frame
     ppt_meta["Radesys"] = telescope.pixel_axes;
