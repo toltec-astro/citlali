@@ -261,6 +261,7 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 template <class KidsProc>
 auto Pointing::run(KidsProc &kidsproc) {
     auto scans_done_mutex = std::make_shared<std::mutex>();
+    auto ptc_line_audit_mutex = std::make_shared<std::mutex>();
 
     struct OrderedWriter {
         std::mutex mutex;
@@ -289,7 +290,8 @@ auto Pointing::run(KidsProc &kidsproc) {
     auto rtcdiag_writer = write_rtcdiag ? std::make_shared<OrderedWriter>() : nullptr;
     auto ptcdiag_writer = write_ptcdiag ? std::make_shared<OrderedWriter>() : nullptr;
 
-    auto farm = grppi::farm(n_threads,[&, scans_done_mutex, rtc_writer, ptc_writer, rtcdiag_writer, ptcdiag_writer,
+    auto farm = grppi::farm(n_threads,[&, scans_done_mutex, ptc_line_audit_mutex,
+                                       rtc_writer, ptc_writer, rtcdiag_writer, ptcdiag_writer,
                                        write_rtc, write_ptc, write_rtcdiag, write_ptcdiag](auto &rtcdata) {
 
         // starting index for scan
@@ -422,7 +424,10 @@ auto Pointing::run(KidsProc &kidsproc) {
                 logger, "ptc after fruitloops map subtraction", ptcdata.kernel.data, ptcdata.index.data);
         }
 
-        apply_model_protected_ptc_line_audit(ptcdata, calib_scan, use_fruit_noise_weights);
+        {
+            std::lock_guard<std::mutex> lock(*ptc_line_audit_mutex);
+            apply_model_protected_ptc_line_audit(ptcdata, calib_scan, use_fruit_noise_weights);
+        }
 
         // run cleaning
         logger->info("processed time chunk processing for scan {}", ptcdata.index.data + 1);
