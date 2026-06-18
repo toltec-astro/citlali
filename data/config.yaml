@@ -67,6 +67,13 @@ beammap: # beammap controls (node required, but options ignored if not beammappi
     array_network_robust_z: [0,0,0] # post-derotation per-network robust radial-z limit in final x_t/y_t (ignored if <=0, flagging only)
     max_prior_d2: 0.0 # max allowed nearest-slot prior-space Mahalanobis d^2 for final position (ignored if <=0 or priors unavailable)
     sens_factors: [0,0] # per network lower and upper multiplicative factors on median sensitivty (ignored if 0, flagging only)
+pointing: # pointing controls (node optional; ignored unless runtime.reduction_type=pointing)
+  source_strategy:
+    mode: standard # standard compact-source pointing; use psf_preserve for focus/out-of-focus holography maps
+    # fit_gaussian: false # optional override; defaults true for standard and false for psf_preserve
+    # fruitloops_center_mode: map_center # optional override; defaults auto for standard and map_center for psf_preserve
+    # header_max_radius_arcsec: 0.0 # optional override; standard defaults to source_fitting.fitting_radius_arcsec, 0 disables this guard
+    # header_require_coverage: true # require fitted POINTING header centers to land on positive-weight map coverage
 coadd: # coaddition controls
   enabled: false # enable or disable coaddition
 noise_maps: # noise map controls (coadded noise maps if coadd enabled, obs noise maps if disabled)

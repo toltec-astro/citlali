@@ -714,10 +714,15 @@ public:
     std::map<Eigen::Index, Eigen::VectorXd> fruit_loops_jinc_shape_params;
     std::map<Eigen::Index, Eigen::MatrixXd> fruit_loops_jinc_weights_mat;
     std::map<Eigen::Index, std::vector<Eigen::MatrixXd>> fruit_loops_jinc_weights_mat_subpix;
+    // source-center policy for loaded fruit loops maps: auto, header, peak, map_center
+    std::string fruit_loops_source_center_mode = "auto";
+    double fruit_loops_header_center_max_radius_arcsec = 0.0;
+    bool fruit_loops_header_center_require_coverage = true;
     // source positions inferred from loaded fruit loops maps, in map-frame radians
     Eigen::VectorXd fruit_loops_source_lat;
     Eigen::VectorXd fruit_loops_source_lon;
     Eigen::VectorXi fruit_loops_source_valid;
+    std::vector<std::string> fruit_loops_source_provenance;
     // save all iterations
     bool save_all_iters;
 
@@ -813,6 +818,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     fruit_loops_source_lat.resize(0);
     fruit_loops_source_lon.resize(0);
     fruit_loops_source_valid.resize(0);
+    fruit_loops_source_provenance.clear();
     fruit_loops_local_sigma_map.resize(0);
     fruit_loops_local_sigma_npix.resize(0);
     fruit_loops_amp_ref.resize(0);
@@ -898,6 +904,40 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             logger->error("failed to read {} from fruit loops map header: {}", key, e.message());
             std::exit(EXIT_FAILURE);
         }
+    };
+
+    auto read_optional_double_key = [&](CCfits::ExtHDU &ext, const std::string &key, double &out) {
+        try {
+            ext.readKey(key, out);
+            return true;
+        } catch (const CCfits::Keyword::WrongKeywordValueType &) {
+            std::string tmp;
+            try {
+                ext.readKey(key, tmp);
+                out = std::stod(tmp);
+                return true;
+            } catch (...) {}
+            long tmp_long = 0;
+            try {
+                ext.readKey(key, tmp_long);
+                out = static_cast<double>(tmp_long);
+                return true;
+            } catch (...) {}
+            return false;
+        } catch (const CCfits::FitsException &) {
+            return false;
+        }
+    };
+
+    auto read_optional_double_keys = [&](CCfits::ExtHDU &ext,
+                                         const std::vector<std::string> &keys,
+                                         double &out) {
+        for (const auto &key : keys) {
+            if (read_optional_double_key(ext, key, out)) {
+                return true;
+            }
+        }
+        return false;
     };
 
     auto read_key_string = [&](CCfits::ExtHDU &ext, const std::string &key, std::string &out) {
@@ -1033,6 +1073,9 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     std::vector<std::optional<Eigen::MatrixXd>> signal_maps(expected_n_maps);
     std::vector<std::optional<Eigen::MatrixXd>> weight_maps(expected_n_maps);
     std::vector<std::optional<Eigen::MatrixXd>> kernel_maps(expected_n_maps);
+    Eigen::VectorXd header_source_lat = Eigen::VectorXd::Zero(expected_n_maps);
+    Eigen::VectorXd header_source_lon = Eigen::VectorXd::Zero(expected_n_maps);
+    Eigen::VectorXi header_source_valid = Eigen::VectorXi::Zero(expected_n_maps);
     bool any_kernel = false;
 
     bool wcs_set = false;
@@ -1229,6 +1272,41 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                             std::exit(EXIT_FAILURE);
                         }
                         signal_maps[*map_index] = fits_io.get_hdu(extName);
+                        double pointing_x = 0.0;
+                        double pointing_y = 0.0;
+                        double pointing_fit_valid = 1.0;
+                        const bool has_pointing_x =
+                            read_optional_double_keys(ext, {"POINTING.x_t", "POINTING.X_T"}, pointing_x);
+                        const bool has_pointing_y =
+                            read_optional_double_keys(ext, {"POINTING.y_t", "POINTING.Y_T"}, pointing_y);
+                        const bool has_pointing_fit_valid =
+                            read_optional_double_keys(ext, {"POINTING.fit_valid", "POINTING.FIT_VALID"},
+                                                      pointing_fit_valid);
+                        if (has_pointing_x && has_pointing_y &&
+                            (!has_pointing_fit_valid || pointing_fit_valid > 0.5) &&
+                            std::isfinite(pointing_x) && std::isfinite(pointing_y)) {
+                            const auto axes_for_center = !file_pixel_axes_lower.empty()
+                                                             ? file_pixel_axes_lower
+                                                             : to_lower(expected_pixel_axes);
+                            if (axes_for_center == "radec") {
+                                Eigen::VectorXd lon_abs(1), lat_abs(1), x(1), y(1);
+                                lon_abs << pointing_x * DEG_TO_RAD;
+                                lat_abs << pointing_y * DEG_TO_RAD;
+                                engine_utils::gnomonic_projection(
+                                    lon_abs, lat_abs,
+                                    crval1 * DEG_TO_RAD, crval2 * DEG_TO_RAD, x, y);
+                                if (std::isfinite(x(0)) && std::isfinite(y(0))) {
+                                    header_source_lon(*map_index) = x(0);
+                                    header_source_lat(*map_index) = y(0);
+                                    header_source_valid(*map_index) = 1;
+                                }
+                            }
+                            else {
+                                header_source_lon(*map_index) = pointing_x * ASEC_TO_RAD;
+                                header_source_lat(*map_index) = pointing_y * ASEC_TO_RAD;
+                                header_source_valid(*map_index) = 1;
+                            }
+                        }
                         logger->info("found {} [{}]", map_path.filename().string(), extName);
                     }
                 }
@@ -1466,9 +1544,18 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     fruit_loops_source_lat = Eigen::VectorXd::Zero(tod_mb.signal.size());
     fruit_loops_source_lon = Eigen::VectorXd::Zero(tod_mb.signal.size());
     fruit_loops_source_valid = Eigen::VectorXi::Zero(tod_mb.signal.size());
+    fruit_loops_source_provenance.assign(tod_mb.signal.size(), "none");
     const double row_offset = (tod_mb.n_rows - 1) / 2.0;
     const double col_offset = (tod_mb.n_cols - 1) / 2.0;
-    for (Eigen::Index i = 0; i < static_cast<Eigen::Index>(tod_mb.signal.size()); ++i) {
+    auto source_center_mode = to_lower(fruit_loops_source_center_mode);
+    if (source_center_mode != "auto" && source_center_mode != "header" &&
+        source_center_mode != "peak" && source_center_mode != "map_center") {
+        logger->warn("unsupported fruit loops source center mode '{}'; using auto",
+                     fruit_loops_source_center_mode);
+        source_center_mode = "auto";
+    }
+
+    auto set_peak_center = [&](Eigen::Index i) {
         double peak_val = -std::numeric_limits<double>::infinity();
         Eigen::Index peak_row = 0;
         Eigen::Index peak_col = 0;
@@ -1490,10 +1577,140 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             fruit_loops_source_lon(i) =
                 (static_cast<double>(peak_col) - col_offset) * tod_mb.pixel_size_rad;
             fruit_loops_source_valid(i) = 1;
+            return true;
+        }
+        return false;
+    };
+
+    auto header_center_is_usable = [&](Eigen::Index i, std::string &reason) {
+        if (i >= header_source_valid.size() || header_source_valid(i) == 0) {
+            reason = "missing";
+            return false;
+        }
+        const double lat = header_source_lat(i);
+        const double lon = header_source_lon(i);
+        if (!std::isfinite(lat) || !std::isfinite(lon)) {
+            reason = "nonfinite";
+            return false;
+        }
+        if (fruit_loops_header_center_max_radius_arcsec > 0.0) {
+            const double radius_arcsec = std::hypot(lat, lon) * RAD_TO_ASEC;
+            if (!std::isfinite(radius_arcsec) ||
+                radius_arcsec > fruit_loops_header_center_max_radius_arcsec) {
+                reason = "radius";
+                return false;
+            }
+        }
+        if (!std::isfinite(tod_mb.pixel_size_rad) || tod_mb.pixel_size_rad <= 0.0) {
+            reason = "geometry";
+            return false;
+        }
+        const double center_row = lat / tod_mb.pixel_size_rad + row_offset;
+        const double center_col = lon / tod_mb.pixel_size_rad + col_offset;
+        if (!std::isfinite(center_row) || !std::isfinite(center_col) ||
+            center_row < 0.0 || center_row > static_cast<double>(tod_mb.n_rows - 1) ||
+            center_col < 0.0 || center_col > static_cast<double>(tod_mb.n_cols - 1)) {
+            reason = "bounds";
+            return false;
+        }
+        if (fruit_loops_header_center_require_coverage) {
+            const Eigen::Index row = static_cast<Eigen::Index>(std::llround(center_row));
+            const Eigen::Index col = static_cast<Eigen::Index>(std::llround(center_col));
+            if (row < 0 || row >= tod_mb.weight[i].rows() ||
+                col < 0 || col >= tod_mb.weight[i].cols()) {
+                reason = "coverage_bounds";
+                return false;
+            }
+            const double weight = tod_mb.weight[i](row, col);
+            if (!std::isfinite(weight) || weight <= 0.0) {
+                reason = "coverage";
+                return false;
+            }
+        }
+        reason = "ok";
+        return true;
+    };
+
+    Eigen::Index n_header_centers = 0;
+    Eigen::Index n_header_rejected = 0;
+    Eigen::Index n_peak_centers = 0;
+    Eigen::Index n_map_center_centers = 0;
+    const Eigen::Index n_loaded_maps = static_cast<Eigen::Index>(tod_mb.signal.size());
+    if (source_center_mode == "map_center") {
+        fruit_loops_source_valid.setOnes();
+        std::fill(fruit_loops_source_provenance.begin(),
+                  fruit_loops_source_provenance.end(), "map_center");
+        n_map_center_centers = n_loaded_maps;
+    }
+    else {
+        if (source_center_mode == "auto" || source_center_mode == "header") {
+            for (Eigen::Index i = 0; i < n_loaded_maps; ++i) {
+                std::string reject_reason;
+                if (header_center_is_usable(i, reject_reason)) {
+                    fruit_loops_source_lat(i) = header_source_lat(i);
+                    fruit_loops_source_lon(i) = header_source_lon(i);
+                    fruit_loops_source_valid(i) = 1;
+                    fruit_loops_source_provenance[i] = "header";
+                    n_header_centers++;
+                }
+                else if (reject_reason != "missing") {
+                    n_header_rejected++;
+                    fruit_loops_source_provenance[i] = "header_rejected_" + reject_reason;
+                    logger->debug("fruit loops rejected POINTING header source center for map {}: {}",
+                                  i, reject_reason);
+                }
+            }
+        }
+        if (source_center_mode == "auto" || source_center_mode == "peak") {
+            for (Eigen::Index i = 0; i < n_loaded_maps; ++i) {
+                if (fruit_loops_source_valid(i) == 0 && set_peak_center(i)) {
+                    fruit_loops_source_provenance[i] = "peak";
+                    n_peak_centers++;
+                }
+            }
         }
     }
 
-    configure_fruit_loops_adaptive_gate(tod_mb, calib, grouping);
+    Eigen::Index n_valid_centers = 0;
+    for (Eigen::Index i = 0; i < n_loaded_maps; ++i) {
+        if (fruit_loops_source_valid(i) != 0) {
+            n_valid_centers++;
+        }
+    }
+    logger->info("fruit loops source centers: mode={} header={} header_rejected={} peak={} "
+                 "map_center={} valid={}/{} header_max_radius_arcsec={} require_coverage={}",
+                 source_center_mode, n_header_centers, n_header_rejected,
+                 n_peak_centers, n_map_center_centers, n_valid_centers, n_loaded_maps,
+                 fruit_loops_header_center_max_radius_arcsec,
+                 fruit_loops_header_center_require_coverage);
+    if (source_center_mode == "header" && n_valid_centers < n_loaded_maps) {
+        logger->warn("fruit loops source_center_mode=header but only {}/{} maps have usable POINTING header centers",
+                     n_valid_centers, n_loaded_maps);
+    }
+    for (Eigen::Index i = 0; i < n_loaded_maps; ++i) {
+        const double lon_arcsec = fruit_loops_source_lon(i) * RAD_TO_ASEC;
+        const double lat_arcsec = fruit_loops_source_lat(i) * RAD_TO_ASEC;
+        const auto log_detail = [&]() {
+            logger->info("fruit loops source center map {}: provenance={} valid={} lon_arcsec={} lat_arcsec={}",
+                         i, fruit_loops_source_provenance[i], fruit_loops_source_valid(i),
+                         lon_arcsec, lat_arcsec);
+        };
+        const auto log_detail_debug = [&]() {
+            logger->debug("fruit loops source center map {}: provenance={} valid={} lon_arcsec={} lat_arcsec={}",
+                          i, fruit_loops_source_provenance[i], fruit_loops_source_valid(i),
+                          lon_arcsec, lat_arcsec);
+        };
+        if (n_loaded_maps <= 16) {
+            log_detail();
+        }
+        else {
+            log_detail_debug();
+        }
+    }
+
+    const bool allow_peak_source_fallback =
+        (source_center_mode == "auto" || source_center_mode == "peak");
+    configure_fruit_loops_adaptive_gate(tod_mb, calib, grouping, allow_peak_source_fallback);
     // clear weight maps to save memory
     std::vector<Eigen::MatrixXd>().swap(tod_mb.weight);
 }

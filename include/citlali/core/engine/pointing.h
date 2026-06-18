@@ -16,6 +16,7 @@ class Pointing: public Engine {
 public:
     // fit parameters
     Eigen::MatrixXd params, perrors;
+    Eigen::VectorXi fit_valid;
 
     // meta information for ppt table
     YAML::Node ppt_meta;
@@ -67,6 +68,7 @@ void Pointing::setup() {
     // resize the current fit matrix
     params.setZero(n_maps, map_fitter.n_params);
     perrors.setZero(n_maps, map_fitter.n_params);
+    fit_valid.setZero(n_maps);
 
     // units for positions
     std::string pos_units = (telescope.pixel_axes == "radec") ? "deg" : "arcsec";
@@ -134,6 +136,13 @@ void Pointing::setup() {
 
     // reference frame
     ppt_meta["Radesys"] = telescope.pixel_axes;
+    ppt_meta["pointing_source_strategy"] = pointing_source_strategy;
+    ppt_meta["pointing_fit_gaussian_enabled"] = pointing_fit_gaussian_enabled;
+    ppt_meta["fruitloops_source_center_mode"] = pointing_fruitloops_center_mode;
+    ppt_meta["pointing_header_center_max_radius_arcsec"] =
+        pointing_header_center_max_radius_arcsec;
+    ppt_meta["pointing_header_center_require_coverage"] =
+        pointing_header_center_require_coverage;
 
     // add array mapping
     for (const auto &[arr_index,arr_name]: toltec_io.array_name_map) {
@@ -555,6 +564,15 @@ auto Pointing::run(KidsProc &kidsproc) {
 }
 
 void Pointing::fit_maps() {
+    fit_valid.setZero(n_maps);
+
+    if (!pointing_fit_gaussian_enabled) {
+        logger->info("pointing Gaussian map fitting disabled");
+        params.setZero(n_maps, map_fitter.n_params);
+        perrors.setZero(n_maps, map_fitter.n_params);
+        return;
+    }
+
     // fit maps
     logger->info("fitting maps");
     double init_row = -99;
@@ -572,6 +590,7 @@ void Pointing::fit_maps() {
         perrors.row(i) = map_perror;
 
         if (good_fit) {
+            fit_valid(i) = 1;
             // rescale fit params from pixel to on-sky units
             params(i,1) = RAD_TO_ASEC*omb.pixel_size_rad*(params(i,1) - (omb.n_cols - 1)/2.0);
             params(i,2) = RAD_TO_ASEC*omb.pixel_size_rad*(params(i,2) - (omb.n_rows - 1)/2.0);
@@ -717,6 +736,32 @@ void Pointing::output() {
                             f_io->at(map_index).hdus.at(k)->addKey("POINTING." + key, 0, key + " (" + ppt_header_units[key] + ")");
                         }
                     }
+                    try {
+                        f_io->at(map_index).hdus.at(k)->addKey("POINTING.fit_enabled",
+                                                               static_cast<int>(pointing_fit_gaussian_enabled),
+                                                               "Gaussian fit enabled");
+                    } catch (...) {
+                        f_io->at(map_index).hdus.at(k)->addKey("POINTING.fit_enabled", 0,
+                                                               "Gaussian fit enabled");
+                    }
+                    try {
+                        f_io->at(map_index).hdus.at(k)->addKey("POINTING.fit_valid",
+                                                               static_cast<int>(fit_valid(i)),
+                                                               "Gaussian fit valid");
+                    } catch (...) {
+                        f_io->at(map_index).hdus.at(k)->addKey("POINTING.fit_valid", 0,
+                                                               "Gaussian fit valid");
+                    }
+                    try {
+                        f_io->at(map_index).hdus.at(k)->addKey("POINTING.source_strategy",
+                                                               pointing_source_strategy,
+                                                               "Pointing source strategy");
+                    } catch (...) {}
+                    try {
+                        f_io->at(map_index).hdus.at(k)->addKey("POINTING.source_center_mode",
+                                                               pointing_fruitloops_center_mode,
+                                                               "Fruit loops source center mode");
+                    } catch (...) {}
                     ++k; // Move to next extension
                 }
             }

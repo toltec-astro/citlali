@@ -232,7 +232,17 @@ struct beammapControls {
     double lower_sens_factor, upper_sens_factor;
 };
 
-class Engine: public reduControls, public reduClasses, public beammapControls {
+struct pointingControls {
+    // source-aware pointing strategy.  Gaussian fits are optional diagnostics;
+    // fruit loops remains empirical and uses previous maps.
+    std::string pointing_source_strategy = "standard";
+    bool pointing_fit_gaussian_enabled = true;
+    std::string pointing_fruitloops_center_mode = "auto";
+    double pointing_header_center_max_radius_arcsec = 0.0;
+    bool pointing_header_center_require_coverage = true;
+};
+
+class Engine: public reduControls, public reduClasses, public beammapControls, public pointingControls {
 public:
     // type for missing/invalid keys
     using key_vec_t = std::vector<std::vector<std::string>>;
@@ -378,6 +388,10 @@ public:
     // get beammap config options
     template<typename CT>
     void get_beammap_config(CT &);
+
+    // get pointing config options
+    template<typename CT>
+    void get_pointing_config(CT &);
 
     // get mapmaking config options
     template<typename CT>
@@ -1429,6 +1443,88 @@ void Engine::get_mapmaking_config(CT &config) {
 }
 
 template<typename CT>
+void Engine::get_pointing_config(CT &config) {
+    logger->info("getting pointing config options");
+
+    pointing_source_strategy = "standard";
+    if (config.template has_typed<std::string>(std::tuple{"pointing","source_strategy","mode"})) {
+        get_config_value(config, pointing_source_strategy, missing_keys, invalid_keys,
+                         std::tuple{"pointing","source_strategy","mode"},
+                         {"standard", "psf_preserve"});
+    }
+
+    pointing_fit_gaussian_enabled = (pointing_source_strategy == "standard");
+    if (config.template has_typed<bool>(std::tuple{"pointing","source_strategy","fit_gaussian"})) {
+        get_config_value(config, pointing_fit_gaussian_enabled, missing_keys, invalid_keys,
+                         std::tuple{"pointing","source_strategy","fit_gaussian"});
+    }
+
+    pointing_fruitloops_center_mode =
+        (pointing_source_strategy == "psf_preserve") ? "map_center" : "auto";
+    if (config.template has_typed<std::string>(std::tuple{"pointing","source_strategy","fruitloops_center_mode"})) {
+        get_config_value(config, pointing_fruitloops_center_mode, missing_keys, invalid_keys,
+                         std::tuple{"pointing","source_strategy","fruitloops_center_mode"},
+                         {"auto", "header", "peak", "map_center"});
+    }
+
+    pointing_header_center_max_radius_arcsec = 0.0;
+    if (pointing_source_strategy == "standard" &&
+        std::isfinite(map_fitter.fitting_region_pix) && map_fitter.fitting_region_pix > 0.0 &&
+        std::isfinite(omb.pixel_size_rad) && omb.pixel_size_rad > 0.0) {
+        pointing_header_center_max_radius_arcsec =
+            map_fitter.fitting_region_pix * omb.pixel_size_rad * RAD_TO_ASEC;
+    }
+    if (config.template has_typed<double>(std::tuple{"pointing","source_strategy","header_max_radius_arcsec"})) {
+        get_config_value(config, pointing_header_center_max_radius_arcsec, missing_keys, invalid_keys,
+                         std::tuple{"pointing","source_strategy","header_max_radius_arcsec"},
+                         {}, {0.0});
+    }
+
+    pointing_header_center_require_coverage = true;
+    if (config.template has_typed<bool>(std::tuple{"pointing","source_strategy","header_require_coverage"})) {
+        get_config_value(config, pointing_header_center_require_coverage, missing_keys, invalid_keys,
+                         std::tuple{"pointing","source_strategy","header_require_coverage"});
+    }
+
+    ptcproc.fruit_loops_source_center_mode = pointing_fruitloops_center_mode;
+    ptcproc.fruit_loops_header_center_max_radius_arcsec =
+        pointing_header_center_max_radius_arcsec;
+    ptcproc.fruit_loops_header_center_require_coverage =
+        pointing_header_center_require_coverage;
+
+    logger->info("pointing source strategy: mode={} fit_gaussian={} fruitloops_center_mode={} "
+                 "header_max_radius_arcsec={} header_require_coverage={}",
+                 pointing_source_strategy, pointing_fit_gaussian_enabled,
+                 pointing_fruitloops_center_mode,
+                 pointing_header_center_max_radius_arcsec,
+                 pointing_header_center_require_coverage);
+
+    if (!ptcproc.run_fruit_loops) {
+        logger->warn("pointing source strategy is configured but timestream.fruit_loops.enabled=false");
+    }
+    else if (ptcproc.fruit_loops_iters < 2) {
+        logger->warn("pointing source-aware fruit loops uses previous maps; max_iters={} will not run a measurement iteration",
+                     ptcproc.fruit_loops_iters);
+    }
+
+    if (pointing_source_strategy == "psf_preserve" && pointing_fit_gaussian_enabled) {
+        logger->warn("pointing.source_strategy.mode=psf_preserve with fit_gaussian=true; "
+                     "Gaussian fits remain diagnostics only and do not constrain fruit loops");
+    }
+    if (pointing_source_strategy == "psf_preserve" &&
+        pointing_fruitloops_center_mode == "peak") {
+        logger->warn("pointing.source_strategy.mode=psf_preserve with fruitloops_center_mode=peak; "
+                     "messy out-of-focus maps may bias the fruit loops source support");
+    }
+    if (!pointing_fit_gaussian_enabled &&
+        (pointing_fruitloops_center_mode == "header" ||
+         pointing_fruitloops_center_mode == "auto")) {
+        logger->warn("pointing Gaussian fitting is disabled; later fruit loops iterations will not "
+                     "get new valid POINTING header centers from this run");
+    }
+}
+
+template<typename CT>
 void Engine::get_beammap_config(CT &config) {
     logger->info("getting beammap config options");
     // max beammap iteration
@@ -2035,6 +2131,11 @@ void Engine::get_citlali_config(CT &config) {
             // copy omb source_finder_mode to cmb
             cmb.source_finder_mode = omb.source_finder_mode;
         }
+    }
+
+    /* get pointing config */
+    if (redu_type=="pointing") {
+        get_pointing_config(config);
     }
 
     /* get beammap config */
@@ -4833,6 +4934,15 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS", ptcproc.run_fruit_loops, "Fruit loops");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path, "Fruit loops path");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.TYPE", ptcproc.fruit_loops_type, "Fruit loops type");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.SRCMODE",
+                                        ptcproc.fruit_loops_source_center_mode,
+                                        "Fruit loops source center mode");
+    add_double_key("CONFIG.FRUITLOOPS.HDRMAXR",
+                   ptcproc.fruit_loops_header_center_max_radius_arcsec,
+                   "Fruit loops header center max radius");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.HDRCOV",
+                                        ptcproc.fruit_loops_header_center_require_coverage,
+                                        "Require coverage at header center");
     add_double_key("CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise, "Fruit loops S/N");
     add_double_key("CONFIG.FRUITLOOPS.PEAKFRAC", ptcproc.fruit_loops_peak_fraction_limit,
                    "Fruit loops peak fraction");
@@ -4867,6 +4977,24 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
                        "Fruit loops flux (" + mb->sig_unit + ")");
     }
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters, "Fruit loops iterations");
+
+    if (redu_type == "pointing") {
+        fits_io->at(i).pfits->pHDU().addKey("CONFIG.POINTING.STRATEGY",
+                                            pointing_source_strategy,
+                                            "Pointing source strategy");
+        fits_io->at(i).pfits->pHDU().addKey("CONFIG.POINTING.FITGAUSS",
+                                            pointing_fit_gaussian_enabled,
+                                            "Pointing Gaussian fit enabled");
+        fits_io->at(i).pfits->pHDU().addKey("CONFIG.POINTING.SRCMODE",
+                                            pointing_fruitloops_center_mode,
+                                            "Pointing fruit loops source mode");
+        add_double_key("CONFIG.POINTING.HDRMAXR",
+                       pointing_header_center_max_radius_arcsec,
+                       "Pointing header center max radius");
+        fits_io->at(i).pfits->pHDU().addKey("CONFIG.POINTING.HDRCOV",
+                                            pointing_header_center_require_coverage,
+                                            "Pointing header coverage guard");
+    }
 
     // add telescope file header information
     if (mb->obsnums.size()==1) {
