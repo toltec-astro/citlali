@@ -47,6 +47,9 @@ public:
     std::string weighting_type;
     // source exclusion radius used only for full-weight variance estimation
     double source_mask_radius_arcsec = 0.0;
+    // bounds for the dimensionless residual-variance correction in hybrid weighting
+    double hybrid_correction_min_factor = 0.5;
+    double hybrid_correction_max_factor = 2.0;
 
     // ptc tod proc
     timestream::Cleaner cleaner;
@@ -256,7 +259,7 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
 
     // weight type
     get_config_value(config, weighting_type, missing_keys, invalid_keys,
-                     std::tuple{"timestream","processed_time_chunk","weighting","type"},{"full","approximate","const"});
+                     std::tuple{"timestream","processed_time_chunk","weighting","type"},{"full","approximate","hybrid","const"});
     // median weight factor
     get_config_value(config, med_weight_factor, missing_keys, invalid_keys,
                      std::tuple{"timestream","processed_time_chunk","weighting","median_map_weight_factor"});
@@ -1108,6 +1111,25 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     }
     else {
         source_mask_radius_arcsec = mask_radius_arcsec;
+    }
+    hybrid_correction_min_factor = 0.5;
+    if (config.template has_typed<double>(
+            std::tuple{"timestream","processed_time_chunk","weighting","hybrid_correction_min_factor"})) {
+        get_config_value(config, hybrid_correction_min_factor, missing_keys, invalid_keys,
+                         std::tuple{"timestream","processed_time_chunk","weighting","hybrid_correction_min_factor"},
+                         {}, {0.0});
+    }
+    hybrid_correction_max_factor = 2.0;
+    if (config.template has_typed<double>(
+            std::tuple{"timestream","processed_time_chunk","weighting","hybrid_correction_max_factor"})) {
+        get_config_value(config, hybrid_correction_max_factor, missing_keys, invalid_keys,
+                         std::tuple{"timestream","processed_time_chunk","weighting","hybrid_correction_max_factor"},
+                         {}, {0.0});
+    }
+    if (hybrid_correction_max_factor < hybrid_correction_min_factor) {
+        invalid_keys.push_back({
+            "timestream", "processed_time_chunk", "weighting",
+            "hybrid_correction_max_factor"});
     }
 
     if (second_pass_local.enabled) {
@@ -2363,6 +2385,134 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                 in.weights.data(i) = 0;
             }
         }
+    }
+    // hybrid weighting: approximate calibration prior times clipped residual-variance correction
+    else if (weighting_type == "hybrid") {
+        logger->debug("calculating hybrid weights using detector sensitivities and residual variance");
+        Eigen::VectorXd approximate_weights = Eigen::VectorXd::Zero(n_dets);
+        Eigen::VectorXd full_weights = Eigen::VectorXd::Zero(n_dets);
+
+        auto calc_approx_weight = [&](Eigen::Index i) {
+            if (apt["flag"](i)!=0) {
+                return 0.0;
+            }
+            const double conversion_factor = in.status.calibrated ? in.fcf.data(i) : 1.0;
+            const double denom = conversion_factor * apt["sens"](i);
+            const double weight_scale = std::sqrt(telescope.d_fsmp) * denom;
+            if (std::isfinite(weight_scale) && weight_scale != 0.0) {
+                return std::pow(weight_scale, -2.0);
+            }
+            return 0.0;
+        };
+
+        const bool use_source_weight_mask =
+            source_mask_radius_arcsec > 0.0 &&
+            fruit_loops_source_valid.size() > 0 &&
+            fruit_loops_source_lat.size() == fruit_loops_source_valid.size() &&
+            fruit_loops_source_lon.size() == fruit_loops_source_valid.size();
+        const double source_mask_radius_rad = source_mask_radius_arcsec * ASEC_TO_RAD;
+        if (use_source_weight_mask) {
+            logger->info("calculating hybrid full-weight correction with source mask (radius {:.3f} arcsec) for scan {}",
+                         source_mask_radius_arcsec, scan_index_1based);
+        }
+
+        auto calc_full_weight = [&](Eigen::Index i) {
+            if (apt["flag"](i)!=0) {
+                return 0.0;
+            }
+            Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, 1>> scans(
+                in.scans.data.col(i).data(), in.scans.data.rows());
+            Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> base_flags(
+                in.flags.data.col(i).data(), in.flags.data.rows());
+
+            double det_std_dev = 0.0;
+            if (use_source_weight_mask &&
+                i < in.map_indices.data.size()) {
+                const auto map_index = in.map_indices.data(i);
+                if (map_index >= 0 &&
+                    map_index < fruit_loops_source_valid.size() &&
+                    fruit_loops_source_valid(map_index)) {
+                    Eigen::Matrix<bool, Eigen::Dynamic, 1> weight_flags = base_flags;
+                    auto [lat, lon] = engine_utils::calc_det_pointing(
+                        in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
+                        telescope.pixel_axes, in.pointing_offsets_arcsec.data,
+                        active_map_grouping);
+                    const double source_lat = fruit_loops_source_lat(map_index);
+                    const double source_lon = fruit_loops_source_lon(map_index);
+                    for (Eigen::Index j = 0; j < weight_flags.size(); ++j) {
+                        const double dlat = lat(j) - source_lat;
+                        const double dlon = lon(j) - source_lon;
+                        if (std::sqrt(dlat * dlat + dlon * dlon) < source_mask_radius_rad) {
+                            weight_flags(j) = 1;
+                        }
+                    }
+                    det_std_dev = engine_utils::calc_std_dev(scans, weight_flags);
+                }
+                else {
+                    det_std_dev = engine_utils::calc_std_dev(scans, base_flags);
+                }
+            }
+            else {
+                det_std_dev = engine_utils::calc_std_dev(scans, base_flags);
+            }
+            if (std::isfinite(det_std_dev) && det_std_dev > 0.0) {
+                return std::pow(det_std_dev, -2.0);
+            }
+            return 0.0;
+        };
+
+        std::map<Eigen::Index, std::vector<double>> ratios_by_array;
+        for (Eigen::Index i=0; i<n_dets; ++i) {
+            approximate_weights(i) = calc_approx_weight(i);
+            full_weights(i) = calc_full_weight(i);
+            if (approximate_weights(i) > 0.0 && full_weights(i) > 0.0 &&
+                std::isfinite(approximate_weights(i)) && std::isfinite(full_weights(i))) {
+                const Eigen::Index array_index =
+                    static_cast<Eigen::Index>(std::lround(apt["array"](i)));
+                ratios_by_array[array_index].push_back(full_weights(i) / approximate_weights(i));
+            }
+        }
+
+        std::map<Eigen::Index, double> median_ratio_by_array;
+        for (auto const& [array_index, ratios] : ratios_by_array) {
+            Eigen::VectorXd ratio_vec(static_cast<Eigen::Index>(ratios.size()));
+            for (Eigen::Index i=0; i<ratio_vec.size(); ++i) {
+                ratio_vec(i) = ratios[static_cast<std::size_t>(i)];
+            }
+            const double median_ratio = tula::alg::median(ratio_vec);
+            median_ratio_by_array[array_index] =
+                (std::isfinite(median_ratio) && median_ratio > 0.0) ? median_ratio : 1.0;
+        }
+
+        for (Eigen::Index i=0; i<n_dets; ++i) {
+            if (approximate_weights(i) <= 0.0 || !std::isfinite(approximate_weights(i))) {
+                in.weights.data(i) = 0.0;
+                continue;
+            }
+            double correction = 1.0;
+            if (full_weights(i) > 0.0 && std::isfinite(full_weights(i))) {
+                const Eigen::Index array_index =
+                    static_cast<Eigen::Index>(std::lround(apt["array"](i)));
+                auto med_it = median_ratio_by_array.find(array_index);
+                const double median_ratio =
+                    (med_it != median_ratio_by_array.end()) ? med_it->second : 1.0;
+                if (std::isfinite(median_ratio) && median_ratio > 0.0) {
+                    correction = (full_weights(i) / approximate_weights(i)) / median_ratio;
+                }
+            }
+            if (!std::isfinite(correction) || correction <= 0.0) {
+                correction = 1.0;
+            }
+            correction = std::clamp(
+                correction, hybrid_correction_min_factor, hybrid_correction_max_factor);
+            in.weights.data(i) = approximate_weights(i) * correction;
+        }
+
+        logger->info(
+            "hybrid weight correction scan={} source_mask_radius_arcsec={} min_factor={} max_factor={} arrays={}",
+            scan_index_1based, source_mask_radius_arcsec,
+            hybrid_correction_min_factor, hybrid_correction_max_factor,
+            median_ratio_by_array.size());
     }
     // constant weighting
     else if (weighting_type == "const") {

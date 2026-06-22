@@ -2645,6 +2645,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var<std::string>(fo, "CONFIG.EXTINCTION.EXTMODEL", rtcproc.calibration.extinction_model);
         add_netcdf_var<std::string>(fo, "CONFIG.WEIGHT.TYPE", ptcproc.weighting_type);
         add_netcdf_var(fo, "CONFIG.WEIGHT.SOURCE_MASK_RADIUS_ARCSEC", ptcproc.source_mask_radius_arcsec);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.HYBRID_MIN_FACTOR", ptcproc.hybrid_correction_min_factor);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.HYBRID_MAX_FACTOR", ptcproc.hybrid_correction_max_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTLOW", rtcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTHIGH", rtcproc.upper_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.ENABLED", rtcproc.network_step_mask.enabled);
@@ -4761,6 +4763,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     add_double_key("CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor, "Median weight factor");
     add_double_key("CONFIG.WEIGHT.SRCMASK_ARCSEC", ptcproc.source_mask_radius_arcsec,
                    "Source mask radius for full-weight variance estimation");
+    add_double_key("CONFIG.WEIGHT.HYBRID_MIN", ptcproc.hybrid_correction_min_factor,
+                   "Minimum hybrid residual-variance correction factor");
+    add_double_key("CONFIG.WEIGHT.HYBRID_MAX", ptcproc.hybrid_correction_max_factor,
+                   "Maximum hybrid residual-variance correction factor");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.ENABLED",
                                         ptcproc.weight_corr_penalty.enabled,
                                         "Enable per-network corr-based weight penalties");
@@ -6112,6 +6118,8 @@ void Engine::create_ptcdiag_file() {
 
     add_netcdf_var(fo, "CONFIG.WEIGHT.TYPE", ptcproc.weighting_type);
     add_netcdf_var(fo, "CONFIG.WEIGHT.SOURCE_MASK_RADIUS_ARCSEC", ptcproc.source_mask_radius_arcsec);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.HYBRID_MIN_FACTOR", ptcproc.hybrid_correction_min_factor);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.HYBRID_MAX_FACTOR", ptcproc.hybrid_correction_max_factor);
     add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
     add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
     add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor);
