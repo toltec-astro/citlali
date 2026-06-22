@@ -562,6 +562,7 @@ int run(const rc_t &rc) {
                     if (todproc.engine().ptcproc.run_fruit_loops) {
                         logger->info("starting fruit loops iteration {}", todproc.engine().fruit_iter);
                     }
+                    todproc.engine().ptcproc.begin_weight_validation_iteration(todproc.engine().fruit_iter);
 
                     // setup redu dirs if saving outputs or on first iter
                     if (todproc.engine().ptcproc.save_all_iters || todproc.engine().fruit_iter == 0) {
@@ -1182,6 +1183,7 @@ int run(const rc_t &rc) {
                     logger->info("making index files");
                     // make index files for each directory recursively
                     todproc.make_index_file(todproc.engine().redu_dir_name);
+                    todproc.engine().ptcproc.finalize_weight_validation_iteration(todproc.engine().fruit_iter);
 
                     // increment fruit loops iteration
                     todproc.engine().fruit_iter++;

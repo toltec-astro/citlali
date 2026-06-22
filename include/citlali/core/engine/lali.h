@@ -305,6 +305,8 @@ auto Lali::run() -> run_stage_t {
                                                                             map_grouping);
         }
 
+        ptcproc.accumulate_weight_validation_atmosphere(ptcdata, calib_scan.apt);
+
         {
             std::lock_guard<std::mutex> lock(*ptc_line_audit_mutex);
             apply_model_protected_ptc_line_audit(ptcdata, calib_scan, use_fruit_noise_weights);
@@ -319,7 +321,7 @@ auto Lali::run() -> run_stage_t {
             // calculate weights
             logger->info("calculating weights for scan {} (fruit loops noise-only pass)",
                          ptcdata.index.data + 1);
-            ptcproc.calc_weights(ptcdata, calib_scan.apt, telescope);
+            ptcproc.calc_weights(ptcdata, calib_scan.apt, telescope, true);
 
             // reset weights to median
             calib_scan = ptcproc.reset_weights(ptcdata, calib_scan, map_grouping);

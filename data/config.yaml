@@ -381,10 +381,30 @@ timestream: # timestream reduction parameters
       grouping: [array] # clean grouping (array, nw, all)
       tau: 0.0 # tolerance for detector correlations (fraction of mean correlation for current group)
     weighting: # how to weight data and maps
-      type: full # type of TOD weighting (full=use scan variance/approximate=use det sensitivity/hybrid=approximate times clipped residual-variance correction/const=1)
+      type: full # type of TOD weighting (full=use scan variance/approximate=use det sensitivity/hybrid=approximate times clipped residual-variance correction/validated=approximate times learned source-aware detector penalties/const=1)
       source_mask_radius_arcsec: 0.0 # source region to exclude only from full-weight variance estimation (0 disables; omitted legacy configs fall back to clean.mask_radius_arcsec)
       hybrid_correction_min_factor: 0.5 # minimum clipped full/approx residual-variance correction when type=hybrid
       hybrid_correction_max_factor: 2.0 # maximum clipped full/approx residual-variance correction when type=hybrid
+      validation: # detector-weight validation used when type=validated
+        enabled: false # type=validated forces this on
+        accumulation_iters: 1 # number of source-subtracted fruitloops iterations used to learn detector penalties
+        apply_start_iter: 1 # earliest fruitloops iteration where finalized detector penalties are applied
+        min_valid_scans: 1 # minimum scans contributing a detector metric before it affects that detector
+        min_factor: 0.1 # floor for learned detector weight penalties
+        unvalidated_factor: 1.0 # factor for detectors without enough validation evidence
+        require_fruitloops_model: true # only learn from source-subtracted fruitloops passes
+        transient_ratio_enabled: false # also apply the current scan's one-sided full/approx ratio penalty
+        ratio_power: 1.0 # exponent for accumulated one-sided full/approx ratio penalties
+        transient_ratio_power: 1.0 # exponent for transient_ratio_enabled scan-local penalties
+        atmospheric_correlation_enabled: true # learn detector penalties from pre-clean common-mode consistency
+        atmospheric_grouping: array # grouping for atmospheric common modes (array, nw, all)
+        atmospheric_min_detectors: 8 # minimum detectors in a common-mode group
+        atmospheric_ref: 0.0 # abs corr below this starts at min_factor
+        atmospheric_span: 0.15 # abs corr interval from atmospheric_ref to full credit
+        atmospheric_power: 1.0 # exponent for atmospheric common-mode quality
+        min_good_frac: 0.5 # minimum unflagged sampled fraction for validation metrics
+        min_overlap: 200 # minimum overlapping samples for detector/common-mode correlation
+        max_samples: 5000 # cap sampled time points per scan for validation metrics (0 => use all)
       median_map_weight_factor: 0 # set all weights above this factor x median of unflagged detectors to median (>=1 allowed)
       lower_map_weight_factor: 0.0 # flag detectors below this weight limit (ignored if 0)
       upper_map_weight_factor: 0.0 # flag detectors above this weight limit (ignored if 0)

@@ -2647,6 +2647,11 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.WEIGHT.SOURCE_MASK_RADIUS_ARCSEC", ptcproc.source_mask_radius_arcsec);
         add_netcdf_var(fo, "CONFIG.WEIGHT.HYBRID_MIN_FACTOR", ptcproc.hybrid_correction_min_factor);
         add_netcdf_var(fo, "CONFIG.WEIGHT.HYBRID_MAX_FACTOR", ptcproc.hybrid_correction_max_factor);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.ENABLED", ptcproc.weight_validation.enabled);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.ACCUMULATION_ITERS", ptcproc.weight_validation.accumulation_iters);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.APPLY_START_ITER", ptcproc.weight_validation.apply_start_iter);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.MIN_FACTOR", ptcproc.weight_validation.min_factor);
+        add_netcdf_var<std::string>(fo, "CONFIG.WEIGHT.VALIDATION.ATM_GROUPING", ptcproc.weight_validation.atmospheric_grouping);
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTLOW", rtcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTHIGH", rtcproc.upper_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.ENABLED", rtcproc.network_step_mask.enabled);
@@ -4767,6 +4772,18 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
                    "Minimum hybrid residual-variance correction factor");
     add_double_key("CONFIG.WEIGHT.HYBRID_MAX", ptcproc.hybrid_correction_max_factor,
                    "Maximum hybrid residual-variance correction factor");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.VALIDATION.ENABLED",
+                                        ptcproc.weight_validation.enabled,
+                                        "Enable validated detector-weight penalties");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.VALIDATION.ACCUM_ITERS",
+                                        ptcproc.weight_validation.accumulation_iters,
+                                        "Fruitloops iterations used to learn penalties");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.VALIDATION.APPLY_ITER",
+                                        ptcproc.weight_validation.apply_start_iter,
+                                        "Earliest fruitloops iter applying penalties");
+    add_double_key("CONFIG.WEIGHT.VALIDATION.MIN_FACTOR",
+                   ptcproc.weight_validation.min_factor,
+                   "Minimum validated detector weight factor");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.ENABLED",
                                         ptcproc.weight_corr_penalty.enabled,
                                         "Enable per-network corr-based weight penalties");
@@ -6120,6 +6137,11 @@ void Engine::create_ptcdiag_file() {
     add_netcdf_var(fo, "CONFIG.WEIGHT.SOURCE_MASK_RADIUS_ARCSEC", ptcproc.source_mask_radius_arcsec);
     add_netcdf_var(fo, "CONFIG.WEIGHT.HYBRID_MIN_FACTOR", ptcproc.hybrid_correction_min_factor);
     add_netcdf_var(fo, "CONFIG.WEIGHT.HYBRID_MAX_FACTOR", ptcproc.hybrid_correction_max_factor);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.ENABLED", ptcproc.weight_validation.enabled);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.ACCUMULATION_ITERS", ptcproc.weight_validation.accumulation_iters);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.APPLY_START_ITER", ptcproc.weight_validation.apply_start_iter);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.MIN_FACTOR", ptcproc.weight_validation.min_factor);
+    add_netcdf_var<std::string>(fo, "CONFIG.WEIGHT.VALIDATION.ATM_GROUPING", ptcproc.weight_validation.atmospheric_grouping);
     add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
     add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
     add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor);

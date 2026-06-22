@@ -9,6 +9,8 @@
 #include <exception>
 #include <limits>
 #include <map>
+#include <memory>
+#include <mutex>
 #include <numeric>
 #include <random>
 #include <unordered_map>
@@ -50,6 +52,42 @@ public:
     // bounds for the dimensionless residual-variance correction in hybrid weighting
     double hybrid_correction_min_factor = 0.5;
     double hybrid_correction_max_factor = 2.0;
+
+    struct WeightValidationOptions {
+        bool enabled = false;
+        int accumulation_iters = 1;
+        int apply_start_iter = 1;
+        int min_valid_scans = 1;
+        double min_factor = 0.1;
+        double unvalidated_factor = 1.0;
+        bool require_fruitloops_model = true;
+        bool transient_ratio_enabled = false;
+        double ratio_power = 1.0;
+        double transient_ratio_power = 1.0;
+        bool atmospheric_correlation_enabled = true;
+        std::string atmospheric_grouping = "array";
+        int atmospheric_min_detectors = 8;
+        double atmospheric_ref = 0.0;
+        double atmospheric_span = 0.15;
+        double atmospheric_power = 1.0;
+        double min_good_frac = 0.5;
+        int min_overlap = 200;
+        int max_samples = 5000;
+    };
+
+    WeightValidationOptions weight_validation;
+    int weight_validation_current_iter = 0;
+    int weight_validation_accumulated_iters = 0;
+    int weight_validation_current_iter_contribution_count = 0;
+    bool weight_validation_finalized = false;
+    Eigen::VectorXd weight_validation_ratio_penalty_sum;
+    Eigen::VectorXd weight_validation_ratio_value_sum;
+    Eigen::VectorXi weight_validation_ratio_count;
+    Eigen::VectorXd weight_validation_atm_penalty_sum;
+    Eigen::VectorXd weight_validation_atm_corr_sum;
+    Eigen::VectorXi weight_validation_atm_count;
+    Eigen::VectorXd weight_validation_detector_penalty;
+    std::shared_ptr<std::mutex> weight_validation_mutex = std::make_shared<std::mutex>();
 
     // ptc tod proc
     timestream::Cleaner cleaner;
@@ -237,9 +275,19 @@ public:
 
     void clear_cached_diagnostics(Eigen::Index scan_id);
 
+    void begin_weight_validation_iteration(int iter);
+    void finalize_weight_validation_iteration(int iter);
+    bool weight_validation_is_enabled() const;
+    bool should_accumulate_weight_validation(bool source_subtracted) const;
+    void ensure_weight_validation_storage(Eigen::Index n_uids);
+
+    template <typename apt_type>
+    void accumulate_weight_validation_atmosphere(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_type &);
+
     // calculate detector weights
     template <typename apt_type, class tel_type>
-    void calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_type &, tel_type &);
+    void calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, apt_type &, tel_type &,
+                      bool source_subtracted_for_weight_validation = false);
 
     // reset outlier weights to the median
     template <typename calib_t>
@@ -259,7 +307,7 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
 
     // weight type
     get_config_value(config, weighting_type, missing_keys, invalid_keys,
-                     std::tuple{"timestream","processed_time_chunk","weighting","type"},{"full","approximate","hybrid","const"});
+                     std::tuple{"timestream","processed_time_chunk","weighting","type"},{"full","approximate","hybrid","validated","const"});
     // median weight factor
     get_config_value(config, med_weight_factor, missing_keys, invalid_keys,
                      std::tuple{"timestream","processed_time_chunk","weighting","median_map_weight_factor"});
@@ -1132,6 +1180,144 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             "hybrid_correction_max_factor"});
     }
 
+    weight_validation = WeightValidationOptions{};
+    weight_validation.enabled = (weighting_type == "validated");
+    if (config.template has_typed<bool>(
+            std::tuple{"timestream","processed_time_chunk","weighting","validation","enabled"})) {
+        get_config_value(config, weight_validation.enabled, missing_keys, invalid_keys,
+                         std::tuple{"timestream","processed_time_chunk","weighting","validation","enabled"});
+    }
+    if (weighting_type == "validated" && !weight_validation.enabled) {
+        logger->warn("weighting.type='validated' forces weighting.validation.enabled=true");
+        weight_validation.enabled = true;
+    }
+    if (weight_validation.enabled) {
+        if (config.template has_typed<int>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","accumulation_iters"})) {
+            get_config_value(config, weight_validation.accumulation_iters, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","accumulation_iters"},
+                             {}, {1});
+        }
+        if (config.template has_typed<int>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","apply_start_iter"})) {
+            get_config_value(config, weight_validation.apply_start_iter, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","apply_start_iter"},
+                             {}, {0});
+        }
+        if (config.template has_typed<int>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","min_valid_scans"})) {
+            get_config_value(config, weight_validation.min_valid_scans, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","min_valid_scans"},
+                             {}, {1});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","min_factor"})) {
+            get_config_value(config, weight_validation.min_factor, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","min_factor"},
+                             {}, {0.0}, {1.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","unvalidated_factor"})) {
+            get_config_value(config, weight_validation.unvalidated_factor, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","unvalidated_factor"},
+                             {}, {0.0}, {1.0});
+        }
+        if (config.template has_typed<bool>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","require_fruitloops_model"})) {
+            get_config_value(config, weight_validation.require_fruitloops_model, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","require_fruitloops_model"});
+        }
+        if (config.template has_typed<bool>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","transient_ratio_enabled"})) {
+            get_config_value(config, weight_validation.transient_ratio_enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","transient_ratio_enabled"});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","ratio_power"})) {
+            get_config_value(config, weight_validation.ratio_power, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","ratio_power"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","transient_ratio_power"})) {
+            get_config_value(config, weight_validation.transient_ratio_power, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","transient_ratio_power"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<bool>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","atmospheric_correlation_enabled"})) {
+            get_config_value(config, weight_validation.atmospheric_correlation_enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","atmospheric_correlation_enabled"});
+        }
+        if (config.template has_typed<std::string>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","atmospheric_grouping"})) {
+            get_config_value(config, weight_validation.atmospheric_grouping, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","atmospheric_grouping"},
+                             {"array", "nw", "all"});
+        }
+        if (config.template has_typed<int>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","atmospheric_min_detectors"})) {
+            get_config_value(config, weight_validation.atmospheric_min_detectors, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","atmospheric_min_detectors"},
+                             {}, {2});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","atmospheric_ref"})) {
+            get_config_value(config, weight_validation.atmospheric_ref, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","atmospheric_ref"},
+                             {}, {0.0}, {1.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","atmospheric_span"})) {
+            get_config_value(config, weight_validation.atmospheric_span, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","atmospheric_span"},
+                             {}, {1e-12});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","atmospheric_power"})) {
+            get_config_value(config, weight_validation.atmospheric_power, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","atmospheric_power"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","min_good_frac"})) {
+            get_config_value(config, weight_validation.min_good_frac, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","min_good_frac"},
+                             {}, {0.0}, {1.0});
+        }
+        if (config.template has_typed<int>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","min_overlap"})) {
+            get_config_value(config, weight_validation.min_overlap, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","min_overlap"},
+                             {}, {2});
+        }
+        if (config.template has_typed<int>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","max_samples"})) {
+            get_config_value(config, weight_validation.max_samples, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","max_samples"},
+                             {}, {0});
+        }
+        logger->info(
+            "weighting.validation enabled: accumulation_iters={} apply_start_iter={} min_valid_scans={} "
+            "min_factor={} unvalidated_factor={} require_fruitloops_model={} transient_ratio_enabled={} "
+            "ratio_power={} transient_ratio_power={} atm(enabled={} grouping={} min_detectors={} ref={} span={} "
+            "power={}) min_good_frac={} min_overlap={} max_samples={}",
+            weight_validation.accumulation_iters, weight_validation.apply_start_iter,
+            weight_validation.min_valid_scans, weight_validation.min_factor,
+            weight_validation.unvalidated_factor, weight_validation.require_fruitloops_model,
+            weight_validation.transient_ratio_enabled, weight_validation.ratio_power,
+            weight_validation.transient_ratio_power,
+            weight_validation.atmospheric_correlation_enabled,
+            weight_validation.atmospheric_grouping,
+            weight_validation.atmospheric_min_detectors,
+            weight_validation.atmospheric_ref,
+            weight_validation.atmospheric_span,
+            weight_validation.atmospheric_power,
+            weight_validation.min_good_frac,
+            weight_validation.min_overlap,
+            weight_validation.max_samples);
+    }
+
     if (second_pass_local.enabled) {
         logger->info(
             "processed_time_chunk.flagging.second_pass_local enabled: min_spike_sigma={:.4g} min_good_frac={:.4f} baseline_window_sec={:.4g} raw_window_sec={:.4g} delta_window_sec={:.4g} merge_within_detector_sec={:.4g} cluster_events_sec={:.4g} min_cluster_detectors={} high_score_cluster_override={:.4g} max_auto_flag_clusters_per_network={}",
@@ -1142,6 +1328,196 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             second_pass_local.high_score_cluster_override,
             second_pass_local.max_auto_flag_clusters_per_network);
     }
+}
+
+inline bool PTCProc::weight_validation_is_enabled() const {
+    return weight_validation.enabled || weighting_type == "validated";
+}
+
+inline bool PTCProc::should_accumulate_weight_validation(bool source_subtracted) const {
+    if (!weight_validation_is_enabled()) {
+        return false;
+    }
+    std::lock_guard<std::mutex> lk(*weight_validation_mutex);
+    if (weight_validation_finalized) {
+        return false;
+    }
+    if (weight_validation_accumulated_iters >= weight_validation.accumulation_iters) {
+        return false;
+    }
+    if (weight_validation.require_fruitloops_model && !source_subtracted) {
+        return false;
+    }
+    return true;
+}
+
+inline void PTCProc::ensure_weight_validation_storage(Eigen::Index n_uids) {
+    if (n_uids <= 0) {
+        return;
+    }
+    if (weight_validation_detector_penalty.size() >= n_uids) {
+        return;
+    }
+
+    const Eigen::Index old_size = weight_validation_detector_penalty.size();
+    auto grow_double = [&](Eigen::VectorXd &vec, double fill) {
+        Eigen::VectorXd old = vec;
+        vec = Eigen::VectorXd::Constant(n_uids, fill);
+        if (old.size() > 0) {
+            vec.head(old.size()) = old;
+        }
+    };
+    auto grow_int = [&](Eigen::VectorXi &vec, int fill) {
+        Eigen::VectorXi old = vec;
+        vec = Eigen::VectorXi::Constant(n_uids, fill);
+        if (old.size() > 0) {
+            vec.head(old.size()) = old;
+        }
+    };
+
+    grow_double(weight_validation_ratio_penalty_sum, 0.0);
+    grow_double(weight_validation_ratio_value_sum, 0.0);
+    grow_int(weight_validation_ratio_count, 0);
+    grow_double(weight_validation_atm_penalty_sum, 0.0);
+    grow_double(weight_validation_atm_corr_sum, 0.0);
+    grow_int(weight_validation_atm_count, 0);
+    grow_double(weight_validation_detector_penalty,
+                std::clamp(weight_validation.unvalidated_factor,
+                           weight_validation.min_factor, 1.0));
+
+    logger->debug("weight validation storage resized from {} to {} detector slots",
+                  old_size, n_uids);
+}
+
+inline void PTCProc::begin_weight_validation_iteration(int iter) {
+    std::lock_guard<std::mutex> lk(*weight_validation_mutex);
+    weight_validation_current_iter = iter;
+    weight_validation_current_iter_contribution_count = 0;
+
+    if (iter == 0) {
+        weight_validation_accumulated_iters = 0;
+        weight_validation_finalized = false;
+        weight_validation_ratio_penalty_sum.resize(0);
+        weight_validation_ratio_value_sum.resize(0);
+        weight_validation_ratio_count.resize(0);
+        weight_validation_atm_penalty_sum.resize(0);
+        weight_validation_atm_corr_sum.resize(0);
+        weight_validation_atm_count.resize(0);
+        weight_validation_detector_penalty.resize(0);
+    }
+}
+
+inline void PTCProc::finalize_weight_validation_iteration(int iter) {
+    if (!weight_validation_is_enabled()) {
+        return;
+    }
+
+    std::lock_guard<std::mutex> lk(*weight_validation_mutex);
+    if (weight_validation_finalized) {
+        return;
+    }
+    if (iter != weight_validation_current_iter) {
+        weight_validation_current_iter = iter;
+    }
+    if (weight_validation_current_iter_contribution_count <= 0) {
+        logger->info("weight validation iteration {} had no source-subtracted validation contributions; not finalizing",
+                     iter);
+        return;
+    }
+
+    weight_validation_accumulated_iters++;
+    if (weight_validation_accumulated_iters < weight_validation.accumulation_iters) {
+        logger->info("weight validation accumulated {}/{} requested iterations",
+                     weight_validation_accumulated_iters,
+                     weight_validation.accumulation_iters);
+        return;
+    }
+
+    const Eigen::Index n_uids = std::max(weight_validation_ratio_count.size(),
+                                        weight_validation_atm_count.size());
+    if (n_uids <= 0) {
+        logger->warn("weight validation had contributions but no detector slots; leaving validation inactive");
+        return;
+    }
+    ensure_weight_validation_storage(n_uids);
+
+    const double min_factor = std::clamp(weight_validation.min_factor, 0.0, 1.0);
+    const double unvalidated_factor = std::clamp(weight_validation.unvalidated_factor,
+                                                min_factor, 1.0);
+    const int min_valid = std::max(1, weight_validation.min_valid_scans);
+    weight_validation_detector_penalty =
+        Eigen::VectorXd::Constant(n_uids, unvalidated_factor);
+
+    std::vector<double> factors;
+    factors.reserve(static_cast<std::size_t>(n_uids));
+    Eigen::Index n_ratio_valid = 0;
+    Eigen::Index n_atm_valid = 0;
+    Eigen::Index n_penalized = 0;
+    for (Eigen::Index uid = 0; uid < n_uids; ++uid) {
+        double factor = unvalidated_factor;
+        bool have_factor = false;
+
+        if (uid < weight_validation_ratio_count.size() &&
+            weight_validation_ratio_count(uid) >= min_valid) {
+            const double avg =
+                weight_validation_ratio_penalty_sum(uid) /
+                static_cast<double>(weight_validation_ratio_count(uid));
+            if (std::isfinite(avg)) {
+                factor = std::clamp(avg, min_factor, 1.0);
+                have_factor = true;
+                n_ratio_valid++;
+            }
+        }
+
+        if (uid < weight_validation_atm_count.size() &&
+            weight_validation_atm_count(uid) >= min_valid) {
+            const double avg =
+                weight_validation_atm_penalty_sum(uid) /
+                static_cast<double>(weight_validation_atm_count(uid));
+            if (std::isfinite(avg)) {
+                const double atm_factor = std::clamp(avg, min_factor, 1.0);
+                factor = have_factor ? std::min(factor, atm_factor) : atm_factor;
+                have_factor = true;
+                n_atm_valid++;
+            }
+        }
+
+        if (!have_factor) {
+            factor = unvalidated_factor;
+        }
+        factor = std::clamp(factor, min_factor, 1.0);
+        weight_validation_detector_penalty(uid) = factor;
+        if (factor < 0.999) {
+            n_penalized++;
+        }
+        factors.push_back(factor);
+    }
+
+    double median_factor = std::numeric_limits<double>::quiet_NaN();
+    double p10_factor = std::numeric_limits<double>::quiet_NaN();
+    if (!factors.empty()) {
+        auto quantile = [](std::vector<double> values, double q) {
+            std::sort(values.begin(), values.end());
+            q = std::clamp(q, 0.0, 1.0);
+            const double pos = q * static_cast<double>(values.size() - 1);
+            const auto lo = static_cast<std::size_t>(std::floor(pos));
+            const auto hi = static_cast<std::size_t>(std::ceil(pos));
+            if (lo == hi) {
+                return values[lo];
+            }
+            const double frac = pos - static_cast<double>(lo);
+            return values[lo] * (1.0 - frac) + values[hi] * frac;
+        };
+        median_factor = quantile(factors, 0.5);
+        p10_factor = quantile(factors, 0.1);
+    }
+
+    weight_validation_finalized = true;
+    logger->info(
+        "weight validation finalized at fruitloops iter {} after {} contributing iteration(s): "
+        "detectors={} ratio_valid={} atmosphere_valid={} penalized={} factor_median={} factor_p10={}",
+        iter, weight_validation_accumulated_iters, n_uids, n_ratio_valid,
+        n_atm_valid, n_penalized, median_factor, p10_factor);
 }
 
 void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
@@ -2271,8 +2647,282 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     }
 }
 
+template <typename apt_type>
+void PTCProc::accumulate_weight_validation_atmosphere(
+    TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_type &apt) {
+
+    if (!weight_validation_is_enabled() ||
+        !weight_validation.atmospheric_correlation_enabled) {
+        return;
+    }
+
+    const bool source_subtracted = run_fruit_loops && !tod_mb.signal.empty();
+    if (!should_accumulate_weight_validation(source_subtracted)) {
+        return;
+    }
+
+    const Eigen::Index n_dets = in.scans.data.cols();
+    const Eigen::Index n_pts_full = in.scans.data.rows();
+    if (n_dets <= 0 || n_pts_full <= 1) {
+        return;
+    }
+
+    auto uid_for = [&](Eigen::Index i) {
+        auto uid_it = apt.find("uid");
+        if (uid_it != apt.end() && i < uid_it->second.size() &&
+            std::isfinite(uid_it->second(i))) {
+            const auto uid = static_cast<Eigen::Index>(std::llround(uid_it->second(i)));
+            if (uid >= 0) {
+                return uid;
+            }
+        }
+        return i;
+    };
+    auto group_for = [&](Eigen::Index i) {
+        if (weight_validation.atmospheric_grouping == "all") {
+            return static_cast<Eigen::Index>(0);
+        }
+        const char *key = (weight_validation.atmospheric_grouping == "nw") ? "nw" : "array";
+        auto grp_it = apt.find(key);
+        if (grp_it != apt.end() && i < grp_it->second.size() &&
+            std::isfinite(grp_it->second(i))) {
+            return static_cast<Eigen::Index>(std::llround(grp_it->second(i)));
+        }
+        return static_cast<Eigen::Index>(0);
+    };
+
+    Eigen::Index max_uid = -1;
+    std::vector<Eigen::Index> det_uids(static_cast<std::size_t>(n_dets), -1);
+    std::map<Eigen::Index, std::vector<Eigen::Index>> dets_by_group;
+    for (Eigen::Index i = 0; i < n_dets; ++i) {
+        const Eigen::Index uid = uid_for(i);
+        det_uids[static_cast<std::size_t>(i)] = uid;
+        max_uid = std::max(max_uid, uid);
+        if (apt["flag"](i) != 0) {
+            continue;
+        }
+        dets_by_group[group_for(i)].push_back(i);
+    }
+    if (max_uid < 0 || dets_by_group.empty()) {
+        return;
+    }
+
+    Eigen::Index sample_step = 1;
+    if (weight_validation.max_samples > 0 &&
+        n_pts_full > static_cast<Eigen::Index>(weight_validation.max_samples)) {
+        sample_step = static_cast<Eigen::Index>(std::ceil(
+            static_cast<double>(n_pts_full) /
+            static_cast<double>(weight_validation.max_samples)));
+    }
+    sample_step = std::max<Eigen::Index>(sample_step, 1);
+    const Eigen::Index n_pts = (n_pts_full + sample_step - 1) / sample_step;
+    const Eigen::Index min_overlap =
+        std::max<Eigen::Index>(2, weight_validation.min_overlap);
+    const Eigen::Index min_group_det =
+        std::max<Eigen::Index>(2, weight_validation.atmospheric_min_detectors);
+    const double min_good_frac =
+        std::clamp(weight_validation.min_good_frac, 0.0, 1.0);
+    const double min_factor = std::clamp(weight_validation.min_factor, 0.0, 1.0);
+    const double ref = std::clamp(weight_validation.atmospheric_ref, 0.0, 1.0);
+    const double span = std::max(weight_validation.atmospheric_span, 1e-12);
+    const double power = std::max(weight_validation.atmospheric_power, 0.0);
+
+    Eigen::VectorXd atm_penalty =
+        Eigen::VectorXd::Constant(n_dets, std::numeric_limits<double>::quiet_NaN());
+    Eigen::VectorXd atm_corr =
+        Eigen::VectorXd::Constant(n_dets, std::numeric_limits<double>::quiet_NaN());
+
+    for (const auto &[group_id, group_dets] : dets_by_group) {
+        (void) group_id;
+        if (group_dets.size() < static_cast<std::size_t>(min_group_det)) {
+            continue;
+        }
+
+        std::vector<Eigen::Index> used_dets;
+        std::vector<double> det_mean;
+        std::vector<double> det_std;
+        used_dets.reserve(group_dets.size());
+        det_mean.reserve(group_dets.size());
+        det_std.reserve(group_dets.size());
+
+        for (const auto det : group_dets) {
+            double sum = 0.0;
+            double sum2 = 0.0;
+            Eigen::Index count = 0;
+            for (Eigen::Index is = 0; is < n_pts; ++is) {
+                const Eigen::Index row = is * sample_step;
+                if (row >= n_pts_full) {
+                    break;
+                }
+                if (in.flags.data(row, det)) {
+                    continue;
+                }
+                const double v = in.scans.data(row, det);
+                if (!std::isfinite(v)) {
+                    continue;
+                }
+                sum += v;
+                sum2 += v * v;
+                count++;
+            }
+            if (count <= 1) {
+                continue;
+            }
+            const double frac = static_cast<double>(count) /
+                                static_cast<double>(n_pts);
+            if (frac < min_good_frac) {
+                continue;
+            }
+            const double mean = sum / static_cast<double>(count);
+            const double var_num =
+                sum2 - (sum * sum) / static_cast<double>(count);
+            const double var_den = static_cast<double>(count - 1);
+            if (var_den <= 0.0) {
+                continue;
+            }
+            const double var = var_num / var_den;
+            if (!(var > 0.0) || !std::isfinite(var)) {
+                continue;
+            }
+            const double std = std::sqrt(var);
+            if (!(std > 0.0) || !std::isfinite(std)) {
+                continue;
+            }
+            used_dets.push_back(det);
+            det_mean.push_back(mean);
+            det_std.push_back(std);
+        }
+
+        const Eigen::Index n_used = static_cast<Eigen::Index>(used_dets.size());
+        if (n_used < min_group_det) {
+            continue;
+        }
+
+        Eigen::MatrixXd z =
+            Eigen::MatrixXd::Constant(n_pts, n_used,
+                                      std::numeric_limits<double>::quiet_NaN());
+        Eigen::VectorXd sum_z = Eigen::VectorXd::Zero(n_pts);
+        Eigen::VectorXi count_z = Eigen::VectorXi::Zero(n_pts);
+
+        for (Eigen::Index k = 0; k < n_used; ++k) {
+            const Eigen::Index det = used_dets[static_cast<std::size_t>(k)];
+            for (Eigen::Index is = 0; is < n_pts; ++is) {
+                const Eigen::Index row = is * sample_step;
+                if (row >= n_pts_full) {
+                    break;
+                }
+                if (in.flags.data(row, det)) {
+                    continue;
+                }
+                const double v = in.scans.data(row, det);
+                if (!std::isfinite(v)) {
+                    continue;
+                }
+                const double zv =
+                    (v - det_mean[static_cast<std::size_t>(k)]) /
+                    det_std[static_cast<std::size_t>(k)];
+                if (!std::isfinite(zv)) {
+                    continue;
+                }
+                z(is, k) = zv;
+                sum_z(is) += zv;
+                count_z(is)++;
+            }
+        }
+
+        for (Eigen::Index k = 0; k < n_used; ++k) {
+            double sx = 0.0;
+            double sy = 0.0;
+            double sxx = 0.0;
+            double syy = 0.0;
+            double sxy = 0.0;
+            Eigen::Index n_overlap = 0;
+            for (Eigen::Index is = 0; is < n_pts; ++is) {
+                const double x = z(is, k);
+                if (!std::isfinite(x) || count_z(is) <= 1) {
+                    continue;
+                }
+                const double y =
+                    (sum_z(is) - x) /
+                    static_cast<double>(count_z(is) - 1);
+                if (!std::isfinite(y)) {
+                    continue;
+                }
+                sx += x;
+                sy += y;
+                sxx += x * x;
+                syy += y * y;
+                sxy += x * y;
+                n_overlap++;
+            }
+            if (n_overlap < min_overlap) {
+                continue;
+            }
+            const double n = static_cast<double>(n_overlap);
+            const double vx = sxx - (sx * sx) / n;
+            const double vy = syy - (sy * sy) / n;
+            if (!(vx > 0.0) || !(vy > 0.0) ||
+                !std::isfinite(vx) || !std::isfinite(vy)) {
+                continue;
+            }
+            const double cov = sxy - (sx * sy) / n;
+            double corr = cov / std::sqrt(vx * vy);
+            if (!std::isfinite(corr)) {
+                continue;
+            }
+            corr = std::clamp(corr, -1.0, 1.0);
+            const double quality =
+                std::clamp((std::abs(corr) - ref) / span, 0.0, 1.0);
+            const double factor =
+                min_factor + (1.0 - min_factor) * std::pow(quality, power);
+            const Eigen::Index det = used_dets[static_cast<std::size_t>(k)];
+            atm_corr(det) = corr;
+            atm_penalty(det) = std::clamp(factor, min_factor, 1.0);
+        }
+    }
+
+    Eigen::Index n_contrib = 0;
+    double penalty_sum = 0.0;
+    double corr_abs_sum = 0.0;
+    {
+        std::lock_guard<std::mutex> lk(*weight_validation_mutex);
+        ensure_weight_validation_storage(max_uid + 1);
+        for (Eigen::Index i = 0; i < n_dets; ++i) {
+            if (!std::isfinite(atm_penalty(i))) {
+                continue;
+            }
+            const Eigen::Index uid = det_uids[static_cast<std::size_t>(i)];
+            if (uid < 0 || uid >= weight_validation_atm_count.size()) {
+                continue;
+            }
+            weight_validation_atm_penalty_sum(uid) += atm_penalty(i);
+            weight_validation_atm_corr_sum(uid) += atm_corr(i);
+            weight_validation_atm_count(uid)++;
+            penalty_sum += atm_penalty(i);
+            corr_abs_sum += std::abs(atm_corr(i));
+            n_contrib++;
+        }
+        if (n_contrib > 0) {
+            weight_validation_current_iter_contribution_count++;
+        }
+    }
+
+    if (n_contrib > 0) {
+        logger->info(
+            "weight validation atmosphere scan={} grouping={} detectors={} sample_step={} "
+            "mean_factor={} mean_abs_corr={}",
+            static_cast<long long>(in.index.data) + 1,
+            weight_validation.atmospheric_grouping,
+            n_contrib,
+            sample_step,
+            penalty_sum / static_cast<double>(n_contrib),
+            corr_abs_sum / static_cast<double>(n_contrib));
+    }
+}
+
 template <typename apt_type, class tel_type>
-void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_type &apt, tel_type &telescope) {
+void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_type &apt, tel_type &telescope,
+                           bool source_subtracted_for_weight_validation) {
     // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
     const auto scan_index_1based = static_cast<long long>(in.index.data) + 1;
@@ -2386,11 +3036,19 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
             }
         }
     }
-    // hybrid weighting: approximate calibration prior times clipped residual-variance correction
-    else if (weighting_type == "hybrid") {
-        logger->debug("calculating hybrid weights using detector sensitivities and residual variance");
+    // hybrid/validated weighting: approximate calibration prior plus residual-variance diagnostics
+    else if (weighting_type == "hybrid" || weighting_type == "validated") {
+        if (weighting_type == "hybrid") {
+            logger->debug("calculating hybrid weights using detector sensitivities and residual variance");
+        }
+        else {
+            logger->debug("calculating validated weights using detector sensitivities and learned detector penalties");
+        }
         Eigen::VectorXd approximate_weights = Eigen::VectorXd::Zero(n_dets);
         Eigen::VectorXd full_weights = Eigen::VectorXd::Zero(n_dets);
+        Eigen::VectorXd ratio_penalty = Eigen::VectorXd::Ones(n_dets);
+        std::vector<Eigen::Index> det_uids(static_cast<std::size_t>(n_dets), -1);
+        Eigen::Index max_uid = -1;
 
         auto calc_approx_weight = [&](Eigen::Index i) {
             if (apt["flag"](i)!=0) {
@@ -2403,6 +3061,18 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                 return std::pow(weight_scale, -2.0);
             }
             return 0.0;
+        };
+
+        auto uid_for = [&](Eigen::Index i) {
+            auto uid_it = apt.find("uid");
+            if (uid_it != apt.end() && i < uid_it->second.size() &&
+                std::isfinite(uid_it->second(i))) {
+                const auto uid = static_cast<Eigen::Index>(std::llround(uid_it->second(i)));
+                if (uid >= 0) {
+                    return uid;
+                }
+            }
+            return i;
         };
 
         const bool use_source_weight_mask =
@@ -2484,12 +3154,8 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                 (std::isfinite(median_ratio) && median_ratio > 0.0) ? median_ratio : 1.0;
         }
 
-        for (Eigen::Index i=0; i<n_dets; ++i) {
-            if (approximate_weights(i) <= 0.0 || !std::isfinite(approximate_weights(i))) {
-                in.weights.data(i) = 0.0;
-                continue;
-            }
-            double correction = 1.0;
+        auto normalized_full_over_approx = [&](Eigen::Index i, bool &valid) {
+            valid = false;
             if (full_weights(i) > 0.0 && std::isfinite(full_weights(i))) {
                 const Eigen::Index array_index =
                     static_cast<Eigen::Index>(std::lround(apt["array"](i)));
@@ -2497,22 +3163,165 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                 const double median_ratio =
                     (med_it != median_ratio_by_array.end()) ? med_it->second : 1.0;
                 if (std::isfinite(median_ratio) && median_ratio > 0.0) {
-                    correction = (full_weights(i) / approximate_weights(i)) / median_ratio;
+                    valid = true;
+                    return (full_weights(i) / approximate_weights(i)) / median_ratio;
                 }
             }
-            if (!std::isfinite(correction) || correction <= 0.0) {
-                correction = 1.0;
-            }
-            correction = std::clamp(
-                correction, hybrid_correction_min_factor, hybrid_correction_max_factor);
-            in.weights.data(i) = approximate_weights(i) * correction;
-        }
+            return 1.0;
+        };
 
-        logger->info(
-            "hybrid weight correction scan={} source_mask_radius_arcsec={} min_factor={} max_factor={} arrays={}",
-            scan_index_1based, source_mask_radius_arcsec,
-            hybrid_correction_min_factor, hybrid_correction_max_factor,
-            median_ratio_by_array.size());
+        if (weighting_type == "hybrid") {
+            for (Eigen::Index i=0; i<n_dets; ++i) {
+                if (approximate_weights(i) <= 0.0 || !std::isfinite(approximate_weights(i))) {
+                    in.weights.data(i) = 0.0;
+                    continue;
+                }
+                bool valid_ratio = false;
+                double correction = normalized_full_over_approx(i, valid_ratio);
+                (void) valid_ratio;
+                if (!std::isfinite(correction) || correction <= 0.0) {
+                    correction = 1.0;
+                }
+                correction = std::clamp(
+                    correction, hybrid_correction_min_factor, hybrid_correction_max_factor);
+                in.weights.data(i) = approximate_weights(i) * correction;
+            }
+
+            logger->info(
+                "hybrid weight correction scan={} source_mask_radius_arcsec={} min_factor={} max_factor={} arrays={}",
+                scan_index_1based, source_mask_radius_arcsec,
+                hybrid_correction_min_factor, hybrid_correction_max_factor,
+                median_ratio_by_array.size());
+        }
+        else {
+            const double min_factor = std::clamp(weight_validation.min_factor, 0.0, 1.0);
+            const double unvalidated_factor =
+                std::clamp(weight_validation.unvalidated_factor, min_factor, 1.0);
+            const double ratio_power = std::max(weight_validation.ratio_power, 0.0);
+            const double transient_power = std::max(weight_validation.transient_ratio_power, 0.0);
+
+            for (Eigen::Index i=0; i<n_dets; ++i) {
+                const Eigen::Index uid = uid_for(i);
+                det_uids[static_cast<std::size_t>(i)] = uid;
+                max_uid = std::max(max_uid, uid);
+
+                if (approximate_weights(i) <= 0.0 || !std::isfinite(approximate_weights(i))) {
+                    in.weights.data(i) = 0.0;
+                    ratio_penalty(i) = 0.0;
+                    continue;
+                }
+
+                bool valid_ratio = false;
+                double correction = normalized_full_over_approx(i, valid_ratio);
+                if (!valid_ratio || !std::isfinite(correction) || correction <= 0.0) {
+                    correction = min_factor;
+                }
+                double penalty = std::min(1.0, correction);
+                penalty = std::pow(std::clamp(penalty, 0.0, 1.0), ratio_power);
+                ratio_penalty(i) = std::clamp(penalty, min_factor, 1.0);
+            }
+
+            if (should_accumulate_weight_validation(source_subtracted_for_weight_validation) &&
+                max_uid >= 0) {
+                Eigen::Index n_contrib = 0;
+                Eigen::Index n_ratio_valid = 0;
+                double penalty_sum = 0.0;
+                double ratio_sum = 0.0;
+                {
+                    std::lock_guard<std::mutex> lk(*weight_validation_mutex);
+                    ensure_weight_validation_storage(max_uid + 1);
+                    for (Eigen::Index i=0; i<n_dets; ++i) {
+                        if (approximate_weights(i) <= 0.0 || !std::isfinite(approximate_weights(i)) ||
+                            !std::isfinite(ratio_penalty(i))) {
+                            continue;
+                        }
+                        const Eigen::Index uid = det_uids[static_cast<std::size_t>(i)];
+                        if (uid < 0 || uid >= weight_validation_ratio_count.size()) {
+                            continue;
+                        }
+                        bool valid_ratio = false;
+                        const double correction = normalized_full_over_approx(i, valid_ratio);
+                        weight_validation_ratio_penalty_sum(uid) += ratio_penalty(i);
+                        if (valid_ratio && std::isfinite(correction)) {
+                            weight_validation_ratio_value_sum(uid) += correction;
+                            ratio_sum += correction;
+                            n_ratio_valid++;
+                        }
+                        weight_validation_ratio_count(uid)++;
+                        penalty_sum += ratio_penalty(i);
+                        n_contrib++;
+                    }
+                    if (n_contrib > 0) {
+                        weight_validation_current_iter_contribution_count++;
+                    }
+                }
+                if (n_contrib > 0) {
+                    logger->info(
+                        "weight validation ratio scan={} detectors={} source_mask_radius_arcsec={} "
+                        "mean_factor={} mean_full_over_approx={}",
+                        scan_index_1based, n_contrib, source_mask_radius_arcsec,
+                        penalty_sum / static_cast<double>(n_contrib),
+                        n_ratio_valid > 0
+                            ? ratio_sum / static_cast<double>(n_ratio_valid)
+                            : std::numeric_limits<double>::quiet_NaN());
+                }
+            }
+
+            Eigen::VectorXd detector_penalty;
+            bool use_learned_penalty = false;
+            int current_iter = 0;
+            {
+                std::lock_guard<std::mutex> lk(*weight_validation_mutex);
+                current_iter = weight_validation_current_iter;
+                use_learned_penalty =
+                    weight_validation_finalized &&
+                    current_iter >= weight_validation.apply_start_iter &&
+                    weight_validation_detector_penalty.size() > 0;
+                if (use_learned_penalty) {
+                    detector_penalty = weight_validation_detector_penalty;
+                }
+            }
+
+            Eigen::Index n_weighted = 0;
+            Eigen::Index n_penalized = 0;
+            const bool allow_transient_ratio =
+                !weight_validation.require_fruitloops_model ||
+                source_subtracted_for_weight_validation;
+            for (Eigen::Index i=0; i<n_dets; ++i) {
+                if (approximate_weights(i) <= 0.0 || !std::isfinite(approximate_weights(i))) {
+                    in.weights.data(i) = 0.0;
+                    continue;
+                }
+                double factor = unvalidated_factor;
+                const Eigen::Index uid = det_uids[static_cast<std::size_t>(i)];
+                if (use_learned_penalty && uid >= 0 && uid < detector_penalty.size() &&
+                    std::isfinite(detector_penalty(uid))) {
+                    factor = detector_penalty(uid);
+                }
+                else if (!use_learned_penalty) {
+                    factor = 1.0;
+                }
+                if (allow_transient_ratio && weight_validation.transient_ratio_enabled &&
+                    std::isfinite(ratio_penalty(i))) {
+                    const double transient_factor =
+                        std::pow(std::clamp(ratio_penalty(i), 0.0, 1.0), transient_power);
+                    factor = std::min(factor, std::clamp(transient_factor, min_factor, 1.0));
+                }
+                factor = std::clamp(factor, min_factor, 1.0);
+                in.weights.data(i) = approximate_weights(i) * factor;
+                n_weighted++;
+                if (factor < 0.999) {
+                    n_penalized++;
+                }
+            }
+
+            logger->info(
+                "validated weight correction scan={} iter={} source_mask_radius_arcsec={} "
+                "learned_applied={} weighted_detectors={} penalized_detectors={} arrays={}",
+                scan_index_1based, current_iter, source_mask_radius_arcsec,
+                use_learned_penalty, n_weighted, n_penalized,
+                median_ratio_by_array.size());
+        }
     }
     // constant weighting
     else if (weighting_type == "const") {
