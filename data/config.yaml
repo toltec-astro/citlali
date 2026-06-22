@@ -382,6 +382,7 @@ timestream: # timestream reduction parameters
       tau: 0.0 # tolerance for detector correlations (fraction of mean correlation for current group)
     weighting: # how to weight data and maps
       type: full # type of TOD weighting (full=use scan variance/approximate=use det sensitivity/const=1)
+      source_mask_radius_arcsec: 0.0 # source region to exclude only from full-weight variance estimation (0 disables; omitted legacy configs fall back to clean.mask_radius_arcsec)
       median_map_weight_factor: 0 # set all weights above this factor x median of unflagged detectors to median (>=1 allowed)
       lower_map_weight_factor: 0.0 # flag detectors below this weight limit (ignored if 0)
       upper_map_weight_factor: 0.0 # flag detectors above this weight limit (ignored if 0)

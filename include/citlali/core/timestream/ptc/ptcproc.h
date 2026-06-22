@@ -45,6 +45,8 @@ public:
     double lower_weight_factor, upper_weight_factor;
     // weight type (full, approximate, const)
     std::string weighting_type;
+    // source exclusion radius used only for full-weight variance estimation
+    double source_mask_radius_arcsec = 0.0;
 
     // ptc tod proc
     timestream::Cleaner cleaner;
@@ -271,6 +273,9 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     // upper weight factor
     get_config_value(config, upper_weight_factor, missing_keys, invalid_keys,
                      std::tuple{"timestream","processed_time_chunk","weighting","upper_map_weight_factor"});
+    const bool has_weight_source_mask_radius =
+        config.template has_typed<double>(
+            std::tuple{"timestream","processed_time_chunk","weighting","source_mask_radius_arcsec"});
 
     second_pass_local = SecondPassLocalOptions{};
     if (config.template has_typed<bool>(
@@ -1094,6 +1099,15 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         // upper weight factor
         get_config_value(config, cleaner.tau, missing_keys, invalid_keys,
                          std::tuple{"timestream","processed_time_chunk","clean","tau"});
+    }
+
+    if (has_weight_source_mask_radius) {
+        get_config_value(config, source_mask_radius_arcsec, missing_keys, invalid_keys,
+                         std::tuple{"timestream","processed_time_chunk","weighting","source_mask_radius_arcsec"},
+                         {}, {0.0});
+    }
+    else {
+        source_mask_radius_arcsec = mask_radius_arcsec;
     }
 
     if (second_pass_local.enabled) {
@@ -2282,15 +2296,15 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
     else if (weighting_type == "full"){
         logger->debug("calculating weights using timestream variance");
         const bool use_source_weight_mask =
-            mask_radius_arcsec > 0.0 &&
+            source_mask_radius_arcsec > 0.0 &&
             fruit_loops_source_valid.size() > 0 &&
             fruit_loops_source_lat.size() == fruit_loops_source_valid.size() &&
             fruit_loops_source_lon.size() == fruit_loops_source_valid.size();
-        const double source_mask_radius_rad = mask_radius_arcsec * ASEC_TO_RAD;
+        const double source_mask_radius_rad = source_mask_radius_arcsec * ASEC_TO_RAD;
 
         if (use_source_weight_mask) {
             logger->info("calculating full weights with source mask (radius {:.3f} arcsec) for scan {}",
-                         mask_radius_arcsec, scan_index_1based);
+                         source_mask_radius_arcsec, scan_index_1based);
         }
 
         // loop through detectors
