@@ -399,8 +399,8 @@ timestream: # timestream reduction parameters
         atmospheric_correlation_enabled: true # learn detector penalties from pre-clean common-mode consistency
         atmospheric_grouping: array # grouping for atmospheric common modes (array, nw, all)
         atmospheric_min_detectors: 8 # minimum detectors in a common-mode group
-        atmospheric_ref: 0.0 # abs corr below this starts at min_factor
-        atmospheric_span: 0.15 # abs corr interval from atmospheric_ref to full credit
+        atmospheric_ref: 0.0 # signed detector/common-mode corr below this starts at min_factor
+        atmospheric_span: 0.15 # signed corr interval from atmospheric_ref to full credit
         atmospheric_power: 1.0 # exponent for atmospheric common-mode quality
         min_good_frac: 0.5 # minimum unflagged sampled fraction for validation metrics
         min_overlap: 200 # minimum overlapping samples for detector/common-mode correlation

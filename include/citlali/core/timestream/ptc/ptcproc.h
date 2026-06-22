@@ -2872,7 +2872,7 @@ void PTCProc::accumulate_weight_validation_atmosphere(
             }
             corr = std::clamp(corr, -1.0, 1.0);
             const double quality =
-                std::clamp((std::abs(corr) - ref) / span, 0.0, 1.0);
+                std::clamp((corr - ref) / span, 0.0, 1.0);
             const double factor =
                 min_factor + (1.0 - min_factor) * std::pow(quality, power);
             const Eigen::Index det = used_dets[static_cast<std::size_t>(k)];
@@ -2883,7 +2883,7 @@ void PTCProc::accumulate_weight_validation_atmosphere(
 
     Eigen::Index n_contrib = 0;
     double penalty_sum = 0.0;
-    double corr_abs_sum = 0.0;
+    double corr_sum = 0.0;
     {
         std::lock_guard<std::mutex> lk(*weight_validation_mutex);
         ensure_weight_validation_storage(max_uid + 1);
@@ -2899,7 +2899,7 @@ void PTCProc::accumulate_weight_validation_atmosphere(
             weight_validation_atm_corr_sum(uid) += atm_corr(i);
             weight_validation_atm_count(uid)++;
             penalty_sum += atm_penalty(i);
-            corr_abs_sum += std::abs(atm_corr(i));
+            corr_sum += atm_corr(i);
             n_contrib++;
         }
         if (n_contrib > 0) {
@@ -2910,13 +2910,13 @@ void PTCProc::accumulate_weight_validation_atmosphere(
     if (n_contrib > 0) {
         logger->info(
             "weight validation atmosphere scan={} grouping={} detectors={} sample_step={} "
-            "mean_factor={} mean_abs_corr={}",
+            "mean_factor={} mean_corr={}",
             static_cast<long long>(in.index.data) + 1,
             weight_validation.atmospheric_grouping,
             n_contrib,
             sample_step,
             penalty_sum / static_cast<double>(n_contrib),
-            corr_abs_sum / static_cast<double>(n_contrib));
+            corr_sum / static_cast<double>(n_contrib));
     }
 }
 
