@@ -180,6 +180,7 @@ timestream: # timestream reduction parameters
         sigma_scale: 0.75 # scale factor on min_spike_sigma for locally detrended raw excursions
         delta_sigma_scale: 0.75 # scale factor on min_spike_sigma for locally detrended delta excursions
         expand_with_filter: false # if true, expand accepted local-residual flags by the TOD filter window; usually too aggressive for compact pointing glitches
+        event_padding_sec: 0.08 # symmetric padding around accepted compact local-residual events before applying the proposal cap
         max_added_flagged_fraction: 0.10 # reject local-residual proposals that newly flag more than this fraction of eligible detector samples
         compact_raw_gate: # optional morphology gate for local raw candidates
           enabled: true # require locally detrended raw events to look like compact bursts rather than steps/drifts

@@ -125,6 +125,7 @@ public:
         double sigma_scale = 0.75;
         double delta_sigma_scale = 0.75;
         bool expand_with_filter = false;
+        double event_padding_sec = 0.08;
         double max_added_flagged_fraction = 0.10;
         CompactRawGateOptions compact_raw_gate;
         CompactDeltaGateOptions compact_delta_gate;
@@ -653,7 +654,12 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                                             if (event.accepted) {
                                                 ++diag.local_raw_accepted_event_count;
                                                 promote_transient_event(diag.local_raw_event, event);
-                                                local_flags.segment(lo, hi - lo + 1).setOnes();
+                                                const Eigen::Index start = std::max<Eigen::Index>(0, event.start_sample);
+                                                const Eigen::Index end =
+                                                    std::min<Eigen::Index>(n_pts - 1, event.end_sample);
+                                                if (end >= start) {
+                                                    local_flags.segment(start, end - start + 1).setOnes();
+                                                }
                                             }
                                             else {
                                                 ++diag.local_raw_reject_count;
@@ -745,9 +751,11 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                                             if (event.accepted) {
                                                 ++diag.local_delta_accepted_event_count;
                                                 promote_transient_event(diag.local_delta_event, event);
-                                                local_flags(best_edge) = 1;
-                                                if (best_edge + 1 < n_pts) {
-                                                    local_flags(best_edge + 1) = 1;
+                                                const Eigen::Index start = std::max<Eigen::Index>(0, event.start_sample);
+                                                const Eigen::Index end =
+                                                    std::min<Eigen::Index>(n_pts - 1, event.end_sample);
+                                                if (end >= start) {
+                                                    local_flags.segment(start, end - start + 1).setOnes();
                                                 }
                                             }
                                             else {
@@ -995,6 +1003,20 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
 
             if ((local_flags.array() == 1).any()) {
                 Eigen::Matrix<bool, Eigen::Dynamic, 1> local_proposal = local_flags;
+                const Eigen::Index event_padding_samples =
+                    std::max<Eigen::Index>(
+                        0, static_cast<Eigen::Index>(std::llround(local_residual.event_padding_sec * fsmp)));
+                if (event_padding_samples > 0) {
+                    Eigen::Matrix<bool, Eigen::Dynamic, 1> padded_local_flags = local_proposal;
+                    for (Eigen::Index i = 0; i < n_pts; ++i) {
+                        if (local_proposal(i) == 1) {
+                            const Eigen::Index start = std::max<Eigen::Index>(0, i - event_padding_samples);
+                            const Eigen::Index end = std::min<Eigen::Index>(n_pts - 1, i + event_padding_samples);
+                            padded_local_flags.segment(start, end - start + 1).setOnes();
+                        }
+                    }
+                    local_proposal = padded_local_flags;
+                }
                 if (run_filter && local_residual.expand_with_filter) {
                     int decay_window = static_cast<int>(window_size);
                     Eigen::Matrix<bool, Eigen::Dynamic, 1> expanded_local_flags = local_proposal;
