@@ -2651,6 +2651,11 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.ACCUMULATION_ITERS", ptcproc.weight_validation.accumulation_iters);
         add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.APPLY_START_ITER", ptcproc.weight_validation.apply_start_iter);
         add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.MIN_FACTOR", ptcproc.weight_validation.min_factor);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_ENABLED", ptcproc.weight_validation.upward_enabled);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_MAX_FACTOR", ptcproc.weight_validation.upward_max_factor);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_POWER", ptcproc.weight_validation.upward_power);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_REQUIRE_ATM", ptcproc.weight_validation.upward_require_atmospheric);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_MIN_ATM_FACTOR", ptcproc.weight_validation.upward_min_atmospheric_factor);
         add_netcdf_var<std::string>(fo, "CONFIG.WEIGHT.VALIDATION.ATM_GROUPING", ptcproc.weight_validation.atmospheric_grouping);
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTLOW", rtcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTHIGH", rtcproc.upper_inv_var_factor);
@@ -4784,6 +4789,21 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     add_double_key("CONFIG.WEIGHT.VALIDATION.MIN_FACTOR",
                    ptcproc.weight_validation.min_factor,
                    "Minimum validated detector weight factor");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.VALIDATION.UPWARD_ENABLED",
+                                        ptcproc.weight_validation.upward_enabled,
+                                        "Allow validated upward weight factors");
+    add_double_key("CONFIG.WEIGHT.VALIDATION.UPWARD_MAX",
+                   ptcproc.weight_validation.upward_max_factor,
+                   "Maximum validated upward weight factor");
+    add_double_key("CONFIG.WEIGHT.VALIDATION.UPWARD_POWER",
+                   ptcproc.weight_validation.upward_power,
+                   "Power for validated upward weight factor");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.VALIDATION.UPWARD_REQ_ATM",
+                                        ptcproc.weight_validation.upward_require_atmospheric,
+                                        "Require atmospheric gate for upward factors");
+    add_double_key("CONFIG.WEIGHT.VALIDATION.UPWARD_MIN_ATM",
+                   ptcproc.weight_validation.upward_min_atmospheric_factor,
+                   "Minimum atmospheric factor for upward validation");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.ENABLED",
                                         ptcproc.weight_corr_penalty.enabled,
                                         "Enable per-network corr-based weight penalties");
@@ -6141,6 +6161,11 @@ void Engine::create_ptcdiag_file() {
     add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.ACCUMULATION_ITERS", ptcproc.weight_validation.accumulation_iters);
     add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.APPLY_START_ITER", ptcproc.weight_validation.apply_start_iter);
     add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.MIN_FACTOR", ptcproc.weight_validation.min_factor);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_ENABLED", ptcproc.weight_validation.upward_enabled);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_MAX_FACTOR", ptcproc.weight_validation.upward_max_factor);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_POWER", ptcproc.weight_validation.upward_power);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_REQUIRE_ATM", ptcproc.weight_validation.upward_require_atmospheric);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_MIN_ATM_FACTOR", ptcproc.weight_validation.upward_min_atmospheric_factor);
     add_netcdf_var<std::string>(fo, "CONFIG.WEIGHT.VALIDATION.ATM_GROUPING", ptcproc.weight_validation.atmospheric_grouping);
     add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
     add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);

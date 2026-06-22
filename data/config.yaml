@@ -396,6 +396,11 @@ timestream: # timestream reduction parameters
         transient_ratio_enabled: false # also apply the current scan's one-sided full/approx ratio penalty
         ratio_power: 1.0 # exponent for accumulated one-sided full/approx ratio penalties
         transient_ratio_power: 1.0 # exponent for transient_ratio_enabled scan-local penalties
+        upward_enabled: false # allow validated detectors to move upward toward full/approx weights
+        upward_max_factor: 1.25 # maximum learned upward weight factor when upward_enabled is true
+        upward_power: 1.0 # exponent for accumulated upward full/approx corrections
+        upward_require_atmospheric: true # require atmospheric validation before applying upward corrections
+        upward_min_atmospheric_factor: 0.9 # minimum atmospheric validation factor for upward correction
         atmospheric_correlation_enabled: true # learn detector penalties from pre-clean common-mode consistency
         atmospheric_grouping: array # grouping for atmospheric common modes (array, nw, all)
         atmospheric_min_detectors: 8 # minimum detectors in a common-mode group

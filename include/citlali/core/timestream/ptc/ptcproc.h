@@ -64,6 +64,11 @@ public:
         bool transient_ratio_enabled = false;
         double ratio_power = 1.0;
         double transient_ratio_power = 1.0;
+        bool upward_enabled = false;
+        double upward_max_factor = 1.25;
+        double upward_power = 1.0;
+        bool upward_require_atmospheric = true;
+        double upward_min_atmospheric_factor = 0.9;
         bool atmospheric_correlation_enabled = true;
         std::string atmospheric_grouping = "array";
         int atmospheric_min_detectors = 8;
@@ -82,6 +87,7 @@ public:
     bool weight_validation_finalized = false;
     Eigen::VectorXd weight_validation_ratio_penalty_sum;
     Eigen::VectorXd weight_validation_ratio_value_sum;
+    Eigen::VectorXi weight_validation_ratio_value_count;
     Eigen::VectorXi weight_validation_ratio_count;
     Eigen::VectorXd weight_validation_atm_penalty_sum;
     Eigen::VectorXd weight_validation_atm_corr_sum;
@@ -1245,6 +1251,34 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                              {}, {0.0});
         }
         if (config.template has_typed<bool>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","upward_enabled"})) {
+            get_config_value(config, weight_validation.upward_enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","upward_enabled"});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","upward_max_factor"})) {
+            get_config_value(config, weight_validation.upward_max_factor, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","upward_max_factor"},
+                             {}, {1.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","upward_power"})) {
+            get_config_value(config, weight_validation.upward_power, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","upward_power"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<bool>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","upward_require_atmospheric"})) {
+            get_config_value(config, weight_validation.upward_require_atmospheric, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","upward_require_atmospheric"});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","upward_min_atmospheric_factor"})) {
+            get_config_value(config, weight_validation.upward_min_atmospheric_factor, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","upward_min_atmospheric_factor"},
+                             {}, {0.0}, {1.0});
+        }
+        if (config.template has_typed<bool>(
                 std::tuple{"timestream","processed_time_chunk","weighting","validation","atmospheric_correlation_enabled"})) {
             get_config_value(config, weight_validation.atmospheric_correlation_enabled, missing_keys, invalid_keys,
                              std::tuple{"timestream","processed_time_chunk","weighting","validation","atmospheric_correlation_enabled"});
@@ -1300,13 +1334,19 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         logger->info(
             "weighting.validation enabled: accumulation_iters={} apply_start_iter={} min_valid_scans={} "
             "min_factor={} unvalidated_factor={} require_fruitloops_model={} transient_ratio_enabled={} "
-            "ratio_power={} transient_ratio_power={} atm(enabled={} grouping={} min_detectors={} ref={} span={} "
-            "power={}) min_good_frac={} min_overlap={} max_samples={}",
+            "ratio_power={} transient_ratio_power={} upward(enabled={} max_factor={} power={} require_atm={} "
+            "min_atm_factor={}) atm(enabled={} grouping={} min_detectors={} ref={} span={} power={}) "
+            "min_good_frac={} min_overlap={} max_samples={}",
             weight_validation.accumulation_iters, weight_validation.apply_start_iter,
             weight_validation.min_valid_scans, weight_validation.min_factor,
             weight_validation.unvalidated_factor, weight_validation.require_fruitloops_model,
             weight_validation.transient_ratio_enabled, weight_validation.ratio_power,
             weight_validation.transient_ratio_power,
+            weight_validation.upward_enabled,
+            weight_validation.upward_max_factor,
+            weight_validation.upward_power,
+            weight_validation.upward_require_atmospheric,
+            weight_validation.upward_min_atmospheric_factor,
             weight_validation.atmospheric_correlation_enabled,
             weight_validation.atmospheric_grouping,
             weight_validation.atmospheric_min_detectors,
@@ -1377,6 +1417,7 @@ inline void PTCProc::ensure_weight_validation_storage(Eigen::Index n_uids) {
 
     grow_double(weight_validation_ratio_penalty_sum, 0.0);
     grow_double(weight_validation_ratio_value_sum, 0.0);
+    grow_int(weight_validation_ratio_value_count, 0);
     grow_int(weight_validation_ratio_count, 0);
     grow_double(weight_validation_atm_penalty_sum, 0.0);
     grow_double(weight_validation_atm_corr_sum, 0.0);
@@ -1399,6 +1440,7 @@ inline void PTCProc::begin_weight_validation_iteration(int iter) {
         weight_validation_finalized = false;
         weight_validation_ratio_penalty_sum.resize(0);
         weight_validation_ratio_value_sum.resize(0);
+        weight_validation_ratio_value_count.resize(0);
         weight_validation_ratio_count.resize(0);
         weight_validation_atm_penalty_sum.resize(0);
         weight_validation_atm_corr_sum.resize(0);
@@ -1444,6 +1486,13 @@ inline void PTCProc::finalize_weight_validation_iteration(int iter) {
     const double min_factor = std::clamp(weight_validation.min_factor, 0.0, 1.0);
     const double unvalidated_factor = std::clamp(weight_validation.unvalidated_factor,
                                                 min_factor, 1.0);
+    const double upward_max_factor =
+        weight_validation.upward_enabled
+            ? std::max(1.0, weight_validation.upward_max_factor)
+            : 1.0;
+    const double upward_power = std::max(weight_validation.upward_power, 0.0);
+    const double upward_min_atm =
+        std::clamp(weight_validation.upward_min_atmospheric_factor, 0.0, 1.0);
     const int min_valid = std::max(1, weight_validation.min_valid_scans);
     weight_validation_detector_penalty =
         Eigen::VectorXd::Constant(n_uids, unvalidated_factor);
@@ -1451,11 +1500,15 @@ inline void PTCProc::finalize_weight_validation_iteration(int iter) {
     std::vector<double> factors;
     factors.reserve(static_cast<std::size_t>(n_uids));
     Eigen::Index n_ratio_valid = 0;
+    Eigen::Index n_ratio_upward_valid = 0;
     Eigen::Index n_atm_valid = 0;
     Eigen::Index n_penalized = 0;
+    Eigen::Index n_boosted = 0;
     for (Eigen::Index uid = 0; uid < n_uids; ++uid) {
         double factor = unvalidated_factor;
         bool have_factor = false;
+        bool have_atm_factor = false;
+        double atm_factor = std::numeric_limits<double>::quiet_NaN();
 
         if (uid < weight_validation_ratio_count.size() &&
             weight_validation_ratio_count(uid) >= min_valid) {
@@ -1475,9 +1528,10 @@ inline void PTCProc::finalize_weight_validation_iteration(int iter) {
                 weight_validation_atm_penalty_sum(uid) /
                 static_cast<double>(weight_validation_atm_count(uid));
             if (std::isfinite(avg)) {
-                const double atm_factor = std::clamp(avg, min_factor, 1.0);
+                atm_factor = std::clamp(avg, min_factor, 1.0);
                 factor = have_factor ? std::min(factor, atm_factor) : atm_factor;
                 have_factor = true;
+                have_atm_factor = true;
                 n_atm_valid++;
             }
         }
@@ -1485,10 +1539,40 @@ inline void PTCProc::finalize_weight_validation_iteration(int iter) {
         if (!have_factor) {
             factor = unvalidated_factor;
         }
-        factor = std::clamp(factor, min_factor, 1.0);
+        if (weight_validation.upward_enabled &&
+            uid < weight_validation_ratio_value_count.size() &&
+            weight_validation_ratio_value_count(uid) >= min_valid) {
+            const double avg_correction =
+                weight_validation_ratio_value_sum(uid) /
+                static_cast<double>(weight_validation_ratio_value_count(uid));
+            const bool atm_ok =
+                !weight_validation.upward_require_atmospheric ||
+                (have_atm_factor && atm_factor >= upward_min_atm);
+            if (atm_ok && std::isfinite(avg_correction) && avg_correction > 1.0) {
+                const double raw_upward =
+                    std::clamp(avg_correction, 1.0, upward_max_factor);
+                const double powered_upward =
+                    std::clamp(std::pow(raw_upward, upward_power),
+                               1.0, upward_max_factor);
+                double atm_quality = 1.0;
+                if (weight_validation.upward_require_atmospheric) {
+                    const double atm_span = std::max(1.0 - upward_min_atm, 1e-12);
+                    atm_quality = std::clamp((atm_factor - upward_min_atm) / atm_span,
+                                             0.0, 1.0);
+                }
+                const double upward_factor =
+                    1.0 + (powered_upward - 1.0) * atm_quality;
+                factor = std::max(factor, upward_factor);
+                n_ratio_upward_valid++;
+            }
+        }
+        factor = std::clamp(factor, min_factor, upward_max_factor);
         weight_validation_detector_penalty(uid) = factor;
         if (factor < 0.999) {
             n_penalized++;
+        }
+        if (factor > 1.001) {
+            n_boosted++;
         }
         factors.push_back(factor);
     }
@@ -1515,9 +1599,11 @@ inline void PTCProc::finalize_weight_validation_iteration(int iter) {
     weight_validation_finalized = true;
     logger->info(
         "weight validation finalized at fruitloops iter {} after {} contributing iteration(s): "
-        "detectors={} ratio_valid={} atmosphere_valid={} penalized={} factor_median={} factor_p10={}",
+        "detectors={} ratio_valid={} ratio_upward_valid={} atmosphere_valid={} penalized={} boosted={} "
+        "factor_median={} factor_p10={}",
         iter, weight_validation_accumulated_iters, n_uids, n_ratio_valid,
-        n_atm_valid, n_penalized, median_factor, p10_factor);
+        n_ratio_upward_valid, n_atm_valid, n_penalized, n_boosted,
+        median_factor, p10_factor);
 }
 
 void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
@@ -3244,6 +3330,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                         weight_validation_ratio_penalty_sum(uid) += ratio_penalty(i);
                         if (valid_ratio && std::isfinite(correction)) {
                             weight_validation_ratio_value_sum(uid) += correction;
+                            weight_validation_ratio_value_count(uid)++;
                             ratio_sum += correction;
                             n_ratio_valid++;
                         }
@@ -3284,6 +3371,11 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 
             Eigen::Index n_weighted = 0;
             Eigen::Index n_penalized = 0;
+            Eigen::Index n_boosted = 0;
+            const double max_applied_factor =
+                weight_validation.upward_enabled
+                    ? std::max(1.0, weight_validation.upward_max_factor)
+                    : 1.0;
             const bool allow_transient_ratio =
                 !weight_validation.require_fruitloops_model ||
                 source_subtracted_for_weight_validation;
@@ -3307,19 +3399,22 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                         std::pow(std::clamp(ratio_penalty(i), 0.0, 1.0), transient_power);
                     factor = std::min(factor, std::clamp(transient_factor, min_factor, 1.0));
                 }
-                factor = std::clamp(factor, min_factor, 1.0);
+                factor = std::clamp(factor, min_factor, max_applied_factor);
                 in.weights.data(i) = approximate_weights(i) * factor;
                 n_weighted++;
                 if (factor < 0.999) {
                     n_penalized++;
                 }
+                if (factor > 1.001) {
+                    n_boosted++;
+                }
             }
 
             logger->info(
                 "validated weight correction scan={} iter={} source_mask_radius_arcsec={} "
-                "learned_applied={} weighted_detectors={} penalized_detectors={} arrays={}",
+                "learned_applied={} weighted_detectors={} penalized_detectors={} boosted_detectors={} arrays={}",
                 scan_index_1based, current_iter, source_mask_radius_arcsec,
-                use_learned_penalty, n_weighted, n_penalized,
+                use_learned_penalty, n_weighted, n_penalized, n_boosted,
                 median_ratio_by_array.size());
         }
     }
