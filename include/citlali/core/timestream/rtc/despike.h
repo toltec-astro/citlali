@@ -124,6 +124,8 @@ public:
         double window_sec = 0.25;
         double sigma_scale = 0.75;
         double delta_sigma_scale = 0.75;
+        bool expand_with_filter = false;
+        double max_added_flagged_fraction = 0.10;
         CompactRawGateOptions compact_raw_gate;
         CompactDeltaGateOptions compact_delta_gate;
     };
@@ -680,9 +682,6 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                                     }
                                 }
                             }
-                            diag.local_flagged_sample_count =
-                                static_cast<int>((local_flags.array() == 1).count());
-
                             std::vector<double> local_delta_vals;
                             local_delta_vals.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(n_pts - 1, 0)));
                             for (Eigen::Index i = 0; i < n_pts - 1; ++i) {
@@ -995,16 +994,49 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
             }
 
             if ((local_flags.array() == 1).any()) {
-                det_flags = (local_flags.array() == 1).select(1, det_flags);
-                if (run_filter) {
+                Eigen::Matrix<bool, Eigen::Dynamic, 1> local_proposal = local_flags;
+                if (run_filter && local_residual.expand_with_filter) {
                     int decay_window = static_cast<int>(window_size);
+                    Eigen::Matrix<bool, Eigen::Dynamic, 1> expanded_local_flags = local_proposal;
                     for (Eigen::Index i = 0; i < n_pts; ++i) {
                         if (local_flags(i) == 1) {
                             if (i - decay_window >= 0 && i + decay_window + 1 < n_pts) {
-                                det_flags.segment(i - decay_window, 2 * decay_window + 1).setOnes();
+                                expanded_local_flags.segment(i - decay_window, 2 * decay_window + 1).setOnes();
                             }
                         }
                     }
+                    local_proposal = expanded_local_flags;
+                }
+
+                if (protect_det) {
+                    local_proposal = source_flags.array().select(false, local_proposal);
+                }
+
+                const Eigen::ArrayXi local_added =
+                    (local_proposal.array().template cast<int>() *
+                     (det_flags.array() == 0).template cast<int>());
+                Eigen::ArrayXi local_eligible =
+                    (existing_flags.array() == 0).template cast<int>();
+                if (protect_det) {
+                    local_eligible *= (source_flags.array() == false).template cast<int>();
+                }
+                const int n_local_eligible = std::max<int>(1, local_eligible.sum());
+                const int n_local_added = local_added.sum();
+                const double local_added_frac =
+                    static_cast<double>(n_local_added) / static_cast<double>(n_local_eligible);
+                if (local_residual.max_added_flagged_fraction > 0.0 &&
+                    local_added_frac > local_residual.max_added_flagged_fraction) {
+                    logger->warn(
+                        "despike local_residual proposal rejected: det={} added_samples={} eligible_samples={} added_fraction={:.4f} max_added_flagged_fraction={:.4f} raw_events={} delta_events={}",
+                        det, n_local_added, n_local_eligible, local_added_frac,
+                        local_residual.max_added_flagged_fraction,
+                        diag.local_raw_accepted_event_count,
+                        diag.local_delta_accepted_event_count);
+                }
+                else {
+                    det_flags = (local_proposal.array() == 1).select(1, det_flags);
+                    diag.local_flagged_sample_count =
+                        static_cast<int>((local_proposal.array() == 1).count());
                 }
             }
 

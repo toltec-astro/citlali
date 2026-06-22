@@ -2632,6 +2632,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.WINDOW_SEC", rtcproc.despiker.local_residual.window_sec);
         add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.SIGMA_SCALE", rtcproc.despiker.local_residual.sigma_scale);
         add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_SIGMA_SCALE", rtcproc.despiker.local_residual.delta_sigma_scale);
+        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.EXPAND_WITH_FILTER", rtcproc.despiker.local_residual.expand_with_filter);
+        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.MAX_ADDED_FLAGGED_FRAC", rtcproc.despiker.local_residual.max_added_flagged_fraction);
         add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.ENABLED", rtcproc.despiker.local_residual.compact_raw_gate.enabled);
         add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_REL_SIGMA_SCALE",
                        rtcproc.despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale);
@@ -4646,6 +4648,12 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     add_double_key("CONFIG.DESPIKE.LOCAL.DELTA_SIGMA_SCALE",
                    rtcproc.despiker.local_residual.delta_sigma_scale,
                    "Local-residual despike delta threshold scale");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.EXPAND_WITH_FILTER",
+                                        rtcproc.despiker.local_residual.expand_with_filter,
+                                        "Expand local-residual flags by TOD filter window");
+    add_double_key("CONFIG.DESPIKE.LOCAL.MAX_ADDED_FLAGGED_FRAC",
+                   rtcproc.despiker.local_residual.max_added_flagged_fraction,
+                   "Reject local-residual proposals above this added flagged fraction");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.ENABLED",
                                         rtcproc.despiker.local_residual.compact_raw_gate.enabled,
                                         "Enable compact morphology gate for local-residual raw candidates");
@@ -6655,6 +6663,8 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.WINDOW_SEC", rtcproc.despiker.local_residual.window_sec);
     add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.SIGMA_SCALE", rtcproc.despiker.local_residual.sigma_scale);
     add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_SIGMA_SCALE", rtcproc.despiker.local_residual.delta_sigma_scale);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.EXPAND_WITH_FILTER", rtcproc.despiker.local_residual.expand_with_filter);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.MAX_ADDED_FLAGGED_FRAC", rtcproc.despiker.local_residual.max_added_flagged_fraction);
     add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.ENABLED", rtcproc.despiker.local_residual.compact_raw_gate.enabled);
     add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_REL_SIGMA_SCALE",
                    rtcproc.despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale);
