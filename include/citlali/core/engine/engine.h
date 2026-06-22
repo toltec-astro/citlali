@@ -2654,6 +2654,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_ENABLED", ptcproc.weight_validation.upward_enabled);
         add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_MAX_FACTOR", ptcproc.weight_validation.upward_max_factor);
         add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_POWER", ptcproc.weight_validation.upward_power);
+        add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_MIN_BASE_FACTOR", ptcproc.weight_validation.upward_min_base_factor);
         add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_REQUIRE_ATM", ptcproc.weight_validation.upward_require_atmospheric);
         add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_MIN_ATM_FACTOR", ptcproc.weight_validation.upward_min_atmospheric_factor);
         add_netcdf_var<std::string>(fo, "CONFIG.WEIGHT.VALIDATION.ATM_GROUPING", ptcproc.weight_validation.atmospheric_grouping);
@@ -4798,6 +4799,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     add_double_key("CONFIG.WEIGHT.VALIDATION.UPWARD_POWER",
                    ptcproc.weight_validation.upward_power,
                    "Power for validated upward weight factor");
+    add_double_key("CONFIG.WEIGHT.VALIDATION.UPWARD_MIN_BASE",
+                   ptcproc.weight_validation.upward_min_base_factor,
+                   "Minimum one-sided factor for upward validation");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.VALIDATION.UPWARD_REQ_ATM",
                                         ptcproc.weight_validation.upward_require_atmospheric,
                                         "Require atmospheric gate for upward factors");
@@ -6164,6 +6168,7 @@ void Engine::create_ptcdiag_file() {
     add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_ENABLED", ptcproc.weight_validation.upward_enabled);
     add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_MAX_FACTOR", ptcproc.weight_validation.upward_max_factor);
     add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_POWER", ptcproc.weight_validation.upward_power);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_MIN_BASE_FACTOR", ptcproc.weight_validation.upward_min_base_factor);
     add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_REQUIRE_ATM", ptcproc.weight_validation.upward_require_atmospheric);
     add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_MIN_ATM_FACTOR", ptcproc.weight_validation.upward_min_atmospheric_factor);
     add_netcdf_var<std::string>(fo, "CONFIG.WEIGHT.VALIDATION.ATM_GROUPING", ptcproc.weight_validation.atmospheric_grouping);

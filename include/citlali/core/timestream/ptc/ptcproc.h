@@ -65,8 +65,9 @@ public:
         double ratio_power = 1.0;
         double transient_ratio_power = 1.0;
         bool upward_enabled = false;
-        double upward_max_factor = 1.25;
+        double upward_max_factor = 1.10;
         double upward_power = 1.0;
+        double upward_min_base_factor = 0.95;
         bool upward_require_atmospheric = true;
         double upward_min_atmospheric_factor = 0.9;
         bool atmospheric_correlation_enabled = true;
@@ -1267,6 +1268,12 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                              std::tuple{"timestream","processed_time_chunk","weighting","validation","upward_power"},
                              {}, {0.0});
         }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","upward_min_base_factor"})) {
+            get_config_value(config, weight_validation.upward_min_base_factor, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","upward_min_base_factor"},
+                             {}, {0.0}, {1.0});
+        }
         if (config.template has_typed<bool>(
                 std::tuple{"timestream","processed_time_chunk","weighting","validation","upward_require_atmospheric"})) {
             get_config_value(config, weight_validation.upward_require_atmospheric, missing_keys, invalid_keys,
@@ -1334,9 +1341,9 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         logger->info(
             "weighting.validation enabled: accumulation_iters={} apply_start_iter={} min_valid_scans={} "
             "min_factor={} unvalidated_factor={} require_fruitloops_model={} transient_ratio_enabled={} "
-            "ratio_power={} transient_ratio_power={} upward(enabled={} max_factor={} power={} require_atm={} "
-            "min_atm_factor={}) atm(enabled={} grouping={} min_detectors={} ref={} span={} power={}) "
-            "min_good_frac={} min_overlap={} max_samples={}",
+            "ratio_power={} transient_ratio_power={} upward(enabled={} max_factor={} power={} min_base_factor={} "
+            "require_atm={} min_atm_factor={}) atm(enabled={} grouping={} min_detectors={} ref={} span={} "
+            "power={}) min_good_frac={} min_overlap={} max_samples={}",
             weight_validation.accumulation_iters, weight_validation.apply_start_iter,
             weight_validation.min_valid_scans, weight_validation.min_factor,
             weight_validation.unvalidated_factor, weight_validation.require_fruitloops_model,
@@ -1345,6 +1352,7 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             weight_validation.upward_enabled,
             weight_validation.upward_max_factor,
             weight_validation.upward_power,
+            weight_validation.upward_min_base_factor,
             weight_validation.upward_require_atmospheric,
             weight_validation.upward_min_atmospheric_factor,
             weight_validation.atmospheric_correlation_enabled,
@@ -1491,6 +1499,8 @@ inline void PTCProc::finalize_weight_validation_iteration(int iter) {
             ? std::max(1.0, weight_validation.upward_max_factor)
             : 1.0;
     const double upward_power = std::max(weight_validation.upward_power, 0.0);
+    const double upward_min_base =
+        std::clamp(weight_validation.upward_min_base_factor, 0.0, 1.0);
     const double upward_min_atm =
         std::clamp(weight_validation.upward_min_atmospheric_factor, 0.0, 1.0);
     const int min_valid = std::max(1, weight_validation.min_valid_scans);
@@ -1541,7 +1551,8 @@ inline void PTCProc::finalize_weight_validation_iteration(int iter) {
         }
         if (weight_validation.upward_enabled &&
             uid < weight_validation_ratio_value_count.size() &&
-            weight_validation_ratio_value_count(uid) >= min_valid) {
+            weight_validation_ratio_value_count(uid) >= min_valid &&
+            factor >= upward_min_base) {
             const double avg_correction =
                 weight_validation_ratio_value_sum(uid) /
                 static_cast<double>(weight_validation_ratio_value_count(uid));
