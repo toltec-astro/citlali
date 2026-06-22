@@ -135,6 +135,12 @@ public:
     // run the legacy full-scan raw/delta despike in addition to local residual gates
     bool run_legacy = true;
 
+    // protect compact source samples from being interpreted as spikes
+    bool source_protection_enabled = false;
+    double source_protection_radius_arcsec = 20.0;
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> source_protection_mask;
+    Eigen::Index last_source_protection_sample_count = 0;
+
     // size of region to merge flags (samples)
     int size = 10;
     // maximum window length (seconds) for sigma estimation
@@ -151,6 +157,11 @@ public:
 
     // scan-level detector summaries from the most recent despike call
     std::vector<DespikeDetectorDiagSummary> last_detector_diag;
+
+    void clear_source_protection_mask() {
+        source_protection_mask.resize(0, 0);
+        last_source_protection_sample_count = 0;
+    }
 
     // the main despiking routine
     template <typename DerivedA, typename DerivedB, typename apt_t>
@@ -323,6 +334,14 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                        apt_t &apt) {
     Eigen::Index n_pts = scans.rows();
     Eigen::Index n_dets = scans.cols();
+    const bool have_source_protection =
+        source_protection_enabled &&
+        source_protection_mask.rows() == n_pts &&
+        source_protection_mask.cols() == n_dets;
+    if (source_protection_enabled && !have_source_protection && source_protection_mask.size() != 0) {
+        logger->warn("despike source protection mask has shape {}x{} but scan has shape {}x{}; ignoring mask",
+                     source_protection_mask.rows(), source_protection_mask.cols(), n_pts, n_dets);
+    }
 
     auto robust_center_scale = [&](const Eigen::VectorXd &x,
                                    const Eigen::Matrix<bool, Eigen::Dynamic, 1> &flag_mask) {
@@ -526,8 +545,18 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
         // only run if detector is good
         if (apt["flag"](det)==0) {
             // get detector's flags
-            Eigen::Matrix<bool, Eigen::Dynamic, 1> det_flags = flags.col(det);
-            Eigen::Matrix<bool, Eigen::Dynamic, 1> base_flags = det_flags;
+            Eigen::Matrix<bool, Eigen::Dynamic, 1> existing_flags = flags.col(det);
+            Eigen::Matrix<bool, Eigen::Dynamic, 1> det_flags = existing_flags;
+            Eigen::Matrix<bool, Eigen::Dynamic, 1> base_flags = existing_flags;
+            Eigen::Matrix<bool, Eigen::Dynamic, 1> source_flags;
+            bool protect_det = false;
+            if (have_source_protection) {
+                source_flags = source_protection_mask.col(det);
+                protect_det = (source_flags.array() == true).any();
+                if (protect_det) {
+                    base_flags = (base_flags.array() || source_flags.array()).matrix();
+                }
+            }
             Eigen::Matrix<bool, Eigen::Dynamic, 1> raw_flags =
                 Eigen::Matrix<bool, Eigen::Dynamic, 1>::Zero(n_pts);
             Eigen::Matrix<bool, Eigen::Dynamic, 1> local_flags =
@@ -979,8 +1008,12 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                 }
             }
 
+            if (protect_det) {
+                det_flags = source_flags.array().select(existing_flags, det_flags);
+            }
+
             Eigen::ArrayXi added_flags =
-                (det_flags.array().template cast<int>() * (base_flags.array() == 0).template cast<int>());
+                (det_flags.array().template cast<int>() * (existing_flags.array() == 0).template cast<int>());
             diag.added_flagged_frac =
                 static_cast<double>(added_flags.sum()) / static_cast<double>(n_pts);
             {
@@ -1022,7 +1055,7 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
             }
 
             // preserve any pre-existing flags
-            det_flags = (base_flags.array() == 1).select(1, det_flags);
+            det_flags = (existing_flags.array() == 1).select(1, det_flags);
             flags.col(det) = det_flags;
         } // end of apt["flag"] loop
     } // end of "for (Eigen::Index det = 0; det < n_dets; det++)" loop

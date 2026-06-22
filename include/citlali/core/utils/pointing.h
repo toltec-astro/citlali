@@ -1,6 +1,11 @@
 #pragma once
 
+#include <algorithm>
+#include <cmath>
 #include <map>
+#include <string>
+
+#include <Eigen/Core>
 
 #include <citlali/core/utils/constants.h>
 
@@ -65,6 +70,59 @@ auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
     }
 
     return std::tuple<Eigen::VectorXd, Eigen::VectorXd>{lat,lon};
+}
+
+template <typename tc_data_t, typename apt_t>
+auto calc_map_center_source_mask(tc_data_t &in, apt_t &apt,
+                                 const std::string &pixel_axes,
+                                 const std::string &map_grouping,
+                                 double radius_arcsec,
+                                 Eigen::Index *n_detectors_with_source = nullptr) {
+    const Eigen::Index n_pts = in.scans.data.rows();
+    const Eigen::Index n_dets = in.scans.data.cols();
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> mask(n_pts, n_dets);
+    mask.setZero();
+
+    if (n_detectors_with_source != nullptr) {
+        *n_detectors_with_source = 0;
+    }
+    if (!(radius_arcsec > 0.0) || n_pts <= 0 || n_dets <= 0) {
+        return mask;
+    }
+
+    const double radius_rad = radius_arcsec * ASEC_TO_RAD;
+    const double radius2 = radius_rad * radius_rad;
+    Eigen::Index det_count = 0;
+
+    for (Eigen::Index det = 0; det < n_dets; ++det) {
+        if (apt["flag"](det) != 0) {
+            continue;
+        }
+        auto [lat, lon] = calc_det_pointing(
+            in.tel_data.data, apt["x_t"](det), apt["y_t"](det),
+            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
+        const Eigen::Index n = std::min({n_pts, lat.size(), lon.size()});
+        bool det_has_source = false;
+        for (Eigen::Index i = 0; i < n; ++i) {
+            const double y = lat(i);
+            const double x = lon(i);
+            if (!std::isfinite(x) || !std::isfinite(y)) {
+                continue;
+            }
+            if (x * x + y * y <= radius2) {
+                mask(i, det) = true;
+                det_has_source = true;
+            }
+        }
+        if (det_has_source) {
+            ++det_count;
+        }
+    }
+
+    if (n_detectors_with_source != nullptr) {
+        *n_detectors_with_source = det_count;
+    }
+    return mask;
 }
 
 template <typename Derived>

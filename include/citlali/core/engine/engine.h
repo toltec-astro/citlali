@@ -2044,6 +2044,31 @@ void Engine::get_citlali_config(CT &config) {
 
     /* get timestream config */
     get_timestream_config(config);
+    {
+        // The pointing pipeline also covers PSF-preserving focus and holography-style reductions.
+        const bool source_aware_reduction = (redu_type == "pointing");
+        rtcproc.despiker.source_protection_enabled =
+            rtcproc.run_despike &&
+            rtcproc.despike_source_protection_config_enabled &&
+            source_aware_reduction;
+        ptcproc.second_pass_local.source_protection_enabled =
+            ptcproc.second_pass_local.enabled &&
+            ptcproc.second_pass_local.source_protection_config_enabled &&
+            source_aware_reduction;
+        if (rtcproc.run_despike && rtcproc.despike_source_protection_config_enabled) {
+            logger->info(
+                "raw_time_chunk.despike source protection active={} reduction_type={} radius_arcsec={:.4g}",
+                rtcproc.despiker.source_protection_enabled, redu_type,
+                rtcproc.despiker.source_protection_radius_arcsec);
+        }
+        if (ptcproc.second_pass_local.enabled &&
+            ptcproc.second_pass_local.source_protection_config_enabled) {
+            logger->info(
+                "processed_time_chunk.flagging.second_pass_local source protection active={} reduction_type={} radius_arcsec={:.4g}",
+                ptcproc.second_pass_local.source_protection_enabled, redu_type,
+                ptcproc.second_pass_local.source_protection_radius_arcsec);
+        }
+    }
 
     /* get mapmaking config */
     get_mapmaking_config(config);

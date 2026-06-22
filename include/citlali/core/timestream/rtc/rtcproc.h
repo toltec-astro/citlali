@@ -13,6 +13,7 @@
 
 #include <citlali/core/timestream/timestream.h>
 #include <citlali/core/engine/io.h>
+#include <citlali/core/utils/pointing.h>
 
 #include <citlali/core/timestream/rtc/polarization.h>
 #include <citlali/core/timestream/rtc/kernel.h>
@@ -47,6 +48,8 @@ public:
     timestream::Filter filter;
     timestream::Downsampler downsampler;
     timestream::Calibration calibration;
+
+    bool despike_source_protection_config_enabled = true;
 
     // minimum allowed frequency distance between tones
     double delta_f_min_Hz;
@@ -1107,6 +1110,19 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                              std::tuple{"timestream","raw_time_chunk","despike","legacy","enabled"});
         }
 
+        despike_source_protection_config_enabled = true;
+        despiker.source_protection_enabled = false;
+        despiker.source_protection_radius_arcsec = 20.0;
+        if (config.has(std::tuple{"timestream","raw_time_chunk","despike","source_protection"})) {
+            get_config_value(config, despike_source_protection_config_enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","raw_time_chunk","despike","source_protection","enabled"});
+            if (config.has(std::tuple{"timestream","raw_time_chunk","despike","source_protection","radius_arcsec"})) {
+                get_config_value(config, despiker.source_protection_radius_arcsec, missing_keys, invalid_keys,
+                                 std::tuple{"timestream","raw_time_chunk","despike","source_protection","radius_arcsec"},
+                                 {}, {0.0});
+            }
+        }
+
         despiker.local_residual = {};
         if (config.has(std::tuple{"timestream","raw_time_chunk","despike","local_residual"})) {
             get_config_value(config, despiker.local_residual.enabled, missing_keys, invalid_keys,
@@ -1836,6 +1852,21 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     // run despiking
     if (run_despike) {
         logger->debug("despiking");
+        if (despiker.source_protection_enabled) {
+            Eigen::Index n_source_detectors = 0;
+            despiker.source_protection_mask = engine_utils::calc_map_center_source_mask(
+                in, calib.apt, telescope.pixel_axes, map_grouping,
+                despiker.source_protection_radius_arcsec, &n_source_detectors);
+            despiker.last_source_protection_sample_count =
+                static_cast<Eigen::Index>((despiker.source_protection_mask.array() == true).count());
+            logger->debug(
+                "despike source protection scan={} radius_arcsec={:.4g} protected_samples={} detectors_with_source={}",
+                in.index.data, despiker.source_protection_radius_arcsec,
+                despiker.last_source_protection_sample_count, n_source_detectors);
+        }
+        else {
+            despiker.clear_source_protection_mask();
+        }
         // despike data
         despiker.despike(in.scans.data, in.flags.data, calib.apt);
 

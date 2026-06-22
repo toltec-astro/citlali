@@ -228,6 +228,9 @@ public:
         int min_cluster_detectors = 3;
         double high_score_cluster_override = 9.0;
         int max_auto_flag_clusters_per_network = 3;
+        bool source_protection_config_enabled = true;
+        bool source_protection_enabled = false;
+        double source_protection_radius_arcsec = 20.0;
     };
 
     struct SecondPassDiagSummary {
@@ -274,7 +277,8 @@ public:
              calib_type &, std::string, std::string);
 
     template <class calib_type>
-    void apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_type &);
+    void apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_type &,
+                                 std::string, std::string);
 
     template <typename calib_t>
     void append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, calib_t &,
@@ -449,6 +453,17 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             get_config_value(config, second_pass_local.max_auto_flag_clusters_per_network, missing_keys, invalid_keys,
                              std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","max_auto_flag_clusters_per_network"},
                              {}, {1});
+        }
+        if (config.template has_typed<bool>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","source_protection","enabled"})) {
+            get_config_value(config, second_pass_local.source_protection_config_enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","source_protection","enabled"});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","source_protection","radius_arcsec"})) {
+            get_config_value(config, second_pass_local.source_protection_radius_arcsec, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","source_protection","radius_arcsec"},
+                             {}, {0.0});
         }
     }
 
@@ -2074,14 +2089,15 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             logger->warn("processed_time_chunk.flagging.second_pass_local enabled but clean.enabled=false; skipping PTC second-pass residual flagging");
         }
         else {
-            apply_second_pass_local(out, calib);
+            apply_second_pass_local(out, calib, pixel_axes, map_grouping);
         }
     }
     log_kernel_matrix_diag(logger, "ptc run output", out.kernel.data, in.index.data);
 }
 
 template <class calib_type>
-void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_type &calib) {
+void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_type &calib,
+                                      std::string pixel_axes, std::string map_grouping) {
 
     struct DetectorEventRow {
         Eigen::Index nw = -1;
@@ -2114,6 +2130,23 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     if (n_pts < 3 || n_dets_total <= 0) {
         return;
     }
+
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> source_protection_mask;
+    Eigen::Index n_source_detectors = 0;
+    if (second_pass_local.source_protection_enabled) {
+        source_protection_mask = engine_utils::calc_map_center_source_mask(
+            in, calib.apt, pixel_axes, map_grouping,
+            second_pass_local.source_protection_radius_arcsec, &n_source_detectors);
+        logger->debug(
+            "processed_time_chunk.flagging.second_pass_local source protection scan={} radius_arcsec={:.4g} protected_samples={} detectors_with_source={}",
+            in.index.data, second_pass_local.source_protection_radius_arcsec,
+            static_cast<Eigen::Index>((source_protection_mask.array() == true).count()),
+            n_source_detectors);
+    }
+    const bool have_source_protection =
+        second_pass_local.source_protection_enabled &&
+        source_protection_mask.rows() == n_pts &&
+        source_protection_mask.cols() == n_dets_total;
 
     const double fsmp = (cleaner.sample_rate_Hz > 0.0) ? cleaner.sample_rate_Hz : 1.0;
     const double dt_sec = 1.0 / fsmp;
@@ -2570,6 +2603,10 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         const auto apt_flags = calib.apt["flag"].segment(start_index, n_dets);
         auto flags_block = in.flags.data.block(0, start_index, n_pts, n_dets);
         Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> existing_flags_block = flags_block;
+        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> source_flags_block;
+        if (have_source_protection) {
+            source_flags_block = source_protection_mask.block(0, start_index, n_pts, n_dets);
+        }
         std::unordered_map<Eigen::Index, Eigen::Index> local_det_lookup;
         local_det_lookup.reserve(static_cast<std::size_t>(n_dets));
 
@@ -2584,13 +2621,20 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                 continue;
             }
             auto signal = in.scans.data.col(det_col);
-            auto det_flags = in.flags.data.col(det_col);
-            auto [events, det_prop_flags, det_resid_z] = analyze_detector(signal, det_flags);
+            Eigen::Matrix<bool, Eigen::Dynamic, 1> det_flags = in.flags.data.col(det_col);
+            Eigen::Matrix<bool, Eigen::Dynamic, 1> base_flags = det_flags;
+            if (have_source_protection) {
+                auto source_flags = source_protection_mask.col(det_col);
+                if ((source_flags.array() == true).any()) {
+                    base_flags = (base_flags.array() || source_flags.array()).matrix();
+                }
+            }
+            auto [events, det_prop_flags, det_resid_z] = analyze_detector(signal, base_flags);
 
             bool det_has_resid = false;
             double det_peak = std::numeric_limits<double>::quiet_NaN();
             for (Eigen::Index i = 0; i < n_pts; ++i) {
-                if (!det_flags(i) && std::isfinite(det_resid_z(i))) {
+                if (!base_flags(i) && std::isfinite(det_resid_z(i))) {
                     const double v = std::abs(det_resid_z(i));
                     if (!det_has_resid || v > det_peak) {
                         det_peak = v;
@@ -2659,6 +2703,10 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                 accepted_flags_block.block(
                     row.start_sample, it->second, row.end_sample - row.start_sample + 1, 1).setOnes();
             }
+        }
+        if (have_source_protection) {
+            accepted_flags_block =
+                (accepted_flags_block.array() && (source_flags_block.array() == false)).matrix();
         }
         std::sort(accepted_rows.begin(), accepted_rows.end(), [](const auto &a, const auto &b) {
             return a.score > b.score;
