@@ -2,6 +2,9 @@
 
 #include <limits>
 #include <string>
+#include <tuple>
+#include <utility>
+#include <vector>
 
 #include <Eigen/Core>
 #include <unsupported/Eigen/CXX11/Tensor>
@@ -90,8 +93,12 @@ public:
 
     // diagnostic largest single weighted sample contribution per map pixel
     bool contribution_diag_enabled = false;
+    bool contribution_diag_targeted = false;
+    std::vector<std::vector<std::pair<Eigen::Index, Eigen::Index>>> contribution_targets;
     std::vector<Eigen::MatrixXd> contribution_max_abs, contribution_signal,
-                                contribution_weight;
+                                contribution_weight, contribution_variance_weight,
+                                contribution_total_signal, contribution_total_weight,
+                                contribution_total_variance_weight;
     std::vector<Eigen::MatrixXi> contribution_uid, contribution_scan,
                                 contribution_sample;
 
@@ -202,8 +209,15 @@ public:
     void normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr);
     void ensure_contribution_diag(Eigen::Index);
     void clear_contribution_diag();
+    void set_contribution_targets(
+        Eigen::Index,
+        const std::vector<std::tuple<Eigen::Index, Eigen::Index, Eigen::Index>> &);
+    void clear_contribution_targets();
+    bool contribution_target_enabled(Eigen::Index, Eigen::Index, Eigen::Index) const;
     void record_contribution(Eigen::Index, Eigen::Index, Eigen::Index, double,
                              double, int, int, int);
+    void record_contribution(Eigen::Index, Eigen::Index, Eigen::Index, double,
+                             double, double, int, int, int);
     void calculate_stokes(std::vector<Eigen::MatrixXd>&, const Eigen::MatrixXd&,
                           Eigen::Index, Eigen::Index, int, int);
     void calculate_stokes(std::vector<Eigen::Tensor<double,3>>&, const Eigen::MatrixXd&,

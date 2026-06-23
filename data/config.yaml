@@ -165,6 +165,8 @@ timestream: # timestream reduction parameters
     apply_max_new_flagged_fraction: 0.02 # reject learned sample-mask application for a scan/stage if it newly flags more than this detector-sample fraction (0 disables cap)
     map_pixel_outlier_diagnostics_enabled: true # record off-source high-S/N map pixels in map diagnostics
     map_pixel_outlier_contributor_diagnostics_enabled: false # opt-in expensive per-sample contributor tracing during mapmaking
+    map_pixel_outlier_targeted_contributor_diagnostics_enabled: false # opt-in low-overhead contributor tracing for previous-iteration extreme map pixels
+    map_pixel_outlier_targeted_contributor_max_pixels: 32 # maximum previous-iteration map pixels to trace per mapmaking stage
     map_pixel_outlier_top_n: 8 # maximum extreme off-source map pixels retained per map/stage
     map_pixel_outlier_min_abs_z: 8.0 # minimum robust off-source map S/N z for map-pixel outlier diagnostics
     map_pixel_outlier_min_n_eff: 4.0 # ignore candidate pixels with fewer effective samples when coverage is available

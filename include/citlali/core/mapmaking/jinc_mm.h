@@ -352,7 +352,6 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     const bool run_kernel = !omb.kernel.empty();
     const bool run_coverage = !omb.coverage.empty();
     const bool run_hwpr = in.hwpr_angle.data.size()!=0;
-    const double diag_weight_unknown = std::numeric_limits<double>::quiet_NaN();
 
     // dimensions of data
     Eigen::Index n_dets = in.scans.data.cols();
@@ -634,17 +633,49 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                 in.weights.data(i) * in.scans.data(j,i);
                             sig_block += (mat_block * weighted_signal).eval();
                             if (omb.contribution_diag_enabled) {
-                                std::scoped_lock<std::mutex> lk(*jinc_mutex);
-                                for (Eigen::Index rr = 0; rr < size_rows; ++rr) {
-                                    for (Eigen::Index cc = 0; cc < size_cols; ++cc) {
+                                const double sample_weight = in.weights.data(i);
+                                if (omb.contribution_diag_targeted &&
+                                    map_index < static_cast<Eigen::Index>(omb.contribution_targets.size())) {
+                                    const auto &targets =
+                                        omb.contribution_targets[static_cast<std::size_t>(map_index)];
+                                    std::unique_lock<std::mutex> lk(*jinc_mutex, std::defer_lock);
+                                    for (const auto &[target_row, target_col] : targets) {
+                                        if (target_row < lower_row || target_row > upper_row ||
+                                            target_col < lower_col || target_col > upper_col) {
+                                            continue;
+                                        }
+                                        const Eigen::Index rr =
+                                            target_row - static_cast<Eigen::Index>(lower_row);
+                                        const Eigen::Index cc =
+                                            target_col - static_cast<Eigen::Index>(lower_col);
+                                        if (!lk.owns_lock()) {
+                                            lk.lock();
+                                        }
                                         omb.record_contribution(
-                                            map_index,
-                                            static_cast<Eigen::Index>(lower_row) + rr,
-                                            static_cast<Eigen::Index>(lower_col) + cc,
+                                            map_index, target_row, target_col,
                                             mat_block(rr, cc) * weighted_signal,
-                                            diag_weight_unknown, det_uid,
+                                            mat_block(rr, cc) * sample_weight,
+                                            mat_sq_block(rr, cc) * sample_weight,
+                                            det_uid,
                                             static_cast<int>(in.index.data),
                                             static_cast<int>(j));
+                                    }
+                                }
+                                else {
+                                    std::scoped_lock<std::mutex> lk(*jinc_mutex);
+                                    for (Eigen::Index rr = 0; rr < size_rows; ++rr) {
+                                        for (Eigen::Index cc = 0; cc < size_cols; ++cc) {
+                                            omb.record_contribution(
+                                                map_index,
+                                                static_cast<Eigen::Index>(lower_row) + rr,
+                                                static_cast<Eigen::Index>(lower_col) + cc,
+                                                mat_block(rr, cc) * weighted_signal,
+                                                mat_block(rr, cc) * sample_weight,
+                                                mat_sq_block(rr, cc) * sample_weight,
+                                                det_uid,
+                                                static_cast<int>(in.index.data),
+                                                static_cast<int>(j));
+                                        }
                                     }
                                 }
                             }
@@ -834,7 +865,6 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
     const bool run_kernel = !omb.kernel.empty();
     const bool run_coverage = !omb.coverage.empty();
     const bool run_hwpr = in.hwpr_angle.data.size()!=0;
-    const double diag_weight_unknown = std::numeric_limits<double>::quiet_NaN();
 
     // dimensions of data
     Eigen::Index n_dets = in.scans.data.cols();
@@ -1163,17 +1193,49 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                                 in.weights.data(i) * in.scans.data(j,i);
                             sig_block += (mat_block * weighted_signal).eval();
                             if (omb.contribution_diag_enabled) {
-                                std::scoped_lock<std::mutex> lk(*jinc_mutex);
-                                for (Eigen::Index rr = 0; rr < size_rows; ++rr) {
-                                    for (Eigen::Index cc = 0; cc < size_cols; ++cc) {
+                                const double sample_weight = in.weights.data(i);
+                                if (omb.contribution_diag_targeted &&
+                                    map_index < static_cast<Eigen::Index>(omb.contribution_targets.size())) {
+                                    const auto &targets =
+                                        omb.contribution_targets[static_cast<std::size_t>(map_index)];
+                                    std::unique_lock<std::mutex> lk(*jinc_mutex, std::defer_lock);
+                                    for (const auto &[target_row, target_col] : targets) {
+                                        if (target_row < lower_row || target_row > upper_row ||
+                                            target_col < lower_col || target_col > upper_col) {
+                                            continue;
+                                        }
+                                        const Eigen::Index rr =
+                                            target_row - static_cast<Eigen::Index>(lower_row);
+                                        const Eigen::Index cc =
+                                            target_col - static_cast<Eigen::Index>(lower_col);
+                                        if (!lk.owns_lock()) {
+                                            lk.lock();
+                                        }
                                         omb.record_contribution(
-                                            map_index,
-                                            static_cast<Eigen::Index>(lower_row) + rr,
-                                            static_cast<Eigen::Index>(lower_col) + cc,
+                                            map_index, target_row, target_col,
                                             mat_block(rr, cc) * weighted_signal,
-                                            diag_weight_unknown, det_uid,
+                                            mat_block(rr, cc) * sample_weight,
+                                            mat_sq_block(rr, cc) * sample_weight,
+                                            det_uid,
                                             static_cast<int>(in.index.data),
                                             static_cast<int>(j));
+                                    }
+                                }
+                                else {
+                                    std::scoped_lock<std::mutex> lk(*jinc_mutex);
+                                    for (Eigen::Index rr = 0; rr < size_rows; ++rr) {
+                                        for (Eigen::Index cc = 0; cc < size_cols; ++cc) {
+                                            omb.record_contribution(
+                                                map_index,
+                                                static_cast<Eigen::Index>(lower_row) + rr,
+                                                static_cast<Eigen::Index>(lower_col) + cc,
+                                                mat_block(rr, cc) * weighted_signal,
+                                                mat_block(rr, cc) * sample_weight,
+                                                mat_sq_block(rr, cc) * sample_weight,
+                                                det_uid,
+                                                static_cast<int>(in.index.data),
+                                                static_cast<int>(j));
+                                        }
                                     }
                                 }
                             }

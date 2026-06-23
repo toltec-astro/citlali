@@ -13,8 +13,9 @@ as implementation and test reductions change the plan.
 - Phase 4: implemented; pending reduction-test review.
 - Phase 5: implemented; pending reduction-test review.
 - Phase 6: implemented as diagnostic-only map-pixel outlier reporting;
-  per-sample contributor tracing is opt-in because it is too expensive for
-  normal jinc mapmaking.
+  full per-sample contributor tracing is opt-in because it is too expensive for
+  normal jinc mapmaking. A targeted previous-iteration contributor tracer is now
+  available for persistent extreme pixels.
 - Phase 7: implemented for the shared source-mask interface used by RTC/PTC and
   mapmaking diagnostics; current active mode is center-radius protection.
 - Phase 8: implemented for current conservative defaults and pointing-test
@@ -125,6 +126,13 @@ Implementation note:
   contribution per map pixel, with detector UID, scan, and PTC sample index, but
   it is disabled by default because it adds inner-loop work and lock contention
   during jinc mapmaking.
+- Targeted contributor tracing reuses previous-iteration map-pixel outliers to
+  trace only a capped set of persistent target pixels in the next mapmaking pass.
+  This keeps full contributor tracing off while still identifying the detector,
+  scan, and sample for stable artifacts.
+- Jinc targeted tracing records the same signal numerator, gridding denominator,
+  and variance-weight accumulator used by map normalization, so mapdiag
+  leave-one-out scores are consistent with the jinc map arithmetic.
 - `write_mapdiag` now records off-source extreme map pixels in the learning CSV,
   using robust z on the core support, an effective-sample cut when coverage is
   available, and a center-radius source exclusion.
@@ -172,7 +180,8 @@ Implementation note:
 - `data/config.yaml` exposes the active learning controls under
   `timestream.learning`, including iteration phase controls, learned sample-mask
   application limits, map-pixel outlier thresholds, and the opt-in expensive
-  map-pixel contributor tracing switch.
+  map-pixel contributor tracing switch plus the lower-overhead targeted
+  contributor tracing switch.
 - Source protection remains explicit on the RTC despiker and PTC second-pass
   local despiker. It is activated only for the pointing-style reduction path,
   which also covers focus and holography reductions that use this pipeline.
@@ -182,7 +191,8 @@ Implementation note:
   state.
 - The current pointing test config keeps contributor tracing disabled by
   default because full per-sample provenance in jinc mapmaking is intentionally
-  an expensive debug mode.
+  an expensive debug mode. The local `point_test/70_reduce.yaml` test config
+  enables targeted contributor tracing with full contributor tracing still off.
 
 ## Phase 9: Verification
 
@@ -196,9 +206,11 @@ After implementation:
 
 Current verification note:
 
-- `cmake --build build` passes after moving RTC/PTC learning summary collection
-  to per-scan snapshots.
-- The next pointing run should check that repeated reductions now produce
-  stable `learning_iter_*.csv` counts, especially `rtc_despike` sample masks,
-  and that `high_weight_detector` rows are present when validated weighting
-  reports high-weight caps/recommendations in the logs.
+- `cmake --build build` passes after adding targeted map-pixel contributor
+  tracing.
+- The next pointing run should check that repeated reductions produce stable
+  `learning_iter_*.csv` counts, that `high_weight_detector` rows are present
+  when validated weighting reports high-weight caps/recommendations in the logs,
+  and that persistent off-source map artifacts move from
+  `extreme_pixel_no_contributor` to `extreme_pixel_targeted_contributor` in the
+  learning CSV.

@@ -909,6 +909,8 @@ int run(const rc_t &rc) {
                             todproc.calc_map_num();
                             logger->info("allocating obs map buffer");
                             todproc.allocate_omb(map_extents[i], map_coords[i]);
+                            todproc.engine().configure_map_pixel_contribution_targets(
+                                todproc.engine().omb, "raw_obs");
 
                             // make noise maps for observation map buffer
                             if (todproc.engine().run_noise &&

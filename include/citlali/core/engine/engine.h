@@ -17,6 +17,7 @@
 #include <fstream>
 #include <limits>
 #include <sstream>
+#include <tuple>
 
 #include <Eigen/Core>
 
@@ -505,6 +506,8 @@ public:
     // write compact map diagnostics sidecar
     template <mapmaking::MapType map_t, class map_buffer_t>
     void write_mapdiag(map_buffer_t &, std::string);
+    void configure_map_pixel_contribution_targets(mapmaking::MapBuffer &,
+                                                  const std::string &);
 
     // write stats netCDF4 file
     void write_stats();
@@ -1113,9 +1116,20 @@ void Engine::get_learning_config(CT &config) {
                          missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","map_pixel_outlier_contributor_diagnostics_enabled"});
     }
+    if (config.template has_typed<bool>(std::tuple{"timestream","learning","map_pixel_outlier_targeted_contributor_diagnostics_enabled"})) {
+        get_config_value(config, options.map_pixel_outlier_targeted_contributor_diagnostics_enabled,
+                         missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","map_pixel_outlier_targeted_contributor_diagnostics_enabled"});
+    }
     if (config.template has_typed<int>(std::tuple{"timestream","learning","map_pixel_outlier_top_n"})) {
         get_config_value(config, options.map_pixel_outlier_top_n, missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","map_pixel_outlier_top_n"}, {}, {0});
+    }
+    if (config.template has_typed<int>(std::tuple{"timestream","learning","map_pixel_outlier_targeted_contributor_max_pixels"})) {
+        get_config_value(config, options.map_pixel_outlier_targeted_contributor_max_pixels,
+                         missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","map_pixel_outlier_targeted_contributor_max_pixels"},
+                         {}, {0});
     }
     if (config.template has_typed<double>(std::tuple{"timestream","learning","map_pixel_outlier_min_abs_z"})) {
         get_config_value(config, options.map_pixel_outlier_min_abs_z, missing_keys, invalid_keys,
@@ -1142,7 +1156,7 @@ void Engine::get_learning_config(CT &config) {
         "reduction learning state configured: enabled={} diagnostics_enabled={} "
         "learn_iters={} apply_start_iter={} max_records_per_type={} "
         "apply_sample_masks_enabled={} apply_max_new_flagged_fraction={:.4g} "
-        "map_pixel_outliers(enabled={} contributors={} top_n={} min_abs_z={} min_n_eff={} source_radius_arcsec={})",
+        "map_pixel_outliers(enabled={} contributors={} targeted_contributors={} top_n={} target_max={} min_abs_z={} min_n_eff={} source_radius_arcsec={})",
         reduction_learning.options.enabled,
         reduction_learning.options.diagnostics_enabled,
         reduction_learning.options.learn_iters,
@@ -1152,10 +1166,138 @@ void Engine::get_learning_config(CT &config) {
         reduction_learning.options.apply_max_new_flagged_fraction,
         reduction_learning.options.map_pixel_outlier_diagnostics_enabled,
         reduction_learning.options.map_pixel_outlier_contributor_diagnostics_enabled,
+        reduction_learning.options.map_pixel_outlier_targeted_contributor_diagnostics_enabled,
         reduction_learning.options.map_pixel_outlier_top_n,
+        reduction_learning.options.map_pixel_outlier_targeted_contributor_max_pixels,
         reduction_learning.options.map_pixel_outlier_min_abs_z,
         reduction_learning.options.map_pixel_outlier_min_n_eff,
         reduction_learning.options.map_pixel_outlier_source_radius_arcsec);
+}
+
+void Engine::configure_map_pixel_contribution_targets(mapmaking::MapBuffer &mb,
+                                                      const std::string &stage_name) {
+    const bool full_contribution_diag =
+        reduction_learning.options.enabled &&
+        reduction_learning.options.diagnostics_enabled &&
+        reduction_learning.options.map_pixel_outlier_diagnostics_enabled &&
+        reduction_learning.options.map_pixel_outlier_contributor_diagnostics_enabled;
+
+    mb.clear_contribution_targets();
+    mb.contribution_diag_enabled = full_contribution_diag;
+
+    if (full_contribution_diag) {
+        return;
+    }
+    if (!reduction_learning.is_enabled() ||
+        !reduction_learning.diagnostics_enabled() ||
+        !reduction_learning.options.map_pixel_outlier_diagnostics_enabled ||
+        !reduction_learning.options.map_pixel_outlier_targeted_contributor_diagnostics_enabled ||
+        reduction_learning.options.map_pixel_outlier_targeted_contributor_max_pixels <= 0 ||
+        fruit_iter <= 0 ||
+        mb.signal.empty() ||
+        mb.n_rows <= 0 ||
+        mb.n_cols <= 0) {
+        return;
+    }
+
+    const std::string producer = "mapdiag:" + stage_name;
+    int target_iter = -1;
+    {
+        std::lock_guard<std::mutex> lock(*reduction_learning.mutex);
+        for (const auto &record : reduction_learning.map_pixel_outliers) {
+            if (record.obsnum == obsnum &&
+                record.producer == producer &&
+                record.iter >= 0 &&
+                record.iter < fruit_iter &&
+                record.map_index >= 0 &&
+                record.map_index < static_cast<int>(mb.signal.size()) &&
+                record.row >= 0 &&
+                record.row < mb.n_rows &&
+                record.col >= 0 &&
+                record.col < mb.n_cols) {
+                target_iter = std::max(target_iter, record.iter);
+            }
+        }
+    }
+    if (target_iter < 0) {
+        return;
+    }
+
+    struct target_candidate_t {
+        Eigen::Index map_index = -1;
+        Eigen::Index row = -1;
+        Eigen::Index col = -1;
+        double score = 0.0;
+    };
+    std::vector<target_candidate_t> candidates;
+    {
+        std::lock_guard<std::mutex> lock(*reduction_learning.mutex);
+        for (const auto &record : reduction_learning.map_pixel_outliers) {
+            if (record.obsnum != obsnum ||
+                record.producer != producer ||
+                record.iter != target_iter ||
+                record.map_index < 0 ||
+                record.map_index >= static_cast<int>(mb.signal.size()) ||
+                record.row < 0 ||
+                record.row >= mb.n_rows ||
+                record.col < 0 ||
+                record.col >= mb.n_cols) {
+                continue;
+            }
+            const double raw_score =
+                std::isfinite(record.leave_one_out_z)
+                    ? std::abs(record.leave_one_out_z)
+                    : std::abs(record.value);
+            const double score = std::isfinite(raw_score) ? raw_score : 0.0;
+            candidates.push_back({
+                static_cast<Eigen::Index>(record.map_index),
+                static_cast<Eigen::Index>(record.row),
+                static_cast<Eigen::Index>(record.col),
+                score});
+        }
+    }
+    if (candidates.empty()) {
+        return;
+    }
+
+    std::sort(candidates.begin(), candidates.end(),
+              [](const auto &a, const auto &b) {
+                  return a.score > b.score;
+              });
+
+    std::vector<std::tuple<Eigen::Index, Eigen::Index, Eigen::Index>> targets;
+    targets.reserve(static_cast<std::size_t>(
+        reduction_learning.options.map_pixel_outlier_targeted_contributor_max_pixels));
+    auto have_target = [&](const auto &candidate) {
+        return std::find_if(targets.begin(), targets.end(),
+                            [&](const auto &target) {
+                                return std::get<0>(target) == candidate.map_index &&
+                                       std::get<1>(target) == candidate.row &&
+                                       std::get<2>(target) == candidate.col;
+                            }) != targets.end();
+    };
+    const std::size_t max_targets = static_cast<std::size_t>(
+        reduction_learning.options.map_pixel_outlier_targeted_contributor_max_pixels);
+    for (const auto &candidate : candidates) {
+        if (targets.size() >= max_targets) {
+            break;
+        }
+        if (have_target(candidate)) {
+            continue;
+        }
+        targets.emplace_back(candidate.map_index, candidate.row, candidate.col);
+    }
+    if (targets.empty()) {
+        return;
+    }
+
+    mb.set_contribution_targets(static_cast<Eigen::Index>(mb.signal.size()), targets);
+    if (mb.contribution_diag_targeted) {
+        mb.contribution_diag_enabled = true;
+        logger->info(
+            "map-pixel targeted contributor tracing enabled stage={} obsnum={} iter={} source_iter={} targets={}",
+            stage_name, obsnum, fruit_iter, target_iter, targets.size());
+    }
 }
 
 template <class apt_t>
@@ -6821,6 +6963,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             i < static_cast<Eigen::Index>(mb->contribution_uid.size()) &&
                             i < static_cast<Eigen::Index>(mb->contribution_signal.size()) &&
                             i < static_cast<Eigen::Index>(mb->contribution_weight.size()) &&
+                            i < static_cast<Eigen::Index>(mb->contribution_variance_weight.size()) &&
+                            i < static_cast<Eigen::Index>(mb->contribution_total_signal.size()) &&
+                            i < static_cast<Eigen::Index>(mb->contribution_total_weight.size()) &&
+                            i < static_cast<Eigen::Index>(mb->contribution_total_variance_weight.size()) &&
                             i < static_cast<Eigen::Index>(mb->contribution_scan.size()) &&
                             i < static_cast<Eigen::Index>(mb->contribution_sample.size()) &&
                             mb->contribution_uid[static_cast<std::size_t>(i)].rows() == mb->n_rows &&
@@ -6880,17 +7026,47 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                         mb->contribution_signal[map_st](r, c);
                                     const double contrib_weight =
                                         mb->contribution_weight[map_st](r, c);
+                                    const double contrib_variance_weight =
+                                        mb->contribution_variance_weight[map_st](r, c);
                                     if (uid != fill_int &&
                                         std::isfinite(contrib_signal)) {
                                         candidate.has_contributor = true;
                                         candidate.uid = uid;
                                         candidate.scan = mb->contribution_scan[map_st](r, c);
                                         candidate.sample = mb->contribution_sample[map_st](r, c);
-                                        if (std::isfinite(contrib_weight) &&
+                                        const double total_signal =
+                                            mb->contribution_total_signal[map_st](r, c);
+                                        const double total_weight =
+                                            mb->contribution_total_weight[map_st](r, c);
+                                        const double total_variance_weight =
+                                            mb->contribution_total_variance_weight[map_st](r, c);
+                                        const double remaining_weight =
+                                            total_weight - contrib_weight;
+                                        if (std::isfinite(total_signal) &&
+                                            std::isfinite(total_weight) &&
+                                            std::isfinite(contrib_weight) &&
+                                            std::isfinite(contrib_variance_weight) &&
+                                            std::isfinite(total_variance_weight) &&
                                             contrib_weight >= 0.0 &&
-                                            wt > contrib_weight &&
-                                            (wt - contrib_weight) >
-                                                std::numeric_limits<double>::epsilon()) {
+                                            contrib_variance_weight >= 0.0 &&
+                                            remaining_weight >
+                                                std::numeric_limits<double>::epsilon() &&
+                                            total_variance_weight > contrib_variance_weight) {
+                                            const double loo_value =
+                                                (total_signal - contrib_signal) /
+                                                remaining_weight;
+                                            const double residual = value - loo_value;
+                                            if (std::isfinite(residual) &&
+                                                std::isfinite(wt) && wt > 0.0) {
+                                                candidate.leave_one_out_z =
+                                                    residual * std::sqrt(wt);
+                                            }
+                                        }
+                                        else if (std::isfinite(contrib_weight) &&
+                                                 contrib_weight >= 0.0 &&
+                                                 wt > contrib_weight &&
+                                                 (wt - contrib_weight) >
+                                                     std::numeric_limits<double>::epsilon()) {
                                             const double raw_sum = value * wt;
                                             const double loo_value =
                                                 (raw_sum - contrib_signal) /
@@ -6922,7 +7098,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             record.obsnum = obsnum;
                             record.producer = "mapdiag:" + stage_name;
                             record.reason = candidate.has_contributor
-                                ? "extreme_pixel_contributor"
+                                ? (mb->contribution_diag_targeted
+                                    ? "extreme_pixel_targeted_contributor"
+                                    : "extreme_pixel_contributor")
                                 : "extreme_pixel_no_contributor";
                             record.iter = fruit_iter;
                             record.map_index = static_cast<int>(i);

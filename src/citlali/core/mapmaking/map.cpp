@@ -437,7 +437,16 @@ void MapBuffer::ensure_contribution_diag(Eigen::Index n_maps) {
                     n_rows, n_cols, std::numeric_limits<double>::quiet_NaN()));
     contribution_weight.assign(
         target, Eigen::MatrixXd::Constant(
+            n_rows, n_cols, std::numeric_limits<double>::quiet_NaN()));
+    contribution_variance_weight.assign(
+        target, Eigen::MatrixXd::Constant(
                     n_rows, n_cols, std::numeric_limits<double>::quiet_NaN()));
+    contribution_total_signal.assign(
+        target, Eigen::MatrixXd::Zero(n_rows, n_cols));
+    contribution_total_weight.assign(
+        target, Eigen::MatrixXd::Zero(n_rows, n_cols));
+    contribution_total_variance_weight.assign(
+        target, Eigen::MatrixXd::Zero(n_rows, n_cols));
     contribution_uid.assign(
         target, Eigen::MatrixXi::Constant(n_rows, n_cols, -2147483647));
     contribution_scan.assign(
@@ -450,15 +459,76 @@ void MapBuffer::clear_contribution_diag() {
     contribution_max_abs.clear();
     contribution_signal.clear();
     contribution_weight.clear();
+    contribution_variance_weight.clear();
+    contribution_total_signal.clear();
+    contribution_total_weight.clear();
+    contribution_total_variance_weight.clear();
     contribution_uid.clear();
     contribution_scan.clear();
     contribution_sample.clear();
+    clear_contribution_targets();
+}
+
+void MapBuffer::set_contribution_targets(
+    Eigen::Index n_maps,
+    const std::vector<std::tuple<Eigen::Index, Eigen::Index, Eigen::Index>> &targets) {
+    clear_contribution_targets();
+    if (n_maps <= 0 || targets.empty()) {
+        return;
+    }
+    contribution_targets.assign(static_cast<std::size_t>(n_maps), {});
+    for (const auto &[map_index, row, col] : targets) {
+        if (map_index < 0 || map_index >= n_maps || row < 0 || col < 0 ||
+            row >= n_rows || col >= n_cols) {
+            continue;
+        }
+        auto &map_targets = contribution_targets[static_cast<std::size_t>(map_index)];
+        const auto pixel = std::make_pair(row, col);
+        if (std::find(map_targets.begin(), map_targets.end(), pixel) == map_targets.end()) {
+            map_targets.push_back(pixel);
+        }
+    }
+    contribution_diag_targeted = false;
+    for (const auto &map_targets : contribution_targets) {
+        if (!map_targets.empty()) {
+            contribution_diag_targeted = true;
+            break;
+        }
+    }
+}
+
+void MapBuffer::clear_contribution_targets() {
+    contribution_targets.clear();
+    contribution_diag_targeted = false;
+}
+
+bool MapBuffer::contribution_target_enabled(Eigen::Index map_index,
+                                            Eigen::Index row,
+                                            Eigen::Index col) const {
+    if (!contribution_diag_targeted) {
+        return true;
+    }
+    if (map_index < 0 || map_index >= static_cast<Eigen::Index>(contribution_targets.size())) {
+        return false;
+    }
+    const auto &map_targets = contribution_targets[static_cast<std::size_t>(map_index)];
+    return std::find(map_targets.begin(), map_targets.end(),
+                     std::make_pair(row, col)) != map_targets.end();
 }
 
 void MapBuffer::record_contribution(Eigen::Index map_index, Eigen::Index row,
                                     Eigen::Index col, double signal_contribution,
                                     double weight_contribution, int uid,
                                     int scan, int sample) {
+    record_contribution(map_index, row, col, signal_contribution,
+                        weight_contribution, weight_contribution, uid, scan, sample);
+}
+
+void MapBuffer::record_contribution(Eigen::Index map_index, Eigen::Index row,
+                                    Eigen::Index col, double signal_contribution,
+                                    double weight_contribution,
+                                    double variance_weight_contribution,
+                                    int uid, int scan, int sample) {
     if (!contribution_diag_enabled) {
         return;
     }
@@ -468,6 +538,18 @@ void MapBuffer::record_contribution(Eigen::Index map_index, Eigen::Index row,
         !std::isfinite(signal_contribution)) {
         return;
     }
+    if (!contribution_target_enabled(map_index, row, col)) {
+        return;
+    }
+    const double safe_weight =
+        std::isfinite(weight_contribution) ? weight_contribution : 0.0;
+    const double safe_variance_weight =
+        std::isfinite(variance_weight_contribution)
+            ? variance_weight_contribution
+            : safe_weight;
+    contribution_total_signal[map_index](row, col) += signal_contribution;
+    contribution_total_weight[map_index](row, col) += safe_weight;
+    contribution_total_variance_weight[map_index](row, col) += safe_variance_weight;
     const double abs_contribution = std::abs(signal_contribution);
     if (!std::isfinite(abs_contribution) ||
         abs_contribution <= contribution_max_abs[map_index](row, col)) {
@@ -476,6 +558,7 @@ void MapBuffer::record_contribution(Eigen::Index map_index, Eigen::Index row,
     contribution_max_abs[map_index](row, col) = abs_contribution;
     contribution_signal[map_index](row, col) = signal_contribution;
     contribution_weight[map_index](row, col) = weight_contribution;
+    contribution_variance_weight[map_index](row, col) = safe_variance_weight;
     contribution_uid[map_index](row, col) = uid;
     contribution_scan[map_index](row, col) = scan;
     contribution_sample[map_index](row, col) = sample;
