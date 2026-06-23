@@ -79,6 +79,14 @@ public:
         double min_good_frac = 0.5;
         int min_overlap = 200;
         int max_samples = 5000;
+        bool high_weight_validation_enabled = true;
+        bool high_weight_apply_caps = true;
+        std::string high_weight_grouping = "array";
+        int high_weight_min_group_detectors = 20;
+        double high_weight_log_robust_z = 6.0;
+        double high_weight_max_median_factor = 8.0;
+        double high_weight_cap_median_factor = 4.0;
+        double high_weight_min_validated_factor = 0.95;
     };
 
     WeightValidationOptions weight_validation;
@@ -94,7 +102,29 @@ public:
     Eigen::VectorXd weight_validation_atm_corr_sum;
     Eigen::VectorXi weight_validation_atm_count;
     Eigen::VectorXd weight_validation_detector_penalty;
+    Eigen::VectorXi weight_validation_detector_validated;
     std::shared_ptr<std::mutex> weight_validation_mutex = std::make_shared<std::mutex>();
+
+    struct HighWeightDiagSummary {
+        int iter = -1;
+        Eigen::Index scan = -1;
+        Eigen::Index det = -1;
+        int uid = kTransientFillInt;
+        Eigen::Index nw = -1;
+        Eigen::Index array = -1;
+        std::string grouping = "array";
+        std::string reason = "high_weight";
+        double approximate_weight = std::numeric_limits<double>::quiet_NaN();
+        double final_weight = std::numeric_limits<double>::quiet_NaN();
+        double group_median_weight = std::numeric_limits<double>::quiet_NaN();
+        double robust_z = std::numeric_limits<double>::quiet_NaN();
+        double applied_cap = std::numeric_limits<double>::quiet_NaN();
+        double validation_factor = std::numeric_limits<double>::quiet_NaN();
+        bool cap_recommended = false;
+        bool cap_applied = false;
+        bool validated = false;
+    };
+    std::map<Eigen::Index, std::vector<HighWeightDiagSummary>> high_weight_summary_by_scan;
 
     // ptc tod proc
     timestream::Cleaner cleaner;
@@ -1387,12 +1417,60 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                              std::tuple{"timestream","processed_time_chunk","weighting","validation","max_samples"},
                              {}, {0});
         }
+        if (config.template has_typed<bool>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","high_weight_validation_enabled"})) {
+            get_config_value(config, weight_validation.high_weight_validation_enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","high_weight_validation_enabled"});
+        }
+        if (config.template has_typed<bool>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","high_weight_apply_caps"})) {
+            get_config_value(config, weight_validation.high_weight_apply_caps, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","high_weight_apply_caps"});
+        }
+        if (config.template has_typed<std::string>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","high_weight_grouping"})) {
+            get_config_value(config, weight_validation.high_weight_grouping, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","high_weight_grouping"},
+                             {"array", "nw", "all"});
+        }
+        if (config.template has_typed<int>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","high_weight_min_group_detectors"})) {
+            get_config_value(config, weight_validation.high_weight_min_group_detectors, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","high_weight_min_group_detectors"},
+                             {}, {2});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","high_weight_log_robust_z"})) {
+            get_config_value(config, weight_validation.high_weight_log_robust_z, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","high_weight_log_robust_z"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","high_weight_max_median_factor"})) {
+            get_config_value(config, weight_validation.high_weight_max_median_factor, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","high_weight_max_median_factor"},
+                             {}, {1.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","high_weight_cap_median_factor"})) {
+            get_config_value(config, weight_validation.high_weight_cap_median_factor, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","high_weight_cap_median_factor"},
+                             {}, {1.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","weighting","validation","high_weight_min_validated_factor"})) {
+            get_config_value(config, weight_validation.high_weight_min_validated_factor, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","weighting","validation","high_weight_min_validated_factor"},
+                             {}, {0.0});
+        }
         logger->info(
             "weighting.validation enabled: accumulation_iters={} apply_start_iter={} min_valid_scans={} "
             "min_factor={} unvalidated_factor={} require_fruitloops_model={} transient_ratio_enabled={} "
             "ratio_power={} transient_ratio_power={} upward(enabled={} max_factor={} power={} min_base_factor={} "
             "require_atm={} min_atm_factor={}) atm(enabled={} grouping={} min_detectors={} ref={} span={} "
-            "power={}) min_good_frac={} min_overlap={} max_samples={}",
+            "power={}) min_good_frac={} min_overlap={} max_samples={} high_weight(enabled={} apply_caps={} "
+            "grouping={} min_group_detectors={} log_robust_z={} max_median_factor={} cap_median_factor={} "
+            "min_validated_factor={})",
             weight_validation.accumulation_iters, weight_validation.apply_start_iter,
             weight_validation.min_valid_scans, weight_validation.min_factor,
             weight_validation.unvalidated_factor, weight_validation.require_fruitloops_model,
@@ -1412,7 +1490,15 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             weight_validation.atmospheric_power,
             weight_validation.min_good_frac,
             weight_validation.min_overlap,
-            weight_validation.max_samples);
+            weight_validation.max_samples,
+            weight_validation.high_weight_validation_enabled,
+            weight_validation.high_weight_apply_caps,
+            weight_validation.high_weight_grouping,
+            weight_validation.high_weight_min_group_detectors,
+            weight_validation.high_weight_log_robust_z,
+            weight_validation.high_weight_max_median_factor,
+            weight_validation.high_weight_cap_median_factor,
+            weight_validation.high_weight_min_validated_factor);
     }
 
     if (second_pass_local.enabled) {
@@ -1456,11 +1542,14 @@ inline void PTCProc::ensure_weight_validation_storage(Eigen::Index n_uids) {
     if (n_uids <= 0) {
         return;
     }
-    if (weight_validation_detector_penalty.size() >= n_uids) {
+    if (weight_validation_detector_penalty.size() >= n_uids &&
+        weight_validation_detector_validated.size() >= n_uids) {
         return;
     }
 
-    const Eigen::Index old_size = weight_validation_detector_penalty.size();
+    const Eigen::Index old_size =
+        std::max(weight_validation_detector_penalty.size(),
+                 weight_validation_detector_validated.size());
     auto grow_double = [&](Eigen::VectorXd &vec, double fill) {
         Eigen::VectorXd old = vec;
         vec = Eigen::VectorXd::Constant(n_uids, fill);
@@ -1486,6 +1575,7 @@ inline void PTCProc::ensure_weight_validation_storage(Eigen::Index n_uids) {
     grow_double(weight_validation_detector_penalty,
                 std::clamp(weight_validation.unvalidated_factor,
                            weight_validation.min_factor, 1.0));
+    grow_int(weight_validation_detector_validated, 0);
 
     logger->debug("weight validation storage resized from {} to {} detector slots",
                   old_size, n_uids);
@@ -1507,6 +1597,7 @@ inline void PTCProc::begin_weight_validation_iteration(int iter) {
         weight_validation_atm_corr_sum.resize(0);
         weight_validation_atm_count.resize(0);
         weight_validation_detector_penalty.resize(0);
+        weight_validation_detector_validated.resize(0);
     }
 }
 
@@ -1559,6 +1650,8 @@ inline void PTCProc::finalize_weight_validation_iteration(int iter) {
     const int min_valid = std::max(1, weight_validation.min_valid_scans);
     weight_validation_detector_penalty =
         Eigen::VectorXd::Constant(n_uids, unvalidated_factor);
+    weight_validation_detector_validated =
+        Eigen::VectorXi::Zero(n_uids);
 
     std::vector<double> factors;
     factors.reserve(static_cast<std::size_t>(n_uids));
@@ -1602,6 +1695,7 @@ inline void PTCProc::finalize_weight_validation_iteration(int iter) {
         if (!have_factor) {
             factor = unvalidated_factor;
         }
+        bool detector_validated = have_factor;
         if (weight_validation.upward_enabled &&
             uid < weight_validation_ratio_value_count.size() &&
             weight_validation_ratio_value_count(uid) >= min_valid &&
@@ -1627,11 +1721,13 @@ inline void PTCProc::finalize_weight_validation_iteration(int iter) {
                 const double upward_factor =
                     1.0 + (powered_upward - 1.0) * atm_quality;
                 factor = std::max(factor, upward_factor);
+                detector_validated = true;
                 n_ratio_upward_valid++;
             }
         }
         factor = std::clamp(factor, min_factor, upward_max_factor);
         weight_validation_detector_penalty(uid) = factor;
+        weight_validation_detector_validated(uid) = detector_validated ? 1 : 0;
         if (factor < 0.999) {
             n_penalized++;
         }
@@ -2174,14 +2270,15 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> source_protection_mask;
     Eigen::Index n_source_detectors = 0;
     if (second_pass_local.source_protection_enabled) {
-        source_protection_mask = engine_utils::calc_map_center_source_mask(
+        auto [source_mask, source_info] = engine_utils::calc_source_protection_mask(
             in, calib.apt, pixel_axes, map_grouping,
-            second_pass_local.source_protection_radius_arcsec, &n_source_detectors);
+            "map_center_radius", second_pass_local.source_protection_radius_arcsec);
+        source_protection_mask = std::move(source_mask);
+        n_source_detectors = source_info.detectors_with_source;
         logger->debug(
-            "processed_time_chunk.flagging.second_pass_local source protection scan={} radius_arcsec={:.4g} protected_samples={} detectors_with_source={}",
-            in.index.data, second_pass_local.source_protection_radius_arcsec,
-            static_cast<Eigen::Index>((source_protection_mask.array() == true).count()),
-            n_source_detectors);
+            "processed_time_chunk.flagging.second_pass_local source protection scan={} mode={} radius_arcsec={:.4g} protected_samples={} detectors_with_source={}",
+            in.index.data, source_info.mode, source_info.radius_arcsec,
+            source_info.protected_samples, n_source_detectors);
     }
     const bool have_source_protection =
         second_pass_local.source_protection_enabled &&
@@ -3464,6 +3561,101 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                 (std::isfinite(median_ratio) && median_ratio > 0.0) ? median_ratio : 1.0;
         }
 
+        std::vector<double> high_weight_group_median(
+            static_cast<std::size_t>(n_dets),
+            std::numeric_limits<double>::quiet_NaN());
+        std::vector<double> high_weight_robust_z(
+            static_cast<std::size_t>(n_dets),
+            std::numeric_limits<double>::quiet_NaN());
+        std::vector<double> high_weight_cap(
+            static_cast<std::size_t>(n_dets),
+            std::numeric_limits<double>::quiet_NaN());
+        std::vector<unsigned char> high_weight_extreme(
+            static_cast<std::size_t>(n_dets), 0);
+        std::vector<HighWeightDiagSummary> high_weight_records;
+
+        auto safe_apt_int = [&](const std::string &key, Eigen::Index i, Eigen::Index fallback) {
+            auto it = apt.find(key);
+            if (it != apt.end() && i >= 0 && i < it->second.size() &&
+                std::isfinite(it->second(i))) {
+                return static_cast<Eigen::Index>(std::llround(it->second(i)));
+            }
+            return fallback;
+        };
+
+        auto high_weight_group_for = [&](Eigen::Index i) {
+            if (weight_validation.high_weight_grouping == "all") {
+                return static_cast<Eigen::Index>(0);
+            }
+            if (weight_validation.high_weight_grouping == "nw") {
+                return safe_apt_int("nw", i, 0);
+            }
+            return safe_apt_int("array", i, 0);
+        };
+
+        if (weighting_type == "validated" &&
+            weight_validation.high_weight_validation_enabled) {
+            std::map<Eigen::Index, std::vector<std::pair<Eigen::Index, double>>> log_weights_by_group;
+            for (Eigen::Index i=0; i<n_dets; ++i) {
+                if (apt["flag"](i) != 0 ||
+                    approximate_weights(i) <= 0.0 ||
+                    !std::isfinite(approximate_weights(i))) {
+                    continue;
+                }
+                log_weights_by_group[high_weight_group_for(i)].push_back(
+                    {i, std::log(approximate_weights(i))});
+            }
+
+            const Eigen::Index min_group =
+                std::max<Eigen::Index>(2, weight_validation.high_weight_min_group_detectors);
+            const double robust_z_thresh =
+                std::max(0.0, weight_validation.high_weight_log_robust_z);
+            const double max_median_factor =
+                std::max(1.0, weight_validation.high_weight_max_median_factor);
+            const double cap_median_factor =
+                std::max(1.0, weight_validation.high_weight_cap_median_factor);
+            for (const auto &[group_id, entries] : log_weights_by_group) {
+                (void) group_id;
+                if (entries.size() < static_cast<std::size_t>(min_group)) {
+                    continue;
+                }
+                Eigen::VectorXd logs(static_cast<Eigen::Index>(entries.size()));
+                for (Eigen::Index k=0; k<logs.size(); ++k) {
+                    logs(k) = entries[static_cast<std::size_t>(k)].second;
+                }
+                const double med_log = tula::alg::median(logs);
+                if (!std::isfinite(med_log)) {
+                    continue;
+                }
+                Eigen::VectorXd abs_dev = (logs.array() - med_log).abs();
+                double sigma_log = 1.4826 * tula::alg::median(abs_dev);
+                if (!std::isfinite(sigma_log) ||
+                    sigma_log <= std::numeric_limits<double>::epsilon()) {
+                    sigma_log = std::numeric_limits<double>::infinity();
+                }
+                const double median_weight = std::exp(med_log);
+                if (!std::isfinite(median_weight) || median_weight <= 0.0) {
+                    continue;
+                }
+                const double cap_weight = median_weight * cap_median_factor;
+                for (const auto &[det, log_weight] : entries) {
+                    const double robust_z =
+                        std::isfinite(sigma_log)
+                            ? std::max(0.0, (log_weight - med_log) / sigma_log)
+                            : 0.0;
+                    const double median_factor = approximate_weights(det) / median_weight;
+                    const bool extreme =
+                        (robust_z_thresh > 0.0 && robust_z >= robust_z_thresh) ||
+                        median_factor >= max_median_factor;
+                    const auto idx = static_cast<std::size_t>(det);
+                    high_weight_group_median[idx] = median_weight;
+                    high_weight_robust_z[idx] = robust_z;
+                    high_weight_cap[idx] = cap_weight;
+                    high_weight_extreme[idx] = extreme ? 1 : 0;
+                }
+            }
+        }
+
         auto normalized_full_over_approx = [&](Eigen::Index i, bool &valid) {
             valid = false;
             if (full_weights(i) > 0.0 && std::isfinite(full_weights(i))) {
@@ -3579,6 +3771,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
             }
 
             Eigen::VectorXd detector_penalty;
+            Eigen::VectorXi detector_validated;
             bool use_learned_penalty = false;
             int current_iter = 0;
             {
@@ -3590,12 +3783,16 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                     weight_validation_detector_penalty.size() > 0;
                 if (use_learned_penalty) {
                     detector_penalty = weight_validation_detector_penalty;
+                    detector_validated = weight_validation_detector_validated;
                 }
             }
 
             Eigen::Index n_weighted = 0;
             Eigen::Index n_penalized = 0;
             Eigen::Index n_boosted = 0;
+            Eigen::Index n_high_weight_extreme = 0;
+            Eigen::Index n_high_weight_cap_recommended = 0;
+            Eigen::Index n_high_weight_cap_applied = 0;
             const double max_applied_factor =
                 weight_validation.upward_enabled
                     ? std::max(1.0, weight_validation.upward_max_factor)
@@ -3624,7 +3821,64 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                     factor = std::min(factor, std::clamp(transient_factor, min_factor, 1.0));
                 }
                 factor = std::clamp(factor, min_factor, max_applied_factor);
-                in.weights.data(i) = approximate_weights(i) * factor;
+                double final_weight = approximate_weights(i) * factor;
+                bool high_weight_validated = false;
+                bool high_weight_cap_recommended = false;
+                bool high_weight_cap_applied = false;
+                const auto det_index = static_cast<std::size_t>(i);
+                if (weight_validation.high_weight_validation_enabled &&
+                    det_index < high_weight_extreme.size() &&
+                    high_weight_extreme[det_index] != 0) {
+                    ++n_high_weight_extreme;
+                    const bool detector_has_validation =
+                        use_learned_penalty &&
+                        uid >= 0 &&
+                        uid < detector_validated.size() &&
+                        detector_validated(uid) != 0;
+                    high_weight_validated =
+                        detector_has_validation &&
+                        factor >= weight_validation.high_weight_min_validated_factor;
+                    high_weight_cap_recommended = !high_weight_validated;
+                    if (high_weight_cap_recommended) {
+                        ++n_high_weight_cap_recommended;
+                    }
+                    if (high_weight_cap_recommended &&
+                        weight_validation.high_weight_apply_caps &&
+                        use_learned_penalty &&
+                        std::isfinite(high_weight_cap[det_index]) &&
+                        high_weight_cap[det_index] > 0.0 &&
+                        final_weight > high_weight_cap[det_index]) {
+                        final_weight = high_weight_cap[det_index];
+                        factor = final_weight / approximate_weights(i);
+                        high_weight_cap_applied = true;
+                        ++n_high_weight_cap_applied;
+                    }
+
+                    HighWeightDiagSummary record;
+                    record.iter = current_iter;
+                    record.scan = in.index.data;
+                    record.det = i;
+                    record.uid = static_cast<int>(uid);
+                    record.nw = safe_apt_int("nw", i, -1);
+                    record.array = safe_apt_int("array", i, -1);
+                    record.grouping = weight_validation.high_weight_grouping;
+                    record.reason = high_weight_cap_applied
+                        ? "high_weight_cap_applied"
+                        : (high_weight_cap_recommended
+                               ? "high_weight_cap_recommended"
+                               : "high_weight_validated");
+                    record.approximate_weight = approximate_weights(i);
+                    record.final_weight = final_weight;
+                    record.group_median_weight = high_weight_group_median[det_index];
+                    record.robust_z = high_weight_robust_z[det_index];
+                    record.applied_cap = high_weight_cap[det_index];
+                    record.validation_factor = factor;
+                    record.cap_recommended = high_weight_cap_recommended;
+                    record.cap_applied = high_weight_cap_applied;
+                    record.validated = high_weight_validated;
+                    high_weight_records.push_back(std::move(record));
+                }
+                in.weights.data(i) = final_weight;
                 n_weighted++;
                 if (factor < 0.999) {
                     n_penalized++;
@@ -3636,10 +3890,16 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 
             logger->info(
                 "validated weight correction scan={} iter={} source_mask_radius_arcsec={} "
-                "learned_applied={} weighted_detectors={} penalized_detectors={} boosted_detectors={} arrays={}",
+                "learned_applied={} weighted_detectors={} penalized_detectors={} boosted_detectors={} arrays={} "
+                "high_weight_extreme={} high_weight_cap_recommended={} high_weight_cap_applied={}",
                 scan_index_1based, current_iter, source_mask_radius_arcsec,
                 use_learned_penalty, n_weighted, n_penalized, n_boosted,
-                median_ratio_by_array.size());
+                median_ratio_by_array.size(), n_high_weight_extreme,
+                n_high_weight_cap_recommended, n_high_weight_cap_applied);
+        }
+        if (weighting_type == "validated" &&
+            weight_validation.high_weight_validation_enabled) {
+            high_weight_summary_by_scan[in.index.data] = std::move(high_weight_records);
         }
     }
     // constant weighting
@@ -5512,6 +5772,7 @@ inline void PTCProc::clear_cached_diagnostics(Eigen::Index scan_id) {
     adaptive_selector_summary_by_scan.erase(scan_id);
     second_pass_summary_by_scan.erase(scan_id);
     second_pass_added_flags_by_scan.erase(scan_id);
+    high_weight_summary_by_scan.erase(scan_id);
 }
 
 } // namespace timestream

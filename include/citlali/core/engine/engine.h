@@ -1101,19 +1101,51 @@ void Engine::get_learning_config(CT &config) {
         get_config_value(config, options.apply_max_new_flagged_fraction, missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","apply_max_new_flagged_fraction"}, {}, {0.0});
     }
+    if (config.template has_typed<bool>(std::tuple{"timestream","learning","map_pixel_outlier_diagnostics_enabled"})) {
+        get_config_value(config, options.map_pixel_outlier_diagnostics_enabled, missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","map_pixel_outlier_diagnostics_enabled"});
+    }
+    if (config.template has_typed<int>(std::tuple{"timestream","learning","map_pixel_outlier_top_n"})) {
+        get_config_value(config, options.map_pixel_outlier_top_n, missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","map_pixel_outlier_top_n"}, {}, {0});
+    }
+    if (config.template has_typed<double>(std::tuple{"timestream","learning","map_pixel_outlier_min_abs_z"})) {
+        get_config_value(config, options.map_pixel_outlier_min_abs_z, missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","map_pixel_outlier_min_abs_z"}, {}, {0.0});
+    }
+    if (config.template has_typed<double>(std::tuple{"timestream","learning","map_pixel_outlier_min_n_eff"})) {
+        get_config_value(config, options.map_pixel_outlier_min_n_eff, missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","map_pixel_outlier_min_n_eff"}, {}, {0.0});
+    }
+    if (config.template has_typed<double>(std::tuple{"timestream","learning","map_pixel_outlier_source_radius_arcsec"})) {
+        get_config_value(config, options.map_pixel_outlier_source_radius_arcsec, missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","map_pixel_outlier_source_radius_arcsec"}, {}, {0.0});
+    }
 
     reduction_learning.configure(options);
+    const bool map_contribution_diag =
+        reduction_learning.options.enabled &&
+        reduction_learning.options.diagnostics_enabled &&
+        reduction_learning.options.map_pixel_outlier_diagnostics_enabled;
+    omb.contribution_diag_enabled = map_contribution_diag;
+    cmb.contribution_diag_enabled = map_contribution_diag;
     logger->info(
         "reduction learning state configured: enabled={} diagnostics_enabled={} "
         "learn_iters={} apply_start_iter={} max_records_per_type={} "
-        "apply_sample_masks_enabled={} apply_max_new_flagged_fraction={:.4g}",
+        "apply_sample_masks_enabled={} apply_max_new_flagged_fraction={:.4g} "
+        "map_pixel_outliers(enabled={} top_n={} min_abs_z={} min_n_eff={} source_radius_arcsec={})",
         reduction_learning.options.enabled,
         reduction_learning.options.diagnostics_enabled,
         reduction_learning.options.learn_iters,
         reduction_learning.options.apply_start_iter,
         reduction_learning.options.max_records_per_type,
         reduction_learning.options.apply_sample_masks_enabled,
-        reduction_learning.options.apply_max_new_flagged_fraction);
+        reduction_learning.options.apply_max_new_flagged_fraction,
+        reduction_learning.options.map_pixel_outlier_diagnostics_enabled,
+        reduction_learning.options.map_pixel_outlier_top_n,
+        reduction_learning.options.map_pixel_outlier_min_abs_z,
+        reduction_learning.options.map_pixel_outlier_min_n_eff,
+        reduction_learning.options.map_pixel_outlier_source_radius_arcsec);
 }
 
 template <class apt_t>
@@ -1212,10 +1244,11 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
     Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> source_mask;
     bool have_source_protection = false;
     if (source_protection_enabled && source_protection_radius_arcsec > 0.0) {
-        Eigen::Index n_source_detectors = 0;
-        source_mask = engine_utils::calc_map_center_source_mask(
+        auto [mask, source_info] = engine_utils::calc_source_protection_mask(
             tcdata, calib_scan.apt, telescope.pixel_axes, map_grouping,
-            source_protection_radius_arcsec, &n_source_detectors);
+            "map_center_radius", source_protection_radius_arcsec);
+        (void) source_info;
+        source_mask = std::move(mask);
         have_source_protection =
             source_mask.rows() == n_pts && source_mask.cols() == n_dets;
         if (source_protection_enabled && !have_source_protection) {
@@ -1385,9 +1418,6 @@ void Engine::collect_ptc_learning_diagnostics(ptc_t &ptcdata, calib_t &calib_sca
 
     const auto scan_id = ptcdata.index.data;
     const auto second_pass_it = ptcproc.second_pass_summary_by_scan.find(scan_id);
-    if (second_pass_it == ptcproc.second_pass_summary_by_scan.end()) {
-        return;
-    }
 
     if (ptcproc.second_pass_local.source_protection_enabled) {
         ReductionLearningState::SourceProtectionSummary source_summary;
@@ -1400,14 +1430,43 @@ void Engine::collect_ptc_learning_diagnostics(ptc_t &ptcdata, calib_t &calib_sca
             static_cast<int>(ptcdata.scans.data.rows() * ptcdata.scans.data.cols());
         source_summary.radius_arcsec =
             ptcproc.second_pass_local.source_protection_radius_arcsec;
-        Eigen::Index n_source_detectors = 0;
-        const auto source_mask = engine_utils::calc_map_center_source_mask(
+        auto [source_mask, source_info] = engine_utils::calc_source_protection_mask(
             ptcdata, calib_scan.apt, telescope.pixel_axes, map_grouping,
-            ptcproc.second_pass_local.source_protection_radius_arcsec,
-            &n_source_detectors);
+            "map_center_radius",
+            ptcproc.second_pass_local.source_protection_radius_arcsec);
+        (void) source_mask;
         source_summary.protected_samples =
-            static_cast<int>((source_mask.array() == true).count());
+            static_cast<int>(source_info.protected_samples);
         reduction_learning.record_source_protection_summary(std::move(source_summary));
+    }
+
+    const auto high_weight_it = ptcproc.high_weight_summary_by_scan.find(scan_id);
+    if (high_weight_it != ptcproc.high_weight_summary_by_scan.end()) {
+        for (const auto &summary : high_weight_it->second) {
+            ReductionLearningState::HighWeightDetector record;
+            record.obsnum = obsnum;
+            record.grouping = summary.grouping;
+            record.reason = summary.reason;
+            record.iter = fruit_iter;
+            record.scan = static_cast<int>(scan_id);
+            record.uid = summary.uid;
+            record.nw = static_cast<int>(summary.nw);
+            record.array = static_cast<int>(summary.array);
+            record.weight = summary.approximate_weight;
+            record.final_weight = summary.final_weight;
+            record.group_median = summary.group_median_weight;
+            record.robust_z = summary.robust_z;
+            record.cap = summary.applied_cap;
+            record.validation_factor = summary.validation_factor;
+            record.cap_recommended = summary.cap_recommended;
+            record.cap_applied = summary.cap_applied;
+            record.validated = summary.validated;
+            reduction_learning.record_high_weight_detector(std::move(record));
+        }
+    }
+
+    if (second_pass_it == ptcproc.second_pass_summary_by_scan.end()) {
+        return;
     }
 
     for (const auto &summary : second_pass_it->second) {
@@ -1621,6 +1680,22 @@ inline void Engine::write_learning_summary() {
         ColNewlyFlaggedFraction,
         ColMaxNewFlaggedFraction,
         ColApplied,
+        ColGrouping,
+        ColWeight,
+        ColFinalWeight,
+        ColGroupMedian,
+        ColRobustZ,
+        ColCap,
+        ColValidationFactor,
+        ColCapRecommended,
+        ColCapApplied,
+        ColValidated,
+        ColMapIndex,
+        ColRow,
+        ColCol,
+        ColSample,
+        ColNEff,
+        ColLeaveOneOutZ,
         ColCount
     };
 
@@ -1639,7 +1714,11 @@ inline void Engine::write_learning_summary() {
         "application_stage", "candidate_records", "matched_records",
         "invalid_records", "proposed_samples", "newly_flagged_samples",
         "already_flagged_samples", "source_protected_samples",
-        "newly_flagged_fraction", "max_new_flagged_fraction", "applied"
+        "newly_flagged_fraction", "max_new_flagged_fraction", "applied",
+        "grouping", "weight", "final_weight", "group_median", "robust_z",
+        "cap", "validation_factor", "cap_recommended", "cap_applied",
+        "validated", "map_index", "row", "col", "sample", "n_eff",
+        "leave_one_out_z"
     };
 
     auto text = [](const auto &value) {
@@ -1737,6 +1816,48 @@ inline void Engine::write_learning_summary() {
         row[ColZ] = text(record.score);
         row[ColFactor] = text(record.factor);
         row[ColScanLocal] = text(record.scan_local ? 1 : 0);
+        write_row(row);
+    }
+
+    for (const auto &record : reduction_learning.high_weight_detectors) {
+        auto row = new_row();
+        write_base(row, "high_weight_detector", record.iter, record.obsnum,
+                   "weight_validation", record.reason, record.scan, record.uid,
+                   record.nw, record.array);
+        row[ColScore] = text(record.robust_z);
+        row[ColZ] = text(record.robust_z);
+        row[ColValue] = text(record.weight);
+        row[ColFactor] = text(record.validation_factor);
+        row[ColGrouping] = csv(record.grouping);
+        row[ColWeight] = text(record.weight);
+        row[ColFinalWeight] = text(record.final_weight);
+        row[ColGroupMedian] = text(record.group_median);
+        row[ColRobustZ] = text(record.robust_z);
+        row[ColCap] = text(record.cap);
+        row[ColValidationFactor] = text(record.validation_factor);
+        row[ColCapRecommended] = text(record.cap_recommended ? 1 : 0);
+        row[ColCapApplied] = text(record.cap_applied ? 1 : 0);
+        row[ColValidated] = text(record.validated ? 1 : 0);
+        write_row(row);
+    }
+
+    for (const auto &record : reduction_learning.map_pixel_outliers) {
+        auto row = new_row();
+        write_base(row, "map_pixel_outlier", record.iter, record.obsnum,
+                   record.producer, record.reason, record.scan, record.uid,
+                   -1, -1);
+        row[ColScore] = text(record.leave_one_out_z);
+        row[ColZ] = text(record.leave_one_out_z);
+        row[ColValue] = text(record.value);
+        row[ColWeight] = text(record.weight);
+        row[ColMapIndex] = text(record.map_index);
+        row[ColRow] = text(record.row);
+        row[ColCol] = text(record.col);
+        row[ColSample] = text(record.sample);
+        row[ColNEff] = text(record.n_eff);
+        row[ColLeaveOneOutZ] = text(record.leave_one_out_z);
+        row[ColSourceDistanceArcsec] = text(record.source_distance_arcsec);
+        row[ColSourceProtected] = text(record.source_protected ? 1 : 0);
         write_row(row);
     }
 
@@ -6372,6 +6493,17 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<int> obs_valid_pixels(n_maps_local * n_obsnums, fill_int);
     std::vector<int> obs_core_pixels(n_maps_local * n_obsnums, fill_int);
 
+    std::string stage_name = "raw_obs";
+    if constexpr (map_t == mapmaking::FilteredObs) {
+        stage_name = "filtered_obs";
+    }
+    else if constexpr (map_t == mapmaking::RawCoadd) {
+        stage_name = "raw_coadd";
+    }
+    else if constexpr (map_t == mapmaking::FilteredCoadd) {
+        stage_name = "filtered_coadd";
+    }
+
     auto put_string_1d = [](netCDF::NcFile &fo, const std::string &name, netCDF::NcDim dim,
                             const std::vector<std::string> &values, const std::string &comment = "") {
         netCDF::NcVar v = fo.addVar(name, netCDF::ncString, dim);
@@ -6423,6 +6555,22 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         double excess_pos3 = std::numeric_limits<double>::quiet_NaN();
         double excess_neg3 = std::numeric_limits<double>::quiet_NaN();
         double skew = std::numeric_limits<double>::quiet_NaN();
+    };
+
+    struct map_pixel_candidate_t {
+        int row = -2147483647;
+        int col = -2147483647;
+        int uid = -2147483647;
+        int scan = -2147483647;
+        long long sample = -2147483647;
+        double value = std::numeric_limits<double>::quiet_NaN();
+        double weight = std::numeric_limits<double>::quiet_NaN();
+        double n_eff = std::numeric_limits<double>::quiet_NaN();
+        double robust_z = std::numeric_limits<double>::quiet_NaN();
+        double leave_one_out_z = std::numeric_limits<double>::quiet_NaN();
+        double source_distance_arcsec = std::numeric_limits<double>::quiet_NaN();
+        bool source_protected = false;
+        bool has_contributor = false;
     };
 
     auto vector_median = [&](const std::vector<double> &values) -> double {
@@ -6617,6 +6765,177 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             core_tail_excess_neg3[idx] = signal_tail.excess_neg3;
             core_sig2noise_skew[idx] = signal_tail.skew;
 
+            if (reduction_learning.is_enabled() &&
+                reduction_learning.diagnostics_enabled() &&
+                reduction_learning.options.map_pixel_outlier_diagnostics_enabled &&
+                reduction_learning.options.map_pixel_outlier_top_n > 0) {
+                const double pix_arcsec = mb->pixel_size_rad * RAD_TO_ASEC;
+                const double center_row = (static_cast<double>(mb->n_rows) - 1.0) / 2.0;
+                const double center_col = (static_cast<double>(mb->n_cols) - 1.0) / 2.0;
+                const double protect_radius =
+                    reduction_learning.options.map_pixel_outlier_source_radius_arcsec;
+
+                auto source_distance_arcsec = [&](Eigen::Index row, Eigen::Index col) {
+                    if (!std::isfinite(pix_arcsec) || pix_arcsec <= 0.0) {
+                        return fill_double;
+                    }
+                    const double drow = (static_cast<double>(row) - center_row) * pix_arcsec;
+                    const double dcol = (static_cast<double>(col) - center_col) * pix_arcsec;
+                    return std::hypot(drow, dcol);
+                };
+
+                Eigen::ArrayXXd off_source_core_mask = core_mask;
+                for (Eigen::Index r = 0; r < mb->n_rows; ++r) {
+                    for (Eigen::Index c = 0; c < mb->n_cols; ++c) {
+                        const double dist_arcsec = source_distance_arcsec(r, c);
+                        if (protect_radius > 0.0 && std::isfinite(dist_arcsec) &&
+                            dist_arcsec <= protect_radius) {
+                            off_source_core_mask(r, c) = 0.0;
+                        }
+                    }
+                }
+
+                const auto off_source_values =
+                    collect_masked_values(sig2noise, off_source_core_mask);
+                if (off_source_values.size() >= 8) {
+                    const double center = vector_median(off_source_values);
+                    std::vector<double> abs_dev;
+                    abs_dev.reserve(off_source_values.size());
+                    for (const auto &value : off_source_values) {
+                        abs_dev.push_back(std::abs(value - center));
+                    }
+                    const double robust_sigma = 1.4826 * vector_median(abs_dev);
+                    if (std::isfinite(center) && std::isfinite(robust_sigma) &&
+                        robust_sigma > std::numeric_limits<double>::epsilon()) {
+                        std::vector<map_pixel_candidate_t> candidates;
+                        const bool have_contrib =
+                            i < static_cast<Eigen::Index>(mb->contribution_uid.size()) &&
+                            i < static_cast<Eigen::Index>(mb->contribution_signal.size()) &&
+                            i < static_cast<Eigen::Index>(mb->contribution_weight.size()) &&
+                            i < static_cast<Eigen::Index>(mb->contribution_scan.size()) &&
+                            i < static_cast<Eigen::Index>(mb->contribution_sample.size()) &&
+                            mb->contribution_uid[static_cast<std::size_t>(i)].rows() == mb->n_rows &&
+                            mb->contribution_uid[static_cast<std::size_t>(i)].cols() == mb->n_cols;
+                        const double ptc_fs_hz = processed_time_chunk_fs_hz();
+
+                        for (Eigen::Index r = 0; r < mb->n_rows; ++r) {
+                            for (Eigen::Index c = 0; c < mb->n_cols; ++c) {
+                                if (off_source_core_mask(r, c) <= 0.0) {
+                                    continue;
+                                }
+
+                                const double value = mb->signal[i](r, c);
+                                const double wt = mb->weight[i](r, c);
+                                const double sn = sig2noise(r, c);
+                                if (!std::isfinite(value) || !std::isfinite(wt) ||
+                                    wt <= 0.0 || !std::isfinite(sn)) {
+                                    continue;
+                                }
+
+                                double n_eff = fill_double;
+                                if (!mb->coverage.empty() &&
+                                    i < static_cast<Eigen::Index>(mb->coverage.size()) &&
+                                    mb->coverage[i].rows() == mb->n_rows &&
+                                    mb->coverage[i].cols() == mb->n_cols &&
+                                    std::isfinite(mb->coverage[i](r, c)) &&
+                                    std::isfinite(ptc_fs_hz) && ptc_fs_hz > 0.0) {
+                                    n_eff = mb->coverage[i](r, c) * ptc_fs_hz;
+                                }
+                                if (std::isfinite(n_eff) &&
+                                    n_eff < reduction_learning.options.map_pixel_outlier_min_n_eff) {
+                                    continue;
+                                }
+
+                                const double z = (sn - center) / robust_sigma;
+                                if (!std::isfinite(z) ||
+                                    std::abs(z) <
+                                        reduction_learning.options.map_pixel_outlier_min_abs_z) {
+                                    continue;
+                                }
+
+                                map_pixel_candidate_t candidate;
+                                candidate.row = static_cast<int>(r);
+                                candidate.col = static_cast<int>(c);
+                                candidate.value = value;
+                                candidate.weight = wt;
+                                candidate.n_eff = n_eff;
+                                candidate.robust_z = z;
+                                candidate.leave_one_out_z = z;
+                                candidate.source_distance_arcsec = source_distance_arcsec(r, c);
+                                candidate.source_protected = false;
+
+                                if (have_contrib) {
+                                    const auto map_st = static_cast<std::size_t>(i);
+                                    const int uid = mb->contribution_uid[map_st](r, c);
+                                    const double contrib_signal =
+                                        mb->contribution_signal[map_st](r, c);
+                                    const double contrib_weight =
+                                        mb->contribution_weight[map_st](r, c);
+                                    if (uid != fill_int &&
+                                        std::isfinite(contrib_signal)) {
+                                        candidate.has_contributor = true;
+                                        candidate.uid = uid;
+                                        candidate.scan = mb->contribution_scan[map_st](r, c);
+                                        candidate.sample = mb->contribution_sample[map_st](r, c);
+                                        if (std::isfinite(contrib_weight) &&
+                                            contrib_weight >= 0.0 &&
+                                            wt > contrib_weight &&
+                                            (wt - contrib_weight) >
+                                                std::numeric_limits<double>::epsilon()) {
+                                            const double raw_sum = value * wt;
+                                            const double loo_value =
+                                                (raw_sum - contrib_signal) /
+                                                (wt - contrib_weight);
+                                            const double residual = value - loo_value;
+                                            if (std::isfinite(residual)) {
+                                                candidate.leave_one_out_z =
+                                                    residual * std::sqrt(wt);
+                                            }
+                                        }
+                                    }
+                                }
+                                candidates.push_back(candidate);
+                            }
+                        }
+
+                        std::sort(candidates.begin(), candidates.end(),
+                                  [](const auto &a, const auto &b) {
+                                      return std::abs(a.robust_z) >
+                                             std::abs(b.robust_z);
+                                  });
+                        const std::size_t n_emit = std::min<std::size_t>(
+                            candidates.size(),
+                            static_cast<std::size_t>(
+                                reduction_learning.options.map_pixel_outlier_top_n));
+                        for (std::size_t ci = 0; ci < n_emit; ++ci) {
+                            const auto &candidate = candidates[ci];
+                            ReductionLearningState::MapPixelOutlier record;
+                            record.obsnum = obsnum;
+                            record.producer = "mapdiag:" + stage_name;
+                            record.reason = candidate.has_contributor
+                                ? "extreme_pixel_contributor"
+                                : "extreme_pixel_no_contributor";
+                            record.iter = fruit_iter;
+                            record.map_index = static_cast<int>(i);
+                            record.scan = candidate.scan;
+                            record.uid = candidate.uid;
+                            record.row = candidate.row;
+                            record.col = candidate.col;
+                            record.sample = candidate.sample;
+                            record.value = candidate.value;
+                            record.weight = candidate.weight;
+                            record.n_eff = candidate.n_eff;
+                            record.leave_one_out_z = candidate.leave_one_out_z;
+                            record.source_distance_arcsec =
+                                candidate.source_distance_arcsec;
+                            record.source_protected = candidate.source_protected;
+                            reduction_learning.record_map_pixel_outlier(
+                                std::move(record));
+                        }
+                    }
+                }
+            }
+
             if (!mb->noise.empty() && i < static_cast<Eigen::Index>(mb->noise.size()) && mb->n_noise > 0) {
                 std::vector<double> noise_rms_values;
                 noise_rms_values.reserve(static_cast<std::size_t>(mb->n_noise));
@@ -6734,16 +7053,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     netCDF::NcDim n_obsnums_dim = fo.addDim("n_obsnums", n_obsnums);
     std::vector<netCDF::NcDim> map_obs_dims = {n_maps_dim, n_obsnums_dim};
 
-    std::string stage_name = "raw_obs";
-    if constexpr (map_t == mapmaking::FilteredObs) {
-        stage_name = "filtered_obs";
-    }
-    else if constexpr (map_t == mapmaking::RawCoadd) {
-        stage_name = "raw_coadd";
-    }
-    else if constexpr (map_t == mapmaking::FilteredCoadd) {
-        stage_name = "filtered_coadd";
-    }
     add_netcdf_var<std::string>(fo, "MAP_STAGE", stage_name);
     add_netcdf_var<std::string>(fo, "MAP_BUFFER", mb->name);
     add_netcdf_var<std::string>(fo, "MAP_REGIME", map_regime);

@@ -1876,16 +1876,17 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     if (run_despike) {
         logger->debug("despiking");
         if (despiker.source_protection_enabled) {
-            Eigen::Index n_source_detectors = 0;
-            despiker.source_protection_mask = engine_utils::calc_map_center_source_mask(
+            auto [source_mask, source_info] = engine_utils::calc_source_protection_mask(
                 in, calib.apt, telescope.pixel_axes, map_grouping,
-                despiker.source_protection_radius_arcsec, &n_source_detectors);
+                "map_center_radius", despiker.source_protection_radius_arcsec);
+            despiker.source_protection_mask = std::move(source_mask);
             despiker.last_source_protection_sample_count =
-                static_cast<Eigen::Index>((despiker.source_protection_mask.array() == true).count());
+                source_info.protected_samples;
             logger->debug(
-                "despike source protection scan={} radius_arcsec={:.4g} protected_samples={} detectors_with_source={}",
-                in.index.data, despiker.source_protection_radius_arcsec,
-                despiker.last_source_protection_sample_count, n_source_detectors);
+                "despike source protection scan={} mode={} radius_arcsec={:.4g} protected_samples={} detectors_with_source={}",
+                in.index.data, source_info.mode, source_info.radius_arcsec,
+                despiker.last_source_protection_sample_count,
+                source_info.detectors_with_source);
         }
         else {
             despiker.clear_source_protection_mask();

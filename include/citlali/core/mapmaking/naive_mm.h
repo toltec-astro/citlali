@@ -112,6 +112,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
     const bool run_hwpr = in.hwpr_angle.data.size()!=0;
 
     if (run_omb) {
+        omb.ensure_contribution_diag(static_cast<Eigen::Index>(omb.signal.size()));
         signals.resize(omb.signal.size());
         weights.resize(omb.signal.size());
 
@@ -124,6 +125,7 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
     }
 
     if (run_polarization && !cmb.signal.empty()) {
+        cmb.ensure_contribution_diag(static_cast<Eigen::Index>(cmb.signal.size()));
         cmb_signals.resize(cmb.signal.size());
         cmb_weights.resize(cmb.signal.size());
 
@@ -220,6 +222,12 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
 
             // array index
             Eigen::Index array_index = apt["array"](i);
+            int det_uid = static_cast<int>(i);
+            auto uid_it = apt.find("uid");
+            if (uid_it != apt.end() && i < uid_it->second.size() &&
+                std::isfinite(uid_it->second(i))) {
+                det_uid = static_cast<int>(std::llround(uid_it->second(i)));
+            }
             // get detector pointing
             auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
                                                               pixel_axes, in.pointing_offsets_arcsec.data, omb.map_grouping);
@@ -275,6 +283,13 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                             // populate signal map
                             signal = in.scans.data(j,i)*in.weights.data(i);
                             signals[map_index].push_back(T(omb_ir,omb_ic,signal));
+                            if (omb.contribution_diag_enabled) {
+                                std::scoped_lock<std::mutex> lk(*naive_mutex);
+                                omb.record_contribution(map_index, omb_ir, omb_ic, signal,
+                                                        in.weights.data(i), det_uid,
+                                                        static_cast<int>(in.index.data),
+                                                        static_cast<int>(j));
+                            }
 
                             // populate weight map
                             weights[map_index].push_back(T(omb_ir,omb_ic,in.weights.data(i)));
@@ -297,6 +312,19 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                                 // update signal map Q and U
                                 signals[q_index].push_back(T(omb_ir,omb_ic,signal*cos_2angle));
                                 signals[u_index].push_back(T(omb_ir,omb_ic,signal*sin_2angle));
+                                if (omb.contribution_diag_enabled) {
+                                    std::scoped_lock<std::mutex> lk(*naive_mutex);
+                                    omb.record_contribution(q_index, omb_ir, omb_ic,
+                                                            signal*cos_2angle,
+                                                            in.weights.data(i), det_uid,
+                                                            static_cast<int>(in.index.data),
+                                                            static_cast<int>(j));
+                                    omb.record_contribution(u_index, omb_ir, omb_ic,
+                                                            signal*sin_2angle,
+                                                            in.weights.data(i), det_uid,
+                                                            static_cast<int>(in.index.data),
+                                                            static_cast<int>(j));
+                                }
 
                                 // update kernel map Q and U
                                 if (run_kernel) {
@@ -316,6 +344,13 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                             // populate signal map
                             signal = in.scans.data(j,i)*in.weights.data(i);
                             cmb_signals[map_index].push_back(T(cmb_ir,cmb_ic,signal));
+                            if (cmb.contribution_diag_enabled) {
+                                std::scoped_lock<std::mutex> lk(*naive_mutex);
+                                cmb.record_contribution(map_index, cmb_ir, cmb_ic, signal,
+                                                        in.weights.data(i), det_uid,
+                                                        static_cast<int>(in.index.data),
+                                                        static_cast<int>(j));
+                            }
 
                             // populate weight map
                             cmb_weights[map_index].push_back(T(cmb_ir,cmb_ic,in.weights.data(i)));
@@ -337,6 +372,19 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
                             // update signal map Q and U
                             cmb_signals[q_index].push_back(T(cmb_ir,cmb_ic,signal*cos_2angle));
                             cmb_signals[u_index].push_back(T(cmb_ir,cmb_ic,signal*sin_2angle));
+                            if (cmb.contribution_diag_enabled) {
+                                std::scoped_lock<std::mutex> lk(*naive_mutex);
+                                cmb.record_contribution(q_index, cmb_ir, cmb_ic,
+                                                        signal*cos_2angle,
+                                                        in.weights.data(i), det_uid,
+                                                        static_cast<int>(in.index.data),
+                                                        static_cast<int>(j));
+                                cmb.record_contribution(u_index, cmb_ir, cmb_ic,
+                                                        signal*sin_2angle,
+                                                        in.weights.data(i), det_uid,
+                                                        static_cast<int>(in.index.data),
+                                                        static_cast<int>(j));
+                            }
 
                             // update kernel map Q and U
                             if (run_kernel) {
@@ -467,6 +515,13 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
         nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
     }
 
+    if (run_omb) {
+        omb.ensure_contribution_diag(static_cast<Eigen::Index>(omb.signal.size()));
+    }
+    if (run_polarization && !cmb.signal.empty()) {
+        cmb.ensure_contribution_diag(static_cast<Eigen::Index>(cmb.signal.size()));
+    }
+
     // step to skip to reach next stokes param
     int step = omb.pointing.size();
 
@@ -539,6 +594,12 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
 
             // array index
             Eigen::Index array_index = apt["array"](i);
+            int det_uid = static_cast<int>(i);
+            auto uid_it = apt.find("uid");
+            if (uid_it != apt.end() && i < uid_it->second.size() &&
+                std::isfinite(uid_it->second(i))) {
+                det_uid = static_cast<int>(std::llround(uid_it->second(i)));
+            }
             // get detector pointing
             auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
                                                               pixel_axes, in.pointing_offsets_arcsec.data, omb.map_grouping);
@@ -594,6 +655,13 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
                             // populate signal map
                             signal = in.scans.data(j,i)*in.weights.data(i);
                             omb.signal[map_index](omb_ir, omb_ic) += signal;
+                            if (omb.contribution_diag_enabled) {
+                                std::scoped_lock<std::mutex> lk(*naive_mutex);
+                                omb.record_contribution(map_index, omb_ir, omb_ic, signal,
+                                                        in.weights.data(i), det_uid,
+                                                        static_cast<int>(in.index.data),
+                                                        static_cast<int>(j));
+                            }
                             //signals[map_index].push_back(T(omb_ir,omb_ic,signal));
 
                             // populate weight map
@@ -623,6 +691,19 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
 
                                 omb.signal[q_index](omb_ir, omb_ic) += signal*cos_2angle;
                                 omb.signal[u_index](omb_ir, omb_ic) += signal*sin_2angle;
+                                if (omb.contribution_diag_enabled) {
+                                    std::scoped_lock<std::mutex> lk(*naive_mutex);
+                                    omb.record_contribution(q_index, omb_ir, omb_ic,
+                                                            signal*cos_2angle,
+                                                            in.weights.data(i), det_uid,
+                                                            static_cast<int>(in.index.data),
+                                                            static_cast<int>(j));
+                                    omb.record_contribution(u_index, omb_ir, omb_ic,
+                                                            signal*sin_2angle,
+                                                            in.weights.data(i), det_uid,
+                                                            static_cast<int>(in.index.data),
+                                                            static_cast<int>(j));
+                                }
 
 
                                 // update kernel map Q and U
@@ -646,6 +727,13 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
                             signal = in.scans.data(j,i)*in.weights.data(i);
                             //cmb_signals[map_index].push_back(T(cmb_ir,cmb_ic,signal));
                             cmb.signal[map_index](cmb_ir, cmb_ic) += signal;
+                            if (cmb.contribution_diag_enabled) {
+                                std::scoped_lock<std::mutex> lk(*naive_mutex);
+                                cmb.record_contribution(map_index, cmb_ir, cmb_ic, signal,
+                                                        in.weights.data(i), det_uid,
+                                                        static_cast<int>(in.index.data),
+                                                        static_cast<int>(j));
+                            }
 
                             // populate weight map
                             //cmb_weights[map_index].push_back(T(cmb_ir,cmb_ic,in.weights.data(i)));
@@ -673,6 +761,19 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
 
                             cmb.signal[q_index](cmb_ir, cmb_ic) += signal*cos_2angle;
                             cmb.signal[u_index](cmb_ir, cmb_ic) += signal*sin_2angle;
+                            if (cmb.contribution_diag_enabled) {
+                                std::scoped_lock<std::mutex> lk(*naive_mutex);
+                                cmb.record_contribution(q_index, cmb_ir, cmb_ic,
+                                                        signal*cos_2angle,
+                                                        in.weights.data(i), det_uid,
+                                                        static_cast<int>(in.index.data),
+                                                        static_cast<int>(j));
+                                cmb.record_contribution(u_index, cmb_ir, cmb_ic,
+                                                        signal*sin_2angle,
+                                                        in.weights.data(i), det_uid,
+                                                        static_cast<int>(in.index.data),
+                                                        static_cast<int>(j));
+                            }
 
 
                             // update kernel map Q and U

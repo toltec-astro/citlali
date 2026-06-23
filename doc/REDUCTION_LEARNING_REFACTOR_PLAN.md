@@ -11,7 +11,12 @@ as implementation and test reductions change the plan.
 - Phase 3: complete, including the phase-boundary fix that prevents apply
   iterations from adding new learned records.
 - Phase 4: implemented; pending reduction-test review.
-- Phases 5-9: pending.
+- Phase 5: implemented; pending reduction-test review.
+- Phase 6: implemented as diagnostic-only map-pixel contributor reporting;
+  pending reduction-test review.
+- Phase 7: implemented for the shared source-mask interface used by RTC/PTC and
+  mapmaking diagnostics; current active mode is center-radius protection.
+- Phases 8-9: pending.
 
 ## Phase 1: Shared Learning State
 
@@ -86,6 +91,17 @@ Response:
 
 This addresses the misidentified-tone failure mode.
 
+Implementation note:
+
+- `PTCProc` now compares approximate detector weights to robust group
+  distributions (`array`, `nw`, or `all`) during validated weighting.
+- Extreme high weights are recorded in the learning CSV. During apply
+  iterations, unvalidated extremes can be capped to a configurable multiple of
+  the group median.
+- Validation still comes from learned source-subtracted/full-vs-approx and
+  atmospheric-agreement information; source flux is not treated as a detector
+  gain estimator.
+
 ## Phase 6: Map-Pixel Contribution Diagnostics
 
 Add mapmaking-side diagnostics that track extreme contributors per pixel using
@@ -93,6 +109,16 @@ effective sample count and leave-one-out residuals.
 
 Start diagnostic-only, then promote only very clear off-source single-detector
 events into learned masks for the next iteration.
+
+Implementation note:
+
+- Naive mapmaking records the largest weighted sample contribution per map
+  pixel, with detector UID, scan, and PTC sample index.
+- `write_mapdiag` now records off-source extreme map pixels in the learning CSV,
+  using robust z on the core support, an effective-sample cut when coverage is
+  available, and a center-radius source exclusion.
+- This phase is intentionally diagnostic-only. It does not yet promote map-pixel
+  contributors into learned sample masks.
 
 ## Phase 7: Source Protection Generalization
 
@@ -104,6 +130,16 @@ Provide one source-mask interface consumed by RTC/PTC/mapmaking diagnostics:
 - beammap: detector source centers/priors
 
 No Gaussian assumption in the shared path.
+
+Implementation note:
+
+- A shared `calc_source_protection_mask` interface now provides source masks to
+  RTC despiking, PTC second-pass despiking, learned-mask application, and
+  mapmaking diagnostics.
+- The currently active shared mode is `map_center_radius`, which is appropriate
+  for compact pointing/holography tests where the source is assumed near map
+  center. Unsupported modes return an all-false diagnostic mask rather than
+  imposing a Gaussian or empirical support assumption.
 
 ## Phase 8: Config And Defaults
 

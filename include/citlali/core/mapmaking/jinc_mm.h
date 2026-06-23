@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <cstdio>
+#include <limits>
 #include <sstream>
 #include <stdexcept>
 #include <thread>
@@ -351,6 +352,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     const bool run_kernel = !omb.kernel.empty();
     const bool run_coverage = !omb.coverage.empty();
     const bool run_hwpr = in.hwpr_angle.data.size()!=0;
+    const double diag_weight_unknown = std::numeric_limits<double>::quiet_NaN();
 
     // dimensions of data
     Eigen::Index n_dets = in.scans.data.cols();
@@ -360,6 +362,9 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     map_buffer_t *nmb = nullptr;
     if (run_noise) {
         nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
+    }
+    if (run_omb) {
+        omb.ensure_contribution_diag(static_cast<Eigen::Index>(omb.signal.size()));
     }
 
     double noise_cube_gb = 0.0;
@@ -504,6 +509,12 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         if (apt["flag"](i)==0 && (in.flags.data.col(i).array()==false).any()) {
             // get detector positions from apt table if not in detector mapmaking mode
             auto det_index = i;
+            int det_uid = static_cast<int>(det_index);
+            auto uid_it = apt.find("uid");
+            if (uid_it != apt.end() && det_index < uid_it->second.size() &&
+                std::isfinite(uid_it->second(det_index))) {
+                det_uid = static_cast<int>(std::llround(uid_it->second(det_index)));
+            }
 
             // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
@@ -619,7 +630,24 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             auto wt_block = omb_copy.weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
 
                             // populate signal map
-                            sig_block += (mat_block * in.weights.data(i) * in.scans.data(j,i)).eval();
+                            const double weighted_signal =
+                                in.weights.data(i) * in.scans.data(j,i);
+                            sig_block += (mat_block * weighted_signal).eval();
+                            if (omb.contribution_diag_enabled) {
+                                std::scoped_lock<std::mutex> lk(*jinc_mutex);
+                                for (Eigen::Index rr = 0; rr < size_rows; ++rr) {
+                                    for (Eigen::Index cc = 0; cc < size_cols; ++cc) {
+                                        omb.record_contribution(
+                                            map_index,
+                                            static_cast<Eigen::Index>(lower_row) + rr,
+                                            static_cast<Eigen::Index>(lower_col) + cc,
+                                            mat_block(rr, cc) * weighted_signal,
+                                            diag_weight_unknown, det_uid,
+                                            static_cast<int>(in.index.data),
+                                            static_cast<int>(j));
+                                    }
+                                }
+                            }
 
                             // memo-style gridding denominator
                             grid_wt_block.array() += (mat_block.array() * in.weights.data(i));
@@ -806,6 +834,7 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
     const bool run_kernel = !omb.kernel.empty();
     const bool run_coverage = !omb.coverage.empty();
     const bool run_hwpr = in.hwpr_angle.data.size()!=0;
+    const double diag_weight_unknown = std::numeric_limits<double>::quiet_NaN();
 
     // dimensions of data
     Eigen::Index n_dets = in.scans.data.cols();
@@ -816,6 +845,9 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
 
     if (run_noise) {
         nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
+    }
+    if (run_omb) {
+        omb.ensure_contribution_diag(static_cast<Eigen::Index>(omb.signal.size()));
     }
 
     auto fail_validation = [&](const std::string &stage, const std::string &message) -> void {
@@ -1127,7 +1159,24 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                             auto wt_block = omb.weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
 
                             // populate signal map
-                            sig_block += (mat_block * in.weights.data(i) * in.scans.data(j,i)).eval();
+                            const double weighted_signal =
+                                in.weights.data(i) * in.scans.data(j,i);
+                            sig_block += (mat_block * weighted_signal).eval();
+                            if (omb.contribution_diag_enabled) {
+                                std::scoped_lock<std::mutex> lk(*jinc_mutex);
+                                for (Eigen::Index rr = 0; rr < size_rows; ++rr) {
+                                    for (Eigen::Index cc = 0; cc < size_cols; ++cc) {
+                                        omb.record_contribution(
+                                            map_index,
+                                            static_cast<Eigen::Index>(lower_row) + rr,
+                                            static_cast<Eigen::Index>(lower_col) + cc,
+                                            mat_block(rr, cc) * weighted_signal,
+                                            diag_weight_unknown, det_uid,
+                                            static_cast<int>(in.index.data),
+                                            static_cast<int>(j));
+                                    }
+                                }
+                            }
 
                             // memo-style gridding denominator
                             grid_wt_block.array() += (mat_block.array() * in.weights.data(i));

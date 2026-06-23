@@ -26,6 +26,11 @@ struct ReductionLearningState {
         int max_records_per_type = 200000;
         bool apply_sample_masks_enabled = true;
         double apply_max_new_flagged_fraction = 0.02;
+        bool map_pixel_outlier_diagnostics_enabled = true;
+        int map_pixel_outlier_top_n = 8;
+        double map_pixel_outlier_min_abs_z = 8.0;
+        double map_pixel_outlier_min_n_eff = 4.0;
+        double map_pixel_outlier_source_radius_arcsec = 30.0;
     };
 
     struct LearnedSampleMask {
@@ -74,10 +79,14 @@ struct ReductionLearningState {
         int nw = -1;
         int array = -1;
         double weight = nan_value();
+        double final_weight = nan_value();
         double group_median = nan_value();
         double robust_z = nan_value();
         double cap = nan_value();
+        double validation_factor = nan_value();
         bool cap_recommended = false;
+        bool cap_applied = false;
+        bool validated = false;
     };
 
     struct MapPixelOutlier {
@@ -204,6 +213,14 @@ struct ReductionLearningState {
         new_options.max_records_per_type = std::max(0, new_options.max_records_per_type);
         new_options.apply_max_new_flagged_fraction =
             std::max(0.0, new_options.apply_max_new_flagged_fraction);
+        new_options.map_pixel_outlier_top_n =
+            std::max(0, new_options.map_pixel_outlier_top_n);
+        new_options.map_pixel_outlier_min_abs_z =
+            std::max(0.0, new_options.map_pixel_outlier_min_abs_z);
+        new_options.map_pixel_outlier_min_n_eff =
+            std::max(0.0, new_options.map_pixel_outlier_min_n_eff);
+        new_options.map_pixel_outlier_source_radius_arcsec =
+            std::max(0.0, new_options.map_pixel_outlier_source_radius_arcsec);
         options = new_options;
         if (!options.enabled) {
             current_phase = IterationPhase::Inactive;
@@ -301,7 +318,7 @@ struct ReductionLearningState {
 
     void record_high_weight_detector(HighWeightDetector record) {
         std::lock_guard<std::mutex> lock(*mutex);
-        if (!options.enabled || !learning_active()) {
+        if (!options.enabled) {
             return;
         }
         push_with_cap(high_weight_detectors, std::move(record),
@@ -310,7 +327,7 @@ struct ReductionLearningState {
 
     void record_map_pixel_outlier(MapPixelOutlier record) {
         std::lock_guard<std::mutex> lock(*mutex);
-        if (!options.enabled || !learning_active()) {
+        if (!options.enabled) {
             return;
         }
         push_with_cap(map_pixel_outliers, std::move(record),

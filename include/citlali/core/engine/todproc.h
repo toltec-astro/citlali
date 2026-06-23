@@ -1415,6 +1415,7 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
     std::vector<Eigen::MatrixXd>().swap(omb.coverage);
     std::vector<Eigen::MatrixXd>().swap(omb.grid_weight);
     std::vector<Eigen::MatrixXd>().swap(omb.pointing);
+    omb.clear_contribution_diag();
 
     // set omb dimensions and wcs parameters
     omb.n_rows = map_extent[0];
@@ -1467,6 +1468,7 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb() {
     std::vector<Eigen::MatrixXd>().swap(cmb.coverage);
     std::vector<Eigen::MatrixXd>().swap(cmb.grid_weight);
     std::vector<Eigen::MatrixXd>().swap(cmb.pointing);
+    cmb.clear_contribution_diag();
 
     Eigen::MatrixXd zero_matrix = Eigen::MatrixXd::Zero(cmb.n_rows, cmb.n_cols);
 

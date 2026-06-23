@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <map>
 #include <string>
 
@@ -123,6 +124,51 @@ auto calc_map_center_source_mask(tc_data_t &in, apt_t &apt,
         *n_detectors_with_source = det_count;
     }
     return mask;
+}
+
+struct SourceProtectionMaskInfo {
+    std::string mode = "none";
+    double radius_arcsec = std::numeric_limits<double>::quiet_NaN();
+    Eigen::Index protected_samples = 0;
+    Eigen::Index total_samples = 0;
+    Eigen::Index detectors_with_source = 0;
+    bool valid = false;
+};
+
+template <typename tc_data_t, typename apt_t>
+auto calc_source_protection_mask(tc_data_t &in, apt_t &apt,
+                                 const std::string &pixel_axes,
+                                 const std::string &map_grouping,
+                                 const std::string &mode,
+                                 double radius_arcsec) {
+    SourceProtectionMaskInfo info;
+    info.mode = mode;
+    info.radius_arcsec = radius_arcsec;
+    info.total_samples = in.scans.data.rows() * in.scans.data.cols();
+
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> mask(
+        in.scans.data.rows(), in.scans.data.cols());
+    mask.setZero();
+
+    if (mode == "none" || mode.empty()) {
+        info.valid = true;
+        return std::tuple{mask, info};
+    }
+
+    if (mode == "map_center_radius" || mode == "pointing_center_radius") {
+        Eigen::Index n_detectors_with_source = 0;
+        mask = calc_map_center_source_mask(
+            in, apt, pixel_axes, map_grouping, radius_arcsec,
+            &n_detectors_with_source);
+        info.protected_samples =
+            static_cast<Eigen::Index>((mask.array() == true).count());
+        info.detectors_with_source = n_detectors_with_source;
+        info.valid = true;
+        return std::tuple{mask, info};
+    }
+
+    info.mode = "unsupported:" + mode;
+    return std::tuple{mask, info};
 }
 
 template <typename Derived>

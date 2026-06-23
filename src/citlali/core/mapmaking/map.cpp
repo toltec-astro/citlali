@@ -414,6 +414,73 @@ void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *act
     }
 }
 
+void MapBuffer::ensure_contribution_diag(Eigen::Index n_maps) {
+    if (!contribution_diag_enabled) {
+        return;
+    }
+    if (n_maps <= 0 || n_rows <= 0 || n_cols <= 0) {
+        return;
+    }
+    const auto target = static_cast<std::size_t>(n_maps);
+    if (contribution_max_abs.size() == target &&
+        !contribution_max_abs.empty() &&
+        contribution_max_abs.front().rows() == n_rows &&
+        contribution_max_abs.front().cols() == n_cols) {
+        return;
+    }
+
+    contribution_max_abs.assign(
+        target, Eigen::MatrixXd::Constant(
+                    n_rows, n_cols, -std::numeric_limits<double>::infinity()));
+    contribution_signal.assign(
+        target, Eigen::MatrixXd::Constant(
+                    n_rows, n_cols, std::numeric_limits<double>::quiet_NaN()));
+    contribution_weight.assign(
+        target, Eigen::MatrixXd::Constant(
+                    n_rows, n_cols, std::numeric_limits<double>::quiet_NaN()));
+    contribution_uid.assign(
+        target, Eigen::MatrixXi::Constant(n_rows, n_cols, -2147483647));
+    contribution_scan.assign(
+        target, Eigen::MatrixXi::Constant(n_rows, n_cols, -2147483647));
+    contribution_sample.assign(
+        target, Eigen::MatrixXi::Constant(n_rows, n_cols, -2147483647));
+}
+
+void MapBuffer::clear_contribution_diag() {
+    contribution_max_abs.clear();
+    contribution_signal.clear();
+    contribution_weight.clear();
+    contribution_uid.clear();
+    contribution_scan.clear();
+    contribution_sample.clear();
+}
+
+void MapBuffer::record_contribution(Eigen::Index map_index, Eigen::Index row,
+                                    Eigen::Index col, double signal_contribution,
+                                    double weight_contribution, int uid,
+                                    int scan, int sample) {
+    if (!contribution_diag_enabled) {
+        return;
+    }
+    if (map_index < 0 || row < 0 || col < 0 ||
+        map_index >= static_cast<Eigen::Index>(contribution_max_abs.size()) ||
+        row >= n_rows || col >= n_cols ||
+        !std::isfinite(signal_contribution)) {
+        return;
+    }
+    const double abs_contribution = std::abs(signal_contribution);
+    if (!std::isfinite(abs_contribution) ||
+        abs_contribution <= contribution_max_abs[map_index](row, col)) {
+        return;
+    }
+    contribution_max_abs[map_index](row, col) = abs_contribution;
+    contribution_signal[map_index](row, col) = signal_contribution;
+    contribution_weight[map_index](row, col) = weight_contribution;
+    contribution_uid[map_index](row, col) = uid;
+    contribution_scan[map_index](row, col) = scan;
+    contribution_sample[map_index](row, col) = sample;
+}
+
 void MapBuffer::calculate_stokes(std::vector<Eigen::MatrixXd>& map_vec, const Eigen::MatrixXd& m, Eigen::Index i, Eigen::Index j,
                                  int index, int step) {
     Eigen::VectorXd d(3);

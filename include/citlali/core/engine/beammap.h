@@ -4094,6 +4094,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                 }
 
                 // set maps to zero for each pass
+                omb.clear_contribution_diag();
                 for (Eigen::Index i = 0; i < n_maps; ++i) {
                     if (active_maps_ptr != nullptr && !(*active_maps_ptr)(i)) {
                         continue;

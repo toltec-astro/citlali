@@ -163,6 +163,11 @@ timestream: # timestream reduction parameters
     max_records_per_type: 200000 # cap retained diagnostic records per learned-state record class (0 disables cap)
     apply_sample_masks_enabled: true # apply learned spike/deglitch sample masks in production iterations
     apply_max_new_flagged_fraction: 0.02 # reject learned sample-mask application for a scan/stage if it newly flags more than this detector-sample fraction (0 disables cap)
+    map_pixel_outlier_diagnostics_enabled: true # record off-source high-S/N map pixels and their strongest sample contributors for diagnostics
+    map_pixel_outlier_top_n: 8 # maximum extreme off-source map pixels retained per map/stage
+    map_pixel_outlier_min_abs_z: 8.0 # minimum robust off-source map S/N z for map-pixel outlier diagnostics
+    map_pixel_outlier_min_n_eff: 4.0 # ignore candidate pixels with fewer effective samples when coverage is available
+    map_pixel_outlier_source_radius_arcsec: 30.0 # central source-protection radius excluded from map-pixel outlier diagnostics
   polarimetry: # polarized reduction
     enabled: false # enable or disable polarized reduction
     ignore_hwpr: auto # override automatic hwpr finding (true, false, auto)
@@ -425,6 +430,14 @@ timestream: # timestream reduction parameters
         min_good_frac: 0.5 # minimum unflagged sampled fraction for validation metrics
         min_overlap: 200 # minimum overlapping samples for detector/common-mode correlation
         max_samples: 5000 # cap sampled time points per scan for validation metrics (0 => use all)
+        high_weight_validation_enabled: true # diagnose extreme approximate weights against robust group distributions
+        high_weight_apply_caps: true # cap unvalidated extreme high weights during apply iterations
+        high_weight_grouping: array # grouping for high-weight comparisons (array, nw, all)
+        high_weight_min_group_detectors: 20 # minimum detectors in a robust high-weight comparison group
+        high_weight_log_robust_z: 6.0 # log-weight robust-z threshold for an extreme high-weight detector
+        high_weight_max_median_factor: 8.0 # also mark weights above this factor times the group median
+        high_weight_cap_median_factor: 4.0 # cap unvalidated extreme weights to this factor times the group median
+        high_weight_min_validated_factor: 0.95 # minimum learned validation factor needed to allow an extreme high weight through
       median_map_weight_factor: 0 # set all weights above this factor x median of unflagged detectors to median (>=1 allowed)
       lower_map_weight_factor: 0.0 # flag detectors below this weight limit (ignored if 0)
       upper_map_weight_factor: 0.0 # flag detectors above this weight limit (ignored if 0)

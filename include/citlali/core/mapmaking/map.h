@@ -88,6 +88,13 @@ public:
     // optional memo-style gridding denominator used before finalizing inverse-variance weights
     std::vector<Eigen::MatrixXd> grid_weight;
 
+    // diagnostic largest single weighted sample contribution per map pixel
+    bool contribution_diag_enabled = false;
+    std::vector<Eigen::MatrixXd> contribution_max_abs, contribution_signal,
+                                contribution_weight;
+    std::vector<Eigen::MatrixXi> contribution_uid, contribution_scan,
+                                contribution_sample;
+
     struct NormalizeSupportDiag {
         Eigen::Index map_index = -1;
         Eigen::Index n_total = 0;
@@ -193,6 +200,10 @@ public:
 
     // normalize accumulated maps and finalize inverse-variance weights
     void normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr);
+    void ensure_contribution_diag(Eigen::Index);
+    void clear_contribution_diag();
+    void record_contribution(Eigen::Index, Eigen::Index, Eigen::Index, double,
+                             double, int, int, int);
     void calculate_stokes(std::vector<Eigen::MatrixXd>&, const Eigen::MatrixXd&,
                           Eigen::Index, Eigen::Index, int, int);
     void calculate_stokes(std::vector<Eigen::Tensor<double,3>>&, const Eigen::MatrixXd&,
