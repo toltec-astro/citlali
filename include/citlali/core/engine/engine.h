@@ -1105,6 +1105,11 @@ void Engine::get_learning_config(CT &config) {
         get_config_value(config, options.map_pixel_outlier_diagnostics_enabled, missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","map_pixel_outlier_diagnostics_enabled"});
     }
+    if (config.template has_typed<bool>(std::tuple{"timestream","learning","map_pixel_outlier_contributor_diagnostics_enabled"})) {
+        get_config_value(config, options.map_pixel_outlier_contributor_diagnostics_enabled,
+                         missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","map_pixel_outlier_contributor_diagnostics_enabled"});
+    }
     if (config.template has_typed<int>(std::tuple{"timestream","learning","map_pixel_outlier_top_n"})) {
         get_config_value(config, options.map_pixel_outlier_top_n, missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","map_pixel_outlier_top_n"}, {}, {0});
@@ -1126,14 +1131,15 @@ void Engine::get_learning_config(CT &config) {
     const bool map_contribution_diag =
         reduction_learning.options.enabled &&
         reduction_learning.options.diagnostics_enabled &&
-        reduction_learning.options.map_pixel_outlier_diagnostics_enabled;
+        reduction_learning.options.map_pixel_outlier_diagnostics_enabled &&
+        reduction_learning.options.map_pixel_outlier_contributor_diagnostics_enabled;
     omb.contribution_diag_enabled = map_contribution_diag;
     cmb.contribution_diag_enabled = map_contribution_diag;
     logger->info(
         "reduction learning state configured: enabled={} diagnostics_enabled={} "
         "learn_iters={} apply_start_iter={} max_records_per_type={} "
         "apply_sample_masks_enabled={} apply_max_new_flagged_fraction={:.4g} "
-        "map_pixel_outliers(enabled={} top_n={} min_abs_z={} min_n_eff={} source_radius_arcsec={})",
+        "map_pixel_outliers(enabled={} contributors={} top_n={} min_abs_z={} min_n_eff={} source_radius_arcsec={})",
         reduction_learning.options.enabled,
         reduction_learning.options.diagnostics_enabled,
         reduction_learning.options.learn_iters,
@@ -1142,6 +1148,7 @@ void Engine::get_learning_config(CT &config) {
         reduction_learning.options.apply_sample_masks_enabled,
         reduction_learning.options.apply_max_new_flagged_fraction,
         reduction_learning.options.map_pixel_outlier_diagnostics_enabled,
+        reduction_learning.options.map_pixel_outlier_contributor_diagnostics_enabled,
         reduction_learning.options.map_pixel_outlier_top_n,
         reduction_learning.options.map_pixel_outlier_min_abs_z,
         reduction_learning.options.map_pixel_outlier_min_n_eff,

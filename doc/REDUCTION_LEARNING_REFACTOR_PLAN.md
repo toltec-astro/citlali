@@ -12,8 +12,9 @@ as implementation and test reductions change the plan.
   iterations from adding new learned records.
 - Phase 4: implemented; pending reduction-test review.
 - Phase 5: implemented; pending reduction-test review.
-- Phase 6: implemented as diagnostic-only map-pixel contributor reporting;
-  pending reduction-test review.
+- Phase 6: implemented as diagnostic-only map-pixel outlier reporting;
+  per-sample contributor tracing is opt-in because it is too expensive for
+  normal jinc mapmaking.
 - Phase 7: implemented for the shared source-mask interface used by RTC/PTC and
   mapmaking diagnostics; current active mode is center-radius protection.
 - Phases 8-9: pending.
@@ -102,18 +103,21 @@ Implementation note:
   atmospheric-agreement information; source flux is not treated as a detector
   gain estimator.
 
-## Phase 6: Map-Pixel Contribution Diagnostics
+## Phase 6: Map-Pixel Outlier Diagnostics
 
-Add mapmaking-side diagnostics that track extreme contributors per pixel using
-effective sample count and leave-one-out residuals.
+Add mapmaking-side diagnostics that track extreme map pixels using effective
+sample count. Per-sample contributor tracking remains an opt-in debug mode until
+we have a cheaper replay/provenance path.
 
 Start diagnostic-only, then promote only very clear off-source single-detector
 events into learned masks for the next iteration.
 
 Implementation note:
 
-- Naive mapmaking records the largest weighted sample contribution per map
-  pixel, with detector UID, scan, and PTC sample index.
+- Per-sample contributor tracing can record the largest weighted sample
+  contribution per map pixel, with detector UID, scan, and PTC sample index, but
+  it is disabled by default because it adds inner-loop work and lock contention
+  during jinc mapmaking.
 - `write_mapdiag` now records off-source extreme map pixels in the learning CSV,
   using robust z on the core support, an effective-sample cut when coverage is
   available, and a center-radius source exclusion.

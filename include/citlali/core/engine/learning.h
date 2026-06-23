@@ -27,6 +27,7 @@ struct ReductionLearningState {
         bool apply_sample_masks_enabled = true;
         double apply_max_new_flagged_fraction = 0.02;
         bool map_pixel_outlier_diagnostics_enabled = true;
+        bool map_pixel_outlier_contributor_diagnostics_enabled = false;
         int map_pixel_outlier_top_n = 8;
         double map_pixel_outlier_min_abs_z = 8.0;
         double map_pixel_outlier_min_n_eff = 4.0;
