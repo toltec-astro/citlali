@@ -378,6 +378,8 @@ auto Pointing::run(KidsProc &kidsproc) {
         apply_learned_rtc_sample_masks(rtcdata, calib);
         auto map_indices = rtcproc.run(rtcdata, ptcdata, calib, telescope, omb.pixel_size_rad, map_grouping,
                                        rtc_outer_output_ptr);
+        const auto rtc_detector_summary =
+            rtcproc.snapshot_detector_diag_summary(ptcdata.index.data);
 
         // remove flagged detectors
         rtcproc.remove_flagged_dets(ptcdata, calib.apt);
@@ -390,7 +392,7 @@ auto Pointing::run(KidsProc &kidsproc) {
             calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib_scan, map_grouping);
         }
 
-        collect_rtc_learning_diagnostics(rtcdata, ptcdata, calib_scan);
+        collect_rtc_learning_diagnostics(rtcdata, ptcdata, calib_scan, rtc_detector_summary);
 
         if (write_rtcdiag) {
             rtcdiag_writer->wait_turn(ptcdata.index.data);
@@ -450,7 +452,8 @@ auto Pointing::run(KidsProc &kidsproc) {
         ptcproc.run(ptcdata, ptcdata, calib_scan, telescope.pixel_axes, map_grouping);
         timestream::log_kernel_matrix_diag(
             logger, "ptc after processed time chunk cleaning", ptcdata.kernel.data, ptcdata.index.data);
-        collect_ptc_learning_diagnostics(ptcdata, calib_scan);
+        const auto ptc_second_pass_summary =
+            ptcproc.snapshot_second_pass_summary(ptcdata.index.data);
 
         // if running fruit loops and a map has been read in
         if (use_fruit_noise_weights) {
@@ -504,6 +507,11 @@ auto Pointing::run(KidsProc &kidsproc) {
             // reset weights to median
             calib_scan = ptcproc.reset_weights(ptcdata, calib_scan, map_grouping);
         }
+
+        const auto ptc_high_weight_summary =
+            ptcproc.snapshot_high_weight_summary(ptcdata.index.data);
+        collect_ptc_learning_diagnostics(
+            ptcdata, calib_scan, ptc_second_pass_summary, ptc_high_weight_summary);
 
         // write ptc timestreams
         if (write_ptcdiag) {

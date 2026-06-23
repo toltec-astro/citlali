@@ -8,6 +8,8 @@
 #include <complex>
 #include <limits>
 #include <map>
+#include <memory>
+#include <mutex>
 #include <numeric>
 #include <vector>
 
@@ -357,6 +359,16 @@ public:
     std::map<Eigen::Index, std::vector<RTCDetectorDiagSummary>> rtc_detector_summary_by_scan;
     std::map<Eigen::Index, std::vector<RTCNetworkDiagSummary>> rtc_network_summary_by_scan;
     std::map<Eigen::Index, std::map<Eigen::Index, std::vector<RTCImpulsiveSnippetSummary>>> rtc_impulsive_summary_by_scan;
+    std::shared_ptr<std::mutex> diag_summary_mutex = std::make_shared<std::mutex>();
+
+    std::vector<RTCDetectorDiagSummary> snapshot_detector_diag_summary(Eigen::Index scan_id) {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        const auto it = rtc_detector_summary_by_scan.find(scan_id);
+        if (it == rtc_detector_summary_by_scan.end()) {
+            return {};
+        }
+        return it->second;
+    }
 
     // get config file
     template <typename config_t>
@@ -2002,11 +2014,16 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
 
     auto seed_rtc_detector_diag = [&](Eigen::Index scan_id, Eigen::Index n_dets) {
         std::vector<RTCDetectorDiagSummary> existing;
-        auto &summary = rtc_detector_summary_by_scan[scan_id];
-        if (summary.size() == static_cast<std::size_t>(n_dets)) {
-            existing = summary;
+        std::vector<RTCDetectorDiagSummary> summary(
+            static_cast<std::size_t>(n_dets), RTCDetectorDiagSummary{});
+        {
+            std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+            const auto it = rtc_detector_summary_by_scan.find(scan_id);
+            if (it != rtc_detector_summary_by_scan.end() &&
+                it->second.size() == static_cast<std::size_t>(n_dets)) {
+                existing = it->second;
+            }
         }
-        summary.assign(static_cast<std::size_t>(n_dets), RTCDetectorDiagSummary{});
         for (Eigen::Index det = 0; det < n_dets; ++det) {
             auto &row = summary[static_cast<std::size_t>(det)];
             row.det = det;
@@ -2025,6 +2042,8 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 row.detector_notch_rms_after = old.detector_notch_rms_after;
             }
         }
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        rtc_detector_summary_by_scan[scan_id] = std::move(summary);
     };
 
     if (post_line_audit.enabled && post_line_audit.post_filter_apply_detector_notches) {
@@ -4165,10 +4184,16 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
         return filtered_column.allFinite();
     };
 
-    auto &det_summary = rtc_detector_summary_by_scan[scan_id];
-    if (det_summary.size() != static_cast<std::size_t>(n_dets)) {
-        det_summary.assign(static_cast<std::size_t>(n_dets), RTCDetectorDiagSummary{});
+    std::vector<RTCDetectorDiagSummary> *det_summary_ptr = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        auto &summary = rtc_detector_summary_by_scan[scan_id];
+        if (summary.size() != static_cast<std::size_t>(n_dets)) {
+            summary.assign(static_cast<std::size_t>(n_dets), RTCDetectorDiagSummary{});
+        }
+        det_summary_ptr = &summary;
     }
+    auto &det_summary = *det_summary_ptr;
     for (Eigen::Index det = 0; det < n_dets; ++det) {
         det_summary[static_cast<std::size_t>(det)].det = det;
     }
@@ -4635,12 +4660,18 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
              ? (impulsive_coincidence.cluster_tol_sec / dt_for_step)
              : 1.0));
 
-    auto det_it = rtc_detector_summary_by_scan.find(scan_id);
+    std::vector<RTCDetectorDiagSummary> det_summary;
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        const auto det_it = rtc_detector_summary_by_scan.find(scan_id);
+        if (det_it != rtc_detector_summary_by_scan.end()) {
+            det_summary = det_it->second;
+        }
+    }
     auto nw_it = rtc_network_summary_by_scan.find(scan_id);
     auto imp_it = rtc_impulsive_summary_by_scan.find(scan_id);
     const bool have_detector_summary =
-        det_it != rtc_detector_summary_by_scan.end() &&
-        det_it->second.size() == static_cast<std::size_t>(n_dets);
+        det_summary.size() == static_cast<std::size_t>(n_dets);
     const bool have_network_summary =
         nw_it != rtc_network_summary_by_scan.end();
     const bool have_impulsive_summary =
@@ -4649,11 +4680,7 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     const bool recompute_detector_impulsive_metrics =
         recompute_impulsive_metrics || !have_detector_summary;
 
-    std::vector<RTCDetectorDiagSummary> det_summary;
-    if (have_detector_summary) {
-        det_summary = det_it->second;
-    }
-    else {
+    if (!have_detector_summary) {
         det_summary.assign(static_cast<std::size_t>(n_dets), RTCDetectorDiagSummary{});
     }
 
@@ -4692,7 +4719,10 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             row.step_sample = row.step_event.sample;
         }
     }
-    rtc_detector_summary_by_scan[scan_id] = det_summary;
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        rtc_detector_summary_by_scan[scan_id] = det_summary;
+    }
 
     if (impulsive_capture.enabled && !(have_impulsive_summary && !recompute_impulsive_metrics)) {
         const Eigen::Index snippet_pre = std::max<Eigen::Index>(
@@ -5195,10 +5225,9 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
              : 1.0));
     const Eigen::Index n_pts = in.scans.data.rows();
     const auto grp_limits = get_grouping("nw", calib, in.scans.data.cols());
-    const auto det_it = rtc_detector_summary_by_scan.find(scan_id);
+    const auto det_summary = snapshot_detector_diag_summary(scan_id);
     const bool have_detector_summary =
-        det_it != rtc_detector_summary_by_scan.end() &&
-        det_it->second.size() == static_cast<std::size_t>(in.scans.data.cols());
+        det_summary.size() == static_cast<std::size_t>(in.scans.data.cols());
 
     struct CoincidenceCandidate {
         RTCNetworkDiagSummary *row = nullptr;
@@ -5259,7 +5288,7 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
             std::vector<std::pair<Eigen::Index, double>> active_events;
             active_events.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(end_det - start_det, 0)));
             for (Eigen::Index det = start_det; det < end_det; ++det) {
-                const auto &det_row = det_it->second[static_cast<std::size_t>(det)];
+                const auto &det_row = det_summary[static_cast<std::size_t>(det)];
                 const double good_frac = 1.0 - det_row.final_flagged_frac;
                 if (!std::isfinite(good_frac) || good_frac < impulsive_coincidence.min_good_frac) {
                     continue;
@@ -5645,7 +5674,7 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
     const double fill_double = std::numeric_limits<double>::quiet_NaN();
     const auto scan_row = static_cast<unsigned long>((scan_row_index >= 0) ? scan_row_index : in.index.data);
 
-    const auto det_diag_it = rtc_detector_summary_by_scan.find(in.index.data);
+    const auto det_diag = snapshot_detector_diag_summary(in.index.data);
     const auto nw_diag_it = rtc_network_summary_by_scan.find(in.index.data);
     const auto impulsive_it = rtc_impulsive_summary_by_scan.find(in.index.data);
     const auto window_diag_it = remove_bad_dets_window_summary_by_scan.find(in.index.data);
@@ -5658,20 +5687,20 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
 
         auto det_double_values = [&](auto getter) {
             std::vector<double> values(n_dets, fill_double);
-            if (det_diag_it != rtc_detector_summary_by_scan.end()) {
-                const auto n_copy = std::min<std::size_t>(n_dets, det_diag_it->second.size());
+            if (!det_diag.empty()) {
+                const auto n_copy = std::min<std::size_t>(n_dets, det_diag.size());
                 for (std::size_t i = 0; i < n_copy; ++i) {
-                    values[i] = getter(det_diag_it->second[i]);
+                    values[i] = getter(det_diag[i]);
                 }
             }
             return values;
         };
         auto det_int_values = [&](auto getter) {
             std::vector<int> values(n_dets, fill_int);
-            if (det_diag_it != rtc_detector_summary_by_scan.end()) {
-                const auto n_copy = std::min<std::size_t>(n_dets, det_diag_it->second.size());
+            if (!det_diag.empty()) {
+                const auto n_copy = std::min<std::size_t>(n_dets, det_diag.size());
                 for (std::size_t i = 0; i < n_copy; ++i) {
-                    values[i] = getter(det_diag_it->second[i]);
+                    values[i] = getter(det_diag[i]);
                 }
             }
             return values;
@@ -6216,7 +6245,10 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
 
 inline void RTCProc::clear_cached_diagnostics(Eigen::Index scan_id) {
     remove_bad_dets_window_summary_by_scan.erase(scan_id);
-    rtc_detector_summary_by_scan.erase(scan_id);
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        rtc_detector_summary_by_scan.erase(scan_id);
+    }
     rtc_network_summary_by_scan.erase(scan_id);
     rtc_impulsive_summary_by_scan.erase(scan_id);
 }

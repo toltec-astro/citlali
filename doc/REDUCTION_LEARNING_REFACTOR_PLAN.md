@@ -17,7 +17,14 @@ as implementation and test reductions change the plan.
   normal jinc mapmaking.
 - Phase 7: implemented for the shared source-mask interface used by RTC/PTC and
   mapmaking diagnostics; current active mode is center-radius protection.
-- Phases 8-9: pending.
+- Phase 8: implemented for current conservative defaults and pointing-test
+  configuration coverage.
+- Phase 9: in progress. Local build verification passes; reduction-test
+  verification is pending the next Unity run.
+- Follow-up cleanup: learning now consumes per-scan RTC/PTC summary snapshots
+  rather than live shared diagnostic maps. This fixes nondeterministic learned
+  sample-mask summaries seen in otherwise identical pointing reductions and
+  captures high-weight detector summaries after the selected final weight pass.
 
 ## Phase 1: Shared Learning State
 
@@ -160,6 +167,23 @@ Add conservative config keys, likely under `timestream.learning` or similar:
 Pointing/holography defaults should be source-aware. Science defaults should be
 conservative unless fruitloops support is credible.
 
+Implementation note:
+
+- `data/config.yaml` exposes the active learning controls under
+  `timestream.learning`, including iteration phase controls, learned sample-mask
+  application limits, map-pixel outlier thresholds, and the opt-in expensive
+  map-pixel contributor tracing switch.
+- Source protection remains explicit on the RTC despiker and PTC second-pass
+  local despiker. It is activated only for the pointing-style reduction path,
+  which also covers focus and holography reductions that use this pipeline.
+- High-weight validation and caps remain under
+  `timestream.processed_time_chunk.weighting.validation`, so detector-weight
+  policy stays attached to weighting rather than buried in generic learning
+  state.
+- The current pointing test config keeps contributor tracing disabled by
+  default because full per-sample provenance in jinc mapmaking is intentionally
+  an expensive debug mode.
+
 ## Phase 9: Verification
 
 After implementation:
@@ -169,3 +193,12 @@ After implementation:
 - update `point_test/70_reduce.yaml`
 - inspect diagnostics from the next run
 - compare the known bad pixel behavior, FWHM, flux recovery, and spike diagnostics
+
+Current verification note:
+
+- `cmake --build build` passes after moving RTC/PTC learning summary collection
+  to per-scan snapshots.
+- The next pointing run should check that repeated reductions now produce
+  stable `learning_iter_*.csv` counts, especially `rtc_despike` sample masks,
+  and that `high_weight_detector` rows are present when validated weighting
+  reports high-weight caps/recommendations in the logs.

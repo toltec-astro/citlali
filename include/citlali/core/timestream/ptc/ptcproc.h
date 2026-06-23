@@ -125,6 +125,16 @@ public:
         bool validated = false;
     };
     std::map<Eigen::Index, std::vector<HighWeightDiagSummary>> high_weight_summary_by_scan;
+    std::shared_ptr<std::mutex> diag_summary_mutex = std::make_shared<std::mutex>();
+
+    std::vector<HighWeightDiagSummary> snapshot_high_weight_summary(Eigen::Index scan_id) {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        const auto it = high_weight_summary_by_scan.find(scan_id);
+        if (it == high_weight_summary_by_scan.end()) {
+            return {};
+        }
+        return it->second;
+    }
 
     // ptc tod proc
     timestream::Cleaner cleaner;
@@ -314,6 +324,15 @@ public:
     SecondPassLocalOptions second_pass_local;
     std::map<Eigen::Index, std::vector<SecondPassDiagSummary>> second_pass_summary_by_scan;
     std::map<Eigen::Index, Eigen::Matrix<signed char, Eigen::Dynamic, Eigen::Dynamic>> second_pass_added_flags_by_scan;
+
+    std::vector<SecondPassDiagSummary> snapshot_second_pass_summary(Eigen::Index scan_id) {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        const auto it = second_pass_summary_by_scan.find(scan_id);
+        if (it == second_pass_summary_by_scan.end()) {
+            return {};
+        }
+        return it->second;
+    }
 
     // get config file
     template <typename config_t>
@@ -3048,9 +3067,12 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         }
     }
 
-    second_pass_summary_by_scan[in.index.data] = summaries;
-    if (run_tod_output) {
-        second_pass_added_flags_by_scan[in.index.data] = std::move(added_flags_out);
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        second_pass_summary_by_scan[in.index.data] = std::move(summaries);
+        if (run_tod_output) {
+            second_pass_added_flags_by_scan[in.index.data] = std::move(added_flags_out);
+        }
     }
 }
 
@@ -3899,6 +3921,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         }
         if (weighting_type == "validated" &&
             weight_validation.high_weight_validation_enabled) {
+            std::lock_guard<std::mutex> lock(*diag_summary_mutex);
             high_weight_summary_by_scan[in.index.data] = std::move(high_weight_records);
         }
     }
@@ -4383,10 +4406,10 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
 
     if (busy_row_suppression.enabled) {
         std::unordered_map<Eigen::Index, const SecondPassDiagSummary *> second_pass_by_nw;
-        const auto second_pass_it = second_pass_summary_by_scan.find(in.index.data);
-        if (second_pass_it != second_pass_summary_by_scan.end()) {
-            second_pass_by_nw.reserve(second_pass_it->second.size());
-            for (const auto &row : second_pass_it->second) {
+        const auto second_pass_summary = snapshot_second_pass_summary(in.index.data);
+        if (!second_pass_summary.empty()) {
+            second_pass_by_nw.reserve(second_pass_summary.size());
+            for (const auto &row : second_pass_summary) {
                 second_pass_by_nw[row.nw] = &row;
             }
         } else {
@@ -4700,13 +4723,22 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         // add weights to tod output
         weights_v.putVar(start_index_weights, size_weights, in.weights.data.data());
 
-        const auto second_pass_summary_it = second_pass_summary_by_scan.find(in.index.data);
-        const auto second_pass_added_it = second_pass_added_flags_by_scan.find(in.index.data);
+        const auto second_pass_summary = snapshot_second_pass_summary(in.index.data);
+        Eigen::Matrix<signed char, Eigen::Dynamic, Eigen::Dynamic> second_pass_added_flags;
+        bool have_second_pass_added_flags = false;
+        {
+            std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+            const auto second_pass_added_it = second_pass_added_flags_by_scan.find(in.index.data);
+            if (second_pass_added_it != second_pass_added_flags_by_scan.end()) {
+                second_pass_added_flags = second_pass_added_it->second;
+                have_second_pass_added_flags = true;
+            }
+        }
         NcVar second_pass_added_v = fo.getVar("ptc_second_pass_added_flag");
-        if (!second_pass_added_v.isNull() && second_pass_added_it != second_pass_added_flags_by_scan.end()) {
+        if (!second_pass_added_v.isNull() && have_second_pass_added_flags) {
             std::vector<std::size_t> start_index = {n_pts_before_append, 0};
             std::vector<std::size_t> size = {1, n_dets_before_append};
-            const auto &added = second_pass_added_it->second;
+            const auto &added = second_pass_added_flags;
             const auto n_rows = std::min<unsigned long>(
                 static_cast<unsigned long>(added.rows()),
                 static_cast<unsigned long>(in.scans.data.rows()));
@@ -5020,8 +5052,8 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                 for (Eigen::Index i = 0; i < calib.nws.size(); ++i) {
                     nw_to_index[calib.nws(i)] = static_cast<std::size_t>(i);
                 }
-                if (second_pass_summary_it != second_pass_summary_by_scan.end()) {
-                    for (const auto &row : second_pass_summary_it->second) {
+                if (!second_pass_summary.empty()) {
+                    for (const auto &row : second_pass_summary) {
                         const auto it = nw_to_index.find(row.nw);
                         if (it == nw_to_index.end() || it->second >= n_nws) {
                             continue;
@@ -5097,11 +5129,10 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         if (adaptive_selector_it != adaptive_selector_summary_by_scan.end()) {
             adaptive_selector_summary_by_scan.erase(adaptive_selector_it);
         }
-        if (second_pass_summary_it != second_pass_summary_by_scan.end()) {
-            second_pass_summary_by_scan.erase(second_pass_summary_it);
-        }
-        if (second_pass_added_it != second_pass_added_flags_by_scan.end()) {
-            second_pass_added_flags_by_scan.erase(second_pass_added_it);
+        {
+            std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+            second_pass_summary_by_scan.erase(in.index.data);
+            second_pass_added_flags_by_scan.erase(in.index.data);
         }
 
         if (write_evals) {
@@ -5414,7 +5445,7 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
         write_window_double("ptc_invvar_window_heavy_flagged_fraction",
                             [](const auto &row) { return row.heavily_flagged_window_fraction; });
 
-        const auto second_pass_summary_it = second_pass_summary_by_scan.find(in.index.data);
+        const auto second_pass_summary = snapshot_second_pass_summary(in.index.data);
         const auto corr_summary_it = corr_nw_summary_by_scan.find(in.index.data);
         const auto weight_corr_penalty_it = weight_corr_penalty_summary_by_scan.find(in.index.data);
         const auto busy_row_suppression_it = busy_row_suppression_summary_by_scan.find(in.index.data);
@@ -5690,8 +5721,8 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
             std::vector<double> v_max_resid_z(n_nws, fill_double);
             std::vector<double> v_top_cluster_peak(n_nws, fill_double);
             std::vector<double> v_top_event_score(n_nws, fill_double);
-            if (second_pass_summary_it != second_pass_summary_by_scan.end()) {
-                for (const auto &row : second_pass_summary_it->second) {
+            if (!second_pass_summary.empty()) {
+                for (const auto &row : second_pass_summary) {
                     const auto it = nw_to_index.find(row.nw);
                     if (it == nw_to_index.end() || it->second >= n_nws) {
                         continue;
@@ -5770,9 +5801,12 @@ inline void PTCProc::clear_cached_diagnostics(Eigen::Index scan_id) {
     weight_corr_penalty_summary_by_scan.erase(scan_id);
     busy_row_suppression_summary_by_scan.erase(scan_id);
     adaptive_selector_summary_by_scan.erase(scan_id);
-    second_pass_summary_by_scan.erase(scan_id);
-    second_pass_added_flags_by_scan.erase(scan_id);
-    high_weight_summary_by_scan.erase(scan_id);
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        second_pass_summary_by_scan.erase(scan_id);
+        second_pass_added_flags_by_scan.erase(scan_id);
+        high_weight_summary_by_scan.erase(scan_id);
+    }
 }
 
 } // namespace timestream

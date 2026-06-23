@@ -404,9 +404,12 @@ public:
 
     // collect passive RTC/PTC diagnostics into the shared reduction-learning state
     template <class rtc_t, class ptc_t, class calib_t>
-    void collect_rtc_learning_diagnostics(rtc_t &, ptc_t &, calib_t &);
+    void collect_rtc_learning_diagnostics(rtc_t &, ptc_t &, calib_t &,
+                                          const std::vector<timestream::RTCProc::RTCDetectorDiagSummary> &);
     template <class ptc_t, class calib_t>
-    void collect_ptc_learning_diagnostics(ptc_t &, calib_t &);
+    void collect_ptc_learning_diagnostics(ptc_t &, calib_t &,
+                                          const std::vector<timestream::PTCProc::SecondPassDiagSummary> &,
+                                          const std::vector<timestream::PTCProc::HighWeightDiagSummary> &);
     void write_learning_summary();
 
     // get beammap config options
@@ -1355,15 +1358,15 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
 
 template <class rtc_t, class ptc_t, class calib_t>
 void Engine::collect_rtc_learning_diagnostics(rtc_t &rtcdata, ptc_t &ptcdata,
-                                              calib_t &calib_scan) {
+                                              calib_t &calib_scan,
+                                              const std::vector<timestream::RTCProc::RTCDetectorDiagSummary> &det_summary) {
     if (!reduction_learning.is_enabled() ||
         !reduction_learning.diagnostics_enabled()) {
         return;
     }
 
     const auto scan_id = ptcdata.index.data;
-    const auto det_it = rtcproc.rtc_detector_summary_by_scan.find(scan_id);
-    if (det_it == rtcproc.rtc_detector_summary_by_scan.end()) {
+    if (det_summary.empty()) {
         return;
     }
 
@@ -1409,7 +1412,7 @@ void Engine::collect_rtc_learning_diagnostics(rtc_t &rtcdata, ptc_t &ptcdata,
         reduction_learning.record_learned_sample_mask(std::move(record));
     };
 
-    for (const auto &row : det_it->second) {
+    for (const auto &row : det_summary) {
         const Eigen::Index det = row.det;
         record_event(row.local_raw_event, det, "local_raw_accepted");
         record_event(row.local_delta_event, det, "local_delta_accepted");
@@ -1417,14 +1420,16 @@ void Engine::collect_rtc_learning_diagnostics(rtc_t &rtcdata, ptc_t &ptcdata,
 }
 
 template <class ptc_t, class calib_t>
-void Engine::collect_ptc_learning_diagnostics(ptc_t &ptcdata, calib_t &calib_scan) {
+void Engine::collect_ptc_learning_diagnostics(
+    ptc_t &ptcdata, calib_t &calib_scan,
+    const std::vector<timestream::PTCProc::SecondPassDiagSummary> &second_pass_summary,
+    const std::vector<timestream::PTCProc::HighWeightDiagSummary> &high_weight_summary) {
     if (!reduction_learning.is_enabled() ||
         !reduction_learning.diagnostics_enabled()) {
         return;
     }
 
     const auto scan_id = ptcdata.index.data;
-    const auto second_pass_it = ptcproc.second_pass_summary_by_scan.find(scan_id);
 
     if (ptcproc.second_pass_local.source_protection_enabled) {
         ReductionLearningState::SourceProtectionSummary source_summary;
@@ -1447,36 +1452,33 @@ void Engine::collect_ptc_learning_diagnostics(ptc_t &ptcdata, calib_t &calib_sca
         reduction_learning.record_source_protection_summary(std::move(source_summary));
     }
 
-    const auto high_weight_it = ptcproc.high_weight_summary_by_scan.find(scan_id);
-    if (high_weight_it != ptcproc.high_weight_summary_by_scan.end()) {
-        for (const auto &summary : high_weight_it->second) {
-            ReductionLearningState::HighWeightDetector record;
-            record.obsnum = obsnum;
-            record.grouping = summary.grouping;
-            record.reason = summary.reason;
-            record.iter = fruit_iter;
-            record.scan = static_cast<int>(scan_id);
-            record.uid = summary.uid;
-            record.nw = static_cast<int>(summary.nw);
-            record.array = static_cast<int>(summary.array);
-            record.weight = summary.approximate_weight;
-            record.final_weight = summary.final_weight;
-            record.group_median = summary.group_median_weight;
-            record.robust_z = summary.robust_z;
-            record.cap = summary.applied_cap;
-            record.validation_factor = summary.validation_factor;
-            record.cap_recommended = summary.cap_recommended;
-            record.cap_applied = summary.cap_applied;
-            record.validated = summary.validated;
-            reduction_learning.record_high_weight_detector(std::move(record));
-        }
+    for (const auto &summary : high_weight_summary) {
+        ReductionLearningState::HighWeightDetector record;
+        record.obsnum = obsnum;
+        record.grouping = summary.grouping;
+        record.reason = summary.reason;
+        record.iter = fruit_iter;
+        record.scan = static_cast<int>(scan_id);
+        record.uid = summary.uid;
+        record.nw = static_cast<int>(summary.nw);
+        record.array = static_cast<int>(summary.array);
+        record.weight = summary.approximate_weight;
+        record.final_weight = summary.final_weight;
+        record.group_median = summary.group_median_weight;
+        record.robust_z = summary.robust_z;
+        record.cap = summary.applied_cap;
+        record.validation_factor = summary.validation_factor;
+        record.cap_recommended = summary.cap_recommended;
+        record.cap_applied = summary.cap_applied;
+        record.validated = summary.validated;
+        reduction_learning.record_high_weight_detector(std::move(record));
     }
 
-    if (second_pass_it == ptcproc.second_pass_summary_by_scan.end()) {
+    if (second_pass_summary.empty()) {
         return;
     }
 
-    for (const auto &summary : second_pass_it->second) {
+    for (const auto &summary : second_pass_summary) {
         const bool has_candidate = summary.n_candidate_clusters > 0 ||
                                    summary.n_candidate_events > 0;
         const bool has_residual =
