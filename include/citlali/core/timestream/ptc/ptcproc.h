@@ -229,6 +229,7 @@ public:
         int min_cluster_detectors = 3;
         double high_score_cluster_override = 9.0;
         int max_auto_flag_clusters_per_network = 3;
+        bool selective_busy_network_acceptance_enabled = true;
         bool source_protection_config_enabled = true;
         bool source_protection_enabled = false;
         double source_protection_radius_arcsec = 20.0;
@@ -246,6 +247,8 @@ public:
         int cluster_n_detectors = 0;
         int cluster_n_events = 0;
         bool busy_network_vetoed = false;
+        bool accepted = false;
+        bool source_protected = false;
     };
 
     struct SecondPassDiagSummary {
@@ -258,6 +261,10 @@ public:
         Eigen::Index n_candidate_clusters = 0;
         Eigen::Index n_accepted_events = 0;
         Eigen::Index n_accepted_clusters = 0;
+        Eigen::Index n_rejected_events = 0;
+        Eigen::Index n_rejected_clusters = 0;
+        Eigen::Index n_source_protected_events = 0;
+        Eigen::Index n_source_protected_clusters = 0;
         Eigen::Index n_det_with_added_flags = 0;
         bool busy_network_vetoed = false;
         double existing_flagged_fraction = std::numeric_limits<double>::quiet_NaN();
@@ -475,6 +482,11 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             get_config_value(config, second_pass_local.max_auto_flag_clusters_per_network, missing_keys, invalid_keys,
                              std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","max_auto_flag_clusters_per_network"},
                              {}, {1});
+        }
+        if (config.template has_typed<bool>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","selective_busy_network_acceptance_enabled"})) {
+            get_config_value(config, second_pass_local.selective_busy_network_acceptance_enabled, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","selective_busy_network_acceptance_enabled"});
         }
         if (config.template has_typed<bool>(
                 std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","source_protection","enabled"})) {
@@ -1413,6 +1425,9 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             second_pass_local.cluster_events_sec, second_pass_local.min_cluster_detectors,
             second_pass_local.high_score_cluster_override,
             second_pass_local.max_auto_flag_clusters_per_network);
+        logger->info(
+            "processed_time_chunk.flagging.second_pass_local selective_busy_network_acceptance_enabled={}",
+            second_pass_local.selective_busy_network_acceptance_enabled);
     }
 }
 
@@ -2145,6 +2160,8 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         TransientEventKind top_kind = TransientEventKind::unknown;
         Eigen::Index n_detector_events = 0;
         Eigen::Index n_detectors = 0;
+        Eigen::Index n_source_protected_events = 0;
+        Eigen::Index n_source_protected_detectors = 0;
         std::vector<DetectorEventRow> rows;
     };
 
@@ -2714,9 +2731,86 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
         const bool busy_network_vetoed =
             static_cast<int>(candidate_clusters.size()) > second_pass_local.max_auto_flag_clusters_per_network;
-        std::vector<EventCluster> accepted_clusters = busy_network_vetoed
-            ? std::vector<EventCluster>{}
-            : candidate_clusters;
+        auto row_source_protected = [&](const DetectorEventRow &row) {
+            if (!have_source_protection) {
+                return false;
+            }
+            const auto it = local_det_lookup.find(row.det_index);
+            if (it == local_det_lookup.end()) {
+                return false;
+            }
+            const Eigen::Index start =
+                std::max<Eigen::Index>(0, row.start_sample);
+            const Eigen::Index stop =
+                std::min<Eigen::Index>(n_pts - 1, row.end_sample);
+            for (Eigen::Index sample = start; sample <= stop; ++sample) {
+                if (source_flags_block(sample, it->second)) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        for (auto &cluster : candidate_clusters) {
+            std::unordered_set<Eigen::Index> protected_uids;
+            for (const auto &row : cluster.rows) {
+                if (row_source_protected(row)) {
+                    ++cluster.n_source_protected_events;
+                    protected_uids.insert(row.uid);
+                }
+            }
+            cluster.n_source_protected_detectors =
+                static_cast<Eigen::Index>(protected_uids.size());
+        }
+
+        auto has_off_source_rows = [](const EventCluster &cluster) {
+            return cluster.n_detector_events > cluster.n_source_protected_events;
+        };
+
+        auto high_confidence_cluster = [&](const EventCluster &cluster) {
+            const bool high_cluster_score =
+                std::isfinite(second_pass_local.high_score_cluster_override) &&
+                second_pass_local.high_score_cluster_override > 0.0 &&
+                std::isfinite(cluster.peak_score) &&
+                cluster.peak_score >= second_pass_local.high_score_cluster_override;
+            const bool multi_detector_cluster =
+                cluster.n_detectors >= second_pass_local.min_cluster_detectors;
+            return high_cluster_score || multi_detector_cluster;
+        };
+
+        const Eigen::Index accepted_cluster_cap =
+            std::max<Eigen::Index>(0, second_pass_local.max_auto_flag_clusters_per_network);
+        std::vector<EventCluster> accepted_clusters;
+        accepted_clusters.reserve(static_cast<std::size_t>(std::min<Eigen::Index>(
+            accepted_cluster_cap, static_cast<Eigen::Index>(candidate_clusters.size()))));
+        Eigen::Index n_rejected_clusters = 0;
+        Eigen::Index n_rejected_events = 0;
+        Eigen::Index n_source_protected_clusters = 0;
+        Eigen::Index n_source_protected_events = 0;
+
+        for (const auto &cluster : candidate_clusters) {
+            if (cluster.n_source_protected_events > 0) {
+                ++n_source_protected_clusters;
+                n_source_protected_events += cluster.n_source_protected_events;
+            }
+
+            const bool accept_cluster =
+                has_off_source_rows(cluster) &&
+                (!busy_network_vetoed ||
+                 (second_pass_local.selective_busy_network_acceptance_enabled &&
+                  high_confidence_cluster(cluster))) &&
+                static_cast<Eigen::Index>(accepted_clusters.size()) < accepted_cluster_cap;
+
+            if (accept_cluster) {
+                accepted_clusters.push_back(cluster);
+            }
+            else {
+                ++n_rejected_clusters;
+                n_rejected_events +=
+                    std::max<Eigen::Index>(0, cluster.n_detector_events -
+                                              cluster.n_source_protected_events);
+            }
+        }
 
         Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> accepted_flags_block =
             Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Zero(n_pts, n_dets);
@@ -2724,6 +2818,9 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         accepted_rows.reserve(detector_rows.size());
         for (const auto &cluster : accepted_clusters) {
             for (const auto &row : cluster.rows) {
+                if (row_source_protected(row)) {
+                    continue;
+                }
                 accepted_rows.push_back(row);
                 const auto it = local_det_lookup.find(row.det_index);
                 if (it == local_det_lookup.end()) {
@@ -2774,6 +2871,10 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         }
         summary.n_accepted_clusters = static_cast<Eigen::Index>(accepted_clusters.size());
         summary.n_accepted_events = static_cast<Eigen::Index>(accepted_rows.size());
+        summary.n_rejected_clusters = n_rejected_clusters;
+        summary.n_rejected_events = n_rejected_events;
+        summary.n_source_protected_clusters = n_source_protected_clusters;
+        summary.n_source_protected_events = n_source_protected_events;
         summary.n_det_with_added_flags = n_det_with_added_flags;
         summary.busy_network_vetoed = busy_network_vetoed;
         summary.existing_flagged_fraction = existing_flags_block.cast<double>().mean();
@@ -2797,6 +2898,14 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
              ++cluster_i) {
             const auto &cluster = candidate_clusters[static_cast<std::size_t>(cluster_i)];
             for (const auto &row : cluster.rows) {
+                const bool event_source_protected = row_source_protected(row);
+                const bool event_accepted =
+                    std::any_of(accepted_clusters.begin(), accepted_clusters.end(),
+                                [&](const auto &accepted_cluster) {
+                                    return accepted_cluster.sample == cluster.sample &&
+                                           accepted_cluster.top_uid == cluster.top_uid &&
+                                           accepted_cluster.peak_score == cluster.peak_score;
+                                }) && !event_source_protected;
                 summary.candidate_events.push_back(SecondPassCandidateEvent{
                     .uid = static_cast<int>(row.uid),
                     .kind = static_cast<int>(row.kind),
@@ -2809,6 +2918,8 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                     .cluster_n_detectors = static_cast<int>(cluster.n_detectors),
                     .cluster_n_events = static_cast<int>(cluster.n_detector_events),
                     .busy_network_vetoed = busy_network_vetoed,
+                    .accepted = event_accepted,
+                    .source_protected = event_source_protected,
                 });
             }
         }
@@ -2827,10 +2938,12 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
         if (!candidate_clusters.empty()) {
             logger->info(
-                "PTC second pass scan {} nw {} candidate_clusters={} accepted_clusters={} busy_veto={} newly_flagged_fraction={:.4f} top_candidate_peak_score={:.4g} top_candidate_n_detectors={}",
+                "PTC second pass scan {} nw {} candidate_clusters={} accepted_clusters={} rejected_clusters={} source_protected_events={} busy_veto={} newly_flagged_fraction={:.4f} top_candidate_peak_score={:.4g} top_candidate_n_detectors={}",
                 static_cast<long long>(in.index.data) + 1, static_cast<long long>(nw_index),
                 static_cast<long long>(summary.n_candidate_clusters),
                 static_cast<long long>(summary.n_accepted_clusters),
+                static_cast<long long>(summary.n_rejected_clusters),
+                static_cast<long long>(summary.n_source_protected_events),
                 summary.busy_network_vetoed ? 1 : 0,
                 summary.newly_flagged_fraction,
                 summary.top_candidate_cluster_peak_score,
@@ -4623,6 +4736,10 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                 std::vector<int> v_n_candidate_events(n_nws, corr_fill_value);
                 std::vector<int> v_n_accepted_clusters(n_nws, corr_fill_value);
                 std::vector<int> v_n_accepted_events(n_nws, corr_fill_value);
+                std::vector<int> v_n_rejected_clusters(n_nws, corr_fill_value);
+                std::vector<int> v_n_rejected_events(n_nws, corr_fill_value);
+                std::vector<int> v_n_source_protected_clusters(n_nws, corr_fill_value);
+                std::vector<int> v_n_source_protected_events(n_nws, corr_fill_value);
                 std::vector<int> v_n_det_with_added_flags(n_nws, corr_fill_value);
                 std::vector<int> v_max_resid_uid(n_nws, corr_fill_value);
                 std::vector<int> v_top_cluster_sample(n_nws, corr_fill_value);
@@ -4655,6 +4772,10 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                         v_n_candidate_events[j] = static_cast<int>(row.n_candidate_events);
                         v_n_accepted_clusters[j] = static_cast<int>(row.n_accepted_clusters);
                         v_n_accepted_events[j] = static_cast<int>(row.n_accepted_events);
+                        v_n_rejected_clusters[j] = static_cast<int>(row.n_rejected_clusters);
+                        v_n_rejected_events[j] = static_cast<int>(row.n_rejected_events);
+                        v_n_source_protected_clusters[j] = static_cast<int>(row.n_source_protected_clusters);
+                        v_n_source_protected_events[j] = static_cast<int>(row.n_source_protected_events);
                         v_n_det_with_added_flags[j] = static_cast<int>(row.n_det_with_added_flags);
                         v_max_resid_uid[j] = row.max_unflagged_residual_uid;
                         v_top_cluster_sample[j] = row.top_candidate_cluster_sample;
@@ -4679,6 +4800,10 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                 fo.getVar("ptc_second_pass_n_candidate_events").putVar(start_scan_nw, size_scan_nw, v_n_candidate_events.data());
                 fo.getVar("ptc_second_pass_n_accepted_clusters").putVar(start_scan_nw, size_scan_nw, v_n_accepted_clusters.data());
                 fo.getVar("ptc_second_pass_n_accepted_events").putVar(start_scan_nw, size_scan_nw, v_n_accepted_events.data());
+                fo.getVar("ptc_second_pass_n_rejected_clusters").putVar(start_scan_nw, size_scan_nw, v_n_rejected_clusters.data());
+                fo.getVar("ptc_second_pass_n_rejected_events").putVar(start_scan_nw, size_scan_nw, v_n_rejected_events.data());
+                fo.getVar("ptc_second_pass_n_source_protected_clusters").putVar(start_scan_nw, size_scan_nw, v_n_source_protected_clusters.data());
+                fo.getVar("ptc_second_pass_n_source_protected_events").putVar(start_scan_nw, size_scan_nw, v_n_source_protected_events.data());
                 fo.getVar("ptc_second_pass_n_det_with_added_flags").putVar(start_scan_nw, size_scan_nw, v_n_det_with_added_flags.data());
                 fo.getVar("ptc_second_pass_max_unflagged_residual_uid").putVar(start_scan_nw, size_scan_nw, v_max_resid_uid.data());
                 fo.getVar("ptc_second_pass_top_candidate_cluster_sample").putVar(start_scan_nw, size_scan_nw, v_top_cluster_sample.data());
@@ -5287,6 +5412,10 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
             std::vector<int> v_n_candidate_events(n_nws, fill_int);
             std::vector<int> v_n_accepted_clusters(n_nws, fill_int);
             std::vector<int> v_n_accepted_events(n_nws, fill_int);
+            std::vector<int> v_n_rejected_clusters(n_nws, fill_int);
+            std::vector<int> v_n_rejected_events(n_nws, fill_int);
+            std::vector<int> v_n_source_protected_clusters(n_nws, fill_int);
+            std::vector<int> v_n_source_protected_events(n_nws, fill_int);
             std::vector<int> v_n_det_with_added_flags(n_nws, fill_int);
             std::vector<int> v_max_resid_uid(n_nws, fill_int);
             std::vector<int> v_top_cluster_sample(n_nws, fill_int);
@@ -5313,6 +5442,10 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
                     v_n_candidate_events[j] = static_cast<int>(row.n_candidate_events);
                     v_n_accepted_clusters[j] = static_cast<int>(row.n_accepted_clusters);
                     v_n_accepted_events[j] = static_cast<int>(row.n_accepted_events);
+                    v_n_rejected_clusters[j] = static_cast<int>(row.n_rejected_clusters);
+                    v_n_rejected_events[j] = static_cast<int>(row.n_rejected_events);
+                    v_n_source_protected_clusters[j] = static_cast<int>(row.n_source_protected_clusters);
+                    v_n_source_protected_events[j] = static_cast<int>(row.n_source_protected_events);
                     v_n_det_with_added_flags[j] = static_cast<int>(row.n_det_with_added_flags);
                     v_max_resid_uid[j] = row.max_unflagged_residual_uid;
                     v_top_cluster_sample[j] = row.top_candidate_cluster_sample;
@@ -5336,6 +5469,10 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
             fo.getVar("ptc_second_pass_n_candidate_events").putVar(start_scan_nw, size_scan_nw, v_n_candidate_events.data());
             fo.getVar("ptc_second_pass_n_accepted_clusters").putVar(start_scan_nw, size_scan_nw, v_n_accepted_clusters.data());
             fo.getVar("ptc_second_pass_n_accepted_events").putVar(start_scan_nw, size_scan_nw, v_n_accepted_events.data());
+            fo.getVar("ptc_second_pass_n_rejected_clusters").putVar(start_scan_nw, size_scan_nw, v_n_rejected_clusters.data());
+            fo.getVar("ptc_second_pass_n_rejected_events").putVar(start_scan_nw, size_scan_nw, v_n_rejected_events.data());
+            fo.getVar("ptc_second_pass_n_source_protected_clusters").putVar(start_scan_nw, size_scan_nw, v_n_source_protected_clusters.data());
+            fo.getVar("ptc_second_pass_n_source_protected_events").putVar(start_scan_nw, size_scan_nw, v_n_source_protected_events.data());
             fo.getVar("ptc_second_pass_n_det_with_added_flags").putVar(start_scan_nw, size_scan_nw, v_n_det_with_added_flags.data());
             fo.getVar("ptc_second_pass_max_unflagged_residual_uid").putVar(start_scan_nw, size_scan_nw, v_max_resid_uid.data());
             fo.getVar("ptc_second_pass_top_candidate_cluster_sample").putVar(start_scan_nw, size_scan_nw, v_top_cluster_sample.data());

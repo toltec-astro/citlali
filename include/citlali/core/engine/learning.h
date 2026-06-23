@@ -123,6 +123,10 @@ struct ReductionLearningState {
         int n_candidate_events = 0;
         int n_accepted_clusters = 0;
         int n_accepted_events = 0;
+        int n_rejected_clusters = 0;
+        int n_rejected_events = 0;
+        int n_source_protected_clusters = 0;
+        int n_source_protected_events = 0;
         int max_unflagged_residual_uid = -1;
         int top_candidate_sample = -1;
         double top_candidate_score = nan_value();

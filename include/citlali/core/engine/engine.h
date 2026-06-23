@@ -1442,6 +1442,14 @@ void Engine::collect_ptc_learning_diagnostics(ptc_t &ptcdata, calib_t &calib_sca
                 static_cast<int>(summary.n_accepted_clusters);
             record.n_accepted_events =
                 static_cast<int>(summary.n_accepted_events);
+            record.n_rejected_clusters =
+                static_cast<int>(summary.n_rejected_clusters);
+            record.n_rejected_events =
+                static_cast<int>(summary.n_rejected_events);
+            record.n_source_protected_clusters =
+                static_cast<int>(summary.n_source_protected_clusters);
+            record.n_source_protected_events =
+                static_cast<int>(summary.n_source_protected_events);
             record.max_unflagged_residual_uid = summary.max_unflagged_residual_uid;
             record.top_candidate_sample = summary.top_candidate_cluster_sample;
             record.top_candidate_score = summary.top_candidate_cluster_peak_score;
@@ -1457,7 +1465,7 @@ void Engine::collect_ptc_learning_diagnostics(ptc_t &ptcdata, calib_t &calib_sca
                 event.end_sample < event.start_sample) {
                 continue;
             }
-            if (event.busy_network_vetoed && !selective_acceptance_recommended) {
+            if (!event.accepted || event.source_protected) {
                 continue;
             }
             const Eigen::Index det =
@@ -1466,7 +1474,7 @@ void Engine::collect_ptc_learning_diagnostics(ptc_t &ptcdata, calib_t &calib_sca
             candidate_record.obsnum = obsnum;
             candidate_record.producer = "ptc_second_pass";
             candidate_record.reason = event.busy_network_vetoed
-                ? "busy_vetoed_candidate_event"
+                ? "busy_selective_accepted_event"
                 : "candidate_event";
             candidate_record.iter = fruit_iter;
             candidate_record.scan = static_cast<int>(scan_id);
@@ -1480,7 +1488,7 @@ void Engine::collect_ptc_learning_diagnostics(ptc_t &ptcdata, calib_t &calib_sca
             candidate_record.z = event.score;
             candidate_record.value = event.cluster_score;
             candidate_record.confidence = event.busy_network_vetoed ? 0.8 : 1.0;
-            candidate_record.source_protected = false;
+            candidate_record.source_protected = event.source_protected;
             candidate_record.apply_pre_rtc = false;
             reduction_learning.record_learned_sample_mask(std::move(candidate_record));
         }
@@ -1509,7 +1517,9 @@ void Engine::collect_ptc_learning_diagnostics(ptc_t &ptcdata, calib_t &calib_sca
             reduction_learning.record_learned_sample_mask(std::move(sample_record));
         }
 
-        if (summary.busy_network_vetoed && has_residual) {
+        if (summary.busy_network_vetoed && has_residual &&
+            summary.max_unflagged_residual_z >=
+                ptcproc.second_pass_local.high_score_event_override) {
             const Eigen::Index det = citlali_learning_find_det_by_uid(
                 calib_scan.apt, summary.max_unflagged_residual_uid);
             ReductionLearningState::DetectorPenalty penalty;
@@ -1584,6 +1594,10 @@ inline void Engine::write_learning_summary() {
         ColCandidateEvents,
         ColAcceptedClusters,
         ColAcceptedEvents,
+        ColRejectedClusters,
+        ColRejectedEvents,
+        ColSourceProtectedClusters,
+        ColSourceProtectedEvents,
         ColMaxResidualUid,
         ColTopCandidateSample,
         ColTopCandidateScore,
@@ -1616,6 +1630,8 @@ inline void Engine::write_learning_summary() {
         "score", "z", "value", "confidence", "source_distance_arcsec",
         "source_protected", "apply_pre_rtc", "n_candidate_clusters",
         "n_candidate_events", "n_accepted_clusters", "n_accepted_events",
+        "n_rejected_clusters", "n_rejected_events",
+        "n_source_protected_clusters", "n_source_protected_events",
         "max_unflagged_residual_uid", "top_candidate_sample",
         "top_candidate_score", "max_unflagged_residual_z", "busy_vetoed",
         "selective_acceptance_recommended", "factor", "scan_local",
@@ -1698,6 +1714,10 @@ inline void Engine::write_learning_summary() {
         row[ColCandidateEvents] = text(record.n_candidate_events);
         row[ColAcceptedClusters] = text(record.n_accepted_clusters);
         row[ColAcceptedEvents] = text(record.n_accepted_events);
+        row[ColRejectedClusters] = text(record.n_rejected_clusters);
+        row[ColRejectedEvents] = text(record.n_rejected_events);
+        row[ColSourceProtectedClusters] = text(record.n_source_protected_clusters);
+        row[ColSourceProtectedEvents] = text(record.n_source_protected_events);
         row[ColMaxResidualUid] = text(record.max_unflagged_residual_uid);
         row[ColTopCandidateSample] = text(record.top_candidate_sample);
         row[ColTopCandidateScore] = text(record.top_candidate_score);
@@ -7138,11 +7158,15 @@ void Engine::create_ptcdiag_file() {
         "ptc_second_pass_network_ids",
         "network IDs corresponding to n_nws_ptc_second_pass axis",
         {
-            {"ptc_second_pass_busy_network_vetoed", "1 if this network had more candidate second-pass clusters than the auto-flag limit and was diagnostic-only"},
+            {"ptc_second_pass_busy_network_vetoed", "1 if this network had more candidate second-pass clusters than the normal auto-flag limit"},
             {"ptc_second_pass_n_candidate_clusters", "number of candidate second-pass residual clusters in this scan/network"},
             {"ptc_second_pass_n_candidate_events", "number of candidate detector-local residual events contributing to candidate clusters"},
             {"ptc_second_pass_n_accepted_clusters", "number of candidate clusters accepted for auto-flagging after the busy-network veto"},
             {"ptc_second_pass_n_accepted_events", "number of accepted detector-local residual events contributing to auto-flagging"},
+            {"ptc_second_pass_n_rejected_clusters", "number of candidate clusters rejected by busy-network/source-protection second-pass policy"},
+            {"ptc_second_pass_n_rejected_events", "number of detector-local residual events in rejected second-pass clusters"},
+            {"ptc_second_pass_n_source_protected_clusters", "number of candidate clusters with at least one source-protected detector event"},
+            {"ptc_second_pass_n_source_protected_events", "number of detector-local residual events protected by the second-pass source mask"},
             {"ptc_second_pass_n_det_with_added_flags", "number of detectors in this scan/network with at least one sample newly flagged by the PTC second pass"},
             {"ptc_second_pass_max_unflagged_residual_uid", "UID of the detector with the largest absolute unflagged post-PCA residual in this scan/network"},
             {"ptc_second_pass_top_candidate_cluster_sample", "median sample of the strongest candidate second-pass cluster; -2147483647 means none"},

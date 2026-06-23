@@ -482,7 +482,8 @@ timestream: # timestream reduction parameters
         cluster_events_sec: 0.08 # cluster merged detector events within a network inside this interval
         min_cluster_detectors: 3 # auto-flag a residual cluster if at least this many detectors contribute
         high_score_cluster_override: 9.0 # auto-flag a residual cluster below min_cluster_detectors if its peak score exceeds this
-        max_auto_flag_clusters_per_network: 3 # if a scan/network exceeds this many candidate clusters, keep it diagnostic-only and do not auto-flag
+        max_auto_flag_clusters_per_network: 3 # cap auto-flagged residual clusters per scan/network
+        selective_busy_network_acceptance_enabled: true # when above the cluster cap, still accept high-score off-source clusters up to the cap
         source_protection: # protect compact source samples from source-aware pointing/holography second-pass flagging
           enabled: true # when reduction_type is pointing, ignore samples within radius_arcsec of map center during residual event scoring
           radius_arcsec: 20.0 # assumed maximum source offset from the map center
