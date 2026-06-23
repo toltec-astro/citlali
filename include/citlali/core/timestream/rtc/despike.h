@@ -126,6 +126,7 @@ public:
         double delta_sigma_scale = 0.75;
         bool expand_with_filter = false;
         double event_padding_sec = 0.08;
+        double high_score_event_override = 20.0;
         double max_added_flagged_fraction = 0.10;
         CompactRawGateOptions compact_raw_gate;
         CompactDeltaGateOptions compact_delta_gate;
@@ -476,10 +477,16 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                 event.baseline_shift_z = std::abs(post_med - pre_med) / resid_sigma;
             }
 
-            event.accepted =
-                width_samples <= max_width_samples &&
+            const bool compact_event = width_samples <= max_width_samples;
+            const bool baseline_ok =
                 std::isfinite(event.baseline_shift_z) &&
                 event.baseline_shift_z <= max_step_shift_z;
+            const bool high_score_override =
+                std::isfinite(local_residual.high_score_event_override) &&
+                local_residual.high_score_event_override > 0.0 &&
+                std::isfinite(event.score) &&
+                event.score >= local_residual.high_score_event_override;
+            event.accepted = compact_event && (baseline_ok || high_score_override);
             return event;
         };
 

@@ -223,6 +223,7 @@ public:
         double delta_half_peak_frac = 0.5;
         double delta_max_width_sec = 0.10;
         double max_step_shift_z = 3.0;
+        double high_score_event_override = 20.0;
         double merge_within_detector_sec = 0.08;
         double cluster_events_sec = 0.08;
         int min_cluster_detectors = 3;
@@ -422,6 +423,12 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","max_step_shift_z"})) {
             get_config_value(config, second_pass_local.max_step_shift_z, missing_keys, invalid_keys,
                              std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","max_step_shift_z"},
+                             {}, {0.0});
+        }
+        if (config.template has_typed<double>(
+                std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","high_score_event_override"})) {
+            get_config_value(config, second_pass_local.high_score_event_override, missing_keys, invalid_keys,
+                             std::tuple{"timestream","processed_time_chunk","flagging","second_pass_local","high_score_event_override"},
                              {}, {0.0});
         }
         if (config.template has_typed<double>(
@@ -1383,10 +1390,11 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
 
     if (second_pass_local.enabled) {
         logger->info(
-            "processed_time_chunk.flagging.second_pass_local enabled: min_spike_sigma={:.4g} min_good_frac={:.4f} baseline_window_sec={:.4g} raw_window_sec={:.4g} delta_window_sec={:.4g} merge_within_detector_sec={:.4g} cluster_events_sec={:.4g} min_cluster_detectors={} high_score_cluster_override={:.4g} max_auto_flag_clusters_per_network={}",
+            "processed_time_chunk.flagging.second_pass_local enabled: min_spike_sigma={:.4g} min_good_frac={:.4f} baseline_window_sec={:.4g} raw_window_sec={:.4g} delta_window_sec={:.4g} max_step_shift_z={:.4g} high_score_event_override={:.4g} merge_within_detector_sec={:.4g} cluster_events_sec={:.4g} min_cluster_detectors={} high_score_cluster_override={:.4g} max_auto_flag_clusters_per_network={}",
             second_pass_local.min_spike_sigma, second_pass_local.min_good_frac,
             second_pass_local.baseline_window_sec, second_pass_local.raw_window_sec,
-            second_pass_local.delta_window_sec, second_pass_local.merge_within_detector_sec,
+            second_pass_local.delta_window_sec, second_pass_local.max_step_shift_z,
+            second_pass_local.high_score_event_override, second_pass_local.merge_within_detector_sec,
             second_pass_local.cluster_events_sec, second_pass_local.min_cluster_detectors,
             second_pass_local.high_score_cluster_override,
             second_pass_local.max_auto_flag_clusters_per_network);
@@ -2290,10 +2298,16 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                 event.baseline_shift_z = std::abs(post_med - pre_med) / resid_sigma;
             }
 
-            event.accepted =
-                width_samples <= max_width_samples &&
+            const bool compact_event = width_samples <= max_width_samples;
+            const bool baseline_ok =
                 std::isfinite(event.baseline_shift_z) &&
                 event.baseline_shift_z <= max_step_shift_z;
+            const bool high_score_override =
+                std::isfinite(second_pass_local.high_score_event_override) &&
+                second_pass_local.high_score_event_override > 0.0 &&
+                std::isfinite(event.score) &&
+                event.score >= second_pass_local.high_score_event_override;
+            event.accepted = compact_event && (baseline_ok || high_score_override);
             return event;
         };
 
