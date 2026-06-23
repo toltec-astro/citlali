@@ -279,7 +279,7 @@ struct ReductionLearningState {
 
     void record_learned_sample_mask(LearnedSampleMask record) {
         std::lock_guard<std::mutex> lock(*mutex);
-        if (!options.enabled) {
+        if (!options.enabled || !learning_active()) {
             return;
         }
         push_with_cap(learned_sample_masks, std::move(record),
@@ -288,7 +288,7 @@ struct ReductionLearningState {
 
     void record_detector_penalty(DetectorPenalty record) {
         std::lock_guard<std::mutex> lock(*mutex);
-        if (!options.enabled) {
+        if (!options.enabled || !learning_active()) {
             return;
         }
         push_with_cap(detector_penalties, std::move(record),
@@ -297,7 +297,7 @@ struct ReductionLearningState {
 
     void record_high_weight_detector(HighWeightDetector record) {
         std::lock_guard<std::mutex> lock(*mutex);
-        if (!options.enabled) {
+        if (!options.enabled || !learning_active()) {
             return;
         }
         push_with_cap(high_weight_detectors, std::move(record),
@@ -306,7 +306,7 @@ struct ReductionLearningState {
 
     void record_map_pixel_outlier(MapPixelOutlier record) {
         std::lock_guard<std::mutex> lock(*mutex);
-        if (!options.enabled) {
+        if (!options.enabled || !learning_active()) {
             return;
         }
         push_with_cap(map_pixel_outliers, std::move(record),
