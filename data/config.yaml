@@ -161,6 +161,8 @@ timestream: # timestream reduction parameters
     learn_iters: 2 # initial iterations treated as learning passes before production application
     apply_start_iter: 2 # first fruitloops iteration where learned products are eligible for application
     max_records_per_type: 200000 # cap retained diagnostic records per learned-state record class (0 disables cap)
+    apply_sample_masks_enabled: true # apply learned spike/deglitch sample masks in production iterations
+    apply_max_new_flagged_fraction: 0.02 # reject learned sample-mask application for a scan/stage if it newly flags more than this detector-sample fraction (0 disables cap)
   polarimetry: # polarized reduction
     enabled: false # enable or disable polarized reduction
     ignore_hwpr: auto # override automatic hwpr finding (true, false, auto)

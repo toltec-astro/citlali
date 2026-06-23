@@ -24,6 +24,8 @@ struct ReductionLearningState {
         int learn_iters = 2;
         int apply_start_iter = 2;
         int max_records_per_type = 200000;
+        bool apply_sample_masks_enabled = true;
+        double apply_max_new_flagged_fraction = 0.02;
     };
 
     struct LearnedSampleMask {
@@ -129,6 +131,24 @@ struct ReductionLearningState {
         bool selective_acceptance_recommended = false;
     };
 
+    struct LearnedMaskApplicationSummary {
+        std::string obsnum;
+        std::string producer;
+        std::string stage;
+        int iter = -1;
+        int scan = -1;
+        int candidate_records = 0;
+        int matched_records = 0;
+        int invalid_records = 0;
+        int proposed_samples = 0;
+        int newly_flagged_samples = 0;
+        int already_flagged_samples = 0;
+        int source_protected_samples = 0;
+        double newly_flagged_fraction = nan_value();
+        double max_new_flagged_fraction = nan_value();
+        bool applied = false;
+    };
+
     Options options;
     int current_iter = -1;
     IterationPhase current_phase = IterationPhase::Inactive;
@@ -143,6 +163,7 @@ struct ReductionLearningState {
     std::vector<MapPixelOutlier> map_pixel_outliers;
     std::vector<SourceProtectionSummary> source_protection_summaries;
     std::vector<BusyNetworkSummary> busy_network_summaries;
+    std::vector<LearnedMaskApplicationSummary> learned_mask_applications;
 
     std::size_t dropped_learned_sample_masks = 0;
     std::size_t dropped_detector_penalties = 0;
@@ -150,6 +171,7 @@ struct ReductionLearningState {
     std::size_t dropped_map_pixel_outliers = 0;
     std::size_t dropped_source_protection_summaries = 0;
     std::size_t dropped_busy_network_summaries = 0;
+    std::size_t dropped_learned_mask_applications = 0;
 
     std::shared_ptr<std::mutex> mutex = std::make_shared<std::mutex>();
 
@@ -176,6 +198,8 @@ struct ReductionLearningState {
         new_options.learn_iters = std::max(0, new_options.learn_iters);
         new_options.apply_start_iter = std::max(0, new_options.apply_start_iter);
         new_options.max_records_per_type = std::max(0, new_options.max_records_per_type);
+        new_options.apply_max_new_flagged_fraction =
+            std::max(0.0, new_options.apply_max_new_flagged_fraction);
         options = new_options;
         if (!options.enabled) {
             current_phase = IterationPhase::Inactive;
@@ -243,12 +267,14 @@ struct ReductionLearningState {
         map_pixel_outliers.clear();
         source_protection_summaries.clear();
         busy_network_summaries.clear();
+        learned_mask_applications.clear();
         dropped_learned_sample_masks = 0;
         dropped_detector_penalties = 0;
         dropped_high_weight_detectors = 0;
         dropped_map_pixel_outliers = 0;
         dropped_source_protection_summaries = 0;
         dropped_busy_network_summaries = 0;
+        dropped_learned_mask_applications = 0;
     }
 
     void record_learned_sample_mask(LearnedSampleMask record) {
@@ -305,6 +331,15 @@ struct ReductionLearningState {
                       dropped_busy_network_summaries);
     }
 
+    void record_learned_mask_application(LearnedMaskApplicationSummary record) {
+        std::lock_guard<std::mutex> lock(*mutex);
+        if (!options.enabled) {
+            return;
+        }
+        push_with_cap(learned_mask_applications, std::move(record),
+                      dropped_learned_mask_applications);
+    }
+
     std::string summary_string() const {
         std::lock_guard<std::mutex> lock(*mutex);
         std::ostringstream os;
@@ -320,11 +355,13 @@ struct ReductionLearningState {
            << " map_pixel_outliers=" << map_pixel_outliers.size()
            << " source_protection_summaries=" << source_protection_summaries.size()
            << " busy_network_summaries=" << busy_network_summaries.size()
+           << " learned_mask_applications=" << learned_mask_applications.size()
            << " dropped_records="
            << (dropped_learned_sample_masks + dropped_detector_penalties +
                dropped_high_weight_detectors + dropped_map_pixel_outliers +
                dropped_source_protection_summaries +
-               dropped_busy_network_summaries);
+               dropped_busy_network_summaries +
+               dropped_learned_mask_applications);
         return os.str();
     }
 

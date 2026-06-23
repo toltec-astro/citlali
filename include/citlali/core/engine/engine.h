@@ -393,6 +393,15 @@ public:
     template<typename CT>
     void get_learning_config(CT &);
 
+    // apply masks learned in earlier iterations; behavior is gated by reduction_learning phase
+    template <class rtc_t, class calib_t>
+    void apply_learned_rtc_sample_masks(rtc_t &, calib_t &);
+    template <class ptc_t, class calib_t>
+    void apply_learned_ptc_sample_masks(ptc_t &, calib_t &);
+    template <class tc_t, class calib_t>
+    void apply_learned_sample_masks(tc_t &, calib_t &, bool, const std::string &,
+                                    bool, double);
+
     // collect passive RTC/PTC diagnostics into the shared reduction-learning state
     template <class rtc_t, class ptc_t, class calib_t>
     void collect_rtc_learning_diagnostics(rtc_t &, ptc_t &, calib_t &);
@@ -1084,16 +1093,27 @@ void Engine::get_learning_config(CT &config) {
         get_config_value(config, options.max_records_per_type, missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","max_records_per_type"}, {}, {0});
     }
+    if (config.template has_typed<bool>(std::tuple{"timestream","learning","apply_sample_masks_enabled"})) {
+        get_config_value(config, options.apply_sample_masks_enabled, missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","apply_sample_masks_enabled"});
+    }
+    if (config.template has_typed<double>(std::tuple{"timestream","learning","apply_max_new_flagged_fraction"})) {
+        get_config_value(config, options.apply_max_new_flagged_fraction, missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","apply_max_new_flagged_fraction"}, {}, {0.0});
+    }
 
     reduction_learning.configure(options);
     logger->info(
         "reduction learning state configured: enabled={} diagnostics_enabled={} "
-        "learn_iters={} apply_start_iter={} max_records_per_type={}",
+        "learn_iters={} apply_start_iter={} max_records_per_type={} "
+        "apply_sample_masks_enabled={} apply_max_new_flagged_fraction={:.4g}",
         reduction_learning.options.enabled,
         reduction_learning.options.diagnostics_enabled,
         reduction_learning.options.learn_iters,
         reduction_learning.options.apply_start_iter,
-        reduction_learning.options.max_records_per_type);
+        reduction_learning.options.max_records_per_type,
+        reduction_learning.options.apply_sample_masks_enabled,
+        reduction_learning.options.apply_max_new_flagged_fraction);
 }
 
 template <class apt_t>
@@ -1123,6 +1143,174 @@ static int citlali_learning_apt_int(const apt_t &apt, const std::string &key,
         return fallback;
     }
     return static_cast<int>(std::llround(it->second(det)));
+}
+
+template <class rtc_t, class calib_t>
+void Engine::apply_learned_rtc_sample_masks(rtc_t &rtcdata, calib_t &calib_scan) {
+    apply_learned_sample_masks(
+        rtcdata, calib_scan, true, "pre_rtc",
+        rtcproc.despiker.source_protection_enabled,
+        rtcproc.despiker.source_protection_radius_arcsec);
+}
+
+template <class ptc_t, class calib_t>
+void Engine::apply_learned_ptc_sample_masks(ptc_t &ptcdata, calib_t &calib_scan) {
+    apply_learned_sample_masks(
+        ptcdata, calib_scan, false, "pre_ptc",
+        ptcproc.second_pass_local.source_protection_enabled,
+        ptcproc.second_pass_local.source_protection_radius_arcsec);
+}
+
+template <class tc_t, class calib_t>
+void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
+                                        bool apply_pre_rtc,
+                                        const std::string &stage,
+                                        bool source_protection_enabled,
+                                        double source_protection_radius_arcsec) {
+    if (!reduction_learning.is_enabled() ||
+        !reduction_learning.options.apply_sample_masks_enabled ||
+        !reduction_learning.apply_active()) {
+        return;
+    }
+    if (tcdata.flags.data.rows() <= 0 || tcdata.flags.data.cols() <= 0) {
+        return;
+    }
+
+    const int scan_id = static_cast<int>(tcdata.index.data);
+    std::vector<ReductionLearningState::LearnedSampleMask> records;
+    {
+        std::lock_guard<std::mutex> lock(*reduction_learning.mutex);
+        for (const auto &record : reduction_learning.learned_sample_masks) {
+            if (record.obsnum == obsnum &&
+                record.scan == scan_id &&
+                record.iter >= 0 &&
+                record.iter < fruit_iter &&
+                record.apply_pre_rtc == apply_pre_rtc) {
+                records.push_back(record);
+            }
+        }
+    }
+    if (records.empty()) {
+        return;
+    }
+
+    ReductionLearningState::LearnedMaskApplicationSummary summary;
+    summary.obsnum = obsnum;
+    summary.producer = "learning_state";
+    summary.stage = stage;
+    summary.iter = fruit_iter;
+    summary.scan = scan_id;
+    summary.candidate_records = static_cast<int>(records.size());
+    summary.max_new_flagged_fraction =
+        reduction_learning.options.apply_max_new_flagged_fraction;
+
+    const Eigen::Index n_pts = tcdata.flags.data.rows();
+    const Eigen::Index n_dets = tcdata.flags.data.cols();
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> proposed(n_pts, n_dets);
+    proposed.setZero();
+
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> source_mask;
+    bool have_source_protection = false;
+    if (source_protection_enabled && source_protection_radius_arcsec > 0.0) {
+        Eigen::Index n_source_detectors = 0;
+        source_mask = engine_utils::calc_map_center_source_mask(
+            tcdata, calib_scan.apt, telescope.pixel_axes, map_grouping,
+            source_protection_radius_arcsec, &n_source_detectors);
+        have_source_protection =
+            source_mask.rows() == n_pts && source_mask.cols() == n_dets;
+        if (source_protection_enabled && !have_source_protection) {
+            logger->warn(
+                "learned mask {} source-protection mask shape mismatch scan {}: mask=({}, {}) flags=({}, {})",
+                stage, scan_id, source_mask.rows(), source_mask.cols(), n_pts, n_dets);
+        }
+    }
+
+    for (const auto &record : records) {
+        if (record.source_protected) {
+            ++summary.invalid_records;
+            continue;
+        }
+        const Eigen::Index det = citlali_learning_find_det_by_uid(calib_scan.apt, record.uid);
+        const long long raw_start = apply_pre_rtc ? record.raw_start : record.ptc_start;
+        const long long raw_stop = apply_pre_rtc ? record.raw_stop : record.ptc_stop;
+        if (det < 0 || det >= n_dets || raw_start < 0 || raw_stop < raw_start ||
+            raw_stop < 0 || raw_start >= n_pts) {
+            ++summary.invalid_records;
+            continue;
+        }
+        const Eigen::Index start =
+            std::max<Eigen::Index>(0, static_cast<Eigen::Index>(raw_start));
+        const Eigen::Index stop =
+            std::min<Eigen::Index>(n_pts - 1, static_cast<Eigen::Index>(raw_stop));
+        if (stop < start) {
+            ++summary.invalid_records;
+            continue;
+        }
+
+        ++summary.matched_records;
+        for (Eigen::Index sample = start; sample <= stop; ++sample) {
+            if (have_source_protection && source_mask(sample, det)) {
+                ++summary.source_protected_samples;
+                continue;
+            }
+            if (!proposed(sample, det)) {
+                proposed(sample, det) = true;
+                ++summary.proposed_samples;
+            }
+        }
+    }
+
+    if (summary.proposed_samples > 0) {
+        for (Eigen::Index det = 0; det < n_dets; ++det) {
+            for (Eigen::Index sample = 0; sample < n_pts; ++sample) {
+                if (!proposed(sample, det)) {
+                    continue;
+                }
+                if (tcdata.flags.data(sample, det)) {
+                    ++summary.already_flagged_samples;
+                }
+                else {
+                    ++summary.newly_flagged_samples;
+                }
+            }
+        }
+    }
+
+    const double denom = static_cast<double>(std::max<Eigen::Index>(1, n_pts * n_dets));
+    summary.newly_flagged_fraction =
+        static_cast<double>(summary.newly_flagged_samples) / denom;
+    const bool over_cap =
+        reduction_learning.options.apply_max_new_flagged_fraction > 0.0 &&
+        summary.newly_flagged_fraction >
+            reduction_learning.options.apply_max_new_flagged_fraction;
+    if (!over_cap) {
+        for (Eigen::Index det = 0; det < n_dets; ++det) {
+            for (Eigen::Index sample = 0; sample < n_pts; ++sample) {
+                if (proposed(sample, det)) {
+                    tcdata.flags.data(sample, det) = true;
+                }
+            }
+        }
+        summary.applied = true;
+    }
+
+    reduction_learning.record_learned_mask_application(summary);
+    if (over_cap) {
+        logger->warn(
+            "learned {} sample-mask application rejected scan {} iter {}: candidates={} matched={} proposed={} newly_flagged={} newly_flagged_fraction={:.4f} cap={:.4f}",
+            stage, scan_id + 1, fruit_iter, summary.candidate_records,
+            summary.matched_records, summary.proposed_samples,
+            summary.newly_flagged_samples, summary.newly_flagged_fraction,
+            reduction_learning.options.apply_max_new_flagged_fraction);
+    }
+    else if (summary.proposed_samples > 0) {
+        logger->info(
+            "learned {} sample masks applied scan {} iter {}: candidates={} matched={} proposed={} newly_flagged={} already_flagged={} source_protected={} newly_flagged_fraction={:.4f}",
+            stage, scan_id + 1, fruit_iter, summary.candidate_records,
+            summary.matched_records, summary.proposed_samples,
+            summary.newly_flagged_samples, summary.already_flagged_samples,
+            summary.source_protected_samples, summary.newly_flagged_fraction);
+    }
 }
 
 template <class rtc_t, class ptc_t, class calib_t>
@@ -1366,6 +1554,17 @@ inline void Engine::write_learning_summary() {
         ColTotalSamples,
         ColRadiusArcsec,
         ColSupportNpix,
+        ColApplicationStage,
+        ColCandidateRecords,
+        ColMatchedRecords,
+        ColInvalidRecords,
+        ColProposedSamples,
+        ColNewlyFlaggedSamples,
+        ColAlreadyFlaggedSamples,
+        ColSourceProtectedSamples,
+        ColNewlyFlaggedFraction,
+        ColMaxNewFlaggedFraction,
+        ColApplied,
         ColCount
     };
 
@@ -1378,7 +1577,11 @@ inline void Engine::write_learning_summary() {
         "max_unflagged_residual_uid", "top_candidate_sample",
         "top_candidate_score", "max_unflagged_residual_z", "busy_vetoed",
         "selective_acceptance_recommended", "factor", "scan_local",
-        "protected_samples", "total_samples", "radius_arcsec", "support_npix"
+        "protected_samples", "total_samples", "radius_arcsec", "support_npix",
+        "application_stage", "candidate_records", "matched_records",
+        "invalid_records", "proposed_samples", "newly_flagged_samples",
+        "already_flagged_samples", "source_protected_samples",
+        "newly_flagged_fraction", "max_new_flagged_fraction", "applied"
     };
 
     auto text = [](const auto &value) {
@@ -1485,6 +1688,25 @@ inline void Engine::write_learning_summary() {
         row[ColTotalSamples] = text(record.total_samples);
         row[ColRadiusArcsec] = text(record.radius_arcsec);
         row[ColSupportNpix] = text(record.support_npix);
+        write_row(row);
+    }
+
+    for (const auto &record : reduction_learning.learned_mask_applications) {
+        auto row = new_row();
+        write_base(row, "sample_mask_application", record.iter, record.obsnum,
+                   record.producer, "apply_learned_sample_mask", record.scan,
+                   -1, -1, -1);
+        row[ColApplicationStage] = csv(record.stage);
+        row[ColCandidateRecords] = text(record.candidate_records);
+        row[ColMatchedRecords] = text(record.matched_records);
+        row[ColInvalidRecords] = text(record.invalid_records);
+        row[ColProposedSamples] = text(record.proposed_samples);
+        row[ColNewlyFlaggedSamples] = text(record.newly_flagged_samples);
+        row[ColAlreadyFlaggedSamples] = text(record.already_flagged_samples);
+        row[ColSourceProtectedSamples] = text(record.source_protected_samples);
+        row[ColNewlyFlaggedFraction] = text(record.newly_flagged_fraction);
+        row[ColMaxNewFlaggedFraction] = text(record.max_new_flagged_fraction);
+        row[ColApplied] = text(record.applied ? 1 : 0);
         write_row(row);
     }
 

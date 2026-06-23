@@ -251,6 +251,7 @@ auto Lali::run() -> run_stage_t {
 
         // run rtcproc
         logger->info("raw time chunk processing for scan {}", rtcdata.index.data + 1);
+        apply_learned_rtc_sample_masks(rtcdata, calib);
         auto map_indices = rtcproc.run(rtcdata, ptcdata, calib, telescope, omb.pixel_size_rad, map_grouping,
                                        rtc_outer_output_ptr);
 
@@ -292,6 +293,8 @@ auto Lali::run() -> run_stage_t {
         if (write_rtc || write_rtcdiag) {
             rtcproc.clear_cached_diagnostics(ptcdata.index.data);
         }
+
+        apply_learned_ptc_sample_masks(ptcdata, calib_scan);
 
         const bool use_fruit_noise_weights =
             ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty();
