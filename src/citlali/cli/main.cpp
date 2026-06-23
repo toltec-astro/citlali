@@ -563,6 +563,21 @@ int run(const rc_t &rc) {
                         logger->info("starting fruit loops iteration {}", todproc.engine().fruit_iter);
                     }
                     todproc.engine().ptcproc.begin_weight_validation_iteration(todproc.engine().fruit_iter);
+                    {
+                        const bool learning_source_model_available =
+                            todproc.engine().ptcproc.run_fruit_loops &&
+                            (todproc.engine().fruit_iter > 0 ||
+                             todproc.engine().ptcproc.fruit_loops_path != "null");
+                        todproc.engine().reduction_learning.begin_iteration(
+                            todproc.engine().fruit_iter,
+                            learning_source_model_available,
+                            todproc.engine().redu_type);
+                        if (todproc.engine().reduction_learning.is_enabled() &&
+                            todproc.engine().reduction_learning.diagnostics_enabled()) {
+                            logger->info("reduction learning begin: {}",
+                                         todproc.engine().reduction_learning.summary_string());
+                        }
+                    }
 
                     // setup redu dirs if saving outputs or on first iter
                     if (todproc.engine().ptcproc.save_all_iters || todproc.engine().fruit_iter == 0) {
@@ -1184,6 +1199,12 @@ int run(const rc_t &rc) {
                     // make index files for each directory recursively
                     todproc.make_index_file(todproc.engine().redu_dir_name);
                     todproc.engine().ptcproc.finalize_weight_validation_iteration(todproc.engine().fruit_iter);
+                    todproc.engine().reduction_learning.finalize_iteration(todproc.engine().fruit_iter);
+                    if (todproc.engine().reduction_learning.is_enabled() &&
+                        todproc.engine().reduction_learning.diagnostics_enabled()) {
+                        logger->info("reduction learning finalize: {}",
+                                     todproc.engine().reduction_learning.summary_string());
+                    }
 
                     // increment fruit loops iteration
                     todproc.engine().fruit_iter++;

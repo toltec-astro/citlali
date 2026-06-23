@@ -155,6 +155,12 @@ timestream: # timestream reduction parameters
     force_chunking: false # ignore map pattern chunking and use config file chunk length
     value: 10.0 # either chunk length or number of chunks for lissajous/rastajous maps (ignored if raster map)
     chunk_mode: duration # how to subdivide chunks, either by time (duration) or number (number)
+  learning: # shared RTC/PTC/mapmaking learning state for source-aware weighting and deglitching
+    enabled: false # record learned-state diagnostics; later phases will use this to apply learned masks/weights
+    diagnostics_enabled: true # log and write metadata for the learned-state bookkeeping
+    learn_iters: 2 # initial iterations treated as learning passes before production application
+    apply_start_iter: 2 # first fruitloops iteration where learned products are eligible for application
+    max_records_per_type: 200000 # cap retained diagnostic records per learned-state record class (0 disables cap)
   polarimetry: # polarized reduction
     enabled: false # enable or disable polarized reduction
     ignore_hwpr: auto # override automatic hwpr finding (true, false, auto)

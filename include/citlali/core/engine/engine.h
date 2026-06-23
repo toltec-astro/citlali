@@ -49,6 +49,7 @@
 #include <citlali/core/utils/pointing.h>
 
 #include <citlali/core/engine/config.h>
+#include <citlali/core/engine/learning.h>
 #include <citlali/core/engine/calib.h>
 #include <citlali/core/engine/telescope.h>
 #include <citlali/core/engine/diagnostics.h>
@@ -357,6 +358,9 @@ public:
     // current fruit loops iteration
     int fruit_iter;
 
+    // shared state learned across RTC, PTC, and mapmaking phases
+    ReductionLearningState reduction_learning;
+
     // manual pointing offsets
     std::map<std::string, Eigen::VectorXd> pointing_offsets_arcsec;
     // modified julian dates of pointing offsets
@@ -384,6 +388,10 @@ public:
     // get timestream config options
     template<typename CT>
     void get_timestream_config(CT &);
+
+    // get shared reduction-learning config options
+    template<typename CT>
+    void get_learning_config(CT &);
 
     // get beammap config options
     template<typename CT>
@@ -1046,6 +1054,42 @@ Eigen::Index Engine::apply_model_protected_ptc_line_audit(
 }
 
 template<typename CT>
+void Engine::get_learning_config(CT &config) {
+    ReductionLearningState::Options options;
+
+    if (config.template has_typed<bool>(std::tuple{"timestream","learning","enabled"})) {
+        get_config_value(config, options.enabled, missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","enabled"});
+    }
+    if (config.template has_typed<bool>(std::tuple{"timestream","learning","diagnostics_enabled"})) {
+        get_config_value(config, options.diagnostics_enabled, missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","diagnostics_enabled"});
+    }
+    if (config.template has_typed<int>(std::tuple{"timestream","learning","learn_iters"})) {
+        get_config_value(config, options.learn_iters, missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","learn_iters"}, {}, {0});
+    }
+    if (config.template has_typed<int>(std::tuple{"timestream","learning","apply_start_iter"})) {
+        get_config_value(config, options.apply_start_iter, missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","apply_start_iter"}, {}, {0});
+    }
+    if (config.template has_typed<int>(std::tuple{"timestream","learning","max_records_per_type"})) {
+        get_config_value(config, options.max_records_per_type, missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","max_records_per_type"}, {}, {0});
+    }
+
+    reduction_learning.configure(options);
+    logger->info(
+        "reduction learning state configured: enabled={} diagnostics_enabled={} "
+        "learn_iters={} apply_start_iter={} max_records_per_type={}",
+        reduction_learning.options.enabled,
+        reduction_learning.options.diagnostics_enabled,
+        reduction_learning.options.learn_iters,
+        reduction_learning.options.apply_start_iter,
+        reduction_learning.options.max_records_per_type);
+}
+
+template<typename CT>
 void Engine::get_timestream_config(CT &config) {
     logger->info("getting timestream config options");
     // run tod processing
@@ -1269,6 +1313,9 @@ void Engine::get_timestream_config(CT &config) {
 
     /* get processed time chunk config */
     get_ptc_config(config);
+
+    /* get shared reduction-learning config */
+    get_learning_config(config);
 }
 
 template<typename CT>
@@ -2687,6 +2734,12 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_REQUIRE_ATM", ptcproc.weight_validation.upward_require_atmospheric);
         add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_MIN_ATM_FACTOR", ptcproc.weight_validation.upward_min_atmospheric_factor);
         add_netcdf_var<std::string>(fo, "CONFIG.WEIGHT.VALIDATION.ATM_GROUPING", ptcproc.weight_validation.atmospheric_grouping);
+        add_netcdf_var(fo, "CONFIG.LEARNING.ENABLED", reduction_learning.options.enabled);
+        add_netcdf_var(fo, "CONFIG.LEARNING.DIAGNOSTICS_ENABLED", reduction_learning.options.diagnostics_enabled);
+        add_netcdf_var(fo, "CONFIG.LEARNING.LEARN_ITERS", reduction_learning.options.learn_iters);
+        add_netcdf_var(fo, "CONFIG.LEARNING.APPLY_START_ITER", reduction_learning.options.apply_start_iter);
+        add_netcdf_var(fo, "CONFIG.LEARNING.MAX_RECORDS_PER_TYPE", reduction_learning.options.max_records_per_type);
+        add_netcdf_var<std::string>(fo, "CONFIG.LEARNING.PHASE", reduction_learning.current_phase_name());
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTLOW", rtcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTHIGH", rtcproc.upper_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.ENABLED", rtcproc.network_step_mask.enabled);
@@ -4847,6 +4900,21 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     add_double_key("CONFIG.WEIGHT.VALIDATION.UPWARD_MIN_ATM",
                    ptcproc.weight_validation.upward_min_atmospheric_factor,
                    "Minimum atmospheric factor for upward validation");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.ENABLED",
+                                        reduction_learning.options.enabled,
+                                        "Enable shared reduction learning state");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.DIAGNOSTICS",
+                                        reduction_learning.options.diagnostics_enabled,
+                                        "Write shared reduction learning diagnostics");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.LEARN_ITERS",
+                                        reduction_learning.options.learn_iters,
+                                        "Initial fruitloops iterations used for learning");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.APPLY_ITER",
+                                        reduction_learning.options.apply_start_iter,
+                                        "Earliest fruitloops iter applying learned state");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.PHASE",
+                                        reduction_learning.current_phase_name(),
+                                        "Shared reduction learning phase");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.ENABLED",
                                         ptcproc.weight_corr_penalty.enabled,
                                         "Enable per-network corr-based weight penalties");
@@ -6211,6 +6279,12 @@ void Engine::create_ptcdiag_file() {
     add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_REQUIRE_ATM", ptcproc.weight_validation.upward_require_atmospheric);
     add_netcdf_var(fo, "CONFIG.WEIGHT.VALIDATION.UPWARD_MIN_ATM_FACTOR", ptcproc.weight_validation.upward_min_atmospheric_factor);
     add_netcdf_var<std::string>(fo, "CONFIG.WEIGHT.VALIDATION.ATM_GROUPING", ptcproc.weight_validation.atmospheric_grouping);
+    add_netcdf_var(fo, "CONFIG.LEARNING.ENABLED", reduction_learning.options.enabled);
+    add_netcdf_var(fo, "CONFIG.LEARNING.DIAGNOSTICS_ENABLED", reduction_learning.options.diagnostics_enabled);
+    add_netcdf_var(fo, "CONFIG.LEARNING.LEARN_ITERS", reduction_learning.options.learn_iters);
+    add_netcdf_var(fo, "CONFIG.LEARNING.APPLY_START_ITER", reduction_learning.options.apply_start_iter);
+    add_netcdf_var(fo, "CONFIG.LEARNING.MAX_RECORDS_PER_TYPE", reduction_learning.options.max_records_per_type);
+    add_netcdf_var<std::string>(fo, "CONFIG.LEARNING.PHASE", reduction_learning.current_phase_name());
     add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
     add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
     add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor);
@@ -6665,6 +6739,11 @@ void Engine::create_rtcdiag_file() {
 
     // Keep a compact provenance subset so rtcdiag is interpretable without the RTC TOD.
     add_netcdf_var(fo, "CONFIG.VERBOSE", verbose_mode);
+    add_netcdf_var(fo, "CONFIG.LEARNING.ENABLED", reduction_learning.options.enabled);
+    add_netcdf_var(fo, "CONFIG.LEARNING.DIAGNOSTICS_ENABLED", reduction_learning.options.diagnostics_enabled);
+    add_netcdf_var(fo, "CONFIG.LEARNING.LEARN_ITERS", reduction_learning.options.learn_iters);
+    add_netcdf_var(fo, "CONFIG.LEARNING.APPLY_START_ITER", reduction_learning.options.apply_start_iter);
+    add_netcdf_var<std::string>(fo, "CONFIG.LEARNING.PHASE", reduction_learning.current_phase_name());
     add_netcdf_var(fo, "CONFIG.DESPIKED", rtcproc.run_despike);
     add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.ENABLED", rtcproc.despiker.local_residual.enabled);
     add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.WINDOW_SEC", rtcproc.despiker.local_residual.window_sec);
