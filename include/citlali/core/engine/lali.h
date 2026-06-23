@@ -265,6 +265,8 @@ auto Lali::run() -> run_stage_t {
             calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib_scan, map_grouping);
         }
 
+        collect_rtc_learning_diagnostics(rtcdata, ptcdata, calib_scan);
+
         if (write_rtcdiag) {
             rtcdiag_writer->wait_turn(ptcdata.index.data);
             logger->info("writing rtc diagnostics sidecar chunk");
@@ -315,6 +317,7 @@ auto Lali::run() -> run_stage_t {
         // run cleaning
         logger->info("processed time chunk processing for scan {}", ptcdata.index.data + 1);
         ptcproc.run(ptcdata, ptcdata, calib_scan, telescope.pixel_axes, map_grouping);
+        collect_ptc_learning_diagnostics(ptcdata, calib_scan);
 
         // if running fruit loops and a map has been read in
         if (use_fruit_noise_weights) {

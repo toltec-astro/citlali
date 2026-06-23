@@ -389,6 +389,8 @@ auto Pointing::run(KidsProc &kidsproc) {
             calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib_scan, map_grouping);
         }
 
+        collect_rtc_learning_diagnostics(rtcdata, ptcdata, calib_scan);
+
         if (write_rtcdiag) {
             rtcdiag_writer->wait_turn(ptcdata.index.data);
             logger->info("writing rtc diagnostics sidecar chunk");
@@ -445,6 +447,7 @@ auto Pointing::run(KidsProc &kidsproc) {
         ptcproc.run(ptcdata, ptcdata, calib_scan, telescope.pixel_axes, map_grouping);
         timestream::log_kernel_matrix_diag(
             logger, "ptc after processed time chunk cleaning", ptcdata.kernel.data, ptcdata.index.data);
+        collect_ptc_learning_diagnostics(ptcdata, calib_scan);
 
         // if running fruit loops and a map has been read in
         if (use_fruit_noise_weights) {

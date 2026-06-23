@@ -1195,9 +1195,6 @@ int run(const rc_t &rc) {
                         }
                     }
 
-                    logger->info("making index files");
-                    // make index files for each directory recursively
-                    todproc.make_index_file(todproc.engine().redu_dir_name);
                     todproc.engine().ptcproc.finalize_weight_validation_iteration(todproc.engine().fruit_iter);
                     todproc.engine().reduction_learning.finalize_iteration(todproc.engine().fruit_iter);
                     if (todproc.engine().reduction_learning.is_enabled() &&
@@ -1205,6 +1202,11 @@ int run(const rc_t &rc) {
                         logger->info("reduction learning finalize: {}",
                                      todproc.engine().reduction_learning.summary_string());
                     }
+                    todproc.engine().write_learning_summary();
+
+                    logger->info("making index files");
+                    // make index files for each directory recursively
+                    todproc.make_index_file(todproc.engine().redu_dir_name);
 
                     // increment fruit loops iteration
                     todproc.engine().fruit_iter++;

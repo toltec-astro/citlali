@@ -393,6 +393,13 @@ public:
     template<typename CT>
     void get_learning_config(CT &);
 
+    // collect passive RTC/PTC diagnostics into the shared reduction-learning state
+    template <class rtc_t, class ptc_t, class calib_t>
+    void collect_rtc_learning_diagnostics(rtc_t &, ptc_t &, calib_t &);
+    template <class ptc_t, class calib_t>
+    void collect_ptc_learning_diagnostics(ptc_t &, calib_t &);
+    void write_learning_summary();
+
     // get beammap config options
     template<typename CT>
     void get_beammap_config(CT &);
@@ -1087,6 +1094,401 @@ void Engine::get_learning_config(CT &config) {
         reduction_learning.options.learn_iters,
         reduction_learning.options.apply_start_iter,
         reduction_learning.options.max_records_per_type);
+}
+
+template <class apt_t>
+static Eigen::Index citlali_learning_find_det_by_uid(const apt_t &apt, int uid) {
+    if (uid == timestream::kTransientFillInt || uid < 0) {
+        return -1;
+    }
+    const auto uid_it = apt.find("uid");
+    if (uid_it == apt.end()) {
+        return static_cast<Eigen::Index>(uid);
+    }
+    for (Eigen::Index i = 0; i < uid_it->second.size(); ++i) {
+        if (std::isfinite(uid_it->second(i)) &&
+            static_cast<int>(std::llround(uid_it->second(i))) == uid) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+template <class apt_t>
+static int citlali_learning_apt_int(const apt_t &apt, const std::string &key,
+                                    Eigen::Index det, int fallback) {
+    const auto it = apt.find(key);
+    if (it == apt.end() || det < 0 || det >= it->second.size() ||
+        !std::isfinite(it->second(det))) {
+        return fallback;
+    }
+    return static_cast<int>(std::llround(it->second(det)));
+}
+
+template <class rtc_t, class ptc_t, class calib_t>
+void Engine::collect_rtc_learning_diagnostics(rtc_t &rtcdata, ptc_t &ptcdata,
+                                              calib_t &calib_scan) {
+    if (!reduction_learning.is_enabled() ||
+        !reduction_learning.diagnostics_enabled()) {
+        return;
+    }
+
+    const auto scan_id = ptcdata.index.data;
+    const auto det_it = rtcproc.rtc_detector_summary_by_scan.find(scan_id);
+    if (det_it == rtcproc.rtc_detector_summary_by_scan.end()) {
+        return;
+    }
+
+    if (rtcproc.despiker.source_protection_enabled) {
+        ReductionLearningState::SourceProtectionSummary source_summary;
+        source_summary.obsnum = obsnum;
+        source_summary.producer = "rtc_despike";
+        source_summary.mode = "map_center_radius";
+        source_summary.iter = fruit_iter;
+        source_summary.scan = static_cast<int>(scan_id);
+        source_summary.protected_samples =
+            static_cast<int>(rtcproc.despiker.last_source_protection_sample_count);
+        source_summary.total_samples =
+            static_cast<int>(rtcdata.scans.data.rows() * rtcdata.scans.data.cols());
+        source_summary.radius_arcsec = rtcproc.despiker.source_protection_radius_arcsec;
+        reduction_learning.record_source_protection_summary(std::move(source_summary));
+    }
+
+    auto record_event = [&](const auto &event, Eigen::Index det,
+                            const std::string &reason) {
+        const auto uid_it = calib_scan.apt.find("uid");
+        if (!event.valid() || !event.accepted || uid_it == calib_scan.apt.end() ||
+            det < 0 || det >= uid_it->second.size()) {
+            return;
+        }
+        ReductionLearningState::LearnedSampleMask record;
+        record.obsnum = obsnum;
+        record.producer = "rtc_despike";
+        record.reason = reason;
+        record.iter = fruit_iter;
+        record.scan = static_cast<int>(scan_id);
+        record.uid = citlali_learning_apt_int(calib_scan.apt, "uid", det,
+                                              static_cast<int>(det));
+        record.nw = citlali_learning_apt_int(calib_scan.apt, "nw", det, -1);
+        record.array = citlali_learning_apt_int(calib_scan.apt, "array", det, -1);
+        record.raw_start = event.start_sample;
+        record.raw_stop = event.end_sample;
+        record.score = event.score;
+        record.z = event.score;
+        record.confidence = 1.0;
+        record.source_protected = false;
+        record.apply_pre_rtc = true;
+        reduction_learning.record_learned_sample_mask(std::move(record));
+    };
+
+    for (const auto &row : det_it->second) {
+        const Eigen::Index det = row.det;
+        record_event(row.local_raw_event, det, "local_raw_accepted");
+        record_event(row.local_delta_event, det, "local_delta_accepted");
+    }
+}
+
+template <class ptc_t, class calib_t>
+void Engine::collect_ptc_learning_diagnostics(ptc_t &ptcdata, calib_t &calib_scan) {
+    if (!reduction_learning.is_enabled() ||
+        !reduction_learning.diagnostics_enabled()) {
+        return;
+    }
+
+    const auto scan_id = ptcdata.index.data;
+    const auto second_pass_it = ptcproc.second_pass_summary_by_scan.find(scan_id);
+    if (second_pass_it == ptcproc.second_pass_summary_by_scan.end()) {
+        return;
+    }
+
+    if (ptcproc.second_pass_local.source_protection_enabled) {
+        ReductionLearningState::SourceProtectionSummary source_summary;
+        source_summary.obsnum = obsnum;
+        source_summary.producer = "ptc_second_pass";
+        source_summary.mode = "map_center_radius";
+        source_summary.iter = fruit_iter;
+        source_summary.scan = static_cast<int>(scan_id);
+        source_summary.total_samples =
+            static_cast<int>(ptcdata.scans.data.rows() * ptcdata.scans.data.cols());
+        source_summary.radius_arcsec =
+            ptcproc.second_pass_local.source_protection_radius_arcsec;
+        reduction_learning.record_source_protection_summary(std::move(source_summary));
+    }
+
+    for (const auto &summary : second_pass_it->second) {
+        const bool has_candidate = summary.n_candidate_clusters > 0 ||
+                                   summary.n_candidate_events > 0;
+        const bool has_residual =
+            std::isfinite(summary.max_unflagged_residual_z) &&
+            summary.max_unflagged_residual_uid != timestream::kTransientFillInt;
+        if (has_candidate || has_residual || summary.busy_network_vetoed) {
+            ReductionLearningState::BusyNetworkSummary record;
+            record.obsnum = obsnum;
+            record.producer = "ptc_second_pass";
+            record.reason = summary.busy_network_vetoed
+                ? "busy_network_vetoed"
+                : "candidate_or_residual";
+            record.iter = fruit_iter;
+            record.scan = static_cast<int>(scan_id);
+            record.nw = static_cast<int>(summary.nw);
+            record.n_candidate_clusters =
+                static_cast<int>(summary.n_candidate_clusters);
+            record.n_candidate_events =
+                static_cast<int>(summary.n_candidate_events);
+            record.n_accepted_clusters =
+                static_cast<int>(summary.n_accepted_clusters);
+            record.n_accepted_events =
+                static_cast<int>(summary.n_accepted_events);
+            record.max_unflagged_residual_uid = summary.max_unflagged_residual_uid;
+            record.top_candidate_sample = summary.top_candidate_cluster_sample;
+            record.top_candidate_score = summary.top_candidate_cluster_peak_score;
+            record.max_unflagged_residual_z = summary.max_unflagged_residual_z;
+            record.busy_vetoed = summary.busy_network_vetoed;
+            record.selective_acceptance_recommended =
+                summary.busy_network_vetoed &&
+                ((std::isfinite(summary.top_candidate_cluster_peak_score) &&
+                  summary.top_candidate_cluster_peak_score >=
+                      ptcproc.second_pass_local.high_score_cluster_override) ||
+                 (std::isfinite(summary.max_unflagged_residual_z) &&
+                  summary.max_unflagged_residual_z >=
+                      ptcproc.second_pass_local.high_score_event_override));
+            reduction_learning.record_busy_network_summary(std::move(record));
+        }
+
+        if (summary.top_event.valid() && summary.top_event.accepted &&
+            summary.top_event_uid != timestream::kTransientFillInt) {
+            const Eigen::Index det =
+                citlali_learning_find_det_by_uid(calib_scan.apt, summary.top_event_uid);
+            ReductionLearningState::LearnedSampleMask sample_record;
+            sample_record.obsnum = obsnum;
+            sample_record.producer = "ptc_second_pass";
+            sample_record.reason = "accepted_event";
+            sample_record.iter = fruit_iter;
+            sample_record.scan = static_cast<int>(scan_id);
+            sample_record.uid = summary.top_event_uid;
+            sample_record.nw = static_cast<int>(summary.nw);
+            sample_record.array =
+                citlali_learning_apt_int(calib_scan.apt, "array", det, -1);
+            sample_record.ptc_start = summary.top_event.start_sample;
+            sample_record.ptc_stop = summary.top_event.end_sample;
+            sample_record.score = summary.top_event.score;
+            sample_record.z = summary.top_event.score;
+            sample_record.confidence = 1.0;
+            sample_record.source_protected = false;
+            sample_record.apply_pre_rtc = false;
+            reduction_learning.record_learned_sample_mask(std::move(sample_record));
+        }
+
+        if (summary.busy_network_vetoed && has_residual) {
+            const Eigen::Index det = citlali_learning_find_det_by_uid(
+                calib_scan.apt, summary.max_unflagged_residual_uid);
+            ReductionLearningState::DetectorPenalty penalty;
+            penalty.obsnum = obsnum;
+            penalty.producer = "ptc_second_pass";
+            penalty.reason = "busy_vetoed_residual";
+            penalty.iter = fruit_iter;
+            penalty.scan = static_cast<int>(scan_id);
+            penalty.uid = summary.max_unflagged_residual_uid;
+            penalty.nw = static_cast<int>(summary.nw);
+            penalty.array =
+                citlali_learning_apt_int(calib_scan.apt, "array", det, -1);
+            penalty.factor = 0.0;
+            penalty.score = summary.max_unflagged_residual_z;
+            penalty.scan_local = true;
+            reduction_learning.record_detector_penalty(std::move(penalty));
+        }
+    }
+}
+
+inline void Engine::write_learning_summary() {
+    if (!reduction_learning.is_enabled() ||
+        !reduction_learning.diagnostics_enabled() ||
+        redu_dir_name.empty()) {
+        return;
+    }
+
+    std::ostringstream filename;
+    filename << redu_dir_name << "/learning_iter_" << fruit_iter << ".csv";
+    std::ofstream out(filename.str());
+    if (!out) {
+        logger->warn("failed to open learning summary output {}", filename.str());
+        return;
+    }
+
+    auto csv = [](const std::string &s) {
+        std::string escaped = "\"";
+        for (const char ch : s) {
+            if (ch == '"') {
+                escaped += "\"\"";
+            }
+            else {
+                escaped += ch;
+            }
+        }
+        escaped += "\"";
+        return escaped;
+    };
+
+    enum {
+        ColRecordType,
+        ColIter,
+        ColObsnum,
+        ColProducer,
+        ColReason,
+        ColScan,
+        ColUid,
+        ColNw,
+        ColArray,
+        ColRawStart,
+        ColRawStop,
+        ColPtcStart,
+        ColPtcStop,
+        ColScore,
+        ColZ,
+        ColValue,
+        ColConfidence,
+        ColSourceDistanceArcsec,
+        ColSourceProtected,
+        ColApplyPreRtc,
+        ColCandidateClusters,
+        ColCandidateEvents,
+        ColAcceptedClusters,
+        ColAcceptedEvents,
+        ColMaxResidualUid,
+        ColTopCandidateSample,
+        ColTopCandidateScore,
+        ColMaxResidualZ,
+        ColBusyVetoed,
+        ColSelectiveAcceptanceRecommended,
+        ColFactor,
+        ColScanLocal,
+        ColProtectedSamples,
+        ColTotalSamples,
+        ColRadiusArcsec,
+        ColSupportNpix,
+        ColCount
+    };
+
+    const std::vector<std::string> header = {
+        "record_type", "iter", "obsnum", "producer", "reason", "scan", "uid",
+        "nw", "array", "raw_start", "raw_stop", "ptc_start", "ptc_stop",
+        "score", "z", "value", "confidence", "source_distance_arcsec",
+        "source_protected", "apply_pre_rtc", "n_candidate_clusters",
+        "n_candidate_events", "n_accepted_clusters", "n_accepted_events",
+        "max_unflagged_residual_uid", "top_candidate_sample",
+        "top_candidate_score", "max_unflagged_residual_z", "busy_vetoed",
+        "selective_acceptance_recommended", "factor", "scan_local",
+        "protected_samples", "total_samples", "radius_arcsec", "support_npix"
+    };
+
+    auto text = [](const auto &value) {
+        std::ostringstream stream;
+        stream << value;
+        return stream.str();
+    };
+
+    auto write_row = [&](const std::vector<std::string> &row) {
+        for (std::size_t i = 0; i < row.size(); ++i) {
+            if (i > 0) {
+                out << ',';
+            }
+            out << row[i];
+        }
+        out << '\n';
+    };
+
+    auto new_row = [&]() {
+        return std::vector<std::string>(ColCount);
+    };
+
+    auto write_common_header = [&]() {
+        write_row(header);
+    };
+
+    auto write_base = [&](std::vector<std::string> &row,
+                          const std::string &record_type, int iter,
+                          const std::string &obsnum_value,
+                          const std::string &producer,
+                          const std::string &reason, int scan, int uid,
+                          int nw, int array) {
+        row[ColRecordType] = csv(record_type);
+        row[ColIter] = text(iter);
+        row[ColObsnum] = csv(obsnum_value);
+        row[ColProducer] = csv(producer);
+        row[ColReason] = csv(reason);
+        row[ColScan] = text(scan);
+        row[ColUid] = text(uid);
+        row[ColNw] = text(nw);
+        row[ColArray] = text(array);
+    };
+
+    std::lock_guard<std::mutex> lock(*reduction_learning.mutex);
+    write_common_header();
+
+    for (const auto &record : reduction_learning.learned_sample_masks) {
+        auto row = new_row();
+        write_base(row, "sample_mask", record.iter, record.obsnum, record.producer,
+                   record.reason, record.scan, record.uid, record.nw, record.array);
+        row[ColRawStart] = text(record.raw_start);
+        row[ColRawStop] = text(record.raw_stop);
+        row[ColPtcStart] = text(record.ptc_start);
+        row[ColPtcStop] = text(record.ptc_stop);
+        row[ColScore] = text(record.score);
+        row[ColZ] = text(record.z);
+        row[ColValue] = text(record.value);
+        row[ColConfidence] = text(record.confidence);
+        row[ColSourceDistanceArcsec] = text(record.source_distance_arcsec);
+        row[ColSourceProtected] = text(record.source_protected ? 1 : 0);
+        row[ColApplyPreRtc] = text(record.apply_pre_rtc ? 1 : 0);
+        write_row(row);
+    }
+
+    for (const auto &record : reduction_learning.busy_network_summaries) {
+        auto row = new_row();
+        write_base(row, "busy_network", record.iter, record.obsnum, record.producer,
+                   record.reason, record.scan, -1, record.nw, -1);
+        row[ColScore] = text(record.top_candidate_score);
+        row[ColZ] = text(record.max_unflagged_residual_z);
+        row[ColCandidateClusters] = text(record.n_candidate_clusters);
+        row[ColCandidateEvents] = text(record.n_candidate_events);
+        row[ColAcceptedClusters] = text(record.n_accepted_clusters);
+        row[ColAcceptedEvents] = text(record.n_accepted_events);
+        row[ColMaxResidualUid] = text(record.max_unflagged_residual_uid);
+        row[ColTopCandidateSample] = text(record.top_candidate_sample);
+        row[ColTopCandidateScore] = text(record.top_candidate_score);
+        row[ColMaxResidualZ] = text(record.max_unflagged_residual_z);
+        row[ColBusyVetoed] = text(record.busy_vetoed ? 1 : 0);
+        row[ColSelectiveAcceptanceRecommended] =
+            text(record.selective_acceptance_recommended ? 1 : 0);
+        write_row(row);
+    }
+
+    for (const auto &record : reduction_learning.detector_penalties) {
+        auto row = new_row();
+        write_base(row, "detector_penalty", record.iter, record.obsnum,
+                   record.producer, record.reason, record.scan, record.uid,
+                   record.nw, record.array);
+        row[ColScore] = text(record.score);
+        row[ColZ] = text(record.score);
+        row[ColFactor] = text(record.factor);
+        row[ColScanLocal] = text(record.scan_local ? 1 : 0);
+        write_row(row);
+    }
+
+    for (const auto &record : reduction_learning.source_protection_summaries) {
+        auto row = new_row();
+        write_base(row, "source_protection", record.iter, record.obsnum,
+                   record.producer, record.mode, record.scan, -1, -1, -1);
+        row[ColSourceProtected] = text(1);
+        row[ColApplyPreRtc] = text(0);
+        row[ColProtectedSamples] = text(record.protected_samples);
+        row[ColTotalSamples] = text(record.total_samples);
+        row[ColRadiusArcsec] = text(record.radius_arcsec);
+        row[ColSupportNpix] = text(record.support_npix);
+        write_row(row);
+    }
+
+    logger->info("wrote reduction learning summary {}", filename.str());
 }
 
 template<typename CT>
