@@ -316,9 +316,11 @@ struct ReductionLearningState {
                       dropped_learned_sample_masks);
     }
 
-    void record_detector_penalty(DetectorPenalty record) {
+    void record_detector_penalty(DetectorPenalty record,
+                                 bool allow_apply_phase = false) {
         std::lock_guard<std::mutex> lock(*mutex);
-        if (!options.enabled || !learning_active()) {
+        if (!options.enabled ||
+            (!learning_active() && !(allow_apply_phase && apply_active()))) {
             return;
         }
         push_with_cap(detector_penalties, std::move(record),
