@@ -234,6 +234,20 @@ public:
         double source_protection_radius_arcsec = 20.0;
     };
 
+    struct SecondPassCandidateEvent {
+        int uid = kTransientFillInt;
+        int kind = 0;
+        int sample = kTransientFillInt;
+        int start_sample = kTransientFillInt;
+        int end_sample = kTransientFillInt;
+        double score = std::numeric_limits<double>::quiet_NaN();
+        double cluster_score = std::numeric_limits<double>::quiet_NaN();
+        int cluster_sample = kTransientFillInt;
+        int cluster_n_detectors = 0;
+        int cluster_n_events = 0;
+        bool busy_network_vetoed = false;
+    };
+
     struct SecondPassDiagSummary {
         Eigen::Index nw = -1;
         Eigen::Index n_det = 0;
@@ -257,6 +271,7 @@ public:
         int top_candidate_cluster_sample = kTransientFillInt;
         int top_event_uid = kTransientFillInt;
         TransientEvent top_event;
+        std::vector<SecondPassCandidateEvent> candidate_events;
     };
 
     SecondPassLocalOptions second_pass_local;
@@ -2773,6 +2788,29 @@ void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             summary.top_candidate_cluster_n_detectors = candidate_clusters.front().n_detectors;
             summary.top_candidate_cluster_n_events = candidate_clusters.front().n_detector_events;
             summary.top_candidate_cluster_sample = static_cast<int>(candidate_clusters.front().sample);
+        }
+        const Eigen::Index max_learning_candidate_clusters =
+            std::max<Eigen::Index>(8, second_pass_local.max_auto_flag_clusters_per_network + 1);
+        for (Eigen::Index cluster_i = 0;
+             cluster_i < static_cast<Eigen::Index>(candidate_clusters.size()) &&
+             cluster_i < max_learning_candidate_clusters;
+             ++cluster_i) {
+            const auto &cluster = candidate_clusters[static_cast<std::size_t>(cluster_i)];
+            for (const auto &row : cluster.rows) {
+                summary.candidate_events.push_back(SecondPassCandidateEvent{
+                    .uid = static_cast<int>(row.uid),
+                    .kind = static_cast<int>(row.kind),
+                    .sample = static_cast<int>(row.sample),
+                    .start_sample = static_cast<int>(row.start_sample),
+                    .end_sample = static_cast<int>(row.end_sample),
+                    .score = row.score,
+                    .cluster_score = cluster.peak_score,
+                    .cluster_sample = static_cast<int>(cluster.sample),
+                    .cluster_n_detectors = static_cast<int>(cluster.n_detectors),
+                    .cluster_n_events = static_cast<int>(cluster.n_detector_events),
+                    .busy_network_vetoed = busy_network_vetoed,
+                });
+            }
         }
         if (!accepted_rows.empty()) {
             summary.top_event_uid = static_cast<int>(accepted_rows.front().uid);
