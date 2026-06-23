@@ -297,6 +297,7 @@ auto Lali::run() -> run_stage_t {
         }
 
         apply_learned_ptc_sample_masks(ptcdata, calib_scan);
+        apply_learned_ptc_detector_exclusions(ptcdata, calib_scan);
 
         const bool use_fruit_noise_weights =
             ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty();

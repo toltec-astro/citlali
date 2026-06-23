@@ -399,6 +399,8 @@ public:
     void apply_learned_rtc_sample_masks(rtc_t &, calib_t &);
     template <class ptc_t, class calib_t>
     void apply_learned_ptc_sample_masks(ptc_t &, calib_t &);
+    template <class ptc_t, class calib_t>
+    void apply_learned_ptc_detector_exclusions(ptc_t &, calib_t &);
     template <class tc_t, class calib_t>
     void apply_learned_sample_masks(tc_t &, calib_t &, bool, const std::string &,
                                     bool, double);
@@ -1121,6 +1123,11 @@ void Engine::get_learning_config(CT &config) {
                          missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","map_pixel_outlier_targeted_contributor_diagnostics_enabled"});
     }
+    if (config.template has_typed<bool>(std::tuple{"timestream","learning","map_pixel_outlier_detector_exclusion_enabled"})) {
+        get_config_value(config, options.map_pixel_outlier_detector_exclusion_enabled,
+                         missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","map_pixel_outlier_detector_exclusion_enabled"});
+    }
     if (config.template has_typed<int>(std::tuple{"timestream","learning","map_pixel_outlier_top_n"})) {
         get_config_value(config, options.map_pixel_outlier_top_n, missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","map_pixel_outlier_top_n"}, {}, {0});
@@ -1130,6 +1137,12 @@ void Engine::get_learning_config(CT &config) {
                          missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","map_pixel_outlier_targeted_contributor_max_pixels"},
                          {}, {0});
+    }
+    if (config.template has_typed<int>(std::tuple{"timestream","learning","map_pixel_outlier_detector_exclusion_min_pixels"})) {
+        get_config_value(config, options.map_pixel_outlier_detector_exclusion_min_pixels,
+                         missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","map_pixel_outlier_detector_exclusion_min_pixels"},
+                         {}, {1});
     }
     if (config.template has_typed<double>(std::tuple{"timestream","learning","map_pixel_outlier_min_abs_z"})) {
         get_config_value(config, options.map_pixel_outlier_min_abs_z, missing_keys, invalid_keys,
@@ -1156,7 +1169,7 @@ void Engine::get_learning_config(CT &config) {
         "reduction learning state configured: enabled={} diagnostics_enabled={} "
         "learn_iters={} apply_start_iter={} max_records_per_type={} "
         "apply_sample_masks_enabled={} apply_max_new_flagged_fraction={:.4g} "
-        "map_pixel_outliers(enabled={} contributors={} targeted_contributors={} top_n={} target_max={} min_abs_z={} min_n_eff={} source_radius_arcsec={})",
+        "map_pixel_outliers(enabled={} contributors={} targeted_contributors={} detector_exclusion={} top_n={} target_max={} exclude_min_pixels={} min_abs_z={} min_n_eff={} source_radius_arcsec={})",
         reduction_learning.options.enabled,
         reduction_learning.options.diagnostics_enabled,
         reduction_learning.options.learn_iters,
@@ -1167,8 +1180,10 @@ void Engine::get_learning_config(CT &config) {
         reduction_learning.options.map_pixel_outlier_diagnostics_enabled,
         reduction_learning.options.map_pixel_outlier_contributor_diagnostics_enabled,
         reduction_learning.options.map_pixel_outlier_targeted_contributor_diagnostics_enabled,
+        reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled,
         reduction_learning.options.map_pixel_outlier_top_n,
         reduction_learning.options.map_pixel_outlier_targeted_contributor_max_pixels,
+        reduction_learning.options.map_pixel_outlier_detector_exclusion_min_pixels,
         reduction_learning.options.map_pixel_outlier_min_abs_z,
         reduction_learning.options.map_pixel_outlier_min_n_eff,
         reduction_learning.options.map_pixel_outlier_source_radius_arcsec);
@@ -1343,6 +1358,121 @@ void Engine::apply_learned_ptc_sample_masks(ptc_t &ptcdata, calib_t &calib_scan)
         ptcdata, calib_scan, false, "pre_ptc",
         ptcproc.second_pass_local.source_protection_enabled,
         ptcproc.second_pass_local.source_protection_radius_arcsec);
+}
+
+template <class ptc_t, class calib_t>
+void Engine::apply_learned_ptc_detector_exclusions(ptc_t &ptcdata,
+                                                   calib_t &calib_scan) {
+    if (!reduction_learning.is_enabled() ||
+        !reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled ||
+        !reduction_learning.apply_active()) {
+        return;
+    }
+    if (ptcdata.flags.data.rows() <= 0 || ptcdata.flags.data.cols() <= 0) {
+        return;
+    }
+
+    const int scan_id = static_cast<int>(ptcdata.index.data);
+    std::vector<ReductionLearningState::DetectorPenalty> records;
+    {
+        std::lock_guard<std::mutex> lock(*reduction_learning.mutex);
+        for (const auto &record : reduction_learning.detector_penalties) {
+            if (record.obsnum == obsnum &&
+                record.reason == "map_pixel_outlier_detector_dominance" &&
+                record.producer.rfind("mapdiag:", 0) == 0 &&
+                record.scan_local &&
+                record.scan == scan_id &&
+                record.iter >= 0 &&
+                record.iter < fruit_iter &&
+                std::isfinite(record.factor) &&
+                record.factor <= 0.0) {
+                records.push_back(record);
+            }
+        }
+    }
+    if (records.empty()) {
+        return;
+    }
+
+    ReductionLearningState::LearnedMaskApplicationSummary summary;
+    summary.obsnum = obsnum;
+    summary.producer = "learning_state";
+    summary.stage = "pre_ptc_detector_exclusion";
+    summary.iter = fruit_iter;
+    summary.scan = scan_id;
+    summary.candidate_records = static_cast<int>(records.size());
+    summary.max_new_flagged_fraction =
+        reduction_learning.options.apply_max_new_flagged_fraction;
+
+    const Eigen::Index n_pts = ptcdata.flags.data.rows();
+    const Eigen::Index n_dets = ptcdata.flags.data.cols();
+    std::set<Eigen::Index> proposed_dets;
+    for (const auto &record : records) {
+        const Eigen::Index det = citlali_learning_find_det_by_uid(calib_scan.apt, record.uid);
+        if (det < 0 || det >= n_dets) {
+            ++summary.invalid_records;
+            continue;
+        }
+        ++summary.matched_records;
+        proposed_dets.insert(det);
+    }
+    if (proposed_dets.empty()) {
+        reduction_learning.record_learned_mask_application(summary);
+        return;
+    }
+
+    for (const auto det : proposed_dets) {
+        for (Eigen::Index sample = 0; sample < n_pts; ++sample) {
+            ++summary.proposed_samples;
+            if (ptcdata.flags.data(sample, det)) {
+                ++summary.already_flagged_samples;
+            }
+            else {
+                ++summary.newly_flagged_samples;
+            }
+        }
+    }
+
+    const double denom = static_cast<double>(std::max<Eigen::Index>(1, n_pts * n_dets));
+    summary.newly_flagged_fraction =
+        static_cast<double>(summary.newly_flagged_samples) / denom;
+    const bool over_cap =
+        reduction_learning.options.apply_max_new_flagged_fraction > 0.0 &&
+        summary.newly_flagged_fraction >
+            reduction_learning.options.apply_max_new_flagged_fraction;
+    if (!over_cap) {
+        auto flag_it = calib_scan.apt.find("flag");
+        for (const auto det : proposed_dets) {
+            ptcdata.flags.data.col(det).setOnes();
+            if (ptcdata.weights.data.size() == n_dets) {
+                ptcdata.weights.data(det) = 0.0;
+            }
+            if (flag_it != calib_scan.apt.end() &&
+                det >= 0 &&
+                det < flag_it->second.size()) {
+                flag_it->second(det) = 1.0;
+            }
+        }
+        summary.applied = true;
+    }
+
+    reduction_learning.record_learned_mask_application(summary);
+    if (over_cap) {
+        logger->warn(
+            "learned PTC detector exclusions rejected scan {} iter {}: candidates={} matched={} dets={} newly_flagged={} newly_flagged_fraction={:.4f} cap={:.4f}",
+            scan_id + 1, fruit_iter, summary.candidate_records,
+            summary.matched_records, proposed_dets.size(),
+            summary.newly_flagged_samples, summary.newly_flagged_fraction,
+            reduction_learning.options.apply_max_new_flagged_fraction);
+    }
+    else {
+        logger->info(
+            "learned PTC detector exclusions applied scan {} iter {}: candidates={} matched={} dets={} newly_flagged={} already_flagged={} newly_flagged_fraction={:.4f}",
+            scan_id + 1, fruit_iter, summary.candidate_records,
+            summary.matched_records, proposed_dets.size(),
+            summary.newly_flagged_samples, summary.already_flagged_samples,
+            summary.newly_flagged_fraction);
+    }
 }
 
 template <class tc_t, class calib_t>
@@ -2027,9 +2157,17 @@ inline void Engine::write_learning_summary() {
 
     for (const auto &record : reduction_learning.learned_mask_applications) {
         auto row = new_row();
-        write_base(row, "sample_mask_application", record.iter, record.obsnum,
-                   record.producer, "apply_learned_sample_mask", record.scan,
-                   -1, -1, -1);
+        const bool detector_exclusion =
+            record.stage.find("detector_exclusion") != std::string::npos;
+        write_base(row,
+                   detector_exclusion
+                       ? "detector_penalty_application"
+                       : "sample_mask_application",
+                   record.iter, record.obsnum, record.producer,
+                   detector_exclusion
+                       ? "apply_learned_detector_exclusion"
+                       : "apply_learned_sample_mask",
+                   record.scan, -1, -1, -1);
         row[ColApplicationStage] = csv(record.stage);
         row[ColCandidateRecords] = text(record.candidate_records);
         row[ColMatchedRecords] = text(record.matched_records);
@@ -3697,6 +3835,10 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.LEARNING.LEARN_ITERS", reduction_learning.options.learn_iters);
         add_netcdf_var(fo, "CONFIG.LEARNING.APPLY_START_ITER", reduction_learning.options.apply_start_iter);
         add_netcdf_var(fo, "CONFIG.LEARNING.MAX_RECORDS_PER_TYPE", reduction_learning.options.max_records_per_type);
+        add_netcdf_var(fo, "CONFIG.LEARNING.MAP_PIXEL_OUTLIER_DETECTOR_EXCLUSION_ENABLED",
+                       reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled);
+        add_netcdf_var(fo, "CONFIG.LEARNING.MAP_PIXEL_OUTLIER_DETECTOR_EXCLUSION_MIN_PIXELS",
+                       reduction_learning.options.map_pixel_outlier_detector_exclusion_min_pixels);
         add_netcdf_var<std::string>(fo, "CONFIG.LEARNING.PHASE", reduction_learning.current_phase_name());
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTLOW", rtcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTHIGH", rtcproc.upper_inv_var_factor);
@@ -5870,6 +6012,12 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.APPLY_ITER",
                                         reduction_learning.options.apply_start_iter,
                                         "Earliest fruitloops iter applying learned state");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.MAP_OUTLIER_DET_EXCL",
+                                        reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled,
+                                        "Enable map-outlier learned detector exclusions");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.MAP_OUTLIER_DET_MINPIX",
+                                        reduction_learning.options.map_pixel_outlier_detector_exclusion_min_pixels,
+                                        "Outlier pixels needed for learned detector exclusion");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.PHASE",
                                         reduction_learning.current_phase_name(),
                                         "Shared reduction learning phase");
@@ -7092,6 +7240,46 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             candidates.size(),
                             static_cast<std::size_t>(
                                 reduction_learning.options.map_pixel_outlier_top_n));
+                        struct detector_dominance_t {
+                            int uid = fill_int;
+                            int scan = fill_int;
+                            int count = 0;
+                            double max_abs_value = 0.0;
+                            double max_abs_leave_one_out_z = 0.0;
+                        };
+                        std::vector<detector_dominance_t> dominance;
+                        auto update_dominance = [&](const map_pixel_candidate_t &candidate) {
+                            if (!candidate.has_contributor ||
+                                candidate.source_protected ||
+                                candidate.uid == fill_int ||
+                                candidate.scan == fill_int ||
+                                candidate.uid < 0 ||
+                                candidate.scan < 0) {
+                                return;
+                            }
+                            auto it = std::find_if(
+                                dominance.begin(), dominance.end(),
+                                [&](const auto &entry) {
+                                    return entry.uid == candidate.uid &&
+                                           entry.scan == candidate.scan;
+                                });
+                            if (it == dominance.end()) {
+                                dominance.push_back({
+                                    candidate.uid, candidate.scan, 0, 0.0, 0.0});
+                                it = dominance.end() - 1;
+                            }
+                            ++it->count;
+                            if (std::isfinite(candidate.value)) {
+                                it->max_abs_value = std::max(
+                                    it->max_abs_value, std::abs(candidate.value));
+                            }
+                            if (std::isfinite(candidate.leave_one_out_z)) {
+                                it->max_abs_leave_one_out_z = std::max(
+                                    it->max_abs_leave_one_out_z,
+                                    std::abs(candidate.leave_one_out_z));
+                            }
+                        };
+
                         for (std::size_t ci = 0; ci < n_emit; ++ci) {
                             const auto &candidate = candidates[ci];
                             ReductionLearningState::MapPixelOutlier record;
@@ -7118,6 +7306,42 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             record.source_protected = candidate.source_protected;
                             reduction_learning.record_map_pixel_outlier(
                                 std::move(record));
+                            update_dominance(candidate);
+                        }
+
+                        if (reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled) {
+                            const int min_pixels =
+                                reduction_learning.options.map_pixel_outlier_detector_exclusion_min_pixels;
+                            int array_id = -1;
+                            if (map_index >= 0 &&
+                                map_index < static_cast<Eigen::Index>(calib.arrays.size())) {
+                                array_id = calib.arrays[map_index];
+                            }
+                            for (const auto &entry : dominance) {
+                                if (entry.count < min_pixels) {
+                                    continue;
+                                }
+                                ReductionLearningState::DetectorPenalty penalty;
+                                penalty.obsnum = obsnum;
+                                penalty.producer = "mapdiag:" + stage_name;
+                                penalty.reason = "map_pixel_outlier_detector_dominance";
+                                penalty.iter = fruit_iter;
+                                penalty.scan = entry.scan;
+                                penalty.uid = entry.uid;
+                                penalty.nw = -1;
+                                penalty.array = array_id;
+                                penalty.factor = 0.0;
+                                penalty.score = static_cast<double>(entry.count);
+                                penalty.scan_local = true;
+                                reduction_learning.record_detector_penalty(
+                                    std::move(penalty));
+                                logger->info(
+                                    "mapdiag learned scan-local detector exclusion candidate stage={} iter={} map={} uid={} scan={} outlier_pixels={} max_abs_value={:.4g} max_abs_leave_one_out_z={:.4g}",
+                                    stage_name, fruit_iter, i, entry.uid,
+                                    entry.scan + 1, entry.count,
+                                    entry.max_abs_value,
+                                    entry.max_abs_leave_one_out_z);
+                            }
                         }
                     }
                 }
@@ -7466,6 +7690,10 @@ void Engine::create_ptcdiag_file() {
     add_netcdf_var(fo, "CONFIG.LEARNING.LEARN_ITERS", reduction_learning.options.learn_iters);
     add_netcdf_var(fo, "CONFIG.LEARNING.APPLY_START_ITER", reduction_learning.options.apply_start_iter);
     add_netcdf_var(fo, "CONFIG.LEARNING.MAX_RECORDS_PER_TYPE", reduction_learning.options.max_records_per_type);
+    add_netcdf_var(fo, "CONFIG.LEARNING.MAP_PIXEL_OUTLIER_DETECTOR_EXCLUSION_ENABLED",
+                   reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled);
+    add_netcdf_var(fo, "CONFIG.LEARNING.MAP_PIXEL_OUTLIER_DETECTOR_EXCLUSION_MIN_PIXELS",
+                   reduction_learning.options.map_pixel_outlier_detector_exclusion_min_pixels);
     add_netcdf_var<std::string>(fo, "CONFIG.LEARNING.PHASE", reduction_learning.current_phase_name());
     add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
     add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
@@ -7929,6 +8157,10 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.LEARNING.DIAGNOSTICS_ENABLED", reduction_learning.options.diagnostics_enabled);
     add_netcdf_var(fo, "CONFIG.LEARNING.LEARN_ITERS", reduction_learning.options.learn_iters);
     add_netcdf_var(fo, "CONFIG.LEARNING.APPLY_START_ITER", reduction_learning.options.apply_start_iter);
+    add_netcdf_var(fo, "CONFIG.LEARNING.MAP_PIXEL_OUTLIER_DETECTOR_EXCLUSION_ENABLED",
+                   reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled);
+    add_netcdf_var(fo, "CONFIG.LEARNING.MAP_PIXEL_OUTLIER_DETECTOR_EXCLUSION_MIN_PIXELS",
+                   reduction_learning.options.map_pixel_outlier_detector_exclusion_min_pixels);
     add_netcdf_var<std::string>(fo, "CONFIG.LEARNING.PHASE", reduction_learning.current_phase_name());
     add_netcdf_var(fo, "CONFIG.DESPIKED", rtcproc.run_despike);
     add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.ENABLED", rtcproc.despiker.local_residual.enabled);

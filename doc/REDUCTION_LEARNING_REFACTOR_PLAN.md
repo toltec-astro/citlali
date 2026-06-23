@@ -136,8 +136,11 @@ Implementation note:
 - `write_mapdiag` now records off-source extreme map pixels in the learning CSV,
   using robust z on the core support, an effective-sample cut when coverage is
   available, and a center-radius source exclusion.
-- This phase is intentionally diagnostic-only. It does not yet promote map-pixel
-  contributors into learned sample masks.
+- The default remains diagnostic-only, but an opt-in detector-exclusion response
+  can now promote repeated off-source map-pixel contributors into a scan-local
+  detector penalty. When a single UID/scan owns enough retained off-source
+  outlier pixels, later apply iterations flag that detector for the affected PTC
+  scan before cleaning and mapmaking.
 
 ## Phase 7: Source Protection Generalization
 
@@ -181,7 +184,9 @@ Implementation note:
   `timestream.learning`, including iteration phase controls, learned sample-mask
   application limits, map-pixel outlier thresholds, and the opt-in expensive
   map-pixel contributor tracing switch plus the lower-overhead targeted
-  contributor tracing switch.
+  contributor tracing switch. It also exposes an opt-in scan-local detector
+  exclusion policy for cases where one detector/scan dominates the retained
+  off-source map outlier population.
 - Source protection remains explicit on the RTC despiker and PTC second-pass
   local despiker. It is activated only for the pointing-style reduction path,
   which also covers focus and holography reductions that use this pipeline.

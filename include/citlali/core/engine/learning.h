@@ -29,8 +29,10 @@ struct ReductionLearningState {
         bool map_pixel_outlier_diagnostics_enabled = true;
         bool map_pixel_outlier_contributor_diagnostics_enabled = false;
         bool map_pixel_outlier_targeted_contributor_diagnostics_enabled = false;
+        bool map_pixel_outlier_detector_exclusion_enabled = false;
         int map_pixel_outlier_top_n = 8;
         int map_pixel_outlier_targeted_contributor_max_pixels = 32;
+        int map_pixel_outlier_detector_exclusion_min_pixels = 4;
         double map_pixel_outlier_min_abs_z = 8.0;
         double map_pixel_outlier_min_n_eff = 4.0;
         double map_pixel_outlier_source_radius_arcsec = 30.0;
@@ -220,6 +222,8 @@ struct ReductionLearningState {
             std::max(0, new_options.map_pixel_outlier_top_n);
         new_options.map_pixel_outlier_targeted_contributor_max_pixels =
             std::max(0, new_options.map_pixel_outlier_targeted_contributor_max_pixels);
+        new_options.map_pixel_outlier_detector_exclusion_min_pixels =
+            std::max(1, new_options.map_pixel_outlier_detector_exclusion_min_pixels);
         new_options.map_pixel_outlier_min_abs_z =
             std::max(0.0, new_options.map_pixel_outlier_min_abs_z);
         new_options.map_pixel_outlier_min_n_eff =
