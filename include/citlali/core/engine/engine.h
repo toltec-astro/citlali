@@ -402,6 +402,9 @@ public:
     template <class ptc_t, class calib_t>
     void apply_learned_ptc_detector_exclusions(ptc_t &, calib_t &);
     template <class tc_t, class calib_t>
+    void apply_learned_detector_exclusions(tc_t &, calib_t &, const std::string &,
+                                           bool, bool);
+    template <class tc_t, class calib_t>
     void apply_learned_sample_masks(tc_t &, calib_t &, bool, const std::string &,
                                     bool, double);
 
@@ -1156,6 +1159,62 @@ void Engine::get_learning_config(CT &config) {
         get_config_value(config, options.map_pixel_outlier_source_radius_arcsec, missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","map_pixel_outlier_source_radius_arcsec"}, {}, {0.0});
     }
+    if (config.template has_typed<bool>(std::tuple{"timestream","learning","busy_detector_exclusion_enabled"})) {
+        get_config_value(config, options.busy_detector_exclusion_enabled,
+                         missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","busy_detector_exclusion_enabled"});
+    }
+    if (config.template has_typed<bool>(std::tuple{"timestream","learning","scan_network_pathology_enabled"})) {
+        get_config_value(config, options.scan_network_pathology_enabled,
+                         missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","scan_network_pathology_enabled"});
+    }
+    if (config.template has_typed<bool>(std::tuple{"timestream","learning","scan_network_pathology_apply_pre_rtc"})) {
+        get_config_value(config, options.scan_network_pathology_apply_pre_rtc,
+                         missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","scan_network_pathology_apply_pre_rtc"});
+    }
+    if (config.template has_typed<bool>(std::tuple{"timestream","learning","scan_network_pathology_apply_pre_ptc"})) {
+        get_config_value(config, options.scan_network_pathology_apply_pre_ptc,
+                         missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","scan_network_pathology_apply_pre_ptc"});
+    }
+    if (config.template has_typed<int>(std::tuple{"timestream","learning","scan_network_pathology_min_candidate_clusters"})) {
+        get_config_value(config, options.scan_network_pathology_min_candidate_clusters,
+                         missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","scan_network_pathology_min_candidate_clusters"},
+                         {}, {0});
+    }
+    if (config.template has_typed<int>(std::tuple{"timestream","learning","scan_network_pathology_min_candidate_events"})) {
+        get_config_value(config, options.scan_network_pathology_min_candidate_events,
+                         missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","scan_network_pathology_min_candidate_events"},
+                         {}, {0});
+    }
+    if (config.template has_typed<double>(std::tuple{"timestream","learning","scan_network_pathology_min_max_residual_z"})) {
+        get_config_value(config, options.scan_network_pathology_min_max_residual_z,
+                         missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","scan_network_pathology_min_max_residual_z"},
+                         {}, {0.0});
+    }
+    if (config.template has_typed<int>(std::tuple{"timestream","learning","scan_network_pathology_severe_candidate_events"})) {
+        get_config_value(config, options.scan_network_pathology_severe_candidate_events,
+                         missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","scan_network_pathology_severe_candidate_events"},
+                         {}, {0});
+    }
+    if (config.template has_typed<double>(std::tuple{"timestream","learning","scan_network_pathology_severe_max_residual_z"})) {
+        get_config_value(config, options.scan_network_pathology_severe_max_residual_z,
+                         missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","scan_network_pathology_severe_max_residual_z"},
+                         {}, {0.0});
+    }
+    if (config.template has_typed<double>(std::tuple{"timestream","learning","scan_network_pathology_max_new_flagged_fraction"})) {
+        get_config_value(config, options.scan_network_pathology_max_new_flagged_fraction,
+                         missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","scan_network_pathology_max_new_flagged_fraction"},
+                         {}, {0.0});
+    }
 
     reduction_learning.configure(options);
     const bool map_contribution_diag =
@@ -1169,7 +1228,8 @@ void Engine::get_learning_config(CT &config) {
         "reduction learning state configured: enabled={} diagnostics_enabled={} "
         "learn_iters={} apply_start_iter={} max_records_per_type={} "
         "apply_sample_masks_enabled={} apply_max_new_flagged_fraction={:.4g} "
-        "map_pixel_outliers(enabled={} contributors={} targeted_contributors={} detector_exclusion={} top_n={} target_max={} exclude_min_pixels={} min_abs_z={} min_n_eff={} source_radius_arcsec={})",
+        "map_pixel_outliers(enabled={} contributors={} targeted_contributors={} detector_exclusion={} top_n={} target_max={} exclude_min_pixels={} min_abs_z={} min_n_eff={} source_radius_arcsec={}) "
+        "busy_detector_exclusion_enabled={} scan_network_pathology(enabled={} pre_rtc={} pre_ptc={} min_clusters={} min_events={} min_resid_z={} severe_events={} severe_resid_z={} max_new_flagged_fraction={:.4g})",
         reduction_learning.options.enabled,
         reduction_learning.options.diagnostics_enabled,
         reduction_learning.options.learn_iters,
@@ -1186,7 +1246,17 @@ void Engine::get_learning_config(CT &config) {
         reduction_learning.options.map_pixel_outlier_detector_exclusion_min_pixels,
         reduction_learning.options.map_pixel_outlier_min_abs_z,
         reduction_learning.options.map_pixel_outlier_min_n_eff,
-        reduction_learning.options.map_pixel_outlier_source_radius_arcsec);
+        reduction_learning.options.map_pixel_outlier_source_radius_arcsec,
+        reduction_learning.options.busy_detector_exclusion_enabled,
+        reduction_learning.options.scan_network_pathology_enabled,
+        reduction_learning.options.scan_network_pathology_apply_pre_rtc,
+        reduction_learning.options.scan_network_pathology_apply_pre_ptc,
+        reduction_learning.options.scan_network_pathology_min_candidate_clusters,
+        reduction_learning.options.scan_network_pathology_min_candidate_events,
+        reduction_learning.options.scan_network_pathology_min_max_residual_z,
+        reduction_learning.options.scan_network_pathology_severe_candidate_events,
+        reduction_learning.options.scan_network_pathology_severe_max_residual_z,
+        reduction_learning.options.scan_network_pathology_max_new_flagged_fraction);
 }
 
 void Engine::configure_map_pixel_contribution_targets(mapmaking::MapBuffer &mb,
@@ -1344,8 +1414,31 @@ static int citlali_learning_apt_int(const apt_t &apt, const std::string &key,
     return static_cast<int>(std::llround(it->second(det)));
 }
 
+template <class apt_t>
+static int citlali_learning_array_for_nw(const apt_t &apt, int nw, int fallback) {
+    const auto nw_it = apt.find("nw");
+    const auto array_it = apt.find("array");
+    if (nw_it == apt.end() || array_it == apt.end()) {
+        return fallback;
+    }
+    const Eigen::Index n =
+        std::min<Eigen::Index>(nw_it->second.size(), array_it->second.size());
+    for (Eigen::Index det = 0; det < n; ++det) {
+        if (!std::isfinite(nw_it->second(det)) ||
+            !std::isfinite(array_it->second(det))) {
+            continue;
+        }
+        if (static_cast<int>(std::llround(nw_it->second(det))) == nw) {
+            return static_cast<int>(std::llround(array_it->second(det)));
+        }
+    }
+    return fallback;
+}
+
 template <class rtc_t, class calib_t>
 void Engine::apply_learned_rtc_sample_masks(rtc_t &rtcdata, calib_t &calib_scan) {
+    apply_learned_detector_exclusions(
+        rtcdata, calib_scan, "pre_rtc_detector_exclusion", true, false);
     apply_learned_sample_masks(
         rtcdata, calib_scan, true, "pre_rtc",
         rtcproc.despiker.source_protection_enabled,
@@ -1363,29 +1456,68 @@ void Engine::apply_learned_ptc_sample_masks(ptc_t &ptcdata, calib_t &calib_scan)
 template <class ptc_t, class calib_t>
 void Engine::apply_learned_ptc_detector_exclusions(ptc_t &ptcdata,
                                                    calib_t &calib_scan) {
+    apply_learned_detector_exclusions(
+        ptcdata, calib_scan, "pre_ptc_detector_exclusion", false, true);
+}
+
+template <class tc_t, class calib_t>
+void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
+                                               calib_t &calib_scan,
+                                               const std::string &stage,
+                                               bool pre_rtc,
+                                               bool update_apt_flags) {
     if (!reduction_learning.is_enabled() ||
-        !reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled ||
         !reduction_learning.apply_active()) {
         return;
     }
-    if (ptcdata.flags.data.rows() <= 0 || ptcdata.flags.data.cols() <= 0) {
+    if (tcdata.flags.data.rows() <= 0 || tcdata.flags.data.cols() <= 0) {
         return;
     }
 
-    const int scan_id = static_cast<int>(ptcdata.index.data);
+    const bool mapdiag_detector_exclusion =
+        reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled;
+    const bool busy_detector_exclusion =
+        reduction_learning.options.busy_detector_exclusion_enabled;
+    const bool network_exclusion =
+        reduction_learning.options.scan_network_pathology_enabled &&
+        ((!pre_rtc && reduction_learning.options.scan_network_pathology_apply_pre_ptc) ||
+         (pre_rtc && reduction_learning.options.scan_network_pathology_apply_pre_rtc));
+    if (!mapdiag_detector_exclusion && !busy_detector_exclusion &&
+        !network_exclusion) {
+        return;
+    }
+
+    const int scan_id = static_cast<int>(tcdata.index.data);
     std::vector<ReductionLearningState::DetectorPenalty> records;
     {
         std::lock_guard<std::mutex> lock(*reduction_learning.mutex);
         for (const auto &record : reduction_learning.detector_penalties) {
-            if (record.obsnum == obsnum &&
+            if (record.obsnum != obsnum ||
+                !record.scan_local ||
+                record.scan != scan_id ||
+                record.iter < 0 ||
+                record.iter >= fruit_iter ||
+                !std::isfinite(record.factor) ||
+                record.factor > 0.0) {
+                continue;
+            }
+            const bool is_mapdiag_detector =
+                mapdiag_detector_exclusion &&
+                record.uid >= 0 &&
                 record.reason == "map_pixel_outlier_detector_dominance" &&
-                record.producer.rfind("mapdiag:", 0) == 0 &&
-                record.scan_local &&
-                record.scan == scan_id &&
-                record.iter >= 0 &&
-                record.iter < fruit_iter &&
-                std::isfinite(record.factor) &&
-                record.factor <= 0.0) {
+                record.producer.rfind("mapdiag:", 0) == 0;
+            const bool is_busy_detector =
+                busy_detector_exclusion &&
+                record.uid >= 0 &&
+                record.reason == "busy_vetoed_residual" &&
+                record.producer == "ptc_second_pass";
+            const bool is_network =
+                network_exclusion &&
+                record.uid < 0 &&
+                record.nw >= 0 &&
+                record.reason == "busy_network_pathology" &&
+                record.producer == "ptc_second_pass";
+            if (is_mapdiag_detector || is_busy_detector || is_network) {
                 records.push_back(record);
             }
         }
@@ -1397,24 +1529,51 @@ void Engine::apply_learned_ptc_detector_exclusions(ptc_t &ptcdata,
     ReductionLearningState::LearnedMaskApplicationSummary summary;
     summary.obsnum = obsnum;
     summary.producer = "learning_state";
-    summary.stage = "pre_ptc_detector_exclusion";
+    summary.stage = stage;
     summary.iter = fruit_iter;
     summary.scan = scan_id;
     summary.candidate_records = static_cast<int>(records.size());
-    summary.max_new_flagged_fraction =
-        reduction_learning.options.apply_max_new_flagged_fraction;
+    const bool has_network_record = std::any_of(
+        records.begin(), records.end(),
+        [](const auto &record) {
+            return record.uid < 0 &&
+                   record.reason == "busy_network_pathology";
+        });
+    summary.max_new_flagged_fraction = has_network_record
+        ? reduction_learning.options.scan_network_pathology_max_new_flagged_fraction
+        : reduction_learning.options.apply_max_new_flagged_fraction;
 
-    const Eigen::Index n_pts = ptcdata.flags.data.rows();
-    const Eigen::Index n_dets = ptcdata.flags.data.cols();
+    const Eigen::Index n_pts = tcdata.flags.data.rows();
+    const Eigen::Index n_dets = tcdata.flags.data.cols();
     std::set<Eigen::Index> proposed_dets;
     for (const auto &record : records) {
-        const Eigen::Index det = citlali_learning_find_det_by_uid(calib_scan.apt, record.uid);
-        if (det < 0 || det >= n_dets) {
-            ++summary.invalid_records;
-            continue;
+        if (record.uid >= 0) {
+            const Eigen::Index det =
+                citlali_learning_find_det_by_uid(calib_scan.apt, record.uid);
+            if (det < 0 || det >= n_dets) {
+                ++summary.invalid_records;
+                continue;
+            }
+            ++summary.matched_records;
+            proposed_dets.insert(det);
         }
-        ++summary.matched_records;
-        proposed_dets.insert(det);
+        else if (record.nw >= 0) {
+            bool matched_network = false;
+            for (Eigen::Index det = 0; det < n_dets; ++det) {
+                const int det_nw =
+                    citlali_learning_apt_int(calib_scan.apt, "nw", det, -1);
+                if (det_nw == record.nw) {
+                    matched_network = true;
+                    proposed_dets.insert(det);
+                }
+            }
+            if (matched_network) {
+                ++summary.matched_records;
+            }
+            else {
+                ++summary.invalid_records;
+            }
+        }
     }
     if (proposed_dets.empty()) {
         reduction_learning.record_learned_mask_application(summary);
@@ -1424,7 +1583,7 @@ void Engine::apply_learned_ptc_detector_exclusions(ptc_t &ptcdata,
     for (const auto det : proposed_dets) {
         for (Eigen::Index sample = 0; sample < n_pts; ++sample) {
             ++summary.proposed_samples;
-            if (ptcdata.flags.data(sample, det)) {
+            if (tcdata.flags.data(sample, det)) {
                 ++summary.already_flagged_samples;
             }
             else {
@@ -1437,17 +1596,15 @@ void Engine::apply_learned_ptc_detector_exclusions(ptc_t &ptcdata,
     summary.newly_flagged_fraction =
         static_cast<double>(summary.newly_flagged_samples) / denom;
     const bool over_cap =
-        reduction_learning.options.apply_max_new_flagged_fraction > 0.0 &&
+        summary.max_new_flagged_fraction > 0.0 &&
         summary.newly_flagged_fraction >
-            reduction_learning.options.apply_max_new_flagged_fraction;
+            summary.max_new_flagged_fraction;
     if (!over_cap) {
         auto flag_it = calib_scan.apt.find("flag");
         for (const auto det : proposed_dets) {
-            ptcdata.flags.data.col(det).setOnes();
-            if (ptcdata.weights.data.size() == n_dets) {
-                ptcdata.weights.data(det) = 0.0;
-            }
-            if (flag_it != calib_scan.apt.end() &&
+            tcdata.flags.data.col(det).setOnes();
+            if (update_apt_flags &&
+                flag_it != calib_scan.apt.end() &&
                 det >= 0 &&
                 det < flag_it->second.size()) {
                 flag_it->second(det) = 1.0;
@@ -1459,16 +1616,16 @@ void Engine::apply_learned_ptc_detector_exclusions(ptc_t &ptcdata,
     reduction_learning.record_learned_mask_application(summary);
     if (over_cap) {
         logger->warn(
-            "learned PTC detector exclusions rejected scan {} iter {}: candidates={} matched={} dets={} newly_flagged={} newly_flagged_fraction={:.4f} cap={:.4f}",
-            scan_id + 1, fruit_iter, summary.candidate_records,
+            "learned {} rejected scan {} iter {}: candidates={} matched={} dets={} newly_flagged={} newly_flagged_fraction={:.4f} cap={:.4f}",
+            stage, scan_id + 1, fruit_iter, summary.candidate_records,
             summary.matched_records, proposed_dets.size(),
             summary.newly_flagged_samples, summary.newly_flagged_fraction,
-            reduction_learning.options.apply_max_new_flagged_fraction);
+            summary.max_new_flagged_fraction);
     }
     else {
         logger->info(
-            "learned PTC detector exclusions applied scan {} iter {}: candidates={} matched={} dets={} newly_flagged={} already_flagged={} newly_flagged_fraction={:.4f}",
-            scan_id + 1, fruit_iter, summary.candidate_records,
+            "learned {} applied scan {} iter {}: candidates={} matched={} dets={} newly_flagged={} already_flagged={} newly_flagged_fraction={:.4f}",
+            stage, scan_id + 1, fruit_iter, summary.candidate_records,
             summary.matched_records, proposed_dets.size(),
             summary.newly_flagged_samples, summary.already_flagged_samples,
             summary.newly_flagged_fraction);
@@ -1797,6 +1954,48 @@ void Engine::collect_ptc_learning_diagnostics(
             record.busy_vetoed = summary.busy_network_vetoed;
             record.selective_acceptance_recommended = selective_acceptance_recommended;
             reduction_learning.record_busy_network_summary(std::move(record));
+        }
+
+        if (reduction_learning.options.scan_network_pathology_enabled &&
+            summary.nw >= 0) {
+            const int off_source_candidate_events = std::max<Eigen::Index>(
+                0, summary.n_candidate_events - summary.n_source_protected_events);
+            const double max_residual_z = std::isfinite(summary.max_unflagged_residual_z)
+                ? summary.max_unflagged_residual_z
+                : 0.0;
+            const bool busy_pathology =
+                summary.busy_network_vetoed &&
+                summary.n_candidate_clusters >=
+                    reduction_learning.options.scan_network_pathology_min_candidate_clusters &&
+                off_source_candidate_events >=
+                    reduction_learning.options.scan_network_pathology_min_candidate_events &&
+                max_residual_z >=
+                    reduction_learning.options.scan_network_pathology_min_max_residual_z;
+            const bool severe_pathology =
+                off_source_candidate_events >=
+                    reduction_learning.options.scan_network_pathology_severe_candidate_events &&
+                max_residual_z >=
+                    reduction_learning.options.scan_network_pathology_severe_max_residual_z;
+            if (busy_pathology || severe_pathology) {
+                ReductionLearningState::DetectorPenalty penalty;
+                penalty.obsnum = obsnum;
+                penalty.producer = "ptc_second_pass";
+                penalty.reason = "busy_network_pathology";
+                penalty.iter = fruit_iter;
+                penalty.scan = static_cast<int>(scan_id);
+                penalty.uid = -1;
+                penalty.nw = static_cast<int>(summary.nw);
+                penalty.array = citlali_learning_array_for_nw(
+                    calib_scan.apt, penalty.nw, -1);
+                penalty.factor = 0.0;
+                penalty.score = std::max(
+                    max_residual_z,
+                    std::isfinite(summary.top_candidate_cluster_peak_score)
+                        ? summary.top_candidate_cluster_peak_score
+                        : 0.0);
+                penalty.scan_local = true;
+                reduction_learning.record_detector_penalty(std::move(penalty));
+            }
         }
 
         for (const auto &event : summary.candidate_events) {
@@ -3839,6 +4038,26 @@ void Engine::add_tod_header(map_buffer_t &mb) {
                        reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled);
         add_netcdf_var(fo, "CONFIG.LEARNING.MAP_PIXEL_OUTLIER_DETECTOR_EXCLUSION_MIN_PIXELS",
                        reduction_learning.options.map_pixel_outlier_detector_exclusion_min_pixels);
+        add_netcdf_var(fo, "CONFIG.LEARNING.BUSY_DETECTOR_EXCLUSION_ENABLED",
+                       reduction_learning.options.busy_detector_exclusion_enabled);
+        add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_ENABLED",
+                       reduction_learning.options.scan_network_pathology_enabled);
+        add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_APPLY_PRE_RTC",
+                       reduction_learning.options.scan_network_pathology_apply_pre_rtc);
+        add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_APPLY_PRE_PTC",
+                       reduction_learning.options.scan_network_pathology_apply_pre_ptc);
+        add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_CLUSTERS",
+                       reduction_learning.options.scan_network_pathology_min_candidate_clusters);
+        add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_EVENTS",
+                       reduction_learning.options.scan_network_pathology_min_candidate_events);
+        add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_RESID_Z",
+                       reduction_learning.options.scan_network_pathology_min_max_residual_z);
+        add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_SEVERE_EVENTS",
+                       reduction_learning.options.scan_network_pathology_severe_candidate_events);
+        add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_SEVERE_RESID_Z",
+                       reduction_learning.options.scan_network_pathology_severe_max_residual_z);
+        add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MAX_NEW_FLAGGED_FRAC",
+                       reduction_learning.options.scan_network_pathology_max_new_flagged_fraction);
         add_netcdf_var<std::string>(fo, "CONFIG.LEARNING.PHASE", reduction_learning.current_phase_name());
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTLOW", rtcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTHIGH", rtcproc.upper_inv_var_factor);
@@ -6018,6 +6237,36 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.MAP_OUTLIER_DET_MINPIX",
                                         reduction_learning.options.map_pixel_outlier_detector_exclusion_min_pixels,
                                         "Outlier pixels needed for learned detector exclusion");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.BUSY_DET_EXCL",
+                                        reduction_learning.options.busy_detector_exclusion_enabled,
+                                        "Enable PTC-busy learned detector exclusions");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.NET_PATH.ENABLED",
+                                        reduction_learning.options.scan_network_pathology_enabled,
+                                        "Enable learned scan-network pathology exclusions");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.NET_PATH.PRE_RTC",
+                                        reduction_learning.options.scan_network_pathology_apply_pre_rtc,
+                                        "Apply scan-network exclusions before RTC");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.NET_PATH.PRE_PTC",
+                                        reduction_learning.options.scan_network_pathology_apply_pre_ptc,
+                                        "Apply scan-network exclusions before PTC");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.NET_PATH.MIN_CLUST",
+                                        reduction_learning.options.scan_network_pathology_min_candidate_clusters,
+                                        "Min clusters for scan-network pathology");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.NET_PATH.MIN_EV",
+                                        reduction_learning.options.scan_network_pathology_min_candidate_events,
+                                        "Min events for scan-network pathology");
+    add_double_key("CONFIG.LEARNING.NET_PATH.MIN_Z",
+                   reduction_learning.options.scan_network_pathology_min_max_residual_z,
+                   "Min residual z for scan-network pathology");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.NET_PATH.SEV_EV",
+                                        reduction_learning.options.scan_network_pathology_severe_candidate_events,
+                                        "Severe event count for scan-network pathology");
+    add_double_key("CONFIG.LEARNING.NET_PATH.SEV_Z",
+                   reduction_learning.options.scan_network_pathology_severe_max_residual_z,
+                   "Severe residual z for scan-network pathology");
+    add_double_key("CONFIG.LEARNING.NET_PATH.MAX_FRAC",
+                   reduction_learning.options.scan_network_pathology_max_new_flagged_fraction,
+                   "Max new flagged fraction for network exclusions");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.PHASE",
                                         reduction_learning.current_phase_name(),
                                         "Shared reduction learning phase");
@@ -7694,6 +7943,26 @@ void Engine::create_ptcdiag_file() {
                    reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled);
     add_netcdf_var(fo, "CONFIG.LEARNING.MAP_PIXEL_OUTLIER_DETECTOR_EXCLUSION_MIN_PIXELS",
                    reduction_learning.options.map_pixel_outlier_detector_exclusion_min_pixels);
+    add_netcdf_var(fo, "CONFIG.LEARNING.BUSY_DETECTOR_EXCLUSION_ENABLED",
+                   reduction_learning.options.busy_detector_exclusion_enabled);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_ENABLED",
+                   reduction_learning.options.scan_network_pathology_enabled);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_APPLY_PRE_RTC",
+                   reduction_learning.options.scan_network_pathology_apply_pre_rtc);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_APPLY_PRE_PTC",
+                   reduction_learning.options.scan_network_pathology_apply_pre_ptc);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_CLUSTERS",
+                   reduction_learning.options.scan_network_pathology_min_candidate_clusters);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_EVENTS",
+                   reduction_learning.options.scan_network_pathology_min_candidate_events);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_RESID_Z",
+                   reduction_learning.options.scan_network_pathology_min_max_residual_z);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_SEVERE_EVENTS",
+                   reduction_learning.options.scan_network_pathology_severe_candidate_events);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_SEVERE_RESID_Z",
+                   reduction_learning.options.scan_network_pathology_severe_max_residual_z);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MAX_NEW_FLAGGED_FRAC",
+                   reduction_learning.options.scan_network_pathology_max_new_flagged_fraction);
     add_netcdf_var<std::string>(fo, "CONFIG.LEARNING.PHASE", reduction_learning.current_phase_name());
     add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
     add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
@@ -8161,6 +8430,26 @@ void Engine::create_rtcdiag_file() {
                    reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled);
     add_netcdf_var(fo, "CONFIG.LEARNING.MAP_PIXEL_OUTLIER_DETECTOR_EXCLUSION_MIN_PIXELS",
                    reduction_learning.options.map_pixel_outlier_detector_exclusion_min_pixels);
+    add_netcdf_var(fo, "CONFIG.LEARNING.BUSY_DETECTOR_EXCLUSION_ENABLED",
+                   reduction_learning.options.busy_detector_exclusion_enabled);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_ENABLED",
+                   reduction_learning.options.scan_network_pathology_enabled);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_APPLY_PRE_RTC",
+                   reduction_learning.options.scan_network_pathology_apply_pre_rtc);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_APPLY_PRE_PTC",
+                   reduction_learning.options.scan_network_pathology_apply_pre_ptc);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_CLUSTERS",
+                   reduction_learning.options.scan_network_pathology_min_candidate_clusters);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_EVENTS",
+                   reduction_learning.options.scan_network_pathology_min_candidate_events);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_RESID_Z",
+                   reduction_learning.options.scan_network_pathology_min_max_residual_z);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_SEVERE_EVENTS",
+                   reduction_learning.options.scan_network_pathology_severe_candidate_events);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_SEVERE_RESID_Z",
+                   reduction_learning.options.scan_network_pathology_severe_max_residual_z);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MAX_NEW_FLAGGED_FRAC",
+                   reduction_learning.options.scan_network_pathology_max_new_flagged_fraction);
     add_netcdf_var<std::string>(fo, "CONFIG.LEARNING.PHASE", reduction_learning.current_phase_name());
     add_netcdf_var(fo, "CONFIG.DESPIKED", rtcproc.run_despike);
     add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.ENABLED", rtcproc.despiker.local_residual.enabled);

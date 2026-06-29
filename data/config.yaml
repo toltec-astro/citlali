@@ -173,6 +173,16 @@ timestream: # timestream reduction parameters
     map_pixel_outlier_min_abs_z: 8.0 # minimum robust off-source map S/N z for map-pixel outlier diagnostics
     map_pixel_outlier_min_n_eff: 4.0 # ignore candidate pixels with fewer effective samples when coverage is available
     map_pixel_outlier_source_radius_arcsec: 30.0 # central source-protection radius excluded from map-pixel outlier diagnostics
+    busy_detector_exclusion_enabled: true # apply learned scan-local exclusions for individual detectors with severe busy-network residuals
+    scan_network_pathology_enabled: true # learn scan-local network exclusions when a whole network shows severe off-source transient pathology
+    scan_network_pathology_apply_pre_rtc: true # apply learned scan-network exclusions before RTC filtering in production iterations
+    scan_network_pathology_apply_pre_ptc: true # apply learned scan-network exclusions before PTC cleaning and weighting in production iterations
+    scan_network_pathology_min_candidate_clusters: 4 # minimum busy-network candidate clusters before considering a network exclusion
+    scan_network_pathology_min_candidate_events: 100 # minimum off-source detector events before considering a network exclusion
+    scan_network_pathology_min_max_residual_z: 25.0 # minimum unflagged residual z before considering a busy-network exclusion
+    scan_network_pathology_severe_candidate_events: 250 # off-source detector-event count that can trigger exclusion even without a busy veto
+    scan_network_pathology_severe_max_residual_z: 50.0 # severe residual z that can trigger exclusion even without a busy veto
+    scan_network_pathology_max_new_flagged_fraction: 0.35 # reject network-exclusion application if it newly flags more than this detector-sample fraction
   polarimetry: # polarized reduction
     enabled: false # enable or disable polarized reduction
     ignore_hwpr: auto # override automatic hwpr finding (true, false, auto)

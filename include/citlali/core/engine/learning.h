@@ -36,6 +36,16 @@ struct ReductionLearningState {
         double map_pixel_outlier_min_abs_z = 8.0;
         double map_pixel_outlier_min_n_eff = 4.0;
         double map_pixel_outlier_source_radius_arcsec = 30.0;
+        bool busy_detector_exclusion_enabled = true;
+        bool scan_network_pathology_enabled = true;
+        bool scan_network_pathology_apply_pre_rtc = true;
+        bool scan_network_pathology_apply_pre_ptc = true;
+        int scan_network_pathology_min_candidate_clusters = 4;
+        int scan_network_pathology_min_candidate_events = 100;
+        double scan_network_pathology_min_max_residual_z = 25.0;
+        int scan_network_pathology_severe_candidate_events = 250;
+        double scan_network_pathology_severe_max_residual_z = 50.0;
+        double scan_network_pathology_max_new_flagged_fraction = 0.35;
     };
 
     struct LearnedSampleMask {
@@ -230,6 +240,18 @@ struct ReductionLearningState {
             std::max(0.0, new_options.map_pixel_outlier_min_n_eff);
         new_options.map_pixel_outlier_source_radius_arcsec =
             std::max(0.0, new_options.map_pixel_outlier_source_radius_arcsec);
+        new_options.scan_network_pathology_min_candidate_clusters =
+            std::max(0, new_options.scan_network_pathology_min_candidate_clusters);
+        new_options.scan_network_pathology_min_candidate_events =
+            std::max(0, new_options.scan_network_pathology_min_candidate_events);
+        new_options.scan_network_pathology_min_max_residual_z =
+            std::max(0.0, new_options.scan_network_pathology_min_max_residual_z);
+        new_options.scan_network_pathology_severe_candidate_events =
+            std::max(0, new_options.scan_network_pathology_severe_candidate_events);
+        new_options.scan_network_pathology_severe_max_residual_z =
+            std::max(0.0, new_options.scan_network_pathology_severe_max_residual_z);
+        new_options.scan_network_pathology_max_new_flagged_fraction =
+            std::max(0.0, new_options.scan_network_pathology_max_new_flagged_fraction);
         options = new_options;
         if (!options.enabled) {
             current_phase = IterationPhase::Inactive;
