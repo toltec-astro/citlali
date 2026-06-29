@@ -1607,8 +1607,34 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
         return;
     }
 
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> source_mask;
+    bool have_network_source_protection = false;
+    if (!network_proposed_dets.empty() &&
+        stage == "pre_mapmaking_detector_exclusion") {
+        const double radius_arcsec =
+            std::max(20.0, ptcproc.second_pass_local.source_protection_radius_arcsec);
+        auto [mask, source_info] = engine_utils::calc_source_protection_mask(
+            tcdata, calib_scan.apt, telescope.pixel_axes, map_grouping,
+            "map_center_radius", radius_arcsec);
+        (void) source_info;
+        source_mask = std::move(mask);
+        have_network_source_protection =
+            source_mask.rows() == n_pts && source_mask.cols() == n_dets;
+        if (!have_network_source_protection) {
+            logger->warn(
+                "learned {} source-protection mask shape mismatch scan {}: mask=({}, {}) flags=({}, {})",
+                stage, scan_id, source_mask.rows(), source_mask.cols(), n_pts, n_dets);
+        }
+    }
+
     for (const auto det : proposed_dets) {
         for (Eigen::Index sample = 0; sample < n_pts; ++sample) {
+            if (have_network_source_protection &&
+                network_proposed_dets.find(det) != network_proposed_dets.end() &&
+                source_mask(sample, det)) {
+                ++summary.source_protected_samples;
+                continue;
+            }
             ++summary.proposed_samples;
             if (tcdata.flags.data(sample, det)) {
                 ++summary.already_flagged_samples;
@@ -1689,7 +1715,17 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
         }
 
         for (const auto det : proposed_dets) {
-            tcdata.flags.data.col(det).setOnes();
+            if (have_network_source_protection &&
+                network_proposed_dets.find(det) != network_proposed_dets.end()) {
+                for (Eigen::Index sample = 0; sample < n_pts; ++sample) {
+                    if (!source_mask(sample, det)) {
+                        tcdata.flags.data(sample, det) = true;
+                    }
+                }
+            }
+            else {
+                tcdata.flags.data.col(det).setOnes();
+            }
             if (apt_flag_dets.find(det) != apt_flag_dets.end()) {
                 flag_it->second(det) = 1.0;
             }
