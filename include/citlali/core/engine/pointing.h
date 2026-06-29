@@ -557,6 +557,7 @@ auto Pointing::run(KidsProc &kidsproc) {
             else {
                 run_noise_fruit = run_noise;
             }
+            apply_learned_mapmaking_detector_exclusions(ptcdata, calib_scan);
             logger->info("populating maps");
             if (map_method=="naive") {
                 naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,

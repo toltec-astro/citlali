@@ -38,8 +38,9 @@ struct ReductionLearningState {
         double map_pixel_outlier_source_radius_arcsec = 30.0;
         bool busy_detector_exclusion_enabled = true;
         bool scan_network_pathology_enabled = true;
-        bool scan_network_pathology_apply_pre_rtc = true;
-        bool scan_network_pathology_apply_pre_ptc = true;
+        bool scan_network_pathology_apply_pre_rtc = false;
+        bool scan_network_pathology_apply_pre_ptc = false;
+        bool scan_network_pathology_apply_pre_mapmaking = true;
         int scan_network_pathology_min_candidate_clusters = 4;
         int scan_network_pathology_min_candidate_events = 100;
         double scan_network_pathology_min_max_residual_z = 25.0;

@@ -423,6 +423,7 @@ auto Lali::run() -> run_stage_t {
                 run_noise_fruit = false;
             }
 
+            apply_learned_mapmaking_detector_exclusions(ptcdata, calib_scan);
             // populate maps with current time chunk
             logger->info("populating maps");
             if (map_method=="naive") {

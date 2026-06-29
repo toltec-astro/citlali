@@ -402,8 +402,10 @@ public:
     template <class ptc_t, class calib_t>
     void apply_learned_ptc_detector_exclusions(ptc_t &, calib_t &);
     template <class tc_t, class calib_t>
+    void apply_learned_mapmaking_detector_exclusions(tc_t &, calib_t &);
+    template <class tc_t, class calib_t>
     void apply_learned_detector_exclusions(tc_t &, calib_t &, const std::string &,
-                                           bool, bool);
+                                           bool, bool, bool, bool);
     template <class tc_t, class calib_t>
     void apply_learned_sample_masks(tc_t &, calib_t &, bool, const std::string &,
                                     bool, double);
@@ -1179,6 +1181,11 @@ void Engine::get_learning_config(CT &config) {
                          missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","scan_network_pathology_apply_pre_ptc"});
     }
+    if (config.template has_typed<bool>(std::tuple{"timestream","learning","scan_network_pathology_apply_pre_mapmaking"})) {
+        get_config_value(config, options.scan_network_pathology_apply_pre_mapmaking,
+                         missing_keys, invalid_keys,
+                         std::tuple{"timestream","learning","scan_network_pathology_apply_pre_mapmaking"});
+    }
     if (config.template has_typed<int>(std::tuple{"timestream","learning","scan_network_pathology_min_candidate_clusters"})) {
         get_config_value(config, options.scan_network_pathology_min_candidate_clusters,
                          missing_keys, invalid_keys,
@@ -1229,7 +1236,7 @@ void Engine::get_learning_config(CT &config) {
         "learn_iters={} apply_start_iter={} max_records_per_type={} "
         "apply_sample_masks_enabled={} apply_max_new_flagged_fraction={:.4g} "
         "map_pixel_outliers(enabled={} contributors={} targeted_contributors={} detector_exclusion={} top_n={} target_max={} exclude_min_pixels={} min_abs_z={} min_n_eff={} source_radius_arcsec={}) "
-        "busy_detector_exclusion_enabled={} scan_network_pathology(enabled={} pre_rtc={} pre_ptc={} min_clusters={} min_events={} min_resid_z={} severe_events={} severe_resid_z={} max_new_flagged_fraction={:.4g})",
+        "busy_detector_exclusion_enabled={} scan_network_pathology(enabled={} pre_rtc={} pre_ptc={} pre_mapmaking={} min_clusters={} min_events={} min_resid_z={} severe_events={} severe_resid_z={} max_new_flagged_fraction={:.4g})",
         reduction_learning.options.enabled,
         reduction_learning.options.diagnostics_enabled,
         reduction_learning.options.learn_iters,
@@ -1251,6 +1258,7 @@ void Engine::get_learning_config(CT &config) {
         reduction_learning.options.scan_network_pathology_enabled,
         reduction_learning.options.scan_network_pathology_apply_pre_rtc,
         reduction_learning.options.scan_network_pathology_apply_pre_ptc,
+        reduction_learning.options.scan_network_pathology_apply_pre_mapmaking,
         reduction_learning.options.scan_network_pathology_min_candidate_clusters,
         reduction_learning.options.scan_network_pathology_min_candidate_events,
         reduction_learning.options.scan_network_pathology_min_max_residual_z,
@@ -1438,7 +1446,8 @@ static int citlali_learning_array_for_nw(const apt_t &apt, int nw, int fallback)
 template <class rtc_t, class calib_t>
 void Engine::apply_learned_rtc_sample_masks(rtc_t &rtcdata, calib_t &calib_scan) {
     apply_learned_detector_exclusions(
-        rtcdata, calib_scan, "pre_rtc_detector_exclusion", true, false);
+        rtcdata, calib_scan, "pre_rtc_detector_exclusion", true, false,
+        true, true);
     apply_learned_sample_masks(
         rtcdata, calib_scan, true, "pre_rtc",
         rtcproc.despiker.source_protection_enabled,
@@ -1457,7 +1466,16 @@ template <class ptc_t, class calib_t>
 void Engine::apply_learned_ptc_detector_exclusions(ptc_t &ptcdata,
                                                    calib_t &calib_scan) {
     apply_learned_detector_exclusions(
-        ptcdata, calib_scan, "pre_ptc_detector_exclusion", false, true);
+        ptcdata, calib_scan, "pre_ptc_detector_exclusion", false, true,
+        true, true);
+}
+
+template <class tc_t, class calib_t>
+void Engine::apply_learned_mapmaking_detector_exclusions(tc_t &tcdata,
+                                                         calib_t &calib_scan) {
+    apply_learned_detector_exclusions(
+        tcdata, calib_scan, "pre_mapmaking_detector_exclusion", false, false,
+        false, true);
 }
 
 template <class tc_t, class calib_t>
@@ -1465,7 +1483,9 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
                                                calib_t &calib_scan,
                                                const std::string &stage,
                                                bool pre_rtc,
-                                               bool update_apt_flags) {
+                                               bool update_apt_flags,
+                                               bool include_detector_records,
+                                               bool include_network_records) {
     if (!reduction_learning.is_enabled() ||
         !reduction_learning.apply_active()) {
         return;
@@ -1475,13 +1495,18 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
     }
 
     const bool mapdiag_detector_exclusion =
+        include_detector_records &&
         reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled;
     const bool busy_detector_exclusion =
+        include_detector_records &&
         reduction_learning.options.busy_detector_exclusion_enabled;
     const bool network_exclusion =
+        include_network_records &&
         reduction_learning.options.scan_network_pathology_enabled &&
-        ((!pre_rtc && reduction_learning.options.scan_network_pathology_apply_pre_ptc) ||
-         (pre_rtc && reduction_learning.options.scan_network_pathology_apply_pre_rtc));
+        (stage == "pre_mapmaking_detector_exclusion"
+             ? reduction_learning.options.scan_network_pathology_apply_pre_mapmaking
+             : ((!pre_rtc && reduction_learning.options.scan_network_pathology_apply_pre_ptc) ||
+                (pre_rtc && reduction_learning.options.scan_network_pathology_apply_pre_rtc)));
     if (!mapdiag_detector_exclusion && !busy_detector_exclusion &&
         !network_exclusion) {
         return;
@@ -4110,6 +4135,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
                        reduction_learning.options.scan_network_pathology_apply_pre_rtc);
         add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_APPLY_PRE_PTC",
                        reduction_learning.options.scan_network_pathology_apply_pre_ptc);
+        add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_APPLY_PRE_MAPMAKING",
+                       reduction_learning.options.scan_network_pathology_apply_pre_mapmaking);
         add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_CLUSTERS",
                        reduction_learning.options.scan_network_pathology_min_candidate_clusters);
         add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_EVENTS",
@@ -6313,6 +6340,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.NET_PATH.PRE_PTC",
                                         reduction_learning.options.scan_network_pathology_apply_pre_ptc,
                                         "Apply scan-network exclusions before PTC");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.NET_PATH.PRE_MAP",
+                                        reduction_learning.options.scan_network_pathology_apply_pre_mapmaking,
+                                        "Apply scan-network exclusions before mapmaking");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.NET_PATH.MIN_CLUST",
                                         reduction_learning.options.scan_network_pathology_min_candidate_clusters,
                                         "Min clusters for scan-network pathology");
@@ -8015,6 +8045,8 @@ void Engine::create_ptcdiag_file() {
                    reduction_learning.options.scan_network_pathology_apply_pre_rtc);
     add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_APPLY_PRE_PTC",
                    reduction_learning.options.scan_network_pathology_apply_pre_ptc);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_APPLY_PRE_MAPMAKING",
+                   reduction_learning.options.scan_network_pathology_apply_pre_mapmaking);
     add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_CLUSTERS",
                    reduction_learning.options.scan_network_pathology_min_candidate_clusters);
     add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_EVENTS",
@@ -8502,6 +8534,8 @@ void Engine::create_rtcdiag_file() {
                    reduction_learning.options.scan_network_pathology_apply_pre_rtc);
     add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_APPLY_PRE_PTC",
                    reduction_learning.options.scan_network_pathology_apply_pre_ptc);
+    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_APPLY_PRE_MAPMAKING",
+                   reduction_learning.options.scan_network_pathology_apply_pre_mapmaking);
     add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_CLUSTERS",
                    reduction_learning.options.scan_network_pathology_min_candidate_clusters);
     add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_EVENTS",

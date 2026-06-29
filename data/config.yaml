@@ -175,8 +175,9 @@ timestream: # timestream reduction parameters
     map_pixel_outlier_source_radius_arcsec: 30.0 # central source-protection radius excluded from map-pixel outlier diagnostics
     busy_detector_exclusion_enabled: true # apply learned scan-local exclusions for individual detectors with severe busy-network residuals
     scan_network_pathology_enabled: true # learn scan-local network exclusions when a whole network shows severe off-source transient pathology
-    scan_network_pathology_apply_pre_rtc: true # apply learned scan-network exclusions before RTC filtering in production iterations
-    scan_network_pathology_apply_pre_ptc: true # apply learned scan-network exclusions before PTC cleaning and weighting in production iterations
+    scan_network_pathology_apply_pre_rtc: false # experimental: applying whole-network exclusions before RTC can make downstream groups degenerate
+    scan_network_pathology_apply_pre_ptc: false # experimental: applying whole-network exclusions before PTC can make cleaner groups degenerate
+    scan_network_pathology_apply_pre_mapmaking: true # apply learned scan-network exclusions after PTC processing, immediately before mapmaking
     scan_network_pathology_min_candidate_clusters: 4 # minimum busy-network candidate clusters before considering a network exclusion
     scan_network_pathology_min_candidate_events: 100 # minimum off-source detector events before considering a network exclusion
     scan_network_pathology_min_max_residual_z: 25.0 # minimum unflagged residual z before considering a busy-network exclusion
