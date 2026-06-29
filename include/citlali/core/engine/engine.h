@@ -1546,6 +1546,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
     const Eigen::Index n_pts = tcdata.flags.data.rows();
     const Eigen::Index n_dets = tcdata.flags.data.cols();
     std::set<Eigen::Index> proposed_dets;
+    std::set<Eigen::Index> network_proposed_dets;
     for (const auto &record : records) {
         if (record.uid >= 0) {
             const Eigen::Index det =
@@ -1565,6 +1566,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
                 if (det_nw == record.nw) {
                     matched_network = true;
                     proposed_dets.insert(det);
+                    network_proposed_dets.insert(det);
                 }
             }
             if (matched_network) {
@@ -1601,16 +1603,78 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
             summary.max_new_flagged_fraction;
     if (!over_cap) {
         auto flag_it = calib_scan.apt.find("flag");
+        std::set<Eigen::Index> apt_flag_dets;
+        Eigen::Index apt_flag_preserved = 0;
+        if (update_apt_flags &&
+            flag_it != calib_scan.apt.end() &&
+            flag_it->second.size() > 0) {
+            std::map<int, Eigen::Index> unflagged_by_nw;
+            std::map<int, Eigen::Index> unflagged_by_array;
+            const Eigen::Index n_apt =
+                std::min<Eigen::Index>(n_dets, flag_it->second.size());
+            for (Eigen::Index det = 0; det < n_apt; ++det) {
+                if (flag_it->second(det) != 0.0) {
+                    continue;
+                }
+                const int nw =
+                    citlali_learning_apt_int(calib_scan.apt, "nw", det, -1);
+                const int array =
+                    citlali_learning_apt_int(calib_scan.apt, "array", det, -1);
+                if (nw >= 0) {
+                    ++unflagged_by_nw[nw];
+                }
+                if (array >= 0) {
+                    ++unflagged_by_array[array];
+                }
+            }
+
+            for (const auto det : proposed_dets) {
+                if (network_proposed_dets.find(det) != network_proposed_dets.end()) {
+                    continue;
+                }
+                if (det < 0 ||
+                    det >= n_apt ||
+                    flag_it->second(det) != 0.0) {
+                    continue;
+                }
+                const int nw =
+                    citlali_learning_apt_int(calib_scan.apt, "nw", det, -1);
+                const int array =
+                    citlali_learning_apt_int(calib_scan.apt, "array", det, -1);
+                const bool preserves_nw =
+                    nw < 0 ||
+                    unflagged_by_nw.find(nw) == unflagged_by_nw.end() ||
+                    unflagged_by_nw[nw] > 1;
+                const bool preserves_array =
+                    array < 0 ||
+                    unflagged_by_array.find(array) == unflagged_by_array.end() ||
+                    unflagged_by_array[array] > 1;
+                if (!preserves_nw || !preserves_array) {
+                    ++apt_flag_preserved;
+                    continue;
+                }
+                apt_flag_dets.insert(det);
+                if (nw >= 0) {
+                    --unflagged_by_nw[nw];
+                }
+                if (array >= 0) {
+                    --unflagged_by_array[array];
+                }
+            }
+        }
+
         for (const auto det : proposed_dets) {
             tcdata.flags.data.col(det).setOnes();
-            if (update_apt_flags &&
-                flag_it != calib_scan.apt.end() &&
-                det >= 0 &&
-                det < flag_it->second.size()) {
+            if (apt_flag_dets.find(det) != apt_flag_dets.end()) {
                 flag_it->second(det) = 1.0;
             }
         }
         summary.applied = true;
+        if (apt_flag_preserved > 0) {
+            logger->info(
+                "learned {} preserved {} scan-local APT flags in scan {} iter {} to keep nw/array groups valid",
+                stage, apt_flag_preserved, scan_id + 1, fruit_iter);
+        }
     }
 
     reduction_learning.record_learned_mask_application(summary);
