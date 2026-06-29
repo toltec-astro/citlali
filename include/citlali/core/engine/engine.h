@@ -2787,6 +2787,11 @@ void Engine::get_mapmaking_config(CT &config) {
                  ptcproc.fruit_loops_recompute_weights_after_addback
                      ? "recompute from add-back TOD"
                      : "keep source-subtracted");
+    logger->info("fruit loops weight feedback: enabled={} reference={} relative=[{}, {}]",
+                 ptcproc.fruit_loops_weight_feedback_enabled,
+                 ptcproc.fruit_loops_weight_feedback_reference,
+                 ptcproc.fruit_loops_weight_feedback_low_relative_weight,
+                 ptcproc.fruit_loops_weight_feedback_high_relative_weight);
     ptcproc.fruit_loops_jinc_r_max = 0.0;
     ptcproc.fruit_loops_jinc_subpixel_n = 1;
     ptcproc.fruit_loops_jinc_shape_params.clear();
@@ -4418,6 +4423,14 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_MINPIX", ptcproc.fruit_loops_local_sigma_min_pixels);
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.ADAPT_SUPPORT_RAD", ptcproc.fruit_loops_adaptive_support_radius_arcsec);
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.ADAPT_SUPPORT_FWHM", ptcproc.fruit_loops_adaptive_support_radius_fwhm);
+        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.ENABLED",
+                       ptcproc.fruit_loops_weight_feedback_enabled);
+        add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.REFERENCE",
+                                    ptcproc.fruit_loops_weight_feedback_reference);
+        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.LOW_RELATIVE_WEIGHT",
+                       ptcproc.fruit_loops_weight_feedback_low_relative_weight);
+        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.HIGH_RELATIVE_WEIGHT",
+                       ptcproc.fruit_loops_weight_feedback_high_relative_weight);
         for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
             double flux_limit = 0.0;
             if (ptcproc.run_fruit_loops) {
@@ -6605,6 +6618,18 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     add_double_key("CONFIG.FRUITLOOPS.ADAPT_SUPPORT_FWHM",
                    ptcproc.fruit_loops_adaptive_support_radius_fwhm,
                    "Fruit loops adaptive support FWHM factor");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.WFB",
+                                        ptcproc.fruit_loops_weight_feedback_enabled,
+                                        "Fruit loops weight feedback");
+    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.WFBREF",
+                                        ptcproc.fruit_loops_weight_feedback_reference,
+                                        "Fruit loops weight feedback reference");
+    add_double_key("CONFIG.FRUITLOOPS.WFBLOW",
+                   ptcproc.fruit_loops_weight_feedback_low_relative_weight,
+                   "Fruit loops weight feedback low relative weight");
+    add_double_key("CONFIG.FRUITLOOPS.WFBHIGH",
+                   ptcproc.fruit_loops_weight_feedback_high_relative_weight,
+                   "Fruit loops weight feedback high relative weight");
     {
         double flux_limit = 0.0;
         if (ptcproc.run_fruit_loops) {
@@ -8123,6 +8148,14 @@ void Engine::create_ptcdiag_file() {
     add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_MINPIX", ptcproc.fruit_loops_local_sigma_min_pixels);
     add_netcdf_var(fo, "CONFIG.FRUITLOOPS.ADAPT_SUPPORT_RAD", ptcproc.fruit_loops_adaptive_support_radius_arcsec);
     add_netcdf_var(fo, "CONFIG.FRUITLOOPS.ADAPT_SUPPORT_FWHM", ptcproc.fruit_loops_adaptive_support_radius_fwhm);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.ENABLED",
+                   ptcproc.fruit_loops_weight_feedback_enabled);
+    add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.REFERENCE",
+                                ptcproc.fruit_loops_weight_feedback_reference);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.LOW_RELATIVE_WEIGHT",
+                   ptcproc.fruit_loops_weight_feedback_low_relative_weight);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.HIGH_RELATIVE_WEIGHT",
+                   ptcproc.fruit_loops_weight_feedback_high_relative_weight);
 
     auto add_det_double = [&](const std::string &name, const std::string &comment) {
         netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, det_dims);

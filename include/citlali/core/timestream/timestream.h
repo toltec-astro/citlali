@@ -691,6 +691,11 @@ public:
     Eigen::VectorXd fruit_loops_amp_ref;
     Eigen::VectorXd fruit_loops_adaptive_threshold;
     Eigen::VectorXd fruit_loops_adaptive_support_radius_rad;
+    // taper fruit-loops feedback in low-relative-weight regions of the input map
+    bool fruit_loops_weight_feedback_enabled = false;
+    std::string fruit_loops_weight_feedback_reference = "p95";
+    double fruit_loops_weight_feedback_low_relative_weight = 0.02;
+    double fruit_loops_weight_feedback_high_relative_weight = 0.10;
     // preserve a central map region from coverage-cut masking when loading
     // fruit loops templates
     double fruit_loops_center_keep_radius_arcsec = 0.0;
@@ -1502,6 +1507,57 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     ones.setOnes(tod_mb.weight[0].rows(), tod_mb.weight[0].cols());
     zeros.setZero(tod_mb.weight[0].rows(), tod_mb.weight[0].cols());
 
+    auto weight_reference_value = [&](const Eigen::MatrixXd &weight_map) {
+        std::vector<double> weights;
+        weights.reserve(static_cast<std::size_t>(weight_map.size()));
+        for (Eigen::Index row = 0; row < weight_map.rows(); ++row) {
+            for (Eigen::Index col = 0; col < weight_map.cols(); ++col) {
+                const double weight = weight_map(row, col);
+                if (std::isfinite(weight) && weight > 0.0) {
+                    weights.push_back(weight);
+                }
+            }
+        }
+        if (weights.empty()) {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+
+        auto quantile = [&](double q) {
+            q = std::clamp(q, 0.0, 1.0);
+            const auto idx = static_cast<std::size_t>(
+                std::llround(q * static_cast<double>(weights.size() - 1)));
+            auto nth = weights.begin() + static_cast<std::ptrdiff_t>(idx);
+            std::nth_element(weights.begin(), nth, weights.end());
+            return *nth;
+        };
+
+        const auto reference = to_lower(fruit_loops_weight_feedback_reference);
+        if (reference == "max" || reference == "peak") {
+            return *std::max_element(weights.begin(), weights.end());
+        }
+        if (reference == "median" || reference == "p50") {
+            return quantile(0.50);
+        }
+        if (reference == "p90") {
+            return quantile(0.90);
+        }
+        if (reference == "p99") {
+            return quantile(0.99);
+        }
+        return quantile(0.95);
+    };
+
+    const bool use_weight_feedback =
+        fruit_loops_weight_feedback_enabled &&
+        fruit_loops_weight_feedback_high_relative_weight >
+            fruit_loops_weight_feedback_low_relative_weight &&
+        fruit_loops_weight_feedback_high_relative_weight > 0.0;
+    if (fruit_loops_weight_feedback_enabled && !use_weight_feedback) {
+        logger->warn("fruit loops weight feedback disabled: invalid relative weight range [{}, {}]",
+                     fruit_loops_weight_feedback_low_relative_weight,
+                     fruit_loops_weight_feedback_high_relative_weight);
+    }
+
     Eigen::MatrixXd center_keep_mask;
     const bool use_center_keep_mask =
         fruit_loops_center_keep_radius_arcsec > 0.0 && tod_mb.pixel_size_rad > 0.0;
@@ -1527,19 +1583,102 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     }
 
     // calculate coverage bool map
+    Eigen::Index weight_feedback_maps = 0;
+    Eigen::Index weight_feedback_zero_pixels = 0;
+    Eigen::Index weight_feedback_partial_pixels = 0;
+    Eigen::Index weight_feedback_full_pixels = 0;
     for (int i=0; i<tod_mb.weight.size(); ++i) {
         // get weight threshold for current map
         auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = tod_mb.calc_cov_region(i);
         // if weight is less than threshold, set to zero, otherwise set to one
-        Eigen::MatrixXd cov_bool =
+        Eigen::MatrixXd support_gain =
             (tod_mb.weight[i].array() < weight_threshold).select(zeros,ones);
         if (use_center_keep_mask) {
-            cov_bool = (cov_bool.array() + center_keep_mask.array()).min(1.0).matrix();
+            support_gain = (support_gain.array() + center_keep_mask.array()).min(1.0).matrix();
         }
-        tod_mb.signal[i] = tod_mb.signal[i].array() * cov_bool.array();
+
+        if (use_weight_feedback) {
+            const double reference_weight = weight_reference_value(tod_mb.weight[i]);
+            if (std::isfinite(reference_weight) && reference_weight > 0.0) {
+                ++weight_feedback_maps;
+                Eigen::Index n_zero = 0;
+                Eigen::Index n_partial = 0;
+                Eigen::Index n_full = 0;
+                Eigen::MatrixXd weight_gain(tod_mb.weight[i].rows(), tod_mb.weight[i].cols());
+                for (Eigen::Index row = 0; row < tod_mb.weight[i].rows(); ++row) {
+                    for (Eigen::Index col = 0; col < tod_mb.weight[i].cols(); ++col) {
+                        const double weight = tod_mb.weight[i](row, col);
+                        double gain = 0.0;
+                        if (std::isfinite(weight) && weight > 0.0) {
+                            const double rel_weight = weight / reference_weight;
+                            if (rel_weight >= fruit_loops_weight_feedback_high_relative_weight) {
+                                gain = 1.0;
+                            }
+                            else if (rel_weight > fruit_loops_weight_feedback_low_relative_weight) {
+                                gain = (rel_weight -
+                                        fruit_loops_weight_feedback_low_relative_weight) /
+                                       (fruit_loops_weight_feedback_high_relative_weight -
+                                        fruit_loops_weight_feedback_low_relative_weight);
+                            }
+                        }
+                        weight_gain(row, col) = gain;
+                        if (gain <= 0.0) {
+                            ++n_zero;
+                        }
+                        else if (gain >= 1.0) {
+                            ++n_full;
+                        }
+                        else {
+                            ++n_partial;
+                        }
+                    }
+                }
+                weight_feedback_zero_pixels += n_zero;
+                weight_feedback_partial_pixels += n_partial;
+                weight_feedback_full_pixels += n_full;
+                support_gain = support_gain.array() * weight_gain.array();
+
+                const auto log_detail = [&]() {
+                    logger->info(
+                        "fruit loops weight feedback map {}: reference={} ref_weight={:.4g} "
+                        "relative=[{:.4g}, {:.4g}] zero={} partial={} full={}",
+                        i, fruit_loops_weight_feedback_reference, reference_weight,
+                        fruit_loops_weight_feedback_low_relative_weight,
+                        fruit_loops_weight_feedback_high_relative_weight,
+                        n_zero, n_partial, n_full);
+                };
+                if (tod_mb.weight.size() <= 16) {
+                    log_detail();
+                }
+                else {
+                    logger->debug(
+                        "fruit loops weight feedback map {}: reference={} ref_weight={:.4g} "
+                        "relative=[{:.4g}, {:.4g}] zero={} partial={} full={}",
+                        i, fruit_loops_weight_feedback_reference, reference_weight,
+                        fruit_loops_weight_feedback_low_relative_weight,
+                        fruit_loops_weight_feedback_high_relative_weight,
+                        n_zero, n_partial, n_full);
+                }
+            }
+            else {
+                logger->warn("fruit loops weight feedback skipped map {}: no finite positive weight reference", i);
+            }
+        }
+
+        tod_mb.signal[i] = tod_mb.signal[i].array() * support_gain.array();
         if (!tod_mb.kernel.empty()) {
-            tod_mb.kernel[i] = tod_mb.kernel[i].array() * cov_bool.array();
+            tod_mb.kernel[i] = tod_mb.kernel[i].array() * support_gain.array();
         }
+    }
+    if (use_weight_feedback) {
+        logger->info(
+            "fruit loops weight feedback summary: maps={} reference={} relative=[{:.4g}, {:.4g}] "
+            "zero_pixels={} partial_pixels={} full_pixels={}",
+            weight_feedback_maps, fruit_loops_weight_feedback_reference,
+            fruit_loops_weight_feedback_low_relative_weight,
+            fruit_loops_weight_feedback_high_relative_weight,
+            weight_feedback_zero_pixels, weight_feedback_partial_pixels,
+            weight_feedback_full_pixels);
     }
     fruit_loops_source_lat = Eigen::VectorXd::Zero(tod_mb.signal.size());
     fruit_loops_source_lon = Eigen::VectorXd::Zero(tod_mb.signal.size());
