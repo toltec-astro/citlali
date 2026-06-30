@@ -478,14 +478,8 @@ int run(const rc_t &rc) {
                         citlali::pipeline::calculate_flux_calibration(
                             todproc.engine(), logger);
 
-                        // get telescope file
-                        if (co.n_inputs() > 1) {
-                            citlali::pipeline::load_and_align_telescope_data(
-                                todproc, rawobs, logger);
-
-                            citlali::pipeline::calculate_telescope_pointing(
-                                todproc, logger);
-                        }
+                        citlali::pipeline::load_and_point_telescope_data_if_needed(
+                            todproc, rawobs, co.n_inputs() > 1, logger);
 
                         // get date time of observation
                         todproc.engine().date_obs.push_back(engine_utils::unix_to_utc(todproc.engine().telescope.tel_data["TelTime"](0)));

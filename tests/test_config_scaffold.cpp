@@ -1582,6 +1582,36 @@ TEST(pipeline_preflight, calculates_telescope_pointing) {
     EXPECT_EQ(logger->info_calls, 2);
 }
 
+TEST(pipeline_preflight, skips_telescope_reload_when_not_needed) {
+    FakeTelescopeTodProc todproc;
+    FakeRawObs rawobs;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_and_point_telescope_data_if_needed(
+        todproc, rawobs, false, logger);
+
+    EXPECT_EQ(todproc.engine().telescope.get_tel_data_calls, 0);
+    EXPECT_EQ(todproc.engine().telescope.calc_tan_pointing_calls, 0);
+    EXPECT_EQ(todproc.interp_pointing_calls, 0);
+    EXPECT_EQ(logger->info_calls, 0);
+}
+
+TEST(pipeline_preflight, reloads_and_points_telescope_when_needed) {
+    FakeTelescopeTodProc todproc;
+    FakeRawObs rawobs;
+    rawobs.tel.path = "/data/tel.nc";
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_and_point_telescope_data_if_needed(
+        todproc, rawobs, true, logger);
+
+    EXPECT_EQ(todproc.engine().telescope.get_tel_data_calls, 1);
+    EXPECT_EQ(todproc.engine().telescope.loaded_tel_path, "/data/tel.nc");
+    EXPECT_EQ(todproc.engine().telescope.calc_tan_pointing_calls, 1);
+    EXPECT_EQ(todproc.interp_pointing_calls, 1);
+    EXPECT_EQ(logger->info_calls, 4);
+}
+
 TEST(pipeline_preflight, calculates_scan_indices) {
     FakeEngine engine;
     auto logger = std::make_shared<FakeLogger>();
