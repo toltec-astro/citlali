@@ -89,6 +89,8 @@ struct FakeEngine {
     bool verbose_mode = false;
     bool run_noise = true;
     bool run_noise_products = true;
+    bool run_source_finder = false;
+    bool write_filtered_maps_partial = false;
     bool apply_empirical_noise_weights = false;
     std::string map_method = "jinc";
     std::map<std::string, int> gaps;
@@ -96,12 +98,19 @@ struct FakeEngine {
     std::string last_map_pixel_contribution_target;
     int create_obs_map_files_calls = 0;
     int output_calls = 0;
+    int run_wiener_filter_calls = 0;
+    int find_sources_calls = 0;
+    int fit_maps_calls = 0;
 
     struct {
         std::vector<std::string> obsnums;
         std::vector<double> crval_config = {0.0, 0.0};
         double exposure_time = 0.0;
         int calc_noise_products_calls = 0;
+        int calc_map_psd_calls = 0;
+        int calc_map_hist_calls = 0;
+        int calc_median_err_calls = 0;
+        int calc_median_rms_calls = 0;
         bool last_apply_empirical_noise_weights = false;
 
         void calc_noise_products(bool apply_empirical_noise_weights) {
@@ -109,7 +118,16 @@ struct FakeEngine {
             last_apply_empirical_noise_weights =
                 apply_empirical_noise_weights;
         }
+
+        void calc_map_psd() { ++calc_map_psd_calls; }
+        void calc_map_hist() { ++calc_map_hist_calls; }
+        void calc_median_err() { ++calc_median_err_calls; }
+        void calc_median_rms() { ++calc_median_rms_calls; }
     } omb;
+
+    struct {
+        bool normalize_error = false;
+    } wiener_filter;
 
     struct {
         std::vector<std::string> obsnums;
@@ -157,6 +175,18 @@ struct FakeEngine {
     void output() {
         ++output_calls;
     }
+
+    template <auto MapType, class MapBuffer>
+    void run_wiener_filter(MapBuffer &) {
+        ++run_wiener_filter_calls;
+    }
+
+    template <auto MapType, class MapBuffer>
+    void find_sources(MapBuffer &) {
+        ++find_sources_calls;
+    }
+
+    void fit_maps() { ++fit_maps_calls; }
 };
 
 struct FakeFlxscaleCorrection {
@@ -296,6 +326,7 @@ struct FakeObservationMapTodProc {
 
 enum class FakeMapType {
     RawObs,
+    FilteredObs,
 };
 
 TEST(config_scaffold, formats_config_paths) {
@@ -1555,6 +1586,53 @@ TEST(pipeline_execution, skips_raw_outputs_when_mapmaking_disabled) {
     EXPECT_EQ(todproc.engine().create_obs_map_files_calls, 0);
     EXPECT_EQ(todproc.engine().output_calls, 0);
     EXPECT_EQ(logger->info_calls, 1);
+}
+
+TEST(pipeline_execution, writes_filtered_observation_outputs) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_noise_products = true;
+    todproc.engine().run_noise = true;
+    todproc.engine().run_source_finder = true;
+    todproc.engine().wiener_filter.normalize_error = true;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_filtered_observation_outputs<
+        FakeMapType::FilteredObs, false>(todproc, logger);
+
+    EXPECT_EQ(todproc.engine().run_wiener_filter_calls, 1);
+    EXPECT_EQ(todproc.engine().omb.calc_noise_products_calls, 1);
+    EXPECT_TRUE(todproc.engine().omb.last_apply_empirical_noise_weights);
+    EXPECT_EQ(todproc.engine().omb.calc_map_psd_calls, 1);
+    EXPECT_EQ(todproc.engine().omb.calc_map_hist_calls, 1);
+    EXPECT_EQ(todproc.engine().omb.calc_median_err_calls, 1);
+    EXPECT_EQ(todproc.engine().omb.calc_median_rms_calls, 1);
+    EXPECT_EQ(todproc.engine().find_sources_calls, 1);
+    EXPECT_EQ(todproc.engine().fit_maps_calls, 0);
+    EXPECT_EQ(todproc.engine().output_calls, 1);
+}
+
+TEST(pipeline_execution, fits_filtered_observation_maps_when_requested) {
+    FakeCoaddTodProc todproc;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_filtered_observation_outputs<
+        FakeMapType::FilteredObs, true>(todproc, logger);
+
+    EXPECT_EQ(todproc.engine().fit_maps_calls, 1);
+    EXPECT_EQ(todproc.engine().output_calls, 1);
+}
+
+TEST(pipeline_execution, skips_filtered_observation_output_when_partial_written) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().write_filtered_maps_partial = true;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_filtered_observation_outputs<
+        FakeMapType::FilteredObs, false>(todproc, logger);
+
+    EXPECT_EQ(todproc.engine().omb.calc_noise_products_calls, 0);
+    EXPECT_EQ(todproc.engine().output_calls, 0);
+    EXPECT_EQ(logger->info_calls, 4);
 }
 
 TEST(pipeline_output_layout, derives_config_copy_destinations) {

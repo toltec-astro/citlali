@@ -74,4 +74,49 @@ void write_raw_observation_outputs(TodProc &todproc, const Logger &logger) {
     }
 }
 
+template <auto FilteredObsMap, bool FitMaps, class TodProc, class Logger>
+void write_filtered_observation_outputs(TodProc &todproc,
+                                        const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    logger->info("filtering obs maps");
+    engine.template run_wiener_filter<FilteredObsMap>(engine.omb);
+
+    if (engine.run_noise_products &&
+        engine.run_noise &&
+        !engine.write_filtered_maps_partial) {
+        logger->info("calculating filtered obs empirical noise products");
+        engine.omb.calc_noise_products(
+            engine.apply_empirical_noise_weights ||
+            engine.wiener_filter.normalize_error);
+    }
+
+    logger->info("calculating filtered obs map psds");
+    engine.omb.calc_map_psd();
+    logger->info("calculating filtered obs map histograms");
+    engine.omb.calc_map_hist();
+
+    engine.omb.calc_median_err();
+    engine.omb.calc_median_rms();
+
+    if (engine.run_source_finder) {
+        logger->info("finding filtered obs map sources");
+        engine.template find_sources<FilteredObsMap>(engine.omb);
+    }
+
+    if constexpr (FitMaps) {
+        engine.fit_maps();
+    }
+
+    if (engine.write_filtered_maps_partial) {
+        logger->info(
+            "filtered obs files already written during Wiener filtering; "
+            "skipping post-filter output stage");
+    }
+    else {
+        logger->info("outputting filtered obs files");
+        engine.template output<FilteredObsMap>();
+    }
+}
+
 }  // namespace citlali::pipeline

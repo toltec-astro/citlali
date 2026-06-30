@@ -778,50 +778,11 @@ int run(const rc_t &rc) {
 
                         // filter obs map
                         else if (todproc.engine().run_map_filter) {
-                            logger->info("filtering obs maps");
-                            todproc.engine().template run_wiener_filter<mapmaking::FilteredObs>(todproc.engine().omb);
-
-                            if (todproc.engine().run_noise_products &&
-                                todproc.engine().run_noise &&
-                                !todproc.engine().write_filtered_maps_partial) {
-                                logger->info("calculating filtered obs empirical noise products");
-                                todproc.engine().omb.calc_noise_products(
-                                    todproc.engine().apply_empirical_noise_weights ||
-                                    todproc.engine().wiener_filter.normalize_error);
-                            }
-
-                            // calculate filtered obs map psds
-                            logger->info("calculating filtered obs map psds");
-                            todproc.engine().omb.calc_map_psd();
-                            // calculate filtered obs map histograms
-                            logger->info("calculating filtered obs map histograms");
-                            todproc.engine().omb.calc_map_hist();
-
-                            // calculate filtered obs map median error
-                            todproc.engine().omb.calc_median_err();
-                            // calculate filtered obs map median rms
-                            todproc.engine().omb.calc_median_rms();
-
-                            // find filtered obs map sources
-                            if (todproc.engine().run_source_finder) {
-                                logger->info("finding filtered obs map sources");
-                                todproc.engine().template find_sources<mapmaking::FilteredObs>(todproc.engine().omb);
-                            }
-
-                            // if pointing, fit filtered maps
-                            if constexpr (std::is_same_v<todproc_t, TimeOrderedDataProc<Pointing>>) {
-                                todproc.engine().fit_maps();
-                            }
-
-                            // output filtered maps only if they were not already
-                            // written incrementally during Wiener filtering.
-                            if (todproc.engine().write_filtered_maps_partial) {
-                                logger->info("filtered obs files already written during Wiener filtering; skipping post-filter output stage");
-                            }
-                            else {
-                                logger->info("outputting filtered obs files");
-                                todproc.engine().template output<mapmaking::FilteredObs>();
-                            }
+                            citlali::pipeline::write_filtered_observation_outputs<
+                                mapmaking::FilteredObs,
+                                std::is_same_v<todproc_t,
+                                               TimeOrderedDataProc<Pointing>>>(
+                                todproc, logger);
                         }
                     }
 
