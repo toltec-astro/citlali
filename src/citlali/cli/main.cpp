@@ -432,18 +432,8 @@ int run(const rc_t &rc) {
 
                     // if simu, set start and end indices to 0
                     else {
-                        todproc.engine().start_indices.clear();
-                        todproc.engine().end_indices.clear();
-
-                        for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
-                            todproc.engine().start_indices.push_back(0);
-                            todproc.engine().start_indices.push_back(0);
-                        }
-                        // set hwpr start and end indices to 0
-                        if (todproc.engine().calib.run_hwpr) {
-                            todproc.engine().hwpr_start_indices = 0;
-                            todproc.engine().hwpr_end_indices = 0;
-                        }
+                        citlali::pipeline::reset_simulated_observation_indices(
+                            todproc.engine(), rawobs);
                     }
 
                     // calc tangent plane pointing
@@ -587,18 +577,8 @@ int run(const rc_t &rc) {
 
                             // if simu, set start and end indices to 0
                             else {
-                                todproc.engine().start_indices.clear();
-                                todproc.engine().end_indices.clear();
-                                // loop through data times and populate start and end indices
-                                for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
-                                    todproc.engine().start_indices.push_back(0);
-                                    todproc.engine().start_indices.push_back(0);
-
-                                    if (todproc.engine().calib.run_hwpr) {
-                                        todproc.engine().hwpr_start_indices = 0;
-                                        todproc.engine().hwpr_end_indices = 0;
-                                    }
-                                }
+                                citlali::pipeline::reset_simulated_observation_indices(
+                                    todproc.engine(), rawobs);
                             }
 
                             // calc tangent plane pointing

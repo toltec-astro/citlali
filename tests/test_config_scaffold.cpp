@@ -120,8 +120,12 @@ struct FakeEngine {
     int fit_maps_calls = 0;
     int get_astrometry_config_calls = 0;
     int get_photometry_config_calls = 0;
+    int hwpr_start_indices = -1;
+    int hwpr_end_indices = -1;
     std::string loaded_astrometry_config;
     std::string loaded_photometry_config;
+    std::vector<int> start_indices = {7};
+    std::vector<int> end_indices = {9};
 
     struct {
         std::vector<std::string> obsnums;
@@ -1293,6 +1297,36 @@ TEST(pipeline_preflight, configures_beammap_array_calibration_from_apt) {
     EXPECT_EQ(todproc.engine().get_photometry_config_calls, 1);
     EXPECT_EQ(todproc.get_apt_from_files_calls, 0);
     EXPECT_EQ(todproc.engine().calib.get_apt_calls, 1);
+}
+
+TEST(pipeline_preflight, resets_simulated_observation_indices) {
+    FakeEngine engine;
+    FakeRawObs rawobs;
+    rawobs.kids_items = {
+        {"a.nc", "nw0"},
+        {"b.nc", "nw1"},
+        {"c.nc", "nw2"},
+    };
+
+    citlali::pipeline::reset_simulated_observation_indices(engine, rawobs);
+
+    EXPECT_EQ(engine.start_indices, (std::vector<int>{0, 0, 0, 0, 0, 0}));
+    EXPECT_TRUE(engine.end_indices.empty());
+    EXPECT_EQ(engine.hwpr_start_indices, 0);
+    EXPECT_EQ(engine.hwpr_end_indices, 0);
+}
+
+TEST(pipeline_preflight, leaves_hwpr_indices_when_hwpr_disabled) {
+    FakeEngine engine;
+    engine.calib.run_hwpr = false;
+    FakeRawObs rawobs;
+
+    citlali::pipeline::reset_simulated_observation_indices(engine, rawobs);
+
+    EXPECT_EQ(engine.start_indices, (std::vector<int>{0, 0, 0, 0}));
+    EXPECT_TRUE(engine.end_indices.empty());
+    EXPECT_EQ(engine.hwpr_start_indices, -1);
+    EXPECT_EQ(engine.hwpr_end_indices, -1);
 }
 
 TEST(pipeline_preflight, configures_sample_rate_without_downsample) {
