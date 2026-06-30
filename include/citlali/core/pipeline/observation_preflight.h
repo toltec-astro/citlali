@@ -183,6 +183,18 @@ bool configure_effective_sample_rate(Engine &engine, const Logger &logger) {
     return true;
 }
 
+template <class TodProc, class RawObs, class Logger>
+void load_raw_detector_diagnostics(TodProc &todproc, const RawObs &rawobs,
+                                   const Logger &logger) {
+    logger->debug("getting tone frequencies");
+    todproc.get_tone_freqs_from_files(rawobs);
+
+    if (!todproc.engine().telescope.sim_obs) {
+        logger->debug("getting adc snap data");
+        todproc.get_adc_snap_from_files(rawobs);
+    }
+}
+
 template <class Engine, class RawObs, class Logger>
 void load_hwpr_data_if_requested(Engine &engine, const RawObs &rawobs,
                                  const Logger &logger) {

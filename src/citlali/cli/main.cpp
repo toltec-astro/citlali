@@ -490,15 +490,8 @@ int run(const rc_t &rc) {
                             return EXIT_FAILURE;
                         }
 
-                        // get tone frequencies from raw files for flagging nearby tones
-                        logger->debug("getting tone frequencies");
-                        todproc.get_tone_freqs_from_files(rawobs);
-
-                        // get adc snap data for stats file
-                        if (!todproc.engine().telescope.sim_obs) {
-                            logger->debug("getting adc snap data");
-                            todproc.get_adc_snap_from_files(rawobs);
-                        }
+                        citlali::pipeline::load_raw_detector_diagnostics(
+                            todproc, rawobs, logger);
 
                         const int obsnum =
                             citlali::pipeline::obsnum_from_rawobs_meta(

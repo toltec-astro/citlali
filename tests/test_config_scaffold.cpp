@@ -495,6 +495,8 @@ struct FakeTelescopeTodProc {
     int align_timestreams_calls = 0;
     int align_timestreams_gaps_calls = 0;
     int interp_pointing_calls = 0;
+    int get_tone_freqs_from_files_calls = 0;
+    int get_adc_snap_from_files_calls = 0;
 
     FakeEngine &engine() { return engine_state; }
 
@@ -507,6 +509,14 @@ struct FakeTelescopeTodProc {
     }
 
     void interp_pointing() { ++interp_pointing_calls; }
+
+    void get_tone_freqs_from_files(const FakeRawObs &) {
+        ++get_tone_freqs_from_files_calls;
+    }
+
+    void get_adc_snap_from_files(const FakeRawObs &) {
+        ++get_adc_snap_from_files_calls;
+    }
 };
 
 struct FakeObservationMapTodProc {
@@ -1541,6 +1551,33 @@ TEST(pipeline_preflight, updates_sample_rate_from_rawobs_meta) {
         engine, rawobs_kids_meta, logger);
 
     EXPECT_DOUBLE_EQ(engine.telescope.fsmp, 122.0);
+    EXPECT_EQ(logger->debug_calls, 1);
+}
+
+TEST(pipeline_preflight, loads_raw_detector_diagnostics) {
+    FakeTelescopeTodProc todproc;
+    FakeRawObs rawobs;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_raw_detector_diagnostics(
+        todproc, rawobs, logger);
+
+    EXPECT_EQ(todproc.get_tone_freqs_from_files_calls, 1);
+    EXPECT_EQ(todproc.get_adc_snap_from_files_calls, 1);
+    EXPECT_EQ(logger->debug_calls, 2);
+}
+
+TEST(pipeline_preflight, skips_adc_snap_for_simulated_observations) {
+    FakeTelescopeTodProc todproc;
+    todproc.engine().telescope.sim_obs = true;
+    FakeRawObs rawobs;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_raw_detector_diagnostics(
+        todproc, rawobs, logger);
+
+    EXPECT_EQ(todproc.get_tone_freqs_from_files_calls, 1);
+    EXPECT_EQ(todproc.get_adc_snap_from_files_calls, 0);
     EXPECT_EQ(logger->debug_calls, 1);
 }
 
