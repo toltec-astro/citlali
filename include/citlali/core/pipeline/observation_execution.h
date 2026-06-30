@@ -32,8 +32,8 @@ void prepare_coadd_iteration_buffers(TodProc &todproc, const Logger &logger) {
 
 template <class TodProc, class MapExtent, class MapCoord, class Logger>
 void allocate_observation_map_buffers(TodProc &todproc,
-                                      const MapExtent &map_extent,
-                                      const MapCoord &map_coord,
+                                      MapExtent &map_extent,
+                                      MapCoord &map_coord,
                                       const Logger &logger) {
     auto &engine = todproc.engine();
 
@@ -50,7 +50,7 @@ void allocate_observation_map_buffers(TodProc &todproc,
     }
 }
 
-template <class RawObsMap, class TodProc, class Logger>
+template <auto RawObsMap, class TodProc, class Logger>
 void write_raw_observation_outputs(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
 

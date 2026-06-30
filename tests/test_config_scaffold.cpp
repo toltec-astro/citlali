@@ -153,7 +153,7 @@ struct FakeEngine {
 
     void create_obs_map_files() { ++create_obs_map_files_calls; }
 
-    template <class MapType>
+    template <auto MapType>
     void output() {
         ++output_calls;
     }
@@ -282,7 +282,7 @@ struct FakeObservationMapTodProc {
 
     void calc_map_num() { ++calc_map_num_calls; }
 
-    void allocate_omb(int map_extent, int map_coord) {
+    void allocate_omb(int &map_extent, int &map_coord) {
         ++allocate_omb_calls;
         last_map_extent = map_extent;
         last_map_coord = map_coord;
@@ -294,7 +294,9 @@ struct FakeObservationMapTodProc {
     }
 };
 
-struct FakeRawObsMapTag {};
+enum class FakeMapType {
+    RawObs,
+};
 
 TEST(config_scaffold, formats_config_paths) {
     EXPECT_EQ(citlali::config::format_path({"runtime", "n_threads"}),
@@ -1473,10 +1475,12 @@ TEST(pipeline_execution, skips_coadd_noise_buffer_when_noise_disabled) {
 
 TEST(pipeline_execution, allocates_observation_map_buffers) {
     FakeObservationMapTodProc todproc;
+    int map_extent = 11;
+    int map_coord = 22;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::allocate_observation_map_buffers(
-        todproc, 11, 22, logger);
+        todproc, map_extent, map_coord, logger);
 
     EXPECT_EQ(todproc.calc_map_num_calls, 1);
     EXPECT_EQ(todproc.allocate_omb_calls, 1);
@@ -1493,10 +1497,12 @@ TEST(pipeline_execution, skips_observation_noise_for_non_jinc_coadd) {
     FakeObservationMapTodProc todproc;
     todproc.engine().run_coadd = true;
     todproc.engine().map_method = "nearest";
+    int map_extent = 11;
+    int map_coord = 22;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::allocate_observation_map_buffers(
-        todproc, 11, 22, logger);
+        todproc, map_extent, map_coord, logger);
 
     EXPECT_EQ(todproc.calc_map_num_calls, 1);
     EXPECT_EQ(todproc.allocate_omb_calls, 1);
@@ -1512,7 +1518,7 @@ TEST(pipeline_execution, writes_raw_observation_outputs) {
     todproc.engine().apply_empirical_noise_weights = true;
     auto logger = std::make_shared<FakeLogger>();
 
-    citlali::pipeline::write_raw_observation_outputs<FakeRawObsMapTag>(
+    citlali::pipeline::write_raw_observation_outputs<FakeMapType::RawObs>(
         todproc, logger);
 
     EXPECT_EQ(todproc.engine().omb.calc_noise_products_calls, 1);
@@ -1528,7 +1534,7 @@ TEST(pipeline_execution, skips_raw_noise_products_when_disabled) {
     todproc.engine().run_noise_products = false;
     auto logger = std::make_shared<FakeLogger>();
 
-    citlali::pipeline::write_raw_observation_outputs<FakeRawObsMapTag>(
+    citlali::pipeline::write_raw_observation_outputs<FakeMapType::RawObs>(
         todproc, logger);
 
     EXPECT_EQ(todproc.engine().omb.calc_noise_products_calls, 0);
@@ -1542,7 +1548,7 @@ TEST(pipeline_execution, skips_raw_outputs_when_mapmaking_disabled) {
     todproc.engine().run_mapmaking = false;
     auto logger = std::make_shared<FakeLogger>();
 
-    citlali::pipeline::write_raw_observation_outputs<FakeRawObsMapTag>(
+    citlali::pipeline::write_raw_observation_outputs<FakeMapType::RawObs>(
         todproc, logger);
 
     EXPECT_EQ(todproc.engine().omb.calc_noise_products_calls, 0);
