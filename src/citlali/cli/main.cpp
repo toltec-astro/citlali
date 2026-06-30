@@ -787,41 +787,8 @@ int run(const rc_t &rc) {
                     }
 
                     if (todproc.engine().run_coadd) {
-                        // create output coadded map files
-                        logger->debug("creating cmb filenames");
-                        todproc.create_coadded_map_files();
-
-                        // normalize coadded maps
-                        logger->info("normalizing coadded maps");
-                        if (todproc.engine().rtcproc.run_polarization) {
-                            todproc.engine().cmb.normalize_polarized_maps();
-                        }
-                        else {
-                            todproc.engine().cmb.normalize_maps();
-                        }
-
-                        if (todproc.engine().run_noise_products &&
-                            todproc.engine().run_noise) {
-                            logger->info("calculating raw coadd empirical noise products");
-                            todproc.engine().cmb.calc_noise_products(
-                                todproc.engine().apply_empirical_noise_weights);
-                        }
-
-                        // calculate coadded map psds
-                        logger->info("calculating coadded map psd");
-                        todproc.engine().cmb.calc_map_psd();
-                        // calculate coadded map histograms
-                        logger->info("calculating coadded map histogram");
-                        todproc.engine().cmb.calc_map_hist();
-
-                        // calculate coadded map median error
-                        todproc.engine().cmb.calc_median_err();
-                        // calculate coadded map median rms
-                        todproc.engine().cmb.calc_median_rms();
-
-                        // output coadded maps
-                        logger->info("outputting raw coadded files");
-                        todproc.engine().template output<mapmaking::RawCoadd>();
+                        citlali::pipeline::write_raw_coadd_outputs<
+                            mapmaking::RawCoadd>(todproc, logger);
 
                         if (todproc.engine().run_map_filter) {
                             logger->info("filtering coadded maps");

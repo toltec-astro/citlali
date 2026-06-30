@@ -119,4 +119,36 @@ void write_filtered_observation_outputs(TodProc &todproc,
     }
 }
 
+template <auto RawCoaddMap, class TodProc, class Logger>
+void write_raw_coadd_outputs(TodProc &todproc, const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    logger->debug("creating cmb filenames");
+    todproc.create_coadded_map_files();
+
+    logger->info("normalizing coadded maps");
+    if (engine.rtcproc.run_polarization) {
+        engine.cmb.normalize_polarized_maps();
+    }
+    else {
+        engine.cmb.normalize_maps();
+    }
+
+    if (engine.run_noise_products && engine.run_noise) {
+        logger->info("calculating raw coadd empirical noise products");
+        engine.cmb.calc_noise_products(engine.apply_empirical_noise_weights);
+    }
+
+    logger->info("calculating coadded map psd");
+    engine.cmb.calc_map_psd();
+    logger->info("calculating coadded map histogram");
+    engine.cmb.calc_map_hist();
+
+    engine.cmb.calc_median_err();
+    engine.cmb.calc_median_rms();
+
+    logger->info("outputting raw coadded files");
+    engine.template output<RawCoaddMap>();
+}
+
 }  // namespace citlali::pipeline

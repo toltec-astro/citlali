@@ -132,6 +132,28 @@ struct FakeEngine {
     struct {
         std::vector<std::string> obsnums;
         double exposure_time = 0.0;
+        int normalize_maps_calls = 0;
+        int normalize_polarized_maps_calls = 0;
+        int calc_noise_products_calls = 0;
+        int calc_map_psd_calls = 0;
+        int calc_map_hist_calls = 0;
+        int calc_median_err_calls = 0;
+        int calc_median_rms_calls = 0;
+        bool last_apply_empirical_noise_weights = false;
+
+        void normalize_maps() { ++normalize_maps_calls; }
+        void normalize_polarized_maps() { ++normalize_polarized_maps_calls; }
+
+        void calc_noise_products(bool apply_empirical_noise_weights) {
+            ++calc_noise_products_calls;
+            last_apply_empirical_noise_weights =
+                apply_empirical_noise_weights;
+        }
+
+        void calc_map_psd() { ++calc_map_psd_calls; }
+        void calc_map_hist() { ++calc_map_hist_calls; }
+        void calc_median_err() { ++calc_median_err_calls; }
+        void calc_median_rms() { ++calc_median_rms_calls; }
     } cmb;
 
     FakeCalib calib;
@@ -289,6 +311,7 @@ struct FakeCoaddTodProc {
     FakeEngine engine_state;
     int allocate_cmb_calls = 0;
     int allocate_nmb_calls = 0;
+    int create_coadded_map_files_calls = 0;
 
     FakeEngine &engine() { return engine_state; }
 
@@ -298,6 +321,8 @@ struct FakeCoaddTodProc {
     void allocate_nmb(MapBuffer &) {
         ++allocate_nmb_calls;
     }
+
+    void create_coadded_map_files() { ++create_coadded_map_files_calls; }
 };
 
 struct FakeObservationMapTodProc {
@@ -327,6 +352,7 @@ struct FakeObservationMapTodProc {
 enum class FakeMapType {
     RawObs,
     FilteredObs,
+    RawCoadd,
 };
 
 TEST(config_scaffold, formats_config_paths) {
@@ -1633,6 +1659,51 @@ TEST(pipeline_execution, skips_filtered_observation_output_when_partial_written)
     EXPECT_EQ(todproc.engine().omb.calc_noise_products_calls, 0);
     EXPECT_EQ(todproc.engine().output_calls, 0);
     EXPECT_EQ(logger->info_calls, 4);
+}
+
+TEST(pipeline_execution, writes_raw_coadd_outputs) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().apply_empirical_noise_weights = true;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_raw_coadd_outputs<FakeMapType::RawCoadd>(
+        todproc, logger);
+
+    EXPECT_EQ(todproc.create_coadded_map_files_calls, 1);
+    EXPECT_EQ(todproc.engine().cmb.normalize_maps_calls, 1);
+    EXPECT_EQ(todproc.engine().cmb.normalize_polarized_maps_calls, 0);
+    EXPECT_EQ(todproc.engine().cmb.calc_noise_products_calls, 1);
+    EXPECT_TRUE(todproc.engine().cmb.last_apply_empirical_noise_weights);
+    EXPECT_EQ(todproc.engine().cmb.calc_map_psd_calls, 1);
+    EXPECT_EQ(todproc.engine().cmb.calc_map_hist_calls, 1);
+    EXPECT_EQ(todproc.engine().cmb.calc_median_err_calls, 1);
+    EXPECT_EQ(todproc.engine().cmb.calc_median_rms_calls, 1);
+    EXPECT_EQ(todproc.engine().output_calls, 1);
+}
+
+TEST(pipeline_execution, writes_polarized_raw_coadd_outputs) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().rtcproc.run_polarization = true;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_raw_coadd_outputs<FakeMapType::RawCoadd>(
+        todproc, logger);
+
+    EXPECT_EQ(todproc.engine().cmb.normalize_maps_calls, 0);
+    EXPECT_EQ(todproc.engine().cmb.normalize_polarized_maps_calls, 1);
+    EXPECT_EQ(todproc.engine().output_calls, 1);
+}
+
+TEST(pipeline_execution, skips_raw_coadd_noise_products_when_disabled) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_noise_products = false;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_raw_coadd_outputs<FakeMapType::RawCoadd>(
+        todproc, logger);
+
+    EXPECT_EQ(todproc.engine().cmb.calc_noise_products_calls, 0);
+    EXPECT_EQ(todproc.engine().output_calls, 1);
 }
 
 TEST(pipeline_output_layout, derives_config_copy_destinations) {
