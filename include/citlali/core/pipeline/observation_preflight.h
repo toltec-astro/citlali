@@ -3,6 +3,7 @@
 #include <cmath>
 #include <functional>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace citlali::pipeline {
@@ -350,6 +351,11 @@ void update_observation_exposure_time(Engine &engine) {
         engine.cmb.exposure_time =
             engine.cmb.exposure_time + engine.omb.exposure_time;
     }
+}
+
+template <class Engine, class DateObs>
+void append_observation_date(Engine &engine, DateObs &&date_obs) {
+    engine.date_obs.push_back(std::forward<DateObs>(date_obs));
 }
 
 template <class Engine, class Logger>

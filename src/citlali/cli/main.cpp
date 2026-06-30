@@ -466,8 +466,10 @@ int run(const rc_t &rc) {
                         citlali::pipeline::load_and_point_telescope_data_if_needed(
                             todproc, rawobs, co.n_inputs() > 1, logger);
 
-                        // get date time of observation
-                        todproc.engine().date_obs.push_back(engine_utils::unix_to_utc(todproc.engine().telescope.tel_data["TelTime"](0)));
+                        citlali::pipeline::append_observation_date(
+                            todproc.engine(),
+                            engine_utils::unix_to_utc(
+                                todproc.engine().telescope.tel_data["TelTime"](0)));
 
                         citlali::pipeline::record_timing_gaps_if_needed(
                             todproc.engine(), logger);

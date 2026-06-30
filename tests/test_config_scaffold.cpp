@@ -1951,6 +1951,15 @@ TEST(pipeline_preflight, accumulates_observation_exposure_time_for_coadd) {
     EXPECT_DOUBLE_EQ(engine.cmb.exposure_time, 7.0);
 }
 
+TEST(pipeline_preflight, appends_observation_date) {
+    FakeEngine engine;
+    engine.date_obs = {"old"};
+
+    citlali::pipeline::append_observation_date(engine, std::string{"new"});
+
+    EXPECT_EQ(engine.date_obs, (std::vector<std::string>{"old", "new"}));
+}
+
 TEST(pipeline_preflight, configures_non_fruit_loop_as_single_iteration) {
     FakeEngine engine;
     engine.ptcproc.run_fruit_loops = false;
