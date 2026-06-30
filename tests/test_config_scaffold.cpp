@@ -38,6 +38,22 @@ struct FakeEngine {
     struct {
         std::map<std::string, FakeAptColumn> apt;
     } calib;
+
+    struct {
+        double fsmp = 100.0;
+        double d_fsmp = -1.0;
+    } telescope;
+
+    struct {
+        bool run_downsample = false;
+        struct {
+            int factor = 1;
+            double downsampled_freq_Hz = 0.0;
+        } downsampler;
+        struct {
+            double freq_high_Hz = 0.0;
+        } filter;
+    } rtcproc;
 };
 
 struct FakeFlxscaleCorrection {
@@ -829,6 +845,79 @@ TEST(pipeline_preflight, rejects_missing_flxscale_column) {
 
     EXPECT_FALSE(citlali::pipeline::apply_flxscale_correction(
         engine, rawobs, logger));
+}
+
+TEST(pipeline_preflight, configures_sample_rate_without_downsample) {
+    FakeEngine engine;
+    engine.telescope.fsmp = 122.0;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::pipeline::configure_effective_sample_rate(
+        engine, logger));
+    EXPECT_DOUBLE_EQ(engine.telescope.d_fsmp, 122.0);
+}
+
+TEST(pipeline_preflight, configures_sample_rate_with_downsample_factor) {
+    FakeEngine engine;
+    engine.telescope.fsmp = 100.0;
+    engine.rtcproc.run_downsample = true;
+    engine.rtcproc.downsampler.factor = 4;
+    engine.rtcproc.filter.freq_high_Hz = 10.0;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::pipeline::configure_effective_sample_rate(
+        engine, logger));
+    EXPECT_DOUBLE_EQ(engine.telescope.d_fsmp, 25.0);
+}
+
+TEST(pipeline_preflight, derives_downsample_factor_from_frequency) {
+    FakeEngine engine;
+    engine.telescope.fsmp = 100.0;
+    engine.rtcproc.run_downsample = true;
+    engine.rtcproc.downsampler.factor = 0;
+    engine.rtcproc.downsampler.downsampled_freq_Hz = 30.0;
+    engine.rtcproc.filter.freq_high_Hz = 10.0;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::pipeline::configure_effective_sample_rate(
+        engine, logger));
+    EXPECT_EQ(engine.rtcproc.downsampler.factor, 3);
+    EXPECT_DOUBLE_EQ(engine.telescope.d_fsmp, 100.0 / 3.0);
+}
+
+TEST(pipeline_preflight, rejects_invalid_downsample_frequency) {
+    FakeEngine engine;
+    engine.rtcproc.run_downsample = true;
+    engine.rtcproc.downsampler.factor = 0;
+    engine.rtcproc.downsampler.downsampled_freq_Hz = 0.0;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_FALSE(citlali::pipeline::configure_effective_sample_rate(
+        engine, logger));
+}
+
+TEST(pipeline_preflight, rejects_downsample_frequency_above_sample_rate) {
+    FakeEngine engine;
+    engine.telescope.fsmp = 100.0;
+    engine.rtcproc.run_downsample = true;
+    engine.rtcproc.downsampler.factor = 0;
+    engine.rtcproc.downsampler.downsampled_freq_Hz = 200.0;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_FALSE(citlali::pipeline::configure_effective_sample_rate(
+        engine, logger));
+}
+
+TEST(pipeline_preflight, rejects_downsample_filter_above_nyquist) {
+    FakeEngine engine;
+    engine.telescope.fsmp = 100.0;
+    engine.rtcproc.run_downsample = true;
+    engine.rtcproc.downsampler.factor = 4;
+    engine.rtcproc.filter.freq_high_Hz = 20.0;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_FALSE(citlali::pipeline::configure_effective_sample_rate(
+        engine, logger));
 }
 
 TEST(pipeline_output_layout, derives_config_copy_destinations) {
