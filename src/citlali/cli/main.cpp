@@ -51,6 +51,7 @@
 #include <citlali/core/engine/lali.h>
 #include <citlali/core/engine/pointing.h>
 #include <citlali/core/engine/beammap.h>
+#include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
 
@@ -844,15 +845,8 @@ int run(const rc_t &rc) {
                             }
                         }
 
-                        // setup
-                        logger->info("pipeline setup");
-                        todproc.engine().setup();
-
-                        // run
-                        if (todproc.engine().run_tod) {
-                            logger->info("running pipeline");
-                            todproc.engine().pipeline(kidsproc, rawobs);
-                        }
+                        citlali::pipeline::setup_and_run_observation_pipeline(
+                            todproc.engine(), kidsproc, rawobs, logger);
 
                         if (todproc.engine().run_mapmaking &&
                             todproc.engine().run_noise_products &&

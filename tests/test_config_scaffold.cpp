@@ -1,6 +1,7 @@
 #include <citlali/core/config/calibration_config.h>
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/error/error.h>
+#include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
 
@@ -148,6 +149,25 @@ struct FakeRawObs {
     const std::string &name() const { return obs_name; }
 
     std::optional<FakeHwpData> hwpdata() const { return hwp; }
+};
+
+struct FakeKidsProc {};
+
+struct FakeExecutionEngine {
+    bool run_tod = true;
+    int setup_calls = 0;
+    int pipeline_calls = 0;
+    std::vector<std::string> event_order;
+
+    void setup() {
+        ++setup_calls;
+        event_order.push_back("setup");
+    }
+
+    void pipeline(FakeKidsProc &, const FakeRawObs &) {
+        ++pipeline_calls;
+        event_order.push_back("pipeline");
+    }
 };
 
 TEST(config_scaffold, formats_config_paths) {
@@ -1154,6 +1174,36 @@ TEST(pipeline_preflight, preserves_science_fruit_loop_iteration_policy) {
     EXPECT_EQ(engine.ptcproc.fruit_loops_iters, 5);
     EXPECT_FALSE(engine.ptcproc.save_all_iters);
     EXPECT_EQ(logger->warn_calls, 0);
+}
+
+TEST(pipeline_execution, setup_runs_before_enabled_pipeline) {
+    FakeExecutionEngine engine;
+    FakeKidsProc kidsproc;
+    FakeRawObs rawobs;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::setup_and_run_observation_pipeline(
+        engine, kidsproc, rawobs, logger);
+
+    EXPECT_EQ(engine.setup_calls, 1);
+    EXPECT_EQ(engine.pipeline_calls, 1);
+    EXPECT_EQ(engine.event_order,
+              (std::vector<std::string>{"setup", "pipeline"}));
+}
+
+TEST(pipeline_execution, setup_runs_when_tod_pipeline_disabled) {
+    FakeExecutionEngine engine;
+    engine.run_tod = false;
+    FakeKidsProc kidsproc;
+    FakeRawObs rawobs;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::setup_and_run_observation_pipeline(
+        engine, kidsproc, rawobs, logger);
+
+    EXPECT_EQ(engine.setup_calls, 1);
+    EXPECT_EQ(engine.pipeline_calls, 0);
+    EXPECT_EQ(engine.event_order, (std::vector<std::string>{"setup"}));
 }
 
 TEST(pipeline_output_layout, derives_config_copy_destinations) {
