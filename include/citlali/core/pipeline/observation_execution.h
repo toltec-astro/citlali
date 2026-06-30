@@ -151,4 +151,44 @@ void write_raw_coadd_outputs(TodProc &todproc, const Logger &logger) {
     engine.template output<RawCoaddMap>();
 }
 
+template <auto FilteredCoaddMap, class TodProc, class Logger>
+void write_filtered_coadd_outputs(TodProc &todproc, const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    logger->info("filtering coadded maps");
+    engine.template run_wiener_filter<FilteredCoaddMap>(engine.cmb);
+
+    if (engine.run_noise_products &&
+        engine.run_noise &&
+        !engine.write_filtered_maps_partial) {
+        logger->info("calculating filtered coadd empirical noise products");
+        engine.cmb.calc_noise_products(
+            engine.apply_empirical_noise_weights ||
+            engine.wiener_filter.normalize_error);
+    }
+
+    logger->info("calculating filtered coadded map psds");
+    engine.cmb.calc_map_psd();
+    logger->info("calculating filtered coadded map histograms");
+    engine.cmb.calc_map_hist();
+
+    engine.cmb.calc_median_err();
+    engine.cmb.calc_median_rms();
+
+    if (engine.run_source_finder) {
+        logger->info("finding filtered coadded map sources");
+        engine.template find_sources<FilteredCoaddMap>(engine.cmb);
+    }
+
+    if (engine.write_filtered_maps_partial) {
+        logger->info(
+            "filtered coadded files already written during Wiener filtering; "
+            "skipping post-filter output stage");
+    }
+    else {
+        logger->info("outputting filtered coadded files");
+        engine.template output<FilteredCoaddMap>();
+    }
+}
+
 }  // namespace citlali::pipeline

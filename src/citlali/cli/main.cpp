@@ -791,47 +791,8 @@ int run(const rc_t &rc) {
                             mapmaking::RawCoadd>(todproc, logger);
 
                         if (todproc.engine().run_map_filter) {
-                            logger->info("filtering coadded maps");
-                            // filter coadded maps
-                            todproc.engine().template run_wiener_filter<mapmaking::FilteredCoadd>(todproc.engine().cmb);
-
-                            if (todproc.engine().run_noise_products &&
-                                todproc.engine().run_noise &&
-                                !todproc.engine().write_filtered_maps_partial) {
-                                logger->info("calculating filtered coadd empirical noise products");
-                                todproc.engine().cmb.calc_noise_products(
-                                    todproc.engine().apply_empirical_noise_weights ||
-                                    todproc.engine().wiener_filter.normalize_error);
-                            }
-
-                            // calculate filtered coadded map psds
-                            logger->info("calculating filtered coadded map psds");
-                            todproc.engine().cmb.calc_map_psd();
-                            // calculate filtered coadded map histograms
-                            logger->info("calculating filtered coadded map histograms");
-                            todproc.engine().cmb.calc_map_hist();
-
-                            // calculate coadded map median error
-                            todproc.engine().cmb.calc_median_err();
-                            // calculate coadded map median rms
-                            todproc.engine().cmb.calc_median_rms();
-
-                            if (todproc.engine().run_source_finder) {
-                                // find coadded map sources
-                                logger->info("finding filtered coadded map sources");
-                                todproc.engine().template find_sources<mapmaking::FilteredCoadd>(todproc.engine().cmb);
-                            }
-
-                            // output filtered coadded maps only if they were not
-                            // already written incrementally during Wiener
-                            // filtering.
-                            if (todproc.engine().write_filtered_maps_partial) {
-                                logger->info("filtered coadded files already written during Wiener filtering; skipping post-filter output stage");
-                            }
-                            else {
-                                logger->info("outputting filtered coadded files");
-                                todproc.engine().template output<mapmaking::FilteredCoadd>();
-                            }
+                            citlali::pipeline::write_filtered_coadd_outputs<
+                                mapmaking::FilteredCoadd>(todproc, logger);
                         }
                     }
 

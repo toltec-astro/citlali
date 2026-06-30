@@ -353,6 +353,7 @@ enum class FakeMapType {
     RawObs,
     FilteredObs,
     RawCoadd,
+    FilteredCoadd,
 };
 
 TEST(config_scaffold, formats_config_paths) {
@@ -1704,6 +1705,39 @@ TEST(pipeline_execution, skips_raw_coadd_noise_products_when_disabled) {
 
     EXPECT_EQ(todproc.engine().cmb.calc_noise_products_calls, 0);
     EXPECT_EQ(todproc.engine().output_calls, 1);
+}
+
+TEST(pipeline_execution, writes_filtered_coadd_outputs) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_source_finder = true;
+    todproc.engine().wiener_filter.normalize_error = true;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_filtered_coadd_outputs<
+        FakeMapType::FilteredCoadd>(todproc, logger);
+
+    EXPECT_EQ(todproc.engine().run_wiener_filter_calls, 1);
+    EXPECT_EQ(todproc.engine().cmb.calc_noise_products_calls, 1);
+    EXPECT_TRUE(todproc.engine().cmb.last_apply_empirical_noise_weights);
+    EXPECT_EQ(todproc.engine().cmb.calc_map_psd_calls, 1);
+    EXPECT_EQ(todproc.engine().cmb.calc_map_hist_calls, 1);
+    EXPECT_EQ(todproc.engine().cmb.calc_median_err_calls, 1);
+    EXPECT_EQ(todproc.engine().cmb.calc_median_rms_calls, 1);
+    EXPECT_EQ(todproc.engine().find_sources_calls, 1);
+    EXPECT_EQ(todproc.engine().output_calls, 1);
+}
+
+TEST(pipeline_execution, skips_filtered_coadd_output_when_partial_written) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().write_filtered_maps_partial = true;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_filtered_coadd_outputs<
+        FakeMapType::FilteredCoadd>(todproc, logger);
+
+    EXPECT_EQ(todproc.engine().cmb.calc_noise_products_calls, 0);
+    EXPECT_EQ(todproc.engine().output_calls, 0);
+    EXPECT_EQ(logger->info_calls, 4);
 }
 
 TEST(pipeline_output_layout, derives_config_copy_destinations) {
