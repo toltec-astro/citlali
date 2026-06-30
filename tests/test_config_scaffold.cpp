@@ -154,6 +154,7 @@ struct FakeEngine {
     int hwpr_end_indices = -1;
     std::string loaded_astrometry_config;
     std::string loaded_photometry_config;
+    std::vector<std::string> date_obs;
     std::vector<int> start_indices = {7};
     std::vector<int> end_indices = {9};
 
@@ -2128,6 +2129,37 @@ TEST(pipeline_execution, skips_coadd_noise_buffer_when_noise_disabled) {
     EXPECT_TRUE(todproc.engine().cmb.obsnums.empty());
     EXPECT_DOUBLE_EQ(todproc.engine().cmb.exposure_time, 0.0);
     EXPECT_EQ(logger->info_calls, 1);
+}
+
+TEST(pipeline_execution, prepares_iteration_observation_buffers_for_coadd) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_coadd = true;
+    todproc.engine().date_obs = {"old"};
+    todproc.engine().cmb.obsnums = {"101"};
+    todproc.engine().cmb.exposure_time = 6.0;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::prepare_iteration_observation_buffers(
+        todproc, logger);
+
+    EXPECT_TRUE(todproc.engine().date_obs.empty());
+    EXPECT_EQ(todproc.allocate_cmb_calls, 1);
+    EXPECT_TRUE(todproc.engine().cmb.obsnums.empty());
+    EXPECT_DOUBLE_EQ(todproc.engine().cmb.exposure_time, 0.0);
+}
+
+TEST(pipeline_execution, prepares_iteration_observation_buffers_without_coadd) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_coadd = false;
+    todproc.engine().date_obs = {"old"};
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::prepare_iteration_observation_buffers(
+        todproc, logger);
+
+    EXPECT_TRUE(todproc.engine().date_obs.empty());
+    EXPECT_EQ(todproc.allocate_cmb_calls, 0);
+    EXPECT_EQ(logger->info_calls, 0);
 }
 
 TEST(pipeline_execution, calculates_initial_observation_map_dimensions) {

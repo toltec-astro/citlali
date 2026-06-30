@@ -35,6 +35,17 @@ void prepare_coadd_iteration_buffers(TodProc &todproc, const Logger &logger) {
     engine.cmb.exposure_time = 0;
 }
 
+template <class TodProc, class Logger>
+void prepare_iteration_observation_buffers(TodProc &todproc,
+                                           const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    engine.date_obs.clear();
+    if (engine.run_coadd) {
+        prepare_coadd_iteration_buffers(todproc, logger);
+    }
+}
+
 template <class TodProc, class MapExtents, class MapCoords, class Logger>
 void calculate_initial_observation_map_dimensions(TodProc &todproc,
                                                  MapExtents &map_extents,

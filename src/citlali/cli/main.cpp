@@ -421,13 +421,8 @@ int run(const rc_t &rc) {
                     citlali::pipeline::prepare_iteration_output_layout_if_needed(
                         todproc, config_filepaths, logger);
 
-                    // clear obs dates
-                    todproc.engine().date_obs.clear();
-
-                    if (todproc.engine().run_coadd) {
-                        citlali::pipeline::prepare_coadd_iteration_buffers(
-                            todproc, logger);
-                    }
+                    citlali::pipeline::prepare_iteration_observation_buffers(
+                        todproc, logger);
 
                     // run the reduction for each observation
                     for (std::size_t i=0; i<co.n_inputs(); ++i) {
