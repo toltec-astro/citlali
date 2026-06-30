@@ -130,11 +130,22 @@ struct TimestreamChunkingConfig {
     bool force = false;
 };
 
+struct TimestreamLearningConfig {
+    bool enabled = false;
+    bool diagnostics_enabled = true;
+    int learn_iters = 2;
+    int apply_start_iter = 2;
+    int max_records_per_type = 200000;
+    bool apply_sample_masks_enabled = true;
+    double apply_max_new_flagged_fraction = 0.02;
+};
+
 struct TimestreamConfig {
     bool enabled = true;
     TodType type = TodType::xs;
     TimestreamOutputConfig output;
     TimestreamChunkingConfig chunking;
+    TimestreamLearningConfig learning;
 };
 
 inline ConfigPath append_config_path(ConfigPath path,
@@ -168,6 +179,19 @@ inline void validate(const TimestreamChunkingConfig &config,
     check_minimum(config.value, 0.0, {"timestream", "chunking", "value"}, report);
 }
 
+inline void validate(const TimestreamLearningConfig &config,
+                     ValidationReport &report) {
+    check_minimum(config.learn_iters, 0,
+                  {"timestream", "learning", "learn_iters"}, report);
+    check_minimum(config.apply_start_iter, 0,
+                  {"timestream", "learning", "apply_start_iter"}, report);
+    check_minimum(config.max_records_per_type, 0,
+                  {"timestream", "learning", "max_records_per_type"}, report);
+    check_minimum(config.apply_max_new_flagged_fraction, 0.0,
+                  {"timestream", "learning", "apply_max_new_flagged_fraction"},
+                  report);
+}
+
 inline void validate(const TimestreamConfig &config, ValidationReport &report) {
     if (!config.enabled) {
         report.add_error({"timestream", "enabled"},
@@ -178,6 +202,7 @@ inline void validate(const TimestreamConfig &config, ValidationReport &report) {
     validate(config.output.processed_time_chunk,
              {"timestream", "processed_time_chunk", "output"}, report);
     validate(config.chunking, report);
+    validate(config.learning, report);
 }
 
 }  // namespace citlali::config

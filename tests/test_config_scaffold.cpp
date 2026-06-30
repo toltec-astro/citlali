@@ -190,6 +190,19 @@ TEST(config_scaffold, validates_timestream_output_selection_values) {
     EXPECT_EQ(report.error_count(), 5U);
 }
 
+TEST(config_scaffold, validates_timestream_learning_values) {
+    citlali::config::TimestreamLearningConfig config;
+    config.learn_iters = -1;
+    config.apply_start_iter = -1;
+    config.max_records_per_type = -1;
+    config.apply_max_new_flagged_fraction = -1.0;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 4U);
+}
+
 TEST(config_scaffold, validates_map_filter_config_values) {
     citlali::config::MapFilterConfig config;
     config.enabled = true;

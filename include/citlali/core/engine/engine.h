@@ -1109,33 +1109,77 @@ template<typename CT>
 void Engine::get_learning_config(CT &config) {
     ReductionLearningState::Options options;
 
+    auto parsed_cleanly = [&](std::size_t missing_before, std::size_t invalid_before) {
+        return missing_keys.size() == missing_before && invalid_keys.size() == invalid_before;
+    };
+
     if (config.template has_typed<bool>(std::tuple{"timestream","learning","enabled"})) {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, options.enabled, missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","enabled"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_timestream_config.learning.enabled = options.enabled;
+        }
     }
     if (config.template has_typed<bool>(std::tuple{"timestream","learning","diagnostics_enabled"})) {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, options.diagnostics_enabled, missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","diagnostics_enabled"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_timestream_config.learning.diagnostics_enabled =
+                options.diagnostics_enabled;
+        }
     }
     if (config.template has_typed<int>(std::tuple{"timestream","learning","learn_iters"})) {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, options.learn_iters, missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","learn_iters"}, {}, {0});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_timestream_config.learning.learn_iters = options.learn_iters;
+        }
     }
     if (config.template has_typed<int>(std::tuple{"timestream","learning","apply_start_iter"})) {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, options.apply_start_iter, missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","apply_start_iter"}, {}, {0});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_timestream_config.learning.apply_start_iter =
+                options.apply_start_iter;
+        }
     }
     if (config.template has_typed<int>(std::tuple{"timestream","learning","max_records_per_type"})) {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, options.max_records_per_type, missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","max_records_per_type"}, {}, {0});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_timestream_config.learning.max_records_per_type =
+                options.max_records_per_type;
+        }
     }
     if (config.template has_typed<bool>(std::tuple{"timestream","learning","apply_sample_masks_enabled"})) {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, options.apply_sample_masks_enabled, missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","apply_sample_masks_enabled"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_timestream_config.learning.apply_sample_masks_enabled =
+                options.apply_sample_masks_enabled;
+        }
     }
     if (config.template has_typed<double>(std::tuple{"timestream","learning","apply_max_new_flagged_fraction"})) {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, options.apply_max_new_flagged_fraction, missing_keys, invalid_keys,
                          std::tuple{"timestream","learning","apply_max_new_flagged_fraction"}, {}, {0.0});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_timestream_config.learning.apply_max_new_flagged_fraction =
+                options.apply_max_new_flagged_fraction;
+        }
     }
     if (config.template has_typed<bool>(std::tuple{"timestream","learning","map_pixel_outlier_diagnostics_enabled"})) {
         get_config_value(config, options.map_pixel_outlier_diagnostics_enabled, missing_keys, invalid_keys,
