@@ -702,20 +702,8 @@ int run(const rc_t &rc) {
 
                         // allocate observation map buffer
                         if (todproc.engine().run_mapmaking) {
-                            // determine number of maps
-                            logger->info("calculating number of maps");
-                            todproc.calc_map_num();
-                            logger->info("allocating obs map buffer");
-                            todproc.allocate_omb(map_extents[i], map_coords[i]);
-                            todproc.engine().configure_map_pixel_contribution_targets(
-                                todproc.engine().omb, "raw_obs");
-
-                            // make noise maps for observation map buffer
-                            if (todproc.engine().run_noise &&
-                                (!todproc.engine().run_coadd || todproc.engine().map_method == "jinc")) {
-                                logger->info("allocating obs noise maps");
-                                todproc.allocate_nmb(todproc.engine().omb);
-                            }
+                            citlali::pipeline::allocate_observation_map_buffers(
+                                todproc, map_extents[i], map_coords[i], logger);
                         }
 
                         citlali::pipeline::update_observation_exposure_time(

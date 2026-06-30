@@ -88,7 +88,10 @@ struct FakeEngine {
     bool run_map_filter = false;
     bool verbose_mode = false;
     bool run_noise = true;
+    std::string map_method = "jinc";
     std::map<std::string, int> gaps;
+    int configure_map_pixel_contribution_targets_calls = 0;
+    std::string last_map_pixel_contribution_target;
 
     struct {
         std::vector<std::string> obsnums;
@@ -128,6 +131,13 @@ struct FakeEngine {
         int fruit_loops_iters = 3;
         bool save_all_iters = false;
     } ptcproc;
+
+    template <class MapBuffer>
+    void configure_map_pixel_contribution_targets(
+        MapBuffer &, const std::string &target) {
+        ++configure_map_pixel_contribution_targets_calls;
+        last_map_pixel_contribution_target = target;
+    }
 };
 
 struct FakeFlxscaleCorrection {
@@ -234,6 +244,30 @@ struct FakeCoaddTodProc {
     FakeEngine &engine() { return engine_state; }
 
     void allocate_cmb() { ++allocate_cmb_calls; }
+
+    template <class MapBuffer>
+    void allocate_nmb(MapBuffer &) {
+        ++allocate_nmb_calls;
+    }
+};
+
+struct FakeObservationMapTodProc {
+    FakeEngine engine_state;
+    int calc_map_num_calls = 0;
+    int allocate_omb_calls = 0;
+    int allocate_nmb_calls = 0;
+    int last_map_extent = 0;
+    int last_map_coord = 0;
+
+    FakeEngine &engine() { return engine_state; }
+
+    void calc_map_num() { ++calc_map_num_calls; }
+
+    void allocate_omb(int map_extent, int map_coord) {
+        ++allocate_omb_calls;
+        last_map_extent = map_extent;
+        last_map_coord = map_coord;
+    }
 
     template <class MapBuffer>
     void allocate_nmb(MapBuffer &) {
@@ -1414,6 +1448,39 @@ TEST(pipeline_execution, skips_coadd_noise_buffer_when_noise_disabled) {
     EXPECT_TRUE(todproc.engine().cmb.obsnums.empty());
     EXPECT_DOUBLE_EQ(todproc.engine().cmb.exposure_time, 0.0);
     EXPECT_EQ(logger->info_calls, 1);
+}
+
+TEST(pipeline_execution, allocates_observation_map_buffers) {
+    FakeObservationMapTodProc todproc;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::allocate_observation_map_buffers(
+        todproc, 11, 22, logger);
+
+    EXPECT_EQ(todproc.calc_map_num_calls, 1);
+    EXPECT_EQ(todproc.allocate_omb_calls, 1);
+    EXPECT_EQ(todproc.last_map_extent, 11);
+    EXPECT_EQ(todproc.last_map_coord, 22);
+    EXPECT_EQ(todproc.engine().configure_map_pixel_contribution_targets_calls,
+              1);
+    EXPECT_EQ(todproc.engine().last_map_pixel_contribution_target, "raw_obs");
+    EXPECT_EQ(todproc.allocate_nmb_calls, 1);
+    EXPECT_EQ(logger->info_calls, 3);
+}
+
+TEST(pipeline_execution, skips_observation_noise_for_non_jinc_coadd) {
+    FakeObservationMapTodProc todproc;
+    todproc.engine().run_coadd = true;
+    todproc.engine().map_method = "nearest";
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::allocate_observation_map_buffers(
+        todproc, 11, 22, logger);
+
+    EXPECT_EQ(todproc.calc_map_num_calls, 1);
+    EXPECT_EQ(todproc.allocate_omb_calls, 1);
+    EXPECT_EQ(todproc.allocate_nmb_calls, 0);
+    EXPECT_EQ(logger->info_calls, 2);
 }
 
 TEST(pipeline_output_layout, derives_config_copy_destinations) {
