@@ -490,23 +490,11 @@ int run(const rc_t &rc) {
                         citlali::pipeline::setup_and_run_observation_pipeline(
                             todproc.engine(), kidsproc, rawobs, logger);
 
-                        citlali::pipeline::write_raw_observation_outputs<
-                            mapmaking::RawObs>(todproc, logger);
-
-                        // coadd
-                        if (todproc.engine().run_coadd) {
-                            citlali::pipeline::coadd_observation(
-                                todproc, logger);
-                        }
-
-                        // filter obs map
-                        else if (todproc.engine().run_map_filter) {
-                            citlali::pipeline::write_filtered_observation_outputs<
-                                mapmaking::FilteredObs,
-                                std::is_same_v<todproc_t,
-                                               TimeOrderedDataProc<Pointing>>>(
-                                todproc, logger);
-                        }
+                        citlali::pipeline::write_observation_outputs_and_accumulate<
+                            mapmaking::RawObs, mapmaking::FilteredObs,
+                            std::is_same_v<todproc_t,
+                                           TimeOrderedDataProc<Pointing>>>(
+                            todproc, logger);
                     }
 
                     citlali::pipeline::write_iteration_coadd_outputs_if_needed<

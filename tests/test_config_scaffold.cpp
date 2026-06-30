@@ -2532,6 +2532,53 @@ TEST(pipeline_execution, skips_filtered_observation_output_when_partial_written)
     EXPECT_EQ(logger->info_calls, 4);
 }
 
+TEST(pipeline_execution, writes_observation_outputs_without_accumulation) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_mapmaking = true;
+    todproc.engine().run_coadd = false;
+    todproc.engine().run_map_filter = false;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_observation_outputs_and_accumulate<
+        FakeMapType::RawObs, FakeMapType::FilteredObs, false>(
+        todproc, logger);
+
+    EXPECT_EQ(todproc.engine().output_calls, 1);
+    EXPECT_EQ(todproc.coadd_calls, 0);
+    EXPECT_EQ(todproc.engine().run_wiener_filter_calls, 0);
+}
+
+TEST(pipeline_execution, writes_observation_outputs_and_coadds) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_mapmaking = true;
+    todproc.engine().run_coadd = true;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_observation_outputs_and_accumulate<
+        FakeMapType::RawObs, FakeMapType::FilteredObs, false>(
+        todproc, logger);
+
+    EXPECT_EQ(todproc.engine().output_calls, 1);
+    EXPECT_EQ(todproc.coadd_calls, 1);
+    EXPECT_EQ(todproc.engine().run_wiener_filter_calls, 0);
+}
+
+TEST(pipeline_execution, writes_observation_outputs_and_filters) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_mapmaking = true;
+    todproc.engine().run_coadd = false;
+    todproc.engine().run_map_filter = true;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_observation_outputs_and_accumulate<
+        FakeMapType::RawObs, FakeMapType::FilteredObs, false>(
+        todproc, logger);
+
+    EXPECT_EQ(todproc.engine().output_calls, 2);
+    EXPECT_EQ(todproc.coadd_calls, 0);
+    EXPECT_EQ(todproc.engine().run_wiener_filter_calls, 1);
+}
+
 TEST(pipeline_execution, writes_raw_coadd_outputs) {
     FakeCoaddTodProc todproc;
     todproc.engine().apply_empirical_noise_weights = true;
