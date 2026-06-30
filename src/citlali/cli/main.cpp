@@ -411,30 +411,8 @@ int run(const rc_t &rc) {
                     logger->debug("getting sample rate");
                     todproc.engine().telescope.fsmp = rawobs_kids_meta.back().get_typed<double>("fsmp");
 
-                    // get telescope file
-                    auto tel_path = rawobs.teldata().filepath();
-                    logger->info("getting telescope file {}", tel_path);
-                    todproc.engine().telescope.get_tel_data(tel_path);
-
-                    citlali::pipeline::overwrite_map_center_if_configured(
-                        todproc.engine(), logger);
-
-                    // align tod
-                    if (!todproc.engine().telescope.sim_obs) {
-                        logger->info("aligning timestreams");
-                        if (todproc.engine().interp_over_gaps) {
-                            todproc.align_timestreams_gaps(rawobs);
-                        }
-                        else {
-                            todproc.align_timestreams(rawobs);
-                        }
-                    }
-
-                    // if simu, set start and end indices to 0
-                    else {
-                        citlali::pipeline::reset_simulated_observation_indices(
-                            todproc.engine(), rawobs);
-                    }
+                    citlali::pipeline::load_and_align_telescope_data(
+                        todproc, rawobs, logger);
 
                     // calc tangent plane pointing
                     logger->info("calculating tangent plane pointing");
@@ -557,29 +535,8 @@ int run(const rc_t &rc) {
 
                         // get telescope file
                         if (co.n_inputs() > 1) {
-                            auto tel_path = rawobs.teldata().filepath();
-                            logger->info("getting telescope file {}", tel_path);
-                            todproc.engine().telescope.get_tel_data(tel_path);
-
-                            citlali::pipeline::overwrite_map_center_if_configured(
-                                todproc.engine(), logger);
-
-                            // align tod
-                            if (!todproc.engine().telescope.sim_obs) {
-                                logger->info("aligning timestreams");
-                                if (todproc.engine().interp_over_gaps) {
-                                    todproc.align_timestreams_gaps(rawobs);
-                                }
-                                else {
-                                    todproc.align_timestreams(rawobs);
-                                }
-                            }
-
-                            // if simu, set start and end indices to 0
-                            else {
-                                citlali::pipeline::reset_simulated_observation_indices(
-                                    todproc.engine(), rawobs);
-                            }
+                            citlali::pipeline::load_and_align_telescope_data(
+                                todproc, rawobs, logger);
 
                             // calc tangent plane pointing
                             logger->info("calculating tangent plane pointing");

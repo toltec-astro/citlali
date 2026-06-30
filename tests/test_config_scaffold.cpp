@@ -108,6 +108,7 @@ struct FakeEngine {
     bool write_filtered_maps_partial = false;
     bool apply_empirical_noise_weights = false;
     int fruit_iter = 0;
+    bool interp_over_gaps = false;
     std::string map_method = "jinc";
     std::string map_grouping = "array";
     std::map<std::string, int> gaps;
@@ -190,8 +191,15 @@ struct FakeEngine {
         double d_fsmp = -1.0;
         bool sim_obs = false;
         std::string pixel_axes = "pixel_axes";
+        int get_tel_data_calls = 0;
+        std::string loaded_tel_path;
         std::map<std::string, FakeTelHeaderValue> tel_header;
         std::map<std::string, FakeTelTime> tel_data;
+
+        void get_tel_data(const std::string &tel_path) {
+            ++get_tel_data_calls;
+            loaded_tel_path = tel_path;
+        }
     } telescope;
 
     struct {
@@ -294,6 +302,11 @@ struct FakeRawObs {
         const std::string &config() const { return value; }
     };
 
+    struct FakeTelData {
+        std::string path = "tel.nc";
+        std::string filepath() const { return path; }
+    };
+
     const FakeFlxscaleCorrection *correction = nullptr;
     std::string obs_name = "fake_obs";
     FakeArrayPropTable apt;
@@ -303,6 +316,7 @@ struct FakeRawObs {
     };
     FakeConfigInfo astrometry;
     FakeConfigInfo photometry;
+    FakeTelData tel;
     std::optional<FakeHwpData> hwp;
 
     const FakeArrayPropTable &array_prop_table() const { return apt; }
@@ -312,6 +326,8 @@ struct FakeRawObs {
     const FakeConfigInfo &astrometry_calib_info() const { return astrometry; }
 
     const FakeConfigInfo &photometry_calib_info() const { return photometry; }
+
+    const FakeTelData &teldata() const { return tel; }
 
     const FakeFlxscaleCorrection *flxscale_correction() const {
         return correction;
@@ -419,6 +435,22 @@ struct FakeCalibrationTodProc {
     FakeEngine &engine() { return engine_state; }
 
     void get_apt_from_files(const FakeRawObs &) { ++get_apt_from_files_calls; }
+};
+
+struct FakeTelescopeTodProc {
+    FakeEngine engine_state;
+    int align_timestreams_calls = 0;
+    int align_timestreams_gaps_calls = 0;
+
+    FakeEngine &engine() { return engine_state; }
+
+    void align_timestreams(const FakeRawObs &) {
+        ++align_timestreams_calls;
+    }
+
+    void align_timestreams_gaps(const FakeRawObs &) {
+        ++align_timestreams_gaps_calls;
+    }
 };
 
 struct FakeObservationMapTodProc {
@@ -1327,6 +1359,52 @@ TEST(pipeline_preflight, leaves_hwpr_indices_when_hwpr_disabled) {
     EXPECT_TRUE(engine.end_indices.empty());
     EXPECT_EQ(engine.hwpr_start_indices, -1);
     EXPECT_EQ(engine.hwpr_end_indices, -1);
+}
+
+TEST(pipeline_preflight, loads_and_aligns_telescope_data) {
+    FakeTelescopeTodProc todproc;
+    FakeRawObs rawobs;
+    rawobs.tel.path = "/data/tel.nc";
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_and_align_telescope_data(
+        todproc, rawobs, logger);
+
+    EXPECT_EQ(todproc.engine().telescope.get_tel_data_calls, 1);
+    EXPECT_EQ(todproc.engine().telescope.loaded_tel_path, "/data/tel.nc");
+    EXPECT_EQ(todproc.align_timestreams_calls, 1);
+    EXPECT_EQ(todproc.align_timestreams_gaps_calls, 0);
+    EXPECT_EQ(logger->info_calls, 2);
+}
+
+TEST(pipeline_preflight, aligns_telescope_data_over_gaps) {
+    FakeTelescopeTodProc todproc;
+    todproc.engine().interp_over_gaps = true;
+    FakeRawObs rawobs;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_and_align_telescope_data(
+        todproc, rawobs, logger);
+
+    EXPECT_EQ(todproc.align_timestreams_calls, 0);
+    EXPECT_EQ(todproc.align_timestreams_gaps_calls, 1);
+}
+
+TEST(pipeline_preflight, resets_indices_for_simulated_telescope_data) {
+    FakeTelescopeTodProc todproc;
+    todproc.engine().telescope.sim_obs = true;
+    FakeRawObs rawobs;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_and_align_telescope_data(
+        todproc, rawobs, logger);
+
+    EXPECT_EQ(todproc.align_timestreams_calls, 0);
+    EXPECT_EQ(todproc.align_timestreams_gaps_calls, 0);
+    EXPECT_EQ(todproc.engine().start_indices,
+              (std::vector<int>{0, 0, 0, 0}));
+    EXPECT_TRUE(todproc.engine().end_indices.empty());
+    EXPECT_EQ(logger->info_calls, 1);
 }
 
 TEST(pipeline_preflight, configures_sample_rate_without_downsample) {
