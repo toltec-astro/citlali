@@ -130,6 +130,36 @@ struct TimestreamChunkingConfig {
     bool force = false;
 };
 
+struct TimestreamLearningMapPixelOutlierConfig {
+    bool diagnostics_enabled = true;
+    bool contributor_diagnostics_enabled = false;
+    bool targeted_contributor_diagnostics_enabled = false;
+    bool detector_exclusion_enabled = false;
+    int top_n = 8;
+    int targeted_contributor_max_pixels = 32;
+    int detector_exclusion_min_pixels = 4;
+    double min_abs_z = 8.0;
+    double min_n_eff = 4.0;
+    double source_radius_arcsec = 30.0;
+};
+
+struct TimestreamLearningBusyDetectorConfig {
+    bool exclusion_enabled = true;
+};
+
+struct TimestreamLearningScanNetworkPathologyConfig {
+    bool enabled = true;
+    bool apply_pre_rtc = false;
+    bool apply_pre_ptc = false;
+    bool apply_pre_mapmaking = true;
+    int min_candidate_clusters = 4;
+    int min_candidate_events = 100;
+    double min_max_residual_z = 25.0;
+    int severe_candidate_events = 250;
+    double severe_max_residual_z = 50.0;
+    double max_new_flagged_fraction = 0.35;
+};
+
 struct TimestreamLearningConfig {
     bool enabled = false;
     bool diagnostics_enabled = true;
@@ -138,6 +168,9 @@ struct TimestreamLearningConfig {
     int max_records_per_type = 200000;
     bool apply_sample_masks_enabled = true;
     double apply_max_new_flagged_fraction = 0.02;
+    TimestreamLearningMapPixelOutlierConfig map_pixel_outlier;
+    TimestreamLearningBusyDetectorConfig busy_detector;
+    TimestreamLearningScanNetworkPathologyConfig scan_network_pathology;
 };
 
 struct TimestreamConfig {
@@ -179,6 +212,62 @@ inline void validate(const TimestreamChunkingConfig &config,
     check_minimum(config.value, 0.0, {"timestream", "chunking", "value"}, report);
 }
 
+inline void validate(const TimestreamLearningMapPixelOutlierConfig &config,
+                     ValidationReport &report) {
+    check_minimum(config.top_n, 0,
+                  {"timestream", "learning", "map_pixel_outlier_top_n"},
+                  report);
+    check_minimum(config.targeted_contributor_max_pixels, 0,
+                  {"timestream", "learning",
+                   "map_pixel_outlier_targeted_contributor_max_pixels"},
+                  report);
+    check_minimum(config.detector_exclusion_min_pixels, 1,
+                  {"timestream", "learning",
+                   "map_pixel_outlier_detector_exclusion_min_pixels"},
+                  report);
+    check_minimum(config.min_abs_z, 0.0,
+                  {"timestream", "learning", "map_pixel_outlier_min_abs_z"},
+                  report);
+    check_minimum(config.min_n_eff, 0.0,
+                  {"timestream", "learning", "map_pixel_outlier_min_n_eff"},
+                  report);
+    check_minimum(config.source_radius_arcsec, 0.0,
+                  {"timestream", "learning",
+                   "map_pixel_outlier_source_radius_arcsec"},
+                  report);
+}
+
+inline void validate(const TimestreamLearningBusyDetectorConfig &,
+                     ValidationReport &) {}
+
+inline void validate(const TimestreamLearningScanNetworkPathologyConfig &config,
+                     ValidationReport &report) {
+    check_minimum(config.min_candidate_clusters, 0,
+                  {"timestream", "learning",
+                   "scan_network_pathology_min_candidate_clusters"},
+                  report);
+    check_minimum(config.min_candidate_events, 0,
+                  {"timestream", "learning",
+                   "scan_network_pathology_min_candidate_events"},
+                  report);
+    check_minimum(config.min_max_residual_z, 0.0,
+                  {"timestream", "learning",
+                   "scan_network_pathology_min_max_residual_z"},
+                  report);
+    check_minimum(config.severe_candidate_events, 0,
+                  {"timestream", "learning",
+                   "scan_network_pathology_severe_candidate_events"},
+                  report);
+    check_minimum(config.severe_max_residual_z, 0.0,
+                  {"timestream", "learning",
+                   "scan_network_pathology_severe_max_residual_z"},
+                  report);
+    check_minimum(config.max_new_flagged_fraction, 0.0,
+                  {"timestream", "learning",
+                   "scan_network_pathology_max_new_flagged_fraction"},
+                  report);
+}
+
 inline void validate(const TimestreamLearningConfig &config,
                      ValidationReport &report) {
     check_minimum(config.learn_iters, 0,
@@ -190,6 +279,9 @@ inline void validate(const TimestreamLearningConfig &config,
     check_minimum(config.apply_max_new_flagged_fraction, 0.0,
                   {"timestream", "learning", "apply_max_new_flagged_fraction"},
                   report);
+    validate(config.map_pixel_outlier, report);
+    validate(config.busy_detector, report);
+    validate(config.scan_network_pathology, report);
 }
 
 inline void validate(const TimestreamConfig &config, ValidationReport &report) {

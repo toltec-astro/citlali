@@ -196,11 +196,23 @@ TEST(config_scaffold, validates_timestream_learning_values) {
     config.apply_start_iter = -1;
     config.max_records_per_type = -1;
     config.apply_max_new_flagged_fraction = -1.0;
+    config.map_pixel_outlier.top_n = -1;
+    config.map_pixel_outlier.targeted_contributor_max_pixels = -1;
+    config.map_pixel_outlier.detector_exclusion_min_pixels = 0;
+    config.map_pixel_outlier.min_abs_z = -1.0;
+    config.map_pixel_outlier.min_n_eff = -1.0;
+    config.map_pixel_outlier.source_radius_arcsec = -1.0;
+    config.scan_network_pathology.min_candidate_clusters = -1;
+    config.scan_network_pathology.min_candidate_events = -1;
+    config.scan_network_pathology.min_max_residual_z = -1.0;
+    config.scan_network_pathology.severe_candidate_events = -1;
+    config.scan_network_pathology.severe_max_residual_z = -1.0;
+    config.scan_network_pathology.max_new_flagged_fraction = -1.0;
 
     citlali::config::ValidationReport report;
     citlali::config::validate(config, report);
     EXPECT_FALSE(report.ok());
-    EXPECT_EQ(report.error_count(), 4U);
+    EXPECT_EQ(report.error_count(), 16U);
 }
 
 TEST(config_scaffold, validates_map_filter_config_values) {
