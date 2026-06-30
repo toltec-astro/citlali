@@ -611,7 +611,11 @@ struct FakeObservationMapTodProc {
 struct FakeInitialObservationTodProc : FakeTelescopeTodProc {
     int calc_map_num_calls = 0;
     int calc_omb_size_calls = 0;
+    int allocate_omb_calls = 0;
+    int allocate_nmb_calls = 0;
     int get_apt_from_files_calls = 0;
+    int last_map_extent = 0;
+    int last_map_coord = 0;
 
     void calc_map_num() { ++calc_map_num_calls; }
 
@@ -624,6 +628,17 @@ struct FakeInitialObservationTodProc : FakeTelescopeTodProc {
 
     void get_apt_from_files(const FakeRawObs &) {
         ++get_apt_from_files_calls;
+    }
+
+    void allocate_omb(int &map_extent, int &map_coord) {
+        ++allocate_omb_calls;
+        last_map_extent = map_extent;
+        last_map_coord = map_coord;
+    }
+
+    template <class MapBuffer>
+    void allocate_nmb(MapBuffer &) {
+        ++allocate_nmb_calls;
     }
 };
 
@@ -2415,6 +2430,57 @@ TEST(pipeline_execution,
     EXPECT_EQ(todproc.allocate_omb_calls, 0);
     EXPECT_EQ(todproc.allocate_nmb_calls, 0);
     EXPECT_EQ(logger->info_calls, 0);
+}
+
+TEST(pipeline_execution, prepares_reduction_observation_inputs) {
+    FakeInitialObservationTodProc todproc;
+    FakeRawObs rawobs;
+    rawobs.tel.path = "/data/tel.nc";
+    std::vector<FakeRawObsMeta> rawobs_kids_meta = {{122.0, 102}};
+    std::vector<int> map_extents = {11};
+    std::vector<int> map_coords = {22};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::pipeline::prepare_reduction_observation_inputs<false>(
+        todproc, rawobs, rawobs_kids_meta, true, map_extents, map_coords, 0,
+        std::string{"2026-01-01T00:00:00"}, logger));
+
+    EXPECT_EQ(todproc.engine().get_astrometry_config_calls, 1);
+    EXPECT_DOUBLE_EQ(todproc.engine().telescope.fsmp, 122.0);
+    EXPECT_DOUBLE_EQ(todproc.engine().telescope.d_fsmp, 122.0);
+    EXPECT_EQ(todproc.get_tone_freqs_from_files_calls, 1);
+    EXPECT_EQ(todproc.get_adc_snap_from_files_calls, 1);
+    EXPECT_EQ(todproc.engine().obsnum, "000102");
+    EXPECT_EQ(todproc.engine().calib.calc_flux_calibration_calls, 1);
+    EXPECT_EQ(todproc.engine().telescope.get_tel_data_calls, 1);
+    EXPECT_EQ(todproc.engine().telescope.calc_scan_indices_calls, 1);
+    EXPECT_EQ(todproc.allocate_omb_calls, 1);
+    EXPECT_EQ(todproc.last_map_extent, 11);
+    EXPECT_EQ(todproc.last_map_coord, 22);
+    EXPECT_EQ(todproc.engine().date_obs,
+              (std::vector<std::string>{"2026-01-01T00:00:00"}));
+    EXPECT_DOUBLE_EQ(todproc.engine().omb.exposure_time, 1.0);
+}
+
+TEST(pipeline_execution,
+     rejects_reduction_observation_inputs_on_bad_sample_rate) {
+    FakeInitialObservationTodProc todproc;
+    todproc.engine().rtcproc.run_downsample = true;
+    todproc.engine().rtcproc.downsampler.factor = 0;
+    todproc.engine().rtcproc.downsampler.downsampled_freq_Hz = 0.0;
+    FakeRawObs rawobs;
+    std::vector<FakeRawObsMeta> rawobs_kids_meta = {{122.0, 102}};
+    std::vector<int> map_extents = {11};
+    std::vector<int> map_coords = {22};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_FALSE(citlali::pipeline::prepare_reduction_observation_inputs<false>(
+        todproc, rawobs, rawobs_kids_meta, true, map_extents, map_coords, 0,
+        std::string{"2026-01-01T00:00:00"}, logger));
+
+    EXPECT_EQ(todproc.get_tone_freqs_from_files_calls, 0);
+    EXPECT_TRUE(todproc.engine().date_obs.empty());
+    EXPECT_EQ(todproc.allocate_omb_calls, 0);
 }
 
 TEST(pipeline_execution, coadds_observation) {

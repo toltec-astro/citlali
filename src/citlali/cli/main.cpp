@@ -438,50 +438,16 @@ int run(const rc_t &rc) {
                             citlali::pipeline::load_rawobs_kids_meta(
                                 kidsproc, rawobs, logger);
 
-                        if (!citlali::pipeline::configure_reduction_observation_calibration_if_needed<
+                        if (!citlali::pipeline::prepare_reduction_observation_inputs<
                                 std::is_same_v<todproc_t,
                                                TimeOrderedDataProc<Beammap>>>(
                                 todproc, rawobs, rawobs_kids_meta,
-                                co.n_inputs() > 1, logger)) {
+                                co.n_inputs() > 1, map_extents, map_coords, i,
+                                engine_utils::unix_to_utc(
+                                    todproc.engine().telescope.tel_data["TelTime"](0)),
+                                logger)) {
                             return EXIT_FAILURE;
                         }
-
-                        if (!citlali::pipeline::configure_effective_sample_rate(
-                                todproc.engine(), logger)) {
-                            return EXIT_FAILURE;
-                        }
-
-                        citlali::pipeline::load_raw_detector_diagnostics(
-                            todproc, rawobs, logger);
-
-                        citlali::pipeline::prepare_observation_output_layout_from_rawobs_meta(
-                            todproc.engine(), rawobs_kids_meta, logger);
-
-                        citlali::pipeline::load_hwpr_data_if_requested(
-                            todproc.engine(), rawobs, logger);
-
-                        citlali::pipeline::calculate_flux_calibration(
-                            todproc.engine(), logger);
-
-                        citlali::pipeline::load_and_point_telescope_data_if_needed(
-                            todproc, rawobs, co.n_inputs() > 1, logger);
-
-                        citlali::pipeline::append_observation_date(
-                            todproc.engine(),
-                            engine_utils::unix_to_utc(
-                                todproc.engine().telescope.tel_data["TelTime"](0)));
-
-                        citlali::pipeline::record_timing_gaps_if_needed(
-                            todproc.engine(), logger);
-
-                        citlali::pipeline::calculate_scan_indices_if_needed(
-                            todproc.engine(), co.n_inputs() > 1, logger);
-
-                        citlali::pipeline::allocate_observation_map_buffers_if_needed(
-                            todproc, map_extents, map_coords, i, logger);
-
-                        citlali::pipeline::update_observation_exposure_time(
-                            todproc.engine());
 
                         citlali::pipeline::load_observation_fruit_loop_models_if_needed<
                             std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>>(
