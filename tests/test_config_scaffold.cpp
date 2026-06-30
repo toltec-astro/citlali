@@ -93,6 +93,9 @@ struct FakeCalib {
     bool loaded_hwpr = false;
     std::string loaded_hwpr_filepath;
     bool loaded_hwpr_sim_obs = false;
+    int calc_flux_calibration_calls = 0;
+    std::string loaded_flux_units;
+    double loaded_flux_pixel_size_rad = 0.0;
 
     void get_apt(const std::string &apt_path,
                  const std::vector<std::string> &raw_filenames,
@@ -107,6 +110,13 @@ struct FakeCalib {
         loaded_hwpr = true;
         loaded_hwpr_filepath = filepath;
         loaded_hwpr_sim_obs = sim_obs;
+    }
+
+    void calc_flux_calibration(const std::string &units,
+                               double pixel_size_rad) {
+        ++calc_flux_calibration_calls;
+        loaded_flux_units = units;
+        loaded_flux_pixel_size_rad = pixel_size_rad;
     }
 };
 
@@ -150,6 +160,7 @@ struct FakeEngine {
     struct {
         std::vector<std::string> obsnums;
         std::vector<double> crval_config = {0.0, 0.0};
+        std::string sig_unit = "mJy/beam";
         double exposure_time = 0.0;
         double cov_cut = 0.0;
         double pixel_size_rad = 0.0;
@@ -1579,6 +1590,20 @@ TEST(pipeline_preflight, skips_adc_snap_for_simulated_observations) {
     EXPECT_EQ(todproc.get_tone_freqs_from_files_calls, 1);
     EXPECT_EQ(todproc.get_adc_snap_from_files_calls, 0);
     EXPECT_EQ(logger->debug_calls, 1);
+}
+
+TEST(pipeline_preflight, calculates_flux_calibration) {
+    FakeEngine engine;
+    engine.omb.sig_unit = "Jy/pixel";
+    engine.omb.pixel_size_rad = 0.001;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::calculate_flux_calibration(engine, logger);
+
+    EXPECT_EQ(engine.calib.calc_flux_calibration_calls, 1);
+    EXPECT_EQ(engine.calib.loaded_flux_units, "Jy/pixel");
+    EXPECT_DOUBLE_EQ(engine.calib.loaded_flux_pixel_size_rad, 0.001);
+    EXPECT_EQ(logger->info_calls, 1);
 }
 
 TEST(pipeline_preflight, configures_sample_rate_without_downsample) {

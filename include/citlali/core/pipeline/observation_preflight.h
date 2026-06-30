@@ -195,6 +195,13 @@ void load_raw_detector_diagnostics(TodProc &todproc, const RawObs &rawobs,
     }
 }
 
+template <class Engine, class Logger>
+void calculate_flux_calibration(Engine &engine, const Logger &logger) {
+    logger->info("calculating flux calibration");
+    engine.calib.calc_flux_calibration(engine.omb.sig_unit,
+                                       engine.omb.pixel_size_rad);
+}
+
 template <class Engine, class RawObs, class Logger>
 void load_hwpr_data_if_requested(Engine &engine, const RawObs &rawobs,
                                  const Logger &logger) {

@@ -502,9 +502,8 @@ int run(const rc_t &rc) {
                         citlali::pipeline::load_hwpr_data_if_requested(
                             todproc.engine(), rawobs, logger);
 
-                        // get flux calibration
-                        logger->info("calculating flux calibration");
-                        todproc.engine().calib.calc_flux_calibration(todproc.engine().omb.sig_unit,todproc.engine().omb.pixel_size_rad);
+                        citlali::pipeline::calculate_flux_calibration(
+                            todproc.engine(), logger);
 
                         // get telescope file
                         if (co.n_inputs() > 1) {
