@@ -514,16 +514,8 @@ int run(const rc_t &rc) {
                 // fruit loops convergence check
                 bool fruit_loops_converged = false;
 
-                // check if noise maps are not enabled when in fruit loops mode
-                if (todproc.engine().ptcproc.run_fruit_loops && !todproc.engine().run_noise) {
-                    logger->warn("noise maps are not enabled for fruit loops");
-                }
-
-                // if fruit loops not enabled or in beammap mode, only run for one iteration
-                if (!todproc.engine().ptcproc.run_fruit_loops || (todproc.engine().redu_type == "beammap")) {
-                    todproc.engine().ptcproc.fruit_loops_iters = 1;
-                    todproc.engine().ptcproc.save_all_iters = true;
-                }
+                citlali::pipeline::configure_fruit_loop_iteration_policy(
+                    todproc.engine(), logger);
 
                 // loop through fruit loops iterations
                 while ((todproc.engine().fruit_iter < todproc.engine().ptcproc.fruit_loops_iters) && !fruit_loops_converged) {

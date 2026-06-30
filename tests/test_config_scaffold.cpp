@@ -77,11 +77,13 @@ struct FakeCalib {
 
 struct FakeEngine {
     std::string obsnum;
+    std::string redu_type = "science";
     std::string redu_dir_name = "/tmp/redu01";
     std::string obsnum_dir_name;
     bool run_coadd = false;
     bool run_map_filter = false;
     bool verbose_mode = false;
+    bool run_noise = true;
     std::map<std::string, int> gaps;
 
     struct {
@@ -116,6 +118,12 @@ struct FakeEngine {
             double freq_high_Hz = 0.0;
         } filter;
     } rtcproc;
+
+    struct {
+        bool run_fruit_loops = false;
+        int fruit_loops_iters = 3;
+        bool save_all_iters = false;
+    } ptcproc;
 };
 
 struct FakeFlxscaleCorrection {
@@ -1088,6 +1096,64 @@ TEST(pipeline_preflight, accumulates_observation_exposure_time_for_coadd) {
 
     EXPECT_DOUBLE_EQ(engine.omb.exposure_time, 4.0);
     EXPECT_DOUBLE_EQ(engine.cmb.exposure_time, 7.0);
+}
+
+TEST(pipeline_preflight, configures_non_fruit_loop_as_single_iteration) {
+    FakeEngine engine;
+    engine.ptcproc.run_fruit_loops = false;
+    engine.ptcproc.fruit_loops_iters = 5;
+    engine.ptcproc.save_all_iters = false;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::configure_fruit_loop_iteration_policy(
+        engine, logger);
+
+    EXPECT_EQ(engine.ptcproc.fruit_loops_iters, 1);
+    EXPECT_TRUE(engine.ptcproc.save_all_iters);
+    EXPECT_EQ(logger->warn_calls, 0);
+}
+
+TEST(pipeline_preflight, configures_beammap_fruit_loop_as_single_iteration) {
+    FakeEngine engine;
+    engine.redu_type = "beammap";
+    engine.ptcproc.run_fruit_loops = true;
+    engine.ptcproc.fruit_loops_iters = 5;
+    engine.ptcproc.save_all_iters = false;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::configure_fruit_loop_iteration_policy(
+        engine, logger);
+
+    EXPECT_EQ(engine.ptcproc.fruit_loops_iters, 1);
+    EXPECT_TRUE(engine.ptcproc.save_all_iters);
+}
+
+TEST(pipeline_preflight, warns_when_fruit_loop_noise_maps_disabled) {
+    FakeEngine engine;
+    engine.ptcproc.run_fruit_loops = true;
+    engine.run_noise = false;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::configure_fruit_loop_iteration_policy(
+        engine, logger);
+
+    EXPECT_EQ(logger->warn_calls, 1);
+}
+
+TEST(pipeline_preflight, preserves_science_fruit_loop_iteration_policy) {
+    FakeEngine engine;
+    engine.redu_type = "science";
+    engine.ptcproc.run_fruit_loops = true;
+    engine.ptcproc.fruit_loops_iters = 5;
+    engine.ptcproc.save_all_iters = false;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::configure_fruit_loop_iteration_policy(
+        engine, logger);
+
+    EXPECT_EQ(engine.ptcproc.fruit_loops_iters, 5);
+    EXPECT_FALSE(engine.ptcproc.save_all_iters);
+    EXPECT_EQ(logger->warn_calls, 0);
 }
 
 TEST(pipeline_output_layout, derives_config_copy_destinations) {
