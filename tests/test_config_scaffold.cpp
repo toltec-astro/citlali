@@ -68,9 +68,22 @@ struct FakeCalib {
     std::map<std::string, FakeAptColumn> apt;
     std::string ignore_hwpr = "false";
     bool run_hwpr = true;
+    int get_apt_calls = 0;
+    std::string loaded_apt_path;
+    std::vector<std::string> loaded_raw_filenames;
+    std::vector<std::string> loaded_interfaces;
     bool loaded_hwpr = false;
     std::string loaded_hwpr_filepath;
     bool loaded_hwpr_sim_obs = false;
+
+    void get_apt(const std::string &apt_path,
+                 const std::vector<std::string> &raw_filenames,
+                 const std::vector<std::string> &interfaces) {
+        ++get_apt_calls;
+        loaded_apt_path = apt_path;
+        loaded_raw_filenames = raw_filenames;
+        loaded_interfaces = interfaces;
+    }
 
     void get_hwpr(const std::string &filepath, bool sim_obs) {
         loaded_hwpr = true;
@@ -246,9 +259,30 @@ struct FakeHwpData {
 };
 
 struct FakeRawObs {
+    struct FakeArrayPropTable {
+        std::string path = "apt.ecsv";
+        std::string filepath() const { return path; }
+    };
+
+    struct FakeDataItem {
+        std::string path;
+        std::string iface;
+        std::string filepath() const { return path; }
+        std::string interface() const { return iface; }
+    };
+
     const FakeFlxscaleCorrection *correction = nullptr;
     std::string obs_name = "fake_obs";
+    FakeArrayPropTable apt;
+    std::vector<FakeDataItem> kids_items = {
+        {"toltec0.nc", "toltec0"},
+        {"toltec1.nc", "toltec1"},
+    };
     std::optional<FakeHwpData> hwp;
+
+    const FakeArrayPropTable &array_prop_table() const { return apt; }
+
+    const std::vector<FakeDataItem> &kidsdata() const { return kids_items; }
 
     const FakeFlxscaleCorrection *flxscale_correction() const {
         return correction;
@@ -1153,6 +1187,29 @@ TEST(pipeline_preflight, rejects_missing_flxscale_column) {
 
     EXPECT_FALSE(citlali::pipeline::apply_flxscale_correction(
         engine, rawobs, logger));
+}
+
+TEST(pipeline_preflight, loads_array_properties_table) {
+    FakeEngine engine;
+    FakeRawObs rawobs;
+    rawobs.apt.path = "/data/apt.ecsv";
+    rawobs.kids_items = {
+        {"/data/toltec0.nc", "nw0"},
+        {"/data/toltec1.nc", "nw1"},
+    };
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_array_properties_table(
+        engine, rawobs, logger);
+
+    EXPECT_EQ(engine.calib.get_apt_calls, 1);
+    EXPECT_EQ(engine.calib.loaded_apt_path, "/data/apt.ecsv");
+    EXPECT_EQ(engine.calib.loaded_raw_filenames,
+              (std::vector<std::string>{"/data/toltec0.nc",
+                                        "/data/toltec1.nc"}));
+    EXPECT_EQ(engine.calib.loaded_interfaces,
+              (std::vector<std::string>{"nw0", "nw1"}));
+    EXPECT_EQ(logger->info_calls, 1);
 }
 
 TEST(pipeline_preflight, configures_sample_rate_without_downsample) {

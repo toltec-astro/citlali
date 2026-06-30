@@ -407,32 +407,13 @@ int run(const rc_t &rc) {
                             todproc.get_apt_from_files(rawobs);
                         }
                         else {
-                            auto apt_path = rawobs.array_prop_table().filepath();
-                            logger->info("getting array properties table {}", apt_path);
-
-                            // get raw files and interfaces
-                            std::vector<std::string> raw_filenames, interfaces;
-                            for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
-                                raw_filenames.push_back(data_item.filepath());
-                                interfaces.push_back(data_item.interface());
-                            }
-
-                            // get and setup apt table
-                            todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
+                            citlali::pipeline::load_array_properties_table(
+                                todproc.engine(), rawobs, logger);
                         }
                     }
                     else {
-                        // get apt table
-                        auto apt_path = rawobs.array_prop_table().filepath();
-                        logger->info("getting array properties table {}", apt_path);
-                        // get raw filenames and interfaces
-                        std::vector<std::string> raw_filenames, interfaces;
-                        for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
-                            raw_filenames.push_back(data_item.filepath());
-                            interfaces.push_back(data_item.interface());
-                        }
-                        // get and setup apt table
-                        todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
+                        citlali::pipeline::load_array_properties_table(
+                            todproc.engine(), rawobs, logger);
                     }
 
                     if (!citlali::pipeline::apply_flxscale_correction(
@@ -572,37 +553,15 @@ int run(const rc_t &rc) {
                                     todproc.get_apt_from_files(rawobs);
                                 }
                                 else {
-                                    // path to apt
-                                    auto apt_path = rawobs.array_prop_table().filepath();
-                                    logger->info("getting array properties table {}", apt_path);
-
-                                    // get raw files and interfaces
-                                    std::vector<std::string> raw_filenames, interfaces;
-                                    for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
-                                        raw_filenames.push_back(data_item.filepath());
-                                        interfaces.push_back(data_item.interface());
-                                    }
-
-                                    // get and setup apt table
-                                    todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
+                                    citlali::pipeline::load_array_properties_table(
+                                        todproc.engine(), rawobs, logger);
                                 }
                             }
 
                             // get apt file
                             else {
-                                // path to apt
-                                auto apt_path = rawobs.array_prop_table().filepath();
-                                logger->info("getting array properties table {}", apt_path);
-
-                                // get raw filenames and interfaces
-                                std::vector<std::string> raw_filenames, interfaces;
-                                for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
-                                    raw_filenames.push_back(data_item.filepath());
-                                    interfaces.push_back(data_item.interface());
-                                }
-
-                                // get and setup apt table
-                                todproc.engine().calib.get_apt(apt_path, raw_filenames, interfaces);
+                                citlali::pipeline::load_array_properties_table(
+                                    todproc.engine(), rawobs, logger);
                             }
 
                             if (!citlali::pipeline::apply_flxscale_correction(
