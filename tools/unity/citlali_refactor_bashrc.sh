@@ -18,12 +18,12 @@ citlali_refactor_update() {
     build_dir="${repo}/${build_dir}"
   fi
 
-  if [[ ! -d "${repo}/.git" ]]; then
+  if ! git -C "${repo}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     echo "Missing citlali refactor checkout: ${repo}" >&2
     return 1
   fi
 
-  if [[ -d "${baseline_repo}/.git" ]]; then
+  if git -C "${baseline_repo}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     local repo_real
     local baseline_real
     repo_real=$(readlink -f "${repo}")
