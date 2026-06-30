@@ -1,10 +1,56 @@
 #include <citlali/core/config/calibration_config.h>
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/error/error.h>
+#include <citlali/core/pipeline/observation_preflight.h>
 
 #include <gtest/gtest.h>
 
+#include <map>
+#include <memory>
+#include <string>
+
 namespace {
+
+struct FakeLogger {
+    template <class... Args>
+    void error(const char *, Args &&...) {}
+
+    template <class... Args>
+    void info(const char *, Args &&...) {}
+};
+
+struct FakeAptColumn {
+    double value = 1.0;
+
+    FakeAptColumn &array() { return *this; }
+
+    FakeAptColumn &operator*=(double factor) {
+        value *= factor;
+        return *this;
+    }
+};
+
+struct FakeEngine {
+    struct {
+        std::map<std::string, FakeAptColumn> apt;
+    } calib;
+};
+
+struct FakeFlxscaleCorrection {
+    double factor = 1.0;
+    double value() const { return factor; }
+};
+
+struct FakeRawObs {
+    const FakeFlxscaleCorrection *correction = nullptr;
+    std::string obs_name = "fake_obs";
+
+    const FakeFlxscaleCorrection *flxscale_correction() const {
+        return correction;
+    }
+
+    const std::string &name() const { return obs_name; }
+};
 
 TEST(config_scaffold, formats_config_paths) {
     EXPECT_EQ(citlali::config::format_path({"runtime", "n_threads"}),
@@ -734,6 +780,51 @@ TEST(error_scaffold, preserves_error_code_and_message) {
     auto error = citlali::error::invalid_config("bad config");
     EXPECT_EQ(error.code(), citlali::error::Code::invalid_config);
     EXPECT_STREQ(error.what(), "bad config");
+}
+
+TEST(pipeline_preflight, applies_flxscale_correction_when_present) {
+    FakeEngine engine;
+    engine.calib.apt["flxscale"].value = 2.0;
+    FakeFlxscaleCorrection correction{1.5};
+    FakeRawObs rawobs{&correction, "obs"};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::pipeline::apply_flxscale_correction(
+        engine, rawobs, logger));
+    EXPECT_DOUBLE_EQ(engine.calib.apt["flxscale"].value, 3.0);
+}
+
+TEST(pipeline_preflight, skips_absent_flxscale_correction) {
+    FakeEngine engine;
+    engine.calib.apt["flxscale"].value = 2.0;
+    FakeRawObs rawobs;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::pipeline::apply_flxscale_correction(
+        engine, rawobs, logger));
+    EXPECT_DOUBLE_EQ(engine.calib.apt["flxscale"].value, 2.0);
+}
+
+TEST(pipeline_preflight, rejects_invalid_flxscale_correction) {
+    FakeEngine engine;
+    engine.calib.apt["flxscale"].value = 2.0;
+    FakeFlxscaleCorrection correction{-1.0};
+    FakeRawObs rawobs{&correction, "obs"};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_FALSE(citlali::pipeline::apply_flxscale_correction(
+        engine, rawobs, logger));
+    EXPECT_DOUBLE_EQ(engine.calib.apt["flxscale"].value, 2.0);
+}
+
+TEST(pipeline_preflight, rejects_missing_flxscale_column) {
+    FakeEngine engine;
+    FakeFlxscaleCorrection correction{1.5};
+    FakeRawObs rawobs{&correction, "obs"};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_FALSE(citlali::pipeline::apply_flxscale_correction(
+        engine, rawobs, logger));
 }
 
 }  // namespace
