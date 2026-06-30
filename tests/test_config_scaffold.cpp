@@ -202,6 +202,30 @@ TEST(config_scaffold, validates_timestream_source_protection_values) {
     EXPECT_EQ(report.error_count(), 2U);
 }
 
+TEST(config_scaffold, validates_timestream_despike_local_residual_values) {
+    citlali::config::RawTimeChunkDespikeLocalResidualConfig config;
+    config.window_sec = -1.0;
+    config.sigma_scale = -1.0;
+    config.delta_sigma_scale = -1.0;
+    config.event_padding_sec = -1.0;
+    config.high_score_event_override = -1.0;
+    config.max_added_flagged_fraction = 2.0;
+    config.compact_raw_gate.candidate_rel_sigma_scale = -1.0;
+    config.compact_raw_gate.window_sec = -1.0;
+    config.compact_raw_gate.half_peak_frac = 2.0;
+    config.compact_raw_gate.max_width_sec = -1.0;
+    config.compact_raw_gate.max_step_shift_z = -1.0;
+    config.compact_delta_gate.window_sec = -1.0;
+    config.compact_delta_gate.half_peak_frac = 2.0;
+    config.compact_delta_gate.max_width_sec = -1.0;
+    config.compact_delta_gate.max_step_shift_z = -1.0;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 15U);
+}
+
 TEST(config_scaffold, validates_timestream_learning_values) {
     citlali::config::TimestreamLearningConfig config;
     config.learn_iters = -1;

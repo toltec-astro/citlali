@@ -136,9 +136,44 @@ struct TimestreamSourceProtectionConfig {
     double radius_arcsec = 20.0;
 };
 
+struct RawTimeChunkDespikeCompactRawGateConfig {
+    bool enabled = true;
+    double candidate_rel_sigma_scale = 1.0;
+    double window_sec = 0.18;
+    double half_peak_frac = 0.5;
+    double max_width_sec = 0.18;
+    double max_step_shift_z = 3.0;
+};
+
+struct RawTimeChunkDespikeCompactDeltaGateConfig {
+    bool enabled = true;
+    double window_sec = 0.12;
+    double half_peak_frac = 0.5;
+    double max_width_sec = 0.10;
+    double max_step_shift_z = 3.0;
+};
+
+struct RawTimeChunkDespikeLocalResidualConfig {
+    bool enabled = false;
+    double window_sec = 0.25;
+    double sigma_scale = 0.75;
+    double delta_sigma_scale = 0.75;
+    bool expand_with_filter = false;
+    double event_padding_sec = 0.08;
+    double high_score_event_override = 20.0;
+    double max_added_flagged_fraction = 0.10;
+    RawTimeChunkDespikeCompactRawGateConfig compact_raw_gate;
+    RawTimeChunkDespikeCompactDeltaGateConfig compact_delta_gate;
+};
+
 struct RawTimeChunkDespikeConfig {
     bool enabled = false;
+    double min_spike_sigma = 8.0;
+    double time_constant_sec = 0.015;
+    double window_size = 32.0;
+    bool legacy_enabled = true;
     TimestreamSourceProtectionConfig source_protection;
+    RawTimeChunkDespikeLocalResidualConfig local_residual;
 };
 
 struct RawTimeChunkConfig {
@@ -249,11 +284,72 @@ inline void validate(const TimestreamSourceProtectionConfig &config,
                   append_config_path(path, {"radius_arcsec"}), report);
 }
 
+inline void validate(const RawTimeChunkDespikeCompactRawGateConfig &config,
+                     const ConfigPath &path,
+                     ValidationReport &report) {
+    check_minimum(config.candidate_rel_sigma_scale, 0.0,
+                  append_config_path(path, {"candidate_rel_sigma_scale"}),
+                  report);
+    check_minimum(config.window_sec, 0.0,
+                  append_config_path(path, {"window_sec"}), report);
+    check_minimum(config.half_peak_frac, 0.0,
+                  append_config_path(path, {"half_peak_frac"}), report);
+    check_maximum(config.half_peak_frac, 1.0,
+                  append_config_path(path, {"half_peak_frac"}), report);
+    check_minimum(config.max_width_sec, 0.0,
+                  append_config_path(path, {"max_width_sec"}), report);
+    check_minimum(config.max_step_shift_z, 0.0,
+                  append_config_path(path, {"max_step_shift_z"}), report);
+}
+
+inline void validate(const RawTimeChunkDespikeCompactDeltaGateConfig &config,
+                     const ConfigPath &path,
+                     ValidationReport &report) {
+    check_minimum(config.window_sec, 0.0,
+                  append_config_path(path, {"window_sec"}), report);
+    check_minimum(config.half_peak_frac, 0.0,
+                  append_config_path(path, {"half_peak_frac"}), report);
+    check_maximum(config.half_peak_frac, 1.0,
+                  append_config_path(path, {"half_peak_frac"}), report);
+    check_minimum(config.max_width_sec, 0.0,
+                  append_config_path(path, {"max_width_sec"}), report);
+    check_minimum(config.max_step_shift_z, 0.0,
+                  append_config_path(path, {"max_step_shift_z"}), report);
+}
+
+inline void validate(const RawTimeChunkDespikeLocalResidualConfig &config,
+                     ValidationReport &report) {
+    const ConfigPath path{
+        "timestream", "raw_time_chunk", "despike", "local_residual"};
+    check_minimum(config.window_sec, 0.0,
+                  append_config_path(path, {"window_sec"}), report);
+    check_minimum(config.sigma_scale, 0.0,
+                  append_config_path(path, {"sigma_scale"}), report);
+    check_minimum(config.delta_sigma_scale, 0.0,
+                  append_config_path(path, {"delta_sigma_scale"}), report);
+    check_minimum(config.event_padding_sec, 0.0,
+                  append_config_path(path, {"event_padding_sec"}), report);
+    check_minimum(config.high_score_event_override, 0.0,
+                  append_config_path(path, {"high_score_event_override"}),
+                  report);
+    check_minimum(config.max_added_flagged_fraction, 0.0,
+                  append_config_path(path, {"max_added_flagged_fraction"}),
+                  report);
+    check_maximum(config.max_added_flagged_fraction, 1.0,
+                  append_config_path(path, {"max_added_flagged_fraction"}),
+                  report);
+    validate(config.compact_raw_gate,
+             append_config_path(path, {"compact_raw_gate"}), report);
+    validate(config.compact_delta_gate,
+             append_config_path(path, {"compact_delta_gate"}), report);
+}
+
 inline void validate(const RawTimeChunkDespikeConfig &config,
                      ValidationReport &report) {
     validate(config.source_protection,
              {"timestream", "raw_time_chunk", "despike", "source_protection"},
              report);
+    validate(config.local_residual, report);
 }
 
 inline void validate(const RawTimeChunkConfig &config, ValidationReport &report) {
