@@ -469,6 +469,7 @@ struct FakeIterationEngine {
 struct FakeCoaddTodProc {
     FakeEngine engine_state;
     int calc_cmb_size_calls = 0;
+    int create_output_dir_calls = 0;
     int allocate_cmb_calls = 0;
     int allocate_nmb_calls = 0;
     int coadd_calls = 0;
@@ -476,6 +477,8 @@ struct FakeCoaddTodProc {
     int last_map_coord_count = 0;
 
     FakeEngine &engine() { return engine_state; }
+
+    void create_output_dir() { ++create_output_dir_calls; }
 
     template <class MapCoords>
     void calc_cmb_size(MapCoords &map_coords) {
@@ -2663,6 +2666,31 @@ TEST(pipeline_output_layout, prepares_observation_layout_from_rawobs_meta) {
     ASSERT_EQ(engine.omb.obsnums.size(), 1U);
     EXPECT_EQ(engine.omb.obsnums.front(), "000202");
     EXPECT_EQ(logger->debug_calls, 3);
+}
+
+TEST(pipeline_output_layout, prepares_iteration_output_layout_on_first_iter) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().fruit_iter = 0;
+    std::vector<std::string> config_filepaths;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::prepare_iteration_output_layout_if_needed(
+        todproc, config_filepaths, logger);
+
+    EXPECT_EQ(todproc.create_output_dir_calls, 1);
+}
+
+TEST(pipeline_output_layout, skips_iteration_output_layout_when_not_saved) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().fruit_iter = 1;
+    todproc.engine().ptcproc.save_all_iters = false;
+    std::vector<std::string> config_filepaths;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::prepare_iteration_output_layout_if_needed(
+        todproc, config_filepaths, logger);
+
+    EXPECT_EQ(todproc.create_output_dir_calls, 0);
 }
 
 TEST(pipeline_output_layout, derives_gaps_log_filepath) {

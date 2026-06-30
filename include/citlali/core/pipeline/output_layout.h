@@ -35,6 +35,19 @@ void copy_config_files_to_reduction_dir(
     }
 }
 
+template <class TodProc, class ConfigFilepaths, class Logger>
+void prepare_iteration_output_layout_if_needed(
+    TodProc &todproc, const ConfigFilepaths &config_filepaths,
+    const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    if (engine.ptcproc.save_all_iters || engine.fruit_iter == 0) {
+        todproc.create_output_dir();
+        copy_config_files_to_reduction_dir(
+            config_filepaths, engine.redu_dir_name, logger);
+    }
+}
+
 inline std::string format_obsnum(int obsnum) {
     std::stringstream ss;
     ss << std::setfill('0') << std::setw(6) << obsnum;

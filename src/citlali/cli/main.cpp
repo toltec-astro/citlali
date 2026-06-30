@@ -418,15 +418,8 @@ int run(const rc_t &rc) {
                     citlali::pipeline::begin_fruit_loop_iteration(
                         todproc.engine(), logger);
 
-                    // setup redu dirs if saving outputs or on first iter
-                    if (todproc.engine().ptcproc.save_all_iters || todproc.engine().fruit_iter == 0) {
-                        // setup reduction directories
-                        todproc.create_output_dir();
-
-                        citlali::pipeline::copy_config_files_to_reduction_dir(
-                            config_filepaths, todproc.engine().redu_dir_name,
-                            logger);
-                    }
+                    citlali::pipeline::prepare_iteration_output_layout_if_needed(
+                        todproc, config_filepaths, logger);
 
                     // clear obs dates
                     todproc.engine().date_obs.clear();
