@@ -10,6 +10,7 @@ set_target_properties(citlali_test
 target_sources(citlali_test
     PRIVATE
         main.cpp
+        test_config_scaffold.cpp
         test_utils.cpp
     )
 target_link_libraries(citlali_test

@@ -38,6 +38,48 @@ $HOME/tolteca/bin/python tools/baseline/compare_manifests.py \
 volatile metadata. Without it, the comparator reports full-file checksum
 changes in addition to structured FITS/netCDF/table summaries.
 
+## Deterministic Refactor Gate
+
+For structural refactor work, use a deterministic reduction mode as the first
+behavior-preservation gate:
+
+- `parallel_policy: seq`
+- `n_threads: 1`
+- same input data, APTs, config, and Citlali command for the protected baseline
+  checkout and the refactor checkout
+
+OpenMP runs are still useful for performance and stress testing, but current
+OMP reductions have run-to-run drift. Until that is fixed, the one-thread `seq`
+case is the reliable functional gate for the refactor branch.
+
+Generate manifests for each completed reduction:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/summarize_outputs.py \
+  --case point_152389_citlali_seq_redu02 \
+  --output-dir /path/to/2026-refactor/point/citlali/reduced/redu02 \
+  --manifest-out /tmp/point_152389_citlali_seq_redu02_manifest.json
+
+$HOME/tolteca/bin/python tools/baseline/summarize_outputs.py \
+  --case point_152389_refactor_seq_redu02 \
+  --output-dir /path/to/2026-refactor/point/refactor/reduced/redu02 \
+  --manifest-out /tmp/point_152389_refactor_seq_redu02_manifest.json
+```
+
+Then compare them with the deterministic policy wrapper:
+
+```bash
+tools/baseline/compare_deterministic_manifests.sh \
+  /tmp/point_152389_citlali_seq_redu02_manifest.json \
+  /tmp/point_152389_refactor_seq_redu02_manifest.json
+```
+
+The wrapper sets `--ignore-sha256`, `--atol 2e-8`, and `--rtol 1e-10`, and it
+ignores volatile paths, mtimes, byte sizes, run labels, and log line counts. It
+still compares structured FITS, netCDF, CSV, and ECSV summaries. Override the
+tolerances with `CITLALI_BASELINE_ATOL` and `CITLALI_BASELINE_RTOL`, or pass
+additional `compare_manifests.py` arguments after the two manifest paths.
+
 ## Files
 
 - `run_manifest_template.yaml`: human-fillable run record template for Unity or
@@ -49,6 +91,8 @@ changes in addition to structured FITS/netCDF/table summaries.
   FITS, netCDF, CSV, ECSV, and logs.
 - `compare_manifests.py`: compares two JSON manifests and reports missing
   files, changed metadata, changed checksums, and changed structured summaries.
+- `compare_deterministic_manifests.sh`: wrapper around `compare_manifests.py`
+  with the standard deterministic refactor gate policy.
 - `examples/tiny_reduction/`: a fake tiny output directory for checking the
   tools without a Citlali reduction.
 - `examples/tiny_manifest.json`: an illustrative manifest shape for the tiny
