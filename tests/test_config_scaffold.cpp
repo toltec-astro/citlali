@@ -64,18 +64,58 @@ TEST(config_scaffold, parses_existing_mapmaking_enum_values) {
               citlali::config::MapMethod::maximum_likelihood);
 }
 
+TEST(config_scaffold, parses_existing_timestream_enum_values) {
+    EXPECT_EQ(citlali::config::parse_tod_type("xs").value(),
+              citlali::config::TodType::xs);
+    EXPECT_EQ(citlali::config::parse_tod_type("rs").value(),
+              citlali::config::TodType::rs);
+    EXPECT_EQ(citlali::config::parse_tod_type("is").value(),
+              citlali::config::TodType::is);
+    EXPECT_EQ(citlali::config::parse_tod_type("qs").value(),
+              citlali::config::TodType::qs);
+
+    EXPECT_EQ(citlali::config::parse_tod_output_type("none").value(),
+              citlali::config::TodOutputType::none);
+    EXPECT_EQ(citlali::config::parse_tod_output_type("rtc").value(),
+              citlali::config::TodOutputType::rtc);
+    EXPECT_EQ(citlali::config::parse_tod_output_type("ptc").value(),
+              citlali::config::TodOutputType::ptc);
+    EXPECT_EQ(citlali::config::parse_tod_output_type("both").value(),
+              citlali::config::TodOutputType::both);
+}
+
+TEST(config_scaffold, parses_existing_pointing_enum_values) {
+    EXPECT_EQ(citlali::config::parse_pointing_source_strategy("standard").value(),
+              citlali::config::PointingSourceStrategy::standard);
+    EXPECT_EQ(citlali::config::parse_pointing_source_strategy("psf_preserve").value(),
+              citlali::config::PointingSourceStrategy::psf_preserve);
+
+    EXPECT_EQ(citlali::config::parse_fruit_loops_center_mode("auto").value(),
+              citlali::config::FruitLoopsCenterMode::automatic);
+    EXPECT_EQ(citlali::config::parse_fruit_loops_center_mode("header").value(),
+              citlali::config::FruitLoopsCenterMode::header);
+    EXPECT_EQ(citlali::config::parse_fruit_loops_center_mode("peak").value(),
+              citlali::config::FruitLoopsCenterMode::peak);
+    EXPECT_EQ(citlali::config::parse_fruit_loops_center_mode("map_center").value(),
+              citlali::config::FruitLoopsCenterMode::map_center);
+}
+
 TEST(config_scaffold, validates_top_level_config_values) {
     citlali::config::ReductionConfig config;
     EXPECT_TRUE(citlali::config::validate(config).ok());
 
     config.runtime.n_threads = 0;
+    config.timestream.enabled = false;
     config.mapmaking.pixel_size_arcsec = -1.0;
     config.noise.enabled = true;
     config.noise.n_noise_maps = -1;
+    config.post_processing.source_fitting.active = true;
+    config.post_processing.source_fitting.bounding_box_arcsec = -1.0;
+    config.pointing.header_max_radius_arcsec = -1.0;
 
     auto report = citlali::config::validate(config);
     EXPECT_FALSE(report.ok());
-    EXPECT_EQ(report.error_count(), 3U);
+    EXPECT_EQ(report.error_count(), 6U);
 }
 
 TEST(error_scaffold, preserves_error_code_and_message) {

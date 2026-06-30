@@ -12,6 +12,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <cctype>
+#include <cstddef>
 #include <cmath>
 #include <omp.h>
 #include <fstream>
@@ -49,9 +50,13 @@
 #include <citlali/core/utils/fitting.h>
 #include <citlali/core/utils/pointing.h>
 
+#include <citlali/core/config/coadd_config.h>
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/noise_config.h>
+#include <citlali/core/config/pointing_config.h>
+#include <citlali/core/config/post_processing_config.h>
 #include <citlali/core/config/runtime_config.h>
+#include <citlali/core/config/timestream_config.h>
 #include <citlali/core/engine/config.h>
 #include <citlali/core/engine/learning.h>
 #include <citlali/core/engine/calib.h>
@@ -314,8 +319,12 @@ public:
 
     // typed runtime config mirror for staged config migration
     citlali::config::RuntimeConfig typed_runtime_config;
+    citlali::config::TimestreamConfig typed_timestream_config;
     citlali::config::MapmakingConfig typed_mapmaking_config;
+    citlali::config::CoaddConfig typed_coadd_config;
     citlali::config::NoiseConfig typed_noise_config;
+    citlali::config::PostProcessingConfig typed_post_processing_config;
+    citlali::config::PointingConfig typed_pointing_config;
 
     // obsnum
     std::string obsnum;
@@ -2524,22 +2533,51 @@ inline void Engine::write_learning_summary() {
 template<typename CT>
 void Engine::get_timestream_config(CT &config) {
     logger->info("getting timestream config options");
+    typed_timestream_config = citlali::config::TimestreamConfig{};
+
+    auto parsed_cleanly = [&](std::size_t missing_before, std::size_t invalid_before) {
+        return missing_keys.size() == missing_before && invalid_keys.size() == invalid_before;
+    };
+
     // run tod processing
-    get_config_value(config, run_tod, missing_keys, invalid_keys,
-                     std::tuple{"timestream","enabled"});
+    {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
+        get_config_value(config, run_tod, missing_keys, invalid_keys,
+                         std::tuple{"timestream","enabled"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_timestream_config.enabled = run_tod;
+        }
+    }
     if (!run_tod) {
         logger->error("timestream.enabled is false. This reduction requires TOD processing; set "
                       "low_level.timestream.enabled: true in your reduce config.");
         std::exit(EXIT_FAILURE);
     }
     // tod type (xs, rs, is, qs)
-    get_config_value(config, tod_type, missing_keys, invalid_keys,
-                     std::tuple{"timestream","type"});
+    {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
+        get_config_value(config, tod_type, missing_keys, invalid_keys,
+                         std::tuple{"timestream","type"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            if (auto parsed = citlali::config::parse_tod_type(tod_type)) {
+                typed_timestream_config.type = *parsed;
+            }
+        }
+    }
 
     // run rtc or ptc tod output?
     // output rtc
-    get_config_value(config, run_tod_output_rtc, missing_keys, invalid_keys,
-                     std::tuple{"timestream","raw_time_chunk","output","enabled"});
+    {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
+        get_config_value(config, run_tod_output_rtc, missing_keys, invalid_keys,
+                         std::tuple{"timestream","raw_time_chunk","output","enabled"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_timestream_config.output.raw_time_chunk_enabled = run_tod_output_rtc;
+        }
+    }
     rtcproc.tod_output_mini = false;
     rtcproc.tod_output_outer = false;
     rtcproc.tod_output_outer_context_samples = 0;
@@ -2557,8 +2595,15 @@ void Engine::get_timestream_config(CT &config) {
                          {}, {0});
     }
     // output ptc
-    get_config_value(config, run_tod_output_ptc, missing_keys, invalid_keys,
-                     std::tuple{"timestream","processed_time_chunk","output","enabled"});
+    {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
+        get_config_value(config, run_tod_output_ptc, missing_keys, invalid_keys,
+                         std::tuple{"timestream","processed_time_chunk","output","enabled"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_timestream_config.output.processed_time_chunk_enabled = run_tod_output_ptc;
+        }
+    }
     ptcproc.tod_output_mini = false;
     ptcproc.tod_output_outer = false;
     ptcproc.tod_output_outer_context_samples = 0;
@@ -2588,13 +2633,32 @@ void Engine::get_timestream_config(CT &config) {
             tod_output_type = "ptc";
         }
     }
+    if (run_tod_output) {
+        if (auto parsed = citlali::config::parse_tod_output_type(tod_output_type)) {
+            typed_timestream_config.output.type = *parsed;
+        }
+    }
 
     // tod subdirectory name
-    get_config_value(config, tod_output_subdir_name, missing_keys, invalid_keys,
-                     std::tuple{"timestream","output", "subdir_name"});
+    {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
+        get_config_value(config, tod_output_subdir_name, missing_keys, invalid_keys,
+                         std::tuple{"timestream","output", "subdir_name"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_timestream_config.output.subdir_name = tod_output_subdir_name;
+        }
+    }
     // write eigenvalues to stats file
-    get_config_value(config, diagnostics.write_evals, missing_keys, invalid_keys,
-                     std::tuple{"timestream","output", "stats","eigenvalues"});
+    {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
+        get_config_value(config, diagnostics.write_evals, missing_keys, invalid_keys,
+                         std::tuple{"timestream","output", "stats","eigenvalues"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_timestream_config.output.write_eigenvalues = diagnostics.write_evals;
+        }
+    }
 
     // optional selection of TOD chunks to write (1-based indices) under each output block.
     // default is "all" for both rtc and ptc outputs.
@@ -2754,6 +2818,7 @@ template<typename CT>
 void Engine::get_mapmaking_config(CT &config) {
     logger->info("getting mapmaking config options");
     typed_mapmaking_config = citlali::config::MapmakingConfig{};
+    typed_coadd_config = citlali::config::CoaddConfig{};
     typed_noise_config = citlali::config::NoiseConfig{};
 
     auto parsed_cleanly = [&](std::size_t missing_before, std::size_t invalid_before) {
@@ -2881,8 +2946,15 @@ void Engine::get_mapmaking_config(CT &config) {
     }
 
     // run coaddition?
-    get_config_value(config, run_coadd, missing_keys, invalid_keys,
-                     std::tuple{"coadd","enabled"});
+    {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
+        get_config_value(config, run_coadd, missing_keys, invalid_keys,
+                         std::tuple{"coadd","enabled"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_coadd_config.enabled = run_coadd;
+        }
+    }
     // re-run to get config for cmb
     if (run_coadd) {
         logger->info("getting cmb config options");
@@ -3026,26 +3098,57 @@ void Engine::get_mapmaking_config(CT &config) {
 template<typename CT>
 void Engine::get_pointing_config(CT &config) {
     logger->info("getting pointing config options");
+    typed_pointing_config = citlali::config::PointingConfig{};
+
+    auto parsed_cleanly = [&](std::size_t missing_before, std::size_t invalid_before) {
+        return missing_keys.size() == missing_before && invalid_keys.size() == invalid_before;
+    };
 
     pointing_source_strategy = "standard";
     if (config.template has_typed<std::string>(std::tuple{"pointing","source_strategy","mode"})) {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, pointing_source_strategy, missing_keys, invalid_keys,
                          std::tuple{"pointing","source_strategy","mode"},
                          {"standard", "psf_preserve"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            if (auto parsed = citlali::config::parse_pointing_source_strategy(
+                    pointing_source_strategy)) {
+                typed_pointing_config.source_strategy = *parsed;
+            }
+        }
     }
 
     pointing_fit_gaussian_enabled = (pointing_source_strategy == "standard");
+    typed_pointing_config.fit_gaussian = pointing_fit_gaussian_enabled;
     if (config.template has_typed<bool>(std::tuple{"pointing","source_strategy","fit_gaussian"})) {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, pointing_fit_gaussian_enabled, missing_keys, invalid_keys,
                          std::tuple{"pointing","source_strategy","fit_gaussian"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_pointing_config.fit_gaussian = pointing_fit_gaussian_enabled;
+        }
     }
 
     pointing_fruitloops_center_mode =
         (pointing_source_strategy == "psf_preserve") ? "map_center" : "auto";
+    if (auto parsed = citlali::config::parse_fruit_loops_center_mode(
+            pointing_fruitloops_center_mode)) {
+        typed_pointing_config.fruitloops_center_mode = *parsed;
+    }
     if (config.template has_typed<std::string>(std::tuple{"pointing","source_strategy","fruitloops_center_mode"})) {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, pointing_fruitloops_center_mode, missing_keys, invalid_keys,
                          std::tuple{"pointing","source_strategy","fruitloops_center_mode"},
                          {"auto", "header", "peak", "map_center"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            if (auto parsed = citlali::config::parse_fruit_loops_center_mode(
+                    pointing_fruitloops_center_mode)) {
+                typed_pointing_config.fruitloops_center_mode = *parsed;
+            }
+        }
     }
 
     pointing_header_center_max_radius_arcsec = 0.0;
@@ -3055,16 +3158,32 @@ void Engine::get_pointing_config(CT &config) {
         pointing_header_center_max_radius_arcsec =
             map_fitter.fitting_region_pix * omb.pixel_size_rad * RAD_TO_ASEC;
     }
+    typed_pointing_config.header_max_radius_arcsec =
+        pointing_header_center_max_radius_arcsec;
     if (config.template has_typed<double>(std::tuple{"pointing","source_strategy","header_max_radius_arcsec"})) {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, pointing_header_center_max_radius_arcsec, missing_keys, invalid_keys,
                          std::tuple{"pointing","source_strategy","header_max_radius_arcsec"},
                          {}, {0.0});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_pointing_config.header_max_radius_arcsec =
+                pointing_header_center_max_radius_arcsec;
+        }
     }
 
     pointing_header_center_require_coverage = true;
+    typed_pointing_config.header_require_coverage =
+        pointing_header_center_require_coverage;
     if (config.template has_typed<bool>(std::tuple{"pointing","source_strategy","header_require_coverage"})) {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, pointing_header_center_require_coverage, missing_keys, invalid_keys,
                          std::tuple{"pointing","source_strategy","header_require_coverage"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_pointing_config.header_require_coverage =
+                pointing_header_center_require_coverage;
+        }
     }
 
     ptcproc.fruit_loops_source_center_mode = pointing_fruitloops_center_mode;
@@ -3714,26 +3833,70 @@ void Engine::get_citlali_config(CT &config) {
 
     /* get mapmaking config */
     get_mapmaking_config(config);
+    typed_post_processing_config = citlali::config::PostProcessingConfig{};
+
+    auto parsed_cleanly = [&](std::size_t missing_before, std::size_t invalid_before) {
+        return missing_keys.size() == missing_before && invalid_keys.size() == invalid_before;
+    };
 
     // run map filter?
-    get_config_value(config, run_map_filter, missing_keys, invalid_keys,
-                     std::tuple{"post_processing","map_filtering","enabled"});
+    {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
+        get_config_value(config, run_map_filter, missing_keys, invalid_keys,
+                         std::tuple{"post_processing","map_filtering","enabled"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_post_processing_config.map_filtering_enabled = run_map_filter;
+        }
+    }
 
     // run source finder?
-    get_config_value(config, run_source_finder, missing_keys, invalid_keys,
-                     std::tuple{"post_processing","source_finding","enabled"});
+    {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
+        get_config_value(config, run_source_finder, missing_keys, invalid_keys,
+                         std::tuple{"post_processing","source_finding","enabled"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_post_processing_config.source_finding_enabled = run_source_finder;
+        }
+    }
 
     // map fitter options if in pointing or beammap mode or if map filtering or source finding are enabled
     if (redu_type=="pointing" || redu_type=="beammap" || run_map_filter || run_source_finder) {
+        typed_post_processing_config.source_fitting.active = true;
         // size of region around found source to fit
-        get_config_value(config, map_fitter.bounding_box_pix, missing_keys, invalid_keys,
-                         std::tuple{"post_processing","source_fitting","bounding_box_arcsec"},{},{0});
+        {
+            const auto missing_before = missing_keys.size();
+            const auto invalid_before = invalid_keys.size();
+            get_config_value(config, map_fitter.bounding_box_pix, missing_keys, invalid_keys,
+                             std::tuple{"post_processing","source_fitting","bounding_box_arcsec"},{},{0});
+            if (parsed_cleanly(missing_before, invalid_before)) {
+                typed_post_processing_config.source_fitting.bounding_box_arcsec =
+                    map_fitter.bounding_box_pix;
+            }
+        }
         // radius around center of map to find source within
-        get_config_value(config, map_fitter.fitting_region_pix, missing_keys, invalid_keys,
-                         std::tuple{"post_processing","source_fitting","fitting_radius_arcsec"});
+        {
+            const auto missing_before = missing_keys.size();
+            const auto invalid_before = invalid_keys.size();
+            get_config_value(config, map_fitter.fitting_region_pix, missing_keys, invalid_keys,
+                             std::tuple{"post_processing","source_fitting","fitting_radius_arcsec"});
+            if (parsed_cleanly(missing_before, invalid_before)) {
+                typed_post_processing_config.source_fitting.fitting_radius_arcsec =
+                    map_fitter.fitting_region_pix;
+            }
+        }
         // fit 2d gaussian rotation angle
-        get_config_value(config, map_fitter.fit_angle, missing_keys, invalid_keys,
-                         std::tuple{"post_processing","source_fitting", "gauss_model","fit_rotation_angle"});
+        {
+            const auto missing_before = missing_keys.size();
+            const auto invalid_before = invalid_keys.size();
+            get_config_value(config, map_fitter.fit_angle, missing_keys, invalid_keys,
+                             std::tuple{"post_processing","source_fitting", "gauss_model","fit_rotation_angle"});
+            if (parsed_cleanly(missing_before, invalid_before)) {
+                typed_post_processing_config.source_fitting.fit_rotation_angle =
+                    map_fitter.fit_angle;
+            }
+        }
 
         // convert bounding box and fitting region to pixels
         map_fitter.bounding_box_pix = ASEC_TO_RAD*map_fitter.bounding_box_pix/omb.pixel_size_rad;
@@ -3746,9 +3909,13 @@ void Engine::get_citlali_config(CT &config) {
             // flux limit
             map_fitter.flux_limits(i) = config.template get_typed<double>(std::tuple{"post_processing","source_fitting",
                                                                                      "gauss_model","amp_limit_factors",i});
+            typed_post_processing_config.source_fitting.amp_limit_factors[static_cast<std::size_t>(i)] =
+                map_fitter.flux_limits(i);
             // fwhm limit
             map_fitter.fwhm_limits(i) = config.template get_typed<double>(std::tuple{"post_processing","source_fitting",
                                                                                      "gauss_model","fwhm_limit_factors",i});
+            typed_post_processing_config.source_fitting.fwhm_limit_factors[static_cast<std::size_t>(i)] =
+                map_fitter.fwhm_limits(i);
         }
 
         // flux lower factor
@@ -3817,6 +3984,11 @@ void Engine::get_citlali_config(CT &config) {
         run_noise = false;
         run_map_filter = false;
         run_source_finder = false;
+        typed_coadd_config.enabled = false;
+        typed_noise_config.enabled = false;
+        typed_post_processing_config.map_filtering_enabled = false;
+        typed_post_processing_config.source_finding_enabled = false;
+        typed_post_processing_config.source_fitting.active = false;
         // we don't need to do iterations if no maps are made
         beammap_iter_max = 1;
     }
