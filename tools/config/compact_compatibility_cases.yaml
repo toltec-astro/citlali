@@ -1,0 +1,73 @@
+schema: citlali-compact-compatibility-suite-v1
+cases:
+  - name: pointing_152389_passthrough
+    intent: pointing
+    compact_config: examples/pointing_compat_passthrough_compact.yaml
+    base_config: ${HOME}/work_toltec/local_data/2026-refactor/point/refactor/70_reduce.yaml
+    ignore:
+      - runtime.output_dir
+    expected_diff_count: 0
+    expected_baseline_leaf_count: 444
+
+  - name: pointing_152389_compact_keys
+    intent: pointing
+    compact_config: examples/pointing_compat_point70_compact.yaml
+    base_config: ${HOME}/work_toltec/local_data/2026-refactor/point/refactor/70_reduce.yaml
+    ignore:
+      - runtime.output_dir
+    expected_diff_count: 0
+    expected_baseline_leaf_count: 444
+
+  - name: oof_149056_passthrough
+    intent: oof
+    compact_config: examples/oof_compat_passthrough_compact.yaml
+    base_config: ${HOME}/work_toltec/local_data/OOF/149056/70_reduce.yaml
+    ignore:
+      - runtime.output_dir
+    expected_diff_count: 0
+    expected_baseline_leaf_count: 164
+
+  - name: oof_149056_compact_keys
+    intent: oof
+    compact_config: examples/oof_compat_149056_compact.yaml
+    base_config: ${HOME}/work_toltec/local_data/OOF/149056/70_reduce.yaml
+    ignore:
+      - runtime.output_dir
+    expected_diff_count: 0
+    expected_baseline_leaf_count: 164
+
+  - name: beammap_3c273_passthrough
+    intent: beammap
+    compact_config: examples/beammap_compat_passthrough_compact.yaml
+    base_config: ${HOME}/work_toltec/local_data/beammaps/3c273/70_reduce.yaml
+    ignore:
+      - runtime.output_dir
+    expected_diff_count: 0
+    expected_baseline_leaf_count: 485
+
+  - name: beammap_3c273_compact_keys
+    intent: beammap
+    compact_config: examples/beammap_compat_3c273_compact.yaml
+    base_config: ${HOME}/work_toltec/local_data/beammaps/3c273/70_reduce.yaml
+    ignore:
+      - runtime.output_dir
+    expected_diff_count: 0
+    expected_baseline_leaf_count: 485
+
+  - name: science_goodsn_passthrough
+    intent: science
+    compact_config: examples/science_compat_passthrough_compact.yaml
+    base_config: ${HOME}/work_toltec/local_data/2025-C1-COM-04/GOODS-N/70_reduce.yaml
+    ignore:
+      - runtime.output_dir
+    expected_diff_count: 0
+    expected_baseline_leaf_count: 219
+
+  - name: science_goodsn_compact_keys
+    intent: science
+    compact_config: examples/science_compat_goodsn_compact.yaml
+    base_config: ${HOME}/work_toltec/local_data/2025-C1-COM-04/GOODS-N/70_reduce.yaml
+    ignore:
+      - runtime.output_dir
+    expected_diff_count: 0
+    expected_baseline_leaf_count: 219

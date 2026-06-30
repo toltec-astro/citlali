@@ -163,3 +163,13 @@ low-level destinations:
 | OOF | `tools/config/examples/oof_compat_149056_compact.yaml` |
 | Beammap | `tools/config/examples/beammap_compat_3c273_compact.yaml` |
 | Science | `tools/config/examples/science_compat_goodsn_compact.yaml` |
+
+These checks are now captured in
+`tools/config/compact_compatibility_cases.yaml` and can be rerun with:
+
+```bash
+$HOME/tolteca/bin/python tools/config/run_compact_compatibility.py \
+  --work-dir /tmp/citlali_compact_compat \
+  --json-out /tmp/citlali_compact_compat/results.json \
+  --markdown-out /tmp/citlali_compact_compat/results.md
+```

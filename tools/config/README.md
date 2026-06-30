@@ -139,3 +139,31 @@ Use this before Unity reduction tests when converting a TolTECA workflow to a
 compact profile. The first target for behavior-preserving work is zero
 differences against the existing `70_reduce.yaml` low-level block, excluding
 TolTECA-owned paths such as `runtime.output_dir`.
+
+## Compact Compatibility Suite
+
+`run_compact_compatibility.py` runs a manifest of compact examples against
+representative local TolTECA `70_reduce.yaml` baselines. The checked-in manifest
+uses `${HOME}/work_toltec/local_data/...` paths for the point, OOF, beammap,
+and science examples discussed in the refactor notes.
+
+```bash
+$HOME/tolteca/bin/python tools/config/run_compact_compatibility.py \
+  --work-dir /tmp/citlali_compact_compat \
+  --json-out /tmp/citlali_compact_compat/results.json \
+  --markdown-out /tmp/citlali_compact_compat/results.md
+```
+
+The suite skips missing baseline files by default, which keeps the tool usable
+on machines that do not have every local reduction copied over. Use
+`--require-all` when a full local validation data set is expected.
+
+The current suite includes eight cases:
+
+- passthrough and compact-key point fixtures
+- passthrough and compact-key OOF fixtures
+- passthrough and compact-key beammap fixtures
+- passthrough and compact-key science fixtures
+
+All cases are expected to have zero low-level differences after ignoring
+`runtime.output_dir`.
