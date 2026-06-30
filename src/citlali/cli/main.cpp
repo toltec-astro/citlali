@@ -449,18 +449,13 @@ int run(const rc_t &rc) {
                             return EXIT_FAILURE;
                         }
 
-                        citlali::pipeline::load_observation_fruit_loop_models_if_needed<
-                            std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>>(
-                            todproc.engine(), logger);
-
-                        citlali::pipeline::setup_and_run_observation_pipeline(
-                            todproc.engine(), kidsproc, rawobs, logger);
-
-                        citlali::pipeline::write_observation_outputs_and_accumulate<
+                        citlali::pipeline::run_reduction_observation_pipeline<
+                            std::is_same_v<todproc_t,
+                                           TimeOrderedDataProc<Beammap>>,
                             mapmaking::RawObs, mapmaking::FilteredObs,
                             std::is_same_v<todproc_t,
                                            TimeOrderedDataProc<Pointing>>>(
-                            todproc, logger);
+                            todproc, kidsproc, rawobs, logger);
                     }
 
                     citlali::pipeline::write_iteration_coadd_outputs_if_needed<

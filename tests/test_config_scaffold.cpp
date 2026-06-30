@@ -130,6 +130,7 @@ struct FakeEngine {
     bool run_coadd = false;
     bool run_map_filter = false;
     bool run_mapmaking = true;
+    bool run_tod = true;
     bool verbose_mode = false;
     bool run_noise = true;
     bool run_noise_products = true;
@@ -148,6 +149,8 @@ struct FakeEngine {
     int run_wiener_filter_calls = 0;
     int find_sources_calls = 0;
     int fit_maps_calls = 0;
+    int setup_calls = 0;
+    int pipeline_calls = 0;
     int get_astrometry_config_calls = 0;
     int get_photometry_config_calls = 0;
     int hwpr_start_indices = -1;
@@ -298,6 +301,13 @@ struct FakeEngine {
     }
 
     void fit_maps() { ++fit_maps_calls; }
+
+    void setup() { ++setup_calls; }
+
+    template <class KidsProc, class RawObs>
+    void pipeline(KidsProc &, const RawObs &) {
+        ++pipeline_calls;
+    }
 
     void get_astrometry_config(const std::string &config) {
         ++get_astrometry_config_calls;
@@ -2643,6 +2653,28 @@ TEST(pipeline_execution, writes_observation_outputs_and_filters) {
     EXPECT_EQ(todproc.engine().output_calls, 2);
     EXPECT_EQ(todproc.coadd_calls, 0);
     EXPECT_EQ(todproc.engine().run_wiener_filter_calls, 1);
+}
+
+TEST(pipeline_execution, runs_reduction_observation_pipeline) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_mapmaking = true;
+    todproc.engine().run_coadd = true;
+    todproc.engine().ptcproc.run_fruit_loops = true;
+    todproc.engine().ptcproc.fruit_loops_path = "/data/fruit";
+    todproc.engine().omb.obsnums = {"000123"};
+    FakeKidsProc kidsproc;
+    FakeRawObs rawobs;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::run_reduction_observation_pipeline<
+        false, FakeMapType::RawObs, FakeMapType::FilteredObs, false>(
+        todproc, kidsproc, rawobs, logger);
+
+    EXPECT_EQ(todproc.engine().ptcproc.load_mb_calls, 1);
+    EXPECT_EQ(todproc.engine().setup_calls, 1);
+    EXPECT_EQ(todproc.engine().pipeline_calls, 1);
+    EXPECT_EQ(todproc.engine().output_calls, 1);
+    EXPECT_EQ(todproc.coadd_calls, 1);
 }
 
 TEST(pipeline_execution, writes_raw_coadd_outputs) {
