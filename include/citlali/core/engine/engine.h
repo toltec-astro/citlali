@@ -1065,6 +1065,101 @@ void Engine::get_rtc_config(CT &config) {
     typed_altaz.min_samples =
         static_cast<int>(rtcproc.altaz_destripe.min_samples);
 
+    const auto &line_audit = rtcproc.line_audit;
+    auto &typed_line_audit = typed_raw.line_audit;
+    typed_line_audit.enabled = line_audit.enabled;
+    typed_line_audit.line_min_hz = line_audit.line_min_hz;
+    typed_line_audit.line_max_hz = line_audit.line_max_hz;
+    typed_line_audit.segment_sec = line_audit.segment_sec;
+    typed_line_audit.min_segment_sec = line_audit.min_segment_sec;
+    typed_line_audit.overlap_frac = line_audit.overlap_frac;
+    typed_line_audit.continuum_radius_bins =
+        static_cast<int>(line_audit.continuum_radius_bins);
+    typed_line_audit.prominence_thresh = line_audit.prominence_thresh;
+    typed_line_audit.cm_prominence_thresh = line_audit.cm_prominence_thresh;
+    typed_line_audit.min_good_frac = line_audit.min_good_frac;
+    typed_line_audit.min_windows = static_cast<int>(line_audit.min_windows);
+    typed_line_audit.max_peaks_per_detector =
+        static_cast<int>(line_audit.max_peaks_per_detector);
+    typed_line_audit.max_det = static_cast<int>(line_audit.max_det);
+    typed_line_audit.min_det_for_network =
+        static_cast<int>(line_audit.min_det_for_network);
+    typed_line_audit.cluster_tol_hz = line_audit.cluster_tol_hz;
+    typed_line_audit.notch_min_detector_frac =
+        line_audit.notch_min_detector_frac;
+    typed_line_audit.notch_min_detectors =
+        static_cast<int>(line_audit.notch_min_detectors);
+    typed_line_audit.notch_min_cm_prominence =
+        line_audit.notch_min_cm_prominence;
+    typed_line_audit.detector_min_prominence =
+        line_audit.detector_min_prominence;
+    typed_line_audit.detector_min_line_power_frac =
+        line_audit.detector_min_line_power_frac;
+    typed_line_audit.bad_detector_max_cluster_frac =
+        line_audit.bad_detector_max_cluster_frac;
+    typed_line_audit.pre_filter_enabled = line_audit.pre_filter_enabled;
+    typed_line_audit.post_filter_enabled = line_audit.post_filter_enabled;
+    typed_line_audit.post_filter_apply_shared_notches =
+        line_audit.post_filter_apply_shared_notches;
+    typed_line_audit.post_filter_apply_detector_notches =
+        line_audit.post_filter_apply_detector_notches;
+    typed_line_audit.post_filter_apply_iterations =
+        static_cast<int>(line_audit.post_filter_apply_iterations);
+    typed_line_audit.post_filter_line_min_hz =
+        line_audit.post_filter_line_min_hz;
+    typed_line_audit.post_filter_line_max_hz =
+        line_audit.post_filter_line_max_hz;
+    typed_line_audit.ptc_model_protected_enabled =
+        line_audit.ptc_model_protected_enabled;
+    typed_line_audit.ptc_require_model_subtracted =
+        line_audit.ptc_require_model_subtracted;
+    typed_line_audit.ptc_apply_fixed_notches =
+        line_audit.ptc_apply_fixed_notches;
+    typed_line_audit.ptc_apply_shared_notches =
+        line_audit.ptc_apply_shared_notches;
+    typed_line_audit.ptc_apply_detector_notches =
+        line_audit.ptc_apply_detector_notches;
+    typed_line_audit.ptc_apply_iterations =
+        static_cast<int>(line_audit.ptc_apply_iterations);
+    typed_line_audit.ptc_line_min_hz = line_audit.ptc_line_min_hz;
+    typed_line_audit.ptc_line_max_hz = line_audit.ptc_line_max_hz;
+    typed_line_audit.fixed_notch_enabled = line_audit.fixed_notch_enabled;
+    typed_line_audit.fixed_notch_freqs_hz =
+        line_audit.fixed_notch_freqs_hz;
+    typed_line_audit.fixed_notch_widths_hz =
+        line_audit.fixed_notch_widths_hz;
+    typed_line_audit.fixed_notch_exclusion_half_width_hz =
+        line_audit.fixed_notch_exclusion_half_width_hz;
+    typed_line_audit.apply_shared_notches =
+        line_audit.apply_shared_notches;
+    typed_line_audit.apply_min_support_networks =
+        static_cast<int>(line_audit.apply_min_support_networks);
+    typed_line_audit.apply_min_detector_frac =
+        line_audit.apply_min_detector_frac;
+    typed_line_audit.apply_min_common_mode_prominence =
+        line_audit.apply_min_common_mode_prominence;
+    typed_line_audit.apply_width_scale = line_audit.apply_width_scale;
+    typed_line_audit.apply_min_width_hz = line_audit.apply_min_width_hz;
+    typed_line_audit.apply_max_width_hz = line_audit.apply_max_width_hz;
+    typed_line_audit.apply_max_notches =
+        static_cast<int>(line_audit.apply_max_notches);
+    typed_line_audit.apply_cluster_tol_hz =
+        line_audit.apply_cluster_tol_hz;
+    typed_line_audit.detector_notch_min_prominence =
+        line_audit.detector_notch_min_prominence;
+    typed_line_audit.detector_notch_min_line_power_frac =
+        line_audit.detector_notch_min_line_power_frac;
+    typed_line_audit.detector_notch_max_notches =
+        static_cast<int>(line_audit.detector_notch_max_notches);
+    typed_line_audit.detector_notch_width_scale =
+        line_audit.detector_notch_width_scale;
+    typed_line_audit.detector_notch_min_width_hz =
+        line_audit.detector_notch_min_width_hz;
+    typed_line_audit.detector_notch_max_width_hz =
+        line_audit.detector_notch_max_width_hz;
+    typed_line_audit.detector_notch_context_samples =
+        static_cast<int>(line_audit.detector_notch_context_samples);
+
     typed_raw.downsample.enabled = rtcproc.run_downsample;
     if (rtcproc.run_downsample) {
         typed_raw.downsample.factor = rtcproc.downsampler.factor;

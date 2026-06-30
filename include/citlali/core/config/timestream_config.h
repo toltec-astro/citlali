@@ -4,7 +4,9 @@
 #include <citlali/core/config/enum_parser.h>
 
 #include <array>
+#include <cmath>
 #include <initializer_list>
+#include <limits>
 #include <map>
 #include <optional>
 #include <string>
@@ -502,6 +504,67 @@ struct RawTimeChunkAltAzDestripeConfig {
     int min_samples = 64;
 };
 
+struct RawTimeChunkLineAuditConfig {
+    bool enabled = false;
+    double line_min_hz = 1.0;
+    double line_max_hz = 60.0;
+    double segment_sec = 4.0;
+    double min_segment_sec = 2.0;
+    double overlap_frac = 0.5;
+    int continuum_radius_bins = 8;
+    double prominence_thresh = 8.0;
+    double cm_prominence_thresh = 6.0;
+    double min_good_frac = 0.8;
+    int min_windows = 2;
+    int max_peaks_per_detector = 3;
+    int max_det = 128;
+    int min_det_for_network = 16;
+    double cluster_tol_hz = 0.15;
+    double notch_min_detector_frac = 0.10;
+    int notch_min_detectors = 8;
+    double notch_min_cm_prominence = 10.0;
+    double detector_min_prominence = 12.0;
+    double detector_min_line_power_frac = 0.10;
+    double bad_detector_max_cluster_frac = 0.10;
+    bool pre_filter_enabled = true;
+    bool post_filter_enabled = false;
+    bool post_filter_apply_shared_notches = false;
+    bool post_filter_apply_detector_notches = false;
+    int post_filter_apply_iterations = 1;
+    double post_filter_line_min_hz =
+        std::numeric_limits<double>::quiet_NaN();
+    double post_filter_line_max_hz =
+        std::numeric_limits<double>::quiet_NaN();
+    bool ptc_model_protected_enabled = false;
+    bool ptc_require_model_subtracted = true;
+    bool ptc_apply_fixed_notches = false;
+    bool ptc_apply_shared_notches = false;
+    bool ptc_apply_detector_notches = false;
+    int ptc_apply_iterations = 1;
+    double ptc_line_min_hz = std::numeric_limits<double>::quiet_NaN();
+    double ptc_line_max_hz = std::numeric_limits<double>::quiet_NaN();
+    bool fixed_notch_enabled = false;
+    std::vector<double> fixed_notch_freqs_hz;
+    std::vector<double> fixed_notch_widths_hz{0.25};
+    double fixed_notch_exclusion_half_width_hz = 0.25;
+    bool apply_shared_notches = false;
+    int apply_min_support_networks = 2;
+    double apply_min_detector_frac = 0.90;
+    double apply_min_common_mode_prominence = 150.0;
+    double apply_width_scale = 1.5;
+    double apply_min_width_hz = 0.25;
+    double apply_max_width_hz = 1.50;
+    int apply_max_notches = 3;
+    double apply_cluster_tol_hz = 0.25;
+    double detector_notch_min_prominence = 8.0;
+    double detector_notch_min_line_power_frac = 0.0;
+    int detector_notch_max_notches = 3;
+    double detector_notch_width_scale = 1.0;
+    double detector_notch_min_width_hz = 0.25;
+    double detector_notch_max_width_hz = 1.50;
+    int detector_notch_context_samples = 0;
+};
+
 struct RawTimeChunkConfig {
     RawTimeChunkDespikeConfig despike;
     RawTimeChunkDownsampleConfig downsample;
@@ -510,6 +573,7 @@ struct RawTimeChunkConfig {
     RawTimeChunkFlaggingConfig flagging;
     RawTimeChunkKernelConfig kernel;
     RawTimeChunkAltAzDestripeConfig altaz_destripe;
+    RawTimeChunkLineAuditConfig line_audit;
     bool flux_calibration_enabled = false;
     bool extinction_correction_enabled = false;
 };
@@ -1131,6 +1195,194 @@ inline void validate(const RawTimeChunkAltAzDestripeConfig &config,
                   report);
 }
 
+inline void validate_optional_minimum(const double value, const double minimum,
+                                      const ConfigPath &path,
+                                      ValidationReport &report) {
+    if (std::isfinite(value)) {
+        check_minimum(value, minimum, path, report);
+    }
+}
+
+inline void validate(const RawTimeChunkLineAuditConfig &config,
+                     ValidationReport &report) {
+    const ConfigPath path{"timestream", "raw_time_chunk", "line_audit"};
+    check_minimum(config.line_min_hz, 0.0,
+                  append_config_path(path, {"line_min_hz"}), report);
+    check_minimum(config.line_max_hz, 0.0,
+                  append_config_path(path, {"line_max_hz"}), report);
+    check_minimum(config.segment_sec, 0.1,
+                  append_config_path(path, {"segment_sec"}), report);
+    check_minimum(config.min_segment_sec, 0.1,
+                  append_config_path(path, {"min_segment_sec"}), report);
+    check_minimum(config.overlap_frac, 0.0,
+                  append_config_path(path, {"overlap_frac"}), report);
+    check_maximum(config.overlap_frac, 0.95,
+                  append_config_path(path, {"overlap_frac"}), report);
+    check_minimum(config.continuum_radius_bins, 1,
+                  append_config_path(path, {"continuum_radius_bins"}), report);
+    check_minimum(config.prominence_thresh, 1.0,
+                  append_config_path(path, {"prominence_thresh"}), report);
+    check_minimum(config.cm_prominence_thresh, 1.0,
+                  append_config_path(path, {"cm_prominence_thresh"}), report);
+    check_minimum(config.min_good_frac, 0.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_maximum(config.min_good_frac, 1.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_minimum(config.min_windows, 1,
+                  append_config_path(path, {"min_windows"}), report);
+    check_minimum(config.max_peaks_per_detector, 1,
+                  append_config_path(path, {"max_peaks_per_detector"}), report);
+    check_minimum(config.max_det, 0, append_config_path(path, {"max_det"}),
+                  report);
+    check_minimum(config.min_det_for_network, 1,
+                  append_config_path(path, {"min_det_for_network"}), report);
+    check_minimum(config.cluster_tol_hz, 0.0,
+                  append_config_path(path, {"cluster_tol_hz"}), report);
+    check_minimum(config.notch_min_detector_frac, 0.0,
+                  append_config_path(path, {"notch_min_detector_frac"}),
+                  report);
+    check_maximum(config.notch_min_detector_frac, 1.0,
+                  append_config_path(path, {"notch_min_detector_frac"}),
+                  report);
+    check_minimum(config.notch_min_detectors, 1,
+                  append_config_path(path, {"notch_min_detectors"}), report);
+    check_minimum(config.notch_min_cm_prominence, 1.0,
+                  append_config_path(path, {"notch_min_cm_prominence"}),
+                  report);
+    check_minimum(config.detector_min_prominence, 1.0,
+                  append_config_path(path, {"detector_min_prominence"}),
+                  report);
+    check_minimum(config.detector_min_line_power_frac, 0.0,
+                  append_config_path(path, {"detector_min_line_power_frac"}),
+                  report);
+    check_maximum(config.detector_min_line_power_frac, 1.0,
+                  append_config_path(path, {"detector_min_line_power_frac"}),
+                  report);
+    check_minimum(config.bad_detector_max_cluster_frac, 0.0,
+                  append_config_path(path, {"bad_detector_max_cluster_frac"}),
+                  report);
+    check_maximum(config.bad_detector_max_cluster_frac, 1.0,
+                  append_config_path(path, {"bad_detector_max_cluster_frac"}),
+                  report);
+    check_minimum(config.post_filter_apply_iterations, 1,
+                  append_config_path(path, {"post_filter_apply_iterations"}),
+                  report);
+    validate_optional_minimum(config.post_filter_line_min_hz, 0.0,
+                              append_config_path(path,
+                                                 {"post_filter_line_min_hz"}),
+                              report);
+    validate_optional_minimum(config.post_filter_line_max_hz, 0.0,
+                              append_config_path(path,
+                                                 {"post_filter_line_max_hz"}),
+                              report);
+    check_minimum(config.ptc_apply_iterations, 1,
+                  append_config_path(path, {"ptc_apply_iterations"}), report);
+    validate_optional_minimum(config.ptc_line_min_hz, 0.0,
+                              append_config_path(path, {"ptc_line_min_hz"}),
+                              report);
+    validate_optional_minimum(config.ptc_line_max_hz, 0.0,
+                              append_config_path(path, {"ptc_line_max_hz"}),
+                              report);
+    if (std::isfinite(config.ptc_line_min_hz) &&
+        std::isfinite(config.ptc_line_max_hz) &&
+        config.ptc_line_max_hz < config.ptc_line_min_hz) {
+        report.add_error(append_config_path(path, {"ptc_line_max_hz"}),
+                         "must be greater than or equal to ptc_line_min_hz");
+    }
+    if (config.fixed_notch_enabled) {
+        if (config.fixed_notch_freqs_hz.empty()) {
+            report.add_error(append_config_path(path, {"fixed_notch_freqs_hz"}),
+                             "must contain at least one fixed notch when enabled");
+        }
+        if (config.fixed_notch_widths_hz.empty()) {
+            report.add_error(append_config_path(path, {"fixed_notch_widths_hz"}),
+                             "must contain at least one fixed notch width");
+        }
+        if (!config.fixed_notch_widths_hz.empty() &&
+            config.fixed_notch_widths_hz.size() != 1 &&
+            config.fixed_notch_widths_hz.size() !=
+                config.fixed_notch_freqs_hz.size()) {
+            report.add_error(append_config_path(path, {"fixed_notch_widths_hz"}),
+                             "must have length 1 or match fixed_notch_freqs_hz");
+        }
+        for (const auto freq_hz : config.fixed_notch_freqs_hz) {
+            if (!std::isfinite(freq_hz) || freq_hz <= 0.0) {
+                report.add_error(
+                    append_config_path(path, {"fixed_notch_freqs_hz"}),
+                    "values must be finite and greater than 0");
+            }
+        }
+        for (const auto width_hz : config.fixed_notch_widths_hz) {
+            if (!std::isfinite(width_hz) || width_hz <= 0.0) {
+                report.add_error(
+                    append_config_path(path, {"fixed_notch_widths_hz"}),
+                    "values must be finite and greater than 0");
+            }
+        }
+    }
+    check_minimum(config.fixed_notch_exclusion_half_width_hz, 0.0,
+                  append_config_path(path,
+                                     {"fixed_notch_exclusion_half_width_hz"}),
+                  report);
+    check_minimum(config.apply_min_support_networks, 1,
+                  append_config_path(path, {"apply_min_support_networks"}),
+                  report);
+    check_minimum(config.apply_min_detector_frac, 0.0,
+                  append_config_path(path, {"apply_min_detector_frac"}), report);
+    check_maximum(config.apply_min_detector_frac, 1.0,
+                  append_config_path(path, {"apply_min_detector_frac"}), report);
+    check_minimum(config.apply_min_common_mode_prominence, 1.0,
+                  append_config_path(path,
+                                     {"apply_min_common_mode_prominence"}),
+                  report);
+    check_minimum(config.apply_width_scale, 0.01,
+                  append_config_path(path, {"apply_width_scale"}), report);
+    check_minimum(config.apply_min_width_hz, 0.0,
+                  append_config_path(path, {"apply_min_width_hz"}), report);
+    check_minimum(config.apply_max_width_hz, 0.0,
+                  append_config_path(path, {"apply_max_width_hz"}), report);
+    if (config.apply_max_width_hz < config.apply_min_width_hz) {
+        report.add_error(append_config_path(path, {"apply_max_width_hz"}),
+                         "must be greater than or equal to apply_min_width_hz");
+    }
+    check_minimum(config.apply_max_notches, 0,
+                  append_config_path(path, {"apply_max_notches"}), report);
+    check_minimum(config.apply_cluster_tol_hz, 0.0,
+                  append_config_path(path, {"apply_cluster_tol_hz"}), report);
+    check_minimum(config.detector_notch_min_prominence, 1.0,
+                  append_config_path(path, {"detector_notch_min_prominence"}),
+                  report);
+    check_minimum(config.detector_notch_min_line_power_frac, 0.0,
+                  append_config_path(path,
+                                     {"detector_notch_min_line_power_frac"}),
+                  report);
+    check_maximum(config.detector_notch_min_line_power_frac, 1.0,
+                  append_config_path(path,
+                                     {"detector_notch_min_line_power_frac"}),
+                  report);
+    check_minimum(config.detector_notch_max_notches, 0,
+                  append_config_path(path, {"detector_notch_max_notches"}),
+                  report);
+    check_minimum(config.detector_notch_width_scale, 0.01,
+                  append_config_path(path, {"detector_notch_width_scale"}),
+                  report);
+    check_minimum(config.detector_notch_min_width_hz, 0.0,
+                  append_config_path(path, {"detector_notch_min_width_hz"}),
+                  report);
+    check_minimum(config.detector_notch_max_width_hz, 0.0,
+                  append_config_path(path, {"detector_notch_max_width_hz"}),
+                  report);
+    if (config.detector_notch_max_width_hz <
+        config.detector_notch_min_width_hz) {
+        report.add_error(
+            append_config_path(path, {"detector_notch_max_width_hz"}),
+            "must be greater than or equal to detector_notch_min_width_hz");
+    }
+    check_minimum(config.detector_notch_context_samples, 0,
+                  append_config_path(path, {"detector_notch_context_samples"}),
+                  report);
+}
+
 inline void validate(const RawTimeChunkConfig &config, ValidationReport &report) {
     validate(config.despike, report);
     validate(config.downsample, report);
@@ -1139,6 +1391,7 @@ inline void validate(const RawTimeChunkConfig &config, ValidationReport &report)
     validate(config.flagging, report);
     validate(config.kernel, report);
     validate(config.altaz_destripe, report);
+    validate(config.line_audit, report);
     if (config.downsample.enabled && !config.filter.enabled) {
         report.add_error({"timestream", "raw_time_chunk", "downsample"},
                          "requires raw_time_chunk.filter.enabled=true");

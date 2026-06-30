@@ -394,6 +394,59 @@ TEST(config_scaffold, validates_raw_time_chunk_altaz_destripe_values) {
     EXPECT_EQ(report.error_count(), 1U);
 }
 
+TEST(config_scaffold, validates_raw_time_chunk_line_audit_values) {
+    citlali::config::RawTimeChunkLineAuditConfig config;
+    config.line_min_hz = -1.0;
+    config.line_max_hz = -1.0;
+    config.segment_sec = 0.0;
+    config.min_segment_sec = 0.0;
+    config.overlap_frac = 1.0;
+    config.continuum_radius_bins = 0;
+    config.prominence_thresh = 0.0;
+    config.cm_prominence_thresh = 0.0;
+    config.min_good_frac = -1.0;
+    config.min_windows = 0;
+    config.max_peaks_per_detector = 0;
+    config.max_det = -1;
+    config.min_det_for_network = 0;
+    config.cluster_tol_hz = -1.0;
+    config.notch_min_detector_frac = 2.0;
+    config.notch_min_detectors = 0;
+    config.notch_min_cm_prominence = 0.0;
+    config.detector_min_prominence = 0.0;
+    config.detector_min_line_power_frac = -1.0;
+    config.bad_detector_max_cluster_frac = 2.0;
+    config.post_filter_apply_iterations = 0;
+    config.post_filter_line_min_hz = -1.0;
+    config.post_filter_line_max_hz = -1.0;
+    config.ptc_apply_iterations = 0;
+    config.ptc_line_min_hz = 2.0;
+    config.ptc_line_max_hz = 1.0;
+    config.fixed_notch_enabled = true;
+    config.fixed_notch_widths_hz = {-1.0};
+    config.fixed_notch_exclusion_half_width_hz = -1.0;
+    config.apply_min_support_networks = 0;
+    config.apply_min_detector_frac = -1.0;
+    config.apply_min_common_mode_prominence = 0.0;
+    config.apply_width_scale = 0.0;
+    config.apply_min_width_hz = 2.0;
+    config.apply_max_width_hz = 1.0;
+    config.apply_max_notches = -1;
+    config.apply_cluster_tol_hz = -1.0;
+    config.detector_notch_min_prominence = 0.0;
+    config.detector_notch_min_line_power_frac = 2.0;
+    config.detector_notch_max_notches = -1;
+    config.detector_notch_width_scale = 0.0;
+    config.detector_notch_min_width_hz = 2.0;
+    config.detector_notch_max_width_hz = 1.0;
+    config.detector_notch_context_samples = -1;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 41U);
+}
+
 TEST(config_scaffold, validates_processed_time_chunk_second_pass_local_values) {
     citlali::config::ProcessedTimeChunkSecondPassLocalConfig config;
     config.min_spike_sigma = -1.0;
