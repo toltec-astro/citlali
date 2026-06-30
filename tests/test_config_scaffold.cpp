@@ -119,6 +119,30 @@ TEST(config_scaffold, parses_existing_pointing_enum_values) {
               citlali::config::FruitLoopsCenterMode::map_center);
 }
 
+TEST(config_scaffold, parses_existing_map_filter_enum_values) {
+    EXPECT_EQ(citlali::config::parse_map_filter_type("wiener_filter").value(),
+              citlali::config::MapFilterType::wiener_filter);
+    EXPECT_EQ(citlali::config::parse_map_filter_type("convolve").value(),
+              citlali::config::MapFilterType::convolve);
+    EXPECT_EQ(citlali::config::parse_map_filter_type("destripe").value(),
+              citlali::config::MapFilterType::destripe);
+    EXPECT_FALSE(citlali::config::parse_map_filter_type("smooth").has_value());
+
+    EXPECT_EQ(citlali::config::parse_map_filter_template_type("kernel").value(),
+              citlali::config::MapFilterTemplateType::kernel);
+    EXPECT_EQ(citlali::config::parse_map_filter_template_type("gaussian").value(),
+              citlali::config::MapFilterTemplateType::gaussian);
+    EXPECT_EQ(citlali::config::parse_map_filter_template_type("airy").value(),
+              citlali::config::MapFilterTemplateType::airy);
+    EXPECT_EQ(citlali::config::parse_map_filter_template_type("highpass").value(),
+              citlali::config::MapFilterTemplateType::highpass);
+
+    EXPECT_EQ(citlali::config::parse_map_filter_edge_taper_mode("none").value(),
+              citlali::config::MapFilterEdgeTaperMode::none);
+    EXPECT_EQ(citlali::config::parse_map_filter_edge_taper_mode("cosine").value(),
+              citlali::config::MapFilterEdgeTaperMode::cosine);
+}
+
 TEST(config_scaffold, parses_existing_beammap_enum_values) {
     EXPECT_EQ(citlali::config::parse_beammap_detector_weighting_mode("const").value(),
               citlali::config::BeammapDetectorWeightingMode::constant);
@@ -163,6 +187,25 @@ TEST(config_scaffold, validates_timestream_output_selection_values) {
     citlali::config::validate(config, report);
     EXPECT_FALSE(report.ok());
     EXPECT_EQ(report.error_count(), 5U);
+}
+
+TEST(config_scaffold, validates_map_filter_config_values) {
+    citlali::config::MapFilterConfig config;
+    config.enabled = true;
+    config.edge_guard.hits_core_fraction = -1.0;
+    config.edge_guard.guard_radius_fwhm = -1.0;
+    config.edge_guard.taper_min_fraction = 2.0;
+    config.denom_rel_tol = 2.0;
+    config.tail_frac_tol = -1.0;
+    config.max_loops = 0;
+    config.denom_check_iters = -1;
+    config.max_denom_iters = -1;
+    config.template_fwhm_arcsec[""] = -1.0;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 10U);
 }
 
 TEST(config_scaffold, validates_beammap_config_values) {

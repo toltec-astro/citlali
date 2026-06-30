@@ -3808,6 +3808,44 @@ void Engine::get_map_filter_config(CT &config) {
     // get wiener filter config options
     wiener_filter.get_config(config, missing_keys, invalid_keys);
 
+    auto &typed_map_filter = typed_post_processing_config.map_filtering;
+    typed_map_filter.enabled = run_map_filter;
+    if (auto parsed = citlali::config::parse_map_filter_type(wiener_filter.filter_type)) {
+        typed_map_filter.type = *parsed;
+    }
+    if (auto parsed = citlali::config::parse_map_filter_template_type(
+            wiener_filter.template_type)) {
+        typed_map_filter.template_type = *parsed;
+    }
+    typed_map_filter.lowpass_only = wiener_filter.run_lowpass;
+    typed_map_filter.normalize_errors = wiener_filter.normalize_error;
+    typed_map_filter.edge_guard.enabled = wiener_filter.edge_guard_enabled;
+    typed_map_filter.edge_guard.weight_threshold_mode =
+        wiener_filter.edge_weight_threshold_mode;
+    typed_map_filter.edge_guard.hits_threshold_mode =
+        wiener_filter.edge_hits_threshold_mode;
+    typed_map_filter.edge_guard.hits_core_fraction =
+        wiener_filter.edge_hits_core_fraction;
+    typed_map_filter.edge_guard.guard_radius_fwhm =
+        wiener_filter.edge_guard_radius_fwhm;
+    typed_map_filter.edge_guard.fill_mode = wiener_filter.edge_fill_mode;
+    if (auto parsed = citlali::config::parse_map_filter_edge_taper_mode(
+            wiener_filter.edge_taper_mode)) {
+        typed_map_filter.edge_guard.taper_mode = *parsed;
+    }
+    typed_map_filter.edge_guard.taper_min_fraction =
+        wiener_filter.edge_taper_min_fraction;
+    typed_map_filter.denom_rel_tol = wiener_filter.denom_rel_tol;
+    typed_map_filter.tail_frac_tol = wiener_filter.tail_frac_tol;
+    typed_map_filter.max_loops = wiener_filter.max_loops;
+    typed_map_filter.denom_check_iters = wiener_filter.denom_check_iters;
+    typed_map_filter.max_denom_iters = wiener_filter.max_denom_iters;
+    typed_map_filter.template_fwhm_arcsec.clear();
+    for (const auto &[array_name, fwhm_rad] : wiener_filter.template_fwhm_rad) {
+        typed_map_filter.template_fwhm_arcsec[array_name] =
+            fwhm_rad * RAD_TO_ASEC;
+    }
+
     // if in science mode, write filtered maps as they complete
     if (redu_type=="science") {
         write_filtered_maps_partial = true;
@@ -4021,6 +4059,7 @@ void Engine::get_citlali_config(CT &config) {
                          std::tuple{"post_processing","map_filtering","enabled"});
         if (parsed_cleanly(missing_before, invalid_before)) {
             typed_post_processing_config.map_filtering_enabled = run_map_filter;
+            typed_post_processing_config.map_filtering.enabled = run_map_filter;
         }
     }
 
@@ -4161,6 +4200,7 @@ void Engine::get_citlali_config(CT &config) {
         typed_coadd_config.enabled = false;
         typed_noise_config.enabled = false;
         typed_post_processing_config.map_filtering_enabled = false;
+        typed_post_processing_config.map_filtering.enabled = false;
         typed_post_processing_config.source_finding_enabled = false;
         typed_post_processing_config.source_fitting.active = false;
         // we don't need to do iterations if no maps are made
