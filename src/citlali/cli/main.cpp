@@ -502,9 +502,9 @@ int run(const rc_t &rc) {
                             todproc.get_adc_snap_from_files(rawobs);
                         }
 
-                        // get obsnum
-                        logger->debug("getting obsnum");
-                        const int obsnum = rawobs_kids_meta.back().get_typed<int>("obsid");
+                        const int obsnum =
+                            citlali::pipeline::obsnum_from_rawobs_meta(
+                                rawobs_kids_meta, logger);
                         citlali::pipeline::prepare_observation_output_layout(
                             todproc.engine(), obsnum, logger);
 

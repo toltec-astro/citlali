@@ -84,6 +84,13 @@ void prepare_observation_output_layout(Engine &engine, int obsnum,
     create_observation_output_dirs(engine, logger);
 }
 
+template <class RawObsKidsMeta, class Logger>
+int obsnum_from_rawobs_meta(const RawObsKidsMeta &rawobs_kids_meta,
+                            const Logger &logger) {
+    logger->debug("getting obsnum");
+    return rawobs_kids_meta.back().template get_typed<int>("obsid");
+}
+
 inline std::string gaps_log_filepath(const std::string &obsnum_dir_name) {
     return obsnum_dir_name + "/logs/gaps.log";
 }

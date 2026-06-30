@@ -2286,6 +2286,20 @@ TEST(pipeline_output_layout, adds_observation_number_to_coadd_layout) {
     EXPECT_EQ(engine.cmb.obsnums.back(), "000042");
 }
 
+TEST(pipeline_output_layout, reads_obsnum_from_rawobs_meta) {
+    std::vector<FakeRawObsMeta> rawobs_kids_meta = {
+        {75.0, 101},
+        {122.0, 202},
+    };
+    auto logger = std::make_shared<FakeLogger>();
+
+    const int obsnum = citlali::pipeline::obsnum_from_rawobs_meta(
+        rawobs_kids_meta, logger);
+
+    EXPECT_EQ(obsnum, 202);
+    EXPECT_EQ(logger->debug_calls, 1);
+}
+
 TEST(pipeline_output_layout, derives_gaps_log_filepath) {
     EXPECT_EQ(citlali::pipeline::gaps_log_filepath("/tmp/redu01/152389/"),
               "/tmp/redu01/152389//logs/gaps.log");
