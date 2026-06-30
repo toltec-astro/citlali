@@ -1,10 +1,31 @@
 #pragma once
 
 #include <cmath>
+#include <functional>
 #include <string>
 #include <vector>
 
 namespace citlali::pipeline {
+
+namespace detail {
+
+template <class T>
+const T &unwrap_reference_wrapper(const T &value) {
+    return value;
+}
+
+template <class T>
+const T &unwrap_reference_wrapper(const std::reference_wrapper<T> &value) {
+    return value.get();
+}
+
+template <class T>
+const T &unwrap_reference_wrapper(
+    const std::reference_wrapper<const T> &value) {
+    return value.get();
+}
+
+}  // namespace detail
 
 inline double degrees_to_radians(double degrees) {
     constexpr double deg_to_rad = 0.017453292519943295769;
@@ -49,8 +70,9 @@ void load_array_properties_table(Engine &engine, const RawObs &rawobs,
 
     std::vector<std::string> raw_filenames, interfaces;
     for (const auto &data_item : rawobs.kidsdata()) {
-        raw_filenames.push_back(data_item.filepath());
-        interfaces.push_back(data_item.interface());
+        const auto &item = detail::unwrap_reference_wrapper(data_item);
+        raw_filenames.push_back(item.filepath());
+        interfaces.push_back(item.interface());
     }
 
     engine.calib.get_apt(apt_path, raw_filenames, interfaces);

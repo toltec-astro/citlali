@@ -9,6 +9,7 @@
 
 #include <gtest/gtest.h>
 
+#include <functional>
 #include <map>
 #include <memory>
 #include <optional>
@@ -359,6 +360,16 @@ struct FakeRawObs {
     const std::string &name() const { return obs_name; }
 
     std::optional<FakeHwpData> hwpdata() const { return hwp; }
+};
+
+struct FakeReferenceWrappedRawObs : FakeRawObs {
+    std::vector<std::reference_wrapper<const FakeDataItem>> kidsdata() const {
+        std::vector<std::reference_wrapper<const FakeDataItem>> refs;
+        for (const auto &item : kids_items) {
+            refs.push_back(std::cref(item));
+        }
+        return refs;
+    }
 };
 
 struct FakeKidsProc {};
@@ -1322,6 +1333,28 @@ TEST(pipeline_preflight, loads_array_properties_table) {
     EXPECT_EQ(engine.calib.loaded_interfaces,
               (std::vector<std::string>{"nw0", "nw1"}));
     EXPECT_EQ(logger->info_calls, 1);
+}
+
+TEST(pipeline_preflight,
+     loads_array_properties_table_from_reference_wrapped_kidsdata) {
+    FakeEngine engine;
+    FakeReferenceWrappedRawObs rawobs;
+    rawobs.apt.path = "/data/apt.ecsv";
+    rawobs.kids_items = {
+        {"/data/toltec0.nc", "nw0"},
+        {"/data/toltec1.nc", "nw1"},
+    };
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_array_properties_table(
+        engine, rawobs, logger);
+
+    EXPECT_EQ(engine.calib.get_apt_calls, 1);
+    EXPECT_EQ(engine.calib.loaded_raw_filenames,
+              (std::vector<std::string>{"/data/toltec0.nc",
+                                        "/data/toltec1.nc"}));
+    EXPECT_EQ(engine.calib.loaded_interfaces,
+              (std::vector<std::string>{"nw0", "nw1"}));
 }
 
 TEST(pipeline_preflight, configures_non_beammap_observation_calibration) {
