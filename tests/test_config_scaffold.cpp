@@ -92,7 +92,9 @@ struct FakeEngine {
     bool run_source_finder = false;
     bool write_filtered_maps_partial = false;
     bool apply_empirical_noise_weights = false;
+    int fruit_iter = 0;
     std::string map_method = "jinc";
+    std::string map_grouping = "array";
     std::map<std::string, int> gaps;
     int configure_map_pixel_contribution_targets_calls = 0;
     std::string last_map_pixel_contribution_target;
@@ -106,6 +108,8 @@ struct FakeEngine {
         std::vector<std::string> obsnums;
         std::vector<double> crval_config = {0.0, 0.0};
         double exposure_time = 0.0;
+        double cov_cut = 0.0;
+        double pixel_size_rad = 0.0;
         int calc_noise_products_calls = 0;
         int calc_map_psd_calls = 0;
         int calc_map_hist_calls = 0;
@@ -162,6 +166,7 @@ struct FakeEngine {
         double fsmp = 100.0;
         double d_fsmp = -1.0;
         bool sim_obs = false;
+        std::string pixel_axes = "pixel_axes";
         std::map<std::string, FakeTelHeaderValue> tel_header;
         std::map<std::string, FakeTelTime> tel_data;
     } telescope;
@@ -182,6 +187,23 @@ struct FakeEngine {
         bool run_fruit_loops = false;
         int fruit_loops_iters = 3;
         bool save_all_iters = false;
+        std::string fruit_loops_path = "null";
+        std::string fruit_loops_type = "obsnum/raw";
+        struct {
+            double cov_cut = 0.0;
+        } tod_mb;
+        int load_mb_calls = 0;
+        std::string loaded_filepath;
+        std::string loaded_noise_filepath;
+
+        template <class Calib, class PixelAxes>
+        void load_mb(const std::string &filepath,
+                     const std::string &noise_filepath, Calib &,
+                     const std::string &, const PixelAxes &, double) {
+            ++load_mb_calls;
+            loaded_filepath = filepath;
+            loaded_noise_filepath = noise_filepath;
+        }
     } ptcproc;
 
     template <class MapBuffer>
@@ -1738,6 +1760,37 @@ TEST(pipeline_execution, skips_filtered_coadd_output_when_partial_written) {
     EXPECT_EQ(todproc.engine().cmb.calc_noise_products_calls, 0);
     EXPECT_EQ(todproc.engine().output_calls, 0);
     EXPECT_EQ(logger->info_calls, 4);
+}
+
+TEST(pipeline_execution, loads_initial_fruit_loop_model_from_configured_path) {
+    FakeEngine engine;
+    engine.fruit_iter = 0;
+    engine.ptcproc.run_fruit_loops = true;
+    engine.ptcproc.fruit_loops_path = "/data/fruit";
+    engine.ptcproc.fruit_loops_type = "obsnum/raw";
+    engine.omb.obsnums = {"152389"};
+    engine.omb.cov_cut = 4.5;
+    engine.omb.pixel_size_rad = 0.001;
+
+    citlali::pipeline::load_initial_fruit_loop_model_if_requested(engine);
+
+    EXPECT_EQ(engine.ptcproc.load_mb_calls, 1);
+    EXPECT_EQ(engine.ptcproc.loaded_filepath, "/data/fruit/152389/raw/");
+    EXPECT_EQ(engine.ptcproc.loaded_noise_filepath,
+              "/data/fruit/152389/raw/");
+    EXPECT_DOUBLE_EQ(engine.ptcproc.tod_mb.cov_cut, 4.5);
+}
+
+TEST(pipeline_execution, skips_initial_fruit_loop_model_without_path) {
+    FakeEngine engine;
+    engine.fruit_iter = 0;
+    engine.ptcproc.run_fruit_loops = true;
+    engine.ptcproc.fruit_loops_path = "null";
+    engine.omb.obsnums = {"152389"};
+
+    citlali::pipeline::load_initial_fruit_loop_model_if_requested(engine);
+
+    EXPECT_EQ(engine.ptcproc.load_mb_calls, 0);
 }
 
 TEST(pipeline_output_layout, derives_config_copy_destinations) {

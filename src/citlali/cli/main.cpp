@@ -711,24 +711,8 @@ int run(const rc_t &rc) {
 
                         if constexpr (!std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>) {
                             // if on first fruit loops iteration and a path is specified
-                            if (todproc.engine().ptcproc.run_fruit_loops && todproc.engine().fruit_iter == 0) {
-                                if (todproc.engine().ptcproc.fruit_loops_path != "null") {
-                                    // path to data
-                                    const std::string fruit_dir =
-                                        citlali::pipeline::fruit_loop_map_dir(
-                                            todproc.engine().ptcproc.fruit_loops_path,
-                                            todproc.engine().ptcproc.fruit_loops_type,
-                                            todproc.engine().omb.obsnums.back());
-
-                                    // set coverage region
-                                    todproc.engine().ptcproc.tod_mb.cov_cut = todproc.engine().omb.cov_cut;
-                                    // get map buffer from from path even if only saving last iteration
-                                    todproc.engine().ptcproc.load_mb(fruit_dir, fruit_dir, todproc.engine().calib,
-                                                                     todproc.engine().map_grouping,
-                                                                     todproc.engine().telescope.pixel_axes,
-                                                                     todproc.engine().omb.pixel_size_rad);
-                                }
-                            }
+                            citlali::pipeline::load_initial_fruit_loop_model_if_requested(
+                                todproc.engine());
 
                             // if on iteration >0 get the maps from the previous iteration
                             if (todproc.engine().fruit_iter > 0) {

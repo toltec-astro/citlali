@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/pipeline/fruit_loop_paths.h>
+
 namespace citlali::pipeline {
 
 template <class Engine, class KidsProc, class RawObs, class Logger>
@@ -188,6 +190,24 @@ void write_filtered_coadd_outputs(TodProc &todproc, const Logger &logger) {
     else {
         logger->info("outputting filtered coadded files");
         engine.template output<FilteredCoaddMap>();
+    }
+}
+
+template <class Engine>
+void load_initial_fruit_loop_model_if_requested(Engine &engine) {
+    if (engine.ptcproc.run_fruit_loops && engine.fruit_iter == 0) {
+        if (engine.ptcproc.fruit_loops_path != "null") {
+            const auto fruit_dir = fruit_loop_map_dir(
+                engine.ptcproc.fruit_loops_path,
+                engine.ptcproc.fruit_loops_type,
+                engine.omb.obsnums.back());
+
+            engine.ptcproc.tod_mb.cov_cut = engine.omb.cov_cut;
+            engine.ptcproc.load_mb(fruit_dir, fruit_dir, engine.calib,
+                                   engine.map_grouping,
+                                   engine.telescope.pixel_axes,
+                                   engine.omb.pixel_size_rad);
+        }
     }
 }
 
