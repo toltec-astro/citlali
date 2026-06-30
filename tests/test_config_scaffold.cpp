@@ -88,15 +88,27 @@ struct FakeEngine {
     bool run_map_filter = false;
     bool verbose_mode = false;
     bool run_noise = true;
+    bool run_noise_products = true;
+    bool apply_empirical_noise_weights = false;
     std::string map_method = "jinc";
     std::map<std::string, int> gaps;
     int configure_map_pixel_contribution_targets_calls = 0;
     std::string last_map_pixel_contribution_target;
+    int create_obs_map_files_calls = 0;
+    int output_calls = 0;
 
     struct {
         std::vector<std::string> obsnums;
         std::vector<double> crval_config = {0.0, 0.0};
         double exposure_time = 0.0;
+        int calc_noise_products_calls = 0;
+        bool last_apply_empirical_noise_weights = false;
+
+        void calc_noise_products(bool apply_empirical_noise_weights) {
+            ++calc_noise_products_calls;
+            last_apply_empirical_noise_weights =
+                apply_empirical_noise_weights;
+        }
     } omb;
 
     struct {
@@ -137,6 +149,13 @@ struct FakeEngine {
         MapBuffer &, const std::string &target) {
         ++configure_map_pixel_contribution_targets_calls;
         last_map_pixel_contribution_target = target;
+    }
+
+    void create_obs_map_files() { ++create_obs_map_files_calls; }
+
+    template <class MapType>
+    void output() {
+        ++output_calls;
     }
 };
 
@@ -274,6 +293,8 @@ struct FakeObservationMapTodProc {
         ++allocate_nmb_calls;
     }
 };
+
+struct FakeRawObsMapTag {};
 
 TEST(config_scaffold, formats_config_paths) {
     EXPECT_EQ(citlali::config::format_path({"runtime", "n_threads"}),
@@ -1481,6 +1502,53 @@ TEST(pipeline_execution, skips_observation_noise_for_non_jinc_coadd) {
     EXPECT_EQ(todproc.allocate_omb_calls, 1);
     EXPECT_EQ(todproc.allocate_nmb_calls, 0);
     EXPECT_EQ(logger->info_calls, 2);
+}
+
+TEST(pipeline_execution, writes_raw_observation_outputs) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_mapmaking = true;
+    todproc.engine().run_noise_products = true;
+    todproc.engine().run_noise = true;
+    todproc.engine().apply_empirical_noise_weights = true;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_raw_observation_outputs<FakeRawObsMapTag>(
+        todproc, logger);
+
+    EXPECT_EQ(todproc.engine().omb.calc_noise_products_calls, 1);
+    EXPECT_TRUE(todproc.engine().omb.last_apply_empirical_noise_weights);
+    EXPECT_EQ(todproc.engine().create_obs_map_files_calls, 1);
+    EXPECT_EQ(todproc.engine().output_calls, 1);
+    EXPECT_EQ(logger->info_calls, 2);
+}
+
+TEST(pipeline_execution, skips_raw_noise_products_when_disabled) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_mapmaking = true;
+    todproc.engine().run_noise_products = false;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_raw_observation_outputs<FakeRawObsMapTag>(
+        todproc, logger);
+
+    EXPECT_EQ(todproc.engine().omb.calc_noise_products_calls, 0);
+    EXPECT_EQ(todproc.engine().create_obs_map_files_calls, 1);
+    EXPECT_EQ(todproc.engine().output_calls, 1);
+    EXPECT_EQ(logger->info_calls, 1);
+}
+
+TEST(pipeline_execution, skips_raw_outputs_when_mapmaking_disabled) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_mapmaking = false;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_raw_observation_outputs<FakeRawObsMapTag>(
+        todproc, logger);
+
+    EXPECT_EQ(todproc.engine().omb.calc_noise_products_calls, 0);
+    EXPECT_EQ(todproc.engine().create_obs_map_files_calls, 0);
+    EXPECT_EQ(todproc.engine().output_calls, 0);
+    EXPECT_EQ(logger->info_calls, 1);
 }
 
 TEST(pipeline_output_layout, derives_config_copy_destinations) {

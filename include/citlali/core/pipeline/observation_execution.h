@@ -50,4 +50,28 @@ void allocate_observation_map_buffers(TodProc &todproc,
     }
 }
 
+template <class RawObsMap, class TodProc, class Logger>
+void write_raw_observation_outputs(TodProc &todproc, const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    if (engine.run_mapmaking &&
+        engine.run_noise_products &&
+        engine.run_noise) {
+        logger->info("calculating raw obs empirical noise products");
+        engine.omb.calc_noise_products(engine.apply_empirical_noise_weights);
+    }
+
+    if (engine.run_mapmaking) {
+        engine.create_obs_map_files();
+    }
+
+    if (engine.run_mapmaking) {
+        logger->info("outputting raw obs files");
+        engine.template output<RawObsMap>();
+    }
+    else {
+        logger->info("mapmaking disabled; skipping raw obs map output");
+    }
+}
+
 }  // namespace citlali::pipeline

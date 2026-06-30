@@ -765,27 +765,8 @@ int run(const rc_t &rc) {
                         citlali::pipeline::setup_and_run_observation_pipeline(
                             todproc.engine(), kidsproc, rawobs, logger);
 
-                        if (todproc.engine().run_mapmaking &&
-                            todproc.engine().run_noise_products &&
-                            todproc.engine().run_noise) {
-                            logger->info("calculating raw obs empirical noise products");
-                            todproc.engine().omb.calc_noise_products(
-                                todproc.engine().apply_empirical_noise_weights);
-                        }
-
-                        // create output map files
-                        if (todproc.engine().run_mapmaking) {
-                            todproc.engine().create_obs_map_files();
-                        }
-
-                        // output files
-                        if (todproc.engine().run_mapmaking) {
-                            logger->info("outputting raw obs files");
-                            todproc.engine().template output<mapmaking::RawObs>();
-                        }
-                        else {
-                            logger->info("mapmaking disabled; skipping raw obs map output");
-                        }
+                        citlali::pipeline::write_raw_observation_outputs<
+                            mapmaking::RawObs>(todproc, logger);
 
                         // coadd
                         if (todproc.engine().run_coadd) {
