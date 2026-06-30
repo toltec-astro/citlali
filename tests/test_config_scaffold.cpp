@@ -121,6 +121,18 @@ TEST(config_scaffold, parses_existing_timestream_enum_values) {
     EXPECT_EQ(citlali::config::parse_processed_weight_grouping("all").value(),
               citlali::config::ProcessedTimeChunkWeightGrouping::all);
     EXPECT_FALSE(citlali::config::parse_processed_weight_grouping("fg").has_value());
+
+    EXPECT_EQ(citlali::config::parse_processed_cleaner_mode("none").value(),
+              citlali::config::ProcessedTimeChunkCleanerMode::none);
+    EXPECT_EQ(citlali::config::parse_processed_cleaner_mode("standard_pca").value(),
+              citlali::config::ProcessedTimeChunkCleanerMode::standard_pca);
+    EXPECT_EQ(citlali::config::parse_processed_cleaner_mode("null_model").value(),
+              citlali::config::ProcessedTimeChunkCleanerMode::null_model);
+    EXPECT_EQ(citlali::config::parse_processed_cleaner_mode("marchenko_pastur").value(),
+              citlali::config::ProcessedTimeChunkCleanerMode::marchenko_pastur);
+    EXPECT_EQ(citlali::config::parse_processed_cleaner_mode("adaptive_selector").value(),
+              citlali::config::ProcessedTimeChunkCleanerMode::adaptive_selector);
+    EXPECT_FALSE(citlali::config::parse_processed_cleaner_mode("pca").has_value());
 }
 
 TEST(config_scaffold, parses_existing_pointing_enum_values) {
@@ -288,6 +300,17 @@ TEST(config_scaffold, validates_processed_time_chunk_weighting_values) {
     citlali::config::validate(config, report);
     EXPECT_FALSE(report.ok());
     EXPECT_EQ(report.error_count(), 5U);
+}
+
+TEST(config_scaffold, validates_processed_time_chunk_clean_values) {
+    citlali::config::ProcessedTimeChunkCleanConfig config;
+    config.enabled = true;
+    config.standard_pca.n_calc = -1;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 1U);
 }
 
 TEST(config_scaffold, validates_processed_time_chunk_weight_validation_values) {

@@ -1010,6 +1010,35 @@ void Engine::get_ptc_config(CT &config) {
     logger->info("getting ptc config options");
     // get ptcproc config
     ptcproc.get_config(config, missing_keys, invalid_keys);
+    auto &typed_clean = typed_timestream_config.processed_time_chunk.clean;
+    typed_clean.enabled = ptcproc.run_clean;
+    if (ptcproc.run_clean) {
+        if (auto parsed = citlali::config::parse_processed_cleaner_mode(
+                ptcproc.cleaner.active_cleaner_label())) {
+            typed_clean.active = *parsed;
+        }
+        typed_clean.grouping = ptcproc.cleaner.grouping;
+        typed_clean.mask_radius_arcsec = ptcproc.mask_radius_arcsec;
+        typed_clean.tau = ptcproc.cleaner.tau;
+        typed_clean.standard_pca.enabled =
+            ptcproc.cleaner.standard_pca.enabled;
+        typed_clean.standard_pca.stddev_limit = ptcproc.cleaner.stddev_limit;
+        typed_clean.standard_pca.n_calc = ptcproc.cleaner.n_calc;
+        typed_clean.standard_pca.n_eig_to_cut.clear();
+        for (const auto &[arr_index, arr_name] : toltec_io.array_name_map) {
+            const auto it = ptcproc.cleaner.n_eig_to_cut.find(arr_index);
+            if (it == ptcproc.cleaner.n_eig_to_cut.end()) {
+                continue;
+            }
+            std::vector<int> n_eig_to_cut;
+            n_eig_to_cut.reserve(static_cast<std::size_t>(it->second.size()));
+            for (Eigen::Index i = 0; i < it->second.size(); ++i) {
+                n_eig_to_cut.push_back(static_cast<int>(it->second(i)));
+            }
+            typed_clean.standard_pca.n_eig_to_cut[arr_name] =
+                std::move(n_eig_to_cut);
+        }
+    }
     auto &typed_weighting =
         typed_timestream_config.processed_time_chunk.weighting;
     if (auto parsed =

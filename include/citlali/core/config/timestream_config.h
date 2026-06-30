@@ -5,6 +5,7 @@
 
 #include <array>
 #include <initializer_list>
+#include <map>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -53,6 +54,14 @@ enum class ProcessedTimeChunkWeightGrouping {
     all
 };
 
+enum class ProcessedTimeChunkCleanerMode {
+    none,
+    standard_pca,
+    null_model,
+    marchenko_pastur,
+    adaptive_selector
+};
+
 inline constexpr std::array<EnumName<TodType>, 4> tod_type_names{{
     {TodType::xs, "xs"},
     {TodType::rs, "rs"},
@@ -99,6 +108,17 @@ inline constexpr std::array<EnumName<ProcessedTimeChunkWeightGrouping>, 3>
         {ProcessedTimeChunkWeightGrouping::all, "all"},
     }};
 
+inline constexpr std::array<EnumName<ProcessedTimeChunkCleanerMode>, 5>
+    processed_cleaner_mode_names{{
+        {ProcessedTimeChunkCleanerMode::none, "none"},
+        {ProcessedTimeChunkCleanerMode::standard_pca, "standard_pca"},
+        {ProcessedTimeChunkCleanerMode::null_model, "null_model"},
+        {ProcessedTimeChunkCleanerMode::marchenko_pastur,
+         "marchenko_pastur"},
+        {ProcessedTimeChunkCleanerMode::adaptive_selector,
+         "adaptive_selector"},
+    }};
+
 inline std::optional<TodType> parse_tod_type(std::string_view value) {
     return parse_enum(value, tod_type_names);
 }
@@ -127,6 +147,11 @@ parse_processed_weight_grouping(std::string_view value) {
     return parse_enum(value, processed_weight_grouping_names);
 }
 
+inline std::optional<ProcessedTimeChunkCleanerMode>
+parse_processed_cleaner_mode(std::string_view value) {
+    return parse_enum(value, processed_cleaner_mode_names);
+}
+
 inline std::string_view to_string(TodType value) {
     return enum_name(value, tod_type_names);
 }
@@ -149,6 +174,10 @@ inline std::string_view to_string(ProcessedTimeChunkWeightingType value) {
 
 inline std::string_view to_string(ProcessedTimeChunkWeightGrouping value) {
     return enum_name(value, processed_weight_grouping_names);
+}
+
+inline std::string_view to_string(ProcessedTimeChunkCleanerMode value) {
+    return enum_name(value, processed_cleaner_mode_names);
 }
 
 struct TodStreamOutputConfig {
@@ -253,6 +282,22 @@ struct ProcessedTimeChunkSecondPassLocalConfig {
     TimestreamSourceProtectionConfig source_protection;
 };
 
+struct ProcessedTimeChunkStandardPcaConfig {
+    bool enabled = true;
+    double stddev_limit = 0.0;
+    int n_calc = 64;
+    std::map<std::string, std::vector<int>> n_eig_to_cut;
+};
+
+struct ProcessedTimeChunkCleanConfig {
+    bool enabled = false;
+    ProcessedTimeChunkCleanerMode active = ProcessedTimeChunkCleanerMode::none;
+    std::vector<std::string> grouping;
+    double mask_radius_arcsec = 0.0;
+    double tau = 0.0;
+    ProcessedTimeChunkStandardPcaConfig standard_pca;
+};
+
 struct ProcessedTimeChunkBusyRowSuppressionConfig {
     bool enabled = false;
     bool require_busy_veto = true;
@@ -351,6 +396,7 @@ struct ProcessedTimeChunkFlaggingConfig {
 };
 
 struct ProcessedTimeChunkConfig {
+    ProcessedTimeChunkCleanConfig clean;
     ProcessedTimeChunkWeightingConfig weighting;
     ProcessedTimeChunkFlaggingConfig flagging;
 };
@@ -572,6 +618,22 @@ inline void validate(const ProcessedTimeChunkSecondPassLocalConfig &config,
              report);
 }
 
+inline void validate(const ProcessedTimeChunkStandardPcaConfig &config,
+                     ValidationReport &report) {
+    check_minimum(config.n_calc, 0,
+                  {"timestream", "processed_time_chunk", "clean",
+                   "standard_pca", "n_calc"},
+                  report);
+}
+
+inline void validate(const ProcessedTimeChunkCleanConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    validate(config.standard_pca, report);
+}
+
 inline void validate(const ProcessedTimeChunkBusyRowSuppressionConfig &config,
                      ValidationReport &report) {
     if (!config.enabled) {
@@ -761,6 +823,7 @@ inline void validate(const ProcessedTimeChunkFlaggingConfig &config,
 
 inline void validate(const ProcessedTimeChunkConfig &config,
                      ValidationReport &report) {
+    validate(config.clean, report);
     validate(config.weighting, report);
     validate(config.flagging, report);
 }
