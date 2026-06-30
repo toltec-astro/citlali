@@ -1463,6 +1463,38 @@ TEST(pipeline_preflight, configures_beammap_array_calibration_from_apt) {
     EXPECT_EQ(todproc.engine().calib.get_apt_calls, 1);
 }
 
+TEST(pipeline_preflight, skips_reduction_calibration_when_not_needed) {
+    FakeCalibrationTodProc todproc;
+    FakeRawObs rawobs;
+    std::vector<FakeRawObsMeta> rawobs_kids_meta = {{122.0, 102}};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(
+        citlali::pipeline::configure_reduction_observation_calibration_if_needed<
+            false>(todproc, rawobs, rawobs_kids_meta, false, logger));
+
+    EXPECT_EQ(todproc.engine().get_astrometry_config_calls, 0);
+    EXPECT_EQ(todproc.engine().calib.get_apt_calls, 0);
+    EXPECT_DOUBLE_EQ(todproc.engine().telescope.fsmp, 100.0);
+}
+
+TEST(pipeline_preflight, configures_reduction_calibration_when_needed) {
+    FakeCalibrationTodProc todproc;
+    FakeRawObs rawobs;
+    rawobs.astrometry.value = "astro";
+    std::vector<FakeRawObsMeta> rawobs_kids_meta = {{122.0, 102}};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(
+        citlali::pipeline::configure_reduction_observation_calibration_if_needed<
+            false>(todproc, rawobs, rawobs_kids_meta, true, logger));
+
+    EXPECT_EQ(todproc.engine().get_astrometry_config_calls, 1);
+    EXPECT_EQ(todproc.engine().loaded_astrometry_config, "astro");
+    EXPECT_EQ(todproc.engine().calib.get_apt_calls, 1);
+    EXPECT_DOUBLE_EQ(todproc.engine().telescope.fsmp, 122.0);
+}
+
 TEST(pipeline_preflight, resets_simulated_observation_indices) {
     FakeEngine engine;
     FakeRawObs rawobs;

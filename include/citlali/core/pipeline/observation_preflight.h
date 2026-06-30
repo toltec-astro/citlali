@@ -140,6 +140,26 @@ void update_sample_rate_from_rawobs_meta(Engine &engine,
         rawobs_kids_meta.back().template get_typed<double>("fsmp");
 }
 
+template <bool IsBeammap, class TodProc, class RawObs, class RawObsKidsMeta,
+          class Logger>
+bool configure_reduction_observation_calibration_if_needed(
+    TodProc &todproc, const RawObs &rawobs,
+    const RawObsKidsMeta &rawobs_kids_meta, bool should_configure,
+    const Logger &logger) {
+    if (!should_configure) {
+        return true;
+    }
+
+    auto &engine = todproc.engine();
+    configure_observation_calibration<IsBeammap>(todproc, rawobs, logger);
+    if (!apply_flxscale_correction(engine, rawobs, logger)) {
+        return false;
+    }
+
+    update_sample_rate_from_rawobs_meta(engine, rawobs_kids_meta, logger);
+    return true;
+}
+
 template <class Engine, class Logger>
 bool configure_effective_sample_rate(Engine &engine, const Logger &logger) {
     if (engine.rtcproc.run_downsample) {

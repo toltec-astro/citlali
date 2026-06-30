@@ -450,19 +450,12 @@ int run(const rc_t &rc) {
                             citlali::pipeline::load_rawobs_kids_meta(
                                 kidsproc, rawobs, logger);
 
-                        if (co.n_inputs() > 1) {
-                            citlali::pipeline::configure_observation_calibration<
+                        if (!citlali::pipeline::configure_reduction_observation_calibration_if_needed<
                                 std::is_same_v<todproc_t,
                                                TimeOrderedDataProc<Beammap>>>(
-                                todproc, rawobs, logger);
-
-                            if (!citlali::pipeline::apply_flxscale_correction(
-                                    todproc.engine(), rawobs, logger)) {
-                                return EXIT_FAILURE;
-                            }
-
-                            citlali::pipeline::update_sample_rate_from_rawobs_meta(
-                                todproc.engine(), rawobs_kids_meta, logger);
+                                todproc, rawobs, rawobs_kids_meta,
+                                co.n_inputs() > 1, logger)) {
+                            return EXIT_FAILURE;
                         }
 
                         if (!citlali::pipeline::configure_effective_sample_rate(
