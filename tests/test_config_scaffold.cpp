@@ -9,6 +9,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace {
 
@@ -35,6 +36,21 @@ struct FakeAptColumn {
 };
 
 struct FakeEngine {
+    std::string obsnum;
+    std::string redu_dir_name = "/tmp/redu01";
+    std::string obsnum_dir_name;
+    bool run_coadd = false;
+    bool run_map_filter = false;
+    bool verbose_mode = false;
+
+    struct {
+        std::vector<std::string> obsnums;
+    } omb;
+
+    struct {
+        std::vector<std::string> obsnums;
+    } cmb;
+
     struct {
         std::map<std::string, FakeAptColumn> apt;
     } calib;
@@ -929,6 +945,36 @@ TEST(pipeline_output_layout, derives_config_copy_destinations) {
     EXPECT_EQ(citlali::pipeline::config_copy_destination(
                   "/tmp/redu01", "/tmp/redu/70_reduce.yaml"),
               "/tmp/redu01/70_reduce.yaml");
+}
+
+TEST(pipeline_output_layout, formats_obsnums_with_legacy_padding) {
+    EXPECT_EQ(citlali::pipeline::format_obsnum(42), "000042");
+    EXPECT_EQ(citlali::pipeline::format_obsnum(1234567), "1234567");
+}
+
+TEST(pipeline_output_layout, configures_observation_output_layout) {
+    FakeEngine engine;
+    engine.redu_dir_name = "/tmp/redu01";
+    engine.omb.obsnums = {"old"};
+
+    citlali::pipeline::configure_observation_output_layout(engine, 42);
+
+    EXPECT_EQ(engine.obsnum, "000042");
+    EXPECT_EQ(engine.obsnum_dir_name, "/tmp/redu01/000042/");
+    ASSERT_EQ(engine.omb.obsnums.size(), 1U);
+    EXPECT_EQ(engine.omb.obsnums.front(), "000042");
+    EXPECT_TRUE(engine.cmb.obsnums.empty());
+}
+
+TEST(pipeline_output_layout, adds_observation_number_to_coadd_layout) {
+    FakeEngine engine;
+    engine.run_coadd = true;
+    engine.cmb.obsnums = {"000001"};
+
+    citlali::pipeline::configure_observation_output_layout(engine, 42);
+
+    ASSERT_EQ(engine.cmb.obsnums.size(), 2U);
+    EXPECT_EQ(engine.cmb.obsnums.back(), "000042");
 }
 
 }  // namespace

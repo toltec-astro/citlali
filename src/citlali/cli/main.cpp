@@ -674,47 +674,9 @@ int run(const rc_t &rc) {
 
                         // get obsnum
                         logger->debug("getting obsnum");
-                        int obsnum = rawobs_kids_meta.back().get_typed<int>("obsid");
-
-                        // convert obsnum to string with leading zeros
-                        std::stringstream ss;
-                        ss << std::setfill('0') << std::setw(6) << obsnum;
-
-                        // add obsnum to todproc for file/directory names
-                        todproc.engine().obsnum = ss.str();
-                        // set up obsnum directory name
-                        todproc.engine().obsnum_dir_name = todproc.engine().redu_dir_name + "/" + todproc.engine().obsnum +"/";
-
-                        // add obsnum to omb for fits headers
-                        todproc.engine().omb.obsnums.clear();
-                        // only add one obsnum to omb vector
-                        todproc.engine().omb.obsnums.push_back(todproc.engine().obsnum);
-
-                        if (todproc.engine().run_coadd) {
-                            // add current obsnum to cmb for fits headers
-                            todproc.engine().cmb.obsnums.push_back(todproc.engine().obsnum);
-                        }
-
-                        // create obsnum directory
-                        logger->debug("creating obsnum directory");
-                        fs::create_directories(todproc.engine().obsnum_dir_name);
-
-                        // create raw obsnum directory
-                        logger->debug("creating obsnum raw directory");
-                        fs::create_directories(todproc.engine().obsnum_dir_name + "raw/");
-
-                        // create filtered obsnum directory
-                        if (!todproc.engine().run_coadd) {
-                            if (todproc.engine().run_map_filter) {
-                                logger->debug("creating obsnum filtered directory");
-                                fs::create_directories(todproc.engine().obsnum_dir_name + "filtered/");
-                            }
-                        }
-                        // create log directory for verbose mode
-                        if (todproc.engine().verbose_mode) {
-                            logger->debug("creating obsnum logs directory");
-                            fs::create_directories(todproc.engine().obsnum_dir_name + "logs/");
-                        }
+                        const int obsnum = rawobs_kids_meta.back().get_typed<int>("obsid");
+                        citlali::pipeline::prepare_observation_output_layout(
+                            todproc.engine(), obsnum, logger);
 
                         // get hwpr data if polarized reduction is requested
                         if (todproc.engine().rtcproc.run_polarization) {
