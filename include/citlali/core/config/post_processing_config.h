@@ -120,6 +120,7 @@ struct SourceFittingConfig {
 struct PostProcessingConfig {
     bool map_filtering_enabled = false;
     MapFilterConfig map_filtering;
+    int map_histogram_n_bins = 50;
     bool source_finding_enabled = false;
     SourceFindingConfig source_finding;
     SourceFittingConfig source_fitting;
@@ -201,6 +202,8 @@ inline void validate(const SourceFindingConfig &config, ValidationReport &report
 
 inline void validate(const PostProcessingConfig &config, ValidationReport &report) {
     validate(config.map_filtering, report);
+    check_minimum(config.map_histogram_n_bins, 0,
+                  {"post_processing", "map_histogram_n_bins"}, report);
     validate(config.source_finding, report);
     validate(config.source_fitting, report);
 }

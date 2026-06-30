@@ -3018,6 +3018,7 @@ void Engine::get_mapmaking_config(CT &config) {
             typed_mapmaking_config.crval1_j2000 = omb.crval_config[0];
             typed_mapmaking_config.crval2_j2000 = omb.crval_config[1];
         }
+        typed_post_processing_config.map_histogram_n_bins = omb.hist_n_bins;
     }
 
     // run coaddition?
@@ -4044,8 +4045,8 @@ void Engine::get_citlali_config(CT &config) {
     }
 
     /* get mapmaking config */
-    get_mapmaking_config(config);
     typed_post_processing_config = citlali::config::PostProcessingConfig{};
+    get_mapmaking_config(config);
 
     auto parsed_cleanly = [&](std::size_t missing_before, std::size_t invalid_before) {
         return missing_keys.size() == missing_before && invalid_keys.size() == invalid_before;

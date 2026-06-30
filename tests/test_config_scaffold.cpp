@@ -164,12 +164,13 @@ TEST(config_scaffold, validates_top_level_config_values) {
     config.noise.n_noise_maps = -1;
     config.post_processing.source_fitting.active = true;
     config.post_processing.source_fitting.bounding_box_arcsec = -1.0;
+    config.post_processing.map_histogram_n_bins = -1;
     config.pointing.header_max_radius_arcsec = -1.0;
     config.beammap.iteration.max_iterations = 0;
 
     auto report = citlali::config::validate(config);
     EXPECT_FALSE(report.ok());
-    EXPECT_EQ(report.error_count(), 7U);
+    EXPECT_EQ(report.error_count(), 8U);
 }
 
 TEST(config_scaffold, validates_timestream_output_selection_values) {
