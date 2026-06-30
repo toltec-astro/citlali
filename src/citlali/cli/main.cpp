@@ -415,14 +415,8 @@ int run(const rc_t &rc) {
 
                 // loop through fruit loops iterations
                 while ((todproc.engine().fruit_iter < todproc.engine().ptcproc.fruit_loops_iters) && !fruit_loops_converged) {
-                    citlali::pipeline::begin_fruit_loop_iteration(
-                        todproc.engine(), logger);
-
-                    citlali::pipeline::prepare_iteration_output_layout_if_needed(
+                    citlali::pipeline::begin_reduction_iteration(
                         todproc, config_filepaths, logger);
-
-                    citlali::pipeline::prepare_iteration_observation_buffers(
-                        todproc, logger);
 
                     // run the reduction for each observation
                     for (std::size_t i=0; i<co.n_inputs(); ++i) {

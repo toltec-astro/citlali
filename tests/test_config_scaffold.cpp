@@ -448,6 +448,7 @@ struct FakeExecutionEngine {
 
 struct FakeIterationPtcProc {
     bool run_fruit_loops = false;
+    bool save_all_iters = false;
     std::string fruit_loops_path = "null";
     int begin_weight_validation_iter = -1;
     int finalize_weight_validation_iter = -1;
@@ -510,6 +511,43 @@ struct FakeIterationTodProc {
     void make_index_file(const std::string &path) {
         ++make_index_file_calls;
         indexed_path = path;
+    }
+};
+
+struct FakeReductionIterationEngine {
+    int fruit_iter = 0;
+    std::string redu_type = "science";
+    std::string redu_dir_name = "/tmp/redu01";
+    bool run_coadd = true;
+    bool run_noise = true;
+    std::vector<std::string> date_obs = {"old"};
+    FakeIterationPtcProc ptcproc;
+    FakeReductionLearning reduction_learning;
+    int write_learning_summary_calls = 0;
+
+    struct {
+        std::vector<std::string> obsnums = {"101"};
+        double exposure_time = 6.0;
+    } cmb;
+
+    void write_learning_summary() { ++write_learning_summary_calls; }
+};
+
+struct FakeReductionIterationTodProc {
+    FakeReductionIterationEngine engine_state;
+    int create_output_dir_calls = 0;
+    int allocate_cmb_calls = 0;
+    int allocate_nmb_calls = 0;
+
+    FakeReductionIterationEngine &engine() { return engine_state; }
+
+    void create_output_dir() { ++create_output_dir_calls; }
+
+    void allocate_cmb() { ++allocate_cmb_calls; }
+
+    template <class MapBuffer>
+    void allocate_nmb(MapBuffer &) {
+        ++allocate_nmb_calls;
     }
 };
 
@@ -2258,6 +2296,24 @@ TEST(pipeline_execution, prepares_iteration_observation_buffers_without_coadd) {
     EXPECT_TRUE(todproc.engine().date_obs.empty());
     EXPECT_EQ(todproc.allocate_cmb_calls, 0);
     EXPECT_EQ(logger->info_calls, 0);
+}
+
+TEST(pipeline_execution, begins_reduction_iteration) {
+    FakeReductionIterationTodProc todproc;
+    std::vector<std::string> config_filepaths;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::begin_reduction_iteration(
+        todproc, config_filepaths, logger);
+
+    EXPECT_EQ(todproc.engine().ptcproc.begin_weight_validation_iter, 0);
+    EXPECT_EQ(todproc.engine().reduction_learning.begin_calls, 1);
+    EXPECT_EQ(todproc.create_output_dir_calls, 1);
+    EXPECT_TRUE(todproc.engine().date_obs.empty());
+    EXPECT_EQ(todproc.allocate_cmb_calls, 1);
+    EXPECT_EQ(todproc.allocate_nmb_calls, 1);
+    EXPECT_TRUE(todproc.engine().cmb.obsnums.empty());
+    EXPECT_DOUBLE_EQ(todproc.engine().cmb.exposure_time, 0.0);
 }
 
 TEST(pipeline_execution, calculates_initial_observation_map_dimensions) {

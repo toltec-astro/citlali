@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/fruit_loop_paths.h>
+#include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
 
@@ -46,6 +47,18 @@ void prepare_iteration_observation_buffers(TodProc &todproc,
     if (engine.run_coadd) {
         prepare_coadd_iteration_buffers(todproc, logger);
     }
+}
+
+template <class TodProc, class ConfigFilepaths, class Logger>
+void begin_reduction_iteration(TodProc &todproc,
+                               const ConfigFilepaths &config_filepaths,
+                               const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    begin_fruit_loop_iteration(engine, logger);
+    prepare_iteration_output_layout_if_needed(todproc, config_filepaths,
+                                              logger);
+    prepare_iteration_observation_buffers(todproc, logger);
 }
 
 template <class TodProc, class MapExtents, class MapCoords, class Logger>
