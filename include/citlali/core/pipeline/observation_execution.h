@@ -287,6 +287,22 @@ void write_filtered_coadd_outputs(TodProc &todproc, const Logger &logger) {
     }
 }
 
+template <auto RawCoaddMap, auto FilteredCoaddMap, class TodProc,
+          class Logger>
+void write_iteration_coadd_outputs_if_needed(TodProc &todproc,
+                                             const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    if (!engine.run_coadd) {
+        return;
+    }
+
+    write_raw_coadd_outputs<RawCoaddMap>(todproc, logger);
+    if (engine.run_map_filter) {
+        write_filtered_coadd_outputs<FilteredCoaddMap>(todproc, logger);
+    }
+}
+
 template <class Engine>
 void load_initial_fruit_loop_model_if_requested(Engine &engine) {
     if (engine.ptcproc.run_fruit_loops && engine.fruit_iter == 0) {

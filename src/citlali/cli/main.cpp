@@ -513,15 +513,9 @@ int run(const rc_t &rc) {
                         }
                     }
 
-                    if (todproc.engine().run_coadd) {
-                        citlali::pipeline::write_raw_coadd_outputs<
-                            mapmaking::RawCoadd>(todproc, logger);
-
-                        if (todproc.engine().run_map_filter) {
-                            citlali::pipeline::write_filtered_coadd_outputs<
-                                mapmaking::FilteredCoadd>(todproc, logger);
-                        }
-                    }
+                    citlali::pipeline::write_iteration_coadd_outputs_if_needed<
+                        mapmaking::RawCoadd, mapmaking::FilteredCoadd>(
+                        todproc, logger);
 
                     citlali::pipeline::finalize_fruit_loop_iteration(
                         todproc.engine(), logger);

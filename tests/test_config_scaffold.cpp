@@ -2537,6 +2537,46 @@ TEST(pipeline_execution, skips_filtered_coadd_output_when_partial_written) {
     EXPECT_EQ(logger->info_calls, 4);
 }
 
+TEST(pipeline_execution, skips_iteration_coadd_outputs_when_coadd_disabled) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_coadd = false;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_iteration_coadd_outputs_if_needed<
+        FakeMapType::RawCoadd, FakeMapType::FilteredCoadd>(todproc, logger);
+
+    EXPECT_EQ(todproc.create_coadded_map_files_calls, 0);
+    EXPECT_EQ(todproc.engine().output_calls, 0);
+}
+
+TEST(pipeline_execution, writes_iteration_raw_coadd_outputs) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_coadd = true;
+    todproc.engine().run_map_filter = false;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_iteration_coadd_outputs_if_needed<
+        FakeMapType::RawCoadd, FakeMapType::FilteredCoadd>(todproc, logger);
+
+    EXPECT_EQ(todproc.create_coadded_map_files_calls, 1);
+    EXPECT_EQ(todproc.engine().run_wiener_filter_calls, 0);
+    EXPECT_EQ(todproc.engine().output_calls, 1);
+}
+
+TEST(pipeline_execution, writes_iteration_filtered_coadd_outputs) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_coadd = true;
+    todproc.engine().run_map_filter = true;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_iteration_coadd_outputs_if_needed<
+        FakeMapType::RawCoadd, FakeMapType::FilteredCoadd>(todproc, logger);
+
+    EXPECT_EQ(todproc.create_coadded_map_files_calls, 1);
+    EXPECT_EQ(todproc.engine().run_wiener_filter_calls, 1);
+    EXPECT_EQ(todproc.engine().output_calls, 2);
+}
+
 TEST(pipeline_execution, loads_initial_fruit_loop_model_from_configured_path) {
     FakeEngine engine;
     engine.fruit_iter = 0;
