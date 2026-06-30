@@ -1,6 +1,7 @@
 #pragma once
 
 #include <filesystem>
+#include <fstream>
 #include <iomanip>
 #include <sstream>
 #include <string>
@@ -81,6 +82,29 @@ void prepare_observation_output_layout(Engine &engine, int obsnum,
                                        const Logger &logger) {
     configure_observation_output_layout(engine, obsnum);
     create_observation_output_dirs(engine, logger);
+}
+
+inline std::string gaps_log_filepath(const std::string &obsnum_dir_name) {
+    return obsnum_dir_name + "/logs/gaps.log";
+}
+
+template <class Engine, class Logger>
+void record_timing_gaps_if_needed(const Engine &engine, const Logger &logger) {
+    if (engine.gaps.size() > 0) {
+        logger->warn("gaps found in obnsum {} data file timing!",
+                     engine.obsnum);
+        if (engine.verbose_mode) {
+            logger->debug("writing gaps.log file");
+            std::ofstream f;
+            f.open(gaps_log_filepath(engine.obsnum_dir_name));
+            f << "Summary of timing gaps\n";
+            for (auto const &[key, val] : engine.gaps) {
+                logger->debug("{} gaps: {}", key, val);
+                f << "-" + key + " gaps: " << val << "\n";
+            }
+            f.close();
+        }
+    }
 }
 
 }  // namespace citlali::pipeline

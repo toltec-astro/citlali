@@ -726,24 +726,8 @@ int run(const rc_t &rc) {
                         // get date time of observation
                         todproc.engine().date_obs.push_back(engine_utils::unix_to_utc(todproc.engine().telescope.tel_data["TelTime"](0)));
 
-                        //if (save_outputs) {
-                            // warning for gaps in data
-                            if (todproc.engine().gaps.size() > 0) {
-                                logger->warn("gaps found in obnsum {} data file timing!", todproc.engine().obsnum);
-                                // write gaps.log file if in verbose mode
-                                if (todproc.engine().verbose_mode) {
-                                    logger->debug("writing gaps.log file");
-                                    std::ofstream f;
-                                    f.open(todproc.engine().obsnum_dir_name+"/logs/gaps.log");
-                                    f << "Summary of timing gaps\n";
-                                    for (auto const& [key, val] : todproc.engine().gaps) {
-                                        logger->debug("{} gaps: {}", key, val);
-                                        f << "-" + key + " gaps: " << val << "\n";
-                                    }
-                                    f.close();
-                                }
-                            }
-                        //}
+                        citlali::pipeline::record_timing_gaps_if_needed(
+                            todproc.engine(), logger);
 
                         if (co.n_inputs() > 1) {
                             // calc scan indices

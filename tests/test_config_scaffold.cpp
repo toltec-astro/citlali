@@ -15,6 +15,8 @@
 namespace {
 
 struct FakeLogger {
+    int warn_calls = 0;
+
     template <class... Args>
     void error(const char *, Args &&...) {}
 
@@ -23,6 +25,11 @@ struct FakeLogger {
 
     template <class... Args>
     void debug(const char *, Args &&...) {}
+
+    template <class... Args>
+    void warn(const char *, Args &&...) {
+        ++warn_calls;
+    }
 };
 
 struct FakeAptColumn {
@@ -68,6 +75,7 @@ struct FakeEngine {
     bool run_coadd = false;
     bool run_map_filter = false;
     bool verbose_mode = false;
+    std::map<std::string, int> gaps;
 
     struct {
         std::vector<std::string> obsnums;
@@ -1089,6 +1097,23 @@ TEST(pipeline_output_layout, adds_observation_number_to_coadd_layout) {
 
     ASSERT_EQ(engine.cmb.obsnums.size(), 2U);
     EXPECT_EQ(engine.cmb.obsnums.back(), "000042");
+}
+
+TEST(pipeline_output_layout, derives_gaps_log_filepath) {
+    EXPECT_EQ(citlali::pipeline::gaps_log_filepath("/tmp/redu01/152389/"),
+              "/tmp/redu01/152389//logs/gaps.log");
+}
+
+TEST(pipeline_output_layout, warns_when_timing_gaps_are_present) {
+    FakeEngine engine;
+    engine.obsnum = "152389";
+    engine.gaps["roach0"] = 2;
+    engine.verbose_mode = false;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::record_timing_gaps_if_needed(engine, logger);
+
+    EXPECT_EQ(logger->warn_calls, 1);
 }
 
 }  // namespace
