@@ -417,9 +417,8 @@ int run(const rc_t &rc) {
                     citlali::pipeline::calculate_telescope_pointing(
                         todproc, logger);
 
-                    // calc scan indices
-                    logger->info("calculating scan indices");
-                    todproc.engine().telescope.calc_scan_indices();
+                    citlali::pipeline::calculate_scan_indices(
+                        todproc.engine(), logger);
 
                     citlali::pipeline::calculate_initial_observation_map_dimensions(
                         todproc, map_extents, map_coords, logger);
@@ -537,9 +536,8 @@ int run(const rc_t &rc) {
                             todproc.engine(), logger);
 
                         if (co.n_inputs() > 1) {
-                            // calc scan indices
-                            logger->info("calculating scan indices");
-                            todproc.engine().telescope.calc_scan_indices();
+                            citlali::pipeline::calculate_scan_indices(
+                                todproc.engine(), logger);
                         }
 
                         // allocate observation map buffer

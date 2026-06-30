@@ -221,6 +221,12 @@ void calculate_telescope_pointing(TodProc &todproc, const Logger &logger) {
     todproc.interp_pointing();
 }
 
+template <class Engine, class Logger>
+void calculate_scan_indices(Engine &engine, const Logger &logger) {
+    logger->info("calculating scan indices");
+    engine.telescope.calc_scan_indices();
+}
+
 template <class Engine>
 void update_observation_exposure_time(Engine &engine) {
     auto t0 = engine.telescope.tel_data["TelTime"](0);

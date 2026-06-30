@@ -194,6 +194,7 @@ struct FakeEngine {
         std::string pixel_axes = "pixel_axes";
         int get_tel_data_calls = 0;
         int calc_tan_pointing_calls = 0;
+        int calc_scan_indices_calls = 0;
         std::string loaded_tel_path;
         std::map<std::string, FakeTelHeaderValue> tel_header;
         std::map<std::string, FakeTelTime> tel_data;
@@ -204,6 +205,7 @@ struct FakeEngine {
         }
 
         void calc_tan_pointing() { ++calc_tan_pointing_calls; }
+        void calc_scan_indices() { ++calc_scan_indices_calls; }
     } telescope;
 
     struct {
@@ -1431,6 +1433,16 @@ TEST(pipeline_preflight, calculates_telescope_pointing) {
     EXPECT_EQ(todproc.engine().telescope.calc_tan_pointing_calls, 1);
     EXPECT_EQ(todproc.interp_pointing_calls, 1);
     EXPECT_EQ(logger->info_calls, 2);
+}
+
+TEST(pipeline_preflight, calculates_scan_indices) {
+    FakeEngine engine;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::calculate_scan_indices(engine, logger);
+
+    EXPECT_EQ(engine.telescope.calc_scan_indices_calls, 1);
+    EXPECT_EQ(logger->info_calls, 1);
 }
 
 TEST(pipeline_preflight, configures_sample_rate_without_downsample) {
