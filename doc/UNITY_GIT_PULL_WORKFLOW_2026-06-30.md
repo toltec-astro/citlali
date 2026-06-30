@@ -111,6 +111,7 @@ git pull --ff-only origin codex/structural-refactor
 cmake -S . -B build \
   -DCMAKE_BUILD_TYPE=Release \
   -DCITLALI_USE_WIENER_FILTER_OMP=ON \
+  -DCONAN_CMD=/work/toltec/toltec_shared/toltec_astro/extern/pyenv/versions/conan1/bin/conan \
   -U FETCHCONTENT_SOURCE_DIR_TULA
 cmake --build build --target citlali_cli -j 15
 ./build/bin/citlali --version
@@ -125,6 +126,7 @@ export CITLALI_REFACTOR_BRANCH=codex/structural-refactor
 export CITLALI_REFACTOR_JOBS=15
 export CITLALI_REFACTOR_BUILD_TYPE=Release
 export CITLALI_REFACTOR_TARGET=citlali_cli
+export CITLALI_CONAN_CMD=/work/toltec/toltec_shared/toltec_astro/extern/pyenv/versions/conan1/bin/conan
 ```
 
 The helper refuses to use the protected baseline checkout

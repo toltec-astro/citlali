@@ -129,3 +129,13 @@ preset by default. It configures `citlali_refactor/build` directly, with
 `CMAKE_BUILD_TYPE=Release`, `CITLALI_USE_WIENER_FILTER_OMP=ON`, and
 `FETCHCONTENT_SOURCE_DIR_TULA` unset so CMake can populate `build/_deps/tula-src`
 the same way the existing `citlali/build` cache does.
+
+It also passes `CONAN_CMD` explicitly. By default it uses the Conan executable
+recorded in the existing Unity `citlali/build` cache:
+
+```text
+/work/toltec/toltec_shared/toltec_astro/extern/pyenv/versions/conan1/bin/conan
+```
+
+Override with `CITLALI_CONAN_CMD=/path/to/conan` if Unity's shared Conan path
+changes.
