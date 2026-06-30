@@ -1936,18 +1936,18 @@ void Engine::collect_rtc_learning_diagnostics(rtc_t &rtcdata, ptc_t &ptcdata,
         return;
     }
 
-    if (rtcproc.despiker.source_protection_enabled) {
+    const auto rtc_source_summary =
+        rtcproc.snapshot_source_protection_diag_summary(scan_id);
+    if (rtc_source_summary.enabled) {
         ReductionLearningState::SourceProtectionSummary source_summary;
         source_summary.obsnum = obsnum;
         source_summary.producer = "rtc_despike";
         source_summary.mode = "map_center_radius";
         source_summary.iter = fruit_iter;
         source_summary.scan = static_cast<int>(scan_id);
-        source_summary.protected_samples =
-            static_cast<int>(rtcproc.despiker.last_source_protection_sample_count);
-        source_summary.total_samples =
-            static_cast<int>(rtcproc.despiker.source_protection_mask.size());
-        source_summary.radius_arcsec = rtcproc.despiker.source_protection_radius_arcsec;
+        source_summary.protected_samples = rtc_source_summary.protected_samples;
+        source_summary.total_samples = rtc_source_summary.total_samples;
+        source_summary.radius_arcsec = rtc_source_summary.radius_arcsec;
         reduction_learning.record_source_protection_summary(std::move(source_summary));
     }
 
