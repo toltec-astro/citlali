@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/fruit_loop_paths.h>
+#include <citlali/core/pipeline/observation_preflight.h>
 
 #include <cstddef>
 
@@ -49,6 +50,30 @@ void calculate_initial_observation_map_dimensions(TodProc &todproc,
     todproc.calc_map_num();
     logger->info("calculating obs map dimensions");
     todproc.calc_omb_size(map_extents, map_coords);
+}
+
+template <bool IsBeammap, class TodProc, class RawObs, class RawObsKidsMeta,
+          class MapExtents, class MapCoords, class Logger>
+bool prepare_initial_observation_setup(TodProc &todproc, const RawObs &rawobs,
+                                       const RawObsKidsMeta &rawobs_kids_meta,
+                                       MapExtents &map_extents,
+                                       MapCoords &map_coords,
+                                       const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    configure_observation_calibration<IsBeammap>(todproc, rawobs, logger);
+    if (!apply_flxscale_correction(engine, rawobs, logger)) {
+        return false;
+    }
+
+    check_observation_inputs(todproc, rawobs, logger);
+    update_sample_rate_from_rawobs_meta(engine, rawobs_kids_meta, logger);
+    load_and_align_telescope_data(todproc, rawobs, logger);
+    calculate_telescope_pointing(todproc, logger);
+    calculate_scan_indices(engine, logger);
+    calculate_initial_observation_map_dimensions(
+        todproc, map_extents, map_coords, logger);
+    return true;
 }
 
 template <class TodProc, class MapCoords, class Logger>

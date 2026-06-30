@@ -568,6 +568,25 @@ struct FakeObservationMapTodProc {
     }
 };
 
+struct FakeInitialObservationTodProc : FakeTelescopeTodProc {
+    int calc_map_num_calls = 0;
+    int calc_omb_size_calls = 0;
+    int get_apt_from_files_calls = 0;
+
+    void calc_map_num() { ++calc_map_num_calls; }
+
+    template <class MapExtents, class MapCoords>
+    void calc_omb_size(MapExtents &map_extents, MapCoords &map_coords) {
+        ++calc_omb_size_calls;
+        map_extents.push_back(303);
+        map_coords.push_back(404);
+    }
+
+    void get_apt_from_files(const FakeRawObs &) {
+        ++get_apt_from_files_calls;
+    }
+};
+
 enum class FakeMapType {
     RawObs,
     FilteredObs,
@@ -2056,6 +2075,54 @@ TEST(pipeline_execution,
     EXPECT_EQ(map_extents, (std::vector<int>{11}));
     EXPECT_EQ(map_coords, (std::vector<int>{22}));
     EXPECT_EQ(logger->info_calls, 0);
+}
+
+TEST(pipeline_execution, prepares_initial_observation_setup) {
+    FakeInitialObservationTodProc todproc;
+    FakeRawObs rawobs;
+    rawobs.astrometry.value = "astro";
+    rawobs.tel.path = "/data/tel.nc";
+    std::vector<FakeRawObsMeta> rawobs_kids_meta = {
+        {75.0, 101},
+        {122.0, 102},
+    };
+    std::vector<int> map_extents;
+    std::vector<int> map_coords;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::pipeline::prepare_initial_observation_setup<false>(
+        todproc, rawobs, rawobs_kids_meta, map_extents, map_coords, logger));
+
+    EXPECT_EQ(todproc.engine().get_astrometry_config_calls, 1);
+    EXPECT_EQ(todproc.engine().calib.get_apt_calls, 1);
+    EXPECT_EQ(todproc.check_inputs_calls, 1);
+    EXPECT_DOUBLE_EQ(todproc.engine().telescope.fsmp, 122.0);
+    EXPECT_EQ(todproc.engine().telescope.loaded_tel_path, "/data/tel.nc");
+    EXPECT_EQ(todproc.engine().telescope.calc_tan_pointing_calls, 1);
+    EXPECT_EQ(todproc.interp_pointing_calls, 1);
+    EXPECT_EQ(todproc.engine().telescope.calc_scan_indices_calls, 1);
+    EXPECT_EQ(todproc.calc_map_num_calls, 1);
+    EXPECT_EQ(todproc.calc_omb_size_calls, 1);
+    EXPECT_EQ(map_extents, (std::vector<int>{303}));
+    EXPECT_EQ(map_coords, (std::vector<int>{404}));
+}
+
+TEST(pipeline_execution, rejects_initial_observation_setup_on_bad_flxscale) {
+    FakeInitialObservationTodProc todproc;
+    FakeFlxscaleCorrection correction{-1.0};
+    FakeRawObs rawobs{&correction, "obs"};
+    std::vector<FakeRawObsMeta> rawobs_kids_meta = {{122.0, 102}};
+    std::vector<int> map_extents;
+    std::vector<int> map_coords;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_FALSE(citlali::pipeline::prepare_initial_observation_setup<false>(
+        todproc, rawobs, rawobs_kids_meta, map_extents, map_coords, logger));
+
+    EXPECT_EQ(todproc.check_inputs_calls, 0);
+    EXPECT_EQ(todproc.calc_map_num_calls, 0);
+    EXPECT_TRUE(map_extents.empty());
+    EXPECT_TRUE(map_coords.empty());
 }
 
 TEST(pipeline_execution, calculates_initial_coadd_map_dimensions) {

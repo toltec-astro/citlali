@@ -393,32 +393,13 @@ int run(const rc_t &rc) {
                         citlali::pipeline::load_rawobs_kids_meta(
                             kidsproc, rawobs, logger);
 
-                    citlali::pipeline::configure_observation_calibration<
-                        std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>>(
-                        todproc, rawobs, logger);
-
-                    if (!citlali::pipeline::apply_flxscale_correction(
-                            todproc.engine(), rawobs, logger)) {
+                    if (!citlali::pipeline::prepare_initial_observation_setup<
+                            std::is_same_v<todproc_t,
+                                           TimeOrderedDataProc<Beammap>>>(
+                            todproc, rawobs, rawobs_kids_meta, map_extents,
+                            map_coords, logger)) {
                         return EXIT_FAILURE;
                     }
-
-                    citlali::pipeline::check_observation_inputs(
-                        todproc, rawobs, logger);
-
-                    citlali::pipeline::update_sample_rate_from_rawobs_meta(
-                        todproc.engine(), rawobs_kids_meta, logger);
-
-                    citlali::pipeline::load_and_align_telescope_data(
-                        todproc, rawobs, logger);
-
-                    citlali::pipeline::calculate_telescope_pointing(
-                        todproc, logger);
-
-                    citlali::pipeline::calculate_scan_indices(
-                        todproc.engine(), logger);
-
-                    citlali::pipeline::calculate_initial_observation_map_dimensions(
-                        todproc, map_extents, map_coords, logger);
                 }
 
                 citlali::pipeline::calculate_initial_coadd_map_dimensions(
