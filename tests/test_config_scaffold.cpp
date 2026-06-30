@@ -139,6 +139,34 @@ TEST(config_scaffold, parses_existing_timestream_enum_values) {
     EXPECT_EQ(citlali::config::parse_processed_corr_grouping_metric("signed").value(),
               citlali::config::ProcessedTimeChunkCorrGroupingMetric::signed_metric);
     EXPECT_FALSE(citlali::config::parse_processed_corr_grouping_metric("pearson").has_value());
+
+    EXPECT_EQ(citlali::config::parse_fruit_loops_mode("upper").value(),
+              citlali::config::FruitLoopsMode::upper);
+    EXPECT_EQ(citlali::config::parse_fruit_loops_mode("lower").value(),
+              citlali::config::FruitLoopsMode::lower);
+    EXPECT_EQ(citlali::config::parse_fruit_loops_mode("both").value(),
+              citlali::config::FruitLoopsMode::both);
+    EXPECT_FALSE(citlali::config::parse_fruit_loops_mode("absolute").has_value());
+
+    EXPECT_EQ(citlali::config::parse_fruit_loops_weight_feedback_reference("p95").value(),
+              citlali::config::FruitLoopsWeightFeedbackReference::p95);
+    EXPECT_EQ(citlali::config::parse_fruit_loops_weight_feedback_reference("median").value(),
+              citlali::config::FruitLoopsWeightFeedbackReference::median);
+    EXPECT_EQ(citlali::config::parse_fruit_loops_weight_feedback_reference("peak").value(),
+              citlali::config::FruitLoopsWeightFeedbackReference::peak);
+    EXPECT_FALSE(citlali::config::parse_fruit_loops_weight_feedback_reference("mean").has_value());
+
+    EXPECT_EQ(citlali::config::parse_fruit_loops_interp_mode_override("auto").value(),
+              citlali::config::FruitLoopsInterpModeOverride::automatic);
+    EXPECT_EQ(citlali::config::parse_fruit_loops_interp_mode_override("nearest").value(),
+              citlali::config::FruitLoopsInterpModeOverride::nearest);
+    EXPECT_EQ(citlali::config::parse_fruit_loops_interp_mode_override("bilinear").value(),
+              citlali::config::FruitLoopsInterpModeOverride::bilinear);
+    EXPECT_EQ(citlali::config::parse_fruit_loops_interp_mode_override("jinc").value(),
+              citlali::config::FruitLoopsInterpModeOverride::jinc);
+    EXPECT_EQ(citlali::config::parse_fruit_loops_interp_mode_override("trunc").value(),
+              citlali::config::FruitLoopsInterpModeOverride::trunc);
+    EXPECT_FALSE(citlali::config::parse_fruit_loops_interp_mode_override("legacy_nearest").has_value());
 }
 
 TEST(config_scaffold, parses_existing_pointing_enum_values) {
@@ -413,6 +441,31 @@ TEST(config_scaffold, validates_processed_time_chunk_corr_penalty_values) {
     config.cm_low_mid_ratio.weight = -1.0;
     config.cm_low_mid_ratio.low_band_Hz = {-1.0, 0.5};
     config.cm_low_mid_ratio.mid_band_Hz = {2.0, 1.0};
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 15U);
+}
+
+TEST(config_scaffold, validates_fruit_loops_values) {
+    citlali::config::TimestreamFruitLoopsConfig config;
+    config.enabled = true;
+    config.peak_fraction_limit = -1.0;
+    config.local_snr_floor = -1.0;
+    config.local_sigma_inner_radius_arcsec = -1.0;
+    config.local_sigma_outer_radius_arcsec = -1.0;
+    config.local_sigma_inner_fwhm = -1.0;
+    config.local_sigma_outer_fwhm = -1.0;
+    config.local_sigma_edge_guard_arcsec = -1.0;
+    config.local_sigma_min_pixels = 0;
+    config.adaptive_support_radius_arcsec = -1.0;
+    config.adaptive_support_radius_fwhm = -1.0;
+    config.weight_feedback.enabled = true;
+    config.weight_feedback.low_relative_weight = -1.0;
+    config.weight_feedback.high_relative_weight = -2.0;
+    config.center_keep_radius_arcsec = -1.0;
+    config.max_iters = -1;
 
     citlali::config::ValidationReport report;
     citlali::config::validate(config, report);

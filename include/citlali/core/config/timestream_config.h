@@ -67,6 +67,30 @@ enum class ProcessedTimeChunkCorrGroupingMetric {
     signed_metric
 };
 
+enum class FruitLoopsMode {
+    upper,
+    lower,
+    both
+};
+
+enum class FruitLoopsWeightFeedbackReference {
+    p95,
+    p90,
+    p99,
+    median,
+    p50,
+    max,
+    peak
+};
+
+enum class FruitLoopsInterpModeOverride {
+    automatic,
+    nearest,
+    bilinear,
+    jinc,
+    trunc
+};
+
 inline constexpr std::array<EnumName<TodType>, 4> tod_type_names{{
     {TodType::xs, "xs"},
     {TodType::rs, "rs"},
@@ -130,6 +154,33 @@ inline constexpr std::array<EnumName<ProcessedTimeChunkCorrGroupingMetric>, 2>
         {ProcessedTimeChunkCorrGroupingMetric::signed_metric, "signed"},
     }};
 
+inline constexpr std::array<EnumName<FruitLoopsMode>, 3>
+    fruit_loops_mode_names{{
+        {FruitLoopsMode::upper, "upper"},
+        {FruitLoopsMode::lower, "lower"},
+        {FruitLoopsMode::both, "both"},
+    }};
+
+inline constexpr std::array<EnumName<FruitLoopsWeightFeedbackReference>, 7>
+    fruit_loops_weight_feedback_reference_names{{
+        {FruitLoopsWeightFeedbackReference::p95, "p95"},
+        {FruitLoopsWeightFeedbackReference::p90, "p90"},
+        {FruitLoopsWeightFeedbackReference::p99, "p99"},
+        {FruitLoopsWeightFeedbackReference::median, "median"},
+        {FruitLoopsWeightFeedbackReference::p50, "p50"},
+        {FruitLoopsWeightFeedbackReference::max, "max"},
+        {FruitLoopsWeightFeedbackReference::peak, "peak"},
+    }};
+
+inline constexpr std::array<EnumName<FruitLoopsInterpModeOverride>, 5>
+    fruit_loops_interp_mode_override_names{{
+        {FruitLoopsInterpModeOverride::automatic, "auto"},
+        {FruitLoopsInterpModeOverride::nearest, "nearest"},
+        {FruitLoopsInterpModeOverride::bilinear, "bilinear"},
+        {FruitLoopsInterpModeOverride::jinc, "jinc"},
+        {FruitLoopsInterpModeOverride::trunc, "trunc"},
+    }};
+
 inline std::optional<TodType> parse_tod_type(std::string_view value) {
     return parse_enum(value, tod_type_names);
 }
@@ -168,6 +219,21 @@ parse_processed_corr_grouping_metric(std::string_view value) {
     return parse_enum(value, processed_corr_grouping_metric_names);
 }
 
+inline std::optional<FruitLoopsMode> parse_fruit_loops_mode(
+    std::string_view value) {
+    return parse_enum(value, fruit_loops_mode_names);
+}
+
+inline std::optional<FruitLoopsWeightFeedbackReference>
+parse_fruit_loops_weight_feedback_reference(std::string_view value) {
+    return parse_enum(value, fruit_loops_weight_feedback_reference_names);
+}
+
+inline std::optional<FruitLoopsInterpModeOverride>
+parse_fruit_loops_interp_mode_override(std::string_view value) {
+    return parse_enum(value, fruit_loops_interp_mode_override_names);
+}
+
 inline std::string_view to_string(TodType value) {
     return enum_name(value, tod_type_names);
 }
@@ -198,6 +264,18 @@ inline std::string_view to_string(ProcessedTimeChunkCleanerMode value) {
 
 inline std::string_view to_string(ProcessedTimeChunkCorrGroupingMetric value) {
     return enum_name(value, processed_corr_grouping_metric_names);
+}
+
+inline std::string_view to_string(FruitLoopsMode value) {
+    return enum_name(value, fruit_loops_mode_names);
+}
+
+inline std::string_view to_string(FruitLoopsWeightFeedbackReference value) {
+    return enum_name(value, fruit_loops_weight_feedback_reference_names);
+}
+
+inline std::string_view to_string(FruitLoopsInterpModeOverride value) {
+    return enum_name(value, fruit_loops_interp_mode_override_names);
 }
 
 struct TodStreamOutputConfig {
@@ -480,6 +558,41 @@ struct ProcessedTimeChunkConfig {
     ProcessedTimeChunkFlaggingConfig flagging;
 };
 
+struct FruitLoopsWeightFeedbackConfig {
+    bool enabled = false;
+    FruitLoopsWeightFeedbackReference reference =
+        FruitLoopsWeightFeedbackReference::p95;
+    double low_relative_weight = 0.02;
+    double high_relative_weight = 0.10;
+};
+
+struct TimestreamFruitLoopsConfig {
+    bool enabled = false;
+    bool save_all_iters = false;
+    std::string path;
+    std::string type;
+    FruitLoopsMode mode = FruitLoopsMode::upper;
+    double sig2noise_limit = 0.0;
+    std::vector<double> array_flux_limit;
+    double peak_fraction_limit = 0.0;
+    double local_snr_floor = 0.0;
+    double local_sigma_inner_radius_arcsec = 10.0;
+    double local_sigma_outer_radius_arcsec = 35.0;
+    double local_sigma_inner_fwhm = 1.5;
+    double local_sigma_outer_fwhm = 4.0;
+    double local_sigma_edge_guard_arcsec = 5.0;
+    int local_sigma_min_pixels = 50;
+    double adaptive_support_radius_arcsec = 12.0;
+    double adaptive_support_radius_fwhm = 1.5;
+    FruitLoopsWeightFeedbackConfig weight_feedback;
+    double center_keep_radius_arcsec = 0.0;
+    FruitLoopsInterpModeOverride interp_mode_override =
+        FruitLoopsInterpModeOverride::automatic;
+    bool legacy_center = false;
+    bool recompute_weights_after_addback = false;
+    int max_iters = 1;
+};
+
 struct TimestreamLearningMapPixelOutlierConfig {
     bool diagnostics_enabled = true;
     bool contributor_diagnostics_enabled = false;
@@ -530,6 +643,7 @@ struct TimestreamConfig {
     TimestreamChunkingConfig chunking;
     RawTimeChunkConfig raw_time_chunk;
     ProcessedTimeChunkConfig processed_time_chunk;
+    TimestreamFruitLoopsConfig fruit_loops;
     TimestreamLearningConfig learning;
 };
 
@@ -1025,6 +1139,59 @@ inline void validate(const ProcessedTimeChunkConfig &config,
     validate(config.flagging, report);
 }
 
+inline void validate(const FruitLoopsWeightFeedbackConfig &config,
+                     ValidationReport &report) {
+    const ConfigPath path{"timestream", "fruit_loops", "weight_feedback"};
+    check_minimum(config.low_relative_weight, 0.0,
+                  append_config_path(path, {"low_relative_weight"}), report);
+    check_minimum(config.high_relative_weight, 0.0,
+                  append_config_path(path, {"high_relative_weight"}), report);
+    if (config.enabled &&
+        config.high_relative_weight <= config.low_relative_weight) {
+        report.add_error(append_config_path(path, {"high_relative_weight"}),
+                         "must be greater than low_relative_weight when enabled");
+    }
+}
+
+inline void validate(const TimestreamFruitLoopsConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    const ConfigPath path{"timestream", "fruit_loops"};
+    check_minimum(config.peak_fraction_limit, 0.0,
+                  append_config_path(path, {"peak_fraction_limit"}), report);
+    check_minimum(config.local_snr_floor, 0.0,
+                  append_config_path(path, {"local_snr_floor"}), report);
+    check_minimum(config.local_sigma_inner_radius_arcsec, 0.0,
+                  append_config_path(path, {"local_sigma_inner_radius_arcsec"}),
+                  report);
+    check_minimum(config.local_sigma_outer_radius_arcsec, 0.0,
+                  append_config_path(path, {"local_sigma_outer_radius_arcsec"}),
+                  report);
+    check_minimum(config.local_sigma_inner_fwhm, 0.0,
+                  append_config_path(path, {"local_sigma_inner_fwhm"}), report);
+    check_minimum(config.local_sigma_outer_fwhm, 0.0,
+                  append_config_path(path, {"local_sigma_outer_fwhm"}), report);
+    check_minimum(config.local_sigma_edge_guard_arcsec, 0.0,
+                  append_config_path(path, {"local_sigma_edge_guard_arcsec"}),
+                  report);
+    check_minimum(config.local_sigma_min_pixels, 1,
+                  append_config_path(path, {"local_sigma_min_pixels"}), report);
+    check_minimum(config.adaptive_support_radius_arcsec, 0.0,
+                  append_config_path(path, {"adaptive_support_radius_arcsec"}),
+                  report);
+    check_minimum(config.adaptive_support_radius_fwhm, 0.0,
+                  append_config_path(path, {"adaptive_support_radius_fwhm"}),
+                  report);
+    validate(config.weight_feedback, report);
+    check_minimum(config.center_keep_radius_arcsec, 0.0,
+                  append_config_path(path, {"center_keep_radius_arcsec"}),
+                  report);
+    check_minimum(config.max_iters, 0,
+                  append_config_path(path, {"max_iters"}), report);
+}
+
 inline void validate(const TimestreamLearningMapPixelOutlierConfig &config,
                      ValidationReport &report) {
     check_minimum(config.top_n, 0,
@@ -1109,6 +1276,7 @@ inline void validate(const TimestreamConfig &config, ValidationReport &report) {
     validate(config.chunking, report);
     validate(config.raw_time_chunk, report);
     validate(config.processed_time_chunk, report);
+    validate(config.fruit_loops, report);
     validate(config.learning, report);
 }
 
