@@ -47,6 +47,12 @@ enum class ProcessedTimeChunkWeightingType {
     constant
 };
 
+enum class ProcessedTimeChunkWeightGrouping {
+    array,
+    network,
+    all
+};
+
 inline constexpr std::array<EnumName<TodType>, 4> tod_type_names{{
     {TodType::xs, "xs"},
     {TodType::rs, "rs"},
@@ -86,6 +92,13 @@ inline constexpr std::array<EnumName<ProcessedTimeChunkWeightingType>, 5>
         {ProcessedTimeChunkWeightingType::constant, "const"},
     }};
 
+inline constexpr std::array<EnumName<ProcessedTimeChunkWeightGrouping>, 3>
+    processed_weight_grouping_names{{
+        {ProcessedTimeChunkWeightGrouping::array, "array"},
+        {ProcessedTimeChunkWeightGrouping::network, "nw"},
+        {ProcessedTimeChunkWeightGrouping::all, "all"},
+    }};
+
 inline std::optional<TodType> parse_tod_type(std::string_view value) {
     return parse_enum(value, tod_type_names);
 }
@@ -109,6 +122,11 @@ inline std::optional<ProcessedTimeChunkWeightingType> parse_processed_weighting_
     return parse_enum(value, processed_weighting_type_names);
 }
 
+inline std::optional<ProcessedTimeChunkWeightGrouping>
+parse_processed_weight_grouping(std::string_view value) {
+    return parse_enum(value, processed_weight_grouping_names);
+}
+
 inline std::string_view to_string(TodType value) {
     return enum_name(value, tod_type_names);
 }
@@ -127,6 +145,10 @@ inline std::string_view to_string(TodOutputSelectionMode value) {
 
 inline std::string_view to_string(ProcessedTimeChunkWeightingType value) {
     return enum_name(value, processed_weighting_type_names);
+}
+
+inline std::string_view to_string(ProcessedTimeChunkWeightGrouping value) {
+    return enum_name(value, processed_weight_grouping_names);
 }
 
 struct TodStreamOutputConfig {
@@ -239,6 +261,75 @@ struct ProcessedTimeChunkBusyRowSuppressionConfig {
     double factor = 0.0;
 };
 
+struct ProcessedTimeChunkWeightValidationConfig {
+    bool enabled = false;
+    int accumulation_iters = 1;
+    int apply_start_iter = 1;
+    int min_valid_scans = 1;
+    double min_factor = 0.1;
+    double unvalidated_factor = 1.0;
+    bool require_fruitloops_model = true;
+    bool transient_ratio_enabled = false;
+    double ratio_power = 1.0;
+    double transient_ratio_power = 1.0;
+    bool upward_enabled = false;
+    double upward_max_factor = 1.10;
+    double upward_power = 1.0;
+    double upward_min_base_factor = 0.95;
+    bool upward_require_atmospheric = true;
+    double upward_min_atmospheric_factor = 0.9;
+    bool atmospheric_correlation_enabled = true;
+    ProcessedTimeChunkWeightGrouping atmospheric_grouping =
+        ProcessedTimeChunkWeightGrouping::array;
+    int atmospheric_min_detectors = 8;
+    double atmospheric_ref = 0.0;
+    double atmospheric_span = 0.15;
+    double atmospheric_power = 1.0;
+    double min_good_frac = 0.5;
+    int min_overlap = 200;
+    int max_samples = 5000;
+    bool high_weight_validation_enabled = true;
+    bool high_weight_apply_caps = true;
+    ProcessedTimeChunkWeightGrouping high_weight_grouping =
+        ProcessedTimeChunkWeightGrouping::array;
+    int high_weight_min_group_detectors = 20;
+    double high_weight_log_robust_z = 6.0;
+    double high_weight_max_median_factor = 8.0;
+    double high_weight_cap_median_factor = 4.0;
+    double high_weight_min_validated_factor = 0.95;
+};
+
+struct ProcessedTimeChunkWeightCorrPenaltyTermConfig {
+    bool enabled = true;
+    double ref = 0.05;
+    double span = 0.15;
+    double weight = 1.0;
+};
+
+struct ProcessedTimeChunkWeightCorrPenaltyBandConfig {
+    bool enabled = false;
+    double ref = 0.6;
+    double span = 2.0;
+    double weight = 0.5;
+    std::array<double, 2> low_band_Hz{0.05, 0.5};
+    std::array<double, 2> mid_band_Hz{0.5, 2.0};
+};
+
+struct ProcessedTimeChunkWeightCorrPenaltyConfig {
+    bool enabled = false;
+    double min_good_frac = 0.7;
+    int min_overlap = 200;
+    int max_samples = 20000;
+    int max_pairs = 4000;
+    int seed = 12345;
+    double floor = 0.05;
+    double exponent = 2.0;
+    ProcessedTimeChunkWeightCorrPenaltyTermConfig pair_corr;
+    ProcessedTimeChunkWeightCorrPenaltyTermConfig cm_el_corr{
+        false, 0.05, 0.25, 0.5};
+    ProcessedTimeChunkWeightCorrPenaltyBandConfig cm_low_mid_ratio;
+};
+
 struct ProcessedTimeChunkWeightingConfig {
     ProcessedTimeChunkWeightingType type =
         ProcessedTimeChunkWeightingType::full;
@@ -248,6 +339,8 @@ struct ProcessedTimeChunkWeightingConfig {
     double median_map_weight_factor = 0.0;
     double lower_map_weight_factor = 0.0;
     double upper_map_weight_factor = 0.0;
+    ProcessedTimeChunkWeightValidationConfig validation;
+    ProcessedTimeChunkWeightCorrPenaltyConfig corr_penalty;
     ProcessedTimeChunkBusyRowSuppressionConfig busy_row_suppression;
 };
 
@@ -498,6 +591,146 @@ inline void validate(const ProcessedTimeChunkBusyRowSuppressionConfig &config,
                   report);
 }
 
+inline void validate(const ProcessedTimeChunkWeightValidationConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    const ConfigPath path{
+        "timestream", "processed_time_chunk", "weighting", "validation"};
+    check_minimum(config.accumulation_iters, 1,
+                  append_config_path(path, {"accumulation_iters"}), report);
+    check_minimum(config.apply_start_iter, 0,
+                  append_config_path(path, {"apply_start_iter"}), report);
+    check_minimum(config.min_valid_scans, 1,
+                  append_config_path(path, {"min_valid_scans"}), report);
+    check_minimum(config.min_factor, 0.0,
+                  append_config_path(path, {"min_factor"}), report);
+    check_maximum(config.min_factor, 1.0,
+                  append_config_path(path, {"min_factor"}), report);
+    check_minimum(config.unvalidated_factor, 0.0,
+                  append_config_path(path, {"unvalidated_factor"}), report);
+    check_maximum(config.unvalidated_factor, 1.0,
+                  append_config_path(path, {"unvalidated_factor"}), report);
+    check_minimum(config.ratio_power, 0.0,
+                  append_config_path(path, {"ratio_power"}), report);
+    check_minimum(config.transient_ratio_power, 0.0,
+                  append_config_path(path, {"transient_ratio_power"}), report);
+    check_minimum(config.upward_max_factor, 1.0,
+                  append_config_path(path, {"upward_max_factor"}), report);
+    check_minimum(config.upward_power, 0.0,
+                  append_config_path(path, {"upward_power"}), report);
+    check_minimum(config.upward_min_base_factor, 0.0,
+                  append_config_path(path, {"upward_min_base_factor"}), report);
+    check_maximum(config.upward_min_base_factor, 1.0,
+                  append_config_path(path, {"upward_min_base_factor"}), report);
+    check_minimum(config.upward_min_atmospheric_factor, 0.0,
+                  append_config_path(path, {"upward_min_atmospheric_factor"}),
+                  report);
+    check_maximum(config.upward_min_atmospheric_factor, 1.0,
+                  append_config_path(path, {"upward_min_atmospheric_factor"}),
+                  report);
+    check_minimum(config.atmospheric_min_detectors, 2,
+                  append_config_path(path, {"atmospheric_min_detectors"}),
+                  report);
+    check_minimum(config.atmospheric_ref, 0.0,
+                  append_config_path(path, {"atmospheric_ref"}), report);
+    check_maximum(config.atmospheric_ref, 1.0,
+                  append_config_path(path, {"atmospheric_ref"}), report);
+    check_minimum(config.atmospheric_span, 1e-12,
+                  append_config_path(path, {"atmospheric_span"}), report);
+    check_minimum(config.atmospheric_power, 0.0,
+                  append_config_path(path, {"atmospheric_power"}), report);
+    check_minimum(config.min_good_frac, 0.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_maximum(config.min_good_frac, 1.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_minimum(config.min_overlap, 2,
+                  append_config_path(path, {"min_overlap"}), report);
+    check_minimum(config.max_samples, 0,
+                  append_config_path(path, {"max_samples"}), report);
+    check_minimum(config.high_weight_min_group_detectors, 2,
+                  append_config_path(path,
+                                     {"high_weight_min_group_detectors"}),
+                  report);
+    check_minimum(config.high_weight_log_robust_z, 0.0,
+                  append_config_path(path, {"high_weight_log_robust_z"}),
+                  report);
+    check_minimum(config.high_weight_max_median_factor, 1.0,
+                  append_config_path(path,
+                                     {"high_weight_max_median_factor"}),
+                  report);
+    check_minimum(config.high_weight_cap_median_factor, 1.0,
+                  append_config_path(path,
+                                     {"high_weight_cap_median_factor"}),
+                  report);
+    check_minimum(config.high_weight_min_validated_factor, 0.0,
+                  append_config_path(path,
+                                     {"high_weight_min_validated_factor"}),
+                  report);
+}
+
+inline void validate(const ProcessedTimeChunkWeightCorrPenaltyTermConfig &config,
+                     const ConfigPath &path,
+                     ValidationReport &report) {
+    check_minimum(config.span, 1e-12, append_config_path(path, {"span"}),
+                  report);
+    check_minimum(config.weight, 0.0, append_config_path(path, {"weight"}),
+                  report);
+}
+
+inline void validate(const ProcessedTimeChunkWeightCorrPenaltyBandConfig &config,
+                     const ConfigPath &path,
+                     ValidationReport &report) {
+    check_minimum(config.span, 1e-12, append_config_path(path, {"span"}),
+                  report);
+    check_minimum(config.weight, 0.0, append_config_path(path, {"weight"}),
+                  report);
+    check_minimum(config.low_band_Hz[0], 0.0,
+                  append_config_path(path, {"low_band_Hz"}), report);
+    if (config.low_band_Hz[1] <= config.low_band_Hz[0]) {
+        report.add_error(append_config_path(path, {"low_band_Hz"}),
+                         "must be [fmin, fmax] with fmax greater than fmin");
+    }
+    check_minimum(config.mid_band_Hz[0], 0.0,
+                  append_config_path(path, {"mid_band_Hz"}), report);
+    if (config.mid_band_Hz[1] <= config.mid_band_Hz[0]) {
+        report.add_error(append_config_path(path, {"mid_band_Hz"}),
+                         "must be [fmin, fmax] with fmax greater than fmin");
+    }
+}
+
+inline void validate(const ProcessedTimeChunkWeightCorrPenaltyConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    const ConfigPath path{
+        "timestream", "processed_time_chunk", "weighting", "corr_penalty"};
+    check_minimum(config.min_good_frac, 0.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_maximum(config.min_good_frac, 1.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_minimum(config.min_overlap, 2,
+                  append_config_path(path, {"min_overlap"}), report);
+    check_minimum(config.max_samples, 0,
+                  append_config_path(path, {"max_samples"}), report);
+    check_minimum(config.max_pairs, 0,
+                  append_config_path(path, {"max_pairs"}), report);
+    check_minimum(config.seed, 0, append_config_path(path, {"seed"}), report);
+    check_minimum(config.floor, 0.0, append_config_path(path, {"floor"}),
+                  report);
+    check_maximum(config.floor, 1.0, append_config_path(path, {"floor"}),
+                  report);
+    check_minimum(config.exponent, 0.0,
+                  append_config_path(path, {"exponent"}), report);
+    validate(config.pair_corr, append_config_path(path, {"pair_corr"}), report);
+    validate(config.cm_el_corr, append_config_path(path, {"cm_el_corr"}),
+             report);
+    validate(config.cm_low_mid_ratio,
+             append_config_path(path, {"cm_low_mid_ratio"}), report);
+}
+
 inline void validate(const ProcessedTimeChunkWeightingConfig &config,
                      ValidationReport &report) {
     const ConfigPath path{"timestream", "processed_time_chunk", "weighting"};
@@ -516,6 +749,8 @@ inline void validate(const ProcessedTimeChunkWeightingConfig &config,
             append_config_path(path, {"hybrid_correction_max_factor"}),
             "must be greater than or equal to hybrid_correction_min_factor");
     }
+    validate(config.validation, report);
+    validate(config.corr_penalty, report);
     validate(config.busy_row_suppression, report);
 }
 

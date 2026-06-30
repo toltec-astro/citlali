@@ -1038,6 +1038,105 @@ void Engine::get_ptc_config(CT &config) {
     typed_busy_row.min_max_unflagged_residual_z =
         ptcproc.busy_row_suppression.min_max_unflagged_residual_z;
     typed_busy_row.factor = ptcproc.busy_row_suppression.factor;
+    const auto &weight_validation = ptcproc.weight_validation;
+    auto &typed_weight_validation = typed_weighting.validation;
+    typed_weight_validation.enabled = weight_validation.enabled;
+    typed_weight_validation.accumulation_iters =
+        weight_validation.accumulation_iters;
+    typed_weight_validation.apply_start_iter =
+        weight_validation.apply_start_iter;
+    typed_weight_validation.min_valid_scans =
+        weight_validation.min_valid_scans;
+    typed_weight_validation.min_factor = weight_validation.min_factor;
+    typed_weight_validation.unvalidated_factor =
+        weight_validation.unvalidated_factor;
+    typed_weight_validation.require_fruitloops_model =
+        weight_validation.require_fruitloops_model;
+    typed_weight_validation.transient_ratio_enabled =
+        weight_validation.transient_ratio_enabled;
+    typed_weight_validation.ratio_power = weight_validation.ratio_power;
+    typed_weight_validation.transient_ratio_power =
+        weight_validation.transient_ratio_power;
+    typed_weight_validation.upward_enabled = weight_validation.upward_enabled;
+    typed_weight_validation.upward_max_factor =
+        weight_validation.upward_max_factor;
+    typed_weight_validation.upward_power = weight_validation.upward_power;
+    typed_weight_validation.upward_min_base_factor =
+        weight_validation.upward_min_base_factor;
+    typed_weight_validation.upward_require_atmospheric =
+        weight_validation.upward_require_atmospheric;
+    typed_weight_validation.upward_min_atmospheric_factor =
+        weight_validation.upward_min_atmospheric_factor;
+    typed_weight_validation.atmospheric_correlation_enabled =
+        weight_validation.atmospheric_correlation_enabled;
+    if (auto parsed = citlali::config::parse_processed_weight_grouping(
+            weight_validation.atmospheric_grouping)) {
+        typed_weight_validation.atmospheric_grouping = *parsed;
+    }
+    typed_weight_validation.atmospheric_min_detectors =
+        weight_validation.atmospheric_min_detectors;
+    typed_weight_validation.atmospheric_ref = weight_validation.atmospheric_ref;
+    typed_weight_validation.atmospheric_span =
+        weight_validation.atmospheric_span;
+    typed_weight_validation.atmospheric_power =
+        weight_validation.atmospheric_power;
+    typed_weight_validation.min_good_frac = weight_validation.min_good_frac;
+    typed_weight_validation.min_overlap = weight_validation.min_overlap;
+    typed_weight_validation.max_samples = weight_validation.max_samples;
+    typed_weight_validation.high_weight_validation_enabled =
+        weight_validation.high_weight_validation_enabled;
+    typed_weight_validation.high_weight_apply_caps =
+        weight_validation.high_weight_apply_caps;
+    if (auto parsed = citlali::config::parse_processed_weight_grouping(
+            weight_validation.high_weight_grouping)) {
+        typed_weight_validation.high_weight_grouping = *parsed;
+    }
+    typed_weight_validation.high_weight_min_group_detectors =
+        weight_validation.high_weight_min_group_detectors;
+    typed_weight_validation.high_weight_log_robust_z =
+        weight_validation.high_weight_log_robust_z;
+    typed_weight_validation.high_weight_max_median_factor =
+        weight_validation.high_weight_max_median_factor;
+    typed_weight_validation.high_weight_cap_median_factor =
+        weight_validation.high_weight_cap_median_factor;
+    typed_weight_validation.high_weight_min_validated_factor =
+        weight_validation.high_weight_min_validated_factor;
+
+    const auto &weight_corr_penalty = ptcproc.weight_corr_penalty;
+    auto &typed_corr_penalty = typed_weighting.corr_penalty;
+    typed_corr_penalty.enabled = weight_corr_penalty.enabled;
+    typed_corr_penalty.min_good_frac = weight_corr_penalty.min_good_frac;
+    typed_corr_penalty.min_overlap = weight_corr_penalty.min_overlap;
+    typed_corr_penalty.max_samples = weight_corr_penalty.max_samples;
+    typed_corr_penalty.max_pairs = weight_corr_penalty.max_pairs;
+    typed_corr_penalty.seed = static_cast<int>(weight_corr_penalty.seed);
+    typed_corr_penalty.floor = weight_corr_penalty.floor;
+    typed_corr_penalty.exponent = weight_corr_penalty.exponent;
+    typed_corr_penalty.pair_corr.enabled =
+        weight_corr_penalty.pair_corr.enabled;
+    typed_corr_penalty.pair_corr.ref = weight_corr_penalty.pair_corr.ref;
+    typed_corr_penalty.pair_corr.span = weight_corr_penalty.pair_corr.span;
+    typed_corr_penalty.pair_corr.weight = weight_corr_penalty.pair_corr.weight;
+    typed_corr_penalty.cm_el_corr.enabled =
+        weight_corr_penalty.cm_el_corr.enabled;
+    typed_corr_penalty.cm_el_corr.ref = weight_corr_penalty.cm_el_corr.ref;
+    typed_corr_penalty.cm_el_corr.span = weight_corr_penalty.cm_el_corr.span;
+    typed_corr_penalty.cm_el_corr.weight =
+        weight_corr_penalty.cm_el_corr.weight;
+    typed_corr_penalty.cm_low_mid_ratio.enabled =
+        weight_corr_penalty.cm_low_mid_ratio.enabled;
+    typed_corr_penalty.cm_low_mid_ratio.ref =
+        weight_corr_penalty.cm_low_mid_ratio.ref;
+    typed_corr_penalty.cm_low_mid_ratio.span =
+        weight_corr_penalty.cm_low_mid_ratio.span;
+    typed_corr_penalty.cm_low_mid_ratio.weight =
+        weight_corr_penalty.cm_low_mid_ratio.weight;
+    typed_corr_penalty.cm_low_mid_ratio.low_band_Hz = {
+        weight_corr_penalty.cm_low_mid_ratio.low_min_Hz,
+        weight_corr_penalty.cm_low_mid_ratio.low_max_Hz};
+    typed_corr_penalty.cm_low_mid_ratio.mid_band_Hz = {
+        weight_corr_penalty.cm_low_mid_ratio.mid_min_Hz,
+        weight_corr_penalty.cm_low_mid_ratio.mid_max_Hz};
 
     auto &typed_second_pass =
         typed_timestream_config.processed_time_chunk.flagging.second_pass_local;

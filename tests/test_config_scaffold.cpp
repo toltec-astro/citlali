@@ -113,6 +113,14 @@ TEST(config_scaffold, parses_existing_timestream_enum_values) {
     EXPECT_EQ(citlali::config::parse_processed_weighting_type("const").value(),
               citlali::config::ProcessedTimeChunkWeightingType::constant);
     EXPECT_FALSE(citlali::config::parse_processed_weighting_type("constant").has_value());
+
+    EXPECT_EQ(citlali::config::parse_processed_weight_grouping("array").value(),
+              citlali::config::ProcessedTimeChunkWeightGrouping::array);
+    EXPECT_EQ(citlali::config::parse_processed_weight_grouping("nw").value(),
+              citlali::config::ProcessedTimeChunkWeightGrouping::network);
+    EXPECT_EQ(citlali::config::parse_processed_weight_grouping("all").value(),
+              citlali::config::ProcessedTimeChunkWeightGrouping::all);
+    EXPECT_FALSE(citlali::config::parse_processed_weight_grouping("fg").has_value());
 }
 
 TEST(config_scaffold, parses_existing_pointing_enum_values) {
@@ -280,6 +288,64 @@ TEST(config_scaffold, validates_processed_time_chunk_weighting_values) {
     citlali::config::validate(config, report);
     EXPECT_FALSE(report.ok());
     EXPECT_EQ(report.error_count(), 5U);
+}
+
+TEST(config_scaffold, validates_processed_time_chunk_weight_validation_values) {
+    citlali::config::ProcessedTimeChunkWeightValidationConfig config;
+    config.enabled = true;
+    config.accumulation_iters = 0;
+    config.apply_start_iter = -1;
+    config.min_valid_scans = 0;
+    config.min_factor = 2.0;
+    config.unvalidated_factor = -1.0;
+    config.ratio_power = -1.0;
+    config.transient_ratio_power = -1.0;
+    config.upward_max_factor = 0.5;
+    config.upward_power = -1.0;
+    config.upward_min_base_factor = 2.0;
+    config.upward_min_atmospheric_factor = -1.0;
+    config.atmospheric_min_detectors = 1;
+    config.atmospheric_ref = 2.0;
+    config.atmospheric_span = 0.0;
+    config.atmospheric_power = -1.0;
+    config.min_good_frac = 2.0;
+    config.min_overlap = 1;
+    config.max_samples = -1;
+    config.high_weight_min_group_detectors = 1;
+    config.high_weight_log_robust_z = -1.0;
+    config.high_weight_max_median_factor = 0.5;
+    config.high_weight_cap_median_factor = 0.5;
+    config.high_weight_min_validated_factor = -1.0;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 23U);
+}
+
+TEST(config_scaffold, validates_processed_time_chunk_corr_penalty_values) {
+    citlali::config::ProcessedTimeChunkWeightCorrPenaltyConfig config;
+    config.enabled = true;
+    config.min_good_frac = 2.0;
+    config.min_overlap = 1;
+    config.max_samples = -1;
+    config.max_pairs = -1;
+    config.seed = -1;
+    config.floor = 2.0;
+    config.exponent = -1.0;
+    config.pair_corr.span = 0.0;
+    config.pair_corr.weight = -1.0;
+    config.cm_el_corr.span = 0.0;
+    config.cm_el_corr.weight = -1.0;
+    config.cm_low_mid_ratio.span = 0.0;
+    config.cm_low_mid_ratio.weight = -1.0;
+    config.cm_low_mid_ratio.low_band_Hz = {-1.0, 0.5};
+    config.cm_low_mid_ratio.mid_band_Hz = {2.0, 1.0};
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 15U);
 }
 
 TEST(config_scaffold, validates_timestream_learning_values) {
