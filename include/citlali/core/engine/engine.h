@@ -51,6 +51,7 @@
 #include <citlali/core/utils/pointing.h>
 
 #include <citlali/core/config/beammap_config.h>
+#include <citlali/core/config/calibration_config.h>
 #include <citlali/core/config/coadd_config.h>
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/noise_config.h>
@@ -327,6 +328,7 @@ public:
     citlali::config::PostProcessingConfig typed_post_processing_config;
     citlali::config::PointingConfig typed_pointing_config;
     citlali::config::BeammapConfig typed_beammap_config;
+    citlali::config::AstrometryConfig typed_astrometry_config;
 
     // obsnum
     std::string obsnum;
@@ -5107,6 +5109,8 @@ void Engine::get_photometry_config(CT &config) {
 
 template<typename CT>
 void Engine::get_astrometry_config(CT &config) {
+    typed_astrometry_config = citlali::config::AstrometryConfig{};
+
     // check if config file has pointing_offsets
     if (config.has("pointing_offsets")) {
         // reset for each observation
@@ -5220,6 +5224,19 @@ void Engine::get_astrometry_config(CT &config) {
                 std::exit(EXIT_FAILURE);
             }
         }
+
+        auto &typed_offsets = typed_astrometry_config.pointing_offsets;
+        typed_offsets.enabled = true;
+        const auto &az_offsets = pointing_offsets_arcsec["az"];
+        typed_offsets.az_arcsec.assign(
+            az_offsets.data(), az_offsets.data() + az_offsets.size());
+        const auto &alt_offsets = pointing_offsets_arcsec["alt"];
+        typed_offsets.alt_arcsec.assign(
+            alt_offsets.data(), alt_offsets.data() + alt_offsets.size());
+        typed_offsets.modified_julian_date.assign(
+            pointing_offsets_modified_julian_date.data(),
+            pointing_offsets_modified_julian_date.data() +
+                pointing_offsets_modified_julian_date.size());
     }
     else {
         logger->error("pointing_offsets not found in config");

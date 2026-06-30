@@ -1,3 +1,4 @@
+#include <citlali/core/config/calibration_config.h>
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/error/error.h>
 
@@ -706,6 +707,22 @@ TEST(config_scaffold, validates_beammap_config_values) {
 TEST(config_scaffold, validates_beammap_source_values) {
     citlali::config::BeammapSourceConfig config;
     config.fluxes.push_back(citlali::config::BeammapSourceFluxConfig{"", 0.0, -1.0});
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 3U);
+}
+
+TEST(config_scaffold, validates_astrometry_pointing_offsets_values) {
+    citlali::config::AstrometryPointingOffsetsConfig config;
+    EXPECT_TRUE(citlali::config::validate(
+                    citlali::config::AstrometryConfig{}).ok());
+
+    config.enabled = true;
+    config.az_arcsec = {1.0, 2.0, 3.0};
+    config.alt_arcsec = {1.0};
+    config.modified_julian_date = {1.0};
 
     citlali::config::ValidationReport report;
     citlali::config::validate(config, report);
