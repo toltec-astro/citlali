@@ -1,0 +1,52 @@
+schema: citlali-reduction-v2
+mode: science
+profile: tod_export
+
+inputs:
+  legacy: ../../../data/config.yaml
+
+output:
+  dir: /path/to/redu/directory/
+  subdir: true
+  verbose: true
+
+runtime:
+  threads: 8
+  parallel: omp
+
+map:
+  unit: mJy/beam
+  method: naive
+  grouping: auto
+  pixel_axes: radec
+  pixel_size_arcsec: 1.0
+  center: auto
+  size: auto
+  coadd: false
+
+products:
+  maps: false
+  noise: false
+  noise_count: 1
+  noise_products: false
+  noise_realizations: false
+  tod: both
+  diagnostics: verbose
+
+processing:
+  tod: true
+  clean: off
+  clean_grouping: [array]
+  weighting: full
+  fruitloops: off
+  fruitloops_iters: 1
+
+expert:
+  timestream:
+    raw_time_chunk:
+      output:
+        mode: mini
+        indices: all
+    processed_time_chunk:
+      output:
+        indices: all

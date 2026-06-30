@@ -1,0 +1,48 @@
+schema: citlali-compact-profile-v1
+name: science_standard
+mode: science
+description: Normal science map production with diagnostic-heavy products off by default.
+full:
+  runtime:
+    reduction_type: science
+    verbose: false
+  mapmaking:
+    enabled: true
+    cunit: mJy/beam
+    grouping: auto
+    method: naive
+    pixel_axes: radec
+    pixel_size_arcsec: 1.0
+  coadd:
+    enabled: false
+  noise_maps:
+    enabled: false
+    n_noise_maps: 1
+    write_realizations: false
+    products:
+      enabled: true
+  timestream:
+    enabled: true
+    raw_time_chunk:
+      output:
+        enabled: false
+        mode: full
+    processed_time_chunk:
+      clean:
+        enabled: false
+        standard_pca:
+          enabled: true
+        null_model:
+          enabled: false
+        marchenko_pastur:
+          enabled: false
+        adaptive_selector:
+          enabled: false
+        grouping: [array]
+      weighting:
+        type: full
+      output:
+        enabled: false
+    fruit_loops:
+      enabled: false
+      max_iters: 1

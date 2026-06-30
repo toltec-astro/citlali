@@ -1,0 +1,49 @@
+schema: citlali-compact-profile-v1
+name: tod_export
+mode: science
+description: Diagnostic profile for producing selected RTC/PTC TOD products.
+full:
+  runtime:
+    reduction_type: science
+    verbose: true
+  mapmaking:
+    enabled: false
+    cunit: mJy/beam
+    grouping: auto
+    method: naive
+    pixel_axes: radec
+    pixel_size_arcsec: 1.0
+  coadd:
+    enabled: false
+  noise_maps:
+    enabled: false
+    n_noise_maps: 1
+    products:
+      enabled: false
+  timestream:
+    enabled: true
+    raw_time_chunk:
+      output:
+        enabled: true
+        indices: all
+        mode: mini
+    processed_time_chunk:
+      clean:
+        enabled: false
+        standard_pca:
+          enabled: true
+        null_model:
+          enabled: false
+        marchenko_pastur:
+          enabled: false
+        adaptive_selector:
+          enabled: false
+        grouping: [array]
+      weighting:
+        type: full
+      output:
+        enabled: true
+        indices: all
+    fruit_loops:
+      enabled: false
+      max_iters: 1

@@ -1,0 +1,4 @@
+product,value,count
+signal_mean,1.5,4
+signal_rms,0.25,4
+flagged_fraction,0.0,4

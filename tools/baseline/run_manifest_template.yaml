@@ -1,0 +1,69 @@
+# Citlali structural-refactor validation run manifest.
+# Fill this out when running reductions in the validation environment.
+
+schema_version: citlali-validation-run-v1
+
+case:
+  name: science_naive_noise_off
+  description: Standard science reduction, naive mapmaking, noise disabled.
+  reduction_type: science
+  mapmaking_method: naive
+  noise_maps_enabled: false
+  coadd_enabled: false
+  tod_output_enabled: false
+
+git:
+  branch: codex/structural-refactor
+  sha: 376e0022
+  remote: origin
+
+environment:
+  host: unity
+  date_local: 2026-06-29
+  modules: []
+  compiler: ""
+  citlali_executable: /path/to/citlali
+  notes: ""
+
+inputs:
+  config_files:
+    - /path/to/reduce.yaml
+  data_ids:
+    - obsnum_or_dataset_id
+  command: >-
+    /path/to/citlali /path/to/reduce.yaml
+
+runtime:
+  n_threads: 1
+  parallel_policy: seq
+  wall_time_sec: null
+  peak_rss_kb: null
+  exit_code: null
+
+outputs:
+  output_dir: /path/to/reduction/output
+  manifest_json: /path/to/generated/output_manifest.json
+  logs:
+    - /path/to/reduction.log
+
+checks:
+  products_compared:
+    - FITS maps
+    - netCDF TOD products
+    - ECSV/CSV diagnostics
+  numeric_tolerance:
+    exact_metadata: true
+    atol: 0.0
+    rtol: 1.0e-10
+  science_metrics:
+    flux: null
+    fwhm: null
+    pointing_offsets: null
+    map_rms: null
+    detector_counts: null
+    flagged_fractions: null
+
+result:
+  status: not_run
+  summary: ""
+  residual_risk: ""

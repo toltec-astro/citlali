@@ -1,0 +1,14 @@
+# Exclude local/remote metadata and generated artifacts from source overlays.
+- /.git/
+- /build/
+- /build_*/
+- /cmake-build-*/
+- /redu[0-9][0-9]/
+- /coadded/
+- /**/__pycache__/
+- /**/*.pyc
+- /.DS_Store
+- /compile_commands.json
+- /.cache/
+- /.pytest_cache/
+- /.mypy_cache/

@@ -1,0 +1,89 @@
+{
+  "aggregate": {
+    "by_kind": {
+      "csv": 1,
+      "log": 1
+    },
+    "file_count": 2,
+    "total_size_bytes": 250
+  },
+  "files": [
+    {
+      "kind": "csv",
+      "path": "metrics.csv",
+      "size_bytes": 79,
+      "summary": {
+        "column_names": [
+          "product",
+          "value",
+          "count"
+        ],
+        "columns": [
+          {
+            "name": "product"
+          },
+          {
+            "name": "value",
+            "numeric": {
+              "finite_count": 3,
+              "mad": 0.25,
+              "max": 1.5,
+              "mean": 0.5833333333333334,
+              "median": 0.25,
+              "min": 0.0,
+              "n_values": 3,
+              "std": 0.6689544080129826,
+              "sum": 1.75
+            }
+          },
+          {
+            "name": "count",
+            "numeric": {
+              "finite_count": 3,
+              "mad": 0.0,
+              "max": 4.0,
+              "mean": 4.0,
+              "median": 4.0,
+              "min": 4.0,
+              "n_values": 3,
+              "std": 0.0,
+              "sum": 12.0
+            }
+          }
+        ],
+        "format": "csv",
+        "row_count": 3
+      }
+    },
+    {
+      "kind": "log",
+      "path": "reduction.log",
+      "size_bytes": 171,
+      "summary": {
+        "critical_count": 0,
+        "error_count": 0,
+        "format": "log",
+        "line_count": 3,
+        "warning_count": 0
+      }
+    }
+  ],
+  "inputs": {
+    "config_files": []
+  },
+  "run": {
+    "branch": "",
+    "case": "tiny_example",
+    "command": "",
+    "description": "Illustrative fake-data manifest; regenerate real manifests with summarize_outputs.py.",
+    "environment": "",
+    "git_sha": "",
+    "n_threads": null,
+    "output_dir": "tools/baseline/examples/tiny_reduction",
+    "parallel_policy": "",
+    "peak_rss_kb": null,
+    "wall_time_sec": null
+  },
+  "schema_version": "citlali-output-manifest-v1",
+  "tool_warnings": []
+}

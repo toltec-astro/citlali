@@ -1,0 +1,58 @@
+schema: citlali-compact-profile-v1
+name: beammap_detector
+mode: beammap
+description: Detector-grouped beammap profile with priors and sidecars disabled by default.
+full:
+  runtime:
+    reduction_type: beammap
+    verbose: false
+  beammap:
+    iter_max: 1
+    derotate: false
+    subtract_reference_det: true
+    reference_det: -99
+    iter_tolerance: 0.0
+    detector_weighting:
+      mode: const
+    detector_tod_output:
+      enabled: false
+    priors:
+      enabled: false
+  mapmaking:
+    enabled: true
+    cunit: mJy/beam
+    grouping: detector
+    method: naive
+    pixel_axes: radec
+    pixel_size_arcsec: 1.0
+  coadd:
+    enabled: false
+  noise_maps:
+    enabled: false
+    n_noise_maps: 1
+    products:
+      enabled: true
+  timestream:
+    enabled: true
+    raw_time_chunk:
+      output:
+        enabled: false
+    processed_time_chunk:
+      clean:
+        enabled: false
+        standard_pca:
+          enabled: true
+        null_model:
+          enabled: false
+        marchenko_pastur:
+          enabled: false
+        adaptive_selector:
+          enabled: false
+        grouping: [array]
+      weighting:
+        type: full
+      output:
+        enabled: false
+    fruit_loops:
+      enabled: false
+      max_iters: 1

@@ -1,0 +1,64 @@
+schema: citlali-compact-profile-v1
+name: pointing_standard
+mode: pointing
+description: Compact-source pointing profile with source-aware protection defaults.
+full:
+  runtime:
+    reduction_type: pointing
+    verbose: false
+  pointing:
+    source_strategy:
+      mode: standard
+  mapmaking:
+    enabled: true
+    cunit: mJy/beam
+    grouping: auto
+    method: naive
+    pixel_axes: radec
+    pixel_size_arcsec: 1.0
+  coadd:
+    enabled: false
+  noise_maps:
+    enabled: false
+    n_noise_maps: 1
+    products:
+      enabled: true
+  timestream:
+    enabled: true
+    raw_time_chunk:
+      despike:
+        source_protection:
+          enabled: true
+          radius_arcsec: 20.0
+      output:
+        enabled: false
+    processed_time_chunk:
+      clean:
+        enabled: false
+        standard_pca:
+          enabled: true
+        null_model:
+          enabled: false
+        marchenko_pastur:
+          enabled: false
+        adaptive_selector:
+          enabled: false
+        grouping: [array]
+      flagging:
+        second_pass_local:
+          source_protection:
+            enabled: true
+            radius_arcsec: 20.0
+      weighting:
+        type: full
+      output:
+        enabled: false
+    fruit_loops:
+      enabled: false
+      max_iters: 1
+  post_processing:
+    source_fitting:
+      bounding_box_arcsec: 10
+      fitting_radius_arcsec: 0
+    map_filtering:
+      enabled: false
