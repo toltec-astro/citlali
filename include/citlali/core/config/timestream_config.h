@@ -40,6 +40,16 @@ enum class TodOutputSelectionMode {
     uniform_plus_source_crossing
 };
 
+enum class RawTimeChunkFilterEdgeGuardMode {
+    flag,
+    none
+};
+
+enum class RawTimeChunkFilterEdgeGuardCombine {
+    sum,
+    max
+};
+
 enum class ProcessedTimeChunkWeightingType {
     full,
     approximate,
@@ -121,6 +131,18 @@ inline constexpr std::array<EnumName<TodOutputSelectionMode>, 3>
          "uniform_plus_source_crossing"},
     }};
 
+inline constexpr std::array<EnumName<RawTimeChunkFilterEdgeGuardMode>, 2>
+    raw_filter_edge_guard_mode_names{{
+        {RawTimeChunkFilterEdgeGuardMode::flag, "flag"},
+        {RawTimeChunkFilterEdgeGuardMode::none, "none"},
+    }};
+
+inline constexpr std::array<EnumName<RawTimeChunkFilterEdgeGuardCombine>, 2>
+    raw_filter_edge_guard_combine_names{{
+        {RawTimeChunkFilterEdgeGuardCombine::sum, "sum"},
+        {RawTimeChunkFilterEdgeGuardCombine::max, "max"},
+    }};
+
 inline constexpr std::array<EnumName<ProcessedTimeChunkWeightingType>, 5>
     processed_weighting_type_names{{
         {ProcessedTimeChunkWeightingType::full, "full"},
@@ -199,6 +221,16 @@ inline std::optional<TodOutputSelectionMode> parse_tod_output_selection_mode(
     return parse_enum(value, tod_output_selection_mode_names);
 }
 
+inline std::optional<RawTimeChunkFilterEdgeGuardMode>
+parse_raw_filter_edge_guard_mode(std::string_view value) {
+    return parse_enum(value, raw_filter_edge_guard_mode_names);
+}
+
+inline std::optional<RawTimeChunkFilterEdgeGuardCombine>
+parse_raw_filter_edge_guard_combine(std::string_view value) {
+    return parse_enum(value, raw_filter_edge_guard_combine_names);
+}
+
 inline std::optional<ProcessedTimeChunkWeightingType> parse_processed_weighting_type(
     std::string_view value) {
     return parse_enum(value, processed_weighting_type_names);
@@ -248,6 +280,14 @@ inline std::string_view to_string(TodStreamOutputMode value) {
 
 inline std::string_view to_string(TodOutputSelectionMode value) {
     return enum_name(value, tod_output_selection_mode_names);
+}
+
+inline std::string_view to_string(RawTimeChunkFilterEdgeGuardMode value) {
+    return enum_name(value, raw_filter_edge_guard_mode_names);
+}
+
+inline std::string_view to_string(RawTimeChunkFilterEdgeGuardCombine value) {
+    return enum_name(value, raw_filter_edge_guard_combine_names);
 }
 
 inline std::string_view to_string(ProcessedTimeChunkWeightingType value) {
@@ -351,8 +391,60 @@ struct RawTimeChunkDespikeConfig {
     RawTimeChunkDespikeLocalResidualConfig local_residual;
 };
 
+struct RawTimeChunkDownsampleConfig {
+    bool enabled = false;
+    int factor = 1;
+    double downsampled_freq_Hz = 0.0;
+};
+
+struct RawTimeChunkFilterNotchConfig {
+    bool enabled = false;
+    bool zero_phase = true;
+    std::vector<double> freqs_Hz;
+    std::vector<double> delta_f_Hz;
+};
+
+struct RawTimeChunkFilterEdgeGuardConfig {
+    bool enabled = false;
+    RawTimeChunkFilterEdgeGuardMode mode =
+        RawTimeChunkFilterEdgeGuardMode::flag;
+    RawTimeChunkFilterEdgeGuardCombine combine =
+        RawTimeChunkFilterEdgeGuardCombine::sum;
+    int min_samples = 0;
+    int extra_samples = 0;
+    int max_samples = 128;
+    double iir_settle_attenuation = 0.01;
+    bool apply_fir = true;
+    bool apply_notch = true;
+    bool apply_dynamic_notch = true;
+    bool apply_iir_highpass = true;
+    bool apply_downsample = true;
+};
+
+struct RawTimeChunkFilterConfig {
+    bool enabled = false;
+    double a_gibbs = 50.0;
+    double freq_high_Hz = 16.0;
+    double freq_low_Hz = 0.0;
+    int n_terms = 32;
+    RawTimeChunkFilterNotchConfig notch;
+    RawTimeChunkFilterEdgeGuardConfig edge_guard;
+};
+
+struct RawTimeChunkIirFilterConfig {
+    bool enabled = false;
+    double freq_Hz = 0.1;
+    int order = 1;
+    bool zero_phase = false;
+};
+
 struct RawTimeChunkConfig {
     RawTimeChunkDespikeConfig despike;
+    RawTimeChunkDownsampleConfig downsample;
+    RawTimeChunkFilterConfig filter;
+    RawTimeChunkIirFilterConfig iir_filter;
+    bool flux_calibration_enabled = false;
+    bool extinction_correction_enabled = false;
 };
 
 struct ProcessedTimeChunkSecondPassLocalConfig {
@@ -753,8 +845,111 @@ inline void validate(const RawTimeChunkDespikeConfig &config,
     validate(config.local_residual, report);
 }
 
+inline void validate(const RawTimeChunkDownsampleConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    const ConfigPath path{"timestream", "raw_time_chunk", "downsample"};
+    check_minimum(config.factor, 0, append_config_path(path, {"factor"}),
+                  report);
+    check_minimum(config.downsampled_freq_Hz, 0.0,
+                  append_config_path(path, {"downsampled_freq_Hz"}), report);
+}
+
+inline void validate(const RawTimeChunkFilterNotchConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    const ConfigPath path{"timestream", "raw_time_chunk", "filter", "notch"};
+    if (!config.zero_phase) {
+        report.add_error(append_config_path(path, {"zero_phase"}),
+                         "must be true to avoid phase shifts");
+    }
+    if (config.freqs_Hz.empty()) {
+        report.add_error(append_config_path(path, {"freqs_Hz"}),
+                         "must contain at least one notch frequency");
+    }
+    if (config.delta_f_Hz.size() != 1 &&
+        config.delta_f_Hz.size() != config.freqs_Hz.size()) {
+        report.add_error(append_config_path(path, {"delta_f_Hz"}),
+                         "must have length 1 or match freqs_Hz length");
+    }
+    for (const auto freq_Hz : config.freqs_Hz) {
+        check_minimum(freq_Hz, 1e-12, append_config_path(path, {"freqs_Hz"}),
+                      report);
+    }
+    for (const auto delta_f_Hz : config.delta_f_Hz) {
+        check_minimum(delta_f_Hz, 1e-12,
+                      append_config_path(path, {"delta_f_Hz"}), report);
+    }
+}
+
+inline void validate(const RawTimeChunkFilterEdgeGuardConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    const ConfigPath path{
+        "timestream", "raw_time_chunk", "filter", "edge_guard"};
+    check_minimum(config.min_samples, 0,
+                  append_config_path(path, {"min_samples"}), report);
+    check_minimum(config.extra_samples, 0,
+                  append_config_path(path, {"extra_samples"}), report);
+    check_minimum(config.max_samples, 0,
+                  append_config_path(path, {"max_samples"}), report);
+    check_minimum(config.iir_settle_attenuation, 0.0,
+                  append_config_path(path, {"iir_settle_attenuation"}), report);
+    check_maximum(config.iir_settle_attenuation, 1.0,
+                  append_config_path(path, {"iir_settle_attenuation"}), report);
+}
+
+inline void validate(const RawTimeChunkFilterConfig &config,
+                     ValidationReport &report) {
+    if (config.enabled) {
+        const ConfigPath path{"timestream", "raw_time_chunk", "filter"};
+        check_minimum(config.a_gibbs, 0.0,
+                      append_config_path(path, {"a_gibbs"}), report);
+        check_minimum(config.freq_low_Hz, 0.0,
+                      append_config_path(path, {"freq_low_Hz"}), report);
+        check_minimum(config.freq_high_Hz, 0.0,
+                      append_config_path(path, {"freq_high_Hz"}), report);
+        if (config.freq_high_Hz < config.freq_low_Hz) {
+            report.add_error(append_config_path(path, {"freq_high_Hz"}),
+                             "must be greater than or equal to freq_low_Hz");
+        }
+        check_minimum(config.n_terms, 0, append_config_path(path, {"n_terms"}),
+                      report);
+        validate(config.notch, report);
+    }
+    validate(config.edge_guard, report);
+}
+
+inline void validate(const RawTimeChunkIirFilterConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    const ConfigPath path{"timestream", "raw_time_chunk", "IIR_filter"};
+    check_minimum(config.freq_Hz, 1e-12,
+                  append_config_path(path, {"freq_Hz"}), report);
+    check_minimum(config.order, 1, append_config_path(path, {"order"}), report);
+    if (!config.zero_phase) {
+        report.add_error(append_config_path(path, {"zero_phase"}),
+                         "must be true to avoid phase shifts");
+    }
+}
+
 inline void validate(const RawTimeChunkConfig &config, ValidationReport &report) {
     validate(config.despike, report);
+    validate(config.downsample, report);
+    validate(config.filter, report);
+    validate(config.iir_filter, report);
+    if (config.downsample.enabled && !config.filter.enabled) {
+        report.add_error({"timestream", "raw_time_chunk", "downsample"},
+                         "requires raw_time_chunk.filter.enabled=true");
+    }
 }
 
 inline void validate(const ProcessedTimeChunkSecondPassLocalConfig &config,

@@ -102,6 +102,18 @@ TEST(config_scaffold, parses_existing_timestream_enum_values) {
               citlali::config::TodOutputSelectionMode::uniform_plus_source_crossing);
     EXPECT_FALSE(citlali::config::parse_tod_output_selection_mode("source").has_value());
 
+    EXPECT_EQ(citlali::config::parse_raw_filter_edge_guard_mode("flag").value(),
+              citlali::config::RawTimeChunkFilterEdgeGuardMode::flag);
+    EXPECT_EQ(citlali::config::parse_raw_filter_edge_guard_mode("none").value(),
+              citlali::config::RawTimeChunkFilterEdgeGuardMode::none);
+    EXPECT_FALSE(citlali::config::parse_raw_filter_edge_guard_mode("mask").has_value());
+
+    EXPECT_EQ(citlali::config::parse_raw_filter_edge_guard_combine("sum").value(),
+              citlali::config::RawTimeChunkFilterEdgeGuardCombine::sum);
+    EXPECT_EQ(citlali::config::parse_raw_filter_edge_guard_combine("max").value(),
+              citlali::config::RawTimeChunkFilterEdgeGuardCombine::max);
+    EXPECT_FALSE(citlali::config::parse_raw_filter_edge_guard_combine("mean").has_value());
+
     EXPECT_EQ(citlali::config::parse_processed_weighting_type("full").value(),
               citlali::config::ProcessedTimeChunkWeightingType::full);
     EXPECT_EQ(citlali::config::parse_processed_weighting_type("approximate").value(),
@@ -290,6 +302,46 @@ TEST(config_scaffold, validates_timestream_despike_local_residual_values) {
     citlali::config::validate(config, report);
     EXPECT_FALSE(report.ok());
     EXPECT_EQ(report.error_count(), 15U);
+}
+
+TEST(config_scaffold, validates_raw_time_chunk_filter_values) {
+    citlali::config::RawTimeChunkConfig config;
+    config.downsample.enabled = true;
+    config.downsample.factor = -1;
+    config.downsample.downsampled_freq_Hz = -1.0;
+    config.filter.enabled = true;
+    config.filter.a_gibbs = -1.0;
+    config.filter.freq_low_Hz = 3.0;
+    config.filter.freq_high_Hz = 2.0;
+    config.filter.n_terms = -1;
+    config.filter.notch.enabled = true;
+    config.filter.notch.zero_phase = false;
+    config.filter.notch.freqs_Hz = {-1.0};
+    config.filter.edge_guard.enabled = true;
+    config.filter.edge_guard.min_samples = -1;
+    config.filter.edge_guard.extra_samples = -1;
+    config.filter.edge_guard.max_samples = -1;
+    config.filter.edge_guard.iir_settle_attenuation = 2.0;
+    config.iir_filter.enabled = true;
+    config.iir_filter.freq_Hz = -1.0;
+    config.iir_filter.order = 0;
+    config.iir_filter.zero_phase = false;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 15U);
+}
+
+TEST(config_scaffold, validates_raw_downsample_requires_filter) {
+    citlali::config::RawTimeChunkConfig config;
+    config.downsample.enabled = true;
+    config.filter.enabled = false;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 1U);
 }
 
 TEST(config_scaffold, validates_processed_time_chunk_second_pass_local_values) {

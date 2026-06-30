@@ -984,7 +984,77 @@ void Engine::get_rtc_config(CT &config) {
             local.compact_delta_gate.max_step_shift_z;
     }
 
+    auto &typed_raw = typed_timestream_config.raw_time_chunk;
+    typed_raw.downsample.enabled = rtcproc.run_downsample;
+    if (rtcproc.run_downsample) {
+        typed_raw.downsample.factor = rtcproc.downsampler.factor;
+        typed_raw.downsample.downsampled_freq_Hz =
+            rtcproc.downsampler.downsampled_freq_Hz;
+    }
+
+    auto &typed_filter = typed_raw.filter;
+    typed_filter.enabled = rtcproc.run_tod_filter;
+    if (rtcproc.run_tod_filter) {
+        typed_filter.a_gibbs = rtcproc.filter.a_gibbs;
+        typed_filter.freq_low_Hz = rtcproc.filter.freq_low_Hz;
+        typed_filter.freq_high_Hz = rtcproc.filter.freq_high_Hz;
+        typed_filter.n_terms = static_cast<int>(rtcproc.filter.n_terms);
+        typed_filter.notch.enabled = rtcproc.run_tod_notch;
+        if (rtcproc.run_tod_notch) {
+            typed_filter.notch.zero_phase = rtcproc.filter.notch_zero_phase;
+            typed_filter.notch.freqs_Hz = rtcproc.filter.w0s;
+            typed_filter.notch.delta_f_Hz.clear();
+            typed_filter.notch.delta_f_Hz.reserve(rtcproc.filter.qs.size());
+            for (std::size_t i = 0; i < rtcproc.filter.qs.size(); ++i) {
+                const auto center_Hz = i < rtcproc.filter.w0s.size()
+                                           ? rtcproc.filter.w0s[i]
+                                           : 0.0;
+                typed_filter.notch.delta_f_Hz.push_back(
+                    rtcproc.filter.qs[i] > 0.0
+                        ? center_Hz / rtcproc.filter.qs[i]
+                        : 0.0);
+            }
+        }
+    }
+
+    auto &typed_iir_filter = typed_raw.iir_filter;
+    typed_iir_filter.enabled = rtcproc.run_tod_iir_highpass;
+    if (rtcproc.run_tod_iir_highpass) {
+        typed_iir_filter.freq_Hz = rtcproc.filter.iir_highpass_freq_Hz;
+        typed_iir_filter.order = rtcproc.filter.iir_highpass_order;
+        typed_iir_filter.zero_phase = rtcproc.filter.iir_highpass_zero_phase;
+    }
+
+    typed_raw.flux_calibration_enabled = rtcproc.run_calibrate;
+    typed_raw.extinction_correction_enabled = rtcproc.run_extinction;
+
     rtcproc.configure_filter_edge_guard(telescope.fsmp);
+    auto &typed_edge_guard = typed_filter.edge_guard;
+    typed_edge_guard.enabled = rtcproc.filter_edge_guard.enabled;
+    if (auto parsed = citlali::config::parse_raw_filter_edge_guard_mode(
+            rtcproc.filter_edge_guard.mode)) {
+        typed_edge_guard.mode = *parsed;
+    }
+    if (auto parsed = citlali::config::parse_raw_filter_edge_guard_combine(
+            rtcproc.filter_edge_guard.combine)) {
+        typed_edge_guard.combine = *parsed;
+    }
+    typed_edge_guard.min_samples =
+        static_cast<int>(rtcproc.filter_edge_guard.min_samples);
+    typed_edge_guard.extra_samples =
+        static_cast<int>(rtcproc.filter_edge_guard.extra_samples);
+    typed_edge_guard.max_samples =
+        static_cast<int>(rtcproc.filter_edge_guard.max_samples);
+    typed_edge_guard.iir_settle_attenuation =
+        rtcproc.filter_edge_guard.iir_settle_attenuation;
+    typed_edge_guard.apply_fir = rtcproc.filter_edge_guard.apply_fir;
+    typed_edge_guard.apply_notch = rtcproc.filter_edge_guard.apply_notch;
+    typed_edge_guard.apply_dynamic_notch =
+        rtcproc.filter_edge_guard.apply_dynamic_notch;
+    typed_edge_guard.apply_iir_highpass =
+        rtcproc.filter_edge_guard.apply_iir_highpass;
+    typed_edge_guard.apply_downsample =
+        rtcproc.filter_edge_guard.apply_downsample;
     telescope.inner_scans_chunk = rtcproc.filter_edge_guard.context_samples;
     telescope.outer_scans_chunk = telescope.inner_scans_chunk;
     if (rtcproc.tod_output_outer) {
