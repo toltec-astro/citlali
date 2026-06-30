@@ -525,11 +525,8 @@ int run(const rc_t &rc) {
                                 todproc.engine(), logger);
                         }
 
-                        // allocate observation map buffer
-                        if (todproc.engine().run_mapmaking) {
-                            citlali::pipeline::allocate_observation_map_buffers(
-                                todproc, map_extents[i], map_coords[i], logger);
-                        }
+                        citlali::pipeline::allocate_observation_map_buffers_if_needed(
+                            todproc, map_extents, map_coords, i, logger);
 
                         citlali::pipeline::update_observation_exposure_time(
                             todproc.engine());

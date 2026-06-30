@@ -2109,6 +2109,40 @@ TEST(pipeline_execution, skips_observation_noise_for_non_jinc_coadd) {
     EXPECT_EQ(logger->info_calls, 2);
 }
 
+TEST(pipeline_execution, allocates_observation_map_buffers_by_index) {
+    FakeObservationMapTodProc todproc;
+    std::vector<int> map_extents = {11, 33};
+    std::vector<int> map_coords = {22, 44};
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::allocate_observation_map_buffers_if_needed(
+        todproc, map_extents, map_coords, 1, logger);
+
+    EXPECT_EQ(todproc.calc_map_num_calls, 1);
+    EXPECT_EQ(todproc.allocate_omb_calls, 1);
+    EXPECT_EQ(todproc.last_map_extent, 33);
+    EXPECT_EQ(todproc.last_map_coord, 44);
+    EXPECT_EQ(todproc.allocate_nmb_calls, 1);
+    EXPECT_EQ(logger->info_calls, 3);
+}
+
+TEST(pipeline_execution,
+     skips_observation_map_buffer_indexing_when_mapmaking_disabled) {
+    FakeObservationMapTodProc todproc;
+    todproc.engine().run_mapmaking = false;
+    std::vector<int> map_extents;
+    std::vector<int> map_coords;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::allocate_observation_map_buffers_if_needed(
+        todproc, map_extents, map_coords, 0, logger);
+
+    EXPECT_EQ(todproc.calc_map_num_calls, 0);
+    EXPECT_EQ(todproc.allocate_omb_calls, 0);
+    EXPECT_EQ(todproc.allocate_nmb_calls, 0);
+    EXPECT_EQ(logger->info_calls, 0);
+}
+
 TEST(pipeline_execution, coadds_observation) {
     FakeCoaddTodProc todproc;
     auto logger = std::make_shared<FakeLogger>();
