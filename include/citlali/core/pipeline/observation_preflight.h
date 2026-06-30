@@ -324,6 +324,16 @@ void calculate_scan_indices(Engine &engine, const Logger &logger) {
     engine.telescope.calc_scan_indices();
 }
 
+template <class Engine, class Logger>
+void calculate_scan_indices_if_needed(Engine &engine, bool should_calculate,
+                                      const Logger &logger) {
+    if (!should_calculate) {
+        return;
+    }
+
+    calculate_scan_indices(engine, logger);
+}
+
 template <class Engine>
 void update_observation_exposure_time(Engine &engine) {
     auto t0 = engine.telescope.tel_data["TelTime"](0);

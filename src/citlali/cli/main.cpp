@@ -487,10 +487,8 @@ int run(const rc_t &rc) {
                         citlali::pipeline::record_timing_gaps_if_needed(
                             todproc.engine(), logger);
 
-                        if (co.n_inputs() > 1) {
-                            citlali::pipeline::calculate_scan_indices(
-                                todproc.engine(), logger);
-                        }
+                        citlali::pipeline::calculate_scan_indices_if_needed(
+                            todproc.engine(), co.n_inputs() > 1, logger);
 
                         citlali::pipeline::allocate_observation_map_buffers_if_needed(
                             todproc, map_extents, map_coords, i, logger);

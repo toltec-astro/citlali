@@ -1622,6 +1622,28 @@ TEST(pipeline_preflight, calculates_scan_indices) {
     EXPECT_EQ(logger->info_calls, 1);
 }
 
+TEST(pipeline_preflight, skips_scan_indices_when_not_needed) {
+    FakeEngine engine;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::calculate_scan_indices_if_needed(
+        engine, false, logger);
+
+    EXPECT_EQ(engine.telescope.calc_scan_indices_calls, 0);
+    EXPECT_EQ(logger->info_calls, 0);
+}
+
+TEST(pipeline_preflight, calculates_scan_indices_when_needed) {
+    FakeEngine engine;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::calculate_scan_indices_if_needed(
+        engine, true, logger);
+
+    EXPECT_EQ(engine.telescope.calc_scan_indices_calls, 1);
+    EXPECT_EQ(logger->info_calls, 1);
+}
+
 TEST(pipeline_preflight, loads_rawobs_kids_meta) {
     FakeKidsProc kidsproc;
     FakeRawObs rawobs;
