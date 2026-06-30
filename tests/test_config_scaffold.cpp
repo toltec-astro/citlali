@@ -226,6 +226,21 @@ struct FakeIterationEngine {
     void write_learning_summary() { ++write_learning_summary_calls; }
 };
 
+struct FakeCoaddTodProc {
+    FakeEngine engine_state;
+    int allocate_cmb_calls = 0;
+    int allocate_nmb_calls = 0;
+
+    FakeEngine &engine() { return engine_state; }
+
+    void allocate_cmb() { ++allocate_cmb_calls; }
+
+    template <class MapBuffer>
+    void allocate_nmb(MapBuffer &) {
+        ++allocate_nmb_calls;
+    }
+};
+
 TEST(config_scaffold, formats_config_paths) {
     EXPECT_EQ(citlali::config::format_path({"runtime", "n_threads"}),
               "runtime.n_threads");
@@ -1367,6 +1382,38 @@ TEST(pipeline_execution, setup_runs_when_tod_pipeline_disabled) {
     EXPECT_EQ(engine.setup_calls, 1);
     EXPECT_EQ(engine.pipeline_calls, 0);
     EXPECT_EQ(engine.event_order, (std::vector<std::string>{"setup"}));
+}
+
+TEST(pipeline_execution, prepares_coadd_iteration_buffers) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_noise = true;
+    todproc.engine().cmb.obsnums = {"101", "102"};
+    todproc.engine().cmb.exposure_time = 12.0;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::prepare_coadd_iteration_buffers(todproc, logger);
+
+    EXPECT_EQ(todproc.allocate_cmb_calls, 1);
+    EXPECT_EQ(todproc.allocate_nmb_calls, 1);
+    EXPECT_TRUE(todproc.engine().cmb.obsnums.empty());
+    EXPECT_DOUBLE_EQ(todproc.engine().cmb.exposure_time, 0.0);
+    EXPECT_EQ(logger->info_calls, 2);
+}
+
+TEST(pipeline_execution, skips_coadd_noise_buffer_when_noise_disabled) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_noise = false;
+    todproc.engine().cmb.obsnums = {"101"};
+    todproc.engine().cmb.exposure_time = 6.0;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::prepare_coadd_iteration_buffers(todproc, logger);
+
+    EXPECT_EQ(todproc.allocate_cmb_calls, 1);
+    EXPECT_EQ(todproc.allocate_nmb_calls, 0);
+    EXPECT_TRUE(todproc.engine().cmb.obsnums.empty());
+    EXPECT_DOUBLE_EQ(todproc.engine().cmb.exposure_time, 0.0);
+    EXPECT_EQ(logger->info_calls, 1);
 }
 
 TEST(pipeline_output_layout, derives_config_copy_destinations) {

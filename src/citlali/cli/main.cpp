@@ -539,20 +539,8 @@ int run(const rc_t &rc) {
                     todproc.engine().date_obs.clear();
 
                     if (todproc.engine().run_coadd) {
-                        // make coadd buffer
-                        logger->info("allocating cmb");
-                        todproc.allocate_cmb();
-                        // make noise maps for coadd map buffer
-                        if (todproc.engine().run_noise) {
-                            logger->info("allocating nmb");
-                            todproc.allocate_nmb(todproc.engine().cmb);
-                        }
-
-                        // clear obsnums from coadd buffer
-                        todproc.engine().cmb.obsnums.clear();
-
-                        // reset cmb exposure time
-                        todproc.engine().cmb.exposure_time = 0;
+                        citlali::pipeline::prepare_coadd_iteration_buffers(
+                            todproc, logger);
                     }
 
                     // run the reduction for each observation

@@ -15,4 +15,19 @@ void setup_and_run_observation_pipeline(Engine &engine, KidsProc &kidsproc,
     }
 }
 
+template <class TodProc, class Logger>
+void prepare_coadd_iteration_buffers(TodProc &todproc, const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    logger->info("allocating cmb");
+    todproc.allocate_cmb();
+    if (engine.run_noise) {
+        logger->info("allocating nmb");
+        todproc.allocate_nmb(engine.cmb);
+    }
+
+    engine.cmb.obsnums.clear();
+    engine.cmb.exposure_time = 0;
+}
+
 }  // namespace citlali::pipeline
