@@ -52,6 +52,7 @@
 #include <citlali/core/engine/pointing.h>
 #include <citlali/core/engine/beammap.h>
 #include <citlali/core/pipeline/observation_preflight.h>
+#include <citlali/core/pipeline/output_layout.h>
 
 using rc_t = tula::config::YamlConfig;
 
@@ -559,22 +560,9 @@ int run(const rc_t &rc) {
                         // setup reduction directories
                         todproc.create_output_dir();
 
-                        // copy config files to reduction directory
-                        for (std::string &config_filepath : config_filepaths) {
-                            logger->debug("copying config files into redu directory");
-                            // get filename
-                            std::string config_name;
-                            size_t last_slash_pos = config_filepath.find_last_of("/");
-                            if (last_slash_pos != std::string::npos) {
-                                config_name = config_filepath.substr(last_slash_pos + 1);
-                                fs::copy(config_filepath, todproc.engine().redu_dir_name + "/" + config_name,
-                                         fs::copy_options::overwrite_existing);
-                            }
-                            else {
-                                fs::copy(config_filepath, todproc.engine().redu_dir_name + "/" + config_filepath,
-                                         fs::copy_options::overwrite_existing);
-                            }
-                        }
+                        citlali::pipeline::copy_config_files_to_reduction_dir(
+                            config_filepaths, todproc.engine().redu_dir_name,
+                            logger);
                     }
 
                     // clear obs dates

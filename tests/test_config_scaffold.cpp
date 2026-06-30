@@ -2,6 +2,7 @@
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/observation_preflight.h>
+#include <citlali/core/pipeline/output_layout.h>
 
 #include <gtest/gtest.h>
 
@@ -17,6 +18,9 @@ struct FakeLogger {
 
     template <class... Args>
     void info(const char *, Args &&...) {}
+
+    template <class... Args>
+    void debug(const char *, Args &&...) {}
 };
 
 struct FakeAptColumn {
@@ -825,6 +829,17 @@ TEST(pipeline_preflight, rejects_missing_flxscale_column) {
 
     EXPECT_FALSE(citlali::pipeline::apply_flxscale_correction(
         engine, rawobs, logger));
+}
+
+TEST(pipeline_output_layout, derives_config_copy_destinations) {
+    EXPECT_EQ(citlali::pipeline::config_copy_filename("70_reduce.yaml"),
+              "70_reduce.yaml");
+    EXPECT_EQ(citlali::pipeline::config_copy_filename(
+                  "/tmp/redu/70_reduce.yaml"),
+              "70_reduce.yaml");
+    EXPECT_EQ(citlali::pipeline::config_copy_destination(
+                  "/tmp/redu01", "/tmp/redu/70_reduce.yaml"),
+              "/tmp/redu01/70_reduce.yaml");
 }
 
 }  // namespace
