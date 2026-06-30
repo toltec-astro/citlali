@@ -91,6 +91,14 @@ int obsnum_from_rawobs_meta(const RawObsKidsMeta &rawobs_kids_meta,
     return rawobs_kids_meta.back().template get_typed<int>("obsid");
 }
 
+template <class Engine, class RawObsKidsMeta, class Logger>
+void prepare_observation_output_layout_from_rawobs_meta(
+    Engine &engine, const RawObsKidsMeta &rawobs_kids_meta,
+    const Logger &logger) {
+    const int obsnum = obsnum_from_rawobs_meta(rawobs_kids_meta, logger);
+    prepare_observation_output_layout(engine, obsnum, logger);
+}
+
 inline std::string gaps_log_filepath(const std::string &obsnum_dir_name) {
     return obsnum_dir_name + "/logs/gaps.log";
 }

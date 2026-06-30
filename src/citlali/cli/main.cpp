@@ -466,11 +466,8 @@ int run(const rc_t &rc) {
                         citlali::pipeline::load_raw_detector_diagnostics(
                             todproc, rawobs, logger);
 
-                        const int obsnum =
-                            citlali::pipeline::obsnum_from_rawobs_meta(
-                                rawobs_kids_meta, logger);
-                        citlali::pipeline::prepare_observation_output_layout(
-                            todproc.engine(), obsnum, logger);
+                        citlali::pipeline::prepare_observation_output_layout_from_rawobs_meta(
+                            todproc.engine(), rawobs_kids_meta, logger);
 
                         citlali::pipeline::load_hwpr_data_if_requested(
                             todproc.engine(), rawobs, logger);

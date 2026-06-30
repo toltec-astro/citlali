@@ -2645,6 +2645,26 @@ TEST(pipeline_output_layout, reads_obsnum_from_rawobs_meta) {
     EXPECT_EQ(logger->debug_calls, 1);
 }
 
+TEST(pipeline_output_layout, prepares_observation_layout_from_rawobs_meta) {
+    FakeEngine engine;
+    engine.redu_dir_name = "/tmp/citlali_scaffold_redu";
+    std::vector<FakeRawObsMeta> rawobs_kids_meta = {
+        {75.0, 101},
+        {122.0, 202},
+    };
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::prepare_observation_output_layout_from_rawobs_meta(
+        engine, rawobs_kids_meta, logger);
+
+    EXPECT_EQ(engine.obsnum, "000202");
+    EXPECT_EQ(engine.obsnum_dir_name,
+              "/tmp/citlali_scaffold_redu/000202/");
+    ASSERT_EQ(engine.omb.obsnums.size(), 1U);
+    EXPECT_EQ(engine.omb.obsnums.front(), "000202");
+    EXPECT_EQ(logger->debug_calls, 3);
+}
+
 TEST(pipeline_output_layout, derives_gaps_log_filepath) {
     EXPECT_EQ(citlali::pipeline::gaps_log_filepath("/tmp/redu01/152389/"),
               "/tmp/redu01/152389//logs/gaps.log");
