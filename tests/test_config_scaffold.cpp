@@ -506,6 +506,7 @@ struct FakeCalibrationTodProc {
 
 struct FakeTelescopeTodProc {
     FakeEngine engine_state;
+    int check_inputs_calls = 0;
     int align_timestreams_calls = 0;
     int align_timestreams_gaps_calls = 0;
     int interp_pointing_calls = 0;
@@ -513,6 +514,8 @@ struct FakeTelescopeTodProc {
     int get_adc_snap_from_files_calls = 0;
 
     FakeEngine &engine() { return engine_state; }
+
+    void check_inputs(const FakeRawObs &) { ++check_inputs_calls; }
 
     void align_timestreams(const FakeRawObs &) {
         ++align_timestreams_calls;
@@ -1550,6 +1553,18 @@ TEST(pipeline_preflight, loads_rawobs_kids_meta) {
     ASSERT_EQ(meta.size(), 2U);
     EXPECT_DOUBLE_EQ(meta.back().fsmp, 122.0);
     EXPECT_EQ(meta.back().obsid, 102);
+    EXPECT_EQ(logger->debug_calls, 1);
+}
+
+TEST(pipeline_preflight, checks_observation_inputs) {
+    FakeTelescopeTodProc todproc;
+    FakeRawObs rawobs;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::check_observation_inputs(
+        todproc, rawobs, logger);
+
+    EXPECT_EQ(todproc.check_inputs_calls, 1);
     EXPECT_EQ(logger->debug_calls, 1);
 }
 

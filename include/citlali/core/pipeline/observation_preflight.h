@@ -124,6 +124,13 @@ auto load_rawobs_kids_meta(KidsProc &kidsproc, const RawObs &rawobs,
     return kidsproc.get_rawobs_meta(rawobs);
 }
 
+template <class TodProc, class RawObs, class Logger>
+void check_observation_inputs(TodProc &todproc, const RawObs &rawobs,
+                              const Logger &logger) {
+    logger->debug("checking inputs");
+    todproc.check_inputs(rawobs);
+}
+
 template <class Engine, class RawObsKidsMeta, class Logger>
 void update_sample_rate_from_rawobs_meta(Engine &engine,
                                          const RawObsKidsMeta &rawobs_kids_meta,

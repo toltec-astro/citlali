@@ -402,9 +402,8 @@ int run(const rc_t &rc) {
                         return EXIT_FAILURE;
                     }
 
-                    // check input files
-                    logger->debug("checking inputs");
-                    todproc.check_inputs(rawobs);
+                    citlali::pipeline::check_observation_inputs(
+                        todproc, rawobs, logger);
 
                     citlali::pipeline::update_sample_rate_from_rawobs_meta(
                         todproc.engine(), rawobs_kids_meta, logger);
