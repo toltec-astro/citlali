@@ -356,15 +356,32 @@ public:
         std::vector<int> snippet_flag;
     };
 
+    struct RTCSourceProtectionDiagSummary {
+        bool enabled = false;
+        int protected_samples = 0;
+        int total_samples = 0;
+        double radius_arcsec = std::numeric_limits<double>::quiet_NaN();
+    };
+
     std::map<Eigen::Index, std::vector<RTCDetectorDiagSummary>> rtc_detector_summary_by_scan;
     std::map<Eigen::Index, std::vector<RTCNetworkDiagSummary>> rtc_network_summary_by_scan;
     std::map<Eigen::Index, std::map<Eigen::Index, std::vector<RTCImpulsiveSnippetSummary>>> rtc_impulsive_summary_by_scan;
+    std::map<Eigen::Index, RTCSourceProtectionDiagSummary> rtc_source_protection_summary_by_scan;
     std::shared_ptr<std::mutex> diag_summary_mutex = std::make_shared<std::mutex>();
 
     std::vector<RTCDetectorDiagSummary> snapshot_detector_diag_summary(Eigen::Index scan_id) {
         std::lock_guard<std::mutex> lock(*diag_summary_mutex);
         const auto it = rtc_detector_summary_by_scan.find(scan_id);
         if (it == rtc_detector_summary_by_scan.end()) {
+            return {};
+        }
+        return it->second;
+    }
+
+    RTCSourceProtectionDiagSummary snapshot_source_protection_diag_summary(Eigen::Index scan_id) {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        const auto it = rtc_source_protection_summary_by_scan.find(scan_id);
+        if (it == rtc_source_protection_summary_by_scan.end()) {
             return {};
         }
         return it->second;
@@ -1842,6 +1859,8 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     // get indices for maps
     logger->debug("calculating map indices");
     auto map_indices = calc_map_indices(calib, map_grouping);
+    auto despiker_local = despiker;
+    RTCSourceProtectionDiagSummary despike_source_summary;
 
     if (run_calibrate) {
         logger->debug("calibrating timestream");
@@ -1887,27 +1906,34 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     // run despiking
     if (run_despike) {
         logger->debug("despiking");
-        if (despiker.source_protection_enabled) {
+        despike_source_summary.enabled = despiker_local.source_protection_enabled;
+        despike_source_summary.radius_arcsec =
+            despiker_local.source_protection_radius_arcsec;
+        if (despiker_local.source_protection_enabled) {
             auto [source_mask, source_info] = engine_utils::calc_source_protection_mask(
                 in, calib.apt, telescope.pixel_axes, map_grouping,
-                "map_center_radius", despiker.source_protection_radius_arcsec);
-            despiker.source_protection_mask = std::move(source_mask);
-            despiker.last_source_protection_sample_count =
+                "map_center_radius", despiker_local.source_protection_radius_arcsec);
+            despike_source_summary.protected_samples =
+                static_cast<int>(source_info.protected_samples);
+            despike_source_summary.total_samples =
+                static_cast<int>(source_mask.size());
+            despiker_local.source_protection_mask = std::move(source_mask);
+            despiker_local.last_source_protection_sample_count =
                 source_info.protected_samples;
             logger->debug(
                 "despike source protection scan={} mode={} radius_arcsec={:.4g} protected_samples={} detectors_with_source={}",
                 in.index.data, source_info.mode, source_info.radius_arcsec,
-                despiker.last_source_protection_sample_count,
+                despiker_local.last_source_protection_sample_count,
                 source_info.detectors_with_source);
         }
         else {
-            despiker.clear_source_protection_mask();
+            despiker_local.clear_source_protection_mask();
         }
         // despike data
-        despiker.despike(in.scans.data, in.flags.data, calib.apt);
+        despiker_local.despike(in.scans.data, in.flags.data, calib.apt);
 
         // we want to replace spikes on a per array or network basis
-        auto grp_limits = get_grouping(despiker.grouping, calib, in.scans.data.cols());
+        auto grp_limits = get_grouping(despiker_local.grouping, calib, in.scans.data.cols());
 
         logger->debug("replacing spikes");
         for (auto const& [key, val] : grp_limits) {
@@ -1932,7 +1958,18 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                          Eigen::OuterStride<>(in_flags_ref.outerStride()));
 
             // replace spikes
-            despiker.replace_spikes(in_scans, in_flags, calib.apt, start_index);
+            despiker_local.replace_spikes(in_scans, in_flags, calib.apt, start_index);
+        }
+
+        {
+            std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+            if (despike_source_summary.enabled) {
+                rtc_source_protection_summary_by_scan[in.index.data] =
+                    despike_source_summary;
+            }
+            else {
+                rtc_source_protection_summary_by_scan.erase(in.index.data);
+            }
         }
 
         in.status.despiked = true;
@@ -2027,9 +2064,9 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         for (Eigen::Index det = 0; det < n_dets; ++det) {
             auto &row = summary[static_cast<std::size_t>(det)];
             row.det = det;
-            if (det < static_cast<Eigen::Index>(despiker.last_detector_diag.size())) {
+            if (det < static_cast<Eigen::Index>(despiker_local.last_detector_diag.size())) {
                 static_cast<DespikeDetectorDiagSummary &>(row) =
-                    despiker.last_detector_diag[static_cast<std::size_t>(det)];
+                    despiker_local.last_detector_diag[static_cast<std::size_t>(det)];
             }
             if (existing.size() == static_cast<std::size_t>(n_dets)) {
                 const auto &old = existing[static_cast<std::size_t>(det)];
@@ -2243,10 +2280,13 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     // Preserve per-detector despike summaries for the final RTC output write while
     // retaining detector-local notch diagnostics selected from the outer scan.
     seed_rtc_detector_diag(out.index.data, out.scans.data.cols());
-    if (!line_audit.enabled) {
-        rtc_network_summary_by_scan.erase(out.index.data);
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        if (!line_audit.enabled) {
+            rtc_network_summary_by_scan.erase(out.index.data);
+        }
+        rtc_impulsive_summary_by_scan.erase(out.index.data);
     }
-    rtc_impulsive_summary_by_scan.erase(out.index.data);
 
     if (network_step_mask.enabled || impulsive_coincidence.enabled) {
         capture_rtc_diagnostics(out, calib, true, true);
@@ -2970,10 +3010,13 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
     const double fs_hz = (std::isfinite(dt_sec) && dt_sec > 0.0) ? (1.0 / dt_sec) : nan;
 
     std::map<Eigen::Index, RTCNetworkDiagSummary> prev_nw_summary;
-    const auto prev_it = rtc_network_summary_by_scan.find(scan_id);
-    if (prev_it != rtc_network_summary_by_scan.end()) {
-        for (const auto &row : prev_it->second) {
-            prev_nw_summary[row.nw] = row;
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        const auto prev_it = rtc_network_summary_by_scan.find(scan_id);
+        if (prev_it != rtc_network_summary_by_scan.end()) {
+            for (const auto &row : prev_it->second) {
+                prev_nw_summary[row.nw] = row;
+            }
         }
     }
 
@@ -3328,7 +3371,10 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
         push_line_audit_row(std::move(row), line_row);
     }
 
-    rtc_network_summary_by_scan[scan_id] = std::move(nw_summary);
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        rtc_network_summary_by_scan[scan_id] = std::move(nw_summary);
+    }
 }
 template <typename tc_t>
 Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
@@ -3341,8 +3387,20 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
     }
 
     const auto scan_id = in.index.data;
-    auto nw_it = rtc_network_summary_by_scan.find(scan_id);
-    if (nw_it == rtc_network_summary_by_scan.end()) {
+    std::vector<RTCNetworkDiagSummary> nw_summary;
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        const auto nw_it = rtc_network_summary_by_scan.find(scan_id);
+        if (nw_it == rtc_network_summary_by_scan.end()) {
+            return 0;
+        }
+        nw_summary = nw_it->second;
+    }
+    auto publish_nw_summary = [&]() {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        rtc_network_summary_by_scan[scan_id] = nw_summary;
+    };
+    if (nw_summary.empty()) {
         return 0;
     }
 
@@ -3482,8 +3540,8 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
     };
 
     std::vector<NetworkCandidate> candidates;
-    candidates.reserve(nw_it->second.size() * 2);
-    for (const auto &row : nw_it->second) {
+    candidates.reserve(nw_summary.size() * 2);
+    for (const auto &row : nw_summary) {
         const auto diag = get_line_audit_diag(row);
         bool added_multi_candidate = false;
         for (const auto &shared : diag.shared_candidates) {
@@ -3514,7 +3572,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
         push_network_candidate(candidates, row.nw, legacy_candidate);
     }
 
-    for (auto &row : nw_it->second) {
+    for (auto &row : nw_summary) {
         auto diag = get_line_audit_diag(row);
         diag.n_applied_notches = 0;
         diag.shared_applied_notch = false;
@@ -3531,11 +3589,13 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
     }
 
     if (candidates.empty()) {
+        publish_nw_summary();
         return 0;
     }
 
     const double cluster_tol_hz = std::max(audit.cluster_tol_hz, audit.apply_cluster_tol_hz);
     if (!(cluster_tol_hz > 0.0)) {
+        publish_nw_summary();
         return 0;
     }
 
@@ -3628,6 +3688,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
     }
 
     if (clusters.empty()) {
+        publish_nw_summary();
         return 0;
     }
 
@@ -3679,6 +3740,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
     }
 
     if (applied_clusters.empty()) {
+        publish_nw_summary();
         return 0;
     }
 
@@ -3691,7 +3753,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
         dynamic_notch_filter.iir(in.kernel.data);
     }
 
-    for (auto &row : nw_it->second) {
+    for (auto &row : nw_summary) {
         auto diag = get_line_audit_diag(row);
         diag.n_applied_notches = static_cast<int>(applied_clusters.size());
         auto find_applied_cluster = [&](double freq_hz) -> const AppliedCluster * {
@@ -3737,6 +3799,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
         }
         set_line_audit_diag(row, diag);
     }
+    publish_nw_summary();
 
     for (const auto &cluster : applied_clusters) {
         logger->info(
@@ -4184,16 +4247,18 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
         return filtered_column.allFinite();
     };
 
-    std::vector<RTCDetectorDiagSummary> *det_summary_ptr = nullptr;
+    std::vector<RTCDetectorDiagSummary> det_summary;
     {
         std::lock_guard<std::mutex> lock(*diag_summary_mutex);
-        auto &summary = rtc_detector_summary_by_scan[scan_id];
-        if (summary.size() != static_cast<std::size_t>(n_dets)) {
-            summary.assign(static_cast<std::size_t>(n_dets), RTCDetectorDiagSummary{});
+        const auto it = rtc_detector_summary_by_scan.find(scan_id);
+        if (it != rtc_detector_summary_by_scan.end() &&
+            it->second.size() == static_cast<std::size_t>(n_dets)) {
+            det_summary = it->second;
         }
-        det_summary_ptr = &summary;
     }
-    auto &det_summary = *det_summary_ptr;
+    if (det_summary.size() != static_cast<std::size_t>(n_dets)) {
+        det_summary.assign(static_cast<std::size_t>(n_dets), RTCDetectorDiagSummary{});
+    }
     for (Eigen::Index det = 0; det < n_dets; ++det) {
         det_summary[static_cast<std::size_t>(det)].det = det;
     }
@@ -4334,6 +4399,10 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
             has_kernel);
     }
 
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        rtc_detector_summary_by_scan[scan_id] = std::move(det_summary);
+    }
     return total_notches;
 }
 
@@ -4668,14 +4737,25 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             det_summary = det_it->second;
         }
     }
-    auto nw_it = rtc_network_summary_by_scan.find(scan_id);
-    auto imp_it = rtc_impulsive_summary_by_scan.find(scan_id);
+    std::vector<RTCNetworkDiagSummary> existing_nw_summary;
+    std::map<Eigen::Index, std::vector<RTCImpulsiveSnippetSummary>> existing_impulsive_summary;
+    bool have_network_summary = false;
+    bool have_impulsive_summary = false;
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        const auto nw_it = rtc_network_summary_by_scan.find(scan_id);
+        if (nw_it != rtc_network_summary_by_scan.end()) {
+            existing_nw_summary = nw_it->second;
+            have_network_summary = true;
+        }
+        const auto imp_it = rtc_impulsive_summary_by_scan.find(scan_id);
+        if (imp_it != rtc_impulsive_summary_by_scan.end()) {
+            existing_impulsive_summary = imp_it->second;
+            have_impulsive_summary = true;
+        }
+    }
     const bool have_detector_summary =
         det_summary.size() == static_cast<std::size_t>(n_dets);
-    const bool have_network_summary =
-        nw_it != rtc_network_summary_by_scan.end();
-    const bool have_impulsive_summary =
-        imp_it != rtc_impulsive_summary_by_scan.end();
     const bool recompute_detector_step_metrics = recompute_step_metrics || !have_detector_summary;
     const bool recompute_detector_impulsive_metrics =
         recompute_impulsive_metrics || !have_detector_summary;
@@ -4810,15 +4890,19 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             }
             impulsive_by_network[nw] = std::move(candidates);
         }
-        rtc_impulsive_summary_by_scan[scan_id] = std::move(impulsive_by_network);
+        {
+            std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+            rtc_impulsive_summary_by_scan[scan_id] = std::move(impulsive_by_network);
+        }
     }
     else if (!impulsive_capture.enabled) {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
         rtc_impulsive_summary_by_scan.erase(scan_id);
     }
 
     std::map<Eigen::Index, RTCNetworkDiagSummary> prev_nw_summary;
     if (have_network_summary) {
-        for (const auto &row : nw_it->second) {
+        for (const auto &row : existing_nw_summary) {
             prev_nw_summary[row.nw] = row;
         }
     }
@@ -5038,7 +5122,10 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
         nw_summary.push_back(row);
     }
-    rtc_network_summary_by_scan[scan_id] = std::move(nw_summary);
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        rtc_network_summary_by_scan[scan_id] = std::move(nw_summary);
+    }
 }
 
 template <typename calib_t>
@@ -5047,8 +5134,16 @@ void RTCProc::apply_network_step_mask(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         return;
     }
     const auto scan_id = in.index.data;
-    const auto nw_it = rtc_network_summary_by_scan.find(scan_id);
-    if (nw_it == rtc_network_summary_by_scan.end()) {
+    std::vector<RTCNetworkDiagSummary> nw_summary;
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        const auto nw_it = rtc_network_summary_by_scan.find(scan_id);
+        if (nw_it == rtc_network_summary_by_scan.end()) {
+            return;
+        }
+        nw_summary = nw_it->second;
+    }
+    if (nw_summary.empty()) {
         return;
     }
 
@@ -5085,7 +5180,7 @@ void RTCProc::apply_network_step_mask(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     const Eigen::Index n_pts = in.scans.data.rows();
     const auto grp_limits = get_grouping("nw", calib, in.scans.data.cols());
 
-    for (auto &row : nw_it->second) {
+    for (auto &row : nw_summary) {
         row.step_mask_applied = false;
         row.step_mask_start_sample = -2147483647;
         row.step_mask_end_sample = -2147483647;
@@ -5172,6 +5267,10 @@ void RTCProc::apply_network_step_mask(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             newly_flagged,
             flagged_fraction);
     }
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        rtc_network_summary_by_scan[scan_id] = std::move(nw_summary);
+    }
 }
 
 template <typename calib_t>
@@ -5181,8 +5280,16 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
         return;
     }
     const auto scan_id = in.index.data;
-    const auto nw_it = rtc_network_summary_by_scan.find(scan_id);
-    if (nw_it == rtc_network_summary_by_scan.end()) {
+    std::vector<RTCNetworkDiagSummary> nw_summary;
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        const auto nw_it = rtc_network_summary_by_scan.find(scan_id);
+        if (nw_it == rtc_network_summary_by_scan.end()) {
+            return;
+        }
+        nw_summary = nw_it->second;
+    }
+    if (nw_summary.empty()) {
         return;
     }
 
@@ -5249,9 +5356,9 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
     };
 
     std::vector<CoincidenceCandidate> candidates;
-    candidates.reserve(nw_it->second.size());
+    candidates.reserve(nw_summary.size());
 
-    for (auto &row : nw_it->second) {
+    for (auto &row : nw_summary) {
         row.impulsive_mask_applied = false;
         row.impulsive_mask_start_sample = kTransientFillInt;
         row.impulsive_mask_end_sample = kTransientFillInt;
@@ -5625,6 +5732,10 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
             newly_flagged,
             flagged_fraction);
     }
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        rtc_network_summary_by_scan[scan_id] = std::move(nw_summary);
+    }
 }
 
 template <typename calib_t>
@@ -5675,9 +5786,27 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
     const auto scan_row = static_cast<unsigned long>((scan_row_index >= 0) ? scan_row_index : in.index.data);
 
     const auto det_diag = snapshot_detector_diag_summary(in.index.data);
-    const auto nw_diag_it = rtc_network_summary_by_scan.find(in.index.data);
-    const auto impulsive_it = rtc_impulsive_summary_by_scan.find(in.index.data);
-    const auto window_diag_it = remove_bad_dets_window_summary_by_scan.find(in.index.data);
+    std::vector<RTCNetworkDiagSummary> nw_diag;
+    std::map<Eigen::Index, std::vector<RTCImpulsiveSnippetSummary>> impulsive_diag;
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        const auto nw_diag_it = rtc_network_summary_by_scan.find(in.index.data);
+        if (nw_diag_it != rtc_network_summary_by_scan.end()) {
+            nw_diag = nw_diag_it->second;
+        }
+        const auto impulsive_it = rtc_impulsive_summary_by_scan.find(in.index.data);
+        if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
+            impulsive_diag = impulsive_it->second;
+        }
+    }
+    std::vector<RemoveBadDetsWindowDiagSummary> window_diag;
+    {
+        std::lock_guard<std::mutex> lock(*diag_cache_mutex);
+        const auto window_diag_it = remove_bad_dets_window_summary_by_scan.find(in.index.data);
+        if (window_diag_it != remove_bad_dets_window_summary_by_scan.end()) {
+            window_diag = window_diag_it->second;
+        }
+    }
 
     NcDim n_dets_dim = fo.getDim("n_dets");
     if (!n_dets_dim.isNull()) {
@@ -5722,20 +5851,20 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
         };
         auto window_double_values = [&](auto getter) {
             std::vector<double> values(n_dets, fill_double);
-            if (window_diag_it != remove_bad_dets_window_summary_by_scan.end()) {
-                const auto n_copy = std::min<std::size_t>(n_dets, window_diag_it->second.size());
+            if (!window_diag.empty()) {
+                const auto n_copy = std::min<std::size_t>(n_dets, window_diag.size());
                 for (std::size_t i = 0; i < n_copy; ++i) {
-                    values[i] = getter(window_diag_it->second[i]);
+                    values[i] = getter(window_diag[i]);
                 }
             }
             return values;
         };
         auto window_int_values = [&](auto getter) {
             std::vector<int> values(n_dets, fill_int);
-            if (window_diag_it != remove_bad_dets_window_summary_by_scan.end()) {
-                const auto n_copy = std::min<std::size_t>(n_dets, window_diag_it->second.size());
+            if (!window_diag.empty()) {
+                const auto n_copy = std::min<std::size_t>(n_dets, window_diag.size());
                 for (std::size_t i = 0; i < n_copy; ++i) {
-                    values[i] = getter(window_diag_it->second[i]);
+                    values[i] = getter(window_diag[i]);
                 }
             }
             return values;
@@ -5871,8 +6000,8 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
             std::vector<std::size_t> size_scan_nw = {1, n_nws};
             auto nw_double_values = [&](auto getter) {
                 std::vector<double> values(n_nws, fill_double);
-                if (nw_diag_it != rtc_network_summary_by_scan.end()) {
-                    for (const auto &row : nw_diag_it->second) {
+                if (!nw_diag.empty()) {
+                    for (const auto &row : nw_diag) {
                         const auto it = nw_to_index.find(row.nw);
                         if (it == nw_to_index.end() || it->second >= n_nws) {
                             continue;
@@ -5884,8 +6013,8 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
             };
             auto nw_int_values = [&](auto getter) {
                 std::vector<int> values(n_nws, fill_int);
-                if (nw_diag_it != rtc_network_summary_by_scan.end()) {
-                    for (const auto &row : nw_diag_it->second) {
+                if (!nw_diag.empty()) {
+                    for (const auto &row : nw_diag) {
                         const auto it = nw_to_index.find(row.nw);
                         if (it == nw_to_index.end() || it->second >= n_nws) {
                             continue;
@@ -6095,8 +6224,8 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
 
                 auto imp_slot_int_values = [&](auto getter) {
                     std::vector<int> values(total_slots, fill_int);
-                    if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
-                        for (const auto &[nw, slots] : impulsive_it->second) {
+                    if (!impulsive_diag.empty()) {
+                        for (const auto &[nw, slots] : impulsive_diag) {
                             const auto it = nw_to_index.find(nw);
                             if (it == nw_to_index.end() || it->second >= n_nws) {
                                 continue;
@@ -6112,8 +6241,8 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
                 };
                 auto imp_slot_double_values = [&](auto getter) {
                     std::vector<double> values(total_slots, fill_double);
-                    if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
-                        for (const auto &[nw, slots] : impulsive_it->second) {
+                    if (!impulsive_diag.empty()) {
+                        for (const auto &[nw, slots] : impulsive_diag) {
                             const auto it = nw_to_index.find(nw);
                             if (it == nw_to_index.end() || it->second >= n_nws) {
                                 continue;
@@ -6129,8 +6258,8 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
                 };
                 auto imp_snip_double_values = [&](auto getter) {
                     std::vector<double> values(total_snip, fill_double);
-                    if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
-                        for (const auto &[nw, slots] : impulsive_it->second) {
+                    if (!impulsive_diag.empty()) {
+                        for (const auto &[nw, slots] : impulsive_diag) {
                             const auto it = nw_to_index.find(nw);
                             if (it == nw_to_index.end() || it->second >= n_nws) {
                                 continue;
@@ -6150,8 +6279,8 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
                 };
                 auto imp_snip_int_values = [&](auto getter) {
                     std::vector<int> values(total_snip, fill_int);
-                    if (impulsive_it != rtc_impulsive_summary_by_scan.end()) {
-                        for (const auto &[nw, slots] : impulsive_it->second) {
+                    if (!impulsive_diag.empty()) {
+                        for (const auto &[nw, slots] : impulsive_diag) {
                             const auto it = nw_to_index.find(nw);
                             if (it == nw_to_index.end() || it->second >= n_nws) {
                                 continue;
@@ -6244,13 +6373,17 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
 }
 
 inline void RTCProc::clear_cached_diagnostics(Eigen::Index scan_id) {
-    remove_bad_dets_window_summary_by_scan.erase(scan_id);
+    {
+        std::lock_guard<std::mutex> lock(*diag_cache_mutex);
+        remove_bad_dets_window_summary_by_scan.erase(scan_id);
+    }
     {
         std::lock_guard<std::mutex> lock(*diag_summary_mutex);
         rtc_detector_summary_by_scan.erase(scan_id);
+        rtc_network_summary_by_scan.erase(scan_id);
+        rtc_impulsive_summary_by_scan.erase(scan_id);
+        rtc_source_protection_summary_by_scan.erase(scan_id);
     }
-    rtc_network_summary_by_scan.erase(scan_id);
-    rtc_impulsive_summary_by_scan.erase(scan_id);
 }
 
 template <typename calib_t>

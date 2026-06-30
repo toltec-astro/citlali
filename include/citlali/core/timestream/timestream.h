@@ -10,6 +10,8 @@
 #include <limits>
 #include <cctype>
 #include <cmath>
+#include <memory>
+#include <mutex>
 #include <numeric>
 #include <string_view>
 #include <vector>
@@ -759,6 +761,7 @@ public:
     double remove_bad_dets_window_sec = 0.5;
     std::map<Eigen::Index, std::vector<RemoveBadDetsWindowDiagSummary>>
         remove_bad_dets_window_summary_by_scan;
+    std::shared_ptr<std::mutex> diag_cache_mutex = std::make_shared<std::mutex>();
 
     // create a map buffer from a citlali reduction directory
     template <class calib_t>
@@ -2729,11 +2732,9 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
     // only run if limits are not zero
     if (lower_inv_var_factor !=0 || upper_inv_var_factor !=0) {
         logger->info("removing outlier dets");
-        auto &window_diag = remove_bad_dets_window_summary_by_scan[in.index.data];
-        if (window_diag.size() != static_cast<std::size_t>(in.scans.data.cols())) {
-            window_diag.assign(static_cast<std::size_t>(in.scans.data.cols()),
-                               RemoveBadDetsWindowDiagSummary{});
-        }
+        std::vector<RemoveBadDetsWindowDiagSummary> window_diag(
+            static_cast<std::size_t>(in.scans.data.cols()),
+            RemoveBadDetsWindowDiagSummary{});
 
         auto infer_dt_sec = [&]() {
             auto it = in.tel_data.data.find("TelTime");
@@ -2987,6 +2988,11 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                     keep_going = false;
                 }
             }
+        }
+        {
+            std::lock_guard<std::mutex> lock(*diag_cache_mutex);
+            remove_bad_dets_window_summary_by_scan[in.index.data] =
+                std::move(window_diag);
         }
         // set up scan calib
         calib_scan.setup();

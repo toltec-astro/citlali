@@ -2074,8 +2074,11 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                             }
                         }
                     }
-                    corr_nw_group_ids_by_scan[in.index.data] = std::move(corr_group_ids_scan);
-                    corr_nw_summary_by_scan[in.index.data] = std::move(corr_summary_scan);
+                    {
+                        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+                        corr_nw_group_ids_by_scan[in.index.data] = std::move(corr_group_ids_scan);
+                        corr_nw_summary_by_scan[in.index.data] = std::move(corr_summary_scan);
+                    }
                     indx++;
                     out.status.cleaned = true;
                     log_kernel_matrix_diag(logger, "ptc after clean group=corr_nw", out.kernel.data, in.index.data);
@@ -2262,6 +2265,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             log_kernel_matrix_diag(logger, "ptc after clean group=" + effective_group, out.kernel.data, in.index.data);
         }
         if (!adaptive_summary_scan.empty()) {
+            std::lock_guard<std::mutex> lock(*diag_summary_mutex);
             adaptive_selector_summary_by_scan[in.index.data] = std::move(adaptive_summary_scan);
         }
     }
@@ -4430,7 +4434,10 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                 finite_or_nan(pair_med_abs_corr), finite_or_nan(cm_el_abs_corr),
                 finite_or_nan(cm_low_mid_ratio), severity, penalty_factor);
         }
-        weight_corr_penalty_summary_by_scan[in.index.data] = std::move(penalty_summary);
+        {
+            std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+            weight_corr_penalty_summary_by_scan[in.index.data] = std::move(penalty_summary);
+        }
     }
 
     if (busy_row_suppression.enabled) {
@@ -4496,7 +4503,10 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
             suppression_summary.push_back(summary);
         }
 
-        busy_row_suppression_summary_by_scan[in.index.data] = std::move(suppression_summary);
+        {
+            std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+            busy_row_suppression_summary_by_scan[in.index.data] = std::move(suppression_summary);
+        }
     }
 
     Eigen::Index n_apt_unflagged = 0;
@@ -4778,22 +4788,49 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
             }
         }
 
-        const auto corr_groups_it = corr_nw_group_ids_by_scan.find(in.index.data);
-        const auto corr_summary_it = corr_nw_summary_by_scan.find(in.index.data);
-        const auto weight_corr_penalty_it = weight_corr_penalty_summary_by_scan.find(in.index.data);
-        const auto busy_row_suppression_it = busy_row_suppression_summary_by_scan.find(in.index.data);
-        const auto adaptive_selector_it = adaptive_selector_summary_by_scan.find(in.index.data);
+        Eigen::VectorXi corr_group_ids;
+        bool have_corr_group_ids = false;
+        std::vector<CorrNWDiagSummary> corr_summary;
+        std::vector<WeightCorrPenaltyDiagSummary> weight_corr_penalty_summary;
+        std::vector<BusyRowSuppressionDiagSummary> busy_row_suppression_summary;
+        std::vector<AdaptiveSelectorDiagSummary> adaptive_selector_summary;
+        {
+            std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+            const auto corr_groups_it = corr_nw_group_ids_by_scan.find(in.index.data);
+            if (corr_groups_it != corr_nw_group_ids_by_scan.end()) {
+                corr_group_ids = corr_groups_it->second;
+                have_corr_group_ids = true;
+            }
+            const auto corr_summary_it = corr_nw_summary_by_scan.find(in.index.data);
+            if (corr_summary_it != corr_nw_summary_by_scan.end()) {
+                corr_summary = corr_summary_it->second;
+            }
+            const auto weight_corr_penalty_it = weight_corr_penalty_summary_by_scan.find(in.index.data);
+            if (weight_corr_penalty_it != weight_corr_penalty_summary_by_scan.end()) {
+                weight_corr_penalty_summary = weight_corr_penalty_it->second;
+            }
+            const auto busy_row_suppression_it = busy_row_suppression_summary_by_scan.find(in.index.data);
+            if (busy_row_suppression_it != busy_row_suppression_summary_by_scan.end()) {
+                busy_row_suppression_summary = busy_row_suppression_it->second;
+            }
+            const auto adaptive_selector_it = adaptive_selector_summary_by_scan.find(in.index.data);
+            if (adaptive_selector_it != adaptive_selector_summary_by_scan.end()) {
+                adaptive_selector_summary = adaptive_selector_it->second;
+            }
+        }
         const int corr_fill_value = -2147483647;
 
         // optional corr_nw diagnostics: detector group IDs per scan x detector
         NcVar corr_group_id_v = fo.getVar("corr_nw_group_id");
         if (!corr_group_id_v.isNull()) {
             std::vector<int> group_ids(static_cast<std::size_t>(n_dets_exists), corr_fill_value);
-            if (corr_groups_it != corr_nw_group_ids_by_scan.end()) {
-                const auto &gid = corr_groups_it->second;
-                const auto n_copy = std::min<unsigned long>(n_dets_exists, static_cast<unsigned long>(gid.size()));
+            if (have_corr_group_ids) {
+                const auto n_copy = std::min<unsigned long>(
+                    n_dets_exists,
+                    static_cast<unsigned long>(corr_group_ids.size()));
                 for (unsigned long i = 0; i < n_copy; ++i) {
-                    group_ids[static_cast<std::size_t>(i)] = static_cast<int>(gid(static_cast<Eigen::Index>(i)));
+                    group_ids[static_cast<std::size_t>(i)] =
+                        static_cast<int>(corr_group_ids(static_cast<Eigen::Index>(i)));
                 }
             }
             corr_group_id_v.putVar(start_index_weights, size_weights, group_ids.data());
@@ -4820,8 +4857,8 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                     nw_to_index[calib.nws(i)] = static_cast<std::size_t>(i);
                 }
 
-                if (corr_summary_it != corr_nw_summary_by_scan.end()) {
-                    for (const auto &row : corr_summary_it->second) {
+                if (!corr_summary.empty()) {
+                    for (const auto &row : corr_summary) {
                         const auto it = nw_to_index.find(row.nw);
                         if (it == nw_to_index.end() || it->second >= n_nws) {
                             continue;
@@ -4876,8 +4913,8 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                     nw_to_index[calib.nws(i)] = static_cast<std::size_t>(i);
                 }
 
-                if (weight_corr_penalty_it != weight_corr_penalty_summary_by_scan.end()) {
-                    for (const auto &row : weight_corr_penalty_it->second) {
+                if (!weight_corr_penalty_summary.empty()) {
+                    for (const auto &row : weight_corr_penalty_summary) {
                         const auto it = nw_to_index.find(row.nw);
                         if (it == nw_to_index.end() || it->second >= n_nws) {
                             continue;
@@ -4931,8 +4968,8 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                     nw_to_index[calib.nws(i)] = static_cast<std::size_t>(i);
                 }
 
-                if (busy_row_suppression_it != busy_row_suppression_summary_by_scan.end()) {
-                    for (const auto &row : busy_row_suppression_it->second) {
+                if (!busy_row_suppression_summary.empty()) {
+                    for (const auto &row : busy_row_suppression_summary) {
                         const auto it = nw_to_index.find(row.nw);
                         if (it == nw_to_index.end() || it->second >= n_nws) {
                             continue;
@@ -4991,8 +5028,8 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                     nw_to_index[calib.nws(i)] = static_cast<std::size_t>(i);
                 }
 
-                if (adaptive_selector_it != adaptive_selector_summary_by_scan.end()) {
-                    for (const auto &row : adaptive_selector_it->second) {
+                if (!adaptive_selector_summary.empty()) {
+                    for (const auto &row : adaptive_selector_summary) {
                         const auto it = nw_to_index.find(row.nw);
                         if (it == nw_to_index.end() || it->second >= n_nws) {
                             continue;
@@ -5143,23 +5180,13 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         }
 
         // drop per-scan diagnostics once persisted to netCDF
-        if (corr_groups_it != corr_nw_group_ids_by_scan.end()) {
-            corr_nw_group_ids_by_scan.erase(corr_groups_it);
-        }
-        if (corr_summary_it != corr_nw_summary_by_scan.end()) {
-            corr_nw_summary_by_scan.erase(corr_summary_it);
-        }
-        if (weight_corr_penalty_it != weight_corr_penalty_summary_by_scan.end()) {
-            weight_corr_penalty_summary_by_scan.erase(weight_corr_penalty_it);
-        }
-        if (busy_row_suppression_it != busy_row_suppression_summary_by_scan.end()) {
-            busy_row_suppression_summary_by_scan.erase(busy_row_suppression_it);
-        }
-        if (adaptive_selector_it != adaptive_selector_summary_by_scan.end()) {
-            adaptive_selector_summary_by_scan.erase(adaptive_selector_it);
-        }
         {
             std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+            corr_nw_group_ids_by_scan.erase(in.index.data);
+            corr_nw_summary_by_scan.erase(in.index.data);
+            weight_corr_penalty_summary_by_scan.erase(in.index.data);
+            busy_row_suppression_summary_by_scan.erase(in.index.data);
+            adaptive_selector_summary_by_scan.erase(in.index.data);
             second_pass_summary_by_scan.erase(in.index.data);
             second_pass_added_flags_by_scan.erase(in.index.data);
         }
@@ -5258,7 +5285,14 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
         std::vector<double> stddev(static_cast<std::size_t>(n_dets), std::numeric_limits<double>::quiet_NaN());
         std::vector<double> median(static_cast<std::size_t>(n_dets), std::numeric_limits<double>::quiet_NaN());
         std::vector<double> flagged_frac(static_cast<std::size_t>(n_dets), std::numeric_limits<double>::quiet_NaN());
-        auto window_diag_it = remove_bad_dets_window_summary_by_scan.find(in.index.data);
+        std::vector<RemoveBadDetsWindowDiagSummary> window_diag;
+        {
+            std::lock_guard<std::mutex> lock(*diag_cache_mutex);
+            const auto window_diag_it = remove_bad_dets_window_summary_by_scan.find(in.index.data);
+            if (window_diag_it != remove_bad_dets_window_summary_by_scan.end()) {
+                window_diag = window_diag_it->second;
+            }
+        }
         const double n_pts = static_cast<double>(in.scans.data.rows());
         const auto n_copy = std::min<unsigned long>(n_dets, static_cast<unsigned long>(in.scans.data.cols()));
         for (unsigned long i = 0; i < n_copy; ++i) {
@@ -5273,7 +5307,7 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
                 (n_pts > 0.0) ? flags.cast<double>().sum() / n_pts : std::numeric_limits<double>::quiet_NaN();
         }
 
-        if (window_diag_it == remove_bad_dets_window_summary_by_scan.end()) {
+        if (window_diag.empty()) {
             auto infer_dt_sec = [&]() {
                 auto it = in.tel_data.data.find("TelTime");
                 if (it == in.tel_data.data.end() || it->second.size() < 2) {
@@ -5403,13 +5437,15 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
                 return summary;
             };
 
-            auto &window_diag = remove_bad_dets_window_summary_by_scan[in.index.data];
             window_diag.assign(static_cast<std::size_t>(in.scans.data.cols()),
                                RemoveBadDetsWindowDiagSummary{});
             for (Eigen::Index det = 0; det < in.scans.data.cols(); ++det) {
                 window_diag[static_cast<std::size_t>(det)] = summarize_windows(det);
             }
-            window_diag_it = remove_bad_dets_window_summary_by_scan.find(in.index.data);
+            {
+                std::lock_guard<std::mutex> lock(*diag_cache_mutex);
+                remove_bad_dets_window_summary_by_scan[in.index.data] = window_diag;
+            }
         }
 
         fo.getVar("ptc_detector_weight").putVar(start_index_det, size_det, weights.data());
@@ -5420,22 +5456,22 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
 
         auto window_double_values = [&](auto getter) {
             std::vector<double> values(static_cast<std::size_t>(n_dets), std::numeric_limits<double>::quiet_NaN());
-            if (window_diag_it != remove_bad_dets_window_summary_by_scan.end()) {
+            if (!window_diag.empty()) {
                 const auto n_copy_diag = std::min<std::size_t>(
-                    static_cast<std::size_t>(n_dets), window_diag_it->second.size());
+                    static_cast<std::size_t>(n_dets), window_diag.size());
                 for (std::size_t i = 0; i < n_copy_diag; ++i) {
-                    values[i] = getter(window_diag_it->second[i]);
+                    values[i] = getter(window_diag[i]);
                 }
             }
             return values;
         };
         auto window_int_values = [&](auto getter) {
             std::vector<int> values(static_cast<std::size_t>(n_dets), -2147483647);
-            if (window_diag_it != remove_bad_dets_window_summary_by_scan.end()) {
+            if (!window_diag.empty()) {
                 const auto n_copy_diag = std::min<std::size_t>(
-                    static_cast<std::size_t>(n_dets), window_diag_it->second.size());
+                    static_cast<std::size_t>(n_dets), window_diag.size());
                 for (std::size_t i = 0; i < n_copy_diag; ++i) {
-                    values[i] = getter(window_diag_it->second[i]);
+                    values[i] = getter(window_diag[i]);
                 }
             }
             return values;
@@ -5475,10 +5511,29 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
                             [](const auto &row) { return row.heavily_flagged_window_fraction; });
 
         const auto second_pass_summary = snapshot_second_pass_summary(in.index.data);
-        const auto corr_summary_it = corr_nw_summary_by_scan.find(in.index.data);
-        const auto weight_corr_penalty_it = weight_corr_penalty_summary_by_scan.find(in.index.data);
-        const auto busy_row_suppression_it = busy_row_suppression_summary_by_scan.find(in.index.data);
-        const auto adaptive_selector_it = adaptive_selector_summary_by_scan.find(in.index.data);
+        std::vector<CorrNWDiagSummary> corr_summary;
+        std::vector<WeightCorrPenaltyDiagSummary> weight_corr_penalty_summary;
+        std::vector<BusyRowSuppressionDiagSummary> busy_row_suppression_summary;
+        std::vector<AdaptiveSelectorDiagSummary> adaptive_selector_summary;
+        {
+            std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+            const auto corr_summary_it = corr_nw_summary_by_scan.find(in.index.data);
+            if (corr_summary_it != corr_nw_summary_by_scan.end()) {
+                corr_summary = corr_summary_it->second;
+            }
+            const auto weight_corr_penalty_it = weight_corr_penalty_summary_by_scan.find(in.index.data);
+            if (weight_corr_penalty_it != weight_corr_penalty_summary_by_scan.end()) {
+                weight_corr_penalty_summary = weight_corr_penalty_it->second;
+            }
+            const auto busy_row_suppression_it = busy_row_suppression_summary_by_scan.find(in.index.data);
+            if (busy_row_suppression_it != busy_row_suppression_summary_by_scan.end()) {
+                busy_row_suppression_summary = busy_row_suppression_it->second;
+            }
+            const auto adaptive_selector_it = adaptive_selector_summary_by_scan.find(in.index.data);
+            if (adaptive_selector_it != adaptive_selector_summary_by_scan.end()) {
+                adaptive_selector_summary = adaptive_selector_it->second;
+            }
+        }
         const int fill_int = -2147483647;
         const double fill_double = std::numeric_limits<double>::quiet_NaN();
 
@@ -5511,8 +5566,8 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
             std::vector<int> v_n_det_grouped(n_nws, fill_int);
             std::vector<int> v_n_det_ungrouped(n_nws, fill_int);
             std::vector<int> v_sample_step(n_nws, fill_int);
-            if (corr_summary_it != corr_nw_summary_by_scan.end()) {
-                for (const auto &row : corr_summary_it->second) {
+            if (!corr_summary.empty()) {
+                for (const auto &row : corr_summary) {
                     const auto it = nw_to_index.find(row.nw);
                     if (it == nw_to_index.end() || it->second >= n_nws) {
                         continue;
@@ -5560,8 +5615,8 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
             std::vector<int> v_n_det_used(n_nws, fill_int);
             std::vector<int> v_n_det_weighted(n_nws, fill_int);
             std::vector<int> v_sample_step(n_nws, fill_int);
-            if (weight_corr_penalty_it != weight_corr_penalty_summary_by_scan.end()) {
-                for (const auto &row : weight_corr_penalty_it->second) {
+            if (!weight_corr_penalty_summary.empty()) {
+                for (const auto &row : weight_corr_penalty_summary) {
                     const auto it = nw_to_index.find(row.nw);
                     if (it == nw_to_index.end() || it->second >= n_nws) {
                         continue;
@@ -5609,8 +5664,8 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
             std::vector<int> v_n_det_weighted(n_nws, fill_int);
             std::vector<double> v_factor(n_nws, fill_double);
             std::vector<double> v_max_resid_z(n_nws, fill_double);
-            if (busy_row_suppression_it != busy_row_suppression_summary_by_scan.end()) {
-                for (const auto &row : busy_row_suppression_it->second) {
+            if (!busy_row_suppression_summary.empty()) {
+                for (const auto &row : busy_row_suppression_summary) {
                     const auto it = nw_to_index.find(row.nw);
                     if (it == nw_to_index.end() || it->second >= n_nws) {
                         continue;
@@ -5664,8 +5719,8 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
             std::vector<double> v_eig_solve_msec(n_nws, fill_double);
             std::vector<double> v_candidate_eval_msec(n_nws, fill_double);
             std::vector<double> v_total_msec(n_nws, fill_double);
-            if (adaptive_selector_it != adaptive_selector_summary_by_scan.end()) {
-                for (const auto &row : adaptive_selector_it->second) {
+            if (!adaptive_selector_summary.empty()) {
+                for (const auto &row : adaptive_selector_summary) {
                     const auto it = nw_to_index.find(row.nw);
                     if (it == nw_to_index.end() || it->second >= n_nws) {
                         continue;
@@ -5824,14 +5879,17 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
 }
 
 inline void PTCProc::clear_cached_diagnostics(Eigen::Index scan_id) {
-    remove_bad_dets_window_summary_by_scan.erase(scan_id);
-    corr_nw_group_ids_by_scan.erase(scan_id);
-    corr_nw_summary_by_scan.erase(scan_id);
-    weight_corr_penalty_summary_by_scan.erase(scan_id);
-    busy_row_suppression_summary_by_scan.erase(scan_id);
-    adaptive_selector_summary_by_scan.erase(scan_id);
+    {
+        std::lock_guard<std::mutex> lock(*diag_cache_mutex);
+        remove_bad_dets_window_summary_by_scan.erase(scan_id);
+    }
     {
         std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        corr_nw_group_ids_by_scan.erase(scan_id);
+        corr_nw_summary_by_scan.erase(scan_id);
+        weight_corr_penalty_summary_by_scan.erase(scan_id);
+        busy_row_suppression_summary_by_scan.erase(scan_id);
+        adaptive_selector_summary_by_scan.erase(scan_id);
         second_pass_summary_by_scan.erase(scan_id);
         second_pass_added_flags_by_scan.erase(scan_id);
         high_weight_summary_by_scan.erase(scan_id);
