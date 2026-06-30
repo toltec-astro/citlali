@@ -36,6 +36,16 @@ struct FakeAptColumn {
     }
 };
 
+struct FakeTelHeaderValue {
+    double value = 0.0;
+    bool set = false;
+
+    void setConstant(double new_value) {
+        value = new_value;
+        set = true;
+    }
+};
+
 struct FakeCalib {
     std::map<std::string, FakeAptColumn> apt;
     std::string ignore_hwpr = "false";
@@ -61,6 +71,7 @@ struct FakeEngine {
 
     struct {
         std::vector<std::string> obsnums;
+        std::vector<double> crval_config = {0.0, 0.0};
     } omb;
 
     struct {
@@ -73,6 +84,7 @@ struct FakeEngine {
         double fsmp = 100.0;
         double d_fsmp = -1.0;
         bool sim_obs = false;
+        std::map<std::string, FakeTelHeaderValue> tel_header;
     } telescope;
 
     struct {
@@ -1012,6 +1024,30 @@ TEST(pipeline_preflight, leaves_hwpr_state_when_not_polarized) {
 
     EXPECT_TRUE(engine.calib.run_hwpr);
     EXPECT_FALSE(engine.calib.loaded_hwpr);
+}
+
+TEST(pipeline_preflight, leaves_map_center_when_not_configured) {
+    FakeEngine engine;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::overwrite_map_center_if_configured(engine, logger);
+
+    EXPECT_TRUE(engine.telescope.tel_header.empty());
+}
+
+TEST(pipeline_preflight, overwrites_map_center_when_configured) {
+    FakeEngine engine;
+    engine.omb.crval_config = {180.0, 45.0};
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::overwrite_map_center_if_configured(engine, logger);
+
+    EXPECT_TRUE(engine.telescope.tel_header["Header.Source.Ra"].set);
+    EXPECT_TRUE(engine.telescope.tel_header["Header.Source.Dec"].set);
+    EXPECT_NEAR(engine.telescope.tel_header["Header.Source.Ra"].value,
+                citlali::pipeline::degrees_to_radians(180.0), 1e-12);
+    EXPECT_NEAR(engine.telescope.tel_header["Header.Source.Dec"].value,
+                citlali::pipeline::degrees_to_radians(45.0), 1e-12);
 }
 
 TEST(pipeline_output_layout, derives_config_copy_destinations) {
