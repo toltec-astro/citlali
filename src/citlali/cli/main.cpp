@@ -389,10 +389,9 @@ int run(const rc_t &rc) {
                     auto kidsproc =
                         KidsDataProc::from_config(citlali_config.get_config("kids"));
                     i++;
-                    // this is needed to figure out the data sample rate
-                    // and number of detectors
-                    logger->debug("getting rawobs kids meta info");
-                    auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
+                    auto rawobs_kids_meta =
+                        citlali::pipeline::load_rawobs_kids_meta(
+                            kidsproc, rawobs, logger);
 
                     citlali::pipeline::configure_observation_calibration<
                         std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>>(
@@ -467,10 +466,9 @@ int run(const rc_t &rc) {
                         // get current rawobs
                         const auto &rawobs = co.inputs()[i];
 
-                        // this is needed to figure out the data sample rate
-                        // and number of detectors
-                        logger->debug("getting rawobs kids meta info");
-                        auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
+                        auto rawobs_kids_meta =
+                            citlali::pipeline::load_rawobs_kids_meta(
+                                kidsproc, rawobs, logger);
 
                         if (co.n_inputs() > 1) {
                             citlali::pipeline::configure_observation_calibration<

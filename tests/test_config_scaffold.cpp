@@ -372,7 +372,18 @@ struct FakeReferenceWrappedRawObs : FakeRawObs {
     }
 };
 
-struct FakeKidsProc {};
+struct FakeKidsProc {
+    int get_rawobs_meta_calls = 0;
+    std::vector<FakeRawObsMeta> meta = {
+        {100.0, 101},
+        {122.0, 102},
+    };
+
+    std::vector<FakeRawObsMeta> get_rawobs_meta(const FakeRawObs &) {
+        ++get_rawobs_meta_calls;
+        return meta;
+    }
+};
 
 struct FakeExecutionEngine {
     bool run_tod = true;
@@ -1501,6 +1512,21 @@ TEST(pipeline_preflight, calculates_scan_indices) {
 
     EXPECT_EQ(engine.telescope.calc_scan_indices_calls, 1);
     EXPECT_EQ(logger->info_calls, 1);
+}
+
+TEST(pipeline_preflight, loads_rawobs_kids_meta) {
+    FakeKidsProc kidsproc;
+    FakeRawObs rawobs;
+    auto logger = std::make_shared<FakeLogger>();
+
+    const auto meta = citlali::pipeline::load_rawobs_kids_meta(
+        kidsproc, rawobs, logger);
+
+    EXPECT_EQ(kidsproc.get_rawobs_meta_calls, 1);
+    ASSERT_EQ(meta.size(), 2U);
+    EXPECT_DOUBLE_EQ(meta.back().fsmp, 122.0);
+    EXPECT_EQ(meta.back().obsid, 102);
+    EXPECT_EQ(logger->debug_calls, 1);
 }
 
 TEST(pipeline_preflight, updates_sample_rate_from_rawobs_meta) {
