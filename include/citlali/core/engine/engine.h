@@ -4098,18 +4098,23 @@ void Engine::get_citlali_config(CT &config) {
 
 template<typename CT>
 void Engine::get_photometry_config(CT &config) {
+    typed_beammap_config.source = citlali::config::BeammapSourceConfig{};
+
     // beammap source name
     get_config_value(config, beammap_source_name, missing_keys, invalid_keys,
                      std::tuple{"beammap_source","name"});
+    typed_beammap_config.source.name = beammap_source_name;
     // beammap source ra
     get_config_value(config, beammap_ra_rad, missing_keys, invalid_keys,
                      std::tuple{"beammap_source","ra_deg"});
+    typed_beammap_config.source.ra_deg = beammap_ra_rad;
     // convert ra to radians
     beammap_ra_rad = beammap_ra_rad*DEG_TO_RAD;
 
     // beammap source dec
     get_config_value(config, beammap_dec_rad, missing_keys, invalid_keys,
                      std::tuple{"beammap_source","dec_deg"});
+    typed_beammap_config.source.dec_deg = beammap_dec_rad;
     // convert dec to radians
     beammap_dec_rad = beammap_dec_rad*DEG_TO_RAD;
 
@@ -4127,6 +4132,8 @@ void Engine::get_photometry_config(CT &config) {
         // copy flux and uncertainty
         beammap_fluxes_mJy_beam[array] = flux;
         beammap_err_mJy_beam[array] = uncertainty_mJy;
+        typed_beammap_config.source.fluxes.push_back(
+            citlali::config::BeammapSourceFluxConfig{array, flux, uncertainty_mJy});
     }
 
     if (redu_type == "beammap") {

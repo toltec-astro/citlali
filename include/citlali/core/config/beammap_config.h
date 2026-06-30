@@ -4,6 +4,7 @@
 #include <citlali/core/config/enum_parser.h>
 
 #include <array>
+#include <cmath>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -121,7 +122,21 @@ struct BeammapFlaggingConfig {
     double max_prior_d2 = 0.0;
 };
 
+struct BeammapSourceFluxConfig {
+    std::string array_name;
+    double value_mjy = 0.0;
+    double uncertainty_mjy = 0.0;
+};
+
+struct BeammapSourceConfig {
+    std::string name;
+    double ra_deg = 0.0;
+    double dec_deg = 0.0;
+    std::vector<BeammapSourceFluxConfig> fluxes;
+};
+
 struct BeammapConfig {
+    BeammapSourceConfig source;
     BeammapIterationConfig iteration;
     BeammapPhaseStrategyConfig phase_strategy;
     BeammapReferenceConfig reference;
@@ -229,7 +244,35 @@ inline void validate(const BeammapFlaggingConfig &config, ValidationReport &repo
                   {"beammap", "flagging", "max_prior_d2"}, report);
 }
 
+inline void validate(const BeammapSourceFluxConfig &config, ValidationReport &report) {
+    if (config.array_name.empty()) {
+        report.add_error({"beammap_source", "fluxes", "array_name"},
+                         "must not be empty");
+    }
+    if (!std::isfinite(config.value_mjy) || config.value_mjy <= 0.0) {
+        report.add_error({"beammap_source", "fluxes", "value_mJy"},
+                         "must be positive and finite");
+    }
+    if (!std::isfinite(config.uncertainty_mjy) || config.uncertainty_mjy < 0.0) {
+        report.add_error({"beammap_source", "fluxes", "uncertainty_mJy"},
+                         "must be greater than or equal to 0 and finite");
+    }
+}
+
+inline void validate(const BeammapSourceConfig &config, ValidationReport &report) {
+    if (!std::isfinite(config.ra_deg)) {
+        report.add_error({"beammap_source", "ra_deg"}, "must be finite");
+    }
+    if (!std::isfinite(config.dec_deg)) {
+        report.add_error({"beammap_source", "dec_deg"}, "must be finite");
+    }
+    for (const auto &flux : config.fluxes) {
+        validate(flux, report);
+    }
+}
+
 inline void validate(const BeammapConfig &config, ValidationReport &report) {
+    validate(config.source, report);
     validate(config.iteration, report);
     validate(config.phase_strategy, report);
     validate(config.rfi_mask, report);

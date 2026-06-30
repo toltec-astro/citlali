@@ -147,6 +147,16 @@ TEST(config_scaffold, validates_beammap_config_values) {
     EXPECT_EQ(report.error_count(), 7U);
 }
 
+TEST(config_scaffold, validates_beammap_source_values) {
+    citlali::config::BeammapSourceConfig config;
+    config.fluxes.push_back(citlali::config::BeammapSourceFluxConfig{"", 0.0, -1.0});
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 3U);
+}
+
 TEST(error_scaffold, preserves_error_code_and_message) {
     auto error = citlali::error::invalid_config("bad config");
     EXPECT_EQ(error.code(), citlali::error::Code::invalid_config);
