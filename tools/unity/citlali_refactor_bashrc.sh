@@ -8,10 +8,12 @@ citlali_refactor_update() {
   local branch="${CITLALI_REFACTOR_BRANCH:-codex/structural-refactor}"
   local remote="${CITLALI_REFACTOR_REMOTE:-origin}"
   local build_dir="${CITLALI_REFACTOR_BUILD_DIR:-${repo}/build}"
-  local preset="${CITLALI_REFACTOR_PRESET:-unity_release}"
+  local preset="${CITLALI_REFACTOR_PRESET:-}"
   local target="${CITLALI_REFACTOR_TARGET:-citlali_cli}"
   local jobs="${CITLALI_REFACTOR_JOBS:-${CITLALI_BUILD_JOBS:-15}}"
-  local tula_dir="${CITLALI_TULA_DIR:-${repo%/*}/tula}"
+  local build_type="${CITLALI_REFACTOR_BUILD_TYPE:-Release}"
+  local wiener_omp="${CITLALI_USE_WIENER_FILTER_OMP:-ON}"
+  local tula_dir="${CITLALI_TULA_DIR:-}"
   local baseline_repo="${CITLALI_BASELINE_REPO:-${HOME}/work_toltec/citlali_dev/citlali}"
 
   if [[ "${build_dir}" != /* ]]; then
@@ -56,13 +58,31 @@ citlali_refactor_update() {
 
     git log -1 --oneline
 
-    if [[ ! -d "${tula_dir}" ]]; then
-      echo "Warning: expected sibling tula checkout not found: ${tula_dir}" >&2
-      echo "CMake may try to fetch tula unless FETCHCONTENT_SOURCE_DIR_TULA is valid." >&2
+    local cmake_args=(
+      -S .
+      -B "${build_dir}"
+      -DCMAKE_BUILD_TYPE="${build_type}"
+      -DCITLALI_USE_WIENER_FILTER_OMP="${wiener_omp}"
+    )
+
+    if [[ -n "${preset}" ]]; then
+      cmake_args+=(--preset "${preset}")
     fi
 
-    cmake -S . -B "${build_dir}" --preset "${preset}" \
-      -DFETCHCONTENT_SOURCE_DIR_TULA="${tula_dir}"
+    if [[ -n "${tula_dir}" ]]; then
+      if [[ ! -d "${tula_dir}" ]]; then
+        echo "Missing tula checkout: ${tula_dir}" >&2
+        echo "Either create it or unset CITLALI_TULA_DIR to let CMake fetch tula into build/_deps." >&2
+        return 1
+      fi
+      cmake_args+=(-DFETCHCONTENT_SOURCE_DIR_TULA="${tula_dir}")
+    else
+      # Match the existing citlali/build behavior: do not force a sibling tula
+      # checkout; let FetchContent populate build/_deps/tula-src.
+      cmake_args+=(-U FETCHCONTENT_SOURCE_DIR_TULA)
+    fi
+
+    cmake "${cmake_args[@]}"
     cmake --build "${build_dir}" --target "${target}" -j "${jobs}"
 
     if [[ -x "${build_dir}/bin/citlali" ]]; then

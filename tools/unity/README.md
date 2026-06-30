@@ -28,7 +28,8 @@ This keeps the existing gw_dev comparison checkout untouched:
 - protected comparison repo: `/home/toltec_umass_edu/work_toltec/citlali_dev/citlali`
 - refactor repo: `/home/toltec_umass_edu/work_toltec/citlali_dev/citlali_refactor`
 - refactor build dir: `build`
-- configure preset fallback: `unity_release`
+- configure preset: none by default; mirrors the existing `citlali/build`
+  workflow
 - target: `citlali_cli`
 
 The sourceable Unity helper is:
@@ -57,6 +58,7 @@ Defaults:
 - protected comparison repo: `/home/toltec_umass_edu/work_toltec/citlali_dev/citlali`
 - refactor repo: `/home/toltec_umass_edu/work_toltec/citlali_dev/citlali_refactor`
 - refactor build dir: `build`
+- configure preset: none by default
 
 Override them with environment variables or command-line options:
 
@@ -104,7 +106,8 @@ The remote build helper builds under the refactor source tree:
 That leaves the gw_dev comparison executable and cache under
 `/home/toltec_umass_edu/work_toltec/citlali_dev/citlali/` untouched.
 
-If the build directory does not exist, or if `--configure` is passed, it runs:
+If the build directory does not exist, or if `--configure` is passed, the ssh
+fallback helper runs:
 
 ```bash
 cmake -S . -B <build-dir> --preset unity_release
@@ -120,3 +123,9 @@ For the first morning validation, keep the gw_dev build directory intact and
 use the default refactor build directory. If a comparison build needs a
 different cache, create another directory under `citlali_refactor/`, not under
 the protected `citlali/` tree.
+
+The sourceable `citlali-refactor-update` helper does not use the `unity_release`
+preset by default. It configures `citlali_refactor/build` directly, with
+`CMAKE_BUILD_TYPE=Release`, `CITLALI_USE_WIENER_FILTER_OMP=ON`, and
+`FETCHCONTENT_SOURCE_DIR_TULA` unset so CMake can populate `build/_deps/tula-src`
+the same way the existing `citlali/build` cache does.

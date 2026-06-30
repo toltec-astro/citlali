@@ -47,14 +47,26 @@ The existing comparison build stays under:
 ${HOME}/work_toltec/citlali_dev/citlali/build_unity_release_native_lto
 ```
 
-The Unity preset expects the sibling `tula` checkout used by the existing
-`citlali` build:
+The existing `citlali/build` directory does not use a sibling `tula` checkout.
+Its cache has `FETCHCONTENT_SOURCE_DIR_TULA` empty and uses:
 
 ```text
-${HOME}/work_toltec/citlali_dev/tula
+${HOME}/work_toltec/citlali_dev/citlali/build/_deps/tula-src
 ```
 
-If it is missing, clone or restore it before configuring Citlali.
+The refactor helper mirrors that behavior by default. It does not pass a
+configure preset and it removes any stale `FETCHCONTENT_SOURCE_DIR_TULA` cache
+entry, so CMake can populate `citlali_refactor/build/_deps/tula-src`.
+
+If Unity already has a maintained `tula` checkout and you want to force it, set:
+
+```bash
+export CITLALI_TULA_DIR=/path/to/tula
+```
+
+before running `citlali-refactor-update`. If you also want the tracked
+`unity_release` preset, set `CITLALI_REFACTOR_PRESET=unity_release` and provide
+`CITLALI_TULA_DIR`, because that preset expects a manual tula source directory.
 
 ## Bashrc Integration
 
@@ -96,8 +108,10 @@ cd "${HOME}/work_toltec/citlali_dev/citlali_refactor"
 git fetch origin codex/structural-refactor
 git switch codex/structural-refactor
 git pull --ff-only origin codex/structural-refactor
-cmake -S . -B build --preset unity_release \
-  -DFETCHCONTENT_SOURCE_DIR_TULA="${HOME}/work_toltec/citlali_dev/tula"
+cmake -S . -B build \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCITLALI_USE_WIENER_FILTER_OMP=ON \
+  -U FETCHCONTENT_SOURCE_DIR_TULA
 cmake --build build --target citlali_cli -j 15
 ./build/bin/citlali --version
 ```
@@ -109,9 +123,8 @@ Set these in the Unity shell before calling `citlali-refactor-update` if needed:
 ```bash
 export CITLALI_REFACTOR_BRANCH=codex/structural-refactor
 export CITLALI_REFACTOR_JOBS=15
-export CITLALI_REFACTOR_PRESET=unity_release
+export CITLALI_REFACTOR_BUILD_TYPE=Release
 export CITLALI_REFACTOR_TARGET=citlali_cli
-export CITLALI_TULA_DIR="${HOME}/work_toltec/citlali_dev/tula"
 ```
 
 The helper refuses to use the protected baseline checkout
