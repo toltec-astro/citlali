@@ -119,6 +119,10 @@ Then it runs:
 cmake --build <build-dir> --target citlali_cli -j <jobs>
 ```
 
+For `citlali-refactor-update`, build parallelism defaults to the detected CPU
+count: `nproc`, then `getconf _NPROCESSORS_ONLN`, then 15 as a last fallback.
+Set `CITLALI_REFACTOR_JOBS=<n>` to cap or override that value.
+
 For the first morning validation, keep the gw_dev build directory intact and
 use the default refactor build directory. If a comparison build needs a
 different cache, create another directory under `citlali_refactor/`, not under

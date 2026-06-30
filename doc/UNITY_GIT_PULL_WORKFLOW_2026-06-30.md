@@ -120,7 +120,7 @@ cmake -S . -B build \
   -DCONAN_INSTALL_NETCDFCXX4=OFF \
   -DFETCH_NETCDFCXX4=ON \
   -U FETCHCONTENT_SOURCE_DIR_TULA
-cmake --build build --target citlali_cli -j 15
+cmake --build build --target citlali_cli -j "$(nproc)"
 ./build/bin/citlali --version
 ```
 
@@ -130,12 +130,18 @@ Set these in the Unity shell before calling `citlali-refactor-update` if needed:
 
 ```bash
 export CITLALI_REFACTOR_BRANCH=codex/structural-refactor
-export CITLALI_REFACTOR_JOBS=15
 export CITLALI_REFACTOR_BUILD_TYPE=Release
 export CITLALI_REFACTOR_TARGET=citlali_cli
 export CITLALI_CONAN_CMD=/work/toltec/toltec_shared/toltec_astro/extern/pyenv/versions/conan1/bin/conan
 export CITLALI_USE_INSTALLED_NETCDF=ON
+# Optional: cap or override auto-detected build parallelism.
+# export CITLALI_REFACTOR_JOBS=8
 ```
+
+When `CITLALI_REFACTOR_JOBS` and `CITLALI_BUILD_JOBS` are unset,
+`citlali-refactor-update` detects build parallelism with `nproc`, then
+`getconf _NPROCESSORS_ONLN`, and falls back to 15 only if neither detector is
+available.
 
 The helper refuses to use the protected baseline checkout
 `${HOME}/work_toltec/citlali_dev/citlali` unless explicitly overridden. That

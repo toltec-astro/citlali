@@ -3,6 +3,24 @@
 # Example:
 #   source "${HOME}/work_toltec/citlali_dev/citlali_refactor/tools/unity/citlali_refactor_bashrc.sh"
 
+_citlali_refactor_detect_jobs() {
+  local detected_jobs=""
+
+  if command -v nproc >/dev/null 2>&1; then
+    detected_jobs="$(nproc 2>/dev/null || true)"
+  fi
+
+  if [[ ! "${detected_jobs}" =~ ^[0-9]+$ || "${detected_jobs}" -lt 1 ]]; then
+    detected_jobs="$(getconf _NPROCESSORS_ONLN 2>/dev/null || true)"
+  fi
+
+  if [[ "${detected_jobs}" =~ ^[0-9]+$ && "${detected_jobs}" -gt 0 ]]; then
+    echo "${detected_jobs}"
+  else
+    echo 15
+  fi
+}
+
 citlali_refactor_update() {
   local repo="${CITLALI_REFACTOR_REPO:-${HOME}/work_toltec/citlali_dev/citlali_refactor}"
   local branch="${CITLALI_REFACTOR_BRANCH:-codex/structural-refactor}"
@@ -10,7 +28,7 @@ citlali_refactor_update() {
   local build_dir="${CITLALI_REFACTOR_BUILD_DIR:-${repo}/build}"
   local preset="${CITLALI_REFACTOR_PRESET:-}"
   local target="${CITLALI_REFACTOR_TARGET:-citlali_cli}"
-  local jobs="${CITLALI_REFACTOR_JOBS:-${CITLALI_BUILD_JOBS:-15}}"
+  local jobs="${CITLALI_REFACTOR_JOBS:-${CITLALI_BUILD_JOBS:-}}"
   local build_type="${CITLALI_REFACTOR_BUILD_TYPE:-Release}"
   local wiener_omp="${CITLALI_USE_WIENER_FILTER_OMP:-ON}"
   local use_installed_netcdf="${CITLALI_USE_INSTALLED_NETCDF:-ON}"
@@ -22,6 +40,10 @@ citlali_refactor_update() {
 
   if [[ "${build_dir}" != /* ]]; then
     build_dir="${repo}/${build_dir}"
+  fi
+
+  if [[ -z "${jobs}" ]]; then
+    jobs="$(_citlali_refactor_detect_jobs)"
   fi
 
   if ! git -C "${repo}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -130,6 +152,7 @@ citlali_refactor_update() {
     fi
 
     cmake "${cmake_args[@]}"
+    echo "Building ${target} with ${jobs} job(s)."
     cmake --build "${build_dir}" --target "${target}" -j "${jobs}"
 
     if [[ -x "${build_dir}/bin/citlali" ]]; then
