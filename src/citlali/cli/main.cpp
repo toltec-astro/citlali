@@ -407,9 +407,8 @@ int run(const rc_t &rc) {
                     logger->debug("checking inputs");
                     todproc.check_inputs(rawobs);
 
-                    // get sample rate
-                    logger->debug("getting sample rate");
-                    todproc.engine().telescope.fsmp = rawobs_kids_meta.back().get_typed<double>("fsmp");
+                    citlali::pipeline::update_sample_rate_from_rawobs_meta(
+                        todproc.engine(), rawobs_kids_meta, logger);
 
                     citlali::pipeline::load_and_align_telescope_data(
                         todproc, rawobs, logger);
@@ -484,9 +483,8 @@ int run(const rc_t &rc) {
                                 return EXIT_FAILURE;
                             }
 
-                            // get sample rate
-                            logger->debug("getting sample rate");
-                            todproc.engine().telescope.fsmp = rawobs_kids_meta.back().get_typed<double>("fsmp");
+                            citlali::pipeline::update_sample_rate_from_rawobs_meta(
+                                todproc.engine(), rawobs_kids_meta, logger);
                         }
 
                         if (!citlali::pipeline::configure_effective_sample_rate(

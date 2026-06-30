@@ -95,6 +95,15 @@ void reset_simulated_observation_indices(Engine &engine,
     }
 }
 
+template <class Engine, class RawObsKidsMeta, class Logger>
+void update_sample_rate_from_rawobs_meta(Engine &engine,
+                                         const RawObsKidsMeta &rawobs_kids_meta,
+                                         const Logger &logger) {
+    logger->debug("getting sample rate");
+    engine.telescope.fsmp =
+        rawobs_kids_meta.back().template get_typed<double>("fsmp");
+}
+
 template <class Engine, class Logger>
 bool configure_effective_sample_rate(Engine &engine, const Logger &logger) {
     if (engine.rtcproc.run_downsample) {

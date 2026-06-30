@@ -19,6 +19,7 @@ namespace {
 
 struct FakeLogger {
     int info_calls = 0;
+    int debug_calls = 0;
     int warn_calls = 0;
 
     template <class... Args>
@@ -28,7 +29,7 @@ struct FakeLogger {
     void info(const char *, Args &&...) { ++info_calls; }
 
     template <class... Args>
-    void debug(const char *, Args &&...) {}
+    void debug(const char *, Args &&...) { ++debug_calls; }
 
     template <class... Args>
     void warn(const char *, Args &&...) {
@@ -62,6 +63,22 @@ struct FakeTelTime {
 
     double operator()(std::size_t index) const { return values.at(index); }
     std::size_t size() const { return values.size(); }
+};
+
+struct FakeRawObsMeta {
+    double fsmp = 0.0;
+    int obsid = 0;
+
+    template <class T>
+    T get_typed(const std::string &key) const {
+        if (key == "fsmp") {
+            return static_cast<T>(fsmp);
+        }
+        if (key == "obsid") {
+            return static_cast<T>(obsid);
+        }
+        return T{};
+    }
 };
 
 struct FakeCalib {
@@ -1451,6 +1468,21 @@ TEST(pipeline_preflight, calculates_scan_indices) {
 
     EXPECT_EQ(engine.telescope.calc_scan_indices_calls, 1);
     EXPECT_EQ(logger->info_calls, 1);
+}
+
+TEST(pipeline_preflight, updates_sample_rate_from_rawobs_meta) {
+    FakeEngine engine;
+    std::vector<FakeRawObsMeta> rawobs_kids_meta = {
+        {75.0, 101},
+        {122.0, 102},
+    };
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::update_sample_rate_from_rawobs_meta(
+        engine, rawobs_kids_meta, logger);
+
+    EXPECT_DOUBLE_EQ(engine.telescope.fsmp, 122.0);
+    EXPECT_EQ(logger->debug_calls, 1);
 }
 
 TEST(pipeline_preflight, configures_sample_rate_without_downsample) {
