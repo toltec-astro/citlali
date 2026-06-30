@@ -438,24 +438,19 @@ int run(const rc_t &rc) {
                             citlali::pipeline::load_rawobs_kids_meta(
                                 kidsproc, rawobs, logger);
 
-                        if (!citlali::pipeline::prepare_reduction_observation_inputs<
+                        if (!citlali::pipeline::run_reduction_observation<
                                 std::is_same_v<todproc_t,
-                                               TimeOrderedDataProc<Beammap>>>(
-                                todproc, rawobs, rawobs_kids_meta,
+                                               TimeOrderedDataProc<Beammap>>,
+                                mapmaking::RawObs, mapmaking::FilteredObs,
+                                std::is_same_v<todproc_t,
+                                               TimeOrderedDataProc<Pointing>>>(
+                                todproc, kidsproc, rawobs, rawobs_kids_meta,
                                 co.n_inputs() > 1, map_extents, map_coords, i,
                                 engine_utils::unix_to_utc(
                                     todproc.engine().telescope.tel_data["TelTime"](0)),
                                 logger)) {
                             return EXIT_FAILURE;
                         }
-
-                        citlali::pipeline::run_reduction_observation_pipeline<
-                            std::is_same_v<todproc_t,
-                                           TimeOrderedDataProc<Beammap>>,
-                            mapmaking::RawObs, mapmaking::FilteredObs,
-                            std::is_same_v<todproc_t,
-                                           TimeOrderedDataProc<Pointing>>>(
-                            todproc, kidsproc, rawobs, logger);
                     }
 
                     citlali::pipeline::write_iteration_coadd_outputs_if_needed<

@@ -2677,6 +2677,50 @@ TEST(pipeline_execution, runs_reduction_observation_pipeline) {
     EXPECT_EQ(todproc.coadd_calls, 1);
 }
 
+TEST(pipeline_execution, runs_reduction_observation) {
+    FakeInitialObservationTodProc todproc;
+    todproc.engine().run_mapmaking = true;
+    FakeKidsProc kidsproc;
+    FakeRawObs rawobs;
+    std::vector<FakeRawObsMeta> rawobs_kids_meta = {{122.0, 102}};
+    std::vector<int> map_extents = {11};
+    std::vector<int> map_coords = {22};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::pipeline::run_reduction_observation<
+        false, FakeMapType::RawObs, FakeMapType::FilteredObs, false>(
+        todproc, kidsproc, rawobs, rawobs_kids_meta, true, map_extents,
+        map_coords, 0, std::string{"2026-01-01T00:00:00"}, logger));
+
+    EXPECT_EQ(todproc.engine().setup_calls, 1);
+    EXPECT_EQ(todproc.engine().pipeline_calls, 1);
+    EXPECT_EQ(todproc.engine().output_calls, 1);
+    EXPECT_EQ(todproc.allocate_omb_calls, 1);
+}
+
+TEST(pipeline_execution,
+     rejects_reduction_observation_when_prepare_fails) {
+    FakeInitialObservationTodProc todproc;
+    todproc.engine().rtcproc.run_downsample = true;
+    todproc.engine().rtcproc.downsampler.factor = 0;
+    todproc.engine().rtcproc.downsampler.downsampled_freq_Hz = 0.0;
+    FakeKidsProc kidsproc;
+    FakeRawObs rawobs;
+    std::vector<FakeRawObsMeta> rawobs_kids_meta = {{122.0, 102}};
+    std::vector<int> map_extents = {11};
+    std::vector<int> map_coords = {22};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_FALSE(citlali::pipeline::run_reduction_observation<
+        false, FakeMapType::RawObs, FakeMapType::FilteredObs, false>(
+        todproc, kidsproc, rawobs, rawobs_kids_meta, true, map_extents,
+        map_coords, 0, std::string{"2026-01-01T00:00:00"}, logger));
+
+    EXPECT_EQ(todproc.engine().setup_calls, 0);
+    EXPECT_EQ(todproc.engine().pipeline_calls, 0);
+    EXPECT_EQ(todproc.engine().output_calls, 0);
+}
+
 TEST(pipeline_execution, writes_raw_coadd_outputs) {
     FakeCoaddTodProc todproc;
     todproc.engine().apply_empirical_noise_weights = true;
