@@ -2578,23 +2578,37 @@ void Engine::get_timestream_config(CT &config) {
                          std::tuple{"timestream","raw_time_chunk","output","enabled"});
         if (parsed_cleanly(missing_before, invalid_before)) {
             typed_timestream_config.output.raw_time_chunk_enabled = run_tod_output_rtc;
+            typed_timestream_config.output.raw_time_chunk.enabled = run_tod_output_rtc;
         }
     }
     rtcproc.tod_output_mini = false;
     rtcproc.tod_output_outer = false;
     rtcproc.tod_output_outer_context_samples = 0;
+    std::string rtc_output_mode = "full";
     if (run_tod_output_rtc && config.has(std::tuple{"timestream","raw_time_chunk","output","mode"})) {
-        std::string rtc_output_mode = "full";
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, rtc_output_mode, missing_keys, invalid_keys,
                          std::tuple{"timestream","raw_time_chunk","output","mode"},
                          {"full","mini","full_outer","mini_outer"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            if (auto parsed = citlali::config::parse_tod_stream_output_mode(rtc_output_mode)) {
+                typed_timestream_config.output.raw_time_chunk.mode = *parsed;
+            }
+        }
         rtcproc.tod_output_mini = (rtc_output_mode == "mini" || rtc_output_mode == "mini_outer");
         rtcproc.tod_output_outer = (rtc_output_mode == "full_outer" || rtc_output_mode == "mini_outer");
     }
     if (run_tod_output_rtc && config.has(std::tuple{"timestream","raw_time_chunk","output","outer_context_samples"})) {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, rtcproc.tod_output_outer_context_samples, missing_keys, invalid_keys,
                          std::tuple{"timestream","raw_time_chunk","output","outer_context_samples"},
                          {}, {0});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_timestream_config.output.raw_time_chunk.outer_context_samples =
+                static_cast<int>(rtcproc.tod_output_outer_context_samples);
+        }
     }
     // output ptc
     {
@@ -2604,15 +2618,23 @@ void Engine::get_timestream_config(CT &config) {
                          std::tuple{"timestream","processed_time_chunk","output","enabled"});
         if (parsed_cleanly(missing_before, invalid_before)) {
             typed_timestream_config.output.processed_time_chunk_enabled = run_tod_output_ptc;
+            typed_timestream_config.output.processed_time_chunk.enabled = run_tod_output_ptc;
         }
     }
     ptcproc.tod_output_mini = false;
     ptcproc.tod_output_outer = false;
     ptcproc.tod_output_outer_context_samples = 0;
+    std::string ptc_output_mode = "full";
     if (run_tod_output_ptc && config.has(std::tuple{"timestream","processed_time_chunk","output","mode"})) {
-        std::string ptc_output_mode = "full";
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, ptc_output_mode, missing_keys, invalid_keys,
                          std::tuple{"timestream","processed_time_chunk","output","mode"}, {"full","mini"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            if (auto parsed = citlali::config::parse_tod_stream_output_mode(ptc_output_mode)) {
+                typed_timestream_config.output.processed_time_chunk.mode = *parsed;
+            }
+        }
         ptcproc.tod_output_mini = (ptc_output_mode == "mini");
     }
     // set tod output to false by default
@@ -2777,6 +2799,36 @@ void Engine::get_timestream_config(CT &config) {
         tod_output_uniform_count_ptc,
         tod_output_source_dense_count_ptc);
 
+    auto mirror_tod_output_selection = [](const std::vector<Eigen::Index> &chunks_1based,
+                                          bool chunk_select_enabled,
+                                          const std::string &selection_mode,
+                                          int n_uniform,
+                                          int n_source_dense,
+                                          citlali::config::TodStreamOutputConfig &target) {
+        target.chunk_select_enabled = chunk_select_enabled;
+        target.chunks_1based.clear();
+        target.chunks_1based.reserve(chunks_1based.size());
+        for (const auto chunk : chunks_1based) {
+            target.chunks_1based.push_back(static_cast<int>(chunk));
+        }
+        if (auto parsed = citlali::config::parse_tod_output_selection_mode(selection_mode)) {
+            target.selection_mode = *parsed;
+        }
+        target.selection_n_uniform = n_uniform;
+        target.selection_n_source_dense = n_source_dense;
+    };
+
+    mirror_tod_output_selection(rtc_output_chunks, rtc_chunk_select_enabled,
+                                tod_output_selection_mode_rtc,
+                                tod_output_uniform_count_rtc,
+                                tod_output_source_dense_count_rtc,
+                                typed_timestream_config.output.raw_time_chunk);
+    mirror_tod_output_selection(ptc_output_chunks, ptc_chunk_select_enabled,
+                                tod_output_selection_mode_ptc,
+                                tod_output_uniform_count_ptc,
+                                tod_output_source_dense_count_ptc,
+                                typed_timestream_config.output.processed_time_chunk);
+
     tod_output_chunk_select_enabled_rtc = rtc_chunk_select_enabled;
     tod_output_chunk_select_enabled_ptc = ptc_chunk_select_enabled;
     tod_output_chunks_rtc = std::move(rtc_output_chunks);
@@ -2797,14 +2849,35 @@ void Engine::get_timestream_config(CT &config) {
     }
 
     // get time chunk size
-    get_config_value(config, telescope.chunk_mode, missing_keys, invalid_keys,
-                     std::tuple{"timestream","chunking", "chunk_mode"});
+    {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
+        get_config_value(config, telescope.chunk_mode, missing_keys, invalid_keys,
+                         std::tuple{"timestream","chunking", "chunk_mode"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_timestream_config.chunking.mode = telescope.chunk_mode;
+        }
+    }
     // get time chunk size
-    get_config_value(config, telescope.chunking_value, missing_keys, invalid_keys,
-                     std::tuple{"timestream","chunking", "value"});
+    {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
+        get_config_value(config, telescope.chunking_value, missing_keys, invalid_keys,
+                         std::tuple{"timestream","chunking", "value"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_timestream_config.chunking.value = telescope.chunking_value;
+        }
+    }
     // force chunking?
-    get_config_value(config, telescope.force_chunk, missing_keys, invalid_keys,
-                     std::tuple{"timestream","chunking", "force_chunking"});
+    {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
+        get_config_value(config, telescope.force_chunk, missing_keys, invalid_keys,
+                         std::tuple{"timestream","chunking", "force_chunking"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_timestream_config.chunking.force = telescope.force_chunk;
+        }
+    }
 
     /* get raw time chunk config */
     get_rtc_config(config);

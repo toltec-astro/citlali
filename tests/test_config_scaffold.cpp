@@ -82,6 +82,25 @@ TEST(config_scaffold, parses_existing_timestream_enum_values) {
               citlali::config::TodOutputType::ptc);
     EXPECT_EQ(citlali::config::parse_tod_output_type("both").value(),
               citlali::config::TodOutputType::both);
+
+    EXPECT_EQ(citlali::config::parse_tod_stream_output_mode("full").value(),
+              citlali::config::TodStreamOutputMode::full);
+    EXPECT_EQ(citlali::config::parse_tod_stream_output_mode("mini").value(),
+              citlali::config::TodStreamOutputMode::mini);
+    EXPECT_EQ(citlali::config::parse_tod_stream_output_mode("full_outer").value(),
+              citlali::config::TodStreamOutputMode::full_outer);
+    EXPECT_EQ(citlali::config::parse_tod_stream_output_mode("mini_outer").value(),
+              citlali::config::TodStreamOutputMode::mini_outer);
+    EXPECT_FALSE(citlali::config::parse_tod_stream_output_mode("outer").has_value());
+
+    EXPECT_EQ(citlali::config::parse_tod_output_selection_mode("indices").value(),
+              citlali::config::TodOutputSelectionMode::indices);
+    EXPECT_EQ(citlali::config::parse_tod_output_selection_mode("all").value(),
+              citlali::config::TodOutputSelectionMode::all);
+    EXPECT_EQ(citlali::config::parse_tod_output_selection_mode(
+                  "uniform_plus_source_crossing").value(),
+              citlali::config::TodOutputSelectionMode::uniform_plus_source_crossing);
+    EXPECT_FALSE(citlali::config::parse_tod_output_selection_mode("source").has_value());
 }
 
 TEST(config_scaffold, parses_existing_pointing_enum_values) {
@@ -127,6 +146,23 @@ TEST(config_scaffold, validates_top_level_config_values) {
     auto report = citlali::config::validate(config);
     EXPECT_FALSE(report.ok());
     EXPECT_EQ(report.error_count(), 7U);
+}
+
+TEST(config_scaffold, validates_timestream_output_selection_values) {
+    citlali::config::TimestreamConfig config;
+    config.output.raw_time_chunk.outer_context_samples = -1;
+    config.output.raw_time_chunk.chunks_1based.push_back(0);
+    config.output.raw_time_chunk.selection_mode =
+        citlali::config::TodOutputSelectionMode::uniform_plus_source_crossing;
+    config.output.raw_time_chunk.selection_n_uniform = 0;
+    config.output.raw_time_chunk.selection_n_source_dense = 0;
+    config.output.processed_time_chunk.selection_n_uniform = -1;
+    config.chunking.value = -1.0;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 5U);
 }
 
 TEST(config_scaffold, validates_beammap_config_values) {
