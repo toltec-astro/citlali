@@ -678,31 +678,8 @@ int run(const rc_t &rc) {
                         citlali::pipeline::prepare_observation_output_layout(
                             todproc.engine(), obsnum, logger);
 
-                        // get hwpr data if polarized reduction is requested
-                        if (todproc.engine().rtcproc.run_polarization) {
-                            std::string hwpr_filepath;
-                            // if hwpr file dict is found in config and we're not ignoring it
-                            if (rawobs.hwpdata().has_value() && todproc.engine().calib.ignore_hwpr!="true") {
-                                // get hwpr filepath
-                                hwpr_filepath = rawobs.hwpdata()->filepath();
-                                // if filepath is not null, get the hwpr data
-                                if (hwpr_filepath != "null") {
-                                    logger->info("getting hwpr file {}",hwpr_filepath);
-                                    todproc.engine().calib.get_hwpr(hwpr_filepath, todproc.engine().telescope.sim_obs);
-                                }
-                                // if filepath is null, ignore hwpr
-                                else {
-                                    todproc.engine().calib.run_hwpr = false;
-                                }
-                            }
-                            // if hwpr either not found or ignored
-                            else {
-                                todproc.engine().calib.run_hwpr = false;
-                            }
-                            if (!todproc.engine().calib.run_hwpr) {
-                                logger->info("ignoring hwpr");
-                            }
-                        }
+                        citlali::pipeline::load_hwpr_data_if_requested(
+                            todproc.engine(), rawobs, logger);
 
                         // get flux calibration
                         logger->info("calculating flux calibration");

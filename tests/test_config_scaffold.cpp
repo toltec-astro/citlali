@@ -8,6 +8,7 @@
 
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -35,6 +36,21 @@ struct FakeAptColumn {
     }
 };
 
+struct FakeCalib {
+    std::map<std::string, FakeAptColumn> apt;
+    std::string ignore_hwpr = "false";
+    bool run_hwpr = true;
+    bool loaded_hwpr = false;
+    std::string loaded_hwpr_filepath;
+    bool loaded_hwpr_sim_obs = false;
+
+    void get_hwpr(const std::string &filepath, bool sim_obs) {
+        loaded_hwpr = true;
+        loaded_hwpr_filepath = filepath;
+        loaded_hwpr_sim_obs = sim_obs;
+    }
+};
+
 struct FakeEngine {
     std::string obsnum;
     std::string redu_dir_name = "/tmp/redu01";
@@ -51,17 +67,17 @@ struct FakeEngine {
         std::vector<std::string> obsnums;
     } cmb;
 
-    struct {
-        std::map<std::string, FakeAptColumn> apt;
-    } calib;
+    FakeCalib calib;
 
     struct {
         double fsmp = 100.0;
         double d_fsmp = -1.0;
+        bool sim_obs = false;
     } telescope;
 
     struct {
         bool run_downsample = false;
+        bool run_polarization = false;
         struct {
             int factor = 1;
             double downsampled_freq_Hz = 0.0;
@@ -77,15 +93,23 @@ struct FakeFlxscaleCorrection {
     double value() const { return factor; }
 };
 
+struct FakeHwpData {
+    std::string path = "hwpr.nc";
+    std::string filepath() const { return path; }
+};
+
 struct FakeRawObs {
     const FakeFlxscaleCorrection *correction = nullptr;
     std::string obs_name = "fake_obs";
+    std::optional<FakeHwpData> hwp;
 
     const FakeFlxscaleCorrection *flxscale_correction() const {
         return correction;
     }
 
     const std::string &name() const { return obs_name; }
+
+    std::optional<FakeHwpData> hwpdata() const { return hwp; }
 };
 
 TEST(config_scaffold, formats_config_paths) {
@@ -934,6 +958,60 @@ TEST(pipeline_preflight, rejects_downsample_filter_above_nyquist) {
 
     EXPECT_FALSE(citlali::pipeline::configure_effective_sample_rate(
         engine, logger));
+}
+
+TEST(pipeline_preflight, loads_hwpr_data_for_polarized_observation) {
+    FakeEngine engine;
+    engine.rtcproc.run_polarization = true;
+    engine.telescope.sim_obs = true;
+    FakeRawObs rawobs;
+    rawobs.hwp = FakeHwpData{"hwpr.nc"};
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_hwpr_data_if_requested(engine, rawobs, logger);
+
+    EXPECT_TRUE(engine.calib.run_hwpr);
+    EXPECT_TRUE(engine.calib.loaded_hwpr);
+    EXPECT_EQ(engine.calib.loaded_hwpr_filepath, "hwpr.nc");
+    EXPECT_TRUE(engine.calib.loaded_hwpr_sim_obs);
+}
+
+TEST(pipeline_preflight, ignores_hwpr_when_configured) {
+    FakeEngine engine;
+    engine.rtcproc.run_polarization = true;
+    engine.calib.ignore_hwpr = "true";
+    FakeRawObs rawobs;
+    rawobs.hwp = FakeHwpData{"hwpr.nc"};
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_hwpr_data_if_requested(engine, rawobs, logger);
+
+    EXPECT_FALSE(engine.calib.run_hwpr);
+    EXPECT_FALSE(engine.calib.loaded_hwpr);
+}
+
+TEST(pipeline_preflight, ignores_null_hwpr_filepath) {
+    FakeEngine engine;
+    engine.rtcproc.run_polarization = true;
+    FakeRawObs rawobs;
+    rawobs.hwp = FakeHwpData{"null"};
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_hwpr_data_if_requested(engine, rawobs, logger);
+
+    EXPECT_FALSE(engine.calib.run_hwpr);
+    EXPECT_FALSE(engine.calib.loaded_hwpr);
+}
+
+TEST(pipeline_preflight, leaves_hwpr_state_when_not_polarized) {
+    FakeEngine engine;
+    FakeRawObs rawobs;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_hwpr_data_if_requested(engine, rawobs, logger);
+
+    EXPECT_TRUE(engine.calib.run_hwpr);
+    EXPECT_FALSE(engine.calib.loaded_hwpr);
 }
 
 TEST(pipeline_output_layout, derives_config_copy_destinations) {
