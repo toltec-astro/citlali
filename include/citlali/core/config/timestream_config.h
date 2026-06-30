@@ -438,11 +438,60 @@ struct RawTimeChunkIirFilterConfig {
     bool zero_phase = false;
 };
 
+struct RawTimeChunkNetworkStepMaskConfig {
+    bool enabled = false;
+    double step_window_sec = 0.5;
+    double step_score_thresh = 2.5;
+    double min_good_frac = 0.8;
+    int min_det_used = 32;
+    double min_step_det_frac = 0.05;
+    double min_alignment_frac = 0.5;
+    double cluster_tol_sec = 0.25;
+    double mask_half_width_sec = 0.5;
+    double max_flagged_fraction = 0.30;
+};
+
+struct RawTimeChunkImpulsiveCaptureConfig {
+    bool enabled = false;
+    double min_good_frac = 0.8;
+    double min_event_z = 6.0;
+    double near_event_z = 4.0;
+    int max_events_per_network = 3;
+    double snippet_pre_window_sec = 0.25;
+    double snippet_post_window_sec = 0.25;
+};
+
+struct RawTimeChunkImpulsiveCoincidenceConfig {
+    bool enabled = false;
+    double min_good_frac = 0.8;
+    double event_score_thresh = 6.0;
+    int min_det_used = 32;
+    double min_impulsive_det_frac = 0.05;
+    double min_alignment_frac = 0.5;
+    int min_networks_aligned = 3;
+    double high_score_override_thresh = 0.0;
+    int high_score_min_networks_aligned = 0;
+    double cluster_tol_sec = 0.03;
+    double mask_pre_window_sec = 0.03;
+    double mask_post_window_sec = 0.03;
+    double max_flagged_fraction = 0.10;
+};
+
+struct RawTimeChunkFlaggingConfig {
+    double delta_f_min_Hz = 60.e3;
+    double lower_tod_inv_var_factor = 0.0;
+    double upper_tod_inv_var_factor = 0.0;
+    RawTimeChunkNetworkStepMaskConfig network_step_mask;
+    RawTimeChunkImpulsiveCaptureConfig impulsive_capture;
+    RawTimeChunkImpulsiveCoincidenceConfig impulsive_coincidence;
+};
+
 struct RawTimeChunkConfig {
     RawTimeChunkDespikeConfig despike;
     RawTimeChunkDownsampleConfig downsample;
     RawTimeChunkFilterConfig filter;
     RawTimeChunkIirFilterConfig iir_filter;
+    RawTimeChunkFlaggingConfig flagging;
     bool flux_calibration_enabled = false;
     bool extinction_correction_enabled = false;
 };
@@ -941,11 +990,122 @@ inline void validate(const RawTimeChunkIirFilterConfig &config,
     }
 }
 
+inline void validate(const RawTimeChunkNetworkStepMaskConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    const ConfigPath path{
+        "timestream", "raw_time_chunk", "flagging", "network_step_mask"};
+    check_minimum(config.step_window_sec, 0.01,
+                  append_config_path(path, {"step_window_sec"}), report);
+    check_minimum(config.step_score_thresh, 0.0,
+                  append_config_path(path, {"step_score_thresh"}), report);
+    check_minimum(config.min_good_frac, 0.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_maximum(config.min_good_frac, 1.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_minimum(config.min_det_used, 1,
+                  append_config_path(path, {"min_det_used"}), report);
+    check_minimum(config.min_step_det_frac, 0.0,
+                  append_config_path(path, {"min_step_det_frac"}), report);
+    check_maximum(config.min_step_det_frac, 1.0,
+                  append_config_path(path, {"min_step_det_frac"}), report);
+    check_minimum(config.min_alignment_frac, 0.0,
+                  append_config_path(path, {"min_alignment_frac"}), report);
+    check_maximum(config.min_alignment_frac, 1.0,
+                  append_config_path(path, {"min_alignment_frac"}), report);
+    check_minimum(config.cluster_tol_sec, 0.0,
+                  append_config_path(path, {"cluster_tol_sec"}), report);
+    check_minimum(config.mask_half_width_sec, 0.0,
+                  append_config_path(path, {"mask_half_width_sec"}), report);
+    check_minimum(config.max_flagged_fraction, 0.0,
+                  append_config_path(path, {"max_flagged_fraction"}), report);
+    check_maximum(config.max_flagged_fraction, 1.0,
+                  append_config_path(path, {"max_flagged_fraction"}), report);
+}
+
+inline void validate(const RawTimeChunkImpulsiveCaptureConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    const ConfigPath path{
+        "timestream", "raw_time_chunk", "flagging", "impulsive_capture"};
+    check_minimum(config.min_good_frac, 0.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_maximum(config.min_good_frac, 1.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_minimum(config.min_event_z, 0.0,
+                  append_config_path(path, {"min_event_z"}), report);
+    check_minimum(config.near_event_z, 0.0,
+                  append_config_path(path, {"near_event_z"}), report);
+    check_minimum(config.max_events_per_network, 1,
+                  append_config_path(path, {"max_events_per_network"}), report);
+    check_minimum(config.snippet_pre_window_sec, 0.0,
+                  append_config_path(path, {"snippet_pre_window_sec"}), report);
+    check_minimum(config.snippet_post_window_sec, 0.0,
+                  append_config_path(path, {"snippet_post_window_sec"}), report);
+}
+
+inline void validate(const RawTimeChunkImpulsiveCoincidenceConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    const ConfigPath path{
+        "timestream", "raw_time_chunk", "flagging",
+        "impulsive_coincidence"};
+    check_minimum(config.min_good_frac, 0.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_maximum(config.min_good_frac, 1.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_minimum(config.event_score_thresh, 0.0,
+                  append_config_path(path, {"event_score_thresh"}), report);
+    check_minimum(config.min_det_used, 1,
+                  append_config_path(path, {"min_det_used"}), report);
+    check_minimum(config.min_impulsive_det_frac, 0.0,
+                  append_config_path(path, {"min_impulsive_det_frac"}), report);
+    check_maximum(config.min_impulsive_det_frac, 1.0,
+                  append_config_path(path, {"min_impulsive_det_frac"}), report);
+    check_minimum(config.min_alignment_frac, 0.0,
+                  append_config_path(path, {"min_alignment_frac"}), report);
+    check_maximum(config.min_alignment_frac, 1.0,
+                  append_config_path(path, {"min_alignment_frac"}), report);
+    check_minimum(config.min_networks_aligned, 1,
+                  append_config_path(path, {"min_networks_aligned"}), report);
+    check_minimum(config.high_score_override_thresh, 0.0,
+                  append_config_path(path, {"high_score_override_thresh"}),
+                  report);
+    check_minimum(config.high_score_min_networks_aligned, 0,
+                  append_config_path(path,
+                                     {"high_score_min_networks_aligned"}),
+                  report);
+    check_minimum(config.cluster_tol_sec, 0.0,
+                  append_config_path(path, {"cluster_tol_sec"}), report);
+    check_minimum(config.mask_pre_window_sec, 0.0,
+                  append_config_path(path, {"mask_pre_window_sec"}), report);
+    check_minimum(config.mask_post_window_sec, 0.0,
+                  append_config_path(path, {"mask_post_window_sec"}), report);
+    check_minimum(config.max_flagged_fraction, 0.0,
+                  append_config_path(path, {"max_flagged_fraction"}), report);
+    check_maximum(config.max_flagged_fraction, 1.0,
+                  append_config_path(path, {"max_flagged_fraction"}), report);
+}
+
+inline void validate(const RawTimeChunkFlaggingConfig &config,
+                     ValidationReport &report) {
+    validate(config.network_step_mask, report);
+    validate(config.impulsive_capture, report);
+    validate(config.impulsive_coincidence, report);
+}
+
 inline void validate(const RawTimeChunkConfig &config, ValidationReport &report) {
     validate(config.despike, report);
     validate(config.downsample, report);
     validate(config.filter, report);
     validate(config.iir_filter, report);
+    validate(config.flagging, report);
     if (config.downsample.enabled && !config.filter.enabled) {
         report.add_error({"timestream", "raw_time_chunk", "downsample"},
                          "requires raw_time_chunk.filter.enabled=true");

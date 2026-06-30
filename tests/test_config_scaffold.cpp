@@ -344,6 +344,45 @@ TEST(config_scaffold, validates_raw_downsample_requires_filter) {
     EXPECT_EQ(report.error_count(), 1U);
 }
 
+TEST(config_scaffold, validates_raw_time_chunk_flagging_diagnostics) {
+    citlali::config::RawTimeChunkFlaggingConfig config;
+    config.network_step_mask.enabled = true;
+    config.network_step_mask.step_window_sec = 0.0;
+    config.network_step_mask.step_score_thresh = -1.0;
+    config.network_step_mask.min_good_frac = 2.0;
+    config.network_step_mask.min_det_used = 0;
+    config.network_step_mask.min_step_det_frac = -1.0;
+    config.network_step_mask.min_alignment_frac = 2.0;
+    config.network_step_mask.cluster_tol_sec = -1.0;
+    config.network_step_mask.mask_half_width_sec = -1.0;
+    config.network_step_mask.max_flagged_fraction = -1.0;
+    config.impulsive_capture.enabled = true;
+    config.impulsive_capture.min_good_frac = -1.0;
+    config.impulsive_capture.min_event_z = -1.0;
+    config.impulsive_capture.near_event_z = -1.0;
+    config.impulsive_capture.max_events_per_network = 0;
+    config.impulsive_capture.snippet_pre_window_sec = -1.0;
+    config.impulsive_capture.snippet_post_window_sec = -1.0;
+    config.impulsive_coincidence.enabled = true;
+    config.impulsive_coincidence.min_good_frac = 2.0;
+    config.impulsive_coincidence.event_score_thresh = -1.0;
+    config.impulsive_coincidence.min_det_used = 0;
+    config.impulsive_coincidence.min_impulsive_det_frac = -1.0;
+    config.impulsive_coincidence.min_alignment_frac = 2.0;
+    config.impulsive_coincidence.min_networks_aligned = 0;
+    config.impulsive_coincidence.high_score_override_thresh = -1.0;
+    config.impulsive_coincidence.high_score_min_networks_aligned = -1;
+    config.impulsive_coincidence.cluster_tol_sec = -1.0;
+    config.impulsive_coincidence.mask_pre_window_sec = -1.0;
+    config.impulsive_coincidence.mask_post_window_sec = -1.0;
+    config.impulsive_coincidence.max_flagged_fraction = 2.0;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 27U);
+}
+
 TEST(config_scaffold, validates_processed_time_chunk_second_pass_local_values) {
     citlali::config::ProcessedTimeChunkSecondPassLocalConfig config;
     config.min_spike_sigma = -1.0;
