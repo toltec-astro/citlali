@@ -2,6 +2,13 @@
 
 namespace citlali::pipeline {
 
+template <class Engine>
+bool fruit_loop_iteration_pending(const Engine &engine,
+                                  bool fruit_loops_converged) {
+    return (engine.fruit_iter < engine.ptcproc.fruit_loops_iters) &&
+           !fruit_loops_converged;
+}
+
 template <class Engine, class Logger>
 void begin_fruit_loop_iteration(Engine &engine, const Logger &logger) {
     if (engine.ptcproc.run_fruit_loops) {

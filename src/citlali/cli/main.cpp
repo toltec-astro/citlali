@@ -414,7 +414,8 @@ int run(const rc_t &rc) {
                     todproc.engine(), logger);
 
                 // loop through fruit loops iterations
-                while ((todproc.engine().fruit_iter < todproc.engine().ptcproc.fruit_loops_iters) && !fruit_loops_converged) {
+                while (citlali::pipeline::fruit_loop_iteration_pending(
+                    todproc.engine(), fruit_loops_converged)) {
                     citlali::pipeline::begin_reduction_iteration(
                         todproc, config_filepaths, logger);
 

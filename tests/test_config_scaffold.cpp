@@ -449,6 +449,7 @@ struct FakeExecutionEngine {
 struct FakeIterationPtcProc {
     bool run_fruit_loops = false;
     bool save_all_iters = false;
+    int fruit_loops_iters = 3;
     std::string fruit_loops_path = "null";
     int begin_weight_validation_iter = -1;
     int finalize_weight_validation_iter = -1;
@@ -2121,6 +2122,33 @@ TEST(pipeline_fruit_loop_paths, derives_previous_iteration_map_dir) {
     EXPECT_EQ(citlali::pipeline::previous_fruit_loop_map_dir(
                   "/data", 12, "obsnum/raw", "123456"),
               "/data/redu11/123456/raw/");
+}
+
+TEST(pipeline_iteration_lifecycle, detects_pending_fruit_loop_iteration) {
+    FakeIterationEngine engine;
+    engine.fruit_iter = 1;
+    engine.ptcproc.fruit_loops_iters = 3;
+
+    EXPECT_TRUE(citlali::pipeline::fruit_loop_iteration_pending(
+        engine, false));
+}
+
+TEST(pipeline_iteration_lifecycle, stops_when_fruit_loops_converge) {
+    FakeIterationEngine engine;
+    engine.fruit_iter = 1;
+    engine.ptcproc.fruit_loops_iters = 3;
+
+    EXPECT_FALSE(citlali::pipeline::fruit_loop_iteration_pending(
+        engine, true));
+}
+
+TEST(pipeline_iteration_lifecycle, stops_at_iteration_limit) {
+    FakeIterationEngine engine;
+    engine.fruit_iter = 3;
+    engine.ptcproc.fruit_loops_iters = 3;
+
+    EXPECT_FALSE(citlali::pipeline::fruit_loop_iteration_pending(
+        engine, false));
 }
 
 TEST(pipeline_iteration_lifecycle, begins_non_fruit_loop_iteration) {
