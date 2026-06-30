@@ -173,3 +173,8 @@ $HOME/tolteca/bin/python tools/config/run_compact_compatibility.py \
   --json-out /tmp/citlali_compact_compat/results.json \
   --markdown-out /tmp/citlali_compact_compat/results.md
 ```
+
+Existing TolTECA low-level files can also be bootstrapped into compact
+compatibility YAML with `tools/config/lowlevel_to_compact_config.py`. For OOF,
+pass `--mode oof`; otherwise the legacy `runtime.reduction_type: pointing`
+cannot distinguish OOF from a normal pointing reduction.

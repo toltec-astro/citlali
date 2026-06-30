@@ -167,3 +167,43 @@ The current suite includes eight cases:
 
 All cases are expected to have zero low-level differences after ignoring
 `runtime.output_dir`.
+
+## Low-Level To Compact Bootstrap
+
+`lowlevel_to_compact_config.py` generates a compact compatibility YAML file
+from an existing low-level Citlali or TolTECA `70_reduce.yaml` file. It only
+emits compact keys whose low-level destinations already exist in the input, and
+uses the `*_compat_passthrough` profile by default.
+
+```bash
+$HOME/tolteca/bin/python tools/config/lowlevel_to_compact_config.py \
+  /path/to/70_reduce.yaml \
+  --mode science \
+  --output /tmp/science_compact.yaml \
+  --summary-out /tmp/science_compact.summary.yaml
+```
+
+`--mode` is optional for `science` and `beammap` baselines because those map
+directly from `runtime.reduction_type`. Use `--mode oof` for OOF reductions,
+because legacy Citlali still represents OOF through
+`runtime.reduction_type: pointing`.
+
+The generated compact file should be validated immediately with the equivalence
+tools:
+
+```bash
+$HOME/tolteca/bin/python tools/config/expand_compact_config.py \
+  /tmp/science_compact.yaml \
+  --base-config /path/to/70_reduce.yaml \
+  --output-format low_level \
+  --output /tmp/science_compact.low_level.yaml
+
+$HOME/tolteca/bin/python tools/config/compare_lowlevel_yaml.py \
+  /path/to/70_reduce.yaml \
+  /tmp/science_compact.low_level.yaml \
+  --ignore runtime.output_dir
+```
+
+By default, the bootstrapper omits `output.dir` when the low-level value is an
+absolute path. Pass `--include-output-dir` when reproducing site-specific output
+paths is desired.
