@@ -208,6 +208,19 @@ TEST(config_scaffold, validates_map_filter_config_values) {
     EXPECT_EQ(report.error_count(), 10U);
 }
 
+TEST(config_scaffold, validates_source_finding_config_values) {
+    citlali::config::SourceFindingConfig config;
+    config.enabled = true;
+    config.source_sigma = -1.0;
+    config.source_window_arcsec = -1.0;
+    config.mode.clear();
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 3U);
+}
+
 TEST(config_scaffold, validates_beammap_config_values) {
     citlali::config::BeammapConfig config;
     EXPECT_TRUE(citlali::config::validate(config).ok());

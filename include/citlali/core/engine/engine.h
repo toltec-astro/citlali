@@ -4071,6 +4071,7 @@ void Engine::get_citlali_config(CT &config) {
                          std::tuple{"post_processing","source_finding","enabled"});
         if (parsed_cleanly(missing_before, invalid_before)) {
             typed_post_processing_config.source_finding_enabled = run_source_finder;
+            typed_post_processing_config.source_finding.enabled = run_source_finder;
         }
     }
 
@@ -4158,14 +4159,38 @@ void Engine::get_citlali_config(CT &config) {
     // get source finder config options
     if (run_source_finder) {
         // minimum found source sigma
-        get_config_value(config, omb.source_sigma, missing_keys, invalid_keys,
-                         std::tuple{"post_processing","source_finding","source_sigma"});
+        {
+            const auto missing_before = missing_keys.size();
+            const auto invalid_before = invalid_keys.size();
+            get_config_value(config, omb.source_sigma, missing_keys, invalid_keys,
+                             std::tuple{"post_processing","source_finding","source_sigma"});
+            if (parsed_cleanly(missing_before, invalid_before)) {
+                typed_post_processing_config.source_finding.source_sigma =
+                    omb.source_sigma;
+            }
+        }
         // window around source to exclude other sources
-        get_config_value(config, omb.source_window_rad, missing_keys, invalid_keys,
-                         std::tuple{"post_processing","source_finding","source_window_arcsec"});
+        {
+            const auto missing_before = missing_keys.size();
+            const auto invalid_before = invalid_keys.size();
+            get_config_value(config, omb.source_window_rad, missing_keys, invalid_keys,
+                             std::tuple{"post_processing","source_finding","source_window_arcsec"});
+            if (parsed_cleanly(missing_before, invalid_before)) {
+                typed_post_processing_config.source_finding.source_window_arcsec =
+                    omb.source_window_rad;
+            }
+        }
         // search map, negative of map, or both
-        get_config_value(config, omb.source_finder_mode, missing_keys, invalid_keys,
-                         std::tuple{"post_processing","source_finding","mode"});
+        {
+            const auto missing_before = missing_keys.size();
+            const auto invalid_before = invalid_keys.size();
+            get_config_value(config, omb.source_finder_mode, missing_keys, invalid_keys,
+                             std::tuple{"post_processing","source_finding","mode"});
+            if (parsed_cleanly(missing_before, invalid_before)) {
+                typed_post_processing_config.source_finding.mode =
+                    omb.source_finder_mode;
+            }
+        }
 
         // convert source window to radians
         omb.source_window_rad = omb.source_window_rad*ASEC_TO_RAD;
@@ -4202,6 +4227,7 @@ void Engine::get_citlali_config(CT &config) {
         typed_post_processing_config.map_filtering_enabled = false;
         typed_post_processing_config.map_filtering.enabled = false;
         typed_post_processing_config.source_finding_enabled = false;
+        typed_post_processing_config.source_finding.enabled = false;
         typed_post_processing_config.source_fitting.active = false;
         // we don't need to do iterations if no maps are made
         beammap_iter_max = 1;

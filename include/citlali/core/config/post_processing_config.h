@@ -101,6 +101,13 @@ struct MapFilterConfig {
     std::map<std::string, double> template_fwhm_arcsec;
 };
 
+struct SourceFindingConfig {
+    bool enabled = false;
+    double source_sigma = 0.0;
+    double source_window_arcsec = 0.0;
+    std::string mode = "default";
+};
+
 struct SourceFittingConfig {
     bool active = false;
     double bounding_box_arcsec = 0.0;
@@ -114,6 +121,7 @@ struct PostProcessingConfig {
     bool map_filtering_enabled = false;
     MapFilterConfig map_filtering;
     bool source_finding_enabled = false;
+    SourceFindingConfig source_finding;
     SourceFittingConfig source_fitting;
 };
 
@@ -175,8 +183,25 @@ inline void validate(const SourceFittingConfig &config, ValidationReport &report
                   report);
 }
 
+inline void validate(const SourceFindingConfig &config, ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    check_minimum(config.source_sigma, 0.0,
+                  {"post_processing", "source_finding", "source_sigma"},
+                  report);
+    check_minimum(config.source_window_arcsec, 0.0,
+                  {"post_processing", "source_finding", "source_window_arcsec"},
+                  report);
+    if (config.mode.empty()) {
+        report.add_error({"post_processing", "source_finding", "mode"},
+                         "must not be empty");
+    }
+}
+
 inline void validate(const PostProcessingConfig &config, ValidationReport &report) {
     validate(config.map_filtering, report);
+    validate(config.source_finding, report);
     validate(config.source_fitting, report);
 }
 
