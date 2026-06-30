@@ -1,0 +1,56 @@
+schema: citlali-reduction-v2
+mode: pointing
+profile: pointing_compat_passthrough
+
+# Compatibility fixture for the point 152389 TolTECA baseline. Use with:
+#   --base-config /path/to/point/refactor/70_reduce.yaml
+# Every compact value below mirrors the matching low-level value in that file.
+
+output:
+  dir: .
+  subdir: true
+  verbose: true
+
+runtime:
+  threads: 6
+  parallel: omp
+
+map:
+  unit: mJy/beam
+  method: jinc
+  grouping: auto
+  pixel_axes: altaz
+  pixel_size_arcsec: 1.0
+  center: auto
+  size: auto
+  coadd: false
+
+products:
+  maps: true
+  noise: false
+  noise_count: 5
+  noise_products: true
+  noise_realizations: false
+  tod: none
+  diagnostics: verbose
+
+processing:
+  tod: true
+  clean: standard
+  clean_grouping: [nw]
+  weighting: validated
+  fruitloops: off
+  fruitloops_iters: 10
+
+pointing:
+  source_strategy:
+    mode: standard
+    fit_gaussian: true
+    fruitloops_center_mode: auto
+    header_max_radius_arcsec: 40.0
+    header_require_coverage: true
+  source_protection_radius_arcsec: 20.0
+  fit_radius_arcsec: 40
+  fit_box_arcsec: 30
+
+expert: {}

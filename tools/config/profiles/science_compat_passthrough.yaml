@@ -1,0 +1,5 @@
+schema: citlali-compact-profile-v1
+name: science_compat_passthrough
+mode: science
+description: No-op profile for validating compact overlays against an existing TolTECA science low-level baseline.
+full: {}

@@ -87,10 +87,13 @@ and writes the generated `inputs` block in the final `citlali_*.yaml`.
 | `pointing_standard` | `pointing` | Compact-source pointing with source-aware protection |
 | `pointing_compat_passthrough` | `pointing` | No-op validation profile for existing TolTECA point baselines |
 | `oof_standard` | `oof` | PSF-preserving OOF defaults mapped through the pointing engine |
+| `oof_compat_passthrough` | `oof` | No-op validation profile for existing TolTECA OOF baselines |
 | `beammap_detector` | `beammap` | Detector-grouped beammap defaults |
+| `beammap_compat_passthrough` | `beammap` | No-op validation profile for existing TolTECA beammap baselines |
 | `science_standard` | `science` | Normal science map production |
 | `science_diagnostic` | `science` | Science maps with verbose diagnostics and TOD products |
 | `tod_export` | `science` | TOD export/debugging profile |
+| `science_compat_passthrough` | `science` | No-op validation profile for existing TolTECA science baselines |
 
 ## User-Facing Knob Groups
 
@@ -137,3 +140,26 @@ The no-op `pointing_compat_passthrough` profile now expands against that same
 `70_reduce.yaml` baseline with zero differences. That is the safe starting
 point for moving point configuration groups behind compact names before asking
 Unity reductions to compare science products.
+
+The same no-op compatibility harness now exists for all four user-facing
+intents. Representative local checks passed with zero low-level YAML
+differences after ignoring `runtime.output_dir`:
+
+| Intent | Baseline | Leaf keys |
+| --- | --- | ---: |
+| Pointing | `/Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/70_reduce.yaml` | 444 |
+| OOF | `/Users/gwilson/work_toltec/local_data/OOF/149056/70_reduce.yaml` | 164 |
+| Beammap | `/Users/gwilson/work_toltec/local_data/beammaps/3c273/70_reduce.yaml` | 485 |
+| Science | `/Users/gwilson/work_toltec/local_data/2025-C1-COM-04/GOODS-N/70_reduce.yaml` | 219 |
+
+The stronger compact-key fixtures below also passed the same zero-difference
+check. These files use compact runtime, map, product, processing, and
+intent-specific fields where the selected baseline already has matching
+low-level destinations:
+
+| Intent | Compact-key fixture |
+| --- | --- |
+| Pointing | `tools/config/examples/pointing_compat_point70_compact.yaml` |
+| OOF | `tools/config/examples/oof_compat_149056_compact.yaml` |
+| Beammap | `tools/config/examples/beammap_compat_3c273_compact.yaml` |
+| Science | `tools/config/examples/science_compat_goodsn_compact.yaml` |

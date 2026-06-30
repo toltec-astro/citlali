@@ -1,0 +1,52 @@
+schema: citlali-reduction-v2
+mode: beammap
+profile: beammap_compat_passthrough
+
+# Compatibility fixture for /Users/gwilson/work_toltec/local_data/beammaps/3c273.
+# Use with --base-config pointing at that reduction's 70_reduce.yaml.
+
+output:
+  subdir: true
+  verbose: false
+
+runtime:
+  threads: 16
+  parallel: omp
+
+map:
+  unit: mJy/beam
+  method: jinc
+  grouping: auto
+  pixel_axes: altaz
+  pixel_size_arcsec: 1.0
+  center: auto
+  size: auto
+  coadd: false
+
+products:
+  maps: true
+  noise: false
+  noise_count: 10
+  tod: none
+  diagnostics: normal
+
+processing:
+  tod: true
+  clean: standard
+  clean_grouping: [corr_nw]
+  weighting: full
+  fruitloops: on
+  fruitloops_iters: 2
+
+beammap:
+  iterations: 6
+  convergence_tolerance: 0.03
+  convergence_radius_arcsec: 10.0
+  derotate: true
+  subtract_reference_det: true
+  reference_det: -99
+  detector_weighting: ptc_after_iter0
+  detector_tod: false
+  priors: true
+
+expert: {}

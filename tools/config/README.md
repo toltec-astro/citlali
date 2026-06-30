@@ -90,6 +90,32 @@ $HOME/tolteca/bin/python tools/config/expand_compact_config.py \
   --output /tmp/pointing_compat.low_level.yaml
 ```
 
+The `*_compat_passthrough` profiles are intentionally empty. Use them as
+validation harnesses when moving an existing TolTECA low-level block behind
+compact knobs:
+
+| Intent | Passthrough profile | Example compact file |
+| --- | --- | --- |
+| Pointing | `pointing_compat_passthrough` | `pointing_compat_passthrough_compact.yaml` |
+| OOF | `oof_compat_passthrough` | `oof_compat_passthrough_compact.yaml` |
+| Beammap | `beammap_compat_passthrough` | `beammap_compat_passthrough_compact.yaml` |
+| Science | `science_compat_passthrough` | `science_compat_passthrough_compact.yaml` |
+
+`pointing_compat_point70_compact.yaml` is a stronger point fixture: it uses the
+same passthrough profile but expresses the normal point-152389 runtime, map,
+product, processing, and source-fitting choices through compact keys. It still
+expands to zero differences against that point `70_reduce.yaml` baseline.
+
+The same stronger-fixture pattern exists for representative OOF, beammap, and
+science baselines:
+
+| Intent | Compact-key fixture |
+| --- | --- |
+| Pointing | `pointing_compat_point70_compact.yaml` |
+| OOF | `oof_compat_149056_compact.yaml` |
+| Beammap | `beammap_compat_3c273_compact.yaml` |
+| Science | `science_compat_goodsn_compact.yaml` |
+
 This is a prototype authoring layer only. It does not change the Citlali C++
 parser, CLI, build system, or default runtime behavior.
 

@@ -160,6 +160,26 @@ Result:
 | Compatibility candidate leaf keys | 444 |
 | Differences | 0 |
 
+The stronger point compatibility fixture is:
+
+```text
+tools/config/examples/pointing_compat_point70_compact.yaml
+```
+
+It uses the same empty compatibility profile, but expresses the normal point
+152389 runtime, map, products, processing, and source-fitting values through
+compact keys. It also expands against the point `70_reduce.yaml` baseline with
+zero differences:
+
+| Metric | Count |
+| --- | ---: |
+| Baseline leaf keys | 444 |
+| Compact point-70 candidate leaf keys | 444 |
+| Differences | 0 |
+
+This confirms that those compact mappings are behavior-preserving for the
+validated point case when the historical low-level block is used as the base.
+
 ## Next Decision
 
 Before replacing TolTECA point authoring with compact profiles, choose one of
@@ -176,7 +196,8 @@ matches the existing point baseline, user-facing simplification can happen by
 moving individual low-level choices behind compact names without changing the
 expanded YAML.
 
-The recommended next implementation step is to add compact point override
-groups to the passthrough example one group at a time, using the current
-`70_reduce.yaml` values. Each group should keep `compare_lowlevel_yaml.py` at
-zero differences before the same mapping is promoted into `pointing_standard`.
+The recommended next implementation step is to repeat the stronger fixture
+pattern for OOF, beammap, and science: start with the passthrough profile,
+choose one representative `70_reduce.yaml`, express a compact group with the
+same values, and keep `compare_lowlevel_yaml.py` at zero differences before the
+mapping is promoted into the normal profile.

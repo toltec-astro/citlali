@@ -1,0 +1,45 @@
+schema: citlali-reduction-v2
+mode: oof
+profile: oof_compat_passthrough
+
+# Compatibility fixture for /Users/gwilson/work_toltec/local_data/OOF/149056.
+# Use with --base-config pointing at that reduction's 70_reduce.yaml.
+
+output:
+  dir: .
+  subdir: true
+  verbose: true
+
+runtime:
+  threads: 8
+  parallel: omp
+
+map:
+  unit: mJy/beam
+  method: jinc
+  grouping: auto
+  pixel_axes: altaz
+  pixel_size_arcsec: 2.25
+  center: auto
+  size: auto
+  coadd: false
+
+products:
+  maps: true
+  noise: false
+  noise_count: 5
+  tod: none
+  diagnostics: verbose
+
+processing:
+  tod: true
+  clean_grouping: [nw]
+  weighting: full
+  fruitloops: on
+  fruitloops_iters: 5
+
+oof:
+  fit_radius_arcsec: 40
+  fit_box_arcsec: 30
+
+expert: {}

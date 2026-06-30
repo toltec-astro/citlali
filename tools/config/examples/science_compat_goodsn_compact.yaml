@@ -1,0 +1,41 @@
+schema: citlali-reduction-v2
+mode: science
+profile: science_compat_passthrough
+
+# Compatibility fixture for /Users/gwilson/work_toltec/local_data/2025-C1-COM-04/GOODS-N.
+# Use with --base-config pointing at that reduction's 70_reduce.yaml.
+
+output:
+  dir: .
+  subdir: true
+  verbose: false
+
+runtime:
+  threads: 16
+  parallel: omp
+
+map:
+  unit: mJy/beam
+  method: naive
+  grouping: auto
+  pixel_axes: radec
+  pixel_size_arcsec: 2.0
+  center: auto
+  size: auto
+  coadd: true
+
+products:
+  maps: true
+  noise: true
+  noise_count: 10
+  tod: none
+  diagnostics: normal
+
+processing:
+  tod: true
+  clean_grouping: [nw]
+  weighting: full
+  fruitloops: off
+  fruitloops_iters: 5
+
+expert: {}

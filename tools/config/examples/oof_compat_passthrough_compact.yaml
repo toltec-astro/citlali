@@ -1,0 +1,7 @@
+schema: citlali-reduction-v2
+mode: oof
+profile: oof_compat_passthrough
+
+# Use with --base-config /path/to/70_reduce.yaml to validate compact overlays
+# against an existing TolTECA OOF low-level baseline.
+expert: {}
