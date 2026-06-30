@@ -352,4 +352,13 @@ void load_previous_fruit_loop_model_if_needed(Engine &engine,
     }
 }
 
+template <bool IsBeammap, class Engine, class Logger>
+void load_observation_fruit_loop_models_if_needed(Engine &engine,
+                                                  const Logger &logger) {
+    if constexpr (!IsBeammap) {
+        load_initial_fruit_loop_model_if_requested(engine);
+        load_previous_fruit_loop_model_if_needed(engine, logger);
+    }
+}
+
 }  // namespace citlali::pipeline

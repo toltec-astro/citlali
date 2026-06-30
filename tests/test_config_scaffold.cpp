@@ -2738,6 +2738,37 @@ TEST(pipeline_execution, skips_previous_fruit_loop_model_on_first_iteration) {
     EXPECT_EQ(logger->info_calls, 0);
 }
 
+TEST(pipeline_execution, loads_observation_fruit_loop_models_for_non_beammap) {
+    FakeEngine engine;
+    engine.fruit_iter = 0;
+    engine.ptcproc.run_fruit_loops = true;
+    engine.ptcproc.fruit_loops_path = "/data/fruit";
+    engine.ptcproc.fruit_loops_type = "obsnum/raw";
+    engine.omb.obsnums = {"000123"};
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_observation_fruit_loop_models_if_needed<false>(
+        engine, logger);
+
+    EXPECT_EQ(engine.ptcproc.load_mb_calls, 1);
+    EXPECT_EQ(engine.ptcproc.loaded_filepath, "/data/fruit/000123/raw/");
+}
+
+TEST(pipeline_execution, skips_observation_fruit_loop_models_for_beammap) {
+    FakeEngine engine;
+    engine.fruit_iter = 0;
+    engine.ptcproc.run_fruit_loops = true;
+    engine.ptcproc.fruit_loops_path = "/data/fruit";
+    engine.omb.obsnums = {"000123"};
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_observation_fruit_loop_models_if_needed<true>(
+        engine, logger);
+
+    EXPECT_EQ(engine.ptcproc.load_mb_calls, 0);
+    EXPECT_EQ(logger->info_calls, 0);
+}
+
 TEST(pipeline_output_layout, derives_config_copy_destinations) {
     EXPECT_EQ(citlali::pipeline::config_copy_filename("70_reduce.yaml"),
               "70_reduce.yaml");

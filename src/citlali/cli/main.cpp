@@ -483,15 +483,9 @@ int run(const rc_t &rc) {
                         citlali::pipeline::update_observation_exposure_time(
                             todproc.engine());
 
-                        if constexpr (!std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>) {
-                            // if on first fruit loops iteration and a path is specified
-                            citlali::pipeline::load_initial_fruit_loop_model_if_requested(
-                                todproc.engine());
-
-                            // if on iteration >0 get the maps from the previous iteration
-                            citlali::pipeline::load_previous_fruit_loop_model_if_needed(
-                                todproc.engine(), logger);
-                        }
+                        citlali::pipeline::load_observation_fruit_loop_models_if_needed<
+                            std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>>(
+                            todproc.engine(), logger);
 
                         citlali::pipeline::setup_and_run_observation_pipeline(
                             todproc.engine(), kidsproc, rawobs, logger);
