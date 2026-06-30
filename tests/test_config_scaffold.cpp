@@ -471,6 +471,7 @@ struct FakeCoaddTodProc {
     int calc_cmb_size_calls = 0;
     int allocate_cmb_calls = 0;
     int allocate_nmb_calls = 0;
+    int coadd_calls = 0;
     int create_coadded_map_files_calls = 0;
     int last_map_coord_count = 0;
 
@@ -483,6 +484,8 @@ struct FakeCoaddTodProc {
     }
 
     void allocate_cmb() { ++allocate_cmb_calls; }
+
+    void coadd() { ++coadd_calls; }
 
     template <class MapBuffer>
     void allocate_nmb(MapBuffer &) {
@@ -2104,6 +2107,27 @@ TEST(pipeline_execution, skips_observation_noise_for_non_jinc_coadd) {
     EXPECT_EQ(todproc.allocate_omb_calls, 1);
     EXPECT_EQ(todproc.allocate_nmb_calls, 0);
     EXPECT_EQ(logger->info_calls, 2);
+}
+
+TEST(pipeline_execution, coadds_observation) {
+    FakeCoaddTodProc todproc;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::coadd_observation(todproc, logger);
+
+    EXPECT_EQ(todproc.coadd_calls, 1);
+    EXPECT_EQ(logger->info_calls, 1);
+}
+
+TEST(pipeline_execution, skips_coadd_for_polarization) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().rtcproc.run_polarization = true;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::coadd_observation(todproc, logger);
+
+    EXPECT_EQ(todproc.coadd_calls, 0);
+    EXPECT_EQ(logger->info_calls, 1);
 }
 
 TEST(pipeline_execution, writes_raw_observation_outputs) {

@@ -83,6 +83,16 @@ void allocate_observation_map_buffers(TodProc &todproc,
     }
 }
 
+template <class TodProc, class Logger>
+void coadd_observation(TodProc &todproc, const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    logger->info("coadding");
+    if (!engine.rtcproc.run_polarization) {
+        todproc.coadd();
+    }
+}
+
 template <auto RawObsMap, class TodProc, class Logger>
 void write_raw_observation_outputs(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();

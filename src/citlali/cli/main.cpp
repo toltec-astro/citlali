@@ -552,10 +552,8 @@ int run(const rc_t &rc) {
 
                         // coadd
                         if (todproc.engine().run_coadd) {
-                            logger->info("coadding");
-                            if (!todproc.engine().rtcproc.run_polarization) {
-                                todproc.coadd();
-                            }
+                            citlali::pipeline::coadd_observation(
+                                todproc, logger);
                         }
 
                         // filter obs map
