@@ -1,0 +1,74 @@
+schema: citlali-compact-profile-v1
+name: oof_standard
+mode: oof
+description: Out-of-focus holography profile using the pointing engine with PSF-preserving defaults.
+full:
+  runtime:
+    reduction_type: pointing
+    verbose: false
+  source:
+    map_regime: source_dominant
+  pointing:
+    source_strategy:
+      mode: psf_preserve
+      fit_gaussian: false
+      fruitloops_center_mode: map_center
+      header_require_coverage: true
+  mapmaking:
+    enabled: true
+    cunit: mJy/beam
+    grouping: auto
+    method: jinc
+    pixel_axes: altaz
+    pixel_size_arcsec: 1.0
+  coadd:
+    enabled: false
+  noise_maps:
+    enabled: false
+    n_noise_maps: 1
+    products:
+      enabled: true
+  timestream:
+    enabled: true
+    raw_time_chunk:
+      despike:
+        source_protection:
+          enabled: true
+          radius_arcsec: 20.0
+      output:
+        enabled: false
+    processed_time_chunk:
+      clean:
+        enabled: true
+        standard_pca:
+          enabled: true
+        null_model:
+          enabled: false
+        marchenko_pastur:
+          enabled: false
+        adaptive_selector:
+          enabled: false
+        grouping: [nw]
+      flagging:
+        second_pass_local:
+          source_protection:
+            enabled: true
+            radius_arcsec: 20.0
+      weighting:
+        type: validated
+      output:
+        enabled: false
+    fruit_loops:
+      enabled: false
+      max_iters: 1
+      center_keep_radius_arcsec: 40.0
+      adaptive_support_radius_arcsec: 18.0
+      interp_mode_override: auto
+      legacy_center: false
+      recompute_weights_after_addback: false
+  post_processing:
+    source_fitting:
+      bounding_box_arcsec: 30
+      fitting_radius_arcsec: 40
+    map_filtering:
+      enabled: false

@@ -17,7 +17,11 @@ PROFILE_SCHEMA = "citlali-compact-profile-v1"
 DEFAULT_PROFILE_BY_MODE = {
     "science": "science_standard",
     "pointing": "pointing_standard",
+    "oof": "oof_standard",
     "beammap": "beammap_detector",
+}
+LEGACY_REDUCTION_TYPE_BY_MODE = {
+    "oof": "pointing",
 }
 TOP_LEVEL_KEYS = {
     "schema",
@@ -30,6 +34,7 @@ TOP_LEVEL_KEYS = {
     "products",
     "processing",
     "pointing",
+    "oof",
     "beammap",
     "expert",
 }
@@ -39,6 +44,7 @@ TOD_MODES = {
     "ptc": (False, True),
     "both": (True, True),
 }
+LOW_LEVEL_EXCLUDED_TOP_LEVEL_KEYS = {"inputs"}
 
 
 class ConfigError(RuntimeError):
@@ -68,6 +74,62 @@ def deep_merge(base: Any, patch: Any) -> Any:
                 result[key] = copy.deepcopy(value)
         return result
     return copy.deepcopy(patch)
+
+
+def step_values(steps: Any) -> list[Any]:
+    if isinstance(steps, list):
+        return steps
+    if isinstance(steps, dict):
+        def step_sort_key(item: Any) -> tuple[int, Any]:
+            text = str(item)
+            if text.isdigit():
+                return (0, int(text))
+            return (1, text)
+
+        return [steps[key] for key in sorted(steps, key=step_sort_key)]
+    return []
+
+
+def extract_low_level(data: Any) -> Any:
+    if not isinstance(data, dict):
+        return data
+    reduce_section = data.get("reduce")
+    if not isinstance(reduce_section, dict):
+        return data
+    for step in step_values(reduce_section.get("steps", [])):
+        if not isinstance(step, dict):
+            continue
+        config = step.get("config", {})
+        if isinstance(config, dict) and "low_level" in config:
+            return config["low_level"] or {}
+    return data
+
+
+def to_low_level_config(expanded: dict[str, Any]) -> dict[str, Any]:
+    result = copy.deepcopy(expanded)
+    for key in LOW_LEVEL_EXCLUDED_TOP_LEVEL_KEYS:
+        result.pop(key, None)
+    return result
+
+
+def format_expanded_output(expanded: dict[str, Any], output_format: str) -> dict[str, Any]:
+    if output_format == "full":
+        return expanded
+    if output_format == "low_level":
+        return to_low_level_config(expanded)
+    if output_format == "tolteca":
+        return {
+            "reduce": {
+                "steps": {
+                    0: {
+                        "config": {
+                            "low_level": to_low_level_config(expanded),
+                        }
+                    }
+                }
+            }
+        }
+    raise ConfigError(f"unsupported output format {output_format!r}")
 
 
 def set_path(data: dict[str, Any], path: tuple[str, ...], value: Any) -> None:
@@ -406,6 +468,79 @@ def apply_pointing(
         record_set(patch, applied, ("post_processing", "source_fitting", "bounding_box_arcsec"), pointing["fit_box_arcsec"])
 
 
+def apply_oof(
+    compact: dict[str, Any],
+    patch: dict[str, Any],
+    applied: list[dict[str, Any]],
+    warnings: list[str],
+) -> None:
+    oof = section(compact, "oof")
+    warn_unknown_keys(
+        warnings,
+        "oof",
+        oof,
+        {
+            "source_strategy",
+            "source_protection_radius_arcsec",
+            "fit_gaussian",
+            "fit_radius_arcsec",
+            "fit_box_arcsec",
+            "fruitloops_center_mode",
+            "header_max_radius_arcsec",
+            "header_require_coverage",
+            "center_keep_radius_arcsec",
+            "adaptive_support_radius_arcsec",
+        },
+    )
+    if "source_strategy" in oof:
+        record_set(patch, applied, ("pointing", "source_strategy", "mode"), oof["source_strategy"])
+    if "fit_gaussian" in oof:
+        record_set(patch, applied, ("pointing", "source_strategy", "fit_gaussian"), oof["fit_gaussian"])
+    if "fruitloops_center_mode" in oof:
+        record_set(
+            patch,
+            applied,
+            ("pointing", "source_strategy", "fruitloops_center_mode"),
+            oof["fruitloops_center_mode"],
+        )
+    if "header_max_radius_arcsec" in oof:
+        record_set(
+            patch,
+            applied,
+            ("pointing", "source_strategy", "header_max_radius_arcsec"),
+            oof["header_max_radius_arcsec"],
+        )
+    if "header_require_coverage" in oof:
+        record_set(
+            patch,
+            applied,
+            ("pointing", "source_strategy", "header_require_coverage"),
+            oof["header_require_coverage"],
+        )
+    if "source_protection_radius_arcsec" in oof:
+        radius = oof["source_protection_radius_arcsec"]
+        record_set(
+            patch,
+            applied,
+            ("timestream", "raw_time_chunk", "despike", "source_protection", "radius_arcsec"),
+            radius,
+        )
+        record_set(
+            patch,
+            applied,
+            ("timestream", "processed_time_chunk", "flagging", "second_pass_local", "source_protection", "radius_arcsec"),
+            radius,
+        )
+    if "fit_radius_arcsec" in oof:
+        record_set(patch, applied, ("post_processing", "source_fitting", "fitting_radius_arcsec"), oof["fit_radius_arcsec"])
+    if "fit_box_arcsec" in oof:
+        record_set(patch, applied, ("post_processing", "source_fitting", "bounding_box_arcsec"), oof["fit_box_arcsec"])
+    if "center_keep_radius_arcsec" in oof:
+        record_set(patch, applied, ("timestream", "fruit_loops", "center_keep_radius_arcsec"), oof["center_keep_radius_arcsec"])
+    if "adaptive_support_radius_arcsec" in oof:
+        record_set(patch, applied, ("timestream", "fruit_loops", "adaptive_support_radius_arcsec"), oof["adaptive_support_radius_arcsec"])
+
+
 def apply_beammap_priors(
     value: Any,
     patch: dict[str, Any],
@@ -475,7 +610,7 @@ def build_compact_patch(compact: dict[str, Any], compact_path: Path) -> tuple[di
 
     mode = compact.get("mode")
     if mode is not None:
-        record_set(patch, applied, ("runtime", "reduction_type"), mode)
+        record_set(patch, applied, ("runtime", "reduction_type"), LEGACY_REDUCTION_TYPE_BY_MODE.get(mode, mode))
 
     apply_inputs(compact, compact_path, patch, applied)
 
@@ -555,6 +690,7 @@ def build_compact_patch(compact: dict[str, Any], compact_path: Path) -> tuple[di
 
     apply_processing(compact, patch, applied, warnings)
     apply_pointing(compact, patch, applied, warnings)
+    apply_oof(compact, patch, applied, warnings)
     apply_beammap(compact, patch, applied, warnings)
     return patch, applied, warnings
 
@@ -590,7 +726,7 @@ def expand_config(
     profiles_dir: Path,
     profile_override: str | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
-    base = load_yaml(base_config_path)
+    base = extract_low_level(load_yaml(base_config_path))
     compact = load_yaml(compact_path)
     if not isinstance(base, dict):
         raise ConfigError("base config must be a mapping")
@@ -632,6 +768,7 @@ def expand_config(
         "profile": str(profile_name),
         "profile_path": str(profile_path),
         "mode": mode,
+        "legacy_reduction_type": LEGACY_REDUCTION_TYPE_BY_MODE.get(str(mode), mode),
         "applied_compact_paths": applied,
         "expert_override_paths": sorted(leaf_paths(expert_patch)),
         "warnings": warnings,
@@ -657,10 +794,20 @@ def list_profiles(profiles_dir: Path) -> None:
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("compact_config", nargs="?", help="Compact config YAML to expand.")
-    parser.add_argument("--base-config", default="data/config.yaml", help="Current full config baseline.")
+    parser.add_argument(
+        "--base-config",
+        default="data/config.yaml",
+        help="Current full config baseline, or a TolTECA YAML file containing reduce.steps.*.config.low_level.",
+    )
     parser.add_argument("--profiles-dir", default="tools/config/profiles", help="Directory of compact profile YAML files.")
     parser.add_argument("--profile", default=None, help="Override profile name from the compact config.")
     parser.add_argument("--output", "-o", default="-", help="Expanded full config output path, or '-' for stdout.")
+    parser.add_argument(
+        "--output-format",
+        choices=("full", "low_level", "tolteca"),
+        default="full",
+        help="Output full Citlali YAML, a bare low_level block, or a TolTECA reduce.steps.0.config.low_level wrapper.",
+    )
     parser.add_argument("--summary-out", default="", help="Optional YAML expansion summary output path.")
     parser.add_argument("--list-profiles", action="store_true", help="List available profiles and exit.")
     return parser.parse_args(argv)
@@ -686,7 +833,8 @@ def main(argv: list[str]) -> int:
         print(f"error: {exc}", file=sys.stderr)
         return 2
 
-    expanded_text = dump_yaml(expanded)
+    output_data = format_expanded_output(expanded, args.output_format)
+    expanded_text = dump_yaml(output_data)
     if args.output == "-":
         print(expanded_text, end="")
     else:
@@ -701,6 +849,7 @@ def main(argv: list[str]) -> int:
     else:
         print(
             f"expanded {compact_path.name} with profile {summary['profile']} "
+            f"as {args.output_format} "
             f"({len(summary['applied_compact_paths'])} compact overrides, "
             f"{len(summary['expert_override_paths'])} expert overrides)",
             file=sys.stderr,

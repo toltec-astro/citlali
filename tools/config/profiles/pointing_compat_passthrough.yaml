@@ -1,0 +1,5 @@
+schema: citlali-compact-profile-v1
+name: pointing_compat_passthrough
+mode: pointing
+description: No-op profile for validating compact overlays against an existing TolTECA point low-level baseline.
+full: {}

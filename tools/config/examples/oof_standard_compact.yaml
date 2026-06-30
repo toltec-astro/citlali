@@ -1,0 +1,54 @@
+schema: citlali-reduction-v2
+mode: oof
+profile: oof_standard
+
+inputs:
+  legacy: ../../../data/config.yaml
+
+output:
+  dir: /path/to/redu/directory/
+  subdir: true
+  verbose: false
+
+runtime:
+  threads: 8
+  parallel: omp
+
+map:
+  unit: mJy/beam
+  method: jinc
+  grouping: auto
+  pixel_axes: altaz
+  pixel_size_arcsec: 1.0
+  center: auto
+  size: auto
+  coadd: false
+
+products:
+  maps: true
+  noise: false
+  noise_count: 1
+  noise_products: true
+  noise_realizations: false
+  tod: none
+  diagnostics: normal
+
+processing:
+  tod: true
+  clean: standard
+  clean_grouping: [nw]
+  weighting: validated
+  fruitloops: off
+  fruitloops_iters: 1
+
+oof:
+  source_strategy: psf_preserve
+  source_protection_radius_arcsec: 20.0
+  fit_gaussian: false
+  fruitloops_center_mode: map_center
+  fit_radius_arcsec: 40
+  fit_box_arcsec: 30
+  center_keep_radius_arcsec: 40.0
+  adaptive_support_radius_arcsec: 18.0
+
+expert: {}

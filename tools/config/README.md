@@ -47,7 +47,15 @@ from the authoring files.
 ## Compact Config Prototype
 
 `expand_compact_config.py` expands a compact user-facing YAML file into the
-current full `data/config.yaml` shape:
+current full `data/config.yaml` shape. It supports the normal TolTECA/Citlali
+reduction intents:
+
+| Mode | Default profile | Legacy Citlali reduction type |
+| --- | --- | --- |
+| `pointing` | `pointing_standard` | `pointing` |
+| `oof` | `oof_standard` | `pointing` |
+| `beammap` | `beammap_detector` | `beammap` |
+| `science` | `science_standard` | `science` |
 
 ```bash
 $HOME/tolteca/bin/python tools/config/expand_compact_config.py \
@@ -56,8 +64,52 @@ $HOME/tolteca/bin/python tools/config/expand_compact_config.py \
   --summary-out /tmp/science_standard.summary.yaml
 ```
 
+Use `--output-format low_level` to write only the Citlali low-level block, or
+`--output-format tolteca` to wrap that block as indexed
+`reduce.steps.0.config.low_level` for a TolTECA `NN*.yaml` file:
+
+```bash
+$HOME/tolteca/bin/python tools/config/expand_compact_config.py \
+  tools/config/examples/oof_standard_compact.yaml \
+  --output-format tolteca \
+  --output /tmp/60_citlali_profile.yaml
+```
+
 Profiles live in `tools/config/profiles/`, and example compact configs live in
 `tools/config/examples/`.
 
+`--base-config` accepts either a full Citlali YAML file or a TolTECA YAML file
+containing `reduce.steps.*.config.low_level`. This is useful for compatibility
+work against an existing `70_reduce.yaml` baseline:
+
+```bash
+$HOME/tolteca/bin/python tools/config/expand_compact_config.py \
+  tools/config/examples/pointing_compat_passthrough_compact.yaml \
+  --base-config /path/to/70_reduce.yaml \
+  --output-format low_level \
+  --output /tmp/pointing_compat.low_level.yaml
+```
+
 This is a prototype authoring layer only. It does not change the Citlali C++
 parser, CLI, build system, or default runtime behavior.
+
+## Low-Level YAML Equivalence
+
+`compare_lowlevel_yaml.py` compares two low-level Citlali YAML trees and exits
+with status 0 only when they match after ignored paths are removed. It accepts
+either a bare low-level block or a TolTECA wrapper under
+`reduce.steps.*.config.low_level`.
+
+```bash
+$HOME/tolteca/bin/python tools/config/compare_lowlevel_yaml.py \
+  /path/to/70_reduce.yaml \
+  /tmp/compact_profile.low_level.yaml \
+  --ignore runtime.output_dir \
+  --json-out /tmp/lowlevel_compare.json \
+  --markdown-out /tmp/lowlevel_compare.md
+```
+
+Use this before Unity reduction tests when converting a TolTECA workflow to a
+compact profile. The first target for behavior-preserving work is zero
+differences against the existing `70_reduce.yaml` low-level block, excluding
+TolTECA-owned paths such as `runtime.output_dir`.

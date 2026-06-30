@@ -1,0 +1,7 @@
+schema: citlali-reduction-v2
+mode: pointing
+profile: pointing_compat_passthrough
+
+# Use with --base-config /path/to/70_reduce.yaml to validate compact overlays
+# against an existing TolTECA low-level baseline.
+expert: {}
