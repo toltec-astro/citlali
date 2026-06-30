@@ -49,6 +49,8 @@
 #include <citlali/core/utils/fitting.h>
 #include <citlali/core/utils/pointing.h>
 
+#include <citlali/core/config/mapmaking_config.h>
+#include <citlali/core/config/noise_config.h>
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/engine/config.h>
 #include <citlali/core/engine/learning.h>
@@ -312,6 +314,8 @@ public:
 
     // typed runtime config mirror for staged config migration
     citlali::config::RuntimeConfig typed_runtime_config;
+    citlali::config::MapmakingConfig typed_mapmaking_config;
+    citlali::config::NoiseConfig typed_noise_config;
 
     // obsnum
     std::string obsnum;
@@ -2749,12 +2753,35 @@ void Engine::get_timestream_config(CT &config) {
 template<typename CT>
 void Engine::get_mapmaking_config(CT &config) {
     logger->info("getting mapmaking config options");
+    typed_mapmaking_config = citlali::config::MapmakingConfig{};
+    typed_noise_config = citlali::config::NoiseConfig{};
+
+    auto parsed_cleanly = [&](std::size_t missing_before, std::size_t invalid_before) {
+        return missing_keys.size() == missing_before && invalid_keys.size() == invalid_before;
+    };
+
     // enable mapmaking?
-    get_config_value(config, run_mapmaking, missing_keys, invalid_keys,
-                     std::tuple{"mapmaking","enabled"});
+    {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
+        get_config_value(config, run_mapmaking, missing_keys, invalid_keys,
+                         std::tuple{"mapmaking","enabled"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_mapmaking_config.enabled = run_mapmaking;
+        }
+    }
     // map grouping
-    get_config_value(config, map_grouping, missing_keys, invalid_keys,
-                     std::tuple{"mapmaking","grouping"},{"auto","array","nw","detector","fg"});
+    {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
+        get_config_value(config, map_grouping, missing_keys, invalid_keys,
+                         std::tuple{"mapmaking","grouping"},{"auto","array","nw","detector","fg"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            if (auto parsed = citlali::config::parse_map_grouping(map_grouping)) {
+                typed_mapmaking_config.grouping = *parsed;
+            }
+        }
+    }
 
     // optional expected sky regime for interpreting map diagnostics
     map_regime = "unknown";
@@ -2776,8 +2803,17 @@ void Engine::get_mapmaking_config(CT &config) {
     ptcproc.active_map_grouping = map_grouping;
 
     // map_method
-    get_config_value(config, map_method, missing_keys, invalid_keys,
-                     std::tuple{"mapmaking","method"},{"naive","jinc","maximum_likelihood"});
+    {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
+        get_config_value(config, map_method, missing_keys, invalid_keys,
+                         std::tuple{"mapmaking","method"},{"naive","jinc","maximum_likelihood"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            if (auto parsed = citlali::config::parse_map_method(map_method)) {
+                typed_mapmaking_config.method = *parsed;
+            }
+        }
+    }
     std::string fruit_interp_default = (map_method == "jinc") ? "jinc" : "bilinear";
     ptcproc.fruit_loops_interp_mode = fruit_interp_default;
     if (ptcproc.run_fruit_loops && ptcproc.fruit_loops_interp_mode_override != "auto") {
@@ -2805,8 +2841,15 @@ void Engine::get_mapmaking_config(CT &config) {
     ptcproc.fruit_loops_jinc_shape_params.clear();
 
     // map reference frame (radec, altaz, galactic)
-    get_config_value(config, telescope.pixel_axes, missing_keys, invalid_keys,
-                     std::tuple{"mapmaking","pixel_axes"},{"radec","altaz", "galactic"});
+    {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
+        get_config_value(config, telescope.pixel_axes, missing_keys, invalid_keys,
+                         std::tuple{"mapmaking","pixel_axes"},{"radec","altaz", "galactic"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_mapmaking_config.pixel_axes = telescope.pixel_axes;
+        }
+    }
     if (redu_type == "beammap" && telescope.pixel_axes != "altaz") {
         logger->error(
             "beammap reductions require mapmaking.pixel_axes='altaz'; got '{}'",
@@ -2816,7 +2859,26 @@ void Engine::get_mapmaking_config(CT &config) {
 
     // get config for omb
     logger->info("getting omb config options");
+    const auto omb_missing_before = missing_keys.size();
+    const auto omb_invalid_before = invalid_keys.size();
     omb.get_config(config, missing_keys, invalid_keys, telescope.pixel_axes, redu_type);
+    if (parsed_cleanly(omb_missing_before, omb_invalid_before)) {
+        typed_mapmaking_config.coverage_cut = omb.cov_cut;
+        typed_mapmaking_config.pixel_size_arcsec = omb.pixel_size_rad * RAD_TO_ASEC;
+        typed_mapmaking_config.unit = omb.sig_unit;
+        if (omb.wcs.naxis.size() >= 2) {
+            typed_mapmaking_config.x_size_pix = static_cast<int>(omb.wcs.naxis[0]);
+            typed_mapmaking_config.y_size_pix = static_cast<int>(omb.wcs.naxis[1]);
+        }
+        if (omb.wcs.crpix.size() >= 2) {
+            typed_mapmaking_config.crpix1 = omb.wcs.crpix[0];
+            typed_mapmaking_config.crpix2 = omb.wcs.crpix[1];
+        }
+        if (omb.crval_config.size() >= 2) {
+            typed_mapmaking_config.crval1_j2000 = omb.crval_config[0];
+            typed_mapmaking_config.crval2_j2000 = omb.crval_config[1];
+        }
+    }
 
     // run coaddition?
     get_config_value(config, run_coadd, missing_keys, invalid_keys,
@@ -2878,15 +2940,36 @@ void Engine::get_mapmaking_config(CT &config) {
     }
 
     // make noise maps?
-    get_config_value(config, run_noise, missing_keys, invalid_keys,
-                     std::tuple{"noise_maps","enabled"});
+    {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
+        get_config_value(config, run_noise, missing_keys, invalid_keys,
+                         std::tuple{"noise_maps","enabled"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_noise_config.enabled = run_noise;
+        }
+    }
     if (run_noise) {
         // number of noise maps
-        get_config_value(config, omb.n_noise, missing_keys, invalid_keys,
-                         std::tuple{"noise_maps","n_noise_maps"},{},{0},{});
+        {
+            const auto missing_before = missing_keys.size();
+            const auto invalid_before = invalid_keys.size();
+            get_config_value(config, omb.n_noise, missing_keys, invalid_keys,
+                             std::tuple{"noise_maps","n_noise_maps"},{},{0},{});
+            if (parsed_cleanly(missing_before, invalid_before)) {
+                typed_noise_config.n_noise_maps = static_cast<int>(omb.n_noise);
+            }
+        }
         // randomize noise maps on detector as well as time chunk
-        get_config_value(config, omb.randomize_dets, missing_keys, invalid_keys,
-                         std::tuple{"noise_maps","randomize_dets"});
+        {
+            const auto missing_before = missing_keys.size();
+            const auto invalid_before = invalid_keys.size();
+            get_config_value(config, omb.randomize_dets, missing_keys, invalid_keys,
+                             std::tuple{"noise_maps","randomize_dets"});
+            if (parsed_cleanly(missing_before, invalid_before)) {
+                typed_noise_config.randomize_dets = omb.randomize_dets;
+            }
+        }
 
         if (run_coadd) {
             // copy omb number of noise maps to cmb
@@ -2899,22 +2982,40 @@ void Engine::get_mapmaking_config(CT &config) {
     else {
         omb.n_noise = 0;
         cmb.n_noise = 0;
+        typed_noise_config.n_noise_maps = 0;
     }
 
     write_noise_realizations = false;
     if (config.template has_typed<bool>(std::tuple{"noise_maps","write_realizations"})) {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, write_noise_realizations, missing_keys, invalid_keys,
                          std::tuple{"noise_maps","write_realizations"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_noise_config.write_realizations = write_noise_realizations;
+        }
     }
     run_noise_products = run_noise;
+    typed_noise_config.products_enabled = run_noise_products;
     if (config.template has_typed<bool>(std::tuple{"noise_maps","products","enabled"})) {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, run_noise_products, missing_keys, invalid_keys,
                          std::tuple{"noise_maps","products","enabled"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_noise_config.products_enabled = run_noise_products;
+        }
     }
     apply_empirical_noise_weights = run_noise;
+    typed_noise_config.apply_empirical_weights = apply_empirical_noise_weights;
     if (config.template has_typed<bool>(std::tuple{"noise_maps","products","apply_empirical_weights"})) {
+        const auto missing_before = missing_keys.size();
+        const auto invalid_before = invalid_keys.size();
         get_config_value(config, apply_empirical_noise_weights, missing_keys, invalid_keys,
                          std::tuple{"noise_maps","products","apply_empirical_weights"});
+        if (parsed_cleanly(missing_before, invalid_before)) {
+            typed_noise_config.apply_empirical_weights = apply_empirical_noise_weights;
+        }
     }
 
     // set mapmaker polarization

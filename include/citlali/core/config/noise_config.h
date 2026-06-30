@@ -14,7 +14,9 @@ struct NoiseConfig {
 };
 
 inline void validate(const NoiseConfig &config, ValidationReport &report) {
-    check_minimum(config.n_noise_maps, 1, {"noise_maps", "n_noise_maps"}, report);
+    if (config.enabled) {
+        check_minimum(config.n_noise_maps, 0, {"noise_maps", "n_noise_maps"}, report);
+    }
 }
 
 }  // namespace citlali::config

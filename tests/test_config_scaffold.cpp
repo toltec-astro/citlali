@@ -70,7 +70,8 @@ TEST(config_scaffold, validates_top_level_config_values) {
 
     config.runtime.n_threads = 0;
     config.mapmaking.pixel_size_arcsec = -1.0;
-    config.noise.n_noise_maps = 0;
+    config.noise.enabled = true;
+    config.noise.n_noise_maps = -1;
 
     auto report = citlali::config::validate(config);
     EXPECT_FALSE(report.ok());
