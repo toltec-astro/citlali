@@ -386,14 +386,36 @@ struct FakeReferenceWrappedRawObs : FakeRawObs {
 
 struct FakeKidsProc {
     int get_rawobs_meta_calls = 0;
+    int loaded_config_value = 0;
     std::vector<FakeRawObsMeta> meta = {
         {100.0, 101},
         {122.0, 102},
     };
 
+    struct Config {
+        int value = 0;
+    };
+
+    static FakeKidsProc from_config(const Config &config) {
+        FakeKidsProc kidsproc;
+        kidsproc.loaded_config_value = config.value;
+        return kidsproc;
+    }
+
     std::vector<FakeRawObsMeta> get_rawobs_meta(const FakeRawObs &) {
         ++get_rawobs_meta_calls;
         return meta;
+    }
+};
+
+struct FakeCitlaliConfig {
+    int get_config_calls = 0;
+    std::string requested_key;
+
+    FakeKidsProc::Config get_config(const std::string &key) {
+        ++get_config_calls;
+        requested_key = key;
+        return {42};
     }
 };
 
@@ -1675,6 +1697,17 @@ TEST(pipeline_preflight, loads_rawobs_kids_meta) {
     EXPECT_DOUBLE_EQ(meta.back().fsmp, 122.0);
     EXPECT_EQ(meta.back().obsid, 102);
     EXPECT_EQ(logger->debug_calls, 1);
+}
+
+TEST(pipeline_preflight, makes_kids_data_proc_from_config) {
+    FakeCitlaliConfig config;
+
+    auto kidsproc =
+        citlali::pipeline::make_kids_data_proc<FakeKidsProc>(config);
+
+    EXPECT_EQ(config.get_config_calls, 1);
+    EXPECT_EQ(config.requested_key, "kids");
+    EXPECT_EQ(kidsproc.loaded_config_value, 42);
 }
 
 TEST(pipeline_preflight, checks_observation_inputs) {

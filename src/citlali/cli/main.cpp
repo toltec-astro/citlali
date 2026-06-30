@@ -385,9 +385,9 @@ int run(const rc_t &rc) {
                 logger->info("starting initial loop through input obs");
                 for (const auto &rawobs : co.inputs()) {
                     logger->info("starting setup of observation {}/{}", i + 1, co.n_inputs());
-                    // set up KIDs data proc
                     auto kidsproc =
-                        KidsDataProc::from_config(citlali_config.get_config("kids"));
+                        citlali::pipeline::make_kids_data_proc<KidsDataProc>(
+                            citlali_config);
                     i++;
                     auto rawobs_kids_meta =
                         citlali::pipeline::load_rawobs_kids_meta(
@@ -427,9 +427,9 @@ int run(const rc_t &rc) {
                     // run the reduction for each observation
                     for (std::size_t i=0; i<co.n_inputs(); ++i) {
                         logger->info("starting reduction of observation {}/{}", i + 1, co.n_inputs());
-                        // set up KIDs data proc
                         auto kidsproc =
-                            KidsDataProc::from_config(citlali_config.get_config("kids"));
+                            citlali::pipeline::make_kids_data_proc<KidsDataProc>(
+                                citlali_config);
 
                         // get current rawobs
                         const auto &rawobs = co.inputs()[i];

@@ -124,6 +124,11 @@ auto load_rawobs_kids_meta(KidsProc &kidsproc, const RawObs &rawobs,
     return kidsproc.get_rawobs_meta(rawobs);
 }
 
+template <class KidsDataProc, class Config>
+auto make_kids_data_proc(Config &config) {
+    return KidsDataProc::from_config(config.get_config("kids"));
+}
+
 template <class TodProc, class RawObs, class Logger>
 void check_observation_inputs(TodProc &todproc, const RawObs &rawobs,
                               const Logger &logger) {
