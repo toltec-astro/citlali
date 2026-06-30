@@ -39,6 +39,14 @@ enum class TodOutputSelectionMode {
     uniform_plus_source_crossing
 };
 
+enum class ProcessedTimeChunkWeightingType {
+    full,
+    approximate,
+    hybrid,
+    validated,
+    constant
+};
+
 inline constexpr std::array<EnumName<TodType>, 4> tod_type_names{{
     {TodType::xs, "xs"},
     {TodType::rs, "rs"},
@@ -69,6 +77,15 @@ inline constexpr std::array<EnumName<TodOutputSelectionMode>, 3>
          "uniform_plus_source_crossing"},
     }};
 
+inline constexpr std::array<EnumName<ProcessedTimeChunkWeightingType>, 5>
+    processed_weighting_type_names{{
+        {ProcessedTimeChunkWeightingType::full, "full"},
+        {ProcessedTimeChunkWeightingType::approximate, "approximate"},
+        {ProcessedTimeChunkWeightingType::hybrid, "hybrid"},
+        {ProcessedTimeChunkWeightingType::validated, "validated"},
+        {ProcessedTimeChunkWeightingType::constant, "const"},
+    }};
+
 inline std::optional<TodType> parse_tod_type(std::string_view value) {
     return parse_enum(value, tod_type_names);
 }
@@ -87,6 +104,11 @@ inline std::optional<TodOutputSelectionMode> parse_tod_output_selection_mode(
     return parse_enum(value, tod_output_selection_mode_names);
 }
 
+inline std::optional<ProcessedTimeChunkWeightingType> parse_processed_weighting_type(
+    std::string_view value) {
+    return parse_enum(value, processed_weighting_type_names);
+}
+
 inline std::string_view to_string(TodType value) {
     return enum_name(value, tod_type_names);
 }
@@ -101,6 +123,10 @@ inline std::string_view to_string(TodStreamOutputMode value) {
 
 inline std::string_view to_string(TodOutputSelectionMode value) {
     return enum_name(value, tod_output_selection_mode_names);
+}
+
+inline std::string_view to_string(ProcessedTimeChunkWeightingType value) {
+    return enum_name(value, processed_weighting_type_names);
 }
 
 struct TodStreamOutputConfig {
@@ -205,11 +231,34 @@ struct ProcessedTimeChunkSecondPassLocalConfig {
     TimestreamSourceProtectionConfig source_protection;
 };
 
+struct ProcessedTimeChunkBusyRowSuppressionConfig {
+    bool enabled = false;
+    bool require_busy_veto = true;
+    int min_candidate_clusters = 5;
+    double min_max_unflagged_residual_z = 25.0;
+    double factor = 0.0;
+};
+
+struct ProcessedTimeChunkWeightingConfig {
+    ProcessedTimeChunkWeightingType type =
+        ProcessedTimeChunkWeightingType::full;
+    double source_mask_radius_arcsec = 0.0;
+    double hybrid_correction_min_factor = 0.5;
+    double hybrid_correction_max_factor = 2.0;
+    double median_map_weight_factor = 0.0;
+    double lower_map_weight_factor = 0.0;
+    double upper_map_weight_factor = 0.0;
+    ProcessedTimeChunkBusyRowSuppressionConfig busy_row_suppression;
+};
+
 struct ProcessedTimeChunkFlaggingConfig {
+    double lower_tod_inv_var_factor = 0.0;
+    double upper_tod_inv_var_factor = 0.0;
     ProcessedTimeChunkSecondPassLocalConfig second_pass_local;
 };
 
 struct ProcessedTimeChunkConfig {
+    ProcessedTimeChunkWeightingConfig weighting;
     ProcessedTimeChunkFlaggingConfig flagging;
 };
 
@@ -430,6 +479,46 @@ inline void validate(const ProcessedTimeChunkSecondPassLocalConfig &config,
              report);
 }
 
+inline void validate(const ProcessedTimeChunkBusyRowSuppressionConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    const ConfigPath path{
+        "timestream", "processed_time_chunk", "weighting",
+        "busy_row_suppression"};
+    check_minimum(config.min_candidate_clusters, 0,
+                  append_config_path(path, {"min_candidate_clusters"}), report);
+    check_minimum(config.min_max_unflagged_residual_z, 0.0,
+                  append_config_path(path, {"min_max_unflagged_residual_z"}),
+                  report);
+    check_minimum(config.factor, 0.0, append_config_path(path, {"factor"}),
+                  report);
+    check_maximum(config.factor, 1.0, append_config_path(path, {"factor"}),
+                  report);
+}
+
+inline void validate(const ProcessedTimeChunkWeightingConfig &config,
+                     ValidationReport &report) {
+    const ConfigPath path{"timestream", "processed_time_chunk", "weighting"};
+    check_minimum(config.source_mask_radius_arcsec, 0.0,
+                  append_config_path(path, {"source_mask_radius_arcsec"}),
+                  report);
+    check_minimum(config.hybrid_correction_min_factor, 0.0,
+                  append_config_path(path, {"hybrid_correction_min_factor"}),
+                  report);
+    check_minimum(config.hybrid_correction_max_factor, 0.0,
+                  append_config_path(path, {"hybrid_correction_max_factor"}),
+                  report);
+    if (config.hybrid_correction_max_factor <
+        config.hybrid_correction_min_factor) {
+        report.add_error(
+            append_config_path(path, {"hybrid_correction_max_factor"}),
+            "must be greater than or equal to hybrid_correction_min_factor");
+    }
+    validate(config.busy_row_suppression, report);
+}
+
 inline void validate(const ProcessedTimeChunkFlaggingConfig &config,
                      ValidationReport &report) {
     validate(config.second_pass_local, report);
@@ -437,6 +526,7 @@ inline void validate(const ProcessedTimeChunkFlaggingConfig &config,
 
 inline void validate(const ProcessedTimeChunkConfig &config,
                      ValidationReport &report) {
+    validate(config.weighting, report);
     validate(config.flagging, report);
 }
 

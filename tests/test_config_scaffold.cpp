@@ -101,6 +101,18 @@ TEST(config_scaffold, parses_existing_timestream_enum_values) {
                   "uniform_plus_source_crossing").value(),
               citlali::config::TodOutputSelectionMode::uniform_plus_source_crossing);
     EXPECT_FALSE(citlali::config::parse_tod_output_selection_mode("source").has_value());
+
+    EXPECT_EQ(citlali::config::parse_processed_weighting_type("full").value(),
+              citlali::config::ProcessedTimeChunkWeightingType::full);
+    EXPECT_EQ(citlali::config::parse_processed_weighting_type("approximate").value(),
+              citlali::config::ProcessedTimeChunkWeightingType::approximate);
+    EXPECT_EQ(citlali::config::parse_processed_weighting_type("hybrid").value(),
+              citlali::config::ProcessedTimeChunkWeightingType::hybrid);
+    EXPECT_EQ(citlali::config::parse_processed_weighting_type("validated").value(),
+              citlali::config::ProcessedTimeChunkWeightingType::validated);
+    EXPECT_EQ(citlali::config::parse_processed_weighting_type("const").value(),
+              citlali::config::ProcessedTimeChunkWeightingType::constant);
+    EXPECT_FALSE(citlali::config::parse_processed_weighting_type("constant").has_value());
 }
 
 TEST(config_scaffold, parses_existing_pointing_enum_values) {
@@ -252,6 +264,22 @@ TEST(config_scaffold, validates_processed_time_chunk_second_pass_local_values) {
     citlali::config::validate(config, report);
     EXPECT_FALSE(report.ok());
     EXPECT_EQ(report.error_count(), 19U);
+}
+
+TEST(config_scaffold, validates_processed_time_chunk_weighting_values) {
+    citlali::config::ProcessedTimeChunkWeightingConfig config;
+    config.source_mask_radius_arcsec = -1.0;
+    config.hybrid_correction_min_factor = 2.0;
+    config.hybrid_correction_max_factor = 1.0;
+    config.busy_row_suppression.enabled = true;
+    config.busy_row_suppression.min_candidate_clusters = -1;
+    config.busy_row_suppression.min_max_unflagged_residual_z = -1.0;
+    config.busy_row_suppression.factor = 2.0;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 5U);
 }
 
 TEST(config_scaffold, validates_timestream_learning_values) {
