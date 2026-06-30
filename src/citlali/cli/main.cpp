@@ -447,11 +447,8 @@ int run(const rc_t &rc) {
                         }
                     }
 
-                    citlali::pipeline::write_iteration_coadd_outputs_if_needed<
+                    citlali::pipeline::finish_reduction_iteration<
                         mapmaking::RawCoadd, mapmaking::FilteredCoadd>(
-                        todproc, logger);
-
-                    citlali::pipeline::finalize_iteration_outputs(
                         todproc, logger);
                 }
 

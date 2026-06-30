@@ -369,6 +369,14 @@ void write_iteration_coadd_outputs_if_needed(TodProc &todproc,
     }
 }
 
+template <auto RawCoaddMap, auto FilteredCoaddMap, class TodProc,
+          class Logger>
+void finish_reduction_iteration(TodProc &todproc, const Logger &logger) {
+    write_iteration_coadd_outputs_if_needed<RawCoaddMap, FilteredCoaddMap>(
+        todproc, logger);
+    finalize_iteration_outputs(todproc, logger);
+}
+
 template <class Engine>
 void load_initial_fruit_loop_model_if_requested(Engine &engine) {
     if (engine.ptcproc.run_fruit_loops && engine.fruit_iter == 0) {

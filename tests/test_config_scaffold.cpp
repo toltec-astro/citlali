@@ -538,6 +538,8 @@ struct FakeReductionIterationTodProc {
     int create_output_dir_calls = 0;
     int allocate_cmb_calls = 0;
     int allocate_nmb_calls = 0;
+    int make_index_file_calls = 0;
+    std::string indexed_path;
 
     FakeReductionIterationEngine &engine() { return engine_state; }
 
@@ -548,6 +550,11 @@ struct FakeReductionIterationTodProc {
     template <class MapBuffer>
     void allocate_nmb(MapBuffer &) {
         ++allocate_nmb_calls;
+    }
+
+    void make_index_file(const std::string &path) {
+        ++make_index_file_calls;
+        indexed_path = path;
     }
 };
 
@@ -2893,6 +2900,24 @@ TEST(pipeline_execution, writes_iteration_filtered_coadd_outputs) {
     EXPECT_EQ(todproc.create_coadded_map_files_calls, 1);
     EXPECT_EQ(todproc.engine().run_wiener_filter_calls, 1);
     EXPECT_EQ(todproc.engine().output_calls, 2);
+}
+
+TEST(pipeline_execution, finishes_reduction_iteration) {
+    FakeReductionIterationTodProc todproc;
+    todproc.engine().run_coadd = false;
+    todproc.engine().fruit_iter = 2;
+    todproc.engine().redu_dir_name = "/data/redu02";
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::finish_reduction_iteration<
+        FakeMapType::RawCoadd, FakeMapType::FilteredCoadd>(todproc, logger);
+
+    EXPECT_EQ(todproc.engine().ptcproc.finalize_weight_validation_iter, 2);
+    EXPECT_EQ(todproc.engine().reduction_learning.finalize_calls, 1);
+    EXPECT_EQ(todproc.engine().write_learning_summary_calls, 1);
+    EXPECT_EQ(todproc.make_index_file_calls, 1);
+    EXPECT_EQ(todproc.indexed_path, "/data/redu02");
+    EXPECT_EQ(todproc.engine().fruit_iter, 3);
 }
 
 TEST(pipeline_execution, loads_initial_fruit_loop_model_from_configured_path) {
