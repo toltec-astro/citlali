@@ -460,11 +460,25 @@ struct FakeReductionLearning {
 struct FakeIterationEngine {
     int fruit_iter = 0;
     std::string redu_type = "science";
+    std::string redu_dir_name = "/tmp/redu01";
     FakeIterationPtcProc ptcproc;
     FakeReductionLearning reduction_learning;
     int write_learning_summary_calls = 0;
 
     void write_learning_summary() { ++write_learning_summary_calls; }
+};
+
+struct FakeIterationTodProc {
+    FakeIterationEngine engine_state;
+    int make_index_file_calls = 0;
+    std::string indexed_path;
+
+    FakeIterationEngine &engine() { return engine_state; }
+
+    void make_index_file(const std::string &path) {
+        ++make_index_file_calls;
+        indexed_path = path;
+    }
 };
 
 struct FakeCoaddTodProc {
@@ -2066,6 +2080,23 @@ TEST(pipeline_iteration_lifecycle, logs_finalize_diagnostics_when_enabled) {
 
     EXPECT_EQ(engine.reduction_learning.finalize_iter, 4);
     EXPECT_EQ(engine.write_learning_summary_calls, 1);
+    EXPECT_EQ(logger->info_calls, 1);
+}
+
+TEST(pipeline_iteration_lifecycle, finalizes_iteration_outputs) {
+    FakeIterationTodProc todproc;
+    todproc.engine().fruit_iter = 3;
+    todproc.engine().redu_dir_name = "/data/redu03";
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::finalize_iteration_outputs(todproc, logger);
+
+    EXPECT_EQ(todproc.engine().ptcproc.finalize_weight_validation_iter, 3);
+    EXPECT_EQ(todproc.engine().reduction_learning.finalize_iter, 3);
+    EXPECT_EQ(todproc.engine().write_learning_summary_calls, 1);
+    EXPECT_EQ(todproc.make_index_file_calls, 1);
+    EXPECT_EQ(todproc.indexed_path, "/data/redu03");
+    EXPECT_EQ(todproc.engine().fruit_iter, 4);
     EXPECT_EQ(logger->info_calls, 1);
 }
 

@@ -517,15 +517,8 @@ int run(const rc_t &rc) {
                         mapmaking::RawCoadd, mapmaking::FilteredCoadd>(
                         todproc, logger);
 
-                    citlali::pipeline::finalize_fruit_loop_iteration(
-                        todproc.engine(), logger);
-
-                    logger->info("making index files");
-                    // make index files for each directory recursively
-                    todproc.make_index_file(todproc.engine().redu_dir_name);
-
-                    // increment fruit loops iteration
-                    todproc.engine().fruit_iter++;
+                    citlali::pipeline::finalize_iteration_outputs(
+                        todproc, logger);
                 }
 
                 logger->info("citlali is done!  going to sleep now...wake me when you need me.");

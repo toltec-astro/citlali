@@ -33,4 +33,16 @@ void finalize_fruit_loop_iteration(Engine &engine, const Logger &logger) {
     engine.write_learning_summary();
 }
 
+template <class TodProc, class Logger>
+void finalize_iteration_outputs(TodProc &todproc, const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    finalize_fruit_loop_iteration(engine, logger);
+
+    logger->info("making index files");
+    todproc.make_index_file(engine.redu_dir_name);
+
+    engine.fruit_iter++;
+}
+
 }  // namespace citlali::pipeline
