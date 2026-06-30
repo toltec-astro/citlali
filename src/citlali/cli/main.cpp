@@ -426,15 +426,8 @@ int run(const rc_t &rc) {
                     logger->info("calculating scan indices");
                     todproc.engine().telescope.calc_scan_indices();
 
-                    if (todproc.engine().run_mapmaking) {
-                        // determine number of maps
-                        logger->info("calculating number of maps");
-                        todproc.calc_map_num();
-
-                        // determine omb map sizes
-                        logger->info("calculating obs map dimensions");
-                        todproc.calc_omb_size(map_extents, map_coords);
-                    }
+                    citlali::pipeline::calculate_initial_observation_map_dimensions(
+                        todproc, map_extents, map_coords, logger);
                 }
 
                 if (todproc.engine().run_coadd) {

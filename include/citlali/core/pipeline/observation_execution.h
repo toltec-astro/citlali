@@ -32,6 +32,23 @@ void prepare_coadd_iteration_buffers(TodProc &todproc, const Logger &logger) {
     engine.cmb.exposure_time = 0;
 }
 
+template <class TodProc, class MapExtents, class MapCoords, class Logger>
+void calculate_initial_observation_map_dimensions(TodProc &todproc,
+                                                 MapExtents &map_extents,
+                                                 MapCoords &map_coords,
+                                                 const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    if (!engine.run_mapmaking) {
+        return;
+    }
+
+    logger->info("calculating number of maps");
+    todproc.calc_map_num();
+    logger->info("calculating obs map dimensions");
+    todproc.calc_omb_size(map_extents, map_coords);
+}
+
 template <class TodProc, class MapExtent, class MapCoord, class Logger>
 void allocate_observation_map_buffers(TodProc &todproc,
                                       MapExtent &map_extent,

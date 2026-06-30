@@ -101,6 +101,7 @@ struct FakeEngine {
     std::string obsnum_dir_name;
     bool run_coadd = false;
     bool run_map_filter = false;
+    bool run_mapmaking = true;
     bool verbose_mode = false;
     bool run_noise = true;
     bool run_noise_products = true;
@@ -456,6 +457,7 @@ struct FakeTelescopeTodProc {
 struct FakeObservationMapTodProc {
     FakeEngine engine_state;
     int calc_map_num_calls = 0;
+    int calc_omb_size_calls = 0;
     int allocate_omb_calls = 0;
     int allocate_nmb_calls = 0;
     int last_map_extent = 0;
@@ -464,6 +466,13 @@ struct FakeObservationMapTodProc {
     FakeEngine &engine() { return engine_state; }
 
     void calc_map_num() { ++calc_map_num_calls; }
+
+    template <class MapExtents, class MapCoords>
+    void calc_omb_size(MapExtents &map_extents, MapCoords &map_coords) {
+        ++calc_omb_size_calls;
+        map_extents.push_back(101);
+        map_coords.push_back(202);
+    }
 
     void allocate_omb(int &map_extent, int &map_coord) {
         ++allocate_omb_calls;
@@ -1805,6 +1814,40 @@ TEST(pipeline_execution, skips_coadd_noise_buffer_when_noise_disabled) {
     EXPECT_TRUE(todproc.engine().cmb.obsnums.empty());
     EXPECT_DOUBLE_EQ(todproc.engine().cmb.exposure_time, 0.0);
     EXPECT_EQ(logger->info_calls, 1);
+}
+
+TEST(pipeline_execution, calculates_initial_observation_map_dimensions) {
+    FakeObservationMapTodProc todproc;
+    std::vector<int> map_extents;
+    std::vector<int> map_coords;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::calculate_initial_observation_map_dimensions(
+        todproc, map_extents, map_coords, logger);
+
+    EXPECT_EQ(todproc.calc_map_num_calls, 1);
+    EXPECT_EQ(todproc.calc_omb_size_calls, 1);
+    EXPECT_EQ(map_extents, (std::vector<int>{101}));
+    EXPECT_EQ(map_coords, (std::vector<int>{202}));
+    EXPECT_EQ(logger->info_calls, 2);
+}
+
+TEST(pipeline_execution,
+     skips_initial_observation_map_dimensions_when_mapmaking_disabled) {
+    FakeObservationMapTodProc todproc;
+    todproc.engine().run_mapmaking = false;
+    std::vector<int> map_extents = {11};
+    std::vector<int> map_coords = {22};
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::calculate_initial_observation_map_dimensions(
+        todproc, map_extents, map_coords, logger);
+
+    EXPECT_EQ(todproc.calc_map_num_calls, 0);
+    EXPECT_EQ(todproc.calc_omb_size_calls, 0);
+    EXPECT_EQ(map_extents, (std::vector<int>{11}));
+    EXPECT_EQ(map_coords, (std::vector<int>{22}));
+    EXPECT_EQ(logger->info_calls, 0);
 }
 
 TEST(pipeline_execution, allocates_observation_map_buffers) {
