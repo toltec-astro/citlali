@@ -190,6 +190,18 @@ TEST(config_scaffold, validates_timestream_output_selection_values) {
     EXPECT_EQ(report.error_count(), 5U);
 }
 
+TEST(config_scaffold, validates_timestream_source_protection_values) {
+    citlali::config::TimestreamConfig config;
+    config.raw_time_chunk.despike.source_protection.radius_arcsec = -1.0;
+    config.processed_time_chunk.flagging.second_pass_local
+        .source_protection.radius_arcsec = -1.0;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 2U);
+}
+
 TEST(config_scaffold, validates_timestream_learning_values) {
     citlali::config::TimestreamLearningConfig config;
     config.learn_iters = -1;

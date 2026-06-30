@@ -130,6 +130,34 @@ struct TimestreamChunkingConfig {
     bool force = false;
 };
 
+struct TimestreamSourceProtectionConfig {
+    bool enabled = true;
+    bool active = false;
+    double radius_arcsec = 20.0;
+};
+
+struct RawTimeChunkDespikeConfig {
+    bool enabled = false;
+    TimestreamSourceProtectionConfig source_protection;
+};
+
+struct RawTimeChunkConfig {
+    RawTimeChunkDespikeConfig despike;
+};
+
+struct ProcessedTimeChunkSecondPassLocalConfig {
+    bool enabled = false;
+    TimestreamSourceProtectionConfig source_protection;
+};
+
+struct ProcessedTimeChunkFlaggingConfig {
+    ProcessedTimeChunkSecondPassLocalConfig second_pass_local;
+};
+
+struct ProcessedTimeChunkConfig {
+    ProcessedTimeChunkFlaggingConfig flagging;
+};
+
 struct TimestreamLearningMapPixelOutlierConfig {
     bool diagnostics_enabled = true;
     bool contributor_diagnostics_enabled = false;
@@ -178,6 +206,8 @@ struct TimestreamConfig {
     TodType type = TodType::xs;
     TimestreamOutputConfig output;
     TimestreamChunkingConfig chunking;
+    RawTimeChunkConfig raw_time_chunk;
+    ProcessedTimeChunkConfig processed_time_chunk;
     TimestreamLearningConfig learning;
 };
 
@@ -210,6 +240,42 @@ inline void validate(const TodStreamOutputConfig &config,
 inline void validate(const TimestreamChunkingConfig &config,
                      ValidationReport &report) {
     check_minimum(config.value, 0.0, {"timestream", "chunking", "value"}, report);
+}
+
+inline void validate(const TimestreamSourceProtectionConfig &config,
+                     const ConfigPath &path,
+                     ValidationReport &report) {
+    check_minimum(config.radius_arcsec, 0.0,
+                  append_config_path(path, {"radius_arcsec"}), report);
+}
+
+inline void validate(const RawTimeChunkDespikeConfig &config,
+                     ValidationReport &report) {
+    validate(config.source_protection,
+             {"timestream", "raw_time_chunk", "despike", "source_protection"},
+             report);
+}
+
+inline void validate(const RawTimeChunkConfig &config, ValidationReport &report) {
+    validate(config.despike, report);
+}
+
+inline void validate(const ProcessedTimeChunkSecondPassLocalConfig &config,
+                     ValidationReport &report) {
+    validate(config.source_protection,
+             {"timestream", "processed_time_chunk", "flagging",
+              "second_pass_local", "source_protection"},
+             report);
+}
+
+inline void validate(const ProcessedTimeChunkFlaggingConfig &config,
+                     ValidationReport &report) {
+    validate(config.second_pass_local, report);
+}
+
+inline void validate(const ProcessedTimeChunkConfig &config,
+                     ValidationReport &report) {
+    validate(config.flagging, report);
 }
 
 inline void validate(const TimestreamLearningMapPixelOutlierConfig &config,
@@ -294,6 +360,8 @@ inline void validate(const TimestreamConfig &config, ValidationReport &report) {
     validate(config.output.processed_time_chunk,
              {"timestream", "processed_time_chunk", "output"}, report);
     validate(config.chunking, report);
+    validate(config.raw_time_chunk, report);
+    validate(config.processed_time_chunk, report);
     validate(config.learning, report);
 }
 

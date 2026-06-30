@@ -941,6 +941,11 @@ void Engine::get_rtc_config(CT &config) {
     logger->info("getting rtc config options");
     // get rtcproc config
     rtcproc.get_config(config, missing_keys, invalid_keys);
+    typed_timestream_config.raw_time_chunk.despike.enabled = rtcproc.run_despike;
+    typed_timestream_config.raw_time_chunk.despike.source_protection.enabled =
+        rtcproc.despike_source_protection_config_enabled;
+    typed_timestream_config.raw_time_chunk.despike.source_protection.radius_arcsec =
+        rtcproc.despiker.source_protection_radius_arcsec;
 
     rtcproc.configure_filter_edge_guard(telescope.fsmp);
     telescope.inner_scans_chunk = rtcproc.filter_edge_guard.context_samples;
@@ -968,6 +973,14 @@ void Engine::get_ptc_config(CT &config) {
     logger->info("getting ptc config options");
     // get ptcproc config
     ptcproc.get_config(config, missing_keys, invalid_keys);
+    typed_timestream_config.processed_time_chunk.flagging.second_pass_local.enabled =
+        ptcproc.second_pass_local.enabled;
+    typed_timestream_config.processed_time_chunk.flagging.second_pass_local
+        .source_protection.enabled =
+        ptcproc.second_pass_local.source_protection_config_enabled;
+    typed_timestream_config.processed_time_chunk.flagging.second_pass_local
+        .source_protection.radius_arcsec =
+        ptcproc.second_pass_local.source_protection_radius_arcsec;
 
     // copy tod output bool for eigenvalues
     ptcproc.run_tod_output = run_tod_output;
@@ -4205,6 +4218,11 @@ void Engine::get_citlali_config(CT &config) {
             ptcproc.second_pass_local.enabled &&
             ptcproc.second_pass_local.source_protection_config_enabled &&
             source_aware_reduction;
+        typed_timestream_config.raw_time_chunk.despike.source_protection.active =
+            rtcproc.despiker.source_protection_enabled;
+        typed_timestream_config.processed_time_chunk.flagging.second_pass_local
+            .source_protection.active =
+            ptcproc.second_pass_local.source_protection_enabled;
         if (rtcproc.run_despike && rtcproc.despike_source_protection_config_enabled) {
             logger->info(
                 "raw_time_chunk.despike source protection active={} reduction_type={} radius_arcsec={:.4g}",
