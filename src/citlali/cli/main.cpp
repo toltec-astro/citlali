@@ -950,14 +950,8 @@ int run(const rc_t &rc) {
                         }
                     }
 
-                    todproc.engine().ptcproc.finalize_weight_validation_iteration(todproc.engine().fruit_iter);
-                    todproc.engine().reduction_learning.finalize_iteration(todproc.engine().fruit_iter);
-                    if (todproc.engine().reduction_learning.is_enabled() &&
-                        todproc.engine().reduction_learning.diagnostics_enabled()) {
-                        logger->info("reduction learning finalize: {}",
-                                     todproc.engine().reduction_learning.summary_string());
-                    }
-                    todproc.engine().write_learning_summary();
+                    citlali::pipeline::finalize_fruit_loop_iteration(
+                        todproc.engine(), logger);
 
                     logger->info("making index files");
                     // make index files for each directory recursively

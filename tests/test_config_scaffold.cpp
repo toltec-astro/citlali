@@ -177,9 +177,14 @@ struct FakeIterationPtcProc {
     bool run_fruit_loops = false;
     std::string fruit_loops_path = "null";
     int begin_weight_validation_iter = -1;
+    int finalize_weight_validation_iter = -1;
 
     void begin_weight_validation_iteration(int iter) {
         begin_weight_validation_iter = iter;
+    }
+
+    void finalize_weight_validation_iteration(int iter) {
+        finalize_weight_validation_iter = iter;
     }
 };
 
@@ -188,6 +193,8 @@ struct FakeReductionLearning {
     bool diagnostics = false;
     int begin_calls = 0;
     int begin_iter = -1;
+    int finalize_calls = 0;
+    int finalize_iter = -1;
     bool source_model_available = false;
     std::string redu_type;
 
@@ -197,6 +204,11 @@ struct FakeReductionLearning {
         begin_iter = iter;
         source_model_available = source_available;
         redu_type = type;
+    }
+
+    void finalize_iteration(int iter) {
+        ++finalize_calls;
+        finalize_iter = iter;
     }
 
     bool is_enabled() const { return enabled; }
@@ -209,6 +221,9 @@ struct FakeIterationEngine {
     std::string redu_type = "science";
     FakeIterationPtcProc ptcproc;
     FakeReductionLearning reduction_learning;
+    int write_learning_summary_calls = 0;
+
+    void write_learning_summary() { ++write_learning_summary_calls; }
 };
 
 TEST(config_scaffold, formats_config_paths) {
@@ -1293,6 +1308,34 @@ TEST(pipeline_iteration_lifecycle, uses_configured_fruit_loop_path_as_source_mod
     citlali::pipeline::begin_fruit_loop_iteration(engine, logger);
 
     EXPECT_TRUE(engine.reduction_learning.source_model_available);
+    EXPECT_EQ(logger->info_calls, 1);
+}
+
+TEST(pipeline_iteration_lifecycle, finalizes_iteration) {
+    FakeIterationEngine engine;
+    engine.fruit_iter = 3;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::finalize_fruit_loop_iteration(engine, logger);
+
+    EXPECT_EQ(engine.ptcproc.finalize_weight_validation_iter, 3);
+    EXPECT_EQ(engine.reduction_learning.finalize_calls, 1);
+    EXPECT_EQ(engine.reduction_learning.finalize_iter, 3);
+    EXPECT_EQ(engine.write_learning_summary_calls, 1);
+    EXPECT_EQ(logger->info_calls, 0);
+}
+
+TEST(pipeline_iteration_lifecycle, logs_finalize_diagnostics_when_enabled) {
+    FakeIterationEngine engine;
+    engine.fruit_iter = 4;
+    engine.reduction_learning.enabled = true;
+    engine.reduction_learning.diagnostics = true;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::finalize_fruit_loop_iteration(engine, logger);
+
+    EXPECT_EQ(engine.reduction_learning.finalize_iter, 4);
+    EXPECT_EQ(engine.write_learning_summary_calls, 1);
     EXPECT_EQ(logger->info_calls, 1);
 }
 
