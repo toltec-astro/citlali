@@ -424,11 +424,8 @@ int run(const rc_t &rc) {
                         todproc, map_extents, map_coords, logger);
                 }
 
-                if (todproc.engine().run_coadd) {
-                    // get size of coadd buffer
-                    logger->info("calculating cmb dimensions");
-                    todproc.calc_cmb_size(map_coords);
-                }
+                citlali::pipeline::calculate_initial_coadd_map_dimensions(
+                    todproc, map_coords, logger);
 
                 // current fruit loops iteration
                 todproc.engine().fruit_iter = 0;

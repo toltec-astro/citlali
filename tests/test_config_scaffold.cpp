@@ -418,11 +418,19 @@ struct FakeIterationEngine {
 
 struct FakeCoaddTodProc {
     FakeEngine engine_state;
+    int calc_cmb_size_calls = 0;
     int allocate_cmb_calls = 0;
     int allocate_nmb_calls = 0;
     int create_coadded_map_files_calls = 0;
+    int last_map_coord_count = 0;
 
     FakeEngine &engine() { return engine_state; }
+
+    template <class MapCoords>
+    void calc_cmb_size(MapCoords &map_coords) {
+        ++calc_cmb_size_calls;
+        last_map_coord_count = static_cast<int>(map_coords.size());
+    }
 
     void allocate_cmb() { ++allocate_cmb_calls; }
 
@@ -1876,6 +1884,35 @@ TEST(pipeline_execution,
     EXPECT_EQ(todproc.calc_omb_size_calls, 0);
     EXPECT_EQ(map_extents, (std::vector<int>{11}));
     EXPECT_EQ(map_coords, (std::vector<int>{22}));
+    EXPECT_EQ(logger->info_calls, 0);
+}
+
+TEST(pipeline_execution, calculates_initial_coadd_map_dimensions) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_coadd = true;
+    std::vector<int> map_coords = {1, 2, 3};
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::calculate_initial_coadd_map_dimensions(
+        todproc, map_coords, logger);
+
+    EXPECT_EQ(todproc.calc_cmb_size_calls, 1);
+    EXPECT_EQ(todproc.last_map_coord_count, 3);
+    EXPECT_EQ(logger->info_calls, 1);
+}
+
+TEST(pipeline_execution,
+     skips_initial_coadd_map_dimensions_when_coadd_disabled) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_coadd = false;
+    std::vector<int> map_coords = {1, 2, 3};
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::calculate_initial_coadd_map_dimensions(
+        todproc, map_coords, logger);
+
+    EXPECT_EQ(todproc.calc_cmb_size_calls, 0);
+    EXPECT_EQ(todproc.last_map_coord_count, 0);
     EXPECT_EQ(logger->info_calls, 0);
 }
 

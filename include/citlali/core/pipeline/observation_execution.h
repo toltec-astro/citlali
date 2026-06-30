@@ -49,6 +49,20 @@ void calculate_initial_observation_map_dimensions(TodProc &todproc,
     todproc.calc_omb_size(map_extents, map_coords);
 }
 
+template <class TodProc, class MapCoords, class Logger>
+void calculate_initial_coadd_map_dimensions(TodProc &todproc,
+                                            MapCoords &map_coords,
+                                            const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    if (!engine.run_coadd) {
+        return;
+    }
+
+    logger->info("calculating cmb dimensions");
+    todproc.calc_cmb_size(map_coords);
+}
+
 template <class TodProc, class MapExtent, class MapCoord, class Logger>
 void allocate_observation_map_buffers(TodProc &todproc,
                                       MapExtent &map_extent,
