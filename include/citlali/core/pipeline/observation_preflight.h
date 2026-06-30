@@ -210,6 +210,17 @@ void load_and_align_telescope_data(TodProc &todproc, const RawObs &rawobs,
     }
 }
 
+template <class TodProc, class Logger>
+void calculate_telescope_pointing(TodProc &todproc, const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    logger->info("calculating tangent plane pointing");
+    engine.telescope.calc_tan_pointing();
+
+    logger->info("calculating pointing offsets");
+    todproc.interp_pointing();
+}
+
 template <class Engine>
 void update_observation_exposure_time(Engine &engine) {
     auto t0 = engine.telescope.tel_data["TelTime"](0);

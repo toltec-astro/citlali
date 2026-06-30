@@ -193,6 +193,7 @@ struct FakeEngine {
         bool sim_obs = false;
         std::string pixel_axes = "pixel_axes";
         int get_tel_data_calls = 0;
+        int calc_tan_pointing_calls = 0;
         std::string loaded_tel_path;
         std::map<std::string, FakeTelHeaderValue> tel_header;
         std::map<std::string, FakeTelTime> tel_data;
@@ -201,6 +202,8 @@ struct FakeEngine {
             ++get_tel_data_calls;
             loaded_tel_path = tel_path;
         }
+
+        void calc_tan_pointing() { ++calc_tan_pointing_calls; }
     } telescope;
 
     struct {
@@ -442,6 +445,7 @@ struct FakeTelescopeTodProc {
     FakeEngine engine_state;
     int align_timestreams_calls = 0;
     int align_timestreams_gaps_calls = 0;
+    int interp_pointing_calls = 0;
 
     FakeEngine &engine() { return engine_state; }
 
@@ -452,6 +456,8 @@ struct FakeTelescopeTodProc {
     void align_timestreams_gaps(const FakeRawObs &) {
         ++align_timestreams_gaps_calls;
     }
+
+    void interp_pointing() { ++interp_pointing_calls; }
 };
 
 struct FakeObservationMapTodProc {
@@ -1414,6 +1420,17 @@ TEST(pipeline_preflight, resets_indices_for_simulated_telescope_data) {
               (std::vector<int>{0, 0, 0, 0}));
     EXPECT_TRUE(todproc.engine().end_indices.empty());
     EXPECT_EQ(logger->info_calls, 1);
+}
+
+TEST(pipeline_preflight, calculates_telescope_pointing) {
+    FakeTelescopeTodProc todproc;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::calculate_telescope_pointing(todproc, logger);
+
+    EXPECT_EQ(todproc.engine().telescope.calc_tan_pointing_calls, 1);
+    EXPECT_EQ(todproc.interp_pointing_calls, 1);
+    EXPECT_EQ(logger->info_calls, 2);
 }
 
 TEST(pipeline_preflight, configures_sample_rate_without_downsample) {

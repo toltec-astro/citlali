@@ -414,13 +414,8 @@ int run(const rc_t &rc) {
                     citlali::pipeline::load_and_align_telescope_data(
                         todproc, rawobs, logger);
 
-                    // calc tangent plane pointing
-                    logger->info("calculating tangent plane pointing");
-                    todproc.engine().telescope.calc_tan_pointing();
-
-                    // calc pointing offsets
-                    logger->info("calculating pointing offsets");
-                    todproc.interp_pointing();
+                    citlali::pipeline::calculate_telescope_pointing(
+                        todproc, logger);
 
                     // calc scan indices
                     logger->info("calculating scan indices");
@@ -531,13 +526,8 @@ int run(const rc_t &rc) {
                             citlali::pipeline::load_and_align_telescope_data(
                                 todproc, rawobs, logger);
 
-                            // calc tangent plane pointing
-                            logger->info("calculating tangent plane pointing");
-                            todproc.engine().telescope.calc_tan_pointing();
-
-                            // calc pointing offsets
-                            logger->info("calculating pointing offsets");
-                            todproc.interp_pointing();
+                            citlali::pipeline::calculate_telescope_pointing(
+                                todproc, logger);
                         }
 
                         // get date time of observation
