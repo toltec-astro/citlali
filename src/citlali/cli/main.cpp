@@ -51,6 +51,7 @@
 #include <citlali/core/engine/lali.h>
 #include <citlali/core/engine/pointing.h>
 #include <citlali/core/engine/beammap.h>
+#include <citlali/core/pipeline/fruit_loop_paths.h>
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
@@ -754,24 +755,11 @@ int run(const rc_t &rc) {
                             if (todproc.engine().ptcproc.run_fruit_loops && todproc.engine().fruit_iter == 0) {
                                 if (todproc.engine().ptcproc.fruit_loops_path != "null") {
                                     // path to data
-                                    std::string fruit_dir;
-
-                                    // per obsnum path
-                                    if (todproc.engine().ptcproc.fruit_loops_type == "obsnum/raw") {
-                                        fruit_dir = todproc.engine().ptcproc.fruit_loops_path + "/" + todproc.engine().omb.obsnums.back() + "/raw/";
-                                    }
-                                    // per obsnum path
-                                    else if (todproc.engine().ptcproc.fruit_loops_type == "obsnum/filtered") {
-                                        fruit_dir = todproc.engine().ptcproc.fruit_loops_path + "/" + todproc.engine().omb.obsnums.back() + "/filtered/";
-                                    }
-                                    // raw coadd path
-                                    else if (todproc.engine().ptcproc.fruit_loops_type == "coadd/raw") {
-                                        fruit_dir = todproc.engine().ptcproc.fruit_loops_path + "/coadded/raw/";
-                                    }
-                                    // filtered coadd path
-                                    else if (todproc.engine().ptcproc.fruit_loops_type == "coadd/filtered") {
-                                        fruit_dir = todproc.engine().ptcproc.fruit_loops_path + "/coadded/filtered/";
-                                    }
+                                    const std::string fruit_dir =
+                                        citlali::pipeline::fruit_loop_map_dir(
+                                            todproc.engine().ptcproc.fruit_loops_path,
+                                            todproc.engine().ptcproc.fruit_loops_type,
+                                            todproc.engine().omb.obsnums.back());
 
                                     // set coverage region
                                     todproc.engine().ptcproc.tod_mb.cov_cut = todproc.engine().omb.cov_cut;
@@ -788,50 +776,20 @@ int run(const rc_t &rc) {
                                 std::string fruit_dir;
                                 // get maps from files if saving all iterations
                                 if (todproc.engine().ptcproc.save_all_iters) {
-                                    // get previous iteration's reduction directory
-                                    std::stringstream ss_redu_dir_num_i;
-                                    ss_redu_dir_num_i << std::setfill('0') << std::setw(2) << todproc.engine().redu_dir_num - 1;
-                                    std::string redu_dir_name = "redu" + ss_redu_dir_num_i.str();
-
-                                    // previous redu directory
-                                    fruit_dir = todproc.engine().output_dir + "/" + redu_dir_name;
-
-                                    // if no input path is given
-                                    // if running fruit loops on each obsnum
-                                    if (todproc.engine().ptcproc.fruit_loops_type == "obsnum/raw") {
-                                        fruit_dir += "/" + todproc.engine().omb.obsnums.back() + "/raw/";
-                                    }
-                                    if (todproc.engine().ptcproc.fruit_loops_type == "obsnum/filtered") {
-                                        fruit_dir += "/" + todproc.engine().omb.obsnums.back() + "/filtered/";
-                                    }
-                                    // if running fruit loops on the raw coadded maps
-                                    else if (todproc.engine().ptcproc.fruit_loops_type == "coadd/raw") {
-                                        fruit_dir += "/coadded/raw/";
-                                    }
-                                    // if running fruit loops on the filtered coadded maps
-                                    else if (todproc.engine().ptcproc.fruit_loops_type == "coadd/filtered") {
-                                        fruit_dir += "/coadded/filtered/";
-                                    }
+                                    fruit_dir =
+                                        citlali::pipeline::previous_fruit_loop_map_dir(
+                                            todproc.engine().output_dir,
+                                            todproc.engine().redu_dir_num,
+                                            todproc.engine().ptcproc.fruit_loops_type,
+                                            todproc.engine().omb.obsnums.back());
                                 }
                                 // otherwise use stored maps
                                 else {
-                                    fruit_dir = todproc.engine().redu_dir_name;
                                     logger->info("loading previous iter maps for fruit loops iteration {}", todproc.engine().fruit_iter);
-                                    // if running fruit loops on each obsnum
-                                    if (todproc.engine().ptcproc.fruit_loops_type == "obsnum/raw") {
-                                        fruit_dir += "/" + todproc.engine().omb.obsnums.back() + "/raw/";
-                                    }
-                                    else if (todproc.engine().ptcproc.fruit_loops_type == "obsnum/filtered") {
-                                        fruit_dir += "/" + todproc.engine().omb.obsnums.back() + "/filtered/";
-                                    }
-                                    // if running fruit loops on the raw coadded maps
-                                    else if (todproc.engine().ptcproc.fruit_loops_type == "coadd/raw") {
-                                        fruit_dir += "/coadded/raw/";
-                                    }
-                                    // if running fruit loops on the filtered coadded maps
-                                    else if (todproc.engine().ptcproc.fruit_loops_type == "coadd/filtered") {
-                                        fruit_dir += "/coadded/filtered/";
-                                    }
+                                    fruit_dir = citlali::pipeline::fruit_loop_map_dir(
+                                        todproc.engine().redu_dir_name,
+                                        todproc.engine().ptcproc.fruit_loops_type,
+                                        todproc.engine().omb.obsnums.back());
                                 }
                                 // set coverage region
                                 todproc.engine().ptcproc.tod_mb.cov_cut = todproc.engine().omb.cov_cut;

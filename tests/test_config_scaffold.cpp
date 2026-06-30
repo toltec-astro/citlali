@@ -1,6 +1,7 @@
 #include <citlali/core/config/calibration_config.h>
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/error/error.h>
+#include <citlali/core/pipeline/fruit_loop_paths.h>
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
@@ -1174,6 +1175,41 @@ TEST(pipeline_preflight, preserves_science_fruit_loop_iteration_policy) {
     EXPECT_EQ(engine.ptcproc.fruit_loops_iters, 5);
     EXPECT_FALSE(engine.ptcproc.save_all_iters);
     EXPECT_EQ(logger->warn_calls, 0);
+}
+
+TEST(pipeline_fruit_loop_paths, derives_obsnum_raw_map_dir) {
+    EXPECT_EQ(citlali::pipeline::fruit_loop_map_dir(
+                  "/data/redu01", "obsnum/raw", "123456"),
+              "/data/redu01/123456/raw/");
+}
+
+TEST(pipeline_fruit_loop_paths, derives_obsnum_filtered_map_dir) {
+    EXPECT_EQ(citlali::pipeline::fruit_loop_map_dir(
+                  "/data/redu01", "obsnum/filtered", "123456"),
+              "/data/redu01/123456/filtered/");
+}
+
+TEST(pipeline_fruit_loop_paths, derives_coadd_map_dirs) {
+    EXPECT_EQ(citlali::pipeline::fruit_loop_map_dir(
+                  "/data/redu01", "coadd/raw", "123456"),
+              "/data/redu01/coadded/raw/");
+    EXPECT_EQ(citlali::pipeline::fruit_loop_map_dir(
+                  "/data/redu01", "coadd/filtered", "123456"),
+              "/data/redu01/coadded/filtered/");
+}
+
+TEST(pipeline_fruit_loop_paths, preserves_empty_path_for_unknown_type) {
+    EXPECT_EQ(citlali::pipeline::fruit_loop_map_dir(
+                  "/data/redu01", "unknown", "123456"),
+              "");
+}
+
+TEST(pipeline_fruit_loop_paths, derives_previous_iteration_map_dir) {
+    EXPECT_EQ(citlali::pipeline::previous_fruit_loop_reduction_dir_name(2),
+              "redu01");
+    EXPECT_EQ(citlali::pipeline::previous_fruit_loop_map_dir(
+                  "/data", 12, "obsnum/raw", "123456"),
+              "/data/redu11/123456/raw/");
 }
 
 TEST(pipeline_execution, setup_runs_before_enabled_pipeline) {
