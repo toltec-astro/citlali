@@ -108,10 +108,17 @@ cd "${HOME}/work_toltec/citlali_dev/citlali_refactor"
 git fetch origin codex/structural-refactor
 git switch codex/structural-refactor
 git pull --ff-only origin codex/structural-refactor
+rm -f build/FindHDF5.cmake build/Findhdf5.cmake build/FindnetCDF.cmake build/FindNetCDF.cmake build/FindCURL.cmake
 cmake -S . -B build \
   -DCMAKE_BUILD_TYPE=Release \
   -DCITLALI_USE_WIENER_FILTER_OMP=ON \
   -DCONAN_CMD=/work/toltec/toltec_shared/toltec_astro/extern/pyenv/versions/conan1/bin/conan \
+  -DUSE_INSTALLED_NETCDF=ON \
+  -DCONAN_INSTALL_NETCDF=OFF \
+  -DFETCH_NETCDF=OFF \
+  -DUSE_INSTALLED_NETCDFCXX4=OFF \
+  -DCONAN_INSTALL_NETCDFCXX4=OFF \
+  -DFETCH_NETCDFCXX4=ON \
   -U FETCHCONTENT_SOURCE_DIR_TULA
 cmake --build build --target citlali_cli -j 15
 ./build/bin/citlali --version
@@ -127,6 +134,7 @@ export CITLALI_REFACTOR_JOBS=15
 export CITLALI_REFACTOR_BUILD_TYPE=Release
 export CITLALI_REFACTOR_TARGET=citlali_cli
 export CITLALI_CONAN_CMD=/work/toltec/toltec_shared/toltec_astro/extern/pyenv/versions/conan1/bin/conan
+export CITLALI_USE_INSTALLED_NETCDF=ON
 ```
 
 The helper refuses to use the protected baseline checkout

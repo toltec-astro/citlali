@@ -139,3 +139,24 @@ recorded in the existing Unity `citlali/build` cache:
 
 Override with `CITLALI_CONAN_CMD=/path/to/conan` if Unity's shared Conan path
 changes.
+
+For NetCDF, the helper also mirrors the existing Unity `citlali/build` cache:
+
+```text
+USE_INSTALLED_NETCDF=ON
+CONAN_INSTALL_NETCDF=OFF
+FETCH_NETCDF=OFF
+USE_INSTALLED_NETCDFCXX4=OFF
+CONAN_INSTALL_NETCDFCXX4=OFF
+FETCH_NETCDFCXX4=ON
+```
+
+This keeps NetCDF C on Unity's system install while fetching NetCDF CXX4 into
+`build/_deps`, avoiding the Conan netCDF link-list path that breaks
+`CHECK_LIBRARY_EXISTS` in NetCDF CXX4's configure checks.
+
+If an earlier configure attempted Conan NetCDF, Conan may leave generated
+`FindHDF5.cmake`, `FindnetCDF.cmake`, or `FindCURL.cmake` files in the build
+directory. Those can shadow CMake's system HDF5 discovery on later configures,
+so the helper removes only those stale finder files before running CMake with
+installed NetCDF.

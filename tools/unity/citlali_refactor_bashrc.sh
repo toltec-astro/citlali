@@ -13,6 +13,7 @@ citlali_refactor_update() {
   local jobs="${CITLALI_REFACTOR_JOBS:-${CITLALI_BUILD_JOBS:-15}}"
   local build_type="${CITLALI_REFACTOR_BUILD_TYPE:-Release}"
   local wiener_omp="${CITLALI_USE_WIENER_FILTER_OMP:-ON}"
+  local use_installed_netcdf="${CITLALI_USE_INSTALLED_NETCDF:-ON}"
   local tula_dir="${CITLALI_TULA_DIR:-}"
   local conan_cmd="${CITLALI_CONAN_CMD:-${CONAN_CMD:-}}"
   local baseline_repo="${CITLALI_BASELINE_REPO:-${HOME}/work_toltec/citlali_dev/citlali}"
@@ -81,12 +82,34 @@ citlali_refactor_update() {
 
     git log -1 --oneline
 
+    if [[ "${use_installed_netcdf}" =~ ^([Oo][Nn]|1|[Tt][Rr][Uu][Ee])$ ]]; then
+      local stale_find_module
+      for stale_find_module in \
+        FindHDF5.cmake \
+        Findhdf5.cmake \
+        FindnetCDF.cmake \
+        FindNetCDF.cmake \
+        FindCURL.cmake
+      do
+        if [[ -e "${build_dir}/${stale_find_module}" ]]; then
+          echo "Removing stale Conan finder: ${build_dir}/${stale_find_module}"
+          rm -f "${build_dir}/${stale_find_module}"
+        fi
+      done
+    fi
+
     local cmake_args=(
       -S .
       -B "${build_dir}"
       -DCMAKE_BUILD_TYPE="${build_type}"
       -DCITLALI_USE_WIENER_FILTER_OMP="${wiener_omp}"
       -DCONAN_CMD="${conan_cmd}"
+      -DUSE_INSTALLED_NETCDF="${use_installed_netcdf}"
+      -DCONAN_INSTALL_NETCDF=OFF
+      -DFETCH_NETCDF=OFF
+      -DUSE_INSTALLED_NETCDFCXX4=OFF
+      -DCONAN_INSTALL_NETCDFCXX4=OFF
+      -DFETCH_NETCDFCXX4=ON
     )
 
     if [[ -n "${preset}" ]]; then
