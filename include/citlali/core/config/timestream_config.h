@@ -182,6 +182,26 @@ struct RawTimeChunkConfig {
 
 struct ProcessedTimeChunkSecondPassLocalConfig {
     bool enabled = false;
+    double min_spike_sigma = 8.0;
+    double min_good_frac = 0.5;
+    double baseline_window_sec = 0.25;
+    double sigma_scale = 0.75;
+    double delta_sigma_scale = 0.75;
+    double raw_candidate_rel_sigma_scale = 1.0;
+    double raw_window_sec = 0.18;
+    double raw_half_peak_frac = 0.5;
+    double raw_max_width_sec = 0.18;
+    double delta_window_sec = 0.12;
+    double delta_half_peak_frac = 0.5;
+    double delta_max_width_sec = 0.10;
+    double max_step_shift_z = 3.0;
+    double high_score_event_override = 20.0;
+    double merge_within_detector_sec = 0.08;
+    double cluster_events_sec = 0.08;
+    int min_cluster_detectors = 3;
+    double high_score_cluster_override = 9.0;
+    int max_auto_flag_clusters_per_network = 3;
+    bool selective_busy_network_acceptance_enabled = true;
     TimestreamSourceProtectionConfig source_protection;
 };
 
@@ -358,6 +378,52 @@ inline void validate(const RawTimeChunkConfig &config, ValidationReport &report)
 
 inline void validate(const ProcessedTimeChunkSecondPassLocalConfig &config,
                      ValidationReport &report) {
+    const ConfigPath path{
+        "timestream", "processed_time_chunk", "flagging", "second_pass_local"};
+    check_minimum(config.min_spike_sigma, 0.0,
+                  append_config_path(path, {"min_spike_sigma"}), report);
+    check_minimum(config.min_good_frac, 0.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_maximum(config.min_good_frac, 1.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_minimum(config.baseline_window_sec, 0.0,
+                  append_config_path(path, {"baseline_window_sec"}), report);
+    check_minimum(config.sigma_scale, 0.0,
+                  append_config_path(path, {"sigma_scale"}), report);
+    check_minimum(config.delta_sigma_scale, 0.0,
+                  append_config_path(path, {"delta_sigma_scale"}), report);
+    check_minimum(config.raw_candidate_rel_sigma_scale, 0.0,
+                  append_config_path(path, {"raw_candidate_rel_sigma_scale"}),
+                  report);
+    check_minimum(config.raw_window_sec, 0.0,
+                  append_config_path(path, {"raw_window_sec"}), report);
+    check_minimum(config.raw_half_peak_frac, 0.0,
+                  append_config_path(path, {"raw_half_peak_frac"}), report);
+    check_minimum(config.raw_max_width_sec, 0.0,
+                  append_config_path(path, {"raw_max_width_sec"}), report);
+    check_minimum(config.delta_window_sec, 0.0,
+                  append_config_path(path, {"delta_window_sec"}), report);
+    check_minimum(config.delta_half_peak_frac, 0.0,
+                  append_config_path(path, {"delta_half_peak_frac"}), report);
+    check_minimum(config.delta_max_width_sec, 0.0,
+                  append_config_path(path, {"delta_max_width_sec"}), report);
+    check_minimum(config.max_step_shift_z, 0.0,
+                  append_config_path(path, {"max_step_shift_z"}), report);
+    check_minimum(config.high_score_event_override, 0.0,
+                  append_config_path(path, {"high_score_event_override"}), report);
+    check_minimum(config.merge_within_detector_sec, 0.0,
+                  append_config_path(path, {"merge_within_detector_sec"}), report);
+    check_minimum(config.cluster_events_sec, 0.0,
+                  append_config_path(path, {"cluster_events_sec"}), report);
+    check_minimum(config.min_cluster_detectors, 1,
+                  append_config_path(path, {"min_cluster_detectors"}), report);
+    check_minimum(config.high_score_cluster_override, 0.0,
+                  append_config_path(path, {"high_score_cluster_override"}),
+                  report);
+    check_minimum(config.max_auto_flag_clusters_per_network, 1,
+                  append_config_path(path,
+                                     {"max_auto_flag_clusters_per_network"}),
+                  report);
     validate(config.source_protection,
              {"timestream", "processed_time_chunk", "flagging",
               "second_pass_local", "source_protection"},

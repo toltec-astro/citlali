@@ -226,6 +226,34 @@ TEST(config_scaffold, validates_timestream_despike_local_residual_values) {
     EXPECT_EQ(report.error_count(), 15U);
 }
 
+TEST(config_scaffold, validates_processed_time_chunk_second_pass_local_values) {
+    citlali::config::ProcessedTimeChunkSecondPassLocalConfig config;
+    config.min_spike_sigma = -1.0;
+    config.min_good_frac = 2.0;
+    config.baseline_window_sec = -1.0;
+    config.sigma_scale = -1.0;
+    config.delta_sigma_scale = -1.0;
+    config.raw_candidate_rel_sigma_scale = -1.0;
+    config.raw_window_sec = -1.0;
+    config.raw_half_peak_frac = -1.0;
+    config.raw_max_width_sec = -1.0;
+    config.delta_window_sec = -1.0;
+    config.delta_half_peak_frac = -1.0;
+    config.delta_max_width_sec = -1.0;
+    config.max_step_shift_z = -1.0;
+    config.high_score_event_override = -1.0;
+    config.merge_within_detector_sec = -1.0;
+    config.cluster_events_sec = -1.0;
+    config.min_cluster_detectors = 0;
+    config.high_score_cluster_override = -1.0;
+    config.max_auto_flag_clusters_per_network = 0;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 19U);
+}
+
 TEST(config_scaffold, validates_timestream_learning_values) {
     citlali::config::TimestreamLearningConfig config;
     config.learn_iters = -1;

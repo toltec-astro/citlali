@@ -1010,13 +1010,50 @@ void Engine::get_ptc_config(CT &config) {
     logger->info("getting ptc config options");
     // get ptcproc config
     ptcproc.get_config(config, missing_keys, invalid_keys);
-    typed_timestream_config.processed_time_chunk.flagging.second_pass_local.enabled =
-        ptcproc.second_pass_local.enabled;
-    typed_timestream_config.processed_time_chunk.flagging.second_pass_local
-        .source_protection.enabled =
+    auto &typed_second_pass =
+        typed_timestream_config.processed_time_chunk.flagging.second_pass_local;
+    typed_second_pass.enabled = ptcproc.second_pass_local.enabled;
+    typed_second_pass.min_spike_sigma =
+        ptcproc.second_pass_local.min_spike_sigma;
+    typed_second_pass.min_good_frac = ptcproc.second_pass_local.min_good_frac;
+    typed_second_pass.baseline_window_sec =
+        ptcproc.second_pass_local.baseline_window_sec;
+    typed_second_pass.sigma_scale = ptcproc.second_pass_local.sigma_scale;
+    typed_second_pass.delta_sigma_scale =
+        ptcproc.second_pass_local.delta_sigma_scale;
+    typed_second_pass.raw_candidate_rel_sigma_scale =
+        ptcproc.second_pass_local.raw_candidate_rel_sigma_scale;
+    typed_second_pass.raw_window_sec =
+        ptcproc.second_pass_local.raw_window_sec;
+    typed_second_pass.raw_half_peak_frac =
+        ptcproc.second_pass_local.raw_half_peak_frac;
+    typed_second_pass.raw_max_width_sec =
+        ptcproc.second_pass_local.raw_max_width_sec;
+    typed_second_pass.delta_window_sec =
+        ptcproc.second_pass_local.delta_window_sec;
+    typed_second_pass.delta_half_peak_frac =
+        ptcproc.second_pass_local.delta_half_peak_frac;
+    typed_second_pass.delta_max_width_sec =
+        ptcproc.second_pass_local.delta_max_width_sec;
+    typed_second_pass.max_step_shift_z =
+        ptcproc.second_pass_local.max_step_shift_z;
+    typed_second_pass.high_score_event_override =
+        ptcproc.second_pass_local.high_score_event_override;
+    typed_second_pass.merge_within_detector_sec =
+        ptcproc.second_pass_local.merge_within_detector_sec;
+    typed_second_pass.cluster_events_sec =
+        ptcproc.second_pass_local.cluster_events_sec;
+    typed_second_pass.min_cluster_detectors =
+        ptcproc.second_pass_local.min_cluster_detectors;
+    typed_second_pass.high_score_cluster_override =
+        ptcproc.second_pass_local.high_score_cluster_override;
+    typed_second_pass.max_auto_flag_clusters_per_network =
+        ptcproc.second_pass_local.max_auto_flag_clusters_per_network;
+    typed_second_pass.selective_busy_network_acceptance_enabled =
+        ptcproc.second_pass_local.selective_busy_network_acceptance_enabled;
+    typed_second_pass.source_protection.enabled =
         ptcproc.second_pass_local.source_protection_config_enabled;
-    typed_timestream_config.processed_time_chunk.flagging.second_pass_local
-        .source_protection.radius_arcsec =
+    typed_second_pass.source_protection.radius_arcsec =
         ptcproc.second_pass_local.source_protection_radius_arcsec;
 
     // copy tod output bool for eigenvalues
