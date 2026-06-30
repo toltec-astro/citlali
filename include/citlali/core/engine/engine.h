@@ -50,6 +50,7 @@
 #include <citlali/core/utils/fitting.h>
 #include <citlali/core/utils/pointing.h>
 
+#include <citlali/core/config/beammap_config.h>
 #include <citlali/core/config/coadd_config.h>
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/noise_config.h>
@@ -325,6 +326,7 @@ public:
     citlali::config::NoiseConfig typed_noise_config;
     citlali::config::PostProcessingConfig typed_post_processing_config;
     citlali::config::PointingConfig typed_pointing_config;
+    citlali::config::BeammapConfig typed_beammap_config;
 
     // obsnum
     std::string obsnum;
@@ -3626,6 +3628,105 @@ void Engine::get_beammap_config(CT &config) {
                          std::tuple{"beammap","detector_tod_output","n_source_dense"},
                          {}, {0});
     }
+
+    typed_beammap_config = citlali::config::BeammapConfig{};
+    typed_beammap_config.iteration.max_iterations = beammap_iter_max;
+    typed_beammap_config.iteration.tolerance = beammap_iter_tolerance;
+    typed_beammap_config.iteration.convergence_radius_arcsec =
+        beammap_convergence_radius_arcsec;
+    typed_beammap_config.phase_strategy.enabled = beammap_phase_split_enabled;
+    typed_beammap_config.phase_strategy.locator_iter = beammap_locator_iter;
+    typed_beammap_config.phase_strategy.measurement_start_iter =
+        beammap_measurement_start_iter;
+    typed_beammap_config.reference.subtract_reference_detector =
+        beammap_subtract_reference;
+    typed_beammap_config.reference.reference_detector =
+        static_cast<long>(beammap_reference_det);
+    typed_beammap_config.reference.derotate = beammap_derotate;
+    typed_beammap_config.rfi_mask.enabled = beammap_rfi_mask_enabled;
+    typed_beammap_config.rfi_mask.block_size_samples =
+        beammap_rfi_mask_block_size_samples;
+    typed_beammap_config.rfi_mask.min_good_samples =
+        beammap_rfi_mask_min_good_samples;
+    typed_beammap_config.rfi_mask.dilate_blocks = beammap_rfi_mask_dilate_blocks;
+    typed_beammap_config.rfi_mask.sigma_threshold =
+        beammap_rfi_mask_sigma_threshold;
+    typed_beammap_config.rfi_mask.sigma_floor = beammap_rfi_mask_sigma_floor;
+    typed_beammap_config.rfi_mask.max_flagged_fraction =
+        beammap_rfi_mask_max_flagged_fraction;
+    if (auto parsed = citlali::config::parse_beammap_detector_weighting_mode(
+            beammap_detector_weighting_mode)) {
+        typed_beammap_config.detector_weighting_mode = *parsed;
+    }
+    typed_beammap_config.fitting.fit_radius_fwhm = beammap_fit_radius_fwhm;
+    typed_beammap_config.scan_band_mask.enabled = beammap_scan_band_mask_enabled;
+    typed_beammap_config.scan_band_mask.edge_rows = beammap_scan_band_mask_edge_rows;
+    typed_beammap_config.scan_band_mask.min_row_pixels =
+        beammap_scan_band_mask_min_row_pixels;
+    typed_beammap_config.scan_band_mask.min_contiguous_rows =
+        beammap_scan_band_mask_min_contiguous_rows;
+    typed_beammap_config.scan_band_mask.row_median_sigma_threshold =
+        beammap_scan_band_mask_row_median_sigma_threshold;
+    typed_beammap_config.scan_band_mask.row_sigma_ratio_threshold =
+        beammap_scan_band_mask_row_sigma_ratio_threshold;
+    typed_beammap_config.scan_band_mask.max_flagged_fraction =
+        beammap_scan_band_mask_max_flagged_fraction;
+    typed_beammap_config.split_fits_by_flag.enabled = beammap_split_fits_by_flag;
+    typed_beammap_config.split_fits_by_flag.flag_values = beammap_split_flag_values;
+    typed_beammap_config.priors.enabled = beammap_priors_enabled;
+    typed_beammap_config.priors.filepath = beammap_priors_filepath;
+    typed_beammap_config.priors.candidate_top_n =
+        beammap_priors_candidate_top_n;
+    typed_beammap_config.priors.min_snr = beammap_priors_min_snr;
+    typed_beammap_config.priors.max_d2 = beammap_priors_max_d2;
+    typed_beammap_config.priors.max_d2_iter0 = beammap_priors_max_d2_iter0;
+    typed_beammap_config.priors.max_d2_after_iter0 =
+        beammap_priors_max_d2_after_iter0;
+    typed_beammap_config.priors.score_lambda = beammap_priors_score_lambda;
+    typed_beammap_config.priors.score_lambda_iter0 =
+        beammap_priors_score_lambda_iter0;
+    typed_beammap_config.priors.score_lambda_after_iter0 =
+        beammap_priors_score_lambda_after_iter0;
+    typed_beammap_config.priors.fallback_blind = beammap_priors_fallback_blind;
+    typed_beammap_config.priors.align_after_iter0 =
+        beammap_priors_align_after_iter0;
+    typed_beammap_config.priors.alignment_scope =
+        beammap_priors_alignment_scope;
+    typed_beammap_config.priors.alignment_common_support =
+        beammap_priors_alignment_common_support;
+    typed_beammap_config.priors.alignment_common_support_quantile =
+        beammap_priors_alignment_common_support_quantile;
+    typed_beammap_config.priors.alignment_min_matches =
+        beammap_priors_alignment_min_matches;
+    typed_beammap_config.priors.alignment_max_d2 =
+        beammap_priors_alignment_max_d2;
+    typed_beammap_config.priors.alignment_fit_rotation =
+        beammap_priors_alignment_fit_rotation;
+    typed_beammap_config.priors.alignment_max_rotation_deg =
+        beammap_priors_alignment_max_rotation_deg;
+    typed_beammap_config.detector_tod_output.enabled =
+        beammap_detector_tod_output_enabled;
+    typed_beammap_config.detector_tod_output.subdir_name =
+        beammap_detector_tod_output_subdir_name;
+    typed_beammap_config.detector_tod_output.n_uniform =
+        beammap_detector_tod_output_n_uniform;
+    typed_beammap_config.detector_tod_output.n_source_dense =
+        beammap_detector_tod_output_n_source_dense;
+    typed_beammap_config.flagging.array_lower_fwhm_arcsec =
+        lower_fwhm_arcsec_vec;
+    typed_beammap_config.flagging.array_upper_fwhm_arcsec =
+        upper_fwhm_arcsec_vec;
+    typed_beammap_config.flagging.array_lower_sig2noise =
+        lower_sig2noise_vec;
+    typed_beammap_config.flagging.array_upper_sig2noise =
+        upper_sig2noise_vec;
+    typed_beammap_config.flagging.array_max_dist_arcsec =
+        max_dist_arcsec_vec;
+    typed_beammap_config.flagging.array_network_robust_z =
+        network_robust_z_vec;
+    typed_beammap_config.flagging.sens_factors = sens_factors_vec;
+    typed_beammap_config.flagging.sens_psd_limits_hz = sens_psd_limits_Hz_vec;
+    typed_beammap_config.flagging.max_prior_d2 = beammap_flag_max_prior_d2;
 }
 
 template<typename CT>
@@ -3991,6 +4092,7 @@ void Engine::get_citlali_config(CT &config) {
         typed_post_processing_config.source_fitting.active = false;
         // we don't need to do iterations if no maps are made
         beammap_iter_max = 1;
+        typed_beammap_config.iteration.max_iterations = 1;
     }
 }
 

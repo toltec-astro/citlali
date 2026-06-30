@@ -100,6 +100,16 @@ TEST(config_scaffold, parses_existing_pointing_enum_values) {
               citlali::config::FruitLoopsCenterMode::map_center);
 }
 
+TEST(config_scaffold, parses_existing_beammap_enum_values) {
+    EXPECT_EQ(citlali::config::parse_beammap_detector_weighting_mode("const").value(),
+              citlali::config::BeammapDetectorWeightingMode::constant);
+    EXPECT_EQ(citlali::config::parse_beammap_detector_weighting_mode("ptc").value(),
+              citlali::config::BeammapDetectorWeightingMode::ptc);
+    EXPECT_EQ(citlali::config::parse_beammap_detector_weighting_mode("ptc_after_iter0").value(),
+              citlali::config::BeammapDetectorWeightingMode::ptc_after_iter0);
+    EXPECT_FALSE(citlali::config::parse_beammap_detector_weighting_mode("weights").has_value());
+}
+
 TEST(config_scaffold, validates_top_level_config_values) {
     citlali::config::ReductionConfig config;
     EXPECT_TRUE(citlali::config::validate(config).ok());
@@ -112,10 +122,29 @@ TEST(config_scaffold, validates_top_level_config_values) {
     config.post_processing.source_fitting.active = true;
     config.post_processing.source_fitting.bounding_box_arcsec = -1.0;
     config.pointing.header_max_radius_arcsec = -1.0;
+    config.beammap.iteration.max_iterations = 0;
 
     auto report = citlali::config::validate(config);
     EXPECT_FALSE(report.ok());
-    EXPECT_EQ(report.error_count(), 6U);
+    EXPECT_EQ(report.error_count(), 7U);
+}
+
+TEST(config_scaffold, validates_beammap_config_values) {
+    citlali::config::BeammapConfig config;
+    EXPECT_TRUE(citlali::config::validate(config).ok());
+
+    config.phase_strategy.measurement_start_iter = 0;
+    config.rfi_mask.max_flagged_fraction = 1.5;
+    config.scan_band_mask.edge_rows = 1;
+    config.priors.candidate_top_n = 0;
+    config.priors.alignment_common_support_quantile = 0.5;
+    config.detector_tod_output.n_uniform = -1;
+    config.flagging.max_prior_d2 = -1.0;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 7U);
 }
 
 TEST(error_scaffold, preserves_error_code_and_message) {

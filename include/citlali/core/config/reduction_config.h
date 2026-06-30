@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/config/beammap_config.h>
 #include <citlali/core/config/coadd_config.h>
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/noise_config.h>
@@ -18,6 +19,7 @@ struct ReductionConfig {
     NoiseConfig noise;
     PostProcessingConfig post_processing;
     PointingConfig pointing;
+    BeammapConfig beammap;
     ValidationReport validation;
 };
 
@@ -29,6 +31,7 @@ inline ValidationReport validate(const ReductionConfig &config) {
     validate(config.noise, report);
     validate(config.post_processing, report);
     validate(config.pointing, report);
+    validate(config.beammap, report);
     return report;
 }
 
