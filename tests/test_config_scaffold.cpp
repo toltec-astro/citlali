@@ -2,6 +2,7 @@
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
+#include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
@@ -17,13 +18,14 @@
 namespace {
 
 struct FakeLogger {
+    int info_calls = 0;
     int warn_calls = 0;
 
     template <class... Args>
     void error(const char *, Args &&...) {}
 
     template <class... Args>
-    void info(const char *, Args &&...) {}
+    void info(const char *, Args &&...) { ++info_calls; }
 
     template <class... Args>
     void debug(const char *, Args &&...) {}
@@ -169,6 +171,44 @@ struct FakeExecutionEngine {
         ++pipeline_calls;
         event_order.push_back("pipeline");
     }
+};
+
+struct FakeIterationPtcProc {
+    bool run_fruit_loops = false;
+    std::string fruit_loops_path = "null";
+    int begin_weight_validation_iter = -1;
+
+    void begin_weight_validation_iteration(int iter) {
+        begin_weight_validation_iter = iter;
+    }
+};
+
+struct FakeReductionLearning {
+    bool enabled = false;
+    bool diagnostics = false;
+    int begin_calls = 0;
+    int begin_iter = -1;
+    bool source_model_available = false;
+    std::string redu_type;
+
+    void begin_iteration(int iter, bool source_available,
+                         const std::string &type) {
+        ++begin_calls;
+        begin_iter = iter;
+        source_model_available = source_available;
+        redu_type = type;
+    }
+
+    bool is_enabled() const { return enabled; }
+    bool diagnostics_enabled() const { return diagnostics; }
+    std::string summary_string() const { return "fake summary"; }
+};
+
+struct FakeIterationEngine {
+    int fruit_iter = 0;
+    std::string redu_type = "science";
+    FakeIterationPtcProc ptcproc;
+    FakeReductionLearning reduction_learning;
 };
 
 TEST(config_scaffold, formats_config_paths) {
@@ -1210,6 +1250,50 @@ TEST(pipeline_fruit_loop_paths, derives_previous_iteration_map_dir) {
     EXPECT_EQ(citlali::pipeline::previous_fruit_loop_map_dir(
                   "/data", 12, "obsnum/raw", "123456"),
               "/data/redu11/123456/raw/");
+}
+
+TEST(pipeline_iteration_lifecycle, begins_non_fruit_loop_iteration) {
+    FakeIterationEngine engine;
+    engine.fruit_iter = 0;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::begin_fruit_loop_iteration(engine, logger);
+
+    EXPECT_EQ(engine.ptcproc.begin_weight_validation_iter, 0);
+    EXPECT_EQ(engine.reduction_learning.begin_calls, 1);
+    EXPECT_EQ(engine.reduction_learning.begin_iter, 0);
+    EXPECT_FALSE(engine.reduction_learning.source_model_available);
+    EXPECT_EQ(engine.reduction_learning.redu_type, "science");
+    EXPECT_EQ(logger->info_calls, 0);
+}
+
+TEST(pipeline_iteration_lifecycle, begins_fruit_loop_iteration_with_source_model) {
+    FakeIterationEngine engine;
+    engine.fruit_iter = 1;
+    engine.ptcproc.run_fruit_loops = true;
+    engine.reduction_learning.enabled = true;
+    engine.reduction_learning.diagnostics = true;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::begin_fruit_loop_iteration(engine, logger);
+
+    EXPECT_EQ(engine.ptcproc.begin_weight_validation_iter, 1);
+    EXPECT_EQ(engine.reduction_learning.begin_calls, 1);
+    EXPECT_TRUE(engine.reduction_learning.source_model_available);
+    EXPECT_EQ(logger->info_calls, 2);
+}
+
+TEST(pipeline_iteration_lifecycle, uses_configured_fruit_loop_path_as_source_model) {
+    FakeIterationEngine engine;
+    engine.fruit_iter = 0;
+    engine.ptcproc.run_fruit_loops = true;
+    engine.ptcproc.fruit_loops_path = "/data/redu00";
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::begin_fruit_loop_iteration(engine, logger);
+
+    EXPECT_TRUE(engine.reduction_learning.source_model_available);
+    EXPECT_EQ(logger->info_calls, 1);
 }
 
 TEST(pipeline_execution, setup_runs_before_enabled_pipeline) {

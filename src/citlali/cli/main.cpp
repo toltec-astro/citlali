@@ -52,6 +52,7 @@
 #include <citlali/core/engine/pointing.h>
 #include <citlali/core/engine/beammap.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
+#include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
@@ -521,26 +522,8 @@ int run(const rc_t &rc) {
 
                 // loop through fruit loops iterations
                 while ((todproc.engine().fruit_iter < todproc.engine().ptcproc.fruit_loops_iters) && !fruit_loops_converged) {
-                    // output current fruit loops iteraton
-                    if (todproc.engine().ptcproc.run_fruit_loops) {
-                        logger->info("starting fruit loops iteration {}", todproc.engine().fruit_iter);
-                    }
-                    todproc.engine().ptcproc.begin_weight_validation_iteration(todproc.engine().fruit_iter);
-                    {
-                        const bool learning_source_model_available =
-                            todproc.engine().ptcproc.run_fruit_loops &&
-                            (todproc.engine().fruit_iter > 0 ||
-                             todproc.engine().ptcproc.fruit_loops_path != "null");
-                        todproc.engine().reduction_learning.begin_iteration(
-                            todproc.engine().fruit_iter,
-                            learning_source_model_available,
-                            todproc.engine().redu_type);
-                        if (todproc.engine().reduction_learning.is_enabled() &&
-                            todproc.engine().reduction_learning.diagnostics_enabled()) {
-                            logger->info("reduction learning begin: {}",
-                                         todproc.engine().reduction_learning.summary_string());
-                        }
-                    }
+                    citlali::pipeline::begin_fruit_loop_iteration(
+                        todproc.engine(), logger);
 
                     // setup redu dirs if saving outputs or on first iter
                     if (todproc.engine().ptcproc.save_all_iters || todproc.engine().fruit_iter == 0) {
