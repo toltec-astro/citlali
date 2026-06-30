@@ -118,6 +118,10 @@ struct FakeEngine {
     int run_wiener_filter_calls = 0;
     int find_sources_calls = 0;
     int fit_maps_calls = 0;
+    int get_astrometry_config_calls = 0;
+    int get_photometry_config_calls = 0;
+    std::string loaded_astrometry_config;
+    std::string loaded_photometry_config;
 
     struct {
         std::vector<std::string> obsnums;
@@ -246,6 +250,16 @@ struct FakeEngine {
     }
 
     void fit_maps() { ++fit_maps_calls; }
+
+    void get_astrometry_config(const std::string &config) {
+        ++get_astrometry_config_calls;
+        loaded_astrometry_config = config;
+    }
+
+    void get_photometry_config(const std::string &config) {
+        ++get_photometry_config_calls;
+        loaded_photometry_config = config;
+    }
 };
 
 struct FakeFlxscaleCorrection {
@@ -271,6 +285,11 @@ struct FakeRawObs {
         std::string interface() const { return iface; }
     };
 
+    struct FakeConfigInfo {
+        std::string value = "config";
+        const std::string &config() const { return value; }
+    };
+
     const FakeFlxscaleCorrection *correction = nullptr;
     std::string obs_name = "fake_obs";
     FakeArrayPropTable apt;
@@ -278,11 +297,17 @@ struct FakeRawObs {
         {"toltec0.nc", "toltec0"},
         {"toltec1.nc", "toltec1"},
     };
+    FakeConfigInfo astrometry;
+    FakeConfigInfo photometry;
     std::optional<FakeHwpData> hwp;
 
     const FakeArrayPropTable &array_prop_table() const { return apt; }
 
     const std::vector<FakeDataItem> &kidsdata() const { return kids_items; }
+
+    const FakeConfigInfo &astrometry_calib_info() const { return astrometry; }
+
+    const FakeConfigInfo &photometry_calib_info() const { return photometry; }
 
     const FakeFlxscaleCorrection *flxscale_correction() const {
         return correction;
@@ -381,6 +406,15 @@ struct FakeCoaddTodProc {
     }
 
     void create_coadded_map_files() { ++create_coadded_map_files_calls; }
+};
+
+struct FakeCalibrationTodProc {
+    FakeEngine engine_state;
+    int get_apt_from_files_calls = 0;
+
+    FakeEngine &engine() { return engine_state; }
+
+    void get_apt_from_files(const FakeRawObs &) { ++get_apt_from_files_calls; }
 };
 
 struct FakeObservationMapTodProc {
@@ -1210,6 +1244,55 @@ TEST(pipeline_preflight, loads_array_properties_table) {
     EXPECT_EQ(engine.calib.loaded_interfaces,
               (std::vector<std::string>{"nw0", "nw1"}));
     EXPECT_EQ(logger->info_calls, 1);
+}
+
+TEST(pipeline_preflight, configures_non_beammap_observation_calibration) {
+    FakeCalibrationTodProc todproc;
+    FakeRawObs rawobs;
+    rawobs.astrometry.value = "astro";
+    rawobs.photometry.value = "photo";
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::configure_observation_calibration<false>(
+        todproc, rawobs, logger);
+
+    EXPECT_EQ(todproc.engine().get_astrometry_config_calls, 1);
+    EXPECT_EQ(todproc.engine().loaded_astrometry_config, "astro");
+    EXPECT_EQ(todproc.engine().get_photometry_config_calls, 0);
+    EXPECT_EQ(todproc.get_apt_from_files_calls, 0);
+    EXPECT_EQ(todproc.engine().calib.get_apt_calls, 1);
+}
+
+TEST(pipeline_preflight, configures_beammap_detector_calibration_from_files) {
+    FakeCalibrationTodProc todproc;
+    todproc.engine().map_grouping = "detector";
+    FakeRawObs rawobs;
+    rawobs.astrometry.value = "astro";
+    rawobs.photometry.value = "photo";
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::configure_observation_calibration<true>(
+        todproc, rawobs, logger);
+
+    EXPECT_EQ(todproc.engine().get_astrometry_config_calls, 1);
+    EXPECT_EQ(todproc.engine().get_photometry_config_calls, 1);
+    EXPECT_EQ(todproc.engine().loaded_photometry_config, "photo");
+    EXPECT_EQ(todproc.get_apt_from_files_calls, 1);
+    EXPECT_EQ(todproc.engine().calib.get_apt_calls, 0);
+}
+
+TEST(pipeline_preflight, configures_beammap_array_calibration_from_apt) {
+    FakeCalibrationTodProc todproc;
+    todproc.engine().map_grouping = "array";
+    FakeRawObs rawobs;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::configure_observation_calibration<true>(
+        todproc, rawobs, logger);
+
+    EXPECT_EQ(todproc.engine().get_photometry_config_calls, 1);
+    EXPECT_EQ(todproc.get_apt_from_files_calls, 0);
+    EXPECT_EQ(todproc.engine().calib.get_apt_calls, 1);
 }
 
 TEST(pipeline_preflight, configures_sample_rate_without_downsample) {

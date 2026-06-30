@@ -394,27 +394,9 @@ int run(const rc_t &rc) {
                     logger->debug("getting rawobs kids meta info");
                     auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
 
-                    // get astrometry config options
-                    logger->debug("getting astrometry config");
-                    todproc.engine().get_astrometry_config(rawobs.astrometry_calib_info().config());
-                    // get photometry config options
-                    if constexpr (std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>) {
-                        todproc.engine().get_photometry_config(rawobs.photometry_calib_info().config());
-
-                        // if beammap with detector grouping generate the apt table from the files
-                        if (todproc.engine().map_grouping=="detector" || todproc.engine().map_grouping=="auto") {
-                            logger->info("making apt file from raw nc files");
-                            todproc.get_apt_from_files(rawobs);
-                        }
-                        else {
-                            citlali::pipeline::load_array_properties_table(
-                                todproc.engine(), rawobs, logger);
-                        }
-                    }
-                    else {
-                        citlali::pipeline::load_array_properties_table(
-                            todproc.engine(), rawobs, logger);
-                    }
+                    citlali::pipeline::configure_observation_calibration<
+                        std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>>(
+                        todproc, rawobs, logger);
 
                     if (!citlali::pipeline::apply_flxscale_correction(
                             todproc.engine(), rawobs, logger)) {
@@ -540,29 +522,10 @@ int run(const rc_t &rc) {
                         auto rawobs_kids_meta = kidsproc.get_rawobs_meta(rawobs);
 
                         if (co.n_inputs() > 1) {
-                            // get astrometry config options
-                            logger->debug("getting astrometry config");
-                            todproc.engine().get_astrometry_config(rawobs.astrometry_calib_info().config());
-                            // get photometry config options
-                            if constexpr (std::is_same_v<todproc_t, TimeOrderedDataProc<Beammap>>) {
-                                todproc.engine().get_photometry_config(rawobs.photometry_calib_info().config());
-
-                                // if beammap with detector maps generate the apt table from the files
-                                if (todproc.engine().map_grouping=="detector" || todproc.engine().map_grouping=="auto") {
-                                    logger->info("making apt file from raw nc files");
-                                    todproc.get_apt_from_files(rawobs);
-                                }
-                                else {
-                                    citlali::pipeline::load_array_properties_table(
-                                        todproc.engine(), rawobs, logger);
-                                }
-                            }
-
-                            // get apt file
-                            else {
-                                citlali::pipeline::load_array_properties_table(
-                                    todproc.engine(), rawobs, logger);
-                            }
+                            citlali::pipeline::configure_observation_calibration<
+                                std::is_same_v<todproc_t,
+                                               TimeOrderedDataProc<Beammap>>>(
+                                todproc, rawobs, logger);
 
                             if (!citlali::pipeline::apply_flxscale_correction(
                                     todproc.engine(), rawobs, logger)) {
