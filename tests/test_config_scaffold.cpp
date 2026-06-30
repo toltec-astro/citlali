@@ -83,6 +83,8 @@ struct FakeEngine {
     std::string obsnum;
     std::string redu_type = "science";
     std::string redu_dir_name = "/tmp/redu01";
+    std::string output_dir = "/tmp";
+    int redu_dir_num = 1;
     std::string obsnum_dir_name;
     bool run_coadd = false;
     bool run_map_filter = false;
@@ -1791,6 +1793,63 @@ TEST(pipeline_execution, skips_initial_fruit_loop_model_without_path) {
     citlali::pipeline::load_initial_fruit_loop_model_if_requested(engine);
 
     EXPECT_EQ(engine.ptcproc.load_mb_calls, 0);
+}
+
+TEST(pipeline_execution, loads_previous_saved_fruit_loop_model) {
+    FakeEngine engine;
+    engine.fruit_iter = 2;
+    engine.output_dir = "/data/out";
+    engine.redu_dir_num = 12;
+    engine.ptcproc.save_all_iters = true;
+    engine.ptcproc.fruit_loops_type = "obsnum/filtered";
+    engine.omb.obsnums = {"152389"};
+    engine.omb.cov_cut = 5.5;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_previous_fruit_loop_model_if_needed(
+        engine, logger);
+
+    EXPECT_EQ(engine.ptcproc.load_mb_calls, 1);
+    EXPECT_EQ(engine.ptcproc.loaded_filepath,
+              "/data/out/redu11/152389/filtered/");
+    EXPECT_EQ(engine.ptcproc.loaded_noise_filepath,
+              "/data/out/redu11/152389/filtered/");
+    EXPECT_DOUBLE_EQ(engine.ptcproc.tod_mb.cov_cut, 5.5);
+    EXPECT_EQ(logger->info_calls, 1);
+}
+
+TEST(pipeline_execution, loads_previous_stored_fruit_loop_model) {
+    FakeEngine engine;
+    engine.fruit_iter = 3;
+    engine.redu_dir_name = "/data/current/redu12";
+    engine.ptcproc.save_all_iters = false;
+    engine.ptcproc.fruit_loops_type = "coadd/raw";
+    engine.omb.obsnums = {"152389"};
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_previous_fruit_loop_model_if_needed(
+        engine, logger);
+
+    EXPECT_EQ(engine.ptcproc.load_mb_calls, 1);
+    EXPECT_EQ(engine.ptcproc.loaded_filepath,
+              "/data/current/redu12/coadded/raw/");
+    EXPECT_EQ(engine.ptcproc.loaded_noise_filepath,
+              "/data/current/redu12/coadded/raw/");
+    EXPECT_EQ(logger->info_calls, 2);
+}
+
+TEST(pipeline_execution, skips_previous_fruit_loop_model_on_first_iteration) {
+    FakeEngine engine;
+    engine.fruit_iter = 0;
+    engine.ptcproc.save_all_iters = true;
+    engine.omb.obsnums = {"152389"};
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_previous_fruit_loop_model_if_needed(
+        engine, logger);
+
+    EXPECT_EQ(engine.ptcproc.load_mb_calls, 0);
+    EXPECT_EQ(logger->info_calls, 0);
 }
 
 TEST(pipeline_output_layout, derives_config_copy_destinations) {

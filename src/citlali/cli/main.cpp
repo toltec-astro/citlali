@@ -715,35 +715,8 @@ int run(const rc_t &rc) {
                                 todproc.engine());
 
                             // if on iteration >0 get the maps from the previous iteration
-                            if (todproc.engine().fruit_iter > 0) {
-                                std::string fruit_dir;
-                                // get maps from files if saving all iterations
-                                if (todproc.engine().ptcproc.save_all_iters) {
-                                    fruit_dir =
-                                        citlali::pipeline::previous_fruit_loop_map_dir(
-                                            todproc.engine().output_dir,
-                                            todproc.engine().redu_dir_num,
-                                            todproc.engine().ptcproc.fruit_loops_type,
-                                            todproc.engine().omb.obsnums.back());
-                                }
-                                // otherwise use stored maps
-                                else {
-                                    logger->info("loading previous iter maps for fruit loops iteration {}", todproc.engine().fruit_iter);
-                                    fruit_dir = citlali::pipeline::fruit_loop_map_dir(
-                                        todproc.engine().redu_dir_name,
-                                        todproc.engine().ptcproc.fruit_loops_type,
-                                        todproc.engine().omb.obsnums.back());
-                                }
-                                // set coverage region
-                                todproc.engine().ptcproc.tod_mb.cov_cut = todproc.engine().omb.cov_cut;
-
-                                // get map buffer from reduction directory
-                                logger->info("reading in {} for fruit loops iteration {}",fruit_dir, todproc.engine().fruit_iter);
-                                todproc.engine().ptcproc.load_mb(fruit_dir, fruit_dir, todproc.engine().calib,
-                                                                 todproc.engine().map_grouping,
-                                                                 todproc.engine().telescope.pixel_axes,
-                                                                 todproc.engine().omb.pixel_size_rad);
-                            }
+                            citlali::pipeline::load_previous_fruit_loop_model_if_needed(
+                                todproc.engine(), logger);
                         }
 
                         citlali::pipeline::setup_and_run_observation_pipeline(

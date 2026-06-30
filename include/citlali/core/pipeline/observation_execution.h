@@ -211,4 +211,35 @@ void load_initial_fruit_loop_model_if_requested(Engine &engine) {
     }
 }
 
+template <class Engine, class Logger>
+void load_previous_fruit_loop_model_if_needed(Engine &engine,
+                                              const Logger &logger) {
+    if (engine.fruit_iter > 0) {
+        auto fruit_dir = std::string{};
+        if (engine.ptcproc.save_all_iters) {
+            fruit_dir = previous_fruit_loop_map_dir(
+                engine.output_dir, engine.redu_dir_num,
+                engine.ptcproc.fruit_loops_type,
+                engine.omb.obsnums.back());
+        }
+        else {
+            logger->info(
+                "loading previous iter maps for fruit loops iteration {}",
+                engine.fruit_iter);
+            fruit_dir = fruit_loop_map_dir(engine.redu_dir_name,
+                                           engine.ptcproc.fruit_loops_type,
+                                           engine.omb.obsnums.back());
+        }
+
+        engine.ptcproc.tod_mb.cov_cut = engine.omb.cov_cut;
+
+        logger->info("reading in {} for fruit loops iteration {}", fruit_dir,
+                     engine.fruit_iter);
+        engine.ptcproc.load_mb(fruit_dir, fruit_dir, engine.calib,
+                               engine.map_grouping,
+                               engine.telescope.pixel_axes,
+                               engine.omb.pixel_size_rad);
+    }
+}
+
 }  // namespace citlali::pipeline
