@@ -62,6 +62,11 @@ enum class ProcessedTimeChunkCleanerMode {
     adaptive_selector
 };
 
+enum class ProcessedTimeChunkCorrGroupingMetric {
+    abs,
+    signed_metric
+};
+
 inline constexpr std::array<EnumName<TodType>, 4> tod_type_names{{
     {TodType::xs, "xs"},
     {TodType::rs, "rs"},
@@ -119,6 +124,12 @@ inline constexpr std::array<EnumName<ProcessedTimeChunkCleanerMode>, 5>
          "adaptive_selector"},
     }};
 
+inline constexpr std::array<EnumName<ProcessedTimeChunkCorrGroupingMetric>, 2>
+    processed_corr_grouping_metric_names{{
+        {ProcessedTimeChunkCorrGroupingMetric::abs, "abs"},
+        {ProcessedTimeChunkCorrGroupingMetric::signed_metric, "signed"},
+    }};
+
 inline std::optional<TodType> parse_tod_type(std::string_view value) {
     return parse_enum(value, tod_type_names);
 }
@@ -152,6 +163,11 @@ parse_processed_cleaner_mode(std::string_view value) {
     return parse_enum(value, processed_cleaner_mode_names);
 }
 
+inline std::optional<ProcessedTimeChunkCorrGroupingMetric>
+parse_processed_corr_grouping_metric(std::string_view value) {
+    return parse_enum(value, processed_corr_grouping_metric_names);
+}
+
 inline std::string_view to_string(TodType value) {
     return enum_name(value, tod_type_names);
 }
@@ -178,6 +194,10 @@ inline std::string_view to_string(ProcessedTimeChunkWeightGrouping value) {
 
 inline std::string_view to_string(ProcessedTimeChunkCleanerMode value) {
     return enum_name(value, processed_cleaner_mode_names);
+}
+
+inline std::string_view to_string(ProcessedTimeChunkCorrGroupingMetric value) {
+    return enum_name(value, processed_corr_grouping_metric_names);
 }
 
 struct TodStreamOutputConfig {
@@ -289,6 +309,61 @@ struct ProcessedTimeChunkStandardPcaConfig {
     std::map<std::string, std::vector<int>> n_eig_to_cut;
 };
 
+struct ProcessedTimeChunkCorrGroupingConfig {
+    bool enabled = false;
+    ProcessedTimeChunkCorrGroupingMetric metric =
+        ProcessedTimeChunkCorrGroupingMetric::abs;
+    double corr_min = 0.6;
+    int min_overlap = 300;
+    double min_good_frac = 0.8;
+    int min_group_size = 10;
+    int max_samples = 20000;
+    bool clean_residual = true;
+};
+
+struct ProcessedTimeChunkNullModelConfig {
+    bool enabled = false;
+    int n_surrogates = 16;
+    double quantile = 0.99;
+    double min_good_frac = 0.8;
+    int max_modes = 64;
+    int max_samples = 20000;
+    int seed = 12345;
+    std::vector<std::string> grouping;
+};
+
+struct ProcessedTimeChunkMarchenkoPasturConfig {
+    bool enabled = false;
+    double min_good_frac = 0.8;
+    int max_modes = 64;
+    int max_samples = 20000;
+    double band_low_Hz = 0.0;
+    double band_high_Hz = 0.0;
+    double clip_z = 12.0;
+    double bulk_keep_frac = 0.8;
+    int q_grid_size = 64;
+    std::vector<std::string> grouping;
+};
+
+struct ProcessedTimeChunkAdaptiveSelectorConfig {
+    bool enabled = false;
+    double min_good_frac = 0.7;
+    int max_det = 120;
+    int max_samples = 1024;
+    int max_pairs = 2000;
+    int seed = 12345;
+    double clip_z = 50.0;
+    double low_weight = 1.0;
+    double tail_weight = 0.0;
+    double topmode_weight = 0.1;
+    double reg_weight = 0.3;
+    std::array<double, 2> low_band_Hz{0.05, 0.5};
+    std::array<double, 2> mid_band_Hz{0.5, 2.0};
+    std::vector<int> candidate_offsets{-2, 0, 2, 4};
+    std::vector<std::string> grouping;
+    bool log_candidates = false;
+};
+
 struct ProcessedTimeChunkCleanConfig {
     bool enabled = false;
     ProcessedTimeChunkCleanerMode active = ProcessedTimeChunkCleanerMode::none;
@@ -296,6 +371,10 @@ struct ProcessedTimeChunkCleanConfig {
     double mask_radius_arcsec = 0.0;
     double tau = 0.0;
     ProcessedTimeChunkStandardPcaConfig standard_pca;
+    ProcessedTimeChunkCorrGroupingConfig corr_grouping;
+    ProcessedTimeChunkNullModelConfig null_model;
+    ProcessedTimeChunkMarchenkoPasturConfig marchenko_pastur;
+    ProcessedTimeChunkAdaptiveSelectorConfig adaptive_selector;
 };
 
 struct ProcessedTimeChunkBusyRowSuppressionConfig {
@@ -626,12 +705,130 @@ inline void validate(const ProcessedTimeChunkStandardPcaConfig &config,
                   report);
 }
 
+inline void validate(const ProcessedTimeChunkCorrGroupingConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    const ConfigPath path{
+        "timestream", "processed_time_chunk", "clean", "corr_grouping"};
+    check_minimum(config.corr_min, 0.0,
+                  append_config_path(path, {"corr_min"}), report);
+    check_maximum(config.corr_min, 1.0,
+                  append_config_path(path, {"corr_min"}), report);
+    check_minimum(config.min_overlap, 1,
+                  append_config_path(path, {"min_overlap"}), report);
+    check_minimum(config.min_good_frac, 0.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_maximum(config.min_good_frac, 1.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_minimum(config.min_group_size, 2,
+                  append_config_path(path, {"min_group_size"}), report);
+    check_minimum(config.max_samples, 0,
+                  append_config_path(path, {"max_samples"}), report);
+}
+
+inline void validate(const ProcessedTimeChunkNullModelConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    const ConfigPath path{
+        "timestream", "processed_time_chunk", "clean", "null_model"};
+    check_minimum(config.n_surrogates, 4,
+                  append_config_path(path, {"n_surrogates"}), report);
+    check_minimum(config.quantile, 0.5,
+                  append_config_path(path, {"quantile"}), report);
+    check_maximum(config.quantile, 0.999999,
+                  append_config_path(path, {"quantile"}), report);
+    check_minimum(config.min_good_frac, 0.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_maximum(config.min_good_frac, 1.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_minimum(config.max_modes, 0,
+                  append_config_path(path, {"max_modes"}), report);
+    check_minimum(config.max_samples, 0,
+                  append_config_path(path, {"max_samples"}), report);
+    check_minimum(config.seed, 0, append_config_path(path, {"seed"}), report);
+}
+
+inline void validate(const ProcessedTimeChunkMarchenkoPasturConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    const ConfigPath path{
+        "timestream", "processed_time_chunk", "clean", "marchenko_pastur"};
+    check_minimum(config.min_good_frac, 0.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_maximum(config.min_good_frac, 1.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_minimum(config.max_modes, 0,
+                  append_config_path(path, {"max_modes"}), report);
+    check_minimum(config.max_samples, 0,
+                  append_config_path(path, {"max_samples"}), report);
+    check_minimum(config.band_low_Hz, 0.0,
+                  append_config_path(path, {"band_low_Hz"}), report);
+    check_minimum(config.band_high_Hz, 0.0,
+                  append_config_path(path, {"band_high_Hz"}), report);
+    check_minimum(config.bulk_keep_frac, 0.1,
+                  append_config_path(path, {"bulk_keep_frac"}), report);
+    check_maximum(config.bulk_keep_frac, 1.0,
+                  append_config_path(path, {"bulk_keep_frac"}), report);
+    check_minimum(config.q_grid_size, 8,
+                  append_config_path(path, {"q_grid_size"}), report);
+}
+
+inline void validate(const ProcessedTimeChunkAdaptiveSelectorConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    const ConfigPath path{
+        "timestream", "processed_time_chunk", "clean", "adaptive_selector"};
+    check_minimum(config.min_good_frac, 0.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_maximum(config.min_good_frac, 1.0,
+                  append_config_path(path, {"min_good_frac"}), report);
+    check_minimum(config.max_det, 0, append_config_path(path, {"max_det"}),
+                  report);
+    check_minimum(config.max_samples, 0,
+                  append_config_path(path, {"max_samples"}), report);
+    check_minimum(config.max_pairs, 0,
+                  append_config_path(path, {"max_pairs"}), report);
+    check_minimum(config.seed, 0, append_config_path(path, {"seed"}), report);
+    check_minimum(config.low_weight, 0.0,
+                  append_config_path(path, {"low_weight"}), report);
+    check_minimum(config.tail_weight, 0.0,
+                  append_config_path(path, {"tail_weight"}), report);
+    check_minimum(config.topmode_weight, 0.0,
+                  append_config_path(path, {"topmode_weight"}), report);
+    check_minimum(config.reg_weight, 0.0,
+                  append_config_path(path, {"reg_weight"}), report);
+    check_minimum(config.low_band_Hz[0], 0.0,
+                  append_config_path(path, {"low_band_Hz"}), report);
+    if (config.low_band_Hz[1] <= config.low_band_Hz[0]) {
+        report.add_error(append_config_path(path, {"low_band_Hz"}),
+                         "must be [fmin, fmax] with fmax greater than fmin");
+    }
+    check_minimum(config.mid_band_Hz[0], 0.0,
+                  append_config_path(path, {"mid_band_Hz"}), report);
+    if (config.mid_band_Hz[1] <= config.mid_band_Hz[0]) {
+        report.add_error(append_config_path(path, {"mid_band_Hz"}),
+                         "must be [fmin, fmax] with fmax greater than fmin");
+    }
+}
+
 inline void validate(const ProcessedTimeChunkCleanConfig &config,
                      ValidationReport &report) {
     if (!config.enabled) {
         return;
     }
     validate(config.standard_pca, report);
+    validate(config.corr_grouping, report);
+    validate(config.null_model, report);
+    validate(config.marchenko_pastur, report);
+    validate(config.adaptive_selector, report);
 }
 
 inline void validate(const ProcessedTimeChunkBusyRowSuppressionConfig &config,

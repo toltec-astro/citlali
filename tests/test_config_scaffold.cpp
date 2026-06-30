@@ -133,6 +133,12 @@ TEST(config_scaffold, parses_existing_timestream_enum_values) {
     EXPECT_EQ(citlali::config::parse_processed_cleaner_mode("adaptive_selector").value(),
               citlali::config::ProcessedTimeChunkCleanerMode::adaptive_selector);
     EXPECT_FALSE(citlali::config::parse_processed_cleaner_mode("pca").has_value());
+
+    EXPECT_EQ(citlali::config::parse_processed_corr_grouping_metric("abs").value(),
+              citlali::config::ProcessedTimeChunkCorrGroupingMetric::abs);
+    EXPECT_EQ(citlali::config::parse_processed_corr_grouping_metric("signed").value(),
+              citlali::config::ProcessedTimeChunkCorrGroupingMetric::signed_metric);
+    EXPECT_FALSE(citlali::config::parse_processed_corr_grouping_metric("pearson").has_value());
 }
 
 TEST(config_scaffold, parses_existing_pointing_enum_values) {
@@ -311,6 +317,49 @@ TEST(config_scaffold, validates_processed_time_chunk_clean_values) {
     citlali::config::validate(config, report);
     EXPECT_FALSE(report.ok());
     EXPECT_EQ(report.error_count(), 1U);
+}
+
+TEST(config_scaffold, validates_processed_time_chunk_clean_expert_values) {
+    citlali::config::ProcessedTimeChunkCleanConfig config;
+    config.enabled = true;
+    config.corr_grouping.enabled = true;
+    config.corr_grouping.corr_min = 2.0;
+    config.corr_grouping.min_overlap = 0;
+    config.corr_grouping.min_good_frac = -1.0;
+    config.corr_grouping.min_group_size = 1;
+    config.corr_grouping.max_samples = -1;
+    config.null_model.enabled = true;
+    config.null_model.n_surrogates = 3;
+    config.null_model.quantile = 0.4;
+    config.null_model.min_good_frac = 2.0;
+    config.null_model.max_modes = -1;
+    config.null_model.max_samples = -1;
+    config.null_model.seed = -1;
+    config.marchenko_pastur.enabled = true;
+    config.marchenko_pastur.min_good_frac = 2.0;
+    config.marchenko_pastur.max_modes = -1;
+    config.marchenko_pastur.max_samples = -1;
+    config.marchenko_pastur.band_low_Hz = -1.0;
+    config.marchenko_pastur.band_high_Hz = -1.0;
+    config.marchenko_pastur.bulk_keep_frac = 0.0;
+    config.marchenko_pastur.q_grid_size = 7;
+    config.adaptive_selector.enabled = true;
+    config.adaptive_selector.min_good_frac = 2.0;
+    config.adaptive_selector.max_det = -1;
+    config.adaptive_selector.max_samples = -1;
+    config.adaptive_selector.max_pairs = -1;
+    config.adaptive_selector.seed = -1;
+    config.adaptive_selector.low_weight = -1.0;
+    config.adaptive_selector.tail_weight = -1.0;
+    config.adaptive_selector.topmode_weight = -1.0;
+    config.adaptive_selector.reg_weight = -1.0;
+    config.adaptive_selector.low_band_Hz = {-1.0, 0.5};
+    config.adaptive_selector.mid_band_Hz = {2.0, 1.0};
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 29U);
 }
 
 TEST(config_scaffold, validates_processed_time_chunk_weight_validation_values) {

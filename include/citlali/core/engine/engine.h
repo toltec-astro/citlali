@@ -1038,6 +1038,78 @@ void Engine::get_ptc_config(CT &config) {
             typed_clean.standard_pca.n_eig_to_cut[arr_name] =
                 std::move(n_eig_to_cut);
         }
+        auto &typed_corr_grouping = typed_clean.corr_grouping;
+        typed_corr_grouping.enabled = ptcproc.cleaner.corr_grouping.enabled;
+        if (auto parsed = citlali::config::parse_processed_corr_grouping_metric(
+                ptcproc.cleaner.corr_grouping.metric)) {
+            typed_corr_grouping.metric = *parsed;
+        }
+        typed_corr_grouping.corr_min = ptcproc.cleaner.corr_grouping.corr_min;
+        typed_corr_grouping.min_overlap =
+            ptcproc.cleaner.corr_grouping.min_overlap;
+        typed_corr_grouping.min_good_frac =
+            ptcproc.cleaner.corr_grouping.min_good_frac;
+        typed_corr_grouping.min_group_size =
+            ptcproc.cleaner.corr_grouping.min_group_size;
+        typed_corr_grouping.max_samples =
+            ptcproc.cleaner.corr_grouping.max_samples;
+        typed_corr_grouping.clean_residual =
+            ptcproc.cleaner.corr_grouping.clean_residual;
+
+        auto &typed_null_model = typed_clean.null_model;
+        typed_null_model.enabled = ptcproc.cleaner.null_model.enabled;
+        typed_null_model.n_surrogates =
+            ptcproc.cleaner.null_model.n_surrogates;
+        typed_null_model.quantile = ptcproc.cleaner.null_model.quantile;
+        typed_null_model.min_good_frac =
+            ptcproc.cleaner.null_model.min_good_frac;
+        typed_null_model.max_modes = ptcproc.cleaner.null_model.max_modes;
+        typed_null_model.max_samples = ptcproc.cleaner.null_model.max_samples;
+        typed_null_model.seed = static_cast<int>(ptcproc.cleaner.null_model.seed);
+        typed_null_model.grouping = ptcproc.cleaner.null_model.grouping;
+
+        auto &typed_mp = typed_clean.marchenko_pastur;
+        typed_mp.enabled = ptcproc.cleaner.marchenko_pastur.enabled;
+        typed_mp.min_good_frac =
+            ptcproc.cleaner.marchenko_pastur.min_good_frac;
+        typed_mp.max_modes = ptcproc.cleaner.marchenko_pastur.max_modes;
+        typed_mp.max_samples = ptcproc.cleaner.marchenko_pastur.max_samples;
+        typed_mp.band_low_Hz = ptcproc.cleaner.marchenko_pastur.band_low_Hz;
+        typed_mp.band_high_Hz = ptcproc.cleaner.marchenko_pastur.band_high_Hz;
+        typed_mp.clip_z = ptcproc.cleaner.marchenko_pastur.clip_z;
+        typed_mp.bulk_keep_frac =
+            ptcproc.cleaner.marchenko_pastur.bulk_keep_frac;
+        typed_mp.q_grid_size = ptcproc.cleaner.marchenko_pastur.q_grid_size;
+        typed_mp.grouping = ptcproc.cleaner.marchenko_pastur.grouping;
+
+        auto &typed_adaptive = typed_clean.adaptive_selector;
+        typed_adaptive.enabled = ptcproc.cleaner.adaptive_selector.enabled;
+        typed_adaptive.min_good_frac =
+            ptcproc.cleaner.adaptive_selector.min_good_frac;
+        typed_adaptive.max_det = ptcproc.cleaner.adaptive_selector.max_det;
+        typed_adaptive.max_samples =
+            ptcproc.cleaner.adaptive_selector.max_samples;
+        typed_adaptive.max_pairs = ptcproc.cleaner.adaptive_selector.max_pairs;
+        typed_adaptive.seed =
+            static_cast<int>(ptcproc.cleaner.adaptive_selector.seed);
+        typed_adaptive.clip_z = ptcproc.cleaner.adaptive_selector.clip_z;
+        typed_adaptive.low_weight =
+            ptcproc.cleaner.adaptive_selector.low_weight;
+        typed_adaptive.tail_weight =
+            ptcproc.cleaner.adaptive_selector.tail_weight;
+        typed_adaptive.topmode_weight =
+            ptcproc.cleaner.adaptive_selector.topmode_weight;
+        typed_adaptive.reg_weight =
+            ptcproc.cleaner.adaptive_selector.reg_weight;
+        typed_adaptive.low_band_Hz =
+            ptcproc.cleaner.adaptive_selector.low_band_Hz;
+        typed_adaptive.mid_band_Hz =
+            ptcproc.cleaner.adaptive_selector.mid_band_Hz;
+        typed_adaptive.candidate_offsets =
+            ptcproc.cleaner.adaptive_selector.candidate_offsets;
+        typed_adaptive.grouping = ptcproc.cleaner.adaptive_selector.grouping;
+        typed_adaptive.log_candidates =
+            ptcproc.cleaner.adaptive_selector.log_candidates;
     }
     auto &typed_weighting =
         typed_timestream_config.processed_time_chunk.weighting;
