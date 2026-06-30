@@ -486,12 +486,30 @@ struct RawTimeChunkFlaggingConfig {
     RawTimeChunkImpulsiveCoincidenceConfig impulsive_coincidence;
 };
 
+struct RawTimeChunkKernelConfig {
+    bool enabled = false;
+    std::string filepath;
+    std::string type;
+    double fwhm_arcsec = 0.0;
+    std::vector<std::string> image_ext_names;
+};
+
+struct RawTimeChunkAltAzDestripeConfig {
+    bool enabled = false;
+    std::string grouping = "nw";
+    bool fit_time_trend = true;
+    bool fit_derivs = true;
+    int min_samples = 64;
+};
+
 struct RawTimeChunkConfig {
     RawTimeChunkDespikeConfig despike;
     RawTimeChunkDownsampleConfig downsample;
     RawTimeChunkFilterConfig filter;
     RawTimeChunkIirFilterConfig iir_filter;
     RawTimeChunkFlaggingConfig flagging;
+    RawTimeChunkKernelConfig kernel;
+    RawTimeChunkAltAzDestripeConfig altaz_destripe;
     bool flux_calibration_enabled = false;
     bool extinction_correction_enabled = false;
 };
@@ -1100,12 +1118,27 @@ inline void validate(const RawTimeChunkFlaggingConfig &config,
     validate(config.impulsive_coincidence, report);
 }
 
+inline void validate(const RawTimeChunkKernelConfig &, ValidationReport &) {}
+
+inline void validate(const RawTimeChunkAltAzDestripeConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    check_minimum(config.min_samples, 4,
+                  {"timestream", "raw_time_chunk", "altaz_destripe",
+                   "min_samples"},
+                  report);
+}
+
 inline void validate(const RawTimeChunkConfig &config, ValidationReport &report) {
     validate(config.despike, report);
     validate(config.downsample, report);
     validate(config.filter, report);
     validate(config.iir_filter, report);
     validate(config.flagging, report);
+    validate(config.kernel, report);
+    validate(config.altaz_destripe, report);
     if (config.downsample.enabled && !config.filter.enabled) {
         report.add_error({"timestream", "raw_time_chunk", "downsample"},
                          "requires raw_time_chunk.filter.enabled=true");

@@ -383,6 +383,17 @@ TEST(config_scaffold, validates_raw_time_chunk_flagging_diagnostics) {
     EXPECT_EQ(report.error_count(), 27U);
 }
 
+TEST(config_scaffold, validates_raw_time_chunk_altaz_destripe_values) {
+    citlali::config::RawTimeChunkAltAzDestripeConfig config;
+    config.enabled = true;
+    config.min_samples = 3;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 1U);
+}
+
 TEST(config_scaffold, validates_processed_time_chunk_second_pass_local_values) {
     citlali::config::ProcessedTimeChunkSecondPassLocalConfig config;
     config.min_spike_sigma = -1.0;
