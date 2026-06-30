@@ -53,6 +53,13 @@ struct FakeTelHeaderValue {
     }
 };
 
+struct FakeTelTime {
+    std::vector<double> values = {0.0, 1.0};
+
+    double operator()(std::size_t index) const { return values.at(index); }
+    std::size_t size() const { return values.size(); }
+};
+
 struct FakeCalib {
     std::map<std::string, FakeAptColumn> apt;
     std::string ignore_hwpr = "false";
@@ -80,10 +87,12 @@ struct FakeEngine {
     struct {
         std::vector<std::string> obsnums;
         std::vector<double> crval_config = {0.0, 0.0};
+        double exposure_time = 0.0;
     } omb;
 
     struct {
         std::vector<std::string> obsnums;
+        double exposure_time = 0.0;
     } cmb;
 
     FakeCalib calib;
@@ -93,6 +102,7 @@ struct FakeEngine {
         double d_fsmp = -1.0;
         bool sim_obs = false;
         std::map<std::string, FakeTelHeaderValue> tel_header;
+        std::map<std::string, FakeTelTime> tel_data;
     } telescope;
 
     struct {
@@ -1056,6 +1066,28 @@ TEST(pipeline_preflight, overwrites_map_center_when_configured) {
                 citlali::pipeline::degrees_to_radians(180.0), 1e-12);
     EXPECT_NEAR(engine.telescope.tel_header["Header.Source.Dec"].value,
                 citlali::pipeline::degrees_to_radians(45.0), 1e-12);
+}
+
+TEST(pipeline_preflight, updates_observation_exposure_time) {
+    FakeEngine engine;
+    engine.telescope.tel_data["TelTime"].values = {10.0, 12.5, 14.0};
+
+    citlali::pipeline::update_observation_exposure_time(engine);
+
+    EXPECT_DOUBLE_EQ(engine.omb.exposure_time, 4.0);
+    EXPECT_DOUBLE_EQ(engine.cmb.exposure_time, 0.0);
+}
+
+TEST(pipeline_preflight, accumulates_observation_exposure_time_for_coadd) {
+    FakeEngine engine;
+    engine.run_coadd = true;
+    engine.cmb.exposure_time = 3.0;
+    engine.telescope.tel_data["TelTime"].values = {10.0, 12.5, 14.0};
+
+    citlali::pipeline::update_observation_exposure_time(engine);
+
+    EXPECT_DOUBLE_EQ(engine.omb.exposure_time, 4.0);
+    EXPECT_DOUBLE_EQ(engine.cmb.exposure_time, 7.0);
 }
 
 TEST(pipeline_output_layout, derives_config_copy_destinations) {

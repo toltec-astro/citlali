@@ -130,4 +130,17 @@ void overwrite_map_center_if_configured(Engine &engine, const Logger &logger) {
     }
 }
 
+template <class Engine>
+void update_observation_exposure_time(Engine &engine) {
+    auto t0 = engine.telescope.tel_data["TelTime"](0);
+    auto tn = engine.telescope.tel_data["TelTime"](
+        engine.telescope.tel_data["TelTime"].size() - 1);
+
+    engine.omb.exposure_time = tn - t0;
+    if (engine.run_coadd) {
+        engine.cmb.exposure_time =
+            engine.cmb.exposure_time + engine.omb.exposure_time;
+    }
+}
+
 }  // namespace citlali::pipeline
