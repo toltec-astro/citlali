@@ -28,8 +28,6 @@
 #include <citlali/core/cli/process_control.h>
 #include <citlali/core/cli/run_logging.h>
 #include <citlali/core/cli/standard_reduction_execution.h>
-#include <citlali/core/cli/standard_reduction_selection.h>
-#include <citlali/core/cli/standard_reduction_types.h>
 
 using rc_t = citlali::cli::RuntimeConfig;
 
@@ -59,27 +57,10 @@ int run(const rc_t &rc) {
         citlali::cli::make_io_coordinator_from_config<SeqIOCoordinator>(
             citlali_config);
 
-    // set up KIDs data proc
-    //auto kidsproc =
-    //    KidsDataProc::from_config(citlali_config.get_config("kids"));
-
-    // set up todproc
-    using todproc_var_t = citlali::cli::StandardTodProcessorVariant;
-
-    // declare todproc variable
-    todproc_var_t todproc;
-
-    // set todproc to variant depending on the config file reduction type
-    if (!citlali::cli::select_standard_citlali_tod_processor_or_report_failure(
-            todproc, citlali_config, logger, std::cerr)) {
-        return EXIT_FAILURE;
-    }
-
     // start the main process
-    auto exitcode = citlali::cli::run_standard_citlali_reduction_variant<
-        KidsDataProc>(
-        todproc, co, citlali_config, loaded_config.filepaths, logger,
-        std::cerr);
+    auto exitcode = citlali::cli::select_and_run_standard_citlali_reduction<
+        KidsDataProc>(co, citlali_config, loaded_config.filepaths, logger,
+                      std::cerr);
 
     // re-enable default logger
     citlali::cli::restore_default_sink_level(run_loggers, log_level);
