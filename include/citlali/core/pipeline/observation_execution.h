@@ -255,44 +255,6 @@ void coadd_observation(TodProc &todproc, const Logger &logger) {
     }
 }
 
-template <auto FilteredObsMap, class Engine, class Logger>
-void output_filtered_observation_maps_if_needed(Engine &engine,
-                                                const Logger &logger) {
-    if (engine.write_filtered_maps_partial) {
-        logger->info(
-            "filtered obs files already written during Wiener filtering; "
-            "skipping post-filter output stage");
-    }
-    else {
-        logger->info("outputting filtered obs files");
-        engine.template output<FilteredObsMap>();
-    }
-}
-
-template <auto FilteredObsMap, bool FitMaps, class TodProc, class Logger>
-void write_filtered_observation_outputs(TodProc &todproc,
-                                        const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    filter_observation_maps<FilteredObsMap>(engine, logger);
-    calculate_filtered_observation_noise_products_if_needed(engine, logger);
-    calculate_filtered_observation_map_diagnostics(engine, logger);
-    find_and_fit_filtered_observation_maps_if_needed<FilteredObsMap,
-                                                     FitMaps>(engine, logger);
-    output_filtered_observation_maps_if_needed<FilteredObsMap>(engine, logger);
-}
-
-template <auto FilteredObsMap, bool FitMaps, class TodProc, class Logger>
-void write_filtered_observation_outputs_if_needed(TodProc &todproc,
-                                                  const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    if (should_write_filtered_outputs(engine)) {
-        write_filtered_observation_outputs<FilteredObsMap, FitMaps>(
-            todproc, logger);
-    }
-}
-
 template <auto RawObsMap, auto FilteredObsMap, bool FitMaps, class TodProc,
           class Logger>
 void write_observation_outputs_and_accumulate(TodProc &todproc,
