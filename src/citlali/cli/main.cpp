@@ -28,6 +28,7 @@
 #include <citlali/core/cli/process_control.h>
 #include <citlali/core/cli/reduction_execution.h>
 #include <citlali/core/cli/run_logging.h>
+#include <citlali/core/cli/standard_reduction_execution.h>
 #include <citlali/core/cli/standard_reduction_selection.h>
 #include <citlali/core/cli/standard_reduction_types.h>
 #include <citlali/core/cli/tod_processor_selection.h>
@@ -80,9 +81,8 @@ int run(const rc_t &rc) {
     }
 
     // start the main process
-    auto exitcode = citlali::cli::run_standard_cli_reduction_variant<
-        citlali::cli::StandardBeammapTodProcessor,
-        citlali::cli::StandardPointingTodProcessor, KidsDataProc>(
+    auto exitcode = citlali::cli::run_standard_citlali_reduction_variant<
+        KidsDataProc>(
         todproc, co, citlali_config, loaded_config.filepaths, logger,
         std::cerr);
 
