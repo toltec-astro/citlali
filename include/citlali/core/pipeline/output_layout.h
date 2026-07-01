@@ -4,14 +4,3 @@
 #include <citlali/core/pipeline/observation_output_layout.h>
 #include <citlali/core/pipeline/output_config_copy.h>
 #include <citlali/core/pipeline/timing_gap_output.h>
-
-#include <filesystem>
-#include <fstream>
-#include <iomanip>
-#include <sstream>
-#include <string>
-#include <vector>
-
-namespace citlali::pipeline {
-
-}  // namespace citlali::pipeline
