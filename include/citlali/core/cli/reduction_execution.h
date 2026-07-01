@@ -4,6 +4,7 @@
 #include <citlali/core/cli/reduction_runtime.h>
 #include <citlali/core/cli/run_logging.h>
 #include <citlali/core/cli/runtime_setup.h>
+#include <citlali/core/mapmaking/map.h>
 #include <citlali/core/pipeline/map_geometry.h>
 #include <citlali/core/pipeline/reduction_pipeline.h>
 #include <spdlog/spdlog.h>
@@ -126,6 +127,20 @@ int run_cli_reduction_processor_for_mode(
         FilteredObsMap, RawCoaddMap, FilteredCoaddMap,
         fits_maps_for_tod_processor_v<TodProc, PointingTodProc>,
         KidsDataProc>(
+        todproc, co, config, config_filepaths, logger, os);
+}
+
+template <class TodProc, class BeammapTodProc, class PointingTodProc,
+          class KidsDataProc, class IOCoordinator, class Config,
+          class ConfigFilepaths, class Logger>
+int run_standard_cli_reduction_processor(
+    TodProc &todproc, const IOCoordinator &co, Config &config,
+    const ConfigFilepaths &config_filepaths, const Logger &logger,
+    std::ostream &os) {
+    return run_cli_reduction_processor_for_mode<
+        TodProc, BeammapTodProc, PointingTodProc, mapmaking::RawObs,
+        mapmaking::FilteredObs, mapmaking::RawCoadd,
+        mapmaking::FilteredCoadd, KidsDataProc>(
         todproc, co, config, config_filepaths, logger, os);
 }
 

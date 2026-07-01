@@ -92,11 +92,9 @@ int run(const rc_t &rc) {
         todproc,
         [&](auto &selected_todproc) {
             using todproc_t = std::decay_t<decltype(selected_todproc)>;
-            return citlali::cli::run_cli_reduction_processor_for_mode<
+            return citlali::cli::run_standard_cli_reduction_processor<
                 todproc_t, TimeOrderedDataProc<Beammap>,
-                TimeOrderedDataProc<Pointing>, mapmaking::RawObs,
-                mapmaking::FilteredObs, mapmaking::RawCoadd,
-                mapmaking::FilteredCoadd, KidsDataProc>(
+                TimeOrderedDataProc<Pointing>, KidsDataProc>(
                 selected_todproc, co, citlali_config,
                 loaded_config.filepaths, logger, std::cerr);
         });
