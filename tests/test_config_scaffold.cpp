@@ -160,6 +160,7 @@ struct FakeEngine {
     std::vector<std::string> date_obs;
     std::vector<int> start_indices = {7};
     std::vector<int> end_indices = {9};
+    int write_learning_summary_calls = 0;
 
     struct {
         std::vector<std::string> obsnums;
@@ -263,6 +264,8 @@ struct FakeEngine {
             double cov_cut = 0.0;
         } tod_mb;
         int load_mb_calls = 0;
+        int begin_weight_validation_iter = -1;
+        int finalize_weight_validation_iter = -1;
         std::string loaded_filepath;
         std::string loaded_noise_filepath;
 
@@ -274,7 +277,43 @@ struct FakeEngine {
             loaded_filepath = filepath;
             loaded_noise_filepath = noise_filepath;
         }
+
+        void begin_weight_validation_iteration(int iter) {
+            begin_weight_validation_iter = iter;
+        }
+
+        void finalize_weight_validation_iteration(int iter) {
+            finalize_weight_validation_iter = iter;
+        }
     } ptcproc;
+
+    struct {
+        bool enabled = false;
+        bool diagnostics = false;
+        int begin_calls = 0;
+        int begin_iter = -1;
+        int finalize_calls = 0;
+        int finalize_iter = -1;
+        bool source_model_available = false;
+        std::string redu_type;
+
+        void begin_iteration(int iter, bool source_available,
+                             const std::string &type) {
+            ++begin_calls;
+            begin_iter = iter;
+            source_model_available = source_available;
+            redu_type = type;
+        }
+
+        void finalize_iteration(int iter) {
+            ++finalize_calls;
+            finalize_iter = iter;
+        }
+
+        bool is_enabled() const { return enabled; }
+        bool diagnostics_enabled() const { return diagnostics; }
+        std::string summary_string() const { return "fake summary"; }
+    } reduction_learning;
 
     template <class MapBuffer>
     void configure_map_pixel_contribution_targets(
@@ -318,6 +357,8 @@ struct FakeEngine {
         ++get_photometry_config_calls;
         loaded_photometry_config = config;
     }
+
+    void write_learning_summary() { ++write_learning_summary_calls; }
 };
 
 struct FakeFlxscaleCorrection {
@@ -676,12 +717,15 @@ struct FakeInitialObservationTodProc : FakeTelescopeTodProc {
     int calc_map_num_calls = 0;
     int calc_omb_size_calls = 0;
     int calc_cmb_size_calls = 0;
+    int create_output_dir_calls = 0;
     int allocate_omb_calls = 0;
     int allocate_nmb_calls = 0;
     int get_apt_from_files_calls = 0;
+    int make_index_file_calls = 0;
     int last_map_extent = 0;
     int last_map_coord = 0;
     int last_map_coord_count = 0;
+    std::string indexed_path;
 
     void calc_map_num() { ++calc_map_num_calls; }
 
@@ -700,6 +744,13 @@ struct FakeInitialObservationTodProc : FakeTelescopeTodProc {
 
     void get_apt_from_files(const FakeRawObs &) {
         ++get_apt_from_files_calls;
+    }
+
+    void create_output_dir() { ++create_output_dir_calls; }
+
+    void make_index_file(const std::string &path) {
+        ++make_index_file_calls;
+        indexed_path = path;
     }
 
     void allocate_omb(int &map_extent, int &map_coord) {
@@ -3010,6 +3061,36 @@ TEST(pipeline_execution, rejects_reduction_iteration_observations_on_failure) {
     EXPECT_EQ(config.get_config_calls, 1);
     EXPECT_EQ(todproc.engine().setup_calls, 0);
     EXPECT_EQ(todproc.engine().output_calls, 0);
+}
+
+TEST(pipeline_execution, runs_reduction_iteration) {
+    FakeInitialObservationTodProc todproc;
+    todproc.engine().redu_dir_name = "/tmp/redu01";
+    FakeCitlaliConfig config;
+    FakeIOCoordinator co{{FakeRawObs{}, FakeRawObs{}}};
+    std::vector<std::string> config_filepaths;
+    std::vector<int> map_extents = {11, 33};
+    std::vector<int> map_coords = {22, 44};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::pipeline::run_reduction_iteration<
+        false, FakeMapType::RawObs, FakeMapType::FilteredObs,
+        FakeMapType::RawCoadd, FakeMapType::FilteredCoadd, false,
+        FakeKidsProc>(
+        todproc, co, config, config_filepaths, map_extents, map_coords,
+        [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
+        logger));
+
+    EXPECT_EQ(todproc.create_output_dir_calls, 1);
+    EXPECT_EQ(todproc.engine().setup_calls, 2);
+    EXPECT_EQ(todproc.engine().pipeline_calls, 2);
+    EXPECT_EQ(todproc.engine().output_calls, 2);
+    EXPECT_EQ(todproc.engine().ptcproc.finalize_weight_validation_iter, 0);
+    EXPECT_EQ(todproc.engine().reduction_learning.finalize_calls, 1);
+    EXPECT_EQ(todproc.engine().write_learning_summary_calls, 1);
+    EXPECT_EQ(todproc.make_index_file_calls, 1);
+    EXPECT_EQ(todproc.indexed_path, "/tmp/redu01");
+    EXPECT_EQ(todproc.engine().fruit_iter, 1);
 }
 
 TEST(pipeline_execution, writes_raw_coadd_outputs) {
