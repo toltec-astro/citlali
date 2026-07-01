@@ -16,18 +16,14 @@
 #include <citlali/core/utils/constants.h>
 #include <citlali/core/utils/utils.h>
 
-#include <citlali/core/cli/abort_backtrace.h>
 #include <citlali/core/cli/argument_errors.h>
 #include <citlali/core/cli/argument_parsing.h>
 #include <citlali/core/cli/config_loading.h>
 #include <citlali/core/cli/default_config_dump.h>
 #include <citlali/core/cli/exception_reporting.h>
-#include <citlali/core/cli/hdf5_diagnostics.h>
 #include <citlali/core/cli/io_coordinator.h>
-#include <citlali/core/cli/kids_data_spec.h>
 #include <citlali/core/cli/process_control.h>
 #include <citlali/core/cli/run_environment.h>
-#include <citlali/core/cli/run_logging.h>
 #include <citlali/core/cli/standard_reduction_execution.h>
 
 using rc_t = citlali::cli::RuntimeConfig;
