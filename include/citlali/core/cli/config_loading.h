@@ -8,6 +8,12 @@
 
 namespace citlali::cli {
 
+template <class Config>
+struct LoadedConfigFiles {
+    Config config;
+    std::vector<std::string> filepaths;
+};
+
 template <class RuntimeConfig>
 bool has_config_files(const RuntimeConfig &runtime_config) {
     return runtime_config.get_node("config_file").size() > 0;
@@ -43,6 +49,15 @@ tula::config::YamlConfig load_merged_yaml_config_files(
            const tula::config::YamlConfig &rhs) {
             return tula::config::merge(lhs, rhs);
         });
+}
+
+template <class RuntimeConfig, class Logger>
+LoadedConfigFiles<tula::config::YamlConfig> load_merged_yaml_config_files(
+    const RuntimeConfig &runtime_config, const Logger &logger) {
+    LoadedConfigFiles<tula::config::YamlConfig> result;
+    result.config = load_merged_yaml_config_files(
+        runtime_config, result.filepaths, logger);
+    return result;
 }
 
 }  // namespace citlali::cli
