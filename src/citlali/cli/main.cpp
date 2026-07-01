@@ -26,18 +26,12 @@
 #include <citlali/core/cli/io_coordinator.h>
 #include <citlali/core/cli/kids_data_spec.h>
 #include <citlali/core/cli/process_control.h>
-#include <citlali/core/cli/reduction_date_obs.h>
 #include <citlali/core/cli/reduction_execution.h>
-#include <citlali/core/cli/reduction_runtime.h>
 #include <citlali/core/cli/run_logging.h>
-#include <citlali/core/cli/runtime_setup.h>
 #include <citlali/core/cli/tod_processor_selection.h>
 #include <citlali/core/engine/lali.h>
 #include <citlali/core/engine/pointing.h>
 #include <citlali/core/engine/beammap.h>
-#include <citlali/core/pipeline/map_geometry.h>
-#include <citlali/core/pipeline/observation_execution.h>
-#include <citlali/core/pipeline/observation_date.h>
 
 using rc_t = citlali::cli::RuntimeConfig;
 
