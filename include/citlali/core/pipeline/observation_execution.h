@@ -61,6 +61,15 @@ void begin_reduction_iteration(TodProc &todproc,
     prepare_iteration_observation_buffers(todproc, logger);
 }
 
+template <class Engine, class Logger>
+void initialize_reduction_iterations(Engine &engine,
+                                     bool &fruit_loops_converged,
+                                     const Logger &logger) {
+    engine.fruit_iter = 0;
+    fruit_loops_converged = false;
+    configure_fruit_loop_iteration_policy(engine, logger);
+}
+
 template <class TodProc, class MapExtents, class MapCoords, class Logger>
 void calculate_initial_observation_map_dimensions(TodProc &todproc,
                                                  MapExtents &map_extents,

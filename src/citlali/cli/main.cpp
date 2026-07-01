@@ -389,13 +389,9 @@ int run(const rc_t &rc) {
                     return EXIT_FAILURE;
                 }
 
-                // current fruit loops iteration
-                todproc.engine().fruit_iter = 0;
-                // fruit loops convergence check
                 bool fruit_loops_converged = false;
-
-                citlali::pipeline::configure_fruit_loop_iteration_policy(
-                    todproc.engine(), logger);
+                citlali::pipeline::initialize_reduction_iterations(
+                    todproc.engine(), fruit_loops_converged, logger);
 
                 // loop through fruit loops iterations
                 while (citlali::pipeline::fruit_loop_iteration_pending(

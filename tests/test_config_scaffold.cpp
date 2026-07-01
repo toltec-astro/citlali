@@ -2367,6 +2367,24 @@ TEST(pipeline_execution, begins_reduction_iteration) {
     EXPECT_DOUBLE_EQ(todproc.engine().cmb.exposure_time, 0.0);
 }
 
+TEST(pipeline_execution, initializes_reduction_iterations) {
+    FakeEngine engine;
+    engine.fruit_iter = 7;
+    engine.ptcproc.run_fruit_loops = false;
+    engine.ptcproc.fruit_loops_iters = 5;
+    engine.ptcproc.save_all_iters = false;
+    bool fruit_loops_converged = true;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::initialize_reduction_iterations(
+        engine, fruit_loops_converged, logger);
+
+    EXPECT_EQ(engine.fruit_iter, 0);
+    EXPECT_FALSE(fruit_loops_converged);
+    EXPECT_EQ(engine.ptcproc.fruit_loops_iters, 1);
+    EXPECT_TRUE(engine.ptcproc.save_all_iters);
+}
+
 TEST(pipeline_execution, calculates_initial_observation_map_dimensions) {
     FakeObservationMapTodProc todproc;
     std::vector<int> map_extents;
