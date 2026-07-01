@@ -566,14 +566,9 @@ void load_previous_fruit_loop_model_if_needed(Engine &engine,
                                            engine.omb.obsnums.back());
         }
 
-        engine.ptcproc.tod_mb.cov_cut = engine.omb.cov_cut;
-
         logger->info("reading in {} for fruit loops iteration {}", fruit_dir,
                      engine.fruit_iter);
-        engine.ptcproc.load_mb(fruit_dir, fruit_dir, engine.calib,
-                               engine.map_grouping,
-                               engine.telescope.pixel_axes,
-                               engine.omb.pixel_size_rad);
+        load_fruit_loop_model(engine, fruit_dir);
     }
 }
 
