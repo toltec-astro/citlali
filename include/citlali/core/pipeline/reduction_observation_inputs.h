@@ -6,7 +6,8 @@
 #include <citlali/core/pipeline/observation_sample_rate.h>
 #include <citlali/core/pipeline/observation_telescope.h>
 #include <citlali/core/pipeline/observation_timing.h>
-#include <citlali/core/pipeline/output_layout.h>
+#include <citlali/core/pipeline/observation_output_layout.h>
+#include <citlali/core/pipeline/timing_gap_output.h>
 
 #include <cstddef>
 #include <utility>
