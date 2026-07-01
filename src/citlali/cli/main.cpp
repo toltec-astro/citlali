@@ -22,6 +22,7 @@
 #include <citlali/core/cli/config_loading.h>
 #include <citlali/core/cli/default_config_dump.h>
 #include <citlali/core/cli/hdf5_diagnostics.h>
+#include <citlali/core/cli/process_control.h>
 #include <citlali/core/cli/reduction_runtime.h>
 #include <citlali/core/cli/run_logging.h>
 #include <citlali/core/cli/runtime_setup.h>
@@ -157,13 +158,9 @@ int main(int argc, char *argv[]) {
         tula::logging::init();
         auto rc = citlali::cli::parse_args(argc, argv);
         SPDLOG_INFO("rc {}", rc.pformat());
-        if (citlali::cli::has_config_files(rc)) {
-            tula::logging::scoped_timeit TULA_X{"Citlali Process"};
-            return run(rc);
-        } else {
-            citlali::cli::report_missing_config_file_argument(std::cout);
-            return EXIT_FAILURE;
-        }
+        return citlali::cli::run_configured_process(
+            rc, [](const auto &runtime_config) { return run(runtime_config); },
+            std::cout);
     } catch (const CCfits::FitsError &e) {
         SPDLOG_CRITICAL("Unhandled CCfits::FitsError: {}", e.message());
         return EXIT_FAILURE;
