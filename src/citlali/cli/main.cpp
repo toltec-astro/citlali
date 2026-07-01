@@ -21,6 +21,7 @@
 #include <citlali/core/cli/argument_parsing.h>
 #include <citlali/core/cli/config_loading.h>
 #include <citlali/core/cli/default_config_dump.h>
+#include <citlali/core/cli/exception_reporting.h>
 #include <citlali/core/cli/hdf5_diagnostics.h>
 #include <citlali/core/cli/process_control.h>
 #include <citlali/core/cli/reduction_runtime.h>
@@ -162,13 +163,10 @@ int main(int argc, char *argv[]) {
             rc, [](const auto &runtime_config) { return run(runtime_config); },
             std::cout);
     } catch (const CCfits::FitsError &e) {
-        SPDLOG_CRITICAL("Unhandled CCfits::FitsError: {}", e.message());
-        return EXIT_FAILURE;
+        return citlali::cli::report_unhandled_fits_error(e);
     } catch (const std::exception &e) {
-        SPDLOG_CRITICAL("Unhandled exception: {}", e.what());
-        return EXIT_FAILURE;
+        return citlali::cli::report_unhandled_std_exception(e);
     } catch (...) {
-        SPDLOG_CRITICAL("Unhandled non-standard exception");
-        return EXIT_FAILURE;
+        return citlali::cli::report_unhandled_unknown_exception();
     }
 }
