@@ -253,10 +253,10 @@ int run(const rc_t &rc) {
 
     // set todproc to variant depending on the config file reduction type
     // check if config file has a reduction type parameter
-    if (citlali_config.has(std::tuple{"runtime", "reduction_type"})) {
+    if (citlali::cli::has_reduction_type_config(citlali_config)) {
         try {
             auto reduction_type =
-                citlali_config.get_str(std::tuple{"runtime", "reduction_type"});
+                *citlali::cli::read_reduction_type_config(citlali_config);
 
             if (!citlali::cli::emplace_tod_processor_for_reduction_type<
                     todproc_var_t, TimeOrderedDataProc<Lali>,
