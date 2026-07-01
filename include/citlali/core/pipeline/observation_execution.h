@@ -516,20 +516,25 @@ void finish_reduction_iteration(TodProc &todproc, const Logger &logger) {
 }
 
 template <class Engine>
-void load_initial_fruit_loop_model_if_requested(Engine &engine) {
-    if (engine.ptcproc.run_fruit_loops && engine.fruit_iter == 0) {
-        if (engine.ptcproc.fruit_loops_path != "null") {
-            const auto fruit_dir = fruit_loop_map_dir(
-                engine.ptcproc.fruit_loops_path,
-                engine.ptcproc.fruit_loops_type,
-                engine.omb.obsnums.back());
+bool should_load_initial_fruit_loop_model(const Engine &engine) {
+    return engine.ptcproc.run_fruit_loops &&
+           engine.fruit_iter == 0 &&
+           engine.ptcproc.fruit_loops_path != "null";
+}
 
-            engine.ptcproc.tod_mb.cov_cut = engine.omb.cov_cut;
-            engine.ptcproc.load_mb(fruit_dir, fruit_dir, engine.calib,
-                                   engine.map_grouping,
-                                   engine.telescope.pixel_axes,
-                                   engine.omb.pixel_size_rad);
-        }
+template <class Engine>
+void load_initial_fruit_loop_model_if_requested(Engine &engine) {
+    if (should_load_initial_fruit_loop_model(engine)) {
+        const auto fruit_dir = fruit_loop_map_dir(
+            engine.ptcproc.fruit_loops_path,
+            engine.ptcproc.fruit_loops_type,
+            engine.omb.obsnums.back());
+
+        engine.ptcproc.tod_mb.cov_cut = engine.omb.cov_cut;
+        engine.ptcproc.load_mb(fruit_dir, fruit_dir, engine.calib,
+                               engine.map_grouping,
+                               engine.telescope.pixel_axes,
+                               engine.omb.pixel_size_rad);
     }
 }
 
