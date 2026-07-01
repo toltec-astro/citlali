@@ -183,10 +183,6 @@ auto parse_args(int argc, char *argv[]) {
 // @brief Run citlali reduction.
 /// @param rc The runtime config.
 int run(const rc_t &rc) {
-    using kids::KidsData;
-    using kids::KidsDataKind;
-    using tula::logging::timeit;
-
 #if CITLALI_HAS_HDF5
     // netCDF may probe optional HDF5 quantization attributes; suppress noisy
     // HDF5 diagnostics when those attributes are absent.
@@ -320,7 +316,6 @@ int run(const rc_t &rc) {
                 // type definitions for map vectors
                 using map_extent_t = typename todproc_t::map_extent_t;
                 using map_coord_t = typename todproc_t::map_coord_t;
-                using array_indices_t = typename todproc_t::array_indices_t;
 
                 // create vectors for map size and grouping parameters
                 std::vector<map_extent_t> map_extents{};
