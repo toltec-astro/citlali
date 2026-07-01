@@ -75,14 +75,10 @@ int run(const rc_t &rc) {
     todproc_var_t todproc;
 
     // set todproc to variant depending on the config file reduction type
-    auto selection_status =
-        citlali::cli::select_tod_processor_from_config<
+    if (!citlali::cli::select_tod_processor_or_report_failure<
             todproc_var_t, TimeOrderedDataProc<Lali>,
             TimeOrderedDataProc<Pointing>, TimeOrderedDataProc<Beammap>>(
-            todproc, citlali_config, logger);
-
-    if (citlali::cli::report_tod_processor_selection_failure(
-            selection_status, std::cerr)) {
+            todproc, citlali_config, logger, std::cerr)) {
         return EXIT_FAILURE;
     }
 

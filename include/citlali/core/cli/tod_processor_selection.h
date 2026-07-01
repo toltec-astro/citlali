@@ -110,4 +110,17 @@ inline bool report_tod_processor_selection_failure(
     return false;
 }
 
+template <class TodProcVariant, class ScienceTodProc, class PointingTodProc,
+          class BeammapTodProc, class Config, class Logger>
+bool select_tod_processor_or_report_failure(
+    TodProcVariant &todproc, Config &config, const Logger &logger,
+    std::ostream &os) {
+    auto selection_status =
+        select_tod_processor_from_config<
+            TodProcVariant, ScienceTodProc, PointingTodProc,
+            BeammapTodProc>(todproc, config, logger);
+
+    return !report_tod_processor_selection_failure(selection_status, os);
+}
+
 }  // namespace citlali::cli
