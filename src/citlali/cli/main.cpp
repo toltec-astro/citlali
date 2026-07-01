@@ -32,6 +32,7 @@
 #include <citlali/core/cli/config_loading.h>
 #include <citlali/core/cli/hdf5_diagnostics.h>
 #include <citlali/core/cli/reduction_runtime.h>
+#include <citlali/core/cli/run_logging.h>
 #include <citlali/core/cli/runtime_setup.h>
 #include <citlali/core/cli/tod_processor_selection.h>
 #include <citlali/core/engine/lali.h>
@@ -117,33 +118,8 @@ int run(const rc_t &rc) {
     // get current level
     auto log_level = spdlog::get_level();
 
-    // vector to hold sink pointers
-    std::vector<spdlog::sink_ptr> sinks_default;
-    // create sink for default logger
-    auto sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    // only show kidscpp critical logs
-    sink->set_level(spdlog::level::critical);
-    sinks_default.push_back(sink);
-    // create default logger
-    auto default_logger = std::make_shared<spdlog::logger>("console", begin(sinks_default), end(sinks_default));
-    // register logger
-    spdlog::register_logger(default_logger);
-    // overwrite default logger
-    spdlog::set_default_logger(default_logger);
-    default_logger->flush_on(spdlog::level::info);
-
-    // vector to hold sink pointers
-    std::vector<spdlog::sink_ptr> sinks;
-    // create console sink
-    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    sinks.push_back(console_sink);
-    // create citlali logger
-    auto logger = std::make_shared<spdlog::logger>("citlali_logger", begin(sinks), end(sinks));
-    spdlog::register_logger(logger);
-    logger->flush_on(spdlog::level::info);
-
-    // set global level
-    spdlog::set_level(log_level);
+    auto run_loggers = citlali::cli::configure_run_loggers(log_level);
+    auto logger = run_loggers.logger;
     // set pattern for logger
     //spdlog::set_pattern("[%H:%M:%S %z] [%s] %v");
 
@@ -288,7 +264,7 @@ int run(const rc_t &rc) {
         todproc);
 
     // re-enable default logger
-    sink->set_level(log_level);
+    citlali::cli::restore_default_sink_level(run_loggers, log_level);
 
     return exitcode;
 }
