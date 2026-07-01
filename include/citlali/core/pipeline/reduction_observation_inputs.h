@@ -1,7 +1,11 @@
 #pragma once
 
 #include <citlali/core/pipeline/observation_buffers.h>
-#include <citlali/core/pipeline/observation_preflight.h>
+#include <citlali/core/pipeline/observation_calibration.h>
+#include <citlali/core/pipeline/observation_detector_diagnostics.h>
+#include <citlali/core/pipeline/observation_sample_rate.h>
+#include <citlali/core/pipeline/observation_telescope.h>
+#include <citlali/core/pipeline/observation_timing.h>
 #include <citlali/core/pipeline/output_layout.h>
 
 #include <cstddef>
