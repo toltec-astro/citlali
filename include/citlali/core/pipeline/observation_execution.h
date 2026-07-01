@@ -530,15 +530,19 @@ std::string initial_fruit_loop_model_dir(const Engine &engine) {
 }
 
 template <class Engine>
+void load_fruit_loop_model(Engine &engine, const std::string &fruit_dir) {
+    engine.ptcproc.tod_mb.cov_cut = engine.omb.cov_cut;
+    engine.ptcproc.load_mb(fruit_dir, fruit_dir, engine.calib,
+                           engine.map_grouping,
+                           engine.telescope.pixel_axes,
+                           engine.omb.pixel_size_rad);
+}
+
+template <class Engine>
 void load_initial_fruit_loop_model_if_requested(Engine &engine) {
     if (should_load_initial_fruit_loop_model(engine)) {
         const auto fruit_dir = initial_fruit_loop_model_dir(engine);
-
-        engine.ptcproc.tod_mb.cov_cut = engine.omb.cov_cut;
-        engine.ptcproc.load_mb(fruit_dir, fruit_dir, engine.calib,
-                               engine.map_grouping,
-                               engine.telescope.pixel_axes,
-                               engine.omb.pixel_size_rad);
+        load_fruit_loop_model(engine, fruit_dir);
     }
 }
 
