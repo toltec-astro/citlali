@@ -28,6 +28,7 @@
 #include <citlali/core/cli/process_control.h>
 #include <citlali/core/cli/run_logging.h>
 #include <citlali/core/cli/standard_reduction_execution.h>
+#include <citlali/core/cli/standard_reduction_inputs.h>
 
 using rc_t = citlali::cli::RuntimeConfig;
 
@@ -48,19 +49,15 @@ int run(const rc_t &rc) {
 
     citlali::cli::log_kids_data_spec(logger);
 
-    auto loaded_config = citlali::cli::load_merged_yaml_config_files(
-        rc, logger);
-    auto &citlali_config = loaded_config.config;
-
-    // set up the IO coorindator
-    auto co =
-        citlali::cli::make_io_coordinator_from_config<SeqIOCoordinator>(
-            citlali_config);
+    auto inputs =
+        citlali::cli::load_standard_reduction_inputs<SeqIOCoordinator>(
+            rc, logger);
+    auto &citlali_config = inputs.loaded_config.config;
 
     // start the main process
     auto exitcode = citlali::cli::select_and_run_standard_citlali_reduction<
-        KidsDataProc>(co, citlali_config, loaded_config.filepaths, logger,
-                      std::cerr);
+        KidsDataProc>(inputs.coordinator, citlali_config,
+                      inputs.loaded_config.filepaths, logger, std::cerr);
 
     // re-enable default logger
     citlali::cli::restore_default_sink_level(run_loggers, log_level);
