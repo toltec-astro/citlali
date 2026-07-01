@@ -9,32 +9,12 @@
 #include <citlali/core/pipeline/observation_pipeline.h>
 #include <citlali/core/pipeline/output_layout.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/reduction_iteration_setup.h>
 
 #include <cstddef>
 #include <utility>
 
 namespace citlali::pipeline {
-
-template <class TodProc, class ConfigFilepaths, class Logger>
-void begin_reduction_iteration(TodProc &todproc,
-                               const ConfigFilepaths &config_filepaths,
-                               const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    begin_fruit_loop_iteration(engine, logger);
-    prepare_iteration_output_layout_if_needed(todproc, config_filepaths,
-                                              logger);
-    prepare_iteration_observation_buffers(todproc, logger);
-}
-
-template <class Engine, class Logger>
-void initialize_reduction_iterations(Engine &engine,
-                                     bool &fruit_loops_converged,
-                                     const Logger &logger) {
-    engine.fruit_iter = 0;
-    fruit_loops_converged = false;
-    configure_fruit_loop_iteration_policy(engine, logger);
-}
 
 template <class TodProc, class MapExtents, class MapCoords, class Logger>
 void calculate_initial_observation_map_dimensions(TodProc &todproc,
