@@ -1,6 +1,7 @@
 #include <citlali/core/config/calibration_config.h>
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/cli/config_loading.h>
+#include <citlali/core/cli/runtime_setup.h>
 #include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>
@@ -139,6 +140,7 @@ struct FakeEngine {
     bool run_source_finder = false;
     bool write_filtered_maps_partial = false;
     bool apply_empirical_noise_weights = false;
+    int n_threads = 4;
     int fruit_iter = 0;
     bool interp_over_gaps = false;
     std::string map_method = "jinc";
@@ -1562,6 +1564,66 @@ TEST(cli_config_loading, loads_and_merges_config_files) {
     EXPECT_EQ(config.loaded_paths,
               (std::vector<std::string>{"70_reduce.yaml", "80_reduce.yaml"}));
     EXPECT_EQ(logger->info_calls, 2);
+}
+
+TEST(cli_runtime_setup, derives_fftw_threads) {
+    EXPECT_EQ(citlali::cli::fftw_threads_for_runtime(8, false), 8);
+    EXPECT_EQ(citlali::cli::fftw_threads_for_runtime(8, true), 1);
+}
+
+TEST(cli_runtime_setup, configures_runtime_threads) {
+    FakeEngine engine;
+    engine.n_threads = 6;
+    auto logger = std::make_shared<FakeLogger>();
+    int omp_threads = 0;
+    int eigen_threads = 0;
+    int fftw_threads = 0;
+
+    citlali::cli::configure_runtime_threads(
+        engine, logger, false,
+        [&](int n_threads) { omp_threads = n_threads; },
+        [&](int n_threads) { eigen_threads = n_threads; },
+        []() { return 1; },
+        [&](int n_threads) { fftw_threads = n_threads; });
+
+    EXPECT_EQ(omp_threads, 6);
+    EXPECT_EQ(eigen_threads, 1);
+    EXPECT_EQ(fftw_threads, 6);
+    EXPECT_EQ(logger->info_calls, 1);
+    EXPECT_EQ(logger->warn_calls, 0);
+}
+
+TEST(cli_runtime_setup, configures_single_fftw_thread_for_wiener_omp) {
+    FakeEngine engine;
+    engine.n_threads = 6;
+    auto logger = std::make_shared<FakeLogger>();
+    int fftw_threads = 0;
+
+    citlali::cli::configure_runtime_threads(
+        engine, logger, true,
+        [](int) {},
+        [](int) {},
+        []() { return 1; },
+        [&](int n_threads) { fftw_threads = n_threads; });
+
+    EXPECT_EQ(fftw_threads, 1);
+}
+
+TEST(cli_runtime_setup, warns_when_fftw_thread_init_fails) {
+    FakeEngine engine;
+    engine.n_threads = 6;
+    auto logger = std::make_shared<FakeLogger>();
+    int fftw_threads = 0;
+
+    citlali::cli::configure_runtime_threads(
+        engine, logger, false,
+        [](int) {},
+        [](int) {},
+        []() { return 0; },
+        [&](int n_threads) { fftw_threads = n_threads; });
+
+    EXPECT_EQ(fftw_threads, 0);
+    EXPECT_EQ(logger->warn_calls, 1);
 }
 
 TEST(pipeline_preflight, applies_flxscale_correction_when_present) {
