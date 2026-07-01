@@ -160,4 +160,21 @@ int visit_tod_processor_or_failure(TodProcVariant &todproc,
         todproc);
 }
 
+template <class BeammapTodProc, class PointingTodProc, class KidsDataProc,
+          class TodProcVariant, class IOCoordinator, class Config,
+          class ConfigFilepaths, class Logger>
+int run_standard_cli_reduction_variant(
+    TodProcVariant &todproc, const IOCoordinator &co, Config &config,
+    const ConfigFilepaths &config_filepaths, const Logger &logger,
+    std::ostream &os) {
+    return visit_tod_processor_or_failure(
+        todproc,
+        [&](auto &selected_todproc) {
+            using todproc_t = std::decay_t<decltype(selected_todproc)>;
+            return run_standard_cli_reduction_processor<
+                todproc_t, BeammapTodProc, PointingTodProc, KidsDataProc>(
+                selected_todproc, co, config, config_filepaths, logger, os);
+        });
+}
+
 }  // namespace citlali::cli

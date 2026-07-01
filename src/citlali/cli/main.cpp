@@ -83,16 +83,11 @@ int run(const rc_t &rc) {
     }
 
     // start the main process
-    auto exitcode = citlali::cli::visit_tod_processor_or_failure(
-        todproc,
-        [&](auto &selected_todproc) {
-            using todproc_t = std::decay_t<decltype(selected_todproc)>;
-            return citlali::cli::run_standard_cli_reduction_processor<
-                todproc_t, TimeOrderedDataProc<Beammap>,
-                TimeOrderedDataProc<Pointing>, KidsDataProc>(
-                selected_todproc, co, citlali_config,
-                loaded_config.filepaths, logger, std::cerr);
-        });
+    auto exitcode = citlali::cli::run_standard_cli_reduction_variant<
+        TimeOrderedDataProc<Beammap>, TimeOrderedDataProc<Pointing>,
+        KidsDataProc>(
+        todproc, co, citlali_config, loaded_config.filepaths, logger,
+        std::cerr);
 
     // re-enable default logger
     citlali::cli::restore_default_sink_level(run_loggers, log_level);
