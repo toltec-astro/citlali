@@ -31,24 +31,11 @@
 #include <unistd.h>
 #endif
 
-#if defined(__has_include)
-#if __has_include(<hdf5.h>)
-#include <hdf5.h>
-#define CITLALI_HAS_HDF5 1
-#elif __has_include(<hdf5/serial/hdf5.h>)
-#include <hdf5/serial/hdf5.h>
-#define CITLALI_HAS_HDF5 1
-#else
-#define CITLALI_HAS_HDF5 0
-#endif
-#else
-#define CITLALI_HAS_HDF5 0
-#endif
-
 #include <citlali/core/utils/constants.h>
 #include <citlali/core/utils/utils.h>
 
 #include <citlali/core/cli/config_loading.h>
+#include <citlali/core/cli/hdf5_diagnostics.h>
 #include <citlali/core/cli/reduction_runtime.h>
 #include <citlali/core/cli/runtime_setup.h>
 #include <citlali/core/cli/tod_processor_selection.h>
@@ -182,11 +169,7 @@ auto parse_args(int argc, char *argv[]) {
 // @brief Run citlali reduction.
 /// @param rc The runtime config.
 int run(const rc_t &rc) {
-#if CITLALI_HAS_HDF5
-    // netCDF may probe optional HDF5 quantization attributes; suppress noisy
-    // HDF5 diagnostics when those attributes are absent.
-    H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
-#endif
+    citlali::cli::suppress_optional_hdf5_diagnostics();
 
     // get current level
     auto log_level = spdlog::get_level();
