@@ -246,33 +246,6 @@ bool prepare_reduction_observation_inputs(
     return true;
 }
 
-template <class TodProc, class Logger>
-void coadd_observation(TodProc &todproc, const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    logger->info("coadding");
-    if (!engine.rtcproc.run_polarization) {
-        todproc.coadd();
-    }
-}
-
-template <auto RawObsMap, auto FilteredObsMap, bool FitMaps, class TodProc,
-          class Logger>
-void write_observation_outputs_and_accumulate(TodProc &todproc,
-                                              const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    write_raw_observation_outputs<RawObsMap>(todproc, logger);
-
-    if (engine.run_coadd) {
-        coadd_observation(todproc, logger);
-    }
-    else {
-        write_filtered_observation_outputs_if_needed<FilteredObsMap, FitMaps>(
-            todproc, logger);
-    }
-}
-
 template <auto RawCoaddMap, auto FilteredCoaddMap, class TodProc,
           class Logger>
 void finish_reduction_iteration(TodProc &todproc, const Logger &logger) {
