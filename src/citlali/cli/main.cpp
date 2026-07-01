@@ -30,6 +30,7 @@
 
 #include <citlali/core/cli/abort_backtrace.h>
 #include <citlali/core/cli/config_loading.h>
+#include <citlali/core/cli/default_config_dump.h>
 #include <citlali/core/cli/hdf5_diagnostics.h>
 #include <citlali/core/cli/reduction_runtime.h>
 #include <citlali/core/cli/run_logging.h>
@@ -273,19 +274,9 @@ int main(int argc, char *argv[]) {
      // to do the dump_config, we need to make sure the output is
     // not contaminated with any logging message. Therefore this has
     // to go first
-    bool exit_dump_config{false};
-    clipp::parse(argc, argv, (
-        clipp::option("--dump_config").call([&exit_dump_config] () {
-            auto preamble = fmt::format(
-                "# Default config.yaml of Citlali {} ({})",
-                CITLALI_GIT_VERSION, CITLALI_BUILD_TIMESTAMP
-                );
-            fmt::print("{}\n{}", preamble, citlali::citlali_default_config_content);
-            exit_dump_config = true;
-            }),
-        clipp::any_other()
-    ));
-    if (exit_dump_config) {
+    if (citlali::cli::dump_default_config_if_requested(
+            argc, argv, CITLALI_GIT_VERSION, CITLALI_BUILD_TIMESTAMP,
+            citlali::citlali_default_config_content)) {
         return EXIT_SUCCESS;
     }
     // now with normal CLI interface
