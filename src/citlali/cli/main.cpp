@@ -345,8 +345,11 @@ int run(const rc_t &rc) {
                         todproc, co, citlali_config, config_filepaths,
                         map_geometry.extents, map_geometry.coords,
                         [](auto &engine) {
-                            return engine_utils::unix_to_utc(
-                                engine.telescope.tel_data["TelTime"](0));
+                            return citlali::pipeline::date_obs_from_telescope_time(
+                                engine, [](double unix_time) {
+                                    return engine_utils::unix_to_utc(
+                                        unix_time);
+                                });
                         },
                         logger)) {
                     return EXIT_FAILURE;
