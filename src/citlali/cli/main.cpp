@@ -54,11 +54,8 @@
 #include <citlali/core/engine/lali.h>
 #include <citlali/core/engine/pointing.h>
 #include <citlali/core/engine/beammap.h>
-#include <citlali/core/pipeline/fruit_loop_paths.h>
-#include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
-#include <citlali/core/pipeline/output_layout.h>
 
 using rc_t = tula::config::YamlConfig;
 
