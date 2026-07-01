@@ -1,20 +1,4 @@
 #pragma once
 
+#include <citlali/core/pipeline/observation_date.h>
 #include <citlali/core/pipeline/observation_exposure_time.h>
-
-#include <utility>
-
-namespace citlali::pipeline {
-
-template <class Engine, class DateObs>
-void append_observation_date(Engine &engine, DateObs &&date_obs) {
-    engine.date_obs.push_back(std::forward<DateObs>(date_obs));
-}
-
-template <class Engine, class ConvertUnixToUtc>
-auto date_obs_from_telescope_time(Engine &engine,
-                                  ConvertUnixToUtc &&convert_unix_to_utc) {
-    return convert_unix_to_utc(engine.telescope.tel_data["TelTime"](0));
-}
-
-}  // namespace citlali::pipeline
