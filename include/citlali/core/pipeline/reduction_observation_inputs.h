@@ -7,8 +7,8 @@
 #include <citlali/core/pipeline/observation_date.h>
 #include <citlali/core/pipeline/observation_exposure_time.h>
 #include <citlali/core/pipeline/observation_sample_rate.h>
-#include <citlali/core/pipeline/observation_output_layout.h>
 #include <citlali/core/pipeline/reduction_observation_calibration.h>
+#include <citlali/core/pipeline/rawobs_observation_output_layout.h>
 #include <citlali/core/pipeline/scan_indices.h>
 #include <citlali/core/pipeline/telescope_pointing.h>
 #include <citlali/core/pipeline/timing_gap_output.h>
