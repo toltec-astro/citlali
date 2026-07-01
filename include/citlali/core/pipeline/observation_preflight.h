@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/pipeline/kids_metadata.h>
 #include <citlali/core/pipeline/reduction_config.h>
 
 #include <cmath>
@@ -120,32 +121,11 @@ void reset_simulated_observation_indices(Engine &engine,
     }
 }
 
-template <class KidsProc, class RawObs, class Logger>
-auto load_rawobs_kids_meta(KidsProc &kidsproc, const RawObs &rawobs,
-                           const Logger &logger) {
-    logger->debug("getting rawobs kids meta info");
-    return kidsproc.get_rawobs_meta(rawobs);
-}
-
-template <class KidsDataProc, class Config>
-auto make_kids_data_proc(Config &config) {
-    return KidsDataProc::from_config(config.get_config("kids"));
-}
-
 template <class TodProc, class RawObs, class Logger>
 void check_observation_inputs(TodProc &todproc, const RawObs &rawobs,
                               const Logger &logger) {
     logger->debug("checking inputs");
     todproc.check_inputs(rawobs);
-}
-
-template <class Engine, class RawObsKidsMeta, class Logger>
-void update_sample_rate_from_rawobs_meta(Engine &engine,
-                                         const RawObsKidsMeta &rawobs_kids_meta,
-                                         const Logger &logger) {
-    logger->debug("getting sample rate");
-    engine.telescope.fsmp =
-        rawobs_kids_meta.back().template get_typed<double>("fsmp");
 }
 
 template <bool IsBeammap, class TodProc, class RawObs, class RawObsKidsMeta,
