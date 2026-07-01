@@ -432,12 +432,9 @@ void filter_coadd_maps(Engine &engine, const Logger &logger) {
     engine.template run_wiener_filter<FilteredCoaddMap>(engine.cmb);
 }
 
-template <auto FilteredCoaddMap, class TodProc, class Logger>
-void write_filtered_coadd_outputs(TodProc &todproc, const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    filter_coadd_maps<FilteredCoaddMap>(engine, logger);
-
+template <class Engine, class Logger>
+void calculate_filtered_coadd_noise_products_if_needed(
+    Engine &engine, const Logger &logger) {
     if (engine.run_noise_products &&
         engine.run_noise &&
         !engine.write_filtered_maps_partial) {
@@ -446,6 +443,14 @@ void write_filtered_coadd_outputs(TodProc &todproc, const Logger &logger) {
             engine.apply_empirical_noise_weights ||
             engine.wiener_filter.normalize_error);
     }
+}
+
+template <auto FilteredCoaddMap, class TodProc, class Logger>
+void write_filtered_coadd_outputs(TodProc &todproc, const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    filter_coadd_maps<FilteredCoaddMap>(engine, logger);
+    calculate_filtered_coadd_noise_products_if_needed(engine, logger);
 
     logger->info("calculating filtered coadded map psds");
     engine.cmb.calc_map_psd();
