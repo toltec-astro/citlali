@@ -373,8 +373,8 @@ void write_observation_outputs_and_accumulate(TodProc &todproc,
     }
 }
 
-template <auto RawCoaddMap, class TodProc, class Logger>
-void write_raw_coadd_outputs(TodProc &todproc, const Logger &logger) {
+template <class TodProc, class Logger>
+void prepare_raw_coadd_maps(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
 
     logger->debug("creating cmb filenames");
@@ -387,6 +387,13 @@ void write_raw_coadd_outputs(TodProc &todproc, const Logger &logger) {
     else {
         engine.cmb.normalize_maps();
     }
+}
+
+template <auto RawCoaddMap, class TodProc, class Logger>
+void write_raw_coadd_outputs(TodProc &todproc, const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    prepare_raw_coadd_maps(todproc, logger);
 
     if (engine.run_noise_products && engine.run_noise) {
         logger->info("calculating raw coadd empirical noise products");
