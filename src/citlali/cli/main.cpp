@@ -48,6 +48,7 @@
 #include <citlali/core/utils/constants.h>
 #include <citlali/core/utils/utils.h>
 
+#include <citlali/core/cli/config_loading.h>
 #include <citlali/core/engine/lali.h>
 #include <citlali/core/engine/pointing.h>
 #include <citlali/core/engine/beammap.h>
@@ -229,16 +230,16 @@ int run(const rc_t &rc) {
 
     std::vector<std::string> config_filepaths;
 
-    // load the yaml citlali config
-    // this will merge the list of config files in rc
-    tula::config::YamlConfig citlali_config;
-    auto node_config_files = rc.get_node("config_file");
-    for (const auto & n: node_config_files) {
-        auto filepath = n.as<std::string>();
-        config_filepaths.push_back(filepath);
-        logger->info("load config from file {}", filepath);
-        citlali_config = tula::config::merge(citlali_config, tula::config::YamlConfig::from_filepath(filepath));
-    }
+    auto citlali_config =
+        citlali::cli::load_config_files<rc_t, tula::config::YamlConfig>(
+            rc, config_filepaths, logger,
+            [](const std::string &filepath) {
+                return tula::config::YamlConfig::from_filepath(filepath);
+            },
+            [](tula::config::YamlConfig lhs,
+               const tula::config::YamlConfig &rhs) {
+                return tula::config::merge(lhs, rhs);
+            });
 
     // set up the IO coorindator
     auto co = SeqIOCoordinator::from_config(citlali_config);
