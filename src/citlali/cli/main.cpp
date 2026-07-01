@@ -52,13 +52,7 @@ auto parse_args(int argc, char *argv[]) {
     auto ver_str = citlali::cli::citlali_version_string();
     auto kids_ver_str = citlali::cli::kidscpp_version_string();
     constexpr auto level_names = tula::logging::active_level_names;
-    auto default_level_name = []() {
-        auto v = spdlog::level::info;
-        if (v < tula::logging::active_level) {
-            v = tula::logging::active_level;
-        }
-        return tula::logging::get_level_name(v);
-    }();
+    auto default_level_name = citlali::cli::default_cli_log_level_name();
     using ex_config = tula::grppi_utils::ex_config;
     // clang-format off
     auto parse = config_parser<rc_t, tula::config::FlatConfig>{};
