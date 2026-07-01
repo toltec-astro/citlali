@@ -4,6 +4,7 @@
 #include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
+#include <citlali/core/pipeline/output_policy.h>
 
 #include <cstddef>
 #include <utility>
@@ -356,11 +357,6 @@ void write_filtered_observation_outputs(TodProc &todproc,
     output_filtered_observation_maps_if_needed<FilteredObsMap>(engine, logger);
 }
 
-template <class Engine>
-bool should_write_filtered_outputs(const Engine &engine) {
-    return engine.run_map_filter;
-}
-
 template <auto FilteredObsMap, bool FitMaps, class TodProc, class Logger>
 void write_filtered_observation_outputs_if_needed(TodProc &todproc,
                                                   const Logger &logger) {
@@ -515,11 +511,6 @@ void write_filtered_coadd_outputs_if_needed(TodProc &todproc,
     if (should_write_filtered_outputs(engine)) {
         write_filtered_coadd_outputs<FilteredCoaddMap>(todproc, logger);
     }
-}
-
-template <class Engine>
-bool should_write_iteration_coadd_outputs(const Engine &engine) {
-    return engine.run_coadd;
 }
 
 template <auto RawCoaddMap, auto FilteredCoaddMap, class TodProc,
