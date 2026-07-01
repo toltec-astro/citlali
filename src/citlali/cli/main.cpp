@@ -97,8 +97,8 @@ int run(const rc_t &rc) {
                 return EXIT_FAILURE;
             }
             else {
-                citlali::pipeline::ReductionMapGeometry<todproc_t>
-                    map_geometry;
+                auto map_geometry =
+                    citlali::pipeline::make_reduction_map_geometry<todproc_t>();
 
                 if (!citlali::cli::prepare_reduction_runtime_or_report_errors(
                         todproc, citlali_config, logger,
