@@ -9,6 +9,7 @@
 #include <citlali/core/pipeline/observation_outputs.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/observation_pipeline.h>
+#include <citlali/core/pipeline/reduction_iteration_outputs.h>
 #include <citlali/core/pipeline/reduction_observation_inputs.h>
 #include <citlali/core/pipeline/output_layout.h>
 #include <citlali/core/pipeline/output_policy.h>
@@ -18,14 +19,6 @@
 #include <utility>
 
 namespace citlali::pipeline {
-
-template <auto RawCoaddMap, auto FilteredCoaddMap, class TodProc,
-          class Logger>
-void finish_reduction_iteration(TodProc &todproc, const Logger &logger) {
-    write_iteration_coadd_outputs_if_needed<RawCoaddMap, FilteredCoaddMap>(
-        todproc, logger);
-    finalize_iteration_outputs(todproc, logger);
-}
 
 template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap, bool FitMaps,
           class TodProc, class KidsProc, class RawObs, class Logger>
