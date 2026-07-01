@@ -49,6 +49,7 @@
 #include <citlali/core/utils/utils.h>
 
 #include <citlali/core/cli/config_loading.h>
+#include <citlali/core/cli/runtime_setup.h>
 #include <citlali/core/engine/lali.h>
 #include <citlali/core/engine/pointing.h>
 #include <citlali/core/engine/beammap.h>
@@ -354,25 +355,19 @@ int run(const rc_t &rc) {
                         spdlog::set_level(spdlog::level::debug);
                     });
 
-                // set omp parallelization explicitly
-                omp_set_num_threads(todproc.engine().n_threads);
-                // disable eigen underlying parallelization
-                Eigen::setNbThreads(1);
-
-                // set fftw threads
-                const int fftw_init_ok = fftw_init_threads();
-                if (!fftw_init_ok) {
-                    logger->warn("unable to initialize FFTW threading; using default FFTW behavior");
-                }
-                int fftw_n_threads = todproc.engine().n_threads;
+                citlali::cli::configure_runtime_threads(
+                    todproc.engine(), logger,
 #if defined(CITLALI_USE_WIENER_FILTER_OMP)
-                // Avoid nested parallelism: Wiener OMP path already parallelizes over work units.
-                fftw_n_threads = 1;
+                    true,
+#else
+                    false,
 #endif
-                if (fftw_init_ok) {
-                    fftw_plan_with_nthreads(fftw_n_threads);
-                    logger->info("configured FFTW plan threads={}", fftw_n_threads);
-                }
+                    [](int n_threads) { omp_set_num_threads(n_threads); },
+                    [](int n_threads) { Eigen::setNbThreads(n_threads); },
+                    []() { return fftw_init_threads(); },
+                    [](int n_threads) {
+                        fftw_plan_with_nthreads(n_threads);
+                    });
 
                 if (!citlali::pipeline::prepare_initial_reduction_geometry<
                         std::is_same_v<todproc_t,
