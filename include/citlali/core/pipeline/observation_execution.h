@@ -255,25 +255,6 @@ void coadd_observation(TodProc &todproc, const Logger &logger) {
     }
 }
 
-template <auto FilteredObsMap, class Engine, class Logger>
-void filter_observation_maps(Engine &engine, const Logger &logger) {
-    logger->info("filtering obs maps");
-    engine.template run_wiener_filter<FilteredObsMap>(engine.omb);
-}
-
-template <class Engine, class Logger>
-void calculate_filtered_observation_noise_products_if_needed(
-    Engine &engine, const Logger &logger) {
-    if (engine.run_noise_products &&
-        engine.run_noise &&
-        !engine.write_filtered_maps_partial) {
-        logger->info("calculating filtered obs empirical noise products");
-        engine.omb.calc_noise_products(
-            engine.apply_empirical_noise_weights ||
-            engine.wiener_filter.normalize_error);
-    }
-}
-
 template <class Engine, class Logger>
 void calculate_filtered_observation_map_diagnostics(Engine &engine,
                                                     const Logger &logger) {
