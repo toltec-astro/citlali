@@ -255,31 +255,6 @@ void coadd_observation(TodProc &todproc, const Logger &logger) {
     }
 }
 
-template <class Engine, class Logger>
-void calculate_filtered_observation_map_diagnostics(Engine &engine,
-                                                    const Logger &logger) {
-    logger->info("calculating filtered obs map psds");
-    engine.omb.calc_map_psd();
-    logger->info("calculating filtered obs map histograms");
-    engine.omb.calc_map_hist();
-
-    engine.omb.calc_median_err();
-    engine.omb.calc_median_rms();
-}
-
-template <auto FilteredObsMap, bool FitMaps, class Engine, class Logger>
-void find_and_fit_filtered_observation_maps_if_needed(
-    Engine &engine, const Logger &logger) {
-    if (engine.run_source_finder) {
-        logger->info("finding filtered obs map sources");
-        engine.template find_sources<FilteredObsMap>(engine.omb);
-    }
-
-    if constexpr (FitMaps) {
-        engine.fit_maps();
-    }
-}
-
 template <auto FilteredObsMap, class Engine, class Logger>
 void output_filtered_observation_maps_if_needed(Engine &engine,
                                                 const Logger &logger) {
