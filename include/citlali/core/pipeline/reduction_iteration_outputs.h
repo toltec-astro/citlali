@@ -1,7 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/coadd_outputs.h>
-#include <citlali/core/pipeline/output_layout.h>
+#include <citlali/core/pipeline/iteration_lifecycle.h>
 
 namespace citlali::pipeline {
 
