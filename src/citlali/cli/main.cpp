@@ -41,60 +41,7 @@
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_date.h>
 
-using rc_t = tula::config::YamlConfig;
-
-auto parse_args(int argc, char *argv[]) {
-    // disable logger before parse
-    spdlog::set_level(spdlog::level::off);
-    using namespace tula::cli::clipp_builder;
-
-    // some of the option specs
-    auto ver_str = citlali::cli::citlali_version_string();
-    auto kids_ver_str = citlali::cli::kidscpp_version_string();
-    constexpr auto level_names = tula::logging::active_level_names;
-    auto default_level_name = citlali::cli::default_cli_log_level_name();
-    using ex_config = tula::grppi_utils::ex_config;
-    // clang-format off
-    auto parse = config_parser<rc_t, tula::config::FlatConfig>{};
-    auto screen = tula::cli::screen{
-    // =======================================================================
-                      "citlali" , CITLALI_PROJECT_NAME, ver_str,
-                                  CITLALI_PROJECT_DESCRIPTION};
-    auto [cli, rc, cc] = parse([&](auto &r, auto &c) { return (
-    // rc -- runtime config
-    // cc -- cli config
-    // =======================================================================
-    c(p(           "h", "help"), "Print help information and exit."),
-    c(p(             "version"), "Print version information and exit."),
-    // =======================================================================
-    r(             "config_file" , "The path of input config file. "
-                                 "Multiple config file are merged in order.",
-                                 opt_strs()),
-    c(p(          "dump_config"), "Print the default config file to STDOUT."),
-    // =======================================================================
-              "common options" % g(
-    c(p(      "l", "log_level"), "Set the log level.",
-                                 default_level_name, list(level_names)),
-    r(p(             "grppiex"), "GRPPI execution policy.",
-                                 ex_config::default_mode(),
-                                 list(ex_config::mode_names_supported())))
-    // =======================================================================
-    );}, screen, argc, argv);
-    // clang-format on
-    if (cc.get_typed<bool>("help")) {
-        screen.manpage(cli);
-        std::exit(EXIT_SUCCESS);
-    } else if (cc.get_typed<bool>("version")) {
-        screen.version();
-        // also print the kids version
-        fmt::print("{}\n", kids_ver_str);
-        std::exit(EXIT_SUCCESS);
-    }
-    citlali::cli::apply_cli_log_level(cc);
-    // pass on the runtime config
-    return std::move(rc);
-}
-
+using rc_t = citlali::cli::RuntimeConfig;
 
 // @brief Run citlali reduction.
 /// @param rc The runtime config.
@@ -216,7 +163,7 @@ int main(int argc, char *argv[]) {
     // now with normal CLI interface
     try {
         tula::logging::init();
-        auto rc = parse_args(argc, argv);
+        auto rc = citlali::cli::parse_args(argc, argv);
         SPDLOG_INFO("rc {}", rc.pformat());
         if (rc.get_node("config_file").size() > 0) {
             tula::logging::scoped_timeit TULA_X{"Citlali Process"};
