@@ -130,16 +130,8 @@ int run(const rc_t &rc) {
 
     std::vector<std::string> config_filepaths;
 
-    auto citlali_config =
-        citlali::cli::load_config_files<rc_t, tula::config::YamlConfig>(
-            rc, config_filepaths, logger,
-            [](const std::string &filepath) {
-                return tula::config::YamlConfig::from_filepath(filepath);
-            },
-            [](tula::config::YamlConfig lhs,
-               const tula::config::YamlConfig &rhs) {
-                return tula::config::merge(lhs, rhs);
-            });
+    auto citlali_config = citlali::cli::load_merged_yaml_config_files(
+        rc, config_filepaths, logger);
 
     // set up the IO coorindator
     auto co = SeqIOCoordinator::from_config(citlali_config);
