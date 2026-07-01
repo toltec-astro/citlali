@@ -26,15 +26,10 @@
 #include <citlali/core/cli/io_coordinator.h>
 #include <citlali/core/cli/kids_data_spec.h>
 #include <citlali/core/cli/process_control.h>
-#include <citlali/core/cli/reduction_execution.h>
 #include <citlali/core/cli/run_logging.h>
 #include <citlali/core/cli/standard_reduction_execution.h>
 #include <citlali/core/cli/standard_reduction_selection.h>
 #include <citlali/core/cli/standard_reduction_types.h>
-#include <citlali/core/cli/tod_processor_selection.h>
-#include <citlali/core/engine/lali.h>
-#include <citlali/core/engine/pointing.h>
-#include <citlali/core/engine/beammap.h>
 
 using rc_t = citlali::cli::RuntimeConfig;
 
