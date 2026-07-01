@@ -4,6 +4,7 @@
 #include <citlali/core/cli/reduction_runtime.h>
 #include <citlali/core/cli/run_logging.h>
 #include <citlali/core/cli/runtime_setup.h>
+#include <citlali/core/cli/tod_processor_selection.h>
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/pipeline/map_geometry.h>
 #include <citlali/core/pipeline/reduction_pipeline.h>
