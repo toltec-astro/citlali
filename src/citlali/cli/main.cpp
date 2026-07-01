@@ -155,18 +155,12 @@ int main(int argc, char *argv[]) {
         return EXIT_SUCCESS;
     }
     // now with normal CLI interface
-    try {
+    return citlali::cli::run_with_exception_reporting([&]() {
         tula::logging::init();
         auto rc = citlali::cli::parse_args(argc, argv);
         SPDLOG_INFO("rc {}", rc.pformat());
         return citlali::cli::run_configured_process(
             rc, [](const auto &runtime_config) { return run(runtime_config); },
             std::cout);
-    } catch (const CCfits::FitsError &e) {
-        return citlali::cli::report_unhandled_fits_error(e);
-    } catch (const std::exception &e) {
-        return citlali::cli::report_unhandled_std_exception(e);
-    } catch (...) {
-        return citlali::cli::report_unhandled_unknown_exception();
-    }
+    });
 }

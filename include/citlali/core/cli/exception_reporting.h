@@ -23,4 +23,17 @@ inline int report_unhandled_unknown_exception() {
     return EXIT_FAILURE;
 }
 
+template <class RunMain>
+int run_with_exception_reporting(RunMain &&run_main) {
+    try {
+        return run_main();
+    } catch (const CCfits::FitsError &e) {
+        return report_unhandled_fits_error(e);
+    } catch (const std::exception &e) {
+        return report_unhandled_std_exception(e);
+    } catch (...) {
+        return report_unhandled_unknown_exception();
+    }
+}
+
 }  // namespace citlali::cli
