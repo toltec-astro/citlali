@@ -11,6 +11,7 @@
 #include <tula/logging.h>
 
 #include <cstdlib>
+#include <iostream>
 #include <cmath>
 
 #include <citlali/core/utils/constants.h>
