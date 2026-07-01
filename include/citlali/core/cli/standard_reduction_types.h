@@ -10,6 +10,8 @@ namespace citlali::cli {
 using StandardScienceTodProcessor = ::TimeOrderedDataProc<::Lali>;
 using StandardPointingTodProcessor = ::TimeOrderedDataProc<::Pointing>;
 using StandardBeammapTodProcessor = ::TimeOrderedDataProc<::Beammap>;
+using StandardKidsDataProcessor = ::KidsDataProc;
+using StandardIOCoordinator = ::SeqIOCoordinator;
 using StandardTodProcessorVariant =
     TodProcessorVariant<StandardScienceTodProcessor,
                         StandardPointingTodProcessor,
