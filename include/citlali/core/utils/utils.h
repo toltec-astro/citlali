@@ -288,9 +288,11 @@ auto fft(Eigen::DenseBase<Derived> &in, std::string parallel_policy) {
     return out;
 }
 
-// parallelized 2d fft using eigen
-template <FFTDirection direction, typename Derived, typename fftw_plan_t>
-auto fft2(Eigen::DenseBase<Derived> &in, fftw_plan_t &plan, fftw_complex* a, fftw_complex*b){
+// 2d FFT using caller-owned FFTW work buffers and output storage.
+template <FFTDirection direction, typename InDerived, typename OutDerived, typename fftw_plan_t>
+void fft2_into(const Eigen::DenseBase<InDerived> &in,
+               Eigen::PlainObjectBase<OutDerived> &out,
+               fftw_plan_t &plan, fftw_complex* a, fftw_complex*b){
     // get dimensions of data
     Eigen::Index n_rows = in.rows();
     Eigen::Index n_cols = in.cols();
@@ -298,30 +300,36 @@ auto fft2(Eigen::DenseBase<Derived> &in, fftw_plan_t &plan, fftw_complex* a, fft
     // copy data from input (row major?)
     for (Eigen::Index i=0; i< n_rows; ++i) {
         for (Eigen::Index j=0; j<n_cols; ++j) {
-            int ii = n_cols*i + j;
-            a[ii][0] = in(i,j).real();
-            a[ii][1] = in(i,j).imag();
+            const Eigen::Index ii = n_cols*i + j;
+            a[ii][0] = in.derived()(i,j).real();
+            a[ii][1] = in.derived()(i,j).imag();
         }
     }
 
     fftw_execute(plan);
 
-    // output matrix
-    Eigen::MatrixXcd out(n_rows, n_cols);
+    out.derived().resize(n_rows, n_cols);
 
     // copy data to output (row major?)
+    const double norm = static_cast<double>(n_rows * n_cols);
     for (Eigen::Index i=0; i<n_rows; ++i) {
         for (Eigen::Index j=0; j<n_cols; ++j) {
-            int ii = n_cols*i + j;
-            out.real()(i,j) = b[ii][0];
-            out.imag()(i,j) = b[ii][1];
+            const Eigen::Index ii = n_cols*i + j;
+            if constexpr(direction == forward) {
+                out.derived()(i,j) = std::complex<double>{b[ii][0] / norm, b[ii][1] / norm};
+            }
+            else {
+                out.derived()(i,j) = std::complex<double>{b[ii][0], b[ii][1]};
+            }
         }
     }
+}
 
-    if constexpr(direction == forward) {
-        // set fft normalization
-        out = out/n_rows/n_cols;
-    }
+// parallelized 2d fft using eigen
+template <FFTDirection direction, typename Derived, typename fftw_plan_t>
+auto fft2(const Eigen::DenseBase<Derived> &in, fftw_plan_t &plan, fftw_complex* a, fftw_complex*b){
+    Eigen::MatrixXcd out;
+    fft2_into<direction>(in, out, plan, a, b);
     return out;
 }
 

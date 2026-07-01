@@ -2,32 +2,30 @@
 
 Date: 2026-07-01
 
-This note tracks the remaining P2 Wiener-filter work after the denominator
-runtime controls and OpenMP accumulation changes.
+This note tracks the P2 Wiener-filter work after the denominator runtime
+controls and OpenMP accumulation changes.
 
-## P2 Items To Address Next
+## Status
 
 1. Reduce FFT wrapper allocation and copy overhead.
 
-   The denominator loop still calls `engine_utils::fft2` three times per
-   denominator term. `fft2` copies the input matrix into FFTW buffers, executes
-   the plan, allocates a new `Eigen::MatrixXcd`, copies FFTW output back into
-   Eigen storage, and returns by value. Add an `fft2_into(...)` style API, or
-   otherwise reuse caller-owned output buffers, before attempting deeper
-   denominator math changes.
+   Addressed by adding `engine_utils::fft2_into(...)` and switching the Wiener
+   numerator, convolution, template FFT cache, and denominator paths to reuse
+   caller-owned output matrices. This removes repeated `Eigen::MatrixXcd`
+   allocations from the hottest FFT call sites while preserving the existing
+   FFTW input/output buffer copy model.
 
 2. Validate and potentially taper the kernel-template radial tail.
 
-   `make_kernel_template` currently fills radii beyond the spline range with
-   the final radial-average value. If that value is nonzero or noisy, the
-   template can become effectively full-map support, which increases
-   denominator cost and may affect normalization. Inspect representative kernel
-   templates first; then consider zeroing, clipping, or tapering beyond the
-   last reliable radial bin.
+   Addressed with `wiener_filter.kernel_template_tail_mode`. The default
+   `constant` preserves legacy behavior. `zero` truncates beyond the last
+   valid radial bin, and `cosine` tapers that tail to zero at the map edge.
+   The builder now logs the tail value, relative tail amplitude, and fraction
+   of pixels affected.
 
 3. Add focused denominator tests and benchmarks.
 
-   Add a small synthetic map test that checks `max_denom_iters`,
-   `denom_rel_tol`, and OMP/non-OMP consistency under a fixed cap. Add a
-   denominator microbenchmark on a modest map size so runtime changes are
-   measurable without a full TolTEC reduction.
+   Focused synthetic tests were added for `fft2_into`, `max_denom_iters`,
+   `denom_rel_tol`, and zero-tail kernel templates. A runnable denominator
+   microbenchmark is still worth adding once the local test dependency setup is
+   fixed so benchmark targets can be built normally.

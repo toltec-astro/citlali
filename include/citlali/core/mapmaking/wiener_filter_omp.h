@@ -67,6 +67,7 @@ public:
 
     // filter template
     std::string template_type, filter_type;
+    std::string kernel_template_tail_mode = "constant";
     // normalize filtered map errors
     bool normalize_error;
     // uniform weighting
@@ -97,6 +98,10 @@ public:
     // denominator convergence tolerances
     double denom_rel_tol = 1e-4;
     double tail_frac_tol = 5e-2;
+    Eigen::Index last_denom_iters = 0;
+    double last_denom_rel_update = std::numeric_limits<double>::quiet_NaN();
+    double last_denom_tail_frac = std::numeric_limits<double>::quiet_NaN();
+    std::string last_denom_stop_reason = "not_run";
 
     // guess fwhm for kernel map filtering
     double init_fwhm;
@@ -797,7 +802,7 @@ inline const Eigen::MatrixXcd &WienerFilter::get_filter_template_fft() {
         Eigen::MatrixXcd out(n_rows, n_cols);
         in.real() = filter_template;
         in.imag().setZero();
-        out = engine_utils::fft2<engine_utils::forward>(in, ctx.pf, ctx.a, ctx.b);
+        engine_utils::fft2_into<engine_utils::forward>(in, out, ctx.pf, ctx.a, ctx.b);
         filter_template_fft = std::move(out);
         filter_template_fft_valid = true;
     }
@@ -818,7 +823,7 @@ inline const Eigen::MatrixXcd &WienerFilter::get_filter_template_fft_scaled(bool
             }
             in.real() = kernel;
             in.imag().setZero();
-            out = engine_utils::fft2<engine_utils::forward>(in, ctx.pf, ctx.a, ctx.b);
+            engine_utils::fft2_into<engine_utils::forward>(in, out, ctx.pf, ctx.a, ctx.b);
             out *= scale;
             filter_template_fft_normalized_scaled = std::move(out);
             filter_template_fft_normalized_scaled_valid = true;
@@ -853,21 +858,21 @@ inline Eigen::MatrixXd WienerFilter::calc_numerator_from_input(const Eigen::Matr
 
     in.real() = rr.array() * input_map.array();
     in.imag().setZero();
-    out = engine_utils::fft2<engine_utils::forward>(in, ctx.pf, ctx.a, ctx.b);
+    engine_utils::fft2_into<engine_utils::forward>(in, out, ctx.pf, ctx.a, ctx.b);
 
     in.real() = out.real().array() / vvq.array();
     in.imag() = out.imag().array() / vvq.array();
-    out = engine_utils::fft2<engine_utils::inverse>(in, ctx.pr, ctx.a, ctx.b);
+    engine_utils::fft2_into<engine_utils::inverse>(in, out, ctx.pr, ctx.a, ctx.b);
 
     in.real() = out.real().array() * rr.array();
     in.imag().setZero();
-    out = engine_utils::fft2<engine_utils::forward>(in, ctx.pf, ctx.a, ctx.b);
+    engine_utils::fft2_into<engine_utils::forward>(in, out, ctx.pf, ctx.a, ctx.b);
     qqq = out;
 
     const auto &template_fft = get_filter_template_fft();
     in.real() = template_fft.real().array() * qqq.real().array() + template_fft.imag().array() * qqq.imag().array();
     in.imag() = -template_fft.imag().array() * qqq.real().array() + template_fft.real().array() * qqq.imag().array();
-    out = engine_utils::fft2<engine_utils::inverse>(in, ctx.pr, ctx.a, ctx.b);
+    engine_utils::fft2_into<engine_utils::inverse>(in, out, ctx.pr, ctx.a, ctx.b);
 
     return out.real();
 }
@@ -890,12 +895,12 @@ inline Eigen::MatrixXd WienerFilter::run_convolve_on_input(const Eigen::MatrixXd
 
     in.real() = input_map;
     in.imag().setZero();
-    out = engine_utils::fft2<engine_utils::forward>(in, ctx.pf, ctx.a, ctx.b);
+    engine_utils::fft2_into<engine_utils::forward>(in, out, ctx.pf, ctx.a, ctx.b);
     out = out * n_rows * n_cols;
 
     in.real() = out.real().array() * fft_filter.real().array() - out.imag().array() * fft_filter.imag().array();
     in.imag() = out.imag().array() * fft_filter.real().array() + out.real().array() * fft_filter.imag().array();
-    out = engine_utils::fft2<engine_utils::inverse>(in, ctx.pr, ctx.a, ctx.b);
+    engine_utils::fft2_into<engine_utils::inverse>(in, out, ctx.pr, ctx.a, ctx.b);
     out = out / n_rows / n_cols;
 
     return out.real();
@@ -922,6 +927,10 @@ void WienerFilter::get_config(config_t &config, std::vector<std::vector<std::str
     // get template type
     get_config_value(config, template_type, missing_keys, invalid_keys,
                      std::tuple{"wiener_filter","template_type"},{"kernel","gaussian","airy","highpass"});
+    if (config.template has_typed<std::string>(std::tuple{"wiener_filter","kernel_template_tail_mode"})) {
+        get_config_value(config, kernel_template_tail_mode, missing_keys, invalid_keys,
+                         std::tuple{"wiener_filter","kernel_template_tail_mode"},{"constant","zero","cosine"});
+    }
     // run lowpass only?
     get_config_value(config, run_lowpass, missing_keys, invalid_keys,
                      std::tuple{"wiener_filter","lowpass_only"});
@@ -1154,6 +1163,26 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
     Eigen::VectorXd dist_interp_valid = Eigen::Map<Eigen::VectorXd>(dist_valid.data(), dist_valid.size());
 
     engine_utils::SplineFunction s(dist_interp_valid, kernel_interp_valid);
+    const double tail_value = kernel_interp_valid(kernel_interp_valid.size() - 1);
+    const double kernel_peak_abs = std::max(kernel_interp_valid.cwiseAbs().maxCoeff(), 1e-300);
+    const double max_dist = dist.maxCoeff();
+    const Eigen::Index tail_pixels = (dist.array() > s.x_max).count();
+    logger->info("kernel template radial tail mode={} x_max={} max_dist={} tail_pixels={} tail_fraction={:.4f} tail_value={} tail_rel_peak={:.4g}",
+                 kernel_template_tail_mode, s.x_max, max_dist,
+                 static_cast<long long>(tail_pixels),
+                 static_cast<double>(tail_pixels) / static_cast<double>(n_rows * n_cols),
+                 tail_value, std::abs(tail_value) / kernel_peak_abs);
+    auto radial_tail_value = [&](double radius) {
+        if (kernel_template_tail_mode == "zero") {
+            return 0.0;
+        }
+        if (kernel_template_tail_mode == "cosine" && max_dist > s.x_max) {
+            constexpr double pi = 3.141592653589793238462643383279502884;
+            const double frac = std::clamp((radius - s.x_max) / (max_dist - s.x_max), 0.0, 1.0);
+            return tail_value * 0.5 * (1.0 + std::cos(pi * frac));
+        }
+        return tail_value;
+    };
 
     // carry out the interpolation
     for (Eigen::Index i=0; i<n_cols; i++) {
@@ -1169,7 +1198,7 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
             }
             // if above x limit
             else if (dist(j,i) > s.x_max) {
-                filter_template(shiftj,shifti) = kernel_interp_valid(kernel_interp_valid.size()-1);
+                filter_template(shiftj,shifti) = radial_tail_value(dist(j,i));
             }
             // if below x limit
             else if (dist(j,i) < s.x_min) {
@@ -1404,6 +1433,10 @@ void WienerFilter::calc_denominator() {
 
     // resize denominator
     denom.setZero(n_rows,n_cols);
+    last_denom_iters = 0;
+    last_denom_rel_update = std::numeric_limits<double>::quiet_NaN();
+    last_denom_tail_frac = std::numeric_limits<double>::quiet_NaN();
+    last_denom_stop_reason = "not_run";
 
     // inputs and outputs to ffts
     Eigen::MatrixXcd in(n_rows,n_cols);
@@ -1416,6 +1449,9 @@ void WienerFilter::calc_denominator() {
 
         // set denominator
         denom.setConstant(((out.real().array() * out.real().array() + out.imag().array() * out.imag().array()) / vvq.array()).sum());
+        last_denom_rel_update = 0.0;
+        last_denom_tail_frac = 0.0;
+        last_denom_stop_reason = "uniform_weight";
 
         // destroy fftw plans
         fftw_destroy_plan(pf);
@@ -1433,7 +1469,7 @@ void WienerFilter::calc_denominator() {
         in.imag().setZero();
 
         //out = engine_utils::fft<engine_utils::inverse>(in, parallel_policy);
-        out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
+        engine_utils::fft2_into<engine_utils::inverse>(in, out, pr, a, b);
 
         // destroy fftw plans
         fftw_free(a);
@@ -1544,18 +1580,18 @@ void WienerFilter::calc_denominator() {
                     in_prod = filter_template.array() * shifted_template.array();
                     in_local.real() = in_prod;
                     in_local.imag().setZero();
-                    out_local = engine_utils::fft2<engine_utils::forward>(in_local, ctx.pf, ctx.a, ctx.b);
+                    engine_utils::fft2_into<engine_utils::forward>(in_local, out_local, ctx.pf, ctx.a, ctx.b);
                     ffdq = out_local;
 
                     engine_utils::shift_2D_into(rr, shift_row, shift_col, shifted_rr);
                     in_prod = rr.array() * shifted_rr.array();
                     in_local.real() = in_prod;
                     in_local.imag().setZero();
-                    out_local = engine_utils::fft2<engine_utils::forward>(in_local, ctx.pf, ctx.a, ctx.b);
+                    engine_utils::fft2_into<engine_utils::forward>(in_local, out_local, ctx.pf, ctx.a, ctx.b);
 
                     in_local.real() = ffdq.real().array() * out_local.real().array() + ffdq.imag().array() * out_local.imag().array();
                     in_local.imag() = -ffdq.imag().array() * out_local.real().array() + ffdq.real().array() * out_local.imag().array();
-                    out_local = engine_utils::fft2<engine_utils::inverse>(in_local, ctx.pr, ctx.a, ctx.b);
+                    engine_utils::fft2_into<engine_utils::inverse>(in_local, out_local, ctx.pr, ctx.a, ctx.b);
 
                     denom_local.array() += scales_desc[kk] * out_local.real().array();
                 }
@@ -1583,24 +1619,31 @@ void WienerFilter::calc_denominator() {
                          static_cast<long long>(chunk_end), rel_update, tail_frac, elapsed_s, step_s);
 
             ++checks_done;
+            last_denom_iters = chunk_end;
+            last_denom_rel_update = rel_update;
+            last_denom_tail_frac = tail_frac;
             if (rel_update < denom_rel_tol_local) {
                 logger->info("Wiener denominator converged after {} iteration(s); rel_update={:.4g} tail_frac={:.4f}",
                              static_cast<long long>(chunk_end), rel_update, tail_frac);
+                last_denom_stop_reason = "converged";
                 done = true;
             }
             else if (checks_done >= max_checks) {
                 logger->info("reached Wiener denominator max_loops={} after {} iteration(s); stopping early",
                              max_checks, static_cast<long long>(chunk_end));
+                last_denom_stop_reason = "max_loops";
                 done = true;
             }
             else if (chunk_end >= max_iters) {
                 if (max_denom_iters > 0 && max_iters < tail_cap_iters) {
                     logger->info("reached configured Wiener denominator max_denom_iters={} before tail_cap_iters={}; stopping",
                                  static_cast<long long>(max_iters), static_cast<long long>(tail_cap_iters));
+                    last_denom_stop_reason = "max_denom_iters";
                 }
                 else {
                     logger->info("reached Wiener denominator tail_cap_iters={} and stopping",
                                  static_cast<long long>(max_iters));
+                    last_denom_stop_reason = "tail_cap_iters";
                 }
                 done = true;
             }
