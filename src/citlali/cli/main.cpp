@@ -50,6 +50,7 @@
 
 #include <citlali/core/cli/config_loading.h>
 #include <citlali/core/cli/runtime_setup.h>
+#include <citlali/core/cli/tod_processor_selection.h>
 #include <citlali/core/engine/lali.h>
 #include <citlali/core/engine/pointing.h>
 #include <citlali/core/engine/beammap.h>
@@ -264,28 +265,11 @@ int run(const rc_t &rc) {
             auto reduction_type =
                 citlali_config.get_str(std::tuple{"runtime", "reduction_type"});
 
-            // check for science mode
-            if (reduction_type == "science") {
-                logger->info("reducing in science mode");
-                todproc.emplace<TimeOrderedDataProc<Lali>>(
-                    TimeOrderedDataProc<Lali>::from_config(citlali_config));
-            }
-
-            // check for pointing mode
-            else if (reduction_type == "pointing") {
-                logger->info("reducing in pointing mode");
-                todproc.emplace<TimeOrderedDataProc<Pointing>>(
-                    TimeOrderedDataProc<Pointing>::from_config(citlali_config));
-            }
-
-            // check for beammap mode
-            else if (reduction_type == "beammap") {
-                logger->info("reducing in beammap mode");
-                todproc.emplace<TimeOrderedDataProc<Beammap>>(
-                    TimeOrderedDataProc<Beammap>::from_config(citlali_config));
-            }
-
-            else {
+            if (!citlali::cli::emplace_tod_processor_for_reduction_type<
+                    todproc_var_t, TimeOrderedDataProc<Lali>,
+                    TimeOrderedDataProc<Pointing>,
+                    TimeOrderedDataProc<Beammap>>(
+                    todproc, reduction_type, citlali_config, logger)) {
                 std::vector<std::string> invalid_keys;
                 // push back invalid keys into temp vector
                 engine_utils::for_each_in_tuple(
