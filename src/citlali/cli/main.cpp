@@ -55,10 +55,9 @@ int run(const rc_t &rc) {
 
     citlali::cli::log_kids_data_spec(logger);
 
-    std::vector<std::string> config_filepaths;
-
-    auto citlali_config = citlali::cli::load_merged_yaml_config_files(
-        rc, config_filepaths, logger);
+    auto loaded_config = citlali::cli::load_merged_yaml_config_files(
+        rc, logger);
+    auto &citlali_config = loaded_config.config;
 
     // set up the IO coorindator
     auto co = SeqIOCoordinator::from_config(citlali_config);
@@ -121,8 +120,9 @@ int run(const rc_t &rc) {
                         std::is_same_v<todproc_t,
                                        TimeOrderedDataProc<Pointing>>,
                         KidsDataProc>(
-                        todproc, co, citlali_config, config_filepaths,
-                        map_geometry.extents, map_geometry.coords,
+                        todproc, co, citlali_config,
+                        loaded_config.filepaths, map_geometry.extents,
+                        map_geometry.coords,
                         [](auto &engine) {
                             return citlali::pipeline::date_obs_from_telescope_time(
                                 engine, [](double unix_time) {
