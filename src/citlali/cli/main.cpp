@@ -28,7 +28,6 @@
 #include <citlali/core/cli/process_control.h>
 #include <citlali/core/cli/run_logging.h>
 #include <citlali/core/cli/standard_reduction_execution.h>
-#include <citlali/core/cli/standard_reduction_inputs.h>
 
 using rc_t = citlali::cli::RuntimeConfig;
 
