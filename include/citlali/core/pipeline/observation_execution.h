@@ -5,6 +5,7 @@
 #include <citlali/core/pipeline/initial_reduction_geometry.h>
 #include <citlali/core/pipeline/iteration_buffers.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>
+#include <citlali/core/pipeline/observation_buffers.h>
 #include <citlali/core/pipeline/observation_outputs.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/observation_pipeline.h>
@@ -16,41 +17,6 @@
 #include <utility>
 
 namespace citlali::pipeline {
-
-template <class TodProc, class MapExtent, class MapCoord, class Logger>
-void allocate_observation_map_buffers(TodProc &todproc,
-                                      MapExtent &map_extent,
-                                      MapCoord &map_coord,
-                                      const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    logger->info("calculating number of maps");
-    todproc.calc_map_num();
-    logger->info("allocating obs map buffer");
-    todproc.allocate_omb(map_extent, map_coord);
-    engine.configure_map_pixel_contribution_targets(engine.omb, "raw_obs");
-
-    if (engine.run_noise &&
-        (!engine.run_coadd || engine.map_method == "jinc")) {
-        logger->info("allocating obs noise maps");
-        todproc.allocate_nmb(engine.omb);
-    }
-}
-
-template <class TodProc, class MapExtents, class MapCoords, class Logger>
-void allocate_observation_map_buffers_if_needed(
-    TodProc &todproc, MapExtents &map_extents, MapCoords &map_coords,
-    std::size_t observation_index, const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    if (!engine.run_mapmaking) {
-        return;
-    }
-
-    allocate_observation_map_buffers(
-        todproc, map_extents[observation_index], map_coords[observation_index],
-        logger);
-}
 
 template <bool IsBeammap, class TodProc, class RawObs, class RawObsKidsMeta,
           class MapExtents, class MapCoords, class DateObs, class Logger>
