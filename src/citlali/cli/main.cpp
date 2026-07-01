@@ -17,6 +17,7 @@
 #include <citlali/core/utils/utils.h>
 
 #include <citlali/core/cli/abort_backtrace.h>
+#include <citlali/core/cli/argument_errors.h>
 #include <citlali/core/cli/argument_parsing.h>
 #include <citlali/core/cli/config_loading.h>
 #include <citlali/core/cli/default_config_dump.h>
@@ -160,7 +161,7 @@ int main(int argc, char *argv[]) {
             tula::logging::scoped_timeit TULA_X{"Citlali Process"};
             return run(rc);
         } else {
-            std::cout << "Invalid argument. Type --help for usage.\n";
+            citlali::cli::report_missing_config_file_argument(std::cout);
             return EXIT_FAILURE;
         }
     } catch (const CCfits::FitsError &e) {
