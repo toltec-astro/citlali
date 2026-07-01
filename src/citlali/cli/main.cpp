@@ -23,6 +23,7 @@
 #include <citlali/core/cli/default_config_dump.h>
 #include <citlali/core/cli/exception_reporting.h>
 #include <citlali/core/cli/hdf5_diagnostics.h>
+#include <citlali/core/cli/kids_data_spec.h>
 #include <citlali/core/cli/process_control.h>
 #include <citlali/core/cli/reduction_runtime.h>
 #include <citlali/core/cli/run_logging.h>
@@ -52,7 +53,7 @@ int run(const rc_t &rc) {
 
     citlali::cli::install_abort_backtrace_handler();
 
-    logger->info("use KIDs data spec: {}", predefs::kidsdata::name);
+    citlali::cli::log_kids_data_spec(logger);
 
     std::vector<std::string> config_filepaths;
 
