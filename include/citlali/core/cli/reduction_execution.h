@@ -10,8 +10,17 @@
 
 #include <cstdlib>
 #include <ostream>
+#include <type_traits>
 
 namespace citlali::cli {
+
+template <class TodProc, class BeammapTodProc>
+inline constexpr bool is_beammap_tod_processor_v =
+    std::is_same_v<TodProc, BeammapTodProc>;
+
+template <class TodProc, class PointingTodProc>
+inline constexpr bool fits_maps_for_tod_processor_v =
+    std::is_same_v<TodProc, PointingTodProc>;
 
 template <class TodProc, class Config, class Logger>
 bool prepare_cli_reduction_runtime_or_report_errors(

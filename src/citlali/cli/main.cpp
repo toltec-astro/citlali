@@ -99,12 +99,12 @@ int run(const rc_t &rc) {
             }
             else {
                 return citlali::cli::run_cli_reduction_processor<
-                        std::is_same_v<todproc_t,
-                                       TimeOrderedDataProc<Beammap>>,
+                        citlali::cli::is_beammap_tod_processor_v<
+                            todproc_t, TimeOrderedDataProc<Beammap>>,
                         mapmaking::RawObs, mapmaking::FilteredObs,
                         mapmaking::RawCoadd, mapmaking::FilteredCoadd,
-                        std::is_same_v<todproc_t,
-                                       TimeOrderedDataProc<Pointing>>,
+                        citlali::cli::fits_maps_for_tod_processor_v<
+                            todproc_t, TimeOrderedDataProc<Pointing>>,
                         KidsDataProc>(
                         todproc, co, citlali_config,
                         loaded_config.filepaths, logger, std::cerr);
