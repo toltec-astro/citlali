@@ -1,24 +1,14 @@
 #include <citlali_config/config.h>
 #include <citlali_config/gitversion.h>
 #include <citlali_config/default_config.h>
-#include <tula/config/core.h>
-#include <tula/config/yamlconfig.h>
-#include <tula/formatter/container.h>
 #include <tula/logging.h>
 
 #include <cstdlib>
 #include <iostream>
-#include <cmath>
 
-#include <citlali/core/utils/constants.h>
-#include <citlali/core/utils/utils.h>
-
-#include <citlali/core/cli/argument_errors.h>
 #include <citlali/core/cli/argument_parsing.h>
-#include <citlali/core/cli/config_loading.h>
 #include <citlali/core/cli/default_config_dump.h>
 #include <citlali/core/cli/exception_reporting.h>
-#include <citlali/core/cli/io_coordinator.h>
 #include <citlali/core/cli/process_control.h>
 #include <citlali/core/cli/run_environment.h>
 #include <citlali/core/cli/standard_reduction_execution.h>
