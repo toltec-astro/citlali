@@ -7,6 +7,7 @@
 #include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>
+#include <citlali/core/pipeline/map_geometry.h>
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
@@ -507,6 +508,11 @@ struct FakeRuntimeConfig {
 
 struct FakeLoadedConfig {
     std::vector<std::string> loaded_paths;
+};
+
+struct FakeGeometryTodProc {
+    using map_extent_t = int;
+    using map_coord_t = double;
 };
 
 struct FakeTodConfig {
@@ -1701,6 +1707,16 @@ TEST(cli_reduction_runtime, rejects_invalid_reduction_runtime) {
     EXPECT_EQ(enable_debug_calls, 0);
     EXPECT_EQ(configure_threads_calls, 0);
     EXPECT_EQ(logger->error_calls, 2);
+}
+
+TEST(pipeline_map_geometry, stores_typed_map_vectors) {
+    citlali::pipeline::ReductionMapGeometry<FakeGeometryTodProc> geometry;
+
+    geometry.extents.push_back(7);
+    geometry.coords.push_back(1.5);
+
+    EXPECT_EQ(geometry.extents, (std::vector<int>{7}));
+    EXPECT_EQ(geometry.coords, (std::vector<double>{1.5}));
 }
 
 TEST(cli_tod_processor_selection, selects_science_processor) {
