@@ -518,4 +518,26 @@ bool run_reduction_observation(
     return true;
 }
 
+template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap, bool FitMaps,
+          class KidsDataProc, class TodProc, class IOCoordinator,
+          class CitlaliConfig, class MapExtents, class MapCoords,
+          class DateObsFactory, class Logger>
+bool run_reduction_observation_at_index(
+    TodProc &todproc, const IOCoordinator &co, CitlaliConfig &citlali_config,
+    MapExtents &map_extents, MapCoords &map_coords,
+    std::size_t observation_index, DateObsFactory &&date_obs_factory,
+    const Logger &logger) {
+    logger->info("starting reduction of observation {}/{}",
+                 observation_index + 1, co.n_inputs());
+    auto kidsproc = make_kids_data_proc<KidsDataProc>(citlali_config);
+    const auto &rawobs = co.inputs()[observation_index];
+    auto rawobs_kids_meta = load_rawobs_kids_meta(kidsproc, rawobs, logger);
+
+    return run_reduction_observation<IsBeammap, RawObsMap, FilteredObsMap,
+                                     FitMaps>(
+        todproc, kidsproc, rawobs, rawobs_kids_meta, co.n_inputs() > 1,
+        map_extents, map_coords, observation_index,
+        date_obs_factory(todproc.engine()), logger);
+}
+
 }  // namespace citlali::pipeline

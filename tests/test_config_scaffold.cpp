@@ -2924,6 +2924,31 @@ TEST(pipeline_execution,
     EXPECT_EQ(todproc.engine().output_calls, 0);
 }
 
+TEST(pipeline_execution, runs_reduction_observation_at_index) {
+    FakeInitialObservationTodProc todproc;
+    FakeCitlaliConfig config;
+    FakeIOCoordinator co{{FakeRawObs{}, FakeRawObs{}}};
+    std::vector<int> map_extents = {11, 33};
+    std::vector<int> map_coords = {22, 44};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::pipeline::run_reduction_observation_at_index<
+        false, FakeMapType::RawObs, FakeMapType::FilteredObs, false,
+        FakeKidsProc>(
+        todproc, co, config, map_extents, map_coords, 1,
+        [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
+        logger));
+
+    EXPECT_EQ(config.get_config_calls, 1);
+    EXPECT_EQ(todproc.last_map_extent, 33);
+    EXPECT_EQ(todproc.last_map_coord, 44);
+    EXPECT_EQ(todproc.engine().setup_calls, 1);
+    EXPECT_EQ(todproc.engine().pipeline_calls, 1);
+    EXPECT_EQ(todproc.engine().output_calls, 1);
+    EXPECT_EQ(todproc.engine().date_obs,
+              (std::vector<std::string>{"2026-01-01T00:00:00"}));
+}
+
 TEST(pipeline_execution, writes_raw_coadd_outputs) {
     FakeCoaddTodProc todproc;
     todproc.engine().apply_empirical_noise_weights = true;
