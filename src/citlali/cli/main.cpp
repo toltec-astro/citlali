@@ -67,8 +67,9 @@ int run(const rc_t &rc) {
 
     // set up todproc
     using todproc_var_t =
-        std::variant<std::monostate, TimeOrderedDataProc<Lali>, TimeOrderedDataProc<Pointing>,
-                     TimeOrderedDataProc<Beammap>>;
+        citlali::cli::TodProcessorVariant<
+            TimeOrderedDataProc<Lali>, TimeOrderedDataProc<Pointing>,
+            TimeOrderedDataProc<Beammap>>;
 
     // declare todproc variable
     todproc_var_t todproc;

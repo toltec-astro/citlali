@@ -24,6 +24,11 @@ template <class TodProc>
 inline constexpr bool is_empty_tod_processor_v =
     std::is_same_v<TodProc, std::monostate>;
 
+template <class ScienceTodProc, class PointingTodProc, class BeammapTodProc>
+using TodProcessorVariant =
+    std::variant<std::monostate, ScienceTodProc, PointingTodProc,
+                 BeammapTodProc>;
+
 inline auto reduction_type_config_key() {
     return std::tuple{"runtime", "reduction_type"};
 }
