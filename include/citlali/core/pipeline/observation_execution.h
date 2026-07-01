@@ -275,20 +275,6 @@ void write_observation_outputs_and_accumulate(TodProc &todproc,
 
 template <auto RawCoaddMap, auto FilteredCoaddMap, class TodProc,
           class Logger>
-void write_iteration_coadd_outputs_if_needed(TodProc &todproc,
-                                             const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    if (!should_write_iteration_coadd_outputs(engine)) {
-        return;
-    }
-
-    write_raw_coadd_outputs<RawCoaddMap>(todproc, logger);
-    write_filtered_coadd_outputs_if_needed<FilteredCoaddMap>(todproc, logger);
-}
-
-template <auto RawCoaddMap, auto FilteredCoaddMap, class TodProc,
-          class Logger>
 void finish_reduction_iteration(TodProc &todproc, const Logger &logger) {
     write_iteration_coadd_outputs_if_needed<RawCoaddMap, FilteredCoaddMap>(
         todproc, logger);
