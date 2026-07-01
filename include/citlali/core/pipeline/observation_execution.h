@@ -540,4 +540,25 @@ bool run_reduction_observation_at_index(
         date_obs_factory(todproc.engine()), logger);
 }
 
+template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap, bool FitMaps,
+          class KidsDataProc, class TodProc, class IOCoordinator,
+          class CitlaliConfig, class MapExtents, class MapCoords,
+          class DateObsFactory, class Logger>
+bool run_reduction_iteration_observations(
+    TodProc &todproc, const IOCoordinator &co, CitlaliConfig &citlali_config,
+    MapExtents &map_extents, MapCoords &map_coords,
+    DateObsFactory &&date_obs_factory, const Logger &logger) {
+    for (std::size_t observation_index = 0; observation_index < co.n_inputs();
+         ++observation_index) {
+        if (!run_reduction_observation_at_index<
+                IsBeammap, RawObsMap, FilteredObsMap, FitMaps,
+                KidsDataProc>(
+                todproc, co, citlali_config, map_extents, map_coords,
+                observation_index, date_obs_factory, logger)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 }  // namespace citlali::pipeline

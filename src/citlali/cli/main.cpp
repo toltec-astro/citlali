@@ -403,33 +403,21 @@ int run(const rc_t &rc) {
                     citlali::pipeline::begin_reduction_iteration(
                         todproc, config_filepaths, logger);
 
-                    // run the reduction for each observation
-                    for (std::size_t i=0; i<co.n_inputs(); ++i) {
-                        logger->info("starting reduction of observation {}/{}", i + 1, co.n_inputs());
-                        auto kidsproc =
-                            citlali::pipeline::make_kids_data_proc<KidsDataProc>(
-                                citlali_config);
-
-                        // get current rawobs
-                        const auto &rawobs = co.inputs()[i];
-
-                        auto rawobs_kids_meta =
-                            citlali::pipeline::load_rawobs_kids_meta(
-                                kidsproc, rawobs, logger);
-
-                        if (!citlali::pipeline::run_reduction_observation<
-                                std::is_same_v<todproc_t,
-                                               TimeOrderedDataProc<Beammap>>,
-                                mapmaking::RawObs, mapmaking::FilteredObs,
-                                std::is_same_v<todproc_t,
-                                               TimeOrderedDataProc<Pointing>>>(
-                                todproc, kidsproc, rawobs, rawobs_kids_meta,
-                                co.n_inputs() > 1, map_extents, map_coords, i,
-                                engine_utils::unix_to_utc(
-                                    todproc.engine().telescope.tel_data["TelTime"](0)),
-                                logger)) {
-                            return EXIT_FAILURE;
-                        }
+                    if (!citlali::pipeline::run_reduction_iteration_observations<
+                            std::is_same_v<todproc_t,
+                                           TimeOrderedDataProc<Beammap>>,
+                            mapmaking::RawObs, mapmaking::FilteredObs,
+                            std::is_same_v<todproc_t,
+                                           TimeOrderedDataProc<Pointing>>,
+                            KidsDataProc>(
+                            todproc, co, citlali_config, map_extents,
+                            map_coords,
+                            [](auto &engine) {
+                                return engine_utils::unix_to_utc(
+                                    engine.telescope.tel_data["TelTime"](0));
+                            },
+                            logger)) {
+                        return EXIT_FAILURE;
                     }
 
                     citlali::pipeline::finish_reduction_iteration<
