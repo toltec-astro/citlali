@@ -8,6 +8,8 @@
 #include <cmath>
 #include <limits>
 
+#include <omp.h>
+
 #include <Eigen/Core>
 #include <unsupported/Eigen/CXX11/Tensor>
 #include <unsupported/Eigen/Splines>
@@ -1454,7 +1456,6 @@ void WienerFilter::calc_denominator() {
         Eigen::VectorXd Z_abs = zz2d.array().abs();
         auto sorted = engine_utils::sorter(Z_abs);
         const Eigen::Index total_iters = n_rows * n_cols;
-        std::vector<Eigen::Index> shift_indices_desc(total_iters);
         std::vector<Eigen::Index> shift_rows_desc(total_iters);
         std::vector<Eigen::Index> shift_cols_desc(total_iters);
         std::vector<double> scales_desc(total_iters);
@@ -1472,7 +1473,6 @@ void WienerFilter::calc_denominator() {
         Eigen::Index tail_cap_iters = total_iters;
         for (Eigen::Index kk=0; kk<total_iters; ++kk) {
             auto shift_index = std::get<1>(sorted[total_iters - kk - 1]);
-            shift_indices_desc[kk] = shift_index;
             shift_rows_desc[kk] = -static_cast<Eigen::Index>(shift_index % n_rows);
             shift_cols_desc[kk] = -static_cast<Eigen::Index>(shift_index / n_rows);
             scales_desc[kk] = zz2d(shift_index) / static_cast<double>(n_rows * n_cols);
@@ -1483,8 +1483,6 @@ void WienerFilter::calc_denominator() {
                 tail_cap_iters = kk + 1;
             }
         }
-        Z_abs_done = 0.0;
-
         // flag for convergence
         bool done = false;
 
@@ -1494,36 +1492,51 @@ void WienerFilter::calc_denominator() {
         const int max_checks = std::max(max_loops, 1);
         int checks_done = 0;
         const Eigen::Index requested_max_iters = max_denom_iters > 0 ? std::min<Eigen::Index>(max_denom_iters, total_iters) : total_iters;
-        const Eigen::Index max_iters = tail_cap_iters;
-        if (max_denom_iters > 0 && requested_max_iters < tail_cap_iters) {
+        const Eigen::Index max_iters = max_denom_iters > 0 ? std::min<Eigen::Index>(requested_max_iters, tail_cap_iters) : tail_cap_iters;
+        if (max_denom_iters > 0 && max_iters < tail_cap_iters) {
             logger->warn(
                 "configured max_denom_iters={} is below Wiener denominator tail_cap_iters={}; "
-                "continuing to the tail cap to avoid an under-converged denominator",
-                static_cast<long long>(requested_max_iters),
-                static_cast<long long>(tail_cap_iters));
+                "using the configured cap with tail_frac_at_cap={:.4f}",
+                static_cast<long long>(max_iters),
+                static_cast<long long>(tail_cap_iters),
+                tail_fracs_desc[max_iters - 1]);
         }
         tula::logging::progressbar pb(
             [&](const auto &msg) { logger->info("{}", msg); }, 90,
             "calculating denom");
         const Eigen::Index pb_stride = std::max<Eigen::Index>(max_iters / 100, 1);
-        logger->info("Wiener denominator pre-cap total_iters={} tail_cap_iters={} max_iters={} check_iters={}",
+        logger->info("Wiener denominator total_iters={} tail_cap_iters={} max_iters={} check_iters={}",
                      static_cast<long long>(total_iters), static_cast<long long>(tail_cap_iters),
                      static_cast<long long>(max_iters), static_cast<long long>(check_iters));
-        #pragma omp parallel shared(shift_indices_desc, shift_rows_desc, shift_cols_desc, scales_desc, tail_fracs_desc, Z_abs, Z_abs_done, max_iters, pb_stride, denom_rel_tol_local, tail_frac_tol_local, denom_start, last_log_s, done, pb, n_rows, n_cols, denom, filter_template, rr, checks_done, max_checks, check_iters) default (none)
-        {
-            auto &ctx = get_thread_fft_context(n_rows, n_cols);
-            Eigen::MatrixXcd in_local(n_rows, n_cols);
-            Eigen::MatrixXcd out_local(n_rows, n_cols);
-            Eigen::MatrixXcd ffdq(n_rows, n_cols);
-            Eigen::MatrixXd in_prod(n_rows, n_cols);
-            Eigen::MatrixXd shifted_template(n_rows, n_cols);
-            Eigen::MatrixXd shifted_rr(n_rows, n_cols);
 
-            #pragma omp for schedule(dynamic) ordered
-            for (Eigen::Index kk = 0; kk < max_iters; ++kk) {
-                #pragma omp flush(done)
-                if (!done) {
-                    const auto shift_index = shift_indices_desc[kk];
+        const int n_threads = std::max(omp_get_max_threads(), 1);
+        std::vector<Eigen::MatrixXd> denom_partials;
+        denom_partials.reserve(n_threads);
+        for (int thread_id = 0; thread_id < n_threads; ++thread_id) {
+            denom_partials.emplace_back(Eigen::MatrixXd::Zero(n_rows, n_cols));
+        }
+        Eigen::MatrixXd delta_since_check = Eigen::MatrixXd::Zero(n_rows, n_cols);
+
+        for (Eigen::Index chunk_start = 0; chunk_start < max_iters && !done; chunk_start += check_iters) {
+            const Eigen::Index chunk_end = std::min<Eigen::Index>(chunk_start + check_iters, max_iters);
+            for (auto &partial : denom_partials) {
+                partial.setZero();
+            }
+
+            #pragma omp parallel shared(shift_rows_desc, shift_cols_desc, scales_desc, chunk_start, chunk_end, n_rows, n_cols, denom_partials, filter_template, rr) default (none)
+            {
+                auto &ctx = get_thread_fft_context(n_rows, n_cols);
+                const int thread_id = omp_get_thread_num();
+                auto &denom_local = denom_partials[thread_id];
+                Eigen::MatrixXcd in_local(n_rows, n_cols);
+                Eigen::MatrixXcd out_local(n_rows, n_cols);
+                Eigen::MatrixXcd ffdq(n_rows, n_cols);
+                Eigen::MatrixXd in_prod(n_rows, n_cols);
+                Eigen::MatrixXd shifted_template(n_rows, n_cols);
+                Eigen::MatrixXd shifted_rr(n_rows, n_cols);
+
+                #pragma omp for schedule(static)
+                for (Eigen::Index kk = chunk_start; kk < chunk_end; ++kk) {
                     const auto shift_row = shift_rows_desc[kk];
                     const auto shift_col = shift_cols_desc[kk];
 
@@ -1544,46 +1557,52 @@ void WienerFilter::calc_denominator() {
                     in_local.imag() = -ffdq.imag().array() * out_local.real().array() + ffdq.real().array() * out_local.imag().array();
                     out_local = engine_utils::fft2<engine_utils::inverse>(in_local, ctx.pr, ctx.a, ctx.b);
 
-                    #pragma omp ordered
-                    {
-                        const double scale = scales_desc[kk];
-                        denom.array() += scale * out_local.real().array();
-                        Z_abs_done += Z_abs(shift_index);
-                        pb.count(max_iters, pb_stride);
-
-                        if ((kk % check_iters) == 1) {
-                            const Eigen::MatrixXd delta_denom = scale * out_local.real().matrix();
-                            const double denom_norm = denom.norm();
-                            const double delta_norm = delta_denom.norm();
-                            const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
-                            const double tail_frac = tail_fracs_desc[kk];
-                            const double elapsed_s = std::chrono::duration<double>(
-                                std::chrono::steady_clock::now() - denom_start).count();
-                            const double step_s = elapsed_s - last_log_s;
-                            last_log_s = elapsed_s;
-
-                            logger->info("{} iteration(s) complete. rel_update={:.4g} tail_frac={:.4f} elapsed_s={:.2f} step_s={:.2f}",
-                                         kk, rel_update, tail_frac, elapsed_s, step_s);
-
-                            ++checks_done;
-                            if (rel_update < denom_rel_tol_local && tail_frac < tail_frac_tol_local) {
-                                done = true;
-                            }
-                            else if (checks_done >= max_checks) {
-                                logger->info("reached Wiener denominator max_loops={} after {} iteration(s); stopping early",
-                                             max_checks, kk);
-                                done = true;
-                            }
-                            #pragma omp flush(done)
-                        }
-                        else if (kk + 1 >= max_iters) {
-                            logger->info("reached Wiener denominator tail_cap_iters={} and stopping",
-                                         static_cast<long long>(max_iters));
-                            done = true;
-                            #pragma omp flush(done)
-                        }
-                    }
+                    denom_local.array() += scales_desc[kk] * out_local.real().array();
                 }
+            }
+
+            delta_since_check.setZero();
+            for (const auto &partial : denom_partials) {
+                denom.array() += partial.array();
+                delta_since_check.array() += partial.array();
+            }
+            for (Eigen::Index kk = chunk_start; kk < chunk_end; ++kk) {
+                pb.count(max_iters, pb_stride);
+            }
+
+            const double denom_norm = denom.norm();
+            const double delta_norm = delta_since_check.norm();
+            const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
+            const double tail_frac = tail_fracs_desc[chunk_end - 1];
+            const double elapsed_s = std::chrono::duration<double>(
+                std::chrono::steady_clock::now() - denom_start).count();
+            const double step_s = elapsed_s - last_log_s;
+            last_log_s = elapsed_s;
+
+            logger->info("{} iteration(s) complete. rel_update={:.4g} tail_frac={:.4f} elapsed_s={:.2f} step_s={:.2f}",
+                         static_cast<long long>(chunk_end), rel_update, tail_frac, elapsed_s, step_s);
+
+            ++checks_done;
+            if (rel_update < denom_rel_tol_local) {
+                logger->info("Wiener denominator converged after {} iteration(s); rel_update={:.4g} tail_frac={:.4f}",
+                             static_cast<long long>(chunk_end), rel_update, tail_frac);
+                done = true;
+            }
+            else if (checks_done >= max_checks) {
+                logger->info("reached Wiener denominator max_loops={} after {} iteration(s); stopping early",
+                             max_checks, static_cast<long long>(chunk_end));
+                done = true;
+            }
+            else if (chunk_end >= max_iters) {
+                if (max_denom_iters > 0 && max_iters < tail_cap_iters) {
+                    logger->info("reached configured Wiener denominator max_denom_iters={} before tail_cap_iters={}; stopping",
+                                 static_cast<long long>(max_iters), static_cast<long long>(tail_cap_iters));
+                }
+                else {
+                    logger->info("reached Wiener denominator tail_cap_iters={} and stopping",
+                                 static_cast<long long>(max_iters));
+                }
+                done = true;
             }
         }
         for (Eigen::Index i=0; i<n_rows; i++) {

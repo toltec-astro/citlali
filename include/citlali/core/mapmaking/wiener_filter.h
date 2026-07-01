@@ -728,7 +728,6 @@ void WienerFilter::calc_denominator() {
         Eigen::VectorXd Z_abs = Z.array().abs();
         auto Z_indices_sorted = engine_utils::sorter(Z_abs);
         const Eigen::Index total_iters = n_rows * n_cols;
-        std::vector<Eigen::Index> shift_indices_desc(total_iters);
         std::vector<Eigen::Index> shift_rows_desc(total_iters);
         std::vector<Eigen::Index> shift_cols_desc(total_iters);
         std::vector<double> scales_desc(total_iters);
@@ -744,7 +743,6 @@ void WienerFilter::calc_denominator() {
         Eigen::Index tail_cap_iters = total_iters;
         for (Eigen::Index kk=0; kk<total_iters; ++kk) {
             auto shift_index = std::get<1>(Z_indices_sorted[total_iters - kk - 1]);
-            shift_indices_desc[kk] = shift_index;
             shift_rows_desc[kk] = -static_cast<Eigen::Index>(shift_index % n_rows);
             shift_cols_desc[kk] = -static_cast<Eigen::Index>(shift_index / n_rows);
             scales_desc[kk] = Z(shift_index) / static_cast<double>(n_rows * n_cols);
@@ -755,8 +753,6 @@ void WienerFilter::calc_denominator() {
                 tail_cap_iters = kk + 1;
             }
         }
-        Z_abs_done = 0.0;
-
         // flag for convergence
         bool done = false;
 
@@ -766,19 +762,20 @@ void WienerFilter::calc_denominator() {
         const int max_checks = std::max(max_loops, 1);
         int checks_done = 0;
         const Eigen::Index requested_max_iters = max_denom_iters > 0 ? std::min<Eigen::Index>(max_denom_iters, total_iters) : total_iters;
-        const Eigen::Index max_iters = tail_cap_iters;
-        if (max_denom_iters > 0 && requested_max_iters < tail_cap_iters) {
+        const Eigen::Index max_iters = max_denom_iters > 0 ? std::min<Eigen::Index>(requested_max_iters, tail_cap_iters) : tail_cap_iters;
+        if (max_denom_iters > 0 && max_iters < tail_cap_iters) {
             logger->warn(
                 "configured max_denom_iters={} is below Wiener denominator tail_cap_iters={}; "
-                "continuing to the tail cap to avoid an under-converged denominator",
-                static_cast<long long>(requested_max_iters),
-                static_cast<long long>(tail_cap_iters));
+                "using the configured cap with tail_frac_at_cap={:.4f}",
+                static_cast<long long>(max_iters),
+                static_cast<long long>(tail_cap_iters),
+                tail_fracs_desc[max_iters - 1]);
         }
         tula::logging::progressbar pb(
             [&](const auto &msg) { logger->info("{}", msg); }, 90,
             "calculating denom");
         const Eigen::Index pb_stride = std::max<Eigen::Index>(max_iters / 100, 1);
-        logger->info("Wiener denominator pre-cap total_iters={} tail_cap_iters={} max_iters={} check_iters={}",
+        logger->info("Wiener denominator total_iters={} tail_cap_iters={} max_iters={} check_iters={}",
                      static_cast<long long>(total_iters), static_cast<long long>(tail_cap_iters),
                      static_cast<long long>(max_iters), static_cast<long long>(check_iters));
 
@@ -787,94 +784,90 @@ void WienerFilter::calc_denominator() {
         Eigen::MatrixXd in_prod(n_rows,n_cols);
         Eigen::MatrixXd shifted_template(n_rows,n_cols);
         Eigen::MatrixXd shifted_rr(n_rows,n_cols);
+        Eigen::MatrixXd delta_since_check = Eigen::MatrixXd::Zero(n_rows, n_cols);
 
-        // loop through cols and rows
-        for (Eigen::Index k=0; k<n_cols; ++k) {
-            for (Eigen::Index l=0; l<n_rows; ++l) {
-                const Eigen::Index kk = n_rows * k + l;
-                if (kk >= max_iters) {
+        for (Eigen::Index kk = 0; kk < max_iters && !done; ++kk) {
+            const auto shift_row = shift_rows_desc[kk];
+            const auto shift_col = shift_cols_desc[kk];
+
+            // f(x) x f(x-x_d)
+            engine_utils::shift_2D_into(filter_template, shift_row, shift_col, shifted_template);
+            in_prod = filter_template.array() * shifted_template.array();
+
+            // populate matrices for fft
+            in.real() = in_prod;
+            in.imag().setZero();
+
+            // fft(f(x) x f(x-x_d))
+            out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+
+            // copy of fft(f(x) x f(x-x_d))
+            ffdq = out;
+
+            // R(x) x R(x-x_d)
+            engine_utils::shift_2D_into(rr, shift_row, shift_col, shifted_rr);
+            in_prod = rr.array() * shifted_rr.array();
+
+            // populate matrices for fft
+            in.real() = in_prod;
+            in.imag().setZero();
+
+            // fft(R(x) x R(x-x_d))
+            out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
+
+            // fft(f(x) x f(x-x_d)) x fft(R(x) x R(x-x_d))
+            in.real() = ffdq.real().array() * out.real().array() + ffdq.imag().array() * out.imag().array();
+            in.imag() = -ffdq.imag().array() * out.real().array() + ffdq.real().array() * out.imag().array();
+
+            // G = ifft(fft(f(x) x f(x-x_d)) x fft(R(x) x R(x-x_d)))
+            out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
+
+            // Z(x_d) x G/n_pixels
+            Eigen::MatrixXd delta_denom = scales_desc[kk] * out.real();
+
+            // D = D + Z(x_d) x G/n_pixels
+            denom = denom.array() + delta_denom.array();
+            delta_since_check.array() += delta_denom.array();
+            pb.count(max_iters, pb_stride);
+
+            const Eigen::Index completed_iters = kk + 1;
+            if ((completed_iters % check_iters) == 0 || completed_iters >= max_iters) {
+                const double denom_norm = denom.norm();
+                const double delta_norm = delta_since_check.norm();
+                const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
+                const double tail_frac = tail_fracs_desc[kk];
+
+                const double elapsed_s = std::chrono::duration<double>(
+                    std::chrono::steady_clock::now() - denom_start).count();
+                const double step_s = elapsed_s - last_log_s;
+                last_log_s = elapsed_s;
+
+                logger->info("{} iteration(s) complete. rel_update={:.4g} tail_frac={:.4f} elapsed_s={:.2f} step_s={:.2f}",
+                             static_cast<long long>(completed_iters), rel_update, tail_frac, elapsed_s, step_s);
+
+                ++checks_done;
+                if (rel_update < denom_rel_tol) {
+                    logger->info("Wiener denominator converged after {} iteration(s); rel_update={:.4g} tail_frac={:.4f}",
+                                 static_cast<long long>(completed_iters), rel_update, tail_frac);
                     done = true;
-                    break;
                 }
-                if (!done) {
-                    const auto shift_index = shift_indices_desc[kk];
-                    const auto shift_row = shift_rows_desc[kk];
-                    const auto shift_col = shift_cols_desc[kk];
-
-                    // f(x) x f(x-x_d)
-                    engine_utils::shift_2D_into(filter_template, shift_row, shift_col, shifted_template);
-                    in_prod = filter_template.array() * shifted_template.array();
-
-                    // populate matrices for fft
-                    in.real() = in_prod;
-                    in.imag().setZero();
-
-                    // fft(f(x) x f(x-x_d))
-                    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
-
-                    // copy of fft(f(x) x f(x-x_d))
-                    ffdq = out;
-
-                    // R(x) x R(x-x_d)
-                    engine_utils::shift_2D_into(rr, shift_row, shift_col, shifted_rr);
-                    in_prod = rr.array() * shifted_rr.array();
-
-                    // populate matrices for fft
-                    in.real() = in_prod;
-                    in.imag().setZero();
-
-                    // fft(R(x) x R(x-x_d))
-                    out = engine_utils::fft2<engine_utils::forward>(in, pf, a, b);
-
-                    // fft(f(x) x f(x-x_d)) x fft(R(x) x R(x-x_d))
-                    in.real() = ffdq.real().array() * out.real().array() + ffdq.imag().array() * out.imag().array();
-                    in.imag() = -ffdq.imag().array() * out.real().array() + ffdq.real().array() * out.imag().array();
-
-                    // G = ifft(fft(f(x) x f(x-x_d)) x fft(R(x) x R(x-x_d)))
-                    out = engine_utils::fft2<engine_utils::inverse>(in, pr, a, b);
-
-                    // Z(x_d) x G/n_pixels
-                    Eigen::MatrixXd delta_denom = scales_desc[kk] * out.real();
-
-                    // D = D + Z(x_d) x G/n_pixels
-                    denom = denom.array() + delta_denom.array();
-                    Z_abs_done += Z_abs(shift_index);
-                    pb.count(max_iters, pb_stride);
-
-                    // update status
-                    if ((kk % check_iters) == 1) {
-                        const double denom_norm = denom.norm();
-                        const double delta_norm = delta_denom.norm();
-                        const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
-                        const double tail_frac = tail_fracs_desc[kk];
-
-                        const double elapsed_s = std::chrono::duration<double>(
-                            std::chrono::steady_clock::now() - denom_start).count();
-                        const double step_s = elapsed_s - last_log_s;
-                        last_log_s = elapsed_s;
-
-                        logger->info("{} iteration(s) complete. rel_update={:.4g} tail_frac={:.4f} elapsed_s={:.2f} step_s={:.2f}",
-                                     kk, rel_update, tail_frac, elapsed_s, step_s);
-
-                        ++checks_done;
-                        if (rel_update < denom_rel_tol && tail_frac < tail_frac_tol) {
-                            done = true;
-                        }
-                        else if (checks_done >= max_checks) {
-                            logger->info("reached Wiener denominator max_loops={} after {} iteration(s); stopping early",
-                                         max_checks, kk);
-                            done = true;
-                        }
+                else if (checks_done >= max_checks) {
+                    logger->info("reached Wiener denominator max_loops={} after {} iteration(s); stopping early",
+                                 max_checks, static_cast<long long>(completed_iters));
+                    done = true;
+                }
+                else if (completed_iters >= max_iters) {
+                    if (max_denom_iters > 0 && max_iters < tail_cap_iters) {
+                        logger->info("reached configured Wiener denominator max_denom_iters={} before tail_cap_iters={}; stopping",
+                                     static_cast<long long>(max_iters), static_cast<long long>(tail_cap_iters));
                     }
-                    else if (kk + 1 >= max_iters) {
+                    else {
                         logger->info("reached Wiener denominator tail_cap_iters={} and stopping",
                                      static_cast<long long>(max_iters));
-                        done = true;
                     }
+                    done = true;
                 }
-            }
-            if (done) {
-                break;
+                delta_since_check.setZero();
             }
         }
 
