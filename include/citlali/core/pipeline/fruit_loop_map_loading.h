@@ -2,32 +2,11 @@
 
 #include <citlali/core/pipeline/fruit_loop_map_io.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
+#include <citlali/core/pipeline/initial_fruit_loop_map_loading.h>
 
 #include <string>
 
 namespace citlali::pipeline {
-
-template <class Engine>
-bool should_load_initial_fruit_loop_maps(const Engine &engine) {
-    return engine.ptcproc.run_fruit_loops &&
-           engine.fruit_iter == 0 &&
-           engine.ptcproc.fruit_loops_path != "null";
-}
-
-template <class Engine>
-std::string initial_fruit_loop_map_dir(const Engine &engine) {
-    return fruit_loop_map_dir(engine.ptcproc.fruit_loops_path,
-                              engine.ptcproc.fruit_loops_type,
-                              engine.omb.obsnums.back());
-}
-
-template <class Engine>
-void load_initial_fruit_loop_maps_if_requested(Engine &engine) {
-    if (should_load_initial_fruit_loop_maps(engine)) {
-        const auto fruit_dir = initial_fruit_loop_map_dir(engine);
-        load_fruit_loop_maps(engine, fruit_dir);
-    }
-}
 
 template <class Engine>
 bool should_load_previous_fruit_loop_maps(const Engine &engine) {
