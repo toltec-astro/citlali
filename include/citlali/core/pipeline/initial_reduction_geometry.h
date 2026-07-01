@@ -1,6 +1,8 @@
 #pragma once
 
 #include <citlali/core/pipeline/flxscale_correction.h>
+#include <citlali/core/pipeline/initial_coadd_map_dimensions.h>
+#include <citlali/core/pipeline/initial_observation_map_dimensions.h>
 #include <citlali/core/pipeline/kids_metadata.h>
 #include <citlali/core/pipeline/observation_calibration_config.h>
 #include <citlali/core/pipeline/observation_input_checks.h>
@@ -11,23 +13,6 @@
 #include <cstddef>
 
 namespace citlali::pipeline {
-
-template <class TodProc, class MapExtents, class MapCoords, class Logger>
-void calculate_initial_observation_map_dimensions(TodProc &todproc,
-                                                 MapExtents &map_extents,
-                                                 MapCoords &map_coords,
-                                                 const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    if (!engine.run_mapmaking) {
-        return;
-    }
-
-    logger->info("calculating number of maps");
-    todproc.calc_map_num();
-    logger->info("calculating obs map dimensions");
-    todproc.calc_omb_size(map_extents, map_coords);
-}
 
 template <bool IsBeammap, class TodProc, class RawObs, class RawObsKidsMeta,
           class MapExtents, class MapCoords, class Logger>
@@ -85,20 +70,6 @@ bool prepare_initial_observations(
         ++observation_index;
     }
     return true;
-}
-
-template <class TodProc, class MapCoords, class Logger>
-void calculate_initial_coadd_map_dimensions(TodProc &todproc,
-                                            MapCoords &map_coords,
-                                            const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    if (!engine.run_coadd) {
-        return;
-    }
-
-    logger->info("calculating cmb dimensions");
-    todproc.calc_cmb_size(map_coords);
 }
 
 template <bool IsBeammap, class KidsDataProc, class TodProc,
