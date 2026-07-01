@@ -559,6 +559,13 @@ std::string saved_previous_fruit_loop_model_dir(const Engine &engine) {
         engine.omb.obsnums.back());
 }
 
+template <class Engine>
+std::string current_previous_fruit_loop_model_dir(const Engine &engine) {
+    return fruit_loop_map_dir(engine.redu_dir_name,
+                              engine.ptcproc.fruit_loops_type,
+                              engine.omb.obsnums.back());
+}
+
 template <class Engine, class Logger>
 void load_previous_fruit_loop_model_if_needed(Engine &engine,
                                               const Logger &logger) {
@@ -571,9 +578,7 @@ void load_previous_fruit_loop_model_if_needed(Engine &engine,
             logger->info(
                 "loading previous iter maps for fruit loops iteration {}",
                 engine.fruit_iter);
-            fruit_dir = fruit_loop_map_dir(engine.redu_dir_name,
-                                           engine.ptcproc.fruit_loops_type,
-                                           engine.omb.obsnums.back());
+            fruit_dir = current_previous_fruit_loop_model_dir(engine);
         }
 
         logger->info("reading in {} for fruit loops iteration {}", fruit_dir,
