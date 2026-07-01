@@ -1,6 +1,6 @@
 #pragma once
 
-#include <citlali/core/pipeline/observation_preflight.h>
+#include <citlali/core/pipeline/reduction_config.h>
 
 namespace citlali::cli {
 
