@@ -5,19 +5,10 @@
 #include <kids/sweep/fitter.h>
 #include <kids/timestream/solver.h>
 #include <kids/toltec/toltec.h>
-#include <kidscpp_config/gitversion.h>
-#include <tula_config/gitversion.h>
-#include <tula/cli.h>
 #include <tula/config/core.h>
-#include <tula/config/flatconfig.h>
 #include <tula/config/yamlconfig.h>
-#include <tula/enum.h>
-#include <tula/filesystem.h>
 #include <tula/formatter/container.h>
-#include <tula/formatter/enum.h>
-#include <tula/grppi.h>
 #include <tula/logging.h>
-#include <tula/switch_invoke.h>
 
 #include <cstdlib>
 #include <cmath>
