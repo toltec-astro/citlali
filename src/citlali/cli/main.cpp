@@ -88,27 +88,18 @@ int run(const rc_t &rc) {
     }
 
     // start the main process
-    auto exitcode = std::visit(
-        [&](auto &todproc) {
-            using todproc_t = std::decay_t<decltype(todproc)>;
-
-            // if todproc type is not one of the allowed std::variant states,
-            // exit
-            if constexpr (citlali::cli::is_empty_tod_processor_v<todproc_t>) {
-                return EXIT_FAILURE;
-            }
-            else {
-                return citlali::cli::run_cli_reduction_processor_for_mode<
-                        todproc_t, TimeOrderedDataProc<Beammap>,
-                        TimeOrderedDataProc<Pointing>,
-                        mapmaking::RawObs, mapmaking::FilteredObs,
-                        mapmaking::RawCoadd, mapmaking::FilteredCoadd,
-                        KidsDataProc>(
-                        todproc, co, citlali_config,
-                        loaded_config.filepaths, logger, std::cerr);
-            }
-        },
-        todproc);
+    auto exitcode = citlali::cli::visit_tod_processor_or_failure(
+        todproc,
+        [&](auto &selected_todproc) {
+            using todproc_t = std::decay_t<decltype(selected_todproc)>;
+            return citlali::cli::run_cli_reduction_processor_for_mode<
+                todproc_t, TimeOrderedDataProc<Beammap>,
+                TimeOrderedDataProc<Pointing>, mapmaking::RawObs,
+                mapmaking::FilteredObs, mapmaking::RawCoadd,
+                mapmaking::FilteredCoadd, KidsDataProc>(
+                selected_todproc, co, citlali_config,
+                loaded_config.filepaths, logger, std::cerr);
+        });
 
     // re-enable default logger
     citlali::cli::restore_default_sink_level(run_loggers, log_level);

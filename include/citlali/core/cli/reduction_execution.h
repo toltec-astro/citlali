@@ -11,6 +11,8 @@
 #include <cstdlib>
 #include <ostream>
 #include <type_traits>
+#include <utility>
+#include <variant>
 
 namespace citlali::cli {
 
@@ -125,6 +127,22 @@ int run_cli_reduction_processor_for_mode(
         fits_maps_for_tod_processor_v<TodProc, PointingTodProc>,
         KidsDataProc>(
         todproc, co, config, config_filepaths, logger, os);
+}
+
+template <class TodProcVariant, class RunProcessor>
+int visit_tod_processor_or_failure(TodProcVariant &todproc,
+                                   RunProcessor &&run_processor) {
+    return std::visit(
+        [&](auto &selected_todproc) {
+            using todproc_t = std::decay_t<decltype(selected_todproc)>;
+            if constexpr (is_empty_tod_processor_v<todproc_t>) {
+                return EXIT_FAILURE;
+            }
+            else {
+                return run_processor(selected_todproc);
+            }
+        },
+        todproc);
 }
 
 }  // namespace citlali::cli
