@@ -2440,6 +2440,19 @@ TEST(pipeline_preflight, appends_observation_date) {
     EXPECT_EQ(engine.date_obs, (std::vector<std::string>{"old", "new"}));
 }
 
+TEST(pipeline_preflight, derives_date_obs_from_telescope_time) {
+    FakeEngine engine;
+    engine.telescope.tel_data["TelTime"].values = {123.0, 456.0};
+
+    auto date_obs = citlali::pipeline::date_obs_from_telescope_time(
+        engine, [](double unix_time) {
+            return std::string{"utc:"} + std::to_string(
+                static_cast<int>(unix_time));
+        });
+
+    EXPECT_EQ(date_obs, "utc:123");
+}
+
 TEST(pipeline_preflight, configures_non_fruit_loop_as_single_iteration) {
     FakeEngine engine;
     engine.ptcproc.run_fruit_loops = false;
