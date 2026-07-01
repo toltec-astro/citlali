@@ -2,6 +2,7 @@
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/cli/config_loading.h>
 #include <citlali/core/cli/runtime_setup.h>
+#include <citlali/core/cli/tod_processor_selection.h>
 #include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>
@@ -16,6 +17,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <variant>
 #include <vector>
 
 namespace {
@@ -504,6 +506,34 @@ struct FakeRuntimeConfig {
 
 struct FakeLoadedConfig {
     std::vector<std::string> loaded_paths;
+};
+
+struct FakeTodConfig {
+    int value = 0;
+};
+
+struct FakeScienceTodProc {
+    int loaded_value = 0;
+
+    static FakeScienceTodProc from_config(FakeTodConfig &config) {
+        return {config.value};
+    }
+};
+
+struct FakePointingTodProc {
+    int loaded_value = 0;
+
+    static FakePointingTodProc from_config(FakeTodConfig &config) {
+        return {config.value};
+    }
+};
+
+struct FakeBeammapTodProc {
+    int loaded_value = 0;
+
+    static FakeBeammapTodProc from_config(FakeTodConfig &config) {
+        return {config.value};
+    }
 };
 
 struct FakeIOCoordinator {
@@ -1624,6 +1654,52 @@ TEST(cli_runtime_setup, warns_when_fftw_thread_init_fails) {
 
     EXPECT_EQ(fftw_threads, 0);
     EXPECT_EQ(logger->warn_calls, 1);
+}
+
+TEST(cli_tod_processor_selection, selects_science_processor) {
+    std::variant<std::monostate, FakeScienceTodProc, FakePointingTodProc,
+                 FakeBeammapTodProc>
+        todproc;
+    FakeTodConfig config{77};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::cli::emplace_tod_processor_for_reduction_type<
+        decltype(todproc), FakeScienceTodProc, FakePointingTodProc,
+        FakeBeammapTodProc>(todproc, "science", config, logger));
+
+    ASSERT_TRUE(std::holds_alternative<FakeScienceTodProc>(todproc));
+    EXPECT_EQ(std::get<FakeScienceTodProc>(todproc).loaded_value, 77);
+    EXPECT_EQ(logger->info_calls, 1);
+}
+
+TEST(cli_tod_processor_selection, selects_pointing_processor) {
+    std::variant<std::monostate, FakeScienceTodProc, FakePointingTodProc,
+                 FakeBeammapTodProc>
+        todproc;
+    FakeTodConfig config{88};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::cli::emplace_tod_processor_for_reduction_type<
+        decltype(todproc), FakeScienceTodProc, FakePointingTodProc,
+        FakeBeammapTodProc>(todproc, "pointing", config, logger));
+
+    ASSERT_TRUE(std::holds_alternative<FakePointingTodProc>(todproc));
+    EXPECT_EQ(std::get<FakePointingTodProc>(todproc).loaded_value, 88);
+}
+
+TEST(cli_tod_processor_selection, rejects_unknown_processor_type) {
+    std::variant<std::monostate, FakeScienceTodProc, FakePointingTodProc,
+                 FakeBeammapTodProc>
+        todproc;
+    FakeTodConfig config{99};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_FALSE(citlali::cli::emplace_tod_processor_for_reduction_type<
+        decltype(todproc), FakeScienceTodProc, FakePointingTodProc,
+        FakeBeammapTodProc>(todproc, "unknown", config, logger));
+
+    EXPECT_TRUE(std::holds_alternative<std::monostate>(todproc));
+    EXPECT_EQ(logger->info_calls, 0);
 }
 
 TEST(pipeline_preflight, applies_flxscale_correction_when_present) {
