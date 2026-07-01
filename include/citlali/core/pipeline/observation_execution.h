@@ -1,6 +1,6 @@
 #pragma once
 
-#include <citlali/core/pipeline/fruit_loop_models.h>
+#include <citlali/core/pipeline/fruit_loop_map_loading.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
@@ -551,7 +551,7 @@ void run_reduction_observation_pipeline(TodProc &todproc, KidsProc &kidsproc,
                                         const Logger &logger) {
     auto &engine = todproc.engine();
 
-    load_observation_fruit_loop_models_if_needed<IsBeammap>(engine, logger);
+    load_observation_fruit_loop_maps_if_needed<IsBeammap>(engine, logger);
     setup_and_run_observation_pipeline(engine, kidsproc, rawobs, logger);
     write_observation_outputs_and_accumulate<RawObsMap, FilteredObsMap,
                                              FitMaps>(todproc, logger);
