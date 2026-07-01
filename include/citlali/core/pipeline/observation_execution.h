@@ -551,16 +551,21 @@ bool should_load_previous_fruit_loop_model(const Engine &engine) {
     return engine.fruit_iter > 0;
 }
 
+template <class Engine>
+std::string saved_previous_fruit_loop_model_dir(const Engine &engine) {
+    return previous_fruit_loop_map_dir(
+        engine.output_dir, engine.redu_dir_num,
+        engine.ptcproc.fruit_loops_type,
+        engine.omb.obsnums.back());
+}
+
 template <class Engine, class Logger>
 void load_previous_fruit_loop_model_if_needed(Engine &engine,
                                               const Logger &logger) {
     if (should_load_previous_fruit_loop_model(engine)) {
         auto fruit_dir = std::string{};
         if (engine.ptcproc.save_all_iters) {
-            fruit_dir = previous_fruit_loop_map_dir(
-                engine.output_dir, engine.redu_dir_num,
-                engine.ptcproc.fruit_loops_type,
-                engine.omb.obsnums.back());
+            fruit_dir = saved_previous_fruit_loop_model_dir(engine);
         }
         else {
             logger->info(
