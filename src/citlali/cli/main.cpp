@@ -55,6 +55,7 @@
 #include <citlali/core/engine/lali.h>
 #include <citlali/core/engine/pointing.h>
 #include <citlali/core/engine/beammap.h>
+#include <citlali/core/pipeline/map_geometry.h>
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 
@@ -302,13 +303,8 @@ int run(const rc_t &rc) {
                 return EXIT_FAILURE;
             }
             else {
-                // type definitions for map vectors
-                using map_extent_t = typename todproc_t::map_extent_t;
-                using map_coord_t = typename todproc_t::map_coord_t;
-
-                // create vectors for map size and grouping parameters
-                std::vector<map_extent_t> map_extents{};
-                std::vector<map_coord_t> map_coords{};
+                citlali::pipeline::ReductionMapGeometry<todproc_t>
+                    map_geometry;
 
                 if (!citlali::cli::prepare_reduction_runtime(
                         todproc, citlali_config, logger,
@@ -347,7 +343,7 @@ int run(const rc_t &rc) {
                                        TimeOrderedDataProc<Pointing>>,
                         KidsDataProc>(
                         todproc, co, citlali_config, config_filepaths,
-                        map_extents, map_coords,
+                        map_geometry.extents, map_geometry.coords,
                         [](auto &engine) {
                             return engine_utils::unix_to_utc(
                                 engine.telescope.tel_data["TelTime"](0));
