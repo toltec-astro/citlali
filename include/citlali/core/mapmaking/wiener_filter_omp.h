@@ -1537,10 +1537,6 @@ void WienerFilter::calc_denominator() {
                 static_cast<long long>(tail_cap_iters),
                 tail_fracs_desc[max_iters - 1]);
         }
-        tula::logging::progressbar pb(
-            [&](const auto &msg) { logger->info("{}", msg); }, 90,
-            "calculating denom");
-        const Eigen::Index pb_stride = std::max<Eigen::Index>(max_iters / 100, 1);
         logger->info("Wiener denominator total_iters={} tail_cap_iters={} max_iters={} check_iters={}",
                      static_cast<long long>(total_iters), static_cast<long long>(tail_cap_iters),
                      static_cast<long long>(max_iters), static_cast<long long>(check_iters));
@@ -1602,10 +1598,6 @@ void WienerFilter::calc_denominator() {
                 denom.array() += partial.array();
                 delta_since_check.array() += partial.array();
             }
-            for (Eigen::Index kk = chunk_start; kk < chunk_end; ++kk) {
-                pb.count(max_iters, pb_stride);
-            }
-
             const double denom_norm = denom.norm();
             const double delta_norm = delta_since_check.norm();
             const double rel_update = delta_norm / std::max(denom_norm, 1e-12);
@@ -1614,9 +1606,10 @@ void WienerFilter::calc_denominator() {
                 std::chrono::steady_clock::now() - denom_start).count();
             const double step_s = elapsed_s - last_log_s;
             last_log_s = elapsed_s;
+            const double progress_pct = 100.0 * static_cast<double>(chunk_end) / static_cast<double>(max_iters);
 
-            logger->info("{} iteration(s) complete. rel_update={:.4g} tail_frac={:.4f} elapsed_s={:.2f} step_s={:.2f}",
-                         static_cast<long long>(chunk_end), rel_update, tail_frac, elapsed_s, step_s);
+            logger->info("{} iteration(s) complete. progress={:.1f}% rel_update={:.4g} tail_frac={:.4f} elapsed_s={:.2f} step_s={:.2f}",
+                         static_cast<long long>(chunk_end), progress_pct, rel_update, tail_frac, elapsed_s, step_s);
 
             ++checks_done;
             last_denom_iters = chunk_end;
