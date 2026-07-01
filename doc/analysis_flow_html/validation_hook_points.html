@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Citlali Analysis Flow: Validation Hook Points</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #223041;
+      --muted: #536579;
+      --line: #d4dde8;
+      --panel: #f7f9fc;
+      --accent: #215f9a;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: #ffffff;
+      line-height: 1.55;
+    }
+    main {
+      width: min(1320px, calc(100vw - 48px));
+      margin: 0 auto;
+      padding: 32px 0 56px;
+    }
+    header {
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 28px;
+      padding-bottom: 18px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+    h2 {
+      margin: 34px 0 10px;
+      font-size: 25px;
+      letter-spacing: 0;
+    }
+    p {
+      max-width: 900px;
+      margin: 8px 0 14px;
+    }
+    a {
+      color: var(--accent);
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+    .note {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .diagram-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 18px 0 34px;
+      background: var(--panel);
+      overflow-x: auto;
+    }
+    .mermaid {
+      min-width: 760px;
+      text-align: center;
+    }
+    details {
+      margin-top: 16px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+    summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    pre.source {
+      overflow-x: auto;
+      background: #101820;
+      color: #e8eef6;
+      border-radius: 6px;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    ul {
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+<main>
+
+<header>
+  <h1>Validation Hook Points</h1>
+  <p class="note">Standalone Mermaid HTML export. <a href="index.html">All diagrams</a></p>
+  <nav><a href="end_to_end_flow.html">End-to-End Flow</a>
+<a href="product_families_by_reduction_type.html">Product Families by Reduction Type</a>
+<a href="runtime_control_flow.html">Runtime Control Flow</a>
+<a href="where_the_current_refactor_boundaries_land.html">Where the Current Refactor Boundaries Land</a></nav>
+</header>
+
+<section id="validation_hook_points">
+  <h2>Validation Hook Points</h2>
+  
+  <div class="diagram-card">
+    <pre class="mermaid">flowchart TD
+    compile[&quot;Unity compile&lt;br/&gt;build/citlali&quot;]
+    point[&quot;Pointing validation&lt;br/&gt;obs 152389 deterministic seq/thread=1&quot;]
+    science[&quot;Science validation&lt;br/&gt;individual obs and coadd products&quot;]
+    manifest[&quot;Manifest comparison&lt;br/&gt;structured FITS/netCDF/ECSV summaries&quot;]
+    logs[&quot;Log scan&lt;br/&gt;fatal/error patterns and completion tail&quot;]
+
+    compile --&gt; point --&gt; manifest
+    compile --&gt; science --&gt; manifest
+    point --&gt; logs
+    science --&gt; logs</pre>
+    <details>
+      <summary>Mermaid source</summary>
+      <pre class="source"><code>flowchart TD
+    compile[&quot;Unity compile&lt;br/&gt;build/citlali&quot;]
+    point[&quot;Pointing validation&lt;br/&gt;obs 152389 deterministic seq/thread=1&quot;]
+    science[&quot;Science validation&lt;br/&gt;individual obs and coadd products&quot;]
+    manifest[&quot;Manifest comparison&lt;br/&gt;structured FITS/netCDF/ECSV summaries&quot;]
+    logs[&quot;Log scan&lt;br/&gt;fatal/error patterns and completion tail&quot;]
+
+    compile --&gt; point --&gt; manifest
+    compile --&gt; science --&gt; manifest
+    point --&gt; logs
+    science --&gt; logs</code></pre>
+    </details>
+  </div>
+  <p>The most useful validation checkpoints for the refactor remain:</p>
+<ul><li>compile on Unity after each batch of structural commits</li><li>deterministic pointing reduction against the protected OG baseline</li><li>science individual-observation product comparison</li><li>science filtered/coadded comparison when Wiener-filter runtime is practical</li><li>log scan for fatal/error patterns plus product manifest parity</li></ul>
+</section>
+
+
+</main>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    securityLevel: "loose",
+    theme: "default",
+    flowchart: { htmlLabels: true, curve: "basis" },
+    sequence: { mirrorActors: false }
+  });
+</script>
+</body>
+</html>

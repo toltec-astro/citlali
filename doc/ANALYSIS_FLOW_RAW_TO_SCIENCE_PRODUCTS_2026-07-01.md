@@ -5,6 +5,13 @@ by the structural refactor validation work. It is intentionally higher level
 than the C++ helper split: the goal is to show what happens scientifically and
 operationally from raw observation inputs to the products we compare.
 
+Standalone Mermaid HTML documents for sharing live in
+`doc/analysis_flow_html/`. Regenerate them with:
+
+```bash
+/Users/gwilson/tolteca/bin/python tools/docs/render_analysis_flow_html.py
+```
+
 ## End-to-End Flow
 
 ```mermaid
