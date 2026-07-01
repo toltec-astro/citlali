@@ -29,4 +29,10 @@ inline CliRunEnvironment configure_citlali_cli_run_environment() {
     return {previous_log_level, run_loggers, logger};
 }
 
+inline void restore_citlali_cli_run_environment(
+    const CliRunEnvironment &environment) {
+    restore_default_sink_level(
+        environment.run_loggers, environment.previous_log_level);
+}
+
 }  // namespace citlali::cli
