@@ -49,13 +49,9 @@ int run(const rc_t &rc) {
 
     citlali::cli::log_kids_data_spec(logger);
 
-    auto inputs =
-        citlali::cli::load_standard_reduction_inputs<SeqIOCoordinator>(
-            rc, logger);
-
     // start the main process
-    auto exitcode = citlali::cli::run_standard_citlali_reduction_inputs<
-        KidsDataProc>(inputs, logger, std::cerr);
+    auto exitcode = citlali::cli::load_and_run_standard_citlali_reduction<
+        KidsDataProc, SeqIOCoordinator>(rc, logger, std::cerr);
 
     // re-enable default logger
     citlali::cli::restore_default_sink_level(run_loggers, log_level);
