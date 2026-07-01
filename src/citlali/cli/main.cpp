@@ -90,12 +90,7 @@ auto parse_args(int argc, char *argv[]) {
         fmt::print("{}\n", kids_ver_str);
         std::exit(EXIT_SUCCESS);
     }
-    {
-        auto log_level_str = cc.get_str("log_level");
-        auto log_level = spdlog::level::from_str(log_level_str);
-        spdlog::set_level(log_level);
-        SPDLOG_INFO("reconfigure logger to level={}", log_level_str);
-    }
+    citlali::cli::apply_cli_log_level(cc);
     // pass on the runtime config
     return std::move(rc);
 }

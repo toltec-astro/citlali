@@ -27,4 +27,12 @@ inline auto default_cli_log_level_name() {
     return tula::logging::get_level_name(v);
 }
 
+template <class CliConfig>
+void apply_cli_log_level(const CliConfig &cli_config) {
+    auto log_level_str = cli_config.get_str("log_level");
+    auto log_level = spdlog::level::from_str(log_level_str);
+    spdlog::set_level(log_level);
+    SPDLOG_INFO("reconfigure logger to level={}", log_level_str);
+}
+
 }  // namespace citlali::cli
