@@ -28,6 +28,7 @@
 #include <citlali/core/cli/process_control.h>
 #include <citlali/core/cli/reduction_execution.h>
 #include <citlali/core/cli/run_logging.h>
+#include <citlali/core/cli/standard_reduction_selection.h>
 #include <citlali/core/cli/standard_reduction_types.h>
 #include <citlali/core/cli/tod_processor_selection.h>
 #include <citlali/core/engine/lali.h>
@@ -73,10 +74,7 @@ int run(const rc_t &rc) {
     todproc_var_t todproc;
 
     // set todproc to variant depending on the config file reduction type
-    if (!citlali::cli::select_tod_processor_variant_or_report_failure<
-            citlali::cli::StandardScienceTodProcessor,
-            citlali::cli::StandardPointingTodProcessor,
-            citlali::cli::StandardBeammapTodProcessor>(
+    if (!citlali::cli::select_standard_citlali_tod_processor_or_report_failure(
             todproc, citlali_config, logger, std::cerr)) {
         return EXIT_FAILURE;
     }
