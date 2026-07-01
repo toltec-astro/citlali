@@ -491,13 +491,18 @@ void write_filtered_coadd_outputs(TodProc &todproc, const Logger &logger) {
     output_filtered_coadd_maps_if_needed<FilteredCoaddMap>(engine, logger);
 }
 
+template <class Engine>
+bool should_write_iteration_coadd_outputs(const Engine &engine) {
+    return engine.run_coadd;
+}
+
 template <auto RawCoaddMap, auto FilteredCoaddMap, class TodProc,
           class Logger>
 void write_iteration_coadd_outputs_if_needed(TodProc &todproc,
                                              const Logger &logger) {
     auto &engine = todproc.engine();
 
-    if (!engine.run_coadd) {
+    if (!should_write_iteration_coadd_outputs(engine)) {
         return;
     }
 
