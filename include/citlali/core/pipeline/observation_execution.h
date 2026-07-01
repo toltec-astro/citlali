@@ -546,10 +546,15 @@ void load_initial_fruit_loop_model_if_requested(Engine &engine) {
     }
 }
 
+template <class Engine>
+bool should_load_previous_fruit_loop_model(const Engine &engine) {
+    return engine.fruit_iter > 0;
+}
+
 template <class Engine, class Logger>
 void load_previous_fruit_loop_model_if_needed(Engine &engine,
                                               const Logger &logger) {
-    if (engine.fruit_iter > 0) {
+    if (should_load_previous_fruit_loop_model(engine)) {
         auto fruit_dir = std::string{};
         if (engine.ptcproc.save_all_iters) {
             fruit_dir = previous_fruit_loop_map_dir(
