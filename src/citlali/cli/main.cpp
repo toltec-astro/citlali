@@ -127,7 +127,7 @@ int run(const rc_t &rc) {
                     return EXIT_FAILURE;
                 }
 
-                logger->info("citlali is done!  going to sleep now...wake me when you need me.");
+                citlali::cli::log_reduction_complete(logger);
                 return EXIT_SUCCESS;
             }
         },

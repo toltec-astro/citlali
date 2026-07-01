@@ -44,4 +44,9 @@ inline void restore_default_sink_level(const RunLoggers &run_loggers,
     run_loggers.default_sink->set_level(log_level);
 }
 
+template <class Logger>
+void log_reduction_complete(const Logger &logger) {
+    logger->info("citlali is done!  going to sleep now...wake me when you need me.");
+}
+
 }  // namespace citlali::cli
