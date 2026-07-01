@@ -567,19 +567,22 @@ std::string current_previous_fruit_loop_model_dir(const Engine &engine) {
 }
 
 template <class Engine, class Logger>
+std::string previous_fruit_loop_model_dir(const Engine &engine,
+                                          const Logger &logger) {
+    if (engine.ptcproc.save_all_iters) {
+        return saved_previous_fruit_loop_model_dir(engine);
+    }
+
+    logger->info("loading previous iter maps for fruit loops iteration {}",
+                 engine.fruit_iter);
+    return current_previous_fruit_loop_model_dir(engine);
+}
+
+template <class Engine, class Logger>
 void load_previous_fruit_loop_model_if_needed(Engine &engine,
                                               const Logger &logger) {
     if (should_load_previous_fruit_loop_model(engine)) {
-        auto fruit_dir = std::string{};
-        if (engine.ptcproc.save_all_iters) {
-            fruit_dir = saved_previous_fruit_loop_model_dir(engine);
-        }
-        else {
-            logger->info(
-                "loading previous iter maps for fruit loops iteration {}",
-                engine.fruit_iter);
-            fruit_dir = current_previous_fruit_loop_model_dir(engine);
-        }
+        const auto fruit_dir = previous_fruit_loop_model_dir(engine, logger);
 
         logger->info("reading in {} for fruit loops iteration {}", fruit_dir,
                      engine.fruit_iter);
