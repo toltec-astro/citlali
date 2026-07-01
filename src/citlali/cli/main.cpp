@@ -348,11 +348,10 @@ int run(const rc_t &rc) {
                     return EXIT_FAILURE;
                 }
 
-                // if running in verbose mode, set log level to debug
-                if (todproc.engine().verbose_mode) {
-                    spdlog::set_level(spdlog::level::debug);
-                    logger->debug("running in verbose mode. setting log level=debug.");
-                }
+                citlali::pipeline::configure_verbose_logging_if_requested(
+                    todproc.engine(), logger, []() {
+                        spdlog::set_level(spdlog::level::debug);
+                    });
 
                 // set omp parallelization explicitly
                 omp_set_num_threads(todproc.engine().n_threads);

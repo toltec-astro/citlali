@@ -1884,6 +1884,32 @@ TEST(pipeline_preflight, rejects_invalid_engine_config) {
     EXPECT_EQ(logger->error_calls, 2);
 }
 
+TEST(pipeline_preflight, configures_verbose_logging_when_requested) {
+    FakeEngine engine;
+    engine.verbose_mode = true;
+    auto logger = std::make_shared<FakeLogger>();
+    int enable_debug_calls = 0;
+
+    citlali::pipeline::configure_verbose_logging_if_requested(
+        engine, logger, [&]() { ++enable_debug_calls; });
+
+    EXPECT_EQ(enable_debug_calls, 1);
+    EXPECT_EQ(logger->debug_calls, 1);
+}
+
+TEST(pipeline_preflight, skips_verbose_logging_when_not_requested) {
+    FakeEngine engine;
+    engine.verbose_mode = false;
+    auto logger = std::make_shared<FakeLogger>();
+    int enable_debug_calls = 0;
+
+    citlali::pipeline::configure_verbose_logging_if_requested(
+        engine, logger, [&]() { ++enable_debug_calls; });
+
+    EXPECT_EQ(enable_debug_calls, 0);
+    EXPECT_EQ(logger->debug_calls, 0);
+}
+
 TEST(pipeline_preflight, checks_observation_inputs) {
     FakeTelescopeTodProc todproc;
     FakeRawObs rawobs;

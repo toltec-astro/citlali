@@ -152,6 +152,18 @@ bool load_and_validate_engine_config(Engine &engine, Config &config,
     return false;
 }
 
+template <class Engine, class Logger, class EnableDebugLogging>
+void configure_verbose_logging_if_requested(
+    const Engine &engine, const Logger &logger,
+    EnableDebugLogging &&enable_debug_logging) {
+    if (!engine.verbose_mode) {
+        return;
+    }
+
+    enable_debug_logging();
+    logger->debug("running in verbose mode. setting log level=debug.");
+}
+
 template <class TodProc, class RawObs, class Logger>
 void check_observation_inputs(TodProc &todproc, const RawObs &rawobs,
                               const Logger &logger) {
