@@ -4,7 +4,9 @@
 #include <citlali/core/pipeline/kids_metadata.h>
 #include <citlali/core/pipeline/observation_calibration_config.h>
 #include <citlali/core/pipeline/observation_input_checks.h>
-#include <citlali/core/pipeline/observation_telescope.h>
+#include <citlali/core/pipeline/scan_indices.h>
+#include <citlali/core/pipeline/telescope_data_loading.h>
+#include <citlali/core/pipeline/telescope_pointing.h>
 
 #include <cstddef>
 
