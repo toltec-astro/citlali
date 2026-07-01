@@ -156,7 +156,7 @@ int main(int argc, char *argv[]) {
         tula::logging::init();
         auto rc = citlali::cli::parse_args(argc, argv);
         SPDLOG_INFO("rc {}", rc.pformat());
-        if (rc.get_node("config_file").size() > 0) {
+        if (citlali::cli::has_config_files(rc)) {
             tula::logging::scoped_timeit TULA_X{"Citlali Process"};
             return run(rc);
         } else {

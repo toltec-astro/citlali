@@ -8,6 +8,11 @@
 
 namespace citlali::cli {
 
+template <class RuntimeConfig>
+bool has_config_files(const RuntimeConfig &runtime_config) {
+    return runtime_config.get_node("config_file").size() > 0;
+}
+
 template <class RuntimeConfig, class Config, class Logger, class LoadConfig,
           class MergeConfig>
 Config load_config_files(const RuntimeConfig &runtime_config,
