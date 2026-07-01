@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/cli/reduction_execution.h>
+#include <citlali/core/cli/standard_reduction_inputs.h>
 #include <citlali/core/cli/standard_reduction_selection.h>
 #include <citlali/core/cli/standard_reduction_types.h>
 
@@ -34,6 +35,16 @@ int select_and_run_standard_citlali_reduction(
 
     return run_standard_citlali_reduction_variant<KidsDataProc>(
         todproc, co, config, config_filepaths, logger, os);
+}
+
+template <class KidsDataProc, class Config, class IOCoordinator,
+          class Logger>
+int run_standard_citlali_reduction_inputs(
+    StandardReductionInputs<Config, IOCoordinator> &inputs,
+    const Logger &logger, std::ostream &os) {
+    return select_and_run_standard_citlali_reduction<KidsDataProc>(
+        inputs.coordinator, inputs.loaded_config.config,
+        inputs.loaded_config.filepaths, logger, os);
 }
 
 }  // namespace citlali::cli
