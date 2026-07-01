@@ -1,28 +1,11 @@
 #pragma once
 
 #include <citlali/core/pipeline/map_center_override.h>
+#include <citlali/core/pipeline/simulated_observation_indices.h>
 
 #include <string>
 
 namespace citlali::pipeline {
-
-template <class Engine, class RawObs>
-void reset_simulated_observation_indices(Engine &engine,
-                                         const RawObs &rawobs) {
-    engine.start_indices.clear();
-    engine.end_indices.clear();
-
-    for (const auto &data_item : rawobs.kidsdata()) {
-        (void)data_item;
-        engine.start_indices.push_back(0);
-        engine.start_indices.push_back(0);
-    }
-
-    if (engine.calib.run_hwpr) {
-        engine.hwpr_start_indices = 0;
-        engine.hwpr_end_indices = 0;
-    }
-}
 
 template <class TodProc, class RawObs, class Logger>
 void load_and_align_telescope_data(TodProc &todproc, const RawObs &rawobs,
