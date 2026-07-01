@@ -263,11 +263,8 @@ int run(const rc_t &rc) {
                     TimeOrderedDataProc<Pointing>,
                     TimeOrderedDataProc<Beammap>>(
                     todproc, reduction_type, citlali_config, logger)) {
-                std::vector<std::string> invalid_keys;
-                // push back invalid keys into temp vector
-                engine_utils::for_each_in_tuple(
-                    std::tuple{"runtime", "reduction_type"},
-                    [&](const auto &x) { invalid_keys.push_back(x); });
+                auto invalid_keys =
+                    citlali::cli::reduction_type_config_key_path();
 
                 std::cerr << fmt::format("invalid keys={}", invalid_keys)
                           << "\n";
@@ -276,11 +273,8 @@ int run(const rc_t &rc) {
 
         // catch bad yaml type conversion and mark as invalid
         } catch (YAML::TypedBadConversion<std::string>) {
-            std::vector<std::string> invalid_keys;
-            // push back invalid keys into temp vector
-            engine_utils::for_each_in_tuple(
-                std::tuple{"runtime", "reduction_type"},
-                [&](const auto &x) { invalid_keys.push_back(x); });
+            auto invalid_keys =
+                citlali::cli::reduction_type_config_key_path();
 
             std::cerr << fmt::format("invalid keys={}", invalid_keys) << "\n";
             return EXIT_FAILURE;
@@ -289,11 +283,8 @@ int run(const rc_t &rc) {
 
     // else mark as missing
     else {
-        std::vector<std::string> missing_keys;
-        // push back invalid keys into temp vector
-        engine_utils::for_each_in_tuple(
-            std::tuple{"runtime", "reduction_type"},
-            [&](const auto &x) { missing_keys.push_back(x); });
+        auto missing_keys =
+            citlali::cli::reduction_type_config_key_path();
 
         std::cerr << fmt::format("missing keys={}", missing_keys) << "\n";
         return EXIT_FAILURE;
