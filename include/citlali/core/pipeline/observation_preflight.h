@@ -1,35 +1,15 @@
 #pragma once
 
 #include <citlali/core/pipeline/kids_metadata.h>
+#include <citlali/core/pipeline/rawobs_data_items.h>
 #include <citlali/core/pipeline/reduction_config.h>
 
 #include <cmath>
-#include <functional>
 #include <string>
 #include <utility>
 #include <vector>
 
 namespace citlali::pipeline {
-
-namespace detail {
-
-template <class T>
-const T &unwrap_reference_wrapper(const T &value) {
-    return value;
-}
-
-template <class T>
-const T &unwrap_reference_wrapper(const std::reference_wrapper<T> &value) {
-    return value.get();
-}
-
-template <class T>
-const T &unwrap_reference_wrapper(
-    const std::reference_wrapper<const T> &value) {
-    return value.get();
-}
-
-}  // namespace detail
 
 inline double degrees_to_radians(double degrees) {
     constexpr double deg_to_rad = 0.017453292519943295769;
