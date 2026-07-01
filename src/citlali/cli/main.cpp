@@ -27,6 +27,7 @@
 #include <citlali/core/cli/kids_data_spec.h>
 #include <citlali/core/cli/process_control.h>
 #include <citlali/core/cli/reduction_date_obs.h>
+#include <citlali/core/cli/reduction_execution.h>
 #include <citlali/core/cli/reduction_runtime.h>
 #include <citlali/core/cli/run_logging.h>
 #include <citlali/core/cli/runtime_setup.h>
@@ -100,14 +101,8 @@ int run(const rc_t &rc) {
                 auto map_geometry =
                     citlali::pipeline::make_reduction_map_geometry<todproc_t>();
 
-                if (!citlali::cli::prepare_reduction_runtime_or_report_errors(
-                        todproc, citlali_config, logger,
-                        []() { spdlog::set_level(spdlog::level::debug); },
-                        [&](const auto &engine) {
-                            citlali::cli::configure_citlali_runtime_threads(
-                                engine, logger);
-                        },
-                        std::cerr)) {
+                if (!citlali::cli::prepare_cli_reduction_runtime_or_report_errors(
+                        todproc, citlali_config, logger, std::cerr)) {
                     return EXIT_FAILURE;
                 }
 
