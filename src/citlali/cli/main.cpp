@@ -49,6 +49,7 @@
 #include <citlali/core/utils/utils.h>
 
 #include <citlali/core/cli/config_loading.h>
+#include <citlali/core/cli/reduction_runtime.h>
 #include <citlali/core/cli/runtime_setup.h>
 #include <citlali/core/cli/tod_processor_selection.h>
 #include <citlali/core/engine/lali.h>
@@ -309,32 +310,33 @@ int run(const rc_t &rc) {
                 std::vector<map_extent_t> map_extents{};
                 std::vector<map_coord_t> map_coords{};
 
-                if (!citlali::pipeline::load_and_validate_engine_config(
-                        todproc.engine(), citlali_config, logger)) {
+                if (!citlali::cli::prepare_reduction_runtime(
+                        todproc, citlali_config, logger,
+                        []() { spdlog::set_level(spdlog::level::debug); },
+                        [&](const auto &engine) {
+                            citlali::cli::configure_runtime_threads(
+                                engine, logger,
+#if defined(CITLALI_USE_WIENER_FILTER_OMP)
+                                true,
+#else
+                                false,
+#endif
+                                [](int n_threads) {
+                                    omp_set_num_threads(n_threads);
+                                },
+                                [](int n_threads) {
+                                    Eigen::setNbThreads(n_threads);
+                                },
+                                []() { return fftw_init_threads(); },
+                                [](int n_threads) {
+                                    fftw_plan_with_nthreads(n_threads);
+                                });
+                        })) {
                     std::cerr << fmt::format("missing keys={}", todproc.engine().missing_keys) << "\n";
                     std::cerr << fmt::format("invalid keys={}", todproc.engine().invalid_keys) << "\n";
 
                     return EXIT_FAILURE;
                 }
-
-                citlali::pipeline::configure_verbose_logging_if_requested(
-                    todproc.engine(), logger, []() {
-                        spdlog::set_level(spdlog::level::debug);
-                    });
-
-                citlali::cli::configure_runtime_threads(
-                    todproc.engine(), logger,
-#if defined(CITLALI_USE_WIENER_FILTER_OMP)
-                    true,
-#else
-                    false,
-#endif
-                    [](int n_threads) { omp_set_num_threads(n_threads); },
-                    [](int n_threads) { Eigen::setNbThreads(n_threads); },
-                    []() { return fftw_init_threads(); },
-                    [](int n_threads) {
-                        fftw_plan_with_nthreads(n_threads);
-                    });
 
                 if (!citlali::pipeline::run_reduction_pipeline<
                         std::is_same_v<todproc_t,
