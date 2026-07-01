@@ -47,4 +47,15 @@ int run_standard_citlali_reduction_inputs(
         inputs.loaded_config.filepaths, logger, os);
 }
 
+template <class KidsDataProc, class IOCoordinator, class RuntimeConfig,
+          class Logger>
+int load_and_run_standard_citlali_reduction(
+    const RuntimeConfig &runtime_config, const Logger &logger,
+    std::ostream &os) {
+    auto inputs =
+        load_standard_reduction_inputs<IOCoordinator>(runtime_config, logger);
+    return run_standard_citlali_reduction_inputs<KidsDataProc>(
+        inputs, logger, os);
+}
+
 }  // namespace citlali::cli
