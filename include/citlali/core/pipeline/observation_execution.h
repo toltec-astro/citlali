@@ -426,12 +426,17 @@ void write_raw_coadd_outputs(TodProc &todproc, const Logger &logger) {
     output_raw_coadd_maps<RawCoaddMap>(engine, logger);
 }
 
+template <auto FilteredCoaddMap, class Engine, class Logger>
+void filter_coadd_maps(Engine &engine, const Logger &logger) {
+    logger->info("filtering coadded maps");
+    engine.template run_wiener_filter<FilteredCoaddMap>(engine.cmb);
+}
+
 template <auto FilteredCoaddMap, class TodProc, class Logger>
 void write_filtered_coadd_outputs(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
 
-    logger->info("filtering coadded maps");
-    engine.template run_wiener_filter<FilteredCoaddMap>(engine.cmb);
+    filter_coadd_maps<FilteredCoaddMap>(engine, logger);
 
     if (engine.run_noise_products &&
         engine.run_noise &&
