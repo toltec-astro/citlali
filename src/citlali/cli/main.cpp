@@ -149,41 +149,27 @@ int run(const rc_t &rc) {
     todproc_var_t todproc;
 
     // set todproc to variant depending on the config file reduction type
-    // check if config file has a reduction type parameter
-    if (citlali::cli::has_reduction_type_config(citlali_config)) {
-        try {
-            auto reduction_type =
-                *citlali::cli::read_reduction_type_config(citlali_config);
+    auto selection_status =
+        citlali::cli::select_tod_processor_from_config<
+            todproc_var_t, TimeOrderedDataProc<Lali>,
+            TimeOrderedDataProc<Pointing>, TimeOrderedDataProc<Beammap>>(
+            todproc, citlali_config, logger);
 
-            if (!citlali::cli::emplace_tod_processor_for_reduction_type<
-                    todproc_var_t, TimeOrderedDataProc<Lali>,
-                    TimeOrderedDataProc<Pointing>,
-                    TimeOrderedDataProc<Beammap>>(
-                    todproc, reduction_type, citlali_config, logger)) {
-                auto invalid_keys =
-                    citlali::cli::reduction_type_config_key_path();
-
-                std::cerr << fmt::format("invalid keys={}", invalid_keys)
-                          << "\n";
-                return EXIT_FAILURE;
-            }
-
-        // catch bad yaml type conversion and mark as invalid
-        } catch (YAML::TypedBadConversion<std::string>) {
-            auto invalid_keys =
-                citlali::cli::reduction_type_config_key_path();
-
-            std::cerr << fmt::format("invalid keys={}", invalid_keys) << "\n";
-            return EXIT_FAILURE;
-        }
-    }
-
-    // else mark as missing
-    else {
+    if (selection_status ==
+        citlali::cli::TodProcessorSelectionStatus::missing_reduction_type) {
         auto missing_keys =
             citlali::cli::reduction_type_config_key_path();
 
         std::cerr << fmt::format("missing keys={}", missing_keys) << "\n";
+        return EXIT_FAILURE;
+    }
+
+    if (selection_status ==
+        citlali::cli::TodProcessorSelectionStatus::invalid_reduction_type) {
+        auto invalid_keys =
+            citlali::cli::reduction_type_config_key_path();
+
+        std::cerr << fmt::format("invalid keys={}", invalid_keys) << "\n";
         return EXIT_FAILURE;
     }
 

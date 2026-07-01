@@ -4,8 +4,15 @@
 #include <string>
 #include <tuple>
 #include <vector>
+#include <yaml-cpp/yaml.h>
 
 namespace citlali::cli {
+
+enum class TodProcessorSelectionStatus {
+    ok,
+    missing_reduction_type,
+    invalid_reduction_type
+};
 
 inline auto reduction_type_config_key() {
     return std::tuple{"runtime", "reduction_type"};
@@ -55,6 +62,31 @@ bool emplace_tod_processor_for_reduction_type(
     }
 
     return false;
+}
+
+template <class TodProcVariant, class ScienceTodProc, class PointingTodProc,
+          class BeammapTodProc, class Config, class Logger>
+TodProcessorSelectionStatus select_tod_processor_from_config(
+    TodProcVariant &todproc, Config &config, const Logger &logger) {
+    if (!has_reduction_type_config(config)) {
+        return TodProcessorSelectionStatus::missing_reduction_type;
+    }
+
+    try {
+        auto reduction_type = *read_reduction_type_config(config);
+
+        if (!emplace_tod_processor_for_reduction_type<
+                TodProcVariant, ScienceTodProc, PointingTodProc,
+                BeammapTodProc>(todproc, reduction_type, config, logger)) {
+            return TodProcessorSelectionStatus::invalid_reduction_type;
+        }
+
+    // catch bad yaml type conversion and mark as invalid
+    } catch (YAML::TypedBadConversion<std::string>) {
+        return TodProcessorSelectionStatus::invalid_reduction_type;
+    }
+
+    return TodProcessorSelectionStatus::ok;
 }
 
 }  // namespace citlali::cli
