@@ -26,6 +26,7 @@
 #include <citlali/core/utils/utils.h>
 
 #include <citlali/core/cli/abort_backtrace.h>
+#include <citlali/core/cli/argument_parsing.h>
 #include <citlali/core/cli/config_loading.h>
 #include <citlali/core/cli/default_config_dump.h>
 #include <citlali/core/cli/hdf5_diagnostics.h>
@@ -48,10 +49,8 @@ auto parse_args(int argc, char *argv[]) {
     using namespace tula::cli::clipp_builder;
 
     // some of the option specs
-    auto ver_str =
-        fmt::format("{} ({})", CITLALI_GIT_VERSION, CITLALI_BUILD_TIMESTAMP);
-    auto kids_ver_str = fmt::format("kids {} ({})", KIDSCPP_GIT_VERSION,
-                                    KIDSCPP_BUILD_TIMESTAMP);
+    auto ver_str = citlali::cli::citlali_version_string();
+    auto kids_ver_str = citlali::cli::kidscpp_version_string();
     constexpr auto level_names = tula::logging::active_level_names;
     auto default_level_name = []() {
         auto v = spdlog::level::info;
