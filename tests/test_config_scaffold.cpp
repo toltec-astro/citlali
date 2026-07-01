@@ -1,6 +1,7 @@
 #include <citlali/core/config/calibration_config.h>
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/cli/config_loading.h>
+#include <citlali/core/cli/reduction_runtime.h>
 #include <citlali/core/cli/runtime_setup.h>
 #include <citlali/core/cli/tod_processor_selection.h>
 #include <citlali/core/error/error.h>
@@ -1666,6 +1667,40 @@ TEST(cli_runtime_setup, warns_when_fftw_thread_init_fails) {
 
     EXPECT_EQ(fftw_threads, 0);
     EXPECT_EQ(logger->warn_calls, 1);
+}
+
+TEST(cli_reduction_runtime, prepares_reduction_runtime) {
+    FakeInitialObservationTodProc todproc;
+    todproc.engine().verbose_mode = true;
+    FakeCitlaliConfig config;
+    auto logger = std::make_shared<FakeLogger>();
+    int enable_debug_calls = 0;
+    int configure_threads_calls = 0;
+
+    EXPECT_TRUE(citlali::cli::prepare_reduction_runtime(
+        todproc, config, logger, [&]() { ++enable_debug_calls; },
+        [&](auto &) { ++configure_threads_calls; }));
+
+    EXPECT_EQ(todproc.engine().get_citlali_config_calls, 1);
+    EXPECT_EQ(enable_debug_calls, 1);
+    EXPECT_EQ(configure_threads_calls, 1);
+}
+
+TEST(cli_reduction_runtime, rejects_invalid_reduction_runtime) {
+    FakeInitialObservationTodProc todproc;
+    todproc.engine().missing_keys = {"runtime"};
+    FakeCitlaliConfig config;
+    auto logger = std::make_shared<FakeLogger>();
+    int enable_debug_calls = 0;
+    int configure_threads_calls = 0;
+
+    EXPECT_FALSE(citlali::cli::prepare_reduction_runtime(
+        todproc, config, logger, [&]() { ++enable_debug_calls; },
+        [&](auto &) { ++configure_threads_calls; }));
+
+    EXPECT_EQ(enable_debug_calls, 0);
+    EXPECT_EQ(configure_threads_calls, 0);
+    EXPECT_EQ(logger->error_calls, 2);
 }
 
 TEST(cli_tod_processor_selection, selects_science_processor) {
