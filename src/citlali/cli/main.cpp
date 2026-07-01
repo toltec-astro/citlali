@@ -178,23 +178,8 @@ int run(const rc_t &rc) {
                         todproc, citlali_config, logger,
                         []() { spdlog::set_level(spdlog::level::debug); },
                         [&](const auto &engine) {
-                            citlali::cli::configure_runtime_threads(
-                                engine, logger,
-#if defined(CITLALI_USE_WIENER_FILTER_OMP)
-                                true,
-#else
-                                false,
-#endif
-                                [](int n_threads) {
-                                    omp_set_num_threads(n_threads);
-                                },
-                                [](int n_threads) {
-                                    Eigen::setNbThreads(n_threads);
-                                },
-                                []() { return fftw_init_threads(); },
-                                [](int n_threads) {
-                                    fftw_plan_with_nthreads(n_threads);
-                                });
+                            citlali::cli::configure_citlali_runtime_threads(
+                                engine, logger);
                         })) {
                     citlali::cli::report_engine_config_errors(
                         todproc.engine(), std::cerr);
