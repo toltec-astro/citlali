@@ -445,13 +445,9 @@ void calculate_filtered_coadd_noise_products_if_needed(
     }
 }
 
-template <auto FilteredCoaddMap, class TodProc, class Logger>
-void write_filtered_coadd_outputs(TodProc &todproc, const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    filter_coadd_maps<FilteredCoaddMap>(engine, logger);
-    calculate_filtered_coadd_noise_products_if_needed(engine, logger);
-
+template <class Engine, class Logger>
+void calculate_filtered_coadd_map_diagnostics(Engine &engine,
+                                              const Logger &logger) {
     logger->info("calculating filtered coadded map psds");
     engine.cmb.calc_map_psd();
     logger->info("calculating filtered coadded map histograms");
@@ -459,6 +455,15 @@ void write_filtered_coadd_outputs(TodProc &todproc, const Logger &logger) {
 
     engine.cmb.calc_median_err();
     engine.cmb.calc_median_rms();
+}
+
+template <auto FilteredCoaddMap, class TodProc, class Logger>
+void write_filtered_coadd_outputs(TodProc &todproc, const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    filter_coadd_maps<FilteredCoaddMap>(engine, logger);
+    calculate_filtered_coadd_noise_products_if_needed(engine, logger);
+    calculate_filtered_coadd_map_diagnostics(engine, logger);
 
     if (engine.run_source_finder) {
         logger->info("finding filtered coadded map sources");
