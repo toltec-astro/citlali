@@ -98,9 +98,6 @@ int run(const rc_t &rc) {
                 return EXIT_FAILURE;
             }
             else {
-                auto map_geometry =
-                    citlali::pipeline::make_reduction_map_geometry<todproc_t>();
-
                 if (!citlali::cli::prepare_and_run_cli_reduction_pipeline<
                         std::is_same_v<todproc_t,
                                        TimeOrderedDataProc<Beammap>>,
@@ -110,8 +107,7 @@ int run(const rc_t &rc) {
                                        TimeOrderedDataProc<Pointing>>,
                         KidsDataProc>(
                         todproc, co, citlali_config,
-                        loaded_config.filepaths, map_geometry, logger,
-                        std::cerr)) {
+                        loaded_config.filepaths, logger, std::cerr)) {
                     return EXIT_FAILURE;
                 }
 

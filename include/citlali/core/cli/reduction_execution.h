@@ -3,6 +3,7 @@
 #include <citlali/core/cli/reduction_date_obs.h>
 #include <citlali/core/cli/reduction_runtime.h>
 #include <citlali/core/cli/runtime_setup.h>
+#include <citlali/core/pipeline/map_geometry.h>
 #include <citlali/core/pipeline/reduction_pipeline.h>
 #include <spdlog/spdlog.h>
 
@@ -62,6 +63,22 @@ bool prepare_and_run_cli_reduction_pipeline(
         IsBeammap, RawObsMap, FilteredObsMap, RawCoaddMap, FilteredCoaddMap,
         FitMaps, KidsDataProc>(
         todproc, co, config, config_filepaths, map_geometry, logger);
+}
+
+template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap,
+          auto RawCoaddMap, auto FilteredCoaddMap, bool FitMaps,
+          class KidsDataProc, class TodProc, class IOCoordinator,
+          class Config, class ConfigFilepaths, class Logger>
+bool prepare_and_run_cli_reduction_pipeline(
+    TodProc &todproc, const IOCoordinator &co, Config &config,
+    const ConfigFilepaths &config_filepaths, const Logger &logger,
+    std::ostream &os) {
+    auto map_geometry =
+        citlali::pipeline::make_reduction_map_geometry<TodProc>();
+    return prepare_and_run_cli_reduction_pipeline<
+        IsBeammap, RawObsMap, FilteredObsMap, RawCoaddMap, FilteredCoaddMap,
+        FitMaps, KidsDataProc>(
+        todproc, co, config, config_filepaths, map_geometry, logger, os);
 }
 
 }  // namespace citlali::cli
