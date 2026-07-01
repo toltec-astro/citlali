@@ -1,8 +1,18 @@
 #pragma once
 
 #include <string>
+#include <tuple>
+#include <vector>
 
 namespace citlali::cli {
+
+inline auto reduction_type_config_key() {
+    return std::tuple{"runtime", "reduction_type"};
+}
+
+inline std::vector<std::string> reduction_type_config_key_path() {
+    return {"runtime", "reduction_type"};
+}
 
 template <class TodProcVariant, class ScienceTodProc, class PointingTodProc,
           class BeammapTodProc, class Config, class Logger>

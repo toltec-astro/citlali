@@ -1672,6 +1672,15 @@ TEST(cli_tod_processor_selection, selects_science_processor) {
     EXPECT_EQ(logger->info_calls, 1);
 }
 
+TEST(cli_tod_processor_selection, exposes_reduction_type_config_key) {
+    auto key = citlali::cli::reduction_type_config_key();
+
+    EXPECT_EQ(std::get<0>(key), "runtime");
+    EXPECT_EQ(std::get<1>(key), "reduction_type");
+    EXPECT_EQ(citlali::cli::reduction_type_config_key_path(),
+              (std::vector<std::string>{"runtime", "reduction_type"}));
+}
+
 TEST(cli_tod_processor_selection, selects_pointing_processor) {
     std::variant<std::monostate, FakeScienceTodProc, FakePointingTodProc,
                  FakeBeammapTodProc>
