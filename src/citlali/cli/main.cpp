@@ -57,7 +57,7 @@
 #include <citlali/core/engine/beammap.h>
 #include <citlali/core/pipeline/map_geometry.h>
 #include <citlali/core/pipeline/observation_execution.h>
-#include <citlali/core/pipeline/observation_timing.h>
+#include <citlali/core/pipeline/observation_date.h>
 
 using rc_t = tula::config::YamlConfig;
 
