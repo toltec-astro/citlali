@@ -1,5 +1,9 @@
 #pragma once
 
+#include <fmt/core.h>
+#include <tula/formatter/container.h>
+
+#include <ostream>
 #include <optional>
 #include <string>
 #include <tuple>
@@ -87,6 +91,23 @@ TodProcessorSelectionStatus select_tod_processor_from_config(
     }
 
     return TodProcessorSelectionStatus::ok;
+}
+
+inline bool report_tod_processor_selection_failure(
+    TodProcessorSelectionStatus status, std::ostream &os) {
+    if (status == TodProcessorSelectionStatus::missing_reduction_type) {
+        auto missing_keys = reduction_type_config_key_path();
+        os << fmt::format("missing keys={}", missing_keys) << "\n";
+        return true;
+    }
+
+    if (status == TodProcessorSelectionStatus::invalid_reduction_type) {
+        auto invalid_keys = reduction_type_config_key_path();
+        os << fmt::format("invalid keys={}", invalid_keys) << "\n";
+        return true;
+    }
+
+    return false;
 }
 
 }  // namespace citlali::cli

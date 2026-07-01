@@ -155,21 +155,8 @@ int run(const rc_t &rc) {
             TimeOrderedDataProc<Pointing>, TimeOrderedDataProc<Beammap>>(
             todproc, citlali_config, logger);
 
-    if (selection_status ==
-        citlali::cli::TodProcessorSelectionStatus::missing_reduction_type) {
-        auto missing_keys =
-            citlali::cli::reduction_type_config_key_path();
-
-        std::cerr << fmt::format("missing keys={}", missing_keys) << "\n";
-        return EXIT_FAILURE;
-    }
-
-    if (selection_status ==
-        citlali::cli::TodProcessorSelectionStatus::invalid_reduction_type) {
-        auto invalid_keys =
-            citlali::cli::reduction_type_config_key_path();
-
-        std::cerr << fmt::format("invalid keys={}", invalid_keys) << "\n";
+    if (citlali::cli::report_tod_processor_selection_failure(
+            selection_status, std::cerr)) {
         return EXIT_FAILURE;
     }
 
