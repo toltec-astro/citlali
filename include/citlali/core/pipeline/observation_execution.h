@@ -389,16 +389,21 @@ void prepare_raw_coadd_maps(TodProc &todproc, const Logger &logger) {
     }
 }
 
+template <class Engine, class Logger>
+void calculate_raw_coadd_noise_products_if_needed(
+    Engine &engine, const Logger &logger) {
+    if (engine.run_noise_products && engine.run_noise) {
+        logger->info("calculating raw coadd empirical noise products");
+        engine.cmb.calc_noise_products(engine.apply_empirical_noise_weights);
+    }
+}
+
 template <auto RawCoaddMap, class TodProc, class Logger>
 void write_raw_coadd_outputs(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
 
     prepare_raw_coadd_maps(todproc, logger);
-
-    if (engine.run_noise_products && engine.run_noise) {
-        logger->info("calculating raw coadd empirical noise products");
-        engine.cmb.calc_noise_products(engine.apply_empirical_noise_weights);
-    }
+    calculate_raw_coadd_noise_products_if_needed(engine, logger);
 
     logger->info("calculating coadded map psd");
     engine.cmb.calc_map_psd();
