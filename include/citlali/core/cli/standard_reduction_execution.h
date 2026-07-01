@@ -58,4 +58,13 @@ int load_and_run_standard_citlali_reduction(
         inputs, logger, os);
 }
 
+template <class RuntimeConfig, class Logger>
+int load_and_run_default_citlali_reduction(
+    const RuntimeConfig &runtime_config, const Logger &logger,
+    std::ostream &os) {
+    return load_and_run_standard_citlali_reduction<
+        StandardKidsDataProcessor, StandardIOCoordinator>(
+        runtime_config, logger, os);
+}
+
 }  // namespace citlali::cli
