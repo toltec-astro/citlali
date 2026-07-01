@@ -111,4 +111,20 @@ int run_cli_reduction_processor(
     return EXIT_SUCCESS;
 }
 
+template <class TodProc, class BeammapTodProc, class PointingTodProc,
+          auto RawObsMap, auto FilteredObsMap, auto RawCoaddMap,
+          auto FilteredCoaddMap, class KidsDataProc, class IOCoordinator,
+          class Config, class ConfigFilepaths, class Logger>
+int run_cli_reduction_processor_for_mode(
+    TodProc &todproc, const IOCoordinator &co, Config &config,
+    const ConfigFilepaths &config_filepaths, const Logger &logger,
+    std::ostream &os) {
+    return run_cli_reduction_processor<
+        is_beammap_tod_processor_v<TodProc, BeammapTodProc>, RawObsMap,
+        FilteredObsMap, RawCoaddMap, FilteredCoaddMap,
+        fits_maps_for_tod_processor_v<TodProc, PointingTodProc>,
+        KidsDataProc>(
+        todproc, co, config, config_filepaths, logger, os);
+}
+
 }  // namespace citlali::cli

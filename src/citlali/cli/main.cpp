@@ -98,13 +98,11 @@ int run(const rc_t &rc) {
                 return EXIT_FAILURE;
             }
             else {
-                return citlali::cli::run_cli_reduction_processor<
-                        citlali::cli::is_beammap_tod_processor_v<
-                            todproc_t, TimeOrderedDataProc<Beammap>>,
+                return citlali::cli::run_cli_reduction_processor_for_mode<
+                        todproc_t, TimeOrderedDataProc<Beammap>,
+                        TimeOrderedDataProc<Pointing>,
                         mapmaking::RawObs, mapmaking::FilteredObs,
                         mapmaking::RawCoadd, mapmaking::FilteredCoadd,
-                        citlali::cli::fits_maps_for_tod_processor_v<
-                            todproc_t, TimeOrderedDataProc<Pointing>>,
                         KidsDataProc>(
                         todproc, co, citlali_config,
                         loaded_config.filepaths, logger, std::cerr);
