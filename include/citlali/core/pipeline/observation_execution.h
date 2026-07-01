@@ -316,15 +316,9 @@ void calculate_filtered_observation_map_diagnostics(Engine &engine,
     engine.omb.calc_median_rms();
 }
 
-template <auto FilteredObsMap, bool FitMaps, class TodProc, class Logger>
-void write_filtered_observation_outputs(TodProc &todproc,
-                                        const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    filter_observation_maps<FilteredObsMap>(engine, logger);
-    calculate_filtered_observation_noise_products_if_needed(engine, logger);
-    calculate_filtered_observation_map_diagnostics(engine, logger);
-
+template <auto FilteredObsMap, bool FitMaps, class Engine, class Logger>
+void find_and_fit_filtered_observation_maps_if_needed(
+    Engine &engine, const Logger &logger) {
     if (engine.run_source_finder) {
         logger->info("finding filtered obs map sources");
         engine.template find_sources<FilteredObsMap>(engine.omb);
@@ -333,6 +327,18 @@ void write_filtered_observation_outputs(TodProc &todproc,
     if constexpr (FitMaps) {
         engine.fit_maps();
     }
+}
+
+template <auto FilteredObsMap, bool FitMaps, class TodProc, class Logger>
+void write_filtered_observation_outputs(TodProc &todproc,
+                                        const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    filter_observation_maps<FilteredObsMap>(engine, logger);
+    calculate_filtered_observation_noise_products_if_needed(engine, logger);
+    calculate_filtered_observation_map_diagnostics(engine, logger);
+    find_and_fit_filtered_observation_maps_if_needed<FilteredObsMap,
+                                                     FitMaps>(engine, logger);
 
     if (engine.write_filtered_maps_partial) {
         logger->info(
