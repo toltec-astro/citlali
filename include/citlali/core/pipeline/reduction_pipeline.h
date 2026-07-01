@@ -1,6 +1,6 @@
 #pragma once
 
-#include <citlali/core/pipeline/initial_reduction_geometry.h>
+#include <citlali/core/pipeline/initial_reduction_geometry_execution.h>
 #include <citlali/core/pipeline/reduction_iteration_loop.h>
 
 namespace citlali::pipeline {
