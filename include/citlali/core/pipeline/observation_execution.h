@@ -356,6 +356,11 @@ void write_filtered_observation_outputs(TodProc &todproc,
     output_filtered_observation_maps_if_needed<FilteredObsMap>(engine, logger);
 }
 
+template <class Engine>
+bool should_write_filtered_outputs(const Engine &engine) {
+    return engine.run_map_filter;
+}
+
 template <auto RawObsMap, auto FilteredObsMap, bool FitMaps, class TodProc,
           class Logger>
 void write_observation_outputs_and_accumulate(TodProc &todproc,
@@ -367,7 +372,7 @@ void write_observation_outputs_and_accumulate(TodProc &todproc,
     if (engine.run_coadd) {
         coadd_observation(todproc, logger);
     }
-    else if (engine.run_map_filter) {
+    else if (should_write_filtered_outputs(engine)) {
         write_filtered_observation_outputs<FilteredObsMap, FitMaps>(
             todproc, logger);
     }
@@ -507,7 +512,7 @@ void write_iteration_coadd_outputs_if_needed(TodProc &todproc,
     }
 
     write_raw_coadd_outputs<RawCoaddMap>(todproc, logger);
-    if (engine.run_map_filter) {
+    if (should_write_filtered_outputs(engine)) {
         write_filtered_coadd_outputs<FilteredCoaddMap>(todproc, logger);
     }
 }
