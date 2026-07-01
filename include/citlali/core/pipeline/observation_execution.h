@@ -273,25 +273,6 @@ void write_observation_outputs_and_accumulate(TodProc &todproc,
     }
 }
 
-template <auto FilteredCoaddMap, class Engine, class Logger>
-void filter_coadd_maps(Engine &engine, const Logger &logger) {
-    logger->info("filtering coadded maps");
-    engine.template run_wiener_filter<FilteredCoaddMap>(engine.cmb);
-}
-
-template <class Engine, class Logger>
-void calculate_filtered_coadd_noise_products_if_needed(
-    Engine &engine, const Logger &logger) {
-    if (engine.run_noise_products &&
-        engine.run_noise &&
-        !engine.write_filtered_maps_partial) {
-        logger->info("calculating filtered coadd empirical noise products");
-        engine.cmb.calc_noise_products(
-            engine.apply_empirical_noise_weights ||
-            engine.wiener_filter.normalize_error);
-    }
-}
-
 template <class Engine, class Logger>
 void calculate_filtered_coadd_map_diagnostics(Engine &engine,
                                               const Logger &logger) {

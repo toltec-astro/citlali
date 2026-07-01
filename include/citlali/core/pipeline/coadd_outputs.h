@@ -55,4 +55,23 @@ void write_raw_coadd_outputs(TodProc &todproc, const Logger &logger) {
     output_raw_coadd_maps<RawCoaddMap>(engine, logger);
 }
 
+template <auto FilteredCoaddMap, class Engine, class Logger>
+void filter_coadd_maps(Engine &engine, const Logger &logger) {
+    logger->info("filtering coadded maps");
+    engine.template run_wiener_filter<FilteredCoaddMap>(engine.cmb);
+}
+
+template <class Engine, class Logger>
+void calculate_filtered_coadd_noise_products_if_needed(
+    Engine &engine, const Logger &logger) {
+    if (engine.run_noise_products &&
+        engine.run_noise &&
+        !engine.write_filtered_maps_partial) {
+        logger->info("calculating filtered coadd empirical noise products");
+        engine.cmb.calc_noise_products(
+            engine.apply_empirical_noise_weights ||
+            engine.wiener_filter.normalize_error);
+    }
+}
+
 }  // namespace citlali::pipeline
