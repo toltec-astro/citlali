@@ -196,9 +196,8 @@ int run(const rc_t &rc) {
                                     fftw_plan_with_nthreads(n_threads);
                                 });
                         })) {
-                    std::cerr << fmt::format("missing keys={}", todproc.engine().missing_keys) << "\n";
-                    std::cerr << fmt::format("invalid keys={}", todproc.engine().invalid_keys) << "\n";
-
+                    citlali::cli::report_engine_config_errors(
+                        todproc.engine(), std::cerr);
                     return EXIT_FAILURE;
                 }
 

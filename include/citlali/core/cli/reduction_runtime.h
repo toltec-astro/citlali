@@ -1,6 +1,10 @@
 #pragma once
 
 #include <citlali/core/pipeline/reduction_config.h>
+#include <fmt/core.h>
+#include <tula/formatter/container.h>
+
+#include <ostream>
 
 namespace citlali::cli {
 
@@ -20,6 +24,12 @@ bool prepare_reduction_runtime(TodProc &todproc, Config &config,
         engine, logger, enable_debug_logging);
     configure_threads(engine);
     return true;
+}
+
+template <class Engine>
+void report_engine_config_errors(const Engine &engine, std::ostream &os) {
+    os << fmt::format("missing keys={}", engine.missing_keys) << "\n";
+    os << fmt::format("invalid keys={}", engine.invalid_keys) << "\n";
 }
 
 }  // namespace citlali::cli
