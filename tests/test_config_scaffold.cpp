@@ -2415,6 +2415,26 @@ TEST(pipeline_execution, prepares_initial_observation_setup) {
     EXPECT_EQ(map_coords, (std::vector<int>{404}));
 }
 
+TEST(pipeline_execution, prepares_initial_observation) {
+    FakeInitialObservationTodProc todproc;
+    FakeCitlaliConfig config;
+    FakeRawObs rawobs;
+    std::vector<int> map_extents;
+    std::vector<int> map_coords;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::pipeline::prepare_initial_observation<
+        false, FakeKidsProc>(
+        todproc, config, rawobs, map_extents, map_coords, logger));
+
+    EXPECT_EQ(config.get_config_calls, 1);
+    EXPECT_EQ(config.requested_key, "kids");
+    EXPECT_EQ(todproc.check_inputs_calls, 1);
+    EXPECT_EQ(todproc.calc_omb_size_calls, 1);
+    EXPECT_EQ(map_extents, (std::vector<int>{303}));
+    EXPECT_EQ(map_coords, (std::vector<int>{404}));
+}
+
 TEST(pipeline_execution, rejects_initial_observation_setup_on_bad_flxscale) {
     FakeInitialObservationTodProc todproc;
     FakeFlxscaleCorrection correction{-1.0};

@@ -102,6 +102,19 @@ bool prepare_initial_observation_setup(TodProc &todproc, const RawObs &rawobs,
     return true;
 }
 
+template <bool IsBeammap, class KidsDataProc, class TodProc,
+          class CitlaliConfig, class RawObs, class MapExtents,
+          class MapCoords, class Logger>
+bool prepare_initial_observation(
+    TodProc &todproc, CitlaliConfig &citlali_config, const RawObs &rawobs,
+    MapExtents &map_extents, MapCoords &map_coords, const Logger &logger) {
+    auto kidsproc = make_kids_data_proc<KidsDataProc>(citlali_config);
+    auto rawobs_kids_meta = load_rawobs_kids_meta(kidsproc, rawobs, logger);
+
+    return prepare_initial_observation_setup<IsBeammap>(
+        todproc, rawobs, rawobs_kids_meta, map_extents, map_coords, logger);
+}
+
 template <class TodProc, class MapCoords, class Logger>
 void calculate_initial_coadd_map_dimensions(TodProc &todproc,
                                             MapCoords &map_coords,
