@@ -37,8 +37,8 @@ int run(const rc_t &rc) {
     //spdlog::set_pattern("[%H:%M:%S %z] [%s] %v");
 
     // start the main process
-    auto exitcode = citlali::cli::load_and_run_standard_citlali_reduction<
-        KidsDataProc, SeqIOCoordinator>(rc, logger, std::cerr);
+    auto exitcode = citlali::cli::load_and_run_default_citlali_reduction(
+        rc, logger, std::cerr);
 
     // re-enable default logger
     citlali::cli::restore_citlali_cli_run_environment(run_environment);
