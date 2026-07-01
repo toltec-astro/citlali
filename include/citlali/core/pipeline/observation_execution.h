@@ -291,13 +291,9 @@ void filter_observation_maps(Engine &engine, const Logger &logger) {
     engine.template run_wiener_filter<FilteredObsMap>(engine.omb);
 }
 
-template <auto FilteredObsMap, bool FitMaps, class TodProc, class Logger>
-void write_filtered_observation_outputs(TodProc &todproc,
-                                        const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    filter_observation_maps<FilteredObsMap>(engine, logger);
-
+template <class Engine, class Logger>
+void calculate_filtered_observation_noise_products_if_needed(
+    Engine &engine, const Logger &logger) {
     if (engine.run_noise_products &&
         engine.run_noise &&
         !engine.write_filtered_maps_partial) {
@@ -306,6 +302,15 @@ void write_filtered_observation_outputs(TodProc &todproc,
             engine.apply_empirical_noise_weights ||
             engine.wiener_filter.normalize_error);
     }
+}
+
+template <auto FilteredObsMap, bool FitMaps, class TodProc, class Logger>
+void write_filtered_observation_outputs(TodProc &todproc,
+                                        const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    filter_observation_maps<FilteredObsMap>(engine, logger);
+    calculate_filtered_observation_noise_products_if_needed(engine, logger);
 
     logger->info("calculating filtered obs map psds");
     engine.omb.calc_map_psd();
