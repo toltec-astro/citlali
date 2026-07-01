@@ -304,14 +304,9 @@ void calculate_filtered_observation_noise_products_if_needed(
     }
 }
 
-template <auto FilteredObsMap, bool FitMaps, class TodProc, class Logger>
-void write_filtered_observation_outputs(TodProc &todproc,
-                                        const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    filter_observation_maps<FilteredObsMap>(engine, logger);
-    calculate_filtered_observation_noise_products_if_needed(engine, logger);
-
+template <class Engine, class Logger>
+void calculate_filtered_observation_map_diagnostics(Engine &engine,
+                                                    const Logger &logger) {
     logger->info("calculating filtered obs map psds");
     engine.omb.calc_map_psd();
     logger->info("calculating filtered obs map histograms");
@@ -319,6 +314,16 @@ void write_filtered_observation_outputs(TodProc &todproc,
 
     engine.omb.calc_median_err();
     engine.omb.calc_median_rms();
+}
+
+template <auto FilteredObsMap, bool FitMaps, class TodProc, class Logger>
+void write_filtered_observation_outputs(TodProc &todproc,
+                                        const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    filter_observation_maps<FilteredObsMap>(engine, logger);
+    calculate_filtered_observation_noise_products_if_needed(engine, logger);
+    calculate_filtered_observation_map_diagnostics(engine, logger);
 
     if (engine.run_source_finder) {
         logger->info("finding filtered obs map sources");
