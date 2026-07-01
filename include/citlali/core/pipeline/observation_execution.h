@@ -253,16 +253,22 @@ void coadd_observation(TodProc &todproc, const Logger &logger) {
     }
 }
 
-template <auto RawObsMap, class TodProc, class Logger>
-void write_raw_observation_outputs(TodProc &todproc, const Logger &logger) {
-    auto &engine = todproc.engine();
-
+template <class Engine, class Logger>
+void calculate_raw_observation_noise_products_if_needed(
+    Engine &engine, const Logger &logger) {
     if (engine.run_mapmaking &&
         engine.run_noise_products &&
         engine.run_noise) {
         logger->info("calculating raw obs empirical noise products");
         engine.omb.calc_noise_products(engine.apply_empirical_noise_weights);
     }
+}
+
+template <auto RawObsMap, class TodProc, class Logger>
+void write_raw_observation_outputs(TodProc &todproc, const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    calculate_raw_observation_noise_products_if_needed(engine, logger);
 
     if (engine.run_mapmaking) {
         engine.create_obs_map_files();
