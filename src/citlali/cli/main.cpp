@@ -96,15 +96,14 @@ int run(const rc_t &rc) {
                 citlali::pipeline::ReductionMapGeometry<todproc_t>
                     map_geometry;
 
-                if (!citlali::cli::prepare_reduction_runtime(
+                if (!citlali::cli::prepare_reduction_runtime_or_report_errors(
                         todproc, citlali_config, logger,
                         []() { spdlog::set_level(spdlog::level::debug); },
                         [&](const auto &engine) {
                             citlali::cli::configure_citlali_runtime_threads(
                                 engine, logger);
-                        })) {
-                    citlali::cli::report_engine_config_errors(
-                        todproc.engine(), std::cerr);
+                        },
+                        std::cerr)) {
                     return EXIT_FAILURE;
                 }
 
