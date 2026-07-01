@@ -7,6 +7,8 @@
 #include <optional>
 #include <string>
 #include <tuple>
+#include <type_traits>
+#include <variant>
 #include <vector>
 #include <yaml-cpp/yaml.h>
 
@@ -17,6 +19,10 @@ enum class TodProcessorSelectionStatus {
     missing_reduction_type,
     invalid_reduction_type
 };
+
+template <class TodProc>
+inline constexpr bool is_empty_tod_processor_v =
+    std::is_same_v<TodProc, std::monostate>;
 
 inline auto reduction_type_config_key() {
     return std::tuple{"runtime", "reduction_type"};

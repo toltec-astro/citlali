@@ -93,7 +93,7 @@ int run(const rc_t &rc) {
 
             // if todproc type is not one of the allowed std::variant states,
             // exit
-            if constexpr (std::is_same_v<todproc_t, std::monostate>) {
+            if constexpr (citlali::cli::is_empty_tod_processor_v<todproc_t>) {
                 return EXIT_FAILURE;
             }
             else {
