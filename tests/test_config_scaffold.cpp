@@ -19,12 +19,13 @@
 namespace {
 
 struct FakeLogger {
+    int error_calls = 0;
     int info_calls = 0;
     int debug_calls = 0;
     int warn_calls = 0;
 
     template <class... Args>
-    void error(const char *, Args &&...) {}
+    void error(const char *, Args &&...) { ++error_calls; }
 
     template <class... Args>
     void info(const char *, Args &&...) { ++info_calls; }
@@ -153,10 +154,13 @@ struct FakeEngine {
     int pipeline_calls = 0;
     int get_astrometry_config_calls = 0;
     int get_photometry_config_calls = 0;
+    int get_citlali_config_calls = 0;
     int hwpr_start_indices = -1;
     int hwpr_end_indices = -1;
     std::string loaded_astrometry_config;
     std::string loaded_photometry_config;
+    std::vector<std::string> missing_keys;
+    std::vector<std::string> invalid_keys;
     std::vector<std::string> date_obs;
     std::vector<int> start_indices = {7};
     std::vector<int> end_indices = {9};
@@ -356,6 +360,11 @@ struct FakeEngine {
     void get_photometry_config(const std::string &config) {
         ++get_photometry_config_calls;
         loaded_photometry_config = config;
+    }
+
+    template <class Config>
+    void get_citlali_config(Config &) {
+        ++get_citlali_config_calls;
     }
 
     void write_learning_summary() { ++write_learning_summary_calls; }
@@ -1846,6 +1855,33 @@ TEST(pipeline_preflight, makes_kids_data_proc_from_config) {
     EXPECT_EQ(config.get_config_calls, 1);
     EXPECT_EQ(config.requested_key, "kids");
     EXPECT_EQ(kidsproc.loaded_config_value, 42);
+}
+
+TEST(pipeline_preflight, loads_valid_engine_config) {
+    FakeEngine engine;
+    FakeCitlaliConfig config;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::pipeline::load_and_validate_engine_config(
+        engine, config, logger));
+
+    EXPECT_EQ(engine.get_citlali_config_calls, 1);
+    EXPECT_EQ(logger->info_calls, 1);
+    EXPECT_EQ(logger->error_calls, 0);
+}
+
+TEST(pipeline_preflight, rejects_invalid_engine_config) {
+    FakeEngine engine;
+    engine.missing_keys = {"runtime"};
+    engine.invalid_keys = {"mapmaking.pixel_size"};
+    FakeCitlaliConfig config;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_FALSE(citlali::pipeline::load_and_validate_engine_config(
+        engine, config, logger));
+
+    EXPECT_EQ(engine.get_citlali_config_calls, 1);
+    EXPECT_EQ(logger->error_calls, 2);
 }
 
 TEST(pipeline_preflight, checks_observation_inputs) {

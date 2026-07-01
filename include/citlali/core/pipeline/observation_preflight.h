@@ -130,6 +130,28 @@ auto make_kids_data_proc(Config &config) {
     return KidsDataProc::from_config(config.get_config("kids"));
 }
 
+template <class Engine>
+bool engine_config_has_errors(const Engine &engine) {
+    return !engine.missing_keys.empty() || !engine.invalid_keys.empty();
+}
+
+template <class Engine, class Config, class Logger>
+bool load_and_validate_engine_config(Engine &engine, Config &config,
+                                     const Logger &logger) {
+    logger->info("getting citlali config");
+    engine.get_citlali_config(config);
+
+    if (!engine_config_has_errors(engine)) {
+        return true;
+    }
+
+    logger->error("missing or invalid keys were found!");
+    logger->error(
+        "see for default config: "
+        "https://github.com/toltec-astro/citlali/blob/v4.x/data/config.yaml");
+    return false;
+}
+
 template <class TodProc, class RawObs, class Logger>
 void check_observation_inputs(TodProc &todproc, const RawObs &rawobs,
                               const Logger &logger) {

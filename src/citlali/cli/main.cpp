@@ -340,14 +340,8 @@ int run(const rc_t &rc) {
                 std::vector<map_extent_t> map_extents{};
                 std::vector<map_coord_t> map_coords{};
 
-                // get config options from citlali_config
-                logger->info("getting citlali config");
-                todproc.engine().get_citlali_config(citlali_config);
-
-                // exit if missing or invalid config options
-                if (!todproc.engine().missing_keys.empty() || !todproc.engine().invalid_keys.empty()) {
-                    logger->error("missing or invalid keys were found!");
-                    logger->error("see for default config: https://github.com/toltec-astro/citlali/blob/v4.x/data/config.yaml");
+                if (!citlali::pipeline::load_and_validate_engine_config(
+                        todproc.engine(), citlali_config, logger)) {
                     std::cerr << fmt::format("missing keys={}", todproc.engine().missing_keys) << "\n";
                     std::cerr << fmt::format("invalid keys={}", todproc.engine().invalid_keys) << "\n";
 
