@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -12,6 +13,19 @@ inline auto reduction_type_config_key() {
 
 inline std::vector<std::string> reduction_type_config_key_path() {
     return {"runtime", "reduction_type"};
+}
+
+template <class Config>
+bool has_reduction_type_config(const Config &config) {
+    return config.has(reduction_type_config_key());
+}
+
+template <class Config>
+std::optional<std::string> read_reduction_type_config(Config &config) {
+    if (!has_reduction_type_config(config)) {
+        return std::nullopt;
+    }
+    return config.get_str(reduction_type_config_key());
 }
 
 template <class TodProcVariant, class ScienceTodProc, class PointingTodProc,

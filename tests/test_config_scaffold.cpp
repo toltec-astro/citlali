@@ -510,6 +510,18 @@ struct FakeLoadedConfig {
 
 struct FakeTodConfig {
     int value = 0;
+    bool has_reduction_type = true;
+    std::string reduction_type = "science";
+
+    template <class Key>
+    bool has(const Key &) const {
+        return has_reduction_type;
+    }
+
+    template <class Key>
+    std::string get_str(const Key &) {
+        return reduction_type;
+    }
 };
 
 struct FakeScienceTodProc {
@@ -1679,6 +1691,23 @@ TEST(cli_tod_processor_selection, exposes_reduction_type_config_key) {
     EXPECT_EQ(std::get<1>(key), "reduction_type");
     EXPECT_EQ(citlali::cli::reduction_type_config_key_path(),
               (std::vector<std::string>{"runtime", "reduction_type"}));
+}
+
+TEST(cli_tod_processor_selection, reads_reduction_type_config) {
+    FakeTodConfig config;
+    config.reduction_type = "pointing";
+
+    auto reduction_type = citlali::cli::read_reduction_type_config(config);
+
+    ASSERT_TRUE(reduction_type.has_value());
+    EXPECT_EQ(*reduction_type, "pointing");
+}
+
+TEST(cli_tod_processor_selection, returns_empty_reduction_type_when_missing) {
+    FakeTodConfig config;
+    config.has_reduction_type = false;
+
+    EXPECT_FALSE(citlali::cli::read_reduction_type_config(config).has_value());
 }
 
 TEST(cli_tod_processor_selection, selects_pointing_processor) {
