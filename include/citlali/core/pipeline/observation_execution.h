@@ -115,6 +115,27 @@ bool prepare_initial_observation(
         todproc, rawobs, rawobs_kids_meta, map_extents, map_coords, logger);
 }
 
+template <bool IsBeammap, class KidsDataProc, class TodProc,
+          class IOCoordinator, class CitlaliConfig, class MapExtents,
+          class MapCoords, class Logger>
+bool prepare_initial_observations(
+    TodProc &todproc, const IOCoordinator &co, CitlaliConfig &citlali_config,
+    MapExtents &map_extents, MapCoords &map_coords, const Logger &logger) {
+    logger->info("starting initial loop through input obs");
+    std::size_t observation_index = 0;
+    for (const auto &rawobs : co.inputs()) {
+        logger->info("starting setup of observation {}/{}",
+                     observation_index + 1, co.n_inputs());
+        if (!prepare_initial_observation<IsBeammap, KidsDataProc>(
+                todproc, citlali_config, rawobs, map_extents, map_coords,
+                logger)) {
+            return false;
+        }
+        ++observation_index;
+    }
+    return true;
+}
+
 template <class TodProc, class MapCoords, class Logger>
 void calculate_initial_coadd_map_dimensions(TodProc &todproc,
                                             MapCoords &map_coords,

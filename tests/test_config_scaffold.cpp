@@ -429,6 +429,14 @@ struct FakeCitlaliConfig {
     }
 };
 
+struct FakeIOCoordinator {
+    std::vector<FakeRawObs> raw_inputs;
+
+    const std::vector<FakeRawObs> &inputs() const { return raw_inputs; }
+
+    std::size_t n_inputs() const { return raw_inputs.size(); }
+};
+
 struct FakeExecutionEngine {
     bool run_tod = true;
     int setup_calls = 0;
@@ -2433,6 +2441,46 @@ TEST(pipeline_execution, prepares_initial_observation) {
     EXPECT_EQ(todproc.calc_omb_size_calls, 1);
     EXPECT_EQ(map_extents, (std::vector<int>{303}));
     EXPECT_EQ(map_coords, (std::vector<int>{404}));
+}
+
+TEST(pipeline_execution, prepares_initial_observations) {
+    FakeInitialObservationTodProc todproc;
+    FakeCitlaliConfig config;
+    FakeIOCoordinator co{{FakeRawObs{}, FakeRawObs{}}};
+    std::vector<int> map_extents;
+    std::vector<int> map_coords;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::pipeline::prepare_initial_observations<
+        false, FakeKidsProc>(
+        todproc, co, config, map_extents, map_coords, logger));
+
+    EXPECT_EQ(config.get_config_calls, 2);
+    EXPECT_EQ(todproc.check_inputs_calls, 2);
+    EXPECT_EQ(todproc.calc_omb_size_calls, 2);
+    EXPECT_EQ(map_extents, (std::vector<int>{303, 303}));
+    EXPECT_EQ(map_coords, (std::vector<int>{404, 404}));
+    EXPECT_EQ(logger->info_calls, 5);
+}
+
+TEST(pipeline_execution, rejects_initial_observations_on_failure) {
+    FakeInitialObservationTodProc todproc;
+    FakeCitlaliConfig config;
+    FakeFlxscaleCorrection correction{-1.0};
+    FakeRawObs bad_rawobs{&correction, "bad_obs"};
+    FakeIOCoordinator co{{bad_rawobs, FakeRawObs{}}};
+    std::vector<int> map_extents;
+    std::vector<int> map_coords;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_FALSE(citlali::pipeline::prepare_initial_observations<
+        false, FakeKidsProc>(
+        todproc, co, config, map_extents, map_coords, logger));
+
+    EXPECT_EQ(config.get_config_calls, 1);
+    EXPECT_EQ(todproc.check_inputs_calls, 0);
+    EXPECT_TRUE(map_extents.empty());
+    EXPECT_TRUE(map_coords.empty());
 }
 
 TEST(pipeline_execution, rejects_initial_observation_setup_on_bad_flxscale) {

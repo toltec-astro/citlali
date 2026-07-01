@@ -380,26 +380,13 @@ int run(const rc_t &rc) {
                     logger->info("configured FFTW plan threads={}", fftw_n_threads);
                 }
 
-                // set up the coadded map buffer by reading in each observation
-                int i = 0;
-                logger->info("starting initial loop through input obs");
-                for (const auto &rawobs : co.inputs()) {
-                    logger->info("starting setup of observation {}/{}", i + 1, co.n_inputs());
-                    auto kidsproc =
-                        citlali::pipeline::make_kids_data_proc<KidsDataProc>(
-                            citlali_config);
-                    i++;
-                    auto rawobs_kids_meta =
-                        citlali::pipeline::load_rawobs_kids_meta(
-                            kidsproc, rawobs, logger);
-
-                    if (!citlali::pipeline::prepare_initial_observation_setup<
-                            std::is_same_v<todproc_t,
-                                           TimeOrderedDataProc<Beammap>>>(
-                            todproc, rawobs, rawobs_kids_meta, map_extents,
-                            map_coords, logger)) {
-                        return EXIT_FAILURE;
-                    }
+                if (!citlali::pipeline::prepare_initial_observations<
+                        std::is_same_v<todproc_t,
+                                       TimeOrderedDataProc<Beammap>>,
+                        KidsDataProc>(
+                        todproc, co, citlali_config, map_extents,
+                        map_coords, logger)) {
+                    return EXIT_FAILURE;
                 }
 
                 citlali::pipeline::calculate_initial_coadd_map_dimensions(
