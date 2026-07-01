@@ -1,5 +1,6 @@
 #include <citlali/core/config/calibration_config.h>
 #include <citlali/core/config/reduction_config.h>
+#include <citlali/core/cli/config_loading.h>
 #include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>
@@ -477,6 +478,30 @@ struct FakeCitlaliConfig {
         requested_key = key;
         return {42};
     }
+};
+
+struct FakeConfigNode {
+    std::string value;
+
+    template <class T>
+    T as() const {
+        return T{value};
+    }
+};
+
+struct FakeRuntimeConfig {
+    std::vector<FakeConfigNode> config_nodes;
+
+    std::vector<FakeConfigNode> get_node(const std::string &key) const {
+        if (key == "config_file") {
+            return config_nodes;
+        }
+        return {};
+    }
+};
+
+struct FakeLoadedConfig {
+    std::vector<std::string> loaded_paths;
 };
 
 struct FakeIOCoordinator {
@@ -1509,6 +1534,34 @@ TEST(error_scaffold, preserves_error_code_and_message) {
     auto error = citlali::error::invalid_config("bad config");
     EXPECT_EQ(error.code(), citlali::error::Code::invalid_config);
     EXPECT_STREQ(error.what(), "bad config");
+}
+
+TEST(cli_config_loading, loads_and_merges_config_files) {
+    FakeRuntimeConfig runtime_config{
+        {FakeConfigNode{"70_reduce.yaml"}, FakeConfigNode{"80_reduce.yaml"}}};
+    std::vector<std::string> config_filepaths;
+    auto logger = std::make_shared<FakeLogger>();
+
+    auto config = citlali::cli::load_config_files<
+        FakeRuntimeConfig, FakeLoadedConfig>(
+        runtime_config, config_filepaths, logger,
+        [](const std::string &filepath) {
+            FakeLoadedConfig config;
+            config.loaded_paths.push_back(filepath);
+            return config;
+        },
+        [](FakeLoadedConfig lhs, FakeLoadedConfig rhs) {
+            lhs.loaded_paths.insert(lhs.loaded_paths.end(),
+                                    rhs.loaded_paths.begin(),
+                                    rhs.loaded_paths.end());
+            return lhs;
+        });
+
+    EXPECT_EQ(config_filepaths,
+              (std::vector<std::string>{"70_reduce.yaml", "80_reduce.yaml"}));
+    EXPECT_EQ(config.loaded_paths,
+              (std::vector<std::string>{"70_reduce.yaml", "80_reduce.yaml"}));
+    EXPECT_EQ(logger->info_calls, 2);
 }
 
 TEST(pipeline_preflight, applies_flxscale_correction_when_present) {
