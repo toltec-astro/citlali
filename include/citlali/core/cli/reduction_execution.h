@@ -44,4 +44,24 @@ bool run_cli_reduction_pipeline(TodProc &todproc, const IOCoordinator &co,
         logger);
 }
 
+template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap,
+          auto RawCoaddMap, auto FilteredCoaddMap, bool FitMaps,
+          class KidsDataProc, class TodProc, class IOCoordinator,
+          class Config, class ConfigFilepaths, class MapGeometry,
+          class Logger>
+bool prepare_and_run_cli_reduction_pipeline(
+    TodProc &todproc, const IOCoordinator &co, Config &config,
+    const ConfigFilepaths &config_filepaths, MapGeometry &map_geometry,
+    const Logger &logger, std::ostream &os) {
+    if (!prepare_cli_reduction_runtime_or_report_errors(
+            todproc, config, logger, os)) {
+        return false;
+    }
+
+    return run_cli_reduction_pipeline<
+        IsBeammap, RawObsMap, FilteredObsMap, RawCoaddMap, FilteredCoaddMap,
+        FitMaps, KidsDataProc>(
+        todproc, co, config, config_filepaths, map_geometry, logger);
+}
+
 }  // namespace citlali::cli
