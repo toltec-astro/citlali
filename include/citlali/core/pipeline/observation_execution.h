@@ -285,13 +285,18 @@ void write_raw_observation_outputs(TodProc &todproc, const Logger &logger) {
     output_raw_observation_maps_if_needed<RawObsMap>(engine, logger);
 }
 
+template <auto FilteredObsMap, class Engine, class Logger>
+void filter_observation_maps(Engine &engine, const Logger &logger) {
+    logger->info("filtering obs maps");
+    engine.template run_wiener_filter<FilteredObsMap>(engine.omb);
+}
+
 template <auto FilteredObsMap, bool FitMaps, class TodProc, class Logger>
 void write_filtered_observation_outputs(TodProc &todproc,
                                         const Logger &logger) {
     auto &engine = todproc.engine();
 
-    logger->info("filtering obs maps");
-    engine.template run_wiener_filter<FilteredObsMap>(engine.omb);
+    filter_observation_maps<FilteredObsMap>(engine, logger);
 
     if (engine.run_noise_products &&
         engine.run_noise &&
