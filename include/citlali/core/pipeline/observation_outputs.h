@@ -1,20 +1,11 @@
 #pragma once
 
 #include <citlali/core/pipeline/filtered_observation_outputs.h>
+#include <citlali/core/pipeline/observation_coadd_accumulation.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/raw_observation_outputs.h>
 
 namespace citlali::pipeline {
-
-template <class TodProc, class Logger>
-void coadd_observation(TodProc &todproc, const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    logger->info("coadding");
-    if (!engine.rtcproc.run_polarization) {
-        todproc.coadd();
-    }
-}
 
 template <auto RawObsMap, auto FilteredObsMap, bool FitMaps, class TodProc,
           class Logger>
