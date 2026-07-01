@@ -98,7 +98,7 @@ int run(const rc_t &rc) {
                 return EXIT_FAILURE;
             }
             else {
-                if (!citlali::cli::prepare_and_run_cli_reduction_pipeline<
+                return citlali::cli::run_cli_reduction_processor<
                         std::is_same_v<todproc_t,
                                        TimeOrderedDataProc<Beammap>>,
                         mapmaking::RawObs, mapmaking::FilteredObs,
@@ -107,12 +107,7 @@ int run(const rc_t &rc) {
                                        TimeOrderedDataProc<Pointing>>,
                         KidsDataProc>(
                         todproc, co, citlali_config,
-                        loaded_config.filepaths, logger, std::cerr)) {
-                    return EXIT_FAILURE;
-                }
-
-                citlali::cli::log_reduction_complete(logger);
-                return EXIT_SUCCESS;
+                        loaded_config.filepaths, logger, std::cerr);
             }
         },
         todproc);

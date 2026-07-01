@@ -2,11 +2,13 @@
 
 #include <citlali/core/cli/reduction_date_obs.h>
 #include <citlali/core/cli/reduction_runtime.h>
+#include <citlali/core/cli/run_logging.h>
 #include <citlali/core/cli/runtime_setup.h>
 #include <citlali/core/pipeline/map_geometry.h>
 #include <citlali/core/pipeline/reduction_pipeline.h>
 #include <spdlog/spdlog.h>
 
+#include <cstdlib>
 #include <ostream>
 
 namespace citlali::cli {
@@ -79,6 +81,25 @@ bool prepare_and_run_cli_reduction_pipeline(
         IsBeammap, RawObsMap, FilteredObsMap, RawCoaddMap, FilteredCoaddMap,
         FitMaps, KidsDataProc>(
         todproc, co, config, config_filepaths, map_geometry, logger, os);
+}
+
+template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap,
+          auto RawCoaddMap, auto FilteredCoaddMap, bool FitMaps,
+          class KidsDataProc, class TodProc, class IOCoordinator,
+          class Config, class ConfigFilepaths, class Logger>
+int run_cli_reduction_processor(
+    TodProc &todproc, const IOCoordinator &co, Config &config,
+    const ConfigFilepaths &config_filepaths, const Logger &logger,
+    std::ostream &os) {
+    if (!prepare_and_run_cli_reduction_pipeline<
+            IsBeammap, RawObsMap, FilteredObsMap, RawCoaddMap,
+            FilteredCoaddMap, FitMaps, KidsDataProc>(
+            todproc, co, config, config_filepaths, logger, os)) {
+        return EXIT_FAILURE;
+    }
+
+    log_reduction_complete(logger);
+    return EXIT_SUCCESS;
 }
 
 }  // namespace citlali::cli
