@@ -466,15 +466,9 @@ void find_filtered_coadd_sources_if_needed(Engine &engine,
     }
 }
 
-template <auto FilteredCoaddMap, class TodProc, class Logger>
-void write_filtered_coadd_outputs(TodProc &todproc, const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    filter_coadd_maps<FilteredCoaddMap>(engine, logger);
-    calculate_filtered_coadd_noise_products_if_needed(engine, logger);
-    calculate_filtered_coadd_map_diagnostics(engine, logger);
-    find_filtered_coadd_sources_if_needed<FilteredCoaddMap>(engine, logger);
-
+template <auto FilteredCoaddMap, class Engine, class Logger>
+void output_filtered_coadd_maps_if_needed(Engine &engine,
+                                          const Logger &logger) {
     if (engine.write_filtered_maps_partial) {
         logger->info(
             "filtered coadded files already written during Wiener filtering; "
@@ -484,6 +478,17 @@ void write_filtered_coadd_outputs(TodProc &todproc, const Logger &logger) {
         logger->info("outputting filtered coadded files");
         engine.template output<FilteredCoaddMap>();
     }
+}
+
+template <auto FilteredCoaddMap, class TodProc, class Logger>
+void write_filtered_coadd_outputs(TodProc &todproc, const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    filter_coadd_maps<FilteredCoaddMap>(engine, logger);
+    calculate_filtered_coadd_noise_products_if_needed(engine, logger);
+    calculate_filtered_coadd_map_diagnostics(engine, logger);
+    find_filtered_coadd_sources_if_needed<FilteredCoaddMap>(engine, logger);
+    output_filtered_coadd_maps_if_needed<FilteredCoaddMap>(engine, logger);
 }
 
 template <auto RawCoaddMap, auto FilteredCoaddMap, class TodProc,
