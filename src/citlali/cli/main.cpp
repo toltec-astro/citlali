@@ -25,6 +25,7 @@
 #include <citlali/core/cli/hdf5_diagnostics.h>
 #include <citlali/core/cli/kids_data_spec.h>
 #include <citlali/core/cli/process_control.h>
+#include <citlali/core/cli/reduction_date_obs.h>
 #include <citlali/core/cli/reduction_runtime.h>
 #include <citlali/core/cli/run_logging.h>
 #include <citlali/core/cli/runtime_setup.h>
@@ -119,11 +120,8 @@ int run(const rc_t &rc) {
                         loaded_config.filepaths, map_geometry.extents,
                         map_geometry.coords,
                         [](auto &engine) {
-                            return citlali::pipeline::date_obs_from_telescope_time(
-                                engine, [](double unix_time) {
-                                    return engine_utils::unix_to_utc(
-                                        unix_time);
-                                });
+                            return citlali::cli::date_obs_from_engine_telescope_time(
+                                engine);
                         },
                         logger)) {
                     return EXIT_FAILURE;
