@@ -353,16 +353,7 @@ int run(const rc_t &rc) {
                         fftw_plan_with_nthreads(n_threads);
                     });
 
-                if (!citlali::pipeline::prepare_initial_reduction_geometry<
-                        std::is_same_v<todproc_t,
-                                       TimeOrderedDataProc<Beammap>>,
-                        KidsDataProc>(
-                        todproc, co, citlali_config, map_extents,
-                        map_coords, logger)) {
-                    return EXIT_FAILURE;
-                }
-
-                if (!citlali::pipeline::run_reduction_iterations<
+                if (!citlali::pipeline::run_reduction_pipeline<
                         std::is_same_v<todproc_t,
                                        TimeOrderedDataProc<Beammap>>,
                         mapmaking::RawObs, mapmaking::FilteredObs,
