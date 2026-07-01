@@ -398,13 +398,9 @@ void calculate_raw_coadd_noise_products_if_needed(
     }
 }
 
-template <auto RawCoaddMap, class TodProc, class Logger>
-void write_raw_coadd_outputs(TodProc &todproc, const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    prepare_raw_coadd_maps(todproc, logger);
-    calculate_raw_coadd_noise_products_if_needed(engine, logger);
-
+template <class Engine, class Logger>
+void calculate_raw_coadd_map_diagnostics(Engine &engine,
+                                         const Logger &logger) {
     logger->info("calculating coadded map psd");
     engine.cmb.calc_map_psd();
     logger->info("calculating coadded map histogram");
@@ -412,6 +408,15 @@ void write_raw_coadd_outputs(TodProc &todproc, const Logger &logger) {
 
     engine.cmb.calc_median_err();
     engine.cmb.calc_median_rms();
+}
+
+template <auto RawCoaddMap, class TodProc, class Logger>
+void write_raw_coadd_outputs(TodProc &todproc, const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    prepare_raw_coadd_maps(todproc, logger);
+    calculate_raw_coadd_noise_products_if_needed(engine, logger);
+    calculate_raw_coadd_map_diagnostics(engine, logger);
 
     logger->info("outputting raw coadded files");
     engine.template output<RawCoaddMap>();
