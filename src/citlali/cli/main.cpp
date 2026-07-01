@@ -26,6 +26,7 @@
 #include <citlali/core/cli/io_coordinator.h>
 #include <citlali/core/cli/kids_data_spec.h>
 #include <citlali/core/cli/process_control.h>
+#include <citlali/core/cli/run_environment.h>
 #include <citlali/core/cli/run_logging.h>
 #include <citlali/core/cli/standard_reduction_execution.h>
 
@@ -34,26 +35,18 @@ using rc_t = citlali::cli::RuntimeConfig;
 // @brief Run citlali reduction.
 /// @param rc The runtime config.
 int run(const rc_t &rc) {
-    citlali::cli::suppress_optional_hdf5_diagnostics();
-
-    // get current level
-    auto log_level = spdlog::get_level();
-
-    auto run_loggers = citlali::cli::configure_run_loggers(log_level);
-    auto logger = run_loggers.logger;
+    auto run_environment = citlali::cli::configure_citlali_cli_run_environment();
+    auto logger = run_environment.logger;
     // set pattern for logger
     //spdlog::set_pattern("[%H:%M:%S %z] [%s] %v");
-
-    citlali::cli::install_abort_backtrace_handler();
-
-    citlali::cli::log_kids_data_spec(logger);
 
     // start the main process
     auto exitcode = citlali::cli::load_and_run_standard_citlali_reduction<
         KidsDataProc, SeqIOCoordinator>(rc, logger, std::cerr);
 
     // re-enable default logger
-    citlali::cli::restore_default_sink_level(run_loggers, log_level);
+    citlali::cli::restore_default_sink_level(
+        run_environment.run_loggers, run_environment.previous_log_level);
 
     return exitcode;
 }
