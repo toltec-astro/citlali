@@ -10,12 +10,3 @@
 #include <citlali/core/pipeline/observation_timing.h>
 #include <citlali/core/pipeline/rawobs_data_items.h>
 #include <citlali/core/pipeline/reduction_config.h>
-
-#include <cmath>
-#include <string>
-#include <utility>
-#include <vector>
-
-namespace citlali::pipeline {
-
-}  // namespace citlali::pipeline
