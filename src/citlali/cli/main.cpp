@@ -28,6 +28,7 @@
 #include <citlali/core/cli/process_control.h>
 #include <citlali/core/cli/reduction_execution.h>
 #include <citlali/core/cli/run_logging.h>
+#include <citlali/core/cli/standard_reduction_types.h>
 #include <citlali/core/cli/tod_processor_selection.h>
 #include <citlali/core/engine/lali.h>
 #include <citlali/core/engine/pointing.h>
@@ -66,26 +67,24 @@ int run(const rc_t &rc) {
     //    KidsDataProc::from_config(citlali_config.get_config("kids"));
 
     // set up todproc
-    using todproc_var_t =
-        citlali::cli::TodProcessorVariant<
-            TimeOrderedDataProc<Lali>, TimeOrderedDataProc<Pointing>,
-            TimeOrderedDataProc<Beammap>>;
+    using todproc_var_t = citlali::cli::StandardTodProcessorVariant;
 
     // declare todproc variable
     todproc_var_t todproc;
 
     // set todproc to variant depending on the config file reduction type
     if (!citlali::cli::select_tod_processor_variant_or_report_failure<
-            TimeOrderedDataProc<Lali>,
-            TimeOrderedDataProc<Pointing>, TimeOrderedDataProc<Beammap>>(
+            citlali::cli::StandardScienceTodProcessor,
+            citlali::cli::StandardPointingTodProcessor,
+            citlali::cli::StandardBeammapTodProcessor>(
             todproc, citlali_config, logger, std::cerr)) {
         return EXIT_FAILURE;
     }
 
     // start the main process
     auto exitcode = citlali::cli::run_standard_cli_reduction_variant<
-        TimeOrderedDataProc<Beammap>, TimeOrderedDataProc<Pointing>,
-        KidsDataProc>(
+        citlali::cli::StandardBeammapTodProcessor,
+        citlali::cli::StandardPointingTodProcessor, KidsDataProc>(
         todproc, co, citlali_config, loaded_config.filepaths, logger,
         std::cerr);
 
