@@ -3,6 +3,7 @@
 #include <citlali/core/pipeline/kids_metadata.h>
 #include <citlali/core/pipeline/observation_calibration.h>
 #include <citlali/core/pipeline/observation_telescope.h>
+#include <citlali/core/pipeline/observation_timing.h>
 #include <citlali/core/pipeline/rawobs_data_items.h>
 #include <citlali/core/pipeline/reduction_config.h>
 
@@ -80,30 +81,6 @@ void load_raw_detector_diagnostics(TodProc &todproc, const RawObs &rawobs,
         logger->debug("getting adc snap data");
         todproc.get_adc_snap_from_files(rawobs);
     }
-}
-
-template <class Engine>
-void update_observation_exposure_time(Engine &engine) {
-    auto t0 = engine.telescope.tel_data["TelTime"](0);
-    auto tn = engine.telescope.tel_data["TelTime"](
-        engine.telescope.tel_data["TelTime"].size() - 1);
-
-    engine.omb.exposure_time = tn - t0;
-    if (engine.run_coadd) {
-        engine.cmb.exposure_time =
-            engine.cmb.exposure_time + engine.omb.exposure_time;
-    }
-}
-
-template <class Engine, class DateObs>
-void append_observation_date(Engine &engine, DateObs &&date_obs) {
-    engine.date_obs.push_back(std::forward<DateObs>(date_obs));
-}
-
-template <class Engine, class ConvertUnixToUtc>
-auto date_obs_from_telescope_time(Engine &engine,
-                                  ConvertUnixToUtc &&convert_unix_to_utc) {
-    return convert_unix_to_utc(engine.telescope.tel_data["TelTime"](0));
 }
 
 template <class Engine, class Logger>
