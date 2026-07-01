@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/pipeline/fruit_loop_map_io.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
 
 #include <string>
@@ -18,15 +19,6 @@ std::string initial_fruit_loop_map_dir(const Engine &engine) {
     return fruit_loop_map_dir(engine.ptcproc.fruit_loops_path,
                               engine.ptcproc.fruit_loops_type,
                               engine.omb.obsnums.back());
-}
-
-template <class Engine>
-void load_fruit_loop_maps(Engine &engine, const std::string &fruit_dir) {
-    engine.ptcproc.tod_mb.cov_cut = engine.omb.cov_cut;
-    engine.ptcproc.load_mb(fruit_dir, fruit_dir, engine.calib,
-                           engine.map_grouping,
-                           engine.telescope.pixel_axes,
-                           engine.omb.pixel_size_rad);
 }
 
 template <class Engine>
