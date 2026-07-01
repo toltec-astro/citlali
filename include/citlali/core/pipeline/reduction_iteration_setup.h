@@ -3,7 +3,7 @@
 #include <citlali/core/pipeline/fruit_loop_iteration_policy.h>
 #include <citlali/core/pipeline/iteration_buffers.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>
-#include <citlali/core/pipeline/output_layout.h>
+#include <citlali/core/pipeline/iteration_output_layout.h>
 
 namespace citlali::pipeline {
 
