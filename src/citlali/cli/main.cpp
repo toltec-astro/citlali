@@ -1,10 +1,6 @@
 #include <citlali_config/config.h>
 #include <citlali_config/gitversion.h>
 #include <citlali_config/default_config.h>
-#include <kids/core/kidsdata.h>
-#include <kids/sweep/fitter.h>
-#include <kids/timestream/solver.h>
-#include <kids/toltec/toltec.h>
 #include <tula/config/core.h>
 #include <tula/config/yamlconfig.h>
 #include <tula/formatter/container.h>
