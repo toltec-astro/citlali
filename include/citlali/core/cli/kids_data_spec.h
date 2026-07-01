@@ -1,12 +1,12 @@
 #pragma once
 
-#include <kids/core/kidsdata.h>
+#include <kids/toltec/toltec.h>
 
 namespace citlali::cli {
 
 template <class Logger>
 void log_kids_data_spec(const Logger &logger) {
-    logger->info("use KIDs data spec: {}", predefs::kidsdata::name);
+    logger->info("use KIDs data spec: {}", kids::toltec::name);
 }
 
 }  // namespace citlali::cli
