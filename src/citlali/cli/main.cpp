@@ -380,7 +380,7 @@ int run(const rc_t &rc) {
                     logger->info("configured FFTW plan threads={}", fftw_n_threads);
                 }
 
-                if (!citlali::pipeline::prepare_initial_observations<
+                if (!citlali::pipeline::prepare_initial_reduction_geometry<
                         std::is_same_v<todproc_t,
                                        TimeOrderedDataProc<Beammap>>,
                         KidsDataProc>(
@@ -388,9 +388,6 @@ int run(const rc_t &rc) {
                         map_coords, logger)) {
                     return EXIT_FAILURE;
                 }
-
-                citlali::pipeline::calculate_initial_coadd_map_dimensions(
-                    todproc, map_coords, logger);
 
                 // current fruit loops iteration
                 todproc.engine().fruit_iter = 0;

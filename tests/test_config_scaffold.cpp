@@ -675,11 +675,13 @@ struct FakeObservationMapTodProc {
 struct FakeInitialObservationTodProc : FakeTelescopeTodProc {
     int calc_map_num_calls = 0;
     int calc_omb_size_calls = 0;
+    int calc_cmb_size_calls = 0;
     int allocate_omb_calls = 0;
     int allocate_nmb_calls = 0;
     int get_apt_from_files_calls = 0;
     int last_map_extent = 0;
     int last_map_coord = 0;
+    int last_map_coord_count = 0;
 
     void calc_map_num() { ++calc_map_num_calls; }
 
@@ -688,6 +690,12 @@ struct FakeInitialObservationTodProc : FakeTelescopeTodProc {
         ++calc_omb_size_calls;
         map_extents.push_back(303);
         map_coords.push_back(404);
+    }
+
+    template <class MapCoords>
+    void calc_cmb_size(MapCoords &map_coords) {
+        ++calc_cmb_size_calls;
+        last_map_coord_count = static_cast<int>(map_coords.size());
     }
 
     void get_apt_from_files(const FakeRawObs &) {
@@ -2481,6 +2489,42 @@ TEST(pipeline_execution, rejects_initial_observations_on_failure) {
     EXPECT_EQ(todproc.check_inputs_calls, 0);
     EXPECT_TRUE(map_extents.empty());
     EXPECT_TRUE(map_coords.empty());
+}
+
+TEST(pipeline_execution, prepares_initial_reduction_geometry) {
+    FakeInitialObservationTodProc todproc;
+    todproc.engine().run_coadd = true;
+    FakeCitlaliConfig config;
+    FakeIOCoordinator co{{FakeRawObs{}, FakeRawObs{}}};
+    std::vector<int> map_extents;
+    std::vector<int> map_coords;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::pipeline::prepare_initial_reduction_geometry<
+        false, FakeKidsProc>(
+        todproc, co, config, map_extents, map_coords, logger));
+
+    EXPECT_EQ(todproc.calc_omb_size_calls, 2);
+    EXPECT_EQ(todproc.calc_cmb_size_calls, 1);
+    EXPECT_EQ(todproc.last_map_coord_count, 2);
+}
+
+TEST(pipeline_execution, rejects_initial_reduction_geometry_on_failure) {
+    FakeInitialObservationTodProc todproc;
+    todproc.engine().run_coadd = true;
+    FakeCitlaliConfig config;
+    FakeFlxscaleCorrection correction{-1.0};
+    FakeRawObs bad_rawobs{&correction, "bad_obs"};
+    FakeIOCoordinator co{{bad_rawobs}};
+    std::vector<int> map_extents;
+    std::vector<int> map_coords;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_FALSE(citlali::pipeline::prepare_initial_reduction_geometry<
+        false, FakeKidsProc>(
+        todproc, co, config, map_extents, map_coords, logger));
+
+    EXPECT_EQ(todproc.calc_cmb_size_calls, 0);
 }
 
 TEST(pipeline_execution, rejects_initial_observation_setup_on_bad_flxscale) {

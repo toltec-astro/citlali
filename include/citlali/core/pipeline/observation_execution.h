@@ -150,6 +150,21 @@ void calculate_initial_coadd_map_dimensions(TodProc &todproc,
     todproc.calc_cmb_size(map_coords);
 }
 
+template <bool IsBeammap, class KidsDataProc, class TodProc,
+          class IOCoordinator, class CitlaliConfig, class MapExtents,
+          class MapCoords, class Logger>
+bool prepare_initial_reduction_geometry(
+    TodProc &todproc, const IOCoordinator &co, CitlaliConfig &citlali_config,
+    MapExtents &map_extents, MapCoords &map_coords, const Logger &logger) {
+    if (!prepare_initial_observations<IsBeammap, KidsDataProc>(
+            todproc, co, citlali_config, map_extents, map_coords, logger)) {
+        return false;
+    }
+
+    calculate_initial_coadd_map_dimensions(todproc, map_coords, logger);
+    return true;
+}
+
 template <class TodProc, class MapExtent, class MapCoord, class Logger>
 void allocate_observation_map_buffers(TodProc &todproc,
                                       MapExtent &map_extent,
