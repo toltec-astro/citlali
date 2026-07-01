@@ -389,36 +389,22 @@ int run(const rc_t &rc) {
                     return EXIT_FAILURE;
                 }
 
-                bool fruit_loops_converged = false;
-                citlali::pipeline::initialize_reduction_iterations(
-                    todproc.engine(), fruit_loops_converged, logger);
-
-                // loop through fruit loops iterations
-                while (citlali::pipeline::fruit_loop_iteration_pending(
-                    todproc.engine(), fruit_loops_converged)) {
-                    citlali::pipeline::begin_reduction_iteration(
-                        todproc, config_filepaths, logger);
-
-                    if (!citlali::pipeline::run_reduction_iteration_observations<
-                            std::is_same_v<todproc_t,
-                                           TimeOrderedDataProc<Beammap>>,
-                            mapmaking::RawObs, mapmaking::FilteredObs,
-                            std::is_same_v<todproc_t,
-                                           TimeOrderedDataProc<Pointing>>,
-                            KidsDataProc>(
-                            todproc, co, citlali_config, map_extents,
-                            map_coords,
-                            [](auto &engine) {
-                                return engine_utils::unix_to_utc(
-                                    engine.telescope.tel_data["TelTime"](0));
-                            },
-                            logger)) {
-                        return EXIT_FAILURE;
-                    }
-
-                    citlali::pipeline::finish_reduction_iteration<
-                        mapmaking::RawCoadd, mapmaking::FilteredCoadd>(
-                        todproc, logger);
+                if (!citlali::pipeline::run_reduction_iterations<
+                        std::is_same_v<todproc_t,
+                                       TimeOrderedDataProc<Beammap>>,
+                        mapmaking::RawObs, mapmaking::FilteredObs,
+                        mapmaking::RawCoadd, mapmaking::FilteredCoadd,
+                        std::is_same_v<todproc_t,
+                                       TimeOrderedDataProc<Pointing>>,
+                        KidsDataProc>(
+                        todproc, co, citlali_config, config_filepaths,
+                        map_extents, map_coords,
+                        [](auto &engine) {
+                            return engine_utils::unix_to_utc(
+                                engine.telescope.tel_data["TelTime"](0));
+                        },
+                        logger)) {
+                    return EXIT_FAILURE;
                 }
 
                 logger->info("citlali is done!  going to sleep now...wake me when you need me.");

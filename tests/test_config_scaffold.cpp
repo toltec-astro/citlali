@@ -3093,6 +3093,34 @@ TEST(pipeline_execution, runs_reduction_iteration) {
     EXPECT_EQ(todproc.engine().fruit_iter, 1);
 }
 
+TEST(pipeline_execution, runs_reduction_iterations) {
+    FakeInitialObservationTodProc todproc;
+    todproc.engine().redu_type = "science";
+    todproc.engine().ptcproc.run_fruit_loops = true;
+    todproc.engine().ptcproc.fruit_loops_iters = 2;
+    FakeCitlaliConfig config;
+    FakeIOCoordinator co{{FakeRawObs{}}};
+    std::vector<std::string> config_filepaths;
+    std::vector<int> map_extents = {11};
+    std::vector<int> map_coords = {22};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::pipeline::run_reduction_iterations<
+        false, FakeMapType::RawObs, FakeMapType::FilteredObs,
+        FakeMapType::RawCoadd, FakeMapType::FilteredCoadd, false,
+        FakeKidsProc>(
+        todproc, co, config, config_filepaths, map_extents, map_coords,
+        [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
+        logger));
+
+    EXPECT_EQ(todproc.engine().fruit_iter, 2);
+    EXPECT_EQ(todproc.engine().setup_calls, 2);
+    EXPECT_EQ(todproc.engine().pipeline_calls, 2);
+    EXPECT_EQ(todproc.engine().output_calls, 2);
+    EXPECT_EQ(todproc.make_index_file_calls, 2);
+    EXPECT_EQ(todproc.create_output_dir_calls, 1);
+}
+
 TEST(pipeline_execution, writes_raw_coadd_outputs) {
     FakeCoaddTodProc todproc;
     todproc.engine().apply_empirical_noise_weights = true;
