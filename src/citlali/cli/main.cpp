@@ -45,8 +45,7 @@ int run(const rc_t &rc) {
         KidsDataProc, SeqIOCoordinator>(rc, logger, std::cerr);
 
     // re-enable default logger
-    citlali::cli::restore_default_sink_level(
-        run_environment.run_loggers, run_environment.previous_log_level);
+    citlali::cli::restore_citlali_cli_run_environment(run_environment);
 
     return exitcode;
 }
