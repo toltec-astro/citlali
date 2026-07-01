@@ -23,6 +23,7 @@
 #include <citlali/core/cli/default_config_dump.h>
 #include <citlali/core/cli/exception_reporting.h>
 #include <citlali/core/cli/hdf5_diagnostics.h>
+#include <citlali/core/cli/io_coordinator.h>
 #include <citlali/core/cli/kids_data_spec.h>
 #include <citlali/core/cli/process_control.h>
 #include <citlali/core/cli/reduction_date_obs.h>
@@ -61,7 +62,9 @@ int run(const rc_t &rc) {
     auto &citlali_config = loaded_config.config;
 
     // set up the IO coorindator
-    auto co = SeqIOCoordinator::from_config(citlali_config);
+    auto co =
+        citlali::cli::make_io_coordinator_from_config<SeqIOCoordinator>(
+            citlali_config);
 
     // set up KIDs data proc
     //auto kidsproc =
