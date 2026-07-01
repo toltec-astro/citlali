@@ -21,9 +21,6 @@
 
 #include <cstdlib>
 #include <cmath>
-#include <omp.h>
-#include <regex>
-#include <tuple>
 
 #include <citlali/core/utils/constants.h>
 #include <citlali/core/utils/utils.h>
