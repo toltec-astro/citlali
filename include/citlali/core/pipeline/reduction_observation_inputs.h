@@ -4,8 +4,9 @@
 #include <citlali/core/pipeline/hwpr_loading.h>
 #include <citlali/core/pipeline/observation_buffers.h>
 #include <citlali/core/pipeline/observation_detector_diagnostics.h>
+#include <citlali/core/pipeline/observation_date.h>
+#include <citlali/core/pipeline/observation_exposure_time.h>
 #include <citlali/core/pipeline/observation_sample_rate.h>
-#include <citlali/core/pipeline/observation_timing.h>
 #include <citlali/core/pipeline/observation_output_layout.h>
 #include <citlali/core/pipeline/reduction_observation_calibration.h>
 #include <citlali/core/pipeline/scan_indices.h>
