@@ -1,7 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/fruit_loop_map_loading.h>
-#include <citlali/core/pipeline/observation_outputs.h>
+#include <citlali/core/pipeline/observation_output_execution.h>
 #include <citlali/core/pipeline/observation_pipeline.h>
 
 namespace citlali::pipeline {
