@@ -11,6 +11,7 @@
 #include <citlali/core/pipeline/observation_pipeline.h>
 #include <citlali/core/pipeline/reduction_iteration_outputs.h>
 #include <citlali/core/pipeline/reduction_observation_inputs.h>
+#include <citlali/core/pipeline/reduction_observation_pipeline.h>
 #include <citlali/core/pipeline/output_layout.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/reduction_iteration_setup.h>
@@ -19,19 +20,6 @@
 #include <utility>
 
 namespace citlali::pipeline {
-
-template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap, bool FitMaps,
-          class TodProc, class KidsProc, class RawObs, class Logger>
-void run_reduction_observation_pipeline(TodProc &todproc, KidsProc &kidsproc,
-                                        const RawObs &rawobs,
-                                        const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    load_observation_fruit_loop_maps_if_needed<IsBeammap>(engine, logger);
-    setup_and_run_observation_pipeline(engine, kidsproc, rawobs, logger);
-    write_observation_outputs_and_accumulate<RawObsMap, FilteredObsMap,
-                                             FitMaps>(todproc, logger);
-}
 
 template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap, bool FitMaps,
           class TodProc, class KidsProc, class RawObs, class RawObsKidsMeta,
