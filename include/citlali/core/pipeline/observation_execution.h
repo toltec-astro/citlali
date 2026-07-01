@@ -579,14 +579,20 @@ std::string previous_fruit_loop_model_dir(const Engine &engine,
 }
 
 template <class Engine, class Logger>
+void load_previous_fruit_loop_model(Engine &engine,
+                                    const std::string &fruit_dir,
+                                    const Logger &logger) {
+    logger->info("reading in {} for fruit loops iteration {}", fruit_dir,
+                 engine.fruit_iter);
+    load_fruit_loop_model(engine, fruit_dir);
+}
+
+template <class Engine, class Logger>
 void load_previous_fruit_loop_model_if_needed(Engine &engine,
                                               const Logger &logger) {
     if (should_load_previous_fruit_loop_model(engine)) {
         const auto fruit_dir = previous_fruit_loop_model_dir(engine, logger);
-
-        logger->info("reading in {} for fruit loops iteration {}", fruit_dir,
-                     engine.fruit_iter);
-        load_fruit_loop_model(engine, fruit_dir);
+        load_previous_fruit_loop_model(engine, fruit_dir, logger);
     }
 }
 
