@@ -91,6 +91,7 @@
 #include <citlali/core/pipeline/map_filename.h>
 #include <citlali/core/pipeline/map_layer_name.h>
 #include <citlali/core/pipeline/map_summary_stats.h>
+#include <citlali/core/pipeline/mapdiag_netcdf.h>
 #include <citlali/core/pipeline/mapdiag_stage.h>
 #include <citlali/core/pipeline/phdu_beammap.h>
 #include <citlali/core/pipeline/phdu_extinction.h>
@@ -8423,18 +8424,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
     std::string stage_name = citlali::pipeline::mapdiag_stage_name<map_t>();
 
-    auto put_string_1d = [](netCDF::NcFile &fo, const std::string &name, netCDF::NcDim dim,
-                            const std::vector<std::string> &values, const std::string &comment = "") {
-        netCDF::NcVar v = fo.addVar(name, netCDF::ncString, dim);
-        if (!comment.empty()) {
-            v.putAtt("comment", comment);
-        }
-        for (std::size_t i = 0; i < values.size(); ++i) {
-            const std::vector<std::size_t> idx = {i};
-            std::string value = values[i];
-            v.putVar(idx, value);
-        }
-    };
+    auto put_string_1d = citlali::pipeline::put_netcdf_string_1d;
 
     auto accumulate_obs_weight = [&](Eigen::Index map_i,
                                      const Eigen::ArrayXXd &core_mask,
