@@ -105,7 +105,7 @@ bool validate_downsample_antialias_filter(const Engine &engine,
 template <class Engine>
 void apply_downsampled_sample_rate(Engine &engine) {
     engine.telescope.d_fsmp =
-        engine.telescope.fsmp / downsample_factor(engine);
+        native_sample_rate_hz(engine) / downsample_factor(engine);
 }
 
 template <class Engine>
