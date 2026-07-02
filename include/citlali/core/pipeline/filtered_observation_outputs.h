@@ -61,9 +61,7 @@ void find_and_fit_filtered_observation_maps_if_needed(
         engine.template find_sources<FilteredObsMap>(engine.omb);
     }
 
-    if constexpr (FitMaps) {
-        engine.fit_maps();
-    }
+    fit_filtered_observation_maps_if_requested<FitMaps>(engine);
 }
 
 template <auto FilteredObsMap, class Engine, class Logger>
