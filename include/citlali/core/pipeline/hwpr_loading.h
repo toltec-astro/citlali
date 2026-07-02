@@ -29,6 +29,10 @@ std::string hwpr_data_filepath(const RawObs &rawobs) {
     return rawobs.hwpdata()->filepath();
 }
 
+inline bool is_valid_hwpr_filepath(const std::string &filepath) {
+    return filepath != "null";
+}
+
 template <class Engine, class RawObs, class Logger>
 void load_hwpr_data_if_requested(Engine &engine, const RawObs &rawobs,
                                  const Logger &logger) {
