@@ -73,7 +73,8 @@ inline void add_ptcdiag_det_double(
     netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, det_dims);
     v.putAtt("units", "N/A");
     v.putAtt("comment", comment);
-    v.setChunking(netCDF::NcVar::nc_CHUNKED, det_chunks);
+    auto chunks = det_chunks;
+    v.setChunking(netCDF::NcVar::nc_CHUNKED, chunks);
     std::vector<double> init(n_values, fill_value);
     v.putVar(init.data());
 }
@@ -86,7 +87,8 @@ inline void add_ptcdiag_det_int(
     netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, det_dims);
     v.putAtt("units", "N/A");
     v.putAtt("comment", comment);
-    v.setChunking(netCDF::NcVar::nc_CHUNKED, det_chunks);
+    auto chunks = det_chunks;
+    v.setChunking(netCDF::NcVar::nc_CHUNKED, chunks);
     std::vector<int> init(n_values, fill_value);
     v.putVar(init.data());
 }
