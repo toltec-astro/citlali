@@ -21,6 +21,11 @@ decltype(auto) observation_map_coord_at(MapCoords &map_coords,
     return map_coords[observation_index];
 }
 
+template <class Engine>
+void configure_observation_pixel_contribution_targets(Engine &engine) {
+    engine.configure_map_pixel_contribution_targets(engine.omb, "raw_obs");
+}
+
 template <class TodProc, class MapExtent, class MapCoord, class Logger>
 void allocate_observation_map_buffers(TodProc &todproc,
                                       MapExtent &map_extent,
