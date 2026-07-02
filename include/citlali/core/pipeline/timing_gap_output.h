@@ -45,7 +45,7 @@ void record_timing_gaps_if_needed(const Engine &engine, const Logger &logger) {
             f.open(gaps_log_filepath(engine.obsnum_dir_name));
             write_timing_gaps_log_header(f);
             for (auto const &[key, val] : engine.gaps) {
-                logger->debug("{} gaps: {}", key, val);
+                log_timing_gap_entry(key, val, logger);
                 f << "-" + key + " gaps: " << val << "\n";
             }
             f.close();
