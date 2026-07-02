@@ -44,6 +44,13 @@ bool validate_requested_downsample_frequency(const Engine &engine,
            validate_downsample_frequency_below_sample_rate(engine, logger);
 }
 
+template <class Engine>
+void derive_downsample_factor_from_frequency(Engine &engine) {
+    engine.rtcproc.downsampler.factor = std::floor(
+        engine.telescope.fsmp /
+        engine.rtcproc.downsampler.downsampled_freq_Hz);
+}
+
 template <class Engine, class Logger>
 bool configure_effective_sample_rate(Engine &engine, const Logger &logger) {
     if (engine.rtcproc.run_downsample) {
