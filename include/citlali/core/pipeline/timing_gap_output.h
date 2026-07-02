@@ -37,7 +37,7 @@ void record_timing_gaps_if_needed(const Engine &engine, const Logger &logger) {
             logger->debug("writing gaps.log file");
             std::ofstream f;
             f.open(gaps_log_filepath(engine.obsnum_dir_name));
-            f << "Summary of timing gaps\n";
+            write_timing_gaps_log_header(f);
             for (auto const &[key, val] : engine.gaps) {
                 logger->debug("{} gaps: {}", key, val);
                 f << "-" + key + " gaps: " << val << "\n";
