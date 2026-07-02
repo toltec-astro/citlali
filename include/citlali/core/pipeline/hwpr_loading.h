@@ -4,6 +4,11 @@
 
 namespace citlali::pipeline {
 
+template <class Engine>
+bool should_load_hwpr_for_polarization(const Engine &engine) {
+    return engine.rtcproc.run_polarization;
+}
+
 template <class Engine, class RawObs, class Logger>
 void load_hwpr_data_if_requested(Engine &engine, const RawObs &rawobs,
                                  const Logger &logger) {
