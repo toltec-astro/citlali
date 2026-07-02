@@ -6351,12 +6351,10 @@ void Engine::create_tod_files() {
                     fill_double);
             };
             auto add_rtc_imp_snip_int = [&](const std::string &name, const std::string &comment) {
-                netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_impulsive_snippet_dims);
-                v.putAtt("units", "N/A");
-                v.putAtt("comment", comment);
-                std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
-                                      static_cast<std::size_t>(calib.n_nws) * n_slots * n_snippet, fill_int);
-                v.putVar(init.data());
+                citlali::pipeline::add_rtcdiag_impulsive_snippet_int(
+                    fo, name, comment, rtc_impulsive_snippet_dims,
+                    rtc_stream_no_chunks, n_rtc_stream_impulsive_snippet_values,
+                    fill_int);
             };
 
             add_rtc_imp_slot_int("rtc_impulsive_slot_det_index",
