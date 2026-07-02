@@ -6297,16 +6297,8 @@ void Engine::create_tod_files() {
             "post-filter");
         citlali::pipeline::add_rtcdiag_network_step_summary_diag(
             add_rtc_nw_int, add_rtc_nw_double);
-        add_rtc_nw_double("rtc_network_impulsive_score_median",
-                          "median detector impulsive-event score within each RTC network block");
-        add_rtc_nw_double("rtc_network_impulsive_score_max",
-                          "maximum detector impulsive-event score within each RTC network block");
-        add_rtc_nw_double("rtc_network_impulsive_det_frac",
-                          "fraction of diagnostic-used detectors with impulsive-event score above the impulsive coincidence threshold");
-        add_rtc_nw_double("rtc_network_impulsive_alignment_frac",
-                          "fraction of impulsive-active detectors aligned in the dominant impulsive time cluster");
-        add_rtc_nw_int("rtc_network_impulsive_dominant_sample",
-                       "dominant aligned impulsive sample within each RTC network block; -2147483647 means unavailable");
+        citlali::pipeline::add_rtcdiag_network_impulsive_summary_diag(
+            add_rtc_nw_int, add_rtc_nw_double);
         add_rtc_nw_double("rtc_network_cm_low_mid_ratio",
                           "low-band to mid-band common-mode power ratio for each RTC network block");
         add_rtc_nw_double("rtc_network_cm_peak_freq_hz",
