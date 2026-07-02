@@ -25,6 +25,11 @@ auto native_sample_rate_hz(const Engine &engine) {
 }
 
 template <class Engine>
+auto filter_high_frequency_hz(const Engine &engine) {
+    return engine.rtcproc.filter.freq_high_Hz;
+}
+
+template <class Engine>
 bool downsample_factor_requires_frequency(const Engine &engine) {
     return downsample_factor(engine) <= 0;
 }
