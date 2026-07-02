@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/pipeline/map_diagnostics.h>
 #include <citlali/core/pipeline/noise_weight_policy.h>
 
 namespace citlali::pipeline {
@@ -54,13 +55,9 @@ void calculate_raw_coadd_noise_products_if_needed(
 template <class Engine, class Logger>
 void calculate_raw_coadd_map_diagnostics(Engine &engine,
                                          const Logger &logger) {
-    logger->info("calculating coadded map psd");
-    engine.cmb.calc_map_psd();
-    logger->info("calculating coadded map histogram");
-    engine.cmb.calc_map_hist();
-
-    engine.cmb.calc_median_err();
-    engine.cmb.calc_median_rms();
+    calculate_map_diagnostics(
+        engine.cmb, logger, "calculating coadded map psd",
+        "calculating coadded map histogram");
 }
 
 template <auto RawCoaddMap, class Engine, class Logger>
