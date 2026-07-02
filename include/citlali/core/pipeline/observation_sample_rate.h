@@ -74,7 +74,7 @@ bool validate_downsample_factor(const Engine &engine, const Logger &logger) {
 template <class Engine>
 double downsample_nyquist_hz(const Engine &engine) {
     return engine.telescope.fsmp /
-           (2.0 * engine.rtcproc.downsampler.factor);
+           (2.0 * downsample_factor(engine));
 }
 
 template <class Engine, class Logger>
