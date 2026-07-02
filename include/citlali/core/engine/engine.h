@@ -6459,12 +6459,10 @@ void Engine::create_tod_files() {
         }
 
         if (ptcproc.weight_corr_penalty.enabled) {
-            add_ptc_stream_network_block(
-                "n_nws_wcorr", "weight_corr_penalty_network_ids",
-                "network IDs corresponding to n_nws_wcorr axis",
-                citlali::pipeline::ptcdiag_weight_corr_int_vars(),
-                citlali::pipeline::ptcdiag_weight_corr_double_vars(
-                    "multiplicative weight penalty factor applied per network in each output scan"));
+            citlali::pipeline::add_ptcdiag_weight_corr_network_block(
+                fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
+                "multiplicative weight penalty factor applied per network in each output scan",
+                ptc_stream_fill_int, ptc_stream_fill_double);
         }
 
         if (ptcproc.busy_row_suppression.enabled) {
@@ -8900,13 +8898,10 @@ void Engine::create_ptcdiag_file() {
     citlali::pipeline::add_ptcdiag_corr_network_block(
         fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
 
-    add_network_block(
-        "n_nws_wcorr",
-        "weight_corr_penalty_network_ids",
-        "network IDs corresponding to n_nws_wcorr axis",
-        citlali::pipeline::ptcdiag_weight_corr_int_vars(),
-        citlali::pipeline::ptcdiag_weight_corr_double_vars(
-            "multiplicative weight penalty factor applied per network in each scan"));
+    citlali::pipeline::add_ptcdiag_weight_corr_network_block(
+        fo, calib, n_scans_dim, n_scans,
+        "multiplicative weight penalty factor applied per network in each scan",
+        fill_int, fill_double);
 
     add_network_block(
         "n_nws_busy_row_suppression",
