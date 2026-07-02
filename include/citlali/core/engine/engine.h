@@ -9877,14 +9877,13 @@ void Engine::create_rtcdiag_file() {
                     "number of fixed windows with a finite inverse-variance estimate for RTC remove_bad_dets diagnostics");
 
     std::vector<netCDF::NcDim> rtc_nw_dims = {n_scans_dim, n_nws_rtcdiag_dim};
+    const auto n_rtc_nw_values =
+        static_cast<std::size_t>(n_scans) *
+        static_cast<std::size_t>(calib.n_nws);
     auto add_rtc_nw_double = [&](const std::string &name, const std::string &comment) {
-        netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, rtc_nw_dims);
-        v.putAtt("units", "N/A");
-        v.putAtt("comment", comment);
-        set_netcdf_chunking_and_compression(v, rtc_nw_chunks, 1);
-        std::vector<double> init(static_cast<std::size_t>(n_scans) *
-                                 static_cast<std::size_t>(calib.n_nws), fill_double);
-        v.putVar(init.data());
+        citlali::pipeline::add_rtcdiag_network_double(
+            fo, name, comment, rtc_nw_dims, rtc_nw_chunks,
+            n_rtc_nw_values, fill_double);
     };
     auto add_rtc_nw_int = [&](const std::string &name, const std::string &comment) {
         netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_nw_dims);
