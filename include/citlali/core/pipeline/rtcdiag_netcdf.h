@@ -331,6 +331,25 @@ void add_rtcdiag_network_step_mask_diag(const AddInt &add_int,
                "fraction of previously good detector-samples in the network block newly flagged by network_step_mask");
 }
 
+template <class AddInt, class AddDouble>
+void add_rtcdiag_network_impulsive_mask_window_diag(
+    const AddInt &add_int, const AddDouble &add_double) {
+    add_int("rtc_network_impulsive_mask_applied",
+            "1 if impulsive_coincidence_mask flagged a time window for this RTC network block, else 0");
+    add_int("rtc_network_impulsive_mask_start_sample",
+            "inclusive starting sample of the applied impulsive_coincidence_mask window; -2147483647 means none");
+    add_int("rtc_network_impulsive_mask_end_sample",
+            "inclusive ending sample of the applied impulsive_coincidence_mask window; -2147483647 means none");
+    add_int("rtc_network_impulsive_mask_window_samples",
+            "number of RTC time samples in the applied impulsive_coincidence_mask window");
+    add_int("rtc_network_impulsive_mask_n_det_masked",
+            "number of detectors included in the applied impulsive_coincidence_mask window");
+    add_int("rtc_network_impulsive_mask_n_det_samples_flagged",
+            "number of previously good detector-samples newly flagged by impulsive_coincidence_mask");
+    add_double("rtc_network_impulsive_mask_flagged_fraction",
+               "fraction of previously good detector-samples in the network block newly flagged by impulsive_coincidence_mask");
+}
+
 inline std::vector<int> rtcdiag_impulsive_snippet_offsets(
     std::size_t n_snippet, std::size_t snippet_pre, int fill_value) {
     std::vector<int> offsets(n_snippet, fill_value);

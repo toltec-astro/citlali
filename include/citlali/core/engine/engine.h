@@ -9910,20 +9910,8 @@ void Engine::create_rtcdiag_file() {
         add_rtc_nw_double);
     citlali::pipeline::add_rtcdiag_network_step_mask_diag(
         add_rtc_nw_int, add_rtc_nw_double);
-    add_rtc_nw_int("rtc_network_impulsive_mask_applied",
-                   "1 if impulsive_coincidence_mask flagged a time window for this RTC network block, else 0");
-    add_rtc_nw_int("rtc_network_impulsive_mask_start_sample",
-                   "inclusive starting sample of the applied impulsive_coincidence_mask window; -2147483647 means none");
-    add_rtc_nw_int("rtc_network_impulsive_mask_end_sample",
-                   "inclusive ending sample of the applied impulsive_coincidence_mask window; -2147483647 means none");
-    add_rtc_nw_int("rtc_network_impulsive_mask_window_samples",
-                   "number of RTC time samples in the applied impulsive_coincidence_mask window");
-    add_rtc_nw_int("rtc_network_impulsive_mask_n_det_masked",
-                   "number of detectors included in the applied impulsive_coincidence_mask window");
-    add_rtc_nw_int("rtc_network_impulsive_mask_n_det_samples_flagged",
-                   "number of previously good detector-samples newly flagged by impulsive_coincidence_mask");
-    add_rtc_nw_double("rtc_network_impulsive_mask_flagged_fraction",
-                      "fraction of previously good detector-samples in the network block newly flagged by impulsive_coincidence_mask");
+    citlali::pipeline::add_rtcdiag_network_impulsive_mask_window_diag(
+        add_rtc_nw_int, add_rtc_nw_double);
     add_rtc_nw_int("rtc_network_impulsive_mask_candidate_available",
                    "1 if impulsive_coincidence_mask found a candidate for this RTC network block, else 0");
     add_rtc_nw_int("rtc_network_impulsive_mask_local_trigger",
