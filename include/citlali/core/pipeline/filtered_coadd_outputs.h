@@ -12,6 +12,11 @@ bool should_calculate_filtered_coadd_noise_products(
            !engine.write_filtered_maps_partial;
 }
 
+template <class Engine>
+bool should_find_filtered_coadd_sources(const Engine &engine) {
+    return engine.run_source_finder;
+}
+
 template <auto FilteredCoaddMap, class Engine, class Logger>
 void filter_coadd_maps(Engine &engine, const Logger &logger) {
     logger->info("filtering coadded maps");
