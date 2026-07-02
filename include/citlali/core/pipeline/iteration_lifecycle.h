@@ -103,6 +103,11 @@ void make_reduction_iteration_index_file(TodProc &todproc,
     todproc.make_index_file(engine.redu_dir_name);
 }
 
+template <class Engine>
+void advance_fruit_loop_iteration(Engine &engine) {
+    engine.fruit_iter++;
+}
+
 template <class TodProc, class Logger>
 void finalize_iteration_outputs(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
@@ -110,7 +115,7 @@ void finalize_iteration_outputs(TodProc &todproc, const Logger &logger) {
     finalize_fruit_loop_iteration(engine, logger);
 
     make_reduction_iteration_index_file(todproc, logger);
-    engine.fruit_iter++;
+    advance_fruit_loop_iteration(engine);
 }
 
 }  // namespace citlali::pipeline
