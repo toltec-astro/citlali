@@ -16,7 +16,7 @@ bool has_timing_gaps(const Engine &engine) {
 
 template <class Engine, class Logger>
 void record_timing_gaps_if_needed(const Engine &engine, const Logger &logger) {
-    if (engine.gaps.size() > 0) {
+    if (has_timing_gaps(engine)) {
         logger->warn("gaps found in obnsum {} data file timing!",
                      engine.obsnum);
         if (engine.verbose_mode) {
