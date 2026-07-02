@@ -2,6 +2,7 @@
 
 #include <citlali/core/pipeline/map_diagnostics.h>
 #include <citlali/core/pipeline/map_noise_products.h>
+#include <citlali/core/pipeline/map_output.h>
 #include <citlali/core/pipeline/noise_weight_policy.h>
 
 namespace citlali::pipeline {
@@ -64,8 +65,8 @@ void calculate_raw_coadd_map_diagnostics(Engine &engine,
 
 template <auto RawCoaddMap, class Engine, class Logger>
 void output_raw_coadd_maps(Engine &engine, const Logger &logger) {
-    logger->info("outputting raw coadded files");
-    engine.template output<RawCoaddMap>();
+    output_map_with_log<RawCoaddMap>(
+        engine, logger, "outputting raw coadded files");
 }
 
 template <auto RawCoaddMap, class TodProc, class Logger>
