@@ -9,6 +9,11 @@ bool fruit_loop_iteration_pending(const Engine &engine,
            !fruit_loops_converged;
 }
 
+template <class Engine>
+bool should_log_fruit_loop_iteration_start(const Engine &engine) {
+    return engine.ptcproc.run_fruit_loops;
+}
+
 template <class Engine, class Logger>
 void begin_fruit_loop_iteration(Engine &engine, const Logger &logger) {
     if (engine.ptcproc.run_fruit_loops) {
