@@ -19,7 +19,7 @@ void log_flux_calibration(const Logger &logger) {
 
 template <class Engine, class Logger>
 void calculate_flux_calibration(Engine &engine, const Logger &logger) {
-    logger->info("calculating flux calibration");
+    log_flux_calibration(logger);
     engine.calib.calc_flux_calibration(flux_calibration_signal_unit(engine),
                                        flux_calibration_pixel_size_rad(engine));
 }
