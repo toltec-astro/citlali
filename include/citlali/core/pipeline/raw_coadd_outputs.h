@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/map_diagnostics.h>
+#include <citlali/core/pipeline/map_noise_products.h>
 #include <citlali/core/pipeline/noise_weight_policy.h>
 
 namespace citlali::pipeline {
@@ -46,9 +47,10 @@ template <class Engine, class Logger>
 void calculate_raw_coadd_noise_products_if_needed(
     Engine &engine, const Logger &logger) {
     if (should_calculate_raw_coadd_noise_products(engine)) {
-        logger->info("calculating raw coadd empirical noise products");
-        engine.cmb.calc_noise_products(
-            raw_coadd_noise_products_apply_empirical_weights(engine));
+        calculate_map_noise_products_with_log(
+            engine.cmb,
+            raw_coadd_noise_products_apply_empirical_weights(engine),
+            logger, "calculating raw coadd empirical noise products");
     }
 }
 
