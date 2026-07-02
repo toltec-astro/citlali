@@ -29,4 +29,18 @@ bool run_reduction_observation(
     return true;
 }
 
+template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap, bool FitMaps,
+          class TodProc, class KidsProc, class ObservationContext,
+          class MapExtents, class MapCoords, class Logger>
+bool run_reduction_observation_context(
+    TodProc &todproc, KidsProc &kidsproc, ObservationContext &context,
+    MapExtents &map_extents, MapCoords &map_coords,
+    const Logger &logger) {
+    return run_reduction_observation<IsBeammap, RawObsMap, FilteredObsMap,
+                                     FitMaps>(
+        todproc, kidsproc, context.rawobs, context.rawobs_kids_meta,
+        context.has_multiple_inputs, map_extents, map_coords,
+        context.observation_index, std::move(context.date_obs), logger);
+}
+
 }  // namespace citlali::pipeline
