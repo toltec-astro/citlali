@@ -20,6 +20,11 @@ auto requested_downsample_frequency_hz(const Engine &engine) {
 }
 
 template <class Engine>
+auto native_sample_rate_hz(const Engine &engine) {
+    return engine.telescope.fsmp;
+}
+
+template <class Engine>
 bool downsample_factor_requires_frequency(const Engine &engine) {
     return downsample_factor(engine) <= 0;
 }
