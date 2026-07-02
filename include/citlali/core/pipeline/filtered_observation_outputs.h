@@ -49,7 +49,7 @@ void calculate_filtered_observation_map_diagnostics(Engine &engine,
 template <auto FilteredObsMap, bool FitMaps, class Engine, class Logger>
 void find_and_fit_filtered_observation_maps_if_needed(
     Engine &engine, const Logger &logger) {
-    if (engine.run_source_finder) {
+    if (should_find_filtered_observation_sources(engine)) {
         logger->info("finding filtered obs map sources");
         engine.template find_sources<FilteredObsMap>(engine.omb);
     }
