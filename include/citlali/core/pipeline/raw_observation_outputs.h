@@ -26,7 +26,7 @@ void calculate_raw_observation_noise_products_if_needed(
 template <auto RawObsMap, class Engine, class Logger>
 void output_raw_observation_maps_if_needed(Engine &engine,
                                            const Logger &logger) {
-    if (engine.run_mapmaking) {
+    if (should_output_raw_observation_maps(engine)) {
         engine.create_obs_map_files();
         logger->info("outputting raw obs files");
         engine.template output<RawObsMap>();
