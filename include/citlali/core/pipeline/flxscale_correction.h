@@ -9,6 +9,11 @@ auto flxscale_correction_metadata(const RawObs &rawobs) {
     return rawobs.flxscale_correction();
 }
 
+template <class FlxscaleCorrection>
+bool has_flxscale_correction(const FlxscaleCorrection *flxscale_corr) {
+    return flxscale_corr != nullptr;
+}
+
 template <class Engine, class RawObs, class Logger>
 bool apply_flxscale_correction(Engine &engine, const RawObs &rawobs,
                                const Logger &logger) {
