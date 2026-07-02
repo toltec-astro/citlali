@@ -6265,14 +6265,8 @@ void Engine::create_tod_files() {
                            "robust RMS of the detector RTC timestream after detector-local post-filter notching");
 
         netCDF::NcDim n_nws_rtcdiag_dim = fo.addDim("n_nws_rtcdiag", calib.n_nws);
-        netCDF::NcVar nw_ids_v = fo.addVar("rtc_diag_network_ids", netCDF::ncInt, n_nws_rtcdiag_dim);
-        nw_ids_v.putAtt("units", "N/A");
-        nw_ids_v.putAtt("comment", "network IDs corresponding to n_nws_rtcdiag axis");
-        std::vector<int> nw_ids(static_cast<std::size_t>(calib.n_nws), fill_int);
-        for (Eigen::Index i = 0; i < calib.n_nws; ++i) {
-            nw_ids[static_cast<std::size_t>(i)] = static_cast<int>(calib.nws(i));
-        }
-        nw_ids_v.putVar(nw_ids.data());
+        citlali::pipeline::add_rtcdiag_network_ids(
+            fo, calib, n_nws_rtcdiag_dim, fill_int);
 
         std::vector<netCDF::NcDim> rtc_nw_dims = {n_scans_dim, n_nws_rtcdiag_dim};
         auto add_rtc_nw_double = [&](const std::string &name, const std::string &comment) {
