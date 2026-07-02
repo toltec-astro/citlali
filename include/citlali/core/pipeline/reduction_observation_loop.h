@@ -8,7 +8,6 @@
 #include <citlali/core/pipeline/reduction_observation_logging.h>
 
 #include <cstddef>
-#include <utility>
 
 namespace citlali::pipeline {
 
