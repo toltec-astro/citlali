@@ -9761,14 +9761,13 @@ void Engine::create_rtcdiag_file() {
     citlali::pipeline::add_rtcdiag_apt_double_vars(fo, calib, n_dets_dim);
 
     std::vector<netCDF::NcDim> rtc_det_dims = {n_scans_dim, n_dets_dim};
+    const auto n_rtc_det_values =
+        static_cast<std::size_t>(n_scans) *
+        static_cast<std::size_t>(calib.n_dets);
     auto add_rtc_det_double = [&](const std::string &name, const std::string &comment) {
-        netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, rtc_det_dims);
-        v.putAtt("units", "N/A");
-        v.putAtt("comment", comment);
-        set_netcdf_chunking_and_compression(v, rtc_det_chunks, 1);
-        std::vector<double> init(static_cast<std::size_t>(n_scans) *
-                                 static_cast<std::size_t>(calib.n_dets), fill_double);
-        v.putVar(init.data());
+        citlali::pipeline::add_rtcdiag_det_double(
+            fo, name, comment, rtc_det_dims, rtc_det_chunks,
+            n_rtc_det_values, fill_double);
     };
     auto add_rtc_det_int = [&](const std::string &name, const std::string &comment) {
         netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_det_dims);
