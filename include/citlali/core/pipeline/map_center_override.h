@@ -27,11 +27,12 @@ template <class Engine, class Logger>
 void overwrite_map_center_if_configured(Engine &engine, const Logger &logger) {
     if (has_map_center_override(engine)) {
         logger->info("overwriting map center to ({}, {})",
-                     engine.omb.crval_config[0], engine.omb.crval_config[1]);
+                     map_center_ra_degrees(engine),
+                     map_center_dec_degrees(engine));
         const double map_center_ra_rad =
-            degrees_to_radians(engine.omb.crval_config[0]);
+            degrees_to_radians(map_center_ra_degrees(engine));
         const double map_center_dec_rad =
-            degrees_to_radians(engine.omb.crval_config[1]);
+            degrees_to_radians(map_center_dec_degrees(engine));
         engine.telescope.tel_header["Header.Source.Ra"].setConstant(
             map_center_ra_rad);
         engine.telescope.tel_header["Header.Source.Dec"].setConstant(
