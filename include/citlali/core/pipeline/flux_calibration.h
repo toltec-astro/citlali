@@ -26,8 +26,7 @@ void calculate_calibration_flux_scale(Engine &engine) {
 template <class Engine, class Logger>
 void calculate_flux_calibration(Engine &engine, const Logger &logger) {
     log_flux_calibration(logger);
-    engine.calib.calc_flux_calibration(flux_calibration_signal_unit(engine),
-                                       flux_calibration_pixel_size_rad(engine));
+    calculate_calibration_flux_scale(engine);
 }
 
 template <class Engine, class Logger>
