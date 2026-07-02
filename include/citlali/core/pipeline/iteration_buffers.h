@@ -14,6 +14,14 @@ void allocate_coadd_map_buffer(TodProc &todproc, const Logger &logger) {
 }
 
 template <class TodProc, class Logger>
+void allocate_coadd_noise_buffer(TodProc &todproc, const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    logger->info("allocating nmb");
+    todproc.allocate_nmb(engine.cmb);
+}
+
+template <class TodProc, class Logger>
 void prepare_coadd_iteration_buffers(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
 
