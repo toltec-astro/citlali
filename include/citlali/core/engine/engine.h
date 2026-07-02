@@ -7108,6 +7108,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // array name
     std::string name = toltec_io.array_name_map[calib.arrays(i)];
+    auto &fits_entry = fits_io->at(i);
 
     try {
     logger->debug("adding unit conversions");
@@ -7136,18 +7137,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     auto add_double_key = [&](const std::string &key, double value, const std::string &comment,
                               double fallback = 0.0) {
-        if (!std::isfinite(value)) {
-            logger->warn("PHDU key '{}' non-finite ({}) for array {} in {}; using fallback {}",
-                         key, value, name, fits_io->at(i).filepath, fallback);
-            value = fallback;
-        }
-        try {
-            fits_io->at(i).pfits->pHDU().addKey(key, value, comment);
-        } catch (const CCfits::FitsError &e) {
-            throw std::runtime_error(
-                fmt::format("failed PHDU float key '{}' for array '{}' (file={} value={}): {}",
-                            key, name, fits_io->at(i).filepath, value, e.message()));
-        }
+        citlali::pipeline::add_phdu_double_key(
+            fits_entry, name, logger, key, value, comment, fallback);
     };
 
     // add unit conversions

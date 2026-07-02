@@ -1,7 +1,11 @@
 #pragma once
 
 #include <cmath>
+#include <stdexcept>
 #include <string>
+
+#include <CCfits/CCfits>
+#include <fmt/core.h>
 
 namespace citlali::pipeline {
 
@@ -40,6 +44,27 @@ double telescope_data_mean(const VectorMap &tel_data, const std::string &key,
         return fallback;
     }
     return value;
+}
+
+template <class FitsEntry, class Logger>
+void add_phdu_double_key(FitsEntry &fits_entry, const std::string &array_name,
+                         const Logger &logger, const std::string &key,
+                         double value, const std::string &comment,
+                         double fallback = 0.0) {
+    if (!std::isfinite(value)) {
+        logger->warn(
+            "PHDU key '{}' non-finite ({}) for array {} in {}; using fallback {}",
+            key, value, array_name, fits_entry.filepath, fallback);
+        value = fallback;
+    }
+    try {
+        fits_entry.pfits->pHDU().addKey(key, value, comment);
+    } catch (const CCfits::FitsError &e) {
+        throw std::runtime_error(
+            fmt::format(
+                "failed PHDU float key '{}' for array '{}' (file={} value={}): {}",
+                key, array_name, fits_entry.filepath, value, e.message()));
+    }
 }
 
 }  // namespace citlali::pipeline
