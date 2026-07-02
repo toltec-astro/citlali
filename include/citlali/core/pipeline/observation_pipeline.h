@@ -17,8 +17,7 @@ template <class Engine, class KidsProc, class RawObs, class Logger>
 void setup_and_run_observation_pipeline(Engine &engine, KidsProc &kidsproc,
                                         const RawObs &rawobs,
                                         const Logger &logger) {
-    logger->info("pipeline setup");
-    engine.setup();
+    setup_observation_pipeline(engine, logger);
 
     if (should_run_observation_tod(engine)) {
         logger->info("running pipeline");
