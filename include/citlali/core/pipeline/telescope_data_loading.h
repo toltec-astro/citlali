@@ -66,13 +66,7 @@ void load_and_align_telescope_data(TodProc &todproc, const RawObs &rawobs,
     overwrite_map_center_if_configured(engine, logger);
 
     if (should_align_telescope_timestreams(engine)) {
-        logger->info("aligning timestreams");
-        if (should_interpolate_over_timing_gaps(engine)) {
-            align_telescope_timestreams_over_gaps(todproc, rawobs);
-        }
-        else {
-            align_telescope_timestreams_direct(todproc, rawobs);
-        }
+        align_telescope_timestreams(todproc, rawobs, logger);
     }
     else {
         reset_simulated_observation_indices(engine, rawobs);
