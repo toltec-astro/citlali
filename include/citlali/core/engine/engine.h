@@ -9886,13 +9886,9 @@ void Engine::create_rtcdiag_file() {
             n_rtc_nw_values, fill_double);
     };
     auto add_rtc_nw_int = [&](const std::string &name, const std::string &comment) {
-        netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_nw_dims);
-        v.putAtt("units", "N/A");
-        v.putAtt("comment", comment);
-        set_netcdf_chunking_and_compression(v, rtc_nw_chunks, 1);
-        std::vector<int> init(static_cast<std::size_t>(n_scans) *
-                              static_cast<std::size_t>(calib.n_nws), fill_int);
-        v.putVar(init.data());
+        citlali::pipeline::add_rtcdiag_network_int(
+            fo, name, comment, rtc_nw_dims, rtc_nw_chunks,
+            n_rtc_nw_values, fill_int);
     };
 
     add_rtc_nw_int("rtc_network_n_det_input",
