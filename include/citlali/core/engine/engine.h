@@ -91,6 +91,7 @@
 #include <citlali/core/pipeline/map_filename.h>
 #include <citlali/core/pipeline/map_layer_name.h>
 #include <citlali/core/pipeline/map_summary_stats.h>
+#include <citlali/core/pipeline/phdu_beammap.h>
 #include <citlali/core/pipeline/phdu_extinction.h>
 #include <citlali/core/pipeline/phdu_oof.h>
 #include <citlali/core/pipeline/phdu_telescope_values.h>
@@ -7225,27 +7226,16 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.IS_DEROTATED", beammap_derotate, "Beammap derotated");
         // add reference detector information
         if (beammap_subtract_reference) {
-            int ref_det_index = beammap_reference_det;
-            if (calib.apt_meta["reference_det"]) {
-                ref_det_index = calib.apt_meta["reference_det"].as<int>();
-            }
-            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_DET_INDEX", ref_det_index, "Beammap Reference det (rotation center)");
-            double ref_x_t = -99.0;
-            double ref_y_t = -99.0;
-            if (calib.apt_meta["reference_x_t"]) {
-                ref_x_t = calib.apt_meta["reference_x_t"].as<double>();
-            }
-            else if (ref_det_index >= 0 && ref_det_index < calib.apt["x_t"].size()) {
-                ref_x_t = calib.apt["x_t"](ref_det_index);
-            }
-            if (calib.apt_meta["reference_y_t"]) {
-                ref_y_t = calib.apt_meta["reference_y_t"].as<double>();
-            }
-            else if (ref_det_index >= 0 && ref_det_index < calib.apt["y_t"].size()) {
-                ref_y_t = calib.apt["y_t"](ref_det_index);
-            }
-            add_double_key("BEAMMAP.REF_X_T", ref_x_t, "Az rotation center (arcsec)");
-            add_double_key("BEAMMAP.REF_Y_T", ref_y_t, "Alt rotation center (arcsec)");
+            const auto reference_values =
+                citlali::pipeline::beammap_reference_header_values(
+                    calib, beammap_reference_det);
+            fits_io->at(i).pfits->pHDU().addKey(
+                "BEAMMAP.REF_DET_INDEX", reference_values.det_index,
+                "Beammap Reference det (rotation center)");
+            add_double_key("BEAMMAP.REF_X_T", reference_values.x_t,
+                           "Az rotation center (arcsec)");
+            add_double_key("BEAMMAP.REF_Y_T", reference_values.y_t,
+                           "Alt rotation center (arcsec)");
         }
         else {
             fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_DET_INDEX", -99, "Beammap Reference det (rotation center)");
