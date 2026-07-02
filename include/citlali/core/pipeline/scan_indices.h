@@ -7,6 +7,11 @@ void log_scan_index_calculation(const Logger &logger) {
     logger->info("calculating scan indices");
 }
 
+template <class Engine>
+void calculate_telescope_scan_indices(Engine &engine) {
+    engine.telescope.calc_scan_indices();
+}
+
 template <class Engine, class Logger>
 void calculate_scan_indices(Engine &engine, const Logger &logger) {
     log_scan_index_calculation(logger);
