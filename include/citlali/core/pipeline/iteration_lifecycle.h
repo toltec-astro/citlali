@@ -68,10 +68,7 @@ void begin_fruit_loop_iteration(Engine &engine, const Logger &logger) {
     begin_iteration_weight_validation(engine);
 
     begin_reduction_learning_iteration(engine);
-    if (should_log_reduction_learning_diagnostics(engine)) {
-        logger->info("reduction learning begin: {}",
-                     engine.reduction_learning.summary_string());
-    }
+    log_reduction_learning_iteration_if_needed(engine, logger, "begin");
 }
 
 template <class Engine, class Logger>
