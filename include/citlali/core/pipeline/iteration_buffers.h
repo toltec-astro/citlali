@@ -27,8 +27,7 @@ void prepare_coadd_iteration_buffers(TodProc &todproc, const Logger &logger) {
 
     allocate_coadd_map_buffer(todproc, logger);
     if (should_allocate_coadd_noise_buffer(engine)) {
-        logger->info("allocating nmb");
-        todproc.allocate_nmb(engine.cmb);
+        allocate_coadd_noise_buffer(todproc, logger);
     }
 
     engine.cmb.obsnums.clear();
