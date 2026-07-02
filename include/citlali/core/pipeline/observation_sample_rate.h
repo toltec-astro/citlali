@@ -16,7 +16,7 @@ auto downsample_factor(const Engine &engine) {
 
 template <class Engine>
 bool downsample_factor_requires_frequency(const Engine &engine) {
-    return engine.rtcproc.downsampler.factor <= 0;
+    return downsample_factor(engine) <= 0;
 }
 
 template <class Engine, class Logger>
