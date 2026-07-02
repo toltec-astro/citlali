@@ -37,7 +37,7 @@ void allocate_observation_map_buffers(TodProc &todproc,
     todproc.calc_map_num();
     logger->info("allocating obs map buffer");
     todproc.allocate_omb(map_extent, map_coord);
-    engine.configure_map_pixel_contribution_targets(engine.omb, "raw_obs");
+    configure_observation_pixel_contribution_targets(engine);
 
     if (engine.run_noise &&
         (!engine.run_coadd || engine.map_method == "jinc")) {
