@@ -16,7 +16,7 @@ bool should_log_fruit_loop_iteration_start(const Engine &engine) {
 
 template <class Engine, class Logger>
 void begin_fruit_loop_iteration(Engine &engine, const Logger &logger) {
-    if (engine.ptcproc.run_fruit_loops) {
+    if (should_log_fruit_loop_iteration_start(engine)) {
         logger->info("starting fruit loops iteration {}", engine.fruit_iter);
     }
     engine.ptcproc.begin_weight_validation_iteration(engine.fruit_iter);
