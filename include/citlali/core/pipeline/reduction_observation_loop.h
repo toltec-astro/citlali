@@ -2,6 +2,7 @@
 
 #include <citlali/core/pipeline/kids_metadata.h>
 #include <citlali/core/pipeline/reduction_observation.h>
+#include <citlali/core/pipeline/reduction_observation_access.h>
 
 #include <cstddef>
 
@@ -17,15 +18,16 @@ bool run_reduction_observation_at_index(
     std::size_t observation_index, DateObsFactory &&date_obs_factory,
     const Logger &logger) {
     logger->info("starting reduction of observation {}/{}",
-                 observation_index + 1, co.n_inputs());
+                 observation_index + 1, reduction_observation_count(co));
     auto kidsproc = make_kids_data_proc<KidsDataProc>(citlali_config);
     const auto &rawobs = co.inputs()[observation_index];
     auto rawobs_kids_meta = load_rawobs_kids_meta(kidsproc, rawobs, logger);
 
     return run_reduction_observation<IsBeammap, RawObsMap, FilteredObsMap,
                                      FitMaps>(
-        todproc, kidsproc, rawobs, rawobs_kids_meta, co.n_inputs() > 1,
-        map_extents, map_coords, observation_index,
+        todproc, kidsproc, rawobs, rawobs_kids_meta,
+        reduction_observation_count(co) > 1, map_extents, map_coords,
+        observation_index,
         date_obs_factory(todproc.engine()), logger);
 }
 
@@ -37,7 +39,8 @@ bool run_reduction_iteration_observations(
     TodProc &todproc, const IOCoordinator &co, CitlaliConfig &citlali_config,
     MapExtents &map_extents, MapCoords &map_coords,
     DateObsFactory &&date_obs_factory, const Logger &logger) {
-    for (std::size_t observation_index = 0; observation_index < co.n_inputs();
+    const auto n_observations = reduction_observation_count(co);
+    for (std::size_t observation_index = 0; observation_index < n_observations;
          ++observation_index) {
         if (!run_reduction_observation_at_index<
                 IsBeammap, RawObsMap, FilteredObsMap, FitMaps,
