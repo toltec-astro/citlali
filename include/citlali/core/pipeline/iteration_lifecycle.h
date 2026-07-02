@@ -14,6 +14,13 @@ bool should_log_fruit_loop_iteration_start(const Engine &engine) {
     return engine.ptcproc.run_fruit_loops;
 }
 
+template <class Engine>
+bool fruit_loop_learning_source_model_available(const Engine &engine) {
+    return engine.ptcproc.run_fruit_loops &&
+           (engine.fruit_iter > 0 ||
+            engine.ptcproc.fruit_loops_path != "null");
+}
+
 template <class Engine, class Logger>
 void begin_fruit_loop_iteration(Engine &engine, const Logger &logger) {
     if (should_log_fruit_loop_iteration_start(engine)) {
