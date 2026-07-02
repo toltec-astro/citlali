@@ -55,6 +55,11 @@ void align_telescope_timestreams(TodProc &todproc, const RawObs &rawobs,
     }
 }
 
+template <class Engine, class RawObs>
+void reset_simulated_telescope_indices(Engine &engine, const RawObs &rawobs) {
+    reset_simulated_observation_indices(engine, rawobs);
+}
+
 template <class TodProc, class RawObs, class Logger>
 void load_and_align_telescope_data(TodProc &todproc, const RawObs &rawobs,
                                    const Logger &logger) {
