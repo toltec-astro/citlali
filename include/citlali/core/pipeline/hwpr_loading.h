@@ -38,6 +38,13 @@ void disable_hwpr_loading(Engine &engine) {
     engine.calib.run_hwpr = false;
 }
 
+template <class Engine, class Logger>
+void log_hwpr_ignored_if_needed(const Engine &engine, const Logger &logger) {
+    if (!engine.calib.run_hwpr) {
+        logger->info("ignoring hwpr");
+    }
+}
+
 template <class Engine, class RawObs, class Logger>
 void load_hwpr_data_if_requested(Engine &engine, const RawObs &rawobs,
                                  const Logger &logger) {
