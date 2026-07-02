@@ -143,4 +143,25 @@ inline PtcDiagVarList ptcdiag_corr_network_int_vars() {
     };
 }
 
+inline PtcDiagVarList ptcdiag_weight_corr_int_vars() {
+    return {
+        {"weight_corr_penalty_n_det_input", "detector count in each network block"},
+        {"weight_corr_penalty_n_det_candidates", "detectors passing apt flag and min_good_frac"},
+        {"weight_corr_penalty_n_det_used", "candidate detectors with finite non-zero std"},
+        {"weight_corr_penalty_n_det_weighted", "detectors with positive map weight multiplied by penalty factor"},
+        {"weight_corr_penalty_sample_step", "time decimation factor used for penalty metrics"},
+    };
+}
+
+inline PtcDiagVarList ptcdiag_weight_corr_double_vars(
+    const std::string &factor_comment) {
+    return {
+        {"weight_corr_penalty_factor", factor_comment},
+        {"weight_corr_penalty_severity", "normalized [0,1] severity used to derive weight_corr_penalty_factor"},
+        {"weight_corr_penalty_pair_med_abs_corr", "median absolute sampled detector-detector correlation per network"},
+        {"weight_corr_penalty_cm_el_abs_corr", "absolute correlation between network common mode and TelElAct"},
+        {"weight_corr_penalty_cm_low_mid_ratio", "common-mode low/mid bandpower ratio"},
+    };
+}
+
 }  // namespace citlali::pipeline
