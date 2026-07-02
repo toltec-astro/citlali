@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/reduction_learning_lifecycle.h>
+#include <citlali/core/pipeline/weight_validation_lifecycle.h>
 
 namespace citlali::pipeline {
 
@@ -29,16 +30,6 @@ bool fruit_loop_iteration_pending(const Engine &engine,
 template <class Engine>
 bool should_log_fruit_loop_iteration_start(const Engine &engine) {
     return engine.ptcproc.run_fruit_loops;
-}
-
-template <class Engine>
-void begin_iteration_weight_validation(Engine &engine) {
-    engine.ptcproc.begin_weight_validation_iteration(engine.fruit_iter);
-}
-
-template <class Engine>
-void finalize_iteration_weight_validation(Engine &engine) {
-    engine.ptcproc.finalize_weight_validation_iteration(engine.fruit_iter);
 }
 
 template <class Engine, class Logger>
