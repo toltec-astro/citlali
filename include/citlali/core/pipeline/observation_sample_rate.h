@@ -68,6 +68,21 @@ double downsample_nyquist_hz(const Engine &engine) {
 }
 
 template <class Engine, class Logger>
+bool validate_downsample_antialias_filter(const Engine &engine,
+                                          double downsample_nyquist_Hz,
+                                          const Logger &logger) {
+    if (engine.rtcproc.filter.freq_high_Hz > downsample_nyquist_Hz) {
+        logger->error(
+            "invalid anti-alias setup: filter freq_high_Hz ({} Hz) "
+            "exceeds downsample Nyquist ({} Hz)",
+            engine.rtcproc.filter.freq_high_Hz,
+            downsample_nyquist_Hz);
+        return false;
+    }
+    return true;
+}
+
+template <class Engine, class Logger>
 bool configure_effective_sample_rate(Engine &engine, const Logger &logger) {
     if (engine.rtcproc.run_downsample) {
         if (downsample_factor_requires_frequency(engine)) {
