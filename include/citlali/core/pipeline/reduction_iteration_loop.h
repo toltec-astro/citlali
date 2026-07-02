@@ -16,11 +16,11 @@ bool run_reduction_iterations(
     const ConfigFilepaths &config_filepaths, MapExtents &map_extents,
     MapCoords &map_coords, DateObsFactory &&date_obs_factory,
     const Logger &logger) {
-    bool fruit_loops_converged = false;
+    ReductionIterationState iteration_state;
     auto &engine = todproc.engine();
-    initialize_reduction_iterations(engine, fruit_loops_converged, logger);
+    initialize_reduction_iterations(engine, iteration_state, logger);
 
-    while (fruit_loop_iteration_pending(engine, fruit_loops_converged)) {
+    while (fruit_loop_iteration_pending(engine, iteration_state)) {
         if (!run_reduction_iteration<
                 IsBeammap, RawObsMap, FilteredObsMap, RawCoaddMap,
                 FilteredCoaddMap, FitMaps, KidsDataProc>(

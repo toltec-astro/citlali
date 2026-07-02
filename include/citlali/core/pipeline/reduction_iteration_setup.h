@@ -21,6 +21,15 @@ void begin_reduction_iteration(TodProc &todproc,
 
 template <class Engine, class Logger>
 void initialize_reduction_iterations(Engine &engine,
+                                     ReductionIterationState &state,
+                                     const Logger &logger) {
+    engine.fruit_iter = 0;
+    reset_reduction_iteration_state(state);
+    configure_fruit_loop_iteration_policy(engine, logger);
+}
+
+template <class Engine, class Logger>
+void initialize_reduction_iterations(Engine &engine,
                                      bool &fruit_loops_converged,
                                      const Logger &logger) {
     engine.fruit_iter = 0;
