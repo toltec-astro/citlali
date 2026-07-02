@@ -23,8 +23,6 @@ inline void create_output_dir(const std::string &path) {
 template <class Engine, class Logger>
 void create_observation_output_dirs(const Engine &engine,
                                     const Logger &logger) {
-    namespace fs = std::filesystem;
-
     logger->debug("creating obsnum directory");
     create_output_dir(engine.obsnum_dir_name);
 
