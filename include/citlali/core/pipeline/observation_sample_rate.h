@@ -96,12 +96,8 @@ bool configure_effective_sample_rate(Engine &engine, const Logger &logger) {
         }
 
         const double downsample_nyquist_Hz = downsample_nyquist_hz(engine);
-        if (engine.rtcproc.filter.freq_high_Hz > downsample_nyquist_Hz) {
-            logger->error(
-                "invalid anti-alias setup: filter freq_high_Hz ({} Hz) "
-                "exceeds downsample Nyquist ({} Hz)",
-                engine.rtcproc.filter.freq_high_Hz,
-                downsample_nyquist_Hz);
+        if (!validate_downsample_antialias_filter(
+                engine, downsample_nyquist_Hz, logger)) {
             return false;
         }
         engine.telescope.d_fsmp =
