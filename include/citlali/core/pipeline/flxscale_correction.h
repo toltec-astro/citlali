@@ -19,6 +19,10 @@ double flxscale_correction_factor(const FlxscaleCorrection &flxscale_corr) {
     return flxscale_corr.value();
 }
 
+inline bool is_valid_flxscale_correction_factor(double factor) {
+    return std::isfinite(factor) && factor > 0.0;
+}
+
 template <class Engine, class RawObs, class Logger>
 bool apply_flxscale_correction(Engine &engine, const RawObs &rawobs,
                                const Logger &logger) {
