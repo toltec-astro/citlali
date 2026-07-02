@@ -9,6 +9,12 @@ bool should_allocate_observation_map_buffers(const Engine &engine) {
     return engine.run_mapmaking;
 }
 
+template <class MapExtents>
+decltype(auto) observation_map_extent_at(MapExtents &map_extents,
+                                         std::size_t observation_index) {
+    return map_extents[observation_index];
+}
+
 template <class TodProc, class MapExtent, class MapCoord, class Logger>
 void allocate_observation_map_buffers(TodProc &todproc,
                                       MapExtent &map_extent,
