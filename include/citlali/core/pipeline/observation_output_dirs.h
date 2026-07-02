@@ -1,6 +1,7 @@
 #pragma once
 
 #include <filesystem>
+#include <string>
 
 namespace citlali::pipeline {
 
@@ -12,6 +13,11 @@ bool should_create_filtered_observation_output_dir(const Engine &engine) {
 template <class Engine>
 bool should_create_observation_logs_dir(const Engine &engine) {
     return engine.verbose_mode;
+}
+
+inline void create_output_dir(const std::string &path) {
+    namespace fs = std::filesystem;
+    fs::create_directories(path);
 }
 
 template <class Engine, class Logger>
