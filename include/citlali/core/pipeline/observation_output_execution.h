@@ -11,6 +11,13 @@ bool should_accumulate_observation_coadd(const Engine &engine) {
     return engine.run_coadd;
 }
 
+template <auto FilteredObsMap, bool FitMaps, class TodProc, class Logger>
+void write_noncoadded_observation_outputs(TodProc &todproc,
+                                          const Logger &logger) {
+    write_filtered_observation_outputs_if_needed<FilteredObsMap, FitMaps>(
+        todproc, logger);
+}
+
 template <auto RawObsMap, auto FilteredObsMap, bool FitMaps, class TodProc,
           class Logger>
 void write_observation_outputs_and_accumulate(TodProc &todproc,
