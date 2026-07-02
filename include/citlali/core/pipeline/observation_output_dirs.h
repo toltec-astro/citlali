@@ -37,7 +37,7 @@ void create_observation_output_dirs(const Engine &engine,
     }
     if (should_create_observation_logs_dir(engine)) {
         logger->debug("creating obsnum logs directory");
-        fs::create_directories(engine.obsnum_dir_name + "logs/");
+        create_output_dir(engine.obsnum_dir_name + "logs/");
     }
 }
 
