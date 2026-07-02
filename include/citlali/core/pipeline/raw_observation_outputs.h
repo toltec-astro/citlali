@@ -9,6 +9,11 @@ bool should_calculate_raw_observation_noise_products(const Engine &engine) {
            engine.run_noise;
 }
 
+template <class Engine>
+bool should_output_raw_observation_maps(const Engine &engine) {
+    return engine.run_mapmaking;
+}
+
 template <class Engine, class Logger>
 void calculate_raw_observation_noise_products_if_needed(
     Engine &engine, const Logger &logger) {
