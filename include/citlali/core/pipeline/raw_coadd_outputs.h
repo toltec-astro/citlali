@@ -20,7 +20,7 @@ void prepare_raw_coadd_maps(TodProc &todproc, const Logger &logger) {
     todproc.create_coadded_map_files();
 
     logger->info("normalizing coadded maps");
-    if (engine.rtcproc.run_polarization) {
+    if (should_normalize_polarized_raw_coadd_maps(engine)) {
         engine.cmb.normalize_polarized_maps();
     }
     else {
