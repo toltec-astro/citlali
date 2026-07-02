@@ -14,6 +14,11 @@ bool has_timing_gaps(const Engine &engine) {
     return engine.gaps.size() > 0;
 }
 
+template <class Engine>
+bool should_write_timing_gaps_log(const Engine &engine) {
+    return engine.verbose_mode;
+}
+
 template <class Engine, class Logger>
 void record_timing_gaps_if_needed(const Engine &engine, const Logger &logger) {
     if (has_timing_gaps(engine)) {
