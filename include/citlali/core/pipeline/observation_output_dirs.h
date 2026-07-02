@@ -26,7 +26,7 @@ void create_observation_output_dirs(const Engine &engine,
     namespace fs = std::filesystem;
 
     logger->debug("creating obsnum directory");
-    fs::create_directories(engine.obsnum_dir_name);
+    create_output_dir(engine.obsnum_dir_name);
 
     logger->debug("creating obsnum raw directory");
     fs::create_directories(engine.obsnum_dir_name + "raw/");
