@@ -106,8 +106,7 @@ bool configure_effective_sample_rate(Engine &engine, const Logger &logger) {
                 engine, downsample_nyquist_Hz, logger)) {
             return false;
         }
-        engine.telescope.d_fsmp =
-            engine.telescope.fsmp / engine.rtcproc.downsampler.factor;
+        apply_downsampled_sample_rate(engine);
     }
     else {
         engine.telescope.d_fsmp = engine.telescope.fsmp;
