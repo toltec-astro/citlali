@@ -49,7 +49,7 @@ void prepare_iteration_observation_buffers(TodProc &todproc,
                                            const Logger &logger) {
     auto &engine = todproc.engine();
 
-    engine.date_obs.clear();
+    clear_iteration_observation_dates(engine);
     if (engine.run_coadd) {
         prepare_coadd_iteration_buffers(todproc, logger);
     }
