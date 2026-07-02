@@ -1906,28 +1906,59 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
                               Eigen::DenseBase<DerivedC> &apt_flags, const Eigen::Index group_n_eig) {
 
     // dimensions
+    Eigen::Index n_pts = scans.rows();
     Eigen::Index n_dets = scans.cols();
 
-    // make copy of flags
-    Eigen::MatrixXd f = abs(flags.derived().template cast<double> ().array() - 1);
-
-    // zero out flagged detectors in apt table.  we need to do this because we want
-    // to make maps of all detectors when in detector mode so the timestreams cannot
-    // be completely flagged.
+    std::vector<Eigen::Index> active_cols;
+    active_cols.reserve(static_cast<std::size_t>(n_dets));
     for (Eigen::Index i=0; i<n_dets; i++) {
-        if (apt_flags.derived()(i)!=0) {
-            f.col(i).setZero();
+        if (apt_flags.derived()(i) != 0) {
+            continue;
+        }
+        Eigen::Index n_good = 0;
+        for (Eigen::Index j=0; j<n_pts; j++) {
+            if (!flags.derived()(j, i)) {
+                n_good++;
+            }
+        }
+        if (n_good > 1) {
+            active_cols.push_back(i);
+        }
+    }
+
+    const Eigen::Index n_active_dets = static_cast<Eigen::Index>(active_cols.size());
+    const int n_active_dets_int = static_cast<int>(n_active_dets);
+    if (n_active_dets != n_dets) {
+        logger->debug("PCA covariance using {}/{} active detectors", n_active_dets, n_dets);
+    }
+
+    if (n_active_dets <= 1) {
+        logger->warn("PCA covariance has only {} active detector(s); skipping eigen solve", n_active_dets);
+        Eigen::VectorXd evals = Eigen::VectorXd::Zero(n_dets);
+        Eigen::MatrixXd evecs = Eigen::MatrixXd::Zero(n_dets, n_dets);
+        return std::tuple<Eigen::VectorXd, Eigen::MatrixXd> {evals, evecs};
+    }
+
+    Eigen::MatrixXd f_active(n_pts, n_active_dets);
+    for (Eigen::Index i=0; i<n_active_dets; i++) {
+        const auto src_col = active_cols[static_cast<std::size_t>(i)];
+        for (Eigen::Index j=0; j<n_pts; j++) {
+            f_active(j, i) = flags.derived()(j, src_col) ? 0.0 : 1.0;
         }
     }
 
     // container for covariance matrix
-    Eigen::MatrixXd pca_cov(n_dets, n_dets);
+    Eigen::MatrixXd pca_cov(n_active_dets, n_active_dets);
 
     // number of unflagged samples
-    auto denom = (f.adjoint() * f).array() - 1;
+    auto denom = (f_active.adjoint() * f_active).array() - 1;
 
     // multiply scans by flags to remove flagged signal
-    auto det = (scans.derived().array()*f.array()).matrix();
+    Eigen::MatrixXd det(n_pts, n_active_dets);
+    for (Eigen::Index i=0; i<n_active_dets; i++) {
+        const auto src_col = active_cols[static_cast<std::size_t>(i)];
+        det.col(i) = (scans.derived().col(src_col).array() * f_active.col(i).array()).matrix();
+    }
 
     // calculate the covariance matrix with safe denominator handling
     Eigen::MatrixXd numer = det.adjoint() * det;
@@ -1969,23 +2000,23 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         int n_ev = static_cast<int>(group_n_eig);
         if (adaptive_mode_selection_enabled()) {
             if (adaptive_mode_selection_max_modes() > 0) {
-                n_ev = std::min<int>(adaptive_mode_selection_max_modes(), n_dets - 1);
+                n_ev = std::min<int>(adaptive_mode_selection_max_modes(), n_active_dets_int - 1);
             }
             else {
-                n_ev = n_dets - 1;
+                n_ev = n_active_dets_int - 1;
             }
         }
         else if (stddev_limit > 0 && group_n_eig == 0) {
-            n_ev = n_dets - 1;
+            n_ev = n_active_dets_int - 1;
         }
         else if (n_calc > 0) {
             n_ev = n_calc;
         }
 
-        n_ev = std::min<int>(n_ev, n_dets - 1);
+        n_ev = std::min<int>(n_ev, n_active_dets_int - 1);
         if (n_ev <= 0) {
             evals = Eigen::VectorXd::Zero(n_dets);
-            evecs = Eigen::MatrixXd::Identity(n_dets, n_dets);
+            evecs = Eigen::MatrixXd::Zero(n_dets, n_dets);
             return std::tuple<Eigen::VectorXd, Eigen::MatrixXd> {evals, evecs};
         }
 
@@ -1998,9 +2029,9 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
         }
 
         // number of values to calculate
-        int n_cv = std::min<int>(n_dets, std::max<int>(n_ev + 2, static_cast<int>(std::ceil(n_ev * 2.5))));
+        int n_cv = std::min<int>(n_active_dets_int, std::max<int>(n_ev + 2, static_cast<int>(std::ceil(n_ev * 2.5))));
         if (n_cv <= n_ev) {
-            n_cv = std::min<int>(n_dets, n_ev + 1);
+            n_cv = std::min<int>(n_active_dets_int, n_ev + 1);
         }
         if (n_cv <= n_ev) {
             throw std::runtime_error("invalid Spectra settings: n_cv <= n_ev");
@@ -2032,7 +2063,10 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
             for (Eigen::Index k=0; k<n_ev; ++k) {
                 evals(k) = evals_sub(order[static_cast<std::size_t>(k)]);
-                evecs.col(k) = evecs_sub.col(order[static_cast<std::size_t>(k)]);
+                for (Eigen::Index i=0; i<n_active_dets; i++) {
+                    const auto dst_row = active_cols[static_cast<std::size_t>(i)];
+                    evecs(dst_row, k) = evecs_sub(i, order[static_cast<std::size_t>(k)]);
+                }
             }
         }
         else {
@@ -2046,11 +2080,21 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
 
         // copy the eigenvalues and eigenvectors
         if (!solution.info()) {
-            evals = solution.eigenvalues();
-            evecs = solution.eigenvectors();
+            Eigen::VectorXd evals_active = solution.eigenvalues();
+            Eigen::MatrixXd evecs_active = solution.eigenvectors();
 
-            evals.reverseInPlace();
-            evecs.rowwise().reverseInPlace();
+            evals_active.reverseInPlace();
+            evecs_active.rowwise().reverseInPlace();
+
+            evals = Eigen::VectorXd::Zero(n_dets);
+            evecs = Eigen::MatrixXd::Zero(n_dets, n_dets);
+            for (Eigen::Index k=0; k<n_active_dets; k++) {
+                evals(k) = evals_active(k);
+                for (Eigen::Index i=0; i<n_active_dets; i++) {
+                    const auto dst_row = active_cols[static_cast<std::size_t>(i)];
+                    evecs(dst_row, k) = evecs_active(i, k);
+                }
+            }
         }
         else {
             throw std::runtime_error("eigen failed to compute eigen values");
