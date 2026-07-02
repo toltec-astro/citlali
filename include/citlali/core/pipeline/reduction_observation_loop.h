@@ -20,7 +20,7 @@ bool run_reduction_observation_at_index(
     logger->info("starting reduction of observation {}/{}",
                  observation_index + 1, reduction_observation_count(co));
     auto kidsproc = make_kids_data_proc<KidsDataProc>(citlali_config);
-    const auto &rawobs = co.inputs()[observation_index];
+    const auto &rawobs = reduction_observation_input_at(co, observation_index);
     auto rawobs_kids_meta = load_rawobs_kids_meta(kidsproc, rawobs, logger);
 
     return run_reduction_observation<IsBeammap, RawObsMap, FilteredObsMap,
