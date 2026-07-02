@@ -59,7 +59,8 @@ bool prepare_reduction_observation_inputs(
     calculate_reduction_observation_flux_calibration(engine, logger);
     load_and_point_reduction_observation_telescope_data_if_needed(
         todproc, rawobs, has_multiple_inputs, logger);
-    append_observation_date(engine, std::forward<DateObs>(date_obs));
+    append_reduction_observation_date(
+        engine, std::forward<DateObs>(date_obs));
     record_timing_gaps_if_needed(engine, logger);
     calculate_scan_indices_if_needed(engine, has_multiple_inputs, logger);
     allocate_observation_map_buffers_if_needed(
