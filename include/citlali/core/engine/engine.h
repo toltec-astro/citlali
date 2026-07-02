@@ -9286,10 +9286,8 @@ void Engine::create_ptcdiag_file() {
         netCDF::NcVar nw_ids_v = fo.addVar(id_name, netCDF::ncInt, n_nws_dim);
         nw_ids_v.putAtt("units", "N/A");
         nw_ids_v.putAtt("comment", id_comment);
-        std::vector<int> nw_ids(static_cast<std::size_t>(calib.n_nws), fill_int);
-        for (Eigen::Index i = 0; i < calib.n_nws; ++i) {
-            nw_ids[static_cast<std::size_t>(i)] = static_cast<int>(calib.nws(i));
-        }
+        const auto nw_ids =
+            citlali::pipeline::diagnostic_network_ids(calib, fill_int);
         nw_ids_v.putVar(nw_ids.data());
         std::vector<netCDF::NcDim> dims = {n_scans_dim, n_nws_dim};
         for (const auto &[name, comment] : int_vars) {

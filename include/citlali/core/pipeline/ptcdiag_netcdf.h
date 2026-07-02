@@ -37,6 +37,17 @@ std::vector<int> ptcdiag_apt_int_values(const Calib &calib,
     return values;
 }
 
+template <class Calib>
+std::vector<int> diagnostic_network_ids(const Calib &calib,
+                                        int fill_value) {
+    std::vector<int> ids(static_cast<std::size_t>(calib.n_nws),
+                         fill_value);
+    for (Eigen::Index i=0; i<calib.n_nws; ++i) {
+        ids[static_cast<std::size_t>(i)] = static_cast<int>(calib.nws(i));
+    }
+    return ids;
+}
+
 inline void add_ptcdiag_det_meta_int(netCDF::NcFile &fo,
                                      const std::string &name,
                                      const std::string &comment,
