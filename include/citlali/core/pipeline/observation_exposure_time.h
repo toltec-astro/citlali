@@ -3,18 +3,18 @@
 namespace citlali::pipeline {
 
 template <class Engine>
-auto observation_start_time(const Engine &engine) {
+auto observation_start_time(Engine &engine) {
     return engine.telescope.tel_data["TelTime"](0);
 }
 
 template <class Engine>
-auto observation_stop_time(const Engine &engine) {
+auto observation_stop_time(Engine &engine) {
     return engine.telescope.tel_data["TelTime"](
         engine.telescope.tel_data["TelTime"].size() - 1);
 }
 
 template <class Engine>
-auto calculate_observation_exposure_time(const Engine &engine) {
+auto calculate_observation_exposure_time(Engine &engine) {
     return observation_stop_time(engine) - observation_start_time(engine);
 }
 
