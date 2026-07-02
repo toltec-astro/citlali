@@ -52,7 +52,7 @@ bool prepare_reduction_observation_inputs(
         return false;
     }
 
-    load_raw_detector_diagnostics(todproc, rawobs, logger);
+    load_reduction_observation_detector_diagnostics(todproc, rawobs, logger);
     prepare_observation_output_layout_from_rawobs_meta(
         engine, rawobs_kids_meta, logger);
     load_hwpr_data_if_requested(engine, rawobs, logger);
