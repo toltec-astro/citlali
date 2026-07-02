@@ -2,19 +2,9 @@
 
 #include <citlali/core/pipeline/iteration_buffer_allocation.h>
 #include <citlali/core/pipeline/iteration_buffer_policy.h>
+#include <citlali/core/pipeline/iteration_buffer_state.h>
 
 namespace citlali::pipeline {
-
-template <class Engine>
-void reset_coadd_iteration_accumulators(Engine &engine) {
-    engine.cmb.obsnums.clear();
-    engine.cmb.exposure_time = 0;
-}
-
-template <class Engine>
-void clear_iteration_observation_dates(Engine &engine) {
-    engine.date_obs.clear();
-}
 
 template <class TodProc, class Logger>
 void prepare_coadd_iteration_buffers(TodProc &todproc, const Logger &logger) {
