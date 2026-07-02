@@ -35,7 +35,7 @@ void allocate_observation_map_buffers_if_needed(
     std::size_t observation_index, const Logger &logger) {
     auto &engine = todproc.engine();
 
-    if (!engine.run_mapmaking) {
+    if (!should_allocate_observation_map_buffers(engine)) {
         return;
     }
 
