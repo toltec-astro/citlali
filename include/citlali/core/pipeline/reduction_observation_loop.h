@@ -3,6 +3,7 @@
 #include <citlali/core/pipeline/kids_metadata.h>
 #include <citlali/core/pipeline/reduction_observation.h>
 #include <citlali/core/pipeline/reduction_observation_access.h>
+#include <citlali/core/pipeline/reduction_observation_logging.h>
 
 #include <cstddef>
 
@@ -17,8 +18,8 @@ bool run_reduction_observation_at_index(
     MapExtents &map_extents, MapCoords &map_coords,
     std::size_t observation_index, DateObsFactory &&date_obs_factory,
     const Logger &logger) {
-    logger->info("starting reduction of observation {}/{}",
-                 observation_index + 1, reduction_observation_count(co));
+    log_reduction_observation_start(
+        observation_index, reduction_observation_count(co), logger);
     auto kidsproc = make_kids_data_proc<KidsDataProc>(citlali_config);
     const auto &rawobs = reduction_observation_input_at(co, observation_index);
     auto rawobs_kids_meta = load_rawobs_kids_meta(kidsproc, rawobs, logger);
