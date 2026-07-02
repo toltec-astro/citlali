@@ -91,6 +91,7 @@
 #include <citlali/core/pipeline/map_filename.h>
 #include <citlali/core/pipeline/map_layer_name.h>
 #include <citlali/core/pipeline/map_summary_stats.h>
+#include <citlali/core/pipeline/mapdiag_labels.h>
 #include <citlali/core/pipeline/mapdiag_netcdf.h>
 #include <citlali/core/pipeline/mapdiag_observation_weight.h>
 #include <citlali/core/pipeline/mapdiag_stage.h>
@@ -8996,22 +8997,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     put_string_1d(fo, "map_stokes", n_maps_dim, stokes_names, "stokes parameter label for each map row");
     put_string_1d(fo, "map_name", n_maps_dim, map_names, "grouping-derived map label prefix for each map row");
 
-    std::vector<std::string> obsnum_strings = mb->obsnums;
-    if (obsnum_strings.empty()) {
-        obsnum_strings.push_back(obsnum);
-    }
+    const auto obsnum_strings =
+        citlali::pipeline::mapdiag_obsnum_labels(mb->obsnums, obsnum);
     put_string_1d(fo, "coadd_obsnum", n_obsnums_dim, obsnum_strings, "obsnum ordering for map x obsnum contribution tables");
 
-    std::vector<std::string> dateobs_strings = date_obs;
-    if (dateobs_strings.empty()) {
-        dateobs_strings.push_back("");
-    }
-    if (dateobs_strings.size() > n_obsnums) {
-        dateobs_strings.resize(n_obsnums);
-    }
-    if (dateobs_strings.size() < n_obsnums) {
-        dateobs_strings.resize(n_obsnums, "");
-    }
+    const auto dateobs_strings =
+        citlali::pipeline::mapdiag_dateobs_labels(date_obs, n_obsnums);
     put_string_1d(fo, "coadd_dateobs", n_obsnums_dim, dateobs_strings, "DATEOBS ordering matching coadd_obsnum");
 
     auto add_map_double = [&](const std::string &name, const std::string &comment, const std::vector<double> &values) {
