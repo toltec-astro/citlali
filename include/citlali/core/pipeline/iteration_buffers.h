@@ -13,7 +13,7 @@ void prepare_coadd_iteration_buffers(TodProc &todproc, const Logger &logger) {
 
     logger->info("allocating cmb");
     todproc.allocate_cmb();
-    if (engine.run_noise) {
+    if (should_allocate_coadd_noise_buffer(engine)) {
         logger->info("allocating nmb");
         todproc.allocate_nmb(engine.cmb);
     }
