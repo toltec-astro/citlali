@@ -7,6 +7,12 @@ inline double degrees_to_radians(double degrees) {
     return degrees * deg_to_rad;
 }
 
+template <class Engine>
+bool has_map_center_override(const Engine &engine) {
+    return engine.omb.crval_config[0] != 0 &&
+           engine.omb.crval_config[1] != 0;
+}
+
 template <class Engine, class Logger>
 void overwrite_map_center_if_configured(Engine &engine, const Logger &logger) {
     if (engine.omb.crval_config[0] != 0 && engine.omb.crval_config[1] != 0) {
