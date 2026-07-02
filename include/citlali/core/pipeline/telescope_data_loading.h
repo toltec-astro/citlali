@@ -23,7 +23,7 @@ bool should_interpolate_over_timing_gaps(const Engine &engine) {
 }
 
 template <class Engine, class Logger>
-void load_telescope_data_file(Engine &engine, const std::string &filepath,
+void load_telescope_data_file(Engine &engine, std::string filepath,
                               const Logger &logger) {
     logger->info("getting telescope file {}", filepath);
     engine.telescope.get_tel_data(filepath);
