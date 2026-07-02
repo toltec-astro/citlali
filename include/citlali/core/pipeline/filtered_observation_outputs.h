@@ -2,6 +2,7 @@
 
 #include <citlali/core/pipeline/map_diagnostics.h>
 #include <citlali/core/pipeline/map_filtering.h>
+#include <citlali/core/pipeline/map_noise_products.h>
 #include <citlali/core/pipeline/noise_weight_policy.h>
 #include <citlali/core/pipeline/output_policy.h>
 
@@ -40,10 +41,11 @@ template <class Engine, class Logger>
 void calculate_filtered_observation_noise_products_if_needed(
     Engine &engine, const Logger &logger) {
     if (should_calculate_filtered_observation_noise_products(engine)) {
-        logger->info("calculating filtered obs empirical noise products");
-        engine.omb.calc_noise_products(
+        calculate_map_noise_products_with_log(
+            engine.omb,
             filtered_observation_noise_products_apply_empirical_weights(
-                engine));
+                engine),
+            logger, "calculating filtered obs empirical noise products");
     }
 }
 
