@@ -6466,12 +6466,9 @@ void Engine::create_tod_files() {
         }
 
         if (ptcproc.busy_row_suppression.enabled) {
-            add_ptc_stream_network_block(
-                "n_nws_busy_row_suppression",
-                "weight_busy_row_suppression_network_ids",
-                "network IDs corresponding to n_nws_busy_row_suppression axis",
-                citlali::pipeline::ptcdiag_busy_row_int_vars(),
-                citlali::pipeline::ptcdiag_busy_row_double_vars());
+            citlali::pipeline::add_ptcdiag_busy_row_network_block(
+                fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
+                ptc_stream_fill_int, ptc_stream_fill_double);
         }
 
         if (ptcproc.cleaner.adaptive_selector.enabled) {
@@ -8903,12 +8900,8 @@ void Engine::create_ptcdiag_file() {
         "multiplicative weight penalty factor applied per network in each scan",
         fill_int, fill_double);
 
-    add_network_block(
-        "n_nws_busy_row_suppression",
-        "weight_busy_row_suppression_network_ids",
-        "network IDs corresponding to n_nws_busy_row_suppression axis",
-        citlali::pipeline::ptcdiag_busy_row_int_vars(),
-        citlali::pipeline::ptcdiag_busy_row_double_vars());
+    citlali::pipeline::add_ptcdiag_busy_row_network_block(
+        fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
 
     add_network_block(
         "n_nws_adaptive_pca",

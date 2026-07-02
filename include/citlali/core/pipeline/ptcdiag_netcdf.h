@@ -206,6 +206,19 @@ inline PtcDiagVarList ptcdiag_busy_row_double_vars() {
     };
 }
 
+template <class Calib>
+void add_ptcdiag_busy_row_network_block(
+    netCDF::NcFile &fo, const Calib &calib, netCDF::NcDim n_scans_dim,
+    Eigen::Index n_scans, int fill_int, double fill_double) {
+    add_ptcdiag_network_block(
+        fo, calib, n_scans_dim, n_scans,
+        "n_nws_busy_row_suppression",
+        "weight_busy_row_suppression_network_ids",
+        "network IDs corresponding to n_nws_busy_row_suppression axis",
+        ptcdiag_busy_row_int_vars(), ptcdiag_busy_row_double_vars(),
+        fill_int, fill_double);
+}
+
 inline PtcDiagVarList ptcdiag_adaptive_pca_int_vars() {
     return {
         {"adaptive_pca_selector_used", "1 if the bounded adaptive PCA selector evaluated this scan/network block, else 0"},
