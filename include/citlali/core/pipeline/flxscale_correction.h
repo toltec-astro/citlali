@@ -4,6 +4,11 @@
 
 namespace citlali::pipeline {
 
+template <class RawObs>
+auto flxscale_correction_metadata(const RawObs &rawobs) {
+    return rawobs.flxscale_correction();
+}
+
 template <class Engine, class RawObs, class Logger>
 bool apply_flxscale_correction(Engine &engine, const RawObs &rawobs,
                                const Logger &logger) {
