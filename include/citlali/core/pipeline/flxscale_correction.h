@@ -12,7 +12,7 @@ auto flxscale_correction_metadata(const RawObs &rawobs) {
 template <class Engine, class RawObs, class Logger>
 bool apply_flxscale_correction(Engine &engine, const RawObs &rawobs,
                                const Logger &logger) {
-    const auto *flxscale_corr = rawobs.flxscale_correction();
+    const auto *flxscale_corr = flxscale_correction_metadata(rawobs);
     if (flxscale_corr == nullptr) {
         return true;
     }
