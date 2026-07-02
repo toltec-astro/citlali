@@ -164,4 +164,20 @@ inline PtcDiagVarList ptcdiag_weight_corr_double_vars(
     };
 }
 
+inline PtcDiagVarList ptcdiag_busy_row_int_vars() {
+    return {
+        {"weight_busy_row_suppression_applied", "1 if busy-row weight suppression was applied to this scan/network block, else 0"},
+        {"weight_busy_row_suppression_busy_network_vetoed", "1 if this scan/network exceeded the second-pass busy-network veto threshold, else 0"},
+        {"weight_busy_row_suppression_n_candidate_clusters", "candidate second-pass residual cluster count used by the busy-row suppression rule"},
+        {"weight_busy_row_suppression_n_det_weighted", "detectors with positive map weight multiplied by the busy-row suppression factor"},
+    };
+}
+
+inline PtcDiagVarList ptcdiag_busy_row_double_vars() {
+    return {
+        {"weight_busy_row_suppression_factor", "multiplicative factor applied by busy-row suppression to positive detector map weights"},
+        {"weight_busy_row_suppression_max_unflagged_residual_z", "largest absolute unflagged post-PCA residual z used by the busy-row suppression rule"},
+    };
+}
+
 }  // namespace citlali::pipeline
