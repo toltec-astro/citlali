@@ -88,6 +88,7 @@
 #else
 #include <citlali/core/mapmaking/wiener_filter.h>
 #endif
+#include <citlali/core/pipeline/map_summary_stats.h>
 
 #include <citlali/core/engine/io.h>
 #include <citlali/core/engine/kidsproc.h>
@@ -7067,66 +7068,14 @@ void Engine::write_map_summary(map_buffer_t &mb) {
     f << "-Noise maps generated: " << !mb.noise.empty() << "\n";
     f << "-Number of noise maps: " << mb.noise.size() << "\n";
 
-    // map to count nans for all maps
-    std::map<std::string,int> n_nans;
-    n_nans["signal"] = 0;
-    n_nans["weight"] = 0;
-    n_nans["kernel"] = 0;
-    n_nans["coverage"] = 0;
-    n_nans["noise"] = 0;
+    const auto nonfinite_counts =
+        citlali::pipeline::count_map_summary_nonfinite(mb);
 
-    // maps to hold infs for all maps
-    std::map<std::string,int> n_infs;
-    n_infs["signal"] = 0;
-    n_infs["weight"] = 0;
-    n_infs["kernel"] = 0;
-    n_infs["coverage"] = 0;
-    n_infs["noise"] = 0;
-
-    // loop through maps and count up nans and infs
-    for (Eigen::Index i=0; i<mb.signal.size(); ++i) {
-        n_nans["signal"] = n_nans["signal"] + mb.signal[i].array().isNaN().count();
-        n_nans["weight"] = n_nans["weight"] + mb.weight[i].array().isNaN().count();
-
-        // check kernel for nans if requested
-        if (!mb.kernel.empty()) {
-            n_nans["kernel"] = n_nans["kernel"] + mb.kernel[i].array().isNaN().count();
-        }
-        // check coverage map for nans if available
-        if (!mb.coverage.empty()) {
-            n_nans["coverage"] = n_nans["coverage"] + mb.coverage[i].array().isNaN().count();
-        }
-
-        n_infs["signal"] = n_infs["signal"] + mb.signal[i].array().isInf().count();
-        n_infs["weight"] = n_infs["weight"] + mb.weight[i].array().isInf().count();
-
-        // check kernel for infs if requested
-        if (!mb.kernel.empty()) {
-            n_infs["kernel"] = n_infs["kernel"] + mb.kernel[i].array().isInf().count();
-        }
-        // check coverage map for infs if available
-        if (!mb.coverage.empty()) {
-            n_infs["coverage"] = n_infs["coverage"] + mb.coverage[i].array().isInf().count();
-        }
-
-        // loop through noise maps and check for nans and infs
-        if (!mb.noise.empty()) {
-            const Eigen::Index n_noise_maps = mb.noise[i].dimension(2);
-            for (Eigen::Index j=0; j<n_noise_maps; ++j) {
-                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(mb.noise[i].data() + j * mb.n_rows * mb.n_cols,
-                                                                                               mb.n_rows, mb.n_cols);
-
-                n_nans["noise"] = n_nans["noise"] + noise_matrix.array().isNaN().count();
-                n_infs["noise"] = n_infs["noise"] + noise_matrix.array().isInf().count();
-            }
-        }
-    }
-
-    for (auto const& [key, val] : n_nans) {
+    for (auto const& [key, val] : nonfinite_counts.n_nans) {
          f << "-Number of "+ key + " NaNs: " << val << "\n";
     }
 
-    for (auto const& [key, val] : n_infs) {
+    for (auto const& [key, val] : nonfinite_counts.n_infs) {
         f << "-Number of "+ key + " Infs: " << val << "\n";
     }
 }
