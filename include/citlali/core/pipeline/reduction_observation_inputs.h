@@ -28,6 +28,12 @@ bool prepare_reduction_observation_calibration_state(
         todproc, rawobs, rawobs_kids_meta, has_multiple_inputs, logger);
 }
 
+template <class Engine, class Logger>
+bool prepare_reduction_observation_sample_rate(Engine &engine,
+                                               const Logger &logger) {
+    return configure_effective_sample_rate(engine, logger);
+}
+
 template <bool IsBeammap, class TodProc, class RawObs, class RawObsKidsMeta,
           class MapExtents, class MapCoords, class DateObs, class Logger>
 bool prepare_reduction_observation_inputs(
