@@ -6484,54 +6484,25 @@ void Engine::create_tod_files() {
         if (ptcproc.weight_corr_penalty.enabled) {
             const int fill_int = -2147483647;
             const double fill_double = std::numeric_limits<double>::quiet_NaN();
-            netCDF::NcDim n_nws_wcorr_dim = fo.addDim("n_nws_wcorr", calib.n_nws);
-            netCDF::NcVar nw_ids_v = fo.addVar("weight_corr_penalty_network_ids", netCDF::ncInt, n_nws_wcorr_dim);
-            nw_ids_v.putAtt("units", "N/A");
-            nw_ids_v.putAtt("comment", "network IDs corresponding to n_nws_wcorr axis");
-            std::vector<int> nw_ids(static_cast<std::size_t>(calib.n_nws), fill_int);
-            for (Eigen::Index i = 0; i < calib.n_nws; ++i) {
-                nw_ids[static_cast<std::size_t>(i)] = static_cast<int>(calib.nws(i));
-            }
-            nw_ids_v.putVar(nw_ids.data());
-
-            std::vector<netCDF::NcDim> wcorr_dims = {n_scans_dim, n_nws_wcorr_dim};
-            auto add_wcorr_double = [&](const std::string &name, const std::string &comment) {
-                netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, wcorr_dims);
-                v.putAtt("units", "N/A");
-                v.putAtt("comment", comment);
-                std::vector<double> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
-                                         static_cast<std::size_t>(calib.n_nws), fill_double);
-                v.putVar(init.data());
-            };
-            auto add_wcorr_int = [&](const std::string &name, const std::string &comment) {
-                netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, wcorr_dims);
-                v.putAtt("units", "N/A");
-                v.putAtt("comment", comment);
-                std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
-                                      static_cast<std::size_t>(calib.n_nws), fill_int);
-                v.putVar(init.data());
-            };
-
-            add_wcorr_double("weight_corr_penalty_factor",
-                             "multiplicative weight penalty factor applied per network in each output scan");
-            add_wcorr_double("weight_corr_penalty_severity",
-                             "normalized [0,1] severity used to derive weight_corr_penalty_factor");
-            add_wcorr_double("weight_corr_penalty_pair_med_abs_corr",
-                             "median absolute sampled detector-detector correlation per network");
-            add_wcorr_double("weight_corr_penalty_cm_el_abs_corr",
-                             "absolute correlation between network common mode and TelElAct");
-            add_wcorr_double("weight_corr_penalty_cm_low_mid_ratio",
-                             "common-mode low/mid bandpower ratio");
-            add_wcorr_int("weight_corr_penalty_n_det_input",
-                          "detector count in each network block");
-            add_wcorr_int("weight_corr_penalty_n_det_candidates",
-                          "detectors passing apt flag and min_good_frac");
-            add_wcorr_int("weight_corr_penalty_n_det_used",
-                          "candidate detectors with finite non-zero std");
-            add_wcorr_int("weight_corr_penalty_n_det_weighted",
-                          "detectors with positive map weight multiplied by penalty factor");
-            add_wcorr_int("weight_corr_penalty_sample_step",
-                          "time decimation factor used for penalty metrics");
+            citlali::pipeline::add_ptcdiag_network_block(
+                fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
+                "n_nws_wcorr", "weight_corr_penalty_network_ids",
+                "network IDs corresponding to n_nws_wcorr axis",
+                {
+                    {"weight_corr_penalty_n_det_input", "detector count in each network block"},
+                    {"weight_corr_penalty_n_det_candidates", "detectors passing apt flag and min_good_frac"},
+                    {"weight_corr_penalty_n_det_used", "candidate detectors with finite non-zero std"},
+                    {"weight_corr_penalty_n_det_weighted", "detectors with positive map weight multiplied by penalty factor"},
+                    {"weight_corr_penalty_sample_step", "time decimation factor used for penalty metrics"},
+                },
+                {
+                    {"weight_corr_penalty_factor", "multiplicative weight penalty factor applied per network in each output scan"},
+                    {"weight_corr_penalty_severity", "normalized [0,1] severity used to derive weight_corr_penalty_factor"},
+                    {"weight_corr_penalty_pair_med_abs_corr", "median absolute sampled detector-detector correlation per network"},
+                    {"weight_corr_penalty_cm_el_abs_corr", "absolute correlation between network common mode and TelElAct"},
+                    {"weight_corr_penalty_cm_low_mid_ratio", "common-mode low/mid bandpower ratio"},
+                },
+                fill_int, fill_double);
         }
 
         if (ptcproc.busy_row_suppression.enabled) {
