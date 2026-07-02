@@ -53,4 +53,17 @@ inline void add_rtcdiag_scan_double(
     v.putVar(values.data());
 }
 
+inline void add_rtcdiag_scan_array_double(
+    netCDF::NcFile &fo, const std::string &name, const std::string &units,
+    const std::string &comment,
+    const std::vector<netCDF::NcDim> &scan_array_dims,
+    const std::vector<std::size_t> &scan_array_chunks,
+    const std::vector<double> &values) {
+    netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, scan_array_dims);
+    v.putAtt("units", units);
+    v.putAtt("comment", comment);
+    set_netcdf_chunking_and_compression(v, scan_array_chunks, 1);
+    v.putVar(values.data());
+}
+
 }  // namespace citlali::pipeline

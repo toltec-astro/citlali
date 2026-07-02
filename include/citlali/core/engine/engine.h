@@ -9569,11 +9569,9 @@ void Engine::create_rtcdiag_file() {
     }
     auto add_scan_array_double = [&](const std::string &name, const std::string &units,
                                      const std::string &comment, const std::vector<double> &values) {
-        netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, scan_array_dims);
-        v.putAtt("units", units);
-        v.putAtt("comment", comment);
-        set_netcdf_chunking_and_compression(v, scan_array_chunks, 1);
-        v.putVar(values.data());
+        citlali::pipeline::add_rtcdiag_scan_array_double(
+            fo, name, units, comment, scan_array_dims, scan_array_chunks,
+            values);
     };
     add_scan_array_double(
         "scan_source_power_half_bandwidth_hz", "Hz",
