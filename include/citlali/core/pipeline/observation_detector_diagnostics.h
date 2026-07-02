@@ -13,7 +13,7 @@ void load_raw_detector_diagnostics(TodProc &todproc, const RawObs &rawobs,
     logger->debug("getting tone frequencies");
     todproc.get_tone_freqs_from_files(rawobs);
 
-    if (!todproc.engine().telescope.sim_obs) {
+    if (should_load_adc_snap_diagnostics(todproc.engine())) {
         logger->debug("getting adc snap data");
         todproc.get_adc_snap_from_files(rawobs);
     }
