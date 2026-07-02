@@ -44,13 +44,8 @@ bool configure_effective_sample_rate(Engine &engine, const Logger &logger) {
             if (!validate_downsample_frequency_positive(engine, logger)) {
                 return false;
             }
-            if (engine.rtcproc.downsampler.downsampled_freq_Hz >
-                engine.telescope.fsmp) {
-                logger->error(
-                    "downsampled freq ({} Hz) must be less than sample rate "
-                    "({} Hz)",
-                    engine.rtcproc.downsampler.downsampled_freq_Hz,
-                    engine.telescope.fsmp);
+            if (!validate_downsample_frequency_below_sample_rate(
+                    engine, logger)) {
                 return false;
             }
             engine.rtcproc.downsampler.factor = std::floor(
