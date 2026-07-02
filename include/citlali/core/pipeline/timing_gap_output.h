@@ -25,6 +25,10 @@ void warn_timing_gaps_found(const Engine &engine, const Logger &logger) {
                  engine.obsnum);
 }
 
+inline void write_timing_gaps_log_header(std::ofstream &stream) {
+    stream << "Summary of timing gaps\n";
+}
+
 template <class Engine, class Logger>
 void record_timing_gaps_if_needed(const Engine &engine, const Logger &logger) {
     if (has_timing_gaps(engine)) {
