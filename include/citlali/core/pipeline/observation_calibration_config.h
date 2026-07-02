@@ -39,8 +39,7 @@ void configure_observation_calibration(TodProc &todproc, const RawObs &rawobs,
     if constexpr (IsBeammap) {
         load_photometry_config(engine, rawobs);
         if (should_make_apt_from_raw_files(engine)) {
-            logger->info("making apt file from raw nc files");
-            todproc.get_apt_from_files(rawobs);
+            make_apt_from_raw_files(todproc, rawobs, logger);
             return;
         }
     }
