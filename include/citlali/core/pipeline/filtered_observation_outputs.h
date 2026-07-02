@@ -9,20 +9,18 @@ namespace citlali::pipeline {
 template <class Engine>
 bool should_calculate_filtered_observation_noise_products(
     const Engine &engine) {
-    return engine.run_noise_products &&
-           engine.run_noise &&
-           !engine.write_filtered_maps_partial;
+    return should_calculate_filtered_noise_products(engine);
 }
 
 template <class Engine>
 bool should_find_filtered_observation_sources(const Engine &engine) {
-    return engine.run_source_finder;
+    return should_find_filtered_sources(engine);
 }
 
 template <class Engine>
 bool filtered_observation_maps_written_during_filtering(
     const Engine &engine) {
-    return engine.write_filtered_maps_partial;
+    return filtered_maps_written_during_filtering(engine);
 }
 
 template <class Engine>
