@@ -93,6 +93,7 @@
 #include <citlali/core/pipeline/map_summary_stats.h>
 #include <citlali/core/pipeline/mapdiag_netcdf.h>
 #include <citlali/core/pipeline/mapdiag_stage.h>
+#include <citlali/core/pipeline/mapdiag_stats.h>
 #include <citlali/core/pipeline/phdu_beammap.h>
 #include <citlali/core/pipeline/phdu_extinction.h>
 #include <citlali/core/pipeline/phdu_oof.h>
@@ -8483,24 +8484,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     };
 
     auto vector_median = [&](const std::vector<double> &values) -> double {
-        if (values.empty()) {
-            return fill_double;
-        }
-        Eigen::Map<const Eigen::VectorXd> mapped(values.data(), static_cast<Eigen::Index>(values.size()));
-        return tula::alg::median(mapped);
+        return citlali::pipeline::mapdiag_vector_median(values, fill_double);
     };
 
     auto vector_quantile = [&](std::vector<double> values, double q) -> double {
-        if (values.empty()) {
-            return fill_double;
-        }
-        q = std::clamp(q, 0.0, 1.0);
-        std::sort(values.begin(), values.end());
-        const double pos = q * static_cast<double>(values.size() - 1);
-        const std::size_t i0 = static_cast<std::size_t>(std::floor(pos));
-        const std::size_t i1 = static_cast<std::size_t>(std::ceil(pos));
-        const double frac = pos - static_cast<double>(i0);
-        return values[i0] * (1.0 - frac) + values[i1] * frac;
+        return citlali::pipeline::mapdiag_vector_quantile(
+            values, q, fill_double);
     };
 
     auto collect_masked_values = [&](const Eigen::MatrixXd &matrix, const Eigen::ArrayXXd &mask) {
