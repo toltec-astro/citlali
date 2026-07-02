@@ -3,6 +3,11 @@
 namespace citlali::pipeline {
 
 template <class Engine>
+auto observation_start_time(const Engine &engine) {
+    return engine.telescope.tel_data["TelTime"](0);
+}
+
+template <class Engine>
 void update_observation_exposure_time(Engine &engine) {
     auto t0 = engine.telescope.tel_data["TelTime"](0);
     auto tn = engine.telescope.tel_data["TelTime"](
