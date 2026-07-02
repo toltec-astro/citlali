@@ -75,10 +75,7 @@ template <class Engine, class Logger>
 void finalize_fruit_loop_iteration(Engine &engine, const Logger &logger) {
     finalize_iteration_weight_validation(engine);
     finalize_reduction_learning_iteration(engine);
-    if (should_log_reduction_learning_diagnostics(engine)) {
-        logger->info("reduction learning finalize: {}",
-                     engine.reduction_learning.summary_string());
-    }
+    log_reduction_learning_iteration_if_needed(engine, logger, "finalize");
     engine.write_learning_summary();
 }
 
