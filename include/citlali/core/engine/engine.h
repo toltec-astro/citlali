@@ -91,6 +91,7 @@
 #include <citlali/core/pipeline/map_filename.h>
 #include <citlali/core/pipeline/map_layer_name.h>
 #include <citlali/core/pipeline/map_summary_stats.h>
+#include <citlali/core/pipeline/phdu_telescope_values.h>
 
 #include <citlali/core/engine/io.h>
 #include <citlali/core/engine/kidsproc.h>
@@ -7124,31 +7125,13 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("UKBASIS", "Jy/sr", "uK basis: monochromatic intensity per steradian");
 
     auto get_tel_header_scalar = [&](const std::string &key, double fallback) {
-        auto it = telescope.tel_header.find(key);
-        if (it == telescope.tel_header.end() || it->second.size() < 1) {
-            logger->warn("tel_header '{}' missing/empty; using fallback {}", key, fallback);
-            return fallback;
-        }
-        const double value = it->second(0);
-        if (!std::isfinite(value)) {
-            logger->warn("tel_header '{}' non-finite ({}); using fallback {}", key, value, fallback);
-            return fallback;
-        }
-        return value;
+        return citlali::pipeline::telescope_header_scalar(
+            telescope.tel_header, key, fallback, logger);
     };
 
     auto get_tel_data_mean = [&](const std::string &key, double fallback) {
-        auto it = telescope.tel_data.find(key);
-        if (it == telescope.tel_data.end() || it->second.size() < 1) {
-            logger->warn("tel_data '{}' missing/empty; using fallback {}", key, fallback);
-            return fallback;
-        }
-        const double value = it->second.mean();
-        if (!std::isfinite(value)) {
-            logger->warn("tel_data '{}' mean non-finite ({}); using fallback {}", key, value, fallback);
-            return fallback;
-        }
-        return value;
+        return citlali::pipeline::telescope_data_mean(
+            telescope.tel_data, key, fallback, logger);
     };
 
     auto add_double_key = [&](const std::string &key, double value, const std::string &comment,
