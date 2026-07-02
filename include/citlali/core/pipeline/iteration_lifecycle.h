@@ -37,6 +37,14 @@ void finalize_iteration_weight_validation(Engine &engine) {
     engine.ptcproc.finalize_weight_validation_iteration(engine.fruit_iter);
 }
 
+template <class Engine>
+void begin_reduction_learning_iteration(Engine &engine) {
+    const bool learning_source_model_available =
+        fruit_loop_learning_source_model_available(engine);
+    engine.reduction_learning.begin_iteration(
+        engine.fruit_iter, learning_source_model_available, engine.redu_type);
+}
+
 template <class Engine, class Logger>
 void begin_fruit_loop_iteration(Engine &engine, const Logger &logger) {
     if (should_log_fruit_loop_iteration_start(engine)) {
