@@ -94,6 +94,7 @@
 #include <citlali/core/pipeline/phdu_extinction.h>
 #include <citlali/core/pipeline/phdu_oof.h>
 #include <citlali/core/pipeline/phdu_telescope_values.h>
+#include <citlali/core/pipeline/string_join.h>
 
 #include <citlali/core/engine/io.h>
 #include <citlali/core/engine/kidsproc.h>
@@ -7754,20 +7755,12 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.MP.MAXMODES",
                                         ptcproc.cleaner.marchenko_pastur.max_modes,
                                         "MP max modes considered");
-    std::string adaptive_offsets_joined;
-    for (std::size_t j = 0; j < ptcproc.cleaner.adaptive_selector.candidate_offsets.size(); ++j) {
-        if (j > 0) {
-            adaptive_offsets_joined += ",";
-        }
-        adaptive_offsets_joined += std::to_string(ptcproc.cleaner.adaptive_selector.candidate_offsets[j]);
-    }
-    std::string adaptive_grouping_joined;
-    for (std::size_t j = 0; j < ptcproc.cleaner.adaptive_selector.grouping.size(); ++j) {
-        if (j > 0) {
-            adaptive_grouping_joined += ",";
-        }
-        adaptive_grouping_joined += ptcproc.cleaner.adaptive_selector.grouping[j];
-    }
+    const auto adaptive_offsets_joined =
+        citlali::pipeline::join_numeric_values(
+            ptcproc.cleaner.adaptive_selector.candidate_offsets);
+    const auto adaptive_grouping_joined =
+        citlali::pipeline::join_string_values(
+            ptcproc.cleaner.adaptive_selector.grouping);
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.ADAPT.ENABLED",
                                         ptcproc.cleaner.adaptive_selector.enabled,
                                         "Bounded adaptive PCA selector enabled");
