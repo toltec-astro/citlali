@@ -38,8 +38,7 @@ void begin_fruit_loop_iteration(Engine &engine, const Logger &logger) {
         fruit_loop_learning_source_model_available(engine);
     engine.reduction_learning.begin_iteration(
         engine.fruit_iter, learning_source_model_available, engine.redu_type);
-    if (engine.reduction_learning.is_enabled() &&
-        engine.reduction_learning.diagnostics_enabled()) {
+    if (should_log_reduction_learning_diagnostics(engine)) {
         logger->info("reduction learning begin: {}",
                      engine.reduction_learning.summary_string());
     }
