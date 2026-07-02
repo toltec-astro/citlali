@@ -17,6 +17,11 @@ bool should_align_telescope_timestreams(const Engine &engine) {
     return !engine.telescope.sim_obs;
 }
 
+template <class Engine>
+bool should_interpolate_over_timing_gaps(const Engine &engine) {
+    return engine.interp_over_gaps;
+}
+
 template <class Engine, class Logger>
 void load_telescope_data_file(Engine &engine, const std::string &filepath,
                               const Logger &logger) {
