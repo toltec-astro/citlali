@@ -9,6 +9,11 @@ inline std::string gaps_log_filepath(const std::string &obsnum_dir_name) {
     return obsnum_dir_name + "/logs/gaps.log";
 }
 
+template <class Engine>
+bool has_timing_gaps(const Engine &engine) {
+    return engine.gaps.size() > 0;
+}
+
 template <class Engine, class Logger>
 void record_timing_gaps_if_needed(const Engine &engine, const Logger &logger) {
     if (engine.gaps.size() > 0) {
