@@ -17,7 +17,7 @@ void set_observation_output_dir_name(Engine &engine) {
 template <class Engine>
 void configure_observation_output_layout(Engine &engine, int obsnum) {
     set_observation_output_obsnum(engine, obsnum);
-    engine.obsnum_dir_name = engine.redu_dir_name + "/" + engine.obsnum + "/";
+    set_observation_output_dir_name(engine);
 
     engine.omb.obsnums.clear();
     engine.omb.obsnums.push_back(engine.obsnum);
