@@ -350,6 +350,21 @@ void add_rtcdiag_network_impulsive_mask_window_diag(
                "fraction of previously good detector-samples in the network block newly flagged by impulsive_coincidence_mask");
 }
 
+template <class AddInt>
+void add_rtcdiag_network_impulsive_mask_trigger_diag(
+    const AddInt &add_int) {
+    add_int("rtc_network_impulsive_mask_candidate_available",
+            "1 if impulsive_coincidence_mask found a candidate for this RTC network block, else 0");
+    add_int("rtc_network_impulsive_mask_local_trigger",
+            "1 if the selected impulsive candidate satisfied the within-network trigger thresholds, else 0");
+    add_int("rtc_network_impulsive_mask_cross_network_trigger",
+            "1 if the selected impulsive candidate satisfied a cross-network alignment trigger, else 0");
+    add_int("rtc_network_impulsive_mask_high_score_override_trigger",
+            "1 if the selected impulsive candidate satisfied the looser high-score cross-network override, else 0");
+    add_int("rtc_network_impulsive_mask_rejected_max_fraction",
+            "1 if the selected impulsive candidate was rejected only because its proposed flagged fraction exceeded the configured limit");
+}
+
 inline std::vector<int> rtcdiag_impulsive_snippet_offsets(
     std::size_t n_snippet, std::size_t snippet_pre, int fill_value) {
     std::vector<int> offsets(n_snippet, fill_value);
