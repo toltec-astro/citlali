@@ -27,4 +27,12 @@ void prepare_observation_output_layout_from_rawobs_meta(
     prepare_observation_output_layout(engine, obsnum, logger);
 }
 
+template <class Engine, class RawObsKidsMeta, class Logger>
+void prepare_reduction_observation_output_layout(
+    Engine &engine, const RawObsKidsMeta &rawobs_kids_meta,
+    const Logger &logger) {
+    prepare_observation_output_layout_from_rawobs_meta(
+        engine, rawobs_kids_meta, logger);
+}
+
 }  // namespace citlali::pipeline
