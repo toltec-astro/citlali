@@ -1,10 +1,6 @@
 #pragma once
 
-#include <citlali/core/pipeline/map_diagnostics.h>
-#include <citlali/core/pipeline/map_filtering.h>
-#include <citlali/core/pipeline/map_noise_products.h>
-#include <citlali/core/pipeline/map_source_finding.h>
-#include <citlali/core/pipeline/noise_weight_policy.h>
+#include <citlali/core/pipeline/filtered_map_outputs.h>
 #include <citlali/core/pipeline/output_policy.h>
 
 namespace citlali::pipeline {
@@ -12,46 +8,43 @@ namespace citlali::pipeline {
 template <class Engine>
 bool should_calculate_filtered_coadd_noise_products(
     const Engine &engine) {
-    return should_calculate_filtered_noise_products(engine);
+    return should_calculate_filtered_map_noise_products(engine);
 }
 
 template <class Engine>
 bool should_find_filtered_coadd_sources(const Engine &engine) {
-    return should_find_filtered_sources(engine);
+    return should_find_filtered_map_sources(engine);
 }
 
 template <class Engine>
 bool filtered_coadd_maps_written_during_filtering(const Engine &engine) {
-    return filtered_maps_written_during_filtering(engine);
+    return filtered_map_written_during_filtering(engine);
 }
 
 template <class Engine>
 bool filtered_coadd_noise_products_apply_empirical_weights(
     const Engine &engine) {
-    return filtered_noise_products_apply_empirical_weights(engine);
+    return filtered_map_noise_products_apply_empirical_weights(engine);
 }
 
 template <auto FilteredCoaddMap, class Engine, class Logger>
 void filter_coadd_maps(Engine &engine, const Logger &logger) {
-    run_wiener_filter_with_log<FilteredCoaddMap>(
+    filter_maps<FilteredCoaddMap>(
         engine, engine.cmb, logger, "filtering coadded maps");
 }
 
 template <class Engine, class Logger>
 void calculate_filtered_coadd_noise_products_if_needed(
     Engine &engine, const Logger &logger) {
-    if (should_calculate_filtered_coadd_noise_products(engine)) {
-        calculate_map_noise_products_with_log(
-            engine.cmb,
-            filtered_coadd_noise_products_apply_empirical_weights(engine),
-            logger, "calculating filtered coadd empirical noise products");
-    }
+    calculate_filtered_map_noise_products_if_needed(
+        engine, engine.cmb, logger,
+        "calculating filtered coadd empirical noise products");
 }
 
 template <class Engine, class Logger>
 void calculate_filtered_coadd_map_diagnostics(Engine &engine,
                                               const Logger &logger) {
-    calculate_map_diagnostics(
+    calculate_filtered_map_diagnostics(
         engine.cmb, logger, "calculating filtered coadded map psds",
         "calculating filtered coadded map histograms");
 }
@@ -59,25 +52,18 @@ void calculate_filtered_coadd_map_diagnostics(Engine &engine,
 template <auto FilteredCoaddMap, class Engine, class Logger>
 void find_filtered_coadd_sources_if_needed(Engine &engine,
                                            const Logger &logger) {
-    if (should_find_filtered_coadd_sources(engine)) {
-        find_map_sources_with_log<FilteredCoaddMap>(
-            engine, engine.cmb, logger,
-            "finding filtered coadded map sources");
-    }
+    find_filtered_map_sources_if_needed<FilteredCoaddMap>(
+        engine, engine.cmb, logger,
+        "finding filtered coadded map sources");
 }
 
 template <auto FilteredCoaddMap, class Engine, class Logger>
 void output_filtered_coadd_maps_if_needed(Engine &engine,
                                           const Logger &logger) {
-    if (filtered_coadd_maps_written_during_filtering(engine)) {
-        logger->info(
-            "filtered coadded files already written during Wiener filtering; "
-            "skipping post-filter output stage");
-    }
-    else {
-        logger->info("outputting filtered coadded files");
-        engine.template output<FilteredCoaddMap>();
-    }
+    output_filtered_maps_if_needed<FilteredCoaddMap>(
+        engine, logger, "outputting filtered coadded files",
+        "filtered coadded files already written during Wiener filtering; "
+        "skipping post-filter output stage");
 }
 
 template <auto FilteredCoaddMap, class TodProc, class Logger>
