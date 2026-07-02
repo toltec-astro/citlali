@@ -63,9 +63,7 @@ void load_hwpr_data_if_requested(Engine &engine, const RawObs &rawobs,
         else {
             disable_hwpr_loading(engine);
         }
-        if (!engine.calib.run_hwpr) {
-            logger->info("ignoring hwpr");
-        }
+        log_hwpr_ignored_if_needed(engine, logger);
     }
 }
 
