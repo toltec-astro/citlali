@@ -11,6 +11,8 @@
 
 namespace citlali::pipeline {
 
+using PtcDiagVarList = std::vector<std::pair<std::string, std::string>>;
+
 inline std::vector<int> diagnostic_output_scan_indices(Eigen::Index n_scans,
                                                        int fill_value) {
     std::vector<int> output_scan_index(static_cast<std::size_t>(n_scans),
@@ -98,8 +100,8 @@ void add_ptcdiag_network_block(
     netCDF::NcFile &fo, const Calib &calib, netCDF::NcDim n_scans_dim,
     Eigen::Index n_scans, const std::string &dim_name,
     const std::string &id_name, const std::string &id_comment,
-    const std::vector<std::pair<std::string, std::string>> &int_vars,
-    const std::vector<std::pair<std::string, std::string>> &double_vars,
+    const PtcDiagVarList &int_vars,
+    const PtcDiagVarList &double_vars,
     int fill_int, double fill_double) {
     netCDF::NcDim n_nws_dim = fo.addDim(dim_name, calib.n_nws);
     netCDF::NcVar nw_ids_v = fo.addVar(id_name, netCDF::ncInt, n_nws_dim);
@@ -126,6 +128,19 @@ void add_ptcdiag_network_block(
         std::vector<double> init(n_values, fill_double);
         v.putVar(init.data());
     }
+}
+
+inline PtcDiagVarList ptcdiag_corr_network_int_vars() {
+    return {
+        {"corr_nw_n_groups", "number of final corr_nw cleaning groups per network"},
+        {"corr_nw_n_groups_raw", "number of raw connected components before min_group_size filtering"},
+        {"corr_nw_n_det_input", "input detector count in each network block"},
+        {"corr_nw_n_det_candidates", "detectors passing apt flag and min_good_frac"},
+        {"corr_nw_n_det_used", "candidate detectors with finite non-zero std for correlation"},
+        {"corr_nw_n_det_grouped", "detectors included in final cleaned corr_nw groups"},
+        {"corr_nw_n_det_ungrouped", "detectors excluded from final cleaned corr_nw groups"},
+        {"corr_nw_sample_step", "time decimation factor used for corr_nw grouping"},
+    };
 }
 
 }  // namespace citlali::pipeline

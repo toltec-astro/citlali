@@ -6477,16 +6477,7 @@ void Engine::create_tod_files() {
             add_ptc_stream_network_block(
                 "n_nws_corr", "corr_nw_network_ids",
                 "network IDs corresponding to n_nws_corr axis",
-                {
-                    {"corr_nw_n_groups", "number of final corr_nw cleaning groups per network"},
-                    {"corr_nw_n_groups_raw", "number of raw connected components before min_group_size filtering"},
-                    {"corr_nw_n_det_input", "input detector count in each network block"},
-                    {"corr_nw_n_det_candidates", "detectors passing apt flag and min_good_frac"},
-                    {"corr_nw_n_det_used", "candidate detectors with finite non-zero std for correlation"},
-                    {"corr_nw_n_det_grouped", "detectors included in final cleaned corr_nw groups"},
-                    {"corr_nw_n_det_ungrouped", "detectors excluded from final cleaned corr_nw groups"},
-                    {"corr_nw_sample_step", "time decimation factor used for corr_nw grouping"},
-                },
+                citlali::pipeline::ptcdiag_corr_network_int_vars(),
                 {});
         }
 
@@ -8974,16 +8965,7 @@ void Engine::create_ptcdiag_file() {
         "n_nws_corr",
         "corr_nw_network_ids",
         "network IDs corresponding to n_nws_corr axis",
-        {
-            {"corr_nw_n_groups", "number of final corr_nw cleaning groups per network"},
-            {"corr_nw_n_groups_raw", "number of raw connected components before min_group_size filtering"},
-            {"corr_nw_n_det_input", "input detector count in each network block"},
-            {"corr_nw_n_det_candidates", "detectors passing apt flag and min_good_frac"},
-            {"corr_nw_n_det_used", "candidate detectors with finite non-zero std for correlation"},
-            {"corr_nw_n_det_grouped", "detectors included in final cleaned corr_nw groups"},
-            {"corr_nw_n_det_ungrouped", "detectors excluded from final cleaned corr_nw groups"},
-            {"corr_nw_sample_step", "time decimation factor used for corr_nw grouping"},
-        },
+        citlali::pipeline::ptcdiag_corr_network_int_vars(),
         {});
 
     add_network_block(
