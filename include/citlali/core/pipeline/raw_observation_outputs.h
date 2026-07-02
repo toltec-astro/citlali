@@ -2,6 +2,13 @@
 
 namespace citlali::pipeline {
 
+template <class Engine>
+bool should_calculate_raw_observation_noise_products(const Engine &engine) {
+    return engine.run_mapmaking &&
+           engine.run_noise_products &&
+           engine.run_noise;
+}
+
 template <class Engine, class Logger>
 void calculate_raw_observation_noise_products_if_needed(
     Engine &engine, const Logger &logger) {
