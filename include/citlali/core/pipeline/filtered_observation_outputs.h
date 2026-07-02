@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/map_diagnostics.h>
+#include <citlali/core/pipeline/map_filtering.h>
 #include <citlali/core/pipeline/noise_weight_policy.h>
 #include <citlali/core/pipeline/output_policy.h>
 
@@ -31,8 +32,8 @@ bool filtered_observation_noise_products_apply_empirical_weights(
 
 template <auto FilteredObsMap, class Engine, class Logger>
 void filter_observation_maps(Engine &engine, const Logger &logger) {
-    logger->info("filtering obs maps");
-    engine.template run_wiener_filter<FilteredObsMap>(engine.omb);
+    run_wiener_filter_with_log<FilteredObsMap>(
+        engine, engine.omb, logger, "filtering obs maps");
 }
 
 template <class Engine, class Logger>
