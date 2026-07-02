@@ -24,7 +24,7 @@ void record_timing_gaps_if_needed(const Engine &engine, const Logger &logger) {
     if (has_timing_gaps(engine)) {
         logger->warn("gaps found in obnsum {} data file timing!",
                      engine.obsnum);
-        if (engine.verbose_mode) {
+        if (should_write_timing_gaps_log(engine)) {
             logger->debug("writing gaps.log file");
             std::ofstream f;
             f.open(gaps_log_filepath(engine.obsnum_dir_name));
