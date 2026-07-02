@@ -9268,22 +9268,14 @@ void Engine::create_ptcdiag_file() {
                    "maximum flagged fraction across remove_bad_dets diagnostic windows in the PTC timestream");
     add_det_double("ptc_invvar_window_heavy_flagged_fraction",
                    "fraction of remove_bad_dets diagnostic windows in the PTC timestream with at least 50 percent flagged samples");
-    {
-        netCDF::NcVar v = fo.addVar("ptc_invvar_window_n_total", netCDF::ncInt, det_dims);
-        v.putAtt("units", "N/A");
-        v.putAtt("comment", "total number of fixed windows evaluated for PTC remove_bad_dets diagnostics");
-        v.setChunking(netCDF::NcVar::nc_CHUNKED, det_chunks);
-        std::vector<int> init(static_cast<std::size_t>(n_scans) * static_cast<std::size_t>(calib.n_dets), fill_int);
-        v.putVar(init.data());
-    }
-    {
-        netCDF::NcVar v = fo.addVar("ptc_invvar_window_n_valid", netCDF::ncInt, det_dims);
-        v.putAtt("units", "N/A");
-        v.putAtt("comment", "number of fixed windows with a finite inverse-variance estimate for PTC remove_bad_dets diagnostics");
-        v.setChunking(netCDF::NcVar::nc_CHUNKED, det_chunks);
-        std::vector<int> init(static_cast<std::size_t>(n_scans) * static_cast<std::size_t>(calib.n_dets), fill_int);
-        v.putVar(init.data());
-    }
+    citlali::pipeline::add_ptcdiag_det_int(
+        fo, "ptc_invvar_window_n_total",
+        "total number of fixed windows evaluated for PTC remove_bad_dets diagnostics",
+        det_dims, det_chunks, ptc_det_value_count, fill_int);
+    citlali::pipeline::add_ptcdiag_det_int(
+        fo, "ptc_invvar_window_n_valid",
+        "number of fixed windows with a finite inverse-variance estimate for PTC remove_bad_dets diagnostics",
+        det_dims, det_chunks, ptc_det_value_count, fill_int);
 
     auto add_network_block = [&](const std::string &dim_name,
                                  const std::string &id_name,

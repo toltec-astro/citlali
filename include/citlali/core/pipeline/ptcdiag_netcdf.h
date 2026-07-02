@@ -61,4 +61,17 @@ inline void add_ptcdiag_det_double(
     v.putVar(init.data());
 }
 
+inline void add_ptcdiag_det_int(
+    netCDF::NcFile &fo, const std::string &name,
+    const std::string &comment, const std::vector<netCDF::NcDim> &det_dims,
+    const std::vector<std::size_t> &det_chunks, std::size_t n_values,
+    int fill_value) {
+    netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, det_dims);
+    v.putAtt("units", "N/A");
+    v.putAtt("comment", comment);
+    v.setChunking(netCDF::NcVar::nc_CHUNKED, det_chunks);
+    std::vector<int> init(n_values, fill_value);
+    v.putVar(init.data());
+}
+
 }  // namespace citlali::pipeline
