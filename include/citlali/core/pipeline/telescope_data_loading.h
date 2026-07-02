@@ -17,6 +17,13 @@ bool should_align_telescope_timestreams(const Engine &engine) {
     return !engine.telescope.sim_obs;
 }
 
+template <class Engine, class Logger>
+void load_telescope_data_file(Engine &engine, const std::string &filepath,
+                              const Logger &logger) {
+    logger->info("getting telescope file {}", filepath);
+    engine.telescope.get_tel_data(filepath);
+}
+
 template <class TodProc, class RawObs, class Logger>
 void load_and_align_telescope_data(TodProc &todproc, const RawObs &rawobs,
                                    const Logger &logger) {
