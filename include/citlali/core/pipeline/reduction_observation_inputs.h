@@ -37,7 +37,7 @@ bool prepare_reduction_observation_inputs(
     std::size_t observation_index, DateObs &&date_obs, const Logger &logger) {
     auto &engine = todproc.engine();
 
-    if (!configure_reduction_observation_calibration_if_needed<IsBeammap>(
+    if (!prepare_reduction_observation_calibration_state<IsBeammap>(
             todproc, rawobs, rawobs_kids_meta, has_multiple_inputs, logger)) {
         return false;
     }
