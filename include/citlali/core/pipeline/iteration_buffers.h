@@ -55,7 +55,7 @@ void prepare_iteration_observation_buffers(TodProc &todproc,
     auto &engine = todproc.engine();
 
     clear_iteration_observation_dates(engine);
-    if (engine.run_coadd) {
+    if (should_prepare_coadd_iteration_buffers(engine)) {
         prepare_coadd_iteration_buffers(todproc, logger);
     }
 }
