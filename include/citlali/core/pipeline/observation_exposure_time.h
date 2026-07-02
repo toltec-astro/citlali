@@ -9,7 +9,7 @@ auto observation_start_time(const Engine &engine) {
 
 template <class Engine>
 void update_observation_exposure_time(Engine &engine) {
-    auto t0 = engine.telescope.tel_data["TelTime"](0);
+    auto t0 = observation_start_time(engine);
     auto tn = engine.telescope.tel_data["TelTime"](
         engine.telescope.tel_data["TelTime"].size() - 1);
 
