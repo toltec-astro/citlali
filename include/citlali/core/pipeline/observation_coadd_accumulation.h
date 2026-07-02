@@ -12,7 +12,7 @@ void coadd_observation(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
 
     logger->info("coadding");
-    if (!engine.rtcproc.run_polarization) {
+    if (should_run_observation_coadd(engine)) {
         todproc.coadd();
     }
 }
