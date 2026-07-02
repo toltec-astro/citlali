@@ -23,6 +23,13 @@ double map_center_dec_degrees(const Engine &engine) {
     return engine.omb.crval_config[1];
 }
 
+template <class Logger>
+void log_map_center_override(double ra_degrees, double dec_degrees,
+                             const Logger &logger) {
+    logger->info("overwriting map center to ({}, {})",
+                 ra_degrees, dec_degrees);
+}
+
 template <class Engine, class Logger>
 void overwrite_map_center_if_configured(Engine &engine, const Logger &logger) {
     if (has_map_center_override(engine)) {
