@@ -2,6 +2,11 @@
 
 namespace citlali::pipeline {
 
+template <class Engine>
+bool should_load_adc_snap_diagnostics(const Engine &engine) {
+    return !engine.telescope.sim_obs;
+}
+
 template <class TodProc, class RawObs, class Logger>
 void load_raw_detector_diagnostics(TodProc &todproc, const RawObs &rawobs,
                                    const Logger &logger) {
