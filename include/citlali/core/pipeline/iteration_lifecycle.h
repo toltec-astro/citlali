@@ -37,7 +37,7 @@ void begin_fruit_loop_iteration(Engine &engine, const Logger &logger) {
     if (should_log_fruit_loop_iteration_start(engine)) {
         logger->info("starting fruit loops iteration {}", engine.fruit_iter);
     }
-    engine.ptcproc.begin_weight_validation_iteration(engine.fruit_iter);
+    begin_iteration_weight_validation(engine);
 
     const bool learning_source_model_available =
         fruit_loop_learning_source_model_available(engine);
