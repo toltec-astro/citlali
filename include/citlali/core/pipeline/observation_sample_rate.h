@@ -70,6 +70,12 @@ bool validate_requested_downsample_frequency(const Engine &engine,
 }
 
 template <class Engine>
+auto derived_downsample_factor_from_frequency(const Engine &engine) {
+    return std::floor(native_sample_rate_hz(engine) /
+                      requested_downsample_frequency_hz(engine));
+}
+
+template <class Engine>
 void derive_downsample_factor_from_frequency(Engine &engine) {
     engine.rtcproc.downsampler.factor = std::floor(
         native_sample_rate_hz(engine) /
