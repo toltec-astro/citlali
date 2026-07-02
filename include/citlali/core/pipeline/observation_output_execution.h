@@ -19,7 +19,7 @@ void write_observation_outputs_and_accumulate(TodProc &todproc,
 
     write_raw_observation_outputs<RawObsMap>(todproc, logger);
 
-    if (engine.run_coadd) {
+    if (should_accumulate_observation_coadd(engine)) {
         coadd_observation(todproc, logger);
     }
     else {
