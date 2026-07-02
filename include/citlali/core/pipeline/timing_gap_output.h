@@ -1,26 +1,11 @@
 #pragma once
 
 #include <citlali/core/pipeline/timing_gap_log_file.h>
+#include <citlali/core/pipeline/timing_gap_policy.h>
 
 #include <fstream>
 
 namespace citlali::pipeline {
-
-template <class Engine>
-bool has_timing_gaps(const Engine &engine) {
-    return engine.gaps.size() > 0;
-}
-
-template <class Engine>
-bool should_write_timing_gaps_log(const Engine &engine) {
-    return engine.verbose_mode;
-}
-
-template <class Engine, class Logger>
-void warn_timing_gaps_found(const Engine &engine, const Logger &logger) {
-    logger->warn("gaps found in obnsum {} data file timing!",
-                 engine.obsnum);
-}
 
 template <class Engine, class Logger>
 void record_timing_gaps_if_needed(const Engine &engine, const Logger &logger) {
