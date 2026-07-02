@@ -14,4 +14,10 @@ bool has_multiple_reduction_observations(const IOCoordinator &co) {
     return reduction_observation_count(co) > 1;
 }
 
+template <class IOCoordinator>
+decltype(auto) reduction_observation_input_at(const IOCoordinator &co,
+                                              std::size_t observation_index) {
+    return co.inputs()[observation_index];
+}
+
 }  // namespace citlali::pipeline
