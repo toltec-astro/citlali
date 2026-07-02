@@ -63,9 +63,9 @@ void derive_downsample_factor_from_frequency(Engine &engine) {
 
 template <class Engine, class Logger>
 bool validate_downsample_factor(const Engine &engine, const Logger &logger) {
-    if (engine.rtcproc.downsampler.factor <= 0) {
+    if (downsample_factor(engine) <= 0) {
         logger->error("downsample factor ({}) must be > 0",
-                      engine.rtcproc.downsampler.factor);
+                      downsample_factor(engine));
         return false;
     }
     return true;
