@@ -2,6 +2,11 @@
 
 namespace citlali::pipeline {
 
+template <class Engine>
+bool should_run_observation_tod(const Engine &engine) {
+    return engine.run_tod;
+}
+
 template <class Engine, class KidsProc, class RawObs, class Logger>
 void setup_and_run_observation_pipeline(Engine &engine, KidsProc &kidsproc,
                                         const RawObs &rawobs,
