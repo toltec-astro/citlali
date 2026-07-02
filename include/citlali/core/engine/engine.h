@@ -9770,13 +9770,9 @@ void Engine::create_rtcdiag_file() {
             n_rtc_det_values, fill_double);
     };
     auto add_rtc_det_int = [&](const std::string &name, const std::string &comment) {
-        netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_det_dims);
-        v.putAtt("units", "N/A");
-        v.putAtt("comment", comment);
-        set_netcdf_chunking_and_compression(v, rtc_det_chunks, 1);
-        std::vector<int> init(static_cast<std::size_t>(n_scans) *
-                              static_cast<std::size_t>(calib.n_dets), fill_int);
-        v.putVar(init.data());
+        citlali::pipeline::add_rtcdiag_det_int(
+            fo, name, comment, rtc_det_dims, rtc_det_chunks,
+            n_rtc_det_values, fill_int);
     };
 
     add_rtc_det_int("rtc_despike_raw_exceed_count",
