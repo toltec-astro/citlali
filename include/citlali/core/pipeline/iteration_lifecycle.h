@@ -80,6 +80,15 @@ void finalize_fruit_loop_iteration(Engine &engine, const Logger &logger) {
 }
 
 template <class TodProc, class Logger>
+void make_reduction_iteration_index_file(TodProc &todproc,
+                                         const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    logger->info("making index files");
+    todproc.make_index_file(engine.redu_dir_name);
+}
+
+template <class TodProc, class Logger>
 void finalize_iteration_outputs(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
 
