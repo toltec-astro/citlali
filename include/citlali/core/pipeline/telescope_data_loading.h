@@ -57,7 +57,7 @@ void load_and_align_telescope_data(TodProc &todproc, const RawObs &rawobs,
             align_telescope_timestreams_over_gaps(todproc, rawobs);
         }
         else {
-            todproc.align_timestreams(rawobs);
+            align_telescope_timestreams_direct(todproc, rawobs);
         }
     }
     else {
