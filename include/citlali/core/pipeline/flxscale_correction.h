@@ -32,7 +32,7 @@ bool apply_flxscale_correction(Engine &engine, const RawObs &rawobs,
     }
 
     const double factor = flxscale_correction_factor(*flxscale_corr);
-    if (!std::isfinite(factor) || factor <= 0.0) {
+    if (!is_valid_flxscale_correction_factor(factor)) {
         logger->error(
             "invalid flxscale_correction={} for observation {}; "
             "factor must be finite and > 0",
