@@ -9241,13 +9241,13 @@ void Engine::create_ptcdiag_file() {
     add_netcdf_var(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.HIGH_RELATIVE_WEIGHT",
                    ptcproc.fruit_loops_weight_feedback_high_relative_weight);
 
+    const std::size_t ptc_det_value_count =
+        static_cast<std::size_t>(n_scans) *
+        static_cast<std::size_t>(calib.n_dets);
     auto add_det_double = [&](const std::string &name, const std::string &comment) {
-        netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, det_dims);
-        v.putAtt("units", "N/A");
-        v.putAtt("comment", comment);
-        v.setChunking(netCDF::NcVar::nc_CHUNKED, det_chunks);
-        std::vector<double> init(static_cast<std::size_t>(n_scans) * static_cast<std::size_t>(calib.n_dets), fill_double);
-        v.putVar(init.data());
+        citlali::pipeline::add_ptcdiag_det_double(
+            fo, name, comment, det_dims, det_chunks, ptc_det_value_count,
+            fill_double);
     };
     add_det_double("ptc_detector_weight", "final detector map weight used by PTC for this scan");
     add_det_double("ptc_detector_rms", "per-detector RMS of the PTC timestream written for this scan");
