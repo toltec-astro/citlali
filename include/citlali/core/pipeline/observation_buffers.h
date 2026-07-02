@@ -46,8 +46,7 @@ void allocate_observation_map_buffers(TodProc &todproc,
                                       const Logger &logger) {
     auto &engine = todproc.engine();
 
-    logger->info("calculating number of maps");
-    todproc.calc_map_num();
+    calculate_observation_map_count(todproc, logger);
     logger->info("allocating obs map buffer");
     todproc.allocate_omb(map_extent, map_coord);
     configure_observation_pixel_contribution_targets(engine);
