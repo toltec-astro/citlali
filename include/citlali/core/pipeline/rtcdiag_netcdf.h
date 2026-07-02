@@ -287,6 +287,21 @@ void add_rtcdiag_network_step_summary_diag(const AddInt &add_int,
             "dominant aligned step sample within each RTC network block; -2147483647 means unavailable");
 }
 
+template <class AddInt, class AddDouble>
+void add_rtcdiag_network_impulsive_summary_diag(
+    const AddInt &add_int, const AddDouble &add_double) {
+    add_double("rtc_network_impulsive_score_median",
+               "median detector impulsive-event score within each RTC network block");
+    add_double("rtc_network_impulsive_score_max",
+               "maximum detector impulsive-event score within each RTC network block");
+    add_double("rtc_network_impulsive_det_frac",
+               "fraction of diagnostic-used detectors with impulsive-event score above the impulsive coincidence threshold");
+    add_double("rtc_network_impulsive_alignment_frac",
+               "fraction of impulsive-active detectors aligned in the dominant impulsive time cluster");
+    add_int("rtc_network_impulsive_dominant_sample",
+            "dominant aligned impulsive sample within each RTC network block; -2147483647 means unavailable");
+}
+
 inline std::vector<int> rtcdiag_impulsive_snippet_offsets(
     std::size_t n_snippet, std::size_t snippet_pre, int fill_value) {
     std::vector<int> offsets(n_snippet, fill_value);
