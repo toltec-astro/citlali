@@ -48,7 +48,7 @@ void load_and_align_telescope_data(TodProc &todproc, const RawObs &rawobs,
     if (should_align_telescope_timestreams(engine)) {
         logger->info("aligning timestreams");
         if (should_interpolate_over_timing_gaps(engine)) {
-            todproc.align_timestreams_gaps(rawobs);
+            align_telescope_timestreams_over_gaps(todproc, rawobs);
         }
         else {
             todproc.align_timestreams(rawobs);
