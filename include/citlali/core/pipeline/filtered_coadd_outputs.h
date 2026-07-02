@@ -22,6 +22,13 @@ bool filtered_coadd_maps_written_during_filtering(const Engine &engine) {
     return engine.write_filtered_maps_partial;
 }
 
+template <class Engine>
+bool filtered_coadd_noise_products_apply_empirical_weights(
+    const Engine &engine) {
+    return engine.apply_empirical_noise_weights ||
+           engine.wiener_filter.normalize_error;
+}
+
 template <auto FilteredCoaddMap, class Engine, class Logger>
 void filter_coadd_maps(Engine &engine, const Logger &logger) {
     logger->info("filtering coadded maps");
@@ -34,8 +41,7 @@ void calculate_filtered_coadd_noise_products_if_needed(
     if (should_calculate_filtered_coadd_noise_products(engine)) {
         logger->info("calculating filtered coadd empirical noise products");
         engine.cmb.calc_noise_products(
-            engine.apply_empirical_noise_weights ||
-            engine.wiener_filter.normalize_error);
+            filtered_coadd_noise_products_apply_empirical_weights(engine));
     }
 }
 
