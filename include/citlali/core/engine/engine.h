@@ -6299,12 +6299,8 @@ void Engine::create_tod_files() {
             add_rtc_nw_int, add_rtc_nw_double);
         citlali::pipeline::add_rtcdiag_network_impulsive_summary_diag(
             add_rtc_nw_int, add_rtc_nw_double);
-        add_rtc_nw_double("rtc_network_cm_low_mid_ratio",
-                          "low-band to mid-band common-mode power ratio for each RTC network block");
-        add_rtc_nw_double("rtc_network_cm_peak_freq_hz",
-                          "frequency of the strongest common-mode spectral peak for each RTC network block");
-        add_rtc_nw_double("rtc_network_cm_peak_prominence",
-                          "prominence of the strongest common-mode spectral peak for each RTC network block");
+        citlali::pipeline::add_rtcdiag_network_common_mode_diag(
+            add_rtc_nw_double);
         add_rtc_nw_int("rtc_network_step_mask_applied",
                        "1 if network_step_mask flagged a time window for this RTC network block, else 0");
         add_rtc_nw_int("rtc_network_step_mask_start_sample",
