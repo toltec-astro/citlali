@@ -56,8 +56,8 @@ void allocate_observation_map_buffers(TodProc &todproc,
     auto &engine = todproc.engine();
 
     calculate_observation_map_count(todproc, logger);
-    logger->info("allocating obs map buffer");
-    todproc.allocate_omb(map_extent, map_coord);
+    allocate_observation_signal_map_buffer(
+        todproc, map_extent, map_coord, logger);
     configure_observation_pixel_contribution_targets(engine);
 
     if (should_allocate_observation_noise_maps(engine)) {
