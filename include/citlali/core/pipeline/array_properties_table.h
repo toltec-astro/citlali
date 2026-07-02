@@ -7,6 +7,11 @@
 
 namespace citlali::pipeline {
 
+template <class RawObs>
+std::string array_properties_table_filepath(const RawObs &rawobs) {
+    return rawobs.array_prop_table().filepath();
+}
+
 template <class Engine, class RawObs, class Logger>
 void load_array_properties_table(Engine &engine, const RawObs &rawobs,
                                  const Logger &logger) {
