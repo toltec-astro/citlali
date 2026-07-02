@@ -2,6 +2,11 @@
 
 namespace citlali::pipeline {
 
+template <class Engine>
+bool should_calculate_raw_coadd_noise_products(const Engine &engine) {
+    return engine.run_noise_products && engine.run_noise;
+}
+
 template <class TodProc, class Logger>
 void prepare_raw_coadd_maps(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
