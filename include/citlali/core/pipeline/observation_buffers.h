@@ -39,4 +39,12 @@ void allocate_observation_map_buffers_if_needed(
         logger);
 }
 
+template <class TodProc, class MapExtents, class MapCoords, class Logger>
+void allocate_reduction_observation_map_buffers_if_needed(
+    TodProc &todproc, MapExtents &map_extents, MapCoords &map_coords,
+    std::size_t observation_index, const Logger &logger) {
+    allocate_observation_map_buffers_if_needed(
+        todproc, map_extents, map_coords, observation_index, logger);
+}
+
 }  // namespace citlali::pipeline
