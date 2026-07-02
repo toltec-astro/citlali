@@ -6292,55 +6292,9 @@ void Engine::create_tod_files() {
                        "detectors passing the impulsive-coincidence valid-sample threshold and finite robust scale");
         citlali::pipeline::add_rtcdiag_network_line_audit_base_diag(
             add_rtc_nw_int, add_rtc_nw_double);
-        auto add_rtc_nw_line_audit_diag = [&](const std::string &prefix, const std::string &stage) {
-            add_rtc_nw_int(prefix + "_n_det_used",
-                           "detectors analyzed by the " + stage + " RTC line audit in each network block");
-            add_rtc_nw_double(prefix + "_shared_freq_hz",
-                              "frequency of the strongest shared narrowband " + stage + " RTC line family in each network block");
-            add_rtc_nw_int(prefix + "_shared_detector_count",
-                           "number of detectors participating in the strongest shared narrowband " + stage + " RTC line family");
-            add_rtc_nw_double(prefix + "_shared_detector_frac",
-                              "fraction of audited detectors participating in the strongest shared narrowband " + stage + " RTC line family");
-            add_rtc_nw_double(prefix + "_shared_median_prominence",
-                              "median detector-level PSD prominence of the strongest shared narrowband " + stage + " RTC line family");
-            add_rtc_nw_double(prefix + "_shared_max_prominence",
-                              "maximum detector-level PSD prominence of the strongest shared narrowband " + stage + " RTC line family");
-            add_rtc_nw_double(prefix + "_shared_width_hz",
-                              "median linewidth of the strongest shared narrowband " + stage + " RTC line family");
-            add_rtc_nw_double(prefix + "_shared_line_power_frac",
-                              "median detector-level line-power fraction of the strongest shared narrowband " + stage + " RTC line family");
-            add_rtc_nw_double(prefix + "_shared_common_mode_freq_hz",
-                              "matched common-mode line frequency for the strongest shared narrowband " + stage + " RTC line family");
-            add_rtc_nw_double(prefix + "_shared_common_mode_prominence",
-                              "matched common-mode PSD prominence for the strongest shared narrowband " + stage + " RTC line family");
-            add_rtc_nw_double(prefix + "_shared_notch_score",
-                              "shared-line notch score, detector fraction times median prominence");
-            add_rtc_nw_int(prefix + "_shared_recommend_notch",
-                           "1 if the strongest shared narrowband " + stage + " RTC line family met the current notch-candidate criteria");
-            add_rtc_nw_int(prefix + "_n_applied_notches",
-                           "number of chunk-level shared-line RTC notches actually applied in the " + stage + " stage");
-            add_rtc_nw_int(prefix + "_shared_applied_notch",
-                           "1 if the strongest shared narrowband " + stage + " RTC line family in this network matched an applied chunk-level RTC notch");
-            add_rtc_nw_double(prefix + "_shared_applied_freq_hz",
-                              "center frequency of the applied chunk-level RTC notch matched to the strongest shared narrowband " + stage + " RTC line family");
-            add_rtc_nw_double(prefix + "_shared_applied_width_hz",
-                              "full-width bandwidth of the applied chunk-level RTC notch matched to the strongest shared narrowband " + stage + " RTC line family");
-            add_rtc_nw_int(prefix + "_shared_applied_support_network_count",
-                           "number of networks supporting the applied chunk-level RTC notch matched to the strongest shared narrowband " + stage + " RTC line family");
-            add_rtc_nw_int(prefix + "_detector_candidate_uid",
-                           "UID of the strongest detector-local " + stage + " RTC line candidate in each network block; -2147483647 means none");
-            add_rtc_nw_double(prefix + "_detector_candidate_freq_hz",
-                              "frequency of the strongest detector-local " + stage + " RTC line candidate");
-            add_rtc_nw_double(prefix + "_detector_candidate_prominence",
-                              "PSD prominence of the strongest detector-local " + stage + " RTC line candidate");
-            add_rtc_nw_double(prefix + "_detector_candidate_line_power_frac",
-                              "line-power fraction of the strongest detector-local " + stage + " RTC line candidate");
-            add_rtc_nw_double(prefix + "_detector_candidate_cluster_detector_frac",
-                              "shared-cluster detector fraction associated with the strongest detector-local " + stage + " RTC line candidate");
-            add_rtc_nw_int(prefix + "_detector_candidate_recommend_flag",
-                           "1 if the strongest detector-local " + stage + " RTC line candidate met the current bad-detector criteria");
-        };
-        add_rtc_nw_line_audit_diag("rtc_network_post_line_audit", "post-filter");
+        citlali::pipeline::add_rtcdiag_network_line_audit_diag(
+            add_rtc_nw_int, add_rtc_nw_double, "rtc_network_post_line_audit",
+            "post-filter");
         add_rtc_nw_double("rtc_network_step_score_median",
                           "median detector step score within each RTC network block");
         add_rtc_nw_double("rtc_network_step_score_max",
