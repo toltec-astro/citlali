@@ -23,7 +23,8 @@ bool run_reduction_observation_at_index(
     auto kidsproc =
         make_reduction_observation_kids_proc<KidsDataProc>(citlali_config);
     const auto &rawobs = reduction_observation_input_at(co, observation_index);
-    auto rawobs_kids_meta = load_rawobs_kids_meta(kidsproc, rawobs, logger);
+    auto rawobs_kids_meta =
+        load_reduction_observation_kids_meta(kidsproc, rawobs, logger);
 
     return run_reduction_observation<IsBeammap, RawObsMap, FilteredObsMap,
                                      FitMaps>(
