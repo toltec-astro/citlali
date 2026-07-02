@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/pipeline/flxscale_correction_logging.h>
 #include <citlali/core/pipeline/flxscale_correction_metadata.h>
 
 namespace citlali::pipeline {
@@ -9,35 +10,9 @@ bool has_apt_flxscale_column(const Engine &engine) {
     return engine.calib.apt.count("flxscale") != 0;
 }
 
-template <class RawObs, class Logger>
-void log_invalid_flxscale_correction_factor(double factor,
-                                            const RawObs &rawobs,
-                                            const Logger &logger) {
-    logger->error(
-        "invalid flxscale_correction={} for observation {}; "
-        "factor must be finite and > 0",
-        factor, rawobs.name());
-}
-
-template <class RawObs, class Logger>
-void log_missing_flxscale_column(const RawObs &rawobs,
-                                 const Logger &logger) {
-    logger->error(
-        "flxscale column missing from APT while applying "
-        "flxscale_correction for observation {}",
-        rawobs.name());
-}
-
 template <class Engine>
 void multiply_apt_flxscale_column(Engine &engine, double factor) {
     engine.calib.apt["flxscale"].array() *= factor;
-}
-
-template <class RawObs, class Logger>
-void log_applied_flxscale_correction(double factor, const RawObs &rawobs,
-                                     const Logger &logger) {
-    logger->info("applied flxscale correction factor={} for observation {}",
-                 factor, rawobs.name());
 }
 
 template <class Engine, class RawObs, class Logger>
