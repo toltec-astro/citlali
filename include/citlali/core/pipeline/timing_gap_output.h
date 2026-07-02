@@ -20,6 +20,12 @@ bool should_write_timing_gaps_log(const Engine &engine) {
 }
 
 template <class Engine, class Logger>
+void warn_timing_gaps_found(const Engine &engine, const Logger &logger) {
+    logger->warn("gaps found in obnsum {} data file timing!",
+                 engine.obsnum);
+}
+
+template <class Engine, class Logger>
 void record_timing_gaps_if_needed(const Engine &engine, const Logger &logger) {
     if (has_timing_gaps(engine)) {
         logger->warn("gaps found in obnsum {} data file timing!",
