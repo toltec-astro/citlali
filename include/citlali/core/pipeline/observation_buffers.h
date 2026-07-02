@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/pipeline/observation_map_access.h>
+
 #include <cstddef>
 
 namespace citlali::pipeline {
@@ -7,18 +9,6 @@ namespace citlali::pipeline {
 template <class Engine>
 bool should_allocate_observation_map_buffers(const Engine &engine) {
     return engine.run_mapmaking;
-}
-
-template <class MapExtents>
-decltype(auto) observation_map_extent_at(MapExtents &map_extents,
-                                         std::size_t observation_index) {
-    return map_extents[observation_index];
-}
-
-template <class MapCoords>
-decltype(auto) observation_map_coord_at(MapCoords &map_coords,
-                                        std::size_t observation_index) {
-    return map_coords[observation_index];
 }
 
 template <class Engine>
