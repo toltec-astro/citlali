@@ -39,11 +39,7 @@ void load_array_properties_table(Engine &engine, const RawObs &rawobs,
     logger->info("getting array properties table {}", apt_path);
 
     std::vector<std::string> raw_filenames = raw_kids_filepaths(rawobs);
-    std::vector<std::string> interfaces;
-    for (const auto &data_item : rawobs.kidsdata()) {
-        const auto &item = detail::unwrap_reference_wrapper(data_item);
-        interfaces.push_back(item.interface());
-    }
+    std::vector<std::string> interfaces = raw_kids_interfaces(rawobs);
 
     engine.calib.get_apt(apt_path, raw_filenames, interfaces);
 }
