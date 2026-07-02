@@ -8493,17 +8493,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     };
 
     auto collect_masked_values = [&](const Eigen::MatrixXd &matrix, const Eigen::ArrayXXd &mask) {
-        std::vector<double> values;
-        values.reserve(static_cast<std::size_t>(mask.sum()));
-        for (Eigen::Index r = 0; r < matrix.rows(); ++r) {
-            for (Eigen::Index c = 0; c < matrix.cols(); ++c) {
-                const double value = matrix(r, c);
-                if (mask(r, c) > 0.0 && std::isfinite(value)) {
-                    values.push_back(value);
-                }
-            }
-        }
-        return values;
+        return citlali::pipeline::mapdiag_collect_masked_values(matrix, mask);
     };
 
     auto calc_tail_stats = [&](const std::vector<double> &values) {
