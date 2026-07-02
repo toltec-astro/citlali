@@ -21,9 +21,7 @@ void filter_observation_maps(Engine &engine, const Logger &logger) {
 template <class Engine, class Logger>
 void calculate_filtered_observation_noise_products_if_needed(
     Engine &engine, const Logger &logger) {
-    if (engine.run_noise_products &&
-        engine.run_noise &&
-        !engine.write_filtered_maps_partial) {
+    if (should_calculate_filtered_observation_noise_products(engine)) {
         logger->info("calculating filtered obs empirical noise products");
         engine.omb.calc_noise_products(
             engine.apply_empirical_noise_weights ||
