@@ -17,6 +17,11 @@ bool should_find_filtered_coadd_sources(const Engine &engine) {
     return engine.run_source_finder;
 }
 
+template <class Engine>
+bool filtered_coadd_maps_written_during_filtering(const Engine &engine) {
+    return engine.write_filtered_maps_partial;
+}
+
 template <auto FilteredCoaddMap, class Engine, class Logger>
 void filter_coadd_maps(Engine &engine, const Logger &logger) {
     logger->info("filtering coadded maps");
