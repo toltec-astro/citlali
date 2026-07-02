@@ -14,6 +14,14 @@ void setup_observation_pipeline(Engine &engine, const Logger &logger) {
 }
 
 template <class Engine, class KidsProc, class RawObs, class Logger>
+void run_observation_tod_pipeline(Engine &engine, KidsProc &kidsproc,
+                                  const RawObs &rawobs,
+                                  const Logger &logger) {
+    logger->info("running pipeline");
+    engine.pipeline(kidsproc, rawobs);
+}
+
+template <class Engine, class KidsProc, class RawObs, class Logger>
 void setup_and_run_observation_pipeline(Engine &engine, KidsProc &kidsproc,
                                         const RawObs &rawobs,
                                         const Logger &logger) {
