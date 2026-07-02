@@ -27,6 +27,16 @@ bool should_log_reduction_learning_diagnostics(const Engine &engine) {
            engine.reduction_learning.diagnostics_enabled();
 }
 
+template <class Engine, class Logger>
+void log_reduction_learning_iteration_if_needed(Engine &engine,
+                                                const Logger &logger,
+                                                const char *phase) {
+    if (should_log_reduction_learning_diagnostics(engine)) {
+        logger->info("reduction learning {}: {}",
+                     phase, engine.reduction_learning.summary_string());
+    }
+}
+
 template <class Engine>
 void begin_iteration_weight_validation(Engine &engine) {
     engine.ptcproc.begin_weight_validation_iteration(engine.fruit_iter);
