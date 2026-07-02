@@ -23,9 +23,7 @@ template <class TodProc, class Logger>
 void prepare_raw_coadd_maps(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
 
-    logger->debug("creating cmb filenames");
-    todproc.create_coadded_map_files();
-
+    prepare_raw_coadd_map_files(todproc, logger);
     logger->info("normalizing coadded maps");
     if (should_normalize_polarized_raw_coadd_maps(engine)) {
         engine.cmb.normalize_polarized_maps();
