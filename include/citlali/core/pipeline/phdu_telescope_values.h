@@ -1,8 +1,10 @@
 #pragma once
 
 #include <cmath>
+#include <sstream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 #include <CCfits/CCfits>
 #include <fmt/core.h>
@@ -65,6 +67,29 @@ void add_phdu_double_key(FitsEntry &fits_entry, const std::string &array_name,
                 "failed PHDU float key '{}' for array '{}' (file={} value={}): {}",
                 key, array_name, fits_entry.filepath, value, e.message()));
     }
+}
+
+template <class Logger>
+std::string apt_table_header_name(const std::string &apt_filepath,
+                                  const Logger &logger) {
+    if (apt_filepath.empty()) {
+        logger->warn("APT filepath empty; using N/A");
+        return "N/A";
+    }
+
+    std::vector<std::string> apt_filename;
+    std::stringstream ss(apt_filepath);
+    std::string item;
+    char delim = '/';
+
+    while (std::getline(ss, item, delim)) {
+        apt_filename.push_back(item);
+    }
+    if (apt_filename.empty()) {
+        logger->warn("APT filepath '{}' parsed empty; using N/A", apt_filepath);
+        return "N/A";
+    }
+    return apt_filename.back();
 }
 
 }  // namespace citlali::pipeline
