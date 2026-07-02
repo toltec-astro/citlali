@@ -2,6 +2,11 @@
 
 namespace citlali::pipeline {
 
+template <class Engine>
+bool should_allocate_coadd_noise_buffer(const Engine &engine) {
+    return engine.run_noise;
+}
+
 template <class TodProc, class Logger>
 void prepare_coadd_iteration_buffers(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
