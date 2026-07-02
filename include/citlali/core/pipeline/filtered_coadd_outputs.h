@@ -49,7 +49,7 @@ void calculate_filtered_coadd_map_diagnostics(Engine &engine,
 template <auto FilteredCoaddMap, class Engine, class Logger>
 void find_filtered_coadd_sources_if_needed(Engine &engine,
                                            const Logger &logger) {
-    if (engine.run_source_finder) {
+    if (should_find_filtered_coadd_sources(engine)) {
         logger->info("finding filtered coadded map sources");
         engine.template find_sources<FilteredCoaddMap>(engine.cmb);
     }
