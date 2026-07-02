@@ -100,6 +100,7 @@
 #include <citlali/core/pipeline/phdu_extinction.h>
 #include <citlali/core/pipeline/phdu_oof.h>
 #include <citlali/core/pipeline/phdu_telescope_values.h>
+#include <citlali/core/pipeline/ptcdiag_netcdf.h>
 #include <citlali/core/pipeline/string_join.h>
 
 #include <citlali/core/engine/io.h>
@@ -9128,10 +9129,8 @@ void Engine::create_ptcdiag_file() {
     netCDF::NcVar output_scan_index_v = fo.addVar("output_scan_index", netCDF::ncInt, n_scans_dim);
     output_scan_index_v.putAtt("units", "N/A");
     output_scan_index_v.putAtt("comment", "1-based original scan index from the full observation");
-    std::vector<int> output_scan_index(static_cast<std::size_t>(n_scans), fill_int);
-    for (Eigen::Index i = 0; i < n_scans; ++i) {
-        output_scan_index[static_cast<std::size_t>(i)] = static_cast<int>(i + 1);
-    }
+    const auto output_scan_index =
+        citlali::pipeline::ptcdiag_output_scan_indices(n_scans, fill_int);
     output_scan_index_v.putVar(output_scan_index.data());
 
     auto add_det_meta_int = [&](const std::string &name, const std::string &comment, const std::vector<int> &values) {
