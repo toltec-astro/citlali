@@ -49,7 +49,7 @@ void log_missing_flxscale_column(const RawObs &rawobs,
 
 template <class Engine>
 void multiply_apt_flxscale_column(Engine &engine, double factor) {
-    engine.calib.apt["flxscale"].array() *= factor;
+    multiply_apt_flxscale_column(engine, factor);
 }
 
 template <class Engine, class RawObs, class Logger>
