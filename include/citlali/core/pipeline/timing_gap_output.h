@@ -28,4 +28,10 @@ void record_timing_gaps_if_needed(const Engine &engine, const Logger &logger) {
     }
 }
 
+template <class Engine, class Logger>
+void record_reduction_observation_timing_gaps_if_needed(
+    const Engine &engine, const Logger &logger) {
+    record_timing_gaps_if_needed(engine, logger);
+}
+
 }  // namespace citlali::pipeline
