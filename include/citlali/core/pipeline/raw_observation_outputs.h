@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/pipeline/noise_weight_policy.h>
+
 namespace citlali::pipeline {
 
 template <class Engine>
@@ -17,7 +19,7 @@ bool should_output_raw_observation_maps(const Engine &engine) {
 template <class Engine>
 bool raw_observation_noise_products_apply_empirical_weights(
     const Engine &engine) {
-    return engine.apply_empirical_noise_weights;
+    return unfiltered_noise_products_apply_empirical_weights(engine);
 }
 
 template <class Engine, class Logger>
