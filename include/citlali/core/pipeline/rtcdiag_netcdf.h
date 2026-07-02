@@ -4,9 +4,13 @@
 #include <cstddef>
 #include <cmath>
 #include <limits>
+#include <string>
 #include <vector>
 
 #include <Eigen/Core>
+#include <netcdf>
+
+#include <citlali/core/utils/netcdf_io.h>
 
 namespace citlali::pipeline {
 
@@ -35,6 +39,18 @@ inline double rtcdiag_percentile_sorted(
     const auto hi = static_cast<std::size_t>(std::ceil(pos));
     const double frac = pos - static_cast<double>(lo);
     return sorted_values[lo] * (1.0 - frac) + sorted_values[hi] * frac;
+}
+
+inline void add_rtcdiag_scan_double(
+    netCDF::NcFile &fo, const std::string &name, const std::string &units,
+    const std::string &comment, netCDF::NcDim n_scans_dim,
+    const std::vector<std::size_t> &scan_chunks,
+    const std::vector<double> &values) {
+    netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, n_scans_dim);
+    v.putAtt("units", units);
+    v.putAtt("comment", comment);
+    set_netcdf_chunking_and_compression(v, scan_chunks, 1);
+    v.putVar(values.data());
 }
 
 }  // namespace citlali::pipeline

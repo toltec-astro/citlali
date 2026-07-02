@@ -9467,11 +9467,8 @@ void Engine::create_rtcdiag_file() {
 
     auto add_scan_double = [&](const std::string &name, const std::string &units,
                                const std::string &comment, const std::vector<double> &values) {
-        netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, n_scans_dim);
-        v.putAtt("units", units);
-        v.putAtt("comment", comment);
-        set_netcdf_chunking_and_compression(v, scan_chunks, 1);
-        v.putVar(values.data());
+        citlali::pipeline::add_rtcdiag_scan_double(
+            fo, name, units, comment, n_scans_dim, scan_chunks, values);
     };
 
     std::vector<double> scan_duration_s(static_cast<std::size_t>(n_scans), fill_double);
