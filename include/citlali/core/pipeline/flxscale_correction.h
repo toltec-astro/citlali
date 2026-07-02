@@ -23,6 +23,11 @@ inline bool is_valid_flxscale_correction_factor(double factor) {
     return std::isfinite(factor) && factor > 0.0;
 }
 
+template <class Engine>
+bool has_apt_flxscale_column(const Engine &engine) {
+    return engine.calib.apt.count("flxscale") != 0;
+}
+
 template <class Engine, class RawObs, class Logger>
 bool apply_flxscale_correction(Engine &engine, const RawObs &rawobs,
                                const Logger &logger) {
