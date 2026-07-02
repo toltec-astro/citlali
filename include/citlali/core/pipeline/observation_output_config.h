@@ -21,6 +21,11 @@ void set_observation_map_output_obsnum(Engine &engine) {
 }
 
 template <class Engine>
+bool should_record_coadd_output_obsnum(const Engine &engine) {
+    return engine.run_coadd;
+}
+
+template <class Engine>
 void configure_observation_output_layout(Engine &engine, int obsnum) {
     set_observation_output_obsnum(engine, obsnum);
     set_observation_output_dir_name(engine);
