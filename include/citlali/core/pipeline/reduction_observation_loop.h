@@ -26,7 +26,7 @@ bool run_reduction_observation_at_index(
     return run_reduction_observation<IsBeammap, RawObsMap, FilteredObsMap,
                                      FitMaps>(
         todproc, kidsproc, rawobs, rawobs_kids_meta,
-        reduction_observation_count(co) > 1, map_extents, map_coords,
+        has_multiple_reduction_observations(co), map_extents, map_coords,
         observation_index,
         date_obs_factory(todproc.engine()), logger);
 }
