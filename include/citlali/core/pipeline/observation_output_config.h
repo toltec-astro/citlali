@@ -26,6 +26,11 @@ bool should_record_coadd_output_obsnum(const Engine &engine) {
 }
 
 template <class Engine>
+void record_coadd_output_obsnum(Engine &engine) {
+    engine.cmb.obsnums.push_back(engine.obsnum);
+}
+
+template <class Engine>
 void configure_observation_output_layout(Engine &engine, int obsnum) {
     set_observation_output_obsnum(engine, obsnum);
     set_observation_output_dir_name(engine);
