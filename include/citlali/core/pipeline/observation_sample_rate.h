@@ -96,11 +96,11 @@ template <class Engine, class Logger>
 bool validate_downsample_antialias_filter(const Engine &engine,
                                           double downsample_nyquist_Hz,
                                           const Logger &logger) {
-    if (engine.rtcproc.filter.freq_high_Hz > downsample_nyquist_Hz) {
+    if (filter_high_frequency_hz(engine) > downsample_nyquist_Hz) {
         logger->error(
             "invalid anti-alias setup: filter freq_high_Hz ({} Hz) "
             "exceeds downsample Nyquist ({} Hz)",
-            engine.rtcproc.filter.freq_high_Hz,
+            filter_high_frequency_hz(engine),
             downsample_nyquist_Hz);
         return false;
     }
