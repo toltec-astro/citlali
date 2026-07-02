@@ -29,7 +29,7 @@ void create_observation_output_dirs(const Engine &engine,
         logger->debug("creating obsnum filtered directory");
         fs::create_directories(engine.obsnum_dir_name + "filtered/");
     }
-    if (engine.verbose_mode) {
+    if (should_create_observation_logs_dir(engine)) {
         logger->debug("creating obsnum logs directory");
         fs::create_directories(engine.obsnum_dir_name + "logs/");
     }
