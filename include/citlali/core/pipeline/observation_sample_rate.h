@@ -15,6 +15,11 @@ auto downsample_factor(const Engine &engine) {
 }
 
 template <class Engine>
+auto requested_downsample_frequency_hz(const Engine &engine) {
+    return engine.rtcproc.downsampler.downsampled_freq_Hz;
+}
+
+template <class Engine>
 bool downsample_factor_requires_frequency(const Engine &engine) {
     return downsample_factor(engine) <= 0;
 }
