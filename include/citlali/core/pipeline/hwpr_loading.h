@@ -28,4 +28,10 @@ void load_hwpr_data_if_requested(Engine &engine, const RawObs &rawobs,
     }
 }
 
+template <class Engine, class RawObs, class Logger>
+void load_reduction_observation_hwpr_data_if_requested(
+    Engine &engine, const RawObs &rawobs, const Logger &logger) {
+    load_hwpr_data_if_requested(engine, rawobs, logger);
+}
+
 }  // namespace citlali::pipeline
