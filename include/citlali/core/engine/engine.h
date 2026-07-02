@@ -9463,20 +9463,7 @@ void Engine::create_rtcdiag_file() {
         citlali::pipeline::diagnostic_array_ids(calib, fill_int);
     array_ids_v.putVar(array_ids.data());
 
-    auto percentile_sorted = [](const std::vector<double> &sorted_values, double pct) {
-        if (sorted_values.empty()) {
-            return std::numeric_limits<double>::quiet_NaN();
-        }
-        if (sorted_values.size() == 1) {
-            return sorted_values.front();
-        }
-        pct = std::min(100.0, std::max(0.0, pct));
-        const double pos = (pct / 100.0) * static_cast<double>(sorted_values.size() - 1);
-        const auto lo = static_cast<std::size_t>(std::floor(pos));
-        const auto hi = static_cast<std::size_t>(std::ceil(pos));
-        const double frac = pos - static_cast<double>(lo);
-        return sorted_values[lo] * (1.0 - frac) + sorted_values[hi] * frac;
-    };
+    auto percentile_sorted = citlali::pipeline::rtcdiag_percentile_sorted;
 
     auto add_scan_double = [&](const std::string &name, const std::string &units,
                                const std::string &comment, const std::vector<double> &values) {
