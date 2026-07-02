@@ -15,4 +15,9 @@ void update_observation_exposure_time(Engine &engine) {
     }
 }
 
+template <class Engine>
+void update_reduction_observation_exposure_time(Engine &engine) {
+    update_observation_exposure_time(engine);
+}
+
 }  // namespace citlali::pipeline
