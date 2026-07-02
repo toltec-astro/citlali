@@ -63,7 +63,7 @@ void find_filtered_coadd_sources_if_needed(Engine &engine,
 template <auto FilteredCoaddMap, class Engine, class Logger>
 void output_filtered_coadd_maps_if_needed(Engine &engine,
                                           const Logger &logger) {
-    if (engine.write_filtered_maps_partial) {
+    if (filtered_coadd_maps_written_during_filtering(engine)) {
         logger->info(
             "filtered coadded files already written during Wiener filtering; "
             "skipping post-filter output stage");
