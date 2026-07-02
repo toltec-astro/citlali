@@ -78,8 +78,7 @@ bool apply_flxscale_correction(Engine &engine, const RawObs &rawobs,
     }
 
     multiply_apt_flxscale_column(engine, factor);
-    logger->info("applied flxscale correction factor={} for observation {}",
-                 factor, rawobs.name());
+    log_applied_flxscale_correction(factor, rawobs, logger);
     return true;
 }
 
