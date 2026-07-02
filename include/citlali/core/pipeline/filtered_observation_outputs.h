@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/pipeline/map_diagnostics.h>
 #include <citlali/core/pipeline/noise_weight_policy.h>
 #include <citlali/core/pipeline/output_policy.h>
 
@@ -50,13 +51,9 @@ void calculate_filtered_observation_noise_products_if_needed(
 template <class Engine, class Logger>
 void calculate_filtered_observation_map_diagnostics(Engine &engine,
                                                     const Logger &logger) {
-    logger->info("calculating filtered obs map psds");
-    engine.omb.calc_map_psd();
-    logger->info("calculating filtered obs map histograms");
-    engine.omb.calc_map_hist();
-
-    engine.omb.calc_median_err();
-    engine.omb.calc_median_rms();
+    calculate_map_diagnostics(
+        engine.omb, logger, "calculating filtered obs map psds",
+        "calculating filtered obs map histograms");
 }
 
 template <bool FitMaps, class Engine>
