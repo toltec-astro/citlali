@@ -6529,74 +6529,35 @@ void Engine::create_tod_files() {
         if (ptcproc.cleaner.adaptive_selector.enabled) {
             const int fill_int = -2147483647;
             const double fill_double = std::numeric_limits<double>::quiet_NaN();
-            netCDF::NcDim n_nws_adapt_dim = fo.addDim("n_nws_adaptive_pca", calib.n_nws);
-            netCDF::NcVar nw_ids_v = fo.addVar("adaptive_pca_network_ids", netCDF::ncInt, n_nws_adapt_dim);
-            nw_ids_v.putAtt("units", "N/A");
-            nw_ids_v.putAtt("comment", "network IDs corresponding to n_nws_adaptive_pca axis");
-            std::vector<int> nw_ids(static_cast<std::size_t>(calib.n_nws), fill_int);
-            for (Eigen::Index i = 0; i < calib.n_nws; ++i) {
-                nw_ids[static_cast<std::size_t>(i)] = static_cast<int>(calib.nws(i));
-            }
-            nw_ids_v.putVar(nw_ids.data());
-
-            std::vector<netCDF::NcDim> adapt_dims = {n_scans_dim, n_nws_adapt_dim};
-            auto add_adapt_int = [&](const std::string &name, const std::string &comment) {
-                netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, adapt_dims);
-                v.putAtt("units", "N/A");
-                v.putAtt("comment", comment);
-                std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
-                                      static_cast<std::size_t>(calib.n_nws), fill_int);
-                v.putVar(init.data());
-            };
-            auto add_adapt_double = [&](const std::string &name, const std::string &comment) {
-                netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, adapt_dims);
-                v.putAtt("units", "N/A");
-                v.putAtt("comment", comment);
-                std::vector<double> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
-                                         static_cast<std::size_t>(calib.n_nws), fill_double);
-                v.putVar(init.data());
-            };
-
-            add_adapt_int("adaptive_pca_selector_used",
-                          "1 if the bounded adaptive PCA selector evaluated this scan/network block, else 0");
-            add_adapt_int("adaptive_pca_selector_fallback",
-                          "1 if adaptive PCA selector fell back to the configured baseline cut, else 0");
-            add_adapt_int("adaptive_pca_baseline_k",
-                          "configured baseline PCA cut for this scan/network block");
-            add_adapt_int("adaptive_pca_chosen_k",
-                          "adaptive PCA cut selected for this scan/network block");
-            add_adapt_int("adaptive_pca_runnerup_k",
-                          "second-best adaptive PCA cut for this scan/network block");
-            add_adapt_int("adaptive_pca_n_candidates",
-                          "number of candidate PCA cuts evaluated for this scan/network block");
-            add_adapt_int("adaptive_pca_n_det_input",
-                          "input detector count in this scan/network block before selector filtering");
-            add_adapt_int("adaptive_pca_n_det_used",
-                          "detector count retained for adaptive selector scoring");
-            add_adapt_int("adaptive_pca_n_time_used",
-                          "sample count retained for adaptive selector scoring");
-            add_adapt_int("adaptive_pca_sample_step",
-                          "time decimation factor used by the adaptive selector");
-            add_adapt_double("adaptive_pca_chosen_score",
-                             "final normalized adaptive selector score for the chosen PCA cut");
-            add_adapt_double("adaptive_pca_runnerup_score",
-                             "final normalized adaptive selector score for the runner-up PCA cut");
-            add_adapt_double("adaptive_pca_score_margin",
-                             "chosen minus runner-up score margin; more negative is a clearer adaptive choice");
-            add_adapt_double("adaptive_pca_chosen_med_abs_corr",
-                             "median absolute detector-detector correlation for the chosen adaptive PCA cut");
-            add_adapt_double("adaptive_pca_chosen_cm_low_mid_ratio",
-                             "common-mode low/mid bandpower ratio for the chosen adaptive PCA cut");
-            add_adapt_double("adaptive_pca_chosen_tail4_binom_z",
-                             "tail-excess metric for the chosen adaptive PCA cut");
-            add_adapt_double("adaptive_pca_chosen_top_mode_frac",
-                             "top residual covariance mode fraction for the chosen adaptive PCA cut");
-            add_adapt_double("adaptive_pca_eig_solve_msec",
-                             "milliseconds spent solving eigenmodes before adaptive scoring");
-            add_adapt_double("adaptive_pca_candidate_eval_msec",
-                             "milliseconds spent scoring candidate PCA cuts after eigen solve");
-            add_adapt_double("adaptive_pca_total_msec",
-                             "total adaptive PCA milliseconds for this scan/network block");
+            citlali::pipeline::add_ptcdiag_network_block(
+                fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
+                "n_nws_adaptive_pca", "adaptive_pca_network_ids",
+                "network IDs corresponding to n_nws_adaptive_pca axis",
+                {
+                    {"adaptive_pca_selector_used", "1 if the bounded adaptive PCA selector evaluated this scan/network block, else 0"},
+                    {"adaptive_pca_selector_fallback", "1 if adaptive PCA selector fell back to the configured baseline cut, else 0"},
+                    {"adaptive_pca_baseline_k", "configured baseline PCA cut for this scan/network block"},
+                    {"adaptive_pca_chosen_k", "adaptive PCA cut selected for this scan/network block"},
+                    {"adaptive_pca_runnerup_k", "second-best adaptive PCA cut for this scan/network block"},
+                    {"adaptive_pca_n_candidates", "number of candidate PCA cuts evaluated for this scan/network block"},
+                    {"adaptive_pca_n_det_input", "input detector count in this scan/network block before selector filtering"},
+                    {"adaptive_pca_n_det_used", "detector count retained for adaptive selector scoring"},
+                    {"adaptive_pca_n_time_used", "sample count retained for adaptive selector scoring"},
+                    {"adaptive_pca_sample_step", "time decimation factor used by the adaptive selector"},
+                },
+                {
+                    {"adaptive_pca_chosen_score", "final normalized adaptive selector score for the chosen PCA cut"},
+                    {"adaptive_pca_runnerup_score", "final normalized adaptive selector score for the runner-up PCA cut"},
+                    {"adaptive_pca_score_margin", "chosen minus runner-up score margin; more negative is a clearer adaptive choice"},
+                    {"adaptive_pca_chosen_med_abs_corr", "median absolute detector-detector correlation for the chosen adaptive PCA cut"},
+                    {"adaptive_pca_chosen_cm_low_mid_ratio", "common-mode low/mid bandpower ratio for the chosen adaptive PCA cut"},
+                    {"adaptive_pca_chosen_tail4_binom_z", "tail-excess metric for the chosen adaptive PCA cut"},
+                    {"adaptive_pca_chosen_top_mode_frac", "top residual covariance mode fraction for the chosen adaptive PCA cut"},
+                    {"adaptive_pca_eig_solve_msec", "milliseconds spent solving eigenmodes before adaptive scoring"},
+                    {"adaptive_pca_candidate_eval_msec", "milliseconds spent scoring candidate PCA cuts after eigen solve"},
+                    {"adaptive_pca_total_msec", "total adaptive PCA milliseconds for this scan/network block"},
+                },
+                fill_int, fill_double);
         }
     }
 
