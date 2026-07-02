@@ -6472,11 +6472,9 @@ void Engine::create_tod_files() {
         }
 
         if (ptcproc.cleaner.adaptive_selector.enabled) {
-            add_ptc_stream_network_block(
-                "n_nws_adaptive_pca", "adaptive_pca_network_ids",
-                "network IDs corresponding to n_nws_adaptive_pca axis",
-                citlali::pipeline::ptcdiag_adaptive_pca_int_vars(),
-                citlali::pipeline::ptcdiag_adaptive_pca_double_vars());
+            citlali::pipeline::add_ptcdiag_adaptive_pca_network_block(
+                fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
+                ptc_stream_fill_int, ptc_stream_fill_double);
         }
     }
 
@@ -8903,12 +8901,8 @@ void Engine::create_ptcdiag_file() {
     citlali::pipeline::add_ptcdiag_busy_row_network_block(
         fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
 
-    add_network_block(
-        "n_nws_adaptive_pca",
-        "adaptive_pca_network_ids",
-        "network IDs corresponding to n_nws_adaptive_pca axis",
-        citlali::pipeline::ptcdiag_adaptive_pca_int_vars(),
-        citlali::pipeline::ptcdiag_adaptive_pca_double_vars());
+    citlali::pipeline::add_ptcdiag_adaptive_pca_network_block(
+        fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
 
     add_network_block(
         "n_nws_ptc_second_pass",

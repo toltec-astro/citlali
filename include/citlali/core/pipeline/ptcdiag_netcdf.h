@@ -249,6 +249,18 @@ inline PtcDiagVarList ptcdiag_adaptive_pca_double_vars() {
     };
 }
 
+template <class Calib>
+void add_ptcdiag_adaptive_pca_network_block(
+    netCDF::NcFile &fo, const Calib &calib, netCDF::NcDim n_scans_dim,
+    Eigen::Index n_scans, int fill_int, double fill_double) {
+    add_ptcdiag_network_block(
+        fo, calib, n_scans_dim, n_scans,
+        "n_nws_adaptive_pca", "adaptive_pca_network_ids",
+        "network IDs corresponding to n_nws_adaptive_pca axis",
+        ptcdiag_adaptive_pca_int_vars(), ptcdiag_adaptive_pca_double_vars(),
+        fill_int, fill_double);
+}
+
 inline PtcDiagVarList ptcdiag_second_pass_double_vars() {
     return {
         {"ptc_second_pass_existing_flagged_fraction", "fraction of detector-samples already flagged before the PTC second pass in this scan/network"},
