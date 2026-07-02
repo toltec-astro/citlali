@@ -48,11 +48,7 @@ template <class Engine, class Logger>
 bool configure_effective_sample_rate(Engine &engine, const Logger &logger) {
     if (engine.rtcproc.run_downsample) {
         if (downsample_factor_requires_frequency(engine)) {
-            if (!validate_downsample_frequency_positive(engine, logger)) {
-                return false;
-            }
-            if (!validate_downsample_frequency_below_sample_rate(
-                    engine, logger)) {
+            if (!validate_requested_downsample_frequency(engine, logger)) {
                 return false;
             }
             engine.rtcproc.downsampler.factor = std::floor(
