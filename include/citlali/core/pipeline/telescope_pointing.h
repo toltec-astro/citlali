@@ -21,9 +21,7 @@ void calculate_telescope_pointing(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
 
     calculate_tangent_plane_pointing(engine, logger);
-
-    logger->info("calculating pointing offsets");
-    todproc.interp_pointing();
+    interpolate_pointing_offsets(todproc, logger);
 }
 
 template <class TodProc, class RawObs, class Logger>
