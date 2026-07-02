@@ -14,7 +14,7 @@ void setup_and_run_observation_pipeline(Engine &engine, KidsProc &kidsproc,
     logger->info("pipeline setup");
     engine.setup();
 
-    if (engine.run_tod) {
+    if (should_run_observation_tod(engine)) {
         logger->info("running pipeline");
         engine.pipeline(kidsproc, rawobs);
     }
