@@ -19,6 +19,16 @@
 namespace citlali::pipeline {
 
 template <bool IsBeammap, class TodProc, class RawObs, class RawObsKidsMeta,
+          class Logger>
+bool prepare_reduction_observation_calibration_state(
+    TodProc &todproc, const RawObs &rawobs,
+    const RawObsKidsMeta &rawobs_kids_meta, bool has_multiple_inputs,
+    const Logger &logger) {
+    return configure_reduction_observation_calibration_if_needed<IsBeammap>(
+        todproc, rawobs, rawobs_kids_meta, has_multiple_inputs, logger);
+}
+
+template <bool IsBeammap, class TodProc, class RawObs, class RawObsKidsMeta,
           class MapExtents, class MapCoords, class DateObs, class Logger>
 bool prepare_reduction_observation_inputs(
     TodProc &todproc, const RawObs &rawobs,
