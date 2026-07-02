@@ -6,6 +6,11 @@
 
 namespace citlali::pipeline {
 
+template <class Engine>
+bool should_accumulate_observation_coadd(const Engine &engine) {
+    return engine.run_coadd;
+}
+
 template <auto RawObsMap, auto FilteredObsMap, bool FitMaps, class TodProc,
           class Logger>
 void write_observation_outputs_and_accumulate(TodProc &todproc,
