@@ -6,20 +6,8 @@
 namespace citlali::pipeline {
 
 template <class Engine>
-bool should_calculate_raw_coadd_noise_products(const Engine &engine) {
-    return should_calculate_unfiltered_map_noise_products(
-        engine, false);
-}
-
-template <class Engine>
 bool should_normalize_polarized_raw_coadd_maps(const Engine &engine) {
     return engine.rtcproc.run_polarization;
-}
-
-template <class Engine>
-bool raw_coadd_noise_products_apply_empirical_weights(
-    const Engine &engine) {
-    return unfiltered_map_noise_products_apply_empirical_weights(engine);
 }
 
 template <class TodProc, class Logger>

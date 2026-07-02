@@ -5,20 +5,8 @@
 namespace citlali::pipeline {
 
 template <class Engine>
-bool should_calculate_raw_observation_noise_products(const Engine &engine) {
-    return should_calculate_unfiltered_map_noise_products(
-        engine, true);
-}
-
-template <class Engine>
 bool should_output_raw_observation_maps(const Engine &engine) {
     return engine.run_mapmaking;
-}
-
-template <class Engine>
-bool raw_observation_noise_products_apply_empirical_weights(
-    const Engine &engine) {
-    return unfiltered_map_noise_products_apply_empirical_weights(engine);
 }
 
 template <class Engine, class Logger>

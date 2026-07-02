@@ -5,29 +5,6 @@
 
 namespace citlali::pipeline {
 
-template <class Engine>
-bool should_calculate_filtered_observation_noise_products(
-    const Engine &engine) {
-    return should_calculate_filtered_map_noise_products(engine);
-}
-
-template <class Engine>
-bool should_find_filtered_observation_sources(const Engine &engine) {
-    return should_find_filtered_map_sources(engine);
-}
-
-template <class Engine>
-bool filtered_observation_maps_written_during_filtering(
-    const Engine &engine) {
-    return filtered_map_written_during_filtering(engine);
-}
-
-template <class Engine>
-bool filtered_observation_noise_products_apply_empirical_weights(
-    const Engine &engine) {
-    return filtered_map_noise_products_apply_empirical_weights(engine);
-}
-
 template <auto FilteredObsMap, class Engine, class Logger>
 void filter_observation_maps(Engine &engine, const Logger &logger) {
     filter_maps<FilteredObsMap>(
