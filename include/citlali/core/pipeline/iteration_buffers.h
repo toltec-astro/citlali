@@ -21,6 +21,12 @@ void allocate_coadd_noise_buffer(TodProc &todproc, const Logger &logger) {
     todproc.allocate_nmb(engine.cmb);
 }
 
+template <class Engine>
+void reset_coadd_iteration_accumulators(Engine &engine) {
+    engine.cmb.obsnums.clear();
+    engine.cmb.exposure_time = 0;
+}
+
 template <class TodProc, class Logger>
 void prepare_coadd_iteration_buffers(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
