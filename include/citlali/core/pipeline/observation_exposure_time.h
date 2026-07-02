@@ -19,6 +19,11 @@ auto calculate_observation_exposure_time(const Engine &engine) {
 }
 
 template <class Engine>
+bool should_accumulate_coadd_exposure_time(const Engine &engine) {
+    return engine.run_coadd;
+}
+
+template <class Engine>
 void update_observation_exposure_time(Engine &engine) {
     engine.omb.exposure_time = calculate_observation_exposure_time(engine);
     if (engine.run_coadd) {
