@@ -91,6 +91,7 @@
 #include <citlali/core/pipeline/map_filename.h>
 #include <citlali/core/pipeline/map_layer_name.h>
 #include <citlali/core/pipeline/map_summary_stats.h>
+#include <citlali/core/pipeline/mapdiag_stage.h>
 #include <citlali/core/pipeline/phdu_beammap.h>
 #include <citlali/core/pipeline/phdu_extinction.h>
 #include <citlali/core/pipeline/phdu_oof.h>
@@ -8420,16 +8421,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<int> obs_valid_pixels(n_maps_local * n_obsnums, fill_int);
     std::vector<int> obs_core_pixels(n_maps_local * n_obsnums, fill_int);
 
-    std::string stage_name = "raw_obs";
-    if constexpr (map_t == mapmaking::FilteredObs) {
-        stage_name = "filtered_obs";
-    }
-    else if constexpr (map_t == mapmaking::RawCoadd) {
-        stage_name = "raw_coadd";
-    }
-    else if constexpr (map_t == mapmaking::FilteredCoadd) {
-        stage_name = "filtered_coadd";
-    }
+    std::string stage_name = citlali::pipeline::mapdiag_stage_name<map_t>();
 
     auto put_string_1d = [](netCDF::NcFile &fo, const std::string &name, netCDF::NcDim dim,
                             const std::vector<std::string> &values, const std::string &comment = "") {
