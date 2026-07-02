@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/map_diagnostics.h>
+#include <citlali/core/pipeline/map_filtering.h>
 #include <citlali/core/pipeline/noise_weight_policy.h>
 #include <citlali/core/pipeline/output_policy.h>
 
@@ -30,8 +31,8 @@ bool filtered_coadd_noise_products_apply_empirical_weights(
 
 template <auto FilteredCoaddMap, class Engine, class Logger>
 void filter_coadd_maps(Engine &engine, const Logger &logger) {
-    logger->info("filtering coadded maps");
-    engine.template run_wiener_filter<FilteredCoaddMap>(engine.cmb);
+    run_wiener_filter_with_log<FilteredCoaddMap>(
+        engine, engine.cmb, logger, "filtering coadded maps");
 }
 
 template <class Engine, class Logger>
