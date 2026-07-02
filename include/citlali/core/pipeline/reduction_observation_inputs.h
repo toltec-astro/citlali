@@ -57,7 +57,7 @@ bool prepare_reduction_observation_inputs(
         engine, rawobs_kids_meta, logger);
     load_reduction_observation_hwpr_data_if_requested(engine, rawobs, logger);
     calculate_reduction_observation_flux_calibration(engine, logger);
-    load_and_point_telescope_data_if_needed(
+    load_and_point_reduction_observation_telescope_data_if_needed(
         todproc, rawobs, has_multiple_inputs, logger);
     append_observation_date(engine, std::forward<DateObs>(date_obs));
     record_timing_gaps_if_needed(engine, logger);
