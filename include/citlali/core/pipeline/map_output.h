@@ -9,4 +9,18 @@ void output_map_with_log(Engine &engine, const Logger &logger,
     engine.template output<MapType>();
 }
 
+template <auto MapType, class Engine, class Logger>
+void output_map_if_needed(Engine &engine, const Logger &logger,
+                          bool should_output,
+                          const char *output_log_message,
+                          const char *skip_log_message) {
+    if (should_output) {
+        output_map_with_log<MapType>(
+            engine, logger, output_log_message);
+    }
+    else {
+        logger->info("{}", skip_log_message);
+    }
+}
+
 }  // namespace citlali::pipeline

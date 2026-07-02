@@ -72,13 +72,9 @@ template <auto FilteredMap, class Engine, class Logger>
 void output_filtered_maps_if_needed(
     Engine &engine, const Logger &logger, const char *output_log_message,
     const char *skip_log_message) {
-    if (filtered_map_written_during_filtering(engine)) {
-        logger->info("{}", skip_log_message);
-    }
-    else {
-        output_map_with_log<FilteredMap>(
-            engine, logger, output_log_message);
-    }
+    output_map_if_needed<FilteredMap>(
+        engine, logger, !filtered_map_written_during_filtering(engine),
+        output_log_message, skip_log_message);
 }
 
 }  // namespace citlali::pipeline

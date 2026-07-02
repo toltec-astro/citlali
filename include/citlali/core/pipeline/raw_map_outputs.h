@@ -43,13 +43,8 @@ template <auto RawMap, class Engine, class Logger>
 void output_unfiltered_maps_if_needed(
     Engine &engine, const Logger &logger, bool should_output,
     const char *output_log_message, const char *skip_log_message) {
-    if (should_output) {
-        output_unfiltered_maps_with_log<RawMap>(
-            engine, logger, output_log_message);
-    }
-    else {
-        logger->info("{}", skip_log_message);
-    }
+    output_map_if_needed<RawMap>(
+        engine, logger, should_output, output_log_message, skip_log_message);
 }
 
 }  // namespace citlali::pipeline
