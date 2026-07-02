@@ -21,6 +21,12 @@ bool fruit_loop_learning_source_model_available(const Engine &engine) {
             engine.ptcproc.fruit_loops_path != "null");
 }
 
+template <class Engine>
+bool should_log_reduction_learning_diagnostics(const Engine &engine) {
+    return engine.reduction_learning.is_enabled() &&
+           engine.reduction_learning.diagnostics_enabled();
+}
+
 template <class Engine, class Logger>
 void begin_fruit_loop_iteration(Engine &engine, const Logger &logger) {
     if (should_log_fruit_loop_iteration_start(engine)) {
