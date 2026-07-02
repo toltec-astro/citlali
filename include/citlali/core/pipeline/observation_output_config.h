@@ -5,6 +5,11 @@
 namespace citlali::pipeline {
 
 template <class Engine>
+void set_observation_output_obsnum(Engine &engine, int obsnum) {
+    engine.obsnum = format_obsnum(obsnum);
+}
+
+template <class Engine>
 void configure_observation_output_layout(Engine &engine, int obsnum) {
     engine.obsnum = format_obsnum(obsnum);
     engine.obsnum_dir_name = engine.redu_dir_name + "/" + engine.obsnum + "/";
