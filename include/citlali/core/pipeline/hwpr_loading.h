@@ -50,7 +50,7 @@ void load_hwpr_data_if_requested(Engine &engine, const RawObs &rawobs,
                 engine.calib.get_hwpr(hwpr_filepath, engine.telescope.sim_obs);
             }
             else {
-                engine.calib.run_hwpr = false;
+                disable_hwpr_loading(engine);
             }
         }
         else {
