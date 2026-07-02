@@ -31,13 +31,10 @@ bool run_reduction_observation_at_index(
                                             todproc.engine()),
         logger);
 
-    return run_reduction_observation<IsBeammap, RawObsMap, FilteredObsMap,
-                                     FitMaps>(
-        todproc, kidsproc, observation_context.rawobs,
-        observation_context.rawobs_kids_meta,
-        observation_context.has_multiple_inputs, map_extents, map_coords,
-        observation_context.observation_index,
-        std::move(observation_context.date_obs), logger);
+    return run_reduction_observation_context<
+        IsBeammap, RawObsMap, FilteredObsMap, FitMaps>(
+        todproc, kidsproc, observation_context, map_extents, map_coords,
+        logger);
 }
 
 template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap, bool FitMaps,
