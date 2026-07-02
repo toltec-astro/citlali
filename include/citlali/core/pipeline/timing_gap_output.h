@@ -29,6 +29,12 @@ inline void write_timing_gaps_log_header(std::ofstream &stream) {
     stream << "Summary of timing gaps\n";
 }
 
+template <class Key, class Value, class Logger>
+void log_timing_gap_entry(const Key &key, const Value &value,
+                          const Logger &logger) {
+    logger->debug("{} gaps: {}", key, value);
+}
+
 template <class Engine, class Logger>
 void record_timing_gaps_if_needed(const Engine &engine, const Logger &logger) {
     if (has_timing_gaps(engine)) {
