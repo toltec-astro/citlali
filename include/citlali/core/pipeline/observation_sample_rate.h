@@ -100,7 +100,7 @@ void apply_native_sample_rate(Engine &engine) {
 
 template <class Engine, class Logger>
 bool configure_effective_sample_rate(Engine &engine, const Logger &logger) {
-    if (engine.rtcproc.run_downsample) {
+    if (should_run_downsample(engine)) {
         if (downsample_factor_requires_frequency(engine)) {
             if (!validate_requested_downsample_frequency(engine, logger)) {
                 return false;
