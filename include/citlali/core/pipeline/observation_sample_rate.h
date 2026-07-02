@@ -114,7 +114,7 @@ bool configure_effective_sample_rate(Engine &engine, const Logger &logger) {
         apply_downsampled_sample_rate(engine);
     }
     else {
-        engine.telescope.d_fsmp = engine.telescope.fsmp;
+        apply_native_sample_rate(engine);
     }
     return true;
 }
