@@ -8457,16 +8457,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         obs_core_pixels[flat] = static_cast<int>((valid * core_block).sum());
     };
 
-    struct tail_stats_t {
-        double frac_abs3 = std::numeric_limits<double>::quiet_NaN();
-        double frac_pos3 = std::numeric_limits<double>::quiet_NaN();
-        double frac_neg3 = std::numeric_limits<double>::quiet_NaN();
-        double excess_abs3 = std::numeric_limits<double>::quiet_NaN();
-        double excess_pos3 = std::numeric_limits<double>::quiet_NaN();
-        double excess_neg3 = std::numeric_limits<double>::quiet_NaN();
-        double skew = std::numeric_limits<double>::quiet_NaN();
-    };
-
     struct map_pixel_candidate_t {
         int row = -2147483647;
         int col = -2147483647;
@@ -8497,57 +8487,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     };
 
     auto calc_tail_stats = [&](const std::vector<double> &values) {
-        tail_stats_t stats;
-        if (values.size() < 8) {
-            return stats;
-        }
-        const double center = vector_median(values);
-        if (!std::isfinite(center)) {
-            return stats;
-        }
-        std::vector<double> abs_dev;
-        abs_dev.reserve(values.size());
-        for (const auto &value : values) {
-            abs_dev.push_back(std::abs(value - center));
-        }
-        const double mad = vector_median(abs_dev);
-        const double robust_sigma = 1.4826 * mad;
-        if (!std::isfinite(robust_sigma) || robust_sigma <= std::numeric_limits<double>::epsilon()) {
-            return stats;
-        }
-
-        std::size_t n_abs = 0;
-        std::size_t n_pos = 0;
-        std::size_t n_neg = 0;
-        double skew_sum = 0.0;
-        for (const auto &value : values) {
-            const double z = (value - center) / robust_sigma;
-            if (!std::isfinite(z)) {
-                continue;
-            }
-            if (std::abs(z) >= 3.0) {
-                ++n_abs;
-            }
-            if (z >= 3.0) {
-                ++n_pos;
-            }
-            if (z <= -3.0) {
-                ++n_neg;
-            }
-            skew_sum += z * z * z;
-        }
-
-        const double n = static_cast<double>(values.size());
-        stats.frac_abs3 = static_cast<double>(n_abs) / n;
-        stats.frac_pos3 = static_cast<double>(n_pos) / n;
-        stats.frac_neg3 = static_cast<double>(n_neg) / n;
-        constexpr double gauss_pos3 = 1.3498980316300959e-3;
-        constexpr double gauss_abs3 = 2.6997960632601918e-3;
-        stats.excess_abs3 = stats.frac_abs3 / gauss_abs3;
-        stats.excess_pos3 = stats.frac_pos3 / gauss_pos3;
-        stats.excess_neg3 = stats.frac_neg3 / gauss_pos3;
-        stats.skew = skew_sum / n;
-        return stats;
+        return citlali::pipeline::mapdiag_tail_stats(values, fill_double);
     };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
