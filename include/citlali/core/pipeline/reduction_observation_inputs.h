@@ -55,7 +55,7 @@ bool prepare_reduction_observation_inputs(
     load_reduction_observation_detector_diagnostics(todproc, rawobs, logger);
     prepare_reduction_observation_output_layout(
         engine, rawobs_kids_meta, logger);
-    load_hwpr_data_if_requested(engine, rawobs, logger);
+    load_reduction_observation_hwpr_data_if_requested(engine, rawobs, logger);
     calculate_flux_calibration(engine, logger);
     load_and_point_telescope_data_if_needed(
         todproc, rawobs, has_multiple_inputs, logger);
