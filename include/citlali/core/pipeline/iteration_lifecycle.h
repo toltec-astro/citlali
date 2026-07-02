@@ -45,6 +45,11 @@ void begin_reduction_learning_iteration(Engine &engine) {
         engine.fruit_iter, learning_source_model_available, engine.redu_type);
 }
 
+template <class Engine>
+void finalize_reduction_learning_iteration(Engine &engine) {
+    engine.reduction_learning.finalize_iteration(engine.fruit_iter);
+}
+
 template <class Engine, class Logger>
 void begin_fruit_loop_iteration(Engine &engine, const Logger &logger) {
     if (should_log_fruit_loop_iteration_start(engine)) {
