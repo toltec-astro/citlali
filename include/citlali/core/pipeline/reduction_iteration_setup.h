@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/pipeline/fruit_loop_iteration_state.h>
 #include <citlali/core/pipeline/fruit_loop_iteration_policy.h>
 #include <citlali/core/pipeline/iteration_buffers.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>

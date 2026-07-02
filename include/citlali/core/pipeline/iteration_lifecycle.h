@@ -1,6 +1,5 @@
 #pragma once
 
-#include <citlali/core/pipeline/fruit_loop_iteration_state.h>
 #include <citlali/core/pipeline/reduction_learning_lifecycle.h>
 #include <citlali/core/pipeline/weight_validation_lifecycle.h>
 
