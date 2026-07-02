@@ -22,6 +22,16 @@ void run_observation_tod_pipeline(Engine &engine, KidsProc &kidsproc,
 }
 
 template <class Engine, class KidsProc, class RawObs, class Logger>
+void run_observation_tod_pipeline_if_needed(Engine &engine,
+                                            KidsProc &kidsproc,
+                                            const RawObs &rawobs,
+                                            const Logger &logger) {
+    if (should_run_observation_tod(engine)) {
+        run_observation_tod_pipeline(engine, kidsproc, rawobs, logger);
+    }
+}
+
+template <class Engine, class KidsProc, class RawObs, class Logger>
 void setup_and_run_observation_pipeline(Engine &engine, KidsProc &kidsproc,
                                         const RawObs &rawobs,
                                         const Logger &logger) {
