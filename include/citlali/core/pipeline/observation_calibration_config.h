@@ -16,8 +16,7 @@ void configure_observation_calibration(TodProc &todproc, const RawObs &rawobs,
                                        const Logger &logger) {
     auto &engine = todproc.engine();
 
-    logger->debug("getting astrometry config");
-    engine.get_astrometry_config(rawobs.astrometry_calib_info().config());
+    load_astrometry_config(engine, rawobs, logger);
 
     if constexpr (IsBeammap) {
         engine.get_photometry_config(rawobs.photometry_calib_info().config());
