@@ -27,6 +27,11 @@ bool should_log_reduction_learning_diagnostics(const Engine &engine) {
            engine.reduction_learning.diagnostics_enabled();
 }
 
+template <class Engine>
+void begin_iteration_weight_validation(Engine &engine) {
+    engine.ptcproc.begin_weight_validation_iteration(engine.fruit_iter);
+}
+
 template <class Engine, class Logger>
 void begin_fruit_loop_iteration(Engine &engine, const Logger &logger) {
     if (should_log_fruit_loop_iteration_start(engine)) {
