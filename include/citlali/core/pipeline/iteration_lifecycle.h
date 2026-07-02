@@ -29,8 +29,7 @@ void begin_fruit_loop_iteration(Engine &engine, const Logger &logger) {
     engine.ptcproc.begin_weight_validation_iteration(engine.fruit_iter);
 
     const bool learning_source_model_available =
-        engine.ptcproc.run_fruit_loops &&
-        (engine.fruit_iter > 0 || engine.ptcproc.fruit_loops_path != "null");
+        fruit_loop_learning_source_model_available(engine);
     engine.reduction_learning.begin_iteration(
         engine.fruit_iter, learning_source_model_available, engine.redu_type);
     if (engine.reduction_learning.is_enabled() &&
