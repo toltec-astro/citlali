@@ -49,7 +49,7 @@ void log_missing_flxscale_column(const RawObs &rawobs,
 
 template <class Engine>
 void multiply_apt_flxscale_column(Engine &engine, double factor) {
-    multiply_apt_flxscale_column(engine, factor);
+    engine.calib.apt["flxscale"].array() *= factor;
 }
 
 template <class Engine, class RawObs, class Logger>
@@ -70,7 +70,7 @@ bool apply_flxscale_correction(Engine &engine, const RawObs &rawobs,
         return false;
     }
 
-    engine.calib.apt["flxscale"].array() *= factor;
+    multiply_apt_flxscale_column(engine, factor);
     logger->info("applied flxscale correction factor={} for observation {}",
                  factor, rawobs.name());
     return true;
