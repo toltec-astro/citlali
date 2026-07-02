@@ -3,6 +3,7 @@
 #include <citlali/core/pipeline/kids_metadata.h>
 #include <citlali/core/pipeline/reduction_observation.h>
 #include <citlali/core/pipeline/reduction_observation_access.h>
+#include <citlali/core/pipeline/reduction_observation_date.h>
 #include <citlali/core/pipeline/reduction_observation_logging.h>
 
 #include <cstddef>
@@ -31,7 +32,9 @@ bool run_reduction_observation_at_index(
         todproc, kidsproc, rawobs, rawobs_kids_meta,
         has_multiple_reduction_observations(co), map_extents, map_coords,
         observation_index,
-        date_obs_factory(todproc.engine()), logger);
+        make_reduction_observation_date_obs(date_obs_factory,
+                                            todproc.engine()),
+        logger);
 }
 
 template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap, bool FitMaps,
