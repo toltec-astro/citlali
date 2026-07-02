@@ -15,7 +15,7 @@ void calculate_telescope_scan_indices(Engine &engine) {
 template <class Engine, class Logger>
 void calculate_scan_indices(Engine &engine, const Logger &logger) {
     log_scan_index_calculation(logger);
-    engine.telescope.calc_scan_indices();
+    calculate_telescope_scan_indices(engine);
 }
 
 template <class Engine, class Logger>
