@@ -12,9 +12,7 @@ bool should_calculate_raw_observation_noise_products(const Engine &engine) {
 template <class Engine, class Logger>
 void calculate_raw_observation_noise_products_if_needed(
     Engine &engine, const Logger &logger) {
-    if (engine.run_mapmaking &&
-        engine.run_noise_products &&
-        engine.run_noise) {
+    if (should_calculate_raw_observation_noise_products(engine)) {
         logger->info("calculating raw obs empirical noise products");
         engine.omb.calc_noise_products(engine.apply_empirical_noise_weights);
     }
