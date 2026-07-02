@@ -26,11 +26,7 @@ template <class Engine, class Logger>
 bool configure_effective_sample_rate(Engine &engine, const Logger &logger) {
     if (engine.rtcproc.run_downsample) {
         if (downsample_factor_requires_frequency(engine)) {
-            if (engine.rtcproc.downsampler.downsampled_freq_Hz <= 0) {
-                logger->error(
-                    "downsampled freq ({} Hz) must be > 0 when downsample "
-                    "factor <= 0",
-                    engine.rtcproc.downsampler.downsampled_freq_Hz);
+            if (!validate_downsample_frequency_positive(engine, logger)) {
                 return false;
             }
             if (engine.rtcproc.downsampler.downsampled_freq_Hz >
