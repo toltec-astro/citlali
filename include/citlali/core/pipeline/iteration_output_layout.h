@@ -21,7 +21,7 @@ void prepare_iteration_output_layout_if_needed(
     auto &engine = todproc.engine();
 
     if (should_prepare_iteration_output_layout(engine)) {
-        todproc.create_output_dir();
+        create_iteration_output_directory(todproc);
         copy_config_files_to_reduction_dir(
             config_filepaths, engine.redu_dir_name, logger);
     }
