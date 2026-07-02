@@ -20,7 +20,8 @@ bool run_reduction_observation_at_index(
     const Logger &logger) {
     log_reduction_observation_start(
         observation_index, reduction_observation_count(co), logger);
-    auto kidsproc = make_kids_data_proc<KidsDataProc>(citlali_config);
+    auto kidsproc =
+        make_reduction_observation_kids_proc<KidsDataProc>(citlali_config);
     const auto &rawobs = reduction_observation_input_at(co, observation_index);
     auto rawobs_kids_meta = load_rawobs_kids_meta(kidsproc, rawobs, logger);
 
