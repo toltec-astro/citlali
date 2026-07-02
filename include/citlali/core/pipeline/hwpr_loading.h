@@ -1,20 +1,9 @@
 #pragma once
 
 #include <citlali/core/pipeline/hwpr_policy.h>
+#include <citlali/core/pipeline/hwpr_state.h>
 
 namespace citlali::pipeline {
-
-template <class Engine>
-void disable_hwpr_loading(Engine &engine) {
-    engine.calib.run_hwpr = false;
-}
-
-template <class Engine, class Logger>
-void log_hwpr_ignored_if_needed(const Engine &engine, const Logger &logger) {
-    if (!engine.calib.run_hwpr) {
-        logger->info("ignoring hwpr");
-    }
-}
 
 template <class Engine, class Logger>
 void load_hwpr_file(Engine &engine, const std::string &filepath,
