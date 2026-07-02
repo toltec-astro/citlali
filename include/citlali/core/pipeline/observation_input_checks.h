@@ -10,7 +10,7 @@ void log_observation_input_check(const Logger &logger) {
 template <class TodProc, class RawObs, class Logger>
 void check_observation_inputs(TodProc &todproc, const RawObs &rawobs,
                               const Logger &logger) {
-    logger->debug("checking inputs");
+    log_observation_input_check(logger);
     todproc.check_inputs(rawobs);
 }
 
