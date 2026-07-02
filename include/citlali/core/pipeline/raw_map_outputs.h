@@ -24,13 +24,12 @@ template <class Engine, class MapBuffer, class Logger>
 void calculate_unfiltered_map_noise_products_if_needed(
     Engine &engine, MapBuffer &map_buffer, const Logger &logger,
     bool require_mapmaking, const char *log_message) {
-    if (should_calculate_unfiltered_map_noise_products(
-            engine, require_mapmaking)) {
-        calculate_map_noise_products_with_log(
-            map_buffer,
-            unfiltered_map_noise_products_apply_empirical_weights(engine),
-            logger, log_message);
-    }
+    calculate_map_noise_products_if_needed(
+        map_buffer,
+        should_calculate_unfiltered_map_noise_products(
+            engine, require_mapmaking),
+        unfiltered_map_noise_products_apply_empirical_weights(engine),
+        logger, log_message);
 }
 
 template <auto RawMap, class Engine, class Logger>

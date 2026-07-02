@@ -42,12 +42,10 @@ template <class Engine, class MapBuffer, class Logger>
 void calculate_filtered_map_noise_products_if_needed(
     Engine &engine, MapBuffer &map_buffer, const Logger &logger,
     const char *log_message) {
-    if (should_calculate_filtered_map_noise_products(engine)) {
-        calculate_map_noise_products_with_log(
-            map_buffer,
-            filtered_map_noise_products_apply_empirical_weights(engine),
-            logger, log_message);
-    }
+    calculate_map_noise_products_if_needed(
+        map_buffer, should_calculate_filtered_map_noise_products(engine),
+        filtered_map_noise_products_apply_empirical_weights(engine),
+        logger, log_message);
 }
 
 template <class MapBuffer, class Logger>
