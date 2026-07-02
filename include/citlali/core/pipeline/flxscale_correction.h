@@ -52,6 +52,13 @@ void multiply_apt_flxscale_column(Engine &engine, double factor) {
     engine.calib.apt["flxscale"].array() *= factor;
 }
 
+template <class RawObs, class Logger>
+void log_applied_flxscale_correction(double factor, const RawObs &rawobs,
+                                     const Logger &logger) {
+    logger->info("applied flxscale correction factor={} for observation {}",
+                 factor, rawobs.name());
+}
+
 template <class Engine, class RawObs, class Logger>
 bool apply_flxscale_correction(Engine &engine, const RawObs &rawobs,
                                const Logger &logger) {
