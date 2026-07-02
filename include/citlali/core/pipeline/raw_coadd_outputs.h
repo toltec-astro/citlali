@@ -13,6 +13,13 @@ bool should_normalize_polarized_raw_coadd_maps(const Engine &engine) {
 }
 
 template <class TodProc, class Logger>
+void prepare_raw_coadd_map_files(TodProc &todproc,
+                                 const Logger &logger) {
+    logger->debug("creating cmb filenames");
+    todproc.create_coadded_map_files();
+}
+
+template <class TodProc, class Logger>
 void prepare_raw_coadd_maps(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
 
