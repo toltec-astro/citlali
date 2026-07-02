@@ -29,7 +29,7 @@ void load_hwpr_data_if_requested(Engine &engine, const RawObs &rawobs,
                                  const Logger &logger) {
     if (should_load_hwpr_for_polarization(engine)) {
         std::string hwpr_filepath;
-        if (has_hwpr_data(rawobs) && !is_hwpr_ignored_by_config(engine)) {
+        if (should_use_raw_hwpr_data(engine, rawobs)) {
             hwpr_filepath = rawobs.hwpdata()->filepath();
             if (hwpr_filepath != "null") {
                 logger->info("getting hwpr file {}", hwpr_filepath);
