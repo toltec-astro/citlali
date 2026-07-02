@@ -13,6 +13,11 @@ bool has_map_center_override(const Engine &engine) {
            engine.omb.crval_config[1] != 0;
 }
 
+template <class Engine>
+double map_center_ra_degrees(const Engine &engine) {
+    return engine.omb.crval_config[0];
+}
+
 template <class Engine, class Logger>
 void overwrite_map_center_if_configured(Engine &engine, const Logger &logger) {
     if (has_map_center_override(engine)) {
