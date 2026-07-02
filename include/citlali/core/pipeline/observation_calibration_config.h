@@ -4,6 +4,13 @@
 
 namespace citlali::pipeline {
 
+template <class Engine, class RawObs, class Logger>
+void load_astrometry_config(Engine &engine, const RawObs &rawobs,
+                            const Logger &logger) {
+    logger->debug("getting astrometry config");
+    engine.get_astrometry_config(rawobs.astrometry_calib_info().config());
+}
+
 template <bool IsBeammap, class TodProc, class RawObs, class Logger>
 void configure_observation_calibration(TodProc &todproc, const RawObs &rawobs,
                                        const Logger &logger) {
