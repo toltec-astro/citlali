@@ -9,4 +9,10 @@ void calculate_flux_calibration(Engine &engine, const Logger &logger) {
                                        engine.omb.pixel_size_rad);
 }
 
+template <class Engine, class Logger>
+void calculate_reduction_observation_flux_calibration(
+    Engine &engine, const Logger &logger) {
+    calculate_flux_calibration(engine, logger);
+}
+
 }  // namespace citlali::pipeline
