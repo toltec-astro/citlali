@@ -61,10 +61,7 @@ bool apply_flxscale_correction(Engine &engine, const RawObs &rawobs,
         return false;
     }
     if (!has_apt_flxscale_column(engine)) {
-        logger->error(
-            "flxscale column missing from APT while applying "
-            "flxscale_correction for observation {}",
-            rawobs.name());
+        log_missing_flxscale_column(rawobs, logger);
         return false;
     }
 
