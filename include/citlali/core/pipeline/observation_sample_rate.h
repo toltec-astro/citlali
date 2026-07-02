@@ -82,6 +82,12 @@ bool validate_downsample_antialias_filter(const Engine &engine,
     return true;
 }
 
+template <class Engine>
+void apply_downsampled_sample_rate(Engine &engine) {
+    engine.telescope.d_fsmp =
+        engine.telescope.fsmp / engine.rtcproc.downsampler.factor;
+}
+
 template <class Engine, class Logger>
 bool configure_effective_sample_rate(Engine &engine, const Logger &logger) {
     if (engine.rtcproc.run_downsample) {
