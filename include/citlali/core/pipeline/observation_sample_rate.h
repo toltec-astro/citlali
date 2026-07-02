@@ -27,11 +27,11 @@ bool downsample_factor_requires_frequency(const Engine &engine) {
 template <class Engine, class Logger>
 bool validate_downsample_frequency_positive(const Engine &engine,
                                             const Logger &logger) {
-    if (engine.rtcproc.downsampler.downsampled_freq_Hz <= 0) {
+    if (requested_downsample_frequency_hz(engine) <= 0) {
         logger->error(
             "downsampled freq ({} Hz) must be > 0 when downsample "
             "factor <= 0",
-            engine.rtcproc.downsampler.downsampled_freq_Hz);
+            requested_downsample_frequency_hz(engine));
         return false;
     }
     return true;
