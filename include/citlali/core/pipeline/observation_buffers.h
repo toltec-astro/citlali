@@ -40,6 +40,15 @@ void calculate_observation_map_count(TodProc &todproc,
 }
 
 template <class TodProc, class MapExtent, class MapCoord, class Logger>
+void allocate_observation_signal_map_buffer(TodProc &todproc,
+                                            MapExtent &map_extent,
+                                            MapCoord &map_coord,
+                                            const Logger &logger) {
+    logger->info("allocating obs map buffer");
+    todproc.allocate_omb(map_extent, map_coord);
+}
+
+template <class TodProc, class MapExtent, class MapCoord, class Logger>
 void allocate_observation_map_buffers(TodProc &todproc,
                                       MapExtent &map_extent,
                                       MapCoord &map_coord,
