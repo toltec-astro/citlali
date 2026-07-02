@@ -46,7 +46,8 @@ void allocate_observation_map_buffers_if_needed(
     }
 
     allocate_observation_map_buffers(
-        todproc, map_extents[observation_index], map_coords[observation_index],
+        todproc, observation_map_extent_at(map_extents, observation_index),
+        map_coords[observation_index],
         logger);
 }
 
