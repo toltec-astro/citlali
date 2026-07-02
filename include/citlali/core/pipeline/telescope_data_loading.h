@@ -74,7 +74,7 @@ void load_and_align_telescope_data(TodProc &todproc, const RawObs &rawobs,
         align_telescope_timestreams(todproc, rawobs, logger);
     }
     else {
-        reset_simulated_observation_indices(engine, rawobs);
+        reset_simulated_telescope_indices(engine, rawobs);
     }
 }
 
