@@ -11,8 +11,8 @@
 
 namespace citlali::pipeline {
 
-inline std::vector<int> ptcdiag_output_scan_indices(Eigen::Index n_scans,
-                                                    int fill_value) {
+inline std::vector<int> diagnostic_output_scan_indices(Eigen::Index n_scans,
+                                                       int fill_value) {
     std::vector<int> output_scan_index(static_cast<std::size_t>(n_scans),
                                        fill_value);
     for (Eigen::Index i=0; i<n_scans; ++i) {
@@ -20,6 +20,11 @@ inline std::vector<int> ptcdiag_output_scan_indices(Eigen::Index n_scans,
             static_cast<int>(i + 1);
     }
     return output_scan_index;
+}
+
+inline std::vector<int> ptcdiag_output_scan_indices(Eigen::Index n_scans,
+                                                    int fill_value) {
+    return diagnostic_output_scan_indices(n_scans, fill_value);
 }
 
 template <class Calib>

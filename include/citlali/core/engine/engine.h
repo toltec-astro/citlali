@@ -9130,7 +9130,7 @@ void Engine::create_ptcdiag_file() {
     output_scan_index_v.putAtt("units", "N/A");
     output_scan_index_v.putAtt("comment", "1-based original scan index from the full observation");
     const auto output_scan_index =
-        citlali::pipeline::ptcdiag_output_scan_indices(n_scans, fill_int);
+        citlali::pipeline::diagnostic_output_scan_indices(n_scans, fill_int);
     output_scan_index_v.putVar(output_scan_index.data());
 
     auto add_det_meta_int = [&](const std::string &name, const std::string &comment, const std::vector<int> &values) {
@@ -9451,10 +9451,8 @@ void Engine::create_rtcdiag_file() {
     netCDF::NcVar output_scan_index_v = fo.addVar("output_scan_index", netCDF::ncInt, n_scans_dim);
     output_scan_index_v.putAtt("units", "N/A");
     output_scan_index_v.putAtt("comment", "1-based original scan index from the full observation");
-    std::vector<int> output_scan_index(static_cast<std::size_t>(n_scans), fill_int);
-    for (Eigen::Index i = 0; i < n_scans; ++i) {
-        output_scan_index[static_cast<std::size_t>(i)] = static_cast<int>(i + 1);
-    }
+    const auto output_scan_index =
+        citlali::pipeline::diagnostic_output_scan_indices(n_scans, fill_int);
     output_scan_index_v.putVar(output_scan_index.data());
 
     netCDF::NcVar array_ids_v = fo.addVar("rtc_diag_array_ids", netCDF::ncInt, n_arrays_dim);
