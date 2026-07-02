@@ -3,10 +3,12 @@
 #include <citlali/core/pipeline/kids_metadata.h>
 #include <citlali/core/pipeline/reduction_observation.h>
 #include <citlali/core/pipeline/reduction_observation_access.h>
+#include <citlali/core/pipeline/reduction_observation_context.h>
 #include <citlali/core/pipeline/reduction_observation_date.h>
 #include <citlali/core/pipeline/reduction_observation_logging.h>
 
 #include <cstddef>
+#include <utility>
 
 namespace citlali::pipeline {
 
@@ -23,18 +25,19 @@ bool run_reduction_observation_at_index(
         observation_index, reduction_observation_count(co), logger);
     auto kidsproc =
         make_reduction_observation_kids_proc<KidsDataProc>(citlali_config);
-    const auto &rawobs = reduction_observation_input_at(co, observation_index);
-    auto rawobs_kids_meta =
-        load_reduction_observation_kids_meta(kidsproc, rawobs, logger);
-
-    return run_reduction_observation<IsBeammap, RawObsMap, FilteredObsMap,
-                                     FitMaps>(
-        todproc, kidsproc, rawobs, rawobs_kids_meta,
-        has_multiple_reduction_observations(co), map_extents, map_coords,
-        observation_index,
+    auto observation_context = make_reduction_observation_context(
+        kidsproc, co, observation_index,
         make_reduction_observation_date_obs(date_obs_factory,
                                             todproc.engine()),
         logger);
+
+    return run_reduction_observation<IsBeammap, RawObsMap, FilteredObsMap,
+                                     FitMaps>(
+        todproc, kidsproc, observation_context.rawobs,
+        observation_context.rawobs_kids_meta,
+        observation_context.has_multiple_inputs, map_extents, map_coords,
+        observation_context.observation_index,
+        std::move(observation_context.date_obs), logger);
 }
 
 template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap, bool FitMaps,
