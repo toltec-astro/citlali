@@ -26,7 +26,7 @@ void prepare_raw_coadd_maps(TodProc &todproc, const Logger &logger) {
 template <class Engine, class Logger>
 void calculate_raw_coadd_noise_products_if_needed(
     Engine &engine, const Logger &logger) {
-    if (engine.run_noise_products && engine.run_noise) {
+    if (should_calculate_raw_coadd_noise_products(engine)) {
         logger->info("calculating raw coadd empirical noise products");
         engine.cmb.calc_noise_products(engine.apply_empirical_noise_weights);
     }
