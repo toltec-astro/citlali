@@ -27,6 +27,11 @@ void reset_coadd_iteration_accumulators(Engine &engine) {
     engine.cmb.exposure_time = 0;
 }
 
+template <class Engine>
+void clear_iteration_observation_dates(Engine &engine) {
+    engine.date_obs.clear();
+}
+
 template <class TodProc, class Logger>
 void prepare_coadd_iteration_buffers(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
