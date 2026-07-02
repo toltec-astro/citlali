@@ -9582,14 +9582,8 @@ void Engine::create_rtcdiag_file() {
         "configured RTC FIR low-pass cutoff divided by scan_source_power_half_bandwidth_hz; values much larger than 1 indicate extra high-frequency noise admitted relative to compact-source half-power bandwidth",
         tod_lowpass_to_source_power_half_ratio);
 
-    netCDF::NcVar nw_ids_v = fo.addVar("rtc_diag_network_ids", netCDF::ncInt, n_nws_rtcdiag_dim);
-    nw_ids_v.putAtt("units", "N/A");
-    nw_ids_v.putAtt("comment", "network IDs corresponding to n_nws_rtcdiag axis");
-    std::vector<int> nw_ids(static_cast<std::size_t>(calib.n_nws), fill_int);
-    for (Eigen::Index i = 0; i < calib.n_nws; ++i) {
-        nw_ids[static_cast<std::size_t>(i)] = static_cast<int>(calib.nws(i));
-    }
-    nw_ids_v.putVar(nw_ids.data());
+    citlali::pipeline::add_rtcdiag_network_ids(
+        fo, calib, n_nws_rtcdiag_dim, fill_int);
 
     add_netcdf_var<std::string>(fo, "INSTRUME", "TolTEC");
     add_netcdf_var<std::string>(fo, "TELESCOP", "LMT");
