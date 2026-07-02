@@ -32,6 +32,11 @@ void begin_iteration_weight_validation(Engine &engine) {
     engine.ptcproc.begin_weight_validation_iteration(engine.fruit_iter);
 }
 
+template <class Engine>
+void finalize_iteration_weight_validation(Engine &engine) {
+    engine.ptcproc.finalize_weight_validation_iteration(engine.fruit_iter);
+}
+
 template <class Engine, class Logger>
 void begin_fruit_loop_iteration(Engine &engine, const Logger &logger) {
     if (should_log_fruit_loop_iteration_start(engine)) {
