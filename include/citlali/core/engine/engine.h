@@ -89,6 +89,7 @@
 #include <citlali/core/mapmaking/wiener_filter.h>
 #endif
 #include <citlali/core/pipeline/map_filename.h>
+#include <citlali/core/pipeline/map_layer_name.h>
 #include <citlali/core/pipeline/map_summary_stats.h>
 
 #include <citlali/core/engine/io.h>
@@ -7088,37 +7089,7 @@ auto Engine::setup_filenames(std::string dir_name) {
 }
 
 auto Engine::get_map_name(int i) {
-    // get name for extension layer
-    std::string map_name = "";
-
-    // only update name if we're not in array mode
-    if (map_grouping!="array") {
-        // if in nw mode
-        if (map_grouping=="nw") {
-            map_name = map_name + "nw_" + std::to_string(calib.nws(i)) + "_";
-        }
-        else if (map_grouping=="fg") {
-            // find all detectors belonging to each fg
-            Eigen::VectorXI array_indices(calib.fg.size()*calib.n_arrays*rtcproc.polarization.stokes_params.size());
-            Eigen::Index k = 0;
-            for (Eigen::Index j=0; j<calib.n_arrays; ++j) {
-                for (Eigen::Index l=0; l<rtcproc.polarization.stokes_params.size(); ++l) {
-                    for (Eigen::Index m=0; m<calib.fg.size(); ++m) {
-                        array_indices(k) = calib.fg(m);
-                        k++;
-                    }
-                }
-            }
-            // if in fg mode
-            map_name = map_name + "fg_" + std::to_string(array_indices(i)) + "_";
-        }
-        // if in detector mode
-        else if (map_grouping=="detector") {
-            map_name = map_name + "det_" + std::to_string(i) + "_";
-        }
-    }
-
-    return map_name;
+    return citlali::pipeline::map_layer_name(i, map_grouping, calib);
 }
 
 template <typename fits_io_type, class map_buffer_t>
