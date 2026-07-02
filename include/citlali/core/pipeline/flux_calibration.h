@@ -16,7 +16,7 @@ template <class Engine, class Logger>
 void calculate_flux_calibration(Engine &engine, const Logger &logger) {
     logger->info("calculating flux calibration");
     engine.calib.calc_flux_calibration(flux_calibration_signal_unit(engine),
-                                       engine.omb.pixel_size_rad);
+                                       flux_calibration_pixel_size_rad(engine));
 }
 
 template <class Engine, class Logger>
