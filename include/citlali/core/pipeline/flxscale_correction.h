@@ -48,10 +48,7 @@ bool apply_flxscale_correction(Engine &engine, const RawObs &rawobs,
 
     const double factor = flxscale_correction_factor(*flxscale_corr);
     if (!is_valid_flxscale_correction_factor(factor)) {
-        logger->error(
-            "invalid flxscale_correction={} for observation {}; "
-            "factor must be finite and > 0",
-            factor, rawobs.name());
+        log_invalid_flxscale_correction_factor(factor, rawobs, logger);
         return false;
     }
     if (!has_apt_flxscale_column(engine)) {
