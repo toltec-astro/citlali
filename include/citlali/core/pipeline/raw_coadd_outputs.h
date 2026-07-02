@@ -1,15 +1,14 @@
 #pragma once
 
 #include <citlali/core/pipeline/map_diagnostics.h>
-#include <citlali/core/pipeline/map_noise_products.h>
-#include <citlali/core/pipeline/map_output.h>
-#include <citlali/core/pipeline/noise_weight_policy.h>
+#include <citlali/core/pipeline/raw_map_outputs.h>
 
 namespace citlali::pipeline {
 
 template <class Engine>
 bool should_calculate_raw_coadd_noise_products(const Engine &engine) {
-    return engine.run_noise_products && engine.run_noise;
+    return should_calculate_unfiltered_map_noise_products(
+        engine, false);
 }
 
 template <class Engine>
@@ -20,7 +19,7 @@ bool should_normalize_polarized_raw_coadd_maps(const Engine &engine) {
 template <class Engine>
 bool raw_coadd_noise_products_apply_empirical_weights(
     const Engine &engine) {
-    return unfiltered_noise_products_apply_empirical_weights(engine);
+    return unfiltered_map_noise_products_apply_empirical_weights(engine);
 }
 
 template <class TodProc, class Logger>
@@ -47,12 +46,9 @@ void prepare_raw_coadd_maps(TodProc &todproc, const Logger &logger) {
 template <class Engine, class Logger>
 void calculate_raw_coadd_noise_products_if_needed(
     Engine &engine, const Logger &logger) {
-    if (should_calculate_raw_coadd_noise_products(engine)) {
-        calculate_map_noise_products_with_log(
-            engine.cmb,
-            raw_coadd_noise_products_apply_empirical_weights(engine),
-            logger, "calculating raw coadd empirical noise products");
-    }
+    calculate_unfiltered_map_noise_products_if_needed(
+        engine, engine.cmb, logger, false,
+        "calculating raw coadd empirical noise products");
 }
 
 template <class Engine, class Logger>
@@ -65,7 +61,7 @@ void calculate_raw_coadd_map_diagnostics(Engine &engine,
 
 template <auto RawCoaddMap, class Engine, class Logger>
 void output_raw_coadd_maps(Engine &engine, const Logger &logger) {
-    output_map_with_log<RawCoaddMap>(
+    output_unfiltered_maps_with_log<RawCoaddMap>(
         engine, logger, "outputting raw coadded files");
 }
 
