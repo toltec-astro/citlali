@@ -22,6 +22,13 @@ bool should_make_apt_from_raw_files(const Engine &engine) {
            engine.map_grouping == "auto";
 }
 
+template <class TodProc, class RawObs, class Logger>
+void make_apt_from_raw_files(TodProc &todproc, const RawObs &rawobs,
+                             const Logger &logger) {
+    logger->info("making apt file from raw nc files");
+    todproc.get_apt_from_files(rawobs);
+}
+
 template <bool IsBeammap, class TodProc, class RawObs, class Logger>
 void configure_observation_calibration(TodProc &todproc, const RawObs &rawobs,
                                        const Logger &logger) {
