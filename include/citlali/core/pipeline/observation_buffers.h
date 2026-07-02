@@ -45,8 +45,7 @@ void allocate_observation_map_buffers(TodProc &todproc,
     todproc.allocate_omb(map_extent, map_coord);
     configure_observation_pixel_contribution_targets(engine);
 
-    if (engine.run_noise &&
-        (!engine.run_coadd || engine.map_method == "jinc")) {
+    if (should_allocate_observation_noise_maps(engine)) {
         logger->info("allocating obs noise maps");
         todproc.allocate_nmb(engine.omb);
     }
