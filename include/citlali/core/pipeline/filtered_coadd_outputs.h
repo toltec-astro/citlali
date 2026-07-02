@@ -3,6 +3,7 @@
 #include <citlali/core/pipeline/map_diagnostics.h>
 #include <citlali/core/pipeline/map_filtering.h>
 #include <citlali/core/pipeline/map_noise_products.h>
+#include <citlali/core/pipeline/map_source_finding.h>
 #include <citlali/core/pipeline/noise_weight_policy.h>
 #include <citlali/core/pipeline/output_policy.h>
 
@@ -59,8 +60,9 @@ template <auto FilteredCoaddMap, class Engine, class Logger>
 void find_filtered_coadd_sources_if_needed(Engine &engine,
                                            const Logger &logger) {
     if (should_find_filtered_coadd_sources(engine)) {
-        logger->info("finding filtered coadded map sources");
-        engine.template find_sources<FilteredCoaddMap>(engine.cmb);
+        find_map_sources_with_log<FilteredCoaddMap>(
+            engine, engine.cmb, logger,
+            "finding filtered coadded map sources");
     }
 }
 
