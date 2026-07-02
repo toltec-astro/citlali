@@ -67,8 +67,8 @@ bool validate_requested_downsample_frequency(const Engine &engine,
 template <class Engine>
 void derive_downsample_factor_from_frequency(Engine &engine) {
     engine.rtcproc.downsampler.factor = std::floor(
-        engine.telescope.fsmp /
-        engine.rtcproc.downsampler.downsampled_freq_Hz);
+        native_sample_rate_hz(engine) /
+        requested_downsample_frequency_hz(engine));
 }
 
 template <class Engine, class Logger>
