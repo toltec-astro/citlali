@@ -15,7 +15,7 @@ bool has_map_center_override(const Engine &engine) {
 
 template <class Engine, class Logger>
 void overwrite_map_center_if_configured(Engine &engine, const Logger &logger) {
-    if (engine.omb.crval_config[0] != 0 && engine.omb.crval_config[1] != 0) {
+    if (has_map_center_override(engine)) {
         logger->info("overwriting map center to ({}, {})",
                      engine.omb.crval_config[0], engine.omb.crval_config[1]);
         const double map_center_ra_rad =
