@@ -15,6 +15,12 @@ void set_observation_output_dir_name(Engine &engine) {
 }
 
 template <class Engine>
+void set_observation_map_output_obsnum(Engine &engine) {
+    engine.omb.obsnums.clear();
+    engine.omb.obsnums.push_back(engine.obsnum);
+}
+
+template <class Engine>
 void configure_observation_output_layout(Engine &engine, int obsnum) {
     set_observation_output_obsnum(engine, obsnum);
     set_observation_output_dir_name(engine);
