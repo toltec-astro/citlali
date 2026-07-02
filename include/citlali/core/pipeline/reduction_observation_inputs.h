@@ -66,7 +66,7 @@ bool prepare_reduction_observation_inputs(
         engine, has_multiple_inputs, logger);
     allocate_reduction_observation_map_buffers_if_needed(
         todproc, map_extents, map_coords, observation_index, logger);
-    update_observation_exposure_time(engine);
+    update_reduction_observation_exposure_time(engine);
     return true;
 }
 
