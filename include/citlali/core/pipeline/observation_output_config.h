@@ -25,8 +25,7 @@ void configure_observation_output_layout(Engine &engine, int obsnum) {
     set_observation_output_obsnum(engine, obsnum);
     set_observation_output_dir_name(engine);
 
-    engine.omb.obsnums.clear();
-    engine.omb.obsnums.push_back(engine.obsnum);
+    set_observation_map_output_obsnum(engine);
 
     if (engine.run_coadd) {
         engine.cmb.obsnums.push_back(engine.obsnum);
