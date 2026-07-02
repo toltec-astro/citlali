@@ -6508,46 +6508,22 @@ void Engine::create_tod_files() {
         if (ptcproc.busy_row_suppression.enabled) {
             const int fill_int = -2147483647;
             const double fill_double = std::numeric_limits<double>::quiet_NaN();
-            netCDF::NcDim n_nws_wbusy_dim = fo.addDim("n_nws_busy_row_suppression", calib.n_nws);
-            netCDF::NcVar nw_ids_v = fo.addVar("weight_busy_row_suppression_network_ids", netCDF::ncInt, n_nws_wbusy_dim);
-            nw_ids_v.putAtt("units", "N/A");
-            nw_ids_v.putAtt("comment", "network IDs corresponding to n_nws_busy_row_suppression axis");
-            std::vector<int> nw_ids(static_cast<std::size_t>(calib.n_nws), fill_int);
-            for (Eigen::Index i = 0; i < calib.n_nws; ++i) {
-                nw_ids[static_cast<std::size_t>(i)] = static_cast<int>(calib.nws(i));
-            }
-            nw_ids_v.putVar(nw_ids.data());
-
-            std::vector<netCDF::NcDim> wbusy_dims = {n_scans_dim, n_nws_wbusy_dim};
-            auto add_wbusy_int = [&](const std::string &name, const std::string &comment) {
-                netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, wbusy_dims);
-                v.putAtt("units", "N/A");
-                v.putAtt("comment", comment);
-                std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
-                                      static_cast<std::size_t>(calib.n_nws), fill_int);
-                v.putVar(init.data());
-            };
-            auto add_wbusy_double = [&](const std::string &name, const std::string &comment) {
-                netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, wbusy_dims);
-                v.putAtt("units", "N/A");
-                v.putAtt("comment", comment);
-                std::vector<double> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
-                                         static_cast<std::size_t>(calib.n_nws), fill_double);
-                v.putVar(init.data());
-            };
-
-            add_wbusy_int("weight_busy_row_suppression_applied",
-                          "1 if busy-row weight suppression was applied to this scan/network block, else 0");
-            add_wbusy_int("weight_busy_row_suppression_busy_network_vetoed",
-                          "1 if this scan/network exceeded the second-pass busy-network veto threshold, else 0");
-            add_wbusy_int("weight_busy_row_suppression_n_candidate_clusters",
-                          "candidate second-pass residual cluster count used by the busy-row suppression rule");
-            add_wbusy_int("weight_busy_row_suppression_n_det_weighted",
-                          "detectors with positive map weight multiplied by the busy-row suppression factor");
-            add_wbusy_double("weight_busy_row_suppression_factor",
-                             "multiplicative factor applied by busy-row suppression to positive detector map weights");
-            add_wbusy_double("weight_busy_row_suppression_max_unflagged_residual_z",
-                             "largest absolute unflagged post-PCA residual z used by the busy-row suppression rule");
+            citlali::pipeline::add_ptcdiag_network_block(
+                fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
+                "n_nws_busy_row_suppression",
+                "weight_busy_row_suppression_network_ids",
+                "network IDs corresponding to n_nws_busy_row_suppression axis",
+                {
+                    {"weight_busy_row_suppression_applied", "1 if busy-row weight suppression was applied to this scan/network block, else 0"},
+                    {"weight_busy_row_suppression_busy_network_vetoed", "1 if this scan/network exceeded the second-pass busy-network veto threshold, else 0"},
+                    {"weight_busy_row_suppression_n_candidate_clusters", "candidate second-pass residual cluster count used by the busy-row suppression rule"},
+                    {"weight_busy_row_suppression_n_det_weighted", "detectors with positive map weight multiplied by the busy-row suppression factor"},
+                },
+                {
+                    {"weight_busy_row_suppression_factor", "multiplicative factor applied by busy-row suppression to positive detector map weights"},
+                    {"weight_busy_row_suppression_max_unflagged_residual_z", "largest absolute unflagged post-PCA residual z used by the busy-row suppression rule"},
+                },
+                fill_int, fill_double);
         }
 
         if (ptcproc.cleaner.adaptive_selector.enabled) {
