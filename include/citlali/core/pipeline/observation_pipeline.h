@@ -36,10 +36,8 @@ void setup_and_run_observation_pipeline(Engine &engine, KidsProc &kidsproc,
                                         const RawObs &rawobs,
                                         const Logger &logger) {
     setup_observation_pipeline(engine, logger);
-
-    if (should_run_observation_tod(engine)) {
-        run_observation_tod_pipeline(engine, kidsproc, rawobs, logger);
-    }
+    run_observation_tod_pipeline_if_needed(
+        engine, kidsproc, rawobs, logger);
 }
 
 }  // namespace citlali::pipeline
