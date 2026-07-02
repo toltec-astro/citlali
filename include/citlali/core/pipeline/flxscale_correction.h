@@ -14,6 +14,11 @@ bool has_flxscale_correction(const FlxscaleCorrection *flxscale_corr) {
     return flxscale_corr != nullptr;
 }
 
+template <class FlxscaleCorrection>
+double flxscale_correction_factor(const FlxscaleCorrection &flxscale_corr) {
+    return flxscale_corr.value();
+}
+
 template <class Engine, class RawObs, class Logger>
 bool apply_flxscale_correction(Engine &engine, const RawObs &rawobs,
                                const Logger &logger) {
