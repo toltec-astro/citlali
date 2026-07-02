@@ -55,7 +55,8 @@ void load_array_properties_table(Engine &engine, const RawObs &rawobs,
     std::vector<std::string> raw_filenames = raw_kids_filepaths(rawobs);
     std::vector<std::string> interfaces = raw_kids_interfaces(rawobs);
 
-    engine.calib.get_apt(apt_path, raw_filenames, interfaces);
+    load_array_properties_table_file(
+        engine, apt_path, raw_filenames, interfaces);
 }
 
 }  // namespace citlali::pipeline
