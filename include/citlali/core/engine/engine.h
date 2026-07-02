@@ -10043,10 +10043,9 @@ void Engine::create_rtcdiag_file() {
         netCDF::NcVar offset_v = fo.addVar("rtc_impulsive_snippet_offset_samples", netCDF::ncInt, n_rtc_impulsive_samples_dim);
         offset_v.putAtt("units", "samples");
         offset_v.putAtt("comment", "sample offsets relative to rtc_impulsive_slot_event_sample");
-        std::vector<int> offsets(n_snippet, fill_int);
-        for (std::size_t i = 0; i < n_snippet; ++i) {
-            offsets[i] = static_cast<int>(i) - static_cast<int>(snippet_pre);
-        }
+        const auto offsets =
+            citlali::pipeline::rtcdiag_impulsive_snippet_offsets(
+                n_snippet, snippet_pre, fill_int);
         offset_v.putVar(offsets.data());
 
         std::vector<netCDF::NcDim> rtc_impulsive_slot_dims = {n_scans_dim, n_nws_rtcdiag_dim, n_rtc_impulsive_slots_dim};

@@ -221,4 +221,13 @@ void add_rtcdiag_network_line_audit_diag(
                 " RTC line candidate met the current bad-detector criteria");
 }
 
+inline std::vector<int> rtcdiag_impulsive_snippet_offsets(
+    std::size_t n_snippet, std::size_t snippet_pre, int fill_value) {
+    std::vector<int> offsets(n_snippet, fill_value);
+    for (std::size_t i=0; i<n_snippet; ++i) {
+        offsets[i] = static_cast<int>(i) - static_cast<int>(snippet_pre);
+    }
+    return offsets;
+}
+
 }  // namespace citlali::pipeline
