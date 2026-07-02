@@ -92,6 +92,7 @@
 #include <citlali/core/pipeline/map_layer_name.h>
 #include <citlali/core/pipeline/map_summary_stats.h>
 #include <citlali/core/pipeline/phdu_extinction.h>
+#include <citlali/core/pipeline/phdu_oof.h>
 #include <citlali/core/pipeline/phdu_telescope_values.h>
 
 #include <citlali/core/engine/io.h>
@@ -7365,17 +7366,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_io->at(i).pfits->pHDU().addKey("APT", apt_name, "APT table used");
     }
 
-    double rms = 0.0;
-
-    if (redu_type != "beammap" && std::isfinite(mb->median_err(i)) &&
-        mb->median_err(i) > std::numeric_limits<double>::epsilon()) {
-        rms = pow(mb->median_err(i), 0.5);
-    }
-    else if (redu_type != "beammap" && std::isfinite(mb->median_err(i)) &&
-             mb->median_err(i) < 0.0) {
-        logger->warn("negative median_err for PHDU {} in {}; using OOF_RMS=0", name,
-                     fits_io->at(i).filepath);
-    }
+    const double rms = citlali::pipeline::phdu_oof_rms(
+        mb, i, redu_type, name, fits_io->at(i).filepath, logger);
 
     // out-of-focus holography parameters
     if (! telescope.sim_obs) {
