@@ -6408,13 +6408,11 @@ void Engine::create_tod_files() {
         const int ptc_stream_fill_int = -2147483647;
         const double ptc_stream_fill_double =
             std::numeric_limits<double>::quiet_NaN();
-        using PtcStreamDiagVars =
-            std::vector<std::pair<std::string, std::string>>;
         auto add_ptc_stream_network_block = [&](
             const std::string &dim_name, const std::string &id_name,
             const std::string &id_comment,
-            const PtcStreamDiagVars &int_vars,
-            const PtcStreamDiagVars &double_vars) {
+            const citlali::pipeline::PtcDiagVarList &int_vars,
+            const citlali::pipeline::PtcDiagVarList &double_vars) {
             citlali::pipeline::add_ptcdiag_network_block(
                 fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
                 dim_name, id_name, id_comment, int_vars, double_vars,
@@ -8913,8 +8911,8 @@ void Engine::create_ptcdiag_file() {
     auto add_network_block = [&](const std::string &dim_name,
                                  const std::string &id_name,
                                  const std::string &id_comment,
-                                 const std::vector<std::pair<std::string, std::string>> &int_vars,
-                                 const std::vector<std::pair<std::string, std::string>> &double_vars) {
+                                 const citlali::pipeline::PtcDiagVarList &int_vars,
+                                 const citlali::pipeline::PtcDiagVarList &double_vars) {
         citlali::pipeline::add_ptcdiag_network_block(
             fo, calib, n_scans_dim, n_scans, dim_name, id_name, id_comment,
             int_vars, double_vars, fill_int, fill_double);
