@@ -12,6 +12,12 @@ bool should_normalize_polarized_raw_coadd_maps(const Engine &engine) {
     return engine.rtcproc.run_polarization;
 }
 
+template <class Engine>
+bool raw_coadd_noise_products_apply_empirical_weights(
+    const Engine &engine) {
+    return engine.apply_empirical_noise_weights;
+}
+
 template <class TodProc, class Logger>
 void prepare_raw_coadd_map_files(TodProc &todproc,
                                  const Logger &logger) {
@@ -38,7 +44,8 @@ void calculate_raw_coadd_noise_products_if_needed(
     Engine &engine, const Logger &logger) {
     if (should_calculate_raw_coadd_noise_products(engine)) {
         logger->info("calculating raw coadd empirical noise products");
-        engine.cmb.calc_noise_products(engine.apply_empirical_noise_weights);
+        engine.cmb.calc_noise_products(
+            raw_coadd_noise_products_apply_empirical_weights(engine));
     }
 }
 
