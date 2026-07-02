@@ -16,6 +16,12 @@ void load_photometry_config(Engine &engine, const RawObs &rawobs) {
     engine.get_photometry_config(rawobs.photometry_calib_info().config());
 }
 
+template <class Engine>
+bool should_make_apt_from_raw_files(const Engine &engine) {
+    return engine.map_grouping == "detector" ||
+           engine.map_grouping == "auto";
+}
+
 template <bool IsBeammap, class TodProc, class RawObs, class Logger>
 void configure_observation_calibration(TodProc &todproc, const RawObs &rawobs,
                                        const Logger &logger) {
