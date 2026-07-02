@@ -24,6 +24,11 @@ bool should_use_raw_hwpr_data(const Engine &engine, const RawObs &rawobs) {
     return has_hwpr_data(rawobs) && !is_hwpr_ignored_by_config(engine);
 }
 
+template <class RawObs>
+std::string hwpr_data_filepath(const RawObs &rawobs) {
+    return rawobs.hwpdata()->filepath();
+}
+
 template <class Engine, class RawObs, class Logger>
 void load_hwpr_data_if_requested(Engine &engine, const RawObs &rawobs,
                                  const Logger &logger) {
