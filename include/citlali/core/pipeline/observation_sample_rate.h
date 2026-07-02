@@ -110,7 +110,7 @@ void apply_downsampled_sample_rate(Engine &engine) {
 
 template <class Engine>
 void apply_native_sample_rate(Engine &engine) {
-    engine.telescope.d_fsmp = engine.telescope.fsmp;
+    engine.telescope.d_fsmp = native_sample_rate_hz(engine);
 }
 
 template <class Engine, class Logger>
