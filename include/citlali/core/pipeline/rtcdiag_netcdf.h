@@ -302,6 +302,16 @@ void add_rtcdiag_network_impulsive_summary_diag(
             "dominant aligned impulsive sample within each RTC network block; -2147483647 means unavailable");
 }
 
+template <class AddDouble>
+void add_rtcdiag_network_common_mode_diag(const AddDouble &add_double) {
+    add_double("rtc_network_cm_low_mid_ratio",
+               "low-band to mid-band common-mode power ratio for each RTC network block");
+    add_double("rtc_network_cm_peak_freq_hz",
+               "frequency of the strongest common-mode spectral peak for each RTC network block");
+    add_double("rtc_network_cm_peak_prominence",
+               "prominence of the strongest common-mode spectral peak for each RTC network block");
+}
+
 inline std::vector<int> rtcdiag_impulsive_snippet_offsets(
     std::size_t n_snippet, std::size_t snippet_pre, int fill_value) {
     std::vector<int> offsets(n_snippet, fill_value);
