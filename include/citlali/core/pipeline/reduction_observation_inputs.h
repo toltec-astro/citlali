@@ -64,7 +64,7 @@ bool prepare_reduction_observation_inputs(
     record_reduction_observation_timing_gaps_if_needed(engine, logger);
     calculate_reduction_observation_scan_indices_if_needed(
         engine, has_multiple_inputs, logger);
-    allocate_observation_map_buffers_if_needed(
+    allocate_reduction_observation_map_buffers_if_needed(
         todproc, map_extents, map_coords, observation_index, logger);
     update_observation_exposure_time(engine);
     return true;
