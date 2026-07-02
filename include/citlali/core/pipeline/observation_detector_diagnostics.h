@@ -15,6 +15,13 @@ void load_tone_frequency_diagnostics(TodProc &todproc, const RawObs &rawobs,
 }
 
 template <class TodProc, class RawObs, class Logger>
+void load_adc_snap_diagnostics(TodProc &todproc, const RawObs &rawobs,
+                               const Logger &logger) {
+    logger->debug("getting adc snap data");
+    todproc.get_adc_snap_from_files(rawobs);
+}
+
+template <class TodProc, class RawObs, class Logger>
 void load_raw_detector_diagnostics(TodProc &todproc, const RawObs &rawobs,
                                    const Logger &logger) {
     load_tone_frequency_diagnostics(todproc, rawobs, logger);
