@@ -9282,28 +9282,9 @@ void Engine::create_ptcdiag_file() {
                                  const std::string &id_comment,
                                  const std::vector<std::pair<std::string, std::string>> &int_vars,
                                  const std::vector<std::pair<std::string, std::string>> &double_vars) {
-        netCDF::NcDim n_nws_dim = fo.addDim(dim_name, calib.n_nws);
-        netCDF::NcVar nw_ids_v = fo.addVar(id_name, netCDF::ncInt, n_nws_dim);
-        nw_ids_v.putAtt("units", "N/A");
-        nw_ids_v.putAtt("comment", id_comment);
-        const auto nw_ids =
-            citlali::pipeline::diagnostic_network_ids(calib, fill_int);
-        nw_ids_v.putVar(nw_ids.data());
-        std::vector<netCDF::NcDim> dims = {n_scans_dim, n_nws_dim};
-        for (const auto &[name, comment] : int_vars) {
-            netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, dims);
-            v.putAtt("units", "N/A");
-            v.putAtt("comment", comment);
-            std::vector<int> init(static_cast<std::size_t>(n_scans) * static_cast<std::size_t>(calib.n_nws), fill_int);
-            v.putVar(init.data());
-        }
-        for (const auto &[name, comment] : double_vars) {
-            netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, dims);
-            v.putAtt("units", "N/A");
-            v.putAtt("comment", comment);
-            std::vector<double> init(static_cast<std::size_t>(n_scans) * static_cast<std::size_t>(calib.n_nws), fill_double);
-            v.putVar(init.data());
-        }
+        citlali::pipeline::add_ptcdiag_network_block(
+            fo, calib, n_scans_dim, n_scans, dim_name, id_name, id_comment,
+            int_vars, double_vars, fill_int, fill_double);
     };
 
     add_network_block(
