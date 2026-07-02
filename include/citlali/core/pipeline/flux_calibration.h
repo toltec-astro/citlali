@@ -7,6 +7,11 @@ decltype(auto) flux_calibration_signal_unit(const Engine &engine) {
     return engine.omb.sig_unit;
 }
 
+template <class Engine>
+decltype(auto) flux_calibration_pixel_size_rad(const Engine &engine) {
+    return engine.omb.pixel_size_rad;
+}
+
 template <class Engine, class Logger>
 void calculate_flux_calibration(Engine &engine, const Logger &logger) {
     logger->info("calculating flux calibration");
