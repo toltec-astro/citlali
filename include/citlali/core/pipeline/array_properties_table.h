@@ -41,8 +41,8 @@ void log_array_properties_table_filepath(const std::string &filepath,
 template <class Engine>
 void load_array_properties_table_file(
     Engine &engine, const std::string &filepath,
-    const std::vector<std::string> &raw_filenames,
-    const std::vector<std::string> &interfaces) {
+    std::vector<std::string> &raw_filenames,
+    std::vector<std::string> &interfaces) {
     engine.calib.get_apt(filepath, raw_filenames, interfaces);
 }
 
