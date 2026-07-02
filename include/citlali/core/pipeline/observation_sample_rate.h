@@ -45,12 +45,13 @@ bool validate_downsample_frequency_positive(const Engine &engine,
 template <class Engine, class Logger>
 bool validate_downsample_frequency_below_sample_rate(
     const Engine &engine, const Logger &logger) {
-    if (requested_downsample_frequency_hz(engine) > engine.telescope.fsmp) {
+    if (requested_downsample_frequency_hz(engine) >
+        native_sample_rate_hz(engine)) {
         logger->error(
             "downsampled freq ({} Hz) must be less than sample rate "
             "({} Hz)",
             requested_downsample_frequency_hz(engine),
-            engine.telescope.fsmp);
+            native_sample_rate_hz(engine));
         return false;
     }
     return true;
