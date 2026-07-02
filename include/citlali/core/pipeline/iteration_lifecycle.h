@@ -94,9 +94,7 @@ void finalize_iteration_outputs(TodProc &todproc, const Logger &logger) {
 
     finalize_fruit_loop_iteration(engine, logger);
 
-    logger->info("making index files");
-    todproc.make_index_file(engine.redu_dir_name);
-
+    make_reduction_iteration_index_file(todproc, logger);
     engine.fruit_iter++;
 }
 
