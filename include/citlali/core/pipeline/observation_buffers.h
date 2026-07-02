@@ -4,6 +4,11 @@
 
 namespace citlali::pipeline {
 
+template <class Engine>
+bool should_allocate_observation_map_buffers(const Engine &engine) {
+    return engine.run_mapmaking;
+}
+
 template <class TodProc, class MapExtent, class MapCoord, class Logger>
 void allocate_observation_map_buffers(TodProc &todproc,
                                       MapExtent &map_extent,
