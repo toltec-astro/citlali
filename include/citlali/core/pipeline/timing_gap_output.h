@@ -52,7 +52,7 @@ void record_timing_gaps_if_needed(const Engine &engine, const Logger &logger) {
             write_timing_gaps_log_header(f);
             for (auto const &[key, val] : engine.gaps) {
                 log_timing_gap_entry(key, val, logger);
-                f << "-" + key + " gaps: " << val << "\n";
+                write_timing_gap_entry(f, key, val);
             }
             f.close();
         }
