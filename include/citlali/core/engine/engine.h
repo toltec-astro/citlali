@@ -101,6 +101,7 @@
 #include <citlali/core/pipeline/phdu_oof.h>
 #include <citlali/core/pipeline/phdu_telescope_values.h>
 #include <citlali/core/pipeline/ptcdiag_netcdf.h>
+#include <citlali/core/pipeline/rtcdiag_netcdf.h>
 #include <citlali/core/pipeline/string_join.h>
 
 #include <citlali/core/engine/io.h>
@@ -9458,10 +9459,8 @@ void Engine::create_rtcdiag_file() {
     netCDF::NcVar array_ids_v = fo.addVar("rtc_diag_array_ids", netCDF::ncInt, n_arrays_dim);
     array_ids_v.putAtt("units", "N/A");
     array_ids_v.putAtt("comment", "array IDs corresponding to n_arrays axis");
-    std::vector<int> array_ids(static_cast<std::size_t>(calib.n_arrays), fill_int);
-    for (Eigen::Index i = 0; i < calib.n_arrays; ++i) {
-        array_ids[static_cast<std::size_t>(i)] = static_cast<int>(calib.arrays(i));
-    }
+    const auto array_ids =
+        citlali::pipeline::diagnostic_array_ids(calib, fill_int);
     array_ids_v.putVar(array_ids.data());
 
     auto percentile_sorted = [](const std::vector<double> &sorted_values, double pct) {
