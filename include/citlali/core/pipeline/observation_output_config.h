@@ -38,7 +38,7 @@ void configure_observation_output_layout(Engine &engine, int obsnum) {
     set_observation_map_output_obsnum(engine);
 
     if (should_record_coadd_output_obsnum(engine)) {
-        engine.cmb.obsnums.push_back(engine.obsnum);
+        record_coadd_output_obsnum(engine);
     }
 }
 
