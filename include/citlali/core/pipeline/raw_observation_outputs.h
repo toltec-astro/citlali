@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/pipeline/map_noise_products.h>
 #include <citlali/core/pipeline/noise_weight_policy.h>
 
 namespace citlali::pipeline {
@@ -26,9 +27,10 @@ template <class Engine, class Logger>
 void calculate_raw_observation_noise_products_if_needed(
     Engine &engine, const Logger &logger) {
     if (should_calculate_raw_observation_noise_products(engine)) {
-        logger->info("calculating raw obs empirical noise products");
-        engine.omb.calc_noise_products(
-            raw_observation_noise_products_apply_empirical_weights(engine));
+        calculate_map_noise_products_with_log(
+            engine.omb,
+            raw_observation_noise_products_apply_empirical_weights(engine),
+            logger, "calculating raw obs empirical noise products");
     }
 }
 
