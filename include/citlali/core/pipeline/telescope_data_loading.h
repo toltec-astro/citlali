@@ -1,7 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/map_center_override.h>
-#include <citlali/core/pipeline/simulated_observation_indices.h>
+#include <citlali/core/pipeline/telescope_timestream_alignment.h>
 
 #include <string>
 
@@ -12,52 +12,11 @@ std::string telescope_data_filepath(const RawObs &rawobs) {
     return rawobs.teldata().filepath();
 }
 
-template <class Engine>
-bool should_align_telescope_timestreams(const Engine &engine) {
-    return !engine.telescope.sim_obs;
-}
-
-template <class Engine>
-bool should_interpolate_over_timing_gaps(const Engine &engine) {
-    return engine.interp_over_gaps;
-}
-
 template <class Engine, class Logger>
 void load_telescope_data_file(Engine &engine, std::string filepath,
                               const Logger &logger) {
     logger->info("getting telescope file {}", filepath);
     engine.telescope.get_tel_data(filepath);
-}
-
-template <class TodProc, class RawObs>
-void align_telescope_timestreams_over_gaps(TodProc &todproc,
-                                           const RawObs &rawobs) {
-    todproc.align_timestreams_gaps(rawobs);
-}
-
-template <class TodProc, class RawObs>
-void align_telescope_timestreams_direct(TodProc &todproc,
-                                        const RawObs &rawobs) {
-    todproc.align_timestreams(rawobs);
-}
-
-template <class TodProc, class RawObs, class Logger>
-void align_telescope_timestreams(TodProc &todproc, const RawObs &rawobs,
-                                 const Logger &logger) {
-    auto &engine = todproc.engine();
-
-    logger->info("aligning timestreams");
-    if (should_interpolate_over_timing_gaps(engine)) {
-        align_telescope_timestreams_over_gaps(todproc, rawobs);
-    }
-    else {
-        align_telescope_timestreams_direct(todproc, rawobs);
-    }
-}
-
-template <class Engine, class RawObs>
-void reset_simulated_telescope_indices(Engine &engine, const RawObs &rawobs) {
-    reset_simulated_observation_indices(engine, rawobs);
 }
 
 template <class TodProc, class RawObs, class Logger>
