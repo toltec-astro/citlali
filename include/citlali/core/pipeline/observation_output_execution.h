@@ -33,7 +33,7 @@ void write_observation_outputs_and_accumulate(TodProc &todproc,
     write_raw_observation_outputs<RawObsMap>(todproc, logger);
 
     if (should_accumulate_observation_coadd(engine)) {
-        coadd_observation(todproc, logger);
+        write_coadded_observation_outputs(todproc, logger);
     }
     else {
         write_noncoadded_observation_outputs<FilteredObsMap, FitMaps>(
