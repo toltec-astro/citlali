@@ -70,8 +70,7 @@ void allocate_observation_map_buffers(TodProc &todproc,
     configure_observation_pixel_contribution_targets(engine);
 
     if (should_allocate_observation_noise_maps(engine)) {
-        logger->info("allocating obs noise maps");
-        todproc.allocate_nmb(engine.omb);
+        allocate_observation_noise_map_buffer(todproc, logger);
     }
 }
 
