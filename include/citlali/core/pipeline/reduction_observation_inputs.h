@@ -48,7 +48,7 @@ bool prepare_reduction_observation_inputs(
         return false;
     }
 
-    if (!configure_effective_sample_rate(engine, logger)) {
+    if (!prepare_reduction_observation_sample_rate(engine, logger)) {
         return false;
     }
 
