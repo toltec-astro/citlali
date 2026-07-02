@@ -60,10 +60,9 @@ template <auto FilteredMap, class Engine, class MapBuffer, class Logger>
 void find_filtered_map_sources_if_needed(
     Engine &engine, MapBuffer &map_buffer, const Logger &logger,
     const char *log_message) {
-    if (should_find_filtered_map_sources(engine)) {
-        find_map_sources_with_log<FilteredMap>(
-            engine, map_buffer, logger, log_message);
-    }
+    find_map_sources_if_needed<FilteredMap>(
+        engine, map_buffer, logger, should_find_filtered_map_sources(engine),
+        log_message);
 }
 
 template <auto FilteredMap, class Engine, class Logger>
