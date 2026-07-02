@@ -17,6 +17,12 @@ bool should_find_filtered_observation_sources(const Engine &engine) {
     return engine.run_source_finder;
 }
 
+template <class Engine>
+bool filtered_observation_maps_written_during_filtering(
+    const Engine &engine) {
+    return engine.write_filtered_maps_partial;
+}
+
 template <auto FilteredObsMap, class Engine, class Logger>
 void filter_observation_maps(Engine &engine, const Logger &logger) {
     logger->info("filtering obs maps");
