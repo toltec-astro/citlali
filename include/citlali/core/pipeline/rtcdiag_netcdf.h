@@ -270,4 +270,18 @@ inline void add_rtcdiag_impulsive_snippet_double(
     v.putVar(init.data());
 }
 
+inline void add_rtcdiag_impulsive_snippet_int(
+    netCDF::NcFile &fo, const std::string &name,
+    const std::string &comment,
+    const std::vector<netCDF::NcDim> &snippet_dims,
+    const std::vector<std::size_t> &snippet_chunks, std::size_t n_values,
+    int fill_value) {
+    netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, snippet_dims);
+    v.putAtt("units", "N/A");
+    v.putAtt("comment", comment);
+    set_netcdf_chunking_and_compression(v, snippet_chunks, 1);
+    std::vector<int> init(n_values, fill_value);
+    v.putVar(init.data());
+}
+
 }  // namespace citlali::pipeline

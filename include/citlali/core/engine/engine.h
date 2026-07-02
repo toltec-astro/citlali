@@ -10077,13 +10077,10 @@ void Engine::create_rtcdiag_file() {
                 fill_double);
         };
         auto add_rtc_imp_snip_int = [&](const std::string &name, const std::string &comment) {
-            netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_impulsive_snippet_dims);
-            v.putAtt("units", "N/A");
-            v.putAtt("comment", comment);
-            set_netcdf_chunking_and_compression(v, rtc_impulsive_snippet_chunks, 1);
-            std::vector<int> init(static_cast<std::size_t>(n_scans) *
-                                  static_cast<std::size_t>(calib.n_nws) * n_slots * n_snippet, fill_int);
-            v.putVar(init.data());
+            citlali::pipeline::add_rtcdiag_impulsive_snippet_int(
+                fo, name, comment, rtc_impulsive_snippet_dims,
+                rtc_impulsive_snippet_chunks, n_rtc_impulsive_snippet_values,
+                fill_int);
         };
 
         add_rtc_imp_slot_int("rtc_impulsive_slot_det_index",
