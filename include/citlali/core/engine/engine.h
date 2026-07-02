@@ -9758,11 +9758,7 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "CONFIG.RTC.LINE_AUDIT.DETECTOR_NOTCH_CONTEXT_SAMPLES", rtcproc.line_audit.detector_notch_context_samples);
     add_netcdf_var(fo, "CONFIG.INV_VAR.WINDOW_SEC", rtcproc.remove_bad_dets_window_sec);
 
-    for (auto const &x : calib.apt) {
-        netCDF::NcVar apt_v = fo.addVar("apt_" + x.first, netCDF::ncDouble, n_dets_dim);
-        apt_v.putAtt("units", calib.apt_header_units[x.first]);
-        apt_v.putVar(x.second.data());
-    }
+    citlali::pipeline::add_rtcdiag_apt_double_vars(fo, calib, n_dets_dim);
 
     std::vector<netCDF::NcDim> rtc_det_dims = {n_scans_dim, n_dets_dim};
     auto add_rtc_det_double = [&](const std::string &name, const std::string &comment) {

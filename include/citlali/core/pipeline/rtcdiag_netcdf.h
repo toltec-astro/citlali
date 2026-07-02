@@ -42,6 +42,17 @@ void add_rtcdiag_network_ids(netCDF::NcFile &fo, const Calib &calib,
     nw_ids_v.putVar(nw_ids.data());
 }
 
+template <class Calib>
+void add_rtcdiag_apt_double_vars(netCDF::NcFile &fo, Calib &calib,
+                                 netCDF::NcDim n_dets_dim) {
+    for (auto const &x : calib.apt) {
+        netCDF::NcVar apt_v =
+            fo.addVar("apt_" + x.first, netCDF::ncDouble, n_dets_dim);
+        apt_v.putAtt("units", calib.apt_header_units[x.first]);
+        apt_v.putVar(x.second.data());
+    }
+}
+
 inline double rtcdiag_percentile_sorted(
     const std::vector<double> &sorted_values, double pct) {
     if (sorted_values.empty()) {
