@@ -272,6 +272,21 @@ void add_rtcdiag_network_line_audit_diag(
                 " RTC line candidate met the current bad-detector criteria");
 }
 
+template <class AddInt, class AddDouble>
+void add_rtcdiag_network_step_summary_diag(const AddInt &add_int,
+                                           const AddDouble &add_double) {
+    add_double("rtc_network_step_score_median",
+               "median detector step score within each RTC network block");
+    add_double("rtc_network_step_score_max",
+               "maximum detector step score within each RTC network block");
+    add_double("rtc_network_step_det_frac",
+               "fraction of diagnostic-used detectors with strong step-like score in each RTC network block");
+    add_double("rtc_network_step_alignment_frac",
+               "fraction of strong-step detectors aligned in the dominant step-time cluster");
+    add_int("rtc_network_step_dominant_sample",
+            "dominant aligned step sample within each RTC network block; -2147483647 means unavailable");
+}
+
 inline std::vector<int> rtcdiag_impulsive_snippet_offsets(
     std::size_t n_snippet, std::size_t snippet_pre, int fill_value) {
     std::vector<int> offsets(n_snippet, fill_value);

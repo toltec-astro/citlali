@@ -9902,16 +9902,8 @@ void Engine::create_rtcdiag_file() {
     citlali::pipeline::add_rtcdiag_network_line_audit_diag(
         add_rtc_nw_int, add_rtc_nw_double, "rtc_network_post_line_audit",
         "post-filter");
-    add_rtc_nw_double("rtc_network_step_score_median",
-                      "median detector step score within each RTC network block");
-    add_rtc_nw_double("rtc_network_step_score_max",
-                      "maximum detector step score within each RTC network block");
-    add_rtc_nw_double("rtc_network_step_det_frac",
-                      "fraction of diagnostic-used detectors with strong step-like score in each RTC network block");
-    add_rtc_nw_double("rtc_network_step_alignment_frac",
-                      "fraction of strong-step detectors aligned in the dominant step-time cluster");
-    add_rtc_nw_int("rtc_network_step_dominant_sample",
-                   "dominant aligned step sample within each RTC network block; -2147483647 means unavailable");
+    citlali::pipeline::add_rtcdiag_network_step_summary_diag(
+        add_rtc_nw_int, add_rtc_nw_double);
     add_rtc_nw_double("rtc_network_impulsive_score_median",
                       "median detector impulsive-event score within each RTC network block");
     add_rtc_nw_double("rtc_network_impulsive_score_max",
