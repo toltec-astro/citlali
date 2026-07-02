@@ -9140,14 +9140,8 @@ void Engine::create_ptcdiag_file() {
         v.putVar(values.data());
     };
     auto apt_int_values = [&](const std::string &key) {
-        std::vector<int> values(static_cast<std::size_t>(calib.n_dets), fill_int);
-        auto it = calib.apt.find(key);
-        if (it != calib.apt.end() && it->second.size() == calib.n_dets) {
-            for (Eigen::Index i = 0; i < calib.n_dets; ++i) {
-                values[static_cast<std::size_t>(i)] = static_cast<int>(std::lround(it->second(i)));
-            }
-        }
-        return values;
+        return citlali::pipeline::ptcdiag_apt_int_values(
+            calib, key, fill_int);
     };
     add_det_meta_int("ptc_diag_uid", "detector UID along n_dets", apt_int_values("uid"));
     add_det_meta_int("ptc_diag_array", "array index along n_dets", apt_int_values("array"));
