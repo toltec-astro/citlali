@@ -210,4 +210,15 @@ inline PtcDiagVarList ptcdiag_adaptive_pca_double_vars() {
     };
 }
 
+inline PtcDiagVarList ptcdiag_second_pass_double_vars() {
+    return {
+        {"ptc_second_pass_existing_flagged_fraction", "fraction of detector-samples already flagged before the PTC second pass in this scan/network"},
+        {"ptc_second_pass_proposed_flagged_fraction", "fraction of detector-samples that the accepted PTC second-pass flags would cover in this scan/network"},
+        {"ptc_second_pass_newly_flagged_fraction", "fraction of previously good detector-samples newly flagged by the PTC second pass in this scan/network"},
+        {"ptc_second_pass_max_unflagged_residual_z", "largest absolute standardized residual remaining on previously unflagged PTC samples in this scan/network"},
+        {"ptc_second_pass_top_candidate_cluster_peak_score", "peak event score of the strongest candidate second-pass cluster in this scan/network"},
+        {"ptc_second_pass_top_event_score", "score of the strongest accepted second-pass event; NaN means none"},
+    };
+}
+
 }  // namespace citlali::pipeline
