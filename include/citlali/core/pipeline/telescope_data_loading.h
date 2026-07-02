@@ -29,6 +29,12 @@ void load_telescope_data_file(Engine &engine, const std::string &filepath,
     engine.telescope.get_tel_data(filepath);
 }
 
+template <class TodProc, class RawObs>
+void align_telescope_timestreams_over_gaps(TodProc &todproc,
+                                           const RawObs &rawobs) {
+    todproc.align_timestreams_gaps(rawobs);
+}
+
 template <class TodProc, class RawObs, class Logger>
 void load_and_align_telescope_data(TodProc &todproc, const RawObs &rawobs,
                                    const Logger &logger) {
