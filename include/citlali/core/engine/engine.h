@@ -88,6 +88,7 @@
 #else
 #include <citlali/core/mapmaking/wiener_filter.h>
 #endif
+#include <citlali/core/pipeline/map_filename.h>
 #include <citlali/core/pipeline/map_summary_stats.h>
 
 #include <citlali/core/engine/io.h>
@@ -7082,31 +7083,8 @@ void Engine::write_map_summary(map_buffer_t &mb) {
 
 template <mapmaking::MapType map_t, engine_utils::toltecIO::DataType data_t, engine_utils::toltecIO::ProdType prod_t>
 auto Engine::setup_filenames(std::string dir_name) {
-
-    std::string filename;
-
-    // raw obs maps
-    if constexpr (map_t == mapmaking::RawObs) {
-        filename = toltec_io.create_filename<data_t, prod_t, engine_utils::toltecIO::raw>
-                   (dir_name, redu_type, "", obsnum, telescope.sim_obs);
-    }
-    // filtered obs maps
-    else if constexpr (map_t == mapmaking::FilteredObs) {
-        filename = toltec_io.create_filename<data_t, prod_t, engine_utils::toltecIO::filtered>
-                   (dir_name, redu_type, "", obsnum, telescope.sim_obs);
-    }
-    // raw coadded maps
-    else if constexpr (map_t == mapmaking::RawCoadd) {
-        filename = toltec_io.create_filename<data_t, prod_t, engine_utils::toltecIO::raw>
-                   (dir_name, "", "", "", telescope.sim_obs);
-    }
-    // filtered coadded maps
-    else if constexpr (map_t == mapmaking::FilteredCoadd) {
-        filename = toltec_io.create_filename<data_t, prod_t, engine_utils::toltecIO::filtered>
-                   (dir_name, "", "", "", telescope.sim_obs);
-    }
-
-    return filename;
+    return citlali::pipeline::map_output_filename<map_t, data_t, prod_t>(
+        toltec_io, dir_name, redu_type, obsnum, telescope.sim_obs);
 }
 
 auto Engine::get_map_name(int i) {
