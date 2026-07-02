@@ -70,9 +70,7 @@ bool configure_effective_sample_rate(Engine &engine, const Logger &logger) {
             }
             derive_downsample_factor_from_frequency(engine);
         }
-        if (engine.rtcproc.downsampler.factor <= 0) {
-            logger->error("downsample factor ({}) must be > 0",
-                          engine.rtcproc.downsampler.factor);
+        if (!validate_downsample_factor(engine, logger)) {
             return false;
         }
 
