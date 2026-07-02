@@ -6405,6 +6405,9 @@ void Engine::create_tod_files() {
         std::vector<netCDF::NcDim> weight_dims = {n_scans_dim, n_dets_dim};
         netCDF::NcVar weights_v = fo.addVar("weights",netCDF::ncDouble, weight_dims);
         weights_v.putAtt("units","("+omb.sig_unit+")^-2");
+        const int ptc_stream_fill_int = -2147483647;
+        const double ptc_stream_fill_double =
+            std::numeric_limits<double>::quiet_NaN();
 
         if (ptcproc.second_pass_local.enabled) {
             netCDF::NcVar added_flag_v = fo.addVar("ptc_second_pass_added_flag", netCDF::ncByte, dims);
@@ -6413,8 +6416,6 @@ void Engine::create_tod_files() {
                                 "0=not added by PTC second-pass residual deglitching, 1=newly flagged by that pass");
             added_flag_v.setChunking(chunkMode, chunkSizes);
 
-            const int fill_value = -2147483647;
-            const double fill_double = std::numeric_limits<double>::quiet_NaN();
             citlali::pipeline::add_ptcdiag_network_block(
                 fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
                 "n_nws_ptc_second_pass", "ptc_second_pass_network_ids",
@@ -6442,7 +6443,7 @@ void Engine::create_tod_files() {
                     {"ptc_second_pass_top_candidate_cluster_peak_score", "peak event score of the strongest candidate second-pass cluster in this scan/network"},
                     {"ptc_second_pass_top_event_score", "score of the strongest accepted second-pass event; NaN means none"},
                 },
-                fill_value, fill_double);
+                ptc_stream_fill_int, ptc_stream_fill_double);
         }
 
         // optional diagnostics for correlation-defined network cleaning groups
@@ -6454,14 +6455,13 @@ void Engine::create_tod_files() {
             }
         }
         if (ptcproc.cleaner.corr_grouping.enabled && corr_nw_requested) {
-            const int fill_value = -2147483647;
             std::vector<netCDF::NcDim> corr_det_dims = {n_scans_dim, n_dets_dim};
             netCDF::NcVar corr_group_id_v = fo.addVar("corr_nw_group_id", netCDF::ncInt, corr_det_dims);
             corr_group_id_v.putAtt("units", "N/A");
             corr_group_id_v.putAtt("comment",
                                    "corr_nw group index for each detector in each output scan; -2147483647 means not assigned");
             std::vector<int> corr_group_init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
-                                             static_cast<std::size_t>(calib.n_dets), fill_value);
+                                             static_cast<std::size_t>(calib.n_dets), ptc_stream_fill_int);
             corr_group_id_v.putVar(corr_group_init.data());
 
             citlali::pipeline::add_ptcdiag_network_block(
@@ -6478,12 +6478,10 @@ void Engine::create_tod_files() {
                     {"corr_nw_n_det_ungrouped", "detectors excluded from final cleaned corr_nw groups"},
                     {"corr_nw_sample_step", "time decimation factor used for corr_nw grouping"},
                 },
-                {}, fill_value, std::numeric_limits<double>::quiet_NaN());
+                {}, ptc_stream_fill_int, ptc_stream_fill_double);
         }
 
         if (ptcproc.weight_corr_penalty.enabled) {
-            const int fill_int = -2147483647;
-            const double fill_double = std::numeric_limits<double>::quiet_NaN();
             citlali::pipeline::add_ptcdiag_network_block(
                 fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
                 "n_nws_wcorr", "weight_corr_penalty_network_ids",
@@ -6502,12 +6500,10 @@ void Engine::create_tod_files() {
                     {"weight_corr_penalty_cm_el_abs_corr", "absolute correlation between network common mode and TelElAct"},
                     {"weight_corr_penalty_cm_low_mid_ratio", "common-mode low/mid bandpower ratio"},
                 },
-                fill_int, fill_double);
+                ptc_stream_fill_int, ptc_stream_fill_double);
         }
 
         if (ptcproc.busy_row_suppression.enabled) {
-            const int fill_int = -2147483647;
-            const double fill_double = std::numeric_limits<double>::quiet_NaN();
             citlali::pipeline::add_ptcdiag_network_block(
                 fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
                 "n_nws_busy_row_suppression",
@@ -6523,12 +6519,10 @@ void Engine::create_tod_files() {
                     {"weight_busy_row_suppression_factor", "multiplicative factor applied by busy-row suppression to positive detector map weights"},
                     {"weight_busy_row_suppression_max_unflagged_residual_z", "largest absolute unflagged post-PCA residual z used by the busy-row suppression rule"},
                 },
-                fill_int, fill_double);
+                ptc_stream_fill_int, ptc_stream_fill_double);
         }
 
         if (ptcproc.cleaner.adaptive_selector.enabled) {
-            const int fill_int = -2147483647;
-            const double fill_double = std::numeric_limits<double>::quiet_NaN();
             citlali::pipeline::add_ptcdiag_network_block(
                 fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
                 "n_nws_adaptive_pca", "adaptive_pca_network_ids",
@@ -6557,7 +6551,7 @@ void Engine::create_tod_files() {
                     {"adaptive_pca_candidate_eval_msec", "milliseconds spent scoring candidate PCA cuts after eigen solve"},
                     {"adaptive_pca_total_msec", "total adaptive PCA milliseconds for this scan/network block"},
                 },
-                fill_int, fill_double);
+                ptc_stream_fill_int, ptc_stream_fill_double);
         }
     }
 
