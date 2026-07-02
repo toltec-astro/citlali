@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/pipeline/noise_weight_policy.h>
 #include <citlali/core/pipeline/output_policy.h>
 
 namespace citlali::pipeline {
@@ -26,8 +27,7 @@ bool filtered_observation_maps_written_during_filtering(
 template <class Engine>
 bool filtered_observation_noise_products_apply_empirical_weights(
     const Engine &engine) {
-    return engine.apply_empirical_noise_weights ||
-           engine.wiener_filter.normalize_error;
+    return filtered_noise_products_apply_empirical_weights(engine);
 }
 
 template <auto FilteredObsMap, class Engine, class Logger>
