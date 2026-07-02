@@ -38,6 +38,13 @@ bool validate_downsample_frequency_below_sample_rate(
 }
 
 template <class Engine, class Logger>
+bool validate_requested_downsample_frequency(const Engine &engine,
+                                             const Logger &logger) {
+    return validate_downsample_frequency_positive(engine, logger) &&
+           validate_downsample_frequency_below_sample_rate(engine, logger);
+}
+
+template <class Engine, class Logger>
 bool configure_effective_sample_rate(Engine &engine, const Logger &logger) {
     if (engine.rtcproc.run_downsample) {
         if (downsample_factor_requires_frequency(engine)) {
