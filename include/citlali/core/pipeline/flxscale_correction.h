@@ -28,6 +28,16 @@ bool has_apt_flxscale_column(const Engine &engine) {
     return engine.calib.apt.count("flxscale") != 0;
 }
 
+template <class RawObs, class Logger>
+void log_invalid_flxscale_correction_factor(double factor,
+                                            const RawObs &rawobs,
+                                            const Logger &logger) {
+    logger->error(
+        "invalid flxscale_correction={} for observation {}; "
+        "factor must be finite and > 0",
+        factor, rawobs.name());
+}
+
 template <class Engine, class RawObs, class Logger>
 bool apply_flxscale_correction(Engine &engine, const RawObs &rawobs,
                                const Logger &logger) {
