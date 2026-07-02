@@ -26,6 +26,12 @@ void configure_observation_pixel_contribution_targets(Engine &engine) {
     engine.configure_map_pixel_contribution_targets(engine.omb, "raw_obs");
 }
 
+template <class Engine>
+bool should_allocate_observation_noise_maps(const Engine &engine) {
+    return engine.run_noise &&
+           (!engine.run_coadd || engine.map_method == "jinc");
+}
+
 template <class TodProc, class MapExtent, class MapCoord, class Logger>
 void allocate_observation_map_buffers(TodProc &todproc,
                                       MapExtent &map_extent,
