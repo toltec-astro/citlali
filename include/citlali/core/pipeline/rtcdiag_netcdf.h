@@ -230,4 +230,17 @@ inline std::vector<int> rtcdiag_impulsive_snippet_offsets(
     return offsets;
 }
 
+inline void add_rtcdiag_impulsive_slot_double(
+    netCDF::NcFile &fo, const std::string &name,
+    const std::string &comment, const std::vector<netCDF::NcDim> &slot_dims,
+    const std::vector<std::size_t> &slot_chunks, std::size_t n_values,
+    double fill_value) {
+    netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, slot_dims);
+    v.putAtt("units", "N/A");
+    v.putAtt("comment", comment);
+    set_netcdf_chunking_and_compression(v, slot_chunks, 1);
+    std::vector<double> init(n_values, fill_value);
+    v.putVar(init.data());
+}
+
 }  // namespace citlali::pipeline

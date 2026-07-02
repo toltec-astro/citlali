@@ -10052,15 +10052,15 @@ void Engine::create_rtcdiag_file() {
         std::vector<netCDF::NcDim> rtc_impulsive_snippet_dims = {n_scans_dim, n_nws_rtcdiag_dim, n_rtc_impulsive_slots_dim, n_rtc_impulsive_samples_dim};
         const std::vector<std::size_t> rtc_impulsive_slot_chunks = {1, TULA_SIZET(calib.n_nws), n_slots};
         const std::vector<std::size_t> rtc_impulsive_snippet_chunks = {1, TULA_SIZET(calib.n_nws), n_slots, n_snippet};
+        const auto n_rtc_impulsive_slot_values =
+            static_cast<std::size_t>(n_scans) *
+            static_cast<std::size_t>(calib.n_nws) * n_slots;
 
         auto add_rtc_imp_slot_double = [&](const std::string &name, const std::string &comment) {
-            netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, rtc_impulsive_slot_dims);
-            v.putAtt("units", "N/A");
-            v.putAtt("comment", comment);
-            set_netcdf_chunking_and_compression(v, rtc_impulsive_slot_chunks, 1);
-            std::vector<double> init(static_cast<std::size_t>(n_scans) *
-                                     static_cast<std::size_t>(calib.n_nws) * n_slots, fill_double);
-            v.putVar(init.data());
+            citlali::pipeline::add_rtcdiag_impulsive_slot_double(
+                fo, name, comment, rtc_impulsive_slot_dims,
+                rtc_impulsive_slot_chunks, n_rtc_impulsive_slot_values,
+                fill_double);
         };
         auto add_rtc_imp_slot_int = [&](const std::string &name, const std::string &comment) {
             netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, rtc_impulsive_slot_dims);
