@@ -35,7 +35,7 @@ void load_hwpr_data_if_requested(Engine &engine, const RawObs &rawobs,
     if (should_load_hwpr_for_polarization(engine)) {
         std::string hwpr_filepath;
         if (should_use_raw_hwpr_data(engine, rawobs)) {
-            hwpr_filepath = rawobs.hwpdata()->filepath();
+            hwpr_filepath = hwpr_data_filepath(rawobs);
             if (hwpr_filepath != "null") {
                 logger->info("getting hwpr file {}", hwpr_filepath);
                 engine.calib.get_hwpr(hwpr_filepath, engine.telescope.sim_obs);
