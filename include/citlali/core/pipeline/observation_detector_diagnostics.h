@@ -14,4 +14,10 @@ void load_raw_detector_diagnostics(TodProc &todproc, const RawObs &rawobs,
     }
 }
 
+template <class TodProc, class RawObs, class Logger>
+void load_reduction_observation_detector_diagnostics(
+    TodProc &todproc, const RawObs &rawobs, const Logger &logger) {
+    load_raw_detector_diagnostics(todproc, rawobs, logger);
+}
+
 }  // namespace citlali::pipeline
