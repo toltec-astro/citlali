@@ -17,7 +17,7 @@ void load_and_align_telescope_data(TodProc &todproc, const RawObs &rawobs,
                                    const Logger &logger) {
     auto &engine = todproc.engine();
 
-    auto tel_path = rawobs.teldata().filepath();
+    auto tel_path = telescope_data_filepath(rawobs);
     logger->info("getting telescope file {}", tel_path);
     engine.telescope.get_tel_data(tel_path);
 
