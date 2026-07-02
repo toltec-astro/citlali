@@ -9015,24 +9015,20 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     put_string_1d(fo, "coadd_dateobs", n_obsnums_dim, dateobs_strings, "DATEOBS ordering matching coadd_obsnum");
 
     auto add_map_double = [&](const std::string &name, const std::string &comment, const std::vector<double> &values) {
-        netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, n_maps_dim);
-        v.putAtt("comment", comment);
-        v.putVar(values.data());
+        citlali::pipeline::add_mapdiag_double_1d(
+            fo, name, comment, n_maps_dim, values);
     };
     auto add_map_int = [&](const std::string &name, const std::string &comment, const std::vector<int> &values) {
-        netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, n_maps_dim);
-        v.putAtt("comment", comment);
-        v.putVar(values.data());
+        citlali::pipeline::add_mapdiag_int_1d(
+            fo, name, comment, n_maps_dim, values);
     };
     auto add_map_obs_double = [&](const std::string &name, const std::string &comment, const std::vector<double> &values) {
-        netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, map_obs_dims);
-        v.putAtt("comment", comment);
-        v.putVar(values.data());
+        citlali::pipeline::add_mapdiag_double_2d(
+            fo, name, comment, map_obs_dims, values);
     };
     auto add_map_obs_int = [&](const std::string &name, const std::string &comment, const std::vector<int> &values) {
-        netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, map_obs_dims);
-        v.putAtt("comment", comment);
-        v.putVar(values.data());
+        citlali::pipeline::add_mapdiag_int_2d(
+            fo, name, comment, map_obs_dims, values);
     };
 
     add_map_double("map_median_err", "median error derived from the map weight product", median_err);
