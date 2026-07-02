@@ -18,4 +18,10 @@ void calculate_scan_indices_if_needed(Engine &engine, bool should_calculate,
     calculate_scan_indices(engine, logger);
 }
 
+template <class Engine, class Logger>
+void calculate_reduction_observation_scan_indices_if_needed(
+    Engine &engine, bool should_calculate, const Logger &logger) {
+    calculate_scan_indices_if_needed(engine, should_calculate, logger);
+}
+
 }  // namespace citlali::pipeline
