@@ -32,6 +32,13 @@ bool should_allocate_observation_noise_maps(const Engine &engine) {
            (!engine.run_coadd || engine.map_method == "jinc");
 }
 
+template <class TodProc, class Logger>
+void calculate_observation_map_count(TodProc &todproc,
+                                     const Logger &logger) {
+    logger->info("calculating number of maps");
+    todproc.calc_map_num();
+}
+
 template <class TodProc, class MapExtent, class MapCoord, class Logger>
 void allocate_observation_map_buffers(TodProc &todproc,
                                       MapExtent &map_extent,
