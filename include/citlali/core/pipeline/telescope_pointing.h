@@ -28,4 +28,12 @@ void load_and_point_telescope_data_if_needed(TodProc &todproc,
     calculate_telescope_pointing(todproc, logger);
 }
 
+template <class TodProc, class RawObs, class Logger>
+void load_and_point_reduction_observation_telescope_data_if_needed(
+    TodProc &todproc, const RawObs &rawobs, bool should_load,
+    const Logger &logger) {
+    load_and_point_telescope_data_if_needed(
+        todproc, rawobs, should_load, logger);
+}
+
 }  // namespace citlali::pipeline
