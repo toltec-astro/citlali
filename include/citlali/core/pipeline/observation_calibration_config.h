@@ -24,7 +24,7 @@ void configure_observation_calibration(TodProc &todproc, const RawObs &rawobs,
     load_astrometry_config(engine, rawobs, logger);
 
     if constexpr (IsBeammap) {
-        engine.get_photometry_config(rawobs.photometry_calib_info().config());
+        load_photometry_config(engine, rawobs);
         if (engine.map_grouping == "detector" ||
             engine.map_grouping == "auto") {
             logger->info("making apt file from raw nc files");
