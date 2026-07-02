@@ -62,7 +62,8 @@ bool prepare_reduction_observation_inputs(
     append_reduction_observation_date(
         engine, std::forward<DateObs>(date_obs));
     record_reduction_observation_timing_gaps_if_needed(engine, logger);
-    calculate_scan_indices_if_needed(engine, has_multiple_inputs, logger);
+    calculate_reduction_observation_scan_indices_if_needed(
+        engine, has_multiple_inputs, logger);
     allocate_observation_map_buffers_if_needed(
         todproc, map_extents, map_coords, observation_index, logger);
     update_observation_exposure_time(engine);
