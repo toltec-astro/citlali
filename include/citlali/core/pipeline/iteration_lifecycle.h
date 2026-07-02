@@ -52,10 +52,7 @@ void begin_fruit_loop_iteration(Engine &engine, const Logger &logger) {
     }
     begin_iteration_weight_validation(engine);
 
-    const bool learning_source_model_available =
-        fruit_loop_learning_source_model_available(engine);
-    engine.reduction_learning.begin_iteration(
-        engine.fruit_iter, learning_source_model_available, engine.redu_type);
+    begin_reduction_learning_iteration(engine);
     if (should_log_reduction_learning_diagnostics(engine)) {
         logger->info("reduction learning begin: {}",
                      engine.reduction_learning.summary_string());
