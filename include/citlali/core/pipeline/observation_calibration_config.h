@@ -11,6 +11,11 @@ void load_astrometry_config(Engine &engine, const RawObs &rawobs,
     engine.get_astrometry_config(rawobs.astrometry_calib_info().config());
 }
 
+template <class Engine, class RawObs>
+void load_photometry_config(Engine &engine, const RawObs &rawobs) {
+    engine.get_photometry_config(rawobs.photometry_calib_info().config());
+}
+
 template <bool IsBeammap, class TodProc, class RawObs, class Logger>
 void configure_observation_calibration(TodProc &todproc, const RawObs &rawobs,
                                        const Logger &logger) {
