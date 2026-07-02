@@ -4,6 +4,11 @@
 
 namespace citlali::pipeline {
 
+template <class Engine>
+bool downsample_factor_requires_frequency(const Engine &engine) {
+    return engine.rtcproc.downsampler.factor <= 0;
+}
+
 template <class Engine, class Logger>
 bool configure_effective_sample_rate(Engine &engine, const Logger &logger) {
     if (engine.rtcproc.run_downsample) {
