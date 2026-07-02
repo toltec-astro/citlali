@@ -9,6 +9,11 @@ bool should_create_filtered_observation_output_dir(const Engine &engine) {
     return !engine.run_coadd && engine.run_map_filter;
 }
 
+template <class Engine>
+bool should_create_observation_logs_dir(const Engine &engine) {
+    return engine.verbose_mode;
+}
+
 template <class Engine, class Logger>
 void create_observation_output_dirs(const Engine &engine,
                                     const Logger &logger) {
