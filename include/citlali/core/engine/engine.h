@@ -9134,10 +9134,8 @@ void Engine::create_ptcdiag_file() {
     output_scan_index_v.putVar(output_scan_index.data());
 
     auto add_det_meta_int = [&](const std::string &name, const std::string &comment, const std::vector<int> &values) {
-        netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, n_dets_dim);
-        v.putAtt("units", "N/A");
-        v.putAtt("comment", comment);
-        v.putVar(values.data());
+        citlali::pipeline::add_ptcdiag_det_meta_int(
+            fo, name, comment, n_dets_dim, values);
     };
     auto apt_int_values = [&](const std::string &key) {
         return citlali::pipeline::ptcdiag_apt_int_values(

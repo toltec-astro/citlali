@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <Eigen/Core>
+#include <netcdf>
 
 namespace citlali::pipeline {
 
@@ -34,6 +35,17 @@ std::vector<int> ptcdiag_apt_int_values(const Calib &calib,
         }
     }
     return values;
+}
+
+inline void add_ptcdiag_det_meta_int(netCDF::NcFile &fo,
+                                     const std::string &name,
+                                     const std::string &comment,
+                                     netCDF::NcDim n_dets_dim,
+                                     const std::vector<int> &values) {
+    netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, n_dets_dim);
+    v.putAtt("units", "N/A");
+    v.putAtt("comment", comment);
+    v.putVar(values.data());
 }
 
 }  // namespace citlali::pipeline
