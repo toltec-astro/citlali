@@ -1,0 +1,36 @@
+#pragma once
+
+#include <string>
+
+namespace citlali::pipeline {
+
+template <class Engine>
+bool should_load_hwpr_for_polarization(const Engine &engine) {
+    return engine.rtcproc.run_polarization;
+}
+
+template <class Engine>
+bool is_hwpr_ignored_by_config(const Engine &engine) {
+    return engine.calib.ignore_hwpr == "true";
+}
+
+template <class RawObs>
+bool has_hwpr_data(const RawObs &rawobs) {
+    return rawobs.hwpdata().has_value();
+}
+
+template <class Engine, class RawObs>
+bool should_use_raw_hwpr_data(const Engine &engine, const RawObs &rawobs) {
+    return has_hwpr_data(rawobs) && !is_hwpr_ignored_by_config(engine);
+}
+
+template <class RawObs>
+std::string hwpr_data_filepath(const RawObs &rawobs) {
+    return rawobs.hwpdata()->filepath();
+}
+
+inline bool is_valid_hwpr_filepath(const std::string &filepath) {
+    return filepath != "null";
+}
+
+}  // namespace citlali::pipeline
