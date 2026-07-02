@@ -14,6 +14,11 @@ auto observation_stop_time(const Engine &engine) {
 }
 
 template <class Engine>
+auto calculate_observation_exposure_time(const Engine &engine) {
+    return observation_stop_time(engine) - observation_start_time(engine);
+}
+
+template <class Engine>
 void update_observation_exposure_time(Engine &engine) {
     auto t0 = observation_start_time(engine);
     auto tn = observation_stop_time(engine);
