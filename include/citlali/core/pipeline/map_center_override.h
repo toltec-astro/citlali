@@ -46,10 +46,8 @@ void overwrite_map_center_if_configured(Engine &engine, const Logger &logger) {
             degrees_to_radians(map_center_ra_degrees(engine));
         const double map_center_dec_rad =
             degrees_to_radians(map_center_dec_degrees(engine));
-        engine.telescope.tel_header["Header.Source.Ra"].setConstant(
-            map_center_ra_rad);
-        engine.telescope.tel_header["Header.Source.Dec"].setConstant(
-            map_center_dec_rad);
+        set_map_center_header(
+            engine, map_center_ra_rad, map_center_dec_rad);
     }
 }
 
