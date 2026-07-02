@@ -48,8 +48,7 @@ template <class Engine, class Logger>
 void finalize_fruit_loop_iteration(Engine &engine, const Logger &logger) {
     engine.ptcproc.finalize_weight_validation_iteration(engine.fruit_iter);
     engine.reduction_learning.finalize_iteration(engine.fruit_iter);
-    if (engine.reduction_learning.is_enabled() &&
-        engine.reduction_learning.diagnostics_enabled()) {
+    if (should_log_reduction_learning_diagnostics(engine)) {
         logger->info("reduction learning finalize: {}",
                      engine.reduction_learning.summary_string());
     }
