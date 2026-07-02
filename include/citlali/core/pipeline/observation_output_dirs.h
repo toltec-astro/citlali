@@ -29,7 +29,7 @@ void create_observation_output_dirs(const Engine &engine,
     create_output_dir(engine.obsnum_dir_name);
 
     logger->debug("creating obsnum raw directory");
-    fs::create_directories(engine.obsnum_dir_name + "raw/");
+    create_output_dir(engine.obsnum_dir_name + "raw/");
 
     if (should_create_filtered_observation_output_dir(engine)) {
         logger->debug("creating obsnum filtered directory");
