@@ -48,6 +48,15 @@ void allocate_observation_signal_map_buffer(TodProc &todproc,
     todproc.allocate_omb(map_extent, map_coord);
 }
 
+template <class TodProc, class Logger>
+void allocate_observation_noise_map_buffer(TodProc &todproc,
+                                           const Logger &logger) {
+    auto &engine = todproc.engine();
+
+    logger->info("allocating obs noise maps");
+    todproc.allocate_nmb(engine.omb);
+}
+
 template <class TodProc, class MapExtent, class MapCoord, class Logger>
 void allocate_observation_map_buffers(TodProc &todproc,
                                       MapExtent &map_extent,
