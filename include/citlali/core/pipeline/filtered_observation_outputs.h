@@ -73,7 +73,7 @@ void find_and_fit_filtered_observation_maps_if_needed(
 template <auto FilteredObsMap, class Engine, class Logger>
 void output_filtered_observation_maps_if_needed(Engine &engine,
                                                 const Logger &logger) {
-    if (engine.write_filtered_maps_partial) {
+    if (filtered_observation_maps_written_during_filtering(engine)) {
         logger->info(
             "filtered obs files already written during Wiener filtering; "
             "skipping post-filter output stage");
