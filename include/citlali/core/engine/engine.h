@@ -6453,11 +6453,9 @@ void Engine::create_tod_files() {
                                              static_cast<std::size_t>(calib.n_dets), ptc_stream_fill_int);
             corr_group_id_v.putVar(corr_group_init.data());
 
-            add_ptc_stream_network_block(
-                "n_nws_corr", "corr_nw_network_ids",
-                "network IDs corresponding to n_nws_corr axis",
-                citlali::pipeline::ptcdiag_corr_network_int_vars(),
-                {});
+            citlali::pipeline::add_ptcdiag_corr_network_block(
+                fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
+                ptc_stream_fill_int, ptc_stream_fill_double);
         }
 
         if (ptcproc.weight_corr_penalty.enabled) {
@@ -8899,12 +8897,8 @@ void Engine::create_ptcdiag_file() {
             int_vars, double_vars, fill_int, fill_double);
     };
 
-    add_network_block(
-        "n_nws_corr",
-        "corr_nw_network_ids",
-        "network IDs corresponding to n_nws_corr axis",
-        citlali::pipeline::ptcdiag_corr_network_int_vars(),
-        {});
+    citlali::pipeline::add_ptcdiag_corr_network_block(
+        fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
 
     add_network_block(
         "n_nws_wcorr",

@@ -143,6 +143,18 @@ inline PtcDiagVarList ptcdiag_corr_network_int_vars() {
     };
 }
 
+template <class Calib>
+void add_ptcdiag_corr_network_block(netCDF::NcFile &fo, const Calib &calib,
+                                    netCDF::NcDim n_scans_dim,
+                                    Eigen::Index n_scans,
+                                    int fill_int, double fill_double) {
+    add_ptcdiag_network_block(
+        fo, calib, n_scans_dim, n_scans,
+        "n_nws_corr", "corr_nw_network_ids",
+        "network IDs corresponding to n_nws_corr axis",
+        ptcdiag_corr_network_int_vars(), {}, fill_int, fill_double);
+}
+
 inline PtcDiagVarList ptcdiag_weight_corr_int_vars() {
     return {
         {"weight_corr_penalty_n_det_input", "detector count in each network block"},
