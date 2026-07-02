@@ -6302,16 +6302,8 @@ void Engine::create_tod_files() {
             add_rtc_nw_int, add_rtc_nw_double);
         citlali::pipeline::add_rtcdiag_network_impulsive_mask_window_diag(
             add_rtc_nw_int, add_rtc_nw_double);
-        add_rtc_nw_int("rtc_network_impulsive_mask_candidate_available",
-                       "1 if impulsive_coincidence_mask found a candidate for this RTC network block, else 0");
-        add_rtc_nw_int("rtc_network_impulsive_mask_local_trigger",
-                       "1 if the selected impulsive candidate satisfied the within-network trigger thresholds, else 0");
-        add_rtc_nw_int("rtc_network_impulsive_mask_cross_network_trigger",
-                       "1 if the selected impulsive candidate satisfied a cross-network alignment trigger, else 0");
-        add_rtc_nw_int("rtc_network_impulsive_mask_high_score_override_trigger",
-                       "1 if the selected impulsive candidate satisfied the looser high-score cross-network override, else 0");
-        add_rtc_nw_int("rtc_network_impulsive_mask_rejected_max_fraction",
-                       "1 if the selected impulsive candidate was rejected only because its proposed flagged fraction exceeded the configured limit");
+        citlali::pipeline::add_rtcdiag_network_impulsive_mask_trigger_diag(
+            add_rtc_nw_int);
         add_rtc_nw_int("rtc_network_impulsive_mask_candidate_center_sample",
                        "center sample of the selected impulsive candidate before any cross-network recentering; -2147483647 means unavailable");
         add_rtc_nw_int("rtc_network_impulsive_mask_cluster_center_sample",
