@@ -6502,33 +6502,21 @@ void Engine::create_tod_files() {
                                              static_cast<std::size_t>(calib.n_dets), fill_value);
             corr_group_id_v.putVar(corr_group_init.data());
 
-            netCDF::NcDim n_nws_corr_dim = fo.addDim("n_nws_corr", calib.n_nws);
-            netCDF::NcVar corr_nw_ids_v = fo.addVar("corr_nw_network_ids", netCDF::ncInt, n_nws_corr_dim);
-            corr_nw_ids_v.putAtt("units", "N/A");
-            corr_nw_ids_v.putAtt("comment", "network IDs corresponding to n_nws_corr axis");
-            std::vector<int> nw_ids(static_cast<std::size_t>(calib.n_nws), fill_value);
-            for (Eigen::Index i = 0; i < calib.n_nws; ++i) {
-                nw_ids[static_cast<std::size_t>(i)] = static_cast<int>(calib.nws(i));
-            }
-            corr_nw_ids_v.putVar(nw_ids.data());
-
-            std::vector<netCDF::NcDim> corr_nw_dims = {n_scans_dim, n_nws_corr_dim};
-            auto add_corr_nw_var = [&](const std::string &name, const std::string &comment) {
-                netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, corr_nw_dims);
-                v.putAtt("units", "N/A");
-                v.putAtt("comment", comment);
-                std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
-                                      static_cast<std::size_t>(calib.n_nws), fill_value);
-                v.putVar(init.data());
-            };
-            add_corr_nw_var("corr_nw_n_groups", "number of final corr_nw cleaning groups per network");
-            add_corr_nw_var("corr_nw_n_groups_raw", "number of raw connected components before min_group_size filtering");
-            add_corr_nw_var("corr_nw_n_det_input", "input detector count in each network block");
-            add_corr_nw_var("corr_nw_n_det_candidates", "detectors passing apt flag and min_good_frac");
-            add_corr_nw_var("corr_nw_n_det_used", "candidate detectors with finite non-zero std for correlation");
-            add_corr_nw_var("corr_nw_n_det_grouped", "detectors included in final cleaned corr_nw groups");
-            add_corr_nw_var("corr_nw_n_det_ungrouped", "detectors excluded from final cleaned corr_nw groups");
-            add_corr_nw_var("corr_nw_sample_step", "time decimation factor used for corr_nw grouping");
+            citlali::pipeline::add_ptcdiag_network_block(
+                fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
+                "n_nws_corr", "corr_nw_network_ids",
+                "network IDs corresponding to n_nws_corr axis",
+                {
+                    {"corr_nw_n_groups", "number of final corr_nw cleaning groups per network"},
+                    {"corr_nw_n_groups_raw", "number of raw connected components before min_group_size filtering"},
+                    {"corr_nw_n_det_input", "input detector count in each network block"},
+                    {"corr_nw_n_det_candidates", "detectors passing apt flag and min_good_frac"},
+                    {"corr_nw_n_det_used", "candidate detectors with finite non-zero std for correlation"},
+                    {"corr_nw_n_det_grouped", "detectors included in final cleaned corr_nw groups"},
+                    {"corr_nw_n_det_ungrouped", "detectors excluded from final cleaned corr_nw groups"},
+                    {"corr_nw_sample_step", "time decimation factor used for corr_nw grouping"},
+                },
+                {}, fill_value, std::numeric_limits<double>::quiet_NaN());
         }
 
         if (ptcproc.weight_corr_penalty.enabled) {
