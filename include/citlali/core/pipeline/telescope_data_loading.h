@@ -35,6 +35,12 @@ void align_telescope_timestreams_over_gaps(TodProc &todproc,
     todproc.align_timestreams_gaps(rawobs);
 }
 
+template <class TodProc, class RawObs>
+void align_telescope_timestreams_direct(TodProc &todproc,
+                                        const RawObs &rawobs) {
+    todproc.align_timestreams(rawobs);
+}
+
 template <class TodProc, class RawObs, class Logger>
 void load_and_align_telescope_data(TodProc &todproc, const RawObs &rawobs,
                                    const Logger &logger) {
