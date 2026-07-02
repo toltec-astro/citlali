@@ -3,7 +3,14 @@
 #include <citlali/core/pipeline/map_center_override.h>
 #include <citlali/core/pipeline/simulated_observation_indices.h>
 
+#include <string>
+
 namespace citlali::pipeline {
+
+template <class RawObs>
+std::string telescope_data_filepath(const RawObs &rawobs) {
+    return rawobs.teldata().filepath();
+}
 
 template <class TodProc, class RawObs, class Logger>
 void load_and_align_telescope_data(TodProc &todproc, const RawObs &rawobs,
