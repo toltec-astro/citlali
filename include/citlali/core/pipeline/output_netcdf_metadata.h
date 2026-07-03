@@ -62,6 +62,13 @@ inline void add_pipeline_identity_vars(
     add_netcdf_var<std::string>(fo, "TYPE", tod_type);
 }
 
+inline void add_observation_date_source_vars(netCDF::NcFile &fo,
+                                             const std::string &date_obs,
+                                             const std::string &source_name) {
+    add_netcdf_var<std::string>(fo, "DATEOBS0", date_obs);
+    add_netcdf_var<std::string>(fo, "SOURCE", source_name);
+}
+
 inline void add_tod_map_geometry_vars(
     netCDF::NcFile &fo, const std::string &map_grouping,
     const std::string &map_method, double exposure_time,

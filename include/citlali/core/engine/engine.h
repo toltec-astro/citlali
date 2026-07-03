@@ -5352,11 +5352,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             }
         }
 
-        // add date and time of obs
-        add_netcdf_var<std::string>(fo, "DATEOBS0", date_obs.back());
-
-        // add source
-        add_netcdf_var<std::string>(fo,"SOURCE",telescope.source_name);
+        citlali::pipeline::add_observation_date_source_vars(
+            fo, date_obs.back(), telescope.source_name);
 
         // add source flux for beammaps
         if (redu_type == "beammap") {
