@@ -611,6 +611,20 @@ inline void add_tod_detector_pointing_vars(
     }
 }
 
+inline void add_tod_core_data_vars(
+    netCDF::NcFile &fo, const std::vector<netCDF::NcDim> &dims,
+    bool mini_output, const std::string &signal_unit, bool run_kernel,
+    const std::string &pixel_axes, netCDF::NcVar::ChunkMode chunk_mode,
+    const std::vector<std::size_t> &chunk_sizes) {
+    add_tod_signal_var(fo, dims, mini_output, signal_unit, chunk_mode,
+                       chunk_sizes);
+    add_tod_flags_var(fo, dims, mini_output, chunk_mode, chunk_sizes);
+    add_tod_kernel_var_if_requested(
+        fo, dims, run_kernel, mini_output, chunk_mode, chunk_sizes);
+    add_tod_detector_pointing_vars(
+        fo, dims, mini_output, pixel_axes, chunk_mode, chunk_sizes);
+}
+
 template <class AptTable, class AptUnits>
 void add_tod_apt_table_vars(netCDF::NcFile &fo, const AptTable &apt,
                             const AptUnits &apt_header_units,

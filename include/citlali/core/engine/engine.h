@@ -5523,15 +5523,9 @@ void Engine::create_tod_files() {
     const auto chunkMode = tod_chunking.mode;
     const auto &chunkSizes = tod_chunking.sizes;
 
-    citlali::pipeline::add_tod_signal_var(
-        fo, dims, tod_output_mini, omb.sig_unit, chunkMode, chunkSizes);
-    citlali::pipeline::add_tod_flags_var(
-        fo, dims, tod_output_mini, chunkMode, chunkSizes);
-    citlali::pipeline::add_tod_kernel_var_if_requested(
-        fo, dims, rtcproc.run_kernel, tod_output_mini, chunkMode, chunkSizes);
-    citlali::pipeline::add_tod_detector_pointing_vars(
-        fo, dims, tod_output_mini, telescope.pixel_axes, chunkMode,
-        chunkSizes);
+    citlali::pipeline::add_tod_core_data_vars(
+        fo, dims, tod_output_mini, omb.sig_unit, rtcproc.run_kernel,
+        telescope.pixel_axes, chunkMode, chunkSizes);
 
     // add apt table
     citlali::pipeline::add_tod_apt_table_vars(
