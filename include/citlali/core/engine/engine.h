@@ -6120,9 +6120,6 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // get Jy/pixel
     auto mJy_beam_to_Jy_px = 1e-3/beam_area_rad*pow(mb->pixel_size_rad,2);
 
-    fits_io->at(i).pfits->pHDU().addKey("UKCONV", "RJ", "uK convention: Rayleigh-Jeans brightness temperature");
-    fits_io->at(i).pfits->pHDU().addKey("UKBASIS", "Jy/sr", "uK basis: monochromatic intensity per steradian");
-
     auto get_tel_header_scalar = [&](const std::string &key, double fallback) {
         return citlali::pipeline::telescope_header_scalar(
             telescope.tel_header, key, fallback, logger);
@@ -6140,67 +6137,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     };
 
     // add unit conversions
-    if (rtcproc.run_calibrate) {
-        if (mb->sig_unit == "mJy/beam") {
-            // conversion to mJy/beam
-            fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", 1, "Conversion to mJy/beam");
-            // conversion to MJy/sr
-            add_double_key("to_MJy/sr",
-                           1/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
-                           "Conversion to MJy/sr");
-            // conversion to Rayleigh-Jeans uK
-            add_double_key("to_uK", mJy_beam_to_uK, "Conversion to Rayleigh-Jeans uK");
-            // conversion to Jy/pixel
-            add_double_key("to_Jy/pixel", mJy_beam_to_Jy_px, "Conversion to Jy/pixel");
-        }
-        else if (mb->sig_unit == "MJy/sr") {
-            // conversion to mJy/beam
-            add_double_key("to_mJy/beam",
-                           calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC,
-                           "Conversion to mJy/beam");
-            // conversion to MJy/Sr
-            fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", 1, "Conversion to MJy/sr");
-            // conversion to Rayleigh-Jeans uK
-            add_double_key("to_uK",
-                           calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_uK,
-                           "Conversion to Rayleigh-Jeans uK");
-            // conversion to Jy/pixel
-            add_double_key("to_Jy/pixel",
-                           calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_Jy_px,
-                           "Conversion to Jy/pixel");
-        }
-        else if (mb->sig_unit == "uK") {
-            // conversion to mJy/beam
-            add_double_key("to_mJy/beam", 1/mJy_beam_to_uK, "Conversion to mJy/beam");
-            // conversion to MJy/sr
-            add_double_key("to_MJy/sr",
-                           1/mJy_beam_to_uK/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
-                           "Conversion to MJy/sr");
-            // conversion to Rayleigh-Jeans uK
-            fits_io->at(i).pfits->pHDU().addKey("to_uK", 1, "Conversion to Rayleigh-Jeans uK");
-            // conversion to Jy/pixel
-            add_double_key("to_Jy/pixel", (1/mJy_beam_to_uK)*mJy_beam_to_Jy_px, "Conversion to Jy/pixel");
-        }
-        else if (mb->sig_unit == "Jy/pixel") {
-            // conversion to mJy/beam
-            add_double_key("to_mJy/beam", 1/mJy_beam_to_Jy_px, "Conversion to mJy/beam");
-            // conversion to MJy/sr
-            add_double_key("to_MJy/sr",
-                           (1/mJy_beam_to_Jy_px)/(calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC),
-                           "Conversion to MJy/sr");
-            // conversion to Rayleigh-Jeans uK
-            add_double_key("to_uK", mJy_beam_to_uK/mJy_beam_to_Jy_px, "Conversion to Rayleigh-Jeans uK");
-            // conversion to Jy/pixel
-            fits_io->at(i).pfits->pHDU().addKey("to_Jy/pixel", 1, "Conversion to Jy/pixel");
-        }
-    }
-    // if flux calibration is disabled
-    else {
-        fits_io->at(i).pfits->pHDU().addKey("to_mJy/beam", "N/A", "Conversion to mJy/beam");
-        fits_io->at(i).pfits->pHDU().addKey("to_MJy/sr", "N/A", "Conversion to MJy/sr");
-        fits_io->at(i).pfits->pHDU().addKey("to_uK", "N/A", "Conversion to uK");
-        fits_io->at(i).pfits->pHDU().addKey("to_Jy/pixel", "N/A", "Conversion to Jy/pixel");
-    }
+    citlali::pipeline::add_phdu_unit_conversion_config(
+        fits_entry, name, logger, rtcproc.run_calibrate, mb->sig_unit,
+        calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC,
+        mJy_beam_to_uK, mJy_beam_to_Jy_px);
 
     // add source flux for beammaps
     if (redu_type == "beammap") {
