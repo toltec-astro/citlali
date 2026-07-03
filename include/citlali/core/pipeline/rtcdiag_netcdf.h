@@ -95,6 +95,47 @@ inline void add_rtcdiag_scan_array_double(
     v.putVar(values.data());
 }
 
+struct RtcDiagScanDoubleValues {
+    const std::vector<double> &scan_duration_s;
+    const std::vector<double> &scan_speed_p50_arcsec_s;
+    const std::vector<double> &scan_speed_p95_arcsec_s;
+    const std::vector<double> &scan_speed_p995_arcsec_s;
+};
+
+template <class AddDouble>
+void add_rtcdiag_scan_summary_vars(
+    const AddDouble &add_double, const RtcDiagScanDoubleValues &values) {
+    add_double("scan_duration_s", "s",
+               "inner scan duration used for scan-speed diagnostics",
+               values.scan_duration_s);
+    add_double("scan_speed_altaz_p50_arcsec_s", "arcsec/s",
+               "per-scan median boresight speed in the delta-source altaz frame",
+               values.scan_speed_p50_arcsec_s);
+    add_double("scan_speed_altaz_p95_arcsec_s", "arcsec/s",
+               "per-scan 95th percentile boresight speed in the delta-source altaz frame",
+               values.scan_speed_p95_arcsec_s);
+    add_double("scan_speed_altaz_p995_arcsec_s", "arcsec/s",
+               "per-scan robust peak (99.5th percentile) boresight speed in the delta-source altaz frame",
+               values.scan_speed_p995_arcsec_s);
+}
+
+struct RtcDiagScanArrayDoubleValues {
+    const std::vector<double> &source_power_half_bandwidth_hz;
+    const std::vector<double> &tod_lowpass_to_source_power_half_ratio;
+};
+
+template <class AddDouble>
+void add_rtcdiag_scan_array_summary_vars(
+    const AddDouble &add_double,
+    const RtcDiagScanArrayDoubleValues &values) {
+    add_double("scan_source_power_half_bandwidth_hz", "Hz",
+               "Gaussian compact-source temporal power half-bandwidth from scan_speed_altaz_p995_arcsec_s and array mean FWHM",
+               values.source_power_half_bandwidth_hz);
+    add_double("scan_tod_lowpass_to_source_power_half_ratio", "N/A",
+               "configured RTC FIR low-pass cutoff divided by scan_source_power_half_bandwidth_hz; values much larger than 1 indicate extra high-frequency noise admitted relative to compact-source half-power bandwidth",
+               values.tod_lowpass_to_source_power_half_ratio);
+}
+
 inline void add_rtcdiag_det_double(
     netCDF::NcFile &fo, const std::string &name,
     const std::string &comment, const std::vector<netCDF::NcDim> &det_dims,
