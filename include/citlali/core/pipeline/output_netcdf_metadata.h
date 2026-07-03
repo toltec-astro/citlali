@@ -73,4 +73,17 @@ inline void add_tod_scan_index_placeholders(
     output_scan_index_v.putVar(output_scan_init.data());
 }
 
+template <class AddInt, class AddDouble>
+void add_tod_filter_edge_guard_scan_vars(const AddInt &add_int,
+                                         const AddDouble &add_double) {
+    add_int("tod_filter_edge_guard_pre_samples",
+            "samples flagged at the start of this output scan by the TOD filter edge guard");
+    add_int("tod_filter_edge_guard_post_samples",
+            "samples flagged at the end of this output scan by the TOD filter edge guard");
+    add_int("tod_filter_edge_guard_flagged_samples",
+            "detector-samples flagged by the TOD filter edge guard");
+    add_double("tod_filter_edge_guard_flagged_frac", "N/A",
+               "fraction of time samples guarded at this output scan edge");
+}
+
 }  // namespace citlali::pipeline
