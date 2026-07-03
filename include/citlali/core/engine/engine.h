@@ -6229,16 +6229,13 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // out-of-focus holography parameters
     if (! telescope.sim_obs) {
 	    logger->debug("adding oof params");
-	    add_double_key("OOF_RMS", rms, "rms of map background (" + mb->sig_unit +")");
-	    add_double_key("OOF_W", toltec_io.array_wavelength_map[calib.arrays(i)]/1000., "wavelength (m)");
-	    fits_io->at(i).pfits->pHDU().addKey("OOF_ID", static_cast<int>(toltec_io.array_wavelength_map[calib.arrays(i)]*1000), "instrument id");
-	    add_double_key("OOF_T", 3.0, "taper (dB)");
-	    add_double_key("OOF_M2X", get_tel_header_scalar("Header.M2.XReq", 0.0)/1000.*1e6, "oof m2x (microns)");
-	    add_double_key("OOF_M2Y", get_tel_header_scalar("Header.M2.YReq", 0.0)/1000.*1e6, "oof m2y (microns)");
-	    add_double_key("OOF_M2Z", get_tel_header_scalar("Header.M2.ZReq", 0.0)/1000.*1e6, "oof m2z (microns)");
-
-	    add_double_key("OOF_RO", 25., "outer diameter of the antenna (m)");
-	    add_double_key("OOF_RI", 1.65, "inner diameter of the antenna (m)");
+        citlali::pipeline::add_phdu_oof_keys(
+            fits_entry, name, logger, rms, mb->sig_unit,
+            toltec_io.array_wavelength_map[calib.arrays(i)]/1000.,
+            static_cast<int>(toltec_io.array_wavelength_map[calib.arrays(i)]*1000),
+            get_tel_header_scalar("Header.M2.XReq", 0.0)/1000.*1e6,
+            get_tel_header_scalar("Header.M2.YReq", 0.0)/1000.*1e6,
+            get_tel_header_scalar("Header.M2.ZReq", 0.0)/1000.*1e6);
     }
     // add control/runtime parameters
     logger->debug("adding config params");
