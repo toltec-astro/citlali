@@ -5609,7 +5609,7 @@ void Engine::cli_summary() {
         if (run_noise) {
             logger->info("observation map buffer noise maps: {}", omb.n_noise);
             // make a rough estimate of memory usage for obs noise maps
-            double nmb_size = 8*omb.n_rows*omb.n_cols*omb.noise.size()*omb.n_noise/1e9;
+            double nmb_size = citlali::pipeline::noise_buffer_memory_gb(omb);
             logger->info("estimated size of noise buffer {:.2f} GB", nmb_size);
             mb_size_total = mb_size_total + nmb_size;
         }
