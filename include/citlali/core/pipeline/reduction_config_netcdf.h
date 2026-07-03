@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include <netcdf>
 
 #include <citlali/core/utils/netcdf_io.h>
