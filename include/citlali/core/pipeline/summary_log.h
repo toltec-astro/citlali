@@ -12,4 +12,11 @@ inline void write_pipeline_version_summary(std::ostream &stream,
     stream << "-Kidscpp version: " << kids_version << "\n";
 }
 
+inline void write_chunk_time_summary(std::ostream &stream,
+                                     const std::string &creation_time,
+                                     const std::string &write_time) {
+    stream << "-Time of time chunk creation: " << creation_time << "\n";
+    stream << "-Time of file writing: " << write_time << "\n";
+}
+
 }  // namespace citlali::pipeline

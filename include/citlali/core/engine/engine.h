@@ -5655,8 +5655,8 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     f << "Summary file for scan " << in.index.data << "\n";
     citlali::pipeline::write_pipeline_version_summary(
         f, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION);
-    f << "-Time of time chunk creation: " + in.creation_time + "\n";
-    f << "-Time of file writing: " << engine_utils::current_date_time() << "\n";
+    citlali::pipeline::write_chunk_time_summary(
+        f, in.creation_time, engine_utils::current_date_time());
 
     f << "-Reduction type: " << redu_type << "\n";
     f << "-TOD type: " << tod_type << "\n";
