@@ -8602,12 +8602,8 @@ void Engine::create_ptcdiag_file() {
     netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
     std::vector<netCDF::NcDim> det_dims = {n_scans_dim, n_dets_dim};
 
-    netCDF::NcVar output_scan_index_v = fo.addVar("output_scan_index", netCDF::ncInt, n_scans_dim);
-    output_scan_index_v.putAtt("units", "N/A");
-    output_scan_index_v.putAtt("comment", "1-based original scan index from the full observation");
-    const auto output_scan_index =
-        citlali::pipeline::diagnostic_output_scan_indices(n_scans, fill_int);
-    output_scan_index_v.putVar(output_scan_index.data());
+    citlali::pipeline::add_diagnostic_output_scan_index(
+        fo, n_scans_dim, n_scans, fill_int);
 
     auto add_det_meta_int = [&](const std::string &name, const std::string &comment, const std::vector<int> &values) {
         citlali::pipeline::add_ptcdiag_det_meta_int(
