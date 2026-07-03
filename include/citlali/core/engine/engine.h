@@ -6459,9 +6459,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         if (!mb->coverage.empty()) {
             fits_io->at(map_index).add_hdu("coverage_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->coverage[i]);
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-            fits_io->at(map_index).hdus.back()->addKey("UNIT", "sec", "Unit of map");
-            fits_io->at(map_index).hdus.back()->addKey("BUNIT", "sec", "Physical unit of image values");
-            fits_io->at(map_index).hdus.back()->addKey("DESCRIP", "Effective integration time coverage map", "Image product description");
+            citlali::pipeline::add_image_unit_description_keys(
+                *fits_io->at(map_index).hdus.back(), "sec",
+                "Effective integration time coverage map");
         }
 
         /* coverage bool and signal-to-noise maps */
@@ -6484,9 +6484,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             // coverage bool map
             fits_io->at(map_index).add_hdu("coverage_bool_" + map_name + rtcproc.polarization.stokes_params[stokes_index], coverage_bool);
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-            fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
-            fits_io->at(map_index).hdus.back()->addKey("BUNIT", "N/A", "Physical unit of image values");
-            fits_io->at(map_index).hdus.back()->addKey("DESCRIP", "Boolean valid-coverage support mask", "Image product description");
+            citlali::pipeline::add_image_unit_description_keys(
+                *fits_io->at(map_index).hdus.back(), "N/A",
+                "Boolean valid-coverage support mask");
             fits_io->at(map_index).hdus.back()->addKey("WTTHRESH", weight_threshold, "Weight threshold");
 
             // legacy signal-to-noise map name retained for compatibility; this is pixel S/N.
@@ -6528,20 +6528,16 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 fits_io->at(map_index).add_hdu("point_source_flux_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
                                                mb->signal[i]);
                 fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-                fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
-                fits_io->at(map_index).hdus.back()->addKey("BUNIT", mb->sig_unit, "Physical unit of image values");
-                citlali::pipeline::add_image_description_key(
-                    *fits_io->at(map_index).hdus.back(),
+                citlali::pipeline::add_image_unit_description_keys(
+                    *fits_io->at(map_index).hdus.back(), mb->sig_unit,
                     "Point-source flux estimate after filter response normalization");
                 fits_io->at(map_index).hdus.back()->addKey("RESPNORM", 1.0, "Point-source response normalization applied");
 
                 fits_io->at(map_index).add_hdu("point_source_uncertainty_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
                                                mb->point_source_uncertainty[i]);
                 fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-                fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
-                fits_io->at(map_index).hdus.back()->addKey("BUNIT", mb->sig_unit, "Physical unit of image values");
-                citlali::pipeline::add_image_description_key(
-                    *fits_io->at(map_index).hdus.back(),
+                citlali::pipeline::add_image_unit_description_keys(
+                    *fits_io->at(map_index).hdus.back(), mb->sig_unit,
                     "Point-source 1-sigma uncertainty from jackknife maps");
 
                 fits_io->at(map_index).add_hdu("sig2noise_point_source_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
