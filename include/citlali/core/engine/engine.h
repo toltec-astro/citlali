@@ -6290,14 +6290,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add telescope file header information
     if (mb->obsnums.size()==1) {
         logger->debug("adding tel params");
-        for (auto const& [key, val] : telescope.tel_header) {
-            if (val.size() < 1 || !std::isfinite(val(0))) {
-                logger->warn("skipping tel_header '{}' due to empty/non-finite value", key);
-                continue;
-            }
-            logger->debug("adding {}: {}", key, val);
-            add_double_key(key, val(0), key);
-        }
+        citlali::pipeline::add_phdu_telescope_header_keys(
+            fits_entry, name, logger, telescope.tel_header);
     }
     } catch (const CCfits::FitsError &e) {
         throw std::runtime_error(
