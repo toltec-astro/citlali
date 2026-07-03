@@ -74,6 +74,16 @@ inline double mapdiag_positive_sqrt_or_fill(double value, double fill_value) {
     return fill_value;
 }
 
+inline double mapdiag_positive_denominator_ratio_or_fill(double numerator,
+                                                         double denominator,
+                                                         double fill_value) {
+    if (std::isfinite(numerator) && std::isfinite(denominator) &&
+        denominator > std::numeric_limits<double>::epsilon()) {
+        return numerator / denominator;
+    }
+    return fill_value;
+}
+
 inline MapdiagTailStats mapdiag_tail_stats(const std::vector<double> &values,
                                            double fill_value) {
     MapdiagTailStats stats;

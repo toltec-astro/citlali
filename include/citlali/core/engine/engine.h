@@ -6892,10 +6892,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         if (i < mb->median_rms.size() && std::isfinite(mb->median_rms(i))) {
             median_rms[idx] = mb->median_rms(i);
         }
-        if (std::isfinite(median_err[idx]) && std::isfinite(median_rms[idx]) &&
-            median_err[idx] > std::numeric_limits<double>::epsilon()) {
-            empirical_to_formal_noise_ratio[idx] = median_rms[idx] / median_err[idx];
-        }
+        empirical_to_formal_noise_ratio[idx] =
+            citlali::pipeline::mapdiag_positive_denominator_ratio_or_fill(
+                median_rms[idx], median_err[idx], fill_double);
         if (i < mb->noise_weight_median_ratio.size()) {
             noise_weight_median_ratio[idx] = mb->noise_weight_median_ratio(i);
         }
