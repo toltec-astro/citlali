@@ -5528,29 +5528,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         const bool run_any_tod_filter = rtcproc.run_tod_filter || rtcproc.run_tod_iir_highpass;
         add_netcdf_var(fo, "CONFIG.POLARIZED", rtcproc.run_polarization);
         add_netcdf_var(fo, "CONFIG.DESPIKED", rtcproc.run_despike);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.ENABLED", rtcproc.despiker.local_residual.enabled);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.WINDOW_SEC", rtcproc.despiker.local_residual.window_sec);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.SIGMA_SCALE", rtcproc.despiker.local_residual.sigma_scale);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_SIGMA_SCALE", rtcproc.despiker.local_residual.delta_sigma_scale);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.EXPAND_WITH_FILTER", rtcproc.despiker.local_residual.expand_with_filter);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.EVENT_PADDING_SEC", rtcproc.despiker.local_residual.event_padding_sec);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.HIGH_SCORE_EVENT_OVERRIDE", rtcproc.despiker.local_residual.high_score_event_override);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.MAX_ADDED_FLAGGED_FRAC", rtcproc.despiker.local_residual.max_added_flagged_fraction);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.ENABLED", rtcproc.despiker.local_residual.compact_raw_gate.enabled);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_REL_SIGMA_SCALE",
-                       rtcproc.despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_SIGMA_SCALE",
-                       rtcproc.despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale *
-                           rtcproc.despiker.local_residual.sigma_scale);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.WINDOW_SEC", rtcproc.despiker.local_residual.compact_raw_gate.window_sec);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.HALF_PEAK_FRAC", rtcproc.despiker.local_residual.compact_raw_gate.half_peak_frac);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.MAX_WIDTH_SEC", rtcproc.despiker.local_residual.compact_raw_gate.max_width_sec);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.MAX_STEP_SHIFT_Z", rtcproc.despiker.local_residual.compact_raw_gate.max_step_shift_z);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.ENABLED", rtcproc.despiker.local_residual.compact_delta_gate.enabled);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.WINDOW_SEC", rtcproc.despiker.local_residual.compact_delta_gate.window_sec);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.HALF_PEAK_FRAC", rtcproc.despiker.local_residual.compact_delta_gate.half_peak_frac);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.MAX_WIDTH_SEC", rtcproc.despiker.local_residual.compact_delta_gate.max_width_sec);
-        add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.MAX_STEP_SHIFT_Z", rtcproc.despiker.local_residual.compact_delta_gate.max_step_shift_z);
+        citlali::pipeline::add_rtc_local_despike_config_vars(
+            fo, rtcproc.despiker.local_residual);
         add_netcdf_var(fo, "CONFIG.TODFILTERED", run_any_tod_filter);
         add_netcdf_var(fo, "CONFIG.TODNOTCH", rtcproc.run_tod_notch);
         add_netcdf_var(fo, "CONFIG.TODIIRHP", rtcproc.run_tod_iir_highpass);
