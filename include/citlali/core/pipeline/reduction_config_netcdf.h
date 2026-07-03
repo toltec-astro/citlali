@@ -292,6 +292,20 @@ void add_ptc_second_pass_config_vars(netCDF::NcFile &fo,
                    second_pass.max_auto_flag_clusters_per_network);
 }
 
+template <class PtcProc, class Calib, class ArrayNameMap>
+void add_ptc_cleaning_header_config_vars(netCDF::NcFile &fo,
+                                         const PtcProc &ptcproc,
+                                         const Calib &calib,
+                                         ArrayNameMap &array_name_map) {
+    add_ptc_weight_cutoff_config_vars(fo, ptcproc);
+    add_weight_corr_penalty_config_vars(fo, ptcproc.weight_corr_penalty);
+    add_busy_row_suppression_config_vars(fo, ptcproc.busy_row_suppression);
+    add_cleaner_mode_config_vars(fo, ptcproc);
+    add_adaptive_cleaner_config_vars(fo, ptcproc.cleaner.adaptive_selector);
+    add_ptc_second_pass_config_vars(fo, ptcproc.second_pass_local);
+    add_cleaned_eigen_count_config_vars(fo, ptcproc, calib, array_name_map);
+}
+
 template <class PtcProc>
 void add_fruit_loops_config_vars(netCDF::NcFile &fo,
                                  const PtcProc &ptcproc) {

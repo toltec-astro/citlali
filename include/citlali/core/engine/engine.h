@@ -5417,18 +5417,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         citlali::pipeline::add_rtc_event_mask_config_vars(fo, rtcproc);
         citlali::pipeline::add_rtc_line_audit_config_vars_if_absent(
             fo, rtcproc.line_audit);
-        citlali::pipeline::add_ptc_weight_cutoff_config_vars(fo, ptcproc);
-        citlali::pipeline::add_weight_corr_penalty_config_vars(
-            fo, ptcproc.weight_corr_penalty);
-        citlali::pipeline::add_busy_row_suppression_config_vars(
-            fo, ptcproc.busy_row_suppression);
-        citlali::pipeline::add_cleaner_mode_config_vars(fo, ptcproc);
-        citlali::pipeline::add_adaptive_cleaner_config_vars(
-            fo, ptcproc.cleaner.adaptive_selector);
-        citlali::pipeline::add_ptc_second_pass_config_vars(
-            fo, ptcproc.second_pass_local);
-
-        citlali::pipeline::add_cleaned_eigen_count_config_vars(
+        citlali::pipeline::add_ptc_cleaning_header_config_vars(
             fo, ptcproc, calib, toltec_io.array_name_map);
 
         citlali::pipeline::add_oof_header_vars_if_observed(
