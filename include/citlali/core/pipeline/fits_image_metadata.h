@@ -36,6 +36,11 @@ void add_image_median_error_key(Hdu &hdu, double median_error,
 }
 
 template <class Hdu>
+void add_image_weight_threshold_key(Hdu &hdu, double weight_threshold) {
+    hdu.addKey("WTTHRESH", weight_threshold, "Weight threshold");
+}
+
+template <class Hdu>
 void add_image_unit_description_keys(Hdu &hdu, const std::string &unit,
                                      const std::string &description) {
     add_image_unit_keys(hdu, unit);

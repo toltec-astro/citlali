@@ -6488,7 +6488,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             citlali::pipeline::add_image_unit_description_keys(
                 *fits_io->at(map_index).hdus.back(), "N/A",
                 "Boolean valid-coverage support mask");
-            fits_io->at(map_index).hdus.back()->addKey("WTTHRESH", weight_threshold, "Weight threshold");
+            citlali::pipeline::add_image_weight_threshold_key(
+                *fits_io->at(map_index).hdus.back(), weight_threshold);
 
             // legacy signal-to-noise map name retained for compatibility; this is pixel S/N.
             Eigen::MatrixXd sig2noise;
