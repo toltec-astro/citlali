@@ -6451,9 +6451,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             }
             fits_io->at(map_index).hdus.back()->addKey("FWHM",fwhm,"Kernel fwhm (arcsec)");
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-            fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
-            fits_io->at(map_index).hdus.back()->addKey("BUNIT", mb->sig_unit, "Physical unit of image values");
-            fits_io->at(map_index).hdus.back()->addKey("DESCRIP", "Mapmaking or filtering kernel image", "Image product description");
+            citlali::pipeline::add_image_unit_description_keys(
+                *fits_io->at(map_index).hdus.back(), mb->sig_unit,
+                "Mapmaking or filtering kernel image");
         }
 
         // coverage map
