@@ -96,4 +96,17 @@ void write_chunk_tod_filter_summary(std::ostream &stream,
            << rtcproc.line_audit.fixed_notch_freqs_hz.size() << "\n";
 }
 
+template <class LineAudit>
+void write_chunk_ptc_model_line_audit_summary(std::ostream &stream,
+                                              const LineAudit &line_audit) {
+    stream << "-PTC model-protected line-audit notch enabled: "
+           << line_audit.ptc_model_protected_enabled << "\n";
+    stream << "-PTC model-protected line-audit require model: "
+           << line_audit.ptc_require_model_subtracted << "\n";
+    stream << "-PTC model-protected fixed/shared/detector notches: "
+           << line_audit.ptc_apply_fixed_notches << "/"
+           << line_audit.ptc_apply_shared_notches << "/"
+           << line_audit.ptc_apply_detector_notches << "\n";
+}
+
 }  // namespace citlali::pipeline

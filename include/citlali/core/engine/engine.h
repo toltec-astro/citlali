@@ -5664,12 +5664,8 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     citlali::pipeline::write_chunk_processing_status_summary(f, in.status);
     citlali::pipeline::write_chunk_tod_filter_summary(
         f, rtcproc, telescope.outer_scans_chunk);
-    f << "-PTC model-protected line-audit notch enabled: " << rtcproc.line_audit.ptc_model_protected_enabled << "\n";
-    f << "-PTC model-protected line-audit require model: " << rtcproc.line_audit.ptc_require_model_subtracted << "\n";
-    f << "-PTC model-protected fixed/shared/detector notches: "
-      << rtcproc.line_audit.ptc_apply_fixed_notches << "/"
-      << rtcproc.line_audit.ptc_apply_shared_notches << "/"
-      << rtcproc.line_audit.ptc_apply_detector_notches << "\n";
+    citlali::pipeline::write_chunk_ptc_model_line_audit_summary(
+        f, rtcproc.line_audit);
     f << "-Scan length: " << in.scans.data.rows() << "\n";
 
     f << "-Number of detectors: " << in.scans.data.cols() << "\n";
