@@ -29,6 +29,18 @@ inline std::vector<int> ptcdiag_output_scan_indices(Eigen::Index n_scans,
     return diagnostic_output_scan_indices(n_scans, fill_value);
 }
 
+inline void add_diagnostic_output_scan_index(netCDF::NcFile &fo,
+                                             netCDF::NcDim n_scans_dim,
+                                             Eigen::Index n_scans,
+                                             int fill_value) {
+    netCDF::NcVar v = fo.addVar("output_scan_index", netCDF::ncInt,
+                                n_scans_dim);
+    v.putAtt("units", "N/A");
+    v.putAtt("comment", "1-based original scan index from the full observation");
+    const auto values = diagnostic_output_scan_indices(n_scans, fill_value);
+    v.putVar(values.data());
+}
+
 template <class Calib>
 std::vector<int> ptcdiag_apt_int_values(const Calib &calib,
                                         const std::string &key,
