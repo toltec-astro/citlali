@@ -195,6 +195,51 @@ void add_adaptive_cleaner_config_vars(
                    selector.log_candidates);
 }
 
+template <class SecondPassLocal>
+void add_ptc_second_pass_config_vars(netCDF::NcFile &fo,
+                                     const SecondPassLocal &second_pass) {
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.ENABLED",
+                   second_pass.enabled);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_SPIKE_SIGMA",
+                   second_pass.min_spike_sigma);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_GOOD_FRAC",
+                   second_pass.min_good_frac);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.BASELINE_WINDOW_SEC",
+                   second_pass.baseline_window_sec);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.SIGMA_SCALE",
+                   second_pass.sigma_scale);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.DELTA_SIGMA_SCALE",
+                   second_pass.delta_sigma_scale);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.RAW_CAND_REL_SIGMA_SCALE",
+                   second_pass.raw_candidate_rel_sigma_scale);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.RAW_WINDOW_SEC",
+                   second_pass.raw_window_sec);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.RAW_HALF_PEAK_FRAC",
+                   second_pass.raw_half_peak_frac);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.RAW_MAX_WIDTH_SEC",
+                   second_pass.raw_max_width_sec);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.DELTA_WINDOW_SEC",
+                   second_pass.delta_window_sec);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.DELTA_HALF_PEAK_FRAC",
+                   second_pass.delta_half_peak_frac);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.DELTA_MAX_WIDTH_SEC",
+                   second_pass.delta_max_width_sec);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MAX_STEP_SHIFT_Z",
+                   second_pass.max_step_shift_z);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.HIGH_SCORE_EVENT_OVERRIDE",
+                   second_pass.high_score_event_override);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MERGE_WITHIN_DET_SEC",
+                   second_pass.merge_within_detector_sec);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.CLUSTER_EVENTS_SEC",
+                   second_pass.cluster_events_sec);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_CLUSTER_DETECTORS",
+                   second_pass.min_cluster_detectors);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.HIGH_SCORE_CLUSTER_OVERRIDE",
+                   second_pass.high_score_cluster_override);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MAX_AUTO_FLAG_CLUSTERS",
+                   second_pass.max_auto_flag_clusters_per_network);
+}
+
 template <class ReductionLearning>
 void add_reduction_learning_config_vars(
     netCDF::NcFile &fo, const ReductionLearning &reduction_learning,

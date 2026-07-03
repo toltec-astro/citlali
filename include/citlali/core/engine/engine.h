@@ -5566,26 +5566,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         citlali::pipeline::add_cleaner_mode_config_vars(fo, ptcproc);
         citlali::pipeline::add_adaptive_cleaner_config_vars(
             fo, ptcproc.cleaner.adaptive_selector);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.ENABLED", ptcproc.second_pass_local.enabled);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_SPIKE_SIGMA", ptcproc.second_pass_local.min_spike_sigma);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_GOOD_FRAC", ptcproc.second_pass_local.min_good_frac);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.BASELINE_WINDOW_SEC", ptcproc.second_pass_local.baseline_window_sec);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.SIGMA_SCALE", ptcproc.second_pass_local.sigma_scale);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.DELTA_SIGMA_SCALE", ptcproc.second_pass_local.delta_sigma_scale);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.RAW_CAND_REL_SIGMA_SCALE", ptcproc.second_pass_local.raw_candidate_rel_sigma_scale);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.RAW_WINDOW_SEC", ptcproc.second_pass_local.raw_window_sec);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.RAW_HALF_PEAK_FRAC", ptcproc.second_pass_local.raw_half_peak_frac);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.RAW_MAX_WIDTH_SEC", ptcproc.second_pass_local.raw_max_width_sec);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.DELTA_WINDOW_SEC", ptcproc.second_pass_local.delta_window_sec);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.DELTA_HALF_PEAK_FRAC", ptcproc.second_pass_local.delta_half_peak_frac);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.DELTA_MAX_WIDTH_SEC", ptcproc.second_pass_local.delta_max_width_sec);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MAX_STEP_SHIFT_Z", ptcproc.second_pass_local.max_step_shift_z);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.HIGH_SCORE_EVENT_OVERRIDE", ptcproc.second_pass_local.high_score_event_override);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MERGE_WITHIN_DET_SEC", ptcproc.second_pass_local.merge_within_detector_sec);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.CLUSTER_EVENTS_SEC", ptcproc.second_pass_local.cluster_events_sec);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_CLUSTER_DETECTORS", ptcproc.second_pass_local.min_cluster_detectors);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.HIGH_SCORE_CLUSTER_OVERRIDE", ptcproc.second_pass_local.high_score_cluster_override);
-        add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MAX_AUTO_FLAG_CLUSTERS", ptcproc.second_pass_local.max_auto_flag_clusters_per_network);
+        citlali::pipeline::add_ptc_second_pass_config_vars(
+            fo, ptcproc.second_pass_local);
 
         // loop through arrays and add number of eigenvalues removed
         for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
