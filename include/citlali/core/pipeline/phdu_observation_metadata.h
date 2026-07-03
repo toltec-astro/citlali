@@ -125,4 +125,9 @@ void add_phdu_auxiliary_scalar_keys(FitsEntry &fits_entry,
                "Current fruit loops iteration");
 }
 
+template <class FitsEntry>
+void add_phdu_apt_key(FitsEntry &fits_entry, const std::string &apt_name) {
+    fits_entry.pfits->pHDU().addKey("APT", apt_name, "APT table used");
+}
+
 }  // namespace citlali::pipeline

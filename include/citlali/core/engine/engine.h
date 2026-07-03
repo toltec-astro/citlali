@@ -6221,7 +6221,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         const auto apt_name =
             citlali::pipeline::apt_table_header_name(calib.apt_filepath,
                                                      logger);
-        fits_io->at(i).pfits->pHDU().addKey("APT", apt_name, "APT table used");
+        citlali::pipeline::add_phdu_apt_key(fits_entry, apt_name);
     }
 
     const double rms = citlali::pipeline::phdu_oof_rms(
