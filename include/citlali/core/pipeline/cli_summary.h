@@ -10,6 +10,10 @@ inline const char *tod_outer_mode_suffix(bool outer_output) {
     return outer_output ? "_outer" : "";
 }
 
+inline double physical_memory_gb(long long physical_memory_kb) {
+    return static_cast<double>(physical_memory_kb) / 1e7;
+}
+
 template <class MapBuffer>
 double map_buffer_memory_gb(const MapBuffer &mb) {
     return 8 * mb.n_rows * mb.n_cols *

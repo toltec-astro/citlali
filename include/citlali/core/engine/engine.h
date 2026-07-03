@@ -5645,7 +5645,8 @@ void Engine::cli_summary() {
     logger->info("total physical memory available {} GB", (totalPhysMem/1024)/1e7);*/
     auto phys_memory_kb = engine_utils::get_phys_memory();
     if (phys_memory_kb >= 0) {
-        logger->info("physical memory used {:.2f} GB", static_cast<double>(phys_memory_kb) / 1e7);
+        logger->info("physical memory used {:.2f} GB",
+                     citlali::pipeline::physical_memory_gb(phys_memory_kb));
     } else {
         logger->debug("physical memory used unavailable on this platform");
     }
