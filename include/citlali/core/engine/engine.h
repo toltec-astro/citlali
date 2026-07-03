@@ -6182,26 +6182,13 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
         telescope.project_id, redu_type, telescope.obs_goal, tod_type,
         map_grouping, map_method);
-    // add exposure time
-    add_double_key("EXPTIME", mb->exposure_time, "Exposure time (sec)");
-    // add pixel axes
-    fits_io->at(i).pfits->pHDU().addKey("RADESYS", telescope.pixel_axes, "Coord Reference Frame");
     const double source_ra = get_tel_header_scalar("Header.Source.Ra", 0.0);
     const double source_dec = get_tel_header_scalar("Header.Source.Dec", 0.0);
-    // add source ra
-    add_double_key("SRC_RA", source_ra, "Source RA (radians)");
-    // add source dec
-    add_double_key("SRC_DEC", source_dec, "Source Dec (radians)");
-    // add map tangent point ra
-    add_double_key("TAN_RA", source_ra, "Map Tangent Point RA (radians)");
-    //add map tangent point dec
-    add_double_key("TAN_DEC", source_dec, "Map Tangent Point Dec (radians)");
-    // add mean alt
-    add_double_key("MEAN_EL", RAD_TO_DEG*get_tel_data_mean("TelElAct", 0.0), "Mean Elevation (deg)");
-    // add mean az
-    add_double_key("MEAN_AZ", RAD_TO_DEG*get_tel_data_mean("TelAzAct", 0.0), "Mean Azimuth (deg)");
-    // add mean parallactic angle
-    add_double_key("MEAN_PA", RAD_TO_DEG*get_tel_data_mean("ActParAng", 0.0), "Mean Parallactic angle (deg)");
+    citlali::pipeline::add_phdu_map_geometry_keys(
+        fits_entry, name, logger, mb->exposure_time, telescope.pixel_axes,
+        source_ra, source_dec, RAD_TO_DEG*get_tel_data_mean("TelElAct", 0.0),
+        RAD_TO_DEG*get_tel_data_mean("TelAzAct", 0.0),
+        RAD_TO_DEG*get_tel_data_mean("ActParAng", 0.0));
 
     logger->debug("adding beamsizes");
 

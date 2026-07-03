@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include <citlali/core/pipeline/phdu_telescope_values.h>
+
 namespace citlali::pipeline {
 
 template <class FitsEntry, class Obsnums>
@@ -53,6 +55,33 @@ void add_phdu_pipeline_identity_keys(
     hdu.addKey("TYPE", tod_type, "TOD Type");
     hdu.addKey("GROUPING", map_grouping, "Map grouping");
     hdu.addKey("METHOD", map_method, "Map method");
+}
+
+template <class FitsEntry, class Logger>
+void add_phdu_map_geometry_keys(
+    FitsEntry &fits_entry, const std::string &array_name,
+    const Logger &logger, double exposure_time,
+    const std::string &pixel_axes, double source_ra, double source_dec,
+    double mean_el_deg, double mean_az_deg, double mean_pa_deg) {
+    auto &hdu = fits_entry.pfits->pHDU();
+    auto add_double_key = [&](const std::string &key, double value,
+                              const std::string &comment,
+                              double fallback = 0.0) {
+        add_phdu_double_key(fits_entry, array_name, logger, key, value,
+                            comment, fallback);
+    };
+
+    add_double_key("EXPTIME", exposure_time, "Exposure time (sec)");
+    hdu.addKey("RADESYS", pixel_axes, "Coord Reference Frame");
+    add_double_key("SRC_RA", source_ra, "Source RA (radians)");
+    add_double_key("SRC_DEC", source_dec, "Source Dec (radians)");
+    add_double_key("TAN_RA", source_ra, "Map Tangent Point RA (radians)");
+    add_double_key("TAN_DEC", source_dec,
+                   "Map Tangent Point Dec (radians)");
+    add_double_key("MEAN_EL", mean_el_deg, "Mean Elevation (deg)");
+    add_double_key("MEAN_AZ", mean_az_deg, "Mean Azimuth (deg)");
+    add_double_key("MEAN_PA", mean_pa_deg,
+                   "Mean Parallactic angle (deg)");
 }
 
 }  // namespace citlali::pipeline
