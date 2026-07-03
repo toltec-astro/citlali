@@ -90,6 +90,7 @@
 #include <citlali/core/mapmaking/wiener_filter.h>
 #endif
 #include <citlali/core/pipeline/fits_image_metadata.h>
+#include <citlali/core/pipeline/cli_summary.h>
 #include <citlali/core/pipeline/map_filename.h>
 #include <citlali/core/pipeline/map_layer_name.h>
 #include <citlali/core/pipeline/map_summary_stats.h>
@@ -5576,9 +5577,7 @@ void Engine::cli_summary() {
     double mb_size_total = 0;
 
     // make a rough estimate of memory usage for obs map buffer
-    double omb_size = 8*omb.n_rows*omb.n_cols*(omb.signal.size() + omb.weight.size() +
-                                               omb.kernel.size() + omb.coverage.size() +
-                                               omb.grid_weight.size())/1e9;
+    double omb_size = citlali::pipeline::map_buffer_memory_gb(omb);
 
     logger->info("estimated size of map buffer {:.2f} GB", omb_size);
 
