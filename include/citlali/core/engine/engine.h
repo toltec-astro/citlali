@@ -5606,25 +5606,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         }
 
         // fruit loops parameters
-        add_netcdf_var(fo, "CONFIG.FRUITLOOPS", ptcproc.run_fruit_loops);
-        add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path);
-        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise);
-        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.PEAKFRAC", ptcproc.fruit_loops_peak_fraction_limit);
-        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSNR", ptcproc.fruit_loops_local_snr_floor);
-        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_INNER", ptcproc.fruit_loops_local_sigma_inner_radius_arcsec);
-        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_OUTER", ptcproc.fruit_loops_local_sigma_outer_radius_arcsec);
-        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_EDGE", ptcproc.fruit_loops_local_sigma_edge_guard_arcsec);
-        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_MINPIX", ptcproc.fruit_loops_local_sigma_min_pixels);
-        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.ADAPT_SUPPORT_RAD", ptcproc.fruit_loops_adaptive_support_radius_arcsec);
-        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.ADAPT_SUPPORT_FWHM", ptcproc.fruit_loops_adaptive_support_radius_fwhm);
-        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.ENABLED",
-                       ptcproc.fruit_loops_weight_feedback_enabled);
-        add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.REFERENCE",
-                                    ptcproc.fruit_loops_weight_feedback_reference);
-        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.LOW_RELATIVE_WEIGHT",
-                       ptcproc.fruit_loops_weight_feedback_low_relative_weight);
-        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.HIGH_RELATIVE_WEIGHT",
-                       ptcproc.fruit_loops_weight_feedback_high_relative_weight);
+        citlali::pipeline::add_fruit_loops_config_vars(fo, ptcproc);
         for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
             double flux_limit = 0.0;
             if (ptcproc.run_fruit_loops) {
@@ -7983,25 +7965,7 @@ void Engine::create_ptcdiag_file() {
     add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.HIGH_SCORE_EVENT_OVERRIDE", ptcproc.second_pass_local.high_score_event_override);
     add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_CLUSTER_DETECTORS", ptcproc.second_pass_local.min_cluster_detectors);
     add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MAX_AUTO_FLAG_CLUSTERS", ptcproc.second_pass_local.max_auto_flag_clusters_per_network);
-    add_netcdf_var(fo, "CONFIG.FRUITLOOPS", ptcproc.run_fruit_loops);
-    add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path);
-    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise);
-    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.PEAKFRAC", ptcproc.fruit_loops_peak_fraction_limit);
-    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSNR", ptcproc.fruit_loops_local_snr_floor);
-    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_INNER", ptcproc.fruit_loops_local_sigma_inner_radius_arcsec);
-    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_OUTER", ptcproc.fruit_loops_local_sigma_outer_radius_arcsec);
-    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_EDGE", ptcproc.fruit_loops_local_sigma_edge_guard_arcsec);
-    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_MINPIX", ptcproc.fruit_loops_local_sigma_min_pixels);
-    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.ADAPT_SUPPORT_RAD", ptcproc.fruit_loops_adaptive_support_radius_arcsec);
-    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.ADAPT_SUPPORT_FWHM", ptcproc.fruit_loops_adaptive_support_radius_fwhm);
-    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.ENABLED",
-                   ptcproc.fruit_loops_weight_feedback_enabled);
-    add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.REFERENCE",
-                                ptcproc.fruit_loops_weight_feedback_reference);
-    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.LOW_RELATIVE_WEIGHT",
-                   ptcproc.fruit_loops_weight_feedback_low_relative_weight);
-    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.HIGH_RELATIVE_WEIGHT",
-                   ptcproc.fruit_loops_weight_feedback_high_relative_weight);
+    citlali::pipeline::add_fruit_loops_config_vars(fo, ptcproc);
 
     const std::size_t ptc_det_value_count =
         static_cast<std::size_t>(n_scans) *

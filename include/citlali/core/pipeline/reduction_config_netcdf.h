@@ -240,6 +240,43 @@ void add_ptc_second_pass_config_vars(netCDF::NcFile &fo,
                    second_pass.max_auto_flag_clusters_per_network);
 }
 
+template <class PtcProc>
+void add_fruit_loops_config_vars(netCDF::NcFile &fo,
+                                 const PtcProc &ptcproc) {
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS", ptcproc.run_fruit_loops);
+    add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.PATH",
+                                ptcproc.fruit_loops_path);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.S2N",
+                   ptcproc.fruit_loops_sig2noise);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.PEAKFRAC",
+                   ptcproc.fruit_loops_peak_fraction_limit);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSNR",
+                   ptcproc.fruit_loops_local_snr_floor);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_INNER",
+                   ptcproc.fruit_loops_local_sigma_inner_radius_arcsec);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_OUTER",
+                   ptcproc.fruit_loops_local_sigma_outer_radius_arcsec);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_EDGE",
+                   ptcproc.fruit_loops_local_sigma_edge_guard_arcsec);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.LOCALSIG_MINPIX",
+                   ptcproc.fruit_loops_local_sigma_min_pixels);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.ADAPT_SUPPORT_RAD",
+                   ptcproc.fruit_loops_adaptive_support_radius_arcsec);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.ADAPT_SUPPORT_FWHM",
+                   ptcproc.fruit_loops_adaptive_support_radius_fwhm);
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.ENABLED",
+                   ptcproc.fruit_loops_weight_feedback_enabled);
+    add_netcdf_var<std::string>(
+        fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.REFERENCE",
+        ptcproc.fruit_loops_weight_feedback_reference);
+    add_netcdf_var(
+        fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.LOW_RELATIVE_WEIGHT",
+        ptcproc.fruit_loops_weight_feedback_low_relative_weight);
+    add_netcdf_var(
+        fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.HIGH_RELATIVE_WEIGHT",
+        ptcproc.fruit_loops_weight_feedback_high_relative_weight);
+}
+
 template <class ReductionLearning>
 void add_reduction_learning_config_vars(
     netCDF::NcFile &fo, const ReductionLearning &reduction_learning,
