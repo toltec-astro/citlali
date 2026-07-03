@@ -6662,13 +6662,10 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
         Eigen::MatrixXd psd_2d_transposed = mb->psd_2ds[i].transpose();
         Eigen::MatrixXd psd_2d_freq_transposed = mb->psd_2d_freqs[i].transpose();
 
-        // 2d psd
-        netCDF::NcVar psd_2d_v = fo.addVar(name + "_psd_2d",netCDF::ncDouble, dims);
-        psd_2d_v.putVar(psd_2d_transposed.data());
-
-        // 2d psd freq
-        netCDF::NcVar psd_2d_freq_v = fo.addVar(name + "_psd_2d_freq",netCDF::ncDouble, dims);
-        psd_2d_freq_v.putVar(psd_2d_freq_transposed.data());
+        citlali::pipeline::add_double_2d_var(
+            fo, name + "_psd_2d", dims, psd_2d_transposed);
+        citlali::pipeline::add_double_2d_var(
+            fo, name + "_psd_2d_freq", dims, psd_2d_freq_transposed);
 
         if (!mb->noise.empty()) {
             // add dimensions
