@@ -5559,18 +5559,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
         // fruit loops parameters
         citlali::pipeline::add_fruit_loops_config_vars(fo, ptcproc);
-        for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
-            double flux_limit = 0.0;
-            if (ptcproc.run_fruit_loops) {
-                if (ptcproc.fruit_loops_flux.size() == calib.arrays.size()) {
-                    flux_limit = ptcproc.fruit_loops_flux(i);
-                }
-                else if (calib.arrays(i) < ptcproc.fruit_loops_flux.size()) {
-                    flux_limit = ptcproc.fruit_loops_flux(calib.arrays(i));
-                }
-            }
-            add_netcdf_var(fo, "CONFIG.FRUITLOOPS.FLUX_"+toltec_io.array_name_map[calib.arrays(i)], flux_limit);
-        }
+        citlali::pipeline::add_fruit_loop_flux_config_vars(
+            fo, ptcproc, calib, toltec_io.array_name_map);
 
         add_netcdf_var(fo, "CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters);
 

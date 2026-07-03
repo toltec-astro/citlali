@@ -277,6 +277,27 @@ void add_fruit_loops_config_vars(netCDF::NcFile &fo,
         ptcproc.fruit_loops_weight_feedback_high_relative_weight);
 }
 
+template <class PtcProc, class Calib, class ArrayNameMap>
+void add_fruit_loop_flux_config_vars(netCDF::NcFile &fo,
+                                     const PtcProc &ptcproc,
+                                     const Calib &calib,
+                                     ArrayNameMap &array_name_map) {
+    for (decltype(calib.arrays.size()) i=0; i<calib.arrays.size(); ++i) {
+        double flux_limit = 0.0;
+        if (ptcproc.run_fruit_loops) {
+            if (ptcproc.fruit_loops_flux.size() == calib.arrays.size()) {
+                flux_limit = ptcproc.fruit_loops_flux(i);
+            }
+            else if (calib.arrays(i) < ptcproc.fruit_loops_flux.size()) {
+                flux_limit = ptcproc.fruit_loops_flux(calib.arrays(i));
+            }
+        }
+        add_netcdf_var(
+            fo, "CONFIG.FRUITLOOPS.FLUX_" + array_name_map[calib.arrays(i)],
+            flux_limit);
+    }
+}
+
 template <class PtcProc>
 void add_ptcdiag_compact_config_vars(netCDF::NcFile &fo,
                                      const PtcProc &ptcproc) {
