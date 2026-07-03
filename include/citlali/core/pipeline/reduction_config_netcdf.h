@@ -136,6 +136,22 @@ void add_busy_row_suppression_config_vars(
                    suppression.factor);
 }
 
+template <class PtcProc>
+void add_cleaner_mode_config_vars(netCDF::NcFile &fo,
+                                  const PtcProc &ptcproc) {
+    add_netcdf_var(fo, "CONFIG.CLEANED", ptcproc.run_clean);
+    add_netcdf_var<std::string>(fo, "CONFIG.CLEANED.MODESEL",
+                                ptcproc.cleaner.active_cleaner_label());
+    add_netcdf_var(fo, "CONFIG.CLEANED.MP.ENABLED",
+                   ptcproc.cleaner.marchenko_pastur.enabled);
+    add_netcdf_var(fo, "CONFIG.CLEANED.MP.BANDLOW_HZ",
+                   ptcproc.cleaner.marchenko_pastur.band_low_Hz);
+    add_netcdf_var(fo, "CONFIG.CLEANED.MP.BANDHIGH_HZ",
+                   ptcproc.cleaner.marchenko_pastur.band_high_Hz);
+    add_netcdf_var(fo, "CONFIG.CLEANED.MP.MAXMODES",
+                   ptcproc.cleaner.marchenko_pastur.max_modes);
+}
+
 template <class ReductionLearning>
 void add_reduction_learning_config_vars(
     netCDF::NcFile &fo, const ReductionLearning &reduction_learning,

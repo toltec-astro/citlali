@@ -5563,12 +5563,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             fo, ptcproc.weight_corr_penalty);
         citlali::pipeline::add_busy_row_suppression_config_vars(
             fo, ptcproc.busy_row_suppression);
-        add_netcdf_var(fo, "CONFIG.CLEANED", ptcproc.run_clean);
-        add_netcdf_var<std::string>(fo, "CONFIG.CLEANED.MODESEL", ptcproc.cleaner.active_cleaner_label());
-        add_netcdf_var(fo, "CONFIG.CLEANED.MP.ENABLED", ptcproc.cleaner.marchenko_pastur.enabled);
-        add_netcdf_var(fo, "CONFIG.CLEANED.MP.BANDLOW_HZ", ptcproc.cleaner.marchenko_pastur.band_low_Hz);
-        add_netcdf_var(fo, "CONFIG.CLEANED.MP.BANDHIGH_HZ", ptcproc.cleaner.marchenko_pastur.band_high_Hz);
-        add_netcdf_var(fo, "CONFIG.CLEANED.MP.MAXMODES", ptcproc.cleaner.marchenko_pastur.max_modes);
+        citlali::pipeline::add_cleaner_mode_config_vars(fo, ptcproc);
         std::string adaptive_offsets_joined;
         for (std::size_t i = 0; i < ptcproc.cleaner.adaptive_selector.candidate_offsets.size(); ++i) {
             if (i > 0) {
