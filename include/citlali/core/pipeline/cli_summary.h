@@ -31,6 +31,18 @@ void log_diagnostics_sidecar_summary(const Logger &logger) {
     logger->info("Map diagnostics sidecar output: standard");
 }
 
+template <class Logger>
+void log_physical_memory_summary(const Logger &logger,
+                                 long long physical_memory_kb) {
+    if (physical_memory_kb >= 0) {
+        logger->info("physical memory used {:.2f} GB",
+                     physical_memory_gb(physical_memory_kb));
+    }
+    else {
+        logger->debug("physical memory used unavailable on this platform");
+    }
+}
+
 template <class MapBuffer>
 double map_buffer_memory_gb(const MapBuffer &mb) {
     return 8 * mb.n_rows * mb.n_cols *
