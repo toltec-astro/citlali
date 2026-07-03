@@ -41,6 +41,17 @@ void add_image_weight_threshold_key(Hdu &hdu, double weight_threshold) {
 }
 
 template <class Hdu>
+void add_empirical_weight_scale_key(Hdu &hdu, double scale) {
+    hdu.addKey("EMP_SCALE", scale, "Empirical weight scale");
+}
+
+template <class Hdu>
+void add_weight_variance_median_key(Hdu &hdu, double median_ratio) {
+    hdu.addKey("WVARMED", median_ratio,
+               "Median formal weight times jackknife variance");
+}
+
+template <class Hdu>
 void add_noise_image_summary_keys(Hdu &hdu, const std::string &unit,
                                   double median_rms) {
     hdu.addKey("UNIT", unit, "Unit of map");

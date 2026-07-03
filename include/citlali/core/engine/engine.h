@@ -6381,12 +6381,13 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 ? "Jackknife-calibrated inverse variance weight map"
                 : "Formal mapmaker inverse variance weight map");
         if (i < mb->noise_weight_scale.size()) {
-            fits_io->at(map_index).hdus.back()->addKey("EMP_SCALE", mb->noise_weight_scale(i),
-                                                       "Empirical weight scale");
+            citlali::pipeline::add_empirical_weight_scale_key(
+                *fits_io->at(map_index).hdus.back(), mb->noise_weight_scale(i));
         }
         if (i < mb->noise_weight_median_ratio.size()) {
-            fits_io->at(map_index).hdus.back()->addKey("WVARMED", mb->noise_weight_median_ratio(i),
-                                                       "Median formal weight times jackknife variance");
+            citlali::pipeline::add_weight_variance_median_key(
+                *fits_io->at(map_index).hdus.back(),
+                mb->noise_weight_median_ratio(i));
         }
         double median_err = 0.0;
         if (redu_type != "beammap" && std::isfinite(mb->median_err(i)) &&
