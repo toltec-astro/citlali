@@ -8797,12 +8797,8 @@ void Engine::create_rtcdiag_file() {
     const std::vector<std::size_t> rtc_det_chunks = {1, TULA_SIZET(calib.n_dets)};
     const std::vector<std::size_t> rtc_nw_chunks = {1, TULA_SIZET(calib.n_nws)};
 
-    netCDF::NcVar output_scan_index_v = fo.addVar("output_scan_index", netCDF::ncInt, n_scans_dim);
-    output_scan_index_v.putAtt("units", "N/A");
-    output_scan_index_v.putAtt("comment", "1-based original scan index from the full observation");
-    const auto output_scan_index =
-        citlali::pipeline::diagnostic_output_scan_indices(n_scans, fill_int);
-    output_scan_index_v.putVar(output_scan_index.data());
+    citlali::pipeline::add_diagnostic_output_scan_index(
+        fo, n_scans_dim, n_scans, fill_int);
 
     netCDF::NcVar array_ids_v = fo.addVar("rtc_diag_array_ids", netCDF::ncInt, n_arrays_dim);
     array_ids_v.putAtt("units", "N/A");
