@@ -32,6 +32,14 @@ inline std::string tod_output_directory(const std::string &obsnum_dir_name,
     return dir_name;
 }
 
+template <class TodFilenameMap>
+std::string register_tod_output_file(TodFilenameMap &tod_filename,
+                                     const std::string &key,
+                                     const std::string &filename_base) {
+    tod_filename[key] = filename_base + ".nc";
+    return key;
+}
+
 struct TodFileDims {
     netCDF::NcDim n_pts;
     netCDF::NcDim n_raw_scan_indices;

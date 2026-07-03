@@ -5446,8 +5446,8 @@ void Engine::create_tod_files() {
                                                   engine_utils::toltecIO::raw>(dir_name, redu_type, "",
                                                                                obsnum, telescope.sim_obs);
 
-        tod_filename["rtc"] = filename + ".nc";
-        name = "rtc";
+        name = citlali::pipeline::register_tod_output_file(
+            tod_filename, "rtc", filename);
     }
 
     // ptc tod output filename setup
@@ -5457,8 +5457,8 @@ void Engine::create_tod_files() {
                                                   engine_utils::toltecIO::raw>(dir_name, redu_type, "",
                                                                                obsnum, telescope.sim_obs);
 
-        tod_filename["ptc"] = filename + ".nc";
-        name = "ptc";
+        name = citlali::pipeline::register_tod_output_file(
+            tod_filename, "ptc", filename);
     }
 
     write_netcdf_atomic(tod_filename[name], [&](netCDF::NcFile &fo) {
