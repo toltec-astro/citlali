@@ -14,6 +14,14 @@
 
 namespace citlali::pipeline {
 
+inline double rtcdiag_fill_double() {
+    return std::numeric_limits<double>::quiet_NaN();
+}
+
+constexpr int rtcdiag_fill_int() {
+    return -2147483647;
+}
+
 template <class Calib>
 std::vector<int> diagnostic_array_ids(const Calib &calib, int fill_value) {
     std::vector<int> ids(static_cast<std::size_t>(calib.n_arrays),

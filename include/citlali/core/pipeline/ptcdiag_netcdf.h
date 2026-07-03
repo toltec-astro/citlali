@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cmath>
+#include <limits>
 #include <string>
 #include <utility>
 #include <vector>
@@ -12,6 +13,14 @@
 namespace citlali::pipeline {
 
 using PtcDiagVarList = std::vector<std::pair<std::string, std::string>>;
+
+inline double ptcdiag_fill_double() {
+    return std::numeric_limits<double>::quiet_NaN();
+}
+
+constexpr int ptcdiag_fill_int() {
+    return -2147483647;
+}
 
 inline std::vector<int> diagnostic_output_scan_indices(Eigen::Index n_scans,
                                                        int fill_value) {

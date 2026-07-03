@@ -5681,8 +5681,8 @@ void Engine::create_tod_files() {
     }
 
     if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
-        const int fill_int = -2147483647;
-        const double fill_double = std::numeric_limits<double>::quiet_NaN();
+        const int fill_int = citlali::pipeline::rtcdiag_fill_int();
+        const double fill_double = citlali::pipeline::rtcdiag_fill_double();
         std::vector<netCDF::NcDim> rtc_det_dims = {n_scans_dim, n_dets_dim};
         const std::vector<std::size_t> rtc_stream_no_chunks;
         const auto n_rtc_stream_det_values =
@@ -5806,9 +5806,9 @@ void Engine::create_tod_files() {
         std::vector<netCDF::NcDim> weight_dims = {n_scans_dim, n_dets_dim};
         netCDF::NcVar weights_v = fo.addVar("weights",netCDF::ncDouble, weight_dims);
         weights_v.putAtt("units","("+omb.sig_unit+")^-2");
-        const int ptc_stream_fill_int = -2147483647;
+        const int ptc_stream_fill_int = citlali::pipeline::ptcdiag_fill_int();
         const double ptc_stream_fill_double =
-            std::numeric_limits<double>::quiet_NaN();
+            citlali::pipeline::ptcdiag_fill_double();
 
         if (ptcproc.second_pass_local.enabled) {
             netCDF::NcVar added_flag_v = fo.addVar("ptc_second_pass_added_flag", netCDF::ncByte, dims);
@@ -6809,17 +6809,17 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     };
 
     struct map_pixel_candidate_t {
-        int row = -2147483647;
-        int col = -2147483647;
-        int uid = -2147483647;
-        int scan = -2147483647;
-        long long sample = -2147483647;
-        double value = std::numeric_limits<double>::quiet_NaN();
-        double weight = std::numeric_limits<double>::quiet_NaN();
-        double n_eff = std::numeric_limits<double>::quiet_NaN();
-        double robust_z = std::numeric_limits<double>::quiet_NaN();
-        double leave_one_out_z = std::numeric_limits<double>::quiet_NaN();
-        double source_distance_arcsec = std::numeric_limits<double>::quiet_NaN();
+        int row = citlali::pipeline::mapdiag_fill_int();
+        int col = citlali::pipeline::mapdiag_fill_int();
+        int uid = citlali::pipeline::mapdiag_fill_int();
+        int scan = citlali::pipeline::mapdiag_fill_int();
+        long long sample = citlali::pipeline::mapdiag_fill_int();
+        double value = citlali::pipeline::mapdiag_fill_double();
+        double weight = citlali::pipeline::mapdiag_fill_double();
+        double n_eff = citlali::pipeline::mapdiag_fill_double();
+        double robust_z = citlali::pipeline::mapdiag_fill_double();
+        double leave_one_out_z = citlali::pipeline::mapdiag_fill_double();
+        double source_distance_arcsec = citlali::pipeline::mapdiag_fill_double();
         bool source_protected = false;
         bool has_contributor = false;
     };
@@ -7477,8 +7477,8 @@ void Engine::create_ptcdiag_file() {
     ptcdiag_filename = filename + ".nc";
 
     write_netcdf_atomic(ptcdiag_filename, [&](netCDF::NcFile &fo) {
-    const int fill_int = -2147483647;
-    const double fill_double = std::numeric_limits<double>::quiet_NaN();
+    const int fill_int = citlali::pipeline::ptcdiag_fill_int();
+    const double fill_double = citlali::pipeline::ptcdiag_fill_double();
     const Eigen::Index n_scans = telescope.scan_indices.cols();
     std::vector<std::size_t> det_chunks = {1, TULA_SIZET(calib.n_dets)};
 
@@ -7571,8 +7571,8 @@ void Engine::create_rtcdiag_file() {
 
     citlali::pipeline::add_tod_output_type_label(fo, "rtcdiag");
 
-    const int fill_int = -2147483647;
-    const double fill_double = std::numeric_limits<double>::quiet_NaN();
+    const int fill_int = citlali::pipeline::rtcdiag_fill_int();
+    const double fill_double = citlali::pipeline::rtcdiag_fill_double();
     const Eigen::Index n_scans = telescope.scan_indices.cols();
     const double rtc_fsmp = rtcproc.run_downsample ? telescope.d_fsmp : telescope.fsmp;
 
