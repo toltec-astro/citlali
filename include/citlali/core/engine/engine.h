@@ -5484,13 +5484,10 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
         // out-of-focus holography parameters
         if (! telescope.sim_obs) {
-            add_netcdf_var(fo, "OOF_T", 3.0);
-            add_netcdf_var(fo, "OOF_M2X", telescope.tel_header["Header.M2.XReq"](0)/1000.*1e6);
-            add_netcdf_var(fo, "OOF_M2Y", telescope.tel_header["Header.M2.YReq"](0)/1000.*1e6);
-            add_netcdf_var(fo, "OOF_M2Z", telescope.tel_header["Header.M2.ZReq"](0)/1000.*1e6);
-
-            add_netcdf_var(fo, "OOF_RO", 25.);
-            add_netcdf_var(fo, "OOF_RI", 1.65);
+            citlali::pipeline::add_oof_telescope_vars(
+                fo, telescope.tel_header["Header.M2.XReq"](0)/1000.*1e6,
+                telescope.tel_header["Header.M2.YReq"](0)/1000.*1e6,
+                telescope.tel_header["Header.M2.ZReq"](0)/1000.*1e6);
             for (int i = 0; i < calib.arrays.size(); ++i) {
                 double rms;
 

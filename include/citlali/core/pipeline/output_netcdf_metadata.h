@@ -222,6 +222,17 @@ inline void add_beammap_reference_vars(netCDF::NcFile &fo, int det_index,
     add_netcdf_var(fo, "BEAMMAP.REF_Y_T", ref_y_t);
 }
 
+inline void add_oof_telescope_vars(netCDF::NcFile &fo, double m2x_microns,
+                                   double m2y_microns,
+                                   double m2z_microns) {
+    add_netcdf_var(fo, "OOF_T", 3.0);
+    add_netcdf_var(fo, "OOF_M2X", m2x_microns);
+    add_netcdf_var(fo, "OOF_M2Y", m2y_microns);
+    add_netcdf_var(fo, "OOF_M2Z", m2z_microns);
+    add_netcdf_var(fo, "OOF_RO", 25.);
+    add_netcdf_var(fo, "OOF_RI", 1.65);
+}
+
 inline void add_tod_scan_index_placeholders(
     netCDF::NcFile &fo, const std::vector<netCDF::NcDim> &raw_scans_dims,
     const std::vector<netCDF::NcDim> &scans_dims,
