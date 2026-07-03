@@ -6358,6 +6358,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     // update wcs ctypes for frequency and stokes params
     mb->wcs.crval[2] = toltec_io.array_freq_map[calib.arrays[maps_to_arrays(i)]];
     mb->wcs.crval[3] = stokes_index;
+    const std::string &stokes_suffix = rtcproc.polarization.stokes_params[stokes_index];
 
     try {
         auto add_map_hdu_with_wcs = [&](const std::string &hdu_name, auto &data) {
@@ -6368,7 +6369,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
         // signal map
         add_map_hdu_with_wcs(
-            "signal_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+            "signal_" + map_name + stokes_suffix,
             mb->signal[i]);
         citlali::pipeline::add_image_unit_description_keys(
             *fits_io->at(map_index).hdus.back(), mb->sig_unit,
@@ -6376,7 +6377,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
         // weight map
         add_map_hdu_with_wcs(
-            "weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+            "weight_" + map_name + stokes_suffix,
             mb->weight[i]);
         const std::string weight_unit = "1/("+mb->sig_unit+")^2";
         citlali::pipeline::add_image_unit_type_description_keys(
@@ -6413,7 +6414,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             mb->weight_formal[i].rows() == mb->n_rows &&
             mb->weight_formal[i].cols() == mb->n_cols) {
             add_map_hdu_with_wcs(
-                "weight_formal_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                "weight_formal_" + map_name + stokes_suffix,
                 mb->weight_formal[i]);
             citlali::pipeline::add_image_unit_type_description_keys(
                 *fits_io->at(map_index).hdus.back(), weight_unit, "formal",
@@ -6425,7 +6426,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             mb->noise_variance[i].rows() == mb->n_rows &&
             mb->noise_variance[i].cols() == mb->n_cols) {
             add_map_hdu_with_wcs(
-                "noise_variance_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                "noise_variance_" + map_name + stokes_suffix,
                 mb->noise_variance[i]);
             const std::string variance_unit = "("+mb->sig_unit+")^2";
             citlali::pipeline::add_image_unit_description_keys(
@@ -6435,7 +6436,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
         // kernel map
         if (rtcproc.run_kernel) {
-            fits_io->at(map_index).add_hdu("kernel_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->kernel[i]);
+            fits_io->at(map_index).add_hdu("kernel_" + map_name + stokes_suffix, mb->kernel[i]);
             citlali::pipeline::add_image_type_key(
                 *fits_io->at(map_index).hdus.back(), rtcproc.kernel.type,
                 "Kernel type");
@@ -6466,7 +6467,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         // coverage map
         if (!mb->coverage.empty()) {
             add_map_hdu_with_wcs(
-                "coverage_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                "coverage_" + map_name + stokes_suffix,
                 mb->coverage[i]);
             citlali::pipeline::add_image_unit_description_keys(
                 *fits_io->at(map_index).hdus.back(), "sec",
@@ -6492,7 +6493,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
             // coverage bool map
             add_map_hdu_with_wcs(
-                "coverage_bool_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                "coverage_bool_" + map_name + stokes_suffix,
                 coverage_bool);
             citlali::pipeline::add_image_unit_description_keys(
                 *fits_io->at(map_index).hdus.back(), "N/A",
@@ -6511,7 +6512,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 sig2noise = mb->signal[i].array()*sqrt(mb->weight[i].array());
             }
             add_map_hdu_with_wcs(
-                "sig2noise_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                "sig2noise_" + map_name + stokes_suffix,
                 sig2noise);
             citlali::pipeline::add_image_unit_type_description_keys(
                 *fits_io->at(map_index).hdus.back(), "N/A", "pixel",
@@ -6519,7 +6520,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 "Legacy pixel S/N: signal times sqrt(weight)");
 
             add_map_hdu_with_wcs(
-                "sig2noise_pixel_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                "sig2noise_pixel_" + map_name + stokes_suffix,
                 sig2noise);
             citlali::pipeline::add_image_unit_type_description_keys(
                 *fits_io->at(map_index).hdus.back(), "N/A", "pixel",
@@ -6534,7 +6535,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 mb->point_source_uncertainty[i].rows() == mb->n_rows &&
                 mb->point_source_uncertainty[i].cols() == mb->n_cols) {
                 add_map_hdu_with_wcs(
-                    "point_source_flux_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                    "point_source_flux_" + map_name + stokes_suffix,
                     mb->signal[i]);
                 citlali::pipeline::add_image_unit_description_keys(
                     *fits_io->at(map_index).hdus.back(), mb->sig_unit,
@@ -6543,14 +6544,14 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                     *fits_io->at(map_index).hdus.back(), 1.0);
 
                 add_map_hdu_with_wcs(
-                    "point_source_uncertainty_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                    "point_source_uncertainty_" + map_name + stokes_suffix,
                     mb->point_source_uncertainty[i]);
                 citlali::pipeline::add_image_unit_description_keys(
                     *fits_io->at(map_index).hdus.back(), mb->sig_unit,
                     "Point-source 1-sigma uncertainty from jackknife maps");
 
                 add_map_hdu_with_wcs(
-                    "sig2noise_point_source_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                    "sig2noise_point_source_" + map_name + stokes_suffix,
                     mb->sig2noise_point_source[i]);
                 citlali::pipeline::add_image_unit_type_description_keys(
                     *fits_io->at(map_index).hdus.back(), "N/A", "point_source",
@@ -6585,7 +6586,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(mb->noise[i].data() + n * mb->n_rows * mb->n_cols,
                                                                                                mb->n_rows, mb->n_cols);
 
-                noise_fits_io->at(map_index).add_hdu("signal_" + map_name + std::to_string(n) + "_" + rtcproc.polarization.stokes_params[stokes_index],
+                noise_fits_io->at(map_index).add_hdu("signal_" + map_name + std::to_string(n) + "_" + stokes_suffix,
                                                      noise_matrix);
                 noise_fits_io->at(map_index).add_wcs(noise_fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
                 citlali::pipeline::add_noise_image_summary_keys(
