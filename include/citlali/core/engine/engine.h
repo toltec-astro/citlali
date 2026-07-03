@@ -5626,7 +5626,9 @@ void Engine::cli_summary() {
         }
         if (tod_output_type == "ptc" || tod_output_type == "both") {
             logger->info("PTC TOD output scans: {}", n_tod_output_scans_ptc);
-            logger->info("PTC TOD output mode: {}", ptcproc.tod_output_mini ? "mini" : "full");
+            logger->info("PTC TOD output mode: {}",
+                         citlali::pipeline::tod_output_mode_label(
+                             ptcproc.tod_output_mini));
         }
     }
     logger->info("RTC diagnostics sidecar output: standard");

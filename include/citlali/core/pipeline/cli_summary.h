@@ -2,6 +2,10 @@
 
 namespace citlali::pipeline {
 
+inline const char *tod_output_mode_label(bool mini_output) {
+    return mini_output ? "mini" : "full";
+}
+
 template <class MapBuffer>
 double map_buffer_memory_gb(const MapBuffer &mb) {
     return 8 * mb.n_rows * mb.n_cols *
