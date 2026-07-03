@@ -5345,46 +5345,10 @@ void Engine::add_tod_header(map_buffer_t &mb) {
                 // get Jy/pixel
                 auto mJy_beam_to_Jy_px = 1e-3/beam_area_rad*pow(omb.pixel_size_rad,2);
 
-                if (omb.sig_unit == "mJy/beam") {
-                    // conversion to mJy/beam
-                    add_netcdf_var(fo, "to_mJy_beam_"+name, 1);
-                    // conversion to MJy/sr
-                    add_netcdf_var(fo, "to_MJy_sr_"+name, 1/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
-                    // conversion to Rayleigh-Jeans uK
-                    add_netcdf_var(fo, "to_uK_"+name, mJy_beam_to_uK);
-                    // conversion to Jy/pixel
-                    add_netcdf_var(fo, "to_Jy_pixel_"+name, mJy_beam_to_Jy_px);
-                }
-                else if (omb.sig_unit == "MJy/sr") {
-                    // conversion to mJy/beam
-                    add_netcdf_var(fo, "to_mJy_beam_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC);
-                    // conversion to MJy/Sr
-                    add_netcdf_var(fo, "to_MJy_sr_"+name, 1);
-                    // conversion to Rayleigh-Jeans uK
-                    add_netcdf_var(fo, "to_uK_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_uK);
-                    // conversion to Jy/pixel
-                    add_netcdf_var(fo, "to_Jy_pixel_"+name, calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC*mJy_beam_to_Jy_px);
-                }
-                else if (omb.sig_unit == "uK") {
-                    // conversion to mJy/beam
-                    add_netcdf_var(fo, "to_mJy_beam_"+name, 1/mJy_beam_to_uK);
-                    // conversion to MJy/sr
-                    add_netcdf_var(fo, "to_MJy_sr_"+name, 1/mJy_beam_to_uK/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
-                    // conversion to Rayleigh-Jeans uK
-                    add_netcdf_var(fo, "to_uK_"+name, 1);
-                    // conversion to Jy/pixel
-                    add_netcdf_var(fo, "to_Jy_pixel_"+name, (1/mJy_beam_to_uK)*mJy_beam_to_Jy_px);
-                }
-                else if (omb.sig_unit == "Jy/pixel") {
-                    // conversion to mJy/beam
-                    add_netcdf_var(fo, "to_mJy_beam_"+name, 1/mJy_beam_to_Jy_px);
-                    // conversion to MJy/sr
-                    add_netcdf_var(fo, "to_MJy_sr_"+name, (1/mJy_beam_to_Jy_px)/(calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC));
-                    // conversion to Rayleigh-Jeans uK
-                    add_netcdf_var(fo, "to_uK_"+name, mJy_beam_to_uK/mJy_beam_to_Jy_px);
-                    // conversion to Jy/pixel
-                    add_netcdf_var(fo, "to_Jy_pixel_"+name, 1);
-                }
+                citlali::pipeline::add_unit_conversion_array_vars(
+                    fo, name, omb.sig_unit,
+                    calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC,
+                    mJy_beam_to_uK, mJy_beam_to_Jy_px);
             }
         }
 

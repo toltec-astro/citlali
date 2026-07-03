@@ -85,6 +85,46 @@ inline void add_unit_conversion_basis_vars(netCDF::NcFile &fo) {
         "monochromatic array center frequency; mJy/beam uses Gaussian beam solid angle to Jy/sr");
 }
 
+inline void add_unit_conversion_array_vars(
+    netCDF::NcFile &fo, const std::string &array_name,
+    const std::string &signal_unit, double mjy_sr_to_mjy_beam,
+    double mjy_beam_to_uk, double mjy_beam_to_jy_pixel) {
+    if (signal_unit == "mJy/beam") {
+        add_netcdf_var(fo, "to_mJy_beam_" + array_name, 1);
+        add_netcdf_var(fo, "to_MJy_sr_" + array_name,
+                       1/mjy_sr_to_mjy_beam);
+        add_netcdf_var(fo, "to_uK_" + array_name, mjy_beam_to_uk);
+        add_netcdf_var(fo, "to_Jy_pixel_" + array_name,
+                       mjy_beam_to_jy_pixel);
+    }
+    else if (signal_unit == "MJy/sr") {
+        add_netcdf_var(fo, "to_mJy_beam_" + array_name,
+                       mjy_sr_to_mjy_beam);
+        add_netcdf_var(fo, "to_MJy_sr_" + array_name, 1);
+        add_netcdf_var(fo, "to_uK_" + array_name,
+                       mjy_sr_to_mjy_beam*mjy_beam_to_uk);
+        add_netcdf_var(fo, "to_Jy_pixel_" + array_name,
+                       mjy_sr_to_mjy_beam*mjy_beam_to_jy_pixel);
+    }
+    else if (signal_unit == "uK") {
+        add_netcdf_var(fo, "to_mJy_beam_" + array_name, 1/mjy_beam_to_uk);
+        add_netcdf_var(fo, "to_MJy_sr_" + array_name,
+                       1/mjy_beam_to_uk/mjy_sr_to_mjy_beam);
+        add_netcdf_var(fo, "to_uK_" + array_name, 1);
+        add_netcdf_var(fo, "to_Jy_pixel_" + array_name,
+                       (1/mjy_beam_to_uk)*mjy_beam_to_jy_pixel);
+    }
+    else if (signal_unit == "Jy/pixel") {
+        add_netcdf_var(fo, "to_mJy_beam_" + array_name,
+                       1/mjy_beam_to_jy_pixel);
+        add_netcdf_var(fo, "to_MJy_sr_" + array_name,
+                       (1/mjy_beam_to_jy_pixel)/mjy_sr_to_mjy_beam);
+        add_netcdf_var(fo, "to_uK_" + array_name,
+                       mjy_beam_to_uk/mjy_beam_to_jy_pixel);
+        add_netcdf_var(fo, "to_Jy_pixel_" + array_name, 1);
+    }
+}
+
 template <class Arrays, class FwhmMap, class PositionAngleMap,
           class ArrayNameMap>
 void add_array_beam_geometry_vars(netCDF::NcFile &fo, const Arrays &arrays,
