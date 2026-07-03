@@ -5913,18 +5913,11 @@ void Engine::create_tod_files() {
 
     write_netcdf_atomic(tod_filename[name], [&](netCDF::NcFile &fo) {
 
-    // add tod output type to file
-    netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type",1);
-    netCDF::NcVar tod_output_type_var = fo.addVar("tod_output_type",netCDF::ncString, n_tod_output_type_dim);
-    const std::vector<size_t> tod_output_type_index = {0};
-
     if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
-        std::string tod_output_type_name = "rtc";
-        tod_output_type_var.putVar(tod_output_type_index,tod_output_type_name);
+        citlali::pipeline::add_tod_output_type_label(fo, "rtc");
     }
     else if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
-        std::string tod_output_type_name = "ptc";
-        tod_output_type_var.putVar(tod_output_type_index,tod_output_type_name);
+        citlali::pipeline::add_tod_output_type_label(fo, "ptc");
 
         // number of eigenvalues
         netCDF::NcDim n_eigs_dim = fo.addDim("n_eigs",ptcproc.cleaner.n_calc);
