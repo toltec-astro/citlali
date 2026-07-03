@@ -5724,8 +5724,8 @@ void Engine::write_map_summary(map_buffer_t &mb) {
     f.open (obsnum_dir_name+"/logs/" + filename + ".log");
 
     f << "Summary file for maps\n";
-    f << "-Citlali version: " << CITLALI_GIT_VERSION << "\n";
-    f << "-Kidscpp version: " << KIDSCPP_GIT_VERSION << "\n";
+    citlali::pipeline::write_pipeline_version_summary(
+        f, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION);
     f << "-Time of file writing: " << engine_utils::current_date_time() << "\n";
 
     f << "-Reduction type: " << redu_type << "\n";
