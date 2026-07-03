@@ -6360,16 +6360,24 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     mb->wcs.crval[3] = stokes_index;
 
     try {
+        auto add_map_hdu_with_wcs = [&](const std::string &hdu_name, const auto &data) {
+            fits_io->at(map_index).add_hdu(hdu_name, data);
+            fits_io->at(map_index).add_wcs(
+                fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+        };
+
         // signal map
-        fits_io->at(map_index).add_hdu("signal_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->signal[i]);
-        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+        add_map_hdu_with_wcs(
+            "signal_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+            mb->signal[i]);
         citlali::pipeline::add_image_unit_description_keys(
             *fits_io->at(map_index).hdus.back(), mb->sig_unit,
             "Signal map in map units");
 
         // weight map
-        fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
-        fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+        add_map_hdu_with_wcs(
+            "weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+            mb->weight[i]);
         const std::string weight_unit = "1/("+mb->sig_unit+")^2";
         citlali::pipeline::add_image_unit_type_description_keys(
             *fits_io->at(map_index).hdus.back(),
