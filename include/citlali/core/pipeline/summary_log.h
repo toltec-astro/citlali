@@ -19,4 +19,9 @@ inline void write_chunk_time_summary(std::ostream &stream,
     stream << "-Time of file writing: " << write_time << "\n";
 }
 
+inline void write_file_time_summary(std::ostream &stream,
+                                    const std::string &write_time) {
+    stream << "-Time of file writing: " << write_time << "\n";
+}
+
 }  // namespace citlali::pipeline

@@ -5726,7 +5726,8 @@ void Engine::write_map_summary(map_buffer_t &mb) {
     f << "Summary file for maps\n";
     citlali::pipeline::write_pipeline_version_summary(
         f, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION);
-    f << "-Time of file writing: " << engine_utils::current_date_time() << "\n";
+    citlali::pipeline::write_file_time_summary(
+        f, engine_utils::current_date_time());
 
     f << "-Reduction type: " << redu_type << "\n";
     f << "-Map type: " << tod_type << "\n";
