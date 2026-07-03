@@ -5438,10 +5438,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         citlali::pipeline::add_tod_filter_edge_guard_config_vars(
             fo, rtcproc.filter_edge_guard, telescope.outer_scans_chunk,
             rtcproc.tod_output_outer_context_samples);
-        add_netcdf_var(fo, "CONFIG.DOWNSAMPLED", rtcproc.run_downsample);
-        add_netcdf_var(fo, "CONFIG.CALIBRATED", rtcproc.run_calibrate);
-        add_netcdf_var(fo, "CONFIG.EXTINCTION", rtcproc.run_extinction);
-        add_netcdf_var<std::string>(fo, "CONFIG.EXTINCTION.EXTMODEL", rtcproc.calibration.extinction_model);
+        citlali::pipeline::add_tod_processing_config_vars(fo, rtcproc);
         citlali::pipeline::add_weight_selection_config_vars(fo, ptcproc);
         citlali::pipeline::add_reduction_learning_config_vars(
             fo, reduction_learning);

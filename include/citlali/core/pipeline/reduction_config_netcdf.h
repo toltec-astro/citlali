@@ -95,6 +95,16 @@ void add_tod_filter_runtime_config_vars(netCDF::NcFile &fo,
                    rtcproc.filter.iir_highpass_zero_phase);
 }
 
+template <class RtcProc>
+void add_tod_processing_config_vars(netCDF::NcFile &fo,
+                                    const RtcProc &rtcproc) {
+    add_netcdf_var(fo, "CONFIG.DOWNSAMPLED", rtcproc.run_downsample);
+    add_netcdf_var(fo, "CONFIG.CALIBRATED", rtcproc.run_calibrate);
+    add_netcdf_var(fo, "CONFIG.EXTINCTION", rtcproc.run_extinction);
+    add_netcdf_var<std::string>(fo, "CONFIG.EXTINCTION.EXTMODEL",
+                                rtcproc.calibration.extinction_model);
+}
+
 template <class WeightCorrPenalty>
 void add_weight_corr_penalty_config_vars(
     netCDF::NcFile &fo, const WeightCorrPenalty &penalty) {
