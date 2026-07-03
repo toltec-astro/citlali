@@ -6424,12 +6424,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                                            mb->noise_variance[i]);
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
             const std::string variance_unit = "("+mb->sig_unit+")^2";
-            fits_io->at(map_index).hdus.back()->addKey("UNIT", variance_unit, "Unit of map");
-            fits_io->at(map_index).hdus.back()->addKey("BUNIT", variance_unit, "Physical unit of image values");
-            fits_io->at(map_index).hdus.back()->addKey(
-                "DESCRIP",
-                "Per-pixel variance estimated from jackknife noise maps",
-                "Image product description");
+            citlali::pipeline::add_image_unit_description_keys(
+                *fits_io->at(map_index).hdus.back(), variance_unit,
+                "Per-pixel variance estimated from jackknife noise maps");
         }
 
         // kernel map
