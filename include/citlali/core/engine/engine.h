@@ -5561,7 +5561,8 @@ void Engine::create_tod_files() {
         const int fill_int = citlali::pipeline::rtcdiag_fill_int();
         const double fill_double = citlali::pipeline::rtcdiag_fill_double();
         const double rtc_stream_fsmp =
-            rtcproc.run_downsample ? telescope.d_fsmp : telescope.fsmp;
+            citlali::pipeline::rtc_tod_stream_sample_rate(
+                rtcproc, telescope.fsmp, telescope.d_fsmp);
         citlali::pipeline::add_rtcdiag_tod_stream_diag(
             fo, calib, rtcproc, n_scans_dim, n_dets_dim,
             n_tod_output_scans_for_stream, rtc_stream_fsmp,

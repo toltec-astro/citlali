@@ -22,6 +22,12 @@ constexpr int rtcdiag_fill_int() {
     return -2147483647;
 }
 
+template <class RtcProc>
+double rtc_tod_stream_sample_rate(const RtcProc &rtcproc, double fsmp,
+                                  double downsampled_fsmp) {
+    return rtcproc.run_downsample ? downsampled_fsmp : fsmp;
+}
+
 template <class Calib>
 std::vector<int> diagnostic_array_ids(const Calib &calib, int fill_value) {
     std::vector<int> ids(static_cast<std::size_t>(calib.n_arrays),
