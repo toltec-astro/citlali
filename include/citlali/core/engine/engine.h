@@ -5662,18 +5662,8 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
         f, redu_type, tod_type, omb.sig_unit, in.name);
 
     citlali::pipeline::write_chunk_processing_status_summary(f, in.status);
-    f << "-TOD notch enabled: " << rtcproc.run_tod_notch << "\n";
-    f << "-TOD IIR highpass enabled: " << rtcproc.run_tod_iir_highpass << "\n";
-    f << "-TOD IIR highpass freq (Hz): " << rtcproc.filter.iir_highpass_freq_Hz << "\n";
-    f << "-TOD IIR highpass order: " << rtcproc.filter.iir_highpass_order << "\n";
-    f << "-TOD IIR highpass zero-phase: " << rtcproc.filter.iir_highpass_zero_phase << "\n";
-    f << "-TOD filter edge guard enabled: " << rtcproc.filter_edge_guard.enabled << "\n";
-    f << "-TOD filter edge guard context samples: " << rtcproc.filter_edge_guard.context_samples << "\n";
-    f << "-TOD filter edge guard samples per edge: " << rtcproc.filter_edge_guard.guard_samples << "\n";
-    f << "-TOD loaded outer context samples: " << telescope.outer_scans_chunk << "\n";
-    f << "-RTC detector notch context samples: " << rtcproc.line_audit.detector_notch_context_samples << "\n";
-    f << "-RTC fixed line-audit notch enabled: " << rtcproc.line_audit.fixed_notch_enabled << "\n";
-    f << "-RTC fixed line-audit notch count: " << rtcproc.line_audit.fixed_notch_freqs_hz.size() << "\n";
+    citlali::pipeline::write_chunk_tod_filter_summary(
+        f, rtcproc, telescope.outer_scans_chunk);
     f << "-PTC model-protected line-audit notch enabled: " << rtcproc.line_audit.ptc_model_protected_enabled << "\n";
     f << "-PTC model-protected line-audit require model: " << rtcproc.line_audit.ptc_require_model_subtracted << "\n";
     f << "-PTC model-protected fixed/shared/detector notches: "
