@@ -5619,12 +5619,9 @@ void Engine::cli_summary() {
     logger->info("number of scans: {}",telescope.scan_indices.cols());
     if (run_tod_output) {
         if (citlali::pipeline::should_report_rtc_tod_output(tod_output_type)) {
-            logger->info("RTC TOD output scans: {}", n_tod_output_scans_rtc);
-            logger->info("RTC TOD output mode: {}{}",
-                         citlali::pipeline::tod_output_mode_label(
-                             rtcproc.tod_output_mini),
-                         citlali::pipeline::tod_outer_mode_suffix(
-                             rtcproc.tod_output_outer));
+            citlali::pipeline::log_rtc_tod_output_summary(
+                logger, n_tod_output_scans_rtc, rtcproc.tod_output_mini,
+                rtcproc.tod_output_outer);
         }
         if (citlali::pipeline::should_report_ptc_tod_output(tod_output_type)) {
             logger->info("PTC TOD output scans: {}", n_tod_output_scans_ptc);
