@@ -5428,10 +5428,9 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             fruit_iter);
 
         // add control/runtime parameters
-        add_netcdf_var(fo, "CONFIG.VERBOSE", verbose_mode);
+        citlali::pipeline::add_tod_initial_runtime_config_vars(
+            fo, verbose_mode, rtcproc.run_polarization, rtcproc.run_despike);
         const bool run_any_tod_filter = rtcproc.run_tod_filter || rtcproc.run_tod_iir_highpass;
-        add_netcdf_var(fo, "CONFIG.POLARIZED", rtcproc.run_polarization);
-        add_netcdf_var(fo, "CONFIG.DESPIKED", rtcproc.run_despike);
         citlali::pipeline::add_rtc_local_despike_config_vars(
             fo, rtcproc.despiker.local_residual);
         add_netcdf_var(fo, "CONFIG.TODFILTERED", run_any_tod_filter);

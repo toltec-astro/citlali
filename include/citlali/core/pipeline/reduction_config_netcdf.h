@@ -71,6 +71,15 @@ void add_ptc_weight_cutoff_config_vars(netCDF::NcFile &fo,
     }
 }
 
+inline void add_tod_initial_runtime_config_vars(netCDF::NcFile &fo,
+                                                bool verbose_mode,
+                                                bool run_polarization,
+                                                bool run_despike) {
+    add_netcdf_var(fo, "CONFIG.VERBOSE", verbose_mode);
+    add_netcdf_var(fo, "CONFIG.POLARIZED", run_polarization);
+    add_netcdf_var(fo, "CONFIG.DESPIKED", run_despike);
+}
+
 template <class WeightCorrPenalty>
 void add_weight_corr_penalty_config_vars(
     netCDF::NcFile &fo, const WeightCorrPenalty &penalty) {
