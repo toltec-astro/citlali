@@ -6711,7 +6711,9 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
 
         // array index
         auto array = calib.arrays[map_index];
-        std::string name = toltec_io.array_name_map[array] + "_" + map_name + rtcproc.polarization.stokes_params[stokes_index];
+        const std::string name = citlali::pipeline::spectral_product_base_name(
+            toltec_io.array_name_map[array], map_name,
+            rtcproc.polarization.stokes_params[stokes_index]);
 
         citlali::pipeline::add_histogram_pair(
             fo, name, hist_bins_dim, mb->hist_bins[i], mb->hists[i]);
