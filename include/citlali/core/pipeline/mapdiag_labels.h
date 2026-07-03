@@ -18,6 +18,11 @@ inline MapdiagMapLabels make_mapdiag_map_labels(
     return {array_name, stokes_name, map_name};
 }
 
+inline std::string mapdiag_weight_hdu_name(const std::string &map_name,
+                                           const std::string &stokes_name) {
+    return "weight_" + map_name + stokes_name;
+}
+
 inline std::vector<std::string> mapdiag_obsnum_labels(
     const std::vector<std::string> &obsnums,
     const std::string &fallback_obsnum) {

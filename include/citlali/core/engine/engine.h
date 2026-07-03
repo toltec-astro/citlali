@@ -7312,12 +7312,16 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     obs_dir, redu_type, array_names[idx], obsnum_i, telescope.sim_obs) + ".fits";
                 try {
                     fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> obs_fits(obs_weight_path);
-                    const auto weight_hdu_name = "weight_" + map_names[idx] + stokes_names[idx];
+                    const auto weight_hdu_name =
+                        citlali::pipeline::mapdiag_weight_hdu_name(
+                            map_names[idx], stokes_names[idx]);
                     auto obs_weight = obs_fits.get_hdu(weight_hdu_name);
                     accumulate_obs_weight(i, core_mask, obs_weight, obs_idx);
                 } catch (const std::exception &e) {
                     logger->warn("failed to derive mapdiag contribution from {} [{}]: {}", obs_weight_path,
-                                 "weight_" + map_names[idx] + stokes_names[idx], e.what());
+                                 citlali::pipeline::mapdiag_weight_hdu_name(
+                                     map_names[idx], stokes_names[idx]),
+                                 e.what());
                     const std::size_t flat =
                         citlali::pipeline::mapdiag_obs_flat_index(
                             mapdiag_context, idx, obs_idx);
