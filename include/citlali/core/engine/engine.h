@@ -96,6 +96,7 @@
 #include <citlali/core/pipeline/mapdiag_observation_weight.h>
 #include <citlali/core/pipeline/mapdiag_stage.h>
 #include <citlali/core/pipeline/mapdiag_stats.h>
+#include <citlali/core/pipeline/output_netcdf_metadata.h>
 #include <citlali/core/pipeline/phdu_beammap.h>
 #include <citlali/core/pipeline/phdu_extinction.h>
 #include <citlali/core/pipeline/phdu_oof.h>
