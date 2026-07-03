@@ -562,6 +562,22 @@ void add_telescope_data_vars(
     }
 }
 
+template <class PointingOffsets, class Logger>
+void add_tod_pointing_offset_vars(
+    netCDF::NcFile &fo, const PointingOffsets &pointing_offsets_arcsec,
+    const Logger &logger, netCDF::NcDim n_pts_dim,
+    netCDF::NcVar::ChunkMode chunk_mode,
+    const std::vector<std::size_t> &chunk_sizes) {
+    for (const auto &item : pointing_offsets_arcsec) {
+        logger->info("pointing_offsets_arcsec.second {} {}", item.first,
+                     item.second);
+        netCDF::NcVar offsets_v = fo.addVar(
+            "pointing_offset_" + item.first, netCDF::ncDouble, n_pts_dim);
+        offsets_v.putAtt("units", "arcsec");
+        set_tod_var_chunking(offsets_v, chunk_mode, chunk_sizes);
+    }
+}
+
 template <class AddInt, class AddDouble>
 void add_tod_filter_edge_guard_scan_vars(const AddInt &add_int,
                                          const AddDouble &add_double) {

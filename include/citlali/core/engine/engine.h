@@ -5578,12 +5578,8 @@ void Engine::create_tod_files() {
         fo, telescope.tel_data, n_pts_dim, chunkMode, chunkSizes);
 
     // add pointing offset parameters
-    for (auto const& x: pointing_offsets_arcsec) {
-        logger->info("pointing_offsets_arcsec.second {} {}",x.first, x.second);
-        netCDF::NcVar offsets_v = fo.addVar("pointing_offset_"+x.first,netCDF::ncDouble, n_pts_dim);
-        offsets_v.putAtt("units","arcsec");
-        offsets_v.setChunking(chunkMode, chunkSizes);
-    }
+    citlali::pipeline::add_tod_pointing_offset_vars(
+        fo, pointing_offsets_arcsec, logger, n_pts_dim, chunkMode, chunkSizes);
 
     if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
         const int fill_int = citlali::pipeline::rtcdiag_fill_int();
