@@ -6193,16 +6193,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     logger->debug("adding beamsizes");
 
     // add beamsizes
-    if (std::get<0>(calib.array_fwhms[calib.arrays(i)]) >= std::get<1>(calib.array_fwhms[calib.arrays(i)])) {
-        add_double_key("BMAJ", std::get<0>(calib.array_fwhms[calib.arrays(i)]), "beammaj (arcsec)");
-        add_double_key("BMIN", std::get<1>(calib.array_fwhms[calib.arrays(i)]), "beammin (arcsec)");
-        add_double_key("BPA", calib.array_pas[calib.arrays(i)]*RAD_TO_DEG, "beampa (deg)");
-    }
-    else {
-        add_double_key("BMAJ", std::get<1>(calib.array_fwhms[calib.arrays(i)]), "beammaj (arcsec)");
-        add_double_key("BMIN", std::get<0>(calib.array_fwhms[calib.arrays(i)]), "beammin (arcsec)");
-        add_double_key("BPA", (calib.array_pas[calib.arrays(i)] + pi/2)*RAD_TO_DEG, "beampa (deg)");
-    }
+    citlali::pipeline::add_phdu_beam_geometry_keys(
+        fits_entry, name, logger, calib.array_fwhms[calib.arrays(i)],
+        calib.array_pas[calib.arrays(i)], RAD_TO_DEG, pi/2);
 
     fits_io->at(i).pfits->pHDU().addKey("BUNIT", mb->sig_unit, "bunit");
 

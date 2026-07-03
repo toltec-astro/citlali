@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <tuple>
 
 #include <citlali/core/pipeline/phdu_telescope_values.h>
 
@@ -82,6 +83,34 @@ void add_phdu_map_geometry_keys(
     add_double_key("MEAN_AZ", mean_az_deg, "Mean Azimuth (deg)");
     add_double_key("MEAN_PA", mean_pa_deg,
                    "Mean Parallactic angle (deg)");
+}
+
+template <class FitsEntry, class ArrayFwhm, class Logger>
+void add_phdu_beam_geometry_keys(
+    FitsEntry &fits_entry, const std::string &array_name,
+    const Logger &logger, const ArrayFwhm &array_fwhm,
+    double position_angle_rad, double rad_to_deg,
+    double pa_quadrature_offset_rad) {
+    auto add_double_key = [&](const std::string &key, double value,
+                              const std::string &comment,
+                              double fallback = 0.0) {
+        add_phdu_double_key(fits_entry, array_name, logger, key, value,
+                            comment, fallback);
+    };
+
+    if (std::get<0>(array_fwhm) >= std::get<1>(array_fwhm)) {
+        add_double_key("BMAJ", std::get<0>(array_fwhm), "beammaj (arcsec)");
+        add_double_key("BMIN", std::get<1>(array_fwhm), "beammin (arcsec)");
+        add_double_key("BPA", position_angle_rad*rad_to_deg, "beampa (deg)");
+    }
+    else {
+        add_double_key("BMAJ", std::get<1>(array_fwhm), "beammaj (arcsec)");
+        add_double_key("BMIN", std::get<0>(array_fwhm), "beammin (arcsec)");
+        add_double_key("BPA",
+                       (position_angle_rad + pa_quadrature_offset_rad)*
+                           rad_to_deg,
+                       "beampa (deg)");
+    }
 }
 
 }  // namespace citlali::pipeline
