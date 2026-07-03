@@ -8754,12 +8754,8 @@ void Engine::create_rtcdiag_file() {
     citlali::pipeline::add_diagnostic_output_scan_index(
         fo, n_scans_dim, n_scans, fill_int);
 
-    netCDF::NcVar array_ids_v = fo.addVar("rtc_diag_array_ids", netCDF::ncInt, n_arrays_dim);
-    array_ids_v.putAtt("units", "N/A");
-    array_ids_v.putAtt("comment", "array IDs corresponding to n_arrays axis");
-    const auto array_ids =
-        citlali::pipeline::diagnostic_array_ids(calib, fill_int);
-    array_ids_v.putVar(array_ids.data());
+    citlali::pipeline::add_rtcdiag_array_ids(
+        fo, calib, n_arrays_dim, fill_int);
 
     auto percentile_sorted = citlali::pipeline::rtcdiag_percentile_sorted;
 
