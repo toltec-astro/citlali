@@ -6802,9 +6802,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                      const Eigen::MatrixXd &obs_weight,
                                      std::size_t obs_index) {
         citlali::pipeline::accumulate_mapdiag_obs_weight(
-            map_i, n_obsnums, mb->n_rows, mb->n_cols, core_mask, obs_weight,
-            obs_index, obs_weight_sum, obs_core_weight_sum, obs_valid_pixels,
-            obs_core_pixels);
+            map_i, mapdiag_context.n_obsnums, mb->n_rows, mb->n_cols,
+            core_mask, obs_weight, obs_index, obs_weight_sum,
+            obs_core_weight_sum, obs_valid_pixels, obs_core_pixels);
     };
 
     struct map_pixel_candidate_t {
@@ -7290,10 +7290,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         }
 
         if (!is_coadd) {
-            obs_weight_sum[idx * n_obsnums] = weight_sum[idx];
-            obs_core_weight_sum[idx * n_obsnums] = core_weight_sum[idx];
-            obs_valid_pixels[idx * n_obsnums] = n_valid_pixels[idx];
-            obs_core_pixels[idx * n_obsnums] = n_core_pixels[idx];
+            obs_weight_sum[idx * mapdiag_context.n_obsnums] = weight_sum[idx];
+            obs_core_weight_sum[idx * mapdiag_context.n_obsnums] = core_weight_sum[idx];
+            obs_valid_pixels[idx * mapdiag_context.n_obsnums] = n_valid_pixels[idx];
+            obs_core_pixels[idx * mapdiag_context.n_obsnums] = n_core_pixels[idx];
         }
         else {
             for (std::size_t obs_idx = 0; obs_idx < mb->obsnums.size(); ++obs_idx) {
@@ -7311,7 +7311,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 } catch (const std::exception &e) {
                     logger->warn("failed to derive mapdiag contribution from {} [{}]: {}", obs_weight_path,
                                  "weight_" + map_names[idx] + stokes_names[idx], e.what());
-                    const std::size_t flat = idx * n_obsnums + obs_idx;
+                    const std::size_t flat = idx * mapdiag_context.n_obsnums + obs_idx;
                     obs_weight_sum[flat] = 0.0;
                     obs_core_weight_sum[flat] = 0.0;
                     obs_valid_pixels[flat] = 0;
@@ -7322,12 +7322,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
         double total_weight = 0.0;
         double total_core_weight = 0.0;
-        for (std::size_t obs_idx = 0; obs_idx < n_obsnums; ++obs_idx) {
-            total_weight += obs_weight_sum[idx * n_obsnums + obs_idx];
-            total_core_weight += obs_core_weight_sum[idx * n_obsnums + obs_idx];
+        for (std::size_t obs_idx = 0; obs_idx < mapdiag_context.n_obsnums; ++obs_idx) {
+            total_weight += obs_weight_sum[idx * mapdiag_context.n_obsnums + obs_idx];
+            total_core_weight += obs_core_weight_sum[idx * mapdiag_context.n_obsnums + obs_idx];
         }
-        for (std::size_t obs_idx = 0; obs_idx < n_obsnums; ++obs_idx) {
-            const std::size_t flat = idx * n_obsnums + obs_idx;
+        for (std::size_t obs_idx = 0; obs_idx < mapdiag_context.n_obsnums; ++obs_idx) {
+            const std::size_t flat = idx * mapdiag_context.n_obsnums + obs_idx;
             obs_weight_frac[flat] = (total_weight > 0.0) ? obs_weight_sum[flat] / total_weight : fill_double;
             obs_core_weight_frac[flat] = (total_core_weight > 0.0) ? obs_core_weight_sum[flat] / total_core_weight : fill_double;
         }
@@ -7338,7 +7338,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         fo, is_coadd ? -1 : std::stoi(obsnum));
 
     netCDF::NcDim n_maps_dim = fo.addDim("n_maps", n_maps_local);
-    netCDF::NcDim n_obsnums_dim = fo.addDim("n_obsnums", n_obsnums);
+    netCDF::NcDim n_obsnums_dim = fo.addDim("n_obsnums", mapdiag_context.n_obsnums);
     std::vector<netCDF::NcDim> map_obs_dims = {n_maps_dim, n_obsnums_dim};
 
     add_netcdf_var<std::string>(fo, "MAP_STAGE", stage_name);
@@ -7368,7 +7368,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     put_string_1d(fo, "coadd_obsnum", n_obsnums_dim, obsnum_strings, "obsnum ordering for map x obsnum contribution tables");
 
     const auto dateobs_strings =
-        citlali::pipeline::mapdiag_dateobs_labels(date_obs, n_obsnums);
+        citlali::pipeline::mapdiag_dateobs_labels(date_obs, mapdiag_context.n_obsnums);
     put_string_1d(fo, "coadd_dateobs", n_obsnums_dim, dateobs_strings, "DATEOBS ordering matching coadd_obsnum");
 
     auto add_map_double = [&](const std::string &name, const std::string &comment, const std::vector<double> &values) {
