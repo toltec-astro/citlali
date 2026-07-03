@@ -2,6 +2,7 @@
 
 #include <ostream>
 #include <string>
+#include <string_view>
 
 namespace citlali::pipeline {
 
@@ -25,10 +26,10 @@ inline void write_file_time_summary(std::ostream &stream,
 }
 
 inline void write_chunk_identity_summary(std::ostream &stream,
-                                         const std::string &reduction_type,
-                                         const std::string &tod_type,
-                                         const std::string &tod_unit,
-                                         const std::string &chunk_type) {
+                                         std::string_view reduction_type,
+                                         std::string_view tod_type,
+                                         std::string_view tod_unit,
+                                         std::string_view chunk_type) {
     stream << "-Reduction type: " << reduction_type << "\n";
     stream << "-TOD type: " << tod_type << "\n";
     stream << "-TOD unit: " << tod_unit << "\n";
