@@ -67,6 +67,13 @@ inline double mapdiag_masked_median(const Eigen::MatrixXd &matrix,
         mapdiag_collect_masked_values(matrix, mask), fill_value);
 }
 
+inline double mapdiag_positive_sqrt_or_fill(double value, double fill_value) {
+    if (std::isfinite(value) && value > std::numeric_limits<double>::epsilon()) {
+        return std::sqrt(value);
+    }
+    return fill_value;
+}
+
 inline MapdiagTailStats mapdiag_tail_stats(const std::vector<double> &values,
                                            double fill_value) {
     MapdiagTailStats stats;
