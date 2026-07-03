@@ -5361,28 +5361,14 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
         // add source flux for beammaps
         if (redu_type == "beammap") {
-            citlali::pipeline::add_beammap_source_flux_vars(
-                fo, calib.arrays, toltec_io.array_name_map,
-                beammap_fluxes_mJy_beam, beammap_fluxes_MJy_Sr);
-            citlali::pipeline::add_beammap_tuning_vars(
-                fo, beammap_iter_tolerance,
-                beammap_convergence_radius_arcsec, beammap_iter_max,
-                beammap_phase_split_enabled, beammap_locator_iter,
-                beammap_measurement_start_iter, beammap_derotate);
-
-            int ref_det_index = -99;
-            double ref_x_t = -99.0;
-            double ref_y_t = -99.0;
-            if (beammap_subtract_reference) {
-                const auto reference_values =
-                    citlali::pipeline::beammap_reference_header_values(
-                        calib, beammap_reference_det);
-                ref_det_index = reference_values.det_index;
-                ref_x_t = reference_values.x_t;
-                ref_y_t = reference_values.y_t;
-            }
-            citlali::pipeline::add_beammap_reference_vars(
-                fo, ref_det_index, ref_x_t, ref_y_t);
+            citlali::pipeline::add_beammap_tod_header_vars(
+                fo, calib, toltec_io.array_name_map,
+                beammap_fluxes_mJy_beam, beammap_fluxes_MJy_Sr,
+                beammap_iter_tolerance, beammap_convergence_radius_arcsec,
+                beammap_iter_max, beammap_phase_split_enabled,
+                beammap_locator_iter, beammap_measurement_start_iter,
+                beammap_derotate, beammap_subtract_reference,
+                beammap_reference_det);
         }
 
         citlali::pipeline::add_pipeline_identity_vars(

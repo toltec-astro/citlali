@@ -10,6 +10,7 @@
 #include <Eigen/Core>
 #include <netcdf>
 
+#include <citlali/core/pipeline/phdu_beammap.h>
 #include <citlali/core/utils/netcdf_io.h>
 
 namespace citlali::pipeline {
@@ -303,6 +304,34 @@ inline void add_beammap_reference_vars(netCDF::NcFile &fo, int det_index,
     add_netcdf_var(fo, "BEAMMAP.REF_DET_INDEX", det_index);
     add_netcdf_var(fo, "BEAMMAP.REF_X_T", ref_x_t);
     add_netcdf_var(fo, "BEAMMAP.REF_Y_T", ref_y_t);
+}
+
+template <class Calib, class ArrayNameMap, class FluxMap, class ReferenceDet>
+void add_beammap_tod_header_vars(
+    netCDF::NcFile &fo, Calib &calib, ArrayNameMap &array_name_map,
+    FluxMap &flux_mjy_beam, FluxMap &flux_mjy_sr, double iter_tolerance,
+    double convergence_radius_arcsec, int iter_max,
+    bool phase_split_enabled, int locator_iter, int measurement_start_iter,
+    bool is_derotated, bool subtract_reference,
+    const ReferenceDet &reference_det) {
+    add_beammap_source_flux_vars(
+        fo, calib.arrays, array_name_map, flux_mjy_beam, flux_mjy_sr);
+    add_beammap_tuning_vars(
+        fo, iter_tolerance, convergence_radius_arcsec, iter_max,
+        phase_split_enabled, locator_iter, measurement_start_iter,
+        is_derotated);
+
+    int ref_det_index = -99;
+    double ref_x_t = -99.0;
+    double ref_y_t = -99.0;
+    if (subtract_reference) {
+        const auto reference_values =
+            beammap_reference_header_values(calib, reference_det);
+        ref_det_index = reference_values.det_index;
+        ref_x_t = reference_values.x_t;
+        ref_y_t = reference_values.y_t;
+    }
+    add_beammap_reference_vars(fo, ref_det_index, ref_x_t, ref_y_t);
 }
 
 inline void add_oof_telescope_vars(netCDF::NcFile &fo, double m2x_microns,
