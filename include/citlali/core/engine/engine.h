@@ -6720,18 +6720,14 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
         auto array = calib.arrays[map_index];
         std::string name = toltec_io.array_name_map[array] + "_" + map_name + rtcproc.polarization.stokes_params[stokes_index];
 
-        // histogram bins
-        netCDF::NcVar hist_bins_v = fo.addVar(name + "_bins",netCDF::ncDouble, hist_bins_dim);
-        hist_bins_v.putVar(mb->hist_bins[i].data());
-
-        // histogram
-        netCDF::NcVar hist_v = fo.addVar(name + "_hist",netCDF::ncDouble, hist_bins_dim);
-        hist_v.putVar(mb->hists[i].data());
+        citlali::pipeline::add_double_1d_var(
+            fo, name + "_bins", hist_bins_dim, mb->hist_bins[i]);
+        citlali::pipeline::add_double_1d_var(
+            fo, name + "_hist", hist_bins_dim, mb->hists[i]);
 
         if (!mb->noise.empty()) {
-            // average noise histogram
-            netCDF::NcVar hist_v = fo.addVar(name + "_noise_hist",netCDF::ncDouble, hist_bins_dim);
-            hist_v.putVar(mb->noise_hists[i].data());
+            citlali::pipeline::add_double_1d_var(
+                fo, name + "_noise_hist", hist_bins_dim, mb->noise_hists[i]);
         }
     }
     });
