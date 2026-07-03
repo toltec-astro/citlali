@@ -6534,7 +6534,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 citlali::pipeline::add_image_unit_description_keys(
                     *fits_io->at(map_index).hdus.back(), mb->sig_unit,
                     "Point-source flux estimate after filter response normalization");
-                fits_io->at(map_index).hdus.back()->addKey("RESPNORM", 1.0, "Point-source response normalization applied");
+                citlali::pipeline::add_point_source_response_norm_key(
+                    *fits_io->at(map_index).hdus.back(), 1.0);
 
                 fits_io->at(map_index).add_hdu("point_source_uncertainty_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
                                                mb->point_source_uncertainty[i]);

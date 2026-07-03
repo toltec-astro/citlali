@@ -52,6 +52,12 @@ void add_weight_variance_median_key(Hdu &hdu, double median_ratio) {
 }
 
 template <class Hdu>
+void add_point_source_response_norm_key(Hdu &hdu, double response_norm) {
+    hdu.addKey("RESPNORM", response_norm,
+               "Point-source response normalization applied");
+}
+
+template <class Hdu>
 void add_noise_image_summary_keys(Hdu &hdu, const std::string &unit,
                                   double median_rms) {
     hdu.addKey("UNIT", unit, "Unit of map");
