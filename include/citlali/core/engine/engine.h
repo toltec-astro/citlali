@@ -5558,11 +5558,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             citlali::pipeline::add_rtc_line_audit_config_vars(
                 fo, rtcproc.line_audit);
         }
-        add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
-        add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTHIGH", ptcproc.upper_weight_factor);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor);
+        citlali::pipeline::add_ptc_weight_cutoff_config_vars(fo, ptcproc);
         add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.ENABLED", ptcproc.weight_corr_penalty.enabled);
         add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.MIN_GOOD_FRAC", ptcproc.weight_corr_penalty.min_good_frac);
         add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.MIN_OVERLAP", ptcproc.weight_corr_penalty.min_overlap);
@@ -8052,12 +8048,7 @@ void Engine::create_ptcdiag_file() {
     citlali::pipeline::add_weight_selection_config_vars(fo, ptcproc);
     citlali::pipeline::add_reduction_learning_config_vars(
         fo, reduction_learning);
-    add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
-    add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
-    add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor);
-    add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTHIGH", ptcproc.upper_weight_factor);
-    add_netcdf_var(fo, "CONFIG.WEIGHT.MEDWTFACTOR", ptcproc.med_weight_factor);
-    add_netcdf_var(fo, "CONFIG.INV_VAR.WINDOW_SEC", ptcproc.remove_bad_dets_window_sec);
+    citlali::pipeline::add_ptc_weight_cutoff_config_vars(fo, ptcproc, true);
     add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.ENABLED", ptcproc.weight_corr_penalty.enabled);
     add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.ENABLED", ptcproc.busy_row_suppression.enabled);
     add_netcdf_var(fo, "CONFIG.CLEANED", ptcproc.run_clean);

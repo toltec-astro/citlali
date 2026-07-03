@@ -50,6 +50,26 @@ void add_weight_selection_config_vars(netCDF::NcFile &fo,
     add_weight_validation_config_vars(fo, ptcproc.weight_validation);
 }
 
+template <class PtcProc>
+void add_ptc_weight_cutoff_config_vars(netCDF::NcFile &fo,
+                                       const PtcProc &ptcproc,
+                                       bool include_inv_var_window = false) {
+    add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW",
+                   ptcproc.lower_inv_var_factor);
+    add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH",
+                   ptcproc.upper_inv_var_factor);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW",
+                   ptcproc.lower_weight_factor);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTHIGH",
+                   ptcproc.upper_weight_factor);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.MEDWTFACTOR",
+                   ptcproc.med_weight_factor);
+    if (include_inv_var_window) {
+        add_netcdf_var(fo, "CONFIG.INV_VAR.WINDOW_SEC",
+                       ptcproc.remove_bad_dets_window_sec);
+    }
+}
+
 template <class ReductionLearning>
 void add_reduction_learning_config_vars(
     netCDF::NcFile &fo, const ReductionLearning &reduction_learning,
