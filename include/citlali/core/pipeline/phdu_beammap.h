@@ -55,4 +55,33 @@ void add_phdu_beammap_source_flux(FitsEntry &fits_entry,
                         "Source flux (MJy/sr)");
 }
 
+template <class FitsEntry, class Logger>
+void add_phdu_beammap_tuning(FitsEntry &fits_entry,
+                             const std::string &array_name,
+                             const Logger &logger,
+                             double iter_tolerance,
+                             double convergence_radius_arcsec,
+                             int iter_max,
+                             bool phase_split_enabled,
+                             int locator_iter,
+                             int measurement_start_iter,
+                             bool is_derotated) {
+    auto &hdu = fits_entry.pfits->pHDU();
+    add_phdu_double_key(fits_entry, array_name, logger,
+                        "BEAMMAP.ITER_TOLERANCE", iter_tolerance,
+                        "Beammap iteration tolerance");
+    add_phdu_double_key(fits_entry, array_name, logger,
+                        "BEAMMAP.CONVERGENCE_RADIUS_ARCSEC",
+                        convergence_radius_arcsec,
+                        "Beammap convergence aperture radius (arcsec)");
+    hdu.addKey("BEAMMAP.ITER_MAX", iter_max, "Beammap max iterations");
+    hdu.addKey("BEAMMAP.PHASE_SPLIT_ENABLED", phase_split_enabled,
+               "Beammap locator/measurement phases enabled");
+    hdu.addKey("BEAMMAP.LOCATOR_ITER", locator_iter,
+               "Beammap locator iteration");
+    hdu.addKey("BEAMMAP.MEASUREMENT_START_ITER", measurement_start_iter,
+               "Beammap first measurement iteration");
+    hdu.addKey("BEAMMAP.IS_DEROTATED", is_derotated, "Beammap derotated");
+}
+
 }  // namespace citlali::pipeline

@@ -6148,17 +6148,11 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
             fits_entry, name, logger, beammap_fluxes_mJy_beam[name],
             beammap_fluxes_MJy_Sr[name]);
 
-        add_double_key("BEAMMAP.ITER_TOLERANCE", beammap_iter_tolerance, "Beammap iteration tolerance");
-        add_double_key("BEAMMAP.CONVERGENCE_RADIUS_ARCSEC", beammap_convergence_radius_arcsec,
-                       "Beammap convergence aperture radius (arcsec)");
-        fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.ITER_MAX", beammap_iter_max, "Beammap max iterations");
-        fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.PHASE_SPLIT_ENABLED", beammap_phase_split_enabled,
-                                            "Beammap locator/measurement phases enabled");
-        fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.LOCATOR_ITER", beammap_locator_iter,
-                                            "Beammap locator iteration");
-        fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.MEASUREMENT_START_ITER", beammap_measurement_start_iter,
-                                            "Beammap first measurement iteration");
-        fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.IS_DEROTATED", beammap_derotate, "Beammap derotated");
+        citlali::pipeline::add_phdu_beammap_tuning(
+            fits_entry, name, logger, beammap_iter_tolerance,
+            beammap_convergence_radius_arcsec, beammap_iter_max,
+            beammap_phase_split_enabled, beammap_locator_iter,
+            beammap_measurement_start_iter, beammap_derotate);
         // add reference detector information
         if (beammap_subtract_reference) {
             const auto reference_values =
