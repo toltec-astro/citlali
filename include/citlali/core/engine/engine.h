@@ -6398,7 +6398,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             logger->warn("negative median_err for map {} in {}; using 0", map_name,
                          fits_io->at(map_index).filepath);
         }
-        fits_io->at(map_index).hdus.back()->addKey("MEDERR", median_err, "Median Error ("+mb->sig_unit+")");
+        citlali::pipeline::add_image_median_error_key(
+            *fits_io->at(map_index).hdus.back(), median_err, mb->sig_unit);
 
         if (i < static_cast<Eigen::Index>(mb->weight_formal.size()) &&
             mb->weight_formal[i].rows() == mb->n_rows &&

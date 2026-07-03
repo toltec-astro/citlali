@@ -30,6 +30,12 @@ void add_image_type_description_keys(Hdu &hdu, const std::string &type,
 }
 
 template <class Hdu>
+void add_image_median_error_key(Hdu &hdu, double median_error,
+                                const std::string &unit) {
+    hdu.addKey("MEDERR", median_error, "Median Error (" + unit + ")");
+}
+
+template <class Hdu>
 void add_image_unit_description_keys(Hdu &hdu, const std::string &unit,
                                      const std::string &description) {
     add_image_unit_keys(hdu, unit);
