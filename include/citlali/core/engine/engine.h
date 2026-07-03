@@ -8493,49 +8493,51 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             fo, name, comment, map_obs_dims, values);
     };
 
-    add_map_double("map_median_err", "median error derived from the map weight product", median_err);
-    add_map_double("map_median_rms", "median RMS of the map noise realization or background estimator", median_rms);
-    add_map_double("map_weight_threshold", "coverage-derived weight threshold used to define the core map support", weight_thresholds);
-    add_map_double("map_weight_sum", "sum of positive map weights over all valid pixels", weight_sum);
-    add_map_double("map_core_weight_sum", "sum of positive map weights over pixels above map_weight_threshold", core_weight_sum);
-    add_map_double("map_coverage_sum", "sum of coverage values over the map; NaN if no coverage map exists", coverage_sum);
-    add_map_double("map_coverage_max", "maximum coverage value in the map; NaN if no coverage map exists", coverage_max);
-    add_map_double("map_core_coverage_median", "median coverage over the core support; NaN if no coverage map exists", coverage_median_core);
-    add_map_double("map_empirical_to_formal_noise_ratio", "ratio of map_median_rms to map_median_err over the core support", empirical_to_formal_noise_ratio);
-    add_map_double("map_noise_weight_median_ratio", "median of formal weight times jackknife variance over the valid support", noise_weight_median_ratio);
-    add_map_double("map_noise_weight_scale", "empirical scalar applied to formal weights", noise_weight_scale);
-    add_map_double("map_noise_products_s2n_sigma", "standard deviation of jackknife noise multiplied by sqrt(formal weight)", noise_products_s2n_sigma);
-    add_map_double("map_noise_products_valid_pixels", "number of pixels used for empirical noise-product calibration", noise_products_valid_pixels);
-    add_map_double("map_peak_signal", "maximum signal value in the map", peak_signal);
-    add_map_double("map_peak_abs_sig2noise", "maximum absolute signal-to-noise value in the map", peak_abs_sig2noise);
-    add_map_double("map_core_peak_abs_sig2noise", "maximum absolute signal-to-noise value over pixels with weight >= map_weight_threshold", core_peak_abs_sig2noise);
-    add_map_double("map_noise_rms_p16", "16th percentile of core RMS values across noise realizations", noise_rms_p16);
-    add_map_double("map_noise_rms_p84", "84th percentile of core RMS values across noise realizations", noise_rms_p84);
-    add_map_double("map_core_tail_fraction_abs_gt3", "fraction of core sig2noise pixels with |robust-z| >= 3", core_tail_frac_abs3);
-    add_map_double("map_core_tail_fraction_pos_gt3", "fraction of core sig2noise pixels with robust-z >= 3", core_tail_frac_pos3);
-    add_map_double("map_core_tail_fraction_neg_lt3", "fraction of core sig2noise pixels with robust-z <= -3", core_tail_frac_neg3);
-    add_map_double("map_core_tail_excess_abs_gt3", "ratio of map_core_tail_fraction_abs_gt3 to Gaussian expectation", core_tail_excess_abs3);
-    add_map_double("map_core_tail_excess_pos_gt3", "ratio of map_core_tail_fraction_pos_gt3 to Gaussian expectation", core_tail_excess_pos3);
-    add_map_double("map_core_tail_excess_neg_lt3", "ratio of map_core_tail_fraction_neg_lt3 to Gaussian expectation", core_tail_excess_neg3);
-    add_map_double("map_core_sig2noise_skew", "mean robust-z^3 of core sig2noise pixels", core_sig2noise_skew);
-    add_map_double("map_noise_tail_fraction_abs_gt3", "median fraction across noise realizations with |robust-z| >= 3 in the core support", noise_tail_frac_abs3);
-    add_map_double("map_noise_tail_fraction_pos_gt3", "median fraction across noise realizations with robust-z >= 3 in the core support", noise_tail_frac_pos3);
-    add_map_double("map_noise_tail_fraction_neg_lt3", "median fraction across noise realizations with robust-z <= -3 in the core support", noise_tail_frac_neg3);
-    add_map_double("map_noise_tail_excess_abs_gt3", "median ratio across noise realizations of abs tail fraction to Gaussian expectation", noise_tail_excess_abs3);
-    add_map_double("map_noise_tail_excess_pos_gt3", "median ratio across noise realizations of positive tail fraction to Gaussian expectation", noise_tail_excess_pos3);
-    add_map_double("map_noise_tail_excess_neg_lt3", "median ratio across noise realizations of negative tail fraction to Gaussian expectation", noise_tail_excess_neg3);
-    add_map_double("map_noise_sig2noise_skew", "median mean robust-z^3 across noise realizations in the core support", noise_sig2noise_skew);
-    add_map_double("map_edge_guard_weight_threshold", "runtime weight threshold used by the filter edge guard; NaN when not applied", edge_guard_weight_thresholds);
-    add_map_double("map_edge_guard_hits_threshold", "runtime coverage threshold used by the filter edge guard; NaN when not applied or no coverage map exists", edge_guard_hits_thresholds);
-    add_map_double("map_edge_guard_background_level", "background fill level applied outside the edge-guard support mask before filtering", edge_guard_background_levels);
-    add_map_double("map_edge_guard_science_fraction", "fraction of map pixels in the edge-guard science mask", edge_guard_science_frac);
-    add_map_double("map_edge_guard_support_fraction", "fraction of map pixels in the edge-guard support mask", edge_guard_support_frac);
-    add_map_double("map_edge_guard_guardband_rms_pre", "RMS of signal values in the effective edge-guard guard band before applying fill/taper", edge_guard_guardband_rms_pre);
-    add_map_double("map_edge_guard_guardband_rms_post", "RMS of signal values in the effective edge-guard guard band after applying fill/taper and before filtering", edge_guard_guardband_rms_post);
-    add_map_double("map_edge_guard_exterior_rms_pre", "RMS of signal values outside the effective edge-guard support before applying fill/taper", edge_guard_exterior_rms_pre);
-    add_map_double("map_edge_guard_exterior_rms_post", "RMS of signal values outside the effective edge-guard support after applying fill/taper and before filtering", edge_guard_exterior_rms_post);
-    add_map_double("map_edge_guard_exterior_max_abs_pre", "maximum absolute signal value outside the effective edge-guard support before applying fill/taper", edge_guard_exterior_max_abs_pre);
-    add_map_double("map_edge_guard_exterior_max_abs_post", "maximum absolute signal value outside the effective edge-guard support after applying fill/taper and before filtering", edge_guard_exterior_max_abs_post);
+    citlali::pipeline::add_mapdiag_map_double_vars(
+        add_map_double,
+        {median_err,
+         median_rms,
+         weight_thresholds,
+         weight_sum,
+         core_weight_sum,
+         coverage_sum,
+         coverage_max,
+         coverage_median_core,
+         empirical_to_formal_noise_ratio,
+         noise_weight_median_ratio,
+         noise_weight_scale,
+         noise_products_s2n_sigma,
+         noise_products_valid_pixels,
+         peak_signal,
+         peak_abs_sig2noise,
+         core_peak_abs_sig2noise,
+         noise_rms_p16,
+         noise_rms_p84,
+         core_tail_frac_abs3,
+         core_tail_frac_pos3,
+         core_tail_frac_neg3,
+         core_tail_excess_abs3,
+         core_tail_excess_pos3,
+         core_tail_excess_neg3,
+         core_sig2noise_skew,
+         noise_tail_frac_abs3,
+         noise_tail_frac_pos3,
+         noise_tail_frac_neg3,
+         noise_tail_excess_abs3,
+         noise_tail_excess_pos3,
+         noise_tail_excess_neg3,
+         noise_sig2noise_skew,
+         edge_guard_weight_thresholds,
+         edge_guard_hits_thresholds,
+         edge_guard_background_levels,
+         edge_guard_science_frac,
+         edge_guard_support_frac,
+         edge_guard_guardband_rms_pre,
+         edge_guard_guardband_rms_post,
+         edge_guard_exterior_rms_pre,
+         edge_guard_exterior_rms_post,
+         edge_guard_exterior_max_abs_pre,
+         edge_guard_exterior_max_abs_post});
     add_map_int("map_n_valid_pixels", "count of pixels with strictly positive weight", n_valid_pixels);
     add_map_int("map_n_core_pixels", "count of pixels with weight >= map_weight_threshold", n_core_pixels);
     add_map_int("map_peak_row", "row index of the maximum absolute signal-to-noise pixel", peak_row);
