@@ -99,6 +99,7 @@
 #include <citlali/core/pipeline/output_netcdf_metadata.h>
 #include <citlali/core/pipeline/phdu_beammap.h>
 #include <citlali/core/pipeline/phdu_extinction.h>
+#include <citlali/core/pipeline/phdu_observation_metadata.h>
 #include <citlali/core/pipeline/phdu_oof.h>
 #include <citlali/core/pipeline/phdu_reduction_config.h>
 #include <citlali/core/pipeline/phdu_rtc_config.h>
@@ -6168,19 +6169,11 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     logger->debug("adding obsnums");
 
     // add obsnums
-    for (Eigen::Index j=0; j<mb->obsnums.size(); ++j) {
-        fits_io->at(i).pfits->pHDU().addKey("OBSNUM"+std::to_string(j), mb->obsnums.at(j), "Observation Number " + std::to_string(j));
-    }
+    citlali::pipeline::add_phdu_obsnum_keys(fits_entry, mb->obsnums);
 
     // add date and time of obs
-    if (mb->obsnums.size()==1) {
-        fits_io->at(i).pfits->pHDU().addKey("DATEOBS0", date_obs.back(), "Date and time of observation 0");
-    }
-    else {
-        for (Eigen::Index j=0; j<mb->obsnums.size(); ++j) {
-            fits_io->at(i).pfits->pHDU().addKey("DATEOBS"+std::to_string(j), date_obs[j], "Date and time of observation "+std::to_string(j));
-        }
-    }
+    citlali::pipeline::add_phdu_date_obs_keys(
+        fits_entry, mb->obsnums, date_obs);
 
     logger->debug("adding obs info");
 
