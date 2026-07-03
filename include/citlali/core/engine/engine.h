@@ -5473,9 +5473,7 @@ void Engine::create_tod_files() {
     }
     else if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
         citlali::pipeline::add_tod_output_type_label(fo, "ptc");
-
-        // number of eigenvalues
-        netCDF::NcDim n_eigs_dim = fo.addDim("n_eigs",ptcproc.cleaner.n_calc);
+        citlali::pipeline::add_ptc_eigenvalue_dim(fo, ptcproc.cleaner.n_calc);
     }
 
     citlali::pipeline::add_observation_identity_vars(

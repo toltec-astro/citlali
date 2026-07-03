@@ -23,6 +23,11 @@ constexpr int ptcdiag_fill_int() {
     return -2147483647;
 }
 
+inline void add_ptc_eigenvalue_dim(netCDF::NcFile &fo,
+                                   Eigen::Index n_eigenvalues) {
+    fo.addDim("n_eigs", n_eigenvalues);
+}
+
 inline std::vector<int> diagnostic_output_scan_indices(Eigen::Index n_scans,
                                                        int fill_value) {
     std::vector<int> output_scan_index(static_cast<std::size_t>(n_scans),
