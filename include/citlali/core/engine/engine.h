@@ -6201,12 +6201,8 @@ void Engine::create_tod_files() {
                 n_rtc_stream_nw_values, fill_int);
         };
 
-        add_rtc_nw_int("rtc_network_n_det_input",
-                       "input detector count in each RTC network block");
-        add_rtc_nw_int("rtc_network_n_det_used",
-                       "detectors passing the step-mask valid-sample threshold and finite robust scale");
-        add_rtc_nw_int("rtc_network_impulsive_n_det_used",
-                       "detectors passing the impulsive-coincidence valid-sample threshold and finite robust scale");
+        citlali::pipeline::add_rtcdiag_network_detector_count_diag(
+            add_rtc_nw_int);
         citlali::pipeline::add_rtcdiag_network_line_audit_base_diag(
             add_rtc_nw_int, add_rtc_nw_double);
         citlali::pipeline::add_rtcdiag_network_line_audit_diag(
