@@ -88,6 +88,7 @@
 #else
 #include <citlali/core/mapmaking/wiener_filter.h>
 #endif
+#include <citlali/core/pipeline/fits_image_metadata.h>
 #include <citlali/core/pipeline/map_filename.h>
 #include <citlali/core/pipeline/map_layer_name.h>
 #include <citlali/core/pipeline/map_summary_stats.h>
@@ -6362,9 +6363,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         // signal map
         fits_io->at(map_index).add_hdu("signal_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->signal[i]);
         fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-        fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
-        fits_io->at(map_index).hdus.back()->addKey("BUNIT", mb->sig_unit, "Physical unit of image values");
-        fits_io->at(map_index).hdus.back()->addKey("DESCRIP", "Signal map in map units", "Image product description");
+        citlali::pipeline::add_image_unit_description_keys(
+            *fits_io->at(map_index).hdus.back(), mb->sig_unit,
+            "Signal map in map units");
 
         // weight map
         fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
