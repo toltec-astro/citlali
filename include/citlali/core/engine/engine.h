@@ -5620,36 +5620,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var<std::string>(fo, "CONFIG.LEARNING.PHASE", reduction_learning.current_phase_name());
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTLOW", rtcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTHIGH", rtcproc.upper_inv_var_factor);
-        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.ENABLED", rtcproc.network_step_mask.enabled);
-        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.STEP_WINDOW_SEC", rtcproc.network_step_mask.step_window_sec);
-        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.STEP_SCORE_THRESH", rtcproc.network_step_mask.step_score_thresh);
-        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.MIN_GOOD_FRAC", rtcproc.network_step_mask.min_good_frac);
-        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.MIN_DET_USED", rtcproc.network_step_mask.min_det_used);
-        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.MIN_STEP_DET_FRAC", rtcproc.network_step_mask.min_step_det_frac);
-        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.MIN_ALIGNMENT_FRAC", rtcproc.network_step_mask.min_alignment_frac);
-        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.CLUSTER_TOL_SEC", rtcproc.network_step_mask.cluster_tol_sec);
-        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.HALF_WIDTH_SEC", rtcproc.network_step_mask.mask_half_width_sec);
-        add_netcdf_var(fo, "CONFIG.RTC.STEP_MASK.MAX_FLAGGED_FRAC", rtcproc.network_step_mask.max_flagged_fraction);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.ENABLED", rtcproc.impulsive_capture.enabled);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.MIN_GOOD_FRAC", rtcproc.impulsive_capture.min_good_frac);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.MIN_EVENT_Z", rtcproc.impulsive_capture.min_event_z);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.NEAR_EVENT_Z", rtcproc.impulsive_capture.near_event_z);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.MAX_EVENTS", rtcproc.impulsive_capture.max_events_per_network);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.PRE_WINDOW_SEC", rtcproc.impulsive_capture.snippet_pre_window_sec);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE.POST_WINDOW_SEC", rtcproc.impulsive_capture.snippet_post_window_sec);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.ENABLED", rtcproc.impulsive_coincidence.enabled);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_GOOD_FRAC", rtcproc.impulsive_coincidence.min_good_frac);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.EVENT_SCORE_THRESH", rtcproc.impulsive_coincidence.event_score_thresh);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_DET_USED", rtcproc.impulsive_coincidence.min_det_used);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_DET_FRAC", rtcproc.impulsive_coincidence.min_impulsive_det_frac);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_ALIGNMENT_FRAC", rtcproc.impulsive_coincidence.min_alignment_frac);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MIN_NETWORKS_ALIGNED", rtcproc.impulsive_coincidence.min_networks_aligned);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.HIGH_SCORE_OVERRIDE_THRESH", rtcproc.impulsive_coincidence.high_score_override_thresh);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.HIGH_SCORE_MIN_NETWORKS", rtcproc.impulsive_coincidence.high_score_min_networks_aligned);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.CLUSTER_TOL_SEC", rtcproc.impulsive_coincidence.cluster_tol_sec);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.PRE_WINDOW_SEC", rtcproc.impulsive_coincidence.mask_pre_window_sec);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.POST_WINDOW_SEC", rtcproc.impulsive_coincidence.mask_post_window_sec);
-        add_netcdf_var(fo, "CONFIG.RTC.IMPULSIVE_COINCIDENCE.MAX_FLAGGED_FRAC", rtcproc.impulsive_coincidence.max_flagged_fraction);
+        citlali::pipeline::add_rtc_event_mask_config_vars(fo, rtcproc);
         // The RTC TOD now records line-audit provenance at file creation time.
         // When raw obs output is enabled, add_tod_header() reopens the same file;
         // skip re-adding those vars to avoid NetCDF duplicate-name failures.
