@@ -234,6 +234,16 @@ void add_jinc_shape_config_vars(netCDF::NcFile &fo, const Arrays &arrays,
     }
 }
 
+template <class Arrays, class ShapeParams, class ArrayNameMap>
+void add_jinc_shape_config_vars_if_needed(
+    netCDF::NcFile &fo, const std::string &map_method, const Arrays &arrays,
+    ShapeParams &shape_params, ArrayNameMap &array_name_map, double r_max) {
+    if (map_method == "jinc") {
+        add_jinc_shape_config_vars(
+            fo, arrays, shape_params, array_name_map, r_max);
+    }
+}
+
 template <class TauByFrequency, class Calib, class ArrayNameMap>
 void add_mean_tau_vars(netCDF::NcFile &fo, const TauByFrequency &tau_freq,
                        const Calib &calib, ArrayNameMap &array_name_map) {

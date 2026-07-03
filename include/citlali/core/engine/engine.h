@@ -5390,12 +5390,9 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
         citlali::pipeline::add_tod_signal_unit_var(fo, omb.sig_unit);
 
-        // add jinc shape params
-        if (map_method=="jinc") {
-            citlali::pipeline::add_jinc_shape_config_vars(
-                fo, calib.arrays, jinc_mm.shape_params,
-                toltec_io.array_name_map, jinc_mm.r_max);
-        }
+        citlali::pipeline::add_jinc_shape_config_vars_if_needed(
+            fo, map_method, calib.arrays, jinc_mm.shape_params,
+            toltec_io.array_name_map, jinc_mm.r_max);
 
         citlali::pipeline::add_tod_mean_tau_vars(
             fo, rtcproc, telescope.tel_data, telescope.tau_225_GHz,
