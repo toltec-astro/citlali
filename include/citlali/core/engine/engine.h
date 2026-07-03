@@ -6028,10 +6028,8 @@ void Engine::create_tod_files() {
                                  std::numeric_limits<double>::quiet_NaN());
         v.putVar(init.data());
     };
-    add_scan_int_var("tod_filter_edge_guard_pre_samples", "samples flagged at the start of this output scan by the TOD filter edge guard");
-    add_scan_int_var("tod_filter_edge_guard_post_samples", "samples flagged at the end of this output scan by the TOD filter edge guard");
-    add_scan_int_var("tod_filter_edge_guard_flagged_samples", "detector-samples flagged by the TOD filter edge guard");
-    add_scan_double_var("tod_filter_edge_guard_flagged_frac", "N/A", "fraction of time samples guarded at this output scan edge");
+    citlali::pipeline::add_tod_filter_edge_guard_scan_vars(
+        add_scan_int_var, add_scan_double_var);
 
     // signal
     netCDF::NcVar signal_v;
