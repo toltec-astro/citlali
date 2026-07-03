@@ -21,13 +21,58 @@ The output is useful for deciding which keys belong in normal user profiles,
 which keys should remain expert-only overrides, and which keys are candidates
 for deprecation after compatibility validation.
 
+## Low-Level Key Classification
+
+`classify_lowlevel_config.py` classifies low-level Citlali YAML leaves as
+`user-facing`, `expert`, `hidden/internal`, or `deprecated` using the policy in
+`config_key_classification.yaml`. It accepts either bare Citlali low-level YAML
+or TolTECA YAML containing `reduce.steps.*.config.low_level`.
+
+Classify the representative compact compatibility baselines:
+
+```bash
+$HOME/tolteca/bin/python tools/config/classify_lowlevel_config.py \
+  --cases tools/config/compact_compatibility_cases.yaml \
+  --require-all \
+  --json-out /tmp/citlali_config_classification.json \
+  --csv-out /tmp/citlali_config_classification.csv \
+  --markdown-out /tmp/citlali_config_classification.md
+```
+
+The classification policy is review metadata only. It does not change the C++
+parser, TolTECA config loading, default YAML, or reduction behavior.
+The current policy is provisional baseline v1; see
+`doc/CONFIG_POLICY_BASELINE_V1_2026-07-02.md` for the compact authoring
+philosophy and mode-specific user/expert surfaces. The handoff summary for the
+main refactor thread is `doc/CONFIG_SIMPLIFICATION_HANDOFF_2026-07-02.md`.
+
+`render_policy_review_dashboard.py` turns the same classification data into a
+standalone interactive HTML review page. It keeps the YAML policy as the source
+of truth, but makes policy review easier by showing rules, observed paths,
+example values, per-mode counts, filters, generated confidence scores, review
+status fields, and an exported review-decision JSON file.
+
+```bash
+$HOME/tolteca/bin/python tools/config/render_policy_review_dashboard.py \
+  --cases tools/config/compact_compatibility_cases.yaml \
+  --require-all \
+  --output /tmp/citlali_config_policy_review/index.html
+```
+
+The dashboard is static HTML with embedded data. Rules can be sorted by
+confidence, and any rule scored 8/10 or lower has hover text explaining the
+uncertainty. Review choices are stored in browser local storage until exported;
+exports include every rule id so unvisited rules are still visible in the next
+review cut. Applying those decisions to `config_key_classification.yaml` is
+still a deliberate follow-up edit.
+
 ## TolTECA Low-Level Boundary Inventory
 
 `tolteca_lowlevel_inventory.py` compares TolTECA authoring YAML files with the
 generated `citlali_*.yaml` low-level file that Citlali actually ingests.
-TolTECA reads all `NN*.yaml` files in a reduction directory and lets higher
-numbered files override lower numbered files, so the preferred invocation is a
-directory scan:
+TolTECA reads leading-number YAML files named like `70_reduce.yaml` in a
+reduction directory and lets higher numbered files override lower numbered
+files, so the preferred invocation is a directory scan:
 
 ```bash
 $HOME/tolteca/bin/python tools/config/tolteca_lowlevel_inventory.py \
@@ -66,7 +111,7 @@ $HOME/tolteca/bin/python tools/config/expand_compact_config.py \
 
 Use `--output-format low_level` to write only the Citlali low-level block, or
 `--output-format tolteca` to wrap that block as indexed
-`reduce.steps.0.config.low_level` for a TolTECA `NN*.yaml` file:
+`reduce.steps.0.config.low_level` for a TolTECA leading-number YAML file:
 
 ```bash
 $HOME/tolteca/bin/python tools/config/expand_compact_config.py \
@@ -119,6 +164,68 @@ science baselines:
 This is a prototype authoring layer only. It does not change the Citlali C++
 parser, CLI, build system, or default runtime behavior.
 
+### Expert Overrides
+
+Compact configs can still reach any low-level Citlali key through the
+top-level `expert` block. The expander deep-merges `expert` after the selected
+profile and normal compact keys, and lists the resulting paths in
+`expert_override_paths` in the expansion summary.
+
+In a TolTECA reduction directory, expert low-level settings should live in an
+optional high-numbered overlay such as `80_expert.yaml`, after profile/default
+material and normal reducer-facing choices:
+
+```text
+40_setup.yaml
+60_citlali_profile.yaml
+70_reduce.yaml
+72_target.yaml
+80_expert.yaml
+```
+
+The file should use the normal TolTECA low-level location:
+
+```yaml
+reduce:
+  steps:
+    0:
+      config:
+        low_level:
+          timestream:
+            raw_time_chunk:
+              line_audit:
+                enabled: true
+```
+
+For example, a beammap reduction can keep the normal compact surface while
+temporarily tuning detailed beammap controls:
+
+```yaml
+schema: citlali-reduction-v2
+mode: beammap
+profile: beammap_detector
+
+beammap:
+  iterations: 6
+  derotate: true
+  priors: true
+
+expert:
+  beammap:
+    flagging:
+      array_upper_fwhm_arcsec: [10, 15, 20]
+      array_network_robust_z: [0, 3.4, 0]
+    priors:
+      score_lambda_after_iter0: 3.0
+    rfi_mask:
+      enabled: true
+      sigma_threshold: 6.0
+```
+
+The policy classification treats these detailed beammap fields as `expert`,
+not unavailable; they remain deliberately reachable for beammap operations and
+development without making them part of the default compact surface.
+
 ## Low-Level YAML Equivalence
 
 `compare_lowlevel_yaml.py` compares two low-level Citlali YAML trees and exits
@@ -168,12 +275,19 @@ The current suite includes eight cases:
 All cases are expected to have zero low-level differences after ignoring
 `runtime.output_dir`.
 
-## Low-Level To Compact Bootstrap
+## Translation Utilities
+
+These translators live in the Citlali refactor tree on purpose. They treat
+TolTECA YAML as an interchange format, but they do not require changes in the
+TolTECA repository.
 
 `lowlevel_to_compact_config.py` generates a compact compatibility YAML file
 from an existing low-level Citlali or TolTECA `70_reduce.yaml` file. It only
 emits compact keys whose low-level destinations already exist in the input, and
-uses the `*_compat_passthrough` profile by default.
+uses the `*_compat_passthrough` profile by default. By default, low-level paths
+that are not represented by compact keys are preserved under `expert:` so the
+result can round-trip without using the original `70_reduce.yaml` as a hidden
+base config.
 
 ```bash
 $HOME/tolteca/bin/python tools/config/lowlevel_to_compact_config.py \
@@ -206,4 +320,28 @@ $HOME/tolteca/bin/python tools/config/compare_lowlevel_yaml.py \
 
 By default, the bootstrapper omits `output.dir` when the low-level value is an
 absolute path. Pass `--include-output-dir` when reproducing site-specific output
-paths is desired.
+paths is desired. Pass `--preserve-unmapped none` only when intentionally
+dropping unmapped low-level content.
+
+To expand a loss-preserving compact file back to an old-style low-level or
+TolTECA YAML file, use an empty base:
+
+```bash
+$HOME/tolteca/bin/python tools/config/expand_compact_config.py \
+  /tmp/science_compact.yaml \
+  --base-config none \
+  --output-format tolteca \
+  --output /tmp/science_roundtrip_70_reduce.yaml
+```
+
+`run_translation_roundtrip.py` automates the full old -> compact -> old check
+and compares the result against the input. This is the preferred smoke test
+when validating older Citlali branches:
+
+```bash
+$HOME/tolteca/bin/python tools/config/run_translation_roundtrip.py \
+  /path/to/70_reduce.yaml \
+  --mode science \
+  --work-dir /tmp/citlali_config_translation_roundtrip \
+  --expected-diff-count 0
+```

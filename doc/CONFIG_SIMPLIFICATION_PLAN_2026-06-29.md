@@ -3,6 +3,28 @@
 This note scopes a user-facing config rework for Citlali. It is intentionally a
 design and migration plan only; no runtime config parsing has been changed.
 
+## 2026-07-03 Status Update
+
+The parallel config support thread produced a non-runtime provisional baseline:
+
+- `tools/config/config_key_classification.yaml` is now the baseline v1
+  low-level key exposure policy.
+- `doc/CONFIG_POLICY_BASELINE_V1_2026-07-02.md` summarizes the policy
+  philosophy and per-mode user/expert surfaces.
+- `doc/CONFIG_SIMPLIFICATION_BASELINE_INVENTORY_2026-07-02.md` records the
+  representative pointing, OOF, beammap, and science inventories.
+- `doc/CONFIG_SIMPLIFICATION_HANDOFF_2026-07-02.md` is the main handoff note
+  for carrying the config work into the structural refactor.
+- `tools/config/classify_lowlevel_config.py`,
+  `tools/config/render_policy_review_dashboard.py`, and
+  `tools/config/run_translation_roundtrip.py` provide policy review and
+  old-style YAML -> compact YAML -> old-style YAML validation support.
+
+These artifacts should be carried with the refactor as planning and tooling.
+They do not change Citlali runtime parsing, TolTECA loading, defaults, engine
+logic, or reduction outputs. Runtime wiring waits until the structural typed
+config boundary and equivalence checks are ready.
+
 ## Why This Is Worth Doing
 
 The current default config is a full expert/debug surface:

@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import argparse
+import collections
+import copy
 import os
 import sys
 from pathlib import Path
@@ -11,6 +13,7 @@ from typing import Any
 
 import yaml
 
+import classify_lowlevel_config
 import compare_lowlevel_yaml
 import expand_compact_config
 
@@ -51,6 +54,78 @@ def set_path(data: dict[str, Any], path: tuple[str, ...], value: Any) -> None:
             raise ConvertError(f"cannot set compact path {'.'.join(path)}")
         cursor = child
     cursor[path[-1]] = value
+
+
+def delete_path(data: Any, path: tuple[str, ...]) -> bool:
+    if not path:
+        return False
+    cursor = data
+    parents: list[tuple[dict[str, Any], str]] = []
+    for key in path[:-1]:
+        if not isinstance(cursor, dict) or key not in cursor:
+            return False
+        child = cursor[key]
+        parents.append((cursor, key))
+        cursor = child
+    if not isinstance(cursor, dict) or path[-1] not in cursor:
+        return False
+    del cursor[path[-1]]
+
+    for parent, key in reversed(parents):
+        child = parent.get(key)
+        if isinstance(child, dict) and not child:
+            del parent[key]
+        else:
+            break
+    return True
+
+
+def residual_after_compact_patch(
+    low_level: dict[str, Any],
+    compact: dict[str, Any],
+    compact_path: Path,
+) -> tuple[dict[str, Any], list[dict[str, Any]], list[str]]:
+    compact_without_expert = copy.deepcopy(compact)
+    compact_without_expert["expert"] = {}
+    _patch, applied, warnings = expand_compact_config.build_compact_patch(
+        compact_without_expert,
+        compact_path,
+    )
+    residual = copy.deepcopy(low_level)
+    for item in applied:
+        path = item.get("path")
+        if isinstance(path, str) and path:
+            delete_path(residual, tuple(path.split(".")))
+    return residual, applied, warnings
+
+
+def classification_rows(
+    tree: dict[str, Any],
+    rules_path: Path | None,
+) -> tuple[dict[str, int], list[dict[str, str]]]:
+    counts: collections.Counter[str] = collections.Counter()
+    rows: list[dict[str, str]] = []
+    if rules_path is None:
+        return {}, rows
+    try:
+        rules = classify_lowlevel_config.load_rules(rules_path)
+    except Exception:
+        return {}, rows
+
+    for row in compare_lowlevel_yaml.walk_leaves(tree):
+        rule = classify_lowlevel_config.classify_path(row["normalized_path"], rules)
+        classification = rule["classification"]
+        counts[classification] += 1
+        rows.append(
+            {
+                "path": row["path"],
+                "normalized_path": row["normalized_path"],
+                "classification": classification,
+                "rule_id": rule["id"],
+                "value_preview": row["value_preview"],
+            }
+        )
+    return classify_lowlevel_config.ordered_class_counts(counts), rows
 
 
 def copy_path(
@@ -266,13 +341,16 @@ def build_compact(
     mode: str,
     profile: str,
     include_output_dir: bool,
-) -> tuple[dict[str, Any], list[dict[str, str]]]:
+    preserve_unmapped: bool,
+    classification_rules: Path | None,
+    compact_path: Path,
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     compact: dict[str, Any] = {
         "schema": COMPACT_SCHEMA,
         "mode": mode,
         "profile": profile,
     }
-    summary: list[dict[str, str]] = []
+    summary: list[dict[str, Any]] = []
 
     copy_common_sections(low_level, compact, summary, include_output_dir)
     if mode == "pointing":
@@ -285,6 +363,27 @@ def build_compact(
         raise ConvertError(f"unsupported compact mode {mode!r}")
 
     compact["expert"] = {}
+    if preserve_unmapped:
+        residual, applied, warnings = residual_after_compact_patch(low_level, compact, compact_path)
+        compact["expert"] = residual
+        preserved_counts, preserved_rows = classification_rows(residual, classification_rules)
+        mapped_counts, mapped_rows = classification_rows(
+            expand_compact_config.build_compact_patch(compact, compact_path)[0],
+            classification_rules,
+        )
+        summary.append(
+            {
+                "low_level": "*",
+                "compact": "expert",
+                "preserved_leaf_count": len(compare_lowlevel_yaml.walk_leaves(residual)),
+                "compact_generated_leaf_count": len(applied),
+                "preserved_count_by_classification": preserved_counts,
+                "compact_generated_count_by_classification": mapped_counts,
+                "preserved_paths": preserved_rows,
+                "compact_generated_paths": mapped_rows,
+                "warnings": warnings,
+            }
+        )
     return compact, summary
 
 
@@ -298,6 +397,17 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--mode", choices=("pointing", "oof", "beammap", "science"), default=None)
     parser.add_argument("--profile", default=None, help="Compact profile name. Defaults to the mode compatibility profile.")
     parser.add_argument("--include-output-dir", action="store_true", help="Emit output.dir even when it is site-specific.")
+    parser.add_argument(
+        "--preserve-unmapped",
+        choices=("expert", "none"),
+        default="expert",
+        help="Preserve low-level paths not represented by compact keys under expert, or drop them.",
+    )
+    parser.add_argument(
+        "--classification-rules",
+        default=str(Path(__file__).with_name("config_key_classification.yaml")),
+        help="Rules file used to classify mapped and preserved paths in the summary.",
+    )
     parser.add_argument("--output", "-o", default="-", help="Generated compact YAML path, or '-' for stdout.")
     parser.add_argument("--summary-out", default="", help="Optional YAML summary output path.")
     return parser.parse_args(argv)
@@ -319,6 +429,13 @@ def main(argv: list[str]) -> int:
             mode=mode,
             profile=profile,
             include_output_dir=args.include_output_dir,
+            preserve_unmapped=args.preserve_unmapped == "expert",
+            classification_rules=Path(args.classification_rules).expanduser().resolve()
+            if args.classification_rules
+            else None,
+            compact_path=Path(args.output).expanduser().resolve()
+            if args.output != "-"
+            else base_path.with_suffix(".compact.yaml"),
         )
     except (OSError, yaml.YAMLError, ConvertError, expand_compact_config.ConfigError) as exc:
         print(f"error: {exc}", file=sys.stderr)
@@ -333,20 +450,23 @@ def main(argv: list[str]) -> int:
         output_path.write_text(text, encoding="utf-8")
 
     if args.summary_out:
+        compact_mapping_count = sum(1 for item in mappings if item.get("compact") != "expert")
         summary = {
             "schema": SUMMARY_SCHEMA,
             "base_config": str(base_path),
             "mode": mode,
             "profile": profile,
             "include_output_dir": args.include_output_dir,
-            "mapping_count": len(mappings),
+            "preserve_unmapped": args.preserve_unmapped,
+            "mapping_count": compact_mapping_count,
             "mappings": mappings,
         }
         summary_path = Path(args.summary_out).expanduser()
         summary_path.parent.mkdir(parents=True, exist_ok=True)
         summary_path.write_text(dump_yaml(summary), encoding="utf-8")
     else:
-        print(f"generated compact {mode} config with {len(mappings)} mapped paths", file=sys.stderr)
+        compact_mapping_count = sum(1 for item in mappings if item.get("compact") != "expert")
+        print(f"generated compact {mode} config with {compact_mapping_count} mapped paths", file=sys.stderr)
 
     return 0
 

@@ -21,6 +21,9 @@ Primary goals:
 - Move orchestration out of `src/citlali/cli/main.cpp` into library code.
 - Introduce typed config adapters and validation boundaries around the current
   YAML tree.
+- Carry the compact-config simplification work as a parallel design/tooling
+  track until equivalence tests and TolTECA workflow review make runtime wiring
+  safe.
 - Replace direct process exits in library paths with typed failures handled at
   the CLI boundary.
 - Split very large public headers into smaller declarations, implementation
@@ -37,6 +40,9 @@ Primary goals:
 - Do not change numerical algorithms unless a separate science reason is
   documented and reviewed.
 - Do not change the YAML schema in a breaking way during the structural phase.
+- Do not wire compact config behavior, simplify default configs, or hide
+  existing low-level keys until the config policy/tooling track has proved
+  low-level YAML equivalence and Unity product equivalence.
 - Do not add abstraction inside detector/sample/map-pixel hot loops without a
   Unity benchmark.
 - Do not attempt authoritative local configure/build/test validation on the
@@ -248,6 +254,67 @@ Validation:
 - Unit tests for valid config, missing key, bad type, out-of-range value,
   fixed-length vector, and enum validation.
 - Unity baseline comparison for any PR that changes runtime parsing behavior.
+
+### Config Simplification Track: Planned, Not Wired Yet
+
+This track now has a provisional baseline from the parallel config support
+thread. It is part of the overall refactor plan, but remains docs/tooling only
+until we intentionally schedule a runtime config slice.
+
+Source-of-truth and support files to carry forward:
+
+- `tools/config/config_key_classification.yaml`: provisional baseline v1
+  exposure policy for low-level keys.
+- `doc/CONFIG_POLICY_BASELINE_V1_2026-07-02.md`: policy philosophy and
+  mode-specific user/expert surfaces.
+- `doc/CONFIG_SIMPLIFICATION_BASELINE_INVENTORY_2026-07-02.md`: inventory
+  counts, TolTECA boundary findings, and policy-review history.
+- `doc/CONFIG_SIMPLIFICATION_HANDOFF_2026-07-02.md`: handoff summary for the
+  main refactor thread.
+- `tools/config/classify_lowlevel_config.py` and
+  `tools/config/render_policy_review_dashboard.py`: policy reporting and
+  review dashboard tooling.
+- `tools/config/lowlevel_to_compact_config.py`,
+  `tools/config/expand_compact_config.py`, and
+  `tools/config/run_translation_roundtrip.py`: old-style low-level/TolTECA
+  YAML to compact YAML and back, for equivalence testing.
+
+Baseline v1 policy:
+
+- Normal reducers get a smaller surface built around reduction intent,
+  resource/output choices, map/product controls, common processing choices, and
+  mode-specific fields for pointing, OOF, beammap, and science.
+- Expert controls are not removed. They remain reachable through compact
+  `expert:` overrides or, in TolTECA reduction directories, high-numbered
+  low-level overlays such as `80_expert.yaml`.
+- Deprecated keys remain accepted during the structural refactor. Warning,
+  translation, or removal comes only after YAML-level and product-level
+  equivalence tests cover the affected baselines.
+
+Integration order:
+
+1. Commit the config policy docs and support tools as non-runtime artifacts.
+2. Review the baseline v1 classification with the TolTECA reduction workflow:
+   pointing, OOF, beammap, and science.
+3. Audit every `user-facing` low-level path against the compact schema and
+   record any compact-field gaps by mode.
+4. Add round-trip/equivalence checks for old low-level YAML -> compact YAML ->
+   old low-level YAML, including TolTECA `NN*.yaml` overlay behavior.
+5. Only after the typed full-schema parser is stable, introduce compact config
+   expansion behind a compatibility path that still feeds the current full
+   low-level schema.
+6. Update TolTECA-facing templates and examples after Unity reductions show
+   compact-expanded configs match the current full-schema reductions.
+7. Change the normal user-facing defaults last.
+
+Constraints:
+
+- No runtime behavior changes in the current structural cleanup batches.
+- No removal of expert/debug knobs; the first user-facing simplification must
+  preserve an explicit expert escape hatch.
+- No TolTECA repository change is required for the current Citlali-side
+  tooling. Future `tolproj` catalog/template work should live in `tolproj`,
+  not in Citlali.
 
 ### PR 3: PipelineRunner / ReductionSession Extraction
 

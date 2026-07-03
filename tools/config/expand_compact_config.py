@@ -722,11 +722,11 @@ def load_profile(profiles_dir: Path, name: str) -> tuple[Path, dict[str, Any]]:
 
 def expand_config(
     compact_path: Path,
-    base_config_path: Path,
+    base_config_path: Path | None,
     profiles_dir: Path,
     profile_override: str | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
-    base = extract_low_level(load_yaml(base_config_path))
+    base = {} if base_config_path is None else extract_low_level(load_yaml(base_config_path))
     compact = load_yaml(compact_path)
     if not isinstance(base, dict):
         raise ConfigError("base config must be a mapping")
@@ -764,7 +764,7 @@ def expand_config(
         "schema": "citlali-compact-expansion-summary-v1",
         "compact_schema": COMPACT_SCHEMA,
         "compact_config": str(compact_path),
-        "base_config": str(base_config_path),
+        "base_config": "none" if base_config_path is None else str(base_config_path),
         "profile": str(profile_name),
         "profile_path": str(profile_path),
         "mode": mode,
@@ -797,7 +797,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument(
         "--base-config",
         default="data/config.yaml",
-        help="Current full config baseline, or a TolTECA YAML file containing reduce.steps.*.config.low_level.",
+        help=(
+            "Current full config baseline, a TolTECA YAML file containing "
+            "reduce.steps.*.config.low_level, or `none`/`empty` to expand from "
+            "an empty low-level base."
+        ),
     )
     parser.add_argument("--profiles-dir", default="tools/config/profiles", help="Directory of compact profile YAML files.")
     parser.add_argument("--profile", default=None, help="Override profile name from the compact config.")
@@ -826,7 +830,9 @@ def main(argv: list[str]) -> int:
         return 2
 
     compact_path = Path(args.compact_config).expanduser().resolve()
-    base_config_path = Path(args.base_config).expanduser().resolve()
+    base_config_path = None
+    if str(args.base_config).strip().lower() not in {"none", "empty"}:
+        base_config_path = Path(args.base_config).expanduser().resolve()
     try:
         expanded, summary = expand_config(compact_path, base_config_path, profiles_dir, args.profile)
     except (ConfigError, OSError, yaml.YAMLError) as exc:

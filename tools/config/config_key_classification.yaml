@@ -1,0 +1,699 @@
+schema: citlali-config-key-classification-rules-v1
+policy_version: provisional-baseline-v1
+policy_date: 2026-07-02
+description: >
+  Provisional baseline v1 exposure policy for low-level Citlali YAML keys
+  observed in TolTECA reduction baselines. This is review metadata only; it
+  does not change runtime parsing or validation.
+fallback:
+  classification: expert
+  owner: citlali
+  reason: >
+    No explicit classification rule matched. Keep the key available only through
+    expert low-level overrides until a maintainer reviews it.
+classes:
+  user-facing: >
+    Should be expressible by compact profile fields or normal TolTECA authoring
+    choices.
+  expert: >
+    Valid tuning, diagnostic, or algorithm-control key, but hidden behind an
+    explicit expert override in compact configs.
+  hidden/internal: >
+    Assembled by TolTECA, owned by runtime/profile plumbing, or otherwise not a
+    normal authoring knob.
+  deprecated: >
+    Retained for compatibility or historical baselines, but should be replaced
+    by a current key or removed after validation.
+rules:
+  - id: deprecated-precompute-pointing
+    pattern: timestream.precompute_pointing
+    classification: deprecated
+    owner: citlali
+    reason: data/config.yaml marks this key ignored.
+  - id: deprecated-legacy-ptc-cleaner-blocks
+    pattern: timestream.processed_time_chunk.standard_pca*
+    classification: deprecated
+    owner: citlali
+    reason: Legacy cleaner location; current config uses timestream.processed_time_chunk.clean.standard_pca.
+  - id: deprecated-legacy-ptc-null-model-block
+    pattern: timestream.processed_time_chunk.null_model*
+    classification: deprecated
+    owner: citlali
+    reason: Legacy cleaner location; current config uses timestream.processed_time_chunk.clean.null_model.
+  - id: deprecated-legacy-ptc-mp-block
+    pattern: timestream.processed_time_chunk.marchenko_pastur*
+    classification: deprecated
+    owner: citlali
+    reason: Legacy cleaner location; current config uses timestream.processed_time_chunk.clean.marchenko_pastur.
+  - id: deprecated-legacy-standard-pca-aliases
+    pattern: timestream.processed_time_chunk.clean.n_eig_to_cut*
+    classification: deprecated
+    owner: citlali
+    reason: Legacy standard-PCA alias; prefer clean.standard_pca.n_eig_to_cut.
+  - id: deprecated-legacy-standard-pca-ncalc
+    pattern: timestream.processed_time_chunk.clean.n_calc
+    classification: deprecated
+    owner: citlali
+    reason: Legacy standard-PCA alias; prefer clean.standard_pca.n_calc.
+  - id: deprecated-legacy-standard-pca-stddev
+    pattern: timestream.processed_time_chunk.clean.stddev_limit
+    classification: deprecated
+    owner: citlali
+    reason: Legacy standard-PCA alias; prefer clean.standard_pca.stddev_limit.
+  - id: deprecated-legacy-standard-pca-cut-std
+    pattern: timestream.processed_time_chunk.clean.cut_std
+    classification: deprecated
+    owner: citlali
+    reason: Historical cleaner field not present in the current default config surface.
+  - id: deprecated-legacy-weighting-pair-corr
+    pattern: timestream.processed_time_chunk.weighting.pair_corr*
+    classification: deprecated
+    owner: citlali
+    reason: Legacy weighting-correlation location; prefer weighting.corr_penalty.pair_corr.
+  - id: deprecated-legacy-weighting-cm-el-corr
+    pattern: timestream.processed_time_chunk.weighting.cm_el_corr*
+    classification: deprecated
+    owner: citlali
+    reason: Legacy weighting-correlation location; prefer weighting.corr_penalty.cm_el_corr.
+  - id: deprecated-legacy-weighting-cm-low-mid-ratio
+    pattern: timestream.processed_time_chunk.weighting.cm_low_mid_ratio*
+    classification: deprecated
+    owner: citlali
+    reason: Legacy weighting-correlation location; prefer weighting.corr_penalty.cm_low_mid_ratio.
+  - id: deprecated-ignored-mapmaking-tangent
+    pattern: mapmaking.tan_*
+    classification: deprecated
+    owner: citlali
+    reason: data/config.yaml marks tangent-plane RA/Dec fields ignored for now.
+
+  - id: internal-tolteca-input-assembly
+    pattern: inputs*
+    classification: hidden/internal
+    owner: tolteca
+    reason: TolTECA assembles inputs and calibration items into generated citlali_*.yaml files.
+  - id: internal-runtime-meta
+    pattern: runtime.meta*
+    classification: hidden/internal
+    owner: tolteca
+    reason: Runtime metadata is generated provenance, not a reducer-authored knob.
+  - id: internal-gap-interpolation
+    pattern: runtime.interp_over_gaps
+    classification: hidden/internal
+    owner: citlali
+    reason: Current runtime expects this to stay true; compact profiles should own it.
+  - id: internal-timestream-type
+    pattern: timestream.type
+    classification: hidden/internal
+    owner: profile
+    reason: Normal reductions use profile-selected TOD type rather than exposing xs/rs/is/qs in compact configs.
+
+  - id: user-runtime
+    pattern: runtime.reduction_type
+    classification: user-facing
+    owner: compact
+    reason: Selects the reduction intent.
+  - id: user-output-dir
+    pattern: runtime.output_dir
+    classification: user-facing
+    owner: compact
+    reason: Compact output.dir maps here; generated Citlali YAML may contain TolTECA's absolute rewrite.
+  - id: user-output-layout
+    pattern: runtime.use_subdir
+    classification: user-facing
+    owner: compact
+    reason: Normal output-layout choice for local reduction directories.
+  - id: user-runtime-threads
+    pattern: runtime.n_threads
+    classification: user-facing
+    owner: compact
+    reason: Common per-run resource choice.
+  - id: user-runtime-parallel-policy
+    pattern: runtime.parallel_policy
+    classification: expert
+    owner: citlali
+    reason: Runtime scheduling policy is performance tuning for expert overrides.
+  - id: user-runtime-verbosity
+    pattern: runtime.verbose
+    classification: user-facing
+    owner: compact
+    reason: Normal diagnostic verbosity choice.
+  - id: user-kids-fitreportdir
+    pattern: kids.solver.fitreportdir
+    classification: user-facing
+    owner: compact
+    reason: Operational path that may need authoring control.
+
+  - id: user-mapmaking-core
+    pattern: mapmaking.enabled
+    classification: expert
+    owner: profile
+    reason: Standard profiles always make maps; disabling mapmaking is an engineering/development override.
+  - id: user-mapmaking-unit
+    pattern: mapmaking.cunit
+    classification: user-facing
+    owner: compact
+    reason: Output map unit.
+  - id: user-mapmaking-grouping
+    pattern: mapmaking.grouping
+    classification: expert
+    owner: citlali
+    reason: Standard profiles own grouping; manual grouping changes are expert data-shape overrides.
+  - id: user-mapmaking-method
+    pattern: mapmaking.method
+    classification: user-facing
+    owner: compact
+    reason: Selects the mapmaking algorithm.
+  - id: user-mapmaking-pixel-axes
+    pattern: mapmaking.pixel_axes
+    classification: user-facing
+    owner: compact
+    reason: Selects map coordinate frame.
+  - id: user-mapmaking-pixel-size
+    pattern: mapmaking.pixel_size_arcsec
+    classification: user-facing
+    owner: compact
+    reason: Common product-resolution choice.
+  - id: user-mapmaking-manual-center
+    pattern: mapmaking.cr*
+    classification: expert
+    owner: citlali
+    reason: Manual map-center overrides are advanced geometry controls.
+  - id: user-mapmaking-manual-size
+    pattern: mapmaking.*_size_pix
+    classification: expert
+    owner: citlali
+    reason: Manual map-size overrides are advanced geometry controls.
+  - id: user-coadd
+    pattern: coadd.enabled
+    classification: user-facing
+    owner: compact
+    reason: Common product-family choice.
+  - id: user-noise-products
+    pattern: noise_maps.enabled
+    classification: user-facing
+    owner: compact
+    reason: Common product-family choice.
+  - id: user-noise-count
+    pattern: noise_maps.n_noise_maps
+    classification: user-facing
+    owner: compact
+    reason: Common product/runtime choice when noise maps are enabled.
+  - id: user-noise-product-summary
+    pattern: noise_maps.products.enabled
+    classification: user-facing
+    owner: compact
+    reason: Controls empirical noise product generation.
+  - id: user-noise-realizations
+    pattern: noise_maps.write_realizations
+    classification: user-facing
+    owner: compact
+    reason: Disk/product-volume choice.
+
+  - id: user-pointing-source-strategy
+    pattern: pointing.source_strategy*
+    classification: user-facing
+    owner: compact
+    reason: High-level pointing and OOF source behavior.
+  - id: user-source-map-regime
+    pattern: source.map_regime
+    classification: user-facing
+    owner: compact
+    reason: High-level source-context metadata for diagnostic interpretation.
+  - id: user-beammap-main
+    pattern: beammap.iter_*
+    classification: user-facing
+    owner: compact
+    reason: Main beammap iteration controls.
+  - id: user-beammap-convergence-radius
+    pattern: beammap.convergence_radius_arcsec
+    classification: user-facing
+    owner: compact
+    reason: Main beammap convergence aperture.
+  - id: user-beammap-derotate
+    pattern: beammap.derotate
+    classification: user-facing
+    owner: compact
+    reason: Common beammap product choice.
+  - id: user-beammap-reference-subtraction
+    pattern: beammap.subtract_reference_det
+    classification: user-facing
+    owner: compact
+    reason: Common beammap operational policy.
+  - id: user-beammap-reference-det
+    pattern: beammap.reference_det
+    classification: user-facing
+    owner: compact
+    reason: Common beammap operational policy.
+  - id: user-beammap-detector-weighting
+    pattern: beammap.detector_weighting.mode
+    classification: user-facing
+    owner: compact
+    reason: Common detector-beammap weighting choice.
+  - id: user-beammap-detector-tod
+    pattern: beammap.detector_tod_output.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level detector TOD sidecar toggle.
+  - id: user-beammap-prior-toggle
+    pattern: beammap.priors.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level prior-use toggle.
+  - id: user-beammap-prior-file
+    pattern: beammap.priors.filepath
+    classification: user-facing
+    owner: compact
+    reason: High-level prior-file selection.
+  - id: user-beammap-rfi-mask-toggle
+    pattern: beammap.rfi_mask.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level beammap RFI burst-mask toggle.
+  - id: user-beammap-scan-band-mask-toggle
+    pattern: beammap.scan_band_mask.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level coherent scan-band mask toggle.
+  - id: user-beammap-split-fits-toggle
+    pattern: beammap.split_fits_by_flag.enabled
+    classification: user-facing
+    owner: compact
+    reason: Optional split beammap FITS product toggle.
+
+  - id: expert-timestream-enabled
+    pattern: timestream.enabled
+    classification: expert
+    owner: profile
+    reason: Standard profiles keep TOD processing enabled; disabling it is an engineering/development override.
+  - id: user-timestream-chunking
+    pattern: timestream.chunking*
+    classification: user-facing
+    owner: compact
+    reason: Advanced but legitimate performance/scan subdivision choice.
+  - id: user-polarimetry
+    pattern: timestream.polarimetry*
+    classification: user-facing
+    owner: compact
+    reason: User-facing only for polarimetry profiles.
+  - id: user-rtc-output
+    pattern: timestream.raw_time_chunk.output.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level RTC TOD product toggle.
+  - id: user-ptc-output
+    pattern: timestream.processed_time_chunk.output.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level PTC TOD product toggle.
+  - id: user-tod-output-selection
+    pattern: timestream.*time_chunk.output.indices*
+    classification: user-facing
+    owner: compact
+    reason: TOD sidecar selection is a product-volume choice.
+  - id: user-raw-line-audit-toggle
+    pattern: timestream.raw_time_chunk.line_audit.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level diagnostic line-audit mode toggle.
+  - id: user-raw-despike-toggle
+    pattern: timestream.raw_time_chunk.despike.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level raw despiking toggle.
+  - id: user-raw-filter-toggle
+    pattern: timestream.raw_time_chunk.filter.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level raw TOD filtering toggle.
+  - id: user-raw-iir-toggle
+    pattern: timestream.raw_time_chunk.IIR_filter.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level IIR filter toggle.
+  - id: user-raw-downsample-toggle
+    pattern: timestream.raw_time_chunk.downsample.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level downsampling toggle.
+  - id: user-flux-calibration-toggle
+    pattern: timestream.raw_time_chunk.flux_calibration.enabled
+    classification: user-facing
+    owner: compact
+    reason: Calibration product policy.
+  - id: user-extinction-correction-toggle
+    pattern: timestream.raw_time_chunk.extinction_correction.enabled
+    classification: user-facing
+    owner: compact
+    reason: Calibration product policy.
+  - id: user-source-protection-radius
+    pattern: timestream.*.source_protection.radius_arcsec
+    classification: user-facing
+    owner: compact
+    reason: Compact pointing and OOF source-protection radius.
+  - id: user-ptc-clean-enabled
+    pattern: timestream.processed_time_chunk.clean.enabled
+    classification: user-facing
+    owner: compact
+    reason: Main PTC cleaning switch.
+  - id: user-ptc-clean-grouping
+    pattern: timestream.processed_time_chunk.clean.grouping*
+    classification: user-facing
+    owner: compact
+    reason: Common PTC cleaning choice.
+  - id: user-standard-pca-mode
+    pattern: timestream.processed_time_chunk.clean.standard_pca.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level cleaner-mode selection.
+  - id: user-null-model-mode
+    pattern: timestream.processed_time_chunk.clean.null_model.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level cleaner-mode selection.
+  - id: user-marchenko-pastur-mode
+    pattern: timestream.processed_time_chunk.clean.marchenko_pastur.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level cleaner-mode selection.
+  - id: user-adaptive-selector-mode
+    pattern: timestream.processed_time_chunk.clean.adaptive_selector.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level cleaner-mode selection.
+  - id: user-standard-pca-depth
+    pattern: timestream.processed_time_chunk.clean.standard_pca.n_eig_to_cut*
+    classification: user-facing
+    owner: compact
+    reason: Common standard-PCA tuning for current cleaner schema.
+  - id: user-standard-pca-stddev
+    pattern: timestream.processed_time_chunk.clean.standard_pca.stddev_limit
+    classification: user-facing
+    owner: compact
+    reason: Common standard-PCA tuning for current cleaner schema.
+  - id: user-standard-pca-ncalc
+    pattern: timestream.processed_time_chunk.clean.standard_pca.n_calc
+    classification: user-facing
+    owner: compact
+    reason: Advanced standard-PCA runtime/accuracy tuning.
+  - id: user-ptc-weighting-type
+    pattern: timestream.processed_time_chunk.weighting.type
+    classification: user-facing
+    owner: compact
+    reason: Main map-weight policy.
+  - id: user-ptc-source-mask
+    pattern: timestream.processed_time_chunk.weighting.source_mask_radius_arcsec
+    classification: user-facing
+    owner: compact
+    reason: Important source-aware weighting control.
+  - id: user-second-pass-local-toggle
+    pattern: timestream.processed_time_chunk.flagging.second_pass_local.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level post-clean deglitch toggle.
+  - id: user-fruitloops-toggle
+    pattern: timestream.fruit_loops.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level source-subtraction iteration switch.
+  - id: user-fruitloops-iters
+    pattern: timestream.fruit_loops.max_iters
+    classification: user-facing
+    owner: compact
+    reason: Common source-subtraction iteration control.
+  - id: user-fruitloops-products
+    pattern: timestream.fruit_loops.save_all_iters
+    classification: user-facing
+    owner: compact
+    reason: Product-volume choice.
+  - id: user-fruitloops-source
+    pattern: timestream.fruit_loops.path
+    classification: user-facing
+    owner: compact
+    reason: Operational map-template source choice.
+  - id: user-fruitloops-type
+    pattern: timestream.fruit_loops.type
+    classification: user-facing
+    owner: compact
+    reason: Operational map-template source choice.
+  - id: user-fruitloops-oof-support
+    pattern: timestream.fruit_loops.*support_radius*
+    classification: user-facing
+    owner: compact
+    reason: OOF/pointing support-radius policy.
+  - id: user-fruitloops-center-keep
+    pattern: timestream.fruit_loops.center_keep_radius_arcsec
+    classification: user-facing
+    owner: compact
+    reason: OOF/pointing central-region policy.
+  - id: user-learning-enabled
+    pattern: timestream.learning.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level learning-state feature switch.
+
+  - id: user-source-fitting-core
+    pattern: post_processing.source_fitting.bounding_box_arcsec
+    classification: user-facing
+    owner: compact
+    reason: Point-source fit support choice.
+  - id: user-source-fitting-radius
+    pattern: post_processing.source_fitting.fitting_radius_arcsec
+    classification: user-facing
+    owner: compact
+    reason: Point-source fit support choice.
+  - id: user-source-fitting-model
+    pattern: post_processing.source_fitting.model
+    classification: user-facing
+    owner: compact
+    reason: Source-fit model choice.
+  - id: user-map-filtering-core
+    pattern: post_processing.map_filtering.enabled
+    classification: user-facing
+    owner: compact
+    reason: High-level filtered-map product switch.
+  - id: user-map-filtering-type
+    pattern: post_processing.map_filtering.type
+    classification: user-facing
+    owner: compact
+    reason: Filter algorithm choice.
+  - id: user-map-filtering-normalize-errors
+    pattern: post_processing.map_filtering.normalize_errors
+    classification: user-facing
+    owner: compact
+    reason: Filtered-map error policy.
+  - id: user-map-histogram
+    pattern: post_processing.map_histogram_n_bins
+    classification: user-facing
+    owner: compact
+    reason: Product-summary choice.
+  - id: user-source-finding
+    pattern: post_processing.source_finding*
+    classification: user-facing
+    owner: compact
+    reason: Optional source-catalog behavior.
+  - id: user-wiener-template
+    pattern: wiener_filter.template_*
+    classification: user-facing
+    owner: compact
+    reason: Filter template shape choice.
+  - id: user-wiener-lowpass
+    pattern: wiener_filter.lowpass_only
+    classification: user-facing
+    owner: compact
+    reason: Filter behavior choice.
+
+  - id: expert-manual-sync
+    pattern: interface_sync_offset*
+    classification: expert
+    owner: citlali
+    reason: Manual timing offsets are operator/debug controls.
+  - id: expert-kids
+    pattern: kids*
+    classification: expert
+    owner: citlali
+    reason: KIDs fitting internals should be profile-managed or explicit expert overrides.
+  - id: expert-mapmaking-coverage
+    pattern: mapmaking.coverage_cut
+    classification: expert
+    owner: citlali
+    reason: Coverage-mask threshold is mapmaking/product-quality tuning.
+  - id: expert-mapmaking-jinc-filter
+    pattern: mapmaking.jinc_filter*
+    classification: expert
+    owner: citlali
+    reason: Jinc kernel shape and sampling parameters are expert mapmaking tuning.
+  - id: expert-mapmaking-maximum-likelihood
+    pattern: mapmaking.maximum_likelihood*
+    classification: expert
+    owner: citlali
+    reason: Maximum-likelihood solver controls are experimental/expert mapmaking tuning.
+  - id: expert-mapmaking
+    pattern: mapmaking*
+    classification: expert
+    owner: citlali
+    reason: Remaining mapmaking fields are expert-only until promoted through a compact key.
+  - id: expert-noise-maps
+    pattern: noise_maps*
+    classification: user-facing
+    owner: compact
+    reason: Remaining noise-map fields are normal noise-product authoring choices.
+  - id: expert-beammap-detector-tod-detail
+    pattern: beammap.detector_tod_output*
+    classification: expert
+    owner: citlali
+    reason: Detector TOD sidecar sampling and layout details should remain expert overrides.
+  - id: expert-beammap-prior-tuning
+    pattern: beammap.priors*
+    classification: expert
+    owner: citlali
+    reason: Prior scoring, gating, and alignment controls are algorithm tuning.
+  - id: expert-beammap-flagging
+    pattern: beammap.flagging*
+    classification: expert
+    owner: citlali
+    reason: Detector flagging thresholds are QA and algorithm policy controls.
+  - id: expert-beammap-rfi-mask
+    pattern: beammap.rfi_mask*
+    classification: expert
+    owner: citlali
+    reason: RFI-mask thresholds and block-shape controls are expert tuning.
+  - id: expert-beammap-scan-band-mask
+    pattern: beammap.scan_band_mask*
+    classification: expert
+    owner: citlali
+    reason: Scan-band mask thresholds and geometry controls are expert tuning.
+  - id: expert-beammap-fitting
+    pattern: beammap.fitting*
+    classification: expert
+    owner: citlali
+    reason: Beammap fit-support controls are expert tuning.
+  - id: expert-beammap-phase-strategy
+    pattern: beammap.phase_strategy*
+    classification: expert
+    owner: profile
+    reason: Detector-beammap iteration staging is profile-managed, with explicit expert override available.
+  - id: expert-beammap-sensitivity
+    pattern: beammap.sens_psd_limits_Hz*
+    classification: expert
+    owner: citlali
+    reason: Sensitivity PSD limits are diagnostic/statistic tuning.
+  - id: expert-beammap-split-fits-detail
+    pattern: beammap.split_fits_by_flag*
+    classification: expert
+    owner: citlali
+    reason: Split beammap FITS flag selection is specialized product tuning.
+  - id: expert-beammap
+    pattern: beammap*
+    classification: expert
+    owner: citlali
+    reason: Remaining beammap fields are expert-only until promoted through a compact key.
+  - id: expert-source-context
+    pattern: source*
+    classification: expert
+    owner: citlali
+    reason: Remaining source-context fields are expert-only until promoted through a compact key.
+  - id: expert-timestream-rtc-output-detail
+    pattern: timestream.raw_time_chunk.output*
+    classification: expert
+    owner: citlali
+    reason: Raw TOD sidecar sampling, layout, and selection details are expert overrides.
+  - id: expert-timestream-ptc-output-detail
+    pattern: timestream.processed_time_chunk.output*
+    classification: expert
+    owner: citlali
+    reason: Processed TOD sidecar sampling, layout, and selection details are expert overrides.
+  - id: expert-timestream-line-audit-detail
+    pattern: timestream.raw_time_chunk.line_audit*
+    classification: expert
+    owner: citlali
+    reason: Line-audit thresholds, fixed-notch lists, and application policy are diagnostic tuning.
+  - id: expert-timestream-raw-despike
+    pattern: timestream.raw_time_chunk.despike*
+    classification: expert
+    owner: citlali
+    reason: Raw despike thresholds and local-residual detection policy are expert tuning.
+  - id: expert-timestream-raw-flagging
+    pattern: timestream.raw_time_chunk.flagging*
+    classification: expert
+    owner: citlali
+    reason: Raw TOD quality thresholds and impulsive-event masking policy are expert tuning.
+  - id: expert-timestream-raw-filter
+    pattern: timestream.raw_time_chunk.filter*
+    classification: expert
+    owner: citlali
+    reason: Raw TOD filter bands, edge guards, and notch parameters are expert tuning.
+  - id: expert-timestream-raw-iir-detail
+    pattern: timestream.raw_time_chunk.IIR_filter*
+    classification: expert
+    owner: citlali
+    reason: IIR filter frequency/order/phase parameters are expert tuning.
+  - id: expert-timestream-raw-downsample-detail
+    pattern: timestream.raw_time_chunk.downsample*
+    classification: expert
+    owner: citlali
+    reason: Downsample frequency/factor details are expert tuning.
+  - id: expert-timestream-raw-kernel
+    pattern: timestream.raw_time_chunk.kernel*
+    classification: expert
+    owner: profile
+    reason: Raw TOD source-kernel shape is profile/algorithm policy.
+  - id: expert-timestream-raw-altaz-destripe
+    pattern: timestream.raw_time_chunk.altaz_destripe*
+    classification: expert
+    owner: citlali
+    reason: Alt-az destriping controls are expert signal-processing policy.
+  - id: expert-timestream-ptc-clean-detail
+    pattern: timestream.processed_time_chunk.clean*
+    classification: expert
+    owner: citlali
+    reason: Cleaner masks, selector parameters, and algorithm thresholds are expert tuning.
+  - id: expert-timestream-ptc-flagging-detail
+    pattern: timestream.processed_time_chunk.flagging*
+    classification: expert
+    owner: citlali
+    reason: Processed TOD deglitch and quality-threshold details are expert tuning.
+  - id: expert-timestream-ptc-weighting-detail
+    pattern: timestream.processed_time_chunk.weighting*
+    classification: expert
+    owner: citlali
+    reason: Map-weight caps, validation, correlation penalties, and suppression factors are expert tuning.
+  - id: expert-timestream-fruitloops-detail
+    pattern: timestream.fruit_loops*
+    classification: expert
+    owner: citlali
+    reason: Fruit-loop flux limits, S/N gates, local-sigma controls, and feedback policy are expert tuning.
+  - id: expert-timestream-learning-detail
+    pattern: timestream.learning*
+    classification: expert
+    owner: citlali
+    reason: Learned mask/weight/pathology machinery beyond the enable switch is expert tuning.
+  - id: expert-timestream-output-detail
+    pattern: timestream.output*
+    classification: expert
+    owner: citlali
+    reason: Timestream diagnostic output layout and statistics controls are expert overrides.
+  - id: expert-timestream
+    pattern: timestream*
+    classification: expert
+    owner: citlali
+    reason: Remaining timestream fields are expert-only until promoted through a compact key.
+  - id: expert-map-filtering-edge-guard
+    pattern: post_processing.map_filtering.edge_guard*
+    classification: expert
+    owner: citlali
+    reason: Map-filter edge conditioning thresholds are expert post-processing tuning.
+  - id: expert-source-fitting-gauss-model
+    pattern: post_processing.source_fitting.gauss_model*
+    classification: expert
+    owner: citlali
+    reason: Gaussian fit bounds and model-shape details are expert post-processing tuning.
+  - id: expert-post-processing
+    pattern: post_processing*
+    classification: expert
+    owner: citlali
+    reason: Remaining post-processing fields are expert-only until promoted through a compact key.
+  - id: expert-wiener
+    pattern: wiener_filter*
+    classification: user-facing
+    owner: compact
+    reason: Remaining Wiener-filter fields are normal filter authoring choices.
