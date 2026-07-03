@@ -5803,22 +5803,14 @@ void Engine::create_tod_files() {
         }
 
         // optional diagnostics for correlation-defined network cleaning groups
-        bool corr_nw_requested = false;
-        for (const auto &g : ptcproc.cleaner.grouping) {
-            if (g == "corr_nw") {
-                corr_nw_requested = true;
-                break;
-            }
-        }
-        if (ptcproc.cleaner.corr_grouping.enabled && corr_nw_requested) {
+        if (ptcproc.cleaner.corr_grouping.enabled &&
+            citlali::pipeline::ptcdiag_corr_nw_requested(ptcproc)) {
             std::vector<netCDF::NcDim> corr_det_dims = {n_scans_dim, n_dets_dim};
-            netCDF::NcVar corr_group_id_v = fo.addVar("corr_nw_group_id", netCDF::ncInt, corr_det_dims);
-            corr_group_id_v.putAtt("units", "N/A");
-            corr_group_id_v.putAtt("comment",
-                                   "corr_nw group index for each detector in each output scan; -2147483647 means not assigned");
-            std::vector<int> corr_group_init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
-                                             static_cast<std::size_t>(calib.n_dets), ptc_stream_fill_int);
-            corr_group_id_v.putVar(corr_group_init.data());
+            citlali::pipeline::add_ptcdiag_corr_group_id(
+                fo, corr_det_dims,
+                static_cast<std::size_t>(n_tod_output_scans_for_stream) *
+                    static_cast<std::size_t>(calib.n_dets),
+                ptc_stream_fill_int);
 
             citlali::pipeline::add_ptcdiag_corr_network_block(
                 fo, calib, n_scans_dim, n_tod_output_scans_for_stream,

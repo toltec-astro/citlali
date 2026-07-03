@@ -214,6 +214,29 @@ inline PtcDiagVarList ptcdiag_corr_network_int_vars() {
     };
 }
 
+template <class Ptcproc>
+bool ptcdiag_corr_nw_requested(const Ptcproc &ptcproc) {
+    for (const auto &grouping : ptcproc.cleaner.grouping) {
+        if (grouping == "corr_nw") {
+            return true;
+        }
+    }
+    return false;
+}
+
+inline void add_ptcdiag_corr_group_id(
+    netCDF::NcFile &fo, const std::vector<netCDF::NcDim> &corr_det_dims,
+    std::size_t n_values, int fill_value) {
+    netCDF::NcVar corr_group_id_v =
+        fo.addVar("corr_nw_group_id", netCDF::ncInt, corr_det_dims);
+    corr_group_id_v.putAtt("units", "N/A");
+    corr_group_id_v.putAtt(
+        "comment",
+        "corr_nw group index for each detector in each output scan; -2147483647 means not assigned");
+    std::vector<int> init(n_values, fill_value);
+    corr_group_id_v.putVar(init.data());
+}
+
 template <class Calib>
 void add_ptcdiag_corr_network_block(netCDF::NcFile &fo, const Calib &calib,
                                     netCDF::NcDim n_scans_dim,
