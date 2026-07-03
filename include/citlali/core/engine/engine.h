@@ -5527,17 +5527,10 @@ void Engine::create_tod_files() {
         fo, dims, tod_output_mini, omb.sig_unit, rtcproc.run_kernel,
         telescope.pixel_axes, chunkMode, chunkSizes);
 
-    // add apt table
-    citlali::pipeline::add_tod_apt_table_vars(
-        fo, calib.apt, calib.apt_header_units, n_dets_dim);
-
-    // add telescope parameters
-    citlali::pipeline::add_telescope_data_vars(
-        fo, telescope.tel_data, n_pts_dim, chunkMode, chunkSizes);
-
-    // add pointing offset parameters
-    citlali::pipeline::add_tod_pointing_offset_vars(
-        fo, pointing_offsets_arcsec, logger, n_pts_dim, chunkMode, chunkSizes);
+    citlali::pipeline::add_tod_static_metadata_vars(
+        fo, calib.apt, calib.apt_header_units, telescope.tel_data,
+        pointing_offsets_arcsec, logger, n_dets_dim, n_pts_dim, chunkMode,
+        chunkSizes);
 
     if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
         const int fill_int = citlali::pipeline::rtcdiag_fill_int();

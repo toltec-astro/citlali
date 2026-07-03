@@ -668,6 +668,21 @@ void add_tod_pointing_offset_vars(
     }
 }
 
+template <class AptTable, class AptUnits, class TelescopeData,
+          class PointingOffsets, class Logger>
+void add_tod_static_metadata_vars(
+    netCDF::NcFile &fo, const AptTable &apt, const AptUnits &apt_header_units,
+    const TelescopeData &tel_data, const PointingOffsets &pointing_offsets,
+    const Logger &logger, netCDF::NcDim n_dets_dim, netCDF::NcDim n_pts_dim,
+    netCDF::NcVar::ChunkMode chunk_mode,
+    const std::vector<std::size_t> &chunk_sizes) {
+    add_tod_apt_table_vars(fo, apt, apt_header_units, n_dets_dim);
+    add_telescope_data_vars(fo, tel_data, n_pts_dim, chunk_mode,
+                            chunk_sizes);
+    add_tod_pointing_offset_vars(
+        fo, pointing_offsets, logger, n_pts_dim, chunk_mode, chunk_sizes);
+}
+
 template <class AddInt, class AddDouble>
 void add_tod_filter_edge_guard_scan_vars(const AddInt &add_int,
                                          const AddDouble &add_double) {
