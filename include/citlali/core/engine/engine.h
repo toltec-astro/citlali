@@ -5589,16 +5589,6 @@ void Engine::create_tod_files() {
     citlali::pipeline::add_tod_filter_edge_guard_scan_vars(
         add_scan_int_var, add_scan_double_var);
 
-    // signal
-    netCDF::NcVar signal_v;
-    if (tod_output_mini) {
-        signal_v = fo.addVar("signal", netCDF::ncFloat, dims);
-    }
-    else {
-        signal_v = fo.addVar("signal", netCDF::ncDouble, dims);
-    }
-    signal_v.putAtt("units",omb.sig_unit);
-
     // set chunk mode
     netCDF::NcVar::ChunkMode chunkMode = netCDF::NcVar::nc_CHUNKED;
 
@@ -5607,54 +5597,15 @@ void Engine::create_tod_files() {
         citlali::pipeline::tod_data_chunk_sizes(
             telescope.scan_indices, static_cast<std::size_t>(calib.n_dets));
 
-    // set signal chunking
-    signal_v.setChunking(chunkMode, chunkSizes);
-
-    // flags
-    netCDF::NcVar flags_v;
-    if (tod_output_mini) {
-        flags_v = fo.addVar("flags", netCDF::ncByte, dims);
-    }
-    else {
-        flags_v = fo.addVar("flags", netCDF::ncDouble, dims);
-    }
-    flags_v.putAtt("units","N/A");
-    if (tod_output_mini) {
-        flags_v.putAtt("comment", "0=good,1=flagged");
-    }
-    flags_v.setChunking(chunkMode, chunkSizes);
-
-    // kernel
-    if (rtcproc.run_kernel && !tod_output_mini) {
-        netCDF::NcVar kernel_v = fo.addVar("kernel",netCDF::ncDouble, dims);
-        kernel_v.putAtt("units","N/A");
-        kernel_v.setChunking(chunkMode, chunkSizes);
-    }
-
-    if (!tod_output_mini) {
-        // detector lat
-        netCDF::NcVar det_lat_v = fo.addVar("det_lat",netCDF::ncDouble, dims);
-        det_lat_v.putAtt("units","rad");
-        det_lat_v.setChunking(chunkMode, chunkSizes);
-
-        // detector lon
-        netCDF::NcVar det_lon_v = fo.addVar("det_lon",netCDF::ncDouble, dims);
-        det_lon_v.putAtt("units","rad");
-        det_lon_v.setChunking(chunkMode, chunkSizes);
-
-        // calc absolute pointing if in radec frame
-        if (telescope.pixel_axes == "radec") {
-            // detector absolute ra
-            netCDF::NcVar det_ra_v = fo.addVar("det_ra",netCDF::ncDouble, dims);
-            det_ra_v.putAtt("units","rad");
-            det_ra_v.setChunking(chunkMode, chunkSizes);
-
-            // detector absolute dec
-            netCDF::NcVar det_dec_v = fo.addVar("det_dec",netCDF::ncDouble, dims);
-            det_dec_v.putAtt("units","rad");
-            det_dec_v.setChunking(chunkMode, chunkSizes);
-        }
-    }
+    citlali::pipeline::add_tod_signal_var(
+        fo, dims, tod_output_mini, omb.sig_unit, chunkMode, chunkSizes);
+    citlali::pipeline::add_tod_flags_var(
+        fo, dims, tod_output_mini, chunkMode, chunkSizes);
+    citlali::pipeline::add_tod_kernel_var_if_requested(
+        fo, dims, rtcproc.run_kernel, tod_output_mini, chunkMode, chunkSizes);
+    citlali::pipeline::add_tod_detector_pointing_vars(
+        fo, dims, tod_output_mini, telescope.pixel_axes, chunkMode,
+        chunkSizes);
 
     // add apt table
     for (auto const& x: calib.apt) {
