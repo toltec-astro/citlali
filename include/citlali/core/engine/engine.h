@@ -6247,12 +6247,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_entry, name, logger, rtcproc.despiker.local_residual);
     citlali::pipeline::add_phdu_tod_filter_runtime_config(
         fits_entry, name, logger, rtcproc, run_any_tod_filter);
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTER.EDGE_GUARD.ENABLED", rtcproc.filter_edge_guard.enabled, "TOD filter edge guard enabled");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTER.EDGE_GUARD.MODE", rtcproc.filter_edge_guard.mode, "TOD filter edge guard mode");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTER.EDGE_GUARD.COMBINE", rtcproc.filter_edge_guard.combine, "TOD filter edge guard combine rule");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTER.EDGE_GUARD.CONTEXT_SAMPLES", static_cast<int>(rtcproc.filter_edge_guard.context_samples), "TOD filter context samples");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTER.EDGE_GUARD.GUARD_SAMPLES", static_cast<int>(rtcproc.filter_edge_guard.guard_samples), "TOD filter guarded samples per edge");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TOD.OUTER_CONTEXT_SAMPLES", static_cast<int>(telescope.outer_scans_chunk), "TOD loaded outer context samples");
+    citlali::pipeline::add_phdu_tod_edge_guard_config(
+        fits_entry, rtcproc.filter_edge_guard, telescope.outer_scans_chunk);
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DOWNSAMPLED", rtcproc.run_downsample, "Downsampled");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CALIBRATED", rtcproc.run_calibrate, "Calibrated");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION", rtcproc.run_extinction, "Extinction corrected");

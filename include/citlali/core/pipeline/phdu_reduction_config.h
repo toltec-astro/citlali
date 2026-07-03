@@ -183,6 +183,28 @@ void add_phdu_tod_filter_runtime_config(FitsEntry &fits_entry,
                "TOD IIR highpass forward-backward");
 }
 
+template <class FitsEntry, class EdgeGuard, class OuterContext>
+void add_phdu_tod_edge_guard_config(FitsEntry &fits_entry,
+                                    const EdgeGuard &edge_guard,
+                                    OuterContext outer_context_samples) {
+    auto &hdu = fits_entry.pfits->pHDU();
+    hdu.addKey("CONFIG.TODFILTER.EDGE_GUARD.ENABLED", edge_guard.enabled,
+               "TOD filter edge guard enabled");
+    hdu.addKey("CONFIG.TODFILTER.EDGE_GUARD.MODE", edge_guard.mode,
+               "TOD filter edge guard mode");
+    hdu.addKey("CONFIG.TODFILTER.EDGE_GUARD.COMBINE", edge_guard.combine,
+               "TOD filter edge guard combine rule");
+    hdu.addKey("CONFIG.TODFILTER.EDGE_GUARD.CONTEXT_SAMPLES",
+               static_cast<int>(edge_guard.context_samples),
+               "TOD filter context samples");
+    hdu.addKey("CONFIG.TODFILTER.EDGE_GUARD.GUARD_SAMPLES",
+               static_cast<int>(edge_guard.guard_samples),
+               "TOD filter guarded samples per edge");
+    hdu.addKey("CONFIG.TOD.OUTER_CONTEXT_SAMPLES",
+               static_cast<int>(outer_context_samples),
+               "TOD loaded outer context samples");
+}
+
 template <class FitsEntry, class WeightCorrPenalty, class Logger>
 void add_phdu_weight_corr_penalty_config(
     FitsEntry &fits_entry, const std::string &array_name,
