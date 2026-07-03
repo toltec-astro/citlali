@@ -106,7 +106,6 @@
 #include <citlali/core/pipeline/ptcdiag_netcdf.h>
 #include <citlali/core/pipeline/reduction_config_netcdf.h>
 #include <citlali/core/pipeline/rtcdiag_netcdf.h>
-#include <citlali/core/pipeline/string_join.h>
 
 #include <citlali/core/engine/io.h>
 #include <citlali/core/engine/kidsproc.h>
