@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cmath>
+#include <limits>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -11,6 +12,14 @@
 #include <citlali/core/utils/netcdf_io.h>
 
 namespace citlali::pipeline {
+
+inline double tod_output_fill_double() {
+    return std::numeric_limits<double>::quiet_NaN();
+}
+
+constexpr int tod_output_fill_int() {
+    return -2147483647;
+}
 
 inline void add_tod_output_type_label(netCDF::NcFile &fo,
                                       const std::string &label) {
@@ -307,6 +316,28 @@ inline void add_tod_scan_index_placeholders(
         "comment", "1-based original scan index from the full observation");
     std::vector<int> output_scan_init(n_output_scans, fill_value);
     output_scan_index_v.putVar(output_scan_init.data());
+}
+
+inline void add_tod_scan_int_placeholder_var(
+    netCDF::NcFile &fo, const std::string &name,
+    const std::string &comment, netCDF::NcDim n_scans_dim,
+    std::size_t n_output_scans, int fill_value) {
+    netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, n_scans_dim);
+    v.putAtt("units", "samples");
+    v.putAtt("comment", comment);
+    std::vector<int> init(n_output_scans, fill_value);
+    v.putVar(init.data());
+}
+
+inline void add_tod_scan_double_placeholder_var(
+    netCDF::NcFile &fo, const std::string &name, const std::string &units,
+    const std::string &comment, netCDF::NcDim n_scans_dim,
+    std::size_t n_output_scans, double fill_value) {
+    netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, n_scans_dim);
+    v.putAtt("units", units);
+    v.putAtt("comment", comment);
+    std::vector<double> init(n_output_scans, fill_value);
+    v.putVar(init.data());
 }
 
 template <class AddInt, class AddDouble>

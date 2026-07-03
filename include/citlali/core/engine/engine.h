@@ -5571,23 +5571,20 @@ void Engine::create_tod_files() {
         fo, raw_scans_dims, scans_dims, n_scans_dim,
         static_cast<std::size_t>(n_tod_output_scans_for_stream),
         static_cast<std::size_t>(telescope.scan_indices.rows()),
-        tod_output_outer, -2147483647);
+        tod_output_outer, citlali::pipeline::tod_output_fill_int());
 
     auto add_scan_int_var = [&](const std::string &name, const std::string &comment) {
-        netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, n_scans_dim);
-        v.putAtt("units", "samples");
-        v.putAtt("comment", comment);
-        std::vector<int> init(static_cast<std::size_t>(n_tod_output_scans_for_stream), -2147483647);
-        v.putVar(init.data());
+        citlali::pipeline::add_tod_scan_int_placeholder_var(
+            fo, name, comment, n_scans_dim,
+            static_cast<std::size_t>(n_tod_output_scans_for_stream),
+            citlali::pipeline::tod_output_fill_int());
     };
     auto add_scan_double_var = [&](const std::string &name, const std::string &units,
                                    const std::string &comment) {
-        netCDF::NcVar v = fo.addVar(name, netCDF::ncDouble, n_scans_dim);
-        v.putAtt("units", units);
-        v.putAtt("comment", comment);
-        std::vector<double> init(static_cast<std::size_t>(n_tod_output_scans_for_stream),
-                                 std::numeric_limits<double>::quiet_NaN());
-        v.putVar(init.data());
+        citlali::pipeline::add_tod_scan_double_placeholder_var(
+            fo, name, units, comment, n_scans_dim,
+            static_cast<std::size_t>(n_tod_output_scans_for_stream),
+            citlali::pipeline::tod_output_fill_double());
     };
     citlali::pipeline::add_tod_filter_edge_guard_scan_vars(
         add_scan_int_var, add_scan_double_var);
