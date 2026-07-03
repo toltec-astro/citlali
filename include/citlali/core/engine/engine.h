@@ -8419,10 +8419,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     }
 
     write_netcdf_atomic(filename + ".nc", [&](netCDF::NcFile &fo) {
-    netCDF::NcVar obsnum_v = fo.addVar("obsnum", netCDF::ncInt);
-    obsnum_v.putAtt("units", "N/A");
-    int obsnum_int = is_coadd ? -1 : std::stoi(obsnum);
-    obsnum_v.putVar(&obsnum_int);
+    citlali::pipeline::add_obsnum_var(
+        fo, is_coadd ? -1 : std::stoi(obsnum));
 
     netCDF::NcDim n_maps_dim = fo.addDim("n_maps", n_maps_local);
     netCDF::NcDim n_obsnums_dim = fo.addDim("n_obsnums", n_obsnums);
