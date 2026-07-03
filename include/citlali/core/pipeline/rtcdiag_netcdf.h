@@ -332,7 +332,7 @@ void add_rtc_line_audit_config_vars(netCDF::NcFile &fo,
 inline double rtcdiag_percentile_sorted(
     const std::vector<double> &sorted_values, double pct) {
     if (sorted_values.empty()) {
-        return std::numeric_limits<double>::quiet_NaN();
+        return rtcdiag_fill_double();
     }
     if (sorted_values.size() == 1) {
         return sorted_values.front();
