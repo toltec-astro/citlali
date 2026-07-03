@@ -6006,30 +6006,11 @@ void Engine::create_tod_files() {
     std::vector<netCDF::NcDim> raw_scans_dims = {n_scans_dim, n_raw_scan_indices_dim};
     std::vector<netCDF::NcDim> scans_dims = {n_scans_dim, n_scan_indices_dim};
 
-    // raw file scan indices
-    netCDF::NcVar raw_scan_indices_v = fo.addVar("raw_scan_indices",netCDF::ncInt, raw_scans_dims);
-    raw_scan_indices_v.putAtt("units","N/A");
-    raw_scan_indices_v.putAtt(
-        "comment",
-        tod_output_outer
-            ? "indices in output timebase: inner_start, inner_end, outer_start, outer_end"
-            : "indices in output timebase; outer=inner (output stores inner scans only)");
-    std::vector<int> raw_scan_init(static_cast<std::size_t>(n_tod_output_scans_for_stream) *
-                                   static_cast<std::size_t>(telescope.scan_indices.rows()), -2147483647);
-    raw_scan_indices_v.putVar(raw_scan_init.data());
-
-    // scan indices for data
-    netCDF::NcVar scan_indices_v = fo.addVar("scan_indices",netCDF::ncInt, scans_dims);
-    scan_indices_v.putAtt("units","N/A");
-    std::vector<int> scan_init(static_cast<std::size_t>(n_tod_output_scans_for_stream) * 2, -2147483647);
-    scan_indices_v.putVar(scan_init.data());
-
-    // mapping from output scan row to original scan number (1-based)
-    netCDF::NcVar output_scan_index_v = fo.addVar("output_scan_index", netCDF::ncInt, n_scans_dim);
-    output_scan_index_v.putAtt("units","N/A");
-    output_scan_index_v.putAtt("comment","1-based original scan index from the full observation");
-    std::vector<int> output_scan_init(static_cast<std::size_t>(n_tod_output_scans_for_stream), -2147483647);
-    output_scan_index_v.putVar(output_scan_init.data());
+    citlali::pipeline::add_tod_scan_index_placeholders(
+        fo, raw_scans_dims, scans_dims, n_scans_dim,
+        static_cast<std::size_t>(n_tod_output_scans_for_stream),
+        static_cast<std::size_t>(telescope.scan_indices.rows()),
+        tod_output_outer, -2147483647);
 
     auto add_scan_int_var = [&](const std::string &name, const std::string &comment) {
         netCDF::NcVar v = fo.addVar(name, netCDF::ncInt, n_scans_dim);
