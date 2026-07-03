@@ -6360,7 +6360,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     mb->wcs.crval[3] = stokes_index;
 
     try {
-        auto add_map_hdu_with_wcs = [&](const std::string &hdu_name, const auto &data) {
+        auto add_map_hdu_with_wcs = [&](const std::string &hdu_name, auto &data) {
             fits_io->at(map_index).add_hdu(hdu_name, data);
             fits_io->at(map_index).add_wcs(
                 fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
