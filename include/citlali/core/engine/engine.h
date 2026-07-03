@@ -5599,7 +5599,7 @@ void Engine::cli_summary() {
         if (run_noise) {
             logger->info("coadd map buffer noise maps: {}", cmb.n_noise);
             // make a rough estimate of memory usage for coadd noise maps
-            double nmb_size = 8*cmb.n_rows*cmb.n_cols*cmb.noise.size()*cmb.n_noise/1e9;
+            double nmb_size = citlali::pipeline::noise_buffer_memory_gb(cmb);
             logger->info("estimated size of noise buffer {:.2f} GB", nmb_size);
             mb_size_total = mb_size_total + nmb_size;
         }
