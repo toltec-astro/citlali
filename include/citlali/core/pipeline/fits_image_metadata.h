@@ -11,10 +11,15 @@ void add_image_unit_keys(Hdu &hdu, const std::string &unit) {
 }
 
 template <class Hdu>
+void add_image_description_key(Hdu &hdu, const std::string &description) {
+    hdu.addKey("DESCRIP", description, "Image product description");
+}
+
+template <class Hdu>
 void add_image_unit_description_keys(Hdu &hdu, const std::string &unit,
                                      const std::string &description) {
     add_image_unit_keys(hdu, unit);
-    hdu.addKey("DESCRIP", description, "Image product description");
+    add_image_description_key(hdu, description);
 }
 
 }  // namespace citlali::pipeline
