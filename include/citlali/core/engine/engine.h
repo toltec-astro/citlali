@@ -5488,20 +5488,9 @@ void Engine::add_tod_header(map_buffer_t &mb) {
                 fo, telescope.tel_header["Header.M2.XReq"](0)/1000.*1e6,
                 telescope.tel_header["Header.M2.YReq"](0)/1000.*1e6,
                 telescope.tel_header["Header.M2.ZReq"](0)/1000.*1e6);
-            for (int i = 0; i < calib.arrays.size(); ++i) {
-                double rms;
-
-                if (redu_type != "beammap" && run_mapmaking) {
-                    rms = pow(mb->median_err(i), 0.5);
-                }
-                else {
-                    rms = 0.0;
-                }
-                auto name = toltec_io.array_name_map[calib.arrays(i)];
-                add_netcdf_var(fo, "OOF_RMS_" + name, rms);
-                add_netcdf_var(fo, "OOF_W_" + name, toltec_io.array_wavelength_map[calib.arrays(i)]/1000.);
-                add_netcdf_var(fo, "OOF_ID_" + name, static_cast<int>(toltec_io.array_wavelength_map[calib.arrays(i)]*1000));
-            }
+            citlali::pipeline::add_oof_array_vars(
+                fo, mb, redu_type, run_mapmaking, calib,
+                toltec_io.array_name_map, toltec_io.array_wavelength_map);
         }
 
         // fruit loops parameters
