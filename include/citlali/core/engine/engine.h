@@ -6639,21 +6639,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_entry, name, logger, reduction_learning);
     citlali::pipeline::add_phdu_weight_corr_penalty_config(
         fits_entry, name, logger, ptcproc.weight_corr_penalty);
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.ENABLED",
-                                        ptcproc.busy_row_suppression.enabled,
-                                        "Enable busy scan/network row weight suppression");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.REQUIRE_BUSY_VETO",
-                                        ptcproc.busy_row_suppression.require_busy_veto,
-                                        "Require second-pass busy-network veto before suppression");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.MIN_CAND_CLUSTERS",
-                                        ptcproc.busy_row_suppression.min_candidate_clusters,
-                                        "Minimum candidate residual clusters for suppression");
-    add_double_key("CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.MIN_MAX_RESID_Z",
-                   ptcproc.busy_row_suppression.min_max_unflagged_residual_z,
-                   "Minimum max unflagged residual z for suppression");
-    add_double_key("CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.FACTOR",
-                   ptcproc.busy_row_suppression.factor,
-                   "Busy-row multiplicative weight suppression factor");
+    citlali::pipeline::add_phdu_busy_row_suppression_config(
+        fits_entry, name, logger, ptcproc.busy_row_suppression);
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED", ptcproc.run_clean, "Cleaned");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.MODESEL",
                                         ptcproc.cleaner.active_cleaner_label(),

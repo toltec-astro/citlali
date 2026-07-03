@@ -156,6 +156,35 @@ void add_phdu_weight_corr_penalty_config(
                    "Mid-band maximum frequency for low/mid ratio");
 }
 
+template <class FitsEntry, class BusyRowSuppression, class Logger>
+void add_phdu_busy_row_suppression_config(
+    FitsEntry &fits_entry, const std::string &array_name,
+    const Logger &logger, const BusyRowSuppression &suppression) {
+    auto &hdu = fits_entry.pfits->pHDU();
+    auto add_double_key = [&](const std::string &key, double value,
+                              const std::string &comment,
+                              double fallback = 0.0) {
+        add_phdu_double_key(fits_entry, array_name, logger, key, value,
+                            comment, fallback);
+    };
+
+    hdu.addKey("CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.ENABLED",
+               suppression.enabled,
+               "Enable busy scan/network row weight suppression");
+    hdu.addKey("CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.REQUIRE_BUSY_VETO",
+               suppression.require_busy_veto,
+               "Require second-pass busy-network veto before suppression");
+    hdu.addKey("CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.MIN_CAND_CLUSTERS",
+               suppression.min_candidate_clusters,
+               "Minimum candidate residual clusters for suppression");
+    add_double_key("CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.MIN_MAX_RESID_Z",
+                   suppression.min_max_unflagged_residual_z,
+                   "Minimum max unflagged residual z for suppression");
+    add_double_key("CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.FACTOR",
+                   suppression.factor,
+                   "Busy-row multiplicative weight suppression factor");
+}
+
 template <class FitsEntry, class ReductionLearning, class Logger>
 void add_phdu_reduction_learning_config(
     FitsEntry &fits_entry, const std::string &array_name,
