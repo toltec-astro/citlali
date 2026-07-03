@@ -8550,12 +8550,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
          edge_guard_support_npix,
          edge_guard_guardband_npix});
 
-    add_map_obs_double("coadd_obs_weight_sum", "sum of positive observation-level raw weight values aligned onto this map grid", obs_weight_sum);
-    add_map_obs_double("coadd_obs_weight_frac", "fractional contribution of each obsnum to coadd_obs_weight_sum for a given map", obs_weight_frac);
-    add_map_obs_double("coadd_obs_core_weight_sum", "sum of positive observation-level raw weight values within the final map core support", obs_core_weight_sum);
-    add_map_obs_double("coadd_obs_core_weight_frac", "fractional contribution of each obsnum within the final map core support", obs_core_weight_frac);
-    add_map_obs_int("coadd_obs_n_valid_pixels", "count of aligned observation pixels with positive raw weight", obs_valid_pixels);
-    add_map_obs_int("coadd_obs_n_core_pixels", "count of aligned observation pixels with positive raw weight inside the final map core support", obs_core_pixels);
+    citlali::pipeline::add_mapdiag_observation_contribution_vars(
+        add_map_obs_double, add_map_obs_int,
+        {obs_weight_sum,
+         obs_weight_frac,
+         obs_core_weight_sum,
+         obs_core_weight_frac},
+        {obs_valid_pixels,
+         obs_core_pixels});
     });
 }
 
