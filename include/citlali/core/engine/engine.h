@@ -6154,23 +6154,15 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
             beammap_phase_split_enabled, beammap_locator_iter,
             beammap_measurement_start_iter, beammap_derotate);
         // add reference detector information
+        citlali::pipeline::BeammapReferenceHeaderValues reference_values;
         if (beammap_subtract_reference) {
-            const auto reference_values =
+            reference_values =
                 citlali::pipeline::beammap_reference_header_values(
                     calib, beammap_reference_det);
-            fits_io->at(i).pfits->pHDU().addKey(
-                "BEAMMAP.REF_DET_INDEX", reference_values.det_index,
-                "Beammap Reference det (rotation center)");
-            add_double_key("BEAMMAP.REF_X_T", reference_values.x_t,
-                           "Az rotation center (arcsec)");
-            add_double_key("BEAMMAP.REF_Y_T", reference_values.y_t,
-                           "Alt rotation center (arcsec)");
         }
-        else {
-            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_DET_INDEX", -99, "Beammap Reference det (rotation center)");
-            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_X_T", "N/A", "Az rotation center (arcsec)");
-            fits_io->at(i).pfits->pHDU().addKey("BEAMMAP.REF_Y_T", "N/A", "Alt rotation center (arcsec)");
-        }
+        citlali::pipeline::add_phdu_beammap_reference(
+            fits_entry, name, logger, beammap_subtract_reference,
+            reference_values);
     }
 
     logger->debug("adding obsnums");

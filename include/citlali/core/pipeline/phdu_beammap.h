@@ -84,4 +84,31 @@ void add_phdu_beammap_tuning(FitsEntry &fits_entry,
     hdu.addKey("BEAMMAP.IS_DEROTATED", is_derotated, "Beammap derotated");
 }
 
+template <class FitsEntry, class ReferenceValues, class Logger>
+void add_phdu_beammap_reference(FitsEntry &fits_entry,
+                                const std::string &array_name,
+                                const Logger &logger,
+                                bool subtract_reference,
+                                const ReferenceValues &reference_values) {
+    auto &hdu = fits_entry.pfits->pHDU();
+    if (subtract_reference) {
+        hdu.addKey("BEAMMAP.REF_DET_INDEX", reference_values.det_index,
+                   "Beammap Reference det (rotation center)");
+        add_phdu_double_key(fits_entry, array_name, logger,
+                            "BEAMMAP.REF_X_T", reference_values.x_t,
+                            "Az rotation center (arcsec)");
+        add_phdu_double_key(fits_entry, array_name, logger,
+                            "BEAMMAP.REF_Y_T", reference_values.y_t,
+                            "Alt rotation center (arcsec)");
+    }
+    else {
+        hdu.addKey("BEAMMAP.REF_DET_INDEX", -99,
+                   "Beammap Reference det (rotation center)");
+        hdu.addKey("BEAMMAP.REF_X_T", "N/A",
+                   "Az rotation center (arcsec)");
+        hdu.addKey("BEAMMAP.REF_Y_T", "N/A",
+                   "Alt rotation center (arcsec)");
+    }
+}
+
 }  // namespace citlali::pipeline
