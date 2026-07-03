@@ -8723,33 +8723,14 @@ void Engine::create_ptcdiag_file() {
             fo, name, comment, det_dims, det_chunks, ptc_det_value_count,
             fill_double);
     };
-    add_det_double("ptc_detector_weight", "final detector map weight used by PTC for this scan");
-    add_det_double("ptc_detector_rms", "per-detector RMS of the PTC timestream written for this scan");
-    add_det_double("ptc_detector_stddev", "per-detector standard deviation of the PTC timestream written for this scan");
-    add_det_double("ptc_detector_median", "per-detector median of the PTC timestream written for this scan");
-    add_det_double("ptc_detector_flagged_fraction", "fraction of detector samples flagged in the PTC timestream for this scan");
-    add_det_double("ptc_invvar_window_valid_fraction",
-                   "fraction of remove_bad_dets diagnostic windows with enough unflagged samples to estimate inverse variance in the PTC timestream");
-    add_det_double("ptc_invvar_window_median",
-                   "median per-window inverse variance used for PTC remove_bad_dets diagnostics");
-    add_det_double("ptc_invvar_window_q10",
-                   "10th percentile of per-window inverse variance used for PTC remove_bad_dets diagnostics");
-    add_det_double("ptc_invvar_window_q90",
-                   "90th percentile of per-window inverse variance used for PTC remove_bad_dets diagnostics");
-    add_det_double("ptc_invvar_window_flagged_frac_median",
-                   "median flagged fraction across remove_bad_dets diagnostic windows in the PTC timestream");
-    add_det_double("ptc_invvar_window_flagged_frac_max",
-                   "maximum flagged fraction across remove_bad_dets diagnostic windows in the PTC timestream");
-    add_det_double("ptc_invvar_window_heavy_flagged_fraction",
-                   "fraction of remove_bad_dets diagnostic windows in the PTC timestream with at least 50 percent flagged samples");
-    citlali::pipeline::add_ptcdiag_det_int(
-        fo, "ptc_invvar_window_n_total",
-        "total number of fixed windows evaluated for PTC remove_bad_dets diagnostics",
-        det_dims, det_chunks, ptc_det_value_count, fill_int);
-    citlali::pipeline::add_ptcdiag_det_int(
-        fo, "ptc_invvar_window_n_valid",
-        "number of fixed windows with a finite inverse-variance estimate for PTC remove_bad_dets diagnostics",
-        det_dims, det_chunks, ptc_det_value_count, fill_int);
+    auto add_det_int = [&](const std::string &name, const std::string &comment) {
+        citlali::pipeline::add_ptcdiag_det_int(
+            fo, name, comment, det_dims, det_chunks, ptc_det_value_count,
+            fill_int);
+    };
+    citlali::pipeline::add_ptcdiag_detector_core_diag(add_det_double);
+    citlali::pipeline::add_ptcdiag_detector_invvar_window_diag(
+        add_det_int, add_det_double);
 
     citlali::pipeline::add_ptcdiag_corr_network_block(
         fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
