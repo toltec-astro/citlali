@@ -46,6 +46,11 @@ struct TodFileCounts {
     std::size_t n_dets;
 };
 
+struct TodChunking {
+    netCDF::NcVar::ChunkMode mode;
+    std::vector<std::size_t> sizes;
+};
+
 inline TodFileCounts tod_file_counts(Eigen::Index n_output_scans,
                                      Eigen::Index n_raw_scan_indices,
                                      Eigen::Index n_dets) {
@@ -92,6 +97,15 @@ std::vector<std::size_t> tod_data_chunk_sizes(const ScanIndices &scan_indices,
     const auto mean_scan_size =
         ((scan_indices.row(3) - scan_indices.row(2)).array() + 1).mean();
     return {static_cast<std::size_t>(mean_scan_size), n_dets};
+}
+
+template <class ScanIndices>
+TodChunking tod_data_chunking(const ScanIndices &scan_indices,
+                              std::size_t n_dets) {
+    return {
+        netCDF::NcVar::nc_CHUNKED,
+        tod_data_chunk_sizes(scan_indices, n_dets),
+    };
 }
 
 inline void add_tod_output_type_label(netCDF::NcFile &fo,

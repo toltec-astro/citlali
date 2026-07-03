@@ -5518,13 +5518,10 @@ void Engine::create_tod_files() {
         citlali::pipeline::tod_output_fill_int(),
         citlali::pipeline::tod_output_fill_double());
 
-    // set chunk mode
-    netCDF::NcVar::ChunkMode chunkMode = netCDF::NcVar::nc_CHUNKED;
-
-    // set chunking to mean scan size and n_dets
-    std::vector<std::size_t> chunkSizes =
-        citlali::pipeline::tod_data_chunk_sizes(
-            telescope.scan_indices, static_cast<std::size_t>(calib.n_dets));
+    const auto tod_chunking = citlali::pipeline::tod_data_chunking(
+        telescope.scan_indices, tod_file_counts.n_dets);
+    const auto chunkMode = tod_chunking.mode;
+    const auto &chunkSizes = tod_chunking.sizes;
 
     citlali::pipeline::add_tod_signal_var(
         fo, dims, tod_output_mini, omb.sig_unit, chunkMode, chunkSizes);
