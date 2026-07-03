@@ -8867,17 +8867,12 @@ void Engine::create_rtcdiag_file() {
         logger->warn("rtcdiag scan-speed diagnostics skipped: missing TelTime, az_phys, or alt_phys telescope data");
     }
 
-    add_scan_double("scan_duration_s", "s",
-                    "inner scan duration used for scan-speed diagnostics", scan_duration_s);
-    add_scan_double("scan_speed_altaz_p50_arcsec_s", "arcsec/s",
-                    "per-scan median boresight speed in the delta-source altaz frame",
-                    scan_speed_p50_arcsec_s);
-    add_scan_double("scan_speed_altaz_p95_arcsec_s", "arcsec/s",
-                    "per-scan 95th percentile boresight speed in the delta-source altaz frame",
-                    scan_speed_p95_arcsec_s);
-    add_scan_double("scan_speed_altaz_p995_arcsec_s", "arcsec/s",
-                    "per-scan robust peak (99.5th percentile) boresight speed in the delta-source altaz frame",
-                    scan_speed_p995_arcsec_s);
+    citlali::pipeline::add_rtcdiag_scan_summary_vars(
+        add_scan_double,
+        {scan_duration_s,
+         scan_speed_p50_arcsec_s,
+         scan_speed_p95_arcsec_s,
+         scan_speed_p995_arcsec_s});
 
     std::vector<netCDF::NcDim> scan_array_dims = {n_scans_dim, n_arrays_dim};
     std::vector<double> source_power_half_bandwidth_hz(
