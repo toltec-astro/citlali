@@ -41,6 +41,13 @@ void add_image_weight_threshold_key(Hdu &hdu, double weight_threshold) {
 }
 
 template <class Hdu>
+void add_noise_image_summary_keys(Hdu &hdu, const std::string &unit,
+                                  double median_rms) {
+    hdu.addKey("UNIT", unit, "Unit of map");
+    hdu.addKey("MEDRMS", median_rms, "Median RMS of noise maps");
+}
+
+template <class Hdu>
 void add_image_unit_description_keys(Hdu &hdu, const std::string &unit,
                                      const std::string &description) {
     add_image_unit_keys(hdu, unit);

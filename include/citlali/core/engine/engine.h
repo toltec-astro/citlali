@@ -6583,8 +6583,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 noise_fits_io->at(map_index).add_hdu("signal_" + map_name + std::to_string(n) + "_" + rtcproc.polarization.stokes_params[stokes_index],
                                                      noise_matrix);
                 noise_fits_io->at(map_index).add_wcs(noise_fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-                noise_fits_io->at(map_index).hdus.back()->addKey("UNIT", mb->sig_unit, "Unit of map");
-                noise_fits_io->at(map_index).hdus.back()->addKey("MEDRMS", median_rms, "Median RMS of noise maps");
+                citlali::pipeline::add_noise_image_summary_keys(
+                    *noise_fits_io->at(map_index).hdus.back(), mb->sig_unit,
+                    median_rms);
             }
         }
     } catch (const CCfits::FitsError &e) {
