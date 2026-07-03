@@ -8617,10 +8617,8 @@ void Engine::create_ptcdiag_file() {
         return citlali::pipeline::ptcdiag_apt_int_values(
             calib, key, fill_int);
     };
-    add_det_meta_int("ptc_diag_uid", "detector UID along n_dets", apt_int_values("uid"));
-    add_det_meta_int("ptc_diag_array", "array index along n_dets", apt_int_values("array"));
-    add_det_meta_int("ptc_diag_network", "network index along n_dets", apt_int_values("nw"));
-    add_det_meta_int("ptc_diag_apt_flag", "APT detector flag along n_dets", apt_int_values("flag"));
+    citlali::pipeline::add_ptcdiag_det_meta_vars(
+        add_det_meta_int, apt_int_values);
 
     add_netcdf_var<std::string>(fo, "INSTRUME", "TolTEC");
     add_netcdf_var<std::string>(fo, "TELESCOP", "LMT");
