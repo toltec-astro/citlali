@@ -5582,12 +5582,8 @@ void Engine::create_tod_files() {
             ptc_stream_fill_int, ptc_stream_fill_double);
     }
 
-    // add hwpr
-    if (rtcproc.run_polarization) {
-        if (calib.run_hwpr) {
-            citlali::pipeline::add_tod_hwpr_var(fo, n_pts_dim);
-        }
-    }
+    citlali::pipeline::add_tod_hwpr_var_if_requested(
+        fo, rtcproc.run_polarization, calib.run_hwpr, n_pts_dim);
 
     // add tel header
     citlali::pipeline::add_telescope_header_vars(fo, telescope.tel_header);

@@ -623,6 +623,15 @@ inline void add_tod_hwpr_var(netCDF::NcFile &fo, netCDF::NcDim n_pts_dim) {
     hwpr_v.putAtt("units", "rad");
 }
 
+inline void add_tod_hwpr_var_if_requested(netCDF::NcFile &fo,
+                                          bool run_polarization,
+                                          bool run_hwpr,
+                                          netCDF::NcDim n_pts_dim) {
+    if (run_polarization && run_hwpr) {
+        add_tod_hwpr_var(fo, n_pts_dim);
+    }
+}
+
 template <class TelescopeHeader>
 void add_telescope_header_vars(netCDF::NcFile &fo,
                                const TelescopeHeader &tel_header) {
