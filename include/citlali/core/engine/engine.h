@@ -5494,11 +5494,13 @@ void Engine::create_tod_files() {
         tod_stream_layout.n_output_scans;
     const bool tod_output_mini = tod_stream_layout.mini_output;
     const bool tod_output_outer = tod_stream_layout.outer_output;
+    const auto tod_file_counts = citlali::pipeline::tod_file_counts(
+        n_tod_output_scans_for_stream, telescope.scan_indices.rows(),
+        calib.n_dets);
 
     const auto tod_dims = citlali::pipeline::add_tod_file_dims(
-        fo, static_cast<std::size_t>(n_tod_output_scans_for_stream),
-        static_cast<std::size_t>(telescope.scan_indices.rows()),
-        static_cast<std::size_t>(calib.n_dets));
+        fo, tod_file_counts.n_output_scans,
+        tod_file_counts.n_raw_scan_indices, tod_file_counts.n_dets);
     netCDF::NcDim n_pts_dim = tod_dims.n_pts;
     netCDF::NcDim n_scans_dim = tod_dims.n_scans;
     netCDF::NcDim n_dets_dim = tod_dims.n_dets;
@@ -5508,8 +5510,7 @@ void Engine::create_tod_files() {
 
     citlali::pipeline::add_tod_scan_index_placeholders(
         fo, raw_scans_dims, scans_dims, n_scans_dim,
-        static_cast<std::size_t>(n_tod_output_scans_for_stream),
-        static_cast<std::size_t>(telescope.scan_indices.rows()),
+        tod_file_counts.n_output_scans, tod_file_counts.n_raw_scan_indices,
         tod_output_outer, citlali::pipeline::tod_output_fill_int());
 
     auto add_scan_int_var = [&](const std::string &name, const std::string &comment) {

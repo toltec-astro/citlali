@@ -40,6 +40,22 @@ struct TodStreamLayout {
     bool outer_output;
 };
 
+struct TodFileCounts {
+    std::size_t n_output_scans;
+    std::size_t n_raw_scan_indices;
+    std::size_t n_dets;
+};
+
+inline TodFileCounts tod_file_counts(Eigen::Index n_output_scans,
+                                     Eigen::Index n_raw_scan_indices,
+                                     Eigen::Index n_dets) {
+    return {
+        static_cast<std::size_t>(n_output_scans),
+        static_cast<std::size_t>(n_raw_scan_indices),
+        static_cast<std::size_t>(n_dets),
+    };
+}
+
 template <class RtcProc, class PtcProc>
 TodStreamLayout tod_stream_layout(bool is_rtc_stream,
                                   Eigen::Index n_rtc_output_scans,
