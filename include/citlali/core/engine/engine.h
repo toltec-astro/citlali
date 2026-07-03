@@ -5707,17 +5707,12 @@ void Engine::create_tod_files() {
     // add hwpr
     if (rtcproc.run_polarization) {
         if (calib.run_hwpr) {
-            netCDF::NcVar hwpr_v = fo.addVar("hwpr",netCDF::ncDouble, n_pts_dim);
-            hwpr_v.putAtt("units","rad");
+            citlali::pipeline::add_tod_hwpr_var(fo, n_pts_dim);
         }
     }
 
     // add tel header
-    netCDF::NcDim tel_header_dim = fo.addDim("tel_header_n_pts", 1);
-    for (const auto &[key,val]: telescope.tel_header) {
-        netCDF::NcVar tel_header_v = fo.addVar(key,netCDF::ncDouble, tel_header_dim);
-        tel_header_v.putVar(&val(0));
-    }
+    citlali::pipeline::add_telescope_header_vars(fo, telescope.tel_header);
 
     });
 }
