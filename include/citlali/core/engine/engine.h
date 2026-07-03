@@ -6357,46 +6357,10 @@ void Engine::create_tod_files() {
                     fill_int);
             };
 
-            add_rtc_imp_slot_int("rtc_impulsive_slot_det_index",
-                                 "detector index of a captured impulsive RTC event for each scan/network/slot");
-            add_rtc_imp_slot_int("rtc_impulsive_slot_event_sample",
-                                 "sample index of a captured impulsive RTC event; -2147483647 means unavailable");
-            add_rtc_imp_slot_int("rtc_impulsive_slot_event_kind",
-                                 "0=raw-sample peak, 1=delta peak, -2147483647 means unavailable");
-            add_rtc_imp_slot_double("rtc_impulsive_slot_event_score",
-                                    "impulsive event score for a captured scan/network detector slot");
-            add_rtc_imp_slot_double("rtc_impulsive_slot_peak_abs_z",
-                                    "maximum per-sample absolute robust-z for a captured scan/network detector slot");
-            add_rtc_imp_slot_double("rtc_impulsive_slot_peak_delta_abs_z",
-                                    "maximum adjacent-sample delta robust-z for a captured scan/network detector slot");
-            add_rtc_imp_slot_double("rtc_impulsive_slot_added_flagged_frac",
-                                    "fraction of samples newly flagged by RTC despiking for a captured detector slot");
-            add_rtc_imp_slot_int("rtc_impulsive_slot_raw_exceed_count",
-                                 "count of raw-sample MAD exceedances for a captured detector slot");
-            add_rtc_imp_slot_int("rtc_impulsive_slot_local_raw_candidate_count",
-                                 "count of locally detrended raw candidate events considered by the compact-raw gate for a captured detector slot");
-            add_rtc_imp_slot_int("rtc_impulsive_slot_local_raw_accepted_event_count",
-                                 "count of locally detrended raw candidate events accepted by the compact-raw gate for a captured detector slot");
-            add_rtc_imp_slot_int("rtc_impulsive_slot_local_flagged_sample_count",
-                                 "count of samples flagged by accepted compact-raw local-residual events for a captured detector slot");
-            add_rtc_imp_slot_int("rtc_impulsive_slot_local_exceed_count",
-                                 "legacy alias for rtc_impulsive_slot_local_flagged_sample_count");
-            add_rtc_imp_slot_int("rtc_impulsive_slot_local_raw_reject_count",
-                                 "count of locally detrended raw candidate events rejected by the compact-raw gate for a captured detector slot");
-            add_rtc_imp_slot_int("rtc_impulsive_slot_delta_spike_count",
-                                 "count of delta-domain spikes for a captured detector slot");
-            add_rtc_imp_slot_int("rtc_impulsive_slot_local_delta_candidate_count",
-                                 "count of locally detrended delta candidate events considered by the compact-delta gate for a captured detector slot");
-            add_rtc_imp_slot_int("rtc_impulsive_slot_local_delta_accepted_event_count",
-                                 "count of locally detrended delta candidate events accepted by the compact-delta gate for a captured detector slot");
-            add_rtc_imp_slot_int("rtc_impulsive_slot_local_delta_exceed_count",
-                                 "legacy alias for rtc_impulsive_slot_local_delta_accepted_event_count");
-            add_rtc_imp_slot_int("rtc_impulsive_slot_local_delta_reject_count",
-                                 "count of locally detrended delta candidate events rejected by the compact-delta gate for a captured detector slot");
-            add_rtc_imp_snip_double("rtc_impulsive_slot_snippet_z",
-                                    "standardized RTC snippet around each captured impulsive event");
-            add_rtc_imp_snip_int("rtc_impulsive_slot_snippet_flag",
-                                 "final RTC flag state for each sample in a captured impulsive snippet");
+            citlali::pipeline::add_rtcdiag_impulsive_capture_diag(
+                add_rtc_imp_slot_int, add_rtc_imp_slot_double,
+                add_rtc_imp_snip_double, add_rtc_imp_snip_int,
+                citlali::pipeline::rtcdiag_impulsive_capture_stream_comments());
         }
     }
 
