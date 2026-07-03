@@ -6177,36 +6177,11 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     logger->debug("adding obs info");
 
-    // add source
-    fits_io->at(i).pfits->pHDU().addKey("SOURCE", telescope.source_name, "Source name");
-    // add instrument
-    fits_io->at(i).pfits->pHDU().addKey("INSTRUME", "TolTEC", "Instrument");
-    // add hwpr
-    fits_io->at(i).pfits->pHDU().addKey("HWPR", calib.run_hwpr, "HWPR installed");
-    // add telescope
-    fits_io->at(i).pfits->pHDU().addKey("TELESCOP", "LMT", "Telescope");
-    // add wavelength
-    fits_io->at(i).pfits->pHDU().addKey("WAV", name, "Wavelength");
-    // add pipeline
-    fits_io->at(i).pfits->pHDU().addKey("PIPELINE", "CITLALI", "Redu pipeline");
-    // add citlali version
-    fits_io->at(i).pfits->pHDU().addKey("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
-    // add kids version
-    fits_io->at(i).pfits->pHDU().addKey("KIDS", KIDSCPP_GIT_VERSION, "KIDSCPP_GIT_VERSION");
-    // add kids version
-    fits_io->at(i).pfits->pHDU().addKey("TULA", TULA_GIT_VERSION, "TULA_GIT_VERSION");
-    // project id
-    fits_io->at(i).pfits->pHDU().addKey("PROJID", telescope.project_id, "Project ID");
-    // add redu type
-    fits_io->at(i).pfits->pHDU().addKey("GOAL", redu_type, "Reduction type");
-    // add obs goal
-    fits_io->at(i).pfits->pHDU().addKey("OBSGOAL", telescope.obs_goal, "Obs goal");
-    // add tod type
-    fits_io->at(i).pfits->pHDU().addKey("TYPE", tod_type, "TOD Type");
-    // add map grouping
-    fits_io->at(i).pfits->pHDU().addKey("GROUPING", map_grouping, "Map grouping");
-    // add map grouping
-    fits_io->at(i).pfits->pHDU().addKey("METHOD", map_method, "Map method");
+    citlali::pipeline::add_phdu_pipeline_identity_keys(
+        fits_entry, telescope.source_name, calib.run_hwpr, name,
+        CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
+        telescope.project_id, redu_type, telescope.obs_goal, tod_type,
+        map_grouping, map_method);
     // add exposure time
     add_double_key("EXPTIME", mb->exposure_time, "Exposure time (sec)");
     // add pixel axes
