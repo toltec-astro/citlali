@@ -5446,15 +5446,13 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             fo, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
             telescope.project_id, redu_type, telescope.obs_goal, tod_type);
         add_netcdf_var(fo, "HWPR", calib.run_hwpr);
-        add_netcdf_var<std::string>(fo, "GROUPING", map_grouping);
-        add_netcdf_var<std::string>(fo, "METHOD", map_method);
-        add_netcdf_var(fo, "EXPTIME", omb.exposure_time);
-        add_netcdf_var<std::string>(fo, "RADESYS", telescope.pixel_axes);
-        add_netcdf_var(fo, "TAN_RA", telescope.tel_header["Header.Source.Ra"][0]);
-        add_netcdf_var(fo, "TAN_DEC", telescope.tel_header["Header.Source.Dec"][0]);
-        add_netcdf_var(fo, "MEAN_EL", RAD_TO_DEG*telescope.tel_data["TelElAct"].mean());
-        add_netcdf_var(fo, "MEAN_AZ", RAD_TO_DEG*telescope.tel_data["TelAzAct"].mean());
-        add_netcdf_var(fo, "MEAN_PA", RAD_TO_DEG*telescope.tel_data["ActParAng"].mean());
+        citlali::pipeline::add_tod_map_geometry_vars(
+            fo, map_grouping, map_method, omb.exposure_time,
+            telescope.pixel_axes, telescope.tel_header["Header.Source.Ra"][0],
+            telescope.tel_header["Header.Source.Dec"][0],
+            RAD_TO_DEG*telescope.tel_data["TelElAct"].mean(),
+            RAD_TO_DEG*telescope.tel_data["TelAzAct"].mean(),
+            RAD_TO_DEG*telescope.tel_data["ActParAng"].mean());
 
         // add beamsizes
         for (const auto &arr: calib.arrays) {

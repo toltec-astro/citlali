@@ -60,6 +60,22 @@ inline void add_pipeline_identity_vars(
     add_netcdf_var<std::string>(fo, "TYPE", tod_type);
 }
 
+inline void add_tod_map_geometry_vars(
+    netCDF::NcFile &fo, const std::string &map_grouping,
+    const std::string &map_method, double exposure_time,
+    const std::string &radec_system, double tangent_ra, double tangent_dec,
+    double mean_el_deg, double mean_az_deg, double mean_pa_deg) {
+    add_netcdf_var<std::string>(fo, "GROUPING", map_grouping);
+    add_netcdf_var<std::string>(fo, "METHOD", map_method);
+    add_netcdf_var(fo, "EXPTIME", exposure_time);
+    add_netcdf_var<std::string>(fo, "RADESYS", radec_system);
+    add_netcdf_var(fo, "TAN_RA", tangent_ra);
+    add_netcdf_var(fo, "TAN_DEC", tangent_dec);
+    add_netcdf_var(fo, "MEAN_EL", mean_el_deg);
+    add_netcdf_var(fo, "MEAN_AZ", mean_az_deg);
+    add_netcdf_var(fo, "MEAN_PA", mean_pa_deg);
+}
+
 inline void add_tod_scan_index_placeholders(
     netCDF::NcFile &fo, const std::vector<netCDF::NcDim> &raw_scans_dims,
     const std::vector<netCDF::NcDim> &scans_dims,
