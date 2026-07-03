@@ -25,6 +25,18 @@ std::vector<int> diagnostic_array_ids(const Calib &calib, int fill_value) {
 }
 
 template <class Calib>
+void add_rtcdiag_array_ids(netCDF::NcFile &fo, const Calib &calib,
+                           netCDF::NcDim n_arrays_dim, int fill_value) {
+    netCDF::NcVar array_ids_v =
+        fo.addVar("rtc_diag_array_ids", netCDF::ncInt, n_arrays_dim);
+    array_ids_v.putAtt("units", "N/A");
+    array_ids_v.putAtt("comment",
+                       "array IDs corresponding to n_arrays axis");
+    const auto array_ids = diagnostic_array_ids(calib, fill_value);
+    array_ids_v.putVar(array_ids.data());
+}
+
+template <class Calib>
 void add_rtcdiag_network_ids(netCDF::NcFile &fo, const Calib &calib,
                              netCDF::NcDim n_nws_rtcdiag_dim,
                              int fill_value) {
