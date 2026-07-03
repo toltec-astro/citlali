@@ -70,6 +70,57 @@ void add_ptc_weight_cutoff_config_vars(netCDF::NcFile &fo,
     }
 }
 
+template <class WeightCorrPenalty>
+void add_weight_corr_penalty_config_vars(
+    netCDF::NcFile &fo, const WeightCorrPenalty &penalty) {
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.ENABLED",
+                   penalty.enabled);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.MIN_GOOD_FRAC",
+                   penalty.min_good_frac);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.MIN_OVERLAP",
+                   penalty.min_overlap);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.MAX_SAMPLES",
+                   penalty.max_samples);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.MAX_PAIRS",
+                   penalty.max_pairs);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.FLOOR",
+                   penalty.floor);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.EXPONENT",
+                   penalty.exponent);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.PAIR.ENABLED",
+                   penalty.pair_corr.enabled);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.PAIR.REF",
+                   penalty.pair_corr.ref);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.PAIR.SPAN",
+                   penalty.pair_corr.span);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.PAIR.WEIGHT",
+                   penalty.pair_corr.weight);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.CM_EL.ENABLED",
+                   penalty.cm_el_corr.enabled);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.CM_EL.REF",
+                   penalty.cm_el_corr.ref);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.CM_EL.SPAN",
+                   penalty.cm_el_corr.span);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.CM_EL.WEIGHT",
+                   penalty.cm_el_corr.weight);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.ENABLED",
+                   penalty.cm_low_mid_ratio.enabled);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.REF",
+                   penalty.cm_low_mid_ratio.ref);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.SPAN",
+                   penalty.cm_low_mid_ratio.span);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.WEIGHT",
+                   penalty.cm_low_mid_ratio.weight);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.LOWMIN_HZ",
+                   penalty.cm_low_mid_ratio.low_min_Hz);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.LOWMAX_HZ",
+                   penalty.cm_low_mid_ratio.low_max_Hz);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMIN_HZ",
+                   penalty.cm_low_mid_ratio.mid_min_Hz);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMAX_HZ",
+                   penalty.cm_low_mid_ratio.mid_max_Hz);
+}
+
 template <class ReductionLearning>
 void add_reduction_learning_config_vars(
     netCDF::NcFile &fo, const ReductionLearning &reduction_learning,

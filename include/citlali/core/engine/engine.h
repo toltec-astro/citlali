@@ -5559,29 +5559,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
                 fo, rtcproc.line_audit);
         }
         citlali::pipeline::add_ptc_weight_cutoff_config_vars(fo, ptcproc);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.ENABLED", ptcproc.weight_corr_penalty.enabled);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.MIN_GOOD_FRAC", ptcproc.weight_corr_penalty.min_good_frac);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.MIN_OVERLAP", ptcproc.weight_corr_penalty.min_overlap);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.MAX_SAMPLES", ptcproc.weight_corr_penalty.max_samples);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.MAX_PAIRS", ptcproc.weight_corr_penalty.max_pairs);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.FLOOR", ptcproc.weight_corr_penalty.floor);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.EXPONENT", ptcproc.weight_corr_penalty.exponent);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.PAIR.ENABLED", ptcproc.weight_corr_penalty.pair_corr.enabled);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.PAIR.REF", ptcproc.weight_corr_penalty.pair_corr.ref);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.PAIR.SPAN", ptcproc.weight_corr_penalty.pair_corr.span);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.PAIR.WEIGHT", ptcproc.weight_corr_penalty.pair_corr.weight);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.CM_EL.ENABLED", ptcproc.weight_corr_penalty.cm_el_corr.enabled);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.CM_EL.REF", ptcproc.weight_corr_penalty.cm_el_corr.ref);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.CM_EL.SPAN", ptcproc.weight_corr_penalty.cm_el_corr.span);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.CM_EL.WEIGHT", ptcproc.weight_corr_penalty.cm_el_corr.weight);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.ENABLED", ptcproc.weight_corr_penalty.cm_low_mid_ratio.enabled);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.REF", ptcproc.weight_corr_penalty.cm_low_mid_ratio.ref);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.SPAN", ptcproc.weight_corr_penalty.cm_low_mid_ratio.span);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.WEIGHT", ptcproc.weight_corr_penalty.cm_low_mid_ratio.weight);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.LOWMIN_HZ", ptcproc.weight_corr_penalty.cm_low_mid_ratio.low_min_Hz);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.LOWMAX_HZ", ptcproc.weight_corr_penalty.cm_low_mid_ratio.low_max_Hz);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMIN_HZ", ptcproc.weight_corr_penalty.cm_low_mid_ratio.mid_min_Hz);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMAX_HZ", ptcproc.weight_corr_penalty.cm_low_mid_ratio.mid_max_Hz);
+        citlali::pipeline::add_weight_corr_penalty_config_vars(
+            fo, ptcproc.weight_corr_penalty);
         add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.ENABLED", ptcproc.busy_row_suppression.enabled);
         add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.REQUIRE_BUSY_VETO", ptcproc.busy_row_suppression.require_busy_veto);
         add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.MIN_CAND_CLUSTERS", ptcproc.busy_row_suppression.min_candidate_clusters);
