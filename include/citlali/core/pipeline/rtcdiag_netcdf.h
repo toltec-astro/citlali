@@ -65,6 +65,54 @@ void add_rtcdiag_apt_double_vars(netCDF::NcFile &fo, Calib &calib,
     }
 }
 
+template <class LocalResidual>
+void add_rtc_local_despike_config_vars(
+    netCDF::NcFile &fo, const LocalResidual &local_residual) {
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.ENABLED",
+                   local_residual.enabled);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.WINDOW_SEC",
+                   local_residual.window_sec);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.SIGMA_SCALE",
+                   local_residual.sigma_scale);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_SIGMA_SCALE",
+                   local_residual.delta_sigma_scale);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.EXPAND_WITH_FILTER",
+                   local_residual.expand_with_filter);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.EVENT_PADDING_SEC",
+                   local_residual.event_padding_sec);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.HIGH_SCORE_EVENT_OVERRIDE",
+                   local_residual.high_score_event_override);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.MAX_ADDED_FLAGGED_FRAC",
+                   local_residual.max_added_flagged_fraction);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.ENABLED",
+                   local_residual.compact_raw_gate.enabled);
+    add_netcdf_var(
+        fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_REL_SIGMA_SCALE",
+        local_residual.compact_raw_gate.candidate_rel_sigma_scale);
+    add_netcdf_var(
+        fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_SIGMA_SCALE",
+        local_residual.compact_raw_gate.candidate_rel_sigma_scale *
+            local_residual.sigma_scale);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.WINDOW_SEC",
+                   local_residual.compact_raw_gate.window_sec);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.HALF_PEAK_FRAC",
+                   local_residual.compact_raw_gate.half_peak_frac);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.MAX_WIDTH_SEC",
+                   local_residual.compact_raw_gate.max_width_sec);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.RAW_GATE.MAX_STEP_SHIFT_Z",
+                   local_residual.compact_raw_gate.max_step_shift_z);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.ENABLED",
+                   local_residual.compact_delta_gate.enabled);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.WINDOW_SEC",
+                   local_residual.compact_delta_gate.window_sec);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.HALF_PEAK_FRAC",
+                   local_residual.compact_delta_gate.half_peak_frac);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.MAX_WIDTH_SEC",
+                   local_residual.compact_delta_gate.max_width_sec);
+    add_netcdf_var(fo, "CONFIG.DESPIKE.LOCAL.DELTA_GATE.MAX_STEP_SHIFT_Z",
+                   local_residual.compact_delta_gate.max_step_shift_z);
+}
+
 template <class StepMask>
 void add_rtc_step_mask_config_vars(netCDF::NcFile &fo,
                                    const StepMask &step_mask) {
