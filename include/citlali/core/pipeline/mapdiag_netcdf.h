@@ -33,6 +33,12 @@ inline std::size_t mapdiag_obs_table_size(const MapdiagSizeContext &context) {
     return context.n_maps * context.n_obsnums;
 }
 
+inline std::size_t mapdiag_obs_flat_index(const MapdiagSizeContext &context,
+                                          std::size_t map_index,
+                                          std::size_t obs_index) {
+    return map_index * context.n_obsnums + obs_index;
+}
+
 inline void put_netcdf_string_1d(
     netCDF::NcFile &fo, const std::string &name, netCDF::NcDim dim,
     const std::vector<std::string> &values,

@@ -7295,10 +7295,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         }
 
         if (!mapdiag_context.is_coadd) {
-            obs_weight_sum[idx * mapdiag_context.n_obsnums] = weight_sum[idx];
-            obs_core_weight_sum[idx * mapdiag_context.n_obsnums] = core_weight_sum[idx];
-            obs_valid_pixels[idx * mapdiag_context.n_obsnums] = n_valid_pixels[idx];
-            obs_core_pixels[idx * mapdiag_context.n_obsnums] = n_core_pixels[idx];
+            const std::size_t flat =
+                citlali::pipeline::mapdiag_obs_flat_index(mapdiag_context, idx, 0);
+            obs_weight_sum[flat] = weight_sum[idx];
+            obs_core_weight_sum[flat] = core_weight_sum[idx];
+            obs_valid_pixels[flat] = n_valid_pixels[idx];
+            obs_core_pixels[flat] = n_core_pixels[idx];
         }
         else {
             for (std::size_t obs_idx = 0; obs_idx < mb->obsnums.size(); ++obs_idx) {
@@ -7316,7 +7318,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 } catch (const std::exception &e) {
                     logger->warn("failed to derive mapdiag contribution from {} [{}]: {}", obs_weight_path,
                                  "weight_" + map_names[idx] + stokes_names[idx], e.what());
-                    const std::size_t flat = idx * mapdiag_context.n_obsnums + obs_idx;
+                    const std::size_t flat =
+                        citlali::pipeline::mapdiag_obs_flat_index(
+                            mapdiag_context, idx, obs_idx);
                     obs_weight_sum[flat] = 0.0;
                     obs_core_weight_sum[flat] = 0.0;
                     obs_valid_pixels[flat] = 0;
@@ -7328,11 +7332,16 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         double total_weight = 0.0;
         double total_core_weight = 0.0;
         for (std::size_t obs_idx = 0; obs_idx < mapdiag_context.n_obsnums; ++obs_idx) {
-            total_weight += obs_weight_sum[idx * mapdiag_context.n_obsnums + obs_idx];
-            total_core_weight += obs_core_weight_sum[idx * mapdiag_context.n_obsnums + obs_idx];
+            const std::size_t flat =
+                citlali::pipeline::mapdiag_obs_flat_index(
+                    mapdiag_context, idx, obs_idx);
+            total_weight += obs_weight_sum[flat];
+            total_core_weight += obs_core_weight_sum[flat];
         }
         for (std::size_t obs_idx = 0; obs_idx < mapdiag_context.n_obsnums; ++obs_idx) {
-            const std::size_t flat = idx * mapdiag_context.n_obsnums + obs_idx;
+            const std::size_t flat =
+                citlali::pipeline::mapdiag_obs_flat_index(
+                    mapdiag_context, idx, obs_idx);
             obs_weight_frac[flat] = (total_weight > 0.0) ? obs_weight_sum[flat] / total_weight : fill_double;
             obs_core_weight_frac[flat] = (total_core_weight > 0.0) ? obs_core_weight_sum[flat] / total_core_weight : fill_double;
         }
