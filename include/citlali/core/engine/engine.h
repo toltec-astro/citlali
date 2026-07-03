@@ -8538,15 +8538,17 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
          edge_guard_exterior_rms_post,
          edge_guard_exterior_max_abs_pre,
          edge_guard_exterior_max_abs_post});
-    add_map_int("map_n_valid_pixels", "count of pixels with strictly positive weight", n_valid_pixels);
-    add_map_int("map_n_core_pixels", "count of pixels with weight >= map_weight_threshold", n_core_pixels);
-    add_map_int("map_peak_row", "row index of the maximum absolute signal-to-noise pixel", peak_row);
-    add_map_int("map_peak_col", "column index of the maximum absolute signal-to-noise pixel", peak_col);
-    add_map_int("map_edge_guard_applied", "1 when the filter edge guard was applied to this map, 0 otherwise", edge_guard_applied);
-    add_map_int("map_edge_guard_support_radius_pix", "support-mask dilation radius in pixels used by the filter edge guard", edge_guard_support_radius_pix);
-    add_map_int("map_edge_guard_science_npix", "number of pixels in the filter edge-guard science mask", edge_guard_science_npix);
-    add_map_int("map_edge_guard_support_npix", "number of pixels in the filter edge-guard support mask", edge_guard_support_npix);
-    add_map_int("map_edge_guard_guardband_npix", "number of pixels in the filter edge-guard guard band (support minus science)", edge_guard_guardband_npix);
+    citlali::pipeline::add_mapdiag_map_int_vars(
+        add_map_int,
+        {n_valid_pixels,
+         n_core_pixels,
+         peak_row,
+         peak_col,
+         edge_guard_applied,
+         edge_guard_support_radius_pix,
+         edge_guard_science_npix,
+         edge_guard_support_npix,
+         edge_guard_guardband_npix});
 
     add_map_obs_double("coadd_obs_weight_sum", "sum of positive observation-level raw weight values aligned onto this map grid", obs_weight_sum);
     add_map_obs_double("coadd_obs_weight_frac", "fractional contribution of each obsnum to coadd_obs_weight_sum for a given map", obs_weight_frac);
