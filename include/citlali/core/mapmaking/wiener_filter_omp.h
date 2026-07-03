@@ -293,7 +293,7 @@ public:
                  (mb.weight[map_index].array() > 0.0));
             const auto provisional_count = static_cast<int>(science_mask.count());
 
-            double hits_threshold = std::numeric_limits<double>::quiet_NaN();
+            double hits_threshold = mapmaking::edge_guard_fill_double();
             if (!mb.coverage.empty() &&
                 map_index < static_cast<int>(mb.coverage.size()) &&
                 edge_hits_threshold_mode == "core_median_fraction" &&
@@ -478,14 +478,14 @@ public:
                     }
                 }
                 if (count == 0) {
-                    return std::numeric_limits<double>::quiet_NaN();
+                    return mapmaking::edge_guard_fill_double();
                 }
                 return std::sqrt(sumsq / static_cast<double>(count));
             };
 
             auto calc_region_max_abs = [&](const Eigen::MatrixXd &matrix,
                                            const Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic> &mask) {
-                double max_abs = std::numeric_limits<double>::quiet_NaN();
+                double max_abs = mapmaking::edge_guard_fill_double();
                 for (Eigen::Index r = 0; r < matrix.rows(); ++r) {
                     for (Eigen::Index c = 0; c < matrix.cols(); ++c) {
                         const double value = matrix(r, c);
