@@ -4,6 +4,7 @@
 
 #include <netcdf>
 
+#include <citlali/core/pipeline/string_join.h>
 #include <citlali/core/utils/netcdf_io.h>
 
 namespace citlali::pipeline {
@@ -150,6 +151,48 @@ void add_cleaner_mode_config_vars(netCDF::NcFile &fo,
                    ptcproc.cleaner.marchenko_pastur.band_high_Hz);
     add_netcdf_var(fo, "CONFIG.CLEANED.MP.MAXMODES",
                    ptcproc.cleaner.marchenko_pastur.max_modes);
+}
+
+template <class AdaptiveSelector>
+void add_adaptive_cleaner_config_vars(
+    netCDF::NcFile &fo, const AdaptiveSelector &selector) {
+    const auto adaptive_offsets_joined =
+        join_numeric_values(selector.candidate_offsets);
+    const auto adaptive_grouping_joined =
+        join_string_values(selector.grouping);
+
+    add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.ENABLED", selector.enabled);
+    add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MIN_GOOD_FRAC",
+                   selector.min_good_frac);
+    add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MAX_DET", selector.max_det);
+    add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MAX_SAMPLES",
+                   selector.max_samples);
+    add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MAX_PAIRS",
+                   selector.max_pairs);
+    add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.CLIP_Z", selector.clip_z);
+    add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.LOW_WEIGHT",
+                   selector.low_weight);
+    add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.TAIL_WEIGHT",
+                   selector.tail_weight);
+    add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.TOPMODE_WEIGHT",
+                   selector.topmode_weight);
+    add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.REG_WEIGHT",
+                   selector.reg_weight);
+    add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.LOWMIN_HZ",
+                   selector.low_band_Hz[0]);
+    add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.LOWMAX_HZ",
+                   selector.low_band_Hz[1]);
+    add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MIDMIN_HZ",
+                   selector.mid_band_Hz[0]);
+    add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MIDMAX_HZ",
+                   selector.mid_band_Hz[1]);
+    add_netcdf_var<std::string>(
+        fo, "CONFIG.CLEANED.ADAPT.CANDIDATE_OFFSETS",
+        adaptive_offsets_joined);
+    add_netcdf_var<std::string>(fo, "CONFIG.CLEANED.ADAPT.GROUPING",
+                                adaptive_grouping_joined);
+    add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.LOG_CANDIDATES",
+                   selector.log_candidates);
 }
 
 template <class ReductionLearning>

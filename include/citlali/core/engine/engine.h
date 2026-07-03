@@ -5564,37 +5564,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         citlali::pipeline::add_busy_row_suppression_config_vars(
             fo, ptcproc.busy_row_suppression);
         citlali::pipeline::add_cleaner_mode_config_vars(fo, ptcproc);
-        std::string adaptive_offsets_joined;
-        for (std::size_t i = 0; i < ptcproc.cleaner.adaptive_selector.candidate_offsets.size(); ++i) {
-            if (i > 0) {
-                adaptive_offsets_joined += ",";
-            }
-            adaptive_offsets_joined += std::to_string(ptcproc.cleaner.adaptive_selector.candidate_offsets[i]);
-        }
-        std::string adaptive_grouping_joined;
-        for (std::size_t i = 0; i < ptcproc.cleaner.adaptive_selector.grouping.size(); ++i) {
-            if (i > 0) {
-                adaptive_grouping_joined += ",";
-            }
-            adaptive_grouping_joined += ptcproc.cleaner.adaptive_selector.grouping[i];
-        }
-        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.ENABLED", ptcproc.cleaner.adaptive_selector.enabled);
-        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MIN_GOOD_FRAC", ptcproc.cleaner.adaptive_selector.min_good_frac);
-        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MAX_DET", ptcproc.cleaner.adaptive_selector.max_det);
-        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MAX_SAMPLES", ptcproc.cleaner.adaptive_selector.max_samples);
-        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MAX_PAIRS", ptcproc.cleaner.adaptive_selector.max_pairs);
-        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.CLIP_Z", ptcproc.cleaner.adaptive_selector.clip_z);
-        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.LOW_WEIGHT", ptcproc.cleaner.adaptive_selector.low_weight);
-        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.TAIL_WEIGHT", ptcproc.cleaner.adaptive_selector.tail_weight);
-        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.TOPMODE_WEIGHT", ptcproc.cleaner.adaptive_selector.topmode_weight);
-        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.REG_WEIGHT", ptcproc.cleaner.adaptive_selector.reg_weight);
-        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.LOWMIN_HZ", ptcproc.cleaner.adaptive_selector.low_band_Hz[0]);
-        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.LOWMAX_HZ", ptcproc.cleaner.adaptive_selector.low_band_Hz[1]);
-        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MIDMIN_HZ", ptcproc.cleaner.adaptive_selector.mid_band_Hz[0]);
-        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.MIDMAX_HZ", ptcproc.cleaner.adaptive_selector.mid_band_Hz[1]);
-        add_netcdf_var<std::string>(fo, "CONFIG.CLEANED.ADAPT.CANDIDATE_OFFSETS", adaptive_offsets_joined);
-        add_netcdf_var<std::string>(fo, "CONFIG.CLEANED.ADAPT.GROUPING", adaptive_grouping_joined);
-        add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.LOG_CANDIDATES", ptcproc.cleaner.adaptive_selector.log_candidates);
+        citlali::pipeline::add_adaptive_cleaner_config_vars(
+            fo, ptcproc.cleaner.adaptive_selector);
         add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.ENABLED", ptcproc.second_pass_local.enabled);
         add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_SPIKE_SIGMA", ptcproc.second_pass_local.min_spike_sigma);
         add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_GOOD_FRAC", ptcproc.second_pass_local.min_good_frac);
