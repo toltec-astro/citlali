@@ -13,7 +13,7 @@ inline double mapdiag_fill_double() {
     return std::numeric_limits<double>::quiet_NaN();
 }
 
-inline int mapdiag_fill_int() {
+constexpr int mapdiag_fill_int() {
     return -2147483647;
 }
 

@@ -7121,8 +7121,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             static_cast<std::size_t>(
                                 reduction_learning.options.map_pixel_outlier_top_n));
                         struct detector_dominance_t {
-                            int uid = fill_int;
-                            int scan = fill_int;
+                            int uid = citlali::pipeline::mapdiag_fill_int();
+                            int scan = citlali::pipeline::mapdiag_fill_int();
                             int count = 0;
                             double max_abs_value = 0.0;
                             double max_abs_leave_one_out_z = 0.0;
