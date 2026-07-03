@@ -8912,14 +8912,10 @@ void Engine::create_rtcdiag_file() {
             fo, name, units, comment, scan_array_dims, scan_array_chunks,
             values);
     };
-    add_scan_array_double(
-        "scan_source_power_half_bandwidth_hz", "Hz",
-        "Gaussian compact-source temporal power half-bandwidth from scan_speed_altaz_p995_arcsec_s and array mean FWHM",
-        source_power_half_bandwidth_hz);
-    add_scan_array_double(
-        "scan_tod_lowpass_to_source_power_half_ratio", "N/A",
-        "configured RTC FIR low-pass cutoff divided by scan_source_power_half_bandwidth_hz; values much larger than 1 indicate extra high-frequency noise admitted relative to compact-source half-power bandwidth",
-        tod_lowpass_to_source_power_half_ratio);
+    citlali::pipeline::add_rtcdiag_scan_array_summary_vars(
+        add_scan_array_double,
+        {source_power_half_bandwidth_hz,
+         tod_lowpass_to_source_power_half_ratio});
 
     citlali::pipeline::add_rtcdiag_network_ids(
         fo, calib, n_nws_rtcdiag_dim, fill_int);
