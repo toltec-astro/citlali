@@ -7800,16 +7800,9 @@ void Engine::create_ptcdiag_file() {
     citlali::pipeline::add_ptcdiag_det_meta_vars(
         add_det_meta_int, apt_int_values);
 
-    add_netcdf_var<std::string>(fo, "INSTRUME", "TolTEC");
-    add_netcdf_var<std::string>(fo, "TELESCOP", "LMT");
-    add_netcdf_var<std::string>(fo, "PIPELINE", "CITLALI");
-    add_netcdf_var<std::string>(fo, "VERSION", CITLALI_GIT_VERSION);
-    add_netcdf_var<std::string>(fo, "KIDS", KIDSCPP_GIT_VERSION);
-    add_netcdf_var<std::string>(fo, "TULA", TULA_GIT_VERSION);
-    add_netcdf_var<std::string>(fo, "PROJID", telescope.project_id);
-    add_netcdf_var<std::string>(fo, "GOAL", redu_type);
-    add_netcdf_var<std::string>(fo, "OBSGOAL", telescope.obs_goal);
-    add_netcdf_var<std::string>(fo, "TYPE", tod_type);
+    citlali::pipeline::add_pipeline_identity_vars(
+        fo, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
+        telescope.project_id, redu_type, telescope.obs_goal, tod_type);
     add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
 
     citlali::pipeline::add_weight_selection_config_vars(fo, ptcproc);
