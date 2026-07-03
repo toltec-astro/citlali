@@ -5407,35 +5407,19 @@ void Engine::add_tod_header(map_buffer_t &mb) {
                 beammap_phase_split_enabled, beammap_locator_iter,
                 beammap_measurement_start_iter, beammap_derotate);
 
-            // add reference detector information
+            int ref_det_index = -99;
+            double ref_x_t = -99.0;
+            double ref_y_t = -99.0;
             if (beammap_subtract_reference) {
-                int ref_det_index = beammap_reference_det;
-                if (calib.apt_meta["reference_det"]) {
-                    ref_det_index = calib.apt_meta["reference_det"].as<int>();
-                }
-                add_netcdf_var(fo, "BEAMMAP.REF_DET_INDEX", ref_det_index);
-                double ref_x_t = -99.0;
-                double ref_y_t = -99.0;
-                if (calib.apt_meta["reference_x_t"]) {
-                    ref_x_t = calib.apt_meta["reference_x_t"].as<double>();
-                }
-                else if (ref_det_index >= 0 && ref_det_index < calib.apt["x_t"].size()) {
-                    ref_x_t = calib.apt["x_t"](ref_det_index);
-                }
-                if (calib.apt_meta["reference_y_t"]) {
-                    ref_y_t = calib.apt_meta["reference_y_t"].as<double>();
-                }
-                else if (ref_det_index >= 0 && ref_det_index < calib.apt["y_t"].size()) {
-                    ref_y_t = calib.apt["y_t"](ref_det_index);
-                }
-                add_netcdf_var(fo, "BEAMMAP.REF_X_T", ref_x_t);
-                add_netcdf_var(fo, "BEAMMAP.REF_Y_T", ref_y_t);
+                const auto reference_values =
+                    citlali::pipeline::beammap_reference_header_values(
+                        calib, beammap_reference_det);
+                ref_det_index = reference_values.det_index;
+                ref_x_t = reference_values.x_t;
+                ref_y_t = reference_values.y_t;
             }
-            else {
-                add_netcdf_var(fo, "BEAMMAP.REF_DET_INDEX", -99);
-                add_netcdf_var(fo, "BEAMMAP.REF_X_T", -99);
-                add_netcdf_var(fo, "BEAMMAP.REF_Y_T", -99);
-            }
+            citlali::pipeline::add_beammap_reference_vars(
+                fo, ref_det_index, ref_x_t, ref_y_t);
         }
 
         citlali::pipeline::add_pipeline_identity_vars(
