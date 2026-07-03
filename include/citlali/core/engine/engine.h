@@ -5720,26 +5720,7 @@ void Engine::create_tod_files() {
                 n_rtc_stream_nw_values, fill_int);
         };
 
-        citlali::pipeline::add_rtcdiag_network_detector_count_diag(
-            add_rtc_nw_int);
-        citlali::pipeline::add_rtcdiag_network_line_audit_base_diag(
-            add_rtc_nw_int, add_rtc_nw_double);
-        citlali::pipeline::add_rtcdiag_network_line_audit_diag(
-            add_rtc_nw_int, add_rtc_nw_double, "rtc_network_post_line_audit",
-            "post-filter");
-        citlali::pipeline::add_rtcdiag_network_step_summary_diag(
-            add_rtc_nw_int, add_rtc_nw_double);
-        citlali::pipeline::add_rtcdiag_network_impulsive_summary_diag(
-            add_rtc_nw_int, add_rtc_nw_double);
-        citlali::pipeline::add_rtcdiag_network_common_mode_diag(
-            add_rtc_nw_double);
-        citlali::pipeline::add_rtcdiag_network_step_mask_diag(
-            add_rtc_nw_int, add_rtc_nw_double);
-        citlali::pipeline::add_rtcdiag_network_impulsive_mask_window_diag(
-            add_rtc_nw_int, add_rtc_nw_double);
-        citlali::pipeline::add_rtcdiag_network_impulsive_mask_trigger_diag(
-            add_rtc_nw_int);
-        citlali::pipeline::add_rtcdiag_network_impulsive_mask_candidate_diag(
+        citlali::pipeline::add_rtcdiag_standard_network_diag(
             add_rtc_nw_int, add_rtc_nw_double);
 
         if (rtcproc.impulsive_capture.enabled) {
@@ -7769,26 +7750,7 @@ void Engine::create_rtcdiag_file() {
             n_rtc_nw_values, fill_int);
     };
 
-    citlali::pipeline::add_rtcdiag_network_detector_count_diag(
-        add_rtc_nw_int);
-    citlali::pipeline::add_rtcdiag_network_line_audit_base_diag(
-        add_rtc_nw_int, add_rtc_nw_double);
-    citlali::pipeline::add_rtcdiag_network_line_audit_diag(
-        add_rtc_nw_int, add_rtc_nw_double, "rtc_network_post_line_audit",
-        "post-filter");
-    citlali::pipeline::add_rtcdiag_network_step_summary_diag(
-        add_rtc_nw_int, add_rtc_nw_double);
-    citlali::pipeline::add_rtcdiag_network_impulsive_summary_diag(
-        add_rtc_nw_int, add_rtc_nw_double);
-    citlali::pipeline::add_rtcdiag_network_common_mode_diag(
-        add_rtc_nw_double);
-    citlali::pipeline::add_rtcdiag_network_step_mask_diag(
-        add_rtc_nw_int, add_rtc_nw_double);
-    citlali::pipeline::add_rtcdiag_network_impulsive_mask_window_diag(
-        add_rtc_nw_int, add_rtc_nw_double);
-    citlali::pipeline::add_rtcdiag_network_impulsive_mask_trigger_diag(
-        add_rtc_nw_int);
-    citlali::pipeline::add_rtcdiag_network_impulsive_mask_candidate_diag(
+    citlali::pipeline::add_rtcdiag_standard_network_diag(
         add_rtc_nw_int, add_rtc_nw_double);
 
     if (rtcproc.impulsive_capture.enabled) {
