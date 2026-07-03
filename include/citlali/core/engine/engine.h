@@ -6582,13 +6582,19 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 logger->warn("non-finite median_rms for map {} in {}; using 0", map_name,
                              noise_fits_io->at(map_index).filepath);
             }
+            auto add_noise_map_hdu_with_wcs = [&](const std::string &hdu_name, auto &data) {
+                noise_fits_io->at(map_index).add_hdu(hdu_name, data);
+                noise_fits_io->at(map_index).add_wcs(
+                    noise_fits_io->at(map_index).hdus.back(), mb->wcs,
+                    source_epoch);
+            };
             for (Eigen::Index n=0; n<mb->n_noise; ++n) {
                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(mb->noise[i].data() + n * mb->n_rows * mb->n_cols,
                                                                                                mb->n_rows, mb->n_cols);
 
-                noise_fits_io->at(map_index).add_hdu("signal_" + map_name + std::to_string(n) + "_" + stokes_suffix,
-                                                     noise_matrix);
-                noise_fits_io->at(map_index).add_wcs(noise_fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+                add_noise_map_hdu_with_wcs(
+                    "signal_" + map_name + std::to_string(n) + "_" + stokes_suffix,
+                    noise_matrix);
                 citlali::pipeline::add_noise_image_summary_keys(
                     *noise_fits_io->at(map_index).hdus.back(), mb->sig_unit,
                     median_rms);
