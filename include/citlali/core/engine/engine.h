@@ -6501,20 +6501,16 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             }
             fits_io->at(map_index).add_hdu("sig2noise_" + map_name + rtcproc.polarization.stokes_params[stokes_index], sig2noise);
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-            fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
-            fits_io->at(map_index).hdus.back()->addKey("BUNIT", "N/A", "Physical unit of image values");
-            citlali::pipeline::add_image_type_description_keys(
-                *fits_io->at(map_index).hdus.back(), "pixel",
+            citlali::pipeline::add_image_unit_type_description_keys(
+                *fits_io->at(map_index).hdus.back(), "N/A", "pixel",
                 "S/N estimator type",
                 "Legacy pixel S/N: signal times sqrt(weight)");
 
             fits_io->at(map_index).add_hdu("sig2noise_pixel_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
                                            sig2noise);
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-            fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
-            fits_io->at(map_index).hdus.back()->addKey("BUNIT", "N/A", "Physical unit of image values");
-            citlali::pipeline::add_image_type_description_keys(
-                *fits_io->at(map_index).hdus.back(), "pixel",
+            citlali::pipeline::add_image_unit_type_description_keys(
+                *fits_io->at(map_index).hdus.back(), "N/A", "pixel",
                 "S/N estimator type",
                 "Pixel S/N map: signal times sqrt(empirical weight)");
 
@@ -6544,10 +6540,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 fits_io->at(map_index).add_hdu("sig2noise_point_source_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
                                                mb->sig2noise_point_source[i]);
                 fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-                fits_io->at(map_index).hdus.back()->addKey("UNIT", "N/A", "Unit of map");
-                fits_io->at(map_index).hdus.back()->addKey("BUNIT", "N/A", "Physical unit of image values");
-                citlali::pipeline::add_image_type_description_keys(
-                    *fits_io->at(map_index).hdus.back(), "point_source",
+                citlali::pipeline::add_image_unit_type_description_keys(
+                    *fits_io->at(map_index).hdus.back(), "N/A", "point_source",
                     "S/N estimator type",
                     "Point-source S/N from flux divided by jackknife uncertainty");
             }
