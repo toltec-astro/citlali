@@ -85,6 +85,11 @@ inline void add_tod_map_geometry_vars(
     add_netcdf_var(fo, "MEAN_PA", mean_pa_deg);
 }
 
+inline void add_tod_signal_unit_var(netCDF::NcFile &fo,
+                                    const std::string &signal_unit) {
+    add_netcdf_var(fo, "BUNIT", signal_unit);
+}
+
 inline void add_unit_conversion_basis_vars(netCDF::NcFile &fo) {
     add_netcdf_var<std::string>(fo, "UNITCONV.UK_CONVENTION",
                                 "Rayleigh-Jeans brightness temperature");

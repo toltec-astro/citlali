@@ -5398,7 +5398,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             fo, calib.arrays, calib.array_fwhms, calib.array_pas,
             toltec_io.array_name_map, RAD_TO_DEG, pi/2);
 
-        add_netcdf_var(fo, "BUNIT", omb.sig_unit);
+        citlali::pipeline::add_tod_signal_unit_var(fo, omb.sig_unit);
 
         // add jinc shape params
         if (map_method=="jinc") {
