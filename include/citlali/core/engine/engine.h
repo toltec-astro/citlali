@@ -6371,10 +6371,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
         fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
         const std::string weight_unit = "1/("+mb->sig_unit+")^2";
-        citlali::pipeline::add_image_unit_keys(
-            *fits_io->at(map_index).hdus.back(), weight_unit);
-        citlali::pipeline::add_image_type_description_keys(
+        citlali::pipeline::add_image_unit_type_description_keys(
             *fits_io->at(map_index).hdus.back(),
+            weight_unit,
             (run_noise_products && run_noise && apply_empirical_noise_weights) ? "empirical" : "formal",
             "Weight calibration type",
             (run_noise_products && run_noise && apply_empirical_noise_weights)
@@ -6408,10 +6407,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             fits_io->at(map_index).add_hdu("weight_formal_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
                                            mb->weight_formal[i]);
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-            citlali::pipeline::add_image_unit_keys(
-                *fits_io->at(map_index).hdus.back(), weight_unit);
-            citlali::pipeline::add_image_type_description_keys(
-                *fits_io->at(map_index).hdus.back(), "formal",
+            citlali::pipeline::add_image_unit_type_description_keys(
+                *fits_io->at(map_index).hdus.back(), weight_unit, "formal",
                 "Weight calibration type",
                 "Formal mapmaker inverse variance before empirical calibration");
         }
