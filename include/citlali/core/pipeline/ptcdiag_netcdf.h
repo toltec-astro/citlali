@@ -67,6 +67,19 @@ inline void add_ptcdiag_det_meta_int(netCDF::NcFile &fo,
     v.putVar(values.data());
 }
 
+template <class AddMetaInt, class AptIntValues>
+void add_ptcdiag_det_meta_vars(const AddMetaInt &add_meta_int,
+                               const AptIntValues &apt_int_values) {
+    add_meta_int("ptc_diag_uid", "detector UID along n_dets",
+                 apt_int_values("uid"));
+    add_meta_int("ptc_diag_array", "array index along n_dets",
+                 apt_int_values("array"));
+    add_meta_int("ptc_diag_network", "network index along n_dets",
+                 apt_int_values("nw"));
+    add_meta_int("ptc_diag_apt_flag", "APT detector flag along n_dets",
+                 apt_int_values("flag"));
+}
+
 inline void add_ptcdiag_det_double(
     netCDF::NcFile &fo, const std::string &name,
     const std::string &comment, const std::vector<netCDF::NcDim> &det_dims,
@@ -93,6 +106,43 @@ inline void add_ptcdiag_det_int(
     v.setChunking(netCDF::NcVar::nc_CHUNKED, chunks);
     std::vector<int> init(n_values, fill_value);
     v.putVar(init.data());
+}
+
+template <class AddDouble>
+void add_ptcdiag_detector_core_diag(const AddDouble &add_double) {
+    add_double("ptc_detector_weight",
+               "final detector map weight used by PTC for this scan");
+    add_double("ptc_detector_rms",
+               "per-detector RMS of the PTC timestream written for this scan");
+    add_double("ptc_detector_stddev",
+               "per-detector standard deviation of the PTC timestream written for this scan");
+    add_double("ptc_detector_median",
+               "per-detector median of the PTC timestream written for this scan");
+    add_double("ptc_detector_flagged_fraction",
+               "fraction of detector samples flagged in the PTC timestream for this scan");
+}
+
+template <class AddInt, class AddDouble>
+void add_ptcdiag_detector_invvar_window_diag(const AddInt &add_int,
+                                             const AddDouble &add_double) {
+    add_double("ptc_invvar_window_valid_fraction",
+               "fraction of remove_bad_dets diagnostic windows with enough unflagged samples to estimate inverse variance in the PTC timestream");
+    add_double("ptc_invvar_window_median",
+               "median per-window inverse variance used for PTC remove_bad_dets diagnostics");
+    add_double("ptc_invvar_window_q10",
+               "10th percentile of per-window inverse variance used for PTC remove_bad_dets diagnostics");
+    add_double("ptc_invvar_window_q90",
+               "90th percentile of per-window inverse variance used for PTC remove_bad_dets diagnostics");
+    add_double("ptc_invvar_window_flagged_frac_median",
+               "median flagged fraction across remove_bad_dets diagnostic windows in the PTC timestream");
+    add_double("ptc_invvar_window_flagged_frac_max",
+               "maximum flagged fraction across remove_bad_dets diagnostic windows in the PTC timestream");
+    add_double("ptc_invvar_window_heavy_flagged_fraction",
+               "fraction of remove_bad_dets diagnostic windows in the PTC timestream with at least 50 percent flagged samples");
+    add_int("ptc_invvar_window_n_total",
+            "total number of fixed windows evaluated for PTC remove_bad_dets diagnostics");
+    add_int("ptc_invvar_window_n_valid",
+            "number of fixed windows with a finite inverse-variance estimate for PTC remove_bad_dets diagnostics");
 }
 
 template <class Calib>
