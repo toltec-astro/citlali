@@ -6687,13 +6687,12 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
             Eigen::MatrixXd noise_psd_2d_transposed = mb->noise_psd_2ds[i].transpose();
             Eigen::MatrixXd noise_psd_2d_freq_transposed = mb->noise_psd_2d_freqs[i].transpose();
 
-            // 2d noise psd
-            netCDF::NcVar noise_psd_2d_v = fo.addVar(name + "_noise_psd_2d",netCDF::ncDouble, noise_dims);
-            noise_psd_2d_v.putVar(noise_psd_2d_transposed.data());
-
-            // 2d noise psd freq
-            netCDF::NcVar noise_psd_2d_freq_v = fo.addVar(name + "_noise_psd_2d_freq",netCDF::ncDouble, noise_dims);
-            noise_psd_2d_freq_v.putVar(noise_psd_2d_freq_transposed.data());
+            citlali::pipeline::add_double_2d_var(
+                fo, name + "_noise_psd_2d", noise_dims,
+                noise_psd_2d_transposed);
+            citlali::pipeline::add_double_2d_var(
+                fo, name + "_noise_psd_2d_freq", noise_dims,
+                noise_psd_2d_freq_transposed);
         }
     }
     });
