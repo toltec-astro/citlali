@@ -6722,11 +6722,10 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::string filename = setup_filenames<map_t, engine_utils::toltecIO::toltec, engine_utils::toltecIO::mapdiag>(dir_name);
-    const std::size_t n_maps_local = static_cast<std::size_t>(n_maps);
-    const std::size_t n_obsnums = std::max<std::size_t>(1, mb->obsnums.size());
-    const bool is_coadd = (map_t == mapmaking::RawCoadd || map_t == mapmaking::FilteredCoadd);
     const auto mapdiag_context = citlali::pipeline::make_mapdiag_size_context(
-        n_maps_local, n_obsnums, is_coadd);
+        static_cast<std::size_t>(n_maps),
+        std::max<std::size_t>(1, mb->obsnums.size()),
+        map_t == mapmaking::RawCoadd || map_t == mapmaking::FilteredCoadd);
     const double fill_double = citlali::pipeline::mapdiag_fill_double();
     const int fill_int = citlali::pipeline::mapdiag_fill_int();
 
@@ -7289,7 +7288,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             }
         }
 
-        if (!is_coadd) {
+        if (!mapdiag_context.is_coadd) {
             obs_weight_sum[idx * mapdiag_context.n_obsnums] = weight_sum[idx];
             obs_core_weight_sum[idx * mapdiag_context.n_obsnums] = core_weight_sum[idx];
             obs_valid_pixels[idx * mapdiag_context.n_obsnums] = n_valid_pixels[idx];
@@ -7335,9 +7334,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
     write_netcdf_atomic(filename + ".nc", [&](netCDF::NcFile &fo) {
     citlali::pipeline::add_obsnum_var(
-        fo, is_coadd ? -1 : std::stoi(obsnum));
+        fo, mapdiag_context.is_coadd ? -1 : std::stoi(obsnum));
 
-    netCDF::NcDim n_maps_dim = fo.addDim("n_maps", n_maps_local);
+    netCDF::NcDim n_maps_dim = fo.addDim("n_maps", mapdiag_context.n_maps);
     netCDF::NcDim n_obsnums_dim = fo.addDim("n_obsnums", mapdiag_context.n_obsnums);
     std::vector<netCDF::NcDim> map_obs_dims = {n_maps_dim, n_obsnums_dim};
 
