@@ -1,6 +1,10 @@
 #pragma once
 
+#include <string>
+
 #include <Eigen/Core>
+
+#include <citlali/core/pipeline/phdu_telescope_values.h>
 
 namespace citlali::pipeline {
 
@@ -35,6 +39,20 @@ BeammapReferenceHeaderValues beammap_reference_header_values(
     }
 
     return values;
+}
+
+template <class FitsEntry, class Logger>
+void add_phdu_beammap_source_flux(FitsEntry &fits_entry,
+                                  const std::string &array_name,
+                                  const Logger &logger,
+                                  double flux_mjy_beam,
+                                  double flux_mjy_sr) {
+    add_phdu_double_key(fits_entry, array_name, logger,
+                        "HEADER.SOURCE.FLUX_MJYPERBEAM", flux_mjy_beam,
+                        "Source flux (mJy/beam)");
+    add_phdu_double_key(fits_entry, array_name, logger,
+                        "HEADER.SOURCE.FLUX_MJYPERSR", flux_mjy_sr,
+                        "Source flux (MJy/sr)");
 }
 
 }  // namespace citlali::pipeline

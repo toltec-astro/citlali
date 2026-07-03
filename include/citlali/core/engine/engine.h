@@ -6144,8 +6144,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // add source flux for beammaps
     if (redu_type == "beammap") {
-        add_double_key("HEADER.SOURCE.FLUX_MJYPERBEAM", beammap_fluxes_mJy_beam[name], "Source flux (mJy/beam)");
-        add_double_key("HEADER.SOURCE.FLUX_MJYPERSR", beammap_fluxes_MJy_Sr[name], "Source flux (MJy/sr)");
+        citlali::pipeline::add_phdu_beammap_source_flux(
+            fits_entry, name, logger, beammap_fluxes_mJy_beam[name],
+            beammap_fluxes_MJy_Sr[name]);
 
         add_double_key("BEAMMAP.ITER_TOLERANCE", beammap_iter_tolerance, "Beammap iteration tolerance");
         add_double_key("BEAMMAP.CONVERGENCE_RADIUS_ARCSEC", beammap_convergence_radius_arcsec,
