@@ -54,4 +54,17 @@ inline void write_map_identity_summary(std::ostream &stream,
            << "1/(" + signal_unit + ")^2" << "\n";
 }
 
+template <class Status>
+void write_chunk_processing_status_summary(std::ostream &stream,
+                                           const Status &status) {
+    stream << "-Calibrated: " << status.calibrated << "\n";
+    stream << "-Extinction Corrected: " << status.extinction_corrected << "\n";
+    stream << "-Demodulated: " << status.demodulated << "\n";
+    stream << "-Kernel Generated: " << status.kernel_generated << "\n";
+    stream << "-Despiked: " << status.despiked << "\n";
+    stream << "-TOD filtered: " << status.tod_filtered << "\n";
+    stream << "-Downsampled: " << status.downsampled << "\n";
+    stream << "-Cleaned: " << status.cleaned << "\n";
+}
+
 }  // namespace citlali::pipeline

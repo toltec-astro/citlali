@@ -5661,12 +5661,7 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     citlali::pipeline::write_chunk_identity_summary(
         f, redu_type, tod_type, omb.sig_unit, in.name);
 
-    f << "-Calibrated: " << in.status.calibrated << "\n";
-    f << "-Extinction Corrected: " << in.status.extinction_corrected << "\n";
-    f << "-Demodulated: " << in.status.demodulated << "\n";
-    f << "-Kernel Generated: " << in.status.kernel_generated << "\n";
-    f << "-Despiked: " << in.status.despiked << "\n";
-    f << "-TOD filtered: " << in.status.tod_filtered << "\n";
+    citlali::pipeline::write_chunk_processing_status_summary(f, in.status);
     f << "-TOD notch enabled: " << rtcproc.run_tod_notch << "\n";
     f << "-TOD IIR highpass enabled: " << rtcproc.run_tod_iir_highpass << "\n";
     f << "-TOD IIR highpass freq (Hz): " << rtcproc.filter.iir_highpass_freq_Hz << "\n";
@@ -5685,9 +5680,6 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
       << rtcproc.line_audit.ptc_apply_fixed_notches << "/"
       << rtcproc.line_audit.ptc_apply_shared_notches << "/"
       << rtcproc.line_audit.ptc_apply_detector_notches << "\n";
-    f << "-Downsampled: " << in.status.downsampled << "\n";
-    f << "-Cleaned: " << in.status.cleaned << "\n";
-
     f << "-Scan length: " << in.scans.data.rows() << "\n";
 
     f << "-Number of detectors: " << in.scans.data.cols() << "\n";
