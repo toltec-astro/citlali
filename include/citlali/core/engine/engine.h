@@ -6240,9 +6240,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add control/runtime parameters
     logger->debug("adding config params");
     const bool run_any_tod_filter = rtcproc.run_tod_filter || rtcproc.run_tod_iir_highpass;
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.VERBOSE", verbose_mode, "Reduced in verbose mode");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.POLARIZED", rtcproc.run_polarization, "Polarized Obs");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKED", rtcproc.run_despike, "Despiked");
+    citlali::pipeline::add_phdu_initial_runtime_config(
+        fits_entry, verbose_mode, rtcproc.run_polarization,
+        rtcproc.run_despike);
     citlali::pipeline::add_phdu_rtc_local_despike_config(
         fits_entry, name, logger, rtcproc.despiker.local_residual);
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTERED", run_any_tod_filter, "TOD Filtered");

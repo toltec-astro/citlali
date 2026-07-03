@@ -149,6 +149,17 @@ void add_phdu_weight_selection_config(FitsEntry &fits_entry,
                    "Minimum atmospheric factor for upward validation");
 }
 
+template <class FitsEntry>
+void add_phdu_initial_runtime_config(FitsEntry &fits_entry,
+                                     bool verbose_mode,
+                                     bool run_polarization,
+                                     bool run_despike) {
+    auto &hdu = fits_entry.pfits->pHDU();
+    hdu.addKey("CONFIG.VERBOSE", verbose_mode, "Reduced in verbose mode");
+    hdu.addKey("CONFIG.POLARIZED", run_polarization, "Polarized Obs");
+    hdu.addKey("CONFIG.DESPIKED", run_despike, "Despiked");
+}
+
 template <class FitsEntry, class WeightCorrPenalty, class Logger>
 void add_phdu_weight_corr_penalty_config(
     FitsEntry &fits_entry, const std::string &array_name,
