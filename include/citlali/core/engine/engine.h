@@ -6408,16 +6408,6 @@ void Engine::create_tod_files() {
         const int ptc_stream_fill_int = -2147483647;
         const double ptc_stream_fill_double =
             std::numeric_limits<double>::quiet_NaN();
-        auto add_ptc_stream_network_block = [&](
-            const std::string &dim_name, const std::string &id_name,
-            const std::string &id_comment,
-            const citlali::pipeline::PtcDiagVarList &int_vars,
-            const citlali::pipeline::PtcDiagVarList &double_vars) {
-            citlali::pipeline::add_ptcdiag_network_block(
-                fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
-                dim_name, id_name, id_comment, int_vars, double_vars,
-                ptc_stream_fill_int, ptc_stream_fill_double);
-        };
 
         if (ptcproc.second_pass_local.enabled) {
             netCDF::NcVar added_flag_v = fo.addVar("ptc_second_pass_added_flag", netCDF::ncByte, dims);
@@ -8876,16 +8866,6 @@ void Engine::create_ptcdiag_file() {
         fo, "ptc_invvar_window_n_valid",
         "number of fixed windows with a finite inverse-variance estimate for PTC remove_bad_dets diagnostics",
         det_dims, det_chunks, ptc_det_value_count, fill_int);
-
-    auto add_network_block = [&](const std::string &dim_name,
-                                 const std::string &id_name,
-                                 const std::string &id_comment,
-                                 const citlali::pipeline::PtcDiagVarList &int_vars,
-                                 const citlali::pipeline::PtcDiagVarList &double_vars) {
-        citlali::pipeline::add_ptcdiag_network_block(
-            fo, calib, n_scans_dim, n_scans, dim_name, id_name, id_comment,
-            int_vars, double_vars, fill_int, fill_double);
-    };
 
     citlali::pipeline::add_ptcdiag_corr_network_block(
         fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
