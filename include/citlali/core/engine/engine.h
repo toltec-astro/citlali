@@ -6662,17 +6662,14 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
             fo, name, dims.image, psd_2d_transposed, psd_2d_freq_transposed);
 
         if (!mb->noise.empty()) {
-            // add dimensions
-            netCDF::NcDim noise_psd_dim = fo.addDim(name + "_noise_nfreq",mb->noise_psds[i].size());
-            netCDF::NcDim noise_pds_2d_row_dim = fo.addDim(name + "_noise_rows",mb->noise_psd_2ds[i].rows());
-            netCDF::NcDim noise_pds_2d_col_dim = fo.addDim(name + "_noise_cols",mb->noise_psd_2ds[i].cols());
-
-            std::vector<netCDF::NcDim> noise_dims;
-            noise_dims.push_back(noise_pds_2d_row_dim);
-            noise_dims.push_back(noise_pds_2d_col_dim);
+            const std::string noise_name = name + "_noise";
+            const auto noise_dims = citlali::pipeline::add_psd_netcdf_dims(
+                fo, noise_name, mb->noise_psds[i].size(),
+                static_cast<std::size_t>(mb->noise_psd_2ds[i].rows()),
+                static_cast<std::size_t>(mb->noise_psd_2ds[i].cols()));
 
             citlali::pipeline::add_psd_vector_pair(
-                fo, name + "_noise", noise_psd_dim, mb->noise_psds[i],
+                fo, noise_name, noise_dims.spectrum, mb->noise_psds[i],
                 mb->noise_psd_freqs[i]);
 
             // transpose 2d noise psd and freq
@@ -6680,7 +6677,7 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
             Eigen::MatrixXd noise_psd_2d_freq_transposed = mb->noise_psd_2d_freqs[i].transpose();
 
             citlali::pipeline::add_psd_image_pair(
-                fo, name + "_noise", noise_dims, noise_psd_2d_transposed,
+                fo, noise_name, noise_dims.image, noise_psd_2d_transposed,
                 noise_psd_2d_freq_transposed);
         }
     }
