@@ -6412,9 +6412,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         if (i < static_cast<Eigen::Index>(mb->weight_formal.size()) &&
             mb->weight_formal[i].rows() == mb->n_rows &&
             mb->weight_formal[i].cols() == mb->n_cols) {
-            fits_io->at(map_index).add_hdu("weight_formal_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
-                                           mb->weight_formal[i]);
-            fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+            add_map_hdu_with_wcs(
+                "weight_formal_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                mb->weight_formal[i]);
             citlali::pipeline::add_image_unit_type_description_keys(
                 *fits_io->at(map_index).hdus.back(), weight_unit, "formal",
                 "Weight calibration type",
@@ -6424,9 +6424,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         if (i < static_cast<Eigen::Index>(mb->noise_variance.size()) &&
             mb->noise_variance[i].rows() == mb->n_rows &&
             mb->noise_variance[i].cols() == mb->n_cols) {
-            fits_io->at(map_index).add_hdu("noise_variance_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
-                                           mb->noise_variance[i]);
-            fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+            add_map_hdu_with_wcs(
+                "noise_variance_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                mb->noise_variance[i]);
             const std::string variance_unit = "("+mb->sig_unit+")^2";
             citlali::pipeline::add_image_unit_description_keys(
                 *fits_io->at(map_index).hdus.back(), variance_unit,
