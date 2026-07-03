@@ -5658,10 +5658,8 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     citlali::pipeline::write_chunk_time_summary(
         f, in.creation_time, engine_utils::current_date_time());
 
-    f << "-Reduction type: " << redu_type << "\n";
-    f << "-TOD type: " << tod_type << "\n";
-    f << "-TOD unit: " << omb.sig_unit << "\n";
-    f << "-TOD chunk type: " << in.name << "\n";
+    citlali::pipeline::write_chunk_identity_summary(
+        f, redu_type, tod_type, omb.sig_unit, in.name);
 
     f << "-Calibrated: " << in.status.calibrated << "\n";
     f << "-Extinction Corrected: " << in.status.extinction_corrected << "\n";
