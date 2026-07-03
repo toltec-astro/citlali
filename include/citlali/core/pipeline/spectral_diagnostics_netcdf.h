@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
@@ -11,6 +12,22 @@ inline std::string spectral_product_base_name(const std::string &array_name,
                                               const std::string &map_name,
                                               const std::string &stokes_name) {
     return array_name + "_" + map_name + stokes_name;
+}
+
+struct PsdNetcdfDims {
+    netCDF::NcDim spectrum;
+    std::vector<netCDF::NcDim> image;
+};
+
+inline PsdNetcdfDims add_psd_netcdf_dims(netCDF::NcFile &fo,
+                                         const std::string &base_name,
+                                         std::size_t nfreq,
+                                         std::size_t n_rows,
+                                         std::size_t n_cols) {
+    netCDF::NcDim spectrum_dim = fo.addDim(base_name + "_nfreq", nfreq);
+    netCDF::NcDim row_dim = fo.addDim(base_name + "_rows", n_rows);
+    netCDF::NcDim col_dim = fo.addDim(base_name + "_cols", n_cols);
+    return {spectrum_dim, {row_dim, col_dim}};
 }
 
 template <class Data>

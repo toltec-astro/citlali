@@ -6646,24 +6646,20 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
             toltec_io.array_name_map[array], map_name,
             rtcproc.polarization.stokes_params[stokes_index]);
 
-        // add dimensions
-        netCDF::NcDim psd_dim = fo.addDim(name + "_nfreq",mb->psds[i].size());
-        netCDF::NcDim pds_2d_row_dim = fo.addDim(name + "_rows",mb->psd_2ds[i].rows());
-        netCDF::NcDim pds_2d_col_dim = fo.addDim(name + "_cols",mb->psd_2ds[i].cols());
-
-        std::vector<netCDF::NcDim> dims;
-        dims.push_back(pds_2d_row_dim);
-        dims.push_back(pds_2d_col_dim);
+        const auto dims = citlali::pipeline::add_psd_netcdf_dims(
+            fo, name, mb->psds[i].size(),
+            static_cast<std::size_t>(mb->psd_2ds[i].rows()),
+            static_cast<std::size_t>(mb->psd_2ds[i].cols()));
 
         citlali::pipeline::add_psd_vector_pair(
-            fo, name, psd_dim, mb->psds[i], mb->psd_freqs[i]);
+            fo, name, dims.spectrum, mb->psds[i], mb->psd_freqs[i]);
 
         // transpose 2d psd and freq
         Eigen::MatrixXd psd_2d_transposed = mb->psd_2ds[i].transpose();
         Eigen::MatrixXd psd_2d_freq_transposed = mb->psd_2d_freqs[i].transpose();
 
         citlali::pipeline::add_psd_image_pair(
-            fo, name, dims, psd_2d_transposed, psd_2d_freq_transposed);
+            fo, name, dims.image, psd_2d_transposed, psd_2d_freq_transposed);
 
         if (!mb->noise.empty()) {
             // add dimensions
