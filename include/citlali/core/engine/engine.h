@@ -5463,13 +5463,9 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
         // add jinc shape params
         if (map_method=="jinc") {
-            add_netcdf_var(fo, "JINC_R", jinc_mm.r_max);
-            for (const auto &arr: calib.arrays) {
-                auto name = toltec_io.array_name_map[arr];
-                add_netcdf_var(fo, "JINC_A_"+name, jinc_mm.shape_params[arr][0]);
-                add_netcdf_var(fo, "JINC_B_"+name, jinc_mm.shape_params[arr][1]);
-                add_netcdf_var(fo, "JINC_C_"+name, jinc_mm.shape_params[arr][2]);
-            }
+            citlali::pipeline::add_jinc_shape_config_vars(
+                fo, calib.arrays, jinc_mm.shape_params,
+                toltec_io.array_name_map, jinc_mm.r_max);
         }
 
         // add mean tau

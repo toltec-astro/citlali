@@ -103,6 +103,20 @@ void add_array_beam_geometry_vars(netCDF::NcFile &fo, const Arrays &arrays,
     }
 }
 
+template <class Arrays, class ShapeParams, class ArrayNameMap>
+void add_jinc_shape_config_vars(netCDF::NcFile &fo, const Arrays &arrays,
+                                ShapeParams &shape_params,
+                                ArrayNameMap &array_name_map,
+                                double r_max) {
+    add_netcdf_var(fo, "JINC_R", r_max);
+    for (const auto &arr: arrays) {
+        const auto &name = array_name_map[arr];
+        add_netcdf_var(fo, "JINC_A_" + name, shape_params[arr][0]);
+        add_netcdf_var(fo, "JINC_B_" + name, shape_params[arr][1]);
+        add_netcdf_var(fo, "JINC_C_" + name, shape_params[arr][2]);
+    }
+}
+
 inline void add_tod_scan_index_placeholders(
     netCDF::NcFile &fo, const std::vector<netCDF::NcDim> &raw_scans_dims,
     const std::vector<netCDF::NcDim> &scans_dims,
