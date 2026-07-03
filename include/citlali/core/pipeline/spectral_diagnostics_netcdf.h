@@ -39,4 +39,12 @@ void add_psd_image_pair(netCDF::NcFile &fo, const std::string &base_name,
     add_double_2d_var(fo, base_name + "_psd_2d_freq", dims, frequency);
 }
 
+template <class Bins, class Counts>
+void add_histogram_pair(netCDF::NcFile &fo, const std::string &base_name,
+                        netCDF::NcDim dim, const Bins &bins,
+                        const Counts &counts) {
+    add_double_1d_var(fo, base_name + "_bins", dim, bins);
+    add_double_1d_var(fo, base_name + "_hist", dim, counts);
+}
+
 }  // namespace citlali::pipeline

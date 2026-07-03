@@ -6711,10 +6711,8 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
         auto array = calib.arrays[map_index];
         std::string name = toltec_io.array_name_map[array] + "_" + map_name + rtcproc.polarization.stokes_params[stokes_index];
 
-        citlali::pipeline::add_double_1d_var(
-            fo, name + "_bins", hist_bins_dim, mb->hist_bins[i]);
-        citlali::pipeline::add_double_1d_var(
-            fo, name + "_hist", hist_bins_dim, mb->hists[i]);
+        citlali::pipeline::add_histogram_pair(
+            fo, name, hist_bins_dim, mb->hist_bins[i], mb->hists[i]);
 
         if (!mb->noise.empty()) {
             citlali::pipeline::add_double_1d_var(
