@@ -451,4 +451,106 @@ inline void add_rtcdiag_impulsive_snippet_int(
     v.putVar(init.data());
 }
 
+struct RtcDiagImpulsiveCaptureComments {
+    std::string peak_abs_z;
+    std::string peak_delta_abs_z;
+    std::string added_flagged_frac;
+    std::string raw_exceed_count;
+    std::string local_raw_candidate_count;
+    std::string local_raw_accepted_event_count;
+    std::string local_flagged_sample_count;
+    std::string local_raw_reject_count;
+    std::string delta_spike_count;
+    std::string local_delta_candidate_count;
+    std::string local_delta_accepted_event_count;
+    std::string local_delta_reject_count;
+    std::string snippet_flag;
+};
+
+inline RtcDiagImpulsiveCaptureComments
+rtcdiag_impulsive_capture_stream_comments() {
+    return {
+        "maximum per-sample absolute robust-z for a captured scan/network detector slot",
+        "maximum adjacent-sample delta robust-z for a captured scan/network detector slot",
+        "fraction of samples newly flagged by RTC despiking for a captured detector slot",
+        "count of raw-sample MAD exceedances for a captured detector slot",
+        "count of locally detrended raw candidate events considered by the compact-raw gate for a captured detector slot",
+        "count of locally detrended raw candidate events accepted by the compact-raw gate for a captured detector slot",
+        "count of samples flagged by accepted compact-raw local-residual events for a captured detector slot",
+        "count of locally detrended raw candidate events rejected by the compact-raw gate for a captured detector slot",
+        "count of delta-domain spikes for a captured detector slot",
+        "count of locally detrended delta candidate events considered by the compact-delta gate for a captured detector slot",
+        "count of locally detrended delta candidate events accepted by the compact-delta gate for a captured detector slot",
+        "count of locally detrended delta candidate events rejected by the compact-delta gate for a captured detector slot",
+        "final RTC flag state for each sample in a captured impulsive snippet",
+    };
+}
+
+inline RtcDiagImpulsiveCaptureComments
+rtcdiag_impulsive_capture_file_comments() {
+    return {
+        "absolute robust-z peak of a captured impulsive RTC event",
+        "absolute delta robust-z peak of a captured impulsive RTC event",
+        "newly added flagged-sample fraction for the captured detector",
+        "native raw-threshold exceedance count for the captured detector",
+        "compact-raw local candidate count for the captured detector",
+        "accepted compact-raw local-event count for the captured detector",
+        "samples flagged by accepted compact-raw local events for the captured detector",
+        "rejected compact-raw local-event count for the captured detector",
+        "native delta-spike count for the captured detector",
+        "compact-delta local candidate count for the captured detector",
+        "accepted compact-delta local-event count for the captured detector",
+        "rejected compact-delta local-event count for the captured detector",
+        "RTC flag state for each sample in the captured impulsive-event snippet",
+    };
+}
+
+template <class AddSlotInt, class AddSlotDouble, class AddSnippetDouble,
+          class AddSnippetInt>
+void add_rtcdiag_impulsive_capture_diag(
+    const AddSlotInt &add_slot_int, const AddSlotDouble &add_slot_double,
+    const AddSnippetDouble &add_snippet_double,
+    const AddSnippetInt &add_snippet_int,
+    const RtcDiagImpulsiveCaptureComments &comments) {
+    add_slot_int("rtc_impulsive_slot_det_index",
+                 "detector index of a captured impulsive RTC event for each scan/network/slot");
+    add_slot_int("rtc_impulsive_slot_event_sample",
+                 "sample index of a captured impulsive RTC event; -2147483647 means unavailable");
+    add_slot_int("rtc_impulsive_slot_event_kind",
+                 "0=raw-sample peak, 1=delta peak, -2147483647 means unavailable");
+    add_slot_double("rtc_impulsive_slot_event_score",
+                    "impulsive event score for a captured scan/network detector slot");
+    add_slot_double("rtc_impulsive_slot_peak_abs_z", comments.peak_abs_z);
+    add_slot_double("rtc_impulsive_slot_peak_delta_abs_z",
+                    comments.peak_delta_abs_z);
+    add_slot_double("rtc_impulsive_slot_added_flagged_frac",
+                    comments.added_flagged_frac);
+    add_slot_int("rtc_impulsive_slot_raw_exceed_count",
+                 comments.raw_exceed_count);
+    add_slot_int("rtc_impulsive_slot_local_raw_candidate_count",
+                 comments.local_raw_candidate_count);
+    add_slot_int("rtc_impulsive_slot_local_raw_accepted_event_count",
+                 comments.local_raw_accepted_event_count);
+    add_slot_int("rtc_impulsive_slot_local_flagged_sample_count",
+                 comments.local_flagged_sample_count);
+    add_slot_int("rtc_impulsive_slot_local_exceed_count",
+                 "legacy alias for rtc_impulsive_slot_local_flagged_sample_count");
+    add_slot_int("rtc_impulsive_slot_local_raw_reject_count",
+                 comments.local_raw_reject_count);
+    add_slot_int("rtc_impulsive_slot_delta_spike_count",
+                 comments.delta_spike_count);
+    add_slot_int("rtc_impulsive_slot_local_delta_candidate_count",
+                 comments.local_delta_candidate_count);
+    add_slot_int("rtc_impulsive_slot_local_delta_accepted_event_count",
+                 comments.local_delta_accepted_event_count);
+    add_slot_int("rtc_impulsive_slot_local_delta_exceed_count",
+                 "legacy alias for rtc_impulsive_slot_local_delta_accepted_event_count");
+    add_slot_int("rtc_impulsive_slot_local_delta_reject_count",
+                 comments.local_delta_reject_count);
+    add_snippet_double("rtc_impulsive_slot_snippet_z",
+                       "standardized RTC snippet around each captured impulsive event");
+    add_snippet_int("rtc_impulsive_slot_snippet_flag",
+                    comments.snippet_flag);
+}
+
 }  // namespace citlali::pipeline
