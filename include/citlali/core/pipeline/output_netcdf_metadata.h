@@ -653,6 +653,25 @@ void add_tod_filter_edge_guard_scan_vars(const AddInt &add_int,
                "fraction of time samples guarded at this output scan edge");
 }
 
+inline void add_tod_filter_edge_guard_scan_placeholders(
+    netCDF::NcFile &fo, netCDF::NcDim n_scans_dim,
+    std::size_t n_output_scans, int fill_int, double fill_double) {
+    auto add_scan_int_var = [&](const std::string &name,
+                                const std::string &comment) {
+        add_tod_scan_int_placeholder_var(
+            fo, name, comment, n_scans_dim, n_output_scans, fill_int);
+    };
+    auto add_scan_double_var = [&](const std::string &name,
+                                   const std::string &units,
+                                   const std::string &comment) {
+        add_tod_scan_double_placeholder_var(
+            fo, name, units, comment, n_scans_dim, n_output_scans,
+            fill_double);
+    };
+    add_tod_filter_edge_guard_scan_vars(add_scan_int_var,
+                                        add_scan_double_var);
+}
+
 inline void add_tod_hwpr_var(netCDF::NcFile &fo, netCDF::NcDim n_pts_dim) {
     netCDF::NcVar hwpr_v = fo.addVar("hwpr", netCDF::ncDouble, n_pts_dim);
     hwpr_v.putAtt("units", "rad");

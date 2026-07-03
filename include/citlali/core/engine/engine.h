@@ -5513,21 +5513,10 @@ void Engine::create_tod_files() {
         tod_file_counts.n_output_scans, tod_file_counts.n_raw_scan_indices,
         tod_output_outer, citlali::pipeline::tod_output_fill_int());
 
-    auto add_scan_int_var = [&](const std::string &name, const std::string &comment) {
-        citlali::pipeline::add_tod_scan_int_placeholder_var(
-            fo, name, comment, n_scans_dim,
-            static_cast<std::size_t>(n_tod_output_scans_for_stream),
-            citlali::pipeline::tod_output_fill_int());
-    };
-    auto add_scan_double_var = [&](const std::string &name, const std::string &units,
-                                   const std::string &comment) {
-        citlali::pipeline::add_tod_scan_double_placeholder_var(
-            fo, name, units, comment, n_scans_dim,
-            static_cast<std::size_t>(n_tod_output_scans_for_stream),
-            citlali::pipeline::tod_output_fill_double());
-    };
-    citlali::pipeline::add_tod_filter_edge_guard_scan_vars(
-        add_scan_int_var, add_scan_double_var);
+    citlali::pipeline::add_tod_filter_edge_guard_scan_placeholders(
+        fo, n_scans_dim, tod_file_counts.n_output_scans,
+        citlali::pipeline::tod_output_fill_int(),
+        citlali::pipeline::tod_output_fill_double());
 
     // set chunk mode
     netCDF::NcVar::ChunkMode chunkMode = netCDF::NcVar::nc_CHUNKED;
