@@ -8739,18 +8739,9 @@ void Engine::create_rtcdiag_file() {
     const Eigen::Index n_scans = telescope.scan_indices.cols();
     const double rtc_fsmp = rtcproc.run_downsample ? telescope.d_fsmp : telescope.fsmp;
 
-    netCDF::NcVar obsnum_v = fo.addVar("obsnum", netCDF::ncInt);
-    obsnum_v.putAtt("units", "N/A");
-    int obsnum_int = std::stoi(obsnum);
-    obsnum_v.putVar(&obsnum_int);
-
-    netCDF::NcVar source_ra_v = fo.addVar("SourceRa", netCDF::ncDouble);
-    source_ra_v.putAtt("units", "rad");
-    source_ra_v.putVar(&telescope.tel_header["Header.Source.Ra"](0));
-
-    netCDF::NcVar source_dec_v = fo.addVar("SourceDec", netCDF::ncDouble);
-    source_dec_v.putAtt("units", "rad");
-    source_dec_v.putVar(&telescope.tel_header["Header.Source.Dec"](0));
+    citlali::pipeline::add_observation_identity_vars(
+        fo, std::stoi(obsnum), telescope.tel_header["Header.Source.Ra"](0),
+        telescope.tel_header["Header.Source.Dec"](0));
 
     netCDF::NcDim n_scans_dim = fo.addDim("n_scans", n_scans);
     netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
