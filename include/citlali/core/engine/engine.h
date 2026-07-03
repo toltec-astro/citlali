@@ -111,6 +111,7 @@
 #include <citlali/core/pipeline/reduction_config_netcdf.h>
 #include <citlali/core/pipeline/rtcdiag_netcdf.h>
 #include <citlali/core/pipeline/spectral_diagnostics_netcdf.h>
+#include <citlali/core/pipeline/summary_log.h>
 
 #include <citlali/core/engine/io.h>
 #include <citlali/core/engine/kidsproc.h>
@@ -5652,8 +5653,8 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     f.open (obsnum_dir_name+"/logs/" + filename + ".log");
 
     f << "Summary file for scan " << in.index.data << "\n";
-    f << "-Citlali version: " << CITLALI_GIT_VERSION << "\n";
-    f << "-Kidscpp version: " << KIDSCPP_GIT_VERSION << "\n";
+    citlali::pipeline::write_pipeline_version_summary(
+        f, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION);
     f << "-Time of time chunk creation: " + in.creation_time + "\n";
     f << "-Time of file writing: " << engine_utils::current_date_time() << "\n";
 
