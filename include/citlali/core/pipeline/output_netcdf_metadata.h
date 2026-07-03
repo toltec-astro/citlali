@@ -131,6 +131,22 @@ void add_beammap_source_flux_vars(netCDF::NcFile &fo, const Arrays &arrays,
     }
 }
 
+inline void add_beammap_tuning_vars(
+    netCDF::NcFile &fo, double iter_tolerance,
+    double convergence_radius_arcsec, int iter_max, bool phase_split_enabled,
+    int locator_iter, int measurement_start_iter, bool is_derotated) {
+    add_netcdf_var(fo, "BEAMMAP.ITER_TOLERANCE", iter_tolerance);
+    add_netcdf_var(fo, "BEAMMAP.CONVERGENCE_RADIUS_ARCSEC",
+                   convergence_radius_arcsec);
+    add_netcdf_var(fo, "BEAMMAP.ITER_MAX", iter_max);
+    add_netcdf_var(fo, "BEAMMAP.PHASE_SPLIT_ENABLED",
+                   phase_split_enabled);
+    add_netcdf_var(fo, "BEAMMAP.LOCATOR_ITER", locator_iter);
+    add_netcdf_var(fo, "BEAMMAP.MEASUREMENT_START_ITER",
+                   measurement_start_iter);
+    add_netcdf_var(fo, "BEAMMAP.IS_DEROTATED", is_derotated);
+}
+
 inline void add_tod_scan_index_placeholders(
     netCDF::NcFile &fo, const std::vector<netCDF::NcDim> &raw_scans_dims,
     const std::vector<netCDF::NcDim> &scans_dims,

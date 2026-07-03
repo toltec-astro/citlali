@@ -5401,13 +5401,11 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             citlali::pipeline::add_beammap_source_flux_vars(
                 fo, calib.arrays, toltec_io.array_name_map,
                 beammap_fluxes_mJy_beam, beammap_fluxes_MJy_Sr);
-            add_netcdf_var(fo, "BEAMMAP.ITER_TOLERANCE", beammap_iter_tolerance);
-            add_netcdf_var(fo, "BEAMMAP.CONVERGENCE_RADIUS_ARCSEC", beammap_convergence_radius_arcsec);
-            add_netcdf_var(fo, "BEAMMAP.ITER_MAX", beammap_iter_max);
-            add_netcdf_var(fo, "BEAMMAP.PHASE_SPLIT_ENABLED", beammap_phase_split_enabled);
-            add_netcdf_var(fo, "BEAMMAP.LOCATOR_ITER", beammap_locator_iter);
-            add_netcdf_var(fo, "BEAMMAP.MEASUREMENT_START_ITER", beammap_measurement_start_iter);
-            add_netcdf_var(fo, "BEAMMAP.IS_DEROTATED", beammap_derotate);
+            citlali::pipeline::add_beammap_tuning_vars(
+                fo, beammap_iter_tolerance,
+                beammap_convergence_radius_arcsec, beammap_iter_max,
+                beammap_phase_split_enabled, beammap_locator_iter,
+                beammap_measurement_start_iter, beammap_derotate);
 
             // add reference detector information
             if (beammap_subtract_reference) {
