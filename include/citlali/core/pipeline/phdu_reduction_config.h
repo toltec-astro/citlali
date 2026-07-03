@@ -3,6 +3,7 @@
 #include <string>
 
 #include <citlali/core/pipeline/phdu_telescope_values.h>
+#include <citlali/core/pipeline/string_join.h>
 
 namespace citlali::pipeline {
 
@@ -183,6 +184,93 @@ void add_phdu_busy_row_suppression_config(
     add_double_key("CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.FACTOR",
                    suppression.factor,
                    "Busy-row multiplicative weight suppression factor");
+}
+
+template <class FitsEntry, class PtcProc, class NEigRemoved, class Logger>
+void add_phdu_cleaner_config(FitsEntry &fits_entry,
+                             const std::string &array_name,
+                             const Logger &logger,
+                             const PtcProc &ptcproc,
+                             NEigRemoved n_eig_removed) {
+    auto &hdu = fits_entry.pfits->pHDU();
+    auto add_double_key = [&](const std::string &key, double value,
+                              const std::string &comment,
+                              double fallback = 0.0) {
+        add_phdu_double_key(fits_entry, array_name, logger, key, value,
+                            comment, fallback);
+    };
+    const auto adaptive_offsets_joined =
+        join_numeric_values(ptcproc.cleaner.adaptive_selector.candidate_offsets);
+    const auto adaptive_grouping_joined =
+        join_string_values(ptcproc.cleaner.adaptive_selector.grouping);
+
+    hdu.addKey("CONFIG.CLEANED", ptcproc.run_clean, "Cleaned");
+    hdu.addKey("CONFIG.CLEANED.MODESEL",
+               ptcproc.cleaner.active_cleaner_label(),
+               "PTC cleaner method");
+    hdu.addKey("CONFIG.CLEANED.MP.ENABLED",
+               ptcproc.cleaner.marchenko_pastur.enabled,
+               "Marchenko-Pastur mode selection enabled");
+    add_double_key("CONFIG.CLEANED.MP.BANDLOW_HZ",
+                   ptcproc.cleaner.marchenko_pastur.band_low_Hz,
+                   "MP covariance low-band edge (Hz)");
+    add_double_key("CONFIG.CLEANED.MP.BANDHIGH_HZ",
+                   ptcproc.cleaner.marchenko_pastur.band_high_Hz,
+                   "MP covariance high-band edge (Hz)");
+    hdu.addKey("CONFIG.CLEANED.MP.MAXMODES",
+               ptcproc.cleaner.marchenko_pastur.max_modes,
+               "MP max modes considered");
+    hdu.addKey("CONFIG.CLEANED.ADAPT.ENABLED",
+               ptcproc.cleaner.adaptive_selector.enabled,
+               "Bounded adaptive PCA selector enabled");
+    add_double_key("CONFIG.CLEANED.ADAPT.MIN_GOOD_FRAC",
+                   ptcproc.cleaner.adaptive_selector.min_good_frac,
+                   "Adaptive PCA minimum unflagged detector fraction");
+    hdu.addKey("CONFIG.CLEANED.ADAPT.MAX_DET",
+               ptcproc.cleaner.adaptive_selector.max_det,
+               "Adaptive PCA max detectors used for scoring");
+    hdu.addKey("CONFIG.CLEANED.ADAPT.MAX_SAMPLES",
+               ptcproc.cleaner.adaptive_selector.max_samples,
+               "Adaptive PCA max time samples used for scoring");
+    hdu.addKey("CONFIG.CLEANED.ADAPT.MAX_PAIRS",
+               ptcproc.cleaner.adaptive_selector.max_pairs,
+               "Adaptive PCA max detector pairs used for scoring");
+    add_double_key("CONFIG.CLEANED.ADAPT.CLIP_Z",
+                   ptcproc.cleaner.adaptive_selector.clip_z,
+                   "Adaptive PCA residual clip threshold");
+    add_double_key("CONFIG.CLEANED.ADAPT.LOW_WEIGHT",
+                   ptcproc.cleaner.adaptive_selector.low_weight,
+                   "Adaptive PCA low-band selector weight");
+    add_double_key("CONFIG.CLEANED.ADAPT.TAIL_WEIGHT",
+                   ptcproc.cleaner.adaptive_selector.tail_weight,
+                   "Adaptive PCA tail selector weight");
+    add_double_key("CONFIG.CLEANED.ADAPT.TOPMODE_WEIGHT",
+                   ptcproc.cleaner.adaptive_selector.topmode_weight,
+                   "Adaptive PCA top-mode selector weight");
+    add_double_key("CONFIG.CLEANED.ADAPT.REG_WEIGHT",
+                   ptcproc.cleaner.adaptive_selector.reg_weight,
+                   "Adaptive PCA regularization-to-baseline weight");
+    add_double_key("CONFIG.CLEANED.ADAPT.LOWMIN_HZ",
+                   ptcproc.cleaner.adaptive_selector.low_band_Hz[0],
+                   "Adaptive PCA low-band minimum frequency");
+    add_double_key("CONFIG.CLEANED.ADAPT.LOWMAX_HZ",
+                   ptcproc.cleaner.adaptive_selector.low_band_Hz[1],
+                   "Adaptive PCA low-band maximum frequency");
+    add_double_key("CONFIG.CLEANED.ADAPT.MIDMIN_HZ",
+                   ptcproc.cleaner.adaptive_selector.mid_band_Hz[0],
+                   "Adaptive PCA mid-band minimum frequency");
+    add_double_key("CONFIG.CLEANED.ADAPT.MIDMAX_HZ",
+                   ptcproc.cleaner.adaptive_selector.mid_band_Hz[1],
+                   "Adaptive PCA mid-band maximum frequency");
+    hdu.addKey("CONFIG.CLEANED.ADAPT.OFFSETS", adaptive_offsets_joined,
+               "Adaptive PCA candidate cut offsets");
+    hdu.addKey("CONFIG.CLEANED.ADAPT.GROUPING", adaptive_grouping_joined,
+               "Grouping subset where adaptive PCA is active");
+    hdu.addKey("CONFIG.CLEANED.ADAPT.LOGCAND",
+               ptcproc.cleaner.adaptive_selector.log_candidates,
+               "Adaptive PCA per-candidate logging enabled");
+    hdu.addKey("CONFIG.CLEANED.NEIG", n_eig_removed,
+               "Number of eigenvalues removed");
 }
 
 template <class FitsEntry, class ReductionLearning, class Logger>

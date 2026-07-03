@@ -6543,86 +6543,11 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_entry, name, logger, ptcproc.weight_corr_penalty);
     citlali::pipeline::add_phdu_busy_row_suppression_config(
         fits_entry, name, logger, ptcproc.busy_row_suppression);
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED", ptcproc.run_clean, "Cleaned");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.MODESEL",
-                                        ptcproc.cleaner.active_cleaner_label(),
-                                        "PTC cleaner method");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.MP.ENABLED",
-                                        ptcproc.cleaner.marchenko_pastur.enabled,
-                                        "Marchenko-Pastur mode selection enabled");
-    add_double_key("CONFIG.CLEANED.MP.BANDLOW_HZ",
-                   ptcproc.cleaner.marchenko_pastur.band_low_Hz,
-                   "MP covariance low-band edge (Hz)");
-    add_double_key("CONFIG.CLEANED.MP.BANDHIGH_HZ",
-                   ptcproc.cleaner.marchenko_pastur.band_high_Hz,
-                   "MP covariance high-band edge (Hz)");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.MP.MAXMODES",
-                                        ptcproc.cleaner.marchenko_pastur.max_modes,
-                                        "MP max modes considered");
-    const auto adaptive_offsets_joined =
-        citlali::pipeline::join_numeric_values(
-            ptcproc.cleaner.adaptive_selector.candidate_offsets);
-    const auto adaptive_grouping_joined =
-        citlali::pipeline::join_string_values(
-            ptcproc.cleaner.adaptive_selector.grouping);
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.ADAPT.ENABLED",
-                                        ptcproc.cleaner.adaptive_selector.enabled,
-                                        "Bounded adaptive PCA selector enabled");
-    add_double_key("CONFIG.CLEANED.ADAPT.MIN_GOOD_FRAC",
-                   ptcproc.cleaner.adaptive_selector.min_good_frac,
-                   "Adaptive PCA minimum unflagged detector fraction");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.ADAPT.MAX_DET",
-                                        ptcproc.cleaner.adaptive_selector.max_det,
-                                        "Adaptive PCA max detectors used for scoring");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.ADAPT.MAX_SAMPLES",
-                                        ptcproc.cleaner.adaptive_selector.max_samples,
-                                        "Adaptive PCA max time samples used for scoring");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.ADAPT.MAX_PAIRS",
-                                        ptcproc.cleaner.adaptive_selector.max_pairs,
-                                        "Adaptive PCA max detector pairs used for scoring");
-    add_double_key("CONFIG.CLEANED.ADAPT.CLIP_Z",
-                   ptcproc.cleaner.adaptive_selector.clip_z,
-                   "Adaptive PCA residual clip threshold");
-    add_double_key("CONFIG.CLEANED.ADAPT.LOW_WEIGHT",
-                   ptcproc.cleaner.adaptive_selector.low_weight,
-                   "Adaptive PCA low-band selector weight");
-    add_double_key("CONFIG.CLEANED.ADAPT.TAIL_WEIGHT",
-                   ptcproc.cleaner.adaptive_selector.tail_weight,
-                   "Adaptive PCA tail selector weight");
-    add_double_key("CONFIG.CLEANED.ADAPT.TOPMODE_WEIGHT",
-                   ptcproc.cleaner.adaptive_selector.topmode_weight,
-                   "Adaptive PCA top-mode selector weight");
-    add_double_key("CONFIG.CLEANED.ADAPT.REG_WEIGHT",
-                   ptcproc.cleaner.adaptive_selector.reg_weight,
-                   "Adaptive PCA regularization-to-baseline weight");
-    add_double_key("CONFIG.CLEANED.ADAPT.LOWMIN_HZ",
-                   ptcproc.cleaner.adaptive_selector.low_band_Hz[0],
-                   "Adaptive PCA low-band minimum frequency");
-    add_double_key("CONFIG.CLEANED.ADAPT.LOWMAX_HZ",
-                   ptcproc.cleaner.adaptive_selector.low_band_Hz[1],
-                   "Adaptive PCA low-band maximum frequency");
-    add_double_key("CONFIG.CLEANED.ADAPT.MIDMIN_HZ",
-                   ptcproc.cleaner.adaptive_selector.mid_band_Hz[0],
-                   "Adaptive PCA mid-band minimum frequency");
-    add_double_key("CONFIG.CLEANED.ADAPT.MIDMAX_HZ",
-                   ptcproc.cleaner.adaptive_selector.mid_band_Hz[1],
-                   "Adaptive PCA mid-band maximum frequency");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.ADAPT.OFFSETS",
-                                        adaptive_offsets_joined,
-                                        "Adaptive PCA candidate cut offsets");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.ADAPT.GROUPING",
-                                        adaptive_grouping_joined,
-                                        "Grouping subset where adaptive PCA is active");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.ADAPT.LOGCAND",
-                                        ptcproc.cleaner.adaptive_selector.log_candidates,
-                                        "Adaptive PCA per-candidate logging enabled");
-    if (ptcproc.run_clean) {
-        fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", ptcproc.cleaner.n_eig_to_cut[calib.arrays(i)].sum(),
-                                            "Number of eigenvalues removed");
-    }
-    else {
-        fits_io->at(i).pfits->pHDU().addKey("CONFIG.CLEANED.NEIG", 0, "Number of eigenvalues removed");
-    }
+    const auto n_eig_removed =
+        ptcproc.run_clean ? ptcproc.cleaner.n_eig_to_cut[calib.arrays(i)].sum()
+                          : 0;
+    citlali::pipeline::add_phdu_cleaner_config(
+        fits_entry, name, logger, ptcproc, n_eig_removed);
 
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS", ptcproc.run_fruit_loops, "Fruit loops");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path, "Fruit loops path");
