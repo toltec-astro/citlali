@@ -67,6 +67,11 @@ void add_point_source_response_norm_key(Hdu &hdu, double response_norm) {
 }
 
 template <class Hdu>
+void add_kernel_fwhm_key(Hdu &hdu, double fwhm_arcsec) {
+    hdu.addKey("FWHM", fwhm_arcsec, "Kernel fwhm (arcsec)");
+}
+
+template <class Hdu>
 void add_noise_image_summary_keys(Hdu &hdu, const std::string &unit,
                                   double median_rms) {
     hdu.addKey("UNIT", unit, "Unit of map");

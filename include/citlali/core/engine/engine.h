@@ -6447,7 +6447,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                              fits_io->at(map_index).filepath);
                 fwhm = -99.0;
             }
-            fits_io->at(map_index).hdus.back()->addKey("FWHM",fwhm,"Kernel fwhm (arcsec)");
+            citlali::pipeline::add_kernel_fwhm_key(
+                *fits_io->at(map_index).hdus.back(), fwhm);
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
             citlali::pipeline::add_image_unit_description_keys(
                 *fits_io->at(map_index).hdus.back(), mb->sig_unit,
