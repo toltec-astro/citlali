@@ -5589,9 +5589,7 @@ void Engine::cli_summary() {
         logger->info("coadd map buffer cols: {}", cmb.n_cols);
 
         // make a rough estimate of memory usage for coadd map buffer
-        double cmb_size = 8*cmb.n_rows*cmb.n_cols*(cmb.signal.size() + cmb.weight.size() +
-                                                   cmb.kernel.size() + cmb.coverage.size() +
-                                                   cmb.grid_weight.size())/1e9;
+        double cmb_size = citlali::pipeline::map_buffer_memory_gb(cmb);
 
         logger->info("estimated size of coadd buffer {:.2f} GB", cmb_size);
 
