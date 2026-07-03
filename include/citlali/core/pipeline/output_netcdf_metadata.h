@@ -459,6 +459,33 @@ inline void add_tod_detector_pointing_vars(
     }
 }
 
+template <class AptTable, class AptUnits>
+void add_tod_apt_table_vars(netCDF::NcFile &fo, const AptTable &apt,
+                            const AptUnits &apt_header_units,
+                            netCDF::NcDim n_dets_dim) {
+    for (const auto &item : apt) {
+        netCDF::NcVar apt_v =
+            fo.addVar("apt_" + item.first, netCDF::ncDouble, n_dets_dim);
+        const auto units_it = apt_header_units.find(item.first);
+        const std::string units =
+            (units_it == apt_header_units.end()) ? "" : units_it->second;
+        apt_v.putAtt("units", units);
+    }
+}
+
+template <class TelescopeData>
+void add_telescope_data_vars(
+    netCDF::NcFile &fo, const TelescopeData &tel_data,
+    netCDF::NcDim n_pts_dim, netCDF::NcVar::ChunkMode chunk_mode,
+    const std::vector<std::size_t> &chunk_sizes) {
+    for (const auto &item : tel_data) {
+        netCDF::NcVar tel_data_v =
+            fo.addVar(item.first, netCDF::ncDouble, n_pts_dim);
+        tel_data_v.putAtt("units", "rad");
+        set_tod_var_chunking(tel_data_v, chunk_mode, chunk_sizes);
+    }
+}
+
 template <class AddInt, class AddDouble>
 void add_tod_filter_edge_guard_scan_vars(const AddInt &add_int,
                                          const AddDouble &add_double) {

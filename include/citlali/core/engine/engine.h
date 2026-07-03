@@ -5608,17 +5608,12 @@ void Engine::create_tod_files() {
         chunkSizes);
 
     // add apt table
-    for (auto const& x: calib.apt) {
-        netCDF::NcVar apt_v = fo.addVar("apt_" + x.first,netCDF::ncDouble, n_dets_dim);
-        apt_v.putAtt("units",calib.apt_header_units[x.first]);
-    }
+    citlali::pipeline::add_tod_apt_table_vars(
+        fo, calib.apt, calib.apt_header_units, n_dets_dim);
 
     // add telescope parameters
-    for (auto const& x: telescope.tel_data) {
-        netCDF::NcVar tel_data_v = fo.addVar(x.first,netCDF::ncDouble, n_pts_dim);
-        tel_data_v.putAtt("units","rad");
-        tel_data_v.setChunking(chunkMode, chunkSizes);
-    }
+    citlali::pipeline::add_telescope_data_vars(
+        fo, telescope.tel_data, n_pts_dim, chunkMode, chunkSizes);
 
     // add pointing offset parameters
     for (auto const& x: pointing_offsets_arcsec) {
