@@ -8003,16 +8003,9 @@ void Engine::create_rtcdiag_file() {
     citlali::pipeline::add_rtcdiag_network_ids(
         fo, calib, n_nws_rtcdiag_dim, fill_int);
 
-    add_netcdf_var<std::string>(fo, "INSTRUME", "TolTEC");
-    add_netcdf_var<std::string>(fo, "TELESCOP", "LMT");
-    add_netcdf_var<std::string>(fo, "PIPELINE", "CITLALI");
-    add_netcdf_var<std::string>(fo, "VERSION", CITLALI_GIT_VERSION);
-    add_netcdf_var<std::string>(fo, "KIDS", KIDSCPP_GIT_VERSION);
-    add_netcdf_var<std::string>(fo, "TULA", TULA_GIT_VERSION);
-    add_netcdf_var<std::string>(fo, "PROJID", telescope.project_id);
-    add_netcdf_var<std::string>(fo, "GOAL", redu_type);
-    add_netcdf_var<std::string>(fo, "OBSGOAL", telescope.obs_goal);
-    add_netcdf_var<std::string>(fo, "TYPE", tod_type);
+    citlali::pipeline::add_pipeline_identity_vars(
+        fo, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
+        telescope.project_id, redu_type, telescope.obs_goal, tod_type);
     add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
     add_netcdf_var(fo, "RTC_SAMPRATE", rtc_fsmp);
     add_netcdf_var(fo, "CONFIG.TODFILTERED", rtcproc.run_tod_filter);
