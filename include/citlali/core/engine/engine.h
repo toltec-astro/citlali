@@ -5624,10 +5624,8 @@ void Engine::cli_summary() {
                 rtcproc.tod_output_outer);
         }
         if (citlali::pipeline::should_report_ptc_tod_output(tod_output_type)) {
-            logger->info("PTC TOD output scans: {}", n_tod_output_scans_ptc);
-            logger->info("PTC TOD output mode: {}",
-                         citlali::pipeline::tod_output_mode_label(
-                             ptcproc.tod_output_mini));
+            citlali::pipeline::log_ptc_tod_output_summary(
+                logger, n_tod_output_scans_ptc, ptcproc.tod_output_mini);
         }
     }
     citlali::pipeline::log_diagnostics_sidecar_summary(logger);

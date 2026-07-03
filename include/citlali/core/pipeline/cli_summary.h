@@ -53,6 +53,14 @@ void log_rtc_tod_output_summary(const Logger &logger,
                  tod_outer_mode_suffix(outer_output));
 }
 
+template <class Logger>
+void log_ptc_tod_output_summary(const Logger &logger,
+                                long long n_output_scans,
+                                bool mini_output) {
+    logger->info("PTC TOD output scans: {}", n_output_scans);
+    logger->info("PTC TOD output mode: {}", tod_output_mode_label(mini_output));
+}
+
 template <class MapBuffer>
 double map_buffer_memory_gb(const MapBuffer &mb) {
     return 8 * mb.n_rows * mb.n_cols *
