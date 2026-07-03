@@ -5436,12 +5436,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             run_mapmaking, calib, toltec_io.array_name_map,
             toltec_io.array_wavelength_map);
 
-        // fruit loops parameters
-        citlali::pipeline::add_fruit_loops_config_vars(fo, ptcproc);
-        citlali::pipeline::add_fruit_loop_flux_config_vars(
+        citlali::pipeline::add_fruit_loop_header_config_vars(
             fo, ptcproc, calib, toltec_io.array_name_map);
-
-        citlali::pipeline::add_fruit_loop_iteration_config_vars(fo, ptcproc);
 
         fo.close();
     }

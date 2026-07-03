@@ -357,6 +357,16 @@ void add_fruit_loop_iteration_config_vars(netCDF::NcFile &fo,
                    ptcproc.fruit_loops_iters);
 }
 
+template <class PtcProc, class Calib, class ArrayNameMap>
+void add_fruit_loop_header_config_vars(netCDF::NcFile &fo,
+                                       const PtcProc &ptcproc,
+                                       const Calib &calib,
+                                       ArrayNameMap &array_name_map) {
+    add_fruit_loops_config_vars(fo, ptcproc);
+    add_fruit_loop_flux_config_vars(fo, ptcproc, calib, array_name_map);
+    add_fruit_loop_iteration_config_vars(fo, ptcproc);
+}
+
 template <class PtcProc>
 void add_ptcdiag_compact_config_vars(netCDF::NcFile &fo,
                                      const PtcProc &ptcproc) {
