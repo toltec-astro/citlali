@@ -7,6 +7,7 @@
 #include <tuple>
 #include <vector>
 
+#include <Eigen/Core>
 #include <netcdf>
 
 #include <citlali/core/utils/netcdf_io.h>
@@ -249,6 +250,21 @@ void add_zero_mean_tau_vars(netCDF::NcFile &fo, const Calib &calib,
     for (decltype(calib.arrays.size()) i=0; i<calib.arrays.size(); ++i) {
         add_netcdf_var(
             fo, "MEAN_TAU_" + array_name_map[calib.arrays(i)], 0.);
+    }
+}
+
+template <class Rtcproc, class TelescopeData, class Calib, class ArrayNameMap>
+void add_tod_mean_tau_vars(netCDF::NcFile &fo, Rtcproc &rtcproc,
+                           TelescopeData &tel_data, double tau_225_ghz,
+                           const Calib &calib, ArrayNameMap &array_name_map) {
+    if (rtcproc.run_extinction) {
+        Eigen::VectorXd tau_el(1);
+        tau_el << tel_data["TelElAct"].mean();
+        auto tau_freq = rtcproc.calibration.calc_tau(tau_el, tau_225_ghz);
+        add_mean_tau_vars(fo, tau_freq, calib, array_name_map);
+    }
+    else {
+        add_zero_mean_tau_vars(fo, calib, array_name_map);
     }
 }
 

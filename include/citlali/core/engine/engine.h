@@ -5411,19 +5411,9 @@ void Engine::add_tod_header(map_buffer_t &mb) {
                 toltec_io.array_name_map, jinc_mm.r_max);
         }
 
-        // add mean tau
-        if (rtcproc.run_extinction) {
-            Eigen::VectorXd tau_el(1);
-            tau_el << telescope.tel_data["TelElAct"].mean();
-            auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
-
-            citlali::pipeline::add_mean_tau_vars(
-                fo, tau_freq, calib, toltec_io.array_name_map);
-        }
-        else {
-            citlali::pipeline::add_zero_mean_tau_vars(
-                fo, calib, toltec_io.array_name_map);
-        }
+        citlali::pipeline::add_tod_mean_tau_vars(
+            fo, rtcproc, telescope.tel_data, telescope.tau_225_GHz,
+            calib, toltec_io.array_name_map);
 
         citlali::pipeline::add_tod_auxiliary_metadata_vars(
             fo, telescope.fsmp,
