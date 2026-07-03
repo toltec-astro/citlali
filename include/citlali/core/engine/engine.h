@@ -6371,8 +6371,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         fits_io->at(map_index).add_hdu("weight_" + map_name + rtcproc.polarization.stokes_params[stokes_index], mb->weight[i]);
         fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
         const std::string weight_unit = "1/("+mb->sig_unit+")^2";
-        fits_io->at(map_index).hdus.back()->addKey("UNIT", weight_unit, "Unit of map");
-        fits_io->at(map_index).hdus.back()->addKey("BUNIT", weight_unit, "Physical unit of image values");
+        citlali::pipeline::add_image_unit_keys(
+            *fits_io->at(map_index).hdus.back(), weight_unit);
         fits_io->at(map_index).hdus.back()->addKey("TYPE",
             (run_noise_products && run_noise && apply_empirical_noise_weights) ? "empirical" : "formal",
             "Weight calibration type");
