@@ -257,6 +257,16 @@ inline void add_rtcdiag_network_int(
     v.putVar(init.data());
 }
 
+template <class AddInt>
+void add_rtcdiag_network_detector_count_diag(const AddInt &add_int) {
+    add_int("rtc_network_n_det_input",
+            "input detector count in each RTC network block");
+    add_int("rtc_network_n_det_used",
+            "detectors passing the step-mask valid-sample threshold and finite robust scale");
+    add_int("rtc_network_impulsive_n_det_used",
+            "detectors passing the impulsive-coincidence valid-sample threshold and finite robust scale");
+}
+
 template <class AddInt, class AddDouble>
 void add_rtcdiag_network_line_audit_base_diag(const AddInt &add_int,
                                               const AddDouble &add_double) {
