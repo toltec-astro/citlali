@@ -6642,7 +6642,9 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
         Eigen::Index stokes_index = maps_to_stokes(i);
 
         auto array = calib.arrays[map_index];
-        std::string name = toltec_io.array_name_map[array] + "_" + map_name + rtcproc.polarization.stokes_params[stokes_index];
+        const std::string name = citlali::pipeline::spectral_product_base_name(
+            toltec_io.array_name_map[array], map_name,
+            rtcproc.polarization.stokes_params[stokes_index]);
 
         // add dimensions
         netCDF::NcDim psd_dim = fo.addDim(name + "_nfreq",mb->psds[i].size());

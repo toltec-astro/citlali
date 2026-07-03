@@ -7,6 +7,12 @@
 
 namespace citlali::pipeline {
 
+inline std::string spectral_product_base_name(const std::string &array_name,
+                                              const std::string &map_name,
+                                              const std::string &stokes_name) {
+    return array_name + "_" + map_name + stokes_name;
+}
+
 template <class Data>
 void add_double_1d_var(netCDF::NcFile &fo, const std::string &name,
                        netCDF::NcDim dim, const Data &data) {
