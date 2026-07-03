@@ -5398,11 +5398,9 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
         // add source flux for beammaps
         if (redu_type == "beammap") {
-            for (const auto &val: calib.arrays) {
-                auto name = toltec_io.array_name_map[val];
-                add_netcdf_var(fo, "HEADER.SOURCE.FLUX_MJYPERBEAM_"+name, beammap_fluxes_mJy_beam[name]);
-                add_netcdf_var(fo, "HEADER.SOURCE.FLUX_MJYPERSR_"+name, beammap_fluxes_MJy_Sr[name]);
-            }
+            citlali::pipeline::add_beammap_source_flux_vars(
+                fo, calib.arrays, toltec_io.array_name_map,
+                beammap_fluxes_mJy_beam, beammap_fluxes_MJy_Sr);
             add_netcdf_var(fo, "BEAMMAP.ITER_TOLERANCE", beammap_iter_tolerance);
             add_netcdf_var(fo, "BEAMMAP.CONVERGENCE_RADIUS_ARCSEC", beammap_convergence_radius_arcsec);
             add_netcdf_var(fo, "BEAMMAP.ITER_MAX", beammap_iter_max);

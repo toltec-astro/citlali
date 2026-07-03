@@ -117,6 +117,20 @@ void add_jinc_shape_config_vars(netCDF::NcFile &fo, const Arrays &arrays,
     }
 }
 
+template <class Arrays, class ArrayNameMap, class FluxMap>
+void add_beammap_source_flux_vars(netCDF::NcFile &fo, const Arrays &arrays,
+                                  ArrayNameMap &array_name_map,
+                                  FluxMap &flux_mjy_beam,
+                                  FluxMap &flux_mjy_sr) {
+    for (const auto &arr: arrays) {
+        const auto &name = array_name_map[arr];
+        add_netcdf_var(fo, "HEADER.SOURCE.FLUX_MJYPERBEAM_" + name,
+                       flux_mjy_beam[name]);
+        add_netcdf_var(fo, "HEADER.SOURCE.FLUX_MJYPERSR_" + name,
+                       flux_mjy_sr[name]);
+    }
+}
+
 inline void add_tod_scan_index_placeholders(
     netCDF::NcFile &fo, const std::vector<netCDF::NcDim> &raw_scans_dims,
     const std::vector<netCDF::NcDim> &scans_dims,
