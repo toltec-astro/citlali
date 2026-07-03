@@ -6785,12 +6785,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<int> edge_guard_support_npix(mapdiag_context.n_maps, 0);
     std::vector<int> edge_guard_guardband_npix(mapdiag_context.n_maps, 0);
 
-    std::vector<double> obs_weight_sum(mapdiag_context.n_maps * mapdiag_context.n_obsnums, fill_double);
-    std::vector<double> obs_weight_frac(mapdiag_context.n_maps * mapdiag_context.n_obsnums, fill_double);
-    std::vector<double> obs_core_weight_sum(mapdiag_context.n_maps * mapdiag_context.n_obsnums, fill_double);
-    std::vector<double> obs_core_weight_frac(mapdiag_context.n_maps * mapdiag_context.n_obsnums, fill_double);
-    std::vector<int> obs_valid_pixels(mapdiag_context.n_maps * mapdiag_context.n_obsnums, fill_int);
-    std::vector<int> obs_core_pixels(mapdiag_context.n_maps * mapdiag_context.n_obsnums, fill_int);
+    const std::size_t obs_table_size =
+        citlali::pipeline::mapdiag_obs_table_size(mapdiag_context);
+    std::vector<double> obs_weight_sum(obs_table_size, fill_double);
+    std::vector<double> obs_weight_frac(obs_table_size, fill_double);
+    std::vector<double> obs_core_weight_sum(obs_table_size, fill_double);
+    std::vector<double> obs_core_weight_frac(obs_table_size, fill_double);
+    std::vector<int> obs_valid_pixels(obs_table_size, fill_int);
+    std::vector<int> obs_core_pixels(obs_table_size, fill_int);
 
     std::string stage_name = citlali::pipeline::mapdiag_stage_name<map_t>();
 

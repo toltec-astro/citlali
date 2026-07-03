@@ -29,6 +29,10 @@ MapdiagSizeContext make_mapdiag_size_context(std::size_t n_maps,
     return {n_maps, obsnum_count, is_coadd};
 }
 
+inline std::size_t mapdiag_obs_table_size(const MapdiagSizeContext &context) {
+    return context.n_maps * context.n_obsnums;
+}
+
 inline void put_netcdf_string_1d(
     netCDF::NcFile &fo, const std::string &name, netCDF::NcDim dim,
     const std::vector<std::string> &values,
