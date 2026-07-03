@@ -5436,13 +5436,8 @@ template <engine_utils::toltecIO::ProdType prod_t>
 void Engine::create_tod_files() {
     // name for std map
     std::string name;
-    // subdirectory name
-    std::string dir_name = obsnum_dir_name + "raw/";
-
-    // if config subdirectory name is specified, add it
-    if (tod_output_subdir_name != "null") {
-        dir_name = dir_name + tod_output_subdir_name + "/";
-    }
+    const std::string dir_name = citlali::pipeline::tod_output_directory(
+        obsnum_dir_name, tod_output_subdir_name);
 
     // rtc tod output filename setup
     if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
