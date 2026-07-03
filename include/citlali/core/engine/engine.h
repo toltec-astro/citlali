@@ -5503,15 +5503,10 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
 
         // add apt table
-        std::vector<string> apt_filename;
-        std::stringstream ss(calib.apt_filepath);
-        std::string item;
-        char delim = '/';
-
-        while (getline (ss, item, delim)) {
-            apt_filename.push_back(item);
-        }
-        add_netcdf_var<std::string>(fo, "APT", apt_filename.back());
+        add_netcdf_var<std::string>(
+            fo, "APT",
+            citlali::pipeline::apt_table_header_name(
+                calib.apt_filepath, logger));
 
         add_netcdf_var(fo, "FRUITLOOPS_ITER", fruit_iter);
 
