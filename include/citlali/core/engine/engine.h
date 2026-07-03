@@ -5455,18 +5455,9 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             RAD_TO_DEG*telescope.tel_data["ActParAng"].mean());
 
         // add beamsizes
-        for (const auto &arr: calib.arrays) {
-            if (std::get<0>(calib.array_fwhms[arr]) >= std::get<1>(calib.array_fwhms[arr])) {
-                add_netcdf_var(fo, "BMAJ_"+toltec_io.array_name_map[arr], std::get<0>(calib.array_fwhms[arr]));
-                add_netcdf_var(fo, "BMIN_"+toltec_io.array_name_map[arr], std::get<1>(calib.array_fwhms[arr]));
-                add_netcdf_var(fo, "BPA_"+toltec_io.array_name_map[arr], calib.array_pas[arr]*RAD_TO_DEG);
-            }
-            else {
-                add_netcdf_var(fo, "BMAJ_"+toltec_io.array_name_map[arr], std::get<1>(calib.array_fwhms[arr]));
-                add_netcdf_var(fo, "BMIN_"+toltec_io.array_name_map[arr], std::get<0>(calib.array_fwhms[arr]));
-                add_netcdf_var(fo, "BPA_"+toltec_io.array_name_map[arr], (calib.array_pas[arr] + pi/2)*RAD_TO_DEG);
-            }
-        }
+        citlali::pipeline::add_array_beam_geometry_vars(
+            fo, calib.arrays, calib.array_fwhms, calib.array_pas,
+            toltec_io.array_name_map, RAD_TO_DEG, pi/2);
 
         add_netcdf_var(fo, "BUNIT", omb.sig_unit);
 

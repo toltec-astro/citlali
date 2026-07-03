@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include <netcdf>
@@ -74,6 +75,32 @@ inline void add_tod_map_geometry_vars(
     add_netcdf_var(fo, "MEAN_EL", mean_el_deg);
     add_netcdf_var(fo, "MEAN_AZ", mean_az_deg);
     add_netcdf_var(fo, "MEAN_PA", mean_pa_deg);
+}
+
+template <class Arrays, class FwhmMap, class PositionAngleMap,
+          class ArrayNameMap>
+void add_array_beam_geometry_vars(netCDF::NcFile &fo, const Arrays &arrays,
+                                  FwhmMap &array_fwhms,
+                                  PositionAngleMap &array_pas,
+                                  ArrayNameMap &array_name_map,
+                                  double rad_to_deg,
+                                  double pa_quadrature_offset_rad) {
+    for (const auto &arr: arrays) {
+        const auto &fwhm = array_fwhms[arr];
+        const auto &name = array_name_map[arr];
+        if (std::get<0>(fwhm) >= std::get<1>(fwhm)) {
+            add_netcdf_var(fo, "BMAJ_" + name, std::get<0>(fwhm));
+            add_netcdf_var(fo, "BMIN_" + name, std::get<1>(fwhm));
+            add_netcdf_var(fo, "BPA_" + name, array_pas[arr]*rad_to_deg);
+        }
+        else {
+            add_netcdf_var(fo, "BMAJ_" + name, std::get<1>(fwhm));
+            add_netcdf_var(fo, "BMIN_" + name, std::get<0>(fwhm));
+            add_netcdf_var(fo, "BPA_" + name,
+                           (array_pas[arr] + pa_quadrature_offset_rad)*
+                               rad_to_deg);
+        }
+    }
 }
 
 inline void add_tod_scan_index_placeholders(
