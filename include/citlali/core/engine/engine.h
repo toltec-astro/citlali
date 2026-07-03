@@ -8732,11 +8732,7 @@ void Engine::create_rtcdiag_file() {
 
     write_netcdf_atomic(rtcdiag_filename, [&](netCDF::NcFile &fo) {
 
-    netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type", 1);
-    netCDF::NcVar tod_output_type_var = fo.addVar("tod_output_type", netCDF::ncString, n_tod_output_type_dim);
-    const std::vector<size_t> tod_output_type_index = {0};
-    std::string tod_output_type_name = "rtcdiag";
-    tod_output_type_var.putVar(tod_output_type_index, tod_output_type_name);
+    citlali::pipeline::add_tod_output_type_label(fo, "rtcdiag");
 
     const int fill_int = -2147483647;
     const double fill_double = std::numeric_limits<double>::quiet_NaN();
