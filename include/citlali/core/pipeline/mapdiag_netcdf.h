@@ -17,6 +17,18 @@ inline int mapdiag_fill_int() {
     return -2147483647;
 }
 
+struct MapdiagSizeContext {
+    std::size_t n_maps;
+    std::size_t n_obsnums;
+    bool is_coadd;
+};
+
+MapdiagSizeContext make_mapdiag_size_context(std::size_t n_maps,
+                                             std::size_t obsnum_count,
+                                             bool is_coadd) {
+    return {n_maps, obsnum_count, is_coadd};
+}
+
 inline void put_netcdf_string_1d(
     netCDF::NcFile &fo, const std::string &name, netCDF::NcDim dim,
     const std::vector<std::string> &values,
