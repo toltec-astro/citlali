@@ -303,4 +303,18 @@ inline PtcDiagVarList ptcdiag_second_pass_int_vars(
     return vars;
 }
 
+template <class Calib>
+void add_ptcdiag_second_pass_network_block(
+    netCDF::NcFile &fo, const Calib &calib, netCDF::NcDim n_scans_dim,
+    Eigen::Index n_scans, const std::string &busy_network_veto_comment,
+    bool include_rejection_policy_vars, int fill_int, double fill_double) {
+    add_ptcdiag_network_block(
+        fo, calib, n_scans_dim, n_scans,
+        "n_nws_ptc_second_pass", "ptc_second_pass_network_ids",
+        "network IDs corresponding to n_nws_ptc_second_pass axis",
+        ptcdiag_second_pass_int_vars(
+            busy_network_veto_comment, include_rejection_policy_vars),
+        ptcdiag_second_pass_double_vars(), fill_int, fill_double);
+}
+
 }  // namespace citlali::pipeline

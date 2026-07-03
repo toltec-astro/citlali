@@ -6426,13 +6426,10 @@ void Engine::create_tod_files() {
                                 "0=not added by PTC second-pass residual deglitching, 1=newly flagged by that pass");
             added_flag_v.setChunking(chunkMode, chunkSizes);
 
-            add_ptc_stream_network_block(
-                "n_nws_ptc_second_pass", "ptc_second_pass_network_ids",
-                "network IDs corresponding to n_nws_ptc_second_pass axis",
-                citlali::pipeline::ptcdiag_second_pass_int_vars(
-                    "1 if this network had more candidate second-pass clusters than the auto-flag limit and was diagnostic-only",
-                    false),
-                citlali::pipeline::ptcdiag_second_pass_double_vars());
+            citlali::pipeline::add_ptcdiag_second_pass_network_block(
+                fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
+                "1 if this network had more candidate second-pass clusters than the auto-flag limit and was diagnostic-only",
+                false, ptc_stream_fill_int, ptc_stream_fill_double);
         }
 
         // optional diagnostics for correlation-defined network cleaning groups
@@ -8904,14 +8901,10 @@ void Engine::create_ptcdiag_file() {
     citlali::pipeline::add_ptcdiag_adaptive_pca_network_block(
         fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
 
-    add_network_block(
-        "n_nws_ptc_second_pass",
-        "ptc_second_pass_network_ids",
-        "network IDs corresponding to n_nws_ptc_second_pass axis",
-        citlali::pipeline::ptcdiag_second_pass_int_vars(
-            "1 if this network had more candidate second-pass clusters than the normal auto-flag limit",
-            true),
-        citlali::pipeline::ptcdiag_second_pass_double_vars());
+    citlali::pipeline::add_ptcdiag_second_pass_network_block(
+        fo, calib, n_scans_dim, n_scans,
+        "1 if this network had more candidate second-pass clusters than the normal auto-flag limit",
+        true, fill_int, fill_double);
     });
 }
 
