@@ -165,6 +165,26 @@ void add_jinc_shape_config_vars(netCDF::NcFile &fo, const Arrays &arrays,
     }
 }
 
+template <class TauByFrequency, class Calib, class ArrayNameMap>
+void add_mean_tau_vars(netCDF::NcFile &fo, const TauByFrequency &tau_freq,
+                       const Calib &calib, ArrayNameMap &array_name_map) {
+    decltype(calib.arrays.size()) i = 0;
+    for (auto const& [key, val] : tau_freq) {
+        add_netcdf_var(
+            fo, "MEAN_TAU_" + array_name_map[calib.arrays(i)], val[0]);
+        i++;
+    }
+}
+
+template <class Calib, class ArrayNameMap>
+void add_zero_mean_tau_vars(netCDF::NcFile &fo, const Calib &calib,
+                            ArrayNameMap &array_name_map) {
+    for (decltype(calib.arrays.size()) i=0; i<calib.arrays.size(); ++i) {
+        add_netcdf_var(
+            fo, "MEAN_TAU_" + array_name_map[calib.arrays(i)], 0.);
+    }
+}
+
 template <class Arrays, class ArrayNameMap, class FluxMap>
 void add_beammap_source_flux_vars(netCDF::NcFile &fo, const Arrays &arrays,
                                   ArrayNameMap &array_name_map,

@@ -5416,16 +5416,12 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             tau_el << telescope.tel_data["TelElAct"].mean();
             auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
 
-            Eigen::Index i = 0;
-            for (auto const& [key, val] : tau_freq) {
-                add_netcdf_var(fo, "MEAN_TAU_"+toltec_io.array_name_map[calib.arrays(i)], val[0]);
-                i++;
-            }
+            citlali::pipeline::add_mean_tau_vars(
+                fo, tau_freq, calib, toltec_io.array_name_map);
         }
         else {
-            for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
-                add_netcdf_var(fo, "MEAN_TAU_"+toltec_io.array_name_map[calib.arrays(i)], 0.);
-            }
+            citlali::pipeline::add_zero_mean_tau_vars(
+                fo, calib, toltec_io.array_name_map);
         }
 
         // add sample rate
