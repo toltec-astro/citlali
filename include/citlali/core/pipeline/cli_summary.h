@@ -24,6 +24,13 @@ inline bool should_report_ptc_tod_output(const std::string &tod_output_type) {
     return tod_output_type == "ptc" || tod_output_type == "both";
 }
 
+template <class Logger>
+void log_diagnostics_sidecar_summary(const Logger &logger) {
+    logger->info("RTC diagnostics sidecar output: standard");
+    logger->info("PTC diagnostics sidecar output: standard");
+    logger->info("Map diagnostics sidecar output: standard");
+}
+
 template <class MapBuffer>
 double map_buffer_memory_gb(const MapBuffer &mb) {
     return 8 * mb.n_rows * mb.n_cols *

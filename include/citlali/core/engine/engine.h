@@ -5633,9 +5633,7 @@ void Engine::cli_summary() {
                              ptcproc.tod_output_mini));
         }
     }
-    logger->info("RTC diagnostics sidecar output: standard");
-    logger->info("PTC diagnostics sidecar output: standard");
-    logger->info("Map diagnostics sidecar output: standard");
+    citlali::pipeline::log_diagnostics_sidecar_summary(logger);
 
     // test getting memory usage for fun
     /*struct sysinfo memInfo;
