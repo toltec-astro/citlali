@@ -5433,12 +5433,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         const bool run_any_tod_filter = rtcproc.run_tod_filter || rtcproc.run_tod_iir_highpass;
         citlali::pipeline::add_rtc_local_despike_config_vars(
             fo, rtcproc.despiker.local_residual);
-        add_netcdf_var(fo, "CONFIG.TODFILTERED", run_any_tod_filter);
-        add_netcdf_var(fo, "CONFIG.TODNOTCH", rtcproc.run_tod_notch);
-        add_netcdf_var(fo, "CONFIG.TODIIRHP", rtcproc.run_tod_iir_highpass);
-        add_netcdf_var(fo, "CONFIG.TODIIRHP.FREQ_HZ", rtcproc.filter.iir_highpass_freq_Hz);
-        add_netcdf_var(fo, "CONFIG.TODIIRHP.ORDER", rtcproc.filter.iir_highpass_order);
-        add_netcdf_var(fo, "CONFIG.TODIIRHP.ZEROPHASE", rtcproc.filter.iir_highpass_zero_phase);
+        citlali::pipeline::add_tod_filter_runtime_config_vars(
+            fo, rtcproc, run_any_tod_filter);
         citlali::pipeline::add_tod_filter_edge_guard_config_vars(
             fo, rtcproc.filter_edge_guard, telescope.outer_scans_chunk,
             rtcproc.tod_output_outer_context_samples);

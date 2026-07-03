@@ -80,6 +80,21 @@ inline void add_tod_initial_runtime_config_vars(netCDF::NcFile &fo,
     add_netcdf_var(fo, "CONFIG.DESPIKED", run_despike);
 }
 
+template <class RtcProc>
+void add_tod_filter_runtime_config_vars(netCDF::NcFile &fo,
+                                        const RtcProc &rtcproc,
+                                        bool run_any_tod_filter) {
+    add_netcdf_var(fo, "CONFIG.TODFILTERED", run_any_tod_filter);
+    add_netcdf_var(fo, "CONFIG.TODNOTCH", rtcproc.run_tod_notch);
+    add_netcdf_var(fo, "CONFIG.TODIIRHP", rtcproc.run_tod_iir_highpass);
+    add_netcdf_var(fo, "CONFIG.TODIIRHP.FREQ_HZ",
+                   rtcproc.filter.iir_highpass_freq_Hz);
+    add_netcdf_var(fo, "CONFIG.TODIIRHP.ORDER",
+                   rtcproc.filter.iir_highpass_order);
+    add_netcdf_var(fo, "CONFIG.TODIIRHP.ZEROPHASE",
+                   rtcproc.filter.iir_highpass_zero_phase);
+}
+
 template <class WeightCorrPenalty>
 void add_weight_corr_penalty_config_vars(
     netCDF::NcFile &fo, const WeightCorrPenalty &penalty) {
