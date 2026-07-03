@@ -237,6 +237,19 @@ inline void add_ptcdiag_corr_group_id(
     corr_group_id_v.putVar(init.data());
 }
 
+inline void add_ptcdiag_second_pass_added_flag(
+    netCDF::NcFile &fo, const std::vector<netCDF::NcDim> &dims,
+    netCDF::NcVar::ChunkMode chunk_mode,
+    const std::vector<std::size_t> &chunk_sizes) {
+    netCDF::NcVar added_flag_v =
+        fo.addVar("ptc_second_pass_added_flag", netCDF::ncByte, dims);
+    added_flag_v.putAtt("units", "N/A");
+    added_flag_v.putAtt(
+        "comment",
+        "0=not added by PTC second-pass residual deglitching, 1=newly flagged by that pass");
+    added_flag_v.setChunking(chunk_mode, chunk_sizes);
+}
+
 template <class Calib>
 void add_ptcdiag_corr_network_block(netCDF::NcFile &fo, const Calib &calib,
                                     netCDF::NcDim n_scans_dim,

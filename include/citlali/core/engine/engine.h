@@ -5790,11 +5790,8 @@ void Engine::create_tod_files() {
             citlali::pipeline::ptcdiag_fill_double();
 
         if (ptcproc.second_pass_local.enabled) {
-            netCDF::NcVar added_flag_v = fo.addVar("ptc_second_pass_added_flag", netCDF::ncByte, dims);
-            added_flag_v.putAtt("units", "N/A");
-            added_flag_v.putAtt("comment",
-                                "0=not added by PTC second-pass residual deglitching, 1=newly flagged by that pass");
-            added_flag_v.setChunking(chunkMode, chunkSizes);
+            citlali::pipeline::add_ptcdiag_second_pass_added_flag(
+                fo, dims, chunkMode, chunkSizes);
 
             citlali::pipeline::add_ptcdiag_second_pass_network_block(
                 fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
