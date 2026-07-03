@@ -6637,75 +6637,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_entry, name, logger, rtcproc);
     citlali::pipeline::add_phdu_reduction_learning_config(
         fits_entry, name, logger, reduction_learning);
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.ENABLED",
-                                        ptcproc.weight_corr_penalty.enabled,
-                                        "Enable per-network corr-based weight penalties");
-    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.MIN_GOOD_FRAC",
-                   ptcproc.weight_corr_penalty.min_good_frac,
-                   "Minimum unflagged sample fraction per detector");
-    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.MIN_OVERLAP",
-                   ptcproc.weight_corr_penalty.min_overlap,
-                   "Minimum overlap for pairwise corr metric");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.MAX_SAMPLES",
-                                        ptcproc.weight_corr_penalty.max_samples,
-                                        "Max sampled timestream points for penalty metrics");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.MAX_PAIRS",
-                                        ptcproc.weight_corr_penalty.max_pairs,
-                                        "Max sampled detector pairs for corr metric");
-    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.FLOOR",
-                   ptcproc.weight_corr_penalty.floor,
-                   "Minimum per-network multiplicative weight factor");
-    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.EXPONENT",
-                   ptcproc.weight_corr_penalty.exponent,
-                   "Exponent shaping corr penalty response");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.PAIR.ENABLED",
-                                        ptcproc.weight_corr_penalty.pair_corr.enabled,
-                                        "Enable pairwise corr penalty term");
-    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.PAIR.REF",
-                   ptcproc.weight_corr_penalty.pair_corr.ref,
-                   "Pairwise corr reference value");
-    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.PAIR.SPAN",
-                   ptcproc.weight_corr_penalty.pair_corr.span,
-                   "Pairwise corr scale span");
-    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.PAIR.WEIGHT",
-                   ptcproc.weight_corr_penalty.pair_corr.weight,
-                   "Pairwise corr term weight");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.CM_EL.ENABLED",
-                                        ptcproc.weight_corr_penalty.cm_el_corr.enabled,
-                                        "Enable common-mode elevation corr penalty term");
-    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.CM_EL.REF",
-                   ptcproc.weight_corr_penalty.cm_el_corr.ref,
-                   "Common-mode elevation corr reference");
-    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.CM_EL.SPAN",
-                   ptcproc.weight_corr_penalty.cm_el_corr.span,
-                   "Common-mode elevation corr scale span");
-    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.CM_EL.WEIGHT",
-                   ptcproc.weight_corr_penalty.cm_el_corr.weight,
-                   "Common-mode elevation corr term weight");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.ENABLED",
-                                        ptcproc.weight_corr_penalty.cm_low_mid_ratio.enabled,
-                                        "Enable common-mode low/mid ratio penalty term");
-    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.REF",
-                   ptcproc.weight_corr_penalty.cm_low_mid_ratio.ref,
-                   "Common-mode low/mid ratio reference");
-    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.SPAN",
-                   ptcproc.weight_corr_penalty.cm_low_mid_ratio.span,
-                   "Common-mode low/mid ratio scale span");
-    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.WEIGHT",
-                   ptcproc.weight_corr_penalty.cm_low_mid_ratio.weight,
-                   "Common-mode low/mid ratio term weight");
-    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.LOWMIN_HZ",
-                   ptcproc.weight_corr_penalty.cm_low_mid_ratio.low_min_Hz,
-                   "Low-band minimum frequency for low/mid ratio");
-    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.LOWMAX_HZ",
-                   ptcproc.weight_corr_penalty.cm_low_mid_ratio.low_max_Hz,
-                   "Low-band maximum frequency for low/mid ratio");
-    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMIN_HZ",
-                   ptcproc.weight_corr_penalty.cm_low_mid_ratio.mid_min_Hz,
-                   "Mid-band minimum frequency for low/mid ratio");
-    add_double_key("CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMAX_HZ",
-                   ptcproc.weight_corr_penalty.cm_low_mid_ratio.mid_max_Hz,
-                   "Mid-band maximum frequency for low/mid ratio");
+    citlali::pipeline::add_phdu_weight_corr_penalty_config(
+        fits_entry, name, logger, ptcproc.weight_corr_penalty);
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.ENABLED",
                                         ptcproc.busy_row_suppression.enabled,
                                         "Enable busy scan/network row weight suppression");
