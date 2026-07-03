@@ -100,6 +100,7 @@
 #include <citlali/core/pipeline/phdu_beammap.h>
 #include <citlali/core/pipeline/phdu_extinction.h>
 #include <citlali/core/pipeline/phdu_oof.h>
+#include <citlali/core/pipeline/phdu_reduction_config.h>
 #include <citlali/core/pipeline/phdu_rtc_config.h>
 #include <citlali/core/pipeline/phdu_telescope_values.h>
 #include <citlali/core/pipeline/ptcdiag_netcdf.h>
@@ -6676,60 +6677,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     add_double_key("CONFIG.WEIGHT.VALIDATION.UPWARD_MIN_ATM",
                    ptcproc.weight_validation.upward_min_atmospheric_factor,
                    "Minimum atmospheric factor for upward validation");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.ENABLED",
-                                        reduction_learning.options.enabled,
-                                        "Enable shared reduction learning state");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.DIAGNOSTICS",
-                                        reduction_learning.options.diagnostics_enabled,
-                                        "Write shared reduction learning diagnostics");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.LEARN_ITERS",
-                                        reduction_learning.options.learn_iters,
-                                        "Initial fruitloops iterations used for learning");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.APPLY_ITER",
-                                        reduction_learning.options.apply_start_iter,
-                                        "Earliest fruitloops iter applying learned state");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.MAP_OUTLIER_DET_EXCL",
-                                        reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled,
-                                        "Enable map-outlier learned detector exclusions");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.MAP_OUTLIER_DET_MINPIX",
-                                        reduction_learning.options.map_pixel_outlier_detector_exclusion_min_pixels,
-                                        "Outlier pixels needed for learned detector exclusion");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.BUSY_DET_EXCL",
-                                        reduction_learning.options.busy_detector_exclusion_enabled,
-                                        "Enable PTC-busy learned detector exclusions");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.NET_PATH.ENABLED",
-                                        reduction_learning.options.scan_network_pathology_enabled,
-                                        "Enable learned scan-network pathology exclusions");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.NET_PATH.PRE_RTC",
-                                        reduction_learning.options.scan_network_pathology_apply_pre_rtc,
-                                        "Apply scan-network exclusions before RTC");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.NET_PATH.PRE_PTC",
-                                        reduction_learning.options.scan_network_pathology_apply_pre_ptc,
-                                        "Apply scan-network exclusions before PTC");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.NET_PATH.PRE_MAP",
-                                        reduction_learning.options.scan_network_pathology_apply_pre_mapmaking,
-                                        "Apply scan-network exclusions before mapmaking");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.NET_PATH.MIN_CLUST",
-                                        reduction_learning.options.scan_network_pathology_min_candidate_clusters,
-                                        "Min clusters for scan-network pathology");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.NET_PATH.MIN_EV",
-                                        reduction_learning.options.scan_network_pathology_min_candidate_events,
-                                        "Min events for scan-network pathology");
-    add_double_key("CONFIG.LEARNING.NET_PATH.MIN_Z",
-                   reduction_learning.options.scan_network_pathology_min_max_residual_z,
-                   "Min residual z for scan-network pathology");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.NET_PATH.SEV_EV",
-                                        reduction_learning.options.scan_network_pathology_severe_candidate_events,
-                                        "Severe event count for scan-network pathology");
-    add_double_key("CONFIG.LEARNING.NET_PATH.SEV_Z",
-                   reduction_learning.options.scan_network_pathology_severe_max_residual_z,
-                   "Severe residual z for scan-network pathology");
-    add_double_key("CONFIG.LEARNING.NET_PATH.MAX_FRAC",
-                   reduction_learning.options.scan_network_pathology_max_new_flagged_fraction,
-                   "Max new flagged fraction for network exclusions");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.LEARNING.PHASE",
-                                        reduction_learning.current_phase_name(),
-                                        "Shared reduction learning phase");
+    citlali::pipeline::add_phdu_reduction_learning_config(
+        fits_entry, name, logger, reduction_learning);
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.WEIGHT.CORR_PENALTY.ENABLED",
                                         ptcproc.weight_corr_penalty.enabled,
                                         "Enable per-network corr-based weight penalties");
