@@ -238,7 +238,8 @@ void add_cleaned_eigen_count_config_vars(netCDF::NcFile &fo,
         const auto array = calib.arrays(i);
         const auto key = "CONFIG.CLEANED.NEIG_" + array_name_map[array];
         if (ptcproc.run_clean) {
-            add_netcdf_var(fo, key, ptcproc.cleaner.n_eig_to_cut[array].sum());
+            add_netcdf_var(fo, key,
+                           ptcproc.cleaner.n_eig_to_cut.at(array).sum());
         }
         else {
             add_netcdf_var(fo, key, 0);
