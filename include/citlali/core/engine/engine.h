@@ -5789,49 +5789,10 @@ void Engine::create_tod_files() {
         const double ptc_stream_fill_double =
             citlali::pipeline::ptcdiag_fill_double();
 
-        if (ptcproc.second_pass_local.enabled) {
-            citlali::pipeline::add_ptcdiag_second_pass_added_flag(
-                fo, dims, chunkMode, chunkSizes);
-
-            citlali::pipeline::add_ptcdiag_second_pass_network_block(
-                fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
-                "1 if this network had more candidate second-pass clusters than the auto-flag limit and was diagnostic-only",
-                false, ptc_stream_fill_int, ptc_stream_fill_double);
-        }
-
-        // optional diagnostics for correlation-defined network cleaning groups
-        if (ptcproc.cleaner.corr_grouping.enabled &&
-            citlali::pipeline::ptcdiag_corr_nw_requested(ptcproc)) {
-            std::vector<netCDF::NcDim> corr_det_dims = {n_scans_dim, n_dets_dim};
-            citlali::pipeline::add_ptcdiag_corr_group_id(
-                fo, corr_det_dims,
-                static_cast<std::size_t>(n_tod_output_scans_for_stream) *
-                    static_cast<std::size_t>(calib.n_dets),
-                ptc_stream_fill_int);
-
-            citlali::pipeline::add_ptcdiag_corr_network_block(
-                fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
-                ptc_stream_fill_int, ptc_stream_fill_double);
-        }
-
-        if (ptcproc.weight_corr_penalty.enabled) {
-            citlali::pipeline::add_ptcdiag_weight_corr_network_block(
-                fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
-                "multiplicative weight penalty factor applied per network in each output scan",
-                ptc_stream_fill_int, ptc_stream_fill_double);
-        }
-
-        if (ptcproc.busy_row_suppression.enabled) {
-            citlali::pipeline::add_ptcdiag_busy_row_network_block(
-                fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
-                ptc_stream_fill_int, ptc_stream_fill_double);
-        }
-
-        if (ptcproc.cleaner.adaptive_selector.enabled) {
-            citlali::pipeline::add_ptcdiag_adaptive_pca_network_block(
-                fo, calib, n_scans_dim, n_tod_output_scans_for_stream,
-                ptc_stream_fill_int, ptc_stream_fill_double);
-        }
+        citlali::pipeline::add_ptcdiag_tod_optional_diag(
+            fo, calib, ptcproc, dims, chunkMode, chunkSizes,
+            n_scans_dim, n_dets_dim, n_tod_output_scans_for_stream,
+            ptc_stream_fill_int, ptc_stream_fill_double);
     }
 
     // add hwpr
