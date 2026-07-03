@@ -6675,10 +6675,8 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
             noise_dims.push_back(noise_pds_2d_row_dim);
             noise_dims.push_back(noise_pds_2d_col_dim);
 
-            citlali::pipeline::add_double_1d_var(
-                fo, name + "_noise_psd", noise_psd_dim, mb->noise_psds[i]);
-            citlali::pipeline::add_double_1d_var(
-                fo, name + "_noise_psd_freq", noise_psd_dim,
+            citlali::pipeline::add_psd_vector_pair(
+                fo, name + "_noise", noise_psd_dim, mb->noise_psds[i],
                 mb->noise_psd_freqs[i]);
 
             // transpose 2d noise psd and freq
