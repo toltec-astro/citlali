@@ -322,6 +322,27 @@ void add_oof_array_vars(netCDF::NcFile &fo, const MapBuffer &mb,
     }
 }
 
+template <class TelescopeHeader, class MapBuffer, class Calib,
+          class ArrayNameMap, class WavelengthMap>
+void add_oof_header_vars_if_observed(
+    netCDF::NcFile &fo, bool simulated_observation,
+    TelescopeHeader &tel_header, const MapBuffer &mb,
+    const std::string &reduction_type, bool run_mapmaking,
+    const Calib &calib, ArrayNameMap &array_name_map,
+    WavelengthMap &array_wavelength_map) {
+    if (simulated_observation) {
+        return;
+    }
+
+    add_oof_telescope_vars(
+        fo, tel_header["Header.M2.XReq"](0) / 1000. * 1e6,
+        tel_header["Header.M2.YReq"](0) / 1000. * 1e6,
+        tel_header["Header.M2.ZReq"](0) / 1000. * 1e6);
+    add_oof_array_vars(
+        fo, mb, reduction_type, run_mapmaking, calib, array_name_map,
+        array_wavelength_map);
+}
+
 inline void add_tod_scan_index_placeholders(
     netCDF::NcFile &fo, const std::vector<netCDF::NcDim> &raw_scans_dims,
     const std::vector<netCDF::NcDim> &scans_dims,

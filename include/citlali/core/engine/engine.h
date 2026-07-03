@@ -5465,16 +5465,10 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         citlali::pipeline::add_cleaned_eigen_count_config_vars(
             fo, ptcproc, calib, toltec_io.array_name_map);
 
-        // out-of-focus holography parameters
-        if (! telescope.sim_obs) {
-            citlali::pipeline::add_oof_telescope_vars(
-                fo, telescope.tel_header["Header.M2.XReq"](0)/1000.*1e6,
-                telescope.tel_header["Header.M2.YReq"](0)/1000.*1e6,
-                telescope.tel_header["Header.M2.ZReq"](0)/1000.*1e6);
-            citlali::pipeline::add_oof_array_vars(
-                fo, mb, redu_type, run_mapmaking, calib,
-                toltec_io.array_name_map, toltec_io.array_wavelength_map);
-        }
+        citlali::pipeline::add_oof_header_vars_if_observed(
+            fo, telescope.sim_obs, telescope.tel_header, mb, redu_type,
+            run_mapmaking, calib, toltec_io.array_name_map,
+            toltec_io.array_wavelength_map);
 
         // fruit loops parameters
         citlali::pipeline::add_fruit_loops_config_vars(fo, ptcproc);
