@@ -5442,17 +5442,10 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             }
         }
 
-        add_netcdf_var<std::string>(fo,"INSTRUME","TolTEC");
+        citlali::pipeline::add_pipeline_identity_vars(
+            fo, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
+            telescope.project_id, redu_type, telescope.obs_goal, tod_type);
         add_netcdf_var(fo, "HWPR", calib.run_hwpr);
-        add_netcdf_var<std::string>(fo, "TELESCOP", "LMT");
-        add_netcdf_var<std::string>(fo, "PIPELINE", "CITLALI");
-        add_netcdf_var<std::string>(fo, "VERSION", CITLALI_GIT_VERSION);
-        add_netcdf_var<std::string>(fo, "KIDS", KIDSCPP_GIT_VERSION);
-        add_netcdf_var<std::string>(fo, "TULA", TULA_GIT_VERSION);
-        add_netcdf_var<std::string>(fo, "PROJID", telescope.project_id);
-        add_netcdf_var<std::string>(fo, "GOAL", redu_type);
-        add_netcdf_var<std::string>(fo, "OBSGOAL", telescope.obs_goal);
-        add_netcdf_var<std::string>(fo, "TYPE", tod_type);
         add_netcdf_var<std::string>(fo, "GROUPING", map_grouping);
         add_netcdf_var<std::string>(fo, "METHOD", map_method);
         add_netcdf_var(fo, "EXPTIME", omb.exposure_time);

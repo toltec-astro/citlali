@@ -6,6 +6,8 @@
 
 #include <netcdf>
 
+#include <citlali/core/utils/netcdf_io.h>
+
 namespace citlali::pipeline {
 
 inline void add_tod_output_type_label(netCDF::NcFile &fo,
@@ -39,6 +41,23 @@ inline void add_observation_identity_vars(netCDF::NcFile &fo, int obsnum,
                                           double source_dec) {
     add_obsnum_var(fo, obsnum);
     add_source_radec_vars(fo, source_ra, source_dec);
+}
+
+inline void add_pipeline_identity_vars(
+    netCDF::NcFile &fo, const std::string &citlali_version,
+    const std::string &kids_version, const std::string &tula_version,
+    const std::string &project_id, const std::string &reduction_goal,
+    const std::string &obs_goal, const std::string &tod_type) {
+    add_netcdf_var<std::string>(fo, "INSTRUME", "TolTEC");
+    add_netcdf_var<std::string>(fo, "TELESCOP", "LMT");
+    add_netcdf_var<std::string>(fo, "PIPELINE", "CITLALI");
+    add_netcdf_var<std::string>(fo, "VERSION", citlali_version);
+    add_netcdf_var<std::string>(fo, "KIDS", kids_version);
+    add_netcdf_var<std::string>(fo, "TULA", tula_version);
+    add_netcdf_var<std::string>(fo, "PROJID", project_id);
+    add_netcdf_var<std::string>(fo, "GOAL", reduction_goal);
+    add_netcdf_var<std::string>(fo, "OBSGOAL", obs_goal);
+    add_netcdf_var<std::string>(fo, "TYPE", tod_type);
 }
 
 inline void add_tod_scan_index_placeholders(
