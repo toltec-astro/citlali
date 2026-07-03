@@ -6533,25 +6533,25 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 i < static_cast<Eigen::Index>(mb->point_source_uncertainty.size()) &&
                 mb->point_source_uncertainty[i].rows() == mb->n_rows &&
                 mb->point_source_uncertainty[i].cols() == mb->n_cols) {
-                fits_io->at(map_index).add_hdu("point_source_flux_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
-                                               mb->signal[i]);
-                fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+                add_map_hdu_with_wcs(
+                    "point_source_flux_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                    mb->signal[i]);
                 citlali::pipeline::add_image_unit_description_keys(
                     *fits_io->at(map_index).hdus.back(), mb->sig_unit,
                     "Point-source flux estimate after filter response normalization");
                 citlali::pipeline::add_point_source_response_norm_key(
                     *fits_io->at(map_index).hdus.back(), 1.0);
 
-                fits_io->at(map_index).add_hdu("point_source_uncertainty_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
-                                               mb->point_source_uncertainty[i]);
-                fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+                add_map_hdu_with_wcs(
+                    "point_source_uncertainty_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                    mb->point_source_uncertainty[i]);
                 citlali::pipeline::add_image_unit_description_keys(
                     *fits_io->at(map_index).hdus.back(), mb->sig_unit,
                     "Point-source 1-sigma uncertainty from jackknife maps");
 
-                fits_io->at(map_index).add_hdu("sig2noise_point_source_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
-                                               mb->sig2noise_point_source[i]);
-                fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+                add_map_hdu_with_wcs(
+                    "sig2noise_point_source_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                    mb->sig2noise_point_source[i]);
                 citlali::pipeline::add_image_unit_type_description_keys(
                     *fits_io->at(map_index).hdus.back(), "N/A", "point_source",
                     "S/N estimator type",
