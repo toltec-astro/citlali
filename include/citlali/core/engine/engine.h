@@ -8561,11 +8561,7 @@ void Engine::create_ptcdiag_file() {
     const Eigen::Index n_scans = telescope.scan_indices.cols();
     std::vector<std::size_t> det_chunks = {1, TULA_SIZET(calib.n_dets)};
 
-    netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type", 1);
-    netCDF::NcVar tod_output_type_var = fo.addVar("tod_output_type", netCDF::ncString, n_tod_output_type_dim);
-    const std::vector<size_t> tod_output_type_index = {0};
-    std::string tod_output_type_name = "ptcdiag";
-    tod_output_type_var.putVar(tod_output_type_index, tod_output_type_name);
+    citlali::pipeline::add_tod_output_type_label(fo, "ptcdiag");
 
     netCDF::NcVar obsnum_v = fo.addVar("obsnum", netCDF::ncInt);
     obsnum_v.putAtt("units", "N/A");
