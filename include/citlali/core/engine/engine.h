@@ -5479,16 +5479,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         citlali::pipeline::add_ptc_second_pass_config_vars(
             fo, ptcproc.second_pass_local);
 
-        // loop through arrays and add number of eigenvalues removed
-        for (Eigen::Index i=0; i<calib.arrays.size(); ++i) {
-            if (ptcproc.run_clean) {
-                add_netcdf_var(fo, "CONFIG.CLEANED.NEIG_"+toltec_io.array_name_map[calib.arrays(i)],
-                                                    ptcproc.cleaner.n_eig_to_cut[calib.arrays(i)].sum());
-            }
-            else {
-                add_netcdf_var(fo, "CONFIG.CLEANED.NEIG_"+toltec_io.array_name_map[calib.arrays(i)], 0);
-            }
-        }
+        citlali::pipeline::add_cleaned_eigen_count_config_vars(
+            fo, ptcproc, calib, toltec_io.array_name_map);
 
         // out-of-focus holography parameters
         if (! telescope.sim_obs) {

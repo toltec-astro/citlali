@@ -195,6 +195,23 @@ void add_adaptive_cleaner_config_vars(
                    selector.log_candidates);
 }
 
+template <class PtcProc, class Calib, class ArrayNameMap>
+void add_cleaned_eigen_count_config_vars(netCDF::NcFile &fo,
+                                         const PtcProc &ptcproc,
+                                         const Calib &calib,
+                                         ArrayNameMap &array_name_map) {
+    for (decltype(calib.arrays.size()) i=0; i<calib.arrays.size(); ++i) {
+        const auto array = calib.arrays(i);
+        const auto key = "CONFIG.CLEANED.NEIG_" + array_name_map[array];
+        if (ptcproc.run_clean) {
+            add_netcdf_var(fo, key, ptcproc.cleaner.n_eig_to_cut[array].sum());
+        }
+        else {
+            add_netcdf_var(fo, key, 0);
+        }
+    }
+}
+
 template <class SecondPassLocal>
 void add_ptc_second_pass_config_vars(netCDF::NcFile &fo,
                                      const SecondPassLocal &second_pass) {
