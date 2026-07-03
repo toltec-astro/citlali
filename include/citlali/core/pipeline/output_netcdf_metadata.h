@@ -220,6 +220,33 @@ void add_array_beam_geometry_vars(netCDF::NcFile &fo, const Arrays &arrays,
     }
 }
 
+template <class Arrays, class FwhmMap, class PositionAngleMap,
+          class ArrayNameMap>
+void add_tod_identity_geometry_vars(
+    netCDF::NcFile &fo, const std::string &citlali_version,
+    const std::string &kids_version, const std::string &tula_version,
+    const std::string &project_id, const std::string &reduction_goal,
+    const std::string &obs_goal, const std::string &tod_type, bool run_hwpr,
+    const std::string &map_grouping, const std::string &map_method,
+    double exposure_time, const std::string &pixel_axes, double tangent_ra,
+    double tangent_dec, double mean_el_deg, double mean_az_deg,
+    double mean_pa_deg, const Arrays &arrays, FwhmMap &array_fwhms,
+    PositionAngleMap &array_pas, ArrayNameMap &array_name_map,
+    double rad_to_deg, double pa_quadrature_offset_rad,
+    const std::string &signal_unit) {
+    add_pipeline_identity_vars(
+        fo, citlali_version, kids_version, tula_version, project_id,
+        reduction_goal, obs_goal, tod_type);
+    add_netcdf_var(fo, "HWPR", run_hwpr);
+    add_tod_map_geometry_vars(
+        fo, map_grouping, map_method, exposure_time, pixel_axes, tangent_ra,
+        tangent_dec, mean_el_deg, mean_az_deg, mean_pa_deg);
+    add_array_beam_geometry_vars(
+        fo, arrays, array_fwhms, array_pas, array_name_map, rad_to_deg,
+        pa_quadrature_offset_rad);
+    add_tod_signal_unit_var(fo, signal_unit);
+}
+
 template <class Arrays, class ShapeParams, class ArrayNameMap>
 void add_jinc_shape_config_vars(netCDF::NcFile &fo, const Arrays &arrays,
                                 ShapeParams &shape_params,

@@ -5371,24 +5371,17 @@ void Engine::add_tod_header(map_buffer_t &mb) {
                 beammap_reference_det);
         }
 
-        citlali::pipeline::add_pipeline_identity_vars(
+        citlali::pipeline::add_tod_identity_geometry_vars(
             fo, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
-            telescope.project_id, redu_type, telescope.obs_goal, tod_type);
-        add_netcdf_var(fo, "HWPR", calib.run_hwpr);
-        citlali::pipeline::add_tod_map_geometry_vars(
-            fo, map_grouping, map_method, omb.exposure_time,
+            telescope.project_id, redu_type, telescope.obs_goal, tod_type,
+            calib.run_hwpr, map_grouping, map_method, omb.exposure_time,
             telescope.pixel_axes, telescope.tel_header["Header.Source.Ra"][0],
             telescope.tel_header["Header.Source.Dec"][0],
-            RAD_TO_DEG*telescope.tel_data["TelElAct"].mean(),
-            RAD_TO_DEG*telescope.tel_data["TelAzAct"].mean(),
-            RAD_TO_DEG*telescope.tel_data["ActParAng"].mean());
-
-        // add beamsizes
-        citlali::pipeline::add_array_beam_geometry_vars(
-            fo, calib.arrays, calib.array_fwhms, calib.array_pas,
-            toltec_io.array_name_map, RAD_TO_DEG, pi/2);
-
-        citlali::pipeline::add_tod_signal_unit_var(fo, omb.sig_unit);
+            RAD_TO_DEG * telescope.tel_data["TelElAct"].mean(),
+            RAD_TO_DEG * telescope.tel_data["TelAzAct"].mean(),
+            RAD_TO_DEG * telescope.tel_data["ActParAng"].mean(),
+            calib.arrays, calib.array_fwhms, calib.array_pas,
+            toltec_io.array_name_map, RAD_TO_DEG, pi / 2, omb.sig_unit);
 
         citlali::pipeline::add_jinc_shape_config_vars_if_needed(
             fo, map_method, calib.arrays, jinc_mm.shape_params,
