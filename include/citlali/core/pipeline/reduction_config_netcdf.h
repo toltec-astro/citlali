@@ -277,6 +277,31 @@ void add_fruit_loops_config_vars(netCDF::NcFile &fo,
         ptcproc.fruit_loops_weight_feedback_high_relative_weight);
 }
 
+template <class PtcProc>
+void add_ptcdiag_compact_config_vars(netCDF::NcFile &fo,
+                                     const PtcProc &ptcproc) {
+    add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.ENABLED",
+                   ptcproc.weight_corr_penalty.enabled);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.ENABLED",
+                   ptcproc.busy_row_suppression.enabled);
+    add_netcdf_var(fo, "CONFIG.CLEANED", ptcproc.run_clean);
+    add_netcdf_var<std::string>(fo, "CONFIG.CLEANED.MODESEL",
+                                ptcproc.cleaner.active_cleaner_label());
+    add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.ENABLED",
+                   ptcproc.cleaner.adaptive_selector.enabled);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.ENABLED",
+                   ptcproc.second_pass_local.enabled);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_SPIKE_SIGMA",
+                   ptcproc.second_pass_local.min_spike_sigma);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.HIGH_SCORE_EVENT_OVERRIDE",
+                   ptcproc.second_pass_local.high_score_event_override);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_CLUSTER_DETECTORS",
+                   ptcproc.second_pass_local.min_cluster_detectors);
+    add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MAX_AUTO_FLAG_CLUSTERS",
+                   ptcproc.second_pass_local.max_auto_flag_clusters_per_network);
+    add_fruit_loops_config_vars(fo, ptcproc);
+}
+
 template <class ReductionLearning>
 void add_reduction_learning_config_vars(
     netCDF::NcFile &fo, const ReductionLearning &reduction_learning,
