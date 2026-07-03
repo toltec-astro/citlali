@@ -282,4 +282,41 @@ void add_mapdiag_map_int_vars(
             values.edge_guard_guardband_npix);
 }
 
+struct MapdiagObservationDoubleValues {
+    const std::vector<double> &obs_weight_sum;
+    const std::vector<double> &obs_weight_frac;
+    const std::vector<double> &obs_core_weight_sum;
+    const std::vector<double> &obs_core_weight_frac;
+};
+
+struct MapdiagObservationIntValues {
+    const std::vector<int> &obs_valid_pixels;
+    const std::vector<int> &obs_core_pixels;
+};
+
+template <class AddDouble, class AddInt>
+void add_mapdiag_observation_contribution_vars(
+    const AddDouble &add_double, const AddInt &add_int,
+    const MapdiagObservationDoubleValues &double_values,
+    const MapdiagObservationIntValues &int_values) {
+    add_double("coadd_obs_weight_sum",
+               "sum of positive observation-level raw weight values aligned onto this map grid",
+               double_values.obs_weight_sum);
+    add_double("coadd_obs_weight_frac",
+               "fractional contribution of each obsnum to coadd_obs_weight_sum for a given map",
+               double_values.obs_weight_frac);
+    add_double("coadd_obs_core_weight_sum",
+               "sum of positive observation-level raw weight values within the final map core support",
+               double_values.obs_core_weight_sum);
+    add_double("coadd_obs_core_weight_frac",
+               "fractional contribution of each obsnum within the final map core support",
+               double_values.obs_core_weight_frac);
+    add_int("coadd_obs_n_valid_pixels",
+            "count of aligned observation pixels with positive raw weight",
+            int_values.obs_valid_pixels);
+    add_int("coadd_obs_n_core_pixels",
+            "count of aligned observation pixels with positive raw weight inside the final map core support",
+            int_values.obs_core_pixels);
+}
+
 }  // namespace citlali::pipeline
