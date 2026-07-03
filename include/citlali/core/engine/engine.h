@@ -6197,7 +6197,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_entry, name, logger, calib.array_fwhms[calib.arrays(i)],
         calib.array_pas[calib.arrays(i)], RAD_TO_DEG, pi/2);
 
-    fits_io->at(i).pfits->pHDU().addKey("BUNIT", mb->sig_unit, "bunit");
+    citlali::pipeline::add_phdu_auxiliary_scalar_keys(
+        fits_entry, mb->sig_unit, telescope.fsmp, fruit_iter);
 
     // add jinc shape params
     if (map_method=="jinc") {
@@ -6214,9 +6215,6 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     const double mean_tau = citlali::pipeline::phdu_mean_tau(
         rtcproc, telescope, calib, i, logger);
     add_double_key("MEAN_TAU", mean_tau, "mean tau (" + name + ")");
-
-    // add sample rate
-    add_double_key("SAMPRATE", telescope.fsmp, "sample rate (Hz)");
 
     // add apt table to header
     if (mb->obsnums.size()==1) {
@@ -6243,9 +6241,6 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 	    add_double_key("OOF_RO", 25., "outer diameter of the antenna (m)");
 	    add_double_key("OOF_RI", 1.65, "inner diameter of the antenna (m)");
     }
-
-    fits_io->at(i).pfits->pHDU().addKey("FRUITLOOPS_ITER", fruit_iter, "Current fruit loops iteration");
-
     // add control/runtime parameters
     logger->debug("adding config params");
     const bool run_any_tod_filter = rtcproc.run_tod_filter || rtcproc.run_tod_iir_highpass;

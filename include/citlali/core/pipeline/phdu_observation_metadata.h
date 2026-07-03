@@ -113,4 +113,16 @@ void add_phdu_beam_geometry_keys(
     }
 }
 
+template <class FitsEntry>
+void add_phdu_auxiliary_scalar_keys(FitsEntry &fits_entry,
+                                    const std::string &signal_unit,
+                                    double sample_rate_hz,
+                                    int fruit_loop_iter) {
+    auto &hdu = fits_entry.pfits->pHDU();
+    hdu.addKey("BUNIT", signal_unit, "bunit");
+    hdu.addKey("SAMPRATE", sample_rate_hz, "sample rate (Hz)");
+    hdu.addKey("FRUITLOOPS_ITER", fruit_loop_iter,
+               "Current fruit loops iteration");
+}
+
 }  // namespace citlali::pipeline
