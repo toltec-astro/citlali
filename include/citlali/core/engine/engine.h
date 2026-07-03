@@ -103,6 +103,7 @@
 #include <citlali/core/pipeline/phdu_rtc_config.h>
 #include <citlali/core/pipeline/phdu_telescope_values.h>
 #include <citlali/core/pipeline/ptcdiag_netcdf.h>
+#include <citlali/core/pipeline/reduction_config_netcdf.h>
 #include <citlali/core/pipeline/rtcdiag_netcdf.h>
 #include <citlali/core/pipeline/string_join.h>
 
