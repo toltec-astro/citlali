@@ -16,6 +16,12 @@ void add_image_description_key(Hdu &hdu, const std::string &description) {
 }
 
 template <class Hdu>
+void add_image_type_key(Hdu &hdu, const std::string &type,
+                        const std::string &comment) {
+    hdu.addKey("TYPE", type, comment);
+}
+
+template <class Hdu>
 void add_image_unit_description_keys(Hdu &hdu, const std::string &unit,
                                      const std::string &description) {
     add_image_unit_keys(hdu, unit);
