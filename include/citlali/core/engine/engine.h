@@ -6663,64 +6663,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.VERBOSE", verbose_mode, "Reduced in verbose mode");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.POLARIZED", rtcproc.run_polarization, "Polarized Obs");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKED", rtcproc.run_despike, "Despiked");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.ENABLED",
-                                        rtcproc.despiker.local_residual.enabled,
-                                        "Enable local-residual RTC despike pass");
-    add_double_key("CONFIG.DESPIKE.LOCAL.WINDOW_SEC",
-                   rtcproc.despiker.local_residual.window_sec,
-                   "Local-residual despike smoothing window");
-    add_double_key("CONFIG.DESPIKE.LOCAL.SIGMA_SCALE",
-                   rtcproc.despiker.local_residual.sigma_scale,
-                   "Local-residual despike raw threshold scale");
-    add_double_key("CONFIG.DESPIKE.LOCAL.DELTA_SIGMA_SCALE",
-                   rtcproc.despiker.local_residual.delta_sigma_scale,
-                   "Local-residual despike delta threshold scale");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.EXPAND_WITH_FILTER",
-                                        rtcproc.despiker.local_residual.expand_with_filter,
-                                        "Expand local-residual flags by TOD filter window");
-    add_double_key("CONFIG.DESPIKE.LOCAL.EVENT_PADDING_SEC",
-                   rtcproc.despiker.local_residual.event_padding_sec,
-                   "Padding around accepted compact local-residual events");
-    add_double_key("CONFIG.DESPIKE.LOCAL.MAX_ADDED_FLAGGED_FRAC",
-                   rtcproc.despiker.local_residual.max_added_flagged_fraction,
-                   "Reject local-residual proposals above this added flagged fraction");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.RAW_GATE.ENABLED",
-                                        rtcproc.despiker.local_residual.compact_raw_gate.enabled,
-                                        "Enable compact morphology gate for local-residual raw candidates");
-    add_double_key("CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_REL_SIGMA_SCALE",
-                   rtcproc.despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale,
-                   "Candidate threshold scale relative to the accepted local-residual raw threshold");
-    add_double_key("CONFIG.DESPIKE.LOCAL.RAW_GATE.CAND_SIGMA_SCALE",
-                   rtcproc.despiker.local_residual.compact_raw_gate.candidate_rel_sigma_scale *
-                       rtcproc.despiker.local_residual.sigma_scale,
-                   "Effective candidate threshold scale in units of min_spike_sigma for compact local-residual raw gate");
-    add_double_key("CONFIG.DESPIKE.LOCAL.RAW_GATE.WINDOW_SEC",
-                   rtcproc.despiker.local_residual.compact_raw_gate.window_sec,
-                   "Window used to score compactness of local-residual raw candidates");
-    add_double_key("CONFIG.DESPIKE.LOCAL.RAW_GATE.HALF_PEAK_FRAC",
-                   rtcproc.despiker.local_residual.compact_raw_gate.half_peak_frac,
-                   "Half-peak fraction used to measure local-residual raw candidate width");
-    add_double_key("CONFIG.DESPIKE.LOCAL.RAW_GATE.MAX_WIDTH_SEC",
-                   rtcproc.despiker.local_residual.compact_raw_gate.max_width_sec,
-                   "Maximum width allowed for compact local-residual raw candidates");
-    add_double_key("CONFIG.DESPIKE.LOCAL.RAW_GATE.MAX_STEP_SHIFT_Z",
-                   rtcproc.despiker.local_residual.compact_raw_gate.max_step_shift_z,
-                   "Maximum allowed pre/post baseline shift for compact local-residual raw candidates");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DESPIKE.LOCAL.DELTA_GATE.ENABLED",
-                                        rtcproc.despiker.local_residual.compact_delta_gate.enabled,
-                                        "Enable compact morphology gate for local-residual delta candidates");
-    add_double_key("CONFIG.DESPIKE.LOCAL.DELTA_GATE.WINDOW_SEC",
-                   rtcproc.despiker.local_residual.compact_delta_gate.window_sec,
-                   "Window used to score compactness of local-residual delta candidates");
-    add_double_key("CONFIG.DESPIKE.LOCAL.DELTA_GATE.HALF_PEAK_FRAC",
-                   rtcproc.despiker.local_residual.compact_delta_gate.half_peak_frac,
-                   "Half-peak fraction used to measure local-residual delta candidate width");
-    add_double_key("CONFIG.DESPIKE.LOCAL.DELTA_GATE.MAX_WIDTH_SEC",
-                   rtcproc.despiker.local_residual.compact_delta_gate.max_width_sec,
-                   "Maximum width allowed for compact local-residual delta candidates");
-    add_double_key("CONFIG.DESPIKE.LOCAL.DELTA_GATE.MAX_STEP_SHIFT_Z",
-                   rtcproc.despiker.local_residual.compact_delta_gate.max_step_shift_z,
-                   "Maximum allowed pre/post baseline shift for compact local-residual delta candidates");
+    citlali::pipeline::add_phdu_rtc_local_despike_config(
+        fits_entry, name, logger, rtcproc.despiker.local_residual);
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTERED", run_any_tod_filter, "TOD Filtered");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODNOTCH", rtcproc.run_tod_notch, "TOD notch enabled");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODIIRHP", rtcproc.run_tod_iir_highpass, "TOD IIR highpass enabled");
