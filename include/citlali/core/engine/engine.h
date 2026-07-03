@@ -6510,16 +6510,17 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             else {
                 sig2noise = mb->signal[i].array()*sqrt(mb->weight[i].array());
             }
-            fits_io->at(map_index).add_hdu("sig2noise_" + map_name + rtcproc.polarization.stokes_params[stokes_index], sig2noise);
-            fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+            add_map_hdu_with_wcs(
+                "sig2noise_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                sig2noise);
             citlali::pipeline::add_image_unit_type_description_keys(
                 *fits_io->at(map_index).hdus.back(), "N/A", "pixel",
                 "S/N estimator type",
                 "Legacy pixel S/N: signal times sqrt(weight)");
 
-            fits_io->at(map_index).add_hdu("sig2noise_pixel_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
-                                           sig2noise);
-            fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+            add_map_hdu_with_wcs(
+                "sig2noise_pixel_" + map_name + rtcproc.polarization.stokes_params[stokes_index],
+                sig2noise);
             citlali::pipeline::add_image_unit_type_description_keys(
                 *fits_io->at(map_index).hdus.back(), "N/A", "pixel",
                 "S/N estimator type",
