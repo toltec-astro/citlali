@@ -49,6 +49,14 @@ inline TodFileDims add_tod_file_dims(netCDF::NcFile &fo,
     return dims;
 }
 
+template <class ScanIndices>
+std::vector<std::size_t> tod_data_chunk_sizes(const ScanIndices &scan_indices,
+                                              std::size_t n_dets) {
+    const auto mean_scan_size =
+        ((scan_indices.row(3) - scan_indices.row(2)).array() + 1).mean();
+    return {static_cast<std::size_t>(mean_scan_size), n_dets};
+}
+
 inline void add_tod_output_type_label(netCDF::NcFile &fo,
                                       const std::string &label) {
     netCDF::NcDim dim = fo.addDim("n_tod_output_type", 1);
