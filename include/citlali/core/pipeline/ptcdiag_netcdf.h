@@ -28,6 +28,13 @@ inline void add_ptc_eigenvalue_dim(netCDF::NcFile &fo,
     fo.addDim("n_eigs", n_eigenvalues);
 }
 
+inline void add_ptc_weights_var(netCDF::NcFile &fo,
+                                const std::vector<netCDF::NcDim> &dims,
+                                const std::string &signal_unit) {
+    netCDF::NcVar weights_v = fo.addVar("weights", netCDF::ncDouble, dims);
+    weights_v.putAtt("units", "(" + signal_unit + ")^-2");
+}
+
 inline std::vector<int> diagnostic_output_scan_indices(Eigen::Index n_scans,
                                                        int fill_value) {
     std::vector<int> output_scan_index(static_cast<std::size_t>(n_scans),

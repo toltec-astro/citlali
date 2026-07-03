@@ -5571,8 +5571,7 @@ void Engine::create_tod_files() {
     // add weights
     if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
         std::vector<netCDF::NcDim> weight_dims = {n_scans_dim, n_dets_dim};
-        netCDF::NcVar weights_v = fo.addVar("weights",netCDF::ncDouble, weight_dims);
-        weights_v.putAtt("units","("+omb.sig_unit+")^-2");
+        citlali::pipeline::add_ptc_weights_var(fo, weight_dims, omb.sig_unit);
         const int ptc_stream_fill_int = citlali::pipeline::ptcdiag_fill_int();
         const double ptc_stream_fill_double =
             citlali::pipeline::ptcdiag_fill_double();
