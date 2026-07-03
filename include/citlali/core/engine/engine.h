@@ -6549,64 +6549,18 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     citlali::pipeline::add_phdu_cleaner_config(
         fits_entry, name, logger, ptcproc, n_eig_removed);
 
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS", ptcproc.run_fruit_loops, "Fruit loops");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.PATH", ptcproc.fruit_loops_path, "Fruit loops path");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.TYPE", ptcproc.fruit_loops_type, "Fruit loops type");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.SRCMODE",
-                                        ptcproc.fruit_loops_source_center_mode,
-                                        "Fruit loops source center mode");
-    add_double_key("CONFIG.FRUITLOOPS.HDRMAXR",
-                   ptcproc.fruit_loops_header_center_max_radius_arcsec,
-                   "Fruit loops header center max radius");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.HDRCOV",
-                                        ptcproc.fruit_loops_header_center_require_coverage,
-                                        "Require coverage at header center");
-    add_double_key("CONFIG.FRUITLOOPS.S2N", ptcproc.fruit_loops_sig2noise, "Fruit loops S/N");
-    add_double_key("CONFIG.FRUITLOOPS.PEAKFRAC", ptcproc.fruit_loops_peak_fraction_limit,
-                   "Fruit loops peak fraction");
-    add_double_key("CONFIG.FRUITLOOPS.LOCALSNR", ptcproc.fruit_loops_local_snr_floor,
-                   "Fruit loops local sigma S/N floor");
-    add_double_key("CONFIG.FRUITLOOPS.LOCALSIG_INNER", ptcproc.fruit_loops_local_sigma_inner_radius_arcsec,
-                   "Fruit loops local sigma inner annulus");
-    add_double_key("CONFIG.FRUITLOOPS.LOCALSIG_OUTER", ptcproc.fruit_loops_local_sigma_outer_radius_arcsec,
-                   "Fruit loops local sigma outer annulus");
-    add_double_key("CONFIG.FRUITLOOPS.LOCALSIG_EDGE", ptcproc.fruit_loops_local_sigma_edge_guard_arcsec,
-                   "Fruit loops local sigma edge guard");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.LOCALSIG_MINPIX",
-                                        ptcproc.fruit_loops_local_sigma_min_pixels,
-                                        "Fruit loops local sigma minimum pixels");
-    add_double_key("CONFIG.FRUITLOOPS.ADAPT_SUPPORT_RAD",
-                   ptcproc.fruit_loops_adaptive_support_radius_arcsec,
-                   "Fruit loops adaptive support radius");
-    add_double_key("CONFIG.FRUITLOOPS.ADAPT_SUPPORT_FWHM",
-                   ptcproc.fruit_loops_adaptive_support_radius_fwhm,
-                   "Fruit loops adaptive support FWHM factor");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.WFB",
-                                        ptcproc.fruit_loops_weight_feedback_enabled,
-                                        "Fruit loops weight feedback");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.WFBREF",
-                                        ptcproc.fruit_loops_weight_feedback_reference,
-                                        "Fruit loops weight feedback reference");
-    add_double_key("CONFIG.FRUITLOOPS.WFBLOW",
-                   ptcproc.fruit_loops_weight_feedback_low_relative_weight,
-                   "Fruit loops weight feedback low relative weight");
-    add_double_key("CONFIG.FRUITLOOPS.WFBHIGH",
-                   ptcproc.fruit_loops_weight_feedback_high_relative_weight,
-                   "Fruit loops weight feedback high relative weight");
-    {
-        double flux_limit = 0.0;
-        if (ptcproc.run_fruit_loops) {
-            if (ptcproc.fruit_loops_flux.size() == calib.arrays.size()) {
-                flux_limit = ptcproc.fruit_loops_flux(i);
-            }
-            else if (calib.arrays(i) < ptcproc.fruit_loops_flux.size()) {
-                flux_limit = ptcproc.fruit_loops_flux(calib.arrays(i));
-            }
+    double fruit_loops_flux_limit = 0.0;
+    if (ptcproc.run_fruit_loops) {
+        if (ptcproc.fruit_loops_flux.size() == calib.arrays.size()) {
+            fruit_loops_flux_limit = ptcproc.fruit_loops_flux(i);
         }
-        add_double_key("CONFIG.FRUITLOOPS.FLUX", flux_limit,
-                       "Fruit loops flux (" + mb->sig_unit + ")");
+        else if (calib.arrays(i) < ptcproc.fruit_loops_flux.size()) {
+            fruit_loops_flux_limit = ptcproc.fruit_loops_flux(calib.arrays(i));
+        }
     }
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters, "Fruit loops iterations");
+    citlali::pipeline::add_phdu_fruit_loops_config(
+        fits_entry, name, logger, ptcproc, fruit_loops_flux_limit,
+        mb->sig_unit);
 
     if (redu_type == "pointing") {
         fits_io->at(i).pfits->pHDU().addKey("CONFIG.POINTING.STRATEGY",
