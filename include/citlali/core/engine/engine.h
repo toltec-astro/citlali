@@ -6562,21 +6562,11 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         mb->sig_unit);
 
     if (redu_type == "pointing") {
-        fits_io->at(i).pfits->pHDU().addKey("CONFIG.POINTING.STRATEGY",
-                                            pointing_source_strategy,
-                                            "Pointing source strategy");
-        fits_io->at(i).pfits->pHDU().addKey("CONFIG.POINTING.FITGAUSS",
-                                            pointing_fit_gaussian_enabled,
-                                            "Pointing Gaussian fit enabled");
-        fits_io->at(i).pfits->pHDU().addKey("CONFIG.POINTING.SRCMODE",
-                                            pointing_fruitloops_center_mode,
-                                            "Pointing fruit loops source mode");
-        add_double_key("CONFIG.POINTING.HDRMAXR",
-                       pointing_header_center_max_radius_arcsec,
-                       "Pointing header center max radius");
-        fits_io->at(i).pfits->pHDU().addKey("CONFIG.POINTING.HDRCOV",
-                                            pointing_header_center_require_coverage,
-                                            "Pointing header coverage guard");
+        citlali::pipeline::add_phdu_pointing_config(
+            fits_entry, name, logger, pointing_source_strategy,
+            pointing_fit_gaussian_enabled, pointing_fruitloops_center_mode,
+            pointing_header_center_max_radius_arcsec,
+            pointing_header_center_require_coverage);
     }
 
     // add telescope file header information

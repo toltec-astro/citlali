@@ -347,6 +347,38 @@ void add_phdu_fruit_loops_config(FitsEntry &fits_entry,
                "Fruit loops iterations");
 }
 
+template <class FitsEntry, class Logger>
+void add_phdu_pointing_config(
+    FitsEntry &fits_entry, const std::string &array_name,
+    const Logger &logger, const std::string &pointing_source_strategy,
+    bool pointing_fit_gaussian_enabled,
+    const std::string &pointing_fruitloops_center_mode,
+    double pointing_header_center_max_radius_arcsec,
+    bool pointing_header_center_require_coverage) {
+    auto &hdu = fits_entry.pfits->pHDU();
+    auto add_double_key = [&](const std::string &key, double value,
+                              const std::string &comment,
+                              double fallback = 0.0) {
+        add_phdu_double_key(fits_entry, array_name, logger, key, value,
+                            comment, fallback);
+    };
+
+    hdu.addKey("CONFIG.POINTING.STRATEGY", pointing_source_strategy,
+               "Pointing source strategy");
+    hdu.addKey("CONFIG.POINTING.FITGAUSS",
+               pointing_fit_gaussian_enabled,
+               "Pointing Gaussian fit enabled");
+    hdu.addKey("CONFIG.POINTING.SRCMODE",
+               pointing_fruitloops_center_mode,
+               "Pointing fruit loops source mode");
+    add_double_key("CONFIG.POINTING.HDRMAXR",
+                   pointing_header_center_max_radius_arcsec,
+                   "Pointing header center max radius");
+    hdu.addKey("CONFIG.POINTING.HDRCOV",
+               pointing_header_center_require_coverage,
+               "Pointing header coverage guard");
+}
+
 template <class FitsEntry, class ReductionLearning, class Logger>
 void add_phdu_reduction_learning_config(
     FitsEntry &fits_entry, const std::string &array_name,
