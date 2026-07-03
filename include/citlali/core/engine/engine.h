@@ -79,6 +79,7 @@
 #include <citlali/core/timestream/rtc/rtcproc.h>
 #include <citlali/core/timestream/ptc/ptcproc.h>
 
+#include <citlali/core/mapmaking/edge_guard_state.h>
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/mapmaking/naive_mm.h>
 #include <citlali/core/mapmaking/jinc_mm.h>
@@ -7971,23 +7972,7 @@ void Engine::write_stats() {
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::run_wiener_filter(map_buffer_t &mb) {
     const auto n_maps_local = static_cast<std::size_t>(mb.signal.size());
-    mb.edge_guard_applied.assign(n_maps_local, 0);
-    mb.edge_guard_support_radius_pix.assign(n_maps_local, 0);
-    mb.edge_guard_science_npix.assign(n_maps_local, 0);
-    mb.edge_guard_support_npix.assign(n_maps_local, 0);
-    mb.edge_guard_guardband_npix.assign(n_maps_local, 0);
-    mb.edge_guard_weight_threshold.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-    mb.edge_guard_hits_threshold.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-    mb.edge_guard_background_level.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-    mb.edge_guard_science_frac.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-    mb.edge_guard_support_frac.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-    mb.edge_guard_guardband_rms_pre.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-    mb.edge_guard_guardband_rms_post.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-    mb.edge_guard_exterior_rms_pre.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-    mb.edge_guard_exterior_rms_post.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-    mb.edge_guard_exterior_max_abs_pre.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-    mb.edge_guard_exterior_max_abs_post.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-    mb.edge_guard_window.resize(n_maps_local);
+    mapmaking::reset_edge_guard_storage(mb, n_maps_local);
 
     // pointer to map buffer
     mapmaking::MapBuffer* pmb = &mb;

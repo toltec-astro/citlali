@@ -21,6 +21,7 @@
 #include <citlali/core/utils/gauss_models.h>
 #include <citlali/core/utils/fitting.h>
 #include <citlali/core/utils/toltec_io.h>
+#include <citlali/core/mapmaking/edge_guard_state.h>
 
 namespace mapmaking {
 
@@ -1140,47 +1141,10 @@ void WienerFilter::destripe(double threshold_factor) {
 template<class MB>
 void WienerFilter::filter_maps(MB &mb, const int map_index) {
     const bool use_convolve = (filter_type=="convolve") || (filter_type=="wiener_filter" && run_lowpass);
-    if (mb.edge_guard_applied.size() != static_cast<std::size_t>(mb.signal.size())) {
-        const auto n_maps_local = static_cast<std::size_t>(mb.signal.size());
-        mb.edge_guard_applied.assign(n_maps_local, 0);
-        mb.edge_guard_support_radius_pix.assign(n_maps_local, 0);
-        mb.edge_guard_science_npix.assign(n_maps_local, 0);
-        mb.edge_guard_support_npix.assign(n_maps_local, 0);
-        mb.edge_guard_guardband_npix.assign(n_maps_local, 0);
-        mb.edge_guard_weight_threshold.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-        mb.edge_guard_hits_threshold.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-        mb.edge_guard_background_level.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-        mb.edge_guard_science_frac.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-        mb.edge_guard_support_frac.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-        mb.edge_guard_guardband_rms_pre.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-        mb.edge_guard_guardband_rms_post.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-        mb.edge_guard_exterior_rms_pre.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-        mb.edge_guard_exterior_rms_post.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-        mb.edge_guard_exterior_max_abs_pre.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-        mb.edge_guard_exterior_max_abs_post.assign(n_maps_local, std::numeric_limits<double>::quiet_NaN());
-        mb.edge_guard_window.resize(n_maps_local);
-    }
+    mapmaking::ensure_edge_guard_storage(mb);
 
     const auto m_idx = static_cast<std::size_t>(map_index);
-    mb.edge_guard_applied[m_idx] = 0;
-    mb.edge_guard_support_radius_pix[m_idx] = 0;
-    mb.edge_guard_science_npix[m_idx] = 0;
-    mb.edge_guard_support_npix[m_idx] = 0;
-    mb.edge_guard_guardband_npix[m_idx] = 0;
-    mb.edge_guard_weight_threshold[m_idx] = std::numeric_limits<double>::quiet_NaN();
-    mb.edge_guard_hits_threshold[m_idx] = std::numeric_limits<double>::quiet_NaN();
-    mb.edge_guard_background_level[m_idx] = std::numeric_limits<double>::quiet_NaN();
-    mb.edge_guard_science_frac[m_idx] = std::numeric_limits<double>::quiet_NaN();
-    mb.edge_guard_support_frac[m_idx] = std::numeric_limits<double>::quiet_NaN();
-    mb.edge_guard_guardband_rms_pre[m_idx] = std::numeric_limits<double>::quiet_NaN();
-    mb.edge_guard_guardband_rms_post[m_idx] = std::numeric_limits<double>::quiet_NaN();
-    mb.edge_guard_exterior_rms_pre[m_idx] = std::numeric_limits<double>::quiet_NaN();
-    mb.edge_guard_exterior_rms_post[m_idx] = std::numeric_limits<double>::quiet_NaN();
-    mb.edge_guard_exterior_max_abs_pre[m_idx] = std::numeric_limits<double>::quiet_NaN();
-    mb.edge_guard_exterior_max_abs_post[m_idx] = std::numeric_limits<double>::quiet_NaN();
-    if (m_idx < mb.edge_guard_window.size()) {
-        mb.edge_guard_window[m_idx].resize(0, 0);
-    }
+    mapmaking::reset_edge_guard_map(mb, m_idx);
 
     Eigen::MatrixXd guarded_weight = mb.weight[map_index];
     if (edge_guard_enabled) {
