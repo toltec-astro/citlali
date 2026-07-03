@@ -5923,21 +5923,9 @@ void Engine::create_tod_files() {
         netCDF::NcDim n_eigs_dim = fo.addDim("n_eigs",ptcproc.cleaner.n_calc);
     }
 
-    // add obsnum
-    netCDF::NcVar obsnum_v = fo.addVar("obsnum",netCDF::ncInt);
-    obsnum_v.putAtt("units","N/A");
-    int obsnum_int = std::stoi(obsnum);
-    obsnum_v.putVar(&obsnum_int);
-
-    // add source ra
-    netCDF::NcVar source_ra_v = fo.addVar("SourceRa",netCDF::ncDouble);
-    source_ra_v.putAtt("units","rad");
-    source_ra_v.putVar(&telescope.tel_header["Header.Source.Ra"](0));
-
-    // add source dec
-    netCDF::NcVar source_dec_v = fo.addVar("SourceDec",netCDF::ncDouble);
-    source_dec_v.putAtt("units","rad");
-    source_dec_v.putVar(&telescope.tel_header["Header.Source.Dec"](0));
+    citlali::pipeline::add_observation_identity_vars(
+        fo, std::stoi(obsnum), telescope.tel_header["Header.Source.Ra"](0),
+        telescope.tel_header["Header.Source.Dec"](0));
 
     if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
         // Keep the RTC line-audit tuning alongside the RTC TOD so offline audits
