@@ -35,4 +35,22 @@ inline void write_chunk_identity_summary(std::ostream &stream,
     stream << "-TOD chunk type: " << chunk_type << "\n";
 }
 
+inline void write_map_identity_summary(std::ostream &stream,
+                                       const std::string &reduction_type,
+                                       const std::string &map_type,
+                                       const std::string &map_grouping,
+                                       long long n_rows, long long n_cols,
+                                       long long n_maps,
+                                       const std::string &signal_unit) {
+    stream << "-Reduction type: " << reduction_type << "\n";
+    stream << "-Map type: " << map_type << "\n";
+    stream << "-Map grouping: " << map_grouping << "\n";
+    stream << "-Rows: " << n_rows << "\n";
+    stream << "-Cols: " << n_cols << "\n";
+    stream << "-Number of maps: " << n_maps << "\n";
+    stream << "-Signal map unit: " << signal_unit << "\n";
+    stream << "-Weight map unit: "
+           << "1/(" + signal_unit + ")^2" << "\n";
+}
+
 }  // namespace citlali::pipeline

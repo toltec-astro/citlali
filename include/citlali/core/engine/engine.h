@@ -5727,14 +5727,9 @@ void Engine::write_map_summary(map_buffer_t &mb) {
     citlali::pipeline::write_file_time_summary(
         f, engine_utils::current_date_time());
 
-    f << "-Reduction type: " << redu_type << "\n";
-    f << "-Map type: " << tod_type << "\n";
-    f << "-Map grouping: " << map_grouping << "\n";
-    f << "-Rows: " << mb.n_rows << "\n";
-    f << "-Cols: " << mb.n_cols << "\n";
-    f << "-Number of maps: " << n_maps << "\n";
-    f << "-Signal map unit: " << mb.sig_unit << "\n";
-    f << "-Weight map unit: " << "1/(" + mb.sig_unit + ")^2" << "\n";
+    citlali::pipeline::write_map_identity_summary(
+        f, redu_type, tod_type, map_grouping, mb.n_rows, mb.n_cols, n_maps,
+        mb.sig_unit);
     f << "-Kernel maps generated: " << !mb.kernel.empty() << "\n";
     f << "-Coverage maps generated: " << !mb.coverage.empty() << "\n";
     f << "-Noise maps generated: " << !mb.noise.empty() << "\n";
