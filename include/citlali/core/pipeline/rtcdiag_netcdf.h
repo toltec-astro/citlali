@@ -329,6 +329,14 @@ void add_rtc_line_audit_config_vars(netCDF::NcFile &fo,
                    line_audit.detector_notch_context_samples);
 }
 
+template <class LineAudit>
+void add_rtc_line_audit_config_vars_if_absent(
+    netCDF::NcFile &fo, const LineAudit &line_audit) {
+    if (fo.getVar("CONFIG.RTC.LINE_AUDIT.ENABLED").isNull()) {
+        add_rtc_line_audit_config_vars(fo, line_audit);
+    }
+}
+
 inline double rtcdiag_percentile_sorted(
     const std::vector<double> &sorted_values, double pct) {
     if (sorted_values.empty()) {

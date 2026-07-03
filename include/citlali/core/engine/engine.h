@@ -5449,13 +5449,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTLOW", rtcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTHIGH", rtcproc.upper_inv_var_factor);
         citlali::pipeline::add_rtc_event_mask_config_vars(fo, rtcproc);
-        // The RTC TOD now records line-audit provenance at file creation time.
-        // When raw obs output is enabled, add_tod_header() reopens the same file;
-        // skip re-adding those vars to avoid NetCDF duplicate-name failures.
-        if (fo.getVar("CONFIG.RTC.LINE_AUDIT.ENABLED").isNull()) {
-            citlali::pipeline::add_rtc_line_audit_config_vars(
-                fo, rtcproc.line_audit);
-        }
+        citlali::pipeline::add_rtc_line_audit_config_vars_if_absent(
+            fo, rtcproc.line_audit);
         citlali::pipeline::add_ptc_weight_cutoff_config_vars(fo, ptcproc);
         citlali::pipeline::add_weight_corr_penalty_config_vars(
             fo, ptcproc.weight_corr_penalty);
