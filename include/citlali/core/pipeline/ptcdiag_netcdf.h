@@ -247,7 +247,8 @@ inline void add_ptcdiag_second_pass_added_flag(
     added_flag_v.putAtt(
         "comment",
         "0=not added by PTC second-pass residual deglitching, 1=newly flagged by that pass");
-    added_flag_v.setChunking(chunk_mode, chunk_sizes);
+    auto chunks = chunk_sizes;
+    added_flag_v.setChunking(chunk_mode, chunks);
 }
 
 template <class Calib>
