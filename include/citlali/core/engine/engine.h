@@ -5562,7 +5562,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         citlali::pipeline::add_fruit_loop_flux_config_vars(
             fo, ptcproc, calib, toltec_io.array_name_map);
 
-        add_netcdf_var(fo, "CONFIG.FRUITLOOPS.MAXITER", ptcproc.fruit_loops_iters);
+        citlali::pipeline::add_fruit_loop_iteration_config_vars(fo, ptcproc);
 
         fo.close();
     }

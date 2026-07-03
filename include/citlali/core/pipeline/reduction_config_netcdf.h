@@ -299,6 +299,13 @@ void add_fruit_loop_flux_config_vars(netCDF::NcFile &fo,
 }
 
 template <class PtcProc>
+void add_fruit_loop_iteration_config_vars(netCDF::NcFile &fo,
+                                          const PtcProc &ptcproc) {
+    add_netcdf_var(fo, "CONFIG.FRUITLOOPS.MAXITER",
+                   ptcproc.fruit_loops_iters);
+}
+
+template <class PtcProc>
 void add_ptcdiag_compact_config_vars(netCDF::NcFile &fo,
                                      const PtcProc &ptcproc) {
     add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.ENABLED",
