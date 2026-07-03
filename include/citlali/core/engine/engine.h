@@ -6653,10 +6653,8 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
         dims.push_back(pds_2d_row_dim);
         dims.push_back(pds_2d_col_dim);
 
-        citlali::pipeline::add_double_1d_var(
-            fo, name + "_psd", psd_dim, mb->psds[i]);
-        citlali::pipeline::add_double_1d_var(
-            fo, name + "_psd_freq", psd_dim, mb->psd_freqs[i]);
+        citlali::pipeline::add_psd_vector_pair(
+            fo, name, psd_dim, mb->psds[i], mb->psd_freqs[i]);
 
         // transpose 2d psd and freq
         Eigen::MatrixXd psd_2d_transposed = mb->psd_2ds[i].transpose();
