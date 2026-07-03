@@ -5421,16 +5421,11 @@ void Engine::add_tod_header(map_buffer_t &mb) {
                 fo, calib, toltec_io.array_name_map);
         }
 
-        // add sample rate
-        add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
-
-        // add apt table
-        add_netcdf_var<std::string>(
-            fo, "APT",
+        citlali::pipeline::add_tod_auxiliary_metadata_vars(
+            fo, telescope.fsmp,
             citlali::pipeline::apt_table_header_name(
-                calib.apt_filepath, logger));
-
-        add_netcdf_var(fo, "FRUITLOOPS_ITER", fruit_iter);
+                calib.apt_filepath, logger),
+            fruit_iter);
 
         // add control/runtime parameters
         add_netcdf_var(fo, "CONFIG.VERBOSE", verbose_mode);
