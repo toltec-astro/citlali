@@ -205,6 +205,21 @@ void add_phdu_tod_edge_guard_config(FitsEntry &fits_entry,
                "TOD loaded outer context samples");
 }
 
+template <class FitsEntry, class RtcProc>
+void add_phdu_tod_processing_config(FitsEntry &fits_entry,
+                                    const RtcProc &rtcproc) {
+    auto &hdu = fits_entry.pfits->pHDU();
+    hdu.addKey("CONFIG.DOWNSAMPLED", rtcproc.run_downsample,
+               "Downsampled");
+    hdu.addKey("CONFIG.CALIBRATED", rtcproc.run_calibrate,
+               "Calibrated");
+    hdu.addKey("CONFIG.EXTINCTION", rtcproc.run_extinction,
+               "Extinction corrected");
+    hdu.addKey("CONFIG.EXTINCTION.EXTMODEL",
+               rtcproc.calibration.extinction_model,
+               "Extinction model");
+}
+
 template <class FitsEntry, class WeightCorrPenalty, class Logger>
 void add_phdu_weight_corr_penalty_config(
     FitsEntry &fits_entry, const std::string &array_name,

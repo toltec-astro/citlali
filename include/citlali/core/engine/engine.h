@@ -6249,10 +6249,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_entry, name, logger, rtcproc, run_any_tod_filter);
     citlali::pipeline::add_phdu_tod_edge_guard_config(
         fits_entry, rtcproc.filter_edge_guard, telescope.outer_scans_chunk);
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.DOWNSAMPLED", rtcproc.run_downsample, "Downsampled");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.CALIBRATED", rtcproc.run_calibrate, "Calibrated");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION", rtcproc.run_extinction, "Extinction corrected");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.EXTINCTION.EXTMODEL", rtcproc.calibration.extinction_model, "Extinction model");
+    citlali::pipeline::add_phdu_tod_processing_config(fits_entry, rtcproc);
     citlali::pipeline::add_phdu_weight_selection_config(
         fits_entry, name, logger, ptcproc, rtcproc);
     citlali::pipeline::add_phdu_rtc_event_mask_config(
