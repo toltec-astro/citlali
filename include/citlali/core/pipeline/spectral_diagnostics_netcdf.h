@@ -30,4 +30,13 @@ void add_psd_vector_pair(netCDF::NcFile &fo, const std::string &base_name,
     add_double_1d_var(fo, base_name + "_psd_freq", dim, frequency);
 }
 
+template <class SpectrumImage, class FrequencyImage>
+void add_psd_image_pair(netCDF::NcFile &fo, const std::string &base_name,
+                        const std::vector<netCDF::NcDim> &dims,
+                        const SpectrumImage &spectrum,
+                        const FrequencyImage &frequency) {
+    add_double_2d_var(fo, base_name + "_psd_2d", dims, spectrum);
+    add_double_2d_var(fo, base_name + "_psd_2d_freq", dims, frequency);
+}
+
 }  // namespace citlali::pipeline
