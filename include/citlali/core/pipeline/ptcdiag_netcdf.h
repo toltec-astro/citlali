@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cstddef>
 #include <cmath>
 #include <limits>
@@ -249,6 +250,16 @@ inline void add_ptcdiag_second_pass_added_flag(
         "0=not added by PTC second-pass residual deglitching, 1=newly flagged by that pass");
     auto chunks = chunk_sizes;
     added_flag_v.setChunking(chunk_mode, chunks);
+}
+
+inline Eigen::VectorXd ptcdiag_padded_eigenvalues(
+    const Eigen::VectorXd &evals, Eigen::Index n_calc, double fill_value) {
+    Eigen::VectorXd values = Eigen::VectorXd::Constant(n_calc, fill_value);
+    const Eigen::Index n_copy = std::min<Eigen::Index>(evals.size(), n_calc);
+    if (n_copy > 0) {
+        values.head(n_copy) = evals.head(n_copy);
+    }
+    return values;
 }
 
 template <class Calib>

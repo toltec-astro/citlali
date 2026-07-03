@@ -7898,12 +7898,10 @@ void Engine::write_stats() {
 
                     // loop through eigenvalues in current group
                     for (const auto &evals: val[i]) {
-                        Eigen::VectorXd tmp = Eigen::VectorXd::Constant(ptcproc.cleaner.n_calc,
-                                                                        std::numeric_limits<double>::quiet_NaN());
-                        const Eigen::Index n_copy = std::min<Eigen::Index>(evals.size(), ptcproc.cleaner.n_calc);
-                        if (n_copy > 0) {
-                            tmp.head(n_copy) = evals.head(n_copy);
-                        }
+                        Eigen::VectorXd tmp =
+                            citlali::pipeline::ptcdiag_padded_eigenvalues(
+                                evals, ptcproc.cleaner.n_calc,
+                                citlali::pipeline::ptcdiag_fill_double());
                         eval_v.putVar(start_eig_index, size, tmp.data());
                         start_eig_index[0] += 1;
                     }
