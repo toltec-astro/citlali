@@ -5561,11 +5561,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         citlali::pipeline::add_ptc_weight_cutoff_config_vars(fo, ptcproc);
         citlali::pipeline::add_weight_corr_penalty_config_vars(
             fo, ptcproc.weight_corr_penalty);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.ENABLED", ptcproc.busy_row_suppression.enabled);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.REQUIRE_BUSY_VETO", ptcproc.busy_row_suppression.require_busy_veto);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.MIN_CAND_CLUSTERS", ptcproc.busy_row_suppression.min_candidate_clusters);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.MIN_MAX_RESID_Z", ptcproc.busy_row_suppression.min_max_unflagged_residual_z);
-        add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.FACTOR", ptcproc.busy_row_suppression.factor);
+        citlali::pipeline::add_busy_row_suppression_config_vars(
+            fo, ptcproc.busy_row_suppression);
         add_netcdf_var(fo, "CONFIG.CLEANED", ptcproc.run_clean);
         add_netcdf_var<std::string>(fo, "CONFIG.CLEANED.MODESEL", ptcproc.cleaner.active_cleaner_label());
         add_netcdf_var(fo, "CONFIG.CLEANED.MP.ENABLED", ptcproc.cleaner.marchenko_pastur.enabled);

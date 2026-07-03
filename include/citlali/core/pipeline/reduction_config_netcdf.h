@@ -121,6 +121,21 @@ void add_weight_corr_penalty_config_vars(
                    penalty.cm_low_mid_ratio.mid_max_Hz);
 }
 
+template <class BusyRowSuppression>
+void add_busy_row_suppression_config_vars(
+    netCDF::NcFile &fo, const BusyRowSuppression &suppression) {
+    add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.ENABLED",
+                   suppression.enabled);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.REQUIRE_BUSY_VETO",
+                   suppression.require_busy_veto);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.MIN_CAND_CLUSTERS",
+                   suppression.min_candidate_clusters);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.MIN_MAX_RESID_Z",
+                   suppression.min_max_unflagged_residual_z);
+    add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.FACTOR",
+                   suppression.factor);
+}
+
 template <class ReductionLearning>
 void add_reduction_learning_config_vars(
     netCDF::NcFile &fo, const ReductionLearning &reduction_learning,
