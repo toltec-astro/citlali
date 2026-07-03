@@ -6204,10 +6204,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     if (map_method=="jinc") {
         logger->debug("adding jinc params");
 
-        add_double_key("JINC_R", jinc_mm.r_max, "Jinc filter R_max");
-        add_double_key("JINC_A", jinc_mm.shape_params[calib.arrays(i)][0], "Jinc filter param a");
-        add_double_key("JINC_B", jinc_mm.shape_params[calib.arrays(i)][1], "Jinc filter param b");
-        add_double_key("JINC_C", jinc_mm.shape_params[calib.arrays(i)][2], "Jinc filter param c");
+        citlali::pipeline::add_phdu_jinc_shape_keys(
+            fits_entry, name, logger, jinc_mm.r_max,
+            jinc_mm.shape_params[calib.arrays(i)]);
     }
 
     // add mean tau

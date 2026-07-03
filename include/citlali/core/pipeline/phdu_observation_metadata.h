@@ -130,4 +130,19 @@ void add_phdu_apt_key(FitsEntry &fits_entry, const std::string &apt_name) {
     fits_entry.pfits->pHDU().addKey("APT", apt_name, "APT table used");
 }
 
+template <class FitsEntry, class ShapeValues, class Logger>
+void add_phdu_jinc_shape_keys(FitsEntry &fits_entry,
+                              const std::string &array_name,
+                              const Logger &logger, double r_max,
+                              const ShapeValues &shape_values) {
+    add_phdu_double_key(fits_entry, array_name, logger, "JINC_R", r_max,
+                        "Jinc filter R_max");
+    add_phdu_double_key(fits_entry, array_name, logger, "JINC_A",
+                        shape_values[0], "Jinc filter param a");
+    add_phdu_double_key(fits_entry, array_name, logger, "JINC_B",
+                        shape_values[1], "Jinc filter param b");
+    add_phdu_double_key(fits_entry, array_name, logger, "JINC_C",
+                        shape_values[2], "Jinc filter param c");
+}
+
 }  // namespace citlali::pipeline
