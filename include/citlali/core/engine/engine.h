@@ -8261,38 +8261,8 @@ void Engine::create_ptcdiag_file() {
     add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
 
     citlali::pipeline::add_weight_selection_config_vars(fo, ptcproc);
-    add_netcdf_var(fo, "CONFIG.LEARNING.ENABLED", reduction_learning.options.enabled);
-    add_netcdf_var(fo, "CONFIG.LEARNING.DIAGNOSTICS_ENABLED", reduction_learning.options.diagnostics_enabled);
-    add_netcdf_var(fo, "CONFIG.LEARNING.LEARN_ITERS", reduction_learning.options.learn_iters);
-    add_netcdf_var(fo, "CONFIG.LEARNING.APPLY_START_ITER", reduction_learning.options.apply_start_iter);
-    add_netcdf_var(fo, "CONFIG.LEARNING.MAX_RECORDS_PER_TYPE", reduction_learning.options.max_records_per_type);
-    add_netcdf_var(fo, "CONFIG.LEARNING.MAP_PIXEL_OUTLIER_DETECTOR_EXCLUSION_ENABLED",
-                   reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled);
-    add_netcdf_var(fo, "CONFIG.LEARNING.MAP_PIXEL_OUTLIER_DETECTOR_EXCLUSION_MIN_PIXELS",
-                   reduction_learning.options.map_pixel_outlier_detector_exclusion_min_pixels);
-    add_netcdf_var(fo, "CONFIG.LEARNING.BUSY_DETECTOR_EXCLUSION_ENABLED",
-                   reduction_learning.options.busy_detector_exclusion_enabled);
-    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_ENABLED",
-                   reduction_learning.options.scan_network_pathology_enabled);
-    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_APPLY_PRE_RTC",
-                   reduction_learning.options.scan_network_pathology_apply_pre_rtc);
-    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_APPLY_PRE_PTC",
-                   reduction_learning.options.scan_network_pathology_apply_pre_ptc);
-    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_APPLY_PRE_MAPMAKING",
-                   reduction_learning.options.scan_network_pathology_apply_pre_mapmaking);
-    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_CLUSTERS",
-                   reduction_learning.options.scan_network_pathology_min_candidate_clusters);
-    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_EVENTS",
-                   reduction_learning.options.scan_network_pathology_min_candidate_events);
-    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MIN_RESID_Z",
-                   reduction_learning.options.scan_network_pathology_min_max_residual_z);
-    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_SEVERE_EVENTS",
-                   reduction_learning.options.scan_network_pathology_severe_candidate_events);
-    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_SEVERE_RESID_Z",
-                   reduction_learning.options.scan_network_pathology_severe_max_residual_z);
-    add_netcdf_var(fo, "CONFIG.LEARNING.SCAN_NETWORK_PATHOLOGY_MAX_NEW_FLAGGED_FRAC",
-                   reduction_learning.options.scan_network_pathology_max_new_flagged_fraction);
-    add_netcdf_var<std::string>(fo, "CONFIG.LEARNING.PHASE", reduction_learning.current_phase_name());
+    citlali::pipeline::add_reduction_learning_config_vars(
+        fo, reduction_learning);
     add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW", ptcproc.lower_inv_var_factor);
     add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH", ptcproc.upper_inv_var_factor);
     add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW", ptcproc.lower_weight_factor);
