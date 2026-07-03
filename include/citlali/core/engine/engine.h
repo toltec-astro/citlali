@@ -5487,12 +5487,13 @@ void Engine::create_tod_files() {
             fo, rtcproc.line_audit);
     }
 
+    const auto tod_stream_layout = citlali::pipeline::tod_stream_layout(
+        prod_t == engine_utils::toltecIO::rtc_timestream,
+        n_tod_output_scans_rtc, n_tod_output_scans_ptc, rtcproc, ptcproc);
     const Eigen::Index n_tod_output_scans_for_stream =
-        (prod_t == engine_utils::toltecIO::rtc_timestream) ? n_tod_output_scans_rtc : n_tod_output_scans_ptc;
-    const bool tod_output_mini =
-        (prod_t == engine_utils::toltecIO::rtc_timestream) ? rtcproc.tod_output_mini : ptcproc.tod_output_mini;
-    const bool tod_output_outer =
-        (prod_t == engine_utils::toltecIO::rtc_timestream) ? rtcproc.tod_output_outer : ptcproc.tod_output_outer;
+        tod_stream_layout.n_output_scans;
+    const bool tod_output_mini = tod_stream_layout.mini_output;
+    const bool tod_output_outer = tod_stream_layout.outer_output;
 
     const auto tod_dims = citlali::pipeline::add_tod_file_dims(
         fo, static_cast<std::size_t>(n_tod_output_scans_for_stream),

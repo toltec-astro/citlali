@@ -34,6 +34,25 @@ struct TodFileDims {
     std::vector<netCDF::NcDim> scans;
 };
 
+struct TodStreamLayout {
+    Eigen::Index n_output_scans;
+    bool mini_output;
+    bool outer_output;
+};
+
+template <class RtcProc, class PtcProc>
+TodStreamLayout tod_stream_layout(bool is_rtc_stream,
+                                  Eigen::Index n_rtc_output_scans,
+                                  Eigen::Index n_ptc_output_scans,
+                                  const RtcProc &rtcproc,
+                                  const PtcProc &ptcproc) {
+    return {
+        is_rtc_stream ? n_rtc_output_scans : n_ptc_output_scans,
+        is_rtc_stream ? rtcproc.tod_output_mini : ptcproc.tod_output_mini,
+        is_rtc_stream ? rtcproc.tod_output_outer : ptcproc.tod_output_outer,
+    };
+}
+
 inline TodFileDims add_tod_file_dims(netCDF::NcFile &fo,
                                      std::size_t n_output_scans,
                                      std::size_t n_raw_scan_indices,
