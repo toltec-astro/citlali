@@ -6245,12 +6245,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         rtcproc.run_despike);
     citlali::pipeline::add_phdu_rtc_local_despike_config(
         fits_entry, name, logger, rtcproc.despiker.local_residual);
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTERED", run_any_tod_filter, "TOD Filtered");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODNOTCH", rtcproc.run_tod_notch, "TOD notch enabled");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODIIRHP", rtcproc.run_tod_iir_highpass, "TOD IIR highpass enabled");
-    add_double_key("CONFIG.TODIIRHP.FREQ_HZ", rtcproc.filter.iir_highpass_freq_Hz, "TOD IIR highpass cutoff frequency");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODIIRHP.ORDER", rtcproc.filter.iir_highpass_order, "TOD IIR highpass cascaded order");
-    fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODIIRHP.ZEROPHASE", rtcproc.filter.iir_highpass_zero_phase, "TOD IIR highpass forward-backward");
+    citlali::pipeline::add_phdu_tod_filter_runtime_config(
+        fits_entry, name, logger, rtcproc, run_any_tod_filter);
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTER.EDGE_GUARD.ENABLED", rtcproc.filter_edge_guard.enabled, "TOD filter edge guard enabled");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTER.EDGE_GUARD.MODE", rtcproc.filter_edge_guard.mode, "TOD filter edge guard mode");
     fits_io->at(i).pfits->pHDU().addKey("CONFIG.TODFILTER.EDGE_GUARD.COMBINE", rtcproc.filter_edge_guard.combine, "TOD filter edge guard combine rule");

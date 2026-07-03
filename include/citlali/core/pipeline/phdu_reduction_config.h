@@ -160,6 +160,29 @@ void add_phdu_initial_runtime_config(FitsEntry &fits_entry,
     hdu.addKey("CONFIG.DESPIKED", run_despike, "Despiked");
 }
 
+template <class FitsEntry, class RtcProc, class Logger>
+void add_phdu_tod_filter_runtime_config(FitsEntry &fits_entry,
+                                        const std::string &array_name,
+                                        const Logger &logger,
+                                        const RtcProc &rtcproc,
+                                        bool run_any_tod_filter) {
+    auto &hdu = fits_entry.pfits->pHDU();
+    hdu.addKey("CONFIG.TODFILTERED", run_any_tod_filter, "TOD Filtered");
+    hdu.addKey("CONFIG.TODNOTCH", rtcproc.run_tod_notch,
+               "TOD notch enabled");
+    hdu.addKey("CONFIG.TODIIRHP", rtcproc.run_tod_iir_highpass,
+               "TOD IIR highpass enabled");
+    add_phdu_double_key(fits_entry, array_name, logger,
+                        "CONFIG.TODIIRHP.FREQ_HZ",
+                        rtcproc.filter.iir_highpass_freq_Hz,
+                        "TOD IIR highpass cutoff frequency");
+    hdu.addKey("CONFIG.TODIIRHP.ORDER", rtcproc.filter.iir_highpass_order,
+               "TOD IIR highpass cascaded order");
+    hdu.addKey("CONFIG.TODIIRHP.ZEROPHASE",
+               rtcproc.filter.iir_highpass_zero_phase,
+               "TOD IIR highpass forward-backward");
+}
+
 template <class FitsEntry, class WeightCorrPenalty, class Logger>
 void add_phdu_weight_corr_penalty_config(
     FitsEntry &fits_entry, const std::string &array_name,
