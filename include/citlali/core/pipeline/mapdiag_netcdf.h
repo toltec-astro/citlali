@@ -1,12 +1,21 @@
 #pragma once
 
 #include <cstddef>
+#include <limits>
 #include <string>
 #include <vector>
 
 #include <netcdf>
 
 namespace citlali::pipeline {
+
+inline double mapdiag_fill_double() {
+    return std::numeric_limits<double>::quiet_NaN();
+}
+
+inline int mapdiag_fill_int() {
+    return -2147483647;
+}
 
 inline void put_netcdf_string_1d(
     netCDF::NcFile &fo, const std::string &name, netCDF::NcDim dim,

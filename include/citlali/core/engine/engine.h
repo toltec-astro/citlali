@@ -6725,8 +6725,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     const std::size_t n_maps_local = static_cast<std::size_t>(n_maps);
     const std::size_t n_obsnums = std::max<std::size_t>(1, mb->obsnums.size());
     const bool is_coadd = (map_t == mapmaking::RawCoadd || map_t == mapmaking::FilteredCoadd);
-    const double fill_double = std::numeric_limits<double>::quiet_NaN();
-    const int fill_int = -2147483647;
+    const double fill_double = citlali::pipeline::mapdiag_fill_double();
+    const int fill_int = citlali::pipeline::mapdiag_fill_int();
 
     std::vector<std::string> array_names(n_maps_local);
     std::vector<std::string> stokes_names(n_maps_local);
