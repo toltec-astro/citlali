@@ -6912,18 +6912,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         if (!mb->coverage.empty() && i < static_cast<Eigen::Index>(mb->coverage.size())) {
             coverage_sum[idx] = mb->coverage[i].sum();
             coverage_max[idx] = mb->coverage[i].maxCoeff();
-            std::vector<double> core_cov;
-            core_cov.reserve(static_cast<std::size_t>(n_core_pixels[idx]));
-            for (Eigen::Index r = 0; r < mb->coverage[i].rows(); ++r) {
-                for (Eigen::Index c = 0; c < mb->coverage[i].cols(); ++c) {
-                    if (core_mask(r, c) > 0.0 && std::isfinite(mb->coverage[i](r, c))) {
-                        core_cov.push_back(mb->coverage[i](r, c));
-                    }
-                }
-            }
-            if (!core_cov.empty()) {
-                coverage_median_core[idx] = tula::alg::median(Eigen::Map<Eigen::VectorXd>(core_cov.data(), core_cov.size()));
-            }
+            coverage_median_core[idx] =
+                citlali::pipeline::mapdiag_masked_median(
+                    mb->coverage[i], core_mask, fill_double);
         }
 
         peak_signal[idx] = mb->signal[i].size() > 0 ? mb->signal[i].maxCoeff() : fill_double;

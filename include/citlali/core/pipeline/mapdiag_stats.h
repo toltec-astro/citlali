@@ -60,6 +60,13 @@ inline std::vector<double> mapdiag_collect_masked_values(
     return values;
 }
 
+inline double mapdiag_masked_median(const Eigen::MatrixXd &matrix,
+                                    const Eigen::ArrayXXd &mask,
+                                    double fill_value) {
+    return mapdiag_vector_median(
+        mapdiag_collect_masked_values(matrix, mask), fill_value);
+}
+
 inline MapdiagTailStats mapdiag_tail_stats(const std::vector<double> &values,
                                            double fill_value) {
     MapdiagTailStats stats;
