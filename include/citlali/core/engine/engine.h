@@ -5556,16 +5556,16 @@ void Engine::create_tod_files() {
     const bool tod_output_outer =
         (prod_t == engine_utils::toltecIO::rtc_timestream) ? rtcproc.tod_output_outer : ptcproc.tod_output_outer;
 
-    netCDF::NcDim n_pts_dim = fo.addDim("n_pts");
-    netCDF::NcDim n_raw_scan_indices_dim = fo.addDim("n_raw_scan_indices", telescope.scan_indices.rows());
-    netCDF::NcDim n_scan_indices_dim = fo.addDim("n_scan_indices", 2);
-    netCDF::NcDim n_scans_dim = fo.addDim("n_scans", n_tod_output_scans_for_stream);
-
-    netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
-
-    std::vector<netCDF::NcDim> dims = {n_pts_dim, n_dets_dim};
-    std::vector<netCDF::NcDim> raw_scans_dims = {n_scans_dim, n_raw_scan_indices_dim};
-    std::vector<netCDF::NcDim> scans_dims = {n_scans_dim, n_scan_indices_dim};
+    const auto tod_dims = citlali::pipeline::add_tod_file_dims(
+        fo, static_cast<std::size_t>(n_tod_output_scans_for_stream),
+        static_cast<std::size_t>(telescope.scan_indices.rows()),
+        static_cast<std::size_t>(calib.n_dets));
+    netCDF::NcDim n_pts_dim = tod_dims.n_pts;
+    netCDF::NcDim n_scans_dim = tod_dims.n_scans;
+    netCDF::NcDim n_dets_dim = tod_dims.n_dets;
+    std::vector<netCDF::NcDim> dims = tod_dims.signal;
+    std::vector<netCDF::NcDim> raw_scans_dims = tod_dims.raw_scans;
+    std::vector<netCDF::NcDim> scans_dims = tod_dims.scans;
 
     citlali::pipeline::add_tod_scan_index_placeholders(
         fo, raw_scans_dims, scans_dims, n_scans_dim,

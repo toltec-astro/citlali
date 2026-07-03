@@ -21,6 +21,34 @@ constexpr int tod_output_fill_int() {
     return -2147483647;
 }
 
+struct TodFileDims {
+    netCDF::NcDim n_pts;
+    netCDF::NcDim n_raw_scan_indices;
+    netCDF::NcDim n_scan_indices;
+    netCDF::NcDim n_scans;
+    netCDF::NcDim n_dets;
+    std::vector<netCDF::NcDim> signal;
+    std::vector<netCDF::NcDim> raw_scans;
+    std::vector<netCDF::NcDim> scans;
+};
+
+inline TodFileDims add_tod_file_dims(netCDF::NcFile &fo,
+                                     std::size_t n_output_scans,
+                                     std::size_t n_raw_scan_indices,
+                                     std::size_t n_dets) {
+    TodFileDims dims;
+    dims.n_pts = fo.addDim("n_pts");
+    dims.n_raw_scan_indices =
+        fo.addDim("n_raw_scan_indices", n_raw_scan_indices);
+    dims.n_scan_indices = fo.addDim("n_scan_indices", 2);
+    dims.n_scans = fo.addDim("n_scans", n_output_scans);
+    dims.n_dets = fo.addDim("n_dets", n_dets);
+    dims.signal = {dims.n_pts, dims.n_dets};
+    dims.raw_scans = {dims.n_scans, dims.n_raw_scan_indices};
+    dims.scans = {dims.n_scans, dims.n_scan_indices};
+    return dims;
+}
+
 inline void add_tod_output_type_label(netCDF::NcFile &fo,
                                       const std::string &label) {
     netCDF::NcDim dim = fo.addDim("n_tod_output_type", 1);
