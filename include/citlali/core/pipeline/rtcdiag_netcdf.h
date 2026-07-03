@@ -121,6 +121,93 @@ inline void add_rtcdiag_det_int(
     v.putVar(init.data());
 }
 
+template <class AddInt, class AddDouble>
+void add_rtcdiag_detector_core_diag(const AddInt &add_int,
+                                    const AddDouble &add_double) {
+    add_int("rtc_despike_raw_exceed_count",
+            "per-detector count of raw-sample MAD-threshold exceedances before despike expansion");
+    add_int("rtc_despike_local_raw_candidate_count",
+            "per-detector count of locally detrended raw candidate events considered by the compact-raw gate");
+    add_int("rtc_despike_local_raw_accepted_event_count",
+            "per-detector count of locally detrended raw candidate events accepted by the compact-raw gate");
+    add_int("rtc_despike_local_flagged_sample_count",
+            "per-detector count of samples flagged by accepted compact-raw local-residual events");
+    add_int("rtc_despike_local_exceed_count",
+            "legacy alias for rtc_despike_local_flagged_sample_count");
+    add_int("rtc_despike_local_raw_reject_count",
+            "per-detector count of locally detrended raw candidate events rejected by the compact-raw gate");
+    add_int("rtc_despike_delta_spike_count",
+            "per-detector count of delta-domain spikes identified by the RTC despiker");
+    add_int("rtc_despike_local_delta_candidate_count",
+            "per-detector count of locally detrended delta candidate events considered by the compact-delta gate");
+    add_int("rtc_despike_local_delta_accepted_event_count",
+            "per-detector count of locally detrended delta candidate events accepted by the compact-delta gate");
+    add_int("rtc_despike_local_delta_exceed_count",
+            "legacy alias for rtc_despike_local_delta_accepted_event_count");
+    add_int("rtc_despike_local_delta_reject_count",
+            "per-detector count of locally detrended delta candidate events rejected by the compact-delta gate");
+    add_double("rtc_despike_added_flagged_frac",
+               "fraction of samples newly flagged by RTC despiking, excluding pre-existing flags");
+    add_int("rtc_despike_added_region_count",
+            "count of newly flagged contiguous sample regions added by RTC despiking");
+    add_double("rtc_despike_added_region_len_median",
+               "median length of newly flagged contiguous sample regions added by RTC despiking");
+    add_int("rtc_despike_added_region_len_max",
+            "maximum length of newly flagged contiguous sample regions added by RTC despiking");
+    add_double("rtc_despike_max_raw_abs_z",
+               "maximum absolute raw-sample deviation in robust-sigma units before despiking");
+    add_double("rtc_despike_max_local_abs_z",
+               "maximum absolute locally detrended raw-sample deviation in robust-sigma units before despiking");
+    add_double("rtc_despike_max_delta_abs_z",
+               "maximum absolute adjacent-sample delta deviation in sigma units before despiking");
+    add_double("rtc_despike_max_local_delta_abs_z",
+               "maximum absolute locally detrended adjacent-sample delta deviation in sigma units before despiking");
+    add_double("rtc_final_flagged_frac",
+               "final per-detector flagged-sample fraction in the RTC product actually written");
+    add_int("rtc_final_region_count",
+            "final count of flagged contiguous sample regions in the RTC product actually written");
+    add_double("rtc_final_region_len_median",
+               "final median flagged-region length in the RTC product actually written");
+    add_int("rtc_final_region_len_max",
+            "final maximum flagged-region length in the RTC product actually written");
+    add_double("rtc_step_score",
+               "per-detector step-like pre/post window jump score on the RTC output");
+    add_int("rtc_step_sample",
+            "sample index of the strongest per-detector RTC step-like jump; -2147483647 means unavailable");
+    add_double("rtc_impulsive_peak_abs_z",
+               "maximum absolute per-sample deviation in robust-sigma units on the RTC output");
+    add_int("rtc_impulsive_peak_abs_sample",
+            "sample index of the maximum absolute per-sample deviation; -2147483647 means unavailable");
+    add_double("rtc_impulsive_peak_delta_abs_z",
+               "maximum absolute adjacent-sample delta deviation in robust-sigma units on the RTC output");
+    add_int("rtc_impulsive_peak_delta_abs_sample",
+            "sample index of the strongest adjacent-sample delta excursion; -2147483647 means unavailable");
+    add_int("rtc_impulsive_near_abs_count",
+            "count of RTC samples exceeding near_event_z in absolute robust-z units");
+    add_int("rtc_impulsive_near_delta_count",
+            "count of RTC adjacent-sample delta excursions exceeding near_event_z");
+    add_double("rtc_impulsive_event_score",
+               "per-detector impulsive event score, max of raw and delta robust-z peaks");
+    add_int("rtc_impulsive_event_sample",
+            "sample index of the strongest per-detector impulsive event; -2147483647 means unavailable");
+    add_int("rtc_impulsive_event_kind",
+            "0=raw-sample peak, 1=delta peak, -2147483647 means unavailable");
+    add_int("rtc_detector_notch_n_applied",
+            "per-detector count of post-filter detector-local RTC notches applied");
+    add_double("rtc_detector_notch_primary_freq_hz",
+               "frequency of the strongest detector-local post-filter RTC notch applied");
+    add_double("rtc_detector_notch_primary_width_hz",
+               "bandwidth of the strongest detector-local post-filter RTC notch applied");
+    add_double("rtc_detector_notch_primary_prominence",
+               "PSD prominence of the strongest detector-local post-filter RTC notch applied");
+    add_double("rtc_detector_notch_primary_line_power_frac",
+               "line-power fraction of the strongest detector-local post-filter RTC notch applied");
+    add_double("rtc_detector_notch_rms_before",
+               "robust RMS of the detector RTC timestream before detector-local post-filter notching");
+    add_double("rtc_detector_notch_rms_after",
+               "robust RMS of the detector RTC timestream after detector-local post-filter notching");
+}
+
 inline void add_rtcdiag_network_double(
     netCDF::NcFile &fo, const std::string &name,
     const std::string &comment, const std::vector<netCDF::NcDim> &nw_dims,
