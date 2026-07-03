@@ -5621,8 +5621,10 @@ void Engine::cli_summary() {
         if (tod_output_type == "rtc" || tod_output_type == "both") {
             logger->info("RTC TOD output scans: {}", n_tod_output_scans_rtc);
             logger->info("RTC TOD output mode: {}{}",
-                         rtcproc.tod_output_mini ? "mini" : "full",
-                         rtcproc.tod_output_outer ? "_outer" : "");
+                         citlali::pipeline::tod_output_mode_label(
+                             rtcproc.tod_output_mini),
+                         citlali::pipeline::tod_outer_mode_suffix(
+                             rtcproc.tod_output_outer));
         }
         if (tod_output_type == "ptc" || tod_output_type == "both") {
             logger->info("PTC TOD output scans: {}", n_tod_output_scans_ptc);
