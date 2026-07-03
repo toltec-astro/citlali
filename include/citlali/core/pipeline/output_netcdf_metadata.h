@@ -77,6 +77,14 @@ inline void add_tod_map_geometry_vars(
     add_netcdf_var(fo, "MEAN_PA", mean_pa_deg);
 }
 
+inline void add_unit_conversion_basis_vars(netCDF::NcFile &fo) {
+    add_netcdf_var<std::string>(fo, "UNITCONV.UK_CONVENTION",
+                                "Rayleigh-Jeans brightness temperature");
+    add_netcdf_var<std::string>(
+        fo, "UNITCONV.UK_BASIS",
+        "monochromatic array center frequency; mJy/beam uses Gaussian beam solid angle to Jy/sr");
+}
+
 template <class Arrays, class FwhmMap, class PositionAngleMap,
           class ArrayNameMap>
 void add_array_beam_geometry_vars(netCDF::NcFile &fo, const Arrays &arrays,

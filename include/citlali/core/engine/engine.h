@@ -5333,9 +5333,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
         // add unit conversions
         if (rtcproc.run_calibrate) {
-            add_netcdf_var<std::string>(fo, "UNITCONV.UK_CONVENTION", "Rayleigh-Jeans brightness temperature");
-            add_netcdf_var<std::string>(fo, "UNITCONV.UK_BASIS",
-                                        "monochromatic array center frequency; mJy/beam uses Gaussian beam solid angle to Jy/sr");
+            citlali::pipeline::add_unit_conversion_basis_vars(fo);
             for (const auto &val: calib.arrays) {
                 auto name = toltec_io.array_name_map[val];
                 // conversion to Rayleigh-Jeans uK brightness temperature
