@@ -208,6 +208,29 @@ void add_rtcdiag_detector_core_diag(const AddInt &add_int,
                "robust RMS of the detector RTC timestream after detector-local post-filter notching");
 }
 
+template <class AddInt, class AddDouble>
+void add_rtcdiag_detector_invvar_window_diag(const AddInt &add_int,
+                                             const AddDouble &add_double) {
+    add_double("rtc_invvar_window_valid_fraction",
+               "fraction of remove_bad_dets diagnostic windows with enough unflagged samples to estimate inverse variance in the RTC timestream");
+    add_double("rtc_invvar_window_median",
+               "median per-window inverse variance used for RTC remove_bad_dets diagnostics");
+    add_double("rtc_invvar_window_q10",
+               "10th percentile of per-window inverse variance used for RTC remove_bad_dets diagnostics");
+    add_double("rtc_invvar_window_q90",
+               "90th percentile of per-window inverse variance used for RTC remove_bad_dets diagnostics");
+    add_double("rtc_invvar_window_flagged_frac_median",
+               "median flagged fraction across remove_bad_dets diagnostic windows in the RTC timestream");
+    add_double("rtc_invvar_window_flagged_frac_max",
+               "maximum flagged fraction across remove_bad_dets diagnostic windows in the RTC timestream");
+    add_double("rtc_invvar_window_heavy_flagged_fraction",
+               "fraction of remove_bad_dets diagnostic windows in the RTC timestream with at least 50 percent flagged samples");
+    add_int("rtc_invvar_window_n_total",
+            "total number of fixed windows evaluated for RTC remove_bad_dets diagnostics");
+    add_int("rtc_invvar_window_n_valid",
+            "number of fixed windows with a finite inverse-variance estimate for RTC remove_bad_dets diagnostics");
+}
+
 inline void add_rtcdiag_network_double(
     netCDF::NcFile &fo, const std::string &name,
     const std::string &comment, const std::vector<netCDF::NcDim> &nw_dims,
