@@ -6,6 +6,18 @@
 
 namespace citlali::pipeline {
 
+struct MapdiagMapLabels {
+    std::string array_name;
+    std::string stokes_name;
+    std::string map_name;
+};
+
+inline MapdiagMapLabels make_mapdiag_map_labels(
+    const std::string &array_name, const std::string &stokes_name,
+    const std::string &map_name) {
+    return {array_name, stokes_name, map_name};
+}
+
 inline std::vector<std::string> mapdiag_obsnum_labels(
     const std::vector<std::string> &obsnums,
     const std::string &fallback_obsnum) {
