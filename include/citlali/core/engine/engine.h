@@ -6779,10 +6779,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_source_distance_context(
                 mb, RAD_TO_ASEC, fill_double);
         };
-    auto make_mapdiag_current_source_distance_context =
-        [&]() {
-            return make_mapdiag_source_distance_context();
-        };
     auto mapdiag_current_source_protect_radius_arcsec =
         [&]() {
             return citlali::pipeline::mapdiag_source_protect_radius_arcsec(
@@ -7286,7 +7282,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
             if (mapdiag_current_outlier_diagnostics_enabled()) {
                 const auto source_distance_context =
-                    make_mapdiag_current_source_distance_context();
+                    make_mapdiag_source_distance_context();
 
                 Eigen::ArrayXXd off_source_core_mask =
                     make_mapdiag_current_off_source_core_mask(
