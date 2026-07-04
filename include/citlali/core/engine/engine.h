@@ -6515,18 +6515,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::MapdiagDetectorDominance;
 
     const citlali::pipeline::MapdiagStatsContext mapdiag_stats{fill_double};
-    auto make_mapdiag_obs_weight_path =
-        [&](const std::string &obsnum_i,
-            const std::string &array_name) {
-            const auto obs_dir =
-                citlali::pipeline::mapdiag_obs_raw_dir(
-                    redu_dir_name, obsnum_i);
-            return toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                             engine_utils::toltecIO::map,
-                                             engine_utils::toltecIO::raw>(
-                obs_dir, redu_type, array_name, obsnum_i,
-                telescope.sim_obs) + ".fits";
-        };
     const std::string mapdiag_record_producer =
         citlali::pipeline::mapdiag_record_producer(stage_name);
 
@@ -6905,9 +6893,16 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             for (std::size_t obs_idx = 0; obs_idx < mb->obsnums.size();
                  ++obs_idx) {
                 const auto &obsnum_i = mb->obsnums[obs_idx];
+                const auto obs_dir =
+                    citlali::pipeline::mapdiag_obs_raw_dir(
+                        redu_dir_name, obsnum_i);
                 const auto obs_weight_path =
-                    make_mapdiag_obs_weight_path(
-                        obsnum_i, array_names[idx]);
+                    toltec_io.create_filename<
+                        engine_utils::toltecIO::toltec,
+                        engine_utils::toltecIO::map,
+                        engine_utils::toltecIO::raw>(
+                        obs_dir, redu_type, array_names[idx], obsnum_i,
+                        telescope.sim_obs) + ".fits";
                 const auto weight_hdu_name =
                     citlali::pipeline::mapdiag_weight_hdu_name(
                         map_names[idx], stokes_names[idx]);
