@@ -546,6 +546,11 @@ inline Eigen::ArrayXXd mapdiag_off_source_core_mask(
     return off_source_mask;
 }
 
+inline bool mapdiag_has_minimum_samples(std::size_t n_values,
+                                        std::size_t min_values) {
+    return n_values >= min_values;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
