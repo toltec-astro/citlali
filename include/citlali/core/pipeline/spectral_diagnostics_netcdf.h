@@ -15,13 +15,14 @@ inline std::string spectral_product_base_name(const std::string &array_name,
     return array_name + "_" + map_name + stokes_name;
 }
 
-template <class ArrayNameMap, class Arrays, class StokesParams>
+template <class ArrayNameMap, class Arrays, class StokesParams, class MapIndex,
+          class StokesIndex>
 std::string spectral_product_name(ArrayNameMap &array_name_map,
                                   const Arrays &arrays,
                                   const StokesParams &stokes_params,
                                   const std::string &map_name,
-                                  std::size_t map_index,
-                                  std::size_t stokes_index) {
+                                  MapIndex map_index,
+                                  StokesIndex stokes_index) {
     const auto array = arrays[map_index];
     return spectral_product_base_name(
         array_name_map[array], map_name, stokes_params[stokes_index]);
