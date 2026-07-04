@@ -102,6 +102,15 @@ inline Eigen::ArrayXXd mapdiag_core_weight_mask(
         .template cast<double>();
 }
 
+inline bool mapdiag_has_matrix_samples(const Eigen::MatrixXd &matrix) {
+    return matrix.size() > 0;
+}
+
+inline Eigen::MatrixXd mapdiag_sig2noise_image(
+    const Eigen::MatrixXd &signal, const Eigen::MatrixXd &weight) {
+    return signal.array() * weight.array().max(0.0).sqrt();
+}
+
 inline MapdiagTailStats mapdiag_tail_stats(const std::vector<double> &values,
                                            double fill_value) {
     MapdiagTailStats stats;
