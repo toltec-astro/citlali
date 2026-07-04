@@ -6700,7 +6700,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 array_id = calib.arrays[map_index];
                             }
                             for (const auto &entry : dominance) {
-                                if (entry.count < min_pixels) {
+                                if (!citlali::pipeline::
+                                        mapdiag_dominance_meets_min_pixels(
+                                            entry, min_pixels)) {
                                     continue;
                                 }
                                 ReductionLearningState::DetectorPenalty penalty;
