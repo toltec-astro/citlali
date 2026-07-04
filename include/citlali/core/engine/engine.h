@@ -6527,35 +6527,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 obs_dir, redu_type, array_name, obsnum_i,
                 telescope.sim_obs) + ".fits";
         };
-    auto assign_mapdiag_coadd_obs_contributions =
-        [&](Eigen::Index map_i, std::size_t idx,
-            const auto &core_mask) {
-            for (std::size_t obs_idx = 0; obs_idx < mb->obsnums.size();
-                 ++obs_idx) {
-                const auto &obsnum_i = mb->obsnums[obs_idx];
-                const auto obs_weight_path =
-                    make_mapdiag_obs_weight_path(
-                        obsnum_i, array_names[idx]);
-                const auto weight_hdu_name =
-                    citlali::pipeline::mapdiag_weight_hdu_name(
-                        map_names[idx], stokes_names[idx]);
-                try {
-                    fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*>
-                        obs_fits(obs_weight_path);
-                    auto obs_weight = obs_fits.get_hdu(weight_hdu_name);
-                    citlali::pipeline::accumulate_mapdiag_obs_weight(
-                        map_i, mapdiag_context.n_obsnums, mb->n_rows,
-                        mb->n_cols, core_mask, obs_weight, obs_idx,
-                        obs_tables);
-                } catch (const std::exception &e) {
-                    logger->warn(
-                        "failed to derive mapdiag contribution from {} [{}]: {}",
-                        obs_weight_path, weight_hdu_name, e.what());
-                    citlali::pipeline::zero_mapdiag_obs_entry(
-                        mapdiag_context, idx, obs_idx, obs_tables);
-                }
-            }
-        };
     const std::string mapdiag_record_producer =
         citlali::pipeline::mapdiag_record_producer(stage_name);
 
@@ -6931,7 +6902,31 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 n_valid_pixels[idx], n_core_pixels[idx], obs_tables);
         }
         else {
-            assign_mapdiag_coadd_obs_contributions(i, idx, core_mask);
+            for (std::size_t obs_idx = 0; obs_idx < mb->obsnums.size();
+                 ++obs_idx) {
+                const auto &obsnum_i = mb->obsnums[obs_idx];
+                const auto obs_weight_path =
+                    make_mapdiag_obs_weight_path(
+                        obsnum_i, array_names[idx]);
+                const auto weight_hdu_name =
+                    citlali::pipeline::mapdiag_weight_hdu_name(
+                        map_names[idx], stokes_names[idx]);
+                try {
+                    fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*>
+                        obs_fits(obs_weight_path);
+                    auto obs_weight = obs_fits.get_hdu(weight_hdu_name);
+                    citlali::pipeline::accumulate_mapdiag_obs_weight(
+                        i, mapdiag_context.n_obsnums, mb->n_rows,
+                        mb->n_cols, core_mask, obs_weight, obs_idx,
+                        obs_tables);
+                } catch (const std::exception &e) {
+                    logger->warn(
+                        "failed to derive mapdiag contribution from {} [{}]: {}",
+                        obs_weight_path, weight_hdu_name, e.what());
+                    citlali::pipeline::zero_mapdiag_obs_entry(
+                        mapdiag_context, idx, obs_idx, obs_tables);
+                }
+            }
         }
         const auto obs_totals =
             citlali::pipeline::sum_mapdiag_obs_weight_totals(
