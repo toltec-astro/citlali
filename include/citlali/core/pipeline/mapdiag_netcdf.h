@@ -634,4 +634,14 @@ inline void add_mapdiag_value_vars(
         fo, dims, values.observation_double, values.observation_int);
 }
 
+inline void add_mapdiag_netcdf_vars(
+    netCDF::NcFile &fo, const MapdiagNetcdfVars &values) {
+    add_obsnum_var(fo, mapdiag_obsnum_value(values.size, values.obsnum));
+
+    const auto dims = add_mapdiag_netcdf_dims(fo, values.size);
+    add_mapdiag_metadata_vars(fo, values.metadata);
+    add_mapdiag_label_vars(fo, dims, values.labels);
+    add_mapdiag_value_vars(fo, dims, values.values);
+}
+
 }  // namespace citlali::pipeline
