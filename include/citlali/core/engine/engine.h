@@ -5913,12 +5913,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
             pointing_header_center_require_coverage);
     }
 
-    // add telescope file header information
-    if (citlali::pipeline::phdu_has_single_observation(mb->obsnums)) {
-        logger->debug("adding tel params");
-        citlali::pipeline::add_phdu_telescope_header_keys(
-            fits_entry, name, logger, telescope.tel_header);
-    }
+    citlali::pipeline::add_phdu_telescope_header_keys_if_single_observation(
+        fits_entry, mb->obsnums, name, logger, telescope.tel_header);
     } catch (const CCfits::FitsError &e) {
         throw std::runtime_error(
             fmt::format("failed to add PHDU/header for array '{}' (file={}): {}",

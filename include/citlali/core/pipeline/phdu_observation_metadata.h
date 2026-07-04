@@ -207,4 +207,17 @@ void add_phdu_telescope_header_keys(FitsEntry &fits_entry,
     }
 }
 
+template <class FitsEntry, class Obsnums, class HeaderValues, class Logger>
+void add_phdu_telescope_header_keys_if_single_observation(
+    FitsEntry &fits_entry, const Obsnums &obsnums,
+    const std::string &array_name, const Logger &logger,
+    const HeaderValues &tel_header) {
+    if (!phdu_has_single_observation(obsnums)) {
+        return;
+    }
+    logger->debug("adding tel params");
+    add_phdu_telescope_header_keys(fits_entry, array_name, logger,
+                                   tel_header);
+}
+
 }  // namespace citlali::pipeline
