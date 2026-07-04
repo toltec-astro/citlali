@@ -33,4 +33,15 @@ bool mapdiag_has_edge_guard_entry(std::size_t idx,
     return idx < state.edge_guard_applied.size();
 }
 
+template <class EdgeGuardState>
+void assign_mapdiag_edge_guard_int_entry(
+    std::size_t idx, const EdgeGuardState &state,
+    MapdiagEdgeGuardIntRefs refs) {
+    refs.applied[idx] = state.edge_guard_applied[idx];
+    refs.support_radius_pix[idx] = state.edge_guard_support_radius_pix[idx];
+    refs.science_npix[idx] = state.edge_guard_science_npix[idx];
+    refs.support_npix[idx] = state.edge_guard_support_npix[idx];
+    refs.guardband_npix[idx] = state.edge_guard_guardband_npix[idx];
+}
+
 }  // namespace citlali::pipeline
