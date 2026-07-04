@@ -6821,15 +6821,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_matrix_double_value(
                 mb->contribution_total_variance_weight[map_st], row, col);
         };
-    auto mapdiag_has_current_full_leave_one_out_inputs =
-        [](double total_signal, double total_weight,
-           double contrib_weight, double contrib_variance_weight,
-           double total_variance_weight, double remaining_weight) {
-            return citlali::pipeline::mapdiag_has_full_leave_one_out_inputs(
-                total_signal, total_weight, contrib_weight,
-                contrib_variance_weight, total_variance_weight,
-                remaining_weight);
-        };
     auto mapdiag_full_leave_one_out_value =
         [](double total_signal, double contrib_signal,
            double remaining_weight) {
@@ -7128,12 +7119,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                                 mapdiag_remaining_contribution_weight(
                                                     total_weight,
                                                     contrib_weight);
-                                        if (mapdiag_has_current_full_leave_one_out_inputs(
-                                                total_signal, total_weight,
-                                                contrib_weight,
-                                                contrib_variance_weight,
-                                            total_variance_weight,
-                                            remaining_weight)) {
+                                        if (citlali::pipeline::
+                                                mapdiag_has_full_leave_one_out_inputs(
+                                                    total_signal,
+                                                    total_weight,
+                                                    contrib_weight,
+                                                    contrib_variance_weight,
+                                                    total_variance_weight,
+                                                    remaining_weight)) {
                                             const double loo_value =
                                                 mapdiag_full_leave_one_out_value(
                                                     total_signal,
