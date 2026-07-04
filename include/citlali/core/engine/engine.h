@@ -7320,9 +7320,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         if (mapdiag_current_has_signal_stats(i)) {
             Eigen::MatrixXd sig2noise =
                 make_mapdiag_current_signal_to_noise_image(i);
-            assign_mapdiag_current_peak_stats(idx, sig2noise, core_mask);
-            assign_mapdiag_current_core_tail_stats(
-                idx, sig2noise, core_mask);
+            assign_mapdiag_current_signal_stats(idx, sig2noise, core_mask);
 
             if (mapdiag_current_outlier_diagnostics_enabled()) {
                 const auto source_distance_context =
