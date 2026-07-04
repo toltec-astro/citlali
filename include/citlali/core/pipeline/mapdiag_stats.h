@@ -578,6 +578,12 @@ inline MapdiagRobustCenterStats mapdiag_robust_center_stats(
     return {center, mapdiag_robust_sigma(stats, values, center)};
 }
 
+inline bool mapdiag_has_valid_robust_center_stats(
+    const MapdiagRobustCenterStats &stats) {
+    return std::isfinite(stats.center) && std::isfinite(stats.robust_sigma) &&
+           stats.robust_sigma > std::numeric_limits<double>::epsilon();
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
