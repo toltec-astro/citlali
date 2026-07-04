@@ -6671,11 +6671,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         assign_mapdiag_current_weight_stats(
             idx, weight_arr, valid_mask, core_mask);
 
-        citlali::pipeline::assign_mapdiag_formal_noise_stats(
-            idx,
-            citlali::pipeline::mapdiag_formal_noise_stats_or_fill(
-                mb->median_err, mb->median_rms, i, fill_double),
-            formal_noise_refs);
+        assign_mapdiag_current_formal_noise_stats(i, idx);
         const auto noise_product_stats =
             citlali::pipeline::mapdiag_noise_product_stats_or_fill(
                 mb->noise_weight_median_ratio, mb->noise_weight_scale,
