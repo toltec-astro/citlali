@@ -32,6 +32,17 @@ struct MapdiagStatsContext {
     MapdiagTailStats tail_stats(const std::vector<double> &values) const;
 };
 
+struct MapdiagNoiseTailSamples {
+    std::vector<double> rms;
+    std::vector<double> tail_abs;
+    std::vector<double> tail_pos;
+    std::vector<double> tail_neg;
+    std::vector<double> excess_abs;
+    std::vector<double> excess_pos;
+    std::vector<double> excess_neg;
+    std::vector<double> skew;
+};
+
 inline double mapdiag_vector_median(const std::vector<double> &values,
                                     double fill_value) {
     if (values.empty()) {
