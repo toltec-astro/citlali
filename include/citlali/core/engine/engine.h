@@ -6452,9 +6452,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         map_names[idx] = labels.map_name;
 
         auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = mb->calc_cov_region(i);
-        if (!std::isfinite(weight_threshold) || weight_threshold < 0.0) {
-            weight_threshold = 0.0;
-        }
+        weight_threshold =
+            citlali::pipeline::mapdiag_weight_threshold_or_zero(
+                weight_threshold);
         weight_thresholds[idx] = weight_threshold;
         if (idx < mb->edge_guard_applied.size()) {
             edge_guard_applied[idx] = mb->edge_guard_applied[idx];
