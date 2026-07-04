@@ -7394,7 +7394,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
                         sort_mapdiag_current_pixel_candidates(candidates);
                         const std::size_t n_emit =
-                            mapdiag_pixel_candidate_emit_count(candidates);
+                            mapdiag_current_pixel_candidate_emit_count(
+                                candidates);
                         std::vector<detector_dominance_t> dominance;
 
                         for (std::size_t ci = 0; ci < n_emit; ++ci) {
