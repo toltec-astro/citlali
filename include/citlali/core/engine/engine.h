@@ -7007,6 +7007,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 mapdiag_detector_penalty_reason(), fruit_iter, entry,
                 array_id);
         };
+    auto assign_mapdiag_current_detector_penalty_dominance =
+        [](ReductionLearningState::DetectorPenalty &penalty,
+           const detector_dominance_t &entry) {
+            citlali::pipeline::assign_mapdiag_detector_penalty_dominance(
+                penalty, entry);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
