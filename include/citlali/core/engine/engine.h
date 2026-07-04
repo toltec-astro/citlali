@@ -6763,12 +6763,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 mb->coverage, map_i, row, col, mb->n_rows, mb->n_cols,
                 ptc_fs_hz, fill_double);
         };
-    auto mapdiag_passes_current_min_abs_z =
-        [&](double z) {
-            return citlali::pipeline::mapdiag_passes_min_abs_z(
-                z, citlali::pipeline::mapdiag_min_abs_z(
-                       reduction_learning));
-        };
     auto make_mapdiag_current_pixel_candidate =
         [&](Eigen::Index row, Eigen::Index col, double value,
             double weight, double n_eff, double z,
@@ -7095,8 +7089,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 const double z =
                                     citlali::pipeline::mapdiag_robust_z(
                                         sn, robust_stats);
-                                if (!mapdiag_passes_current_min_abs_z(
-                                        z)) {
+                                if (!citlali::pipeline::
+                                        mapdiag_passes_min_abs_z(
+                                            z,
+                                            citlali::pipeline::
+                                                mapdiag_min_abs_z(
+                                                    reduction_learning))) {
                                     continue;
                                 }
 
