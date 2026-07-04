@@ -156,6 +156,12 @@ inline void add_mapdiag_metadata_vars(
     add_mapdiag_edge_guard_config_vars(fo, edge_guard);
 }
 
+inline void add_mapdiag_metadata_vars(
+    netCDF::NcFile &fo, const MapdiagMetadataVars &values) {
+    add_mapdiag_metadata_vars(
+        fo, values.identity, values.runtime, values.edge_guard);
+}
+
 inline void put_netcdf_string_1d(
     netCDF::NcFile &fo, const std::string &name, netCDF::NcDim dim,
     const std::vector<std::string> &values,
