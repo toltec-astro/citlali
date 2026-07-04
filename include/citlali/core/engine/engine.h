@@ -6085,11 +6085,6 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
         /* coverage bool and signal-to-noise maps */
         if (!mb->coverage.empty()) {
-            // need these to use eigen select
-            Eigen::MatrixXd ones, zeros;
-            ones.setOnes(mb->weight[i].rows(), mb->weight[i].cols());
-            zeros.setZero(mb->weight[i].rows(), mb->weight[i].cols());
-
             // get weight threshold for current map
             auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = mb->calc_cov_region(i);
             if (citlali::pipeline::has_nonfinite_weight_threshold(
@@ -6099,8 +6094,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             }
             weight_threshold =
                 citlali::pipeline::weight_threshold_or_zero(weight_threshold);
-            // if weight is less than threshold, set to zero, otherwise set to one
-            Eigen::MatrixXd coverage_bool = (mb->weight[i].array() < weight_threshold).select(zeros,ones);
+            Eigen::MatrixXd coverage_bool =
+                citlali::pipeline::coverage_mask_from_weight(
+                    mb->weight[i], weight_threshold);
 
             // coverage bool map
             add_map_hdu_with_wcs(
