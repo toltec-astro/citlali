@@ -6985,6 +6985,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_array_id_or_default(
                 map_index, calib.arrays, -1);
         };
+    auto mapdiag_current_dominance_meets_min_pixels =
+        [](const detector_dominance_t &entry, int min_pixels) {
+            return citlali::pipeline::mapdiag_dominance_meets_min_pixels(
+                entry, min_pixels);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
