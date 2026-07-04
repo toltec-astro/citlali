@@ -6144,9 +6144,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                     citlali::pipeline::point_source_flux_map_hdu_name(
                         map_name, stokes_suffix),
                     mb->signal[i]);
-                citlali::pipeline::add_image_unit_description_keys(
-                    *fits_io->at(map_index).hdus.back(), mb->sig_unit,
-                    citlali::pipeline::point_source_flux_map_description());
+                citlali::pipeline::add_point_source_flux_map_metadata(
+                    *fits_io->at(map_index).hdus.back(), mb->sig_unit);
                 citlali::pipeline::add_point_source_response_norm_key(
                     *fits_io->at(map_index).hdus.back(), 1.0);
 
@@ -6154,20 +6153,15 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                     citlali::pipeline::point_source_uncertainty_map_hdu_name(
                         map_name, stokes_suffix),
                     mb->point_source_uncertainty[i]);
-                citlali::pipeline::add_image_unit_description_keys(
-                    *fits_io->at(map_index).hdus.back(), mb->sig_unit,
-                    citlali::pipeline::point_source_uncertainty_map_description());
+                citlali::pipeline::add_point_source_uncertainty_map_metadata(
+                    *fits_io->at(map_index).hdus.back(), mb->sig_unit);
 
                 add_map_hdu_with_wcs(
                     citlali::pipeline::point_source_snr_map_hdu_name(
                         map_name, stokes_suffix),
                     mb->sig2noise_point_source[i]);
-                citlali::pipeline::add_image_unit_type_description_keys(
-                    *fits_io->at(map_index).hdus.back(),
-                    citlali::pipeline::not_applicable_image_unit(),
-                    citlali::pipeline::point_source_snr_estimator_type(),
-                    citlali::pipeline::snr_estimator_type_comment(),
-                    citlali::pipeline::point_source_snr_map_description());
+                citlali::pipeline::add_point_source_snr_map_metadata(
+                    *fits_io->at(map_index).hdus.back());
             }
         }
 
