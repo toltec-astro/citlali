@@ -197,6 +197,11 @@ mapdiag_positive_mask(const Eigen::ArrayXXd &mask) {
     return mask > 0.0;
 }
 
+template <class Mask>
+double mapdiag_mask_count_as_double(const Mask &mask) {
+    return static_cast<double>(mask.count());
+}
+
 inline bool mapdiag_has_matrix_samples(const Eigen::MatrixXd &matrix) {
     return matrix.size() > 0;
 }
