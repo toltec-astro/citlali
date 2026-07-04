@@ -1093,6 +1093,11 @@ double mapdiag_min_abs_z(const ReductionLearning &reduction_learning) {
     return reduction_learning.options.map_pixel_outlier_min_abs_z;
 }
 
+template <class ReductionLearning>
+int mapdiag_candidate_top_n(const ReductionLearning &reduction_learning) {
+    return reduction_learning.options.map_pixel_outlier_top_n;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {

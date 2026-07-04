@@ -7115,7 +7115,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [&](const std::vector<map_pixel_candidate_t> &candidates) {
             return citlali::pipeline::mapdiag_candidate_emit_count(
                 candidates.size(),
-                reduction_learning.options.map_pixel_outlier_top_n);
+                citlali::pipeline::mapdiag_candidate_top_n(
+                    reduction_learning));
         };
     auto mapdiag_current_pixel_candidate_emit_count =
         [&](const std::vector<map_pixel_candidate_t> &candidates) {
