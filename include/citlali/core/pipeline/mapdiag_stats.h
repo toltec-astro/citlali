@@ -60,6 +60,13 @@ struct MapdiagNoiseTailSummary {
     double skew;
 };
 
+struct MapdiagNoiseProductStats {
+    double weight_median_ratio;
+    double weight_scale;
+    double s2n_sigma;
+    double valid_pixels;
+};
+
 inline void MapdiagNoiseTailSamples::reserve(std::size_t n_noise) {
     rms.reserve(n_noise);
     tail_abs.reserve(n_noise);
