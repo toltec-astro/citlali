@@ -6848,6 +6848,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 contrib_variance_weight, total_variance_weight,
                 remaining_weight);
         };
+    auto mapdiag_full_leave_one_out_value =
+        [](double total_signal, double contrib_signal,
+           double remaining_weight) {
+            return (total_signal - contrib_signal) / remaining_weight;
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
