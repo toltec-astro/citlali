@@ -6912,9 +6912,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     citlali::pipeline::add_obsnum_var(
         fo, mapdiag_context.is_coadd ? -1 : std::stoi(obsnum));
 
-    netCDF::NcDim n_maps_dim = fo.addDim("n_maps", mapdiag_context.n_maps);
-    netCDF::NcDim n_obsnums_dim = fo.addDim("n_obsnums", mapdiag_context.n_obsnums);
-    std::vector<netCDF::NcDim> map_obs_dims = {n_maps_dim, n_obsnums_dim};
+    const auto mapdiag_dims =
+        citlali::pipeline::add_mapdiag_netcdf_dims(fo, mapdiag_context);
 
     add_netcdf_var<std::string>(fo, "MAP_STAGE", stage_name);
     add_netcdf_var<std::string>(fo, "MAP_BUFFER", mb->name);
@@ -6934,33 +6933,33 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     add_netcdf_var(fo, "MAP_EDGE_GUARD_RADIUS_FWHM", wiener_filter.edge_guard_radius_fwhm);
     add_netcdf_var(fo, "MAP_EDGE_GUARD_TAPER_MIN_FRACTION", wiener_filter.edge_taper_min_fraction);
 
-    put_string_1d(fo, "map_array_name", n_maps_dim, array_names, "array label for each map row");
-    put_string_1d(fo, "map_stokes", n_maps_dim, stokes_names, "stokes parameter label for each map row");
-    put_string_1d(fo, "map_name", n_maps_dim, map_names, "grouping-derived map label prefix for each map row");
+    put_string_1d(fo, "map_array_name", mapdiag_dims.maps, array_names, "array label for each map row");
+    put_string_1d(fo, "map_stokes", mapdiag_dims.maps, stokes_names, "stokes parameter label for each map row");
+    put_string_1d(fo, "map_name", mapdiag_dims.maps, map_names, "grouping-derived map label prefix for each map row");
 
     const auto obsnum_strings =
         citlali::pipeline::mapdiag_obsnum_labels(mb->obsnums, obsnum);
-    put_string_1d(fo, "coadd_obsnum", n_obsnums_dim, obsnum_strings, "obsnum ordering for map x obsnum contribution tables");
+    put_string_1d(fo, "coadd_obsnum", mapdiag_dims.obsnums, obsnum_strings, "obsnum ordering for map x obsnum contribution tables");
 
     const auto dateobs_strings =
         citlali::pipeline::mapdiag_dateobs_labels(date_obs, mapdiag_context.n_obsnums);
-    put_string_1d(fo, "coadd_dateobs", n_obsnums_dim, dateobs_strings, "DATEOBS ordering matching coadd_obsnum");
+    put_string_1d(fo, "coadd_dateobs", mapdiag_dims.obsnums, dateobs_strings, "DATEOBS ordering matching coadd_obsnum");
 
     auto add_map_double = [&](const std::string &name, const std::string &comment, const std::vector<double> &values) {
         citlali::pipeline::add_mapdiag_double_1d(
-            fo, name, comment, n_maps_dim, values);
+            fo, name, comment, mapdiag_dims.maps, values);
     };
     auto add_map_int = [&](const std::string &name, const std::string &comment, const std::vector<int> &values) {
         citlali::pipeline::add_mapdiag_int_1d(
-            fo, name, comment, n_maps_dim, values);
+            fo, name, comment, mapdiag_dims.maps, values);
     };
     auto add_map_obs_double = [&](const std::string &name, const std::string &comment, const std::vector<double> &values) {
         citlali::pipeline::add_mapdiag_double_2d(
-            fo, name, comment, map_obs_dims, values);
+            fo, name, comment, mapdiag_dims.map_obs, values);
     };
     auto add_map_obs_int = [&](const std::string &name, const std::string &comment, const std::vector<int> &values) {
         citlali::pipeline::add_mapdiag_int_2d(
-            fo, name, comment, map_obs_dims, values);
+            fo, name, comment, mapdiag_dims.map_obs, values);
     };
 
     citlali::pipeline::add_mapdiag_map_double_vars(
