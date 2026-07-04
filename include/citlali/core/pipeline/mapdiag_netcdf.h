@@ -429,6 +429,17 @@ void add_mapdiag_map_double_vars(
                values.edge_guard_exterior_max_abs_post);
 }
 
+inline void add_mapdiag_map_double_vars(
+    netCDF::NcFile &fo, const MapdiagNetcdfDims &dims,
+    const MapdiagMapDoubleValues &values) {
+    auto add_double = [&](const std::string &name,
+                          const std::string &comment,
+                          const std::vector<double> &var_values) {
+        add_mapdiag_map_double_var(fo, dims, name, comment, var_values);
+    };
+    add_mapdiag_map_double_vars(add_double, values);
+}
+
 struct MapdiagMapIntValues {
     const std::vector<int> &n_valid_pixels;
     const std::vector<int> &n_core_pixels;
