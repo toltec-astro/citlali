@@ -796,6 +796,11 @@ void assign_mapdiag_outlier_record_candidate(
     record.source_protected = candidate.source_protected;
 }
 
+inline bool mapdiag_dominance_meets_min_pixels(
+    const MapdiagDetectorDominance &entry, int min_pixels) {
+    return entry.count >= min_pixels;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
