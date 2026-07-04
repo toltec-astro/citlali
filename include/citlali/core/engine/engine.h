@@ -5919,7 +5919,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     }
 
     // add telescope file header information
-    if (mb->obsnums.size()==1) {
+    if (citlali::pipeline::phdu_has_single_observation(mb->obsnums)) {
         logger->debug("adding tel params");
         citlali::pipeline::add_phdu_telescope_header_keys(
             fits_entry, name, logger, telescope.tel_header);
