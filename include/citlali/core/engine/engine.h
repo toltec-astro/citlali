@@ -6784,8 +6784,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     citlali::pipeline::mapdiag_mask_count_as_double(
                         valid_core);
                 for (Eigen::Index n = 0; n < mb->n_noise; ++n) {
+                    const auto noise_offset =
+                        citlali::pipeline::mapdiag_noise_realization_offset(
+                            n, mb->n_rows, mb->n_cols);
                     Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(
-                        mb->noise[i].data() + n * mb->n_rows * mb->n_cols, mb->n_rows, mb->n_cols);
+                        mb->noise[i].data() + noise_offset, mb->n_rows, mb->n_cols);
                     if (valid_core_count > 0.0) {
                         noise_samples.rms.push_back(
                             citlali::pipeline::mapdiag_core_noise_rms(
