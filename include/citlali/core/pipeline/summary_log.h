@@ -128,4 +128,22 @@ inline float chunk_flagged_detector_percent(long long n_flagged,
            static_cast<float>(n_detectors);
 }
 
+inline void write_chunk_detector_flag_summary(std::ostream &stream,
+                                              long long n_apt_flagged,
+                                              long long n_low_weight,
+                                              long long n_high_weight,
+                                              long long n_detectors) {
+    stream << "-Number of detectors flagged in APT table: "
+           << n_apt_flagged << "\n";
+    stream << "-Number of detectors flagged below weight limit: "
+           << n_low_weight << "\n";
+    stream << "-Number of detectors flagged above weight limit: "
+           << n_high_weight << "\n";
+    const auto n_flagged = chunk_flagged_detector_count(
+        n_low_weight, n_high_weight, n_apt_flagged);
+    stream << "-Number of detectors flagged: " << n_flagged << " ("
+           << chunk_flagged_detector_percent(n_flagged, n_detectors)
+           << "%)\n";
+}
+
 }  // namespace citlali::pipeline
