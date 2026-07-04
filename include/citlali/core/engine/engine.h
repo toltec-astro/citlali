@@ -6792,6 +6792,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [&](Eigen::Index map_i, Eigen::Index row, Eigen::Index col) {
             return mb->signal[map_i](row, col);
         };
+    auto mapdiag_current_weight_value =
+        [&](Eigen::Index map_i, Eigen::Index row, Eigen::Index col) {
+            return mb->weight[map_i](row, col);
+        };
     auto mapdiag_current_effective_samples =
         [&](Eigen::Index map_i, Eigen::Index row, Eigen::Index col,
             double ptc_fs_hz) {
