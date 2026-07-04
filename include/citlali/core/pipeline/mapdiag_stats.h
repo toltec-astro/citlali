@@ -726,6 +726,15 @@ inline MapdiagNoiseMatrix mapdiag_noise_matrix(
         n_rows, n_cols);
 }
 
+template <class MapBuffer>
+MapdiagNoiseMatrix mapdiag_noise_matrix(
+    const MapBuffer &mb, Eigen::Index map_index,
+    Eigen::Index realization_index) {
+    return mapdiag_noise_matrix(
+        mb->noise[map_index].data(), realization_index,
+        mapdiag_n_rows(mb), mapdiag_n_cols(mb));
+}
+
 inline double mapdiag_center_pixel_coordinate(Eigen::Index n_pixels) {
     return (static_cast<double>(n_pixels) - 1.0) / 2.0;
 }
