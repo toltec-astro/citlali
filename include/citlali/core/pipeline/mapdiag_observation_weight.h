@@ -182,4 +182,14 @@ inline void assign_mapdiag_single_obs_entry(
         map_core_pixels, tables);
 }
 
+template <class Context>
+void assign_mapdiag_single_obs_entry(
+    const Context &context, std::size_t map_index, double map_weight_sum,
+    double map_core_weight_sum, int map_valid_pixels, int map_core_pixels,
+    MapdiagObsTableRefs tables) {
+    assign_mapdiag_single_obs_entry(
+        map_index * context.n_obsnums, map_weight_sum, map_core_weight_sum,
+        map_valid_pixels, map_core_pixels, tables);
+}
+
 }  // namespace citlali::pipeline
