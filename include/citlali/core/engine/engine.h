@@ -6863,10 +6863,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 z, citlali::pipeline::mapdiag_min_abs_z(
                        reduction_learning));
         };
-    auto mapdiag_current_candidate_passes_min_abs_z =
-        [&](double z) {
-            return mapdiag_passes_current_min_abs_z(z);
-        };
     auto mapdiag_has_valid_current_robust_center_stats =
         [](const auto &robust_stats) {
             return citlali::pipeline::mapdiag_has_valid_robust_center_stats(
@@ -7300,7 +7296,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 const double z =
                                     mapdiag_current_robust_z(
                                         sn, robust_stats);
-                                if (!mapdiag_current_candidate_passes_min_abs_z(
+                                if (!mapdiag_passes_current_min_abs_z(
                                         z)) {
                                     continue;
                                 }
