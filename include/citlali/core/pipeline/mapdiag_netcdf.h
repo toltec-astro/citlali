@@ -95,6 +95,13 @@ inline void add_mapdiag_identity_vars(
     add_netcdf_var<std::string>(fo, "OBSGOAL", values.obs_goal);
 }
 
+inline void add_mapdiag_runtime_vars(
+    netCDF::NcFile &fo, const MapdiagRuntimeVars &values) {
+    add_netcdf_var(fo, "MAP_PIXEL_SIZE_RAD", values.pixel_size_rad);
+    add_netcdf_var(fo, "MAP_COVERAGE_CUT", values.coverage_cut);
+    add_netcdf_var<std::string>(fo, "MAP_SIG_UNIT", values.signal_unit);
+}
+
 inline void put_netcdf_string_1d(
     netCDF::NcFile &fo, const std::string &name, netCDF::NcDim dim,
     const std::vector<std::string> &values,
