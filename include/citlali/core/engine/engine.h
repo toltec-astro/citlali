@@ -6853,16 +6853,19 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto mapdiag_current_signal_value =
         [&](Eigen::Index map_i, Eigen::Index row, Eigen::Index col) {
-            return mb->signal[map_i](row, col);
+            return citlali::pipeline::mapdiag_matrix_double_value(
+                mb->signal[map_i], row, col);
         };
     auto mapdiag_current_weight_value =
         [&](Eigen::Index map_i, Eigen::Index row, Eigen::Index col) {
-            return mb->weight[map_i](row, col);
+            return citlali::pipeline::mapdiag_matrix_double_value(
+                mb->weight[map_i], row, col);
         };
     auto mapdiag_current_sig2noise_value =
         [](const Eigen::MatrixXd &sig2noise, Eigen::Index row,
            Eigen::Index col) {
-            return sig2noise(row, col);
+            return citlali::pipeline::mapdiag_matrix_double_value(
+                sig2noise, row, col);
         };
     auto mapdiag_current_effective_samples =
         [&](Eigen::Index map_i, Eigen::Index row, Eigen::Index col,
@@ -6966,7 +6969,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto mapdiag_current_contributor_signal =
         [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
-            return mb->contribution_signal[map_st](row, col);
+            return citlali::pipeline::mapdiag_matrix_double_value(
+                mb->contribution_signal[map_st], row, col);
         };
     auto mapdiag_has_current_valid_contributor =
         [&](int uid, double contrib_signal) {
@@ -6993,23 +6997,28 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto mapdiag_current_contributor_weight =
         [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
-            return mb->contribution_weight[map_st](row, col);
+            return citlali::pipeline::mapdiag_matrix_double_value(
+                mb->contribution_weight[map_st], row, col);
         };
     auto mapdiag_current_contributor_variance_weight =
         [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
-            return mb->contribution_variance_weight[map_st](row, col);
+            return citlali::pipeline::mapdiag_matrix_double_value(
+                mb->contribution_variance_weight[map_st], row, col);
         };
     auto mapdiag_current_total_signal =
         [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
-            return mb->contribution_total_signal[map_st](row, col);
+            return citlali::pipeline::mapdiag_matrix_double_value(
+                mb->contribution_total_signal[map_st], row, col);
         };
     auto mapdiag_current_total_weight =
         [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
-            return mb->contribution_total_weight[map_st](row, col);
+            return citlali::pipeline::mapdiag_matrix_double_value(
+                mb->contribution_total_weight[map_st], row, col);
         };
     auto mapdiag_current_total_variance_weight =
         [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
-            return mb->contribution_total_variance_weight[map_st](row, col);
+            return citlali::pipeline::mapdiag_matrix_double_value(
+                mb->contribution_total_variance_weight[map_st], row, col);
         };
     auto mapdiag_remaining_contribution_weight =
         [](double total_weight, double contrib_weight) {
