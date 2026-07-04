@@ -42,6 +42,11 @@ inline std::string spectral_histogram_bins_dim_name() {
     return "n_bins";
 }
 
+inline netCDF::NcDim add_spectral_histogram_bins_dim(netCDF::NcFile &fo,
+                                                     std::size_t n_bins) {
+    return fo.addDim(spectral_histogram_bins_dim_name(), n_bins);
+}
+
 template <class NoiseList>
 bool has_spectral_noise_products(const NoiseList &noise) {
     return !noise.empty();
