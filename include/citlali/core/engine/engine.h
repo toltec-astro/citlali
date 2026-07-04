@@ -6980,6 +6980,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return reduction_learning.options
                 .map_pixel_outlier_detector_exclusion_min_pixels;
         };
+    auto mapdiag_current_detector_penalty_array_id =
+        [&](const auto &map_index) {
+            return citlali::pipeline::mapdiag_array_id_or_default(
+                map_index, calib.arrays, -1);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
