@@ -7370,7 +7370,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                                 mapdiag_current_candidate_raw_weighted_signal(
                                                     value, wt);
                                             const double loo_value =
-                                                mapdiag_fallback_leave_one_out_value(
+                                                mapdiag_current_candidate_fallback_leave_one_out_value(
                                                     raw_sum, contrib_signal,
                                                     wt, contrib_weight);
                                             assign_mapdiag_current_candidate_leave_one_out_z(
