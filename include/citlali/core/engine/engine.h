@@ -6837,10 +6837,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_has_contribution_products(
                 mb, map_i);
         };
-    auto mapdiag_current_uses_contribution_products =
-        [&](Eigen::Index map_i) {
-            return mapdiag_current_has_contribution_products(map_i);
-        };
     auto mapdiag_current_ptc_fs_hz =
         [&]() {
             return processed_time_chunk_fs_hz();
@@ -7308,7 +7304,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             robust_stats)) {
                         auto candidates = make_mapdiag_pixel_candidates();
                         const bool have_contrib =
-                            mapdiag_current_uses_contribution_products(i);
+                            mapdiag_current_has_contribution_products(i);
                         const double ptc_fs_hz = mapdiag_current_ptc_fs_hz();
 
                         for (Eigen::Index r = 0;
