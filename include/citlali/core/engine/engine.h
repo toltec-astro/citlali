@@ -6804,27 +6804,20 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         mapdiag_stats.collect_masked_values(
                             noise_matrix, core_mask);
                     const auto noise_tail = mapdiag_stats.tail_stats(noise_values);
-                    if (std::isfinite(noise_tail.frac_abs3)) {
-                        tail_abs_values.push_back(noise_tail.frac_abs3);
-                    }
-                    if (std::isfinite(noise_tail.frac_pos3)) {
-                        tail_pos_values.push_back(noise_tail.frac_pos3);
-                    }
-                    if (std::isfinite(noise_tail.frac_neg3)) {
-                        tail_neg_values.push_back(noise_tail.frac_neg3);
-                    }
-                    if (std::isfinite(noise_tail.excess_abs3)) {
-                        excess_abs_values.push_back(noise_tail.excess_abs3);
-                    }
-                    if (std::isfinite(noise_tail.excess_pos3)) {
-                        excess_pos_values.push_back(noise_tail.excess_pos3);
-                    }
-                    if (std::isfinite(noise_tail.excess_neg3)) {
-                        excess_neg_values.push_back(noise_tail.excess_neg3);
-                    }
-                    if (std::isfinite(noise_tail.skew)) {
-                        skew_values.push_back(noise_tail.skew);
-                    }
+                    citlali::pipeline::mapdiag_append_finite(
+                        tail_abs_values, noise_tail.frac_abs3);
+                    citlali::pipeline::mapdiag_append_finite(
+                        tail_pos_values, noise_tail.frac_pos3);
+                    citlali::pipeline::mapdiag_append_finite(
+                        tail_neg_values, noise_tail.frac_neg3);
+                    citlali::pipeline::mapdiag_append_finite(
+                        excess_abs_values, noise_tail.excess_abs3);
+                    citlali::pipeline::mapdiag_append_finite(
+                        excess_pos_values, noise_tail.excess_pos3);
+                    citlali::pipeline::mapdiag_append_finite(
+                        excess_neg_values, noise_tail.excess_neg3);
+                    citlali::pipeline::mapdiag_append_finite(
+                        skew_values, noise_tail.skew);
                 }
                 noise_rms_p16[idx] = mapdiag_stats.quantile(noise_rms_values, 0.16);
                 noise_rms_p84[idx] = mapdiag_stats.quantile(noise_rms_values, 0.84);
