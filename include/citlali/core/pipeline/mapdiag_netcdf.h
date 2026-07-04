@@ -8,6 +8,7 @@
 #include <netcdf>
 
 #include <citlali/core/pipeline/mapdiag_labels.h>
+#include <citlali/core/utils/netcdf_io.h>
 
 namespace citlali::pipeline {
 
