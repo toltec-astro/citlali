@@ -6896,9 +6896,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         }
 
         if (!mapdiag_context.is_coadd) {
-            citlali::pipeline::assign_mapdiag_single_obs_entry(
-                mapdiag_context, idx, weight_sum[idx], core_weight_sum[idx],
-                n_valid_pixels[idx], n_core_pixels[idx], obs_tables);
+            assign_mapdiag_single_obs_contribution(idx);
         }
         else {
             for (std::size_t obs_idx = 0; obs_idx < mb->obsnums.size(); ++obs_idx) {
