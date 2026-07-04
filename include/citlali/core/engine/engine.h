@@ -6748,6 +6748,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             citlali::pipeline::assign_mapdiag_core_tail_stats(
                 idx, signal_tail, core_tail_refs);
         };
+    auto assign_mapdiag_current_signal_stats =
+        [&](std::size_t idx, const Eigen::MatrixXd &sig2noise,
+            const auto &core_mask) {
+            assign_mapdiag_current_peak_stats(idx, sig2noise, core_mask);
+            assign_mapdiag_current_core_tail_stats(
+                idx, sig2noise, core_mask);
+        };
     auto mapdiag_current_has_signal_stats =
         [&](Eigen::Index map_i) {
             return citlali::pipeline::mapdiag_has_matrix_samples(
