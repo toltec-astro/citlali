@@ -7172,8 +7172,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto mapdiag_current_detector_exclusion_min_pixels =
         [&]() {
-            return reduction_learning.options
-                .map_pixel_outlier_detector_exclusion_min_pixels;
+            return citlali::pipeline::
+                mapdiag_detector_exclusion_min_pixels(reduction_learning);
         };
     auto mapdiag_current_detector_penalty_array_id =
         [&](const auto &map_index) {

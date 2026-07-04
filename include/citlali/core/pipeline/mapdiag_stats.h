@@ -1105,6 +1105,13 @@ bool mapdiag_detector_exclusion_enabled(
         .map_pixel_outlier_detector_exclusion_enabled;
 }
 
+template <class ReductionLearning>
+int mapdiag_detector_exclusion_min_pixels(
+    const ReductionLearning &reduction_learning) {
+    return reduction_learning.options
+        .map_pixel_outlier_detector_exclusion_min_pixels;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
