@@ -816,6 +816,15 @@ inline int mapdiag_display_scan_index(int scan) {
     return scan + 1;
 }
 
+template <class ReductionLearning>
+bool mapdiag_outlier_diagnostics_enabled(
+    const ReductionLearning &reduction_learning) {
+    return reduction_learning.is_enabled() &&
+           reduction_learning.diagnostics_enabled() &&
+           reduction_learning.options.map_pixel_outlier_diagnostics_enabled &&
+           reduction_learning.options.map_pixel_outlier_top_n > 0;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
