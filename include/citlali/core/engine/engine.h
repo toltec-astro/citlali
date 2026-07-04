@@ -6605,6 +6605,16 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     map_i, idx, core_mask);
             }
         };
+    auto assign_mapdiag_current_labels =
+        [&](Eigen::Index map_i, std::size_t idx, const auto map_index,
+            const auto stokes_index) {
+            const auto labels = citlali::pipeline::make_mapdiag_map_labels(
+                toltec_io.array_name_map[calib.arrays[map_index]],
+                rtcproc.polarization.stokes_params[stokes_index],
+                get_map_name(map_i));
+            citlali::pipeline::assign_mapdiag_map_labels(
+                idx, labels, {array_names, stokes_names, map_names});
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
