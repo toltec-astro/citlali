@@ -6556,20 +6556,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 }
             }
         };
-    auto assign_mapdiag_obs_contributions =
-        [&](Eigen::Index map_i, std::size_t idx,
-            const auto &core_mask) {
-            if (!mapdiag_context.is_coadd) {
-                citlali::pipeline::assign_mapdiag_single_obs_entry(
-                    mapdiag_context, idx, weight_sum[idx],
-                    core_weight_sum[idx], n_valid_pixels[idx],
-                    n_core_pixels[idx], obs_tables);
-            }
-            else {
-                assign_mapdiag_coadd_obs_contributions(
-                    map_i, idx, core_mask);
-            }
-        };
     const std::string mapdiag_record_producer =
         citlali::pipeline::mapdiag_record_producer(stage_name);
 
@@ -6939,7 +6925,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             }
         }
 
-        assign_mapdiag_obs_contributions(i, idx, core_mask);
+        if (!mapdiag_context.is_coadd) {
+            citlali::pipeline::assign_mapdiag_single_obs_entry(
+                mapdiag_context, idx, weight_sum[idx], core_weight_sum[idx],
+                n_valid_pixels[idx], n_core_pixels[idx], obs_tables);
+        }
+        else {
+            assign_mapdiag_coadd_obs_contributions(i, idx, core_mask);
+        }
         const auto obs_totals =
             citlali::pipeline::sum_mapdiag_obs_weight_totals(
                 obs_weight_sum, obs_core_weight_sum, mapdiag_context, idx);
