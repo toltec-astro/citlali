@@ -6902,8 +6902,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     citlali::pipeline::add_mapdiag_metadata_vars(fo, mapdiag_metadata);
 
     citlali::pipeline::add_mapdiag_label_vars(
-        fo, mapdiag_dims, array_names, stokes_names, map_names,
-        mb->obsnums, obsnum, date_obs, mapdiag_context.n_obsnums);
+        fo, mapdiag_dims, mapdiag_labels);
 
     citlali::pipeline::add_mapdiag_map_double_vars(
         fo, mapdiag_dims, map_double_values);
