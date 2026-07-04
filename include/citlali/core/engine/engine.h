@@ -6789,11 +6789,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                  citlali::pipeline::mapdiag_weight_hdu_name(
                                      map_names[idx], stokes_names[idx]),
                                  e.what());
-                    const std::size_t flat =
-                        citlali::pipeline::mapdiag_obs_flat_index(
-                            mapdiag_context, idx, obs_idx);
                     citlali::pipeline::zero_mapdiag_obs_entry(
-                        flat, obs_tables);
+                        mapdiag_context, idx, obs_idx, obs_tables);
                 }
             }
         }
