@@ -6244,12 +6244,9 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
             rtcproc.polarization.stokes_params, map_name, map_index,
             stokes_index);
 
-        citlali::pipeline::add_psd_product(
-            fo, name, mb->psds[i], mb->psd_freqs[i], mb->psd_2ds[i],
-            mb->psd_2d_freqs[i]);
-
-        citlali::pipeline::add_noise_psd_product_if_present(
-            fo, mb->noise, name, mb->noise_psds, mb->noise_psd_freqs,
+        citlali::pipeline::add_spectral_psd_product(
+            fo, mb->noise, name, mb->psds, mb->psd_freqs, mb->psd_2ds,
+            mb->psd_2d_freqs, mb->noise_psds, mb->noise_psd_freqs,
             mb->noise_psd_2ds, mb->noise_psd_2d_freqs, i);
     }
     });
