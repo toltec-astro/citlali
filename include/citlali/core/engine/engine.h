@@ -6561,6 +6561,17 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 mapdiag_context, idx, weight_sum[idx], core_weight_sum[idx],
                 n_valid_pixels[idx], n_core_pixels[idx], obs_tables);
         };
+    auto assign_mapdiag_obs_contribution_fractions =
+        [&](std::size_t idx) {
+            const auto obs_totals =
+                citlali::pipeline::sum_mapdiag_obs_weight_totals(
+                    obs_weight_sum, obs_core_weight_sum,
+                    mapdiag_context, idx);
+            citlali::pipeline::assign_mapdiag_obs_fraction_pair(
+                obs_weight_sum, obs_totals.weight, obs_core_weight_sum,
+                obs_totals.core_weight, fill_double, mapdiag_context, idx,
+                obs_weight_frac, obs_core_weight_frac);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
