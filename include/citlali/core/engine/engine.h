@@ -6541,6 +6541,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [&](Eigen::Index map_i) {
             return mb->weight[map_i].array();
         };
+    auto mapdiag_current_n_rows =
+        [&]() {
+            return mb->n_rows;
+        };
+    auto mapdiag_current_n_cols =
+        [&]() {
+            return mb->n_cols;
+        };
     auto mapdiag_current_outlier_diagnostics_enabled =
         [&]() {
             return citlali::pipeline::mapdiag_outlier_diagnostics_enabled(
