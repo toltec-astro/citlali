@@ -6555,6 +6555,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             citlali::pipeline::zero_mapdiag_obs_entry(
                 mapdiag_context, map_idx, obs_idx, obs_tables);
         };
+    auto assign_mapdiag_single_obs_contribution =
+        [&](std::size_t idx) {
+            citlali::pipeline::assign_mapdiag_single_obs_entry(
+                mapdiag_context, idx, weight_sum[idx], core_weight_sum[idx],
+                n_valid_pixels[idx], n_core_pixels[idx], obs_tables);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
