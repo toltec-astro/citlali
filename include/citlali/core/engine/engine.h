@@ -6694,10 +6694,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         assign_mapdiag_current_formal_noise_stats(i, idx);
         assign_mapdiag_current_noise_product_stats(i, idx);
 
-        if (citlali::pipeline::mapdiag_has_coverage_map(mb->coverage, i)) {
-            citlali::pipeline::assign_mapdiag_coverage_stats(
-                idx, mb->coverage[i], core_mask, fill_double, coverage_refs);
-        }
+        assign_mapdiag_current_coverage_stats(i, idx, core_mask);
 
         peak_signal[idx] = citlali::pipeline::mapdiag_peak_signal_or_fill(
             mb->signal[i], fill_double);
