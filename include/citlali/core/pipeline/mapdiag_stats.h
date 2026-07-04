@@ -857,6 +857,22 @@ inline bool mapdiag_candidate_has_dominance_key(
            candidate.uid >= 0 && candidate.scan >= 0;
 }
 
+inline std::vector<MapdiagDetectorDominance>
+make_mapdiag_detector_dominance_list() {
+    return {};
+}
+
+inline bool mapdiag_dominance_matches_candidate(
+    const MapdiagDetectorDominance &entry,
+    const MapdiagMapPixelCandidate &candidate) {
+    return entry.uid == candidate.uid && entry.scan == candidate.scan;
+}
+
+inline MapdiagDetectorDominance make_mapdiag_detector_dominance_entry(
+    const MapdiagMapPixelCandidate &candidate) {
+    return {candidate.uid, candidate.scan, 0, 0.0, 0.0};
+}
+
 inline void update_mapdiag_detector_dominance_stats(
     MapdiagDetectorDominance &entry,
     const MapdiagMapPixelCandidate &candidate) {
@@ -870,6 +886,24 @@ inline void update_mapdiag_detector_dominance_stats(
             std::max(entry.max_abs_leave_one_out_z,
                      std::abs(candidate.leave_one_out_z));
     }
+}
+
+inline void update_mapdiag_detector_dominance(
+    std::vector<MapdiagDetectorDominance> &dominance,
+    const MapdiagMapPixelCandidate &candidate, int fill_int) {
+    if (!mapdiag_candidate_has_dominance_key(candidate, fill_int)) {
+        return;
+    }
+    auto it = std::find_if(
+        dominance.begin(), dominance.end(),
+        [&](const auto &entry) {
+            return mapdiag_dominance_matches_candidate(entry, candidate);
+        });
+    if (it == dominance.end()) {
+        dominance.push_back(make_mapdiag_detector_dominance_entry(candidate));
+        it = dominance.end() - 1;
+    }
+    update_mapdiag_detector_dominance_stats(*it, candidate);
 }
 
 inline const char *mapdiag_map_pixel_outlier_reason(bool has_contributor,
