@@ -6747,7 +6747,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 const auto valid_core =
                     citlali::pipeline::mapdiag_valid_core_noise_mask(core_mask);
                 const double valid_core_count =
-                    citlali::pipeline::mapdiag_mask_count_as_double(
+                    citlali::pipeline::mapdiag_valid_core_noise_count(
                         valid_core);
                 for (Eigen::Index n = 0; n < mb->n_noise; ++n) {
                     auto noise_matrix =
