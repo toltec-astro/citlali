@@ -6036,9 +6036,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         citlali::pipeline::add_image_median_error_key(
             *fits_io->at(map_index).hdus.back(), median_err, mb->sig_unit);
 
-        if (i < static_cast<Eigen::Index>(mb->weight_formal.size()) &&
-            mb->weight_formal[i].rows() == mb->n_rows &&
-            mb->weight_formal[i].cols() == mb->n_cols) {
+        if (citlali::pipeline::has_map_image_slot(
+                mb->weight_formal, i, mb->n_rows, mb->n_cols)) {
             add_map_hdu_with_wcs(
                 "weight_formal_" + map_name + stokes_suffix,
                 mb->weight_formal[i]);

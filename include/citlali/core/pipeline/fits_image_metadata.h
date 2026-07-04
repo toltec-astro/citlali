@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Eigen/Core>
+
 #include <string>
 
 namespace citlali::pipeline {
@@ -26,6 +28,14 @@ inline const char *weight_map_description(bool empirical_calibration) {
     return empirical_calibration
         ? "Jackknife-calibrated inverse variance weight map"
         : "Formal mapmaker inverse variance weight map";
+}
+
+template <class ImageList>
+bool has_map_image_slot(const ImageList &images, Eigen::Index i,
+                        Eigen::Index n_rows, Eigen::Index n_cols) {
+    return i < static_cast<Eigen::Index>(images.size()) &&
+           images[i].rows() == n_rows &&
+           images[i].cols() == n_cols;
 }
 
 template <class Hdu>
