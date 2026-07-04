@@ -6527,14 +6527,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 obs_dir, redu_type, array_name, obsnum_i,
                 telescope.sim_obs) + ".fits";
         };
-    auto warn_mapdiag_obs_weight_failure =
-        [&](const std::string &obs_weight_path,
-            const std::string &weight_hdu_name,
-            const std::exception &e) {
-            logger->warn(
-                "failed to derive mapdiag contribution from {} [{}]: {}",
-                obs_weight_path, weight_hdu_name, e.what());
-        };
     auto assign_mapdiag_coadd_obs_contributions =
         [&](Eigen::Index map_i, std::size_t idx,
             const auto &core_mask) {
@@ -6556,8 +6548,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         mb->n_cols, core_mask, obs_weight, obs_idx,
                         obs_tables);
                 } catch (const std::exception &e) {
-                    warn_mapdiag_obs_weight_failure(
-                        obs_weight_path, weight_hdu_name, e);
+                    logger->warn(
+                        "failed to derive mapdiag contribution from {} [{}]: {}",
+                        obs_weight_path, weight_hdu_name, e.what());
                     citlali::pipeline::zero_mapdiag_obs_entry(
                         mapdiag_context, idx, obs_idx, obs_tables);
                 }
