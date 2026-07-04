@@ -6972,14 +6972,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                             mapdiag_remaining_contribution_weight(
                                                 total_weight,
                                                 contrib_weight);
-                                        if (citlali::pipeline::
-                                                mapdiag_has_full_leave_one_out_inputs(
-                                                    total_signal,
-                                                    total_weight,
-                                                    contrib_weight,
-                                                    contrib_variance_weight,
-                                                    total_variance_weight,
-                                                    remaining_weight)) {
+                                        if (mapdiag_has_current_full_leave_one_out_inputs(
+                                                total_signal, total_weight,
+                                                contrib_weight,
+                                                contrib_variance_weight,
+                                                total_variance_weight,
+                                                remaining_weight)) {
                                             const double loo_value =
                                                 (total_signal - contrib_signal) /
                                                 remaining_weight;
