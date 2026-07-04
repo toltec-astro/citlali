@@ -7162,8 +7162,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             const int min_pixels =
                                 mapdiag_current_detector_exclusion_min_pixels();
                             const int array_id =
-                                citlali::pipeline::mapdiag_array_id_or_default(
-                                    map_index, calib.arrays, -1);
+                                mapdiag_current_detector_penalty_array_id(
+                                    map_index);
                             for (const auto &entry : dominance) {
                                 if (!citlali::pipeline::
                                         mapdiag_dominance_meets_min_pixels(
