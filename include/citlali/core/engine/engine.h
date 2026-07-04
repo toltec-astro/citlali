@@ -6939,6 +6939,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 candidate.has_contributor,
                 mb->contribution_diag_targeted);
         };
+    auto mapdiag_outlier_record_map_index =
+        [](Eigen::Index map_i) {
+            return static_cast<int>(map_i);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
