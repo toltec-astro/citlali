@@ -29,6 +29,7 @@ struct MapdiagStatsContext {
     double quantile(std::vector<double> values, double q) const;
     std::vector<double> collect_masked_values(
         const Eigen::MatrixXd &matrix, const Eigen::ArrayXXd &mask) const;
+    MapdiagTailStats tail_stats(const std::vector<double> &values) const;
 };
 
 inline double mapdiag_vector_median(const std::vector<double> &values,
@@ -246,6 +247,11 @@ inline MapdiagTailStats mapdiag_tail_stats(const std::vector<double> &values,
     stats.excess_neg3 = stats.frac_neg3 / gauss_pos3;
     stats.skew = skew_sum / n;
     return stats;
+}
+
+inline MapdiagTailStats MapdiagStatsContext::tail_stats(
+    const std::vector<double> &values) const {
+    return mapdiag_tail_stats(values, fill_value);
 }
 
 }  // namespace citlali::pipeline
