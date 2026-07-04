@@ -6122,7 +6122,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                     map_name, stokes_suffix),
                 coverage_bool);
             citlali::pipeline::add_image_unit_description_keys(
-                *fits_io->at(map_index).hdus.back(), "N/A",
+                *fits_io->at(map_index).hdus.back(),
+                citlali::pipeline::not_applicable_image_unit(),
                 citlali::pipeline::coverage_mask_map_description());
             citlali::pipeline::add_image_weight_threshold_key(
                 *fits_io->at(map_index).hdus.back(), weight_threshold);
@@ -6141,7 +6142,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                     map_name, stokes_suffix),
                 sig2noise);
             citlali::pipeline::add_image_unit_type_description_keys(
-                *fits_io->at(map_index).hdus.back(), "N/A", "pixel",
+                *fits_io->at(map_index).hdus.back(),
+                citlali::pipeline::not_applicable_image_unit(), "pixel",
                 "S/N estimator type",
                 citlali::pipeline::legacy_pixel_snr_map_description());
 
@@ -6150,7 +6152,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                     map_name, stokes_suffix),
                 sig2noise);
             citlali::pipeline::add_image_unit_type_description_keys(
-                *fits_io->at(map_index).hdus.back(), "N/A", "pixel",
+                *fits_io->at(map_index).hdus.back(),
+                citlali::pipeline::not_applicable_image_unit(), "pixel",
                 "S/N estimator type",
                 citlali::pipeline::pixel_snr_map_description());
 
@@ -6184,7 +6187,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                         map_name, stokes_suffix),
                     mb->sig2noise_point_source[i]);
                 citlali::pipeline::add_image_unit_type_description_keys(
-                    *fits_io->at(map_index).hdus.back(), "N/A", "point_source",
+                    *fits_io->at(map_index).hdus.back(),
+                    citlali::pipeline::not_applicable_image_unit(),
+                    "point_source",
                     "S/N estimator type",
                     citlali::pipeline::point_source_snr_map_description());
             }
