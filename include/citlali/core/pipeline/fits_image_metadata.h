@@ -5,6 +5,7 @@
 #include <cmath>
 #include <limits>
 #include <string>
+#include <tuple>
 
 namespace citlali::pipeline {
 
@@ -62,6 +63,28 @@ inline const char *kernel_type_comment() {
 
 inline const char *snr_estimator_type_comment() {
     return "S/N estimator type";
+}
+
+inline double invalid_kernel_fwhm_arcsec() {
+    return -99.0;
+}
+
+template <class ArrayFwhm>
+double kernel_fwhm_arcsec(const std::string &kernel_type,
+                          double kernel_fwhm_rad,
+                          const ArrayFwhm &array_fwhm,
+                          double rad_to_arcsec) {
+    if (kernel_type == "fits") {
+        return invalid_kernel_fwhm_arcsec();
+    }
+    if (kernel_fwhm_rad <= 0) {
+        return (std::get<0>(array_fwhm) + std::get<1>(array_fwhm)) / 2;
+    }
+    return kernel_fwhm_rad * rad_to_arcsec;
+}
+
+inline bool has_nonfinite_kernel_fwhm(double fwhm_arcsec) {
+    return !std::isfinite(fwhm_arcsec);
 }
 
 inline const char *signal_map_description() {
