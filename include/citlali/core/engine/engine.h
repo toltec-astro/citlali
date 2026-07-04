@@ -6784,8 +6784,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(
                         mb->noise[i].data() + n * mb->n_rows * mb->n_cols, mb->n_rows, mb->n_cols);
                     if (valid_core_count > 0.0) {
-                        const double rms_sq = (valid_core.select(noise_matrix.array().square(), 0.0)).sum();
-                        noise_samples.rms.push_back(std::sqrt(rms_sq / valid_core_count));
+                        noise_samples.rms.push_back(
+                            citlali::pipeline::mapdiag_core_noise_rms(
+                                noise_matrix, valid_core, valid_core_count));
                     }
                     const auto noise_values =
                         mapdiag_stats.collect_masked_values(
