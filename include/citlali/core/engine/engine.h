@@ -6244,14 +6244,9 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
             rtcproc.polarization.stokes_params, map_name, map_index,
             stokes_index);
 
-        const auto dims = citlali::pipeline::add_psd_netcdf_dims_for_image(
-            fo, name, mb->psds[i], mb->psd_2ds[i]);
-
-        citlali::pipeline::add_psd_vector_pair(
-            fo, name, dims.spectrum, mb->psds[i], mb->psd_freqs[i]);
-
-        citlali::pipeline::add_transposed_psd_image_pair(
-            fo, name, dims.image, mb->psd_2ds[i], mb->psd_2d_freqs[i]);
+        citlali::pipeline::add_psd_product(
+            fo, name, mb->psds[i], mb->psd_freqs[i], mb->psd_2ds[i],
+            mb->psd_2d_freqs[i]);
 
         if (citlali::pipeline::has_spectral_noise_products(mb->noise)) {
             const std::string noise_name =
