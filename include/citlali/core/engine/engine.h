@@ -6781,6 +6781,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_has_minimum_samples(
                 values.size(), 8);
         };
+    auto mapdiag_current_has_enough_off_source_values =
+        [&](const std::vector<double> &values) {
+            return mapdiag_has_enough_off_source_values(values);
+        };
     auto make_mapdiag_robust_center_stats =
         [&](const std::vector<double> &values) {
             return citlali::pipeline::mapdiag_robust_center_stats(
