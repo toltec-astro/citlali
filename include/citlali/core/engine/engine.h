@@ -7517,7 +7517,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     make_mapdiag_current_valid_core_noise_mask(core_mask);
                 const double valid_core_count =
                     mapdiag_current_valid_core_noise_count(valid_core);
-                for (Eigen::Index n = 0; n < mb->n_noise; ++n) {
+                for (Eigen::Index n = 0;
+                     n < mapdiag_current_noise_realization_count(); ++n) {
                     auto noise_matrix =
                         make_mapdiag_current_noise_matrix(i, n);
                     add_mapdiag_current_noise_realization_samples(
