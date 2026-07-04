@@ -6528,15 +6528,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         sig2noise, off_source_core_mask);
                 if (citlali::pipeline::mapdiag_has_minimum_samples(
                         off_source_values.size(), 8)) {
-                    const double center = mapdiag_stats.median(off_source_values);
-                    std::vector<double> abs_dev;
-                    abs_dev.reserve(off_source_values.size());
-                    for (const auto &value : off_source_values) {
-                        abs_dev.push_back(std::abs(value - center));
-                    }
-                    const double robust_sigma = 1.4826 * mapdiag_stats.median(abs_dev);
-                    if (std::isfinite(center) && std::isfinite(robust_sigma) &&
-                        robust_sigma > std::numeric_limits<double>::epsilon()) {
+                    const auto robust_stats =
+                        citlali::pipeline::mapdiag_robust_center_stats(
+                            mapdiag_stats, off_source_values);
+                    if (std::isfinite(robust_stats.center) &&
+                        std::isfinite(robust_stats.robust_sigma) &&
+                        robust_stats.robust_sigma >
+                            std::numeric_limits<double>::epsilon()) {
                         std::vector<map_pixel_candidate_t> candidates;
                         const bool have_contrib =
                             i < static_cast<Eigen::Index>(mb->contribution_uid.size()) &&
@@ -6580,7 +6578,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     continue;
                                 }
 
-                                const double z = (sn - center) / robust_sigma;
+                                const double z =
+                                    (sn - robust_stats.center) /
+                                    robust_stats.robust_sigma;
                                 if (!std::isfinite(z) ||
                                     std::abs(z) <
                                         reduction_learning.options.map_pixel_outlier_min_abs_z) {
