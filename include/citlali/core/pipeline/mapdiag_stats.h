@@ -631,6 +631,11 @@ Eigen::Index mapdiag_n_cols(const MapBuffer &mb) {
     return mb->n_cols;
 }
 
+template <class MapBuffer>
+Eigen::Index mapdiag_noise_realization_count(const MapBuffer &mb) {
+    return mb->n_noise;
+}
+
 inline bool mapdiag_has_valid_contributor(int uid, int fill_int,
                                           double contribution_signal) {
     return uid != fill_int && std::isfinite(contribution_signal);

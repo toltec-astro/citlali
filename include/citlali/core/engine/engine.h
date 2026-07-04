@@ -7228,7 +7228,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto mapdiag_current_noise_realization_count =
         [&]() {
-            return mb->n_noise;
+            return citlali::pipeline::mapdiag_noise_realization_count(mb);
         };
     auto make_mapdiag_current_noise_tail_samples =
         [&]() {
