@@ -7069,8 +7069,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             auto it = std::find_if(
                                 dominance.begin(), dominance.end(),
                                 [&](const auto &entry) {
-                                    return entry.uid == candidate.uid &&
-                                           entry.scan == candidate.scan;
+                                    return mapdiag_dominance_matches_candidate(
+                                        entry, candidate);
                                 });
                             if (it == dominance.end()) {
                                 dominance.push_back({
