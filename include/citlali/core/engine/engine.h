@@ -7046,10 +7046,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
                         sort_mapdiag_pixel_candidates(candidates);
                         const std::size_t n_emit =
-                            citlali::pipeline::mapdiag_candidate_emit_count(
-                                candidates.size(),
-                                reduction_learning.options
-                                    .map_pixel_outlier_top_n);
+                            mapdiag_pixel_candidate_emit_count(candidates);
                         using detector_dominance_t =
                             citlali::pipeline::MapdiagDetectorDominance;
                         std::vector<detector_dominance_t> dominance;
