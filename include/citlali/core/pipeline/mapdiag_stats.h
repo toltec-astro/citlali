@@ -815,6 +815,14 @@ void assign_mapdiag_detector_penalty_context(
     penalty.array = array_id;
 }
 
+template <class Penalty>
+void assign_mapdiag_detector_penalty_dominance(
+    Penalty &penalty, const MapdiagDetectorDominance &entry) {
+    penalty.factor = 0.0;
+    penalty.score = static_cast<double>(entry.count);
+    penalty.scan_local = true;
+}
+
 inline bool mapdiag_dominance_meets_min_pixels(
     const MapdiagDetectorDominance &entry, int min_pixels) {
     return entry.count >= min_pixels;
