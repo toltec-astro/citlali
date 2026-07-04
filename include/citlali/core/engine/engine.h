@@ -5651,7 +5651,7 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
 
     // write summary log file
     std::ofstream f;
-    f.open (obsnum_dir_name+"/logs/" + filename + ".log");
+    f.open(citlali::pipeline::summary_log_path(obsnum_dir_name, filename));
 
     f << "Summary file for scan " << in.index.data << "\n";
     citlali::pipeline::write_pipeline_version_summary(

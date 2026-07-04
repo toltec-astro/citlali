@@ -14,6 +14,11 @@ inline std::string map_summary_filename() {
     return "map_summary";
 }
 
+inline std::string summary_log_path(const std::string &obsnum_dir_name,
+                                    const std::string &filename) {
+    return obsnum_dir_name + "/logs/" + filename + ".log";
+}
+
 inline void write_pipeline_version_summary(std::ostream &stream,
                                            const std::string &citlali_version,
                                            const std::string &kids_version) {
