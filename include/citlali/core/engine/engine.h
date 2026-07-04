@@ -6677,11 +6677,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             ReductionLearningState::MapPixelOutlier record;
                             record.obsnum = obsnum;
                             record.producer = "mapdiag:" + stage_name;
-                            record.reason = candidate.has_contributor
-                                ? (mb->contribution_diag_targeted
-                                    ? "extreme_pixel_targeted_contributor"
-                                    : "extreme_pixel_contributor")
-                                : "extreme_pixel_no_contributor";
+                            record.reason =
+                                citlali::pipeline::
+                                    mapdiag_map_pixel_outlier_reason(
+                                        candidate.has_contributor,
+                                        mb->contribution_diag_targeted);
                             record.iter = fruit_iter;
                             record.map_index = static_cast<int>(i);
                             record.scan = candidate.scan;
