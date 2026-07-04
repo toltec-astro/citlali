@@ -6351,6 +6351,16 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<double> noise_tail_excess_pos3(mapdiag_context.n_maps, fill_double);
     std::vector<double> noise_tail_excess_neg3(mapdiag_context.n_maps, fill_double);
     std::vector<double> noise_sig2noise_skew(mapdiag_context.n_maps, fill_double);
+    citlali::pipeline::MapdiagNoiseTailRefs noise_tail_refs{
+        noise_rms_p16,
+        noise_rms_p84,
+        noise_tail_frac_abs3,
+        noise_tail_frac_pos3,
+        noise_tail_frac_neg3,
+        noise_tail_excess_abs3,
+        noise_tail_excess_pos3,
+        noise_tail_excess_neg3,
+        noise_sig2noise_skew};
     std::vector<double> edge_guard_weight_thresholds(mapdiag_context.n_maps, fill_double);
     std::vector<double> edge_guard_hits_thresholds(mapdiag_context.n_maps, fill_double);
     std::vector<double> edge_guard_background_levels(mapdiag_context.n_maps, fill_double);
