@@ -6709,11 +6709,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             assign_mapdiag_current_core_tail_stats(
                 idx, sig2noise, core_mask);
         };
-    auto mapdiag_current_has_signal_stats =
-        [&](Eigen::Index map_i) {
-            return citlali::pipeline::mapdiag_has_signal_weight_samples(
-                mb->signal[map_i], mb->weight[map_i]);
-        };
     auto make_mapdiag_off_source_core_mask =
         [&](const auto &core_mask,
             const auto &source_distance_context) {
@@ -6844,7 +6839,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
         assign_mapdiag_current_coverage_stats(i, idx, core_mask);
         assign_mapdiag_current_peak_signal(i, idx);
-        if (mapdiag_current_has_signal_stats(i)) {
+        if (citlali::pipeline::mapdiag_has_signal_weight_samples(
+                mb->signal[i], mb->weight[i])) {
             Eigen::MatrixXd sig2noise =
                 citlali::pipeline::mapdiag_sig2noise_image(
                     mb->signal[i], mb->weight[i]);
