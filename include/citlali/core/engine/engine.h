@@ -5903,15 +5903,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     citlali::pipeline::add_phdu_cleaner_config(
         fits_entry, name, logger, ptcproc, n_eig_removed);
 
-    double fruit_loops_flux_limit = 0.0;
-    if (ptcproc.run_fruit_loops) {
-        if (ptcproc.fruit_loops_flux.size() == calib.arrays.size()) {
-            fruit_loops_flux_limit = ptcproc.fruit_loops_flux(i);
-        }
-        else if (calib.arrays(i) < ptcproc.fruit_loops_flux.size()) {
-            fruit_loops_flux_limit = ptcproc.fruit_loops_flux(calib.arrays(i));
-        }
-    }
+    const double fruit_loops_flux_limit =
+        citlali::pipeline::phdu_fruit_loop_flux_limit(
+            ptcproc, calib.arrays, i, array_id);
     citlali::pipeline::add_phdu_fruit_loops_config(
         fits_entry, name, logger, ptcproc, fruit_loops_flux_limit,
         mb->sig_unit);

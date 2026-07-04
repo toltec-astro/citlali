@@ -12,6 +12,22 @@ bool phdu_any_tod_filter_enabled(const RtcProc &rtcproc) {
     return rtcproc.run_tod_filter || rtcproc.run_tod_iir_highpass;
 }
 
+template <class PtcProc, class Arrays, class Index, class ArrayId>
+double phdu_fruit_loop_flux_limit(const PtcProc &ptcproc,
+                                  const Arrays &arrays, Index i,
+                                  const ArrayId &array_id) {
+    double flux_limit = 0.0;
+    if (ptcproc.run_fruit_loops) {
+        if (ptcproc.fruit_loops_flux.size() == arrays.size()) {
+            flux_limit = ptcproc.fruit_loops_flux(i);
+        }
+        else if (array_id < ptcproc.fruit_loops_flux.size()) {
+            flux_limit = ptcproc.fruit_loops_flux(array_id);
+        }
+    }
+    return flux_limit;
+}
+
 template <class FitsEntry, class Logger>
 void add_phdu_unit_conversion_config(FitsEntry &fits_entry,
                                      const std::string &array_name,
