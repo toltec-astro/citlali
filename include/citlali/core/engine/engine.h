@@ -6890,16 +6890,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     citlali::pipeline::add_mapdiag_map_double_vars(
         fo, mapdiag_dims, map_double_values);
     citlali::pipeline::add_mapdiag_map_int_vars(
-        fo, mapdiag_dims,
-        {n_valid_pixels,
-         n_core_pixels,
-         peak_row,
-         peak_col,
-         edge_guard_applied,
-         edge_guard_support_radius_pix,
-         edge_guard_science_npix,
-         edge_guard_support_npix,
-         edge_guard_guardband_npix});
+        fo, mapdiag_dims, map_int_values);
 
     citlali::pipeline::add_mapdiag_observation_contribution_vars(
         fo, mapdiag_dims,
