@@ -522,6 +522,15 @@ inline bool mapdiag_has_full_leave_one_out_inputs(
            total_variance_weight > contribution_variance_weight;
 }
 
+inline void mapdiag_assign_leave_one_out_z(double value, double weight,
+                                           double leave_one_out_value,
+                                           double &leave_one_out_z) {
+    const double residual = value - leave_one_out_value;
+    if (std::isfinite(residual) && std::isfinite(weight) && weight > 0.0) {
+        leave_one_out_z = residual * std::sqrt(weight);
+    }
+}
+
 template <class NoiseList>
 bool mapdiag_has_noise_realizations(
     const NoiseList &noise, Eigen::Index i, Eigen::Index n_noise) {
