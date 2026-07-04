@@ -2,6 +2,8 @@
 
 #include <Eigen/Core>
 
+#include <cmath>
+#include <limits>
 #include <string>
 
 namespace citlali::pipeline {
@@ -36,6 +38,24 @@ bool has_map_image_slot(const ImageList &images, Eigen::Index i,
     return i < static_cast<Eigen::Index>(images.size()) &&
            images[i].rows() == n_rows &&
            images[i].cols() == n_cols;
+}
+
+inline double map_median_error_or_zero(double median_error_variance,
+                                       bool is_beammap) {
+    if (is_beammap) {
+        return 0.0;
+    }
+    if (std::isfinite(median_error_variance) &&
+        median_error_variance > std::numeric_limits<double>::epsilon()) {
+        return std::sqrt(median_error_variance);
+    }
+    return 0.0;
+}
+
+inline bool has_negative_map_median_error(double median_error_variance,
+                                          bool is_beammap) {
+    return !is_beammap && std::isfinite(median_error_variance) &&
+           median_error_variance < 0.0;
 }
 
 template <class Hdu>
