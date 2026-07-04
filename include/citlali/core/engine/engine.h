@@ -6690,6 +6690,15 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     sig2noise, core_mask, n_core_pixels[idx], fill_double),
                 peak_refs);
         };
+    auto assign_mapdiag_current_core_tail_stats =
+        [&](std::size_t idx, const Eigen::MatrixXd &sig2noise,
+            const auto &core_mask) {
+            const auto core_values =
+                mapdiag_stats.collect_masked_values(sig2noise, core_mask);
+            const auto signal_tail = mapdiag_stats.tail_stats(core_values);
+            citlali::pipeline::assign_mapdiag_core_tail_stats(
+                idx, signal_tail, core_tail_refs);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
