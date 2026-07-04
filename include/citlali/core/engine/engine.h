@@ -6633,15 +6633,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             weight_thresholds[idx] = weight_threshold;
             return weight_threshold;
         };
-    auto assign_mapdiag_current_weight_stats =
-        [&](std::size_t idx, const auto &weight_arr,
-            const auto &valid_mask, const auto &core_mask) {
-            citlali::pipeline::assign_mapdiag_weight_stats(
-                idx,
-                citlali::pipeline::mapdiag_weight_stats(
-                    weight_arr, valid_mask, core_mask),
-                weight_refs);
-        };
     auto assign_mapdiag_current_formal_noise_stats =
         [&](Eigen::Index map_i, std::size_t idx) {
             citlali::pipeline::assign_mapdiag_formal_noise_stats(
@@ -6827,8 +6818,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         const auto core_mask =
             citlali::pipeline::mapdiag_core_weight_mask(
                 weight_arr, weight_threshold);
-        assign_mapdiag_current_weight_stats(
-            idx, weight_arr, valid_mask, core_mask);
+        citlali::pipeline::assign_mapdiag_weight_stats(
+            idx,
+            citlali::pipeline::mapdiag_weight_stats(
+                weight_arr, valid_mask, core_mask),
+            weight_refs);
 
         assign_mapdiag_current_formal_noise_stats(i, idx);
         assign_mapdiag_current_noise_product_stats(i, idx);
