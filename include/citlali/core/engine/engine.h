@@ -6770,7 +6770,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         else {
             for (std::size_t obs_idx = 0; obs_idx < mb->obsnums.size(); ++obs_idx) {
                 const auto &obsnum_i = mb->obsnums[obs_idx];
-                const auto obs_dir = redu_dir_name + "/" + obsnum_i + "/raw/";
+                const auto obs_dir =
+                    citlali::pipeline::mapdiag_obs_raw_dir(
+                        redu_dir_name, obsnum_i);
                 const auto obs_weight_path = toltec_io.create_filename<engine_utils::toltecIO::toltec,
                                                                        engine_utils::toltecIO::map,
                                                                        engine_utils::toltecIO::raw>(
