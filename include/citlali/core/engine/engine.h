@@ -5733,9 +5733,11 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         std::exit(EXIT_FAILURE);
     }
 
+    const auto array_id = citlali::pipeline::phdu_array_id(calib.arrays, i);
+
     // array name
     std::string name = citlali::pipeline::phdu_array_name(
-        toltec_io.array_name_map, calib.arrays(i));
+        toltec_io.array_name_map, array_id);
     auto &fits_entry = fits_io->at(i);
 
     try {
@@ -5743,8 +5745,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // conversion to Rayleigh-Jeans uK brightness temperature
     auto fwhm = citlali::pipeline::mean_beam_fwhm_arcsec(
-        calib.array_fwhms[calib.arrays(i)]);
-    auto mJy_beam_to_uK = engine_utils::mJy_beam_to_uK(1, toltec_io.array_freq_map[calib.arrays(i)], fwhm);
+        calib.array_fwhms[array_id]);
+    auto mJy_beam_to_uK = engine_utils::mJy_beam_to_uK(
+        1, toltec_io.array_freq_map[array_id], fwhm);
 
     // beam area in steradians
     auto beam_area_rad = citlali::pipeline::gaussian_beam_area_sr(
@@ -5773,7 +5776,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add unit conversions
     citlali::pipeline::add_phdu_unit_conversion_config(
         fits_entry, name, logger, rtcproc.run_calibrate, mb->sig_unit,
-        calib.array_beam_areas[calib.arrays(i)]*MJY_SR_TO_mJY_ASEC,
+        calib.array_beam_areas[array_id]*MJY_SR_TO_mJY_ASEC,
         mJy_beam_to_uK, mJy_beam_to_Jy_px);
 
     // add source flux for beammaps

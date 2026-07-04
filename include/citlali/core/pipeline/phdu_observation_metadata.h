@@ -32,6 +32,11 @@ std::string phdu_array_name(ArrayNameMap &array_name_map,
     return array_name_map[array_id];
 }
 
+template <class Arrays, class Index>
+auto phdu_array_id(const Arrays &arrays, Index i) {
+    return arrays(i);
+}
+
 template <class FitsEntry, class Obsnums>
 void add_phdu_obsnum_keys(FitsEntry &fits_entry, const Obsnums &obsnums) {
     auto &hdu = fits_entry.pfits->pHDU();
