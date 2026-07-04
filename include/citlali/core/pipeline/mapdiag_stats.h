@@ -80,6 +80,11 @@ struct MapdiagSourceDistanceContext {
     double fill_value;
 };
 
+struct MapdiagRobustCenterStats {
+    double center;
+    double robust_sigma;
+};
+
 struct MapdiagWeightStats {
     int n_valid_pixels;
     int n_core_pixels;
