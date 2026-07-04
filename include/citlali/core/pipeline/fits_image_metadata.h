@@ -327,6 +327,16 @@ bool has_noise_map_slot(const NoiseList &noise, Eigen::Index i) {
     return i >= 0 && i < static_cast<Eigen::Index>(noise.size());
 }
 
+template <class NoiseList, class FitsIo>
+std::string noise_file_path_or_na(const NoiseList &noise,
+                                  const FitsIo &noise_fits_io,
+                                  Eigen::Index map_index) {
+    if (!noise.empty() && has_noise_fits_slot(noise_fits_io, map_index)) {
+        return noise_fits_io->at(map_index).filepath;
+    }
+    return std::string("N/A");
+}
+
 template <class Hdu>
 void add_image_unit_keys(Hdu &hdu, const std::string &unit) {
     hdu.addKey("UNIT", unit, "Unit of map");
