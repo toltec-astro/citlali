@@ -7091,10 +7091,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         using detector_dominance_t =
                             citlali::pipeline::MapdiagDetectorDominance;
                         std::vector<detector_dominance_t> dominance;
-                        auto update_dominance = [&](const map_pixel_candidate_t &candidate) {
-                            update_mapdiag_detector_dominance(
-                                dominance, candidate);
-                        };
 
                         for (std::size_t ci = 0; ci < n_emit; ++ci) {
                             const auto &candidate = candidates[ci];
@@ -7112,7 +7108,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     record, candidate);
                             reduction_learning.record_map_pixel_outlier(
                                 std::move(record));
-                            update_dominance(candidate);
+                            update_mapdiag_detector_dominance(
+                                dominance, candidate);
                         }
 
                         if (reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled) {
