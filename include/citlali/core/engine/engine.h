@@ -6768,15 +6768,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 const auto noise_summary =
                     citlali::pipeline::summarize_mapdiag_noise_tail_samples(
                         mapdiag_stats, noise_samples);
-                noise_rms_p16[idx] = noise_summary.rms_p16;
-                noise_rms_p84[idx] = noise_summary.rms_p84;
-                noise_tail_frac_abs3[idx] = noise_summary.tail_abs;
-                noise_tail_frac_pos3[idx] = noise_summary.tail_pos;
-                noise_tail_frac_neg3[idx] = noise_summary.tail_neg;
-                noise_tail_excess_abs3[idx] = noise_summary.excess_abs;
-                noise_tail_excess_pos3[idx] = noise_summary.excess_pos;
-                noise_tail_excess_neg3[idx] = noise_summary.excess_neg;
-                noise_sig2noise_skew[idx] = noise_summary.skew;
+                citlali::pipeline::assign_mapdiag_noise_tail_summary(
+                    idx, noise_summary, noise_tail_refs);
             }
         }
 
