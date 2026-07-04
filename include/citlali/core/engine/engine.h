@@ -6306,6 +6306,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<double> coverage_sum(mapdiag_context.n_maps, fill_double);
     std::vector<double> coverage_max(mapdiag_context.n_maps, fill_double);
     std::vector<double> coverage_median_core(mapdiag_context.n_maps, fill_double);
+    citlali::pipeline::MapdiagCoverageRefs coverage_refs{
+        coverage_sum,
+        coverage_max,
+        coverage_median_core};
     std::vector<double> empirical_to_formal_noise_ratio(mapdiag_context.n_maps, fill_double);
     std::vector<double> noise_weight_median_ratio(mapdiag_context.n_maps, fill_double);
     std::vector<double> noise_weight_scale(mapdiag_context.n_maps, fill_double);
