@@ -769,10 +769,10 @@ inline const char *mapdiag_map_pixel_outlier_reason(bool has_contributor,
                     : "extreme_pixel_contributor";
 }
 
-template <class Record, class Producer, class Reason>
+template <class Record, class Obsnum, class Producer, class Reason>
 void assign_mapdiag_outlier_record_context(
-    Record &record, int obsnum, const Producer &producer, const Reason &reason,
-    int iter, int map_index) {
+    Record &record, const Obsnum &obsnum, const Producer &producer,
+    const Reason &reason, int iter, int map_index) {
     record.obsnum = obsnum;
     record.producer = producer;
     record.reason = reason;
