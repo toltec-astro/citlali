@@ -7,6 +7,8 @@
 
 #include <netcdf>
 
+#include <citlali/core/pipeline/mapdiag_labels.h>
+
 namespace citlali::pipeline {
 
 inline double mapdiag_fill_double() {
@@ -96,6 +98,25 @@ inline void add_mapdiag_map_label_vars(
     put_netcdf_string_1d(
         fo, "map_name", maps_dim, map_names,
         "grouping-derived map label prefix for each map row");
+}
+
+inline void add_mapdiag_observation_label_vars(
+    netCDF::NcFile &fo, netCDF::NcDim obsnums_dim,
+    const std::vector<std::string> &obsnums,
+    const std::string &fallback_obsnum,
+    const std::vector<std::string> &date_obs,
+    std::size_t n_obsnums) {
+    const auto obsnum_strings =
+        mapdiag_obsnum_labels(obsnums, fallback_obsnum);
+    put_netcdf_string_1d(
+        fo, "coadd_obsnum", obsnums_dim, obsnum_strings,
+        "obsnum ordering for map x obsnum contribution tables");
+
+    const auto dateobs_strings =
+        mapdiag_dateobs_labels(date_obs, n_obsnums);
+    put_netcdf_string_1d(
+        fo, "coadd_dateobs", obsnums_dim, dateobs_strings,
+        "DATEOBS ordering matching coadd_obsnum");
 }
 
 inline void add_mapdiag_double_1d(
