@@ -504,6 +504,11 @@ bool mapdiag_has_contribution_products(const MapBuffer &mb, Eigen::Index i) {
                mb->n_cols;
 }
 
+inline bool mapdiag_has_valid_contributor(int uid, int fill_int,
+                                          double contribution_signal) {
+    return uid != fill_int && std::isfinite(contribution_signal);
+}
+
 template <class NoiseList>
 bool mapdiag_has_noise_realizations(
     const NoiseList &noise, Eigen::Index i, Eigen::Index n_noise) {
