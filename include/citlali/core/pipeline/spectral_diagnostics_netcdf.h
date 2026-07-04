@@ -126,6 +126,19 @@ void add_transposed_psd_image_pair(
         fo, base_name, dims, spectrum_transposed, frequency_transposed);
 }
 
+template <class Spectrum, class Frequency, class SpectrumImage,
+          class FrequencyImage>
+void add_psd_product(netCDF::NcFile &fo, const std::string &base_name,
+                     const Spectrum &spectrum, const Frequency &frequency,
+                     const SpectrumImage &spectrum_image,
+                     const FrequencyImage &frequency_image) {
+    const auto dims = add_psd_netcdf_dims_for_image(
+        fo, base_name, spectrum, spectrum_image);
+    add_psd_vector_pair(fo, base_name, dims.spectrum, spectrum, frequency);
+    add_transposed_psd_image_pair(
+        fo, base_name, dims.image, spectrum_image, frequency_image);
+}
+
 template <class Bins, class Counts>
 void add_histogram_pair(netCDF::NcFile &fo, const std::string &base_name,
                         netCDF::NcDim dim, const Bins &bins,
