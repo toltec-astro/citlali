@@ -244,6 +244,15 @@ inline void assign_mapdiag_coverage_stats(
         mapdiag_masked_median(coverage, core_mask, fill_value);
 }
 
+template <class Matrix, class Mask>
+double mapdiag_core_noise_rms(const Matrix &noise_matrix,
+                              const Mask &valid_core,
+                              double valid_core_count) {
+    const double rms_sq =
+        (valid_core.select(noise_matrix.array().square(), 0.0)).sum();
+    return std::sqrt(rms_sq / valid_core_count);
+}
+
 inline MapdiagTailStats mapdiag_tail_stats(const std::vector<double> &values,
                                            double fill_value) {
     MapdiagTailStats stats;
