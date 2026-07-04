@@ -6981,6 +6981,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_has_fallback_leave_one_out_inputs(
                 weight, contrib_weight);
         };
+    auto mapdiag_current_candidate_has_fallback_leave_one_out_inputs =
+        [&](double weight, double contrib_weight) {
+            return mapdiag_has_current_fallback_leave_one_out_inputs(
+                weight, contrib_weight);
+        };
     auto mapdiag_raw_weighted_signal =
         [](double value, double weight) {
             return value * weight;
