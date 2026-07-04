@@ -6756,10 +6756,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_off_source_core_mask(
                 core_mask, source_distance_context, protect_radius);
         };
-    auto mapdiag_current_ptc_fs_hz =
-        [&]() {
-            return processed_time_chunk_fs_hz();
-        };
     auto mapdiag_current_effective_samples =
         [&](Eigen::Index map_i, Eigen::Index row, Eigen::Index col,
             double ptc_fs_hz) {
@@ -7062,7 +7058,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         const bool have_contrib =
                             citlali::pipeline::
                                 mapdiag_has_contribution_products(mb, i);
-                        const double ptc_fs_hz = mapdiag_current_ptc_fs_hz();
+                        const double ptc_fs_hz = processed_time_chunk_fs_hz();
 
                         for (Eigen::Index r = 0;
                              r < citlali::pipeline::mapdiag_n_rows(mb); ++r) {
