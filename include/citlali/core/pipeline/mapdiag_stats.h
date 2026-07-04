@@ -709,6 +709,15 @@ inline MapdiagMapPixelCandidate make_mapdiag_map_pixel_candidate(
             false};
 }
 
+inline void assign_mapdiag_candidate_contributor(
+    MapdiagMapPixelCandidate &candidate, int uid, int scan,
+    long long sample) {
+    candidate.has_contributor = true;
+    candidate.uid = uid;
+    candidate.scan = scan;
+    candidate.sample = sample;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
