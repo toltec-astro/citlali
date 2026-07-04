@@ -21,6 +21,10 @@ struct MapdiagTailStats {
     double skew = std::numeric_limits<double>::quiet_NaN();
 };
 
+struct MapdiagStatsContext {
+    double fill_value;
+};
+
 inline double mapdiag_vector_median(const std::vector<double> &values,
                                     double fill_value) {
     if (values.empty()) {
