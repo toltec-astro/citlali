@@ -162,4 +162,12 @@ void assign_mapdiag_single_obs_entry(
         obs_valid_pixels, obs_core_pixels);
 }
 
+inline void assign_mapdiag_single_obs_entry(
+    std::size_t flat, double map_weight_sum, double map_core_weight_sum,
+    int map_valid_pixels, int map_core_pixels, MapdiagObsTableRefs tables) {
+    assign_mapdiag_obs_entry(
+        flat, map_weight_sum, map_core_weight_sum, map_valid_pixels,
+        map_core_pixels, tables);
+}
+
 }  // namespace citlali::pipeline
