@@ -6154,8 +6154,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 "Pixel S/N map: signal times sqrt(empirical weight)");
 
             const bool is_filtered_output =
-                (fits_io == &filtered_fits_io_vec) ||
-                (fits_io == &filtered_coadd_fits_io_vec);
+                citlali::pipeline::is_filtered_map_output(
+                    fits_io, filtered_fits_io_vec, filtered_coadd_fits_io_vec);
             if (is_filtered_output &&
                 citlali::pipeline::has_map_image_slot(
                     mb->point_source_uncertainty, i, mb->n_rows,
