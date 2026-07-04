@@ -7295,7 +7295,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         core_mask, source_distance_context);
 
                 const auto off_source_values =
-                    collect_mapdiag_off_source_values(
+                    collect_mapdiag_current_off_source_values(
                         sig2noise, off_source_core_mask);
                 if (mapdiag_has_enough_off_source_values(
                         off_source_values)) {
