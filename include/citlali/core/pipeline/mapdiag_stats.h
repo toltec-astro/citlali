@@ -284,6 +284,17 @@ double mapdiag_finite_value_or_fill(const Values &values, Eigen::Index i,
     return fill_value;
 }
 
+template <class Values>
+MapdiagNoiseProductStats mapdiag_noise_product_stats_or_fill(
+    const Values &weight_median_ratio, const Values &weight_scale,
+    const Values &s2n_sigma, const Values &valid_pixels, Eigen::Index i,
+    double fill_value) {
+    return {mapdiag_value_or_fill(weight_median_ratio, i, fill_value),
+            mapdiag_value_or_fill(weight_scale, i, fill_value),
+            mapdiag_value_or_fill(s2n_sigma, i, fill_value),
+            mapdiag_value_or_fill(valid_pixels, i, fill_value)};
+}
+
 template <class CoverageList>
 bool mapdiag_has_coverage_map(const CoverageList &coverage, Eigen::Index i) {
     return !coverage.empty() && i >= 0 &&
