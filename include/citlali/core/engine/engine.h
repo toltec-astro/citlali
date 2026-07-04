@@ -6635,15 +6635,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     const std::string mapdiag_record_producer =
         citlali::pipeline::mapdiag_record_producer(stage_name);
-    auto log_mapdiag_current_detector_penalty =
-        [&](Eigen::Index map_i, const detector_dominance_t &entry) {
-            logger->info(
-                "mapdiag learned scan-local detector exclusion candidate stage={} iter={} map={} uid={} scan={} outlier_pixels={} max_abs_value={:.4g} max_abs_leave_one_out_z={:.4g}",
-                stage_name, fruit_iter, map_i, entry.uid,
-                citlali::pipeline::mapdiag_display_scan_index(entry.scan),
-                entry.count, entry.max_abs_value,
-                entry.max_abs_leave_one_out_z);
-        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = citlali::pipeline::mapdiag_size_index(i);
@@ -6963,7 +6954,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                             fruit_iter, entry, array_id);
                                 reduction_learning.record_detector_penalty(
                                     std::move(penalty), true);
-                                log_mapdiag_current_detector_penalty(i, entry);
+                                logger->info(
+                                    "mapdiag learned scan-local detector exclusion candidate stage={} iter={} map={} uid={} scan={} outlier_pixels={} max_abs_value={:.4g} max_abs_leave_one_out_z={:.4g}",
+                                    stage_name, fruit_iter, i, entry.uid,
+                                    citlali::pipeline::
+                                        mapdiag_display_scan_index(entry.scan),
+                                    entry.count, entry.max_abs_value,
+                                    entry.max_abs_leave_one_out_z);
                             }
                         }
                     }
