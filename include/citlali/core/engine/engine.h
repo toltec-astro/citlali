@@ -6773,7 +6773,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 }
             }
 
-            if (!mb->noise.empty() && i < static_cast<Eigen::Index>(mb->noise.size()) && mb->n_noise > 0) {
+            if (citlali::pipeline::mapdiag_has_noise_realizations(
+                    mb->noise, i, mb->n_noise)) {
                 citlali::pipeline::MapdiagNoiseTailSamples noise_samples;
                 noise_samples.reserve(static_cast<std::size_t>(mb->n_noise));
 
