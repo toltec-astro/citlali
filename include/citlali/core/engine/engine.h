@@ -6613,16 +6613,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             assign_mapdiag_obs_contributions(map_i, idx, core_mask);
             assign_mapdiag_obs_contribution_fractions(idx);
         };
-    auto assign_mapdiag_current_labels =
-        [&](Eigen::Index map_i, std::size_t idx, const auto map_index,
-            const auto stokes_index) {
-            const auto labels = citlali::pipeline::make_mapdiag_map_labels(
-                toltec_io.array_name_map[calib.arrays[map_index]],
-                rtcproc.polarization.stokes_params[stokes_index],
-                get_map_name(map_i));
-            citlali::pipeline::assign_mapdiag_map_labels(
-                idx, labels, {array_names, stokes_names, map_names});
-        };
     auto assign_mapdiag_weight_threshold =
         [&](Eigen::Index map_i, std::size_t idx) {
             auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] =
@@ -6640,7 +6630,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         const std::size_t idx = citlali::pipeline::mapdiag_size_index(i);
         const auto map_index = arrays_to_maps(i);
         const auto stokes_index = maps_to_stokes(i);
-        assign_mapdiag_current_labels(i, idx, map_index, stokes_index);
+        const auto labels = citlali::pipeline::make_mapdiag_map_labels(
+            toltec_io.array_name_map[calib.arrays[map_index]],
+            rtcproc.polarization.stokes_params[stokes_index],
+            get_map_name(i));
+        citlali::pipeline::assign_mapdiag_map_labels(
+            idx, labels, {array_names, stokes_names, map_names});
 
         const auto weight_threshold =
             assign_mapdiag_weight_threshold(i, idx);
