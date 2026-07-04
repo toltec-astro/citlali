@@ -6142,7 +6142,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             citlali::pipeline::add_image_unit_type_description_keys(
                 *fits_io->at(map_index).hdus.back(), "N/A", "pixel",
                 "S/N estimator type",
-                "Legacy pixel S/N: signal times sqrt(weight)");
+                citlali::pipeline::legacy_pixel_snr_map_description());
 
             add_map_hdu_with_wcs(
                 citlali::pipeline::pixel_snr_map_hdu_name(
@@ -6151,7 +6151,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             citlali::pipeline::add_image_unit_type_description_keys(
                 *fits_io->at(map_index).hdus.back(), "N/A", "pixel",
                 "S/N estimator type",
-                "Pixel S/N map: signal times sqrt(empirical weight)");
+                citlali::pipeline::pixel_snr_map_description());
 
             const bool is_filtered_output =
                 citlali::pipeline::is_filtered_map_output(
