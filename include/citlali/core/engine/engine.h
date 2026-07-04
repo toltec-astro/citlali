@@ -6916,6 +6916,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 candidate, uid, mb->contribution_scan[map_st](row, col),
                 mb->contribution_sample[map_st](row, col));
         };
+    auto assign_mapdiag_current_pixel_candidate_contributor =
+        [&](map_pixel_candidate_t &candidate, std::size_t map_st,
+            Eigen::Index row, Eigen::Index col, int uid) {
+            assign_mapdiag_current_candidate_contributor(
+                candidate, map_st, row, col, uid);
+        };
     auto mapdiag_current_contributor_weight =
         [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
             return mb->contribution_weight[map_st](row, col);
