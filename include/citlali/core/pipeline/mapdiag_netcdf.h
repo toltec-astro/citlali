@@ -49,6 +49,12 @@ struct MapdiagIdentityVars {
     const std::string &obs_goal;
 };
 
+struct MapdiagRuntimeVars {
+    double pixel_size_rad;
+    double coverage_cut;
+    const std::string &signal_unit;
+};
+
 inline MapdiagNetcdfDims add_mapdiag_netcdf_dims(
     netCDF::NcFile &fo, const MapdiagSizeContext &context) {
     netCDF::NcDim maps_dim =
