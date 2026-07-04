@@ -509,6 +509,19 @@ inline bool mapdiag_has_valid_contributor(int uid, int fill_int,
     return uid != fill_int && std::isfinite(contribution_signal);
 }
 
+inline bool mapdiag_has_full_leave_one_out_inputs(
+    double total_signal, double total_weight, double contribution_weight,
+    double contribution_variance_weight, double total_variance_weight,
+    double remaining_weight) {
+    return std::isfinite(total_signal) && std::isfinite(total_weight) &&
+           std::isfinite(contribution_weight) &&
+           std::isfinite(contribution_variance_weight) &&
+           std::isfinite(total_variance_weight) &&
+           contribution_weight >= 0.0 && contribution_variance_weight >= 0.0 &&
+           remaining_weight > std::numeric_limits<double>::epsilon() &&
+           total_variance_weight > contribution_variance_weight;
+}
+
 template <class NoiseList>
 bool mapdiag_has_noise_realizations(
     const NoiseList &noise, Eigen::Index i, Eigen::Index n_noise) {
