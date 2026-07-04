@@ -7305,9 +7305,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
         assign_mapdiag_current_noise_stats(i, idx);
 
-        assign_mapdiag_current_coverage_stats(i, idx, core_mask);
-
-        assign_mapdiag_current_peak_signal(i, idx);
+        assign_mapdiag_current_coverage_and_peak(i, idx, core_mask);
         if (mapdiag_current_has_signal_stats(i)) {
             Eigen::MatrixXd sig2noise = make_mapdiag_current_sig2noise(i);
             assign_mapdiag_current_peak_stats(idx, sig2noise, core_mask);
