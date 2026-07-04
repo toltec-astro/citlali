@@ -6515,10 +6515,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::MapdiagDetectorDominance;
 
     const citlali::pipeline::MapdiagStatsContext mapdiag_stats{fill_double};
-    auto mapdiag_current_size_index =
-        [](Eigen::Index map_i) {
-            return citlali::pipeline::mapdiag_size_index(map_i);
-        };
     auto mapdiag_current_array_map_index =
         [&](Eigen::Index map_i) {
             return arrays_to_maps(map_i);
@@ -7092,7 +7088,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
-        const std::size_t idx = mapdiag_current_size_index(i);
+        const std::size_t idx = citlali::pipeline::mapdiag_size_index(i);
         const auto map_index = mapdiag_current_array_map_index(i);
         const auto stokes_index = mapdiag_current_stokes_index(i);
         assign_mapdiag_current_labels(i, idx, map_index, stokes_index);
