@@ -6257,9 +6257,7 @@ template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
     std::string filename = setup_filenames<map_t,engine_utils::toltecIO::toltec,engine_utils::toltecIO::hist>(dir_name);
 
-    write_netcdf_atomic(
-        citlali::pipeline::mapdiag_netcdf_filename(filename),
-        [&](netCDF::NcFile &fo) {
+    write_netcdf_atomic(filename + ".nc", [&](netCDF::NcFile &fo) {
     netCDF::NcDim hist_bins_dim =
         citlali::pipeline::add_spectral_histogram_bins_dim(
             fo, mb->hist_n_bins);
@@ -6883,7 +6881,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             obs_weight_frac, obs_core_weight_frac);
     }
 
-    write_netcdf_atomic(filename + ".nc", [&](netCDF::NcFile &fo) {
+    write_netcdf_atomic(
+        citlali::pipeline::mapdiag_netcdf_filename(filename),
+        [&](netCDF::NcFile &fo) {
     citlali::pipeline::add_obsnum_var(
         fo, citlali::pipeline::mapdiag_obsnum_value(
                 mapdiag_context, obsnum));
@@ -6891,19 +6891,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     const auto mapdiag_dims =
         citlali::pipeline::add_mapdiag_netcdf_dims(fo, mapdiag_context);
 
-    citlali::pipeline::add_mapdiag_metadata_vars(
-        fo,
-        {stage_name, mb->name, map_regime, telescope.source_name,
-         telescope.project_id, telescope.obs_goal},
-        {mb->pixel_size_rad, mb->cov_cut, mb->sig_unit},
-        {wiener_filter.edge_guard_enabled,
-         wiener_filter.edge_weight_threshold_mode,
-         wiener_filter.edge_hits_threshold_mode,
-         wiener_filter.edge_fill_mode,
-         wiener_filter.edge_taper_mode,
-         wiener_filter.edge_hits_core_fraction,
-         wiener_filter.edge_guard_radius_fwhm,
-         wiener_filter.edge_taper_min_fraction});
+    citlali::pipeline::add_mapdiag_metadata_vars(fo, mapdiag_metadata);
 
     citlali::pipeline::add_mapdiag_label_vars(
         fo, mapdiag_dims, array_names, stokes_names, map_names,
