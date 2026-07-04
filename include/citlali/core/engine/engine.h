@@ -6895,22 +6895,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     write_netcdf_atomic(
         citlali::pipeline::mapdiag_netcdf_filename(filename),
         [&](netCDF::NcFile &fo) {
-    citlali::pipeline::add_obsnum_var(
-        fo, citlali::pipeline::mapdiag_obsnum_value(
-                mapdiag_context, obsnum));
-
-    const auto mapdiag_dims =
-        citlali::pipeline::add_mapdiag_netcdf_dims(fo, mapdiag_context);
-
-    citlali::pipeline::add_mapdiag_metadata_vars(fo, mapdiag_metadata);
-
-    citlali::pipeline::add_mapdiag_label_vars(
-        fo, mapdiag_dims, mapdiag_labels);
-
-    citlali::pipeline::add_mapdiag_value_vars(
-        fo, mapdiag_dims,
-        {map_double_values, map_int_values, obs_double_values,
-         obs_int_values});
+    citlali::pipeline::add_mapdiag_netcdf_vars(
+        fo,
+        {mapdiag_context, obsnum, mapdiag_metadata, mapdiag_labels,
+         mapdiag_values});
     });
 }
 
