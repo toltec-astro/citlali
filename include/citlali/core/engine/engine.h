@@ -7192,12 +7192,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     continue;
                                 }
                                 ReductionLearningState::DetectorPenalty penalty;
-                                citlali::pipeline::
-                                    assign_mapdiag_detector_penalty_context(
-                                        penalty, obsnum,
-                                        mapdiag_detector_penalty_producer(),
-                                        mapdiag_detector_penalty_reason(),
-                                        fruit_iter, entry, array_id);
+                                assign_mapdiag_current_detector_penalty_context(
+                                    penalty, entry, array_id);
                                 citlali::pipeline::
                                     assign_mapdiag_detector_penalty_dominance(
                                         penalty, entry);
