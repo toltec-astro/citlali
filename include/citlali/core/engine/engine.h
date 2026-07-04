@@ -6904,7 +6904,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     auto mapdiag_passes_current_min_abs_z =
         [&](double z) {
             return citlali::pipeline::mapdiag_passes_min_abs_z(
-                z, reduction_learning.options.map_pixel_outlier_min_abs_z);
+                z, citlali::pipeline::mapdiag_min_abs_z(
+                       reduction_learning));
         };
     auto mapdiag_current_candidate_passes_min_abs_z =
         [&](double z) {
