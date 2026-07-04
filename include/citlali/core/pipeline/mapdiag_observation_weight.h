@@ -39,10 +39,9 @@ void accumulate_mapdiag_obs_weight(
     const std::size_t flat =
         static_cast<std::size_t>(map_i) * n_obsnums + obs_index;
     if (rows <= 0 || cols <= 0) {
-        obs_weight_sum[flat] = 0.0;
-        obs_core_weight_sum[flat] = 0.0;
-        obs_valid_pixels[flat] = 0;
-        obs_core_pixels[flat] = 0;
+        assign_mapdiag_obs_entry(
+            flat, 0.0, 0.0, 0, 0, obs_weight_sum, obs_core_weight_sum,
+            obs_valid_pixels, obs_core_pixels);
         return;
     }
 
