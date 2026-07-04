@@ -44,4 +44,23 @@ void assign_mapdiag_edge_guard_int_entry(
     refs.guardband_npix[idx] = state.edge_guard_guardband_npix[idx];
 }
 
+template <class EdgeGuardState>
+void assign_mapdiag_edge_guard_double_entry(
+    std::size_t idx, const EdgeGuardState &state,
+    MapdiagEdgeGuardDoubleRefs refs) {
+    refs.weight_thresholds[idx] = state.edge_guard_weight_threshold[idx];
+    refs.hits_thresholds[idx] = state.edge_guard_hits_threshold[idx];
+    refs.background_levels[idx] = state.edge_guard_background_level[idx];
+    refs.science_frac[idx] = state.edge_guard_science_frac[idx];
+    refs.support_frac[idx] = state.edge_guard_support_frac[idx];
+    refs.guardband_rms_pre[idx] = state.edge_guard_guardband_rms_pre[idx];
+    refs.guardband_rms_post[idx] = state.edge_guard_guardband_rms_post[idx];
+    refs.exterior_rms_pre[idx] = state.edge_guard_exterior_rms_pre[idx];
+    refs.exterior_rms_post[idx] = state.edge_guard_exterior_rms_post[idx];
+    refs.exterior_max_abs_pre[idx] =
+        state.edge_guard_exterior_max_abs_pre[idx];
+    refs.exterior_max_abs_post[idx] =
+        state.edge_guard_exterior_max_abs_post[idx];
+}
+
 }  // namespace citlali::pipeline
