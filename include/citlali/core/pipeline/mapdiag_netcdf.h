@@ -71,6 +71,12 @@ struct MapdiagEdgeGuardConfigVars {
     double taper_min_fraction;
 };
 
+struct MapdiagMetadataVars {
+    MapdiagIdentityVars identity;
+    MapdiagRuntimeVars runtime;
+    MapdiagEdgeGuardConfigVars edge_guard;
+};
+
 inline MapdiagNetcdfDims add_mapdiag_netcdf_dims(
     netCDF::NcFile &fo, const MapdiagSizeContext &context) {
     netCDF::NcDim maps_dim =
