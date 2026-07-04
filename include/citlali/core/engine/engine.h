@@ -6239,10 +6239,10 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
         // get the stokes parameter for the given map
         Eigen::Index stokes_index = maps_to_stokes(i);
 
-        auto array = calib.arrays[map_index];
-        const std::string name = citlali::pipeline::spectral_product_base_name(
-            toltec_io.array_name_map[array], map_name,
-            rtcproc.polarization.stokes_params[stokes_index]);
+        const std::string name = citlali::pipeline::spectral_product_name(
+            toltec_io.array_name_map, calib.arrays,
+            rtcproc.polarization.stokes_params, map_name, map_index,
+            stokes_index);
 
         const auto dims = citlali::pipeline::add_psd_netcdf_dims(
             fo, name, citlali::pipeline::psd_spectrum_size(mb->psds[i]),
