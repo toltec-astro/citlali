@@ -341,6 +341,11 @@ double mapdiag_mask_count_as_double(const Mask &mask) {
     return static_cast<double>(mask.count());
 }
 
+template <class Mask>
+double mapdiag_valid_core_noise_count(const Mask &valid_core_mask) {
+    return mapdiag_mask_count_as_double(valid_core_mask);
+}
+
 inline bool mapdiag_has_positive_count(double count) {
     return count > 0.0;
 }
