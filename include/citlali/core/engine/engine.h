@@ -6709,9 +6709,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                         citlali::pipeline::
                                             mapdiag_detector_dominance_penalty_reason(),
                                         fruit_iter, entry, array_id);
-                                penalty.factor = 0.0;
-                                penalty.score = static_cast<double>(entry.count);
-                                penalty.scan_local = true;
+                                citlali::pipeline::
+                                    assign_mapdiag_detector_penalty_dominance(
+                                        penalty, entry);
                                 reduction_learning.record_detector_penalty(
                                     std::move(penalty), true);
                                 logger->info(
