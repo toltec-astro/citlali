@@ -769,6 +769,17 @@ inline const char *mapdiag_map_pixel_outlier_reason(bool has_contributor,
                     : "extreme_pixel_contributor";
 }
 
+template <class Record, class Producer, class Reason>
+void assign_mapdiag_outlier_record_context(
+    Record &record, int obsnum, const Producer &producer, const Reason &reason,
+    int iter, int map_index) {
+    record.obsnum = obsnum;
+    record.producer = producer;
+    record.reason = reason;
+    record.iter = iter;
+    record.map_index = map_index;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
