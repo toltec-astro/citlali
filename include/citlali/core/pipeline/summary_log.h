@@ -175,4 +175,13 @@ void write_chunk_kernel_summary_if_generated(std::ostream &stream,
     }
 }
 
+template <class MapBuffer>
+void write_map_product_presence_summary(std::ostream &stream,
+                                        const MapBuffer &mb) {
+    stream << "-Kernel maps generated: " << !mb.kernel.empty() << "\n";
+    stream << "-Coverage maps generated: " << !mb.coverage.empty() << "\n";
+    stream << "-Noise maps generated: " << !mb.noise.empty() << "\n";
+    stream << "-Number of noise maps: " << mb.noise.size() << "\n";
+}
+
 }  // namespace citlali::pipeline

@@ -5702,10 +5702,7 @@ void Engine::write_map_summary(map_buffer_t &mb) {
     citlali::pipeline::write_map_identity_summary(
         f, redu_type, tod_type, map_grouping, mb.n_rows, mb.n_cols, n_maps,
         mb.sig_unit);
-    f << "-Kernel maps generated: " << !mb.kernel.empty() << "\n";
-    f << "-Coverage maps generated: " << !mb.coverage.empty() << "\n";
-    f << "-Noise maps generated: " << !mb.noise.empty() << "\n";
-    f << "-Number of noise maps: " << mb.noise.size() << "\n";
+    citlali::pipeline::write_map_product_presence_summary(f, mb);
 
     const auto nonfinite_counts =
         citlali::pipeline::count_map_summary_nonfinite(mb);
