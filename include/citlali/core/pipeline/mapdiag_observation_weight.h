@@ -92,6 +92,18 @@ void accumulate_mapdiag_obs_weight(
     obs_core_pixels[flat] = static_cast<int>((valid * core_block).sum());
 }
 
+template <class CoreMask, class ObsWeight>
+void accumulate_mapdiag_obs_weight(
+    Eigen::Index map_i, std::size_t n_obsnums, Eigen::Index map_n_rows,
+    Eigen::Index map_n_cols, const CoreMask &core_mask,
+    const ObsWeight &obs_weight, std::size_t obs_index,
+    MapdiagObsTableRefs tables) {
+    accumulate_mapdiag_obs_weight(
+        map_i, n_obsnums, map_n_rows, map_n_cols, core_mask, obs_weight,
+        obs_index, tables.weight_sum, tables.core_weight_sum,
+        tables.valid_pixels, tables.core_pixels);
+}
+
 inline double mapdiag_fraction_or_fill(double value, double total,
                                        double fill_value) {
     return (total > 0.0) ? value / total : fill_value;
