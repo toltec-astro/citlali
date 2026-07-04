@@ -5707,14 +5707,7 @@ void Engine::write_map_summary(map_buffer_t &mb) {
 
     const auto nonfinite_counts =
         citlali::pipeline::count_map_summary_nonfinite(mb);
-
-    for (auto const& [key, val] : nonfinite_counts.n_nans) {
-         f << "-Number of "+ key + " NaNs: " << val << "\n";
-    }
-
-    for (auto const& [key, val] : nonfinite_counts.n_infs) {
-        f << "-Number of "+ key + " Infs: " << val << "\n";
-    }
+    citlali::pipeline::write_map_nonfinite_summary(f, nonfinite_counts);
 }
 
 template <mapmaking::MapType map_t, engine_utils::toltecIO::DataType data_t, engine_utils::toltecIO::ProdType prod_t>

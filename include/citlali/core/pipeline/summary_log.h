@@ -197,4 +197,16 @@ void write_map_product_presence_summary(std::ostream &stream,
     stream << "-Number of noise maps: " << mb.noise.size() << "\n";
 }
 
+template <class NonfiniteCounts>
+void write_map_nonfinite_summary(std::ostream &stream,
+                                 const NonfiniteCounts &counts) {
+    for (auto const& [key, val] : counts.n_nans) {
+         stream << "-Number of " + key + " NaNs: " << val << "\n";
+    }
+
+    for (auto const& [key, val] : counts.n_infs) {
+        stream << "-Number of " + key + " Infs: " << val << "\n";
+    }
+}
+
 }  // namespace citlali::pipeline
