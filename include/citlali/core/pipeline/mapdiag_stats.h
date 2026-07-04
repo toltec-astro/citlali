@@ -234,6 +234,13 @@ inline MapdiagNoiseTailSamples make_mapdiag_noise_tail_samples(
     return samples;
 }
 
+template <class MapBuffer>
+MapdiagNoiseTailSamples make_mapdiag_noise_tail_samples(
+    const MapBuffer &mb) {
+    return make_mapdiag_noise_tail_samples(
+        static_cast<std::size_t>(mb->n_noise));
+}
+
 inline MapdiagNoiseTailSummary summarize_mapdiag_noise_tail_samples(
     const MapdiagStatsContext &stats,
     const MapdiagNoiseTailSamples &samples) {

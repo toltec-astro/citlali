@@ -7232,9 +7232,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto make_mapdiag_current_noise_tail_samples =
         [&]() {
-            return citlali::pipeline::make_mapdiag_noise_tail_samples(
-                static_cast<std::size_t>(
-                    mapdiag_current_noise_realization_count()));
+            return citlali::pipeline::make_mapdiag_noise_tail_samples(mb);
         };
     auto make_mapdiag_current_valid_core_noise_mask =
         [](const Eigen::ArrayXXd &core_mask) {
