@@ -148,6 +148,20 @@ void add_psd_product(netCDF::NcFile &fo, const std::string &base_name,
         fo, base_name, dims.image, spectrum_image, frequency_image);
 }
 
+template <class NoiseList, class Spectrum, class Frequency,
+          class SpectrumImage, class FrequencyImage>
+void add_noise_psd_product_if_present(
+    netCDF::NcFile &fo, const NoiseList &noise,
+    const std::string &base_name, const Spectrum &spectrum,
+    const Frequency &frequency, const SpectrumImage &spectrum_image,
+    const FrequencyImage &frequency_image) {
+    if (has_spectral_noise_products(noise)) {
+        add_psd_product(
+            fo, spectral_noise_product_base_name(base_name), spectrum,
+            frequency, spectrum_image, frequency_image);
+    }
+}
+
 template <class Bins, class Counts>
 void add_histogram_pair(netCDF::NcFile &fo, const std::string &base_name,
                         netCDF::NcDim dim, const Bins &bins,
