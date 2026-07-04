@@ -24,6 +24,14 @@ inline MapdiagMapLabels make_mapdiag_map_labels(
     return {array_name, stokes_name, map_name};
 }
 
+inline void assign_mapdiag_map_labels(std::size_t idx,
+                                      const MapdiagMapLabels &labels,
+                                      MapdiagMapLabelRefs refs) {
+    refs.array_names[idx] = labels.array_name;
+    refs.stokes_names[idx] = labels.stokes_name;
+    refs.map_names[idx] = labels.map_name;
+}
+
 inline std::string mapdiag_weight_hdu_name(const std::string &map_name,
                                            const std::string &stokes_name) {
     return "weight_" + map_name + stokes_name;
