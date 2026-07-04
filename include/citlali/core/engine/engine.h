@@ -6912,7 +6912,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
          edge_guard_guardband_npix});
 
     citlali::pipeline::add_mapdiag_observation_contribution_vars(
-        add_map_obs_double, add_map_obs_int,
+        fo, mapdiag_dims,
         {obs_weight_sum,
          obs_weight_frac,
          obs_core_weight_sum,
