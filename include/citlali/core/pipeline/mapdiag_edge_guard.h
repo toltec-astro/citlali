@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <vector>
 
 namespace citlali::pipeline {
@@ -25,5 +26,11 @@ struct MapdiagEdgeGuardDoubleRefs {
     std::vector<double> &exterior_max_abs_pre;
     std::vector<double> &exterior_max_abs_post;
 };
+
+template <class EdgeGuardState>
+bool mapdiag_has_edge_guard_entry(std::size_t idx,
+                                  const EdgeGuardState &state) {
+    return idx < state.edge_guard_applied.size();
+}
 
 }  // namespace citlali::pipeline
