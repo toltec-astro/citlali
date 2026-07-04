@@ -5673,11 +5673,10 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
         in.n_dets_high, in.scans.data.cols());
 
     citlali::pipeline::write_chunk_nonfinite_summary(f, in.scans.data);
-    f << "-Data min: " << in.scans.data.minCoeff() << " " << omb.sig_unit << "\n";
-    f << "-Data max: " << in.scans.data.maxCoeff() << " " << omb.sig_unit << "\n";
-    f << "-Data mean: " << in.scans.data.mean() << " " << omb.sig_unit << "\n";
-    f << "-Data median: " << tula::alg::median(in.scans.data) << " " << omb.sig_unit << "\n";
-    f << "-Data stddev: " << engine_utils::calc_std_dev(in.scans.data) << " " << omb.sig_unit << "\n";
+    citlali::pipeline::write_chunk_data_stat_summary(
+        f, in.scans.data.minCoeff(), in.scans.data.maxCoeff(),
+        in.scans.data.mean(), tula::alg::median(in.scans.data),
+        engine_utils::calc_std_dev(in.scans.data), omb.sig_unit);
 
     if (in.status.kernel_generated) {
         f << "-Kernel max: " << in.kernel.data.maxCoeff() << " " << omb.sig_unit << "\n";

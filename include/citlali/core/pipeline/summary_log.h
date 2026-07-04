@@ -153,4 +153,15 @@ void write_chunk_nonfinite_summary(std::ostream &stream,
     stream << "-Infs found: " << data.array().isInf().count() << "\n";
 }
 
+inline void write_chunk_data_stat_summary(
+    std::ostream &stream, double min_value, double max_value,
+    double mean_value, double median_value, double stddev_value,
+    std::string_view unit) {
+    stream << "-Data min: " << min_value << " " << unit << "\n";
+    stream << "-Data max: " << max_value << " " << unit << "\n";
+    stream << "-Data mean: " << mean_value << " " << unit << "\n";
+    stream << "-Data median: " << median_value << " " << unit << "\n";
+    stream << "-Data stddev: " << stddev_value << " " << unit << "\n";
+}
+
 }  // namespace citlali::pipeline
