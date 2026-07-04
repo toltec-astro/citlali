@@ -6897,6 +6897,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return entry.uid == candidate.uid &&
                    entry.scan == candidate.scan;
         };
+    auto make_mapdiag_detector_dominance_entry =
+        [](const map_pixel_candidate_t &candidate) {
+            return detector_dominance_t{
+                candidate.uid, candidate.scan, 0, 0.0, 0.0};
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
