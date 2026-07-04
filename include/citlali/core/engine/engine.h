@@ -6633,11 +6633,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             weight_thresholds[idx] = weight_threshold;
             return weight_threshold;
         };
-    auto mapdiag_current_contributor_uid =
-        [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
-            return citlali::pipeline::mapdiag_matrix_value(
-                mb->contribution_uid[map_st], row, col);
-        };
     auto mapdiag_current_contributor_signal =
         [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
             return citlali::pipeline::mapdiag_matrix_double_value(
@@ -6877,8 +6872,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                         citlali::pipeline::
                                             mapdiag_contribution_map_index(i);
                                     const int uid =
-                                        mapdiag_current_contributor_uid(
-                                            map_st, r, c);
+                                        citlali::pipeline::
+                                            mapdiag_matrix_value(
+                                                mb->contribution_uid[map_st],
+                                                r, c);
                                     const double contrib_signal =
                                         mapdiag_current_contributor_signal(
                                             map_st, r, c);
