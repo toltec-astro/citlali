@@ -7005,11 +7005,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             citlali::pipeline::update_mapdiag_detector_dominance(
                 dominance, candidate, fill_int);
         };
-    auto make_mapdiag_detector_dominance_list =
-        []() {
-            return citlali::pipeline::
-                make_mapdiag_detector_dominance_list();
-        };
     auto mapdiag_outlier_record_producer =
         [&]() {
             return citlali::pipeline::mapdiag_record_producer(stage_name);
@@ -7298,7 +7293,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             mapdiag_pixel_candidate_emit_count(
                                 candidates);
                         auto dominance =
-                            make_mapdiag_detector_dominance_list();
+                            citlali::pipeline::
+                                make_mapdiag_detector_dominance_list();
 
                         for (std::size_t ci = 0; ci < n_emit; ++ci) {
                             const auto &candidate =
