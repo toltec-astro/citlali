@@ -6515,10 +6515,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::MapdiagDetectorDominance;
 
     const citlali::pipeline::MapdiagStatsContext mapdiag_stats{fill_double};
-    auto make_mapdiag_current_weight_array =
-        [&](Eigen::Index map_i) {
-            return mb->weight[map_i].array();
-        };
     auto make_mapdiag_obs_weight_path =
         [&](const std::string &obsnum_i,
             const std::string &array_name) {
@@ -6855,7 +6851,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             assign_mapdiag_weight_threshold(i, idx);
         assign_mapdiag_current_edge_guard(idx);
 
-        const auto weight_arr = make_mapdiag_current_weight_array(i);
+        const auto weight_arr = mb->weight[i].array();
         const auto valid_mask =
             citlali::pipeline::mapdiag_valid_weight_mask(weight_arr);
         const auto core_mask =
