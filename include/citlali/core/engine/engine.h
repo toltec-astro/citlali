@@ -6756,11 +6756,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_off_source_core_mask(
                 core_mask, source_distance_context, protect_radius);
         };
-    auto make_mapdiag_robust_center_stats =
-        [&](const std::vector<double> &values) {
-            return citlali::pipeline::mapdiag_robust_center_stats(
-                mapdiag_stats, values);
-        };
     auto mapdiag_current_has_contribution_products =
         [&](Eigen::Index map_i) {
             return citlali::pipeline::mapdiag_has_contribution_products(
@@ -7062,8 +7057,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 if (citlali::pipeline::mapdiag_has_enough_off_source_values(
                         off_source_values)) {
                     const auto robust_stats =
-                        make_mapdiag_robust_center_stats(
-                            off_source_values);
+                        citlali::pipeline::mapdiag_robust_center_stats(
+                            mapdiag_stats, off_source_values);
                     if (citlali::pipeline::
                             mapdiag_has_valid_robust_center_stats(
                                 robust_stats)) {
