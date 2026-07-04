@@ -79,6 +79,16 @@ inline std::size_t mapdiag_obs_flat_index(const MapdiagSizeContext &context,
     return map_index * context.n_obsnums + obs_index;
 }
 
+inline void add_mapdiag_identity_vars(
+    netCDF::NcFile &fo, const MapdiagIdentityVars &values) {
+    add_netcdf_var<std::string>(fo, "MAP_STAGE", values.stage_name);
+    add_netcdf_var<std::string>(fo, "MAP_BUFFER", values.buffer_name);
+    add_netcdf_var<std::string>(fo, "MAP_REGIME", values.map_regime);
+    add_netcdf_var<std::string>(fo, "SOURCE", values.source_name);
+    add_netcdf_var<std::string>(fo, "PROJID", values.project_id);
+    add_netcdf_var<std::string>(fo, "OBSGOAL", values.obs_goal);
+}
+
 inline void put_netcdf_string_1d(
     netCDF::NcFile &fo, const std::string &name, netCDF::NcDim dim,
     const std::vector<std::string> &values,
