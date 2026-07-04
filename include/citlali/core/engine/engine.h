@@ -6643,6 +6643,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     weight_arr, valid_mask, core_mask),
                 weight_refs);
         };
+    auto assign_mapdiag_current_formal_noise_stats =
+        [&](Eigen::Index map_i, std::size_t idx) {
+            citlali::pipeline::assign_mapdiag_formal_noise_stats(
+                idx,
+                citlali::pipeline::mapdiag_formal_noise_stats_or_fill(
+                    mb->median_err, mb->median_rms, map_i, fill_double),
+                formal_noise_refs);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
