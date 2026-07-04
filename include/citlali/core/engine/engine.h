@@ -6633,15 +6633,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             weight_thresholds[idx] = weight_threshold;
             return weight_threshold;
         };
-    auto make_mapdiag_off_source_core_mask =
-        [&](const auto &core_mask,
-            const auto &source_distance_context) {
-            const double protect_radius =
-                citlali::pipeline::mapdiag_source_protect_radius_arcsec(
-                    reduction_learning);
-            return citlali::pipeline::mapdiag_off_source_core_mask(
-                core_mask, source_distance_context, protect_radius);
-        };
     auto mapdiag_current_effective_samples =
         [&](Eigen::Index map_i, Eigen::Index row, Eigen::Index col,
             double ptc_fs_hz) {
@@ -6809,9 +6800,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     citlali::pipeline::mapdiag_source_distance_context(
                         mb, RAD_TO_ASEC, fill_double);
 
+                const double protect_radius =
+                    citlali::pipeline::mapdiag_source_protect_radius_arcsec(
+                        reduction_learning);
                 Eigen::ArrayXXd off_source_core_mask =
-                    make_mapdiag_off_source_core_mask(
-                        core_mask, source_distance_context);
+                    citlali::pipeline::mapdiag_off_source_core_mask(
+                        core_mask, source_distance_context, protect_radius);
 
                 const auto off_source_values =
                     mapdiag_stats.collect_masked_values(
