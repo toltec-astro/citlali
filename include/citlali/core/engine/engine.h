@@ -7271,7 +7271,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
                                 if (have_contrib) {
                                     const auto map_st =
-                                        mapdiag_contribution_map_index(i);
+                                        mapdiag_current_contribution_map_index(
+                                            i);
                                     const int uid =
                                         mapdiag_current_contributor_uid(
                                             map_st, r, c);
