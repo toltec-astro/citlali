@@ -6582,8 +6582,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 }
 
                                 const double z =
-                                    (sn - robust_stats.center) /
-                                    robust_stats.robust_sigma;
+                                    citlali::pipeline::mapdiag_robust_z(
+                                        sn, robust_stats);
                                 if (!std::isfinite(z) ||
                                     std::abs(z) <
                                         reduction_learning.options.map_pixel_outlier_min_abs_z) {
