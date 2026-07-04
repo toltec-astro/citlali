@@ -5734,7 +5734,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     }
 
     // array name
-    std::string name = toltec_io.array_name_map[calib.arrays(i)];
+    std::string name = citlali::pipeline::phdu_array_name(
+        toltec_io.array_name_map, calib.arrays(i));
     auto &fits_entry = fits_io->at(i);
 
     try {

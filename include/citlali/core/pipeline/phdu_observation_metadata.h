@@ -26,6 +26,12 @@ inline double mjy_beam_to_jy_pixel_factor(double beam_area_sr,
     return 1e-3 / beam_area_sr * std::pow(pixel_size_rad, 2);
 }
 
+template <class ArrayNameMap, class ArrayId>
+std::string phdu_array_name(ArrayNameMap &array_name_map,
+                            const ArrayId &array_id) {
+    return array_name_map[array_id];
+}
+
 template <class FitsEntry, class Obsnums>
 void add_phdu_obsnum_keys(FitsEntry &fits_entry, const Obsnums &obsnums) {
     auto &hdu = fits_entry.pfits->pHDU();
