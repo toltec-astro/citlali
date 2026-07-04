@@ -7078,8 +7078,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                         entry, candidate);
                                 });
                             if (it == dominance.end()) {
-                                dominance.push_back({
-                                    candidate.uid, candidate.scan, 0, 0.0, 0.0});
+                                dominance.push_back(
+                                    make_mapdiag_detector_dominance_entry(
+                                        candidate));
                                 it = dominance.end() - 1;
                             }
                             citlali::pipeline::
