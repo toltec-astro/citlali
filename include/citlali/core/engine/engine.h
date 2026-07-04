@@ -7148,7 +7148,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 dominance, candidate);
                         }
 
-                        if (reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled) {
+                        if (mapdiag_current_detector_exclusion_enabled()) {
                             const int min_pixels =
                                 reduction_learning.options.map_pixel_outlier_detector_exclusion_min_pixels;
                             const int array_id =
