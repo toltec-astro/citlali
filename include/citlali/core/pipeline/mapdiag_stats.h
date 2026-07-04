@@ -572,6 +572,12 @@ inline double mapdiag_robust_sigma(
     return 1.4826 * stats.median(mapdiag_absolute_deviations(values, center));
 }
 
+inline MapdiagRobustCenterStats mapdiag_robust_center_stats(
+    const MapdiagStatsContext &stats, const std::vector<double> &values) {
+    const double center = stats.median(values);
+    return {center, mapdiag_robust_sigma(stats, values, center)};
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
