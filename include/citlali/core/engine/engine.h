@@ -6039,7 +6039,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         if (citlali::pipeline::has_map_image_slot(
                 mb->weight_formal, i, mb->n_rows, mb->n_cols)) {
             add_map_hdu_with_wcs(
-                "weight_formal_" + map_name + stokes_suffix,
+                citlali::pipeline::formal_weight_map_hdu_name(
+                    map_name, stokes_suffix),
                 mb->weight_formal[i]);
             citlali::pipeline::add_image_unit_type_description_keys(
                 *fits_io->at(map_index).hdus.back(), weight_unit, "formal",
