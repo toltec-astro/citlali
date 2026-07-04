@@ -6832,11 +6832,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 const double n_eff =
                                     mapdiag_current_effective_samples(
                                         i, r, c, ptc_fs_hz);
-                                if (!citlali::pipeline::
-                                        mapdiag_passes_min_effective_samples(
-                                            n_eff,
-                                            reduction_learning.options
-                                                .map_pixel_outlier_min_n_eff)) {
+                                if (!mapdiag_passes_current_min_effective_samples(
+                                        n_eff)) {
                                     continue;
                                 }
 
