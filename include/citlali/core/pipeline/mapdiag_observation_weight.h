@@ -70,6 +70,17 @@ inline double mapdiag_fraction_or_fill(double value, double total,
     return (total > 0.0) ? value / total : fill_value;
 }
 
+template <class Values>
+double sum_mapdiag_obs_values(const Values &values, std::size_t n_obsnums,
+                              std::size_t map_index) {
+    double total = 0.0;
+    for (std::size_t obs_idx = 0; obs_idx < n_obsnums; ++obs_idx) {
+        const std::size_t flat = map_index * n_obsnums + obs_idx;
+        total += values[flat];
+    }
+    return total;
+}
+
 template <class DoubleValues, class IntValues>
 void assign_mapdiag_single_obs_entry(
     std::size_t flat, double map_weight_sum, double map_core_weight_sum,
