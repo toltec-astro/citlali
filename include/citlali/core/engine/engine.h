@@ -6912,11 +6912,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_has_valid_contributor(
                 uid, fill_int, contrib_signal);
         };
-    auto mapdiag_current_candidate_has_valid_contributor =
-        [&](int uid, double contrib_signal) {
-            return mapdiag_has_current_valid_contributor(
-                uid, contrib_signal);
-        };
     auto assign_mapdiag_current_candidate_contributor =
         [&](map_pixel_candidate_t &candidate, std::size_t map_st,
             Eigen::Index row, Eigen::Index col, int uid) {
@@ -7302,7 +7297,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     const double contrib_variance_weight =
                                         mapdiag_current_contributor_variance_weight(
                                             map_st, r, c);
-                                    if (mapdiag_current_candidate_has_valid_contributor(
+                                    if (mapdiag_has_current_valid_contributor(
                                             uid, contrib_signal)) {
                                         assign_mapdiag_current_pixel_candidate_contributor(
                                             candidate, map_st, r, c, uid);
