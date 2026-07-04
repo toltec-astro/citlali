@@ -6843,11 +6843,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         mapdiag_detector_dominance_penalty_reason(),
                     fruit_iter, entry, array_id);
         };
-    auto record_mapdiag_current_detector_penalty =
-        [&](ReductionLearningState::DetectorPenalty &&penalty) {
-            reduction_learning.record_detector_penalty(
-                std::move(penalty), true);
-        };
     auto log_mapdiag_current_detector_penalty =
         [&](Eigen::Index map_i, const detector_dominance_t &entry) {
             logger->info(
@@ -7133,8 +7128,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 auto penalty =
                                     make_mapdiag_current_detector_penalty(
                                         entry, array_id);
-                                record_mapdiag_current_detector_penalty(
-                                    std::move(penalty));
+                                reduction_learning.record_detector_penalty(
+                                    std::move(penalty), true);
                                 log_mapdiag_current_detector_penalty(i, entry);
                             }
                         }
