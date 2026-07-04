@@ -5897,7 +5897,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     citlali::pipeline::add_phdu_busy_row_suppression_config(
         fits_entry, name, logger, ptcproc.busy_row_suppression);
     const auto n_eig_removed =
-        ptcproc.run_clean ? ptcproc.cleaner.n_eig_to_cut[calib.arrays(i)].sum()
+        ptcproc.run_clean ? ptcproc.cleaner.n_eig_to_cut[array_id].sum()
                           : 0;
     citlali::pipeline::add_phdu_cleaner_config(
         fits_entry, name, logger, ptcproc, n_eig_removed);
