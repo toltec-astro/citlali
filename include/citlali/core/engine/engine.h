@@ -6613,16 +6613,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             assign_mapdiag_obs_contributions(map_i, idx, core_mask);
             assign_mapdiag_obs_contribution_fractions(idx);
         };
-    auto assign_mapdiag_weight_threshold =
-        [&](Eigen::Index map_i, std::size_t idx) {
-            auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] =
-                mb->calc_cov_region(map_i);
-            weight_threshold =
-                citlali::pipeline::mapdiag_weight_threshold_or_zero(
-                    weight_threshold);
-            weight_thresholds[idx] = weight_threshold;
-            return weight_threshold;
-        };
     const std::string mapdiag_record_producer =
         citlali::pipeline::mapdiag_record_producer(stage_name);
 
@@ -6637,8 +6627,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::assign_mapdiag_map_labels(
             idx, labels, {array_names, stokes_names, map_names});
 
-        const auto weight_threshold =
-            assign_mapdiag_weight_threshold(i, idx);
+        auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] =
+            mb->calc_cov_region(i);
+        weight_threshold =
+            citlali::pipeline::mapdiag_weight_threshold_or_zero(
+                weight_threshold);
+        weight_thresholds[idx] = weight_threshold;
         if (citlali::pipeline::mapdiag_has_edge_guard_entry(idx, *mb)) {
             citlali::pipeline::assign_mapdiag_edge_guard_int_entry(
                 idx, *mb, edge_guard_int_refs);
