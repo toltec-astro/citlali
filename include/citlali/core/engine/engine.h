@@ -6855,7 +6855,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     };
 
     citlali::pipeline::add_mapdiag_map_double_vars(
-        add_map_double,
+        fo, mapdiag_dims,
         {median_err,
          median_rms,
          weight_thresholds,
