@@ -6527,14 +6527,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [&](Eigen::Index map_i) {
             return mb->weight[map_i].array();
         };
-    auto mapdiag_current_n_rows =
-        [&]() {
-            return citlali::pipeline::mapdiag_n_rows(mb);
-        };
-    auto mapdiag_current_n_cols =
-        [&]() {
-            return citlali::pipeline::mapdiag_n_cols(mb);
-        };
     auto mapdiag_current_outlier_diagnostics_enabled =
         [&]() {
             return citlali::pipeline::mapdiag_outlier_diagnostics_enabled(
@@ -7128,9 +7120,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         const double ptc_fs_hz = mapdiag_current_ptc_fs_hz();
 
                         for (Eigen::Index r = 0;
-                             r < mapdiag_current_n_rows(); ++r) {
+                             r < citlali::pipeline::mapdiag_n_rows(mb); ++r) {
                             for (Eigen::Index c = 0;
-                                 c < mapdiag_current_n_cols(); ++c) {
+                                 c < citlali::pipeline::mapdiag_n_cols(mb); ++c) {
                                 if (!citlali::pipeline::mapdiag_mask_pixel_is_selected(
                                         off_source_core_mask, r, c)) {
                                     continue;
