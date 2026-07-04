@@ -6564,15 +6564,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     continue;
                                 }
 
-                                double n_eff = fill_double;
-                                if (!mb->coverage.empty() &&
-                                    i < static_cast<Eigen::Index>(mb->coverage.size()) &&
-                                    mb->coverage[i].rows() == mb->n_rows &&
-                                    mb->coverage[i].cols() == mb->n_cols &&
-                                    std::isfinite(mb->coverage[i](r, c)) &&
-                                    std::isfinite(ptc_fs_hz) && ptc_fs_hz > 0.0) {
-                                    n_eff = mb->coverage[i](r, c) * ptc_fs_hz;
-                                }
+                                const double n_eff =
+                                    citlali::pipeline::
+                                        mapdiag_effective_samples_or_fill(
+                                            mb->coverage, i, r, c, mb->n_rows,
+                                            mb->n_cols, ptc_fs_hz,
+                                            fill_double);
                                 if (!citlali::pipeline::
                                         mapdiag_passes_min_effective_samples(
                                             n_eff,
