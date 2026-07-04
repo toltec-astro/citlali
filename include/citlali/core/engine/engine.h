@@ -7409,7 +7409,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             make_mapdiag_detector_dominance_list();
 
                         for (std::size_t ci = 0; ci < n_emit; ++ci) {
-                            const auto &candidate = candidates[ci];
+                            const auto &candidate =
+                                mapdiag_current_emitted_candidate(
+                                    candidates, ci);
                             auto record =
                                 make_mapdiag_current_outlier_record(
                                     i, candidate);
