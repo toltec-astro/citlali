@@ -6934,9 +6934,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     add_netcdf_var(fo, "MAP_EDGE_GUARD_RADIUS_FWHM", wiener_filter.edge_guard_radius_fwhm);
     add_netcdf_var(fo, "MAP_EDGE_GUARD_TAPER_MIN_FRACTION", wiener_filter.edge_taper_min_fraction);
 
-    put_string_1d(fo, "map_array_name", mapdiag_dims.maps, array_names, "array label for each map row");
-    put_string_1d(fo, "map_stokes", mapdiag_dims.maps, stokes_names, "stokes parameter label for each map row");
-    put_string_1d(fo, "map_name", mapdiag_dims.maps, map_names, "grouping-derived map label prefix for each map row");
+    citlali::pipeline::add_mapdiag_map_label_vars(
+        fo, mapdiag_dims.maps, array_names, stokes_names, map_names);
 
     const auto obsnum_strings =
         citlali::pipeline::mapdiag_obsnum_labels(mb->obsnums, obsnum);
