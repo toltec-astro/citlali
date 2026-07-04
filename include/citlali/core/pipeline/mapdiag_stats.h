@@ -474,6 +474,10 @@ inline Eigen::Index mapdiag_noise_realization_offset(
     return realization_index * mapdiag_noise_realization_size(n_rows, n_cols);
 }
 
+inline double mapdiag_center_pixel_coordinate(Eigen::Index n_pixels) {
+    return (static_cast<double>(n_pixels) - 1.0) / 2.0;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
