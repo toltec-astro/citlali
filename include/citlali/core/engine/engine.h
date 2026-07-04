@@ -7117,8 +7117,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         const auto valid_mask =
             make_mapdiag_current_valid_weight_mask(weight_arr);
         const auto core_mask =
-            citlali::pipeline::mapdiag_core_weight_mask(weight_arr,
-                                                        weight_threshold);
+            make_mapdiag_current_core_weight_mask(
+                weight_arr, weight_threshold);
         assign_mapdiag_current_weight_stats(
             idx, weight_arr, valid_mask, core_mask);
 
