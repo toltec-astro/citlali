@@ -6900,7 +6900,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
          edge_guard_exterior_max_abs_pre,
          edge_guard_exterior_max_abs_post});
     citlali::pipeline::add_mapdiag_map_int_vars(
-        add_map_int,
+        fo, mapdiag_dims,
         {n_valid_pixels,
          n_core_pixels,
          peak_row,
