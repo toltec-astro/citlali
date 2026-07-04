@@ -507,6 +507,14 @@ inline double mapdiag_source_distance_arcsec(
     return std::hypot(drow, dcol);
 }
 
+inline double mapdiag_source_distance_arcsec(
+    Eigen::Index row, Eigen::Index col,
+    const MapdiagSourceDistanceContext &context) {
+    return mapdiag_source_distance_arcsec(
+        row, col, context.center_row, context.center_col,
+        context.pixel_size_arcsec, context.fill_value);
+}
+
 inline bool mapdiag_is_source_protected(double distance_arcsec,
                                         double protect_radius_arcsec) {
     return protect_radius_arcsec > 0.0 && std::isfinite(distance_arcsec) &&
