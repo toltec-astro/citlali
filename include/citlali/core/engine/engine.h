@@ -7114,7 +7114,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     record, obsnum,
                                     mapdiag_outlier_record_producer(),
                                     mapdiag_outlier_record_reason(candidate),
-                                    fruit_iter, static_cast<int>(i));
+                                    fruit_iter,
+                                    mapdiag_outlier_record_map_index(i));
                             citlali::pipeline::
                                 assign_mapdiag_outlier_record_candidate(
                                     record, candidate);
