@@ -521,6 +521,21 @@ inline bool mapdiag_is_source_protected(double distance_arcsec,
            distance_arcsec <= protect_radius_arcsec;
 }
 
+inline void apply_mapdiag_source_protection_mask(
+    Eigen::ArrayXXd &mask, const MapdiagSourceDistanceContext &context,
+    double protect_radius_arcsec) {
+    for (Eigen::Index r = 0; r < mask.rows(); ++r) {
+        for (Eigen::Index c = 0; c < mask.cols(); ++c) {
+            const double dist_arcsec =
+                mapdiag_source_distance_arcsec(r, c, context);
+            if (mapdiag_is_source_protected(
+                    dist_arcsec, protect_radius_arcsec)) {
+                mask(r, c) = 0.0;
+            }
+        }
+    }
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
