@@ -74,6 +74,12 @@ struct MapdiagWeightStats {
     double core_weight_sum;
 };
 
+struct MapdiagCoverageStats {
+    double sum;
+    double max;
+    double median_core;
+};
+
 struct MapdiagPeakStats {
     double peak_abs_sig2noise;
     int peak_row;
