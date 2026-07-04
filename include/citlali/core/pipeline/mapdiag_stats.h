@@ -192,6 +192,11 @@ inline Eigen::ArrayXXd mapdiag_core_weight_mask(
         .template cast<double>();
 }
 
+inline Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic>
+mapdiag_positive_mask(const Eigen::ArrayXXd &mask) {
+    return mask > 0.0;
+}
+
 inline bool mapdiag_has_matrix_samples(const Eigen::MatrixXd &matrix) {
     return matrix.size() > 0;
 }
