@@ -6671,6 +6671,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     coverage_refs);
             }
         };
+    auto assign_mapdiag_current_peak_signal =
+        [&](Eigen::Index map_i, std::size_t idx) {
+            peak_signal[idx] = citlali::pipeline::mapdiag_peak_signal_or_fill(
+                mb->signal[map_i], fill_double);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
