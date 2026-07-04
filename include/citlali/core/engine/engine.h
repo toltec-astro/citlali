@@ -6505,6 +6505,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         obsnum,
         date_obs,
         mapdiag_context.n_obsnums};
+    citlali::pipeline::MapdiagValueVars mapdiag_values{
+        map_double_values, map_int_values, obs_double_values,
+        obs_int_values};
 
     using map_pixel_candidate_t =
         citlali::pipeline::MapdiagMapPixelCandidate;
