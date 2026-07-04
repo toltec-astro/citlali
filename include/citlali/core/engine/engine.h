@@ -7184,28 +7184,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::
                 mapdiag_detector_dominance_penalty_reason();
         };
-    auto assign_mapdiag_current_detector_penalty_context =
-        [&](ReductionLearningState::DetectorPenalty &penalty,
-            const detector_dominance_t &entry, int array_id) {
-            citlali::pipeline::assign_mapdiag_detector_penalty_context(
-                penalty, obsnum, mapdiag_detector_penalty_producer(),
-                mapdiag_detector_penalty_reason(), fruit_iter, entry,
-                array_id);
-        };
-    auto assign_mapdiag_current_detector_penalty_dominance =
-        [](ReductionLearningState::DetectorPenalty &penalty,
-           const detector_dominance_t &entry) {
-            citlali::pipeline::assign_mapdiag_detector_penalty_dominance(
-                penalty, entry);
-        };
     auto make_mapdiag_current_detector_penalty =
         [&](const detector_dominance_t &entry, int array_id) {
-            ReductionLearningState::DetectorPenalty penalty;
-            assign_mapdiag_current_detector_penalty_context(
-                penalty, entry, array_id);
-            assign_mapdiag_current_detector_penalty_dominance(
-                penalty, entry);
-            return penalty;
+            return citlali::pipeline::make_mapdiag_detector_penalty<
+                ReductionLearningState::DetectorPenalty>(
+                    obsnum, mapdiag_detector_penalty_producer(),
+                    mapdiag_detector_penalty_reason(), fruit_iter, entry,
+                    array_id);
         };
     auto record_mapdiag_current_detector_penalty =
         [&](ReductionLearningState::DetectorPenalty &&penalty) {

@@ -980,6 +980,17 @@ void assign_mapdiag_detector_penalty_dominance(
     penalty.scan_local = true;
 }
 
+template <class Penalty, class Obsnum, class Producer, class Reason>
+Penalty make_mapdiag_detector_penalty(
+    const Obsnum &obsnum, const Producer &producer, const Reason &reason,
+    int iter, const MapdiagDetectorDominance &entry, int array_id) {
+    Penalty penalty;
+    assign_mapdiag_detector_penalty_context(
+        penalty, obsnum, producer, reason, iter, entry, array_id);
+    assign_mapdiag_detector_penalty_dominance(penalty, entry);
+    return penalty;
+}
+
 inline bool mapdiag_dominance_meets_min_pixels(
     const MapdiagDetectorDominance &entry, int min_pixels) {
     return entry.count >= min_pixels;
