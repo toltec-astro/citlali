@@ -6387,9 +6387,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         bool has_contributor = false;
     };
 
-    auto vector_median = [&](const std::vector<double> &values) -> double {
-        return citlali::pipeline::mapdiag_vector_median(values, fill_double);
-    };
+    const citlali::pipeline::MapdiagStatsContext mapdiag_stats{fill_double};
 
     auto vector_quantile = [&](std::vector<double> values, double q) -> double {
         return citlali::pipeline::mapdiag_vector_quantile(
@@ -6536,13 +6534,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 const auto off_source_values =
                     collect_masked_values(sig2noise, off_source_core_mask);
                 if (off_source_values.size() >= 8) {
-                    const double center = vector_median(off_source_values);
+                    const double center = mapdiag_stats.median(off_source_values);
                     std::vector<double> abs_dev;
                     abs_dev.reserve(off_source_values.size());
                     for (const auto &value : off_source_values) {
                         abs_dev.push_back(std::abs(value - center));
                     }
-                    const double robust_sigma = 1.4826 * vector_median(abs_dev);
+                    const double robust_sigma = 1.4826 * mapdiag_stats.median(abs_dev);
                     if (std::isfinite(center) && std::isfinite(robust_sigma) &&
                         robust_sigma > std::numeric_limits<double>::epsilon()) {
                         std::vector<map_pixel_candidate_t> candidates;
@@ -6839,13 +6837,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 }
                 noise_rms_p16[idx] = vector_quantile(noise_rms_values, 0.16);
                 noise_rms_p84[idx] = vector_quantile(noise_rms_values, 0.84);
-                noise_tail_frac_abs3[idx] = vector_median(tail_abs_values);
-                noise_tail_frac_pos3[idx] = vector_median(tail_pos_values);
-                noise_tail_frac_neg3[idx] = vector_median(tail_neg_values);
-                noise_tail_excess_abs3[idx] = vector_median(excess_abs_values);
-                noise_tail_excess_pos3[idx] = vector_median(excess_pos_values);
-                noise_tail_excess_neg3[idx] = vector_median(excess_neg_values);
-                noise_sig2noise_skew[idx] = vector_median(skew_values);
+                noise_tail_frac_abs3[idx] = mapdiag_stats.median(tail_abs_values);
+                noise_tail_frac_pos3[idx] = mapdiag_stats.median(tail_pos_values);
+                noise_tail_frac_neg3[idx] = mapdiag_stats.median(tail_neg_values);
+                noise_tail_excess_abs3[idx] = mapdiag_stats.median(excess_abs_values);
+                noise_tail_excess_pos3[idx] = mapdiag_stats.median(excess_pos_values);
+                noise_tail_excess_neg3[idx] = mapdiag_stats.median(excess_neg_values);
+                noise_sig2noise_skew[idx] = mapdiag_stats.median(skew_values);
             }
         }
 
