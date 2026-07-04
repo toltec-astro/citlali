@@ -6526,7 +6526,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 const auto off_source_values =
                     mapdiag_stats.collect_masked_values(
                         sig2noise, off_source_core_mask);
-                if (off_source_values.size() >= 8) {
+                if (citlali::pipeline::mapdiag_has_minimum_samples(
+                        off_source_values.size(), 8)) {
                     const double center = mapdiag_stats.median(off_source_values);
                     std::vector<double> abs_dev;
                     abs_dev.reserve(off_source_values.size());
