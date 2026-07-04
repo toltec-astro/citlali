@@ -472,6 +472,13 @@ inline void assign_mapdiag_noise_tail_summary(
     refs.skew[idx] = summary.skew;
 }
 
+inline void assign_mapdiag_noise_tail_samples(
+    std::size_t idx, const MapdiagStatsContext &stats,
+    const MapdiagNoiseTailSamples &samples, MapdiagNoiseTailRefs refs) {
+    assign_mapdiag_noise_tail_summary(
+        idx, summarize_mapdiag_noise_tail_samples(stats, samples), refs);
+}
+
 inline void mapdiag_append_finite(std::vector<double> &values, double value) {
     if (std::isfinite(value)) {
         values.push_back(value);
