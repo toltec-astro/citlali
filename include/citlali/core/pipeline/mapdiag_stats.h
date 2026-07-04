@@ -536,6 +536,16 @@ inline void apply_mapdiag_source_protection_mask(
     }
 }
 
+inline Eigen::ArrayXXd mapdiag_off_source_core_mask(
+    const Eigen::ArrayXXd &core_mask,
+    const MapdiagSourceDistanceContext &context,
+    double protect_radius_arcsec) {
+    Eigen::ArrayXXd off_source_mask = core_mask;
+    apply_mapdiag_source_protection_mask(
+        off_source_mask, context, protect_radius_arcsec);
+    return off_source_mask;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
