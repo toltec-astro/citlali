@@ -6746,10 +6746,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
             if (citlali::pipeline::mapdiag_outlier_diagnostics_enabled(
                     reduction_learning)) {
-                const double pix_arcsec = mb->pixel_size_rad * RAD_TO_ASEC;
                 const auto source_distance_context =
-                    citlali::pipeline::mapdiag_source_distance_context(
-                        mb->n_rows, mb->n_cols, pix_arcsec, fill_double);
+                    make_mapdiag_source_distance_context();
                 const double protect_radius =
                     reduction_learning.options.map_pixel_outlier_source_radius_arcsec;
 
