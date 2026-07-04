@@ -7301,7 +7301,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 const auto off_source_values =
                     collect_mapdiag_current_off_source_values(
                         sig2noise, off_source_core_mask);
-                if (mapdiag_has_enough_off_source_values(
+                if (mapdiag_current_has_enough_off_source_values(
                         off_source_values)) {
                     const auto robust_stats =
                         make_mapdiag_robust_center_stats(
