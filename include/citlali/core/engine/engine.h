@@ -7027,6 +7027,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             reduction_learning.record_detector_penalty(
                 std::move(penalty), true);
         };
+    auto mapdiag_current_dominance_display_scan_index =
+        [](const detector_dominance_t &entry) {
+            return citlali::pipeline::mapdiag_display_scan_index(
+                entry.scan);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
