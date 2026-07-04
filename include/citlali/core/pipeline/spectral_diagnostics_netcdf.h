@@ -156,4 +156,16 @@ void add_histogram_pair(netCDF::NcFile &fo, const std::string &base_name,
     add_double_1d_var(fo, base_name + "_hist", dim, counts);
 }
 
+template <class NoiseList, class Counts>
+void add_noise_histogram_if_present(netCDF::NcFile &fo,
+                                    const NoiseList &noise,
+                                    const std::string &base_name,
+                                    netCDF::NcDim dim,
+                                    const Counts &counts) {
+    if (has_spectral_noise_products(noise)) {
+        add_double_1d_var(
+            fo, spectral_noise_histogram_name(base_name), dim, counts);
+    }
+}
+
 }  // namespace citlali::pipeline
