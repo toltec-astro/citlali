@@ -6431,6 +6431,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     citlali::pipeline::MapdiagObsTableRefs obs_tables{
         obs_weight_sum, obs_core_weight_sum, obs_valid_pixels,
         obs_core_pixels};
+    citlali::pipeline::MapdiagObservationDoubleValues obs_double_values{
+        obs_weight_sum,
+        obs_weight_frac,
+        obs_core_weight_sum,
+        obs_core_weight_frac};
+    citlali::pipeline::MapdiagObservationIntValues obs_int_values{
+        obs_valid_pixels,
+        obs_core_pixels};
     citlali::pipeline::MapdiagMapDoubleValues map_double_values{
         median_err,
         median_rms,
