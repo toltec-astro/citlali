@@ -7014,7 +7014,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto mapdiag_remaining_contribution_weight =
         [](double total_weight, double contrib_weight) {
-            return total_weight - contrib_weight;
+            return citlali::pipeline::mapdiag_remaining_contribution_weight(
+                total_weight, contrib_weight);
         };
     auto mapdiag_has_current_full_leave_one_out_inputs =
         [](double total_signal, double total_weight,
@@ -7037,7 +7038,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     auto mapdiag_full_leave_one_out_value =
         [](double total_signal, double contrib_signal,
            double remaining_weight) {
-            return (total_signal - contrib_signal) / remaining_weight;
+            return citlali::pipeline::mapdiag_full_leave_one_out_value(
+                total_signal, contrib_signal, remaining_weight);
         };
     auto mapdiag_current_candidate_full_leave_one_out_value =
         [&](double total_signal, double contrib_signal,
@@ -7070,7 +7072,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto mapdiag_raw_weighted_signal =
         [](double value, double weight) {
-            return value * weight;
+            return citlali::pipeline::mapdiag_raw_weighted_signal(
+                value, weight);
         };
     auto mapdiag_current_candidate_raw_weighted_signal =
         [&](double value, double weight) {
@@ -7079,7 +7082,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     auto mapdiag_fallback_leave_one_out_value =
         [](double raw_sum, double contrib_signal, double weight,
            double contrib_weight) {
-            return (raw_sum - contrib_signal) / (weight - contrib_weight);
+            return citlali::pipeline::mapdiag_fallback_leave_one_out_value(
+                raw_sum, contrib_signal, weight, contrib_weight);
         };
     auto mapdiag_current_candidate_fallback_leave_one_out_value =
         [&](double raw_sum, double contrib_signal, double weight,

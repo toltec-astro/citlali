@@ -611,6 +611,17 @@ inline bool mapdiag_has_full_leave_one_out_inputs(
            total_variance_weight > contribution_variance_weight;
 }
 
+inline double mapdiag_remaining_contribution_weight(double total_weight,
+                                                    double contribution_weight) {
+    return total_weight - contribution_weight;
+}
+
+inline double mapdiag_full_leave_one_out_value(double total_signal,
+                                               double contribution_signal,
+                                               double remaining_weight) {
+    return (total_signal - contribution_signal) / remaining_weight;
+}
+
 inline void mapdiag_assign_leave_one_out_z(double value, double weight,
                                            double leave_one_out_value,
                                            double &leave_one_out_z) {
@@ -626,6 +637,17 @@ inline bool mapdiag_has_fallback_leave_one_out_inputs(
            weight > contribution_weight &&
            (weight - contribution_weight) >
                std::numeric_limits<double>::epsilon();
+}
+
+inline double mapdiag_raw_weighted_signal(double value, double weight) {
+    return value * weight;
+}
+
+inline double mapdiag_fallback_leave_one_out_value(
+    double raw_weighted_signal, double contribution_signal, double weight,
+    double contribution_weight) {
+    return (raw_weighted_signal - contribution_signal) /
+           (weight - contribution_weight);
 }
 
 template <class NoiseList>
