@@ -6538,6 +6538,18 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 "failed to derive mapdiag contribution from {} [{}]: {}",
                 obs_weight_path, weight_hdu_name, e.what());
         };
+    auto accumulate_mapdiag_obs_weight_file =
+        [&](Eigen::Index map_i, std::size_t obs_idx,
+            const auto &core_mask,
+            const std::string &obs_weight_path,
+            const std::string &weight_hdu_name) {
+            fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> obs_fits(
+                obs_weight_path);
+            auto obs_weight = obs_fits.get_hdu(weight_hdu_name);
+            citlali::pipeline::accumulate_mapdiag_obs_weight(
+                map_i, mapdiag_context.n_obsnums, mb->n_rows, mb->n_cols,
+                core_mask, obs_weight, obs_idx, obs_tables);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
