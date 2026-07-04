@@ -6919,9 +6919,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     citlali::pipeline::add_mapdiag_identity_vars(
         fo, {stage_name, mb->name, map_regime, telescope.source_name,
              telescope.project_id, telescope.obs_goal});
-    add_netcdf_var(fo, "MAP_PIXEL_SIZE_RAD", mb->pixel_size_rad);
-    add_netcdf_var(fo, "MAP_COVERAGE_CUT", mb->cov_cut);
-    add_netcdf_var<std::string>(fo, "MAP_SIG_UNIT", mb->sig_unit);
+    citlali::pipeline::add_mapdiag_runtime_vars(
+        fo, {mb->pixel_size_rad, mb->cov_cut, mb->sig_unit});
     add_netcdf_var(fo, "MAP_EDGE_GUARD_ENABLED", wiener_filter.edge_guard_enabled);
     add_netcdf_var<std::string>(fo, "MAP_EDGE_GUARD_WEIGHT_THRESHOLD_MODE", wiener_filter.edge_weight_threshold_mode);
     add_netcdf_var<std::string>(fo, "MAP_EDGE_GUARD_HITS_THRESHOLD_MODE", wiener_filter.edge_hits_threshold_mode);
