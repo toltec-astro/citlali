@@ -7337,10 +7337,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                                 total_signal, total_weight,
                                                 contrib_weight,
                                                 contrib_variance_weight,
-                                                total_variance_weight,
-                                                remaining_weight)) {
+                                            total_variance_weight,
+                                            remaining_weight)) {
                                             const double loo_value =
-                                                mapdiag_full_leave_one_out_value(
+                                                mapdiag_current_candidate_full_leave_one_out_value(
                                                     total_signal,
                                                     contrib_signal,
                                                     remaining_weight);
