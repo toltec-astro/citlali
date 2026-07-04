@@ -154,6 +154,12 @@ inline double mapdiag_core_peak_abs_or_fill(const Eigen::MatrixXd &sig2noise,
     return core_sig2noise.maxCoeff();
 }
 
+inline void mapdiag_append_finite(std::vector<double> &values, double value) {
+    if (std::isfinite(value)) {
+        values.push_back(value);
+    }
+}
+
 template <class Values>
 bool mapdiag_has_value(const Values &values, Eigen::Index i) {
     return i >= 0 && i < static_cast<Eigen::Index>(values.size());
