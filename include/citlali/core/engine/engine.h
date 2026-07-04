@@ -6852,10 +6852,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 citlali::pipeline::mapdiag_min_effective_samples(
                     reduction_learning));
         };
-    auto mapdiag_current_candidate_passes_min_effective_samples =
-        [&](double n_eff) {
-            return mapdiag_passes_current_min_effective_samples(n_eff);
-        };
     auto mapdiag_current_robust_z =
         [](double sig2noise_value, const auto &robust_stats) {
             return citlali::pipeline::mapdiag_robust_z(
@@ -7301,7 +7297,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 const double n_eff =
                                     mapdiag_current_effective_samples(
                                         i, r, c, ptc_fs_hz);
-                                if (!mapdiag_current_candidate_passes_min_effective_samples(
+                                if (!mapdiag_passes_current_min_effective_samples(
                                         n_eff)) {
                                     continue;
                                 }
