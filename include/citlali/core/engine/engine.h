@@ -6801,8 +6801,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 mapdiag_context, idx);
         citlali::pipeline::assign_mapdiag_obs_fraction_pair(
             obs_weight_sum, obs_totals.weight, obs_core_weight_sum,
-            obs_totals.core_weight, fill_double, mapdiag_context.n_obsnums,
-            idx, obs_weight_frac, obs_core_weight_frac);
+            obs_totals.core_weight, fill_double, mapdiag_context, idx,
+            obs_weight_frac, obs_core_weight_frac);
     }
 
     write_netcdf_atomic(filename + ".nc", [&](netCDF::NcFile &fo) {
