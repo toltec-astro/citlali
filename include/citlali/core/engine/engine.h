@@ -6990,6 +6990,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_dominance_meets_min_pixels(
                 entry, min_pixels);
         };
+    auto mapdiag_detector_penalty_producer =
+        [&]() {
+            return "mapdiag:" + stage_name;
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
