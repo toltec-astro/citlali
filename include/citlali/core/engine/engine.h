@@ -6389,10 +6389,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
     const citlali::pipeline::MapdiagStatsContext mapdiag_stats{fill_double};
 
-    auto collect_masked_values = [&](const Eigen::MatrixXd &matrix, const Eigen::ArrayXXd &mask) {
-        return citlali::pipeline::mapdiag_collect_masked_values(matrix, mask);
-    };
-
     auto calc_tail_stats = [&](const std::vector<double> &values) {
         return citlali::pipeline::mapdiag_tail_stats(values, fill_double);
     };
@@ -6486,7 +6482,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             core_peak_abs_sig2noise[idx] =
                 citlali::pipeline::mapdiag_core_peak_abs_or_fill(
                     sig2noise, core_mask, n_core_pixels[idx], fill_double);
-            const auto core_values = collect_masked_values(sig2noise, core_mask);
+            const auto core_values =
+                mapdiag_stats.collect_masked_values(sig2noise, core_mask);
             const auto signal_tail = calc_tail_stats(core_values);
             core_tail_frac_abs3[idx] = signal_tail.frac_abs3;
             core_tail_frac_pos3[idx] = signal_tail.frac_pos3;
@@ -6527,7 +6524,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 }
 
                 const auto off_source_values =
-                    collect_masked_values(sig2noise, off_source_core_mask);
+                    mapdiag_stats.collect_masked_values(
+                        sig2noise, off_source_core_mask);
                 if (off_source_values.size() >= 8) {
                     const double center = mapdiag_stats.median(off_source_values);
                     std::vector<double> abs_dev;
@@ -6806,7 +6804,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         const double rms_sq = (valid_core.select(noise_matrix.array().square(), 0.0)).sum();
                         noise_rms_values.push_back(std::sqrt(rms_sq / valid_core_count));
                     }
-                    const auto noise_values = collect_masked_values(noise_matrix, core_mask);
+                    const auto noise_values =
+                        mapdiag_stats.collect_masked_values(
+                            noise_matrix, core_mask);
                     const auto noise_tail = calc_tail_stats(noise_values);
                     if (std::isfinite(noise_tail.frac_abs3)) {
                         tail_abs_values.push_back(noise_tail.frac_abs3);
