@@ -78,6 +78,17 @@ void add_psd_image_pair(netCDF::NcFile &fo, const std::string &base_name,
     add_double_2d_var(fo, base_name + "_psd_2d_freq", dims, frequency);
 }
 
+template <class SpectrumImage, class FrequencyImage>
+void add_transposed_psd_image_pair(
+    netCDF::NcFile &fo, const std::string &base_name,
+    const std::vector<netCDF::NcDim> &dims,
+    const SpectrumImage &spectrum, const FrequencyImage &frequency) {
+    const Eigen::MatrixXd spectrum_transposed = spectrum.transpose();
+    const Eigen::MatrixXd frequency_transposed = frequency.transpose();
+    add_psd_image_pair(
+        fo, base_name, dims, spectrum_transposed, frequency_transposed);
+}
+
 template <class Bins, class Counts>
 void add_histogram_pair(netCDF::NcFile &fo, const std::string &base_name,
                         netCDF::NcDim dim, const Bins &bins,
