@@ -5958,9 +5958,10 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                       static_cast<long long>(i));
         std::exit(EXIT_FAILURE);
     }
-    if (maps_to_arrays(i) < 0 || maps_to_arrays(i) >= calib.arrays.size()) {
+    const Eigen::Index array_index = maps_to_arrays(i);
+    if (array_index < 0 || array_index >= calib.arrays.size()) {
         logger->error("write_maps maps_to_arrays index out of range: maps_to_arrays(i)={} calib.arrays.size={} map_i={}",
-                      static_cast<long long>(maps_to_arrays(i)),
+                      static_cast<long long>(array_index),
                       static_cast<long long>(calib.arrays.size()),
                       static_cast<long long>(i));
         std::exit(EXIT_FAILURE);
@@ -5971,7 +5972,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                                                        logger);
 
     // update wcs ctypes for frequency and stokes params
-    mb->wcs.crval[2] = toltec_io.array_freq_map[calib.arrays[maps_to_arrays(i)]];
+    mb->wcs.crval[2] = toltec_io.array_freq_map[calib.arrays[array_index]];
     mb->wcs.crval[3] = stokes_index;
     const std::string &stokes_suffix = rtcproc.polarization.stokes_params[stokes_index];
 
