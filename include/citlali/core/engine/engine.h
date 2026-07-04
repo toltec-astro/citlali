@@ -6315,6 +6315,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<double> noise_weight_scale(mapdiag_context.n_maps, fill_double);
     std::vector<double> noise_products_s2n_sigma(mapdiag_context.n_maps, fill_double);
     std::vector<double> noise_products_valid_pixels(mapdiag_context.n_maps, fill_double);
+    citlali::pipeline::MapdiagNoiseProductRefs noise_product_refs{
+        noise_weight_median_ratio,
+        noise_weight_scale,
+        noise_products_s2n_sigma,
+        noise_products_valid_pixels};
     std::vector<double> peak_signal(mapdiag_context.n_maps, fill_double);
     std::vector<double> peak_abs_sig2noise(mapdiag_context.n_maps, fill_double);
     std::vector<double> core_peak_abs_sig2noise(mapdiag_context.n_maps, fill_double);
