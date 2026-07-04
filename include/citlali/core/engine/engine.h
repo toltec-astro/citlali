@@ -6834,11 +6834,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     citlali::pipeline::mapdiag_record_map_index(map_i),
                     candidate);
         };
-    auto mapdiag_current_detector_exclusion_min_pixels =
-        [&]() {
-            return citlali::pipeline::
-                mapdiag_detector_exclusion_min_pixels(reduction_learning);
-        };
     auto mapdiag_current_detector_penalty_array_id =
         [&](const auto &map_index) {
             return citlali::pipeline::mapdiag_array_id_or_default(
@@ -7133,7 +7128,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 mapdiag_detector_exclusion_enabled(
                                     reduction_learning)) {
                             const int min_pixels =
-                                mapdiag_current_detector_exclusion_min_pixels();
+                                citlali::pipeline::
+                                    mapdiag_detector_exclusion_min_pixels(
+                                        reduction_learning);
                             const int array_id =
                                 mapdiag_current_detector_penalty_array_id(
                                     map_index);
