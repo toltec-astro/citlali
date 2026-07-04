@@ -6633,16 +6633,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             weight_thresholds[idx] = weight_threshold;
             return weight_threshold;
         };
-    auto assign_mapdiag_current_coverage_stats =
-        [&](Eigen::Index map_i, std::size_t idx,
-            const auto &core_mask) {
-            if (citlali::pipeline::mapdiag_has_coverage_map(
-                    mb->coverage, map_i)) {
-                citlali::pipeline::assign_mapdiag_coverage_stats(
-                    idx, mb->coverage[map_i], core_mask, fill_double,
-                    coverage_refs);
-            }
-        };
     auto assign_mapdiag_current_peak_signal =
         [&](Eigen::Index map_i, std::size_t idx) {
             peak_signal[idx] = citlali::pipeline::mapdiag_peak_signal_or_fill(
@@ -6819,7 +6809,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::assign_mapdiag_noise_product_stats(
             idx, noise_product_stats, noise_product_refs);
 
-        assign_mapdiag_current_coverage_stats(i, idx, core_mask);
+        if (citlali::pipeline::mapdiag_has_coverage_map(
+                mb->coverage, i)) {
+            citlali::pipeline::assign_mapdiag_coverage_stats(
+                idx, mb->coverage[i], core_mask, fill_double,
+                coverage_refs);
+        }
         assign_mapdiag_current_peak_signal(i, idx);
         if (citlali::pipeline::mapdiag_has_signal_weight_samples(
                 mb->signal[i], mb->weight[i])) {
