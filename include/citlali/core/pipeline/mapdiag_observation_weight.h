@@ -170,6 +170,14 @@ MapdiagObsWeightTotals sum_mapdiag_obs_weight_totals(
             sum_mapdiag_obs_values(core_weight_sum, n_obsnums, map_index)};
 }
 
+template <class Values, class Context>
+MapdiagObsWeightTotals sum_mapdiag_obs_weight_totals(
+    const Values &weight_sum, const Values &core_weight_sum,
+    const Context &context, std::size_t map_index) {
+    return sum_mapdiag_obs_weight_totals(
+        weight_sum, core_weight_sum, context.n_obsnums, map_index);
+}
+
 template <class DoubleValues, class IntValues>
 void assign_mapdiag_single_obs_entry(
     std::size_t flat, double map_weight_sum, double map_core_weight_sum,
