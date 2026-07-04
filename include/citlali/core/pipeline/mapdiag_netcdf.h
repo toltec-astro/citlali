@@ -567,6 +567,13 @@ struct MapdiagObservationIntValues {
     const std::vector<int> &obs_core_pixels;
 };
 
+struct MapdiagValueVars {
+    MapdiagMapDoubleValues map_double;
+    MapdiagMapIntValues map_int;
+    MapdiagObservationDoubleValues observation_double;
+    MapdiagObservationIntValues observation_int;
+};
+
 template <class AddDouble, class AddInt>
 void add_mapdiag_observation_contribution_vars(
     const AddDouble &add_double, const AddInt &add_int,
