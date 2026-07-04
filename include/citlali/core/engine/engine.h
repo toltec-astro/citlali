@@ -6951,6 +6951,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 mapdiag_outlier_record_reason(candidate), fruit_iter,
                 mapdiag_outlier_record_map_index(map_i));
         };
+    auto assign_mapdiag_current_outlier_record_candidate =
+        [](ReductionLearningState::MapPixelOutlier &record,
+           const map_pixel_candidate_t &candidate) {
+            citlali::pipeline::assign_mapdiag_outlier_record_candidate(
+                record, candidate);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
