@@ -6870,20 +6870,18 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 const auto obs_weight_path =
                     make_mapdiag_obs_weight_path(
                         obsnum_i, array_names[idx]);
+                const auto weight_hdu_name =
+                    citlali::pipeline::mapdiag_weight_hdu_name(
+                        map_names[idx], stokes_names[idx]);
                 try {
                     fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> obs_fits(obs_weight_path);
-                    const auto weight_hdu_name =
-                        citlali::pipeline::mapdiag_weight_hdu_name(
-                            map_names[idx], stokes_names[idx]);
                     auto obs_weight = obs_fits.get_hdu(weight_hdu_name);
                     citlali::pipeline::accumulate_mapdiag_obs_weight(
                         i, mapdiag_context.n_obsnums, mb->n_rows, mb->n_cols,
                         core_mask, obs_weight, obs_idx, obs_tables);
                 } catch (const std::exception &e) {
                     logger->warn("failed to derive mapdiag contribution from {} [{}]: {}", obs_weight_path,
-                                 citlali::pipeline::mapdiag_weight_hdu_name(
-                                     map_names[idx], stokes_names[idx]),
-                                 e.what());
+                                 weight_hdu_name, e.what());
                     citlali::pipeline::zero_mapdiag_obs_entry(
                         mapdiag_context, idx, obs_idx, obs_tables);
                 }
