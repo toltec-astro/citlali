@@ -6633,13 +6633,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             weight_thresholds[idx] = weight_threshold;
             return weight_threshold;
         };
-    auto mapdiag_current_effective_samples =
-        [&](Eigen::Index map_i, Eigen::Index row, Eigen::Index col,
-            double ptc_fs_hz) {
-            return citlali::pipeline::mapdiag_effective_samples_or_fill(
-                mb->coverage, map_i, row, col, mb->n_rows, mb->n_cols,
-                ptc_fs_hz, fill_double);
-        };
     auto make_mapdiag_current_pixel_candidate =
         [&](Eigen::Index row, Eigen::Index col, double value,
             double weight, double n_eff, double z,
@@ -6853,8 +6846,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 }
 
                                 const double n_eff =
-                                    mapdiag_current_effective_samples(
-                                        i, r, c, ptc_fs_hz);
+                                    citlali::pipeline::
+                                        mapdiag_effective_samples_or_fill(
+                                            mb->coverage, i, r, c,
+                                            mb->n_rows, mb->n_cols,
+                                            ptc_fs_hz, fill_double);
                                 if (!citlali::pipeline::
                                         mapdiag_passes_min_effective_samples(
                                             n_eff,
