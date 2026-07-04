@@ -292,6 +292,18 @@ inline void assign_mapdiag_peak_stats(std::size_t idx,
     refs.core_peak_abs_sig2noise[idx] = stats.core_peak_abs_sig2noise;
 }
 
+inline void assign_mapdiag_core_tail_stats(
+    std::size_t idx, const MapdiagTailStats &stats,
+    MapdiagCoreTailRefs refs) {
+    refs.frac_abs3[idx] = stats.frac_abs3;
+    refs.frac_pos3[idx] = stats.frac_pos3;
+    refs.frac_neg3[idx] = stats.frac_neg3;
+    refs.excess_abs3[idx] = stats.excess_abs3;
+    refs.excess_pos3[idx] = stats.excess_pos3;
+    refs.excess_neg3[idx] = stats.excess_neg3;
+    refs.skew[idx] = stats.skew;
+}
+
 inline void mapdiag_append_finite(std::vector<double> &values, double value) {
     if (std::isfinite(value)) {
         values.push_back(value);
