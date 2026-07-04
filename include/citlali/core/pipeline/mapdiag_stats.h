@@ -416,6 +416,14 @@ inline Eigen::Index mapdiag_noise_realization_offset(
     return realization_index * mapdiag_noise_realization_size(n_rows, n_cols);
 }
 
+inline MapdiagCoverageStats mapdiag_coverage_stats(
+    const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
+    double fill_value) {
+    return {coverage.sum(),
+            coverage.maxCoeff(),
+            mapdiag_masked_median(coverage, core_mask, fill_value)};
+}
+
 inline void assign_mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value, double &coverage_sum, double &coverage_max,
