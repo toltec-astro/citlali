@@ -7298,7 +7298,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                             map_st, r, c);
                                     if (mapdiag_current_candidate_has_valid_contributor(
                                             uid, contrib_signal)) {
-                                        assign_mapdiag_current_candidate_contributor(
+                                        assign_mapdiag_current_pixel_candidate_contributor(
                                             candidate, map_st, r, c, uid);
                                         const double total_signal =
                                             mapdiag_current_total_signal(
