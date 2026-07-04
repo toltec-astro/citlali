@@ -6023,13 +6023,13 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 *fits_io->at(map_index).hdus.back(),
                 mb->noise_weight_median_ratio(i));
         }
-        double median_err = 0.0;
-        if (redu_type != "beammap" && std::isfinite(mb->median_err(i)) &&
-            mb->median_err(i) > std::numeric_limits<double>::epsilon()) {
-            median_err = pow(mb->median_err(i), 0.5);
-        }
-        else if (redu_type != "beammap" && std::isfinite(mb->median_err(i)) &&
-                 mb->median_err(i) < 0.0) {
+        const bool is_beammap = redu_type == "beammap";
+        const double median_err_value = mb->median_err(i);
+        const double median_err =
+            citlali::pipeline::map_median_error_or_zero(median_err_value,
+                                                        is_beammap);
+        if (citlali::pipeline::has_negative_map_median_error(
+                median_err_value, is_beammap)) {
             logger->warn("negative median_err for map {} in {}; using 0", map_name,
                          fits_io->at(map_index).filepath);
         }
