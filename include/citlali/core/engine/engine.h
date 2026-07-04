@@ -6775,6 +6775,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_is_valid_outlier_pixel_value(
                 value, weight, sig2noise_value);
         };
+    auto mapdiag_current_source_distance_arcsec =
+        [](Eigen::Index row, Eigen::Index col,
+           const auto &source_distance_context) {
+            return citlali::pipeline::mapdiag_source_distance_arcsec(
+                row, col, source_distance_context);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
