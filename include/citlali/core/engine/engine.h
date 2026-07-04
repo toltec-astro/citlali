@@ -6853,6 +6853,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
            double remaining_weight) {
             return (total_signal - contrib_signal) / remaining_weight;
         };
+    auto assign_mapdiag_current_leave_one_out_z =
+        [](double value, double weight, double leave_one_out_value,
+           map_pixel_candidate_t &candidate) {
+            citlali::pipeline::mapdiag_assign_leave_one_out_z(
+                value, weight, leave_one_out_value,
+                candidate.leave_one_out_z);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
