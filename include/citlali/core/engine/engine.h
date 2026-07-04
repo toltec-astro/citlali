@@ -6389,11 +6389,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
     const citlali::pipeline::MapdiagStatsContext mapdiag_stats{fill_double};
 
-    auto vector_quantile = [&](std::vector<double> values, double q) -> double {
-        return citlali::pipeline::mapdiag_vector_quantile(
-            values, q, fill_double);
-    };
-
     auto collect_masked_values = [&](const Eigen::MatrixXd &matrix, const Eigen::ArrayXXd &mask) {
         return citlali::pipeline::mapdiag_collect_masked_values(matrix, mask);
     };
@@ -6835,8 +6830,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         skew_values.push_back(noise_tail.skew);
                     }
                 }
-                noise_rms_p16[idx] = vector_quantile(noise_rms_values, 0.16);
-                noise_rms_p84[idx] = vector_quantile(noise_rms_values, 0.84);
+                noise_rms_p16[idx] = mapdiag_stats.quantile(noise_rms_values, 0.16);
+                noise_rms_p84[idx] = mapdiag_stats.quantile(noise_rms_values, 0.84);
                 noise_tail_frac_abs3[idx] = mapdiag_stats.median(tail_abs_values);
                 noise_tail_frac_pos3[idx] = mapdiag_stats.median(tail_pos_values);
                 noise_tail_frac_neg3[idx] = mapdiag_stats.median(tail_neg_values);
