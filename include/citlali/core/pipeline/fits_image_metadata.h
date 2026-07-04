@@ -32,6 +32,38 @@ inline const char *weight_map_description(bool empirical_calibration) {
         : "Formal mapmaker inverse variance weight map";
 }
 
+inline const char *not_applicable_image_unit() {
+    return "N/A";
+}
+
+inline const char *coverage_time_unit() {
+    return "sec";
+}
+
+inline const char *formal_weight_calibration_type() {
+    return "formal";
+}
+
+inline const char *pixel_snr_estimator_type() {
+    return "pixel";
+}
+
+inline const char *point_source_snr_estimator_type() {
+    return "point_source";
+}
+
+inline const char *weight_calibration_type_comment() {
+    return "Weight calibration type";
+}
+
+inline const char *kernel_type_comment() {
+    return "Kernel type";
+}
+
+inline const char *snr_estimator_type_comment() {
+    return "S/N estimator type";
+}
+
 inline const char *signal_map_description() {
     return "Signal map in map units";
 }
