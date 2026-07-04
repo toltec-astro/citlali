@@ -6251,18 +6251,9 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
         if (citlali::pipeline::has_spectral_noise_products(mb->noise)) {
             const std::string noise_name =
                 citlali::pipeline::spectral_noise_product_base_name(name);
-            const auto noise_dims =
-                citlali::pipeline::add_psd_netcdf_dims_for_image(
-                    fo, noise_name, mb->noise_psds[i],
-                    mb->noise_psd_2ds[i]);
-
-            citlali::pipeline::add_psd_vector_pair(
-                fo, noise_name, noise_dims.spectrum, mb->noise_psds[i],
-                mb->noise_psd_freqs[i]);
-
-            citlali::pipeline::add_transposed_psd_image_pair(
-                fo, noise_name, noise_dims.image, mb->noise_psd_2ds[i],
-                mb->noise_psd_2d_freqs[i]);
+            citlali::pipeline::add_psd_product(
+                fo, noise_name, mb->noise_psds[i], mb->noise_psd_freqs[i],
+                mb->noise_psd_2ds[i], mb->noise_psd_2d_freqs[i]);
         }
     }
     });
