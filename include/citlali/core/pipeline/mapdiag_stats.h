@@ -184,6 +184,9 @@ struct MapdiagNoiseTailRefs {
     std::vector<double> &skew;
 };
 
+using MapdiagNoiseMatrix =
+    Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>>;
+
 inline void MapdiagNoiseTailSamples::reserve(std::size_t n_noise) {
     rms.reserve(n_noise);
     tail_abs.reserve(n_noise);
