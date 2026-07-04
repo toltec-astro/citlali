@@ -6312,7 +6312,8 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
 
         if (!mb->noise.empty()) {
             citlali::pipeline::add_double_1d_var(
-                fo, name + "_noise_hist", hist_bins_dim, mb->noise_hists[i]);
+                fo, citlali::pipeline::spectral_noise_histogram_name(name),
+                hist_bins_dim, mb->noise_hists[i]);
         }
     }
     });
