@@ -6635,17 +6635,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     const std::string mapdiag_record_producer =
         citlali::pipeline::mapdiag_record_producer(stage_name);
-    auto make_mapdiag_current_outlier_record =
-        [&](Eigen::Index map_i, const map_pixel_candidate_t &candidate) {
-            return citlali::pipeline::make_mapdiag_outlier_record<
-                ReductionLearningState::MapPixelOutlier>(
-                    obsnum, mapdiag_record_producer,
-                    citlali::pipeline::mapdiag_map_pixel_outlier_reason(
-                        candidate, mb),
-                    fruit_iter,
-                    citlali::pipeline::mapdiag_record_map_index(map_i),
-                    candidate);
-        };
     auto make_mapdiag_current_detector_penalty =
         [&](const detector_dominance_t &entry, int array_id) {
             return citlali::pipeline::make_mapdiag_detector_penalty<
@@ -6939,8 +6928,16 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 citlali::pipeline::mapdiag_emitted_candidate(
                                     candidates, ci);
                             auto record =
-                                make_mapdiag_current_outlier_record(
-                                    i, candidate);
+                                citlali::pipeline::make_mapdiag_outlier_record<
+                                    ReductionLearningState::MapPixelOutlier>(
+                                    obsnum, mapdiag_record_producer,
+                                    citlali::pipeline::
+                                        mapdiag_map_pixel_outlier_reason(
+                                            candidate, mb),
+                                    fruit_iter,
+                                    citlali::pipeline::
+                                        mapdiag_record_map_index(i),
+                                    candidate);
                             reduction_learning.record_map_pixel_outlier(
                                 std::move(record));
                             citlali::pipeline::
