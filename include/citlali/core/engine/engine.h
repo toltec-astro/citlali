@@ -6633,15 +6633,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             weight_thresholds[idx] = weight_threshold;
             return weight_threshold;
         };
-    auto assign_mapdiag_current_core_tail_stats =
-        [&](std::size_t idx, const Eigen::MatrixXd &sig2noise,
-            const auto &core_mask) {
-            const auto core_values =
-                mapdiag_stats.collect_masked_values(sig2noise, core_mask);
-            const auto signal_tail = mapdiag_stats.tail_stats(core_values);
-            citlali::pipeline::assign_mapdiag_core_tail_stats(
-                idx, signal_tail, core_tail_refs);
-        };
     auto make_mapdiag_off_source_core_mask =
         [&](const auto &core_mask,
             const auto &source_distance_context) {
@@ -6806,8 +6797,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 citlali::pipeline::mapdiag_peak_stats(
                     sig2noise, core_mask, n_core_pixels[idx], fill_double),
                 peak_refs);
-            assign_mapdiag_current_core_tail_stats(
-                idx, sig2noise, core_mask);
+            const auto core_values =
+                mapdiag_stats.collect_masked_values(sig2noise, core_mask);
+            const auto signal_tail = mapdiag_stats.tail_stats(core_values);
+            citlali::pipeline::assign_mapdiag_core_tail_stats(
+                idx, signal_tail, core_tail_refs);
 
             if (citlali::pipeline::mapdiag_outlier_diagnostics_enabled(
                     reduction_learning)) {
