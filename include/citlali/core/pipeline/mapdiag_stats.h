@@ -101,6 +101,12 @@ struct MapdiagWeightRefs {
     std::vector<int> &n_core_pixels;
 };
 
+struct MapdiagCoverageRefs {
+    std::vector<double> &coverage_sum;
+    std::vector<double> &coverage_max;
+    std::vector<double> &coverage_median_core;
+};
+
 struct MapdiagCoreTailRefs {
     std::vector<double> &frac_abs3;
     std::vector<double> &frac_pos3;
