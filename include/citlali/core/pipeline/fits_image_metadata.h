@@ -125,6 +125,13 @@ bool has_map_image_slot(const ImageList &images, Eigen::Index i,
            images[i].cols() == n_cols;
 }
 
+template <class FitsIo, class FitsIoContainer>
+bool is_filtered_map_output(const FitsIo &fits_io,
+                            const FitsIoContainer &filtered_fits_io,
+                            const FitsIoContainer &filtered_coadd_fits_io) {
+    return fits_io == &filtered_fits_io || fits_io == &filtered_coadd_fits_io;
+}
+
 inline double map_median_error_or_zero(double median_error_variance,
                                        bool is_beammap) {
     if (is_beammap) {
