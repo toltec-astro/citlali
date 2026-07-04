@@ -6921,14 +6921,15 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
              telescope.project_id, telescope.obs_goal});
     citlali::pipeline::add_mapdiag_runtime_vars(
         fo, {mb->pixel_size_rad, mb->cov_cut, mb->sig_unit});
-    add_netcdf_var(fo, "MAP_EDGE_GUARD_ENABLED", wiener_filter.edge_guard_enabled);
-    add_netcdf_var<std::string>(fo, "MAP_EDGE_GUARD_WEIGHT_THRESHOLD_MODE", wiener_filter.edge_weight_threshold_mode);
-    add_netcdf_var<std::string>(fo, "MAP_EDGE_GUARD_HITS_THRESHOLD_MODE", wiener_filter.edge_hits_threshold_mode);
-    add_netcdf_var<std::string>(fo, "MAP_EDGE_GUARD_FILL_MODE", wiener_filter.edge_fill_mode);
-    add_netcdf_var<std::string>(fo, "MAP_EDGE_GUARD_TAPER_MODE", wiener_filter.edge_taper_mode);
-    add_netcdf_var(fo, "MAP_EDGE_GUARD_HITS_CORE_FRACTION", wiener_filter.edge_hits_core_fraction);
-    add_netcdf_var(fo, "MAP_EDGE_GUARD_RADIUS_FWHM", wiener_filter.edge_guard_radius_fwhm);
-    add_netcdf_var(fo, "MAP_EDGE_GUARD_TAPER_MIN_FRACTION", wiener_filter.edge_taper_min_fraction);
+    citlali::pipeline::add_mapdiag_edge_guard_config_vars(
+        fo, {wiener_filter.edge_guard_enabled,
+             wiener_filter.edge_weight_threshold_mode,
+             wiener_filter.edge_hits_threshold_mode,
+             wiener_filter.edge_fill_mode,
+             wiener_filter.edge_taper_mode,
+             wiener_filter.edge_hits_core_fraction,
+             wiener_filter.edge_guard_radius_fwhm,
+             wiener_filter.edge_taper_min_fraction});
 
     citlali::pipeline::add_mapdiag_map_label_vars(
         fo, mapdiag_dims.maps, array_names, stokes_names, map_names);
