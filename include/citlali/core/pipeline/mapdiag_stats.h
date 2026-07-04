@@ -478,6 +478,19 @@ inline double mapdiag_center_pixel_coordinate(Eigen::Index n_pixels) {
     return (static_cast<double>(n_pixels) - 1.0) / 2.0;
 }
 
+inline double mapdiag_source_distance_arcsec(
+    Eigen::Index row, Eigen::Index col, double center_row,
+    double center_col, double pixel_size_arcsec, double fill_value) {
+    if (!std::isfinite(pixel_size_arcsec) || pixel_size_arcsec <= 0.0) {
+        return fill_value;
+    }
+    const double drow =
+        (static_cast<double>(row) - center_row) * pixel_size_arcsec;
+    const double dcol =
+        (static_cast<double>(col) - center_col) * pixel_size_arcsec;
+    return std::hypot(drow, dcol);
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
