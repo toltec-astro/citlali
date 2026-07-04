@@ -6706,6 +6706,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                    citlali::pipeline::mapdiag_has_matrix_samples(
                        mb->weight[map_i]);
         };
+    auto make_mapdiag_source_distance_context =
+        [&]() {
+            const double pix_arcsec = mb->pixel_size_rad * RAD_TO_ASEC;
+            return citlali::pipeline::mapdiag_source_distance_context(
+                mb->n_rows, mb->n_cols, pix_arcsec, fill_double);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
