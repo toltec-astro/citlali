@@ -6803,6 +6803,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_has_valid_robust_center_stats(
                 robust_stats);
         };
+    auto make_mapdiag_pixel_candidates =
+        []() {
+            return std::vector<map_pixel_candidate_t>{};
+        };
     auto mapdiag_is_valid_current_outlier_pixel_value =
         [](double value, double weight, double sig2noise_value) {
             return citlali::pipeline::mapdiag_is_valid_outlier_pixel_value(
