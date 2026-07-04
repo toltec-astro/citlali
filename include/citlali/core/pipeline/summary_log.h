@@ -109,4 +109,11 @@ void write_chunk_ptc_model_line_audit_summary(std::ostream &stream,
            << line_audit.ptc_apply_detector_notches << "\n";
 }
 
+inline void write_chunk_scan_shape_summary(std::ostream &stream,
+                                           long long n_samples,
+                                           long long n_detectors) {
+    stream << "-Scan length: " << n_samples << "\n";
+    stream << "-Number of detectors: " << n_detectors << "\n";
+}
+
 }  // namespace citlali::pipeline
