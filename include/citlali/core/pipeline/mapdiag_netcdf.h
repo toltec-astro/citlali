@@ -55,6 +55,17 @@ struct MapdiagRuntimeVars {
     const std::string &signal_unit;
 };
 
+struct MapdiagEdgeGuardConfigVars {
+    bool enabled;
+    const std::string &weight_threshold_mode;
+    const std::string &hits_threshold_mode;
+    const std::string &fill_mode;
+    const std::string &taper_mode;
+    double hits_core_fraction;
+    double radius_fwhm;
+    double taper_min_fraction;
+};
+
 inline MapdiagNetcdfDims add_mapdiag_netcdf_dims(
     netCDF::NcFile &fo, const MapdiagSizeContext &context) {
     netCDF::NcDim maps_dim =
