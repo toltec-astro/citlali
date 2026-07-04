@@ -6780,7 +6780,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
                 const auto valid_core =
                     citlali::pipeline::mapdiag_positive_mask(core_mask);
-                const double valid_core_count = valid_core.count();
+                const double valid_core_count =
+                    citlali::pipeline::mapdiag_mask_count_as_double(
+                        valid_core);
                 for (Eigen::Index n = 0; n < mb->n_noise; ++n) {
                     Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(
                         mb->noise[i].data() + n * mb->n_rows * mb->n_cols, mb->n_rows, mb->n_cols);
