@@ -5646,7 +5646,8 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
 
     logger->debug("writing summary files for chunk {}",in.index.data);
 
-    std::string filename = "chunk_summary_" + std::to_string(in.index.data);
+    const auto filename =
+        citlali::pipeline::chunk_summary_filename(in.index.data);
 
     // write summary log file
     std::ofstream f;
