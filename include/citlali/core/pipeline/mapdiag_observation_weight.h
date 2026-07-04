@@ -65,6 +65,11 @@ void accumulate_mapdiag_obs_weight(
     obs_core_pixels[flat] = static_cast<int>((valid * core_block).sum());
 }
 
+inline double mapdiag_fraction_or_fill(double value, double total,
+                                       double fill_value) {
+    return (total > 0.0) ? value / total : fill_value;
+}
+
 template <class DoubleValues, class IntValues>
 void assign_mapdiag_single_obs_entry(
     std::size_t flat, double map_weight_sum, double map_core_weight_sum,
