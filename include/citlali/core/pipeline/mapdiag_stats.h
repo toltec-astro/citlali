@@ -1098,6 +1098,13 @@ int mapdiag_candidate_top_n(const ReductionLearning &reduction_learning) {
     return reduction_learning.options.map_pixel_outlier_top_n;
 }
 
+template <class ReductionLearning>
+bool mapdiag_detector_exclusion_enabled(
+    const ReductionLearning &reduction_learning) {
+    return reduction_learning.options
+        .map_pixel_outlier_detector_exclusion_enabled;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
