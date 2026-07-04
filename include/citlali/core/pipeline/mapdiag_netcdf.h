@@ -136,6 +136,15 @@ inline void add_mapdiag_edge_guard_config_vars(
         values.taper_min_fraction);
 }
 
+inline void add_mapdiag_metadata_vars(
+    netCDF::NcFile &fo, const MapdiagIdentityVars &identity,
+    const MapdiagRuntimeVars &runtime,
+    const MapdiagEdgeGuardConfigVars &edge_guard) {
+    add_mapdiag_identity_vars(fo, identity);
+    add_mapdiag_runtime_vars(fo, runtime);
+    add_mapdiag_edge_guard_config_vars(fo, edge_guard);
+}
+
 inline void put_netcdf_string_1d(
     netCDF::NcFile &fo, const std::string &name, netCDF::NcDim dim,
     const std::vector<std::string> &values,
