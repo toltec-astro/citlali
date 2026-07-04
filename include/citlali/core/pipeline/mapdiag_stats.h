@@ -111,6 +111,23 @@ inline Eigen::MatrixXd mapdiag_sig2noise_image(
     return signal.array() * weight.array().max(0.0).sqrt();
 }
 
+inline double mapdiag_peak_signal_or_fill(const Eigen::MatrixXd &signal,
+                                          double fill_value) {
+    return mapdiag_has_matrix_samples(signal) ? signal.maxCoeff() : fill_value;
+}
+
+inline double mapdiag_core_peak_abs_or_fill(const Eigen::MatrixXd &sig2noise,
+                                            const Eigen::ArrayXXd &core_mask,
+                                            int n_core_pixels,
+                                            double fill_value) {
+    if (n_core_pixels <= 0) {
+        return fill_value;
+    }
+    const Eigen::MatrixXd core_sig2noise =
+        (sig2noise.cwiseAbs().array() * core_mask).matrix();
+    return core_sig2noise.maxCoeff();
+}
+
 template <class Values>
 bool mapdiag_has_value(const Values &values, Eigen::Index i) {
     return i >= 0 && i < static_cast<Eigen::Index>(values.size());
