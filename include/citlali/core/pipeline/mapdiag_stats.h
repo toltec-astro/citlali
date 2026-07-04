@@ -41,7 +41,20 @@ struct MapdiagNoiseTailSamples {
     std::vector<double> excess_pos;
     std::vector<double> excess_neg;
     std::vector<double> skew;
+
+    void reserve(std::size_t n_noise);
 };
+
+inline void MapdiagNoiseTailSamples::reserve(std::size_t n_noise) {
+    rms.reserve(n_noise);
+    tail_abs.reserve(n_noise);
+    tail_pos.reserve(n_noise);
+    tail_neg.reserve(n_noise);
+    excess_abs.reserve(n_noise);
+    excess_pos.reserve(n_noise);
+    excess_neg.reserve(n_noise);
+    skew.reserve(n_noise);
+}
 
 inline double mapdiag_vector_median(const std::vector<double> &values,
                                     double fill_value) {
