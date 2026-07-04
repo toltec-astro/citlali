@@ -6642,10 +6642,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         std::sort(
                             candidates.begin(), candidates.end(),
                             citlali::pipeline::mapdiag_candidate_abs_z_greater);
-                        const std::size_t n_emit = std::min<std::size_t>(
-                            candidates.size(),
-                            static_cast<std::size_t>(
-                                reduction_learning.options.map_pixel_outlier_top_n));
+                        const std::size_t n_emit =
+                            citlali::pipeline::mapdiag_candidate_emit_count(
+                                candidates.size(),
+                                reduction_learning.options
+                                    .map_pixel_outlier_top_n);
                         struct detector_dominance_t {
                             int uid = citlali::pipeline::mapdiag_fill_int();
                             int scan = citlali::pipeline::mapdiag_fill_int();
