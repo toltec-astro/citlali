@@ -5998,7 +5998,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
         // weight map
         add_map_hdu_with_wcs(
-            "weight_" + map_name + stokes_suffix,
+            citlali::pipeline::weight_map_hdu_name(map_name, stokes_suffix),
             mb->weight[i]);
         const std::string weight_unit =
             citlali::pipeline::map_weight_unit(mb->sig_unit);
