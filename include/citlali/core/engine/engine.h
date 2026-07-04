@@ -7400,7 +7400,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         const std::size_t n_emit =
                             mapdiag_current_pixel_candidate_emit_count(
                                 candidates);
-                        std::vector<detector_dominance_t> dominance;
+                        auto dominance =
+                            make_mapdiag_detector_dominance_list();
 
                         for (std::size_t ci = 0; ci < n_emit; ++ci) {
                             const auto &candidate = candidates[ci];
