@@ -6527,11 +6527,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [&](Eigen::Index map_i) {
             return mb->weight[map_i].array();
         };
-    auto mapdiag_current_outlier_diagnostics_enabled =
-        [&]() {
-            return citlali::pipeline::mapdiag_outlier_diagnostics_enabled(
-                reduction_learning);
-        };
     auto make_mapdiag_obs_weight_path =
         [&](const std::string &obsnum_i,
             const std::string &array_name) {
@@ -7066,7 +7061,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 make_mapdiag_current_signal_to_noise_image(i);
             assign_mapdiag_current_signal_stats(idx, sig2noise, core_mask);
 
-            if (mapdiag_current_outlier_diagnostics_enabled()) {
+            if (citlali::pipeline::mapdiag_outlier_diagnostics_enabled(
+                    reduction_learning)) {
                 const auto source_distance_context =
                     make_mapdiag_source_distance_context();
 
