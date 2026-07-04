@@ -6986,9 +6986,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     auto assign_mapdiag_current_candidate_contributor =
         [&](map_pixel_candidate_t &candidate, std::size_t map_st,
             Eigen::Index row, Eigen::Index col, int uid) {
-            citlali::pipeline::assign_mapdiag_candidate_contributor(
-                candidate, uid, mb->contribution_scan[map_st](row, col),
-                mb->contribution_sample[map_st](row, col));
+            citlali::pipeline::
+                assign_mapdiag_candidate_contributor_from_products(
+                    candidate, uid, mb->contribution_scan[map_st],
+                    mb->contribution_sample[map_st], row, col);
         };
     auto assign_mapdiag_current_pixel_candidate_contributor =
         [&](map_pixel_candidate_t &candidate, std::size_t map_st,

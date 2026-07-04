@@ -871,6 +871,16 @@ inline void assign_mapdiag_candidate_contributor(
     candidate.sample = sample;
 }
 
+template <class ScanMatrix, class SampleMatrix>
+void assign_mapdiag_candidate_contributor_from_products(
+    MapdiagMapPixelCandidate &candidate, int uid,
+    const ScanMatrix &scan_matrix, const SampleMatrix &sample_matrix,
+    Eigen::Index row, Eigen::Index col) {
+    assign_mapdiag_candidate_contributor(
+        candidate, uid, mapdiag_matrix_value(scan_matrix, row, col),
+        mapdiag_matrix_value(sample_matrix, row, col));
+}
+
 inline bool mapdiag_candidate_abs_z_greater(
     const MapdiagMapPixelCandidate &a,
     const MapdiagMapPixelCandidate &b) {
