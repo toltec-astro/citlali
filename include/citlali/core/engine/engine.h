@@ -6109,14 +6109,10 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 *fits_io->at(map_index).hdus.back(), weight_threshold);
 
             // legacy signal-to-noise map name retained for compatibility; this is pixel S/N.
-            Eigen::MatrixXd sig2noise;
-            if (citlali::pipeline::has_map_image_slot(
-                    mb->sig2noise_pixel, i, mb->n_rows, mb->n_cols)) {
-                sig2noise = mb->sig2noise_pixel[i];
-            }
-            else {
-                sig2noise = mb->signal[i].array()*sqrt(mb->weight[i].array());
-            }
+            Eigen::MatrixXd sig2noise =
+                citlali::pipeline::pixel_snr_image_or_fallback(
+                    mb->sig2noise_pixel, i, mb->n_rows, mb->n_cols,
+                    mb->signal[i], mb->weight[i]);
             add_map_hdu_with_wcs(
                 citlali::pipeline::legacy_pixel_snr_map_hdu_name(
                     map_name, stokes_suffix),
