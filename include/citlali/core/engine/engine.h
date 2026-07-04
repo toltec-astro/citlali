@@ -6721,6 +6721,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_off_source_core_mask(
                 core_mask, source_distance_context, protect_radius);
         };
+    auto collect_mapdiag_off_source_values =
+        [&](const Eigen::MatrixXd &sig2noise,
+            const Eigen::ArrayXXd &off_source_core_mask) {
+            return mapdiag_stats.collect_masked_values(
+                sig2noise, off_source_core_mask);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
