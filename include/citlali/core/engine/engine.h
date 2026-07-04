@@ -6850,11 +6850,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 const double z =
                                     mapdiag_current_robust_z(
                                         sn, robust_stats);
-                                if (!citlali::pipeline::
-                                        mapdiag_passes_min_abs_z(
-                                            z,
-                                            reduction_learning.options
-                                                .map_pixel_outlier_min_abs_z)) {
+                                if (!mapdiag_passes_current_min_abs_z(z)) {
                                     continue;
                                 }
 
