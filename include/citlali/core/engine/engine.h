@@ -6747,11 +6747,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_has_signal_weight_samples(
                 mb->signal[map_i], mb->weight[map_i]);
         };
-    auto make_mapdiag_source_distance_context =
-        [&]() {
-            return citlali::pipeline::mapdiag_source_distance_context(
-                mb, RAD_TO_ASEC, fill_double);
-        };
     auto mapdiag_current_source_protect_radius_arcsec =
         [&]() {
             return citlali::pipeline::mapdiag_source_protect_radius_arcsec(
@@ -7064,7 +7059,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             if (citlali::pipeline::mapdiag_outlier_diagnostics_enabled(
                     reduction_learning)) {
                 const auto source_distance_context =
-                    make_mapdiag_source_distance_context();
+                    citlali::pipeline::mapdiag_source_distance_context(
+                        mb, RAD_TO_ASEC, fill_double);
 
                 Eigen::ArrayXXd off_source_core_mask =
                     make_mapdiag_off_source_core_mask(
