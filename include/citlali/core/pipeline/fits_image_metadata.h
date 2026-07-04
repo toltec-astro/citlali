@@ -290,6 +290,25 @@ Eigen::MatrixXd coverage_mask_from_weight(const Matrix &weight,
     return (weight.array() < weight_threshold).select(zeros, ones);
 }
 
+template <class Matrix>
+Eigen::MatrixXd pixel_snr_from_signal_weight(const Matrix &signal,
+                                             const Matrix &weight) {
+    return signal.array() * weight.array().sqrt();
+}
+
+template <class ImageList, class Matrix>
+Eigen::MatrixXd pixel_snr_image_or_fallback(const ImageList &pixel_snr_images,
+                                            Eigen::Index i,
+                                            Eigen::Index n_rows,
+                                            Eigen::Index n_cols,
+                                            const Matrix &signal,
+                                            const Matrix &weight) {
+    if (has_map_image_slot(pixel_snr_images, i, n_rows, n_cols)) {
+        return pixel_snr_images[i];
+    }
+    return pixel_snr_from_signal_weight(signal, weight);
+}
+
 template <class Hdu>
 void add_image_unit_keys(Hdu &hdu, const std::string &unit) {
     hdu.addKey("UNIT", unit, "Unit of map");
