@@ -6228,9 +6228,7 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
     // get filename
     std::string filename = setup_filenames<map_t,engine_utils::toltecIO::toltec,engine_utils::toltecIO::psd>(dir_name);
 
-    write_netcdf_atomic(
-        citlali::pipeline::mapdiag_netcdf_filename(filename),
-        [&](netCDF::NcFile &fo) {
+    write_netcdf_atomic(filename + ".nc", [&](netCDF::NcFile &fo) {
 
     // loop through psd vector
     for (Eigen::Index i=0; i<mb->psds.size(); ++i) {
@@ -6259,7 +6257,9 @@ template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
     std::string filename = setup_filenames<map_t,engine_utils::toltecIO::toltec,engine_utils::toltecIO::hist>(dir_name);
 
-    write_netcdf_atomic(filename + ".nc", [&](netCDF::NcFile &fo) {
+    write_netcdf_atomic(
+        citlali::pipeline::mapdiag_netcdf_filename(filename),
+        [&](netCDF::NcFile &fo) {
     netCDF::NcDim hist_bins_dim =
         citlali::pipeline::add_spectral_histogram_bins_dim(
             fo, mb->hist_n_bins);
