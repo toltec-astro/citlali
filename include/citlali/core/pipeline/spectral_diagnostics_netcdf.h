@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include <Eigen/Core>
 #include <netcdf>
 
 namespace citlali::pipeline {
@@ -12,6 +13,16 @@ inline std::string spectral_product_base_name(const std::string &array_name,
                                               const std::string &map_name,
                                               const std::string &stokes_name) {
     return array_name + "_" + map_name + stokes_name;
+}
+
+inline std::string spectral_noise_product_base_name(
+    const std::string &base_name) {
+    return base_name + "_noise";
+}
+
+inline std::string spectral_noise_histogram_name(
+    const std::string &base_name) {
+    return base_name + "_noise_hist";
 }
 
 struct PsdNetcdfDims {
