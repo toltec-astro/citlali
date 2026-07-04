@@ -5842,7 +5842,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
         citlali::pipeline::add_phdu_jinc_shape_keys(
             fits_entry, name, logger, jinc_mm.r_max,
-            jinc_mm.shape_params[calib.arrays(i)]);
+            jinc_mm.shape_params[array_id]);
     }
 
     // add mean tau
