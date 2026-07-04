@@ -12,6 +12,12 @@ struct MapdiagMapLabels {
     std::string map_name;
 };
 
+struct MapdiagMapLabelRefs {
+    std::vector<std::string> &array_names;
+    std::vector<std::string> &stokes_names;
+    std::vector<std::string> &map_names;
+};
+
 inline MapdiagMapLabels make_mapdiag_map_labels(
     const std::string &array_name, const std::string &stokes_name,
     const std::string &map_name) {
