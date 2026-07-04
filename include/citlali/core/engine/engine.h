@@ -6954,8 +6954,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             fo, mapdiag_dims, name, comment, values);
     };
     auto add_map_obs_int = [&](const std::string &name, const std::string &comment, const std::vector<int> &values) {
-        citlali::pipeline::add_mapdiag_int_2d(
-            fo, name, comment, mapdiag_dims.map_obs, values);
+        citlali::pipeline::add_mapdiag_obs_int_var(
+            fo, mapdiag_dims, name, comment, values);
     };
 
     citlali::pipeline::add_mapdiag_map_double_vars(
