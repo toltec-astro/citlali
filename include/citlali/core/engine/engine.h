@@ -6005,7 +6005,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             weight_unit,
             citlali::pipeline::weight_calibration_type(
                 empirical_weight_calibration),
-            "Weight calibration type",
+            citlali::pipeline::weight_calibration_type_comment(),
             citlali::pipeline::weight_map_description(
                 empirical_weight_calibration));
         if (i < mb->noise_weight_scale.size()) {
@@ -6039,7 +6039,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             citlali::pipeline::add_image_unit_type_description_keys(
                 *fits_io->at(map_index).hdus.back(), weight_unit,
                 citlali::pipeline::formal_weight_calibration_type(),
-                "Weight calibration type",
+                citlali::pipeline::weight_calibration_type_comment(),
                 citlali::pipeline::formal_weight_map_description());
         }
 
@@ -6063,7 +6063,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 mb->kernel[i]);
             citlali::pipeline::add_image_type_key(
                 *fits_io->at(map_index).hdus.back(), rtcproc.kernel.type,
-                "Kernel type");
+                citlali::pipeline::kernel_type_comment());
 
             // add fwhm
             double fwhm = -99;
@@ -6146,7 +6146,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 *fits_io->at(map_index).hdus.back(),
                 citlali::pipeline::not_applicable_image_unit(),
                 citlali::pipeline::pixel_snr_estimator_type(),
-                "S/N estimator type",
+                citlali::pipeline::snr_estimator_type_comment(),
                 citlali::pipeline::legacy_pixel_snr_map_description());
 
             add_map_hdu_with_wcs(
@@ -6157,7 +6157,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 *fits_io->at(map_index).hdus.back(),
                 citlali::pipeline::not_applicable_image_unit(),
                 citlali::pipeline::pixel_snr_estimator_type(),
-                "S/N estimator type",
+                citlali::pipeline::snr_estimator_type_comment(),
                 citlali::pipeline::pixel_snr_map_description());
 
             const bool is_filtered_output =
@@ -6193,7 +6193,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                     *fits_io->at(map_index).hdus.back(),
                     citlali::pipeline::not_applicable_image_unit(),
                     citlali::pipeline::point_source_snr_estimator_type(),
-                    "S/N estimator type",
+                    citlali::pipeline::snr_estimator_type_comment(),
                     citlali::pipeline::point_source_snr_map_description());
             }
         }
