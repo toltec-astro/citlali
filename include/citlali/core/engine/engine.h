@@ -6796,8 +6796,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 robust_stats)) {
                         std::vector<map_pixel_candidate_t> candidates;
                         const bool have_contrib =
-                            citlali::pipeline::
-                                mapdiag_has_contribution_products(mb, i);
+                            mapdiag_current_has_contribution_products(i);
                         const double ptc_fs_hz = processed_time_chunk_fs_hz();
 
                         for (Eigen::Index r = 0; r < mb->n_rows; ++r) {
