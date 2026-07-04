@@ -111,6 +111,29 @@ inline Eigen::MatrixXd mapdiag_sig2noise_image(
     return signal.array() * weight.array().max(0.0).sqrt();
 }
 
+template <class Values>
+bool mapdiag_has_value(const Values &values, Eigen::Index i) {
+    return i >= 0 && i < static_cast<Eigen::Index>(values.size());
+}
+
+template <class Values>
+double mapdiag_value_or_fill(const Values &values, Eigen::Index i,
+                             double fill_value) {
+    if (mapdiag_has_value(values, i)) {
+        return values(i);
+    }
+    return fill_value;
+}
+
+template <class Values>
+double mapdiag_finite_value_or_fill(const Values &values, Eigen::Index i,
+                                    double fill_value) {
+    if (mapdiag_has_value(values, i) && std::isfinite(values(i))) {
+        return values(i);
+    }
+    return fill_value;
+}
+
 inline MapdiagTailStats mapdiag_tail_stats(const std::vector<double> &values,
                                            double fill_value) {
     MapdiagTailStats stats;
