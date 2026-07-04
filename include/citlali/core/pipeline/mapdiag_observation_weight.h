@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <vector>
 
 #include <Eigen/Core>
 
@@ -10,6 +11,13 @@ namespace citlali::pipeline {
 struct MapdiagObsWeightTotals {
     double weight;
     double core_weight;
+};
+
+struct MapdiagObsTableRefs {
+    std::vector<double> &weight_sum;
+    std::vector<double> &core_weight_sum;
+    std::vector<int> &valid_pixels;
+    std::vector<int> &core_pixels;
 };
 
 template <class DoubleValues, class IntValues>
