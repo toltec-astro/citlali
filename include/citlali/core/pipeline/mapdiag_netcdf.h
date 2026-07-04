@@ -574,6 +574,14 @@ struct MapdiagValueVars {
     MapdiagObservationIntValues observation_int;
 };
 
+struct MapdiagNetcdfVars {
+    const MapdiagSizeContext &size;
+    const std::string &obsnum;
+    const MapdiagMetadataVars &metadata;
+    const MapdiagLabelVars &labels;
+    const MapdiagValueVars &values;
+};
+
 template <class AddDouble, class AddInt>
 void add_mapdiag_observation_contribution_vars(
     const AddDouble &add_double, const AddInt &add_int,
