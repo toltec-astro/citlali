@@ -6478,14 +6478,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             Eigen::MatrixXd sig2noise =
                 citlali::pipeline::mapdiag_sig2noise_image(
                     mb->signal[i], mb->weight[i]);
-            Eigen::Index r_peak = 0;
-            Eigen::Index c_peak = 0;
-            peak_abs_sig2noise[idx] = sig2noise.cwiseAbs().maxCoeff(&r_peak, &c_peak);
-            peak_row[idx] = static_cast<int>(r_peak);
-            peak_col[idx] = static_cast<int>(c_peak);
-            core_peak_abs_sig2noise[idx] =
-                citlali::pipeline::mapdiag_core_peak_abs_or_fill(
-                    sig2noise, core_mask, n_core_pixels[idx], fill_double);
+            citlali::pipeline::assign_mapdiag_peak_stats(
+                idx,
+                citlali::pipeline::mapdiag_peak_stats(
+                    sig2noise, core_mask, n_core_pixels[idx], fill_double),
+                peak_refs);
             const auto core_values =
                 mapdiag_stats.collect_masked_values(sig2noise, core_mask);
             const auto signal_tail = mapdiag_stats.tail_stats(core_values);
