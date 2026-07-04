@@ -34,6 +34,11 @@ inline std::string mapdiag_obsnum_dim_name() {
     return "n_obsnums";
 }
 
+inline std::string mapdiag_netcdf_filename(
+    const std::string &base_filename) {
+    return base_filename + ".nc";
+}
+
 struct MapdiagNetcdfDims {
     netCDF::NcDim maps;
     netCDF::NcDim obsnums;
