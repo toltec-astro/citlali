@@ -491,6 +491,12 @@ inline double mapdiag_source_distance_arcsec(
     return std::hypot(drow, dcol);
 }
 
+inline bool mapdiag_is_source_protected(double distance_arcsec,
+                                        double protect_radius_arcsec) {
+    return protect_radius_arcsec > 0.0 && std::isfinite(distance_arcsec) &&
+           distance_arcsec <= protect_radius_arcsec;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
