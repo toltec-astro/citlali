@@ -172,6 +172,18 @@ struct MapdiagCoreTailRefs {
     std::vector<double> &skew;
 };
 
+struct MapdiagNoiseTailRefs {
+    std::vector<double> &rms_p16;
+    std::vector<double> &rms_p84;
+    std::vector<double> &frac_abs3;
+    std::vector<double> &frac_pos3;
+    std::vector<double> &frac_neg3;
+    std::vector<double> &excess_abs3;
+    std::vector<double> &excess_pos3;
+    std::vector<double> &excess_neg3;
+    std::vector<double> &skew;
+};
+
 inline void MapdiagNoiseTailSamples::reserve(std::size_t n_noise) {
     rms.reserve(n_noise);
     tail_abs.reserve(n_noise);
