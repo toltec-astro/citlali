@@ -946,6 +946,17 @@ void assign_mapdiag_outlier_record_candidate(
     record.source_protected = candidate.source_protected;
 }
 
+template <class Record, class Obsnum, class Producer, class Reason>
+Record make_mapdiag_outlier_record(
+    const Obsnum &obsnum, const Producer &producer, const Reason &reason,
+    int iter, int map_index, const MapdiagMapPixelCandidate &candidate) {
+    Record record;
+    assign_mapdiag_outlier_record_context(
+        record, obsnum, producer, reason, iter, map_index);
+    assign_mapdiag_outlier_record_candidate(record, candidate);
+    return record;
+}
+
 template <class Penalty, class Obsnum, class Producer, class Reason>
 void assign_mapdiag_detector_penalty_context(
     Penalty &penalty, const Obsnum &obsnum, const Producer &producer,

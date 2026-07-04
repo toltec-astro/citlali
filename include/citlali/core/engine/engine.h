@@ -7143,28 +7143,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [](Eigen::Index map_i) {
             return static_cast<int>(map_i);
         };
-    auto assign_mapdiag_current_outlier_record_context =
-        [&](ReductionLearningState::MapPixelOutlier &record,
-            Eigen::Index map_i, const map_pixel_candidate_t &candidate) {
-            citlali::pipeline::assign_mapdiag_outlier_record_context(
-                record, obsnum, mapdiag_outlier_record_producer(),
-                mapdiag_outlier_record_reason(candidate), fruit_iter,
-                mapdiag_outlier_record_map_index(map_i));
-        };
-    auto assign_mapdiag_current_outlier_record_candidate =
-        [](ReductionLearningState::MapPixelOutlier &record,
-           const map_pixel_candidate_t &candidate) {
-            citlali::pipeline::assign_mapdiag_outlier_record_candidate(
-                record, candidate);
-        };
     auto make_mapdiag_current_outlier_record =
         [&](Eigen::Index map_i, const map_pixel_candidate_t &candidate) {
-            ReductionLearningState::MapPixelOutlier record;
-            assign_mapdiag_current_outlier_record_context(
-                record, map_i, candidate);
-            assign_mapdiag_current_outlier_record_candidate(
-                record, candidate);
-            return record;
+            return citlali::pipeline::make_mapdiag_outlier_record<
+                ReductionLearningState::MapPixelOutlier>(
+                    obsnum, mapdiag_outlier_record_producer(),
+                    mapdiag_outlier_record_reason(candidate), fruit_iter,
+                    mapdiag_outlier_record_map_index(map_i), candidate);
         };
     auto record_mapdiag_current_outlier =
         [&](ReductionLearningState::MapPixelOutlier &&record) {
