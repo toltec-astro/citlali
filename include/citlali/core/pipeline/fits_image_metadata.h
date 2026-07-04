@@ -309,6 +309,24 @@ Eigen::MatrixXd pixel_snr_image_or_fallback(const ImageList &pixel_snr_images,
     return pixel_snr_from_signal_weight(signal, weight);
 }
 
+template <class NoiseList, class FitsIo>
+bool should_write_noise_maps(const NoiseList &noise,
+                             const FitsIo &noise_fits_io) {
+    return !noise.empty() && !noise_fits_io->empty();
+}
+
+template <class FitsIo>
+bool has_noise_fits_slot(const FitsIo &noise_fits_io,
+                         Eigen::Index map_index) {
+    return map_index >= 0 &&
+           map_index < static_cast<Eigen::Index>(noise_fits_io->size());
+}
+
+template <class NoiseList>
+bool has_noise_map_slot(const NoiseList &noise, Eigen::Index i) {
+    return i >= 0 && i < static_cast<Eigen::Index>(noise.size());
+}
+
 template <class Hdu>
 void add_image_unit_keys(Hdu &hdu, const std::string &unit) {
     hdu.addKey("UNIT", unit, "Unit of map");
