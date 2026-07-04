@@ -270,6 +270,11 @@ bool mapdiag_has_noise_realizations(
            i < static_cast<Eigen::Index>(noise.size()) && n_noise > 0;
 }
 
+inline Eigen::Index mapdiag_noise_realization_size(Eigen::Index n_rows,
+                                                   Eigen::Index n_cols) {
+    return n_rows * n_cols;
+}
+
 inline void assign_mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value, double &coverage_sum, double &coverage_max,
