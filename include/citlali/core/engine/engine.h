@@ -6530,6 +6530,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_weight_hdu_name(
                 map_names[idx], stokes_names[idx]);
         };
+    auto warn_mapdiag_obs_weight_failure =
+        [&](const std::string &obs_weight_path,
+            const std::string &weight_hdu_name,
+            const std::exception &e) {
+            logger->warn(
+                "failed to derive mapdiag contribution from {} [{}]: {}",
+                obs_weight_path, weight_hdu_name, e.what());
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
