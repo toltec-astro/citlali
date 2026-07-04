@@ -7302,7 +7302,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                         }
                                     }
                                 }
-                                candidates.push_back(candidate);
+                                append_mapdiag_pixel_candidate(
+                                    candidates, candidate);
                             }
                         }
 
