@@ -6909,8 +6909,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 } catch (const std::exception &e) {
                     warn_mapdiag_obs_weight_failure(
                         obs_weight_path, weight_hdu_name, e);
-                    citlali::pipeline::zero_mapdiag_obs_entry(
-                        mapdiag_context, idx, obs_idx, obs_tables);
+                    zero_mapdiag_obs_contribution(idx, obs_idx);
                 }
             }
         }
