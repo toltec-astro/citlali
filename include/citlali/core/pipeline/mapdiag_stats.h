@@ -202,6 +202,11 @@ double mapdiag_mask_count_as_double(const Mask &mask) {
     return static_cast<double>(mask.count());
 }
 
+template <class Mask>
+int mapdiag_mask_sum_as_int(const Mask &mask) {
+    return static_cast<int>(mask.sum());
+}
+
 inline bool mapdiag_has_matrix_samples(const Eigen::MatrixXd &matrix) {
     return matrix.size() > 0;
 }
