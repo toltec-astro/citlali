@@ -259,6 +259,16 @@ double mapdiag_value_or_fill(const Values &values, Eigen::Index i,
 }
 
 template <class Values>
+double mapdiag_positive_sqrt_value_or_fill(const Values &values,
+                                           Eigen::Index i,
+                                           double fill_value) {
+    if (mapdiag_has_value(values, i)) {
+        return mapdiag_positive_sqrt_or_fill(values(i), fill_value);
+    }
+    return fill_value;
+}
+
+template <class Values>
 double mapdiag_finite_value_or_fill(const Values &values, Eigen::Index i,
                                     double fill_value) {
     if (mapdiag_has_value(values, i) && std::isfinite(values(i))) {
