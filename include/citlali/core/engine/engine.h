@@ -7051,6 +7051,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::make_mapdiag_noise_tail_samples(
                 static_cast<std::size_t>(mb->n_noise));
         };
+    auto make_mapdiag_current_valid_core_noise_mask =
+        [](const Eigen::ArrayXXd &core_mask) {
+            return citlali::pipeline::mapdiag_valid_core_noise_mask(
+                core_mask);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
