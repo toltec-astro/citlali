@@ -7220,7 +7220,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 const double sn =
                                     mapdiag_current_sig2noise_value(
                                         sig2noise, r, c);
-                                if (!mapdiag_is_valid_current_outlier_pixel_value(
+                                if (!mapdiag_current_candidate_has_valid_pixel_value(
                                         value, wt, sn)) {
                                     continue;
                                 }
