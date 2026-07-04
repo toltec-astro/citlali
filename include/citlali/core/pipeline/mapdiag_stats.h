@@ -316,6 +316,15 @@ inline void assign_mapdiag_peak_stats(std::size_t idx,
     refs.core_peak_abs_sig2noise[idx] = stats.core_peak_abs_sig2noise;
 }
 
+inline void assign_mapdiag_weight_stats(std::size_t idx,
+                                        const MapdiagWeightStats &stats,
+                                        MapdiagWeightRefs refs) {
+    refs.n_valid_pixels[idx] = stats.n_valid_pixels;
+    refs.n_core_pixels[idx] = stats.n_core_pixels;
+    refs.weight_sum[idx] = stats.weight_sum;
+    refs.core_weight_sum[idx] = stats.core_weight_sum;
+}
+
 inline void assign_mapdiag_core_tail_stats(
     std::size_t idx, const MapdiagTailStats &stats,
     MapdiagCoreTailRefs refs) {
