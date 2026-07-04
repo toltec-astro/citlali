@@ -40,6 +40,15 @@ struct MapdiagNetcdfDims {
     std::vector<netCDF::NcDim> map_obs;
 };
 
+struct MapdiagIdentityVars {
+    const std::string &stage_name;
+    const std::string &buffer_name;
+    const std::string &map_regime;
+    const std::string &source_name;
+    const std::string &project_id;
+    const std::string &obs_goal;
+};
+
 inline MapdiagNetcdfDims add_mapdiag_netcdf_dims(
     netCDF::NcFile &fo, const MapdiagSizeContext &context) {
     netCDF::NcDim maps_dim =
