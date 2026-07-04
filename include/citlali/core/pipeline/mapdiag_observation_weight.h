@@ -65,4 +65,16 @@ void accumulate_mapdiag_obs_weight(
     obs_core_pixels[flat] = static_cast<int>((valid * core_block).sum());
 }
 
+template <class DoubleValues, class IntValues>
+void assign_mapdiag_single_obs_entry(
+    std::size_t flat, double map_weight_sum, double map_core_weight_sum,
+    int map_valid_pixels, int map_core_pixels, DoubleValues &obs_weight_sum,
+    DoubleValues &obs_core_weight_sum, IntValues &obs_valid_pixels,
+    IntValues &obs_core_pixels) {
+    assign_mapdiag_obs_entry(
+        flat, map_weight_sum, map_core_weight_sum, map_valid_pixels,
+        map_core_pixels, obs_weight_sum, obs_core_weight_sum,
+        obs_valid_pixels, obs_core_pixels);
+}
+
 }  // namespace citlali::pipeline
