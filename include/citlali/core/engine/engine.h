@@ -6523,11 +6523,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [&](Eigen::Index map_i) {
             return maps_to_stokes(map_i);
         };
-    auto make_mapdiag_current_valid_weight_mask =
-        [](const auto &weight_arr) {
-            return citlali::pipeline::mapdiag_valid_weight_mask(
-                weight_arr);
-        };
     auto make_mapdiag_current_core_weight_mask =
         [](const auto &weight_arr, double weight_threshold) {
             return citlali::pipeline::mapdiag_core_weight_mask(
@@ -7099,7 +7094,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
         const auto weight_arr = make_mapdiag_current_weight_array(i);
         const auto valid_mask =
-            make_mapdiag_current_valid_weight_mask(weight_arr);
+            citlali::pipeline::mapdiag_valid_weight_mask(weight_arr);
         const auto core_mask =
             make_mapdiag_current_core_weight_mask(
                 weight_arr, weight_threshold);
