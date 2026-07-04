@@ -6525,6 +6525,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 obs_dir, redu_type, array_name, obsnum_i,
                 telescope.sim_obs) + ".fits";
         };
+    auto make_mapdiag_obs_weight_hdu_name =
+        [&](std::size_t idx) {
+            return citlali::pipeline::mapdiag_weight_hdu_name(
+                map_names[idx], stokes_names[idx]);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
