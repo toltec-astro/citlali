@@ -6819,9 +6819,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     const auto robust_stats =
                         make_mapdiag_robust_center_stats(
                             off_source_values);
-                    if (citlali::pipeline::
-                            mapdiag_has_valid_robust_center_stats(
-                                robust_stats)) {
+                    if (mapdiag_has_valid_current_robust_center_stats(
+                            robust_stats)) {
                         std::vector<map_pixel_candidate_t> candidates;
                         const bool have_contrib =
                             mapdiag_current_has_contribution_products(i);
