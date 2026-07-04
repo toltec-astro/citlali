@@ -5875,7 +5875,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     }
     // add control/runtime parameters
     logger->debug("adding config params");
-    const bool run_any_tod_filter = rtcproc.run_tod_filter || rtcproc.run_tod_iir_highpass;
+    const bool run_any_tod_filter =
+        citlali::pipeline::phdu_any_tod_filter_enabled(rtcproc);
     citlali::pipeline::add_phdu_initial_runtime_config(
         fits_entry, verbose_mode, rtcproc.run_polarization,
         rtcproc.run_despike);

@@ -7,6 +7,11 @@
 
 namespace citlali::pipeline {
 
+template <class RtcProc>
+bool phdu_any_tod_filter_enabled(const RtcProc &rtcproc) {
+    return rtcproc.run_tod_filter || rtcproc.run_tod_iir_highpass;
+}
+
 template <class FitsEntry, class Logger>
 void add_phdu_unit_conversion_config(FitsEntry &fits_entry,
                                      const std::string &array_name,
