@@ -90,6 +90,20 @@ void assign_mapdiag_obs_fraction_series(
     }
 }
 
+template <class SourceValues, class DestValues>
+void assign_mapdiag_obs_fraction_pair(
+    const SourceValues &weight_sum, double total_weight,
+    const SourceValues &core_weight_sum, double total_core_weight,
+    double fill_value, std::size_t n_obsnums, std::size_t map_index,
+    DestValues &weight_frac, DestValues &core_weight_frac) {
+    assign_mapdiag_obs_fraction_series(
+        weight_sum, total_weight, fill_value, n_obsnums, map_index,
+        weight_frac);
+    assign_mapdiag_obs_fraction_series(
+        core_weight_sum, total_core_weight, fill_value, n_obsnums,
+        map_index, core_weight_frac);
+}
+
 template <class Values>
 double sum_mapdiag_obs_values(const Values &values, std::size_t n_obsnums,
                               std::size_t map_index) {
