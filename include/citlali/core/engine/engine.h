@@ -6264,7 +6264,9 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
     std::string filename = setup_filenames<map_t,engine_utils::toltecIO::toltec,engine_utils::toltecIO::hist>(dir_name);
 
     write_netcdf_atomic(filename + ".nc", [&](netCDF::NcFile &fo) {
-    netCDF::NcDim hist_bins_dim = fo.addDim("n_bins", mb->hist_n_bins);
+    netCDF::NcDim hist_bins_dim = fo.addDim(
+        citlali::pipeline::spectral_histogram_bins_dim_name(),
+        mb->hist_n_bins);
 
     // loop through stored histograms
     for (Eigen::Index i=0; i<mb->hists.size(); ++i) {
