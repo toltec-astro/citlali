@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cmath>
 #include <limits>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -193,6 +194,15 @@ inline std::size_t mapdiag_size_index(Eigen::Index map_index) {
 
 inline std::size_t mapdiag_contribution_map_index(Eigen::Index map_index) {
     return mapdiag_size_index(map_index);
+}
+
+template <class StageName>
+std::string mapdiag_record_producer(const StageName &stage_name) {
+    return "mapdiag:" + stage_name;
+}
+
+inline int mapdiag_record_map_index(Eigen::Index map_index) {
+    return static_cast<int>(map_index);
 }
 
 inline void MapdiagNoiseTailSamples::reserve(std::size_t n_noise) {

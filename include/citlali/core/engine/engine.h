@@ -7129,7 +7129,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto mapdiag_outlier_record_producer =
         [&]() {
-            return "mapdiag:" + stage_name;
+            return citlali::pipeline::mapdiag_record_producer(stage_name);
         };
     auto mapdiag_outlier_record_reason =
         [&](const map_pixel_candidate_t &candidate) {
@@ -7139,7 +7139,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto mapdiag_outlier_record_map_index =
         [](Eigen::Index map_i) {
-            return static_cast<int>(map_i);
+            return citlali::pipeline::mapdiag_record_map_index(map_i);
         };
     auto make_mapdiag_current_outlier_record =
         [&](Eigen::Index map_i, const map_pixel_candidate_t &candidate) {
@@ -7175,7 +7175,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto mapdiag_detector_penalty_producer =
         [&]() {
-            return "mapdiag:" + stage_name;
+            return citlali::pipeline::mapdiag_record_producer(stage_name);
         };
     auto mapdiag_detector_penalty_reason =
         []() {
