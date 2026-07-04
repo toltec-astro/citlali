@@ -6820,10 +6820,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 z, citlali::pipeline::mapdiag_min_abs_z(
                        reduction_learning));
         };
-    auto make_mapdiag_pixel_candidates =
-        []() {
-            return citlali::pipeline::make_mapdiag_pixel_candidates();
-        };
     auto append_mapdiag_pixel_candidate =
         [](std::vector<map_pixel_candidate_t> &candidates,
            const map_pixel_candidate_t &candidate) {
@@ -7110,7 +7106,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     if (citlali::pipeline::
                             mapdiag_has_valid_robust_center_stats(
                                 robust_stats)) {
-                        auto candidates = make_mapdiag_pixel_candidates();
+                        auto candidates =
+                            citlali::pipeline::make_mapdiag_pixel_candidates();
                         const bool have_contrib =
                             mapdiag_current_has_contribution_products(i);
                         const double ptc_fs_hz = mapdiag_current_ptc_fs_hz();
