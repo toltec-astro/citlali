@@ -6667,16 +6667,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     candidate.uid, candidate.scan, 0, 0.0, 0.0});
                                 it = dominance.end() - 1;
                             }
-                            ++it->count;
-                            if (std::isfinite(candidate.value)) {
-                                it->max_abs_value = std::max(
-                                    it->max_abs_value, std::abs(candidate.value));
-                            }
-                            if (std::isfinite(candidate.leave_one_out_z)) {
-                                it->max_abs_leave_one_out_z = std::max(
-                                    it->max_abs_leave_one_out_z,
-                                    std::abs(candidate.leave_one_out_z));
-                            }
+                            citlali::pipeline::
+                                update_mapdiag_detector_dominance_stats(
+                                    *it, candidate);
                         };
 
                         for (std::size_t ci = 0; ci < n_emit; ++ci) {
