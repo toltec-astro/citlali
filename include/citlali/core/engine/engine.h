@@ -6487,6 +6487,18 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         edge_guard_exterior_max_abs_post};
 
     std::string stage_name = citlali::pipeline::mapdiag_stage_name<map_t>();
+    citlali::pipeline::MapdiagMetadataVars mapdiag_metadata{
+        {stage_name, mb->name, map_regime, telescope.source_name,
+         telescope.project_id, telescope.obs_goal},
+        {mb->pixel_size_rad, mb->cov_cut, mb->sig_unit},
+        {wiener_filter.edge_guard_enabled,
+         wiener_filter.edge_weight_threshold_mode,
+         wiener_filter.edge_hits_threshold_mode,
+         wiener_filter.edge_fill_mode,
+         wiener_filter.edge_taper_mode,
+         wiener_filter.edge_hits_core_fraction,
+         wiener_filter.edge_guard_radius_fwhm,
+         wiener_filter.edge_taper_min_fraction}};
 
     using map_pixel_candidate_t =
         citlali::pipeline::MapdiagMapPixelCandidate;
