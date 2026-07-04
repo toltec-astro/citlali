@@ -6536,17 +6536,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 robust_stats)) {
                         std::vector<map_pixel_candidate_t> candidates;
                         const bool have_contrib =
-                            i < static_cast<Eigen::Index>(mb->contribution_uid.size()) &&
-                            i < static_cast<Eigen::Index>(mb->contribution_signal.size()) &&
-                            i < static_cast<Eigen::Index>(mb->contribution_weight.size()) &&
-                            i < static_cast<Eigen::Index>(mb->contribution_variance_weight.size()) &&
-                            i < static_cast<Eigen::Index>(mb->contribution_total_signal.size()) &&
-                            i < static_cast<Eigen::Index>(mb->contribution_total_weight.size()) &&
-                            i < static_cast<Eigen::Index>(mb->contribution_total_variance_weight.size()) &&
-                            i < static_cast<Eigen::Index>(mb->contribution_scan.size()) &&
-                            i < static_cast<Eigen::Index>(mb->contribution_sample.size()) &&
-                            mb->contribution_uid[static_cast<std::size_t>(i)].rows() == mb->n_rows &&
-                            mb->contribution_uid[static_cast<std::size_t>(i)].cols() == mb->n_cols;
+                            citlali::pipeline::
+                                mapdiag_has_contribution_products(mb, i);
                         const double ptc_fs_hz = processed_time_chunk_fs_hz();
 
                         for (Eigen::Index r = 0; r < mb->n_rows; ++r) {
