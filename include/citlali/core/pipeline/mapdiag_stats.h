@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cmath>
 #include <limits>
+#include <utility>
 #include <vector>
 
 #include <Eigen/Core>
@@ -25,6 +26,7 @@ struct MapdiagStatsContext {
     double fill_value;
 
     double median(const std::vector<double> &values) const;
+    double quantile(std::vector<double> values, double q) const;
 };
 
 inline double mapdiag_vector_median(const std::vector<double> &values,
@@ -54,6 +56,11 @@ inline double mapdiag_vector_quantile(std::vector<double> values, double q,
     const std::size_t i1 = static_cast<std::size_t>(std::ceil(pos));
     const double frac = pos - static_cast<double>(i0);
     return values[i0] * (1.0 - frac) + values[i1] * frac;
+}
+
+inline double MapdiagStatsContext::quantile(
+    std::vector<double> values, double q) const {
+    return mapdiag_vector_quantile(std::move(values), q, fill_value);
 }
 
 inline std::vector<double> mapdiag_collect_masked_values(
