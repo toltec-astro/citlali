@@ -6719,11 +6719,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         if (citlali::pipeline::mapdiag_has_matrix_samples(mb->signal[i]) &&
             citlali::pipeline::mapdiag_has_matrix_samples(mb->weight[i])) {
             Eigen::MatrixXd sig2noise = make_mapdiag_current_sig2noise(i);
-            citlali::pipeline::assign_mapdiag_peak_stats(
-                idx,
-                citlali::pipeline::mapdiag_peak_stats(
-                    sig2noise, core_mask, n_core_pixels[idx], fill_double),
-                peak_refs);
+            assign_mapdiag_current_peak_stats(idx, sig2noise, core_mask);
             const auto core_values =
                 mapdiag_stats.collect_masked_values(sig2noise, core_mask);
             const auto signal_tail = mapdiag_stats.tail_stats(core_values);
