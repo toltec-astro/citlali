@@ -6123,23 +6123,15 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 citlali::pipeline::legacy_pixel_snr_map_hdu_name(
                     map_name, stokes_suffix),
                 sig2noise);
-            citlali::pipeline::add_image_unit_type_description_keys(
-                *fits_io->at(map_index).hdus.back(),
-                citlali::pipeline::not_applicable_image_unit(),
-                citlali::pipeline::pixel_snr_estimator_type(),
-                citlali::pipeline::snr_estimator_type_comment(),
-                citlali::pipeline::legacy_pixel_snr_map_description());
+            citlali::pipeline::add_legacy_pixel_snr_map_metadata(
+                *fits_io->at(map_index).hdus.back());
 
             add_map_hdu_with_wcs(
                 citlali::pipeline::pixel_snr_map_hdu_name(
                     map_name, stokes_suffix),
                 sig2noise);
-            citlali::pipeline::add_image_unit_type_description_keys(
-                *fits_io->at(map_index).hdus.back(),
-                citlali::pipeline::not_applicable_image_unit(),
-                citlali::pipeline::pixel_snr_estimator_type(),
-                citlali::pipeline::snr_estimator_type_comment(),
-                citlali::pipeline::pixel_snr_map_description());
+            citlali::pipeline::add_pixel_snr_map_metadata(
+                *fits_io->at(map_index).hdus.back());
 
             const bool is_filtered_output =
                 citlali::pipeline::is_filtered_map_output(
