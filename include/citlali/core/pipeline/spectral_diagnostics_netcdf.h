@@ -74,6 +74,15 @@ inline PsdNetcdfDims add_psd_netcdf_dims(netCDF::NcFile &fo,
     return {spectrum_dim, {row_dim, col_dim}};
 }
 
+template <class Spectrum, class Image>
+PsdNetcdfDims add_psd_netcdf_dims_for_image(
+    netCDF::NcFile &fo, const std::string &base_name,
+    const Spectrum &spectrum, const Image &image) {
+    return add_psd_netcdf_dims(
+        fo, base_name, psd_spectrum_size(spectrum), psd_image_rows(image),
+        psd_image_cols(image));
+}
+
 template <class Data>
 void add_double_1d_var(netCDF::NcFile &fo, const std::string &name,
                        netCDF::NcDim dim, const Data &data) {
