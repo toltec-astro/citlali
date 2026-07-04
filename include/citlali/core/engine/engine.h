@@ -6865,6 +6865,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_has_fallback_leave_one_out_inputs(
                 weight, contrib_weight);
         };
+    auto mapdiag_raw_weighted_signal =
+        [](double value, double weight) {
+            return value * weight;
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
