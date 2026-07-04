@@ -67,6 +67,13 @@ struct MapdiagNoiseProductStats {
     double valid_pixels;
 };
 
+struct MapdiagWeightStats {
+    int n_valid_pixels;
+    int n_core_pixels;
+    double weight_sum;
+    double core_weight_sum;
+};
+
 struct MapdiagPeakStats {
     double peak_abs_sig2noise;
     int peak_row;
