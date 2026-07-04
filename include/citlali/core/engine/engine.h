@@ -6835,6 +6835,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
             return mb->contribution_total_variance_weight[map_st](row, col);
         };
+    auto mapdiag_remaining_contribution_weight =
+        [](double total_weight, double contrib_weight) {
+            return total_weight - contrib_weight;
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
