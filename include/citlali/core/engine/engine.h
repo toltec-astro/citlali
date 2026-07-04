@@ -6755,6 +6755,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 n_eff,
                 reduction_learning.options.map_pixel_outlier_min_n_eff);
         };
+    auto mapdiag_current_robust_z =
+        [](double sig2noise_value, const auto &robust_stats) {
+            return citlali::pipeline::mapdiag_robust_z(
+                sig2noise_value, robust_stats);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
