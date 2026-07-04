@@ -7185,9 +7185,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
                         for (Eigen::Index r = 0; r < mb->n_rows; ++r) {
                             for (Eigen::Index c = 0; c < mb->n_cols; ++c) {
-                                if (!citlali::pipeline::
-                                        mapdiag_mask_pixel_is_selected(
-                                            off_source_core_mask, r, c)) {
+                                if (!mapdiag_current_mask_pixel_is_selected(
+                                        off_source_core_mask, r, c)) {
                                     continue;
                                 }
 
