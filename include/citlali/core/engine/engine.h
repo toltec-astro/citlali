@@ -6620,12 +6620,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         const std::size_t idx = static_cast<std::size_t>(i);
         const auto map_index = arrays_to_maps(i);
         const auto stokes_index = maps_to_stokes(i);
-        const auto labels = citlali::pipeline::make_mapdiag_map_labels(
-            toltec_io.array_name_map[calib.arrays[map_index]],
-            rtcproc.polarization.stokes_params[stokes_index],
-            get_map_name(i));
-        citlali::pipeline::assign_mapdiag_map_labels(
-            idx, labels, {array_names, stokes_names, map_names});
+        assign_mapdiag_current_labels(i, idx, map_index, stokes_index);
 
         auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = mb->calc_cov_region(i);
         weight_threshold =
