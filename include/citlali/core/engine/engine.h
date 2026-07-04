@@ -7032,6 +7032,15 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_display_scan_index(
                 entry.scan);
         };
+    auto log_mapdiag_current_detector_penalty =
+        [&](Eigen::Index map_i, const detector_dominance_t &entry) {
+            logger->info(
+                "mapdiag learned scan-local detector exclusion candidate stage={} iter={} map={} uid={} scan={} outlier_pixels={} max_abs_value={:.4g} max_abs_leave_one_out_z={:.4g}",
+                stage_name, fruit_iter, map_i, entry.uid,
+                mapdiag_current_dominance_display_scan_index(entry),
+                entry.count, entry.max_abs_value,
+                entry.max_abs_leave_one_out_z);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
