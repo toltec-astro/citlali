@@ -6737,6 +6737,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_robust_center_stats(
                 mapdiag_stats, values);
         };
+    auto mapdiag_current_has_contribution_products =
+        [&](Eigen::Index map_i) {
+            return citlali::pipeline::mapdiag_has_contribution_products(
+                mb, map_i);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
