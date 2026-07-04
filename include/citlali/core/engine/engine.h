@@ -6497,6 +6497,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
          wiener_filter.edge_hits_core_fraction,
          wiener_filter.edge_guard_radius_fwhm,
          wiener_filter.edge_taper_min_fraction}};
+    citlali::pipeline::MapdiagLabelVars mapdiag_labels{
+        array_names,
+        stokes_names,
+        map_names,
+        mb->obsnums,
+        obsnum,
+        date_obs,
+        mapdiag_context.n_obsnums};
 
     using map_pixel_candidate_t =
         citlali::pipeline::MapdiagMapPixelCandidate;
