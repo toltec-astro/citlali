@@ -7238,7 +7238,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 const double n_eff =
                                     mapdiag_current_candidate_effective_samples(
                                         i, r, c, ptc_fs_hz);
-                                if (!mapdiag_passes_current_min_effective_samples(
+                                if (!mapdiag_current_candidate_passes_min_effective_samples(
                                         n_eff)) {
                                     continue;
                                 }
