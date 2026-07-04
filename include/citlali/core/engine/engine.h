@@ -6357,6 +6357,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<int> n_core_pixels(mapdiag_context.n_maps, 0);
     std::vector<int> peak_row(mapdiag_context.n_maps, fill_int);
     std::vector<int> peak_col(mapdiag_context.n_maps, fill_int);
+    citlali::pipeline::MapdiagPeakRefs peak_refs{
+        peak_abs_sig2noise,
+        core_peak_abs_sig2noise,
+        peak_row,
+        peak_col};
     std::vector<int> edge_guard_applied(mapdiag_context.n_maps, 0);
     std::vector<int> edge_guard_support_radius_pix(mapdiag_context.n_maps, 0);
     std::vector<int> edge_guard_science_npix(mapdiag_context.n_maps, 0);
