@@ -6694,11 +6694,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         if (reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled) {
                             const int min_pixels =
                                 reduction_learning.options.map_pixel_outlier_detector_exclusion_min_pixels;
-                            int array_id = -1;
-                            if (map_index >= 0 &&
-                                map_index < static_cast<Eigen::Index>(calib.arrays.size())) {
-                                array_id = calib.arrays[map_index];
-                            }
+                            const int array_id =
+                                citlali::pipeline::mapdiag_array_id_or_default(
+                                    map_index, calib.arrays, -1);
                             for (const auto &entry : dominance) {
                                 if (!citlali::pipeline::
                                         mapdiag_dominance_meets_min_pixels(
