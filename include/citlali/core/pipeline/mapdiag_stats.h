@@ -595,6 +595,11 @@ inline bool mapdiag_passes_min_effective_samples(double n_eff,
     return !std::isfinite(n_eff) || n_eff >= min_n_eff;
 }
 
+inline double mapdiag_robust_z(double sig2noise,
+                               const MapdiagRobustCenterStats &stats) {
+    return (sig2noise - stats.center) / stats.robust_sigma;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
