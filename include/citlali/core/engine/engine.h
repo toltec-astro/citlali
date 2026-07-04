@@ -6742,6 +6742,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_has_contribution_products(
                 mb, map_i);
         };
+    auto mapdiag_current_effective_samples =
+        [&](Eigen::Index map_i, Eigen::Index row, Eigen::Index col,
+            double ptc_fs_hz) {
+            return citlali::pipeline::mapdiag_effective_samples_or_fill(
+                mb->coverage, map_i, row, col, mb->n_rows, mb->n_cols,
+                ptc_fs_hz, fill_double);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
