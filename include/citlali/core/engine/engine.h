@@ -6880,6 +6880,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 candidates.begin(), candidates.end(),
                 citlali::pipeline::mapdiag_candidate_abs_z_greater);
         };
+    auto mapdiag_pixel_candidate_emit_count =
+        [&](const std::vector<map_pixel_candidate_t> &candidates) {
+            return citlali::pipeline::mapdiag_candidate_emit_count(
+                candidates.size(),
+                reduction_learning.options.map_pixel_outlier_top_n);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
