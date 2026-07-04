@@ -768,6 +768,11 @@ inline bool mapdiag_has_minimum_samples(std::size_t n_values,
     return n_values >= min_values;
 }
 
+inline bool mapdiag_has_enough_off_source_values(
+    const std::vector<double> &values) {
+    return mapdiag_has_minimum_samples(values.size(), 8);
+}
+
 inline std::vector<double> mapdiag_absolute_deviations(
     const std::vector<double> &values, double center) {
     std::vector<double> abs_dev;
