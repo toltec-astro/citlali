@@ -620,6 +620,15 @@ inline Eigen::Index mapdiag_noise_realization_offset(
     return realization_index * mapdiag_noise_realization_size(n_rows, n_cols);
 }
 
+inline MapdiagNoiseMatrix mapdiag_noise_matrix(
+    double *noise_data, Eigen::Index realization_index, Eigen::Index n_rows,
+    Eigen::Index n_cols) {
+    return MapdiagNoiseMatrix(
+        noise_data + mapdiag_noise_realization_offset(
+                         realization_index, n_rows, n_cols),
+        n_rows, n_cols);
+}
+
 inline double mapdiag_center_pixel_coordinate(Eigen::Index n_pixels) {
     return (static_cast<double>(n_pixels) - 1.0) / 2.0;
 }
