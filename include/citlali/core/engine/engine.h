@@ -6829,6 +6829,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_robust_z(
                 sig2noise_value, robust_stats);
         };
+    auto mapdiag_current_candidate_robust_z =
+        [&](double sig2noise_value, const auto &robust_stats) {
+            return mapdiag_current_robust_z(
+                sig2noise_value, robust_stats);
+        };
     auto mapdiag_passes_current_min_abs_z =
         [&](double z) {
             return citlali::pipeline::mapdiag_passes_min_abs_z(
