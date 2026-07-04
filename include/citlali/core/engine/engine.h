@@ -6791,6 +6791,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     row, col, source_distance_context),
                 fill_int, fill_double);
         };
+    auto mapdiag_contribution_map_index =
+        [](Eigen::Index map_i) {
+            return static_cast<std::size_t>(map_i);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
