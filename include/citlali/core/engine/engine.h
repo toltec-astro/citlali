@@ -6627,12 +6627,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                             const double loo_value =
                                                 (total_signal - contrib_signal) /
                                                 remaining_weight;
-                                            const double residual = value - loo_value;
-                                            if (std::isfinite(residual) &&
-                                                std::isfinite(wt) && wt > 0.0) {
-                                                candidate.leave_one_out_z =
-                                                    residual * std::sqrt(wt);
-                                            }
+                                            citlali::pipeline::
+                                                mapdiag_assign_leave_one_out_z(
+                                                    value, wt, loo_value,
+                                                    candidate
+                                                        .leave_one_out_z);
                                         }
                                         else if (std::isfinite(contrib_weight) &&
                                                  contrib_weight >= 0.0 &&
