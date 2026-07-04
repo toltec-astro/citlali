@@ -6128,9 +6128,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
             // legacy signal-to-noise map name retained for compatibility; this is pixel S/N.
             Eigen::MatrixXd sig2noise;
-            if (i < static_cast<Eigen::Index>(mb->sig2noise_pixel.size()) &&
-                mb->sig2noise_pixel[i].rows() == mb->n_rows &&
-                mb->sig2noise_pixel[i].cols() == mb->n_cols) {
+            if (citlali::pipeline::has_map_image_slot(
+                    mb->sig2noise_pixel, i, mb->n_rows, mb->n_cols)) {
                 sig2noise = mb->sig2noise_pixel[i];
             }
             else {
