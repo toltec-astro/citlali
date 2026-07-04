@@ -6868,11 +6868,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_has_valid_robust_center_stats(
                 robust_stats);
         };
-    auto mapdiag_current_has_valid_robust_center_stats =
-        [&](const auto &robust_stats) {
-            return mapdiag_has_valid_current_robust_center_stats(
-                robust_stats);
-        };
     auto make_mapdiag_pixel_candidates =
         []() {
             return citlali::pipeline::make_mapdiag_pixel_candidates();
@@ -7257,7 +7252,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     const auto robust_stats =
                         make_mapdiag_robust_center_stats(
                             off_source_values);
-                    if (mapdiag_current_has_valid_robust_center_stats(
+                    if (mapdiag_has_valid_current_robust_center_stats(
                             robust_stats)) {
                         auto candidates = make_mapdiag_pixel_candidates();
                         const bool have_contrib =
