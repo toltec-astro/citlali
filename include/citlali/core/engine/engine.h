@@ -6248,13 +6248,9 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
             fo, name, mb->psds[i], mb->psd_freqs[i], mb->psd_2ds[i],
             mb->psd_2d_freqs[i]);
 
-        if (citlali::pipeline::has_spectral_noise_products(mb->noise)) {
-            const std::string noise_name =
-                citlali::pipeline::spectral_noise_product_base_name(name);
-            citlali::pipeline::add_psd_product(
-                fo, noise_name, mb->noise_psds[i], mb->noise_psd_freqs[i],
-                mb->noise_psd_2ds[i], mb->noise_psd_2d_freqs[i]);
-        }
+        citlali::pipeline::add_noise_psd_product_if_present(
+            fo, mb->noise, name, mb->noise_psds[i], mb->noise_psd_freqs[i],
+            mb->noise_psd_2ds[i], mb->noise_psd_2d_freqs[i]);
     }
     });
 }
