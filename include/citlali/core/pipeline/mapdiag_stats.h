@@ -769,6 +769,10 @@ inline const char *mapdiag_map_pixel_outlier_reason(bool has_contributor,
                     : "extreme_pixel_contributor";
 }
 
+inline const char *mapdiag_detector_dominance_penalty_reason() {
+    return "map_pixel_outlier_detector_dominance";
+}
+
 template <class Record, class Obsnum, class Producer, class Reason>
 void assign_mapdiag_outlier_record_context(
     Record &record, const Obsnum &obsnum, const Producer &producer,
