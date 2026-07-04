@@ -35,6 +35,21 @@ struct PsdNetcdfDims {
     std::vector<netCDF::NcDim> image;
 };
 
+template <class Spectrum>
+std::size_t psd_spectrum_size(const Spectrum &spectrum) {
+    return spectrum.size();
+}
+
+template <class Image>
+std::size_t psd_image_rows(const Image &image) {
+    return static_cast<std::size_t>(image.rows());
+}
+
+template <class Image>
+std::size_t psd_image_cols(const Image &image) {
+    return static_cast<std::size_t>(image.cols());
+}
+
 inline PsdNetcdfDims add_psd_netcdf_dims(netCDF::NcFile &fo,
                                          const std::string &base_name,
                                          std::size_t nfreq,
