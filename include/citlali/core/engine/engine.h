@@ -6550,6 +6550,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 map_i, mapdiag_context.n_obsnums, mb->n_rows, mb->n_cols,
                 core_mask, obs_weight, obs_idx, obs_tables);
         };
+    auto zero_mapdiag_obs_contribution =
+        [&](std::size_t map_idx, std::size_t obs_idx) {
+            citlali::pipeline::zero_mapdiag_obs_entry(
+                mapdiag_context, map_idx, obs_idx, obs_tables);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
