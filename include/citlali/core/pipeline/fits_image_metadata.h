@@ -58,6 +58,22 @@ inline bool has_negative_map_median_error(double median_error_variance,
            median_error_variance < 0.0;
 }
 
+template <class MedianRms>
+double map_median_rms_or_zero(const MedianRms &median_rms, Eigen::Index i) {
+    if (i < static_cast<Eigen::Index>(median_rms.size()) &&
+        std::isfinite(median_rms(i))) {
+        return median_rms(i);
+    }
+    return 0.0;
+}
+
+template <class MedianRms>
+bool has_nonfinite_map_median_rms(const MedianRms &median_rms,
+                                  Eigen::Index i) {
+    return i < static_cast<Eigen::Index>(median_rms.size()) &&
+           !std::isfinite(median_rms(i));
+}
+
 template <class Hdu>
 void add_image_unit_keys(Hdu &hdu, const std::string &unit) {
     hdu.addKey("UNIT", unit, "Unit of map");
