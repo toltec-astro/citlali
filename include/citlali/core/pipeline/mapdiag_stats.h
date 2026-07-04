@@ -531,6 +531,14 @@ inline void mapdiag_assign_leave_one_out_z(double value, double weight,
     }
 }
 
+inline bool mapdiag_has_fallback_leave_one_out_inputs(
+    double weight, double contribution_weight) {
+    return std::isfinite(contribution_weight) && contribution_weight >= 0.0 &&
+           weight > contribution_weight &&
+           (weight - contribution_weight) >
+               std::numeric_limits<double>::epsilon();
+}
+
 template <class NoiseList>
 bool mapdiag_has_noise_realizations(
     const NoiseList &noise, Eigen::Index i, Eigen::Index n_noise) {
