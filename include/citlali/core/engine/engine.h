@@ -5830,8 +5830,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // add beamsizes
     citlali::pipeline::add_phdu_beam_geometry_keys(
-        fits_entry, name, logger, calib.array_fwhms[calib.arrays(i)],
-        calib.array_pas[calib.arrays(i)], RAD_TO_DEG, pi/2);
+        fits_entry, name, logger, calib.array_fwhms[array_id],
+        calib.array_pas[array_id], RAD_TO_DEG, pi/2);
 
     citlali::pipeline::add_phdu_auxiliary_scalar_keys(
         fits_entry, mb->sig_unit, telescope.fsmp, fruit_iter);
