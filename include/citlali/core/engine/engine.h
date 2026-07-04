@@ -6287,11 +6287,8 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::add_histogram_pair(
             fo, name, hist_bins_dim, mb->hist_bins[i], mb->hists[i]);
 
-        if (citlali::pipeline::has_spectral_noise_products(mb->noise)) {
-            citlali::pipeline::add_double_1d_var(
-                fo, citlali::pipeline::spectral_noise_histogram_name(name),
-                hist_bins_dim, mb->noise_hists[i]);
-        }
+        citlali::pipeline::add_noise_histogram_if_present(
+            fo, mb->noise, name, hist_bins_dim, mb->noise_hists[i]);
     }
     });
 }
