@@ -6937,13 +6937,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     citlali::pipeline::add_mapdiag_map_label_vars(
         fo, mapdiag_dims.maps, array_names, stokes_names, map_names);
 
-    const auto obsnum_strings =
-        citlali::pipeline::mapdiag_obsnum_labels(mb->obsnums, obsnum);
-    put_string_1d(fo, "coadd_obsnum", mapdiag_dims.obsnums, obsnum_strings, "obsnum ordering for map x obsnum contribution tables");
-
-    const auto dateobs_strings =
-        citlali::pipeline::mapdiag_dateobs_labels(date_obs, mapdiag_context.n_obsnums);
-    put_string_1d(fo, "coadd_dateobs", mapdiag_dims.obsnums, dateobs_strings, "DATEOBS ordering matching coadd_obsnum");
+    citlali::pipeline::add_mapdiag_observation_label_vars(
+        fo, mapdiag_dims.obsnums, mb->obsnums, obsnum, date_obs,
+        mapdiag_context.n_obsnums);
 
     auto add_map_double = [&](const std::string &name, const std::string &comment, const std::vector<double> &values) {
         citlali::pipeline::add_mapdiag_double_1d(
