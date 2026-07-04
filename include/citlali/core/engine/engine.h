@@ -5851,13 +5851,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         rtcproc, telescope, calib, i, logger);
     add_double_key("MEAN_TAU", mean_tau, "mean tau (" + name + ")");
 
-    // add apt table to header
-    if (citlali::pipeline::phdu_has_single_observation(mb->obsnums)) {
-        const auto apt_name =
-            citlali::pipeline::apt_table_header_name(calib.apt_filepath,
-                                                     logger);
-        citlali::pipeline::add_phdu_apt_key(fits_entry, apt_name);
-    }
+    citlali::pipeline::add_phdu_apt_key_if_single_observation(
+        fits_entry, mb->obsnums, calib.apt_filepath, logger);
 
     const double rms = citlali::pipeline::phdu_oof_rms(
         mb, i, redu_type, name, fits_io->at(i).filepath, logger);

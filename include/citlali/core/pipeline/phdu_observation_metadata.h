@@ -165,6 +165,17 @@ void add_phdu_apt_key(FitsEntry &fits_entry, const std::string &apt_name) {
     fits_entry.pfits->pHDU().addKey("APT", apt_name, "APT table used");
 }
 
+template <class FitsEntry, class Obsnums, class Logger>
+void add_phdu_apt_key_if_single_observation(
+    FitsEntry &fits_entry, const Obsnums &obsnums,
+    const std::string &apt_filepath, const Logger &logger) {
+    if (!phdu_has_single_observation(obsnums)) {
+        return;
+    }
+    const auto apt_name = apt_table_header_name(apt_filepath, logger);
+    add_phdu_apt_key(fits_entry, apt_name);
+}
+
 template <class FitsEntry, class ShapeValues, class Logger>
 void add_phdu_jinc_shape_keys(FitsEntry &fits_entry,
                               const std::string &array_name,
