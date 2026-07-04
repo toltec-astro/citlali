@@ -7249,7 +7249,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 }
 
                                 const double z =
-                                    mapdiag_current_robust_z(
+                                    mapdiag_current_candidate_robust_z(
                                         sn, robust_stats);
                                 if (!mapdiag_passes_current_min_abs_z(z)) {
                                     continue;
