@@ -6434,7 +6434,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             citlali::pipeline::mapdiag_mask_sum_as_int(valid_mask);
         n_core_pixels[idx] =
             citlali::pipeline::mapdiag_mask_sum_as_int(core_mask);
-        weight_sum[idx] = (weight_arr * valid_mask).sum();
+        weight_sum[idx] =
+            citlali::pipeline::mapdiag_weighted_mask_sum(
+                weight_arr, valid_mask);
         core_weight_sum[idx] = (weight_arr * core_mask).sum();
 
         if (i < mb->median_err.size()) {
