@@ -37,6 +37,15 @@ struct MapdiagNetcdfDims {
     std::vector<netCDF::NcDim> map_obs;
 };
 
+inline MapdiagNetcdfDims add_mapdiag_netcdf_dims(
+    netCDF::NcFile &fo, const MapdiagSizeContext &context) {
+    netCDF::NcDim maps_dim =
+        fo.addDim(mapdiag_map_dim_name(), context.n_maps);
+    netCDF::NcDim obsnums_dim =
+        fo.addDim(mapdiag_obsnum_dim_name(), context.n_obsnums);
+    return {maps_dim, obsnums_dim, {maps_dim, obsnums_dim}};
+}
+
 MapdiagSizeContext make_mapdiag_size_context(std::size_t n_maps,
                                              std::size_t obsnum_count,
                                              bool is_coadd) {
