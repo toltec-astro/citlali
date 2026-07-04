@@ -6449,17 +6449,16 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         empirical_to_formal_noise_ratio[idx] =
             citlali::pipeline::mapdiag_positive_denominator_ratio_or_fill(
                 median_rms[idx], median_err[idx], fill_double);
+        const auto noise_product_stats =
+            citlali::pipeline::mapdiag_noise_product_stats_or_fill(
+                mb->noise_weight_median_ratio, mb->noise_weight_scale,
+                mb->noise_s2n_sigma, mb->noise_valid_pixels, i,
+                fill_double);
         noise_weight_median_ratio[idx] =
-            citlali::pipeline::mapdiag_value_or_fill(
-                mb->noise_weight_median_ratio, i, fill_double);
-        noise_weight_scale[idx] = citlali::pipeline::mapdiag_value_or_fill(
-            mb->noise_weight_scale, i, fill_double);
-        noise_products_s2n_sigma[idx] =
-            citlali::pipeline::mapdiag_value_or_fill(
-                mb->noise_s2n_sigma, i, fill_double);
-        noise_products_valid_pixels[idx] =
-            citlali::pipeline::mapdiag_value_or_fill(
-                mb->noise_valid_pixels, i, fill_double);
+            noise_product_stats.weight_median_ratio;
+        noise_weight_scale[idx] = noise_product_stats.weight_scale;
+        noise_products_s2n_sigma[idx] = noise_product_stats.s2n_sigma;
+        noise_products_valid_pixels[idx] = noise_product_stats.valid_pixels;
 
         if (citlali::pipeline::mapdiag_has_coverage_map(mb->coverage, i)) {
             citlali::pipeline::assign_mapdiag_coverage_stats(
