@@ -6879,13 +6879,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 }
 
                                 auto candidate =
-                                    citlali::pipeline::
-                                        make_mapdiag_map_pixel_candidate(
-                                            r, c, value, wt, n_eff, z,
-                                            mapdiag_current_source_distance_arcsec(
-                                                r, c,
-                                                source_distance_context),
-                                            fill_int, fill_double);
+                                    make_mapdiag_current_pixel_candidate(
+                                        r, c, value, wt, n_eff, z,
+                                        source_distance_context);
 
                                 if (have_contrib) {
                                     const auto map_st = static_cast<std::size_t>(i);
