@@ -6683,18 +6683,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                             candidate.has_contributor,
                                             mb->contribution_diag_targeted),
                                     fruit_iter, static_cast<int>(i));
-                            record.scan = candidate.scan;
-                            record.uid = candidate.uid;
-                            record.row = candidate.row;
-                            record.col = candidate.col;
-                            record.sample = candidate.sample;
-                            record.value = candidate.value;
-                            record.weight = candidate.weight;
-                            record.n_eff = candidate.n_eff;
-                            record.leave_one_out_z = candidate.leave_one_out_z;
-                            record.source_distance_arcsec =
-                                candidate.source_distance_arcsec;
-                            record.source_protected = candidate.source_protected;
+                            citlali::pipeline::
+                                assign_mapdiag_outlier_record_candidate(
+                                    record, candidate);
                             reduction_learning.record_map_pixel_outlier(
                                 std::move(record));
                             update_dominance(candidate);
