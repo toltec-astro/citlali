@@ -6361,8 +6361,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
     std::string stage_name = citlali::pipeline::mapdiag_stage_name<map_t>();
 
-    auto put_string_1d = citlali::pipeline::put_netcdf_string_1d;
-
     auto accumulate_obs_weight = [&](Eigen::Index map_i,
                                      const Eigen::ArrayXXd &core_mask,
                                      const Eigen::MatrixXd &obs_weight,
