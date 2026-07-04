@@ -434,6 +434,20 @@ inline void assign_mapdiag_core_tail_stats(
     refs.skew[idx] = stats.skew;
 }
 
+inline void assign_mapdiag_noise_tail_summary(
+    std::size_t idx, const MapdiagNoiseTailSummary &summary,
+    MapdiagNoiseTailRefs refs) {
+    refs.rms_p16[idx] = summary.rms_p16;
+    refs.rms_p84[idx] = summary.rms_p84;
+    refs.frac_abs3[idx] = summary.tail_abs;
+    refs.frac_pos3[idx] = summary.tail_pos;
+    refs.frac_neg3[idx] = summary.tail_neg;
+    refs.excess_abs3[idx] = summary.excess_abs;
+    refs.excess_pos3[idx] = summary.excess_pos;
+    refs.excess_neg3[idx] = summary.excess_neg;
+    refs.skew[idx] = summary.skew;
+}
+
 inline void mapdiag_append_finite(std::vector<double> &values, double value) {
     if (std::isfinite(value)) {
         values.push_back(value);
