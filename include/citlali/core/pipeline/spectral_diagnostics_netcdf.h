@@ -25,6 +25,11 @@ inline std::string spectral_noise_histogram_name(
     return base_name + "_noise_hist";
 }
 
+template <class NoiseList>
+bool has_spectral_noise_products(const NoiseList &noise) {
+    return !noise.empty();
+}
+
 struct PsdNetcdfDims {
     netCDF::NcDim spectrum;
     std::vector<netCDF::NcDim> image;
