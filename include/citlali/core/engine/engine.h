@@ -7109,10 +7109,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     assign_mapdiag_outlier_record_context(
                                     record, obsnum,
                                     mapdiag_outlier_record_producer(),
-                                    citlali::pipeline::
-                                        mapdiag_map_pixel_outlier_reason(
-                                            candidate.has_contributor,
-                                            mb->contribution_diag_targeted),
+                                    mapdiag_outlier_record_reason(candidate),
                                     fruit_iter, static_cast<int>(i));
                             citlali::pipeline::
                                 assign_mapdiag_outlier_record_candidate(
