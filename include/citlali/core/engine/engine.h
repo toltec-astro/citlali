@@ -6047,9 +6047,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 "Formal mapmaker inverse variance before empirical calibration");
         }
 
-        if (i < static_cast<Eigen::Index>(mb->noise_variance.size()) &&
-            mb->noise_variance[i].rows() == mb->n_rows &&
-            mb->noise_variance[i].cols() == mb->n_cols) {
+        if (citlali::pipeline::has_map_image_slot(
+                mb->noise_variance, i, mb->n_rows, mb->n_cols)) {
             add_map_hdu_with_wcs(
                 "noise_variance_" + map_name + stokes_suffix,
                 mb->noise_variance[i]);
