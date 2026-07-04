@@ -780,6 +780,22 @@ void assign_mapdiag_outlier_record_context(
     record.map_index = map_index;
 }
 
+template <class Record>
+void assign_mapdiag_outlier_record_candidate(
+    Record &record, const MapdiagMapPixelCandidate &candidate) {
+    record.scan = candidate.scan;
+    record.uid = candidate.uid;
+    record.row = candidate.row;
+    record.col = candidate.col;
+    record.sample = candidate.sample;
+    record.value = candidate.value;
+    record.weight = candidate.weight;
+    record.n_eff = candidate.n_eff;
+    record.leave_one_out_z = candidate.leave_one_out_z;
+    record.source_distance_arcsec = candidate.source_distance_arcsec;
+    record.source_protected = candidate.source_protected;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
