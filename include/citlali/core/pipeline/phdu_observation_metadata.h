@@ -8,6 +8,11 @@
 
 namespace citlali::pipeline {
 
+template <class ArrayFwhm>
+double mean_beam_fwhm_arcsec(const ArrayFwhm &array_fwhm) {
+    return (std::get<0>(array_fwhm) + std::get<1>(array_fwhm)) / 2;
+}
+
 template <class FitsEntry, class Obsnums>
 void add_phdu_obsnum_keys(FitsEntry &fits_entry, const Obsnums &obsnums) {
     auto &hdu = fits_entry.pfits->pHDU();

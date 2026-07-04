@@ -5741,7 +5741,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     logger->debug("adding unit conversions");
 
     // conversion to Rayleigh-Jeans uK brightness temperature
-    auto fwhm = (std::get<0>(calib.array_fwhms[calib.arrays(i)]) + std::get<1>(calib.array_fwhms[calib.arrays(i)]))/2;
+    auto fwhm = citlali::pipeline::mean_beam_fwhm_arcsec(
+        calib.array_fwhms[calib.arrays(i)]);
     auto mJy_beam_to_uK = engine_utils::mJy_beam_to_uK(1, toltec_io.array_freq_map[calib.arrays(i)], fwhm);
 
     // beam area in steradians
