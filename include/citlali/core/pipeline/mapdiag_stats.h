@@ -392,6 +392,12 @@ inline bool mapdiag_has_matrix_samples(const Eigen::MatrixXd &matrix) {
     return matrix.size() > 0;
 }
 
+inline bool mapdiag_has_signal_weight_samples(
+    const Eigen::MatrixXd &signal, const Eigen::MatrixXd &weight) {
+    return mapdiag_has_matrix_samples(signal) &&
+           mapdiag_has_matrix_samples(weight);
+}
+
 inline Eigen::MatrixXd mapdiag_sig2noise_image(
     const Eigen::MatrixXd &signal, const Eigen::MatrixXd &weight) {
     return signal.array() * weight.array().max(0.0).sqrt();

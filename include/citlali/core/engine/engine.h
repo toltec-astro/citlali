@@ -6771,10 +6771,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto mapdiag_current_has_signal_stats =
         [&](Eigen::Index map_i) {
-            return citlali::pipeline::mapdiag_has_matrix_samples(
-                       mb->signal[map_i]) &&
-                   citlali::pipeline::mapdiag_has_matrix_samples(
-                       mb->weight[map_i]);
+            return citlali::pipeline::mapdiag_has_signal_weight_samples(
+                mb->signal[map_i], mb->weight[map_i]);
         };
     auto make_mapdiag_source_distance_context =
         [&]() {
