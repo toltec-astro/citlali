@@ -67,6 +67,13 @@ struct MapdiagNoiseProductStats {
     double valid_pixels;
 };
 
+struct MapdiagPeakStats {
+    double peak_abs_sig2noise;
+    int peak_row;
+    int peak_col;
+    double core_peak_abs_sig2noise;
+};
+
 inline void MapdiagNoiseTailSamples::reserve(std::size_t n_noise) {
     rms.reserve(n_noise);
     tail_abs.reserve(n_noise);
