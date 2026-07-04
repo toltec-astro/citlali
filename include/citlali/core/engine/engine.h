@@ -5746,7 +5746,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     auto mJy_beam_to_uK = engine_utils::mJy_beam_to_uK(1, toltec_io.array_freq_map[calib.arrays(i)], fwhm);
 
     // beam area in steradians
-    auto beam_area_rad = 2.*pi*pow(fwhm*FWHM_TO_STD*ASEC_TO_RAD,2);
+    auto beam_area_rad = citlali::pipeline::gaussian_beam_area_sr(
+        fwhm, FWHM_TO_STD, ASEC_TO_RAD, pi);
     // get Jy/pixel
     auto mJy_beam_to_Jy_px = 1e-3/beam_area_rad*pow(mb->pixel_size_rad,2);
 

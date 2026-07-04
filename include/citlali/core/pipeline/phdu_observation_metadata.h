@@ -13,6 +13,14 @@ double mean_beam_fwhm_arcsec(const ArrayFwhm &array_fwhm) {
     return (std::get<0>(array_fwhm) + std::get<1>(array_fwhm)) / 2;
 }
 
+inline double gaussian_beam_area_sr(double fwhm_arcsec,
+                                    double fwhm_to_std,
+                                    double arcsec_to_rad,
+                                    double pi_value) {
+    return 2. * pi_value *
+           std::pow(fwhm_arcsec * fwhm_to_std * arcsec_to_rad, 2);
+}
+
 template <class FitsEntry, class Obsnums>
 void add_phdu_obsnum_keys(FitsEntry &fits_entry, const Obsnums &obsnums) {
     auto &hdu = fits_entry.pfits->pHDU();
