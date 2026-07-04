@@ -6634,6 +6634,15 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     idx, *mb, edge_guard_double_refs);
             }
         };
+    auto assign_mapdiag_current_weight_stats =
+        [&](std::size_t idx, const auto &weight_arr,
+            const auto &valid_mask, const auto &core_mask) {
+            citlali::pipeline::assign_mapdiag_weight_stats(
+                idx,
+                citlali::pipeline::mapdiag_weight_stats(
+                    weight_arr, valid_mask, core_mask),
+                weight_refs);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
