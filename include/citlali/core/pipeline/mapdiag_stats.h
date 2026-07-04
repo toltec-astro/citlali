@@ -724,6 +724,12 @@ inline bool mapdiag_candidate_abs_z_greater(
     return std::abs(a.robust_z) > std::abs(b.robust_z);
 }
 
+inline std::size_t mapdiag_candidate_emit_count(std::size_t n_candidates,
+                                                int top_n) {
+    return std::min<std::size_t>(
+        n_candidates, static_cast<std::size_t>(top_n));
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
