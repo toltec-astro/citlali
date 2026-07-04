@@ -271,6 +271,15 @@ bool has_nonfinite_map_median_rms(const MedianRms &median_rms,
            !std::isfinite(median_rms(i));
 }
 
+inline bool has_nonfinite_weight_threshold(double weight_threshold) {
+    return !std::isfinite(weight_threshold);
+}
+
+inline double weight_threshold_or_zero(double weight_threshold) {
+    return has_nonfinite_weight_threshold(weight_threshold) ? 0.0
+                                                            : weight_threshold;
+}
+
 template <class Hdu>
 void add_image_unit_keys(Hdu &hdu, const std::string &unit) {
     hdu.addKey("UNIT", unit, "Unit of map");
