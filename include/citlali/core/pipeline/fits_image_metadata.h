@@ -32,6 +32,73 @@ inline const char *weight_map_description(bool empirical_calibration) {
         : "Formal mapmaker inverse variance weight map";
 }
 
+inline std::string signal_map_hdu_name(const std::string &map_name,
+                                       const std::string &stokes_suffix) {
+    return "signal_" + map_name + stokes_suffix;
+}
+
+inline std::string weight_map_hdu_name(const std::string &map_name,
+                                       const std::string &stokes_suffix) {
+    return "weight_" + map_name + stokes_suffix;
+}
+
+inline std::string formal_weight_map_hdu_name(
+    const std::string &map_name, const std::string &stokes_suffix) {
+    return "weight_formal_" + map_name + stokes_suffix;
+}
+
+inline std::string noise_variance_map_hdu_name(
+    const std::string &map_name, const std::string &stokes_suffix) {
+    return "noise_variance_" + map_name + stokes_suffix;
+}
+
+inline std::string kernel_map_hdu_name(const std::string &map_name,
+                                       const std::string &stokes_suffix) {
+    return "kernel_" + map_name + stokes_suffix;
+}
+
+inline std::string coverage_map_hdu_name(const std::string &map_name,
+                                         const std::string &stokes_suffix) {
+    return "coverage_" + map_name + stokes_suffix;
+}
+
+inline std::string coverage_mask_map_hdu_name(
+    const std::string &map_name, const std::string &stokes_suffix) {
+    return "coverage_bool_" + map_name + stokes_suffix;
+}
+
+inline std::string legacy_pixel_snr_map_hdu_name(
+    const std::string &map_name, const std::string &stokes_suffix) {
+    return "sig2noise_" + map_name + stokes_suffix;
+}
+
+inline std::string pixel_snr_map_hdu_name(const std::string &map_name,
+                                          const std::string &stokes_suffix) {
+    return "sig2noise_pixel_" + map_name + stokes_suffix;
+}
+
+inline std::string point_source_flux_map_hdu_name(
+    const std::string &map_name, const std::string &stokes_suffix) {
+    return "point_source_flux_" + map_name + stokes_suffix;
+}
+
+inline std::string point_source_uncertainty_map_hdu_name(
+    const std::string &map_name, const std::string &stokes_suffix) {
+    return "point_source_uncertainty_" + map_name + stokes_suffix;
+}
+
+inline std::string point_source_snr_map_hdu_name(
+    const std::string &map_name, const std::string &stokes_suffix) {
+    return "sig2noise_point_source_" + map_name + stokes_suffix;
+}
+
+inline std::string noise_signal_map_hdu_name(
+    const std::string &map_name, Eigen::Index noise_index,
+    const std::string &stokes_suffix) {
+    return "signal_" + map_name + std::to_string(noise_index) + "_" +
+           stokes_suffix;
+}
+
 template <class ImageList>
 bool has_map_image_slot(const ImageList &images, Eigen::Index i,
                         Eigen::Index n_rows, Eigen::Index n_cols) {
