@@ -365,6 +365,15 @@ inline void assign_mapdiag_noise_product_stats(
     refs.valid_pixels[idx] = stats.valid_pixels;
 }
 
+inline void assign_mapdiag_formal_noise_stats(
+    std::size_t idx, const MapdiagFormalNoiseStats &stats,
+    MapdiagFormalNoiseRefs refs) {
+    refs.median_err[idx] = stats.median_err;
+    refs.median_rms[idx] = stats.median_rms;
+    refs.empirical_to_formal_ratio[idx] =
+        stats.empirical_to_formal_ratio;
+}
+
 inline void assign_mapdiag_core_tail_stats(
     std::size_t idx, const MapdiagTailStats &stats,
     MapdiagCoreTailRefs refs) {
