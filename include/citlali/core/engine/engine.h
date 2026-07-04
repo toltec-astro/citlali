@@ -7038,9 +7038,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             }
                         }
 
-                        std::sort(
-                            candidates.begin(), candidates.end(),
-                            citlali::pipeline::mapdiag_candidate_abs_z_greater);
+                        sort_mapdiag_pixel_candidates(candidates);
                         const std::size_t n_emit =
                             citlali::pipeline::mapdiag_candidate_emit_count(
                                 candidates.size(),
