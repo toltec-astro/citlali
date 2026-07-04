@@ -6519,10 +6519,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         row, col, source_distance_context);
                 };
 
-                Eigen::ArrayXXd off_source_core_mask = core_mask;
-                citlali::pipeline::apply_mapdiag_source_protection_mask(
-                    off_source_core_mask, source_distance_context,
-                    protect_radius);
+                Eigen::ArrayXXd off_source_core_mask =
+                    citlali::pipeline::mapdiag_off_source_core_mask(
+                        core_mask, source_distance_context, protect_radius);
 
                 const auto off_source_values =
                     mapdiag_stats.collect_masked_values(
