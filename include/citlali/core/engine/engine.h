@@ -6495,18 +6495,17 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         empirical_to_formal_noise_ratio[idx] =
             citlali::pipeline::mapdiag_positive_denominator_ratio_or_fill(
                 median_rms[idx], median_err[idx], fill_double);
-        if (i < mb->noise_weight_median_ratio.size()) {
-            noise_weight_median_ratio[idx] = mb->noise_weight_median_ratio(i);
-        }
-        if (i < mb->noise_weight_scale.size()) {
-            noise_weight_scale[idx] = mb->noise_weight_scale(i);
-        }
-        if (i < mb->noise_s2n_sigma.size()) {
-            noise_products_s2n_sigma[idx] = mb->noise_s2n_sigma(i);
-        }
-        if (i < mb->noise_valid_pixels.size()) {
-            noise_products_valid_pixels[idx] = mb->noise_valid_pixels(i);
-        }
+        noise_weight_median_ratio[idx] =
+            citlali::pipeline::mapdiag_value_or_fill(
+                mb->noise_weight_median_ratio, i, fill_double);
+        noise_weight_scale[idx] = citlali::pipeline::mapdiag_value_or_fill(
+            mb->noise_weight_scale, i, fill_double);
+        noise_products_s2n_sigma[idx] =
+            citlali::pipeline::mapdiag_value_or_fill(
+                mb->noise_s2n_sigma, i, fill_double);
+        noise_products_valid_pixels[idx] =
+            citlali::pipeline::mapdiag_value_or_fill(
+                mb->noise_valid_pixels, i, fill_double);
 
         if (!mb->coverage.empty() && i < static_cast<Eigen::Index>(mb->coverage.size())) {
             coverage_sum[idx] = mb->coverage[i].sum();
