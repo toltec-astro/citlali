@@ -6494,13 +6494,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             const auto core_values =
                 mapdiag_stats.collect_masked_values(sig2noise, core_mask);
             const auto signal_tail = mapdiag_stats.tail_stats(core_values);
-            core_tail_frac_abs3[idx] = signal_tail.frac_abs3;
-            core_tail_frac_pos3[idx] = signal_tail.frac_pos3;
-            core_tail_frac_neg3[idx] = signal_tail.frac_neg3;
-            core_tail_excess_abs3[idx] = signal_tail.excess_abs3;
-            core_tail_excess_pos3[idx] = signal_tail.excess_pos3;
-            core_tail_excess_neg3[idx] = signal_tail.excess_neg3;
-            core_sig2noise_skew[idx] = signal_tail.skew;
+            citlali::pipeline::assign_mapdiag_core_tail_stats(
+                idx, signal_tail, core_tail_refs);
 
             if (reduction_learning.is_enabled() &&
                 reduction_learning.diagnostics_enabled() &&
