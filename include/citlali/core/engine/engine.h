@@ -6651,6 +6651,16 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     mb->median_err, mb->median_rms, map_i, fill_double),
                 formal_noise_refs);
         };
+    auto assign_mapdiag_current_noise_product_stats =
+        [&](Eigen::Index map_i, std::size_t idx) {
+            const auto noise_product_stats =
+                citlali::pipeline::mapdiag_noise_product_stats_or_fill(
+                    mb->noise_weight_median_ratio, mb->noise_weight_scale,
+                    mb->noise_s2n_sigma, mb->noise_valid_pixels, map_i,
+                    fill_double);
+            citlali::pipeline::assign_mapdiag_noise_product_stats(
+                idx, noise_product_stats, noise_product_refs);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
