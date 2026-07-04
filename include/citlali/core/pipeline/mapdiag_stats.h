@@ -800,6 +800,21 @@ void assign_mapdiag_outlier_record_candidate(
     record.source_protected = candidate.source_protected;
 }
 
+template <class Penalty, class Obsnum, class Producer, class Reason>
+void assign_mapdiag_detector_penalty_context(
+    Penalty &penalty, const Obsnum &obsnum, const Producer &producer,
+    const Reason &reason, int iter, const MapdiagDetectorDominance &entry,
+    int array_id) {
+    penalty.obsnum = obsnum;
+    penalty.producer = producer;
+    penalty.reason = reason;
+    penalty.iter = iter;
+    penalty.scan = entry.scan;
+    penalty.uid = entry.uid;
+    penalty.nw = -1;
+    penalty.array = array_id;
+}
+
 inline bool mapdiag_dominance_meets_min_pixels(
     const MapdiagDetectorDominance &entry, int min_pixels) {
     return entry.count >= min_pixels;
