@@ -6633,16 +6633,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             weight_thresholds[idx] = weight_threshold;
             return weight_threshold;
         };
-    auto make_mapdiag_current_pixel_candidate =
-        [&](Eigen::Index row, Eigen::Index col, double value,
-            double weight, double n_eff, double z,
-            const auto &source_distance_context) {
-            return citlali::pipeline::make_mapdiag_map_pixel_candidate(
-                row, col, value, weight, n_eff, z,
-                citlali::pipeline::mapdiag_source_distance_arcsec(
-                    row, col, source_distance_context),
-                fill_int, fill_double);
-        };
     auto mapdiag_current_contributor_uid =
         [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
             return citlali::pipeline::mapdiag_matrix_value(
@@ -6873,9 +6863,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 }
 
                                 auto candidate =
-                                    make_mapdiag_current_pixel_candidate(
-                                        r, c, value, wt, n_eff, z,
-                                        source_distance_context);
+                                    citlali::pipeline::
+                                        make_mapdiag_map_pixel_candidate(
+                                            r, c, value, wt, n_eff, z,
+                                            citlali::pipeline::
+                                                mapdiag_source_distance_arcsec(
+                                                    r, c,
+                                                    source_distance_context),
+                                            fill_int, fill_double);
 
                                 if (have_contrib) {
                                     const auto map_st =
