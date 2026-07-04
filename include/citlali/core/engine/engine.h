@@ -6039,7 +6039,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             citlali::pipeline::add_image_unit_type_description_keys(
                 *fits_io->at(map_index).hdus.back(), weight_unit, "formal",
                 "Weight calibration type",
-                "Formal mapmaker inverse variance before empirical calibration");
+                citlali::pipeline::formal_weight_map_description());
         }
 
         if (citlali::pipeline::has_map_image_slot(
@@ -6052,7 +6052,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 citlali::pipeline::map_variance_unit(mb->sig_unit);
             citlali::pipeline::add_image_unit_description_keys(
                 *fits_io->at(map_index).hdus.back(), variance_unit,
-                "Per-pixel variance estimated from jackknife noise maps");
+                citlali::pipeline::noise_variance_map_description());
         }
 
         // kernel map
