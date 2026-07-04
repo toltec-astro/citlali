@@ -23,6 +23,20 @@ struct MapdiagSizeContext {
     bool is_coadd;
 };
 
+inline std::string mapdiag_map_dim_name() {
+    return "n_maps";
+}
+
+inline std::string mapdiag_obsnum_dim_name() {
+    return "n_obsnums";
+}
+
+struct MapdiagNetcdfDims {
+    netCDF::NcDim maps;
+    netCDF::NcDim obsnums;
+    std::vector<netCDF::NcDim> map_obs;
+};
+
 MapdiagSizeContext make_mapdiag_size_context(std::size_t n_maps,
                                              std::size_t obsnum_count,
                                              bool is_coadd) {
