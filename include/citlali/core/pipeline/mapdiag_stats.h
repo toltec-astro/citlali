@@ -344,6 +344,15 @@ inline void assign_mapdiag_weight_stats(std::size_t idx,
     refs.core_weight_sum[idx] = stats.core_weight_sum;
 }
 
+inline void assign_mapdiag_noise_product_stats(
+    std::size_t idx, const MapdiagNoiseProductStats &stats,
+    MapdiagNoiseProductRefs refs) {
+    refs.weight_median_ratio[idx] = stats.weight_median_ratio;
+    refs.weight_scale[idx] = stats.weight_scale;
+    refs.s2n_sigma[idx] = stats.s2n_sigma;
+    refs.valid_pixels[idx] = stats.valid_pixels;
+}
+
 inline void assign_mapdiag_core_tail_stats(
     std::size_t idx, const MapdiagTailStats &stats,
     MapdiagCoreTailRefs refs) {
