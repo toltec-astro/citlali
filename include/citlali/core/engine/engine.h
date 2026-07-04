@@ -6888,7 +6888,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                         source_distance_context);
 
                                 if (have_contrib) {
-                                    const auto map_st = static_cast<std::size_t>(i);
+                                    const auto map_st =
+                                        mapdiag_contribution_map_index(i);
                                     const int uid = mb->contribution_uid[map_st](r, c);
                                     const double contrib_signal =
                                         mb->contribution_signal[map_st](r, c);
