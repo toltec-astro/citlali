@@ -6957,6 +6957,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             citlali::pipeline::assign_mapdiag_outlier_record_candidate(
                 record, candidate);
         };
+    auto record_mapdiag_current_outlier =
+        [&](ReductionLearningState::MapPixelOutlier &&record) {
+            reduction_learning.record_map_pixel_outlier(std::move(record));
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
@@ -7127,8 +7131,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 record, i, candidate);
                             assign_mapdiag_current_outlier_record_candidate(
                                 record, candidate);
-                            reduction_learning.record_map_pixel_outlier(
-                                std::move(record));
+                            record_mapdiag_current_outlier(std::move(record));
                             update_mapdiag_detector_dominance(
                                 dominance, candidate);
                         }
