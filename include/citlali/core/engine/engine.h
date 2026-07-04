@@ -6853,15 +6853,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             }
         }
 
-        double total_weight = 0.0;
-        double total_core_weight = 0.0;
-        for (std::size_t obs_idx = 0; obs_idx < mapdiag_context.n_obsnums; ++obs_idx) {
-            const std::size_t flat =
-                citlali::pipeline::mapdiag_obs_flat_index(
-                    mapdiag_context, idx, obs_idx);
-            total_weight += obs_weight_sum[flat];
-            total_core_weight += obs_core_weight_sum[flat];
-        }
+        const double total_weight =
+            citlali::pipeline::sum_mapdiag_obs_values(
+                obs_weight_sum, mapdiag_context.n_obsnums, idx);
+        const double total_core_weight =
+            citlali::pipeline::sum_mapdiag_obs_values(
+                obs_core_weight_sum, mapdiag_context.n_obsnums, idx);
         for (std::size_t obs_idx = 0; obs_idx < mapdiag_context.n_obsnums; ++obs_idx) {
             const std::size_t flat =
                 citlali::pipeline::mapdiag_obs_flat_index(
