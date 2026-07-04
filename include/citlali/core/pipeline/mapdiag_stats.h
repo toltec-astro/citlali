@@ -600,6 +600,10 @@ inline double mapdiag_robust_z(double sig2noise,
     return (sig2noise - stats.center) / stats.robust_sigma;
 }
 
+inline bool mapdiag_passes_min_abs_z(double z, double min_abs_z) {
+    return std::isfinite(z) && std::abs(z) >= min_abs_z;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
