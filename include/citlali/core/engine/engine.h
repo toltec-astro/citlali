@@ -7139,8 +7139,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             assign_mapdiag_current_core_tail_stats(
                 idx, sig2noise, core_mask);
 
-            if (citlali::pipeline::mapdiag_outlier_diagnostics_enabled(
-                    reduction_learning)) {
+            if (mapdiag_current_outlier_diagnostics_enabled()) {
                 const auto source_distance_context =
                     make_mapdiag_source_distance_context();
 
