@@ -401,4 +401,39 @@ void add_coverage_mask_map_metadata(Hdu &hdu) {
                                     coverage_mask_map_description());
 }
 
+template <class Hdu>
+void add_legacy_pixel_snr_map_metadata(Hdu &hdu) {
+    add_image_unit_type_description_keys(
+        hdu, not_applicable_image_unit(), pixel_snr_estimator_type(),
+        snr_estimator_type_comment(), legacy_pixel_snr_map_description());
+}
+
+template <class Hdu>
+void add_pixel_snr_map_metadata(Hdu &hdu) {
+    add_image_unit_type_description_keys(
+        hdu, not_applicable_image_unit(), pixel_snr_estimator_type(),
+        snr_estimator_type_comment(), pixel_snr_map_description());
+}
+
+template <class Hdu>
+void add_point_source_flux_map_metadata(Hdu &hdu,
+                                        const std::string &signal_unit) {
+    add_image_unit_description_keys(hdu, signal_unit,
+                                    point_source_flux_map_description());
+}
+
+template <class Hdu>
+void add_point_source_uncertainty_map_metadata(
+    Hdu &hdu, const std::string &signal_unit) {
+    add_image_unit_description_keys(
+        hdu, signal_unit, point_source_uncertainty_map_description());
+}
+
+template <class Hdu>
+void add_point_source_snr_map_metadata(Hdu &hdu) {
+    add_image_unit_type_description_keys(
+        hdu, not_applicable_image_unit(), point_source_snr_estimator_type(),
+        snr_estimator_type_comment(), point_source_snr_map_description());
+}
+
 }  // namespace citlali::pipeline
