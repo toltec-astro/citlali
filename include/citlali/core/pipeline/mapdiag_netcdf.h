@@ -484,6 +484,17 @@ void add_mapdiag_map_int_vars(
             values.edge_guard_guardband_npix);
 }
 
+inline void add_mapdiag_map_int_vars(
+    netCDF::NcFile &fo, const MapdiagNetcdfDims &dims,
+    const MapdiagMapIntValues &values) {
+    auto add_int = [&](const std::string &name,
+                       const std::string &comment,
+                       const std::vector<int> &var_values) {
+        add_mapdiag_map_int_var(fo, dims, name, comment, var_values);
+    };
+    add_mapdiag_map_int_vars(add_int, values);
+}
+
 struct MapdiagObservationDoubleValues {
     const std::vector<double> &obs_weight_sum;
     const std::vector<double> &obs_weight_frac;
