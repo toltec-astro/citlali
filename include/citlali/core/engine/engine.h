@@ -6726,6 +6726,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_sig2noise_image(
                 mb->signal[map_i], mb->weight[map_i]);
         };
+    auto make_mapdiag_current_signal_to_noise_image =
+        [&](Eigen::Index map_i) {
+            return make_mapdiag_current_sig2noise(map_i);
+        };
     auto assign_mapdiag_current_peak_stats =
         [&](std::size_t idx, const Eigen::MatrixXd &sig2noise,
             const auto &core_mask) {
