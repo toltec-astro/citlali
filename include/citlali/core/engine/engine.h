@@ -7165,7 +7165,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             off_source_values);
                     if (mapdiag_has_valid_current_robust_center_stats(
                             robust_stats)) {
-                        std::vector<map_pixel_candidate_t> candidates;
+                        auto candidates = make_mapdiag_pixel_candidates();
                         const bool have_contrib =
                             mapdiag_current_has_contribution_products(i);
                         const double ptc_fs_hz = processed_time_chunk_fs_hz();
