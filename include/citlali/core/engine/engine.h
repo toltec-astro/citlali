@@ -6414,21 +6414,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
     std::string stage_name = citlali::pipeline::mapdiag_stage_name<map_t>();
 
-    struct map_pixel_candidate_t {
-        int row = citlali::pipeline::mapdiag_fill_int();
-        int col = citlali::pipeline::mapdiag_fill_int();
-        int uid = citlali::pipeline::mapdiag_fill_int();
-        int scan = citlali::pipeline::mapdiag_fill_int();
-        long long sample = citlali::pipeline::mapdiag_fill_int();
-        double value = citlali::pipeline::mapdiag_fill_double();
-        double weight = citlali::pipeline::mapdiag_fill_double();
-        double n_eff = citlali::pipeline::mapdiag_fill_double();
-        double robust_z = citlali::pipeline::mapdiag_fill_double();
-        double leave_one_out_z = citlali::pipeline::mapdiag_fill_double();
-        double source_distance_arcsec = citlali::pipeline::mapdiag_fill_double();
-        bool source_protected = false;
-        bool has_contributor = false;
-    };
+    using map_pixel_candidate_t =
+        citlali::pipeline::MapdiagMapPixelCandidate;
 
     const citlali::pipeline::MapdiagStatsContext mapdiag_stats{fill_double};
 
@@ -6580,16 +6567,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     continue;
                                 }
 
-                                map_pixel_candidate_t candidate;
-                                candidate.row = static_cast<int>(r);
-                                candidate.col = static_cast<int>(c);
-                                candidate.value = value;
-                                candidate.weight = wt;
-                                candidate.n_eff = n_eff;
-                                candidate.robust_z = z;
-                                candidate.leave_one_out_z = z;
-                                candidate.source_distance_arcsec = source_distance_arcsec(r, c);
-                                candidate.source_protected = false;
+                                auto candidate =
+                                    citlali::pipeline::
+                                        make_mapdiag_map_pixel_candidate(
+                                            r, c, value, wt, n_eff, z,
+                                            source_distance_arcsec(r, c),
+                                            fill_int, fill_double);
 
                                 if (have_contrib) {
                                     const auto map_st = static_cast<std::size_t>(i);
