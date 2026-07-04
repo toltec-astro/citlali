@@ -6823,17 +6823,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     const std::string mapdiag_record_producer =
         citlali::pipeline::mapdiag_record_producer(stage_name);
-    auto mapdiag_outlier_record_reason =
-        [&](const map_pixel_candidate_t &candidate) {
-            return citlali::pipeline::mapdiag_map_pixel_outlier_reason(
-                candidate, mb);
-        };
     auto make_mapdiag_current_outlier_record =
         [&](Eigen::Index map_i, const map_pixel_candidate_t &candidate) {
             return citlali::pipeline::make_mapdiag_outlier_record<
                 ReductionLearningState::MapPixelOutlier>(
                     obsnum, mapdiag_record_producer,
-                    mapdiag_outlier_record_reason(candidate), fruit_iter,
+                    citlali::pipeline::mapdiag_map_pixel_outlier_reason(
+                        candidate, mb),
+                    fruit_iter,
                     citlali::pipeline::mapdiag_record_map_index(map_i),
                     candidate);
         };
