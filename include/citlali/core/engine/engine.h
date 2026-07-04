@@ -6511,6 +6511,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
     using map_pixel_candidate_t =
         citlali::pipeline::MapdiagMapPixelCandidate;
+    using detector_dominance_t =
+        citlali::pipeline::MapdiagDetectorDominance;
 
     const citlali::pipeline::MapdiagStatsContext mapdiag_stats{fill_double};
     auto make_mapdiag_obs_weight_path =
@@ -7088,8 +7090,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         sort_mapdiag_pixel_candidates(candidates);
                         const std::size_t n_emit =
                             mapdiag_pixel_candidate_emit_count(candidates);
-                        using detector_dominance_t =
-                            citlali::pipeline::MapdiagDetectorDominance;
                         std::vector<detector_dominance_t> dominance;
 
                         for (std::size_t ci = 0; ci < n_emit; ++ci) {
