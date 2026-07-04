@@ -6635,15 +6635,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     const std::string mapdiag_record_producer =
         citlali::pipeline::mapdiag_record_producer(stage_name);
-    auto make_mapdiag_current_detector_penalty =
-        [&](const detector_dominance_t &entry, int array_id) {
-            return citlali::pipeline::make_mapdiag_detector_penalty<
-                ReductionLearningState::DetectorPenalty>(
-                    obsnum, mapdiag_record_producer,
-                    citlali::pipeline::
-                        mapdiag_detector_dominance_penalty_reason(),
-                    fruit_iter, entry, array_id);
-        };
     auto log_mapdiag_current_detector_penalty =
         [&](Eigen::Index map_i, const detector_dominance_t &entry) {
             logger->info(
@@ -6962,8 +6953,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     continue;
                                 }
                                 auto penalty =
-                                    make_mapdiag_current_detector_penalty(
-                                        entry, array_id);
+                                    citlali::pipeline::
+                                        make_mapdiag_detector_penalty<
+                                            ReductionLearningState::
+                                                DetectorPenalty>(
+                                            obsnum, mapdiag_record_producer,
+                                            citlali::pipeline::
+                                                mapdiag_detector_dominance_penalty_reason(),
+                                            fruit_iter, entry, array_id);
                                 reduction_learning.record_detector_penalty(
                                     std::move(penalty), true);
                                 log_mapdiag_current_detector_penalty(i, entry);
