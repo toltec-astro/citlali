@@ -6955,6 +6955,15 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 contrib_variance_weight, total_variance_weight,
                 remaining_weight);
         };
+    auto mapdiag_current_candidate_has_full_leave_one_out_inputs =
+        [&](double total_signal, double total_weight,
+            double contrib_weight, double contrib_variance_weight,
+            double total_variance_weight, double remaining_weight) {
+            return mapdiag_has_current_full_leave_one_out_inputs(
+                total_signal, total_weight, contrib_weight,
+                contrib_variance_weight, total_variance_weight,
+                remaining_weight);
+        };
     auto mapdiag_full_leave_one_out_value =
         [](double total_signal, double contrib_signal,
            double remaining_weight) {
