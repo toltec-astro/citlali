@@ -6639,11 +6639,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             }
                         }
 
-                        std::sort(candidates.begin(), candidates.end(),
-                                  [](const auto &a, const auto &b) {
-                                      return std::abs(a.robust_z) >
-                                             std::abs(b.robust_z);
-                                  });
+                        std::sort(
+                            candidates.begin(), candidates.end(),
+                            citlali::pipeline::mapdiag_candidate_abs_z_greater);
                         const std::size_t n_emit = std::min<std::size_t>(
                             candidates.size(),
                             static_cast<std::size_t>(
