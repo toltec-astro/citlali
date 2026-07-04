@@ -760,6 +760,15 @@ inline void update_mapdiag_detector_dominance_stats(
     }
 }
 
+inline const char *mapdiag_map_pixel_outlier_reason(bool has_contributor,
+                                                    bool targeted) {
+    if (!has_contributor) {
+        return "extreme_pixel_no_contributor";
+    }
+    return targeted ? "extreme_pixel_targeted_contributor"
+                    : "extreme_pixel_contributor";
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
