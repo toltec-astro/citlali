@@ -6572,6 +6572,28 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 obs_totals.core_weight, fill_double, mapdiag_context, idx,
                 obs_weight_frac, obs_core_weight_frac);
         };
+    auto assign_mapdiag_coadd_obs_contributions =
+        [&](Eigen::Index map_i, std::size_t idx,
+            const auto &core_mask) {
+            for (std::size_t obs_idx = 0; obs_idx < mb->obsnums.size();
+                 ++obs_idx) {
+                const auto &obsnum_i = mb->obsnums[obs_idx];
+                const auto obs_weight_path =
+                    make_mapdiag_obs_weight_path(
+                        obsnum_i, array_names[idx]);
+                const auto weight_hdu_name =
+                    make_mapdiag_obs_weight_hdu_name(idx);
+                try {
+                    accumulate_mapdiag_obs_weight_file(
+                        map_i, obs_idx, core_mask, obs_weight_path,
+                        weight_hdu_name);
+                } catch (const std::exception &e) {
+                    warn_mapdiag_obs_weight_failure(
+                        obs_weight_path, weight_hdu_name, e);
+                    zero_mapdiag_obs_contribution(idx, obs_idx);
+                }
+            }
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
