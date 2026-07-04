@@ -939,6 +939,16 @@ double mapdiag_core_noise_rms(const Matrix &noise_matrix,
     return std::sqrt(rms_sq / valid_core_count);
 }
 
+template <class Matrix, class Mask>
+void add_mapdiag_core_noise_rms_sample(
+    MapdiagNoiseTailSamples &samples, const Matrix &noise_matrix,
+    const Mask &valid_core, double valid_core_count) {
+    if (mapdiag_has_positive_count(valid_core_count)) {
+        samples.rms.push_back(
+            mapdiag_core_noise_rms(noise_matrix, valid_core, valid_core_count));
+    }
+}
+
 inline MapdiagTailStats mapdiag_tail_stats(const std::vector<double> &values,
                                            double fill_value) {
     MapdiagTailStats stats;
