@@ -6817,11 +6817,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [&]() {
             return processed_time_chunk_fs_hz();
         };
-    auto mapdiag_current_signal_value =
-        [&](Eigen::Index map_i, Eigen::Index row, Eigen::Index col) {
-            return citlali::pipeline::mapdiag_matrix_double_value(
-                mb->signal[map_i], row, col);
-        };
     auto mapdiag_current_weight_value =
         [&](Eigen::Index map_i, Eigen::Index row, Eigen::Index col) {
             return citlali::pipeline::mapdiag_matrix_double_value(
@@ -7167,7 +7162,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 }
 
                                 const double value =
-                                    mapdiag_current_signal_value(i, r, c);
+                                    citlali::pipeline::
+                                        mapdiag_matrix_double_value(
+                                            mb->signal[i], r, c);
                                 const double wt =
                                     mapdiag_current_weight_value(i, r, c);
                                 const double sn =
