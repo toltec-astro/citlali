@@ -237,6 +237,15 @@ inline void add_mapdiag_label_vars(
         fo, dims.obsnums, obsnums, fallback_obsnum, date_obs, n_obsnums);
 }
 
+inline void add_mapdiag_label_vars(
+    netCDF::NcFile &fo, const MapdiagNetcdfDims &dims,
+    const MapdiagLabelVars &values) {
+    add_mapdiag_label_vars(
+        fo, dims, values.array_names, values.stokes_names,
+        values.map_names, values.obsnums, values.fallback_obsnum,
+        values.date_obs, values.n_obsnums);
+}
+
 inline void add_mapdiag_double_1d(
     netCDF::NcFile &fo, const std::string &name,
     const std::string &comment, netCDF::NcDim dim,
