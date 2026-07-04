@@ -6853,16 +6853,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             }
         }
 
-        const double total_weight =
-            citlali::pipeline::sum_mapdiag_obs_values(
-                obs_weight_sum, mapdiag_context.n_obsnums, idx);
-        const double total_core_weight =
-            citlali::pipeline::sum_mapdiag_obs_values(
-                obs_core_weight_sum, mapdiag_context.n_obsnums, idx);
+        const auto obs_totals =
+            citlali::pipeline::sum_mapdiag_obs_weight_totals(
+                obs_weight_sum, obs_core_weight_sum,
+                mapdiag_context.n_obsnums, idx);
         citlali::pipeline::assign_mapdiag_obs_fraction_pair(
-            obs_weight_sum, total_weight, obs_core_weight_sum,
-            total_core_weight, fill_double, mapdiag_context.n_obsnums, idx,
-            obs_weight_frac, obs_core_weight_frac);
+            obs_weight_sum, obs_totals.weight, obs_core_weight_sum,
+            obs_totals.core_weight, fill_double, mapdiag_context.n_obsnums,
+            idx, obs_weight_frac, obs_core_weight_frac);
     }
 
     write_netcdf_atomic(filename + ".nc", [&](netCDF::NcFile &fo) {
