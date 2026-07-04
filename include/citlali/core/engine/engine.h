@@ -6939,13 +6939,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             }
         }
 
-        if (!mapdiag_context.is_coadd) {
-            assign_mapdiag_single_obs_contribution(idx);
-        }
-        else {
-            assign_mapdiag_coadd_obs_contributions(i, idx, core_mask);
-        }
-
+        assign_mapdiag_obs_contributions(i, idx, core_mask);
         assign_mapdiag_obs_contribution_fractions(idx);
     }
 
