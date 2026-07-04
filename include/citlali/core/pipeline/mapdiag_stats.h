@@ -84,6 +84,13 @@ inline double mapdiag_positive_denominator_ratio_or_fill(double numerator,
     return fill_value;
 }
 
+inline double mapdiag_weight_threshold_or_zero(double weight_threshold) {
+    if (std::isfinite(weight_threshold) && weight_threshold >= 0.0) {
+        return weight_threshold;
+    }
+    return 0.0;
+}
+
 inline MapdiagTailStats mapdiag_tail_stats(const std::vector<double> &values,
                                            double fill_value) {
     MapdiagTailStats stats;
