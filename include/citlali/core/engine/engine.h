@@ -6943,6 +6943,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [](Eigen::Index map_i) {
             return static_cast<int>(map_i);
         };
+    auto assign_mapdiag_current_outlier_record_context =
+        [&](ReductionLearningState::MapPixelOutlier &record,
+            Eigen::Index map_i, const map_pixel_candidate_t &candidate) {
+            citlali::pipeline::assign_mapdiag_outlier_record_context(
+                record, obsnum, mapdiag_outlier_record_producer(),
+                mapdiag_outlier_record_reason(candidate), fruit_iter,
+                mapdiag_outlier_record_map_index(map_i));
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
