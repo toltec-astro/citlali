@@ -78,6 +78,18 @@ void assign_mapdiag_obs_fraction_entry(
         mapdiag_fraction_or_fill(source_values[flat], total, fill_value);
 }
 
+template <class SourceValues, class DestValues>
+void assign_mapdiag_obs_fraction_series(
+    const SourceValues &source_values, double total, double fill_value,
+    std::size_t n_obsnums, std::size_t map_index,
+    DestValues &fraction_values) {
+    for (std::size_t obs_idx = 0; obs_idx < n_obsnums; ++obs_idx) {
+        const std::size_t flat = map_index * n_obsnums + obs_idx;
+        assign_mapdiag_obs_fraction_entry(
+            flat, source_values, total, fill_value, fraction_values);
+    }
+}
+
 template <class Values>
 double sum_mapdiag_obs_values(const Values &values, std::size_t n_obsnums,
                               std::size_t map_index) {
