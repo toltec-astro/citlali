@@ -6891,6 +6891,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_candidate_has_dominance_key(
                 candidate, fill_int);
         };
+    auto mapdiag_dominance_matches_candidate =
+        [](const detector_dominance_t &entry,
+           const map_pixel_candidate_t &candidate) {
+            return entry.uid == candidate.uid &&
+                   entry.scan == candidate.scan;
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
