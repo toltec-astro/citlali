@@ -6798,7 +6798,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         const auto obs_totals =
             citlali::pipeline::sum_mapdiag_obs_weight_totals(
                 obs_weight_sum, obs_core_weight_sum,
-                mapdiag_context.n_obsnums, idx);
+                mapdiag_context, idx);
         citlali::pipeline::assign_mapdiag_obs_fraction_pair(
             obs_weight_sum, obs_totals.weight, obs_core_weight_sum,
             obs_totals.core_weight, fill_double, mapdiag_context.n_obsnums,
