@@ -7056,9 +7056,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             citlali::pipeline::MapdiagDetectorDominance;
                         std::vector<detector_dominance_t> dominance;
                         auto update_dominance = [&](const map_pixel_candidate_t &candidate) {
-                            if (!citlali::pipeline::
-                                    mapdiag_candidate_has_dominance_key(
-                                        candidate, fill_int)) {
+                            if (!mapdiag_candidate_has_current_dominance_key(
+                                    candidate)) {
                                 return;
                             }
                             auto it = std::find_if(
