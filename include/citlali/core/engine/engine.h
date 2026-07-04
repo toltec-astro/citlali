@@ -6852,10 +6852,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 entry.count, entry.max_abs_value,
                 entry.max_abs_leave_one_out_z);
         };
-    auto make_mapdiag_current_noise_tail_samples =
-        [&]() {
-            return citlali::pipeline::make_mapdiag_noise_tail_samples(mb);
-        };
     auto make_mapdiag_current_valid_core_noise_mask =
         [](const Eigen::ArrayXXd &core_mask) {
             return citlali::pipeline::mapdiag_valid_core_noise_mask(
@@ -7131,7 +7127,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             if (citlali::pipeline::mapdiag_has_noise_realizations(
                     mb->noise, i, mb->n_noise)) {
                 auto noise_samples =
-                    make_mapdiag_current_noise_tail_samples();
+                    citlali::pipeline::make_mapdiag_noise_tail_samples(mb);
 
                 const auto valid_core =
                     make_mapdiag_current_valid_core_noise_mask(core_mask);
