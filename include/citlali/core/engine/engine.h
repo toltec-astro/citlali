@@ -6740,8 +6740,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
             if (citlali::pipeline::mapdiag_has_noise_realizations(
                     mb->noise, i, mb->n_noise)) {
-                citlali::pipeline::MapdiagNoiseTailSamples noise_samples;
-                noise_samples.reserve(static_cast<std::size_t>(mb->n_noise));
+                auto noise_samples =
+                    citlali::pipeline::make_mapdiag_noise_tail_samples(
+                        static_cast<std::size_t>(mb->n_noise));
 
                 const auto valid_core =
                     citlali::pipeline::mapdiag_positive_mask(core_mask);
