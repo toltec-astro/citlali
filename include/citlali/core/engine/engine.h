@@ -7089,9 +7089,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                         candidate));
                                 it = dominance.end() - 1;
                             }
-                            citlali::pipeline::
-                                update_mapdiag_detector_dominance_stats(
-                                    *it, candidate);
+                            assign_mapdiag_detector_dominance_stats(
+                                *it, candidate);
                         };
 
                         for (std::size_t ci = 0; ci < n_emit; ++ci) {
