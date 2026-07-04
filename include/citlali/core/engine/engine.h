@@ -6633,11 +6633,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             weight_thresholds[idx] = weight_threshold;
             return weight_threshold;
         };
-    auto mapdiag_current_total_signal =
-        [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
-            return citlali::pipeline::mapdiag_matrix_double_value(
-                mb->contribution_total_signal[map_st], row, col);
-        };
     auto mapdiag_current_total_weight =
         [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
             return citlali::pipeline::mapdiag_matrix_double_value(
@@ -6874,8 +6869,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                                 mb->contribution_sample[map_st],
                                                 r, c);
                                         const double total_signal =
-                                            mapdiag_current_total_signal(
-                                                map_st, r, c);
+                                            citlali::pipeline::
+                                                mapdiag_matrix_double_value(
+                                                    mb->contribution_total_signal[map_st],
+                                                    r, c);
                                         const double total_weight =
                                             mapdiag_current_total_weight(
                                                 map_st, r, c);
