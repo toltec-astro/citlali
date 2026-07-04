@@ -6833,6 +6833,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         []() {
             return std::vector<map_pixel_candidate_t>{};
         };
+    auto append_mapdiag_pixel_candidate =
+        [](std::vector<map_pixel_candidate_t> &candidates,
+           const map_pixel_candidate_t &candidate) {
+            candidates.push_back(candidate);
+        };
     auto mapdiag_is_valid_current_outlier_pixel_value =
         [](double value, double weight, double sig2noise_value) {
             return citlali::pipeline::mapdiag_is_valid_outlier_pixel_value(
