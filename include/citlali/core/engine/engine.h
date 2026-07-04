@@ -6523,6 +6523,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [&](Eigen::Index map_i) {
             return arrays_to_maps(map_i);
         };
+    auto mapdiag_current_stokes_index =
+        [&](Eigen::Index map_i) {
+            return maps_to_stokes(map_i);
+        };
     auto make_mapdiag_obs_weight_path =
         [&](const std::string &obsnum_i,
             const std::string &array_name) {
