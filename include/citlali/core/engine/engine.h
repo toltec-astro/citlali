@@ -6839,6 +6839,15 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [](double total_weight, double contrib_weight) {
             return total_weight - contrib_weight;
         };
+    auto mapdiag_has_current_full_leave_one_out_inputs =
+        [](double total_signal, double total_weight,
+           double contrib_weight, double contrib_variance_weight,
+           double total_variance_weight, double remaining_weight) {
+            return citlali::pipeline::mapdiag_has_full_leave_one_out_inputs(
+                total_signal, total_weight, contrib_weight,
+                contrib_variance_weight, total_variance_weight,
+                remaining_weight);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
