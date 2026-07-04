@@ -164,4 +164,15 @@ inline void write_chunk_data_stat_summary(
     stream << "-Data stddev: " << stddev_value << " " << unit << "\n";
 }
 
+template <class Kernel>
+void write_chunk_kernel_summary_if_generated(std::ostream &stream,
+                                             bool kernel_generated,
+                                             const Kernel &kernel,
+                                             std::string_view unit) {
+    if (kernel_generated) {
+        stream << "-Kernel max: " << kernel.data.maxCoeff() << " "
+               << unit << "\n";
+    }
+}
+
 }  // namespace citlali::pipeline

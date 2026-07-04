@@ -5678,9 +5678,8 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
         in.scans.data.mean(), tula::alg::median(in.scans.data),
         engine_utils::calc_std_dev(in.scans.data), omb.sig_unit);
 
-    if (in.status.kernel_generated) {
-        f << "-Kernel max: " << in.kernel.data.maxCoeff() << " " << omb.sig_unit << "\n";
-    }
+    citlali::pipeline::write_chunk_kernel_summary_if_generated(
+        f, in.status.kernel_generated, in.kernel, omb.sig_unit);
 
     f.close();
 }
