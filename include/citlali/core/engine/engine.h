@@ -6259,7 +6259,7 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::add_psd_image_pair(
             fo, name, dims.image, psd_2d_transposed, psd_2d_freq_transposed);
 
-        if (!mb->noise.empty()) {
+        if (citlali::pipeline::has_spectral_noise_products(mb->noise)) {
             const std::string noise_name =
                 citlali::pipeline::spectral_noise_product_base_name(name);
             const auto noise_dims = citlali::pipeline::add_psd_netcdf_dims(
