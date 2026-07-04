@@ -32,6 +32,15 @@ void assign_mapdiag_obs_entry(
     obs_core_pixels[flat] = core_pixels;
 }
 
+inline void assign_mapdiag_obs_entry(
+    std::size_t flat, double weight_sum, double core_weight_sum,
+    int valid_pixels, int core_pixels, MapdiagObsTableRefs tables) {
+    assign_mapdiag_obs_entry(
+        flat, weight_sum, core_weight_sum, valid_pixels, core_pixels,
+        tables.weight_sum, tables.core_weight_sum, tables.valid_pixels,
+        tables.core_pixels);
+}
+
 template <class DoubleValues, class IntValues>
 void zero_mapdiag_obs_entry(
     std::size_t flat, DoubleValues &obs_weight_sum,
