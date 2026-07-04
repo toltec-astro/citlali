@@ -7110,7 +7110,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
         const auto weight_arr = mb->weight[i].array();
         const auto valid_mask =
-            citlali::pipeline::mapdiag_valid_weight_mask(weight_arr);
+            make_mapdiag_current_valid_weight_mask(weight_arr);
         const auto core_mask =
             citlali::pipeline::mapdiag_core_weight_mask(weight_arr,
                                                         weight_threshold);
