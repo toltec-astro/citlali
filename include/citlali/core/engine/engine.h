@@ -6712,6 +6712,15 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_source_distance_context(
                 mb->n_rows, mb->n_cols, pix_arcsec, fill_double);
         };
+    auto make_mapdiag_off_source_core_mask =
+        [&](const auto &core_mask,
+            const auto &source_distance_context) {
+            const double protect_radius =
+                reduction_learning.options
+                    .map_pixel_outlier_source_radius_arcsec;
+            return citlali::pipeline::mapdiag_off_source_core_mask(
+                core_mask, source_distance_context, protect_radius);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
