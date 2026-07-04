@@ -56,6 +56,14 @@ inline void zero_mapdiag_obs_entry(std::size_t flat,
     assign_mapdiag_obs_entry(flat, 0.0, 0.0, 0, 0, tables);
 }
 
+template <class Context>
+void zero_mapdiag_obs_entry(const Context &context, std::size_t map_index,
+                            std::size_t obs_index,
+                            MapdiagObsTableRefs tables) {
+    zero_mapdiag_obs_entry(
+        map_index * context.n_obsnums + obs_index, tables);
+}
+
 template <class CoreMask, class ObsWeight, class DoubleValues, class IntValues>
 void accumulate_mapdiag_obs_weight(
     Eigen::Index map_i, std::size_t n_obsnums, Eigen::Index map_n_rows,
