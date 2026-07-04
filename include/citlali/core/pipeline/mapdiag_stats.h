@@ -590,6 +590,11 @@ inline bool mapdiag_is_valid_outlier_pixel_value(double value, double weight,
            std::isfinite(sig2noise);
 }
 
+inline bool mapdiag_passes_min_effective_samples(double n_eff,
+                                                 double min_n_eff) {
+    return !std::isfinite(n_eff) || n_eff >= min_n_eff;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
