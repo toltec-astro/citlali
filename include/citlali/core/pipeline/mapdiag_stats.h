@@ -812,6 +812,10 @@ int mapdiag_array_id_or_default(Eigen::Index map_index,
     return default_array_id;
 }
 
+inline int mapdiag_display_scan_index(int scan) {
+    return scan + 1;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
