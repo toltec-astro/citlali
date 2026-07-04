@@ -6829,12 +6829,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
          wiener_filter.edge_guard_radius_fwhm,
          wiener_filter.edge_taper_min_fraction});
 
-    citlali::pipeline::add_mapdiag_map_label_vars(
-        fo, mapdiag_dims.maps, array_names, stokes_names, map_names);
-
-    citlali::pipeline::add_mapdiag_observation_label_vars(
-        fo, mapdiag_dims.obsnums, mb->obsnums, obsnum, date_obs,
-        mapdiag_context.n_obsnums);
+    citlali::pipeline::add_mapdiag_label_vars(
+        fo, mapdiag_dims, array_names, stokes_names, map_names,
+        mb->obsnums, obsnum, date_obs, mapdiag_context.n_obsnums);
 
     citlali::pipeline::add_mapdiag_map_double_vars(
         fo, mapdiag_dims,
