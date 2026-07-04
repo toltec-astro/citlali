@@ -5966,15 +5966,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         std::exit(EXIT_FAILURE);
     }
 
-    double source_epoch = 2000.0;
-    auto epoch_it = telescope.tel_header.find("Header.Source.Epoch");
-    if (epoch_it != telescope.tel_header.end() && epoch_it->second.size() > 0 &&
-        std::isfinite(epoch_it->second(0))) {
-        source_epoch = epoch_it->second(0);
-    }
-    else {
-        logger->warn("Header.Source.Epoch missing/invalid; using epoch={} for WCS", source_epoch);
-    }
+    const double source_epoch =
+        citlali::pipeline::wcs_source_epoch_or_default(telescope.tel_header,
+                                                       logger);
 
     // update wcs ctypes for frequency and stokes params
     mb->wcs.crval[2] = toltec_io.array_freq_map[calib.arrays[maps_to_arrays(i)]];
