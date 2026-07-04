@@ -7353,8 +7353,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             mapdiag_current_uses_contribution_products(i);
                         const double ptc_fs_hz = mapdiag_current_ptc_fs_hz();
 
-                        for (Eigen::Index r = 0; r < mb->n_rows; ++r) {
-                            for (Eigen::Index c = 0; c < mb->n_cols; ++c) {
+                        for (Eigen::Index r = 0;
+                             r < mapdiag_current_n_rows(); ++r) {
+                            for (Eigen::Index c = 0;
+                                 c < mapdiag_current_n_cols(); ++c) {
                                 if (!mapdiag_current_mask_pixel_is_selected(
                                         off_source_core_mask, r, c)) {
                                     continue;
