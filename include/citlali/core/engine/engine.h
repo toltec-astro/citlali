@@ -7308,7 +7308,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 if (mapdiag_current_has_enough_off_source_values(
                         off_source_values)) {
                     const auto robust_stats =
-                        make_mapdiag_robust_center_stats(
+                        make_mapdiag_current_robust_center_stats(
                             off_source_values);
                     if (mapdiag_has_valid_current_robust_center_stats(
                             robust_stats)) {
