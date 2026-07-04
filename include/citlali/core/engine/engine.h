@@ -7022,6 +7022,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 penalty, entry);
             return penalty;
         };
+    auto record_mapdiag_current_detector_penalty =
+        [&](ReductionLearningState::DetectorPenalty &&penalty) {
+            reduction_learning.record_detector_penalty(
+                std::move(penalty), true);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
