@@ -7022,11 +7022,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                                 mapdiag_fallback_leave_one_out_value(
                                                     raw_sum, contrib_signal,
                                                     wt, contrib_weight);
-                                            citlali::pipeline::
-                                                mapdiag_assign_leave_one_out_z(
-                                                    value, wt, loo_value,
-                                                    candidate
-                                                        .leave_one_out_z);
+                                            assign_mapdiag_current_leave_one_out_z(
+                                                value, wt, loo_value,
+                                                candidate);
                                         }
                                     }
                                 }
