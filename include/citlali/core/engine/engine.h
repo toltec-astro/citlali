@@ -6714,6 +6714,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             peak_signal[idx] = citlali::pipeline::mapdiag_peak_signal_or_fill(
                 mb->signal[map_i], fill_double);
         };
+    auto assign_mapdiag_current_coverage_and_peak =
+        [&](Eigen::Index map_i, std::size_t idx,
+            const auto &core_mask) {
+            assign_mapdiag_current_coverage_stats(
+                map_i, idx, core_mask);
+            assign_mapdiag_current_peak_signal(map_i, idx);
+        };
     auto make_mapdiag_current_sig2noise =
         [&](Eigen::Index map_i) {
             return citlali::pipeline::mapdiag_sig2noise_image(
