@@ -7011,6 +7011,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
            double contrib_weight) {
             return (raw_sum - contrib_signal) / (weight - contrib_weight);
         };
+    auto mapdiag_current_candidate_fallback_leave_one_out_value =
+        [&](double raw_sum, double contrib_signal, double weight,
+            double contrib_weight) {
+            return mapdiag_fallback_leave_one_out_value(
+                raw_sum, contrib_signal, weight, contrib_weight);
+        };
     auto sort_mapdiag_pixel_candidates =
         [](std::vector<map_pixel_candidate_t> &candidates) {
             std::sort(
