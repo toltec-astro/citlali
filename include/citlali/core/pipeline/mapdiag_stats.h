@@ -74,6 +74,13 @@ struct MapdiagPeakStats {
     double core_peak_abs_sig2noise;
 };
 
+struct MapdiagPeakRefs {
+    std::vector<double> &peak_abs_sig2noise;
+    std::vector<double> &core_peak_abs_sig2noise;
+    std::vector<int> &peak_row;
+    std::vector<int> &peak_col;
+};
+
 inline void MapdiagNoiseTailSamples::reserve(std::size_t n_noise) {
     rms.reserve(n_noise);
     tail_abs.reserve(n_noise);
