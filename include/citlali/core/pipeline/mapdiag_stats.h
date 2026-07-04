@@ -469,6 +469,20 @@ bool mapdiag_has_coverage_map(const CoverageList &coverage, Eigen::Index i) {
            i < static_cast<Eigen::Index>(coverage.size());
 }
 
+template <class CoverageList>
+double mapdiag_effective_samples_or_fill(
+    const CoverageList &coverage, Eigen::Index i, Eigen::Index row,
+    Eigen::Index col, Eigen::Index n_rows, Eigen::Index n_cols,
+    double ptc_fs_hz, double fill_value) {
+    if (mapdiag_has_coverage_map(coverage, i) &&
+        coverage[i].rows() == n_rows && coverage[i].cols() == n_cols &&
+        std::isfinite(coverage[i](row, col)) && std::isfinite(ptc_fs_hz) &&
+        ptc_fs_hz > 0.0) {
+        return coverage[i](row, col) * ptc_fs_hz;
+    }
+    return fill_value;
+}
+
 template <class NoiseList>
 bool mapdiag_has_noise_realizations(
     const NoiseList &noise, Eigen::Index i, Eigen::Index n_noise) {
