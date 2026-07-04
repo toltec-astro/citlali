@@ -6999,10 +6999,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 citlali::pipeline::mapdiag_candidate_top_n(
                     reduction_learning));
         };
-    auto mapdiag_current_pixel_candidate_emit_count =
-        [&](const std::vector<map_pixel_candidate_t> &candidates) {
-            return mapdiag_pixel_candidate_emit_count(candidates);
-        };
     auto mapdiag_current_emitted_candidate =
         [](const std::vector<map_pixel_candidate_t> &candidates,
            std::size_t index) -> const map_pixel_candidate_t & {
@@ -7305,7 +7301,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
                         sort_mapdiag_pixel_candidates(candidates);
                         const std::size_t n_emit =
-                            mapdiag_current_pixel_candidate_emit_count(
+                            mapdiag_pixel_candidate_emit_count(
                                 candidates);
                         auto dominance =
                             make_mapdiag_detector_dominance_list();
