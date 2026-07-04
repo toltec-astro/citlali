@@ -6741,6 +6741,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_source_distance_context(
                 mb->n_rows, mb->n_cols, pix_arcsec, fill_double);
         };
+    auto make_mapdiag_current_source_distance_context =
+        [&]() {
+            return make_mapdiag_source_distance_context();
+        };
     auto mapdiag_current_source_protect_radius_arcsec =
         [&]() {
             return reduction_learning.options
