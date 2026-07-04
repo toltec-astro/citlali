@@ -6358,6 +6358,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<double> obs_core_weight_frac(obs_table_size, fill_double);
     std::vector<int> obs_valid_pixels(obs_table_size, fill_int);
     std::vector<int> obs_core_pixels(obs_table_size, fill_int);
+    citlali::pipeline::MapdiagObsTableRefs obs_tables{
+        obs_weight_sum, obs_core_weight_sum, obs_valid_pixels,
+        obs_core_pixels};
 
     std::string stage_name = citlali::pipeline::mapdiag_stage_name<map_t>();
 
