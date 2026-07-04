@@ -7296,8 +7296,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         assign_mapdiag_current_weight_stats(
             idx, weight_arr, valid_mask, core_mask);
 
-        assign_mapdiag_current_formal_noise_stats(i, idx);
-        assign_mapdiag_current_noise_product_stats(i, idx);
+        assign_mapdiag_current_noise_stats(i, idx);
 
         assign_mapdiag_current_coverage_stats(i, idx, core_mask);
 
