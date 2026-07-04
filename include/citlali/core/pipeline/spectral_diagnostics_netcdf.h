@@ -38,6 +38,10 @@ inline std::string spectral_noise_histogram_name(
     return base_name + "_noise_hist";
 }
 
+inline std::string spectral_histogram_bins_dim_name() {
+    return "n_bins";
+}
+
 template <class NoiseList>
 bool has_spectral_noise_products(const NoiseList &noise) {
     return !noise.empty();
