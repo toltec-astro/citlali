@@ -27,6 +27,8 @@ struct MapdiagStatsContext {
 
     double median(const std::vector<double> &values) const;
     double quantile(std::vector<double> values, double q) const;
+    std::vector<double> collect_masked_values(
+        const Eigen::MatrixXd &matrix, const Eigen::ArrayXXd &mask) const;
 };
 
 inline double mapdiag_vector_median(const std::vector<double> &values,
@@ -76,6 +78,11 @@ inline std::vector<double> mapdiag_collect_masked_values(
         }
     }
     return values;
+}
+
+inline std::vector<double> MapdiagStatsContext::collect_masked_values(
+    const Eigen::MatrixXd &matrix, const Eigen::ArrayXXd &mask) const {
+    return mapdiag_collect_masked_values(matrix, mask);
 }
 
 inline double mapdiag_masked_median(const Eigen::MatrixXd &matrix,
