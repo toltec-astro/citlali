@@ -6694,6 +6694,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             citlali::pipeline::assign_mapdiag_noise_product_stats(
                 idx, noise_product_stats, noise_product_refs);
         };
+    auto assign_mapdiag_current_noise_stats =
+        [&](Eigen::Index map_i, std::size_t idx) {
+            assign_mapdiag_current_formal_noise_stats(map_i, idx);
+            assign_mapdiag_current_noise_product_stats(map_i, idx);
+        };
     auto assign_mapdiag_current_coverage_stats =
         [&](Eigen::Index map_i, std::size_t idx,
             const auto &core_mask) {
