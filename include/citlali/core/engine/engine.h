@@ -6646,6 +6646,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     map_i, idx, core_mask);
             }
         };
+    auto finalize_mapdiag_current_obs_contributions =
+        [&](Eigen::Index map_i, std::size_t idx,
+            const auto &core_mask) {
+            assign_mapdiag_obs_contributions(map_i, idx, core_mask);
+            assign_mapdiag_obs_contribution_fractions(idx);
+        };
     auto assign_mapdiag_current_labels =
         [&](Eigen::Index map_i, std::size_t idx, const auto map_index,
             const auto stokes_index) {
