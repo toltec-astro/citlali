@@ -85,6 +85,22 @@ struct MapdiagRobustCenterStats {
     double robust_sigma;
 };
 
+struct MapdiagMapPixelCandidate {
+    int row;
+    int col;
+    int uid;
+    int scan;
+    long long sample;
+    double value;
+    double weight;
+    double n_eff;
+    double robust_z;
+    double leave_one_out_z;
+    double source_distance_arcsec;
+    bool source_protected;
+    bool has_contributor;
+};
+
 struct MapdiagWeightStats {
     int n_valid_pixels;
     int n_core_pixels;
