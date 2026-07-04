@@ -483,6 +483,27 @@ double mapdiag_effective_samples_or_fill(
     return fill_value;
 }
 
+template <class MapBuffer>
+bool mapdiag_has_contribution_products(const MapBuffer &mb, Eigen::Index i) {
+    return i < static_cast<Eigen::Index>(mb->contribution_uid.size()) &&
+           i < static_cast<Eigen::Index>(mb->contribution_signal.size()) &&
+           i < static_cast<Eigen::Index>(mb->contribution_weight.size()) &&
+           i < static_cast<Eigen::Index>(
+                   mb->contribution_variance_weight.size()) &&
+           i < static_cast<Eigen::Index>(
+                   mb->contribution_total_signal.size()) &&
+           i < static_cast<Eigen::Index>(
+                   mb->contribution_total_weight.size()) &&
+           i < static_cast<Eigen::Index>(
+                   mb->contribution_total_variance_weight.size()) &&
+           i < static_cast<Eigen::Index>(mb->contribution_scan.size()) &&
+           i < static_cast<Eigen::Index>(mb->contribution_sample.size()) &&
+           mb->contribution_uid[static_cast<std::size_t>(i)].rows() ==
+               mb->n_rows &&
+           mb->contribution_uid[static_cast<std::size_t>(i)].cols() ==
+               mb->n_cols;
+}
+
 template <class NoiseList>
 bool mapdiag_has_noise_realizations(
     const NoiseList &noise, Eigen::Index i, Eigen::Index n_noise) {
