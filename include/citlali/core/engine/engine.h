@@ -6834,11 +6834,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     citlali::pipeline::mapdiag_record_map_index(map_i),
                     candidate);
         };
-    auto mapdiag_current_detector_penalty_array_id =
-        [&](const auto &map_index) {
-            return citlali::pipeline::mapdiag_array_id_or_default(
-                map_index, calib.arrays, -1);
-        };
     auto mapdiag_current_dominance_meets_min_pixels =
         [](const detector_dominance_t &entry, int min_pixels) {
             return citlali::pipeline::mapdiag_dominance_meets_min_pixels(
@@ -7132,8 +7127,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     mapdiag_detector_exclusion_min_pixels(
                                         reduction_learning);
                             const int array_id =
-                                mapdiag_current_detector_penalty_array_id(
-                                    map_index);
+                                citlali::pipeline::mapdiag_array_id_or_default(
+                                    map_index, calib.arrays, -1);
                             for (const auto &entry : dominance) {
                                 if (!mapdiag_current_dominance_meets_min_pixels(
                                         entry, min_pixels)) {
