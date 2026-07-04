@@ -6749,6 +6749,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 mb->coverage, map_i, row, col, mb->n_rows, mb->n_cols,
                 ptc_fs_hz, fill_double);
         };
+    auto mapdiag_passes_current_min_effective_samples =
+        [&](double n_eff) {
+            return citlali::pipeline::mapdiag_passes_min_effective_samples(
+                n_eff,
+                reduction_learning.options.map_pixel_outlier_min_n_eff);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
