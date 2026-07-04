@@ -532,4 +532,22 @@ void add_mapdiag_observation_contribution_vars(
             int_values.obs_core_pixels);
 }
 
+inline void add_mapdiag_observation_contribution_vars(
+    netCDF::NcFile &fo, const MapdiagNetcdfDims &dims,
+    const MapdiagObservationDoubleValues &double_values,
+    const MapdiagObservationIntValues &int_values) {
+    auto add_double = [&](const std::string &name,
+                          const std::string &comment,
+                          const std::vector<double> &var_values) {
+        add_mapdiag_obs_double_var(fo, dims, name, comment, var_values);
+    };
+    auto add_int = [&](const std::string &name,
+                       const std::string &comment,
+                       const std::vector<int> &var_values) {
+        add_mapdiag_obs_int_var(fo, dims, name, comment, var_values);
+    };
+    add_mapdiag_observation_contribution_vars(
+        add_double, add_int, double_values, int_values);
+}
+
 }  // namespace citlali::pipeline
