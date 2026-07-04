@@ -6821,11 +6821,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_matrix_double_value(
                 mb->contribution_total_variance_weight[map_st], row, col);
         };
-    auto mapdiag_has_current_fallback_leave_one_out_inputs =
-        [](double weight, double contrib_weight) {
-            return citlali::pipeline::mapdiag_has_fallback_leave_one_out_inputs(
-                weight, contrib_weight);
-        };
     auto mapdiag_raw_weighted_signal =
         [](double value, double weight) {
             return citlali::pipeline::mapdiag_raw_weighted_signal(
@@ -7125,8 +7120,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                                     value, wt, loo_value,
                                                     candidate.leave_one_out_z);
                                         }
-                                        else if (mapdiag_has_current_fallback_leave_one_out_inputs(
-                                                     wt, contrib_weight)) {
+                                        else if (citlali::pipeline::
+                                                     mapdiag_has_fallback_leave_one_out_inputs(
+                                                         wt, contrib_weight)) {
                                             const double raw_sum =
                                                 mapdiag_raw_weighted_signal(
                                                     value, wt);
