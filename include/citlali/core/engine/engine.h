@@ -6501,12 +6501,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             citlali::pipeline::mapdiag_value_or_fill(
                 mb->noise_valid_pixels, i, fill_double);
 
-        if (!mb->coverage.empty() && i < static_cast<Eigen::Index>(mb->coverage.size())) {
-            coverage_sum[idx] = mb->coverage[i].sum();
-            coverage_max[idx] = mb->coverage[i].maxCoeff();
-            coverage_median_core[idx] =
-                citlali::pipeline::mapdiag_masked_median(
-                    mb->coverage[i], core_mask, fill_double);
+        if (citlali::pipeline::mapdiag_has_coverage_map(mb->coverage, i)) {
+            citlali::pipeline::assign_mapdiag_coverage_stats(
+                mb->coverage[i], core_mask, fill_double, coverage_sum[idx],
+                coverage_max[idx], coverage_median_core[idx]);
         }
 
         peak_signal[idx] = citlali::pipeline::mapdiag_peak_signal_or_fill(
