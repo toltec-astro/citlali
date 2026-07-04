@@ -7361,7 +7361,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                         else if (mapdiag_current_candidate_has_fallback_leave_one_out_inputs(
                                                      wt, contrib_weight)) {
                                             const double raw_sum =
-                                                mapdiag_raw_weighted_signal(
+                                                mapdiag_current_candidate_raw_weighted_signal(
                                                     value, wt);
                                             const double loo_value =
                                                 mapdiag_fallback_leave_one_out_value(
