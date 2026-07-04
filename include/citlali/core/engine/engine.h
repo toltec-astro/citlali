@@ -6820,11 +6820,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 z, citlali::pipeline::mapdiag_min_abs_z(
                        reduction_learning));
         };
-    auto mapdiag_is_valid_current_outlier_pixel_value =
-        [](double value, double weight, double sig2noise_value) {
-            return citlali::pipeline::mapdiag_is_valid_outlier_pixel_value(
-                value, weight, sig2noise_value);
-        };
     auto make_mapdiag_current_pixel_candidate =
         [&](Eigen::Index row, Eigen::Index col, double value,
             double weight, double n_eff, double z,
@@ -7127,8 +7122,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     citlali::pipeline::
                                         mapdiag_matrix_double_value(
                                             sig2noise, r, c);
-                                if (!mapdiag_is_valid_current_outlier_pixel_value(
-                                        value, wt, sn)) {
+                                if (!citlali::pipeline::
+                                        mapdiag_is_valid_outlier_pixel_value(
+                                            value, wt, sn)) {
                                     continue;
                                 }
 
