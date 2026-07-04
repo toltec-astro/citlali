@@ -6897,10 +6897,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [](Eigen::Index map_i) {
             return citlali::pipeline::mapdiag_contribution_map_index(map_i);
         };
-    auto mapdiag_current_contribution_map_index =
-        [&](Eigen::Index map_i) {
-            return mapdiag_contribution_map_index(map_i);
-        };
     auto mapdiag_current_contributor_uid =
         [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
             return citlali::pipeline::mapdiag_matrix_value(
@@ -7292,7 +7288,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
                                 if (have_contrib) {
                                     const auto map_st =
-                                        mapdiag_current_contribution_map_index(
+                                        mapdiag_contribution_map_index(
                                             i);
                                     const int uid =
                                         mapdiag_current_contributor_uid(
