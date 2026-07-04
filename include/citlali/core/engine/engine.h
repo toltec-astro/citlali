@@ -6079,10 +6079,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 citlali::pipeline::coverage_map_hdu_name(
                     map_name, stokes_suffix),
                 mb->coverage[i]);
-            citlali::pipeline::add_image_unit_description_keys(
-                *fits_io->at(map_index).hdus.back(),
-                citlali::pipeline::coverage_time_unit(),
-                citlali::pipeline::coverage_map_description());
+            citlali::pipeline::add_coverage_map_metadata(
+                *fits_io->at(map_index).hdus.back());
         }
 
         /* coverage bool and signal-to-noise maps */
@@ -6107,10 +6105,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 citlali::pipeline::coverage_mask_map_hdu_name(
                     map_name, stokes_suffix),
                 coverage_bool);
-            citlali::pipeline::add_image_unit_description_keys(
-                *fits_io->at(map_index).hdus.back(),
-                citlali::pipeline::not_applicable_image_unit(),
-                citlali::pipeline::coverage_mask_map_description());
+            citlali::pipeline::add_coverage_mask_map_metadata(
+                *fits_io->at(map_index).hdus.back());
             citlali::pipeline::add_image_weight_threshold_key(
                 *fits_io->at(map_index).hdus.back(), weight_threshold);
 
