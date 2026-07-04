@@ -6913,10 +6913,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                         mb->contribution_weight[map_st](r, c);
                                     const double contrib_variance_weight =
                                         mb->contribution_variance_weight[map_st](r, c);
-                                    if (citlali::pipeline::
-                                            mapdiag_has_valid_contributor(
-                                                uid, fill_int,
-                                                contrib_signal)) {
+                                    if (mapdiag_has_current_valid_contributor(
+                                            uid, contrib_signal)) {
                                         citlali::pipeline::
                                             assign_mapdiag_candidate_contributor(
                                                 candidate, uid,
