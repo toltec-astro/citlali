@@ -6160,15 +6160,17 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         }
 
         // write noise maps
-        if (!mb->noise.empty() && !noise_fits_io->empty()) {
-            if (map_index < 0 || map_index >= static_cast<Eigen::Index>(noise_fits_io->size())) {
+        if (citlali::pipeline::should_write_noise_maps(mb->noise,
+                                                       noise_fits_io)) {
+            if (!citlali::pipeline::has_noise_fits_slot(noise_fits_io,
+                                                        map_index)) {
                 logger->error("write_maps noise file index out of range: map_index={} noise_fits_io_size={} map_i={}",
                               static_cast<long long>(map_index),
                               static_cast<long long>(noise_fits_io->size()),
                               static_cast<long long>(i));
                 std::exit(EXIT_FAILURE);
             }
-            if (i >= static_cast<Eigen::Index>(mb->noise.size())) {
+            if (!citlali::pipeline::has_noise_map_slot(mb->noise, i)) {
                 logger->error("write_maps noise map index out of range: i={} noise_size={}",
                               static_cast<long long>(i), static_cast<long long>(mb->noise.size()));
                 std::exit(EXIT_FAILURE);
