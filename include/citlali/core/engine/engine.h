@@ -6616,16 +6616,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                             mb->contribution_total_variance_weight[map_st](r, c);
                                         const double remaining_weight =
                                             total_weight - contrib_weight;
-                                        if (std::isfinite(total_signal) &&
-                                            std::isfinite(total_weight) &&
-                                            std::isfinite(contrib_weight) &&
-                                            std::isfinite(contrib_variance_weight) &&
-                                            std::isfinite(total_variance_weight) &&
-                                            contrib_weight >= 0.0 &&
-                                            contrib_variance_weight >= 0.0 &&
-                                            remaining_weight >
-                                                std::numeric_limits<double>::epsilon() &&
-                                            total_variance_weight > contrib_variance_weight) {
+                                        if (citlali::pipeline::
+                                                mapdiag_has_full_leave_one_out_inputs(
+                                                    total_signal,
+                                                    total_weight,
+                                                    contrib_weight,
+                                                    contrib_variance_weight,
+                                                    total_variance_weight,
+                                                    remaining_weight)) {
                                             const double loo_value =
                                                 (total_signal - contrib_signal) /
                                                 remaining_weight;
