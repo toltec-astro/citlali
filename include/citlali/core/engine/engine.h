@@ -6249,8 +6249,8 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
             mb->psd_2d_freqs[i]);
 
         citlali::pipeline::add_noise_psd_product_if_present(
-            fo, mb->noise, name, mb->noise_psds[i], mb->noise_psd_freqs[i],
-            mb->noise_psd_2ds[i], mb->noise_psd_2d_freqs[i]);
+            fo, mb->noise, name, mb->noise_psds, mb->noise_psd_freqs,
+            mb->noise_psd_2ds, mb->noise_psd_2d_freqs, i);
     }
     });
 }
@@ -6284,7 +6284,7 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
             fo, name, hist_bins_dim, mb->hist_bins[i], mb->hists[i]);
 
         citlali::pipeline::add_noise_histogram_if_present(
-            fo, mb->noise, name, hist_bins_dim, mb->noise_hists[i]);
+            fo, mb->noise, name, hist_bins_dim, mb->noise_hists, i);
     }
     });
 }

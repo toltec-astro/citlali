@@ -148,17 +148,18 @@ void add_psd_product(netCDF::NcFile &fo, const std::string &base_name,
         fo, base_name, dims.image, spectrum_image, frequency_image);
 }
 
-template <class NoiseList, class Spectrum, class Frequency,
-          class SpectrumImage, class FrequencyImage>
+template <class NoiseList, class Spectra, class Frequencies,
+          class SpectrumImages, class FrequencyImages, class Index>
 void add_noise_psd_product_if_present(
     netCDF::NcFile &fo, const NoiseList &noise,
-    const std::string &base_name, const Spectrum &spectrum,
-    const Frequency &frequency, const SpectrumImage &spectrum_image,
-    const FrequencyImage &frequency_image) {
+    const std::string &base_name, const Spectra &spectra,
+    const Frequencies &frequencies, const SpectrumImages &spectrum_images,
+    const FrequencyImages &frequency_images, Index index) {
     if (has_spectral_noise_products(noise)) {
         add_psd_product(
-            fo, spectral_noise_product_base_name(base_name), spectrum,
-            frequency, spectrum_image, frequency_image);
+            fo, spectral_noise_product_base_name(base_name), spectra[index],
+            frequencies[index], spectrum_images[index],
+            frequency_images[index]);
     }
 }
 
@@ -170,15 +171,16 @@ void add_histogram_pair(netCDF::NcFile &fo, const std::string &base_name,
     add_double_1d_var(fo, base_name + "_hist", dim, counts);
 }
 
-template <class NoiseList, class Counts>
+template <class NoiseList, class Counts, class Index>
 void add_noise_histogram_if_present(netCDF::NcFile &fo,
                                     const NoiseList &noise,
                                     const std::string &base_name,
                                     netCDF::NcDim dim,
-                                    const Counts &counts) {
+                                    const Counts &counts,
+                                    Index index) {
     if (has_spectral_noise_products(noise)) {
         add_double_1d_var(
-            fo, spectral_noise_histogram_name(base_name), dim, counts);
+            fo, spectral_noise_histogram_name(base_name), dim, counts[index]);
     }
 }
 
