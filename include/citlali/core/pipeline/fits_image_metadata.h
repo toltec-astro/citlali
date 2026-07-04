@@ -99,6 +99,24 @@ inline std::string noise_signal_map_hdu_name(
            stokes_suffix;
 }
 
+inline double default_wcs_source_epoch() {
+    return 2000.0;
+}
+
+template <class HeaderMap, class Logger>
+double wcs_source_epoch_or_default(const HeaderMap &tel_header,
+                                   const Logger &logger) {
+    const double source_epoch = default_wcs_source_epoch();
+    const auto epoch_it = tel_header.find("Header.Source.Epoch");
+    if (epoch_it != tel_header.end() && epoch_it->second.size() > 0 &&
+        std::isfinite(epoch_it->second(0))) {
+        return epoch_it->second(0);
+    }
+    logger->warn("Header.Source.Epoch missing/invalid; using epoch={} for WCS",
+                 source_epoch);
+    return source_epoch;
+}
+
 template <class ImageList>
 bool has_map_image_slot(const ImageList &images, Eigen::Index i,
                         Eigen::Index n_rows, Eigen::Index n_cols) {
