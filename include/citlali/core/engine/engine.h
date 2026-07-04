@@ -6908,6 +6908,25 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             citlali::pipeline::update_mapdiag_detector_dominance_stats(
                 entry, candidate);
         };
+    auto update_mapdiag_detector_dominance =
+        [&](std::vector<detector_dominance_t> &dominance,
+            const map_pixel_candidate_t &candidate) {
+            if (!mapdiag_candidate_has_current_dominance_key(candidate)) {
+                return;
+            }
+            auto it = std::find_if(
+                dominance.begin(), dominance.end(),
+                [&](const auto &entry) {
+                    return mapdiag_dominance_matches_candidate(
+                        entry, candidate);
+                });
+            if (it == dominance.end()) {
+                dominance.push_back(
+                    make_mapdiag_detector_dominance_entry(candidate));
+                it = dominance.end() - 1;
+            }
+            assign_mapdiag_detector_dominance_stats(*it, candidate);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
