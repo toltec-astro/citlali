@@ -6144,7 +6144,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 sig2noise);
             citlali::pipeline::add_image_unit_type_description_keys(
                 *fits_io->at(map_index).hdus.back(),
-                citlali::pipeline::not_applicable_image_unit(), "pixel",
+                citlali::pipeline::not_applicable_image_unit(),
+                citlali::pipeline::pixel_snr_estimator_type(),
                 "S/N estimator type",
                 citlali::pipeline::legacy_pixel_snr_map_description());
 
@@ -6154,7 +6155,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 sig2noise);
             citlali::pipeline::add_image_unit_type_description_keys(
                 *fits_io->at(map_index).hdus.back(),
-                citlali::pipeline::not_applicable_image_unit(), "pixel",
+                citlali::pipeline::not_applicable_image_unit(),
+                citlali::pipeline::pixel_snr_estimator_type(),
                 "S/N estimator type",
                 citlali::pipeline::pixel_snr_map_description());
 
@@ -6190,7 +6192,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 citlali::pipeline::add_image_unit_type_description_keys(
                     *fits_io->at(map_index).hdus.back(),
                     citlali::pipeline::not_applicable_image_unit(),
-                    "point_source",
+                    citlali::pipeline::point_source_snr_estimator_type(),
                     "S/N estimator type",
                     citlali::pipeline::point_source_snr_map_description());
             }
