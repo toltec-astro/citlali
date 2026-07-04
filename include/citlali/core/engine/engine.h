@@ -6643,12 +6643,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
         const auto weight_threshold =
             assign_mapdiag_weight_threshold(i, idx);
-        if (citlali::pipeline::mapdiag_has_edge_guard_entry(idx, *mb)) {
-            citlali::pipeline::assign_mapdiag_edge_guard_int_entry(
-                idx, *mb, edge_guard_int_refs);
-            citlali::pipeline::assign_mapdiag_edge_guard_double_entry(
-                idx, *mb, edge_guard_double_refs);
-        }
+        assign_mapdiag_current_edge_guard(idx);
 
         const auto weight_arr = mb->weight[i].array();
         const auto valid_mask =
