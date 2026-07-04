@@ -6508,8 +6508,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 reduction_learning.options.map_pixel_outlier_diagnostics_enabled &&
                 reduction_learning.options.map_pixel_outlier_top_n > 0) {
                 const double pix_arcsec = mb->pixel_size_rad * RAD_TO_ASEC;
-                const double center_row = (static_cast<double>(mb->n_rows) - 1.0) / 2.0;
-                const double center_col = (static_cast<double>(mb->n_cols) - 1.0) / 2.0;
+                const double center_row =
+                    citlali::pipeline::mapdiag_center_pixel_coordinate(
+                        mb->n_rows);
+                const double center_col =
+                    citlali::pipeline::mapdiag_center_pixel_coordinate(
+                        mb->n_cols);
                 const double protect_radius =
                     reduction_learning.options.map_pixel_outlier_source_radius_arcsec;
 
