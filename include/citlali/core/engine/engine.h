@@ -7037,6 +7037,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [&](const std::vector<map_pixel_candidate_t> &candidates) {
             return mapdiag_pixel_candidate_emit_count(candidates);
         };
+    auto mapdiag_current_emitted_candidate =
+        [](const std::vector<map_pixel_candidate_t> &candidates,
+           std::size_t index) -> const map_pixel_candidate_t & {
+            return candidates[index];
+        };
     auto mapdiag_candidate_has_current_dominance_key =
         [&](const map_pixel_candidate_t &candidate) {
             return citlali::pipeline::mapdiag_candidate_has_dominance_key(
