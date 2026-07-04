@@ -844,6 +844,13 @@ inline bool mapdiag_candidate_abs_z_greater(
     return std::abs(a.robust_z) > std::abs(b.robust_z);
 }
 
+inline void sort_mapdiag_pixel_candidates(
+    std::vector<MapdiagMapPixelCandidate> &candidates) {
+    std::sort(
+        candidates.begin(), candidates.end(),
+        mapdiag_candidate_abs_z_greater);
+}
+
 inline std::size_t mapdiag_candidate_emit_count(std::size_t n_candidates,
                                                 int top_n) {
     return std::min<std::size_t>(

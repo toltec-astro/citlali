@@ -7094,9 +7094,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto sort_mapdiag_pixel_candidates =
         [](std::vector<map_pixel_candidate_t> &candidates) {
-            std::sort(
-                candidates.begin(), candidates.end(),
-                citlali::pipeline::mapdiag_candidate_abs_z_greater);
+            citlali::pipeline::sort_mapdiag_pixel_candidates(candidates);
         };
     auto sort_mapdiag_current_pixel_candidates =
         [&](std::vector<map_pixel_candidate_t> &candidates) {
