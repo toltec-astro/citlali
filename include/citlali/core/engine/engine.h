@@ -6808,6 +6808,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_has_valid_contributor(
                 uid, fill_int, contrib_signal);
         };
+    auto assign_mapdiag_current_candidate_contributor =
+        [&](map_pixel_candidate_t &candidate, std::size_t map_st,
+            Eigen::Index row, Eigen::Index col, int uid) {
+            citlali::pipeline::assign_mapdiag_candidate_contributor(
+                candidate, uid, mb->contribution_scan[map_st](row, col),
+                mb->contribution_sample[map_st](row, col));
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
