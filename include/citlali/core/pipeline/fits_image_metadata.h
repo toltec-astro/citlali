@@ -376,4 +376,29 @@ void add_formal_weight_map_metadata(Hdu &hdu,
         weight_calibration_type_comment(), formal_weight_map_description());
 }
 
+template <class Hdu>
+void add_noise_variance_map_metadata(Hdu &hdu,
+                                     const std::string &variance_unit) {
+    add_image_unit_description_keys(hdu, variance_unit,
+                                    noise_variance_map_description());
+}
+
+template <class Hdu>
+void add_kernel_map_metadata(Hdu &hdu, const std::string &signal_unit) {
+    add_image_unit_description_keys(hdu, signal_unit,
+                                    kernel_map_description());
+}
+
+template <class Hdu>
+void add_coverage_map_metadata(Hdu &hdu) {
+    add_image_unit_description_keys(hdu, coverage_time_unit(),
+                                    coverage_map_description());
+}
+
+template <class Hdu>
+void add_coverage_mask_map_metadata(Hdu &hdu) {
+    add_image_unit_description_keys(hdu, not_applicable_image_unit(),
+                                    coverage_mask_map_description());
+}
+
 }  // namespace citlali::pipeline
