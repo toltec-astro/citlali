@@ -7047,18 +7047,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_dominance_meets_min_pixels(
                 entry, min_pixels);
         };
-    auto mapdiag_detector_penalty_reason =
-        []() {
-            return citlali::pipeline::
-                mapdiag_detector_dominance_penalty_reason();
-        };
     auto make_mapdiag_current_detector_penalty =
         [&](const detector_dominance_t &entry, int array_id) {
             return citlali::pipeline::make_mapdiag_detector_penalty<
                 ReductionLearningState::DetectorPenalty>(
                     obsnum, mapdiag_current_record_producer(),
-                    mapdiag_detector_penalty_reason(), fruit_iter, entry,
-                    array_id);
+                    citlali::pipeline::
+                        mapdiag_detector_dominance_penalty_reason(),
+                    fruit_iter, entry, array_id);
         };
     auto record_mapdiag_current_detector_penalty =
         [&](ReductionLearningState::DetectorPenalty &&penalty) {
