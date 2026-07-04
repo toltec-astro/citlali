@@ -7010,7 +7010,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                         }
                                         else if (mapdiag_has_current_fallback_leave_one_out_inputs(
                                                      wt, contrib_weight)) {
-                                            const double raw_sum = value * wt;
+                                            const double raw_sum =
+                                                mapdiag_raw_weighted_signal(
+                                                    value, wt);
                                             const double loo_value =
                                                 (raw_sum - contrib_signal) /
                                                 (wt - contrib_weight);
