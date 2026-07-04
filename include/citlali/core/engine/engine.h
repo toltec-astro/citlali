@@ -6167,7 +6167,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                     mb->point_source_uncertainty, i, mb->n_rows,
                     mb->n_cols)) {
                 add_map_hdu_with_wcs(
-                    "point_source_flux_" + map_name + stokes_suffix,
+                    citlali::pipeline::point_source_flux_map_hdu_name(
+                        map_name, stokes_suffix),
                     mb->signal[i]);
                 citlali::pipeline::add_image_unit_description_keys(
                     *fits_io->at(map_index).hdus.back(), mb->sig_unit,
@@ -6176,14 +6177,16 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                     *fits_io->at(map_index).hdus.back(), 1.0);
 
                 add_map_hdu_with_wcs(
-                    "point_source_uncertainty_" + map_name + stokes_suffix,
+                    citlali::pipeline::point_source_uncertainty_map_hdu_name(
+                        map_name, stokes_suffix),
                     mb->point_source_uncertainty[i]);
                 citlali::pipeline::add_image_unit_description_keys(
                     *fits_io->at(map_index).hdus.back(), mb->sig_unit,
                     "Point-source 1-sigma uncertainty from jackknife maps");
 
                 add_map_hdu_with_wcs(
-                    "sig2noise_point_source_" + map_name + stokes_suffix,
+                    citlali::pipeline::point_source_snr_map_hdu_name(
+                        map_name, stokes_suffix),
                     mb->sig2noise_point_source[i]);
                 citlali::pipeline::add_image_unit_type_description_keys(
                     *fits_io->at(map_index).hdus.back(), "N/A", "point_source",
