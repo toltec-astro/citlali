@@ -6499,11 +6499,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 const double protect_radius =
                     reduction_learning.options.map_pixel_outlier_source_radius_arcsec;
 
-                auto source_distance_arcsec = [&](Eigen::Index row, Eigen::Index col) {
-                    return citlali::pipeline::mapdiag_source_distance_arcsec(
-                        row, col, source_distance_context);
-                };
-
                 Eigen::ArrayXXd off_source_core_mask =
                     citlali::pipeline::mapdiag_off_source_core_mask(
                         core_mask, source_distance_context, protect_radius);
@@ -6571,7 +6566,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     citlali::pipeline::
                                         make_mapdiag_map_pixel_candidate(
                                             r, c, value, wt, n_eff, z,
-                                            source_distance_arcsec(r, c),
+                                            citlali::pipeline::
+                                                mapdiag_source_distance_arcsec(
+                                                    r, c,
+                                                    source_distance_context),
                                             fill_int, fill_double);
 
                                 if (have_contrib) {
