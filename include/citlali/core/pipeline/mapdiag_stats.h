@@ -431,6 +431,14 @@ inline MapdiagCoverageStats mapdiag_coverage_stats(
 }
 
 inline void assign_mapdiag_coverage_stats(
+    std::size_t idx, const MapdiagCoverageStats &stats,
+    MapdiagCoverageRefs refs) {
+    refs.coverage_sum[idx] = stats.sum;
+    refs.coverage_max[idx] = stats.max;
+    refs.coverage_median_core[idx] = stats.median_core;
+}
+
+inline void assign_mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value, double &coverage_sum, double &coverage_max,
     double &coverage_median_core) {
