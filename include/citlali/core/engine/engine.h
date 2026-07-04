@@ -6916,12 +6916,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     const auto mapdiag_dims =
         citlali::pipeline::add_mapdiag_netcdf_dims(fo, mapdiag_context);
 
-    add_netcdf_var<std::string>(fo, "MAP_STAGE", stage_name);
-    add_netcdf_var<std::string>(fo, "MAP_BUFFER", mb->name);
-    add_netcdf_var<std::string>(fo, "MAP_REGIME", map_regime);
-    add_netcdf_var<std::string>(fo, "SOURCE", telescope.source_name);
-    add_netcdf_var<std::string>(fo, "PROJID", telescope.project_id);
-    add_netcdf_var<std::string>(fo, "OBSGOAL", telescope.obs_goal);
+    citlali::pipeline::add_mapdiag_identity_vars(
+        fo, {stage_name, mb->name, map_regime, telescope.source_name,
+             telescope.project_id, telescope.obs_goal});
     add_netcdf_var(fo, "MAP_PIXEL_SIZE_RAD", mb->pixel_size_rad);
     add_netcdf_var(fo, "MAP_COVERAGE_CUT", mb->cov_cut);
     add_netcdf_var<std::string>(fo, "MAP_SIG_UNIT", mb->sig_unit);
