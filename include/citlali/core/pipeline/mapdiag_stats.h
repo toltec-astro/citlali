@@ -207,6 +207,11 @@ int mapdiag_mask_sum_as_int(const Mask &mask) {
     return static_cast<int>(mask.sum());
 }
 
+template <class Values, class Mask>
+double mapdiag_weighted_mask_sum(const Values &values, const Mask &mask) {
+    return (values * mask).sum();
+}
+
 inline bool mapdiag_has_matrix_samples(const Eigen::MatrixXd &matrix) {
     return matrix.size() > 0;
 }
