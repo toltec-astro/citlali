@@ -6607,12 +6607,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     map_i, idx, core_mask);
             }
         };
-    auto finalize_mapdiag_current_obs_contributions =
-        [&](Eigen::Index map_i, std::size_t idx,
-            const auto &core_mask) {
-            assign_mapdiag_obs_contributions(map_i, idx, core_mask);
-            assign_mapdiag_obs_contribution_fractions(idx);
-        };
     const std::string mapdiag_record_producer =
         citlali::pipeline::mapdiag_record_producer(stage_name);
 
@@ -6982,7 +6976,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             }
         }
 
-        finalize_mapdiag_current_obs_contributions(i, idx, core_mask);
+        assign_mapdiag_obs_contributions(i, idx, core_mask);
+        assign_mapdiag_obs_contribution_fractions(idx);
     }
 
     write_netcdf_atomic(
