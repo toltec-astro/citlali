@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <string>
 #include <vector>
 
 #include <Eigen/Core>
@@ -19,6 +20,11 @@ struct MapdiagObsTableRefs {
     std::vector<int> &valid_pixels;
     std::vector<int> &core_pixels;
 };
+
+inline std::string mapdiag_obs_raw_dir(const std::string &redu_dir_name,
+                                       const std::string &obsnum) {
+    return redu_dir_name + "/" + obsnum + "/raw/";
+}
 
 template <class DoubleValues, class IntValues>
 void assign_mapdiag_obs_entry(
