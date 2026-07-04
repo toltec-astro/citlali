@@ -252,6 +252,20 @@ inline double mapdiag_core_peak_abs_or_fill(const Eigen::MatrixXd &sig2noise,
     return core_sig2noise.maxCoeff();
 }
 
+inline MapdiagPeakStats mapdiag_peak_stats(
+    const Eigen::MatrixXd &sig2noise, const Eigen::ArrayXXd &core_mask,
+    int n_core_pixels, double fill_value) {
+    Eigen::Index r_peak = 0;
+    Eigen::Index c_peak = 0;
+    const double peak_abs_sig2noise =
+        sig2noise.cwiseAbs().maxCoeff(&r_peak, &c_peak);
+    return {peak_abs_sig2noise,
+            static_cast<int>(r_peak),
+            static_cast<int>(c_peak),
+            mapdiag_core_peak_abs_or_fill(
+                sig2noise, core_mask, n_core_pixels, fill_value)};
+}
+
 inline void mapdiag_append_finite(std::vector<double> &values, double value) {
     if (std::isfinite(value)) {
         values.push_back(value);
