@@ -331,6 +331,11 @@ mapdiag_positive_mask(const Eigen::ArrayXXd &mask) {
     return mask > 0.0;
 }
 
+inline Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic>
+mapdiag_valid_core_noise_mask(const Eigen::ArrayXXd &core_mask) {
+    return mapdiag_positive_mask(core_mask);
+}
+
 template <class Mask>
 double mapdiag_mask_count_as_double(const Mask &mask) {
     return static_cast<double>(mask.count());
