@@ -151,6 +151,22 @@ double mapdiag_finite_value_or_fill(const Values &values, Eigen::Index i,
     return fill_value;
 }
 
+template <class CoverageList>
+bool mapdiag_has_coverage_map(const CoverageList &coverage, Eigen::Index i) {
+    return !coverage.empty() && i >= 0 &&
+           i < static_cast<Eigen::Index>(coverage.size());
+}
+
+inline void assign_mapdiag_coverage_stats(
+    const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
+    double fill_value, double &coverage_sum, double &coverage_max,
+    double &coverage_median_core) {
+    coverage_sum = coverage.sum();
+    coverage_max = coverage.maxCoeff();
+    coverage_median_core =
+        mapdiag_masked_median(coverage, core_mask, fill_value);
+}
+
 inline MapdiagTailStats mapdiag_tail_stats(const std::vector<double> &values,
                                            double fill_value) {
     MapdiagTailStats stats;
