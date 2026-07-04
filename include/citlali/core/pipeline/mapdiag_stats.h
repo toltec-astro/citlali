@@ -120,6 +120,12 @@ struct MapdiagNoiseProductRefs {
     std::vector<double> &valid_pixels;
 };
 
+struct MapdiagFormalNoiseRefs {
+    std::vector<double> &median_err;
+    std::vector<double> &median_rms;
+    std::vector<double> &empirical_to_formal_ratio;
+};
+
 struct MapdiagCoreTailRefs {
     std::vector<double> &frac_abs3;
     std::vector<double> &frac_pos3;
