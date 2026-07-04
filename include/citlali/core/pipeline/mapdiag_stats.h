@@ -748,6 +748,14 @@ inline MapdiagSourceDistanceContext mapdiag_source_distance_context(
             fill_value};
 }
 
+template <class MapBuffer>
+MapdiagSourceDistanceContext mapdiag_source_distance_context(
+    const MapBuffer &mb, double rad_to_arcsec, double fill_value) {
+    return mapdiag_source_distance_context(
+        mapdiag_n_rows(mb), mapdiag_n_cols(mb),
+        mb->pixel_size_rad * rad_to_arcsec, fill_value);
+}
+
 inline double mapdiag_source_distance_arcsec(
     Eigen::Index row, Eigen::Index col, double center_row,
     double center_col, double pixel_size_arcsec, double fill_value) {

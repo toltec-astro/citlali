@@ -6776,9 +6776,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto make_mapdiag_source_distance_context =
         [&]() {
-            const double pix_arcsec = mb->pixel_size_rad * RAD_TO_ASEC;
             return citlali::pipeline::mapdiag_source_distance_context(
-                mb->n_rows, mb->n_cols, pix_arcsec, fill_double);
+                mb, RAD_TO_ASEC, fill_double);
         };
     auto make_mapdiag_current_source_distance_context =
         [&]() {
