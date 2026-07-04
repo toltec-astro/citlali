@@ -6675,15 +6675,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         for (std::size_t ci = 0; ci < n_emit; ++ci) {
                             const auto &candidate = candidates[ci];
                             ReductionLearningState::MapPixelOutlier record;
-                            record.obsnum = obsnum;
-                            record.producer = "mapdiag:" + stage_name;
-                            record.reason =
-                                citlali::pipeline::
-                                    mapdiag_map_pixel_outlier_reason(
-                                        candidate.has_contributor,
-                                        mb->contribution_diag_targeted);
-                            record.iter = fruit_iter;
-                            record.map_index = static_cast<int>(i);
+                            citlali::pipeline::
+                                assign_mapdiag_outlier_record_context(
+                                    record, obsnum, "mapdiag:" + stage_name,
+                                    citlali::pipeline::
+                                        mapdiag_map_pixel_outlier_reason(
+                                            candidate.has_contributor,
+                                            mb->contribution_diag_targeted),
+                                    fruit_iter, static_cast<int>(i));
                             record.scan = candidate.scan;
                             record.uid = candidate.uid;
                             record.row = candidate.row;
