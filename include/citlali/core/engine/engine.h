@@ -6633,16 +6633,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             weight_thresholds[idx] = weight_threshold;
             return weight_threshold;
         };
-    auto assign_mapdiag_current_noise_product_stats =
-        [&](Eigen::Index map_i, std::size_t idx) {
-            const auto noise_product_stats =
-                citlali::pipeline::mapdiag_noise_product_stats_or_fill(
-                    mb->noise_weight_median_ratio, mb->noise_weight_scale,
-                    mb->noise_s2n_sigma, mb->noise_valid_pixels, map_i,
-                    fill_double);
-            citlali::pipeline::assign_mapdiag_noise_product_stats(
-                idx, noise_product_stats, noise_product_refs);
-        };
     auto assign_mapdiag_current_coverage_stats =
         [&](Eigen::Index map_i, std::size_t idx,
             const auto &core_mask) {
@@ -6821,7 +6811,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             citlali::pipeline::mapdiag_formal_noise_stats_or_fill(
                 mb->median_err, mb->median_rms, i, fill_double),
             formal_noise_refs);
-        assign_mapdiag_current_noise_product_stats(i, idx);
+        const auto noise_product_stats =
+            citlali::pipeline::mapdiag_noise_product_stats_or_fill(
+                mb->noise_weight_median_ratio, mb->noise_weight_scale,
+                mb->noise_s2n_sigma, mb->noise_valid_pixels, i,
+                fill_double);
+        citlali::pipeline::assign_mapdiag_noise_product_stats(
+            idx, noise_product_stats, noise_product_refs);
 
         assign_mapdiag_current_coverage_stats(i, idx, core_mask);
         assign_mapdiag_current_peak_signal(i, idx);
