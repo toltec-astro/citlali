@@ -32,6 +32,50 @@ inline const char *weight_map_description(bool empirical_calibration) {
         : "Formal mapmaker inverse variance weight map";
 }
 
+inline const char *signal_map_description() {
+    return "Signal map in map units";
+}
+
+inline const char *formal_weight_map_description() {
+    return "Formal mapmaker inverse variance before empirical calibration";
+}
+
+inline const char *noise_variance_map_description() {
+    return "Per-pixel variance estimated from jackknife noise maps";
+}
+
+inline const char *kernel_map_description() {
+    return "Mapmaking or filtering kernel image";
+}
+
+inline const char *coverage_map_description() {
+    return "Effective integration time coverage map";
+}
+
+inline const char *coverage_mask_map_description() {
+    return "Boolean valid-coverage support mask";
+}
+
+inline const char *legacy_pixel_snr_map_description() {
+    return "Legacy pixel S/N: signal times sqrt(weight)";
+}
+
+inline const char *pixel_snr_map_description() {
+    return "Pixel S/N map: signal times sqrt(empirical weight)";
+}
+
+inline const char *point_source_flux_map_description() {
+    return "Point-source flux estimate after filter response normalization";
+}
+
+inline const char *point_source_uncertainty_map_description() {
+    return "Point-source 1-sigma uncertainty from jackknife maps";
+}
+
+inline const char *point_source_snr_map_description() {
+    return "Point-source S/N from flux divided by jackknife uncertainty";
+}
+
 inline std::string signal_map_hdu_name(const std::string &map_name,
                                        const std::string &stokes_suffix) {
     return "signal_" + map_name + stokes_suffix;
