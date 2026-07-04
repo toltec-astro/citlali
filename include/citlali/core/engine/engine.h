@@ -6799,6 +6799,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
             return mb->contribution_uid[map_st](row, col);
         };
+    auto mapdiag_current_contributor_signal =
+        [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
+            return mb->contribution_signal[map_st](row, col);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
