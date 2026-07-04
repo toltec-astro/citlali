@@ -5972,7 +5972,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                                                        logger);
 
     // update wcs ctypes for frequency and stokes params
-    mb->wcs.crval[2] = toltec_io.array_freq_map[calib.arrays[array_index]];
+    mb->wcs.crval[2] =
+        citlali::pipeline::map_wcs_frequency(toltec_io.array_freq_map,
+                                             calib.arrays, array_index);
     mb->wcs.crval[3] = stokes_index;
     const std::string &stokes_suffix = rtcproc.polarization.stokes_params[stokes_index];
 
