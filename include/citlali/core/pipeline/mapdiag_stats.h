@@ -48,6 +48,18 @@ struct MapdiagNoiseTailSamples {
     void add_tail_stats(const MapdiagTailStats &stats);
 };
 
+struct MapdiagNoiseTailSummary {
+    double rms_p16;
+    double rms_p84;
+    double tail_abs;
+    double tail_pos;
+    double tail_neg;
+    double excess_abs;
+    double excess_pos;
+    double excess_neg;
+    double skew;
+};
+
 inline void MapdiagNoiseTailSamples::reserve(std::size_t n_noise) {
     rms.reserve(n_noise);
     tail_abs.reserve(n_noise);
