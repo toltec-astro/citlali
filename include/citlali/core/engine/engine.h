@@ -6051,7 +6051,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         if (citlali::pipeline::has_map_image_slot(
                 mb->noise_variance, i, mb->n_rows, mb->n_cols)) {
             add_map_hdu_with_wcs(
-                "noise_variance_" + map_name + stokes_suffix,
+                citlali::pipeline::noise_variance_map_hdu_name(
+                    map_name, stokes_suffix),
                 mb->noise_variance[i]);
             const std::string variance_unit =
                 citlali::pipeline::map_variance_unit(mb->sig_unit);
