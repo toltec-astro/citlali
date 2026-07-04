@@ -6720,7 +6720,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 logger->info(
                                     "mapdiag learned scan-local detector exclusion candidate stage={} iter={} map={} uid={} scan={} outlier_pixels={} max_abs_value={:.4g} max_abs_leave_one_out_z={:.4g}",
                                     stage_name, fruit_iter, i, entry.uid,
-                                    entry.scan + 1, entry.count,
+                                    citlali::pipeline::
+                                        mapdiag_display_scan_index(entry.scan),
+                                    entry.count,
                                     entry.max_abs_value,
                                     entry.max_abs_leave_one_out_z);
                             }
