@@ -7155,7 +7155,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
                         if (mapdiag_current_detector_exclusion_enabled()) {
                             const int min_pixels =
-                                reduction_learning.options.map_pixel_outlier_detector_exclusion_min_pixels;
+                                mapdiag_current_detector_exclusion_min_pixels();
                             const int array_id =
                                 citlali::pipeline::mapdiag_array_id_or_default(
                                     map_index, calib.arrays, -1);
