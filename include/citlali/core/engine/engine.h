@@ -6775,6 +6775,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_has_contribution_products(
                 mb, map_i);
         };
+    auto mapdiag_current_ptc_fs_hz =
+        [&]() {
+            return processed_time_chunk_fs_hz();
+        };
     auto mapdiag_current_effective_samples =
         [&](Eigen::Index map_i, Eigen::Index row, Eigen::Index col,
             double ptc_fs_hz) {
