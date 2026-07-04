@@ -690,6 +690,25 @@ inline bool mapdiag_passes_min_abs_z(double z, double min_abs_z) {
     return std::isfinite(z) && std::abs(z) >= min_abs_z;
 }
 
+inline MapdiagMapPixelCandidate make_mapdiag_map_pixel_candidate(
+    Eigen::Index row, Eigen::Index col, double value, double weight,
+    double n_eff, double robust_z, double source_distance_arcsec,
+    int fill_int, double fill_double) {
+    return {static_cast<int>(row),
+            static_cast<int>(col),
+            fill_int,
+            fill_int,
+            fill_int,
+            value,
+            weight,
+            n_eff,
+            robust_z,
+            robust_z,
+            source_distance_arcsec,
+            false,
+            false};
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
