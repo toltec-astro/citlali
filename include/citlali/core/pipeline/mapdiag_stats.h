@@ -206,6 +206,13 @@ inline void MapdiagNoiseTailSamples::add_tail_stats(
     mapdiag_append_finite(skew, stats.skew);
 }
 
+inline MapdiagNoiseTailSamples make_mapdiag_noise_tail_samples(
+    std::size_t n_noise) {
+    MapdiagNoiseTailSamples samples;
+    samples.reserve(n_noise);
+    return samples;
+}
+
 inline MapdiagNoiseTailSummary summarize_mapdiag_noise_tail_samples(
     const MapdiagStatsContext &stats,
     const MapdiagNoiseTailSamples &samples) {
