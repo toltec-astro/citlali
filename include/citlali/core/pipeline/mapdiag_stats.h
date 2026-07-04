@@ -273,6 +273,15 @@ inline MapdiagPeakStats mapdiag_peak_stats(
                 sig2noise, core_mask, n_core_pixels, fill_value)};
 }
 
+inline void assign_mapdiag_peak_stats(std::size_t idx,
+                                      const MapdiagPeakStats &stats,
+                                      MapdiagPeakRefs refs) {
+    refs.peak_abs_sig2noise[idx] = stats.peak_abs_sig2noise;
+    refs.peak_row[idx] = stats.peak_row;
+    refs.peak_col[idx] = stats.peak_col;
+    refs.core_peak_abs_sig2noise[idx] = stats.core_peak_abs_sig2noise;
+}
+
 inline void mapdiag_append_finite(std::vector<double> &values, double value) {
     if (std::isfinite(value)) {
         values.push_back(value);
