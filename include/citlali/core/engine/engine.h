@@ -6517,7 +6517,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     const citlali::pipeline::MapdiagStatsContext mapdiag_stats{fill_double};
     auto mapdiag_current_size_index =
         [](Eigen::Index map_i) {
-            return static_cast<std::size_t>(map_i);
+            return citlali::pipeline::mapdiag_size_index(map_i);
         };
     auto mapdiag_current_array_map_index =
         [&](Eigen::Index map_i) {
@@ -6955,7 +6955,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto mapdiag_contribution_map_index =
         [](Eigen::Index map_i) {
-            return static_cast<std::size_t>(map_i);
+            return citlali::pipeline::mapdiag_contribution_map_index(map_i);
         };
     auto mapdiag_current_contribution_map_index =
         [&](Eigen::Index map_i) {

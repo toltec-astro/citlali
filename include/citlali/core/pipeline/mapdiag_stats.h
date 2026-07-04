@@ -187,6 +187,14 @@ struct MapdiagNoiseTailRefs {
 using MapdiagNoiseMatrix =
     Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>>;
 
+inline std::size_t mapdiag_size_index(Eigen::Index map_index) {
+    return static_cast<std::size_t>(map_index);
+}
+
+inline std::size_t mapdiag_contribution_map_index(Eigen::Index map_index) {
+    return mapdiag_size_index(map_index);
+}
+
 inline void MapdiagNoiseTailSamples::reserve(std::size_t n_noise) {
     rms.reserve(n_noise);
     tail_abs.reserve(n_noise);
