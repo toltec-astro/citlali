@@ -6920,12 +6920,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto make_mapdiag_pixel_candidates =
         []() {
-            return std::vector<map_pixel_candidate_t>{};
+            return citlali::pipeline::make_mapdiag_pixel_candidates();
         };
     auto append_mapdiag_pixel_candidate =
         [](std::vector<map_pixel_candidate_t> &candidates,
            const map_pixel_candidate_t &candidate) {
-            candidates.push_back(candidate);
+            citlali::pipeline::append_mapdiag_pixel_candidate(
+                candidates, candidate);
         };
     auto mapdiag_is_valid_current_outlier_pixel_value =
         [](double value, double weight, double sig2noise_value) {
@@ -7114,7 +7115,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     auto mapdiag_current_emitted_candidate =
         [](const std::vector<map_pixel_candidate_t> &candidates,
            std::size_t index) -> const map_pixel_candidate_t & {
-            return candidates[index];
+            return citlali::pipeline::mapdiag_emitted_candidate(
+                candidates, index);
         };
     auto mapdiag_candidate_has_current_dominance_key =
         [&](const map_pixel_candidate_t &candidate) {

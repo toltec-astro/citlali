@@ -813,6 +813,22 @@ inline MapdiagMapPixelCandidate make_mapdiag_map_pixel_candidate(
             false};
 }
 
+inline std::vector<MapdiagMapPixelCandidate> make_mapdiag_pixel_candidates() {
+    return {};
+}
+
+inline void append_mapdiag_pixel_candidate(
+    std::vector<MapdiagMapPixelCandidate> &candidates,
+    const MapdiagMapPixelCandidate &candidate) {
+    candidates.push_back(candidate);
+}
+
+inline const MapdiagMapPixelCandidate &mapdiag_emitted_candidate(
+    const std::vector<MapdiagMapPixelCandidate> &candidates,
+    std::size_t index) {
+    return candidates[index];
+}
+
 inline void assign_mapdiag_candidate_contributor(
     MapdiagMapPixelCandidate &candidate, int uid, int scan,
     long long sample) {
