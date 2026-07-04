@@ -6594,6 +6594,17 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 }
             }
         };
+    auto assign_mapdiag_obs_contributions =
+        [&](Eigen::Index map_i, std::size_t idx,
+            const auto &core_mask) {
+            if (!mapdiag_context.is_coadd) {
+                assign_mapdiag_single_obs_contribution(idx);
+            }
+            else {
+                assign_mapdiag_coadd_obs_contributions(
+                    map_i, idx, core_mask);
+            }
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
