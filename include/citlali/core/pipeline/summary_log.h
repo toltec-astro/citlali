@@ -116,4 +116,16 @@ inline void write_chunk_scan_shape_summary(std::ostream &stream,
     stream << "-Number of detectors: " << n_detectors << "\n";
 }
 
+inline long long chunk_flagged_detector_count(long long n_low_weight,
+                                              long long n_high_weight,
+                                              long long n_apt_flagged) {
+    return n_low_weight + n_high_weight + n_apt_flagged;
+}
+
+inline float chunk_flagged_detector_percent(long long n_flagged,
+                                            long long n_detectors) {
+    return 100 * static_cast<float>(n_flagged) /
+           static_cast<float>(n_detectors);
+}
+
 }  // namespace citlali::pipeline

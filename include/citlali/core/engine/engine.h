@@ -5671,8 +5671,13 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     f << "-Number of detectors flagged in APT table: " << (calib.apt["flag"].array()!=0).count() << "\n";
     f << "-Number of detectors flagged below weight limit: " << in.n_dets_low <<"\n";
     f << "-Number of detectors flagged above weight limit: " << in.n_dets_high << "\n";
-    Eigen::Index n_flagged = in.n_dets_low + in.n_dets_high + (calib.apt["flag"].array()!=0).count();
-    f << "-Number of detectors flagged: " << n_flagged << " (" << 100*float(n_flagged)/float(in.scans.data.cols()) << "%)\n";
+    const auto n_flagged = citlali::pipeline::chunk_flagged_detector_count(
+        in.n_dets_low, in.n_dets_high,
+        (calib.apt["flag"].array()!=0).count());
+    f << "-Number of detectors flagged: " << n_flagged << " ("
+      << citlali::pipeline::chunk_flagged_detector_percent(
+             n_flagged, in.scans.data.cols())
+      << "%)\n";
 
     f << "-NaNs found: " << in.scans.data.array().isNaN().count() << "\n";
     f << "-Infs found: " << in.scans.data.array().isInf().count() << "\n";
