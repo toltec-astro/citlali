@@ -7125,9 +7125,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             ReductionLearningState::MapPixelOutlier record;
                             assign_mapdiag_current_outlier_record_context(
                                 record, i, candidate);
-                            citlali::pipeline::
-                                assign_mapdiag_outlier_record_candidate(
-                                    record, candidate);
+                            assign_mapdiag_current_outlier_record_candidate(
+                                record, candidate);
                             reduction_learning.record_map_pixel_outlier(
                                 std::move(record));
                             update_mapdiag_detector_dominance(
