@@ -980,6 +980,17 @@ void add_mapdiag_noise_tail_sample(
     samples.add_tail_stats(stats.tail_stats(noise_values));
 }
 
+template <class Matrix, class Mask>
+void add_mapdiag_noise_realization_samples(
+    MapdiagNoiseTailSamples &samples, const MapdiagStatsContext &stats,
+    const Matrix &noise_matrix, const Mask &valid_core,
+    double valid_core_count, const Eigen::ArrayXXd &core_mask) {
+    add_mapdiag_core_noise_rms_sample(
+        samples, noise_matrix, valid_core, valid_core_count);
+    add_mapdiag_noise_tail_sample(
+        samples, stats, noise_matrix, core_mask);
+}
+
 inline MapdiagTailStats mapdiag_tail_stats(const std::vector<double> &values,
                                            double fill_value) {
     MapdiagTailStats stats;
