@@ -4,6 +4,30 @@
 
 namespace citlali::pipeline {
 
+inline std::string map_weight_unit(const std::string &signal_unit) {
+    return "1/(" + signal_unit + ")^2";
+}
+
+inline std::string map_variance_unit(const std::string &signal_unit) {
+    return "(" + signal_unit + ")^2";
+}
+
+inline bool empirical_weight_calibration_enabled(
+    bool run_noise_products, bool run_noise,
+    bool apply_empirical_noise_weights) {
+    return run_noise_products && run_noise && apply_empirical_noise_weights;
+}
+
+inline const char *weight_calibration_type(bool empirical_calibration) {
+    return empirical_calibration ? "empirical" : "formal";
+}
+
+inline const char *weight_map_description(bool empirical_calibration) {
+    return empirical_calibration
+        ? "Jackknife-calibrated inverse variance weight map"
+        : "Formal mapmaker inverse variance weight map";
+}
+
 template <class Hdu>
 void add_image_unit_keys(Hdu &hdu, const std::string &unit) {
     hdu.addKey("UNIT", unit, "Unit of map");
