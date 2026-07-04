@@ -6647,13 +6647,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 candidates.size(),
                                 reduction_learning.options
                                     .map_pixel_outlier_top_n);
-                        struct detector_dominance_t {
-                            int uid = citlali::pipeline::mapdiag_fill_int();
-                            int scan = citlali::pipeline::mapdiag_fill_int();
-                            int count = 0;
-                            double max_abs_value = 0.0;
-                            double max_abs_leave_one_out_z = 0.0;
-                        };
+                        using detector_dominance_t =
+                            citlali::pipeline::MapdiagDetectorDominance;
                         std::vector<detector_dominance_t> dominance;
                         auto update_dominance = [&](const map_pixel_candidate_t &candidate) {
                             if (!candidate.has_contributor ||
