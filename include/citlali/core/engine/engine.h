@@ -6509,11 +6509,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         map_double_values, map_int_values, obs_double_values,
         obs_int_values};
 
-    using map_pixel_candidate_t =
-        citlali::pipeline::MapdiagMapPixelCandidate;
-    using detector_dominance_t =
-        citlali::pipeline::MapdiagDetectorDominance;
-
     const citlali::pipeline::MapdiagStatsContext mapdiag_stats{fill_double};
     const std::string mapdiag_record_producer =
         citlali::pipeline::mapdiag_record_producer(stage_name);
