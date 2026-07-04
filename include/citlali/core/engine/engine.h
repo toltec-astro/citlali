@@ -6965,7 +6965,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto mapdiag_current_contributor_uid =
         [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
-            return mb->contribution_uid[map_st](row, col);
+            return citlali::pipeline::mapdiag_matrix_value(
+                mb->contribution_uid[map_st], row, col);
         };
     auto mapdiag_current_contributor_signal =
         [&](std::size_t map_st, Eigen::Index row, Eigen::Index col) {
