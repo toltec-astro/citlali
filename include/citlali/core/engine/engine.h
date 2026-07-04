@@ -6063,7 +6063,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
         // kernel map
         if (rtcproc.run_kernel) {
-            fits_io->at(map_index).add_hdu("kernel_" + map_name + stokes_suffix, mb->kernel[i]);
+            fits_io->at(map_index).add_hdu(
+                citlali::pipeline::kernel_map_hdu_name(map_name, stokes_suffix),
+                mb->kernel[i]);
             citlali::pipeline::add_image_type_key(
                 *fits_io->at(map_index).hdus.back(), rtcproc.kernel.type,
                 "Kernel type");
