@@ -92,6 +92,7 @@
 #include <citlali/core/pipeline/fits_image_metadata.h>
 #include <citlali/core/pipeline/cli_summary.h>
 #include <citlali/core/pipeline/map_filename.h>
+#include <citlali/core/pipeline/mapdiag_edge_guard.h>
 #include <citlali/core/pipeline/map_layer_name.h>
 #include <citlali/core/pipeline/map_summary_stats.h>
 #include <citlali/core/pipeline/mapdiag_labels.h>
@@ -6340,6 +6341,18 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<double> edge_guard_exterior_rms_post(mapdiag_context.n_maps, fill_double);
     std::vector<double> edge_guard_exterior_max_abs_pre(mapdiag_context.n_maps, fill_double);
     std::vector<double> edge_guard_exterior_max_abs_post(mapdiag_context.n_maps, fill_double);
+    citlali::pipeline::MapdiagEdgeGuardDoubleRefs edge_guard_double_refs{
+        edge_guard_weight_thresholds,
+        edge_guard_hits_thresholds,
+        edge_guard_background_levels,
+        edge_guard_science_frac,
+        edge_guard_support_frac,
+        edge_guard_guardband_rms_pre,
+        edge_guard_guardband_rms_post,
+        edge_guard_exterior_rms_pre,
+        edge_guard_exterior_rms_post,
+        edge_guard_exterior_max_abs_pre,
+        edge_guard_exterior_max_abs_post};
     std::vector<int> n_valid_pixels(mapdiag_context.n_maps, 0);
     std::vector<int> n_core_pixels(mapdiag_context.n_maps, 0);
     std::vector<int> peak_row(mapdiag_context.n_maps, fill_int);
@@ -6349,6 +6362,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<int> edge_guard_science_npix(mapdiag_context.n_maps, 0);
     std::vector<int> edge_guard_support_npix(mapdiag_context.n_maps, 0);
     std::vector<int> edge_guard_guardband_npix(mapdiag_context.n_maps, 0);
+    citlali::pipeline::MapdiagEdgeGuardIntRefs edge_guard_int_refs{
+        edge_guard_applied,
+        edge_guard_support_radius_pix,
+        edge_guard_science_npix,
+        edge_guard_support_npix,
+        edge_guard_guardband_npix};
 
     const std::size_t obs_table_size =
         citlali::pipeline::mapdiag_obs_table_size(mapdiag_context);
