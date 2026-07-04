@@ -6518,12 +6518,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     reduction_learning.options.map_pixel_outlier_source_radius_arcsec;
 
                 auto source_distance_arcsec = [&](Eigen::Index row, Eigen::Index col) {
-                    if (!std::isfinite(pix_arcsec) || pix_arcsec <= 0.0) {
-                        return fill_double;
-                    }
-                    const double drow = (static_cast<double>(row) - center_row) * pix_arcsec;
-                    const double dcol = (static_cast<double>(col) - center_col) * pix_arcsec;
-                    return std::hypot(drow, dcol);
+                    return citlali::pipeline::mapdiag_source_distance_arcsec(
+                        row, col, center_row, center_col, pix_arcsec,
+                        fill_double);
                 };
 
                 Eigen::ArrayXXd off_source_core_mask = core_mask;
