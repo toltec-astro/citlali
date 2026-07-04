@@ -718,6 +718,12 @@ inline void assign_mapdiag_candidate_contributor(
     candidate.sample = sample;
 }
 
+inline bool mapdiag_candidate_abs_z_greater(
+    const MapdiagMapPixelCandidate &a,
+    const MapdiagMapPixelCandidate &b) {
+    return std::abs(a.robust_z) > std::abs(b.robust_z);
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
