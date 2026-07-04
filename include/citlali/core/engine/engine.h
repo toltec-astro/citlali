@@ -6842,9 +6842,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 const double value = mb->signal[i](r, c);
                                 const double wt = mb->weight[i](r, c);
                                 const double sn = sig2noise(r, c);
-                                if (!citlali::pipeline::
-                                        mapdiag_is_valid_outlier_pixel_value(
-                                            value, wt, sn)) {
+                                if (!mapdiag_is_valid_current_outlier_pixel_value(
+                                        value, wt, sn)) {
                                     continue;
                                 }
 
