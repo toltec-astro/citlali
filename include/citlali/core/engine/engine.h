@@ -6155,9 +6155,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 (fits_io == &filtered_fits_io_vec) ||
                 (fits_io == &filtered_coadd_fits_io_vec);
             if (is_filtered_output &&
-                i < static_cast<Eigen::Index>(mb->point_source_uncertainty.size()) &&
-                mb->point_source_uncertainty[i].rows() == mb->n_rows &&
-                mb->point_source_uncertainty[i].cols() == mb->n_cols) {
+                citlali::pipeline::has_map_image_slot(
+                    mb->point_source_uncertainty, i, mb->n_rows,
+                    mb->n_cols)) {
                 add_map_hdu_with_wcs(
                     "point_source_flux_" + map_name + stokes_suffix,
                     mb->signal[i]);
