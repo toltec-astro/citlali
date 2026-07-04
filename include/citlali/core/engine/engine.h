@@ -6933,6 +6933,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [&]() {
             return "mapdiag:" + stage_name;
         };
+    auto mapdiag_outlier_record_reason =
+        [&](const map_pixel_candidate_t &candidate) {
+            return citlali::pipeline::mapdiag_map_pixel_outlier_reason(
+                candidate.has_contributor,
+                mb->contribution_diag_targeted);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
