@@ -51,6 +51,11 @@ void zero_mapdiag_obs_entry(
         obs_valid_pixels, obs_core_pixels);
 }
 
+inline void zero_mapdiag_obs_entry(std::size_t flat,
+                                   MapdiagObsTableRefs tables) {
+    assign_mapdiag_obs_entry(flat, 0.0, 0.0, 0, 0, tables);
+}
+
 template <class CoreMask, class ObsWeight, class DoubleValues, class IntValues>
 void accumulate_mapdiag_obs_weight(
     Eigen::Index map_i, std::size_t n_obsnums, Eigen::Index map_n_rows,
