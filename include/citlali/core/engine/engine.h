@@ -6821,13 +6821,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_matrix_double_value(
                 mb->contribution_total_variance_weight[map_st], row, col);
         };
-    auto assign_mapdiag_current_leave_one_out_z =
-        [](double value, double weight, double leave_one_out_value,
-           map_pixel_candidate_t &candidate) {
-            citlali::pipeline::mapdiag_assign_leave_one_out_z(
-                value, weight, leave_one_out_value,
-                candidate.leave_one_out_z);
-        };
     auto mapdiag_has_current_fallback_leave_one_out_inputs =
         [](double weight, double contrib_weight) {
             return citlali::pipeline::mapdiag_has_fallback_leave_one_out_inputs(
@@ -7127,9 +7120,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                                         total_signal,
                                                         contrib_signal,
                                                         remaining_weight);
-                                            assign_mapdiag_current_leave_one_out_z(
-                                                value, wt, loo_value,
-                                                candidate);
+                                            citlali::pipeline::
+                                                mapdiag_assign_leave_one_out_z(
+                                                    value, wt, loo_value,
+                                                    candidate.leave_one_out_z);
                                         }
                                         else if (mapdiag_has_current_fallback_leave_one_out_inputs(
                                                      wt, contrib_weight)) {
@@ -7140,9 +7134,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                                 mapdiag_fallback_leave_one_out_value(
                                                     raw_sum, contrib_signal,
                                                     wt, contrib_weight);
-                                            assign_mapdiag_current_leave_one_out_z(
-                                                value, wt, loo_value,
-                                                candidate);
+                                            citlali::pipeline::
+                                                mapdiag_assign_leave_one_out_z(
+                                                    value, wt, loo_value,
+                                                    candidate.leave_one_out_z);
                                         }
                                     }
                                 }
