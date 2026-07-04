@@ -6921,7 +6921,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                         mapdiag_current_contributor_signal(
                                             map_st, r, c);
                                     const double contrib_weight =
-                                        mb->contribution_weight[map_st](r, c);
+                                        mapdiag_current_contributor_weight(
+                                            map_st, r, c);
                                     const double contrib_variance_weight =
                                         mb->contribution_variance_weight[map_st](r, c);
                                     if (mapdiag_has_current_valid_contributor(
