@@ -7013,6 +7013,15 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             citlali::pipeline::assign_mapdiag_detector_penalty_dominance(
                 penalty, entry);
         };
+    auto make_mapdiag_current_detector_penalty =
+        [&](const detector_dominance_t &entry, int array_id) {
+            ReductionLearningState::DetectorPenalty penalty;
+            assign_mapdiag_current_detector_penalty_context(
+                penalty, entry, array_id);
+            assign_mapdiag_current_detector_penalty_dominance(
+                penalty, entry);
+            return penalty;
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
