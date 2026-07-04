@@ -6776,8 +6776,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 const auto off_source_values =
                     collect_mapdiag_off_source_values(
                         sig2noise, off_source_core_mask);
-                if (citlali::pipeline::mapdiag_has_minimum_samples(
-                        off_source_values.size(), 8)) {
+                if (mapdiag_has_enough_off_source_values(
+                        off_source_values)) {
                     const auto robust_stats =
                         citlali::pipeline::mapdiag_robust_center_stats(
                             mapdiag_stats, off_source_values);
