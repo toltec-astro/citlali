@@ -6786,8 +6786,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto mapdiag_current_source_protect_radius_arcsec =
         [&]() {
-            return reduction_learning.options
-                .map_pixel_outlier_source_radius_arcsec;
+            return citlali::pipeline::mapdiag_source_protect_radius_arcsec(
+                reduction_learning);
         };
     auto make_mapdiag_off_source_core_mask =
         [&](const auto &core_mask,

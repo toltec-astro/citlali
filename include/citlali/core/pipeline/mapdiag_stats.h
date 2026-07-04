@@ -1076,6 +1076,12 @@ bool mapdiag_outlier_diagnostics_enabled(
            reduction_learning.options.map_pixel_outlier_top_n > 0;
 }
 
+template <class ReductionLearning>
+double mapdiag_source_protect_radius_arcsec(
+    const ReductionLearning &reduction_learning) {
+    return reduction_learning.options.map_pixel_outlier_source_radius_arcsec;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
