@@ -6883,19 +6883,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_is_valid_outlier_pixel_value(
                 value, weight, sig2noise_value);
         };
-    auto mapdiag_current_source_distance_arcsec =
-        [](Eigen::Index row, Eigen::Index col,
-           const auto &source_distance_context) {
-            return citlali::pipeline::mapdiag_source_distance_arcsec(
-                row, col, source_distance_context);
-        };
     auto make_mapdiag_current_pixel_candidate =
         [&](Eigen::Index row, Eigen::Index col, double value,
             double weight, double n_eff, double z,
             const auto &source_distance_context) {
             return citlali::pipeline::make_mapdiag_map_pixel_candidate(
                 row, col, value, weight, n_eff, z,
-                mapdiag_current_source_distance_arcsec(
+                citlali::pipeline::mapdiag_source_distance_arcsec(
                     row, col, source_distance_context),
                 fill_int, fill_double);
         };
