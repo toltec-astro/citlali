@@ -6600,8 +6600,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                         mb->contribution_weight[map_st](r, c);
                                     const double contrib_variance_weight =
                                         mb->contribution_variance_weight[map_st](r, c);
-                                    if (uid != fill_int &&
-                                        std::isfinite(contrib_signal)) {
+                                    if (citlali::pipeline::
+                                            mapdiag_has_valid_contributor(
+                                                uid, fill_int,
+                                                contrib_signal)) {
                                         candidate.has_contributor = true;
                                         candidate.uid = uid;
                                         candidate.scan = mb->contribution_scan[map_st](r, c);
