@@ -584,6 +584,12 @@ inline bool mapdiag_has_valid_robust_center_stats(
            stats.robust_sigma > std::numeric_limits<double>::epsilon();
 }
 
+inline bool mapdiag_is_valid_outlier_pixel_value(double value, double weight,
+                                                 double sig2noise) {
+    return std::isfinite(value) && std::isfinite(weight) && weight > 0.0 &&
+           std::isfinite(sig2noise);
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
