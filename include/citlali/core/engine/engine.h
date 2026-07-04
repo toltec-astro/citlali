@@ -7172,7 +7172,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         auto candidates = make_mapdiag_pixel_candidates();
                         const bool have_contrib =
                             mapdiag_current_has_contribution_products(i);
-                        const double ptc_fs_hz = processed_time_chunk_fs_hz();
+                        const double ptc_fs_hz = mapdiag_current_ptc_fs_hz();
 
                         for (Eigen::Index r = 0; r < mb->n_rows; ++r) {
                             for (Eigen::Index c = 0; c < mb->n_cols; ++c) {
