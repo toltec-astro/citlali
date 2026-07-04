@@ -6852,11 +6852,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 entry.count, entry.max_abs_value,
                 entry.max_abs_leave_one_out_z);
         };
-    auto assign_mapdiag_current_noise_tail_samples =
-        [&](std::size_t map_idx, const auto &noise_samples) {
-            citlali::pipeline::assign_mapdiag_noise_tail_samples(
-                map_idx, mapdiag_stats, noise_samples, noise_tail_refs);
-        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = citlali::pipeline::mapdiag_size_index(i);
@@ -7122,8 +7117,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         noise_samples, mapdiag_stats, noise_matrix,
                         valid_core, valid_core_count, core_mask);
                 }
-                assign_mapdiag_current_noise_tail_samples(
-                    idx, noise_samples);
+                citlali::pipeline::assign_mapdiag_noise_tail_samples(
+                    idx, mapdiag_stats, noise_samples, noise_tail_refs);
             }
         }
 
