@@ -88,6 +88,13 @@ struct MapdiagPeakRefs {
     std::vector<int> &peak_col;
 };
 
+struct MapdiagWeightRefs {
+    std::vector<double> &weight_sum;
+    std::vector<double> &core_weight_sum;
+    std::vector<int> &n_valid_pixels;
+    std::vector<int> &n_core_pixels;
+};
+
 struct MapdiagCoreTailRefs {
     std::vector<double> &frac_abs3;
     std::vector<double> &frac_pos3;
