@@ -6992,10 +6992,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [](std::vector<map_pixel_candidate_t> &candidates) {
             citlali::pipeline::sort_mapdiag_pixel_candidates(candidates);
         };
-    auto sort_mapdiag_current_pixel_candidates =
-        [&](std::vector<map_pixel_candidate_t> &candidates) {
-            sort_mapdiag_pixel_candidates(candidates);
-        };
     auto mapdiag_pixel_candidate_emit_count =
         [&](const std::vector<map_pixel_candidate_t> &candidates) {
             return citlali::pipeline::mapdiag_candidate_emit_count(
@@ -7307,7 +7303,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             }
                         }
 
-                        sort_mapdiag_current_pixel_candidates(candidates);
+                        sort_mapdiag_pixel_candidates(candidates);
                         const std::size_t n_emit =
                             mapdiag_current_pixel_candidate_emit_count(
                                 candidates);
