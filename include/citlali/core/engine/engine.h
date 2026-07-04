@@ -6065,20 +6065,13 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 *fits_io->at(map_index).hdus.back(), rtcproc.kernel.type,
                 citlali::pipeline::kernel_type_comment());
 
-            // add fwhm
-            double fwhm = -99;
-            if (rtcproc.kernel.type!="fits") {
-                if (rtcproc.kernel.fwhm_rad<=0) {
-                    fwhm = (std::get<0>(calib.array_fwhms[calib.arrays(i)]) + std::get<1>(calib.array_fwhms[calib.arrays(i)]))/2;
-                }
-                else {
-                    fwhm = rtcproc.kernel.fwhm_rad*RAD_TO_ASEC;
-                }
-            }
-            if (!std::isfinite(fwhm)) {
+            double fwhm = citlali::pipeline::kernel_fwhm_arcsec(
+                rtcproc.kernel.type, rtcproc.kernel.fwhm_rad,
+                calib.array_fwhms[calib.arrays(i)], RAD_TO_ASEC);
+            if (citlali::pipeline::has_nonfinite_kernel_fwhm(fwhm)) {
                 logger->warn("non-finite kernel FWHM for map {} in {}; using -99", map_name,
                              fits_io->at(map_index).filepath);
-                fwhm = -99.0;
+                fwhm = citlali::pipeline::invalid_kernel_fwhm_arcsec();
             }
             citlali::pipeline::add_kernel_fwhm_key(
                 *fits_io->at(map_index).hdus.back(), fwhm);
