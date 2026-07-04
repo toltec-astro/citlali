@@ -6633,11 +6633,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                                     candidate
                                                         .leave_one_out_z);
                                         }
-                                        else if (std::isfinite(contrib_weight) &&
-                                                 contrib_weight >= 0.0 &&
-                                                 wt > contrib_weight &&
-                                                 (wt - contrib_weight) >
-                                                     std::numeric_limits<double>::epsilon()) {
+                                        else if (citlali::pipeline::
+                                                     mapdiag_has_fallback_leave_one_out_inputs(
+                                                         wt,
+                                                         contrib_weight)) {
                                             const double raw_sum = value * wt;
                                             const double loo_value =
                                                 (raw_sum - contrib_signal) /
