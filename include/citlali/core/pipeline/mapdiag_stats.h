@@ -485,6 +485,15 @@ inline double mapdiag_center_pixel_coordinate(Eigen::Index n_pixels) {
     return (static_cast<double>(n_pixels) - 1.0) / 2.0;
 }
 
+inline MapdiagSourceDistanceContext mapdiag_source_distance_context(
+    Eigen::Index n_rows, Eigen::Index n_cols, double pixel_size_arcsec,
+    double fill_value) {
+    return {mapdiag_center_pixel_coordinate(n_rows),
+            mapdiag_center_pixel_coordinate(n_cols),
+            pixel_size_arcsec,
+            fill_value};
+}
+
 inline double mapdiag_source_distance_arcsec(
     Eigen::Index row, Eigen::Index col, double center_row,
     double center_col, double pixel_size_arcsec, double fill_value) {
