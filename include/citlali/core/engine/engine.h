@@ -6815,20 +6815,19 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     const auto mapdiag_dims =
         citlali::pipeline::add_mapdiag_netcdf_dims(fo, mapdiag_context);
 
-    citlali::pipeline::add_mapdiag_identity_vars(
-        fo, {stage_name, mb->name, map_regime, telescope.source_name,
-             telescope.project_id, telescope.obs_goal});
-    citlali::pipeline::add_mapdiag_runtime_vars(
-        fo, {mb->pixel_size_rad, mb->cov_cut, mb->sig_unit});
-    citlali::pipeline::add_mapdiag_edge_guard_config_vars(
-        fo, {wiener_filter.edge_guard_enabled,
-             wiener_filter.edge_weight_threshold_mode,
-             wiener_filter.edge_hits_threshold_mode,
-             wiener_filter.edge_fill_mode,
-             wiener_filter.edge_taper_mode,
-             wiener_filter.edge_hits_core_fraction,
-             wiener_filter.edge_guard_radius_fwhm,
-             wiener_filter.edge_taper_min_fraction});
+    citlali::pipeline::add_mapdiag_metadata_vars(
+        fo,
+        {stage_name, mb->name, map_regime, telescope.source_name,
+         telescope.project_id, telescope.obs_goal},
+        {mb->pixel_size_rad, mb->cov_cut, mb->sig_unit},
+        {wiener_filter.edge_guard_enabled,
+         wiener_filter.edge_weight_threshold_mode,
+         wiener_filter.edge_hits_threshold_mode,
+         wiener_filter.edge_fill_mode,
+         wiener_filter.edge_taper_mode,
+         wiener_filter.edge_hits_core_fraction,
+         wiener_filter.edge_guard_radius_fwhm,
+         wiener_filter.edge_taper_min_fraction});
 
     citlali::pipeline::add_mapdiag_map_label_vars(
         fo, mapdiag_dims.maps, array_names, stokes_names, map_names);
