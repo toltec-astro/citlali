@@ -10,6 +10,10 @@ inline std::string chunk_summary_filename(long long scan_index) {
     return "chunk_summary_" + std::to_string(scan_index);
 }
 
+inline std::string map_summary_filename() {
+    return "map_summary";
+}
+
 inline void write_pipeline_version_summary(std::ostream &stream,
                                            const std::string &citlali_version,
                                            const std::string &kids_version) {

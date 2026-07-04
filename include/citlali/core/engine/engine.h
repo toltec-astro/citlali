@@ -5690,7 +5690,7 @@ void Engine::write_map_summary(map_buffer_t &mb) {
 
     logger->debug("writing map summary files");
 
-    std::string filename = "map_summary";
+    const auto filename = citlali::pipeline::map_summary_filename();
     std::ofstream f;
     f.open (obsnum_dir_name+"/logs/" + filename + ".log");
 
