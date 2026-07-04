@@ -333,6 +333,10 @@ double mapdiag_mask_count_as_double(const Mask &mask) {
     return static_cast<double>(mask.count());
 }
 
+inline bool mapdiag_has_positive_count(double count) {
+    return count > 0.0;
+}
+
 template <class Mask>
 int mapdiag_mask_sum_as_int(const Mask &mask) {
     return static_cast<int>(mask.sum());
