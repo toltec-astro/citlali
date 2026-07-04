@@ -5989,9 +5989,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         add_map_hdu_with_wcs(
             citlali::pipeline::signal_map_hdu_name(map_name, stokes_suffix),
             mb->signal[i]);
-        citlali::pipeline::add_image_unit_description_keys(
-            *fits_io->at(map_index).hdus.back(), mb->sig_unit,
-            citlali::pipeline::signal_map_description());
+        citlali::pipeline::add_signal_map_metadata(
+            *fits_io->at(map_index).hdus.back(), mb->sig_unit);
 
         // weight map
         add_map_hdu_with_wcs(
