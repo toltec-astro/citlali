@@ -7005,7 +7005,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             citlali::pipeline::update_mapdiag_detector_dominance(
                 dominance, candidate, fill_int);
         };
-    auto mapdiag_outlier_record_producer =
+    auto mapdiag_current_record_producer =
         [&]() {
             return citlali::pipeline::mapdiag_record_producer(stage_name);
         };
@@ -7022,7 +7022,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [&](Eigen::Index map_i, const map_pixel_candidate_t &candidate) {
             return citlali::pipeline::make_mapdiag_outlier_record<
                 ReductionLearningState::MapPixelOutlier>(
-                    obsnum, mapdiag_outlier_record_producer(),
+                    obsnum, mapdiag_current_record_producer(),
                     mapdiag_outlier_record_reason(candidate), fruit_iter,
                     mapdiag_outlier_record_map_index(map_i), candidate);
         };
@@ -7050,10 +7050,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_dominance_meets_min_pixels(
                 entry, min_pixels);
         };
-    auto mapdiag_detector_penalty_producer =
-        [&]() {
-            return citlali::pipeline::mapdiag_record_producer(stage_name);
-        };
     auto mapdiag_detector_penalty_reason =
         []() {
             return citlali::pipeline::
@@ -7063,7 +7059,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [&](const detector_dominance_t &entry, int array_id) {
             return citlali::pipeline::make_mapdiag_detector_penalty<
                 ReductionLearningState::DetectorPenalty>(
-                    obsnum, mapdiag_detector_penalty_producer(),
+                    obsnum, mapdiag_current_record_producer(),
                     mapdiag_detector_penalty_reason(), fruit_iter, entry,
                     array_id);
         };
