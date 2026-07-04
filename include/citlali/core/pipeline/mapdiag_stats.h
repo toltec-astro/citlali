@@ -73,6 +73,13 @@ struct MapdiagFormalNoiseStats {
     double empirical_to_formal_ratio;
 };
 
+struct MapdiagSourceDistanceContext {
+    double center_row;
+    double center_col;
+    double pixel_size_arcsec;
+    double fill_value;
+};
+
 struct MapdiagWeightStats {
     int n_valid_pixels;
     int n_core_pixels;
