@@ -280,6 +280,16 @@ inline double weight_threshold_or_zero(double weight_threshold) {
                                                             : weight_threshold;
 }
 
+template <class Matrix>
+Eigen::MatrixXd coverage_mask_from_weight(const Matrix &weight,
+                                          double weight_threshold) {
+    Eigen::MatrixXd ones;
+    Eigen::MatrixXd zeros;
+    ones.setOnes(weight.rows(), weight.cols());
+    zeros.setZero(weight.rows(), weight.cols());
+    return (weight.array() < weight_threshold).select(zeros, ones);
+}
+
 template <class Hdu>
 void add_image_unit_keys(Hdu &hdu, const std::string &unit) {
     hdu.addKey("UNIT", unit, "Unit of map");
