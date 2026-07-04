@@ -7002,6 +7002,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [](double value, double weight) {
             return value * weight;
         };
+    auto mapdiag_current_candidate_raw_weighted_signal =
+        [&](double value, double weight) {
+            return mapdiag_raw_weighted_signal(value, weight);
+        };
     auto mapdiag_fallback_leave_one_out_value =
         [](double raw_sum, double contrib_signal, double weight,
            double contrib_weight) {
