@@ -6364,16 +6364,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
     std::string stage_name = citlali::pipeline::mapdiag_stage_name<map_t>();
 
-    auto accumulate_obs_weight = [&](Eigen::Index map_i,
-                                     const Eigen::ArrayXXd &core_mask,
-                                     const Eigen::MatrixXd &obs_weight,
-                                     std::size_t obs_index) {
-        citlali::pipeline::accumulate_mapdiag_obs_weight(
-            map_i, mapdiag_context.n_obsnums, mb->n_rows, mb->n_cols,
-            core_mask, obs_weight, obs_index, obs_weight_sum,
-            obs_core_weight_sum, obs_valid_pixels, obs_core_pixels);
-    };
-
     struct map_pixel_candidate_t {
         int row = citlali::pipeline::mapdiag_fill_int();
         int col = citlali::pipeline::mapdiag_fill_int();
@@ -6839,7 +6829,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         citlali::pipeline::mapdiag_weight_hdu_name(
                             map_names[idx], stokes_names[idx]);
                     auto obs_weight = obs_fits.get_hdu(weight_hdu_name);
-                    accumulate_obs_weight(i, core_mask, obs_weight, obs_idx);
+                    citlali::pipeline::accumulate_mapdiag_obs_weight(
+                        i, mapdiag_context.n_obsnums, mb->n_rows, mb->n_cols,
+                        core_mask, obs_weight, obs_idx, obs_tables);
                 } catch (const std::exception &e) {
                     logger->warn("failed to derive mapdiag contribution from {} [{}]: {}", obs_weight_path,
                                  citlali::pipeline::mapdiag_weight_hdu_name(
