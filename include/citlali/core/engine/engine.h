@@ -6660,11 +6660,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         const auto core_mask =
             citlali::pipeline::mapdiag_core_weight_mask(weight_arr,
                                                         weight_threshold);
-        citlali::pipeline::assign_mapdiag_weight_stats(
-            idx,
-            citlali::pipeline::mapdiag_weight_stats(
-                weight_arr, valid_mask, core_mask),
-            weight_refs);
+        assign_mapdiag_current_weight_stats(
+            idx, weight_arr, valid_mask, core_mask);
 
         citlali::pipeline::assign_mapdiag_formal_noise_stats(
             idx,
