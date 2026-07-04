@@ -7291,8 +7291,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     auto make_mapdiag_current_noise_matrix =
         [&](Eigen::Index map_i, Eigen::Index realization_i) {
             return citlali::pipeline::mapdiag_noise_matrix(
-                mb->noise[map_i].data(), realization_i, mb->n_rows,
-                mb->n_cols);
+                mb->noise[map_i].data(), realization_i,
+                mapdiag_current_n_rows(), mapdiag_current_n_cols());
         };
     auto add_mapdiag_current_noise_realization_samples =
         [&](auto &noise_samples, const auto &noise_matrix,
