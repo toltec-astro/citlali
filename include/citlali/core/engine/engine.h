@@ -6757,11 +6757,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         noise_samples, mapdiag_stats, noise_matrix,
                         valid_core, valid_core_count, core_mask);
                 }
-                const auto noise_summary =
-                    citlali::pipeline::summarize_mapdiag_noise_tail_samples(
-                        mapdiag_stats, noise_samples);
-                citlali::pipeline::assign_mapdiag_noise_tail_summary(
-                    idx, noise_summary, noise_tail_refs);
+                citlali::pipeline::assign_mapdiag_noise_tail_samples(
+                    idx, mapdiag_stats, noise_samples, noise_tail_refs);
             }
         }
 
