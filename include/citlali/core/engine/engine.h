@@ -6508,19 +6508,15 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 reduction_learning.options.map_pixel_outlier_diagnostics_enabled &&
                 reduction_learning.options.map_pixel_outlier_top_n > 0) {
                 const double pix_arcsec = mb->pixel_size_rad * RAD_TO_ASEC;
-                const double center_row =
-                    citlali::pipeline::mapdiag_center_pixel_coordinate(
-                        mb->n_rows);
-                const double center_col =
-                    citlali::pipeline::mapdiag_center_pixel_coordinate(
-                        mb->n_cols);
+                const auto source_distance_context =
+                    citlali::pipeline::mapdiag_source_distance_context(
+                        mb->n_rows, mb->n_cols, pix_arcsec, fill_double);
                 const double protect_radius =
                     reduction_learning.options.map_pixel_outlier_source_radius_arcsec;
 
                 auto source_distance_arcsec = [&](Eigen::Index row, Eigen::Index col) {
                     return citlali::pipeline::mapdiag_source_distance_arcsec(
-                        row, col, center_row, center_col, pix_arcsec,
-                        fill_double);
+                        row, col, source_distance_context);
                 };
 
                 Eigen::ArrayXXd off_source_core_mask = core_mask;
