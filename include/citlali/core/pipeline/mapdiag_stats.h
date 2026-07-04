@@ -67,6 +67,12 @@ struct MapdiagNoiseProductStats {
     double valid_pixels;
 };
 
+struct MapdiagFormalNoiseStats {
+    double median_err;
+    double median_rms;
+    double empirical_to_formal_ratio;
+};
+
 struct MapdiagWeightStats {
     int n_valid_pixels;
     int n_core_pixels;
