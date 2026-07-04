@@ -5749,7 +5749,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     auto beam_area_rad = citlali::pipeline::gaussian_beam_area_sr(
         fwhm, FWHM_TO_STD, ASEC_TO_RAD, pi);
     // get Jy/pixel
-    auto mJy_beam_to_Jy_px = 1e-3/beam_area_rad*pow(mb->pixel_size_rad,2);
+    auto mJy_beam_to_Jy_px =
+        citlali::pipeline::mjy_beam_to_jy_pixel_factor(
+            beam_area_rad, mb->pixel_size_rad);
 
     auto get_tel_header_scalar = [&](const std::string &key, double fallback) {
         return citlali::pipeline::telescope_header_scalar(
