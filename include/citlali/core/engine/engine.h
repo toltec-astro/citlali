@@ -6280,11 +6280,9 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
             rtcproc.polarization.stokes_params, map_name, map_index,
             stokes_index);
 
-        citlali::pipeline::add_histogram_pair(
-            fo, name, hist_bins_dim, mb->hist_bins[i], mb->hists[i]);
-
-        citlali::pipeline::add_noise_histogram_if_present(
-            fo, mb->noise, name, hist_bins_dim, mb->noise_hists, i);
+        citlali::pipeline::add_spectral_histogram_product(
+            fo, mb->noise, name, hist_bins_dim, mb->hist_bins, mb->hists,
+            mb->noise_hists, i);
     }
     });
 }
