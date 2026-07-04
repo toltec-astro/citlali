@@ -77,6 +77,16 @@ struct MapdiagMetadataVars {
     MapdiagEdgeGuardConfigVars edge_guard;
 };
 
+struct MapdiagLabelVars {
+    const std::vector<std::string> &array_names;
+    const std::vector<std::string> &stokes_names;
+    const std::vector<std::string> &map_names;
+    const std::vector<std::string> &obsnums;
+    const std::string &fallback_obsnum;
+    const std::vector<std::string> &date_obs;
+    std::size_t n_obsnums;
+};
+
 inline MapdiagNetcdfDims add_mapdiag_netcdf_dims(
     netCDF::NcFile &fo, const MapdiagSizeContext &context) {
     netCDF::NcDim maps_dim =
