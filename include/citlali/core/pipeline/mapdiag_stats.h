@@ -101,6 +101,14 @@ struct MapdiagMapPixelCandidate {
     bool has_contributor;
 };
 
+struct MapdiagDetectorDominance {
+    int uid;
+    int scan;
+    int count;
+    double max_abs_value;
+    double max_abs_leave_one_out_z;
+};
+
 struct MapdiagWeightStats {
     int n_valid_pixels;
     int n_core_pixels;
