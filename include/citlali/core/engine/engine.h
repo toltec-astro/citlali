@@ -6824,11 +6824,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 }
 
                                 const double n_eff =
-                                    citlali::pipeline::
-                                        mapdiag_effective_samples_or_fill(
-                                            mb->coverage, i, r, c, mb->n_rows,
-                                            mb->n_cols, ptc_fs_hz,
-                                            fill_double);
+                                    mapdiag_current_effective_samples(
+                                        i, r, c, ptc_fs_hz);
                                 if (!citlali::pipeline::
                                         mapdiag_passes_min_effective_samples(
                                             n_eff,
