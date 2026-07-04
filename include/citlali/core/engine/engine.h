@@ -6417,23 +6417,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             citlali::pipeline::mapdiag_weight_threshold_or_zero(
                 weight_threshold);
         weight_thresholds[idx] = weight_threshold;
-        if (idx < mb->edge_guard_applied.size()) {
-            edge_guard_applied[idx] = mb->edge_guard_applied[idx];
-            edge_guard_support_radius_pix[idx] = mb->edge_guard_support_radius_pix[idx];
-            edge_guard_science_npix[idx] = mb->edge_guard_science_npix[idx];
-            edge_guard_support_npix[idx] = mb->edge_guard_support_npix[idx];
-            edge_guard_guardband_npix[idx] = mb->edge_guard_guardband_npix[idx];
-            edge_guard_weight_thresholds[idx] = mb->edge_guard_weight_threshold[idx];
-            edge_guard_hits_thresholds[idx] = mb->edge_guard_hits_threshold[idx];
-            edge_guard_background_levels[idx] = mb->edge_guard_background_level[idx];
-            edge_guard_science_frac[idx] = mb->edge_guard_science_frac[idx];
-            edge_guard_support_frac[idx] = mb->edge_guard_support_frac[idx];
-            edge_guard_guardband_rms_pre[idx] = mb->edge_guard_guardband_rms_pre[idx];
-            edge_guard_guardband_rms_post[idx] = mb->edge_guard_guardband_rms_post[idx];
-            edge_guard_exterior_rms_pre[idx] = mb->edge_guard_exterior_rms_pre[idx];
-            edge_guard_exterior_rms_post[idx] = mb->edge_guard_exterior_rms_post[idx];
-            edge_guard_exterior_max_abs_pre[idx] = mb->edge_guard_exterior_max_abs_pre[idx];
-            edge_guard_exterior_max_abs_post[idx] = mb->edge_guard_exterior_max_abs_post[idx];
+        if (citlali::pipeline::mapdiag_has_edge_guard_entry(idx, *mb)) {
+            citlali::pipeline::assign_mapdiag_edge_guard_int_entry(
+                idx, *mb, edge_guard_int_refs);
+            citlali::pipeline::assign_mapdiag_edge_guard_double_entry(
+                idx, *mb, edge_guard_double_refs);
         }
 
         const auto weight_arr = mb->weight[i].array();
