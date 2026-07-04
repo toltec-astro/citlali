@@ -82,6 +82,22 @@ inline void put_netcdf_string_1d(
     }
 }
 
+inline void add_mapdiag_map_label_vars(
+    netCDF::NcFile &fo, netCDF::NcDim maps_dim,
+    const std::vector<std::string> &array_names,
+    const std::vector<std::string> &stokes_names,
+    const std::vector<std::string> &map_names) {
+    put_netcdf_string_1d(
+        fo, "map_array_name", maps_dim, array_names,
+        "array label for each map row");
+    put_netcdf_string_1d(
+        fo, "map_stokes", maps_dim, stokes_names,
+        "stokes parameter label for each map row");
+    put_netcdf_string_1d(
+        fo, "map_name", maps_dim, map_names,
+        "grouping-derived map label prefix for each map row");
+}
+
 inline void add_mapdiag_double_1d(
     netCDF::NcFile &fo, const std::string &name,
     const std::string &comment, netCDF::NcDim dim,
