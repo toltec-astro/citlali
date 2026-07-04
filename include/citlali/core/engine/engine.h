@@ -7285,7 +7285,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     make_mapdiag_current_source_distance_context();
 
                 Eigen::ArrayXXd off_source_core_mask =
-                    make_mapdiag_off_source_core_mask(
+                    make_mapdiag_current_off_source_core_mask(
                         core_mask, source_distance_context);
 
                 const auto off_source_values =
