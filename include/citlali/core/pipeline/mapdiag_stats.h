@@ -1082,6 +1082,12 @@ double mapdiag_source_protect_radius_arcsec(
     return reduction_learning.options.map_pixel_outlier_source_radius_arcsec;
 }
 
+template <class ReductionLearning>
+double mapdiag_min_effective_samples(
+    const ReductionLearning &reduction_learning) {
+    return reduction_learning.options.map_pixel_outlier_min_n_eff;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
