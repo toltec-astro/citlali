@@ -6784,8 +6784,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 if (mapdiag_has_enough_off_source_values(
                         off_source_values)) {
                     const auto robust_stats =
-                        citlali::pipeline::mapdiag_robust_center_stats(
-                            mapdiag_stats, off_source_values);
+                        make_mapdiag_robust_center_stats(
+                            off_source_values);
                     if (citlali::pipeline::
                             mapdiag_has_valid_robust_center_stats(
                                 robust_stats)) {
