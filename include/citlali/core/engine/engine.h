@@ -7078,6 +7078,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             }
             assign_mapdiag_detector_dominance_stats(*it, candidate);
         };
+    auto make_mapdiag_detector_dominance_list =
+        []() {
+            return std::vector<detector_dominance_t>{};
+        };
     auto mapdiag_outlier_record_producer =
         [&]() {
             return "mapdiag:" + stage_name;
