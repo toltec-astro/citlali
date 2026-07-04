@@ -227,6 +227,13 @@ bool mapdiag_has_coverage_map(const CoverageList &coverage, Eigen::Index i) {
            i < static_cast<Eigen::Index>(coverage.size());
 }
 
+template <class NoiseList>
+bool mapdiag_has_noise_realizations(
+    const NoiseList &noise, Eigen::Index i, Eigen::Index n_noise) {
+    return !noise.empty() && i >= 0 &&
+           i < static_cast<Eigen::Index>(noise.size()) && n_noise > 0;
+}
+
 inline void assign_mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value, double &coverage_sum, double &coverage_max,
