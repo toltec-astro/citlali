@@ -6198,11 +6198,10 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                               static_cast<long long>(i), static_cast<long long>(mb->noise.size()));
                 std::exit(EXIT_FAILURE);
             }
-            double median_rms = 0.0;
-            if (i < mb->median_rms.size() && std::isfinite(mb->median_rms(i))) {
-                median_rms = mb->median_rms(i);
-            }
-            else if (i < mb->median_rms.size()) {
+            const double median_rms =
+                citlali::pipeline::map_median_rms_or_zero(mb->median_rms, i);
+            if (citlali::pipeline::has_nonfinite_map_median_rms(
+                    mb->median_rms, i)) {
                 logger->warn("non-finite median_rms for map {} in {}; using 0", map_name,
                              noise_fits_io->at(map_index).filepath);
             }
