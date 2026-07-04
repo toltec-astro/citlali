@@ -7,6 +7,18 @@
 
 namespace citlali::pipeline {
 
+template <class DoubleValues, class IntValues>
+void assign_mapdiag_obs_entry(
+    std::size_t flat, double weight_sum, double core_weight_sum,
+    int valid_pixels, int core_pixels, DoubleValues &obs_weight_sum,
+    DoubleValues &obs_core_weight_sum, IntValues &obs_valid_pixels,
+    IntValues &obs_core_pixels) {
+    obs_weight_sum[flat] = weight_sum;
+    obs_core_weight_sum[flat] = core_weight_sum;
+    obs_valid_pixels[flat] = valid_pixels;
+    obs_core_pixels[flat] = core_pixels;
+}
+
 template <class CoreMask, class ObsWeight, class DoubleValues, class IntValues>
 void accumulate_mapdiag_obs_weight(
     Eigen::Index map_i, std::size_t n_obsnums, Eigen::Index map_n_rows,
