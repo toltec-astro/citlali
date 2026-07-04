@@ -6323,6 +6323,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<double> core_tail_excess_pos3(mapdiag_context.n_maps, fill_double);
     std::vector<double> core_tail_excess_neg3(mapdiag_context.n_maps, fill_double);
     std::vector<double> core_sig2noise_skew(mapdiag_context.n_maps, fill_double);
+    citlali::pipeline::MapdiagCoreTailRefs core_tail_refs{
+        core_tail_frac_abs3,
+        core_tail_frac_pos3,
+        core_tail_frac_neg3,
+        core_tail_excess_abs3,
+        core_tail_excess_pos3,
+        core_tail_excess_neg3,
+        core_sig2noise_skew};
     std::vector<double> noise_tail_frac_abs3(mapdiag_context.n_maps, fill_double);
     std::vector<double> noise_tail_frac_pos3(mapdiag_context.n_maps, fill_double);
     std::vector<double> noise_tail_frac_neg3(mapdiag_context.n_maps, fill_double);
