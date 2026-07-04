@@ -6409,6 +6409,16 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         edge_guard_science_npix,
         edge_guard_support_npix,
         edge_guard_guardband_npix};
+    citlali::pipeline::MapdiagMapIntValues map_int_values{
+        n_valid_pixels,
+        n_core_pixels,
+        peak_row,
+        peak_col,
+        edge_guard_applied,
+        edge_guard_support_radius_pix,
+        edge_guard_science_npix,
+        edge_guard_support_npix,
+        edge_guard_guardband_npix};
 
     const std::size_t obs_table_size =
         citlali::pipeline::mapdiag_obs_table_size(mapdiag_context);
