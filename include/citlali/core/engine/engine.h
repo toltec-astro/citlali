@@ -6294,11 +6294,10 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
         // get the stokes parameter for the given map
         Eigen::Index stokes_index = maps_to_stokes(i);
 
-        // array index
-        auto array = calib.arrays[map_index];
-        const std::string name = citlali::pipeline::spectral_product_base_name(
-            toltec_io.array_name_map[array], map_name,
-            rtcproc.polarization.stokes_params[stokes_index]);
+        const std::string name = citlali::pipeline::spectral_product_name(
+            toltec_io.array_name_map, calib.arrays,
+            rtcproc.polarization.stokes_params, map_name, map_index,
+            stokes_index);
 
         citlali::pipeline::add_histogram_pair(
             fo, name, hist_bins_dim, mb->hist_bins[i], mb->hists[i]);
