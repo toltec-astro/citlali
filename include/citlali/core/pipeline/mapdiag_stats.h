@@ -621,6 +621,16 @@ bool mapdiag_has_contribution_products(const MapBuffer &mb, Eigen::Index i) {
                mb->n_cols;
 }
 
+template <class MapBuffer>
+Eigen::Index mapdiag_n_rows(const MapBuffer &mb) {
+    return mb->n_rows;
+}
+
+template <class MapBuffer>
+Eigen::Index mapdiag_n_cols(const MapBuffer &mb) {
+    return mb->n_cols;
+}
+
 inline bool mapdiag_has_valid_contributor(int uid, int fill_int,
                                           double contribution_signal) {
     return uid != fill_int && std::isfinite(contribution_signal);

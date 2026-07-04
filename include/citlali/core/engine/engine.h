@@ -6543,11 +6543,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         };
     auto mapdiag_current_n_rows =
         [&]() {
-            return mb->n_rows;
+            return citlali::pipeline::mapdiag_n_rows(mb);
         };
     auto mapdiag_current_n_cols =
         [&]() {
-            return mb->n_cols;
+            return citlali::pipeline::mapdiag_n_cols(mb);
         };
     auto mapdiag_current_outlier_diagnostics_enabled =
         [&]() {
