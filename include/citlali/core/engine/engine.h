@@ -6929,6 +6929,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             }
             assign_mapdiag_detector_dominance_stats(*it, candidate);
         };
+    auto mapdiag_outlier_record_producer =
+        [&]() {
+            return "mapdiag:" + stage_name;
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
