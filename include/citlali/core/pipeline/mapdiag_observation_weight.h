@@ -151,6 +151,18 @@ void assign_mapdiag_obs_fraction_pair(
         map_index, core_weight_frac);
 }
 
+template <class SourceValues, class DestValues, class Context>
+void assign_mapdiag_obs_fraction_pair(
+    const SourceValues &weight_sum, double total_weight,
+    const SourceValues &core_weight_sum, double total_core_weight,
+    double fill_value, const Context &context, std::size_t map_index,
+    DestValues &weight_frac, DestValues &core_weight_frac) {
+    assign_mapdiag_obs_fraction_pair(
+        weight_sum, total_weight, core_weight_sum, total_core_weight,
+        fill_value, context.n_obsnums, map_index, weight_frac,
+        core_weight_frac);
+}
+
 template <class Values>
 double sum_mapdiag_obs_values(const Values &values, std::size_t n_obsnums,
                               std::size_t map_index) {
