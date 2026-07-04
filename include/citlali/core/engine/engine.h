@@ -7282,7 +7282,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             assign_mapdiag_weight_threshold(i, idx);
         assign_mapdiag_current_edge_guard(idx);
 
-        const auto weight_arr = mb->weight[i].array();
+        const auto weight_arr = make_mapdiag_current_weight_array(i);
         const auto valid_mask =
             make_mapdiag_current_valid_weight_mask(weight_arr);
         const auto core_mask =
