@@ -6770,6 +6770,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return mapdiag_stats.collect_masked_values(
                 sig2noise, off_source_core_mask);
         };
+    auto collect_mapdiag_current_off_source_values =
+        [&](const Eigen::MatrixXd &sig2noise,
+            const Eigen::ArrayXXd &off_source_core_mask) {
+            return collect_mapdiag_off_source_values(
+                sig2noise, off_source_core_mask);
+        };
     auto mapdiag_has_enough_off_source_values =
         [](const std::vector<double> &values) {
             return citlali::pipeline::mapdiag_has_minimum_samples(
