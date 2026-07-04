@@ -6999,12 +6999,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 citlali::pipeline::mapdiag_candidate_top_n(
                     reduction_learning));
         };
-    auto mapdiag_current_emitted_candidate =
-        [](const std::vector<map_pixel_candidate_t> &candidates,
-           std::size_t index) -> const map_pixel_candidate_t & {
-            return citlali::pipeline::mapdiag_emitted_candidate(
-                candidates, index);
-        };
     auto update_mapdiag_detector_dominance =
         [&](std::vector<detector_dominance_t> &dominance,
             const map_pixel_candidate_t &candidate) {
@@ -7308,7 +7302,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
                         for (std::size_t ci = 0; ci < n_emit; ++ci) {
                             const auto &candidate =
-                                mapdiag_current_emitted_candidate(
+                                citlali::pipeline::mapdiag_emitted_candidate(
                                     candidates, ci);
                             auto record =
                                 make_mapdiag_current_outlier_record(
