@@ -6783,6 +6783,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [&]() {
             return processed_time_chunk_fs_hz();
         };
+    auto mapdiag_current_mask_pixel_is_selected =
+        [](const auto &mask, Eigen::Index row, Eigen::Index col) {
+            return citlali::pipeline::mapdiag_mask_pixel_is_selected(
+                mask, row, col);
+        };
     auto mapdiag_current_effective_samples =
         [&](Eigen::Index map_i, Eigen::Index row, Eigen::Index col,
             double ptc_fs_hz) {
