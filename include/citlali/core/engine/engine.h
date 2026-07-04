@@ -6770,6 +6770,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_has_valid_robust_center_stats(
                 robust_stats);
         };
+    auto mapdiag_is_valid_current_outlier_pixel_value =
+        [](double value, double weight, double sig2noise_value) {
+            return citlali::pipeline::mapdiag_is_valid_outlier_pixel_value(
+                value, weight, sig2noise_value);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
