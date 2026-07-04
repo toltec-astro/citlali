@@ -6632,11 +6632,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         const auto stokes_index = maps_to_stokes(i);
         assign_mapdiag_current_labels(i, idx, map_index, stokes_index);
 
-        auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = mb->calc_cov_region(i);
-        weight_threshold =
-            citlali::pipeline::mapdiag_weight_threshold_or_zero(
-                weight_threshold);
-        weight_thresholds[idx] = weight_threshold;
+        const auto weight_threshold =
+            assign_mapdiag_weight_threshold(i, idx);
         if (citlali::pipeline::mapdiag_has_edge_guard_entry(idx, *mb)) {
             citlali::pipeline::assign_mapdiag_edge_guard_int_entry(
                 idx, *mb, edge_guard_int_refs);
