@@ -6704,7 +6704,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 ReductionLearningState::DetectorPenalty penalty;
                                 penalty.obsnum = obsnum;
                                 penalty.producer = "mapdiag:" + stage_name;
-                                penalty.reason = "map_pixel_outlier_detector_dominance";
+                                penalty.reason =
+                                    citlali::pipeline::
+                                        mapdiag_detector_dominance_penalty_reason();
                                 penalty.iter = fruit_iter;
                                 penalty.scan = entry.scan;
                                 penalty.uid = entry.uid;
