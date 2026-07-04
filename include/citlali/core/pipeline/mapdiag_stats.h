@@ -399,9 +399,15 @@ inline bool mapdiag_has_signal_weight_samples(
 }
 
 template <class Matrix>
+auto mapdiag_matrix_value(const Matrix &matrix, Eigen::Index row,
+                          Eigen::Index col) {
+    return matrix(row, col);
+}
+
+template <class Matrix>
 double mapdiag_matrix_double_value(const Matrix &matrix, Eigen::Index row,
                                    Eigen::Index col) {
-    return matrix(row, col);
+    return static_cast<double>(mapdiag_matrix_value(matrix, row, col));
 }
 
 inline Eigen::MatrixXd mapdiag_sig2noise_image(
