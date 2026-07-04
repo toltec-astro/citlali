@@ -6781,6 +6781,16 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_source_distance_arcsec(
                 row, col, source_distance_context);
         };
+    auto make_mapdiag_current_pixel_candidate =
+        [&](Eigen::Index row, Eigen::Index col, double value,
+            double weight, double n_eff, double z,
+            const auto &source_distance_context) {
+            return citlali::pipeline::make_mapdiag_map_pixel_candidate(
+                row, col, value, weight, n_eff, z,
+                mapdiag_current_source_distance_arcsec(
+                    row, col, source_distance_context),
+                fill_int, fill_double);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
