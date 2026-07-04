@@ -7242,8 +7242,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 }
             }
 
-            if (citlali::pipeline::mapdiag_has_noise_realizations(
-                    mb->noise, i, mb->n_noise)) {
+            if (mapdiag_current_has_noise_realizations(i)) {
                 auto noise_samples =
                     citlali::pipeline::make_mapdiag_noise_tail_samples(
                         static_cast<std::size_t>(mb->n_noise));
