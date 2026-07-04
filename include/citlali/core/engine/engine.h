@@ -6625,6 +6625,15 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             weight_thresholds[idx] = weight_threshold;
             return weight_threshold;
         };
+    auto assign_mapdiag_current_edge_guard =
+        [&](std::size_t idx) {
+            if (citlali::pipeline::mapdiag_has_edge_guard_entry(idx, *mb)) {
+                citlali::pipeline::assign_mapdiag_edge_guard_int_entry(
+                    idx, *mb, edge_guard_int_refs);
+                citlali::pipeline::assign_mapdiag_edge_guard_double_entry(
+                    idx, *mb, edge_guard_double_refs);
+            }
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
