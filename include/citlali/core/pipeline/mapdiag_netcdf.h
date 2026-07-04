@@ -617,4 +617,13 @@ inline void add_mapdiag_observation_contribution_vars(
         add_double, add_int, double_values, int_values);
 }
 
+inline void add_mapdiag_value_vars(
+    netCDF::NcFile &fo, const MapdiagNetcdfDims &dims,
+    const MapdiagValueVars &values) {
+    add_mapdiag_map_double_vars(fo, dims, values.map_double);
+    add_mapdiag_map_int_vars(fo, dims, values.map_int);
+    add_mapdiag_observation_contribution_vars(
+        fo, dims, values.observation_double, values.observation_int);
+}
+
 }  // namespace citlali::pipeline
