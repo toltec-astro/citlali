@@ -6969,6 +6969,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
            double remaining_weight) {
             return (total_signal - contrib_signal) / remaining_weight;
         };
+    auto mapdiag_current_candidate_full_leave_one_out_value =
+        [&](double total_signal, double contrib_signal,
+            double remaining_weight) {
+            return mapdiag_full_leave_one_out_value(
+                total_signal, contrib_signal, remaining_weight);
+        };
     auto assign_mapdiag_current_leave_one_out_z =
         [](double value, double weight, double leave_one_out_value,
            map_pixel_candidate_t &candidate) {
