@@ -6069,9 +6069,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             citlali::pipeline::add_kernel_fwhm_key(
                 *fits_io->at(map_index).hdus.back(), fwhm);
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-            citlali::pipeline::add_image_unit_description_keys(
-                *fits_io->at(map_index).hdus.back(), mb->sig_unit,
-                citlali::pipeline::kernel_map_description());
+            citlali::pipeline::add_kernel_map_metadata(
+                *fits_io->at(map_index).hdus.back(), mb->sig_unit);
         }
 
         // coverage map
