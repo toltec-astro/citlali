@@ -32,6 +32,8 @@ struct MapdiagStatsContext {
     MapdiagTailStats tail_stats(const std::vector<double> &values) const;
 };
 
+inline void mapdiag_append_finite(std::vector<double> &values, double value);
+
 struct MapdiagNoiseTailSamples {
     std::vector<double> rms;
     std::vector<double> tail_abs;
@@ -43,6 +45,7 @@ struct MapdiagNoiseTailSamples {
     std::vector<double> skew;
 
     void reserve(std::size_t n_noise);
+    void add_tail_stats(const MapdiagTailStats &stats);
 };
 
 inline void MapdiagNoiseTailSamples::reserve(std::size_t n_noise) {
@@ -54,6 +57,17 @@ inline void MapdiagNoiseTailSamples::reserve(std::size_t n_noise) {
     excess_pos.reserve(n_noise);
     excess_neg.reserve(n_noise);
     skew.reserve(n_noise);
+}
+
+inline void MapdiagNoiseTailSamples::add_tail_stats(
+    const MapdiagTailStats &stats) {
+    mapdiag_append_finite(tail_abs, stats.frac_abs3);
+    mapdiag_append_finite(tail_pos, stats.frac_pos3);
+    mapdiag_append_finite(tail_neg, stats.frac_neg3);
+    mapdiag_append_finite(excess_abs, stats.excess_abs3);
+    mapdiag_append_finite(excess_pos, stats.excess_pos3);
+    mapdiag_append_finite(excess_neg, stats.excess_neg3);
+    mapdiag_append_finite(skew, stats.skew);
 }
 
 inline double mapdiag_vector_median(const std::vector<double> &values,
