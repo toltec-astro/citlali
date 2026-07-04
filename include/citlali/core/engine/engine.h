@@ -6633,11 +6633,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             weight_thresholds[idx] = weight_threshold;
             return weight_threshold;
         };
-    auto assign_mapdiag_current_peak_signal =
-        [&](Eigen::Index map_i, std::size_t idx) {
-            peak_signal[idx] = citlali::pipeline::mapdiag_peak_signal_or_fill(
-                mb->signal[map_i], fill_double);
-        };
     auto assign_mapdiag_current_peak_stats =
         [&](std::size_t idx, const Eigen::MatrixXd &sig2noise,
             const auto &core_mask) {
@@ -6815,7 +6810,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 idx, mb->coverage[i], core_mask, fill_double,
                 coverage_refs);
         }
-        assign_mapdiag_current_peak_signal(i, idx);
+        peak_signal[idx] = citlali::pipeline::mapdiag_peak_signal_or_fill(
+            mb->signal[i], fill_double);
         if (citlali::pipeline::mapdiag_has_signal_weight_samples(
                 mb->signal[i], mb->weight[i])) {
             Eigen::MatrixXd sig2noise =
