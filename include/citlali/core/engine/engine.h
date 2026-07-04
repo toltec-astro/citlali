@@ -5864,11 +5864,11 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // out-of-focus holography parameters
     if (! telescope.sim_obs) {
-	    logger->debug("adding oof params");
+        logger->debug("adding oof params");
         citlali::pipeline::add_phdu_oof_keys(
             fits_entry, name, logger, rms, mb->sig_unit,
-            toltec_io.array_wavelength_map[calib.arrays(i)]/1000.,
-            static_cast<int>(toltec_io.array_wavelength_map[calib.arrays(i)]*1000),
+            toltec_io.array_wavelength_map[array_id]/1000.,
+            static_cast<int>(toltec_io.array_wavelength_map[array_id]*1000),
             get_tel_header_scalar("Header.M2.XReq", 0.0)/1000.*1e6,
             get_tel_header_scalar("Header.M2.YReq", 0.0)/1000.*1e6,
             get_tel_header_scalar("Header.M2.ZReq", 0.0)/1000.*1e6);
