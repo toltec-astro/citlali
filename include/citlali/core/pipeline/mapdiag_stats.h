@@ -556,6 +556,16 @@ inline bool mapdiag_has_minimum_samples(std::size_t n_values,
     return n_values >= min_values;
 }
 
+inline std::vector<double> mapdiag_absolute_deviations(
+    const std::vector<double> &values, double center) {
+    std::vector<double> abs_dev;
+    abs_dev.reserve(values.size());
+    for (const auto &value : values) {
+        abs_dev.push_back(std::abs(value - center));
+    }
+    return abs_dev;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
