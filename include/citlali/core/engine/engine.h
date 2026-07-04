@@ -7033,6 +7033,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 candidates.size(),
                 reduction_learning.options.map_pixel_outlier_top_n);
         };
+    auto mapdiag_current_pixel_candidate_emit_count =
+        [&](const std::vector<map_pixel_candidate_t> &candidates) {
+            return mapdiag_pixel_candidate_emit_count(candidates);
+        };
     auto mapdiag_candidate_has_current_dominance_key =
         [&](const map_pixel_candidate_t &candidate) {
             return citlali::pipeline::mapdiag_candidate_has_dominance_key(
