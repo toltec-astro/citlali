@@ -6531,10 +6531,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     const auto robust_stats =
                         citlali::pipeline::mapdiag_robust_center_stats(
                             mapdiag_stats, off_source_values);
-                    if (std::isfinite(robust_stats.center) &&
-                        std::isfinite(robust_stats.robust_sigma) &&
-                        robust_stats.robust_sigma >
-                            std::numeric_limits<double>::epsilon()) {
+                    if (citlali::pipeline::
+                            mapdiag_has_valid_robust_center_stats(
+                                robust_stats)) {
                         std::vector<map_pixel_candidate_t> candidates;
                         const bool have_contrib =
                             i < static_cast<Eigen::Index>(mb->contribution_uid.size()) &&
