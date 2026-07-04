@@ -6769,7 +6769,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         core_mask, source_distance_context);
 
                 const auto off_source_values =
-                    mapdiag_stats.collect_masked_values(
+                    collect_mapdiag_off_source_values(
                         sig2noise, off_source_core_mask);
                 if (citlali::pipeline::mapdiag_has_minimum_samples(
                         off_source_values.size(), 8)) {
