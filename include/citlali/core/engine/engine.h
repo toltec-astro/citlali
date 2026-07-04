@@ -6904,6 +6904,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_has_valid_contributor(
                 uid, fill_int, contrib_signal);
         };
+    auto mapdiag_current_candidate_has_valid_contributor =
+        [&](int uid, double contrib_signal) {
+            return mapdiag_has_current_valid_contributor(
+                uid, contrib_signal);
+        };
     auto assign_mapdiag_current_candidate_contributor =
         [&](map_pixel_candidate_t &candidate, std::size_t map_st,
             Eigen::Index row, Eigen::Index col, int uid) {
