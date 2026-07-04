@@ -6874,6 +6874,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
            double contrib_weight) {
             return (raw_sum - contrib_signal) / (weight - contrib_weight);
         };
+    auto sort_mapdiag_pixel_candidates =
+        [](std::vector<map_pixel_candidate_t> &candidates) {
+            std::sort(
+                candidates.begin(), candidates.end(),
+                citlali::pipeline::mapdiag_candidate_abs_z_greater);
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
