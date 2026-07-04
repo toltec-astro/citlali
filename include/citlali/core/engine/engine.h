@@ -6092,11 +6092,13 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
             // get weight threshold for current map
             auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = mb->calc_cov_region(i);
-            if (!std::isfinite(weight_threshold)) {
+            if (citlali::pipeline::has_nonfinite_weight_threshold(
+                    weight_threshold)) {
                 logger->warn("non-finite weight threshold for map {} in {}; using 0", map_name,
                              fits_io->at(map_index).filepath);
-                weight_threshold = 0.0;
             }
+            weight_threshold =
+                citlali::pipeline::weight_threshold_or_zero(weight_threshold);
             // if weight is less than threshold, set to zero, otherwise set to one
             Eigen::MatrixXd coverage_bool = (mb->weight[i].array() < weight_threshold).select(zeros,ones);
 
