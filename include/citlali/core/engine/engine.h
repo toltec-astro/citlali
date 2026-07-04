@@ -7145,8 +7145,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     auto mapdiag_outlier_record_reason =
         [&](const map_pixel_candidate_t &candidate) {
             return citlali::pipeline::mapdiag_map_pixel_outlier_reason(
-                candidate.has_contributor,
-                mb->contribution_diag_targeted);
+                candidate, mb);
         };
     auto mapdiag_outlier_record_map_index =
         [](Eigen::Index map_i) {

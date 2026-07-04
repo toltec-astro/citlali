@@ -1004,6 +1004,13 @@ inline const char *mapdiag_map_pixel_outlier_reason(bool has_contributor,
                     : "extreme_pixel_contributor";
 }
 
+template <class MapBuffer>
+const char *mapdiag_map_pixel_outlier_reason(
+    const MapdiagMapPixelCandidate &candidate, const MapBuffer &mb) {
+    return mapdiag_map_pixel_outlier_reason(
+        candidate.has_contributor, mb->contribution_diag_targeted);
+}
+
 inline const char *mapdiag_detector_dominance_penalty_reason() {
     return "map_pixel_outlier_detector_dominance";
 }
