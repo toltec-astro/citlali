@@ -82,6 +82,20 @@ inline void MapdiagNoiseTailSamples::add_tail_stats(
     mapdiag_append_finite(skew, stats.skew);
 }
 
+inline MapdiagNoiseTailSummary summarize_mapdiag_noise_tail_samples(
+    const MapdiagStatsContext &stats,
+    const MapdiagNoiseTailSamples &samples) {
+    return {stats.quantile(samples.rms, 0.16),
+            stats.quantile(samples.rms, 0.84),
+            stats.median(samples.tail_abs),
+            stats.median(samples.tail_pos),
+            stats.median(samples.tail_neg),
+            stats.median(samples.excess_abs),
+            stats.median(samples.excess_pos),
+            stats.median(samples.excess_neg),
+            stats.median(samples.skew)};
+}
+
 inline double mapdiag_vector_median(const std::vector<double> &values,
                                     double fill_value) {
     if (values.empty()) {
