@@ -6389,10 +6389,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
     const citlali::pipeline::MapdiagStatsContext mapdiag_stats{fill_double};
 
-    auto calc_tail_stats = [&](const std::vector<double> &values) {
-        return citlali::pipeline::mapdiag_tail_stats(values, fill_double);
-    };
-
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
         const auto map_index = arrays_to_maps(i);
@@ -6484,7 +6480,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     sig2noise, core_mask, n_core_pixels[idx], fill_double);
             const auto core_values =
                 mapdiag_stats.collect_masked_values(sig2noise, core_mask);
-            const auto signal_tail = calc_tail_stats(core_values);
+            const auto signal_tail = mapdiag_stats.tail_stats(core_values);
             core_tail_frac_abs3[idx] = signal_tail.frac_abs3;
             core_tail_frac_pos3[idx] = signal_tail.frac_pos3;
             core_tail_frac_neg3[idx] = signal_tail.frac_neg3;
@@ -6807,7 +6803,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     const auto noise_values =
                         mapdiag_stats.collect_masked_values(
                             noise_matrix, core_mask);
-                    const auto noise_tail = calc_tail_stats(noise_values);
+                    const auto noise_tail = mapdiag_stats.tail_stats(noise_values);
                     if (std::isfinite(noise_tail.frac_abs3)) {
                         tail_abs_values.push_back(noise_tail.frac_abs3);
                     }
