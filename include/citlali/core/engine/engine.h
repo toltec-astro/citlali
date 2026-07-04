@@ -5692,7 +5692,7 @@ void Engine::write_map_summary(map_buffer_t &mb) {
 
     const auto filename = citlali::pipeline::map_summary_filename();
     std::ofstream f;
-    f.open (obsnum_dir_name+"/logs/" + filename + ".log");
+    f.open(citlali::pipeline::summary_log_path(obsnum_dir_name, filename));
 
     f << "Summary file for maps\n";
     citlali::pipeline::write_pipeline_version_summary(
