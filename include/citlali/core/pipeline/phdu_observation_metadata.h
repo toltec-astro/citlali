@@ -37,6 +37,11 @@ auto phdu_array_id(const Arrays &arrays, Index i) {
     return arrays(i);
 }
 
+template <class Obsnums>
+bool phdu_has_single_observation(const Obsnums &obsnums) {
+    return obsnums.size() == 1;
+}
+
 template <class FitsEntry, class Obsnums>
 void add_phdu_obsnum_keys(FitsEntry &fits_entry, const Obsnums &obsnums) {
     auto &hdu = fits_entry.pfits->pHDU();

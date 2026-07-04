@@ -5852,7 +5852,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     add_double_key("MEAN_TAU", mean_tau, "mean tau (" + name + ")");
 
     // add apt table to header
-    if (mb->obsnums.size()==1) {
+    if (citlali::pipeline::phdu_has_single_observation(mb->obsnums)) {
         const auto apt_name =
             citlali::pipeline::apt_table_header_name(calib.apt_filepath,
                                                      logger);
