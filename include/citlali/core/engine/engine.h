@@ -6096,7 +6096,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         // coverage map
         if (!mb->coverage.empty()) {
             add_map_hdu_with_wcs(
-                "coverage_" + map_name + stokes_suffix,
+                citlali::pipeline::coverage_map_hdu_name(
+                    map_name, stokes_suffix),
                 mb->coverage[i]);
             citlali::pipeline::add_image_unit_description_keys(
                 *fits_io->at(map_index).hdus.back(), "sec",
@@ -6122,7 +6123,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
             // coverage bool map
             add_map_hdu_with_wcs(
-                "coverage_bool_" + map_name + stokes_suffix,
+                citlali::pipeline::coverage_mask_map_hdu_name(
+                    map_name, stokes_suffix),
                 coverage_bool);
             citlali::pipeline::add_image_unit_description_keys(
                 *fits_io->at(map_index).hdus.back(), "N/A",
