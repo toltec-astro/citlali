@@ -6661,6 +6661,16 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             citlali::pipeline::assign_mapdiag_noise_product_stats(
                 idx, noise_product_stats, noise_product_refs);
         };
+    auto assign_mapdiag_current_coverage_stats =
+        [&](Eigen::Index map_i, std::size_t idx,
+            const auto &core_mask) {
+            if (citlali::pipeline::mapdiag_has_coverage_map(
+                    mb->coverage, map_i)) {
+                citlali::pipeline::assign_mapdiag_coverage_stats(
+                    idx, mb->coverage[map_i], core_mask, fill_double,
+                    coverage_refs);
+            }
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
