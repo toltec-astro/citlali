@@ -801,6 +801,17 @@ inline bool mapdiag_dominance_meets_min_pixels(
     return entry.count >= min_pixels;
 }
 
+template <class ArrayIds>
+int mapdiag_array_id_or_default(Eigen::Index map_index,
+                                const ArrayIds &array_ids,
+                                int default_array_id) {
+    if (map_index >= 0 &&
+        map_index < static_cast<Eigen::Index>(array_ids.size())) {
+        return array_ids[map_index];
+    }
+    return default_array_id;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
