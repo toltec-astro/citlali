@@ -91,6 +91,17 @@ inline double mapdiag_weight_threshold_or_zero(double weight_threshold) {
     return 0.0;
 }
 
+inline Eigen::ArrayXXd mapdiag_valid_weight_mask(
+    const Eigen::ArrayXXd &weight) {
+    return (weight > 0.0).template cast<double>();
+}
+
+inline Eigen::ArrayXXd mapdiag_core_weight_mask(
+    const Eigen::ArrayXXd &weight, double weight_threshold) {
+    return ((weight >= weight_threshold) && (weight > 0.0))
+        .template cast<double>();
+}
+
 inline MapdiagTailStats mapdiag_tail_stats(const std::vector<double> &values,
                                            double fill_value) {
     MapdiagTailStats stats;
