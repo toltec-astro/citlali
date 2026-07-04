@@ -7537,8 +7537,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             }
         }
 
-        assign_mapdiag_obs_contributions(i, idx, core_mask);
-        assign_mapdiag_obs_contribution_fractions(idx);
+        finalize_mapdiag_current_obs_contributions(i, idx, core_mask);
     }
 
     write_netcdf_atomic(
