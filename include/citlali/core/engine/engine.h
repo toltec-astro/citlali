@@ -6946,7 +6946,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                             mapdiag_current_total_signal(
                                                 map_st, r, c);
                                         const double total_weight =
-                                            mb->contribution_total_weight[map_st](r, c);
+                                            mapdiag_current_total_weight(
+                                                map_st, r, c);
                                         const double total_variance_weight =
                                             mb->contribution_total_variance_weight[map_st](r, c);
                                         const double remaining_weight =
