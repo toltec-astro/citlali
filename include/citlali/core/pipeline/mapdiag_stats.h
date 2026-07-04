@@ -745,6 +745,21 @@ inline bool mapdiag_candidate_has_dominance_key(
            candidate.uid >= 0 && candidate.scan >= 0;
 }
 
+inline void update_mapdiag_detector_dominance_stats(
+    MapdiagDetectorDominance &entry,
+    const MapdiagMapPixelCandidate &candidate) {
+    ++entry.count;
+    if (std::isfinite(candidate.value)) {
+        entry.max_abs_value =
+            std::max(entry.max_abs_value, std::abs(candidate.value));
+    }
+    if (std::isfinite(candidate.leave_one_out_z)) {
+        entry.max_abs_leave_one_out_z =
+            std::max(entry.max_abs_leave_one_out_z,
+                     std::abs(candidate.leave_one_out_z));
+    }
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
