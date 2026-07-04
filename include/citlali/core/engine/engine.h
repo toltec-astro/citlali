@@ -6970,6 +6970,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [&](ReductionLearningState::MapPixelOutlier &&record) {
             reduction_learning.record_map_pixel_outlier(std::move(record));
         };
+    auto mapdiag_current_detector_exclusion_enabled =
+        [&]() {
+            return reduction_learning.options
+                .map_pixel_outlier_detector_exclusion_enabled;
+        };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = static_cast<std::size_t>(i);
