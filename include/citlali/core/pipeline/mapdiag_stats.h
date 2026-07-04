@@ -250,6 +250,16 @@ double mapdiag_weighted_mask_sum(const Values &values, const Mask &mask) {
     return (values * mask).sum();
 }
 
+template <class Values, class ValidMask, class CoreMask>
+MapdiagWeightStats mapdiag_weight_stats(const Values &weight,
+                                        const ValidMask &valid_mask,
+                                        const CoreMask &core_mask) {
+    return {mapdiag_mask_sum_as_int(valid_mask),
+            mapdiag_mask_sum_as_int(core_mask),
+            mapdiag_weighted_mask_sum(weight, valid_mask),
+            mapdiag_weighted_mask_sum(weight, core_mask)};
+}
+
 inline bool mapdiag_has_matrix_samples(const Eigen::MatrixXd &matrix) {
     return matrix.size() > 0;
 }
