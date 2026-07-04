@@ -6988,12 +6988,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_fallback_leave_one_out_value(
                 raw_sum, contrib_signal, weight, contrib_weight);
         };
-    auto mapdiag_current_candidate_fallback_leave_one_out_value =
-        [&](double raw_sum, double contrib_signal, double weight,
-            double contrib_weight) {
-            return mapdiag_fallback_leave_one_out_value(
-                raw_sum, contrib_signal, weight, contrib_weight);
-        };
     auto sort_mapdiag_pixel_candidates =
         [](std::vector<map_pixel_candidate_t> &candidates) {
             citlali::pipeline::sort_mapdiag_pixel_candidates(candidates);
@@ -7299,7 +7293,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                                 mapdiag_raw_weighted_signal(
                                                     value, wt);
                                             const double loo_value =
-                                                mapdiag_current_candidate_fallback_leave_one_out_value(
+                                                mapdiag_fallback_leave_one_out_value(
                                                     raw_sum, contrib_signal,
                                                     wt, contrib_weight);
                                             assign_mapdiag_current_leave_one_out_z(
