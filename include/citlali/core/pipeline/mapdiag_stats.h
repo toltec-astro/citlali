@@ -107,6 +107,13 @@ struct MapdiagCoverageRefs {
     std::vector<double> &coverage_median_core;
 };
 
+struct MapdiagNoiseProductRefs {
+    std::vector<double> &weight_median_ratio;
+    std::vector<double> &weight_scale;
+    std::vector<double> &s2n_sigma;
+    std::vector<double> &valid_pixels;
+};
+
 struct MapdiagCoreTailRefs {
     std::vector<double> &frac_abs3;
     std::vector<double> &frac_pos3;
