@@ -6741,6 +6741,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_source_distance_context(
                 mb->n_rows, mb->n_cols, pix_arcsec, fill_double);
         };
+    auto mapdiag_current_source_protect_radius_arcsec =
+        [&]() {
+            return reduction_learning.options
+                .map_pixel_outlier_source_radius_arcsec;
+        };
     auto make_mapdiag_off_source_core_mask =
         [&](const auto &core_mask,
             const auto &source_distance_context) {
