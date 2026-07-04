@@ -6960,7 +6960,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                             mapdiag_current_total_variance_weight(
                                                 map_st, r, c);
                                         const double remaining_weight =
-                                            total_weight - contrib_weight;
+                                            mapdiag_remaining_contribution_weight(
+                                                total_weight,
+                                                contrib_weight);
                                         if (citlali::pipeline::
                                                 mapdiag_has_full_leave_one_out_inputs(
                                                     total_signal,
