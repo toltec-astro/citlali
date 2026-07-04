@@ -70,6 +70,14 @@ inline double mapdiag_fraction_or_fill(double value, double total,
     return (total > 0.0) ? value / total : fill_value;
 }
 
+template <class SourceValues, class DestValues>
+void assign_mapdiag_obs_fraction_entry(
+    std::size_t flat, const SourceValues &source_values, double total,
+    double fill_value, DestValues &fraction_values) {
+    fraction_values[flat] =
+        mapdiag_fraction_or_fill(source_values[flat], total, fill_value);
+}
+
 template <class Values>
 double sum_mapdiag_obs_values(const Values &values, std::size_t n_obsnums,
                               std::size_t map_index) {
