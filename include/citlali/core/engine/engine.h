@@ -6441,10 +6441,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             citlali::pipeline::mapdiag_weighted_mask_sum(
                 weight_arr, core_mask);
 
-        if (i < mb->median_err.size()) {
-            median_err[idx] = citlali::pipeline::mapdiag_positive_sqrt_or_fill(
-                mb->median_err(i), fill_double);
-        }
+        median_err[idx] =
+            citlali::pipeline::mapdiag_positive_sqrt_value_or_fill(
+                mb->median_err, i, fill_double);
         median_rms[idx] = citlali::pipeline::mapdiag_finite_value_or_fill(
             mb->median_rms, i, fill_double);
         empirical_to_formal_noise_ratio[idx] =
