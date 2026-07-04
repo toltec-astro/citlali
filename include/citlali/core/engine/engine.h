@@ -6702,16 +6702,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     continue;
                                 }
                                 ReductionLearningState::DetectorPenalty penalty;
-                                penalty.obsnum = obsnum;
-                                penalty.producer = "mapdiag:" + stage_name;
-                                penalty.reason =
-                                    citlali::pipeline::
-                                        mapdiag_detector_dominance_penalty_reason();
-                                penalty.iter = fruit_iter;
-                                penalty.scan = entry.scan;
-                                penalty.uid = entry.uid;
-                                penalty.nw = -1;
-                                penalty.array = array_id;
+                                citlali::pipeline::
+                                    assign_mapdiag_detector_penalty_context(
+                                        penalty, obsnum,
+                                        "mapdiag:" + stage_name,
+                                        citlali::pipeline::
+                                            mapdiag_detector_dominance_penalty_reason(),
+                                        fruit_iter, entry, array_id);
                                 penalty.factor = 0.0;
                                 penalty.score = static_cast<double>(entry.count);
                                 penalty.scan_local = true;
