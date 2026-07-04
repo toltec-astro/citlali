@@ -6696,15 +6696,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 map_i, idx, core_mask);
             assign_mapdiag_current_peak_signal(map_i, idx);
         };
-    auto make_mapdiag_current_sig2noise =
-        [&](Eigen::Index map_i) {
-            return citlali::pipeline::mapdiag_sig2noise_image(
-                mb->signal[map_i], mb->weight[map_i]);
-        };
-    auto make_mapdiag_current_signal_to_noise_image =
-        [&](Eigen::Index map_i) {
-            return make_mapdiag_current_sig2noise(map_i);
-        };
     auto assign_mapdiag_current_peak_stats =
         [&](std::size_t idx, const Eigen::MatrixXd &sig2noise,
             const auto &core_mask) {
@@ -6865,7 +6856,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         assign_mapdiag_current_coverage_and_peak(i, idx, core_mask);
         if (mapdiag_current_has_signal_stats(i)) {
             Eigen::MatrixXd sig2noise =
-                make_mapdiag_current_signal_to_noise_image(i);
+                citlali::pipeline::mapdiag_sig2noise_image(
+                    mb->signal[i], mb->weight[i]);
             assign_mapdiag_current_signal_stats(idx, sig2noise, core_mask);
 
             if (citlali::pipeline::mapdiag_outlier_diagnostics_enabled(
