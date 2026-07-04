@@ -6901,13 +6901,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         fo, mapdiag_dims, map_int_values);
 
     citlali::pipeline::add_mapdiag_observation_contribution_vars(
-        fo, mapdiag_dims,
-        {obs_weight_sum,
-         obs_weight_frac,
-         obs_core_weight_sum,
-         obs_core_weight_frac},
-        {obs_valid_pixels,
-         obs_core_pixels});
+        fo, mapdiag_dims, obs_double_values, obs_int_values);
     });
 }
 
