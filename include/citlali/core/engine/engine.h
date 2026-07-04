@@ -7322,7 +7322,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                             mapdiag_remaining_contribution_weight(
                                                 total_weight,
                                                 contrib_weight);
-                                        if (mapdiag_has_current_full_leave_one_out_inputs(
+                                        if (mapdiag_current_candidate_has_full_leave_one_out_inputs(
                                                 total_signal, total_weight,
                                                 contrib_weight,
                                                 contrib_variance_weight,
