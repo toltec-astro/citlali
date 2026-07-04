@@ -6537,6 +6537,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_core_weight_mask(
                 weight_arr, weight_threshold);
         };
+    auto mapdiag_current_outlier_diagnostics_enabled =
+        [&]() {
+            return citlali::pipeline::mapdiag_outlier_diagnostics_enabled(
+                reduction_learning);
+        };
     auto make_mapdiag_obs_weight_path =
         [&](const std::string &obsnum_i,
             const std::string &array_name) {
