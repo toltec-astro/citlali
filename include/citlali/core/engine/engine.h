@@ -6087,7 +6087,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         /* coverage bool and signal-to-noise maps */
         if (!mb->coverage.empty()) {
             // get weight threshold for current map
-            auto [weight_threshold, cov_ranges, cov_n_rows, cov_n_cols] = mb->calc_cov_region(i);
+            auto cov_region = mb->calc_cov_region(i);
+            auto weight_threshold = std::get<0>(cov_region);
             if (citlali::pipeline::has_nonfinite_weight_threshold(
                     weight_threshold)) {
                 logger->warn("non-finite weight threshold for map {} in {}; using 0", map_name,
