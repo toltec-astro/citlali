@@ -7214,8 +7214,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 auto penalty =
                                     make_mapdiag_current_detector_penalty(
                                         entry, array_id);
-                                reduction_learning.record_detector_penalty(
-                                    std::move(penalty), true);
+                                record_mapdiag_current_detector_penalty(
+                                    std::move(penalty));
                                 logger->info(
                                     "mapdiag learned scan-local detector exclusion candidate stage={} iter={} map={} uid={} scan={} outlier_pixels={} max_abs_value={:.4g} max_abs_leave_one_out_z={:.4g}",
                                     stage_name, fruit_iter, i, entry.uid,
