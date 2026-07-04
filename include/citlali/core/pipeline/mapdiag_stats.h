@@ -738,6 +738,13 @@ inline std::size_t mapdiag_candidate_emit_count(std::size_t n_candidates,
         n_candidates, static_cast<std::size_t>(top_n));
 }
 
+inline bool mapdiag_candidate_has_dominance_key(
+    const MapdiagMapPixelCandidate &candidate, int fill_int) {
+    return candidate.has_contributor && !candidate.source_protected &&
+           candidate.uid != fill_int && candidate.scan != fill_int &&
+           candidate.uid >= 0 && candidate.scan >= 0;
+}
+
 inline MapdiagCoverageStats mapdiag_coverage_stats(
     const Eigen::MatrixXd &coverage, const Eigen::ArrayXXd &core_mask,
     double fill_value) {
