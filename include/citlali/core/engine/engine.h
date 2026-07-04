@@ -6573,8 +6573,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     std::isfinite(ptc_fs_hz) && ptc_fs_hz > 0.0) {
                                     n_eff = mb->coverage[i](r, c) * ptc_fs_hz;
                                 }
-                                if (std::isfinite(n_eff) &&
-                                    n_eff < reduction_learning.options.map_pixel_outlier_min_n_eff) {
+                                if (!citlali::pipeline::
+                                        mapdiag_passes_min_effective_samples(
+                                            n_eff,
+                                            reduction_learning.options
+                                                .map_pixel_outlier_min_n_eff)) {
                                     continue;
                                 }
 
