@@ -6467,14 +6467,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 weight_arr, valid_mask, core_mask),
             weight_refs);
 
-        median_err[idx] =
-            citlali::pipeline::mapdiag_positive_sqrt_value_or_fill(
-                mb->median_err, i, fill_double);
-        median_rms[idx] = citlali::pipeline::mapdiag_finite_value_or_fill(
-            mb->median_rms, i, fill_double);
-        empirical_to_formal_noise_ratio[idx] =
-            citlali::pipeline::mapdiag_positive_denominator_ratio_or_fill(
-                median_rms[idx], median_err[idx], fill_double);
+        citlali::pipeline::assign_mapdiag_formal_noise_stats(
+            idx,
+            citlali::pipeline::mapdiag_formal_noise_stats_or_fill(
+                mb->median_err, mb->median_rms, i, fill_double),
+            formal_noise_refs);
         const auto noise_product_stats =
             citlali::pipeline::mapdiag_noise_product_stats_or_fill(
                 mb->noise_weight_median_ratio, mb->noise_weight_scale,
