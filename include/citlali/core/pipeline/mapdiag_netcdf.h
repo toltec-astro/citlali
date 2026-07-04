@@ -195,6 +195,21 @@ inline void add_mapdiag_observation_label_vars(
         "DATEOBS ordering matching coadd_obsnum");
 }
 
+inline void add_mapdiag_label_vars(
+    netCDF::NcFile &fo, const MapdiagNetcdfDims &dims,
+    const std::vector<std::string> &array_names,
+    const std::vector<std::string> &stokes_names,
+    const std::vector<std::string> &map_names,
+    const std::vector<std::string> &obsnums,
+    const std::string &fallback_obsnum,
+    const std::vector<std::string> &date_obs,
+    std::size_t n_obsnums) {
+    add_mapdiag_map_label_vars(
+        fo, dims.maps, array_names, stokes_names, map_names);
+    add_mapdiag_observation_label_vars(
+        fo, dims.obsnums, obsnums, fallback_obsnum, date_obs, n_obsnums);
+}
+
 inline void add_mapdiag_double_1d(
     netCDF::NcFile &fo, const std::string &name,
     const std::string &comment, netCDF::NcDim dim,
