@@ -6094,7 +6094,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                     map_name, stokes_suffix),
                 mb->coverage[i]);
             citlali::pipeline::add_image_unit_description_keys(
-                *fits_io->at(map_index).hdus.back(), "sec",
+                *fits_io->at(map_index).hdus.back(),
+                citlali::pipeline::coverage_time_unit(),
                 citlali::pipeline::coverage_map_description());
         }
 
