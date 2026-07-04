@@ -6790,20 +6790,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         mapdiag_stats.collect_masked_values(
                             noise_matrix, core_mask);
                     const auto noise_tail = mapdiag_stats.tail_stats(noise_values);
-                    citlali::pipeline::mapdiag_append_finite(
-                        noise_samples.tail_abs, noise_tail.frac_abs3);
-                    citlali::pipeline::mapdiag_append_finite(
-                        noise_samples.tail_pos, noise_tail.frac_pos3);
-                    citlali::pipeline::mapdiag_append_finite(
-                        noise_samples.tail_neg, noise_tail.frac_neg3);
-                    citlali::pipeline::mapdiag_append_finite(
-                        noise_samples.excess_abs, noise_tail.excess_abs3);
-                    citlali::pipeline::mapdiag_append_finite(
-                        noise_samples.excess_pos, noise_tail.excess_pos3);
-                    citlali::pipeline::mapdiag_append_finite(
-                        noise_samples.excess_neg, noise_tail.excess_neg3);
-                    citlali::pipeline::mapdiag_append_finite(
-                        noise_samples.skew, noise_tail.skew);
+                    noise_samples.add_tail_stats(noise_tail);
                 }
                 noise_rms_p16[idx] = mapdiag_stats.quantile(noise_samples.rms, 0.16);
                 noise_rms_p84[idx] = mapdiag_stats.quantile(noise_samples.rms, 0.84);
