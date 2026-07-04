@@ -19,6 +19,16 @@ void assign_mapdiag_obs_entry(
     obs_core_pixels[flat] = core_pixels;
 }
 
+template <class DoubleValues, class IntValues>
+void zero_mapdiag_obs_entry(
+    std::size_t flat, DoubleValues &obs_weight_sum,
+    DoubleValues &obs_core_weight_sum, IntValues &obs_valid_pixels,
+    IntValues &obs_core_pixels) {
+    assign_mapdiag_obs_entry(
+        flat, 0.0, 0.0, 0, 0, obs_weight_sum, obs_core_weight_sum,
+        obs_valid_pixels, obs_core_pixels);
+}
+
 template <class CoreMask, class ObsWeight, class DoubleValues, class IntValues>
 void accumulate_mapdiag_obs_weight(
     Eigen::Index map_i, std::size_t n_obsnums, Eigen::Index map_n_rows,
