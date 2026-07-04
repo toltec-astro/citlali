@@ -146,4 +146,11 @@ inline void write_chunk_detector_flag_summary(std::ostream &stream,
            << "%)\n";
 }
 
+template <class Matrix>
+void write_chunk_nonfinite_summary(std::ostream &stream,
+                                   const Matrix &data) {
+    stream << "-NaNs found: " << data.array().isNaN().count() << "\n";
+    stream << "-Infs found: " << data.array().isInf().count() << "\n";
+}
+
 }  // namespace citlali::pipeline

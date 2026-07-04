@@ -5672,8 +5672,7 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
         f, (calib.apt["flag"].array()!=0).count(), in.n_dets_low,
         in.n_dets_high, in.scans.data.cols());
 
-    f << "-NaNs found: " << in.scans.data.array().isNaN().count() << "\n";
-    f << "-Infs found: " << in.scans.data.array().isInf().count() << "\n";
+    citlali::pipeline::write_chunk_nonfinite_summary(f, in.scans.data);
     f << "-Data min: " << in.scans.data.minCoeff() << " " << omb.sig_unit << "\n";
     f << "-Data max: " << in.scans.data.maxCoeff() << " " << omb.sig_unit << "\n";
     f << "-Data mean: " << in.scans.data.mean() << " " << omb.sig_unit << "\n";
