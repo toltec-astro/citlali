@@ -56,6 +56,11 @@ inline std::size_t mapdiag_obs_table_size(const MapdiagSizeContext &context) {
     return context.n_maps * context.n_obsnums;
 }
 
+inline int mapdiag_obsnum_value(const MapdiagSizeContext &context,
+                                const std::string &obsnum) {
+    return context.is_coadd ? -1 : std::stoi(obsnum);
+}
+
 inline std::size_t mapdiag_obs_flat_index(const MapdiagSizeContext &context,
                                           std::size_t map_index,
                                           std::size_t obs_index) {
