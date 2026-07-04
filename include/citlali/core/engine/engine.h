@@ -6515,6 +6515,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::MapdiagDetectorDominance;
 
     const citlali::pipeline::MapdiagStatsContext mapdiag_stats{fill_double};
+    auto mapdiag_current_size_index =
+        [](Eigen::Index map_i) {
+            return static_cast<std::size_t>(map_i);
+        };
     auto make_mapdiag_obs_weight_path =
         [&](const std::string &obsnum_i,
             const std::string &array_name) {
