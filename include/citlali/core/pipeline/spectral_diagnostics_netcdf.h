@@ -19,7 +19,7 @@ template <class ArrayNameMap, class Arrays, class StokesParams, class MapIndex,
           class StokesIndex>
 std::string spectral_product_name(ArrayNameMap &array_name_map,
                                   const Arrays &arrays,
-                                  const StokesParams &stokes_params,
+                                  StokesParams &stokes_params,
                                   const std::string &map_name,
                                   MapIndex map_index,
                                   StokesIndex stokes_index) {
