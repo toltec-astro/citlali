@@ -410,6 +410,21 @@ double mapdiag_finite_value_or_fill(const Values &values, Eigen::Index i,
     return fill_value;
 }
 
+template <class MedianErrValues, class MedianRmsValues>
+MapdiagFormalNoiseStats mapdiag_formal_noise_stats_or_fill(
+    const MedianErrValues &median_err_values,
+    const MedianRmsValues &median_rms_values, Eigen::Index i,
+    double fill_value) {
+    const double median_err = mapdiag_positive_sqrt_value_or_fill(
+        median_err_values, i, fill_value);
+    const double median_rms =
+        mapdiag_finite_value_or_fill(median_rms_values, i, fill_value);
+    return {median_err,
+            median_rms,
+            mapdiag_positive_denominator_ratio_or_fill(
+                median_rms, median_err, fill_value)};
+}
+
 template <class Values>
 MapdiagNoiseProductStats mapdiag_noise_product_stats_or_fill(
     const Values &weight_median_ratio, const Values &weight_scale,
