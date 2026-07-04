@@ -6207,9 +6207,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                         map_name,
                         static_cast<long long>(i),
                         fits_io->at(map_index).filepath,
-                        (!mb->noise.empty() && map_index < static_cast<Eigen::Index>(noise_fits_io->size()))
-                            ? noise_fits_io->at(map_index).filepath
-                            : std::string("N/A"),
+                        citlali::pipeline::noise_file_path_or_na(
+                            mb->noise, noise_fits_io, map_index),
                         e.message()));
     } catch (const std::exception &e) {
         throw std::runtime_error(
@@ -6217,9 +6216,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                         map_name,
                         static_cast<long long>(i),
                         fits_io->at(map_index).filepath,
-                        (!mb->noise.empty() && map_index < static_cast<Eigen::Index>(noise_fits_io->size()))
-                            ? noise_fits_io->at(map_index).filepath
-                            : std::string("N/A"),
+                        citlali::pipeline::noise_file_path_or_na(
+                            mb->noise, noise_fits_io, map_index),
                         e.what()));
     }
 }
