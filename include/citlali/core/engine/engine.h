@@ -6002,14 +6002,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             citlali::pipeline::empirical_weight_calibration_enabled(
                 run_noise_products, run_noise,
                 apply_empirical_noise_weights);
-        citlali::pipeline::add_image_unit_type_description_keys(
-            *fits_io->at(map_index).hdus.back(),
-            weight_unit,
-            citlali::pipeline::weight_calibration_type(
-                empirical_weight_calibration),
-            citlali::pipeline::weight_calibration_type_comment(),
-            citlali::pipeline::weight_map_description(
-                empirical_weight_calibration));
+        citlali::pipeline::add_weight_map_metadata(
+            *fits_io->at(map_index).hdus.back(), weight_unit,
+            empirical_weight_calibration);
         if (i < mb->noise_weight_scale.size()) {
             citlali::pipeline::add_empirical_weight_scale_key(
                 *fits_io->at(map_index).hdus.back(), mb->noise_weight_scale(i));
