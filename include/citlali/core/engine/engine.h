@@ -7188,8 +7188,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     assign_mapdiag_detector_penalty_context(
                                         penalty, obsnum,
                                         mapdiag_detector_penalty_producer(),
-                                        citlali::pipeline::
-                                            mapdiag_detector_dominance_penalty_reason(),
+                                        mapdiag_detector_penalty_reason(),
                                         fruit_iter, entry, array_id);
                                 citlali::pipeline::
                                     assign_mapdiag_detector_penalty_dominance(
