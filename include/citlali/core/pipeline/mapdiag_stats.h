@@ -23,6 +23,8 @@ struct MapdiagTailStats {
 
 struct MapdiagStatsContext {
     double fill_value;
+
+    double median(const std::vector<double> &values) const;
 };
 
 inline double mapdiag_vector_median(const std::vector<double> &values,
@@ -33,6 +35,11 @@ inline double mapdiag_vector_median(const std::vector<double> &values,
     Eigen::Map<const Eigen::VectorXd> mapped(
         values.data(), static_cast<Eigen::Index>(values.size()));
     return tula::alg::median(mapped);
+}
+
+inline double MapdiagStatsContext::median(
+    const std::vector<double> &values) const {
+    return mapdiag_vector_median(values, fill_value);
 }
 
 inline double mapdiag_vector_quantile(std::vector<double> values, double q,
