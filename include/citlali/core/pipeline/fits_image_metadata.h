@@ -216,6 +216,12 @@ double wcs_source_epoch_or_default(const HeaderMap &tel_header,
     return source_epoch;
 }
 
+template <class ArrayFreqMap, class Arrays>
+double map_wcs_frequency(ArrayFreqMap &array_freq_map, const Arrays &arrays,
+                         Eigen::Index array_index) {
+    return array_freq_map[arrays[array_index]];
+}
+
 template <class ImageList>
 bool has_map_image_slot(const ImageList &images, Eigen::Index i,
                         Eigen::Index n_rows, Eigen::Index n_cols) {
