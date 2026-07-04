@@ -6527,8 +6527,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 for (Eigen::Index r = 0; r < mb->n_rows; ++r) {
                     for (Eigen::Index c = 0; c < mb->n_cols; ++c) {
                         const double dist_arcsec = source_distance_arcsec(r, c);
-                        if (protect_radius > 0.0 && std::isfinite(dist_arcsec) &&
-                            dist_arcsec <= protect_radius) {
+                        if (citlali::pipeline::mapdiag_is_source_protected(
+                                dist_arcsec, protect_radius)) {
                             off_source_core_mask(r, c) = 0.0;
                         }
                     }
