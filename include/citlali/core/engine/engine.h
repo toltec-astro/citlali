@@ -5990,7 +5990,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
 
         // signal map
         add_map_hdu_with_wcs(
-            "signal_" + map_name + stokes_suffix,
+            citlali::pipeline::signal_map_hdu_name(map_name, stokes_suffix),
             mb->signal[i]);
         citlali::pipeline::add_image_unit_description_keys(
             *fits_io->at(map_index).hdus.back(), mb->sig_unit,
