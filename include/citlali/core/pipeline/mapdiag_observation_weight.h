@@ -7,6 +7,11 @@
 
 namespace citlali::pipeline {
 
+struct MapdiagObsWeightTotals {
+    double weight;
+    double core_weight;
+};
+
 template <class DoubleValues, class IntValues>
 void assign_mapdiag_obs_entry(
     std::size_t flat, double weight_sum, double core_weight_sum,
