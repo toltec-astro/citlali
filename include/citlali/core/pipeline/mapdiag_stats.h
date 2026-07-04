@@ -816,6 +816,12 @@ inline int mapdiag_display_scan_index(int scan) {
     return scan + 1;
 }
 
+inline bool mapdiag_mask_pixel_is_selected(const Eigen::ArrayXXd &mask,
+                                           Eigen::Index row,
+                                           Eigen::Index col) {
+    return mask(row, col) > 0.0;
+}
+
 template <class ReductionLearning>
 bool mapdiag_outlier_diagnostics_enabled(
     const ReductionLearning &reduction_learning) {
