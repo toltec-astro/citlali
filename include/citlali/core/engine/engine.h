@@ -6142,7 +6142,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 sig2noise = mb->signal[i].array()*sqrt(mb->weight[i].array());
             }
             add_map_hdu_with_wcs(
-                "sig2noise_" + map_name + stokes_suffix,
+                citlali::pipeline::legacy_pixel_snr_map_hdu_name(
+                    map_name, stokes_suffix),
                 sig2noise);
             citlali::pipeline::add_image_unit_type_description_keys(
                 *fits_io->at(map_index).hdus.back(), "N/A", "pixel",
@@ -6150,7 +6151,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 "Legacy pixel S/N: signal times sqrt(weight)");
 
             add_map_hdu_with_wcs(
-                "sig2noise_pixel_" + map_name + stokes_suffix,
+                citlali::pipeline::pixel_snr_map_hdu_name(
+                    map_name, stokes_suffix),
                 sig2noise);
             citlali::pipeline::add_image_unit_type_description_keys(
                 *fits_io->at(map_index).hdus.back(), "N/A", "pixel",
