@@ -6821,13 +6821,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             return citlali::pipeline::mapdiag_matrix_double_value(
                 mb->contribution_total_variance_weight[map_st], row, col);
         };
-    auto mapdiag_pixel_candidate_emit_count =
-        [&](const std::vector<map_pixel_candidate_t> &candidates) {
-            return citlali::pipeline::mapdiag_candidate_emit_count(
-                candidates.size(),
-                citlali::pipeline::mapdiag_candidate_top_n(
-                    reduction_learning));
-        };
     auto update_mapdiag_detector_dominance =
         [&](std::vector<detector_dominance_t> &dominance,
             const map_pixel_candidate_t &candidate) {
@@ -7134,8 +7127,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         citlali::pipeline::sort_mapdiag_pixel_candidates(
                             candidates);
                         const std::size_t n_emit =
-                            mapdiag_pixel_candidate_emit_count(
-                                candidates);
+                            citlali::pipeline::mapdiag_candidate_emit_count(
+                                candidates.size(),
+                                citlali::pipeline::mapdiag_candidate_top_n(
+                                    reduction_learning));
                         auto dominance =
                             citlali::pipeline::
                                 make_mapdiag_detector_dominance_list();
