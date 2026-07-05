@@ -3,6 +3,8 @@
 // Engine FITS map output implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/map_image_output_helpers.h>
+
 template <typename fits_io_type, class map_buffer_t>
 void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_buffer_t &mb, Eigen::Index i) {
     citlali::pipeline::require_map_data_slots(
@@ -42,85 +44,18 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 source_epoch);
         };
 
-        // signal map
-        add_map_hdu_with_wcs(
-            citlali::pipeline::signal_map_hdu_name(map_name, stokes_suffix),
-            mb->signal[i]);
-        citlali::pipeline::add_signal_map_metadata(
-            *fits_io->at(map_index).hdus.back(), mb->sig_unit);
-
-        // weight map
-        add_map_hdu_with_wcs(
-            citlali::pipeline::weight_map_hdu_name(map_name, stokes_suffix),
-            mb->weight[i]);
-        const std::string weight_unit =
-            citlali::pipeline::map_weight_unit(mb->sig_unit);
-        const bool empirical_weight_calibration =
-            citlali::pipeline::empirical_weight_calibration_enabled(
-                run_noise_products, run_noise,
-                apply_empirical_noise_weights);
-        citlali::pipeline::add_weight_map_metadata(
-            *fits_io->at(map_index).hdus.back(), weight_unit,
-            empirical_weight_calibration);
-        if (i < mb->noise_weight_scale.size()) {
-            citlali::pipeline::add_empirical_weight_scale_key(
-                *fits_io->at(map_index).hdus.back(), mb->noise_weight_scale(i));
-        }
-        if (i < mb->noise_weight_median_ratio.size()) {
-            citlali::pipeline::add_weight_variance_median_key(
-                *fits_io->at(map_index).hdus.back(),
-                mb->noise_weight_median_ratio(i));
-        }
         const bool is_beammap = redu_type == "beammap";
-        const double median_err_value = mb->median_err(i);
-        const double median_err =
-            citlali::pipeline::map_median_error_or_zero_logged(
-                median_err_value, is_beammap, map_name,
-                fits_io->at(map_index).filepath, logger);
-        citlali::pipeline::add_image_median_error_key(
-            *fits_io->at(map_index).hdus.back(), median_err, mb->sig_unit);
-
-        if (citlali::pipeline::has_map_image_slot(
-                mb->weight_formal, i, mb->n_rows, mb->n_cols)) {
-            add_map_hdu_with_wcs(
-                citlali::pipeline::formal_weight_map_hdu_name(
-                    map_name, stokes_suffix),
-                mb->weight_formal[i]);
-            citlali::pipeline::add_formal_weight_map_metadata(
-                *fits_io->at(map_index).hdus.back(), weight_unit);
-        }
-
-        if (citlali::pipeline::has_map_image_slot(
-                mb->noise_variance, i, mb->n_rows, mb->n_cols)) {
-            add_map_hdu_with_wcs(
-                citlali::pipeline::noise_variance_map_hdu_name(
-                    map_name, stokes_suffix),
-                mb->noise_variance[i]);
-            const std::string variance_unit =
-                citlali::pipeline::map_variance_unit(mb->sig_unit);
-            citlali::pipeline::add_noise_variance_map_metadata(
-                *fits_io->at(map_index).hdus.back(), variance_unit);
-        }
+        citlali::pipeline::add_primary_map_image_hdus(
+            fits_io->at(map_index), mb, i, map_name, stokes_suffix, mb->wcs,
+            source_epoch, run_noise_products, run_noise,
+            apply_empirical_noise_weights, is_beammap, logger);
 
         // kernel map
         if (rtcproc.run_kernel) {
-            fits_io->at(map_index).add_hdu(
-                citlali::pipeline::kernel_map_hdu_name(map_name, stokes_suffix),
-                mb->kernel[i]);
-            citlali::pipeline::add_image_type_key(
-                *fits_io->at(map_index).hdus.back(), rtcproc.kernel.type,
-                citlali::pipeline::kernel_type_comment());
-
-            double fwhm = citlali::pipeline::kernel_fwhm_arcsec(
-                rtcproc.kernel.type, rtcproc.kernel.fwhm_rad,
-                calib.array_fwhms[calib.arrays(i)], RAD_TO_ASEC);
-            fwhm = citlali::pipeline::kernel_fwhm_or_invalid(
-                fwhm, map_name, fits_io->at(map_index).filepath, logger);
-            citlali::pipeline::add_kernel_fwhm_key(
-                *fits_io->at(map_index).hdus.back(), fwhm);
-            fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
-            citlali::pipeline::add_kernel_map_metadata(
-                *fits_io->at(map_index).hdus.back(), mb->sig_unit);
+            citlali::pipeline::add_kernel_map_image_hdu(
+                fits_io->at(map_index), mb, i, map_name, stokes_suffix,
+                rtcproc.kernel, calib.array_fwhms[calib.arrays(i)], mb->wcs,
+                source_epoch, RAD_TO_ASEC, logger);
         }
 
         // coverage map
