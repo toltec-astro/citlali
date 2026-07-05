@@ -6299,8 +6299,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<std::string> array_names(n_mapdiag_maps);
     std::vector<std::string> stokes_names(n_mapdiag_maps);
     std::vector<std::string> map_names(n_mapdiag_maps);
-    std::vector<double> median_err(mapdiag_context.n_maps, fill_double);
-    std::vector<double> median_rms(mapdiag_context.n_maps, fill_double);
+    std::vector<double> median_err(n_mapdiag_maps, fill_double);
+    std::vector<double> median_rms(n_mapdiag_maps, fill_double);
     std::vector<double> weight_thresholds(mapdiag_context.n_maps, fill_double);
     std::vector<double> weight_sum(mapdiag_context.n_maps, fill_double);
     std::vector<double> core_weight_sum(mapdiag_context.n_maps, fill_double);
@@ -6311,7 +6311,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         coverage_sum,
         coverage_max,
         coverage_median_core};
-    std::vector<double> empirical_to_formal_noise_ratio(mapdiag_context.n_maps, fill_double);
+    std::vector<double> empirical_to_formal_noise_ratio(
+        n_mapdiag_maps, fill_double);
     citlali::pipeline::MapdiagFormalNoiseRefs formal_noise_refs{
         median_err,
         median_rms,
