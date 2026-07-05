@@ -6541,7 +6541,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::assign_mapdiag_map_labels(
             idx, labels, {array_names, stokes_names, map_names});
 
-        auto cov_region = mb->calc_cov_region(i);
+        const auto cov_region = mb->calc_cov_region(i);
         auto weight_threshold = std::get<0>(cov_region);
         weight_threshold =
             citlali::pipeline::mapdiag_weight_threshold_or_zero(
