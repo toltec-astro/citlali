@@ -99,13 +99,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         const bool is_beammap = redu_type == "beammap";
         const double median_err_value = mb->median_err(i);
         const double median_err =
-            citlali::pipeline::map_median_error_or_zero(median_err_value,
-                                                        is_beammap);
-        if (citlali::pipeline::has_negative_map_median_error(
-                median_err_value, is_beammap)) {
-            logger->warn("negative median_err for map {} in {}; using 0", map_name,
-                         fits_io->at(map_index).filepath);
-        }
+            citlali::pipeline::map_median_error_or_zero_logged(
+                median_err_value, is_beammap, map_name,
+                fits_io->at(map_index).filepath, logger);
         citlali::pipeline::add_image_median_error_key(
             *fits_io->at(map_index).hdus.back(), median_err, mb->sig_unit);
 
@@ -253,12 +249,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 std::exit(EXIT_FAILURE);
             }
             const double median_rms =
-                citlali::pipeline::map_median_rms_or_zero(mb->median_rms, i);
-            if (citlali::pipeline::has_nonfinite_map_median_rms(
-                    mb->median_rms, i)) {
-                logger->warn("non-finite median_rms for map {} in {}; using 0", map_name,
-                             noise_fits_io->at(map_index).filepath);
-            }
+                citlali::pipeline::map_median_rms_or_zero_logged(
+                    mb->median_rms, i, map_name,
+                    noise_fits_io->at(map_index).filepath, logger);
             auto add_noise_map_hdu_with_wcs =
                 [&](const std::string &hdu_name, auto &data) {
                     citlali::pipeline::add_map_hdu_with_wcs(

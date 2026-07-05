@@ -323,6 +323,19 @@ inline bool has_negative_map_median_error(double median_error_variance,
            median_error_variance < 0.0;
 }
 
+template <class Logger>
+double map_median_error_or_zero_logged(double median_error_variance,
+                                       bool is_beammap,
+                                       const std::string &map_name,
+                                       const std::string &filepath,
+                                       const Logger &logger) {
+    if (has_negative_map_median_error(median_error_variance, is_beammap)) {
+        logger->warn("negative median_err for map {} in {}; using 0",
+                     map_name, filepath);
+    }
+    return map_median_error_or_zero(median_error_variance, is_beammap);
+}
+
 template <class MedianRms>
 double map_median_rms_or_zero(const MedianRms &median_rms, Eigen::Index i) {
     if (i < static_cast<Eigen::Index>(median_rms.size()) &&
@@ -337,6 +350,19 @@ bool has_nonfinite_map_median_rms(const MedianRms &median_rms,
                                   Eigen::Index i) {
     return i < static_cast<Eigen::Index>(median_rms.size()) &&
            !std::isfinite(median_rms(i));
+}
+
+template <class MedianRms, class Logger>
+double map_median_rms_or_zero_logged(const MedianRms &median_rms,
+                                     Eigen::Index i,
+                                     const std::string &map_name,
+                                     const std::string &filepath,
+                                     const Logger &logger) {
+    if (has_nonfinite_map_median_rms(median_rms, i)) {
+        logger->warn("non-finite median_rms for map {} in {}; using 0",
+                     map_name, filepath);
+    }
+    return map_median_rms_or_zero(median_rms, i);
 }
 
 inline bool has_nonfinite_weight_threshold(double weight_threshold) {
