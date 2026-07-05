@@ -6327,11 +6327,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         noise_weight_scale,
         noise_products_s2n_sigma,
         noise_products_valid_pixels};
-    std::vector<double> peak_signal(mapdiag_context.n_maps, fill_double);
-    std::vector<double> peak_abs_sig2noise(mapdiag_context.n_maps, fill_double);
-    std::vector<double> core_peak_abs_sig2noise(mapdiag_context.n_maps, fill_double);
-    std::vector<double> noise_rms_p16(mapdiag_context.n_maps, fill_double);
-    std::vector<double> noise_rms_p84(mapdiag_context.n_maps, fill_double);
+    std::vector<double> peak_signal(n_mapdiag_maps, fill_double);
+    std::vector<double> peak_abs_sig2noise(n_mapdiag_maps, fill_double);
+    std::vector<double> core_peak_abs_sig2noise(n_mapdiag_maps, fill_double);
+    std::vector<double> noise_rms_p16(n_mapdiag_maps, fill_double);
+    std::vector<double> noise_rms_p84(n_mapdiag_maps, fill_double);
     std::vector<double> core_tail_frac_abs3(mapdiag_context.n_maps, fill_double);
     std::vector<double> core_tail_frac_pos3(mapdiag_context.n_maps, fill_double);
     std::vector<double> core_tail_frac_neg3(mapdiag_context.n_maps, fill_double);
