@@ -7219,7 +7219,8 @@ void Engine::create_rtcdiag_file() {
          scan_speed_p95_arcsec_s,
          scan_speed_p995_arcsec_s});
 
-    std::vector<netCDF::NcDim> scan_array_dims = {n_scans_dim, n_arrays_dim};
+    std::vector<netCDF::NcDim> scan_array_dims = {
+        n_scans_dim, n_arrays_dim};
     std::vector<double> source_power_half_bandwidth_hz(
         n_scan_array_values, fill_double);
     std::vector<double> tod_lowpass_to_source_power_half_ratio(
