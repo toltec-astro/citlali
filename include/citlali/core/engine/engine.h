@@ -6815,14 +6815,15 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         const std::size_t candidate_top_n =
                             citlali::pipeline::mapdiag_candidate_top_n(
                                 reduction_learning);
-                        const std::size_t n_emit =
+                        const std::size_t n_emitted_candidates =
                             citlali::pipeline::mapdiag_candidate_emit_count(
                                 candidates.size(), candidate_top_n);
                         auto dominance =
                             citlali::pipeline::
                                 make_mapdiag_detector_dominance_list();
 
-                        for (std::size_t ci = 0; ci < n_emit; ++ci) {
+                        for (std::size_t ci = 0; ci < n_emitted_candidates;
+                             ++ci) {
                             const auto &candidate =
                                 citlali::pipeline::mapdiag_emitted_candidate(
                                     candidates, ci);
