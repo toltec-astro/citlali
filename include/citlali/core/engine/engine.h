@@ -7654,7 +7654,7 @@ void Engine::find_sources(map_buffer_t &mb) {
         mb.col_source_locs.back() *= missing_source_location;
 
         // run source finder
-        auto sources_found = mb.find_sources(i);
+        const auto sources_found = mb.find_sources(i);
 
         // number of sources found for current map
         if (sources_found) {
