@@ -126,4 +126,21 @@ inline netCDF::NcVar add_stats_eigenvalue_var(
     return fo.addVar(name, netCDF::ncDouble, dims);
 }
 
+template <class EvalVectors>
+void write_stats_eigenvalue_rows(netCDF::NcVar &eval_v,
+                                 const EvalVectors &eval_vectors,
+                                 Eigen::Index n_cleaner_eigenvalues,
+                                 double fill_value) {
+    auto start_eig_index = stats_eigenvalue_start_index();
+    const auto eig_write_shape =
+        stats_eigenvalue_write_shape(n_cleaner_eigenvalues);
+    for (const auto &evals : eval_vectors) {
+        Eigen::VectorXd padded_evals =
+            ptcdiag_padded_eigenvalues(
+                evals, n_cleaner_eigenvalues, fill_value);
+        eval_v.putVar(start_eig_index, eig_write_shape, padded_evals.data());
+        start_eig_index[0] += 1;
+    }
+}
+
 }  // namespace citlali::pipeline
