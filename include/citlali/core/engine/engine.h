@@ -7130,8 +7130,10 @@ void Engine::create_rtcdiag_file() {
     citlali::pipeline::add_rtcdiag_array_ids(
         fo, calib, n_arrays_dim, fill_int);
 
-    auto add_scan_double = [&](const std::string &name, const std::string &units,
-                               const std::string &comment, const std::vector<double> &values) {
+    auto add_scan_double = [&](const std::string &name,
+                               const std::string &units,
+                               const std::string &comment,
+                               const std::vector<double> &values) {
         citlali::pipeline::add_rtcdiag_scan_double(
             fo, name, units, comment, n_scans_dim, scan_chunks, values);
     };
