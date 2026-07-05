@@ -7441,14 +7441,14 @@ void Engine::create_rtcdiag_file() {
 }
 
 void Engine::write_stats() {
-    std::string path = obsnum_dir_name + "raw/";
+    std::string stats_dir = obsnum_dir_name + "raw/";
     // if using tod subdir, put stats file in it
     const bool has_tod_output_subdir = tod_output_subdir_name != "null";
     if (has_tod_output_subdir) {
-        const auto stats_subdir_path = path + tod_output_subdir_name;
+        const auto stats_subdir_path = stats_dir + tod_output_subdir_name;
         if (!fs::exists(fs::status(stats_subdir_path))) {
             fs::create_directories(stats_subdir_path);
-            path = stats_subdir_path + "/";
+            stats_dir = stats_subdir_path + "/";
         }
     }
     // create stats filename
@@ -7456,7 +7456,7 @@ void Engine::write_stats() {
         toltec_io.create_filename<engine_utils::toltecIO::toltec,
                                   engine_utils::toltecIO::stats,
                                   engine_utils::toltecIO::raw>(
-            path, redu_type, "", obsnum, telescope.sim_obs);
+            stats_dir, redu_type, "", obsnum, telescope.sim_obs);
 
     // det stats header
     std::map<std::string, std::string> det_stats_header_units {
