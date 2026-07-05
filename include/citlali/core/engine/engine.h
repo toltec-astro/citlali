@@ -7594,8 +7594,9 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         if (write_filtered_maps_partial) {
             // only write if saving all iterations or on last iteration
             // write maps immediately after filtering due to computation time
-            logger->info("writing {} map {}/{} to disk", map_label, i + 1, n_maps);
-            write_maps(f_io,n_io,pmb,i);
+            logger->info("writing {} map {}/{} to disk",
+                         map_label, i + 1, n_maps);
+            write_maps(f_io, n_io, pmb, i);
 
             logger->info("file has been written to:");
             logger->info("{}.fits",f_io->at(map_index).filepath);
