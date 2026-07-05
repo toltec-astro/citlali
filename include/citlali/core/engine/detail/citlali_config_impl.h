@@ -3,6 +3,8 @@
 // Engine config loading implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/engine/detail/config_parse_tracking.h>
+
 template<typename CT>
 void Engine::get_citlali_config(CT &config) {
     // interface key names
@@ -100,7 +102,8 @@ void Engine::get_citlali_config(CT &config) {
     get_mapmaking_config(config);
 
     auto parsed_cleanly = [&](std::size_t missing_before, std::size_t invalid_before) {
-        return missing_keys.size() == missing_before && invalid_keys.size() == invalid_before;
+        return citlali::engine_detail::config_parse_clean(
+            missing_keys, invalid_keys, missing_before, invalid_before);
     };
 
     // run map filter?
@@ -286,4 +289,3 @@ void Engine::get_citlali_config(CT &config) {
         typed_beammap_config.iteration.max_iterations = 1;
     }
 }
-
