@@ -6640,6 +6640,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         const double min_effective_samples =
                             citlali::pipeline::mapdiag_min_effective_samples(
                                 reduction_learning);
+                        const double min_abs_z =
+                            citlali::pipeline::mapdiag_min_abs_z(
+                                reduction_learning);
 
                         for (Eigen::Index r = 0; r < n_mapdiag_rows; ++r) {
                             for (Eigen::Index c = 0; c < n_mapdiag_cols; ++c) {
@@ -6683,11 +6686,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     citlali::pipeline::mapdiag_robust_z(
                                         sn, robust_stats);
                                 if (!citlali::pipeline::
-                                        mapdiag_passes_min_abs_z(
-                                            z,
-                                            citlali::pipeline::
-                                                mapdiag_min_abs_z(
-                                                    reduction_learning))) {
+                                        mapdiag_passes_min_abs_z(z,
+                                                                 min_abs_z)) {
                                     continue;
                                 }
 
