@@ -4,6 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/engine/detail/config_parse_tracking.h>
+#include <citlali/core/engine/detail/mapmaking_config_read.h>
 #include <citlali/core/pipeline/mapmaking_config_policy.h>
 
 template<typename CT>
@@ -18,28 +19,12 @@ void Engine::get_mapmaking_config(CT &config) {
             missing_keys, invalid_keys, missing_before, invalid_before);
     };
 
-    // enable mapmaking?
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, run_mapmaking, missing_keys, invalid_keys,
-                         std::tuple{"mapmaking","enabled"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_mapmaking_config.enabled = run_mapmaking;
-        }
-    }
-    // map grouping
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, map_grouping, missing_keys, invalid_keys,
-                         std::tuple{"mapmaking","grouping"},{"auto","array","nw","detector","fg"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            if (auto parsed = citlali::config::parse_map_grouping(map_grouping)) {
-                typed_mapmaking_config.grouping = *parsed;
-            }
-        }
-    }
+    citlali::engine_detail::read_mapmaking_enabled_config(
+        config, run_mapmaking, typed_mapmaking_config, missing_keys,
+        invalid_keys);
+    citlali::engine_detail::read_map_grouping_config(
+        config, map_grouping, typed_mapmaking_config, missing_keys,
+        invalid_keys);
 
     // optional expected sky regime for interpreting map diagnostics
     map_regime = "unknown";
@@ -60,33 +45,17 @@ void Engine::get_mapmaking_config(CT &config) {
     rtcproc.kernel.map_grouping = map_grouping;
     ptcproc.active_map_grouping = map_grouping;
 
-    // map_method
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, map_method, missing_keys, invalid_keys,
-                         std::tuple{"mapmaking","method"},{"naive","jinc","maximum_likelihood"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            if (auto parsed = citlali::config::parse_map_method(map_method)) {
-                typed_mapmaking_config.method = *parsed;
-            }
-        }
-    }
+    citlali::engine_detail::read_map_method_config(
+        config, map_method, typed_mapmaking_config, missing_keys,
+        invalid_keys);
     citlali::pipeline::configure_fruit_loop_interpolation_mode(
         ptcproc, map_method, logger);
     citlali::pipeline::log_fruit_loop_runtime_policy(ptcproc, logger);
     citlali::pipeline::reset_fruit_loop_jinc_kernel_config(ptcproc);
 
-    // map reference frame (radec, altaz, galactic)
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, telescope.pixel_axes, missing_keys, invalid_keys,
-                         std::tuple{"mapmaking","pixel_axes"},{"radec","altaz", "galactic"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_mapmaking_config.pixel_axes = telescope.pixel_axes;
-        }
-    }
+    citlali::engine_detail::read_map_pixel_axes_config(
+        config, telescope.pixel_axes, typed_mapmaking_config, missing_keys,
+        invalid_keys);
     if (redu_type == "beammap" && telescope.pixel_axes != "altaz") {
         logger->error(
             "beammap reductions require mapmaking.pixel_axes='altaz'; got '{}'",

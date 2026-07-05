@@ -1,0 +1,86 @@
+#pragma once
+
+#include <citlali/core/config/mapmaking_config.h>
+#include <citlali/core/engine/detail/config_parse_tracking.h>
+
+#include <string>
+#include <tuple>
+
+namespace citlali::engine_detail {
+
+template <class Config, class MissingKeys, class InvalidKeys,
+          class MapmakingConfig>
+void read_mapmaking_enabled_config(Config &config, bool &enabled,
+                                   MapmakingConfig &typed_config,
+                                   MissingKeys &missing_keys,
+                                   InvalidKeys &invalid_keys) {
+    const auto missing_before = missing_keys.size();
+    const auto invalid_before = invalid_keys.size();
+    ::get_config_value(config, enabled, missing_keys, invalid_keys,
+                       std::tuple{"mapmaking", "enabled"});
+    if (config_parse_clean(
+            missing_keys, invalid_keys, missing_before, invalid_before)) {
+        typed_config.enabled = enabled;
+    }
+}
+
+template <class Config, class MissingKeys, class InvalidKeys,
+          class MapmakingConfig>
+void read_map_grouping_config(Config &config, std::string &grouping,
+                              MapmakingConfig &typed_config,
+                              MissingKeys &missing_keys,
+                              InvalidKeys &invalid_keys) {
+    const auto missing_before = missing_keys.size();
+    const auto invalid_before = invalid_keys.size();
+    ::get_config_value(
+        config, grouping, missing_keys, invalid_keys,
+        std::tuple{"mapmaking", "grouping"},
+        {"auto", "array", "nw", "detector", "fg"});
+    if (!config_parse_clean(
+            missing_keys, invalid_keys, missing_before, invalid_before)) {
+        return;
+    }
+    if (auto parsed = citlali::config::parse_map_grouping(grouping)) {
+        typed_config.grouping = *parsed;
+    }
+}
+
+template <class Config, class MissingKeys, class InvalidKeys,
+          class MapmakingConfig>
+void read_map_method_config(Config &config, std::string &method,
+                            MapmakingConfig &typed_config,
+                            MissingKeys &missing_keys,
+                            InvalidKeys &invalid_keys) {
+    const auto missing_before = missing_keys.size();
+    const auto invalid_before = invalid_keys.size();
+    ::get_config_value(
+        config, method, missing_keys, invalid_keys,
+        std::tuple{"mapmaking", "method"},
+        {"naive", "jinc", "maximum_likelihood"});
+    if (!config_parse_clean(
+            missing_keys, invalid_keys, missing_before, invalid_before)) {
+        return;
+    }
+    if (auto parsed = citlali::config::parse_map_method(method)) {
+        typed_config.method = *parsed;
+    }
+}
+
+template <class Config, class MissingKeys, class InvalidKeys,
+          class PixelAxes, class MapmakingConfig>
+void read_map_pixel_axes_config(Config &config, PixelAxes &pixel_axes,
+                                MapmakingConfig &typed_config,
+                                MissingKeys &missing_keys,
+                                InvalidKeys &invalid_keys) {
+    const auto missing_before = missing_keys.size();
+    const auto invalid_before = invalid_keys.size();
+    ::get_config_value(config, pixel_axes, missing_keys, invalid_keys,
+                       std::tuple{"mapmaking", "pixel_axes"},
+                       {"radec", "altaz", "galactic"});
+    if (config_parse_clean(
+            missing_keys, invalid_keys, missing_before, invalid_before)) {
+        typed_config.pixel_axes = pixel_axes;
+    }
+}
+
+}  // namespace citlali::engine_detail
