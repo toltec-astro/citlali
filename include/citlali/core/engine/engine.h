@@ -7654,7 +7654,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
 
             for (Eigen::Index j = 0; j < n_wiener_noise_maps; ++j) {
                 wiener_filter.filter_noise(mb, i, j);
-                pb.count(mb.n_noise, mb.n_noise / 100);
+                pb.count(n_wiener_noise_maps, n_wiener_noise_maps / 100);
             }
             logger->info("noise filtering complete for {} map {}/{}",
                          map_label, map_number, n_maps);
