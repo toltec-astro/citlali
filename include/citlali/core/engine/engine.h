@@ -7148,7 +7148,8 @@ void Engine::create_rtcdiag_file() {
     std::vector<double> tod_lowpass_to_source_power_half_ratio(
         n_scan_array_values, fill_double);
     for (Eigen::Index scan = 0; scan < n_scans; ++scan) {
-        const double speed = scan_speed_p995_arcsec_s[static_cast<std::size_t>(scan)];
+        const auto scan_index = static_cast<std::size_t>(scan);
+        const double speed = scan_speed_p995_arcsec_s[scan_index];
         if (!std::isfinite(speed) || speed <= 0.0) {
             continue;
         }
@@ -7165,7 +7166,7 @@ void Engine::create_rtcdiag_file() {
             }
             const double f_half_hz =
                 (std::sqrt(std::log(2.0)) / (2.0 * pi * fwhm_arcsec * FWHM_TO_STD)) * speed;
-            const auto flat_i = static_cast<std::size_t>(scan) * n_array_values +
+            const auto flat_i = scan_index * n_array_values +
                                 static_cast<std::size_t>(arr_i);
             source_power_half_bandwidth_hz[flat_i] = f_half_hz;
             if (rtcproc.run_tod_filter && rtcproc.filter.freq_high_Hz > 0.0 && f_half_hz > 0.0) {
