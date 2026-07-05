@@ -7520,7 +7520,10 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         logger->info("building Wiener template for {} map {}/{} (array={})",
                      map_label, i + 1, n_maps, array_name);
         double template_fwhm_rad = 0.0;
-        if (wiener_filter.template_type=="gaussian" || wiener_filter.template_type=="airy") {
+        const bool template_uses_fwhm =
+            wiener_filter.template_type=="gaussian" ||
+            wiener_filter.template_type=="airy";
+        if (template_uses_fwhm) {
             auto it = wiener_filter.template_fwhm_rad.find(array_name);
             if (it == wiener_filter.template_fwhm_rad.end()) {
                 logger->error("missing Wiener template_fwhm_rad for array {}", array_name);
