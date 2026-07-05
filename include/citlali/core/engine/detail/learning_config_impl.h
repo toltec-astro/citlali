@@ -52,112 +52,54 @@ void Engine::get_learning_config(CT &config) {
         options.apply_max_new_flagged_fraction,
         typed_timestream_config.learning.apply_max_new_flagged_fraction,
         missing_keys, invalid_keys, {0.0});
-    if (config.template has_typed<bool>(std::tuple{"timestream","learning","map_pixel_outlier_diagnostics_enabled"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, options.map_pixel_outlier_diagnostics_enabled, missing_keys, invalid_keys,
-                         std::tuple{"timestream","learning","map_pixel_outlier_diagnostics_enabled"});
-        mirror_if_parsed(
-            typed_timestream_config.learning.map_pixel_outlier.diagnostics_enabled,
-            options.map_pixel_outlier_diagnostics_enabled, missing_before,
-            invalid_before);
-    }
-    if (config.template has_typed<bool>(std::tuple{"timestream","learning","map_pixel_outlier_contributor_diagnostics_enabled"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, options.map_pixel_outlier_contributor_diagnostics_enabled,
-                         missing_keys, invalid_keys,
-                         std::tuple{"timestream","learning","map_pixel_outlier_contributor_diagnostics_enabled"});
-        mirror_if_parsed(
-            typed_timestream_config.learning.map_pixel_outlier.contributor_diagnostics_enabled,
-            options.map_pixel_outlier_contributor_diagnostics_enabled,
-            missing_before, invalid_before);
-    }
-    if (config.template has_typed<bool>(std::tuple{"timestream","learning","map_pixel_outlier_targeted_contributor_diagnostics_enabled"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, options.map_pixel_outlier_targeted_contributor_diagnostics_enabled,
-                         missing_keys, invalid_keys,
-                         std::tuple{"timestream","learning","map_pixel_outlier_targeted_contributor_diagnostics_enabled"});
-        mirror_if_parsed(
-            typed_timestream_config.learning.map_pixel_outlier.targeted_contributor_diagnostics_enabled,
-            options.map_pixel_outlier_targeted_contributor_diagnostics_enabled,
-            missing_before, invalid_before);
-    }
-    if (config.template has_typed<bool>(std::tuple{"timestream","learning","map_pixel_outlier_detector_exclusion_enabled"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, options.map_pixel_outlier_detector_exclusion_enabled,
-                         missing_keys, invalid_keys,
-                         std::tuple{"timestream","learning","map_pixel_outlier_detector_exclusion_enabled"});
-        mirror_if_parsed(
-            typed_timestream_config.learning.map_pixel_outlier.detector_exclusion_enabled,
-            options.map_pixel_outlier_detector_exclusion_enabled,
-            missing_before, invalid_before);
-    }
-    if (config.template has_typed<int>(std::tuple{"timestream","learning","map_pixel_outlier_top_n"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, options.map_pixel_outlier_top_n, missing_keys, invalid_keys,
-                         std::tuple{"timestream","learning","map_pixel_outlier_top_n"}, {}, {0});
-        mirror_if_parsed(typed_timestream_config.learning.map_pixel_outlier.top_n,
-                         options.map_pixel_outlier_top_n, missing_before,
-                         invalid_before);
-    }
-    if (config.template has_typed<int>(std::tuple{"timestream","learning","map_pixel_outlier_targeted_contributor_max_pixels"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, options.map_pixel_outlier_targeted_contributor_max_pixels,
-                         missing_keys, invalid_keys,
-                         std::tuple{"timestream","learning","map_pixel_outlier_targeted_contributor_max_pixels"},
-                         {}, {0});
-        mirror_if_parsed(
-            typed_timestream_config.learning.map_pixel_outlier.targeted_contributor_max_pixels,
-            options.map_pixel_outlier_targeted_contributor_max_pixels,
-            missing_before, invalid_before);
-    }
-    if (config.template has_typed<int>(std::tuple{"timestream","learning","map_pixel_outlier_detector_exclusion_min_pixels"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, options.map_pixel_outlier_detector_exclusion_min_pixels,
-                         missing_keys, invalid_keys,
-                         std::tuple{"timestream","learning","map_pixel_outlier_detector_exclusion_min_pixels"},
-                         {}, {1});
-        mirror_if_parsed(
-            typed_timestream_config.learning.map_pixel_outlier.detector_exclusion_min_pixels,
-            options.map_pixel_outlier_detector_exclusion_min_pixels,
-            missing_before, invalid_before);
-    }
-    if (config.template has_typed<double>(std::tuple{"timestream","learning","map_pixel_outlier_min_abs_z"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, options.map_pixel_outlier_min_abs_z, missing_keys, invalid_keys,
-                         std::tuple{"timestream","learning","map_pixel_outlier_min_abs_z"}, {}, {0.0});
-        mirror_if_parsed(
-            typed_timestream_config.learning.map_pixel_outlier.min_abs_z,
-            options.map_pixel_outlier_min_abs_z, missing_before,
-            invalid_before);
-    }
-    if (config.template has_typed<double>(std::tuple{"timestream","learning","map_pixel_outlier_min_n_eff"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, options.map_pixel_outlier_min_n_eff, missing_keys, invalid_keys,
-                         std::tuple{"timestream","learning","map_pixel_outlier_min_n_eff"}, {}, {0.0});
-        mirror_if_parsed(
-            typed_timestream_config.learning.map_pixel_outlier.min_n_eff,
-            options.map_pixel_outlier_min_n_eff, missing_before,
-            invalid_before);
-    }
-    if (config.template has_typed<double>(std::tuple{"timestream","learning","map_pixel_outlier_source_radius_arcsec"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, options.map_pixel_outlier_source_radius_arcsec, missing_keys, invalid_keys,
-                         std::tuple{"timestream","learning","map_pixel_outlier_source_radius_arcsec"}, {}, {0.0});
-        mirror_if_parsed(
-            typed_timestream_config.learning.map_pixel_outlier.source_radius_arcsec,
-            options.map_pixel_outlier_source_radius_arcsec, missing_before,
-            invalid_before);
-    }
+    auto &typed_map_outlier =
+        typed_timestream_config.learning.map_pixel_outlier;
+    citlali::engine_detail::read_optional_learning_config(
+        config, std::tuple{"timestream","learning","map_pixel_outlier_diagnostics_enabled"},
+        options.map_pixel_outlier_diagnostics_enabled,
+        typed_map_outlier.diagnostics_enabled, missing_keys, invalid_keys);
+    citlali::engine_detail::read_optional_learning_config(
+        config, std::tuple{"timestream","learning","map_pixel_outlier_contributor_diagnostics_enabled"},
+        options.map_pixel_outlier_contributor_diagnostics_enabled,
+        typed_map_outlier.contributor_diagnostics_enabled, missing_keys,
+        invalid_keys);
+    citlali::engine_detail::read_optional_learning_config(
+        config, std::tuple{"timestream","learning","map_pixel_outlier_targeted_contributor_diagnostics_enabled"},
+        options.map_pixel_outlier_targeted_contributor_diagnostics_enabled,
+        typed_map_outlier.targeted_contributor_diagnostics_enabled,
+        missing_keys, invalid_keys);
+    citlali::engine_detail::read_optional_learning_config(
+        config, std::tuple{"timestream","learning","map_pixel_outlier_detector_exclusion_enabled"},
+        options.map_pixel_outlier_detector_exclusion_enabled,
+        typed_map_outlier.detector_exclusion_enabled, missing_keys,
+        invalid_keys);
+    citlali::engine_detail::read_optional_learning_config(
+        config, std::tuple{"timestream","learning","map_pixel_outlier_top_n"},
+        options.map_pixel_outlier_top_n, typed_map_outlier.top_n,
+        missing_keys, invalid_keys, {0});
+    citlali::engine_detail::read_optional_learning_config(
+        config, std::tuple{"timestream","learning","map_pixel_outlier_targeted_contributor_max_pixels"},
+        options.map_pixel_outlier_targeted_contributor_max_pixels,
+        typed_map_outlier.targeted_contributor_max_pixels, missing_keys,
+        invalid_keys, {0});
+    citlali::engine_detail::read_optional_learning_config(
+        config, std::tuple{"timestream","learning","map_pixel_outlier_detector_exclusion_min_pixels"},
+        options.map_pixel_outlier_detector_exclusion_min_pixels,
+        typed_map_outlier.detector_exclusion_min_pixels, missing_keys,
+        invalid_keys, {1});
+    citlali::engine_detail::read_optional_learning_config(
+        config, std::tuple{"timestream","learning","map_pixel_outlier_min_abs_z"},
+        options.map_pixel_outlier_min_abs_z, typed_map_outlier.min_abs_z,
+        missing_keys, invalid_keys, {0.0});
+    citlali::engine_detail::read_optional_learning_config(
+        config, std::tuple{"timestream","learning","map_pixel_outlier_min_n_eff"},
+        options.map_pixel_outlier_min_n_eff, typed_map_outlier.min_n_eff,
+        missing_keys, invalid_keys, {0.0});
+    citlali::engine_detail::read_optional_learning_config(
+        config, std::tuple{"timestream","learning","map_pixel_outlier_source_radius_arcsec"},
+        options.map_pixel_outlier_source_radius_arcsec,
+        typed_map_outlier.source_radius_arcsec, missing_keys, invalid_keys,
+        {0.0});
     if (config.template has_typed<bool>(std::tuple{"timestream","learning","busy_detector_exclusion_enabled"})) {
         const auto missing_before = missing_keys.size();
         const auto invalid_before = invalid_keys.size();
