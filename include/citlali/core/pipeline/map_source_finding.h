@@ -74,6 +74,22 @@ void initialize_source_fit_tables(MapBuffer &map_buffer,
     map_buffer.source_perror.setZero(n_sources, n_params);
 }
 
+template <class MapBuffer, class MapCount, class Logger>
+void detect_map_sources(MapBuffer &map_buffer, MapCount n_maps,
+                        const Logger &logger) {
+    clear_source_detection_vectors(map_buffer);
+
+    for (Eigen::Index i = 0; i < n_maps; ++i) {
+        append_missing_source_location(
+            map_buffer.n_sources, map_buffer.row_source_locs,
+            map_buffer.col_source_locs);
+
+        const auto sources_found = map_buffer.find_sources(i);
+        log_source_detection_result(
+            sources_found, map_buffer.n_sources, logger);
+    }
+}
+
 inline double source_fit_initial_fwhm_pixels(
     double array_fwhm_arcsec, double arcsec_to_rad, double pixel_size_rad) {
     return array_fwhm_arcsec * arcsec_to_rad / pixel_size_rad;
@@ -194,6 +210,28 @@ auto next_source_fit_row_start(SourceRow source_row_start,
     return source_row_start + n_map_sources;
 }
 
+template <class MapBuffer, class MapCount, class MapsToArrays,
+          class InitFwhmForArray, class FitMapSources>
+void fit_detected_map_sources(MapBuffer &map_buffer, MapCount n_maps,
+                              const MapsToArrays &maps_to_arrays,
+                              const InitFwhmForArray &init_fwhm_for_array,
+                              const FitMapSources &fit_map_sources) {
+    Eigen::Index source_row_start = 0;
+
+    for (Eigen::Index i = 0; i < n_maps; ++i) {
+        const auto n_map_sources = map_buffer.n_sources[i];
+        if (!has_sources(n_map_sources)) {
+            continue;
+        }
+
+        const auto array = maps_to_arrays(i);
+        const auto init_fwhm = init_fwhm_for_array(array);
+        fit_map_sources(i, n_map_sources, init_fwhm, source_row_start);
+        source_row_start =
+            next_source_fit_row_start(source_row_start, n_map_sources);
+    }
+}
+
 inline std::vector<std::string> source_table_header() {
     return {
         "array",
@@ -243,6 +281,11 @@ inline std::map<std::string, std::string> source_table_units(
         {"sig2noise", "N/A"}};
 }
 
+inline std::map<std::string, std::string> source_table_units_for_pixel_axes(
+    const std::string &signal_unit, const std::string &pixel_axes) {
+    return source_table_units(signal_unit, source_position_units(pixel_axes));
+}
+
 inline Eigen::Index source_table_column_count(Eigen::Index n_params) {
     return 2 * n_params + 2;
 }
@@ -282,6 +325,19 @@ YAML::Node source_table_meta(
     }
 
     return source_meta;
+}
+
+template <class Obsnums, class HeaderDescriptions>
+YAML::Node source_table_meta_for_observation(
+    const Obsnums &obsnums, const std::string &signal_unit,
+    const std::string &pixel_axes, const std::string &source_name,
+    const std::string &creation_date, const std::string &observation_date,
+    HeaderDescriptions &apt_header_description) {
+    const auto source_header_units =
+        source_table_units_for_pixel_axes(signal_unit, pixel_axes);
+    return source_table_meta(
+        obsnums, source_name, creation_date, observation_date,
+        source_header_units, apt_header_description);
 }
 
 inline float source_signal_to_noise(double source_amplitude,

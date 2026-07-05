@@ -7136,57 +7136,38 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
 
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::find_sources(map_buffer_t &mb) {
-    citlali::pipeline::clear_source_detection_vectors(mb);
-    // loop through maps
-    for (Eigen::Index i = 0; i < n_maps; ++i) {
-        citlali::pipeline::append_missing_source_location(
-            mb.n_sources, mb.row_source_locs, mb.col_source_locs);
-
-        // run source finder
-        const auto sources_found = mb.find_sources(i);
-
-        // number of sources found for current map
-        citlali::pipeline::log_source_detection_result(
-            sources_found, mb.n_sources, logger);
-    }
+    citlali::pipeline::detect_map_sources(mb, n_maps, logger);
 
     citlali::pipeline::initialize_source_fit_tables(
         mb, map_fitter.n_params);
 
-    // keep track of row in total source count
-    Eigen::Index source_row_start = 0;
-
-    // now loop through and fit the sources
-    for (Eigen::Index i = 0; i < n_maps; ++i) {
-        // skip map if no sources found
-        const auto n_map_sources = mb.n_sources[i];
-        if (citlali::pipeline::has_sources(n_map_sources)) {
-            // current array
-            const auto array = maps_to_arrays(i);
-            // init fwhm in pixels
-            const auto init_fwhm =
-                citlali::pipeline::source_fit_initial_fwhm_for_array(
-                    toltec_io.array_fwhm_arcsec, array, ASEC_TO_RAD,
-                    mb.pixel_size_rad);
-
-            // placeholder vectors for grppi map
+    const auto map_to_array_index = [&](Eigen::Index map_index) {
+        return maps_to_arrays(map_index);
+    };
+    const auto init_fwhm_for_array = [&](Eigen::Index array) {
+        return citlali::pipeline::source_fit_initial_fwhm_for_array(
+            toltec_io.array_fwhm_arcsec, array, ASEC_TO_RAD,
+            mb.pixel_size_rad);
+    };
+    const auto fit_map_sources =
+        [&](Eigen::Index map_index, Eigen::Index n_map_sources,
+            double init_fwhm, Eigen::Index source_row_start) {
             const auto source_in_vec =
                 citlali::pipeline::source_index_vector(n_map_sources);
             std::vector<int> source_out_vec(source_in_vec.size());
 
-            // loop through sources and fit them
             grppi::map(tula::grppi_utils::dyn_ex(parallel_policy),
                        source_in_vec, source_out_vec, [&](auto j) {
-                // update source rows and cols
-                const double init_row = mb.row_source_locs[i](j);
-                const double init_col = mb.col_source_locs[i](j);
+                const double init_row =
+                    mb.row_source_locs[map_index](j);
+                const double init_col =
+                    mb.col_source_locs[map_index](j);
 
-                // fit source
                 auto [params, perrors, good_fit] =
                     map_fitter.fit_to_gaussian<
                         engine_utils::mapFitter::pointing>(
-                            mb.signal[i], mb.weight[i], init_fwhm,
-                            init_row, init_col);
+                            mb.signal[map_index], mb.weight[map_index],
+                            init_fwhm, init_row, init_col);
                 if (good_fit) {
                     const auto tangent_to_abs = [](auto &lat, auto &lon,
                                                    double crval_lat,
@@ -7206,13 +7187,10 @@ void Engine::find_sources(map_buffer_t &mb) {
                 }
                 return 0;
             });
-
-            // update row
-            source_row_start =
-                citlali::pipeline::next_source_fit_row_start(
-                    source_row_start, n_map_sources);
-        }
-    }
+        };
+    citlali::pipeline::fit_detected_map_sources(
+        mb, n_maps, map_to_array_index, init_fwhm_for_array,
+        fit_map_sources);
 }
 
 template <mapmaking::MapType map_t, class map_buffer_t>
@@ -7225,20 +7203,12 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     // source header information
     const auto source_header = citlali::pipeline::source_table_header();
 
-    // units for fitted parameter centroids
-    const std::string pos_units =
-        citlali::pipeline::source_position_units(telescope.pixel_axes);
-
-    // units for source header
-    const auto source_header_units =
-        citlali::pipeline::source_table_units(mb->sig_unit, pos_units);
-
     // meta information for source table
     YAML::Node source_meta =
-        citlali::pipeline::source_table_meta(
-            mb->obsnums, telescope.source_name,
-            engine_utils::current_date_time(), date_obs.back(),
-            source_header_units, calib.apt_header_description);
+        citlali::pipeline::source_table_meta_for_observation(
+            mb->obsnums, mb->sig_unit, telescope.pixel_axes,
+            telescope.source_name, engine_utils::current_date_time(),
+            date_obs.back(), calib.apt_header_description);
 
     const auto map_to_array_index = [&](Eigen::Index map_index) {
         return maps_to_arrays(map_index);
