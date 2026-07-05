@@ -7528,10 +7528,11 @@ void Engine::write_stats() {
                 // loop through cleaner grouping
                 const auto n_eval_groupings = eval_groups.size();
                 for (Eigen::Index i=0; i<n_eval_groupings; ++i) {
+                    const auto &cleaner_grouping_name = cleaner_grouping[i];
 
                     const auto eval_var_name =
                         citlali::pipeline::stats_eigenvalue_var_name(
-                            cleaner_grouping[i], i, chunk_index);
+                            cleaner_grouping_name, i, chunk_index);
                     netCDF::NcVar eval_v =
                         citlali::pipeline::add_stats_eigenvalue_var(
                             fo, eval_var_name, eval_dims);
