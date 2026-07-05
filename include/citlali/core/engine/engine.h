@@ -6703,28 +6703,28 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                             fill_int, fill_double);
 
                                 if (has_contribution_products) {
-                                    const auto map_st =
+                                    const auto contribution_map_index =
                                         citlali::pipeline::
                                             mapdiag_contribution_map_index(i);
                                     const int uid =
                                         citlali::pipeline::
                                             mapdiag_matrix_value(
-                                                mb->contribution_uid[map_st],
+                                                mb->contribution_uid[contribution_map_index],
                                                 r, c);
                                     const double contrib_signal =
                                         citlali::pipeline::
                                             mapdiag_matrix_double_value(
-                                                mb->contribution_signal[map_st],
+                                                mb->contribution_signal[contribution_map_index],
                                                 r, c);
                                     const double contrib_weight =
                                         citlali::pipeline::
                                             mapdiag_matrix_double_value(
-                                                mb->contribution_weight[map_st],
+                                                mb->contribution_weight[contribution_map_index],
                                                 r, c);
                                     const double contrib_variance_weight =
                                         citlali::pipeline::
                                             mapdiag_matrix_double_value(
-                                                mb->contribution_variance_weight[map_st],
+                                                mb->contribution_variance_weight[contribution_map_index],
                                                 r, c);
                                     if (citlali::pipeline::
                                             mapdiag_has_valid_contributor(
@@ -6733,23 +6733,23 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                         citlali::pipeline::
                                             assign_mapdiag_candidate_contributor_from_products(
                                                 candidate, uid,
-                                                mb->contribution_scan[map_st],
-                                                mb->contribution_sample[map_st],
+                                                mb->contribution_scan[contribution_map_index],
+                                                mb->contribution_sample[contribution_map_index],
                                                 r, c);
                                         const double total_signal =
                                             citlali::pipeline::
                                                 mapdiag_matrix_double_value(
-                                                    mb->contribution_total_signal[map_st],
+                                                    mb->contribution_total_signal[contribution_map_index],
                                                     r, c);
                                         const double total_weight =
                                             citlali::pipeline::
                                                 mapdiag_matrix_double_value(
-                                                    mb->contribution_total_weight[map_st],
+                                                    mb->contribution_total_weight[contribution_map_index],
                                                     r, c);
                                         const double total_variance_weight =
                                             citlali::pipeline::
                                                 mapdiag_matrix_double_value(
-                                                    mb->contribution_total_variance_weight[map_st],
+                                                    mb->contribution_total_variance_weight[contribution_map_index],
                                                     r, c);
                                         const double remaining_weight =
                                             citlali::pipeline::
