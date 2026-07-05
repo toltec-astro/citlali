@@ -7643,7 +7643,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                 wiener_filter.filter_noise_threadsafe(mb, i, j);
             }
             logger->info("noise filtering complete for {} map {}/{}",
-                         map_label, i + 1, n_maps);
+                         map_label, map_number, n_maps);
 #else
             tula::logging::progressbar pb(
                 [&](const auto &msg) { logger->info("{}", msg); }, 100,
