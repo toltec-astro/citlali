@@ -7545,7 +7545,7 @@ void Engine::write_stats() {
                         Eigen::VectorXd padded_evals =
                             citlali::pipeline::ptcdiag_padded_eigenvalues(
                                 evals, n_cleaner_eigenvalues,
-                                citlali::pipeline::ptcdiag_fill_double());
+                                eigenvalue_fill_value);
                         eval_v.putVar(start_eig_index, eig_write_shape,
                                       padded_evals.data());
                         start_eig_index[0] += 1;
