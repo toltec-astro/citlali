@@ -7469,13 +7469,6 @@ void Engine::write_stats() {
     // group stats header
     const std::map<std::string, std::string> grp_stats_header_units{
         {"median_weights", "1/(" + omb.sig_unit + ")^2"}};
-    auto lookup_stat_units =
-        [](const std::map<std::string, std::string> &units,
-           const std::string &stat) -> std::string {
-            const auto it = units.find(stat);
-            return it == units.end() ? "" : it->second;
-        };
-
     const auto stats_netcdf_filename = stats_filename + ".nc";
     write_netcdf_atomic(stats_netcdf_filename, [&](netCDF::NcFile &fo) {
 
@@ -7498,7 +7491,8 @@ void Engine::write_stats() {
             fo.addVar(stat, netCDF::ncDouble, det_stat_dims);
         stat_v.putVar(diagnostics.stats[stat].data());
         stat_v.putAtt("units",
-                      lookup_stat_units(det_stats_header_units, stat));
+                      citlali::pipeline::stats_unit_or_empty(
+                          det_stats_header_units, stat));
     }
     // add group stats
     for (const auto &stat : diagnostics.grp_stats_header) {
@@ -7506,7 +7500,8 @@ void Engine::write_stats() {
             fo.addVar(stat, netCDF::ncDouble, grp_stat_dims);
         stat_v.putVar(diagnostics.stats[stat].data());
         stat_v.putAtt("units",
-                      lookup_stat_units(grp_stats_header_units, stat));
+                      citlali::pipeline::stats_unit_or_empty(
+                          grp_stats_header_units, stat));
     }
 
     // add apt table
