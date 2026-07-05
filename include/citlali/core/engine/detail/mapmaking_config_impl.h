@@ -46,7 +46,7 @@ void Engine::get_mapmaking_config(CT &config) {
     if (config.template has_typed<std::string>(std::tuple{"source", "map_regime"})) {
         map_regime = config.template get_typed<std::string>(std::tuple{"source", "map_regime"});
         check_allowed(map_regime, missing_keys, invalid_keys,
-                      std::vector<std::string>{"source_dominant", "source_faint", "blank_field", "unknown"},
+                      citlali::pipeline::allowed_map_regimes(),
                       std::tuple{"source", "map_regime"});
     }
 

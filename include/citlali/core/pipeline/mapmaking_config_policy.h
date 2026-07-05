@@ -1,6 +1,13 @@
 #pragma once
 
+#include <string>
+#include <vector>
+
 namespace citlali::pipeline {
+
+inline std::vector<std::string> allowed_map_regimes() {
+    return {"source_dominant", "source_faint", "blank_field", "unknown"};
+}
 
 template <class OutputMapBlock, class CoaddMapBlock>
 void mirror_noise_map_settings_to_coadd(const OutputMapBlock &omb,
