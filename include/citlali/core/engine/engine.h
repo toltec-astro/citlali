@@ -7531,8 +7531,9 @@ void Engine::write_stats() {
                                   eval_dims);
                     auto start_eig_index =
                         citlali::pipeline::stats_eigenvalue_start_index();
-                    std::vector<std::size_t> eig_write_shape = {
-                        1, TULA_SIZET(ptcproc.cleaner.n_calc)};
+                    const auto eig_write_shape =
+                        citlali::pipeline::stats_eigenvalue_write_shape(
+                            ptcproc.cleaner.n_calc);
 
                     // loop through eigenvalues in current group
                     for (const auto &evals : eval_groups[i]) {
