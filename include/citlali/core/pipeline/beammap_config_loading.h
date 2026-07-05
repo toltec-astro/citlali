@@ -100,6 +100,24 @@ void disable_missing_beammap_priors(bool &enabled,
     enabled = false;
 }
 
+template <class Config, class Logger>
+void read_beammap_split_flag_values(Config &config,
+                                    std::vector<int> &flag_values,
+                                    const Logger &logger) {
+    const auto key = std::tuple{"beammap", "split_fits_by_flag",
+                                "flag_values"};
+    if (!config.template has_typed<std::vector<int>>(key)) {
+        return;
+    }
+    auto values = config.template get_typed<std::vector<int>>(key);
+    if (values.empty()) {
+        logger->warn(
+            "beammap.split_fits_by_flag.flag_values is empty; using defaults [0, 1]");
+        return;
+    }
+    flag_values = normalized_beammap_split_flag_values(std::move(values));
+}
+
 inline void mirror_beammap_core_config(
     citlali::config::BeammapConfig &target,
     int iter_max, double iter_tolerance, double convergence_radius_arcsec,

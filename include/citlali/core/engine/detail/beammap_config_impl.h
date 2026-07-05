@@ -162,18 +162,8 @@ void Engine::get_beammap_config(CT &config) {
         get_config_value(config, beammap_split_fits_by_flag, missing_keys, invalid_keys,
                          std::tuple{"beammap","split_fits_by_flag","enabled"});
     }
-    if (config.template has_typed<std::vector<int>>(std::tuple{"beammap","split_fits_by_flag","flag_values"})) {
-        auto values = config.template get_typed<std::vector<int>>(
-            std::tuple{"beammap","split_fits_by_flag","flag_values"});
-        if (values.empty()) {
-            logger->warn("beammap.split_fits_by_flag.flag_values is empty; using defaults [0, 1]");
-        }
-        else {
-            beammap_split_flag_values =
-                citlali::pipeline::normalized_beammap_split_flag_values(
-                    std::move(values));
-        }
-    }
+    citlali::pipeline::read_beammap_split_flag_values(
+        config, beammap_split_flag_values, logger);
 
     // optional soft priors for beammap peak initialization
     beammap_priors_enabled = false;
