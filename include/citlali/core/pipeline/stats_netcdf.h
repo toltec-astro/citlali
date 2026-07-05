@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include <Eigen/Core>
 #include <netcdf>
 
 namespace citlali::pipeline {
