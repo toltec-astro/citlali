@@ -78,36 +78,13 @@ inline void Engine::write_learning_summary() {
     }
 
     for (const auto &record : reduction_learning.map_pixel_outliers) {
-        auto row = new_row();
-        write_base(row, "map_pixel_outlier", record.iter, record.obsnum,
-                   record.producer, record.reason, record.scan, record.uid,
-                   -1, -1);
-        row[ColScore] = text(record.leave_one_out_z);
-        row[ColZ] = text(record.leave_one_out_z);
-        row[ColValue] = text(record.value);
-        row[ColWeight] = text(record.weight);
-        row[ColMapIndex] = text(record.map_index);
-        row[ColRow] = text(record.row);
-        row[ColCol] = text(record.col);
-        row[ColSample] = text(record.sample);
-        row[ColNEff] = text(record.n_eff);
-        row[ColLeaveOneOutZ] = text(record.leave_one_out_z);
-        row[ColSourceDistanceArcsec] = text(record.source_distance_arcsec);
-        row[ColSourceProtected] = text(record.source_protected ? 1 : 0);
-        write_row(row);
+        write_row(citlali::pipeline::learning_summary_map_pixel_outlier_row(
+            record, text, csv));
     }
 
     for (const auto &record : reduction_learning.source_protection_summaries) {
-        auto row = new_row();
-        write_base(row, "source_protection", record.iter, record.obsnum,
-                   record.producer, record.mode, record.scan, -1, -1, -1);
-        row[ColSourceProtected] = text(1);
-        row[ColApplyPreRtc] = text(0);
-        row[ColProtectedSamples] = text(record.protected_samples);
-        row[ColTotalSamples] = text(record.total_samples);
-        row[ColRadiusArcsec] = text(record.radius_arcsec);
-        row[ColSupportNpix] = text(record.support_npix);
-        write_row(row);
+        write_row(citlali::pipeline::learning_summary_source_protection_row(
+            record, text, csv));
     }
 
     for (const auto &record : reduction_learning.learned_mask_applications) {
