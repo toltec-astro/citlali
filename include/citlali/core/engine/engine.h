@@ -6234,7 +6234,7 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
     write_netcdf_atomic(filename + ".nc", [&](netCDF::NcFile &fo) {
 
     // loop through psd vector
-    for (Eigen::Index i=0; i<mb->psds.size(); ++i) {
+    for (Eigen::Index i = 0; i < mb->psds.size(); ++i) {
         // get name for extension layer
         std::string map_name = get_map_name(i);
 
