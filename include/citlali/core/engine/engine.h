@@ -7244,7 +7244,9 @@ void Engine::create_rtcdiag_file() {
                 continue;
             }
             const double f_half_hz =
-                (std::sqrt(std::log(2.0)) / (2.0 * pi * fwhm_arcsec * FWHM_TO_STD)) * speed;
+                (std::sqrt(std::log(2.0)) /
+                 (2.0 * pi * fwhm_arcsec * FWHM_TO_STD)) *
+                speed;
             const auto flat_i = scan_index * n_array_values +
                                 static_cast<std::size_t>(arr_i);
             source_power_half_bandwidth_hz[flat_i] = f_half_hz;
