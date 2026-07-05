@@ -6935,10 +6935,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                     citlali::pipeline::mapdiag_obs_raw_dir(
                         redu_dir_name, coadd_obsnum);
                 const auto obs_weight_path =
-                    toltec_io.create_filename<
-                        engine_utils::toltecIO::toltec,
-                        engine_utils::toltecIO::map,
-                        engine_utils::toltecIO::raw>(
+                    toltec_io
+                        .create_filename<engine_utils::toltecIO::toltec,
+                                         engine_utils::toltecIO::map,
+                                         engine_utils::toltecIO::raw>(
                         obs_dir, redu_type, array_names[idx], coadd_obsnum,
                         telescope.sim_obs) + ".fits";
                 const auto weight_hdu_name =
