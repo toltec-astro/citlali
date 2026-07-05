@@ -52,6 +52,22 @@ inline bool should_destroy_filtered_fits_handle(
     return next_map_opens_new_file && should_close_filtered_fits;
 }
 
+inline bool is_final_map_filter_polarization_stokes(
+    const std::string &stokes_param) {
+    return stokes_param == "U";
+}
+
+template <class MapIndex, class MapCount>
+bool has_next_map_filter_output(MapIndex map_index, MapCount n_maps) {
+    return map_index < n_maps - 1;
+}
+
+template <class MapIndex>
+bool next_map_filter_output_opens_new_file(MapIndex current_map_index,
+                                           MapIndex next_map_index) {
+    return next_map_index > current_map_index;
+}
+
 template <auto FilteredMap, class Engine, class MapBuffer, class Logger>
 void run_wiener_filter_with_log(Engine &engine, MapBuffer &map_buffer,
                                 const Logger &logger,

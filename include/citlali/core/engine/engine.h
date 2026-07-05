@@ -7559,8 +7559,6 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     FitsVector *filtered_fits_io = nullptr;
     // pointer to noise file fits vector
     FitsVector *filtered_noise_fits_io = nullptr;
-    // directory name
-    std::string filtered_dir_name;
     // logging label
     const char *map_label = "filtered maps";
 
@@ -7568,7 +7566,6 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     if constexpr (map_t == mapmaking::FilteredObs) {
         filtered_fits_io = &filtered_fits_io_vec;
         filtered_noise_fits_io = &filtered_noise_fits_io_vec;
-        filtered_dir_name = obsnum_dir_name + "filtered/";
         map_label = "filtered obs maps";
     }
 
@@ -7576,7 +7573,6 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     else if constexpr (map_t == mapmaking::FilteredCoadd) {
         filtered_fits_io = &filtered_coadd_fits_io_vec;
         filtered_noise_fits_io = &filtered_coadd_noise_fits_io_vec;
-        filtered_dir_name = coadd_dir_name + "filtered/";
         map_label = "filtered coadded maps";
     }
 
@@ -7720,17 +7716,20 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                 const auto &current_stokes_param =
                     rtcproc.polarization.stokes_params[maps_to_stokes(i)];
                 const bool is_last_polarization_stokes =
-                    current_stokes_param == "U";
+                    citlali::pipeline::is_final_map_filter_polarization_stokes(
+                        current_stokes_param);
                 if (!is_last_polarization_stokes) {
                     should_close_filtered_fits = false;
                 }
             }
             // check if we're moving onto a new file
-            const bool has_next_map = i < n_maps - 1;
+            const bool has_next_map =
+                citlali::pipeline::has_next_map_filter_output(i, n_maps);
             if (has_next_map) {
                 const auto next_map_index = arrays_to_maps(i + 1);
                 const bool next_map_opens_new_file =
-                    next_map_index > map_index;
+                    citlali::pipeline::next_map_filter_output_opens_new_file(
+                        map_index, next_map_index);
                 const bool should_destroy_filtered_fits =
                     citlali::pipeline::should_destroy_filtered_fits_handle(
                         next_map_opens_new_file,
