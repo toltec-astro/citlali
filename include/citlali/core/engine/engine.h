@@ -7492,8 +7492,10 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         map_label = "filtered coadded maps";
     }
 
-    logger->info("preparing {} FITS headers ({} files)", map_label, f_io->size());
-    for (Eigen::Index i=0; i<f_io->size(); ++i) {
+    const auto n_filtered_fits = static_cast<Eigen::Index>(f_io->size());
+    logger->info("preparing {} FITS headers ({} files)", map_label,
+                 f_io->size());
+    for (Eigen::Index i=0; i<n_filtered_fits; ++i) {
         // get the array for the given map
         // add primary hdu
         add_phdu(f_io, pmb, i);
