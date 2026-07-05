@@ -11,6 +11,8 @@
 #include <Eigen/Core>
 #include <netcdf>
 
+#include <citlali/core/pipeline/reduction_config_netcdf.h>
+
 namespace citlali::pipeline {
 
 using PtcDiagVarList = std::vector<std::pair<std::string, std::string>>;
@@ -534,6 +536,16 @@ inline std::string ptcdiag_weight_corr_factor_comment() {
 
 inline std::string ptcdiag_second_pass_busy_network_comment() {
     return "1 if this network had more candidate second-pass clusters than the normal auto-flag limit";
+}
+
+template <class PtcProc, class ReductionLearning>
+void add_ptcdiag_file_config_vars(netCDF::NcFile &fo,
+                                  const PtcProc &ptcproc,
+                                  const ReductionLearning &learning) {
+    add_weight_selection_config_vars(fo, ptcproc);
+    add_reduction_learning_config_vars(fo, learning);
+    add_ptc_weight_cutoff_config_vars(fo, ptcproc, true);
+    add_ptcdiag_compact_config_vars(fo, ptcproc);
 }
 
 template <class Calib>

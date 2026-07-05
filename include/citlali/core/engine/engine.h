@@ -117,6 +117,7 @@
 #include <citlali/core/pipeline/spectral_diagnostics_netcdf.h>
 #include <citlali/core/pipeline/stats_netcdf.h>
 #include <citlali/core/pipeline/summary_log.h>
+#include <citlali/core/pipeline/tod_stream_netcdf.h>
 
 #include <citlali/core/engine/io.h>
 #include <citlali/core/engine/kidsproc.h>
@@ -5539,31 +5540,15 @@ void Engine::create_tod_files() {
         chunkMode, chunkSizes);
 
     if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
-        const int fill_int = citlali::pipeline::rtcdiag_fill_int();
-        const double fill_double = citlali::pipeline::rtcdiag_fill_double();
-        const double rtc_stream_fsmp =
-            citlali::pipeline::rtc_tod_stream_sample_rate(
-                rtcproc, telescope.fsmp, telescope.d_fsmp);
-        citlali::pipeline::add_rtcdiag_tod_stream_diag(
-            fo, calib, rtcproc, tod_dims.n_scans, tod_dims.n_dets,
-            tod_layout.stream.n_output_scans, rtc_stream_fsmp,
-            fill_int, fill_double);
+        citlali::pipeline::add_rtc_tod_stream_diagnostic_outputs(
+            fo, calib, rtcproc, tod_layout, telescope.fsmp,
+            telescope.d_fsmp);
     }
 
     // add weights
     if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
-        std::vector<netCDF::NcDim> weight_dims = {
-            tod_dims.n_scans, tod_dims.n_dets};
-        citlali::pipeline::add_ptc_weights_var(fo, weight_dims, omb.sig_unit);
-        const int ptc_stream_fill_int = citlali::pipeline::ptcdiag_fill_int();
-        const double ptc_stream_fill_double =
-            citlali::pipeline::ptcdiag_fill_double();
-
-        citlali::pipeline::add_ptcdiag_tod_optional_diag(
-            fo, calib, ptcproc, tod_dims.signal, chunkMode, chunkSizes,
-            tod_dims.n_scans, tod_dims.n_dets,
-            tod_layout.stream.n_output_scans, ptc_stream_fill_int,
-            ptc_stream_fill_double);
+        citlali::pipeline::add_ptc_tod_stream_weight_and_diagnostic_outputs(
+            fo, calib, ptcproc, tod_layout, omb.sig_unit);
     }
 
     citlali::pipeline::add_tod_hwpr_var_if_requested(
@@ -7025,11 +7010,8 @@ void Engine::create_ptcdiag_file() {
         telescope.project_id, redu_type, telescope.obs_goal, tod_type);
     add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
 
-    citlali::pipeline::add_weight_selection_config_vars(fo, ptcproc);
-    citlali::pipeline::add_reduction_learning_config_vars(
-        fo, reduction_learning);
-    citlali::pipeline::add_ptc_weight_cutoff_config_vars(fo, ptcproc, true);
-    citlali::pipeline::add_ptcdiag_compact_config_vars(fo, ptcproc);
+    citlali::pipeline::add_ptcdiag_file_config_vars(
+        fo, ptcproc, reduction_learning);
 
     citlali::pipeline::add_ptcdiag_standard_detector_diag(
         fo, ptcdiag_dims.det, ptcdiag_dims.det_chunks,
@@ -7101,29 +7083,9 @@ void Engine::create_rtcdiag_file() {
         fo, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
         telescope.project_id, redu_type, telescope.obs_goal, tod_type);
     add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
-    add_netcdf_var(fo, "RTC_SAMPRATE", rtc_fsmp);
-    add_netcdf_var(fo, "CONFIG.TODFILTERED", rtcproc.run_tod_filter);
-    add_netcdf_var(fo, "CONFIG.TODFILTER.FREQ_HIGH_HZ",
-                   rtcproc.filter.freq_high_Hz);
-    add_netcdf_var(fo, "CONFIG.TODFILTER.FREQ_LOW_HZ",
-                   rtcproc.filter.freq_low_Hz);
-    add_netcdf_var(fo, "CONFIG.TODFILTER.N_TERMS", rtcproc.filter.n_terms);
-    citlali::pipeline::add_tod_filter_edge_guard_config_vars(
-        fo, rtcproc.filter_edge_guard, telescope.outer_scans_chunk,
-        rtcproc.tod_output_outer_context_samples);
-
-    // Keep a compact provenance subset so rtcdiag is interpretable without the RTC TOD.
-    add_netcdf_var(fo, "CONFIG.VERBOSE", verbose_mode);
-    citlali::pipeline::add_reduction_learning_config_vars(
-        fo, reduction_learning, false);
-    add_netcdf_var(fo, "CONFIG.DESPIKED", rtcproc.run_despike);
-    citlali::pipeline::add_rtc_local_despike_config_vars(
-        fo, rtcproc.despiker.local_residual);
-    citlali::pipeline::add_rtc_event_mask_config_vars(fo, rtcproc);
-    citlali::pipeline::add_rtc_line_audit_config_vars(
-        fo, rtcproc.line_audit);
-    add_netcdf_var(fo, "CONFIG.INV_VAR.WINDOW_SEC",
-                   rtcproc.remove_bad_dets_window_sec);
+    citlali::pipeline::add_rtcdiag_file_config_vars(
+        fo, rtcproc, reduction_learning, verbose_mode,
+        telescope.outer_scans_chunk, rtc_fsmp);
 
     citlali::pipeline::add_rtcdiag_apt_double_vars(
         fo, calib, rtcdiag_dims.n_dets);
