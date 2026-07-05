@@ -127,4 +127,30 @@ void add_phdu_tod_runtime_config_section(
         fits_entry, array_name, logger, rtcproc);
 }
 
+template <class FitsEntry, class PtcProc, class Calib, class LearningState,
+          class ArrayId, class Logger>
+void add_phdu_ptc_learning_config_section(
+    FitsEntry &fits_entry, const std::string &array_name,
+    const Logger &logger, PtcProc &ptcproc, const Calib &calib,
+    const LearningState &reduction_learning, Eigen::Index map_index,
+    const ArrayId &array_id, const std::string &signal_unit) {
+    citlali::pipeline::add_phdu_reduction_learning_config(
+        fits_entry, array_name, logger, reduction_learning);
+    citlali::pipeline::add_phdu_weight_corr_penalty_config(
+        fits_entry, array_name, logger, ptcproc.weight_corr_penalty);
+    citlali::pipeline::add_phdu_busy_row_suppression_config(
+        fits_entry, array_name, logger, ptcproc.busy_row_suppression);
+    const auto n_eig_removed =
+        ptcproc.run_clean ? ptcproc.cleaner.n_eig_to_cut[array_id].sum() : 0;
+    citlali::pipeline::add_phdu_cleaner_config(
+        fits_entry, array_name, logger, ptcproc, n_eig_removed);
+
+    const double fruit_loops_flux_limit =
+        citlali::pipeline::phdu_fruit_loop_flux_limit(
+            ptcproc, calib.arrays, map_index, array_id);
+    citlali::pipeline::add_phdu_fruit_loops_config(
+        fits_entry, array_name, logger, ptcproc, fruit_loops_flux_limit,
+        signal_unit);
+}
+
 }  // namespace citlali::engine_detail

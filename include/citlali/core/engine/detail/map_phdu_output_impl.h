@@ -72,24 +72,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_entry, name, logger, verbose_mode, rtcproc, ptcproc,
         telescope.outer_scans_chunk);
 
-    citlali::pipeline::add_phdu_reduction_learning_config(
-        fits_entry, name, logger, reduction_learning);
-    citlali::pipeline::add_phdu_weight_corr_penalty_config(
-        fits_entry, name, logger, ptcproc.weight_corr_penalty);
-    citlali::pipeline::add_phdu_busy_row_suppression_config(
-        fits_entry, name, logger, ptcproc.busy_row_suppression);
-    const auto n_eig_removed =
-        ptcproc.run_clean ? ptcproc.cleaner.n_eig_to_cut[array_id].sum()
-                          : 0;
-    citlali::pipeline::add_phdu_cleaner_config(
-        fits_entry, name, logger, ptcproc, n_eig_removed);
-
-    const double fruit_loops_flux_limit =
-        citlali::pipeline::phdu_fruit_loop_flux_limit(
-            ptcproc, calib.arrays, i, array_id);
-    citlali::pipeline::add_phdu_fruit_loops_config(
-        fits_entry, name, logger, ptcproc, fruit_loops_flux_limit,
-        mb->sig_unit);
+    citlali::engine_detail::add_phdu_ptc_learning_config_section(
+        fits_entry, name, logger, ptcproc, calib, reduction_learning, i,
+        array_id, mb->sig_unit);
 
     citlali::pipeline::add_phdu_pointing_config_if_needed(
         fits_entry, name, logger, redu_type, pointing_source_strategy,
