@@ -14,6 +14,13 @@ inline double map_filter_initial_fwhm_pixels(
     return array_fwhm_arcsec * arcsec_to_rad / pixel_size_rad;
 }
 
+template <class TemplateFwhmMap>
+bool has_map_filter_template_fwhm(
+    const TemplateFwhmMap &template_fwhm_rad,
+    const std::string &array_name) {
+    return template_fwhm_rad.find(array_name) != template_fwhm_rad.end();
+}
+
 template <auto FilteredMap, class Engine, class MapBuffer, class Logger>
 void run_wiener_filter_with_log(Engine &engine, MapBuffer &map_buffer,
                                 const Logger &logger,
