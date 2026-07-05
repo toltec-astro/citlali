@@ -109,4 +109,8 @@ inline std::string stats_eigenvalue_var_name(
            std::to_string(chunk_index);
 }
 
+inline std::vector<std::size_t> stats_eigenvalue_start_index() {
+    return {0, 0};
+}
+
 }  // namespace citlali::pipeline
