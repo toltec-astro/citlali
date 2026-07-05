@@ -7816,7 +7816,8 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     // add obsnums
     for (Eigen::Index i=0; i<mb->obsnums.size(); ++i) {
         // add obsnum to meta data
-        source_meta["obsnum" + std::to_string(i)] = mb->obsnums[i];
+        const auto obsnum_key = "obsnum" + std::to_string(i);
+        source_meta[obsnum_key] = mb->obsnums[i];
     }
 
     // add source name
