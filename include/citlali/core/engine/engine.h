@@ -6364,17 +6364,26 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         noise_tail_excess_pos3,
         noise_tail_excess_neg3,
         noise_sig2noise_skew};
-    std::vector<double> edge_guard_weight_thresholds(mapdiag_context.n_maps, fill_double);
-    std::vector<double> edge_guard_hits_thresholds(mapdiag_context.n_maps, fill_double);
-    std::vector<double> edge_guard_background_levels(mapdiag_context.n_maps, fill_double);
-    std::vector<double> edge_guard_science_frac(mapdiag_context.n_maps, fill_double);
-    std::vector<double> edge_guard_support_frac(mapdiag_context.n_maps, fill_double);
-    std::vector<double> edge_guard_guardband_rms_pre(mapdiag_context.n_maps, fill_double);
-    std::vector<double> edge_guard_guardband_rms_post(mapdiag_context.n_maps, fill_double);
-    std::vector<double> edge_guard_exterior_rms_pre(mapdiag_context.n_maps, fill_double);
-    std::vector<double> edge_guard_exterior_rms_post(mapdiag_context.n_maps, fill_double);
-    std::vector<double> edge_guard_exterior_max_abs_pre(mapdiag_context.n_maps, fill_double);
-    std::vector<double> edge_guard_exterior_max_abs_post(mapdiag_context.n_maps, fill_double);
+    std::vector<double> edge_guard_weight_thresholds(
+        n_mapdiag_maps, fill_double);
+    std::vector<double> edge_guard_hits_thresholds(
+        n_mapdiag_maps, fill_double);
+    std::vector<double> edge_guard_background_levels(
+        n_mapdiag_maps, fill_double);
+    std::vector<double> edge_guard_science_frac(n_mapdiag_maps, fill_double);
+    std::vector<double> edge_guard_support_frac(n_mapdiag_maps, fill_double);
+    std::vector<double> edge_guard_guardband_rms_pre(
+        n_mapdiag_maps, fill_double);
+    std::vector<double> edge_guard_guardband_rms_post(
+        n_mapdiag_maps, fill_double);
+    std::vector<double> edge_guard_exterior_rms_pre(
+        n_mapdiag_maps, fill_double);
+    std::vector<double> edge_guard_exterior_rms_post(
+        n_mapdiag_maps, fill_double);
+    std::vector<double> edge_guard_exterior_max_abs_pre(
+        n_mapdiag_maps, fill_double);
+    std::vector<double> edge_guard_exterior_max_abs_post(
+        n_mapdiag_maps, fill_double);
     citlali::pipeline::MapdiagEdgeGuardDoubleRefs edge_guard_double_refs{
         edge_guard_weight_thresholds,
         edge_guard_hits_thresholds,
