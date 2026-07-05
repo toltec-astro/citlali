@@ -7463,8 +7463,8 @@ void Engine::write_stats() {
     const auto det_stats_header_units =
         citlali::pipeline::detector_stats_units(omb.sig_unit);
     // group stats header
-    const std::map<std::string, std::string> grp_stats_header_units{
-        {"median_weights", "1/(" + omb.sig_unit + ")^2"}};
+    const auto grp_stats_header_units =
+        citlali::pipeline::group_stats_units(omb.sig_unit);
     const auto stats_netcdf_filename = stats_filename + ".nc";
     write_netcdf_atomic(stats_netcdf_filename, [&](netCDF::NcFile &fo) {
 
