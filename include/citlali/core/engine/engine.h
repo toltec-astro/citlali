@@ -7717,8 +7717,9 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             // check if we're moving onto a new file
             const bool has_next_map = i < n_maps - 1;
             if (has_next_map) {
+                const auto next_map_index = arrays_to_maps(i + 1);
                 const bool next_map_opens_new_file =
-                    arrays_to_maps(i + 1) > arrays_to_maps(i);
+                    next_map_index > arrays_to_maps(i);
                 if (next_map_opens_new_file && should_close_filtered_fits) {
                     logger->info("closing FITS handle for {}",
                                  filtered_map_path);
