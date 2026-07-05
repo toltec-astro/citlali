@@ -6996,7 +6996,8 @@ void Engine::create_ptcdiag_file() {
     const int fill_int = citlali::pipeline::ptcdiag_fill_int();
     const double fill_double = citlali::pipeline::ptcdiag_fill_double();
     const Eigen::Index n_scans = telescope.scan_indices.cols();
-    std::vector<std::size_t> det_chunks = {1, TULA_SIZET(calib.n_dets)};
+    const std::vector<std::size_t> det_chunks = {
+        1, TULA_SIZET(calib.n_dets)};
 
     citlali::pipeline::add_tod_output_type_label(fo, "ptcdiag");
 
