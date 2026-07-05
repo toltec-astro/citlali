@@ -6640,8 +6640,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
                         for (Eigen::Index r = 0; r < n_mapdiag_rows; ++r) {
                             for (Eigen::Index c = 0; c < n_mapdiag_cols; ++c) {
-                                if (!citlali::pipeline::mapdiag_mask_pixel_is_selected(
-                                        off_source_core_mask, r, c)) {
+                                if (!citlali::pipeline::
+                                        mapdiag_mask_pixel_is_selected(
+                                            off_source_core_mask, r, c)) {
                                     continue;
                                 }
 
