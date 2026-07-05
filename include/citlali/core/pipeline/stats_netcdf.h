@@ -94,4 +94,11 @@ bool has_stats_eigenvalue_groups(const EvalMap &evals) {
     return !first_it->second.empty() && !first_it->second[0].empty();
 }
 
+inline std::vector<netCDF::NcDim> add_stats_eigenvalue_dims(
+    netCDF::NcFile &fo, Eigen::Index n_calc, std::size_t n_eig_groups) {
+    netCDF::NcDim n_eigs_dim = fo.addDim("n_eigs", n_calc);
+    netCDF::NcDim n_eig_grp_dim = fo.addDim("n_eig_grp", n_eig_groups);
+    return {n_eig_grp_dim, n_eigs_dim};
+}
+
 }  // namespace citlali::pipeline
