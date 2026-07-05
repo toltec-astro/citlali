@@ -7649,7 +7649,7 @@ void Engine::find_sources(map_buffer_t &mb) {
         mb.row_source_locs.push_back(Eigen::VectorXi::Ones(1));
         mb.col_source_locs.push_back(Eigen::VectorXi::Ones(1));
 
-        // default value of -99 to keep size of vectors same as map vector
+        // default missing value keeps vector sizes aligned with maps
         mb.row_source_locs.back() *= missing_source_location;
         mb.col_source_locs.back() *= missing_source_location;
 
