@@ -3,6 +3,8 @@
 // Engine FITS map output implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/engine/detail/map_phdu_output_helpers.h>
+
 template <typename fits_io_type, class map_buffer_t>
 void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     citlali::pipeline::require_phdu_output_slots(
@@ -17,16 +19,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     auto &fits_entry = fits_io->at(i);
 
     try {
-    logger->debug("adding unit conversions");
-
-    // conversion to Rayleigh-Jeans uK brightness temperature
-    const auto unit_conversion =
-        citlali::pipeline::phdu_unit_conversion_factors(
-            calib.array_fwhms[array_id], mb->pixel_size_rad, FWHM_TO_STD,
-            ASEC_TO_RAD, pi);
-    auto mJy_beam_to_uK = engine_utils::mJy_beam_to_uK(
-        1, toltec_io.array_freq_map[array_id],
-        unit_conversion.mean_fwhm_arcsec);
+    citlali::engine_detail::add_phdu_unit_conversion_section(
+        fits_entry, mb, calib, toltec_io, array_id, name,
+        rtcproc.run_calibrate, FWHM_TO_STD, ASEC_TO_RAD, pi,
+        MJY_SR_TO_mJY_ASEC, logger);
 
     auto get_tel_header_scalar = [&](const std::string &key, double fallback) {
         return citlali::pipeline::telescope_header_scalar(
@@ -43,12 +39,6 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         citlali::pipeline::add_phdu_double_key(
             fits_entry, name, logger, key, value, comment, fallback);
     };
-
-    // add unit conversions
-    citlali::pipeline::add_phdu_unit_conversion_config(
-        fits_entry, name, logger, rtcproc.run_calibrate, mb->sig_unit,
-        calib.array_beam_areas[array_id]*MJY_SR_TO_mJY_ASEC,
-        mJy_beam_to_uK, unit_conversion.mjy_beam_to_jy_pixel);
 
     // add source flux and tuning for beammaps
     citlali::pipeline::add_phdu_beammap_keys_if_needed(
