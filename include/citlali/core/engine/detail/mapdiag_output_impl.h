@@ -580,8 +580,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 idx, mb, i, mapdiag_stats, core_mask, noise_tail_refs);
         }
 
-        const bool is_single_observation_mapdiag = !mapdiag_context.is_coadd;
-        if (is_single_observation_mapdiag) {
+        if (citlali::pipeline::mapdiag_is_single_observation_context(
+                mapdiag_context)) {
             citlali::pipeline::assign_mapdiag_single_obs_entry(
                 mapdiag_context, idx, weight_sum[idx],
                 core_weight_sum[idx], n_valid_pixels[idx],
@@ -620,13 +620,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 }
             }
         }
-        const auto obs_totals =
-            citlali::pipeline::sum_mapdiag_obs_weight_totals(
-                obs_weight_sum, obs_core_weight_sum, mapdiag_context, idx);
-        citlali::pipeline::assign_mapdiag_obs_fraction_pair(
-            obs_weight_sum, obs_totals.weight, obs_core_weight_sum,
-            obs_totals.core_weight, fill_double, mapdiag_context, idx,
-            obs_weight_frac, obs_core_weight_frac);
+        citlali::pipeline::assign_mapdiag_obs_fractions_for_map(
+            obs_weight_sum, obs_core_weight_sum, fill_double,
+            mapdiag_context, idx, obs_weight_frac, obs_core_weight_frac);
     }
 
     write_netcdf_atomic(

@@ -21,6 +21,11 @@ struct MapdiagObsTableRefs {
     std::vector<int> &core_pixels;
 };
 
+template <class Context>
+bool mapdiag_is_single_observation_context(const Context &context) {
+    return !context.is_coadd;
+}
+
 inline std::string mapdiag_obs_raw_dir(const std::string &redu_dir_name,
                                        const std::string &obsnum) {
     return redu_dir_name + "/" + obsnum + "/raw/";
@@ -194,6 +199,19 @@ MapdiagObsWeightTotals sum_mapdiag_obs_weight_totals(
     const Context &context, std::size_t map_index) {
     return sum_mapdiag_obs_weight_totals(
         weight_sum, core_weight_sum, context.n_obsnums, map_index);
+}
+
+template <class SourceValues, class DestValues, class Context>
+void assign_mapdiag_obs_fractions_for_map(
+    const SourceValues &weight_sum, const SourceValues &core_weight_sum,
+    double fill_value, const Context &context, std::size_t map_index,
+    DestValues &weight_frac, DestValues &core_weight_frac) {
+    const auto obs_totals = sum_mapdiag_obs_weight_totals(
+        weight_sum, core_weight_sum, context, map_index);
+    assign_mapdiag_obs_fraction_pair(
+        weight_sum, obs_totals.weight, core_weight_sum,
+        obs_totals.core_weight, fill_value, context, map_index,
+        weight_frac, core_weight_frac);
 }
 
 template <class DoubleValues, class IntValues>
