@@ -7691,7 +7691,8 @@ void Engine::find_sources(map_buffer_t &mb) {
                 mb.pixel_size_rad;
 
             // placeholder vectors for grppi map
-            std::vector<int> source_in_vec, source_out_vec;
+            std::vector<int> source_in_vec;
+            std::vector<int> source_out_vec;
 
             source_in_vec.resize(n_map_sources);
             std::iota(source_in_vec.begin(), source_in_vec.end(), 0);
