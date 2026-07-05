@@ -7576,7 +7576,9 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                 logger->info("calculating empirical noise products for {} map {}/{}",
                              map_label, i + 1, n_maps);
                 mb.calc_noise_products(i, apply_scale);
-                if (i < mb.noise_weight_median_ratio.size()) {
+                const bool has_noise_weight_summary =
+                    i < mb.noise_weight_median_ratio.size();
+                if (has_noise_weight_summary) {
                     logger->info("noise products: median(w_formal*var)={:.4g} scale={:.4g} noise_s2n_sigma={:.4g}",
                                  mb.noise_weight_median_ratio(i),
                                  mb.noise_weight_scale(i),
