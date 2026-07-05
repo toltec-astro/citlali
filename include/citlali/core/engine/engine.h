@@ -7496,11 +7496,8 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     logger->info("preparing {} FITS headers ({} files)", map_label,
                  f_io->size());
     for (Eigen::Index i=0; i<n_filtered_fits; ++i) {
-        // get the array for the given map
-        // add primary hdu
         add_phdu(f_io, pmb, i);
 
-        // add primary hdu to noise maps
         if (!pmb->noise.empty() && !n_io->empty()) {
             add_phdu(n_io, pmb, i);
         }
