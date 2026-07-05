@@ -22,4 +22,9 @@ detector_stats_units(const std::string &signal_unit) {
         {"weights", "1/(" + signal_unit + ")^2"}};
 }
 
+inline std::map<std::string, std::string>
+group_stats_units(const std::string &signal_unit) {
+    return {{"median_weights", "1/(" + signal_unit + ")^2"}};
+}
+
 }  // namespace citlali::pipeline
