@@ -3,6 +3,8 @@
 // Engine output implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/mapdiag_workspace.h>
+
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     const std::string filename =
@@ -16,206 +18,33 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     const int fill_int = citlali::pipeline::mapdiag_fill_int();
     const auto n_mapdiag_maps = mapdiag_context.n_maps;
 
-    citlali::pipeline::MapdiagMapLabelStorage mapdiag_label_storage{
-        n_mapdiag_maps};
-    std::vector<double> median_err(n_mapdiag_maps, fill_double);
-    std::vector<double> median_rms(n_mapdiag_maps, fill_double);
-    std::vector<double> weight_thresholds(n_mapdiag_maps, fill_double);
-    std::vector<double> weight_sum(n_mapdiag_maps, fill_double);
-    std::vector<double> core_weight_sum(n_mapdiag_maps, fill_double);
-    std::vector<double> coverage_sum(n_mapdiag_maps, fill_double);
-    std::vector<double> coverage_max(n_mapdiag_maps, fill_double);
-    std::vector<double> coverage_median_core(n_mapdiag_maps, fill_double);
-    citlali::pipeline::MapdiagCoverageRefs coverage_refs{
-        coverage_sum,
-        coverage_max,
-        coverage_median_core};
-    std::vector<double> empirical_to_formal_noise_ratio(
-        n_mapdiag_maps, fill_double);
-    citlali::pipeline::MapdiagFormalNoiseRefs formal_noise_refs{
-        median_err,
-        median_rms,
-        empirical_to_formal_noise_ratio};
-    std::vector<double> noise_weight_median_ratio(n_mapdiag_maps, fill_double);
-    std::vector<double> noise_weight_scale(n_mapdiag_maps, fill_double);
-    std::vector<double> noise_products_s2n_sigma(n_mapdiag_maps, fill_double);
-    std::vector<double> noise_products_valid_pixels(
-        n_mapdiag_maps, fill_double);
-    citlali::pipeline::MapdiagNoiseProductRefs noise_product_refs{
-        noise_weight_median_ratio,
-        noise_weight_scale,
-        noise_products_s2n_sigma,
-        noise_products_valid_pixels};
-    std::vector<double> peak_signal(n_mapdiag_maps, fill_double);
-    std::vector<double> peak_abs_sig2noise(n_mapdiag_maps, fill_double);
-    std::vector<double> core_peak_abs_sig2noise(n_mapdiag_maps, fill_double);
-    std::vector<double> noise_rms_p16(n_mapdiag_maps, fill_double);
-    std::vector<double> noise_rms_p84(n_mapdiag_maps, fill_double);
-    std::vector<double> core_tail_frac_abs3(n_mapdiag_maps, fill_double);
-    std::vector<double> core_tail_frac_pos3(n_mapdiag_maps, fill_double);
-    std::vector<double> core_tail_frac_neg3(n_mapdiag_maps, fill_double);
-    std::vector<double> core_tail_excess_abs3(n_mapdiag_maps, fill_double);
-    std::vector<double> core_tail_excess_pos3(n_mapdiag_maps, fill_double);
-    std::vector<double> core_tail_excess_neg3(n_mapdiag_maps, fill_double);
-    std::vector<double> core_sig2noise_skew(n_mapdiag_maps, fill_double);
-    citlali::pipeline::MapdiagCoreTailRefs core_tail_refs{
-        core_tail_frac_abs3,
-        core_tail_frac_pos3,
-        core_tail_frac_neg3,
-        core_tail_excess_abs3,
-        core_tail_excess_pos3,
-        core_tail_excess_neg3,
-        core_sig2noise_skew};
-    std::vector<double> noise_tail_frac_abs3(n_mapdiag_maps, fill_double);
-    std::vector<double> noise_tail_frac_pos3(n_mapdiag_maps, fill_double);
-    std::vector<double> noise_tail_frac_neg3(n_mapdiag_maps, fill_double);
-    std::vector<double> noise_tail_excess_abs3(n_mapdiag_maps, fill_double);
-    std::vector<double> noise_tail_excess_pos3(n_mapdiag_maps, fill_double);
-    std::vector<double> noise_tail_excess_neg3(n_mapdiag_maps, fill_double);
-    std::vector<double> noise_sig2noise_skew(n_mapdiag_maps, fill_double);
-    citlali::pipeline::MapdiagNoiseTailRefs noise_tail_refs{
-        noise_rms_p16,
-        noise_rms_p84,
-        noise_tail_frac_abs3,
-        noise_tail_frac_pos3,
-        noise_tail_frac_neg3,
-        noise_tail_excess_abs3,
-        noise_tail_excess_pos3,
-        noise_tail_excess_neg3,
-        noise_sig2noise_skew};
-    std::vector<double> edge_guard_weight_thresholds(
-        n_mapdiag_maps, fill_double);
-    std::vector<double> edge_guard_hits_thresholds(
-        n_mapdiag_maps, fill_double);
-    std::vector<double> edge_guard_background_levels(
-        n_mapdiag_maps, fill_double);
-    std::vector<double> edge_guard_science_frac(n_mapdiag_maps, fill_double);
-    std::vector<double> edge_guard_support_frac(n_mapdiag_maps, fill_double);
-    std::vector<double> edge_guard_guardband_rms_pre(
-        n_mapdiag_maps, fill_double);
-    std::vector<double> edge_guard_guardband_rms_post(
-        n_mapdiag_maps, fill_double);
-    std::vector<double> edge_guard_exterior_rms_pre(
-        n_mapdiag_maps, fill_double);
-    std::vector<double> edge_guard_exterior_rms_post(
-        n_mapdiag_maps, fill_double);
-    std::vector<double> edge_guard_exterior_max_abs_pre(
-        n_mapdiag_maps, fill_double);
-    std::vector<double> edge_guard_exterior_max_abs_post(
-        n_mapdiag_maps, fill_double);
-    citlali::pipeline::MapdiagEdgeGuardDoubleRefs edge_guard_double_refs{
-        edge_guard_weight_thresholds,
-        edge_guard_hits_thresholds,
-        edge_guard_background_levels,
-        edge_guard_science_frac,
-        edge_guard_support_frac,
-        edge_guard_guardband_rms_pre,
-        edge_guard_guardband_rms_post,
-        edge_guard_exterior_rms_pre,
-        edge_guard_exterior_rms_post,
-        edge_guard_exterior_max_abs_pre,
-        edge_guard_exterior_max_abs_post};
-    std::vector<int> n_valid_pixels(n_mapdiag_maps, 0);
-    std::vector<int> n_core_pixels(n_mapdiag_maps, 0);
-    citlali::pipeline::MapdiagWeightRefs weight_refs{
-        weight_sum,
-        core_weight_sum,
-        n_valid_pixels,
-        n_core_pixels};
-    std::vector<int> peak_row(n_mapdiag_maps, fill_int);
-    std::vector<int> peak_col(n_mapdiag_maps, fill_int);
-    citlali::pipeline::MapdiagPeakRefs peak_refs{
-        peak_abs_sig2noise,
-        core_peak_abs_sig2noise,
-        peak_row,
-        peak_col};
-    std::vector<int> edge_guard_applied(n_mapdiag_maps, 0);
-    std::vector<int> edge_guard_support_radius_pix(n_mapdiag_maps, 0);
-    std::vector<int> edge_guard_science_npix(n_mapdiag_maps, 0);
-    std::vector<int> edge_guard_support_npix(n_mapdiag_maps, 0);
-    std::vector<int> edge_guard_guardband_npix(n_mapdiag_maps, 0);
-    citlali::pipeline::MapdiagEdgeGuardIntRefs edge_guard_int_refs{
-        edge_guard_applied,
-        edge_guard_support_radius_pix,
-        edge_guard_science_npix,
-        edge_guard_support_npix,
-        edge_guard_guardband_npix};
-    citlali::pipeline::MapdiagMapIntValues map_int_values{
-        n_valid_pixels,
-        n_core_pixels,
-        peak_row,
-        peak_col,
-        edge_guard_applied,
-        edge_guard_support_radius_pix,
-        edge_guard_science_npix,
-        edge_guard_support_npix,
-        edge_guard_guardband_npix};
-
+    citlali::pipeline::MapdiagMapWorkspace map_workspace{
+        n_mapdiag_maps, fill_double, fill_int};
+    auto &mapdiag_label_storage = map_workspace.label_storage;
+    auto &weight_thresholds = map_workspace.weight_thresholds;
+    auto &weight_sum = map_workspace.weight_sum;
+    auto &core_weight_sum = map_workspace.core_weight_sum;
+    auto &peak_signal = map_workspace.peak_signal;
+    auto &n_valid_pixels = map_workspace.n_valid_pixels;
+    auto &n_core_pixels = map_workspace.n_core_pixels;
+    auto &coverage_refs = map_workspace.coverage_refs;
+    auto &formal_noise_refs = map_workspace.formal_noise_refs;
+    auto &noise_product_refs = map_workspace.noise_product_refs;
+    auto &core_tail_refs = map_workspace.core_tail_refs;
+    auto &noise_tail_refs = map_workspace.noise_tail_refs;
+    auto &edge_guard_double_refs = map_workspace.edge_guard_double_refs;
+    auto &weight_refs = map_workspace.weight_refs;
+    auto &peak_refs = map_workspace.peak_refs;
+    auto &edge_guard_int_refs = map_workspace.edge_guard_int_refs;
     const std::size_t obs_table_size =
         citlali::pipeline::mapdiag_obs_table_size(mapdiag_context);
-    std::vector<double> obs_weight_sum(obs_table_size, fill_double);
-    std::vector<double> obs_weight_frac(obs_table_size, fill_double);
-    std::vector<double> obs_core_weight_sum(obs_table_size, fill_double);
-    std::vector<double> obs_core_weight_frac(obs_table_size, fill_double);
-    std::vector<int> obs_valid_pixels(obs_table_size, fill_int);
-    std::vector<int> obs_core_pixels(obs_table_size, fill_int);
-    citlali::pipeline::MapdiagObsTableRefs obs_tables{
-        obs_weight_sum,
-        obs_core_weight_sum,
-        obs_valid_pixels,
-        obs_core_pixels};
-    citlali::pipeline::MapdiagObservationDoubleValues obs_double_values{
-        obs_weight_sum,
-        obs_weight_frac,
-        obs_core_weight_sum,
-        obs_core_weight_frac};
-    citlali::pipeline::MapdiagObservationIntValues obs_int_values{
-        obs_valid_pixels,
-        obs_core_pixels};
-    citlali::pipeline::MapdiagMapDoubleValues map_double_values{
-        median_err,
-        median_rms,
-        weight_thresholds,
-        weight_sum,
-        core_weight_sum,
-        coverage_sum,
-        coverage_max,
-        coverage_median_core,
-        empirical_to_formal_noise_ratio,
-        noise_weight_median_ratio,
-        noise_weight_scale,
-        noise_products_s2n_sigma,
-        noise_products_valid_pixels,
-        peak_signal,
-        peak_abs_sig2noise,
-        core_peak_abs_sig2noise,
-        noise_rms_p16,
-        noise_rms_p84,
-        core_tail_frac_abs3,
-        core_tail_frac_pos3,
-        core_tail_frac_neg3,
-        core_tail_excess_abs3,
-        core_tail_excess_pos3,
-        core_tail_excess_neg3,
-        core_sig2noise_skew,
-        noise_tail_frac_abs3,
-        noise_tail_frac_pos3,
-        noise_tail_frac_neg3,
-        noise_tail_excess_abs3,
-        noise_tail_excess_pos3,
-        noise_tail_excess_neg3,
-        noise_sig2noise_skew,
-        edge_guard_weight_thresholds,
-        edge_guard_hits_thresholds,
-        edge_guard_background_levels,
-        edge_guard_science_frac,
-        edge_guard_support_frac,
-        edge_guard_guardband_rms_pre,
-        edge_guard_guardband_rms_post,
-        edge_guard_exterior_rms_pre,
-        edge_guard_exterior_rms_post,
-        edge_guard_exterior_max_abs_pre,
-        edge_guard_exterior_max_abs_post};
+    citlali::pipeline::MapdiagObservationWorkspace obs_workspace{
+        obs_table_size, fill_double, fill_int};
+    auto &obs_weight_sum = obs_workspace.weight_sum;
+    auto &obs_core_weight_sum = obs_workspace.core_weight_sum;
+    auto &obs_weight_frac = obs_workspace.weight_frac;
+    auto &obs_core_weight_frac = obs_workspace.core_weight_frac;
+    auto &obs_tables = obs_workspace.tables;
 
     const std::string stage_name =
         citlali::pipeline::mapdiag_stage_name<map_t>();
@@ -229,8 +58,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             mapdiag_context);
     const auto mapdiag_values =
         citlali::pipeline::make_mapdiag_value_vars(
-            map_double_values, map_int_values, obs_double_values,
-            obs_int_values);
+            map_workspace.map_double_values, map_workspace.map_int_values,
+            obs_workspace.double_values, obs_workspace.int_values);
 
     const citlali::pipeline::MapdiagStatsContext mapdiag_stats{fill_double};
     const std::string mapdiag_record_producer =
