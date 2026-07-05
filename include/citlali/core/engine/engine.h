@@ -6846,9 +6846,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     dominance, candidate, fill_int);
                         }
 
-                        if (citlali::pipeline::
+                        const bool detector_exclusion_enabled =
+                            citlali::pipeline::
                                 mapdiag_detector_exclusion_enabled(
-                                    reduction_learning)) {
+                                    reduction_learning);
+                        if (detector_exclusion_enabled) {
                             const int min_pixels =
                                 citlali::pipeline::
                                     mapdiag_detector_exclusion_min_pixels(
