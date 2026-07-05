@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
+#include <optional>
 #include <set>
 #include <sstream>
 #include <string>
@@ -107,6 +108,20 @@ inline void mirror_tod_output_selection_config(
     }
     target.selection_n_uniform = n_uniform;
     target.selection_n_source_dense = n_source_dense;
+}
+
+inline std::optional<std::string> requested_tod_output_type_name(
+    bool raw_time_chunk_enabled, bool processed_time_chunk_enabled) {
+    if (raw_time_chunk_enabled && processed_time_chunk_enabled) {
+        return "both";
+    }
+    if (raw_time_chunk_enabled) {
+        return "rtc";
+    }
+    if (processed_time_chunk_enabled) {
+        return "ptc";
+    }
+    return std::nullopt;
 }
 
 template <class Config, class Key, class Logger>

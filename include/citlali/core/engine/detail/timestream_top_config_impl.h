@@ -114,22 +114,11 @@ void Engine::get_timestream_config(CT &config) {
     // set tod output to false by default
     run_tod_output = false;
 
-    // check if rtc output is requested
-    if (run_tod_output_rtc) {
+    if (auto requested_output_type =
+            citlali::pipeline::requested_tod_output_type_name(
+                run_tod_output_rtc, run_tod_output_ptc)) {
         run_tod_output = true;
-        tod_output_type = "rtc";
-    }
-    // if ptc output is requested
-    if (run_tod_output_ptc) {
-        // check if rtc output was requested
-        if (run_tod_output == true) {
-            tod_output_type = "both";
-        }
-        // else just output ptc
-        else {
-            run_tod_output = true;
-            tod_output_type = "ptc";
-        }
+        tod_output_type = *requested_output_type;
     }
     if (run_tod_output) {
         if (auto parsed = citlali::config::parse_tod_output_type(tod_output_type)) {
