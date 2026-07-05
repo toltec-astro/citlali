@@ -5600,34 +5600,13 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     std::ofstream f;
     f.open(citlali::pipeline::summary_log_path(obsnum_dir_name, filename));
 
-    f << "Summary file for scan " << in.index.data << "\n";
-    citlali::pipeline::write_pipeline_version_summary(
-        f, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION);
-    citlali::pipeline::write_chunk_time_summary(
-        f, in.creation_time, engine_utils::current_date_time());
-
-    citlali::pipeline::write_chunk_identity_summary(
-        f, redu_type, tod_type, omb.sig_unit, in.name);
-
-    citlali::pipeline::write_chunk_processing_status_summary(f, in.status);
-    citlali::pipeline::write_chunk_tod_filter_summary(
-        f, rtcproc, telescope.outer_scans_chunk);
-    citlali::pipeline::write_chunk_ptc_model_line_audit_summary(
-        f, rtcproc.line_audit);
-    citlali::pipeline::write_chunk_scan_shape_summary(
-        f, in.scans.data.rows(), in.scans.data.cols());
-    citlali::pipeline::write_chunk_detector_flag_summary(
-        f, (calib.apt["flag"].array()!=0).count(), in.n_dets_low,
-        in.n_dets_high, in.scans.data.cols());
-
-    citlali::pipeline::write_chunk_nonfinite_summary(f, in.scans.data);
-    citlali::pipeline::write_chunk_data_stat_summary(
-        f, in.scans.data.minCoeff(), in.scans.data.maxCoeff(),
-        in.scans.data.mean(), tula::alg::median(in.scans.data),
-        engine_utils::calc_std_dev(in.scans.data), omb.sig_unit);
-
-    citlali::pipeline::write_chunk_kernel_summary_if_generated(
-        f, in.status.kernel_generated, in.kernel, omb.sig_unit);
+    citlali::pipeline::write_chunk_summary_log(
+        f, in, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION,
+        engine_utils::current_date_time(), redu_type, tod_type,
+        omb.sig_unit, rtcproc, telescope.outer_scans_chunk,
+        (calib.apt["flag"].array()!=0).count(),
+        tula::alg::median(in.scans.data),
+        engine_utils::calc_std_dev(in.scans.data));
 
     f.close();
 }
@@ -5641,20 +5620,12 @@ void Engine::write_map_summary(map_buffer_t &mb) {
     std::ofstream f;
     f.open(citlali::pipeline::summary_log_path(obsnum_dir_name, filename));
 
-    f << "Summary file for maps\n";
-    citlali::pipeline::write_pipeline_version_summary(
-        f, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION);
-    citlali::pipeline::write_file_time_summary(
-        f, engine_utils::current_date_time());
-
-    citlali::pipeline::write_map_identity_summary(
-        f, redu_type, tod_type, map_grouping, mb.n_rows, mb.n_cols, n_maps,
-        mb.sig_unit);
-    citlali::pipeline::write_map_product_presence_summary(f, mb);
-
     const auto nonfinite_counts =
         citlali::pipeline::count_map_summary_nonfinite(mb);
-    citlali::pipeline::write_map_nonfinite_summary(f, nonfinite_counts);
+    citlali::pipeline::write_map_summary_log(
+        f, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION,
+        engine_utils::current_date_time(), redu_type, tod_type,
+        map_grouping, n_maps, mb, nonfinite_counts);
 }
 
 template <mapmaking::MapType map_t, engine_utils::toltecIO::DataType data_t, engine_utils::toltecIO::ProdType prod_t>
