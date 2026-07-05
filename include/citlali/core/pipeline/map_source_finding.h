@@ -17,6 +17,11 @@ struct SourceFitUnitScale {
     double source_fwhm_to_arcsec;
 };
 
+struct SourceInitialPosition {
+    double row;
+    double col;
+};
+
 constexpr int missing_source_location() {
     return -99;
 }
@@ -186,6 +191,17 @@ void rescale_source_fit_result(
         adec(0) * rad_to_deg, arcsec_to_deg);
 }
 
+template <class MapBuffer, class MapIndex, class SourceIndex>
+SourceInitialPosition source_initial_position(
+    const MapBuffer &map_buffer, MapIndex map_index,
+    SourceIndex source_index) {
+    return {
+        static_cast<double>(
+            map_buffer.row_source_locs[map_index](source_index)),
+        static_cast<double>(
+            map_buffer.col_source_locs[map_index](source_index))};
+}
+
 template <class SourceRow, class SourceIndex>
 auto source_fit_result_row(SourceRow source_row_start,
                            SourceIndex source_index) {
@@ -203,6 +219,24 @@ void store_source_fit_result(MapBuffer &map_buffer,
         source_fit_result_row(source_row_start, source_index);
     map_buffer.source_params.row(source_row) = params;
     map_buffer.source_perror.row(source_row) = perrors;
+}
+
+template <class MapBuffer, class SourceRow, class SourceIndex,
+          class Params, class PErrors, class TangentToAbs>
+void normalize_and_store_source_fit_result(
+    MapBuffer &map_buffer, SourceRow source_row_start,
+    SourceIndex source_index, Params &params, PErrors &perrors,
+    const std::string &pixel_axes, double rad_to_arcsec,
+    double std_to_fwhm, double arcsec_to_rad, double rad_to_deg,
+    double deg_to_rad, double arcsec_to_deg,
+    const TangentToAbs &tangent_to_abs) {
+    rescale_source_fit_result(
+        params, perrors, map_buffer.n_rows, map_buffer.n_cols,
+        map_buffer.pixel_size_rad, pixel_axes, map_buffer.wcs,
+        rad_to_arcsec, std_to_fwhm, arcsec_to_rad, rad_to_deg,
+        deg_to_rad, arcsec_to_deg, tangent_to_abs);
+    store_source_fit_result(
+        map_buffer, source_row_start, source_index, params, perrors);
 }
 
 template <class SourceRow, class SourceCount>

@@ -7106,16 +7106,16 @@ void Engine::find_sources(map_buffer_t &mb) {
             double init_fwhm, Eigen::Index source_row_start) {
             citlali::pipeline::fit_source_candidates(
                 parallel_policy, n_map_sources, [&](auto j) {
-                const double init_row =
-                    mb.row_source_locs[map_index](j);
-                const double init_col =
-                    mb.col_source_locs[map_index](j);
+                const auto init_position =
+                    citlali::pipeline::source_initial_position(
+                        mb, map_index, j);
 
                 auto [params, perrors, good_fit] =
                     map_fitter.fit_to_gaussian<
                         engine_utils::mapFitter::pointing>(
                             mb.signal[map_index], mb.weight[map_index],
-                            init_fwhm, init_row, init_col);
+                            init_fwhm, init_position.row,
+                            init_position.col);
                 if (good_fit) {
                     const auto tangent_to_abs = [](auto &lat, auto &lon,
                                                    double crval_lat,
@@ -7123,15 +7123,11 @@ void Engine::find_sources(map_buffer_t &mb) {
                         return engine_utils::tangent_to_abs(
                             lat, lon, crval_lat, crval_lon);
                     };
-                    citlali::pipeline::rescale_source_fit_result(
-                        params, perrors, mb.n_rows, mb.n_cols,
-                        mb.pixel_size_rad, telescope.pixel_axes, mb.wcs,
-                        RAD_TO_ASEC, STD_TO_FWHM, ASEC_TO_RAD,
-                        RAD_TO_DEG, DEG_TO_RAD, ASEC_TO_DEG,
+                    citlali::pipeline::normalize_and_store_source_fit_result(
+                        mb, source_row_start, j, params, perrors,
+                        telescope.pixel_axes, RAD_TO_ASEC, STD_TO_FWHM,
+                        ASEC_TO_RAD, RAD_TO_DEG, DEG_TO_RAD, ASEC_TO_DEG,
                         tangent_to_abs);
-
-                    citlali::pipeline::store_source_fit_result(
-                        mb, source_row_start, j, params, perrors);
                 }
             });
         };
