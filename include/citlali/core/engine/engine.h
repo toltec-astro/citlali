@@ -7579,7 +7579,8 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         map_label = "filtered coadded maps";
     }
 
-    const auto n_filtered_fits = static_cast<Eigen::Index>(filtered_fits_io->size());
+    const auto n_filtered_fits =
+        static_cast<Eigen::Index>(filtered_fits_io->size());
     logger->info("preparing {} FITS headers ({} files)", map_label,
                  filtered_fits_io->size());
     for (Eigen::Index i = 0; i < n_filtered_fits; ++i) {
