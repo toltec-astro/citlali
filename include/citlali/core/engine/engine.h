@@ -7193,34 +7193,18 @@ void Engine::find_sources(map_buffer_t &mb) {
                             mb.signal[i], mb.weight[i], init_fwhm,
                             init_row, init_col);
                 if (good_fit) {
-                    const double pixel_to_arcsec =
-                        citlali::pipeline::source_fit_pixel_to_arcsec(
-                            RAD_TO_ASEC, mb.pixel_size_rad);
-                    const double source_fwhm_to_arcsec =
-                        citlali::pipeline::source_fit_fwhm_to_arcsec(
-                            RAD_TO_ASEC, STD_TO_FWHM, mb.pixel_size_rad);
-                    citlali::pipeline::rescale_source_fit_pixel_units(
+                    const auto tangent_to_abs = [](auto &lat, auto &lon,
+                                                   double crval_lat,
+                                                   double crval_lon) {
+                        return engine_utils::tangent_to_abs(
+                            lat, lon, crval_lat, crval_lon);
+                    };
+                    citlali::pipeline::rescale_source_fit_result(
                         params, perrors, mb.n_rows, mb.n_cols,
-                        pixel_to_arcsec, source_fwhm_to_arcsec);
-
-                    // if in radec calculate absolute pointing
-                    const bool use_radec_projection =
-                        citlali::pipeline::source_fit_uses_radec_projection(
-                            telescope.pixel_axes);
-                    if (use_radec_projection) {
-                        Eigen::VectorXd lat(1), lon(1);
-                        lat << params(2) * ASEC_TO_RAD;
-                        lon << params(1) * ASEC_TO_RAD;
-
-                        auto [adec, ara] =
-                            engine_utils::tangent_to_abs(
-                                lat, lon, mb.wcs.crval[0] * DEG_TO_RAD,
-                                mb.wcs.crval[1] * DEG_TO_RAD);
-
-                        citlali::pipeline::rescale_source_fit_radec_errors(
-                            params, perrors, ara(0) * RAD_TO_DEG,
-                            adec(0) * RAD_TO_DEG, ASEC_TO_DEG);
-                    }
+                        mb.pixel_size_rad, telescope.pixel_axes, mb.wcs,
+                        RAD_TO_ASEC, STD_TO_FWHM, ASEC_TO_RAD,
+                        RAD_TO_DEG, DEG_TO_RAD, ASEC_TO_DEG,
+                        tangent_to_abs);
 
                     // add source params and errors to table
                     mb.source_params.row(source_row_start + j) = params;

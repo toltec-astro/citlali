@@ -11,6 +11,11 @@
 
 namespace citlali::pipeline {
 
+struct SourceFitUnitScale {
+    double pixel_to_arcsec;
+    double source_fwhm_to_arcsec;
+};
+
 constexpr int missing_source_location() {
     return -99;
 }
@@ -73,6 +78,15 @@ inline double source_fit_fwhm_to_arcsec(double rad_to_arcsec,
     return rad_to_arcsec * std_to_fwhm * pixel_size_rad;
 }
 
+inline SourceFitUnitScale source_fit_unit_scale(double rad_to_arcsec,
+                                                double std_to_fwhm,
+                                                double pixel_size_rad) {
+    return {
+        source_fit_pixel_to_arcsec(rad_to_arcsec, pixel_size_rad),
+        source_fit_fwhm_to_arcsec(rad_to_arcsec, std_to_fwhm,
+                                  pixel_size_rad)};
+}
+
 template <class Params, class PErrors>
 void rescale_source_fit_pixel_units(Params &params, PErrors &perrors,
                                     Eigen::Index n_rows, Eigen::Index n_cols,
@@ -102,6 +116,37 @@ void rescale_source_fit_radec_errors(Params &params, PErrors &perrors,
 
     perrors(1) = perrors(1) * arcsec_to_deg;
     perrors(2) = perrors(2) * arcsec_to_deg;
+}
+
+template <class Params, class PErrors, class Wcs, class TangentToAbs>
+void rescale_source_fit_result(
+    Params &params, PErrors &perrors, Eigen::Index n_rows,
+    Eigen::Index n_cols, double pixel_size_rad,
+    const std::string &pixel_axes, const Wcs &wcs,
+    double rad_to_arcsec, double std_to_fwhm, double arcsec_to_rad,
+    double rad_to_deg, double deg_to_rad, double arcsec_to_deg,
+    const TangentToAbs &tangent_to_abs) {
+    const auto unit_scale =
+        source_fit_unit_scale(rad_to_arcsec, std_to_fwhm, pixel_size_rad);
+    rescale_source_fit_pixel_units(
+        params, perrors, n_rows, n_cols, unit_scale.pixel_to_arcsec,
+        unit_scale.source_fwhm_to_arcsec);
+
+    if (!source_fit_uses_radec_projection(pixel_axes)) {
+        return;
+    }
+
+    Eigen::VectorXd lat(1), lon(1);
+    lat << params(2) * arcsec_to_rad;
+    lon << params(1) * arcsec_to_rad;
+
+    auto [adec, ara] = tangent_to_abs(
+        lat, lon, wcs.crval[0] * deg_to_rad,
+        wcs.crval[1] * deg_to_rad);
+
+    rescale_source_fit_radec_errors(
+        params, perrors, ara(0) * rad_to_deg,
+        adec(0) * rad_to_deg, arcsec_to_deg);
 }
 
 inline std::vector<std::string> source_table_header() {
