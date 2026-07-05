@@ -7160,8 +7160,11 @@ void Engine::create_rtcdiag_file() {
             std::min({tel_time.size(), az_phys.size(), alt_phys.size()});
         for (Eigen::Index scan = 0; scan < n_scans; ++scan) {
             const auto scan_index = static_cast<std::size_t>(scan);
-            const Eigen::Index start = std::max<Eigen::Index>(0, telescope.scan_indices(0, scan));
-            const Eigen::Index stop = std::min<Eigen::Index>(n_tel - 1, telescope.scan_indices(1, scan));
+            const Eigen::Index start =
+                std::max<Eigen::Index>(0, telescope.scan_indices(0, scan));
+            const Eigen::Index stop =
+                std::min<Eigen::Index>(n_tel - 1,
+                                       telescope.scan_indices(1, scan));
             if (stop <= start || start < 0 || stop >= n_tel) {
                 continue;
             }
