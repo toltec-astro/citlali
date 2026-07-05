@@ -228,6 +228,36 @@ void validate_tod_selection_mode_counts(
     std::exit(EXIT_FAILURE);
 }
 
+template <class Config, class ModeKey, class UniformKey, class SourceDenseKey,
+          class MissingKeys, class InvalidKeys, class Logger>
+void read_tod_selection_mode_config(
+    Config &config, const ModeKey &mode_key, const UniformKey &n_uniform_key,
+    const SourceDenseKey &n_source_dense_key, bool output_enabled,
+    const std::string &mode_path, const std::string &n_uniform_path,
+    const std::string &n_source_dense_path, std::string &mode,
+    int &n_uniform, int &n_source_dense, MissingKeys &missing_keys,
+    InvalidKeys &invalid_keys, const Logger &logger) {
+    mode = "indices";
+    n_uniform = 10;
+    n_source_dense = 10;
+    if (!output_enabled) {
+        return;
+    }
+    if (config.has(mode_key)) {
+        ::get_config_value(config, mode, missing_keys, invalid_keys, mode_key,
+                           {"indices", "all",
+                            "uniform_plus_source_crossing"});
+    }
+    read_tod_selection_count_config(
+        config, n_uniform_key, n_uniform_path, n_uniform, logger);
+    read_tod_selection_count_config(
+        config, n_source_dense_key, n_source_dense_path, n_source_dense,
+        logger);
+    validate_tod_selection_mode_counts(
+        mode, n_uniform, n_source_dense, mode_path, n_uniform_path,
+        n_source_dense_path, logger);
+}
+
 inline bool tod_output_chunk_is_valid(Eigen::Index chunk_1based,
                                       Eigen::Index n_scans) {
     return chunk_1based >= 1 && chunk_1based <= n_scans;

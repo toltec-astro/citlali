@@ -99,37 +99,8 @@ void Engine::get_timestream_config(CT &config) {
         "timestream.processed_time_chunk.output.indices",
         ptc_chunk_select_enabled, ptc_output_chunks, logger);
 
-    auto parse_tod_selection_mode = [&](const auto &mode_key,
-                                        const auto &n_uniform_key,
-                                        const auto &n_source_dense_key,
-                                        bool output_enabled,
-                                        const std::string &mode_path,
-                                        const std::string &n_uniform_path,
-                                        const std::string &n_source_dense_path,
-                                        std::string &mode,
-                                        int &n_uniform,
-                                        int &n_source_dense) {
-        mode = "indices";
-        n_uniform = 10;
-        n_source_dense = 10;
-        if (!output_enabled) {
-            return;
-        }
-        if (config.has(mode_key)) {
-            get_config_value(config, mode, missing_keys, invalid_keys, mode_key,
-                             {"indices", "all", "uniform_plus_source_crossing"});
-        }
-        citlali::pipeline::read_tod_selection_count_config(
-            config, n_uniform_key, n_uniform_path, n_uniform, logger);
-        citlali::pipeline::read_tod_selection_count_config(
-            config, n_source_dense_key, n_source_dense_path, n_source_dense,
-            logger);
-        citlali::pipeline::validate_tod_selection_mode_counts(
-            mode, n_uniform, n_source_dense, mode_path, n_uniform_path,
-            n_source_dense_path, logger);
-    };
-
-    parse_tod_selection_mode(
+    citlali::pipeline::read_tod_selection_mode_config(
+        config,
         std::tuple{"timestream","raw_time_chunk","output","selection","mode"},
         std::tuple{"timestream","raw_time_chunk","output","selection","n_uniform"},
         std::tuple{"timestream","raw_time_chunk","output","selection","n_source_dense"},
@@ -139,8 +110,10 @@ void Engine::get_timestream_config(CT &config) {
         "timestream.raw_time_chunk.output.selection.n_source_dense",
         tod_output_selection_mode_rtc,
         tod_output_uniform_count_rtc,
-        tod_output_source_dense_count_rtc);
-    parse_tod_selection_mode(
+        tod_output_source_dense_count_rtc, missing_keys, invalid_keys,
+        logger);
+    citlali::pipeline::read_tod_selection_mode_config(
+        config,
         std::tuple{"timestream","processed_time_chunk","output","selection","mode"},
         std::tuple{"timestream","processed_time_chunk","output","selection","n_uniform"},
         std::tuple{"timestream","processed_time_chunk","output","selection","n_source_dense"},
@@ -150,7 +123,8 @@ void Engine::get_timestream_config(CT &config) {
         "timestream.processed_time_chunk.output.selection.n_source_dense",
         tod_output_selection_mode_ptc,
         tod_output_uniform_count_ptc,
-        tod_output_source_dense_count_ptc);
+        tod_output_source_dense_count_ptc, missing_keys, invalid_keys,
+        logger);
 
     citlali::pipeline::mirror_tod_output_selection_config(
         rtc_output_chunks, rtc_chunk_select_enabled,
