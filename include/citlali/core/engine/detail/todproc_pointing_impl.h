@@ -1,0 +1,84 @@
+#pragma once
+
+// Implementation detail included by todproc.h.
+
+template <class EngineType>
+void TimeOrderedDataProc<EngineType>::interp_pointing() {
+    const auto az_it = engine().pointing_offsets_arcsec.find("az");
+    const auto alt_it = engine().pointing_offsets_arcsec.find("alt");
+    if (az_it == engine().pointing_offsets_arcsec.end() || alt_it == engine().pointing_offsets_arcsec.end()) {
+        logger->error("pointing_offsets must include both az and alt vectors");
+        std::exit(EXIT_FAILURE);
+    }
+
+    // how many offsets in config file
+    Eigen::Index n_offsets = az_it->second.size();
+    if (n_offsets != alt_it->second.size()) {
+        logger->error("pointing_offsets az/alt lengths differ (az={} alt={})",
+                      n_offsets, alt_it->second.size());
+        std::exit(EXIT_FAILURE);
+    }
+    if (n_offsets != 1 && n_offsets != 2) {
+        logger->error("only one or two values for altaz offsets are supported");
+        std::exit(EXIT_FAILURE);
+    }
+
+    const Eigen::Index ni = engine().telescope.tel_data["TelTime"].size();
+    if (ni <= 0) {
+        logger->error("cannot interpolate pointing offsets: telescope TelTime is empty");
+        std::exit(EXIT_FAILURE);
+    }
+
+    // keys for pointing offsets
+    std::vector<std::string> altaz_keys = {"alt", "az"};
+
+    for (const auto &key: altaz_keys) {
+        // if only one value given
+        if (n_offsets==1) {
+            double offset = engine().pointing_offsets_arcsec[key](0);
+            engine().pointing_offsets_arcsec[key].resize(ni);
+            engine().pointing_offsets_arcsec[key].setConstant(offset);
+        }
+        else if (n_offsets==2) {
+            // size of offset data
+            Eigen::Matrix<Eigen::Index,1,1> nd;
+            nd << n_offsets;
+
+            // vector to store interpolation
+            Eigen::VectorXd yi(ni);
+
+            // start and end times of observation
+            Eigen::VectorXd xd(n_offsets);
+            const bool use_mjd = (engine().pointing_offsets_modified_julian_date.size() == 2) &&
+                                 (engine().pointing_offsets_modified_julian_date > 0).all();
+
+            // use start and end of current obs if MJD values are not specified
+            if (!use_mjd) {
+                xd << engine().telescope.tel_data["TelTime"](0), engine().telescope.tel_data["TelTime"](ni-1);
+            }
+            // else use specified modified julian dates, convert to julian dates, and calc unix time
+            else {
+                xd << engine_utils::modified_julian_date_to_unix(engine().pointing_offsets_modified_julian_date(0)),
+                    engine_utils::modified_julian_date_to_unix(engine().pointing_offsets_modified_julian_date(1));
+
+                if (xd(1) <= xd(0)) {
+                    logger->error("MJD range is invalid: end <= start");
+                    std::exit(EXIT_FAILURE);
+                }
+                // make sure offsets are before and after the observation
+                if (xd(0) > engine().telescope.tel_data["TelTime"](0) || xd(1) < engine().telescope.tel_data["TelTime"](ni-1)) {
+                    logger->error("MJD range is invalid");
+                    std::exit(EXIT_FAILURE);
+                }
+            }
+
+            // interpolate offset onto time vector
+            mlinterp::interp(nd.data(), ni, // nd, ni
+                             engine().pointing_offsets_arcsec[key].data(), yi.data(), // yd, yi
+                             xd.data(), engine().telescope.tel_data["TelTime"].data()); // xd, xi
+
+            // overwrite pointing offsets
+            engine().pointing_offsets_arcsec[key] = yi;
+        }
+    }
+}

@@ -2,6 +2,58 @@
 
 // Implementation detail included by todproc.h.
 
+namespace todproc_alignment_detail {
+
+inline Eigen::Index find_first_sample_at_or_after(const Eigen::VectorXd &times,
+                                                  double target_time,
+                                                  const std::string &error_message) {
+    if (times.size() == 0) {
+        throw std::runtime_error(error_message);
+    }
+    Eigen::Index sample_index = 0;
+    (times.array() - target_time).abs().minCoeff(&sample_index);
+    while (sample_index < times.size() && times[sample_index] < target_time) {
+        sample_index++;
+    }
+    if (sample_index >= times.size()) {
+        throw std::runtime_error(error_message);
+    }
+    return sample_index;
+}
+
+inline Eigen::Index find_last_sample_at_or_before(const Eigen::VectorXd &times,
+                                                  double target_time,
+                                                  Eigen::Index start_index,
+                                                  const std::string &error_message) {
+    if (times.size() == 0) {
+        throw std::runtime_error(error_message);
+    }
+    Eigen::Index sample_index = 0;
+    (times.array() - target_time).abs().minCoeff(&sample_index);
+    while (sample_index >= 0 && times[sample_index] > target_time) {
+        sample_index--;
+    }
+    if (sample_index < 0 || sample_index < start_index) {
+        throw std::runtime_error(error_message);
+    }
+    return sample_index;
+}
+
+inline void validate_hwpr_alignment_inputs(const Eigen::VectorXd &recvt,
+                                           const Eigen::VectorXd &angle,
+                                           const std::string &alignment_label) {
+    if (recvt.size() == 0 || angle.size() == 0) {
+        throw std::runtime_error("HWPR is enabled but HWP time/angle data are empty");
+    }
+    if (recvt.size() != angle.size()) {
+        throw std::runtime_error(
+            fmt::format("HWPR time and angle vectors have different lengths before {} alignment",
+                        alignment_label));
+    }
+}
+
+} // namespace todproc_alignment_detail
+
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     using namespace netCDF;
@@ -142,13 +194,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
     // get hwpr timing
     if (engine().calib.run_hwpr) {
-        if (engine().calib.hwpr_recvt.size() == 0 || engine().calib.hwpr_angle.size() == 0) {
-            throw std::runtime_error("HWPR is enabled but HWP time/angle data are empty");
-        }
-        if (engine().calib.hwpr_recvt.size() != engine().calib.hwpr_angle.size()) {
-            throw std::runtime_error(
-                "HWPR time and angle vectors have different lengths before no-gap alignment");
-        }
+        todproc_alignment_detail::validate_hwpr_alignment_inputs(
+            engine().calib.hwpr_recvt, engine().calib.hwpr_angle, "no-gap");
         // if hwpr init time is larger than max start time, replace global max start time
         Eigen::Index hwpr_ts_n_pts = engine().calib.hwpr_recvt.size();
         if (engine().calib.hwpr_recvt(0) > max_t0) {
@@ -173,33 +220,16 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     // loop through time vectors and get the smallest
     for (Eigen::Index i=0; i<nw_ts.size(); ++i) {
         // find start index that is larger than max start
-        Eigen::Index si, ei;
-        // find index closest to max start time
-        auto s = (abs(nw_ts[i].array() - max_t0)).minCoeff(&si);
-
-        // if closest index is smaller than max start time
-        // incrememnt index until it is larger or equal
-        while (si < nw_ts[i].size() && nw_ts[i][si] < max_t0) {
-            si++;
-        }
-        if (si >= nw_ts[i].size()) {
-            throw std::runtime_error(fmt::format(
-                "failed to find aligned start sample for interface index {}", i));
-        }
+        Eigen::Index si = todproc_alignment_detail::find_first_sample_at_or_after(
+            nw_ts[i], max_t0,
+            fmt::format("failed to find aligned start sample for interface index {}", i));
         // pushback start index on start index vector
         engine().start_indices.push_back(si);
 
         // find end index that is smaller than min end
-        auto e = (abs(nw_ts[i].array() - min_tn)).minCoeff(&ei);
-        // if closest index is larger than min end time
-        // incrememnt index until it is smaller or equal
-        while (ei >= 0 && nw_ts[i][ei] > min_tn) {
-            ei--;
-        }
-        if (ei < 0 || ei < si) {
-            throw std::runtime_error(fmt::format(
-                "failed to find aligned end sample for interface index {}", i));
-        }
+        Eigen::Index ei = todproc_alignment_detail::find_last_sample_at_or_before(
+            nw_ts[i], min_tn, si,
+            fmt::format("failed to find aligned end sample for interface index {}", i));
         // pushback end index on end index vector
         engine().end_indices.push_back(ei);
     }
@@ -224,31 +254,17 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
     // if hwpr requested
     if (engine().calib.run_hwpr) {
-        Eigen::Index si, ei;
         // find start index that is larger than max start for hwpr
-        auto s = (abs(engine().calib.hwpr_recvt.array() - max_t0)).minCoeff(&si);
-
-        // if closest index is smaller than max start time
-        // incrememnt index until it is larger or equal
-        while (si < engine().calib.hwpr_recvt.size() && engine().calib.hwpr_recvt(si) < max_t0) {
-            si++;
-        }
-        if (si >= engine().calib.hwpr_recvt.size()) {
-            throw std::runtime_error("failed to find aligned HWPR start sample");
-        }
+        Eigen::Index si = todproc_alignment_detail::find_first_sample_at_or_after(
+            engine().calib.hwpr_recvt, max_t0,
+            "failed to find aligned HWPR start sample");
         // pushback start index on hwpr start index vector
         engine().hwpr_start_indices = si;
 
         // find end index that is smaller than min end for hwpr
-        auto e = (abs(engine().calib.hwpr_recvt.array() - min_tn)).minCoeff(&ei);
-        // if closest index is larger than min end time
-        // incrememnt index until it is smaller or equal
-        while (ei >= 0 && engine().calib.hwpr_recvt(ei) > min_tn) {
-            ei--;
-        }
-        if (ei < 0 || ei < si) {
-            throw std::runtime_error("failed to find aligned HWPR end sample");
-        }
+        Eigen::Index ei = todproc_alignment_detail::find_last_sample_at_or_before(
+            engine().calib.hwpr_recvt, min_tn, si,
+            "failed to find aligned HWPR end sample");
         // pushback end index on hwpr end index vector
         engine().hwpr_end_indices = ei;
 
@@ -413,13 +429,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
 
     // get hwpr times if not ignored
     if (engine().calib.run_hwpr) {
-        if (engine().calib.hwpr_recvt.size() == 0 || engine().calib.hwpr_angle.size() == 0) {
-            throw std::runtime_error("HWPR is enabled but HWP time/angle data are empty");
-        }
-        if (engine().calib.hwpr_recvt.size() != engine().calib.hwpr_angle.size()) {
-            throw std::runtime_error(
-                "HWPR time and angle vectors have different lengths before gap alignment");
-        }
+        todproc_alignment_detail::validate_hwpr_alignment_inputs(
+            engine().calib.hwpr_recvt, engine().calib.hwpr_angle, "gap");
         logger->debug("calculating hwpr time");
         // hwpr gets added alongside networks
         nw_times.push_back(engine().calib.hwpr_recvt);
@@ -546,87 +557,3 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
     engine().masks = masks;
     engine().nw_times = nw_times;
 }
-
-template <class EngineType>
-void TimeOrderedDataProc<EngineType>::interp_pointing() {
-    const auto az_it = engine().pointing_offsets_arcsec.find("az");
-    const auto alt_it = engine().pointing_offsets_arcsec.find("alt");
-    if (az_it == engine().pointing_offsets_arcsec.end() || alt_it == engine().pointing_offsets_arcsec.end()) {
-        logger->error("pointing_offsets must include both az and alt vectors");
-        std::exit(EXIT_FAILURE);
-    }
-
-    // how many offsets in config file
-    Eigen::Index n_offsets = az_it->second.size();
-    if (n_offsets != alt_it->second.size()) {
-        logger->error("pointing_offsets az/alt lengths differ (az={} alt={})",
-                      n_offsets, alt_it->second.size());
-        std::exit(EXIT_FAILURE);
-    }
-    if (n_offsets != 1 && n_offsets != 2) {
-        logger->error("only one or two values for altaz offsets are supported");
-        std::exit(EXIT_FAILURE);
-    }
-
-    const Eigen::Index ni = engine().telescope.tel_data["TelTime"].size();
-    if (ni <= 0) {
-        logger->error("cannot interpolate pointing offsets: telescope TelTime is empty");
-        std::exit(EXIT_FAILURE);
-    }
-
-    // keys for pointing offsets
-    std::vector<std::string> altaz_keys = {"alt", "az"};
-
-    for (const auto &key: altaz_keys) {
-        // if only one value given
-        if (n_offsets==1) {
-            double offset = engine().pointing_offsets_arcsec[key](0);
-            engine().pointing_offsets_arcsec[key].resize(ni);
-            engine().pointing_offsets_arcsec[key].setConstant(offset);
-        }
-        else if (n_offsets==2) {
-            // size of offset data
-            Eigen::Matrix<Eigen::Index,1,1> nd;
-            nd << n_offsets;
-
-            // vector to store interpolation
-            Eigen::VectorXd yi(ni);
-
-            // start and end times of observation
-            Eigen::VectorXd xd(n_offsets);
-            const bool use_mjd = (engine().pointing_offsets_modified_julian_date.size() == 2) &&
-                                 (engine().pointing_offsets_modified_julian_date > 0).all();
-
-            // use start and end of current obs if MJD values are not specified
-            if (!use_mjd) {
-                xd << engine().telescope.tel_data["TelTime"](0), engine().telescope.tel_data["TelTime"](ni-1);
-            }
-            // else use specified modified julian dates, convert to julian dates, and calc unix time
-            else {
-                xd << engine_utils::modified_julian_date_to_unix(engine().pointing_offsets_modified_julian_date(0)),
-                    engine_utils::modified_julian_date_to_unix(engine().pointing_offsets_modified_julian_date(1));
-
-                if (xd(1) <= xd(0)) {
-                    logger->error("MJD range is invalid: end <= start");
-                    std::exit(EXIT_FAILURE);
-                }
-                // make sure offsets are before and after the observation
-                if (xd(0) > engine().telescope.tel_data["TelTime"](0) || xd(1) < engine().telescope.tel_data["TelTime"](ni-1)) {
-                    logger->error("MJD range is invalid");
-                    std::exit(EXIT_FAILURE);
-                }
-            }
-
-            // interpolate offset onto time vector
-            mlinterp::interp(nd.data(), ni, // nd, ni
-                             engine().pointing_offsets_arcsec[key].data(), yi.data(), // yd, yi
-                             xd.data(), engine().telescope.tel_data["TelTime"].data()); // xd, xi
-
-            // overwrite pointing offsets
-            engine().pointing_offsets_arcsec[key] = yi;
-        }
-    }
-}
-
-// get map number
-
