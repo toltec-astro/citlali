@@ -397,49 +397,23 @@ void Engine::get_beammap_config(CT &config) {
     }
 
     typed_beammap_config = citlali::config::BeammapConfig{};
-    typed_beammap_config.iteration.max_iterations = beammap_iter_max;
-    typed_beammap_config.iteration.tolerance = beammap_iter_tolerance;
-    typed_beammap_config.iteration.convergence_radius_arcsec =
-        beammap_convergence_radius_arcsec;
-    typed_beammap_config.phase_strategy.enabled = beammap_phase_split_enabled;
-    typed_beammap_config.phase_strategy.locator_iter = beammap_locator_iter;
-    typed_beammap_config.phase_strategy.measurement_start_iter =
-        beammap_measurement_start_iter;
-    typed_beammap_config.reference.subtract_reference_detector =
-        beammap_subtract_reference;
-    typed_beammap_config.reference.reference_detector =
-        static_cast<long>(beammap_reference_det);
-    typed_beammap_config.reference.derotate = beammap_derotate;
-    typed_beammap_config.rfi_mask.enabled = beammap_rfi_mask_enabled;
-    typed_beammap_config.rfi_mask.block_size_samples =
-        beammap_rfi_mask_block_size_samples;
-    typed_beammap_config.rfi_mask.min_good_samples =
-        beammap_rfi_mask_min_good_samples;
-    typed_beammap_config.rfi_mask.dilate_blocks = beammap_rfi_mask_dilate_blocks;
-    typed_beammap_config.rfi_mask.sigma_threshold =
-        beammap_rfi_mask_sigma_threshold;
-    typed_beammap_config.rfi_mask.sigma_floor = beammap_rfi_mask_sigma_floor;
-    typed_beammap_config.rfi_mask.max_flagged_fraction =
-        beammap_rfi_mask_max_flagged_fraction;
-    if (auto parsed = citlali::config::parse_beammap_detector_weighting_mode(
-            beammap_detector_weighting_mode)) {
-        typed_beammap_config.detector_weighting_mode = *parsed;
-    }
-    typed_beammap_config.fitting.fit_radius_fwhm = beammap_fit_radius_fwhm;
-    typed_beammap_config.scan_band_mask.enabled = beammap_scan_band_mask_enabled;
-    typed_beammap_config.scan_band_mask.edge_rows = beammap_scan_band_mask_edge_rows;
-    typed_beammap_config.scan_band_mask.min_row_pixels =
-        beammap_scan_band_mask_min_row_pixels;
-    typed_beammap_config.scan_band_mask.min_contiguous_rows =
-        beammap_scan_band_mask_min_contiguous_rows;
-    typed_beammap_config.scan_band_mask.row_median_sigma_threshold =
-        beammap_scan_band_mask_row_median_sigma_threshold;
-    typed_beammap_config.scan_band_mask.row_sigma_ratio_threshold =
-        beammap_scan_band_mask_row_sigma_ratio_threshold;
-    typed_beammap_config.scan_band_mask.max_flagged_fraction =
-        beammap_scan_band_mask_max_flagged_fraction;
-    typed_beammap_config.split_fits_by_flag.enabled = beammap_split_fits_by_flag;
-    typed_beammap_config.split_fits_by_flag.flag_values = beammap_split_flag_values;
+    citlali::pipeline::mirror_beammap_core_config(
+        typed_beammap_config, beammap_iter_max, beammap_iter_tolerance,
+        beammap_convergence_radius_arcsec, beammap_phase_split_enabled,
+        beammap_locator_iter, beammap_measurement_start_iter,
+        beammap_subtract_reference, static_cast<long>(beammap_reference_det),
+        beammap_derotate, beammap_rfi_mask_enabled,
+        beammap_rfi_mask_block_size_samples, beammap_rfi_mask_min_good_samples,
+        beammap_rfi_mask_dilate_blocks, beammap_rfi_mask_sigma_threshold,
+        beammap_rfi_mask_sigma_floor, beammap_rfi_mask_max_flagged_fraction,
+        beammap_detector_weighting_mode, beammap_fit_radius_fwhm,
+        beammap_scan_band_mask_enabled, beammap_scan_band_mask_edge_rows,
+        beammap_scan_band_mask_min_row_pixels,
+        beammap_scan_band_mask_min_contiguous_rows,
+        beammap_scan_band_mask_row_median_sigma_threshold,
+        beammap_scan_band_mask_row_sigma_ratio_threshold,
+        beammap_scan_band_mask_max_flagged_fraction,
+        beammap_split_fits_by_flag, beammap_split_flag_values);
     typed_beammap_config.priors.enabled = beammap_priors_enabled;
     typed_beammap_config.priors.filepath = beammap_priors_filepath;
     typed_beammap_config.priors.candidate_top_n =

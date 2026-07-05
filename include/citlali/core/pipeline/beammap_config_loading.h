@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/config/beammap_config.h>
+
 #include <cstddef>
 #include <algorithm>
 #include <string>
@@ -61,6 +63,61 @@ inline std::vector<int> normalized_beammap_split_flag_values(
     std::sort(values.begin(), values.end());
     values.erase(std::unique(values.begin(), values.end()), values.end());
     return values;
+}
+
+inline void mirror_beammap_core_config(
+    citlali::config::BeammapConfig &target,
+    int iter_max, double iter_tolerance, double convergence_radius_arcsec,
+    bool phase_split_enabled, int locator_iter, int measurement_start_iter,
+    bool subtract_reference, long reference_det, bool derotate,
+    bool rfi_mask_enabled, int rfi_mask_block_size_samples,
+    int rfi_mask_min_good_samples, int rfi_mask_dilate_blocks,
+    double rfi_mask_sigma_threshold, double rfi_mask_sigma_floor,
+    double rfi_mask_max_flagged_fraction,
+    const std::string &detector_weighting_mode,
+    double fit_radius_fwhm,
+    bool scan_band_mask_enabled, int scan_band_mask_edge_rows,
+    int scan_band_mask_min_row_pixels,
+    int scan_band_mask_min_contiguous_rows,
+    double scan_band_mask_row_median_sigma_threshold,
+    double scan_band_mask_row_sigma_ratio_threshold,
+    double scan_band_mask_max_flagged_fraction,
+    bool split_fits_by_flag,
+    const std::vector<int> &split_flag_values) {
+    target.iteration.max_iterations = iter_max;
+    target.iteration.tolerance = iter_tolerance;
+    target.iteration.convergence_radius_arcsec = convergence_radius_arcsec;
+    target.phase_strategy.enabled = phase_split_enabled;
+    target.phase_strategy.locator_iter = locator_iter;
+    target.phase_strategy.measurement_start_iter = measurement_start_iter;
+    target.reference.subtract_reference_detector = subtract_reference;
+    target.reference.reference_detector = reference_det;
+    target.reference.derotate = derotate;
+    target.rfi_mask.enabled = rfi_mask_enabled;
+    target.rfi_mask.block_size_samples = rfi_mask_block_size_samples;
+    target.rfi_mask.min_good_samples = rfi_mask_min_good_samples;
+    target.rfi_mask.dilate_blocks = rfi_mask_dilate_blocks;
+    target.rfi_mask.sigma_threshold = rfi_mask_sigma_threshold;
+    target.rfi_mask.sigma_floor = rfi_mask_sigma_floor;
+    target.rfi_mask.max_flagged_fraction = rfi_mask_max_flagged_fraction;
+    if (auto parsed = citlali::config::parse_beammap_detector_weighting_mode(
+            detector_weighting_mode)) {
+        target.detector_weighting_mode = *parsed;
+    }
+    target.fitting.fit_radius_fwhm = fit_radius_fwhm;
+    target.scan_band_mask.enabled = scan_band_mask_enabled;
+    target.scan_band_mask.edge_rows = scan_band_mask_edge_rows;
+    target.scan_band_mask.min_row_pixels = scan_band_mask_min_row_pixels;
+    target.scan_band_mask.min_contiguous_rows =
+        scan_band_mask_min_contiguous_rows;
+    target.scan_band_mask.row_median_sigma_threshold =
+        scan_band_mask_row_median_sigma_threshold;
+    target.scan_band_mask.row_sigma_ratio_threshold =
+        scan_band_mask_row_sigma_ratio_threshold;
+    target.scan_band_mask.max_flagged_fraction =
+        scan_band_mask_max_flagged_fraction;
+    target.split_fits_by_flag.enabled = split_fits_by_flag;
+    target.split_fits_by_flag.flag_values = split_flag_values;
 }
 
 }  // namespace citlali::pipeline
