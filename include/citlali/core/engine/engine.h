@@ -7305,10 +7305,10 @@ void Engine::create_rtcdiag_file() {
 
     citlali::pipeline::add_rtcdiag_apt_double_vars(fo, calib, n_dets_dim);
 
-    std::vector<netCDF::NcDim> rtc_det_dims = {n_scans_dim, n_dets_dim};
+    std::vector<netCDF::NcDim> rtc_det_dims = {
+        n_scans_dim, n_dets_dim};
     const auto n_rtc_det_values =
-        static_cast<std::size_t>(n_scans) *
-        static_cast<std::size_t>(calib.n_dets);
+        n_scan_values * static_cast<std::size_t>(calib.n_dets);
     auto add_rtc_det_double = [&](const std::string &name, const std::string &comment) {
         citlali::pipeline::add_rtcdiag_det_double(
             fo, name, comment, rtc_det_dims, rtc_det_chunks,
