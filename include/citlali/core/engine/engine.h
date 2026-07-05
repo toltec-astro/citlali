@@ -7628,7 +7628,6 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     }
 
     if (write_filtered_maps_partial) {
-        // clear fits file vectors to ensure its closed.
         logger->info("finalizing {} FITS handles", map_label);
         f_io->clear();
         n_io->clear();
