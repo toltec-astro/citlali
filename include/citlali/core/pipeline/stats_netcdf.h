@@ -7,6 +7,8 @@
 #include <Eigen/Core>
 #include <netcdf>
 
+#include <citlali/core/pipeline/ptcdiag_netcdf.h>
+
 namespace citlali::pipeline {
 
 inline std::string stats_unit_or_empty(
