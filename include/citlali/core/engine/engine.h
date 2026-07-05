@@ -7528,7 +7528,7 @@ void Engine::write_stats() {
 
                     const auto eval_var_name =
                         citlali::pipeline::stats_eigenvalue_var_name(
-                            ptcproc.cleaner.grouping[i], i, chunk_index);
+                            cleaner_grouping[i], i, chunk_index);
                     netCDF::NcVar eval_v =
                         citlali::pipeline::add_stats_eigenvalue_var(
                             fo, eval_var_name, eval_dims);
