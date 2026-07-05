@@ -64,35 +64,13 @@ void Engine::get_mapmaking_config(CT &config) {
         config, map_method, jinc_mm, ml_mm, toltec_io.array_name_map,
         ptcproc, omb.pixel_size_rad, missing_keys, invalid_keys);
 
-    citlali::engine_detail::read_noise_maps_enabled_config(
-        config, run_noise, typed_noise_config, missing_keys, invalid_keys);
-    if (run_noise) {
-        citlali::engine_detail::read_noise_map_count_config(
-            config, omb.n_noise, typed_noise_config, missing_keys,
-            invalid_keys);
-        citlali::engine_detail::read_noise_randomize_dets_config(
-            config, omb.randomize_dets, typed_noise_config, missing_keys,
-            invalid_keys);
-
-        if (run_coadd) {
-            citlali::pipeline::mirror_noise_map_settings_to_coadd(omb, cmb);
-        }
-    }
-    // otherwise set number of noise maps to zero
-    else {
-        citlali::pipeline::disable_noise_map_settings(
-            omb, cmb, typed_noise_config);
-    }
-
-    citlali::engine_detail::read_noise_write_realizations_config(
-        config, write_noise_realizations, typed_noise_config, missing_keys,
+    citlali::engine_detail::read_noise_map_config(
+        config, run_noise, run_coadd, omb, cmb, typed_noise_config,
+        missing_keys, invalid_keys);
+    citlali::engine_detail::read_noise_product_config(
+        config, run_noise, write_noise_realizations, run_noise_products,
+        apply_empirical_noise_weights, typed_noise_config, missing_keys,
         invalid_keys);
-    citlali::engine_detail::read_noise_products_enabled_config(
-        config, run_noise_products, run_noise, typed_noise_config,
-        missing_keys, invalid_keys);
-    citlali::engine_detail::read_noise_empirical_weights_config(
-        config, apply_empirical_noise_weights, run_noise, typed_noise_config,
-        missing_keys, invalid_keys);
 
     citlali::pipeline::set_mapmaker_polarization(
         rtcproc.run_polarization, naive_mm, jinc_mm);
