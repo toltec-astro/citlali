@@ -7355,13 +7355,13 @@ void Engine::create_rtcdiag_file() {
         const auto n_slots =
             static_cast<std::size_t>(
                 std::max<Eigen::Index>(max_events_per_network, 1));
+        const double snippet_pre_window_sec =
+            rtcproc.impulsive_capture.snippet_pre_window_sec;
         const auto snippet_pre =
             static_cast<std::size_t>(
                 std::max(
                     0.0,
-                    std::round(
-                        rtcproc.impulsive_capture.snippet_pre_window_sec *
-                        rtc_fsmp)));
+                    std::round(snippet_pre_window_sec * rtc_fsmp)));
         const auto snippet_post =
             static_cast<std::size_t>(
                 std::max(
