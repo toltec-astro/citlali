@@ -429,27 +429,14 @@ void Engine::get_beammap_config(CT &config) {
         beammap_priors_alignment_max_d2,
         beammap_priors_alignment_fit_rotation,
         beammap_priors_alignment_max_rotation_deg);
-    typed_beammap_config.detector_tod_output.enabled =
-        beammap_detector_tod_output_enabled;
-    typed_beammap_config.detector_tod_output.subdir_name =
-        beammap_detector_tod_output_subdir_name;
-    typed_beammap_config.detector_tod_output.n_uniform =
-        beammap_detector_tod_output_n_uniform;
-    typed_beammap_config.detector_tod_output.n_source_dense =
-        beammap_detector_tod_output_n_source_dense;
-    typed_beammap_config.flagging.array_lower_fwhm_arcsec =
-        lower_fwhm_arcsec_vec;
-    typed_beammap_config.flagging.array_upper_fwhm_arcsec =
-        upper_fwhm_arcsec_vec;
-    typed_beammap_config.flagging.array_lower_sig2noise =
-        lower_sig2noise_vec;
-    typed_beammap_config.flagging.array_upper_sig2noise =
-        upper_sig2noise_vec;
-    typed_beammap_config.flagging.array_max_dist_arcsec =
-        max_dist_arcsec_vec;
-    typed_beammap_config.flagging.array_network_robust_z =
-        network_robust_z_vec;
-    typed_beammap_config.flagging.sens_factors = sens_factors_vec;
-    typed_beammap_config.flagging.sens_psd_limits_hz = sens_psd_limits_Hz_vec;
-    typed_beammap_config.flagging.max_prior_d2 = beammap_flag_max_prior_d2;
+    citlali::pipeline::mirror_beammap_output_and_flagging_config(
+        typed_beammap_config, beammap_detector_tod_output_enabled,
+        beammap_detector_tod_output_subdir_name,
+        beammap_detector_tod_output_n_uniform,
+        beammap_detector_tod_output_n_source_dense,
+        lower_fwhm_arcsec_vec, upper_fwhm_arcsec_vec,
+        lower_sig2noise_vec, upper_sig2noise_vec,
+        max_dist_arcsec_vec, network_robust_z_vec,
+        sens_factors_vec, sens_psd_limits_Hz_vec,
+        beammap_flag_max_prior_d2);
 }
