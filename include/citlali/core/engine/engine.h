@@ -7766,8 +7766,9 @@ void Engine::find_sources(map_buffer_t &mb) {
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     // get filenmame for source table
-    std::string source_filename = setup_filenames<map_t,engine_utils::toltecIO::source,
-                                                  engine_utils::toltecIO::map>(dir_name);
+    const std::string source_filename =
+        setup_filenames<map_t, engine_utils::toltecIO::source,
+                        engine_utils::toltecIO::map>(dir_name);
 
     // source header information
     std::vector<std::string> source_header = {
