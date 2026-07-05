@@ -6737,8 +6737,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                         citlali::pipeline::
                                             assign_mapdiag_candidate_contributor_from_products(
                                                 candidate, uid,
-                                                mb->contribution_scan[contribution_map_index],
-                                                mb->contribution_sample[contribution_map_index],
+                                                mb->contribution_scan[
+                                                    contribution_map_index],
+                                                mb->contribution_sample[
+                                                    contribution_map_index],
                                                 r, c);
                                         const double total_signal =
                                             citlali::pipeline::
