@@ -3,6 +3,8 @@
 // Engine config loading implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/beammap_config_loading.h>
+
 template<typename CT>
 void Engine::get_beammap_config(CT &config) {
     logger->info("getting beammap config options");
@@ -306,41 +308,37 @@ void Engine::get_beammap_config(CT &config) {
         beammap_priors_enabled = false;
     }
 
-    auto get_fixed_beammap_vector = [&](const std::vector<std::string> &path,
-                                        std::size_t expected_size) {
-        std::vector<double> values;
-        if (path.size() == 2) {
-            values = config.template get_typed<std::vector<double>>(std::make_tuple(path[0], path[1]));
-        }
-        else {
-            values = config.template get_typed<std::vector<double>>(std::make_tuple(path[0], path[1], path[2]));
-        }
-        if (values.size() != expected_size) {
-            invalid_keys.push_back(path);
-            values.resize(expected_size, 0.0);
-        }
-        return values;
-    };
-
     const std::size_t n_toltec_arrays = toltec_io.array_name_map.size();
     // lower fwhm limit
-    auto lower_fwhm_arcsec_vec = get_fixed_beammap_vector({"beammap","flagging","array_lower_fwhm_arcsec"},
-                                                          n_toltec_arrays);
+    auto lower_fwhm_arcsec_vec =
+        citlali::pipeline::beammap_fixed_double_vector(
+            config, {"beammap","flagging","array_lower_fwhm_arcsec"},
+            n_toltec_arrays, invalid_keys);
     // upper fwhm limit
-    auto upper_fwhm_arcsec_vec = get_fixed_beammap_vector({"beammap","flagging","array_upper_fwhm_arcsec"},
-                                                          n_toltec_arrays);
+    auto upper_fwhm_arcsec_vec =
+        citlali::pipeline::beammap_fixed_double_vector(
+            config, {"beammap","flagging","array_upper_fwhm_arcsec"},
+            n_toltec_arrays, invalid_keys);
     // lower signal-to-noise limit
-    auto lower_sig2noise_vec = get_fixed_beammap_vector({"beammap","flagging","array_lower_sig2noise"},
-                                                        n_toltec_arrays);
+    auto lower_sig2noise_vec =
+        citlali::pipeline::beammap_fixed_double_vector(
+            config, {"beammap","flagging","array_lower_sig2noise"},
+            n_toltec_arrays, invalid_keys);
     // upper signal-to-noise limit
-    auto upper_sig2noise_vec = get_fixed_beammap_vector({"beammap","flagging","array_upper_sig2noise"},
-                                                        n_toltec_arrays);
+    auto upper_sig2noise_vec =
+        citlali::pipeline::beammap_fixed_double_vector(
+            config, {"beammap","flagging","array_upper_sig2noise"},
+            n_toltec_arrays, invalid_keys);
     // maximum allowed distance limit
-    auto max_dist_arcsec_vec = get_fixed_beammap_vector({"beammap","flagging","array_max_dist_arcsec"},
-                                                        n_toltec_arrays);
+    auto max_dist_arcsec_vec =
+        citlali::pipeline::beammap_fixed_double_vector(
+            config, {"beammap","flagging","array_max_dist_arcsec"},
+            n_toltec_arrays, invalid_keys);
     // per-array post-derotation network geometry cut
-    auto network_robust_z_vec = get_fixed_beammap_vector({"beammap","flagging","array_network_robust_z"},
-                                                         n_toltec_arrays);
+    auto network_robust_z_vec =
+        citlali::pipeline::beammap_fixed_double_vector(
+            config, {"beammap","flagging","array_network_robust_z"},
+            n_toltec_arrays, invalid_keys);
     beammap_flag_max_prior_d2 = 0.0;
     if (config.template has_typed<double>(std::tuple{"beammap","flagging","max_prior_d2"})) {
         get_config_value(config, beammap_flag_max_prior_d2, missing_keys, invalid_keys,
@@ -367,14 +365,17 @@ void Engine::get_beammap_config(CT &config) {
     }
 
     // sensitivity factors
-    auto sens_factors_vec = get_fixed_beammap_vector({"beammap","flagging","sens_factors"}, 2);
+    auto sens_factors_vec = citlali::pipeline::beammap_fixed_double_vector(
+        config, {"beammap","flagging","sens_factors"}, 2, invalid_keys);
     lower_sens_factor = sens_factors_vec[0];
     upper_sens_factor = sens_factors_vec[1];
 
     // upper and lower frequencies over which to calculate sensitivity
     sens_psd_limits_Hz.resize(2);
     // get psd limits for sens from config
-    auto sens_psd_limits_Hz_vec = get_fixed_beammap_vector({"beammap","sens_psd_limits_Hz"}, 2);
+    auto sens_psd_limits_Hz_vec =
+        citlali::pipeline::beammap_fixed_double_vector(
+            config, {"beammap","sens_psd_limits_Hz"}, 2, invalid_keys);
     // map sens limits back to Eigen vector
     sens_psd_limits_Hz = (Eigen::Map<Eigen::VectorXd>(sens_psd_limits_Hz_vec.data(), sens_psd_limits_Hz_vec.size()));
 
@@ -505,4 +506,3 @@ void Engine::get_beammap_config(CT &config) {
     typed_beammap_config.flagging.sens_psd_limits_hz = sens_psd_limits_Hz_vec;
     typed_beammap_config.flagging.max_prior_d2 = beammap_flag_max_prior_d2;
 }
-
