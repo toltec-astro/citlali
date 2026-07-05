@@ -250,6 +250,48 @@ std::vector<double> beammap_fixed_double_vector(
     return values;
 }
 
+struct BeammapFlaggingVectors {
+    std::vector<double> lower_fwhm_arcsec;
+    std::vector<double> upper_fwhm_arcsec;
+    std::vector<double> lower_sig2noise;
+    std::vector<double> upper_sig2noise;
+    std::vector<double> max_dist_arcsec;
+    std::vector<double> network_robust_z;
+    double max_prior_d2 = 0.0;
+};
+
+template <class Config, class MissingKeys, class InvalidKeys>
+BeammapFlaggingVectors read_beammap_flagging_vectors(
+    Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys,
+    std::size_t n_arrays) {
+    BeammapFlaggingVectors vectors;
+    vectors.lower_fwhm_arcsec = beammap_fixed_double_vector(
+        config, {"beammap", "flagging", "array_lower_fwhm_arcsec"},
+        n_arrays, invalid_keys);
+    vectors.upper_fwhm_arcsec = beammap_fixed_double_vector(
+        config, {"beammap", "flagging", "array_upper_fwhm_arcsec"},
+        n_arrays, invalid_keys);
+    vectors.lower_sig2noise = beammap_fixed_double_vector(
+        config, {"beammap", "flagging", "array_lower_sig2noise"},
+        n_arrays, invalid_keys);
+    vectors.upper_sig2noise = beammap_fixed_double_vector(
+        config, {"beammap", "flagging", "array_upper_sig2noise"},
+        n_arrays, invalid_keys);
+    vectors.max_dist_arcsec = beammap_fixed_double_vector(
+        config, {"beammap", "flagging", "array_max_dist_arcsec"},
+        n_arrays, invalid_keys);
+    vectors.network_robust_z = beammap_fixed_double_vector(
+        config, {"beammap", "flagging", "array_network_robust_z"},
+        n_arrays, invalid_keys);
+    if (config.template has_typed<double>(
+            std::tuple{"beammap", "flagging", "max_prior_d2"})) {
+        ::get_config_value(
+            config, vectors.max_prior_d2, missing_keys, invalid_keys,
+            std::tuple{"beammap", "flagging", "max_prior_d2"}, {}, {0.0});
+    }
+    return vectors;
+}
+
 template <class ArrayNameMap, class ValueMap>
 void assign_beammap_array_flag_limits(
     const ArrayNameMap &array_name_map,

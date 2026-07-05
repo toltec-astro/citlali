@@ -93,50 +93,19 @@ void Engine::get_beammap_config(CT &config) {
     citlali::pipeline::disable_missing_beammap_priors(
         beammap_priors_enabled, beammap_priors_filepath, logger);
 
-    const std::size_t n_toltec_arrays = toltec_io.array_name_map.size();
-    // lower fwhm limit
-    auto lower_fwhm_arcsec_vec =
-        citlali::pipeline::beammap_fixed_double_vector(
-            config, {"beammap","flagging","array_lower_fwhm_arcsec"},
-            n_toltec_arrays, invalid_keys);
-    // upper fwhm limit
-    auto upper_fwhm_arcsec_vec =
-        citlali::pipeline::beammap_fixed_double_vector(
-            config, {"beammap","flagging","array_upper_fwhm_arcsec"},
-            n_toltec_arrays, invalid_keys);
-    // lower signal-to-noise limit
-    auto lower_sig2noise_vec =
-        citlali::pipeline::beammap_fixed_double_vector(
-            config, {"beammap","flagging","array_lower_sig2noise"},
-            n_toltec_arrays, invalid_keys);
-    // upper signal-to-noise limit
-    auto upper_sig2noise_vec =
-        citlali::pipeline::beammap_fixed_double_vector(
-            config, {"beammap","flagging","array_upper_sig2noise"},
-            n_toltec_arrays, invalid_keys);
-    // maximum allowed distance limit
-    auto max_dist_arcsec_vec =
-        citlali::pipeline::beammap_fixed_double_vector(
-            config, {"beammap","flagging","array_max_dist_arcsec"},
-            n_toltec_arrays, invalid_keys);
-    // per-array post-derotation network geometry cut
-    auto network_robust_z_vec =
-        citlali::pipeline::beammap_fixed_double_vector(
-            config, {"beammap","flagging","array_network_robust_z"},
-            n_toltec_arrays, invalid_keys);
-    beammap_flag_max_prior_d2 = 0.0;
-    if (config.template has_typed<double>(std::tuple{"beammap","flagging","max_prior_d2"})) {
-        get_config_value(config, beammap_flag_max_prior_d2, missing_keys, invalid_keys,
-                         std::tuple{"beammap","flagging","max_prior_d2"},
-                         {}, {0.0});
-    }
+    const auto flagging_vectors =
+        citlali::pipeline::read_beammap_flagging_vectors(
+            config, missing_keys, invalid_keys, toltec_io.array_name_map.size());
+    beammap_flag_max_prior_d2 = flagging_vectors.max_prior_d2;
 
     citlali::pipeline::assign_beammap_array_flag_limits(
-        toltec_io.array_name_map, lower_fwhm_arcsec_vec,
-        upper_fwhm_arcsec_vec, lower_sig2noise_vec, upper_sig2noise_vec,
-        max_dist_arcsec_vec, network_robust_z_vec, lower_fwhm_arcsec,
-        upper_fwhm_arcsec, lower_sig2noise, upper_sig2noise,
-        max_dist_arcsec, network_robust_z);
+        toltec_io.array_name_map, flagging_vectors.lower_fwhm_arcsec,
+        flagging_vectors.upper_fwhm_arcsec,
+        flagging_vectors.lower_sig2noise,
+        flagging_vectors.upper_sig2noise,
+        flagging_vectors.max_dist_arcsec, flagging_vectors.network_robust_z,
+        lower_fwhm_arcsec, upper_fwhm_arcsec, lower_sig2noise,
+        upper_sig2noise, max_dist_arcsec, network_robust_z);
 
     std::vector<double> sens_factors_vec;
     std::vector<double> sens_psd_limits_Hz_vec;
@@ -194,9 +163,12 @@ void Engine::get_beammap_config(CT &config) {
         beammap_detector_tod_output_subdir_name,
         beammap_detector_tod_output_n_uniform,
         beammap_detector_tod_output_n_source_dense,
-        lower_fwhm_arcsec_vec, upper_fwhm_arcsec_vec,
-        lower_sig2noise_vec, upper_sig2noise_vec,
-        max_dist_arcsec_vec, network_robust_z_vec,
+        flagging_vectors.lower_fwhm_arcsec,
+        flagging_vectors.upper_fwhm_arcsec,
+        flagging_vectors.lower_sig2noise,
+        flagging_vectors.upper_sig2noise,
+        flagging_vectors.max_dist_arcsec,
+        flagging_vectors.network_robust_z,
         sens_factors_vec, sens_psd_limits_Hz_vec,
         beammap_flag_max_prior_d2);
 }
