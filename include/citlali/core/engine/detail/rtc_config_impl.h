@@ -17,14 +17,8 @@ void Engine::get_rtc_config(CT &config) {
     citlali::pipeline::mirror_raw_flagging_config(
         typed_raw.flagging, rtcproc);
 
-    auto &typed_kernel = typed_raw.kernel;
-    typed_kernel.enabled = rtcproc.run_kernel;
-    if (rtcproc.run_kernel) {
-        typed_kernel.filepath = rtcproc.kernel.filepath;
-        typed_kernel.type = rtcproc.kernel.type;
-        typed_kernel.fwhm_arcsec = rtcproc.kernel.fwhm_rad * RAD_TO_ASEC;
-        typed_kernel.image_ext_names = rtcproc.kernel.img_ext_names;
-    }
+    citlali::pipeline::mirror_raw_kernel_config(
+        typed_raw.kernel, rtcproc, RAD_TO_ASEC);
 
     auto &typed_altaz = typed_raw.altaz_destripe;
     typed_altaz.enabled = rtcproc.altaz_destripe.enabled;
@@ -129,12 +123,8 @@ void Engine::get_rtc_config(CT &config) {
     typed_line_audit.detector_notch_context_samples =
         static_cast<int>(line_audit.detector_notch_context_samples);
 
-    typed_raw.downsample.enabled = rtcproc.run_downsample;
-    if (rtcproc.run_downsample) {
-        typed_raw.downsample.factor = rtcproc.downsampler.factor;
-        typed_raw.downsample.downsampled_freq_Hz =
-            rtcproc.downsampler.downsampled_freq_Hz;
-    }
+    citlali::pipeline::mirror_raw_downsample_config(
+        typed_raw.downsample, rtcproc);
 
     auto &typed_filter = typed_raw.filter;
     typed_filter.enabled = rtcproc.run_tod_filter;

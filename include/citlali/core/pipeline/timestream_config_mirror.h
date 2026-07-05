@@ -432,4 +432,28 @@ void mirror_raw_flagging_config(RawFlaggingConfig &target,
         impulsive_coincidence.max_flagged_fraction;
 }
 
+template <class KernelConfig, class RtcProc>
+void mirror_raw_kernel_config(KernelConfig &target, const RtcProc &rtcproc,
+                              double radians_to_arcsec) {
+    target.enabled = rtcproc.run_kernel;
+    if (!rtcproc.run_kernel) {
+        return;
+    }
+    target.filepath = rtcproc.kernel.filepath;
+    target.type = rtcproc.kernel.type;
+    target.fwhm_arcsec = rtcproc.kernel.fwhm_rad * radians_to_arcsec;
+    target.image_ext_names = rtcproc.kernel.img_ext_names;
+}
+
+template <class DownsampleConfig, class RtcProc>
+void mirror_raw_downsample_config(DownsampleConfig &target,
+                                  const RtcProc &rtcproc) {
+    target.enabled = rtcproc.run_downsample;
+    if (!rtcproc.run_downsample) {
+        return;
+    }
+    target.factor = rtcproc.downsampler.factor;
+    target.downsampled_freq_Hz = rtcproc.downsampler.downsampled_freq_Hz;
+}
+
 }  // namespace citlali::pipeline
