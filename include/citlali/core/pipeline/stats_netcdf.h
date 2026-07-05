@@ -40,4 +40,16 @@ void add_stats_double_var(netCDF::NcFile &fo, const std::string &name,
     stat_v.putAtt("units", units);
 }
 
+template <class Calib>
+void add_stats_apt_double_vars(netCDF::NcFile &fo, const Calib &calib,
+                               netCDF::NcDim n_dets_dim) {
+    for (const auto &x : calib.apt) {
+        netCDF::NcVar apt_v =
+            fo.addVar("apt_" + x.first, netCDF::ncDouble, n_dets_dim);
+        apt_v.putVar(x.second.data());
+        apt_v.putAtt("units",
+                     stats_unit_or_empty(calib.apt_header_units, x.first));
+    }
+}
+
 }  // namespace citlali::pipeline
