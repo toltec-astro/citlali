@@ -7620,7 +7620,10 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                 wiener_filter.template_type);
         if (template_uses_fwhm) {
             const auto it = wiener_filter.template_fwhm_rad.find(array_name);
-            if (it == wiener_filter.template_fwhm_rad.end()) {
+            const bool has_template_fwhm =
+                citlali::pipeline::has_map_filter_template_fwhm(
+                    wiener_filter.template_fwhm_rad, array_name);
+            if (!has_template_fwhm) {
                 logger->error("missing Wiener template_fwhm_rad for array {}",
                               array_name);
                 std::exit(EXIT_FAILURE);
