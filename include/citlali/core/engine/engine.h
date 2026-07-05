@@ -7868,15 +7868,15 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     }
 
     // populate source table
-    Eigen::Index j = 0;
+    Eigen::Index source_param_index = 0;
     for (Eigen::Index i = 1; i < 2 * map_fitter.n_params; i = i + 2) {
         const auto param_col = i;
         const auto error_col = i + 1;
         source_table.col(param_col) =
-            mb->source_params.col(j).template cast<float>();
+            mb->source_params.col(source_param_index).template cast<float>();
         source_table.col(error_col) =
-            mb->source_perror.col(j).template cast<float>();
-        ++j;
+            mb->source_perror.col(source_param_index).template cast<float>();
+        ++source_param_index;
     }
 
     // write source table
