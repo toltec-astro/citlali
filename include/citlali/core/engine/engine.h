@@ -6406,19 +6406,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::make_mapdiag_metadata_vars(
             stage_name, mb, map_regime, telescope.source_name,
             telescope.project_id, telescope.obs_goal, wiener_filter);
-    citlali::pipeline::MapdiagLabelVars mapdiag_labels{
-        array_names,
-        stokes_names,
-        map_names,
-        mb->obsnums,
-        obsnum,
-        date_obs,
-        mapdiag_context.n_obsnums};
-    citlali::pipeline::MapdiagValueVars mapdiag_values{
-        map_double_values,
-        map_int_values,
-        obs_double_values,
-        obs_int_values};
+    const auto mapdiag_labels =
+        citlali::pipeline::make_mapdiag_label_vars(
+            array_names, stokes_names, map_names, mb->obsnums, obsnum,
+            date_obs, mapdiag_context);
+    const auto mapdiag_values =
+        citlali::pipeline::make_mapdiag_value_vars(
+            map_double_values, map_int_values, obs_double_values,
+            obs_int_values);
 
     const citlali::pipeline::MapdiagStatsContext mapdiag_stats{fill_double};
     const std::string mapdiag_record_producer =
@@ -6869,10 +6864,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     write_netcdf_atomic(
         citlali::pipeline::mapdiag_netcdf_filename(filename),
         [&](netCDF::NcFile &fo) {
+            const auto mapdiag_netcdf_vars =
+                citlali::pipeline::make_mapdiag_netcdf_vars(
+                    mapdiag_context, obsnum, mapdiag_metadata,
+                    mapdiag_labels, mapdiag_values);
             citlali::pipeline::add_mapdiag_netcdf_vars(
-                fo,
-                {mapdiag_context, obsnum, mapdiag_metadata,
-                 mapdiag_labels, mapdiag_values});
+                fo, mapdiag_netcdf_vars);
         });
 }
 

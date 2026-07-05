@@ -107,6 +107,24 @@ struct MapdiagLabelVars {
     std::size_t n_obsnums;
 };
 
+inline MapdiagLabelVars make_mapdiag_label_vars(
+    const std::vector<std::string> &array_names,
+    const std::vector<std::string> &stokes_names,
+    const std::vector<std::string> &map_names,
+    const std::vector<std::string> &obsnums,
+    const std::string &fallback_obsnum,
+    const std::vector<std::string> &date_obs,
+    const MapdiagSizeContext &context) {
+    return {
+        array_names,
+        stokes_names,
+        map_names,
+        obsnums,
+        fallback_obsnum,
+        date_obs,
+        context.n_obsnums};
+}
+
 inline MapdiagNetcdfDims add_mapdiag_netcdf_dims(
     netCDF::NcFile &fo, const MapdiagSizeContext &context) {
     netCDF::NcDim maps_dim =
@@ -594,6 +612,18 @@ struct MapdiagValueVars {
     MapdiagObservationIntValues observation_int;
 };
 
+inline MapdiagValueVars make_mapdiag_value_vars(
+    const MapdiagMapDoubleValues &map_double_values,
+    const MapdiagMapIntValues &map_int_values,
+    const MapdiagObservationDoubleValues &obs_double_values,
+    const MapdiagObservationIntValues &obs_int_values) {
+    return {
+        map_double_values,
+        map_int_values,
+        obs_double_values,
+        obs_int_values};
+}
+
 struct MapdiagNetcdfVars {
     const MapdiagSizeContext &size;
     const std::string &obsnum;
@@ -601,6 +631,13 @@ struct MapdiagNetcdfVars {
     const MapdiagLabelVars &labels;
     const MapdiagValueVars &values;
 };
+
+inline MapdiagNetcdfVars make_mapdiag_netcdf_vars(
+    const MapdiagSizeContext &size, const std::string &obsnum,
+    const MapdiagMetadataVars &metadata, const MapdiagLabelVars &labels,
+    const MapdiagValueVars &values) {
+    return {size, obsnum, metadata, labels, values};
+}
 
 template <class AddDouble, class AddInt>
 void add_mapdiag_observation_contribution_vars(
