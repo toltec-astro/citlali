@@ -7490,12 +7490,10 @@ void Engine::write_stats() {
     }
     // add group stats
     for (const auto &stat : diagnostics.grp_stats_header) {
-        netCDF::NcVar stat_v =
-            fo.addVar(stat, netCDF::ncDouble, grp_stat_dims);
-        stat_v.putVar(diagnostics.stats[stat].data());
-        stat_v.putAtt("units",
-                      citlali::pipeline::stats_unit_or_empty(
-                          grp_stats_header_units, stat));
+        citlali::pipeline::add_stats_double_var(
+            fo, stat, grp_stat_dims, diagnostics.stats[stat],
+            citlali::pipeline::stats_unit_or_empty(
+                grp_stats_header_units, stat));
     }
 
     // add apt table
