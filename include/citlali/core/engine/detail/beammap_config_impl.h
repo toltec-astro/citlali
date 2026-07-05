@@ -183,9 +183,9 @@ void Engine::get_beammap_config(CT &config) {
             logger->warn("beammap.split_fits_by_flag.flag_values is empty; using defaults [0, 1]");
         }
         else {
-            std::sort(values.begin(), values.end());
-            values.erase(std::unique(values.begin(), values.end()), values.end());
-            beammap_split_flag_values = std::move(values);
+            beammap_split_flag_values =
+                citlali::pipeline::normalized_beammap_split_flag_values(
+                    std::move(values));
         }
     }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <algorithm>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -53,6 +54,13 @@ void assign_beammap_array_flag_limits(
         network_robust_z[arr_name] = network_robust_z_vec[i];
         ++i;
     }
+}
+
+inline std::vector<int> normalized_beammap_split_flag_values(
+    std::vector<int> values) {
+    std::sort(values.begin(), values.end());
+    values.erase(std::unique(values.begin(), values.end()), values.end());
+    return values;
 }
 
 }  // namespace citlali::pipeline
