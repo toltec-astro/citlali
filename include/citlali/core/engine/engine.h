@@ -7535,7 +7535,7 @@ void Engine::write_stats() {
                         citlali::pipeline::stats_eigenvalue_start_index();
                     const auto eig_write_shape =
                         citlali::pipeline::stats_eigenvalue_write_shape(
-                            ptcproc.cleaner.n_calc);
+                            n_cleaner_eigenvalues);
 
                     // loop through eigenvalues in current group
                     for (const auto &evals : eval_groups[i]) {
