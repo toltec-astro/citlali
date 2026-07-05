@@ -435,6 +435,14 @@ inline double mapdiag_peak_signal_or_fill(const Eigen::MatrixXd &signal,
     return mapdiag_has_matrix_samples(signal) ? signal.maxCoeff() : fill_value;
 }
 
+template <class SignalList>
+void assign_mapdiag_peak_signal_or_fill(
+    std::size_t idx, const SignalList &signals, Eigen::Index map_index,
+    double fill_value, std::vector<double> &peak_signal) {
+    peak_signal[idx] = mapdiag_peak_signal_or_fill(
+        signals[map_index], fill_value);
+}
+
 inline double mapdiag_core_peak_abs_or_fill(const Eigen::MatrixXd &sig2noise,
                                             const Eigen::ArrayXXd &core_mask,
                                             int n_core_pixels,
@@ -1212,6 +1220,18 @@ inline void assign_mapdiag_coverage_stats(
     MapdiagCoverageRefs refs) {
     assign_mapdiag_coverage_stats(
         idx, mapdiag_coverage_stats(coverage, core_mask, fill_value), refs);
+}
+
+template <class CoverageList, class CoreMask>
+void assign_mapdiag_coverage_stats_if_present(
+    std::size_t idx, const CoverageList &coverage, Eigen::Index map_index,
+    const CoreMask &core_mask, double fill_value,
+    MapdiagCoverageRefs refs) {
+    if (!mapdiag_has_coverage_map(coverage, map_index)) {
+        return;
+    }
+    assign_mapdiag_coverage_stats(
+        idx, coverage[map_index], core_mask, fill_value, refs);
 }
 
 inline void assign_mapdiag_coverage_stats(

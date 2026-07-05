@@ -273,14 +273,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::assign_mapdiag_noise_product_stats_or_fill(
             idx, mb, i, fill_double, noise_product_refs);
 
-        if (citlali::pipeline::mapdiag_has_coverage_map(
-                mb->coverage, i)) {
-            citlali::pipeline::assign_mapdiag_coverage_stats(
-                idx, mb->coverage[i], core_mask, fill_double,
-                coverage_refs);
-        }
-        peak_signal[idx] = citlali::pipeline::mapdiag_peak_signal_or_fill(
-            mb->signal[i], fill_double);
+        citlali::pipeline::assign_mapdiag_coverage_stats_if_present(
+            idx, mb->coverage, i, core_mask, fill_double, coverage_refs);
+        citlali::pipeline::assign_mapdiag_peak_signal_or_fill(
+            idx, mb->signal, i, fill_double, peak_signal);
         if (citlali::pipeline::mapdiag_has_signal_weight_samples(
                 mb->signal[i], mb->weight[i])) {
             const Eigen::MatrixXd sig2noise =
