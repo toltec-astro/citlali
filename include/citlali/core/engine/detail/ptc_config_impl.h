@@ -26,40 +26,8 @@ void Engine::get_ptc_config(CT &config) {
         typed_weighting.validation, weight_validation);
 
     const auto &weight_corr_penalty = ptcproc.weight_corr_penalty;
-    auto &typed_corr_penalty = typed_weighting.corr_penalty;
-    typed_corr_penalty.enabled = weight_corr_penalty.enabled;
-    typed_corr_penalty.min_good_frac = weight_corr_penalty.min_good_frac;
-    typed_corr_penalty.min_overlap = weight_corr_penalty.min_overlap;
-    typed_corr_penalty.max_samples = weight_corr_penalty.max_samples;
-    typed_corr_penalty.max_pairs = weight_corr_penalty.max_pairs;
-    typed_corr_penalty.seed = static_cast<int>(weight_corr_penalty.seed);
-    typed_corr_penalty.floor = weight_corr_penalty.floor;
-    typed_corr_penalty.exponent = weight_corr_penalty.exponent;
-    typed_corr_penalty.pair_corr.enabled =
-        weight_corr_penalty.pair_corr.enabled;
-    typed_corr_penalty.pair_corr.ref = weight_corr_penalty.pair_corr.ref;
-    typed_corr_penalty.pair_corr.span = weight_corr_penalty.pair_corr.span;
-    typed_corr_penalty.pair_corr.weight = weight_corr_penalty.pair_corr.weight;
-    typed_corr_penalty.cm_el_corr.enabled =
-        weight_corr_penalty.cm_el_corr.enabled;
-    typed_corr_penalty.cm_el_corr.ref = weight_corr_penalty.cm_el_corr.ref;
-    typed_corr_penalty.cm_el_corr.span = weight_corr_penalty.cm_el_corr.span;
-    typed_corr_penalty.cm_el_corr.weight =
-        weight_corr_penalty.cm_el_corr.weight;
-    typed_corr_penalty.cm_low_mid_ratio.enabled =
-        weight_corr_penalty.cm_low_mid_ratio.enabled;
-    typed_corr_penalty.cm_low_mid_ratio.ref =
-        weight_corr_penalty.cm_low_mid_ratio.ref;
-    typed_corr_penalty.cm_low_mid_ratio.span =
-        weight_corr_penalty.cm_low_mid_ratio.span;
-    typed_corr_penalty.cm_low_mid_ratio.weight =
-        weight_corr_penalty.cm_low_mid_ratio.weight;
-    typed_corr_penalty.cm_low_mid_ratio.low_band_Hz = {
-        weight_corr_penalty.cm_low_mid_ratio.low_min_Hz,
-        weight_corr_penalty.cm_low_mid_ratio.low_max_Hz};
-    typed_corr_penalty.cm_low_mid_ratio.mid_band_Hz = {
-        weight_corr_penalty.cm_low_mid_ratio.mid_min_Hz,
-        weight_corr_penalty.cm_low_mid_ratio.mid_max_Hz};
+    citlali::pipeline::mirror_processed_weight_corr_penalty_config(
+        typed_weighting.corr_penalty, weight_corr_penalty);
 
     auto &typed_second_pass =
         typed_timestream_config.processed_time_chunk.flagging.second_pass_local;

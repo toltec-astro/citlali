@@ -253,4 +253,35 @@ void mirror_processed_weight_validation_config(
         source.high_weight_min_validated_factor;
 }
 
+template <class CorrPenaltyConfig, class CorrPenalty>
+void mirror_processed_weight_corr_penalty_config(CorrPenaltyConfig &target,
+                                                 const CorrPenalty &source) {
+    target.enabled = source.enabled;
+    target.min_good_frac = source.min_good_frac;
+    target.min_overlap = source.min_overlap;
+    target.max_samples = source.max_samples;
+    target.max_pairs = source.max_pairs;
+    target.seed = static_cast<int>(source.seed);
+    target.floor = source.floor;
+    target.exponent = source.exponent;
+    target.pair_corr.enabled = source.pair_corr.enabled;
+    target.pair_corr.ref = source.pair_corr.ref;
+    target.pair_corr.span = source.pair_corr.span;
+    target.pair_corr.weight = source.pair_corr.weight;
+    target.cm_el_corr.enabled = source.cm_el_corr.enabled;
+    target.cm_el_corr.ref = source.cm_el_corr.ref;
+    target.cm_el_corr.span = source.cm_el_corr.span;
+    target.cm_el_corr.weight = source.cm_el_corr.weight;
+    target.cm_low_mid_ratio.enabled = source.cm_low_mid_ratio.enabled;
+    target.cm_low_mid_ratio.ref = source.cm_low_mid_ratio.ref;
+    target.cm_low_mid_ratio.span = source.cm_low_mid_ratio.span;
+    target.cm_low_mid_ratio.weight = source.cm_low_mid_ratio.weight;
+    target.cm_low_mid_ratio.low_band_Hz = {
+        source.cm_low_mid_ratio.low_min_Hz,
+        source.cm_low_mid_ratio.low_max_Hz};
+    target.cm_low_mid_ratio.mid_band_Hz = {
+        source.cm_low_mid_ratio.mid_min_Hz,
+        source.cm_low_mid_ratio.mid_max_Hz};
+}
+
 }  // namespace citlali::pipeline
