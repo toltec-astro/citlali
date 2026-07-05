@@ -6255,7 +6255,9 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
 
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
-    std::string filename = setup_filenames<map_t,engine_utils::toltecIO::toltec,engine_utils::toltecIO::hist>(dir_name);
+    const std::string filename =
+        setup_filenames<map_t, engine_utils::toltecIO::toltec,
+                        engine_utils::toltecIO::hist>(dir_name);
 
     write_netcdf_atomic(filename + ".nc", [&](netCDF::NcFile &fo) {
     netCDF::NcDim hist_bins_dim =
