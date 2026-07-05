@@ -7824,18 +7824,10 @@ void Engine::find_sources(map_buffer_t &mb) {
     mb.n_sources.clear();
     mb.row_source_locs.clear();
     mb.col_source_locs.clear();
-    constexpr int missing_source_location =
-        citlali::pipeline::missing_source_location();
     // loop through maps
     for (Eigen::Index i = 0; i < n_maps; ++i) {
-        // update source vectors
-        mb.n_sources.push_back(0);
-        mb.row_source_locs.push_back(Eigen::VectorXi::Ones(1));
-        mb.col_source_locs.push_back(Eigen::VectorXi::Ones(1));
-
-        // default missing value keeps vector sizes aligned with maps
-        mb.row_source_locs.back() *= missing_source_location;
-        mb.col_source_locs.back() *= missing_source_location;
+        citlali::pipeline::append_missing_source_location(
+            mb.n_sources, mb.row_source_locs, mb.col_source_locs);
 
         // run source finder
         const auto sources_found = mb.find_sources(i);
@@ -7864,7 +7856,7 @@ void Engine::find_sources(map_buffer_t &mb) {
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         // skip map if no sources found
         const auto n_map_sources = mb.n_sources[i];
-        if (n_map_sources > 0) {
+        if (citlali::pipeline::has_sources(n_map_sources)) {
             // current array
             const auto array = maps_to_arrays(i);
             // init fwhm in pixels
@@ -7894,26 +7886,19 @@ void Engine::find_sources(map_buffer_t &mb) {
                             init_row, init_col);
                 if (good_fit) {
                     const double pixel_to_arcsec =
-                        RAD_TO_ASEC * mb.pixel_size_rad;
+                        citlali::pipeline::source_fit_pixel_to_arcsec(
+                            RAD_TO_ASEC, mb.pixel_size_rad);
                     const double source_fwhm_to_arcsec =
-                        RAD_TO_ASEC * STD_TO_FWHM * mb.pixel_size_rad;
-                    // rescale fit params from pixel to on-sky units
-                    params(1) = pixel_to_arcsec *
-                                (params(1) - (mb.n_cols - 1)/2.0);
-                    params(2) = pixel_to_arcsec *
-                                (params(2) - (mb.n_rows - 1)/2.0);
-                    params(3) = source_fwhm_to_arcsec * params(3);
-                    params(4) = source_fwhm_to_arcsec * params(4);
-
-                    // rescale fit errors from pixel to on-sky units
-                    perrors(1) = pixel_to_arcsec * perrors(1);
-                    perrors(2) = pixel_to_arcsec * perrors(2);
-                    perrors(3) = source_fwhm_to_arcsec * perrors(3);
-                    perrors(4) = source_fwhm_to_arcsec * perrors(4);
+                        citlali::pipeline::source_fit_fwhm_to_arcsec(
+                            RAD_TO_ASEC, STD_TO_FWHM, mb.pixel_size_rad);
+                    citlali::pipeline::rescale_source_fit_pixel_units(
+                        params, perrors, mb.n_rows, mb.n_cols,
+                        pixel_to_arcsec, source_fwhm_to_arcsec);
 
                     // if in radec calculate absolute pointing
                     const bool use_radec_projection =
-                        telescope.pixel_axes == "radec";
+                        citlali::pipeline::source_fit_uses_radec_projection(
+                            telescope.pixel_axes);
                     if (use_radec_projection) {
                         Eigen::VectorXd lat(1), lon(1);
                         lat << params(2) * ASEC_TO_RAD;
@@ -7924,11 +7909,9 @@ void Engine::find_sources(map_buffer_t &mb) {
                                 lat, lon, mb.wcs.crval[0] * DEG_TO_RAD,
                                 mb.wcs.crval[1] * DEG_TO_RAD);
 
-                        params(1) = ara(0) * RAD_TO_DEG;
-                        params(2) = adec(0) * RAD_TO_DEG;
-
-                        perrors(1) = perrors(1) * ASEC_TO_DEG;
-                        perrors(2) = perrors(2) * ASEC_TO_DEG;
+                        citlali::pipeline::rescale_source_fit_radec_errors(
+                            params, perrors, ara(0) * RAD_TO_DEG,
+                            adec(0) * RAD_TO_DEG, ASEC_TO_DEG);
                     }
 
                     // add source params and errors to table
@@ -7968,7 +7951,8 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     // add obsnums
     for (Eigen::Index i = 0; i < mb->obsnums.size(); ++i) {
         // add obsnum to meta data
-        const auto obsnum_key = "obsnum" + std::to_string(i);
+        const auto obsnum_key =
+            citlali::pipeline::source_obsnum_meta_key(i);
         source_meta[obsnum_key] = mb->obsnums[i];
     }
 
@@ -7984,7 +7968,8 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
 
     // populate source meta information
     for (const auto &[key, val] : source_header_units) {
-        source_meta[key].push_back("units: " + val);
+        source_meta[key].push_back(
+            citlali::pipeline::source_units_meta_entry(val));
         // description from apt
         const auto description = calib.apt_header_description[key];
         source_meta[key].push_back(description);
@@ -8005,7 +7990,7 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     // loop through params and add arrays
     Eigen::Index k = 0;
     for (Eigen::Index i = 0; i < mb->n_sources.size(); ++i) {
-        if (mb->n_sources[i] != 0) {
+        if (citlali::pipeline::has_sources(mb->n_sources[i])) {
             // calculate map standard deviation
             const double map_std_dev =
                 engine_utils::calc_std_dev(mb->signal[i]);
@@ -8014,7 +7999,8 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
                 source_table(k, 0) = maps_to_arrays(i);
                 // set signal to noise
                 source_table(k, sig2noise_col) =
-                    mb->source_params(k, 0) / map_std_dev;
+                    citlali::pipeline::source_signal_to_noise(
+                        mb->source_params(k, 0), map_std_dev);
 
                 ++k;
             }
@@ -8023,9 +8009,13 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
 
     // populate source table
     Eigen::Index source_param_index = 0;
-    for (Eigen::Index i = 1; i < 2 * map_fitter.n_params; i = i + 2) {
-        const auto param_col = i;
-        const auto error_col = i + 1;
+    while (source_param_index < map_fitter.n_params) {
+        const auto param_col =
+            citlali::pipeline::source_table_param_column(
+                source_param_index);
+        const auto error_col =
+            citlali::pipeline::source_table_error_column(
+                source_param_index);
         source_table.col(param_col) =
             mb->source_params.col(source_param_index).template cast<float>();
         source_table.col(error_col) =
