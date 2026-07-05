@@ -7250,7 +7250,10 @@ void Engine::create_rtcdiag_file() {
             const auto flat_i = scan_index * n_array_values +
                                 static_cast<std::size_t>(arr_i);
             source_power_half_bandwidth_hz[flat_i] = f_half_hz;
-            if (rtcproc.run_tod_filter && rtcproc.filter.freq_high_Hz > 0.0 && f_half_hz > 0.0) {
+            const bool has_lowpass_ratio =
+                rtcproc.run_tod_filter &&
+                rtcproc.filter.freq_high_Hz > 0.0 && f_half_hz > 0.0;
+            if (has_lowpass_ratio) {
                 tod_lowpass_to_source_power_half_ratio[flat_i] =
                     rtcproc.filter.freq_high_Hz / f_half_hz;
             }
