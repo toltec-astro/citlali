@@ -7505,7 +7505,8 @@ void Engine::write_stats() {
 
     // add eigenvalues
     const bool has_eigenvalue_diagnostics =
-        !diagnostics.evals.empty() && ptcproc.cleaner.n_calc > 0;
+        citlali::pipeline::should_write_stats_eigenvalues(
+            diagnostics, ptcproc.cleaner);
     if (has_eigenvalue_diagnostics) {
         const auto first_it = diagnostics.evals.begin();
         if (!first_it->second.empty() && !first_it->second[0].empty()) {
