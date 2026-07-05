@@ -29,11 +29,6 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
             telescope.tel_header, key, fallback, logger);
     };
 
-    auto get_tel_data_mean = [&](const std::string &key, double fallback) {
-        return citlali::pipeline::telescope_data_mean(
-            telescope.tel_data, key, fallback, logger);
-    };
-
     auto add_double_key = [&](const std::string &key, double value, const std::string &comment,
                               double fallback = 0.0) {
         citlali::pipeline::add_phdu_double_key(
@@ -60,18 +55,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     logger->debug("adding obs info");
 
-    citlali::pipeline::add_phdu_pipeline_identity_keys(
-        fits_entry, telescope.source_name, calib.run_hwpr, name,
-        CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
-        telescope.project_id, redu_type, telescope.obs_goal, tod_type,
-        map_grouping, map_method);
-    const double source_ra = get_tel_header_scalar("Header.Source.Ra", 0.0);
-    const double source_dec = get_tel_header_scalar("Header.Source.Dec", 0.0);
-    citlali::pipeline::add_phdu_map_geometry_keys(
-        fits_entry, name, logger, mb->exposure_time, telescope.pixel_axes,
-        source_ra, source_dec, RAD_TO_DEG*get_tel_data_mean("TelElAct", 0.0),
-        RAD_TO_DEG*get_tel_data_mean("TelAzAct", 0.0),
-        RAD_TO_DEG*get_tel_data_mean("ActParAng", 0.0));
+    citlali::engine_detail::add_phdu_identity_geometry_section(
+        fits_entry, mb, telescope, calib, name, CITLALI_GIT_VERSION,
+        KIDSCPP_GIT_VERSION, TULA_GIT_VERSION, redu_type, tod_type,
+        map_grouping, map_method, RAD_TO_DEG, logger);
 
     logger->debug("adding beamsizes");
 
