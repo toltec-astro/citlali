@@ -7400,7 +7400,7 @@ void Engine::create_rtcdiag_file() {
             1, n_impulsive_networks, n_slots, n_snippet};
         const auto n_rtc_impulsive_slot_values =
             static_cast<std::size_t>(n_scans) *
-            static_cast<std::size_t>(calib.n_nws) * n_slots;
+            n_impulsive_networks * n_slots;
         const auto n_rtc_impulsive_snippet_values =
             n_rtc_impulsive_slot_values * n_snippet;
 
