@@ -6893,8 +6893,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 }
             }
 
-            if (citlali::pipeline::mapdiag_has_noise_realizations(
-                    mb->noise, i, mb->n_noise)) {
+            const bool has_noise_realizations =
+                citlali::pipeline::mapdiag_has_noise_realizations(
+                    mb->noise, i, mb->n_noise);
+            if (has_noise_realizations) {
                 auto noise_samples =
                     citlali::pipeline::make_mapdiag_noise_tail_samples(mb);
 
