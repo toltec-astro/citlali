@@ -6301,12 +6301,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<std::string> map_names(n_mapdiag_maps);
     std::vector<double> median_err(n_mapdiag_maps, fill_double);
     std::vector<double> median_rms(n_mapdiag_maps, fill_double);
-    std::vector<double> weight_thresholds(mapdiag_context.n_maps, fill_double);
-    std::vector<double> weight_sum(mapdiag_context.n_maps, fill_double);
-    std::vector<double> core_weight_sum(mapdiag_context.n_maps, fill_double);
-    std::vector<double> coverage_sum(mapdiag_context.n_maps, fill_double);
-    std::vector<double> coverage_max(mapdiag_context.n_maps, fill_double);
-    std::vector<double> coverage_median_core(mapdiag_context.n_maps, fill_double);
+    std::vector<double> weight_thresholds(n_mapdiag_maps, fill_double);
+    std::vector<double> weight_sum(n_mapdiag_maps, fill_double);
+    std::vector<double> core_weight_sum(n_mapdiag_maps, fill_double);
+    std::vector<double> coverage_sum(n_mapdiag_maps, fill_double);
+    std::vector<double> coverage_max(n_mapdiag_maps, fill_double);
+    std::vector<double> coverage_median_core(n_mapdiag_maps, fill_double);
     citlali::pipeline::MapdiagCoverageRefs coverage_refs{
         coverage_sum,
         coverage_max,
