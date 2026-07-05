@@ -7849,8 +7849,8 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
 
     // loop through params and add arrays
     Eigen::Index k = 0;
-    for (Eigen::Index i=0; i<mb->n_sources.size(); ++i) {
-        if (mb->n_sources[i]!=0) {
+    for (Eigen::Index i = 0; i < mb->n_sources.size(); ++i) {
+        if (mb->n_sources[i] != 0) {
             // calculate map standard deviation
             double map_std_dev = engine_utils::calc_std_dev(mb->signal[i]);
 
