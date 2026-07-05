@@ -7831,7 +7831,7 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
 
 
     // populate source meta information
-    for (const auto &[key,val]: source_header_units) {
+    for (const auto &[key, val] : source_header_units) {
         source_meta[key].push_back("units: " + val);
         // description from apt
         auto description = calib.apt_header_description[key];
