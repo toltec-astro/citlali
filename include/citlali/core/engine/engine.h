@@ -7067,34 +7067,17 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         filtered_fits_io, filtered_noise_fits_io, map_buffer_ptr, map_label,
         logger, add_phdu_for_filter);
 
-    auto write_filtered_map_output =
-        [&](Eigen::Index map_i, Eigen::Index map_number,
+    const auto write_filter_maps =
+        [&](auto *fits, auto *noise_fits, auto *buffer,
             Eigen::Index map_index) {
-            logger->info("writing {} map {}/{} to disk",
-                         map_label, map_number, n_maps);
-            write_maps(filtered_fits_io, filtered_noise_fits_io,
-                       map_buffer_ptr, map_i);
-
-            const auto &filtered_map_path =
-                filtered_fits_io->at(map_index).filepath;
-            logger->info("file has been written to:");
-            logger->info("{}.fits", filtered_map_path);
-
-            const auto map_to_stokes_index = [&](Eigen::Index map_index) {
-                return maps_to_stokes(map_index);
-            };
-            const bool should_close_filtered_fits =
-                citlali::pipeline::should_close_current_map_filter_fits(
-                    rtcproc.run_polarization, rtcproc.polarization,
-                    map_to_stokes_index, map_i);
-            const auto array_to_map_index = [&](Eigen::Index array_index) {
-                return arrays_to_maps(array_index);
-            };
-            citlali::pipeline::destroy_map_filter_fits_if_ready(
-                filtered_fits_io, map_i, map_index, n_maps,
-                filtered_map_path, should_close_filtered_fits,
-                array_to_map_index, logger);
+            write_maps(fits, noise_fits, buffer, map_index);
         };
+    const auto map_to_stokes_index = [&](Eigen::Index map_index) {
+        return maps_to_stokes(map_index);
+    };
+    const auto array_to_map_index = [&](Eigen::Index array_index) {
+        return arrays_to_maps(array_index);
+    };
 
     // loop through maps and run wiener filter
     for (Eigen::Index i = 0; i < n_maps; ++i) {
@@ -7133,7 +7116,12 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         if (write_filtered_maps_partial) {
             // only write if saving all iterations or on last iteration
             // write maps immediately after filtering due to computation time
-            write_filtered_map_output(i, map_number, map_index);
+            citlali::pipeline::write_map_filter_output(
+                filtered_fits_io, filtered_noise_fits_io, map_buffer_ptr,
+                i, map_number, map_index, n_maps, map_label,
+                rtcproc.run_polarization, rtcproc.polarization,
+                map_to_stokes_index, array_to_map_index,
+                write_filter_maps, logger);
         }
 
         logger->info("completed {} map {}/{}", map_label, map_number,

@@ -328,6 +328,35 @@ void destroy_map_filter_fits_if_ready(
     logger->info("closed FITS handle for {}", filtered_map_path);
 }
 
+template <class FitsVector, class MapBufferPtr, class MapIndex,
+          class MapNumber, class MapCount, class Polarization,
+          class MapsToStokes, class ArraysToMaps, class WriteMaps,
+          class Logger>
+void write_map_filter_output(
+    FitsVector *filtered_fits_io, FitsVector *filtered_noise_fits_io,
+    MapBufferPtr map_buffer_ptr, MapIndex map_i, MapNumber map_number,
+    MapIndex map_index, MapCount n_maps, const char *map_label,
+    bool run_polarization, Polarization &polarization,
+    const MapsToStokes &maps_to_stokes, const ArraysToMaps &arrays_to_maps,
+    const WriteMaps &write_maps, const Logger &logger) {
+    logger->info("writing {} map {}/{} to disk",
+                 map_label, map_number, n_maps);
+    write_maps(filtered_fits_io, filtered_noise_fits_io, map_buffer_ptr,
+               map_i);
+
+    const auto &filtered_map_path =
+        filtered_fits_io->at(map_index).filepath;
+    logger->info("file has been written to:");
+    logger->info("{}.fits", filtered_map_path);
+
+    const bool should_close_filtered_fits =
+        should_close_current_map_filter_fits(
+            run_polarization, polarization, maps_to_stokes, map_i);
+    destroy_map_filter_fits_if_ready(
+        filtered_fits_io, map_i, map_index, n_maps, filtered_map_path,
+        should_close_filtered_fits, arrays_to_maps, logger);
+}
+
 template <auto FilteredMap, class Engine, class MapBuffer, class Logger>
 void run_wiener_filter_with_log(Engine &engine, MapBuffer &map_buffer,
                                 const Logger &logger,
