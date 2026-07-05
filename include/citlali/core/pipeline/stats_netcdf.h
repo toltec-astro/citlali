@@ -143,4 +143,15 @@ void write_stats_eigenvalue_rows(netCDF::NcVar &eval_v,
     }
 }
 
+template <class EvalVectors>
+void add_stats_eigenvalue_group_var(
+    netCDF::NcFile &fo, const std::string &name,
+    const std::vector<netCDF::NcDim> &dims,
+    const EvalVectors &eval_vectors,
+    Eigen::Index n_cleaner_eigenvalues, double fill_value) {
+    netCDF::NcVar eval_v = add_stats_eigenvalue_var(fo, name, dims);
+    write_stats_eigenvalue_rows(
+        eval_v, eval_vectors, n_cleaner_eigenvalues, fill_value);
+}
+
 }  // namespace citlali::pipeline
