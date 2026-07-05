@@ -53,4 +53,30 @@ void add_stats_apt_double_vars(netCDF::NcFile &fo, const Calib &calib,
     }
 }
 
+template <class Calib, class AdcSnapData>
+void add_stats_adc_snap_vars(netCDF::NcFile &fo, const Calib &calib,
+                             const AdcSnapData &adc_snap_data) {
+    if (adc_snap_data.empty()) {
+        return;
+    }
+
+    netCDF::NcDim adc_snap_dim =
+        fo.addDim("adcSnapDim", adc_snap_data[0].cols());
+    netCDF::NcDim adc_snap_data_dim =
+        fo.addDim("adcSnapDataDim", adc_snap_data[0].rows());
+    const std::vector<netCDF::NcDim> adc_snap_dims = {
+        adc_snap_dim, adc_snap_data_dim};
+
+    Eigen::Index network_index = 0;
+    for (const auto &x : adc_snap_data) {
+        netCDF::NcVar adc_snap_v =
+            fo.addVar("toltec" +
+                          std::to_string(calib.nws(network_index)) +
+                          "_adc_snap_data",
+                      netCDF::ncDouble, adc_snap_dims);
+        adc_snap_v.putVar(x.data());
+        ++network_index;
+    }
+}
+
 }  // namespace citlali::pipeline
