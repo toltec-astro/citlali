@@ -78,6 +78,25 @@ struct MapdiagMetadataVars {
     MapdiagEdgeGuardConfigVars edge_guard;
 };
 
+template <class MapBuffer, class MapFilter>
+MapdiagMetadataVars make_mapdiag_metadata_vars(
+    const std::string &stage_name, const MapBuffer &mb,
+    const std::string &map_regime, const std::string &source_name,
+    const std::string &project_id, const std::string &obs_goal,
+    const MapFilter &map_filter) {
+    return {
+        {stage_name, mb->name, map_regime, source_name, project_id, obs_goal},
+        {mb->pixel_size_rad, mb->cov_cut, mb->sig_unit},
+        {map_filter.edge_guard_enabled,
+         map_filter.edge_weight_threshold_mode,
+         map_filter.edge_hits_threshold_mode,
+         map_filter.edge_fill_mode,
+         map_filter.edge_taper_mode,
+         map_filter.edge_hits_core_fraction,
+         map_filter.edge_guard_radius_fwhm,
+         map_filter.edge_taper_min_fraction}};
+}
+
 struct MapdiagLabelVars {
     const std::vector<std::string> &array_names;
     const std::vector<std::string> &stokes_names;

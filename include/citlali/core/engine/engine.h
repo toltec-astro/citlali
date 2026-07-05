@@ -6402,18 +6402,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
     const std::string stage_name =
         citlali::pipeline::mapdiag_stage_name<map_t>();
-    citlali::pipeline::MapdiagMetadataVars mapdiag_metadata{
-        {stage_name, mb->name, map_regime, telescope.source_name,
-         telescope.project_id, telescope.obs_goal},
-        {mb->pixel_size_rad, mb->cov_cut, mb->sig_unit},
-        {wiener_filter.edge_guard_enabled,
-         wiener_filter.edge_weight_threshold_mode,
-         wiener_filter.edge_hits_threshold_mode,
-         wiener_filter.edge_fill_mode,
-         wiener_filter.edge_taper_mode,
-         wiener_filter.edge_hits_core_fraction,
-         wiener_filter.edge_guard_radius_fwhm,
-         wiener_filter.edge_taper_min_fraction}};
+    const auto mapdiag_metadata =
+        citlali::pipeline::make_mapdiag_metadata_vars(
+            stage_name, mb, map_regime, telescope.source_name,
+            telescope.project_id, telescope.obs_goal, wiener_filter);
     citlali::pipeline::MapdiagLabelVars mapdiag_labels{
         array_names,
         stokes_names,
@@ -6431,18 +6423,19 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     const citlali::pipeline::MapdiagStatsContext mapdiag_stats{fill_double};
     const std::string mapdiag_record_producer =
         citlali::pipeline::mapdiag_record_producer(stage_name);
+    auto map_name_for_index = [&](Eigen::Index map_i) {
+        return get_map_name(map_i);
+    };
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = citlali::pipeline::mapdiag_size_index(i);
         const auto write_indices =
             citlali::pipeline::map_write_indices(
                 i, arrays_to_maps, maps_to_stokes, maps_to_arrays);
-        const auto labels = citlali::pipeline::make_mapdiag_map_labels(
-            toltec_io.array_name_map[calib.arrays[write_indices.map_index]],
-            rtcproc.polarization.stokes_params[write_indices.stokes_index],
-            get_map_name(i));
-        citlali::pipeline::assign_mapdiag_map_labels(
-            idx, labels, {array_names, stokes_names, map_names});
+        citlali::pipeline::assign_mapdiag_map_labels_from_indices(
+            idx, i, write_indices, toltec_io.array_name_map, calib.arrays,
+            rtcproc.polarization.stokes_params, map_name_for_index,
+            {array_names, stokes_names, map_names});
 
         const auto cov_region = mb->calc_cov_region(i);
         auto weight_threshold = std::get<0>(cov_region);
