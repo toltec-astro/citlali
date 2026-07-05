@@ -24,17 +24,6 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         rtcproc.run_calibrate, FWHM_TO_STD, ASEC_TO_RAD, pi,
         MJY_SR_TO_mJY_ASEC, logger);
 
-    auto get_tel_header_scalar = [&](const std::string &key, double fallback) {
-        return citlali::pipeline::telescope_header_scalar(
-            telescope.tel_header, key, fallback, logger);
-    };
-
-    auto add_double_key = [&](const std::string &key, double value, const std::string &comment,
-                              double fallback = 0.0) {
-        citlali::pipeline::add_phdu_double_key(
-            fits_entry, name, logger, key, value, comment, fallback);
-    };
-
     // add source flux and tuning for beammaps
     citlali::pipeline::add_phdu_beammap_keys_if_needed(
         fits_entry, name, logger, redu_type, beammap_fluxes_mJy_beam,
@@ -75,26 +64,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_entry, name, logger, map_method, jinc_mm.r_max,
         jinc_mm.shape_params, array_id);
 
-    // add mean tau
-    logger->debug("adding extinction");
-    const double mean_tau = citlali::pipeline::phdu_mean_tau(
-        rtcproc, telescope, calib, i, logger);
-    add_double_key("MEAN_TAU", mean_tau, "mean tau (" + name + ")");
+    citlali::engine_detail::add_phdu_extinction_apt_oof_section(
+        fits_entry, mb, rtcproc, telescope, calib, toltec_io, i, array_id,
+        name, redu_type, logger);
 
-    citlali::pipeline::add_phdu_apt_key_if_single_observation(
-        fits_entry, mb->obsnums, calib.apt_filepath, logger);
-
-    const double rms = citlali::pipeline::phdu_oof_rms(
-        mb, i, redu_type, name, fits_io->at(i).filepath, logger);
-
-    // out-of-focus holography parameters
-    citlali::pipeline::add_phdu_oof_keys_if_observed(
-        fits_entry, name, logger, telescope.sim_obs, rms, mb->sig_unit,
-        toltec_io.array_wavelength_map[array_id]/1000.,
-        static_cast<int>(toltec_io.array_wavelength_map[array_id]*1000),
-        get_tel_header_scalar("Header.M2.XReq", 0.0)/1000.*1e6,
-        get_tel_header_scalar("Header.M2.YReq", 0.0)/1000.*1e6,
-        get_tel_header_scalar("Header.M2.ZReq", 0.0)/1000.*1e6);
     // add control/runtime parameters
     logger->debug("adding config params");
     const bool run_any_tod_filter =

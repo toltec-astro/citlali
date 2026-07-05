@@ -1,6 +1,8 @@
 #pragma once
 
+#include <citlali/core/pipeline/phdu_extinction.h>
 #include <citlali/core/pipeline/phdu_observation_metadata.h>
+#include <citlali/core/pipeline/phdu_oof.h>
 #include <citlali/core/pipeline/phdu_reduction_config.h>
 
 namespace citlali::engine_detail {
@@ -60,6 +62,43 @@ void add_phdu_identity_geometry_section(
                          telescope.tel_data, "TelAzAct", 0.0, logger),
         rad_to_deg * citlali::pipeline::telescope_data_mean(
                          telescope.tel_data, "ActParAng", 0.0, logger));
+}
+
+template <class FitsEntry, class MapBuffer, class RtcProc, class Telescope,
+          class Calib, class ToltecIo, class ArrayId, class Logger>
+void add_phdu_extinction_apt_oof_section(
+    FitsEntry &fits_entry, const MapBuffer &mb, RtcProc &rtcproc,
+    const Telescope &telescope, const Calib &calib, ToltecIo &toltec_io,
+    Eigen::Index map_index, const ArrayId &array_id,
+    const std::string &array_name, const std::string &reduction_type,
+    const Logger &logger) {
+    logger->debug("adding extinction");
+    const double mean_tau = citlali::pipeline::phdu_mean_tau(
+        rtcproc, telescope, calib, map_index, logger);
+    citlali::pipeline::add_phdu_double_key(
+        fits_entry, array_name, logger, "MEAN_TAU", mean_tau,
+        "mean tau (" + array_name + ")");
+
+    citlali::pipeline::add_phdu_apt_key_if_single_observation(
+        fits_entry, mb->obsnums, calib.apt_filepath, logger);
+
+    const double rms = citlali::pipeline::phdu_oof_rms(
+        mb, map_index, reduction_type, array_name, fits_entry.filepath,
+        logger);
+
+    citlali::pipeline::add_phdu_oof_keys_if_observed(
+        fits_entry, array_name, logger, telescope.sim_obs, rms,
+        mb->sig_unit, toltec_io.array_wavelength_map[array_id] / 1000.,
+        static_cast<int>(toltec_io.array_wavelength_map[array_id] * 1000),
+        citlali::pipeline::telescope_header_scalar(
+            telescope.tel_header, "Header.M2.XReq", 0.0, logger) /
+            1000. * 1e6,
+        citlali::pipeline::telescope_header_scalar(
+            telescope.tel_header, "Header.M2.YReq", 0.0, logger) /
+            1000. * 1e6,
+        citlali::pipeline::telescope_header_scalar(
+            telescope.tel_header, "Header.M2.ZReq", 0.0, logger) /
+            1000. * 1e6);
 }
 
 }  // namespace citlali::engine_detail
