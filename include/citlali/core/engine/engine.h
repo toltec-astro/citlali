@@ -7529,7 +7529,8 @@ void Engine::write_stats() {
                     netCDF::NcVar eval_v =
                         fo.addVar(eval_var_name, netCDF::ncDouble,
                                   eval_dims);
-                    std::vector<std::size_t> start_eig_index = {0, 0};
+                    auto start_eig_index =
+                        citlali::pipeline::stats_eigenvalue_start_index();
                     std::vector<std::size_t> eig_write_shape = {
                         1, TULA_SIZET(ptcproc.cleaner.n_calc)};
 
