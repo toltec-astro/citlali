@@ -109,29 +109,20 @@ void Engine::get_timestream_config(CT &config) {
         tod_output_source_dense_count_ptc, missing_keys, invalid_keys,
         logger);
 
-    citlali::pipeline::mirror_tod_output_selection_config(
+    citlali::pipeline::mirror_tod_output_selections_config(
         rtc_output_chunks, rtc_chunk_select_enabled,
         tod_output_selection_mode_rtc, tod_output_uniform_count_rtc,
-        tod_output_source_dense_count_rtc,
-        typed_timestream_config.output.raw_time_chunk);
-    citlali::pipeline::mirror_tod_output_selection_config(
-        ptc_output_chunks, ptc_chunk_select_enabled,
-        tod_output_selection_mode_ptc, tod_output_uniform_count_ptc,
-        tod_output_source_dense_count_ptc,
-        typed_timestream_config.output.processed_time_chunk);
-
-    tod_output_chunk_select_enabled_rtc = rtc_chunk_select_enabled;
-    tod_output_chunk_select_enabled_ptc = ptc_chunk_select_enabled;
-    tod_output_chunks_rtc = std::move(rtc_output_chunks);
-    tod_output_chunks_ptc = std::move(ptc_output_chunks);
-
-    // keep legacy shared fields aligned with rtc (or ptc if rtc is disabled)
-    citlali::pipeline::align_legacy_tod_output_selection(
-        run_tod_output_rtc, run_tod_output_ptc,
+        tod_output_source_dense_count_rtc, ptc_output_chunks,
+        ptc_chunk_select_enabled, tod_output_selection_mode_ptc,
+        tod_output_uniform_count_ptc, tod_output_source_dense_count_ptc,
+        typed_timestream_config.output);
+    citlali::engine_detail::sync_legacy_tod_output_selection_state(
+        run_tod_output_rtc, run_tod_output_ptc, rtc_chunk_select_enabled,
+        ptc_chunk_select_enabled, rtc_output_chunks, ptc_output_chunks,
         tod_output_chunk_select_enabled_rtc,
-        tod_output_chunk_select_enabled_ptc,
-        tod_output_chunks_rtc, tod_output_chunks_ptc,
-        tod_output_chunk_select_enabled, tod_output_chunks);
+        tod_output_chunk_select_enabled_ptc, tod_output_chunks_rtc,
+        tod_output_chunks_ptc, tod_output_chunk_select_enabled,
+        tod_output_chunks);
 
     citlali::engine_detail::read_mirrored_config_value(
         config, std::tuple{"timestream", "chunking", "chunk_mode"},

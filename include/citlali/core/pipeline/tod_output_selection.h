@@ -111,6 +111,25 @@ inline void mirror_tod_output_selection_config(
     target.selection_n_source_dense = n_source_dense;
 }
 
+template <class OutputConfig>
+void mirror_tod_output_selections_config(
+    const std::vector<Eigen::Index> &raw_chunks_1based,
+    bool raw_chunk_select_enabled, const std::string &raw_selection_mode,
+    int raw_n_uniform, int raw_n_source_dense,
+    const std::vector<Eigen::Index> &processed_chunks_1based,
+    bool processed_chunk_select_enabled,
+    const std::string &processed_selection_mode,
+    int processed_n_uniform, int processed_n_source_dense,
+    OutputConfig &target) {
+    mirror_tod_output_selection_config(
+        raw_chunks_1based, raw_chunk_select_enabled, raw_selection_mode,
+        raw_n_uniform, raw_n_source_dense, target.raw_time_chunk);
+    mirror_tod_output_selection_config(
+        processed_chunks_1based, processed_chunk_select_enabled,
+        processed_selection_mode, processed_n_uniform,
+        processed_n_source_dense, target.processed_time_chunk);
+}
+
 inline std::optional<std::string> requested_tod_output_type_name(
     bool raw_time_chunk_enabled, bool processed_time_chunk_enabled) {
     if (raw_time_chunk_enabled && processed_time_chunk_enabled) {

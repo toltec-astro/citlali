@@ -152,6 +152,27 @@ void sync_tod_output_type_config(bool raw_time_chunk_enabled,
     }
 }
 
+template <class Chunks>
+void sync_legacy_tod_output_selection_state(
+    bool raw_time_chunk_enabled, bool processed_time_chunk_enabled,
+    bool raw_chunk_select_enabled, bool processed_chunk_select_enabled,
+    Chunks &raw_output_chunks, Chunks &processed_output_chunks,
+    bool &stored_raw_chunk_select_enabled,
+    bool &stored_processed_chunk_select_enabled,
+    Chunks &stored_raw_output_chunks, Chunks &stored_processed_output_chunks,
+    bool &legacy_chunk_select_enabled, Chunks &legacy_output_chunks) {
+    stored_raw_chunk_select_enabled = raw_chunk_select_enabled;
+    stored_processed_chunk_select_enabled = processed_chunk_select_enabled;
+    stored_raw_output_chunks = std::move(raw_output_chunks);
+    stored_processed_output_chunks = std::move(processed_output_chunks);
+
+    citlali::pipeline::align_legacy_tod_output_selection(
+        raw_time_chunk_enabled, processed_time_chunk_enabled,
+        stored_raw_chunk_select_enabled, stored_processed_chunk_select_enabled,
+        stored_raw_output_chunks, stored_processed_output_chunks,
+        legacy_chunk_select_enabled, legacy_output_chunks);
+}
+
 template <class Config, class Key, class Param, class Target,
           class MissingKeys, class InvalidKeys>
 void read_mirrored_config_value(
