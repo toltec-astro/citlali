@@ -75,11 +75,6 @@ void Engine::get_citlali_config(CT &config) {
     typed_post_processing_config = citlali::config::PostProcessingConfig{};
     get_mapmaking_config(config);
 
-    auto parsed_cleanly = [&](std::size_t missing_before, std::size_t invalid_before) {
-        return citlali::engine_detail::config_parse_clean(
-            missing_keys, invalid_keys, missing_before, invalid_before);
-    };
-
     citlali::engine_detail::read_post_processing_activation_config(
         config, run_map_filter, run_source_finder,
         typed_post_processing_config, missing_keys, invalid_keys);
@@ -97,49 +92,9 @@ void Engine::get_citlali_config(CT &config) {
     }
 
     // get source finder config options
-    if (run_source_finder) {
-        // minimum found source sigma
-        {
-            const auto missing_before = missing_keys.size();
-            const auto invalid_before = invalid_keys.size();
-            get_config_value(config, omb.source_sigma, missing_keys, invalid_keys,
-                             std::tuple{"post_processing","source_finding","source_sigma"});
-            if (parsed_cleanly(missing_before, invalid_before)) {
-                typed_post_processing_config.source_finding.source_sigma =
-                    omb.source_sigma;
-            }
-        }
-        // window around source to exclude other sources
-        {
-            const auto missing_before = missing_keys.size();
-            const auto invalid_before = invalid_keys.size();
-            get_config_value(config, omb.source_window_rad, missing_keys, invalid_keys,
-                             std::tuple{"post_processing","source_finding","source_window_arcsec"});
-            if (parsed_cleanly(missing_before, invalid_before)) {
-                typed_post_processing_config.source_finding.source_window_arcsec =
-                    omb.source_window_rad;
-            }
-        }
-        // search map, negative of map, or both
-        {
-            const auto missing_before = missing_keys.size();
-            const auto invalid_before = invalid_keys.size();
-            get_config_value(config, omb.source_finder_mode, missing_keys, invalid_keys,
-                             std::tuple{"post_processing","source_finding","mode"});
-            if (parsed_cleanly(missing_before, invalid_before)) {
-                typed_post_processing_config.source_finding.mode =
-                    omb.source_finder_mode;
-            }
-        }
-
-        // convert source window to radians
-        omb.source_window_rad =
-            citlali::pipeline::source_window_arcsec_to_rad(
-                omb.source_window_rad, ASEC_TO_RAD);
-
-        citlali::pipeline::mirror_source_finding_config_to_coadd(
-            omb, cmb, run_coadd);
-    }
+    citlali::engine_detail::read_source_finding_config(
+        config, run_source_finder, omb, cmb, run_coadd, ASEC_TO_RAD,
+        typed_post_processing_config, missing_keys, invalid_keys);
 
     /* get pointing config */
     if (redu_type=="pointing") {
