@@ -347,28 +347,12 @@ void Engine::get_beammap_config(CT &config) {
     // convergence, so the saved PTC reflects the final cleaning state.
     beammap_tod_output_iter = -1;
 
-    beammap_detector_tod_output_enabled = false;
-    beammap_detector_tod_output_subdir_name = "source_crossing_tod";
-    beammap_detector_tod_output_n_uniform = 10;
-    beammap_detector_tod_output_n_source_dense = 10;
-    if (config.template has_typed<bool>(std::tuple{"beammap","detector_tod_output","enabled"})) {
-        get_config_value(config, beammap_detector_tod_output_enabled, missing_keys, invalid_keys,
-                         std::tuple{"beammap","detector_tod_output","enabled"});
-    }
-    if (config.template has_typed<std::string>(std::tuple{"beammap","detector_tod_output","subdir_name"})) {
-        get_config_value(config, beammap_detector_tod_output_subdir_name, missing_keys, invalid_keys,
-                         std::tuple{"beammap","detector_tod_output","subdir_name"});
-    }
-    if (config.template has_typed<int>(std::tuple{"beammap","detector_tod_output","n_uniform"})) {
-        get_config_value(config, beammap_detector_tod_output_n_uniform, missing_keys, invalid_keys,
-                         std::tuple{"beammap","detector_tod_output","n_uniform"},
-                         {}, {0});
-    }
-    if (config.template has_typed<int>(std::tuple{"beammap","detector_tod_output","n_source_dense"})) {
-        get_config_value(config, beammap_detector_tod_output_n_source_dense, missing_keys, invalid_keys,
-                         std::tuple{"beammap","detector_tod_output","n_source_dense"},
-                         {}, {0});
-    }
+    citlali::pipeline::read_beammap_detector_tod_output_config(
+        config, missing_keys, invalid_keys,
+        beammap_detector_tod_output_enabled,
+        beammap_detector_tod_output_subdir_name,
+        beammap_detector_tod_output_n_uniform,
+        beammap_detector_tod_output_n_source_dense);
 
     typed_beammap_config = citlali::config::BeammapConfig{};
     citlali::pipeline::mirror_beammap_core_config(

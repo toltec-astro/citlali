@@ -118,6 +118,43 @@ void read_beammap_split_flag_values(Config &config,
     flag_values = normalized_beammap_split_flag_values(std::move(values));
 }
 
+template <class Config, class MissingKeys, class InvalidKeys>
+void read_beammap_detector_tod_output_config(
+    Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys,
+    bool &enabled, std::string &subdir_name, int &n_uniform,
+    int &n_source_dense) {
+    enabled = false;
+    subdir_name = "source_crossing_tod";
+    n_uniform = 10;
+    n_source_dense = 10;
+    if (config.template has_typed<bool>(
+            std::tuple{"beammap", "detector_tod_output", "enabled"})) {
+        ::get_config_value(
+            config, enabled, missing_keys, invalid_keys,
+            std::tuple{"beammap", "detector_tod_output", "enabled"});
+    }
+    if (config.template has_typed<std::string>(
+            std::tuple{"beammap", "detector_tod_output", "subdir_name"})) {
+        ::get_config_value(
+            config, subdir_name, missing_keys, invalid_keys,
+            std::tuple{"beammap", "detector_tod_output", "subdir_name"});
+    }
+    if (config.template has_typed<int>(
+            std::tuple{"beammap", "detector_tod_output", "n_uniform"})) {
+        ::get_config_value(
+            config, n_uniform, missing_keys, invalid_keys,
+            std::tuple{"beammap", "detector_tod_output", "n_uniform"},
+            {}, {0});
+    }
+    if (config.template has_typed<int>(
+            std::tuple{"beammap", "detector_tod_output", "n_source_dense"})) {
+        ::get_config_value(
+            config, n_source_dense, missing_keys, invalid_keys,
+            std::tuple{"beammap", "detector_tod_output", "n_source_dense"},
+            {}, {0});
+    }
+}
+
 inline void mirror_beammap_core_config(
     citlali::config::BeammapConfig &target,
     int iter_max, double iter_tolerance, double convergence_radius_arcsec,
