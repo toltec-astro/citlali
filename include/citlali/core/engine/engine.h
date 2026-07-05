@@ -7012,24 +7012,23 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 }
 
 void Engine::create_ptcdiag_file() {
-    std::string dir_name = obsnum_dir_name + "raw/";
-    if (tod_output_subdir_name != "null") {
-        dir_name = dir_name + tod_output_subdir_name + "/";
-    }
+    const std::string dir_name =
+        citlali::pipeline::diagnostic_raw_directory(
+            obsnum_dir_name, tod_output_subdir_name);
 
     const auto filename =
         toltec_io.create_filename<engine_utils::toltecIO::toltec,
                                   engine_utils::toltecIO::ptcdiag,
                                   engine_utils::toltecIO::raw>(
             dir_name, redu_type, "", obsnum, telescope.sim_obs);
-    ptcdiag_filename = filename + ".nc";
+    ptcdiag_filename = citlali::pipeline::diagnostic_netcdf_filename(filename);
 
     write_netcdf_atomic(ptcdiag_filename, [&](netCDF::NcFile &fo) {
     const int fill_int = citlali::pipeline::ptcdiag_fill_int();
     const double fill_double = citlali::pipeline::ptcdiag_fill_double();
     const Eigen::Index n_scans = telescope.scan_indices.cols();
-    const std::vector<std::size_t> det_chunks = {
-        1, TULA_SIZET(calib.n_dets)};
+    const auto ptcdiag_dims =
+        citlali::pipeline::add_ptcdiag_dims(fo, n_scans, calib.n_dets);
 
     citlali::pipeline::add_tod_output_type_label(fo, "ptcdiag");
 
@@ -7037,26 +7036,11 @@ void Engine::create_ptcdiag_file() {
         fo, std::stoi(obsnum), telescope.tel_header["Header.Source.Ra"](0),
         telescope.tel_header["Header.Source.Dec"](0));
 
-    netCDF::NcDim n_scans_dim = fo.addDim("n_scans", n_scans);
-    netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
-    std::vector<netCDF::NcDim> det_dims = {
-        n_scans_dim, n_dets_dim};
-
     citlali::pipeline::add_diagnostic_output_scan_index(
-        fo, n_scans_dim, n_scans, fill_int);
+        fo, ptcdiag_dims.n_scans, n_scans, fill_int);
 
-    auto add_det_meta_int = [&](const std::string &name,
-                                const std::string &comment,
-                                const std::vector<int> &values) {
-        citlali::pipeline::add_ptcdiag_det_meta_int(
-            fo, name, comment, n_dets_dim, values);
-    };
-    auto apt_int_values = [&](const std::string &key) {
-        return citlali::pipeline::ptcdiag_apt_int_values(
-            calib, key, fill_int);
-    };
-    citlali::pipeline::add_ptcdiag_det_meta_vars(
-        add_det_meta_int, apt_int_values);
+    citlali::pipeline::add_ptcdiag_detector_metadata_vars(
+        fo, calib, ptcdiag_dims.n_dets, fill_int);
 
     citlali::pipeline::add_pipeline_identity_vars(
         fo, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
@@ -7069,46 +7053,12 @@ void Engine::create_ptcdiag_file() {
     citlali::pipeline::add_ptc_weight_cutoff_config_vars(fo, ptcproc, true);
     citlali::pipeline::add_ptcdiag_compact_config_vars(fo, ptcproc);
 
-    const auto n_ptc_scan_values = static_cast<std::size_t>(n_scans);
-    const auto n_ptc_det_values = static_cast<std::size_t>(calib.n_dets);
-    const std::size_t ptc_det_value_count =
-        n_ptc_scan_values * n_ptc_det_values;
-    auto add_det_double = [&](const std::string &name,
-                              const std::string &comment) {
-        citlali::pipeline::add_ptcdiag_det_double(
-            fo, name, comment, det_dims, det_chunks, ptc_det_value_count,
-            fill_double);
-    };
-    auto add_det_int = [&](const std::string &name,
-                           const std::string &comment) {
-        citlali::pipeline::add_ptcdiag_det_int(
-            fo, name, comment, det_dims, det_chunks, ptc_det_value_count,
-            fill_int);
-    };
-    citlali::pipeline::add_ptcdiag_detector_core_diag(add_det_double);
-    citlali::pipeline::add_ptcdiag_detector_invvar_window_diag(
-        add_det_int, add_det_double);
+    citlali::pipeline::add_ptcdiag_standard_detector_diag(
+        fo, ptcdiag_dims.det, ptcdiag_dims.det_chunks,
+        ptcdiag_dims.n_det_values, fill_int, fill_double);
 
-    citlali::pipeline::add_ptcdiag_corr_network_block(
-        fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
-
-    const std::string weight_corr_comment =
-        "multiplicative weight penalty factor applied per network in each scan";
-    citlali::pipeline::add_ptcdiag_weight_corr_network_block(
-        fo, calib, n_scans_dim, n_scans, weight_corr_comment, fill_int,
-        fill_double);
-
-    citlali::pipeline::add_ptcdiag_busy_row_network_block(
-        fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
-
-    citlali::pipeline::add_ptcdiag_adaptive_pca_network_block(
-        fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
-
-    const std::string second_pass_comment =
-        "1 if this network had more candidate second-pass clusters than the normal auto-flag limit";
-    citlali::pipeline::add_ptcdiag_second_pass_network_block(
-        fo, calib, n_scans_dim, n_scans, second_pass_comment, true,
-        fill_int, fill_double);
+    citlali::pipeline::add_ptcdiag_standard_network_blocks(
+        fo, calib, ptcdiag_dims.n_scans, n_scans, fill_int, fill_double);
     });
 }
 

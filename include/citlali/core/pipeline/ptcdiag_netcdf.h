@@ -15,6 +15,21 @@ namespace citlali::pipeline {
 
 using PtcDiagVarList = std::vector<std::pair<std::string, std::string>>;
 
+inline std::string diagnostic_raw_directory(
+    const std::string &obsnum_dir_name,
+    const std::string &tod_output_subdir_name) {
+    std::string dir_name = obsnum_dir_name + "raw/";
+    if (tod_output_subdir_name != "null") {
+        dir_name += tod_output_subdir_name + "/";
+    }
+    return dir_name;
+}
+
+inline std::string diagnostic_netcdf_filename(
+    const std::string &filename) {
+    return filename + ".nc";
+}
+
 inline double ptcdiag_fill_double() {
     return std::numeric_limits<double>::quiet_NaN();
 }
@@ -26,6 +41,34 @@ constexpr int ptcdiag_fill_int() {
 inline void add_ptc_eigenvalue_dim(netCDF::NcFile &fo,
                                    Eigen::Index n_eigenvalues) {
     fo.addDim("n_eigs", n_eigenvalues);
+}
+
+struct PtcDiagDims {
+    netCDF::NcDim n_scans;
+    netCDF::NcDim n_dets;
+    std::vector<netCDF::NcDim> det;
+    std::vector<std::size_t> det_chunks;
+    std::size_t n_det_values;
+};
+
+inline PtcDiagDims add_ptcdiag_dims(netCDF::NcFile &fo,
+                                    Eigen::Index n_scans,
+                                    Eigen::Index n_dets) {
+    netCDF::NcDim n_scans_dim = fo.addDim("n_scans", n_scans);
+    netCDF::NcDim n_dets_dim = fo.addDim("n_dets", n_dets);
+    const std::vector<netCDF::NcDim> det_dims = {
+        n_scans_dim, n_dets_dim};
+    const std::vector<std::size_t> det_chunks = {
+        1, static_cast<std::size_t>(n_dets)};
+    const auto n_scan_values = static_cast<std::size_t>(n_scans);
+    const auto n_det_values = static_cast<std::size_t>(n_dets);
+
+    return {
+        n_scans_dim,
+        n_dets_dim,
+        det_dims,
+        det_chunks,
+        n_scan_values * n_det_values};
 }
 
 inline void add_ptc_weights_var(netCDF::NcFile &fo,
@@ -114,6 +157,23 @@ void add_ptcdiag_det_meta_vars(const AddMetaInt &add_meta_int,
                  apt_int_values("flag"));
 }
 
+template <class Calib>
+void add_ptcdiag_detector_metadata_vars(netCDF::NcFile &fo,
+                                        const Calib &calib,
+                                        netCDF::NcDim n_dets_dim,
+                                        int fill_int) {
+    auto add_det_meta_int = [&](const std::string &name,
+                                const std::string &comment,
+                                const std::vector<int> &values) {
+        add_ptcdiag_det_meta_int(
+            fo, name, comment, n_dets_dim, values);
+    };
+    auto apt_int_values = [&](const std::string &key) {
+        return ptcdiag_apt_int_values(calib, key, fill_int);
+    };
+    add_ptcdiag_det_meta_vars(add_det_meta_int, apt_int_values);
+}
+
 inline void add_ptcdiag_det_double(
     netCDF::NcFile &fo, const std::string &name,
     const std::string &comment, const std::vector<netCDF::NcDim> &det_dims,
@@ -177,6 +237,26 @@ void add_ptcdiag_detector_invvar_window_diag(const AddInt &add_int,
             "total number of fixed windows evaluated for PTC remove_bad_dets diagnostics");
     add_int("ptc_invvar_window_n_valid",
             "number of fixed windows with a finite inverse-variance estimate for PTC remove_bad_dets diagnostics");
+}
+
+inline void add_ptcdiag_standard_detector_diag(
+    netCDF::NcFile &fo, const std::vector<netCDF::NcDim> &det_dims,
+    const std::vector<std::size_t> &det_chunks, std::size_t n_det_values,
+    int fill_int, double fill_double) {
+    auto add_det_double = [&](const std::string &name,
+                              const std::string &comment) {
+        add_ptcdiag_det_double(
+            fo, name, comment, det_dims, det_chunks, n_det_values,
+            fill_double);
+    };
+    auto add_det_int = [&](const std::string &name,
+                           const std::string &comment) {
+        add_ptcdiag_det_int(
+            fo, name, comment, det_dims, det_chunks, n_det_values,
+            fill_int);
+    };
+    add_ptcdiag_detector_core_diag(add_det_double);
+    add_ptcdiag_detector_invvar_window_diag(add_det_int, add_det_double);
 }
 
 template <class Calib>
@@ -446,6 +526,33 @@ void add_ptcdiag_second_pass_network_block(
         ptcdiag_second_pass_int_vars(
             busy_network_veto_comment, include_rejection_policy_vars),
         ptcdiag_second_pass_double_vars(), fill_int, fill_double);
+}
+
+inline std::string ptcdiag_weight_corr_factor_comment() {
+    return "multiplicative weight penalty factor applied per network in each scan";
+}
+
+inline std::string ptcdiag_second_pass_busy_network_comment() {
+    return "1 if this network had more candidate second-pass clusters than the normal auto-flag limit";
+}
+
+template <class Calib>
+void add_ptcdiag_standard_network_blocks(
+    netCDF::NcFile &fo, const Calib &calib, netCDF::NcDim n_scans_dim,
+    Eigen::Index n_scans, int fill_int, double fill_double) {
+    add_ptcdiag_corr_network_block(
+        fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
+    add_ptcdiag_weight_corr_network_block(
+        fo, calib, n_scans_dim, n_scans,
+        ptcdiag_weight_corr_factor_comment(), fill_int, fill_double);
+    add_ptcdiag_busy_row_network_block(
+        fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
+    add_ptcdiag_adaptive_pca_network_block(
+        fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
+    add_ptcdiag_second_pass_network_block(
+        fo, calib, n_scans_dim, n_scans,
+        ptcdiag_second_pass_busy_network_comment(), true, fill_int,
+        fill_double);
 }
 
 template <class Calib, class Ptcproc>
