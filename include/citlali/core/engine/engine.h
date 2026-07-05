@@ -6332,13 +6332,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     std::vector<double> core_peak_abs_sig2noise(n_mapdiag_maps, fill_double);
     std::vector<double> noise_rms_p16(n_mapdiag_maps, fill_double);
     std::vector<double> noise_rms_p84(n_mapdiag_maps, fill_double);
-    std::vector<double> core_tail_frac_abs3(mapdiag_context.n_maps, fill_double);
-    std::vector<double> core_tail_frac_pos3(mapdiag_context.n_maps, fill_double);
-    std::vector<double> core_tail_frac_neg3(mapdiag_context.n_maps, fill_double);
-    std::vector<double> core_tail_excess_abs3(mapdiag_context.n_maps, fill_double);
-    std::vector<double> core_tail_excess_pos3(mapdiag_context.n_maps, fill_double);
-    std::vector<double> core_tail_excess_neg3(mapdiag_context.n_maps, fill_double);
-    std::vector<double> core_sig2noise_skew(mapdiag_context.n_maps, fill_double);
+    std::vector<double> core_tail_frac_abs3(n_mapdiag_maps, fill_double);
+    std::vector<double> core_tail_frac_pos3(n_mapdiag_maps, fill_double);
+    std::vector<double> core_tail_frac_neg3(n_mapdiag_maps, fill_double);
+    std::vector<double> core_tail_excess_abs3(n_mapdiag_maps, fill_double);
+    std::vector<double> core_tail_excess_pos3(n_mapdiag_maps, fill_double);
+    std::vector<double> core_tail_excess_neg3(n_mapdiag_maps, fill_double);
+    std::vector<double> core_sig2noise_skew(n_mapdiag_maps, fill_double);
     citlali::pipeline::MapdiagCoreTailRefs core_tail_refs{
         core_tail_frac_abs3,
         core_tail_frac_pos3,
