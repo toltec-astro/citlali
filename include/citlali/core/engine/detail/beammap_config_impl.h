@@ -346,23 +346,12 @@ void Engine::get_beammap_config(CT &config) {
                          {}, {0.0});
     }
 
-    // add params to respective array values
-    Eigen::Index i = 0;
-    for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
-        // lower fwhm limit
-        lower_fwhm_arcsec[arr_name] = lower_fwhm_arcsec_vec[i];
-        // upper fwhm limit
-        upper_fwhm_arcsec[arr_name] = upper_fwhm_arcsec_vec[i];
-        // lower signal-to-noise limit
-        lower_sig2noise[arr_name] = lower_sig2noise_vec[i];
-        // upper signal-to-noise limit
-        upper_sig2noise[arr_name] = upper_sig2noise_vec[i];
-        // maximum allowed distance limit
-        max_dist_arcsec[arr_name] = max_dist_arcsec_vec[i];
-        // post-process per-network robust-z limit
-        network_robust_z[arr_name] = network_robust_z_vec[i];
-        i++;
-    }
+    citlali::pipeline::assign_beammap_array_flag_limits(
+        toltec_io.array_name_map, lower_fwhm_arcsec_vec,
+        upper_fwhm_arcsec_vec, lower_sig2noise_vec, upper_sig2noise_vec,
+        max_dist_arcsec_vec, network_robust_z_vec, lower_fwhm_arcsec,
+        upper_fwhm_arcsec, lower_sig2noise, upper_sig2noise,
+        max_dist_arcsec, network_robust_z);
 
     // sensitivity factors
     auto sens_factors_vec = citlali::pipeline::beammap_fixed_double_vector(
