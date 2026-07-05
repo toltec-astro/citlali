@@ -7576,20 +7576,206 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         map_label = "filtered coadded maps";
     }
 
-    const auto n_filtered_fits =
-        static_cast<Eigen::Index>(filtered_fits_io->size());
-    logger->info("preparing {} FITS headers ({} files)", map_label,
-                 n_filtered_fits);
-    for (Eigen::Index i = 0; i < n_filtered_fits; ++i) {
-        add_phdu(filtered_fits_io, map_buffer_ptr, i);
-
+    auto add_filtered_phdus = [&](Eigen::Index fits_index) {
+        add_phdu(filtered_fits_io, map_buffer_ptr, fits_index);
         const bool has_filtered_noise_fits =
             citlali::pipeline::has_map_filter_noise_fits(
                 map_buffer_ptr->noise, *filtered_noise_fits_io);
         if (has_filtered_noise_fits) {
-            add_phdu(filtered_noise_fits_io, map_buffer_ptr, i);
+            add_phdu(filtered_noise_fits_io, map_buffer_ptr, fits_index);
         }
-    }
+    };
+    auto prepare_filtered_fits_headers = [&]() {
+        const auto n_filtered_fits =
+            static_cast<Eigen::Index>(filtered_fits_io->size());
+        logger->info("preparing {} FITS headers ({} files)", map_label,
+                     n_filtered_fits);
+        for (Eigen::Index i = 0; i < n_filtered_fits; ++i) {
+            add_filtered_phdus(i);
+        }
+    };
+
+    auto resolve_template_fwhm_rad = [&](const std::string &array_name) {
+        double template_fwhm_rad = 0.0;
+        const bool template_uses_fwhm =
+            citlali::pipeline::map_filter_template_uses_fwhm(
+                wiener_filter.template_type);
+        if (!template_uses_fwhm) {
+            return template_fwhm_rad;
+        }
+        const bool has_template_fwhm =
+            citlali::pipeline::has_map_filter_template_fwhm(
+                wiener_filter.template_fwhm_rad, array_name);
+        if (!has_template_fwhm) {
+            logger->error("missing Wiener template_fwhm_rad for array {}",
+                          array_name);
+            std::exit(EXIT_FAILURE);
+        }
+        return citlali::pipeline::map_filter_template_fwhm_or(
+            wiener_filter.template_fwhm_rad, array_name,
+            template_fwhm_rad);
+    };
+
+    auto init_wiener_filter_fwhm = [&](Eigen::Index array) {
+        const auto array_fwhm_arcsec =
+            toltec_io.array_fwhm_arcsec[array];
+        wiener_filter.init_fwhm =
+            citlali::pipeline::map_filter_initial_fwhm_pixels(
+                array_fwhm_arcsec, ASEC_TO_RAD, mb.pixel_size_rad);
+    };
+
+    auto calculate_filtered_noise_products =
+        [&](Eigen::Index map_i, Eigen::Index map_number) {
+            const bool normalize_filtered_error =
+                wiener_filter.normalize_error;
+            const bool should_calculate_noise_products =
+                citlali::pipeline::should_calculate_map_filter_noise_products(
+                    write_filtered_maps_partial, run_noise_products,
+                    normalize_filtered_error);
+            if (!should_calculate_noise_products) {
+                return;
+            }
+            const bool apply_empirical_noise_scale =
+                citlali::pipeline::should_apply_map_filter_noise_scale(
+                    apply_empirical_noise_weights,
+                    normalize_filtered_error);
+            logger->info(
+                "calculating empirical noise products for {} map {}/{}",
+                map_label, map_number, n_maps);
+            mb.calc_noise_products(map_i, apply_empirical_noise_scale);
+            const bool has_noise_weight_summary =
+                citlali::pipeline::has_map_filter_noise_weight_summary(
+                    map_i, mb.noise_weight_median_ratio.size());
+            if (has_noise_weight_summary) {
+                logger->info(
+                    "noise products: median(w_formal*var)={:.4g} "
+                    "scale={:.4g} noise_s2n_sigma={:.4g}",
+                    mb.noise_weight_median_ratio(map_i),
+                    mb.noise_weight_scale(map_i),
+                    mb.noise_s2n_sigma(map_i));
+            }
+            mb.calc_median_err();
+            mb.calc_median_rms();
+        };
+
+    auto filter_wiener_noise_maps =
+        [&](Eigen::Index map_i, Eigen::Index map_number,
+            Eigen::Index n_wiener_noise_maps) {
+#if defined(CITLALI_USE_WIENER_FILTER_OMP)
+            logger->info("filtering noise for {} map {}/{} (n_noise={})",
+                         map_label, map_number, n_maps,
+                         n_wiener_noise_maps);
+            #pragma omp parallel for schedule(dynamic)
+            for (Eigen::Index j = 0; j < n_wiener_noise_maps; ++j) {
+                wiener_filter.filter_noise_threadsafe(mb, map_i, j);
+            }
+            logger->info("noise filtering complete for {} map {}/{}",
+                         map_label, map_number, n_maps);
+#else
+            tula::logging::progressbar pb(
+                [&](const auto &msg) { logger->info("{}", msg); }, 100,
+                "filtering noise");
+            const auto noise_progress_stride =
+                citlali::pipeline::map_filter_progress_stride(
+                    n_wiener_noise_maps);
+
+            for (Eigen::Index j = 0; j < n_wiener_noise_maps; ++j) {
+                wiener_filter.filter_noise(mb, map_i, j);
+                pb.count(n_wiener_noise_maps, noise_progress_stride);
+            }
+            logger->info("noise filtering complete for {} map {}/{}",
+                         map_label, map_number, n_maps);
+#endif
+        };
+
+    auto build_wiener_template =
+        [&](Eigen::Index map_i, Eigen::Index map_number,
+            const std::string &array_name) {
+            logger->info(
+                "building Wiener template for {} map {}/{} (array={})",
+                map_label, map_number, n_maps, array_name);
+            const double template_fwhm_rad =
+                resolve_template_fwhm_rad(array_name);
+            wiener_filter.make_template(
+                mb, calib.apt, template_fwhm_rad, map_i);
+            logger->info(
+                "Wiener template ready for {} map {}/{} (array={})",
+                map_label, map_number, n_maps, array_name);
+        };
+
+    auto filter_wiener_signal_map =
+        [&](Eigen::Index map_i, Eigen::Index map_number,
+            const std::string &array_name) {
+            logger->info(
+                "running Wiener filter core for {} map {}/{} (array={})",
+                map_label, map_number, n_maps, array_name);
+            wiener_filter.filter_maps(mb, map_i);
+            logger->info("map filtering complete for {} map {}/{}",
+                         map_label, map_number, n_maps);
+        };
+
+    auto should_close_current_filtered_fits = [&](Eigen::Index map_i) {
+        if (!rtcproc.run_polarization) {
+            return true;
+        }
+        const auto &current_stokes_param =
+            rtcproc.polarization.stokes_params[maps_to_stokes(map_i)];
+        return citlali::pipeline::is_final_map_filter_polarization_stokes(
+            current_stokes_param);
+    };
+
+    auto destroy_filtered_fits_if_ready =
+        [&](Eigen::Index map_i, Eigen::Index map_index,
+            const std::string &filtered_map_path,
+            bool should_close_filtered_fits) {
+            const bool has_next_map =
+                citlali::pipeline::has_next_map_filter_output(map_i, n_maps);
+            if (!has_next_map) {
+                return;
+            }
+            const auto next_map_index = arrays_to_maps(map_i + 1);
+            const bool next_map_opens_new_file =
+                citlali::pipeline::next_map_filter_output_opens_new_file(
+                    map_index, next_map_index);
+            const bool should_destroy_filtered_fits =
+                citlali::pipeline::should_destroy_filtered_fits_handle(
+                    next_map_opens_new_file, should_close_filtered_fits);
+            if (!should_destroy_filtered_fits) {
+                return;
+            }
+            logger->info("closing FITS handle for {}", filtered_map_path);
+            filtered_fits_io->at(map_index).pfits->destroy();
+            logger->info("closed FITS handle for {}", filtered_map_path);
+        };
+
+    auto finalize_filtered_fits_outputs = [&]() {
+        logger->info("finalizing {} FITS handles", map_label);
+        filtered_fits_io->clear();
+        filtered_noise_fits_io->clear();
+        logger->info("finished finalizing {} FITS handles", map_label);
+    };
+
+    prepare_filtered_fits_headers();
+
+    auto write_filtered_map_output =
+        [&](Eigen::Index map_i, Eigen::Index map_number,
+            Eigen::Index map_index) {
+            logger->info("writing {} map {}/{} to disk",
+                         map_label, map_number, n_maps);
+            write_maps(filtered_fits_io, filtered_noise_fits_io,
+                       map_buffer_ptr, map_i);
+
+            const auto &filtered_map_path =
+                filtered_fits_io->at(map_index).filepath;
+            logger->info("file has been written to:");
+            logger->info("{}.fits", filtered_map_path);
+
+            const bool should_close_filtered_fits =
+                should_close_current_filtered_fits(map_i);
+            destroy_filtered_fits_if_ready(
+                map_i, map_index, filtered_map_path,
+                should_close_filtered_fits);
+        };
 
     // loop through maps and run wiener filter
     for (Eigen::Index i = 0; i < n_maps; ++i) {
@@ -7603,149 +7789,23 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         logger->info("starting {} map {}/{} (array={})",
                      map_label, map_number, n_maps, array_name);
         // init fwhm in pixels
-        const auto array_fwhm_arcsec =
-            toltec_io.array_fwhm_arcsec[array];
-        wiener_filter.init_fwhm =
-            citlali::pipeline::map_filter_initial_fwhm_pixels(
-                array_fwhm_arcsec, ASEC_TO_RAD, mb.pixel_size_rad);
+        init_wiener_filter_fwhm(array);
         // make wiener filter template
-        logger->info("building Wiener template for {} map {}/{} (array={})",
-                     map_label, map_number, n_maps, array_name);
-        double template_fwhm_rad = 0.0;
-        const bool template_uses_fwhm =
-            citlali::pipeline::map_filter_template_uses_fwhm(
-                wiener_filter.template_type);
-        if (template_uses_fwhm) {
-            const bool has_template_fwhm =
-                citlali::pipeline::has_map_filter_template_fwhm(
-                    wiener_filter.template_fwhm_rad, array_name);
-            if (!has_template_fwhm) {
-                logger->error("missing Wiener template_fwhm_rad for array {}",
-                              array_name);
-                std::exit(EXIT_FAILURE);
-            }
-            template_fwhm_rad =
-                citlali::pipeline::map_filter_template_fwhm_or(
-                    wiener_filter.template_fwhm_rad, array_name,
-                    template_fwhm_rad);
-        }
-        wiener_filter.make_template(mb, calib.apt, template_fwhm_rad, i);
-        logger->info("Wiener template ready for {} map {}/{} (array={})",
-                     map_label, map_number, n_maps, array_name);
+        build_wiener_template(i, map_number, array_name);
         // run the filter for the current map
-        logger->info("running Wiener filter core for {} map {}/{} (array={})",
-                     map_label, map_number, n_maps, array_name);
-        wiener_filter.filter_maps(mb, i);
-        logger->info("map filtering complete for {} map {}/{}",
-                     map_label, map_number, n_maps);
+        filter_wiener_signal_map(i, map_number, array_name);
 
         // filter noise maps
         const auto n_wiener_noise_maps = mb.n_noise;
         if (run_noise) {
-#if defined(CITLALI_USE_WIENER_FILTER_OMP)
-            logger->info("filtering noise for {} map {}/{} (n_noise={})",
-                         map_label, map_number, n_maps,
-                         n_wiener_noise_maps);
-            #pragma omp parallel for schedule(dynamic)
-            for (Eigen::Index j = 0; j < n_wiener_noise_maps; ++j) {
-                wiener_filter.filter_noise_threadsafe(mb, i, j);
-            }
-            logger->info("noise filtering complete for {} map {}/{}",
-                         map_label, map_number, n_maps);
-#else
-            tula::logging::progressbar pb(
-                [&](const auto &msg) { logger->info("{}", msg); }, 100,
-                "filtering noise");
-            const auto noise_progress_stride =
-                citlali::pipeline::map_filter_progress_stride(
-                    n_wiener_noise_maps);
-
-            for (Eigen::Index j = 0; j < n_wiener_noise_maps; ++j) {
-                wiener_filter.filter_noise(mb, i, j);
-                pb.count(n_wiener_noise_maps, noise_progress_stride);
-            }
-            logger->info("noise filtering complete for {} map {}/{}",
-                         map_label, map_number, n_maps);
-#endif
-
-            const bool normalize_filtered_error =
-                wiener_filter.normalize_error;
-            const bool should_calculate_noise_products =
-                citlali::pipeline::should_calculate_map_filter_noise_products(
-                    write_filtered_maps_partial, run_noise_products,
-                    normalize_filtered_error);
-            if (should_calculate_noise_products) {
-                const bool apply_empirical_noise_scale =
-                    citlali::pipeline::should_apply_map_filter_noise_scale(
-                        apply_empirical_noise_weights,
-                        normalize_filtered_error);
-                logger->info(
-                    "calculating empirical noise products for {} map {}/{}",
-                    map_label, map_number, n_maps);
-                mb.calc_noise_products(i, apply_empirical_noise_scale);
-                const bool has_noise_weight_summary =
-                    citlali::pipeline::has_map_filter_noise_weight_summary(
-                        i, mb.noise_weight_median_ratio.size());
-                if (has_noise_weight_summary) {
-                    logger->info(
-                        "noise products: median(w_formal*var)={:.4g} "
-                        "scale={:.4g} noise_s2n_sigma={:.4g}",
-                        mb.noise_weight_median_ratio(i),
-                        mb.noise_weight_scale(i),
-                        mb.noise_s2n_sigma(i));
-                }
-                mb.calc_median_err();
-                mb.calc_median_rms();
-            }
+            filter_wiener_noise_maps(i, map_number, n_wiener_noise_maps);
+            calculate_filtered_noise_products(i, map_number);
         }
 
         if (write_filtered_maps_partial) {
             // only write if saving all iterations or on last iteration
             // write maps immediately after filtering due to computation time
-            logger->info("writing {} map {}/{} to disk",
-                         map_label, map_number, n_maps);
-            write_maps(filtered_fits_io, filtered_noise_fits_io,
-                       map_buffer_ptr, i);
-
-            const auto &filtered_map_path =
-                filtered_fits_io->at(map_index).filepath;
-            logger->info("file has been written to:");
-            logger->info("{}.fits", filtered_map_path);
-
-            // explicitly destroy the fits file after we're done with it
-            bool should_close_filtered_fits = true;
-            const bool is_polarization_reduction =
-                rtcproc.run_polarization;
-            if (is_polarization_reduction) {
-                const auto &current_stokes_param =
-                    rtcproc.polarization.stokes_params[maps_to_stokes(i)];
-                const bool is_last_polarization_stokes =
-                    citlali::pipeline::is_final_map_filter_polarization_stokes(
-                        current_stokes_param);
-                if (!is_last_polarization_stokes) {
-                    should_close_filtered_fits = false;
-                }
-            }
-            // check if we're moving onto a new file
-            const bool has_next_map =
-                citlali::pipeline::has_next_map_filter_output(i, n_maps);
-            if (has_next_map) {
-                const auto next_map_index = arrays_to_maps(i + 1);
-                const bool next_map_opens_new_file =
-                    citlali::pipeline::next_map_filter_output_opens_new_file(
-                        map_index, next_map_index);
-                const bool should_destroy_filtered_fits =
-                    citlali::pipeline::should_destroy_filtered_fits_handle(
-                        next_map_opens_new_file,
-                        should_close_filtered_fits);
-                if (should_destroy_filtered_fits) {
-                    logger->info("closing FITS handle for {}",
-                                 filtered_map_path);
-                    filtered_fits_io->at(map_index).pfits->destroy();
-                    logger->info("closed FITS handle for {}",
-                                 filtered_map_path);
-                }
-            }
+            write_filtered_map_output(i, map_number, map_index);
         }
 
         logger->info("completed {} map {}/{}", map_label, map_number,
@@ -7753,10 +7813,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     }
 
     if (write_filtered_maps_partial) {
-        logger->info("finalizing {} FITS handles", map_label);
-        filtered_fits_io->clear();
-        filtered_noise_fits_io->clear();
-        logger->info("finished finalizing {} FITS handles", map_label);
+        finalize_filtered_fits_outputs();
     }
 }
 
