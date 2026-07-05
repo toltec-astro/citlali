@@ -68,6 +68,17 @@ struct TodChunking {
     std::vector<std::size_t> sizes;
 };
 
+struct TodPreparedLayout {
+    TodStreamLayout stream;
+    TodFileCounts counts;
+    TodFileDims dims;
+    TodChunking chunking;
+};
+
+inline const char *tod_stream_output_key(bool is_rtc_stream) {
+    return is_rtc_stream ? "rtc" : "ptc";
+}
+
 inline TodFileCounts tod_file_counts(Eigen::Index n_output_scans,
                                      Eigen::Index n_raw_scan_indices,
                                      Eigen::Index n_dets) {
@@ -132,6 +143,11 @@ inline void add_tod_output_type_label(netCDF::NcFile &fo,
     const std::vector<std::size_t> index = {0};
     std::string value = label;
     var.putVar(index, value);
+}
+
+inline void add_tod_stream_output_type_label(netCDF::NcFile &fo,
+                                             bool is_rtc_stream) {
+    add_tod_output_type_label(fo, tod_stream_output_key(is_rtc_stream));
 }
 
 inline void add_obsnum_var(netCDF::NcFile &fo, int obsnum) {
@@ -730,6 +746,31 @@ inline void add_tod_filter_edge_guard_scan_placeholders(
     };
     add_tod_filter_edge_guard_scan_vars(add_scan_int_var,
                                         add_scan_double_var);
+}
+
+template <class RtcProc, class PtcProc, class ScanIndices>
+TodPreparedLayout prepare_tod_file_layout(
+    netCDF::NcFile &fo, bool is_rtc_stream,
+    Eigen::Index n_rtc_output_scans, Eigen::Index n_ptc_output_scans,
+    const RtcProc &rtcproc, const PtcProc &ptcproc,
+    const ScanIndices &scan_indices, Eigen::Index n_dets) {
+    auto stream = tod_stream_layout(
+        is_rtc_stream, n_rtc_output_scans, n_ptc_output_scans, rtcproc,
+        ptcproc);
+    auto counts = tod_file_counts(
+        stream.n_output_scans, scan_indices.rows(), n_dets);
+    auto dims = add_tod_file_dims(
+        fo, counts.n_output_scans, counts.n_raw_scan_indices, counts.n_dets);
+    add_tod_scan_index_placeholders(
+        fo, dims.raw_scans, dims.scans, dims.n_scans,
+        counts.n_output_scans, counts.n_raw_scan_indices,
+        stream.outer_output, tod_output_fill_int());
+    add_tod_filter_edge_guard_scan_placeholders(
+        fo, dims.n_scans, counts.n_output_scans, tod_output_fill_int(),
+        tod_output_fill_double());
+    auto chunking = tod_data_chunking(scan_indices, counts.n_dets);
+
+    return {stream, counts, dims, chunking};
 }
 
 inline void add_tod_hwpr_var(netCDF::NcFile &fo, netCDF::NcDim n_pts_dim) {

@@ -5473,6 +5473,8 @@ void Engine::create_tod_files() {
     std::string name;
     const std::string dir_name = citlali::pipeline::tod_output_directory(
         obsnum_dir_name, tod_output_subdir_name);
+    constexpr bool is_rtc_stream =
+        prod_t == engine_utils::toltecIO::rtc_timestream;
 
     // rtc tod output filename setup
     if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
@@ -5482,7 +5484,9 @@ void Engine::create_tod_files() {
                                                                                obsnum, telescope.sim_obs);
 
         name = citlali::pipeline::register_tod_output_file(
-            tod_filename, "rtc", filename);
+            tod_filename,
+            citlali::pipeline::tod_stream_output_key(is_rtc_stream),
+            filename);
     }
 
     // ptc tod output filename setup
@@ -5493,16 +5497,15 @@ void Engine::create_tod_files() {
                                                                                obsnum, telescope.sim_obs);
 
         name = citlali::pipeline::register_tod_output_file(
-            tod_filename, "ptc", filename);
+            tod_filename,
+            citlali::pipeline::tod_stream_output_key(is_rtc_stream),
+            filename);
     }
 
     write_netcdf_atomic(tod_filename[name], [&](netCDF::NcFile &fo) {
 
-    if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
-        citlali::pipeline::add_tod_output_type_label(fo, "rtc");
-    }
-    else if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
-        citlali::pipeline::add_tod_output_type_label(fo, "ptc");
+    citlali::pipeline::add_tod_stream_output_type_label(fo, is_rtc_stream);
+    if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
         citlali::pipeline::add_ptc_eigenvalue_dim(fo, ptcproc.cleaner.n_calc);
     }
 
@@ -5517,50 +5520,23 @@ void Engine::create_tod_files() {
             fo, rtcproc.line_audit);
     }
 
-    const auto tod_stream_layout = citlali::pipeline::tod_stream_layout(
-        prod_t == engine_utils::toltecIO::rtc_timestream,
-        n_tod_output_scans_rtc, n_tod_output_scans_ptc, rtcproc, ptcproc);
-    const Eigen::Index n_tod_output_scans_for_stream =
-        tod_stream_layout.n_output_scans;
-    const bool tod_output_mini = tod_stream_layout.mini_output;
-    const bool tod_output_outer = tod_stream_layout.outer_output;
-    const auto tod_file_counts = citlali::pipeline::tod_file_counts(
-        n_tod_output_scans_for_stream, telescope.scan_indices.rows(),
+    const auto tod_layout = citlali::pipeline::prepare_tod_file_layout(
+        fo, is_rtc_stream, n_tod_output_scans_rtc,
+        n_tod_output_scans_ptc, rtcproc, ptcproc, telescope.scan_indices,
         calib.n_dets);
-
-    const auto tod_dims = citlali::pipeline::add_tod_file_dims(
-        fo, tod_file_counts.n_output_scans,
-        tod_file_counts.n_raw_scan_indices, tod_file_counts.n_dets);
-    netCDF::NcDim n_pts_dim = tod_dims.n_pts;
-    netCDF::NcDim n_scans_dim = tod_dims.n_scans;
-    netCDF::NcDim n_dets_dim = tod_dims.n_dets;
-    std::vector<netCDF::NcDim> dims = tod_dims.signal;
-    std::vector<netCDF::NcDim> raw_scans_dims = tod_dims.raw_scans;
-    std::vector<netCDF::NcDim> scans_dims = tod_dims.scans;
-
-    citlali::pipeline::add_tod_scan_index_placeholders(
-        fo, raw_scans_dims, scans_dims, n_scans_dim,
-        tod_file_counts.n_output_scans, tod_file_counts.n_raw_scan_indices,
-        tod_output_outer, citlali::pipeline::tod_output_fill_int());
-
-    citlali::pipeline::add_tod_filter_edge_guard_scan_placeholders(
-        fo, n_scans_dim, tod_file_counts.n_output_scans,
-        citlali::pipeline::tod_output_fill_int(),
-        citlali::pipeline::tod_output_fill_double());
-
-    const auto tod_chunking = citlali::pipeline::tod_data_chunking(
-        telescope.scan_indices, tod_file_counts.n_dets);
-    const auto chunkMode = tod_chunking.mode;
-    const auto &chunkSizes = tod_chunking.sizes;
+    const auto &tod_dims = tod_layout.dims;
+    const auto &chunking = tod_layout.chunking;
+    const auto chunkMode = chunking.mode;
+    const auto &chunkSizes = chunking.sizes;
 
     citlali::pipeline::add_tod_core_data_vars(
-        fo, dims, tod_output_mini, omb.sig_unit, rtcproc.run_kernel,
-        telescope.pixel_axes, chunkMode, chunkSizes);
+        fo, tod_dims.signal, tod_layout.stream.mini_output, omb.sig_unit,
+        rtcproc.run_kernel, telescope.pixel_axes, chunkMode, chunkSizes);
 
     citlali::pipeline::add_tod_static_metadata_vars(
         fo, calib.apt, calib.apt_header_units, telescope.tel_data,
-        pointing_offsets_arcsec, logger, n_dets_dim, n_pts_dim, chunkMode,
-        chunkSizes);
+        pointing_offsets_arcsec, logger, tod_dims.n_dets, tod_dims.n_pts,
+        chunkMode, chunkSizes);
 
     if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
         const int fill_int = citlali::pipeline::rtcdiag_fill_int();
@@ -5569,27 +5545,29 @@ void Engine::create_tod_files() {
             citlali::pipeline::rtc_tod_stream_sample_rate(
                 rtcproc, telescope.fsmp, telescope.d_fsmp);
         citlali::pipeline::add_rtcdiag_tod_stream_diag(
-            fo, calib, rtcproc, n_scans_dim, n_dets_dim,
-            n_tod_output_scans_for_stream, rtc_stream_fsmp,
+            fo, calib, rtcproc, tod_dims.n_scans, tod_dims.n_dets,
+            tod_layout.stream.n_output_scans, rtc_stream_fsmp,
             fill_int, fill_double);
     }
 
     // add weights
     if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
-        std::vector<netCDF::NcDim> weight_dims = {n_scans_dim, n_dets_dim};
+        std::vector<netCDF::NcDim> weight_dims = {
+            tod_dims.n_scans, tod_dims.n_dets};
         citlali::pipeline::add_ptc_weights_var(fo, weight_dims, omb.sig_unit);
         const int ptc_stream_fill_int = citlali::pipeline::ptcdiag_fill_int();
         const double ptc_stream_fill_double =
             citlali::pipeline::ptcdiag_fill_double();
 
         citlali::pipeline::add_ptcdiag_tod_optional_diag(
-            fo, calib, ptcproc, dims, chunkMode, chunkSizes,
-            n_scans_dim, n_dets_dim, n_tod_output_scans_for_stream,
-            ptc_stream_fill_int, ptc_stream_fill_double);
+            fo, calib, ptcproc, tod_dims.signal, chunkMode, chunkSizes,
+            tod_dims.n_scans, tod_dims.n_dets,
+            tod_layout.stream.n_output_scans, ptc_stream_fill_int,
+            ptc_stream_fill_double);
     }
 
     citlali::pipeline::add_tod_hwpr_var_if_requested(
-        fo, rtcproc.run_polarization, calib.run_hwpr, n_pts_dim);
+        fo, rtcproc.run_polarization, calib.run_hwpr, tod_dims.n_pts);
 
     // add tel header
     citlali::pipeline::add_telescope_header_vars(fo, telescope.tel_header);
