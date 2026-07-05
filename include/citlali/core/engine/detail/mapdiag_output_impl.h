@@ -73,23 +73,20 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         if (citlali::pipeline::mapdiag_has_signal_weight_samples(
                 mb->signal[i], mb->weight[i])) {
             const Eigen::MatrixXd sig2noise =
-                citlali::pipeline::assign_mapdiag_signal_stats(
-                    idx, mb->signal[i], mb->weight[i], core_mask,
-                    n_core_pixels[idx], fill_double, mapdiag_stats,
-                    peak_refs, core_tail_refs);
+                citlali::pipeline::assign_mapdiag_signal_stats_for_map(
+                    i, idx, mb, core_mask, fill_double, mapdiag_stats,
+                    map_workspace);
 
             if (citlali::pipeline::mapdiag_outlier_diagnostics_enabled(
                     reduction_learning)) {
-                const auto source_distance_context =
-                    citlali::pipeline::mapdiag_source_distance_context(
-                        mb, RAD_TO_ASEC, fill_double);
-
-                const double protect_radius =
-                    citlali::pipeline::mapdiag_source_protect_radius_arcsec(
-                        reduction_learning);
-                const Eigen::ArrayXXd off_source_core_mask =
-                    citlali::pipeline::mapdiag_off_source_core_mask(
-                        core_mask, source_distance_context, protect_radius);
+                const auto outlier_mask_context =
+                    citlali::pipeline::make_mapdiag_outlier_mask_context(
+                        mb, core_mask, reduction_learning, RAD_TO_ASEC,
+                        fill_double);
+                const auto &source_distance_context =
+                    outlier_mask_context.source_distance;
+                const auto &off_source_core_mask =
+                    outlier_mask_context.off_source_core_mask;
 
                 const auto off_source_values =
                     mapdiag_stats.collect_masked_values(

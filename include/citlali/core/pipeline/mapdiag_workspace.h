@@ -218,6 +218,11 @@ struct MapdiagObservationWorkspace {
     MapdiagObservationIntValues int_values;
 };
 
+struct MapdiagOutlierMaskContext {
+    MapdiagSourceDistanceContext source_distance;
+    Eigen::ArrayXXd off_source_core_mask;
+};
+
 template <class ArraysToMaps, class MapsToStokes, class MapsToArrays,
           class ArrayNameMap, class Arrays, class StokesParams,
           class MapNameForIndex>
@@ -267,6 +272,32 @@ auto assign_mapdiag_basic_map_stats(
     assign_mapdiag_peak_signal_or_fill(
         idx, mb->signal, map_index, fill_double, workspace.peak_signal);
     return core_mask;
+}
+
+template <class MapBuffer>
+Eigen::MatrixXd assign_mapdiag_signal_stats_for_map(
+    Eigen::Index map_index, std::size_t idx, MapBuffer &mb,
+    const Eigen::ArrayXXd &core_mask, double fill_double,
+    const MapdiagStatsContext &stats, MapdiagMapWorkspace &workspace) {
+    return assign_mapdiag_signal_stats(
+        idx, mb->signal[map_index], mb->weight[map_index], core_mask,
+        workspace.n_core_pixels[idx], fill_double, stats,
+        workspace.peak_refs, workspace.core_tail_refs);
+}
+
+template <class MapBuffer, class ReductionLearning>
+MapdiagOutlierMaskContext make_mapdiag_outlier_mask_context(
+    const MapBuffer &mb, const Eigen::ArrayXXd &core_mask,
+    const ReductionLearning &reduction_learning, double rad_to_arcsec,
+    double fill_double) {
+    const auto source_distance =
+        mapdiag_source_distance_context(mb, rad_to_arcsec, fill_double);
+    const double protect_radius =
+        mapdiag_source_protect_radius_arcsec(reduction_learning);
+    return {
+        source_distance,
+        mapdiag_off_source_core_mask(
+            core_mask, source_distance, protect_radius)};
 }
 
 }  // namespace citlali::pipeline
