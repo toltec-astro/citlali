@@ -7628,7 +7628,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                      map_label, map_number, n_maps, array_name);
         // run the filter for the current map
         logger->info("running Wiener filter core for {} map {}/{} (array={})",
-                     map_label, i + 1, n_maps, array_name);
+                     map_label, map_number, n_maps, array_name);
         wiener_filter.filter_maps(mb, i);
         logger->info("map filtering complete for {} map {}/{}",
                      map_label, i + 1, n_maps);
