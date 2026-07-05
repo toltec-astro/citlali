@@ -7612,8 +7612,9 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             }
             // check if we're moving onto a new file
             if (i < n_maps - 1) {
-                if (arrays_to_maps(i+1) > arrays_to_maps(i) &&
-                    should_close_file) {
+                const bool next_map_opens_new_file =
+                    arrays_to_maps(i+1) > arrays_to_maps(i);
+                if (next_map_opens_new_file && should_close_file) {
                     logger->info("closing FITS handle for {}", f_io->at(map_index).filepath);
                     f_io->at(map_index).pfits->destroy();
                     logger->info("closed FITS handle for {}", f_io->at(map_index).filepath);
