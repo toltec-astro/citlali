@@ -6806,7 +6806,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 }
                                 citlali::pipeline::
                                     append_mapdiag_pixel_candidate(
-                                    candidates, candidate);
+                                        candidates, candidate);
                             }
                         }
 
