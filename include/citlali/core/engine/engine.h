@@ -5562,68 +5562,19 @@ void Engine::create_tod_files() {
 
 //template <TCDataKind tc_t>
 void Engine::cli_summary() {
-    logger->info("reduction info");
-    logger->info("obsnum: {}", obsnum);
-    logger->info("map buffer rows: {}", omb.n_rows);
-    logger->info("map buffer cols: {}", omb.n_cols);
-    logger->info("number of maps: {}", omb.signal.size());
-    logger->info("map units: {}", omb.sig_unit);
-    logger->info("polarized reduction: {}", rtcproc.run_polarization);
-
-    // total size of all maps
-    double mb_size_total = 0;
-
-    // make a rough estimate of memory usage for obs map buffer
-    double omb_size = citlali::pipeline::map_buffer_memory_gb(omb);
-
-    logger->info("estimated size of map buffer {:.2f} GB", omb_size);
-
-    mb_size_total = mb_size_total + omb_size;
-
-    // print info if coadd is requested
-    if (run_coadd) {
-        logger->info("coadd map buffer rows: {}", cmb.n_rows);
-        logger->info("coadd map buffer cols: {}", cmb.n_cols);
-
-        // make a rough estimate of memory usage for coadd map buffer
-        double cmb_size = citlali::pipeline::map_buffer_memory_gb(cmb);
-
-        logger->info("estimated size of coadd buffer {:.2f} GB", cmb_size);
-
-        mb_size_total = mb_size_total + cmb_size;
-
-        // output info if coadd noise maps are requested
-        if (run_noise) {
-            logger->info("coadd map buffer noise maps: {}", cmb.n_noise);
-            // make a rough estimate of memory usage for coadd noise maps
-            double nmb_size = citlali::pipeline::noise_buffer_memory_gb(cmb);
-            logger->info("estimated size of noise buffer {:.2f} GB", nmb_size);
-            mb_size_total = mb_size_total + nmb_size;
-        }
-    }
-    else {
-        // output info if obs noise maps are requested
-        if (run_noise) {
-            logger->info("observation map buffer noise maps: {}", omb.n_noise);
-            // make a rough estimate of memory usage for obs noise maps
-            double nmb_size = citlali::pipeline::noise_buffer_memory_gb(omb);
-            logger->info("estimated size of noise buffer {:.2f} GB", nmb_size);
-            mb_size_total = mb_size_total + nmb_size;
-        }
-    }
+    citlali::pipeline::log_reduction_map_summary(
+        logger, obsnum, omb, rtcproc.run_polarization);
+    const double mb_size_total =
+        citlali::pipeline::log_map_memory_summary(
+            logger, omb, cmb, run_coadd, run_noise);
 
     logger->info("estimated size of all maps {:.2f} GB", mb_size_total);
     logger->info("number of scans: {}",telescope.scan_indices.cols());
     if (run_tod_output) {
-        if (citlali::pipeline::should_report_rtc_tod_output(tod_output_type)) {
-            citlali::pipeline::log_rtc_tod_output_summary(
-                logger, n_tod_output_scans_rtc, rtcproc.tod_output_mini,
-                rtcproc.tod_output_outer);
-        }
-        if (citlali::pipeline::should_report_ptc_tod_output(tod_output_type)) {
-            citlali::pipeline::log_ptc_tod_output_summary(
-                logger, n_tod_output_scans_ptc, ptcproc.tod_output_mini);
-        }
+        citlali::pipeline::log_tod_output_selection_summary(
+            logger, tod_output_type, n_tod_output_scans_rtc,
+            rtcproc.tod_output_mini, rtcproc.tod_output_outer,
+            n_tod_output_scans_ptc, ptcproc.tod_output_mini);
     }
     citlali::pipeline::log_diagnostics_sidecar_summary(logger);
 
