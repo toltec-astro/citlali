@@ -7506,18 +7506,18 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     // loop through maps and run wiener filter
     for (Eigen::Index i=0; i<n_maps; ++i) {
         // current array
-        auto array = maps_to_arrays(i);
+        const auto array = maps_to_arrays(i);
+        const auto &array_name = toltec_io.array_name_map[array];
         // get file index
-        auto map_index = arrays_to_maps(i);
+        const auto map_index = arrays_to_maps(i);
         logger->info("starting {} map {}/{} (array={})",
-                     map_label, i + 1, n_maps, toltec_io.array_name_map[array]);
+                     map_label, i + 1, n_maps, array_name);
         // init fwhm in pixels
         wiener_filter.init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/mb.pixel_size_rad;
         // make wiener filter template
         logger->info("building Wiener template for {} map {}/{} (array={})",
-                     map_label, i + 1, n_maps, toltec_io.array_name_map[array]);
+                     map_label, i + 1, n_maps, array_name);
         double template_fwhm_rad = 0.0;
-        const auto &array_name = toltec_io.array_name_map[array];
         if (wiener_filter.template_type=="gaussian" || wiener_filter.template_type=="airy") {
             auto it = wiener_filter.template_fwhm_rad.find(array_name);
             if (it == wiener_filter.template_fwhm_rad.end()) {
