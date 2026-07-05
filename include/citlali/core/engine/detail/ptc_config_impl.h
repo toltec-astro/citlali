@@ -3,72 +3,15 @@
 // Engine timestream config implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/timestream_config_mirror.h>
+
 template<typename CT>
 void Engine::get_ptc_config(CT &config) {
     logger->info("getting ptc config options");
     // get ptcproc config
     ptcproc.get_config(config, missing_keys, invalid_keys);
-    auto &typed_fruit_loops = typed_timestream_config.fruit_loops;
-    typed_fruit_loops.enabled = ptcproc.run_fruit_loops;
-    if (ptcproc.run_fruit_loops) {
-        typed_fruit_loops.save_all_iters = ptcproc.save_all_iters;
-        typed_fruit_loops.path = ptcproc.fruit_loops_path;
-        typed_fruit_loops.type = ptcproc.fruit_loops_type;
-        if (auto parsed = citlali::config::parse_fruit_loops_mode(
-                ptcproc.fruit_mode)) {
-            typed_fruit_loops.mode = *parsed;
-        }
-        typed_fruit_loops.sig2noise_limit = ptcproc.fruit_loops_sig2noise;
-        typed_fruit_loops.array_flux_limit.clear();
-        typed_fruit_loops.array_flux_limit.reserve(
-            static_cast<std::size_t>(ptcproc.fruit_loops_flux.size()));
-        for (Eigen::Index i = 0; i < ptcproc.fruit_loops_flux.size(); ++i) {
-            typed_fruit_loops.array_flux_limit.push_back(
-                ptcproc.fruit_loops_flux(i));
-        }
-        typed_fruit_loops.peak_fraction_limit =
-            ptcproc.fruit_loops_peak_fraction_limit;
-        typed_fruit_loops.local_snr_floor =
-            ptcproc.fruit_loops_local_snr_floor;
-        typed_fruit_loops.local_sigma_inner_radius_arcsec =
-            ptcproc.fruit_loops_local_sigma_inner_radius_arcsec;
-        typed_fruit_loops.local_sigma_outer_radius_arcsec =
-            ptcproc.fruit_loops_local_sigma_outer_radius_arcsec;
-        typed_fruit_loops.local_sigma_inner_fwhm =
-            ptcproc.fruit_loops_local_sigma_inner_fwhm;
-        typed_fruit_loops.local_sigma_outer_fwhm =
-            ptcproc.fruit_loops_local_sigma_outer_fwhm;
-        typed_fruit_loops.local_sigma_edge_guard_arcsec =
-            ptcproc.fruit_loops_local_sigma_edge_guard_arcsec;
-        typed_fruit_loops.local_sigma_min_pixels =
-            ptcproc.fruit_loops_local_sigma_min_pixels;
-        typed_fruit_loops.adaptive_support_radius_arcsec =
-            ptcproc.fruit_loops_adaptive_support_radius_arcsec;
-        typed_fruit_loops.adaptive_support_radius_fwhm =
-            ptcproc.fruit_loops_adaptive_support_radius_fwhm;
-        typed_fruit_loops.weight_feedback.enabled =
-            ptcproc.fruit_loops_weight_feedback_enabled;
-        if (auto parsed =
-                citlali::config::parse_fruit_loops_weight_feedback_reference(
-                    ptcproc.fruit_loops_weight_feedback_reference)) {
-            typed_fruit_loops.weight_feedback.reference = *parsed;
-        }
-        typed_fruit_loops.weight_feedback.low_relative_weight =
-            ptcproc.fruit_loops_weight_feedback_low_relative_weight;
-        typed_fruit_loops.weight_feedback.high_relative_weight =
-            ptcproc.fruit_loops_weight_feedback_high_relative_weight;
-        typed_fruit_loops.center_keep_radius_arcsec =
-            ptcproc.fruit_loops_center_keep_radius_arcsec;
-        if (auto parsed =
-                citlali::config::parse_fruit_loops_interp_mode_override(
-                    ptcproc.fruit_loops_interp_mode_override)) {
-            typed_fruit_loops.interp_mode_override = *parsed;
-        }
-        typed_fruit_loops.legacy_center = ptcproc.fruit_loops_legacy_center;
-        typed_fruit_loops.recompute_weights_after_addback =
-            ptcproc.fruit_loops_recompute_weights_after_addback;
-        typed_fruit_loops.max_iters = ptcproc.fruit_loops_iters;
-    }
+    citlali::pipeline::mirror_fruit_loops_config(
+        typed_timestream_config.fruit_loops, ptcproc);
     auto &typed_clean = typed_timestream_config.processed_time_chunk.clean;
     typed_clean.enabled = ptcproc.run_clean;
     if (ptcproc.run_clean) {
@@ -348,4 +291,3 @@ void Engine::get_ptc_config(CT &config) {
     ptcproc.run_tod_output = run_tod_output;
     ptcproc.write_evals = diagnostics.write_evals;
 }
-
