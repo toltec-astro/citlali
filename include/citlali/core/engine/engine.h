@@ -7873,10 +7873,10 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
         const auto param_col = i;
         const auto error_col = i + 1;
         source_table.col(param_col) =
-            mb->source_params.col(j).template cast <float> ();
+            mb->source_params.col(j).template cast<float>();
         source_table.col(error_col) =
-            mb->source_perror.col(j).template cast <float> ();
-        j++;
+            mb->source_perror.col(j).template cast<float>();
+        ++j;
     }
 
     // write source table
