@@ -7712,9 +7712,11 @@ void Engine::find_sources(map_buffer_t &mb) {
                             mb.signal[i], mb.weight[i], init_fwhm,
                             init_row, init_col);
                 if (good_fit) {
+                    const double pixel_to_arcsec =
+                        RAD_TO_ASEC * mb.pixel_size_rad;
                     // rescale fit params from pixel to on-sky units
-                    params(1) = RAD_TO_ASEC*mb.pixel_size_rad*(params(1) - (mb.n_cols - 1)/2.0);
-                    params(2) = RAD_TO_ASEC*mb.pixel_size_rad*(params(2) - (mb.n_rows - 1)/2.0);
+                    params(1) = pixel_to_arcsec * (params(1) - (mb.n_cols - 1)/2.0);
+                    params(2) = pixel_to_arcsec * (params(2) - (mb.n_rows - 1)/2.0);
                     params(3) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(params(3));
                     params(4) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(params(4));
 
