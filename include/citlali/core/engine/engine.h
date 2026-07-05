@@ -6266,13 +6266,9 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
 
     // loop through stored histograms
     for (Eigen::Index i = 0; i < mb->hists.size(); ++i) {
-        // string to hold name
-        // get name for extension layer
         const std::string map_name = get_map_name(i);
 
-        // get the array for the given map
         const Eigen::Index map_index = arrays_to_maps(i);
-        // get the stokes parameter for the given map
         const Eigen::Index stokes_index = maps_to_stokes(i);
 
         const std::string name = citlali::pipeline::spectral_product_name(
