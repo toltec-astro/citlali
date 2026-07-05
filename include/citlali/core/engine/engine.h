@@ -7399,14 +7399,14 @@ void Engine::write_stats() {
             fo.addDim("adcSnapDataDim", adc_snap_data[0].rows());
         std::vector<netCDF::NcDim> adc_snap_dims = {
             adc_snap_dim, adc_snap_data_dim};
-        Eigen::Index i = 0;
-        for (auto const& x: adc_snap_data) {
+        Eigen::Index network_index = 0;
+        for (const auto &x : adc_snap_data) {
             netCDF::NcVar adc_snap_v =
-                fo.addVar("toltec" + std::to_string(calib.nws(i)) +
+                fo.addVar("toltec" + std::to_string(calib.nws(network_index)) +
                               "_adc_snap_data",
                           netCDF::ncDouble, adc_snap_dims);
             adc_snap_v.putVar(x.data());
-            i++;
+            ++network_index;
         }
     }
 
