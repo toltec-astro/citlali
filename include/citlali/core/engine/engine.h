@@ -7555,7 +7555,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     using FitsVector =
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>>;
     // pointer to data file fits vector
-    FitsVector *f_io = nullptr;
+    FitsVector *filtered_fits_io = nullptr;
     // pointer to noise file fits vector
     FitsVector *n_io = nullptr;
     // directory name
@@ -7565,7 +7565,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
 
     // filtered obs maps
     if constexpr (map_t == mapmaking::FilteredObs) {
-        f_io = &filtered_fits_io_vec;
+        filtered_fits_io = &filtered_fits_io_vec;
         n_io = &filtered_noise_fits_io_vec;
         filtered_dir_name = obsnum_dir_name + "filtered/";
         map_label = "filtered obs maps";
@@ -7573,17 +7573,17 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
 
     // filtered coadded maps
     else if constexpr (map_t == mapmaking::FilteredCoadd) {
-        f_io = &filtered_coadd_fits_io_vec;
+        filtered_fits_io = &filtered_coadd_fits_io_vec;
         n_io = &filtered_coadd_noise_fits_io_vec;
         filtered_dir_name = coadd_dir_name + "filtered/";
         map_label = "filtered coadded maps";
     }
 
-    const auto n_filtered_fits = static_cast<Eigen::Index>(f_io->size());
+    const auto n_filtered_fits = static_cast<Eigen::Index>(filtered_fits_io->size());
     logger->info("preparing {} FITS headers ({} files)", map_label,
-                 f_io->size());
+                 filtered_fits_io->size());
     for (Eigen::Index i=0; i<n_filtered_fits; ++i) {
-        add_phdu(f_io, pmb, i);
+        add_phdu(filtered_fits_io, pmb, i);
 
         if (!pmb->noise.empty() && !n_io->empty()) {
             add_phdu(n_io, pmb, i);
@@ -7683,9 +7683,9 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             // write maps immediately after filtering due to computation time
             logger->info("writing {} map {}/{} to disk",
                          map_label, i + 1, n_maps);
-            write_maps(f_io, n_io, pmb, i);
+            write_maps(filtered_fits_io, n_io, pmb, i);
 
-            const auto &filtered_map_path = f_io->at(map_index).filepath;
+            const auto &filtered_map_path = filtered_fits_io->at(map_index).filepath;
             logger->info("file has been written to:");
             logger->info("{}.fits", filtered_map_path);
 
@@ -7704,7 +7704,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                 if (next_map_opens_new_file && should_close_file) {
                     logger->info("closing FITS handle for {}",
                                  filtered_map_path);
-                    f_io->at(map_index).pfits->destroy();
+                    filtered_fits_io->at(map_index).pfits->destroy();
                     logger->info("closed FITS handle for {}",
                                  filtered_map_path);
                 }
@@ -7716,7 +7716,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
 
     if (write_filtered_maps_partial) {
         logger->info("finalizing {} FITS handles", map_label);
-        f_io->clear();
+        filtered_fits_io->clear();
         n_io->clear();
         logger->info("finished finalizing {} FITS handles", map_label);
     }
