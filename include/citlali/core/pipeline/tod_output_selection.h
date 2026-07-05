@@ -214,6 +214,20 @@ void read_tod_selection_count_config(
     }
 }
 
+template <class Logger>
+void validate_tod_selection_mode_counts(
+    const std::string &mode, int n_uniform, int n_source_dense,
+    const std::string &mode_path, const std::string &n_uniform_path,
+    const std::string &n_source_dense_path, const Logger &logger) {
+    if (mode != "uniform_plus_source_crossing" ||
+        n_uniform + n_source_dense > 0) {
+        return;
+    }
+    logger->error("{} selects uniform_plus_source_crossing but {} + {} is zero",
+                  mode_path, n_uniform_path, n_source_dense_path);
+    std::exit(EXIT_FAILURE);
+}
+
 inline bool tod_output_chunk_is_valid(Eigen::Index chunk_1based,
                                       Eigen::Index n_scans) {
     return chunk_1based >= 1 && chunk_1based <= n_scans;

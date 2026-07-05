@@ -192,11 +192,9 @@ void Engine::get_timestream_config(CT &config) {
         citlali::pipeline::read_tod_selection_count_config(
             config, n_source_dense_key, n_source_dense_path, n_source_dense,
             logger);
-        if (mode == "uniform_plus_source_crossing" && n_uniform + n_source_dense <= 0) {
-            logger->error("{} selects uniform_plus_source_crossing but {} + {} is zero",
-                          mode_path, n_uniform_path, n_source_dense_path);
-            std::exit(EXIT_FAILURE);
-        }
+        citlali::pipeline::validate_tod_selection_mode_counts(
+            mode, n_uniform, n_source_dense, mode_path, n_uniform_path,
+            n_source_dense_path, logger);
     };
 
     parse_tod_selection_mode(
