@@ -7598,8 +7598,9 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                          map_label, i + 1, n_maps);
             write_maps(f_io, n_io, pmb, i);
 
+            const auto &filtered_map_path = f_io->at(map_index).filepath;
             logger->info("file has been written to:");
-            logger->info("{}.fits",f_io->at(map_index).filepath);
+            logger->info("{}.fits", filtered_map_path);
 
             // explicitly destroy the fits file after we're done with it
             bool close_file = true;
