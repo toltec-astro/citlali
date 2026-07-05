@@ -134,6 +134,31 @@ void read_beammap_rfi_mask_config(
     }
 }
 
+template <class Config, class MissingKeys, class InvalidKeys,
+          class MapFitter>
+void read_beammap_fitting_config(Config &config, MissingKeys &missing_keys,
+                                 InvalidKeys &invalid_keys,
+                                 std::string &detector_weighting_mode,
+                                 double &fit_radius_fwhm,
+                                 MapFitter &map_fitter) {
+    detector_weighting_mode = "const";
+    if (config.template has_typed<std::string>(
+            std::tuple{"beammap", "detector_weighting", "mode"})) {
+        ::get_config_value(
+            config, detector_weighting_mode, missing_keys, invalid_keys,
+            std::tuple{"beammap", "detector_weighting", "mode"},
+            {"const", "ptc", "ptc_after_iter0"});
+    }
+    fit_radius_fwhm = 0.0;
+    if (config.template has_typed<double>(
+            std::tuple{"beammap", "fitting", "fit_radius_fwhm"})) {
+        ::get_config_value(
+            config, fit_radius_fwhm, missing_keys, invalid_keys,
+            std::tuple{"beammap", "fitting", "fit_radius_fwhm"}, {}, {0.0});
+    }
+    map_fitter.beammap_fit_radius_fwhm = fit_radius_fwhm;
+}
+
 template <class Config, class InvalidKeys>
 std::vector<double> beammap_fixed_double_vector(
     Config &config, const std::vector<std::string> &path,

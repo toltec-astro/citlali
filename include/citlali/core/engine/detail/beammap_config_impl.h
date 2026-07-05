@@ -30,20 +30,9 @@ void Engine::get_beammap_config(CT &config) {
         beammap_rfi_mask_sigma_threshold, beammap_rfi_mask_sigma_floor,
         beammap_rfi_mask_max_flagged_fraction);
 
-    beammap_detector_weighting_mode = "const";
-    if (config.template has_typed<std::string>(std::tuple{"beammap","detector_weighting","mode"})) {
-        get_config_value(config, beammap_detector_weighting_mode, missing_keys, invalid_keys,
-                         std::tuple{"beammap","detector_weighting","mode"},
-                         {"const", "ptc", "ptc_after_iter0"});
-    }
-
-    beammap_fit_radius_fwhm = 0.0;
-    if (config.template has_typed<double>(std::tuple{"beammap","fitting","fit_radius_fwhm"})) {
-        get_config_value(config, beammap_fit_radius_fwhm, missing_keys, invalid_keys,
-                         std::tuple{"beammap","fitting","fit_radius_fwhm"},
-                         {}, {0.0});
-    }
-    map_fitter.beammap_fit_radius_fwhm = beammap_fit_radius_fwhm;
+    citlali::pipeline::read_beammap_fitting_config(
+        config, missing_keys, invalid_keys, beammap_detector_weighting_mode,
+        beammap_fit_radius_fwhm, map_fitter);
 
     // optional detector-map edge-band masking for coherent bad scan legs
     beammap_scan_band_mask_enabled = false;
