@@ -6920,7 +6920,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             }
         }
 
-        if (!mapdiag_context.is_coadd) {
+        const bool is_single_observation_mapdiag = !mapdiag_context.is_coadd;
+        if (is_single_observation_mapdiag) {
             citlali::pipeline::assign_mapdiag_single_obs_entry(
                 mapdiag_context, idx, weight_sum[idx], core_weight_sum[idx],
                 n_valid_pixels[idx], n_core_pixels[idx], obs_tables);
