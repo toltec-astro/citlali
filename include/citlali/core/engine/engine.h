@@ -91,6 +91,7 @@
 #endif
 #include <citlali/core/pipeline/fits_image_metadata.h>
 #include <citlali/core/pipeline/cli_summary.h>
+#include <citlali/core/pipeline/learning_apt_helpers.h>
 #include <citlali/core/pipeline/map_filename.h>
 #include <citlali/core/pipeline/map_filtering.h>
 #include <citlali/core/pipeline/map_source_finding.h>

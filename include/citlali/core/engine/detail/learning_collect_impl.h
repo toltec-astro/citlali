@@ -45,10 +45,10 @@ void Engine::collect_rtc_learning_diagnostics(rtc_t &rtcdata, ptc_t &ptcdata,
         record.reason = reason;
         record.iter = fruit_iter;
         record.scan = static_cast<int>(scan_id);
-        record.uid = citlali_learning_apt_int(calib_scan.apt, "uid", det,
+        record.uid = citlali::pipeline::learning_apt_int(calib_scan.apt, "uid", det,
                                               static_cast<int>(det));
-        record.nw = citlali_learning_apt_int(calib_scan.apt, "nw", det, -1);
-        record.array = citlali_learning_apt_int(calib_scan.apt, "array", det, -1);
+        record.nw = citlali::pipeline::learning_apt_int(calib_scan.apt, "nw", det, -1);
+        record.array = citlali::pipeline::learning_apt_int(calib_scan.apt, "array", det, -1);
         record.raw_start = event.start_sample;
         record.raw_stop = event.end_sample;
         record.score = event.score;
@@ -203,7 +203,7 @@ void Engine::collect_ptc_learning_diagnostics(
                 penalty.scan = static_cast<int>(scan_id);
                 penalty.uid = -1;
                 penalty.nw = static_cast<int>(summary.nw);
-                penalty.array = citlali_learning_array_for_nw(
+                penalty.array = citlali::pipeline::learning_array_for_nw(
                     calib_scan.apt, penalty.nw, -1);
                 penalty.factor = 0.0;
                 penalty.score = std::max(
@@ -226,7 +226,7 @@ void Engine::collect_ptc_learning_diagnostics(
                 continue;
             }
             const Eigen::Index det =
-                citlali_learning_find_det_by_uid(calib_scan.apt, event.uid);
+                citlali::pipeline::learning_find_det_by_uid(calib_scan.apt, event.uid);
             ReductionLearningState::LearnedSampleMask candidate_record;
             candidate_record.obsnum = obsnum;
             candidate_record.producer = "ptc_second_pass";
@@ -238,7 +238,7 @@ void Engine::collect_ptc_learning_diagnostics(
             candidate_record.uid = event.uid;
             candidate_record.nw = static_cast<int>(summary.nw);
             candidate_record.array =
-                citlali_learning_apt_int(calib_scan.apt, "array", det, -1);
+                citlali::pipeline::learning_apt_int(calib_scan.apt, "array", det, -1);
             candidate_record.ptc_start = event.start_sample;
             candidate_record.ptc_stop = event.end_sample;
             candidate_record.score = event.score;
@@ -253,7 +253,7 @@ void Engine::collect_ptc_learning_diagnostics(
         if (summary.top_event.valid() && summary.top_event.accepted &&
             summary.top_event_uid != timestream::kTransientFillInt) {
             const Eigen::Index det =
-                citlali_learning_find_det_by_uid(calib_scan.apt, summary.top_event_uid);
+                citlali::pipeline::learning_find_det_by_uid(calib_scan.apt, summary.top_event_uid);
             ReductionLearningState::LearnedSampleMask sample_record;
             sample_record.obsnum = obsnum;
             sample_record.producer = "ptc_second_pass";
@@ -263,7 +263,7 @@ void Engine::collect_ptc_learning_diagnostics(
             sample_record.uid = summary.top_event_uid;
             sample_record.nw = static_cast<int>(summary.nw);
             sample_record.array =
-                citlali_learning_apt_int(calib_scan.apt, "array", det, -1);
+                citlali::pipeline::learning_apt_int(calib_scan.apt, "array", det, -1);
             sample_record.ptc_start = summary.top_event.start_sample;
             sample_record.ptc_stop = summary.top_event.end_sample;
             sample_record.score = summary.top_event.score;
@@ -277,7 +277,7 @@ void Engine::collect_ptc_learning_diagnostics(
         if (summary.busy_network_vetoed && has_residual &&
             summary.max_unflagged_residual_z >=
                 ptcproc.second_pass_local.high_score_event_override) {
-            const Eigen::Index det = citlali_learning_find_det_by_uid(
+            const Eigen::Index det = citlali::pipeline::learning_find_det_by_uid(
                 calib_scan.apt, summary.max_unflagged_residual_uid);
             ReductionLearningState::DetectorPenalty penalty;
             penalty.obsnum = obsnum;
@@ -288,7 +288,7 @@ void Engine::collect_ptc_learning_diagnostics(
             penalty.uid = summary.max_unflagged_residual_uid;
             penalty.nw = static_cast<int>(summary.nw);
             penalty.array =
-                citlali_learning_apt_int(calib_scan.apt, "array", det, -1);
+                citlali::pipeline::learning_apt_int(calib_scan.apt, "array", det, -1);
             penalty.factor = 0.0;
             penalty.score = summary.max_unflagged_residual_z;
             penalty.scan_local = true;

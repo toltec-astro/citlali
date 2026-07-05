@@ -135,7 +135,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
     for (const auto &record : records) {
         if (record.uid >= 0) {
             const Eigen::Index det =
-                citlali_learning_find_det_by_uid(calib_scan.apt, record.uid);
+                citlali::pipeline::learning_find_det_by_uid(calib_scan.apt, record.uid);
             if (det < 0 || det >= n_dets) {
                 ++summary.invalid_records;
                 continue;
@@ -147,7 +147,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
             bool matched_network = false;
             for (Eigen::Index det = 0; det < n_dets; ++det) {
                 const int det_nw =
-                    citlali_learning_apt_int(calib_scan.apt, "nw", det, -1);
+                    citlali::pipeline::learning_apt_int(calib_scan.apt, "nw", det, -1);
                 if (det_nw == record.nw) {
                     matched_network = true;
                     proposed_dets.insert(det);
@@ -228,9 +228,9 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
                     continue;
                 }
                 const int nw =
-                    citlali_learning_apt_int(calib_scan.apt, "nw", det, -1);
+                    citlali::pipeline::learning_apt_int(calib_scan.apt, "nw", det, -1);
                 const int array =
-                    citlali_learning_apt_int(calib_scan.apt, "array", det, -1);
+                    citlali::pipeline::learning_apt_int(calib_scan.apt, "array", det, -1);
                 if (nw >= 0) {
                     ++unflagged_by_nw[nw];
                 }
@@ -249,9 +249,9 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
                     continue;
                 }
                 const int nw =
-                    citlali_learning_apt_int(calib_scan.apt, "nw", det, -1);
+                    citlali::pipeline::learning_apt_int(calib_scan.apt, "nw", det, -1);
                 const int array =
-                    citlali_learning_apt_int(calib_scan.apt, "array", det, -1);
+                    citlali::pipeline::learning_apt_int(calib_scan.apt, "array", det, -1);
                 const bool preserves_nw =
                     nw < 0 ||
                     unflagged_by_nw.find(nw) == unflagged_by_nw.end() ||
@@ -387,7 +387,7 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
             ++summary.invalid_records;
             continue;
         }
-        const Eigen::Index det = citlali_learning_find_det_by_uid(calib_scan.apt, record.uid);
+        const Eigen::Index det = citlali::pipeline::learning_find_det_by_uid(calib_scan.apt, record.uid);
         const long long raw_start = apply_pre_rtc ? record.raw_start : record.ptc_start;
         const long long raw_stop = apply_pre_rtc ? record.raw_stop : record.ptc_stop;
         if (det < 0 || det >= n_dets || raw_start < 0 || raw_stop < raw_start ||

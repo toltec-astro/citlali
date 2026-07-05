@@ -1,10 +1,17 @@
 #pragma once
 
-// Engine learning implementation detail.
-// Include this only after Engine has been declared.
+#include <algorithm>
+#include <cmath>
+#include <string>
 
-template <class apt_t>
-static Eigen::Index citlali_learning_find_det_by_uid(const apt_t &apt, int uid) {
+#include <Eigen/Core>
+
+#include <citlali/core/timestream/timestream.h>
+
+namespace citlali::pipeline {
+
+template <class Apt>
+Eigen::Index learning_find_det_by_uid(const Apt &apt, int uid) {
     if (uid == timestream::kTransientFillInt || uid < 0) {
         return -1;
     }
@@ -21,9 +28,9 @@ static Eigen::Index citlali_learning_find_det_by_uid(const apt_t &apt, int uid) 
     return -1;
 }
 
-template <class apt_t>
-static int citlali_learning_apt_int(const apt_t &apt, const std::string &key,
-                                    Eigen::Index det, int fallback) {
+template <class Apt>
+int learning_apt_int(const Apt &apt, const std::string &key,
+                     Eigen::Index det, int fallback) {
     const auto it = apt.find(key);
     if (it == apt.end() || det < 0 || det >= it->second.size() ||
         !std::isfinite(it->second(det))) {
@@ -32,8 +39,8 @@ static int citlali_learning_apt_int(const apt_t &apt, const std::string &key,
     return static_cast<int>(std::llround(it->second(det)));
 }
 
-template <class apt_t>
-static int citlali_learning_array_for_nw(const apt_t &apt, int nw, int fallback) {
+template <class Apt>
+int learning_array_for_nw(const Apt &apt, int nw, int fallback) {
     const auto nw_it = apt.find("nw");
     const auto array_it = apt.find("array");
     if (nw_it == apt.end() || array_it == apt.end()) {
@@ -53,3 +60,4 @@ static int citlali_learning_array_for_nw(const apt_t &apt, int nw, int fallback)
     return fallback;
 }
 
+}  // namespace citlali::pipeline
