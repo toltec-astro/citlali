@@ -7182,8 +7182,9 @@ void Engine::create_rtcdiag_file() {
                 const double dt = tel_time(i + 1) - tel_time(i);
                 const double daz = az_phys(i + 1) - az_phys(i);
                 const double dalt = alt_phys(i + 1) - alt_phys(i);
-                if (!std::isfinite(dt) || !std::isfinite(daz) || !std::isfinite(dalt) ||
-                    dt <= 0.0 || dt > max_tel_sample_step_s ||
+                if (!std::isfinite(dt) || !std::isfinite(daz) ||
+                    !std::isfinite(dalt) || dt <= 0.0 ||
+                    dt > max_tel_sample_step_s ||
                     std::abs(daz) > max_pointing_step_rad ||
                     std::abs(dalt) > max_pointing_step_rad) {
                     continue;
