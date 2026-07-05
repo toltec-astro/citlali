@@ -7606,6 +7606,8 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         logger->info("starting {} map {}/{} (array={})",
                      map_label, map_number, n_maps, array_name);
         // init fwhm in pixels
+        const auto array_fwhm_arcsec =
+            toltec_io.array_fwhm_arcsec[array];
         wiener_filter.init_fwhm =
             toltec_io.array_fwhm_arcsec[array] * ASEC_TO_RAD /
             mb.pixel_size_rad;
