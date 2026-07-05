@@ -667,7 +667,7 @@ void Engine::obsnum_setup() {
 
     setup_tod_output_chunk_selection();
     // create output subdirectory if requested
-    if (tod_output_subdir_name!="null") {
+    if (tod_output_subdir_name != "null") {
         fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
     }
     // create timestream files
