@@ -7411,7 +7411,8 @@ void Engine::create_rtcdiag_file() {
                 rtc_impulsive_slot_chunks, n_rtc_impulsive_slot_values,
                 fill_double);
         };
-        auto add_rtc_imp_slot_int = [&](const std::string &name, const std::string &comment) {
+        auto add_rtc_imp_slot_int = [&](const std::string &name,
+                                        const std::string &comment) {
             citlali::pipeline::add_rtcdiag_impulsive_slot_int(
                 fo, name, comment, rtc_impulsive_slot_dims,
                 rtc_impulsive_slot_chunks, n_rtc_impulsive_slot_values,
