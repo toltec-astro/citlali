@@ -7738,7 +7738,10 @@ void Engine::find_sources(map_buffer_t &mb) {
                         lat << params(2) * ASEC_TO_RAD;
                         lon << params(1) * ASEC_TO_RAD;
 
-                        auto [adec, ara] = engine_utils::tangent_to_abs(lat, lon, mb.wcs.crval[0]*DEG_TO_RAD, mb.wcs.crval[1]*DEG_TO_RAD);
+                        auto [adec, ara] =
+                            engine_utils::tangent_to_abs(
+                                lat, lon, mb.wcs.crval[0] * DEG_TO_RAD,
+                                mb.wcs.crval[1] * DEG_TO_RAD);
 
                         params(1) = ara(0)*RAD_TO_DEG;
                         params(2) = adec(0)*RAD_TO_DEG;
