@@ -7642,7 +7642,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                          map_label, map_number, n_maps,
                          n_wiener_noise_maps);
             #pragma omp parallel for schedule(dynamic)
-            for (Eigen::Index j=0; j<mb.n_noise; ++j) {
+            for (Eigen::Index j = 0; j < n_wiener_noise_maps; ++j) {
                 wiener_filter.filter_noise_threadsafe(mb, i, j);
             }
             logger->info("noise filtering complete for {} map {}/{}",
