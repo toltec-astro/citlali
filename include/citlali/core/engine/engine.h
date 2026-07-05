@@ -7418,7 +7418,8 @@ void Engine::create_rtcdiag_file() {
                 rtc_impulsive_slot_chunks, n_rtc_impulsive_slot_values,
                 fill_int);
         };
-        auto add_rtc_imp_snip_double = [&](const std::string &name, const std::string &comment) {
+        auto add_rtc_imp_snip_double = [&](const std::string &name,
+                                           const std::string &comment) {
             citlali::pipeline::add_rtcdiag_impulsive_snippet_double(
                 fo, name, comment, rtc_impulsive_snippet_dims,
                 rtc_impulsive_snippet_chunks, n_rtc_impulsive_snippet_values,
