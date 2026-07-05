@@ -7342,15 +7342,15 @@ void Engine::write_stats() {
             path, redu_type, "", obsnum, telescope.sim_obs);
 
     // det stats header
-    std::map<std::string, std::string> det_stats_header_units {
+    const std::map<std::string, std::string> det_stats_header_units {
         {"rms", omb.sig_unit},
-        {"stddev",omb.sig_unit},
-        {"median",omb.sig_unit},
-        {"flagged_frac","N/A"},
-        {"weights","1/(" + omb.sig_unit + ")^2"},
+        {"stddev", omb.sig_unit},
+        {"median", omb.sig_unit},
+        {"flagged_frac", "N/A"},
+        {"weights", "1/(" + omb.sig_unit + ")^2"},
         };
     // group stats header
-    std::map<std::string, std::string> grp_stats_header_units {
+    const std::map<std::string, std::string> grp_stats_header_units {
         {"median_weights", "1/(" + omb.sig_unit + ")^2"},
         };
 
