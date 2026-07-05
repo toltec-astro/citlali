@@ -7152,27 +7152,21 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
         setup_filenames<map_t, engine_utils::toltecIO::source,
                         engine_utils::toltecIO::map>(dir_name);
 
-    // source header information
-    const auto source_header = citlali::pipeline::source_table_header();
-
-    // meta information for source table
-    YAML::Node source_meta =
-        citlali::pipeline::source_table_meta_for_observation(
-            mb->obsnums, mb->sig_unit, telescope.pixel_axes,
-            telescope.source_name, engine_utils::current_date_time(),
-            date_obs.back(), calib.apt_header_description);
-
     const auto map_to_array_index = [&](Eigen::Index map_index) {
         return maps_to_arrays(map_index);
     };
     const auto calc_map_std_dev = [](auto &signal) {
         return engine_utils::calc_std_dev(signal);
     };
-    Eigen::MatrixXf source_table =
-        citlali::pipeline::build_source_table(
-            *mb, map_fitter.n_params, map_to_array_index,
-            calc_map_std_dev);
-
-    // write source table
-    to_ecsv_from_matrix(source_filename, source_table, source_header, source_meta);
+    const auto write_source_table =
+        [&](const std::string &filename, auto &source_table,
+            auto source_header, auto source_meta) {
+            to_ecsv_from_matrix(
+                filename, source_table, source_header, source_meta);
+        };
+    citlali::pipeline::write_source_table_output(
+        source_filename, *mb, map_fitter.n_params, telescope.pixel_axes,
+        telescope.source_name, engine_utils::current_date_time(),
+        date_obs.back(), calib.apt_header_description, map_to_array_index,
+        calc_map_std_dev, write_source_table);
 }

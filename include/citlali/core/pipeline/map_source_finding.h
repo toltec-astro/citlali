@@ -408,6 +408,30 @@ Eigen::MatrixXf build_source_table(MapBuffer &map_buffer,
     return source_table;
 }
 
+template <class MapBuffer, class HeaderDescriptions, class MapToArray,
+          class CalcStdDev, class WriteSourceTable>
+void write_source_table_output(
+    const std::string &source_filename, MapBuffer &map_buffer,
+    Eigen::Index n_params, const std::string &pixel_axes,
+    const std::string &source_name, const std::string &creation_date,
+    const std::string &observation_date,
+    HeaderDescriptions &apt_header_description,
+    const MapToArray &maps_to_arrays, const CalcStdDev &calc_std_dev,
+    const WriteSourceTable &write_source_table) {
+    auto source_header = source_table_header();
+    YAML::Node source_meta =
+        source_table_meta_for_observation(
+            map_buffer.obsnums, map_buffer.sig_unit, pixel_axes,
+            source_name, creation_date, observation_date,
+            apt_header_description);
+    Eigen::MatrixXf source_table =
+        build_source_table(
+            map_buffer, n_params, maps_to_arrays, calc_std_dev);
+
+    write_source_table(
+        source_filename, source_table, source_header, source_meta);
+}
+
 template <class SourceCount>
 std::vector<int> source_index_vector(SourceCount n_sources) {
     std::vector<int> source_indices(static_cast<std::size_t>(n_sources));
