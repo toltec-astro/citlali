@@ -289,10 +289,8 @@ void Engine::get_beammap_config(CT &config) {
                          std::tuple{"beammap","priors","alignment_max_rotation_deg"},
                          {}, {0.0});
     }
-    if (beammap_priors_enabled && beammap_priors_filepath == "null") {
-        logger->warn("beammap.priors.enabled=true but beammap.priors.filepath is null; disabling priors");
-        beammap_priors_enabled = false;
-    }
+    citlali::pipeline::disable_missing_beammap_priors(
+        beammap_priors_enabled, beammap_priors_filepath, logger);
 
     const std::size_t n_toltec_arrays = toltec_io.array_name_map.size();
     // lower fwhm limit

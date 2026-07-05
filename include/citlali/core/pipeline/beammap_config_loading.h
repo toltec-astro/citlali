@@ -88,6 +88,18 @@ void normalize_beammap_phase_strategy(int iter_max, int &locator_iter,
     }
 }
 
+template <class Logger>
+void disable_missing_beammap_priors(bool &enabled,
+                                    const std::string &filepath,
+                                    const Logger &logger) {
+    if (!enabled || filepath != "null") {
+        return;
+    }
+    logger->warn(
+        "beammap.priors.enabled=true but beammap.priors.filepath is null; disabling priors");
+    enabled = false;
+}
+
 inline void mirror_beammap_core_config(
     citlali::config::BeammapConfig &target,
     int iter_max, double iter_tolerance, double convergence_radius_arcsec,
