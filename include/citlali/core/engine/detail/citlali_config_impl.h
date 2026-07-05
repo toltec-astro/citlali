@@ -4,6 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/engine/detail/config_parse_tracking.h>
+#include <citlali/core/engine/detail/mapmaking_activation_policy.h>
 #include <citlali/core/engine/detail/source_protection_activation.h>
 
 template<typename CT>
@@ -245,20 +246,9 @@ void Engine::get_citlali_config(CT &config) {
     }
 
     // disable map related keys if map-making is disabled
-    if (!run_mapmaking) {
-        run_coadd = false;
-        run_noise = false;
-        run_map_filter = false;
-        run_source_finder = false;
-        typed_coadd_config.enabled = false;
-        typed_noise_config.enabled = false;
-        typed_post_processing_config.map_filtering_enabled = false;
-        typed_post_processing_config.map_filtering.enabled = false;
-        typed_post_processing_config.source_finding_enabled = false;
-        typed_post_processing_config.source_finding.enabled = false;
-        typed_post_processing_config.source_fitting.active = false;
-        // we don't need to do iterations if no maps are made
-        beammap_iter_max = 1;
-        typed_beammap_config.iteration.max_iterations = 1;
-    }
+    citlali::engine_detail::disable_map_products_if_mapmaking_disabled(
+        run_mapmaking, run_coadd, run_noise, run_map_filter,
+        run_source_finder, typed_coadd_config, typed_noise_config,
+        typed_post_processing_config, beammap_iter_max,
+        typed_beammap_config);
 }
