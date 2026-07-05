@@ -92,6 +92,7 @@
 #include <citlali/core/pipeline/fits_image_metadata.h>
 #include <citlali/core/pipeline/cli_summary.h>
 #include <citlali/core/pipeline/map_filename.h>
+#include <citlali/core/pipeline/map_filtering.h>
 #include <citlali/core/pipeline/mapdiag_edge_guard.h>
 #include <citlali/core/pipeline/map_layer_name.h>
 #include <citlali/core/pipeline/map_summary_stats.h>
