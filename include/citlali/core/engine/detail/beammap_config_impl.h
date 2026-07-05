@@ -116,7 +116,8 @@ void Engine::get_beammap_config(CT &config) {
     // Beammap PTC TOD/diagnostics are written after the convergence decision.
     // The default is the actual last attempted iteration, including early
     // convergence, so the saved PTC reflects the final cleaning state.
-    beammap_tod_output_iter = -1;
+    beammap_tod_output_iter =
+        citlali::pipeline::default_beammap_tod_output_iter();
 
     citlali::pipeline::read_beammap_detector_tod_output_config(
         config, missing_keys, invalid_keys,
@@ -125,7 +126,7 @@ void Engine::get_beammap_config(CT &config) {
         beammap_detector_tod_output_n_uniform,
         beammap_detector_tod_output_n_source_dense);
 
-    typed_beammap_config = citlali::config::BeammapConfig{};
+    citlali::pipeline::reset_beammap_config_mirror(typed_beammap_config);
     citlali::pipeline::mirror_beammap_core_config(
         typed_beammap_config, beammap_iter_max, beammap_iter_tolerance,
         beammap_convergence_radius_arcsec, beammap_phase_split_enabled,

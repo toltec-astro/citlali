@@ -644,6 +644,15 @@ void read_beammap_detector_tod_output_config(
     }
 }
 
+inline int default_beammap_tod_output_iter() {
+    return -1;
+}
+
+inline void reset_beammap_config_mirror(
+    citlali::config::BeammapConfig &target) {
+    target = citlali::config::BeammapConfig{};
+}
+
 inline void mirror_beammap_core_config(
     citlali::config::BeammapConfig &target,
     int iter_max, double iter_tolerance, double convergence_radius_arcsec,
