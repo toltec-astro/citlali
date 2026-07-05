@@ -7845,10 +7845,10 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     }
 
     // matrix to hold source information (floats for readability)
-    Eigen::MatrixXf source_table(n_sources, 2*map_fitter.n_params + 2);
+    Eigen::MatrixXf source_table(n_sources, 2 * map_fitter.n_params + 2);
 
     // loop through params and add arrays
-    Eigen::Index k=0;
+    Eigen::Index k = 0;
     for (Eigen::Index i=0; i<mb->n_sources.size(); ++i) {
         if (mb->n_sources[i]!=0) {
             // calculate map standard deviation
