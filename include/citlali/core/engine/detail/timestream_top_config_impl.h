@@ -270,35 +270,16 @@ void Engine::get_timestream_config(CT &config) {
         tod_output_uniform_count_ptc,
         tod_output_source_dense_count_ptc);
 
-    auto mirror_tod_output_selection = [](const std::vector<Eigen::Index> &chunks_1based,
-                                          bool chunk_select_enabled,
-                                          const std::string &selection_mode,
-                                          int n_uniform,
-                                          int n_source_dense,
-                                          citlali::config::TodStreamOutputConfig &target) {
-        target.chunk_select_enabled = chunk_select_enabled;
-        target.chunks_1based.clear();
-        target.chunks_1based.reserve(chunks_1based.size());
-        for (const auto chunk : chunks_1based) {
-            target.chunks_1based.push_back(static_cast<int>(chunk));
-        }
-        if (auto parsed = citlali::config::parse_tod_output_selection_mode(selection_mode)) {
-            target.selection_mode = *parsed;
-        }
-        target.selection_n_uniform = n_uniform;
-        target.selection_n_source_dense = n_source_dense;
-    };
-
-    mirror_tod_output_selection(rtc_output_chunks, rtc_chunk_select_enabled,
-                                tod_output_selection_mode_rtc,
-                                tod_output_uniform_count_rtc,
-                                tod_output_source_dense_count_rtc,
-                                typed_timestream_config.output.raw_time_chunk);
-    mirror_tod_output_selection(ptc_output_chunks, ptc_chunk_select_enabled,
-                                tod_output_selection_mode_ptc,
-                                tod_output_uniform_count_ptc,
-                                tod_output_source_dense_count_ptc,
-                                typed_timestream_config.output.processed_time_chunk);
+    citlali::pipeline::mirror_tod_output_selection_config(
+        rtc_output_chunks, rtc_chunk_select_enabled,
+        tod_output_selection_mode_rtc, tod_output_uniform_count_rtc,
+        tod_output_source_dense_count_rtc,
+        typed_timestream_config.output.raw_time_chunk);
+    citlali::pipeline::mirror_tod_output_selection_config(
+        ptc_output_chunks, ptc_chunk_select_enabled,
+        tod_output_selection_mode_ptc, tod_output_uniform_count_ptc,
+        tod_output_source_dense_count_ptc,
+        typed_timestream_config.output.processed_time_chunk);
 
     tod_output_chunk_select_enabled_rtc = rtc_chunk_select_enabled;
     tod_output_chunk_select_enabled_ptc = ptc_chunk_select_enabled;
@@ -359,4 +340,3 @@ void Engine::get_timestream_config(CT &config) {
     /* get shared reduction-learning config */
     get_learning_config(config);
 }
-

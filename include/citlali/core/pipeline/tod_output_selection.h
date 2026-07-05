@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/config/timestream_config.h>
+
 #include <algorithm>
 #include <cmath>
 #include <set>
@@ -85,6 +87,25 @@ inline std::vector<Eigen::Index> uniform_plus_source_tod_output_chunks(
     add_source_dense_tod_output_chunks(
         selected_0based, n_scans, source_scan, n_source_dense);
     return selected_tod_output_chunks_1based(selected_0based);
+}
+
+inline void mirror_tod_output_selection_config(
+    const std::vector<Eigen::Index> &chunks_1based,
+    bool chunk_select_enabled, const std::string &selection_mode,
+    int n_uniform, int n_source_dense,
+    citlali::config::TodStreamOutputConfig &target) {
+    target.chunk_select_enabled = chunk_select_enabled;
+    target.chunks_1based.clear();
+    target.chunks_1based.reserve(chunks_1based.size());
+    for (const auto chunk : chunks_1based) {
+        target.chunks_1based.push_back(static_cast<int>(chunk));
+    }
+    if (auto parsed =
+            citlali::config::parse_tod_output_selection_mode(selection_mode)) {
+        target.selection_mode = *parsed;
+    }
+    target.selection_n_uniform = n_uniform;
+    target.selection_n_source_dense = n_source_dense;
 }
 
 inline bool tod_output_chunk_is_valid(Eigen::Index chunk_1based,
