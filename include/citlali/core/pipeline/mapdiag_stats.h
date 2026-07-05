@@ -584,6 +584,17 @@ MapdiagFormalNoiseStats mapdiag_formal_noise_stats_or_fill(
                 median_rms, median_err, fill_value)};
 }
 
+template <class MapBuffer>
+void assign_mapdiag_formal_noise_stats_or_fill(
+    std::size_t idx, const MapBuffer &mb, Eigen::Index map_index,
+    double fill_value, MapdiagFormalNoiseRefs refs) {
+    assign_mapdiag_formal_noise_stats(
+        idx,
+        mapdiag_formal_noise_stats_or_fill(
+            mb->median_err, mb->median_rms, map_index, fill_value),
+        refs);
+}
+
 template <class Values>
 MapdiagNoiseProductStats mapdiag_noise_product_stats_or_fill(
     const Values &weight_median_ratio, const Values &weight_scale,
@@ -593,6 +604,19 @@ MapdiagNoiseProductStats mapdiag_noise_product_stats_or_fill(
             mapdiag_value_or_fill(weight_scale, i, fill_value),
             mapdiag_value_or_fill(s2n_sigma, i, fill_value),
             mapdiag_value_or_fill(valid_pixels, i, fill_value)};
+}
+
+template <class MapBuffer>
+void assign_mapdiag_noise_product_stats_or_fill(
+    std::size_t idx, const MapBuffer &mb, Eigen::Index map_index,
+    double fill_value, MapdiagNoiseProductRefs refs) {
+    assign_mapdiag_noise_product_stats(
+        idx,
+        mapdiag_noise_product_stats_or_fill(
+            mb->noise_weight_median_ratio, mb->noise_weight_scale,
+            mb->noise_s2n_sigma, mb->noise_valid_pixels, map_index,
+            fill_value),
+        refs);
 }
 
 template <class CoverageList>

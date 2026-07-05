@@ -268,18 +268,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 weight_arr, valid_mask, core_mask),
             weight_refs);
 
-        citlali::pipeline::assign_mapdiag_formal_noise_stats(
-            idx,
-            citlali::pipeline::mapdiag_formal_noise_stats_or_fill(
-                mb->median_err, mb->median_rms, i, fill_double),
-            formal_noise_refs);
-        const auto noise_product_stats =
-            citlali::pipeline::mapdiag_noise_product_stats_or_fill(
-                mb->noise_weight_median_ratio, mb->noise_weight_scale,
-                mb->noise_s2n_sigma, mb->noise_valid_pixels, i,
-                fill_double);
-        citlali::pipeline::assign_mapdiag_noise_product_stats(
-            idx, noise_product_stats, noise_product_refs);
+        citlali::pipeline::assign_mapdiag_formal_noise_stats_or_fill(
+            idx, mb, i, fill_double, formal_noise_refs);
+        citlali::pipeline::assign_mapdiag_noise_product_stats_or_fill(
+            idx, mb, i, fill_double, noise_product_refs);
 
         if (citlali::pipeline::mapdiag_has_coverage_map(
                 mb->coverage, i)) {
