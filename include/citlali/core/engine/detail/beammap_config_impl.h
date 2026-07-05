@@ -47,26 +47,21 @@ void Engine::get_beammap_config(CT &config) {
         config, missing_keys, invalid_keys, beammap_split_fits_by_flag,
         beammap_split_flag_values, logger);
 
-    // optional soft priors for beammap peak initialization
-    beammap_priors_enabled = false;
-    beammap_priors_filepath = "null";
-    beammap_priors_candidate_top_n = 64;
-    beammap_priors_min_snr = 0.0;
-    beammap_priors_max_d2 = 25.0;
-    beammap_priors_max_d2_iter0 = 25.0;
-    beammap_priors_max_d2_after_iter0 = 25.0;
-    beammap_priors_score_lambda = 2.0;
-    beammap_priors_score_lambda_iter0 = 2.0;
-    beammap_priors_score_lambda_after_iter0 = 2.0;
-    beammap_priors_fallback_blind = true;
-    beammap_priors_align_after_iter0 = true;
-    beammap_priors_alignment_scope = "array";
-    beammap_priors_alignment_common_support = "all";
-    beammap_priors_alignment_common_support_quantile = 0.02;
-    beammap_priors_alignment_min_matches = 30;
-    beammap_priors_alignment_max_d2 = 25.0;
-    beammap_priors_alignment_fit_rotation = true;
-    beammap_priors_alignment_max_rotation_deg = 8.0;
+    citlali::pipeline::initialize_beammap_priors_defaults(
+        beammap_priors_enabled, beammap_priors_filepath,
+        beammap_priors_candidate_top_n, beammap_priors_min_snr,
+        beammap_priors_max_d2, beammap_priors_max_d2_iter0,
+        beammap_priors_max_d2_after_iter0, beammap_priors_score_lambda,
+        beammap_priors_score_lambda_iter0,
+        beammap_priors_score_lambda_after_iter0,
+        beammap_priors_fallback_blind, beammap_priors_align_after_iter0,
+        beammap_priors_alignment_scope,
+        beammap_priors_alignment_common_support,
+        beammap_priors_alignment_common_support_quantile,
+        beammap_priors_alignment_min_matches,
+        beammap_priors_alignment_max_d2,
+        beammap_priors_alignment_fit_rotation,
+        beammap_priors_alignment_max_rotation_deg);
 
     if (config.template has_typed<bool>(std::tuple{"beammap","priors","enabled"})) {
         get_config_value(config, beammap_priors_enabled, missing_keys, invalid_keys,

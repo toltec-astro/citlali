@@ -373,6 +373,37 @@ void read_beammap_sensitivity_config(
         sens_psd_limits_Hz_vec.data(), sens_psd_limits_Hz_vec.size());
 }
 
+inline void initialize_beammap_priors_defaults(
+    bool &enabled, std::string &filepath, int &candidate_top_n,
+    double &min_snr, double &max_d2, double &max_d2_iter0,
+    double &max_d2_after_iter0, double &score_lambda,
+    double &score_lambda_iter0, double &score_lambda_after_iter0,
+    bool &fallback_blind, bool &align_after_iter0,
+    std::string &alignment_scope, std::string &alignment_common_support,
+    double &alignment_common_support_quantile, int &alignment_min_matches,
+    double &alignment_max_d2, bool &alignment_fit_rotation,
+    double &alignment_max_rotation_deg) {
+    enabled = false;
+    filepath = "null";
+    candidate_top_n = 64;
+    min_snr = 0.0;
+    max_d2 = 25.0;
+    max_d2_iter0 = 25.0;
+    max_d2_after_iter0 = 25.0;
+    score_lambda = 2.0;
+    score_lambda_iter0 = 2.0;
+    score_lambda_after_iter0 = 2.0;
+    fallback_blind = true;
+    align_after_iter0 = true;
+    alignment_scope = "array";
+    alignment_common_support = "all";
+    alignment_common_support_quantile = 0.02;
+    alignment_min_matches = 30;
+    alignment_max_d2 = 25.0;
+    alignment_fit_rotation = true;
+    alignment_max_rotation_deg = 8.0;
+}
+
 template <class Config, class MissingKeys, class InvalidKeys>
 void read_beammap_detector_tod_output_config(
     Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys,
