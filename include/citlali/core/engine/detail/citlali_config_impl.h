@@ -165,22 +165,7 @@ void Engine::get_citlali_config(CT &config) {
                 map_fitter.fwhm_limits(i);
         }
 
-        // flux lower factor
-        if (map_fitter.flux_limits(0) > 0) {
-            map_fitter.flux_low = map_fitter.flux_limits(0);
-        }
-        // flux lower factor
-        if (map_fitter.flux_limits(1) > 0) {
-            map_fitter.flux_high = map_fitter.flux_limits(1);
-        }
-        // fwhm lower factor
-        if (map_fitter.fwhm_limits(0) > 0) {
-            map_fitter.fwhm_low = map_fitter.fwhm_limits(0);
-        }
-        // fwhm upper factor
-        if (map_fitter.fwhm_limits(1) > 0) {
-            map_fitter.fwhm_high = map_fitter.fwhm_limits(1);
-        }
+        citlali::pipeline::apply_positive_source_fit_limits(map_fitter);
     }
 
     /* get wiener filter config */

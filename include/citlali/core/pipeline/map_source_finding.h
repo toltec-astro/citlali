@@ -42,6 +42,22 @@ inline double source_fitting_arcsec_to_pixels(double value_arcsec,
     return arcsec_to_rad * value_arcsec / pixel_size_rad;
 }
 
+template <class MapFitter>
+void apply_positive_source_fit_limits(MapFitter &map_fitter) {
+    if (map_fitter.flux_limits(0) > 0) {
+        map_fitter.flux_low = map_fitter.flux_limits(0);
+    }
+    if (map_fitter.flux_limits(1) > 0) {
+        map_fitter.flux_high = map_fitter.flux_limits(1);
+    }
+    if (map_fitter.fwhm_limits(0) > 0) {
+        map_fitter.fwhm_low = map_fitter.fwhm_limits(0);
+    }
+    if (map_fitter.fwhm_limits(1) > 0) {
+        map_fitter.fwhm_high = map_fitter.fwhm_limits(1);
+    }
+}
+
 template <class ObservationMapBuffer, class CoaddMapBuffer>
 void mirror_source_finding_config_to_coadd(
     const ObservationMapBuffer &omb, CoaddMapBuffer &cmb,
