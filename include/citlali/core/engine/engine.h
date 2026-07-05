@@ -7272,10 +7272,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
 
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::find_sources(map_buffer_t &mb) {
-    // clear all source vectors
-    mb.n_sources.clear();
-    mb.row_source_locs.clear();
-    mb.col_source_locs.clear();
+    citlali::pipeline::clear_source_detection_vectors(mb);
     // loop through maps
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         citlali::pipeline::append_missing_source_location(
@@ -7293,13 +7290,8 @@ void Engine::find_sources(map_buffer_t &mb) {
         }
     }
 
-    // count up the total number of sources
-    const Eigen::Index n_sources =
-        citlali::pipeline::count_map_sources(mb.n_sources);
-
-    // matrix to store source parameters
-    mb.source_params.setZero(n_sources, map_fitter.n_params);
-    mb.source_perror.setZero(n_sources, map_fitter.n_params);
+    citlali::pipeline::initialize_source_fit_tables(
+        mb, map_fitter.n_params);
 
     // keep track of row in total source count
     Eigen::Index source_row_start = 0;
@@ -7398,34 +7390,11 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::source_table_units(mb->sig_unit, pos_units);
 
     // meta information for source table
-    YAML::Node source_meta;
-
-    // add obsnums
-    for (Eigen::Index i = 0; i < mb->obsnums.size(); ++i) {
-        // add obsnum to meta data
-        const auto obsnum_key =
-            citlali::pipeline::source_obsnum_meta_key(i);
-        source_meta[obsnum_key] = mb->obsnums[i];
-    }
-
-    // add source name
-    source_meta["Source"] = telescope.source_name;
-
-    // add date of file creation
-    source_meta["creation_date"] = engine_utils::current_date_time();
-
-    // add observation date
-    source_meta["date"] = date_obs.back();
-
-
-    // populate source meta information
-    for (const auto &[key, val] : source_header_units) {
-        source_meta[key].push_back(
-            citlali::pipeline::source_units_meta_entry(val));
-        // description from apt
-        const auto description = calib.apt_header_description[key];
-        source_meta[key].push_back(description);
-    }
+    YAML::Node source_meta =
+        citlali::pipeline::source_table_meta(
+            mb->obsnums, telescope.source_name,
+            engine_utils::current_date_time(), date_obs.back(),
+            source_header_units, calib.apt_header_description);
 
     // count up the total number of sources
     const Eigen::Index n_sources =
@@ -7439,41 +7408,19 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::source_table_sig2noise_column(
             map_fitter.n_params);
 
-    // loop through params and add arrays
-    Eigen::Index k = 0;
-    for (Eigen::Index i = 0; i < mb->n_sources.size(); ++i) {
-        if (citlali::pipeline::has_sources(mb->n_sources[i])) {
-            // calculate map standard deviation
-            const double map_std_dev =
-                engine_utils::calc_std_dev(mb->signal[i]);
-
-            for (Eigen::Index j = 0; j < mb->n_sources[i]; ++j) {
-                source_table(k, 0) = maps_to_arrays(i);
-                // set signal to noise
-                source_table(k, sig2noise_col) =
-                    citlali::pipeline::source_signal_to_noise(
-                        mb->source_params(k, 0), map_std_dev);
-
-                ++k;
-            }
-        }
-    }
+    const auto map_to_array_index = [&](Eigen::Index map_index) {
+        return maps_to_arrays(map_index);
+    };
+    const auto calc_map_std_dev = [](auto &signal) {
+        return engine_utils::calc_std_dev(signal);
+    };
+    citlali::pipeline::populate_source_table_map_columns(
+        source_table, *mb, sig2noise_col, map_to_array_index,
+        calc_map_std_dev);
 
     // populate source table
-    Eigen::Index source_param_index = 0;
-    while (source_param_index < map_fitter.n_params) {
-        const auto param_col =
-            citlali::pipeline::source_table_param_column(
-                source_param_index);
-        const auto error_col =
-            citlali::pipeline::source_table_error_column(
-                source_param_index);
-        source_table.col(param_col) =
-            mb->source_params.col(source_param_index).template cast<float>();
-        source_table.col(error_col) =
-            mb->source_perror.col(source_param_index).template cast<float>();
-        ++source_param_index;
-    }
+    citlali::pipeline::populate_source_table_fit_columns(
+        source_table, *mb, map_fitter.n_params);
 
     // write source table
     to_ecsv_from_matrix(source_filename, source_table, source_header, source_meta);

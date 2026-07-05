@@ -7,6 +7,7 @@
 #include <vector>
 
 #include <Eigen/Core>
+#include <yaml-cpp/yaml.h>
 
 namespace citlali::pipeline {
 
@@ -37,6 +38,23 @@ Eigen::Index count_map_sources(const SourceCounts &source_counts) {
         n_sources += sources;
     }
     return n_sources;
+}
+
+template <class MapBuffer>
+void clear_source_detection_vectors(MapBuffer &map_buffer) {
+    map_buffer.n_sources.clear();
+    map_buffer.row_source_locs.clear();
+    map_buffer.col_source_locs.clear();
+}
+
+template <class MapBuffer>
+void initialize_source_fit_tables(MapBuffer &map_buffer,
+                                  Eigen::Index n_params) {
+    const Eigen::Index n_sources =
+        count_map_sources(map_buffer.n_sources);
+
+    map_buffer.source_params.setZero(n_sources, n_params);
+    map_buffer.source_perror.setZero(n_sources, n_params);
 }
 
 inline double source_fit_initial_fwhm_pixels(
@@ -151,9 +169,77 @@ inline Eigen::Index source_table_error_column(Eigen::Index source_param_index) {
     return source_table_param_column(source_param_index) + 1;
 }
 
+template <class Obsnums, class HeaderUnits, class HeaderDescriptions>
+YAML::Node source_table_meta(
+    const Obsnums &obsnums, const std::string &source_name,
+    const std::string &creation_date, const std::string &observation_date,
+    const HeaderUnits &source_header_units,
+    HeaderDescriptions &apt_header_description) {
+    YAML::Node source_meta;
+
+    for (Eigen::Index i = 0; i < obsnums.size(); ++i) {
+        const auto obsnum_key = source_obsnum_meta_key(i);
+        source_meta[obsnum_key] = obsnums[i];
+    }
+
+    source_meta["Source"] = source_name;
+    source_meta["creation_date"] = creation_date;
+    source_meta["date"] = observation_date;
+
+    for (const auto &[key, val] : source_header_units) {
+        source_meta[key].push_back(source_units_meta_entry(val));
+        source_meta[key].push_back(apt_header_description[key]);
+    }
+
+    return source_meta;
+}
+
 inline float source_signal_to_noise(double source_amplitude,
                                     double map_std_dev) {
     return static_cast<float>(source_amplitude / map_std_dev);
+}
+
+template <class SourceTable, class MapBuffer, class MapToArray,
+          class CalcStdDev>
+void populate_source_table_map_columns(
+    SourceTable &source_table, MapBuffer &map_buffer,
+    Eigen::Index sig2noise_col, const MapToArray &maps_to_arrays,
+    const CalcStdDev &calc_std_dev) {
+    Eigen::Index source_row = 0;
+    for (Eigen::Index i = 0; i < map_buffer.n_sources.size(); ++i) {
+        if (!has_sources(map_buffer.n_sources[i])) {
+            continue;
+        }
+
+        const double map_std_dev = calc_std_dev(map_buffer.signal[i]);
+        for (Eigen::Index j = 0; j < map_buffer.n_sources[i]; ++j) {
+            source_table(source_row, 0) = maps_to_arrays(i);
+            source_table(source_row, sig2noise_col) =
+                source_signal_to_noise(
+                    map_buffer.source_params(source_row, 0), map_std_dev);
+            ++source_row;
+        }
+    }
+}
+
+template <class SourceTable, class MapBuffer>
+void populate_source_table_fit_columns(SourceTable &source_table,
+                                       MapBuffer &map_buffer,
+                                       Eigen::Index n_params) {
+    Eigen::Index source_param_index = 0;
+    while (source_param_index < n_params) {
+        const auto param_col =
+            source_table_param_column(source_param_index);
+        const auto error_col =
+            source_table_error_column(source_param_index);
+        source_table.col(param_col) =
+            map_buffer.source_params.col(source_param_index)
+                .template cast<float>();
+        source_table.col(error_col) =
+            map_buffer.source_perror.col(source_param_index)
+                .template cast<float>();
+        ++source_param_index;
+    }
 }
 
 template <class SourceCount>
