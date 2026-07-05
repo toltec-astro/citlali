@@ -414,37 +414,21 @@ void Engine::get_beammap_config(CT &config) {
         beammap_scan_band_mask_row_sigma_ratio_threshold,
         beammap_scan_band_mask_max_flagged_fraction,
         beammap_split_fits_by_flag, beammap_split_flag_values);
-    typed_beammap_config.priors.enabled = beammap_priors_enabled;
-    typed_beammap_config.priors.filepath = beammap_priors_filepath;
-    typed_beammap_config.priors.candidate_top_n =
-        beammap_priors_candidate_top_n;
-    typed_beammap_config.priors.min_snr = beammap_priors_min_snr;
-    typed_beammap_config.priors.max_d2 = beammap_priors_max_d2;
-    typed_beammap_config.priors.max_d2_iter0 = beammap_priors_max_d2_iter0;
-    typed_beammap_config.priors.max_d2_after_iter0 =
-        beammap_priors_max_d2_after_iter0;
-    typed_beammap_config.priors.score_lambda = beammap_priors_score_lambda;
-    typed_beammap_config.priors.score_lambda_iter0 =
-        beammap_priors_score_lambda_iter0;
-    typed_beammap_config.priors.score_lambda_after_iter0 =
-        beammap_priors_score_lambda_after_iter0;
-    typed_beammap_config.priors.fallback_blind = beammap_priors_fallback_blind;
-    typed_beammap_config.priors.align_after_iter0 =
-        beammap_priors_align_after_iter0;
-    typed_beammap_config.priors.alignment_scope =
-        beammap_priors_alignment_scope;
-    typed_beammap_config.priors.alignment_common_support =
-        beammap_priors_alignment_common_support;
-    typed_beammap_config.priors.alignment_common_support_quantile =
-        beammap_priors_alignment_common_support_quantile;
-    typed_beammap_config.priors.alignment_min_matches =
-        beammap_priors_alignment_min_matches;
-    typed_beammap_config.priors.alignment_max_d2 =
-        beammap_priors_alignment_max_d2;
-    typed_beammap_config.priors.alignment_fit_rotation =
-        beammap_priors_alignment_fit_rotation;
-    typed_beammap_config.priors.alignment_max_rotation_deg =
-        beammap_priors_alignment_max_rotation_deg;
+    citlali::pipeline::mirror_beammap_priors_config(
+        typed_beammap_config, beammap_priors_enabled,
+        beammap_priors_filepath, beammap_priors_candidate_top_n,
+        beammap_priors_min_snr, beammap_priors_max_d2,
+        beammap_priors_max_d2_iter0, beammap_priors_max_d2_after_iter0,
+        beammap_priors_score_lambda, beammap_priors_score_lambda_iter0,
+        beammap_priors_score_lambda_after_iter0,
+        beammap_priors_fallback_blind, beammap_priors_align_after_iter0,
+        beammap_priors_alignment_scope,
+        beammap_priors_alignment_common_support,
+        beammap_priors_alignment_common_support_quantile,
+        beammap_priors_alignment_min_matches,
+        beammap_priors_alignment_max_d2,
+        beammap_priors_alignment_fit_rotation,
+        beammap_priors_alignment_max_rotation_deg);
     typed_beammap_config.detector_tod_output.enabled =
         beammap_detector_tod_output_enabled;
     typed_beammap_config.detector_tod_output.subdir_name =

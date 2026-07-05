@@ -120,4 +120,38 @@ inline void mirror_beammap_core_config(
     target.split_fits_by_flag.flag_values = split_flag_values;
 }
 
+inline void mirror_beammap_priors_config(
+    citlali::config::BeammapConfig &target,
+    bool enabled, const std::string &filepath, int candidate_top_n,
+    double min_snr, double max_d2, double max_d2_iter0,
+    double max_d2_after_iter0, double score_lambda,
+    double score_lambda_iter0, double score_lambda_after_iter0,
+    bool fallback_blind, bool align_after_iter0,
+    const std::string &alignment_scope,
+    const std::string &alignment_common_support,
+    double alignment_common_support_quantile,
+    int alignment_min_matches, double alignment_max_d2,
+    bool alignment_fit_rotation, double alignment_max_rotation_deg) {
+    target.priors.enabled = enabled;
+    target.priors.filepath = filepath;
+    target.priors.candidate_top_n = candidate_top_n;
+    target.priors.min_snr = min_snr;
+    target.priors.max_d2 = max_d2;
+    target.priors.max_d2_iter0 = max_d2_iter0;
+    target.priors.max_d2_after_iter0 = max_d2_after_iter0;
+    target.priors.score_lambda = score_lambda;
+    target.priors.score_lambda_iter0 = score_lambda_iter0;
+    target.priors.score_lambda_after_iter0 = score_lambda_after_iter0;
+    target.priors.fallback_blind = fallback_blind;
+    target.priors.align_after_iter0 = align_after_iter0;
+    target.priors.alignment_scope = alignment_scope;
+    target.priors.alignment_common_support = alignment_common_support;
+    target.priors.alignment_common_support_quantile =
+        alignment_common_support_quantile;
+    target.priors.alignment_min_matches = alignment_min_matches;
+    target.priors.alignment_max_d2 = alignment_max_d2;
+    target.priors.alignment_fit_rotation = alignment_fit_rotation;
+    target.priors.alignment_max_rotation_deg = alignment_max_rotation_deg;
+}
+
 }  // namespace citlali::pipeline
