@@ -16,9 +16,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     const int fill_int = citlali::pipeline::mapdiag_fill_int();
     const auto n_mapdiag_maps = mapdiag_context.n_maps;
 
-    std::vector<std::string> array_names(n_mapdiag_maps);
-    std::vector<std::string> stokes_names(n_mapdiag_maps);
-    std::vector<std::string> map_names(n_mapdiag_maps);
+    citlali::pipeline::MapdiagMapLabelStorage mapdiag_label_storage{
+        n_mapdiag_maps};
     std::vector<double> median_err(n_mapdiag_maps, fill_double);
     std::vector<double> median_rms(n_mapdiag_maps, fill_double);
     std::vector<double> weight_thresholds(n_mapdiag_maps, fill_double);
@@ -226,8 +225,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             telescope.project_id, telescope.obs_goal, wiener_filter);
     const auto mapdiag_labels =
         citlali::pipeline::make_mapdiag_label_vars(
-            array_names, stokes_names, map_names, mb->obsnums, obsnum,
-            date_obs, mapdiag_context);
+            mapdiag_label_storage, mb->obsnums, obsnum, date_obs,
+            mapdiag_context);
     const auto mapdiag_values =
         citlali::pipeline::make_mapdiag_value_vars(
             map_double_values, map_int_values, obs_double_values,
@@ -248,7 +247,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::assign_mapdiag_map_labels_from_indices(
             idx, i, write_indices, toltec_io.array_name_map, calib.arrays,
             rtcproc.polarization.stokes_params, map_name_for_index,
-            {array_names, stokes_names, map_names});
+            mapdiag_label_storage.refs());
 
         const double weight_threshold =
             citlali::pipeline::mapdiag_weight_threshold_for_map(mb, i);
@@ -599,11 +598,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         .create_filename<engine_utils::toltecIO::toltec,
                                          engine_utils::toltecIO::map,
                                          engine_utils::toltecIO::raw>(
-                        obs_dir, redu_type, array_names[idx], coadd_obsnum,
-                        telescope.sim_obs) + ".fits";
+                        obs_dir, redu_type,
+                        mapdiag_label_storage.array_names[idx], coadd_obsnum,
+                        telescope.sim_obs) +
+                    ".fits";
                 const auto weight_hdu_name =
                     citlali::pipeline::mapdiag_weight_hdu_name(
-                        map_names[idx], stokes_names[idx]);
+                        mapdiag_label_storage.map_names[idx],
+                        mapdiag_label_storage.stokes_names[idx]);
                 try {
                     fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*>
                         obs_fits(obs_weight_path);

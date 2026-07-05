@@ -125,6 +125,17 @@ inline MapdiagLabelVars make_mapdiag_label_vars(
         context.n_obsnums};
 }
 
+inline MapdiagLabelVars make_mapdiag_label_vars(
+    const MapdiagMapLabelStorage &labels,
+    const std::vector<std::string> &obsnums,
+    const std::string &fallback_obsnum,
+    const std::vector<std::string> &date_obs,
+    const MapdiagSizeContext &context) {
+    return make_mapdiag_label_vars(
+        labels.array_names, labels.stokes_names, labels.map_names, obsnums,
+        fallback_obsnum, date_obs, context);
+}
+
 inline MapdiagNetcdfDims add_mapdiag_netcdf_dims(
     netCDF::NcFile &fo, const MapdiagSizeContext &context) {
     netCDF::NcDim maps_dim =

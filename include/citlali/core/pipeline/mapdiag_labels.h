@@ -20,6 +20,19 @@ struct MapdiagMapLabelRefs {
     std::vector<std::string> &map_names;
 };
 
+struct MapdiagMapLabelStorage {
+    std::vector<std::string> array_names;
+    std::vector<std::string> stokes_names;
+    std::vector<std::string> map_names;
+
+    explicit MapdiagMapLabelStorage(std::size_t n_maps)
+        : array_names(n_maps), stokes_names(n_maps), map_names(n_maps) {}
+
+    MapdiagMapLabelRefs refs() {
+        return {array_names, stokes_names, map_names};
+    }
+};
+
 inline MapdiagMapLabels make_mapdiag_map_labels(
     const std::string &array_name, const std::string &stokes_name,
     const std::string &map_name) {
