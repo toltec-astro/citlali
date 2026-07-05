@@ -7383,10 +7383,11 @@ void Engine::write_stats() {
     }
 
     // add apt table
-    for (auto const& x: calib.apt) {
-        netCDF::NcVar apt_v = fo.addVar("apt_" + x.first,netCDF::ncDouble, n_dets_dim);
+    for (const auto &x : calib.apt) {
+        netCDF::NcVar apt_v =
+            fo.addVar("apt_" + x.first, netCDF::ncDouble, n_dets_dim);
         apt_v.putVar(x.second.data());
-        apt_v.putAtt("units",calib.apt_header_units[x.first]);
+        apt_v.putAtt("units", calib.apt_header_units[x.first]);
     }
 
     // add adc
