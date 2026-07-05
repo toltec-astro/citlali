@@ -6285,7 +6285,9 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
 
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
-    std::string filename = setup_filenames<map_t, engine_utils::toltecIO::toltec, engine_utils::toltecIO::mapdiag>(dir_name);
+    std::string filename =
+        setup_filenames<map_t, engine_utils::toltecIO::toltec,
+                        engine_utils::toltecIO::mapdiag>(dir_name);
     const auto mapdiag_context = citlali::pipeline::make_mapdiag_size_context(
         static_cast<std::size_t>(n_maps),
         std::max<std::size_t>(1, mb->obsnums.size()),
