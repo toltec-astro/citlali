@@ -9,6 +9,8 @@
 #include <type_traits>
 #include <vector>
 
+#include <Eigen/Core>
+
 namespace citlali::engine_detail {
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -273,6 +275,34 @@ void read_coadd_map_block_config(
     }
     logger->info("getting cmb config options");
     cmb.get_config(config, missing_keys, invalid_keys, pixel_axes, redu_type);
+}
+
+template <class Config, class JincMapmaker, class ArrayNameMap,
+          class MissingKeys, class InvalidKeys>
+void read_jinc_filter_config(Config &config, JincMapmaker &jinc_mm,
+                             const ArrayNameMap &array_name_map,
+                             MissingKeys &missing_keys,
+                             InvalidKeys &invalid_keys) {
+    ::get_config_value(config, jinc_mm.r_max, missing_keys, invalid_keys,
+                       std::tuple{"mapmaking", "jinc_filter", "r_max"});
+    for (auto const& [arr_index, arr_name] : array_name_map) {
+        auto shape = config.template get_typed<std::vector<double>>(
+            std::tuple{"mapmaking", "jinc_filter", "shape_params",
+                       arr_name});
+        if (shape.size() != 3) {
+            invalid_keys.push_back(
+                {"mapmaking", "jinc_filter", "shape_params", arr_name});
+            shape.resize(3, 0.0);
+        }
+        jinc_mm.shape_params[arr_index] =
+            Eigen::Map<Eigen::VectorXd>(shape.data(), shape.size());
+    }
+    if (config.template has_typed<int>(
+            std::tuple{"mapmaking", "jinc_filter", "subpixel_n"})) {
+        ::get_config_value(
+            config, jinc_mm.subpixel_n, missing_keys, invalid_keys,
+            std::tuple{"mapmaking", "jinc_filter", "subpixel_n"}, {}, {1});
+    }
 }
 
 }  // namespace citlali::engine_detail

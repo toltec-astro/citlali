@@ -61,34 +61,11 @@ void Engine::get_mapmaking_config(CT &config) {
         parallel_policy, omb, cmb, jinc_mm);
 
     if (map_method=="jinc") {
-        // maximum radius for jinc filter
-        get_config_value(config, jinc_mm.r_max, missing_keys, invalid_keys,
-                         std::tuple{"mapmaking","jinc_filter","r_max"});
-        // get jinc filter shape params
-        for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
-            auto jinc_shape_vec = config.template get_typed<std::vector<double>>(std::tuple{"mapmaking","jinc_filter","shape_params",arr_name});
-            if (jinc_shape_vec.size() != 3) {
-                invalid_keys.push_back({"mapmaking","jinc_filter","shape_params",arr_name});
-                jinc_shape_vec.resize(3, 0.0);
-            }
-            jinc_mm.shape_params[arr_index] = Eigen::Map<Eigen::VectorXd>(jinc_shape_vec.data(),jinc_shape_vec.size());
-        }
-        // optional: sub-pixel sampling for jinc kernel
-        if (config.template has_typed<int>(std::tuple{"mapmaking","jinc_filter","subpixel_n"})) {
-            get_config_value(config, jinc_mm.subpixel_n, missing_keys, invalid_keys,
-                             std::tuple{"mapmaking","jinc_filter","subpixel_n"},{},{1});
-        }
-        citlali::pipeline::mirror_jinc_mapmaker_config_to_fruit_loops(
-            jinc_mm, ptcproc);
-
-        if (jinc_mm.mode=="matrix") {
-            // allocate jinc matrix
-            jinc_mm.allocate_jinc_matrix(omb.pixel_size_rad);
-        }
-        else if (jinc_mm.mode=="splines") {
-            // precompute jinc spline
-            jinc_mm.calculate_jinc_splines();
-        }
+        citlali::engine_detail::read_jinc_filter_config(
+            config, jinc_mm, toltec_io.array_name_map, missing_keys,
+            invalid_keys);
+        citlali::pipeline::finalize_jinc_filter_config(
+            jinc_mm, ptcproc, omb.pixel_size_rad);
     }
 
     else if (map_method=="maximum_likelihood") {

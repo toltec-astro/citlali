@@ -97,6 +97,18 @@ void sync_mapmaking_parallel_policy(const ParallelPolicy &parallel_policy,
     jinc_mm.parallel_policy = parallel_policy;
 }
 
+template <class JincMapmaker, class PtcProc>
+void finalize_jinc_filter_config(JincMapmaker &jinc_mm, PtcProc &ptcproc,
+                                 double pixel_size_rad) {
+    mirror_jinc_mapmaker_config_to_fruit_loops(jinc_mm, ptcproc);
+    if (jinc_mm.mode == "matrix") {
+        jinc_mm.allocate_jinc_matrix(pixel_size_rad);
+    }
+    else if (jinc_mm.mode == "splines") {
+        jinc_mm.calculate_jinc_splines();
+    }
+}
+
 template <class OutputMapBlock, class CoaddMapBlock>
 void mirror_noise_map_settings_to_coadd(const OutputMapBlock &omb,
                                         CoaddMapBlock &cmb) {
