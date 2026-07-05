@@ -7609,7 +7609,8 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         const auto array_fwhm_arcsec =
             toltec_io.array_fwhm_arcsec[array];
         wiener_filter.init_fwhm =
-            array_fwhm_arcsec * ASEC_TO_RAD / mb.pixel_size_rad;
+            citlali::pipeline::map_filter_initial_fwhm_pixels(
+                array_fwhm_arcsec, ASEC_TO_RAD, mb.pixel_size_rad);
         // make wiener filter template
         logger->info("building Wiener template for {} map {}/{} (array={})",
                      map_label, map_number, n_maps, array_name);
