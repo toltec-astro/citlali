@@ -7676,7 +7676,7 @@ void Engine::find_sources(map_buffer_t &mb) {
     mb.source_perror.setZero(n_sources, map_fitter.n_params);
 
     // keep track of row in total source count
-    Eigen::Index k = 0;
+    Eigen::Index source_row_start = 0;
 
     // now loop through and fit the sources
     for (Eigen::Index i=0; i<n_maps; ++i) {
@@ -7733,14 +7733,14 @@ void Engine::find_sources(map_buffer_t &mb) {
                     }
 
                     // add source params and errors to table
-                    mb.source_params.row(k+j) = params;
-                    mb.source_perror.row(k+j) = perrors;
+                    mb.source_params.row(source_row_start+j) = params;
+                    mb.source_perror.row(source_row_start+j) = perrors;
                 }
                 return 0;
             });
 
             // update row
-            k += mb.n_sources[i];
+            source_row_start += mb.n_sources[i];
         }
     }
 }
