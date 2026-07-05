@@ -3,6 +3,8 @@
 // Engine config loading implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/engine/detail/pointing_offsets_config.h>
+
 template<typename CT>
 void Engine::get_astrometry_config(CT &config) {
     typed_astrometry_config = citlali::config::AstrometryConfig{};
@@ -21,9 +23,9 @@ void Engine::get_astrometry_config(CT &config) {
 
         for (Eigen::Index i = 0; i < pointing_node.size(); ++i) {
             if (config.has(std::tuple{"pointing_offsets", i, "axes_name"})) {
-                auto axis = config.get_str(std::tuple{"pointing_offsets", i, "axes_name"});
-                std::transform(axis.begin(), axis.end(), axis.begin(),
-                               [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
+                auto axis = citlali::engine_detail::normalized_pointing_axis_name(
+                    config.get_str(
+                        std::tuple{"pointing_offsets", i, "axes_name"}));
                 if (axis == "az" || axis == "alt") {
                     auto offset = config.template get_typed<std::vector<double>>(
                         std::tuple{"pointing_offsets", i, "value_arcsec"});
