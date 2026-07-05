@@ -21,21 +21,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     citlali::pipeline::MapdiagMapWorkspace map_workspace{
         n_mapdiag_maps, fill_double, fill_int};
     auto &mapdiag_label_storage = map_workspace.label_storage;
-    auto &weight_thresholds = map_workspace.weight_thresholds;
     auto &weight_sum = map_workspace.weight_sum;
     auto &core_weight_sum = map_workspace.core_weight_sum;
-    auto &peak_signal = map_workspace.peak_signal;
     auto &n_valid_pixels = map_workspace.n_valid_pixels;
     auto &n_core_pixels = map_workspace.n_core_pixels;
-    auto &coverage_refs = map_workspace.coverage_refs;
-    auto &formal_noise_refs = map_workspace.formal_noise_refs;
-    auto &noise_product_refs = map_workspace.noise_product_refs;
     auto &core_tail_refs = map_workspace.core_tail_refs;
     auto &noise_tail_refs = map_workspace.noise_tail_refs;
-    auto &edge_guard_double_refs = map_workspace.edge_guard_double_refs;
-    auto &weight_refs = map_workspace.weight_refs;
     auto &peak_refs = map_workspace.peak_refs;
-    auto &edge_guard_int_refs = map_workspace.edge_guard_int_refs;
     const std::size_t obs_table_size =
         citlali::pipeline::mapdiag_obs_table_size(mapdiag_context);
     citlali::pipeline::MapdiagObservationWorkspace obs_workspace{
@@ -71,40 +63,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = citlali::pipeline::mapdiag_size_index(i);
         const auto write_indices =
-            citlali::pipeline::map_write_indices(
-                i, arrays_to_maps, maps_to_stokes, maps_to_arrays);
-        citlali::pipeline::assign_mapdiag_map_labels_from_indices(
-            idx, i, write_indices, toltec_io.array_name_map, calib.arrays,
-            rtcproc.polarization.stokes_params, map_name_for_index,
-            mapdiag_label_storage.refs());
-
-        const double weight_threshold =
-            citlali::pipeline::mapdiag_weight_threshold_for_map(mb, i);
-        weight_thresholds[idx] = weight_threshold;
-        citlali::pipeline::assign_mapdiag_edge_guard_entry(
-            idx, *mb, edge_guard_int_refs, edge_guard_double_refs);
-
-        const auto weight_arr = mb->weight[i].array();
-        const auto valid_mask =
-            citlali::pipeline::mapdiag_valid_weight_mask(weight_arr);
-        const auto core_mask =
-            citlali::pipeline::mapdiag_core_weight_mask(
-                weight_arr, weight_threshold);
-        citlali::pipeline::assign_mapdiag_weight_stats(
-            idx,
-            citlali::pipeline::mapdiag_weight_stats(
-                weight_arr, valid_mask, core_mask),
-            weight_refs);
-
-        citlali::pipeline::assign_mapdiag_formal_noise_stats_or_fill(
-            idx, mb, i, fill_double, formal_noise_refs);
-        citlali::pipeline::assign_mapdiag_noise_product_stats_or_fill(
-            idx, mb, i, fill_double, noise_product_refs);
-
-        citlali::pipeline::assign_mapdiag_coverage_stats_if_present(
-            idx, mb->coverage, i, core_mask, fill_double, coverage_refs);
-        citlali::pipeline::assign_mapdiag_peak_signal_or_fill(
-            idx, mb->signal, i, fill_double, peak_signal);
+            citlali::pipeline::assign_mapdiag_label_entry(
+                i, arrays_to_maps, maps_to_stokes, maps_to_arrays,
+                toltec_io.array_name_map, calib.arrays,
+                rtcproc.polarization.stokes_params, map_name_for_index,
+                mapdiag_label_storage);
+        const auto core_mask = citlali::pipeline::assign_mapdiag_basic_map_stats(
+            i, idx, mb, fill_double, map_workspace);
         if (citlali::pipeline::mapdiag_has_signal_weight_samples(
                 mb->signal[i], mb->weight[i])) {
             const Eigen::MatrixXd sig2noise =
