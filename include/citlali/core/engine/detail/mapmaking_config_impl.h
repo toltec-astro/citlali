@@ -261,7 +261,6 @@ void Engine::get_mapmaking_config(CT &config) {
         }
     }
 
-    // set mapmaker polarization
-    naive_mm.run_polarization = rtcproc.run_polarization;
-    jinc_mm.run_polarization = rtcproc.run_polarization;
+    citlali::pipeline::set_mapmaker_polarization(
+        rtcproc.run_polarization, naive_mm, jinc_mm);
 }

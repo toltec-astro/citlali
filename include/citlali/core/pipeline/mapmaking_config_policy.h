@@ -17,4 +17,12 @@ void disable_noise_map_settings(OutputMapBlock &omb, CoaddMapBlock &cmb,
     typed_noise_config.n_noise_maps = 0;
 }
 
+template <class NaiveMapmaker, class JincMapmaker>
+void set_mapmaker_polarization(bool run_polarization,
+                               NaiveMapmaker &naive_mm,
+                               JincMapmaker &jinc_mm) {
+    naive_mm.run_polarization = run_polarization;
+    jinc_mm.run_polarization = run_polarization;
+}
+
 }  // namespace citlali::pipeline
