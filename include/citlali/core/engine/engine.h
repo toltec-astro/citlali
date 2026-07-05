@@ -7089,9 +7089,11 @@ void Engine::create_rtcdiag_file() {
     const auto tel_time_it = telescope.tel_data.find("TelTime");
     const auto az_it = telescope.tel_data.find("az_phys");
     const auto alt_it = telescope.tel_data.find("alt_phys");
-    if (tel_time_it != telescope.tel_data.end() &&
+    const bool has_telescope_motion_data =
+        tel_time_it != telescope.tel_data.end() &&
         az_it != telescope.tel_data.end() &&
-        alt_it != telescope.tel_data.end()) {
+        alt_it != telescope.tel_data.end();
+    if (has_telescope_motion_data) {
         const auto &tel_time = tel_time_it->second;
         const auto &az_phys = az_it->second;
         const auto &alt_phys = alt_it->second;
