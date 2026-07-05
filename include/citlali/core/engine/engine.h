@@ -7362,13 +7362,13 @@ void Engine::create_rtcdiag_file() {
                 std::max(
                     0.0,
                     std::round(snippet_pre_window_sec * rtc_fsmp)));
+        const double snippet_post_window_sec =
+            rtcproc.impulsive_capture.snippet_post_window_sec;
         const auto snippet_post =
             static_cast<std::size_t>(
                 std::max(
                     0.0,
-                    std::round(
-                        rtcproc.impulsive_capture.snippet_post_window_sec *
-                        rtc_fsmp)));
+                    std::round(snippet_post_window_sec * rtc_fsmp)));
         const auto n_snippet = snippet_pre + snippet_post + 1;
         netCDF::NcDim n_rtc_impulsive_slots_dim =
             fo.addDim("n_rtc_impulsive_slots", n_slots);
