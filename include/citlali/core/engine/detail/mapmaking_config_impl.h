@@ -3,7 +3,6 @@
 // Engine config loading implementation detail.
 // Include this only after Engine has been declared.
 
-#include <citlali/core/engine/detail/config_parse_tracking.h>
 #include <citlali/core/engine/detail/mapmaking_config_read.h>
 #include <citlali/core/pipeline/mapmaking_config_policy.h>
 
@@ -13,11 +12,6 @@ void Engine::get_mapmaking_config(CT &config) {
     typed_mapmaking_config = citlali::config::MapmakingConfig{};
     typed_coadd_config = citlali::config::CoaddConfig{};
     typed_noise_config = citlali::config::NoiseConfig{};
-
-    auto parsed_cleanly = [&](std::size_t missing_before, std::size_t invalid_before) {
-        return citlali::engine_detail::config_parse_clean(
-            missing_keys, invalid_keys, missing_before, invalid_before);
-    };
 
     citlali::engine_detail::read_mapmaking_enabled_config(
         config, run_mapmaking, typed_mapmaking_config, missing_keys,
@@ -49,16 +43,10 @@ void Engine::get_mapmaking_config(CT &config) {
     citlali::pipeline::enforce_beammap_pixel_axes_policy(
         redu_type, telescope.pixel_axes, logger);
 
-    // get config for omb
-    logger->info("getting omb config options");
-    const auto omb_missing_before = missing_keys.size();
-    const auto omb_invalid_before = invalid_keys.size();
-    omb.get_config(config, missing_keys, invalid_keys, telescope.pixel_axes, redu_type);
-    if (parsed_cleanly(omb_missing_before, omb_invalid_before)) {
-        citlali::pipeline::mirror_output_map_block_config(
-            typed_mapmaking_config, omb, RAD_TO_ASEC,
-            typed_post_processing_config);
-    }
+    citlali::engine_detail::read_output_map_block_config(
+        config, omb, missing_keys, invalid_keys, telescope.pixel_axes,
+        redu_type, RAD_TO_ASEC, typed_mapmaking_config,
+        typed_post_processing_config, logger);
 
     citlali::engine_detail::read_coadd_enabled_config(
         config, run_coadd, typed_coadd_config, missing_keys, invalid_keys);

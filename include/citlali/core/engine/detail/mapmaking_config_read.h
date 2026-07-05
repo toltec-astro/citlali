@@ -239,4 +239,26 @@ void read_noise_empirical_weights_config(Config &config,
     }
 }
 
+template <class Config, class OutputMapBlock, class MissingKeys,
+          class InvalidKeys, class PixelAxes, class MapmakingConfig,
+          class PostProcessingConfig, class Logger>
+void read_output_map_block_config(
+    Config &config, OutputMapBlock &omb, MissingKeys &missing_keys,
+    InvalidKeys &invalid_keys, const PixelAxes &pixel_axes,
+    const std::string &redu_type, double rad_to_arcsec,
+    MapmakingConfig &typed_mapmaking_config,
+    PostProcessingConfig &typed_post_processing_config,
+    const Logger &logger) {
+    logger->info("getting omb config options");
+    const auto missing_before = missing_keys.size();
+    const auto invalid_before = invalid_keys.size();
+    omb.get_config(config, missing_keys, invalid_keys, pixel_axes, redu_type);
+    if (config_parse_clean(
+            missing_keys, invalid_keys, missing_before, invalid_before)) {
+        citlali::pipeline::mirror_output_map_block_config(
+            typed_mapmaking_config, omb, rad_to_arcsec,
+            typed_post_processing_config);
+    }
+}
+
 }  // namespace citlali::engine_detail
