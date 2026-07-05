@@ -124,13 +124,8 @@ void Engine::get_rtc_config(CT &config) {
     auto &typed_filter = typed_raw.filter;
     citlali::pipeline::mirror_raw_filter_config(typed_filter, rtcproc);
 
-    auto &typed_iir_filter = typed_raw.iir_filter;
-    typed_iir_filter.enabled = rtcproc.run_tod_iir_highpass;
-    if (rtcproc.run_tod_iir_highpass) {
-        typed_iir_filter.freq_Hz = rtcproc.filter.iir_highpass_freq_Hz;
-        typed_iir_filter.order = rtcproc.filter.iir_highpass_order;
-        typed_iir_filter.zero_phase = rtcproc.filter.iir_highpass_zero_phase;
-    }
+    citlali::pipeline::mirror_raw_iir_filter_config(
+        typed_raw.iir_filter, rtcproc);
 
     citlali::pipeline::mirror_raw_correction_flags(typed_raw, rtcproc);
 

@@ -503,4 +503,17 @@ void mirror_raw_filter_config(FilterConfig &target, const RtcProc &rtcproc) {
     }
 }
 
+template <class IirFilterConfig, class RtcProc>
+void mirror_raw_iir_filter_config(IirFilterConfig &target,
+                                  const RtcProc &rtcproc) {
+    target.enabled = rtcproc.run_tod_iir_highpass;
+    if (!rtcproc.run_tod_iir_highpass) {
+        return;
+    }
+
+    target.freq_Hz = rtcproc.filter.iir_highpass_freq_Hz;
+    target.order = rtcproc.filter.iir_highpass_order;
+    target.zero_phase = rtcproc.filter.iir_highpass_zero_phase;
+}
+
 }  // namespace citlali::pipeline
