@@ -7559,7 +7559,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     // pointer to noise file fits vector
     FitsVector *n_io = nullptr;
     // directory name
-    std::string dir_name;
+    std::string filtered_dir_name;
     // logging label
     const char* map_label = "filtered maps";
 
@@ -7567,7 +7567,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     if constexpr (map_t == mapmaking::FilteredObs) {
         f_io = &filtered_fits_io_vec;
         n_io = &filtered_noise_fits_io_vec;
-        dir_name = obsnum_dir_name + "filtered/";
+        filtered_dir_name = obsnum_dir_name + "filtered/";
         map_label = "filtered obs maps";
     }
 
@@ -7575,7 +7575,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     else if constexpr (map_t == mapmaking::FilteredCoadd) {
         f_io = &filtered_coadd_fits_io_vec;
         n_io = &filtered_coadd_noise_fits_io_vec;
-        dir_name = coadd_dir_name + "filtered/";
+        filtered_dir_name = coadd_dir_name + "filtered/";
         map_label = "filtered coadded maps";
     }
 
