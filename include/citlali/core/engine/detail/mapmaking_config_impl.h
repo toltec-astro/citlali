@@ -163,9 +163,8 @@ void Engine::get_mapmaking_config(CT &config) {
             get_config_value(config, jinc_mm.subpixel_n, missing_keys, invalid_keys,
                              std::tuple{"mapmaking","jinc_filter","subpixel_n"},{},{1});
         }
-        ptcproc.fruit_loops_jinc_r_max = jinc_mm.r_max;
-        ptcproc.fruit_loops_jinc_subpixel_n = jinc_mm.subpixel_n;
-        ptcproc.fruit_loops_jinc_shape_params = jinc_mm.shape_params;
+        citlali::pipeline::mirror_jinc_mapmaker_config_to_fruit_loops(
+            jinc_mm, ptcproc);
 
         if (jinc_mm.mode=="matrix") {
             // allocate jinc matrix

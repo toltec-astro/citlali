@@ -52,6 +52,14 @@ void reset_fruit_loop_jinc_kernel_config(PtcProc &ptcproc) {
     ptcproc.fruit_loops_jinc_shape_params.clear();
 }
 
+template <class JincMapmaker, class PtcProc>
+void mirror_jinc_mapmaker_config_to_fruit_loops(const JincMapmaker &jinc_mm,
+                                                PtcProc &ptcproc) {
+    ptcproc.fruit_loops_jinc_r_max = jinc_mm.r_max;
+    ptcproc.fruit_loops_jinc_subpixel_n = jinc_mm.subpixel_n;
+    ptcproc.fruit_loops_jinc_shape_params = jinc_mm.shape_params;
+}
+
 template <class Engine, class Logger>
 void configure_fruit_loop_iteration_policy(Engine &engine,
                                            const Logger &logger) {
