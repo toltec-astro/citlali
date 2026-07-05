@@ -7397,7 +7397,7 @@ void Engine::create_rtcdiag_file() {
         const std::vector<std::size_t> rtc_impulsive_slot_chunks = {
             1, n_impulsive_networks, n_slots};
         const std::vector<std::size_t> rtc_impulsive_snippet_chunks = {
-            1, TULA_SIZET(calib.n_nws), n_slots, n_snippet};
+            1, n_impulsive_networks, n_slots, n_snippet};
         const auto n_rtc_impulsive_slot_values =
             static_cast<std::size_t>(n_scans) *
             static_cast<std::size_t>(calib.n_nws) * n_slots;
