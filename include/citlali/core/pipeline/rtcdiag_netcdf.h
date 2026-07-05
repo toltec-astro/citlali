@@ -864,6 +864,12 @@ inline std::vector<int> rtcdiag_impulsive_snippet_offsets(
     return offsets;
 }
 
+inline std::size_t rtcdiag_impulsive_window_samples(
+    double window_sec, double sample_rate_hz) {
+    return static_cast<std::size_t>(
+        std::max(0.0, std::round(window_sec * sample_rate_hz)));
+}
+
 inline void add_rtcdiag_impulsive_slot_double(
     netCDF::NcFile &fo, const std::string &name,
     const std::string &comment, const std::vector<netCDF::NcDim> &slot_dims,
