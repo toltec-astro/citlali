@@ -284,4 +284,37 @@ void mirror_processed_weight_corr_penalty_config(CorrPenaltyConfig &target,
         source.cm_low_mid_ratio.mid_max_Hz};
 }
 
+template <class SecondPassConfig, class SecondPassLocal>
+void mirror_second_pass_local_config(SecondPassConfig &target,
+                                     const SecondPassLocal &source) {
+    target.enabled = source.enabled;
+    target.min_spike_sigma = source.min_spike_sigma;
+    target.min_good_frac = source.min_good_frac;
+    target.baseline_window_sec = source.baseline_window_sec;
+    target.sigma_scale = source.sigma_scale;
+    target.delta_sigma_scale = source.delta_sigma_scale;
+    target.raw_candidate_rel_sigma_scale =
+        source.raw_candidate_rel_sigma_scale;
+    target.raw_window_sec = source.raw_window_sec;
+    target.raw_half_peak_frac = source.raw_half_peak_frac;
+    target.raw_max_width_sec = source.raw_max_width_sec;
+    target.delta_window_sec = source.delta_window_sec;
+    target.delta_half_peak_frac = source.delta_half_peak_frac;
+    target.delta_max_width_sec = source.delta_max_width_sec;
+    target.max_step_shift_z = source.max_step_shift_z;
+    target.high_score_event_override = source.high_score_event_override;
+    target.merge_within_detector_sec = source.merge_within_detector_sec;
+    target.cluster_events_sec = source.cluster_events_sec;
+    target.min_cluster_detectors = source.min_cluster_detectors;
+    target.high_score_cluster_override = source.high_score_cluster_override;
+    target.max_auto_flag_clusters_per_network =
+        source.max_auto_flag_clusters_per_network;
+    target.selective_busy_network_acceptance_enabled =
+        source.selective_busy_network_acceptance_enabled;
+    target.source_protection.enabled =
+        source.source_protection_config_enabled;
+    target.source_protection.radius_arcsec =
+        source.source_protection_radius_arcsec;
+}
+
 }  // namespace citlali::pipeline
