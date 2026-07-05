@@ -6629,7 +6629,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 robust_stats)) {
                         auto candidates =
                             citlali::pipeline::make_mapdiag_pixel_candidates();
-                        const bool have_contrib =
+                        const bool has_contribution_products =
                             citlali::pipeline::
                                 mapdiag_has_contribution_products(mb, i);
                         const double ptc_fs_hz = processed_time_chunk_fs_hz();
@@ -6698,7 +6698,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                                     source_distance_context),
                                             fill_int, fill_double);
 
-                                if (have_contrib) {
+                                if (has_contribution_products) {
                                     const auto map_st =
                                         citlali::pipeline::
                                             mapdiag_contribution_map_index(i);
