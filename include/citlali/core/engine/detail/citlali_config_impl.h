@@ -142,8 +142,12 @@ void Engine::get_citlali_config(CT &config) {
         }
 
         // convert bounding box and fitting region to pixels
-        map_fitter.bounding_box_pix = ASEC_TO_RAD*map_fitter.bounding_box_pix/omb.pixel_size_rad;
-        map_fitter.fitting_region_pix = ASEC_TO_RAD*map_fitter.fitting_region_pix/omb.pixel_size_rad;
+        map_fitter.bounding_box_pix =
+            citlali::pipeline::source_fitting_arcsec_to_pixels(
+                map_fitter.bounding_box_pix, ASEC_TO_RAD, omb.pixel_size_rad);
+        map_fitter.fitting_region_pix =
+            citlali::pipeline::source_fitting_arcsec_to_pixels(
+                map_fitter.fitting_region_pix, ASEC_TO_RAD, omb.pixel_size_rad);
 
         // fitter flux and fwhm limits
         map_fitter.flux_limits.resize(2);

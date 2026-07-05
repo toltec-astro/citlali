@@ -36,6 +36,12 @@ inline double source_window_arcsec_to_rad(double source_window_arcsec,
     return source_window_arcsec * arcsec_to_rad;
 }
 
+inline double source_fitting_arcsec_to_pixels(double value_arcsec,
+                                              double arcsec_to_rad,
+                                              double pixel_size_rad) {
+    return arcsec_to_rad * value_arcsec / pixel_size_rad;
+}
+
 template <class ObservationMapBuffer, class CoaddMapBuffer>
 void mirror_source_finding_config_to_coadd(
     const ObservationMapBuffer &omb, CoaddMapBuffer &cmb,
