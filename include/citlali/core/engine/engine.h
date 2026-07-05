@@ -6265,7 +6265,7 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
             fo, mb->hist_n_bins);
 
     // loop through stored histograms
-    for (Eigen::Index i=0; i<mb->hists.size(); ++i) {
+    for (Eigen::Index i = 0; i < mb->hists.size(); ++i) {
         // string to hold name
         // get name for extension layer
         std::string map_name = get_map_name(i);
