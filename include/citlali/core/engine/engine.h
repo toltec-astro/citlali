@@ -7585,7 +7585,10 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     for (Eigen::Index i=0; i<n_filtered_fits; ++i) {
         add_phdu(filtered_fits_io, map_buffer_ptr, i);
 
-        if (!map_buffer_ptr->noise.empty() && !filtered_noise_fits_io->empty()) {
+        const bool has_filtered_noise_fits =
+            !map_buffer_ptr->noise.empty() &&
+            !filtered_noise_fits_io->empty();
+        if (has_filtered_noise_fits) {
             add_phdu(filtered_noise_fits_io, map_buffer_ptr, i);
         }
     }
