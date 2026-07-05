@@ -7667,13 +7667,13 @@ void Engine::find_sources(map_buffer_t &mb) {
 
     // count up the total number of sources
     Eigen::Index n_sources = 0;
-    for (const auto &sources: mb.n_sources) {
+    for (const auto &sources : mb.n_sources) {
         n_sources += sources;
     }
 
     // matrix to store source parameters
-    mb.source_params.setZero(n_sources,map_fitter.n_params);
-    mb.source_perror.setZero(n_sources,map_fitter.n_params);
+    mb.source_params.setZero(n_sources, map_fitter.n_params);
+    mb.source_perror.setZero(n_sources, map_fitter.n_params);
 
     // keep track of row in total source count
     Eigen::Index k = 0;
