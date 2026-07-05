@@ -79,4 +79,10 @@ void add_stats_adc_snap_vars(netCDF::NcFile &fo, const Calib &calib,
     }
 }
 
+template <class Diagnostics, class Cleaner>
+bool should_write_stats_eigenvalues(const Diagnostics &diagnostics,
+                                    const Cleaner &cleaner) {
+    return !diagnostics.evals.empty() && cleaner.n_calc > 0;
+}
+
 }  // namespace citlali::pipeline
