@@ -68,24 +68,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_entry, mb, rtcproc, telescope, calib, toltec_io, i, array_id,
         name, redu_type, logger);
 
-    // add control/runtime parameters
-    logger->debug("adding config params");
-    const bool run_any_tod_filter =
-        citlali::pipeline::phdu_any_tod_filter_enabled(rtcproc);
-    citlali::pipeline::add_phdu_initial_runtime_config(
-        fits_entry, verbose_mode, rtcproc.run_polarization,
-        rtcproc.run_despike);
-    citlali::pipeline::add_phdu_rtc_local_despike_config(
-        fits_entry, name, logger, rtcproc.despiker.local_residual);
-    citlali::pipeline::add_phdu_tod_filter_runtime_config(
-        fits_entry, name, logger, rtcproc, run_any_tod_filter);
-    citlali::pipeline::add_phdu_tod_edge_guard_config(
-        fits_entry, rtcproc.filter_edge_guard, telescope.outer_scans_chunk);
-    citlali::pipeline::add_phdu_tod_processing_config(fits_entry, rtcproc);
-    citlali::pipeline::add_phdu_weight_selection_config(
-        fits_entry, name, logger, ptcproc, rtcproc);
-    citlali::pipeline::add_phdu_rtc_event_mask_config(
-        fits_entry, name, logger, rtcproc);
+    citlali::engine_detail::add_phdu_tod_runtime_config_section(
+        fits_entry, name, logger, verbose_mode, rtcproc, ptcproc,
+        telescope.outer_scans_chunk);
+
     citlali::pipeline::add_phdu_reduction_learning_config(
         fits_entry, name, logger, reduction_learning);
     citlali::pipeline::add_phdu_weight_corr_penalty_config(
