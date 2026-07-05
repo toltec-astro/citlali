@@ -305,4 +305,37 @@ void read_jinc_filter_config(Config &config, JincMapmaker &jinc_mm,
     }
 }
 
+template <class Config, class MaximumLikelihoodMapmaker, class MissingKeys,
+          class InvalidKeys>
+void read_maximum_likelihood_mapmaker_config(
+    Config &config, MaximumLikelihoodMapmaker &ml_mm,
+    MissingKeys &missing_keys, InvalidKeys &invalid_keys) {
+    ::get_config_value(
+        config, ml_mm.tolerance, missing_keys, invalid_keys,
+        std::tuple{"mapmaking", "maximum_likelihood", "tolerance"});
+    ::get_config_value(
+        config, ml_mm.max_iterations, missing_keys, invalid_keys,
+        std::tuple{"mapmaking", "maximum_likelihood", "max_iterations"});
+}
+
+template <class Config, class JincMapmaker, class MaximumLikelihoodMapmaker,
+          class ArrayNameMap, class PtcProc, class MissingKeys,
+          class InvalidKeys>
+void read_method_specific_mapmaker_config(
+    Config &config, const std::string &map_method, JincMapmaker &jinc_mm,
+    MaximumLikelihoodMapmaker &ml_mm, const ArrayNameMap &array_name_map,
+    PtcProc &ptcproc, double pixel_size_rad, MissingKeys &missing_keys,
+    InvalidKeys &invalid_keys) {
+    if (map_method == "jinc") {
+        read_jinc_filter_config(
+            config, jinc_mm, array_name_map, missing_keys, invalid_keys);
+        citlali::pipeline::finalize_jinc_filter_config(
+            jinc_mm, ptcproc, pixel_size_rad);
+    }
+    else if (map_method == "maximum_likelihood") {
+        read_maximum_likelihood_mapmaker_config(
+            config, ml_mm, missing_keys, invalid_keys);
+    }
+}
+
 }  // namespace citlali::engine_detail

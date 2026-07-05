@@ -60,20 +60,9 @@ void Engine::get_mapmaking_config(CT &config) {
     citlali::pipeline::sync_mapmaking_parallel_policy(
         parallel_policy, omb, cmb, jinc_mm);
 
-    if (map_method=="jinc") {
-        citlali::engine_detail::read_jinc_filter_config(
-            config, jinc_mm, toltec_io.array_name_map, missing_keys,
-            invalid_keys);
-        citlali::pipeline::finalize_jinc_filter_config(
-            jinc_mm, ptcproc, omb.pixel_size_rad);
-    }
-
-    else if (map_method=="maximum_likelihood") {
-        get_config_value(config, ml_mm.tolerance, missing_keys, invalid_keys,
-                         std::tuple{"mapmaking","maximum_likelihood","tolerance"});
-        get_config_value(config, ml_mm.max_iterations, missing_keys, invalid_keys,
-                         std::tuple{"mapmaking","maximum_likelihood","max_iterations"});
-    }
+    citlali::engine_detail::read_method_specific_mapmaker_config(
+        config, map_method, jinc_mm, ml_mm, toltec_io.array_name_map,
+        ptcproc, omb.pixel_size_rad, missing_keys, invalid_keys);
 
     citlali::engine_detail::read_noise_maps_enabled_config(
         config, run_noise, typed_noise_config, missing_keys, invalid_keys);
