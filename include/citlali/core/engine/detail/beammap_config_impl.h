@@ -209,20 +209,11 @@ void Engine::get_beammap_config(CT &config) {
         upper_fwhm_arcsec, lower_sig2noise, upper_sig2noise,
         max_dist_arcsec, network_robust_z);
 
-    // sensitivity factors
-    auto sens_factors_vec = citlali::pipeline::beammap_fixed_double_vector(
-        config, {"beammap","flagging","sens_factors"}, 2, invalid_keys);
-    lower_sens_factor = sens_factors_vec[0];
-    upper_sens_factor = sens_factors_vec[1];
-
-    // upper and lower frequencies over which to calculate sensitivity
-    sens_psd_limits_Hz.resize(2);
-    // get psd limits for sens from config
-    auto sens_psd_limits_Hz_vec =
-        citlali::pipeline::beammap_fixed_double_vector(
-            config, {"beammap","sens_psd_limits_Hz"}, 2, invalid_keys);
-    // map sens limits back to Eigen vector
-    sens_psd_limits_Hz = (Eigen::Map<Eigen::VectorXd>(sens_psd_limits_Hz_vec.data(), sens_psd_limits_Hz_vec.size()));
+    std::vector<double> sens_factors_vec;
+    std::vector<double> sens_psd_limits_Hz_vec;
+    citlali::pipeline::read_beammap_sensitivity_config(
+        config, invalid_keys, lower_sens_factor, upper_sens_factor,
+        sens_psd_limits_Hz, sens_factors_vec, sens_psd_limits_Hz_vec);
 
     // Beammap PTC TOD/diagnostics are written after the convergence decision.
     // The default is the actual last attempted iteration, including early
