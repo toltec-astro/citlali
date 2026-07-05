@@ -3,6 +3,8 @@
 // Engine learning implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/engine/detail/learning_config_logging.h>
+
 template<typename CT>
 void Engine::get_learning_config(CT &config) {
     ReductionLearningState::Options options;
@@ -328,39 +330,6 @@ void Engine::get_learning_config(CT &config) {
         reduction_learning.options.map_pixel_outlier_contributor_diagnostics_enabled;
     omb.contribution_diag_enabled = map_contribution_diag;
     cmb.contribution_diag_enabled = map_contribution_diag;
-    logger->info(
-        "reduction learning state configured: enabled={} diagnostics_enabled={} "
-        "learn_iters={} apply_start_iter={} max_records_per_type={} "
-        "apply_sample_masks_enabled={} apply_max_new_flagged_fraction={:.4g} "
-        "map_pixel_outliers(enabled={} contributors={} targeted_contributors={} detector_exclusion={} top_n={} target_max={} exclude_min_pixels={} min_abs_z={} min_n_eff={} source_radius_arcsec={}) "
-        "busy_detector_exclusion_enabled={} scan_network_pathology(enabled={} pre_rtc={} pre_ptc={} pre_mapmaking={} min_clusters={} min_events={} min_resid_z={} severe_events={} severe_resid_z={} max_new_flagged_fraction={:.4g})",
-        reduction_learning.options.enabled,
-        reduction_learning.options.diagnostics_enabled,
-        reduction_learning.options.learn_iters,
-        reduction_learning.options.apply_start_iter,
-        reduction_learning.options.max_records_per_type,
-        reduction_learning.options.apply_sample_masks_enabled,
-        reduction_learning.options.apply_max_new_flagged_fraction,
-        reduction_learning.options.map_pixel_outlier_diagnostics_enabled,
-        reduction_learning.options.map_pixel_outlier_contributor_diagnostics_enabled,
-        reduction_learning.options.map_pixel_outlier_targeted_contributor_diagnostics_enabled,
-        reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled,
-        reduction_learning.options.map_pixel_outlier_top_n,
-        reduction_learning.options.map_pixel_outlier_targeted_contributor_max_pixels,
-        reduction_learning.options.map_pixel_outlier_detector_exclusion_min_pixels,
-        reduction_learning.options.map_pixel_outlier_min_abs_z,
-        reduction_learning.options.map_pixel_outlier_min_n_eff,
-        reduction_learning.options.map_pixel_outlier_source_radius_arcsec,
-        reduction_learning.options.busy_detector_exclusion_enabled,
-        reduction_learning.options.scan_network_pathology_enabled,
-        reduction_learning.options.scan_network_pathology_apply_pre_rtc,
-        reduction_learning.options.scan_network_pathology_apply_pre_ptc,
-        reduction_learning.options.scan_network_pathology_apply_pre_mapmaking,
-        reduction_learning.options.scan_network_pathology_min_candidate_clusters,
-        reduction_learning.options.scan_network_pathology_min_candidate_events,
-        reduction_learning.options.scan_network_pathology_min_max_residual_z,
-        reduction_learning.options.scan_network_pathology_severe_candidate_events,
-        reduction_learning.options.scan_network_pathology_severe_max_residual_z,
-        reduction_learning.options.scan_network_pathology_max_new_flagged_fraction);
+    citlali::engine_detail::log_reduction_learning_config(
+        reduction_learning.options, logger);
 }
-
