@@ -5,43 +5,15 @@
 
 void Engine::setup_tod_output_chunk_selection() {
     const Eigen::Index n_scans = telescope.scan_indices.cols();
-    auto vector_to_string = [](const std::vector<Eigen::Index> &values) {
-        std::ostringstream os;
-        os << "[";
-        for (std::size_t i = 0; i < values.size(); ++i) {
-            if (i != 0) {
-                os << ", ";
-            }
-            os << values[i];
-        }
-        os << "]";
-        return os.str();
-    };
 
     auto build_uniform_plus_source_crossing_chunks =
         [&](const std::string &stream_name, int n_uniform, int n_source_dense) {
-            std::set<Eigen::Index> selected_0based;
-            std::vector<Eigen::Index> selected_1based;
             if (n_scans <= 0) {
-                return selected_1based;
+                return std::vector<Eigen::Index>{};
             }
 
             n_uniform = std::max(0, n_uniform);
             n_source_dense = std::max(0, n_source_dense);
-
-            if (n_uniform == 1) {
-                selected_0based.insert((n_scans - 1) / 2);
-            }
-            else if (n_uniform > 1) {
-                for (int i = 0; i < n_uniform; ++i) {
-                    const double frac = static_cast<double>(i) /
-                                        static_cast<double>(n_uniform - 1);
-                    Eigen::Index scan_index =
-                        static_cast<Eigen::Index>(std::lround(frac * (n_scans - 1)));
-                    scan_index = std::clamp<Eigen::Index>(scan_index, 0, n_scans - 1);
-                    selected_0based.insert(scan_index);
-                }
-            }
 
             Eigen::Index source_scan = (n_scans - 1) / 2;
             double best_scan_d2 = std::numeric_limits<double>::infinity();
@@ -98,23 +70,9 @@ void Engine::setup_tod_output_chunk_selection() {
                     stream_name, e.what(), source_scan + 1);
             }
 
-            if (n_source_dense > 0) {
-                Eigen::Index first_dense =
-                    source_scan - static_cast<Eigen::Index>((n_source_dense - 1) / 2);
-                first_dense = std::clamp<Eigen::Index>(
-                    first_dense, 0, std::max<Eigen::Index>(0, n_scans - n_source_dense));
-                const Eigen::Index last_dense =
-                    std::min<Eigen::Index>(n_scans - 1,
-                                           first_dense + static_cast<Eigen::Index>(n_source_dense) - 1);
-                for (Eigen::Index scan_index = first_dense; scan_index <= last_dense; ++scan_index) {
-                    selected_0based.insert(scan_index);
-                }
-            }
-
-            selected_1based.reserve(selected_0based.size());
-            for (const auto scan_index : selected_0based) {
-                selected_1based.push_back(scan_index + 1);
-            }
+            const auto selected_1based =
+                citlali::pipeline::uniform_plus_source_tod_output_chunks(
+                    n_scans, n_uniform, n_source_dense, source_scan);
 
             logger->info(
                 "{} TOD output selection mode uniform_plus_source_crossing: n_uniform={} n_source_dense={} source_scan={} source_min_distance_arcsec={:.3f} selected={}",
@@ -124,7 +82,8 @@ void Engine::setup_tod_output_chunk_selection() {
                 source_scan + 1,
                 std::isfinite(best_scan_d2) ? std::sqrt(best_scan_d2) * RAD_TO_ASEC
                                             : std::numeric_limits<double>::quiet_NaN(),
-                vector_to_string(selected_1based));
+                citlali::pipeline::tod_output_chunks_to_string(
+                    selected_1based));
             return selected_1based;
         };
 
@@ -168,33 +127,26 @@ void Engine::setup_tod_output_chunk_selection() {
         }
 
         if (!effective_select_enabled || effective_chunks.empty()) {
-            for (Eigen::Index i = 0; i < n_scans; ++i) {
-                scan_to_output(i) = i;
-            }
-            n_output_scans = n_scans;
+            n_output_scans =
+                citlali::pipeline::assign_all_tod_output_rows(
+                    scan_to_output, n_scans);
             logger->info("{} TOD output chunk selection disabled: writing all {} chunks",
                          stream_name, n_output_scans);
             return;
         }
 
-        std::set<Eigen::Index> selected_chunks;
         for (const auto chunk_1based : effective_chunks) {
-            if (chunk_1based < 1 || chunk_1based > n_scans) {
+            if (!citlali::pipeline::tod_output_chunk_is_valid(
+                    chunk_1based, n_scans)) {
                 logger->error("{} TOD output indices contain {} but valid scan range is [1, {}]",
                               stream_name, chunk_1based, n_scans);
                 std::exit(EXIT_FAILURE);
             }
-            selected_chunks.insert(chunk_1based - 1);
         }
 
-        Eigen::Index out_index = 0;
-        for (Eigen::Index i = 0; i < n_scans; ++i) {
-            if (selected_chunks.count(i) > 0) {
-                scan_to_output(i) = out_index;
-                ++out_index;
-            }
-        }
-        n_output_scans = out_index;
+        n_output_scans =
+            citlali::pipeline::assign_selected_tod_output_rows(
+                scan_to_output, n_scans, effective_chunks);
         logger->info("{} TOD output chunk selection enabled: writing {} of {} chunks",
                      stream_name, n_output_scans, n_scans);
     };

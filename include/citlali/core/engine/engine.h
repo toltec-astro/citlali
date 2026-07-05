@@ -119,6 +119,7 @@
 #include <citlali/core/pipeline/stats_netcdf.h>
 #include <citlali/core/pipeline/summary_log.h>
 #include <citlali/core/pipeline/tod_stream_netcdf.h>
+#include <citlali/core/pipeline/tod_output_selection.h>
 
 #include <citlali/core/engine/io.h>
 #include <citlali/core/engine/kidsproc.h>
