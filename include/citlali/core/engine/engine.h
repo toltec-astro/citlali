@@ -6396,15 +6396,15 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         edge_guard_exterior_rms_post,
         edge_guard_exterior_max_abs_pre,
         edge_guard_exterior_max_abs_post};
-    std::vector<int> n_valid_pixels(mapdiag_context.n_maps, 0);
-    std::vector<int> n_core_pixels(mapdiag_context.n_maps, 0);
+    std::vector<int> n_valid_pixels(n_mapdiag_maps, 0);
+    std::vector<int> n_core_pixels(n_mapdiag_maps, 0);
     citlali::pipeline::MapdiagWeightRefs weight_refs{
         weight_sum,
         core_weight_sum,
         n_valid_pixels,
         n_core_pixels};
-    std::vector<int> peak_row(mapdiag_context.n_maps, fill_int);
-    std::vector<int> peak_col(mapdiag_context.n_maps, fill_int);
+    std::vector<int> peak_row(n_mapdiag_maps, fill_int);
+    std::vector<int> peak_col(n_mapdiag_maps, fill_int);
     citlali::pipeline::MapdiagPeakRefs peak_refs{
         peak_abs_sig2noise,
         core_peak_abs_sig2noise,
