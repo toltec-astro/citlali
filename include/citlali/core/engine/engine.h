@@ -7609,7 +7609,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             mb.pixel_size_rad;
         // make wiener filter template
         logger->info("building Wiener template for {} map {}/{} (array={})",
-                     map_label, i + 1, n_maps, array_name);
+                     map_label, map_number, n_maps, array_name);
         double template_fwhm_rad = 0.0;
         const bool template_uses_fwhm =
             wiener_filter.template_type == "gaussian" ||
