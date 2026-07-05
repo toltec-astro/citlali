@@ -17,6 +17,15 @@ struct SourceFitUnitScale {
     double source_fwhm_to_arcsec;
 };
 
+struct SourceFitUnitConstants {
+    double rad_to_arcsec;
+    double std_to_fwhm;
+    double arcsec_to_rad;
+    double rad_to_deg;
+    double deg_to_rad;
+    double arcsec_to_deg;
+};
+
 struct SourceInitialPosition {
     double row;
     double col;
@@ -129,6 +138,24 @@ inline SourceFitUnitScale source_fit_unit_scale(double rad_to_arcsec,
                                   pixel_size_rad)};
 }
 
+inline SourceFitUnitScale source_fit_unit_scale(
+    const SourceFitUnitConstants &constants, double pixel_size_rad) {
+    return source_fit_unit_scale(
+        constants.rad_to_arcsec, constants.std_to_fwhm, pixel_size_rad);
+}
+
+inline SourceFitUnitConstants source_fit_unit_constants(
+    double rad_to_arcsec, double std_to_fwhm, double arcsec_to_rad,
+    double rad_to_deg, double deg_to_rad, double arcsec_to_deg) {
+    return {
+        rad_to_arcsec,
+        std_to_fwhm,
+        arcsec_to_rad,
+        rad_to_deg,
+        deg_to_rad,
+        arcsec_to_deg};
+}
+
 template <class Params, class PErrors>
 void rescale_source_fit_pixel_units(Params &params, PErrors &perrors,
                                     Eigen::Index n_rows, Eigen::Index n_cols,
@@ -165,11 +192,10 @@ void rescale_source_fit_result(
     Params &params, PErrors &perrors, Eigen::Index n_rows,
     Eigen::Index n_cols, double pixel_size_rad,
     const std::string &pixel_axes, const Wcs &wcs,
-    double rad_to_arcsec, double std_to_fwhm, double arcsec_to_rad,
-    double rad_to_deg, double deg_to_rad, double arcsec_to_deg,
+    const SourceFitUnitConstants &constants,
     const TangentToAbs &tangent_to_abs) {
     const auto unit_scale =
-        source_fit_unit_scale(rad_to_arcsec, std_to_fwhm, pixel_size_rad);
+        source_fit_unit_scale(constants, pixel_size_rad);
     rescale_source_fit_pixel_units(
         params, perrors, n_rows, n_cols, unit_scale.pixel_to_arcsec,
         unit_scale.source_fwhm_to_arcsec);
@@ -179,16 +205,16 @@ void rescale_source_fit_result(
     }
 
     Eigen::VectorXd lat(1), lon(1);
-    lat << params(2) * arcsec_to_rad;
-    lon << params(1) * arcsec_to_rad;
+    lat << params(2) * constants.arcsec_to_rad;
+    lon << params(1) * constants.arcsec_to_rad;
 
     auto [adec, ara] = tangent_to_abs(
-        lat, lon, wcs.crval[0] * deg_to_rad,
-        wcs.crval[1] * deg_to_rad);
+        lat, lon, wcs.crval[0] * constants.deg_to_rad,
+        wcs.crval[1] * constants.deg_to_rad);
 
     rescale_source_fit_radec_errors(
-        params, perrors, ara(0) * rad_to_deg,
-        adec(0) * rad_to_deg, arcsec_to_deg);
+        params, perrors, ara(0) * constants.rad_to_deg,
+        adec(0) * constants.rad_to_deg, constants.arcsec_to_deg);
 }
 
 template <class MapBuffer, class MapIndex, class SourceIndex>
@@ -226,15 +252,13 @@ template <class MapBuffer, class SourceRow, class SourceIndex,
 void normalize_and_store_source_fit_result(
     MapBuffer &map_buffer, SourceRow source_row_start,
     SourceIndex source_index, Params &params, PErrors &perrors,
-    const std::string &pixel_axes, double rad_to_arcsec,
-    double std_to_fwhm, double arcsec_to_rad, double rad_to_deg,
-    double deg_to_rad, double arcsec_to_deg,
+    const std::string &pixel_axes,
+    const SourceFitUnitConstants &constants,
     const TangentToAbs &tangent_to_abs) {
     rescale_source_fit_result(
         params, perrors, map_buffer.n_rows, map_buffer.n_cols,
         map_buffer.pixel_size_rad, pixel_axes, map_buffer.wcs,
-        rad_to_arcsec, std_to_fwhm, arcsec_to_rad, rad_to_deg,
-        deg_to_rad, arcsec_to_deg, tangent_to_abs);
+        constants, tangent_to_abs);
     store_source_fit_result(
         map_buffer, source_row_start, source_index, params, perrors);
 }

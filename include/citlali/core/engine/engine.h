@@ -7090,12 +7090,17 @@ void Engine::find_sources(map_buffer_t &mb) {
     citlali::pipeline::initialize_source_fit_tables(
         mb, map_fitter.n_params);
 
+    const auto source_fit_constants =
+        citlali::pipeline::source_fit_unit_constants(
+            RAD_TO_ASEC, STD_TO_FWHM, ASEC_TO_RAD, RAD_TO_DEG,
+            DEG_TO_RAD, ASEC_TO_DEG);
     const auto map_to_array_index = [&](Eigen::Index map_index) {
         return maps_to_arrays(map_index);
     };
     const auto init_fwhm_for_array = [&](Eigen::Index array) {
         return citlali::pipeline::source_fit_initial_fwhm_for_array(
-            toltec_io.array_fwhm_arcsec, array, ASEC_TO_RAD,
+            toltec_io.array_fwhm_arcsec, array,
+            source_fit_constants.arcsec_to_rad,
             mb.pixel_size_rad);
     };
     const auto fit_map_sources =
@@ -7122,8 +7127,7 @@ void Engine::find_sources(map_buffer_t &mb) {
                     };
                     citlali::pipeline::normalize_and_store_source_fit_result(
                         mb, source_row_start, j, params, perrors,
-                        telescope.pixel_axes, RAD_TO_ASEC, STD_TO_FWHM,
-                        ASEC_TO_RAD, RAD_TO_DEG, DEG_TO_RAD, ASEC_TO_DEG,
+                        telescope.pixel_axes, source_fit_constants,
                         tangent_to_abs);
                 }
             });
