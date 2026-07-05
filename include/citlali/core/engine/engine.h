@@ -7793,8 +7793,8 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
         (telescope.pixel_axes == "radec") ? "deg" : "arcsec";
 
     // units for source header
-    std::map<std::string,std::string> source_header_units = {
-        {"array","N/A"},
+    std::map<std::string, std::string> source_header_units = {
+        {"array", "N/A"},
         {"amp", mb->sig_unit},
         {"amp_err", mb->sig_unit},
         {"x_t", pos_units},
@@ -7807,7 +7807,7 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
         {"b_fwhm_err", "arcsec"},
         {"angle", "rad"},
         {"angle_err", "rad"},
-        {"sig2noise", "N/A"}
+        {"sig2noise", "N/A"},
     };
 
     // meta information for source table
