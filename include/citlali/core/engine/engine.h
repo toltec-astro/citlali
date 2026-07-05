@@ -7327,10 +7327,10 @@ void Engine::create_rtcdiag_file() {
     citlali::pipeline::add_rtcdiag_detector_invvar_window_diag(
         add_rtc_det_int, add_rtc_det_double);
 
-    std::vector<netCDF::NcDim> rtc_nw_dims = {n_scans_dim, n_nws_rtcdiag_dim};
+    std::vector<netCDF::NcDim> rtc_nw_dims = {
+        n_scans_dim, n_nws_rtcdiag_dim};
     const auto n_rtc_nw_values =
-        static_cast<std::size_t>(n_scans) *
-        static_cast<std::size_t>(calib.n_nws);
+        n_scan_values * static_cast<std::size_t>(calib.n_nws);
     auto add_rtc_nw_double = [&](const std::string &name, const std::string &comment) {
         citlali::pipeline::add_rtcdiag_network_double(
             fo, name, comment, rtc_nw_dims, rtc_nw_chunks,
