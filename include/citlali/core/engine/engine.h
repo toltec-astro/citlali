@@ -6589,7 +6589,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             mb->signal[i], fill_double);
         if (citlali::pipeline::mapdiag_has_signal_weight_samples(
                 mb->signal[i], mb->weight[i])) {
-            Eigen::MatrixXd sig2noise =
+            const Eigen::MatrixXd sig2noise =
                 citlali::pipeline::mapdiag_sig2noise_image(
                     mb->signal[i], mb->weight[i]);
             citlali::pipeline::assign_mapdiag_peak_stats(
