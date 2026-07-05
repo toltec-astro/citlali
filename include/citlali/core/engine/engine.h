@@ -7513,7 +7513,9 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         logger->info("starting {} map {}/{} (array={})",
                      map_label, i + 1, n_maps, array_name);
         // init fwhm in pixels
-        wiener_filter.init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/mb.pixel_size_rad;
+        wiener_filter.init_fwhm =
+            toltec_io.array_fwhm_arcsec[array] * ASEC_TO_RAD /
+            mb.pixel_size_rad;
         // make wiener filter template
         logger->info("building Wiener template for {} map {}/{} (array={})",
                      map_label, i + 1, n_maps, array_name);
