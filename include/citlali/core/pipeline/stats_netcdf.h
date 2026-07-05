@@ -85,4 +85,13 @@ bool should_write_stats_eigenvalues(const Diagnostics &diagnostics,
     return !diagnostics.evals.empty() && cleaner.n_calc > 0;
 }
 
+template <class EvalMap>
+bool has_stats_eigenvalue_groups(const EvalMap &evals) {
+    if (evals.empty()) {
+        return false;
+    }
+    const auto first_it = evals.begin();
+    return !first_it->second.empty() && !first_it->second[0].empty();
+}
+
 }  // namespace citlali::pipeline
