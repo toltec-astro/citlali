@@ -61,4 +61,25 @@ void add_phdu_oof_keys(FitsEntry &fits_entry,
     add_double_key("OOF_RI", 1.65, "inner diameter of the antenna (m)");
 }
 
+template <class FitsEntry, class Logger>
+void add_phdu_oof_keys_if_observed(FitsEntry &fits_entry,
+                                   const std::string &array_name,
+                                   const Logger &logger,
+                                   bool simulated_observation,
+                                   double rms,
+                                   const std::string &signal_unit,
+                                   double wavelength_m,
+                                   int instrument_id,
+                                   double m2x_microns,
+                                   double m2y_microns,
+                                   double m2z_microns) {
+    if (simulated_observation) {
+        return;
+    }
+    logger->debug("adding oof params");
+    add_phdu_oof_keys(
+        fits_entry, array_name, logger, rms, signal_unit, wavelength_m,
+        instrument_id, m2x_microns, m2y_microns, m2z_microns);
+}
+
 }  // namespace citlali::pipeline
