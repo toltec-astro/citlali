@@ -38,23 +38,9 @@ void Engine::get_beammap_config(CT &config) {
                          std::tuple{"beammap","phase_strategy","measurement_start_iter"},
                          {}, {1});
     }
-    if (beammap_locator_iter != 0) {
-        logger->warn(
-            "beammap.phase_strategy.locator_iter={} requested, but the locator pass must be iter 0; using 0",
-            beammap_locator_iter);
-        beammap_locator_iter = 0;
-    }
-    if (beammap_measurement_start_iter <= beammap_locator_iter) {
-        logger->warn(
-            "beammap.phase_strategy.measurement_start_iter={} must be after locator_iter={}; using {}",
-            beammap_measurement_start_iter, beammap_locator_iter, beammap_locator_iter + 1);
-        beammap_measurement_start_iter = beammap_locator_iter + 1;
-    }
-    if (beammap_iter_max <= beammap_measurement_start_iter) {
-        logger->warn(
-            "beammap.iter_max={} will not run a measurement pass with measurement_start_iter={}",
-            beammap_iter_max, beammap_measurement_start_iter);
-    }
+    citlali::pipeline::normalize_beammap_phase_strategy(
+        beammap_iter_max, beammap_locator_iter,
+        beammap_measurement_start_iter, logger);
 
     // beammap reference detector
     get_config_value(config, beammap_reference_det, missing_keys, invalid_keys,

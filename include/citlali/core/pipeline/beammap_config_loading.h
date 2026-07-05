@@ -65,6 +65,29 @@ inline std::vector<int> normalized_beammap_split_flag_values(
     return values;
 }
 
+template <class Logger>
+void normalize_beammap_phase_strategy(int iter_max, int &locator_iter,
+                                      int &measurement_start_iter,
+                                      const Logger &logger) {
+    if (locator_iter != 0) {
+        logger->warn(
+            "beammap.phase_strategy.locator_iter={} requested, but the locator pass must be iter 0; using 0",
+            locator_iter);
+        locator_iter = 0;
+    }
+    if (measurement_start_iter <= locator_iter) {
+        logger->warn(
+            "beammap.phase_strategy.measurement_start_iter={} must be after locator_iter={}; using {}",
+            measurement_start_iter, locator_iter, locator_iter + 1);
+        measurement_start_iter = locator_iter + 1;
+    }
+    if (iter_max <= measurement_start_iter) {
+        logger->warn(
+            "beammap.iter_max={} will not run a measurement pass with measurement_start_iter={}",
+            iter_max, measurement_start_iter);
+    }
+}
+
 inline void mirror_beammap_core_config(
     citlali::config::BeammapConfig &target,
     int iter_max, double iter_tolerance, double convergence_radius_arcsec,
