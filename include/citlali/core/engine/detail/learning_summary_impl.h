@@ -22,7 +22,6 @@ inline void Engine::write_learning_summary() {
     }
 
     auto csv = citlali::pipeline::csv_escaped;
-    using namespace citlali::pipeline::learning_summary_columns;
 
     const auto header = citlali::pipeline::learning_summary_csv_header();
 
@@ -34,23 +33,8 @@ inline void Engine::write_learning_summary() {
         citlali::pipeline::write_csv_row(out, row);
     };
 
-    auto new_row = [&]() {
-        return citlali::pipeline::learning_summary_empty_row();
-    };
-
     auto write_common_header = [&]() {
         write_row(header);
-    };
-
-    auto write_base = [&](std::vector<std::string> &row,
-                          const std::string &record_type, int iter,
-                          const std::string &obsnum_value,
-                          const std::string &producer,
-                          const std::string &reason, int scan, int uid,
-                          int nw, int array) {
-        citlali::pipeline::write_learning_summary_base_fields(
-            row, record_type, iter, obsnum_value, producer, reason, scan,
-            uid, nw, array, text, csv);
     };
 
     std::lock_guard<std::mutex> lock(*reduction_learning.mutex);
@@ -88,30 +72,8 @@ inline void Engine::write_learning_summary() {
     }
 
     for (const auto &record : reduction_learning.learned_mask_applications) {
-        auto row = new_row();
-        const bool detector_exclusion =
-            record.stage.find("detector_exclusion") != std::string::npos;
-        write_base(row,
-                   detector_exclusion
-                       ? "detector_penalty_application"
-                       : "sample_mask_application",
-                   record.iter, record.obsnum, record.producer,
-                   detector_exclusion
-                       ? "apply_learned_detector_exclusion"
-                       : "apply_learned_sample_mask",
-                   record.scan, -1, -1, -1);
-        row[ColApplicationStage] = csv(record.stage);
-        row[ColCandidateRecords] = text(record.candidate_records);
-        row[ColMatchedRecords] = text(record.matched_records);
-        row[ColInvalidRecords] = text(record.invalid_records);
-        row[ColProposedSamples] = text(record.proposed_samples);
-        row[ColNewlyFlaggedSamples] = text(record.newly_flagged_samples);
-        row[ColAlreadyFlaggedSamples] = text(record.already_flagged_samples);
-        row[ColSourceProtectedSamples] = text(record.source_protected_samples);
-        row[ColNewlyFlaggedFraction] = text(record.newly_flagged_fraction);
-        row[ColMaxNewFlaggedFraction] = text(record.max_new_flagged_fraction);
-        row[ColApplied] = text(record.applied ? 1 : 0);
-        write_row(row);
+        write_row(citlali::pipeline::learning_summary_mask_application_row(
+            record, text, csv));
     }
 
     logger->info("wrote reduction learning summary {}", filename);
