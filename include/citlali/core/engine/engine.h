@@ -7733,8 +7733,8 @@ void Engine::find_sources(map_buffer_t &mb) {
                     }
 
                     // add source params and errors to table
-                    mb.source_params.row(source_row_start+j) = params;
-                    mb.source_perror.row(source_row_start+j) = perrors;
+                    mb.source_params.row(source_row_start + j) = params;
+                    mb.source_perror.row(source_row_start + j) = perrors;
                 }
                 return 0;
             });
