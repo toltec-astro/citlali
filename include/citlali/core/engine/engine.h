@@ -7743,11 +7743,11 @@ void Engine::find_sources(map_buffer_t &mb) {
                                 lat, lon, mb.wcs.crval[0] * DEG_TO_RAD,
                                 mb.wcs.crval[1] * DEG_TO_RAD);
 
-                        params(1) = ara(0)*RAD_TO_DEG;
-                        params(2) = adec(0)*RAD_TO_DEG;
+                        params(1) = ara(0) * RAD_TO_DEG;
+                        params(2) = adec(0) * RAD_TO_DEG;
 
-                        perrors(1) = perrors(1)*ASEC_TO_DEG;
-                        perrors(2) = perrors(2)*ASEC_TO_DEG;
+                        perrors(1) = perrors(1) * ASEC_TO_DEG;
+                        perrors(2) = perrors(2) * ASEC_TO_DEG;
                     }
 
                     // add source params and errors to table
