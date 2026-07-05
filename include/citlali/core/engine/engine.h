@@ -7007,7 +7007,8 @@ void Engine::create_ptcdiag_file() {
 
     netCDF::NcDim n_scans_dim = fo.addDim("n_scans", n_scans);
     netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
-    std::vector<netCDF::NcDim> det_dims = {n_scans_dim, n_dets_dim};
+    std::vector<netCDF::NcDim> det_dims = {
+        n_scans_dim, n_dets_dim};
 
     citlali::pipeline::add_diagnostic_output_scan_index(
         fo, n_scans_dim, n_scans, fill_int);
