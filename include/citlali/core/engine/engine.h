@@ -7384,8 +7384,11 @@ void Engine::create_rtcdiag_file() {
                 n_snippet, snippet_pre, fill_int);
         offset_v.putVar(offsets.data());
 
-        std::vector<netCDF::NcDim> rtc_impulsive_slot_dims = {n_scans_dim, n_nws_rtcdiag_dim, n_rtc_impulsive_slots_dim};
-        std::vector<netCDF::NcDim> rtc_impulsive_snippet_dims = {n_scans_dim, n_nws_rtcdiag_dim, n_rtc_impulsive_slots_dim, n_rtc_impulsive_samples_dim};
+        std::vector<netCDF::NcDim> rtc_impulsive_slot_dims = {
+            n_scans_dim, n_nws_rtcdiag_dim, n_rtc_impulsive_slots_dim};
+        std::vector<netCDF::NcDim> rtc_impulsive_snippet_dims = {
+            n_scans_dim, n_nws_rtcdiag_dim, n_rtc_impulsive_slots_dim,
+            n_rtc_impulsive_samples_dim};
         const std::vector<std::size_t> rtc_impulsive_slot_chunks = {1, TULA_SIZET(calib.n_nws), n_slots};
         const std::vector<std::size_t> rtc_impulsive_snippet_chunks = {1, TULA_SIZET(calib.n_nws), n_slots, n_snippet};
         const auto n_rtc_impulsive_slot_values =
