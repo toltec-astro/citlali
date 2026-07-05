@@ -7858,7 +7858,8 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
             for (Eigen::Index j = 0; j < mb->n_sources[i]; ++j) {
                 source_table(k, 0) = maps_to_arrays(i);
                 // set signal to noise
-                source_table(k,2*map_fitter.n_params + 1) = mb->source_params(k,0)/map_std_dev;
+                const auto sig2noise_col = 2 * map_fitter.n_params + 1;
+                source_table(k, sig2noise_col) = mb->source_params(k,0)/map_std_dev;
 
                 k++;
             }
