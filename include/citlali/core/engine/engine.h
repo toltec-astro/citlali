@@ -7469,7 +7469,8 @@ void Engine::write_stats() {
     const std::map<std::string, std::string> grp_stats_header_units{
         {"median_weights", "1/(" + omb.sig_unit + ")^2"}};
 
-    write_netcdf_atomic(stats_filename + ".nc", [&](netCDF::NcFile &fo) {
+    const auto stats_netcdf_filename = stats_filename + ".nc";
+    write_netcdf_atomic(stats_netcdf_filename, [&](netCDF::NcFile &fo) {
 
     citlali::pipeline::add_obsnum_var(fo, std::stoi(obsnum));
 
