@@ -20,13 +20,8 @@ void Engine::get_rtc_config(CT &config) {
     citlali::pipeline::mirror_raw_kernel_config(
         typed_raw.kernel, rtcproc, RAD_TO_ASEC);
 
-    auto &typed_altaz = typed_raw.altaz_destripe;
-    typed_altaz.enabled = rtcproc.altaz_destripe.enabled;
-    typed_altaz.grouping = rtcproc.altaz_destripe.grouping;
-    typed_altaz.fit_time_trend = rtcproc.altaz_destripe.fit_time_trend;
-    typed_altaz.fit_derivs = rtcproc.altaz_destripe.fit_derivs;
-    typed_altaz.min_samples =
-        static_cast<int>(rtcproc.altaz_destripe.min_samples);
+    citlali::pipeline::mirror_raw_altaz_destripe_config(
+        typed_raw.altaz_destripe, rtcproc);
 
     const auto &line_audit = rtcproc.line_audit;
     auto &typed_line_audit = typed_raw.line_audit;
@@ -159,8 +154,7 @@ void Engine::get_rtc_config(CT &config) {
         typed_iir_filter.zero_phase = rtcproc.filter.iir_highpass_zero_phase;
     }
 
-    typed_raw.flux_calibration_enabled = rtcproc.run_calibrate;
-    typed_raw.extinction_correction_enabled = rtcproc.run_extinction;
+    citlali::pipeline::mirror_raw_correction_flags(typed_raw, rtcproc);
 
     rtcproc.configure_filter_edge_guard(telescope.fsmp);
     auto &typed_edge_guard = typed_filter.edge_guard;

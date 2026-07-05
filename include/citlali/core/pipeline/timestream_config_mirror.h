@@ -456,4 +456,22 @@ void mirror_raw_downsample_config(DownsampleConfig &target,
     target.downsampled_freq_Hz = rtcproc.downsampler.downsampled_freq_Hz;
 }
 
+template <class AltazDestripeConfig, class RtcProc>
+void mirror_raw_altaz_destripe_config(AltazDestripeConfig &target,
+                                      const RtcProc &rtcproc) {
+    target.enabled = rtcproc.altaz_destripe.enabled;
+    target.grouping = rtcproc.altaz_destripe.grouping;
+    target.fit_time_trend = rtcproc.altaz_destripe.fit_time_trend;
+    target.fit_derivs = rtcproc.altaz_destripe.fit_derivs;
+    target.min_samples =
+        static_cast<int>(rtcproc.altaz_destripe.min_samples);
+}
+
+template <class RawTimeChunkConfig, class RtcProc>
+void mirror_raw_correction_flags(RawTimeChunkConfig &target,
+                                 const RtcProc &rtcproc) {
+    target.flux_calibration_enabled = rtcproc.run_calibrate;
+    target.extinction_correction_enabled = rtcproc.run_extinction;
+}
+
 }  // namespace citlali::pipeline
