@@ -7429,8 +7429,13 @@ void Engine::write_stats() {
                 // loop through cleaner grouping
                 for (Eigen::Index i=0; i<eval_groups.size(); ++i) {
 
-                    netCDF::NcVar eval_v = fo.addVar("evals_" + ptcproc.cleaner.grouping[i] + "_" + std::to_string(i) +
-                                                         "_chunk_" + std::to_string(chunk_index), netCDF::ncDouble, eval_dims);
+                    const auto eval_var_name =
+                        "evals_" + ptcproc.cleaner.grouping[i] + "_" +
+                        std::to_string(i) + "_chunk_" +
+                        std::to_string(chunk_index);
+                    netCDF::NcVar eval_v =
+                        fo.addVar(eval_var_name, netCDF::ncDouble,
+                                  eval_dims);
                     std::vector<std::size_t> start_eig_index = {0, 0};
                     std::vector<std::size_t> size = {1, TULA_SIZET(ptcproc.cleaner.n_calc)};
 
