@@ -7459,17 +7459,15 @@ void Engine::write_stats() {
             stats_dir, redu_type, "", obsnum, telescope.sim_obs);
 
     // det stats header
-    const std::map<std::string, std::string> det_stats_header_units {
+    const std::map<std::string, std::string> det_stats_header_units{
         {"rms", omb.sig_unit},
         {"stddev", omb.sig_unit},
         {"median", omb.sig_unit},
         {"flagged_frac", "N/A"},
-        {"weights", "1/(" + omb.sig_unit + ")^2"},
-        };
+        {"weights", "1/(" + omb.sig_unit + ")^2"}};
     // group stats header
-    const std::map<std::string, std::string> grp_stats_header_units {
-        {"median_weights", "1/(" + omb.sig_unit + ")^2"},
-        };
+    const std::map<std::string, std::string> grp_stats_header_units{
+        {"median_weights", "1/(" + omb.sig_unit + ")^2"}};
 
     write_netcdf_atomic(stats_filename + ".nc", [&](netCDF::NcFile &fo) {
 
