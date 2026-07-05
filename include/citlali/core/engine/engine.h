@@ -6827,14 +6827,15 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             const auto &candidate =
                                 citlali::pipeline::mapdiag_emitted_candidate(
                                     candidates, ci);
+                            const auto outlier_reason =
+                                citlali::pipeline::
+                                    mapdiag_map_pixel_outlier_reason(
+                                        candidate, mb);
                             auto record =
                                 citlali::pipeline::make_mapdiag_outlier_record<
                                     ReductionLearningState::MapPixelOutlier>(
                                     obsnum, mapdiag_record_producer,
-                                    citlali::pipeline::
-                                        mapdiag_map_pixel_outlier_reason(
-                                            candidate, mb),
-                                    fruit_iter,
+                                    outlier_reason, fruit_iter,
                                     citlali::pipeline::
                                         mapdiag_record_map_index(i),
                                     candidate);
