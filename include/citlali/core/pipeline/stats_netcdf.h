@@ -2,6 +2,9 @@
 
 #include <map>
 #include <string>
+#include <vector>
+
+#include <netcdf>
 
 namespace citlali::pipeline {
 
@@ -25,6 +28,16 @@ detector_stats_units(const std::string &signal_unit) {
 inline std::map<std::string, std::string>
 group_stats_units(const std::string &signal_unit) {
     return {{"median_weights", "1/(" + signal_unit + ")^2"}};
+}
+
+template <class Values>
+void add_stats_double_var(netCDF::NcFile &fo, const std::string &name,
+                          const std::vector<netCDF::NcDim> &dims,
+                          const Values &values,
+                          const std::string &units) {
+    netCDF::NcVar stat_v = fo.addVar(name, netCDF::ncDouble, dims);
+    stat_v.putVar(values.data());
+    stat_v.putAtt("units", units);
 }
 
 }  // namespace citlali::pipeline
