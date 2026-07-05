@@ -7416,8 +7416,9 @@ void Engine::write_stats() {
     if (has_eigenvalue_diagnostics) {
         const auto first_it = diagnostics.evals.begin();
         if (!first_it->second.empty() && !first_it->second[0].empty()) {
+            const auto n_eig_groups = first_it->second[0].size();
             netCDF::NcDim n_eigs_dim = fo.addDim("n_eigs", ptcproc.cleaner.n_calc);
-            netCDF::NcDim n_eig_grp_dim = fo.addDim("n_eig_grp", first_it->second[0].size());
+            netCDF::NcDim n_eig_grp_dim = fo.addDim("n_eig_grp", n_eig_groups);
 
             std::vector<netCDF::NcDim> eval_dims = {n_eig_grp_dim, n_eigs_dim};
 
