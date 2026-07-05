@@ -24,23 +24,13 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         rtcproc.run_calibrate, FWHM_TO_STD, ASEC_TO_RAD, pi,
         MJY_SR_TO_mJY_ASEC, logger);
 
-    // add source flux and tuning for beammaps
-    citlali::pipeline::add_phdu_beammap_keys_if_needed(
-        fits_entry, name, logger, redu_type, beammap_fluxes_mJy_beam,
+    citlali::engine_detail::add_phdu_beammap_observation_section(
+        fits_entry, mb, name, logger, redu_type, beammap_fluxes_mJy_beam,
         beammap_fluxes_MJy_Sr, beammap_iter_tolerance,
         beammap_convergence_radius_arcsec, beammap_iter_max,
         beammap_phase_split_enabled, beammap_locator_iter,
         beammap_measurement_start_iter, beammap_derotate,
-        beammap_subtract_reference, calib, beammap_reference_det);
-
-    logger->debug("adding obsnums");
-
-    // add obsnums
-    citlali::pipeline::add_phdu_obsnum_keys(fits_entry, mb->obsnums);
-
-    // add date and time of obs
-    citlali::pipeline::add_phdu_date_obs_keys(
-        fits_entry, mb->obsnums, date_obs);
+        beammap_subtract_reference, calib, beammap_reference_det, date_obs);
 
     logger->debug("adding obs info");
 
