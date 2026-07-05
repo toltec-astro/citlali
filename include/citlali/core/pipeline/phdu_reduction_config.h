@@ -542,6 +542,25 @@ void add_phdu_pointing_config(
                "Pointing header coverage guard");
 }
 
+template <class FitsEntry, class Logger>
+void add_phdu_pointing_config_if_needed(
+    FitsEntry &fits_entry, const std::string &array_name,
+    const Logger &logger, const std::string &redu_type,
+    const std::string &pointing_source_strategy,
+    bool pointing_fit_gaussian_enabled,
+    const std::string &pointing_fruitloops_center_mode,
+    double pointing_header_center_max_radius_arcsec,
+    bool pointing_header_center_require_coverage) {
+    if (redu_type != "pointing") {
+        return;
+    }
+    add_phdu_pointing_config(
+        fits_entry, array_name, logger, pointing_source_strategy,
+        pointing_fit_gaussian_enabled, pointing_fruitloops_center_mode,
+        pointing_header_center_max_radius_arcsec,
+        pointing_header_center_require_coverage);
+}
+
 template <class FitsEntry, class ReductionLearning, class Logger>
 void add_phdu_reduction_learning_config(
     FitsEntry &fits_entry, const std::string &array_name,
