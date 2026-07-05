@@ -76,14 +76,12 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_entry, name, logger, ptcproc, calib, reduction_learning, i,
         array_id, mb->sig_unit);
 
-    citlali::pipeline::add_phdu_pointing_config_if_needed(
-        fits_entry, name, logger, redu_type, pointing_source_strategy,
-        pointing_fit_gaussian_enabled, pointing_fruitloops_center_mode,
+    citlali::engine_detail::add_phdu_pointing_telescope_header_section(
+        fits_entry, mb, telescope, name, logger, redu_type,
+        pointing_source_strategy, pointing_fit_gaussian_enabled,
+        pointing_fruitloops_center_mode,
         pointing_header_center_max_radius_arcsec,
         pointing_header_center_require_coverage);
-
-    citlali::pipeline::add_phdu_telescope_header_keys_if_single_observation(
-        fits_entry, mb->obsnums, name, logger, telescope.tel_header);
     } catch (const CCfits::FitsError &e) {
         throw std::runtime_error(
             citlali::pipeline::phdu_write_error_message(
