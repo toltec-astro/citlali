@@ -7840,7 +7840,7 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
 
     // count up the total number of sources
     Eigen::Index n_sources = 0;
-    for (const auto &sources: mb->n_sources) {
+    for (const auto &sources : mb->n_sources) {
         n_sources += sources;
     }
 
