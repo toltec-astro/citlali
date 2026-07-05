@@ -6294,10 +6294,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         map_t == mapmaking::RawCoadd || map_t == mapmaking::FilteredCoadd);
     const double fill_double = citlali::pipeline::mapdiag_fill_double();
     const int fill_int = citlali::pipeline::mapdiag_fill_int();
+    const auto n_mapdiag_maps = mapdiag_context.n_maps;
 
-    std::vector<std::string> array_names(mapdiag_context.n_maps);
-    std::vector<std::string> stokes_names(mapdiag_context.n_maps);
-    std::vector<std::string> map_names(mapdiag_context.n_maps);
+    std::vector<std::string> array_names(n_mapdiag_maps);
+    std::vector<std::string> stokes_names(n_mapdiag_maps);
+    std::vector<std::string> map_names(n_mapdiag_maps);
     std::vector<double> median_err(mapdiag_context.n_maps, fill_double);
     std::vector<double> median_rms(mapdiag_context.n_maps, fill_double);
     std::vector<double> weight_thresholds(mapdiag_context.n_maps, fill_double);
