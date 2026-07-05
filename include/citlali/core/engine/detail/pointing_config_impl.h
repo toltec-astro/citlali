@@ -3,13 +3,16 @@
 // Engine config loading implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/engine/detail/config_parse_tracking.h>
+
 template<typename CT>
 void Engine::get_pointing_config(CT &config) {
     logger->info("getting pointing config options");
     typed_pointing_config = citlali::config::PointingConfig{};
 
     auto parsed_cleanly = [&](std::size_t missing_before, std::size_t invalid_before) {
-        return missing_keys.size() == missing_before && invalid_keys.size() == invalid_before;
+        return citlali::engine_detail::config_parse_clean(
+            missing_keys, invalid_keys, missing_before, invalid_before);
     };
 
     pointing_source_strategy = "standard";
@@ -131,4 +134,3 @@ void Engine::get_pointing_config(CT &config) {
                      "get new valid POINTING header centers from this run");
     }
 }
-
