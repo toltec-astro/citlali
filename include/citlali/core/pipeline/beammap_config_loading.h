@@ -455,6 +455,40 @@ void read_beammap_priors_core_config(
 }
 
 template <class Config, class MissingKeys, class InvalidKeys>
+void read_beammap_priors_iteration_config(
+    Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys,
+    double &max_d2_iter0, double &max_d2_after_iter0,
+    double &score_lambda_iter0, double &score_lambda_after_iter0) {
+    if (config.template has_typed<double>(
+            std::tuple{"beammap", "priors", "max_d2_iter0"})) {
+        ::get_config_value(
+            config, max_d2_iter0, missing_keys, invalid_keys,
+            std::tuple{"beammap", "priors", "max_d2_iter0"}, {}, {0.0});
+    }
+    if (config.template has_typed<double>(
+            std::tuple{"beammap", "priors", "max_d2_after_iter0"})) {
+        ::get_config_value(
+            config, max_d2_after_iter0, missing_keys, invalid_keys,
+            std::tuple{"beammap", "priors", "max_d2_after_iter0"}, {},
+            {0.0});
+    }
+    if (config.template has_typed<double>(
+            std::tuple{"beammap", "priors", "score_lambda_iter0"})) {
+        ::get_config_value(
+            config, score_lambda_iter0, missing_keys, invalid_keys,
+            std::tuple{"beammap", "priors", "score_lambda_iter0"}, {},
+            {0.0});
+    }
+    if (config.template has_typed<double>(
+            std::tuple{"beammap", "priors", "score_lambda_after_iter0"})) {
+        ::get_config_value(
+            config, score_lambda_after_iter0, missing_keys, invalid_keys,
+            std::tuple{"beammap", "priors", "score_lambda_after_iter0"}, {},
+            {0.0});
+    }
+}
+
+template <class Config, class MissingKeys, class InvalidKeys>
 void read_beammap_detector_tod_output_config(
     Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys,
     bool &enabled, std::string &subdir_name, int &n_uniform,

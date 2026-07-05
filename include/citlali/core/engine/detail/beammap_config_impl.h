@@ -73,26 +73,11 @@ void Engine::get_beammap_config(CT &config) {
         beammap_priors_max_d2_after_iter0, beammap_priors_score_lambda,
         beammap_priors_score_lambda_iter0,
         beammap_priors_score_lambda_after_iter0);
-    if (config.template has_typed<double>(std::tuple{"beammap","priors","max_d2_iter0"})) {
-        get_config_value(config, beammap_priors_max_d2_iter0, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","max_d2_iter0"},
-                         {}, {0.0});
-    }
-    if (config.template has_typed<double>(std::tuple{"beammap","priors","max_d2_after_iter0"})) {
-        get_config_value(config, beammap_priors_max_d2_after_iter0, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","max_d2_after_iter0"},
-                         {}, {0.0});
-    }
-    if (config.template has_typed<double>(std::tuple{"beammap","priors","score_lambda_iter0"})) {
-        get_config_value(config, beammap_priors_score_lambda_iter0, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","score_lambda_iter0"},
-                         {}, {0.0});
-    }
-    if (config.template has_typed<double>(std::tuple{"beammap","priors","score_lambda_after_iter0"})) {
-        get_config_value(config, beammap_priors_score_lambda_after_iter0, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","score_lambda_after_iter0"},
-                         {}, {0.0});
-    }
+    citlali::pipeline::read_beammap_priors_iteration_config(
+        config, missing_keys, invalid_keys, beammap_priors_max_d2_iter0,
+        beammap_priors_max_d2_after_iter0,
+        beammap_priors_score_lambda_iter0,
+        beammap_priors_score_lambda_after_iter0);
     if (config.template has_typed<bool>(std::tuple{"beammap","priors","fallback_blind"})) {
         get_config_value(config, beammap_priors_fallback_blind, missing_keys, invalid_keys,
                          std::tuple{"beammap","priors","fallback_blind"});
