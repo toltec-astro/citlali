@@ -11,6 +11,8 @@
 #include <netcdf>
 
 #include <citlali/core/pipeline/phdu_beammap.h>
+#include <citlali/core/pipeline/phdu_observation_metadata.h>
+#include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/netcdf_io.h>
 
 namespace citlali::pipeline {
@@ -306,6 +308,32 @@ inline void add_unit_conversion_array_vars(
         add_netcdf_var(fo, "to_uK_" + array_name,
                        mjy_beam_to_uk/mjy_beam_to_jy_pixel);
         add_netcdf_var(fo, "to_Jy_pixel_" + array_name, 1);
+    }
+}
+
+template <class Calib, class ToltecIo>
+void add_tod_unit_conversion_vars(
+    netCDF::NcFile &fo, Calib &calib, ToltecIo &toltec_io,
+    const std::string &signal_unit, double pixel_size_rad,
+    double mjy_sr_to_mjy_arcsec, double fwhm_to_std, double arcsec_to_rad,
+    double pi_value) {
+    add_unit_conversion_basis_vars(fo);
+    for (const auto &array_id: calib.arrays) {
+        const auto array_name = toltec_io.array_name_map[array_id];
+        const auto fwhm =
+            mean_beam_fwhm_arcsec(calib.array_fwhms[array_id]);
+        const auto mjy_beam_to_uk = engine_utils::mJy_beam_to_uK(
+            1, toltec_io.array_freq_map[array_id], fwhm);
+        const auto beam_area_sr =
+            gaussian_beam_area_sr(
+                fwhm, fwhm_to_std, arcsec_to_rad, pi_value);
+        const auto mjy_beam_to_jy_pixel =
+            mjy_beam_to_jy_pixel_factor(beam_area_sr, pixel_size_rad);
+
+        add_unit_conversion_array_vars(
+            fo, array_name, signal_unit,
+            calib.array_beam_areas[array_id] * mjy_sr_to_mjy_arcsec,
+            mjy_beam_to_uk, mjy_beam_to_jy_pixel);
     }
 }
 

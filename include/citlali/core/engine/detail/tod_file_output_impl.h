@@ -11,23 +11,9 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
         // add unit conversions
         if (rtcproc.run_calibrate) {
-            citlali::pipeline::add_unit_conversion_basis_vars(fo);
-            for (const auto &val: calib.arrays) {
-                auto name = toltec_io.array_name_map[val];
-                // conversion to Rayleigh-Jeans uK brightness temperature
-                auto fwhm = (std::get<0>(calib.array_fwhms[val]) + std::get<1>(calib.array_fwhms[val]))/2;
-                auto mJy_beam_to_uK = engine_utils::mJy_beam_to_uK(1, toltec_io.array_freq_map[val], fwhm);
-
-                // beam area in steradians
-                auto beam_area_rad = 2.*pi*pow(fwhm*FWHM_TO_STD*ASEC_TO_RAD,2);
-                // get Jy/pixel
-                auto mJy_beam_to_Jy_px = 1e-3/beam_area_rad*pow(omb.pixel_size_rad,2);
-
-                citlali::pipeline::add_unit_conversion_array_vars(
-                    fo, name, omb.sig_unit,
-                    calib.array_beam_areas[val]*MJY_SR_TO_mJY_ASEC,
-                    mJy_beam_to_uK, mJy_beam_to_Jy_px);
-            }
+            citlali::pipeline::add_tod_unit_conversion_vars(
+                fo, calib, toltec_io, omb.sig_unit, omb.pixel_size_rad,
+                MJY_SR_TO_mJY_ASEC, FWHM_TO_STD, ASEC_TO_RAD, pi);
         }
 
         citlali::pipeline::add_observation_date_source_vars(
