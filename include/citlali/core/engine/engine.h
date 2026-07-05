@@ -7852,7 +7852,8 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     for (Eigen::Index i = 0; i < mb->n_sources.size(); ++i) {
         if (mb->n_sources[i] != 0) {
             // calculate map standard deviation
-            double map_std_dev = engine_utils::calc_std_dev(mb->signal[i]);
+            const double map_std_dev =
+                engine_utils::calc_std_dev(mb->signal[i]);
 
             for (Eigen::Index j=0; j<mb->n_sources[i]; ++j) {
                 source_table(k,0) = maps_to_arrays(i);
