@@ -7614,8 +7614,8 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                      map_label, map_number, n_maps, array_name);
         double template_fwhm_rad = 0.0;
         const bool template_uses_fwhm =
-            wiener_filter.template_type == "gaussian" ||
-            wiener_filter.template_type == "airy";
+            citlali::pipeline::map_filter_template_uses_fwhm(
+                wiener_filter.template_type);
         if (template_uses_fwhm) {
             const auto it = wiener_filter.template_fwhm_rad.find(array_name);
             if (it == wiener_filter.template_fwhm_rad.end()) {
