@@ -105,7 +105,8 @@ void Engine::get_citlali_config(CT &config) {
     }
 
     // map fitter options if in pointing or beammap mode or if map filtering or source finding are enabled
-    if (redu_type=="pointing" || redu_type=="beammap" || run_map_filter || run_source_finder) {
+    if (citlali::pipeline::source_fitting_config_needed(
+            redu_type, run_map_filter, run_source_finder)) {
         typed_post_processing_config.source_fitting.active = true;
         // size of region around found source to fit
         {

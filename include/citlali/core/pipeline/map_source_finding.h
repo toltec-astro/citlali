@@ -42,6 +42,13 @@ inline double source_fitting_arcsec_to_pixels(double value_arcsec,
     return arcsec_to_rad * value_arcsec / pixel_size_rad;
 }
 
+inline bool source_fitting_config_needed(const std::string &reduction_type,
+                                         bool run_map_filter,
+                                         bool run_source_finder) {
+    return reduction_type == "pointing" || reduction_type == "beammap" ||
+           run_map_filter || run_source_finder;
+}
+
 template <class MapFitter>
 void apply_positive_source_fit_limits(MapFitter &map_fitter) {
     if (map_fitter.flux_limits(0) > 0) {
