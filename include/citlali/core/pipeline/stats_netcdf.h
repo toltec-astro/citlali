@@ -11,6 +11,30 @@
 
 namespace citlali::pipeline {
 
+inline std::string stats_raw_directory(const std::string &obsnum_dir_name) {
+    return obsnum_dir_name + "raw/";
+}
+
+inline bool stats_has_tod_output_subdir(
+    const std::string &tod_output_subdir_name) {
+    return tod_output_subdir_name != "null";
+}
+
+inline std::string stats_tod_output_subdir_path(
+    const std::string &stats_dir,
+    const std::string &tod_output_subdir_name) {
+    return stats_dir + tod_output_subdir_name;
+}
+
+inline std::string stats_directory_from_subdir(
+    const std::string &stats_subdir_path) {
+    return stats_subdir_path + "/";
+}
+
+inline std::string stats_netcdf_filename(const std::string &stats_filename) {
+    return stats_filename + ".nc";
+}
+
 inline std::string stats_unit_or_empty(
     const std::map<std::string, std::string> &units,
     const std::string &stat) {
@@ -33,6 +57,29 @@ group_stats_units(const std::string &signal_unit) {
     return {{"median_weights", "1/(" + signal_unit + ")^2"}};
 }
 
+struct StatsDims {
+    netCDF::NcDim n_dets;
+    netCDF::NcDim n_arrays;
+    netCDF::NcDim n_chunks;
+    std::vector<netCDF::NcDim> det_stat;
+    std::vector<netCDF::NcDim> grp_stat;
+};
+
+inline StatsDims add_stats_dims(netCDF::NcFile &fo, Eigen::Index n_dets,
+                                Eigen::Index n_arrays,
+                                Eigen::Index n_chunks) {
+    netCDF::NcDim n_dets_dim = fo.addDim("n_dets", n_dets);
+    netCDF::NcDim n_arrays_dim = fo.addDim("n_arrays", n_arrays);
+    netCDF::NcDim n_chunks_dim = fo.addDim("n_chunks", n_chunks);
+
+    return {
+        n_dets_dim,
+        n_arrays_dim,
+        n_chunks_dim,
+        {n_chunks_dim, n_dets_dim},
+        {n_chunks_dim, n_arrays_dim}};
+}
+
 template <class Values>
 void add_stats_double_var(netCDF::NcFile &fo, const std::string &name,
                           const std::vector<netCDF::NcDim> &dims,
@@ -41,6 +88,30 @@ void add_stats_double_var(netCDF::NcFile &fo, const std::string &name,
     netCDF::NcVar stat_v = fo.addVar(name, netCDF::ncDouble, dims);
     stat_v.putVar(values.data());
     stat_v.putAtt("units", units);
+}
+
+template <class Diagnostics>
+void add_detector_stats_vars(
+    netCDF::NcFile &fo, Diagnostics &diagnostics,
+    const std::vector<netCDF::NcDim> &det_stat_dims,
+    const std::map<std::string, std::string> &det_stats_header_units) {
+    for (const auto &stat : diagnostics.det_stats_header) {
+        add_stats_double_var(
+            fo, stat, det_stat_dims, diagnostics.stats[stat],
+            stats_unit_or_empty(det_stats_header_units, stat));
+    }
+}
+
+template <class Diagnostics>
+void add_group_stats_vars(
+    netCDF::NcFile &fo, Diagnostics &diagnostics,
+    const std::vector<netCDF::NcDim> &grp_stat_dims,
+    const std::map<std::string, std::string> &grp_stats_header_units) {
+    for (const auto &stat : diagnostics.grp_stats_header) {
+        add_stats_double_var(
+            fo, stat, grp_stat_dims, diagnostics.stats[stat],
+            stats_unit_or_empty(grp_stats_header_units, stat));
+    }
 }
 
 template <class Calib>
@@ -152,6 +223,41 @@ void add_stats_eigenvalue_group_var(
     netCDF::NcVar eval_v = add_stats_eigenvalue_var(fo, name, dims);
     write_stats_eigenvalue_rows(
         eval_v, eval_vectors, n_cleaner_eigenvalues, fill_value);
+}
+
+template <class Diagnostics, class Cleaner, class Logger>
+void add_stats_eigenvalue_outputs_if_needed(
+    netCDF::NcFile &fo, const Diagnostics &diagnostics,
+    const Cleaner &cleaner, const Logger &logger, double fill_value) {
+    if (!should_write_stats_eigenvalues(diagnostics, cleaner)) {
+        return;
+    }
+
+    if (!has_stats_eigenvalue_groups(diagnostics.evals)) {
+        logger->warn("evals requested but empty; skipping eval/evec output");
+        return;
+    }
+
+    const auto first_it = diagnostics.evals.begin();
+    const Eigen::Index n_cleaner_eigenvalues = cleaner.n_calc;
+    const auto &cleaner_grouping = cleaner.grouping;
+    const auto n_eig_groups = first_it->second[0].size();
+    const auto eval_dims =
+        add_stats_eigenvalue_dims(fo, n_cleaner_eigenvalues, n_eig_groups);
+
+    for (const auto &[chunk_index, eval_groups] : diagnostics.evals) {
+        const auto n_eval_groupings = eval_groups.size();
+        for (Eigen::Index i = 0;
+             i < static_cast<Eigen::Index>(n_eval_groupings); ++i) {
+            const auto &cleaner_grouping_name = cleaner_grouping[i];
+            const auto eval_var_name =
+                stats_eigenvalue_var_name(
+                    cleaner_grouping_name, i, chunk_index);
+            add_stats_eigenvalue_group_var(
+                fo, eval_var_name, eval_dims, eval_groups[i],
+                n_cleaner_eigenvalues, fill_value);
+        }
+    }
 }
 
 }  // namespace citlali::pipeline

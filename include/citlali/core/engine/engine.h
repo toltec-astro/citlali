@@ -7473,14 +7473,21 @@ void Engine::create_rtcdiag_file() {
 }
 
 void Engine::write_stats() {
-    std::string stats_dir = obsnum_dir_name + "raw/";
+    std::string stats_dir =
+        citlali::pipeline::stats_raw_directory(obsnum_dir_name);
     // if using tod subdir, put stats file in it
-    const bool has_tod_output_subdir = tod_output_subdir_name != "null";
+    const bool has_tod_output_subdir =
+        citlali::pipeline::stats_has_tod_output_subdir(
+            tod_output_subdir_name);
     if (has_tod_output_subdir) {
-        const auto stats_subdir_path = stats_dir + tod_output_subdir_name;
+        const auto stats_subdir_path =
+            citlali::pipeline::stats_tod_output_subdir_path(
+                stats_dir, tod_output_subdir_name);
         if (!fs::exists(fs::status(stats_subdir_path))) {
             fs::create_directories(stats_subdir_path);
-            stats_dir = stats_subdir_path + "/";
+            stats_dir =
+                citlali::pipeline::stats_directory_from_subdir(
+                    stats_subdir_path);
         }
     }
     // create stats filename
@@ -7496,83 +7503,36 @@ void Engine::write_stats() {
     // group stats header
     const auto grp_stats_header_units =
         citlali::pipeline::group_stats_units(omb.sig_unit);
-    const auto stats_netcdf_filename = stats_filename + ".nc";
+    const auto stats_netcdf_filename =
+        citlali::pipeline::stats_netcdf_filename(stats_filename);
     write_netcdf_atomic(stats_netcdf_filename, [&](netCDF::NcFile &fo) {
 
     citlali::pipeline::add_obsnum_var(fo, std::stoi(obsnum));
 
     // add dimensions
     const auto n_stats_chunks = telescope.scan_indices.cols();
-    netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
-    netCDF::NcDim n_arrays_dim = fo.addDim("n_arrays", calib.n_arrays);
-    netCDF::NcDim n_chunks_dim = fo.addDim("n_chunks", n_stats_chunks);
-
-    const std::vector<netCDF::NcDim> det_stat_dims = {
-        n_chunks_dim, n_dets_dim};
-    const std::vector<netCDF::NcDim> grp_stat_dims = {
-        n_chunks_dim, n_arrays_dim};
+    const auto stats_dims =
+        citlali::pipeline::add_stats_dims(
+            fo, calib.n_dets, calib.n_arrays, n_stats_chunks);
 
     // add det stats
-    for (const auto &stat : diagnostics.det_stats_header) {
-        citlali::pipeline::add_stats_double_var(
-            fo, stat, det_stat_dims, diagnostics.stats[stat],
-            citlali::pipeline::stats_unit_or_empty(
-                det_stats_header_units, stat));
-    }
+    citlali::pipeline::add_detector_stats_vars(
+        fo, diagnostics, stats_dims.det_stat, det_stats_header_units);
     // add group stats
-    for (const auto &stat : diagnostics.grp_stats_header) {
-        citlali::pipeline::add_stats_double_var(
-            fo, stat, grp_stat_dims, diagnostics.stats[stat],
-            citlali::pipeline::stats_unit_or_empty(
-                grp_stats_header_units, stat));
-    }
+    citlali::pipeline::add_group_stats_vars(
+        fo, diagnostics, stats_dims.grp_stat, grp_stats_header_units);
 
     // add apt table
-    citlali::pipeline::add_stats_apt_double_vars(fo, calib, n_dets_dim);
+    citlali::pipeline::add_stats_apt_double_vars(
+        fo, calib, stats_dims.n_dets);
 
     // add adc
     citlali::pipeline::add_stats_adc_snap_vars(
         fo, calib, diagnostics.adc_snap_data);
 
-    // add eigenvalues
-    const bool has_eigenvalue_diagnostics =
-        citlali::pipeline::should_write_stats_eigenvalues(
-            diagnostics, ptcproc.cleaner);
-    if (has_eigenvalue_diagnostics) {
-        const bool has_eigenvalue_groups =
-            citlali::pipeline::has_stats_eigenvalue_groups(
-                diagnostics.evals);
-        if (has_eigenvalue_groups) {
-            const auto first_it = diagnostics.evals.begin();
-            const Eigen::Index n_cleaner_eigenvalues =
-                ptcproc.cleaner.n_calc;
-            const auto &cleaner_grouping = ptcproc.cleaner.grouping;
-            const double eigenvalue_fill_value =
-                citlali::pipeline::ptcdiag_fill_double();
-            const auto n_eig_groups = first_it->second[0].size();
-            const auto eval_dims =
-                citlali::pipeline::add_stats_eigenvalue_dims(
-                    fo, n_cleaner_eigenvalues, n_eig_groups);
-
-            // loop through chunks
-            for (const auto &[chunk_index, eval_groups] : diagnostics.evals) {
-                // loop through cleaner grouping
-                const auto n_eval_groupings = eval_groups.size();
-                for (Eigen::Index i=0; i<n_eval_groupings; ++i) {
-                    const auto &cleaner_grouping_name = cleaner_grouping[i];
-                    const auto eval_var_name =
-                        citlali::pipeline::stats_eigenvalue_var_name(
-                            cleaner_grouping_name, i, chunk_index);
-                    citlali::pipeline::add_stats_eigenvalue_group_var(
-                        fo, eval_var_name, eval_dims, eval_groups[i],
-                        n_cleaner_eigenvalues, eigenvalue_fill_value);
-                }
-            }
-        }
-        else {
-            logger->warn("evals requested but empty; skipping eval/evec output");
-        }
-    }
+    citlali::pipeline::add_stats_eigenvalue_outputs_if_needed(
+        fo, diagnostics, ptcproc.cleaner, logger,
+        citlali::pipeline::ptcdiag_fill_double());
     });
 }
 
