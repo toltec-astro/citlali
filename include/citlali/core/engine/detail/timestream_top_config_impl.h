@@ -70,8 +70,9 @@ void Engine::get_timestream_config(CT &config) {
                 typed_timestream_config.output.raw_time_chunk.mode = *parsed;
             }
         }
-        rtcproc.tod_output_mini = (rtc_output_mode == "mini" || rtc_output_mode == "mini_outer");
-        rtcproc.tod_output_outer = (rtc_output_mode == "full_outer" || rtc_output_mode == "mini_outer");
+        citlali::pipeline::apply_tod_output_mode_flags(
+            rtc_output_mode, rtcproc.tod_output_mini,
+            rtcproc.tod_output_outer);
     }
     if (run_tod_output_rtc && config.has(std::tuple{"timestream","raw_time_chunk","output","outer_context_samples"})) {
         const auto missing_before = missing_keys.size();
@@ -109,7 +110,9 @@ void Engine::get_timestream_config(CT &config) {
                 typed_timestream_config.output.processed_time_chunk.mode = *parsed;
             }
         }
-        ptcproc.tod_output_mini = (ptc_output_mode == "mini");
+        citlali::pipeline::apply_tod_output_mode_flags(
+            ptc_output_mode, ptcproc.tod_output_mini,
+            ptcproc.tod_output_outer);
     }
     // set tod output to false by default
     run_tod_output = false;

@@ -124,6 +124,12 @@ inline std::optional<std::string> requested_tod_output_type_name(
     return std::nullopt;
 }
 
+inline void apply_tod_output_mode_flags(const std::string &mode,
+                                        bool &mini, bool &outer) {
+    mini = (mode == "mini" || mode == "mini_outer");
+    outer = (mode == "full_outer" || mode == "mini_outer");
+}
+
 inline void align_legacy_tod_output_selection(
     bool raw_time_chunk_enabled, bool processed_time_chunk_enabled,
     bool raw_chunk_select_enabled, bool processed_chunk_select_enabled,
