@@ -31,6 +31,18 @@ struct SourceInitialPosition {
     double col;
 };
 
+template <class ObservationMapBuffer, class CoaddMapBuffer>
+void mirror_source_finding_config_to_coadd(
+    const ObservationMapBuffer &omb, CoaddMapBuffer &cmb,
+    bool run_coadd) {
+    if (!run_coadd) {
+        return;
+    }
+    cmb.source_sigma = omb.source_sigma;
+    cmb.source_window_rad = omb.source_window_rad;
+    cmb.source_finder_mode = omb.source_finder_mode;
+}
+
 template <class MapsToArrays, class InitFwhmForArray, class FitMapSources>
 struct SourceFitCallbacks {
     MapsToArrays maps_to_arrays;

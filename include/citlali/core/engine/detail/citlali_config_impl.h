@@ -224,14 +224,8 @@ void Engine::get_citlali_config(CT &config) {
         // convert source window to radians
         omb.source_window_rad = omb.source_window_rad*ASEC_TO_RAD;
 
-        if (run_coadd) {
-            // copy omb source sigma to cmb
-            cmb.source_sigma = omb.source_sigma;
-            // copy omb source_window_rad to cmb
-            cmb.source_window_rad = omb.source_window_rad;
-            // copy omb source_finder_mode to cmb
-            cmb.source_finder_mode = omb.source_finder_mode;
-        }
+        citlali::pipeline::mirror_source_finding_config_to_coadd(
+            omb, cmb, run_coadd);
     }
 
     /* get pointing config */
