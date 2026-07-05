@@ -9,6 +9,44 @@
 
 namespace citlali::pipeline {
 
+struct MapWriteIndices {
+    Eigen::Index map_index;
+    Eigen::Index stokes_index;
+    Eigen::Index array_index;
+};
+
+template <class ArrayToMap, class MapToStokes, class MapToArray>
+MapWriteIndices map_write_indices(Eigen::Index i,
+                                  const ArrayToMap &arrays_to_maps,
+                                  const MapToStokes &maps_to_stokes,
+                                  const MapToArray &maps_to_arrays) {
+    return {
+        arrays_to_maps(i),
+        maps_to_stokes(i),
+        maps_to_arrays(i),
+    };
+}
+
+inline bool has_map_data_slots(Eigen::Index i, Eigen::Index signal_size,
+                               Eigen::Index weight_size) {
+    return i >= 0 && i < signal_size && i < weight_size;
+}
+
+inline bool has_output_file_slot(Eigen::Index map_index,
+                                 Eigen::Index n_files) {
+    return map_index >= 0 && map_index < n_files;
+}
+
+inline bool has_stokes_slot(Eigen::Index stokes_index,
+                            Eigen::Index n_stokes) {
+    return stokes_index >= 0 && stokes_index < n_stokes;
+}
+
+inline bool has_array_slot(Eigen::Index array_index,
+                           Eigen::Index n_arrays) {
+    return array_index >= 0 && array_index < n_arrays;
+}
+
 inline std::string map_weight_unit(const std::string &signal_unit) {
     return "1/(" + signal_unit + ")^2";
 }
@@ -220,6 +258,15 @@ template <class ArrayFreqMap, class Arrays>
 double map_wcs_frequency(ArrayFreqMap &array_freq_map, const Arrays &arrays,
                          Eigen::Index array_index) {
     return array_freq_map[arrays[array_index]];
+}
+
+template <class Wcs, class ArrayFreqMap, class Arrays>
+void assign_map_wcs_spectral_axes(Wcs &wcs, ArrayFreqMap &array_freq_map,
+                                  const Arrays &arrays,
+                                  Eigen::Index array_index,
+                                  Eigen::Index stokes_index) {
+    wcs.crval[2] = map_wcs_frequency(array_freq_map, arrays, array_index);
+    wcs.crval[3] = stokes_index;
 }
 
 template <class ImageList>

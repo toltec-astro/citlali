@@ -5846,8 +5846,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
 template <typename fits_io_type, class map_buffer_t>
 void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_buffer_t &mb, Eigen::Index i) {
-    if (i < 0 || i >= static_cast<Eigen::Index>(mb->signal.size()) ||
-        i >= static_cast<Eigen::Index>(mb->weight.size())) {
+    if (!citlali::pipeline::has_map_data_slots(
+            i, static_cast<Eigen::Index>(mb->signal.size()),
+            static_cast<Eigen::Index>(mb->weight.size()))) {
         logger->error("write_maps map index out of range: i={} signal_size={} weight_size={}",
                       static_cast<long long>(i),
                       static_cast<long long>(mb->signal.size()),
@@ -5858,26 +5859,30 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     // get name for extension layer
     std::string map_name = get_map_name(i);
 
-    // get the array for the given map
-    Eigen::Index map_index = arrays_to_maps(i);
-    // get the stokes parameter for the given map
-    Eigen::Index stokes_index = maps_to_stokes(i);
-    if (map_index < 0 || map_index >= static_cast<Eigen::Index>(fits_io->size())) {
+    const auto write_indices =
+        citlali::pipeline::map_write_indices(
+            i, arrays_to_maps, maps_to_stokes, maps_to_arrays);
+    const Eigen::Index map_index = write_indices.map_index;
+    const Eigen::Index stokes_index = write_indices.stokes_index;
+    const Eigen::Index array_index = write_indices.array_index;
+    if (!citlali::pipeline::has_output_file_slot(
+            map_index, static_cast<Eigen::Index>(fits_io->size()))) {
         logger->error("write_maps file index out of range: map_index={} fits_io_size={} map_i={}",
                       static_cast<long long>(map_index),
                       static_cast<long long>(fits_io->size()),
                       static_cast<long long>(i));
         std::exit(EXIT_FAILURE);
     }
-    if (stokes_index < 0 || stokes_index >= static_cast<Eigen::Index>(rtcproc.polarization.stokes_params.size())) {
+    if (!citlali::pipeline::has_stokes_slot(
+            stokes_index,
+            static_cast<Eigen::Index>(rtcproc.polarization.stokes_params.size()))) {
         logger->error("write_maps stokes index out of range: stokes_index={} stokes_size={} map_i={}",
                       static_cast<long long>(stokes_index),
                       static_cast<long long>(rtcproc.polarization.stokes_params.size()),
                       static_cast<long long>(i));
         std::exit(EXIT_FAILURE);
     }
-    const Eigen::Index array_index = maps_to_arrays(i);
-    if (array_index < 0 || array_index >= calib.arrays.size()) {
+    if (!citlali::pipeline::has_array_slot(array_index, calib.arrays.size())) {
         logger->error("write_maps maps_to_arrays index out of range: maps_to_arrays(i)={} calib.arrays.size={} map_i={}",
                       static_cast<long long>(array_index),
                       static_cast<long long>(calib.arrays.size()),
@@ -5890,10 +5895,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                                                        logger);
 
     // update wcs ctypes for frequency and stokes params
-    mb->wcs.crval[2] =
-        citlali::pipeline::map_wcs_frequency(toltec_io.array_freq_map,
-                                             calib.arrays, array_index);
-    mb->wcs.crval[3] = stokes_index;
+    citlali::pipeline::assign_map_wcs_spectral_axes(
+        mb->wcs, toltec_io.array_freq_map, calib.arrays, array_index,
+        stokes_index);
     const std::string &stokes_suffix = rtcproc.polarization.stokes_params[stokes_index];
 
     try {
@@ -6153,14 +6157,14 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
     // loop through psd vector
     for (Eigen::Index i = 0; i < mb->psds.size(); ++i) {
         const std::string map_name = get_map_name(i);
-
-        const Eigen::Index map_index = arrays_to_maps(i);
-        const Eigen::Index stokes_index = maps_to_stokes(i);
+        const auto write_indices =
+            citlali::pipeline::map_write_indices(
+                i, arrays_to_maps, maps_to_stokes, maps_to_arrays);
 
         const std::string name = citlali::pipeline::spectral_product_name(
             toltec_io.array_name_map, calib.arrays,
-            rtcproc.polarization.stokes_params, map_name, map_index,
-            stokes_index);
+            rtcproc.polarization.stokes_params, map_name,
+            write_indices.map_index, write_indices.stokes_index);
 
         citlali::pipeline::add_spectral_psd_product(
             fo, mb->noise, name, mb->psds, mb->psd_freqs, mb->psd_2ds,
@@ -6184,14 +6188,14 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
     // loop through stored histograms
     for (Eigen::Index i = 0; i < mb->hists.size(); ++i) {
         const std::string map_name = get_map_name(i);
-
-        const Eigen::Index map_index = arrays_to_maps(i);
-        const Eigen::Index stokes_index = maps_to_stokes(i);
+        const auto write_indices =
+            citlali::pipeline::map_write_indices(
+                i, arrays_to_maps, maps_to_stokes, maps_to_arrays);
 
         const std::string name = citlali::pipeline::spectral_product_name(
             toltec_io.array_name_map, calib.arrays,
-            rtcproc.polarization.stokes_params, map_name, map_index,
-            stokes_index);
+            rtcproc.polarization.stokes_params, map_name,
+            write_indices.map_index, write_indices.stokes_index);
 
         citlali::pipeline::add_spectral_histogram_product(
             fo, mb->noise, name, hist_bins_dim, mb->hist_bins, mb->hists,
@@ -6449,11 +6453,12 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const std::size_t idx = citlali::pipeline::mapdiag_size_index(i);
-        const auto map_index = arrays_to_maps(i);
-        const auto stokes_index = maps_to_stokes(i);
+        const auto write_indices =
+            citlali::pipeline::map_write_indices(
+                i, arrays_to_maps, maps_to_stokes, maps_to_arrays);
         const auto labels = citlali::pipeline::make_mapdiag_map_labels(
-            toltec_io.array_name_map[calib.arrays[map_index]],
-            rtcproc.polarization.stokes_params[stokes_index],
+            toltec_io.array_name_map[calib.arrays[write_indices.map_index]],
+            rtcproc.polarization.stokes_params[write_indices.stokes_index],
             get_map_name(i));
         citlali::pipeline::assign_mapdiag_map_labels(
             idx, labels, {array_names, stokes_names, map_names});
@@ -6774,7 +6779,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                         reduction_learning);
                             const int array_id =
                                 citlali::pipeline::mapdiag_array_id_or_default(
-                                    map_index, calib.arrays, -1);
+                                    write_indices.map_index, calib.arrays,
+                                    -1);
                             for (const auto &entry : dominance) {
                                 if (!citlali::pipeline::
                                         mapdiag_dominance_meets_min_pixels(
