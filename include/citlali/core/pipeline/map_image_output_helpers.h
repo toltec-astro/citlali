@@ -149,4 +149,23 @@ void add_coverage_support_image_hdus(
     }
 }
 
+template <class FitsEntry, class MapBuffer, class Wcs>
+void add_noise_realization_image_hdus(
+    FitsEntry &fits_entry, MapBuffer &mb, Eigen::Index i,
+    const std::string &map_name, const std::string &stokes_suffix,
+    const Wcs &wcs, double source_epoch, double median_rms) {
+    for (Eigen::Index n = 0; n < mb->n_noise; ++n) {
+        Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>>
+            noise_matrix(
+                mb->noise[i].data() + n * mb->n_rows * mb->n_cols,
+                mb->n_rows, mb->n_cols);
+
+        add_map_hdu_with_wcs(
+            fits_entry, noise_signal_map_hdu_name(map_name, n, stokes_suffix),
+            noise_matrix, wcs, source_epoch);
+        add_noise_image_summary_keys(
+            *fits_entry.hdus.back(), mb->sig_unit, median_rms);
+    }
+}
+
 }  // namespace citlali::pipeline
