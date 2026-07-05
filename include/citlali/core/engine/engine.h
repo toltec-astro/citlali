@@ -7300,7 +7300,8 @@ void Engine::create_rtcdiag_file() {
     citlali::pipeline::add_rtc_event_mask_config_vars(fo, rtcproc);
     citlali::pipeline::add_rtc_line_audit_config_vars(
         fo, rtcproc.line_audit);
-    add_netcdf_var(fo, "CONFIG.INV_VAR.WINDOW_SEC", rtcproc.remove_bad_dets_window_sec);
+    add_netcdf_var(fo, "CONFIG.INV_VAR.WINDOW_SEC",
+                   rtcproc.remove_bad_dets_window_sec);
 
     citlali::pipeline::add_rtcdiag_apt_double_vars(fo, calib, n_dets_dim);
 
