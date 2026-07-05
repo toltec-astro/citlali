@@ -5,15 +5,12 @@
 
 #include <citlali/core/engine/detail/learning_config_logging.h>
 #include <citlali/core/engine/detail/config_parse_tracking.h>
+#include <citlali/core/engine/detail/learning_config_read.h>
 
 template<typename CT>
 void Engine::get_learning_config(CT &config) {
     ReductionLearningState::Options options;
 
-    auto parsed_cleanly = [&](std::size_t missing_before, std::size_t invalid_before) {
-        return citlali::engine_detail::config_parse_clean(
-            missing_keys, invalid_keys, missing_before, invalid_before);
-    };
     auto mirror_if_parsed = [&](auto &target, const auto &source,
                                 std::size_t missing_before,
                                 std::size_t invalid_before) {
@@ -22,74 +19,39 @@ void Engine::get_learning_config(CT &config) {
             invalid_before);
     };
 
-    if (config.template has_typed<bool>(std::tuple{"timestream","learning","enabled"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, options.enabled, missing_keys, invalid_keys,
-                         std::tuple{"timestream","learning","enabled"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_timestream_config.learning.enabled = options.enabled;
-        }
-    }
-    if (config.template has_typed<bool>(std::tuple{"timestream","learning","diagnostics_enabled"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, options.diagnostics_enabled, missing_keys, invalid_keys,
-                         std::tuple{"timestream","learning","diagnostics_enabled"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_timestream_config.learning.diagnostics_enabled =
-                options.diagnostics_enabled;
-        }
-    }
-    if (config.template has_typed<int>(std::tuple{"timestream","learning","learn_iters"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, options.learn_iters, missing_keys, invalid_keys,
-                         std::tuple{"timestream","learning","learn_iters"}, {}, {0});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_timestream_config.learning.learn_iters = options.learn_iters;
-        }
-    }
-    if (config.template has_typed<int>(std::tuple{"timestream","learning","apply_start_iter"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, options.apply_start_iter, missing_keys, invalid_keys,
-                         std::tuple{"timestream","learning","apply_start_iter"}, {}, {0});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_timestream_config.learning.apply_start_iter =
-                options.apply_start_iter;
-        }
-    }
-    if (config.template has_typed<int>(std::tuple{"timestream","learning","max_records_per_type"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, options.max_records_per_type, missing_keys, invalid_keys,
-                         std::tuple{"timestream","learning","max_records_per_type"}, {}, {0});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_timestream_config.learning.max_records_per_type =
-                options.max_records_per_type;
-        }
-    }
-    if (config.template has_typed<bool>(std::tuple{"timestream","learning","apply_sample_masks_enabled"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, options.apply_sample_masks_enabled, missing_keys, invalid_keys,
-                         std::tuple{"timestream","learning","apply_sample_masks_enabled"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_timestream_config.learning.apply_sample_masks_enabled =
-                options.apply_sample_masks_enabled;
-        }
-    }
-    if (config.template has_typed<double>(std::tuple{"timestream","learning","apply_max_new_flagged_fraction"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, options.apply_max_new_flagged_fraction, missing_keys, invalid_keys,
-                         std::tuple{"timestream","learning","apply_max_new_flagged_fraction"}, {}, {0.0});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_timestream_config.learning.apply_max_new_flagged_fraction =
-                options.apply_max_new_flagged_fraction;
-        }
-    }
+    citlali::engine_detail::read_optional_learning_config(
+        config, std::tuple{"timestream","learning","enabled"},
+        options.enabled, typed_timestream_config.learning.enabled,
+        missing_keys, invalid_keys);
+    citlali::engine_detail::read_optional_learning_config(
+        config, std::tuple{"timestream","learning","diagnostics_enabled"},
+        options.diagnostics_enabled,
+        typed_timestream_config.learning.diagnostics_enabled,
+        missing_keys, invalid_keys);
+    citlali::engine_detail::read_optional_learning_config(
+        config, std::tuple{"timestream","learning","learn_iters"},
+        options.learn_iters, typed_timestream_config.learning.learn_iters,
+        missing_keys, invalid_keys, {0});
+    citlali::engine_detail::read_optional_learning_config(
+        config, std::tuple{"timestream","learning","apply_start_iter"},
+        options.apply_start_iter,
+        typed_timestream_config.learning.apply_start_iter,
+        missing_keys, invalid_keys, {0});
+    citlali::engine_detail::read_optional_learning_config(
+        config, std::tuple{"timestream","learning","max_records_per_type"},
+        options.max_records_per_type,
+        typed_timestream_config.learning.max_records_per_type,
+        missing_keys, invalid_keys, {0});
+    citlali::engine_detail::read_optional_learning_config(
+        config, std::tuple{"timestream","learning","apply_sample_masks_enabled"},
+        options.apply_sample_masks_enabled,
+        typed_timestream_config.learning.apply_sample_masks_enabled,
+        missing_keys, invalid_keys);
+    citlali::engine_detail::read_optional_learning_config(
+        config, std::tuple{"timestream","learning","apply_max_new_flagged_fraction"},
+        options.apply_max_new_flagged_fraction,
+        typed_timestream_config.learning.apply_max_new_flagged_fraction,
+        missing_keys, invalid_keys, {0.0});
     if (config.template has_typed<bool>(std::tuple{"timestream","learning","map_pixel_outlier_diagnostics_enabled"})) {
         const auto missing_before = missing_keys.size();
         const auto invalid_before = invalid_keys.size();
