@@ -7189,7 +7189,8 @@ void Engine::create_rtcdiag_file() {
                     std::abs(dalt) > max_pointing_step_rad) {
                     continue;
                 }
-                speed_arcsec_s.push_back(std::hypot(daz, dalt) / dt * RAD_TO_ASEC);
+                speed_arcsec_s.push_back(
+                    std::hypot(daz, dalt) / dt * RAD_TO_ASEC);
             }
             if (!speed_arcsec_s.empty()) {
                 std::sort(speed_arcsec_s.begin(), speed_arcsec_s.end());
