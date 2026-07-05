@@ -31,6 +31,11 @@ struct SourceInitialPosition {
     double col;
 };
 
+inline double source_window_arcsec_to_rad(double source_window_arcsec,
+                                          double arcsec_to_rad) {
+    return source_window_arcsec * arcsec_to_rad;
+}
+
 template <class ObservationMapBuffer, class CoaddMapBuffer>
 void mirror_source_finding_config_to_coadd(
     const ObservationMapBuffer &omb, CoaddMapBuffer &cmb,

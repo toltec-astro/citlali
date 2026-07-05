@@ -222,7 +222,9 @@ void Engine::get_citlali_config(CT &config) {
         }
 
         // convert source window to radians
-        omb.source_window_rad = omb.source_window_rad*ASEC_TO_RAD;
+        omb.source_window_rad =
+            citlali::pipeline::source_window_arcsec_to_rad(
+                omb.source_window_rad, ASEC_TO_RAD);
 
         citlali::pipeline::mirror_source_finding_config_to_coadd(
             omb, cmb, run_coadd);
