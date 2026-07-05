@@ -6,6 +6,8 @@
 
 #include <string>
 #include <tuple>
+#include <type_traits>
+#include <vector>
 
 namespace citlali::engine_detail {
 
@@ -127,6 +129,42 @@ void read_noise_maps_enabled_config(Config &config, bool &enabled,
     if (config_parse_clean(
             missing_keys, invalid_keys, missing_before, invalid_before)) {
         typed_config.enabled = enabled;
+    }
+}
+
+template <class Config, class MissingKeys, class InvalidKeys,
+          class NoiseCount, class NoiseConfig>
+void read_noise_map_count_config(Config &config, NoiseCount &n_noise,
+                                 NoiseConfig &typed_config,
+                                 MissingKeys &missing_keys,
+                                 InvalidKeys &invalid_keys) {
+    using value_type = std::decay_t<NoiseCount>;
+    const auto missing_before = missing_keys.size();
+    const auto invalid_before = invalid_keys.size();
+    ::get_config_value(
+        config, n_noise, missing_keys, invalid_keys,
+        std::tuple{"noise_maps", "n_noise_maps"},
+        std::vector<value_type>{}, std::vector<value_type>{0},
+        std::vector<value_type>{});
+    if (config_parse_clean(
+            missing_keys, invalid_keys, missing_before, invalid_before)) {
+        typed_config.n_noise_maps = static_cast<int>(n_noise);
+    }
+}
+
+template <class Config, class MissingKeys, class InvalidKeys,
+          class NoiseConfig>
+void read_noise_randomize_dets_config(Config &config, bool &randomize_dets,
+                                      NoiseConfig &typed_config,
+                                      MissingKeys &missing_keys,
+                                      InvalidKeys &invalid_keys) {
+    const auto missing_before = missing_keys.size();
+    const auto invalid_before = invalid_keys.size();
+    ::get_config_value(config, randomize_dets, missing_keys, invalid_keys,
+                       std::tuple{"noise_maps", "randomize_dets"});
+    if (config_parse_clean(
+            missing_keys, invalid_keys, missing_before, invalid_before)) {
+        typed_config.randomize_dets = randomize_dets;
     }
 }
 

@@ -125,26 +125,12 @@ void Engine::get_mapmaking_config(CT &config) {
     citlali::engine_detail::read_noise_maps_enabled_config(
         config, run_noise, typed_noise_config, missing_keys, invalid_keys);
     if (run_noise) {
-        // number of noise maps
-        {
-            const auto missing_before = missing_keys.size();
-            const auto invalid_before = invalid_keys.size();
-            get_config_value(config, omb.n_noise, missing_keys, invalid_keys,
-                             std::tuple{"noise_maps","n_noise_maps"},{},{0},{});
-            if (parsed_cleanly(missing_before, invalid_before)) {
-                typed_noise_config.n_noise_maps = static_cast<int>(omb.n_noise);
-            }
-        }
-        // randomize noise maps on detector as well as time chunk
-        {
-            const auto missing_before = missing_keys.size();
-            const auto invalid_before = invalid_keys.size();
-            get_config_value(config, omb.randomize_dets, missing_keys, invalid_keys,
-                             std::tuple{"noise_maps","randomize_dets"});
-            if (parsed_cleanly(missing_before, invalid_before)) {
-                typed_noise_config.randomize_dets = omb.randomize_dets;
-            }
-        }
+        citlali::engine_detail::read_noise_map_count_config(
+            config, omb.n_noise, typed_noise_config, missing_keys,
+            invalid_keys);
+        citlali::engine_detail::read_noise_randomize_dets_config(
+            config, omb.randomize_dets, typed_noise_config, missing_keys,
+            invalid_keys);
 
         if (run_coadd) {
             citlali::pipeline::mirror_noise_map_settings_to_coadd(omb, cmb);
