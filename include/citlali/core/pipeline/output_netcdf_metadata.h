@@ -32,12 +32,41 @@ inline std::string tod_output_directory(const std::string &obsnum_dir_name,
     return dir_name;
 }
 
+inline const char *tod_stream_output_key(bool is_rtc_stream) {
+    return is_rtc_stream ? "rtc" : "ptc";
+}
+
 template <class TodFilenameMap>
 std::string register_tod_output_file(TodFilenameMap &tod_filename,
                                      const std::string &key,
                                      const std::string &filename_base) {
     tod_filename[key] = filename_base + ".nc";
     return key;
+}
+
+template <auto DataType, auto ProductType, auto FilterType, class ToltecIo>
+std::string tod_stream_output_filename(
+    ToltecIo &toltec_io, const std::string &dir_name,
+    const std::string &reduction_type, const std::string &obsnum,
+    bool simulated_observation) {
+    return toltec_io.template create_filename<DataType, ProductType,
+                                              FilterType>(
+        dir_name, reduction_type, "", obsnum, simulated_observation);
+}
+
+template <auto DataType, auto ProductType, auto FilterType, class ToltecIo,
+          class TodFilenameMap>
+std::string register_tod_stream_output_file(
+    ToltecIo &toltec_io, TodFilenameMap &tod_filename,
+    const std::string &dir_name, const std::string &reduction_type,
+    const std::string &obsnum, bool simulated_observation,
+    bool is_rtc_stream) {
+    const auto filename =
+        tod_stream_output_filename<DataType, ProductType, FilterType>(
+            toltec_io, dir_name, reduction_type, obsnum,
+            simulated_observation);
+    return register_tod_output_file(
+        tod_filename, tod_stream_output_key(is_rtc_stream), filename);
 }
 
 struct TodFileDims {
@@ -74,10 +103,6 @@ struct TodPreparedLayout {
     TodFileDims dims;
     TodChunking chunking;
 };
-
-inline const char *tod_stream_output_key(bool is_rtc_stream) {
-    return is_rtc_stream ? "rtc" : "ptc";
-}
 
 inline TodFileCounts tod_file_counts(Eigen::Index n_output_scans,
                                      Eigen::Index n_raw_scan_indices,

@@ -109,37 +109,17 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 template <engine_utils::toltecIO::ProdType prod_t>
 void Engine::create_tod_files() {
     // name for std map
-    std::string name;
     const std::string dir_name = citlali::pipeline::tod_output_directory(
         obsnum_dir_name, tod_output_subdir_name);
     constexpr bool is_rtc_stream =
         prod_t == engine_utils::toltecIO::rtc_timestream;
 
-    // rtc tod output filename setup
-    if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
-        auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                                  engine_utils::toltecIO::rtc_timestream,
-                                                  engine_utils::toltecIO::raw>(dir_name, redu_type, "",
-                                                                               obsnum, telescope.sim_obs);
-
-        name = citlali::pipeline::register_tod_output_file(
-            tod_filename,
-            citlali::pipeline::tod_stream_output_key(is_rtc_stream),
-            filename);
-    }
-
-    // ptc tod output filename setup
-    else if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
-        auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                                  engine_utils::toltecIO::ptc_timestream,
-                                                  engine_utils::toltecIO::raw>(dir_name, redu_type, "",
-                                                                               obsnum, telescope.sim_obs);
-
-        name = citlali::pipeline::register_tod_output_file(
-            tod_filename,
-            citlali::pipeline::tod_stream_output_key(is_rtc_stream),
-            filename);
-    }
+    const std::string name =
+        citlali::pipeline::register_tod_stream_output_file<
+            engine_utils::toltecIO::toltec, prod_t,
+            engine_utils::toltecIO::raw>(
+            toltec_io, tod_filename, dir_name, redu_type, obsnum,
+            telescope.sim_obs, is_rtc_stream);
 
     write_netcdf_atomic(tod_filename[name], [&](netCDF::NcFile &fo) {
 
