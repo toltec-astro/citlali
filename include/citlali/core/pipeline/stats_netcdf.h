@@ -113,4 +113,9 @@ inline std::vector<std::size_t> stats_eigenvalue_start_index() {
     return {0, 0};
 }
 
+inline std::vector<std::size_t> stats_eigenvalue_write_shape(
+    Eigen::Index n_calc) {
+    return {1, static_cast<std::size_t>(n_calc)};
+}
+
 }  // namespace citlali::pipeline
