@@ -516,4 +516,28 @@ void mirror_raw_iir_filter_config(IirFilterConfig &target,
     target.zero_phase = rtcproc.filter.iir_highpass_zero_phase;
 }
 
+template <class EdgeGuardConfig, class FilterEdgeGuard>
+void mirror_raw_filter_edge_guard_config(EdgeGuardConfig &target,
+                                         const FilterEdgeGuard &source) {
+    target.enabled = source.enabled;
+    if (auto parsed =
+            citlali::config::parse_raw_filter_edge_guard_mode(source.mode)) {
+        target.mode = *parsed;
+    }
+    if (auto parsed =
+            citlali::config::parse_raw_filter_edge_guard_combine(
+                source.combine)) {
+        target.combine = *parsed;
+    }
+    target.min_samples = static_cast<int>(source.min_samples);
+    target.extra_samples = static_cast<int>(source.extra_samples);
+    target.max_samples = static_cast<int>(source.max_samples);
+    target.iir_settle_attenuation = source.iir_settle_attenuation;
+    target.apply_fir = source.apply_fir;
+    target.apply_notch = source.apply_notch;
+    target.apply_dynamic_notch = source.apply_dynamic_notch;
+    target.apply_iir_highpass = source.apply_iir_highpass;
+    target.apply_downsample = source.apply_downsample;
+}
+
 }  // namespace citlali::pipeline

@@ -130,32 +130,8 @@ void Engine::get_rtc_config(CT &config) {
     citlali::pipeline::mirror_raw_correction_flags(typed_raw, rtcproc);
 
     rtcproc.configure_filter_edge_guard(telescope.fsmp);
-    auto &typed_edge_guard = typed_filter.edge_guard;
-    typed_edge_guard.enabled = rtcproc.filter_edge_guard.enabled;
-    if (auto parsed = citlali::config::parse_raw_filter_edge_guard_mode(
-            rtcproc.filter_edge_guard.mode)) {
-        typed_edge_guard.mode = *parsed;
-    }
-    if (auto parsed = citlali::config::parse_raw_filter_edge_guard_combine(
-            rtcproc.filter_edge_guard.combine)) {
-        typed_edge_guard.combine = *parsed;
-    }
-    typed_edge_guard.min_samples =
-        static_cast<int>(rtcproc.filter_edge_guard.min_samples);
-    typed_edge_guard.extra_samples =
-        static_cast<int>(rtcproc.filter_edge_guard.extra_samples);
-    typed_edge_guard.max_samples =
-        static_cast<int>(rtcproc.filter_edge_guard.max_samples);
-    typed_edge_guard.iir_settle_attenuation =
-        rtcproc.filter_edge_guard.iir_settle_attenuation;
-    typed_edge_guard.apply_fir = rtcproc.filter_edge_guard.apply_fir;
-    typed_edge_guard.apply_notch = rtcproc.filter_edge_guard.apply_notch;
-    typed_edge_guard.apply_dynamic_notch =
-        rtcproc.filter_edge_guard.apply_dynamic_notch;
-    typed_edge_guard.apply_iir_highpass =
-        rtcproc.filter_edge_guard.apply_iir_highpass;
-    typed_edge_guard.apply_downsample =
-        rtcproc.filter_edge_guard.apply_downsample;
+    citlali::pipeline::mirror_raw_filter_edge_guard_config(
+        typed_filter.edge_guard, rtcproc.filter_edge_guard);
     telescope.inner_scans_chunk = rtcproc.filter_edge_guard.context_samples;
     telescope.outer_scans_chunk = telescope.inner_scans_chunk;
     if (rtcproc.tod_output_outer) {
