@@ -148,12 +148,10 @@ void Engine::get_learning_config(CT &config) {
 
     reduction_learning.configure(options);
     const bool map_contribution_diag =
-        reduction_learning.options.enabled &&
-        reduction_learning.options.diagnostics_enabled &&
-        reduction_learning.options.map_pixel_outlier_diagnostics_enabled &&
-        reduction_learning.options.map_pixel_outlier_contributor_diagnostics_enabled;
-    omb.contribution_diag_enabled = map_contribution_diag;
-    cmb.contribution_diag_enabled = map_contribution_diag;
+        citlali::engine_detail::learning_map_contribution_diagnostics_enabled(
+            reduction_learning.options);
+    citlali::engine_detail::set_learning_map_contribution_diagnostics(
+        map_contribution_diag, omb, cmb);
     citlali::engine_detail::log_reduction_learning_config(
         reduction_learning.options, logger);
 }
