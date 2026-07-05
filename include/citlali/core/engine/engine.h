@@ -6851,7 +6851,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                 mapdiag_detector_exclusion_enabled(
                                     reduction_learning);
                         if (detector_exclusion_enabled) {
-                            const int min_pixels =
+                            const int detector_exclusion_min_pixels =
                                 citlali::pipeline::
                                     mapdiag_detector_exclusion_min_pixels(
                                         reduction_learning);
@@ -6861,7 +6861,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             for (const auto &entry : dominance) {
                                 if (!citlali::pipeline::
                                         mapdiag_dominance_meets_min_pixels(
-                                            entry, min_pixels)) {
+                                            entry,
+                                            detector_exclusion_min_pixels)) {
                                     continue;
                                 }
                                 auto penalty =
