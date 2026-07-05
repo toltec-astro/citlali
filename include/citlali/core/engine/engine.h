@@ -93,6 +93,7 @@
 #include <citlali/core/pipeline/cli_summary.h>
 #include <citlali/core/pipeline/map_filename.h>
 #include <citlali/core/pipeline/map_filtering.h>
+#include <citlali/core/pipeline/map_source_finding.h>
 #include <citlali/core/pipeline/mapdiag_edge_guard.h>
 #include <citlali/core/pipeline/map_layer_name.h>
 #include <citlali/core/pipeline/map_summary_stats.h>
@@ -7823,9 +7824,10 @@ void Engine::find_sources(map_buffer_t &mb) {
     mb.n_sources.clear();
     mb.row_source_locs.clear();
     mb.col_source_locs.clear();
-    constexpr int missing_source_location = -99;
+    constexpr int missing_source_location =
+        citlali::pipeline::missing_source_location();
     // loop through maps
-    for (Eigen::Index i=0; i<n_maps; ++i) {
+    for (Eigen::Index i = 0; i < n_maps; ++i) {
         // update source vectors
         mb.n_sources.push_back(0);
         mb.row_source_locs.push_back(Eigen::VectorXi::Ones(1));
@@ -7848,10 +7850,8 @@ void Engine::find_sources(map_buffer_t &mb) {
     }
 
     // count up the total number of sources
-    Eigen::Index n_sources = 0;
-    for (const auto &sources : mb.n_sources) {
-        n_sources += sources;
-    }
+    const Eigen::Index n_sources =
+        citlali::pipeline::count_map_sources(mb.n_sources);
 
     // matrix to store source parameters
     mb.source_params.setZero(n_sources, map_fitter.n_params);
@@ -7861,24 +7861,23 @@ void Engine::find_sources(map_buffer_t &mb) {
     Eigen::Index source_row_start = 0;
 
     // now loop through and fit the sources
-    for (Eigen::Index i=0; i<n_maps; ++i) {
+    for (Eigen::Index i = 0; i < n_maps; ++i) {
         // skip map if no sources found
         const auto n_map_sources = mb.n_sources[i];
         if (n_map_sources > 0) {
             // current array
             const auto array = maps_to_arrays(i);
             // init fwhm in pixels
+            const auto array_fwhm_arcsec =
+                toltec_io.array_fwhm_arcsec[array];
             const auto init_fwhm =
-                toltec_io.array_fwhm_arcsec[array] * ASEC_TO_RAD /
-                mb.pixel_size_rad;
+                citlali::pipeline::source_fit_initial_fwhm_pixels(
+                    array_fwhm_arcsec, ASEC_TO_RAD, mb.pixel_size_rad);
 
             // placeholder vectors for grppi map
-            std::vector<int> source_in_vec;
-            std::vector<int> source_out_vec;
-
-            source_in_vec.resize(n_map_sources);
-            std::iota(source_in_vec.begin(), source_in_vec.end(), 0);
-            source_out_vec.resize(n_map_sources);
+            const auto source_in_vec =
+                citlali::pipeline::source_index_vector(n_map_sources);
+            std::vector<int> source_out_vec(source_in_vec.size());
 
             // loop through sources and fit them
             grppi::map(tula::grppi_utils::dyn_ex(parallel_policy),
@@ -7953,44 +7952,15 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
                         engine_utils::toltecIO::map>(dir_name);
 
     // source header information
-    std::vector<std::string> source_header = {
-        "array",
-        "amp",
-        "amp_err",
-        "x_t",
-        "x_t_err",
-        "y_t",
-        "y_t_err",
-        "a_fwhm",
-        "a_fwhm_err",
-        "b_fwhm",
-        "b_fwhm_err",
-        "angle",
-        "angle_err",
-        "sig2noise"
-    };
+    const auto source_header = citlali::pipeline::source_table_header();
 
     // units for fitted parameter centroids
     const std::string pos_units =
-        (telescope.pixel_axes == "radec") ? "deg" : "arcsec";
+        citlali::pipeline::source_position_units(telescope.pixel_axes);
 
     // units for source header
-    std::map<std::string, std::string> source_header_units = {
-        {"array", "N/A"},
-        {"amp", mb->sig_unit},
-        {"amp_err", mb->sig_unit},
-        {"x_t", pos_units},
-        {"x_t_err", pos_units},
-        {"y_t", pos_units},
-        {"y_t_err", pos_units},
-        {"a_fwhm", "arcsec"},
-        {"a_fwhm_err", "arcsec"},
-        {"b_fwhm", "arcsec"},
-        {"b_fwhm_err", "arcsec"},
-        {"angle", "rad"},
-        {"angle_err", "rad"},
-        {"sig2noise", "N/A"},
-    };
+    const auto source_header_units =
+        citlali::pipeline::source_table_units(mb->sig_unit, pos_units);
 
     // meta information for source table
     YAML::Node source_meta;
@@ -8021,14 +7991,16 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     }
 
     // count up the total number of sources
-    Eigen::Index n_sources = 0;
-    for (const auto &sources : mb->n_sources) {
-        n_sources += sources;
-    }
+    const Eigen::Index n_sources =
+        citlali::pipeline::count_map_sources(mb->n_sources);
 
     // matrix to hold source information (floats for readability)
-    const auto source_table_cols = 2 * map_fitter.n_params + 2;
+    const auto source_table_cols =
+        citlali::pipeline::source_table_column_count(map_fitter.n_params);
     Eigen::MatrixXf source_table(n_sources, source_table_cols);
+    const auto sig2noise_col =
+        citlali::pipeline::source_table_sig2noise_column(
+            map_fitter.n_params);
 
     // loop through params and add arrays
     Eigen::Index k = 0;
@@ -8041,7 +8013,6 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
             for (Eigen::Index j = 0; j < mb->n_sources[i]; ++j) {
                 source_table(k, 0) = maps_to_arrays(i);
                 // set signal to noise
-                const auto sig2noise_col = 2 * map_fitter.n_params + 1;
                 source_table(k, sig2noise_col) =
                     mb->source_params(k, 0) / map_std_dev;
 
