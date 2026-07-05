@@ -77,6 +77,63 @@ void read_beammap_reference_config(Config &config, MissingKeys &missing_keys,
                        std::tuple{"beammap", "derotate"});
 }
 
+template <class Config, class MissingKeys, class InvalidKeys>
+void read_beammap_rfi_mask_config(
+    Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys,
+    bool &enabled, int &block_size_samples, int &min_good_samples,
+    int &dilate_blocks, double &sigma_threshold, double &sigma_floor,
+    double &max_flagged_fraction) {
+    enabled = false;
+    block_size_samples = 64;
+    min_good_samples = 32;
+    dilate_blocks = 1;
+    sigma_threshold = 6.0;
+    sigma_floor = 0.0;
+    max_flagged_fraction = 0.35;
+    if (config.template has_typed<bool>(
+            std::tuple{"beammap", "rfi_mask", "enabled"})) {
+        ::get_config_value(config, enabled, missing_keys, invalid_keys,
+                           std::tuple{"beammap", "rfi_mask", "enabled"});
+    }
+    if (config.template has_typed<int>(
+            std::tuple{"beammap", "rfi_mask", "block_size_samples"})) {
+        ::get_config_value(
+            config, block_size_samples, missing_keys, invalid_keys,
+            std::tuple{"beammap", "rfi_mask", "block_size_samples"}, {}, {8});
+    }
+    if (config.template has_typed<int>(
+            std::tuple{"beammap", "rfi_mask", "min_good_samples"})) {
+        ::get_config_value(
+            config, min_good_samples, missing_keys, invalid_keys,
+            std::tuple{"beammap", "rfi_mask", "min_good_samples"}, {}, {4});
+    }
+    if (config.template has_typed<int>(
+            std::tuple{"beammap", "rfi_mask", "dilate_blocks"})) {
+        ::get_config_value(
+            config, dilate_blocks, missing_keys, invalid_keys,
+            std::tuple{"beammap", "rfi_mask", "dilate_blocks"}, {}, {0});
+    }
+    if (config.template has_typed<double>(
+            std::tuple{"beammap", "rfi_mask", "sigma_threshold"})) {
+        ::get_config_value(
+            config, sigma_threshold, missing_keys, invalid_keys,
+            std::tuple{"beammap", "rfi_mask", "sigma_threshold"}, {}, {1.0});
+    }
+    if (config.template has_typed<double>(
+            std::tuple{"beammap", "rfi_mask", "sigma_floor"})) {
+        ::get_config_value(
+            config, sigma_floor, missing_keys, invalid_keys,
+            std::tuple{"beammap", "rfi_mask", "sigma_floor"}, {}, {0.0});
+    }
+    if (config.template has_typed<double>(
+            std::tuple{"beammap", "rfi_mask", "max_flagged_fraction"})) {
+        ::get_config_value(
+            config, max_flagged_fraction, missing_keys, invalid_keys,
+            std::tuple{"beammap", "rfi_mask", "max_flagged_fraction"}, {},
+            {0.0}, {1.0});
+    }
+}
+
 template <class Config, class InvalidKeys>
 std::vector<double> beammap_fixed_double_vector(
     Config &config, const std::vector<std::string> &path,

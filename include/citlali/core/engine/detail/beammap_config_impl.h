@@ -23,49 +23,12 @@ void Engine::get_beammap_config(CT &config) {
         config, missing_keys, invalid_keys, beammap_reference_det,
         beammap_subtract_reference, beammap_derotate);
 
-    // optional robust sample-level RFI masking (detector grouping)
-    beammap_rfi_mask_enabled = false;
-    beammap_rfi_mask_block_size_samples = 64;
-    beammap_rfi_mask_min_good_samples = 32;
-    beammap_rfi_mask_dilate_blocks = 1;
-    beammap_rfi_mask_sigma_threshold = 6.0;
-    beammap_rfi_mask_sigma_floor = 0.0;
-    beammap_rfi_mask_max_flagged_fraction = 0.35;
-
-    if (config.template has_typed<bool>(std::tuple{"beammap","rfi_mask","enabled"})) {
-        get_config_value(config, beammap_rfi_mask_enabled, missing_keys, invalid_keys,
-                         std::tuple{"beammap","rfi_mask","enabled"});
-    }
-    if (config.template has_typed<int>(std::tuple{"beammap","rfi_mask","block_size_samples"})) {
-        get_config_value(config, beammap_rfi_mask_block_size_samples, missing_keys, invalid_keys,
-                         std::tuple{"beammap","rfi_mask","block_size_samples"},
-                         {}, {8});
-    }
-    if (config.template has_typed<int>(std::tuple{"beammap","rfi_mask","min_good_samples"})) {
-        get_config_value(config, beammap_rfi_mask_min_good_samples, missing_keys, invalid_keys,
-                         std::tuple{"beammap","rfi_mask","min_good_samples"},
-                         {}, {4});
-    }
-    if (config.template has_typed<int>(std::tuple{"beammap","rfi_mask","dilate_blocks"})) {
-        get_config_value(config, beammap_rfi_mask_dilate_blocks, missing_keys, invalid_keys,
-                         std::tuple{"beammap","rfi_mask","dilate_blocks"},
-                         {}, {0});
-    }
-    if (config.template has_typed<double>(std::tuple{"beammap","rfi_mask","sigma_threshold"})) {
-        get_config_value(config, beammap_rfi_mask_sigma_threshold, missing_keys, invalid_keys,
-                         std::tuple{"beammap","rfi_mask","sigma_threshold"},
-                         {}, {1.0});
-    }
-    if (config.template has_typed<double>(std::tuple{"beammap","rfi_mask","sigma_floor"})) {
-        get_config_value(config, beammap_rfi_mask_sigma_floor, missing_keys, invalid_keys,
-                         std::tuple{"beammap","rfi_mask","sigma_floor"},
-                         {}, {0.0});
-    }
-    if (config.template has_typed<double>(std::tuple{"beammap","rfi_mask","max_flagged_fraction"})) {
-        get_config_value(config, beammap_rfi_mask_max_flagged_fraction, missing_keys, invalid_keys,
-                         std::tuple{"beammap","rfi_mask","max_flagged_fraction"},
-                         {}, {0.0}, {1.0});
-    }
+    citlali::pipeline::read_beammap_rfi_mask_config(
+        config, missing_keys, invalid_keys, beammap_rfi_mask_enabled,
+        beammap_rfi_mask_block_size_samples,
+        beammap_rfi_mask_min_good_samples, beammap_rfi_mask_dilate_blocks,
+        beammap_rfi_mask_sigma_threshold, beammap_rfi_mask_sigma_floor,
+        beammap_rfi_mask_max_flagged_fraction);
 
     beammap_detector_weighting_mode = "const";
     if (config.template has_typed<std::string>(std::tuple{"beammap","detector_weighting","mode"})) {
