@@ -7696,7 +7696,8 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             write_maps(filtered_fits_io, filtered_noise_fits_io,
                        map_buffer_ptr, i);
 
-            const auto &filtered_map_path = filtered_fits_io->at(map_index).filepath;
+            const auto &filtered_map_path =
+                filtered_fits_io->at(map_index).filepath;
             logger->info("file has been written to:");
             logger->info("{}.fits", filtered_map_path);
 
