@@ -3,18 +3,12 @@
 // Engine config loading implementation detail.
 // Include this only after Engine has been declared.
 
-#include <citlali/core/engine/detail/config_parse_tracking.h>
 #include <citlali/core/engine/detail/timestream_config_read.h>
 
 template<typename CT>
 void Engine::get_timestream_config(CT &config) {
     logger->info("getting timestream config options");
     typed_timestream_config = citlali::config::TimestreamConfig{};
-
-    auto parsed_cleanly = [&](std::size_t missing_before, std::size_t invalid_before) {
-        return citlali::engine_detail::config_parse_clean(
-            missing_keys, invalid_keys, missing_before, invalid_before);
-    };
 
     citlali::engine_detail::read_timestream_enabled_config(
         config, run_tod, typed_timestream_config, missing_keys, invalid_keys);
@@ -78,26 +72,15 @@ void Engine::get_timestream_config(CT &config) {
         }
     }
 
-    // tod subdirectory name
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, tod_output_subdir_name, missing_keys, invalid_keys,
-                         std::tuple{"timestream","output", "subdir_name"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_timestream_config.output.subdir_name = tod_output_subdir_name;
-        }
-    }
-    // write eigenvalues to stats file
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, diagnostics.write_evals, missing_keys, invalid_keys,
-                         std::tuple{"timestream","output", "stats","eigenvalues"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_timestream_config.output.write_eigenvalues = diagnostics.write_evals;
-        }
-    }
+    citlali::engine_detail::read_mirrored_config_value(
+        config, std::tuple{"timestream", "output", "subdir_name"},
+        tod_output_subdir_name, typed_timestream_config.output.subdir_name,
+        missing_keys, invalid_keys);
+    citlali::engine_detail::read_mirrored_config_value(
+        config, std::tuple{"timestream", "output", "stats", "eigenvalues"},
+        diagnostics.write_evals,
+        typed_timestream_config.output.write_eigenvalues, missing_keys,
+        invalid_keys);
 
     // optional selection of TOD chunks to write (1-based indices) under each output block.
     // default is "all" for both rtc and ptc outputs.
@@ -193,36 +176,18 @@ void Engine::get_timestream_config(CT &config) {
         tod_output_chunks_rtc, tod_output_chunks_ptc,
         tod_output_chunk_select_enabled, tod_output_chunks);
 
-    // get time chunk size
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, telescope.chunk_mode, missing_keys, invalid_keys,
-                         std::tuple{"timestream","chunking", "chunk_mode"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_timestream_config.chunking.mode = telescope.chunk_mode;
-        }
-    }
-    // get time chunk size
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, telescope.chunking_value, missing_keys, invalid_keys,
-                         std::tuple{"timestream","chunking", "value"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_timestream_config.chunking.value = telescope.chunking_value;
-        }
-    }
-    // force chunking?
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, telescope.force_chunk, missing_keys, invalid_keys,
-                         std::tuple{"timestream","chunking", "force_chunking"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_timestream_config.chunking.force = telescope.force_chunk;
-        }
-    }
+    citlali::engine_detail::read_mirrored_config_value(
+        config, std::tuple{"timestream", "chunking", "chunk_mode"},
+        telescope.chunk_mode, typed_timestream_config.chunking.mode,
+        missing_keys, invalid_keys);
+    citlali::engine_detail::read_mirrored_config_value(
+        config, std::tuple{"timestream", "chunking", "value"},
+        telescope.chunking_value, typed_timestream_config.chunking.value,
+        missing_keys, invalid_keys);
+    citlali::engine_detail::read_mirrored_config_value(
+        config, std::tuple{"timestream", "chunking", "force_chunking"},
+        telescope.force_chunk, typed_timestream_config.chunking.force,
+        missing_keys, invalid_keys);
 
     /* get raw time chunk config */
     get_rtc_config(config);
