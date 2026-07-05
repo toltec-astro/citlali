@@ -50,22 +50,15 @@ void Engine::get_mapmaking_config(CT &config) {
 
     citlali::engine_detail::read_coadd_enabled_config(
         config, run_coadd, typed_coadd_config, missing_keys, invalid_keys);
-    // re-run to get config for cmb
-    if (run_coadd) {
-        logger->info("getting cmb config options");
-        cmb.get_config(config, missing_keys, invalid_keys, telescope.pixel_axes, redu_type);
-    }
+    citlali::engine_detail::read_coadd_map_block_config(
+        config, run_coadd, cmb, missing_keys, invalid_keys,
+        telescope.pixel_axes, redu_type, logger);
 
-    // if flux calibration is not enabled, use tod type units (xs, rs, is, or qs)
-    if (!rtcproc.run_calibrate) {
-        omb.sig_unit = tod_type;
-        cmb.sig_unit = tod_type;
-    }
+    citlali::pipeline::apply_uncalibrated_map_units(
+        rtcproc.run_calibrate, tod_type, omb, cmb);
 
-    // set parallelization for psd filter ffts (maintained with tod output/verbose mode)
-    omb.parallel_policy = parallel_policy;
-    cmb.parallel_policy = parallel_policy;
-    jinc_mm.parallel_policy = parallel_policy;
+    citlali::pipeline::sync_mapmaking_parallel_policy(
+        parallel_policy, omb, cmb, jinc_mm);
 
     if (map_method=="jinc") {
         // maximum radius for jinc filter

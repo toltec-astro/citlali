@@ -76,6 +76,28 @@ void mirror_output_map_block_config(MapmakingConfig &target,
 }
 
 template <class OutputMapBlock, class CoaddMapBlock>
+void apply_uncalibrated_map_units(bool run_calibrate,
+                                  const std::string &tod_type,
+                                  OutputMapBlock &omb,
+                                  CoaddMapBlock &cmb) {
+    if (run_calibrate) {
+        return;
+    }
+    omb.sig_unit = tod_type;
+    cmb.sig_unit = tod_type;
+}
+
+template <class OutputMapBlock, class CoaddMapBlock, class JincMapmaker,
+          class ParallelPolicy>
+void sync_mapmaking_parallel_policy(const ParallelPolicy &parallel_policy,
+                                    OutputMapBlock &omb, CoaddMapBlock &cmb,
+                                    JincMapmaker &jinc_mm) {
+    omb.parallel_policy = parallel_policy;
+    cmb.parallel_policy = parallel_policy;
+    jinc_mm.parallel_policy = parallel_policy;
+}
+
+template <class OutputMapBlock, class CoaddMapBlock>
 void mirror_noise_map_settings_to_coadd(const OutputMapBlock &omb,
                                         CoaddMapBlock &cmb) {
     cmb.n_noise = omb.n_noise;
