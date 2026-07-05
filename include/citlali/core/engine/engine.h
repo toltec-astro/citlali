@@ -7113,8 +7113,10 @@ void Engine::create_rtcdiag_file() {
     netCDF::NcDim n_scans_dim = fo.addDim("n_scans", n_scans);
     netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
     netCDF::NcDim n_arrays_dim = fo.addDim("n_arrays", calib.n_arrays);
-    netCDF::NcDim n_nws_rtcdiag_dim = fo.addDim("n_nws_rtcdiag", calib.n_nws);
-    const std::vector<std::size_t> scan_chunks = {TULA_SIZET(std::max<Eigen::Index>(n_scans, 1))};
+    netCDF::NcDim n_nws_rtcdiag_dim =
+        fo.addDim("n_nws_rtcdiag", calib.n_nws);
+    const std::vector<std::size_t> scan_chunks = {
+        TULA_SIZET(std::max<Eigen::Index>(n_scans, 1))};
     const std::vector<std::size_t> scan_array_chunks = {
         1, TULA_SIZET(std::max<Eigen::Index>(calib.n_arrays, 1))};
     const std::vector<std::size_t> rtc_det_chunks = {1, TULA_SIZET(calib.n_dets)};
