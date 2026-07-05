@@ -7553,7 +7553,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     // pointer to map buffer
     mapmaking::MapBuffer *pmb = &mb;
     using FitsVector =
-        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>;
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>>;
     // pointer to data file fits vector
     FitsVector *f_io = nullptr;
     // pointer to noise file fits vector
