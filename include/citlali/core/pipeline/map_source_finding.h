@@ -31,6 +31,36 @@ struct SourceInitialPosition {
     double col;
 };
 
+template <class MapsToArrays, class InitFwhmForArray, class FitMapSources>
+struct SourceFitCallbacks {
+    MapsToArrays maps_to_arrays;
+    InitFwhmForArray init_fwhm_for_array;
+    FitMapSources fit_map_sources;
+};
+
+template <class MapsToArrays, class InitFwhmForArray, class FitMapSources>
+SourceFitCallbacks<MapsToArrays, InitFwhmForArray, FitMapSources>
+make_source_fit_callbacks(const MapsToArrays &maps_to_arrays,
+                          const InitFwhmForArray &init_fwhm_for_array,
+                          const FitMapSources &fit_map_sources) {
+    return {maps_to_arrays, init_fwhm_for_array, fit_map_sources};
+}
+
+template <class MapToArray, class CalcStdDev, class WriteSourceTable>
+struct SourceTableCallbacks {
+    MapToArray maps_to_arrays;
+    CalcStdDev calc_std_dev;
+    WriteSourceTable write_source_table;
+};
+
+template <class MapToArray, class CalcStdDev, class WriteSourceTable>
+SourceTableCallbacks<MapToArray, CalcStdDev, WriteSourceTable>
+make_source_table_callbacks(const MapToArray &maps_to_arrays,
+                            const CalcStdDev &calc_std_dev,
+                            const WriteSourceTable &write_source_table) {
+    return {maps_to_arrays, calc_std_dev, write_source_table};
+}
+
 constexpr int missing_source_location() {
     return -99;
 }
@@ -269,12 +299,9 @@ auto next_source_fit_row_start(SourceRow source_row_start,
     return source_row_start + n_map_sources;
 }
 
-template <class MapBuffer, class MapCount, class MapsToArrays,
-          class InitFwhmForArray, class FitMapSources>
+template <class MapBuffer, class MapCount, class SourceFitCallbacks>
 void fit_detected_map_sources(MapBuffer &map_buffer, MapCount n_maps,
-                              const MapsToArrays &maps_to_arrays,
-                              const InitFwhmForArray &init_fwhm_for_array,
-                              const FitMapSources &fit_map_sources) {
+                              const SourceFitCallbacks &callbacks) {
     Eigen::Index source_row_start = 0;
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
@@ -283,9 +310,10 @@ void fit_detected_map_sources(MapBuffer &map_buffer, MapCount n_maps,
             continue;
         }
 
-        const auto array = maps_to_arrays(i);
-        const auto init_fwhm = init_fwhm_for_array(array);
-        fit_map_sources(i, n_map_sources, init_fwhm, source_row_start);
+        const auto array = callbacks.maps_to_arrays(i);
+        const auto init_fwhm = callbacks.init_fwhm_for_array(array);
+        callbacks.fit_map_sources(
+            i, n_map_sources, init_fwhm, source_row_start);
         source_row_start =
             next_source_fit_row_start(source_row_start, n_map_sources);
     }
@@ -467,16 +495,14 @@ Eigen::MatrixXf build_source_table(MapBuffer &map_buffer,
     return source_table;
 }
 
-template <class MapBuffer, class HeaderDescriptions, class MapToArray,
-          class CalcStdDev, class WriteSourceTable>
+template <class MapBuffer, class HeaderDescriptions, class SourceTableCallbacks>
 void write_source_table_output(
     const std::string &source_filename, MapBuffer &map_buffer,
     Eigen::Index n_params, const std::string &pixel_axes,
     const std::string &source_name, const std::string &creation_date,
     const std::string &observation_date,
     HeaderDescriptions &apt_header_description,
-    const MapToArray &maps_to_arrays, const CalcStdDev &calc_std_dev,
-    const WriteSourceTable &write_source_table) {
+    const SourceTableCallbacks &callbacks) {
     auto source_header = source_table_header();
     YAML::Node source_meta =
         source_table_meta_for_observation(
@@ -485,9 +511,10 @@ void write_source_table_output(
             apt_header_description);
     Eigen::MatrixXf source_table =
         build_source_table(
-            map_buffer, n_params, maps_to_arrays, calc_std_dev);
+            map_buffer, n_params, callbacks.maps_to_arrays,
+            callbacks.calc_std_dev);
 
-    write_source_table(
+    callbacks.write_source_table(
         source_filename, source_table, source_header, source_meta);
 }
 

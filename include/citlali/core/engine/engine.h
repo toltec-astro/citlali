@@ -7132,9 +7132,11 @@ void Engine::find_sources(map_buffer_t &mb) {
                 }
             });
         };
+    const auto source_fit_callbacks =
+        citlali::pipeline::make_source_fit_callbacks(
+            map_to_array_index, init_fwhm_for_array, fit_map_sources);
     citlali::pipeline::fit_detected_map_sources(
-        mb, n_maps, map_to_array_index, init_fwhm_for_array,
-        fit_map_sources);
+        mb, n_maps, source_fit_callbacks);
 }
 
 template <mapmaking::MapType map_t, class map_buffer_t>
@@ -7156,9 +7158,12 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
             to_ecsv_from_matrix(
                 filename, source_table, source_header, source_meta);
         };
+    const auto source_table_callbacks =
+        citlali::pipeline::make_source_table_callbacks(
+            map_to_array_index, calc_map_std_dev, write_source_table);
     citlali::pipeline::write_source_table_output(
         source_filename, *mb, map_fitter.n_params, telescope.pixel_axes,
         telescope.source_name, engine_utils::current_date_time(),
-        date_obs.back(), calib.apt_header_description, map_to_array_index,
-        calc_map_std_dev, write_source_table);
+        date_obs.back(), calib.apt_header_description,
+        source_table_callbacks);
 }
