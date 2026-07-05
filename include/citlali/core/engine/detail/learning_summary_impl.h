@@ -67,37 +67,14 @@ inline void Engine::write_learning_summary() {
     }
 
     for (const auto &record : reduction_learning.detector_penalties) {
-        auto row = new_row();
-        write_base(row, "detector_penalty", record.iter, record.obsnum,
-                   record.producer, record.reason, record.scan, record.uid,
-                   record.nw, record.array);
-        row[ColScore] = text(record.score);
-        row[ColZ] = text(record.score);
-        row[ColFactor] = text(record.factor);
-        row[ColScanLocal] = text(record.scan_local ? 1 : 0);
-        write_row(row);
+        write_row(citlali::pipeline::learning_summary_detector_penalty_row(
+            record, text, csv));
     }
 
     for (const auto &record : reduction_learning.high_weight_detectors) {
-        auto row = new_row();
-        write_base(row, "high_weight_detector", record.iter, record.obsnum,
-                   "weight_validation", record.reason, record.scan, record.uid,
-                   record.nw, record.array);
-        row[ColScore] = text(record.robust_z);
-        row[ColZ] = text(record.robust_z);
-        row[ColValue] = text(record.weight);
-        row[ColFactor] = text(record.validation_factor);
-        row[ColGrouping] = csv(record.grouping);
-        row[ColWeight] = text(record.weight);
-        row[ColFinalWeight] = text(record.final_weight);
-        row[ColGroupMedian] = text(record.group_median);
-        row[ColRobustZ] = text(record.robust_z);
-        row[ColCap] = text(record.cap);
-        row[ColValidationFactor] = text(record.validation_factor);
-        row[ColCapRecommended] = text(record.cap_recommended ? 1 : 0);
-        row[ColCapApplied] = text(record.cap_applied ? 1 : 0);
-        row[ColValidated] = text(record.validated ? 1 : 0);
-        write_row(row);
+        write_row(
+            citlali::pipeline::learning_summary_high_weight_detector_row(
+                record, text, csv));
     }
 
     for (const auto &record : reduction_learning.map_pixel_outliers) {
