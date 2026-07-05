@@ -7702,18 +7702,18 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             logger->info("{}.fits", filtered_map_path);
 
             // explicitly destroy the fits file after we're done with it
-            bool should_close_file = true;
+            bool should_close_filtered_fits = true;
             if (rtcproc.run_polarization) {
                 if (rtcproc.polarization.stokes_params[maps_to_stokes(i)] !=
                     "U") {
-                    should_close_file = false;
+                    should_close_filtered_fits = false;
                 }
             }
             // check if we're moving onto a new file
             if (i < n_maps - 1) {
                 const bool next_map_opens_new_file =
                     arrays_to_maps(i + 1) > arrays_to_maps(i);
-                if (next_map_opens_new_file && should_close_file) {
+                if (next_map_opens_new_file && should_close_filtered_fits) {
                     logger->info("closing FITS handle for {}",
                                  filtered_map_path);
                     filtered_fits_io->at(map_index).pfits->destroy();
