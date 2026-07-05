@@ -7727,8 +7727,8 @@ void Engine::find_sources(map_buffer_t &mb) {
                     // rescale fit errors from pixel to on-sky units
                     perrors(1) = pixel_to_arcsec * perrors(1);
                     perrors(2) = pixel_to_arcsec * perrors(2);
-                    perrors(3) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(perrors(3));
-                    perrors(4) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(perrors(4));
+                    perrors(3) = source_fwhm_to_arcsec * perrors(3);
+                    perrors(4) = source_fwhm_to_arcsec * perrors(4);
 
                     // if in radec calculate absolute pointing
                     if (telescope.pixel_axes=="radec") {
