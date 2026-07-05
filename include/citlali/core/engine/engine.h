@@ -7335,9 +7335,11 @@ void Engine::write_stats() {
         }
     }
     // create stats filename
-    auto stats_filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::stats,
-                                                    engine_utils::toltecIO::raw>
-                          (path, redu_type, "", obsnum, telescope.sim_obs);
+    const auto stats_filename =
+        toltec_io.create_filename<engine_utils::toltecIO::toltec,
+                                  engine_utils::toltecIO::stats,
+                                  engine_utils::toltecIO::raw>(
+            path, redu_type, "", obsnum, telescope.sim_obs);
 
     // det stats header
     std::map<std::string, std::string> det_stats_header_units {
