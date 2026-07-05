@@ -7595,6 +7595,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
 
     // loop through maps and run wiener filter
     for (Eigen::Index i = 0; i < n_maps; ++i) {
+        const auto map_number = i + 1;
         // current array
         const auto array = maps_to_arrays(i);
         const auto &array_name = toltec_io.array_name_map[array];
