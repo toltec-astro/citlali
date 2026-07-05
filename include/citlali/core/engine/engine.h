@@ -7699,7 +7699,8 @@ void Engine::find_sources(map_buffer_t &mb) {
             source_out_vec.resize(n_map_sources);
 
             // loop through sources and fit them
-            grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), source_in_vec, source_out_vec, [&](auto j) {
+            grppi::map(tula::grppi_utils::dyn_ex(parallel_policy),
+                       source_in_vec, source_out_vec, [&](auto j) {
                 // update source rows and cols
                 double init_row = mb.row_source_locs[i](j);
                 double init_col = mb.col_source_locs[i](j);
