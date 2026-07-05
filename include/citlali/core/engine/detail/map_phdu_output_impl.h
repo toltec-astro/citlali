@@ -5,16 +5,9 @@
 
 template <typename fits_io_type, class map_buffer_t>
 void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
-    if (i < 0 || i >= static_cast<Eigen::Index>(fits_io->size())) {
-        logger->error("add_phdu index out of range: i={} fits_io_size={}",
-                      static_cast<long long>(i), static_cast<long long>(fits_io->size()));
-        std::exit(EXIT_FAILURE);
-    }
-    if (i >= calib.arrays.size()) {
-        logger->error("add_phdu array index out of range: i={} calib.arrays.size={}",
-                      static_cast<long long>(i), static_cast<long long>(calib.arrays.size()));
-        std::exit(EXIT_FAILURE);
-    }
+    citlali::pipeline::require_phdu_output_slots(
+        i, static_cast<Eigen::Index>(fits_io->size()),
+        static_cast<Eigen::Index>(calib.arrays.size()), logger);
 
     const auto array_id = citlali::pipeline::phdu_array_id(calib.arrays, i);
 
@@ -208,4 +201,3 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
                         name, fits_io->at(i).filepath, e.what()));
     }
 }
-

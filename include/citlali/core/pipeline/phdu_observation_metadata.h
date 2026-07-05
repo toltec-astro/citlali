@@ -1,12 +1,30 @@
 #pragma once
 
 #include <cmath>
+#include <cstdlib>
 #include <string>
 #include <tuple>
 
 #include <citlali/core/pipeline/phdu_telescope_values.h>
 
 namespace citlali::pipeline {
+
+template <class Index, class Logger>
+void require_phdu_output_slots(Index i, Index n_files, Index n_arrays,
+                               const Logger &logger) {
+    if (i < 0 || i >= n_files) {
+        logger->error("add_phdu index out of range: i={} fits_io_size={}",
+                      static_cast<long long>(i),
+                      static_cast<long long>(n_files));
+        std::exit(EXIT_FAILURE);
+    }
+    if (i >= n_arrays) {
+        logger->error(
+            "add_phdu array index out of range: i={} calib.arrays.size={}",
+            static_cast<long long>(i), static_cast<long long>(n_arrays));
+        std::exit(EXIT_FAILURE);
+    }
+}
 
 template <class ArrayFwhm>
 double mean_beam_fwhm_arcsec(const ArrayFwhm &array_fwhm) {
