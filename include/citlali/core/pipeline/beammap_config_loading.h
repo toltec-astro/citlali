@@ -10,6 +10,25 @@
 
 namespace citlali::pipeline {
 
+template <class Config, class MissingKeys, class InvalidKeys>
+void read_beammap_iteration_config(Config &config, MissingKeys &missing_keys,
+                                   InvalidKeys &invalid_keys,
+                                   int &iter_max,
+                                   double &iter_tolerance,
+                                   double &convergence_radius_arcsec) {
+    ::get_config_value(config, iter_max, missing_keys, invalid_keys,
+                       std::tuple{"beammap", "iter_max"});
+    ::get_config_value(config, iter_tolerance, missing_keys, invalid_keys,
+                       std::tuple{"beammap", "iter_tolerance"});
+    convergence_radius_arcsec = 10.0;
+    if (config.template has_typed<double>(
+            std::tuple{"beammap", "convergence_radius_arcsec"})) {
+        ::get_config_value(
+            config, convergence_radius_arcsec, missing_keys, invalid_keys,
+            std::tuple{"beammap", "convergence_radius_arcsec"}, {}, {0.0});
+    }
+}
+
 template <class Config, class InvalidKeys>
 std::vector<double> beammap_fixed_double_vector(
     Config &config, const std::vector<std::string> &path,

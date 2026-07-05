@@ -8,18 +8,9 @@
 template<typename CT>
 void Engine::get_beammap_config(CT &config) {
     logger->info("getting beammap config options");
-    // max beammap iteration
-    get_config_value(config, beammap_iter_max, missing_keys, invalid_keys,
-                     std::tuple{"beammap","iter_max"});
-    // beammap iteration tolerance
-    get_config_value(config, beammap_iter_tolerance, missing_keys, invalid_keys,
-                     std::tuple{"beammap","iter_tolerance"});
-    beammap_convergence_radius_arcsec = 10.0;
-    if (config.template has_typed<double>(std::tuple{"beammap","convergence_radius_arcsec"})) {
-        get_config_value(config, beammap_convergence_radius_arcsec, missing_keys, invalid_keys,
-                         std::tuple{"beammap","convergence_radius_arcsec"},
-                         {}, {0.0});
-    }
+    citlali::pipeline::read_beammap_iteration_config(
+        config, missing_keys, invalid_keys, beammap_iter_max,
+        beammap_iter_tolerance, beammap_convergence_radius_arcsec);
 
     beammap_phase_split_enabled = true;
     beammap_locator_iter = 0;
