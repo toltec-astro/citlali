@@ -870,6 +870,11 @@ inline std::size_t rtcdiag_impulsive_window_samples(
         std::max(0.0, std::round(window_sec * sample_rate_hz)));
 }
 
+inline std::size_t rtcdiag_impulsive_snippet_sample_count(
+    std::size_t snippet_pre, std::size_t snippet_post) {
+    return snippet_pre + snippet_post + 1;
+}
+
 inline void add_rtcdiag_impulsive_slot_double(
     netCDF::NcFile &fo, const std::string &name,
     const std::string &comment, const std::vector<netCDF::NcDim> &slot_dims,
