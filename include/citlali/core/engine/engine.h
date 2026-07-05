@@ -7095,6 +7095,7 @@ void Engine::create_rtcdiag_file() {
         const auto &alt_phys = alt_it->second;
         const Eigen::Index n_tel = std::min({tel_time.size(), az_phys.size(), alt_phys.size()});
         for (Eigen::Index scan = 0; scan < n_scans; ++scan) {
+            const auto scan_index = static_cast<std::size_t>(scan);
             const Eigen::Index start = std::max<Eigen::Index>(0, telescope.scan_indices(0, scan));
             const Eigen::Index stop = std::min<Eigen::Index>(n_tel - 1, telescope.scan_indices(1, scan));
             if (stop <= start || start < 0 || stop >= n_tel) {
@@ -7102,7 +7103,7 @@ void Engine::create_rtcdiag_file() {
             }
             const double duration = tel_time(stop) - tel_time(start);
             if (std::isfinite(duration) && duration > 0.0) {
-                scan_duration_s[static_cast<std::size_t>(scan)] = duration;
+                scan_duration_s[scan_index] = duration;
             }
             std::vector<double> speed_arcsec_s;
             speed_arcsec_s.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(stop - start, 0)));
@@ -7118,13 +7119,13 @@ void Engine::create_rtcdiag_file() {
             }
             if (!speed_arcsec_s.empty()) {
                 std::sort(speed_arcsec_s.begin(), speed_arcsec_s.end());
-                scan_speed_p50_arcsec_s[static_cast<std::size_t>(scan)] =
+                scan_speed_p50_arcsec_s[scan_index] =
                     citlali::pipeline::rtcdiag_percentile_sorted(
                         speed_arcsec_s, 50.0);
-                scan_speed_p95_arcsec_s[static_cast<std::size_t>(scan)] =
+                scan_speed_p95_arcsec_s[scan_index] =
                     citlali::pipeline::rtcdiag_percentile_sorted(
                         speed_arcsec_s, 95.0);
-                scan_speed_p995_arcsec_s[static_cast<std::size_t>(scan)] =
+                scan_speed_p995_arcsec_s[scan_index] =
                     citlali::pipeline::rtcdiag_percentile_sorted(
                         speed_arcsec_s, 99.5);
             }
