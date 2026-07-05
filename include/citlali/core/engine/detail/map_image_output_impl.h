@@ -143,11 +143,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             double fwhm = citlali::pipeline::kernel_fwhm_arcsec(
                 rtcproc.kernel.type, rtcproc.kernel.fwhm_rad,
                 calib.array_fwhms[calib.arrays(i)], RAD_TO_ASEC);
-            if (citlali::pipeline::has_nonfinite_kernel_fwhm(fwhm)) {
-                logger->warn("non-finite kernel FWHM for map {} in {}; using -99", map_name,
-                             fits_io->at(map_index).filepath);
-                fwhm = citlali::pipeline::invalid_kernel_fwhm_arcsec();
-            }
+            fwhm = citlali::pipeline::kernel_fwhm_or_invalid(
+                fwhm, map_name, fits_io->at(map_index).filepath, logger);
             citlali::pipeline::add_kernel_fwhm_key(
                 *fits_io->at(map_index).hdus.back(), fwhm);
             fits_io->at(map_index).add_wcs(fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
@@ -170,13 +167,10 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
             // get weight threshold for current map
             auto cov_region = mb->calc_cov_region(i);
             auto weight_threshold = std::get<0>(cov_region);
-            if (citlali::pipeline::has_nonfinite_weight_threshold(
-                    weight_threshold)) {
-                logger->warn("non-finite weight threshold for map {} in {}; using 0", map_name,
-                             fits_io->at(map_index).filepath);
-            }
             weight_threshold =
-                citlali::pipeline::weight_threshold_or_zero(weight_threshold);
+                citlali::pipeline::weight_threshold_or_zero_logged(
+                    weight_threshold, map_name,
+                    fits_io->at(map_index).filepath, logger);
             Eigen::MatrixXd coverage_bool =
                 citlali::pipeline::coverage_mask_from_weight(
                     mb->weight[i], weight_threshold);

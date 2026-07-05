@@ -133,6 +133,19 @@ inline bool has_nonfinite_kernel_fwhm(double fwhm_arcsec) {
     return !std::isfinite(fwhm_arcsec);
 }
 
+template <class Logger>
+double kernel_fwhm_or_invalid(double fwhm_arcsec,
+                              const std::string &map_name,
+                              const std::string &filepath,
+                              const Logger &logger) {
+    if (has_nonfinite_kernel_fwhm(fwhm_arcsec)) {
+        logger->warn("non-finite kernel FWHM for map {} in {}; using -99",
+                     map_name, filepath);
+        return invalid_kernel_fwhm_arcsec();
+    }
+    return fwhm_arcsec;
+}
+
 inline const char *signal_map_description() {
     return "Signal map in map units";
 }
@@ -333,6 +346,18 @@ inline bool has_nonfinite_weight_threshold(double weight_threshold) {
 inline double weight_threshold_or_zero(double weight_threshold) {
     return has_nonfinite_weight_threshold(weight_threshold) ? 0.0
                                                             : weight_threshold;
+}
+
+template <class Logger>
+double weight_threshold_or_zero_logged(double weight_threshold,
+                                       const std::string &map_name,
+                                       const std::string &filepath,
+                                       const Logger &logger) {
+    if (has_nonfinite_weight_threshold(weight_threshold)) {
+        logger->warn("non-finite weight threshold for map {} in {}; using 0",
+                     map_name, filepath);
+    }
+    return weight_threshold_or_zero(weight_threshold);
 }
 
 template <class Matrix>
