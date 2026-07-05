@@ -7119,8 +7119,10 @@ void Engine::create_rtcdiag_file() {
         TULA_SIZET(std::max<Eigen::Index>(n_scans, 1))};
     const std::vector<std::size_t> scan_array_chunks = {
         1, TULA_SIZET(std::max<Eigen::Index>(calib.n_arrays, 1))};
-    const std::vector<std::size_t> rtc_det_chunks = {1, TULA_SIZET(calib.n_dets)};
-    const std::vector<std::size_t> rtc_nw_chunks = {1, TULA_SIZET(calib.n_nws)};
+    const std::vector<std::size_t> rtc_det_chunks = {
+        1, TULA_SIZET(calib.n_dets)};
+    const std::vector<std::size_t> rtc_nw_chunks = {
+        1, TULA_SIZET(calib.n_nws)};
 
     citlali::pipeline::add_diagnostic_output_scan_index(
         fo, n_scans_dim, n_scans, fill_int);
