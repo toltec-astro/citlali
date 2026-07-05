@@ -7072,10 +7072,11 @@ void Engine::create_ptcdiag_file() {
     citlali::pipeline::add_ptcdiag_adaptive_pca_network_block(
         fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
 
+    const std::string second_pass_comment =
+        "1 if this network had more candidate second-pass clusters than the normal auto-flag limit";
     citlali::pipeline::add_ptcdiag_second_pass_network_block(
-        fo, calib, n_scans_dim, n_scans,
-        "1 if this network had more candidate second-pass clusters than the normal auto-flag limit",
-        true, fill_int, fill_double);
+        fo, calib, n_scans_dim, n_scans, second_pass_comment, true,
+        fill_int, fill_double);
     });
 }
 
