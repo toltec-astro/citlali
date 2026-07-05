@@ -7707,8 +7707,10 @@ void Engine::find_sources(map_buffer_t &mb) {
 
                 // fit source
                 auto [params, perrors, good_fit] =
-                    map_fitter.fit_to_gaussian<engine_utils::mapFitter::pointing>(mb.signal[i], mb.weight[i],
-                                                                                  init_fwhm, init_row, init_col);
+                    map_fitter.fit_to_gaussian<
+                        engine_utils::mapFitter::pointing>(
+                            mb.signal[i], mb.weight[i], init_fwhm,
+                            init_row, init_col);
                 if (good_fit) {
                     // rescale fit params from pixel to on-sky units
                     params(1) = RAD_TO_ASEC*mb.pixel_size_rad*(params(1) - (mb.n_cols - 1)/2.0);
