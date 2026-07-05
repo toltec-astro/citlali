@@ -7708,7 +7708,9 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             if (is_polarization_reduction) {
                 const auto &current_stokes_param =
                     rtcproc.polarization.stokes_params[maps_to_stokes(i)];
-                if (current_stokes_param != "U") {
+                const bool is_last_polarization_stokes =
+                    current_stokes_param == "U";
+                if (!is_last_polarization_stokes) {
                     should_close_filtered_fits = false;
                 }
             }
