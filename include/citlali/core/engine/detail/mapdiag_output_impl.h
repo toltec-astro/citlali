@@ -576,31 +576,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 }
             }
 
-            const bool has_noise_realizations =
-                citlali::pipeline::mapdiag_has_noise_realizations(
-                    mb->noise, i, mb->n_noise);
-            if (has_noise_realizations) {
-                auto noise_samples =
-                    citlali::pipeline::make_mapdiag_noise_tail_samples(mb);
-
-                const auto valid_core =
-                    citlali::pipeline::mapdiag_valid_core_noise_mask(
-                        core_mask);
-                const double valid_core_count =
-                    citlali::pipeline::mapdiag_valid_core_noise_count(
-                        valid_core);
-                const Eigen::Index n_noise_realizations =
-                    citlali::pipeline::mapdiag_noise_realization_count(mb);
-                for (Eigen::Index n = 0; n < n_noise_realizations; ++n) {
-                    const auto noise_matrix =
-                        citlali::pipeline::mapdiag_noise_matrix(mb, i, n);
-                    citlali::pipeline::add_mapdiag_noise_realization_samples(
-                        noise_samples, mapdiag_stats, noise_matrix,
-                        valid_core, valid_core_count, core_mask);
-                }
-                citlali::pipeline::assign_mapdiag_noise_tail_samples(
-                    idx, mapdiag_stats, noise_samples, noise_tail_refs);
-            }
+            citlali::pipeline::assign_mapdiag_noise_tail_for_map(
+                idx, mb, i, mapdiag_stats, core_mask, noise_tail_refs);
         }
 
         const bool is_single_observation_mapdiag = !mapdiag_context.is_coadd;

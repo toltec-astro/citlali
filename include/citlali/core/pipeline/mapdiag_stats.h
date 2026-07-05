@@ -1303,6 +1303,31 @@ void add_mapdiag_noise_realization_samples(
         samples, stats, noise_matrix, core_mask);
 }
 
+template <class MapBuffer, class CoreMask>
+void assign_mapdiag_noise_tail_for_map(
+    std::size_t idx, const MapBuffer &mb, Eigen::Index map_index,
+    const MapdiagStatsContext &stats, const CoreMask &core_mask,
+    MapdiagNoiseTailRefs refs) {
+    if (!mapdiag_has_noise_realizations(
+            mb->noise, map_index, mb->n_noise)) {
+        return;
+    }
+
+    auto noise_samples = make_mapdiag_noise_tail_samples(mb);
+    const auto valid_core = mapdiag_valid_core_noise_mask(core_mask);
+    const double valid_core_count =
+        mapdiag_valid_core_noise_count(valid_core);
+    const Eigen::Index n_noise_realizations =
+        mapdiag_noise_realization_count(mb);
+    for (Eigen::Index n = 0; n < n_noise_realizations; ++n) {
+        const auto noise_matrix = mapdiag_noise_matrix(mb, map_index, n);
+        add_mapdiag_noise_realization_samples(
+            noise_samples, stats, noise_matrix, valid_core,
+            valid_core_count, core_mask);
+    }
+    assign_mapdiag_noise_tail_samples(idx, stats, noise_samples, refs);
+}
+
 inline MapdiagTailStats mapdiag_tail_stats(const std::vector<double> &values,
                                            double fill_value) {
     MapdiagTailStats stats;
