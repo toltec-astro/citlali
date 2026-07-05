@@ -17,6 +17,25 @@ struct MapFilterOutputTargets {
     const char *map_label;
 };
 
+template <class MapsToArrays, class MapsToStokes, class ArraysToMaps,
+          class WriteMaps>
+struct MapFilterCallbacks {
+    MapsToArrays maps_to_arrays;
+    MapsToStokes maps_to_stokes;
+    ArraysToMaps arrays_to_maps;
+    WriteMaps write_maps;
+};
+
+template <class MapsToArrays, class MapsToStokes, class ArraysToMaps,
+          class WriteMaps>
+MapFilterCallbacks<MapsToArrays, MapsToStokes, ArraysToMaps, WriteMaps>
+make_map_filter_callbacks(const MapsToArrays &maps_to_arrays,
+                          const MapsToStokes &maps_to_stokes,
+                          const ArraysToMaps &arrays_to_maps,
+                          const WriteMaps &write_maps) {
+    return {maps_to_arrays, maps_to_stokes, arrays_to_maps, write_maps};
+}
+
 template <mapmaking::MapType map_t, class FitsVector>
 MapFilterOutputTargets<FitsVector> map_filter_output_targets(
     FitsVector &filtered_fits_io_vec,
@@ -431,28 +450,25 @@ void write_map_filter_output(
 }
 
 template <class WienerFilter, class MapBuffer, class MapCount,
-          class MapsToArrays, class ArrayNames, class ArrayFwhm, class Apt,
+          class ArrayNames, class ArrayFwhm, class Apt,
           class FitsVector, class MapBufferPtr, class Polarization,
-          class MapsToStokes, class ArraysToMaps, class WriteMaps,
-          class Logger>
+          class Callbacks, class Logger>
 void run_map_filter_loop(
     WienerFilter &wiener_filter, MapBuffer &map_buffer, MapCount n_maps,
-    const char *map_label, const MapsToArrays &maps_to_arrays,
-    ArrayNames &array_names, ArrayFwhm &array_fwhm_arcsec,
+    const char *map_label, ArrayNames &array_names, ArrayFwhm &array_fwhm_arcsec,
     double arcsec_to_rad, const Apt &apt, bool run_noise,
     bool write_filtered_maps_partial, bool run_noise_products,
     bool apply_empirical_noise_weights,
     FitsVector *filtered_fits_io, FitsVector *filtered_noise_fits_io,
     MapBufferPtr map_buffer_ptr, bool run_polarization,
-    Polarization &polarization, const MapsToStokes &maps_to_stokes,
-    const ArraysToMaps &arrays_to_maps, const WriteMaps &write_maps,
+    Polarization &polarization, const Callbacks &callbacks,
     const Logger &logger) {
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const auto map_number = map_filter_display_number(i);
-        const auto array = maps_to_arrays(i);
+        const auto array = callbacks.maps_to_arrays(i);
         const auto &array_name =
             map_filter_array_name(array_names, array);
-        const auto map_index = arrays_to_maps(i);
+        const auto map_index = callbacks.arrays_to_maps(i);
 
         log_map_filter_map_start(
             map_label, map_number, n_maps, array_name, logger);
@@ -482,8 +498,8 @@ void run_map_filter_loop(
             write_map_filter_output(
                 filtered_fits_io, filtered_noise_fits_io, map_buffer_ptr,
                 i, map_number, map_index, n_maps, map_label,
-                run_polarization, polarization, maps_to_stokes,
-                arrays_to_maps, write_maps, logger);
+                run_polarization, polarization, callbacks.maps_to_stokes,
+                callbacks.arrays_to_maps, callbacks.write_maps, logger);
         }
 
         log_map_filter_map_completed(map_label, map_number, n_maps, logger);

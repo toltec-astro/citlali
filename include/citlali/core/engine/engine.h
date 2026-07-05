@@ -7065,16 +7065,19 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     const auto array_to_map_index = [&](Eigen::Index array_index) {
         return arrays_to_maps(array_index);
     };
+    const auto filter_callbacks =
+        citlali::pipeline::make_map_filter_callbacks(
+            map_to_array_index, map_to_stokes_index, array_to_map_index,
+            write_filter_maps);
 
     citlali::pipeline::run_map_filter_loop(
-        wiener_filter, mb, n_maps, map_label, map_to_array_index,
+        wiener_filter, mb, n_maps, map_label,
         toltec_io.array_name_map, toltec_io.array_fwhm_arcsec,
         ASEC_TO_RAD, calib.apt, run_noise, write_filtered_maps_partial,
         run_noise_products, apply_empirical_noise_weights,
         filtered_fits_io, filtered_noise_fits_io, &mb,
         rtcproc.run_polarization, rtcproc.polarization,
-        map_to_stokes_index, array_to_map_index, write_filter_maps,
-        logger);
+        filter_callbacks, logger);
 
     citlali::pipeline::finalize_map_filter_fits_outputs_if_needed(
         write_filtered_maps_partial, filtered_fits_io,
