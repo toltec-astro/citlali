@@ -7238,7 +7238,8 @@ void Engine::create_rtcdiag_file() {
                 continue;
             }
             const double fwhm_arcsec =
-                0.5 * (std::get<0>(fwhm_it->second) + std::get<1>(fwhm_it->second));
+                0.5 * (std::get<0>(fwhm_it->second) +
+                       std::get<1>(fwhm_it->second));
             if (!std::isfinite(fwhm_arcsec) || fwhm_arcsec <= 0.0) {
                 continue;
             }
