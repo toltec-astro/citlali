@@ -7109,8 +7109,10 @@ void Engine::create_rtcdiag_file() {
             if (std::isfinite(duration) && duration > 0.0) {
                 scan_duration_s[scan_index] = duration;
             }
+            const auto n_scan_samples =
+                std::max<Eigen::Index>(stop - start, 0);
             std::vector<double> speed_arcsec_s;
-            speed_arcsec_s.reserve(static_cast<std::size_t>(std::max<Eigen::Index>(stop - start, 0)));
+            speed_arcsec_s.reserve(static_cast<std::size_t>(n_scan_samples));
             for (Eigen::Index i = start; i < stop; ++i) {
                 const double dt = tel_time(i + 1) - tel_time(i);
                 const double daz = az_phys(i + 1) - az_phys(i);
