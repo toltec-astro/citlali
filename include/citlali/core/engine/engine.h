@@ -7103,7 +7103,8 @@ void Engine::create_rtcdiag_file() {
     const auto n_scan_values = static_cast<std::size_t>(n_scans);
     const auto n_array_values = static_cast<std::size_t>(calib.n_arrays);
     const auto n_scan_array_values = n_scan_values * n_array_values;
-    const double rtc_fsmp = rtcproc.run_downsample ? telescope.d_fsmp : telescope.fsmp;
+    const double rtc_fsmp =
+        rtcproc.run_downsample ? telescope.d_fsmp : telescope.fsmp;
 
     citlali::pipeline::add_observation_identity_vars(
         fo, std::stoi(obsnum), telescope.tel_header["Header.Source.Ra"](0),
