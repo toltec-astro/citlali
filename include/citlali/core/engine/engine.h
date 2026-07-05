@@ -7041,7 +7041,8 @@ void Engine::create_ptcdiag_file() {
     const auto n_ptc_det_values = static_cast<std::size_t>(calib.n_dets);
     const std::size_t ptc_det_value_count =
         n_ptc_scan_values * n_ptc_det_values;
-    auto add_det_double = [&](const std::string &name, const std::string &comment) {
+    auto add_det_double = [&](const std::string &name,
+                              const std::string &comment) {
         citlali::pipeline::add_ptcdiag_det_double(
             fo, name, comment, det_dims, det_chunks, ptc_det_value_count,
             fill_double);
