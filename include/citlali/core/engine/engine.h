@@ -7425,7 +7425,8 @@ void Engine::create_rtcdiag_file() {
                 rtc_impulsive_snippet_chunks, n_rtc_impulsive_snippet_values,
                 fill_double);
         };
-        auto add_rtc_imp_snip_int = [&](const std::string &name, const std::string &comment) {
+        auto add_rtc_imp_snip_int = [&](const std::string &name,
+                                        const std::string &comment) {
             citlali::pipeline::add_rtcdiag_impulsive_snippet_int(
                 fo, name, comment, rtc_impulsive_snippet_dims,
                 rtc_impulsive_snippet_chunks, n_rtc_impulsive_snippet_values,
