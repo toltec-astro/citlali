@@ -7048,56 +7048,6 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         filter_outputs.filtered_noise_fits_io;
     const char *map_label = filter_outputs.map_label;
 
-    auto init_wiener_filter_fwhm = [&](Eigen::Index array) {
-        const auto array_fwhm_arcsec =
-            toltec_io.array_fwhm_arcsec[array];
-        wiener_filter.init_fwhm =
-            citlali::pipeline::map_filter_initial_fwhm_pixels(
-                array_fwhm_arcsec, ASEC_TO_RAD, mb.pixel_size_rad);
-    };
-
-    auto calculate_filtered_noise_products =
-        [&](Eigen::Index map_i, Eigen::Index map_number) {
-            const bool normalize_filtered_error =
-                wiener_filter.normalize_error;
-            const bool should_calculate_noise_products =
-                citlali::pipeline::should_calculate_map_filter_noise_products(
-                    write_filtered_maps_partial, run_noise_products,
-                    normalize_filtered_error);
-            if (!should_calculate_noise_products) {
-                return;
-            }
-            const bool apply_empirical_noise_scale =
-                citlali::pipeline::should_apply_map_filter_noise_scale(
-                    apply_empirical_noise_weights,
-                    normalize_filtered_error);
-            logger->info(
-                "calculating empirical noise products for {} map {}/{}",
-                map_label, map_number, n_maps);
-            mb.calc_noise_products(map_i, apply_empirical_noise_scale);
-            citlali::pipeline::log_map_filter_noise_weight_summary_if_present(
-                mb, map_i, logger);
-            mb.calc_median_err();
-            mb.calc_median_rms();
-        };
-
-    auto build_wiener_template =
-        [&](Eigen::Index map_i, Eigen::Index map_number,
-            const std::string &array_name) {
-            logger->info(
-                "building Wiener template for {} map {}/{} (array={})",
-                map_label, map_number, n_maps, array_name);
-            const double template_fwhm_rad =
-                citlali::pipeline::map_filter_template_fwhm_or_exit(
-                    wiener_filter.template_type,
-                    wiener_filter.template_fwhm_rad, array_name, logger);
-            wiener_filter.make_template(
-                mb, calib.apt, template_fwhm_rad, map_i);
-            logger->info(
-                "Wiener template ready for {} map {}/{} (array={})",
-                map_label, map_number, n_maps, array_name);
-        };
-
     auto filter_wiener_signal_map =
         [&](Eigen::Index map_i, Eigen::Index map_number,
             const std::string &array_name) {
@@ -7158,9 +7108,13 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         logger->info("starting {} map {}/{} (array={})",
                      map_label, map_number, n_maps, array_name);
         // init fwhm in pixels
-        init_wiener_filter_fwhm(array);
+        citlali::pipeline::initialize_map_filter_fwhm(
+            wiener_filter, toltec_io.array_fwhm_arcsec, array,
+            ASEC_TO_RAD, mb.pixel_size_rad);
         // make wiener filter template
-        build_wiener_template(i, map_number, array_name);
+        citlali::pipeline::build_map_filter_template(
+            wiener_filter, mb, calib.apt, i, map_number, n_maps,
+            array_name, map_label, logger);
         // run the filter for the current map
         filter_wiener_signal_map(i, map_number, array_name);
 
@@ -7170,7 +7124,10 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             citlali::pipeline::filter_map_filter_noise_maps(
                 wiener_filter, mb, i, map_number, n_wiener_noise_maps,
                 map_label, n_maps, logger);
-            calculate_filtered_noise_products(i, map_number);
+            citlali::pipeline::calculate_map_filter_noise_products_if_needed(
+                mb, i, map_number, n_maps, write_filtered_maps_partial,
+                run_noise_products, wiener_filter.normalize_error,
+                apply_empirical_noise_weights, map_label, logger);
         }
 
         if (write_filtered_maps_partial) {

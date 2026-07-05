@@ -47,6 +47,19 @@ inline double map_filter_initial_fwhm_pixels(
     return array_fwhm_arcsec * arcsec_to_rad / pixel_size_rad;
 }
 
+template <class WienerFilter, class ArrayFwhm, class ArrayIndex,
+          class PixelSize>
+void initialize_map_filter_fwhm(WienerFilter &wiener_filter,
+                                ArrayFwhm &array_fwhm_arcsec,
+                                ArrayIndex array_index,
+                                double arcsec_to_rad,
+                                PixelSize pixel_size_rad) {
+    wiener_filter.init_fwhm =
+        map_filter_initial_fwhm_pixels(
+            array_fwhm_arcsec[array_index], arcsec_to_rad,
+            pixel_size_rad);
+}
+
 template <class MapIndex>
 auto map_filter_display_number(MapIndex map_index) {
     return map_index + 1;
@@ -132,6 +145,29 @@ double map_filter_template_fwhm_or_exit(
         template_fwhm_rad, array_name, template_fwhm_rad_value);
 }
 
+template <class WienerFilter, class MapBuffer, class Apt, class MapIndex,
+          class MapNumber, class MapCount, class Logger>
+void build_map_filter_template(WienerFilter &wiener_filter,
+                               MapBuffer &map_buffer, const Apt &apt,
+                               MapIndex map_index, MapNumber map_number,
+                               MapCount n_maps,
+                               const std::string &array_name,
+                               const char *map_label,
+                               const Logger &logger) {
+    logger->info(
+        "building Wiener template for {} map {}/{} (array={})",
+        map_label, map_number, n_maps, array_name);
+    const double template_fwhm_rad =
+        map_filter_template_fwhm_or_exit(
+            wiener_filter.template_type,
+            wiener_filter.template_fwhm_rad, array_name, logger);
+    wiener_filter.make_template(
+        map_buffer, apt, template_fwhm_rad, map_index);
+    logger->info(
+        "Wiener template ready for {} map {}/{} (array={})",
+        map_label, map_number, n_maps, array_name);
+}
+
 inline bool should_calculate_map_filter_noise_products(
     bool write_filtered_maps_partial, bool run_noise_products,
     bool normalize_filtered_error) {
@@ -167,6 +203,35 @@ void log_map_filter_noise_weight_summary_if_present(
         map_buffer.noise_weight_median_ratio(map_index),
         map_buffer.noise_weight_scale(map_index),
         map_buffer.noise_s2n_sigma(map_index));
+}
+
+template <class MapBuffer, class MapIndex, class MapNumber,
+          class MapCount, class Logger>
+void calculate_map_filter_noise_products_if_needed(
+    MapBuffer &map_buffer, MapIndex map_index, MapNumber map_number,
+    MapCount n_maps, bool write_filtered_maps_partial,
+    bool run_noise_products, bool normalize_filtered_error,
+    bool apply_empirical_noise_weights, const char *map_label,
+    const Logger &logger) {
+    const bool should_calculate_noise_products =
+        should_calculate_map_filter_noise_products(
+            write_filtered_maps_partial, run_noise_products,
+            normalize_filtered_error);
+    if (!should_calculate_noise_products) {
+        return;
+    }
+
+    const bool apply_empirical_noise_scale =
+        should_apply_map_filter_noise_scale(
+            apply_empirical_noise_weights, normalize_filtered_error);
+    logger->info(
+        "calculating empirical noise products for {} map {}/{}",
+        map_label, map_number, n_maps);
+    map_buffer.calc_noise_products(map_index, apply_empirical_noise_scale);
+    log_map_filter_noise_weight_summary_if_present(
+        map_buffer, map_index, logger);
+    map_buffer.calc_median_err();
+    map_buffer.calc_median_rms();
 }
 
 inline bool should_destroy_filtered_fits_handle(
