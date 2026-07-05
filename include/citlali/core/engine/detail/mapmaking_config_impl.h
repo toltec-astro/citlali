@@ -4,6 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/engine/detail/config_parse_tracking.h>
+#include <citlali/core/pipeline/mapmaking_config_policy.h>
 
 template<typename CT>
 void Engine::get_mapmaking_config(CT &config) {
@@ -218,17 +219,13 @@ void Engine::get_mapmaking_config(CT &config) {
         }
 
         if (run_coadd) {
-            // copy omb number of noise maps to cmb
-            cmb.n_noise = omb.n_noise;
-            // copy randomize_dets to cmb
-            cmb.randomize_dets = omb.randomize_dets;
+            citlali::pipeline::mirror_noise_map_settings_to_coadd(omb, cmb);
         }
     }
     // otherwise set number of noise maps to zero
     else {
-        omb.n_noise = 0;
-        cmb.n_noise = 0;
-        typed_noise_config.n_noise_maps = 0;
+        citlali::pipeline::disable_noise_map_settings(
+            omb, cmb, typed_noise_config);
     }
 
     write_noise_realizations = false;
