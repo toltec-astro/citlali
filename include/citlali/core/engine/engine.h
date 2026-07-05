@@ -7681,7 +7681,8 @@ void Engine::find_sources(map_buffer_t &mb) {
     // now loop through and fit the sources
     for (Eigen::Index i=0; i<n_maps; ++i) {
         // skip map if no sources found
-        if (mb.n_sources[i] > 0) {
+        const auto n_map_sources = mb.n_sources[i];
+        if (n_map_sources > 0) {
             // current array
             const auto array = maps_to_arrays(i);
             // init fwhm in pixels
@@ -7692,9 +7693,9 @@ void Engine::find_sources(map_buffer_t &mb) {
             // placeholder vectors for grppi map
             std::vector<int> source_in_vec, source_out_vec;
 
-            source_in_vec.resize(mb.n_sources[i]);
+            source_in_vec.resize(n_map_sources);
             std::iota(source_in_vec.begin(), source_in_vec.end(), 0);
-            source_out_vec.resize(mb.n_sources[i]);
+            source_out_vec.resize(n_map_sources);
 
             // loop through sources and fit them
             grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), source_in_vec, source_out_vec, [&](auto j) {
@@ -7742,7 +7743,7 @@ void Engine::find_sources(map_buffer_t &mb) {
             });
 
             // update row
-            source_row_start += mb.n_sources[i];
+            source_row_start += n_map_sources;
         }
     }
 }
