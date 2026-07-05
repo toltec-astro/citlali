@@ -32,9 +32,8 @@ void Engine::get_mapmaking_config(CT &config) {
     citlali::pipeline::enforce_map_grouping_polarization_policy(
         rtcproc.run_polarization, redu_type, map_grouping, logger);
 
-    // set rtcproc map_grouping
-    rtcproc.kernel.map_grouping = map_grouping;
-    ptcproc.active_map_grouping = map_grouping;
+    citlali::pipeline::sync_map_grouping_to_timestream_processors(
+        map_grouping, rtcproc, ptcproc);
 
     citlali::engine_detail::read_map_method_config(
         config, map_method, typed_mapmaking_config, missing_keys,
@@ -47,12 +46,8 @@ void Engine::get_mapmaking_config(CT &config) {
     citlali::engine_detail::read_map_pixel_axes_config(
         config, telescope.pixel_axes, typed_mapmaking_config, missing_keys,
         invalid_keys);
-    if (redu_type == "beammap" && telescope.pixel_axes != "altaz") {
-        logger->error(
-            "beammap reductions require mapmaking.pixel_axes='altaz'; got '{}'",
-            telescope.pixel_axes);
-        std::exit(EXIT_FAILURE);
-    }
+    citlali::pipeline::enforce_beammap_pixel_axes_policy(
+        redu_type, telescope.pixel_axes, logger);
 
     // get config for omb
     logger->info("getting omb config options");

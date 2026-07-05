@@ -31,6 +31,26 @@ void enforce_map_grouping_polarization_policy(
     std::exit(EXIT_FAILURE);
 }
 
+template <class Logger>
+void enforce_beammap_pixel_axes_policy(const std::string &redu_type,
+                                       const std::string &pixel_axes,
+                                       const Logger &logger) {
+    if (redu_type != "beammap" || pixel_axes == "altaz") {
+        return;
+    }
+    logger->error(
+        "beammap reductions require mapmaking.pixel_axes='altaz'; got '{}'",
+        pixel_axes);
+    std::exit(EXIT_FAILURE);
+}
+
+template <class RtcProc, class PtcProc>
+void sync_map_grouping_to_timestream_processors(
+    const std::string &map_grouping, RtcProc &rtcproc, PtcProc &ptcproc) {
+    rtcproc.kernel.map_grouping = map_grouping;
+    ptcproc.active_map_grouping = map_grouping;
+}
+
 template <class MapmakingConfig, class OutputMapBlock,
           class PostProcessingConfig>
 void mirror_output_map_block_config(MapmakingConfig &target,
