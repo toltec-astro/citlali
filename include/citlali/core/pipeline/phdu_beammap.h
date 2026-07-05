@@ -111,4 +111,35 @@ void add_phdu_beammap_reference(FitsEntry &fits_entry,
     }
 }
 
+template <class FitsEntry, class Logger, class FluxMap, class Calib>
+void add_phdu_beammap_keys_if_needed(
+    FitsEntry &fits_entry, const std::string &array_name,
+    const Logger &logger, const std::string &redu_type,
+    FluxMap &flux_mjy_beam, FluxMap &flux_mjy_sr,
+    double iter_tolerance, double convergence_radius_arcsec, int iter_max,
+    bool phase_split_enabled, int locator_iter, int measurement_start_iter,
+    bool is_derotated, bool subtract_reference, Calib &calib,
+    Eigen::Index fallback_reference_det) {
+    if (redu_type != "beammap") {
+        return;
+    }
+
+    add_phdu_beammap_source_flux(
+        fits_entry, array_name, logger, flux_mjy_beam[array_name],
+        flux_mjy_sr[array_name]);
+
+    add_phdu_beammap_tuning(
+        fits_entry, array_name, logger, iter_tolerance,
+        convergence_radius_arcsec, iter_max, phase_split_enabled,
+        locator_iter, measurement_start_iter, is_derotated);
+
+    BeammapReferenceHeaderValues reference_values;
+    if (subtract_reference) {
+        reference_values =
+            beammap_reference_header_values(calib, fallback_reference_det);
+    }
+    add_phdu_beammap_reference(
+        fits_entry, array_name, logger, subtract_reference, reference_values);
+}
+
 }  // namespace citlali::pipeline

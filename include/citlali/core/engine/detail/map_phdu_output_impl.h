@@ -50,28 +50,14 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         calib.array_beam_areas[array_id]*MJY_SR_TO_mJY_ASEC,
         mJy_beam_to_uK, unit_conversion.mjy_beam_to_jy_pixel);
 
-    // add source flux for beammaps
-    if (redu_type == "beammap") {
-        citlali::pipeline::add_phdu_beammap_source_flux(
-            fits_entry, name, logger, beammap_fluxes_mJy_beam[name],
-            beammap_fluxes_MJy_Sr[name]);
-
-        citlali::pipeline::add_phdu_beammap_tuning(
-            fits_entry, name, logger, beammap_iter_tolerance,
-            beammap_convergence_radius_arcsec, beammap_iter_max,
-            beammap_phase_split_enabled, beammap_locator_iter,
-            beammap_measurement_start_iter, beammap_derotate);
-        // add reference detector information
-        citlali::pipeline::BeammapReferenceHeaderValues reference_values;
-        if (beammap_subtract_reference) {
-            reference_values =
-                citlali::pipeline::beammap_reference_header_values(
-                    calib, beammap_reference_det);
-        }
-        citlali::pipeline::add_phdu_beammap_reference(
-            fits_entry, name, logger, beammap_subtract_reference,
-            reference_values);
-    }
+    // add source flux and tuning for beammaps
+    citlali::pipeline::add_phdu_beammap_keys_if_needed(
+        fits_entry, name, logger, redu_type, beammap_fluxes_mJy_beam,
+        beammap_fluxes_MJy_Sr, beammap_iter_tolerance,
+        beammap_convergence_radius_arcsec, beammap_iter_max,
+        beammap_phase_split_enabled, beammap_locator_iter,
+        beammap_measurement_start_iter, beammap_derotate,
+        beammap_subtract_reference, calib, beammap_reference_det);
 
     logger->debug("adding obsnums");
 
