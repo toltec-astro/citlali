@@ -7350,10 +7350,11 @@ void Engine::create_rtcdiag_file() {
     const bool write_impulsive_capture_diag =
         rtcproc.impulsive_capture.enabled;
     if (write_impulsive_capture_diag) {
+        const auto max_events_per_network =
+            rtcproc.impulsive_capture.max_events_per_network;
         const auto n_slots =
             static_cast<std::size_t>(
-                std::max<Eigen::Index>(
-                    rtcproc.impulsive_capture.max_events_per_network, 1));
+                std::max<Eigen::Index>(max_events_per_network, 1));
         const auto snippet_pre =
             static_cast<std::size_t>(
                 std::max(
