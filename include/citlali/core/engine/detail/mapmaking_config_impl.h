@@ -73,17 +73,7 @@ void Engine::get_mapmaking_config(CT &config) {
     }
     citlali::pipeline::configure_fruit_loop_interpolation_mode(
         ptcproc, map_method, logger);
-    logger->info("fruit loops center convention: {}",
-                 ptcproc.fruit_loops_legacy_center ? "legacy n/2" : "current (n-1)/2");
-    logger->info("fruit loops post-addback weight mode: {}",
-                 ptcproc.fruit_loops_recompute_weights_after_addback
-                     ? "recompute from add-back TOD"
-                     : "keep source-subtracted");
-    logger->info("fruit loops weight feedback: enabled={} reference={} relative=[{}, {}]",
-                 ptcproc.fruit_loops_weight_feedback_enabled,
-                 ptcproc.fruit_loops_weight_feedback_reference,
-                 ptcproc.fruit_loops_weight_feedback_low_relative_weight,
-                 ptcproc.fruit_loops_weight_feedback_high_relative_weight);
+    citlali::pipeline::log_fruit_loop_runtime_policy(ptcproc, logger);
     ptcproc.fruit_loops_jinc_r_max = 0.0;
     ptcproc.fruit_loops_jinc_subpixel_n = 1;
     ptcproc.fruit_loops_jinc_shape_params.clear();

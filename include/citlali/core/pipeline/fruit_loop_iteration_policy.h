@@ -26,6 +26,25 @@ void configure_fruit_loop_interpolation_mode(
         ptcproc.fruit_loops_interp_mode, map_method, fruit_interp_default);
 }
 
+template <class PtcProc, class Logger>
+void log_fruit_loop_runtime_policy(const PtcProc &ptcproc,
+                                   const Logger &logger) {
+    logger->info("fruit loops center convention: {}",
+                 ptcproc.fruit_loops_legacy_center
+                     ? "legacy n/2"
+                     : "current (n-1)/2");
+    logger->info("fruit loops post-addback weight mode: {}",
+                 ptcproc.fruit_loops_recompute_weights_after_addback
+                     ? "recompute from add-back TOD"
+                     : "keep source-subtracted");
+    logger->info(
+        "fruit loops weight feedback: enabled={} reference={} relative=[{}, {}]",
+        ptcproc.fruit_loops_weight_feedback_enabled,
+        ptcproc.fruit_loops_weight_feedback_reference,
+        ptcproc.fruit_loops_weight_feedback_low_relative_weight,
+        ptcproc.fruit_loops_weight_feedback_high_relative_weight);
+}
+
 template <class Engine, class Logger>
 void configure_fruit_loop_iteration_policy(Engine &engine,
                                            const Logger &logger) {
