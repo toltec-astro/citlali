@@ -7425,17 +7425,17 @@ void Engine::write_stats() {
             std::vector<netCDF::NcDim> eval_dims = {n_eig_grp_dim, n_eigs_dim};
 
             // loop through chunks
-            for (const auto &[key, val]: diagnostics.evals) {
+            for (const auto &[chunk_index, eval_groups] : diagnostics.evals) {
                 // loop through cleaner grouping
-                for (Eigen::Index i=0; i<val.size(); ++i) {
+                for (Eigen::Index i=0; i<eval_groups.size(); ++i) {
 
                     netCDF::NcVar eval_v = fo.addVar("evals_" + ptcproc.cleaner.grouping[i] + "_" + std::to_string(i) +
-                                                         "_chunk_" + std::to_string(key), netCDF::ncDouble, eval_dims);
+                                                         "_chunk_" + std::to_string(chunk_index), netCDF::ncDouble, eval_dims);
                     std::vector<std::size_t> start_eig_index = {0, 0};
                     std::vector<std::size_t> size = {1, TULA_SIZET(ptcproc.cleaner.n_calc)};
 
                     // loop through eigenvalues in current group
-                    for (const auto &evals: val[i]) {
+                    for (const auto &evals: eval_groups[i]) {
                         Eigen::VectorXd tmp =
                             citlali::pipeline::ptcdiag_padded_eigenvalues(
                                 evals, ptcproc.cleaner.n_calc,
