@@ -477,6 +477,27 @@ bool has_noise_map_slot(const NoiseList &noise, Eigen::Index i) {
     return i >= 0 && i < static_cast<Eigen::Index>(noise.size());
 }
 
+template <class NoiseList, class FitsIo, class Logger>
+void require_noise_map_write_slots(
+    const NoiseList &noise, const FitsIo &noise_fits_io,
+    Eigen::Index map_index, Eigen::Index map_i, const Logger &logger) {
+    if (!has_noise_fits_slot(noise_fits_io, map_index)) {
+        logger->error(
+            "write_maps noise file index out of range: map_index={} noise_fits_io_size={} map_i={}",
+            static_cast<long long>(map_index),
+            static_cast<long long>(noise_fits_io->size()),
+            static_cast<long long>(map_i));
+        std::exit(EXIT_FAILURE);
+    }
+    if (!has_noise_map_slot(noise, map_i)) {
+        logger->error(
+            "write_maps noise map index out of range: i={} noise_size={}",
+            static_cast<long long>(map_i),
+            static_cast<long long>(noise.size()));
+        std::exit(EXIT_FAILURE);
+    }
+}
+
 template <class NoiseList, class FitsIo>
 std::string noise_file_path_or_na(const NoiseList &noise,
                                   const FitsIo &noise_fits_io,

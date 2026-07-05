@@ -210,19 +210,8 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         // write noise maps
         if (citlali::pipeline::should_write_noise_maps(mb->noise,
                                                        noise_fits_io)) {
-            if (!citlali::pipeline::has_noise_fits_slot(noise_fits_io,
-                                                        map_index)) {
-                logger->error("write_maps noise file index out of range: map_index={} noise_fits_io_size={} map_i={}",
-                              static_cast<long long>(map_index),
-                              static_cast<long long>(noise_fits_io->size()),
-                              static_cast<long long>(i));
-                std::exit(EXIT_FAILURE);
-            }
-            if (!citlali::pipeline::has_noise_map_slot(mb->noise, i)) {
-                logger->error("write_maps noise map index out of range: i={} noise_size={}",
-                              static_cast<long long>(i), static_cast<long long>(mb->noise.size()));
-                std::exit(EXIT_FAILURE);
-            }
+            citlali::pipeline::require_noise_map_write_slots(
+                mb->noise, noise_fits_io, map_index, i, logger);
             const double median_rms =
                 citlali::pipeline::map_median_rms_or_zero_logged(
                     mb->median_rms, i, map_name,
