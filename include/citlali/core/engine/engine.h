@@ -6949,9 +6949,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                         obs_fits(obs_weight_path);
                     const auto obs_weight = obs_fits.get_hdu(weight_hdu_name);
                     citlali::pipeline::accumulate_mapdiag_obs_weight(
-                        i, mapdiag_context.n_obsnums, mb->n_rows,
-                        mb->n_cols, core_mask, obs_weight, obs_idx,
-                        obs_tables);
+                        i, mapdiag_context.n_obsnums, mb->n_rows, mb->n_cols,
+                        core_mask, obs_weight, obs_idx, obs_tables);
                 } catch (const std::exception &e) {
                     logger->warn(
                         "failed to derive mapdiag contribution from {} [{}]: {}",
