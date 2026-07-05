@@ -7789,7 +7789,8 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     };
 
     // units for fitted parameter centroids
-    std::string pos_units = (telescope.pixel_axes == "radec") ? "deg" : "arcsec";
+    const std::string pos_units =
+        (telescope.pixel_axes == "radec") ? "deg" : "arcsec";
 
     // units for source header
     std::map<std::string,std::string> source_header_units = {
