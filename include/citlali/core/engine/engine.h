@@ -7411,7 +7411,9 @@ void Engine::write_stats() {
     }
 
     // add eigenvalues
-    if (!diagnostics.evals.empty() && ptcproc.cleaner.n_calc > 0) {
+    const bool has_eigenvalue_diagnostics =
+        !diagnostics.evals.empty() && ptcproc.cleaner.n_calc > 0;
+    if (has_eigenvalue_diagnostics) {
         const auto first_it = diagnostics.evals.begin();
         if (!first_it->second.empty() && !first_it->second[0].empty()) {
             netCDF::NcDim n_eigs_dim = fo.addDim("n_eigs", ptcproc.cleaner.n_calc);
