@@ -7083,6 +7083,8 @@ void Engine::create_rtcdiag_file() {
     std::vector<double> scan_speed_p50_arcsec_s(n_scan_values, fill_double);
     std::vector<double> scan_speed_p95_arcsec_s(n_scan_values, fill_double);
     std::vector<double> scan_speed_p995_arcsec_s(n_scan_values, fill_double);
+    constexpr double max_tel_sample_step_s = 0.1;
+    constexpr double max_pointing_step_rad = 0.01;
 
     const auto tel_time_it = telescope.tel_data.find("TelTime");
     const auto az_it = telescope.tel_data.find("az_phys");
@@ -7112,7 +7114,9 @@ void Engine::create_rtcdiag_file() {
                 const double daz = az_phys(i + 1) - az_phys(i);
                 const double dalt = alt_phys(i + 1) - alt_phys(i);
                 if (!std::isfinite(dt) || !std::isfinite(daz) || !std::isfinite(dalt) ||
-                    dt <= 0.0 || dt > 0.1 || std::abs(daz) > 0.01 || std::abs(dalt) > 0.01) {
+                    dt <= 0.0 || dt > max_tel_sample_step_s ||
+                    std::abs(daz) > max_pointing_step_rad ||
+                    std::abs(dalt) > max_pointing_step_rad) {
                     continue;
                 }
                 speed_arcsec_s.push_back(std::hypot(daz, dalt) / dt * RAD_TO_ASEC);
