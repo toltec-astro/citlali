@@ -7524,7 +7524,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             wiener_filter.template_type == "gaussian" ||
             wiener_filter.template_type == "airy";
         if (template_uses_fwhm) {
-            auto it = wiener_filter.template_fwhm_rad.find(array_name);
+            const auto it = wiener_filter.template_fwhm_rad.find(array_name);
             if (it == wiener_filter.template_fwhm_rad.end()) {
                 logger->error("missing Wiener template_fwhm_rad for array {}", array_name);
                 std::exit(EXIT_FAILURE);
