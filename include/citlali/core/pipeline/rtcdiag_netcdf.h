@@ -1086,9 +1086,10 @@ void add_rtcdiag_tod_stream_diag(netCDF::NcFile &fo, const Calib &calib,
         rtcdiag_impulsive_window_samples(
             rtcproc.impulsive_capture.snippet_pre_window_sec,
             sample_rate_hz);
-    const auto snippet_post = static_cast<std::size_t>(std::max(
-        0.0, std::round(rtcproc.impulsive_capture.snippet_post_window_sec *
-                        sample_rate_hz)));
+    const auto snippet_post =
+        rtcdiag_impulsive_window_samples(
+            rtcproc.impulsive_capture.snippet_post_window_sec,
+            sample_rate_hz);
     const auto n_snippet = snippet_pre + snippet_post + 1;
     netCDF::NcDim n_rtc_impulsive_slots_dim =
         fo.addDim("n_rtc_impulsive_slots", n_slots);
