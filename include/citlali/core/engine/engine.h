@@ -7049,6 +7049,8 @@ void Engine::create_rtcdiag_file() {
     const double fill_double = citlali::pipeline::rtcdiag_fill_double();
     const Eigen::Index n_scans = telescope.scan_indices.cols();
     const auto n_scan_values = static_cast<std::size_t>(n_scans);
+    const auto n_array_values = static_cast<std::size_t>(calib.n_arrays);
+    const auto n_scan_array_values = n_scan_values * n_array_values;
     const double rtc_fsmp = rtcproc.run_downsample ? telescope.d_fsmp : telescope.fsmp;
 
     citlali::pipeline::add_observation_identity_vars(
@@ -7141,9 +7143,9 @@ void Engine::create_rtcdiag_file() {
 
     std::vector<netCDF::NcDim> scan_array_dims = {n_scans_dim, n_arrays_dim};
     std::vector<double> source_power_half_bandwidth_hz(
-        static_cast<std::size_t>(n_scans) * static_cast<std::size_t>(calib.n_arrays), fill_double);
+        n_scan_array_values, fill_double);
     std::vector<double> tod_lowpass_to_source_power_half_ratio(
-        static_cast<std::size_t>(n_scans) * static_cast<std::size_t>(calib.n_arrays), fill_double);
+        n_scan_array_values, fill_double);
     for (Eigen::Index scan = 0; scan < n_scans; ++scan) {
         const double speed = scan_speed_p995_arcsec_s[static_cast<std::size_t>(scan)];
         if (!std::isfinite(speed) || speed <= 0.0) {
