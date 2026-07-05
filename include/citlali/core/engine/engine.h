@@ -7441,13 +7441,13 @@ void Engine::write_stats() {
                         1, TULA_SIZET(ptcproc.cleaner.n_calc)};
 
                     // loop through eigenvalues in current group
-                    for (const auto &evals: eval_groups[i]) {
-                        Eigen::VectorXd tmp =
+                    for (const auto &evals : eval_groups[i]) {
+                        Eigen::VectorXd padded_evals =
                             citlali::pipeline::ptcdiag_padded_eigenvalues(
                                 evals, ptcproc.cleaner.n_calc,
                                 citlali::pipeline::ptcdiag_fill_double());
                         eval_v.putVar(start_eig_index, eig_write_shape,
-                                      tmp.data());
+                                      padded_evals.data());
                         start_eig_index[0] += 1;
                     }
                 }
