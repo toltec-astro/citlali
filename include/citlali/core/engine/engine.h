@@ -7479,8 +7479,10 @@ void Engine::write_stats() {
     netCDF::NcDim n_arrays_dim = fo.addDim("n_arrays", calib.n_arrays);
     netCDF::NcDim n_chunks_dim = fo.addDim("n_chunks", n_stats_chunks);
 
-    std::vector<netCDF::NcDim> det_stat_dims = {n_chunks_dim, n_dets_dim};
-    std::vector<netCDF::NcDim> grp_stat_dims = {n_chunks_dim, n_arrays_dim};
+    const std::vector<netCDF::NcDim> det_stat_dims = {
+        n_chunks_dim, n_dets_dim};
+    const std::vector<netCDF::NcDim> grp_stat_dims = {
+        n_chunks_dim, n_arrays_dim};
 
     // add det stats
     for (const auto &stat : diagnostics.det_stats_header) {
