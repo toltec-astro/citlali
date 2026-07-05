@@ -6745,17 +6745,20 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                         const double total_signal =
                                             citlali::pipeline::
                                                 mapdiag_matrix_double_value(
-                                                    mb->contribution_total_signal[contribution_map_index],
+                                                    mb->contribution_total_signal[
+                                                        contribution_map_index],
                                                     r, c);
                                         const double total_weight =
                                             citlali::pipeline::
                                                 mapdiag_matrix_double_value(
-                                                    mb->contribution_total_weight[contribution_map_index],
+                                                    mb->contribution_total_weight[
+                                                        contribution_map_index],
                                                     r, c);
                                         const double total_variance_weight =
                                             citlali::pipeline::
                                                 mapdiag_matrix_double_value(
-                                                    mb->contribution_total_variance_weight[contribution_map_index],
+                                                    mb->contribution_total_variance_weight[
+                                                        contribution_map_index],
                                                     r, c);
                                         const double remaining_weight =
                                             citlali::pipeline::
