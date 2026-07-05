@@ -7508,8 +7508,11 @@ void Engine::write_stats() {
         citlali::pipeline::should_write_stats_eigenvalues(
             diagnostics, ptcproc.cleaner);
     if (has_eigenvalue_diagnostics) {
-        const auto first_it = diagnostics.evals.begin();
-        if (!first_it->second.empty() && !first_it->second[0].empty()) {
+        const bool has_eigenvalue_groups =
+            citlali::pipeline::has_stats_eigenvalue_groups(
+                diagnostics.evals);
+        if (has_eigenvalue_groups) {
+            const auto first_it = diagnostics.evals.begin();
             const auto n_eig_groups = first_it->second[0].size();
             netCDF::NcDim n_eigs_dim =
                 fo.addDim("n_eigs", ptcproc.cleaner.n_calc);
