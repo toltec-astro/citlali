@@ -8,6 +8,7 @@
 #include <citlali/core/pipeline/mapdiag_stats.h>
 
 #include <cstddef>
+#include <utility>
 #include <vector>
 
 namespace citlali::pipeline {
@@ -298,6 +299,183 @@ MapdiagOutlierMaskContext make_mapdiag_outlier_mask_context(
         source_distance,
         mapdiag_off_source_core_mask(
             core_mask, source_distance, protect_radius)};
+}
+
+template <class MapBuffer, class Matrix, class Mask,
+          class RobustStats, class ReductionLearning>
+auto collect_mapdiag_pixel_candidates_for_map(
+    MapBuffer &mb, Eigen::Index map_index, const Matrix &sig2noise,
+    const Mask &off_source_core_mask,
+    const MapdiagSourceDistanceContext &source_distance_context,
+    const RobustStats &robust_stats,
+    const ReductionLearning &reduction_learning, double ptc_fs_hz,
+    int fill_int, double fill_double) {
+    auto candidates = make_mapdiag_pixel_candidates();
+    const bool has_contribution_products =
+        mapdiag_has_contribution_products(mb, map_index);
+    const Eigen::Index n_mapdiag_rows = mapdiag_n_rows(mb);
+    const Eigen::Index n_mapdiag_cols = mapdiag_n_cols(mb);
+    const double min_effective_samples =
+        mapdiag_min_effective_samples(reduction_learning);
+    const double min_abs_z = mapdiag_min_abs_z(reduction_learning);
+
+    for (Eigen::Index r = 0; r < n_mapdiag_rows; ++r) {
+        for (Eigen::Index c = 0; c < n_mapdiag_cols; ++c) {
+            if (!mapdiag_mask_pixel_is_selected(
+                    off_source_core_mask, r, c)) {
+                continue;
+            }
+
+            const double value =
+                mapdiag_matrix_double_value(mb->signal[map_index], r, c);
+            const double wt =
+                mapdiag_matrix_double_value(mb->weight[map_index], r, c);
+            const double sn = mapdiag_matrix_double_value(sig2noise, r, c);
+            if (!mapdiag_is_valid_outlier_pixel_value(value, wt, sn)) {
+                continue;
+            }
+
+            const double n_eff = mapdiag_effective_samples_or_fill(
+                mb->coverage, map_index, r, c, mb->n_rows, mb->n_cols,
+                ptc_fs_hz, fill_double);
+            if (!mapdiag_passes_min_effective_samples(
+                    n_eff, min_effective_samples)) {
+                continue;
+            }
+
+            const double z = mapdiag_robust_z(sn, robust_stats);
+            if (!mapdiag_passes_min_abs_z(z, min_abs_z)) {
+                continue;
+            }
+
+            const double source_distance_arcsec =
+                mapdiag_source_distance_arcsec(r, c, source_distance_context);
+            auto candidate = make_mapdiag_map_pixel_candidate(
+                r, c, value, wt, n_eff, z, source_distance_arcsec, fill_int,
+                fill_double);
+
+            if (has_contribution_products) {
+                const auto contribution_map_index =
+                    mapdiag_contribution_map_index(map_index);
+                const int uid = mapdiag_matrix_value(
+                    mb->contribution_uid[contribution_map_index], r, c);
+                const double contrib_signal = mapdiag_matrix_double_value(
+                    mb->contribution_signal[contribution_map_index], r, c);
+                const double contrib_weight = mapdiag_matrix_double_value(
+                    mb->contribution_weight[contribution_map_index], r, c);
+                const double contrib_variance_weight =
+                    mapdiag_matrix_double_value(
+                        mb->contribution_variance_weight[
+                            contribution_map_index],
+                        r, c);
+                if (mapdiag_has_valid_contributor(
+                        uid, fill_int, contrib_signal)) {
+                    assign_mapdiag_candidate_contributor_from_products(
+                        candidate, uid,
+                        mb->contribution_scan[contribution_map_index],
+                        mb->contribution_sample[contribution_map_index],
+                        r, c);
+                    const double total_signal = mapdiag_matrix_double_value(
+                        mb->contribution_total_signal[contribution_map_index],
+                        r, c);
+                    const double total_weight = mapdiag_matrix_double_value(
+                        mb->contribution_total_weight[contribution_map_index],
+                        r, c);
+                    const double total_variance_weight =
+                        mapdiag_matrix_double_value(
+                            mb->contribution_total_variance_weight[
+                                contribution_map_index],
+                            r, c);
+                    const double remaining_weight =
+                        mapdiag_remaining_contribution_weight(
+                            total_weight, contrib_weight);
+                    if (mapdiag_has_full_leave_one_out_inputs(
+                            total_signal, total_weight, contrib_weight,
+                            contrib_variance_weight, total_variance_weight,
+                            remaining_weight)) {
+                        const double loo_value =
+                            mapdiag_full_leave_one_out_value(
+                                total_signal, contrib_signal,
+                                remaining_weight);
+                        mapdiag_assign_leave_one_out_z(
+                            value, wt, loo_value,
+                            candidate.leave_one_out_z);
+                    }
+                    else if (mapdiag_has_fallback_leave_one_out_inputs(
+                                 wt, contrib_weight)) {
+                        const double raw_sum =
+                            mapdiag_raw_weighted_signal(value, wt);
+                        const double loo_value =
+                            mapdiag_fallback_leave_one_out_value(
+                                raw_sum, contrib_signal, wt,
+                                contrib_weight);
+                        mapdiag_assign_leave_one_out_z(
+                            value, wt, loo_value,
+                            candidate.leave_one_out_z);
+                    }
+                }
+            }
+            append_mapdiag_pixel_candidate(candidates, candidate);
+        }
+    }
+    return candidates;
+}
+
+template <class MapPixelOutlier, class DetectorPenalty, class Candidates,
+          class MapBuffer, class ReductionLearning, class Arrays,
+          class Logger>
+void emit_mapdiag_outlier_learning(
+    Candidates &candidates, const MapBuffer &mb, Eigen::Index map_index,
+    Eigen::Index write_map_index, const Arrays &arrays,
+    const std::string &obsnum, const std::string &record_producer,
+    const std::string &stage_name, int fruit_iter, int fill_int,
+    ReductionLearning &reduction_learning, const Logger &logger) {
+    sort_mapdiag_pixel_candidates(candidates);
+    const std::size_t candidate_top_n =
+        mapdiag_candidate_top_n(reduction_learning);
+    const std::size_t n_emitted_candidates =
+        mapdiag_candidate_emit_count(candidates.size(), candidate_top_n);
+    auto dominance = make_mapdiag_detector_dominance_list();
+
+    for (std::size_t ci = 0; ci < n_emitted_candidates; ++ci) {
+        const auto &candidate = mapdiag_emitted_candidate(candidates, ci);
+        const auto outlier_reason =
+            mapdiag_map_pixel_outlier_reason(candidate, mb);
+        const auto record_map_index = mapdiag_record_map_index(map_index);
+        auto record = make_mapdiag_outlier_record<MapPixelOutlier>(
+            obsnum, record_producer, outlier_reason, fruit_iter,
+            record_map_index, candidate);
+        reduction_learning.record_map_pixel_outlier(std::move(record));
+        update_mapdiag_detector_dominance(dominance, candidate, fill_int);
+    }
+
+    if (!mapdiag_detector_exclusion_enabled(reduction_learning)) {
+        return;
+    }
+
+    const int detector_exclusion_min_pixels =
+        mapdiag_detector_exclusion_min_pixels(reduction_learning);
+    const int array_id =
+        mapdiag_array_id_or_default(write_map_index, arrays, -1);
+    for (const auto &entry : dominance) {
+        if (!mapdiag_dominance_meets_min_pixels(
+                entry, detector_exclusion_min_pixels)) {
+            continue;
+        }
+        const auto penalty_reason =
+            mapdiag_detector_dominance_penalty_reason();
+        auto penalty = make_mapdiag_detector_penalty<DetectorPenalty>(
+            obsnum, record_producer, penalty_reason, fruit_iter, entry,
+            array_id);
+        reduction_learning.record_detector_penalty(std::move(penalty), true);
+        const auto display_scan_index =
+            mapdiag_display_scan_index(entry.scan);
+        logger->info(
+            "mapdiag learned scan-local detector exclusion candidate stage={} iter={} map={} uid={} scan={} outlier_pixels={} max_abs_value={:.4g} max_abs_leave_one_out_z={:.4g}",
+            stage_name, fruit_iter, map_index, entry.uid,
+            display_scan_index, entry.count, entry.max_abs_value,
+            entry.max_abs_leave_one_out_z);
+    }
 }
 
 }  // namespace citlali::pipeline
