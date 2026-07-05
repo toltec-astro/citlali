@@ -7376,7 +7376,9 @@ void Engine::create_rtcdiag_file() {
             fo.addVar("rtc_impulsive_snippet_offset_samples", netCDF::ncInt,
                       n_rtc_impulsive_samples_dim);
         offset_v.putAtt("units", "samples");
-        offset_v.putAtt("comment", "sample offsets relative to rtc_impulsive_slot_event_sample");
+        offset_v.putAtt(
+            "comment",
+            "sample offsets relative to rtc_impulsive_slot_event_sample");
         const auto offsets =
             citlali::pipeline::rtcdiag_impulsive_snippet_offsets(
                 n_snippet, snippet_pre, fill_int);
