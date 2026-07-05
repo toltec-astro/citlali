@@ -3,6 +3,9 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/engine/detail/beammap_fit_qc_schema.h>
+#include <citlali/core/engine/detail/beammap_detector_table_vectors.h>
+
 void Beammap::write_detector_table_outputs() {
     if (map_grouping != "detector") {
         return;
@@ -35,107 +38,7 @@ void Beammap::write_detector_table_outputs() {
     logger->info("writing beammap fit qc table");
     std::string fit_qc_filename = apt_filename + "_fit_qc";
 
-    std::vector<std::string> fit_qc_header = {
-        "uid",
-        "array",
-        "nw",
-        "kids_tone",
-        "good_fit",
-        "converged",
-        "converge_iter",
-        "flag",
-        "flag2",
-        "amp",
-        "amp_err",
-        "cal_amp",
-        "cal_amp_method",
-        "template_amp",
-        "template_offset",
-        "template_resid_rms",
-        "template_npix",
-        "template_amp_over_fit_amp",
-        "cal_amp_over_fit_amp",
-        "map_peak_amp",
-        "map_peak_amp_over_fit_amp",
-        "fit_sig2noise",
-        "map_rms",
-        "map_sig2noise",
-        "n_weight_pos",
-        "fruitloops_source_x_t",
-        "fruitloops_source_y_t",
-        "fruitloops_local_sigma",
-        "fruitloops_local_sigma_npix",
-        "fruitloops_amp_ref",
-        "fruitloops_peak_threshold",
-        "fruitloops_snr_threshold",
-        "fruitloops_adaptive_threshold",
-        "fruitloops_support_radius_arcsec",
-        "fruitloops_support_npix",
-        "fruitloops_support_signal_sum",
-        "fruitloops_support_x_span_arcsec",
-        "fruitloops_support_y_span_arcsec",
-        "rfi_masked_samples",
-        "rfi_masked_scans",
-        "scan_band_masked_samples",
-        "scan_band_masked_rows",
-        "scan_band_masked_edge",
-        "scan_band_mask_rejected",
-        "fit_bound_nhit",
-        "fit_bound_code",
-        "fit_bound_amp",
-        "fit_bound_x",
-        "fit_bound_y",
-        "fit_bound_a",
-        "fit_bound_b",
-        "fit_bound_angle",
-        "fit_init_amp",
-        "fit_init_x_t",
-        "fit_init_y_t",
-        "fit_init_a_fwhm",
-        "fit_init_b_fwhm",
-        "fit_low_a_fwhm",
-        "fit_high_a_fwhm",
-        "fit_low_b_fwhm",
-        "fit_high_b_fwhm",
-        "prior_init_mode",
-        "prior_used",
-        "prior_fallback_blind",
-        "prior_no_candidate_reason",
-        "prior_slot_index",
-        "prior_match_d2",
-        "prior_match_score",
-        "prior_candidate_snr",
-        "prior_n_candidates",
-        "prior_n_candidates_keep",
-        "prior_n_candidates_gate",
-        "prior_candidate_x_t_raw",
-        "prior_candidate_y_t_raw",
-        "prior_candidate_x_t_prior",
-        "prior_candidate_y_t_prior",
-        "prior_center_x_t",
-        "prior_center_y_t",
-        "prior_derot_elev",
-        "prior_slot_x_t",
-        "prior_slot_y_t",
-        "prior_slot_sx",
-        "prior_slot_sy",
-        "final_prior_slot_index",
-        "final_prior_d2",
-        "x_t_raw",
-        "y_t_raw",
-        "x_t",
-        "y_t",
-        "x_t_derot",
-        "y_t_derot",
-        "a_fwhm",
-        "a_fwhm_err",
-        "b_fwhm",
-        "b_fwhm_err",
-        "angle",
-        "angle_err",
-        "flxscale",
-        "sens"
-    };
+    std::vector<std::string> fit_qc_header = beammap_fit_qc_schema::header_keys();
 
     auto apt_or_zero = [&](const std::string &key) -> Eigen::VectorXd {
         auto it = calib.apt.find(key);
@@ -222,36 +125,22 @@ void Beammap::write_detector_table_outputs() {
     Eigen::VectorXd fit_high_b_fwhm = (sigma_to_fwhm_arcsec * fit_diag_upper_limits.col(4).array()).matrix();
 
     const double fill_double = std::numeric_limits<double>::quiet_NaN();
-    auto fruitloops_or_nan = [&](const Eigen::VectorXd &values,
-                                 double scale = 1.0) -> Eigen::VectorXd {
-        Eigen::VectorXd out = Eigen::VectorXd::Constant(calib.n_dets, fill_double);
-        if (values.size() == calib.n_dets) {
-            out = (scale * values.array()).matrix();
-        }
-        return out;
-    };
-    auto fruitloops_int_or_nan = [&](const Eigen::VectorXi &values) -> Eigen::VectorXd {
-        Eigen::VectorXd out = Eigen::VectorXd::Constant(calib.n_dets, fill_double);
-        if (values.size() == calib.n_dets) {
-            out = values.cast<double>();
-        }
-        return out;
-    };
 
     Eigen::VectorXd fruitloops_source_x_t =
-        fruitloops_or_nan(ptcproc.fruit_loops_source_lon, RAD_TO_ASEC);
+        beammap_detector_table_vectors::double_or_nan(ptcproc.fruit_loops_source_lon, calib.n_dets, RAD_TO_ASEC);
     Eigen::VectorXd fruitloops_source_y_t =
-        fruitloops_or_nan(ptcproc.fruit_loops_source_lat, RAD_TO_ASEC);
+        beammap_detector_table_vectors::double_or_nan(ptcproc.fruit_loops_source_lat, calib.n_dets, RAD_TO_ASEC);
     Eigen::VectorXd fruitloops_local_sigma =
-        fruitloops_or_nan(ptcproc.fruit_loops_local_sigma_map);
+        beammap_detector_table_vectors::double_or_nan(ptcproc.fruit_loops_local_sigma_map, calib.n_dets);
     Eigen::VectorXd fruitloops_local_sigma_npix =
-        fruitloops_int_or_nan(ptcproc.fruit_loops_local_sigma_npix);
+        beammap_detector_table_vectors::int_or_nan(ptcproc.fruit_loops_local_sigma_npix, calib.n_dets);
     Eigen::VectorXd fruitloops_amp_ref =
-        fruitloops_or_nan(ptcproc.fruit_loops_amp_ref);
+        beammap_detector_table_vectors::double_or_nan(ptcproc.fruit_loops_amp_ref, calib.n_dets);
     Eigen::VectorXd fruitloops_adaptive_threshold =
-        fruitloops_or_nan(ptcproc.fruit_loops_adaptive_threshold);
+        beammap_detector_table_vectors::double_or_nan(ptcproc.fruit_loops_adaptive_threshold, calib.n_dets);
     Eigen::VectorXd fruitloops_support_radius_arcsec =
-        fruitloops_or_nan(ptcproc.fruit_loops_adaptive_support_radius_rad, RAD_TO_ASEC);
+        beammap_detector_table_vectors::double_or_nan(
+            ptcproc.fruit_loops_adaptive_support_radius_rad, calib.n_dets, RAD_TO_ASEC);
     Eigen::VectorXd fruitloops_peak_threshold =
         Eigen::VectorXd::Constant(calib.n_dets, fill_double);
     Eigen::VectorXd fruitloops_snr_threshold =
@@ -737,43 +626,7 @@ void Beammap::write_detector_table_outputs() {
         fit_qc_meta[key].push_back("units: " + fit_qc_units[key]);
         fit_qc_meta[key].push_back(fit_qc_desc[key]);
     }
-    fit_qc_meta["flag2"].push_back("Good=0");
-    fit_qc_meta["flag2"].push_back("BadFit=1");
-    fit_qc_meta["flag2"].push_back("AzFWHM=2");
-    fit_qc_meta["flag2"].push_back("ElFWHM=4");
-    fit_qc_meta["flag2"].push_back("Sig2Noise=8");
-    fit_qc_meta["flag2"].push_back("Sens=16");
-    fit_qc_meta["flag2"].push_back("Position=32");
-    fit_qc_meta["flag2"].push_back("PriorDist=64");
-    fit_qc_meta["flag2"].push_back("NetworkPos=128");
-    fit_qc_meta["cal_amp_method"].push_back("0: Gaussian fit amplitude fallback");
-    fit_qc_meta["cal_amp_method"].push_back("1: empirical array-template matched amplitude");
-    fit_qc_meta["fit_bound_code"].push_back("bit 0: amp lower");
-    fit_qc_meta["fit_bound_code"].push_back("bit 1: amp upper");
-    fit_qc_meta["fit_bound_code"].push_back("bit 2: x lower");
-    fit_qc_meta["fit_bound_code"].push_back("bit 3: x upper");
-    fit_qc_meta["fit_bound_code"].push_back("bit 4: y lower");
-    fit_qc_meta["fit_bound_code"].push_back("bit 5: y upper");
-    fit_qc_meta["fit_bound_code"].push_back("bit 6: a lower");
-    fit_qc_meta["fit_bound_code"].push_back("bit 7: a upper");
-    fit_qc_meta["fit_bound_code"].push_back("bit 8: b lower");
-    fit_qc_meta["fit_bound_code"].push_back("bit 9: b upper");
-    fit_qc_meta["fit_bound_code"].push_back("bit 10: angle lower");
-    fit_qc_meta["fit_bound_code"].push_back("bit 11: angle upper");
-    fit_qc_meta["prior_init_mode"].push_back("-1: skipped before fitting on last attempted iteration");
-    fit_qc_meta["prior_init_mode"].push_back("0: blind seed");
-    fit_qc_meta["prior_init_mode"].push_back("1: previous-iteration seed");
-    fit_qc_meta["prior_init_mode"].push_back("2: prior-guided seed");
-    fit_qc_meta["prior_no_candidate_reason"].push_back("0: none");
-    fit_qc_meta["prior_no_candidate_reason"].push_back("1: no slot group for (array,nw)");
-    fit_qc_meta["prior_no_candidate_reason"].push_back("2: no valid weighted pixels");
-    fit_qc_meta["prior_no_candidate_reason"].push_back("3: invalid robust sigma estimate");
-    fit_qc_meta["prior_no_candidate_reason"].push_back("4: no candidates above min_snr");
-    fit_qc_meta["prior_no_candidate_reason"].push_back("5: all retained candidates failed max_d2 gate");
-    fit_qc_meta["scan_band_masked_edge"].push_back("0: none");
-    fit_qc_meta["scan_band_masked_edge"].push_back("1: top");
-    fit_qc_meta["scan_band_masked_edge"].push_back("2: bottom");
-    fit_qc_meta["scan_band_masked_edge"].push_back("3: both");
+    beammap_fit_qc_schema::append_legends(fit_qc_meta);
 
     to_ecsv_from_matrix(fit_qc_filename, fit_qc_table, fit_qc_header, fit_qc_meta);
     logger->info("done writing beammap fit qc table {}.ecsv", fit_qc_filename);
