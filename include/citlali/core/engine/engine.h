@@ -7515,6 +7515,7 @@ void Engine::write_stats() {
             const auto first_it = diagnostics.evals.begin();
             const Eigen::Index n_cleaner_eigenvalues =
                 ptcproc.cleaner.n_calc;
+            const auto &cleaner_grouping = ptcproc.cleaner.grouping;
             const auto n_eig_groups = first_it->second[0].size();
             const auto eval_dims =
                 citlali::pipeline::add_stats_eigenvalue_dims(
