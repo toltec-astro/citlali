@@ -75,9 +75,7 @@ void Engine::get_mapmaking_config(CT &config) {
     citlali::pipeline::configure_fruit_loop_interpolation_mode(
         ptcproc, map_method, logger);
     citlali::pipeline::log_fruit_loop_runtime_policy(ptcproc, logger);
-    ptcproc.fruit_loops_jinc_r_max = 0.0;
-    ptcproc.fruit_loops_jinc_subpixel_n = 1;
-    ptcproc.fruit_loops_jinc_shape_params.clear();
+    citlali::pipeline::reset_fruit_loop_jinc_kernel_config(ptcproc);
 
     // map reference frame (radec, altaz, galactic)
     {

@@ -45,6 +45,13 @@ void log_fruit_loop_runtime_policy(const PtcProc &ptcproc,
         ptcproc.fruit_loops_weight_feedback_high_relative_weight);
 }
 
+template <class PtcProc>
+void reset_fruit_loop_jinc_kernel_config(PtcProc &ptcproc) {
+    ptcproc.fruit_loops_jinc_r_max = 0.0;
+    ptcproc.fruit_loops_jinc_subpixel_n = 1;
+    ptcproc.fruit_loops_jinc_shape_params.clear();
+}
+
 template <class Engine, class Logger>
 void configure_fruit_loop_iteration_policy(Engine &engine,
                                            const Logger &logger) {
