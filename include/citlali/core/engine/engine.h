@@ -6972,11 +6972,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     write_netcdf_atomic(
         citlali::pipeline::mapdiag_netcdf_filename(filename),
         [&](netCDF::NcFile &fo) {
-    citlali::pipeline::add_mapdiag_netcdf_vars(
-        fo,
-        {mapdiag_context, obsnum, mapdiag_metadata, mapdiag_labels,
-         mapdiag_values});
-    });
+            citlali::pipeline::add_mapdiag_netcdf_vars(
+                fo,
+                {mapdiag_context, obsnum, mapdiag_metadata,
+                 mapdiag_labels, mapdiag_values});
+        });
 }
 
 void Engine::create_ptcdiag_file() {
