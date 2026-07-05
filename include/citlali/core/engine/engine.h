@@ -7060,10 +7060,11 @@ void Engine::create_ptcdiag_file() {
     citlali::pipeline::add_ptcdiag_corr_network_block(
         fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
 
+    const std::string weight_corr_comment =
+        "multiplicative weight penalty factor applied per network in each scan";
     citlali::pipeline::add_ptcdiag_weight_corr_network_block(
-        fo, calib, n_scans_dim, n_scans,
-        "multiplicative weight penalty factor applied per network in each scan",
-        fill_int, fill_double);
+        fo, calib, n_scans_dim, n_scans, weight_corr_comment, fill_int,
+        fill_double);
 
     citlali::pipeline::add_ptcdiag_busy_row_network_block(
         fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
