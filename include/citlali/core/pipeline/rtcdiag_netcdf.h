@@ -5,6 +5,7 @@
 #include <cmath>
 #include <limits>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include <Eigen/Core>
@@ -26,6 +27,73 @@ template <class RtcProc>
 double rtc_tod_stream_sample_rate(const RtcProc &rtcproc, double fsmp,
                                   double downsampled_fsmp) {
     return rtcproc.run_downsample ? downsampled_fsmp : fsmp;
+}
+
+struct RtcDiagDims {
+    netCDF::NcDim n_scans;
+    netCDF::NcDim n_dets;
+    netCDF::NcDim n_arrays;
+    netCDF::NcDim n_nws;
+    std::vector<netCDF::NcDim> scan_array;
+    std::vector<netCDF::NcDim> det;
+    std::vector<netCDF::NcDim> nw;
+    std::vector<std::size_t> scan_chunks;
+    std::vector<std::size_t> scan_array_chunks;
+    std::vector<std::size_t> det_chunks;
+    std::vector<std::size_t> nw_chunks;
+    std::size_t n_scan_values;
+    std::size_t n_array_values;
+    std::size_t n_scan_array_values;
+    std::size_t n_det_values;
+    std::size_t n_nw_values;
+};
+
+inline RtcDiagDims add_rtcdiag_dims(netCDF::NcFile &fo,
+                                    Eigen::Index n_scans,
+                                    Eigen::Index n_dets,
+                                    Eigen::Index n_arrays,
+                                    Eigen::Index n_nws) {
+    netCDF::NcDim n_scans_dim = fo.addDim("n_scans", n_scans);
+    netCDF::NcDim n_dets_dim = fo.addDim("n_dets", n_dets);
+    netCDF::NcDim n_arrays_dim = fo.addDim("n_arrays", n_arrays);
+    netCDF::NcDim n_nws_dim = fo.addDim("n_nws_rtcdiag", n_nws);
+
+    const auto n_scan_values = static_cast<std::size_t>(n_scans);
+    const auto n_array_values = static_cast<std::size_t>(n_arrays);
+    const auto n_det_values = static_cast<std::size_t>(n_dets);
+    const auto n_nw_values = static_cast<std::size_t>(n_nws);
+    const std::vector<netCDF::NcDim> scan_array_dims = {
+        n_scans_dim, n_arrays_dim};
+    const std::vector<netCDF::NcDim> det_dims = {
+        n_scans_dim, n_dets_dim};
+    const std::vector<netCDF::NcDim> nw_dims = {
+        n_scans_dim, n_nws_dim};
+    const std::vector<std::size_t> scan_chunks = {
+        static_cast<std::size_t>(std::max<Eigen::Index>(n_scans, 1))};
+    const std::vector<std::size_t> scan_array_chunks = {
+        1, static_cast<std::size_t>(std::max<Eigen::Index>(n_arrays, 1))};
+    const std::vector<std::size_t> det_chunks = {
+        1, n_det_values};
+    const std::vector<std::size_t> nw_chunks = {
+        1, n_nw_values};
+
+    return {
+        n_scans_dim,
+        n_dets_dim,
+        n_arrays_dim,
+        n_nws_dim,
+        scan_array_dims,
+        det_dims,
+        nw_dims,
+        scan_chunks,
+        scan_array_chunks,
+        det_chunks,
+        nw_chunks,
+        n_scan_values,
+        n_array_values,
+        n_scan_values * n_array_values,
+        n_scan_values * n_det_values,
+        n_scan_values * n_nw_values};
 }
 
 template <class Calib>
@@ -426,6 +494,181 @@ void add_rtcdiag_scan_array_summary_vars(
                values.tod_lowpass_to_source_power_half_ratio);
 }
 
+struct RtcDiagScanSummaryData {
+    std::vector<double> scan_duration_s;
+    std::vector<double> scan_speed_p50_arcsec_s;
+    std::vector<double> scan_speed_p95_arcsec_s;
+    std::vector<double> scan_speed_p995_arcsec_s;
+};
+
+template <class Telescope, class Logger>
+RtcDiagScanSummaryData calculate_rtcdiag_scan_summary(
+    const Telescope &telescope, Eigen::Index n_scans,
+    std::size_t n_scan_values, double rad_to_arcsec, double fill_double,
+    const Logger &logger) {
+    RtcDiagScanSummaryData values{
+        std::vector<double>(n_scan_values, fill_double),
+        std::vector<double>(n_scan_values, fill_double),
+        std::vector<double>(n_scan_values, fill_double),
+        std::vector<double>(n_scan_values, fill_double)};
+    constexpr double max_tel_sample_step_s = 0.1;
+    constexpr double max_pointing_step_rad = 0.01;
+
+    const auto tel_time_it = telescope.tel_data.find("TelTime");
+    const auto az_it = telescope.tel_data.find("az_phys");
+    const auto alt_it = telescope.tel_data.find("alt_phys");
+    const bool has_telescope_motion_data =
+        tel_time_it != telescope.tel_data.end() &&
+        az_it != telescope.tel_data.end() &&
+        alt_it != telescope.tel_data.end();
+    if (!has_telescope_motion_data) {
+        logger->warn(
+            "rtcdiag scan-speed diagnostics skipped: missing TelTime, "
+            "az_phys, or alt_phys telescope data");
+        return values;
+    }
+
+    const auto &tel_time = tel_time_it->second;
+    const auto &az_phys = az_it->second;
+    const auto &alt_phys = alt_it->second;
+    const Eigen::Index n_tel =
+        std::min({tel_time.size(), az_phys.size(), alt_phys.size()});
+    for (Eigen::Index scan = 0; scan < n_scans; ++scan) {
+        const auto scan_index = static_cast<std::size_t>(scan);
+        const Eigen::Index start =
+            std::max<Eigen::Index>(0, telescope.scan_indices(0, scan));
+        const Eigen::Index stop =
+            std::min<Eigen::Index>(n_tel - 1,
+                                   telescope.scan_indices(1, scan));
+        const bool has_valid_scan_bounds =
+            stop > start && start >= 0 && stop < n_tel;
+        if (!has_valid_scan_bounds) {
+            continue;
+        }
+        const double duration = tel_time(stop) - tel_time(start);
+        if (std::isfinite(duration) && duration > 0.0) {
+            values.scan_duration_s[scan_index] = duration;
+        }
+        const auto n_scan_samples = std::max<Eigen::Index>(stop - start, 0);
+        std::vector<double> speed_arcsec_s;
+        speed_arcsec_s.reserve(static_cast<std::size_t>(n_scan_samples));
+        for (Eigen::Index i = start; i < stop; ++i) {
+            const double dt = tel_time(i + 1) - tel_time(i);
+            const double daz = az_phys(i + 1) - az_phys(i);
+            const double dalt = alt_phys(i + 1) - alt_phys(i);
+            if (!std::isfinite(dt) || !std::isfinite(daz) ||
+                !std::isfinite(dalt) || dt <= 0.0 ||
+                dt > max_tel_sample_step_s ||
+                std::abs(daz) > max_pointing_step_rad ||
+                std::abs(dalt) > max_pointing_step_rad) {
+                continue;
+            }
+            speed_arcsec_s.push_back(
+                std::hypot(daz, dalt) / dt * rad_to_arcsec);
+        }
+        if (!speed_arcsec_s.empty()) {
+            std::sort(speed_arcsec_s.begin(), speed_arcsec_s.end());
+            values.scan_speed_p50_arcsec_s[scan_index] =
+                rtcdiag_percentile_sorted(speed_arcsec_s, 50.0);
+            values.scan_speed_p95_arcsec_s[scan_index] =
+                rtcdiag_percentile_sorted(speed_arcsec_s, 95.0);
+            values.scan_speed_p995_arcsec_s[scan_index] =
+                rtcdiag_percentile_sorted(speed_arcsec_s, 99.5);
+        }
+    }
+    return values;
+}
+
+inline void add_rtcdiag_scan_summary_outputs(
+    netCDF::NcFile &fo, netCDF::NcDim n_scans_dim,
+    const std::vector<std::size_t> &scan_chunks,
+    const RtcDiagScanSummaryData &values) {
+    auto add_scan_double = [&](const std::string &name,
+                               const std::string &units,
+                               const std::string &comment,
+                               const std::vector<double> &data) {
+        add_rtcdiag_scan_double(
+            fo, name, units, comment, n_scans_dim, scan_chunks, data);
+    };
+    add_rtcdiag_scan_summary_vars(
+        add_scan_double,
+        {values.scan_duration_s,
+         values.scan_speed_p50_arcsec_s,
+         values.scan_speed_p95_arcsec_s,
+         values.scan_speed_p995_arcsec_s});
+}
+
+struct RtcDiagScanArraySummaryData {
+    std::vector<double> source_power_half_bandwidth_hz;
+    std::vector<double> tod_lowpass_to_source_power_half_ratio;
+};
+
+template <class Calib, class RtcProc>
+RtcDiagScanArraySummaryData calculate_rtcdiag_scan_array_summary(
+    const Calib &calib, const RtcProc &rtcproc,
+    const std::vector<double> &scan_speed_p995_arcsec_s,
+    Eigen::Index n_scans, std::size_t n_array_values,
+    std::size_t n_scan_array_values, double pi_value, double fwhm_to_std,
+    double fill_double) {
+    RtcDiagScanArraySummaryData values{
+        std::vector<double>(n_scan_array_values, fill_double),
+        std::vector<double>(n_scan_array_values, fill_double)};
+
+    for (Eigen::Index scan = 0; scan < n_scans; ++scan) {
+        const auto scan_index = static_cast<std::size_t>(scan);
+        const double speed = scan_speed_p995_arcsec_s[scan_index];
+        if (!std::isfinite(speed) || speed <= 0.0) {
+            continue;
+        }
+        for (Eigen::Index arr_i = 0; arr_i < calib.n_arrays; ++arr_i) {
+            const Eigen::Index array = calib.arrays(arr_i);
+            const auto fwhm_it = calib.array_fwhms.find(array);
+            if (fwhm_it == calib.array_fwhms.end()) {
+                continue;
+            }
+            const double fwhm_arcsec =
+                0.5 * (std::get<0>(fwhm_it->second) +
+                       std::get<1>(fwhm_it->second));
+            if (!std::isfinite(fwhm_arcsec) || fwhm_arcsec <= 0.0) {
+                continue;
+            }
+            const double f_half_hz =
+                (std::sqrt(std::log(2.0)) /
+                 (2.0 * pi_value * fwhm_arcsec * fwhm_to_std)) *
+                speed;
+            const auto flat_i = scan_index * n_array_values +
+                                static_cast<std::size_t>(arr_i);
+            values.source_power_half_bandwidth_hz[flat_i] = f_half_hz;
+            const bool has_lowpass_ratio =
+                rtcproc.run_tod_filter &&
+                rtcproc.filter.freq_high_Hz > 0.0 && f_half_hz > 0.0;
+            if (has_lowpass_ratio) {
+                values.tod_lowpass_to_source_power_half_ratio[flat_i] =
+                    rtcproc.filter.freq_high_Hz / f_half_hz;
+            }
+        }
+    }
+    return values;
+}
+
+inline void add_rtcdiag_scan_array_summary_outputs(
+    netCDF::NcFile &fo, const std::vector<netCDF::NcDim> &scan_array_dims,
+    const std::vector<std::size_t> &scan_array_chunks,
+    const RtcDiagScanArraySummaryData &values) {
+    auto add_scan_array_double = [&](const std::string &name,
+                                     const std::string &units,
+                                     const std::string &comment,
+                                     const std::vector<double> &data) {
+        add_rtcdiag_scan_array_double(
+            fo, name, units, comment, scan_array_dims, scan_array_chunks,
+            data);
+    };
+    add_rtcdiag_scan_array_summary_vars(
+        add_scan_array_double,
+        {values.source_power_half_bandwidth_hz,
+         values.tod_lowpass_to_source_power_half_ratio});
+}
+
 inline void add_rtcdiag_det_double(
     netCDF::NcFile &fo, const std::string &name,
     const std::string &comment, const std::vector<netCDF::NcDim> &det_dims,
@@ -560,6 +803,28 @@ void add_rtcdiag_detector_invvar_window_diag(const AddInt &add_int,
             "total number of fixed windows evaluated for RTC remove_bad_dets diagnostics");
     add_int("rtc_invvar_window_n_valid",
             "number of fixed windows with a finite inverse-variance estimate for RTC remove_bad_dets diagnostics");
+}
+
+inline void add_rtcdiag_standard_detector_outputs(
+    netCDF::NcFile &fo, const std::vector<netCDF::NcDim> &det_dims,
+    const std::vector<std::size_t> &det_chunks, std::size_t n_det_values,
+    int fill_int, double fill_double) {
+    auto add_rtc_det_double = [&](const std::string &name,
+                                  const std::string &comment) {
+        add_rtcdiag_det_double(
+            fo, name, comment, det_dims, det_chunks, n_det_values,
+            fill_double);
+    };
+    auto add_rtc_det_int = [&](const std::string &name,
+                               const std::string &comment) {
+        add_rtcdiag_det_int(
+            fo, name, comment, det_dims, det_chunks, n_det_values,
+            fill_int);
+    };
+
+    add_rtcdiag_detector_core_diag(add_rtc_det_int, add_rtc_det_double);
+    add_rtcdiag_detector_invvar_window_diag(
+        add_rtc_det_int, add_rtc_det_double);
 }
 
 inline void add_rtcdiag_network_double(
@@ -853,6 +1118,26 @@ void add_rtcdiag_standard_network_diag(const AddInt &add_int,
     add_rtcdiag_network_impulsive_mask_window_diag(add_int, add_double);
     add_rtcdiag_network_impulsive_mask_trigger_diag(add_int);
     add_rtcdiag_network_impulsive_mask_candidate_diag(add_int, add_double);
+}
+
+inline void add_rtcdiag_standard_network_outputs(
+    netCDF::NcFile &fo, const std::vector<netCDF::NcDim> &nw_dims,
+    const std::vector<std::size_t> &nw_chunks, std::size_t n_nw_values,
+    int fill_int, double fill_double) {
+    auto add_rtc_nw_double = [&](const std::string &name,
+                                 const std::string &comment) {
+        add_rtcdiag_network_double(
+            fo, name, comment, nw_dims, nw_chunks, n_nw_values,
+            fill_double);
+    };
+    auto add_rtc_nw_int = [&](const std::string &name,
+                              const std::string &comment) {
+        add_rtcdiag_network_int(
+            fo, name, comment, nw_dims, nw_chunks, n_nw_values,
+            fill_int);
+    };
+
+    add_rtcdiag_standard_network_diag(add_rtc_nw_int, add_rtc_nw_double);
 }
 
 inline std::vector<int> rtcdiag_impulsive_snippet_offsets(
