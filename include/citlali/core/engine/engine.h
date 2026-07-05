@@ -7331,12 +7331,14 @@ void Engine::create_rtcdiag_file() {
         n_scans_dim, n_nws_rtcdiag_dim};
     const auto n_rtc_nw_values =
         n_scan_values * static_cast<std::size_t>(calib.n_nws);
-    auto add_rtc_nw_double = [&](const std::string &name, const std::string &comment) {
+    auto add_rtc_nw_double = [&](const std::string &name,
+                                 const std::string &comment) {
         citlali::pipeline::add_rtcdiag_network_double(
             fo, name, comment, rtc_nw_dims, rtc_nw_chunks,
             n_rtc_nw_values, fill_double);
     };
-    auto add_rtc_nw_int = [&](const std::string &name, const std::string &comment) {
+    auto add_rtc_nw_int = [&](const std::string &name,
+                              const std::string &comment) {
         citlali::pipeline::add_rtcdiag_network_int(
             fo, name, comment, rtc_nw_dims, rtc_nw_chunks,
             n_rtc_nw_values, fill_int);
