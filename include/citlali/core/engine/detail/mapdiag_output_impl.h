@@ -26,9 +26,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     auto &core_weight_sum = map_workspace.core_weight_sum;
     auto &n_valid_pixels = map_workspace.n_valid_pixels;
     auto &n_core_pixels = map_workspace.n_core_pixels;
-    auto &core_tail_refs = map_workspace.core_tail_refs;
-    auto &noise_tail_refs = map_workspace.noise_tail_refs;
-    auto &peak_refs = map_workspace.peak_refs;
     const std::size_t obs_table_size =
         citlali::pipeline::mapdiag_obs_table_size(mapdiag_context);
     citlali::pipeline::MapdiagObservationWorkspace obs_workspace{
@@ -71,57 +68,14 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 mapdiag_label_storage);
         const auto core_mask = citlali::pipeline::assign_mapdiag_basic_map_stats(
             i, idx, mb, fill_double, map_workspace);
-        if (citlali::pipeline::mapdiag_has_signal_weight_samples(
-                mb->signal[i], mb->weight[i])) {
-            const Eigen::MatrixXd sig2noise =
-                citlali::pipeline::assign_mapdiag_signal_stats_for_map(
-                    i, idx, mb, core_mask, fill_double, mapdiag_stats,
-                    map_workspace);
-
-            if (citlali::pipeline::mapdiag_outlier_diagnostics_enabled(
-                    reduction_learning)) {
-                const auto outlier_mask_context =
-                    citlali::pipeline::make_mapdiag_outlier_mask_context(
-                        mb, core_mask, reduction_learning, RAD_TO_ASEC,
-                        fill_double);
-                const auto &source_distance_context =
-                    outlier_mask_context.source_distance;
-                const auto &off_source_core_mask =
-                    outlier_mask_context.off_source_core_mask;
-
-                const auto off_source_values =
-                    mapdiag_stats.collect_masked_values(
-                        sig2noise, off_source_core_mask);
-                if (citlali::pipeline::mapdiag_has_enough_off_source_values(
-                        off_source_values)) {
-                    const auto robust_stats =
-                        citlali::pipeline::mapdiag_robust_center_stats(
-                            mapdiag_stats, off_source_values);
-                    if (citlali::pipeline::
-                            mapdiag_has_valid_robust_center_stats(
-                                robust_stats)) {
-                        auto candidates =
-                            citlali::pipeline::
-                                collect_mapdiag_pixel_candidates_for_map(
-                                    mb, i, sig2noise, off_source_core_mask,
-                                    source_distance_context, robust_stats,
-                                    reduction_learning,
-                                    processed_time_chunk_fs_hz(), fill_int,
-                                    fill_double);
-                        citlali::pipeline::emit_mapdiag_outlier_learning<
-                            ReductionLearningState::MapPixelOutlier,
-                            ReductionLearningState::DetectorPenalty>(
-                            candidates, mb, i, write_indices.map_index,
-                            calib.arrays, obsnum, mapdiag_record_producer,
-                            stage_name, fruit_iter, fill_int,
-                            reduction_learning, logger);
-                    }
-                }
-            }
-
-            citlali::pipeline::assign_mapdiag_noise_tail_for_map(
-                idx, mb, i, mapdiag_stats, core_mask, noise_tail_refs);
-        }
+        citlali::pipeline::assign_mapdiag_signal_diagnostics_for_map<
+            ReductionLearningState::MapPixelOutlier,
+            ReductionLearningState::DetectorPenalty>(
+            i, idx, write_indices.map_index, mb, core_mask, fill_double,
+            fill_int, mapdiag_stats, RAD_TO_ASEC,
+            processed_time_chunk_fs_hz(), calib.arrays, obsnum,
+            mapdiag_record_producer, stage_name, fruit_iter,
+            reduction_learning, map_workspace, logger);
 
         citlali::engine_detail::
             assign_mapdiag_observation_contributions_for_map(
