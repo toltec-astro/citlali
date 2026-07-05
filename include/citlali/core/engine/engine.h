@@ -6496,7 +6496,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         edge_guard_exterior_max_abs_pre,
         edge_guard_exterior_max_abs_post};
 
-    std::string stage_name = citlali::pipeline::mapdiag_stage_name<map_t>();
+    const std::string stage_name =
+        citlali::pipeline::mapdiag_stage_name<map_t>();
     citlali::pipeline::MapdiagMetadataVars mapdiag_metadata{
         {stage_name, mb->name, map_regime, telescope.source_name,
          telescope.project_id, telescope.obs_goal},
