@@ -6909,7 +6909,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 const Eigen::Index n_noise_realizations =
                     citlali::pipeline::mapdiag_noise_realization_count(mb);
                 for (Eigen::Index n = 0; n < n_noise_realizations; ++n) {
-                    auto noise_matrix =
+                    const auto noise_matrix =
                         citlali::pipeline::mapdiag_noise_matrix(mb, i, n);
                     citlali::pipeline::add_mapdiag_noise_realization_samples(
                         noise_samples, mapdiag_stats, noise_matrix,
