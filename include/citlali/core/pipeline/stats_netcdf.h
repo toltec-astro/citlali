@@ -101,4 +101,12 @@ inline std::vector<netCDF::NcDim> add_stats_eigenvalue_dims(
     return {n_eig_grp_dim, n_eigs_dim};
 }
 
+inline std::string stats_eigenvalue_var_name(
+    const std::string &grouping_name, Eigen::Index grouping_index,
+    Eigen::Index chunk_index) {
+    return "evals_" + grouping_name + "_" +
+           std::to_string(grouping_index) + "_chunk_" +
+           std::to_string(chunk_index);
+}
+
 }  // namespace citlali::pipeline
