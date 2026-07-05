@@ -7703,7 +7703,9 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
 
             // explicitly destroy the fits file after we're done with it
             bool should_close_filtered_fits = true;
-            if (rtcproc.run_polarization) {
+            const bool is_polarization_reduction =
+                rtcproc.run_polarization;
+            if (is_polarization_reduction) {
                 if (rtcproc.polarization.stokes_params[maps_to_stokes(i)] !=
                     "U") {
                     should_close_filtered_fits = false;
