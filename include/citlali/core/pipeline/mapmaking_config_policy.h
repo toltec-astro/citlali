@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdlib>
 #include <string>
 #include <vector>
 
@@ -7,6 +8,27 @@ namespace citlali::pipeline {
 
 inline std::vector<std::string> allowed_map_regimes() {
     return {"source_dominant", "source_faint", "blank_field", "unknown"};
+}
+
+inline bool map_grouping_disallows_polarization(
+    bool run_polarization, const std::string &redu_type,
+    const std::string &map_grouping) {
+    return run_polarization &&
+           ((redu_type == "beammap" && map_grouping == "auto") ||
+            map_grouping == "detector");
+}
+
+template <class Logger>
+void enforce_map_grouping_polarization_policy(
+    bool run_polarization, const std::string &redu_type,
+    const std::string &map_grouping, const Logger &logger) {
+    if (!map_grouping_disallows_polarization(
+            run_polarization, redu_type, map_grouping)) {
+        return;
+    }
+    logger->error(
+        "Detector grouping reductions do not currently support polarimetry mode");
+    std::exit(EXIT_FAILURE);
 }
 
 template <class OutputMapBlock, class CoaddMapBlock>

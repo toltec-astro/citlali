@@ -26,20 +26,11 @@ void Engine::get_mapmaking_config(CT &config) {
         config, map_grouping, typed_mapmaking_config, missing_keys,
         invalid_keys);
 
-    // optional expected sky regime for interpreting map diagnostics
-    map_regime = "unknown";
-    if (config.template has_typed<std::string>(std::tuple{"source", "map_regime"})) {
-        map_regime = config.template get_typed<std::string>(std::tuple{"source", "map_regime"});
-        check_allowed(map_regime, missing_keys, invalid_keys,
-                      citlali::pipeline::allowed_map_regimes(),
-                      std::tuple{"source", "map_regime"});
-    }
+    citlali::engine_detail::read_map_regime_config(
+        config, map_regime, missing_keys, invalid_keys);
 
-    // polarization is disabled for detector grouping
-    if (rtcproc.run_polarization && ((redu_type=="beammap" && map_grouping=="auto") || map_grouping=="detector")) {
-        logger->error("Detector grouping reductions do not currently support polarimetry mode");
-        std::exit(EXIT_FAILURE);
-    }
+    citlali::pipeline::enforce_map_grouping_polarization_policy(
+        rtcproc.run_polarization, redu_type, map_grouping, logger);
 
     // set rtcproc map_grouping
     rtcproc.kernel.map_grouping = map_grouping;

@@ -2,6 +2,7 @@
 
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/engine/detail/config_parse_tracking.h>
+#include <citlali/core/pipeline/mapmaking_config_policy.h>
 
 #include <string>
 #include <tuple>
@@ -81,6 +82,20 @@ void read_map_pixel_axes_config(Config &config, PixelAxes &pixel_axes,
             missing_keys, invalid_keys, missing_before, invalid_before)) {
         typed_config.pixel_axes = pixel_axes;
     }
+}
+
+template <class Config, class MissingKeys, class InvalidKeys>
+void read_map_regime_config(Config &config, std::string &map_regime,
+                            MissingKeys &missing_keys,
+                            InvalidKeys &invalid_keys) {
+    map_regime = "unknown";
+    const auto key = std::tuple{"source", "map_regime"};
+    if (!config.template has_typed<std::string>(key)) {
+        return;
+    }
+    map_regime = config.template get_typed<std::string>(key);
+    ::check_allowed(map_regime, missing_keys, invalid_keys,
+                    citlali::pipeline::allowed_map_regimes(), key);
 }
 
 }  // namespace citlali::engine_detail
