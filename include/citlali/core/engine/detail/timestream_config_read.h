@@ -131,6 +131,27 @@ void read_tod_stream_outer_context_config(
     }
 }
 
+template <class TimestreamConfig>
+void sync_tod_output_type_config(bool raw_time_chunk_enabled,
+                                 bool processed_time_chunk_enabled,
+                                 bool &output_enabled,
+                                 std::string &output_type,
+                                 TimestreamConfig &typed_config) {
+    output_enabled = false;
+    if (auto requested_output_type =
+            citlali::pipeline::requested_tod_output_type_name(
+                raw_time_chunk_enabled, processed_time_chunk_enabled)) {
+        output_enabled = true;
+        output_type = *requested_output_type;
+    }
+    if (!output_enabled) {
+        return;
+    }
+    if (auto parsed = citlali::config::parse_tod_output_type(output_type)) {
+        typed_config.output.type = *parsed;
+    }
+}
+
 template <class Config, class Key, class Param, class Target,
           class MissingKeys, class InvalidKeys>
 void read_mirrored_config_value(

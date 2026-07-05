@@ -57,20 +57,9 @@ void Engine::get_timestream_config(CT &config) {
         ptcproc.tod_output_mini, ptcproc.tod_output_outer,
         typed_timestream_config.output.processed_time_chunk, missing_keys,
         invalid_keys);
-    // set tod output to false by default
-    run_tod_output = false;
-
-    if (auto requested_output_type =
-            citlali::pipeline::requested_tod_output_type_name(
-                run_tod_output_rtc, run_tod_output_ptc)) {
-        run_tod_output = true;
-        tod_output_type = *requested_output_type;
-    }
-    if (run_tod_output) {
-        if (auto parsed = citlali::config::parse_tod_output_type(tod_output_type)) {
-            typed_timestream_config.output.type = *parsed;
-        }
-    }
+    citlali::engine_detail::sync_tod_output_type_config(
+        run_tod_output_rtc, run_tod_output_ptc, run_tod_output,
+        tod_output_type, typed_timestream_config);
 
     citlali::engine_detail::read_mirrored_config_value(
         config, std::tuple{"timestream", "output", "subdir_name"},
@@ -88,16 +77,10 @@ void Engine::get_timestream_config(CT &config) {
     bool ptc_chunk_select_enabled = false;
     std::vector<Eigen::Index> rtc_output_chunks, ptc_output_chunks;
 
-    citlali::pipeline::parse_tod_output_indices_config(
-        config, std::tuple{"timestream","raw_time_chunk","output","indices"},
-        run_tod_output_rtc, "timestream.raw_time_chunk.output.indices",
-        rtc_chunk_select_enabled, rtc_output_chunks, logger);
-    citlali::pipeline::parse_tod_output_indices_config(
-        config,
-        std::tuple{"timestream","processed_time_chunk","output","indices"},
-        run_tod_output_ptc,
-        "timestream.processed_time_chunk.output.indices",
-        ptc_chunk_select_enabled, ptc_output_chunks, logger);
+    citlali::pipeline::parse_tod_output_indices_configs(
+        config, run_tod_output_rtc, run_tod_output_ptc,
+        rtc_chunk_select_enabled, rtc_output_chunks, ptc_chunk_select_enabled,
+        ptc_output_chunks, logger);
 
     citlali::pipeline::read_tod_selection_mode_config(
         config,

@@ -9,6 +9,7 @@
 #include <set>
 #include <sstream>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include <Eigen/Core>
@@ -198,6 +199,26 @@ void parse_tod_output_indices_config(
     logger->error("{} must be \"all\" or a list of 1-based positive integers",
                   config_path);
     std::exit(EXIT_FAILURE);
+}
+
+template <class Config, class Logger>
+void parse_tod_output_indices_configs(
+    Config &config, bool raw_time_chunk_enabled,
+    bool processed_time_chunk_enabled, bool &raw_select_enabled,
+    std::vector<Eigen::Index> &raw_chunks,
+    bool &processed_select_enabled,
+    std::vector<Eigen::Index> &processed_chunks, const Logger &logger) {
+    parse_tod_output_indices_config(
+        config, std::tuple{"timestream", "raw_time_chunk", "output",
+                           "indices"},
+        raw_time_chunk_enabled, "timestream.raw_time_chunk.output.indices",
+        raw_select_enabled, raw_chunks, logger);
+    parse_tod_output_indices_config(
+        config, std::tuple{"timestream", "processed_time_chunk", "output",
+                           "indices"},
+        processed_time_chunk_enabled,
+        "timestream.processed_time_chunk.output.indices",
+        processed_select_enabled, processed_chunks, logger);
 }
 
 template <class Config, class Key, class Logger>
