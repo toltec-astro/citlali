@@ -6691,14 +6691,15 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     continue;
                                 }
 
+                                const double source_distance_arcsec =
+                                    citlali::pipeline::
+                                        mapdiag_source_distance_arcsec(
+                                            r, c, source_distance_context);
                                 auto candidate =
                                     citlali::pipeline::
                                         make_mapdiag_map_pixel_candidate(
                                             r, c, value, wt, n_eff, z,
-                                            citlali::pipeline::
-                                                mapdiag_source_distance_arcsec(
-                                                    r, c,
-                                                    source_distance_context),
+                                            source_distance_arcsec,
                                             fill_int, fill_double);
 
                                 if (has_contribution_products) {
