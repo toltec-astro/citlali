@@ -78,48 +78,18 @@ void Engine::get_beammap_config(CT &config) {
         beammap_priors_max_d2_after_iter0,
         beammap_priors_score_lambda_iter0,
         beammap_priors_score_lambda_after_iter0);
-    if (config.template has_typed<bool>(std::tuple{"beammap","priors","fallback_blind"})) {
-        get_config_value(config, beammap_priors_fallback_blind, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","fallback_blind"});
-    }
-    if (config.template has_typed<bool>(std::tuple{"beammap","priors","align_after_iter0"})) {
-        get_config_value(config, beammap_priors_align_after_iter0, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","align_after_iter0"});
-    }
-    if (config.template has_typed<std::string>(std::tuple{"beammap","priors","alignment_scope"})) {
-        get_config_value(config, beammap_priors_alignment_scope, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","alignment_scope"},
-                         {"array", "common"});
-    }
-    if (config.template has_typed<std::string>(std::tuple{"beammap","priors","alignment_common_support"})) {
-        get_config_value(config, beammap_priors_alignment_common_support, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","alignment_common_support"},
-                         {"all", "overlap_box"});
-    }
-    if (config.template has_typed<double>(std::tuple{"beammap","priors","alignment_common_support_quantile"})) {
-        get_config_value(config, beammap_priors_alignment_common_support_quantile, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","alignment_common_support_quantile"},
-                         {}, {0.0}, {0.45});
-    }
-    if (config.template has_typed<int>(std::tuple{"beammap","priors","alignment_min_matches"})) {
-        get_config_value(config, beammap_priors_alignment_min_matches, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","alignment_min_matches"},
-                         {}, {3});
-    }
-    if (config.template has_typed<double>(std::tuple{"beammap","priors","alignment_max_d2"})) {
-        get_config_value(config, beammap_priors_alignment_max_d2, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","alignment_max_d2"},
-                         {}, {0.0});
-    }
-    if (config.template has_typed<bool>(std::tuple{"beammap","priors","alignment_fit_rotation"})) {
-        get_config_value(config, beammap_priors_alignment_fit_rotation, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","alignment_fit_rotation"});
-    }
-    if (config.template has_typed<double>(std::tuple{"beammap","priors","alignment_max_rotation_deg"})) {
-        get_config_value(config, beammap_priors_alignment_max_rotation_deg, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","alignment_max_rotation_deg"},
-                         {}, {0.0});
-    }
+    citlali::pipeline::read_beammap_priors_behavior_config(
+        config, missing_keys, invalid_keys, beammap_priors_fallback_blind,
+        beammap_priors_align_after_iter0);
+    citlali::pipeline::read_beammap_priors_alignment_config(
+        config, missing_keys, invalid_keys,
+        beammap_priors_alignment_scope,
+        beammap_priors_alignment_common_support,
+        beammap_priors_alignment_common_support_quantile,
+        beammap_priors_alignment_min_matches,
+        beammap_priors_alignment_max_d2,
+        beammap_priors_alignment_fit_rotation,
+        beammap_priors_alignment_max_rotation_deg);
     citlali::pipeline::disable_missing_beammap_priors(
         beammap_priors_enabled, beammap_priors_filepath, logger);
 
