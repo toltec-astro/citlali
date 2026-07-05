@@ -20,18 +20,13 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     logger->debug("adding unit conversions");
 
     // conversion to Rayleigh-Jeans uK brightness temperature
-    auto fwhm = citlali::pipeline::mean_beam_fwhm_arcsec(
-        calib.array_fwhms[array_id]);
+    const auto unit_conversion =
+        citlali::pipeline::phdu_unit_conversion_factors(
+            calib.array_fwhms[array_id], mb->pixel_size_rad, FWHM_TO_STD,
+            ASEC_TO_RAD, pi);
     auto mJy_beam_to_uK = engine_utils::mJy_beam_to_uK(
-        1, toltec_io.array_freq_map[array_id], fwhm);
-
-    // beam area in steradians
-    auto beam_area_rad = citlali::pipeline::gaussian_beam_area_sr(
-        fwhm, FWHM_TO_STD, ASEC_TO_RAD, pi);
-    // get Jy/pixel
-    auto mJy_beam_to_Jy_px =
-        citlali::pipeline::mjy_beam_to_jy_pixel_factor(
-            beam_area_rad, mb->pixel_size_rad);
+        1, toltec_io.array_freq_map[array_id],
+        unit_conversion.mean_fwhm_arcsec);
 
     auto get_tel_header_scalar = [&](const std::string &key, double fallback) {
         return citlali::pipeline::telescope_header_scalar(
@@ -53,7 +48,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     citlali::pipeline::add_phdu_unit_conversion_config(
         fits_entry, name, logger, rtcproc.run_calibrate, mb->sig_unit,
         calib.array_beam_areas[array_id]*MJY_SR_TO_mJY_ASEC,
-        mJy_beam_to_uK, mJy_beam_to_Jy_px);
+        mJy_beam_to_uK, unit_conversion.mjy_beam_to_jy_pixel);
 
     // add source flux for beammaps
     if (redu_type == "beammap") {
