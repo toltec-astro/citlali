@@ -7359,9 +7359,10 @@ void Engine::write_stats() {
     citlali::pipeline::add_obsnum_var(fo, std::stoi(obsnum));
 
     // add dimensions
+    const auto n_chunks = telescope.scan_indices.cols();
     netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
     netCDF::NcDim n_arrays_dim = fo.addDim("n_arrays", calib.n_arrays);
-    netCDF::NcDim n_chunks_dim = fo.addDim("n_chunks", telescope.scan_indices.cols());
+    netCDF::NcDim n_chunks_dim = fo.addDim("n_chunks", n_chunks);
 
     std::vector<netCDF::NcDim> dims = {n_chunks_dim, n_dets_dim};
     std::vector<netCDF::NcDim> grp_dims = {n_chunks_dim, n_arrays_dim};
