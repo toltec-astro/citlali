@@ -118,4 +118,10 @@ inline std::vector<std::size_t> stats_eigenvalue_write_shape(
     return {1, static_cast<std::size_t>(n_calc)};
 }
 
+inline netCDF::NcVar add_stats_eigenvalue_var(
+    netCDF::NcFile &fo, const std::string &name,
+    const std::vector<netCDF::NcDim> &dims) {
+    return fo.addVar(name, netCDF::ncDouble, dims);
+}
+
 }  // namespace citlali::pipeline
