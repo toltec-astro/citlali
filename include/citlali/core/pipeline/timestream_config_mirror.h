@@ -367,4 +367,69 @@ void mirror_raw_despike_config(DespikeConfig &target,
         local.compact_delta_gate.max_step_shift_z;
 }
 
+template <class RawFlaggingConfig, class RtcProc>
+void mirror_raw_flagging_config(RawFlaggingConfig &target,
+                                const RtcProc &rtcproc) {
+    target.delta_f_min_Hz = rtcproc.delta_f_min_Hz;
+    target.lower_tod_inv_var_factor = rtcproc.lower_inv_var_factor;
+    target.upper_tod_inv_var_factor = rtcproc.upper_inv_var_factor;
+
+    const auto &network_step_mask = rtcproc.network_step_mask;
+    auto &typed_network_step = target.network_step_mask;
+    typed_network_step.enabled = network_step_mask.enabled;
+    typed_network_step.step_window_sec = network_step_mask.step_window_sec;
+    typed_network_step.step_score_thresh = network_step_mask.step_score_thresh;
+    typed_network_step.min_good_frac = network_step_mask.min_good_frac;
+    typed_network_step.min_det_used =
+        static_cast<int>(network_step_mask.min_det_used);
+    typed_network_step.min_step_det_frac =
+        network_step_mask.min_step_det_frac;
+    typed_network_step.min_alignment_frac =
+        network_step_mask.min_alignment_frac;
+    typed_network_step.cluster_tol_sec = network_step_mask.cluster_tol_sec;
+    typed_network_step.mask_half_width_sec =
+        network_step_mask.mask_half_width_sec;
+    typed_network_step.max_flagged_fraction =
+        network_step_mask.max_flagged_fraction;
+
+    const auto &impulsive_capture = rtcproc.impulsive_capture;
+    auto &typed_capture = target.impulsive_capture;
+    typed_capture.enabled = impulsive_capture.enabled;
+    typed_capture.min_good_frac = impulsive_capture.min_good_frac;
+    typed_capture.min_event_z = impulsive_capture.min_event_z;
+    typed_capture.near_event_z = impulsive_capture.near_event_z;
+    typed_capture.max_events_per_network =
+        static_cast<int>(impulsive_capture.max_events_per_network);
+    typed_capture.snippet_pre_window_sec =
+        impulsive_capture.snippet_pre_window_sec;
+    typed_capture.snippet_post_window_sec =
+        impulsive_capture.snippet_post_window_sec;
+
+    const auto &impulsive_coincidence = rtcproc.impulsive_coincidence;
+    auto &typed_coincidence = target.impulsive_coincidence;
+    typed_coincidence.enabled = impulsive_coincidence.enabled;
+    typed_coincidence.min_good_frac = impulsive_coincidence.min_good_frac;
+    typed_coincidence.event_score_thresh =
+        impulsive_coincidence.event_score_thresh;
+    typed_coincidence.min_det_used =
+        static_cast<int>(impulsive_coincidence.min_det_used);
+    typed_coincidence.min_impulsive_det_frac =
+        impulsive_coincidence.min_impulsive_det_frac;
+    typed_coincidence.min_alignment_frac =
+        impulsive_coincidence.min_alignment_frac;
+    typed_coincidence.min_networks_aligned =
+        static_cast<int>(impulsive_coincidence.min_networks_aligned);
+    typed_coincidence.high_score_override_thresh =
+        impulsive_coincidence.high_score_override_thresh;
+    typed_coincidence.high_score_min_networks_aligned =
+        static_cast<int>(impulsive_coincidence.high_score_min_networks_aligned);
+    typed_coincidence.cluster_tol_sec = impulsive_coincidence.cluster_tol_sec;
+    typed_coincidence.mask_pre_window_sec =
+        impulsive_coincidence.mask_pre_window_sec;
+    typed_coincidence.mask_post_window_sec =
+        impulsive_coincidence.mask_post_window_sec;
+    typed_coincidence.max_flagged_fraction =
+        impulsive_coincidence.max_flagged_fraction;
+}
+
 }  // namespace citlali::pipeline
