@@ -174,6 +174,14 @@ inline void add_observation_identity_vars(netCDF::NcFile &fo, int obsnum,
     add_source_radec_vars(fo, source_ra, source_dec);
 }
 
+inline void add_diagnostic_file_identity_vars(netCDF::NcFile &fo,
+                                              const std::string &output_type,
+                                              int obsnum, double source_ra,
+                                              double source_dec) {
+    add_tod_output_type_label(fo, output_type);
+    add_observation_identity_vars(fo, obsnum, source_ra, source_dec);
+}
+
 inline void add_pipeline_identity_vars(
     netCDF::NcFile &fo, const std::string &citlali_version,
     const std::string &kids_version, const std::string &tula_version,

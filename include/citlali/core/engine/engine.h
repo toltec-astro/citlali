@@ -6993,10 +6993,9 @@ void Engine::create_ptcdiag_file() {
     const auto ptcdiag_dims =
         citlali::pipeline::add_ptcdiag_dims(fo, n_scans, calib.n_dets);
 
-    citlali::pipeline::add_tod_output_type_label(fo, "ptcdiag");
-
-    citlali::pipeline::add_observation_identity_vars(
-        fo, std::stoi(obsnum), telescope.tel_header["Header.Source.Ra"](0),
+    citlali::pipeline::add_diagnostic_file_identity_vars(
+        fo, "ptcdiag", std::stoi(obsnum),
+        telescope.tel_header["Header.Source.Ra"](0),
         telescope.tel_header["Header.Source.Dec"](0));
 
     citlali::pipeline::add_diagnostic_output_scan_index(
@@ -7036,8 +7035,6 @@ void Engine::create_rtcdiag_file() {
 
     write_netcdf_atomic(rtcdiag_filename, [&](netCDF::NcFile &fo) {
 
-    citlali::pipeline::add_tod_output_type_label(fo, "rtcdiag");
-
     const int fill_int = citlali::pipeline::rtcdiag_fill_int();
     const double fill_double = citlali::pipeline::rtcdiag_fill_double();
     const Eigen::Index n_scans = telescope.scan_indices.cols();
@@ -7045,8 +7042,9 @@ void Engine::create_rtcdiag_file() {
         citlali::pipeline::rtc_tod_stream_sample_rate(
             rtcproc, telescope.fsmp, telescope.d_fsmp);
 
-    citlali::pipeline::add_observation_identity_vars(
-        fo, std::stoi(obsnum), telescope.tel_header["Header.Source.Ra"](0),
+    citlali::pipeline::add_diagnostic_file_identity_vars(
+        fo, "rtcdiag", std::stoi(obsnum),
+        telescope.tel_header["Header.Source.Ra"](0),
         telescope.tel_header["Header.Source.Dec"](0));
 
     const auto rtcdiag_dims =
@@ -7131,41 +7129,13 @@ void Engine::write_stats() {
                                   engine_utils::toltecIO::raw>(
             stats_dir, redu_type, "", obsnum, telescope.sim_obs);
 
-    // det stats header
-    const auto det_stats_header_units =
-        citlali::pipeline::detector_stats_units(omb.sig_unit);
-    // group stats header
-    const auto grp_stats_header_units =
-        citlali::pipeline::group_stats_units(omb.sig_unit);
     const auto stats_netcdf_filename =
         citlali::pipeline::stats_netcdf_filename(stats_filename);
     write_netcdf_atomic(stats_netcdf_filename, [&](netCDF::NcFile &fo) {
 
-    citlali::pipeline::add_obsnum_var(fo, std::stoi(obsnum));
-
-    // add dimensions
-    const auto n_stats_chunks = telescope.scan_indices.cols();
-    const auto stats_dims =
-        citlali::pipeline::add_stats_dims(
-            fo, calib.n_dets, calib.n_arrays, n_stats_chunks);
-
-    // add det stats
-    citlali::pipeline::add_detector_stats_vars(
-        fo, diagnostics, stats_dims.det_stat, det_stats_header_units);
-    // add group stats
-    citlali::pipeline::add_group_stats_vars(
-        fo, diagnostics, stats_dims.grp_stat, grp_stats_header_units);
-
-    // add apt table
-    citlali::pipeline::add_stats_apt_double_vars(
-        fo, calib, stats_dims.n_dets);
-
-    // add adc
-    citlali::pipeline::add_stats_adc_snap_vars(
-        fo, calib, diagnostics.adc_snap_data);
-
-    citlali::pipeline::add_stats_eigenvalue_outputs_if_needed(
-        fo, diagnostics, ptcproc.cleaner, logger,
+    citlali::pipeline::add_stats_file_outputs(
+        fo, std::stoi(obsnum), calib, diagnostics, ptcproc.cleaner, logger,
+        omb.sig_unit, telescope.scan_indices.cols(),
         citlali::pipeline::ptcdiag_fill_double());
     });
 }
