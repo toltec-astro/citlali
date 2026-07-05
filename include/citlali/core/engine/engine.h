@@ -6637,6 +6637,9 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             citlali::pipeline::mapdiag_n_rows(mb);
                         const Eigen::Index n_mapdiag_cols =
                             citlali::pipeline::mapdiag_n_cols(mb);
+                        const double min_effective_samples =
+                            citlali::pipeline::mapdiag_min_effective_samples(
+                                reduction_learning);
 
                         for (Eigen::Index r = 0; r < n_mapdiag_rows; ++r) {
                             for (Eigen::Index c = 0; c < n_mapdiag_cols; ++c) {
@@ -6672,10 +6675,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                             ptc_fs_hz, fill_double);
                                 if (!citlali::pipeline::
                                         mapdiag_passes_min_effective_samples(
-                                            n_eff,
-                                            citlali::pipeline::
-                                                mapdiag_min_effective_samples(
-                                                    reduction_learning))) {
+                                            n_eff, min_effective_samples)) {
                                     continue;
                                 }
 
