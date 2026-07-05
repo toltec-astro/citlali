@@ -7579,10 +7579,12 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                 const bool has_noise_weight_summary =
                     i < mb.noise_weight_median_ratio.size();
                 if (has_noise_weight_summary) {
-                    logger->info("noise products: median(w_formal*var)={:.4g} scale={:.4g} noise_s2n_sigma={:.4g}",
-                                 mb.noise_weight_median_ratio(i),
-                                 mb.noise_weight_scale(i),
-                                 mb.noise_s2n_sigma(i));
+                    logger->info(
+                        "noise products: median(w_formal*var)={:.4g} "
+                        "scale={:.4g} noise_s2n_sigma={:.4g}",
+                        mb.noise_weight_median_ratio(i),
+                        mb.noise_weight_scale(i),
+                        mb.noise_s2n_sigma(i));
                 }
                 mb.calc_median_err();
                 mb.calc_median_rms();
