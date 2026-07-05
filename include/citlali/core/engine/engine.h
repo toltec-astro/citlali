@@ -7526,7 +7526,8 @@ void Engine::write_stats() {
             // loop through chunks
             for (const auto &[chunk_index, eval_groups] : diagnostics.evals) {
                 // loop through cleaner grouping
-                for (Eigen::Index i=0; i<eval_groups.size(); ++i) {
+                const auto n_eval_groupings = eval_groups.size();
+                for (Eigen::Index i=0; i<n_eval_groupings; ++i) {
 
                     const auto eval_var_name =
                         citlali::pipeline::stats_eigenvalue_var_name(
