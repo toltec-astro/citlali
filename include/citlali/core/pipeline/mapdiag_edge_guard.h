@@ -63,4 +63,16 @@ void assign_mapdiag_edge_guard_double_entry(
         state.edge_guard_exterior_max_abs_post[idx];
 }
 
+template <class EdgeGuardState>
+void assign_mapdiag_edge_guard_entry(
+    std::size_t idx, const EdgeGuardState &state,
+    MapdiagEdgeGuardIntRefs int_refs,
+    MapdiagEdgeGuardDoubleRefs double_refs) {
+    if (!mapdiag_has_edge_guard_entry(idx, state)) {
+        return;
+    }
+    assign_mapdiag_edge_guard_int_entry(idx, state, int_refs);
+    assign_mapdiag_edge_guard_double_entry(idx, state, double_refs);
+}
+
 }  // namespace citlali::pipeline

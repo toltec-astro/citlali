@@ -5,6 +5,7 @@
 #include <cmath>
 #include <limits>
 #include <string>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -338,6 +339,13 @@ inline double mapdiag_weight_threshold_or_zero(double weight_threshold) {
         return weight_threshold;
     }
     return 0.0;
+}
+
+template <class MapBuffer>
+double mapdiag_weight_threshold_for_map(const MapBuffer &mb,
+                                        Eigen::Index map_index) {
+    const auto cov_region = mb->calc_cov_region(map_index);
+    return mapdiag_weight_threshold_or_zero(std::get<0>(cov_region));
 }
 
 inline Eigen::ArrayXXd mapdiag_valid_weight_mask(

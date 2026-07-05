@@ -250,18 +250,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             rtcproc.polarization.stokes_params, map_name_for_index,
             {array_names, stokes_names, map_names});
 
-        const auto cov_region = mb->calc_cov_region(i);
-        auto weight_threshold = std::get<0>(cov_region);
-        weight_threshold =
-            citlali::pipeline::mapdiag_weight_threshold_or_zero(
-                weight_threshold);
+        const double weight_threshold =
+            citlali::pipeline::mapdiag_weight_threshold_for_map(mb, i);
         weight_thresholds[idx] = weight_threshold;
-        if (citlali::pipeline::mapdiag_has_edge_guard_entry(idx, *mb)) {
-            citlali::pipeline::assign_mapdiag_edge_guard_int_entry(
-                idx, *mb, edge_guard_int_refs);
-            citlali::pipeline::assign_mapdiag_edge_guard_double_entry(
-                idx, *mb, edge_guard_double_refs);
-        }
+        citlali::pipeline::assign_mapdiag_edge_guard_entry(
+            idx, *mb, edge_guard_int_refs, edge_guard_double_refs);
 
         const auto weight_arr = mb->weight[i].array();
         const auto valid_mask =
@@ -690,4 +683,3 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 fo, mapdiag_netcdf_vars);
         });
 }
-
