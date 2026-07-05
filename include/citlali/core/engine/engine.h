@@ -7561,7 +7561,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     // directory name
     std::string filtered_dir_name;
     // logging label
-    const char* map_label = "filtered maps";
+    const char *map_label = "filtered maps";
 
     // filtered obs maps
     if constexpr (map_t == mapmaking::FilteredObs) {
