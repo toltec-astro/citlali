@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdlib>
 #include <set>
 #include <sstream>
 #include <string>
@@ -106,6 +107,55 @@ inline void mirror_tod_output_selection_config(
     }
     target.selection_n_uniform = n_uniform;
     target.selection_n_source_dense = n_source_dense;
+}
+
+template <class Config, class Key, class Logger>
+void parse_tod_output_indices_config(
+    Config &config, const Key &indices_key, bool output_enabled,
+    const std::string &config_path, bool &select_enabled,
+    std::vector<Eigen::Index> &chunks_out, const Logger &logger) {
+    select_enabled = false;
+    chunks_out.clear();
+
+    if (!output_enabled || !config.has(indices_key)) {
+        return;
+    }
+
+    if (config.template has_typed<std::string>(indices_key)) {
+        const auto indices_value =
+            config.template get_typed<std::string>(indices_key);
+        if (indices_value == "all") {
+            return;
+        }
+        logger->error(
+            "{} must be \"all\" or a non-empty list of 1-based positive integers. Found \"{}\"",
+            config_path, indices_value);
+        std::exit(EXIT_FAILURE);
+    }
+
+    if (config.template has_typed<std::vector<int>>(indices_key)) {
+        const auto chunks = config.template get_typed<std::vector<int>>(indices_key);
+        if (chunks.empty()) {
+            logger->error(
+                "{} must be \"all\" or a non-empty list of 1-based positive integers",
+                config_path);
+            std::exit(EXIT_FAILURE);
+        }
+        select_enabled = true;
+        for (const auto chunk_index : chunks) {
+            if (chunk_index <= 0) {
+                logger->error("{} must be 1-based positive integers. Found {}",
+                              config_path, chunk_index);
+                std::exit(EXIT_FAILURE);
+            }
+            chunks_out.push_back(static_cast<Eigen::Index>(chunk_index));
+        }
+        return;
+    }
+
+    logger->error("{} must be \"all\" or a list of 1-based positive integers",
+                  config_path);
+    std::exit(EXIT_FAILURE);
 }
 
 inline bool tod_output_chunk_is_valid(Eigen::Index chunk_1based,

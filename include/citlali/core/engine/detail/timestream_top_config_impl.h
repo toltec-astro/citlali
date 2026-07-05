@@ -157,54 +157,20 @@ void Engine::get_timestream_config(CT &config) {
 
     // optional selection of TOD chunks to write (1-based indices) under each output block.
     // default is "all" for both rtc and ptc outputs.
-    auto parse_tod_output_indices = [&](const auto &indices_key, bool output_enabled, const std::string &config_path,
-                                        bool &select_enabled, std::vector<Eigen::Index> &chunks_out) {
-        select_enabled = false;
-        chunks_out.clear();
-
-        if (!output_enabled || !config.has(indices_key)) {
-            return;
-        }
-
-        if (config.template has_typed<std::string>(indices_key)) {
-            const auto indices_value = config.template get_typed<std::string>(indices_key);
-            if (indices_value == "all") {
-                return;
-            }
-            logger->error("{} must be \"all\" or a non-empty list of 1-based positive integers. Found \"{}\"",
-                          config_path, indices_value);
-            std::exit(EXIT_FAILURE);
-        }
-
-        if (config.template has_typed<std::vector<int>>(indices_key)) {
-            const auto chunks = config.template get_typed<std::vector<int>>(indices_key);
-            if (chunks.empty()) {
-                logger->error("{} must be \"all\" or a non-empty list of 1-based positive integers", config_path);
-                std::exit(EXIT_FAILURE);
-            }
-            select_enabled = true;
-            for (const auto chunk_index : chunks) {
-                if (chunk_index <= 0) {
-                    logger->error("{} must be 1-based positive integers. Found {}", config_path, chunk_index);
-                    std::exit(EXIT_FAILURE);
-                }
-                chunks_out.push_back(static_cast<Eigen::Index>(chunk_index));
-            }
-            return;
-        }
-
-        logger->error("{} must be \"all\" or a list of 1-based positive integers", config_path);
-        std::exit(EXIT_FAILURE);
-    };
-
     bool rtc_chunk_select_enabled = false;
     bool ptc_chunk_select_enabled = false;
     std::vector<Eigen::Index> rtc_output_chunks, ptc_output_chunks;
 
-    parse_tod_output_indices(std::tuple{"timestream","raw_time_chunk","output","indices"}, run_tod_output_rtc,
-                             "timestream.raw_time_chunk.output.indices", rtc_chunk_select_enabled, rtc_output_chunks);
-    parse_tod_output_indices(std::tuple{"timestream","processed_time_chunk","output","indices"}, run_tod_output_ptc,
-                             "timestream.processed_time_chunk.output.indices", ptc_chunk_select_enabled, ptc_output_chunks);
+    citlali::pipeline::parse_tod_output_indices_config(
+        config, std::tuple{"timestream","raw_time_chunk","output","indices"},
+        run_tod_output_rtc, "timestream.raw_time_chunk.output.indices",
+        rtc_chunk_select_enabled, rtc_output_chunks, logger);
+    citlali::pipeline::parse_tod_output_indices_config(
+        config,
+        std::tuple{"timestream","processed_time_chunk","output","indices"},
+        run_tod_output_ptc,
+        "timestream.processed_time_chunk.output.indices",
+        ptc_chunk_select_enabled, ptc_output_chunks, logger);
 
     auto read_tod_selection_count = [&](const auto &key, const std::string &config_path,
                                         int &value) {
