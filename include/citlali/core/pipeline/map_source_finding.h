@@ -7,6 +7,7 @@
 #include <vector>
 
 #include <Eigen/Core>
+#include <tula/grppi.h>
 #include <yaml-cpp/yaml.h>
 
 namespace citlali::pipeline {
@@ -437,6 +438,20 @@ std::vector<int> source_index_vector(SourceCount n_sources) {
     std::vector<int> source_indices(static_cast<std::size_t>(n_sources));
     std::iota(source_indices.begin(), source_indices.end(), 0);
     return source_indices;
+}
+
+template <class ParallelPolicy, class SourceCount, class FitSource>
+void fit_source_candidates(ParallelPolicy &parallel_policy,
+                           SourceCount n_map_sources,
+                           const FitSource &fit_source) {
+    const auto source_in_vec = source_index_vector(n_map_sources);
+    std::vector<int> source_out_vec(source_in_vec.size());
+
+    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy),
+               source_in_vec, source_out_vec, [&](auto source_index) {
+        fit_source(source_index);
+        return 0;
+    });
 }
 
 template <auto MapType, class Engine, class MapBuffer, class Logger>

@@ -7104,12 +7104,8 @@ void Engine::find_sources(map_buffer_t &mb) {
     const auto fit_map_sources =
         [&](Eigen::Index map_index, Eigen::Index n_map_sources,
             double init_fwhm, Eigen::Index source_row_start) {
-            const auto source_in_vec =
-                citlali::pipeline::source_index_vector(n_map_sources);
-            std::vector<int> source_out_vec(source_in_vec.size());
-
-            grppi::map(tula::grppi_utils::dyn_ex(parallel_policy),
-                       source_in_vec, source_out_vec, [&](auto j) {
+            citlali::pipeline::fit_source_candidates(
+                parallel_policy, n_map_sources, [&](auto j) {
                 const double init_row =
                     mb.row_source_locs[map_index](j);
                 const double init_col =
@@ -7137,7 +7133,6 @@ void Engine::find_sources(map_buffer_t &mb) {
                     citlali::pipeline::store_source_fit_result(
                         mb, source_row_start, j, params, perrors);
                 }
-                return 0;
             });
         };
     citlali::pipeline::fit_detected_map_sources(
