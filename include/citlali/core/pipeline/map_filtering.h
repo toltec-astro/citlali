@@ -124,6 +124,25 @@ bool has_map_filter_noise_weight_summary(MapIndex map_index,
     return map_index < n_summary_values;
 }
 
+template <class MapBuffer, class MapIndex, class Logger>
+void log_map_filter_noise_weight_summary_if_present(
+    const MapBuffer &map_buffer, MapIndex map_index,
+    const Logger &logger) {
+    const bool has_noise_weight_summary =
+        has_map_filter_noise_weight_summary(
+            map_index, map_buffer.noise_weight_median_ratio.size());
+    if (!has_noise_weight_summary) {
+        return;
+    }
+
+    logger->info(
+        "noise products: median(w_formal*var)={:.4g} "
+        "scale={:.4g} noise_s2n_sigma={:.4g}",
+        map_buffer.noise_weight_median_ratio(map_index),
+        map_buffer.noise_weight_scale(map_index),
+        map_buffer.noise_s2n_sigma(map_index));
+}
+
 inline bool should_destroy_filtered_fits_handle(
     bool next_map_opens_new_file, bool should_close_filtered_fits) {
     return next_map_opens_new_file && should_close_filtered_fits;
@@ -143,6 +162,48 @@ template <class MapIndex>
 bool next_map_filter_output_opens_new_file(MapIndex current_map_index,
                                            MapIndex next_map_index) {
     return next_map_index > current_map_index;
+}
+
+template <class Polarization, class MapsToStokes, class MapIndex>
+bool should_close_current_map_filter_fits(
+    bool run_polarization, Polarization &polarization,
+    const MapsToStokes &maps_to_stokes, MapIndex map_index) {
+    if (!run_polarization) {
+        return true;
+    }
+
+    const auto &current_stokes_param =
+        polarization.stokes_params[maps_to_stokes(map_index)];
+    return is_final_map_filter_polarization_stokes(current_stokes_param);
+}
+
+template <class FitsVector, class MapIndex, class MapCount,
+          class ArraysToMaps, class Logger>
+void destroy_map_filter_fits_if_ready(
+    FitsVector *filtered_fits_io, MapIndex map_i, MapIndex map_index,
+    MapCount n_maps, const std::string &filtered_map_path,
+    bool should_close_filtered_fits, const ArraysToMaps &arrays_to_maps,
+    const Logger &logger) {
+    const bool has_next_map =
+        has_next_map_filter_output(map_i, n_maps);
+    if (!has_next_map) {
+        return;
+    }
+
+    const auto next_map_index = arrays_to_maps(map_i + 1);
+    const bool next_map_opens_new_file =
+        next_map_filter_output_opens_new_file(
+            map_index, next_map_index);
+    const bool should_destroy_filtered_fits =
+        should_destroy_filtered_fits_handle(
+            next_map_opens_new_file, should_close_filtered_fits);
+    if (!should_destroy_filtered_fits) {
+        return;
+    }
+
+    logger->info("closing FITS handle for {}", filtered_map_path);
+    filtered_fits_io->at(map_index).pfits->destroy();
+    logger->info("closed FITS handle for {}", filtered_map_path);
 }
 
 template <auto FilteredMap, class Engine, class MapBuffer, class Logger>
