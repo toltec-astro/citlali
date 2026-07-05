@@ -7639,7 +7639,8 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         if (run_noise) {
 #if defined(CITLALI_USE_WIENER_FILTER_OMP)
             logger->info("filtering noise for {} map {}/{} (n_noise={})",
-                         map_label, map_number, n_maps, mb.n_noise);
+                         map_label, map_number, n_maps,
+                         n_wiener_noise_maps);
             #pragma omp parallel for schedule(dynamic)
             for (Eigen::Index j=0; j<mb.n_noise; ++j) {
                 wiener_filter.filter_noise_threadsafe(mb, i, j);
