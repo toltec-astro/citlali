@@ -200,4 +200,57 @@ void mirror_processed_weighting_config(WeightingConfig &weighting,
     busy_row.factor = ptcproc.busy_row_suppression.factor;
 }
 
+template <class WeightValidationConfig, class WeightValidation>
+void mirror_processed_weight_validation_config(
+    WeightValidationConfig &target, const WeightValidation &source) {
+    target.enabled = source.enabled;
+    target.accumulation_iters = source.accumulation_iters;
+    target.apply_start_iter = source.apply_start_iter;
+    target.min_valid_scans = source.min_valid_scans;
+    target.min_factor = source.min_factor;
+    target.unvalidated_factor = source.unvalidated_factor;
+    target.require_fruitloops_model = source.require_fruitloops_model;
+    target.transient_ratio_enabled = source.transient_ratio_enabled;
+    target.ratio_power = source.ratio_power;
+    target.transient_ratio_power = source.transient_ratio_power;
+    target.upward_enabled = source.upward_enabled;
+    target.upward_max_factor = source.upward_max_factor;
+    target.upward_power = source.upward_power;
+    target.upward_min_base_factor = source.upward_min_base_factor;
+    target.upward_require_atmospheric = source.upward_require_atmospheric;
+    target.upward_min_atmospheric_factor =
+        source.upward_min_atmospheric_factor;
+    target.atmospheric_correlation_enabled =
+        source.atmospheric_correlation_enabled;
+    if (auto parsed =
+            citlali::config::parse_processed_weight_grouping(
+                source.atmospheric_grouping)) {
+        target.atmospheric_grouping = *parsed;
+    }
+    target.atmospheric_min_detectors = source.atmospheric_min_detectors;
+    target.atmospheric_ref = source.atmospheric_ref;
+    target.atmospheric_span = source.atmospheric_span;
+    target.atmospheric_power = source.atmospheric_power;
+    target.min_good_frac = source.min_good_frac;
+    target.min_overlap = source.min_overlap;
+    target.max_samples = source.max_samples;
+    target.high_weight_validation_enabled =
+        source.high_weight_validation_enabled;
+    target.high_weight_apply_caps = source.high_weight_apply_caps;
+    if (auto parsed =
+            citlali::config::parse_processed_weight_grouping(
+                source.high_weight_grouping)) {
+        target.high_weight_grouping = *parsed;
+    }
+    target.high_weight_min_group_detectors =
+        source.high_weight_min_group_detectors;
+    target.high_weight_log_robust_z = source.high_weight_log_robust_z;
+    target.high_weight_max_median_factor =
+        source.high_weight_max_median_factor;
+    target.high_weight_cap_median_factor =
+        source.high_weight_cap_median_factor;
+    target.high_weight_min_validated_factor =
+        source.high_weight_min_validated_factor;
+}
+
 }  // namespace citlali::pipeline
