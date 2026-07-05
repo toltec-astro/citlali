@@ -6709,22 +6709,26 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                     const int uid =
                                         citlali::pipeline::
                                             mapdiag_matrix_value(
-                                                mb->contribution_uid[contribution_map_index],
+                                                mb->contribution_uid[
+                                                    contribution_map_index],
                                                 r, c);
                                     const double contrib_signal =
                                         citlali::pipeline::
                                             mapdiag_matrix_double_value(
-                                                mb->contribution_signal[contribution_map_index],
+                                                mb->contribution_signal[
+                                                    contribution_map_index],
                                                 r, c);
                                     const double contrib_weight =
                                         citlali::pipeline::
                                             mapdiag_matrix_double_value(
-                                                mb->contribution_weight[contribution_map_index],
+                                                mb->contribution_weight[
+                                                    contribution_map_index],
                                                 r, c);
                                     const double contrib_variance_weight =
                                         citlali::pipeline::
                                             mapdiag_matrix_double_value(
-                                                mb->contribution_variance_weight[contribution_map_index],
+                                                mb->contribution_variance_weight[
+                                                    contribution_map_index],
                                                 r, c);
                                     if (citlali::pipeline::
                                             mapdiag_has_valid_contributor(
