@@ -123,18 +123,9 @@ void Engine::get_astrometry_config(CT &config) {
             }
         }
 
-        auto &typed_offsets = typed_astrometry_config.pointing_offsets;
-        typed_offsets.enabled = true;
-        const auto &az_offsets = pointing_offsets_arcsec["az"];
-        typed_offsets.az_arcsec.assign(
-            az_offsets.data(), az_offsets.data() + az_offsets.size());
-        const auto &alt_offsets = pointing_offsets_arcsec["alt"];
-        typed_offsets.alt_arcsec.assign(
-            alt_offsets.data(), alt_offsets.data() + alt_offsets.size());
-        typed_offsets.modified_julian_date.assign(
-            pointing_offsets_modified_julian_date.data(),
-            pointing_offsets_modified_julian_date.data() +
-                pointing_offsets_modified_julian_date.size());
+        citlali::engine_detail::mirror_typed_pointing_offsets(
+            pointing_offsets_arcsec, pointing_offsets_modified_julian_date,
+            typed_astrometry_config.pointing_offsets);
     }
     else {
         logger->error("pointing_offsets not found in config");
