@@ -7551,7 +7551,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     mapmaking::reset_edge_guard_storage(mb, n_maps_local);
 
     // pointer to map buffer
-    mapmaking::MapBuffer *pmb = &mb;
+    mapmaking::MapBuffer *map_buffer_ptr = &mb;
     using FitsVector =
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>>;
     // pointer to data file fits vector
@@ -7583,10 +7583,10 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     logger->info("preparing {} FITS headers ({} files)", map_label,
                  filtered_fits_io->size());
     for (Eigen::Index i=0; i<n_filtered_fits; ++i) {
-        add_phdu(filtered_fits_io, pmb, i);
+        add_phdu(filtered_fits_io, map_buffer_ptr, i);
 
-        if (!pmb->noise.empty() && !filtered_noise_fits_io->empty()) {
-            add_phdu(filtered_noise_fits_io, pmb, i);
+        if (!map_buffer_ptr->noise.empty() && !filtered_noise_fits_io->empty()) {
+            add_phdu(filtered_noise_fits_io, map_buffer_ptr, i);
         }
     }
 
@@ -7683,7 +7683,8 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             // write maps immediately after filtering due to computation time
             logger->info("writing {} map {}/{} to disk",
                          map_label, i + 1, n_maps);
-            write_maps(filtered_fits_io, filtered_noise_fits_io, pmb, i);
+            write_maps(filtered_fits_io, filtered_noise_fits_io,
+                       map_buffer_ptr, i);
 
             const auto &filtered_map_path = filtered_fits_io->at(map_index).filepath;
             logger->info("file has been written to:");
