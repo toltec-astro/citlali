@@ -35,32 +35,19 @@ void Engine::get_timestream_config(CT &config) {
     rtcproc.tod_output_outer = false;
     rtcproc.tod_output_outer_context_samples = 0;
     std::string rtc_output_mode = "full";
-    if (run_tod_output_rtc && config.has(std::tuple{"timestream","raw_time_chunk","output","mode"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, rtc_output_mode, missing_keys, invalid_keys,
-                         std::tuple{"timestream","raw_time_chunk","output","mode"},
-                         {"full","mini","full_outer","mini_outer"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            if (auto parsed = citlali::config::parse_tod_stream_output_mode(rtc_output_mode)) {
-                typed_timestream_config.output.raw_time_chunk.mode = *parsed;
-            }
-        }
-        citlali::pipeline::apply_tod_output_mode_flags(
-            rtc_output_mode, rtcproc.tod_output_mini,
-            rtcproc.tod_output_outer);
-    }
-    if (run_tod_output_rtc && config.has(std::tuple{"timestream","raw_time_chunk","output","outer_context_samples"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, rtcproc.tod_output_outer_context_samples, missing_keys, invalid_keys,
-                         std::tuple{"timestream","raw_time_chunk","output","outer_context_samples"},
-                         {}, {0});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_timestream_config.output.raw_time_chunk.outer_context_samples =
-                static_cast<int>(rtcproc.tod_output_outer_context_samples);
-        }
-    }
+    citlali::engine_detail::read_tod_stream_output_mode_config(
+        config, std::tuple{"timestream", "raw_time_chunk", "output", "mode"},
+        run_tod_output_rtc, {"full", "mini", "full_outer", "mini_outer"},
+        rtc_output_mode, rtcproc.tod_output_mini, rtcproc.tod_output_outer,
+        typed_timestream_config.output.raw_time_chunk, missing_keys,
+        invalid_keys);
+    citlali::engine_detail::read_tod_stream_outer_context_config(
+        config,
+        std::tuple{"timestream", "raw_time_chunk", "output",
+                   "outer_context_samples"},
+        run_tod_output_rtc, rtcproc.tod_output_outer_context_samples,
+        typed_timestream_config.output.raw_time_chunk, missing_keys,
+        invalid_keys);
     // output ptc
     citlali::engine_detail::read_processed_tod_output_enabled_config(
         config, run_tod_output_ptc, typed_timestream_config, missing_keys,
@@ -69,20 +56,13 @@ void Engine::get_timestream_config(CT &config) {
     ptcproc.tod_output_outer = false;
     ptcproc.tod_output_outer_context_samples = 0;
     std::string ptc_output_mode = "full";
-    if (run_tod_output_ptc && config.has(std::tuple{"timestream","processed_time_chunk","output","mode"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, ptc_output_mode, missing_keys, invalid_keys,
-                         std::tuple{"timestream","processed_time_chunk","output","mode"}, {"full","mini"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            if (auto parsed = citlali::config::parse_tod_stream_output_mode(ptc_output_mode)) {
-                typed_timestream_config.output.processed_time_chunk.mode = *parsed;
-            }
-        }
-        citlali::pipeline::apply_tod_output_mode_flags(
-            ptc_output_mode, ptcproc.tod_output_mini,
-            ptcproc.tod_output_outer);
-    }
+    citlali::engine_detail::read_tod_stream_output_mode_config(
+        config,
+        std::tuple{"timestream", "processed_time_chunk", "output", "mode"},
+        run_tod_output_ptc, {"full", "mini"}, ptc_output_mode,
+        ptcproc.tod_output_mini, ptcproc.tod_output_outer,
+        typed_timestream_config.output.processed_time_chunk, missing_keys,
+        invalid_keys);
     // set tod output to false by default
     run_tod_output = false;
 
