@@ -7364,18 +7364,18 @@ void Engine::write_stats() {
     netCDF::NcDim n_arrays_dim = fo.addDim("n_arrays", calib.n_arrays);
     netCDF::NcDim n_chunks_dim = fo.addDim("n_chunks", n_chunks);
 
-    std::vector<netCDF::NcDim> dims = {n_chunks_dim, n_dets_dim};
-    std::vector<netCDF::NcDim> grp_dims = {n_chunks_dim, n_arrays_dim};
+    std::vector<netCDF::NcDim> det_stat_dims = {n_chunks_dim, n_dets_dim};
+    std::vector<netCDF::NcDim> grp_stat_dims = {n_chunks_dim, n_arrays_dim};
 
     // add det stats
     for (const auto &stat: diagnostics.det_stats_header) {
-        netCDF::NcVar stat_v = fo.addVar(stat,netCDF::ncDouble, dims);
+        netCDF::NcVar stat_v = fo.addVar(stat,netCDF::ncDouble, det_stat_dims);
         stat_v.putVar(diagnostics.stats[stat].data());
         stat_v.putAtt("units",det_stats_header_units[stat]);
     }
     // add group stats
     for (const auto &stat: diagnostics.grp_stats_header) {
-        netCDF::NcVar stat_v = fo.addVar(stat,netCDF::ncDouble, grp_dims);
+        netCDF::NcVar stat_v = fo.addVar(stat,netCDF::ncDouble, grp_stat_dims);
         stat_v.putVar(diagnostics.stats[stat].data());
         stat_v.putAtt("units",grp_stats_header_units[stat]);
     }
