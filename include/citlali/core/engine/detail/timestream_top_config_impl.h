@@ -236,18 +236,12 @@ void Engine::get_timestream_config(CT &config) {
     tod_output_chunks_ptc = std::move(ptc_output_chunks);
 
     // keep legacy shared fields aligned with rtc (or ptc if rtc is disabled)
-    if (run_tod_output_rtc) {
-        tod_output_chunk_select_enabled = tod_output_chunk_select_enabled_rtc;
-        tod_output_chunks = tod_output_chunks_rtc;
-    }
-    else if (run_tod_output_ptc) {
-        tod_output_chunk_select_enabled = tod_output_chunk_select_enabled_ptc;
-        tod_output_chunks = tod_output_chunks_ptc;
-    }
-    else {
-        tod_output_chunk_select_enabled = false;
-        tod_output_chunks.clear();
-    }
+    citlali::pipeline::align_legacy_tod_output_selection(
+        run_tod_output_rtc, run_tod_output_ptc,
+        tod_output_chunk_select_enabled_rtc,
+        tod_output_chunk_select_enabled_ptc,
+        tod_output_chunks_rtc, tod_output_chunks_ptc,
+        tod_output_chunk_select_enabled, tod_output_chunks);
 
     // get time chunk size
     {

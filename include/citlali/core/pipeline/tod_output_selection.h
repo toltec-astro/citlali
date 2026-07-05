@@ -124,6 +124,27 @@ inline std::optional<std::string> requested_tod_output_type_name(
     return std::nullopt;
 }
 
+inline void align_legacy_tod_output_selection(
+    bool raw_time_chunk_enabled, bool processed_time_chunk_enabled,
+    bool raw_chunk_select_enabled, bool processed_chunk_select_enabled,
+    const std::vector<Eigen::Index> &raw_output_chunks,
+    const std::vector<Eigen::Index> &processed_output_chunks,
+    bool &legacy_chunk_select_enabled,
+    std::vector<Eigen::Index> &legacy_output_chunks) {
+    if (raw_time_chunk_enabled) {
+        legacy_chunk_select_enabled = raw_chunk_select_enabled;
+        legacy_output_chunks = raw_output_chunks;
+    }
+    else if (processed_time_chunk_enabled) {
+        legacy_chunk_select_enabled = processed_chunk_select_enabled;
+        legacy_output_chunks = processed_output_chunks;
+    }
+    else {
+        legacy_chunk_select_enabled = false;
+        legacy_output_chunks.clear();
+    }
+}
+
 template <class Config, class Key, class Logger>
 void parse_tod_output_indices_config(
     Config &config, const Key &indices_key, bool output_enabled,
