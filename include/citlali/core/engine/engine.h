@@ -7683,9 +7683,11 @@ void Engine::find_sources(map_buffer_t &mb) {
         // skip map if no sources found
         if (mb.n_sources[i] > 0) {
             // current array
-            auto array = maps_to_arrays(i);
+            const auto array = maps_to_arrays(i);
             // init fwhm in pixels
-            auto init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/mb.pixel_size_rad;
+            const auto init_fwhm =
+                toltec_io.array_fwhm_arcsec[array] * ASEC_TO_RAD /
+                mb.pixel_size_rad;
 
             // placeholder vectors for grppi map
             std::vector<int> source_in_vec, source_out_vec;
