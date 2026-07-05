@@ -3,6 +3,7 @@
 // Engine output implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/engine/detail/mapdiag_observation_contribution.h>
 #include <citlali/core/pipeline/mapdiag_workspace.h>
 
 template <mapmaking::MapType map_t, class map_buffer_t>
@@ -122,49 +123,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 idx, mb, i, mapdiag_stats, core_mask, noise_tail_refs);
         }
 
-        if (citlali::pipeline::mapdiag_is_single_observation_context(
-                mapdiag_context)) {
-            citlali::pipeline::assign_mapdiag_single_obs_entry(
-                mapdiag_context, idx, weight_sum[idx],
+        citlali::engine_detail::
+            assign_mapdiag_observation_contributions_for_map(
+                mapdiag_context, i, idx, mb, core_mask, weight_sum[idx],
                 core_weight_sum[idx], n_valid_pixels[idx],
-                n_core_pixels[idx], obs_tables);
-        }
-        else {
-            const auto n_obsnums = mb->obsnums.size();
-            for (std::size_t obs_idx = 0; obs_idx < n_obsnums; ++obs_idx) {
-                const auto &coadd_obsnum = mb->obsnums[obs_idx];
-                const auto obs_dir =
-                    citlali::pipeline::mapdiag_obs_raw_dir(
-                        redu_dir_name, coadd_obsnum);
-                const auto obs_weight_path =
-                    toltec_io
-                        .create_filename<engine_utils::toltecIO::toltec,
-                                         engine_utils::toltecIO::map,
-                                         engine_utils::toltecIO::raw>(
-                        obs_dir, redu_type,
-                        mapdiag_label_storage.array_names[idx], coadd_obsnum,
-                        telescope.sim_obs) +
-                    ".fits";
-                const auto weight_hdu_name =
-                    citlali::pipeline::mapdiag_weight_hdu_name(
-                        mapdiag_label_storage.map_names[idx],
-                        mapdiag_label_storage.stokes_names[idx]);
-                try {
-                    fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*>
-                        obs_fits(obs_weight_path);
-                    const auto obs_weight = obs_fits.get_hdu(weight_hdu_name);
-                    citlali::pipeline::accumulate_mapdiag_obs_weight(
-                        i, mapdiag_context.n_obsnums, mb->n_rows, mb->n_cols,
-                        core_mask, obs_weight, obs_idx, obs_tables);
-                } catch (const std::exception &e) {
-                    logger->warn(
-                        "failed to derive mapdiag contribution from {} [{}]: {}",
-                        obs_weight_path, weight_hdu_name, e.what());
-                    citlali::pipeline::zero_mapdiag_obs_entry(
-                        mapdiag_context, idx, obs_idx, obs_tables);
-                }
-            }
-        }
+                n_core_pixels[idx], toltec_io, redu_dir_name, redu_type,
+                telescope.sim_obs, mapdiag_label_storage, obs_tables,
+                logger);
         citlali::pipeline::assign_mapdiag_obs_fractions_for_map(
             obs_weight_sum, obs_core_weight_sum, fill_double,
             mapdiag_context, idx, obs_weight_frac, obs_core_weight_frac);
