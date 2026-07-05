@@ -7165,7 +7165,9 @@ void Engine::create_rtcdiag_file() {
             const Eigen::Index stop =
                 std::min<Eigen::Index>(n_tel - 1,
                                        telescope.scan_indices(1, scan));
-            if (stop <= start || start < 0 || stop >= n_tel) {
+            const bool has_valid_scan_bounds =
+                stop > start && start >= 0 && stop < n_tel;
+            if (!has_valid_scan_bounds) {
                 continue;
             }
             const double duration = tel_time(stop) - tel_time(start);
