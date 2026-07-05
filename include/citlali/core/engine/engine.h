@@ -7514,12 +7514,9 @@ void Engine::write_stats() {
         if (has_eigenvalue_groups) {
             const auto first_it = diagnostics.evals.begin();
             const auto n_eig_groups = first_it->second[0].size();
-            netCDF::NcDim n_eigs_dim =
-                fo.addDim("n_eigs", ptcproc.cleaner.n_calc);
-            netCDF::NcDim n_eig_grp_dim =
-                fo.addDim("n_eig_grp", n_eig_groups);
-
-            std::vector<netCDF::NcDim> eval_dims = {n_eig_grp_dim, n_eigs_dim};
+            const auto eval_dims =
+                citlali::pipeline::add_stats_eigenvalue_dims(
+                    fo, ptcproc.cleaner.n_calc, n_eig_groups);
 
             // loop through chunks
             for (const auto &[chunk_index, eval_groups] : diagnostics.evals) {
