@@ -7497,12 +7497,7 @@ void Engine::write_stats() {
     }
 
     // add apt table
-    for (const auto &x : calib.apt) {
-        netCDF::NcVar apt_v =
-            fo.addVar("apt_" + x.first, netCDF::ncDouble, n_dets_dim);
-        apt_v.putVar(x.second.data());
-        apt_v.putAtt("units", calib.apt_header_units[x.first]);
-    }
+    citlali::pipeline::add_stats_apt_double_vars(fo, calib, n_dets_dim);
 
     // add adc
     const auto &adc_snap_data = diagnostics.adc_snap_data;
