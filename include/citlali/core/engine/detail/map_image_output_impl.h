@@ -273,21 +273,13 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         }
     } catch (const CCfits::FitsError &e) {
         throw std::runtime_error(
-            fmt::format("failed to write map '{}' (map_i={} file={} noise_file={}): {}",
-                        map_name,
-                        static_cast<long long>(i),
-                        fits_io->at(map_index).filepath,
-                        citlali::pipeline::noise_file_path_or_na(
-                            mb->noise, noise_fits_io, map_index),
-                        e.message()));
+            citlali::pipeline::map_write_error_message(
+                map_name, i, fits_io->at(map_index).filepath, mb->noise,
+                noise_fits_io, map_index, e.message()));
     } catch (const std::exception &e) {
         throw std::runtime_error(
-            fmt::format("failed to write map '{}' (map_i={} file={} noise_file={}): {}",
-                        map_name,
-                        static_cast<long long>(i),
-                        fits_io->at(map_index).filepath,
-                        citlali::pipeline::noise_file_path_or_na(
-                            mb->noise, noise_fits_io, map_index),
-                        e.what()));
+            citlali::pipeline::map_write_error_message(
+                map_name, i, fits_io->at(map_index).filepath, mb->noise,
+                noise_fits_io, map_index, e.what()));
     }
 }

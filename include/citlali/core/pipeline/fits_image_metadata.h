@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Eigen/Core>
+#include <fmt/format.h>
 
 #include <cmath>
 #include <limits>
@@ -441,6 +442,18 @@ std::string noise_file_path_or_na(const NoiseList &noise,
         return noise_fits_io->at(map_index).filepath;
     }
     return std::string("N/A");
+}
+
+template <class NoiseList, class FitsIo>
+std::string map_write_error_message(
+    const std::string &map_name, Eigen::Index map_i,
+    const std::string &filepath, const NoiseList &noise,
+    const FitsIo &noise_fits_io, Eigen::Index map_index,
+    const std::string &message) {
+    return fmt::format(
+        "failed to write map '{}' (map_i={} file={} noise_file={}): {}",
+        map_name, static_cast<long long>(map_i), filepath,
+        noise_file_path_or_na(noise, noise_fits_io, map_index), message);
 }
 
 template <class Hdu>
