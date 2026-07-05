@@ -58,89 +58,13 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 source_epoch, RAD_TO_ASEC, logger);
         }
 
-        // coverage map
-        if (!mb->coverage.empty()) {
-            add_map_hdu_with_wcs(
-                citlali::pipeline::coverage_map_hdu_name(
-                    map_name, stokes_suffix),
-                mb->coverage[i]);
-            citlali::pipeline::add_coverage_map_metadata(
-                *fits_io->at(map_index).hdus.back());
-        }
-
         /* coverage bool and signal-to-noise maps */
-        if (!mb->coverage.empty()) {
-            // get weight threshold for current map
-            auto cov_region = mb->calc_cov_region(i);
-            auto weight_threshold = std::get<0>(cov_region);
-            weight_threshold =
-                citlali::pipeline::weight_threshold_or_zero_logged(
-                    weight_threshold, map_name,
-                    fits_io->at(map_index).filepath, logger);
-            Eigen::MatrixXd coverage_bool =
-                citlali::pipeline::coverage_mask_from_weight(
-                    mb->weight[i], weight_threshold);
-
-            // coverage bool map
-            add_map_hdu_with_wcs(
-                citlali::pipeline::coverage_mask_map_hdu_name(
-                    map_name, stokes_suffix),
-                coverage_bool);
-            citlali::pipeline::add_coverage_mask_map_metadata(
-                *fits_io->at(map_index).hdus.back());
-            citlali::pipeline::add_image_weight_threshold_key(
-                *fits_io->at(map_index).hdus.back(), weight_threshold);
-
-            // legacy signal-to-noise map name retained for compatibility; this is pixel S/N.
-            Eigen::MatrixXd sig2noise =
-                citlali::pipeline::pixel_snr_image_or_fallback(
-                    mb->sig2noise_pixel, i, mb->n_rows, mb->n_cols,
-                    mb->signal[i], mb->weight[i]);
-            add_map_hdu_with_wcs(
-                citlali::pipeline::legacy_pixel_snr_map_hdu_name(
-                    map_name, stokes_suffix),
-                sig2noise);
-            citlali::pipeline::add_legacy_pixel_snr_map_metadata(
-                *fits_io->at(map_index).hdus.back());
-
-            add_map_hdu_with_wcs(
-                citlali::pipeline::pixel_snr_map_hdu_name(
-                    map_name, stokes_suffix),
-                sig2noise);
-            citlali::pipeline::add_pixel_snr_map_metadata(
-                *fits_io->at(map_index).hdus.back());
-
-            const bool is_filtered_output =
-                citlali::pipeline::is_filtered_map_output(
-                    fits_io, filtered_fits_io_vec, filtered_coadd_fits_io_vec);
-            if (is_filtered_output &&
-                citlali::pipeline::has_map_image_slot(
-                    mb->point_source_uncertainty, i, mb->n_rows,
-                    mb->n_cols)) {
-                add_map_hdu_with_wcs(
-                    citlali::pipeline::point_source_flux_map_hdu_name(
-                        map_name, stokes_suffix),
-                    mb->signal[i]);
-                citlali::pipeline::add_point_source_flux_map_metadata(
-                    *fits_io->at(map_index).hdus.back(), mb->sig_unit);
-                citlali::pipeline::add_point_source_response_norm_key(
-                    *fits_io->at(map_index).hdus.back(), 1.0);
-
-                add_map_hdu_with_wcs(
-                    citlali::pipeline::point_source_uncertainty_map_hdu_name(
-                        map_name, stokes_suffix),
-                    mb->point_source_uncertainty[i]);
-                citlali::pipeline::add_point_source_uncertainty_map_metadata(
-                    *fits_io->at(map_index).hdus.back(), mb->sig_unit);
-
-                add_map_hdu_with_wcs(
-                    citlali::pipeline::point_source_snr_map_hdu_name(
-                        map_name, stokes_suffix),
-                    mb->sig2noise_point_source[i]);
-                citlali::pipeline::add_point_source_snr_map_metadata(
-                    *fits_io->at(map_index).hdus.back());
-            }
-        }
+        const bool is_filtered_output =
+            citlali::pipeline::is_filtered_map_output(
+                fits_io, filtered_fits_io_vec, filtered_coadd_fits_io_vec);
+        citlali::pipeline::add_coverage_support_image_hdus(
+            fits_io->at(map_index), mb, i, map_name, stokes_suffix, mb->wcs,
+            source_epoch, is_filtered_output, logger);
 
         // write noise maps
         if (citlali::pipeline::should_write_noise_maps(mb->noise,

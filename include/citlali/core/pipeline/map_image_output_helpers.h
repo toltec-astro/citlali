@@ -82,4 +82,71 @@ void add_kernel_map_image_hdu(
     add_kernel_map_metadata(*fits_entry.hdus.back(), mb->sig_unit);
 }
 
+template <class FitsEntry, class MapBuffer, class Wcs, class Logger>
+void add_coverage_support_image_hdus(
+    FitsEntry &fits_entry, MapBuffer &mb, Eigen::Index i,
+    const std::string &map_name, const std::string &stokes_suffix,
+    const Wcs &wcs, double source_epoch, bool is_filtered_output,
+    const Logger &logger) {
+    if (mb->coverage.empty()) {
+        return;
+    }
+
+    add_map_hdu_with_wcs(
+        fits_entry, coverage_map_hdu_name(map_name, stokes_suffix),
+        mb->coverage[i], wcs, source_epoch);
+    add_coverage_map_metadata(*fits_entry.hdus.back());
+
+    auto cov_region = mb->calc_cov_region(i);
+    auto weight_threshold = std::get<0>(cov_region);
+    weight_threshold = weight_threshold_or_zero_logged(
+        weight_threshold, map_name, fits_entry.filepath, logger);
+    Eigen::MatrixXd coverage_bool =
+        coverage_mask_from_weight(mb->weight[i], weight_threshold);
+
+    add_map_hdu_with_wcs(
+        fits_entry, coverage_mask_map_hdu_name(map_name, stokes_suffix),
+        coverage_bool, wcs, source_epoch);
+    add_coverage_mask_map_metadata(*fits_entry.hdus.back());
+    add_image_weight_threshold_key(*fits_entry.hdus.back(), weight_threshold);
+
+    Eigen::MatrixXd sig2noise = pixel_snr_image_or_fallback(
+        mb->sig2noise_pixel, i, mb->n_rows, mb->n_cols, mb->signal[i],
+        mb->weight[i]);
+    add_map_hdu_with_wcs(
+        fits_entry, legacy_pixel_snr_map_hdu_name(map_name, stokes_suffix),
+        sig2noise, wcs, source_epoch);
+    add_legacy_pixel_snr_map_metadata(*fits_entry.hdus.back());
+
+    add_map_hdu_with_wcs(
+        fits_entry, pixel_snr_map_hdu_name(map_name, stokes_suffix),
+        sig2noise, wcs, source_epoch);
+    add_pixel_snr_map_metadata(*fits_entry.hdus.back());
+
+    if (is_filtered_output &&
+        has_map_image_slot(
+            mb->point_source_uncertainty, i, mb->n_rows, mb->n_cols)) {
+        add_map_hdu_with_wcs(
+            fits_entry, point_source_flux_map_hdu_name(
+                map_name, stokes_suffix),
+            mb->signal[i], wcs, source_epoch);
+        add_point_source_flux_map_metadata(
+            *fits_entry.hdus.back(), mb->sig_unit);
+        add_point_source_response_norm_key(*fits_entry.hdus.back(), 1.0);
+
+        add_map_hdu_with_wcs(
+            fits_entry, point_source_uncertainty_map_hdu_name(
+                map_name, stokes_suffix),
+            mb->point_source_uncertainty[i], wcs, source_epoch);
+        add_point_source_uncertainty_map_metadata(
+            *fits_entry.hdus.back(), mb->sig_unit);
+
+        add_map_hdu_with_wcs(
+            fits_entry, point_source_snr_map_hdu_name(
+                map_name, stokes_suffix),
+            mb->sig2noise_point_source[i], wcs, source_epoch);
+        add_point_source_snr_map_metadata(*fits_entry.hdus.back());
+    }
+}
+
 }  // namespace citlali::pipeline
