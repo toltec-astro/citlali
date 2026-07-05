@@ -238,6 +238,19 @@ void add_phdu_jinc_shape_keys(FitsEntry &fits_entry,
                         shape_values[2], "Jinc filter param c");
 }
 
+template <class FitsEntry, class ShapeMap, class ArrayId, class Logger>
+void add_phdu_jinc_shape_keys_if_needed(
+    FitsEntry &fits_entry, const std::string &array_name,
+    const Logger &logger, const std::string &map_method,
+    double r_max, ShapeMap &shape_params, const ArrayId &array_id) {
+    if (map_method != "jinc") {
+        return;
+    }
+    logger->debug("adding jinc params");
+    add_phdu_jinc_shape_keys(
+        fits_entry, array_name, logger, r_max, shape_params[array_id]);
+}
+
 template <class FitsEntry, class HeaderValues, class Logger>
 void add_phdu_telescope_header_keys(FitsEntry &fits_entry,
                                     const std::string &array_name,

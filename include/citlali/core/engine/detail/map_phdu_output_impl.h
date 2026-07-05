@@ -94,13 +94,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_entry, mb->sig_unit, telescope.fsmp, fruit_iter);
 
     // add jinc shape params
-    if (map_method=="jinc") {
-        logger->debug("adding jinc params");
-
-        citlali::pipeline::add_phdu_jinc_shape_keys(
-            fits_entry, name, logger, jinc_mm.r_max,
-            jinc_mm.shape_params[array_id]);
-    }
+    citlali::pipeline::add_phdu_jinc_shape_keys_if_needed(
+        fits_entry, name, logger, map_method, jinc_mm.r_max,
+        jinc_mm.shape_params, array_id);
 
     // add mean tau
     logger->debug("adding extinction");
