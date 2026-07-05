@@ -7437,7 +7437,8 @@ void Engine::write_stats() {
                         fo.addVar(eval_var_name, netCDF::ncDouble,
                                   eval_dims);
                     std::vector<std::size_t> start_eig_index = {0, 0};
-                    std::vector<std::size_t> size = {1, TULA_SIZET(ptcproc.cleaner.n_calc)};
+                    std::vector<std::size_t> eig_write_shape = {
+                        1, TULA_SIZET(ptcproc.cleaner.n_calc)};
 
                     // loop through eigenvalues in current group
                     for (const auto &evals: eval_groups[i]) {
@@ -7445,7 +7446,8 @@ void Engine::write_stats() {
                             citlali::pipeline::ptcdiag_padded_eigenvalues(
                                 evals, ptcproc.cleaner.n_calc,
                                 citlali::pipeline::ptcdiag_fill_double());
-                        eval_v.putVar(start_eig_index, size, tmp.data());
+                        eval_v.putVar(start_eig_index, eig_write_shape,
+                                      tmp.data());
                         start_eig_index[0] += 1;
                     }
                 }
