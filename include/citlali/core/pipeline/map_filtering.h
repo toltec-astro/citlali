@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace citlali::pipeline {
 
 template <auto FilteredMap, class Engine, class MapBuffer, class Logger>
