@@ -36,6 +36,18 @@ inline bool has_sources(Eigen::Index n_sources) {
     return n_sources > 0;
 }
 
+template <class SourceCounts, class Logger>
+void log_source_detection_result(bool sources_found,
+                                 const SourceCounts &source_counts,
+                                 const Logger &logger) {
+    if (sources_found) {
+        logger->info("{} source(s) found", source_counts.back());
+    }
+    else {
+        logger->info("no sources found");
+    }
+}
+
 template <class SourceCounts>
 Eigen::Index count_map_sources(const SourceCounts &source_counts) {
     Eigen::Index n_sources = 0;
@@ -65,6 +77,14 @@ void initialize_source_fit_tables(MapBuffer &map_buffer,
 inline double source_fit_initial_fwhm_pixels(
     double array_fwhm_arcsec, double arcsec_to_rad, double pixel_size_rad) {
     return array_fwhm_arcsec * arcsec_to_rad / pixel_size_rad;
+}
+
+template <class ArrayFwhm, class ArrayIndex>
+double source_fit_initial_fwhm_for_array(
+    ArrayFwhm &array_fwhm_arcsec, ArrayIndex array_index,
+    double arcsec_to_rad, double pixel_size_rad) {
+    return source_fit_initial_fwhm_pixels(
+        array_fwhm_arcsec[array_index], arcsec_to_rad, pixel_size_rad);
 }
 
 inline double source_fit_pixel_to_arcsec(double rad_to_arcsec,
@@ -147,6 +167,31 @@ void rescale_source_fit_result(
     rescale_source_fit_radec_errors(
         params, perrors, ara(0) * rad_to_deg,
         adec(0) * rad_to_deg, arcsec_to_deg);
+}
+
+template <class SourceRow, class SourceIndex>
+auto source_fit_result_row(SourceRow source_row_start,
+                           SourceIndex source_index) {
+    return source_row_start + source_index;
+}
+
+template <class MapBuffer, class SourceRow, class SourceIndex,
+          class Params, class PErrors>
+void store_source_fit_result(MapBuffer &map_buffer,
+                             SourceRow source_row_start,
+                             SourceIndex source_index,
+                             const Params &params,
+                             const PErrors &perrors) {
+    const auto source_row =
+        source_fit_result_row(source_row_start, source_index);
+    map_buffer.source_params.row(source_row) = params;
+    map_buffer.source_perror.row(source_row) = perrors;
+}
+
+template <class SourceRow, class SourceCount>
+auto next_source_fit_row_start(SourceRow source_row_start,
+                               SourceCount n_map_sources) {
+    return source_row_start + n_map_sources;
 }
 
 inline std::vector<std::string> source_table_header() {

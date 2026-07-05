@@ -7146,12 +7146,8 @@ void Engine::find_sources(map_buffer_t &mb) {
         const auto sources_found = mb.find_sources(i);
 
         // number of sources found for current map
-        if (sources_found) {
-            logger->info("{} source(s) found", mb.n_sources.back());
-        }
-        else {
-            logger->info("no sources found");
-        }
+        citlali::pipeline::log_source_detection_result(
+            sources_found, mb.n_sources, logger);
     }
 
     citlali::pipeline::initialize_source_fit_tables(
@@ -7168,11 +7164,10 @@ void Engine::find_sources(map_buffer_t &mb) {
             // current array
             const auto array = maps_to_arrays(i);
             // init fwhm in pixels
-            const auto array_fwhm_arcsec =
-                toltec_io.array_fwhm_arcsec[array];
             const auto init_fwhm =
-                citlali::pipeline::source_fit_initial_fwhm_pixels(
-                    array_fwhm_arcsec, ASEC_TO_RAD, mb.pixel_size_rad);
+                citlali::pipeline::source_fit_initial_fwhm_for_array(
+                    toltec_io.array_fwhm_arcsec, array, ASEC_TO_RAD,
+                    mb.pixel_size_rad);
 
             // placeholder vectors for grppi map
             const auto source_in_vec =
@@ -7206,15 +7201,16 @@ void Engine::find_sources(map_buffer_t &mb) {
                         RAD_TO_DEG, DEG_TO_RAD, ASEC_TO_DEG,
                         tangent_to_abs);
 
-                    // add source params and errors to table
-                    mb.source_params.row(source_row_start + j) = params;
-                    mb.source_perror.row(source_row_start + j) = perrors;
+                    citlali::pipeline::store_source_fit_result(
+                        mb, source_row_start, j, params, perrors);
                 }
                 return 0;
             });
 
             // update row
-            source_row_start += n_map_sources;
+            source_row_start =
+                citlali::pipeline::next_source_fit_row_start(
+                    source_row_start, n_map_sources);
         }
     }
 }
