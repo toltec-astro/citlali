@@ -7845,7 +7845,8 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     }
 
     // matrix to hold source information (floats for readability)
-    Eigen::MatrixXf source_table(n_sources, 2 * map_fitter.n_params + 2);
+    const auto source_table_cols = 2 * map_fitter.n_params + 2;
+    Eigen::MatrixXf source_table(n_sources, source_table_cols);
 
     // loop through params and add arrays
     Eigen::Index k = 0;
