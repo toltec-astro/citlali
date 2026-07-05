@@ -32,6 +32,20 @@ inline std::string diagnostic_netcdf_filename(
     return filename + ".nc";
 }
 
+template <auto DataType, auto ProductType, auto FilterType, class ToltecIo>
+std::string diagnostic_output_netcdf_filename(
+    ToltecIo &toltec_io, const std::string &obsnum_dir_name,
+    const std::string &tod_output_subdir_name,
+    const std::string &reduction_type, const std::string &obsnum,
+    bool simulated_observation) {
+    const std::string dir_name =
+        diagnostic_raw_directory(obsnum_dir_name, tod_output_subdir_name);
+    const auto filename =
+        toltec_io.template create_filename<DataType, ProductType, FilterType>(
+            dir_name, reduction_type, "", obsnum, simulated_observation);
+    return diagnostic_netcdf_filename(filename);
+}
+
 inline double ptcdiag_fill_double() {
     return std::numeric_limits<double>::quiet_NaN();
 }

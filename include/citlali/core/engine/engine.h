@@ -6884,16 +6884,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 }
 
 void Engine::create_ptcdiag_file() {
-    const std::string dir_name =
-        citlali::pipeline::diagnostic_raw_directory(
-            obsnum_dir_name, tod_output_subdir_name);
-
-    const auto filename =
-        toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                  engine_utils::toltecIO::ptcdiag,
-                                  engine_utils::toltecIO::raw>(
-            dir_name, redu_type, "", obsnum, telescope.sim_obs);
-    ptcdiag_filename = citlali::pipeline::diagnostic_netcdf_filename(filename);
+    ptcdiag_filename =
+        citlali::pipeline::diagnostic_output_netcdf_filename<
+            engine_utils::toltecIO::toltec,
+            engine_utils::toltecIO::ptcdiag,
+            engine_utils::toltecIO::raw>(
+            toltec_io, obsnum_dir_name, tod_output_subdir_name, redu_type,
+            obsnum, telescope.sim_obs);
 
     write_netcdf_atomic(ptcdiag_filename, [&](netCDF::NcFile &fo) {
     const int fill_int = citlali::pipeline::ptcdiag_fill_int();
@@ -6931,16 +6928,13 @@ void Engine::create_ptcdiag_file() {
 }
 
 void Engine::create_rtcdiag_file() {
-    const std::string dir_name =
-        citlali::pipeline::diagnostic_raw_directory(
-            obsnum_dir_name, tod_output_subdir_name);
-
-    const auto filename =
-        toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                  engine_utils::toltecIO::rtcdiag,
-                                  engine_utils::toltecIO::raw>(
-            dir_name, redu_type, "", obsnum, telescope.sim_obs);
-    rtcdiag_filename = citlali::pipeline::diagnostic_netcdf_filename(filename);
+    rtcdiag_filename =
+        citlali::pipeline::diagnostic_output_netcdf_filename<
+            engine_utils::toltecIO::toltec,
+            engine_utils::toltecIO::rtcdiag,
+            engine_utils::toltecIO::raw>(
+            toltec_io, obsnum_dir_name, tod_output_subdir_name, redu_type,
+            obsnum, telescope.sim_obs);
 
     write_netcdf_atomic(rtcdiag_filename, [&](netCDF::NcFile &fo) {
 
@@ -7031,15 +7025,12 @@ void Engine::write_stats() {
                     stats_subdir_path);
         }
     }
-    // create stats filename
-    const auto stats_filename =
-        toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                  engine_utils::toltecIO::stats,
-                                  engine_utils::toltecIO::raw>(
-            stats_dir, redu_type, "", obsnum, telescope.sim_obs);
-
     const auto stats_netcdf_filename =
-        citlali::pipeline::stats_netcdf_filename(stats_filename);
+        citlali::pipeline::stats_output_netcdf_filename<
+            engine_utils::toltecIO::toltec,
+            engine_utils::toltecIO::stats,
+            engine_utils::toltecIO::raw>(
+            toltec_io, stats_dir, redu_type, obsnum, telescope.sim_obs);
     write_netcdf_atomic(stats_netcdf_filename, [&](netCDF::NcFile &fo) {
 
     citlali::pipeline::add_stats_file_outputs(

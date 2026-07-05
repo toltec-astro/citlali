@@ -36,6 +36,17 @@ inline std::string stats_netcdf_filename(const std::string &stats_filename) {
     return stats_filename + ".nc";
 }
 
+template <auto DataType, auto ProductType, auto FilterType, class ToltecIo>
+std::string stats_output_netcdf_filename(
+    ToltecIo &toltec_io, const std::string &stats_dir,
+    const std::string &reduction_type, const std::string &obsnum,
+    bool simulated_observation) {
+    const auto filename =
+        toltec_io.template create_filename<DataType, ProductType, FilterType>(
+            stats_dir, reduction_type, "", obsnum, simulated_observation);
+    return stats_netcdf_filename(filename);
+}
+
 inline std::string stats_unit_or_empty(
     const std::map<std::string, std::string> &units,
     const std::string &stat) {
