@@ -7641,6 +7641,7 @@ void Engine::find_sources(map_buffer_t &mb) {
     mb.n_sources.clear();
     mb.row_source_locs.clear();
     mb.col_source_locs.clear();
+    constexpr int missing_source_location = -99;
     // loop through maps
     for (Eigen::Index i=0; i<n_maps; ++i) {
         // update source vectors
@@ -7649,8 +7650,8 @@ void Engine::find_sources(map_buffer_t &mb) {
         mb.col_source_locs.push_back(Eigen::VectorXi::Ones(1));
 
         // default value of -99 to keep size of vectors same as map vector
-        mb.row_source_locs.back()*=-99;
-        mb.col_source_locs.back()*=-99;
+        mb.row_source_locs.back() *= missing_source_location;
+        mb.col_source_locs.back() *= missing_source_location;
 
         // run source finder
         auto sources_found = mb.find_sources(i);
