@@ -7731,7 +7731,9 @@ void Engine::find_sources(map_buffer_t &mb) {
                     perrors(4) = source_fwhm_to_arcsec * perrors(4);
 
                     // if in radec calculate absolute pointing
-                    if (telescope.pixel_axes=="radec") {
+                    const bool use_radec_projection =
+                        telescope.pixel_axes=="radec";
+                    if (use_radec_projection) {
                         Eigen::VectorXd lat(1), lon(1);
                         lat << params(2)*ASEC_TO_RAD;
                         lon << params(1)*ASEC_TO_RAD;
