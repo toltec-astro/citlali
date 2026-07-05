@@ -3,7 +3,7 @@
 // Engine config loading implementation detail.
 // Include this only after Engine has been declared.
 
-#include <citlali/core/engine/detail/config_parse_tracking.h>
+#include <citlali/core/engine/detail/citlali_config_read.h>
 #include <citlali/core/engine/detail/mapmaking_activation_policy.h>
 #include <citlali/core/engine/detail/source_protection_activation.h>
 
@@ -80,94 +80,15 @@ void Engine::get_citlali_config(CT &config) {
             missing_keys, invalid_keys, missing_before, invalid_before);
     };
 
-    // run map filter?
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, run_map_filter, missing_keys, invalid_keys,
-                         std::tuple{"post_processing","map_filtering","enabled"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_post_processing_config.map_filtering_enabled = run_map_filter;
-            typed_post_processing_config.map_filtering.enabled = run_map_filter;
-        }
-    }
-
-    // run source finder?
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, run_source_finder, missing_keys, invalid_keys,
-                         std::tuple{"post_processing","source_finding","enabled"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_post_processing_config.source_finding_enabled = run_source_finder;
-            typed_post_processing_config.source_finding.enabled = run_source_finder;
-        }
-    }
+    citlali::engine_detail::read_post_processing_activation_config(
+        config, run_map_filter, run_source_finder,
+        typed_post_processing_config, missing_keys, invalid_keys);
 
     // map fitter options if in pointing or beammap mode or if map filtering or source finding are enabled
-    if (citlali::pipeline::source_fitting_config_needed(
-            redu_type, run_map_filter, run_source_finder)) {
-        typed_post_processing_config.source_fitting.active = true;
-        // size of region around found source to fit
-        {
-            const auto missing_before = missing_keys.size();
-            const auto invalid_before = invalid_keys.size();
-            get_config_value(config, map_fitter.bounding_box_pix, missing_keys, invalid_keys,
-                             std::tuple{"post_processing","source_fitting","bounding_box_arcsec"},{},{0});
-            if (parsed_cleanly(missing_before, invalid_before)) {
-                typed_post_processing_config.source_fitting.bounding_box_arcsec =
-                    map_fitter.bounding_box_pix;
-            }
-        }
-        // radius around center of map to find source within
-        {
-            const auto missing_before = missing_keys.size();
-            const auto invalid_before = invalid_keys.size();
-            get_config_value(config, map_fitter.fitting_region_pix, missing_keys, invalid_keys,
-                             std::tuple{"post_processing","source_fitting","fitting_radius_arcsec"});
-            if (parsed_cleanly(missing_before, invalid_before)) {
-                typed_post_processing_config.source_fitting.fitting_radius_arcsec =
-                    map_fitter.fitting_region_pix;
-            }
-        }
-        // fit 2d gaussian rotation angle
-        {
-            const auto missing_before = missing_keys.size();
-            const auto invalid_before = invalid_keys.size();
-            get_config_value(config, map_fitter.fit_angle, missing_keys, invalid_keys,
-                             std::tuple{"post_processing","source_fitting", "gauss_model","fit_rotation_angle"});
-            if (parsed_cleanly(missing_before, invalid_before)) {
-                typed_post_processing_config.source_fitting.fit_rotation_angle =
-                    map_fitter.fit_angle;
-            }
-        }
-
-        // convert bounding box and fitting region to pixels
-        map_fitter.bounding_box_pix =
-            citlali::pipeline::source_fitting_arcsec_to_pixels(
-                map_fitter.bounding_box_pix, ASEC_TO_RAD, omb.pixel_size_rad);
-        map_fitter.fitting_region_pix =
-            citlali::pipeline::source_fitting_arcsec_to_pixels(
-                map_fitter.fitting_region_pix, ASEC_TO_RAD, omb.pixel_size_rad);
-
-        // fitter flux and fwhm limits
-        map_fitter.flux_limits.resize(2);
-        map_fitter.fwhm_limits.resize(2);
-        for (Eigen::Index i=0; i<map_fitter.flux_limits.size(); ++i) {
-            // flux limit
-            map_fitter.flux_limits(i) = config.template get_typed<double>(std::tuple{"post_processing","source_fitting",
-                                                                                     "gauss_model","amp_limit_factors",i});
-            typed_post_processing_config.source_fitting.amp_limit_factors[static_cast<std::size_t>(i)] =
-                map_fitter.flux_limits(i);
-            // fwhm limit
-            map_fitter.fwhm_limits(i) = config.template get_typed<double>(std::tuple{"post_processing","source_fitting",
-                                                                                     "gauss_model","fwhm_limit_factors",i});
-            typed_post_processing_config.source_fitting.fwhm_limit_factors[static_cast<std::size_t>(i)] =
-                map_fitter.fwhm_limits(i);
-        }
-
-        citlali::pipeline::apply_positive_source_fit_limits(map_fitter);
-    }
+    citlali::engine_detail::read_source_fitting_config(
+        config, redu_type, run_map_filter, run_source_finder, map_fitter,
+        omb.pixel_size_rad, ASEC_TO_RAD, typed_post_processing_config,
+        missing_keys, invalid_keys);
 
     /* get wiener filter config */
     if (run_map_filter) {
