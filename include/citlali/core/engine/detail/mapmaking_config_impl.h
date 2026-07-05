@@ -60,34 +60,13 @@ void Engine::get_mapmaking_config(CT &config) {
     const auto omb_invalid_before = invalid_keys.size();
     omb.get_config(config, missing_keys, invalid_keys, telescope.pixel_axes, redu_type);
     if (parsed_cleanly(omb_missing_before, omb_invalid_before)) {
-        typed_mapmaking_config.coverage_cut = omb.cov_cut;
-        typed_mapmaking_config.pixel_size_arcsec = omb.pixel_size_rad * RAD_TO_ASEC;
-        typed_mapmaking_config.unit = omb.sig_unit;
-        if (omb.wcs.naxis.size() >= 2) {
-            typed_mapmaking_config.x_size_pix = static_cast<int>(omb.wcs.naxis[0]);
-            typed_mapmaking_config.y_size_pix = static_cast<int>(omb.wcs.naxis[1]);
-        }
-        if (omb.wcs.crpix.size() >= 2) {
-            typed_mapmaking_config.crpix1 = omb.wcs.crpix[0];
-            typed_mapmaking_config.crpix2 = omb.wcs.crpix[1];
-        }
-        if (omb.crval_config.size() >= 2) {
-            typed_mapmaking_config.crval1_j2000 = omb.crval_config[0];
-            typed_mapmaking_config.crval2_j2000 = omb.crval_config[1];
-        }
-        typed_post_processing_config.map_histogram_n_bins = omb.hist_n_bins;
+        citlali::pipeline::mirror_output_map_block_config(
+            typed_mapmaking_config, omb, RAD_TO_ASEC,
+            typed_post_processing_config);
     }
 
-    // run coaddition?
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, run_coadd, missing_keys, invalid_keys,
-                         std::tuple{"coadd","enabled"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_coadd_config.enabled = run_coadd;
-        }
-    }
+    citlali::engine_detail::read_coadd_enabled_config(
+        config, run_coadd, typed_coadd_config, missing_keys, invalid_keys);
     // re-run to get config for cmb
     if (run_coadd) {
         logger->info("getting cmb config options");
@@ -143,16 +122,8 @@ void Engine::get_mapmaking_config(CT &config) {
                          std::tuple{"mapmaking","maximum_likelihood","max_iterations"});
     }
 
-    // make noise maps?
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, run_noise, missing_keys, invalid_keys,
-                         std::tuple{"noise_maps","enabled"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_noise_config.enabled = run_noise;
-        }
-    }
+    citlali::engine_detail::read_noise_maps_enabled_config(
+        config, run_noise, typed_noise_config, missing_keys, invalid_keys);
     if (run_noise) {
         // number of noise maps
         {

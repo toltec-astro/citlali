@@ -98,4 +98,36 @@ void read_map_regime_config(Config &config, std::string &map_regime,
                     citlali::pipeline::allowed_map_regimes(), key);
 }
 
+template <class Config, class MissingKeys, class InvalidKeys,
+          class CoaddConfig>
+void read_coadd_enabled_config(Config &config, bool &enabled,
+                               CoaddConfig &typed_config,
+                               MissingKeys &missing_keys,
+                               InvalidKeys &invalid_keys) {
+    const auto missing_before = missing_keys.size();
+    const auto invalid_before = invalid_keys.size();
+    ::get_config_value(config, enabled, missing_keys, invalid_keys,
+                       std::tuple{"coadd", "enabled"});
+    if (config_parse_clean(
+            missing_keys, invalid_keys, missing_before, invalid_before)) {
+        typed_config.enabled = enabled;
+    }
+}
+
+template <class Config, class MissingKeys, class InvalidKeys,
+          class NoiseConfig>
+void read_noise_maps_enabled_config(Config &config, bool &enabled,
+                                    NoiseConfig &typed_config,
+                                    MissingKeys &missing_keys,
+                                    InvalidKeys &invalid_keys) {
+    const auto missing_before = missing_keys.size();
+    const auto invalid_before = invalid_keys.size();
+    ::get_config_value(config, enabled, missing_keys, invalid_keys,
+                       std::tuple{"noise_maps", "enabled"});
+    if (config_parse_clean(
+            missing_keys, invalid_keys, missing_before, invalid_before)) {
+        typed_config.enabled = enabled;
+    }
+}
+
 }  // namespace citlali::engine_detail

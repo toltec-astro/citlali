@@ -31,6 +31,30 @@ void enforce_map_grouping_polarization_policy(
     std::exit(EXIT_FAILURE);
 }
 
+template <class MapmakingConfig, class OutputMapBlock,
+          class PostProcessingConfig>
+void mirror_output_map_block_config(MapmakingConfig &target,
+                                    const OutputMapBlock &omb,
+                                    double rad_to_arcsec,
+                                    PostProcessingConfig &post_processing) {
+    target.coverage_cut = omb.cov_cut;
+    target.pixel_size_arcsec = omb.pixel_size_rad * rad_to_arcsec;
+    target.unit = omb.sig_unit;
+    if (omb.wcs.naxis.size() >= 2) {
+        target.x_size_pix = static_cast<int>(omb.wcs.naxis[0]);
+        target.y_size_pix = static_cast<int>(omb.wcs.naxis[1]);
+    }
+    if (omb.wcs.crpix.size() >= 2) {
+        target.crpix1 = omb.wcs.crpix[0];
+        target.crpix2 = omb.wcs.crpix[1];
+    }
+    if (omb.crval_config.size() >= 2) {
+        target.crval1_j2000 = omb.crval_config[0];
+        target.crval2_j2000 = omb.crval_config[1];
+    }
+    post_processing.map_histogram_n_bins = omb.hist_n_bins;
+}
+
 template <class OutputMapBlock, class CoaddMapBlock>
 void mirror_noise_map_settings_to_coadd(const OutputMapBlock &omb,
                                         CoaddMapBlock &cmb) {
