@@ -7557,7 +7557,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     // pointer to data file fits vector
     FitsVector *f_io = nullptr;
     // pointer to noise file fits vector
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>* n_io = nullptr;
+    FitsVector *n_io = nullptr;
     // directory name
     std::string dir_name;
     // logging label
