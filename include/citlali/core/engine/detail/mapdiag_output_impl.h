@@ -280,18 +280,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         if (citlali::pipeline::mapdiag_has_signal_weight_samples(
                 mb->signal[i], mb->weight[i])) {
             const Eigen::MatrixXd sig2noise =
-                citlali::pipeline::mapdiag_sig2noise_image(
-                    mb->signal[i], mb->weight[i]);
-            citlali::pipeline::assign_mapdiag_peak_stats(
-                idx,
-                citlali::pipeline::mapdiag_peak_stats(
-                    sig2noise, core_mask, n_core_pixels[idx], fill_double),
-                peak_refs);
-            const auto core_values =
-                mapdiag_stats.collect_masked_values(sig2noise, core_mask);
-            const auto signal_tail = mapdiag_stats.tail_stats(core_values);
-            citlali::pipeline::assign_mapdiag_core_tail_stats(
-                idx, signal_tail, core_tail_refs);
+                citlali::pipeline::assign_mapdiag_signal_stats(
+                    idx, mb->signal[i], mb->weight[i], core_mask,
+                    n_core_pixels[idx], fill_double, mapdiag_stats,
+                    peak_refs, core_tail_refs);
 
             if (citlali::pipeline::mapdiag_outlier_diagnostics_enabled(
                     reduction_learning)) {

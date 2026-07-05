@@ -538,6 +538,25 @@ inline void assign_mapdiag_noise_tail_samples(
         idx, summarize_mapdiag_noise_tail_samples(stats, samples), refs);
 }
 
+inline Eigen::MatrixXd assign_mapdiag_signal_stats(
+    std::size_t idx, const Eigen::MatrixXd &signal,
+    const Eigen::MatrixXd &weight, const Eigen::ArrayXXd &core_mask,
+    int n_core_pixels, double fill_value,
+    const MapdiagStatsContext &stats, MapdiagPeakRefs peak_refs,
+    MapdiagCoreTailRefs core_tail_refs) {
+    const Eigen::MatrixXd sig2noise =
+        mapdiag_sig2noise_image(signal, weight);
+    assign_mapdiag_peak_stats(
+        idx, mapdiag_peak_stats(
+                 sig2noise, core_mask, n_core_pixels, fill_value),
+        peak_refs);
+    const auto core_values = stats.collect_masked_values(
+        sig2noise, core_mask);
+    assign_mapdiag_core_tail_stats(
+        idx, stats.tail_stats(core_values), core_tail_refs);
+    return sig2noise;
+}
+
 inline void mapdiag_append_finite(std::vector<double> &values, double value) {
     if (std::isfinite(value)) {
         values.push_back(value);
