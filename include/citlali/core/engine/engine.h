@@ -6410,11 +6410,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         core_peak_abs_sig2noise,
         peak_row,
         peak_col};
-    std::vector<int> edge_guard_applied(mapdiag_context.n_maps, 0);
-    std::vector<int> edge_guard_support_radius_pix(mapdiag_context.n_maps, 0);
-    std::vector<int> edge_guard_science_npix(mapdiag_context.n_maps, 0);
-    std::vector<int> edge_guard_support_npix(mapdiag_context.n_maps, 0);
-    std::vector<int> edge_guard_guardband_npix(mapdiag_context.n_maps, 0);
+    std::vector<int> edge_guard_applied(n_mapdiag_maps, 0);
+    std::vector<int> edge_guard_support_radius_pix(n_mapdiag_maps, 0);
+    std::vector<int> edge_guard_science_npix(n_mapdiag_maps, 0);
+    std::vector<int> edge_guard_support_npix(n_mapdiag_maps, 0);
+    std::vector<int> edge_guard_guardband_npix(n_mapdiag_maps, 0);
     citlali::pipeline::MapdiagEdgeGuardIntRefs edge_guard_int_refs{
         edge_guard_applied,
         edge_guard_support_radius_pix,
