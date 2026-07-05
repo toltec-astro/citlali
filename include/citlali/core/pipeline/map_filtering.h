@@ -123,6 +123,17 @@ void finalize_map_filter_fits_outputs(
     logger->info("finished finalizing {} FITS handles", map_label);
 }
 
+template <class FitsVector, class Logger>
+void finalize_map_filter_fits_outputs_if_needed(
+    bool write_filtered_maps_partial,
+    FitsVector *filtered_fits_io, FitsVector *filtered_noise_fits_io,
+    const char *map_label, const Logger &logger) {
+    if (write_filtered_maps_partial) {
+        finalize_map_filter_fits_outputs(
+            filtered_fits_io, filtered_noise_fits_io, map_label, logger);
+    }
+}
+
 template <class NoiseCount>
 auto map_filter_progress_stride(NoiseCount n_noise) {
     return n_noise / 100;
@@ -395,6 +406,66 @@ void write_map_filter_output(
     destroy_map_filter_fits_if_ready(
         filtered_fits_io, map_i, map_index, n_maps, filtered_map_path,
         should_close_filtered_fits, arrays_to_maps, logger);
+}
+
+template <class WienerFilter, class MapBuffer, class MapCount,
+          class MapsToArrays, class ArrayNames, class ArrayFwhm, class Apt,
+          class FitsVector, class MapBufferPtr, class Polarization,
+          class MapsToStokes, class ArraysToMaps, class WriteMaps,
+          class Logger>
+void run_map_filter_loop(
+    WienerFilter &wiener_filter, MapBuffer &map_buffer, MapCount n_maps,
+    const char *map_label, const MapsToArrays &maps_to_arrays,
+    ArrayNames &array_names, ArrayFwhm &array_fwhm_arcsec,
+    double arcsec_to_rad, const Apt &apt, bool run_noise,
+    bool write_filtered_maps_partial, bool run_noise_products,
+    bool apply_empirical_noise_weights,
+    FitsVector *filtered_fits_io, FitsVector *filtered_noise_fits_io,
+    MapBufferPtr map_buffer_ptr, bool run_polarization,
+    Polarization &polarization, const MapsToStokes &maps_to_stokes,
+    const ArraysToMaps &arrays_to_maps, const WriteMaps &write_maps,
+    const Logger &logger) {
+    for (Eigen::Index i = 0; i < n_maps; ++i) {
+        const auto map_number = map_filter_display_number(i);
+        const auto array = maps_to_arrays(i);
+        const auto &array_name =
+            map_filter_array_name(array_names, array);
+        const auto map_index = arrays_to_maps(i);
+
+        log_map_filter_map_start(
+            map_label, map_number, n_maps, array_name, logger);
+        initialize_map_filter_fwhm(
+            wiener_filter, array_fwhm_arcsec, array, arcsec_to_rad,
+            map_buffer.pixel_size_rad);
+        build_map_filter_template(
+            wiener_filter, map_buffer, apt, i, map_number, n_maps,
+            array_name, map_label, logger);
+        filter_map_filter_signal_map(
+            wiener_filter, map_buffer, i, map_number, n_maps, array_name,
+            map_label, logger);
+
+        const auto n_wiener_noise_maps = map_buffer.n_noise;
+        if (run_noise) {
+            filter_map_filter_noise_maps(
+                wiener_filter, map_buffer, i, map_number,
+                n_wiener_noise_maps, map_label, n_maps, logger);
+            calculate_map_filter_noise_products_if_needed(
+                map_buffer, i, map_number, n_maps,
+                write_filtered_maps_partial, run_noise_products,
+                wiener_filter.normalize_error, apply_empirical_noise_weights,
+                map_label, logger);
+        }
+
+        if (write_filtered_maps_partial) {
+            write_map_filter_output(
+                filtered_fits_io, filtered_noise_fits_io, map_buffer_ptr,
+                i, map_number, map_index, n_maps, map_label,
+                run_polarization, polarization, maps_to_stokes,
+                arrays_to_maps, write_maps, logger);
+        }
+
+        log_map_filter_map_completed(map_label, map_number, n_maps, logger);
+    }
 }
 
 template <auto FilteredMap, class Engine, class MapBuffer, class Logger>

@@ -7064,67 +7064,26 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     const auto map_to_stokes_index = [&](Eigen::Index map_index) {
         return maps_to_stokes(map_index);
     };
+    const auto map_to_array_index = [&](Eigen::Index map_index) {
+        return maps_to_arrays(map_index);
+    };
     const auto array_to_map_index = [&](Eigen::Index array_index) {
         return arrays_to_maps(array_index);
     };
 
-    // loop through maps and run wiener filter
-    for (Eigen::Index i = 0; i < n_maps; ++i) {
-        const auto map_number =
-            citlali::pipeline::map_filter_display_number(i);
-        // current array
-        const auto array = maps_to_arrays(i);
-        const auto &array_name =
-            citlali::pipeline::map_filter_array_name(
-                toltec_io.array_name_map, array);
-        // get file index
-        const auto map_index = arrays_to_maps(i);
-        citlali::pipeline::log_map_filter_map_start(
-            map_label, map_number, n_maps, array_name, logger);
-        // init fwhm in pixels
-        citlali::pipeline::initialize_map_filter_fwhm(
-            wiener_filter, toltec_io.array_fwhm_arcsec, array,
-            ASEC_TO_RAD, mb.pixel_size_rad);
-        // make wiener filter template
-        citlali::pipeline::build_map_filter_template(
-            wiener_filter, mb, calib.apt, i, map_number, n_maps,
-            array_name, map_label, logger);
-        // run the filter for the current map
-        citlali::pipeline::filter_map_filter_signal_map(
-            wiener_filter, mb, i, map_number, n_maps, array_name,
-            map_label, logger);
+    citlali::pipeline::run_map_filter_loop(
+        wiener_filter, mb, n_maps, map_label, map_to_array_index,
+        toltec_io.array_name_map, toltec_io.array_fwhm_arcsec,
+        ASEC_TO_RAD, calib.apt, run_noise, write_filtered_maps_partial,
+        run_noise_products, apply_empirical_noise_weights,
+        filtered_fits_io, filtered_noise_fits_io, map_buffer_ptr,
+        rtcproc.run_polarization, rtcproc.polarization,
+        map_to_stokes_index, array_to_map_index, write_filter_maps,
+        logger);
 
-        // filter noise maps
-        const auto n_wiener_noise_maps = mb.n_noise;
-        if (run_noise) {
-            citlali::pipeline::filter_map_filter_noise_maps(
-                wiener_filter, mb, i, map_number, n_wiener_noise_maps,
-                map_label, n_maps, logger);
-            citlali::pipeline::calculate_map_filter_noise_products_if_needed(
-                mb, i, map_number, n_maps, write_filtered_maps_partial,
-                run_noise_products, wiener_filter.normalize_error,
-                apply_empirical_noise_weights, map_label, logger);
-        }
-
-        if (write_filtered_maps_partial) {
-            // only write if saving all iterations or on last iteration
-            // write maps immediately after filtering due to computation time
-            citlali::pipeline::write_map_filter_output(
-                filtered_fits_io, filtered_noise_fits_io, map_buffer_ptr,
-                i, map_number, map_index, n_maps, map_label,
-                rtcproc.run_polarization, rtcproc.polarization,
-                map_to_stokes_index, array_to_map_index,
-                write_filter_maps, logger);
-        }
-
-        citlali::pipeline::log_map_filter_map_completed(
-            map_label, map_number, n_maps, logger);
-    }
-
-    if (write_filtered_maps_partial) {
-        citlali::pipeline::finalize_map_filter_fits_outputs(
-            filtered_fits_io, filtered_noise_fits_io, map_label, logger);
-    }
+    citlali::pipeline::finalize_map_filter_fits_outputs_if_needed(
+        write_filtered_maps_partial, filtered_fits_io,
+        filtered_noise_fits_io, map_label, logger);
 }
 
 template <mapmaking::MapType map_t, class map_buffer_t>
