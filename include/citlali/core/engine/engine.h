@@ -7039,45 +7039,14 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     mapmaking::MapBuffer *map_buffer_ptr = &mb;
     using FitsVector =
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>>;
-    // pointer to data file fits vector
-    FitsVector *filtered_fits_io = nullptr;
-    // pointer to noise file fits vector
-    FitsVector *filtered_noise_fits_io = nullptr;
-    // logging label
-    const char *map_label = "filtered maps";
-
-    // filtered obs maps
-    if constexpr (map_t == mapmaking::FilteredObs) {
-        filtered_fits_io = &filtered_fits_io_vec;
-        filtered_noise_fits_io = &filtered_noise_fits_io_vec;
-        map_label = "filtered obs maps";
-    }
-
-    // filtered coadded maps
-    else if constexpr (map_t == mapmaking::FilteredCoadd) {
-        filtered_fits_io = &filtered_coadd_fits_io_vec;
-        filtered_noise_fits_io = &filtered_coadd_noise_fits_io_vec;
-        map_label = "filtered coadded maps";
-    }
-
-    auto add_filtered_phdus = [&](Eigen::Index fits_index) {
-        add_phdu(filtered_fits_io, map_buffer_ptr, fits_index);
-        const bool has_filtered_noise_fits =
-            citlali::pipeline::has_map_filter_noise_fits(
-                map_buffer_ptr->noise, *filtered_noise_fits_io);
-        if (has_filtered_noise_fits) {
-            add_phdu(filtered_noise_fits_io, map_buffer_ptr, fits_index);
-        }
-    };
-    auto prepare_filtered_fits_headers = [&]() {
-        const auto n_filtered_fits =
-            static_cast<Eigen::Index>(filtered_fits_io->size());
-        logger->info("preparing {} FITS headers ({} files)", map_label,
-                     n_filtered_fits);
-        for (Eigen::Index i = 0; i < n_filtered_fits; ++i) {
-            add_filtered_phdus(i);
-        }
-    };
+    auto filter_outputs =
+        citlali::pipeline::map_filter_output_targets<map_t>(
+            filtered_fits_io_vec, filtered_noise_fits_io_vec,
+            filtered_coadd_fits_io_vec, filtered_coadd_noise_fits_io_vec);
+    FitsVector *filtered_fits_io = filter_outputs.filtered_fits_io;
+    FitsVector *filtered_noise_fits_io =
+        filter_outputs.filtered_noise_fits_io;
+    const char *map_label = filter_outputs.map_label;
 
     auto resolve_template_fwhm_rad = [&](const std::string &array_name) {
         double template_fwhm_rad = 0.0;
@@ -7232,14 +7201,13 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             logger->info("closed FITS handle for {}", filtered_map_path);
         };
 
-    auto finalize_filtered_fits_outputs = [&]() {
-        logger->info("finalizing {} FITS handles", map_label);
-        filtered_fits_io->clear();
-        filtered_noise_fits_io->clear();
-        logger->info("finished finalizing {} FITS handles", map_label);
+    auto add_phdu_for_filter = [&](auto *fits, auto *buffer,
+                                   Eigen::Index fits_index) {
+        add_phdu(fits, buffer, fits_index);
     };
-
-    prepare_filtered_fits_headers();
+    citlali::pipeline::prepare_map_filter_fits_headers(
+        filtered_fits_io, filtered_noise_fits_io, map_buffer_ptr, map_label,
+        logger, add_phdu_for_filter);
 
     auto write_filtered_map_output =
         [&](Eigen::Index map_i, Eigen::Index map_number,
@@ -7297,7 +7265,8 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     }
 
     if (write_filtered_maps_partial) {
-        finalize_filtered_fits_outputs();
+        citlali::pipeline::finalize_map_filter_fits_outputs(
+            filtered_fits_io, filtered_noise_fits_io, map_label, logger);
     }
 }
 

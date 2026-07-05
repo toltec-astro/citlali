@@ -2,7 +2,38 @@
 
 #include <string>
 
+#include <Eigen/Core>
+
+#include <citlali/core/mapmaking/map.h>
+
 namespace citlali::pipeline {
+
+template <class FitsVector>
+struct MapFilterOutputTargets {
+    FitsVector *filtered_fits_io;
+    FitsVector *filtered_noise_fits_io;
+    const char *map_label;
+};
+
+template <mapmaking::MapType map_t, class FitsVector>
+MapFilterOutputTargets<FitsVector> map_filter_output_targets(
+    FitsVector &filtered_fits_io_vec,
+    FitsVector &filtered_noise_fits_io_vec,
+    FitsVector &filtered_coadd_fits_io_vec,
+    FitsVector &filtered_coadd_noise_fits_io_vec) {
+    if constexpr (map_t == mapmaking::FilteredObs) {
+        return {
+            &filtered_fits_io_vec,
+            &filtered_noise_fits_io_vec,
+            "filtered obs maps"};
+    }
+    else {
+        return {
+            &filtered_coadd_fits_io_vec,
+            &filtered_coadd_noise_fits_io_vec,
+            "filtered coadded maps"};
+    }
+}
 
 inline bool map_filter_template_uses_fwhm(
     const std::string &template_type) {
@@ -23,6 +54,36 @@ template <class NoiseContainer, class FitsContainer>
 bool has_map_filter_noise_fits(const NoiseContainer &noise,
                                const FitsContainer &noise_fits) {
     return !noise.empty() && !noise_fits.empty();
+}
+
+template <class FitsVector, class MapBufferPtr, class Logger, class AddPhdu>
+void prepare_map_filter_fits_headers(
+    FitsVector *filtered_fits_io, FitsVector *filtered_noise_fits_io,
+    MapBufferPtr map_buffer_ptr, const char *map_label,
+    const Logger &logger, const AddPhdu &add_phdu) {
+    const auto n_filtered_fits =
+        static_cast<Eigen::Index>(filtered_fits_io->size());
+    logger->info("preparing {} FITS headers ({} files)", map_label,
+                 n_filtered_fits);
+    const bool has_filtered_noise_fits =
+        has_map_filter_noise_fits(
+            map_buffer_ptr->noise, *filtered_noise_fits_io);
+    for (Eigen::Index i = 0; i < n_filtered_fits; ++i) {
+        add_phdu(filtered_fits_io, map_buffer_ptr, i);
+        if (has_filtered_noise_fits) {
+            add_phdu(filtered_noise_fits_io, map_buffer_ptr, i);
+        }
+    }
+}
+
+template <class FitsVector, class Logger>
+void finalize_map_filter_fits_outputs(
+    FitsVector *filtered_fits_io, FitsVector *filtered_noise_fits_io,
+    const char *map_label, const Logger &logger) {
+    logger->info("finalizing {} FITS handles", map_label);
+    filtered_fits_io->clear();
+    filtered_noise_fits_io->clear();
+    logger->info("finished finalizing {} FITS handles", map_label);
 }
 
 template <class NoiseCount>
