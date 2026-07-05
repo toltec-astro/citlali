@@ -22,77 +22,7 @@ inline void Engine::write_learning_summary() {
     }
 
     auto csv = citlali::pipeline::csv_escaped;
-
-    enum {
-        ColRecordType,
-        ColIter,
-        ColObsnum,
-        ColProducer,
-        ColReason,
-        ColScan,
-        ColUid,
-        ColNw,
-        ColArray,
-        ColRawStart,
-        ColRawStop,
-        ColPtcStart,
-        ColPtcStop,
-        ColScore,
-        ColZ,
-        ColValue,
-        ColConfidence,
-        ColSourceDistanceArcsec,
-        ColSourceProtected,
-        ColApplyPreRtc,
-        ColCandidateClusters,
-        ColCandidateEvents,
-        ColAcceptedClusters,
-        ColAcceptedEvents,
-        ColRejectedClusters,
-        ColRejectedEvents,
-        ColSourceProtectedClusters,
-        ColSourceProtectedEvents,
-        ColMaxResidualUid,
-        ColTopCandidateSample,
-        ColTopCandidateScore,
-        ColMaxResidualZ,
-        ColBusyVetoed,
-        ColSelectiveAcceptanceRecommended,
-        ColFactor,
-        ColScanLocal,
-        ColProtectedSamples,
-        ColTotalSamples,
-        ColRadiusArcsec,
-        ColSupportNpix,
-        ColApplicationStage,
-        ColCandidateRecords,
-        ColMatchedRecords,
-        ColInvalidRecords,
-        ColProposedSamples,
-        ColNewlyFlaggedSamples,
-        ColAlreadyFlaggedSamples,
-        ColSourceProtectedSamples,
-        ColNewlyFlaggedFraction,
-        ColMaxNewFlaggedFraction,
-        ColApplied,
-        ColGrouping,
-        ColWeight,
-        ColFinalWeight,
-        ColGroupMedian,
-        ColRobustZ,
-        ColCap,
-        ColValidationFactor,
-        ColCapRecommended,
-        ColCapApplied,
-        ColValidated,
-        ColMapIndex,
-        ColRow,
-        ColCol,
-        ColSample,
-        ColNEff,
-        ColLeaveOneOutZ,
-        ColCount
-    };
+    using namespace citlali::pipeline::learning_summary_columns;
 
     const auto header = citlali::pipeline::learning_summary_csv_header();
 
@@ -105,7 +35,7 @@ inline void Engine::write_learning_summary() {
     };
 
     auto new_row = [&]() {
-        return std::vector<std::string>(ColCount);
+        return citlali::pipeline::learning_summary_empty_row();
     };
 
     auto write_common_header = [&]() {
@@ -118,15 +48,9 @@ inline void Engine::write_learning_summary() {
                           const std::string &producer,
                           const std::string &reason, int scan, int uid,
                           int nw, int array) {
-        row[ColRecordType] = csv(record_type);
-        row[ColIter] = text(iter);
-        row[ColObsnum] = csv(obsnum_value);
-        row[ColProducer] = csv(producer);
-        row[ColReason] = csv(reason);
-        row[ColScan] = text(scan);
-        row[ColUid] = text(uid);
-        row[ColNw] = text(nw);
-        row[ColArray] = text(array);
+        citlali::pipeline::write_learning_summary_base_fields(
+            row, record_type, iter, obsnum_value, producer, reason, scan,
+            uid, nw, array, text, csv);
     };
 
     std::lock_guard<std::mutex> lock(*reduction_learning.mutex);

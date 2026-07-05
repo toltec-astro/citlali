@@ -1,10 +1,86 @@
 #pragma once
 
+#include <cstddef>
 #include <sstream>
 #include <string>
 #include <vector>
 
 namespace citlali::pipeline {
+
+namespace learning_summary_columns {
+
+enum : std::size_t {
+    ColRecordType,
+    ColIter,
+    ColObsnum,
+    ColProducer,
+    ColReason,
+    ColScan,
+    ColUid,
+    ColNw,
+    ColArray,
+    ColRawStart,
+    ColRawStop,
+    ColPtcStart,
+    ColPtcStop,
+    ColScore,
+    ColZ,
+    ColValue,
+    ColConfidence,
+    ColSourceDistanceArcsec,
+    ColSourceProtected,
+    ColApplyPreRtc,
+    ColCandidateClusters,
+    ColCandidateEvents,
+    ColAcceptedClusters,
+    ColAcceptedEvents,
+    ColRejectedClusters,
+    ColRejectedEvents,
+    ColSourceProtectedClusters,
+    ColSourceProtectedEvents,
+    ColMaxResidualUid,
+    ColTopCandidateSample,
+    ColTopCandidateScore,
+    ColMaxResidualZ,
+    ColBusyVetoed,
+    ColSelectiveAcceptanceRecommended,
+    ColFactor,
+    ColScanLocal,
+    ColProtectedSamples,
+    ColTotalSamples,
+    ColRadiusArcsec,
+    ColSupportNpix,
+    ColApplicationStage,
+    ColCandidateRecords,
+    ColMatchedRecords,
+    ColInvalidRecords,
+    ColProposedSamples,
+    ColNewlyFlaggedSamples,
+    ColAlreadyFlaggedSamples,
+    ColSourceProtectedSamples,
+    ColNewlyFlaggedFraction,
+    ColMaxNewFlaggedFraction,
+    ColApplied,
+    ColGrouping,
+    ColWeight,
+    ColFinalWeight,
+    ColGroupMedian,
+    ColRobustZ,
+    ColCap,
+    ColValidationFactor,
+    ColCapRecommended,
+    ColCapApplied,
+    ColValidated,
+    ColMapIndex,
+    ColRow,
+    ColCol,
+    ColSample,
+    ColNEff,
+    ColLeaveOneOutZ,
+    ColCount
+};
+
+}  // namespace learning_summary_columns
 
 inline std::string learning_summary_filename(
     const std::string &redu_dir_name, int fruit_iter) {
@@ -35,6 +111,29 @@ inline std::vector<std::string> learning_summary_csv_header() {
         "validated", "map_index", "row", "col", "sample", "n_eff",
         "leave_one_out_z"
     };
+}
+
+inline std::vector<std::string> learning_summary_empty_row() {
+    return std::vector<std::string>(
+        learning_summary_columns::ColCount);
+}
+
+template <class TextFormatter, class CsvFormatter>
+void write_learning_summary_base_fields(
+    std::vector<std::string> &row, const std::string &record_type, int iter,
+    const std::string &obsnum_value, const std::string &producer,
+    const std::string &reason, int scan, int uid, int nw, int array,
+    TextFormatter &&text, CsvFormatter &&csv) {
+    using namespace learning_summary_columns;
+    row[ColRecordType] = csv(record_type);
+    row[ColIter] = text(iter);
+    row[ColObsnum] = csv(obsnum_value);
+    row[ColProducer] = csv(producer);
+    row[ColReason] = csv(reason);
+    row[ColScan] = text(scan);
+    row[ColUid] = text(uid);
+    row[ColNw] = text(nw);
+    row[ColArray] = text(array);
 }
 
 }  // namespace citlali::pipeline
