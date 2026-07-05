@@ -188,11 +188,11 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_entry, mb->obsnums, name, logger, telescope.tel_header);
     } catch (const CCfits::FitsError &e) {
         throw std::runtime_error(
-            fmt::format("failed to add PHDU/header for array '{}' (file={}): {}",
-                        name, fits_io->at(i).filepath, e.message()));
+            citlali::pipeline::phdu_write_error_message(
+                name, fits_io->at(i).filepath, e.message()));
     } catch (const std::exception &e) {
         throw std::runtime_error(
-            fmt::format("failed to add PHDU/header for array '{}' (file={}): {}",
-                        name, fits_io->at(i).filepath, e.what()));
+            citlali::pipeline::phdu_write_error_message(
+                name, fits_io->at(i).filepath, e.what()));
     }
 }

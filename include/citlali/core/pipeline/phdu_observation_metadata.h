@@ -1,5 +1,7 @@
 #pragma once
 
+#include <fmt/format.h>
+
 #include <cmath>
 #include <cstdlib>
 #include <string>
@@ -24,6 +26,14 @@ void require_phdu_output_slots(Index i, Index n_files, Index n_arrays,
             static_cast<long long>(i), static_cast<long long>(n_arrays));
         std::exit(EXIT_FAILURE);
     }
+}
+
+inline std::string phdu_write_error_message(
+    const std::string &array_name, const std::string &filepath,
+    const std::string &message) {
+    return fmt::format(
+        "failed to add PHDU/header for array '{}' (file={}): {}",
+        array_name, filepath, message);
 }
 
 template <class ArrayFwhm>
