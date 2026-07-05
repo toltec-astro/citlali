@@ -415,6 +415,46 @@ inline void set_beammap_priors_iteration_defaults(
 }
 
 template <class Config, class MissingKeys, class InvalidKeys>
+void read_beammap_priors_core_config(
+    Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys,
+    bool &enabled, std::string &filepath, int &candidate_top_n,
+    double &min_snr, double &max_d2, double &score_lambda) {
+    if (config.template has_typed<bool>(
+            std::tuple{"beammap", "priors", "enabled"})) {
+        ::get_config_value(config, enabled, missing_keys, invalid_keys,
+                           std::tuple{"beammap", "priors", "enabled"});
+    }
+    if (config.template has_typed<std::string>(
+            std::tuple{"beammap", "priors", "filepath"})) {
+        ::get_config_value(config, filepath, missing_keys, invalid_keys,
+                           std::tuple{"beammap", "priors", "filepath"});
+    }
+    if (config.template has_typed<int>(
+            std::tuple{"beammap", "priors", "candidate_top_n"})) {
+        ::get_config_value(
+            config, candidate_top_n, missing_keys, invalid_keys,
+            std::tuple{"beammap", "priors", "candidate_top_n"}, {}, {1});
+    }
+    if (config.template has_typed<double>(
+            std::tuple{"beammap", "priors", "min_snr"})) {
+        ::get_config_value(config, min_snr, missing_keys, invalid_keys,
+                           std::tuple{"beammap", "priors", "min_snr"});
+    }
+    if (config.template has_typed<double>(
+            std::tuple{"beammap", "priors", "max_d2"})) {
+        ::get_config_value(config, max_d2, missing_keys, invalid_keys,
+                           std::tuple{"beammap", "priors", "max_d2"}, {},
+                           {0.0});
+    }
+    if (config.template has_typed<double>(
+            std::tuple{"beammap", "priors", "score_lambda"})) {
+        ::get_config_value(
+            config, score_lambda, missing_keys, invalid_keys,
+            std::tuple{"beammap", "priors", "score_lambda"}, {}, {0.0});
+    }
+}
+
+template <class Config, class MissingKeys, class InvalidKeys>
 void read_beammap_detector_tod_output_config(
     Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys,
     bool &enabled, std::string &subdir_name, int &n_uniform,

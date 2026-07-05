@@ -63,33 +63,11 @@ void Engine::get_beammap_config(CT &config) {
         beammap_priors_alignment_fit_rotation,
         beammap_priors_alignment_max_rotation_deg);
 
-    if (config.template has_typed<bool>(std::tuple{"beammap","priors","enabled"})) {
-        get_config_value(config, beammap_priors_enabled, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","enabled"});
-    }
-    if (config.template has_typed<std::string>(std::tuple{"beammap","priors","filepath"})) {
-        get_config_value(config, beammap_priors_filepath, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","filepath"});
-    }
-    if (config.template has_typed<int>(std::tuple{"beammap","priors","candidate_top_n"})) {
-        get_config_value(config, beammap_priors_candidate_top_n, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","candidate_top_n"},
-                         {}, {1});
-    }
-    if (config.template has_typed<double>(std::tuple{"beammap","priors","min_snr"})) {
-        get_config_value(config, beammap_priors_min_snr, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","min_snr"});
-    }
-    if (config.template has_typed<double>(std::tuple{"beammap","priors","max_d2"})) {
-        get_config_value(config, beammap_priors_max_d2, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","max_d2"},
-                         {}, {0.0});
-    }
-    if (config.template has_typed<double>(std::tuple{"beammap","priors","score_lambda"})) {
-        get_config_value(config, beammap_priors_score_lambda, missing_keys, invalid_keys,
-                         std::tuple{"beammap","priors","score_lambda"},
-                         {}, {0.0});
-    }
+    citlali::pipeline::read_beammap_priors_core_config(
+        config, missing_keys, invalid_keys, beammap_priors_enabled,
+        beammap_priors_filepath, beammap_priors_candidate_top_n,
+        beammap_priors_min_snr, beammap_priors_max_d2,
+        beammap_priors_score_lambda);
     citlali::pipeline::set_beammap_priors_iteration_defaults(
         beammap_priors_max_d2, beammap_priors_max_d2_iter0,
         beammap_priors_max_d2_after_iter0, beammap_priors_score_lambda,
