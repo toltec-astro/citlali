@@ -5,15 +5,9 @@
 
 template <typename fits_io_type, class map_buffer_t>
 void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_buffer_t &mb, Eigen::Index i) {
-    if (!citlali::pipeline::has_map_data_slots(
-            i, static_cast<Eigen::Index>(mb->signal.size()),
-            static_cast<Eigen::Index>(mb->weight.size()))) {
-        logger->error("write_maps map index out of range: i={} signal_size={} weight_size={}",
-                      static_cast<long long>(i),
-                      static_cast<long long>(mb->signal.size()),
-                      static_cast<long long>(mb->weight.size()));
-        std::exit(EXIT_FAILURE);
-    }
+    citlali::pipeline::require_map_data_slots(
+        i, static_cast<Eigen::Index>(mb->signal.size()),
+        static_cast<Eigen::Index>(mb->weight.size()), logger);
 
     // get name for extension layer
     std::string map_name = get_map_name(i);
@@ -24,30 +18,11 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     const Eigen::Index map_index = write_indices.map_index;
     const Eigen::Index stokes_index = write_indices.stokes_index;
     const Eigen::Index array_index = write_indices.array_index;
-    if (!citlali::pipeline::has_output_file_slot(
-            map_index, static_cast<Eigen::Index>(fits_io->size()))) {
-        logger->error("write_maps file index out of range: map_index={} fits_io_size={} map_i={}",
-                      static_cast<long long>(map_index),
-                      static_cast<long long>(fits_io->size()),
-                      static_cast<long long>(i));
-        std::exit(EXIT_FAILURE);
-    }
-    if (!citlali::pipeline::has_stokes_slot(
-            stokes_index,
-            static_cast<Eigen::Index>(rtcproc.polarization.stokes_params.size()))) {
-        logger->error("write_maps stokes index out of range: stokes_index={} stokes_size={} map_i={}",
-                      static_cast<long long>(stokes_index),
-                      static_cast<long long>(rtcproc.polarization.stokes_params.size()),
-                      static_cast<long long>(i));
-        std::exit(EXIT_FAILURE);
-    }
-    if (!citlali::pipeline::has_array_slot(array_index, calib.arrays.size())) {
-        logger->error("write_maps maps_to_arrays index out of range: maps_to_arrays(i)={} calib.arrays.size={} map_i={}",
-                      static_cast<long long>(array_index),
-                      static_cast<long long>(calib.arrays.size()),
-                      static_cast<long long>(i));
-        std::exit(EXIT_FAILURE);
-    }
+    citlali::pipeline::require_map_write_index_slots(
+        i, map_index, static_cast<Eigen::Index>(fits_io->size()),
+        stokes_index,
+        static_cast<Eigen::Index>(rtcproc.polarization.stokes_params.size()),
+        array_index, static_cast<Eigen::Index>(calib.arrays.size()), logger);
 
     const double source_epoch =
         citlali::pipeline::wcs_source_epoch_or_default(telescope.tel_header,
