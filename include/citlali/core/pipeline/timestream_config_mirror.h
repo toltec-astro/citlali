@@ -317,4 +317,54 @@ void mirror_second_pass_local_config(SecondPassConfig &target,
         source.source_protection_radius_arcsec;
 }
 
+template <class DespikeConfig, class RtcProc>
+void mirror_raw_despike_config(DespikeConfig &target,
+                               const RtcProc &rtcproc) {
+    target.enabled = rtcproc.run_despike;
+    target.source_protection.enabled =
+        rtcproc.despike_source_protection_config_enabled;
+    target.source_protection.radius_arcsec =
+        rtcproc.despiker.source_protection_radius_arcsec;
+    if (!rtcproc.run_despike) {
+        return;
+    }
+
+    target.min_spike_sigma = rtcproc.despiker.min_spike_sigma;
+    target.time_constant_sec = rtcproc.despiker.time_constant_sec;
+    target.window_size = rtcproc.despiker.window_size;
+    target.legacy_enabled = rtcproc.despiker.run_legacy;
+
+    const auto &local = rtcproc.despiker.local_residual;
+    auto &typed_local = target.local_residual;
+    typed_local.enabled = local.enabled;
+    typed_local.window_sec = local.window_sec;
+    typed_local.sigma_scale = local.sigma_scale;
+    typed_local.delta_sigma_scale = local.delta_sigma_scale;
+    typed_local.expand_with_filter = local.expand_with_filter;
+    typed_local.event_padding_sec = local.event_padding_sec;
+    typed_local.high_score_event_override = local.high_score_event_override;
+    typed_local.max_added_flagged_fraction = local.max_added_flagged_fraction;
+    typed_local.compact_raw_gate.enabled = local.compact_raw_gate.enabled;
+    typed_local.compact_raw_gate.candidate_rel_sigma_scale =
+        local.compact_raw_gate.candidate_rel_sigma_scale;
+    typed_local.compact_raw_gate.window_sec =
+        local.compact_raw_gate.window_sec;
+    typed_local.compact_raw_gate.half_peak_frac =
+        local.compact_raw_gate.half_peak_frac;
+    typed_local.compact_raw_gate.max_width_sec =
+        local.compact_raw_gate.max_width_sec;
+    typed_local.compact_raw_gate.max_step_shift_z =
+        local.compact_raw_gate.max_step_shift_z;
+    typed_local.compact_delta_gate.enabled =
+        local.compact_delta_gate.enabled;
+    typed_local.compact_delta_gate.window_sec =
+        local.compact_delta_gate.window_sec;
+    typed_local.compact_delta_gate.half_peak_frac =
+        local.compact_delta_gate.half_peak_frac;
+    typed_local.compact_delta_gate.max_width_sec =
+        local.compact_delta_gate.max_width_sec;
+    typed_local.compact_delta_gate.max_step_shift_z =
+        local.compact_delta_gate.max_step_shift_z;
+}
+
 }  // namespace citlali::pipeline
