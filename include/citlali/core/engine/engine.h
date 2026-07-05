@@ -7048,6 +7048,7 @@ void Engine::create_rtcdiag_file() {
     const int fill_int = citlali::pipeline::rtcdiag_fill_int();
     const double fill_double = citlali::pipeline::rtcdiag_fill_double();
     const Eigen::Index n_scans = telescope.scan_indices.cols();
+    const auto n_scan_values = static_cast<std::size_t>(n_scans);
     const double rtc_fsmp = rtcproc.run_downsample ? telescope.d_fsmp : telescope.fsmp;
 
     citlali::pipeline::add_observation_identity_vars(
@@ -7076,10 +7077,10 @@ void Engine::create_rtcdiag_file() {
             fo, name, units, comment, n_scans_dim, scan_chunks, values);
     };
 
-    std::vector<double> scan_duration_s(static_cast<std::size_t>(n_scans), fill_double);
-    std::vector<double> scan_speed_p50_arcsec_s(static_cast<std::size_t>(n_scans), fill_double);
-    std::vector<double> scan_speed_p95_arcsec_s(static_cast<std::size_t>(n_scans), fill_double);
-    std::vector<double> scan_speed_p995_arcsec_s(static_cast<std::size_t>(n_scans), fill_double);
+    std::vector<double> scan_duration_s(n_scan_values, fill_double);
+    std::vector<double> scan_speed_p50_arcsec_s(n_scan_values, fill_double);
+    std::vector<double> scan_speed_p95_arcsec_s(n_scan_values, fill_double);
+    std::vector<double> scan_speed_p995_arcsec_s(n_scan_values, fill_double);
 
     const auto tel_time_it = telescope.tel_data.find("TelTime");
     const auto az_it = telescope.tel_data.find("az_phys");
