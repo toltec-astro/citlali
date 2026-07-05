@@ -1,11 +1,13 @@
 #pragma once
 
+#include <cstddef>
 #include <cstdlib>
 #include <string>
 
 #include <Eigen/Core>
 #include <tula/logging.h>
 
+#include <citlali/core/mapmaking/edge_guard_state.h>
 #include <citlali/core/mapmaking/map.h>
 
 namespace citlali::pipeline {
@@ -130,6 +132,13 @@ void prepare_map_filter_fits_headers(
             add_phdu(filtered_noise_fits_io, map_buffer_ptr, i);
         }
     }
+}
+
+template <class MapBuffer>
+void reset_map_filter_edge_guard_storage(MapBuffer &map_buffer) {
+    const auto n_maps =
+        static_cast<std::size_t>(map_buffer.signal.size());
+    mapmaking::reset_edge_guard_storage(map_buffer, n_maps);
 }
 
 template <mapmaking::MapType map_t, class FitsVector,

@@ -7032,8 +7032,7 @@ void Engine::write_stats() {
 
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::run_wiener_filter(map_buffer_t &mb) {
-    const auto n_maps_local = static_cast<std::size_t>(mb.signal.size());
-    mapmaking::reset_edge_guard_storage(mb, n_maps_local);
+    citlali::pipeline::reset_map_filter_edge_guard_storage(mb);
 
     using FitsVector =
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>>;
