@@ -6928,8 +6928,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 n_core_pixels[idx], obs_tables);
         }
         else {
-            for (std::size_t obs_idx = 0; obs_idx < mb->obsnums.size();
-                 ++obs_idx) {
+            const auto n_obsnums = mb->obsnums.size();
+            for (std::size_t obs_idx = 0; obs_idx < n_obsnums; ++obs_idx) {
                 const auto &obsnum_i = mb->obsnums[obs_idx];
                 const auto obs_dir =
                     citlali::pipeline::mapdiag_obs_raw_dir(
