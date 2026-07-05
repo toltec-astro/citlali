@@ -142,38 +142,15 @@ void Engine::get_mapmaking_config(CT &config) {
             omb, cmb, typed_noise_config);
     }
 
-    write_noise_realizations = false;
-    if (config.template has_typed<bool>(std::tuple{"noise_maps","write_realizations"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, write_noise_realizations, missing_keys, invalid_keys,
-                         std::tuple{"noise_maps","write_realizations"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_noise_config.write_realizations = write_noise_realizations;
-        }
-    }
-    run_noise_products = run_noise;
-    typed_noise_config.products_enabled = run_noise_products;
-    if (config.template has_typed<bool>(std::tuple{"noise_maps","products","enabled"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, run_noise_products, missing_keys, invalid_keys,
-                         std::tuple{"noise_maps","products","enabled"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_noise_config.products_enabled = run_noise_products;
-        }
-    }
-    apply_empirical_noise_weights = run_noise;
-    typed_noise_config.apply_empirical_weights = apply_empirical_noise_weights;
-    if (config.template has_typed<bool>(std::tuple{"noise_maps","products","apply_empirical_weights"})) {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, apply_empirical_noise_weights, missing_keys, invalid_keys,
-                         std::tuple{"noise_maps","products","apply_empirical_weights"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_noise_config.apply_empirical_weights = apply_empirical_noise_weights;
-        }
-    }
+    citlali::engine_detail::read_noise_write_realizations_config(
+        config, write_noise_realizations, typed_noise_config, missing_keys,
+        invalid_keys);
+    citlali::engine_detail::read_noise_products_enabled_config(
+        config, run_noise_products, run_noise, typed_noise_config,
+        missing_keys, invalid_keys);
+    citlali::engine_detail::read_noise_empirical_weights_config(
+        config, apply_empirical_noise_weights, run_noise, typed_noise_config,
+        missing_keys, invalid_keys);
 
     citlali::pipeline::set_mapmaker_polarization(
         rtcproc.run_polarization, naive_mm, jinc_mm);
