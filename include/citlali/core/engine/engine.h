@@ -7735,8 +7735,8 @@ void Engine::find_sources(map_buffer_t &mb) {
                         telescope.pixel_axes == "radec";
                     if (use_radec_projection) {
                         Eigen::VectorXd lat(1), lon(1);
-                        lat << params(2)*ASEC_TO_RAD;
-                        lon << params(1)*ASEC_TO_RAD;
+                        lat << params(2) * ASEC_TO_RAD;
+                        lon << params(1) * ASEC_TO_RAD;
 
                         auto [adec, ara] = engine_utils::tangent_to_abs(lat, lon, mb.wcs.crval[0]*DEG_TO_RAD, mb.wcs.crval[1]*DEG_TO_RAD);
 
