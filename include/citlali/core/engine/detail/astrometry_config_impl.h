@@ -1,0 +1,141 @@
+#pragma once
+
+// Engine config loading implementation detail.
+// Include this only after Engine has been declared.
+
+template<typename CT>
+void Engine::get_astrometry_config(CT &config) {
+    typed_astrometry_config = citlali::config::AstrometryConfig{};
+
+    // check if config file has pointing_offsets
+    if (config.has("pointing_offsets")) {
+        // reset for each observation
+        pointing_offsets_arcsec.clear();
+        pointing_offsets_modified_julian_date.setZero(2);
+
+        auto pointing_node = config.get_node(std::tuple{"pointing_offsets"});
+        bool has_az = false;
+        bool has_alt = false;
+        bool has_mjd = false;
+        std::vector<double> mjd_values;
+
+        for (Eigen::Index i = 0; i < pointing_node.size(); ++i) {
+            if (config.has(std::tuple{"pointing_offsets", i, "axes_name"})) {
+                auto axis = config.get_str(std::tuple{"pointing_offsets", i, "axes_name"});
+                std::transform(axis.begin(), axis.end(), axis.begin(),
+                               [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
+                if (axis == "az" || axis == "alt") {
+                    auto offset = config.template get_typed<std::vector<double>>(
+                        std::tuple{"pointing_offsets", i, "value_arcsec"});
+                    if (offset.empty()) {
+                        logger->error("pointing_offsets {} has empty value_arcsec", axis);
+                        std::exit(EXIT_FAILURE);
+                    }
+                    if (pointing_offsets_arcsec.find(axis) != pointing_offsets_arcsec.end()) {
+                        logger->warn("pointing_offsets {} specified multiple times; using last value", axis);
+                    }
+                    pointing_offsets_arcsec[axis] =
+                        Eigen::Map<Eigen::VectorXd>(offset.data(), offset.size());
+                    if (axis == "az") {
+                        has_az = true;
+                    }
+                    else {
+                        has_alt = true;
+                    }
+                }
+                else {
+                    logger->warn("unknown pointing_offsets axis_name '{}' at entry {}", axis, i);
+                }
+            }
+            else if (config.has(std::tuple{"pointing_offsets", i, "modified_julian_date"})) {
+                mjd_values = config.template get_typed<std::vector<double>>(
+                    std::tuple{"pointing_offsets", i, "modified_julian_date"});
+                has_mjd = true;
+            }
+            else {
+                logger->warn("unrecognized pointing_offsets entry {}. expected axes_name/value_arcsec or modified_julian_date", i);
+            }
+        }
+
+        // backward-compatible fallback for positional configs
+        if (!has_az && config.has(std::tuple{"pointing_offsets", 0, "value_arcsec"})) {
+            auto offset = config.template get_typed<std::vector<double>>(std::tuple{"pointing_offsets", 0, "value_arcsec"});
+            if (offset.empty()) {
+                logger->error("pointing_offsets az has empty value_arcsec");
+                std::exit(EXIT_FAILURE);
+            }
+            logger->warn("pointing_offsets az parsed by positional index; consider setting axes_name: az");
+            pointing_offsets_arcsec["az"] = Eigen::Map<Eigen::VectorXd>(offset.data(), offset.size());
+            has_az = true;
+        }
+        if (!has_alt && config.has(std::tuple{"pointing_offsets", 1, "value_arcsec"})) {
+            auto offset = config.template get_typed<std::vector<double>>(std::tuple{"pointing_offsets", 1, "value_arcsec"});
+            if (offset.empty()) {
+                logger->error("pointing_offsets alt has empty value_arcsec");
+                std::exit(EXIT_FAILURE);
+            }
+            logger->warn("pointing_offsets alt parsed by positional index; consider setting axes_name: alt");
+            pointing_offsets_arcsec["alt"] = Eigen::Map<Eigen::VectorXd>(offset.data(), offset.size());
+            has_alt = true;
+        }
+        if (!has_mjd && config.has(std::tuple{"pointing_offsets", 2, "modified_julian_date"})) {
+            mjd_values = config.template get_typed<std::vector<double>>(std::tuple{"pointing_offsets", 2, "modified_julian_date"});
+            has_mjd = true;
+        }
+
+        if (!has_az || !has_alt) {
+            logger->error("pointing_offsets must include both az and alt entries");
+            std::exit(EXIT_FAILURE);
+        }
+
+        const auto n_az = pointing_offsets_arcsec["az"].size();
+        const auto n_alt = pointing_offsets_arcsec["alt"].size();
+        if (n_az != n_alt) {
+            logger->error("pointing_offsets az/alt lengths differ (az={} alt={})", n_az, n_alt);
+            std::exit(EXIT_FAILURE);
+        }
+        if (n_az != 1 && n_az != 2) {
+            logger->error("pointing_offsets supports only one or two values per axis (got {})", n_az);
+            std::exit(EXIT_FAILURE);
+        }
+
+        if (has_mjd) {
+            if (mjd_values.size() == 2) {
+                pointing_offsets_modified_julian_date =
+                    Eigen::Map<Eigen::VectorXd>(mjd_values.data(), mjd_values.size());
+            }
+            else if (!mjd_values.empty() &&
+                     std::all_of(mjd_values.begin(), mjd_values.end(), [](double v){ return v <= 0.0; })) {
+                // non-positive sentinel means "not specified"
+                pointing_offsets_modified_julian_date.setZero(2);
+            }
+            else if (mjd_values.size() == 1 && n_az == 1) {
+                logger->warn(
+                    "ignoring single pointing_offsets.modified_julian_date for single pointing offset; using a constant offset across the observation");
+                pointing_offsets_modified_julian_date.setZero(2);
+            }
+            else {
+                logger->error(
+                    "pointing_offsets.modified_julian_date must contain 2 values when interpolating two offsets, or non-positive sentinels");
+                std::exit(EXIT_FAILURE);
+            }
+        }
+
+        auto &typed_offsets = typed_astrometry_config.pointing_offsets;
+        typed_offsets.enabled = true;
+        const auto &az_offsets = pointing_offsets_arcsec["az"];
+        typed_offsets.az_arcsec.assign(
+            az_offsets.data(), az_offsets.data() + az_offsets.size());
+        const auto &alt_offsets = pointing_offsets_arcsec["alt"];
+        typed_offsets.alt_arcsec.assign(
+            alt_offsets.data(), alt_offsets.data() + alt_offsets.size());
+        typed_offsets.modified_julian_date.assign(
+            pointing_offsets_modified_julian_date.data(),
+            pointing_offsets_modified_julian_date.data() +
+                pointing_offsets_modified_julian_date.size());
+    }
+    else {
+        logger->error("pointing_offsets not found in config");
+        std::exit(EXIT_FAILURE);
+    }
+}
