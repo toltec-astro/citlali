@@ -60,10 +60,11 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
     const std::string &stokes_suffix = rtcproc.polarization.stokes_params[stokes_index];
 
     try {
-        auto add_map_hdu_with_wcs = [&](const std::string &hdu_name, auto &data) {
-            fits_io->at(map_index).add_hdu(hdu_name, data);
-            fits_io->at(map_index).add_wcs(
-                fits_io->at(map_index).hdus.back(), mb->wcs, source_epoch);
+        auto add_map_hdu_with_wcs = [&](const std::string &hdu_name,
+                                        auto &data) {
+            citlali::pipeline::add_map_hdu_with_wcs(
+                fits_io->at(map_index), hdu_name, data, mb->wcs,
+                source_epoch);
         };
 
         // signal map
@@ -264,12 +265,12 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 logger->warn("non-finite median_rms for map {} in {}; using 0", map_name,
                              noise_fits_io->at(map_index).filepath);
             }
-            auto add_noise_map_hdu_with_wcs = [&](const std::string &hdu_name, auto &data) {
-                noise_fits_io->at(map_index).add_hdu(hdu_name, data);
-                noise_fits_io->at(map_index).add_wcs(
-                    noise_fits_io->at(map_index).hdus.back(), mb->wcs,
-                    source_epoch);
-            };
+            auto add_noise_map_hdu_with_wcs =
+                [&](const std::string &hdu_name, auto &data) {
+                    citlali::pipeline::add_map_hdu_with_wcs(
+                        noise_fits_io->at(map_index), hdu_name, data,
+                        mb->wcs, source_epoch);
+                };
             for (Eigen::Index n=0; n<mb->n_noise; ++n) {
                 Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(mb->noise[i].data() + n * mb->n_rows * mb->n_cols,
                                                                                                mb->n_rows, mb->n_cols);
@@ -303,4 +304,3 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                         e.what()));
     }
 }
-

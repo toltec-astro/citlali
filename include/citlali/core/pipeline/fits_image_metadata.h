@@ -27,6 +27,14 @@ MapWriteIndices map_write_indices(Eigen::Index i,
     };
 }
 
+template <class FitsEntry, class Wcs, class Data>
+void add_map_hdu_with_wcs(FitsEntry &fits_entry, const std::string &hdu_name,
+                          Data &data, const Wcs &wcs,
+                          double source_epoch) {
+    fits_entry.add_hdu(hdu_name, data);
+    fits_entry.add_wcs(fits_entry.hdus.back(), wcs, source_epoch);
+}
+
 inline bool has_map_data_slots(Eigen::Index i, Eigen::Index signal_size,
                                Eigen::Index weight_size) {
     return i >= 0 && i < signal_size && i < weight_size;
