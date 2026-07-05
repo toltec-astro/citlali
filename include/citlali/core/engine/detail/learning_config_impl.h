@@ -4,20 +4,22 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/engine/detail/learning_config_logging.h>
+#include <citlali/core/engine/detail/config_parse_tracking.h>
 
 template<typename CT>
 void Engine::get_learning_config(CT &config) {
     ReductionLearningState::Options options;
 
     auto parsed_cleanly = [&](std::size_t missing_before, std::size_t invalid_before) {
-        return missing_keys.size() == missing_before && invalid_keys.size() == invalid_before;
+        return citlali::engine_detail::config_parse_clean(
+            missing_keys, invalid_keys, missing_before, invalid_before);
     };
     auto mirror_if_parsed = [&](auto &target, const auto &source,
                                 std::size_t missing_before,
                                 std::size_t invalid_before) {
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            target = source;
-        }
+        citlali::engine_detail::mirror_if_config_parsed(
+            target, source, missing_keys, invalid_keys, missing_before,
+            invalid_before);
     };
 
     if (config.template has_typed<bool>(std::tuple{"timestream","learning","enabled"})) {
