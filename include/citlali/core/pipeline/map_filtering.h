@@ -14,6 +14,22 @@ inline double map_filter_initial_fwhm_pixels(
     return array_fwhm_arcsec * arcsec_to_rad / pixel_size_rad;
 }
 
+template <class MapIndex>
+auto map_filter_display_number(MapIndex map_index) {
+    return map_index + 1;
+}
+
+template <class NoiseContainer, class FitsContainer>
+bool has_map_filter_noise_fits(const NoiseContainer &noise,
+                               const FitsContainer &noise_fits) {
+    return !noise.empty() && !noise_fits.empty();
+}
+
+template <class NoiseCount>
+auto map_filter_progress_stride(NoiseCount n_noise) {
+    return n_noise / 100;
+}
+
 template <class TemplateFwhmMap>
 bool has_map_filter_template_fwhm(
     const TemplateFwhmMap &template_fwhm_rad,

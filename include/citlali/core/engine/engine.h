@@ -7584,8 +7584,8 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         add_phdu(filtered_fits_io, map_buffer_ptr, i);
 
         const bool has_filtered_noise_fits =
-            !map_buffer_ptr->noise.empty() &&
-            !filtered_noise_fits_io->empty();
+            citlali::pipeline::has_map_filter_noise_fits(
+                map_buffer_ptr->noise, *filtered_noise_fits_io);
         if (has_filtered_noise_fits) {
             add_phdu(filtered_noise_fits_io, map_buffer_ptr, i);
         }
@@ -7593,7 +7593,8 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
 
     // loop through maps and run wiener filter
     for (Eigen::Index i = 0; i < n_maps; ++i) {
-        const auto map_number = i + 1;
+        const auto map_number =
+            citlali::pipeline::map_filter_display_number(i);
         // current array
         const auto array = maps_to_arrays(i);
         const auto &array_name = toltec_io.array_name_map[array];
@@ -7655,10 +7656,13 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             tula::logging::progressbar pb(
                 [&](const auto &msg) { logger->info("{}", msg); }, 100,
                 "filtering noise");
+            const auto noise_progress_stride =
+                citlali::pipeline::map_filter_progress_stride(
+                    n_wiener_noise_maps);
 
             for (Eigen::Index j = 0; j < n_wiener_noise_maps; ++j) {
                 wiener_filter.filter_noise(mb, i, j);
-                pb.count(n_wiener_noise_maps, n_wiener_noise_maps / 100);
+                pb.count(n_wiener_noise_maps, noise_progress_stride);
             }
             logger->info("noise filtering complete for {} map {}/{}",
                          map_label, map_number, n_maps);
