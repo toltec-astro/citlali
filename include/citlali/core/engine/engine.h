@@ -7716,7 +7716,8 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             }
         }
 
-        logger->info("completed {} map {}/{}", map_label, i + 1, n_maps);
+        logger->info("completed {} map {}/{}", map_label, map_number,
+                     n_maps);
     }
 
     if (write_filtered_maps_partial) {
