@@ -7582,7 +7582,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     const auto n_filtered_fits =
         static_cast<Eigen::Index>(filtered_fits_io->size());
     logger->info("preparing {} FITS headers ({} files)", map_label,
-                 filtered_fits_io->size());
+                 n_filtered_fits);
     for (Eigen::Index i = 0; i < n_filtered_fits; ++i) {
         add_phdu(filtered_fits_io, map_buffer_ptr, i);
 
