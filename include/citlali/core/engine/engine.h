@@ -7372,7 +7372,9 @@ void Engine::create_rtcdiag_file() {
         netCDF::NcDim n_rtc_impulsive_samples_dim =
             fo.addDim("n_rtc_impulsive_samples", n_snippet);
 
-        netCDF::NcVar offset_v = fo.addVar("rtc_impulsive_snippet_offset_samples", netCDF::ncInt, n_rtc_impulsive_samples_dim);
+        netCDF::NcVar offset_v =
+            fo.addVar("rtc_impulsive_snippet_offset_samples", netCDF::ncInt,
+                      n_rtc_impulsive_samples_dim);
         offset_v.putAtt("units", "samples");
         offset_v.putAtt("comment", "sample offsets relative to rtc_impulsive_slot_event_sample");
         const auto offsets =
