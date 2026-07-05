@@ -7513,10 +7513,12 @@ void Engine::write_stats() {
                 diagnostics.evals);
         if (has_eigenvalue_groups) {
             const auto first_it = diagnostics.evals.begin();
+            const Eigen::Index n_cleaner_eigenvalues =
+                ptcproc.cleaner.n_calc;
             const auto n_eig_groups = first_it->second[0].size();
             const auto eval_dims =
                 citlali::pipeline::add_stats_eigenvalue_dims(
-                    fo, ptcproc.cleaner.n_calc, n_eig_groups);
+                    fo, n_cleaner_eigenvalues, n_eig_groups);
 
             // loop through chunks
             for (const auto &[chunk_index, eval_groups] : diagnostics.evals) {
