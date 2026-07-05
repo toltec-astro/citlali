@@ -172,18 +172,6 @@ void Engine::get_timestream_config(CT &config) {
         "timestream.processed_time_chunk.output.indices",
         ptc_chunk_select_enabled, ptc_output_chunks, logger);
 
-    auto read_tod_selection_count = [&](const auto &key, const std::string &config_path,
-                                        int &value) {
-        if (!config.template has_typed<int>(key)) {
-            return;
-        }
-        value = config.template get_typed<int>(key);
-        if (value < 0) {
-            logger->error("{} must be non-negative. Found {}", config_path, value);
-            std::exit(EXIT_FAILURE);
-        }
-    };
-
     auto parse_tod_selection_mode = [&](const auto &mode_key,
                                         const auto &n_uniform_key,
                                         const auto &n_source_dense_key,
@@ -204,8 +192,11 @@ void Engine::get_timestream_config(CT &config) {
             get_config_value(config, mode, missing_keys, invalid_keys, mode_key,
                              {"indices", "all", "uniform_plus_source_crossing"});
         }
-        read_tod_selection_count(n_uniform_key, n_uniform_path, n_uniform);
-        read_tod_selection_count(n_source_dense_key, n_source_dense_path, n_source_dense);
+        citlali::pipeline::read_tod_selection_count_config(
+            config, n_uniform_key, n_uniform_path, n_uniform, logger);
+        citlali::pipeline::read_tod_selection_count_config(
+            config, n_source_dense_key, n_source_dense_path, n_source_dense,
+            logger);
         if (mode == "uniform_plus_source_crossing" && n_uniform + n_source_dense <= 0) {
             logger->error("{} selects uniform_plus_source_crossing but {} + {} is zero",
                           mode_path, n_uniform_path, n_source_dense_path);

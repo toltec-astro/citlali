@@ -158,6 +158,20 @@ void parse_tod_output_indices_config(
     std::exit(EXIT_FAILURE);
 }
 
+template <class Config, class Key, class Logger>
+void read_tod_selection_count_config(
+    Config &config, const Key &key, const std::string &config_path,
+    int &value, const Logger &logger) {
+    if (!config.template has_typed<int>(key)) {
+        return;
+    }
+    value = config.template get_typed<int>(key);
+    if (value < 0) {
+        logger->error("{} must be non-negative. Found {}", config_path, value);
+        std::exit(EXIT_FAILURE);
+    }
+}
+
 inline bool tod_output_chunk_is_valid(Eigen::Index chunk_1based,
                                       Eigen::Index n_scans) {
     return chunk_1based >= 1 && chunk_1based <= n_scans;
