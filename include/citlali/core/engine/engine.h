@@ -7719,7 +7719,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             if (has_next_map) {
                 const auto next_map_index = arrays_to_maps(i + 1);
                 const bool next_map_opens_new_file =
-                    next_map_index > arrays_to_maps(i);
+                    next_map_index > map_index;
                 if (next_map_opens_new_file && should_close_filtered_fits) {
                     logger->info("closing FITS handle for {}",
                                  filtered_map_path);
