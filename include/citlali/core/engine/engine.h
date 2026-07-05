@@ -7086,10 +7086,11 @@ void Engine::create_rtcdiag_file() {
         dir_name = dir_name + tod_output_subdir_name + "/";
     }
 
-    auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec,
-                                              engine_utils::toltecIO::rtcdiag,
-                                              engine_utils::toltecIO::raw>(dir_name, redu_type, "",
-                                                                           obsnum, telescope.sim_obs);
+    const auto filename =
+        toltec_io.create_filename<engine_utils::toltecIO::toltec,
+                                  engine_utils::toltecIO::rtcdiag,
+                                  engine_utils::toltecIO::raw>(
+            dir_name, redu_type, "", obsnum, telescope.sim_obs);
     rtcdiag_filename = filename + ".nc";
 
     write_netcdf_atomic(rtcdiag_filename, [&](netCDF::NcFile &fo) {
