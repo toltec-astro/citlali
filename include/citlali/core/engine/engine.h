@@ -7207,7 +7207,9 @@ void Engine::create_rtcdiag_file() {
         }
     }
     else {
-        logger->warn("rtcdiag scan-speed diagnostics skipped: missing TelTime, az_phys, or alt_phys telescope data");
+        logger->warn(
+            "rtcdiag scan-speed diagnostics skipped: missing TelTime, "
+            "az_phys, or alt_phys telescope data");
     }
 
     citlali::pipeline::add_rtcdiag_scan_summary_vars(
