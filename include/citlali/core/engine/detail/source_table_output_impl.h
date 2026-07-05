@@ -1,0 +1,33 @@
+#pragma once
+
+// Engine post-processing implementation detail.
+// Include this only after Engine has been declared.
+
+template <mapmaking::MapType map_t, class map_buffer_t>
+void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
+    // get filename for source table
+    const std::string source_filename =
+        setup_filenames<map_t, engine_utils::toltecIO::source,
+                        engine_utils::toltecIO::map>(dir_name);
+
+    const auto map_to_array_index = [&](Eigen::Index map_index) {
+        return maps_to_arrays(map_index);
+    };
+    const auto calc_map_std_dev = [](auto &signal) {
+        return engine_utils::calc_std_dev(signal);
+    };
+    const auto write_source_table =
+        [&](const std::string &filename, auto &source_table,
+            auto source_header, auto source_meta) {
+            to_ecsv_from_matrix(
+                filename, source_table, source_header, source_meta);
+        };
+    const auto source_table_callbacks =
+        citlali::pipeline::make_source_table_callbacks(
+            map_to_array_index, calc_map_std_dev, write_source_table);
+    citlali::pipeline::write_source_table_output(
+        source_filename, *mb, map_fitter.n_params, telescope.pixel_axes,
+        telescope.source_name, engine_utils::current_date_time(),
+        date_obs.back(), calib.apt_header_description,
+        source_table_callbacks);
+}

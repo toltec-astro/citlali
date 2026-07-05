@@ -1,0 +1,60 @@
+#pragma once
+
+// Engine post-processing implementation detail.
+// Include this only after Engine has been declared.
+
+template <mapmaking::MapType map_t, class map_buffer_t>
+void Engine::run_wiener_filter(map_buffer_t &mb) {
+    citlali::pipeline::reset_map_filter_edge_guard_storage(mb);
+
+    using FitsVector =
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>>;
+    auto add_phdu_for_filter = [&](auto *fits, auto *buffer,
+                                   Eigen::Index fits_index) {
+        add_phdu(fits, buffer, fits_index);
+    };
+    auto filter_outputs =
+        citlali::pipeline::prepare_map_filter_outputs<map_t, FitsVector>(
+            filtered_fits_io_vec, filtered_noise_fits_io_vec,
+            filtered_coadd_fits_io_vec, filtered_coadd_noise_fits_io_vec,
+            &mb, logger, add_phdu_for_filter);
+    FitsVector *filtered_fits_io = filter_outputs.filtered_fits_io;
+    FitsVector *filtered_noise_fits_io =
+        filter_outputs.filtered_noise_fits_io;
+    const char *map_label = filter_outputs.map_label;
+
+    const auto write_filter_maps =
+        [&](auto *fits, auto *noise_fits, auto *buffer,
+            Eigen::Index map_index) {
+            write_maps(fits, noise_fits, buffer, map_index);
+        };
+    const auto map_to_stokes_index = [&](Eigen::Index map_index) {
+        return maps_to_stokes(map_index);
+    };
+    const auto map_to_array_index = [&](Eigen::Index map_index) {
+        return maps_to_arrays(map_index);
+    };
+    const auto array_to_map_index = [&](Eigen::Index array_index) {
+        return arrays_to_maps(array_index);
+    };
+    const auto filter_callbacks =
+        citlali::pipeline::make_map_filter_callbacks(
+            map_to_array_index, map_to_stokes_index, array_to_map_index,
+            write_filter_maps);
+    const auto filter_options =
+        citlali::pipeline::map_filter_run_options(
+            run_noise, write_filtered_maps_partial, run_noise_products,
+            apply_empirical_noise_weights);
+
+    citlali::pipeline::run_map_filter_loop(
+        wiener_filter, mb, n_maps, filter_outputs,
+        toltec_io.array_name_map, toltec_io.array_fwhm_arcsec,
+        ASEC_TO_RAD, calib.apt, filter_options, &mb,
+        rtcproc.run_polarization, rtcproc.polarization,
+        filter_callbacks, logger);
+
+    citlali::pipeline::finalize_map_filter_fits_outputs_if_needed(
+        write_filtered_maps_partial, filtered_fits_io,
+        filtered_noise_fits_io, map_label, logger);
+}
+
