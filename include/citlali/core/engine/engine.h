@@ -7281,8 +7281,10 @@ void Engine::create_rtcdiag_file() {
     add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
     add_netcdf_var(fo, "RTC_SAMPRATE", rtc_fsmp);
     add_netcdf_var(fo, "CONFIG.TODFILTERED", rtcproc.run_tod_filter);
-    add_netcdf_var(fo, "CONFIG.TODFILTER.FREQ_HIGH_HZ", rtcproc.filter.freq_high_Hz);
-    add_netcdf_var(fo, "CONFIG.TODFILTER.FREQ_LOW_HZ", rtcproc.filter.freq_low_Hz);
+    add_netcdf_var(fo, "CONFIG.TODFILTER.FREQ_HIGH_HZ",
+                   rtcproc.filter.freq_high_Hz);
+    add_netcdf_var(fo, "CONFIG.TODFILTER.FREQ_LOW_HZ",
+                   rtcproc.filter.freq_low_Hz);
     add_netcdf_var(fo, "CONFIG.TODFILTER.N_TERMS", rtcproc.filter.n_terms);
     citlali::pipeline::add_tod_filter_edge_guard_config_vars(
         fo, rtcproc.filter_edge_guard, telescope.outer_scans_chunk,
