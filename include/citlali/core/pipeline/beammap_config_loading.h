@@ -29,6 +29,39 @@ void read_beammap_iteration_config(Config &config, MissingKeys &missing_keys,
     }
 }
 
+template <class Config, class MissingKeys, class InvalidKeys>
+void read_beammap_phase_strategy_config(Config &config,
+                                        MissingKeys &missing_keys,
+                                        InvalidKeys &invalid_keys,
+                                        bool &enabled,
+                                        int &locator_iter,
+                                        int &measurement_start_iter) {
+    enabled = true;
+    locator_iter = 0;
+    measurement_start_iter = 1;
+    if (config.template has_typed<bool>(
+            std::tuple{"beammap", "phase_strategy", "enabled"})) {
+        ::get_config_value(
+            config, enabled, missing_keys, invalid_keys,
+            std::tuple{"beammap", "phase_strategy", "enabled"});
+    }
+    if (config.template has_typed<int>(
+            std::tuple{"beammap", "phase_strategy", "locator_iter"})) {
+        ::get_config_value(
+            config, locator_iter, missing_keys, invalid_keys,
+            std::tuple{"beammap", "phase_strategy", "locator_iter"}, {}, {0});
+    }
+    if (config.template has_typed<int>(
+            std::tuple{"beammap", "phase_strategy",
+                       "measurement_start_iter"})) {
+        ::get_config_value(
+            config, measurement_start_iter, missing_keys, invalid_keys,
+            std::tuple{"beammap", "phase_strategy",
+                       "measurement_start_iter"},
+            {}, {1});
+    }
+}
+
 template <class Config, class InvalidKeys>
 std::vector<double> beammap_fixed_double_vector(
     Config &config, const std::vector<std::string> &path,

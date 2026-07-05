@@ -12,23 +12,9 @@ void Engine::get_beammap_config(CT &config) {
         config, missing_keys, invalid_keys, beammap_iter_max,
         beammap_iter_tolerance, beammap_convergence_radius_arcsec);
 
-    beammap_phase_split_enabled = true;
-    beammap_locator_iter = 0;
-    beammap_measurement_start_iter = 1;
-    if (config.template has_typed<bool>(std::tuple{"beammap","phase_strategy","enabled"})) {
-        get_config_value(config, beammap_phase_split_enabled, missing_keys, invalid_keys,
-                         std::tuple{"beammap","phase_strategy","enabled"});
-    }
-    if (config.template has_typed<int>(std::tuple{"beammap","phase_strategy","locator_iter"})) {
-        get_config_value(config, beammap_locator_iter, missing_keys, invalid_keys,
-                         std::tuple{"beammap","phase_strategy","locator_iter"},
-                         {}, {0});
-    }
-    if (config.template has_typed<int>(std::tuple{"beammap","phase_strategy","measurement_start_iter"})) {
-        get_config_value(config, beammap_measurement_start_iter, missing_keys, invalid_keys,
-                         std::tuple{"beammap","phase_strategy","measurement_start_iter"},
-                         {}, {1});
-    }
+    citlali::pipeline::read_beammap_phase_strategy_config(
+        config, missing_keys, invalid_keys, beammap_phase_split_enabled,
+        beammap_locator_iter, beammap_measurement_start_iter);
     citlali::pipeline::normalize_beammap_phase_strategy(
         beammap_iter_max, beammap_locator_iter,
         beammap_measurement_start_iter, logger);
