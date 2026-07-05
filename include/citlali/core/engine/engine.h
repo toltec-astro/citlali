@@ -7070,8 +7070,6 @@ void Engine::create_rtcdiag_file() {
     citlali::pipeline::add_rtcdiag_array_ids(
         fo, calib, n_arrays_dim, fill_int);
 
-    auto percentile_sorted = citlali::pipeline::rtcdiag_percentile_sorted;
-
     auto add_scan_double = [&](const std::string &name, const std::string &units,
                                const std::string &comment, const std::vector<double> &values) {
         citlali::pipeline::add_rtcdiag_scan_double(
@@ -7118,11 +7116,14 @@ void Engine::create_rtcdiag_file() {
             if (!speed_arcsec_s.empty()) {
                 std::sort(speed_arcsec_s.begin(), speed_arcsec_s.end());
                 scan_speed_p50_arcsec_s[static_cast<std::size_t>(scan)] =
-                    percentile_sorted(speed_arcsec_s, 50.0);
+                    citlali::pipeline::rtcdiag_percentile_sorted(
+                        speed_arcsec_s, 50.0);
                 scan_speed_p95_arcsec_s[static_cast<std::size_t>(scan)] =
-                    percentile_sorted(speed_arcsec_s, 95.0);
+                    citlali::pipeline::rtcdiag_percentile_sorted(
+                        speed_arcsec_s, 95.0);
                 scan_speed_p995_arcsec_s[static_cast<std::size_t>(scan)] =
-                    percentile_sorted(speed_arcsec_s, 99.5);
+                    citlali::pipeline::rtcdiag_percentile_sorted(
+                        speed_arcsec_s, 99.5);
             }
         }
     }
