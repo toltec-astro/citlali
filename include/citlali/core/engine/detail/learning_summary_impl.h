@@ -57,45 +57,13 @@ inline void Engine::write_learning_summary() {
     write_common_header();
 
     for (const auto &record : reduction_learning.learned_sample_masks) {
-        auto row = new_row();
-        write_base(row, "sample_mask", record.iter, record.obsnum, record.producer,
-                   record.reason, record.scan, record.uid, record.nw, record.array);
-        row[ColRawStart] = text(record.raw_start);
-        row[ColRawStop] = text(record.raw_stop);
-        row[ColPtcStart] = text(record.ptc_start);
-        row[ColPtcStop] = text(record.ptc_stop);
-        row[ColScore] = text(record.score);
-        row[ColZ] = text(record.z);
-        row[ColValue] = text(record.value);
-        row[ColConfidence] = text(record.confidence);
-        row[ColSourceDistanceArcsec] = text(record.source_distance_arcsec);
-        row[ColSourceProtected] = text(record.source_protected ? 1 : 0);
-        row[ColApplyPreRtc] = text(record.apply_pre_rtc ? 1 : 0);
-        write_row(row);
+        write_row(citlali::pipeline::learning_summary_sample_mask_row(
+            record, text, csv));
     }
 
     for (const auto &record : reduction_learning.busy_network_summaries) {
-        auto row = new_row();
-        write_base(row, "busy_network", record.iter, record.obsnum, record.producer,
-                   record.reason, record.scan, -1, record.nw, -1);
-        row[ColScore] = text(record.top_candidate_score);
-        row[ColZ] = text(record.max_unflagged_residual_z);
-        row[ColCandidateClusters] = text(record.n_candidate_clusters);
-        row[ColCandidateEvents] = text(record.n_candidate_events);
-        row[ColAcceptedClusters] = text(record.n_accepted_clusters);
-        row[ColAcceptedEvents] = text(record.n_accepted_events);
-        row[ColRejectedClusters] = text(record.n_rejected_clusters);
-        row[ColRejectedEvents] = text(record.n_rejected_events);
-        row[ColSourceProtectedClusters] = text(record.n_source_protected_clusters);
-        row[ColSourceProtectedEvents] = text(record.n_source_protected_events);
-        row[ColMaxResidualUid] = text(record.max_unflagged_residual_uid);
-        row[ColTopCandidateSample] = text(record.top_candidate_sample);
-        row[ColTopCandidateScore] = text(record.top_candidate_score);
-        row[ColMaxResidualZ] = text(record.max_unflagged_residual_z);
-        row[ColBusyVetoed] = text(record.busy_vetoed ? 1 : 0);
-        row[ColSelectiveAcceptanceRecommended] =
-            text(record.selective_acceptance_recommended ? 1 : 0);
-        write_row(row);
+        write_row(citlali::pipeline::learning_summary_busy_network_row(
+            record, text, csv));
     }
 
     for (const auto &record : reduction_learning.detector_penalties) {
