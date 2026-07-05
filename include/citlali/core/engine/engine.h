@@ -7240,31 +7240,16 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
             engine_utils::current_date_time(), date_obs.back(),
             source_header_units, calib.apt_header_description);
 
-    // count up the total number of sources
-    const Eigen::Index n_sources =
-        citlali::pipeline::count_map_sources(mb->n_sources);
-
-    // matrix to hold source information (floats for readability)
-    const auto source_table_cols =
-        citlali::pipeline::source_table_column_count(map_fitter.n_params);
-    Eigen::MatrixXf source_table(n_sources, source_table_cols);
-    const auto sig2noise_col =
-        citlali::pipeline::source_table_sig2noise_column(
-            map_fitter.n_params);
-
     const auto map_to_array_index = [&](Eigen::Index map_index) {
         return maps_to_arrays(map_index);
     };
     const auto calc_map_std_dev = [](auto &signal) {
         return engine_utils::calc_std_dev(signal);
     };
-    citlali::pipeline::populate_source_table_map_columns(
-        source_table, *mb, sig2noise_col, map_to_array_index,
-        calc_map_std_dev);
-
-    // populate source table
-    citlali::pipeline::populate_source_table_fit_columns(
-        source_table, *mb, map_fitter.n_params);
+    Eigen::MatrixXf source_table =
+        citlali::pipeline::build_source_table(
+            *mb, map_fitter.n_params, map_to_array_index,
+            calc_map_std_dev);
 
     // write source table
     to_ecsv_from_matrix(source_filename, source_table, source_header, source_meta);

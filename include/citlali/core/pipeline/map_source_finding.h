@@ -332,6 +332,26 @@ void populate_source_table_fit_columns(SourceTable &source_table,
     }
 }
 
+template <class MapBuffer, class MapToArray, class CalcStdDev>
+Eigen::MatrixXf build_source_table(MapBuffer &map_buffer,
+                                   Eigen::Index n_params,
+                                   const MapToArray &maps_to_arrays,
+                                   const CalcStdDev &calc_std_dev) {
+    const Eigen::Index n_sources =
+        count_map_sources(map_buffer.n_sources);
+    const auto source_table_cols = source_table_column_count(n_params);
+    Eigen::MatrixXf source_table(n_sources, source_table_cols);
+    const auto sig2noise_col = source_table_sig2noise_column(n_params);
+
+    populate_source_table_map_columns(
+        source_table, map_buffer, sig2noise_col, maps_to_arrays,
+        calc_std_dev);
+    populate_source_table_fit_columns(
+        source_table, map_buffer, n_params);
+
+    return source_table;
+}
+
 template <class SourceCount>
 std::vector<int> source_index_vector(SourceCount n_sources) {
     std::vector<int> source_indices(static_cast<std::size_t>(n_sources));
