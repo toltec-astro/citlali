@@ -7035,26 +7035,21 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     const auto n_maps_local = static_cast<std::size_t>(mb.signal.size());
     mapmaking::reset_edge_guard_storage(mb, n_maps_local);
 
-    // pointer to map buffer
-    mapmaking::MapBuffer *map_buffer_ptr = &mb;
     using FitsVector =
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>>;
-    auto filter_outputs =
-        citlali::pipeline::map_filter_output_targets<map_t>(
-            filtered_fits_io_vec, filtered_noise_fits_io_vec,
-            filtered_coadd_fits_io_vec, filtered_coadd_noise_fits_io_vec);
-    FitsVector *filtered_fits_io = filter_outputs.filtered_fits_io;
-    FitsVector *filtered_noise_fits_io =
-        filter_outputs.filtered_noise_fits_io;
-    const char *map_label = filter_outputs.map_label;
-
     auto add_phdu_for_filter = [&](auto *fits, auto *buffer,
                                    Eigen::Index fits_index) {
         add_phdu(fits, buffer, fits_index);
     };
-    citlali::pipeline::prepare_map_filter_fits_headers(
-        filtered_fits_io, filtered_noise_fits_io, map_buffer_ptr, map_label,
-        logger, add_phdu_for_filter);
+    auto filter_outputs =
+        citlali::pipeline::prepare_map_filter_outputs<map_t, FitsVector>(
+            filtered_fits_io_vec, filtered_noise_fits_io_vec,
+            filtered_coadd_fits_io_vec, filtered_coadd_noise_fits_io_vec,
+            &mb, logger, add_phdu_for_filter);
+    FitsVector *filtered_fits_io = filter_outputs.filtered_fits_io;
+    FitsVector *filtered_noise_fits_io =
+        filter_outputs.filtered_noise_fits_io;
+    const char *map_label = filter_outputs.map_label;
 
     const auto write_filter_maps =
         [&](auto *fits, auto *noise_fits, auto *buffer,
@@ -7076,7 +7071,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         toltec_io.array_name_map, toltec_io.array_fwhm_arcsec,
         ASEC_TO_RAD, calib.apt, run_noise, write_filtered_maps_partial,
         run_noise_products, apply_empirical_noise_weights,
-        filtered_fits_io, filtered_noise_fits_io, map_buffer_ptr,
+        filtered_fits_io, filtered_noise_fits_io, &mb,
         rtcproc.run_polarization, rtcproc.polarization,
         map_to_stokes_index, array_to_map_index, write_filter_maps,
         logger);

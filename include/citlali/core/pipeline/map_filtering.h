@@ -113,6 +113,28 @@ void prepare_map_filter_fits_headers(
     }
 }
 
+template <mapmaking::MapType map_t, class FitsVector,
+          class MapBufferPtr, class Logger, class AddPhdu>
+MapFilterOutputTargets<FitsVector> prepare_map_filter_outputs(
+    FitsVector &filtered_fits_io_vec,
+    FitsVector &filtered_noise_fits_io_vec,
+    FitsVector &filtered_coadd_fits_io_vec,
+    FitsVector &filtered_coadd_noise_fits_io_vec,
+    MapBufferPtr map_buffer_ptr, const Logger &logger,
+    const AddPhdu &add_phdu) {
+    auto filter_outputs =
+        map_filter_output_targets<map_t>(
+            filtered_fits_io_vec, filtered_noise_fits_io_vec,
+            filtered_coadd_fits_io_vec, filtered_coadd_noise_fits_io_vec);
+
+    prepare_map_filter_fits_headers(
+        filter_outputs.filtered_fits_io,
+        filter_outputs.filtered_noise_fits_io,
+        map_buffer_ptr, filter_outputs.map_label, logger, add_phdu);
+
+    return filter_outputs;
+}
+
 template <class FitsVector, class Logger>
 void finalize_map_filter_fits_outputs(
     FitsVector *filtered_fits_io, FitsVector *filtered_noise_fits_io,
