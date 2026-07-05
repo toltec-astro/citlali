@@ -6865,14 +6865,16 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                                             detector_exclusion_min_pixels)) {
                                     continue;
                                 }
+                                const auto penalty_reason =
+                                    citlali::pipeline::
+                                        mapdiag_detector_dominance_penalty_reason();
                                 auto penalty =
                                     citlali::pipeline::
                                         make_mapdiag_detector_penalty<
                                             ReductionLearningState::
                                                 DetectorPenalty>(
                                             obsnum, mapdiag_record_producer,
-                                            citlali::pipeline::
-                                                mapdiag_detector_dominance_penalty_reason(),
+                                            penalty_reason,
                                             fruit_iter, entry, array_id);
                                 reduction_learning.record_detector_penalty(
                                     std::move(penalty), true);
