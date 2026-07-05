@@ -7725,8 +7725,8 @@ void Engine::find_sources(map_buffer_t &mb) {
                     params(4) = source_fwhm_to_arcsec * params(4);
 
                     // rescale fit errors from pixel to on-sky units
-                    perrors(1) = RAD_TO_ASEC*mb.pixel_size_rad*(perrors(1));
-                    perrors(2) = RAD_TO_ASEC*mb.pixel_size_rad*(perrors(2));
+                    perrors(1) = pixel_to_arcsec * perrors(1);
+                    perrors(2) = pixel_to_arcsec * perrors(2);
                     perrors(3) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(perrors(3));
                     perrors(4) = RAD_TO_ASEC*STD_TO_FWHM*mb.pixel_size_rad*(perrors(4));
 
