@@ -7048,17 +7048,6 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         filter_outputs.filtered_noise_fits_io;
     const char *map_label = filter_outputs.map_label;
 
-    auto filter_wiener_signal_map =
-        [&](Eigen::Index map_i, Eigen::Index map_number,
-            const std::string &array_name) {
-            logger->info(
-                "running Wiener filter core for {} map {}/{} (array={})",
-                map_label, map_number, n_maps, array_name);
-            wiener_filter.filter_maps(mb, map_i);
-            logger->info("map filtering complete for {} map {}/{}",
-                         map_label, map_number, n_maps);
-        };
-
     auto add_phdu_for_filter = [&](auto *fits, auto *buffer,
                                    Eigen::Index fits_index) {
         add_phdu(fits, buffer, fits_index);
@@ -7085,11 +7074,13 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             citlali::pipeline::map_filter_display_number(i);
         // current array
         const auto array = maps_to_arrays(i);
-        const auto &array_name = toltec_io.array_name_map[array];
+        const auto &array_name =
+            citlali::pipeline::map_filter_array_name(
+                toltec_io.array_name_map, array);
         // get file index
         const auto map_index = arrays_to_maps(i);
-        logger->info("starting {} map {}/{} (array={})",
-                     map_label, map_number, n_maps, array_name);
+        citlali::pipeline::log_map_filter_map_start(
+            map_label, map_number, n_maps, array_name, logger);
         // init fwhm in pixels
         citlali::pipeline::initialize_map_filter_fwhm(
             wiener_filter, toltec_io.array_fwhm_arcsec, array,
@@ -7099,7 +7090,9 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             wiener_filter, mb, calib.apt, i, map_number, n_maps,
             array_name, map_label, logger);
         // run the filter for the current map
-        filter_wiener_signal_map(i, map_number, array_name);
+        citlali::pipeline::filter_map_filter_signal_map(
+            wiener_filter, mb, i, map_number, n_maps, array_name,
+            map_label, logger);
 
         // filter noise maps
         const auto n_wiener_noise_maps = mb.n_noise;
@@ -7124,8 +7117,8 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                 write_filter_maps, logger);
         }
 
-        logger->info("completed {} map {}/{}", map_label, map_number,
-                     n_maps);
+        citlali::pipeline::log_map_filter_map_completed(
+            map_label, map_number, n_maps, logger);
     }
 
     if (write_filtered_maps_partial) {

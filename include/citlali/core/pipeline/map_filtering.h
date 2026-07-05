@@ -65,6 +65,28 @@ auto map_filter_display_number(MapIndex map_index) {
     return map_index + 1;
 }
 
+template <class ArrayNames, class ArrayIndex>
+decltype(auto) map_filter_array_name(ArrayNames &array_names,
+                                     ArrayIndex array_index) {
+    return array_names[array_index];
+}
+
+template <class MapNumber, class MapCount, class Logger>
+void log_map_filter_map_start(const char *map_label,
+                              MapNumber map_number, MapCount n_maps,
+                              const std::string &array_name,
+                              const Logger &logger) {
+    logger->info("starting {} map {}/{} (array={})",
+                 map_label, map_number, n_maps, array_name);
+}
+
+template <class MapNumber, class MapCount, class Logger>
+void log_map_filter_map_completed(const char *map_label,
+                                  MapNumber map_number, MapCount n_maps,
+                                  const Logger &logger) {
+    logger->info("completed {} map {}/{}", map_label, map_number, n_maps);
+}
+
 template <class NoiseContainer, class FitsContainer>
 bool has_map_filter_noise_fits(const NoiseContainer &noise,
                                const FitsContainer &noise_fits) {
@@ -166,6 +188,24 @@ void build_map_filter_template(WienerFilter &wiener_filter,
     logger->info(
         "Wiener template ready for {} map {}/{} (array={})",
         map_label, map_number, n_maps, array_name);
+}
+
+template <class WienerFilter, class MapBuffer, class MapIndex,
+          class MapNumber, class MapCount, class Logger>
+void filter_map_filter_signal_map(WienerFilter &wiener_filter,
+                                  MapBuffer &map_buffer,
+                                  MapIndex map_index,
+                                  MapNumber map_number,
+                                  MapCount n_maps,
+                                  const std::string &array_name,
+                                  const char *map_label,
+                                  const Logger &logger) {
+    logger->info(
+        "running Wiener filter core for {} map {}/{} (array={})",
+        map_label, map_number, n_maps, array_name);
+    wiener_filter.filter_maps(map_buffer, map_index);
+    logger->info("map filtering complete for {} map {}/{}",
+                 map_label, map_number, n_maps);
 }
 
 inline bool should_calculate_map_filter_noise_products(
