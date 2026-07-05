@@ -6317,10 +6317,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         median_err,
         median_rms,
         empirical_to_formal_noise_ratio};
-    std::vector<double> noise_weight_median_ratio(mapdiag_context.n_maps, fill_double);
-    std::vector<double> noise_weight_scale(mapdiag_context.n_maps, fill_double);
-    std::vector<double> noise_products_s2n_sigma(mapdiag_context.n_maps, fill_double);
-    std::vector<double> noise_products_valid_pixels(mapdiag_context.n_maps, fill_double);
+    std::vector<double> noise_weight_median_ratio(n_mapdiag_maps, fill_double);
+    std::vector<double> noise_weight_scale(n_mapdiag_maps, fill_double);
+    std::vector<double> noise_products_s2n_sigma(n_mapdiag_maps, fill_double);
+    std::vector<double> noise_products_valid_pixels(
+        n_mapdiag_maps, fill_double);
     citlali::pipeline::MapdiagNoiseProductRefs noise_product_refs{
         noise_weight_median_ratio,
         noise_weight_scale,
