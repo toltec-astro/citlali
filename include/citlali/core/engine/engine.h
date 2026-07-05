@@ -7158,97 +7158,10 @@ void Engine::create_rtcdiag_file() {
         fo, rtcdiag_dims.nw, rtcdiag_dims.nw_chunks,
         rtcdiag_dims.n_nw_values, fill_int, fill_double);
 
-    const bool write_impulsive_capture_diag =
-        rtcproc.impulsive_capture.enabled;
-    if (write_impulsive_capture_diag) {
-        const auto max_events_per_network =
-            rtcproc.impulsive_capture.max_events_per_network;
-        const auto n_slots =
-            static_cast<std::size_t>(
-                std::max<Eigen::Index>(max_events_per_network, 1));
-        const double snippet_pre_window_sec =
-            rtcproc.impulsive_capture.snippet_pre_window_sec;
-        const auto snippet_pre =
-            citlali::pipeline::rtcdiag_impulsive_window_samples(
-                snippet_pre_window_sec, rtc_fsmp);
-        const double snippet_post_window_sec =
-            rtcproc.impulsive_capture.snippet_post_window_sec;
-        const auto snippet_post =
-            citlali::pipeline::rtcdiag_impulsive_window_samples(
-                snippet_post_window_sec, rtc_fsmp);
-        const auto n_snippet =
-            citlali::pipeline::rtcdiag_impulsive_snippet_sample_count(
-                snippet_pre, snippet_post);
-        netCDF::NcDim n_rtc_impulsive_slots_dim =
-            fo.addDim("n_rtc_impulsive_slots", n_slots);
-        netCDF::NcDim n_rtc_impulsive_samples_dim =
-            fo.addDim("n_rtc_impulsive_samples", n_snippet);
-
-        netCDF::NcVar offset_v =
-            fo.addVar("rtc_impulsive_snippet_offset_samples", netCDF::ncInt,
-                      n_rtc_impulsive_samples_dim);
-        offset_v.putAtt("units", "samples");
-        offset_v.putAtt(
-            "comment",
-            "sample offsets relative to rtc_impulsive_slot_event_sample");
-        const auto offsets =
-            citlali::pipeline::rtcdiag_impulsive_snippet_offsets(
-                n_snippet, snippet_pre, fill_int);
-        offset_v.putVar(offsets.data());
-
-        const auto n_impulsive_networks =
-            static_cast<std::size_t>(calib.n_nws);
-        std::vector<netCDF::NcDim> rtc_impulsive_slot_dims = {
-            rtcdiag_dims.n_scans, rtcdiag_dims.n_nws,
-            n_rtc_impulsive_slots_dim};
-        std::vector<netCDF::NcDim> rtc_impulsive_snippet_dims = {
-            rtcdiag_dims.n_scans, rtcdiag_dims.n_nws,
-            n_rtc_impulsive_slots_dim,
-            n_rtc_impulsive_samples_dim};
-        const std::vector<std::size_t> rtc_impulsive_slot_chunks = {
-            1, n_impulsive_networks, n_slots};
-        const std::vector<std::size_t> rtc_impulsive_snippet_chunks = {
-            1, n_impulsive_networks, n_slots, n_snippet};
-        const auto n_rtc_impulsive_slot_values =
-            static_cast<std::size_t>(n_scans) *
-            n_impulsive_networks * n_slots;
-        const auto n_rtc_impulsive_snippet_values =
-            n_rtc_impulsive_slot_values * n_snippet;
-
-        auto add_rtc_imp_slot_double = [&](const std::string &name,
-                                           const std::string &comment) {
-            citlali::pipeline::add_rtcdiag_impulsive_slot_double(
-                fo, name, comment, rtc_impulsive_slot_dims,
-                rtc_impulsive_slot_chunks, n_rtc_impulsive_slot_values,
-                fill_double);
-        };
-        auto add_rtc_imp_slot_int = [&](const std::string &name,
-                                        const std::string &comment) {
-            citlali::pipeline::add_rtcdiag_impulsive_slot_int(
-                fo, name, comment, rtc_impulsive_slot_dims,
-                rtc_impulsive_slot_chunks, n_rtc_impulsive_slot_values,
-                fill_int);
-        };
-        auto add_rtc_imp_snip_double = [&](const std::string &name,
-                                           const std::string &comment) {
-            citlali::pipeline::add_rtcdiag_impulsive_snippet_double(
-                fo, name, comment, rtc_impulsive_snippet_dims,
-                rtc_impulsive_snippet_chunks, n_rtc_impulsive_snippet_values,
-                fill_double);
-        };
-        auto add_rtc_imp_snip_int = [&](const std::string &name,
-                                        const std::string &comment) {
-            citlali::pipeline::add_rtcdiag_impulsive_snippet_int(
-                fo, name, comment, rtc_impulsive_snippet_dims,
-                rtc_impulsive_snippet_chunks, n_rtc_impulsive_snippet_values,
-                fill_int);
-        };
-
-        citlali::pipeline::add_rtcdiag_impulsive_capture_diag(
-            add_rtc_imp_slot_int, add_rtc_imp_slot_double,
-            add_rtc_imp_snip_double, add_rtc_imp_snip_int,
-            citlali::pipeline::rtcdiag_impulsive_capture_file_comments());
-    }
+    citlali::pipeline::add_rtcdiag_impulsive_capture_file_outputs_if_needed(
+        fo, rtcproc.impulsive_capture, rtcdiag_dims.n_scans,
+        rtcdiag_dims.n_nws, n_scans, calib.n_nws, rtc_fsmp, fill_int,
+        fill_double);
 
     });
 }
