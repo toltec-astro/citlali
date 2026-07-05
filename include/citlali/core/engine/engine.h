@@ -7532,12 +7532,9 @@ void Engine::write_stats() {
                     const auto eval_var_name =
                         citlali::pipeline::stats_eigenvalue_var_name(
                             cleaner_grouping_name, i, chunk_index);
-                    netCDF::NcVar eval_v =
-                        citlali::pipeline::add_stats_eigenvalue_var(
-                            fo, eval_var_name, eval_dims);
-                    citlali::pipeline::write_stats_eigenvalue_rows(
-                        eval_v, eval_groups[i], n_cleaner_eigenvalues,
-                        eigenvalue_fill_value);
+                    citlali::pipeline::add_stats_eigenvalue_group_var(
+                        fo, eval_var_name, eval_dims, eval_groups[i],
+                        n_cleaner_eigenvalues, eigenvalue_fill_value);
                 }
             }
         }
