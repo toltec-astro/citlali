@@ -7619,7 +7619,6 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             citlali::pipeline::map_filter_template_uses_fwhm(
                 wiener_filter.template_type);
         if (template_uses_fwhm) {
-            const auto it = wiener_filter.template_fwhm_rad.find(array_name);
             const bool has_template_fwhm =
                 citlali::pipeline::has_map_filter_template_fwhm(
                     wiener_filter.template_fwhm_rad, array_name);
@@ -7628,7 +7627,10 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                               array_name);
                 std::exit(EXIT_FAILURE);
             }
-            template_fwhm_rad = it->second;
+            template_fwhm_rad =
+                citlali::pipeline::map_filter_template_fwhm_or(
+                    wiener_filter.template_fwhm_rad, array_name,
+                    template_fwhm_rad);
         }
         wiener_filter.make_template(mb, calib.apt, template_fwhm_rad, i);
         logger->info("Wiener template ready for {} map {}/{} (array={})",
@@ -7669,18 +7671,21 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             const bool normalize_filtered_error =
                 wiener_filter.normalize_error;
             const bool should_calculate_noise_products =
-                write_filtered_maps_partial &&
-                (run_noise_products || normalize_filtered_error);
+                citlali::pipeline::should_calculate_map_filter_noise_products(
+                    write_filtered_maps_partial, run_noise_products,
+                    normalize_filtered_error);
             if (should_calculate_noise_products) {
                 const bool apply_empirical_noise_scale =
-                    apply_empirical_noise_weights ||
-                    normalize_filtered_error;
+                    citlali::pipeline::should_apply_map_filter_noise_scale(
+                        apply_empirical_noise_weights,
+                        normalize_filtered_error);
                 logger->info(
                     "calculating empirical noise products for {} map {}/{}",
                     map_label, map_number, n_maps);
                 mb.calc_noise_products(i, apply_empirical_noise_scale);
                 const bool has_noise_weight_summary =
-                    i < mb.noise_weight_median_ratio.size();
+                    citlali::pipeline::has_map_filter_noise_weight_summary(
+                        i, mb.noise_weight_median_ratio.size());
                 if (has_noise_weight_summary) {
                     logger->info(
                         "noise products: median(w_formal*var)={:.4g} "
@@ -7727,7 +7732,9 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                 const bool next_map_opens_new_file =
                     next_map_index > map_index;
                 const bool should_destroy_filtered_fits =
-                    next_map_opens_new_file && should_close_filtered_fits;
+                    citlali::pipeline::should_destroy_filtered_fits_handle(
+                        next_map_opens_new_file,
+                        should_close_filtered_fits);
                 if (should_destroy_filtered_fits) {
                     logger->info("closing FITS handle for {}",
                                  filtered_map_path);
