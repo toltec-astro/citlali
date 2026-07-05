@@ -71,17 +71,8 @@ void Engine::get_mapmaking_config(CT &config) {
             }
         }
     }
-    std::string fruit_interp_default = (map_method == "jinc") ? "jinc" : "bilinear";
-    ptcproc.fruit_loops_interp_mode = fruit_interp_default;
-    if (ptcproc.run_fruit_loops && ptcproc.fruit_loops_interp_mode_override != "auto") {
-        ptcproc.fruit_loops_interp_mode = ptcproc.fruit_loops_interp_mode_override;
-    }
-    if (ptcproc.fruit_loops_interp_mode == "jinc" && map_method != "jinc") {
-        logger->warn("fruit_loops.interp_mode_override='jinc' requires mapmaking.method='jinc'; using bilinear");
-        ptcproc.fruit_loops_interp_mode = "bilinear";
-    }
-    logger->info("fruit loops interpolation mode: {} (default from mapmaking.method='{}' is {})",
-                 ptcproc.fruit_loops_interp_mode, map_method, fruit_interp_default);
+    citlali::pipeline::configure_fruit_loop_interpolation_mode(
+        ptcproc, map_method, logger);
     logger->info("fruit loops center convention: {}",
                  ptcproc.fruit_loops_legacy_center ? "legacy n/2" : "current (n-1)/2");
     logger->info("fruit loops post-addback weight mode: {}",
