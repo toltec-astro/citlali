@@ -7347,7 +7347,9 @@ void Engine::create_rtcdiag_file() {
     citlali::pipeline::add_rtcdiag_standard_network_diag(
         add_rtc_nw_int, add_rtc_nw_double);
 
-    if (rtcproc.impulsive_capture.enabled) {
+    const bool write_impulsive_capture_diag =
+        rtcproc.impulsive_capture.enabled;
+    if (write_impulsive_capture_diag) {
         const auto n_slots =
             static_cast<std::size_t>(
                 std::max<Eigen::Index>(
