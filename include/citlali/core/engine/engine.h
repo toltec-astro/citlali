@@ -7566,7 +7566,10 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                          map_label, i + 1, n_maps);
 #endif
 
-            if (write_filtered_maps_partial && (run_noise_products || wiener_filter.normalize_error)) {
+            const bool should_calculate_noise_products =
+                write_filtered_maps_partial &&
+                (run_noise_products || wiener_filter.normalize_error);
+            if (should_calculate_noise_products) {
                 const bool apply_scale = apply_empirical_noise_weights || wiener_filter.normalize_error;
                 logger->info("calculating empirical noise products for {} map {}/{}",
                              map_label, i + 1, n_maps);
