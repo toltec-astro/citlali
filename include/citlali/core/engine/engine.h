@@ -7535,22 +7535,9 @@ void Engine::write_stats() {
                     netCDF::NcVar eval_v =
                         citlali::pipeline::add_stats_eigenvalue_var(
                             fo, eval_var_name, eval_dims);
-                    auto start_eig_index =
-                        citlali::pipeline::stats_eigenvalue_start_index();
-                    const auto eig_write_shape =
-                        citlali::pipeline::stats_eigenvalue_write_shape(
-                            n_cleaner_eigenvalues);
-
-                    // loop through eigenvalues in current group
-                    for (const auto &evals : eval_groups[i]) {
-                        Eigen::VectorXd padded_evals =
-                            citlali::pipeline::ptcdiag_padded_eigenvalues(
-                                evals, n_cleaner_eigenvalues,
-                                eigenvalue_fill_value);
-                        eval_v.putVar(start_eig_index, eig_write_shape,
-                                      padded_evals.data());
-                        start_eig_index[0] += 1;
-                    }
+                    citlali::pipeline::write_stats_eigenvalue_rows(
+                        eval_v, eval_groups[i], n_cleaner_eigenvalues,
+                        eigenvalue_fill_value);
                 }
             }
         }
