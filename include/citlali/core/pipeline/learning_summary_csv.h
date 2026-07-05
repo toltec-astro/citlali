@@ -1,9 +1,17 @@
 #pragma once
 
+#include <sstream>
 #include <string>
 #include <vector>
 
 namespace citlali::pipeline {
+
+inline std::string learning_summary_filename(
+    const std::string &redu_dir_name, int fruit_iter) {
+    std::ostringstream filename;
+    filename << redu_dir_name << "/learning_iter_" << fruit_iter << ".csv";
+    return filename.str();
+}
 
 inline std::vector<std::string> learning_summary_csv_header() {
     return {

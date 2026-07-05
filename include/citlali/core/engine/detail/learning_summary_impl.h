@@ -13,11 +13,11 @@ inline void Engine::write_learning_summary() {
         return;
     }
 
-    std::ostringstream filename;
-    filename << redu_dir_name << "/learning_iter_" << fruit_iter << ".csv";
-    std::ofstream out(filename.str());
+    const auto filename =
+        citlali::pipeline::learning_summary_filename(redu_dir_name, fruit_iter);
+    std::ofstream out(filename);
     if (!out) {
-        logger->warn("failed to open learning summary output {}", filename.str());
+        logger->warn("failed to open learning summary output {}", filename);
         return;
     }
 
@@ -268,5 +268,5 @@ inline void Engine::write_learning_summary() {
         write_row(row);
     }
 
-    logger->info("wrote reduction learning summary {}", filename.str());
+    logger->info("wrote reduction learning summary {}", filename);
 }
