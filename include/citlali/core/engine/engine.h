@@ -7443,7 +7443,7 @@ void Engine::create_rtcdiag_file() {
 void Engine::write_stats() {
     std::string path = obsnum_dir_name + "raw/";
     // if using tod subdir, put stats file in it
-    if (tod_output_subdir_name!="null") {
+    if (tod_output_subdir_name != "null") {
         if (!fs::exists(fs::status(path + tod_output_subdir_name))) {
             fs::create_directories(path + tod_output_subdir_name);
             path = path + tod_output_subdir_name + "/";
