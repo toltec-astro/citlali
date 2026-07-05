@@ -7048,27 +7048,6 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         filter_outputs.filtered_noise_fits_io;
     const char *map_label = filter_outputs.map_label;
 
-    auto resolve_template_fwhm_rad = [&](const std::string &array_name) {
-        double template_fwhm_rad = 0.0;
-        const bool template_uses_fwhm =
-            citlali::pipeline::map_filter_template_uses_fwhm(
-                wiener_filter.template_type);
-        if (!template_uses_fwhm) {
-            return template_fwhm_rad;
-        }
-        const bool has_template_fwhm =
-            citlali::pipeline::has_map_filter_template_fwhm(
-                wiener_filter.template_fwhm_rad, array_name);
-        if (!has_template_fwhm) {
-            logger->error("missing Wiener template_fwhm_rad for array {}",
-                          array_name);
-            std::exit(EXIT_FAILURE);
-        }
-        return citlali::pipeline::map_filter_template_fwhm_or(
-            wiener_filter.template_fwhm_rad, array_name,
-            template_fwhm_rad);
-    };
-
     auto init_wiener_filter_fwhm = [&](Eigen::Index array) {
         const auto array_fwhm_arcsec =
             toltec_io.array_fwhm_arcsec[array];
@@ -7102,36 +7081,6 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             mb.calc_median_rms();
         };
 
-    auto filter_wiener_noise_maps =
-        [&](Eigen::Index map_i, Eigen::Index map_number,
-            Eigen::Index n_wiener_noise_maps) {
-#if defined(CITLALI_USE_WIENER_FILTER_OMP)
-            logger->info("filtering noise for {} map {}/{} (n_noise={})",
-                         map_label, map_number, n_maps,
-                         n_wiener_noise_maps);
-            #pragma omp parallel for schedule(dynamic)
-            for (Eigen::Index j = 0; j < n_wiener_noise_maps; ++j) {
-                wiener_filter.filter_noise_threadsafe(mb, map_i, j);
-            }
-            logger->info("noise filtering complete for {} map {}/{}",
-                         map_label, map_number, n_maps);
-#else
-            tula::logging::progressbar pb(
-                [&](const auto &msg) { logger->info("{}", msg); }, 100,
-                "filtering noise");
-            const auto noise_progress_stride =
-                citlali::pipeline::map_filter_progress_stride(
-                    n_wiener_noise_maps);
-
-            for (Eigen::Index j = 0; j < n_wiener_noise_maps; ++j) {
-                wiener_filter.filter_noise(mb, map_i, j);
-                pb.count(n_wiener_noise_maps, noise_progress_stride);
-            }
-            logger->info("noise filtering complete for {} map {}/{}",
-                         map_label, map_number, n_maps);
-#endif
-        };
-
     auto build_wiener_template =
         [&](Eigen::Index map_i, Eigen::Index map_number,
             const std::string &array_name) {
@@ -7139,7 +7088,9 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
                 "building Wiener template for {} map {}/{} (array={})",
                 map_label, map_number, n_maps, array_name);
             const double template_fwhm_rad =
-                resolve_template_fwhm_rad(array_name);
+                citlali::pipeline::map_filter_template_fwhm_or_exit(
+                    wiener_filter.template_type,
+                    wiener_filter.template_fwhm_rad, array_name, logger);
             wiener_filter.make_template(
                 mb, calib.apt, template_fwhm_rad, map_i);
             logger->info(
@@ -7216,7 +7167,9 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         // filter noise maps
         const auto n_wiener_noise_maps = mb.n_noise;
         if (run_noise) {
-            filter_wiener_noise_maps(i, map_number, n_wiener_noise_maps);
+            citlali::pipeline::filter_map_filter_noise_maps(
+                wiener_filter, mb, i, map_number, n_wiener_noise_maps,
+                map_label, n_maps, logger);
             calculate_filtered_noise_products(i, map_number);
         }
 

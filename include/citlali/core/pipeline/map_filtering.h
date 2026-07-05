@@ -1,8 +1,10 @@
 #pragma once
 
+#include <cstdlib>
 #include <string>
 
 #include <Eigen/Core>
+#include <tula/logging.h>
 
 #include <citlali/core/mapmaking/map.h>
 
@@ -106,6 +108,30 @@ double map_filter_template_fwhm_or(
     return it == template_fwhm_rad.end() ? fallback_value : it->second;
 }
 
+template <class TemplateFwhmMap, class Logger>
+double map_filter_template_fwhm_or_exit(
+    const std::string &template_type,
+    const TemplateFwhmMap &template_fwhm_rad,
+    const std::string &array_name, const Logger &logger) {
+    double template_fwhm_rad_value = 0.0;
+    const bool template_uses_fwhm =
+        map_filter_template_uses_fwhm(template_type);
+    if (!template_uses_fwhm) {
+        return template_fwhm_rad_value;
+    }
+
+    const bool has_template_fwhm =
+        has_map_filter_template_fwhm(template_fwhm_rad, array_name);
+    if (!has_template_fwhm) {
+        logger->error("missing Wiener template_fwhm_rad for array {}",
+                      array_name);
+        std::exit(EXIT_FAILURE);
+    }
+
+    return map_filter_template_fwhm_or(
+        template_fwhm_rad, array_name, template_fwhm_rad_value);
+}
+
 inline bool should_calculate_map_filter_noise_products(
     bool write_filtered_maps_partial, bool run_noise_products,
     bool normalize_filtered_error) {
@@ -162,6 +188,37 @@ template <class MapIndex>
 bool next_map_filter_output_opens_new_file(MapIndex current_map_index,
                                            MapIndex next_map_index) {
     return next_map_index > current_map_index;
+}
+
+template <class WienerFilter, class MapBuffer, class MapIndex,
+          class MapNumber, class NoiseCount, class MapCount, class Logger>
+void filter_map_filter_noise_maps(
+    WienerFilter &wiener_filter, MapBuffer &map_buffer, MapIndex map_index,
+    MapNumber map_number, NoiseCount n_wiener_noise_maps,
+    const char *map_label, MapCount n_maps, const Logger &logger) {
+#if defined(CITLALI_USE_WIENER_FILTER_OMP)
+    logger->info("filtering noise for {} map {}/{} (n_noise={})",
+                 map_label, map_number, n_maps, n_wiener_noise_maps);
+    #pragma omp parallel for schedule(dynamic)
+    for (Eigen::Index j = 0; j < n_wiener_noise_maps; ++j) {
+        wiener_filter.filter_noise_threadsafe(map_buffer, map_index, j);
+    }
+    logger->info("noise filtering complete for {} map {}/{}",
+                 map_label, map_number, n_maps);
+#else
+    tula::logging::progressbar pb(
+        [&](const auto &msg) { logger->info("{}", msg); }, 100,
+        "filtering noise");
+    const auto noise_progress_stride =
+        map_filter_progress_stride(n_wiener_noise_maps);
+
+    for (Eigen::Index j = 0; j < n_wiener_noise_maps; ++j) {
+        wiener_filter.filter_noise(map_buffer, map_index, j);
+        pb.count(n_wiener_noise_maps, noise_progress_stride);
+    }
+    logger->info("noise filtering complete for {} map {}/{}",
+                 map_label, map_number, n_maps);
+#endif
 }
 
 template <class Polarization, class MapsToStokes, class MapIndex>
