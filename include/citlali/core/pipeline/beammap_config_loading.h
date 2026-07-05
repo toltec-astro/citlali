@@ -404,6 +404,16 @@ inline void initialize_beammap_priors_defaults(
     alignment_max_rotation_deg = 8.0;
 }
 
+inline void set_beammap_priors_iteration_defaults(
+    double max_d2, double &max_d2_iter0, double &max_d2_after_iter0,
+    double score_lambda, double &score_lambda_iter0,
+    double &score_lambda_after_iter0) {
+    max_d2_iter0 = max_d2;
+    max_d2_after_iter0 = max_d2;
+    score_lambda_iter0 = score_lambda;
+    score_lambda_after_iter0 = score_lambda;
+}
+
 template <class Config, class MissingKeys, class InvalidKeys>
 void read_beammap_detector_tod_output_config(
     Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys,

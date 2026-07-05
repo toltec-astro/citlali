@@ -85,15 +85,16 @@ void Engine::get_beammap_config(CT &config) {
                          std::tuple{"beammap","priors","max_d2"},
                          {}, {0.0});
     }
-    beammap_priors_max_d2_iter0 = beammap_priors_max_d2;
-    beammap_priors_max_d2_after_iter0 = beammap_priors_max_d2;
     if (config.template has_typed<double>(std::tuple{"beammap","priors","score_lambda"})) {
         get_config_value(config, beammap_priors_score_lambda, missing_keys, invalid_keys,
                          std::tuple{"beammap","priors","score_lambda"},
                          {}, {0.0});
     }
-    beammap_priors_score_lambda_iter0 = beammap_priors_score_lambda;
-    beammap_priors_score_lambda_after_iter0 = beammap_priors_score_lambda;
+    citlali::pipeline::set_beammap_priors_iteration_defaults(
+        beammap_priors_max_d2, beammap_priors_max_d2_iter0,
+        beammap_priors_max_d2_after_iter0, beammap_priors_score_lambda,
+        beammap_priors_score_lambda_iter0,
+        beammap_priors_score_lambda_after_iter0);
     if (config.template has_typed<double>(std::tuple{"beammap","priors","max_d2_iter0"})) {
         get_config_value(config, beammap_priors_max_d2_iter0, missing_keys, invalid_keys,
                          std::tuple{"beammap","priors","max_d2_iter0"},
