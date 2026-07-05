@@ -6947,7 +6947,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 try {
                     fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*>
                         obs_fits(obs_weight_path);
-                    auto obs_weight = obs_fits.get_hdu(weight_hdu_name);
+                    const auto obs_weight = obs_fits.get_hdu(weight_hdu_name);
                     citlali::pipeline::accumulate_mapdiag_obs_weight(
                         i, mapdiag_context.n_obsnums, mb->n_rows,
                         mb->n_cols, core_mask, obs_weight, obs_idx,
