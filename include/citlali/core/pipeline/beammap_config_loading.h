@@ -62,6 +62,21 @@ void read_beammap_phase_strategy_config(Config &config,
     }
 }
 
+template <class Config, class MissingKeys, class InvalidKeys,
+          class ReferenceDetector>
+void read_beammap_reference_config(Config &config, MissingKeys &missing_keys,
+                                   InvalidKeys &invalid_keys,
+                                   ReferenceDetector &reference_det,
+                                   bool &subtract_reference,
+                                   bool &derotate) {
+    ::get_config_value(config, reference_det, missing_keys, invalid_keys,
+                       std::tuple{"beammap", "reference_det"});
+    ::get_config_value(config, subtract_reference, missing_keys, invalid_keys,
+                       std::tuple{"beammap", "subtract_reference_det"});
+    ::get_config_value(config, derotate, missing_keys, invalid_keys,
+                       std::tuple{"beammap", "derotate"});
+}
+
 template <class Config, class InvalidKeys>
 std::vector<double> beammap_fixed_double_vector(
     Config &config, const std::vector<std::string> &path,

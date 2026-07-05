@@ -19,15 +19,9 @@ void Engine::get_beammap_config(CT &config) {
         beammap_iter_max, beammap_locator_iter,
         beammap_measurement_start_iter, logger);
 
-    // beammap reference detector
-    get_config_value(config, beammap_reference_det, missing_keys, invalid_keys,
-                     std::tuple{"beammap","reference_det"});
-    // subtract reference detector?
-    get_config_value(config, beammap_subtract_reference, missing_keys, invalid_keys,
-                     std::tuple{"beammap","subtract_reference_det"});
-    // derotate apt?
-    get_config_value(config, beammap_derotate, missing_keys, invalid_keys,
-                     std::tuple{"beammap","derotate"});
+    citlali::pipeline::read_beammap_reference_config(
+        config, missing_keys, invalid_keys, beammap_reference_det,
+        beammap_subtract_reference, beammap_derotate);
 
     // optional robust sample-level RFI masking (detector grouping)
     beammap_rfi_mask_enabled = false;
