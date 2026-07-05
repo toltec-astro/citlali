@@ -122,29 +122,7 @@ void Engine::get_rtc_config(CT &config) {
         typed_raw.downsample, rtcproc);
 
     auto &typed_filter = typed_raw.filter;
-    typed_filter.enabled = rtcproc.run_tod_filter;
-    if (rtcproc.run_tod_filter) {
-        typed_filter.a_gibbs = rtcproc.filter.a_gibbs;
-        typed_filter.freq_low_Hz = rtcproc.filter.freq_low_Hz;
-        typed_filter.freq_high_Hz = rtcproc.filter.freq_high_Hz;
-        typed_filter.n_terms = static_cast<int>(rtcproc.filter.n_terms);
-        typed_filter.notch.enabled = rtcproc.run_tod_notch;
-        if (rtcproc.run_tod_notch) {
-            typed_filter.notch.zero_phase = rtcproc.filter.notch_zero_phase;
-            typed_filter.notch.freqs_Hz = rtcproc.filter.w0s;
-            typed_filter.notch.delta_f_Hz.clear();
-            typed_filter.notch.delta_f_Hz.reserve(rtcproc.filter.qs.size());
-            for (std::size_t i = 0; i < rtcproc.filter.qs.size(); ++i) {
-                const auto center_Hz = i < rtcproc.filter.w0s.size()
-                                           ? rtcproc.filter.w0s[i]
-                                           : 0.0;
-                typed_filter.notch.delta_f_Hz.push_back(
-                    rtcproc.filter.qs[i] > 0.0
-                        ? center_Hz / rtcproc.filter.qs[i]
-                        : 0.0);
-            }
-        }
-    }
+    citlali::pipeline::mirror_raw_filter_config(typed_filter, rtcproc);
 
     auto &typed_iir_filter = typed_raw.iir_filter;
     typed_iir_filter.enabled = rtcproc.run_tod_iir_highpass;

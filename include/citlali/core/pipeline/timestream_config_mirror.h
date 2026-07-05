@@ -474,4 +474,33 @@ void mirror_raw_correction_flags(RawTimeChunkConfig &target,
     target.extinction_correction_enabled = rtcproc.run_extinction;
 }
 
+template <class FilterConfig, class RtcProc>
+void mirror_raw_filter_config(FilterConfig &target, const RtcProc &rtcproc) {
+    target.enabled = rtcproc.run_tod_filter;
+    if (!rtcproc.run_tod_filter) {
+        return;
+    }
+
+    target.a_gibbs = rtcproc.filter.a_gibbs;
+    target.freq_low_Hz = rtcproc.filter.freq_low_Hz;
+    target.freq_high_Hz = rtcproc.filter.freq_high_Hz;
+    target.n_terms = static_cast<int>(rtcproc.filter.n_terms);
+    target.notch.enabled = rtcproc.run_tod_notch;
+    if (!rtcproc.run_tod_notch) {
+        return;
+    }
+
+    target.notch.zero_phase = rtcproc.filter.notch_zero_phase;
+    target.notch.freqs_Hz = rtcproc.filter.w0s;
+    target.notch.delta_f_Hz.clear();
+    target.notch.delta_f_Hz.reserve(rtcproc.filter.qs.size());
+    for (std::size_t i = 0; i < rtcproc.filter.qs.size(); ++i) {
+        const auto center_Hz =
+            i < rtcproc.filter.w0s.size() ? rtcproc.filter.w0s[i] : 0.0;
+        target.notch.delta_f_Hz.push_back(
+            rtcproc.filter.qs[i] > 0.0 ? center_Hz / rtcproc.filter.qs[i]
+                                        : 0.0);
+    }
+}
+
 }  // namespace citlali::pipeline
