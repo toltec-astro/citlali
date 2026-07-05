@@ -6154,23 +6154,13 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
 
     write_netcdf_atomic(filename + ".nc", [&](netCDF::NcFile &fo) {
 
-    // loop through psd vector
-    for (Eigen::Index i = 0; i < mb->psds.size(); ++i) {
-        const std::string map_name = get_map_name(i);
-        const auto write_indices =
-            citlali::pipeline::map_write_indices(
-                i, arrays_to_maps, maps_to_stokes, maps_to_arrays);
-
-        const std::string name = citlali::pipeline::spectral_product_name(
-            toltec_io.array_name_map, calib.arrays,
-            rtcproc.polarization.stokes_params, map_name,
-            write_indices.map_index, write_indices.stokes_index);
-
-        citlali::pipeline::add_spectral_psd_product(
-            fo, mb->noise, name, mb->psds, mb->psd_freqs, mb->psd_2ds,
-            mb->psd_2d_freqs, mb->noise_psds, mb->noise_psd_freqs,
-            mb->noise_psd_2ds, mb->noise_psd_2d_freqs, i);
-    }
+    auto map_name_for_index = [&](Eigen::Index i) {
+        return get_map_name(i);
+    };
+    citlali::pipeline::add_spectral_psd_products_for_maps(
+        fo, mb, toltec_io.array_name_map, calib.arrays,
+        rtcproc.polarization.stokes_params, map_name_for_index,
+        arrays_to_maps, maps_to_stokes);
     });
 }
 
@@ -6185,22 +6175,13 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::add_spectral_histogram_bins_dim(
             fo, mb->hist_n_bins);
 
-    // loop through stored histograms
-    for (Eigen::Index i = 0; i < mb->hists.size(); ++i) {
-        const std::string map_name = get_map_name(i);
-        const auto write_indices =
-            citlali::pipeline::map_write_indices(
-                i, arrays_to_maps, maps_to_stokes, maps_to_arrays);
-
-        const std::string name = citlali::pipeline::spectral_product_name(
-            toltec_io.array_name_map, calib.arrays,
-            rtcproc.polarization.stokes_params, map_name,
-            write_indices.map_index, write_indices.stokes_index);
-
-        citlali::pipeline::add_spectral_histogram_product(
-            fo, mb->noise, name, hist_bins_dim, mb->hist_bins, mb->hists,
-            mb->noise_hists, i);
-    }
+    auto map_name_for_index = [&](Eigen::Index i) {
+        return get_map_name(i);
+    };
+    citlali::pipeline::add_spectral_histogram_products_for_maps(
+        fo, mb, hist_bins_dim, toltec_io.array_name_map, calib.arrays,
+        rtcproc.polarization.stokes_params, map_name_for_index,
+        arrays_to_maps, maps_to_stokes);
     });
 }
 
