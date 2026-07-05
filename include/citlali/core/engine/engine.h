@@ -7013,7 +7013,9 @@ void Engine::create_ptcdiag_file() {
     citlali::pipeline::add_diagnostic_output_scan_index(
         fo, n_scans_dim, n_scans, fill_int);
 
-    auto add_det_meta_int = [&](const std::string &name, const std::string &comment, const std::vector<int> &values) {
+    auto add_det_meta_int = [&](const std::string &name,
+                                const std::string &comment,
+                                const std::vector<int> &values) {
         citlali::pipeline::add_ptcdiag_det_meta_int(
             fo, name, comment, n_dets_dim, values);
     };
