@@ -17,32 +17,10 @@ void Engine::get_ptc_config(CT &config) {
         toltec_io.array_name_map);
     auto &typed_weighting =
         typed_timestream_config.processed_time_chunk.weighting;
-    if (auto parsed =
-            citlali::config::parse_processed_weighting_type(ptcproc.weighting_type)) {
-        typed_weighting.type = *parsed;
-    }
-    typed_weighting.source_mask_radius_arcsec =
-        ptcproc.source_mask_radius_arcsec;
-    typed_weighting.hybrid_correction_min_factor =
-        ptcproc.hybrid_correction_min_factor;
-    typed_weighting.hybrid_correction_max_factor =
-        ptcproc.hybrid_correction_max_factor;
-    typed_weighting.median_map_weight_factor = ptcproc.med_weight_factor;
-    typed_weighting.lower_map_weight_factor = ptcproc.lower_weight_factor;
-    typed_weighting.upper_map_weight_factor = ptcproc.upper_weight_factor;
     auto &typed_flagging =
         typed_timestream_config.processed_time_chunk.flagging;
-    typed_flagging.lower_tod_inv_var_factor = ptcproc.lower_inv_var_factor;
-    typed_flagging.upper_tod_inv_var_factor = ptcproc.upper_inv_var_factor;
-    auto &typed_busy_row = typed_weighting.busy_row_suppression;
-    typed_busy_row.enabled = ptcproc.busy_row_suppression.enabled;
-    typed_busy_row.require_busy_veto =
-        ptcproc.busy_row_suppression.require_busy_veto;
-    typed_busy_row.min_candidate_clusters =
-        ptcproc.busy_row_suppression.min_candidate_clusters;
-    typed_busy_row.min_max_unflagged_residual_z =
-        ptcproc.busy_row_suppression.min_max_unflagged_residual_z;
-    typed_busy_row.factor = ptcproc.busy_row_suppression.factor;
+    citlali::pipeline::mirror_processed_weighting_config(
+        typed_weighting, typed_flagging, ptcproc);
     const auto &weight_validation = ptcproc.weight_validation;
     auto &typed_weight_validation = typed_weighting.validation;
     typed_weight_validation.enabled = weight_validation.enabled;

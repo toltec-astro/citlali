@@ -169,4 +169,35 @@ void mirror_processed_clean_config(CleanConfig &target, const PtcProc &ptcproc,
         ptcproc.cleaner.adaptive_selector.log_candidates;
 }
 
+template <class WeightingConfig, class FlaggingConfig, class PtcProc>
+void mirror_processed_weighting_config(WeightingConfig &weighting,
+                                       FlaggingConfig &flagging,
+                                       const PtcProc &ptcproc) {
+    if (auto parsed =
+            citlali::config::parse_processed_weighting_type(
+                ptcproc.weighting_type)) {
+        weighting.type = *parsed;
+    }
+    weighting.source_mask_radius_arcsec = ptcproc.source_mask_radius_arcsec;
+    weighting.hybrid_correction_min_factor =
+        ptcproc.hybrid_correction_min_factor;
+    weighting.hybrid_correction_max_factor =
+        ptcproc.hybrid_correction_max_factor;
+    weighting.median_map_weight_factor = ptcproc.med_weight_factor;
+    weighting.lower_map_weight_factor = ptcproc.lower_weight_factor;
+    weighting.upper_map_weight_factor = ptcproc.upper_weight_factor;
+    flagging.lower_tod_inv_var_factor = ptcproc.lower_inv_var_factor;
+    flagging.upper_tod_inv_var_factor = ptcproc.upper_inv_var_factor;
+
+    auto &busy_row = weighting.busy_row_suppression;
+    busy_row.enabled = ptcproc.busy_row_suppression.enabled;
+    busy_row.require_busy_veto =
+        ptcproc.busy_row_suppression.require_busy_veto;
+    busy_row.min_candidate_clusters =
+        ptcproc.busy_row_suppression.min_candidate_clusters;
+    busy_row.min_max_unflagged_residual_z =
+        ptcproc.busy_row_suppression.min_max_unflagged_residual_z;
+    busy_row.factor = ptcproc.busy_row_suppression.factor;
+}
+
 }  // namespace citlali::pipeline
