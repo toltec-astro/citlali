@@ -7557,7 +7557,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     // pointer to data file fits vector
     FitsVector *filtered_fits_io = nullptr;
     // pointer to noise file fits vector
-    FitsVector *n_io = nullptr;
+    FitsVector *filtered_noise_fits_io = nullptr;
     // directory name
     std::string filtered_dir_name;
     // logging label
@@ -7566,7 +7566,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     // filtered obs maps
     if constexpr (map_t == mapmaking::FilteredObs) {
         filtered_fits_io = &filtered_fits_io_vec;
-        n_io = &filtered_noise_fits_io_vec;
+        filtered_noise_fits_io = &filtered_noise_fits_io_vec;
         filtered_dir_name = obsnum_dir_name + "filtered/";
         map_label = "filtered obs maps";
     }
@@ -7574,7 +7574,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     // filtered coadded maps
     else if constexpr (map_t == mapmaking::FilteredCoadd) {
         filtered_fits_io = &filtered_coadd_fits_io_vec;
-        n_io = &filtered_coadd_noise_fits_io_vec;
+        filtered_noise_fits_io = &filtered_coadd_noise_fits_io_vec;
         filtered_dir_name = coadd_dir_name + "filtered/";
         map_label = "filtered coadded maps";
     }
@@ -7585,8 +7585,8 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     for (Eigen::Index i=0; i<n_filtered_fits; ++i) {
         add_phdu(filtered_fits_io, pmb, i);
 
-        if (!pmb->noise.empty() && !n_io->empty()) {
-            add_phdu(n_io, pmb, i);
+        if (!pmb->noise.empty() && !filtered_noise_fits_io->empty()) {
+            add_phdu(filtered_noise_fits_io, pmb, i);
         }
     }
 
@@ -7683,7 +7683,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             // write maps immediately after filtering due to computation time
             logger->info("writing {} map {}/{} to disk",
                          map_label, i + 1, n_maps);
-            write_maps(filtered_fits_io, n_io, pmb, i);
+            write_maps(filtered_fits_io, filtered_noise_fits_io, pmb, i);
 
             const auto &filtered_map_path = filtered_fits_io->at(map_index).filepath;
             logger->info("file has been written to:");
@@ -7717,7 +7717,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     if (write_filtered_maps_partial) {
         logger->info("finalizing {} FITS handles", map_label);
         filtered_fits_io->clear();
-        n_io->clear();
+        filtered_noise_fits_io->clear();
         logger->info("finished finalizing {} FITS handles", map_label);
     }
 }
