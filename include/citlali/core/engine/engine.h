@@ -102,6 +102,7 @@
 #include <citlali/core/pipeline/mapdiag_observation_weight.h>
 #include <citlali/core/pipeline/mapdiag_stage.h>
 #include <citlali/core/pipeline/mapdiag_stats.h>
+#include <citlali/core/pipeline/observation_map_files.h>
 #include <citlali/core/pipeline/output_netcdf_metadata.h>
 #include <citlali/core/pipeline/phdu_beammap.h>
 #include <citlali/core/pipeline/phdu_extinction.h>
@@ -5274,61 +5275,89 @@ void Engine::get_astrometry_config(CT &config) {
 
 void Engine::create_obs_map_files() {
     // clear fits vectors for each observation
-    fits_io_vec.clear();
-    noise_fits_io_vec.clear();
-    filtered_fits_io_vec.clear();
-    filtered_noise_fits_io_vec.clear();
+    citlali::pipeline::clear_observation_map_fits_files(
+        fits_io_vec, noise_fits_io_vec, filtered_fits_io_vec,
+        filtered_noise_fits_io_vec);
+    const std::string raw_dir =
+        citlali::pipeline::raw_observation_map_directory(obsnum_dir_name);
+    const std::string filtered_dir =
+        citlali::pipeline::filtered_observation_map_directory(
+            obsnum_dir_name);
+    auto make_fits_io = [](const std::string &filename) {
+        return fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>(filename);
+    };
+    auto append_fits_file = [&](auto &fits_files,
+                                const std::string &filename) {
+        citlali::pipeline::append_observation_map_fits_file(
+            fits_files, filename, make_fits_io);
+    };
+    const bool create_per_obs_outputs =
+        citlali::pipeline::should_create_observation_per_obs_outputs(
+            run_coadd);
+    const bool create_noise_maps =
+        citlali::pipeline::should_create_observation_noise_maps(
+            run_noise, write_noise_realizations);
+    const bool create_filtered_maps =
+        citlali::pipeline::should_create_observation_filtered_maps(
+            run_map_filter);
+    const bool create_filtered_noise_maps =
+        citlali::pipeline::should_create_observation_filtered_noise_maps(
+            run_noise, write_noise_realizations);
 
     // loop through arrays
-    for (Eigen::Index i=0; i<calib.n_arrays; ++i) {
+    for (Eigen::Index i = 0; i < calib.n_arrays; ++i) {
         // array index
         auto array = calib.arrays[i];
         // array name
         std::string array_name = toltec_io.array_name_map[array];
         // map filename
-        auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
-                                                  engine_utils::toltecIO::raw>(obsnum_dir_name + "raw/", redu_type, array_name,
-                                                                               obsnum, telescope.sim_obs);
-        // create fits_io class for current array file
-        fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
-        // append to fits_io vector
-        fits_io_vec.push_back(std::move(fits_io));
+        const auto filename =
+            toltec_io
+                .create_filename<engine_utils::toltecIO::toltec,
+                                 engine_utils::toltecIO::map,
+                                 engine_utils::toltecIO::raw>(
+                    raw_dir, redu_type, array_name, obsnum,
+                    telescope.sim_obs);
+        append_fits_file(fits_io_vec, filename);
 
         // if noise maps are requested but coadding is not, populate noise fits vector
-        if (!run_coadd) {
-            if (run_noise && write_noise_realizations) {
+        if (create_per_obs_outputs) {
+            if (create_noise_maps) {
                 // noise map filename
-                auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
-                                                          engine_utils::toltecIO::raw>(obsnum_dir_name + "raw/", redu_type, array_name,
-                                                                                       obsnum, telescope.sim_obs);
-                // create fits_io class for current array file
-                fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
-                // append to fits_io vector
-                noise_fits_io_vec.push_back(std::move(fits_io));
+                const auto noise_filename =
+                    toltec_io
+                        .create_filename<engine_utils::toltecIO::toltec,
+                                         engine_utils::toltecIO::noise,
+                                         engine_utils::toltecIO::raw>(
+                            raw_dir, redu_type, array_name, obsnum,
+                            telescope.sim_obs);
+                append_fits_file(noise_fits_io_vec, noise_filename);
             }
 
             // map filtering
-            if (run_map_filter) {
+            if (create_filtered_maps) {
                 // filtered map filename
-                auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
-                                                          engine_utils::toltecIO::filtered>(obsnum_dir_name + "filtered/",
-                                                                                            redu_type, array_name,
-                                                                                            obsnum, telescope.sim_obs);
-                // create fits_io class for current array file
-                fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
-                // append to fits_io vector
-                filtered_fits_io_vec.push_back(std::move(fits_io));
+                const auto filtered_filename =
+                    toltec_io
+                        .create_filename<engine_utils::toltecIO::toltec,
+                                         engine_utils::toltecIO::map,
+                                         engine_utils::toltecIO::filtered>(
+                            filtered_dir, redu_type, array_name, obsnum,
+                            telescope.sim_obs);
+                append_fits_file(filtered_fits_io_vec, filtered_filename);
 
                 // filtered noise maps
-                if (run_noise && write_noise_realizations) {
+                if (create_filtered_noise_maps) {
                     // filtered noise map filename
-                    auto filename = toltec_io.create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
-                                                              engine_utils::toltecIO::filtered>(obsnum_dir_name + "filtered/", redu_type,
-                                                                                                array_name, obsnum, telescope.sim_obs);
-                    // create fits_io class for current array file
-                    fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
-                    // append to fits_io vector
-                    filtered_noise_fits_io_vec.push_back(std::move(fits_io));
+                    const auto filtered_noise_filename =
+                        toltec_io
+                            .create_filename<engine_utils::toltecIO::toltec,
+                                             engine_utils::toltecIO::noise,
+                                             engine_utils::toltecIO::filtered>(
+                                filtered_dir, redu_type, array_name, obsnum,
+                                telescope.sim_obs);
+                    append_fits_file(filtered_noise_fits_io_vec,
+                                     filtered_noise_filename);
                 }
             }
         }
