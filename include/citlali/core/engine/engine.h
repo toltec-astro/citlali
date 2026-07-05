@@ -6633,11 +6633,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                             citlali::pipeline::
                                 mapdiag_has_contribution_products(mb, i);
                         const double ptc_fs_hz = processed_time_chunk_fs_hz();
+                        const Eigen::Index n_mapdiag_rows =
+                            citlali::pipeline::mapdiag_n_rows(mb);
+                        const Eigen::Index n_mapdiag_cols =
+                            citlali::pipeline::mapdiag_n_cols(mb);
 
-                        for (Eigen::Index r = 0;
-                             r < citlali::pipeline::mapdiag_n_rows(mb); ++r) {
-                            for (Eigen::Index c = 0;
-                                 c < citlali::pipeline::mapdiag_n_cols(mb); ++c) {
+                        for (Eigen::Index r = 0; r < n_mapdiag_rows; ++r) {
+                            for (Eigen::Index c = 0; c < n_mapdiag_cols; ++c) {
                                 if (!citlali::pipeline::mapdiag_mask_pixel_is_selected(
                                         off_source_core_mask, r, c)) {
                                     continue;
