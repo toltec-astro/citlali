@@ -3,6 +3,8 @@
 // Engine learning implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/csv_output.h>
+
 inline void Engine::write_learning_summary() {
     if (!reduction_learning.is_enabled() ||
         !reduction_learning.diagnostics_enabled() ||
@@ -18,19 +20,7 @@ inline void Engine::write_learning_summary() {
         return;
     }
 
-    auto csv = [](const std::string &s) {
-        std::string escaped = "\"";
-        for (const char ch : s) {
-            if (ch == '"') {
-                escaped += "\"\"";
-            }
-            else {
-                escaped += ch;
-            }
-        }
-        escaped += "\"";
-        return escaped;
-    };
+    auto csv = citlali::pipeline::csv_escaped;
 
     enum {
         ColRecordType,
@@ -126,19 +116,11 @@ inline void Engine::write_learning_summary() {
     };
 
     auto text = [](const auto &value) {
-        std::ostringstream stream;
-        stream << value;
-        return stream.str();
+        return citlali::pipeline::csv_text(value);
     };
 
     auto write_row = [&](const std::vector<std::string> &row) {
-        for (std::size_t i = 0; i < row.size(); ++i) {
-            if (i > 0) {
-                out << ',';
-            }
-            out << row[i];
-        }
-        out << '\n';
+        citlali::pipeline::write_csv_row(out, row);
     };
 
     auto new_row = [&]() {
