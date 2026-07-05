@@ -7047,7 +7047,8 @@ void Engine::create_ptcdiag_file() {
             fo, name, comment, det_dims, det_chunks, ptc_det_value_count,
             fill_double);
     };
-    auto add_det_int = [&](const std::string &name, const std::string &comment) {
+    auto add_det_int = [&](const std::string &name,
+                           const std::string &comment) {
         citlali::pipeline::add_ptcdiag_det_int(
             fo, name, comment, det_dims, det_chunks, ptc_det_value_count,
             fill_int);
