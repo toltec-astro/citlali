@@ -3,9 +3,17 @@
 // Engine config loading implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/engine/detail/config_parse_tracking.h>
+
 template<typename CT>
 citlali::config::RuntimeConfig Engine::get_runtime_config(CT &config) {
     citlali::config::RuntimeConfig runtime_config;
+
+    auto parsed_cleanly = [&](std::size_t missing_before,
+                              std::size_t invalid_before) {
+        return citlali::engine_detail::config_parse_clean(
+            missing_keys, invalid_keys, missing_before, invalid_before);
+    };
 
     // verbose mode?
     {
@@ -13,7 +21,7 @@ citlali::config::RuntimeConfig Engine::get_runtime_config(CT &config) {
         const auto invalid_before = invalid_keys.size();
         get_config_value(config, verbose_mode, missing_keys, invalid_keys,
                          std::tuple{"runtime","verbose"});
-        if (missing_keys.size() == missing_before && invalid_keys.size() == invalid_before) {
+        if (parsed_cleanly(missing_before, invalid_before)) {
             runtime_config.verbose = verbose_mode;
         }
     }
@@ -23,7 +31,7 @@ citlali::config::RuntimeConfig Engine::get_runtime_config(CT &config) {
         const auto invalid_before = invalid_keys.size();
         get_config_value(config, output_dir, missing_keys, invalid_keys,
                          std::tuple{"runtime","output_dir"});
-        if (missing_keys.size() == missing_before && invalid_keys.size() == invalid_before) {
+        if (parsed_cleanly(missing_before, invalid_before)) {
             runtime_config.output_dir = output_dir;
         }
     }
@@ -33,7 +41,7 @@ citlali::config::RuntimeConfig Engine::get_runtime_config(CT &config) {
         const auto invalid_before = invalid_keys.size();
         get_config_value(config, n_threads, missing_keys, invalid_keys,
                          std::tuple{"runtime","n_threads"});
-        if (missing_keys.size() == missing_before && invalid_keys.size() == invalid_before) {
+        if (parsed_cleanly(missing_before, invalid_before)) {
             runtime_config.n_threads = n_threads;
         }
     }
@@ -43,7 +51,7 @@ citlali::config::RuntimeConfig Engine::get_runtime_config(CT &config) {
         const auto invalid_before = invalid_keys.size();
         get_config_value(config, parallel_policy, missing_keys, invalid_keys,
                          std::tuple{"runtime","parallel_policy"},{"seq","omp"});
-        if (missing_keys.size() == missing_before && invalid_keys.size() == invalid_before) {
+        if (parsed_cleanly(missing_before, invalid_before)) {
             if (auto parsed = citlali::config::parse_parallel_policy(parallel_policy)) {
                 runtime_config.parallel_policy = *parsed;
             }
@@ -55,7 +63,7 @@ citlali::config::RuntimeConfig Engine::get_runtime_config(CT &config) {
         const auto invalid_before = invalid_keys.size();
         get_config_value(config, redu_type, missing_keys, invalid_keys,
                          std::tuple{"runtime","reduction_type"},{"science","pointing","beammap"});
-        if (missing_keys.size() == missing_before && invalid_keys.size() == invalid_before) {
+        if (parsed_cleanly(missing_before, invalid_before)) {
             if (auto parsed = citlali::config::parse_reduction_type(redu_type)) {
                 runtime_config.reduction_type = *parsed;
             }
@@ -67,7 +75,7 @@ citlali::config::RuntimeConfig Engine::get_runtime_config(CT &config) {
         const auto invalid_before = invalid_keys.size();
         get_config_value(config, use_subdir, missing_keys, invalid_keys,
                          std::tuple{"runtime","use_subdir"});
-        if (missing_keys.size() == missing_before && invalid_keys.size() == invalid_before) {
+        if (parsed_cleanly(missing_before, invalid_before)) {
             runtime_config.use_subdir = use_subdir;
         }
     }
@@ -77,10 +85,9 @@ citlali::config::RuntimeConfig Engine::get_runtime_config(CT &config) {
         const auto invalid_before = invalid_keys.size();
         get_config_value(config, interp_over_gaps, missing_keys, invalid_keys,
                          std::tuple{"runtime","interp_over_gaps"});
-        if (missing_keys.size() == missing_before && invalid_keys.size() == invalid_before) {
+        if (parsed_cleanly(missing_before, invalid_before)) {
             runtime_config.interp_over_gaps = interp_over_gaps;
         }
     }
     return runtime_config;
 }
-
