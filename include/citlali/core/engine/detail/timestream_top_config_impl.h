@@ -4,6 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/engine/detail/config_parse_tracking.h>
+#include <citlali/core/engine/detail/timestream_config_read.h>
 
 template<typename CT>
 void Engine::get_timestream_config(CT &config) {
@@ -15,46 +16,21 @@ void Engine::get_timestream_config(CT &config) {
             missing_keys, invalid_keys, missing_before, invalid_before);
     };
 
-    // run tod processing
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, run_tod, missing_keys, invalid_keys,
-                         std::tuple{"timestream","enabled"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_timestream_config.enabled = run_tod;
-        }
-    }
+    citlali::engine_detail::read_timestream_enabled_config(
+        config, run_tod, typed_timestream_config, missing_keys, invalid_keys);
     if (!run_tod) {
         logger->error("timestream.enabled is false. This reduction requires TOD processing; set "
                       "low_level.timestream.enabled: true in your reduce config.");
         std::exit(EXIT_FAILURE);
     }
-    // tod type (xs, rs, is, qs)
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, tod_type, missing_keys, invalid_keys,
-                         std::tuple{"timestream","type"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            if (auto parsed = citlali::config::parse_tod_type(tod_type)) {
-                typed_timestream_config.type = *parsed;
-            }
-        }
-    }
+    citlali::engine_detail::read_timestream_type_config(
+        config, tod_type, typed_timestream_config, missing_keys, invalid_keys);
 
     // run rtc or ptc tod output?
     // output rtc
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, run_tod_output_rtc, missing_keys, invalid_keys,
-                         std::tuple{"timestream","raw_time_chunk","output","enabled"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_timestream_config.output.raw_time_chunk_enabled = run_tod_output_rtc;
-            typed_timestream_config.output.raw_time_chunk.enabled = run_tod_output_rtc;
-        }
-    }
+    citlali::engine_detail::read_raw_tod_output_enabled_config(
+        config, run_tod_output_rtc, typed_timestream_config, missing_keys,
+        invalid_keys);
     rtcproc.tod_output_mini = false;
     rtcproc.tod_output_outer = false;
     rtcproc.tod_output_outer_context_samples = 0;
@@ -86,16 +62,9 @@ void Engine::get_timestream_config(CT &config) {
         }
     }
     // output ptc
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        get_config_value(config, run_tod_output_ptc, missing_keys, invalid_keys,
-                         std::tuple{"timestream","processed_time_chunk","output","enabled"});
-        if (parsed_cleanly(missing_before, invalid_before)) {
-            typed_timestream_config.output.processed_time_chunk_enabled = run_tod_output_ptc;
-            typed_timestream_config.output.processed_time_chunk.enabled = run_tod_output_ptc;
-        }
-    }
+    citlali::engine_detail::read_processed_tod_output_enabled_config(
+        config, run_tod_output_ptc, typed_timestream_config, missing_keys,
+        invalid_keys);
     ptcproc.tod_output_mini = false;
     ptcproc.tod_output_outer = false;
     ptcproc.tod_output_outer_context_samples = 0;
