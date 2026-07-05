@@ -336,6 +336,23 @@ void read_beammap_split_flag_values(Config &config,
     flag_values = normalized_beammap_split_flag_values(std::move(values));
 }
 
+template <class Config, class MissingKeys, class InvalidKeys, class Logger>
+void read_beammap_split_fits_config(Config &config, MissingKeys &missing_keys,
+                                    InvalidKeys &invalid_keys,
+                                    bool &enabled,
+                                    std::vector<int> &flag_values,
+                                    const Logger &logger) {
+    enabled = false;
+    flag_values = {0, 1};
+    if (config.template has_typed<bool>(
+            std::tuple{"beammap", "split_fits_by_flag", "enabled"})) {
+        ::get_config_value(
+            config, enabled, missing_keys, invalid_keys,
+            std::tuple{"beammap", "split_fits_by_flag", "enabled"});
+    }
+    read_beammap_split_flag_values(config, flag_values, logger);
+}
+
 template <class Config, class MissingKeys, class InvalidKeys>
 void read_beammap_detector_tod_output_config(
     Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys,

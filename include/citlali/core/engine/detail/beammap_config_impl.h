@@ -43,15 +43,9 @@ void Engine::get_beammap_config(CT &config) {
         beammap_scan_band_mask_row_sigma_ratio_threshold,
         beammap_scan_band_mask_max_flagged_fraction);
 
-    // optional split output detector-map FITS files by detector quality flag
-    beammap_split_fits_by_flag = false;
-    beammap_split_flag_values = {0, 1};
-    if (config.template has_typed<bool>(std::tuple{"beammap","split_fits_by_flag","enabled"})) {
-        get_config_value(config, beammap_split_fits_by_flag, missing_keys, invalid_keys,
-                         std::tuple{"beammap","split_fits_by_flag","enabled"});
-    }
-    citlali::pipeline::read_beammap_split_flag_values(
-        config, beammap_split_flag_values, logger);
+    citlali::pipeline::read_beammap_split_fits_config(
+        config, missing_keys, invalid_keys, beammap_split_fits_by_flag,
+        beammap_split_flag_values, logger);
 
     // optional soft priors for beammap peak initialization
     beammap_priors_enabled = false;
