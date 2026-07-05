@@ -7445,9 +7445,10 @@ void Engine::write_stats() {
     // if using tod subdir, put stats file in it
     const bool has_tod_output_subdir = tod_output_subdir_name != "null";
     if (has_tod_output_subdir) {
-        if (!fs::exists(fs::status(path + tod_output_subdir_name))) {
-            fs::create_directories(path + tod_output_subdir_name);
-            path = path + tod_output_subdir_name + "/";
+        const auto stats_subdir_path = path + tod_output_subdir_name;
+        if (!fs::exists(fs::status(stats_subdir_path))) {
+            fs::create_directories(stats_subdir_path);
+            path = stats_subdir_path + "/";
         }
     }
     // create stats filename
