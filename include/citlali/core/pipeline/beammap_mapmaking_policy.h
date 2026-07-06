@@ -64,4 +64,54 @@ void ensure_jinc_grid_weight_maps(citlali::config::MapMethod method,
                            Eigen::MatrixXd::Zero(omb.n_rows, omb.n_cols));
 }
 
+template <class MapBuffer, class PtcChunks, class RandomBits, class Generator>
+void reset_beammap_mapmaking_buffers(
+    MapBuffer &omb, PtcChunks &ptcs, Eigen::Index n_maps, bool run_kernel,
+    bool run_noise, bool randomize_dets, Eigen::Index n_dets,
+    const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
+    RandomBits &rands, Generator &eng) {
+    omb.clear_contribution_diag();
+    for (Eigen::Index i = 0; i < n_maps; ++i) {
+        if (active_maps != nullptr && !(*active_maps)(i)) {
+            continue;
+        }
+        omb.signal[i].setZero();
+        omb.weight[i].setZero();
+        if (!omb.grid_weight.empty()) {
+            omb.grid_weight[i].setZero();
+        }
+
+        if (!omb.coverage.empty()) {
+            omb.coverage[i].setZero();
+        }
+        if (run_kernel) {
+            omb.kernel[i].setZero();
+        }
+        if (!omb.noise.empty()) {
+            omb.noise[i].setZero();
+        }
+
+        if (run_noise) {
+            for (auto &ptcdata : ptcs) {
+                if (randomize_dets) {
+                    ptcdata.noise.data =
+                        Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>::
+                            Zero(omb.n_noise, n_dets)
+                                .unaryExpr([&](int dummy) {
+                                    return 2 * rands(eng) - 1;
+                                });
+                }
+                else {
+                    ptcdata.noise.data =
+                        Eigen::Matrix<int, Eigen::Dynamic, 1>::
+                            Zero(omb.n_noise)
+                                .unaryExpr([&](int dummy) {
+                                    return 2 * rands(eng) - 1;
+                                });
+                }
+            }
+        }
+    }
+}
+
 }  // namespace citlali::pipeline

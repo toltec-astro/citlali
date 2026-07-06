@@ -289,42 +289,10 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                 citlali::pipeline::ensure_jinc_grid_weight_maps(
                     mapmaking_method, omb, n_maps, logger);
 
-                // set maps to zero for each pass
-                omb.clear_contribution_diag();
-                for (Eigen::Index i = 0; i < n_maps; ++i) {
-                    if (active_maps_ptr != nullptr && !(*active_maps_ptr)(i)) {
-                        continue;
-                    }
-                    omb.signal[i].setZero();
-                    omb.weight[i].setZero();
-                    if (!omb.grid_weight.empty()) {
-                        omb.grid_weight[i].setZero();
-                    }
-
-                    if (!omb.coverage.empty()) {
-                        omb.coverage[i].setZero();
-                    }
-                    if (rtcproc.run_kernel) {
-                        omb.kernel[i].setZero();
-                    }
-                    if (!omb.noise.empty()) {
-                        omb.noise[i].setZero();
-                    }
-
-                    if (run_noise) {
-                        for (auto &ptcdata : ptcs) {
-                            if (omb.randomize_dets) {
-                                ptcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>::Zero(
-                                                         omb.n_noise, calib.n_dets)
-                                                         .unaryExpr([&](int dummy) { return 2 * rands(eng) - 1; });
-                            }
-                            else {
-                                ptcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(omb.n_noise)
-                                                         .unaryExpr([&](int dummy) { return 2 * rands(eng) - 1; });
-                            }
-                        }
-                    }
-                }
+                citlali::pipeline::reset_beammap_mapmaking_buffers(
+                    omb, ptcs, n_maps, rtcproc.run_kernel, run_noise,
+                    omb.randomize_dets, calib.n_dets, active_maps_ptr, rands,
+                    eng);
 
                 logger->info("running mapmaking");
 
