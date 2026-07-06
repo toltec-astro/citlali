@@ -3,6 +3,8 @@
 // Engine output implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/output_policy.h>
+
 template <class map_buffer_t>
 void Engine::add_tod_header(map_buffer_t &mb) {
     const std::string reduction_type_name{
@@ -93,7 +95,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
         citlali::pipeline::add_oof_header_vars_if_observed(
             fo, telescope.sim_obs, telescope.tel_header, mb,
-            typed_config.runtime.reduction_type, run_mapmaking, calib,
+            typed_config.runtime.reduction_type,
+            citlali::pipeline::mapmaking_enabled(*this), calib,
             toltec_io.array_name_map, toltec_io.array_wavelength_map);
 
         citlali::pipeline::add_fruit_loop_header_config_vars(
