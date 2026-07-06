@@ -2,6 +2,8 @@
 
 // Implementation detail included by pointing.h.
 
+#include <citlali/core/pipeline/output_policy.h>
+
 template <mapmaking::MapType map_type>
 void Pointing::output() {
     const std::string reduction_type_name{
@@ -65,7 +67,7 @@ void Pointing::output() {
         n_io = (map_type == mapmaking::RawCoadd) ? &coadd_noise_fits_io_vec : &filtered_coadd_noise_fits_io_vec;
     }
 
-    if (run_mapmaking) {
+    if (citlali::pipeline::mapmaking_outputs_enabled(*this)) {
         if (!f_io->empty()) {
             {
                 // progress bar
@@ -169,7 +171,7 @@ void Pointing::output() {
         write_mapdiag<map_type>(mb, dir_name);
 
         // write source table
-        if (run_source_finder) {
+        if (citlali::pipeline::source_finding_outputs_enabled(*this)) {
             logger->debug("writing source table");
             write_sources<map_type>(mb, dir_name);
         }

@@ -2,6 +2,8 @@
 
 // Implementation detail included by todproc.h.
 
+#include <citlali/core/pipeline/output_policy.h>
+
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::coadd() {
     // calculate the offset between cmb and omb
@@ -72,7 +74,8 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
         engine().coadd_fits_io_vec.push_back(std::move(fits_io));
 
         // if noise maps requested
-        if (engine().run_noise && engine().write_noise_realizations) {
+        if (citlali::pipeline::noise_maps_enabled(engine()) &&
+            citlali::pipeline::noise_realization_outputs_enabled(engine())) {
             // noise map filename
             auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
                                                                         engine_utils::toltecIO::raw>(engine().coadd_dir_name + "raw/",
@@ -86,7 +89,7 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
     }
 
     // if map filtering are requested
-    if (engine().run_map_filter) {
+    if (citlali::pipeline::map_filter_outputs_enabled(engine())) {
         // loop through arrays
         for (Eigen::Index i=0; i<engine().calib.n_arrays; ++i) {
             // array index
@@ -104,7 +107,8 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
             engine().filtered_coadd_fits_io_vec.push_back(std::move(fits_io));
 
             // if noise maps requested
-            if (engine().run_noise && engine().write_noise_realizations) {
+            if (citlali::pipeline::noise_maps_enabled(engine()) &&
+                citlali::pipeline::noise_realization_outputs_enabled(engine())) {
                 // filtered noise map filename
                 auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
                                                                             engine_utils::toltecIO::filtered>(engine().coadd_dir_name +
@@ -151,4 +155,3 @@ void TimeOrderedDataProc<EngineType>::make_index_file(std::string filepath) {
     std::ofstream fout(filepath + "/index.yaml");
     fout << node;
 }
-
