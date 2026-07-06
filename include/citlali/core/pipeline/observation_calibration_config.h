@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/pipeline/array_properties_table.h>
 
 namespace citlali::pipeline {
@@ -18,8 +19,10 @@ void load_photometry_config(Engine &engine, const RawObs &rawobs) {
 
 template <class Engine>
 bool should_make_apt_from_raw_files(const Engine &engine) {
-    return engine.map_grouping == "detector" ||
-           engine.map_grouping == "auto";
+    return engine.typed_config.mapmaking.grouping ==
+               citlali::config::MapGrouping::detector ||
+           engine.typed_config.mapmaking.grouping ==
+               citlali::config::MapGrouping::automatic;
 }
 
 template <class TodProc, class RawObs, class Logger>

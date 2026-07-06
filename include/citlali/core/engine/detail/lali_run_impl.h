@@ -7,6 +7,7 @@
 auto Lali::run() -> run_stage_t {
     auto scans_done_mutex = std::make_shared<std::mutex>();
     auto ptc_line_audit_mutex = std::make_shared<std::mutex>();
+    const auto mapmaking_method = typed_config.mapmaking.method;
 
     const bool write_rtc =
         run_tod_output && run_tod_output_rtc && !tod_filename.empty();
@@ -191,11 +192,11 @@ auto Lali::run() -> run_stage_t {
                 // populate noise maps only
                 bool run_omb = false;
                 logger->info("populating noise maps");
-                if (map_method=="naive") {
+                if (mapmaking_method == citlali::config::MapMethod::naive) {
                     naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
                                                  calib_scan.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
-                else if (map_method=="jinc") {
+                else if (mapmaking_method == citlali::config::MapMethod::jinc) {
                     jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
                                                calib_scan.apt, telescope.d_fsmp, run_omb, run_noise);
                 }
@@ -277,15 +278,16 @@ auto Lali::run() -> run_stage_t {
             apply_learned_mapmaking_detector_exclusions(ptcdata, calib_scan);
             // populate maps with current time chunk
             logger->info("populating maps");
-            if (map_method=="naive") {
+            if (mapmaking_method == citlali::config::MapMethod::naive) {
                 naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
                                              calib_scan.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
-            else if (map_method=="jinc") {
+            else if (mapmaking_method == citlali::config::MapMethod::jinc) {
                 jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
                                            calib_scan.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
             }
-            else if (map_method=="maximum_likelihood") {
+            else if (mapmaking_method ==
+                     citlali::config::MapMethod::maximum_likelihood) {
                 ml_mm.populate_maps_ml(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
                                        calib_scan, telescope.d_fsmp, run_omb, run_noise_fruit);
             }

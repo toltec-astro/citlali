@@ -1,14 +1,19 @@
 #pragma once
 
+#include <citlali/core/config/mapmaking_config.h>
+#include <citlali/core/config/runtime_config.h>
+
 #include <string>
 
 namespace citlali::pipeline {
 
 template <class PtcProc, class Logger>
 void configure_fruit_loop_interpolation_mode(
-    PtcProc &ptcproc, const std::string &map_method, const Logger &logger) {
+    PtcProc &ptcproc, citlali::config::MapMethod map_method,
+    const Logger &logger) {
+    const std::string map_method_name{citlali::config::to_string(map_method)};
     const std::string fruit_interp_default =
-        (map_method == "jinc") ? "jinc" : "bilinear";
+        (map_method == citlali::config::MapMethod::jinc) ? "jinc" : "bilinear";
     ptcproc.fruit_loops_interp_mode = fruit_interp_default;
     if (ptcproc.run_fruit_loops &&
         ptcproc.fruit_loops_interp_mode_override != "auto") {
@@ -16,14 +21,15 @@ void configure_fruit_loop_interpolation_mode(
             ptcproc.fruit_loops_interp_mode_override;
     }
     if (ptcproc.fruit_loops_interp_mode == "jinc" &&
-        map_method != "jinc") {
+        map_method != citlali::config::MapMethod::jinc) {
         logger->warn(
             "fruit_loops.interp_mode_override='jinc' requires mapmaking.method='jinc'; using bilinear");
         ptcproc.fruit_loops_interp_mode = "bilinear";
     }
     logger->info(
         "fruit loops interpolation mode: {} (default from mapmaking.method='{}' is {})",
-        ptcproc.fruit_loops_interp_mode, map_method, fruit_interp_default);
+        ptcproc.fruit_loops_interp_mode, map_method_name,
+        fruit_interp_default);
 }
 
 template <class PtcProc, class Logger>
@@ -67,7 +73,9 @@ void configure_fruit_loop_iteration_policy(Engine &engine,
         logger->warn("noise maps are not enabled for fruit loops");
     }
 
-    if (!engine.ptcproc.run_fruit_loops || engine.redu_type == "beammap") {
+    if (!engine.ptcproc.run_fruit_loops ||
+        engine.typed_config.runtime.reduction_type ==
+            citlali::config::ReductionType::beammap) {
         engine.ptcproc.fruit_loops_iters = 1;
         engine.ptcproc.save_all_iters = true;
     }

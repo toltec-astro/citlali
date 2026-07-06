@@ -37,7 +37,7 @@ void Engine::get_mapmaking_config(CT &config) {
         config, map_method, mapmaking_config, missing_keys,
         invalid_keys);
     citlali::pipeline::configure_fruit_loop_interpolation_mode(
-        ptcproc, map_method, logger);
+        ptcproc, mapmaking_config.method, logger);
     citlali::pipeline::log_fruit_loop_runtime_policy(ptcproc, logger);
     citlali::pipeline::reset_fruit_loop_jinc_kernel_config(ptcproc);
 

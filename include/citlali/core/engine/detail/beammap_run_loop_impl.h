@@ -271,11 +271,15 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
         logger->info("starting mapmaking");
 
         if (run_mapmaking) {
+            const auto mapmaking_grouping = typed_config.mapmaking.grouping;
+            const auto mapmaking_method = typed_config.mapmaking.method;
             auto run_mapmaking_pass = [&](bool update_progress) {
                 Eigen::Matrix<bool, Eigen::Dynamic, 1> active_maps;
                 const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps_ptr = nullptr;
                 Eigen::Index n_active_maps = n_maps;
-                if (map_grouping == "detector" && converged.size() == n_maps) {
+                if (mapmaking_grouping ==
+                        citlali::config::MapGrouping::detector &&
+                    converged.size() == n_maps) {
                     const Eigen::Index n_converged = (converged.array() == true).count();
                     if (n_converged > 0 && n_converged < n_maps) {
                         active_maps.resize(n_maps);
@@ -292,7 +296,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                     }
                 }
 
-                if (map_method == "jinc" &&
+                if (mapmaking_method == citlali::config::MapMethod::jinc &&
                     static_cast<Eigen::Index>(omb.grid_weight.size()) != n_maps) {
                     logger->info("allocating jinc grid_weight maps: current={} expected={}",
                                  omb.grid_weight.size(), n_maps);
@@ -340,18 +344,21 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
 
                 logger->info("running mapmaking");
 
-                if (map_grouping == "detector") {
+                if (mapmaking_grouping ==
+                    citlali::config::MapGrouping::detector) {
                     bool run_omb = true;
                     for (std::size_t scan_vec_idx = 0; scan_vec_idx < ptcs.size(); ++scan_vec_idx) {
                         auto &ptc = ptcs[scan_vec_idx];
                         auto &scan_apt = calib_scans[scan_vec_idx].apt;
-                        if (map_method == "naive") {
+                        if (mapmaking_method ==
+                            citlali::config::MapMethod::naive) {
                             naive_mm.populate_maps_naive_parallel(ptc, omb, cmb, ptc.map_indices.data,
                                                                   telescope.pixel_axes, scan_apt,
                                                                   telescope.d_fsmp, run_omb, run_noise,
                                                                   active_maps_ptr);
                         }
-                        else if (map_method == "jinc") {
+                        else if (mapmaking_method ==
+                                 citlali::config::MapMethod::jinc) {
                             std::array<Eigen::Index, 3> array_counts = {0, 0, 0};
                             for (Eigen::Index det = 0; det < ptc.scans.data.cols(); ++det) {
                                 auto array_index = static_cast<int>(calib.apt["array"](det));
@@ -403,12 +410,14 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                 else {
                     grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
                         bool run_omb = true;
-                        if (map_method == "naive") {
+                        if (mapmaking_method ==
+                            citlali::config::MapMethod::naive) {
                             naive_mm.populate_maps_naive(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
                                                         telescope.pixel_axes, calib_scans[i].apt, telescope.d_fsmp,
                                                         run_omb, run_noise);
                         }
-                        else if (map_method == "jinc") {
+                        else if (mapmaking_method ==
+                                 citlali::config::MapMethod::jinc) {
                             jinc_mm.populate_maps_jinc(ptcs[i], omb, cmb, ptcs[i].map_indices.data,
                                                        telescope.pixel_axes, calib_scans[i].apt, telescope.d_fsmp,
                                                        run_omb, run_noise);

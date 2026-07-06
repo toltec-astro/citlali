@@ -31,7 +31,8 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
         omb.signal.push_back(zero_matrix);
         omb.weight.push_back(zero_matrix);
 
-        if (engine().map_method == "jinc") {
+        if (engine().typed_config.mapmaking.method ==
+            citlali::config::MapMethod::jinc) {
             omb.grid_weight.push_back(zero_matrix);
         }
 
@@ -39,7 +40,8 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
             omb.kernel.push_back(zero_matrix);
         }
 
-        if (engine().map_grouping != "detector") {
+        if (engine().typed_config.mapmaking.grouping !=
+            citlali::config::MapGrouping::detector) {
             omb.coverage.push_back(zero_matrix);
         }
     }
@@ -78,7 +80,8 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb() {
             // allocate kernel
             cmb.kernel.push_back(zero_matrix);
         }
-        if (engine().map_grouping!="detector") {
+        if (engine().typed_config.mapmaking.grouping !=
+            citlali::config::MapGrouping::detector) {
             // allocate coverage
             cmb.coverage.push_back(zero_matrix);
         }
@@ -117,4 +120,3 @@ void TimeOrderedDataProc<EngineType>::allocate_nmb(map_buffer_t &nmb) {
 }
 
 // coadd maps
-
