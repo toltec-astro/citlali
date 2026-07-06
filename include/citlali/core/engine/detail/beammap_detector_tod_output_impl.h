@@ -3,6 +3,8 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/engine/detail/beammap_detector_tod_selection.h>
+
 void Beammap::write_detector_specific_ptc_tod(int output_iter) {
     if (!beammap_detector_tod_output_enabled) {
         return;
@@ -33,45 +35,8 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         return;
     }
 
-    std::vector<Eigen::Index> uniform_scans;
-    uniform_scans.reserve(static_cast<std::size_t>(n_uniform));
-    for (int i = 0; i < n_uniform; ++i) {
-        Eigen::Index scan_index = (n_scans - 1) / 2;
-        if (n_uniform > 1) {
-            const double frac = static_cast<double>(i) /
-                                static_cast<double>(n_uniform - 1);
-            scan_index = static_cast<Eigen::Index>(std::llround(frac * (n_scans - 1)));
-        }
-        uniform_scans.push_back(std::clamp<Eigen::Index>(scan_index, 0, n_scans - 1));
-    }
-
-    auto dense_window = [&](Eigen::Index center_scan) {
-        std::vector<Eigen::Index> scans;
-        scans.reserve(static_cast<std::size_t>(n_dense));
-        if (n_dense <= 0) {
-            return scans;
-        }
-        if (n_dense > n_scans) {
-            for (int i = 0; i < n_dense; ++i) {
-                Eigen::Index scan_index = 0;
-                if (n_dense > 1) {
-                    const double frac = static_cast<double>(i) /
-                                        static_cast<double>(n_dense - 1);
-                    scan_index = static_cast<Eigen::Index>(std::llround(frac * (n_scans - 1)));
-                }
-                scans.push_back(std::clamp<Eigen::Index>(scan_index, 0, n_scans - 1));
-            }
-            return scans;
-        }
-        Eigen::Index first_dense =
-            center_scan - static_cast<Eigen::Index>((n_dense - 1) / 2);
-        first_dense = std::clamp<Eigen::Index>(
-            first_dense, 0, std::max<Eigen::Index>(0, n_scans - static_cast<Eigen::Index>(n_dense)));
-        for (int i = 0; i < n_dense; ++i) {
-            scans.push_back(first_dense + static_cast<Eigen::Index>(i));
-        }
-        return scans;
-    };
+    std::vector<Eigen::Index> uniform_scans =
+        beammap_detector_tod_selection::uniform_scan_indices(n_uniform, n_scans);
 
     std::vector<Eigen::Index> sampled_indices;
     std::vector<Eigen::Index> sampled_scan;
@@ -214,36 +179,11 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
     std::vector<double> center_distances;
     center_distances.reserve(static_cast<std::size_t>(calib.n_dets));
 
-    auto flat = [&](Eigen::Index det, Eigen::Index slot) {
-        return static_cast<std::size_t>(det) * static_cast<std::size_t>(n_slots) +
-               static_cast<std::size_t>(slot);
-    };
-    auto get_detector_source_position = [&](Eigen::Index det, bool &used_fit) {
-        used_fit = false;
-        double x_arcsec = std::numeric_limits<double>::quiet_NaN();
-        double y_arcsec = std::numeric_limits<double>::quiet_NaN();
-        const bool fit_ok = det < good_fits.size() && good_fits(det) &&
-                            det < params.rows() && params.cols() > 2 &&
-                            std::isfinite(params(det, 1)) &&
-                            std::isfinite(params(det, 2));
-        if (fit_ok) {
-            x_arcsec = RAD_TO_ASEC * omb.pixel_size_rad *
-                       (params(det, 1) - (omb.n_cols - 1) / 2.0);
-            y_arcsec = RAD_TO_ASEC * omb.pixel_size_rad *
-                       (params(det, 2) - (omb.n_rows - 1) / 2.0);
-            used_fit = true;
-        }
-        if ((!std::isfinite(x_arcsec) || !std::isfinite(y_arcsec)) &&
-            det < calib.apt["x_t"].size() && det < calib.apt["y_t"].size()) {
-            x_arcsec = calib.apt["x_t"](det);
-            y_arcsec = calib.apt["y_t"](det);
-        }
-        return std::pair<double, double>{x_arcsec, y_arcsec};
-    };
-
     for (Eigen::Index det = 0; det < calib.n_dets; ++det) {
         bool used_fit = false;
-        auto [x_arcsec, y_arcsec] = get_detector_source_position(det, used_fit);
+        auto [x_arcsec, y_arcsec] = beammap_detector_tod_selection::detector_source_position(
+            det, good_fits, params, calib.apt["x_t"], calib.apt["y_t"],
+            omb.pixel_size_rad, omb.n_cols, omb.n_rows, used_fit);
         det_fit_x_arcsec[static_cast<std::size_t>(det)] = x_arcsec;
         det_fit_y_arcsec[static_cast<std::size_t>(det)] = y_arcsec;
         det_fit_good[static_cast<std::size_t>(det)] = used_fit ? 1 : 0;
@@ -267,7 +207,7 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
 
         Eigen::Index slot = 0;
         for (const auto scan_index : uniform_scans) {
-            const auto idx = flat(det, slot);
+            const auto idx = beammap_detector_tod_selection::flat_detector_slot(det, slot, n_slots);
             slot_scan_index[idx] = static_cast<int>(scan_index + 1);
             slot_kind[idx] = 1;
             if (scan_index >= 0 && scan_index < n_scans) {
@@ -285,8 +225,8 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
             }
             slot++;
         }
-        for (const auto scan_index : dense_window(center_scan)) {
-            const auto idx = flat(det, slot);
+        for (const auto scan_index : beammap_detector_tod_selection::dense_scan_window(center_scan, n_dense, n_scans)) {
+            const auto idx = beammap_detector_tod_selection::flat_detector_slot(det, slot, n_slots);
             slot_scan_index[idx] = static_cast<int>(scan_index + 1);
             slot_kind[idx] = 2;
             if (scan_index >= 0 && scan_index < n_scans) {
@@ -501,7 +441,7 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
             std::fill(signal_block.begin(), signal_block.end(), fill_float);
             std::fill(flags_block.begin(), flags_block.end(), fill_flag);
             for (Eigen::Index slot = 0; slot < n_slots; ++slot) {
-                const auto meta_idx = flat(det, slot);
+                const auto meta_idx = beammap_detector_tod_selection::flat_detector_slot(det, slot, n_slots);
                 const int scan_1based = slot_scan_index[meta_idx];
                 if (scan_1based <= 0) {
                     continue;

@@ -3,6 +3,8 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/engine/detail/beammap_map_product_headers.h>
+
 template <mapmaking::MapType map_type>
 void Beammap::write_beammap_map_products(
     mapmaking::MapBuffer *mb,
@@ -82,21 +84,8 @@ void Beammap::write_beammap_map_products(
 
                         // add apt table
                         logger->debug("adding beammap header keys");
-                        for (auto const& key: calib.apt_header_keys) {
-                            if (key!="flag2") {
-                                try {
-                                    f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, calib.apt[key](i), key
-                                                                          + " (" + calib.apt_header_units[key] + ")");
-                                } catch(...) {
-                                    f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, 0.0, key
-                                                                           + " (" + calib.apt_header_units[key] + ")");
-                                }
-                            }
-                            else {
-                                f_io->at(map_index).hdus.at(k)->addKey("BEAMMAP." + key, flag2(i), key
-                                                                       + " (" + calib.apt_header_units[key] + ")");
-                            }
-                        }
+                        beammap_map_product_headers::add_detector_header_keys(
+                            f_io->at(map_index).hdus.at(k), calib, flag2, i);
                         // increment hdu layer
                         k = k + step;
                     }
@@ -256,25 +245,8 @@ void Beammap::write_beammap_map_products(
                                 const Eigen::Index k = hdu_layer.at(map_index);
 
                                 logger->debug("adding split beammap header keys");
-                                for (auto const &key : calib.apt_header_keys) {
-                                    if (key != "flag2") {
-                                        try {
-                                            split_f_io->at(map_index).hdus.at(k)->addKey(
-                                                "BEAMMAP." + key, calib.apt[key](i),
-                                                key + " (" + calib.apt_header_units[key] + ")");
-                                        }
-                                        catch (...) {
-                                            split_f_io->at(map_index).hdus.at(k)->addKey(
-                                                "BEAMMAP." + key, 0.0,
-                                                key + " (" + calib.apt_header_units[key] + ")");
-                                        }
-                                    }
-                                    else {
-                                        split_f_io->at(map_index).hdus.at(k)->addKey(
-                                            "BEAMMAP." + key, flag2(i),
-                                            key + " (" + calib.apt_header_units[key] + ")");
-                                    }
-                                }
+                                beammap_map_product_headers::add_detector_header_keys(
+                                    split_f_io->at(map_index).hdus.at(k), calib, flag2, i);
                                 hdu_layer.at(map_index) = hdu_layer.at(map_index) + step;
                             }
                         }
