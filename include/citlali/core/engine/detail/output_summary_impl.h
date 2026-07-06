@@ -4,15 +4,20 @@
 // Include this only after Engine has been declared.
 
 void Engine::cli_summary() {
+    const auto &coadd_config = typed_config.coadd;
+    const auto &noise_config = typed_config.noise;
+    const auto &tod_output_config = typed_config.timestream.output;
+
     citlali::pipeline::log_reduction_map_summary(
         logger, obsnum, omb, rtcproc.run_polarization);
     const double mb_size_total =
         citlali::pipeline::log_map_memory_summary(
-            logger, omb, cmb, run_coadd, run_noise);
+            logger, omb, cmb, coadd_config.enabled, noise_config.enabled);
 
     logger->info("estimated size of all maps {:.2f} GB", mb_size_total);
     logger->info("number of scans: {}",telescope.scan_indices.cols());
-    if (run_tod_output) {
+    if (tod_output_config.raw_time_chunk_enabled ||
+        tod_output_config.processed_time_chunk_enabled) {
         citlali::pipeline::log_tod_output_selection_summary(
             logger, tod_output_type, n_tod_output_scans_rtc,
             rtcproc.tod_output_mini, rtcproc.tod_output_outer,
@@ -79,4 +84,3 @@ auto Engine::setup_filenames(std::string dir_name) {
 auto Engine::get_map_name(int i) {
     return citlali::pipeline::map_layer_name(i, map_grouping, calib);
 }
-
