@@ -68,6 +68,45 @@ inline std::size_t flat_detector_slot(Eigen::Index det,
            static_cast<std::size_t>(slot);
 }
 
+template <class ScanIndices, class Ptcs>
+inline void fill_slot_scan_metadata(
+    Eigen::Index det,
+    Eigen::Index slot,
+    Eigen::Index n_slots,
+    Eigen::Index scan_index,
+    Eigen::Index n_scans,
+    int slot_kind_value,
+    const ScanIndices &scan_indices,
+    const Ptcs &ptcs,
+    const std::vector<double> &distances_arcsec,
+    std::vector<int> &slot_scan_index,
+    std::vector<int> &slot_kind,
+    std::vector<int> &slot_n_samples,
+    std::vector<int> &slot_inner_start,
+    std::vector<int> &slot_inner_end,
+    std::vector<int> &slot_outer_start,
+    std::vector<int> &slot_outer_end,
+    std::vector<double> &slot_source_distance_arcsec) {
+    const auto idx = flat_detector_slot(det, slot, n_slots);
+    slot_scan_index[idx] = static_cast<int>(scan_index + 1);
+    slot_kind[idx] = slot_kind_value;
+    if (scan_index < 0 || scan_index >= n_scans) {
+        return;
+    }
+
+    slot_inner_start[idx] = static_cast<int>(scan_indices(0, scan_index));
+    slot_inner_end[idx] = static_cast<int>(scan_indices(1, scan_index));
+    slot_outer_start[idx] = static_cast<int>(scan_indices(2, scan_index));
+    slot_outer_end[idx] = static_cast<int>(scan_indices(3, scan_index));
+    if (scan_index < static_cast<Eigen::Index>(ptcs.size())) {
+        slot_n_samples[idx] = static_cast<int>(ptcs[scan_index].scans.data.rows());
+    }
+    if (scan_index < static_cast<Eigen::Index>(distances_arcsec.size())) {
+        slot_source_distance_arcsec[idx] =
+            distances_arcsec[static_cast<std::size_t>(scan_index)];
+    }
+}
+
 template <class ScanIndices, class TelData>
 inline std::pair<std::vector<Eigen::Index>, std::vector<Eigen::Index>>
 sampled_scan_samples(const ScanIndices &scan_indices,

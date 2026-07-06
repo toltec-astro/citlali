@@ -117,41 +117,21 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
 
         Eigen::Index slot = 0;
         for (const auto scan_index : uniform_scans) {
-            const auto idx = beammap_detector_tod_selection::flat_detector_slot(det, slot, n_slots);
-            slot_scan_index[idx] = static_cast<int>(scan_index + 1);
-            slot_kind[idx] = 1;
-            if (scan_index >= 0 && scan_index < n_scans) {
-                slot_inner_start[idx] = static_cast<int>(telescope.scan_indices(0, scan_index));
-                slot_inner_end[idx] = static_cast<int>(telescope.scan_indices(1, scan_index));
-                slot_outer_start[idx] = static_cast<int>(telescope.scan_indices(2, scan_index));
-                slot_outer_end[idx] = static_cast<int>(telescope.scan_indices(3, scan_index));
-                if (scan_index < static_cast<Eigen::Index>(ptcs.size())) {
-                    slot_n_samples[idx] = static_cast<int>(ptcs[scan_index].scans.data.rows());
-                }
-                if (scan_index < static_cast<Eigen::Index>(distances_arcsec.size())) {
-                    slot_source_distance_arcsec[idx] =
-                        distances_arcsec[static_cast<std::size_t>(scan_index)];
-                }
-            }
+            beammap_detector_tod_selection::fill_slot_scan_metadata(
+                det, slot, n_slots, scan_index, n_scans, 1,
+                telescope.scan_indices, ptcs, distances_arcsec,
+                slot_scan_index, slot_kind, slot_n_samples, slot_inner_start,
+                slot_inner_end, slot_outer_start, slot_outer_end,
+                slot_source_distance_arcsec);
             slot++;
         }
         for (const auto scan_index : beammap_detector_tod_selection::dense_scan_window(center_scan, n_dense, n_scans)) {
-            const auto idx = beammap_detector_tod_selection::flat_detector_slot(det, slot, n_slots);
-            slot_scan_index[idx] = static_cast<int>(scan_index + 1);
-            slot_kind[idx] = 2;
-            if (scan_index >= 0 && scan_index < n_scans) {
-                slot_inner_start[idx] = static_cast<int>(telescope.scan_indices(0, scan_index));
-                slot_inner_end[idx] = static_cast<int>(telescope.scan_indices(1, scan_index));
-                slot_outer_start[idx] = static_cast<int>(telescope.scan_indices(2, scan_index));
-                slot_outer_end[idx] = static_cast<int>(telescope.scan_indices(3, scan_index));
-                if (scan_index < static_cast<Eigen::Index>(ptcs.size())) {
-                    slot_n_samples[idx] = static_cast<int>(ptcs[scan_index].scans.data.rows());
-                }
-                if (scan_index < static_cast<Eigen::Index>(distances_arcsec.size())) {
-                    slot_source_distance_arcsec[idx] =
-                        distances_arcsec[static_cast<std::size_t>(scan_index)];
-                }
-            }
+            beammap_detector_tod_selection::fill_slot_scan_metadata(
+                det, slot, n_slots, scan_index, n_scans, 2,
+                telescope.scan_indices, ptcs, distances_arcsec,
+                slot_scan_index, slot_kind, slot_n_samples, slot_inner_start,
+                slot_inner_end, slot_outer_start, slot_outer_end,
+                slot_source_distance_arcsec);
             slot++;
         }
     }
