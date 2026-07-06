@@ -60,63 +60,6 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         beammap_detector_tod_selection::sample_pointing_offset(
             pointing_offsets_arcsec, "alt", sampled_indices);
 
-    auto scan_distances_for_detector = [&](Eigen::Index det, double source_x_arcsec,
-                                           double source_y_arcsec,
-                                           std::vector<double> &distances_arcsec) {
-        Eigen::Index best_scan = (n_scans - 1) / 2;
-        distances_arcsec.assign(static_cast<std::size_t>(n_scans),
-                                std::numeric_limits<double>::quiet_NaN());
-        if (!std::isfinite(source_x_arcsec) || !std::isfinite(source_y_arcsec) ||
-            det < 0 || det >= calib.n_dets ||
-            det >= calib.apt["x_t"].size() || det >= calib.apt["y_t"].size() ||
-            !std::isfinite(calib.apt["x_t"](det)) ||
-            !std::isfinite(calib.apt["y_t"](det))) {
-            return best_scan;
-        }
-        double best_d2 = std::numeric_limits<double>::infinity();
-        const double source_x_rad = source_x_arcsec * ASEC_TO_RAD;
-        const double source_y_rad = source_y_arcsec * ASEC_TO_RAD;
-        // Use the detector pointing that built the map, then find where
-        // that pointing passes closest to the fitted source location.
-        auto [lat, lon] = engine_utils::calc_det_pointing(
-            sampled_tel_data, calib.apt["x_t"](det), calib.apt["y_t"](det),
-            telescope.pixel_axes,
-            pointing_offsets, typed_config.mapmaking.grouping, true);
-
-        std::vector<double> best_d2_by_scan(static_cast<std::size_t>(n_scans),
-                                            std::numeric_limits<double>::infinity());
-        for (Eigen::Index sample_i = 0; sample_i < n_sampled; ++sample_i) {
-            if (sample_i >= lat.size() || sample_i >= lon.size()) {
-                continue;
-            }
-            const double y = lat(sample_i) - source_y_rad;
-            const double x = lon(sample_i) - source_x_rad;
-            if (!std::isfinite(x) || !std::isfinite(y)) {
-                continue;
-            }
-            const auto scan_index = sampled_scan[static_cast<std::size_t>(sample_i)];
-            if (scan_index < 0 || scan_index >= n_scans) {
-                continue;
-            }
-            const double d2 = x * x + y * y;
-            auto &scan_best = best_d2_by_scan[static_cast<std::size_t>(scan_index)];
-            if (d2 < scan_best) {
-                scan_best = d2;
-            }
-            if (d2 < best_d2) {
-                best_d2 = d2;
-                best_scan = scan_index;
-            }
-        }
-        for (Eigen::Index scan_index = 0; scan_index < n_scans; ++scan_index) {
-            const double d2 = best_d2_by_scan[static_cast<std::size_t>(scan_index)];
-            if (std::isfinite(d2)) {
-                distances_arcsec[static_cast<std::size_t>(scan_index)] = std::sqrt(d2) * RAD_TO_ASEC;
-            }
-        }
-        return best_scan;
-    };
-
     const int fill_int = -2147483647;
     const double fill_double = std::numeric_limits<double>::quiet_NaN();
     const float fill_float = std::numeric_limits<float>::quiet_NaN();
@@ -157,8 +100,12 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
             n_det_fallback_positions++;
         }
         std::vector<double> distances_arcsec;
-        const Eigen::Index center_scan = scan_distances_for_detector(
-            det, x_arcsec, y_arcsec, distances_arcsec);
+        const Eigen::Index center_scan =
+            beammap_detector_tod_selection::scan_distances_for_detector_source(
+                det, x_arcsec, y_arcsec, n_scans, n_sampled, sampled_scan,
+                sampled_tel_data, calib.apt["x_t"], calib.apt["y_t"],
+                telescope.pixel_axes, pointing_offsets,
+                typed_config.mapmaking.grouping, distances_arcsec);
         det_center_scan_index[static_cast<std::size_t>(det)] = static_cast<int>(center_scan + 1);
         center_scan_counts[center_scan]++;
         if (center_scan >= 0 && center_scan < n_scans &&
