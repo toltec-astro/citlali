@@ -46,6 +46,25 @@ The current policy is provisional baseline v1; see
 philosophy and mode-specific user/expert surfaces. The handoff summary for the
 main refactor thread is `doc/CONFIG_SIMPLIFICATION_HANDOFF_2026-07-02.md`.
 
+`audit_compact_surface_coverage.py` compares the provisional `user-facing`
+classification against the compact translator. A path is counted as covered
+only when normal compact fields expand back to that low-level path without
+using the `expert:` escape hatch.
+
+```bash
+$HOME/tolteca/bin/python tools/config/audit_compact_surface_coverage.py \
+  --cases tools/config/compact_compatibility_cases.yaml \
+  --require-all \
+  --json-out /tmp/citlali_compact_surface_coverage.json \
+  --csv-out /tmp/citlali_compact_surface_coverage.csv \
+  --markdown-out /tmp/citlali_compact_surface_coverage.md
+```
+
+Use this audit before adding typed config mirrors or new compact keys. Gaps are
+not automatically bugs: some provisional user-facing paths are conditional
+product families, inactive defaults in a given reduction mode, or policy
+questions that may stay profile-owned.
+
 `render_policy_review_dashboard.py` turns the same classification data into a
 standalone interactive HTML review page. It keeps the YAML policy as the source
 of truth, but makes policy review easier by showing rules, observed paths,
