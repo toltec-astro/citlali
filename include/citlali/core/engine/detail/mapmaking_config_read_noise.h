@@ -8,14 +8,9 @@ void read_noise_maps_enabled_config(Config &config, bool &enabled,
                                     NoiseConfig &typed_config,
                                     MissingKeys &missing_keys,
                                     InvalidKeys &invalid_keys) {
-    const auto missing_before = missing_keys.size();
-    const auto invalid_before = invalid_keys.size();
-    ::get_config_value(config, enabled, missing_keys, invalid_keys,
-                       std::tuple{"noise_maps", "enabled"});
-    if (config_parse_clean(
-            missing_keys, invalid_keys, missing_before, invalid_before)) {
-        typed_config.enabled = enabled;
-    }
+    read_mirrored_config_value(
+        config, std::tuple{"noise_maps", "enabled"}, enabled,
+        typed_config.enabled, missing_keys, invalid_keys);
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -44,14 +39,9 @@ void read_noise_randomize_dets_config(Config &config, bool &randomize_dets,
                                       NoiseConfig &typed_config,
                                       MissingKeys &missing_keys,
                                       InvalidKeys &invalid_keys) {
-    const auto missing_before = missing_keys.size();
-    const auto invalid_before = invalid_keys.size();
-    ::get_config_value(config, randomize_dets, missing_keys, invalid_keys,
-                       std::tuple{"noise_maps", "randomize_dets"});
-    if (config_parse_clean(
-            missing_keys, invalid_keys, missing_before, invalid_before)) {
-        typed_config.randomize_dets = randomize_dets;
-    }
+    read_mirrored_config_value(
+        config, std::tuple{"noise_maps", "randomize_dets"}, randomize_dets,
+        typed_config.randomize_dets, missing_keys, invalid_keys);
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -63,17 +53,9 @@ void read_noise_write_realizations_config(Config &config,
                                           InvalidKeys &invalid_keys) {
     write_realizations = false;
     const auto key = std::tuple{"noise_maps", "write_realizations"};
-    if (!config.template has_typed<bool>(key)) {
-        return;
-    }
-    const auto missing_before = missing_keys.size();
-    const auto invalid_before = invalid_keys.size();
-    ::get_config_value(config, write_realizations, missing_keys,
-                       invalid_keys, key);
-    if (config_parse_clean(
-            missing_keys, invalid_keys, missing_before, invalid_before)) {
-        typed_config.write_realizations = write_realizations;
-    }
+    read_optional_mirrored_config_value(
+        config, key, write_realizations, typed_config.write_realizations,
+        missing_keys, invalid_keys);
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -87,17 +69,9 @@ void read_noise_products_enabled_config(Config &config,
     products_enabled = default_enabled;
     typed_config.products_enabled = products_enabled;
     const auto key = std::tuple{"noise_maps", "products", "enabled"};
-    if (!config.template has_typed<bool>(key)) {
-        return;
-    }
-    const auto missing_before = missing_keys.size();
-    const auto invalid_before = invalid_keys.size();
-    ::get_config_value(config, products_enabled, missing_keys, invalid_keys,
-                       key);
-    if (config_parse_clean(
-            missing_keys, invalid_keys, missing_before, invalid_before)) {
-        typed_config.products_enabled = products_enabled;
-    }
+    read_optional_mirrored_config_value(
+        config, key, products_enabled, typed_config.products_enabled,
+        missing_keys, invalid_keys);
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -112,16 +86,7 @@ void read_noise_empirical_weights_config(Config &config,
     typed_config.apply_empirical_weights = apply_weights;
     const auto key =
         std::tuple{"noise_maps", "products", "apply_empirical_weights"};
-    if (!config.template has_typed<bool>(key)) {
-        return;
-    }
-    const auto missing_before = missing_keys.size();
-    const auto invalid_before = invalid_keys.size();
-    ::get_config_value(config, apply_weights, missing_keys, invalid_keys,
-                       key);
-    if (config_parse_clean(
-            missing_keys, invalid_keys, missing_before, invalid_before)) {
-        typed_config.apply_empirical_weights = apply_weights;
-    }
+    read_optional_mirrored_config_value(
+        config, key, apply_weights, typed_config.apply_empirical_weights,
+        missing_keys, invalid_keys);
 }
-
