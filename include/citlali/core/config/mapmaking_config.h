@@ -54,6 +54,34 @@ inline std::string_view to_string(MapMethod value) {
     return enum_name(value, map_method_names);
 }
 
+inline bool is_map_grouping(std::string_view value, MapGrouping grouping) {
+    return value == to_string(grouping);
+}
+
+inline bool is_map_grouping(MapGrouping value, MapGrouping grouping) {
+    return value == grouping;
+}
+
+inline bool is_detector_map_grouping(std::string_view value) {
+    return is_map_grouping(value, MapGrouping::detector);
+}
+
+inline bool is_detector_map_grouping(MapGrouping value) {
+    return is_map_grouping(value, MapGrouping::detector);
+}
+
+inline bool is_network_map_grouping(std::string_view value) {
+    return is_map_grouping(value, MapGrouping::network);
+}
+
+inline bool is_array_map_grouping(std::string_view value) {
+    return is_map_grouping(value, MapGrouping::array);
+}
+
+inline bool is_frequency_group_map_grouping(std::string_view value) {
+    return is_map_grouping(value, MapGrouping::frequency_group);
+}
+
 struct MapmakingConfig {
     bool enabled = true;
     double crpix1 = 0.0;

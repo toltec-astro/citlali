@@ -6,6 +6,7 @@
 
 #include <boost/math/special_functions/bessel.hpp>
 
+#include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/utils/constants.h>
 #include <citlali/core/utils/pointing.h>
 #include <citlali/core/utils/fits_io.h>
@@ -113,7 +114,7 @@ inline void Kernel::set_source_centers(const Eigen::VectorXd &lat,
 }
 
 inline bool Kernel::has_source_centers() const {
-    return map_grouping == "detector" &&
+    return citlali::config::is_detector_map_grouping(map_grouping) &&
            source_valid.size() > 0 &&
            source_lat.size() == source_valid.size() &&
            source_lon.size() == source_valid.size() &&
@@ -125,7 +126,7 @@ inline bool Kernel::source_center_for_map(Eigen::Index map_index,
                                           double &lon) const {
     lat = 0.0;
     lon = 0.0;
-    if (map_grouping != "detector" ||
+    if (!citlali::config::is_detector_map_grouping(map_grouping) ||
         map_index < 0 ||
         map_index >= source_valid.size() ||
         map_index >= source_lat.size() ||
@@ -148,7 +149,7 @@ inline bool Kernel::source_fwhm_for_map(Eigen::Index map_index,
                                         double &b_fwhm_rad) const {
     a_fwhm_rad = std::numeric_limits<double>::quiet_NaN();
     b_fwhm_rad = std::numeric_limits<double>::quiet_NaN();
-    if (map_grouping != "detector" ||
+    if (!citlali::config::is_detector_map_grouping(map_grouping) ||
         map_index < 0 ||
         map_index >= source_valid.size() ||
         map_index >= source_a_fwhm_rad.size() ||

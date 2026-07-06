@@ -23,6 +23,7 @@
 #include <tula/nc.h>
 #include <tula/algorithm/ei_stats.h>
 
+#include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/engine/io.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
@@ -4659,7 +4660,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
                     // flag those below limit
                     if ((in.weights.data(j) < (lower_weight_factor*med_wt)) && lower_weight_factor!=0) {
                         in.flags.data.col(j).setOnes();
-                        if (map_grouping=="detector") {
+                        if (citlali::config::is_detector_map_grouping(map_grouping)) {
                             calib_scan.apt["flag"](j) = 1;
                         }
                         in.n_dets_low++;
@@ -4669,7 +4670,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
                     // flag those above limit
                     if ((in.weights.data(j) > (upper_weight_factor*med_wt)) && upper_weight_factor!=0) {
                         in.flags.data.col(j).setOnes();
-                        if (map_grouping=="detector") {
+                        if (citlali::config::is_detector_map_grouping(map_grouping)) {
                             calib_scan.apt["flag"](j) = 1;
                         }
                         in.n_dets_high++;
@@ -5357,7 +5358,8 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
                 }
                 Eigen::VectorXd scans = in.scans.data.col(det_index);
                 Eigen::Matrix<bool, Eigen::Dynamic, 1> flags = in.flags.data.col(det_index);
-                if (active_map_grouping == "detector" && mask_radius_arcsec > 0.0) {
+                if (citlali::config::is_detector_map_grouping(active_map_grouping) &&
+                    mask_radius_arcsec > 0.0) {
                     Eigen::Matrix<bool, Eigen::Dynamic, 1> masked_flags = flags;
                     double az_off = calib.apt["x_t"](det_index);
                     double el_off = calib.apt["y_t"](det_index);

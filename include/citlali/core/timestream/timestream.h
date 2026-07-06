@@ -30,6 +30,7 @@
 #include <tula/logging.h>
 #include <kids/core/wcs.h>
 
+#include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
 #include <citlali/core/utils/toltec_io.h>
@@ -2004,7 +2005,7 @@ void TCProc::configure_fruit_loops_adaptive_gate(mb_t &mb, calib_t &calib,
         }
 
         double fwhm_arcsec = std::numeric_limits<double>::quiet_NaN();
-        if (map_grouping == "detector") {
+        if (citlali::config::is_detector_map_grouping(map_grouping)) {
             const double a_fwhm = apt_value("a_fwhm", i);
             const double b_fwhm = apt_value("b_fwhm", i);
             if (std::isfinite(a_fwhm) && std::isfinite(b_fwhm)) {
@@ -2072,7 +2073,7 @@ void TCProc::configure_fruit_loops_adaptive_gate(mb_t &mb, calib_t &calib,
         }
 
         double amp_ref = std::numeric_limits<double>::quiet_NaN();
-        if (map_grouping == "detector") {
+        if (citlali::config::is_detector_map_grouping(map_grouping)) {
             for (const auto &key : {"cal_amp", "template_amp", "amp", "map_peak_amp"}) {
                 amp_ref = apt_value(key, i);
                 if (std::isfinite(amp_ref) && amp_ref > 0.0) {
@@ -2449,7 +2450,8 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                      mb.kernel.size(), mb.signal.size());
         run_kernel = false;
     }
-    const bool detector_map_kernel_feedback = run_kernel && map_grouping == "detector";
+    const bool detector_map_kernel_feedback =
+        run_kernel && citlali::config::is_detector_map_grouping(map_grouping);
     // if mean rms is filled use S/N limit
     bool run_noise = mb.median_rms.size() != 0;
 
@@ -2881,7 +2883,8 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                         Eigen::Map<Eigen::Matrix<bool, Eigen::Dynamic, 1>> flags(
                             in.flags.data.col(j).data(), in.flags.data.rows());
 
-                        if (map_grouping == "detector" && mask_radius_arcsec > 0.0) {
+                        if (citlali::config::is_detector_map_grouping(map_grouping) &&
+                            mask_radius_arcsec > 0.0) {
                             Eigen::Matrix<bool, Eigen::Dynamic, 1> masked_flags = flags;
                             double az_off = calib.apt["x_t"](det_index);
                             double el_off = calib.apt["y_t"](det_index);
@@ -2959,7 +2962,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                         // flag those below limit
                         if ((det_std_dev(j) < (lower_inv_var_factor*median_std_dev)) && lower_inv_var_factor!=0) {
                             in.flags.data.col(dets(j)).setOnes();
-                            if (map_grouping=="detector") {
+                            if (citlali::config::is_detector_map_grouping(map_grouping)) {
                                 calib_scan.apt["flag"](det_index) = 1;
                             }
                             in.n_dets_low++;
@@ -2969,7 +2972,7 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                         // flag those above limit
                         if ((det_std_dev(j) > (upper_inv_var_factor*median_std_dev)) && upper_inv_var_factor!=0) {
                             in.flags.data.col(dets(j)).setOnes();
-                            if (map_grouping=="detector") {
+                            if (citlali::config::is_detector_map_grouping(map_grouping)) {
                                 calib_scan.apt["flag"](det_index) = 1;
                             }
                             in.n_dets_high++;

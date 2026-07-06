@@ -5,7 +5,6 @@
 #include <limits>
 #include <map>
 #include <string>
-#include <string_view>
 
 #include <Eigen/Core>
 
@@ -14,18 +13,6 @@
 
 namespace engine_utils {
 
-inline bool is_detector_map_grouping(citlali::config::MapGrouping grouping) {
-    return grouping == citlali::config::MapGrouping::detector;
-}
-
-inline bool is_detector_map_grouping(std::string_view grouping) {
-    return grouping == "detector";
-}
-
-inline bool is_detector_map_grouping(const std::string &grouping) {
-    return is_detector_map_grouping(std::string_view{grouping});
-}
-
 // get a single detector's pointing
 template <typename tel_data_t, typename pointing_offset_t, typename MapGroupingT>
 auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
@@ -33,7 +20,8 @@ auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
                        const MapGroupingT &map_grouping, bool apply_det_offsets = false) {
 
     // if making per detector maps, set offsets to zero
-    if (is_detector_map_grouping(map_grouping) && !apply_det_offsets) {
+    if (citlali::config::is_detector_map_grouping(map_grouping) &&
+        !apply_det_offsets) {
         az_off = 0;
         el_off = 0;
     }

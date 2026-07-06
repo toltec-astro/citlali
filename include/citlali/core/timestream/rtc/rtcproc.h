@@ -13,6 +13,7 @@
 #include <numeric>
 #include <vector>
 
+#include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/timestream/timestream.h>
 #include <citlali/core/engine/io.h>
 #include <citlali/core/utils/pointing.h>
@@ -1780,23 +1781,23 @@ auto RTCProc::calc_map_indices(calib_t &calib, std::string map_grouping) {
     Eigen::VectorXI indices(calib.n_dets), map_indices(calib.n_dets);
 
     // overwrite map indices for networks
-    if (map_grouping == "nw") {
+    if (citlali::config::is_network_map_grouping(map_grouping)) {
         indices = calib.apt["nw"].template cast<Eigen::Index> ();
     }
     // overwrite map indices for arrays
-    else if (map_grouping == "array") {
+    else if (citlali::config::is_array_map_grouping(map_grouping)) {
         indices = calib.apt["array"].template cast<Eigen::Index> ();
     }
     // overwrite map indices for detectors
-    else if (map_grouping == "detector") {
+    else if (citlali::config::is_detector_map_grouping(map_grouping)) {
         indices = Eigen::VectorXI::LinSpaced(calib.n_dets,0,calib.n_dets-1);
     }
     // overwrite map indices for fg
-    else if (map_grouping == "fg") {
+    else if (citlali::config::is_frequency_group_map_grouping(map_grouping)) {
         indices = calib.apt["fg"].template cast<Eigen::Index> ();
     }
     // start at 0
-    if (map_grouping != "fg") {
+    if (!citlali::config::is_frequency_group_map_grouping(map_grouping)) {
         std::unordered_map<Eigen::Index, Eigen::Index> group_to_index;
         Eigen::Index next_index = 0;
         for (Eigen::Index i=0; i<indices.size(); ++i) {
@@ -5758,7 +5759,7 @@ auto RTCProc::remove_nearby_tones(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, 
             n_nearby_tones++;
             // increment number of nearby tones
             in.flags.data.col(i).setOnes();
-            if (map_grouping=="detector") {
+            if (citlali::config::is_detector_map_grouping(map_grouping)) {
                 calib_scan.apt["flag"](det_index) = 1;
             }
         }
