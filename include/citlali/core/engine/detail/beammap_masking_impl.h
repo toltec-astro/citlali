@@ -3,6 +3,8 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/engine/detail/beammap_masking_stats.h>
+
 Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PTC,Eigen::MatrixXd> &ptc) {
     RFIMaskScanSummary summary;
     if (!beammap_rfi_mask_enabled) {
@@ -25,7 +27,6 @@ Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PT
 
     const Eigen::Index n_blocks = (n_samples + block_size - 1) / block_size;
     std::vector<unsigned char> bad_blocks(static_cast<std::size_t>(n_blocks), 0);
-    std::vector<unsigned char> dilated_blocks(static_cast<std::size_t>(n_blocks), 0);
     std::vector<double> diffs;
     std::vector<Eigen::Index> to_flag;
 
@@ -62,11 +63,7 @@ Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PT
             continue;
         }
 
-        Eigen::Map<Eigen::VectorXd> diff_global(diffs.data(), static_cast<Eigen::Index>(diffs.size()));
-        const double diff_med = tula::alg::median(diff_global);
-        Eigen::VectorXd diff_abs_dev = (diff_global.array() - diff_med).abs().matrix();
-        const double diff_mad = tula::alg::median(diff_abs_dev);
-        const double global_sigma = 1.4826 * diff_mad;
+        const double global_sigma = beammap_masking_stats::robust_stats(diffs).sigma;
         if (!std::isfinite(global_sigma) || global_sigma <= eps) {
             continue;
         }
@@ -93,11 +90,7 @@ Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PT
                 continue;
             }
 
-            Eigen::Map<Eigen::VectorXd> diff_block(diffs.data(), static_cast<Eigen::Index>(diffs.size()));
-            const double block_med = tula::alg::median(diff_block);
-            Eigen::VectorXd block_abs_dev = (diff_block.array() - block_med).abs().matrix();
-            const double block_mad = tula::alg::median(block_abs_dev);
-            const double block_sigma = 1.4826 * block_mad;
+            const double block_sigma = beammap_masking_stats::robust_stats(diffs).sigma;
             if (!std::isfinite(block_sigma) || block_sigma <= eps) {
                 continue;
             }
@@ -111,20 +104,7 @@ Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PT
             continue;
         }
 
-        if (dilate_blocks > 0) {
-            std::fill(dilated_blocks.begin(), dilated_blocks.end(), 0);
-            for (Eigen::Index b = 0; b < n_blocks; ++b) {
-                if (!bad_blocks[static_cast<std::size_t>(b)]) {
-                    continue;
-                }
-                const Eigen::Index b0 = std::max<Eigen::Index>(0, b - dilate_blocks);
-                const Eigen::Index b1 = std::min<Eigen::Index>(n_blocks - 1, b + dilate_blocks);
-                for (Eigen::Index bb = b0; bb <= b1; ++bb) {
-                    dilated_blocks[static_cast<std::size_t>(bb)] = 1;
-                }
-            }
-            bad_blocks.swap(dilated_blocks);
-        }
+        beammap_masking_stats::dilate_block_mask(bad_blocks, dilate_blocks);
 
         to_flag.clear();
         for (Eigen::Index b = 0; b < n_blocks; ++b) {
@@ -202,42 +182,6 @@ Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer 
     const double eps = std::numeric_limits<double>::epsilon();
     const double row0 = static_cast<double>(map_buffer.n_rows - 1) / 2.0;
 
-    auto robust_stats = [&](const std::vector<double> &values, double &median, double &sigma) -> bool {
-        if (values.empty()) {
-            median = std::numeric_limits<double>::quiet_NaN();
-            sigma = std::numeric_limits<double>::quiet_NaN();
-            return false;
-        }
-        Eigen::Map<const Eigen::VectorXd> vec(values.data(), static_cast<Eigen::Index>(values.size()));
-        median = tula::alg::median(vec);
-        Eigen::VectorXd abs_dev = (vec.array() - median).abs().matrix();
-        sigma = 1.4826 * tula::alg::median(abs_dev);
-        if (!std::isfinite(sigma)) {
-            sigma = std::numeric_limits<double>::quiet_NaN();
-        }
-        return std::isfinite(median);
-    };
-
-    auto row_is_bad = [&](double row_median, double row_sigma, double interior_median,
-                          double interior_median_sigma, double interior_row_sigma_median) {
-        bool bad = false;
-        if (median_sigma_threshold > 0.0 &&
-            std::isfinite(row_median) &&
-            std::isfinite(interior_median) &&
-            std::isfinite(interior_median_sigma) &&
-            interior_median_sigma > eps) {
-            bad = std::abs(row_median - interior_median) > median_sigma_threshold * interior_median_sigma;
-        }
-        if (!bad &&
-            sigma_ratio_threshold > 0.0 &&
-            std::isfinite(row_sigma) &&
-            std::isfinite(interior_row_sigma_median) &&
-            interior_row_sigma_median > eps) {
-            bad = row_sigma > sigma_ratio_threshold * interior_row_sigma_median;
-        }
-        return bad;
-    };
-
     for (Eigen::Index det = 0; det < n_det_maps; ++det) {
         const auto &sig = map_buffer.signal[det];
         const auto &wt = map_buffer.weight[det];
@@ -270,17 +214,16 @@ Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer 
             if (row_counts[static_cast<std::size_t>(row)] < min_row_pixels) {
                 continue;
             }
-            double row_median = std::numeric_limits<double>::quiet_NaN();
-            double row_sigma = std::numeric_limits<double>::quiet_NaN();
-            if (!robust_stats(row_values, row_median, row_sigma)) {
+            const auto row_stats = beammap_masking_stats::robust_stats(row_values);
+            if (!row_stats.valid) {
                 continue;
             }
-            row_medians[static_cast<std::size_t>(row)] = row_median;
-            row_sigmas[static_cast<std::size_t>(row)] = row_sigma;
+            row_medians[static_cast<std::size_t>(row)] = row_stats.median;
+            row_sigmas[static_cast<std::size_t>(row)] = row_stats.sigma;
             if (row >= search_rows && row < map_buffer.n_rows - search_rows) {
-                interior_row_medians.push_back(row_median);
-                if (std::isfinite(row_sigma)) {
-                    interior_row_sigmas.push_back(row_sigma);
+                interior_row_medians.push_back(row_stats.median);
+                if (std::isfinite(row_stats.sigma)) {
+                    interior_row_sigmas.push_back(row_stats.sigma);
                 }
             }
         }
@@ -289,16 +232,16 @@ Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer 
             continue;
         }
 
-        double interior_median = std::numeric_limits<double>::quiet_NaN();
-        double interior_median_sigma = std::numeric_limits<double>::quiet_NaN();
-        if (!robust_stats(interior_row_medians, interior_median, interior_median_sigma)) {
+        const auto interior_stats = beammap_masking_stats::robust_stats(interior_row_medians);
+        if (!interior_stats.valid) {
             continue;
         }
+        const double interior_median = interior_stats.median;
+        const double interior_median_sigma = interior_stats.sigma;
 
         double interior_row_sigma_median = std::numeric_limits<double>::quiet_NaN();
-        double dummy_sigma = std::numeric_limits<double>::quiet_NaN();
         if (!interior_row_sigmas.empty()) {
-            robust_stats(interior_row_sigmas, interior_row_sigma_median, dummy_sigma);
+            interior_row_sigma_median = beammap_masking_stats::robust_stats(interior_row_sigmas).median;
         }
 
         auto collect_edge_rows = [&](bool from_top) {
@@ -317,12 +260,15 @@ Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer 
                     continue;
                 }
                 saw_eligible_row = true;
-                const bool bad = row_is_bad(
+                const bool bad = beammap_masking_stats::row_is_bad(
                     row_medians[static_cast<std::size_t>(row)],
                     row_sigmas[static_cast<std::size_t>(row)],
                     interior_median,
                     interior_median_sigma,
-                    interior_row_sigma_median);
+                    interior_row_sigma_median,
+                    median_sigma_threshold,
+                    sigma_ratio_threshold,
+                    eps);
                 if (!bad) {
                     break;
                 }
