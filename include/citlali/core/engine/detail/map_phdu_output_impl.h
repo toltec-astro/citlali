@@ -17,6 +17,14 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     std::string name = citlali::pipeline::phdu_array_name(
         toltec_io.array_name_map, array_id);
     auto &fits_entry = fits_io->at(i);
+    const std::string reduction_type_name{
+        citlali::config::to_string(typed_config.runtime.reduction_type)};
+    const std::string tod_type_name{
+        citlali::config::to_string(typed_config.timestream.type)};
+    const std::string map_grouping_name{
+        citlali::config::to_string(typed_config.mapmaking.grouping)};
+    const std::string map_method_name{
+        citlali::config::to_string(typed_config.mapmaking.method)};
 
     try {
     citlali::engine_detail::add_phdu_unit_conversion_section(
@@ -25,7 +33,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         MJY_SR_TO_mJY_ASEC, logger);
 
     citlali::engine_detail::add_phdu_beammap_observation_section(
-        fits_entry, mb, name, logger, redu_type, beammap_fluxes_mJy_beam,
+        fits_entry, mb, name, logger, reduction_type_name,
+        beammap_fluxes_mJy_beam,
         beammap_fluxes_MJy_Sr, beammap_iter_tolerance,
         beammap_convergence_radius_arcsec, beammap_iter_max,
         beammap_phase_split_enabled, beammap_locator_iter,
@@ -36,8 +45,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     citlali::engine_detail::add_phdu_identity_geometry_section(
         fits_entry, mb, telescope, calib, name, CITLALI_GIT_VERSION,
-        KIDSCPP_GIT_VERSION, TULA_GIT_VERSION, redu_type, tod_type,
-        map_grouping, map_method, RAD_TO_DEG, logger);
+        KIDSCPP_GIT_VERSION, TULA_GIT_VERSION, reduction_type_name,
+        tod_type_name, map_grouping_name, map_method_name, RAD_TO_DEG,
+        logger);
 
     logger->debug("adding beamsizes");
 
@@ -51,12 +61,12 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // add jinc shape params
     citlali::pipeline::add_phdu_jinc_shape_keys_if_needed(
-        fits_entry, name, logger, map_method, jinc_mm.r_max,
+        fits_entry, name, logger, map_method_name, jinc_mm.r_max,
         jinc_mm.shape_params, array_id);
 
     citlali::engine_detail::add_phdu_extinction_apt_oof_section(
         fits_entry, mb, rtcproc, telescope, calib, toltec_io, i, array_id,
-        name, redu_type, logger);
+        name, reduction_type_name, logger);
 
     citlali::engine_detail::add_phdu_tod_runtime_config_section(
         fits_entry, name, logger, verbose_mode, rtcproc, ptcproc,
@@ -67,7 +77,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         array_id, mb->sig_unit);
 
     citlali::engine_detail::add_phdu_pointing_telescope_header_section(
-        fits_entry, mb, telescope, name, logger, redu_type,
+        fits_entry, mb, telescope, name, logger, reduction_type_name,
         pointing_source_strategy, pointing_fit_gaussian_enabled,
         pointing_fruitloops_center_mode,
         pointing_header_center_max_radius_arcsec,
