@@ -11,9 +11,9 @@ void Engine::get_rtc_config(CT &config) {
     // get rtcproc config
     rtcproc.get_config(config, missing_keys, invalid_keys);
     citlali::pipeline::mirror_raw_despike_config(
-        typed_timestream_config.raw_time_chunk.despike, rtcproc);
+        typed_config.timestream.raw_time_chunk.despike, rtcproc);
 
-    auto &typed_raw = typed_timestream_config.raw_time_chunk;
+    auto &typed_raw = typed_config.timestream.raw_time_chunk;
     citlali::pipeline::mirror_raw_flagging_config(
         typed_raw.flagging, rtcproc);
 

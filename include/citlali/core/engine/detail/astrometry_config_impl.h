@@ -7,7 +7,7 @@
 
 template<typename CT>
 void Engine::get_astrometry_config(CT &config) {
-    typed_astrometry_config = citlali::config::AstrometryConfig{};
+    typed_config.astrometry = citlali::config::AstrometryConfig{};
 
     // check if config file has pointing_offsets
     if (config.has("pointing_offsets")) {
@@ -125,7 +125,7 @@ void Engine::get_astrometry_config(CT &config) {
 
         citlali::engine_detail::mirror_typed_pointing_offsets(
             pointing_offsets_arcsec, pointing_offsets_modified_julian_date,
-            typed_astrometry_config.pointing_offsets);
+            typed_config.astrometry.pointing_offsets);
     }
     else {
         logger->error("pointing_offsets not found in config");

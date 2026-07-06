@@ -11,14 +11,14 @@ void Engine::get_ptc_config(CT &config) {
     // get ptcproc config
     ptcproc.get_config(config, missing_keys, invalid_keys);
     citlali::pipeline::mirror_fruit_loops_config(
-        typed_timestream_config.fruit_loops, ptcproc);
+        typed_config.timestream.fruit_loops, ptcproc);
     citlali::pipeline::mirror_processed_clean_config(
-        typed_timestream_config.processed_time_chunk.clean, ptcproc,
+        typed_config.timestream.processed_time_chunk.clean, ptcproc,
         toltec_io.array_name_map);
     auto &typed_weighting =
-        typed_timestream_config.processed_time_chunk.weighting;
+        typed_config.timestream.processed_time_chunk.weighting;
     auto &typed_flagging =
-        typed_timestream_config.processed_time_chunk.flagging;
+        typed_config.timestream.processed_time_chunk.flagging;
     citlali::pipeline::mirror_processed_weighting_config(
         typed_weighting, typed_flagging, ptcproc);
     const auto &weight_validation = ptcproc.weight_validation;
@@ -30,7 +30,7 @@ void Engine::get_ptc_config(CT &config) {
         typed_weighting.corr_penalty, weight_corr_penalty);
 
     auto &typed_second_pass =
-        typed_timestream_config.processed_time_chunk.flagging.second_pass_local;
+        typed_config.timestream.processed_time_chunk.flagging.second_pass_local;
     citlali::pipeline::mirror_second_pass_local_config(
         typed_second_pass, ptcproc.second_pass_local);
 

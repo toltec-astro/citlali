@@ -38,29 +38,6 @@ void log_typed_config_validation_report(
     }
 }
 
-inline citlali::config::ReductionConfig make_typed_reduction_config_mirror(
-    const citlali::config::RuntimeConfig &runtime_config,
-    const citlali::config::TimestreamConfig &timestream_config,
-    const citlali::config::MapmakingConfig &mapmaking_config,
-    const citlali::config::CoaddConfig &coadd_config,
-    const citlali::config::NoiseConfig &noise_config,
-    const citlali::config::PostProcessingConfig &post_processing_config,
-    const citlali::config::PointingConfig &pointing_config,
-    const citlali::config::BeammapConfig &beammap_config,
-    const citlali::config::AstrometryConfig &astrometry_config) {
-    citlali::config::ReductionConfig config;
-    config.runtime = runtime_config;
-    config.timestream = timestream_config;
-    config.mapmaking = mapmaking_config;
-    config.coadd = coadd_config;
-    config.noise = noise_config;
-    config.post_processing = post_processing_config;
-    config.pointing = pointing_config;
-    config.beammap = beammap_config;
-    config.astrometry = astrometry_config;
-    return config;
-}
-
 template <typename Logger>
 void validate_typed_config_mirrors(
     const citlali::config::ReductionConfig &config, const Logger &logger) {

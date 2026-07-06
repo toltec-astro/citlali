@@ -12,8 +12,8 @@ void Engine::get_citlali_config(CT &config) {
     citlali::engine_detail::read_interface_sync_offsets(
         config, interface_sync_offset, logger);
 
-    typed_runtime_config = get_runtime_config(config);
-    if (!typed_runtime_config.interp_over_gaps) {
+    typed_config.runtime = get_runtime_config(config);
+    if (!typed_config.runtime.interp_over_gaps) {
         logger->error("runtime.interp_over_gaps=false is unsupported; set runtime.interp_over_gaps: true");
         std::exit(EXIT_FAILURE);
     }
@@ -21,20 +21,20 @@ void Engine::get_citlali_config(CT &config) {
     /* get timestream config */
     get_timestream_config(config);
     citlali::engine_detail::apply_source_protection_activation(
-        redu_type, rtcproc, ptcproc, typed_timestream_config, logger);
+        redu_type, rtcproc, ptcproc, typed_config.timestream, logger);
 
     /* get mapmaking config */
-    typed_post_processing_config = citlali::config::PostProcessingConfig{};
+    typed_config.post_processing = citlali::config::PostProcessingConfig{};
     get_mapmaking_config(config);
 
     citlali::engine_detail::read_post_processing_activation_config(
         config, run_map_filter, run_source_finder,
-        typed_post_processing_config, missing_keys, invalid_keys);
+        typed_config.post_processing, missing_keys, invalid_keys);
 
     // map fitter options if in pointing or beammap mode or if map filtering or source finding are enabled
     citlali::engine_detail::read_source_fitting_config(
         config, redu_type, run_map_filter, run_source_finder, map_fitter,
-        omb.pixel_size_rad, ASEC_TO_RAD, typed_post_processing_config,
+        omb.pixel_size_rad, ASEC_TO_RAD, typed_config.post_processing,
         missing_keys, invalid_keys);
 
     /* get wiener filter config */
@@ -46,7 +46,7 @@ void Engine::get_citlali_config(CT &config) {
     // get source finder config options
     citlali::engine_detail::read_source_finding_config(
         config, run_source_finder, omb, cmb, run_coadd, ASEC_TO_RAD,
-        typed_post_processing_config, missing_keys, invalid_keys);
+        typed_config.post_processing, missing_keys, invalid_keys);
 
     /* get pointing config */
     if (redu_type=="pointing") {
@@ -62,15 +62,9 @@ void Engine::get_citlali_config(CT &config) {
     // disable map related keys if map-making is disabled
     citlali::engine_detail::disable_map_products_if_mapmaking_disabled(
         run_mapmaking, run_coadd, run_noise, run_map_filter,
-        run_source_finder, typed_coadd_config, typed_noise_config,
-        typed_post_processing_config, beammap_iter_max,
-        typed_beammap_config);
+        run_source_finder, typed_config.coadd, typed_config.noise,
+        typed_config.post_processing, beammap_iter_max,
+        typed_config.beammap);
 
-    const auto typed_config_mirror =
-        citlali::engine_detail::make_typed_reduction_config_mirror(
-        typed_runtime_config, typed_timestream_config, typed_mapmaking_config,
-        typed_coadd_config, typed_noise_config, typed_post_processing_config,
-        typed_pointing_config, typed_beammap_config, typed_astrometry_config);
-    citlali::engine_detail::validate_typed_config_mirrors(
-        typed_config_mirror, logger);
+    citlali::engine_detail::validate_typed_config_mirrors(typed_config, logger);
 }

@@ -57,6 +57,7 @@
 #include <citlali/core/config/noise_config.h>
 #include <citlali/core/config/pointing_config.h>
 #include <citlali/core/config/post_processing_config.h>
+#include <citlali/core/config/reduction_config.h>
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/engine/config.h>
@@ -351,16 +352,8 @@ public:
     // reduction type (science, pointing, beammap)
     std::string redu_type;
 
-    // typed runtime config mirror for staged config migration
-    citlali::config::RuntimeConfig typed_runtime_config;
-    citlali::config::TimestreamConfig typed_timestream_config;
-    citlali::config::MapmakingConfig typed_mapmaking_config;
-    citlali::config::CoaddConfig typed_coadd_config;
-    citlali::config::NoiseConfig typed_noise_config;
-    citlali::config::PostProcessingConfig typed_post_processing_config;
-    citlali::config::PointingConfig typed_pointing_config;
-    citlali::config::BeammapConfig typed_beammap_config;
-    citlali::config::AstrometryConfig typed_astrometry_config;
+    // typed config mirror for staged config migration
+    citlali::config::ReductionConfig typed_config;
 
     // obsnum
     std::string obsnum;
