@@ -14,18 +14,9 @@ void read_optional_learning_config(Config &config, const Key &key,
                                    KeyVec &invalid_keys,
                                    std::vector<std::decay_t<Param>> min_val = {},
                                    std::vector<std::decay_t<Param>> max_val = {}) {
-    using value_type = std::decay_t<Param>;
-    if (!config.template has_typed<value_type>(key)) {
-        return;
-    }
-    const auto missing_before = missing_keys.size();
-    const auto invalid_before = invalid_keys.size();
-    ::get_config_value(config, param, missing_keys, invalid_keys, key,
-                       std::vector<value_type>{}, std::move(min_val),
-                       std::move(max_val));
-    citlali::engine_detail::mirror_if_config_parsed(
-        target, param, missing_keys, invalid_keys, missing_before,
-        invalid_before);
+    citlali::engine_detail::read_optional_mirrored_config_value(
+        config, key, param, target, missing_keys, invalid_keys,
+        {}, std::move(min_val), std::move(max_val));
 }
 
 template <class LearningOptions>

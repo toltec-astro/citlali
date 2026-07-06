@@ -173,21 +173,4 @@ void sync_legacy_tod_output_selection_state(
         legacy_chunk_select_enabled, legacy_output_chunks);
 }
 
-template <class Config, class Key, class Param, class Target,
-          class MissingKeys, class InvalidKeys>
-void read_mirrored_config_value(
-    Config &config, const Key &key, Param &param, Target &target,
-    MissingKeys &missing_keys, InvalidKeys &invalid_keys,
-    std::vector<std::decay_t<Param>> accepted_values = {},
-    std::vector<std::decay_t<Param>> min_values = {},
-    std::vector<std::decay_t<Param>> max_values = {}) {
-    const auto missing_before = missing_keys.size();
-    const auto invalid_before = invalid_keys.size();
-    ::get_config_value(config, param, missing_keys, invalid_keys, key,
-                       std::move(accepted_values), std::move(min_values),
-                       std::move(max_values));
-    mirror_if_config_parsed(target, param, missing_keys, invalid_keys,
-                            missing_before, invalid_before);
-}
-
 }  // namespace citlali::engine_detail
