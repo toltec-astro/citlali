@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 
+#include <citlali/core/config/runtime_config.h>
 #include <citlali/core/pipeline/phdu_telescope_values.h>
 
 namespace citlali::pipeline {
@@ -120,7 +121,7 @@ void add_phdu_beammap_keys_if_needed(
     bool phase_split_enabled, int locator_iter, int measurement_start_iter,
     bool is_derotated, bool subtract_reference, Calib &calib,
     Eigen::Index fallback_reference_det) {
-    if (redu_type != "beammap") {
+    if (!citlali::config::is_beammap_reduction_type(redu_type)) {
         return;
     }
 

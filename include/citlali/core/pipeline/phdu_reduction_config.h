@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include <citlali/core/config/runtime_config.h>
 #include <citlali/core/pipeline/phdu_telescope_values.h>
 #include <citlali/core/pipeline/string_join.h>
 

@@ -6,6 +6,7 @@
 #include <Eigen/Sparse>
 #include <spdlog/spdlog.h>
 
+#include <citlali/core/config/runtime_config.h>
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/utils/toltec_io.h>
 
@@ -144,7 +145,7 @@ void MapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::ve
         wcs.ctype.push_back("ELOFFSET");
 
         // arcsec if pointing or beammap
-        if (redu_type != "science") {
+        if (!citlali::config::is_science_reduction_type(redu_type)) {
             wcs.cunit.push_back("arcsec");
             wcs.cunit.push_back("arcsec");
             wcs.cdelt[0] *= RAD_TO_ASEC;

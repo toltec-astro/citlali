@@ -48,6 +48,30 @@ inline std::string_view to_string(ParallelPolicy value) {
     return enum_name(value, parallel_policy_names);
 }
 
+inline bool is_reduction_type(std::string_view value, ReductionType type) {
+    return value == to_string(type);
+}
+
+inline bool is_reduction_type(ReductionType value, ReductionType type) {
+    return value == type;
+}
+
+inline bool is_science_reduction_type(std::string_view value) {
+    return is_reduction_type(value, ReductionType::science);
+}
+
+inline bool is_pointing_reduction_type(std::string_view value) {
+    return is_reduction_type(value, ReductionType::pointing);
+}
+
+inline bool is_beammap_reduction_type(std::string_view value) {
+    return is_reduction_type(value, ReductionType::beammap);
+}
+
+inline bool is_beammap_reduction_type(ReductionType value) {
+    return is_reduction_type(value, ReductionType::beammap);
+}
+
 struct RuntimeConfig {
     bool verbose = true;
     bool interp_over_gaps = true;

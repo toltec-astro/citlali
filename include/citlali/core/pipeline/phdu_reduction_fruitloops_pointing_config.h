@@ -117,7 +117,7 @@ void add_phdu_pointing_config_if_needed(
     const std::string &pointing_fruitloops_center_mode,
     double pointing_header_center_max_radius_arcsec,
     bool pointing_header_center_require_coverage) {
-    if (redu_type != "pointing") {
+    if (!citlali::config::is_pointing_reduction_type(redu_type)) {
         return;
     }
     add_phdu_pointing_config(
@@ -126,4 +126,3 @@ void add_phdu_pointing_config_if_needed(
         pointing_header_center_max_radius_arcsec,
         pointing_header_center_require_coverage);
 }
-

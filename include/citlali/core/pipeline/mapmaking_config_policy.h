@@ -39,7 +39,8 @@ template <class Logger>
 void enforce_beammap_pixel_axes_policy(const std::string &redu_type,
                                        const std::string &pixel_axes,
                                        const Logger &logger) {
-    if (redu_type != "beammap" || pixel_axes == "altaz") {
+    if (!citlali::config::is_beammap_reduction_type(redu_type) ||
+        pixel_axes == "altaz") {
         return;
     }
     logger->error(
