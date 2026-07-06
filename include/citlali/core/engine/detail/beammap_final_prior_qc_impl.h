@@ -3,6 +3,8 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/engine/detail/beammap_prior_qc_stats.h>
+
 void Beammap::apply_final_network_position_flags() {
     if (map_grouping != "detector") {
         return;
@@ -172,16 +174,6 @@ void Beammap::update_final_prior_match_diagnostics() {
     };
 
     std::map<int, ArrayCenter> centers;
-    auto median_from = [](std::vector<double> &values, double &median) -> bool {
-        if (values.empty()) {
-            median = std::numeric_limits<double>::quiet_NaN();
-            return false;
-        }
-        Eigen::Map<Eigen::VectorXd> vec(values.data(), static_cast<Eigen::Index>(values.size()));
-        median = tula::alg::median(vec);
-        return std::isfinite(median);
-    };
-
     for (Eigen::Index i = 0; i < calib.n_arrays; ++i) {
         const Eigen::Index array = calib.arrays(i);
         std::vector<double> x_vals;
@@ -215,9 +207,9 @@ void Beammap::update_final_prior_match_diagnostics() {
             continue;
         }
 
-        double median_x = std::numeric_limits<double>::quiet_NaN();
-        double median_y = std::numeric_limits<double>::quiet_NaN();
-        if (!median_from(x_vals, median_x) || !median_from(y_vals, median_y)) {
+        double median_x = beammap_prior_qc_stats::median_or_nan(x_vals);
+        double median_y = beammap_prior_qc_stats::median_or_nan(y_vals);
+        if (!std::isfinite(median_x) || !std::isfinite(median_y)) {
             continue;
         }
         centers[static_cast<int>(array)] = {true, median_x, median_y};
@@ -289,14 +281,6 @@ void Beammap::log_final_network_qc_summary() {
         return;
     }
 
-    auto median_or_nan = [](std::vector<double> &values) {
-        if (values.empty()) {
-            return std::numeric_limits<double>::quiet_NaN();
-        }
-        Eigen::Map<Eigen::VectorXd> vec(values.data(), static_cast<Eigen::Index>(values.size()));
-        return tula::alg::median(vec);
-    };
-
     logger->info("beammap final per-network qc summary follows");
     for (Eigen::Index i = 0; i < calib.n_arrays; ++i) {
         const Eigen::Index array = calib.arrays(i);
@@ -351,10 +335,10 @@ void Beammap::log_final_network_qc_summary() {
                 n_good,
                 n_total,
                 good_frac,
-                median_or_nan(a_vals),
-                median_or_nan(b_vals),
-                median_or_nan(snr_vals),
-                median_or_nan(prior_d2_vals));
+                beammap_prior_qc_stats::median_or_nan(a_vals),
+                beammap_prior_qc_stats::median_or_nan(b_vals),
+                beammap_prior_qc_stats::median_or_nan(snr_vals),
+                beammap_prior_qc_stats::median_or_nan(prior_d2_vals));
         }
     }
 }

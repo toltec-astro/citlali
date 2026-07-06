@@ -3,6 +3,8 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/engine/detail/beammap_prior_qc_stats.h>
+
 void Beammap::update_prior_frame_estimates() {
     beammap_prior_array_center_x_arcsec.clear();
     beammap_prior_array_center_y_arcsec.clear();
@@ -240,22 +242,6 @@ void Beammap::update_prior_frame_estimates() {
             auto common_pairs = all_pairs;
             if (beammap_priors_alignment_common_support == "overlap_box" &&
                 pairs_by_array.size() >= 2) {
-                auto quantile = [](std::vector<double> values, double q) {
-                    if (values.empty()) {
-                        return std::numeric_limits<double>::quiet_NaN();
-                    }
-                    q = std::clamp(q, 0.0, 1.0);
-                    std::sort(values.begin(), values.end());
-                    const double pos = q * static_cast<double>(values.size() - 1);
-                    const auto lo = static_cast<std::size_t>(std::floor(pos));
-                    const auto hi = static_cast<std::size_t>(std::ceil(pos));
-                    if (lo == hi) {
-                        return values[lo];
-                    }
-                    const double frac = pos - static_cast<double>(lo);
-                    return values[lo] * (1.0 - frac) + values[hi] * frac;
-                };
-
                 const double q_low = beammap_priors_alignment_common_support_quantile;
                 const double q_high = 1.0 - beammap_priors_alignment_common_support_quantile;
                 double overlap_x_low = -std::numeric_limits<double>::infinity();
@@ -276,10 +262,10 @@ void Beammap::update_prior_frame_estimates() {
                             ys.push_back(pair.slot_y);
                         }
                     }
-                    const double x_low = quantile(xs, q_low);
-                    const double x_high = quantile(xs, q_high);
-                    const double y_low = quantile(ys, q_low);
-                    const double y_high = quantile(ys, q_high);
+                    const double x_low = beammap_prior_qc_stats::quantile(xs, q_low);
+                    const double x_high = beammap_prior_qc_stats::quantile(xs, q_high);
+                    const double y_low = beammap_prior_qc_stats::quantile(ys, q_low);
+                    const double y_high = beammap_prior_qc_stats::quantile(ys, q_high);
                     if (!(std::isfinite(x_low) && std::isfinite(x_high) &&
                           std::isfinite(y_low) && std::isfinite(y_high))) {
                         overlap_valid = false;
