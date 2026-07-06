@@ -7,6 +7,132 @@
 #include <citlali/core/pipeline/beammap_normalize_support_logging.h>
 #include <citlali/core/pipeline/mapmaking_dispatch.h>
 
+void Beammap::process_beammap_ptc_scan(
+    int scan_index, bool locator_iter, bool measurement_iter,
+    bool detector_grouping,
+    const std::shared_ptr<std::mutex> &ptc_line_audit_mutex) {
+    bool model_subtracted_for_ptc_line_audit = false;
+    if (run_mapmaking) {
+        if (measurement_iter) {
+            if (!ptcproc.run_fruit_loops) {
+                // if not running fruit loops use source fit
+                logger->info("subtracting gaussian from tod");
+                // subtract gaussian
+                ptcproc.add_gaussian<timestream::TCProc::SourceType::NegativeGaussian>(
+                    ptcs[scan_index], params, telescope.pixel_axes, map_grouping,
+                    calib.apt, omb.pixel_size_rad, omb.n_rows, omb.n_cols);
+            }
+            else {
+                logger->info("subtracting map from tod");
+                // subtract map
+                ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(
+                    omb, ptcs[scan_index], calib, ptcs[scan_index].map_indices.data,
+                    telescope.pixel_axes, map_grouping);
+                model_subtracted_for_ptc_line_audit = true;
+            }
+        }
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(*ptc_line_audit_mutex);
+        apply_model_protected_ptc_line_audit(
+            ptcs[scan_index], calib_scans[scan_index],
+            model_subtracted_for_ptc_line_audit);
+    }
+
+    // clean the maps
+    logger->info("processed time chunk processing for scan {}", scan_index + 1);
+    ptcproc.run(
+        ptcs[scan_index], ptcs[scan_index], calib_scans[scan_index],
+        telescope.pixel_axes, map_grouping);
+
+    if (run_mapmaking) {
+        if (measurement_iter) {
+            // if not running fruit loops use source fit
+            if (!ptcproc.run_fruit_loops) {
+                logger->info("adding gaussian to tod");
+                // add gaussian back
+                ptcproc.add_gaussian<timestream::TCProc::SourceType::Gaussian>(
+                    ptcs[scan_index], params, telescope.pixel_axes, map_grouping,
+                    calib.apt, omb.pixel_size_rad, omb.n_rows, omb.n_cols);
+            }
+            else {
+                logger->info("adding map to tod");
+                // add map back
+                ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(
+                    omb, ptcs[scan_index], calib,
+                    ptcs[scan_index].map_indices.data, telescope.pixel_axes,
+                    map_grouping);
+            }
+        }
+    }
+
+    // For detector-grouped beammaps, keep the locator pass permissive so
+    // bright-source scans are less likely to be rejected before we have
+    // any source-location estimate to feed back into later iterations.
+    if (detector_grouping && locator_iter) {
+        logger->info(
+            "skipping remove_bad_dets on beammap locator iter {} for detector scan {}",
+            current_iter, ptcs[scan_index].index.data + 1);
+    }
+    else {
+        // remove outliers after clean
+        calib_scans[scan_index] = ptcproc.remove_bad_dets(
+            ptcs[scan_index], calib_scans[scan_index], map_grouping);
+    }
+
+    if (detector_grouping) {
+        auto rfi_summary = apply_rfi_sample_mask(ptcs[scan_index]);
+        if (beammap_rfi_mask_enabled) {
+            if (rfi_summary.n_samples_flagged > 0 ||
+                rfi_summary.n_det_rejected > 0) {
+                logger->info(
+                    "beammap rfi mask scan {}: masked {} samples across {}/{} detectors ({} rejected by max_flagged_fraction={:.4f})",
+                    ptcs[scan_index].index.data + 1,
+                    rfi_summary.n_samples_flagged,
+                    rfi_summary.n_det_flagged,
+                    rfi_summary.n_det_candidates,
+                    rfi_summary.n_det_rejected,
+                    beammap_rfi_mask_max_flagged_fraction);
+            }
+            else {
+                logger->debug(
+                    "beammap rfi mask scan {}: no samples masked",
+                    ptcs[scan_index].index.data + 1);
+            }
+        }
+        const bool use_ptc_weights =
+            citlali::pipeline::use_beammap_detector_ptc_weights(
+                beammap_detector_weighting_mode, measurement_iter);
+        if (use_ptc_weights) {
+            logger->info(
+                "calculating detector-mode PTC weights for scan {} (mode={})",
+                ptcs[scan_index].index.data + 1, beammap_detector_weighting_mode);
+            ptcproc.calc_weights(ptcs[scan_index], calib_scans[scan_index].apt, telescope);
+            calib_scans[scan_index] = ptcproc.reset_weights(
+                ptcs[scan_index], calib_scans[scan_index], map_grouping);
+        }
+        else {
+            // Constant weights remain the safest default for bright beammaps.
+            ptcs[scan_index].weights.data.resize(ptcs[scan_index].scans.data.cols());
+            ptcs[scan_index].weights.data.setOnes();
+        }
+    }
+    else {
+        // calculate weights
+        logger->info("calculating weights for scan {}", ptcs[scan_index].index.data + 1);
+        ptcproc.calc_weights(ptcs[scan_index], calib_scans[scan_index].apt, telescope);
+
+        // reset weights to median
+        calib_scans[scan_index] = ptcproc.reset_weights(
+            ptcs[scan_index], calib_scans[scan_index], map_grouping);
+    }
+
+    // calc stats
+    logger->debug("calculating stats");
+    diagnostics.calc_stats(ptcs[scan_index]);
+}
+
 template <class KidsProc, class RawObs>
 void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
     // variable to control iteration
@@ -94,110 +220,9 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
 
         // cleaning (separate from mapmaking loop due to jinc mapmaking parallelization)
         grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
-            bool model_subtracted_for_ptc_line_audit = false;
-            if (run_mapmaking) {
-                if (measurement_iter) {
-                    if (!ptcproc.run_fruit_loops) {
-                        // if not running fruit loops use source fit
-                        logger->info("subtracting gaussian from tod");
-                        // subtract gaussian
-                        ptcproc.add_gaussian<timestream::TCProc::SourceType::NegativeGaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping,
-                                                                                               calib.apt,omb.pixel_size_rad, omb.n_rows, omb.n_cols);
-                    }
-                    else {
-                        logger->info("subtracting map from tod");
-                        // subtract map
-                        ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(omb, ptcs[i], calib, ptcs[i].map_indices.data, telescope.pixel_axes,
-                                                                                        map_grouping);
-                        model_subtracted_for_ptc_line_audit = true;
-                    }
-                }
-            }
-
-            {
-                std::lock_guard<std::mutex> lock(*ptc_line_audit_mutex);
-                apply_model_protected_ptc_line_audit(
-                    ptcs[i], calib_scans[i], model_subtracted_for_ptc_line_audit);
-            }
-
-            // clean the maps
-            logger->info("processed time chunk processing for scan {}", i + 1);
-            ptcproc.run(ptcs[i], ptcs[i], calib_scans[i], telescope.pixel_axes, map_grouping);
-
-            if (run_mapmaking) {
-                if (measurement_iter) {
-                    // if not running fruit loops use source fit
-                    if (!ptcproc.run_fruit_loops) {
-                        logger->info("adding gaussian to tod");
-                        // add gaussian back
-                        ptcproc.add_gaussian<timestream::TCProc::SourceType::Gaussian>(ptcs[i], params, telescope.pixel_axes, map_grouping, calib.apt,
-                                                                                       omb.pixel_size_rad,omb.n_rows, omb.n_cols);
-                    }
-                    else {
-                        logger->info("adding map to tod");
-                        // add map back
-                        ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(omb, ptcs[i], calib, ptcs[i].map_indices.data, telescope.pixel_axes,
-                                                                                map_grouping);
-                    }
-                }
-            }
-
-            // For detector-grouped beammaps, keep the locator pass permissive so
-            // bright-source scans are less likely to be rejected before we have
-            // any source-location estimate to feed back into later iterations.
-            if (detector_grouping && locator_iter) {
-                logger->info("skipping remove_bad_dets on beammap locator iter {} for detector scan {}",
-                             current_iter, ptcs[i].index.data + 1);
-            }
-            else {
-                // remove outliers after clean
-                calib_scans[i] = ptcproc.remove_bad_dets(ptcs[i], calib_scans[i], map_grouping);
-            }
-
-            if (detector_grouping) {
-                auto rfi_summary = apply_rfi_sample_mask(ptcs[i]);
-                if (beammap_rfi_mask_enabled) {
-                    if (rfi_summary.n_samples_flagged > 0 || rfi_summary.n_det_rejected > 0) {
-                        logger->info("beammap rfi mask scan {}: masked {} samples across {}/{} detectors ({} rejected by max_flagged_fraction={:.4f})",
-                                     ptcs[i].index.data + 1,
-                                     rfi_summary.n_samples_flagged,
-                                     rfi_summary.n_det_flagged,
-                                     rfi_summary.n_det_candidates,
-                                     rfi_summary.n_det_rejected,
-                                     beammap_rfi_mask_max_flagged_fraction);
-                    }
-                    else {
-                        logger->debug("beammap rfi mask scan {}: no samples masked", ptcs[i].index.data + 1);
-                    }
-                }
-                const bool use_ptc_weights =
-                    citlali::pipeline::use_beammap_detector_ptc_weights(
-                        beammap_detector_weighting_mode, measurement_iter);
-                if (use_ptc_weights) {
-                    logger->info("calculating detector-mode PTC weights for scan {} (mode={})",
-                                 ptcs[i].index.data + 1, beammap_detector_weighting_mode);
-                    ptcproc.calc_weights(ptcs[i], calib_scans[i].apt, telescope);
-                    calib_scans[i] = ptcproc.reset_weights(ptcs[i], calib_scans[i], map_grouping);
-                }
-                else {
-                    // Constant weights remain the safest default for bright beammaps.
-                    ptcs[i].weights.data.resize(ptcs[i].scans.data.cols());
-                    ptcs[i].weights.data.setOnes();
-                }
-            }
-            else {
-                // calculate weights
-                logger->info("calculating weights for scan {}", ptcs[i].index.data + 1);
-                ptcproc.calc_weights(ptcs[i], calib_scans[i].apt, telescope);
-
-                // reset weights to median
-                calib_scans[i] = ptcproc.reset_weights(ptcs[i], calib_scans[i], map_grouping);
-            }
-
-            // calc stats
-            logger->debug("calculating stats");
-            diagnostics.calc_stats(ptcs[i]);
-
+            process_beammap_ptc_scan(
+                i, locator_iter, measurement_iter, detector_grouping,
+                ptc_line_audit_mutex);
             return 0;
         });
 

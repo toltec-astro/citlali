@@ -190,6 +190,10 @@ public:
     // run the iterative stage
     template <class KidsProc, class RawObs>
     void run_loop(KidsProc &, RawObs &);
+    void process_beammap_ptc_scan(
+        int scan_index, bool locator_iter, bool measurement_iter,
+        bool detector_grouping,
+        const std::shared_ptr<std::mutex> &ptc_line_audit_mutex);
 
     // robust sample-level masking for short RFI bursts in detector beammaps
     RFIMaskScanSummary apply_rfi_sample_mask(TCData<TCDataKind::PTC,Eigen::MatrixXd> &);

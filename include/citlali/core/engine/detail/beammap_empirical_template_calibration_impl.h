@@ -90,39 +90,6 @@ void Beammap::calc_empirical_template_calibration() {
     constexpr double min_template_snr = 20.0;
     constexpr double min_template_value = 0.015;
 
-    auto edge_baseline = [&](const Eigen::MatrixXd &map, double row0, double col0) -> double {
-        std::vector<double> edge;
-        edge.reserve(static_cast<std::size_t>(4 * side));
-        for (Eigen::Index k = -template_radius_pix; k <= template_radius_pix; ++k) {
-            edge.push_back(beammap_empirical_template_utils::bilinear_sample(
-                map, row0 - template_radius_pix, col0 + k));
-            edge.push_back(beammap_empirical_template_utils::bilinear_sample(
-                map, row0 + template_radius_pix, col0 + k));
-            edge.push_back(beammap_empirical_template_utils::bilinear_sample(
-                map, row0 + k, col0 - template_radius_pix));
-            edge.push_back(beammap_empirical_template_utils::bilinear_sample(
-                map, row0 + k, col0 + template_radius_pix));
-        }
-        return beammap_empirical_template_utils::median_finite(std::move(edge));
-    };
-
-    auto local_peak = [&](const Eigen::MatrixXd &map, double row0, double col0, double baseline) -> double {
-        double peak = -std::numeric_limits<double>::infinity();
-        for (Eigen::Index dr = -peak_radius_pix; dr <= peak_radius_pix; ++dr) {
-            for (Eigen::Index dc = -peak_radius_pix; dc <= peak_radius_pix; ++dc) {
-                if (dr * dr + dc * dc > peak_radius_pix * peak_radius_pix) {
-                    continue;
-                }
-                const double value = beammap_empirical_template_utils::bilinear_sample(
-                    map, row0 + dr, col0 + dc);
-                if (std::isfinite(value)) {
-                    peak = std::max(peak, value - baseline);
-                }
-            }
-        }
-        return std::isfinite(peak) ? peak : std::numeric_limits<double>::quiet_NaN();
-    };
-
     auto extract_normalized_cut = [&](Eigen::Index map_index,
                                       Eigen::MatrixXd &cut,
                                       double &peak_amp) -> bool {
@@ -137,28 +104,9 @@ void Beammap::calc_empirical_template_calibration() {
             !std::isfinite(row0) || !std::isfinite(col0)) {
             return false;
         }
-        const double baseline = edge_baseline(omb.signal[map_index], row0, col0);
-        if (!std::isfinite(baseline)) {
-            return false;
-        }
-        peak_amp = local_peak(omb.signal[map_index], row0, col0, baseline);
-        if (!std::isfinite(peak_amp) || peak_amp <= 0.0) {
-            return false;
-        }
-        cut.resize(side, side);
-        cut.setConstant(std::numeric_limits<double>::quiet_NaN());
-        for (Eigen::Index rr = 0; rr < side; ++rr) {
-            const Eigen::Index dr = rr - center;
-            for (Eigen::Index cc = 0; cc < side; ++cc) {
-                const Eigen::Index dc = cc - center;
-                const double value = beammap_empirical_template_utils::bilinear_sample(
-                    omb.signal[map_index], row0 + dr, col0 + dc);
-                if (std::isfinite(value)) {
-                    cut(rr, cc) = (value - baseline) / peak_amp;
-                }
-            }
-        }
-        return true;
+        return beammap_empirical_template_utils::extract_normalized_cut(
+            omb.signal[map_index], row0, col0, template_radius_pix,
+            peak_radius_pix, cut, peak_amp);
     };
 
     struct TemplateCandidate {
@@ -317,11 +265,15 @@ void Beammap::calc_empirical_template_calibration() {
         if (!std::isfinite(row0) || !std::isfinite(col0)) {
             return false;
         }
-        const double baseline = edge_baseline(omb.signal[map_index], row0, col0);
+        const double baseline =
+            beammap_empirical_template_utils::edge_baseline(
+                omb.signal[map_index], row0, col0, template_radius_pix);
         if (!std::isfinite(baseline)) {
             return false;
         }
-        const double peak_amp = local_peak(omb.signal[map_index], row0, col0, baseline);
+        const double peak_amp =
+            beammap_empirical_template_utils::local_peak(
+                omb.signal[map_index], row0, col0, baseline, peak_radius_pix);
         if (std::isfinite(peak_amp)) {
             calib.apt["map_peak_amp"](map_index) = peak_amp;
             if (std::isfinite(params(map_index, 0)) && params(map_index, 0) > 0.0) {
