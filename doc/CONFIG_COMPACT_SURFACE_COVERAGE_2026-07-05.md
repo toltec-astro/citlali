@@ -10,43 +10,49 @@ tooling check only; it does not change Citlali runtime parsing.
 - Configs checked: 4
 - Unique mode/path user-facing keys: 282
 - Covered by compact fields: 265
-- Gaps: 17
-- Coverage: 94.0%
+- Profile-owned inactive defaults: 17
+- Actionable gaps: 0
+- Actionable coverage: 100.0%
 
 `Covered` means the current compact fields expand back to that low-level
-path without using `expert:`. `Gap` means the value is still preserved
-only through the expert escape hatch. Some gaps are expected policy
-questions because the provisional classification includes inactive
-defaults and conditional product families that may stay profile-owned.
+path without using `expert:`. `Profile-owned` means the key is present
+in the low-level baseline but is inactive for that reduction mode and
+should be owned by a profile/default rather than normal user authoring.
+`Gap` means the value is still preserved only through the expert escape
+hatch and needs a compact-field or policy decision.
 
-| Mode | User-Facing Paths | Covered | Gaps | Coverage |
-| --- | ---: | ---: | ---: | ---: |
-| `beammap` | 80 | 80 | 0 | 100.0% |
-| `oof` | 56 | 51 | 5 | 91.1% |
-| `pointing` | 87 | 80 | 7 | 92.0% |
-| `science` | 59 | 54 | 5 | 91.5% |
+| Mode | User-Facing Paths | Covered | Profile-Owned | Gaps | Coverage |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `beammap` | 80 | 80 | 0 | 0 | 100.0% |
+| `oof` | 56 | 51 | 5 | 0 | 100.0% |
+| `pointing` | 87 | 80 | 7 | 0 | 100.0% |
+| `science` | 59 | 54 | 5 | 0 | 100.0% |
 
 ## Gaps
 
-| Mode | Low-Level Path | Rule | Reason |
-| --- | --- | --- | --- |
-| `oof` | `beammap.derotate` | `user-beammap-derotate` | Common beammap product choice. |
-| `oof` | `beammap.iter_max` | `user-beammap-main` | Main beammap iteration controls. |
-| `oof` | `beammap.iter_tolerance` | `user-beammap-main` | Main beammap iteration controls. |
-| `oof` | `beammap.reference_det` | `user-beammap-reference-det` | Common beammap operational policy. |
-| `oof` | `beammap.subtract_reference_det` | `user-beammap-reference-subtraction` | Common beammap operational policy. |
-| `pointing` | `beammap.convergence_radius_arcsec` | `user-beammap-convergence-radius` | Main beammap convergence aperture. |
-| `pointing` | `beammap.derotate` | `user-beammap-derotate` | Common beammap product choice. |
-| `pointing` | `beammap.detector_weighting.mode` | `user-beammap-detector-weighting` | Common detector-beammap weighting choice. |
-| `pointing` | `beammap.iter_max` | `user-beammap-main` | Main beammap iteration controls. |
-| `pointing` | `beammap.iter_tolerance` | `user-beammap-main` | Main beammap iteration controls. |
-| `pointing` | `beammap.reference_det` | `user-beammap-reference-det` | Common beammap operational policy. |
-| `pointing` | `beammap.subtract_reference_det` | `user-beammap-reference-subtraction` | Common beammap operational policy. |
-| `science` | `beammap.derotate` | `user-beammap-derotate` | Common beammap product choice. |
-| `science` | `beammap.iter_max` | `user-beammap-main` | Main beammap iteration controls. |
-| `science` | `beammap.iter_tolerance` | `user-beammap-main` | Main beammap iteration controls. |
-| `science` | `beammap.reference_det` | `user-beammap-reference-det` | Common beammap operational policy. |
-| `science` | `beammap.subtract_reference_det` | `user-beammap-reference-subtraction` | Common beammap operational policy. |
+_No user-facing compact coverage gaps were found._
+
+## Profile-Owned Inactive Defaults
+
+| Mode | Low-Level Path | Reason |
+| --- | --- | --- |
+| `oof` | `beammap.derotate` | Beammap defaults are present in the low-level baseline but inactive for oof reductions; the mode/profile owns them. |
+| `oof` | `beammap.iter_max` | Beammap defaults are present in the low-level baseline but inactive for oof reductions; the mode/profile owns them. |
+| `oof` | `beammap.iter_tolerance` | Beammap defaults are present in the low-level baseline but inactive for oof reductions; the mode/profile owns them. |
+| `oof` | `beammap.reference_det` | Beammap defaults are present in the low-level baseline but inactive for oof reductions; the mode/profile owns them. |
+| `oof` | `beammap.subtract_reference_det` | Beammap defaults are present in the low-level baseline but inactive for oof reductions; the mode/profile owns them. |
+| `pointing` | `beammap.convergence_radius_arcsec` | Beammap defaults are present in the low-level baseline but inactive for pointing reductions; the mode/profile owns them. |
+| `pointing` | `beammap.derotate` | Beammap defaults are present in the low-level baseline but inactive for pointing reductions; the mode/profile owns them. |
+| `pointing` | `beammap.detector_weighting.mode` | Beammap defaults are present in the low-level baseline but inactive for pointing reductions; the mode/profile owns them. |
+| `pointing` | `beammap.iter_max` | Beammap defaults are present in the low-level baseline but inactive for pointing reductions; the mode/profile owns them. |
+| `pointing` | `beammap.iter_tolerance` | Beammap defaults are present in the low-level baseline but inactive for pointing reductions; the mode/profile owns them. |
+| `pointing` | `beammap.reference_det` | Beammap defaults are present in the low-level baseline but inactive for pointing reductions; the mode/profile owns them. |
+| `pointing` | `beammap.subtract_reference_det` | Beammap defaults are present in the low-level baseline but inactive for pointing reductions; the mode/profile owns them. |
+| `science` | `beammap.derotate` | Beammap defaults are present in the low-level baseline but inactive for science reductions; the mode/profile owns them. |
+| `science` | `beammap.iter_max` | Beammap defaults are present in the low-level baseline but inactive for science reductions; the mode/profile owns them. |
+| `science` | `beammap.iter_tolerance` | Beammap defaults are present in the low-level baseline but inactive for science reductions; the mode/profile owns them. |
+| `science` | `beammap.reference_det` | Beammap defaults are present in the low-level baseline but inactive for science reductions; the mode/profile owns them. |
+| `science` | `beammap.subtract_reference_det` | Beammap defaults are present in the low-level baseline but inactive for science reductions; the mode/profile owns them. |
 
 ## Covered User-Facing Paths
 

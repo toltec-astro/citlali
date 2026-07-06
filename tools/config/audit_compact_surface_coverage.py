@@ -143,6 +143,15 @@ def compact_generated_paths(
     return {row["normalized_path"] for row in rows}, warnings
 
 
+def profile_owned_reason(mode: str, normalized_path: str) -> str:
+    if mode != "beammap" and normalized_path.startswith("beammap."):
+        return (
+            "Beammap defaults are present in the low-level baseline but inactive "
+            f"for {mode} reductions; the mode/profile owns them."
+        )
+    return ""
+
+
 def audit_config(
     config: dict[str, str],
     *,
@@ -158,7 +167,7 @@ def audit_config(
             "path": str(path),
             "missing": True,
             "rows": [],
-            "summary": {"user_facing": 0, "covered": 0, "gaps": 0},
+            "summary": {"user_facing": 0, "covered": 0, "profile_owned": 0, "gaps": 0},
         }
 
     low_level = compare_lowlevel_yaml.extract_low_level(load_yaml(path))
@@ -186,6 +195,8 @@ def audit_config(
             continue
         compact_fields = compact_mapping_fields(row["path"], row["normalized_path"], mappings)
         covered = row["normalized_path"] in covered_paths
+        inactive_reason = "" if covered else profile_owned_reason(mode, row["normalized_path"])
+        status = "covered" if covered else "profile-owned" if inactive_reason else "gap"
         rows.append(
             {
                 "config_label": config["label"],
@@ -194,11 +205,12 @@ def audit_config(
                 "path": row["path"],
                 "normalized_path": row["normalized_path"],
                 "top": row["top"],
-                "status": "covered" if covered else "gap",
+                "status": status,
                 "compact_fields": compact_fields,
                 "rule_id": row["rule_id"],
                 "owner": row["owner"],
                 "reason": row["reason"],
+                "status_reason": inactive_reason,
                 "value_preview": row["value_preview"],
             }
         )
@@ -215,6 +227,7 @@ def audit_config(
         "summary": {
             "user_facing": len(rows),
             "covered": counts["covered"],
+            "profile_owned": counts["profile-owned"],
             "gaps": counts["gap"],
         },
         "rows": rows,
@@ -243,11 +256,13 @@ def build_report(configs: list[dict[str, str]], rules: dict[str, Any], rules_pat
         rows = list(rows_by_path.values())
         counts = collections.Counter(row["status"] for row in rows)
         total = len(rows)
+        active_total = counts["covered"] + counts["gap"]
         mode_summary[mode] = {
             "user_facing_unique_paths": total,
             "covered": counts["covered"],
+            "profile_owned": counts["profile-owned"],
             "gaps": counts["gap"],
-            "coverage_fraction": counts["covered"] / total if total else 1.0,
+            "coverage_fraction": counts["covered"] / active_total if active_total else 1.0,
         }
 
     unique_rows = {
@@ -264,8 +279,11 @@ def build_report(configs: list[dict[str, str]], rules: dict[str, Any], rules_pat
         "summary": {
             "user_facing_unique_mode_paths": total_unique,
             "covered": counts["covered"],
+            "profile_owned": counts["profile-owned"],
             "gaps": counts["gap"],
-            "coverage_fraction": counts["covered"] / total_unique if total_unique else 1.0,
+            "coverage_fraction": counts["covered"] / (counts["covered"] + counts["gap"])
+            if (counts["covered"] + counts["gap"])
+            else 1.0,
             "by_mode": mode_summary,
         },
         "configs": [
@@ -303,22 +321,25 @@ def write_markdown(report: dict[str, Any], out_path: Path) -> None:
         f"- Configs checked: {report['config_count']}",
         f"- Unique mode/path user-facing keys: {summary['user_facing_unique_mode_paths']}",
         f"- Covered by compact fields: {summary['covered']}",
-        f"- Gaps: {summary['gaps']}",
-        f"- Coverage: {format_percent(summary['coverage_fraction'])}",
+        f"- Profile-owned inactive defaults: {summary['profile_owned']}",
+        f"- Actionable gaps: {summary['gaps']}",
+        f"- Actionable coverage: {format_percent(summary['coverage_fraction'])}",
         "",
         "`Covered` means the current compact fields expand back to that low-level",
-        "path without using `expert:`. `Gap` means the value is still preserved",
-        "only through the expert escape hatch. Some gaps are expected policy",
-        "questions because the provisional classification includes inactive",
-        "defaults and conditional product families that may stay profile-owned.",
+        "path without using `expert:`. `Profile-owned` means the key is present",
+        "in the low-level baseline but is inactive for that reduction mode and",
+        "should be owned by a profile/default rather than normal user authoring.",
+        "`Gap` means the value is still preserved only through the expert escape",
+        "hatch and needs a compact-field or policy decision.",
         "",
-        "| Mode | User-Facing Paths | Covered | Gaps | Coverage |",
-        "| --- | ---: | ---: | ---: | ---: |",
+        "| Mode | User-Facing Paths | Covered | Profile-Owned | Gaps | Coverage |",
+        "| --- | ---: | ---: | ---: | ---: | ---: |",
     ]
     for mode, mode_summary in summary["by_mode"].items():
         lines.append(
             f"| `{mode}` | {mode_summary['user_facing_unique_paths']} | "
-            f"{mode_summary['covered']} | {mode_summary['gaps']} | "
+            f"{mode_summary['covered']} | {mode_summary['profile_owned']} | "
+            f"{mode_summary['gaps']} | "
             f"{format_percent(mode_summary['coverage_fraction'])} |"
         )
 
@@ -339,6 +360,23 @@ def write_markdown(report: dict[str, Any], out_path: Path) -> None:
             lines.append(
                 f"| `{markdown_cell(row['mode'])}` | `{markdown_cell(row['normalized_path'])}` | "
                 f"`{markdown_cell(row['rule_id'])}` | {markdown_cell(row['reason'])} |"
+            )
+
+    profile_owned = [row for row in report["rows"] if row["status"] == "profile-owned"]
+    unique_profile_owned = {
+        f"{row['mode']}:{row['normalized_path']}": row
+        for row in profile_owned
+    }
+    if unique_profile_owned:
+        lines.extend(["", "## Profile-Owned Inactive Defaults", ""])
+        lines.extend([
+            "| Mode | Low-Level Path | Reason |",
+            "| --- | --- | --- |",
+        ])
+        for row in sorted(unique_profile_owned.values(), key=lambda item: (item["mode"], item["normalized_path"])):
+            lines.append(
+                f"| `{markdown_cell(row['mode'])}` | `{markdown_cell(row['normalized_path'])}` | "
+                f"{markdown_cell(row['status_reason'])} |"
             )
 
     covered = [row for row in report["rows"] if row["status"] == "covered"]
@@ -373,6 +411,7 @@ def write_csv(report: dict[str, Any], out_path: Path) -> None:
         "rule_id",
         "owner",
         "reason",
+        "status_reason",
         "value_preview",
         "config_path",
     ]
@@ -436,7 +475,7 @@ def main(argv: list[str]) -> int:
     summary = report["summary"]
     print(
         "compact surface coverage: "
-        f"covered={summary['covered']} gaps={summary['gaps']} "
+        f"covered={summary['covered']} profile_owned={summary['profile_owned']} gaps={summary['gaps']} "
         f"coverage={format_percent(summary['coverage_fraction'])}"
     )
     if args.fail_on_gaps and summary["gaps"]:
