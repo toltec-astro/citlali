@@ -88,7 +88,8 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     if (run_mapmaking) {
         // normalize maps
         logger->info("normalizing maps");
-        if (map_method != "maximum_likelihood") {
+        if (typed_config.mapmaking.method !=
+            citlali::config::MapMethod::maximum_likelihood) {
             if (rtcproc.run_polarization) {
                 omb.normalize_polarized_maps();
             }
@@ -113,4 +114,3 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         }
     }
 }
-

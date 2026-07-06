@@ -61,7 +61,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // add jinc shape params
     citlali::pipeline::add_phdu_jinc_shape_keys_if_needed(
-        fits_entry, name, logger, map_method_name, jinc_mm.r_max,
+        fits_entry, name, logger, typed_config.mapmaking.method, jinc_mm.r_max,
         jinc_mm.shape_params, array_id);
 
     citlali::engine_detail::add_phdu_extinction_apt_oof_section(

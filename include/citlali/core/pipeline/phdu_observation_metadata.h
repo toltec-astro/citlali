@@ -7,6 +7,7 @@
 #include <string>
 #include <tuple>
 
+#include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/pipeline/phdu_telescope_values.h>
 
 

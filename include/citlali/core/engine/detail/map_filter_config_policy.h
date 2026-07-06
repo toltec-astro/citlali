@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/config/post_processing_config.h>
+#include <citlali/core/config/runtime_config.h>
 
 #include <cstdlib>
 #include <string>
@@ -55,11 +56,12 @@ void mirror_wiener_filter_config(
 template <class WienerFilter, class RuntimeTimestreamProc, class MapFitter,
           class Logger>
 void apply_map_filter_runtime_policy(
-    const std::string &reduction_type, bool run_noise,
+    citlali::config::ReductionType reduction_type, bool run_noise,
     const RuntimeTimestreamProc &rtcproc, const MapFitter &map_fitter,
     const std::string &parallel_policy, WienerFilter &wiener_filter,
     bool &write_filtered_maps_partial, const Logger &logger) {
-    write_filtered_maps_partial = reduction_type == "science";
+    write_filtered_maps_partial =
+        reduction_type == citlali::config::ReductionType::science;
 
     if (wiener_filter.template_type == "kernel") {
         if (!rtcproc.run_kernel) {

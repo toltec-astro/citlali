@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/config/runtime_config.h>
+
 #include <fmt/core.h>
 #include <tula/formatter/container.h>
 
@@ -53,23 +55,23 @@ std::optional<std::string> read_reduction_type_config(Config &config) {
 template <class TodProcVariant, class ScienceTodProc, class PointingTodProc,
           class BeammapTodProc, class Config, class Logger>
 bool emplace_tod_processor_for_reduction_type(
-    TodProcVariant &todproc, const std::string &reduction_type,
+    TodProcVariant &todproc, citlali::config::ReductionType reduction_type,
     Config &config, const Logger &logger) {
-    if (reduction_type == "science") {
+    if (reduction_type == citlali::config::ReductionType::science) {
         logger->info("reducing in science mode");
         todproc.template emplace<ScienceTodProc>(
             ScienceTodProc::from_config(config));
         return true;
     }
 
-    if (reduction_type == "pointing") {
+    if (reduction_type == citlali::config::ReductionType::pointing) {
         logger->info("reducing in pointing mode");
         todproc.template emplace<PointingTodProc>(
             PointingTodProc::from_config(config));
         return true;
     }
 
-    if (reduction_type == "beammap") {
+    if (reduction_type == citlali::config::ReductionType::beammap) {
         logger->info("reducing in beammap mode");
         todproc.template emplace<BeammapTodProc>(
             BeammapTodProc::from_config(config));
@@ -88,11 +90,16 @@ TodProcessorSelectionStatus select_tod_processor_from_config(
     }
 
     try {
-        auto reduction_type = *read_reduction_type_config(config);
+        const auto reduction_type_name = *read_reduction_type_config(config);
+        auto reduction_type =
+            citlali::config::parse_reduction_type(reduction_type_name);
+        if (!reduction_type) {
+            return TodProcessorSelectionStatus::invalid_reduction_type;
+        }
 
         if (!emplace_tod_processor_for_reduction_type<
                 TodProcVariant, ScienceTodProc, PointingTodProc,
-                BeammapTodProc>(todproc, reduction_type, config, logger)) {
+                BeammapTodProc>(todproc, *reduction_type, config, logger)) {
             return TodProcessorSelectionStatus::invalid_reduction_type;
         }
 

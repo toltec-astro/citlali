@@ -16,6 +16,6 @@ void Engine::get_map_filter_config(CT &config) {
         wiener_filter, run_map_filter, RAD_TO_ASEC,
         post_processing_config);
     citlali::engine_detail::apply_map_filter_runtime_policy(
-        redu_type, run_noise, rtcproc, map_fitter, parallel_policy,
-        wiener_filter, write_filtered_maps_partial, logger);
+        typed_config.runtime.reduction_type, run_noise, rtcproc, map_fitter,
+        parallel_policy, wiener_filter, write_filtered_maps_partial, logger);
 }

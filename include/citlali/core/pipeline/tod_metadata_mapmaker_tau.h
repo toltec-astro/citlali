@@ -18,9 +18,10 @@ void add_jinc_shape_config_vars(netCDF::NcFile &fo, const Arrays &arrays,
 
 template <class Arrays, class ShapeParams, class ArrayNameMap>
 void add_jinc_shape_config_vars_if_needed(
-    netCDF::NcFile &fo, const std::string &map_method, const Arrays &arrays,
+    netCDF::NcFile &fo, citlali::config::MapMethod map_method,
+    const Arrays &arrays,
     ShapeParams &shape_params, ArrayNameMap &array_name_map, double r_max) {
-    if (map_method == "jinc") {
+    if (map_method == citlali::config::MapMethod::jinc) {
         add_jinc_shape_config_vars(
             fo, arrays, shape_params, array_name_map, r_max);
     }
@@ -60,4 +61,3 @@ void add_tod_mean_tau_vars(netCDF::NcFile &fo, Rtcproc &rtcproc,
         add_zero_mean_tau_vars(fo, calib, array_name_map);
     }
 }
-
