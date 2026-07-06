@@ -3,6 +3,7 @@
 // Implementation detail included by pointing.h.
 
 #include <citlali/core/pipeline/ordered_writer.h>
+#include <citlali/core/pipeline/mapmaking_dispatch.h>
 #include <citlali/core/pipeline/output_policy.h>
 
 template <class KidsProc>
@@ -207,14 +208,10 @@ auto Pointing::run(KidsProc &kidsproc) {
             if (make_maps) {
                 bool run_omb = false;
                 logger->info("populating noise maps");
-                if (mapmaking_method == citlali::config::MapMethod::naive) {
-                    naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
-                                                 calib_scan.apt, telescope.d_fsmp, run_omb, make_noise_maps);
-                }
-                else if (mapmaking_method == citlali::config::MapMethod::jinc) {
-                    jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
-                                               calib_scan.apt, telescope.d_fsmp, run_omb, make_noise_maps);
-                }
+                citlali::pipeline::populate_naive_or_jinc_maps(
+                    mapmaking_method, naive_mm, jinc_mm, ptcdata, omb, cmb,
+                    map_indices, telescope.pixel_axes, calib_scan.apt,
+                    telescope.d_fsmp, run_omb, make_noise_maps);
             }
             logger->info("adding map to tod");
             // add map back
@@ -283,27 +280,16 @@ auto Pointing::run(KidsProc &kidsproc) {
         // populate maps
         if (make_maps) {
             bool run_omb = true;
-            bool run_noise_fruit;
-
-            // if running fruit loops, noise maps are made on source
-            // subtracted timestreams so don't make them here unless
-            // on first iteration
-            if (ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty()) {
-                run_noise_fruit = false;
-            }
-            else {
-                run_noise_fruit = make_noise_maps;
-            }
+            const bool run_noise_fruit =
+                citlali::pipeline::should_populate_final_noise_maps(
+                    make_noise_maps, ptcproc.run_fruit_loops,
+                    !ptcproc.tod_mb.signal.empty());
             apply_learned_mapmaking_detector_exclusions(ptcdata, calib_scan);
             logger->info("populating maps");
-            if (mapmaking_method == citlali::config::MapMethod::naive) {
-                naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
-                                             calib_scan.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
-            }
-            else if (mapmaking_method == citlali::config::MapMethod::jinc) {
-                jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
-                                           calib_scan.apt, telescope.d_fsmp, run_omb, run_noise_fruit);
-            }
+            citlali::pipeline::populate_naive_or_jinc_maps(
+                mapmaking_method, naive_mm, jinc_mm, ptcdata, omb, cmb,
+                map_indices, telescope.pixel_axes, calib_scan.apt,
+                telescope.d_fsmp, run_omb, run_noise_fruit);
         }
         // increment number of completed scans
         {
