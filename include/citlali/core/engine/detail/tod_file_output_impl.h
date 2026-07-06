@@ -104,6 +104,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
 template <engine_utils::toltecIO::ProdType prod_t>
 void Engine::create_tod_files() {
+    const std::string reduction_type_name{
+        citlali::config::to_string(typed_config.runtime.reduction_type)};
     // name for std map
     const std::string dir_name = citlali::pipeline::tod_output_directory(
         obsnum_dir_name, tod_output_subdir_name);
@@ -114,7 +116,7 @@ void Engine::create_tod_files() {
         citlali::pipeline::register_tod_stream_output_file<
             engine_utils::toltecIO::toltec, prod_t,
             engine_utils::toltecIO::raw>(
-            toltec_io, tod_filename, dir_name, redu_type, obsnum,
+            toltec_io, tod_filename, dir_name, reduction_type_name, obsnum,
             telescope.sim_obs, is_rtc_stream);
 
     write_netcdf_atomic(tod_filename[name], [&](netCDF::NcFile &fo) {

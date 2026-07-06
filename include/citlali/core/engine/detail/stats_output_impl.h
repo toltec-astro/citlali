@@ -4,6 +4,8 @@
 // Include this only after Engine has been declared.
 
 void Engine::write_stats() {
+    const std::string reduction_type_name{
+        citlali::config::to_string(typed_config.runtime.reduction_type)};
     std::string stats_dir =
         citlali::pipeline::stats_raw_directory(obsnum_dir_name);
     // if using tod subdir, put stats file in it
@@ -26,7 +28,8 @@ void Engine::write_stats() {
             engine_utils::toltecIO::toltec,
             engine_utils::toltecIO::stats,
             engine_utils::toltecIO::raw>(
-            toltec_io, stats_dir, redu_type, obsnum, telescope.sim_obs);
+            toltec_io, stats_dir, reduction_type_name, obsnum,
+            telescope.sim_obs);
     write_netcdf_atomic(stats_netcdf_filename, [&](netCDF::NcFile &fo) {
 
     citlali::pipeline::add_stats_file_outputs(

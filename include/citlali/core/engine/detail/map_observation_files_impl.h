@@ -21,6 +21,8 @@ void Engine::create_obs_map_files() {
         citlali::pipeline::append_observation_map_fits_file(
             fits_files, filename, make_fits_io);
     };
+    const std::string reduction_type_name{
+        citlali::config::to_string(typed_config.runtime.reduction_type)};
     const bool create_per_obs_outputs =
         citlali::pipeline::should_create_observation_per_obs_outputs(
             run_coadd);
@@ -46,7 +48,7 @@ void Engine::create_obs_map_files() {
                 .create_filename<engine_utils::toltecIO::toltec,
                                  engine_utils::toltecIO::map,
                                  engine_utils::toltecIO::raw>(
-                    raw_dir, redu_type, array_name, obsnum,
+                    raw_dir, reduction_type_name, array_name, obsnum,
                     telescope.sim_obs);
         append_fits_file(fits_io_vec, filename);
 
@@ -59,7 +61,7 @@ void Engine::create_obs_map_files() {
                         .create_filename<engine_utils::toltecIO::toltec,
                                          engine_utils::toltecIO::noise,
                                          engine_utils::toltecIO::raw>(
-                            raw_dir, redu_type, array_name, obsnum,
+                            raw_dir, reduction_type_name, array_name, obsnum,
                             telescope.sim_obs);
                 append_fits_file(noise_fits_io_vec, noise_filename);
             }
@@ -72,7 +74,8 @@ void Engine::create_obs_map_files() {
                         .create_filename<engine_utils::toltecIO::toltec,
                                          engine_utils::toltecIO::map,
                                          engine_utils::toltecIO::filtered>(
-                            filtered_dir, redu_type, array_name, obsnum,
+                            filtered_dir, reduction_type_name, array_name,
+                            obsnum,
                             telescope.sim_obs);
                 append_fits_file(filtered_fits_io_vec, filtered_filename);
 
@@ -84,7 +87,8 @@ void Engine::create_obs_map_files() {
                             .create_filename<engine_utils::toltecIO::toltec,
                                              engine_utils::toltecIO::noise,
                                              engine_utils::toltecIO::filtered>(
-                                filtered_dir, redu_type, array_name, obsnum,
+                                filtered_dir, reduction_type_name, array_name,
+                                obsnum,
                                 telescope.sim_obs);
                     append_fits_file(filtered_noise_fits_io_vec,
                                      filtered_noise_filename);
@@ -93,4 +97,3 @@ void Engine::create_obs_map_files() {
         }
     }
 }
-

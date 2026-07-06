@@ -87,8 +87,10 @@ void Engine::write_map_summary(map_buffer_t &mb) {
 
 template <mapmaking::MapType map_t, engine_utils::toltecIO::DataType data_t, engine_utils::toltecIO::ProdType prod_t>
 auto Engine::setup_filenames(std::string dir_name) {
+    const std::string reduction_type_name{
+        citlali::config::to_string(typed_config.runtime.reduction_type)};
     return citlali::pipeline::map_output_filename<map_t, data_t, prod_t>(
-        toltec_io, dir_name, redu_type, obsnum, telescope.sim_obs);
+        toltec_io, dir_name, reduction_type_name, obsnum, telescope.sim_obs);
 }
 
 auto Engine::get_map_name(int i) {

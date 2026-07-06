@@ -14,8 +14,8 @@ void Engine::create_ptcdiag_file() {
             engine_utils::toltecIO::toltec,
             engine_utils::toltecIO::ptcdiag,
             engine_utils::toltecIO::raw>(
-            toltec_io, obsnum_dir_name, tod_output_subdir_name, redu_type,
-            obsnum, telescope.sim_obs);
+            toltec_io, obsnum_dir_name, tod_output_subdir_name,
+            reduction_type_name, obsnum, telescope.sim_obs);
 
     write_netcdf_atomic(ptcdiag_filename, [&](netCDF::NcFile &fo) {
     const int fill_int = citlali::pipeline::ptcdiag_fill_int();
