@@ -46,36 +46,12 @@ void Beammap::write_beammap_fit_qc_table(const std::string &apt_filename) {
 
     Eigen::VectorXd fit_bound_nhit = fit_diag_bound_nhit.cast<double>();
     Eigen::VectorXd fit_bound_code = fit_diag_bound_code.cast<double>();
-    Eigen::VectorXd fit_bound_amp =
-        beammap_detector_table_vectors::bound_state(
-            fit_diag_hit_upper, fit_diag_hit_lower, 0);
-    Eigen::VectorXd fit_bound_x =
-        beammap_detector_table_vectors::bound_state(
-            fit_diag_hit_upper, fit_diag_hit_lower, 1);
-    Eigen::VectorXd fit_bound_y =
-        beammap_detector_table_vectors::bound_state(
-            fit_diag_hit_upper, fit_diag_hit_lower, 2);
-    Eigen::VectorXd fit_bound_a =
-        beammap_detector_table_vectors::bound_state(
-            fit_diag_hit_upper, fit_diag_hit_lower, 3);
-    Eigen::VectorXd fit_bound_b =
-        beammap_detector_table_vectors::bound_state(
-            fit_diag_hit_upper, fit_diag_hit_lower, 4);
-    Eigen::VectorXd fit_bound_angle =
-        beammap_detector_table_vectors::bound_state(
-            fit_diag_hit_upper, fit_diag_hit_lower, 5);
-
-    Eigen::VectorXd fit_init_amp = fit_diag_init_params.col(0);
-    Eigen::VectorXd fit_init_x_t =
-        (pix_to_arcsec * (fit_diag_init_params.col(1).array() - (omb.n_cols - 1) / 2.0)).matrix();
-    Eigen::VectorXd fit_init_y_t =
-        (pix_to_arcsec * (fit_diag_init_params.col(2).array() - (omb.n_rows - 1) / 2.0)).matrix();
-    Eigen::VectorXd fit_init_a_fwhm = (sigma_to_fwhm_arcsec * fit_diag_init_params.col(3).array()).matrix();
-    Eigen::VectorXd fit_init_b_fwhm = (sigma_to_fwhm_arcsec * fit_diag_init_params.col(4).array()).matrix();
-    Eigen::VectorXd fit_low_a_fwhm = (sigma_to_fwhm_arcsec * fit_diag_lower_limits.col(3).array()).matrix();
-    Eigen::VectorXd fit_high_a_fwhm = (sigma_to_fwhm_arcsec * fit_diag_upper_limits.col(3).array()).matrix();
-    Eigen::VectorXd fit_low_b_fwhm = (sigma_to_fwhm_arcsec * fit_diag_lower_limits.col(4).array()).matrix();
-    Eigen::VectorXd fit_high_b_fwhm = (sigma_to_fwhm_arcsec * fit_diag_upper_limits.col(4).array()).matrix();
+    auto fit_bounds = beammap_detector_table_vectors::fit_bound_vectors(
+        fit_diag_hit_upper, fit_diag_hit_lower);
+    auto fit_init_limits =
+        beammap_detector_table_vectors::fit_init_limit_vectors(
+            fit_diag_init_params, fit_diag_lower_limits, fit_diag_upper_limits,
+            pix_to_arcsec, sigma_to_fwhm_arcsec, omb.n_cols, omb.n_rows);
 
     const double fill_double = std::numeric_limits<double>::quiet_NaN();
 
@@ -155,21 +131,21 @@ void Beammap::write_beammap_fit_qc_table(const std::string &apt_filename) {
     fit_qc_table.col(col++) = table_access.apt_or_zero("scan_band_mask_rejected");
     fit_qc_table.col(col++) = fit_bound_nhit;
     fit_qc_table.col(col++) = fit_bound_code;
-    fit_qc_table.col(col++) = fit_bound_amp;
-    fit_qc_table.col(col++) = fit_bound_x;
-    fit_qc_table.col(col++) = fit_bound_y;
-    fit_qc_table.col(col++) = fit_bound_a;
-    fit_qc_table.col(col++) = fit_bound_b;
-    fit_qc_table.col(col++) = fit_bound_angle;
-    fit_qc_table.col(col++) = fit_init_amp;
-    fit_qc_table.col(col++) = fit_init_x_t;
-    fit_qc_table.col(col++) = fit_init_y_t;
-    fit_qc_table.col(col++) = fit_init_a_fwhm;
-    fit_qc_table.col(col++) = fit_init_b_fwhm;
-    fit_qc_table.col(col++) = fit_low_a_fwhm;
-    fit_qc_table.col(col++) = fit_high_a_fwhm;
-    fit_qc_table.col(col++) = fit_low_b_fwhm;
-    fit_qc_table.col(col++) = fit_high_b_fwhm;
+    fit_qc_table.col(col++) = fit_bounds.amp;
+    fit_qc_table.col(col++) = fit_bounds.x;
+    fit_qc_table.col(col++) = fit_bounds.y;
+    fit_qc_table.col(col++) = fit_bounds.a;
+    fit_qc_table.col(col++) = fit_bounds.b;
+    fit_qc_table.col(col++) = fit_bounds.angle;
+    fit_qc_table.col(col++) = fit_init_limits.amp;
+    fit_qc_table.col(col++) = fit_init_limits.x_t;
+    fit_qc_table.col(col++) = fit_init_limits.y_t;
+    fit_qc_table.col(col++) = fit_init_limits.a_fwhm;
+    fit_qc_table.col(col++) = fit_init_limits.b_fwhm;
+    fit_qc_table.col(col++) = fit_init_limits.low_a_fwhm;
+    fit_qc_table.col(col++) = fit_init_limits.high_a_fwhm;
+    fit_qc_table.col(col++) = fit_init_limits.low_b_fwhm;
+    fit_qc_table.col(col++) = fit_init_limits.high_b_fwhm;
     fit_qc_table.col(col++) = table_access.prior_diag_or(prior_init_mode_col, -1.0);
     fit_qc_table.col(col++) = table_access.prior_diag_or(prior_used_col, 0.0);
     fit_qc_table.col(col++) = table_access.prior_diag_or(prior_fallback_blind_col, 0.0);

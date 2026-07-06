@@ -228,4 +228,58 @@ inline Eigen::VectorXd bound_state(const Eigen::MatrixXi &hit_upper,
            hit_lower.col(param_index).cast<double>();
 }
 
+struct FitBoundVectors {
+    Eigen::VectorXd amp;
+    Eigen::VectorXd x;
+    Eigen::VectorXd y;
+    Eigen::VectorXd a;
+    Eigen::VectorXd b;
+    Eigen::VectorXd angle;
+};
+
+inline FitBoundVectors fit_bound_vectors(const Eigen::MatrixXi &hit_upper,
+                                         const Eigen::MatrixXi &hit_lower) {
+    return {
+        bound_state(hit_upper, hit_lower, 0),
+        bound_state(hit_upper, hit_lower, 1),
+        bound_state(hit_upper, hit_lower, 2),
+        bound_state(hit_upper, hit_lower, 3),
+        bound_state(hit_upper, hit_lower, 4),
+        bound_state(hit_upper, hit_lower, 5)};
+}
+
+struct FitInitLimitVectors {
+    Eigen::VectorXd amp;
+    Eigen::VectorXd x_t;
+    Eigen::VectorXd y_t;
+    Eigen::VectorXd a_fwhm;
+    Eigen::VectorXd b_fwhm;
+    Eigen::VectorXd low_a_fwhm;
+    Eigen::VectorXd high_a_fwhm;
+    Eigen::VectorXd low_b_fwhm;
+    Eigen::VectorXd high_b_fwhm;
+};
+
+inline FitInitLimitVectors fit_init_limit_vectors(
+    const Eigen::MatrixXd &init_params,
+    const Eigen::MatrixXd &lower_limits,
+    const Eigen::MatrixXd &upper_limits,
+    double pix_to_arcsec,
+    double sigma_to_fwhm_arcsec,
+    Eigen::Index n_cols,
+    Eigen::Index n_rows) {
+    return {
+        init_params.col(0),
+        (pix_to_arcsec *
+         (init_params.col(1).array() - (n_cols - 1) / 2.0)).matrix(),
+        (pix_to_arcsec *
+         (init_params.col(2).array() - (n_rows - 1) / 2.0)).matrix(),
+        (sigma_to_fwhm_arcsec * init_params.col(3).array()).matrix(),
+        (sigma_to_fwhm_arcsec * init_params.col(4).array()).matrix(),
+        (sigma_to_fwhm_arcsec * lower_limits.col(3).array()).matrix(),
+        (sigma_to_fwhm_arcsec * upper_limits.col(3).array()).matrix(),
+        (sigma_to_fwhm_arcsec * lower_limits.col(4).array()).matrix(),
+        (sigma_to_fwhm_arcsec * upper_limits.col(4).array()).matrix()};
+}
+
 } // namespace beammap_detector_table_vectors
