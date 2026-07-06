@@ -45,7 +45,7 @@ void Engine::get_citlali_config(CT &config) {
         missing_keys, invalid_keys);
 
     /* get wiener filter config */
-    if (run_map_filter) {
+    if (post_processing_config.map_filtering.enabled) {
         // needs map fitter config
         get_map_filter_config(config);
     }
