@@ -31,6 +31,7 @@
 #include <kids/core/wcs.h>
 
 #include <citlali/core/config/mapmaking_config.h>
+#include <citlali/core/config/pointing_config.h>
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
@@ -1693,11 +1694,15 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     const double row_offset = (tod_mb.n_rows - 1) / 2.0;
     const double col_offset = (tod_mb.n_cols - 1) / 2.0;
     auto source_center_mode = to_lower(fruit_loops_source_center_mode);
-    if (source_center_mode != "auto" && source_center_mode != "header" &&
-        source_center_mode != "peak" && source_center_mode != "map_center") {
+    if (!citlali::config::is_fruit_loops_auto_center_mode(source_center_mode) &&
+        !citlali::config::is_fruit_loops_header_center_mode(source_center_mode) &&
+        !citlali::config::is_fruit_loops_peak_center_mode(source_center_mode) &&
+        !citlali::config::is_fruit_loops_map_center_mode(source_center_mode)) {
         logger->warn("unsupported fruit loops source center mode '{}'; using auto",
                      fruit_loops_source_center_mode);
-        source_center_mode = "auto";
+        source_center_mode = std::string{
+            citlali::config::to_string(
+                citlali::config::FruitLoopsCenterMode::automatic)};
     }
 
     auto set_peak_center = [&](Eigen::Index i) {
@@ -1781,14 +1786,15 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     Eigen::Index n_peak_centers = 0;
     Eigen::Index n_map_center_centers = 0;
     const Eigen::Index n_loaded_maps = static_cast<Eigen::Index>(tod_mb.signal.size());
-    if (source_center_mode == "map_center") {
+    if (citlali::config::is_fruit_loops_map_center_mode(source_center_mode)) {
         fruit_loops_source_valid.setOnes();
         std::fill(fruit_loops_source_provenance.begin(),
                   fruit_loops_source_provenance.end(), "map_center");
         n_map_center_centers = n_loaded_maps;
     }
     else {
-        if (source_center_mode == "auto" || source_center_mode == "header") {
+        if (citlali::config::is_fruit_loops_auto_center_mode(source_center_mode) ||
+            citlali::config::is_fruit_loops_header_center_mode(source_center_mode)) {
             for (Eigen::Index i = 0; i < n_loaded_maps; ++i) {
                 std::string reject_reason;
                 if (header_center_is_usable(i, reject_reason)) {
@@ -1806,7 +1812,8 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 }
             }
         }
-        if (source_center_mode == "auto" || source_center_mode == "peak") {
+        if (citlali::config::is_fruit_loops_auto_center_mode(source_center_mode) ||
+            citlali::config::is_fruit_loops_peak_center_mode(source_center_mode)) {
             for (Eigen::Index i = 0; i < n_loaded_maps; ++i) {
                 if (fruit_loops_source_valid(i) == 0 && set_peak_center(i)) {
                     fruit_loops_source_provenance[i] = "peak";
@@ -1828,7 +1835,8 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                  n_peak_centers, n_map_center_centers, n_valid_centers, n_loaded_maps,
                  fruit_loops_header_center_max_radius_arcsec,
                  fruit_loops_header_center_require_coverage);
-    if (source_center_mode == "header" && n_valid_centers < n_loaded_maps) {
+    if (citlali::config::is_fruit_loops_header_center_mode(source_center_mode) &&
+        n_valid_centers < n_loaded_maps) {
         logger->warn("fruit loops source_center_mode=header but only {}/{} maps have usable POINTING header centers",
                      n_valid_centers, n_loaded_maps);
     }
@@ -1854,7 +1862,8 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     }
 
     const bool allow_peak_source_fallback =
-        (source_center_mode == "auto" || source_center_mode == "peak");
+        citlali::config::is_fruit_loops_auto_center_mode(source_center_mode) ||
+        citlali::config::is_fruit_loops_peak_center_mode(source_center_mode);
     configure_fruit_loops_adaptive_gate(tod_mb, calib, grouping, allow_peak_source_fallback);
     // clear weight maps to save memory
     std::vector<Eigen::MatrixXd>().swap(tod_mb.weight);

@@ -53,6 +53,27 @@ inline std::string_view to_string(FruitLoopsCenterMode value) {
     return enum_name(value, fruit_loops_center_mode_names);
 }
 
+inline bool is_fruit_loops_center_mode(
+    std::string_view value, FruitLoopsCenterMode mode) {
+    return value == to_string(mode);
+}
+
+inline bool is_fruit_loops_auto_center_mode(std::string_view value) {
+    return is_fruit_loops_center_mode(value, FruitLoopsCenterMode::automatic);
+}
+
+inline bool is_fruit_loops_header_center_mode(std::string_view value) {
+    return is_fruit_loops_center_mode(value, FruitLoopsCenterMode::header);
+}
+
+inline bool is_fruit_loops_peak_center_mode(std::string_view value) {
+    return is_fruit_loops_center_mode(value, FruitLoopsCenterMode::peak);
+}
+
+inline bool is_fruit_loops_map_center_mode(std::string_view value) {
+    return is_fruit_loops_center_mode(value, FruitLoopsCenterMode::map_center);
+}
+
 struct PointingConfig {
     PointingSourceStrategy source_strategy = PointingSourceStrategy::standard;
     bool fit_gaussian = true;
