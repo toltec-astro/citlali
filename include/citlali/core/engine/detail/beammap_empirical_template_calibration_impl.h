@@ -3,6 +3,9 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/engine/detail/beammap_empirical_template_schema.h>
+#include <citlali/core/engine/detail/beammap_empirical_template_utils.h>
+
 void Beammap::init_empirical_template_calibration_columns() {
     auto add_column = [&](const std::string &name,
                           const std::string &unit,
@@ -19,38 +22,10 @@ void Beammap::init_empirical_template_calibration_columns() {
         calib.apt_meta[name].push_back(description);
     };
 
-    add_column("cal_amp", "xs",
-               "amplitude used for beammap flux calibration; empirical template when valid, Gaussian fallback otherwise",
-               std::numeric_limits<double>::quiet_NaN());
-    add_column("cal_amp_method", "N/A",
-               "calibration amplitude method code (0 Gaussian fallback, 1 empirical template)",
-               0.0);
-    add_column("template_amp", "xs",
-               "empirical array-template matched amplitude with fitted local offset",
-               std::numeric_limits<double>::quiet_NaN());
-    add_column("template_offset", "xs",
-               "local offset fitted with empirical array-template amplitude",
-               std::numeric_limits<double>::quiet_NaN());
-    add_column("template_resid_rms", "xs",
-               "weighted residual RMS for empirical-template amplitude fit",
-               std::numeric_limits<double>::quiet_NaN());
-    add_column("template_npix", "pix",
-               "number of pixels used for empirical-template amplitude fit",
-               0.0);
-    add_column("template_amp_over_fit_amp", "N/A",
-               "ratio of empirical-template matched amplitude to Gaussian fit amplitude",
-               std::numeric_limits<double>::quiet_NaN());
-    add_column("cal_amp_over_fit_amp", "N/A",
-               "ratio of calibration amplitude to Gaussian fit amplitude",
-               std::numeric_limits<double>::quiet_NaN());
-    add_column("map_peak_amp", "xs",
-               "baseline-subtracted local map peak within 8 arcsec of Gaussian fit center",
-               std::numeric_limits<double>::quiet_NaN());
-    add_column("map_peak_amp_over_fit_amp", "N/A",
-               "ratio of local map peak amplitude to Gaussian fit amplitude",
-               std::numeric_limits<double>::quiet_NaN());
-    calib.apt_meta["cal_amp_method"].push_back("0: Gaussian fit amplitude fallback");
-    calib.apt_meta["cal_amp_method"].push_back("1: empirical array-template matched amplitude");
+    for (const auto &column : beammap_empirical_template_schema::calibration_columns()) {
+        add_column(column.name, column.unit, column.description, column.fill_value);
+    }
+    beammap_empirical_template_schema::append_cal_amp_method_legend(calib.apt_meta);
 }
 
 void Beammap::calc_empirical_template_calibration() {
@@ -114,53 +89,20 @@ void Beammap::calc_empirical_template_calibration() {
     constexpr double min_template_snr = 20.0;
     constexpr double min_template_value = 0.015;
 
-    auto median_vector = [](std::vector<double> values) -> double {
-        values.erase(std::remove_if(values.begin(), values.end(),
-                                    [](double v) { return !std::isfinite(v); }),
-                     values.end());
-        if (values.empty()) {
-            return std::numeric_limits<double>::quiet_NaN();
-        }
-        Eigen::Map<Eigen::VectorXd> vec(values.data(), static_cast<Eigen::Index>(values.size()));
-        return tula::alg::median(vec);
-    };
-
-    auto bilinear_sample = [](const Eigen::MatrixXd &map, double row, double col) -> double {
-        if (!std::isfinite(row) || !std::isfinite(col)) {
-            return std::numeric_limits<double>::quiet_NaN();
-        }
-        const Eigen::Index r0 = static_cast<Eigen::Index>(std::floor(row));
-        const Eigen::Index c0 = static_cast<Eigen::Index>(std::floor(col));
-        const Eigen::Index r1 = r0 + 1;
-        const Eigen::Index c1 = c0 + 1;
-        if (r0 < 0 || c0 < 0 || r1 >= map.rows() || c1 >= map.cols()) {
-            return std::numeric_limits<double>::quiet_NaN();
-        }
-        const double v00 = map(r0, c0);
-        const double v01 = map(r0, c1);
-        const double v10 = map(r1, c0);
-        const double v11 = map(r1, c1);
-        if (!std::isfinite(v00) || !std::isfinite(v01) ||
-            !std::isfinite(v10) || !std::isfinite(v11)) {
-            return std::numeric_limits<double>::quiet_NaN();
-        }
-        const double fr = row - static_cast<double>(r0);
-        const double fc = col - static_cast<double>(c0);
-        const double v0 = (1.0 - fc) * v00 + fc * v01;
-        const double v1 = (1.0 - fc) * v10 + fc * v11;
-        return (1.0 - fr) * v0 + fr * v1;
-    };
-
     auto edge_baseline = [&](const Eigen::MatrixXd &map, double row0, double col0) -> double {
         std::vector<double> edge;
         edge.reserve(static_cast<std::size_t>(4 * side));
         for (Eigen::Index k = -template_radius_pix; k <= template_radius_pix; ++k) {
-            edge.push_back(bilinear_sample(map, row0 - template_radius_pix, col0 + k));
-            edge.push_back(bilinear_sample(map, row0 + template_radius_pix, col0 + k));
-            edge.push_back(bilinear_sample(map, row0 + k, col0 - template_radius_pix));
-            edge.push_back(bilinear_sample(map, row0 + k, col0 + template_radius_pix));
+            edge.push_back(beammap_empirical_template_utils::bilinear_sample(
+                map, row0 - template_radius_pix, col0 + k));
+            edge.push_back(beammap_empirical_template_utils::bilinear_sample(
+                map, row0 + template_radius_pix, col0 + k));
+            edge.push_back(beammap_empirical_template_utils::bilinear_sample(
+                map, row0 + k, col0 - template_radius_pix));
+            edge.push_back(beammap_empirical_template_utils::bilinear_sample(
+                map, row0 + k, col0 + template_radius_pix));
         }
-        return median_vector(std::move(edge));
+        return beammap_empirical_template_utils::median_finite(std::move(edge));
     };
 
     auto local_peak = [&](const Eigen::MatrixXd &map, double row0, double col0, double baseline) -> double {
@@ -170,7 +112,8 @@ void Beammap::calc_empirical_template_calibration() {
                 if (dr * dr + dc * dc > peak_radius_pix * peak_radius_pix) {
                     continue;
                 }
-                const double value = bilinear_sample(map, row0 + dr, col0 + dc);
+                const double value = beammap_empirical_template_utils::bilinear_sample(
+                    map, row0 + dr, col0 + dc);
                 if (std::isfinite(value)) {
                     peak = std::max(peak, value - baseline);
                 }
@@ -207,7 +150,8 @@ void Beammap::calc_empirical_template_calibration() {
             const Eigen::Index dr = rr - center;
             for (Eigen::Index cc = 0; cc < side; ++cc) {
                 const Eigen::Index dc = cc - center;
-                const double value = bilinear_sample(omb.signal[map_index], row0 + dr, col0 + dc);
+                const double value = beammap_empirical_template_utils::bilinear_sample(
+                    omb.signal[map_index], row0 + dr, col0 + dc);
                 if (std::isfinite(value)) {
                     cut(rr, cc) = (value - baseline) / peak_amp;
                 }
@@ -248,8 +192,8 @@ void Beammap::calc_empirical_template_calibration() {
             a_values.push_back(calib.apt["a_fwhm"](i));
             b_values.push_back(calib.apt["b_fwhm"](i));
         }
-        const double med_a = median_vector(a_values);
-        const double med_b = median_vector(b_values);
+        const double med_a = beammap_empirical_template_utils::median_finite(a_values);
+        const double med_b = beammap_empirical_template_utils::median_finite(b_values);
         if (!std::isfinite(med_a) || !std::isfinite(med_b) || med_a <= 0.0 || med_b <= 0.0) {
             continue;
         }
@@ -323,7 +267,7 @@ void Beammap::calc_empirical_template_calibration() {
                     }
                 }
                 if (!values.empty()) {
-                    templ(rr, cc) = median_vector(values);
+                    templ(rr, cc) = beammap_empirical_template_utils::median_finite(values);
                 }
             }
         }
@@ -404,8 +348,10 @@ void Beammap::calc_empirical_template_calibration() {
                 }
                 const double row = row0 + static_cast<double>(dr);
                 const double col = col0 + static_cast<double>(dc);
-                const double signal_value = bilinear_sample(omb.signal[map_index], row, col);
-                const double weight_value = bilinear_sample(omb.weight[map_index], row, col);
+                const double signal_value = beammap_empirical_template_utils::bilinear_sample(
+                    omb.signal[map_index], row, col);
+                const double weight_value = beammap_empirical_template_utils::bilinear_sample(
+                    omb.weight[map_index], row, col);
                 if (!std::isfinite(signal_value) || !std::isfinite(weight_value) || weight_value <= 0.0) {
                     continue;
                 }
