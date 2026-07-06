@@ -5,6 +5,32 @@
 
 #include <citlali/core/engine/detail/beammap_masking_stats.h>
 
+void Beammap::log_beammap_masking_config() {
+    const bool detector_grouping =
+        typed_config.mapmaking.grouping ==
+        citlali::config::MapGrouping::detector;
+
+    if (beammap_rfi_mask_enabled && detector_grouping) {
+        logger->info("beammap rfi mask enabled: block_size={} min_good={} sigma_threshold={:.4g} sigma_floor={:.4g} dilate_blocks={} max_flagged_fraction={:.4f}",
+                     beammap_rfi_mask_block_size_samples,
+                     beammap_rfi_mask_min_good_samples,
+                     beammap_rfi_mask_sigma_threshold,
+                     beammap_rfi_mask_sigma_floor,
+                     beammap_rfi_mask_dilate_blocks,
+                     beammap_rfi_mask_max_flagged_fraction);
+    }
+    if (beammap_scan_band_mask_enabled && detector_grouping) {
+        logger->info(
+            "beammap scan-band mask enabled: edge_rows={} min_row_pixels={} min_contiguous_rows={} row_median_sigma_threshold={:.4g} row_sigma_ratio_threshold={:.4g} max_flagged_fraction={:.4f}",
+            beammap_scan_band_mask_edge_rows,
+            beammap_scan_band_mask_min_row_pixels,
+            beammap_scan_band_mask_min_contiguous_rows,
+            beammap_scan_band_mask_row_median_sigma_threshold,
+            beammap_scan_band_mask_row_sigma_ratio_threshold,
+            beammap_scan_band_mask_max_flagged_fraction);
+    }
+}
+
 Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PTC,Eigen::MatrixXd> &ptc) {
     RFIMaskScanSummary summary;
     if (!beammap_rfi_mask_enabled) {

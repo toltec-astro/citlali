@@ -196,6 +196,7 @@ public:
 
     // detector-map edge-band masking for coherent bad scan legs
     ScanBandMaskSummary apply_scan_band_mask(mapmaking::MapBuffer &);
+    void log_beammap_masking_config();
 
     // optional prior-assisted peak initialization
     bool is_beammap_locator_iter(Eigen::Index iter) const;
