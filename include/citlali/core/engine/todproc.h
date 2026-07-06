@@ -140,6 +140,7 @@ private:
 };
 
 #include <citlali/core/engine/detail/todproc_raw_input_impl.h>
+#include <citlali/core/engine/detail/todproc_adc_snap_impl.h>
 #include <citlali/core/engine/detail/todproc_alignment_impl.h>
 #include <citlali/core/engine/detail/todproc_pointing_impl.h>
 #include <citlali/core/engine/detail/todproc_map_geometry_impl.h>
