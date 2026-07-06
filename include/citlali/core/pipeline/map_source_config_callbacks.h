@@ -40,6 +40,15 @@ inline bool source_fitting_config_needed(citlali::config::ReductionType reductio
            run_map_filter || run_source_finder;
 }
 
+template <class PostProcessingConfig>
+bool source_fitting_config_needed(
+    citlali::config::ReductionType reduction_type,
+    const PostProcessingConfig &post_processing_config) {
+    return source_fitting_config_needed(
+        reduction_type, post_processing_config.map_filtering.enabled,
+        post_processing_config.source_finding.enabled);
+}
+
 template <class MapFitter>
 void apply_positive_source_fit_limits(MapFitter &map_fitter) {
     if (map_fitter.flux_limits(0) > 0) {

@@ -3,13 +3,13 @@
 // Included by citlali_config_read.h inside namespace citlali::engine_detail {
 
 template <class Config, class ObservationMapBuffer, class CoaddMapBuffer,
-          class PostProcessingConfig, class KeyList>
+          class CoaddConfig, class PostProcessingConfig, class KeyList>
 void read_source_finding_config(
-    Config &config, bool run_source_finder, ObservationMapBuffer &omb,
-    CoaddMapBuffer &cmb, bool run_coadd, double arcsec_to_rad,
-    PostProcessingConfig &typed_post_processing_config,
-    KeyList &missing_keys, KeyList &invalid_keys) {
-    if (!run_source_finder) {
+    Config &config, ObservationMapBuffer &omb, CoaddMapBuffer &cmb,
+    const CoaddConfig &typed_coadd_config, double arcsec_to_rad,
+    PostProcessingConfig &typed_post_processing_config, KeyList &missing_keys,
+    KeyList &invalid_keys) {
+    if (!typed_post_processing_config.source_finding.enabled) {
         return;
     }
 
@@ -37,5 +37,5 @@ void read_source_finding_config(
             omb.source_window_rad, arcsec_to_rad);
 
     citlali::pipeline::mirror_source_finding_config_to_coadd(
-        omb, cmb, run_coadd);
+        omb, cmb, typed_coadd_config.enabled);
 }

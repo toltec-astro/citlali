@@ -16,8 +16,6 @@ void Engine::get_citlali_config(CT &config) {
     auto &timestream_config = typed_config.timestream;
     auto &post_processing_config = typed_config.post_processing;
     auto &coadd_config = typed_config.coadd;
-    auto &noise_config = typed_config.noise;
-    auto &beammap_config = typed_config.beammap;
 
     runtime_config = get_runtime_config(config);
     if (!runtime_config.interp_over_gaps) {
@@ -41,8 +39,8 @@ void Engine::get_citlali_config(CT &config) {
 
     // map fitter options if in pointing or beammap mode or if map filtering or source finding are enabled
     citlali::engine_detail::read_source_fitting_config(
-        config, runtime_config.reduction_type, run_map_filter,
-        run_source_finder, map_fitter, omb.pixel_size_rad, ASEC_TO_RAD,
+        config, runtime_config.reduction_type, map_fitter,
+        omb.pixel_size_rad, ASEC_TO_RAD,
         post_processing_config,
         missing_keys, invalid_keys);
 
@@ -54,7 +52,7 @@ void Engine::get_citlali_config(CT &config) {
 
     // get source finder config options
     citlali::engine_detail::read_source_finding_config(
-        config, run_source_finder, omb, cmb, run_coadd, ASEC_TO_RAD,
+        config, omb, cmb, coadd_config, ASEC_TO_RAD,
         post_processing_config, missing_keys, invalid_keys);
 
     /* get pointing config */
@@ -73,9 +71,7 @@ void Engine::get_citlali_config(CT &config) {
     // disable map related keys if map-making is disabled
     citlali::engine_detail::disable_map_products_if_mapmaking_disabled(
         run_mapmaking, run_coadd, run_noise, run_map_filter,
-        run_source_finder, coadd_config, noise_config,
-        post_processing_config, beammap_iter_max,
-        beammap_config);
+        run_source_finder, typed_config, beammap_iter_max);
 
     citlali::engine_detail::validate_typed_config_mirrors(typed_config, logger);
 }
