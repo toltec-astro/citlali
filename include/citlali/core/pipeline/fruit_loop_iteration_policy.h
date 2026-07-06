@@ -3,6 +3,7 @@
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/config/timestream_config.h>
+#include <citlali/core/pipeline/output_policy.h>
 
 #include <string>
 
@@ -77,7 +78,7 @@ void mirror_jinc_mapmaker_config_to_fruit_loops(const JincMapmaker &jinc_mm,
 template <class Engine, class Logger>
 void configure_fruit_loop_iteration_policy(Engine &engine,
                                            const Logger &logger) {
-    if (engine.ptcproc.run_fruit_loops && !engine.run_noise) {
+    if (engine.ptcproc.run_fruit_loops && !noise_maps_enabled(engine)) {
         logger->warn("noise maps are not enabled for fruit loops");
     }
 

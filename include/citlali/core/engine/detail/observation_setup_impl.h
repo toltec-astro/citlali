@@ -3,6 +3,8 @@
 // Engine member-function implementations split from engine.h.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/output_policy.h>
+
 void Engine::obsnum_setup() {
     if (rtcproc.run_extinction) {
         // get atm model
@@ -69,7 +71,7 @@ void Engine::obsnum_setup() {
         omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
         omb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
 
-        if (run_coadd) {
+        if (citlali::pipeline::coadd_outputs_enabled(*this)) {
             cmb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
             cmb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
         }
@@ -80,7 +82,7 @@ void Engine::obsnum_setup() {
         omb.wcs.crval[0] = telescope.tel_header["Header.Source.L"](0)*RAD_TO_DEG;
         omb.wcs.crval[1] = telescope.tel_header["Header.Source.B"](0)*RAD_TO_DEG;
 
-        if (run_coadd) {
+        if (citlali::pipeline::coadd_outputs_enabled(*this)) {
             cmb.wcs.crval[0] = telescope.tel_header["Header.Source.L"](0)*RAD_TO_DEG;
             cmb.wcs.crval[1] = telescope.tel_header["Header.Source.B"](0)*RAD_TO_DEG;
         }

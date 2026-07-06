@@ -2,6 +2,8 @@
 
 // Implementation detail included by todproc.h.
 
+#include <citlali/core/pipeline/output_policy.h>
+
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
     using namespace netCDF;
@@ -233,7 +235,7 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
     }
 
     // coadded subdir
-    if (engine().run_coadd) {
+    if (citlali::pipeline::coadd_outputs_enabled(engine())) {
         engine().coadd_dir_name = engine().redu_dir_name + "/coadded/";
         // coadded raw subdir
         if (!fs::exists(fs::status(engine().coadd_dir_name + "raw/"))) {
@@ -243,7 +245,7 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
             logger->warn("directory {} already exists", engine().coadd_dir_name + "raw/");
         }
         // if map filtering is requested
-        if (engine().run_map_filter) {
+        if (citlali::pipeline::map_filter_outputs_enabled(engine())) {
             // coadded filtered subdir
             if (!fs::exists(fs::status(engine().coadd_dir_name + "filtered/"))) {
                 fs::create_directories(engine().coadd_dir_name + "filtered/");
