@@ -53,8 +53,11 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
                 grppi::map(tula::grppi_utils::dyn_ex(engine().parallel_policy), det_in_vec, det_out_vec, [&](auto j) {
 
                     // get pointing
-                    auto [lat, lon] = engine_utils::calc_det_pointing(tel_data, engine().calib.apt["x_t"](j), engine().calib.apt["y_t"](j),
-                                                                      engine().telescope.pixel_axes, pointing_offsets_arcsec, engine().map_grouping);
+                    auto [lat, lon] = engine_utils::calc_det_pointing(
+                        tel_data, engine().calib.apt["x_t"](j),
+                        engine().calib.apt["y_t"](j),
+                        engine().telescope.pixel_axes, pointing_offsets_arcsec,
+                        engine().typed_config.mapmaking.grouping);
                     // check for min and max
                     if (engine().calib.apt["flag"](j)==0) {
                         if (lat.minCoeff() < det_lat_limits(j,0)) {
@@ -75,8 +78,10 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
             }
             else {
                 // calculate detector pointing for first detector only since offsets are zero
-                auto [lat, lon] = engine_utils::calc_det_pointing(tel_data, 0., 0., engine().telescope.pixel_axes,
-                                                                  pointing_offsets_arcsec, engine().map_grouping);
+                auto [lat, lon] = engine_utils::calc_det_pointing(
+                    tel_data, 0., 0., engine().telescope.pixel_axes,
+                    pointing_offsets_arcsec,
+                    engine().typed_config.mapmaking.grouping);
                 if (lat.minCoeff() < det_lat_limits(0,0)) {
                     det_lat_limits.col(0).setConstant(lat.minCoeff());
                 }

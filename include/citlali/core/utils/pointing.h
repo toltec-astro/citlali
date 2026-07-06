@@ -5,21 +5,35 @@
 #include <limits>
 #include <map>
 #include <string>
+#include <string_view>
 
 #include <Eigen/Core>
 
+#include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/utils/constants.h>
 
 namespace engine_utils {
 
+inline bool is_detector_map_grouping(citlali::config::MapGrouping grouping) {
+    return grouping == citlali::config::MapGrouping::detector;
+}
+
+inline bool is_detector_map_grouping(std::string_view grouping) {
+    return grouping == "detector";
+}
+
+inline bool is_detector_map_grouping(const std::string &grouping) {
+    return is_detector_map_grouping(std::string_view{grouping});
+}
+
 // get a single detector's pointing
-template <typename tel_data_t, typename pointing_offset_t>
+template <typename tel_data_t, typename pointing_offset_t, typename MapGroupingT>
 auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
                        const std::string pixel_axes, pointing_offset_t &pointing_offsets,
-                       const std::string map_grouping, bool apply_det_offsets = false) {
+                       const MapGroupingT &map_grouping, bool apply_det_offsets = false) {
 
     // if making per detector maps, set offsets to zero
-    if (map_grouping=="detector" && !apply_det_offsets) {
+    if (is_detector_map_grouping(map_grouping) && !apply_det_offsets) {
         az_off = 0;
         el_off = 0;
     }

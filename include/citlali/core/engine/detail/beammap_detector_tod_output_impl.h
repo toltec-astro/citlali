@@ -119,7 +119,7 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         auto [lat, lon] = engine_utils::calc_det_pointing(
             sampled_tel_data, calib.apt["x_t"](det), calib.apt["y_t"](det),
             telescope.pixel_axes,
-            pointing_offsets, map_grouping, true);
+            pointing_offsets, typed_config.mapmaking.grouping, true);
 
         std::vector<double> best_d2_by_scan(static_cast<std::size_t>(n_scans),
                                             std::numeric_limits<double>::infinity());

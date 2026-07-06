@@ -327,7 +327,7 @@ Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer 
                     calib.apt["y_t"](det),
                     telescope.pixel_axes,
                     ptc.pointing_offsets_arcsec.data,
-                    map_grouping);
+                    typed_config.mapmaking.grouping);
                 lat = std::get<0>(latlon);
             }
             if (lat.size() != ptc.scans.data.rows()) {

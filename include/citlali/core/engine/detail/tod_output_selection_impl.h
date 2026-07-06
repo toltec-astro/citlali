@@ -36,7 +36,7 @@ void Engine::setup_tod_output_chunk_selection() {
 
                 auto [lat, lon] = engine_utils::calc_det_pointing(
                     tel_data_copy, 0.0, 0.0, telescope.pixel_axes, pointing_offsets,
-                    map_grouping, true);
+                    typed_config.mapmaking.grouping, true);
 
                 for (Eigen::Index scan_index = 0; scan_index < n_scans; ++scan_index) {
                     const Eigen::Index start =

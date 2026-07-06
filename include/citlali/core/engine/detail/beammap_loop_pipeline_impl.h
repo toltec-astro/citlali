@@ -145,7 +145,7 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                     auto [det_lat, det_lon] = engine_utils::calc_det_pointing(ptcs[i].tel_data.data, az_off,
                                                                               el_off, telescope.pixel_axes,
                                                                               ptcs[i].pointing_offsets_arcsec.data,
-                                                                              map_grouping, true);
+                                                                              typed_config.mapmaking.grouping, true);
                     ptc_lat.col(j) = std::move(det_lat);
                     ptc_lon.col(j) = std::move(det_lon);
 
