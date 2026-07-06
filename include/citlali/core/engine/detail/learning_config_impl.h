@@ -10,42 +10,43 @@
 template<typename CT>
 void Engine::get_learning_config(CT &config) {
     ReductionLearningState::Options options;
+    auto &learning_config = typed_config.timestream.learning;
 
     citlali::engine_detail::read_optional_learning_config(
         config, std::tuple{"timestream","learning","enabled"},
-        options.enabled, typed_config.timestream.learning.enabled,
+        options.enabled, learning_config.enabled,
         missing_keys, invalid_keys);
     citlali::engine_detail::read_optional_learning_config(
         config, std::tuple{"timestream","learning","diagnostics_enabled"},
         options.diagnostics_enabled,
-        typed_config.timestream.learning.diagnostics_enabled,
+        learning_config.diagnostics_enabled,
         missing_keys, invalid_keys);
     citlali::engine_detail::read_optional_learning_config(
         config, std::tuple{"timestream","learning","learn_iters"},
-        options.learn_iters, typed_config.timestream.learning.learn_iters,
+        options.learn_iters, learning_config.learn_iters,
         missing_keys, invalid_keys, {0});
     citlali::engine_detail::read_optional_learning_config(
         config, std::tuple{"timestream","learning","apply_start_iter"},
         options.apply_start_iter,
-        typed_config.timestream.learning.apply_start_iter,
+        learning_config.apply_start_iter,
         missing_keys, invalid_keys, {0});
     citlali::engine_detail::read_optional_learning_config(
         config, std::tuple{"timestream","learning","max_records_per_type"},
         options.max_records_per_type,
-        typed_config.timestream.learning.max_records_per_type,
+        learning_config.max_records_per_type,
         missing_keys, invalid_keys, {0});
     citlali::engine_detail::read_optional_learning_config(
         config, std::tuple{"timestream","learning","apply_sample_masks_enabled"},
         options.apply_sample_masks_enabled,
-        typed_config.timestream.learning.apply_sample_masks_enabled,
+        learning_config.apply_sample_masks_enabled,
         missing_keys, invalid_keys);
     citlali::engine_detail::read_optional_learning_config(
         config, std::tuple{"timestream","learning","apply_max_new_flagged_fraction"},
         options.apply_max_new_flagged_fraction,
-        typed_config.timestream.learning.apply_max_new_flagged_fraction,
+        learning_config.apply_max_new_flagged_fraction,
         missing_keys, invalid_keys, {0.0});
     auto &typed_map_outlier =
-        typed_config.timestream.learning.map_pixel_outlier;
+        learning_config.map_pixel_outlier;
     citlali::engine_detail::read_optional_learning_config(
         config, std::tuple{"timestream","learning","map_pixel_outlier_diagnostics_enabled"},
         options.map_pixel_outlier_diagnostics_enabled,
@@ -95,10 +96,10 @@ void Engine::get_learning_config(CT &config) {
     citlali::engine_detail::read_optional_learning_config(
         config, std::tuple{"timestream","learning","busy_detector_exclusion_enabled"},
         options.busy_detector_exclusion_enabled,
-        typed_config.timestream.learning.busy_detector.exclusion_enabled,
+        learning_config.busy_detector.exclusion_enabled,
         missing_keys, invalid_keys);
     auto &typed_scan_pathology =
-        typed_config.timestream.learning.scan_network_pathology;
+        learning_config.scan_network_pathology;
     citlali::engine_detail::read_optional_learning_config(
         config, std::tuple{"timestream","learning","scan_network_pathology_enabled"},
         options.scan_network_pathology_enabled, typed_scan_pathology.enabled,
