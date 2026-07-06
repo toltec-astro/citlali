@@ -241,6 +241,13 @@ public:
     void write_detector_specific_ptc_tod(int output_iter);
     void write_detector_table_outputs();
     void write_beammap_fit_qc_table(const std::string &apt_filename);
+    struct FitQCSignalVectors {
+        Eigen::VectorXd map_rms;
+        Eigen::VectorXd fit_sig2noise;
+        Eigen::VectorXd map_sig2noise;
+        Eigen::VectorXd n_weight_pos;
+    };
+    FitQCSignalVectors make_beammap_fit_qc_signal_vectors();
 
     // main pipeline process
     template <class KidsProc, class RawObs>
