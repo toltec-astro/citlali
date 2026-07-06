@@ -5,6 +5,15 @@
 
 template <class map_buffer_t>
 void Engine::add_tod_header(map_buffer_t &mb) {
+    const std::string reduction_type_name{
+        citlali::config::to_string(typed_config.runtime.reduction_type)};
+    const std::string tod_type_name{
+        citlali::config::to_string(typed_config.timestream.type)};
+    const std::string map_grouping_name{
+        citlali::config::to_string(typed_config.mapmaking.grouping)};
+    const std::string map_method_name{
+        citlali::config::to_string(typed_config.mapmaking.method)};
+
     // loop through viles
     for (const auto & [fkey, fval]: tod_filename) {
         netCDF::NcFile fo(fval, netCDF::NcFile::write);
@@ -20,7 +29,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             fo, date_obs.back(), telescope.source_name);
 
         // add source flux for beammaps
-        if (redu_type == "beammap") {
+        if (reduction_type_name == "beammap") {
             citlali::pipeline::add_beammap_tod_header_vars(
                 fo, calib, toltec_io.array_name_map,
                 beammap_fluxes_mJy_beam, beammap_fluxes_MJy_Sr,
@@ -33,9 +42,10 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
         citlali::pipeline::add_tod_identity_geometry_vars(
             fo, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
-            telescope.project_id, redu_type, telescope.obs_goal, tod_type,
-            calib.run_hwpr, map_grouping, map_method, omb.exposure_time,
-            telescope.pixel_axes, telescope.tel_header["Header.Source.Ra"][0],
+            telescope.project_id, reduction_type_name, telescope.obs_goal,
+            tod_type_name, calib.run_hwpr, map_grouping_name,
+            map_method_name, omb.exposure_time, telescope.pixel_axes,
+            telescope.tel_header["Header.Source.Ra"][0],
             telescope.tel_header["Header.Source.Dec"][0],
             RAD_TO_DEG * telescope.tel_data["TelElAct"].mean(),
             RAD_TO_DEG * telescope.tel_data["TelAzAct"].mean(),
@@ -44,7 +54,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             toltec_io.array_name_map, RAD_TO_DEG, pi / 2, omb.sig_unit);
 
         citlali::pipeline::add_jinc_shape_config_vars_if_needed(
-            fo, map_method, calib.arrays, jinc_mm.shape_params,
+            fo, map_method_name, calib.arrays, jinc_mm.shape_params,
             toltec_io.array_name_map, jinc_mm.r_max);
 
         citlali::pipeline::add_tod_mean_tau_vars(
@@ -81,8 +91,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             fo, ptcproc, calib, toltec_io.array_name_map);
 
         citlali::pipeline::add_oof_header_vars_if_observed(
-            fo, telescope.sim_obs, telescope.tel_header, mb, redu_type,
-            run_mapmaking, calib, toltec_io.array_name_map,
+            fo, telescope.sim_obs, telescope.tel_header, mb,
+            reduction_type_name, run_mapmaking, calib, toltec_io.array_name_map,
             toltec_io.array_wavelength_map);
 
         citlali::pipeline::add_fruit_loop_header_config_vars(
