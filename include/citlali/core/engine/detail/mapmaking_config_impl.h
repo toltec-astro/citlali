@@ -56,7 +56,7 @@ void Engine::get_mapmaking_config(CT &config) {
     citlali::engine_detail::read_coadd_enabled_config(
         config, run_coadd, coadd_config, missing_keys, invalid_keys);
     citlali::engine_detail::read_coadd_map_block_config(
-        config, run_coadd, cmb, missing_keys, invalid_keys,
+        config, coadd_config, cmb, missing_keys, invalid_keys,
         telescope.pixel_axes, redu_type, logger);
 
     citlali::pipeline::apply_uncalibrated_map_units(
@@ -71,10 +71,10 @@ void Engine::get_mapmaking_config(CT &config) {
         invalid_keys);
 
     citlali::engine_detail::read_noise_map_config(
-        config, run_noise, run_coadd, omb, cmb, noise_config,
+        config, run_noise, coadd_config, omb, cmb, noise_config,
         missing_keys, invalid_keys);
     citlali::engine_detail::read_noise_product_config(
-        config, run_noise, write_noise_realizations, run_noise_products,
+        config, write_noise_realizations, run_noise_products,
         apply_empirical_noise_weights, noise_config, missing_keys,
         invalid_keys);
 

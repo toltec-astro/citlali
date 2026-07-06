@@ -4,10 +4,10 @@ namespace citlali::engine_detail {
 
 template <class ReductionConfig>
 void disable_map_products_if_mapmaking_disabled(
-    bool run_mapmaking, bool &run_coadd, bool &run_noise,
-    bool &run_map_filter, bool &run_source_finder,
-    ReductionConfig &typed_config, int &beammap_iter_max) {
-    if (run_mapmaking) {
+    bool &run_coadd, bool &run_noise, bool &run_map_filter,
+    bool &run_source_finder, ReductionConfig &typed_config,
+    int &beammap_iter_max) {
+    if (typed_config.mapmaking.enabled) {
         return;
     }
     run_coadd = false;

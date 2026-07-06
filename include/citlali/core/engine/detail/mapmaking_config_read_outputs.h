@@ -24,17 +24,17 @@ void read_output_map_block_config(
     }
 }
 
-template <class Config, class CoaddMapBlock, class MissingKeys,
-          class InvalidKeys, class PixelAxes, class Logger>
+template <class Config, class CoaddMapBlock, class CoaddConfig,
+          class MissingKeys, class InvalidKeys, class PixelAxes,
+          class Logger>
 void read_coadd_map_block_config(
-    Config &config, bool run_coadd, CoaddMapBlock &cmb,
+    Config &config, const CoaddConfig &typed_coadd_config, CoaddMapBlock &cmb,
     MissingKeys &missing_keys, InvalidKeys &invalid_keys,
     const PixelAxes &pixel_axes, const std::string &redu_type,
     const Logger &logger) {
-    if (!run_coadd) {
+    if (!typed_coadd_config.enabled) {
         return;
     }
     logger->info("getting cmb config options");
     cmb.get_config(config, missing_keys, invalid_keys, pixel_axes, redu_type);
 }
-
