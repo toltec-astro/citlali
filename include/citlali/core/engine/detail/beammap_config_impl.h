@@ -8,6 +8,7 @@
 template<typename CT>
 void Engine::get_beammap_config(CT &config) {
     logger->info("getting beammap config options");
+    auto &beammap_config = typed_config.beammap;
     citlali::pipeline::read_beammap_iteration_config(
         config, missing_keys, invalid_keys, beammap_iter_max,
         beammap_iter_tolerance, beammap_convergence_radius_arcsec);
@@ -126,9 +127,9 @@ void Engine::get_beammap_config(CT &config) {
         beammap_detector_tod_output_n_uniform,
         beammap_detector_tod_output_n_source_dense);
 
-    citlali::pipeline::reset_beammap_config_mirror(typed_config.beammap);
+    citlali::pipeline::reset_beammap_config_mirror(beammap_config);
     citlali::pipeline::mirror_beammap_core_config(
-        typed_config.beammap, beammap_iter_max, beammap_iter_tolerance,
+        beammap_config, beammap_iter_max, beammap_iter_tolerance,
         beammap_convergence_radius_arcsec, beammap_phase_split_enabled,
         beammap_locator_iter, beammap_measurement_start_iter,
         beammap_subtract_reference, static_cast<long>(beammap_reference_det),
@@ -145,7 +146,7 @@ void Engine::get_beammap_config(CT &config) {
         beammap_scan_band_mask_max_flagged_fraction,
         beammap_split_fits_by_flag, beammap_split_flag_values);
     citlali::pipeline::mirror_beammap_priors_config(
-        typed_config.beammap, beammap_priors_enabled,
+        beammap_config, beammap_priors_enabled,
         beammap_priors_filepath, beammap_priors_candidate_top_n,
         beammap_priors_min_snr, beammap_priors_max_d2,
         beammap_priors_max_d2_iter0, beammap_priors_max_d2_after_iter0,
@@ -160,7 +161,7 @@ void Engine::get_beammap_config(CT &config) {
         beammap_priors_alignment_fit_rotation,
         beammap_priors_alignment_max_rotation_deg);
     citlali::pipeline::mirror_beammap_output_and_flagging_config(
-        typed_config.beammap, beammap_detector_tod_output_enabled,
+        beammap_config, beammap_detector_tod_output_enabled,
         beammap_detector_tod_output_subdir_name,
         beammap_detector_tod_output_n_uniform,
         beammap_detector_tod_output_n_source_dense,

@@ -10,32 +10,32 @@ void Engine::get_rtc_config(CT &config) {
     logger->info("getting rtc config options");
     // get rtcproc config
     rtcproc.get_config(config, missing_keys, invalid_keys);
+    auto &raw_config = typed_config.timestream.raw_time_chunk;
     citlali::pipeline::mirror_raw_despike_config(
-        typed_config.timestream.raw_time_chunk.despike, rtcproc);
+        raw_config.despike, rtcproc);
 
-    auto &typed_raw = typed_config.timestream.raw_time_chunk;
     citlali::pipeline::mirror_raw_flagging_config(
-        typed_raw.flagging, rtcproc);
+        raw_config.flagging, rtcproc);
 
     citlali::pipeline::mirror_raw_kernel_config(
-        typed_raw.kernel, rtcproc, RAD_TO_ASEC);
+        raw_config.kernel, rtcproc, RAD_TO_ASEC);
 
     citlali::pipeline::mirror_raw_altaz_destripe_config(
-        typed_raw.altaz_destripe, rtcproc);
+        raw_config.altaz_destripe, rtcproc);
 
     citlali::pipeline::mirror_raw_line_audit_config(
-        typed_raw.line_audit, rtcproc.line_audit);
+        raw_config.line_audit, rtcproc.line_audit);
 
     citlali::pipeline::mirror_raw_downsample_config(
-        typed_raw.downsample, rtcproc);
+        raw_config.downsample, rtcproc);
 
-    auto &typed_filter = typed_raw.filter;
+    auto &typed_filter = raw_config.filter;
     citlali::pipeline::mirror_raw_filter_config(typed_filter, rtcproc);
 
     citlali::pipeline::mirror_raw_iir_filter_config(
-        typed_raw.iir_filter, rtcproc);
+        raw_config.iir_filter, rtcproc);
 
-    citlali::pipeline::mirror_raw_correction_flags(typed_raw, rtcproc);
+    citlali::pipeline::mirror_raw_correction_flags(raw_config, rtcproc);
 
     rtcproc.configure_filter_edge_guard(telescope.fsmp);
     citlali::pipeline::mirror_raw_filter_edge_guard_config(
