@@ -3,12 +3,15 @@
 // Implementation detail included by pointing.h.
 
 #include <citlali/core/pipeline/ordered_writer.h>
+#include <citlali/core/pipeline/output_policy.h>
 
 template <class KidsProc>
 auto Pointing::run(KidsProc &kidsproc) {
     auto scans_done_mutex = std::make_shared<std::mutex>();
     auto ptc_line_audit_mutex = std::make_shared<std::mutex>();
     const auto mapmaking_method = typed_config.mapmaking.method;
+    const bool make_maps = citlali::pipeline::mapmaking_enabled(*this);
+    const bool make_noise_maps = citlali::pipeline::noise_maps_enabled(*this);
 
     const bool write_rtc =
         run_tod_output && run_tod_output_rtc && !tod_filename.empty();
@@ -198,16 +201,16 @@ auto Pointing::run(KidsProc &kidsproc) {
             calib_scan = ptcproc.reset_weights(ptcdata, calib_scan, map_grouping);
 
             // populate maps
-            if (run_mapmaking) {
+            if (make_maps) {
                 bool run_omb = false;
                 logger->info("populating noise maps");
                 if (mapmaking_method == citlali::config::MapMethod::naive) {
                     naive_mm.populate_maps_naive(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
-                                                 calib_scan.apt, telescope.d_fsmp, run_omb, run_noise);
+                                                 calib_scan.apt, telescope.d_fsmp, run_omb, make_noise_maps);
                 }
                 else if (mapmaking_method == citlali::config::MapMethod::jinc) {
                     jinc_mm.populate_maps_jinc(ptcdata, omb, cmb, map_indices, telescope.pixel_axes,
-                                               calib_scan.apt, telescope.d_fsmp, run_omb, run_noise);
+                                               calib_scan.apt, telescope.d_fsmp, run_omb, make_noise_maps);
                 }
             }
             logger->info("adding map to tod");
@@ -275,7 +278,7 @@ auto Pointing::run(KidsProc &kidsproc) {
         diagnostics.calc_stats(ptcdata);
 
         // populate maps
-        if (run_mapmaking) {
+        if (make_maps) {
             bool run_omb = true;
             bool run_noise_fruit;
 
@@ -286,7 +289,7 @@ auto Pointing::run(KidsProc &kidsproc) {
                 run_noise_fruit = false;
             }
             else {
-                run_noise_fruit = run_noise;
+                run_noise_fruit = make_noise_maps;
             }
             apply_learned_mapmaking_detector_exclusions(ptcdata, calib_scan);
             logger->info("populating maps");

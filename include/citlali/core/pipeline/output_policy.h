@@ -3,12 +3,12 @@
 namespace citlali::pipeline {
 
 template <class Engine>
-bool mapmaking_outputs_enabled(const Engine &engine) {
+bool mapmaking_enabled(const Engine &engine) {
     return engine.typed_config.mapmaking.enabled;
 }
 
 template <class Engine>
-bool coadd_outputs_enabled(const Engine &engine) {
+bool coadd_enabled(const Engine &engine) {
     return engine.typed_config.coadd.enabled;
 }
 
@@ -40,13 +40,33 @@ bool empirical_weight_calibration_enabled(const Engine &engine) {
 }
 
 template <class Engine>
-bool map_filter_outputs_enabled(const Engine &engine) {
+bool map_filter_enabled(const Engine &engine) {
     return engine.typed_config.post_processing.map_filtering.enabled;
 }
 
 template <class Engine>
-bool source_finding_outputs_enabled(const Engine &engine) {
+bool source_finding_enabled(const Engine &engine) {
     return engine.typed_config.post_processing.source_finding.enabled;
+}
+
+template <class Engine>
+bool mapmaking_outputs_enabled(const Engine &engine) {
+    return mapmaking_enabled(engine);
+}
+
+template <class Engine>
+bool coadd_outputs_enabled(const Engine &engine) {
+    return coadd_enabled(engine);
+}
+
+template <class Engine>
+bool map_filter_outputs_enabled(const Engine &engine) {
+    return map_filter_enabled(engine);
+}
+
+template <class Engine>
+bool source_finding_outputs_enabled(const Engine &engine) {
+    return source_finding_enabled(engine);
 }
 
 template <class Engine>

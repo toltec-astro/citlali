@@ -2,6 +2,8 @@
 
 // Implementation detail included by pointing.h.
 
+#include <citlali/core/pipeline/output_policy.h>
+
 template <class KidsProc, class RawObs>
 void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     using input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
@@ -36,7 +38,7 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 rtcdata.index.data = scan;
 
                 // populate noise matrix
-                if (run_noise) {
+                if (citlali::pipeline::noise_maps_enabled(*this)) {
                     if (omb.randomize_dets) {
                         rtcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>::Zero(omb.n_noise, calib.n_dets)
                                                  .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
@@ -74,7 +76,7 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         },
         run(kidsproc));
 
-    if (run_mapmaking) {
+    if (citlali::pipeline::mapmaking_enabled(*this)) {
         // normalize maps
         logger->info("normalizing maps");
         omb.normalize_maps();
@@ -93,4 +95,3 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         fit_maps();
     }
 }
-

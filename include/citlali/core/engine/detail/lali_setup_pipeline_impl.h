@@ -2,6 +2,8 @@
 
 // Implementation detail included by lali.h.
 
+#include <citlali/core/pipeline/output_policy.h>
+
 void Lali::setup() {
     // run obsnum setup
     obsnum_setup();
@@ -42,7 +44,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 rtcdata.index.data = scan;
 
                 // populate noise matrix (do outside of parallelized region for thread safety)
-                if (run_noise) {
+                if (citlali::pipeline::noise_maps_enabled(*this)) {
                     if (omb.randomize_dets) {
                         // n_noise x n_dets
                         rtcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>::Zero(omb.n_noise, calib.n_dets)
@@ -85,7 +87,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         // run the farm
         run());
 
-    if (run_mapmaking) {
+    if (citlali::pipeline::mapmaking_enabled(*this)) {
         // normalize maps
         logger->info("normalizing maps");
         if (typed_config.mapmaking.method !=
