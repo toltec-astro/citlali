@@ -33,6 +33,13 @@ bool empirical_noise_weights_enabled(const Engine &engine) {
 }
 
 template <class Engine>
+bool empirical_weight_calibration_enabled(const Engine &engine) {
+    return noise_product_outputs_enabled(engine) &&
+           noise_maps_enabled(engine) &&
+           empirical_noise_weights_enabled(engine);
+}
+
+template <class Engine>
 bool map_filter_outputs_enabled(const Engine &engine) {
     return engine.typed_config.post_processing.map_filtering.enabled;
 }

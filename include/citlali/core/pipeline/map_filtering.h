@@ -9,6 +9,7 @@
 
 #include <citlali/core/mapmaking/edge_guard_state.h>
 #include <citlali/core/mapmaking/map.h>
+#include <citlali/core/pipeline/output_policy.h>
 
 
 namespace citlali::pipeline {

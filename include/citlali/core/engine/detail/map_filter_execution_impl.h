@@ -42,9 +42,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             map_to_array_index, map_to_stokes_index, array_to_map_index,
             write_filter_maps);
     const auto filter_options =
-        citlali::pipeline::map_filter_run_options(
-            run_noise, write_filtered_maps_partial, run_noise_products,
-            apply_empirical_noise_weights);
+        citlali::pipeline::map_filter_run_options(*this);
 
     citlali::pipeline::run_map_filter_loop(
         wiener_filter, mb, n_maps, filter_outputs,
@@ -57,4 +55,3 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         write_filtered_maps_partial, filtered_fits_io,
         filtered_noise_fits_io, map_label, logger);
 }
-

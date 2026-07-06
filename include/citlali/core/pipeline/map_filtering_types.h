@@ -26,6 +26,14 @@ inline MapFilterRunOptions map_filter_run_options(
         apply_empirical_noise_weights};
 }
 
+template <class Engine>
+MapFilterRunOptions map_filter_run_options(const Engine &engine) {
+    return map_filter_run_options(
+        noise_maps_enabled(engine), engine.write_filtered_maps_partial,
+        noise_product_outputs_enabled(engine),
+        empirical_noise_weights_enabled(engine));
+}
+
 template <class MapsToArrays, class MapsToStokes, class ArraysToMaps,
           class WriteMaps>
 struct MapFilterCallbacks {
@@ -64,4 +72,3 @@ MapFilterOutputTargets<FitsVector> map_filter_output_targets(
             "filtered coadded maps"};
     }
 }
-

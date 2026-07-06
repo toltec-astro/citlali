@@ -12,9 +12,8 @@ template <class FitsEntry, class MapBuffer, class Wcs, class Logger>
 void add_primary_map_image_hdus(
     FitsEntry &fits_entry, MapBuffer &mb, Eigen::Index i,
     const std::string &map_name, const std::string &stokes_suffix,
-    const Wcs &wcs, double source_epoch, bool run_noise_products,
-    bool run_noise, bool apply_empirical_noise_weights, bool is_beammap,
-    const Logger &logger) {
+    const Wcs &wcs, double source_epoch, bool empirical_weight_calibration,
+    bool is_beammap, const Logger &logger) {
     add_map_hdu_with_wcs(
         fits_entry, signal_map_hdu_name(map_name, stokes_suffix),
         mb->signal[i], wcs, source_epoch);
@@ -24,9 +23,6 @@ void add_primary_map_image_hdus(
         fits_entry, weight_map_hdu_name(map_name, stokes_suffix),
         mb->weight[i], wcs, source_epoch);
     const std::string weight_unit = map_weight_unit(mb->sig_unit);
-    const bool empirical_weight_calibration =
-        empirical_weight_calibration_enabled(
-            run_noise_products, run_noise, apply_empirical_noise_weights);
     add_weight_map_metadata(
         *fits_entry.hdus.back(), weight_unit, empirical_weight_calibration);
     if (i < mb->noise_weight_scale.size()) {
