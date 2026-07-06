@@ -58,7 +58,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         if (rtcproc.run_kernel) {
             citlali::pipeline::add_kernel_map_image_hdu(
                 fits_io->at(map_index), mb, i, map_name, stokes_suffix,
-                rtcproc.kernel, calib.array_fwhms[calib.arrays(i)], mb->wcs,
+                rtcproc.kernel, calib.array_fwhms[array_index], mb->wcs,
                 source_epoch, RAD_TO_ASEC, logger);
         }
 
