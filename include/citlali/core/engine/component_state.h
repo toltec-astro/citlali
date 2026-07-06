@@ -19,7 +19,7 @@
 #include <citlali/core/utils/fitting.h>
 #include <citlali/core/utils/toltec_io.h>
 
-struct reduClasses {
+struct ReductionComponents {
     // reduction classes
     engine::Calib calib;
     engine::Telescope telescope;
@@ -40,3 +40,5 @@ struct reduClasses {
     mapmaking::MLMapmaker ml_mm;
     mapmaking::WienerFilter wiener_filter;
 };
+
+using reduClasses = ReductionComponents;

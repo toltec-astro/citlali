@@ -120,14 +120,14 @@
 #include <citlali/core/engine/kidsproc.h>
 #include <citlali/core/engine/todproc.h>
 
-class Engine: public reduControls,
-              public reduClasses,
-              public beammapControls,
-              public pointingControls,
-              public EngineRunState {
+class Engine: public ReductionControls,
+              public ReductionComponents,
+              public BeammapControls,
+              public PointingControls,
+              public EngineRuntimeState {
 public:
     // type for missing/invalid keys
-    using key_vec_t = EngineRunState::key_vec_t;
+    using key_vec_t = EngineRuntimeState::key_vec_t;
 
     // per obsnum setup common to all redu types
     void obsnum_setup();

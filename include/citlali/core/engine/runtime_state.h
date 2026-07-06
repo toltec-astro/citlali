@@ -13,7 +13,7 @@
 #include <citlali/core/engine/learning.h>
 #include <citlali/core/utils/fits_io.h>
 
-struct EngineRunState {
+struct EngineRuntimeState {
     // type for missing/invalid keys
     using key_vec_t = std::vector<std::vector<std::string>>;
 
@@ -133,3 +133,5 @@ struct EngineRunState {
     map_fits_io_t coadd_fits_io_vec, coadd_noise_fits_io_vec;
     map_fits_io_t filtered_coadd_fits_io_vec, filtered_coadd_noise_fits_io_vec;
 };
+
+using EngineRunState = EngineRuntimeState;

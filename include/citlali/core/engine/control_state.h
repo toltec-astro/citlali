@@ -6,7 +6,7 @@
 
 #include <Eigen/Core>
 
-struct reduControls {
+struct ReductionControls {
     // interpolate over gaps in timestreams
     bool interp_over_gaps;
     // create reduction subdirectories
@@ -31,7 +31,7 @@ struct reduControls {
     bool run_source_finder;
 };
 
-struct beammapControls {
+struct BeammapControls {
     // source name
     std::string beammap_source_name;
 
@@ -135,7 +135,7 @@ struct beammapControls {
     double lower_sens_factor, upper_sens_factor;
 };
 
-struct pointingControls {
+struct PointingControls {
     // source-aware pointing strategy.  Gaussian fits are optional diagnostics;
     // fruit loops remains empirical and uses previous maps.
     std::string pointing_source_strategy = "standard";
@@ -144,3 +144,7 @@ struct pointingControls {
     double pointing_header_center_max_radius_arcsec = 0.0;
     bool pointing_header_center_require_coverage = true;
 };
+
+using reduControls = ReductionControls;
+using beammapControls = BeammapControls;
+using pointingControls = PointingControls;
