@@ -21,6 +21,48 @@ _citlali_refactor_detect_jobs() {
   fi
 }
 
+_citlali_refactor_bool_on() {
+  [[ "$1" =~ ^([Oo][Nn]|1|[Tt][Rr][Uu][Ee]|[Yy][Ee][Ss])$ ]]
+}
+
+_citlali_refactor_bool_norm() {
+  if _citlali_refactor_bool_on "$1"; then
+    echo ON
+  else
+    echo OFF
+  fi
+}
+
+_citlali_refactor_cache_value() {
+  local build_dir="$1"
+  local key="$2"
+  local cache_file="${build_dir}/CMakeCache.txt"
+
+  if [[ ! -f "${cache_file}" ]]; then
+    return 0
+  fi
+
+  sed -n "s/^${key}:[^=]*=//p" "${cache_file}" | head -n 1
+}
+
+_citlali_refactor_cmake_inputs_changed() {
+  local previous_head="$1"
+  local current_head="$2"
+
+  if [[ -z "${previous_head}" || -z "${current_head}" || "${previous_head}" == "${current_head}" ]]; then
+    return 1
+  fi
+
+  ! git diff --quiet "${previous_head}" "${current_head}" -- \
+    CMakeLists.txt \
+    CMakePresets.json \
+    CMakeUserPresets.json \
+    ':(glob)**/*.cmake' \
+    data/config.yaml \
+    data/default_config.h.in \
+    patches
+}
+
 citlali_refactor_update() {
   local repo="${CITLALI_REFACTOR_REPO:-${HOME}/work_toltec/citlali_dev/citlali_refactor}"
   local branch="${CITLALI_REFACTOR_BRANCH:-codex/structural-refactor}"
@@ -34,6 +76,7 @@ citlali_refactor_update() {
   local use_installed_netcdf="${CITLALI_USE_INSTALLED_NETCDF:-ON}"
   local tula_dir="${CITLALI_TULA_DIR:-}"
   local conan_cmd="${CITLALI_CONAN_CMD:-${CONAN_CMD:-}}"
+  local configure_mode="${CITLALI_REFACTOR_CONFIGURE:-auto}"
   local baseline_repo="${CITLALI_BASELINE_REPO:-${HOME}/work_toltec/citlali_dev/citlali}"
   local conan_cmd_default="/work/toltec/toltec_shared/toltec_astro/extern/pyenv/versions/conan1/bin/conan"
   local conan_cmd_fallback="/work/toltec/toltec_shared/toltec_astro/venvs/toltec_20241023/envs/conan1/bin/conan"
@@ -94,6 +137,9 @@ citlali_refactor_update() {
 
     cd "${repo}"
 
+    local previous_head=""
+    previous_head="$(git rev-parse HEAD 2>/dev/null || true)"
+
     git fetch "${remote}" "${branch}"
     if git show-ref --verify --quiet "refs/heads/${branch}"; then
       git switch "${branch}"
@@ -103,22 +149,8 @@ citlali_refactor_update() {
     git pull --ff-only "${remote}" "${branch}"
 
     git log -1 --oneline
-
-    if [[ "${use_installed_netcdf}" =~ ^([Oo][Nn]|1|[Tt][Rr][Uu][Ee])$ ]]; then
-      local stale_find_module
-      for stale_find_module in \
-        FindHDF5.cmake \
-        Findhdf5.cmake \
-        FindnetCDF.cmake \
-        FindNetCDF.cmake \
-        FindCURL.cmake
-      do
-        if [[ -e "${build_dir}/${stale_find_module}" ]]; then
-          echo "Removing stale Conan finder: ${build_dir}/${stale_find_module}"
-          rm -f "${build_dir}/${stale_find_module}"
-        fi
-      done
-    fi
+    local current_head
+    current_head="$(git rev-parse HEAD)"
 
     local cmake_args=(
       -S .
@@ -132,6 +164,7 @@ citlali_refactor_update() {
       -DUSE_INSTALLED_NETCDFCXX4=OFF
       -DCONAN_INSTALL_NETCDFCXX4=OFF
       -DFETCH_NETCDFCXX4=ON
+      -DFETCHCONTENT_UPDATES_DISCONNECTED=ON
     )
 
     if [[ -n "${preset}" ]]; then
@@ -151,7 +184,68 @@ citlali_refactor_update() {
       cmake_args+=(-U FETCHCONTENT_SOURCE_DIR_TULA)
     fi
 
-    cmake "${cmake_args[@]}"
+    local configure_reason=""
+    case "${configure_mode}" in
+      [Aa][Ll][Ww][Aa][Yy][Ss]|[Oo][Nn]|1|[Tt][Rr][Uu][Ee])
+        configure_reason="forced by CITLALI_REFACTOR_CONFIGURE=${configure_mode}"
+        ;;
+      [Nn][Ee][Vv][Ee][Rr]|[Oo][Ff][Ff]|0|[Ff][Aa][Ll][Ss][Ee])
+        if [[ ! -f "${build_dir}/CMakeCache.txt" ]]; then
+          echo "CITLALI_REFACTOR_CONFIGURE=${configure_mode}, but ${build_dir}/CMakeCache.txt is missing." >&2
+          return 1
+        fi
+        ;;
+      [Aa][Uu][Tt][Oo]|"")
+        if [[ ! -f "${build_dir}/CMakeCache.txt" ]]; then
+          configure_reason="missing CMakeCache.txt"
+        elif [[ ! -d "${build_dir}/CMakeFiles" ]]; then
+          configure_reason="missing CMakeFiles directory"
+        elif _citlali_refactor_cmake_inputs_changed "${previous_head}" "${current_head}"; then
+          configure_reason="CMake/dependency inputs changed since previous HEAD"
+        elif [[ "$(_citlali_refactor_cache_value "${build_dir}" CMAKE_BUILD_TYPE)" != "${build_type}" ]]; then
+          configure_reason="CMAKE_BUILD_TYPE changed"
+        elif [[ "$(_citlali_refactor_bool_norm "$(_citlali_refactor_cache_value "${build_dir}" CITLALI_USE_WIENER_FILTER_OMP)")" != "$(_citlali_refactor_bool_norm "${wiener_omp}")" ]]; then
+          configure_reason="CITLALI_USE_WIENER_FILTER_OMP changed"
+        elif [[ "$(_citlali_refactor_bool_norm "$(_citlali_refactor_cache_value "${build_dir}" USE_INSTALLED_NETCDF)")" != "$(_citlali_refactor_bool_norm "${use_installed_netcdf}")" ]]; then
+          configure_reason="USE_INSTALLED_NETCDF changed"
+        elif [[ "$(_citlali_refactor_bool_norm "$(_citlali_refactor_cache_value "${build_dir}" FETCHCONTENT_UPDATES_DISCONNECTED)")" != ON ]]; then
+          configure_reason="FETCHCONTENT_UPDATES_DISCONNECTED is not enabled in cache"
+        elif [[ -n "${conan_cmd}" && "$(_citlali_refactor_cache_value "${build_dir}" CONAN_CMD)" != "${conan_cmd}" ]]; then
+          configure_reason="CONAN_CMD changed"
+        elif [[ -n "${tula_dir}" && "$(_citlali_refactor_cache_value "${build_dir}" FETCHCONTENT_SOURCE_DIR_TULA)" != "${tula_dir}" ]]; then
+          configure_reason="FETCHCONTENT_SOURCE_DIR_TULA changed"
+        elif [[ -z "${tula_dir}" && -n "$(_citlali_refactor_cache_value "${build_dir}" FETCHCONTENT_SOURCE_DIR_TULA)" ]]; then
+          configure_reason="FETCHCONTENT_SOURCE_DIR_TULA must be cleared"
+        fi
+        ;;
+      *)
+        echo "Unknown CITLALI_REFACTOR_CONFIGURE=${configure_mode}; use auto, always, or never." >&2
+        return 2
+        ;;
+    esac
+
+    if [[ -n "${configure_reason}" ]]; then
+      echo "Configuring ${build_dir}: ${configure_reason}."
+      if _citlali_refactor_bool_on "${use_installed_netcdf}"; then
+        local stale_find_module
+        for stale_find_module in \
+          FindHDF5.cmake \
+          Findhdf5.cmake \
+          FindnetCDF.cmake \
+          FindNetCDF.cmake \
+          FindCURL.cmake
+        do
+          if [[ -e "${build_dir}/${stale_find_module}" ]]; then
+            echo "Removing stale Conan finder: ${build_dir}/${stale_find_module}"
+            rm -f "${build_dir}/${stale_find_module}"
+          fi
+        done
+      fi
+      cmake "${cmake_args[@]}"
+    else
+      echo "Skipping CMake configure; build tree is current. Set CITLALI_REFACTOR_CONFIGURE=always to force it."
+    fi
+
     echo "Building ${target} with ${jobs} job(s)."
     cmake --build "${build_dir}" --target "${target}" -j "${jobs}"
 
