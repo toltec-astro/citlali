@@ -294,6 +294,37 @@ The current suite includes eight cases:
 All cases are expected to have zero low-level differences after ignoring
 `runtime.output_dir`.
 
+The compact translator currently covers the common runtime/output/map/product
+surface plus selected direct controls:
+
+- `runtime.fitreport_dir`
+- `products.noise_randomize_dets`
+- `products.noise_apply_empirical_weights`
+- `products.tod_indices`
+- `products.map_filtering`
+- `products.map_histogram_bins`
+- `products.source_finding`
+- `processing.chunking`
+- `processing.raw`
+- `processing.clean_enabled`
+- `processing.standard_pca`
+- `processing.second_pass_local`
+- `processing.source_mask_radius_arcsec`
+- `processing.learning`
+- `processing.polarimetry`
+- `processing.fruitloops_*`
+- `filter.wiener`
+- `source.map_regime`
+- `source.fit_model`
+- `source.fit_radius_arcsec`
+- `source.fit_box_arcsec`
+- `beammap.rfi_mask`
+- `beammap.scan_band_mask`
+- `beammap.split_fits`
+
+These additions are still translator/config-tooling surfaces. They do not
+change Citlali's C++ config parser or runtime defaults.
+
 ## Translation Utilities
 
 These translators live in the Citlali refactor tree on purpose. They treat

@@ -33,6 +33,8 @@ TOP_LEVEL_KEYS = {
     "map",
     "products",
     "processing",
+    "filter",
+    "source",
     "pointing",
     "oof",
     "beammap",
@@ -344,6 +346,80 @@ def apply_diagnostics(
     raise ConfigError("`products.diagnostics` must be none, minimal, normal, verbose, detailed, or line_audit")
 
 
+def apply_map_filtering(
+    value: Any,
+    patch: dict[str, Any],
+    applied: list[dict[str, Any]],
+    warnings: list[str],
+) -> None:
+    if isinstance(value, bool):
+        record_set(patch, applied, ("post_processing", "map_filtering", "enabled"), value)
+        return
+    if not isinstance(value, dict):
+        raise ConfigError("`products.map_filtering` must be boolean or a mapping")
+    warn_unknown_keys(
+        warnings,
+        "products.map_filtering",
+        value,
+        {"enabled", "type", "normalize_errors"},
+    )
+    apply_direct_mappings(
+        value,
+        {
+            "enabled": ("post_processing", "map_filtering", "enabled"),
+            "type": ("post_processing", "map_filtering", "type"),
+            "normalize_errors": ("post_processing", "map_filtering", "normalize_errors"),
+        },
+        patch,
+        applied,
+    )
+
+
+def apply_source_finding(
+    value: Any,
+    patch: dict[str, Any],
+    applied: list[dict[str, Any]],
+    warnings: list[str],
+) -> None:
+    if isinstance(value, bool):
+        record_set(patch, applied, ("post_processing", "source_finding", "enabled"), value)
+        return
+    if not isinstance(value, dict):
+        raise ConfigError("`products.source_finding` must be boolean or a mapping")
+    warn_unknown_keys(
+        warnings,
+        "products.source_finding",
+        value,
+        {"enabled", "mode", "source_sigma", "source_window_arcsec"},
+    )
+    apply_direct_mappings(
+        value,
+        {
+            "enabled": ("post_processing", "source_finding", "enabled"),
+            "mode": ("post_processing", "source_finding", "mode"),
+            "source_sigma": ("post_processing", "source_finding", "source_sigma"),
+            "source_window_arcsec": ("post_processing", "source_finding", "source_window_arcsec"),
+        },
+        patch,
+        applied,
+    )
+
+
+def apply_tod_indices(
+    value: Any,
+    patch: dict[str, Any],
+    applied: list[dict[str, Any]],
+    warnings: list[str],
+) -> None:
+    if not isinstance(value, dict):
+        raise ConfigError("`products.tod_indices` must be a mapping")
+    warn_unknown_keys(warnings, "products.tod_indices", value, {"rtc", "ptc"})
+    if "rtc" in value:
+        record_set(patch, applied, ("timestream", "raw_time_chunk", "output", "indices"), value["rtc"])
+    if "ptc" in value:
+        record_set(patch, applied, ("timestream", "processed_time_chunk", "output", "indices"), value["ptc"])
+
+
 def apply_clean_mode(
     value: Any,
     patch: dict[str, Any],
@@ -389,6 +465,110 @@ def apply_clean_mode(
         )
 
 
+def apply_chunking(
+    value: Any,
+    patch: dict[str, Any],
+    applied: list[dict[str, Any]],
+    warnings: list[str],
+) -> None:
+    if not isinstance(value, dict):
+        raise ConfigError("`processing.chunking` must be a mapping")
+    warn_unknown_keys(warnings, "processing.chunking", value, {"mode", "force", "value"})
+    apply_direct_mappings(
+        value,
+        {
+            "mode": ("timestream", "chunking", "chunk_mode"),
+            "force": ("timestream", "chunking", "force_chunking"),
+            "value": ("timestream", "chunking", "value"),
+        },
+        patch,
+        applied,
+    )
+
+
+def apply_raw_processing(
+    value: Any,
+    patch: dict[str, Any],
+    applied: list[dict[str, Any]],
+    warnings: list[str],
+) -> None:
+    if not isinstance(value, dict):
+        raise ConfigError("`processing.raw` must be a mapping")
+    warn_unknown_keys(
+        warnings,
+        "processing.raw",
+        value,
+        {
+            "despike",
+            "filter",
+            "iir_filter",
+            "downsample",
+            "flux_calibration",
+            "extinction_correction",
+            "line_audit",
+        },
+    )
+    apply_direct_mappings(
+        value,
+        {
+            "despike": ("timestream", "raw_time_chunk", "despike", "enabled"),
+            "filter": ("timestream", "raw_time_chunk", "filter", "enabled"),
+            "iir_filter": ("timestream", "raw_time_chunk", "IIR_filter", "enabled"),
+            "downsample": ("timestream", "raw_time_chunk", "downsample", "enabled"),
+            "flux_calibration": ("timestream", "raw_time_chunk", "flux_calibration", "enabled"),
+            "extinction_correction": ("timestream", "raw_time_chunk", "extinction_correction", "enabled"),
+            "line_audit": ("timestream", "raw_time_chunk", "line_audit", "enabled"),
+        },
+        patch,
+        applied,
+    )
+
+
+def apply_standard_pca(
+    value: Any,
+    patch: dict[str, Any],
+    applied: list[dict[str, Any]],
+    warnings: list[str],
+) -> None:
+    if not isinstance(value, dict):
+        raise ConfigError("`processing.standard_pca` must be a mapping")
+    warn_unknown_keys(warnings, "processing.standard_pca", value, {"n_eig_to_cut", "stddev_limit", "n_calc"})
+    apply_direct_mappings(
+        value,
+        {
+            "n_eig_to_cut": ("timestream", "processed_time_chunk", "clean", "standard_pca", "n_eig_to_cut"),
+            "stddev_limit": ("timestream", "processed_time_chunk", "clean", "standard_pca", "stddev_limit"),
+            "n_calc": ("timestream", "processed_time_chunk", "clean", "standard_pca", "n_calc"),
+        },
+        patch,
+        applied,
+    )
+
+
+def apply_polarimetry(
+    value: Any,
+    patch: dict[str, Any],
+    applied: list[dict[str, Any]],
+    warnings: list[str],
+) -> None:
+    if isinstance(value, bool):
+        record_set(patch, applied, ("timestream", "polarimetry", "enabled"), value)
+        return
+    if not isinstance(value, dict):
+        raise ConfigError("`processing.polarimetry` must be boolean or a mapping")
+    warn_unknown_keys(warnings, "processing.polarimetry", value, {"enabled", "grouping", "ignore_hwpr"})
+    apply_direct_mappings(
+        value,
+        {
+            "enabled": ("timestream", "polarimetry", "enabled"),
+            "grouping": ("timestream", "polarimetry", "grouping"),
+            "ignore_hwpr": ("timestream", "polarimetry", "ignore_hwpr"),
+        },
+        patch,
+        applied,
+    )
+
+
 def apply_processing(
     compact: dict[str, Any],
     patch: dict[str, Any],
@@ -400,12 +580,44 @@ def apply_processing(
         warnings,
         "processing",
         processing,
-        {"tod", "clean", "clean_grouping", "weighting", "fruitloops", "fruitloops_iters"},
+        {
+            "tod",
+            "chunking",
+            "raw",
+            "clean",
+            "clean_enabled",
+            "clean_grouping",
+            "standard_pca",
+            "weighting",
+            "source_mask_radius_arcsec",
+            "second_pass_local",
+            "learning",
+            "polarimetry",
+            "fruitloops",
+            "fruitloops_iters",
+            "fruitloops_source",
+            "fruitloops_type",
+            "fruitloops_save_all_iters",
+            "fruitloops_support_radius_arcsec",
+            "fruitloops_support_radius_fwhm",
+            "fruitloops_center_keep_radius_arcsec",
+        },
     )
     if "tod" in processing:
         record_set(patch, applied, ("timestream", "enabled"), normalize_boolish(processing["tod"], field="processing.tod"))
+    if "chunking" in processing:
+        apply_chunking(processing["chunking"], patch, applied, warnings)
+    if "raw" in processing:
+        apply_raw_processing(processing["raw"], patch, applied, warnings)
     if "clean" in processing:
         apply_clean_mode(processing["clean"], patch, applied)
+    if "clean_enabled" in processing:
+        record_set(
+            patch,
+            applied,
+            ("timestream", "processed_time_chunk", "clean", "enabled"),
+            normalize_boolish(processing["clean_enabled"], field="processing.clean_enabled"),
+        )
     if "clean_grouping" in processing:
         record_set(
             patch,
@@ -413,8 +625,33 @@ def apply_processing(
             ("timestream", "processed_time_chunk", "clean", "grouping"),
             normalize_string_list(processing["clean_grouping"], field="processing.clean_grouping"),
         )
+    if "standard_pca" in processing:
+        apply_standard_pca(processing["standard_pca"], patch, applied, warnings)
     if "weighting" in processing:
         record_set(patch, applied, ("timestream", "processed_time_chunk", "weighting", "type"), processing["weighting"])
+    if "source_mask_radius_arcsec" in processing:
+        record_set(
+            patch,
+            applied,
+            ("timestream", "processed_time_chunk", "weighting", "source_mask_radius_arcsec"),
+            processing["source_mask_radius_arcsec"],
+        )
+    if "second_pass_local" in processing:
+        record_set(
+            patch,
+            applied,
+            ("timestream", "processed_time_chunk", "flagging", "second_pass_local", "enabled"),
+            normalize_boolish(processing["second_pass_local"], field="processing.second_pass_local"),
+        )
+    if "learning" in processing:
+        record_set(
+            patch,
+            applied,
+            ("timestream", "learning", "enabled"),
+            normalize_boolish(processing["learning"], field="processing.learning"),
+        )
+    if "polarimetry" in processing:
+        apply_polarimetry(processing["polarimetry"], patch, applied, warnings)
     if "fruitloops" in processing:
         record_set(
             patch,
@@ -424,6 +661,67 @@ def apply_processing(
         )
     if "fruitloops_iters" in processing:
         record_set(patch, applied, ("timestream", "fruit_loops", "max_iters"), processing["fruitloops_iters"])
+    direct_fruitloops = {
+        "fruitloops_source": ("timestream", "fruit_loops", "path"),
+        "fruitloops_type": ("timestream", "fruit_loops", "type"),
+        "fruitloops_save_all_iters": ("timestream", "fruit_loops", "save_all_iters"),
+        "fruitloops_support_radius_arcsec": ("timestream", "fruit_loops", "adaptive_support_radius_arcsec"),
+        "fruitloops_support_radius_fwhm": ("timestream", "fruit_loops", "adaptive_support_radius_fwhm"),
+        "fruitloops_center_keep_radius_arcsec": ("timestream", "fruit_loops", "center_keep_radius_arcsec"),
+    }
+    apply_direct_mappings(processing, direct_fruitloops, patch, applied)
+
+
+def apply_source(
+    compact: dict[str, Any],
+    patch: dict[str, Any],
+    applied: list[dict[str, Any]],
+    warnings: list[str],
+) -> None:
+    source = section(compact, "source")
+    warn_unknown_keys(
+        warnings,
+        "source",
+        source,
+        {"map_regime", "fit_model", "fit_radius_arcsec", "fit_box_arcsec"},
+    )
+    apply_direct_mappings(
+        source,
+        {
+            "map_regime": ("source", "map_regime"),
+            "fit_model": ("post_processing", "source_fitting", "model"),
+            "fit_radius_arcsec": ("post_processing", "source_fitting", "fitting_radius_arcsec"),
+            "fit_box_arcsec": ("post_processing", "source_fitting", "bounding_box_arcsec"),
+        },
+        patch,
+        applied,
+    )
+
+
+def apply_filter(
+    compact: dict[str, Any],
+    patch: dict[str, Any],
+    applied: list[dict[str, Any]],
+    warnings: list[str],
+) -> None:
+    filter_config = section(compact, "filter")
+    warn_unknown_keys(warnings, "filter", filter_config, {"wiener"})
+    wiener = filter_config.get("wiener")
+    if wiener is None:
+        return
+    if not isinstance(wiener, dict):
+        raise ConfigError("`filter.wiener` must be a mapping")
+    warn_unknown_keys(warnings, "filter.wiener", wiener, {"template_type", "template_fwhm_arcsec", "lowpass_only"})
+    apply_direct_mappings(
+        wiener,
+        {
+            "template_type": ("wiener_filter", "template_type"),
+            "template_fwhm_arcsec": ("wiener_filter", "template_fwhm_arcsec"),
+            "lowpass_only": ("wiener_filter", "lowpass_only"),
+        },
+        patch,
+        applied,
+    )
 
 
 def apply_pointing(
@@ -582,6 +880,9 @@ def apply_beammap(
             "reference_det",
             "detector_weighting",
             "detector_tod",
+            "rfi_mask",
+            "scan_band_mask",
+            "split_fits",
             "priors",
         },
     )
@@ -594,6 +895,9 @@ def apply_beammap(
         "reference_det": ("beammap", "reference_det"),
         "detector_weighting": ("beammap", "detector_weighting", "mode"),
         "detector_tod": ("beammap", "detector_tod_output", "enabled"),
+        "rfi_mask": ("beammap", "rfi_mask", "enabled"),
+        "scan_band_mask": ("beammap", "scan_band_mask", "enabled"),
+        "split_fits": ("beammap", "split_fits_by_flag", "enabled"),
     }
     apply_direct_mappings(beammap, direct, patch, applied)
     if "priors" in beammap:
@@ -628,12 +932,13 @@ def build_compact_patch(compact: dict[str, Any], compact_path: Path) -> tuple[di
     )
 
     runtime = section(compact, "runtime")
-    warn_unknown_keys(warnings, "runtime", runtime, {"threads", "parallel"})
+    warn_unknown_keys(warnings, "runtime", runtime, {"threads", "parallel", "fitreport_dir"})
     apply_direct_mappings(
         runtime,
         {
             "threads": ("runtime", "n_threads"),
             "parallel": ("runtime", "parallel_policy"),
+            "fitreport_dir": ("kids", "solver", "fitreportdir"),
         },
         patch,
         applied,
@@ -669,7 +974,21 @@ def build_compact_patch(compact: dict[str, Any], compact_path: Path) -> tuple[di
         warnings,
         "products",
         products,
-        {"maps", "noise", "noise_count", "noise_products", "noise_realizations", "tod", "diagnostics"},
+        {
+            "maps",
+            "noise",
+            "noise_count",
+            "noise_products",
+            "noise_realizations",
+            "noise_randomize_dets",
+            "noise_apply_empirical_weights",
+            "tod",
+            "tod_indices",
+            "diagnostics",
+            "map_filtering",
+            "map_histogram_bins",
+            "source_finding",
+        },
     )
     apply_direct_mappings(
         products,
@@ -679,16 +998,27 @@ def build_compact_patch(compact: dict[str, Any], compact_path: Path) -> tuple[di
             "noise_count": ("noise_maps", "n_noise_maps"),
             "noise_products": ("noise_maps", "products", "enabled"),
             "noise_realizations": ("noise_maps", "write_realizations"),
+            "noise_randomize_dets": ("noise_maps", "randomize_dets"),
+            "noise_apply_empirical_weights": ("noise_maps", "products", "apply_empirical_weights"),
+            "map_histogram_bins": ("post_processing", "map_histogram_n_bins"),
         },
         patch,
         applied,
     )
     if "tod" in products:
         apply_tod_mode(products["tod"], patch, applied)
+    if "tod_indices" in products:
+        apply_tod_indices(products["tod_indices"], patch, applied, warnings)
     if "diagnostics" in products:
         apply_diagnostics(products["diagnostics"], patch, applied, warnings)
+    if "map_filtering" in products:
+        apply_map_filtering(products["map_filtering"], patch, applied, warnings)
+    if "source_finding" in products:
+        apply_source_finding(products["source_finding"], patch, applied, warnings)
 
     apply_processing(compact, patch, applied, warnings)
+    apply_filter(compact, patch, applied, warnings)
+    apply_source(compact, patch, applied, warnings)
     apply_pointing(compact, patch, applied, warnings)
     apply_oof(compact, patch, applied, warnings)
     apply_beammap(compact, patch, applied, warnings)

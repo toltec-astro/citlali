@@ -215,22 +215,52 @@ def copy_common_sections(
         ("runtime", "verbose"): ("output", "verbose"),
         ("runtime", "n_threads"): ("runtime", "threads"),
         ("runtime", "parallel_policy"): ("runtime", "parallel"),
+        ("kids", "solver", "fitreportdir"): ("runtime", "fitreport_dir"),
         ("mapmaking", "cunit"): ("map", "unit"),
         ("mapmaking", "method"): ("map", "method"),
         ("mapmaking", "grouping"): ("map", "grouping"),
         ("mapmaking", "pixel_axes"): ("map", "pixel_axes"),
         ("mapmaking", "pixel_size_arcsec"): ("map", "pixel_size_arcsec"),
         ("coadd", "enabled"): ("map", "coadd"),
+        ("source", "map_regime"): ("source", "map_regime"),
         ("mapmaking", "enabled"): ("products", "maps"),
         ("noise_maps", "enabled"): ("products", "noise"),
         ("noise_maps", "n_noise_maps"): ("products", "noise_count"),
         ("noise_maps", "products", "enabled"): ("products", "noise_products"),
         ("noise_maps", "write_realizations"): ("products", "noise_realizations"),
+        ("noise_maps", "randomize_dets"): ("products", "noise_randomize_dets"),
+        ("noise_maps", "products", "apply_empirical_weights"): ("products", "noise_apply_empirical_weights"),
+        ("post_processing", "map_histogram_n_bins"): ("products", "map_histogram_bins"),
+        ("post_processing", "source_fitting", "model"): ("source", "fit_model"),
         ("timestream", "enabled"): ("processing", "tod"),
         ("timestream", "processed_time_chunk", "clean", "grouping"): ("processing", "clean_grouping"),
         ("timestream", "processed_time_chunk", "weighting", "type"): ("processing", "weighting"),
+        ("timestream", "processed_time_chunk", "weighting", "source_mask_radius_arcsec"): (
+            "processing",
+            "source_mask_radius_arcsec",
+        ),
+        ("timestream", "processed_time_chunk", "flagging", "second_pass_local", "enabled"): (
+            "processing",
+            "second_pass_local",
+        ),
+        ("timestream", "learning", "enabled"): ("processing", "learning"),
         ("timestream", "fruit_loops", "enabled"): ("processing", "fruitloops"),
         ("timestream", "fruit_loops", "max_iters"): ("processing", "fruitloops_iters"),
+        ("timestream", "fruit_loops", "path"): ("processing", "fruitloops_source"),
+        ("timestream", "fruit_loops", "type"): ("processing", "fruitloops_type"),
+        ("timestream", "fruit_loops", "save_all_iters"): ("processing", "fruitloops_save_all_iters"),
+        ("timestream", "fruit_loops", "adaptive_support_radius_arcsec"): (
+            "processing",
+            "fruitloops_support_radius_arcsec",
+        ),
+        ("timestream", "fruit_loops", "adaptive_support_radius_fwhm"): (
+            "processing",
+            "fruitloops_support_radius_fwhm",
+        ),
+        ("timestream", "fruit_loops", "center_keep_radius_arcsec"): (
+            "processing",
+            "fruitloops_center_keep_radius_arcsec",
+        ),
     }
     for source_path, compact_path in common_paths.items():
         copy_path(low_level, compact, summary, source_path, compact_path)
@@ -240,15 +270,151 @@ def copy_common_sections(
         set_path(compact, ("products", "tod"), mode)
         summary.append({"low_level": "timestream.*_time_chunk.output.enabled", "compact": "products.tod"})
 
+    chunking: dict[str, Any] = {}
+    chunking_fields = {
+        ("timestream", "chunking", "chunk_mode"): "mode",
+        ("timestream", "chunking", "force_chunking"): "force",
+        ("timestream", "chunking", "value"): "value",
+    }
+    for source_path, compact_key in chunking_fields.items():
+        found, value = path_get(low_level, source_path)
+        if found:
+            chunking[compact_key] = value
+    if chunking:
+        set_path(compact, ("processing", "chunking"), chunking)
+        summary.append({"low_level": "timestream.chunking", "compact": "processing.chunking"})
+
+    raw_processing: dict[str, Any] = {}
+    raw_fields = {
+        ("timestream", "raw_time_chunk", "despike", "enabled"): "despike",
+        ("timestream", "raw_time_chunk", "filter", "enabled"): "filter",
+        ("timestream", "raw_time_chunk", "IIR_filter", "enabled"): "iir_filter",
+        ("timestream", "raw_time_chunk", "downsample", "enabled"): "downsample",
+        ("timestream", "raw_time_chunk", "flux_calibration", "enabled"): "flux_calibration",
+        ("timestream", "raw_time_chunk", "extinction_correction", "enabled"): "extinction_correction",
+        ("timestream", "raw_time_chunk", "line_audit", "enabled"): "line_audit",
+    }
+    for source_path, compact_key in raw_fields.items():
+        found, value = path_get(low_level, source_path)
+        if found:
+            raw_processing[compact_key] = value
+    if raw_processing:
+        set_path(compact, ("processing", "raw"), raw_processing)
+        summary.append({"low_level": "timestream.raw_time_chunk.*.enabled", "compact": "processing.raw"})
+
+    tod_indices: dict[str, Any] = {}
+    found, indices = path_get(low_level, ("timestream", "raw_time_chunk", "output", "indices"))
+    if found:
+        tod_indices["rtc"] = indices
+    found, indices = path_get(low_level, ("timestream", "processed_time_chunk", "output", "indices"))
+    if found:
+        tod_indices["ptc"] = indices
+    if tod_indices:
+        set_path(compact, ("products", "tod_indices"), tod_indices)
+        summary.append({"low_level": "timestream.*_time_chunk.output.indices", "compact": "products.tod_indices"})
+
     cleaner = clean_mode(low_level)
     if cleaner is not None:
         set_path(compact, ("processing", "clean"), cleaner)
         summary.append({"low_level": "timestream.processed_time_chunk.clean.*", "compact": "processing.clean"})
+    else:
+        found, clean_enabled = path_get(low_level, ("timestream", "processed_time_chunk", "clean", "enabled"))
+        if found:
+            set_path(compact, ("processing", "clean_enabled"), clean_enabled)
+            summary.append(
+                {
+                    "low_level": "timestream.processed_time_chunk.clean.enabled",
+                    "compact": "processing.clean_enabled",
+                }
+            )
+
+    standard_pca: dict[str, Any] = {}
+    standard_pca_fields = {
+        ("timestream", "processed_time_chunk", "clean", "standard_pca", "n_eig_to_cut"): "n_eig_to_cut",
+        ("timestream", "processed_time_chunk", "clean", "standard_pca", "stddev_limit"): "stddev_limit",
+        ("timestream", "processed_time_chunk", "clean", "standard_pca", "n_calc"): "n_calc",
+    }
+    for source_path, compact_key in standard_pca_fields.items():
+        found, value = path_get(low_level, source_path)
+        if found:
+            standard_pca[compact_key] = value
+    if standard_pca:
+        set_path(compact, ("processing", "standard_pca"), standard_pca)
+        summary.append(
+            {
+                "low_level": "timestream.processed_time_chunk.clean.standard_pca",
+                "compact": "processing.standard_pca",
+            }
+        )
+
+    polarimetry: dict[str, Any] = {}
+    polarimetry_fields = {
+        ("timestream", "polarimetry", "enabled"): "enabled",
+        ("timestream", "polarimetry", "grouping"): "grouping",
+        ("timestream", "polarimetry", "ignore_hwpr"): "ignore_hwpr",
+    }
+    for source_path, compact_key in polarimetry_fields.items():
+        found, value = path_get(low_level, source_path)
+        if found:
+            polarimetry[compact_key] = value
+    if polarimetry:
+        set_path(compact, ("processing", "polarimetry"), polarimetry)
+        summary.append({"low_level": "timestream.polarimetry", "compact": "processing.polarimetry"})
+
+    wiener: dict[str, Any] = {}
+    wiener_fields = {
+        ("wiener_filter", "template_type"): "template_type",
+        ("wiener_filter", "template_fwhm_arcsec"): "template_fwhm_arcsec",
+        ("wiener_filter", "lowpass_only"): "lowpass_only",
+    }
+    for source_path, compact_key in wiener_fields.items():
+        found, value = path_get(low_level, source_path)
+        if found:
+            wiener[compact_key] = value
+    if wiener:
+        set_path(compact, ("filter", "wiener"), wiener)
+        summary.append({"low_level": "wiener_filter", "compact": "filter.wiener"})
 
     found, verbose = path_get(low_level, ("runtime", "verbose"))
     if found:
         set_path(compact, ("products", "diagnostics"), "verbose" if verbose else "normal")
         summary.append({"low_level": "runtime.verbose", "compact": "products.diagnostics"})
+
+    map_filtering: dict[str, Any] = {}
+    map_filtering_fields = {
+        ("post_processing", "map_filtering", "enabled"): "enabled",
+        ("post_processing", "map_filtering", "type"): "type",
+        ("post_processing", "map_filtering", "normalize_errors"): "normalize_errors",
+    }
+    for source_path, compact_key in map_filtering_fields.items():
+        found, value = path_get(low_level, source_path)
+        if found:
+            map_filtering[compact_key] = value
+    if map_filtering:
+        set_path(compact, ("products", "map_filtering"), map_filtering)
+        summary.append({"low_level": "post_processing.map_filtering", "compact": "products.map_filtering"})
+
+    source_finding: dict[str, Any] = {}
+    source_finding_fields = {
+        ("post_processing", "source_finding", "enabled"): "enabled",
+        ("post_processing", "source_finding", "mode"): "mode",
+        ("post_processing", "source_finding", "source_sigma"): "source_sigma",
+        ("post_processing", "source_finding", "source_window_arcsec"): "source_window_arcsec",
+    }
+    for source_path, compact_key in source_finding_fields.items():
+        found, value = path_get(low_level, source_path)
+        if found:
+            source_finding[compact_key] = value
+    if source_finding:
+        set_path(compact, ("products", "source_finding"), source_finding)
+        summary.append({"low_level": "post_processing.source_finding", "compact": "products.source_finding"})
+
+    source_fit_paths = {
+        ("post_processing", "source_fitting", "fitting_radius_arcsec"): ("source", "fit_radius_arcsec"),
+        ("post_processing", "source_fitting", "bounding_box_arcsec"): ("source", "fit_box_arcsec"),
+    }
+    for source_path, compact_path in source_fit_paths.items():
+        copy_path(low_level, compact, summary, source_path, compact_path)
 
 
 def copy_pointing_section(
@@ -319,6 +485,9 @@ def copy_beammap_section(low_level: dict[str, Any], compact: dict[str, Any], sum
         ("beammap", "reference_det"): ("beammap", "reference_det"),
         ("beammap", "detector_weighting", "mode"): ("beammap", "detector_weighting"),
         ("beammap", "detector_tod_output", "enabled"): ("beammap", "detector_tod"),
+        ("beammap", "rfi_mask", "enabled"): ("beammap", "rfi_mask"),
+        ("beammap", "scan_band_mask", "enabled"): ("beammap", "scan_band_mask"),
+        ("beammap", "split_fits_by_flag", "enabled"): ("beammap", "split_fits"),
     }
     for source_path, compact_path in beammap_paths.items():
         copy_path(low_level, compact, summary, source_path, compact_path)

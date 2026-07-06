@@ -694,6 +694,6 @@ rules:
     reason: Remaining post-processing fields are expert-only until promoted through a compact key.
   - id: expert-wiener
     pattern: wiener_filter*
-    classification: user-facing
-    owner: compact
-    reason: Remaining Wiener-filter fields are normal filter authoring choices.
+    classification: expert
+    owner: citlali
+    reason: Remaining Wiener-filter convergence and iteration controls are expert tuning; compact exposes template and lowpass choices separately.
