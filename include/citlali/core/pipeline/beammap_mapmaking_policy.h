@@ -4,7 +4,10 @@
 
 #include <Eigen/Core>
 
+#include <array>
 #include <cstddef>
+#include <sstream>
+#include <string>
 
 namespace citlali::pipeline {
 
@@ -112,6 +115,61 @@ void reset_beammap_mapmaking_buffers(
             }
         }
     }
+}
+
+template <class Ptc, class MapBuffer, class JincMapMaker, class Logger>
+void log_beammap_jinc_preflight(
+    const Ptc &ptc, const Eigen::VectorXd &detector_arrays,
+    const MapBuffer &omb, const JincMapMaker &jinc_mm,
+    const Logger &logger) {
+    std::array<Eigen::Index, 3> array_counts = {0, 0, 0};
+    for (Eigen::Index det = 0; det < ptc.scans.data.cols(); ++det) {
+        auto array_index = static_cast<int>(detector_arrays(det));
+        if (array_index >= 0 &&
+            array_index < static_cast<int>(array_counts.size())) {
+            array_counts[static_cast<std::size_t>(array_index)]++;
+        }
+    }
+
+    Eigen::Index map_min = -1;
+    Eigen::Index map_max = -1;
+    if (ptc.map_indices.data.size() > 0) {
+        map_min = ptc.map_indices.data.minCoeff();
+        map_max = ptc.map_indices.data.maxCoeff();
+    }
+
+    std::ostringstream kernel_dims;
+    for (int array_index = 0; array_index < 3; ++array_index) {
+        auto it = jinc_mm.jinc_weights_mat.find(array_index);
+        if (it == jinc_mm.jinc_weights_mat.end()) {
+            continue;
+        }
+        if (kernel_dims.tellp() > 0) {
+            kernel_dims << ", ";
+        }
+        kernel_dims << "a" << array_index << "="
+                    << it->second.rows() << "x" << it->second.cols();
+    }
+
+    logger->info(
+        "beammap jinc preflight: n_dets={} n_pts={} n_maps={} map_index_range=[{}, {}] "
+        "subpixel_n={} kernel_dims=[{}] array_counts=[{},{},{}]",
+        ptc.scans.data.cols(),
+        ptc.scans.data.rows(),
+        omb.signal.size(),
+        map_min,
+        map_max,
+        jinc_mm.subpixel_n,
+        kernel_dims.str(),
+        array_counts[0],
+        array_counts[1],
+        array_counts[2]);
+}
+
+inline bool use_beammap_detector_ptc_weights(const std::string &mode,
+                                             bool measurement_iter) {
+    return mode == "ptc" ||
+           (mode == "ptc_after_iter0" && measurement_iter);
 }
 
 }  // namespace citlali::pipeline

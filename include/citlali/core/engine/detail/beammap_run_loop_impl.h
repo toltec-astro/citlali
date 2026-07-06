@@ -189,8 +189,8 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                     }
                 }
                 const bool use_ptc_weights =
-                    beammap_detector_weighting_mode == "ptc" ||
-                    (beammap_detector_weighting_mode == "ptc_after_iter0" && measurement_iter);
+                    citlali::pipeline::use_beammap_detector_ptc_weights(
+                        beammap_detector_weighting_mode, measurement_iter);
                 if (use_ptc_weights) {
                     logger->info("calculating detector-mode PTC weights for scan {} (mode={})",
                                  ptcs[i].index.data + 1, beammap_detector_weighting_mode);
@@ -255,44 +255,8 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                         }
                         else if (mapmaking_method ==
                                  citlali::config::MapMethod::jinc) {
-                            std::array<Eigen::Index, 3> array_counts = {0, 0, 0};
-                            for (Eigen::Index det = 0; det < ptc.scans.data.cols(); ++det) {
-                                auto array_index = static_cast<int>(calib.apt["array"](det));
-                                if (array_index >= 0 && array_index < static_cast<int>(array_counts.size())) {
-                                    array_counts[static_cast<size_t>(array_index)]++;
-                                }
-                            }
-                            Eigen::Index map_min = -1;
-                            Eigen::Index map_max = -1;
-                            if (ptc.map_indices.data.size() > 0) {
-                                map_min = ptc.map_indices.data.minCoeff();
-                                map_max = ptc.map_indices.data.maxCoeff();
-                            }
-                            std::ostringstream kernel_dims;
-                            for (int array_index = 0; array_index < 3; ++array_index) {
-                                auto it = jinc_mm.jinc_weights_mat.find(array_index);
-                                if (it == jinc_mm.jinc_weights_mat.end()) {
-                                    continue;
-                                }
-                                if (kernel_dims.tellp() > 0) {
-                                    kernel_dims << ", ";
-                                }
-                                kernel_dims << "a" << array_index << "="
-                                            << it->second.rows() << "x" << it->second.cols();
-                            }
-                            logger->info(
-                                "beammap jinc preflight: n_dets={} n_pts={} n_maps={} map_index_range=[{}, {}] "
-                                "subpixel_n={} kernel_dims=[{}] array_counts=[{},{},{}]",
-                                ptc.scans.data.cols(),
-                                ptc.scans.data.rows(),
-                                omb.signal.size(),
-                                map_min,
-                                map_max,
-                                jinc_mm.subpixel_n,
-                                kernel_dims.str(),
-                                array_counts[0],
-                                array_counts[1],
-                                array_counts[2]);
+                            citlali::pipeline::log_beammap_jinc_preflight(
+                                ptc, calib.apt["array"], omb, jinc_mm, logger);
                             jinc_mm.populate_maps_jinc_parallel(ptc, omb, cmb, ptc.map_indices.data,
                                                                 telescope.pixel_axes, scan_apt,
                                                                 telescope.d_fsmp, run_omb, run_noise,
