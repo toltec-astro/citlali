@@ -320,6 +320,36 @@ inline std::string_view to_string(FruitLoopsInterpModeOverride value) {
     return enum_name(value, fruit_loops_interp_mode_override_names);
 }
 
+inline bool is_fruit_loops_interp_mode(
+    std::string_view value, FruitLoopsInterpModeOverride mode) {
+    return value == to_string(mode);
+}
+
+inline bool is_fruit_loops_auto_interp_mode(std::string_view value) {
+    return is_fruit_loops_interp_mode(
+        value, FruitLoopsInterpModeOverride::automatic);
+}
+
+inline bool is_fruit_loops_nearest_interp_mode(std::string_view value) {
+    return is_fruit_loops_interp_mode(
+        value, FruitLoopsInterpModeOverride::nearest);
+}
+
+inline bool is_fruit_loops_bilinear_interp_mode(std::string_view value) {
+    return is_fruit_loops_interp_mode(
+        value, FruitLoopsInterpModeOverride::bilinear);
+}
+
+inline bool is_fruit_loops_jinc_interp_mode(std::string_view value) {
+    return is_fruit_loops_interp_mode(
+        value, FruitLoopsInterpModeOverride::jinc);
+}
+
+inline bool is_fruit_loops_trunc_interp_mode(std::string_view value) {
+    return is_fruit_loops_interp_mode(
+        value, FruitLoopsInterpModeOverride::trunc);
+}
+
 struct TodStreamOutputConfig {
     bool enabled = false;
     TodStreamOutputMode mode = TodStreamOutputMode::full;

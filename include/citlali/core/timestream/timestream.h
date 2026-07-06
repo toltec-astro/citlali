@@ -31,6 +31,7 @@
 #include <kids/core/wcs.h>
 
 #include <citlali/core/config/mapmaking_config.h>
+#include <citlali/core/config/timestream_config.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
 #include <citlali/core/utils/toltec_io.h>
@@ -1484,7 +1485,8 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
         }
     }
 
-    if (fruit_loops_interp_mode == "jinc") {
+    if (citlali::config::is_fruit_loops_jinc_interp_mode(
+            fruit_loops_interp_mode)) {
         allocate_fruit_loops_jinc_matrix(tod_mb.pixel_size_rad);
     }
     else {
@@ -2534,7 +2536,8 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                 Eigen::Index trunc_ir = 0;
                 Eigen::Index trunc_ic = 0;
 
-                if (fruit_loops_interp_mode == "trunc") {
+                if (citlali::config::is_fruit_loops_trunc_interp_mode(
+                        fruit_loops_interp_mode)) {
                     // Legacy v4.x behavior: cast to integer pixel indices (truncate toward zero).
                     trunc_ir = static_cast<Eigen::Index>(map_row);
                     trunc_ic = static_cast<Eigen::Index>(map_col);
@@ -2551,10 +2554,12 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                                map_row <= static_cast<double>(mb.n_rows - 1) &&
                                map_col <= static_cast<double>(mb.n_cols - 1);
                     if (on_image) {
-                        if (fruit_loops_interp_mode == "jinc") {
+                        if (citlali::config::is_fruit_loops_jinc_interp_mode(
+                                fruit_loops_interp_mode)) {
                             signal = sample_map_jinc(mb.signal[map_index], array_id, map_row, map_col);
                         }
-                        else if (fruit_loops_interp_mode == "nearest") {
+                        else if (citlali::config::is_fruit_loops_nearest_interp_mode(
+                                     fruit_loops_interp_mode)) {
                             const auto ir = std::clamp(static_cast<Eigen::Index>(std::llround(map_row)),
                                                        Eigen::Index{0}, mb.n_rows - 1);
                             const auto ic = std::clamp(static_cast<Eigen::Index>(std::llround(map_col)),
@@ -2570,14 +2575,17 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                 if (on_image) {
                     auto sample_kernel_value = [&]() {
                         double kernel_value = 0.0;
-                        if (fruit_loops_interp_mode == "jinc") {
+                        if (citlali::config::is_fruit_loops_jinc_interp_mode(
+                                fruit_loops_interp_mode)) {
                             kernel_value = sample_map_jinc(mb.kernel[map_index], array_id,
                                                            map_row, map_col);
                         }
-                        else if (fruit_loops_interp_mode == "trunc") {
+                        else if (citlali::config::is_fruit_loops_trunc_interp_mode(
+                                     fruit_loops_interp_mode)) {
                             kernel_value = mb.kernel[map_index](trunc_ir, trunc_ic);
                         }
-                        else if (fruit_loops_interp_mode == "nearest") {
+                        else if (citlali::config::is_fruit_loops_nearest_interp_mode(
+                                     fruit_loops_interp_mode)) {
                             const auto ir = std::clamp(static_cast<Eigen::Index>(std::llround(map_row)),
                                                        Eigen::Index{0}, mb.n_rows - 1);
                             const auto ic = std::clamp(static_cast<Eigen::Index>(std::llround(map_col)),
