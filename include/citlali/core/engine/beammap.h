@@ -235,6 +235,8 @@ public:
     void apply_final_network_position_flags();
     void update_final_prior_match_diagnostics();
     void log_final_network_qc_summary();
+    void clear_beammap_ptc_diagnostics();
+    void write_beammap_ptc_products(int output_iter);
     void write_detector_specific_ptc_tod(int output_iter);
     void write_detector_table_outputs();
 
@@ -254,6 +256,7 @@ public:
 };
 
 #include <citlali/core/engine/detail/beammap_detector_tod_output_impl.h>
+#include <citlali/core/engine/detail/beammap_ptc_product_output_impl.h>
 #include <citlali/core/engine/detail/beammap_detector_table_output_impl.h>
 #include <citlali/core/engine/detail/beammap_map_product_output_impl.h>
 #include <citlali/core/engine/detail/beammap_empirical_template_calibration_impl.h>
