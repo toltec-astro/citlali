@@ -7,29 +7,23 @@ void read_post_processing_activation_config(
     Config &config, bool &run_map_filter, bool &run_source_finder,
     PostProcessingConfig &typed_post_processing_config,
     KeyList &missing_keys, KeyList &invalid_keys) {
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        ::get_config_value(config, run_map_filter, missing_keys, invalid_keys,
-                           std::tuple{"post_processing", "map_filtering", "enabled"});
-        if (config_parse_clean(
-                missing_keys, invalid_keys, missing_before, invalid_before)) {
-            typed_post_processing_config.map_filtering_enabled = run_map_filter;
-            typed_post_processing_config.map_filtering.enabled = run_map_filter;
-        }
-    }
+    read_config_value_if_clean(
+        config, std::tuple{"post_processing", "map_filtering", "enabled"},
+        run_map_filter,
+        [&typed_post_processing_config](bool enabled) {
+            typed_post_processing_config.map_filtering_enabled = enabled;
+            typed_post_processing_config.map_filtering.enabled = enabled;
+        },
+        missing_keys, invalid_keys);
 
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        ::get_config_value(config, run_source_finder, missing_keys, invalid_keys,
-                           std::tuple{"post_processing", "source_finding", "enabled"});
-        if (config_parse_clean(
-                missing_keys, invalid_keys, missing_before, invalid_before)) {
-            typed_post_processing_config.source_finding_enabled = run_source_finder;
-            typed_post_processing_config.source_finding.enabled = run_source_finder;
-        }
-    }
+    read_config_value_if_clean(
+        config, std::tuple{"post_processing", "source_finding", "enabled"},
+        run_source_finder,
+        [&typed_post_processing_config](bool enabled) {
+            typed_post_processing_config.source_finding_enabled = enabled;
+            typed_post_processing_config.source_finding.enabled = enabled;
+        },
+        missing_keys, invalid_keys);
 }
 
 template <class Config, class MapFitter, class PostProcessingConfig,
@@ -46,46 +40,28 @@ void read_source_fitting_config(
 
     typed_post_processing_config.source_fitting.active = true;
 
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        ::get_config_value(
-            config, map_fitter.bounding_box_pix, missing_keys, invalid_keys,
-            std::tuple{"post_processing", "source_fitting", "bounding_box_arcsec"},
-            {}, {0});
-        if (config_parse_clean(
-                missing_keys, invalid_keys, missing_before, invalid_before)) {
-            typed_post_processing_config.source_fitting.bounding_box_arcsec =
-                map_fitter.bounding_box_pix;
-        }
-    }
+    read_mirrored_config_value(
+        config,
+        std::tuple{"post_processing", "source_fitting", "bounding_box_arcsec"},
+        map_fitter.bounding_box_pix,
+        typed_post_processing_config.source_fitting.bounding_box_arcsec,
+        missing_keys, invalid_keys, {}, {0});
 
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        ::get_config_value(
-            config, map_fitter.fitting_region_pix, missing_keys, invalid_keys,
-            std::tuple{"post_processing", "source_fitting", "fitting_radius_arcsec"});
-        if (config_parse_clean(
-                missing_keys, invalid_keys, missing_before, invalid_before)) {
-            typed_post_processing_config.source_fitting.fitting_radius_arcsec =
-                map_fitter.fitting_region_pix;
-        }
-    }
+    read_mirrored_config_value(
+        config,
+        std::tuple{"post_processing", "source_fitting",
+                   "fitting_radius_arcsec"},
+        map_fitter.fitting_region_pix,
+        typed_post_processing_config.source_fitting.fitting_radius_arcsec,
+        missing_keys, invalid_keys);
 
-    {
-        const auto missing_before = missing_keys.size();
-        const auto invalid_before = invalid_keys.size();
-        ::get_config_value(
-            config, map_fitter.fit_angle, missing_keys, invalid_keys,
-            std::tuple{"post_processing", "source_fitting", "gauss_model",
-                       "fit_rotation_angle"});
-        if (config_parse_clean(
-                missing_keys, invalid_keys, missing_before, invalid_before)) {
-            typed_post_processing_config.source_fitting.fit_rotation_angle =
-                map_fitter.fit_angle;
-        }
-    }
+    read_mirrored_config_value(
+        config,
+        std::tuple{"post_processing", "source_fitting", "gauss_model",
+                   "fit_rotation_angle"},
+        map_fitter.fit_angle,
+        typed_post_processing_config.source_fitting.fit_rotation_angle,
+        missing_keys, invalid_keys);
 
     map_fitter.bounding_box_pix =
         citlali::pipeline::source_fitting_arcsec_to_pixels(
@@ -116,4 +92,3 @@ void read_source_fitting_config(
 
     citlali::pipeline::apply_positive_source_fit_limits(map_fitter);
 }
-
