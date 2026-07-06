@@ -50,16 +50,7 @@
 #include <citlali/core/utils/fitting.h>
 #include <citlali/core/utils/pointing.h>
 
-#include <citlali/core/config/beammap_config.h>
-#include <citlali/core/config/calibration_config.h>
-#include <citlali/core/config/coadd_config.h>
-#include <citlali/core/config/mapmaking_config.h>
-#include <citlali/core/config/noise_config.h>
-#include <citlali/core/config/pointing_config.h>
-#include <citlali/core/config/post_processing_config.h>
 #include <citlali/core/config/reduction_config.h>
-#include <citlali/core/config/runtime_config.h>
-#include <citlali/core/config/timestream_config.h>
 #include <citlali/core/engine/config.h>
 #include <citlali/core/engine/learning.h>
 #include <citlali/core/engine/calib.h>
