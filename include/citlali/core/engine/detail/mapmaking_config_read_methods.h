@@ -47,19 +47,20 @@ template <class Config, class JincMapmaker, class MaximumLikelihoodMapmaker,
           class ArrayNameMap, class PtcProc, class MissingKeys,
           class InvalidKeys>
 void read_method_specific_mapmaker_config(
-    Config &config, const std::string &map_method, JincMapmaker &jinc_mm,
+    Config &config, citlali::config::MapMethod map_method,
+    JincMapmaker &jinc_mm,
     MaximumLikelihoodMapmaker &ml_mm, const ArrayNameMap &array_name_map,
     PtcProc &ptcproc, double pixel_size_rad, MissingKeys &missing_keys,
     InvalidKeys &invalid_keys) {
-    if (map_method == "jinc") {
+    if (map_method == citlali::config::MapMethod::jinc) {
         read_jinc_filter_config(
             config, jinc_mm, array_name_map, missing_keys, invalid_keys);
         citlali::pipeline::finalize_jinc_filter_config(
             jinc_mm, ptcproc, pixel_size_rad);
     }
-    else if (map_method == "maximum_likelihood") {
+    else if (map_method ==
+             citlali::config::MapMethod::maximum_likelihood) {
         read_maximum_likelihood_mapmaker_config(
             config, ml_mm, missing_keys, invalid_keys);
     }
 }
-

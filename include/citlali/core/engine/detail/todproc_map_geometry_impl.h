@@ -47,7 +47,8 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
             pointing_offsets_arcsec["alt"] = engine().pointing_offsets_arcsec["alt"].segment(si,sl);
 
             // don't need to find the offsets if in detector mode
-            if (engine().map_grouping!="detector") {
+            if (engine().typed_config.mapmaking.grouping !=
+                citlali::config::MapGrouping::detector) {
                 // loop through detectors
                 grppi::map(tula::grppi_utils::dyn_ex(engine().parallel_policy), det_in_vec, det_out_vec, [&](auto j) {
 

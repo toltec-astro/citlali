@@ -66,8 +66,9 @@ void Engine::get_mapmaking_config(CT &config) {
         parallel_policy, omb, cmb, jinc_mm);
 
     citlali::engine_detail::read_method_specific_mapmaker_config(
-        config, map_method, jinc_mm, ml_mm, toltec_io.array_name_map,
-        ptcproc, omb.pixel_size_rad, missing_keys, invalid_keys);
+        config, mapmaking_config.method, jinc_mm, ml_mm,
+        toltec_io.array_name_map, ptcproc, omb.pixel_size_rad, missing_keys,
+        invalid_keys);
 
     citlali::engine_detail::read_noise_map_config(
         config, run_noise, run_coadd, omb, cmb, noise_config,

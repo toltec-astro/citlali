@@ -94,7 +94,6 @@ auto Engine::setup_filenames(std::string dir_name) {
 }
 
 auto Engine::get_map_name(int i) {
-    const std::string map_grouping_name{
-        citlali::config::to_string(typed_config.mapmaking.grouping)};
-    return citlali::pipeline::map_layer_name(i, map_grouping_name, calib);
+    return citlali::pipeline::map_layer_name(
+        i, typed_config.mapmaking.grouping, calib);
 }
