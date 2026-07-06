@@ -80,6 +80,54 @@ still compares structured FITS, netCDF, CSV, and ECSV summaries. Override the
 tolerances with `CITLALI_BASELINE_ATOL` and `CITLALI_BASELINE_RTOL`, or pass
 additional `compare_manifests.py` arguments after the two manifest paths.
 
+## Product Triage Reports
+
+Use `compare_reduction_products.py` when you want a fast, reduction-aware
+summary of the latest output products rather than a strict deterministic
+manifest gate. It resolves `latest` `reduNN` directories, compares matching
+FITS/netCDF/table products, reports missing or extra products, and ranks numeric
+array/column differences by absolute and fractional size.
+
+Pointing validation against the latest downloaded refactor run:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/compare_reduction_products.py \
+  --base-root /Users/gwilson/work_toltec/local_data/2026-refactor \
+  --mode point \
+  --baseline-redu latest \
+  --candidate-redu latest \
+  --report-out /tmp/point_product_compare.md
+```
+
+Beammap validation once the long run has landed:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/compare_reduction_products.py \
+  --base-root /Users/gwilson/work_toltec/local_data/2026-refactor \
+  --mode beammap \
+  --baseline-redu latest \
+  --candidate-redu latest \
+  --report-out /tmp/beammap_product_compare.md
+```
+
+Science coadd triage, with an explicit baseline/candidate pair when the latest
+directories are not the intended comparison:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/compare_reduction_products.py \
+  /Users/gwilson/work_toltec/local_data/2026-refactor/science/citlali/reduced/redu13 \
+  /Users/gwilson/work_toltec/local_data/2026-refactor/science/refactor/reduced/redu09 \
+  --mode science \
+  --top 30 \
+  --json-out /tmp/science_product_compare.json \
+  --report-out /tmp/science_product_compare.md
+```
+
+By default, the product triage skips logs, configs, `learning_iter_*.csv`, and
+`*_timestream.nc` files so the report stays focused on map/table/diagnostic
+products. Pass `--include-timestream` or explicit `--include`/`--exclude` globs
+for deeper diagnostics.
+
 ## Files
 
 - `run_manifest_template.yaml`: human-fillable run record template for Unity or
@@ -93,6 +141,8 @@ additional `compare_manifests.py` arguments after the two manifest paths.
   files, changed metadata, changed checksums, and changed structured summaries.
 - `compare_deterministic_manifests.sh`: wrapper around `compare_manifests.py`
   with the standard deterministic refactor gate policy.
+- `compare_reduction_products.py`: reduction-aware product triage report for
+  latest/direct `reduNN` pairs, with FITS/netCDF/table numeric differences.
 - `examples/tiny_reduction/`: a fake tiny output directory for checking the
   tools without a Citlali reduction.
 - `examples/tiny_manifest.json`: an illustrative manifest shape for the tiny
@@ -128,3 +178,11 @@ $HOME/tolteca/bin/python tools/baseline/compare_manifests.py \
 ```
 
 The comparator should report `manifests match`.
+
+The product triage tool can also be checked against the tiny fixture:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/compare_reduction_products.py \
+  tools/baseline/examples/tiny_reduction \
+  tools/baseline/examples/tiny_reduction
+```
