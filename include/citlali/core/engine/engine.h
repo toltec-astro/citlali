@@ -359,25 +359,7 @@ public:
     std::string rtcdiag_filename;
     std::string ptcdiag_filename;
 
-    // legacy shared TOD output selection (kept for backward compatibility helpers)
-    bool tod_output_chunk_select_enabled = false;
-    std::vector<Eigen::Index> tod_output_chunks;
-    Eigen::VectorXI tod_scan_to_output_scan;
-    Eigen::Index n_tod_output_scans = 0;
-
-    // per-stream TOD output selection
-    bool tod_output_chunk_select_enabled_rtc = false;
-    bool tod_output_chunk_select_enabled_ptc = false;
-    std::vector<Eigen::Index> tod_output_chunks_rtc;
-    std::vector<Eigen::Index> tod_output_chunks_ptc;
-    citlali::config::TodOutputSelectionMode tod_output_selection_mode_rtc =
-        citlali::config::TodOutputSelectionMode::indices;
-    citlali::config::TodOutputSelectionMode tod_output_selection_mode_ptc =
-        citlali::config::TodOutputSelectionMode::indices;
-    int tod_output_uniform_count_rtc = 10;
-    int tod_output_uniform_count_ptc = 10;
-    int tod_output_source_dense_count_rtc = 10;
-    int tod_output_source_dense_count_ptc = 10;
+    // per-stream TOD output row maps
     Eigen::VectorXI tod_scan_to_output_scan_rtc;
     Eigen::VectorXI tod_scan_to_output_scan_ptc;
     Eigen::Index n_tod_output_scans_rtc = 0;

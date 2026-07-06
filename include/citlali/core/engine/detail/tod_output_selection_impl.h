@@ -87,13 +87,8 @@ void Engine::setup_tod_output_chunk_selection() {
             return selected_1based;
         };
 
-    auto setup_one = [&](const std::string &stream_name,
-                         bool output_enabled,
-                         bool select_enabled,
-                         const std::vector<Eigen::Index> &chunks_1based,
-                         citlali::config::TodOutputSelectionMode selection_mode,
-                         int uniform_count,
-                         int source_dense_count,
+    auto setup_one = [&](const std::string &stream_name, bool output_enabled,
+                         const citlali::config::TodStreamOutputConfig &config,
                          Eigen::VectorXI &scan_to_output,
                          Eigen::Index &n_output_scans) {
         scan_to_output.resize(n_scans);
@@ -105,27 +100,34 @@ void Engine::setup_tod_output_chunk_selection() {
             return;
         }
 
-        std::vector<Eigen::Index> effective_chunks = chunks_1based;
-        bool effective_select_enabled = select_enabled;
-        if (selection_mode == citlali::config::TodOutputSelectionMode::all) {
+        std::vector<Eigen::Index> effective_chunks;
+        effective_chunks.reserve(config.chunks_1based.size());
+        for (const auto chunk : config.chunks_1based) {
+            effective_chunks.push_back(static_cast<Eigen::Index>(chunk));
+        }
+        bool effective_select_enabled = config.chunk_select_enabled;
+        if (config.selection_mode ==
+            citlali::config::TodOutputSelectionMode::all) {
             effective_select_enabled = false;
             effective_chunks.clear();
         }
-        else if (selection_mode ==
+        else if (config.selection_mode ==
                  citlali::config::TodOutputSelectionMode::uniform_plus_source_crossing) {
             effective_select_enabled = true;
             effective_chunks = build_uniform_plus_source_crossing_chunks(
-                stream_name, uniform_count, source_dense_count);
+                stream_name, config.selection_n_uniform,
+                config.selection_n_source_dense);
             if (effective_chunks.empty()) {
                 logger->error("{} TOD output selection mode uniform_plus_source_crossing selected no chunks",
                               stream_name);
                 std::exit(EXIT_FAILURE);
             }
         }
-        else if (selection_mode != citlali::config::TodOutputSelectionMode::indices) {
+        else if (config.selection_mode !=
+                 citlali::config::TodOutputSelectionMode::indices) {
             logger->error("{} TOD output selection mode '{}' is invalid",
                           stream_name,
-                          citlali::config::to_string(selection_mode));
+                          citlali::config::to_string(config.selection_mode));
             std::exit(EXIT_FAILURE);
         }
 
@@ -161,27 +163,13 @@ void Engine::setup_tod_output_chunk_selection() {
         n_tod_output_scans_ptc = 0;
     }
     else {
-        setup_one("RTC", run_tod_output_rtc, tod_output_chunk_select_enabled_rtc, tod_output_chunks_rtc,
-                  tod_output_selection_mode_rtc, tod_output_uniform_count_rtc, tod_output_source_dense_count_rtc,
+        const auto &output_config = typed_config.timestream.output;
+        const auto &rtc_output_config = output_config.raw_time_chunk;
+        const auto &ptc_output_config = output_config.processed_time_chunk;
+        setup_one("RTC", run_tod_output_rtc, rtc_output_config,
                   tod_scan_to_output_scan_rtc, n_tod_output_scans_rtc);
-        setup_one("PTC", run_tod_output_ptc, tod_output_chunk_select_enabled_ptc, tod_output_chunks_ptc,
-                  tod_output_selection_mode_ptc, tod_output_uniform_count_ptc, tod_output_source_dense_count_ptc,
+        setup_one("PTC", run_tod_output_ptc, ptc_output_config,
                   tod_scan_to_output_scan_ptc, n_tod_output_scans_ptc);
-    }
-
-    // keep legacy shared fields for backwards compatibility with call sites that
-    // do not specify stream type explicitly.
-    if (run_tod_output_rtc) {
-        tod_scan_to_output_scan = tod_scan_to_output_scan_rtc;
-        n_tod_output_scans = n_tod_output_scans_rtc;
-    }
-    else if (run_tod_output_ptc) {
-        tod_scan_to_output_scan = tod_scan_to_output_scan_ptc;
-        n_tod_output_scans = n_tod_output_scans_ptc;
-    }
-    else {
-        tod_scan_to_output_scan.resize(0);
-        n_tod_output_scans = 0;
     }
 }
 
