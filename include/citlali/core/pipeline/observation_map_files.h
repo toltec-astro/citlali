@@ -30,47 +30,25 @@ inline std::string filtered_observation_map_directory(
     return obsnum_dir_name + "filtered/";
 }
 
-inline bool should_create_observation_per_obs_outputs(bool run_coadd) {
-    return !run_coadd;
-}
-
-inline bool should_create_observation_noise_maps(
-    bool run_noise, bool write_noise_realizations) {
-    return run_noise && write_noise_realizations;
-}
-
-inline bool should_create_observation_filtered_maps(bool run_map_filter) {
-    return run_map_filter;
-}
-
-inline bool should_create_observation_filtered_noise_maps(
-    bool run_noise, bool write_noise_realizations) {
-    return should_create_observation_noise_maps(
-        run_noise, write_noise_realizations);
-}
-
 template <class Engine>
 bool should_create_observation_per_obs_outputs(const Engine &engine) {
-    return should_create_observation_per_obs_outputs(
-        coadd_outputs_enabled(engine));
+    return !coadd_outputs_enabled(engine);
 }
 
 template <class Engine>
 bool should_create_observation_noise_maps(const Engine &engine) {
-    return should_create_observation_noise_maps(
-        noise_maps_enabled(engine), noise_realization_outputs_enabled(engine));
+    return noise_maps_enabled(engine) &&
+           noise_realization_outputs_enabled(engine);
 }
 
 template <class Engine>
 bool should_create_observation_filtered_maps(const Engine &engine) {
-    return should_create_observation_filtered_maps(
-        map_filter_outputs_enabled(engine));
+    return map_filter_outputs_enabled(engine);
 }
 
 template <class Engine>
 bool should_create_observation_filtered_noise_maps(const Engine &engine) {
-    return should_create_observation_filtered_noise_maps(
-        noise_maps_enabled(engine), noise_realization_outputs_enabled(engine));
+    return should_create_observation_noise_maps(engine);
 }
 
 template <class FitsFiles, class MakeFits>
