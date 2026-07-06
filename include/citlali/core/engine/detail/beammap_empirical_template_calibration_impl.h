@@ -62,7 +62,8 @@ void Beammap::calc_empirical_template_calibration() {
         }
     }
 
-    if (map_grouping != "detector" ||
+    if (typed_config.mapmaking.grouping !=
+            citlali::config::MapGrouping::detector ||
         static_cast<Eigen::Index>(omb.signal.size()) != n_maps ||
         static_cast<Eigen::Index>(omb.weight.size()) != n_maps ||
         omb.pixel_size_rad <= 0.0) {

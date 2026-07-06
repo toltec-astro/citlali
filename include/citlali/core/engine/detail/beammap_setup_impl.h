@@ -247,7 +247,8 @@ void Beammap::setup() {
     beammap_prior_array_center_y_arcsec.clear();
     beammap_prior_array_alignment.clear();
     if (beammap_priors_enabled) {
-        if (map_grouping != "detector") {
+        if (typed_config.mapmaking.grouping !=
+            citlali::config::MapGrouping::detector) {
             logger->warn("beammap priors requested but map_grouping={} (requires detector); disabling priors",
                          map_grouping);
             beammap_priors_enabled = false;

@@ -14,7 +14,8 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         logger->error("cannot write detector-specific PTC TOD: no scans");
         std::exit(EXIT_FAILURE);
     }
-    if (map_grouping != "detector") {
+    if (typed_config.mapmaking.grouping !=
+        citlali::config::MapGrouping::detector) {
         logger->warn(
             "beammap.detector_tod_output requires detector map grouping; skipping detector-specific PTC TOD");
         return;

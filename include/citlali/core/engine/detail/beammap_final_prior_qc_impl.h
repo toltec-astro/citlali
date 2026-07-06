@@ -6,7 +6,8 @@
 #include <citlali/core/engine/detail/beammap_prior_qc_stats.h>
 
 void Beammap::apply_final_network_position_flags() {
-    if (map_grouping != "detector") {
+    if (typed_config.mapmaking.grouping !=
+        citlali::config::MapGrouping::detector) {
         return;
     }
 
@@ -163,7 +164,9 @@ void Beammap::update_final_prior_match_diagnostics() {
         calib.n_dets, std::numeric_limits<double>::quiet_NaN());
     final_prior_slot_index_diag = Eigen::VectorXi::Constant(calib.n_dets, -1);
 
-    if (map_grouping != "detector" || !beammap_soft_priors_loaded || beammap_soft_prior_slots.empty()) {
+    if (typed_config.mapmaking.grouping !=
+            citlali::config::MapGrouping::detector ||
+        !beammap_soft_priors_loaded || beammap_soft_prior_slots.empty()) {
         return;
     }
 
@@ -277,7 +280,8 @@ void Beammap::update_final_prior_match_diagnostics() {
 }
 
 void Beammap::log_final_network_qc_summary() {
-    if (map_grouping != "detector") {
+    if (typed_config.mapmaking.grouping !=
+        citlali::config::MapGrouping::detector) {
         return;
     }
 

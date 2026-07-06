@@ -157,7 +157,8 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
         auto map_indices = rtcproc.run(rtcdata, ptcdata, calib, telescope, omb.pixel_size_rad, map_grouping,
                                        rtc_outer_output_ptr);
 
-        if (map_grouping!="detector") {
+        if (typed_config.mapmaking.grouping !=
+            citlali::config::MapGrouping::detector) {
             // remove flagged detectors
             rtcproc.remove_flagged_dets(ptcdata, calib.apt);
         }

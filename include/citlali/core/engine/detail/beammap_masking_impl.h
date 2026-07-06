@@ -158,7 +158,9 @@ Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PT
 Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer &map_buffer) {
     ScanBandMaskSummary summary;
 
-    if (!beammap_scan_band_mask_enabled || map_grouping != "detector") {
+    if (!beammap_scan_band_mask_enabled ||
+        typed_config.mapmaking.grouping !=
+            citlali::config::MapGrouping::detector) {
         return summary;
     }
 

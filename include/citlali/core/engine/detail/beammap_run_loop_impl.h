@@ -13,8 +13,11 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
 
     // boost random number generator (0,1)
     boost::random::uniform_int_distribution<> rands{0,1};
+    const bool detector_grouping =
+        typed_config.mapmaking.grouping ==
+        citlali::config::MapGrouping::detector;
 
-    if (beammap_rfi_mask_enabled && map_grouping == "detector") {
+    if (beammap_rfi_mask_enabled && detector_grouping) {
         logger->info("beammap rfi mask enabled: block_size={} min_good={} sigma_threshold={:.4g} sigma_floor={:.4g} dilate_blocks={} max_flagged_fraction={:.4f}",
                      beammap_rfi_mask_block_size_samples,
                      beammap_rfi_mask_min_good_samples,
@@ -23,7 +26,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                      beammap_rfi_mask_dilate_blocks,
                      beammap_rfi_mask_max_flagged_fraction);
     }
-    if (beammap_scan_band_mask_enabled && map_grouping == "detector") {
+    if (beammap_scan_band_mask_enabled && detector_grouping) {
         logger->info(
             "beammap scan-band mask enabled: edge_rows={} min_row_pixels={} min_contiguous_rows={} row_median_sigma_threshold={:.4g} row_sigma_ratio_threshold={:.4g} max_flagged_fraction={:.4f}",
             beammap_scan_band_mask_edge_rows,
@@ -46,7 +49,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
 
         configure_detector_source_centers_from_previous_fit();
         const bool detector_kernel_source_centers_active =
-            map_grouping == "detector" &&
+            detector_grouping &&
             rtcproc.run_kernel &&
             rtcproc.kernel.has_source_centers();
         const bool rerun_source_aware_rtc =
@@ -62,7 +65,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
         ptcs = ptcs0;
         // copy calibs
         calib_scans = calib_scans0;
-        if (beammap_rfi_mask_enabled && map_grouping == "detector" &&
+        if (beammap_rfi_mask_enabled && detector_grouping &&
             rfi_mask_samples_flagged.size() == calib.n_dets &&
             rfi_mask_scans_flagged.size() == calib.n_dets) {
             rfi_mask_samples_flagged.setZero();
@@ -156,7 +159,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
             // For detector-grouped beammaps, keep the locator pass permissive so
             // bright-source scans are less likely to be rejected before we have
             // any source-location estimate to feed back into later iterations.
-            if (map_grouping == "detector" && locator_iter) {
+            if (detector_grouping && locator_iter) {
                 logger->info("skipping remove_bad_dets on beammap locator iter {} for detector scan {}",
                              current_iter, ptcs[i].index.data + 1);
             }
@@ -165,7 +168,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                 calib_scans[i] = ptcproc.remove_bad_dets(ptcs[i], calib_scans[i], map_grouping);
             }
 
-            if (map_grouping == "detector") {
+            if (detector_grouping) {
                 auto rfi_summary = apply_rfi_sample_mask(ptcs[i]);
                 if (beammap_rfi_mask_enabled) {
                     if (rfi_summary.n_samples_flagged > 0 || rfi_summary.n_det_rejected > 0) {
@@ -573,7 +576,8 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
 
             run_mapmaking_pass(true);
 
-            if (beammap_scan_band_mask_enabled && map_grouping == "detector" && locator_iter) {
+            if (beammap_scan_band_mask_enabled && detector_grouping &&
+                locator_iter) {
                 auto scan_band_summary = apply_scan_band_mask(omb);
                 if (scan_band_summary.n_samples_flagged > 0) {
                     logger->info(
@@ -616,7 +620,8 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
 
             logger->info("fitting maps");
             logger->info("beammap fit diagnostics enabled");
-            if (beammap_priors_enabled && beammap_soft_priors_loaded && map_grouping == "detector") {
+            if (beammap_priors_enabled && beammap_soft_priors_loaded &&
+                detector_grouping) {
                 update_prior_frame_estimates();
             }
             // Run beammap fits sequentially. This avoids allocator/covariance instability
@@ -682,7 +687,8 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                     enum class FitInitMode { Blind, Previous, Prior };
                     auto init_mode = FitInitMode::Blind;
                     const bool can_try_prior =
-                        beammap_priors_enabled && beammap_soft_priors_loaded && map_grouping == "detector";
+                        beammap_priors_enabled && beammap_soft_priors_loaded &&
+                        detector_grouping;
                     if (measurement_iter &&
                         good_fits(i) &&
                         p0.cols() > 2 &&

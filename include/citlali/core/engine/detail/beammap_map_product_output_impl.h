@@ -17,9 +17,12 @@ void Beammap::write_beammap_map_products(
 
     namespace fs = std::filesystem;
 
+    const bool detector_grouping =
+        typed_config.mapmaking.grouping ==
+        citlali::config::MapGrouping::detector;
     bool split_by_flag_mode = false;
     if constexpr (map_type == mapmaking::RawObs) {
-        split_by_flag_mode = (map_grouping == "detector") && beammap_split_fits_by_flag;
+        split_by_flag_mode = detector_grouping && beammap_split_fits_by_flag;
         if (split_by_flag_mode && beammap_split_flag_values.empty()) {
             logger->warn("beammap.split_fits_by_flag enabled but no flag_values specified; using standard map output");
             split_by_flag_mode = false;
@@ -69,7 +72,7 @@ void Beammap::write_beammap_map_products(
                 logger->debug("adding map");
                 write_maps(f_io,n_io,mb,i);
 
-                if (map_grouping=="detector") {
+                if (detector_grouping) {
                     if constexpr (map_type == mapmaking::RawObs) {
                         // get the array for the given map
                         Eigen::Index map_index = arrays_to_maps(i);
@@ -239,7 +242,7 @@ void Beammap::write_beammap_map_products(
                         logger->debug("adding split map for detector {} flag={}", i, flag_value);
                         write_maps(split_f_io, split_n_io, mb, i);
 
-                        if (map_grouping == "detector") {
+                        if (detector_grouping) {
                             if constexpr (map_type == mapmaking::RawObs) {
                                 const Eigen::Index map_index = arrays_to_maps(i);
                                 const Eigen::Index k = hdu_layer.at(map_index);
@@ -268,7 +271,7 @@ void Beammap::write_beammap_map_products(
     f_io->clear();
     n_io->clear();
 
-    if (map_grouping!="detector") {
+    if (!detector_grouping) {
         // write psd and histogram files
         logger->debug("writing psds");
         write_psd<map_type>(mb, dir_name);

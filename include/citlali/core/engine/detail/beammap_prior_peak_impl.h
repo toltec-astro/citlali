@@ -62,7 +62,8 @@ bool Beammap::find_map_weighted_peak(Eigen::Index map_index, Eigen::Index &best_
 }
 
 void Beammap::configure_detector_source_centers_from_previous_fit() {
-    if (map_grouping != "detector") {
+    if (typed_config.mapmaking.grouping !=
+        citlali::config::MapGrouping::detector) {
         ptcproc.fruit_loops_source_lat.resize(0);
         ptcproc.fruit_loops_source_lon.resize(0);
         ptcproc.fruit_loops_source_valid.resize(0);

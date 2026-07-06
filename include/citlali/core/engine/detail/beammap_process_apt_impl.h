@@ -175,7 +175,10 @@ void Beammap::process_apt() {
 
     // per-detector derotation elevation for altaz beammaps
     calib.apt["derot_elev"].setConstant(telescope.tel_data["TelElAct"].mean());
-    if (telescope.pixel_axes == "altaz" && map_grouping == "detector" && !ptcs.empty()) {
+    if (telescope.pixel_axes == "altaz" &&
+        typed_config.mapmaking.grouping ==
+            citlali::config::MapGrouping::detector &&
+        !ptcs.empty()) {
         Eigen::MatrixXd elev_best(omb.n_rows, omb.n_cols);
         Eigen::MatrixXd dist2_best(omb.n_rows, omb.n_cols);
         elev_best.setConstant(std::numeric_limits<double>::quiet_NaN());

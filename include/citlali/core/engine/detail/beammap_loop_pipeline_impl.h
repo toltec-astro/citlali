@@ -5,6 +5,10 @@
 
 template <class KidsProc, class RawObs>
 void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+    const bool detector_grouping =
+        typed_config.mapmaking.grouping ==
+        citlali::config::MapGrouping::detector;
+
     // run iterative stage
     run_loop(kidsproc, rawobs);
     ptcproc.fruit_loops_kernel_feedback_enabled = true;
@@ -20,7 +24,7 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     // set to input parallel policy
     parallel_policy = omb.parallel_policy;
 
-    if (map_grouping=="detector") {
+    if (detector_grouping) {
         logger->info("calculating sensitivity");
         // parallelize on detectors
         grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
@@ -35,7 +39,7 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     }
 
     // apt and sensitivity only relevant if beammapping
-    if (map_grouping=="detector") {
+    if (detector_grouping) {
         // rescale fit params from pixel to on-sky units
         calib.apt["amp"] = params.col(0);
         calib.apt["x_t"] = RAD_TO_ASEC*omb.pixel_size_rad*(params.col(1).array() - (omb.n_cols - 1)/2.0);

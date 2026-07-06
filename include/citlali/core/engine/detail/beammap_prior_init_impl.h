@@ -21,7 +21,9 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
     constexpr int prior_reason_below_min_snr = 4;
     constexpr int prior_reason_gate_rejected = 5;
 
-    if (!beammap_soft_priors_loaded || map_grouping != "detector") {
+    if (!beammap_soft_priors_loaded ||
+        typed_config.mapmaking.grouping !=
+            citlali::config::MapGrouping::detector) {
         return false;
     }
     if (map_index < 0 || map_index >= n_maps || map_index >= calib.n_dets) {

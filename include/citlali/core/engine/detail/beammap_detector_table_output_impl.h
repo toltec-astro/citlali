@@ -7,7 +7,8 @@
 #include <citlali/core/engine/detail/beammap_detector_table_vectors.h>
 
 void Beammap::write_detector_table_outputs() {
-    if (map_grouping != "detector") {
+    if (typed_config.mapmaking.grouping !=
+        citlali::config::MapGrouping::detector) {
         return;
     }
 
