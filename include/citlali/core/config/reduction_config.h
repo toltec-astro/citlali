@@ -22,7 +22,6 @@ struct ReductionConfig {
     PointingConfig pointing;
     BeammapConfig beammap;
     AstrometryConfig astrometry;
-    ValidationReport validation;
 };
 
 inline ValidationReport validate(const ReductionConfig &config) {
