@@ -4,6 +4,11 @@
 // Include this only after Engine has been declared.
 
 void Engine::create_ptcdiag_file() {
+    const std::string reduction_type_name{
+        citlali::config::to_string(typed_config.runtime.reduction_type)};
+    const std::string tod_type_name{
+        citlali::config::to_string(typed_config.timestream.type)};
+
     ptcdiag_filename =
         citlali::pipeline::diagnostic_output_netcdf_filename<
             engine_utils::toltecIO::toltec,
@@ -32,7 +37,8 @@ void Engine::create_ptcdiag_file() {
 
     citlali::pipeline::add_pipeline_identity_vars(
         fo, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
-        telescope.project_id, redu_type, telescope.obs_goal, tod_type);
+        telescope.project_id, reduction_type_name, telescope.obs_goal,
+        tod_type_name);
     add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
 
     citlali::pipeline::add_ptcdiag_file_config_vars(
@@ -46,4 +52,3 @@ void Engine::create_ptcdiag_file() {
         fo, calib, ptcdiag_dims.n_scans, n_scans, fill_int, fill_double);
     });
 }
-
