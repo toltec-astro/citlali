@@ -29,7 +29,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             fo, date_obs.back(), telescope.source_name);
 
         // add source flux for beammaps
-        if (reduction_type_name == "beammap") {
+        if (typed_config.runtime.reduction_type ==
+            citlali::config::ReductionType::beammap) {
             citlali::pipeline::add_beammap_tod_header_vars(
                 fo, calib, toltec_io.array_name_map,
                 beammap_fluxes_mJy_beam, beammap_fluxes_MJy_Sr,

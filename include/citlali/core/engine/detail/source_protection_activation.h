@@ -1,15 +1,19 @@
 #pragma once
 
+#include <citlali/core/config/runtime_config.h>
+
 #include <string>
 
 namespace citlali::engine_detail {
 
 template <class RtcProc, class PtcProc, class TimestreamConfig, class Logger>
 void apply_source_protection_activation(
-    const std::string &redu_type, RtcProc &rtcproc, PtcProc &ptcproc,
-    TimestreamConfig &typed_timestream_config, const Logger &logger) {
+    citlali::config::ReductionType reduction_type, RtcProc &rtcproc,
+    PtcProc &ptcproc, TimestreamConfig &typed_timestream_config,
+    const Logger &logger) {
     // The pointing pipeline also covers PSF-preserving focus and holography-style reductions.
-    const bool source_aware_reduction = (redu_type == "pointing");
+    const bool source_aware_reduction =
+        reduction_type == citlali::config::ReductionType::pointing;
     rtcproc.despiker.source_protection_enabled =
         rtcproc.run_despike &&
         rtcproc.despike_source_protection_config_enabled &&
@@ -28,14 +32,16 @@ void apply_source_protection_activation(
         rtcproc.despike_source_protection_config_enabled) {
         logger->info(
             "raw_time_chunk.despike source protection active={} reduction_type={} radius_arcsec={:.4g}",
-            rtcproc.despiker.source_protection_enabled, redu_type,
+            rtcproc.despiker.source_protection_enabled,
+            citlali::config::to_string(reduction_type),
             rtcproc.despiker.source_protection_radius_arcsec);
     }
     if (ptcproc.second_pass_local.enabled &&
         ptcproc.second_pass_local.source_protection_config_enabled) {
         logger->info(
             "processed_time_chunk.flagging.second_pass_local source protection active={} reduction_type={} radius_arcsec={:.4g}",
-            ptcproc.second_pass_local.source_protection_enabled, redu_type,
+            ptcproc.second_pass_local.source_protection_enabled,
+            citlali::config::to_string(reduction_type),
             ptcproc.second_pass_local.source_protection_radius_arcsec);
     }
 }

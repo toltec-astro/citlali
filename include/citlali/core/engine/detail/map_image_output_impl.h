@@ -44,7 +44,9 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 source_epoch);
         };
 
-        const bool is_beammap = redu_type == "beammap";
+        const bool is_beammap =
+            typed_config.runtime.reduction_type ==
+            citlali::config::ReductionType::beammap;
         citlali::pipeline::add_primary_map_image_hdus(
             fits_io->at(map_index), mb, i, map_name, stokes_suffix, mb->wcs,
             source_epoch, run_noise_products, run_noise,

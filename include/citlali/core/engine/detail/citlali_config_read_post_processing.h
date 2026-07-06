@@ -29,10 +29,11 @@ void read_post_processing_activation_config(
 template <class Config, class MapFitter, class PostProcessingConfig,
           class KeyList>
 void read_source_fitting_config(
-    Config &config, const std::string &reduction_type, bool run_map_filter,
-    bool run_source_finder, MapFitter &map_fitter, double pixel_size_rad,
-    double arcsec_to_rad, PostProcessingConfig &typed_post_processing_config,
-    KeyList &missing_keys, KeyList &invalid_keys) {
+    Config &config, citlali::config::ReductionType reduction_type,
+    bool run_map_filter, bool run_source_finder, MapFitter &map_fitter,
+    double pixel_size_rad, double arcsec_to_rad,
+    PostProcessingConfig &typed_post_processing_config, KeyList &missing_keys,
+    KeyList &invalid_keys) {
     if (!citlali::pipeline::source_fitting_config_needed(
             reduction_type, run_map_filter, run_source_finder)) {
         return;

@@ -1,5 +1,8 @@
 #pragma once
 
+#include <citlali/core/config/mapmaking_config.h>
+#include <citlali/core/config/runtime_config.h>
+
 #include <cstdlib>
 #include <string>
 #include <vector>
@@ -11,19 +14,20 @@ inline std::vector<std::string> allowed_map_regimes() {
 }
 
 inline bool map_grouping_disallows_polarization(
-    bool run_polarization, const std::string &redu_type,
-    const std::string &map_grouping) {
+    bool run_polarization, citlali::config::ReductionType reduction_type,
+    citlali::config::MapGrouping map_grouping) {
     return run_polarization &&
-           ((redu_type == "beammap" && map_grouping == "auto") ||
-            map_grouping == "detector");
+           ((reduction_type == citlali::config::ReductionType::beammap &&
+             map_grouping == citlali::config::MapGrouping::automatic) ||
+            map_grouping == citlali::config::MapGrouping::detector);
 }
 
 template <class Logger>
 void enforce_map_grouping_polarization_policy(
-    bool run_polarization, const std::string &redu_type,
-    const std::string &map_grouping, const Logger &logger) {
+    bool run_polarization, citlali::config::ReductionType reduction_type,
+    citlali::config::MapGrouping map_grouping, const Logger &logger) {
     if (!map_grouping_disallows_polarization(
-            run_polarization, redu_type, map_grouping)) {
+            run_polarization, reduction_type, map_grouping)) {
         return;
     }
     logger->error(

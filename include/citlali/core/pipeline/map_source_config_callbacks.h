@@ -32,10 +32,11 @@ inline double source_fitting_arcsec_to_pixels(double value_arcsec,
     return arcsec_to_rad * value_arcsec / pixel_size_rad;
 }
 
-inline bool source_fitting_config_needed(const std::string &reduction_type,
+inline bool source_fitting_config_needed(citlali::config::ReductionType reduction_type,
                                          bool run_map_filter,
                                          bool run_source_finder) {
-    return reduction_type == "pointing" || reduction_type == "beammap" ||
+    return reduction_type == citlali::config::ReductionType::pointing ||
+           reduction_type == citlali::config::ReductionType::beammap ||
            run_map_filter || run_source_finder;
 }
 
@@ -100,4 +101,3 @@ make_source_table_callbacks(const MapToArray &maps_to_arrays,
 constexpr int missing_source_location() {
     return -99;
 }
-

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/config/runtime_config.h>
+
 #include <cstddef>
 #include <map>
 #include <numeric>

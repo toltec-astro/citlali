@@ -4,50 +4,55 @@
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::calc_map_num() {
+    auto &mapmaking_config = engine().typed_config.mapmaking;
+    const auto reduction_type = engine().typed_config.runtime.reduction_type;
+
     // auto map grouping
-    if (engine().map_grouping=="auto") {
+    if (mapmaking_config.grouping == citlali::config::MapGrouping::automatic) {
         // array map grouping for science and pointing
-        if ((engine().redu_type == "science") || (engine().redu_type == "pointing")) {
-            engine().map_grouping = "array";
+        if (reduction_type == citlali::config::ReductionType::science ||
+            reduction_type == citlali::config::ReductionType::pointing) {
+            mapmaking_config.grouping = citlali::config::MapGrouping::array;
         }
 
         // detector map grouping for beammaps
-        else if ((engine().redu_type == "beammap")) {
-            engine().map_grouping = "detector";
+        else if (reduction_type == citlali::config::ReductionType::beammap) {
+            mapmaking_config.grouping = citlali::config::MapGrouping::detector;
         }
     }
 
-    if (engine().map_grouping == "detector" && engine().redu_type != "beammap") {
+    if (mapmaking_config.grouping == citlali::config::MapGrouping::detector &&
+        reduction_type != citlali::config::ReductionType::beammap) {
         logger->warn("mapmaking.grouping=detector is only supported for beammap; defaulting to array for {}",
                      engine().redu_type);
-        engine().map_grouping = "array";
+        mapmaking_config.grouping = citlali::config::MapGrouping::array;
     }
 
+    engine().map_grouping = std::string{citlali::config::to_string(
+        mapmaking_config.grouping)};
     engine().omb.map_grouping = engine().map_grouping;
     engine().cmb.map_grouping = engine().map_grouping;
     engine().rtcproc.kernel.map_grouping = engine().map_grouping;
-    if (auto parsed_grouping =
-            citlali::config::parse_map_grouping(engine().map_grouping)) {
-        engine().typed_config.mapmaking.grouping = *parsed_grouping;
-    }
 
     // overwrite map number for detectors
-    if (engine().map_grouping == "detector") {
+    if (mapmaking_config.grouping == citlali::config::MapGrouping::detector) {
         engine().n_maps = engine().calib.n_dets;
     }
 
     // overwrite map number for networks
-    else if (engine().map_grouping == "nw") {
+    else if (mapmaking_config.grouping ==
+             citlali::config::MapGrouping::network) {
         engine().n_maps = engine().calib.n_nws;
     }
 
     // overwrite map number for arrays
-    else if (engine().map_grouping == "array") {
+    else if (mapmaking_config.grouping == citlali::config::MapGrouping::array) {
         engine().n_maps = engine().calib.n_arrays;
     }
 
     // overwrite map number for fg grouping
-    else if (engine().map_grouping == "fg") {
+    else if (mapmaking_config.grouping ==
+             citlali::config::MapGrouping::frequency_group) {
         // there are potentially 4 fg's per array, so total number of maps is max 4 x n_arrays
         engine().n_maps = engine().calib.fg.size()*engine().calib.n_arrays;
     }
@@ -76,20 +81,21 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
     Eigen::VectorXI array_indices;
 
     // detector gropuing
-    if (engine().map_grouping == "detector") {
+    if (mapmaking_config.grouping == citlali::config::MapGrouping::detector) {
         // only do stokes I as Q and U don't make sense for detector grouping
         // this is just a copy of the array indices from the apt
         array_indices = engine().calib.apt["array"].template cast<Eigen::Index> ();
     }
 
     // array grouping
-    else if (engine().map_grouping == "array") {
+    else if (mapmaking_config.grouping == citlali::config::MapGrouping::array) {
         // if all arrays are included this will be [0,1,2]
         array_indices = engine().calib.arrays;
     }
 
     // network grouping
-    else if (engine().map_grouping == "nw") {
+    else if (mapmaking_config.grouping ==
+             citlali::config::MapGrouping::network) {
         // if all nws/arrays are included this will be:
         // [0,0,0,0,0,0,0,0,1,1,1,1,2,2]
         // nws are ordered automatically when files are read in
@@ -103,7 +109,8 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
     }
 
     // frequency grouping
-    else if (engine().map_grouping == "fg") {
+    else if (mapmaking_config.grouping ==
+             citlali::config::MapGrouping::frequency_group) {
         // size of array indices is number of fg's x number of arrays
         // if all fgs are included, this will be:
         // [0,0,0,0,0,1,1,1,1,1,2,2,2,2,2]

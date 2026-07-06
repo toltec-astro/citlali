@@ -28,7 +28,8 @@ void Engine::get_citlali_config(CT &config) {
     /* get timestream config */
     get_timestream_config(config);
     citlali::engine_detail::apply_source_protection_activation(
-        redu_type, rtcproc, ptcproc, timestream_config, logger);
+        runtime_config.reduction_type, rtcproc, ptcproc, timestream_config,
+        logger);
 
     /* get mapmaking config */
     post_processing_config = citlali::config::PostProcessingConfig{};
@@ -40,8 +41,9 @@ void Engine::get_citlali_config(CT &config) {
 
     // map fitter options if in pointing or beammap mode or if map filtering or source finding are enabled
     citlali::engine_detail::read_source_fitting_config(
-        config, redu_type, run_map_filter, run_source_finder, map_fitter,
-        omb.pixel_size_rad, ASEC_TO_RAD, post_processing_config,
+        config, runtime_config.reduction_type, run_map_filter,
+        run_source_finder, map_fitter, omb.pixel_size_rad, ASEC_TO_RAD,
+        post_processing_config,
         missing_keys, invalid_keys);
 
     /* get wiener filter config */
@@ -56,12 +58,14 @@ void Engine::get_citlali_config(CT &config) {
         post_processing_config, missing_keys, invalid_keys);
 
     /* get pointing config */
-    if (redu_type=="pointing") {
+    if (runtime_config.reduction_type ==
+        citlali::config::ReductionType::pointing) {
         get_pointing_config(config);
     }
 
     /* get beammap config */
-    if (redu_type=="beammap") {
+    if (runtime_config.reduction_type ==
+        citlali::config::ReductionType::beammap) {
         // needs redu_type config
         get_beammap_config(config);
     }

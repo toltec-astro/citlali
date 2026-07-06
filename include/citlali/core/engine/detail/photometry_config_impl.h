@@ -44,7 +44,8 @@ void Engine::get_photometry_config(CT &config) {
             citlali::config::BeammapSourceFluxConfig{array, flux, uncertainty_mJy});
     }
 
-    if (redu_type == "beammap") {
+    if (typed_config.runtime.reduction_type ==
+        citlali::config::ReductionType::beammap) {
         bool valid_flux_config = true;
         for (auto const& entry : toltec_io.array_name_map) {
             const auto &arr_name = entry.second;

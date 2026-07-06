@@ -28,7 +28,8 @@ void Engine::get_mapmaking_config(CT &config) {
         config, map_regime, missing_keys, invalid_keys);
 
     citlali::pipeline::enforce_map_grouping_polarization_policy(
-        rtcproc.run_polarization, redu_type, map_grouping, logger);
+        rtcproc.run_polarization, typed_config.runtime.reduction_type,
+        mapmaking_config.grouping, logger);
 
     citlali::pipeline::sync_map_grouping_to_timestream_processors(
         map_grouping, rtcproc, ptcproc);
