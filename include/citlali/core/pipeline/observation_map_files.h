@@ -3,6 +3,8 @@
 #include <string>
 #include <utility>
 
+#include <citlali/core/pipeline/output_policy.h>
+
 namespace citlali::pipeline {
 
 template <class RawFitsFiles, class NoiseFitsFiles, class FilteredFitsFiles,
@@ -45,6 +47,30 @@ inline bool should_create_observation_filtered_noise_maps(
     bool run_noise, bool write_noise_realizations) {
     return should_create_observation_noise_maps(
         run_noise, write_noise_realizations);
+}
+
+template <class Engine>
+bool should_create_observation_per_obs_outputs(const Engine &engine) {
+    return should_create_observation_per_obs_outputs(
+        coadd_outputs_enabled(engine));
+}
+
+template <class Engine>
+bool should_create_observation_noise_maps(const Engine &engine) {
+    return should_create_observation_noise_maps(
+        noise_maps_enabled(engine), noise_realization_outputs_enabled(engine));
+}
+
+template <class Engine>
+bool should_create_observation_filtered_maps(const Engine &engine) {
+    return should_create_observation_filtered_maps(
+        map_filter_outputs_enabled(engine));
+}
+
+template <class Engine>
+bool should_create_observation_filtered_noise_maps(const Engine &engine) {
+    return should_create_observation_filtered_noise_maps(
+        noise_maps_enabled(engine), noise_realization_outputs_enabled(engine));
 }
 
 template <class FitsFiles, class MakeFits>

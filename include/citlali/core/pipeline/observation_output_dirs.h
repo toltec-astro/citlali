@@ -3,11 +3,13 @@
 #include <filesystem>
 #include <string>
 
+#include <citlali/core/pipeline/output_policy.h>
+
 namespace citlali::pipeline {
 
 template <class Engine>
 bool should_create_filtered_observation_output_dir(const Engine &engine) {
-    return !engine.run_coadd && engine.run_map_filter;
+    return !coadd_outputs_enabled(engine) && map_filter_outputs_enabled(engine);
 }
 
 template <class Engine>

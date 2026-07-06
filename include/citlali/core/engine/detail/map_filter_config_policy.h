@@ -12,6 +12,7 @@ template <class WienerFilter, class PostProcessingConfig>
 void mirror_wiener_filter_config(
     const WienerFilter &wiener_filter, bool run_map_filter,
     double rad_to_arcsec, PostProcessingConfig &typed_post_processing_config) {
+    typed_post_processing_config.map_filtering_enabled = run_map_filter;
     auto &typed_map_filter = typed_post_processing_config.map_filtering;
     typed_map_filter.enabled = run_map_filter;
     if (auto parsed =

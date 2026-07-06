@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/obsnum_format.h>
+#include <citlali/core/pipeline/output_policy.h>
 
 namespace citlali::pipeline {
 
@@ -22,7 +23,7 @@ void set_observation_map_output_obsnum(Engine &engine) {
 
 template <class Engine>
 bool should_record_coadd_output_obsnum(const Engine &engine) {
-    return engine.run_coadd;
+    return coadd_outputs_enabled(engine);
 }
 
 template <class Engine>

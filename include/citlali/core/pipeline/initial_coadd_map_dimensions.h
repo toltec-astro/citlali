@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/pipeline/output_policy.h>
+
 namespace citlali::pipeline {
 
 template <class TodProc, class MapCoords, class Logger>
@@ -8,7 +10,7 @@ void calculate_initial_coadd_map_dimensions(TodProc &todproc,
                                             const Logger &logger) {
     auto &engine = todproc.engine();
 
-    if (!engine.run_coadd) {
+    if (!coadd_outputs_enabled(engine)) {
         return;
     }
 

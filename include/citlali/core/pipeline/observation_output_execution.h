@@ -2,13 +2,14 @@
 
 #include <citlali/core/pipeline/filtered_observation_outputs.h>
 #include <citlali/core/pipeline/observation_coadd_accumulation.h>
+#include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/raw_observation_outputs.h>
 
 namespace citlali::pipeline {
 
 template <class Engine>
 bool should_accumulate_observation_coadd(const Engine &engine) {
-    return engine.run_coadd;
+    return coadd_outputs_enabled(engine);
 }
 
 template <class TodProc, class Logger>

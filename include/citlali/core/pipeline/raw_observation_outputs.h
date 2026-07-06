@@ -6,7 +6,7 @@ namespace citlali::pipeline {
 
 template <class Engine>
 bool should_output_raw_observation_maps(const Engine &engine) {
-    return engine.run_mapmaking;
+    return mapmaking_outputs_enabled(engine);
 }
 
 template <class Engine, class Logger>

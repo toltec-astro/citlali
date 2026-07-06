@@ -25,16 +25,16 @@ void Engine::create_obs_map_files() {
         citlali::config::to_string(typed_config.runtime.reduction_type)};
     const bool create_per_obs_outputs =
         citlali::pipeline::should_create_observation_per_obs_outputs(
-            run_coadd);
+            *this);
     const bool create_noise_maps =
         citlali::pipeline::should_create_observation_noise_maps(
-            run_noise, write_noise_realizations);
+            *this);
     const bool create_filtered_maps =
         citlali::pipeline::should_create_observation_filtered_maps(
-            run_map_filter);
+            *this);
     const bool create_filtered_noise_maps =
         citlali::pipeline::should_create_observation_filtered_noise_maps(
-            run_noise, write_noise_realizations);
+            *this);
 
     // loop through arrays
     for (Eigen::Index i = 0; i < calib.n_arrays; ++i) {

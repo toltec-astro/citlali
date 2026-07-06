@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/pipeline/output_policy.h>
+
 namespace citlali::pipeline {
 
 template <class Engine>
@@ -20,7 +22,7 @@ auto calculate_observation_exposure_time(Engine &engine) {
 
 template <class Engine>
 bool should_accumulate_coadd_exposure_time(const Engine &engine) {
-    return engine.run_coadd;
+    return coadd_outputs_enabled(engine);
 }
 
 template <class Engine>

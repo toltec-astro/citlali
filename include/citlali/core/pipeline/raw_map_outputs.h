@@ -3,15 +3,16 @@
 #include <citlali/core/pipeline/map_noise_products.h>
 #include <citlali/core/pipeline/map_output.h>
 #include <citlali/core/pipeline/noise_weight_policy.h>
+#include <citlali/core/pipeline/output_policy.h>
 
 namespace citlali::pipeline {
 
 template <class Engine>
 bool should_calculate_unfiltered_map_noise_products(
     const Engine &engine, bool require_mapmaking) {
-    return (!require_mapmaking || engine.run_mapmaking) &&
-           engine.run_noise_products &&
-           engine.run_noise;
+    return (!require_mapmaking || mapmaking_outputs_enabled(engine)) &&
+           noise_product_outputs_enabled(engine) &&
+           noise_maps_enabled(engine);
 }
 
 template <class Engine>
