@@ -26,6 +26,10 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
     engine().omb.map_grouping = engine().map_grouping;
     engine().cmb.map_grouping = engine().map_grouping;
     engine().rtcproc.kernel.map_grouping = engine().map_grouping;
+    if (auto parsed_grouping =
+            citlali::config::parse_map_grouping(engine().map_grouping)) {
+        engine().typed_config.mapmaking.grouping = *parsed_grouping;
+    }
 
     // overwrite map number for detectors
     if (engine().map_grouping == "detector") {
