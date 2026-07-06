@@ -6,14 +6,7 @@
 #include <citlali/core/engine/detail/beammap_fit_qc_schema.h>
 #include <citlali/core/engine/detail/beammap_detector_table_vectors.h>
 
-void Beammap::write_detector_table_outputs() {
-    if (typed_config.mapmaking.grouping !=
-        citlali::config::MapGrouping::detector) {
-        return;
-    }
-
-    const std::string apt_filename = write_beammap_apt_table();
-
+void Beammap::write_beammap_fit_qc_table(const std::string &apt_filename) {
     logger->info("writing beammap fit qc table");
     std::string fit_qc_filename = apt_filename + "_fit_qc";
 
@@ -590,4 +583,14 @@ void Beammap::write_detector_table_outputs() {
 
     to_ecsv_from_matrix(fit_qc_filename, fit_qc_table, fit_qc_header, fit_qc_meta);
     logger->info("done writing beammap fit qc table {}.ecsv", fit_qc_filename);
+}
+
+void Beammap::write_detector_table_outputs() {
+    if (typed_config.mapmaking.grouping !=
+        citlali::config::MapGrouping::detector) {
+        return;
+    }
+
+    const std::string apt_filename = write_beammap_apt_table();
+    write_beammap_fit_qc_table(apt_filename);
 }

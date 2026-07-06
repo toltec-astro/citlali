@@ -239,6 +239,7 @@ public:
     void write_beammap_ptc_products(int output_iter);
     void write_detector_specific_ptc_tod(int output_iter);
     void write_detector_table_outputs();
+    void write_beammap_fit_qc_table(const std::string &apt_filename);
 
     // main pipeline process
     template <class KidsProc, class RawObs>
