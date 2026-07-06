@@ -66,9 +66,11 @@ void Engine::get_citlali_config(CT &config) {
         typed_post_processing_config, beammap_iter_max,
         typed_beammap_config);
 
-    citlali::engine_detail::validate_typed_config_mirrors(
+    const auto typed_config_mirror =
+        citlali::engine_detail::make_typed_reduction_config_mirror(
         typed_runtime_config, typed_timestream_config, typed_mapmaking_config,
         typed_coadd_config, typed_noise_config, typed_post_processing_config,
-        typed_pointing_config, typed_beammap_config, typed_astrometry_config,
-        redu_type, logger);
+        typed_pointing_config, typed_beammap_config, typed_astrometry_config);
+    citlali::engine_detail::validate_typed_config_mirrors(
+        typed_config_mirror, logger);
 }
