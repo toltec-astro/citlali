@@ -12,29 +12,7 @@ void Beammap::write_detector_table_outputs() {
         return;
     }
 
-    logger->info("writing apt table");
-    auto apt_filename = toltec_io.create_filename<engine_utils::toltecIO::apt, engine_utils::toltecIO::map,
-                                                  engine_utils::toltecIO::raw>
-                        (obsnum_dir_name + "raw/", redu_type, "", obsnum, telescope.sim_obs);
-
-    Eigen::MatrixXd apt_table(calib.n_dets, calib.apt_header_keys.size());
-
-    // copy to table
-    Eigen::Index i = 0;
-    for (auto const& x: calib.apt_header_keys) {
-        if (x != "flag2") {
-            apt_table.col(i) = calib.apt[x];
-        }
-        else {
-            apt_table.col(i) = flag2.cast<double> ();
-        }
-        i++;
-    }
-
-    // write to ecsv
-    to_ecsv_from_matrix(apt_filename, apt_table, calib.apt_header_keys, calib.apt_meta);
-
-    logger->info("done writing apt table {}.ecsv",apt_filename);
+    const std::string apt_filename = write_beammap_apt_table();
 
     logger->info("writing beammap fit qc table");
     std::string fit_qc_filename = apt_filename + "_fit_qc";

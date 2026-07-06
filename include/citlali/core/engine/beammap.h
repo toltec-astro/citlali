@@ -245,6 +245,7 @@ public:
     void pipeline(KidsProc &, RawObs &);
 
     // output files
+    std::string write_beammap_apt_table();
     template <mapmaking::MapType map_type>
     void output();
     template <mapmaking::MapType map_type>
@@ -257,6 +258,7 @@ public:
 
 #include <citlali/core/engine/detail/beammap_detector_tod_output_impl.h>
 #include <citlali/core/engine/detail/beammap_ptc_product_output_impl.h>
+#include <citlali/core/engine/detail/beammap_apt_table_output_impl.h>
 #include <citlali/core/engine/detail/beammap_detector_table_output_impl.h>
 #include <citlali/core/engine/detail/beammap_map_product_output_impl.h>
 #include <citlali/core/engine/detail/beammap_empirical_template_calibration_impl.h>
