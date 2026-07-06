@@ -19,37 +19,9 @@ void Beammap::write_detector_table_outputs() {
 
     std::vector<std::string> fit_qc_header = beammap_fit_qc_schema::header_keys();
 
-    auto apt_or_zero = [&](const std::string &key) -> Eigen::VectorXd {
-        auto it = calib.apt.find(key);
-        if (it != calib.apt.end() && it->second.size() == calib.n_dets) {
-            return it->second;
-        }
-        return Eigen::VectorXd::Zero(calib.n_dets);
-    };
-    auto get_unit = [&](const std::string &key, const std::string &fallback) {
-        auto it = calib.apt_header_units.find(key);
-        if (it != calib.apt_header_units.end()) {
-            return it->second;
-        }
-        return fallback;
-    };
-    auto get_description = [&](const std::string &key, const std::string &fallback) {
-        auto it = calib.apt_header_description.find(key);
-        if (it != calib.apt_header_description.end()) {
-            return it->second;
-        }
-        return fallback;
-    };
-    auto prior_diag_or = [&](PriorDiagColumn diag_col, double fallback_value) -> Eigen::VectorXd {
-        Eigen::VectorXd out(calib.n_dets);
-        if (prior_diag_values.rows() == calib.n_dets && prior_diag_values.cols() == n_prior_diag_cols) {
-            out = prior_diag_values.col(diag_col);
-        }
-        else {
-            out.setConstant(fallback_value);
-        }
-        return out;
-    };
+    const auto table_access = beammap_detector_table_vectors::make_accessors(
+        calib.apt, calib.apt_header_units, calib.apt_header_description,
+        prior_diag_values, calib.n_dets, n_prior_diag_cols);
 
     Eigen::VectorXd map_rms(calib.n_dets);
     Eigen::VectorXd fit_sig2noise(calib.n_dets);
@@ -81,15 +53,24 @@ void Beammap::write_detector_table_outputs() {
 
     Eigen::VectorXd fit_bound_nhit = fit_diag_bound_nhit.cast<double>();
     Eigen::VectorXd fit_bound_code = fit_diag_bound_code.cast<double>();
-    auto bound_state = [&](Eigen::Index p) -> Eigen::VectorXd {
-        return fit_diag_hit_upper.col(p).cast<double>() - fit_diag_hit_lower.col(p).cast<double>();
-    };
-    Eigen::VectorXd fit_bound_amp = bound_state(0);
-    Eigen::VectorXd fit_bound_x = bound_state(1);
-    Eigen::VectorXd fit_bound_y = bound_state(2);
-    Eigen::VectorXd fit_bound_a = bound_state(3);
-    Eigen::VectorXd fit_bound_b = bound_state(4);
-    Eigen::VectorXd fit_bound_angle = bound_state(5);
+    Eigen::VectorXd fit_bound_amp =
+        beammap_detector_table_vectors::bound_state(
+            fit_diag_hit_upper, fit_diag_hit_lower, 0);
+    Eigen::VectorXd fit_bound_x =
+        beammap_detector_table_vectors::bound_state(
+            fit_diag_hit_upper, fit_diag_hit_lower, 1);
+    Eigen::VectorXd fit_bound_y =
+        beammap_detector_table_vectors::bound_state(
+            fit_diag_hit_upper, fit_diag_hit_lower, 2);
+    Eigen::VectorXd fit_bound_a =
+        beammap_detector_table_vectors::bound_state(
+            fit_diag_hit_upper, fit_diag_hit_lower, 3);
+    Eigen::VectorXd fit_bound_b =
+        beammap_detector_table_vectors::bound_state(
+            fit_diag_hit_upper, fit_diag_hit_lower, 4);
+    Eigen::VectorXd fit_bound_angle =
+        beammap_detector_table_vectors::bound_state(
+            fit_diag_hit_upper, fit_diag_hit_lower, 5);
 
     Eigen::VectorXd fit_init_amp = fit_diag_init_params.col(0);
     Eigen::VectorXd fit_init_x_t =
@@ -238,27 +219,27 @@ void Beammap::write_detector_table_outputs() {
 
     Eigen::MatrixXd fit_qc_table(calib.n_dets, fit_qc_header.size());
     Eigen::Index col = 0;
-    fit_qc_table.col(col++) = apt_or_zero("uid");
-    fit_qc_table.col(col++) = apt_or_zero("array");
-    fit_qc_table.col(col++) = apt_or_zero("nw");
-    fit_qc_table.col(col++) = apt_or_zero("kids_tone");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("uid");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("array");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("nw");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("kids_tone");
     fit_qc_table.col(col++) = good_fits.cast<double>();
     fit_qc_table.col(col++) = converged.cast<double>();
     fit_qc_table.col(col++) = converge_iter.cast<double>();
-    fit_qc_table.col(col++) = apt_or_zero("flag");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("flag");
     fit_qc_table.col(col++) = flag2.cast<double>();
-    fit_qc_table.col(col++) = apt_or_zero("amp");
-    fit_qc_table.col(col++) = apt_or_zero("amp_err");
-    fit_qc_table.col(col++) = apt_or_zero("cal_amp");
-    fit_qc_table.col(col++) = apt_or_zero("cal_amp_method");
-    fit_qc_table.col(col++) = apt_or_zero("template_amp");
-    fit_qc_table.col(col++) = apt_or_zero("template_offset");
-    fit_qc_table.col(col++) = apt_or_zero("template_resid_rms");
-    fit_qc_table.col(col++) = apt_or_zero("template_npix");
-    fit_qc_table.col(col++) = apt_or_zero("template_amp_over_fit_amp");
-    fit_qc_table.col(col++) = apt_or_zero("cal_amp_over_fit_amp");
-    fit_qc_table.col(col++) = apt_or_zero("map_peak_amp");
-    fit_qc_table.col(col++) = apt_or_zero("map_peak_amp_over_fit_amp");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("amp");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("amp_err");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("cal_amp");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("cal_amp_method");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("template_amp");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("template_offset");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("template_resid_rms");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("template_npix");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("template_amp_over_fit_amp");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("cal_amp_over_fit_amp");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("map_peak_amp");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("map_peak_amp_over_fit_amp");
     fit_qc_table.col(col++) = fit_sig2noise;
     fit_qc_table.col(col++) = map_rms;
     fit_qc_table.col(col++) = map_sig2noise;
@@ -276,12 +257,12 @@ void Beammap::write_detector_table_outputs() {
     fit_qc_table.col(col++) = fruitloops_support_signal_sum;
     fit_qc_table.col(col++) = fruitloops_support_x_span_arcsec;
     fit_qc_table.col(col++) = fruitloops_support_y_span_arcsec;
-    fit_qc_table.col(col++) = apt_or_zero("rfi_masked_samples");
-    fit_qc_table.col(col++) = apt_or_zero("rfi_masked_scans");
-    fit_qc_table.col(col++) = apt_or_zero("scan_band_masked_samples");
-    fit_qc_table.col(col++) = apt_or_zero("scan_band_masked_rows");
-    fit_qc_table.col(col++) = apt_or_zero("scan_band_masked_edge");
-    fit_qc_table.col(col++) = apt_or_zero("scan_band_mask_rejected");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("rfi_masked_samples");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("rfi_masked_scans");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("scan_band_masked_samples");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("scan_band_masked_rows");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("scan_band_masked_edge");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("scan_band_mask_rejected");
     fit_qc_table.col(col++) = fit_bound_nhit;
     fit_qc_table.col(col++) = fit_bound_code;
     fit_qc_table.col(col++) = fit_bound_amp;
@@ -299,44 +280,44 @@ void Beammap::write_detector_table_outputs() {
     fit_qc_table.col(col++) = fit_high_a_fwhm;
     fit_qc_table.col(col++) = fit_low_b_fwhm;
     fit_qc_table.col(col++) = fit_high_b_fwhm;
-    fit_qc_table.col(col++) = prior_diag_or(prior_init_mode_col, -1.0);
-    fit_qc_table.col(col++) = prior_diag_or(prior_used_col, 0.0);
-    fit_qc_table.col(col++) = prior_diag_or(prior_fallback_blind_col, 0.0);
-    fit_qc_table.col(col++) = prior_diag_or(prior_no_candidate_reason_col, 0.0);
-    fit_qc_table.col(col++) = prior_diag_or(prior_slot_index_col, -1.0);
-    fit_qc_table.col(col++) = prior_diag_or(prior_match_d2_col, std::numeric_limits<double>::quiet_NaN());
-    fit_qc_table.col(col++) = prior_diag_or(prior_match_score_col, std::numeric_limits<double>::quiet_NaN());
-    fit_qc_table.col(col++) = prior_diag_or(prior_candidate_snr_col, std::numeric_limits<double>::quiet_NaN());
-    fit_qc_table.col(col++) = prior_diag_or(prior_n_candidates_col, 0.0);
-    fit_qc_table.col(col++) = prior_diag_or(prior_n_candidates_keep_col, 0.0);
-    fit_qc_table.col(col++) = prior_diag_or(prior_n_candidates_gate_col, 0.0);
-    fit_qc_table.col(col++) = prior_diag_or(prior_candidate_x_raw_col, std::numeric_limits<double>::quiet_NaN());
-    fit_qc_table.col(col++) = prior_diag_or(prior_candidate_y_raw_col, std::numeric_limits<double>::quiet_NaN());
-    fit_qc_table.col(col++) = prior_diag_or(prior_candidate_x_prior_col, std::numeric_limits<double>::quiet_NaN());
-    fit_qc_table.col(col++) = prior_diag_or(prior_candidate_y_prior_col, std::numeric_limits<double>::quiet_NaN());
-    fit_qc_table.col(col++) = prior_diag_or(prior_center_x_col, std::numeric_limits<double>::quiet_NaN());
-    fit_qc_table.col(col++) = prior_diag_or(prior_center_y_col, std::numeric_limits<double>::quiet_NaN());
-    fit_qc_table.col(col++) = prior_diag_or(prior_derot_elev_col, std::numeric_limits<double>::quiet_NaN());
-    fit_qc_table.col(col++) = prior_diag_or(prior_slot_x_col, std::numeric_limits<double>::quiet_NaN());
-    fit_qc_table.col(col++) = prior_diag_or(prior_slot_y_col, std::numeric_limits<double>::quiet_NaN());
-    fit_qc_table.col(col++) = prior_diag_or(prior_slot_sx_col, std::numeric_limits<double>::quiet_NaN());
-    fit_qc_table.col(col++) = prior_diag_or(prior_slot_sy_col, std::numeric_limits<double>::quiet_NaN());
-    fit_qc_table.col(col++) = apt_or_zero("final_prior_slot_index");
-    fit_qc_table.col(col++) = apt_or_zero("final_prior_d2");
-    fit_qc_table.col(col++) = apt_or_zero("x_t_raw");
-    fit_qc_table.col(col++) = apt_or_zero("y_t_raw");
-    fit_qc_table.col(col++) = apt_or_zero("x_t");
-    fit_qc_table.col(col++) = apt_or_zero("y_t");
-    fit_qc_table.col(col++) = apt_or_zero("x_t_derot");
-    fit_qc_table.col(col++) = apt_or_zero("y_t_derot");
-    fit_qc_table.col(col++) = apt_or_zero("a_fwhm");
-    fit_qc_table.col(col++) = apt_or_zero("a_fwhm_err");
-    fit_qc_table.col(col++) = apt_or_zero("b_fwhm");
-    fit_qc_table.col(col++) = apt_or_zero("b_fwhm_err");
-    fit_qc_table.col(col++) = apt_or_zero("angle");
-    fit_qc_table.col(col++) = apt_or_zero("angle_err");
-    fit_qc_table.col(col++) = apt_or_zero("flxscale");
-    fit_qc_table.col(col++) = apt_or_zero("sens");
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_init_mode_col, -1.0);
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_used_col, 0.0);
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_fallback_blind_col, 0.0);
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_no_candidate_reason_col, 0.0);
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_slot_index_col, -1.0);
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_match_d2_col, std::numeric_limits<double>::quiet_NaN());
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_match_score_col, std::numeric_limits<double>::quiet_NaN());
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_candidate_snr_col, std::numeric_limits<double>::quiet_NaN());
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_n_candidates_col, 0.0);
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_n_candidates_keep_col, 0.0);
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_n_candidates_gate_col, 0.0);
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_candidate_x_raw_col, std::numeric_limits<double>::quiet_NaN());
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_candidate_y_raw_col, std::numeric_limits<double>::quiet_NaN());
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_candidate_x_prior_col, std::numeric_limits<double>::quiet_NaN());
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_candidate_y_prior_col, std::numeric_limits<double>::quiet_NaN());
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_center_x_col, std::numeric_limits<double>::quiet_NaN());
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_center_y_col, std::numeric_limits<double>::quiet_NaN());
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_derot_elev_col, std::numeric_limits<double>::quiet_NaN());
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_slot_x_col, std::numeric_limits<double>::quiet_NaN());
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_slot_y_col, std::numeric_limits<double>::quiet_NaN());
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_slot_sx_col, std::numeric_limits<double>::quiet_NaN());
+    fit_qc_table.col(col++) = table_access.prior_diag_or(prior_slot_sy_col, std::numeric_limits<double>::quiet_NaN());
+    fit_qc_table.col(col++) = table_access.apt_or_zero("final_prior_slot_index");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("final_prior_d2");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("x_t_raw");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("y_t_raw");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("x_t");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("y_t");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("x_t_derot");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("y_t_derot");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("a_fwhm");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("a_fwhm_err");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("b_fwhm");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("b_fwhm_err");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("angle");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("angle_err");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("flxscale");
+    fit_qc_table.col(col++) = table_access.apt_or_zero("sens");
 
     YAML::Node fit_qc_meta;
     fit_qc_meta["obsnum"] = obsnum;
@@ -362,7 +343,7 @@ void Beammap::write_detector_table_outputs() {
     fit_qc_meta["detector_weighting_mode"] = beammap_detector_weighting_mode;
     fit_qc_meta["beammap_fit_radius_fwhm"] = beammap_fit_radius_fwhm;
     fit_qc_meta["rfi_mask_detectors_affected"] =
-        static_cast<int>((apt_or_zero("rfi_masked_scans").array() > 0.0).count());
+        static_cast<int>((table_access.apt_or_zero("rfi_masked_scans").array() > 0.0).count());
     fit_qc_meta["scan_band_mask_enabled"] = beammap_scan_band_mask_enabled;
     fit_qc_meta["scan_band_mask_edge_rows"] = beammap_scan_band_mask_edge_rows;
     fit_qc_meta["scan_band_mask_min_row_pixels"] = beammap_scan_band_mask_min_row_pixels;
@@ -374,9 +355,9 @@ void Beammap::write_detector_table_outputs() {
     fit_qc_meta["scan_band_mask_max_flagged_fraction"] =
         beammap_scan_band_mask_max_flagged_fraction;
     fit_qc_meta["scan_band_mask_detectors_affected"] =
-        static_cast<int>((apt_or_zero("scan_band_masked_rows").array() > 0.0).count());
+        static_cast<int>((table_access.apt_or_zero("scan_band_masked_rows").array() > 0.0).count());
     fit_qc_meta["scan_band_mask_detectors_rejected"] =
-        static_cast<int>((apt_or_zero("scan_band_mask_rejected").array() > 0.0).count());
+        static_cast<int>((table_access.apt_or_zero("scan_band_mask_rejected").array() > 0.0).count());
     fit_qc_meta["fit_bound_any"] = static_cast<int>((fit_diag_bound_nhit.array() > 0).count());
     fit_qc_meta["beammap_priors_enabled"] = beammap_priors_enabled;
     fit_qc_meta["beammap_priors_filepath"] = beammap_priors_filepath;
@@ -408,17 +389,17 @@ void Beammap::write_detector_table_outputs() {
         {"converge_iter", "N/A"},
         {"flag", "N/A"},
         {"flag2", "N/A"},
-        {"amp", get_unit("amp", omb.sig_unit)},
-        {"amp_err", get_unit("amp_err", omb.sig_unit)},
-        {"cal_amp", get_unit("cal_amp", omb.sig_unit)},
+        {"amp", table_access.unit("amp", omb.sig_unit)},
+        {"amp_err", table_access.unit("amp_err", omb.sig_unit)},
+        {"cal_amp", table_access.unit("cal_amp", omb.sig_unit)},
         {"cal_amp_method", "N/A"},
-        {"template_amp", get_unit("template_amp", omb.sig_unit)},
-        {"template_offset", get_unit("template_offset", omb.sig_unit)},
-        {"template_resid_rms", get_unit("template_resid_rms", omb.sig_unit)},
+        {"template_amp", table_access.unit("template_amp", omb.sig_unit)},
+        {"template_offset", table_access.unit("template_offset", omb.sig_unit)},
+        {"template_resid_rms", table_access.unit("template_resid_rms", omb.sig_unit)},
         {"template_npix", "pix"},
         {"template_amp_over_fit_amp", "N/A"},
         {"cal_amp_over_fit_amp", "N/A"},
-        {"map_peak_amp", get_unit("map_peak_amp", omb.sig_unit)},
+        {"map_peak_amp", table_access.unit("map_peak_amp", omb.sig_unit)},
         {"map_peak_amp_over_fit_amp", "N/A"},
         {"fit_sig2noise", "N/A"},
         {"map_rms", omb.sig_unit},
@@ -451,7 +432,7 @@ void Beammap::write_detector_table_outputs() {
         {"fit_bound_a", "N/A"},
         {"fit_bound_b", "N/A"},
         {"fit_bound_angle", "N/A"},
-        {"fit_init_amp", get_unit("amp", omb.sig_unit)},
+        {"fit_init_amp", table_access.unit("amp", omb.sig_unit)},
         {"fit_init_x_t", "arcsec"},
         {"fit_init_y_t", "arcsec"},
         {"fit_init_a_fwhm", "arcsec"},
@@ -484,43 +465,43 @@ void Beammap::write_detector_table_outputs() {
         {"prior_slot_sy", "arcsec"},
         {"final_prior_slot_index", "N/A"},
         {"final_prior_d2", "N/A"},
-        {"x_t_raw", get_unit("x_t", "arcsec")},
-        {"y_t_raw", get_unit("y_t", "arcsec")},
-        {"x_t", get_unit("x_t", "arcsec")},
-        {"y_t", get_unit("y_t", "arcsec")},
-        {"x_t_derot", get_unit("x_t", "arcsec")},
-        {"y_t_derot", get_unit("y_t", "arcsec")},
-        {"a_fwhm", get_unit("a_fwhm", "arcsec")},
-        {"a_fwhm_err", get_unit("a_fwhm_err", "arcsec")},
-        {"b_fwhm", get_unit("b_fwhm", "arcsec")},
-        {"b_fwhm_err", get_unit("b_fwhm_err", "arcsec")},
-        {"angle", get_unit("angle", "rad")},
-        {"angle_err", get_unit("angle_err", "rad")},
-        {"flxscale", get_unit("flxscale", "N/A")},
-        {"sens", get_unit("sens", "N/A")}
+        {"x_t_raw", table_access.unit("x_t", "arcsec")},
+        {"y_t_raw", table_access.unit("y_t", "arcsec")},
+        {"x_t", table_access.unit("x_t", "arcsec")},
+        {"y_t", table_access.unit("y_t", "arcsec")},
+        {"x_t_derot", table_access.unit("x_t", "arcsec")},
+        {"y_t_derot", table_access.unit("y_t", "arcsec")},
+        {"a_fwhm", table_access.unit("a_fwhm", "arcsec")},
+        {"a_fwhm_err", table_access.unit("a_fwhm_err", "arcsec")},
+        {"b_fwhm", table_access.unit("b_fwhm", "arcsec")},
+        {"b_fwhm_err", table_access.unit("b_fwhm_err", "arcsec")},
+        {"angle", table_access.unit("angle", "rad")},
+        {"angle_err", table_access.unit("angle_err", "rad")},
+        {"flxscale", table_access.unit("flxscale", "N/A")},
+        {"sens", table_access.unit("sens", "N/A")}
     };
     std::map<std::string, std::string> fit_qc_desc = {
-        {"uid", get_description("uid", "detector uid")},
-        {"array", get_description("array", "array index")},
-        {"nw", get_description("nw", "network index")},
-        {"kids_tone", get_description("kids_tone", "index of tone in network")},
+        {"uid", table_access.description("uid", "detector uid")},
+        {"array", table_access.description("array", "array index")},
+        {"nw", table_access.description("nw", "network index")},
+        {"kids_tone", table_access.description("kids_tone", "index of tone in network")},
         {"good_fit", "fit returned a usable solution"},
         {"converged", "beammap iterative convergence flag"},
-        {"converge_iter", get_description("converge_iter", "beammap convergence iteration")},
-        {"flag", get_description("flag", "detector quality flag")},
+        {"converge_iter", table_access.description("converge_iter", "beammap convergence iteration")},
+        {"flag", table_access.description("flag", "detector quality flag")},
         {"flag2", "bitwise detector quality flag"},
-        {"amp", get_description("amp", "fitted beam amplitude")},
-        {"amp_err", get_description("amp_err", "fitted beam amplitude uncertainty")},
-        {"cal_amp", get_description("cal_amp", "amplitude used for beammap flux calibration")},
-        {"cal_amp_method", get_description("cal_amp_method", "calibration amplitude method code")},
-        {"template_amp", get_description("template_amp", "empirical-template matched amplitude")},
-        {"template_offset", get_description("template_offset", "empirical-template fitted local offset")},
-        {"template_resid_rms", get_description("template_resid_rms", "empirical-template residual RMS")},
-        {"template_npix", get_description("template_npix", "number of pixels used by empirical-template amplitude fit")},
-        {"template_amp_over_fit_amp", get_description("template_amp_over_fit_amp", "empirical-template amplitude divided by Gaussian fit amplitude")},
-        {"cal_amp_over_fit_amp", get_description("cal_amp_over_fit_amp", "calibration amplitude divided by Gaussian fit amplitude")},
-        {"map_peak_amp", get_description("map_peak_amp", "local map peak near Gaussian fit center")},
-        {"map_peak_amp_over_fit_amp", get_description("map_peak_amp_over_fit_amp", "local map peak divided by Gaussian fit amplitude")},
+        {"amp", table_access.description("amp", "fitted beam amplitude")},
+        {"amp_err", table_access.description("amp_err", "fitted beam amplitude uncertainty")},
+        {"cal_amp", table_access.description("cal_amp", "amplitude used for beammap flux calibration")},
+        {"cal_amp_method", table_access.description("cal_amp_method", "calibration amplitude method code")},
+        {"template_amp", table_access.description("template_amp", "empirical-template matched amplitude")},
+        {"template_offset", table_access.description("template_offset", "empirical-template fitted local offset")},
+        {"template_resid_rms", table_access.description("template_resid_rms", "empirical-template residual RMS")},
+        {"template_npix", table_access.description("template_npix", "number of pixels used by empirical-template amplitude fit")},
+        {"template_amp_over_fit_amp", table_access.description("template_amp_over_fit_amp", "empirical-template amplitude divided by Gaussian fit amplitude")},
+        {"cal_amp_over_fit_amp", table_access.description("cal_amp_over_fit_amp", "calibration amplitude divided by Gaussian fit amplitude")},
+        {"map_peak_amp", table_access.description("map_peak_amp", "local map peak near Gaussian fit center")},
+        {"map_peak_amp_over_fit_amp", table_access.description("map_peak_amp_over_fit_amp", "local map peak divided by Gaussian fit amplitude")},
         {"fit_sig2noise", "fitted amplitude divided by fitted amplitude uncertainty"},
         {"map_rms", "standard deviation of positive-weight detector map pixels, excluding fitted source core when possible"},
         {"map_sig2noise", "fitted amplitude divided by support-only detector map rms"},
@@ -587,18 +568,18 @@ void Beammap::write_detector_table_outputs() {
         {"final_prior_d2", "nearest-slot Mahalanobis d^2 for final detector position in the soft-prior frame"},
         {"x_t_raw", "raw x position before reference subtraction/derotation"},
         {"y_t_raw", "raw y position before reference subtraction/derotation"},
-        {"x_t", get_description("x_t", "detector x position")},
-        {"y_t", get_description("y_t", "detector y position")},
+        {"x_t", table_access.description("x_t", "detector x position")},
+        {"y_t", table_access.description("y_t", "detector y position")},
         {"x_t_derot", "detector x position after derotation transform"},
         {"y_t_derot", "detector y position after derotation transform"},
-        {"a_fwhm", get_description("a_fwhm", "fitted major-axis FWHM")},
-        {"a_fwhm_err", get_description("a_fwhm_err", "fitted major-axis FWHM uncertainty")},
-        {"b_fwhm", get_description("b_fwhm", "fitted minor-axis FWHM")},
-        {"b_fwhm_err", get_description("b_fwhm_err", "fitted minor-axis FWHM uncertainty")},
-        {"angle", get_description("angle", "fitted beam angle")},
-        {"angle_err", get_description("angle_err", "fitted beam angle uncertainty")},
-        {"flxscale", get_description("flxscale", "flux conversion factor")},
-        {"sens", get_description("sens", "detector sensitivity")}
+        {"a_fwhm", table_access.description("a_fwhm", "fitted major-axis FWHM")},
+        {"a_fwhm_err", table_access.description("a_fwhm_err", "fitted major-axis FWHM uncertainty")},
+        {"b_fwhm", table_access.description("b_fwhm", "fitted minor-axis FWHM")},
+        {"b_fwhm_err", table_access.description("b_fwhm_err", "fitted minor-axis FWHM uncertainty")},
+        {"angle", table_access.description("angle", "fitted beam angle")},
+        {"angle_err", table_access.description("angle_err", "fitted beam angle uncertainty")},
+        {"flxscale", table_access.description("flxscale", "flux conversion factor")},
+        {"sens", table_access.description("sens", "detector sensitivity")}
     };
 
     for (const auto &key: fit_qc_header) {
