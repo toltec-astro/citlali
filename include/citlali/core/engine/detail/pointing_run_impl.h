@@ -34,8 +34,11 @@ auto Pointing::run(KidsProc &kidsproc) {
                       : nullptr;
 
     auto farm = grppi::farm(n_threads,[&, scans_done_mutex, ptc_line_audit_mutex,
-                                       rtc_writer, ptc_writer, rtcdiag_writer, ptcdiag_writer,
-                                       write_rtc, write_ptc, write_rtcdiag, write_ptcdiag](auto &rtcdata) {
+                                       rtc_writer, ptc_writer,
+                                       rtcdiag_writer, ptcdiag_writer,
+                                       mapmaking_method, make_maps,
+                                       make_noise_maps, write_rtc, write_ptc,
+                                       write_rtcdiag, write_ptcdiag](auto &rtcdata) {
 
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);

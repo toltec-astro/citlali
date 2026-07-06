@@ -32,9 +32,15 @@ auto Lali::run() -> run_stage_t {
         write_ptcdiag ? std::make_shared<citlali::pipeline::OrderedWriter>()
                       : nullptr;
 
-    auto farm_fn = std::function<void(input_t &)>{[&, scans_done_mutex, ptc_line_audit_mutex,
-                                                   rtc_writer, ptc_writer, rtcdiag_writer, ptcdiag_writer,
-                                                   write_rtc, write_ptc, write_rtcdiag, write_ptcdiag](input_t &rtcdata) {
+    auto farm_fn = std::function<void(input_t &)>{[&, scans_done_mutex,
+                                                   ptc_line_audit_mutex,
+                                                   rtc_writer, ptc_writer,
+                                                   rtcdiag_writer,
+                                                   ptcdiag_writer,
+                                                   mapmaking_method, make_maps,
+                                                   make_noise_maps, write_rtc,
+                                                   write_ptc, write_rtcdiag,
+                                                   write_ptcdiag](input_t &rtcdata) {
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);
         // current length of outer scans
