@@ -28,6 +28,7 @@ inline ValidationReport validate(const ReductionConfig &config) {
     validate(config.runtime, report);
     validate(config.timestream, report);
     validate(config.mapmaking, report);
+    validate(config.coadd, report);
     validate(config.noise, report);
     validate(config.post_processing, report);
     validate(config.pointing, report);
