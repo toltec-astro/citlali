@@ -60,7 +60,7 @@ void Engine::get_timestream_config(CT &config) {
         invalid_keys);
     citlali::engine_detail::sync_tod_output_type_config(
         run_tod_output_rtc, run_tod_output_ptc, run_tod_output,
-        tod_output_type, timestream_config);
+        timestream_config);
 
     citlali::engine_detail::read_mirrored_config_value(
         config, std::tuple{"timestream", "output", "subdir_name"},

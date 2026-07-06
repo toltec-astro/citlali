@@ -87,10 +87,12 @@ void read_tod_selection_count_config(
 
 template <class Logger>
 void validate_tod_selection_mode_counts(
-    const std::string &mode, int n_uniform, int n_source_dense,
+    citlali::config::TodOutputSelectionMode mode, int n_uniform,
+    int n_source_dense,
     const std::string &mode_path, const std::string &n_uniform_path,
     const std::string &n_source_dense_path, const Logger &logger) {
-    if (mode != "uniform_plus_source_crossing" ||
+    if (mode !=
+            citlali::config::TodOutputSelectionMode::uniform_plus_source_crossing ||
         n_uniform + n_source_dense > 0) {
         return;
     }
@@ -105,19 +107,26 @@ void read_tod_selection_mode_config(
     Config &config, const ModeKey &mode_key, const UniformKey &n_uniform_key,
     const SourceDenseKey &n_source_dense_key, bool output_enabled,
     const std::string &mode_path, const std::string &n_uniform_path,
-    const std::string &n_source_dense_path, std::string &mode,
-    int &n_uniform, int &n_source_dense, MissingKeys &missing_keys,
-    InvalidKeys &invalid_keys, const Logger &logger) {
-    mode = "indices";
+    const std::string &n_source_dense_path,
+    citlali::config::TodOutputSelectionMode &mode, int &n_uniform,
+    int &n_source_dense, MissingKeys &missing_keys, InvalidKeys &invalid_keys,
+    const Logger &logger) {
+    mode = citlali::config::TodOutputSelectionMode::indices;
     n_uniform = 10;
     n_source_dense = 10;
     if (!output_enabled) {
         return;
     }
     if (config.has(mode_key)) {
-        ::get_config_value(config, mode, missing_keys, invalid_keys, mode_key,
+        std::string mode_name{citlali::config::to_string(mode)};
+        ::get_config_value(config, mode_name, missing_keys, invalid_keys,
+                           mode_key,
                            {"indices", "all",
                             "uniform_plus_source_crossing"});
+        if (auto parsed =
+                citlali::config::parse_tod_output_selection_mode(mode_name)) {
+            mode = *parsed;
+        }
     }
     read_tod_selection_count_config(
         config, n_uniform_key, n_uniform_path, n_uniform, logger);
@@ -128,4 +137,3 @@ void read_tod_selection_mode_config(
         mode, n_uniform, n_source_dense, mode_path, n_uniform_path,
         n_source_dense_path, logger);
 }
-

@@ -19,7 +19,7 @@ void Engine::cli_summary() {
     if (tod_output_config.raw_time_chunk_enabled ||
         tod_output_config.processed_time_chunk_enabled) {
         citlali::pipeline::log_tod_output_selection_summary(
-            logger, tod_output_type, n_tod_output_scans_rtc,
+            logger, tod_output_config.type, n_tod_output_scans_rtc,
             rtcproc.tod_output_mini, rtcproc.tod_output_outer,
             n_tod_output_scans_ptc, ptcproc.tod_output_mini);
     }

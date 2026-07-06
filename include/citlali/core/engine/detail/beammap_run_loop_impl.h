@@ -230,14 +230,13 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                 logger->info("writing ptc diagnostics sidecar chunks for beammap iteration {}", output_iter);
                 for (Eigen::Index i=0; i<telescope.scan_indices.cols(); ++i) {
                     ptcproc.append_diag_to_netcdf(ptcs[i], ptcdiag_filename, calib_scans[i], ptcs[i].index.data);
-                    if (!(run_tod_output && !tod_filename.empty() &&
-                          (tod_output_type == "ptc" || tod_output_type == "both"))) {
+                    if (!(run_tod_output && run_tod_output_ptc &&
+                          !tod_filename.empty())) {
                         ptcproc.clear_cached_diagnostics(ptcs[i].index.data);
                     }
                 }
             }
-            if (run_tod_output && !tod_filename.empty()) {
-                if (tod_output_type == "ptc" || tod_output_type == "both") {
+            if (run_tod_output && run_tod_output_ptc && !tod_filename.empty()) {
                     logger->info("writing processed time chunk for beammap iteration {}", output_iter);
                     auto ptc_filename_it = tod_filename.find("ptc");
                     if (ptc_filename_it != tod_filename.end() && !ptc_filename_it->second.empty()) {
@@ -265,7 +264,6 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                                                  ptcs[i].pointing_offsets_arcsec.data, calib_scans[i], true, ptc_scan_row);
                         ptcproc.clear_cached_diagnostics(ptcs[i].index.data);
                     }
-                }
             }
             write_detector_specific_ptc_tod(output_iter);
         };

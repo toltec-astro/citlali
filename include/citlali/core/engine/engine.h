@@ -353,7 +353,7 @@ public:
     bool write_filtered_maps_partial;
 
     // rtc or ptc types
-    std::string tod_output_type, tod_output_subdir_name;
+    std::string tod_output_subdir_name;
     bool run_tod_output_rtc = false;
     bool run_tod_output_ptc = false;
     std::string rtcdiag_filename;
@@ -370,8 +370,10 @@ public:
     bool tod_output_chunk_select_enabled_ptc = false;
     std::vector<Eigen::Index> tod_output_chunks_rtc;
     std::vector<Eigen::Index> tod_output_chunks_ptc;
-    std::string tod_output_selection_mode_rtc = "indices";
-    std::string tod_output_selection_mode_ptc = "indices";
+    citlali::config::TodOutputSelectionMode tod_output_selection_mode_rtc =
+        citlali::config::TodOutputSelectionMode::indices;
+    citlali::config::TodOutputSelectionMode tod_output_selection_mode_ptc =
+        citlali::config::TodOutputSelectionMode::indices;
     int tod_output_uniform_count_rtc = 10;
     int tod_output_uniform_count_ptc = 10;
     int tod_output_source_dense_count_rtc = 10;

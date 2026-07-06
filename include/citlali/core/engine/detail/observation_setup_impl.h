@@ -94,11 +94,11 @@ void Engine::obsnum_setup() {
     // create timestream files
     if (run_tod_output) {
         // make rtc tod output file
-        if (tod_output_type == "rtc" || tod_output_type == "both") {
+        if (run_tod_output_rtc) {
             create_tod_files<engine_utils::toltecIO::rtc_timestream>();
         }
         // make ptc tod output file
-        if (tod_output_type == "ptc" || tod_output_type == "both") {
+        if (run_tod_output_ptc) {
             create_tod_files<engine_utils::toltecIO::ptc_timestream>();
         }
     }

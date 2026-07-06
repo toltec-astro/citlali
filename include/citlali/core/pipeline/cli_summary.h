@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/config/timestream_config.h>
+
 #include <string>
 
 namespace citlali::pipeline {
@@ -16,12 +18,16 @@ inline double physical_memory_gb(long long physical_memory_kb) {
     return static_cast<double>(physical_memory_kb) / 1e7;
 }
 
-inline bool should_report_rtc_tod_output(const std::string &tod_output_type) {
-    return tod_output_type == "rtc" || tod_output_type == "both";
+inline bool should_report_rtc_tod_output(
+    citlali::config::TodOutputType tod_output_type) {
+    return tod_output_type == citlali::config::TodOutputType::rtc ||
+           tod_output_type == citlali::config::TodOutputType::both;
 }
 
-inline bool should_report_ptc_tod_output(const std::string &tod_output_type) {
-    return tod_output_type == "ptc" || tod_output_type == "both";
+inline bool should_report_ptc_tod_output(
+    citlali::config::TodOutputType tod_output_type) {
+    return tod_output_type == citlali::config::TodOutputType::ptc ||
+           tod_output_type == citlali::config::TodOutputType::both;
 }
 
 template <class Logger>
@@ -134,7 +140,7 @@ double log_map_memory_summary(const Logger &logger, const ObsMapBuffer &omb,
 
 template <class Logger>
 void log_tod_output_selection_summary(
-    const Logger &logger, const std::string &tod_output_type,
+    const Logger &logger, citlali::config::TodOutputType tod_output_type,
     long long n_rtc_output_scans, bool rtc_mini_output,
     bool rtc_outer_output, long long n_ptc_output_scans,
     bool ptc_mini_output) {

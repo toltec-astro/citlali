@@ -2,16 +2,16 @@
 
 // Included by tod_output_selection.h inside namespace citlali::pipeline.
 
-inline std::optional<std::string> requested_tod_output_type_name(
+inline std::optional<citlali::config::TodOutputType> requested_tod_output_type(
     bool raw_time_chunk_enabled, bool processed_time_chunk_enabled) {
     if (raw_time_chunk_enabled && processed_time_chunk_enabled) {
-        return "both";
+        return citlali::config::TodOutputType::both;
     }
     if (raw_time_chunk_enabled) {
-        return "rtc";
+        return citlali::config::TodOutputType::rtc;
     }
     if (processed_time_chunk_enabled) {
-        return "ptc";
+        return citlali::config::TodOutputType::ptc;
     }
     return std::nullopt;
 }
@@ -42,4 +42,3 @@ inline void align_legacy_tod_output_selection(
         legacy_output_chunks.clear();
     }
 }
-

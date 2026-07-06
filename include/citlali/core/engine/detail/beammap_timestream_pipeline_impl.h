@@ -3,6 +3,8 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/pipeline/ordered_writer.h>
+
 template <class KidsProc, class RawObs>
 void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs, bool write_outputs) {
     using input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
@@ -65,26 +67,16 @@ template <class KidsProc>
 auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
     auto scans_done_mutex = std::make_shared<std::mutex>();
 
-    struct OrderedWriter {
-        std::mutex mutex;
-        std::condition_variable cv;
-        Eigen::Index next = 0;
-        void wait_turn(Eigen::Index idx) {
-            std::unique_lock<std::mutex> lk(mutex);
-            cv.wait(lk, [&] { return idx == next; });
-        }
-        void advance() {
-            std::lock_guard<std::mutex> lk(mutex);
-            ++next;
-            cv.notify_all();
-        }
-    };
-
-    const bool write_rtc = write_outputs && run_tod_output && !tod_filename.empty() &&
-        (tod_output_type == "rtc" || tod_output_type == "both");
+    const bool write_rtc =
+        write_outputs && run_tod_output && run_tod_output_rtc &&
+        !tod_filename.empty();
     const bool write_rtcdiag = write_outputs && !rtcdiag_filename.empty();
-    auto rtc_writer = write_rtc ? std::make_shared<OrderedWriter>() : nullptr;
-    auto rtcdiag_writer = write_rtcdiag ? std::make_shared<OrderedWriter>() : nullptr;
+    auto rtc_writer =
+        write_rtc ? std::make_shared<citlali::pipeline::OrderedWriter>()
+                  : nullptr;
+    auto rtcdiag_writer =
+        write_rtcdiag ? std::make_shared<citlali::pipeline::OrderedWriter>()
+                      : nullptr;
 
     auto farm = grppi::farm(n_threads,[&, scans_done_mutex, rtc_writer, rtcdiag_writer,
                                        write_rtc, write_rtcdiag](auto &rtcdata) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {

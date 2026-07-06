@@ -2,36 +2,31 @@
 
 // Implementation detail included by lali.h.
 
+#include <citlali/core/pipeline/ordered_writer.h>
+
 auto Lali::run() -> run_stage_t {
     auto scans_done_mutex = std::make_shared<std::mutex>();
     auto ptc_line_audit_mutex = std::make_shared<std::mutex>();
 
-    struct OrderedWriter {
-        std::mutex mutex;
-        std::condition_variable cv;
-        Eigen::Index next = 0;
-        void wait_turn(Eigen::Index idx) {
-            std::unique_lock<std::mutex> lk(mutex);
-            cv.wait(lk, [&] { return idx == next; });
-        }
-        void advance() {
-            std::lock_guard<std::mutex> lk(mutex);
-            ++next;
-            cv.notify_all();
-        }
-    };
-
-    const bool write_rtc = run_tod_output && !tod_filename.empty() &&
-        (tod_output_type == "rtc" || tod_output_type == "both");
-    const bool write_ptc = run_tod_output && !tod_filename.empty() &&
-        (tod_output_type == "ptc" || tod_output_type == "both");
+    const bool write_rtc =
+        run_tod_output && run_tod_output_rtc && !tod_filename.empty();
+    const bool write_ptc =
+        run_tod_output && run_tod_output_ptc && !tod_filename.empty();
     const bool write_rtcdiag = !rtcdiag_filename.empty();
     const bool write_ptcdiag = !ptcdiag_filename.empty();
 
-    auto rtc_writer = write_rtc ? std::make_shared<OrderedWriter>() : nullptr;
-    auto ptc_writer = write_ptc ? std::make_shared<OrderedWriter>() : nullptr;
-    auto rtcdiag_writer = write_rtcdiag ? std::make_shared<OrderedWriter>() : nullptr;
-    auto ptcdiag_writer = write_ptcdiag ? std::make_shared<OrderedWriter>() : nullptr;
+    auto rtc_writer =
+        write_rtc ? std::make_shared<citlali::pipeline::OrderedWriter>()
+                  : nullptr;
+    auto ptc_writer =
+        write_ptc ? std::make_shared<citlali::pipeline::OrderedWriter>()
+                  : nullptr;
+    auto rtcdiag_writer =
+        write_rtcdiag ? std::make_shared<citlali::pipeline::OrderedWriter>()
+                      : nullptr;
+    auto ptcdiag_writer =
+        write_ptcdiag ? std::make_shared<citlali::pipeline::OrderedWriter>()
+                      : nullptr;
 
     auto farm_fn = std::function<void(input_t &)>{[&, scans_done_mutex, ptc_line_audit_mutex,
                                                    rtc_writer, ptc_writer, rtcdiag_writer, ptcdiag_writer,
@@ -308,4 +303,3 @@ auto Lali::run() -> run_stage_t {
 
     return farm;
 }
-

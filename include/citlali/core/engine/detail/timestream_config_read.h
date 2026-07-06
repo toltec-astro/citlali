@@ -115,21 +115,16 @@ template <class TimestreamConfig>
 void sync_tod_output_type_config(bool raw_time_chunk_enabled,
                                  bool processed_time_chunk_enabled,
                                  bool &output_enabled,
-                                 std::string &output_type,
                                  TimestreamConfig &typed_config) {
     output_enabled = false;
     if (auto requested_output_type =
-            citlali::pipeline::requested_tod_output_type_name(
+            citlali::pipeline::requested_tod_output_type(
                 raw_time_chunk_enabled, processed_time_chunk_enabled)) {
+        typed_config.output.type = *requested_output_type;
         output_enabled = true;
-        output_type = *requested_output_type;
-    }
-    if (!output_enabled) {
         return;
     }
-    if (auto parsed = citlali::config::parse_tod_output_type(output_type)) {
-        typed_config.output.type = *parsed;
-    }
+    typed_config.output.type = citlali::config::TodOutputType::none;
 }
 
 template <class Chunks>
