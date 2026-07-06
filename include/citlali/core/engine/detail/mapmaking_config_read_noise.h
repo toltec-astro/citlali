@@ -20,17 +20,16 @@ void read_noise_map_count_config(Config &config, NoiseCount &n_noise,
                                  MissingKeys &missing_keys,
                                  InvalidKeys &invalid_keys) {
     using value_type = std::decay_t<NoiseCount>;
-    const auto missing_before = missing_keys.size();
-    const auto invalid_before = invalid_keys.size();
-    ::get_config_value(
-        config, n_noise, missing_keys, invalid_keys,
+    read_config_value_if_clean(
+        config,
         std::tuple{"noise_maps", "n_noise_maps"},
+        n_noise,
+        [&typed_config](value_type count) {
+            typed_config.n_noise_maps = static_cast<int>(count);
+        },
+        missing_keys, invalid_keys,
         std::vector<value_type>{}, std::vector<value_type>{0},
         std::vector<value_type>{});
-    if (config_parse_clean(
-            missing_keys, invalid_keys, missing_before, invalid_before)) {
-        typed_config.n_noise_maps = static_cast<int>(n_noise);
-    }
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
