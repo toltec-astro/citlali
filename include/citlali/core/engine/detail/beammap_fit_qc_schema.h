@@ -325,6 +325,121 @@ std::map<std::string, std::string> descriptions(const TableAccess &table_access)
     };
 }
 
+inline void append_legends(YAML::Node &fit_qc_meta);
+
+template <class BeammapState, class TableAccess>
+YAML::Node make_metadata(const BeammapState &beammap,
+                         const TableAccess &table_access,
+                         const std::vector<std::string> &fit_qc_header) {
+    YAML::Node fit_qc_meta;
+    fit_qc_meta["obsnum"] = beammap.obsnum;
+    fit_qc_meta["source"] = beammap.telescope.source_name;
+    fit_qc_meta["creation_date"] = engine_utils::current_date_time();
+    fit_qc_meta["date"] = beammap.date_obs.back();
+    fit_qc_meta["map_grouping"] = beammap.map_grouping;
+    fit_qc_meta["beammap_iter_max"] = beammap.beammap_iter_max;
+    fit_qc_meta["beammap_iter_tolerance"] = beammap.beammap_iter_tolerance;
+    fit_qc_meta["beammap_convergence_radius_arcsec"] =
+        beammap.beammap_convergence_radius_arcsec;
+    fit_qc_meta["beammap_phase_split_enabled"] =
+        beammap.beammap_phase_split_enabled;
+    fit_qc_meta["beammap_locator_iter"] = beammap.beammap_locator_iter;
+    fit_qc_meta["beammap_measurement_start_iter"] =
+        beammap.beammap_measurement_start_iter;
+    fit_qc_meta["reference_detector_subtracted"] =
+        beammap.beammap_subtract_reference;
+    fit_qc_meta["reference_det"] = beammap.beammap_reference_det_found;
+    fit_qc_meta["rfi_mask_enabled"] = beammap.beammap_rfi_mask_enabled;
+    fit_qc_meta["rfi_mask_block_size_samples"] =
+        beammap.beammap_rfi_mask_block_size_samples;
+    fit_qc_meta["rfi_mask_min_good_samples"] =
+        beammap.beammap_rfi_mask_min_good_samples;
+    fit_qc_meta["rfi_mask_dilate_blocks"] =
+        beammap.beammap_rfi_mask_dilate_blocks;
+    fit_qc_meta["rfi_mask_sigma_threshold"] =
+        beammap.beammap_rfi_mask_sigma_threshold;
+    fit_qc_meta["rfi_mask_sigma_floor"] =
+        beammap.beammap_rfi_mask_sigma_floor;
+    fit_qc_meta["rfi_mask_max_flagged_fraction"] =
+        beammap.beammap_rfi_mask_max_flagged_fraction;
+    fit_qc_meta["detector_weighting_mode"] =
+        beammap.beammap_detector_weighting_mode;
+    fit_qc_meta["beammap_fit_radius_fwhm"] =
+        beammap.beammap_fit_radius_fwhm;
+    fit_qc_meta["rfi_mask_detectors_affected"] =
+        static_cast<int>(
+            (table_access.apt_or_zero("rfi_masked_scans").array() > 0.0)
+                .count());
+    fit_qc_meta["scan_band_mask_enabled"] =
+        beammap.beammap_scan_band_mask_enabled;
+    fit_qc_meta["scan_band_mask_edge_rows"] =
+        beammap.beammap_scan_band_mask_edge_rows;
+    fit_qc_meta["scan_band_mask_min_row_pixels"] =
+        beammap.beammap_scan_band_mask_min_row_pixels;
+    fit_qc_meta["scan_band_mask_min_contiguous_rows"] =
+        beammap.beammap_scan_band_mask_min_contiguous_rows;
+    fit_qc_meta["scan_band_mask_row_median_sigma_threshold"] =
+        beammap.beammap_scan_band_mask_row_median_sigma_threshold;
+    fit_qc_meta["scan_band_mask_row_sigma_ratio_threshold"] =
+        beammap.beammap_scan_band_mask_row_sigma_ratio_threshold;
+    fit_qc_meta["scan_band_mask_max_flagged_fraction"] =
+        beammap.beammap_scan_band_mask_max_flagged_fraction;
+    fit_qc_meta["scan_band_mask_detectors_affected"] =
+        static_cast<int>(
+            (table_access.apt_or_zero("scan_band_masked_rows").array() > 0.0)
+                .count());
+    fit_qc_meta["scan_band_mask_detectors_rejected"] =
+        static_cast<int>(
+            (table_access.apt_or_zero("scan_band_mask_rejected").array() >
+             0.0)
+                .count());
+    fit_qc_meta["fit_bound_any"] =
+        static_cast<int>((beammap.fit_diag_bound_nhit.array() > 0).count());
+    fit_qc_meta["beammap_priors_enabled"] =
+        beammap.beammap_priors_enabled;
+    fit_qc_meta["beammap_priors_filepath"] =
+        beammap.beammap_priors_filepath;
+    fit_qc_meta["beammap_priors_centered"] =
+        beammap.beammap_soft_priors_are_centered;
+    fit_qc_meta["beammap_priors_derotated"] =
+        beammap.beammap_soft_priors_are_derotated;
+    fit_qc_meta["beammap_priors_max_d2_iter0"] =
+        beammap.beammap_priors_max_d2_iter0;
+    fit_qc_meta["beammap_priors_max_d2_after_iter0"] =
+        beammap.beammap_priors_max_d2_after_iter0;
+    fit_qc_meta["beammap_priors_score_lambda_iter0"] =
+        beammap.beammap_priors_score_lambda_iter0;
+    fit_qc_meta["beammap_priors_score_lambda_after_iter0"] =
+        beammap.beammap_priors_score_lambda_after_iter0;
+    fit_qc_meta["beammap_priors_align_after_iter0"] =
+        beammap.beammap_priors_align_after_iter0;
+    fit_qc_meta["beammap_priors_alignment_scope"] =
+        beammap.beammap_priors_alignment_scope;
+    fit_qc_meta["beammap_priors_alignment_common_support"] =
+        beammap.beammap_priors_alignment_common_support;
+    fit_qc_meta["beammap_priors_alignment_common_support_quantile"] =
+        beammap.beammap_priors_alignment_common_support_quantile;
+    fit_qc_meta["beammap_priors_alignment_min_matches"] =
+        beammap.beammap_priors_alignment_min_matches;
+    fit_qc_meta["beammap_priors_alignment_max_d2"] =
+        beammap.beammap_priors_alignment_max_d2;
+    fit_qc_meta["beammap_priors_alignment_fit_rotation"] =
+        beammap.beammap_priors_alignment_fit_rotation;
+    fit_qc_meta["beammap_priors_alignment_max_rotation_deg"] =
+        beammap.beammap_priors_alignment_max_rotation_deg;
+    fit_qc_meta["beammap_priors_aligned_arrays"] =
+        static_cast<int>(beammap.beammap_prior_array_alignment.size());
+
+    auto fit_qc_units = units(table_access, beammap.omb.sig_unit);
+    auto fit_qc_desc = descriptions(table_access);
+    for (const auto &key: fit_qc_header) {
+        fit_qc_meta[key].push_back("units: " + fit_qc_units[key]);
+        fit_qc_meta[key].push_back(fit_qc_desc[key]);
+    }
+    append_legends(fit_qc_meta);
+    return fit_qc_meta;
+}
+
 inline void append_legends(YAML::Node &fit_qc_meta) {
     fit_qc_meta["flag2"].push_back("Good=0");
     fit_qc_meta["flag2"].push_back("BadFit=1");
