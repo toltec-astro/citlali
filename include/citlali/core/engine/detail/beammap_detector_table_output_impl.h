@@ -6,31 +6,6 @@
 #include <citlali/core/engine/detail/beammap_fit_qc_schema.h>
 #include <citlali/core/engine/detail/beammap_detector_table_vectors.h>
 
-Beammap::FitQCSignalVectors Beammap::make_beammap_fit_qc_signal_vectors() {
-    FitQCSignalVectors vectors{
-        Eigen::VectorXd::Zero(calib.n_dets),
-        Eigen::VectorXd::Zero(calib.n_dets),
-        Eigen::VectorXd::Zero(calib.n_dets),
-        Eigen::VectorXd::Zero(calib.n_dets)};
-    for (Eigen::Index i = 0; i < calib.n_dets; ++i) {
-        const double amp = params(i, 0);
-        const double amp_err = perrors(i, 0);
-        const double rms = calc_map_support_stddev(i, true);
-        const double npos = static_cast<double>((omb.weight[i].array() > 0.0).count());
-        vectors.n_weight_pos(i) = npos;
-        if (std::isfinite(rms) && rms > 0.0) {
-            vectors.map_rms(i) = rms;
-            if (std::isfinite(amp)) {
-                vectors.map_sig2noise(i) = amp / rms;
-            }
-        }
-        if (std::isfinite(amp) && std::isfinite(amp_err) && amp_err > 0.0) {
-            vectors.fit_sig2noise(i) = amp / amp_err;
-        }
-    }
-    return vectors;
-}
-
 void Beammap::write_beammap_fit_qc_table(const std::string &apt_filename) {
     logger->info("writing beammap fit qc table");
     std::string fit_qc_filename = apt_filename + "_fit_qc";
@@ -40,7 +15,11 @@ void Beammap::write_beammap_fit_qc_table(const std::string &apt_filename) {
     const auto table_access = beammap_detector_table_vectors::make_accessors(
         calib.apt, calib.apt_header_units, calib.apt_header_description,
         prior_diag_values, calib.n_dets, n_prior_diag_cols);
-    auto fit_signal = make_beammap_fit_qc_signal_vectors();
+    auto fit_signal = beammap_detector_table_vectors::fit_qc_signal_vectors(
+        params, perrors, omb, calib.n_dets,
+        [this](Eigen::Index map_index) {
+            return calc_map_support_stddev(map_index, true);
+        });
 
     const double pix_to_arcsec = RAD_TO_ASEC * omb.pixel_size_rad;
     const double sigma_to_fwhm_arcsec = pix_to_arcsec * STD_TO_FWHM;
