@@ -4,8 +4,12 @@
 
 #include <exception>
 #include <filesystem>
+#include <cmath>
+#include <set>
 #include <string>
 #include <vector>
+
+#include <Eigen/Core>
 
 namespace beammap_map_product_split_helpers {
 
@@ -18,6 +22,45 @@ inline std::string split_suffix(int flag_value) {
         suffix += "_bad";
     }
     return suffix;
+}
+
+template <class Flags>
+Eigen::Index count_maps_with_flag(const Flags &flags,
+                                  Eigen::Index n_maps,
+                                  int flag_value) {
+    Eigen::Index n_flag_maps = 0;
+    for (Eigen::Index i = 0; i < n_maps; ++i) {
+        const int det_flag = static_cast<int>(std::lround(flags(i)));
+        if (det_flag == flag_value) {
+            ++n_flag_maps;
+        }
+    }
+    return n_flag_maps;
+}
+
+template <class Flags>
+Eigen::Index count_maps_with_any_flag(const Flags &flags,
+                                      Eigen::Index n_maps,
+                                      const std::vector<int> &flag_values) {
+    const std::set<int> split_values(flag_values.begin(), flag_values.end());
+    Eigen::Index n_selected_maps = 0;
+    for (Eigen::Index i = 0; i < n_maps; ++i) {
+        const int det_flag = static_cast<int>(std::lround(flags(i)));
+        if (split_values.count(det_flag) > 0) {
+            ++n_selected_maps;
+        }
+    }
+    return n_selected_maps;
+}
+
+template <class FitsIo>
+void add_split_primary_header(FitsIo &fits_io, Eigen::Index index,
+                              int flag_value) {
+    fits_io.at(index).pfits->pHDU().addKey(
+        "BEAMMAP.SPLIT_BY", "flag", "Beammap detector split criterion");
+    fits_io.at(index).pfits->pHDU().addKey(
+        "BEAMMAP.SPLIT_VALUE", flag_value,
+        "Beammap detector flag value in this file");
 }
 
 template <class FitsIoVec>

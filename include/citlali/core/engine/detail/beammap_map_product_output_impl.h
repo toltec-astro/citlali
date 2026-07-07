@@ -96,14 +96,9 @@ void Beammap::write_beammap_map_products(
                     "map output " + dir_name + " split-by-flag before write",
                     mb->kernel);
             }
-            std::set<int> split_values(beammap_split_flag_values.begin(), beammap_split_flag_values.end());
-            Eigen::Index n_selected_maps = 0;
-            for (Eigen::Index i = 0; i < n_maps; ++i) {
-                const int det_flag = static_cast<int>(std::lround(calib.apt["flag"](i)));
-                if (split_values.count(det_flag) > 0) {
-                    n_selected_maps++;
-                }
-            }
+            const Eigen::Index n_selected_maps =
+                beammap_map_product_split_helpers::count_maps_with_any_flag(
+                    calib.apt["flag"], n_maps, beammap_split_flag_values);
 
             if (n_selected_maps <= 0) {
                 logger->warn("beammap split_fits_by_flag selected no detector maps; using standard map output");
@@ -126,13 +121,9 @@ void Beammap::write_beammap_map_products(
                 using split_io_t = fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>;
 
                 for (const auto flag_value : beammap_split_flag_values) {
-                    Eigen::Index n_flag_maps = 0;
-                    for (Eigen::Index i = 0; i < n_maps; ++i) {
-                        const int det_flag = static_cast<int>(std::lround(calib.apt["flag"](i)));
-                        if (det_flag == flag_value) {
-                            n_flag_maps++;
-                        }
-                    }
+                    const Eigen::Index n_flag_maps =
+                        beammap_map_product_split_helpers::count_maps_with_flag(
+                            calib.apt["flag"], n_maps, flag_value);
 
                     if (n_flag_maps <= 0) {
                         logger->warn("beammap split_fits_by_flag: no detector maps found with flag={}; skipping", flag_value);
@@ -163,18 +154,14 @@ void Beammap::write_beammap_map_products(
                     for (Eigen::Index i = 0; i < split_f_io->size(); ++i) {
                         logger->debug("adding primary header to split file {} flag={}", i, flag_value);
                         add_phdu(split_f_io, mb, i);
-                        split_f_io->at(i).pfits->pHDU().addKey("BEAMMAP.SPLIT_BY", "flag",
-                                                                "Beammap detector split criterion");
-                        split_f_io->at(i).pfits->pHDU().addKey("BEAMMAP.SPLIT_VALUE", flag_value,
-                                                                "Beammap detector flag value in this file");
+                        beammap_map_product_split_helpers::add_split_primary_header(
+                            *split_f_io, i, flag_value);
 
                         if (!mb->noise.empty()) {
                             logger->debug("adding primary header to split noise file {} flag={}", i, flag_value);
                             add_phdu(split_n_io, mb, i);
-                            split_n_io->at(i).pfits->pHDU().addKey("BEAMMAP.SPLIT_BY", "flag",
-                                                                    "Beammap detector split criterion");
-                            split_n_io->at(i).pfits->pHDU().addKey("BEAMMAP.SPLIT_VALUE", flag_value,
-                                                                    "Beammap detector flag value in this file");
+                            beammap_map_product_split_helpers::add_split_primary_header(
+                                *split_n_io, i, flag_value);
                         }
                     }
 
