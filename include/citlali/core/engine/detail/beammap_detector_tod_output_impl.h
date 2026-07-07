@@ -5,6 +5,7 @@
 
 #include <citlali/core/engine/detail/beammap_detector_tod_selection.h>
 #include <citlali/core/engine/detail/beammap_detector_tod_netcdf_helpers.h>
+#include <citlali/core/engine/detail/beammap_detector_tod_output_helpers.h>
 
 void Beammap::write_detector_specific_ptc_tod(int output_iter) {
     if (!beammap_detector_tod_output_enabled) {
@@ -21,17 +22,18 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
             "beammap.detector_tod_output requires detector map grouping; skipping detector-specific PTC TOD");
         return;
     }
-    const int n_uniform = std::max(0, beammap_detector_tod_output_n_uniform);
-    const int n_dense = std::max(0, beammap_detector_tod_output_n_source_dense);
-    const Eigen::Index n_slots = static_cast<Eigen::Index>(n_uniform + n_dense);
+    const auto output_counts = beammap_detector_tod_output_helpers::output_counts(
+        beammap_detector_tod_output_n_uniform,
+        beammap_detector_tod_output_n_source_dense);
+    const int n_uniform = output_counts.n_uniform;
+    const int n_dense = output_counts.n_dense;
+    const Eigen::Index n_slots = output_counts.n_slots;
     if (n_slots <= 0) {
         logger->warn("beammap.detector_tod_output requested with no output slots; skipping");
         return;
     }
-    Eigen::Index n_samples_max = 0;
-    for (const auto &ptc : ptcs) {
-        n_samples_max = std::max<Eigen::Index>(n_samples_max, ptc.scans.data.rows());
-    }
+    const Eigen::Index n_samples_max =
+        beammap_detector_tod_output_helpers::max_ptc_samples(ptcs);
     if (n_samples_max <= 0) {
         logger->warn("beammap.detector_tod_output has no PTC samples to write; skipping");
         return;
@@ -148,15 +150,10 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         median_center_distance_arcsec = tula::alg::median(dist_vec);
     }
 
-    namespace fs = std::filesystem;
-    std::string dir_name = obsnum_dir_name + "raw/";
-    if (beammap_detector_tod_output_subdir_name != "null") {
-        dir_name += beammap_detector_tod_output_subdir_name + "/";
-    }
-    fs::create_directories(dir_name);
-    std::string filename = dir_name + "toltec";
-    filename += telescope.sim_obs ? "_simu" : "_commissioning";
-    filename += "_" + redu_type + "_" + obsnum + "_ptc_detector_tod.nc";
+    const auto output_paths = beammap_detector_tod_output_helpers::output_paths(
+        obsnum_dir_name, beammap_detector_tod_output_subdir_name,
+        telescope.sim_obs, redu_type, obsnum);
+    const std::string &filename = output_paths.filename;
 
     logger->info(
         "writing detector-specific PTC TOD iter={} file={} n_dets={} n_slots={} n_uniform={} n_source_dense={} fit_positions={} fallback_positions={} median_center_distance_arcsec={} top_center_scans={}",
