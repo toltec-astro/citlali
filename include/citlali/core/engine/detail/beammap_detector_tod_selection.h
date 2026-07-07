@@ -8,6 +8,7 @@
 #include <cmath>
 #include <limits>
 #include <map>
+#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -66,6 +67,32 @@ inline std::size_t flat_detector_slot(Eigen::Index det,
                                       Eigen::Index n_slots) {
     return static_cast<std::size_t>(det) * static_cast<std::size_t>(n_slots) +
            static_cast<std::size_t>(slot);
+}
+
+inline std::string format_center_scan_counts(
+    const std::map<Eigen::Index, Eigen::Index> &center_scan_counts,
+    std::size_t max_entries = 8) {
+    std::vector<std::pair<Eigen::Index, Eigen::Index>> center_hist(
+        center_scan_counts.begin(), center_scan_counts.end());
+    std::sort(center_hist.begin(), center_hist.end(),
+              [](const auto &lhs, const auto &rhs) {
+                  if (lhs.second != rhs.second) {
+                      return lhs.second > rhs.second;
+                  }
+                  return lhs.first < rhs.first;
+              });
+
+    std::ostringstream center_os;
+    center_os << "[";
+    for (std::size_t i = 0;
+         i < std::min<std::size_t>(max_entries, center_hist.size()); ++i) {
+        if (i != 0) {
+            center_os << ", ";
+        }
+        center_os << center_hist[i].first + 1 << ":" << center_hist[i].second;
+    }
+    center_os << "]";
+    return center_os.str();
 }
 
 template <class ScanIndices, class Ptcs>

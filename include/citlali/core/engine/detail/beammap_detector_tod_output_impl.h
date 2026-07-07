@@ -136,24 +136,9 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         }
     }
 
-    std::vector<std::pair<Eigen::Index, Eigen::Index>> center_hist(center_scan_counts.begin(),
-                                                                   center_scan_counts.end());
-    std::sort(center_hist.begin(), center_hist.end(),
-              [](const auto &lhs, const auto &rhs) {
-                  if (lhs.second != rhs.second) {
-                      return lhs.second > rhs.second;
-                  }
-                  return lhs.first < rhs.first;
-              });
-    std::ostringstream center_os;
-    center_os << "[";
-    for (std::size_t i = 0; i < std::min<std::size_t>(8, center_hist.size()); ++i) {
-        if (i != 0) {
-            center_os << ", ";
-        }
-        center_os << center_hist[i].first + 1 << ":" << center_hist[i].second;
-    }
-    center_os << "]";
+    const std::string center_scan_summary =
+        beammap_detector_tod_selection::format_center_scan_counts(
+            center_scan_counts);
 
     double median_center_distance_arcsec = std::numeric_limits<double>::quiet_NaN();
     if (!center_distances.empty()) {
@@ -184,7 +169,7 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         n_det_fit_positions,
         n_det_fallback_positions,
         median_center_distance_arcsec,
-        center_os.str());
+        center_scan_summary);
 
     write_netcdf_atomic(filename, [&](netCDF::NcFile &fo) {
         netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type", 1);
@@ -300,46 +285,8 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         flags_v.putAtt("comment", "0=good, 1=flagged, -1=unused sample");
         set_netcdf_chunking_and_compression(flags_v, data_chunks, 1);
 
-        std::vector<float> signal_block(
-            static_cast<std::size_t>(n_slots) * static_cast<std::size_t>(n_samples_max),
-            fill_float);
-        std::vector<signed char> flags_block(
-            static_cast<std::size_t>(n_slots) * static_cast<std::size_t>(n_samples_max),
-            fill_flag);
-        for (Eigen::Index det = 0; det < calib.n_dets; ++det) {
-            std::fill(signal_block.begin(), signal_block.end(), fill_float);
-            std::fill(flags_block.begin(), flags_block.end(), fill_flag);
-            for (Eigen::Index slot = 0; slot < n_slots; ++slot) {
-                const auto meta_idx = beammap_detector_tod_selection::flat_detector_slot(det, slot, n_slots);
-                const int scan_1based = slot_scan_index[meta_idx];
-                if (scan_1based <= 0) {
-                    continue;
-                }
-                const Eigen::Index scan_index = static_cast<Eigen::Index>(scan_1based - 1);
-                if (scan_index < 0 || scan_index >= static_cast<Eigen::Index>(ptcs.size())) {
-                    continue;
-                }
-                const auto &ptc = ptcs[scan_index];
-                if (det >= ptc.scans.data.cols() || det >= ptc.flags.data.cols()) {
-                    continue;
-                }
-                const Eigen::Index n_copy = std::min<Eigen::Index>(
-                    n_samples_max, ptc.scans.data.rows());
-                for (Eigen::Index sample = 0; sample < n_copy; ++sample) {
-                    const auto data_idx =
-                        static_cast<std::size_t>(slot) * static_cast<std::size_t>(n_samples_max) +
-                        static_cast<std::size_t>(sample);
-                    signal_block[data_idx] = static_cast<float>(ptc.scans.data(sample, det));
-                    flags_block[data_idx] =
-                        ptc.flags.data(sample, det) ? static_cast<signed char>(1)
-                                                    : static_cast<signed char>(0);
-                }
-            }
-            std::vector<std::size_t> start = {static_cast<std::size_t>(det), 0, 0};
-            std::vector<std::size_t> size = {
-                1, static_cast<std::size_t>(n_slots), static_cast<std::size_t>(n_samples_max)};
-            signal_v.putVar(start, size, signal_block.data());
-            flags_v.putVar(start, size, flags_block.data());
-        }
+        tod_nc::put_detector_tod_signal_flags(
+            signal_v, flags_v, ptcs, slot_scan_index, calib.n_dets, n_slots,
+            n_samples_max, fill_float, fill_flag);
     });
 }
