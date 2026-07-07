@@ -21,12 +21,12 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
             i, arrays_to_maps, maps_to_stokes, maps_to_arrays);
     const Eigen::Index map_index = write_indices.map_index;
     const Eigen::Index stokes_index = write_indices.stokes_index;
-    const Eigen::Index array_index = write_indices.array_index;
+    const Eigen::Index array_id = write_indices.array_id;
     citlali::pipeline::require_map_write_index_slots(
         i, map_index, static_cast<Eigen::Index>(fits_io->size()),
         stokes_index,
         static_cast<Eigen::Index>(rtcproc.polarization.stokes_params.size()),
-        array_index, static_cast<Eigen::Index>(calib.arrays.size()), logger);
+        array_id, logger);
     const auto first_hdu_index =
         static_cast<Eigen::Index>(fits_io->at(map_index).hdus.size());
     struct MapOutputBreadcrumbReset {
@@ -36,7 +36,7 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
     } map_output_breadcrumb_reset;
     citlali::pipeline::update_map_output_debug_breadcrumb(
         "write-maps", fits_io->at(map_index).filepath.c_str(), i, map_index,
-        stokes_index, array_index, first_hdu_index, first_hdu_index);
+        stokes_index, array_id, first_hdu_index, first_hdu_index);
 
     const double source_epoch =
         citlali::pipeline::wcs_source_epoch_or_default(telescope.tel_header,
@@ -44,8 +44,7 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
 
     // update wcs ctypes for frequency and stokes params
     citlali::pipeline::assign_map_wcs_spectral_axes(
-        mb->wcs, toltec_io.array_freq_map, calib.arrays, array_index,
-        stokes_index);
+        mb->wcs, toltec_io.array_freq_map, array_id, stokes_index);
     const std::string &stokes_suffix = rtcproc.polarization.stokes_params[stokes_index];
 
     try {
@@ -67,9 +66,12 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
 
         // kernel map
         if (rtcproc.run_kernel) {
+            const auto &array_fwhm =
+                citlali::pipeline::require_array_fwhm_for_id(
+                    calib.array_fwhms, array_id, logger);
             citlali::pipeline::add_kernel_map_image_hdu(
                 fits_io->at(map_index), mb, i, map_name, stokes_suffix,
-                rtcproc.kernel, calib.array_fwhms[array_index], mb->wcs,
+                rtcproc.kernel, array_fwhm, mb->wcs,
                 source_epoch, RAD_TO_ASEC, logger);
         }
 

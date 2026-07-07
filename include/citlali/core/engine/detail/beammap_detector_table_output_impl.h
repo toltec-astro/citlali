@@ -56,33 +56,8 @@ void Beammap::write_beammap_fit_qc_table(const std::string &apt_filename) {
 
     const double fill_double = std::numeric_limits<double>::quiet_NaN();
 
-    Eigen::VectorXd fruitloops_source_x_t =
-        beammap_detector_table_vectors::double_or_nan(ptcproc.fruit_loops_source_lon, calib.n_dets, RAD_TO_ASEC);
-    Eigen::VectorXd fruitloops_source_y_t =
-        beammap_detector_table_vectors::double_or_nan(ptcproc.fruit_loops_source_lat, calib.n_dets, RAD_TO_ASEC);
-    Eigen::VectorXd fruitloops_local_sigma =
-        beammap_detector_table_vectors::double_or_nan(ptcproc.fruit_loops_local_sigma_map, calib.n_dets);
-    Eigen::VectorXd fruitloops_local_sigma_npix =
-        beammap_detector_table_vectors::int_or_nan(ptcproc.fruit_loops_local_sigma_npix, calib.n_dets);
-    Eigen::VectorXd fruitloops_amp_ref =
-        beammap_detector_table_vectors::double_or_nan(ptcproc.fruit_loops_amp_ref, calib.n_dets);
-    Eigen::VectorXd fruitloops_adaptive_threshold =
-        beammap_detector_table_vectors::double_or_nan(ptcproc.fruit_loops_adaptive_threshold, calib.n_dets);
-    Eigen::VectorXd fruitloops_support_radius_arcsec =
-        beammap_detector_table_vectors::double_or_nan(
-            ptcproc.fruit_loops_adaptive_support_radius_rad, calib.n_dets, RAD_TO_ASEC);
-    Eigen::VectorXd fruitloops_peak_threshold =
-        beammap_detector_table_vectors::positive_scaled_threshold(
-            fruitloops_amp_ref, calib.n_dets,
-            ptcproc.fruit_loops_peak_fraction_limit);
-    Eigen::VectorXd fruitloops_snr_threshold =
-        beammap_detector_table_vectors::positive_scaled_threshold(
-            fruitloops_local_sigma, calib.n_dets,
-            ptcproc.fruit_loops_local_snr_floor);
-    auto fruitloops_support =
-        beammap_detector_table_vectors::fruitloops_support_vectors(
-            ptcproc, omb, calib.n_dets, fruitloops_adaptive_threshold,
-            pix_to_arcsec, fill_double);
+    auto fruitloops = beammap_detector_table_vectors::fruitloops_qc_vectors(
+        ptcproc, omb, calib.n_dets, pix_to_arcsec, fill_double);
 
     Eigen::MatrixXd fit_qc_table(calib.n_dets, fit_qc_header.size());
     Eigen::Index col = 0;
@@ -111,19 +86,19 @@ void Beammap::write_beammap_fit_qc_table(const std::string &apt_filename) {
     fit_qc_table.col(col++) = fit_signal.map_rms;
     fit_qc_table.col(col++) = fit_signal.map_sig2noise;
     fit_qc_table.col(col++) = fit_signal.n_weight_pos;
-    fit_qc_table.col(col++) = fruitloops_source_x_t;
-    fit_qc_table.col(col++) = fruitloops_source_y_t;
-    fit_qc_table.col(col++) = fruitloops_local_sigma;
-    fit_qc_table.col(col++) = fruitloops_local_sigma_npix;
-    fit_qc_table.col(col++) = fruitloops_amp_ref;
-    fit_qc_table.col(col++) = fruitloops_peak_threshold;
-    fit_qc_table.col(col++) = fruitloops_snr_threshold;
-    fit_qc_table.col(col++) = fruitloops_adaptive_threshold;
-    fit_qc_table.col(col++) = fruitloops_support_radius_arcsec;
-    fit_qc_table.col(col++) = fruitloops_support.npix;
-    fit_qc_table.col(col++) = fruitloops_support.signal_sum;
-    fit_qc_table.col(col++) = fruitloops_support.x_span_arcsec;
-    fit_qc_table.col(col++) = fruitloops_support.y_span_arcsec;
+    fit_qc_table.col(col++) = fruitloops.source_x_t;
+    fit_qc_table.col(col++) = fruitloops.source_y_t;
+    fit_qc_table.col(col++) = fruitloops.local_sigma;
+    fit_qc_table.col(col++) = fruitloops.local_sigma_npix;
+    fit_qc_table.col(col++) = fruitloops.amp_ref;
+    fit_qc_table.col(col++) = fruitloops.peak_threshold;
+    fit_qc_table.col(col++) = fruitloops.snr_threshold;
+    fit_qc_table.col(col++) = fruitloops.adaptive_threshold;
+    fit_qc_table.col(col++) = fruitloops.support_radius_arcsec;
+    fit_qc_table.col(col++) = fruitloops.support.npix;
+    fit_qc_table.col(col++) = fruitloops.support.signal_sum;
+    fit_qc_table.col(col++) = fruitloops.support.x_span_arcsec;
+    fit_qc_table.col(col++) = fruitloops.support.y_span_arcsec;
     fit_qc_table.col(col++) = table_access.apt_or_zero("rfi_masked_samples");
     fit_qc_table.col(col++) = table_access.apt_or_zero("rfi_masked_scans");
     fit_qc_table.col(col++) = table_access.apt_or_zero("scan_band_masked_samples");

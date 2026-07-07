@@ -5,7 +5,7 @@
 struct MapWriteIndices {
     Eigen::Index map_index;
     Eigen::Index stokes_index;
-    Eigen::Index array_index;
+    Eigen::Index array_id;
 };
 
 template <class ArrayToMap, class MapToStokes, class MapToArray>
@@ -43,9 +43,8 @@ inline bool has_stokes_slot(Eigen::Index stokes_index,
     return stokes_index >= 0 && stokes_index < n_stokes;
 }
 
-inline bool has_array_slot(Eigen::Index array_index,
-                           Eigen::Index n_arrays) {
-    return array_index >= 0 && array_index < n_arrays;
+inline bool has_array_id(Eigen::Index array_id) {
+    return array_id >= 0;
 }
 
 template <class Logger>
@@ -65,7 +64,7 @@ template <class Logger>
 void require_map_write_index_slots(
     Eigen::Index i, Eigen::Index map_index, Eigen::Index n_files,
     Eigen::Index stokes_index, Eigen::Index n_stokes,
-    Eigen::Index array_index, Eigen::Index n_arrays, const Logger &logger) {
+    Eigen::Index array_id, const Logger &logger) {
     if (!has_output_file_slot(map_index, n_files)) {
         logger->error(
             "write_maps file index out of range: map_index={} fits_io_size={} map_i={}",
@@ -80,12 +79,24 @@ void require_map_write_index_slots(
             static_cast<long long>(n_stokes), static_cast<long long>(i));
         std::exit(EXIT_FAILURE);
     }
-    if (!has_array_slot(array_index, n_arrays)) {
+    if (!has_array_id(array_id)) {
         logger->error(
-            "write_maps maps_to_arrays index out of range: maps_to_arrays(i)={} calib.arrays.size={} map_i={}",
-            static_cast<long long>(array_index),
-            static_cast<long long>(n_arrays), static_cast<long long>(i));
+            "write_maps invalid maps_to_arrays array id: maps_to_arrays(i)={} map_i={}",
+            static_cast<long long>(array_id), static_cast<long long>(i));
         std::exit(EXIT_FAILURE);
     }
 }
 
+template <class ArrayFwhms, class Logger>
+const typename ArrayFwhms::mapped_type &require_array_fwhm_for_id(
+    const ArrayFwhms &array_fwhms, Eigen::Index array_id,
+    const Logger &logger) {
+    const auto it = array_fwhms.find(array_id);
+    if (it == array_fwhms.end()) {
+        logger->error(
+            "write_maps missing array FWHM for array_id={}",
+            static_cast<long long>(array_id));
+        std::exit(EXIT_FAILURE);
+    }
+    return it->second;
+}

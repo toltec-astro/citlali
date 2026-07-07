@@ -87,18 +87,17 @@ double wcs_source_epoch_or_default(const HeaderMap &tel_header,
     return source_epoch;
 }
 
-template <class ArrayFreqMap, class Arrays>
-double map_wcs_frequency(ArrayFreqMap &array_freq_map, const Arrays &arrays,
-                         Eigen::Index array_index) {
-    return array_freq_map[arrays[array_index]];
+template <class ArrayFreqMap>
+double map_wcs_frequency(ArrayFreqMap &array_freq_map,
+                         Eigen::Index array_id) {
+    return array_freq_map[array_id];
 }
 
-template <class Wcs, class ArrayFreqMap, class Arrays>
+template <class Wcs, class ArrayFreqMap>
 void assign_map_wcs_spectral_axes(Wcs &wcs, ArrayFreqMap &array_freq_map,
-                                  const Arrays &arrays,
-                                  Eigen::Index array_index,
+                                  Eigen::Index array_id,
                                   Eigen::Index stokes_index) {
-    wcs.crval[2] = map_wcs_frequency(array_freq_map, arrays, array_index);
+    wcs.crval[2] = map_wcs_frequency(array_freq_map, array_id);
     wcs.crval[3] = stokes_index;
 }
 
@@ -116,4 +115,3 @@ bool is_filtered_map_output(const FitsIo &fits_io,
                             const FitsIoContainer &filtered_coadd_fits_io) {
     return fits_io == &filtered_fits_io || fits_io == &filtered_coadd_fits_io;
 }
-

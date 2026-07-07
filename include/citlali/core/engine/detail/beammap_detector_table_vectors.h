@@ -55,6 +55,19 @@ struct FruitLoopsSupportVectors {
     Eigen::VectorXd y_span_arcsec;
 };
 
+struct FruitLoopsQCVectors {
+    Eigen::VectorXd source_x_t;
+    Eigen::VectorXd source_y_t;
+    Eigen::VectorXd local_sigma;
+    Eigen::VectorXd local_sigma_npix;
+    Eigen::VectorXd amp_ref;
+    Eigen::VectorXd peak_threshold;
+    Eigen::VectorXd snr_threshold;
+    Eigen::VectorXd adaptive_threshold;
+    Eigen::VectorXd support_radius_arcsec;
+    FruitLoopsSupportVectors support;
+};
+
 template <class PtcProc, class MapBuffer>
 FruitLoopsSupportVectors fruitloops_support_vectors(
     const PtcProc &ptcproc,
@@ -159,6 +172,37 @@ FruitLoopsSupportVectors fruitloops_support_vectors(
         }
     }
 
+    return out;
+}
+
+template <class PtcProc, class MapBuffer>
+FruitLoopsQCVectors fruitloops_qc_vectors(
+    const PtcProc &ptcproc,
+    const MapBuffer &omb,
+    Eigen::Index n_dets,
+    double pix_to_arcsec,
+    double fill_value) {
+    FruitLoopsQCVectors out{
+        double_or_nan(ptcproc.fruit_loops_source_lon, n_dets, RAD_TO_ASEC),
+        double_or_nan(ptcproc.fruit_loops_source_lat, n_dets, RAD_TO_ASEC),
+        double_or_nan(ptcproc.fruit_loops_local_sigma_map, n_dets),
+        int_or_nan(ptcproc.fruit_loops_local_sigma_npix, n_dets),
+        double_or_nan(ptcproc.fruit_loops_amp_ref, n_dets),
+        Eigen::VectorXd::Constant(n_dets, fill_value),
+        Eigen::VectorXd::Constant(n_dets, fill_value),
+        double_or_nan(ptcproc.fruit_loops_adaptive_threshold, n_dets),
+        double_or_nan(ptcproc.fruit_loops_adaptive_support_radius_rad,
+                      n_dets, RAD_TO_ASEC),
+        {Eigen::VectorXd(), Eigen::VectorXd(), Eigen::VectorXd(),
+         Eigen::VectorXd()}};
+
+    out.peak_threshold = positive_scaled_threshold(
+        out.amp_ref, n_dets, ptcproc.fruit_loops_peak_fraction_limit);
+    out.snr_threshold = positive_scaled_threshold(
+        out.local_sigma, n_dets, ptcproc.fruit_loops_local_snr_floor);
+    out.support = fruitloops_support_vectors(
+        ptcproc, omb, n_dets, out.adaptive_threshold, pix_to_arcsec,
+        fill_value);
     return out;
 }
 
