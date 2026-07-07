@@ -2,6 +2,7 @@
 
 #if defined(__linux__)
 #include <citlali/core/mapmaking/jinc_debug_breadcrumb.h>
+#include <citlali/core/pipeline/map_output_debug_breadcrumb.h>
 
 #include <csignal>
 #include <cstdio>
@@ -20,6 +21,21 @@ inline void abort_backtrace_handler(int sig) {
     const ssize_t nw = ::write(STDERR_FILENO, msg, sizeof(msg) - 1);
     if (nw < 0) {
         // best-effort only in signal context
+    }
+    const auto &map_crumb = pipeline::get_map_output_debug_breadcrumb();
+    if (map_crumb.valid) {
+        std::fprintf(stderr,
+                     "[citlali] map output breadcrumb: stage=%s map_i=%lld map_index=%lld "
+                     "stokes=%lld array=%lld hdu_index=%lld hdu_count=%lld flag=%d file=%s\n",
+                     map_crumb.stage,
+                     map_crumb.map_i,
+                     map_crumb.map_index,
+                     map_crumb.stokes_index,
+                     map_crumb.array_index,
+                     map_crumb.hdu_index,
+                     map_crumb.hdu_count,
+                     map_crumb.flag_value,
+                     map_crumb.filepath);
     }
     const auto &crumb = mapmaking::get_jinc_debug_breadcrumb();
     if (crumb.valid) {

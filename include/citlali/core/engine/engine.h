@@ -258,7 +258,7 @@ public:
 
     // add maps to FITS files and output them
     template <typename fits_io_type, class map_buffer_t>
-    void write_maps(fits_io_type &, fits_io_type &, map_buffer_t &, Eigen::Index);
+    Eigen::Index write_maps(fits_io_type &, fits_io_type &, map_buffer_t &, Eigen::Index);
 
     // write map psds
     template <mapmaking::MapType map_t, class map_buffer_t>

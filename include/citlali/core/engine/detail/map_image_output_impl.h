@@ -4,10 +4,11 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/pipeline/map_image_output_helpers.h>
+#include <citlali/core/pipeline/map_output_debug_breadcrumb.h>
 #include <citlali/core/pipeline/output_policy.h>
 
 template <typename fits_io_type, class map_buffer_t>
-void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_buffer_t &mb, Eigen::Index i) {
+Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_buffer_t &mb, Eigen::Index i) {
     citlali::pipeline::require_map_data_slots(
         i, static_cast<Eigen::Index>(mb->signal.size()),
         static_cast<Eigen::Index>(mb->weight.size()), logger);
@@ -26,6 +27,16 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
         stokes_index,
         static_cast<Eigen::Index>(rtcproc.polarization.stokes_params.size()),
         array_index, static_cast<Eigen::Index>(calib.arrays.size()), logger);
+    const auto first_hdu_index =
+        static_cast<Eigen::Index>(fits_io->at(map_index).hdus.size());
+    struct MapOutputBreadcrumbReset {
+        ~MapOutputBreadcrumbReset() {
+            citlali::pipeline::reset_map_output_debug_breadcrumb();
+        }
+    } map_output_breadcrumb_reset;
+    citlali::pipeline::update_map_output_debug_breadcrumb(
+        "write-maps", fits_io->at(map_index).filepath.c_str(), i, map_index,
+        stokes_index, array_index, first_hdu_index, first_hdu_index);
 
     const double source_epoch =
         citlali::pipeline::wcs_source_epoch_or_default(telescope.tel_header,
@@ -83,6 +94,7 @@ void Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_
                 noise_fits_io->at(map_index), mb, i, map_name, stokes_suffix,
                 mb->wcs, source_epoch, median_rms);
         }
+        return first_hdu_index;
     } catch (const CCfits::FitsError &e) {
         throw std::runtime_error(
             citlali::pipeline::map_write_error_message(
