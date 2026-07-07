@@ -7,6 +7,7 @@
 #include <citlali/core/pipeline/map_source_finding.h>
 #include <citlali/core/pipeline/noise_weight_policy.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/stage_profile.h>
 
 namespace citlali::pipeline {
 
@@ -34,6 +35,8 @@ bool filtered_map_noise_products_apply_empirical_weights(
 template <auto FilteredMap, class Engine, class MapBuffer, class Logger>
 void filter_maps(Engine &engine, MapBuffer &map_buffer,
                  const Logger &logger, const char *log_message) {
+    const auto profile_scope =
+        profile_stage("map.filter", logger, log_message);
     run_wiener_filter_with_log<FilteredMap>(
         engine, map_buffer, logger, log_message);
 }
@@ -60,6 +63,8 @@ template <auto FilteredMap, class Engine, class MapBuffer, class Logger>
 void find_filtered_map_sources_if_needed(
     Engine &engine, MapBuffer &map_buffer, const Logger &logger,
     const char *log_message) {
+    const auto profile_scope =
+        profile_stage("map.source_finding", logger, log_message);
     find_map_sources_if_needed<FilteredMap>(
         engine, map_buffer, logger, should_find_filtered_map_sources(engine),
         log_message);

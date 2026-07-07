@@ -4,6 +4,7 @@
 #include <citlali/core/pipeline/observation_coadd_accumulation.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/raw_observation_outputs.h>
+#include <citlali/core/pipeline/stage_profile.h>
 
 namespace citlali::pipeline {
 
@@ -30,6 +31,8 @@ template <auto RawObsMap, auto FilteredObsMap, bool FitMaps, class TodProc,
 void write_observation_outputs_and_accumulate(TodProc &todproc,
                                               const Logger &logger) {
     auto &engine = todproc.engine();
+    const auto profile_scope =
+        profile_stage("observation.outputs_and_accumulation", logger);
 
     write_raw_observation_outputs<RawObsMap>(todproc, logger);
 

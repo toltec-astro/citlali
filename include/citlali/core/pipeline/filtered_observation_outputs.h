@@ -2,6 +2,7 @@
 
 #include <citlali/core/pipeline/filtered_map_outputs.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/stage_profile.h>
 
 namespace citlali::pipeline {
 
@@ -27,9 +28,12 @@ void calculate_filtered_observation_map_diagnostics(Engine &engine,
         "calculating filtered obs map histograms");
 }
 
-template <bool FitMaps, class Engine>
-void fit_filtered_observation_maps_if_requested(Engine &engine) {
+template <bool FitMaps, class Engine, class Logger>
+void fit_filtered_observation_maps_if_requested(Engine &engine,
+                                                const Logger &logger) {
     if constexpr (FitMaps) {
+        const auto profile_scope =
+            profile_stage("filtered_observation.fit_maps", logger);
         engine.fit_maps();
     }
 }
@@ -40,7 +44,7 @@ void find_and_fit_filtered_observation_maps_if_needed(
     find_filtered_map_sources_if_needed<FilteredObsMap>(
         engine, engine.omb, logger, "finding filtered obs map sources");
 
-    fit_filtered_observation_maps_if_requested<FitMaps>(engine);
+    fit_filtered_observation_maps_if_requested<FitMaps>(engine, logger);
 }
 
 template <auto FilteredObsMap, class Engine, class Logger>
@@ -56,6 +60,8 @@ template <auto FilteredObsMap, bool FitMaps, class TodProc, class Logger>
 void write_filtered_observation_outputs(TodProc &todproc,
                                         const Logger &logger) {
     auto &engine = todproc.engine();
+    const auto profile_scope =
+        profile_stage("filtered_observation.outputs", logger);
 
     filter_observation_maps<FilteredObsMap>(engine, logger);
     calculate_filtered_observation_noise_products_if_needed(engine, logger);

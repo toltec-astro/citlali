@@ -3,6 +3,7 @@
 // Implementation detail included by todproc.h.
 
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/stage_profile.h>
 
 namespace citlali::pipeline {
 
@@ -234,6 +235,8 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
             logger->warn("failed to enable reduction-local compressed log in {}: {}",
                          engine().redu_dir_name, e.what());
         }
+        citlali::pipeline::configure_stage_profile_output(
+            engine().redu_dir_name, logger);
     }
     else {
         engine().redu_dir_name = engine().output_dir + "/";
@@ -245,6 +248,8 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
             logger->warn("failed to enable reduction-local compressed log in {}: {}",
                          engine().redu_dir_name, e.what());
         }
+        citlali::pipeline::configure_stage_profile_output(
+            engine().redu_dir_name, logger);
     }
 
     // coadded subdir

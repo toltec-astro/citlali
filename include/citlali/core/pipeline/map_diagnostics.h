@@ -1,19 +1,25 @@
 #pragma once
 
+#include <citlali/core/pipeline/stage_profile.h>
+
 namespace citlali::pipeline {
 
 template <class MapBuffer, class Logger>
 void calculate_map_psd_with_log(MapBuffer &map_buffer, const Logger &logger,
                                 const char *log_message) {
     logger->info("{}", log_message);
+    const auto profile_scope =
+        profile_stage("map.diagnostics.psd", logger, log_message);
     map_buffer.calc_map_psd();
 }
 
 template <class MapBuffer, class Logger>
 void calculate_map_histogram_with_log(MapBuffer &map_buffer,
-                                      const Logger &logger,
-                                      const char *log_message) {
+    const Logger &logger,
+    const char *log_message) {
     logger->info("{}", log_message);
+    const auto profile_scope =
+        profile_stage("map.diagnostics.histogram", logger, log_message);
     map_buffer.calc_map_hist();
 }
 
@@ -30,6 +36,8 @@ void calculate_map_diagnostics(MapBuffer &map_buffer, const Logger &logger,
     calculate_map_psd_with_log(map_buffer, logger, psd_log_message);
     calculate_map_histogram_with_log(
         map_buffer, logger, histogram_log_message);
+    const auto profile_scope =
+        profile_stage("map.diagnostics.median_statistics", logger);
     calculate_map_median_statistics(map_buffer);
 }
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/pipeline/stage_profile.h>
+
 namespace citlali::pipeline {
 
 template <class Engine>
@@ -10,14 +12,16 @@ bool should_run_observation_tod(const Engine &engine) {
 template <class Engine, class Logger>
 void setup_observation_pipeline(Engine &engine, const Logger &logger) {
     logger->info("pipeline setup");
+    const auto profile_scope = profile_stage("observation.setup", logger);
     engine.setup();
 }
 
 template <class Engine, class KidsProc, class RawObs, class Logger>
 void run_observation_tod_pipeline(Engine &engine, KidsProc &kidsproc,
-                                  const RawObs &rawobs,
-                                  const Logger &logger) {
+    const RawObs &rawobs,
+    const Logger &logger) {
     logger->info("running pipeline");
+    const auto profile_scope = profile_stage("observation.tod_pipeline", logger);
     engine.pipeline(kidsproc, rawobs);
 }
 

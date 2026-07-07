@@ -3,6 +3,9 @@
 #include <citlali/core/pipeline/reduction_iteration_outputs.h>
 #include <citlali/core/pipeline/reduction_iteration_setup.h>
 #include <citlali/core/pipeline/reduction_observation_loop.h>
+#include <citlali/core/pipeline/stage_profile.h>
+
+#include <string>
 
 namespace citlali::pipeline {
 
@@ -16,6 +19,10 @@ bool run_reduction_iteration(
     const ConfigFilepaths &config_filepaths, MapExtents &map_extents,
     MapCoords &map_coords, DateObsFactory &&date_obs_factory,
     const Logger &logger) {
+    const auto profile_scope = profile_stage(
+        "reduction.iteration", logger,
+        "fruit_iter=" + std::to_string(todproc.engine().fruit_iter));
+
     begin_reduction_iteration(todproc, config_filepaths, logger);
 
     if (!run_reduction_iteration_observations<

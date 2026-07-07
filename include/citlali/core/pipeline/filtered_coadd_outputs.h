@@ -2,6 +2,7 @@
 
 #include <citlali/core/pipeline/filtered_map_outputs.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/stage_profile.h>
 
 namespace citlali::pipeline {
 
@@ -47,6 +48,8 @@ void output_filtered_coadd_maps_if_needed(Engine &engine,
 template <auto FilteredCoaddMap, class TodProc, class Logger>
 void write_filtered_coadd_outputs(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
+    const auto profile_scope =
+        profile_stage("filtered_coadd.outputs", logger);
 
     filter_coadd_maps<FilteredCoaddMap>(engine, logger);
     calculate_filtered_coadd_noise_products_if_needed(engine, logger);

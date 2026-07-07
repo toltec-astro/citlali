@@ -2,8 +2,10 @@
 
 #include <citlali/core/pipeline/reduction_observation_inputs.h>
 #include <citlali/core/pipeline/reduction_observation_pipeline.h>
+#include <citlali/core/pipeline/stage_profile.h>
 
 #include <cstddef>
+#include <string>
 #include <utility>
 
 namespace citlali::pipeline {
@@ -16,16 +18,27 @@ bool run_reduction_observation(
     const RawObsKidsMeta &rawobs_kids_meta, bool has_multiple_inputs,
     MapExtents &map_extents, MapCoords &map_coords,
     std::size_t observation_index, DateObs &&date_obs, const Logger &logger) {
-    if (!prepare_reduction_observation_inputs<IsBeammap>(
-            todproc, rawobs, rawobs_kids_meta, has_multiple_inputs,
-            map_extents, map_coords, observation_index,
-            std::forward<DateObs>(date_obs), logger)) {
-        return false;
+    const auto profile_context =
+        "observation_index=" + std::to_string(observation_index);
+
+    {
+        const auto profile_scope = profile_stage(
+            "observation.prepare_inputs", logger, profile_context);
+        if (!prepare_reduction_observation_inputs<IsBeammap>(
+                todproc, rawobs, rawobs_kids_meta, has_multiple_inputs,
+                map_extents, map_coords, observation_index,
+                std::forward<DateObs>(date_obs), logger)) {
+            return false;
+        }
     }
 
-    run_reduction_observation_pipeline<IsBeammap, RawObsMap, FilteredObsMap,
-                                       FitMaps>(
-        todproc, kidsproc, rawobs, logger);
+    {
+        const auto profile_scope = profile_stage(
+            "observation.pipeline", logger, profile_context);
+        run_reduction_observation_pipeline<IsBeammap, RawObsMap,
+                                           FilteredObsMap, FitMaps>(
+            todproc, kidsproc, rawobs, logger);
+    }
     return true;
 }
 

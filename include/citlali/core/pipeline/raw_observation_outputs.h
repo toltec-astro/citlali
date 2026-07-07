@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/raw_map_outputs.h>
+#include <citlali/core/pipeline/stage_profile.h>
 
 namespace citlali::pipeline {
 
@@ -33,6 +34,8 @@ void output_raw_observation_maps_if_needed(Engine &engine,
 template <auto RawObsMap, class TodProc, class Logger>
 void write_raw_observation_outputs(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
+    const auto profile_scope =
+        profile_stage("raw_observation.outputs", logger);
 
     calculate_raw_observation_noise_products_if_needed(engine, logger);
     output_raw_observation_maps_if_needed<RawObsMap>(engine, logger);

@@ -2,6 +2,7 @@
 
 #include <citlali/core/pipeline/map_diagnostics.h>
 #include <citlali/core/pipeline/raw_map_outputs.h>
+#include <citlali/core/pipeline/stage_profile.h>
 
 namespace citlali::pipeline {
 
@@ -20,6 +21,7 @@ void prepare_raw_coadd_map_files(TodProc &todproc,
 template <class TodProc, class Logger>
 void prepare_raw_coadd_maps(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
+    const auto profile_scope = profile_stage("raw_coadd.prepare", logger);
 
     prepare_raw_coadd_map_files(todproc, logger);
     logger->info("normalizing coadded maps");
@@ -56,6 +58,7 @@ void output_raw_coadd_maps(Engine &engine, const Logger &logger) {
 template <auto RawCoaddMap, class TodProc, class Logger>
 void write_raw_coadd_outputs(TodProc &todproc, const Logger &logger) {
     auto &engine = todproc.engine();
+    const auto profile_scope = profile_stage("raw_coadd.outputs", logger);
 
     prepare_raw_coadd_maps(todproc, logger);
     calculate_raw_coadd_noise_products_if_needed(engine, logger);
