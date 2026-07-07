@@ -25,6 +25,8 @@ void Beammap::output() {
         // write stats file
         write_stats();
 
+        mb->calc_median_err();
+
         // add header informqtion to tod
         if (run_tod_output && !tod_filename.empty()) {
             add_tod_header(mb);
