@@ -15,6 +15,45 @@
 
 namespace beammap_detector_tod_netcdf_helpers {
 
+template <class Telescope>
+inline void put_output_metadata(netCDF::NcFile &fo,
+                                const std::string &obsnum,
+                                Telescope &telescope,
+                                const std::string &redu_type,
+                                const std::string &tod_type,
+                                double sample_rate_hz,
+                                int output_iter,
+                                int n_uniform,
+                                int n_dense) {
+    netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type", 1);
+    netCDF::NcVar tod_output_type_var =
+        fo.addVar("tod_output_type", netCDF::ncString,
+                  n_tod_output_type_dim);
+    const std::vector<size_t> tod_output_type_index = {0};
+    std::string tod_output_type_name = "ptc_detector_tod";
+    tod_output_type_var.putVar(tod_output_type_index, tod_output_type_name);
+
+    netCDF::NcVar obsnum_v = fo.addVar("obsnum", netCDF::ncInt);
+    obsnum_v.putAtt("units", "N/A");
+    int obsnum_int = std::stoi(obsnum);
+    obsnum_v.putVar(&obsnum_int);
+    add_netcdf_var<std::string>(fo, "SOURCE", telescope.source_name);
+    add_netcdf_var<std::string>(fo, "PROJID", telescope.project_id);
+    add_netcdf_var<std::string>(fo, "GOAL", redu_type);
+    add_netcdf_var<std::string>(fo, "OBSGOAL", telescope.obs_goal);
+    add_netcdf_var<std::string>(fo, "TYPE", tod_type);
+    add_netcdf_var<std::string>(fo, "PIPELINE", "CITLALI");
+    add_netcdf_var<std::string>(fo, "VERSION", CITLALI_GIT_VERSION);
+    add_netcdf_var<std::string>(fo, "KIDS", KIDSCPP_GIT_VERSION);
+    add_netcdf_var<std::string>(fo, "TULA", TULA_GIT_VERSION);
+    add_netcdf_var(fo, "SourceRa", telescope.tel_header["Header.Source.Ra"](0));
+    add_netcdf_var(fo, "SourceDec", telescope.tel_header["Header.Source.Dec"](0));
+    add_netcdf_var(fo, "PTC_SAMPRATE", sample_rate_hz);
+    add_netcdf_var(fo, "FRUITLOOPS_ITER", output_iter);
+    add_netcdf_var(fo, "CONFIG.BEAMMAP.DETECTOR_TOD.N_UNIFORM", n_uniform);
+    add_netcdf_var(fo, "CONFIG.BEAMMAP.DETECTOR_TOD.N_SOURCE_DENSE", n_dense);
+}
+
 inline void put_detector_int(netCDF::NcFile &fo,
                              const std::vector<netCDF::NcDim> &det_dims,
                              const std::string &name,

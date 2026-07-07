@@ -169,32 +169,11 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         center_scan_summary);
 
     write_netcdf_atomic(filename, [&](netCDF::NcFile &fo) {
-        netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type", 1);
-        netCDF::NcVar tod_output_type_var =
-            fo.addVar("tod_output_type", netCDF::ncString, n_tod_output_type_dim);
-        const std::vector<size_t> tod_output_type_index = {0};
-        std::string tod_output_type_name = "ptc_detector_tod";
-        tod_output_type_var.putVar(tod_output_type_index, tod_output_type_name);
+        namespace tod_nc = beammap_detector_tod_netcdf_helpers;
 
-        netCDF::NcVar obsnum_v = fo.addVar("obsnum", netCDF::ncInt);
-        obsnum_v.putAtt("units", "N/A");
-        int obsnum_int = std::stoi(obsnum);
-        obsnum_v.putVar(&obsnum_int);
-        add_netcdf_var<std::string>(fo, "SOURCE", telescope.source_name);
-        add_netcdf_var<std::string>(fo, "PROJID", telescope.project_id);
-        add_netcdf_var<std::string>(fo, "GOAL", redu_type);
-        add_netcdf_var<std::string>(fo, "OBSGOAL", telescope.obs_goal);
-        add_netcdf_var<std::string>(fo, "TYPE", tod_type);
-        add_netcdf_var<std::string>(fo, "PIPELINE", "CITLALI");
-        add_netcdf_var<std::string>(fo, "VERSION", CITLALI_GIT_VERSION);
-        add_netcdf_var<std::string>(fo, "KIDS", KIDSCPP_GIT_VERSION);
-        add_netcdf_var<std::string>(fo, "TULA", TULA_GIT_VERSION);
-        add_netcdf_var(fo, "SourceRa", telescope.tel_header["Header.Source.Ra"](0));
-        add_netcdf_var(fo, "SourceDec", telescope.tel_header["Header.Source.Dec"](0));
-        add_netcdf_var(fo, "PTC_SAMPRATE", processed_time_chunk_fs_hz());
-        add_netcdf_var(fo, "FRUITLOOPS_ITER", output_iter);
-        add_netcdf_var(fo, "CONFIG.BEAMMAP.DETECTOR_TOD.N_UNIFORM", n_uniform);
-        add_netcdf_var(fo, "CONFIG.BEAMMAP.DETECTOR_TOD.N_SOURCE_DENSE", n_dense);
+        tod_nc::put_output_metadata(
+            fo, obsnum, telescope, redu_type, tod_type,
+            processed_time_chunk_fs_hz(), output_iter, n_uniform, n_dense);
 
         netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);
         netCDF::NcDim n_slots_dim = fo.addDim("n_detector_tod_slots", n_slots);
@@ -205,8 +184,6 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         std::vector<std::size_t> det_slot_chunks = {1, static_cast<std::size_t>(n_slots)};
         std::vector<std::size_t> data_chunks = {
             1, 1, static_cast<std::size_t>(n_samples_max)};
-
-        namespace tod_nc = beammap_detector_tod_netcdf_helpers;
 
         tod_nc::put_detector_int(
             fo, det_dims, "detector_tod_uid", "detector UID along n_dets",
