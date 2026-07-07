@@ -107,6 +107,12 @@ $HOME/tolteca/bin/python tools/baseline/audit_reduction_run.py \
   --expected-mode beammap \
   --expected-label refactor
 
+$HOME/tolteca/bin/python tools/baseline/compare_reduction_audits.py \
+  /Users/gwilson/work_toltec/local_data/2026-refactor/beammap/citlali/reduced \
+  /Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced \
+  --expected-mode beammap \
+  --report-out /tmp/beammap_audit_compare.md
+
 $HOME/tolteca/bin/python tools/baseline/compare_reduction_products.py \
   --base-root /Users/gwilson/work_toltec/local_data/2026-refactor \
   --mode beammap \
@@ -140,6 +146,11 @@ intended `citlali` or `refactor` tree and summarize coarse timing such as
 mapmaking, PTC diagnostics sidecar writing, APT table writing, fit-QC writing,
 and split map output.
 
+Use `compare_reduction_audits.py` before the heavier product comparison when
+both OG and refactor runs are present. It checks both run identities, completion
+markers, product inventory counts, and timing deltas without opening large
+FITS/netCDF arrays.
+
 ## Files
 
 - `run_manifest_template.yaml`: human-fillable run record template for Unity or
@@ -156,6 +167,9 @@ and split map output.
 - `audit_reduction_run.py`: fast preflight audit for one completed `reduNN`
   directory or reduced root; reports path identity, completion markers, product
   inventory, and coarse timing without reading large array payloads.
+- `compare_reduction_audits.py`: compares two audit summaries, including
+  expected labels, completion status, product inventory counts, and coarse
+  timing deltas.
 - `compare_reduction_products.py`: reduction-aware product triage report for
   latest/direct `reduNN` pairs, with FITS/netCDF/table numeric differences.
 - `examples/tiny_reduction/`: a fake tiny output directory for checking the
