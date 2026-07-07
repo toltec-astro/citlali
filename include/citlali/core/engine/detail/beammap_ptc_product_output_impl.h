@@ -3,6 +3,8 @@
 // Beammap PTC output implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/engine/detail/beammap_ptc_product_output_helpers.h>
+
 void Beammap::clear_beammap_ptc_diagnostics() {
     for (Eigen::Index i = 0; i < telescope.scan_indices.cols(); ++i) {
         ptcproc.clear_cached_diagnostics(ptcs[i].index.data);
@@ -36,27 +38,8 @@ void Beammap::write_beammap_ptc_products(int output_iter) {
         logger->info(
             "writing processed time chunk for beammap iteration {}",
             output_iter);
-        auto ptc_filename_it = tod_filename.find("ptc");
-        if (ptc_filename_it != tod_filename.end() &&
-            !ptc_filename_it->second.empty()) {
-            try {
-                netCDF::NcFile ptc_tod_file(
-                    ptc_filename_it->second, netCDF::NcFile::write);
-                netCDF::NcVar fruit_iter_var =
-                    ptc_tod_file.getVar("FRUITLOOPS_ITER");
-                if (!fruit_iter_var.isNull()) {
-                    fruit_iter_var.putVar(&output_iter);
-                }
-                else {
-                    logger->warn("PTC TOD file {} has no FRUITLOOPS_ITER variable",
-                                 ptc_filename_it->second);
-                }
-            } catch (const std::exception &e) {
-                logger->warn(
-                    "failed to update PTC TOD FRUITLOOPS_ITER in {}: {}",
-                    ptc_filename_it->second, e.what());
-            }
-        }
+        beammap_ptc_product_output_helpers::update_ptc_tod_fruitloops_iter(
+            tod_filename, output_iter, logger);
         for (Eigen::Index i = 0; i < telescope.scan_indices.cols(); ++i) {
             const auto ptc_scan_row = tod_output_scan_row(i, "ptc");
             if (ptc_scan_row < 0) {
