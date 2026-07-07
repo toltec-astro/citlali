@@ -30,6 +30,7 @@ REDU_RE = re.compile(r"^redu(\d+)$")
 TIMESTAMP_RE = re.compile(r"^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3})\]")
 VALIDATION_PATH_RE = re.compile(r"/2026-refactor/(?P<mode>[^/]+)/(?P<label>[^/]+)/reduced/?")
 PRODUCT_SUFFIXES = {".fits", ".fit", ".nc", ".nc4", ".cdf", ".csv", ".ecsv"}
+PROFILE_SIDECAR_NAMES = {"citlali_profile.ecsv"}
 LOG_MARKERS = (
     ("start", "reduction-local compressed log"),
     ("version", "citlali version:"),
@@ -278,10 +279,22 @@ def audit_products(path: Path, top: int) -> dict[str, Any]:
         if child.suffix.lower() in PRODUCT_SUFFIXES or product_kind(child) in {"fits", "netcdf", "ecsv", "csv"}
     ]
     comparable.sort(key=lambda row: int(row["size_bytes"]), reverse=True)
+    stable_comparable = [
+        row for row in comparable
+        if Path(str(row["path"])).name not in PROFILE_SIDECAR_NAMES
+    ]
+    stable_by_kind = Counter(str(row["kind"]) for row in stable_comparable)
+    profile_sidecars = [
+        row for row in comparable
+        if Path(str(row["path"])).name in PROFILE_SIDECAR_NAMES
+    ]
     return {
         "file_count": len(files),
         "counts_by_kind": dict(sorted(by_kind.items())),
         "comparable_count": len(comparable),
+        "stable_counts_by_kind": dict(sorted(stable_by_kind.items())),
+        "stable_comparable_count": len(stable_comparable),
+        "profile_sidecars": profile_sidecars,
         "largest_comparable": comparable[:top],
     }
 
@@ -377,7 +390,15 @@ def render_markdown(result: dict[str, Any]) -> str:
     lines.extend(["", "## Products", ""])
     lines.append(f"- Files: `{products['file_count']}`")
     lines.append(f"- Comparable products: `{products['comparable_count']}`")
+    lines.append(f"- Stable comparable products: `{products['stable_comparable_count']}`")
     lines.append(f"- Counts by kind: `{products['counts_by_kind']}`")
+    lines.append(f"- Stable counts by kind: `{products['stable_counts_by_kind']}`")
+    if products["profile_sidecars"]:
+        lines.append(
+            "- Profile sidecars: `" +
+            ", ".join(str(row["path"]) for row in products["profile_sidecars"]) +
+            "`"
+        )
     if products["largest_comparable"]:
         lines.extend(["", "Largest comparable products:", ""])
         for row in products["largest_comparable"]:

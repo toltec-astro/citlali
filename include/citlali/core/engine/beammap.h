@@ -190,6 +190,10 @@ public:
     // run the iterative stage
     template <class KidsProc, class RawObs>
     void run_loop(KidsProc &, RawObs &);
+    template <class RandomBits, class Generator>
+    void run_beammap_mapmaking_pass(bool update_progress,
+                                    RandomBits &rands,
+                                    Generator &eng);
     void process_beammap_ptc_scan(
         int scan_index, bool locator_iter, bool measurement_iter,
         bool detector_grouping,

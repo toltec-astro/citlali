@@ -6,6 +6,7 @@
 #include <citlali/core/engine/detail/beammap_map_product_headers.h>
 #include <citlali/core/engine/detail/beammap_map_product_split_helpers.h>
 #include <citlali/core/pipeline/map_output_debug_breadcrumb.h>
+#include <citlali/core/pipeline/stage_profile.h>
 
 template <mapmaking::MapType map_type>
 void Beammap::write_beammap_map_products(
@@ -36,15 +37,21 @@ void Beammap::write_beammap_map_products(
             tula::logging::progressbar pb(
                 [&](const auto &msg) { logger->info("{}", msg); }, 100, "output progress ");
 
-            for (Eigen::Index i=0; i<f_io->size(); ++i) {
-                // get the array for the given map
-                // add primary hdu
-                logger->debug("adding primary header to file {}",i);
-                add_phdu(f_io, mb, i);
+            {
+                const auto profile_scope =
+                    citlali::pipeline::profile_stage(
+                        "beammap.map_output.primary_headers", logger,
+                        "dir=" + dir_name);
+                for (Eigen::Index i=0; i<f_io->size(); ++i) {
+                    // get the array for the given map
+                    // add primary hdu
+                    logger->debug("adding primary header to file {}",i);
+                    add_phdu(f_io, mb, i);
 
-                if (!mb->noise.empty() && !n_io->empty()) {
-                    logger->debug("adding primary header to noise file {}",i);
-                    add_phdu(n_io, mb, i);
+                    if (!mb->noise.empty() && !n_io->empty()) {
+                        logger->debug("adding primary header to noise file {}",i);
+                        add_phdu(n_io, mb, i);
+                    }
                 }
             }
 
@@ -58,27 +65,33 @@ void Beammap::write_beammap_map_products(
             }
 
             // write the maps
-            for (Eigen::Index i=0; i<n_maps; ++i) {
-                // update progress bar
-                pb.count(n_maps, 1);
-                logger->debug("adding map");
-                const Eigen::Index signal_hdu_index = write_maps(f_io,n_io,mb,i);
+            {
+                const auto profile_scope =
+                    citlali::pipeline::profile_stage(
+                        "beammap.map_output.write_maps", logger,
+                        "dir=" + dir_name + " maps=" + std::to_string(n_maps));
+                for (Eigen::Index i=0; i<n_maps; ++i) {
+                    // update progress bar
+                    pb.count(n_maps, 1);
+                    logger->debug("adding map");
+                    const Eigen::Index signal_hdu_index = write_maps(f_io,n_io,mb,i);
 
-                if (detector_grouping) {
-                    if constexpr (map_type == mapmaking::RawObs) {
-                        // get the array for the given map
-                        Eigen::Index map_index = arrays_to_maps(i);
+                    if (detector_grouping) {
+                        if constexpr (map_type == mapmaking::RawObs) {
+                            // get the array for the given map
+                            Eigen::Index map_index = arrays_to_maps(i);
 
-                        // add apt table
-                        logger->debug("adding beammap header keys");
-                        citlali::pipeline::update_map_output_debug_breadcrumb(
-                            "beammap-detector-header",
-                            f_io->at(map_index).filepath.c_str(), i, map_index,
-                            -1, -1, signal_hdu_index,
-                            static_cast<Eigen::Index>(f_io->at(map_index).hdus.size()));
-                        beammap_map_product_headers::add_detector_header_keys(
-                            f_io->at(map_index).hdus.at(signal_hdu_index), calib, flag2, i);
-                        citlali::pipeline::reset_map_output_debug_breadcrumb();
+                            // add apt table
+                            logger->debug("adding beammap header keys");
+                            citlali::pipeline::update_map_output_debug_breadcrumb(
+                                "beammap-detector-header",
+                                f_io->at(map_index).filepath.c_str(), i, map_index,
+                                -1, -1, signal_hdu_index,
+                                static_cast<Eigen::Index>(f_io->at(map_index).hdus.size()));
+                            beammap_map_product_headers::add_detector_header_keys(
+                                f_io->at(map_index).hdus.at(signal_hdu_index), calib, flag2, i);
+                            citlali::pipeline::reset_map_output_debug_breadcrumb();
+                        }
                     }
                 }
             }
@@ -149,46 +162,61 @@ void Beammap::write_beammap_map_products(
                         [&](const auto &msg) { logger->info("{}", msg); }, 100,
                         "output progress (flag=" + std::to_string(flag_value) + ") ");
 
-                    for (Eigen::Index i = 0; i < split_f_io->size(); ++i) {
-                        logger->debug("adding primary header to split file {} flag={}", i, flag_value);
-                        add_phdu(split_f_io, mb, i);
-                        beammap_map_product_split_helpers::add_split_primary_header(
-                            *split_f_io, i, flag_value);
-
-                        if (!mb->noise.empty()) {
-                            logger->debug("adding primary header to split noise file {} flag={}", i, flag_value);
-                            add_phdu(split_n_io, mb, i);
+                    {
+                        const auto profile_scope =
+                            citlali::pipeline::profile_stage(
+                                "beammap.map_output.split_primary_headers", logger,
+                                "dir=" + dir_name +
+                                    " flag=" + std::to_string(flag_value));
+                        for (Eigen::Index i = 0; i < split_f_io->size(); ++i) {
+                            logger->debug("adding primary header to split file {} flag={}", i, flag_value);
+                            add_phdu(split_f_io, mb, i);
                             beammap_map_product_split_helpers::add_split_primary_header(
-                                *split_n_io, i, flag_value);
+                                *split_f_io, i, flag_value);
+
+                            if (!mb->noise.empty()) {
+                                logger->debug("adding primary header to split noise file {} flag={}", i, flag_value);
+                                add_phdu(split_n_io, mb, i);
+                                beammap_map_product_split_helpers::add_split_primary_header(
+                                    *split_n_io, i, flag_value);
+                            }
                         }
                     }
 
-                    for (Eigen::Index i = 0; i < n_maps; ++i) {
-                        const int det_flag =
-                            beammap_map_product_split_helpers::detector_flag(
-                                calib.apt["flag"], i);
-                        if (det_flag != flag_value) {
-                            continue;
-                        }
+                    {
+                        const auto profile_scope =
+                            citlali::pipeline::profile_stage(
+                                "beammap.map_output.split_write_maps", logger,
+                                "dir=" + dir_name +
+                                    " flag=" + std::to_string(flag_value) +
+                                    " maps=" + std::to_string(n_flag_maps));
+                        for (Eigen::Index i = 0; i < n_maps; ++i) {
+                            const int det_flag =
+                                beammap_map_product_split_helpers::detector_flag(
+                                    calib.apt["flag"], i);
+                            if (det_flag != flag_value) {
+                                continue;
+                            }
 
-                        pb.count(n_flag_maps, 1);
-                        logger->debug("adding split map for detector {} flag={}", i, flag_value);
-                        const Eigen::Index signal_hdu_index = write_maps(split_f_io, split_n_io, mb, i);
+                            pb.count(n_flag_maps, 1);
+                            logger->debug("adding split map for detector {} flag={}", i, flag_value);
+                            const Eigen::Index signal_hdu_index = write_maps(split_f_io, split_n_io, mb, i);
 
-                        if (detector_grouping) {
-                            if constexpr (map_type == mapmaking::RawObs) {
-                                const Eigen::Index map_index = arrays_to_maps(i);
+                            if (detector_grouping) {
+                                if constexpr (map_type == mapmaking::RawObs) {
+                                    const Eigen::Index map_index = arrays_to_maps(i);
 
-                                logger->debug("adding split beammap header keys");
-                                citlali::pipeline::update_map_output_debug_breadcrumb(
-                                    "beammap-split-detector-header",
-                                    split_f_io->at(map_index).filepath.c_str(),
-                                    i, map_index, -1, -1, signal_hdu_index,
-                                    static_cast<Eigen::Index>(split_f_io->at(map_index).hdus.size()),
-                                    flag_value);
-                                beammap_map_product_headers::add_detector_header_keys(
-                                    split_f_io->at(map_index).hdus.at(signal_hdu_index), calib, flag2, i);
-                                citlali::pipeline::reset_map_output_debug_breadcrumb();
+                                    logger->debug("adding split beammap header keys");
+                                    citlali::pipeline::update_map_output_debug_breadcrumb(
+                                        "beammap-split-detector-header",
+                                        split_f_io->at(map_index).filepath.c_str(),
+                                        i, map_index, -1, -1, signal_hdu_index,
+                                        static_cast<Eigen::Index>(split_f_io->at(map_index).hdus.size()),
+                                        flag_value);
+                                    beammap_map_product_headers::add_detector_header_keys(
+                                        split_f_io->at(map_index).hdus.at(signal_hdu_index), calib, flag2, i);
+                                    citlali::pipeline::reset_map_output_debug_breadcrumb();
+                                }
                             }
                         }
                     }

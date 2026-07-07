@@ -148,8 +148,9 @@ and split map output.
 
 Use `compare_reduction_audits.py` before the heavier product comparison when
 both OG and refactor runs are present. It checks both run identities, completion
-markers, product inventory counts, and timing deltas without opening large
-FITS/netCDF arrays.
+markers, stable product inventory counts, and timing deltas without opening
+large FITS/netCDF arrays. The profile sidecar `citlali_profile.ecsv` is reported
+separately and does not count as a stable product mismatch.
 
 ## Files
 
@@ -168,8 +169,8 @@ FITS/netCDF arrays.
   directory or reduced root; reports path identity, completion markers, product
   inventory, and coarse timing without reading large array payloads.
 - `compare_reduction_audits.py`: compares two audit summaries, including
-  expected labels, completion status, product inventory counts, and coarse
-  timing deltas.
+  expected labels, completion status, stable product inventory counts, profile
+  sidecars, and coarse timing deltas.
 - `compare_reduction_products.py`: reduction-aware product triage report for
   latest/direct `reduNN` pairs, with FITS/netCDF/table numeric differences.
 - `examples/tiny_reduction/`: a fake tiny output directory for checking the

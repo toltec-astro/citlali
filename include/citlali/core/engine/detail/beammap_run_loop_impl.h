@@ -6,6 +6,9 @@
 #include <citlali/core/pipeline/beammap_mapmaking_policy.h>
 #include <citlali/core/pipeline/beammap_normalize_support_logging.h>
 #include <citlali/core/pipeline/mapmaking_dispatch.h>
+#include <citlali/core/pipeline/stage_profile.h>
+
+#include <sstream>
 
 void Beammap::process_beammap_ptc_scan(
     int scan_index, bool locator_iter, bool measurement_iter,
@@ -133,6 +136,123 @@ void Beammap::process_beammap_ptc_scan(
     diagnostics.calc_stats(ptcs[scan_index]);
 }
 
+template <class RandomBits, class Generator>
+void Beammap::run_beammap_mapmaking_pass(bool update_progress,
+                                         RandomBits &rands,
+                                         Generator &eng) {
+    const auto mapmaking_grouping = typed_config.mapmaking.grouping;
+    const auto mapmaking_method = typed_config.mapmaking.method;
+    const auto active_maps =
+        citlali::pipeline::select_unconverged_beammap_maps(
+            mapmaking_grouping, converged, n_maps, logger);
+    const auto *active_maps_ptr = active_maps.ptr();
+
+    std::ostringstream context;
+    context << "iter=" << current_iter
+            << " phase=" << beammap_iter_phase_name(current_iter)
+            << " update_progress=" << (update_progress ? 1 : 0)
+            << " grouping=" << static_cast<int>(mapmaking_grouping)
+            << " method=" << static_cast<int>(mapmaking_method)
+            << " active_maps=" << active_maps.n_active_maps << "/" << n_maps;
+    const auto profile_scope =
+        citlali::pipeline::profile_stage(
+            "beammap.mapmaking.pass", logger, context.str());
+
+    {
+        const auto reset_profile_scope =
+            citlali::pipeline::profile_stage(
+                "beammap.mapmaking.reset_buffers", logger, context.str());
+        citlali::pipeline::ensure_jinc_grid_weight_maps(
+            mapmaking_method, omb, n_maps, logger);
+
+        citlali::pipeline::reset_beammap_mapmaking_buffers(
+            omb, ptcs, n_maps, rtcproc.run_kernel, run_noise,
+            omb.randomize_dets, calib.n_dets, active_maps_ptr, rands,
+            eng);
+    }
+
+    logger->info("running mapmaking");
+
+    {
+        const auto populate_profile_scope =
+            citlali::pipeline::profile_stage(
+                "beammap.mapmaking.populate", logger, context.str());
+
+        tula::logging::progressbar pb(
+            [&](const auto &msg) { logger->info("{}", msg); }, 100,
+            "PTC progress ");
+
+        if (mapmaking_grouping ==
+            citlali::config::MapGrouping::detector) {
+            bool run_omb = true;
+            for (std::size_t scan_vec_idx = 0; scan_vec_idx < ptcs.size(); ++scan_vec_idx) {
+                auto &ptc = ptcs[scan_vec_idx];
+                auto &scan_apt = calib_scans[scan_vec_idx].apt;
+                if (mapmaking_method ==
+                    citlali::config::MapMethod::naive) {
+                    naive_mm.populate_maps_naive_parallel(
+                        ptc, omb, cmb, ptc.map_indices.data,
+                        telescope.pixel_axes, scan_apt,
+                        telescope.d_fsmp, run_omb, run_noise,
+                        active_maps_ptr);
+                }
+                else if (mapmaking_method ==
+                         citlali::config::MapMethod::jinc) {
+                    citlali::pipeline::log_beammap_jinc_preflight(
+                        ptc, calib.apt["array"], omb, jinc_mm, logger);
+                    jinc_mm.populate_maps_jinc_parallel(
+                        ptc, omb, cmb, ptc.map_indices.data,
+                        telescope.pixel_axes, scan_apt,
+                        telescope.d_fsmp, run_omb, run_noise,
+                        active_maps_ptr);
+                }
+                if (update_progress) {
+                    pb.count(telescope.scan_indices.cols(), 1);
+                }
+            }
+        }
+        else {
+            grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
+                bool run_omb = true;
+                citlali::pipeline::populate_naive_or_jinc_maps(
+                    mapmaking_method, naive_mm, jinc_mm, ptcs[i], omb,
+                    cmb, ptcs[i].map_indices.data,
+                    telescope.pixel_axes, calib_scans[i].apt,
+                    telescope.d_fsmp, run_omb, run_noise);
+                if (update_progress) {
+                    pb.count(telescope.scan_indices.cols(), 1);
+                }
+                return 0;
+            });
+        }
+    }
+
+    logger->info("normalizing maps");
+    {
+        const auto normalize_profile_scope =
+            citlali::pipeline::profile_stage(
+                "beammap.mapmaking.normalize", logger, context.str());
+        if (rtcproc.run_kernel && !omb.grid_weight.empty()) {
+            timestream::log_kernel_map_diag(
+                logger,
+                "beammap iter " + std::to_string(current_iter) + " before normalize",
+                omb.kernel,
+                active_maps_ptr,
+                &omb.grid_weight);
+        }
+        omb.normalize_maps(active_maps_ptr);
+        if (rtcproc.run_kernel) {
+            timestream::log_kernel_map_diag(
+                logger,
+                "beammap iter " + std::to_string(current_iter) + " after normalize",
+                omb.kernel,
+                active_maps_ptr);
+        }
+        citlali::pipeline::log_beammap_normalize_support_summary(
+            omb, calib, current_iter, logger);
+    }
+}
+
 template <class KidsProc, class RawObs>
 void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
     // variable to control iteration
@@ -170,6 +290,10 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
             logger->info(
                 "beammap iter {} rerunning RTC with previous-fit detector source centers; regular RTC TOD output disabled for this internal pass",
                 current_iter);
+            const auto profile_scope =
+                citlali::pipeline::profile_stage(
+                    "beammap.rtc.source_aware_rerun", logger,
+                    "iter=" + std::to_string(current_iter));
             timestream_pipeline(kidsproc, rawobs, false);
         }
 
@@ -211,106 +335,27 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
             }
         }
 
-        // progress bar
-        tula::logging::progressbar pb(
-            [&](const auto &msg) { logger->info("{}", msg); }, 100, "PTC progress ");
-
-
         auto ptc_line_audit_mutex = std::make_shared<std::mutex>();
 
         // cleaning (separate from mapmaking loop due to jinc mapmaking parallelization)
-        grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
-            process_beammap_ptc_scan(
-                i, locator_iter, measurement_iter, detector_grouping,
-                ptc_line_audit_mutex);
-            return 0;
-        });
+        {
+            const auto profile_scope =
+                citlali::pipeline::profile_stage(
+                    "beammap.ptc.cleaning", logger,
+                    "iter=" + std::to_string(current_iter) +
+                        " phase=" + beammap_iter_phase_name(current_iter));
+            grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
+                process_beammap_ptc_scan(
+                    i, locator_iter, measurement_iter, detector_grouping,
+                    ptc_line_audit_mutex);
+                return 0;
+            });
+        }
 
         logger->info("starting mapmaking");
 
         if (run_mapmaking) {
-            const auto mapmaking_grouping = typed_config.mapmaking.grouping;
-            const auto mapmaking_method = typed_config.mapmaking.method;
-            auto run_mapmaking_pass = [&](bool update_progress) {
-                const auto active_maps =
-                    citlali::pipeline::select_unconverged_beammap_maps(
-                        mapmaking_grouping, converged, n_maps, logger);
-                const auto *active_maps_ptr = active_maps.ptr();
-
-                citlali::pipeline::ensure_jinc_grid_weight_maps(
-                    mapmaking_method, omb, n_maps, logger);
-
-                citlali::pipeline::reset_beammap_mapmaking_buffers(
-                    omb, ptcs, n_maps, rtcproc.run_kernel, run_noise,
-                    omb.randomize_dets, calib.n_dets, active_maps_ptr, rands,
-                    eng);
-
-                logger->info("running mapmaking");
-
-                if (mapmaking_grouping ==
-                    citlali::config::MapGrouping::detector) {
-                    bool run_omb = true;
-                    for (std::size_t scan_vec_idx = 0; scan_vec_idx < ptcs.size(); ++scan_vec_idx) {
-                        auto &ptc = ptcs[scan_vec_idx];
-                        auto &scan_apt = calib_scans[scan_vec_idx].apt;
-                        if (mapmaking_method ==
-                            citlali::config::MapMethod::naive) {
-                            naive_mm.populate_maps_naive_parallel(ptc, omb, cmb, ptc.map_indices.data,
-                                                                  telescope.pixel_axes, scan_apt,
-                                                                  telescope.d_fsmp, run_omb, run_noise,
-                                                                  active_maps_ptr);
-                        }
-                        else if (mapmaking_method ==
-                                 citlali::config::MapMethod::jinc) {
-                            citlali::pipeline::log_beammap_jinc_preflight(
-                                ptc, calib.apt["array"], omb, jinc_mm, logger);
-                            jinc_mm.populate_maps_jinc_parallel(ptc, omb, cmb, ptc.map_indices.data,
-                                                                telescope.pixel_axes, scan_apt,
-                                                                telescope.d_fsmp, run_omb, run_noise,
-                                                                active_maps_ptr);
-                        }
-                        if (update_progress) {
-                            pb.count(telescope.scan_indices.cols(), 1);
-                        }
-                    }
-                }
-                else {
-                    grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
-                        bool run_omb = true;
-                        citlali::pipeline::populate_naive_or_jinc_maps(
-                            mapmaking_method, naive_mm, jinc_mm, ptcs[i], omb,
-                            cmb, ptcs[i].map_indices.data,
-                            telescope.pixel_axes, calib_scans[i].apt,
-                            telescope.d_fsmp, run_omb, run_noise);
-                        if (update_progress) {
-                            pb.count(telescope.scan_indices.cols(), 1);
-                        }
-                        return 0;
-                    });
-                }
-
-                logger->info("normalizing maps");
-                if (rtcproc.run_kernel && !omb.grid_weight.empty()) {
-                    timestream::log_kernel_map_diag(
-                        logger,
-                        "beammap iter " + std::to_string(current_iter) + " before normalize",
-                        omb.kernel,
-                        active_maps_ptr,
-                        &omb.grid_weight);
-                }
-                omb.normalize_maps(active_maps_ptr);
-                if (rtcproc.run_kernel) {
-                    timestream::log_kernel_map_diag(
-                        logger,
-                        "beammap iter " + std::to_string(current_iter) + " after normalize",
-                        omb.kernel,
-                        active_maps_ptr);
-                }
-                citlali::pipeline::log_beammap_normalize_support_summary(
-                    omb, calib, current_iter, logger);
-            };
-
-            run_mapmaking_pass(true);
+            run_beammap_mapmaking_pass(true, rands, eng);
 
             if (beammap_scan_band_mask_enabled && detector_grouping &&
                 locator_iter) {
@@ -323,7 +368,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                         scan_band_summary.n_det_flagged,
                         scan_band_summary.n_det_rejected,
                         beammap_scan_band_mask_max_flagged_fraction);
-                    run_mapmaking_pass(false);
+                    run_beammap_mapmaking_pass(false, rands, eng);
                 }
                 else {
                     logger->info(
@@ -362,6 +407,12 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
             }
             // Run beammap fits sequentially. This avoids allocator/covariance instability
             // observed with parallel Ceres fits on some systems.
+            {
+            const auto fit_profile_scope =
+                citlali::pipeline::profile_stage(
+                    "beammap.fit_maps", logger,
+                    "iter=" + std::to_string(current_iter) +
+                        " phase=" + beammap_iter_phase_name(current_iter));
             for (Eigen::Index i = 0; i < n_maps; ++i) {
                 logger->debug("beammap fit checkpoint: map={} begin converged={}", i, converged(i));
 
@@ -689,6 +740,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
 
                 logger->debug("beammap fit checkpoint: map={} end good_fit={}", i, good_fits(i));
             }
+            }
 
             logger->info("beammap init summary (iter {}): previous={} prior={} blind={} skipped={} prev_rejected_by_peak={}",
                          current_iter, iter_init_prev, iter_init_prior, iter_init_blind, iter_init_skip,
@@ -740,6 +792,12 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                     // loop through maps and check if it is converged
                     logger->info("checking convergence in fitted-source aperture radius={:.3f} arcsec",
                                  beammap_convergence_radius_arcsec);
+                    const auto convergence_profile_scope =
+                        citlali::pipeline::profile_stage(
+                            "beammap.convergence", logger,
+                            "iter=" + std::to_string(current_iter) +
+                                " radius_arcsec=" +
+                                std::to_string(beammap_convergence_radius_arcsec));
                     Eigen::VectorXd convergence_delta =
                         Eigen::VectorXd::Constant(n_maps, std::numeric_limits<double>::quiet_NaN());
                     grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), det_in_vec, det_out_vec, [&](auto i) {

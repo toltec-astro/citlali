@@ -110,10 +110,10 @@ def compare_audits(args: argparse.Namespace) -> dict[str, Any]:
         "candidate": candidate,
         "baseline_ok": status_ok(baseline),
         "candidate_ok": status_ok(candidate),
-        "product_counts_match": baseline.get("products", {}).get("counts_by_kind")
-        == candidate.get("products", {}).get("counts_by_kind"),
-        "comparable_count_match": baseline.get("products", {}).get("comparable_count")
-        == candidate.get("products", {}).get("comparable_count"),
+        "product_counts_match": baseline.get("products", {}).get("stable_counts_by_kind")
+        == candidate.get("products", {}).get("stable_counts_by_kind"),
+        "comparable_count_match": baseline.get("products", {}).get("stable_comparable_count")
+        == candidate.get("products", {}).get("stable_comparable_count"),
         "timing": timing,
     }
 
@@ -140,8 +140,8 @@ def render_markdown(result: dict[str, Any]) -> str:
         f"- Candidate label: `{result['candidate_label']}`",
         f"- Baseline OK: `{result['baseline_ok']}`",
         f"- Candidate OK: `{result['candidate_ok']}`",
-        f"- Product kind counts match: `{result['product_counts_match']}`",
-        f"- Comparable product counts match: `{result['comparable_count_match']}`",
+        f"- Stable product kind counts match: `{result['product_counts_match']}`",
+        f"- Stable comparable product counts match: `{result['comparable_count_match']}`",
         "",
         "## Identity",
         "",
@@ -169,9 +169,24 @@ def render_markdown(result: dict[str, Any]) -> str:
                     str(candidate.get("products", {}).get("comparable_count", "")),
                 ],
                 [
+                    "stable_comparable_count",
+                    str(baseline.get("products", {}).get("stable_comparable_count", "")),
+                    str(candidate.get("products", {}).get("stable_comparable_count", "")),
+                ],
+                [
                     "counts_by_kind",
                     str(baseline.get("products", {}).get("counts_by_kind", "")),
                     str(candidate.get("products", {}).get("counts_by_kind", "")),
+                ],
+                [
+                    "stable_counts_by_kind",
+                    str(baseline.get("products", {}).get("stable_counts_by_kind", "")),
+                    str(candidate.get("products", {}).get("stable_counts_by_kind", "")),
+                ],
+                [
+                    "profile_sidecars",
+                    str(baseline.get("products", {}).get("profile_sidecars", "")),
+                    str(candidate.get("products", {}).get("profile_sidecars", "")),
                 ],
             ]
         ),
