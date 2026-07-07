@@ -83,10 +83,8 @@ void Beammap::write_beammap_map_products(
                 }
             }
 
-            logger->info("maps have been written to:");
-            for (Eigen::Index i=0; i<f_io->size(); ++i) {
-                logger->info("{}.fits",f_io->at(i).filepath);
-            }
+            beammap_map_product_split_helpers::log_output_filepaths(
+                logger, *f_io);
         };
 
         if (split_by_flag_mode) {
@@ -166,7 +164,9 @@ void Beammap::write_beammap_map_products(
                     }
 
                     for (Eigen::Index i = 0; i < n_maps; ++i) {
-                        const int det_flag = static_cast<int>(std::lround(calib.apt["flag"](i)));
+                        const int det_flag =
+                            beammap_map_product_split_helpers::detector_flag(
+                                calib.apt["flag"], i);
                         if (det_flag != flag_value) {
                             continue;
                         }
@@ -193,10 +193,8 @@ void Beammap::write_beammap_map_products(
                         }
                     }
 
-                    logger->info("beammap split maps (flag={}) have been written to:", flag_value);
-                    for (Eigen::Index i = 0; i < split_f_io->size(); ++i) {
-                        logger->info("{}.fits", split_f_io->at(i).filepath);
-                    }
+                    beammap_map_product_split_helpers::log_split_output_filepaths(
+                        logger, *split_f_io, flag_value);
                 }
             }
         }

@@ -25,12 +25,17 @@ inline std::string split_suffix(int flag_value) {
 }
 
 template <class Flags>
+int detector_flag(const Flags &flags, Eigen::Index map_index) {
+    return static_cast<int>(std::lround(flags(map_index)));
+}
+
+template <class Flags>
 Eigen::Index count_maps_with_flag(const Flags &flags,
                                   Eigen::Index n_maps,
                                   int flag_value) {
     Eigen::Index n_flag_maps = 0;
     for (Eigen::Index i = 0; i < n_maps; ++i) {
-        const int det_flag = static_cast<int>(std::lround(flags(i)));
+        const int det_flag = detector_flag(flags, i);
         if (det_flag == flag_value) {
             ++n_flag_maps;
         }
@@ -45,7 +50,7 @@ Eigen::Index count_maps_with_any_flag(const Flags &flags,
     const std::set<int> split_values(flag_values.begin(), flag_values.end());
     Eigen::Index n_selected_maps = 0;
     for (Eigen::Index i = 0; i < n_maps; ++i) {
-        const int det_flag = static_cast<int>(std::lround(flags(i)));
+        const int det_flag = detector_flag(flags, i);
         if (split_values.count(det_flag) > 0) {
             ++n_selected_maps;
         }
@@ -71,6 +76,26 @@ std::vector<std::string> filepaths(const FitsIoVec &fits_io) {
         paths.push_back(fio.filepath);
     }
     return paths;
+}
+
+template <class Logger, class FitsIoVec>
+void log_output_filepaths(const Logger &logger,
+                          const FitsIoVec &fits_io) {
+    logger->info("maps have been written to:");
+    for (Eigen::Index i = 0; i < fits_io.size(); ++i) {
+        logger->info("{}.fits", fits_io.at(i).filepath);
+    }
+}
+
+template <class Logger, class FitsIoVec>
+void log_split_output_filepaths(const Logger &logger,
+                                const FitsIoVec &fits_io,
+                                int flag_value) {
+    logger->info("beammap split maps (flag={}) have been written to:",
+                 flag_value);
+    for (Eigen::Index i = 0; i < fits_io.size(); ++i) {
+        logger->info("{}.fits", fits_io.at(i).filepath);
+    }
 }
 
 template <class Logger>
