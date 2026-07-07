@@ -4,6 +4,17 @@
 
 #include <citlali/core/pipeline/output_policy.h>
 
+namespace citlali::pipeline {
+
+template <class Logger>
+void log_reduction_version_stamp(const Logger &logger) {
+    logger->info("citlali version: {}", CITLALI_GIT_VERSION);
+    logger->info("kids version: {}", KIDSCPP_GIT_VERSION);
+    logger->info("tula version: {}", TULA_GIT_VERSION);
+}
+
+}  // namespace citlali::pipeline
+
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
     using namespace netCDF;
@@ -218,6 +229,7 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
         try {
             auto log_path = citlali::logging::enable_reduction_gzip_logs(engine().redu_dir_name);
             logger->info("reduction-local compressed log: {}", log_path);
+            citlali::pipeline::log_reduction_version_stamp(logger);
         } catch (const std::exception &e) {
             logger->warn("failed to enable reduction-local compressed log in {}: {}",
                          engine().redu_dir_name, e.what());
@@ -228,6 +240,7 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
         try {
             auto log_path = citlali::logging::enable_reduction_gzip_logs(engine().redu_dir_name);
             logger->info("reduction-local compressed log: {}", log_path);
+            citlali::pipeline::log_reduction_version_stamp(logger);
         } catch (const std::exception &e) {
             logger->warn("failed to enable reduction-local compressed log in {}: {}",
                          engine().redu_dir_name, e.what());
