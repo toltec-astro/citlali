@@ -253,6 +253,485 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
     }
 }
 
+void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
+    Eigen::VectorXi iter_bound_low = Eigen::VectorXi::Zero(map_fitter.n_params);
+    Eigen::VectorXi iter_bound_high = Eigen::VectorXi::Zero(map_fitter.n_params);
+    Eigen::Index iter_bound_any = 0;
+    Eigen::Index iter_init_prev = 0;
+    Eigen::Index iter_init_prior = 0;
+    Eigen::Index iter_init_blind = 0;
+    Eigen::Index iter_init_skip = 0;
+    Eigen::Index iter_attempt_prev = 0;
+    Eigen::Index iter_attempt_prior = 0;
+    Eigen::Index iter_attempt_blind = 0;
+    Eigen::Index iter_fail_prev = 0;
+    Eigen::Index iter_fail_prior = 0;
+    Eigen::Index iter_fail_blind = 0;
+    Eigen::Index iter_prev_rejected_by_peak = 0;
+    Eigen::Index iter_init_amp_zero_prev = 0;
+    Eigen::Index iter_init_amp_zero_prior = 0;
+    Eigen::Index iter_init_amp_zero_blind = 0;
+    Eigen::Index iter_amp_bounds_zero_prev = 0;
+    Eigen::Index iter_amp_bounds_zero_prior = 0;
+    Eigen::Index iter_amp_bounds_zero_blind = 0;
+
+    logger->info("fitting maps");
+    logger->info("beammap fit diagnostics enabled");
+    if (beammap_priors_enabled && beammap_soft_priors_loaded &&
+        detector_grouping) {
+        update_prior_frame_estimates();
+    }
+    // Run beammap fits sequentially. This avoids allocator/covariance instability
+    // observed with parallel Ceres fits on some systems.
+    {
+    const auto fit_profile_scope =
+        citlali::pipeline::profile_stage(
+            "beammap.fit_maps", logger,
+            "iter=" + std::to_string(current_iter) +
+                " phase=" + beammap_iter_phase_name(current_iter));
+    for (Eigen::Index i = 0; i < n_maps; ++i) {
+        logger->debug("beammap fit checkpoint: map={} begin converged={}", i, converged(i));
+
+        if (omb.signal[i].rows() != omb.n_rows || omb.signal[i].cols() != omb.n_cols ||
+            omb.weight[i].rows() != omb.n_rows || omb.weight[i].cols() != omb.n_cols) {
+            logger->error("beammap fit map={} geometry mismatch: signal={}x{} weight={}x{} expected={}x{}",
+                          i, omb.signal[i].rows(), omb.signal[i].cols(),
+                          omb.weight[i].rows(), omb.weight[i].cols(),
+                          omb.n_rows, omb.n_cols);
+            std::exit(EXIT_FAILURE);
+        }
+
+        const auto &sig = omb.signal[i];
+        const auto &wt = omb.weight[i];
+        const Eigen::Index n_pix = sig.size();
+        const Eigen::Index sig_finite = sig.array().isFinite().count();
+        const Eigen::Index wt_finite = wt.array().isFinite().count();
+        const Eigen::Index wt_pos = (wt.array() > 0.0).count();
+        logger->debug("beammap fit map={} stats: sig_finite={}/{} wt_finite={}/{} wt_pos={}/{} sig[min,max]=({:.6g}, {:.6g}) wt[min,max]=({:.6g}, {:.6g})",
+                      i, sig_finite, n_pix, wt_finite, n_pix, wt_pos, n_pix,
+                      sig.minCoeff(), sig.maxCoeff(), wt.minCoeff(), wt.maxCoeff());
+
+        // only fit if not converged
+        if (!converged(i)) {
+            if (prior_diag_values.rows() == n_maps && prior_diag_values.cols() == n_prior_diag_cols) {
+                prior_diag_values.row(i).setConstant(std::numeric_limits<double>::quiet_NaN());
+                prior_diag_values(i, prior_init_mode_col) = -1.0;
+                prior_diag_values(i, prior_used_col) = 0.0;
+                prior_diag_values(i, prior_fallback_blind_col) = 0.0;
+                prior_diag_values(i, prior_no_candidate_reason_col) = 0.0;
+                prior_diag_values(i, prior_slot_index_col) = -1.0;
+            }
+
+            const Eigen::Index n_weight_pos = (omb.weight[i].array() > 0.0).count();
+            if (n_weight_pos < map_fitter.n_params) {
+                logger->warn("beammap fit map={} skipped: insufficient weighted pixels ({})", i, n_weight_pos);
+                params.row(i).setZero();
+                perrors.row(i).setZero();
+                fit_diag_init_params.row(i).setZero();
+                fit_diag_lower_limits.row(i).setZero();
+                fit_diag_upper_limits.row(i).setZero();
+                fit_diag_hit_lower.row(i).setZero();
+                fit_diag_hit_upper.row(i).setZero();
+                fit_diag_bound_code(i) = 0;
+                fit_diag_bound_nhit(i) = 0;
+                good_fits(i) = false;
+                continue;
+            }
+
+            // get array number
+            auto array = maps_to_arrays(i);
+            // get initial guess fwhm from theoretical fwhms for the arrays
+            double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
+            // choose fit initialization
+            double init_row = -99.0;
+            double init_col = -99.0;
+            bool init_from_prev = false;
+            bool init_from_prior = false;
+            enum class FitInitMode { Blind, Previous, Prior };
+            auto init_mode = FitInitMode::Blind;
+            const bool can_try_prior =
+                beammap_priors_enabled && beammap_soft_priors_loaded &&
+                detector_grouping;
+            if (measurement_iter &&
+                good_fits(i) &&
+                p0.cols() > 2 &&
+                std::isfinite(p0(i,0)) && p0(i,0) > 0.0 &&
+                std::isfinite(p0(i,1)) && std::isfinite(p0(i,2))) {
+                const double prev_col = p0(i,1);
+                const double prev_row = p0(i,2);
+                Eigen::Index prev_row_i = static_cast<Eigen::Index>(std::llround(prev_row));
+                Eigen::Index prev_col_i = static_cast<Eigen::Index>(std::llround(prev_col));
+                bool prev_seed_valid = false;
+                if (prev_row_i >= 0 && prev_row_i < omb.signal[i].rows() &&
+                    prev_col_i >= 0 && prev_col_i < omb.signal[i].cols()) {
+                    const double seed_w = omb.weight[i](prev_row_i, prev_col_i);
+                    const double seed_s = omb.signal[i](prev_row_i, prev_col_i);
+                    prev_seed_valid = std::isfinite(seed_w) && seed_w > 0.0 &&
+                                      std::isfinite(seed_s) && seed_s > 0.0;
+                    if (prev_seed_valid) {
+                        Eigen::Index peak_row = -1;
+                        Eigen::Index peak_col = -1;
+                        double peak_snr = -std::numeric_limits<double>::infinity();
+                        if (find_map_weighted_peak(i, peak_row, peak_col, peak_snr) &&
+                            peak_row >= 0 && peak_col >= 0 && std::isfinite(peak_snr)) {
+                            const double prev_snr = seed_s * std::sqrt(seed_w);
+                            const double dr = static_cast<double>(peak_row) - prev_row;
+                            const double dc = static_cast<double>(peak_col) - prev_col;
+                            const double dist_pix = std::sqrt(dr * dr + dc * dc);
+                            const double min_switch_dist_pix = std::max(1.0, init_fwhm);
+                            constexpr double min_switch_snr_ratio = 1.25;
+                            bool prior_allows_switch = true;
+                            if (can_try_prior) {
+                                const int array_int = static_cast<int>(maps_to_arrays(i));
+                                const int nw_int = static_cast<int>(std::lround(calib.apt["nw"](i)));
+                                const double pix_to_arcsec = RAD_TO_ASEC * omb.pixel_size_rad;
+                                const double col0 = static_cast<double>(omb.n_cols - 1) / 2.0;
+                                const double row0 = static_cast<double>(omb.n_rows - 1) / 2.0;
+                                const double derot_elev_rad = get_prior_derot_elev_rad();
+                                const double prior_max_d2 = effective_prior_max_d2();
+
+                                auto prior_compatible = [&](double row, double col, double &d2_out) {
+                                    const double x_raw = pix_to_arcsec * (col - col0);
+                                    const double y_raw = pix_to_arcsec * (row - row0);
+                                    double x_prior = std::numeric_limits<double>::quiet_NaN();
+                                    double y_prior = std::numeric_limits<double>::quiet_NaN();
+                                    d2_out = std::numeric_limits<double>::infinity();
+                                    int slot_index = -1;
+                                    if (!observed_to_prior_frame(array_int, x_raw, y_raw, derot_elev_rad,
+                                                                 x_prior, y_prior, nullptr, nullptr, true)) {
+                                        return false;
+                                    }
+                                    if (!match_prior_slot(array_int, nw_int, x_prior, y_prior,
+                                                          d2_out, slot_index)) {
+                                        return false;
+                                    }
+                                    static_cast<void>(slot_index);
+                                    return prior_max_d2 <= 0.0 || d2_out <= prior_max_d2;
+                                };
+
+                                double prev_prior_d2 = std::numeric_limits<double>::infinity();
+                                double peak_prior_d2 = std::numeric_limits<double>::infinity();
+                                const bool prev_prior_ok = prior_compatible(prev_row, prev_col, prev_prior_d2);
+                                const bool peak_prior_ok = prior_compatible(
+                                    static_cast<double>(peak_row), static_cast<double>(peak_col), peak_prior_d2);
+                                prior_allows_switch = peak_prior_ok || !prev_prior_ok;
+                                if (!prior_allows_switch) {
+                                    logger->debug(
+                                        "beammap fit map={} kept previous init over stronger weighted peak because prior d2 prev={} peak={} max_d2={}",
+                                        i, prev_prior_d2, peak_prior_d2, prior_max_d2);
+                                }
+                            }
+                            if (std::isfinite(prev_snr) &&
+                                peak_snr > min_switch_snr_ratio * prev_snr &&
+                                dist_pix > min_switch_dist_pix &&
+                                prior_allows_switch) {
+                                prev_seed_valid = false;
+                                iter_prev_rejected_by_peak++;
+                                logger->debug(
+                                    "beammap fit map={} rejected previous init: current weighted peak row={} col={} snr={} is {} pix from previous row={} col={} snr={}",
+                                    i, peak_row, peak_col, peak_snr, dist_pix,
+                                    prev_row, prev_col, prev_snr);
+                            }
+                        }
+                    }
+                }
+                if (prev_seed_valid) {
+                    init_col = prev_col;
+                    init_row = prev_row;
+                    init_from_prev = true;
+                    init_mode = FitInitMode::Previous;
+                    iter_init_prev++;
+                }
+                else {
+                    logger->debug(
+                        "beammap fit map={} rejected previous init at row={} col={} due to invalid/no-weight/non-positive seed pixel",
+                        i, prev_row, prev_col);
+                }
+            }
+            if (!init_from_prev && can_try_prior) {
+                if (choose_prior_guided_init(i, init_row, init_col)) {
+                    init_from_prior = true;
+                    init_mode = FitInitMode::Prior;
+                    iter_init_prior++;
+                }
+                else if (!beammap_priors_fallback_blind) {
+                    if (prior_diag_values.rows() == n_maps && prior_diag_values.cols() == n_prior_diag_cols) {
+                        prior_diag_values(i, prior_init_mode_col) = -1.0;
+                    }
+                    logger->warn("beammap fit map={} skipped: no prior-guided init candidate and fallback_blind=false", i);
+                    params.row(i).setZero();
+                    perrors.row(i).setZero();
+                    fit_diag_init_params.row(i).setZero();
+                    fit_diag_lower_limits.row(i).setZero();
+                    fit_diag_upper_limits.row(i).setZero();
+                    fit_diag_hit_lower.row(i).setZero();
+                    fit_diag_hit_upper.row(i).setZero();
+                    fit_diag_bound_code(i) = 0;
+                    fit_diag_bound_nhit(i) = 0;
+                    good_fits(i) = false;
+                    iter_init_skip++;
+                    continue;
+                }
+                else if (prior_diag_values.rows() == n_maps && prior_diag_values.cols() == n_prior_diag_cols) {
+                    prior_diag_values(i, prior_fallback_blind_col) = 1.0;
+                }
+            }
+            if (!init_from_prev && !init_from_prior) {
+                iter_init_blind++;
+            }
+            if (prior_diag_values.rows() == n_maps && prior_diag_values.cols() == n_prior_diag_cols) {
+                if (init_from_prev) {
+                    prior_diag_values(i, prior_init_mode_col) = 1.0;
+                }
+                else if (init_from_prior) {
+                    prior_diag_values(i, prior_init_mode_col) = 2.0;
+                }
+                else {
+                    prior_diag_values(i, prior_init_mode_col) = 0.0;
+                }
+            }
+            logger->debug("beammap fit map={} init mode={} row={:.3f} col={:.3f}",
+                          i, init_from_prev ? "previous" : (init_from_prior ? "prior" : "blind"),
+                          init_row, init_col);
+            // fit the maps
+            logger->debug("beammap fit checkpoint: map={} call fit_to_gaussian", i);
+            engine_utils::mapFitter::FitDiagnostics fit_diag;
+            auto [det_params, det_perror, good_fit] =
+                map_fitter.fit_to_gaussian<engine_utils::mapFitter::beammap>(omb.signal[i], omb.weight[i],
+                                                                             init_fwhm, init_row, init_col, &fit_diag);
+            logger->debug("beammap fit checkpoint: map={} fit_to_gaussian returned good_fit={}", i, good_fit);
+
+            if (!(det_params.array().isFinite().all() && det_perror.array().isFinite().all())) {
+                det_params.setZero();
+                det_perror.setZero();
+                good_fit = false;
+            }
+
+            params.row(i) = det_params;
+            perrors.row(i) = det_perror;
+            good_fits(i) = good_fit;
+
+            bool init_amp_zero = false;
+            bool amp_bounds_zero = false;
+            if (fit_diag.valid &&
+                fit_diag.init_params.size() > 0 &&
+                fit_diag.lower_limits.size() > 0 &&
+                fit_diag.upper_limits.size() > 0) {
+                const double init_amp = fit_diag.init_params(0);
+                const double amp_low = fit_diag.lower_limits(0);
+                const double amp_high = fit_diag.upper_limits(0);
+                init_amp_zero = std::isfinite(init_amp) && std::abs(init_amp) <= 1e-12;
+                amp_bounds_zero =
+                    std::isfinite(amp_low) && std::isfinite(amp_high) &&
+                    std::abs(amp_high - amp_low) <= 1e-12;
+            }
+            switch (init_mode) {
+                case FitInitMode::Previous:
+                    iter_attempt_prev++;
+                    if (!good_fit) {
+                        iter_fail_prev++;
+                    }
+                    if (init_amp_zero) {
+                        iter_init_amp_zero_prev++;
+                    }
+                    if (amp_bounds_zero) {
+                        iter_amp_bounds_zero_prev++;
+                    }
+                    break;
+                case FitInitMode::Prior:
+                    iter_attempt_prior++;
+                    if (!good_fit) {
+                        iter_fail_prior++;
+                    }
+                    if (init_amp_zero) {
+                        iter_init_amp_zero_prior++;
+                    }
+                    if (amp_bounds_zero) {
+                        iter_amp_bounds_zero_prior++;
+                    }
+                    break;
+                case FitInitMode::Blind:
+                    iter_attempt_blind++;
+                    if (!good_fit) {
+                        iter_fail_blind++;
+                    }
+                    if (init_amp_zero) {
+                        iter_init_amp_zero_blind++;
+                    }
+                    if (amp_bounds_zero) {
+                        iter_amp_bounds_zero_blind++;
+                    }
+                    break;
+            }
+
+            if (fit_diag.valid &&
+                fit_diag.init_params.size() == map_fitter.n_params &&
+                fit_diag.lower_limits.size() == map_fitter.n_params &&
+                fit_diag.upper_limits.size() == map_fitter.n_params &&
+                fit_diag.hit_lower.size() == map_fitter.n_params &&
+                fit_diag.hit_upper.size() == map_fitter.n_params) {
+                fit_diag_init_params.row(i) = fit_diag.init_params.transpose();
+                fit_diag_lower_limits.row(i) = fit_diag.lower_limits.transpose();
+                fit_diag_upper_limits.row(i) = fit_diag.upper_limits.transpose();
+                fit_diag_hit_lower.row(i) = fit_diag.hit_lower.transpose();
+                fit_diag_hit_upper.row(i) = fit_diag.hit_upper.transpose();
+
+                int bound_code = 0;
+                int bound_nhit = 0;
+                for (int p = 0; p < map_fitter.n_params; ++p) {
+                    const bool hit_low = fit_diag.hit_lower(p) != 0;
+                    const bool hit_high = fit_diag.hit_upper(p) != 0;
+                    if (hit_low) {
+                        bound_code |= (1 << (2 * p));
+                        iter_bound_low(p)++;
+                        bound_nhit++;
+                    }
+                    if (hit_high) {
+                        bound_code |= (1 << (2 * p + 1));
+                        iter_bound_high(p)++;
+                        bound_nhit++;
+                    }
+                }
+                fit_diag_bound_code(i) = bound_code;
+                fit_diag_bound_nhit(i) = bound_nhit;
+                if (bound_nhit > 0) {
+                    iter_bound_any++;
+                }
+            }
+            else {
+                fit_diag_init_params.row(i).setZero();
+                fit_diag_lower_limits.row(i).setZero();
+                fit_diag_upper_limits.row(i).setZero();
+                fit_diag_hit_lower.row(i).setZero();
+                fit_diag_hit_upper.row(i).setZero();
+                fit_diag_bound_code(i) = 0;
+                fit_diag_bound_nhit(i) = 0;
+            }
+        }
+        // otherwise keep value from previous iteration
+        else {
+            params.row(i) = p0.row(i);
+            perrors.row(i) = perror0.row(i);
+        }
+
+        logger->debug("beammap fit checkpoint: map={} end good_fit={}", i, good_fits(i));
+    }
+    }
+
+    logger->info("beammap init summary (iter {}): previous={} prior={} blind={} skipped={} prev_rejected_by_peak={}",
+                 current_iter, iter_init_prev, iter_init_prior, iter_init_blind, iter_init_skip,
+                 iter_prev_rejected_by_peak);
+    logger->info(
+        "beammap fit diagnostics (iter {}): prev fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{} | "
+        "prior fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{} | "
+        "blind fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{}",
+        current_iter,
+        iter_fail_prev, iter_attempt_prev, iter_init_amp_zero_prev, iter_attempt_prev,
+        iter_amp_bounds_zero_prev, iter_attempt_prev,
+        iter_fail_prior, iter_attempt_prior, iter_init_amp_zero_prior, iter_attempt_prior,
+        iter_amp_bounds_zero_prior, iter_attempt_prior,
+        iter_fail_blind, iter_attempt_blind, iter_init_amp_zero_blind, iter_attempt_blind,
+        iter_amp_bounds_zero_blind, iter_attempt_blind);
+
+    if (map_fitter.n_params >= 6) {
+        logger->info(
+            "beammap fit bound summary (iter {}): any_hit={}/{} amp(lo/hi)={}/{} x(lo/hi)={}/{} y(lo/hi)={}/{} a(lo/hi)={}/{} b(lo/hi)={}/{} angle(lo/hi)={}/{}",
+            current_iter, iter_bound_any, n_maps,
+            iter_bound_low(0), iter_bound_high(0),
+            iter_bound_low(1), iter_bound_high(1),
+            iter_bound_low(2), iter_bound_high(2),
+            iter_bound_low(3), iter_bound_high(3),
+            iter_bound_low(4), iter_bound_high(4),
+            iter_bound_low(5), iter_bound_high(5));
+    }
+    else {
+        logger->info("beammap fit bound summary (iter {}): any_hit={}/{}",
+                     current_iter, iter_bound_any, n_maps);
+    }
+    logger->info("number of good fits {}/{}", static_cast<long long>(good_fits.cast<int>().sum()), n_maps);
+}
+
+bool Beammap::advance_beammap_iteration_state() {
+    bool keep_going = true;
+
+    // increment loop iteration
+    current_iter++;
+
+    if (current_iter < beammap_iter_max) {
+        // check if all detectors are converged
+        if ((converged.array() == true).all()) {
+            logger->info("all maps converged");
+            keep_going = false;
+        }
+        else if (has_completed_beammap_measurement_iter(current_iter)) {
+            // only do convergence test if tolerance is above zero, otherwise run all iterations
+            if (run_mapmaking && beammap_iter_tolerance > 0) {
+                // loop through maps and check if it is converged
+                logger->info("checking convergence in fitted-source aperture radius={:.3f} arcsec",
+                             beammap_convergence_radius_arcsec);
+                const auto convergence_profile_scope =
+                    citlali::pipeline::profile_stage(
+                        "beammap.convergence", logger,
+                        "iter=" + std::to_string(current_iter) +
+                            " radius_arcsec=" +
+                            std::to_string(beammap_convergence_radius_arcsec));
+                Eigen::VectorXd convergence_delta =
+                    Eigen::VectorXd::Constant(n_maps, std::numeric_limits<double>::quiet_NaN());
+                grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+                    if (!converged(i)) {
+                        const double delta = calc_beammap_convergence_delta(i);
+                        convergence_delta(i) = delta;
+                        if (std::isfinite(delta) && delta <= beammap_iter_tolerance) {
+                            // set as converged
+                            converged(i) = true;
+                            // set convergence iteration
+                            converge_iter(i) = current_iter;
+                        }
+                    }
+                    return 0;
+                });
+
+                Eigen::Index n_delta_finite = 0;
+                Eigen::Index n_delta_invalid = 0;
+                double max_delta = 0.0;
+                for (Eigen::Index i = 0; i < convergence_delta.size(); ++i) {
+                    if (std::isfinite(convergence_delta(i))) {
+                        n_delta_finite++;
+                        max_delta = std::max(max_delta, convergence_delta(i));
+                    }
+                    else if (!converged(i)) {
+                        n_delta_invalid++;
+                    }
+                }
+
+                logger->info(
+                    "{} maps converged on iter {} (finite_metrics={} invalid_metrics={} max_delta={})",
+                    (converged.array() == true).count(), current_iter,
+                    n_delta_finite, n_delta_invalid, max_delta);
+
+                // stop if all maps converged
+                if ((converged.array() == true).all()) {
+                    logger->info("all maps converged");
+                    keep_going = false;
+                }
+            }
+            else {
+                logger->info("bypassing convergence check");
+            }
+        }
+
+        // set previous iteration fits to current iteration fits
+        p0 = params;
+        perror0 = perrors;
+    }
+    else {
+        logger->info("max iteration reached");
+        keep_going = false;
+    }
+
+    return keep_going;
+}
+
 template <class KidsProc, class RawObs>
 void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
     // variable to control iteration
@@ -378,479 +857,11 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
                 }
             }
 
-            Eigen::VectorXi iter_bound_low = Eigen::VectorXi::Zero(map_fitter.n_params);
-            Eigen::VectorXi iter_bound_high = Eigen::VectorXi::Zero(map_fitter.n_params);
-            Eigen::Index iter_bound_any = 0;
-            Eigen::Index iter_init_prev = 0;
-            Eigen::Index iter_init_prior = 0;
-            Eigen::Index iter_init_blind = 0;
-            Eigen::Index iter_init_skip = 0;
-            Eigen::Index iter_attempt_prev = 0;
-            Eigen::Index iter_attempt_prior = 0;
-            Eigen::Index iter_attempt_blind = 0;
-            Eigen::Index iter_fail_prev = 0;
-            Eigen::Index iter_fail_prior = 0;
-            Eigen::Index iter_fail_blind = 0;
-            Eigen::Index iter_prev_rejected_by_peak = 0;
-            Eigen::Index iter_init_amp_zero_prev = 0;
-            Eigen::Index iter_init_amp_zero_prior = 0;
-            Eigen::Index iter_init_amp_zero_blind = 0;
-            Eigen::Index iter_amp_bounds_zero_prev = 0;
-            Eigen::Index iter_amp_bounds_zero_prior = 0;
-            Eigen::Index iter_amp_bounds_zero_blind = 0;
-
-            logger->info("fitting maps");
-            logger->info("beammap fit diagnostics enabled");
-            if (beammap_priors_enabled && beammap_soft_priors_loaded &&
-                detector_grouping) {
-                update_prior_frame_estimates();
-            }
-            // Run beammap fits sequentially. This avoids allocator/covariance instability
-            // observed with parallel Ceres fits on some systems.
-            {
-            const auto fit_profile_scope =
-                citlali::pipeline::profile_stage(
-                    "beammap.fit_maps", logger,
-                    "iter=" + std::to_string(current_iter) +
-                        " phase=" + beammap_iter_phase_name(current_iter));
-            for (Eigen::Index i = 0; i < n_maps; ++i) {
-                logger->debug("beammap fit checkpoint: map={} begin converged={}", i, converged(i));
-
-                if (omb.signal[i].rows() != omb.n_rows || omb.signal[i].cols() != omb.n_cols ||
-                    omb.weight[i].rows() != omb.n_rows || omb.weight[i].cols() != omb.n_cols) {
-                    logger->error("beammap fit map={} geometry mismatch: signal={}x{} weight={}x{} expected={}x{}",
-                                  i, omb.signal[i].rows(), omb.signal[i].cols(),
-                                  omb.weight[i].rows(), omb.weight[i].cols(),
-                                  omb.n_rows, omb.n_cols);
-                    std::exit(EXIT_FAILURE);
-                }
-
-                const auto &sig = omb.signal[i];
-                const auto &wt = omb.weight[i];
-                const Eigen::Index n_pix = sig.size();
-                const Eigen::Index sig_finite = sig.array().isFinite().count();
-                const Eigen::Index wt_finite = wt.array().isFinite().count();
-                const Eigen::Index wt_pos = (wt.array() > 0.0).count();
-                logger->debug("beammap fit map={} stats: sig_finite={}/{} wt_finite={}/{} wt_pos={}/{} sig[min,max]=({:.6g}, {:.6g}) wt[min,max]=({:.6g}, {:.6g})",
-                              i, sig_finite, n_pix, wt_finite, n_pix, wt_pos, n_pix,
-                              sig.minCoeff(), sig.maxCoeff(), wt.minCoeff(), wt.maxCoeff());
-
-                // only fit if not converged
-                if (!converged(i)) {
-                    if (prior_diag_values.rows() == n_maps && prior_diag_values.cols() == n_prior_diag_cols) {
-                        prior_diag_values.row(i).setConstant(std::numeric_limits<double>::quiet_NaN());
-                        prior_diag_values(i, prior_init_mode_col) = -1.0;
-                        prior_diag_values(i, prior_used_col) = 0.0;
-                        prior_diag_values(i, prior_fallback_blind_col) = 0.0;
-                        prior_diag_values(i, prior_no_candidate_reason_col) = 0.0;
-                        prior_diag_values(i, prior_slot_index_col) = -1.0;
-                    }
-
-                    const Eigen::Index n_weight_pos = (omb.weight[i].array() > 0.0).count();
-                    if (n_weight_pos < map_fitter.n_params) {
-                        logger->warn("beammap fit map={} skipped: insufficient weighted pixels ({})", i, n_weight_pos);
-                        params.row(i).setZero();
-                        perrors.row(i).setZero();
-                        fit_diag_init_params.row(i).setZero();
-                        fit_diag_lower_limits.row(i).setZero();
-                        fit_diag_upper_limits.row(i).setZero();
-                        fit_diag_hit_lower.row(i).setZero();
-                        fit_diag_hit_upper.row(i).setZero();
-                        fit_diag_bound_code(i) = 0;
-                        fit_diag_bound_nhit(i) = 0;
-                        good_fits(i) = false;
-                        continue;
-                    }
-
-                    // get array number
-                    auto array = maps_to_arrays(i);
-                    // get initial guess fwhm from theoretical fwhms for the arrays
-                    double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
-                    // choose fit initialization
-                    double init_row = -99.0;
-                    double init_col = -99.0;
-                    bool init_from_prev = false;
-                    bool init_from_prior = false;
-                    enum class FitInitMode { Blind, Previous, Prior };
-                    auto init_mode = FitInitMode::Blind;
-                    const bool can_try_prior =
-                        beammap_priors_enabled && beammap_soft_priors_loaded &&
-                        detector_grouping;
-                    if (measurement_iter &&
-                        good_fits(i) &&
-                        p0.cols() > 2 &&
-                        std::isfinite(p0(i,0)) && p0(i,0) > 0.0 &&
-                        std::isfinite(p0(i,1)) && std::isfinite(p0(i,2))) {
-                        const double prev_col = p0(i,1);
-                        const double prev_row = p0(i,2);
-                        Eigen::Index prev_row_i = static_cast<Eigen::Index>(std::llround(prev_row));
-                        Eigen::Index prev_col_i = static_cast<Eigen::Index>(std::llround(prev_col));
-                        bool prev_seed_valid = false;
-                        if (prev_row_i >= 0 && prev_row_i < omb.signal[i].rows() &&
-                            prev_col_i >= 0 && prev_col_i < omb.signal[i].cols()) {
-                            const double seed_w = omb.weight[i](prev_row_i, prev_col_i);
-                            const double seed_s = omb.signal[i](prev_row_i, prev_col_i);
-                            prev_seed_valid = std::isfinite(seed_w) && seed_w > 0.0 &&
-                                              std::isfinite(seed_s) && seed_s > 0.0;
-                            if (prev_seed_valid) {
-                                Eigen::Index peak_row = -1;
-                                Eigen::Index peak_col = -1;
-                                double peak_snr = -std::numeric_limits<double>::infinity();
-                                if (find_map_weighted_peak(i, peak_row, peak_col, peak_snr) &&
-                                    peak_row >= 0 && peak_col >= 0 && std::isfinite(peak_snr)) {
-                                    const double prev_snr = seed_s * std::sqrt(seed_w);
-                                    const double dr = static_cast<double>(peak_row) - prev_row;
-                                    const double dc = static_cast<double>(peak_col) - prev_col;
-                                    const double dist_pix = std::sqrt(dr * dr + dc * dc);
-                                    const double min_switch_dist_pix = std::max(1.0, init_fwhm);
-                                    constexpr double min_switch_snr_ratio = 1.25;
-                                    bool prior_allows_switch = true;
-                                    if (can_try_prior) {
-                                        const int array_int = static_cast<int>(maps_to_arrays(i));
-                                        const int nw_int = static_cast<int>(std::lround(calib.apt["nw"](i)));
-                                        const double pix_to_arcsec = RAD_TO_ASEC * omb.pixel_size_rad;
-                                        const double col0 = static_cast<double>(omb.n_cols - 1) / 2.0;
-                                        const double row0 = static_cast<double>(omb.n_rows - 1) / 2.0;
-                                        const double derot_elev_rad = get_prior_derot_elev_rad();
-                                        const double prior_max_d2 = effective_prior_max_d2();
-
-                                        auto prior_compatible = [&](double row, double col, double &d2_out) {
-                                            const double x_raw = pix_to_arcsec * (col - col0);
-                                            const double y_raw = pix_to_arcsec * (row - row0);
-                                            double x_prior = std::numeric_limits<double>::quiet_NaN();
-                                            double y_prior = std::numeric_limits<double>::quiet_NaN();
-                                            d2_out = std::numeric_limits<double>::infinity();
-                                            int slot_index = -1;
-                                            if (!observed_to_prior_frame(array_int, x_raw, y_raw, derot_elev_rad,
-                                                                         x_prior, y_prior, nullptr, nullptr, true)) {
-                                                return false;
-                                            }
-                                            if (!match_prior_slot(array_int, nw_int, x_prior, y_prior,
-                                                                  d2_out, slot_index)) {
-                                                return false;
-                                            }
-                                            static_cast<void>(slot_index);
-                                            return prior_max_d2 <= 0.0 || d2_out <= prior_max_d2;
-                                        };
-
-                                        double prev_prior_d2 = std::numeric_limits<double>::infinity();
-                                        double peak_prior_d2 = std::numeric_limits<double>::infinity();
-                                        const bool prev_prior_ok = prior_compatible(prev_row, prev_col, prev_prior_d2);
-                                        const bool peak_prior_ok = prior_compatible(
-                                            static_cast<double>(peak_row), static_cast<double>(peak_col), peak_prior_d2);
-                                        prior_allows_switch = peak_prior_ok || !prev_prior_ok;
-                                        if (!prior_allows_switch) {
-                                            logger->debug(
-                                                "beammap fit map={} kept previous init over stronger weighted peak because prior d2 prev={} peak={} max_d2={}",
-                                                i, prev_prior_d2, peak_prior_d2, prior_max_d2);
-                                        }
-                                    }
-                                    if (std::isfinite(prev_snr) &&
-                                        peak_snr > min_switch_snr_ratio * prev_snr &&
-                                        dist_pix > min_switch_dist_pix &&
-                                        prior_allows_switch) {
-                                        prev_seed_valid = false;
-                                        iter_prev_rejected_by_peak++;
-                                        logger->debug(
-                                            "beammap fit map={} rejected previous init: current weighted peak row={} col={} snr={} is {} pix from previous row={} col={} snr={}",
-                                            i, peak_row, peak_col, peak_snr, dist_pix,
-                                            prev_row, prev_col, prev_snr);
-                                    }
-                                }
-                            }
-                        }
-                        if (prev_seed_valid) {
-                            init_col = prev_col;
-                            init_row = prev_row;
-                            init_from_prev = true;
-                            init_mode = FitInitMode::Previous;
-                            iter_init_prev++;
-                        }
-                        else {
-                            logger->debug(
-                                "beammap fit map={} rejected previous init at row={} col={} due to invalid/no-weight/non-positive seed pixel",
-                                i, prev_row, prev_col);
-                        }
-                    }
-                    if (!init_from_prev && can_try_prior) {
-                        if (choose_prior_guided_init(i, init_row, init_col)) {
-                            init_from_prior = true;
-                            init_mode = FitInitMode::Prior;
-                            iter_init_prior++;
-                        }
-                        else if (!beammap_priors_fallback_blind) {
-                            if (prior_diag_values.rows() == n_maps && prior_diag_values.cols() == n_prior_diag_cols) {
-                                prior_diag_values(i, prior_init_mode_col) = -1.0;
-                            }
-                            logger->warn("beammap fit map={} skipped: no prior-guided init candidate and fallback_blind=false", i);
-                            params.row(i).setZero();
-                            perrors.row(i).setZero();
-                            fit_diag_init_params.row(i).setZero();
-                            fit_diag_lower_limits.row(i).setZero();
-                            fit_diag_upper_limits.row(i).setZero();
-                            fit_diag_hit_lower.row(i).setZero();
-                            fit_diag_hit_upper.row(i).setZero();
-                            fit_diag_bound_code(i) = 0;
-                            fit_diag_bound_nhit(i) = 0;
-                            good_fits(i) = false;
-                            iter_init_skip++;
-                            continue;
-                        }
-                        else if (prior_diag_values.rows() == n_maps && prior_diag_values.cols() == n_prior_diag_cols) {
-                            prior_diag_values(i, prior_fallback_blind_col) = 1.0;
-                        }
-                    }
-                    if (!init_from_prev && !init_from_prior) {
-                        iter_init_blind++;
-                    }
-                    if (prior_diag_values.rows() == n_maps && prior_diag_values.cols() == n_prior_diag_cols) {
-                        if (init_from_prev) {
-                            prior_diag_values(i, prior_init_mode_col) = 1.0;
-                        }
-                        else if (init_from_prior) {
-                            prior_diag_values(i, prior_init_mode_col) = 2.0;
-                        }
-                        else {
-                            prior_diag_values(i, prior_init_mode_col) = 0.0;
-                        }
-                    }
-                    logger->debug("beammap fit map={} init mode={} row={:.3f} col={:.3f}",
-                                  i, init_from_prev ? "previous" : (init_from_prior ? "prior" : "blind"),
-                                  init_row, init_col);
-                    // fit the maps
-                    logger->debug("beammap fit checkpoint: map={} call fit_to_gaussian", i);
-                    engine_utils::mapFitter::FitDiagnostics fit_diag;
-                    auto [det_params, det_perror, good_fit] =
-                        map_fitter.fit_to_gaussian<engine_utils::mapFitter::beammap>(omb.signal[i], omb.weight[i],
-                                                                                     init_fwhm, init_row, init_col, &fit_diag);
-                    logger->debug("beammap fit checkpoint: map={} fit_to_gaussian returned good_fit={}", i, good_fit);
-
-                    if (!(det_params.array().isFinite().all() && det_perror.array().isFinite().all())) {
-                        det_params.setZero();
-                        det_perror.setZero();
-                        good_fit = false;
-                    }
-
-                    params.row(i) = det_params;
-                    perrors.row(i) = det_perror;
-                    good_fits(i) = good_fit;
-
-                    bool init_amp_zero = false;
-                    bool amp_bounds_zero = false;
-                    if (fit_diag.valid &&
-                        fit_diag.init_params.size() > 0 &&
-                        fit_diag.lower_limits.size() > 0 &&
-                        fit_diag.upper_limits.size() > 0) {
-                        const double init_amp = fit_diag.init_params(0);
-                        const double amp_low = fit_diag.lower_limits(0);
-                        const double amp_high = fit_diag.upper_limits(0);
-                        init_amp_zero = std::isfinite(init_amp) && std::abs(init_amp) <= 1e-12;
-                        amp_bounds_zero =
-                            std::isfinite(amp_low) && std::isfinite(amp_high) &&
-                            std::abs(amp_high - amp_low) <= 1e-12;
-                    }
-                    switch (init_mode) {
-                        case FitInitMode::Previous:
-                            iter_attempt_prev++;
-                            if (!good_fit) {
-                                iter_fail_prev++;
-                            }
-                            if (init_amp_zero) {
-                                iter_init_amp_zero_prev++;
-                            }
-                            if (amp_bounds_zero) {
-                                iter_amp_bounds_zero_prev++;
-                            }
-                            break;
-                        case FitInitMode::Prior:
-                            iter_attempt_prior++;
-                            if (!good_fit) {
-                                iter_fail_prior++;
-                            }
-                            if (init_amp_zero) {
-                                iter_init_amp_zero_prior++;
-                            }
-                            if (amp_bounds_zero) {
-                                iter_amp_bounds_zero_prior++;
-                            }
-                            break;
-                        case FitInitMode::Blind:
-                            iter_attempt_blind++;
-                            if (!good_fit) {
-                                iter_fail_blind++;
-                            }
-                            if (init_amp_zero) {
-                                iter_init_amp_zero_blind++;
-                            }
-                            if (amp_bounds_zero) {
-                                iter_amp_bounds_zero_blind++;
-                            }
-                            break;
-                    }
-
-                    if (fit_diag.valid &&
-                        fit_diag.init_params.size() == map_fitter.n_params &&
-                        fit_diag.lower_limits.size() == map_fitter.n_params &&
-                        fit_diag.upper_limits.size() == map_fitter.n_params &&
-                        fit_diag.hit_lower.size() == map_fitter.n_params &&
-                        fit_diag.hit_upper.size() == map_fitter.n_params) {
-                        fit_diag_init_params.row(i) = fit_diag.init_params.transpose();
-                        fit_diag_lower_limits.row(i) = fit_diag.lower_limits.transpose();
-                        fit_diag_upper_limits.row(i) = fit_diag.upper_limits.transpose();
-                        fit_diag_hit_lower.row(i) = fit_diag.hit_lower.transpose();
-                        fit_diag_hit_upper.row(i) = fit_diag.hit_upper.transpose();
-
-                        int bound_code = 0;
-                        int bound_nhit = 0;
-                        for (int p = 0; p < map_fitter.n_params; ++p) {
-                            const bool hit_low = fit_diag.hit_lower(p) != 0;
-                            const bool hit_high = fit_diag.hit_upper(p) != 0;
-                            if (hit_low) {
-                                bound_code |= (1 << (2 * p));
-                                iter_bound_low(p)++;
-                                bound_nhit++;
-                            }
-                            if (hit_high) {
-                                bound_code |= (1 << (2 * p + 1));
-                                iter_bound_high(p)++;
-                                bound_nhit++;
-                            }
-                        }
-                        fit_diag_bound_code(i) = bound_code;
-                        fit_diag_bound_nhit(i) = bound_nhit;
-                        if (bound_nhit > 0) {
-                            iter_bound_any++;
-                        }
-                    }
-                    else {
-                        fit_diag_init_params.row(i).setZero();
-                        fit_diag_lower_limits.row(i).setZero();
-                        fit_diag_upper_limits.row(i).setZero();
-                        fit_diag_hit_lower.row(i).setZero();
-                        fit_diag_hit_upper.row(i).setZero();
-                        fit_diag_bound_code(i) = 0;
-                        fit_diag_bound_nhit(i) = 0;
-                    }
-                }
-                // otherwise keep value from previous iteration
-                else {
-                    params.row(i) = p0.row(i);
-                    perrors.row(i) = perror0.row(i);
-                }
-
-                logger->debug("beammap fit checkpoint: map={} end good_fit={}", i, good_fits(i));
-            }
-            }
-
-            logger->info("beammap init summary (iter {}): previous={} prior={} blind={} skipped={} prev_rejected_by_peak={}",
-                         current_iter, iter_init_prev, iter_init_prior, iter_init_blind, iter_init_skip,
-                         iter_prev_rejected_by_peak);
-            logger->info(
-                "beammap fit diagnostics (iter {}): prev fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{} | "
-                "prior fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{} | "
-                "blind fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{}",
-                current_iter,
-                iter_fail_prev, iter_attempt_prev, iter_init_amp_zero_prev, iter_attempt_prev,
-                iter_amp_bounds_zero_prev, iter_attempt_prev,
-                iter_fail_prior, iter_attempt_prior, iter_init_amp_zero_prior, iter_attempt_prior,
-                iter_amp_bounds_zero_prior, iter_attempt_prior,
-                iter_fail_blind, iter_attempt_blind, iter_init_amp_zero_blind, iter_attempt_blind,
-                iter_amp_bounds_zero_blind, iter_attempt_blind);
-
-            if (map_fitter.n_params >= 6) {
-                logger->info(
-                    "beammap fit bound summary (iter {}): any_hit={}/{} amp(lo/hi)={}/{} x(lo/hi)={}/{} y(lo/hi)={}/{} a(lo/hi)={}/{} b(lo/hi)={}/{} angle(lo/hi)={}/{}",
-                    current_iter, iter_bound_any, n_maps,
-                    iter_bound_low(0), iter_bound_high(0),
-                    iter_bound_low(1), iter_bound_high(1),
-                    iter_bound_low(2), iter_bound_high(2),
-                    iter_bound_low(3), iter_bound_high(3),
-                    iter_bound_low(4), iter_bound_high(4),
-                    iter_bound_low(5), iter_bound_high(5));
-            }
-            else {
-                logger->info("beammap fit bound summary (iter {}): any_hit={}/{}",
-                             current_iter, iter_bound_any, n_maps);
-            }
-            logger->info("number of good fits {}/{}", static_cast<long long>(good_fits.cast<int>().sum()), n_maps);
+            fit_beammap_maps(detector_grouping, measurement_iter);
         }
 
         const int completed_iter = current_iter;
-
-        // increment loop iteration
-        current_iter++;
-
-        if (current_iter < beammap_iter_max) {
-            // check if all detectors are converged
-            if ((converged.array() == true).all()) {
-                logger->info("all maps converged");
-                keep_going = false;
-            }
-            else if (has_completed_beammap_measurement_iter(current_iter)) {
-                // only do convergence test if tolerance is above zero, otherwise run all iterations
-                if (run_mapmaking && beammap_iter_tolerance > 0) {
-                    // loop through maps and check if it is converged
-                    logger->info("checking convergence in fitted-source aperture radius={:.3f} arcsec",
-                                 beammap_convergence_radius_arcsec);
-                    const auto convergence_profile_scope =
-                        citlali::pipeline::profile_stage(
-                            "beammap.convergence", logger,
-                            "iter=" + std::to_string(current_iter) +
-                                " radius_arcsec=" +
-                                std::to_string(beammap_convergence_radius_arcsec));
-                    Eigen::VectorXd convergence_delta =
-                        Eigen::VectorXd::Constant(n_maps, std::numeric_limits<double>::quiet_NaN());
-                    grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-                        if (!converged(i)) {
-                            const double delta = calc_beammap_convergence_delta(i);
-                            convergence_delta(i) = delta;
-                            if (std::isfinite(delta) && delta <= beammap_iter_tolerance) {
-                                // set as converged
-                                converged(i) = true;
-                                // set convergence iteration
-                                converge_iter(i) = current_iter;
-                            }
-                        }
-                        return 0;
-                    });
-
-                    Eigen::Index n_delta_finite = 0;
-                    Eigen::Index n_delta_invalid = 0;
-                    double max_delta = 0.0;
-                    for (Eigen::Index i = 0; i < convergence_delta.size(); ++i) {
-                        if (std::isfinite(convergence_delta(i))) {
-                            n_delta_finite++;
-                            max_delta = std::max(max_delta, convergence_delta(i));
-                        }
-                        else if (!converged(i)) {
-                            n_delta_invalid++;
-                        }
-                    }
-
-                    logger->info(
-                        "{} maps converged on iter {} (finite_metrics={} invalid_metrics={} max_delta={})",
-                        (converged.array() == true).count(), current_iter,
-                        n_delta_finite, n_delta_invalid, max_delta);
-
-                    // stop if all maps converged
-                    if ((converged.array() == true).all()) {
-                        logger->info("all maps converged");
-                        keep_going = false;
-                    }
-                }
-                else {
-                    logger->info("bypassing convergence check");
-                }
-            }
-
-            // set previous iteration fits to current iteration fits
-            p0 = params;
-            perror0 = perrors;
-        }
-        else {
-            logger->info("max iteration reached");
-            keep_going = false;
-        }
+        keep_going = advance_beammap_iteration_state();
 
         const bool beammap_iter_is_final = !keep_going;
         const bool write_beammap_ptc_this_iter =
