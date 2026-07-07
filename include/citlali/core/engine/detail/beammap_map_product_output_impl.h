@@ -4,6 +4,7 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/engine/detail/beammap_map_product_headers.h>
+#include <citlali/core/engine/detail/beammap_map_product_split_helpers.h>
 #include <citlali/core/pipeline/map_output_debug_breadcrumb.h>
 
 template <mapmaking::MapType map_type>
@@ -15,8 +16,6 @@ void Beammap::write_beammap_map_products(
     if (!run_mapmaking) {
         return;
     }
-
-    namespace fs = std::filesystem;
 
     const bool detector_grouping =
         typed_config.mapmaking.grouping ==
@@ -111,43 +110,18 @@ void Beammap::write_beammap_map_products(
                 write_standard_maps();
             }
             else {
-                std::vector<std::string> base_filepaths;
-                base_filepaths.reserve(f_io->size());
-                for (const auto &fio : *f_io) {
-                    base_filepaths.push_back(fio.filepath);
-                }
-
-                std::vector<std::string> base_noise_filepaths;
-                base_noise_filepaths.reserve(n_io->size());
-                for (const auto &nio : *n_io) {
-                    base_noise_filepaths.push_back(nio.filepath);
-                }
+                const auto base_filepaths =
+                    beammap_map_product_split_helpers::filepaths(*f_io);
+                const auto base_noise_filepaths =
+                    beammap_map_product_split_helpers::filepaths(*n_io);
 
                 // close and remove the default unsplit files before writing split outputs
                 f_io->clear();
                 n_io->clear();
-                for (const auto &path : base_filepaths) {
-                    const auto fits_path = path + ".fits";
-                    try {
-                        if (fs::exists(fits_path)) {
-                            fs::remove(fits_path);
-                        }
-                    }
-                    catch (const std::exception &e) {
-                        logger->warn("unable to remove unsplit beammap file {}: {}", fits_path, e.what());
-                    }
-                }
-                for (const auto &path : base_noise_filepaths) {
-                    const auto fits_path = path + ".fits";
-                    try {
-                        if (fs::exists(fits_path)) {
-                            fs::remove(fits_path);
-                        }
-                    }
-                    catch (const std::exception &e) {
-                        logger->warn("unable to remove unsplit beammap noise file {}: {}", fits_path, e.what());
-                    }
-                }
+                beammap_map_product_split_helpers::remove_fits_files(
+                    base_filepaths, "map", logger);
+                beammap_map_product_split_helpers::remove_fits_files(
+                    base_noise_filepaths, "noise", logger);
 
                 using split_io_t = fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>;
 
@@ -165,25 +139,18 @@ void Beammap::write_beammap_map_products(
                         continue;
                     }
 
-                    std::string split_suffix = "_flag" + std::to_string(flag_value);
-                    if (flag_value == 0) {
-                        split_suffix += "_good";
-                    }
-                    else if (flag_value == 1) {
-                        split_suffix += "_bad";
-                    }
+                    const std::string split_suffix =
+                        beammap_map_product_split_helpers::split_suffix(
+                            flag_value);
 
-                    std::vector<split_io_t> split_f_io_vec;
+                    auto split_f_io_vec =
+                        beammap_map_product_split_helpers::make_split_io<split_io_t>(
+                            base_filepaths, split_suffix);
                     std::vector<split_io_t> split_n_io_vec;
-                    split_f_io_vec.reserve(base_filepaths.size());
-                    for (const auto &path : base_filepaths) {
-                        split_f_io_vec.emplace_back(path + split_suffix);
-                    }
                     if (!mb->noise.empty()) {
-                        split_n_io_vec.reserve(base_noise_filepaths.size());
-                        for (const auto &path : base_noise_filepaths) {
-                            split_n_io_vec.emplace_back(path + split_suffix);
-                        }
+                        split_n_io_vec =
+                            beammap_map_product_split_helpers::make_split_io<split_io_t>(
+                                base_noise_filepaths, split_suffix);
                     }
 
                     auto split_f_io = &split_f_io_vec;
