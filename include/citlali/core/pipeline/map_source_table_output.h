@@ -20,7 +20,7 @@ inline std::vector<std::string> source_table_header() {
         "sig2noise"};
 }
 
-inline std::string source_position_units(const std::string &pixel_axes) {
+inline std::string source_position_units(citlali::config::MapPixelAxes pixel_axes) {
     return citlali::config::is_radec_map_pixel_axes(pixel_axes)
                ? "deg"
                : "arcsec";
@@ -54,7 +54,7 @@ inline std::map<std::string, std::string> source_table_units(
 }
 
 inline std::map<std::string, std::string> source_table_units_for_pixel_axes(
-    const std::string &signal_unit, const std::string &pixel_axes) {
+    const std::string &signal_unit, citlali::config::MapPixelAxes pixel_axes) {
     return source_table_units(signal_unit, source_position_units(pixel_axes));
 }
 
@@ -102,7 +102,7 @@ YAML::Node source_table_meta(
 template <class Obsnums, class HeaderDescriptions>
 YAML::Node source_table_meta_for_observation(
     const Obsnums &obsnums, const std::string &signal_unit,
-    const std::string &pixel_axes, const std::string &source_name,
+    citlali::config::MapPixelAxes pixel_axes, const std::string &source_name,
     const std::string &creation_date, const std::string &observation_date,
     HeaderDescriptions &apt_header_description) {
     const auto source_header_units =
@@ -183,7 +183,7 @@ Eigen::MatrixXf build_source_table(MapBuffer &map_buffer,
 template <class MapBuffer, class HeaderDescriptions, class SourceTableCallbacks>
 void write_source_table_output(
     const std::string &source_filename, MapBuffer &map_buffer,
-    Eigen::Index n_params, const std::string &pixel_axes,
+    Eigen::Index n_params, citlali::config::MapPixelAxes pixel_axes,
     const std::string &source_name, const std::string &creation_date,
     const std::string &observation_date,
     HeaderDescriptions &apt_header_description,

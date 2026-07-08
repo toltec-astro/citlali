@@ -26,7 +26,8 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::make_source_table_callbacks(
             map_to_array_index, calc_map_std_dev, write_source_table);
     citlali::pipeline::write_source_table_output(
-        source_filename, *mb, map_fitter.n_params, telescope.pixel_axes,
+        source_filename, *mb, map_fitter.n_params,
+        typed_config.mapmaking.pixel_axes_frame,
         telescope.source_name, engine_utils::current_date_time(),
         date_obs.back(), calib.apt_header_description,
         source_table_callbacks);

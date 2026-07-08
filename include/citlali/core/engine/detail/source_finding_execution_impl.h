@@ -47,7 +47,8 @@ void Engine::find_sources(map_buffer_t &mb) {
                     };
                     citlali::pipeline::normalize_and_store_source_fit_result(
                         mb, source_row_start, j, params, perrors,
-                        telescope.pixel_axes, source_fit_constants,
+                        typed_config.mapmaking.pixel_axes_frame,
+                        source_fit_constants,
                         tangent_to_abs);
                 }
             });
@@ -58,4 +59,3 @@ void Engine::find_sources(map_buffer_t &mb) {
     citlali::pipeline::fit_detected_map_sources(
         mb, n_maps, source_fit_callbacks);
 }
-

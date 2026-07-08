@@ -69,7 +69,8 @@ void rescale_source_fit_pixel_units(Params &params, PErrors &perrors,
     perrors(4) = source_fwhm_to_arcsec * perrors(4);
 }
 
-inline bool source_fit_uses_radec_projection(const std::string &pixel_axes) {
+inline bool source_fit_uses_radec_projection(
+    citlali::config::MapPixelAxes pixel_axes) {
     return citlali::config::is_radec_map_pixel_axes(pixel_axes);
 }
 
@@ -88,7 +89,7 @@ template <class Params, class PErrors, class Wcs, class TangentToAbs>
 void rescale_source_fit_result(
     Params &params, PErrors &perrors, Eigen::Index n_rows,
     Eigen::Index n_cols, double pixel_size_rad,
-    const std::string &pixel_axes, const Wcs &wcs,
+    citlali::config::MapPixelAxes pixel_axes, const Wcs &wcs,
     const SourceFitUnitConstants &constants,
     const TangentToAbs &tangent_to_abs) {
     const auto unit_scale =

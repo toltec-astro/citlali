@@ -37,7 +37,7 @@ template <class MapBuffer, class SourceRow, class SourceIndex,
 void normalize_and_store_source_fit_result(
     MapBuffer &map_buffer, SourceRow source_row_start,
     SourceIndex source_index, Params &params, PErrors &perrors,
-    const std::string &pixel_axes,
+    citlali::config::MapPixelAxes pixel_axes,
     const SourceFitUnitConstants &constants,
     const TangentToAbs &tangent_to_abs) {
     rescale_source_fit_result(
@@ -73,4 +73,3 @@ void fit_detected_map_sources(MapBuffer &map_buffer, MapCount n_maps,
             next_source_fit_row_start(source_row_start, n_map_sources);
     }
 }
-
