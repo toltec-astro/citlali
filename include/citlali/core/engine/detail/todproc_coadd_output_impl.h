@@ -16,68 +16,36 @@ void TimeOrderedDataProc<EngineType>::coadd() {
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
     // clear fits_io vectors
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>().swap(engine().coadd_fits_io_vec);
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>().swap(engine().coadd_noise_fits_io_vec);
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>().swap(engine().filtered_coadd_fits_io_vec);
-    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>().swap(engine().filtered_coadd_noise_fits_io_vec);
+    citlali::pipeline::reset_coadd_map_fits_files(
+        engine().coadd_fits_io_vec, engine().coadd_noise_fits_io_vec,
+        engine().filtered_coadd_fits_io_vec,
+        engine().filtered_coadd_noise_fits_io_vec);
 
     const bool write_noise_maps =
         citlali::pipeline::noise_maps_enabled(engine()) &&
         citlali::pipeline::noise_realization_outputs_enabled(engine());
-    const std::string raw_dir = engine().coadd_dir_name + "raw/";
-    const std::string filtered_dir = engine().coadd_dir_name + "filtered/";
+    const std::string raw_dir =
+        citlali::pipeline::raw_coadd_map_directory(engine().coadd_dir_name);
+    const std::string filtered_dir =
+        citlali::pipeline::filtered_coadd_map_directory(
+            engine().coadd_dir_name);
 
-    // loop through arrays
-    for (Eigen::Index i=0; i<engine().calib.n_arrays; ++i) {
-        // array index
-        auto array = engine().calib.arrays[i];
-        // array name
-        std::string array_name = engine().toltec_io.array_name_map[array];
-        // map filename
-        citlali::pipeline::append_coadd_map_fits_file<
-            engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
-            engine_utils::toltecIO::raw>(
-            engine().coadd_fits_io_vec, engine().toltec_io, raw_dir,
-            array_name, engine().telescope.sim_obs);
-
-        // if noise maps requested
-        if (write_noise_maps) {
-            // noise map filename
-            citlali::pipeline::append_coadd_map_fits_file<
-                engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
-                engine_utils::toltecIO::raw>(
-                engine().coadd_noise_fits_io_vec, engine().toltec_io,
-                raw_dir, array_name, engine().telescope.sim_obs);
-        }
-    }
+    citlali::pipeline::append_coadd_array_products<
+        engine_utils::toltecIO::raw>(
+        engine().coadd_fits_io_vec, engine().coadd_noise_fits_io_vec,
+        engine().toltec_io, raw_dir, engine().calib.arrays,
+        engine().calib.n_arrays, engine().toltec_io.array_name_map,
+        engine().telescope.sim_obs, write_noise_maps);
 
     // if map filtering are requested
     if (citlali::pipeline::map_filter_outputs_enabled(engine())) {
-        // loop through arrays
-        for (Eigen::Index i=0; i<engine().calib.n_arrays; ++i) {
-            // array index
-            auto array = engine().calib.arrays[i];
-            // array name
-            std::string array_name = engine().toltec_io.array_name_map[array];
-            // filtered map filename
-            citlali::pipeline::append_coadd_map_fits_file<
-                engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
-                engine_utils::toltecIO::filtered>(
-                engine().filtered_coadd_fits_io_vec, engine().toltec_io,
-                filtered_dir, array_name, engine().telescope.sim_obs);
-
-            // if noise maps requested
-            if (write_noise_maps) {
-                // filtered noise map filename
-                citlali::pipeline::append_coadd_map_fits_file<
-                    engine_utils::toltecIO::toltec,
-                    engine_utils::toltecIO::noise,
-                    engine_utils::toltecIO::filtered>(
-                    engine().filtered_coadd_noise_fits_io_vec,
-                    engine().toltec_io, filtered_dir, array_name,
-                    engine().telescope.sim_obs);
-            }
-        }
+        citlali::pipeline::append_coadd_array_products<
+            engine_utils::toltecIO::filtered>(
+            engine().filtered_coadd_fits_io_vec,
+            engine().filtered_coadd_noise_fits_io_vec, engine().toltec_io,
+            filtered_dir, engine().calib.arrays, engine().calib.n_arrays,
+            engine().toltec_io.array_name_map, engine().telescope.sim_obs,
+            write_noise_maps);
     }
 }
 
