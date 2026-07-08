@@ -1526,7 +1526,8 @@ inline void RTCProc::configure_filter_edge_guard(double fs_hz) {
         if (next <= 0) {
             return current;
         }
-        if (filter_edge_guard.combine == "max") {
+        if (citlali::config::is_max_raw_filter_edge_guard_combine(
+                filter_edge_guard.combine)) {
             return std::max(current, next);
         }
         return current + next;

@@ -462,6 +462,39 @@ inline bool is_none_raw_filter_edge_guard_mode(std::string_view value) {
         value, RawTimeChunkFilterEdgeGuardMode::none);
 }
 
+inline bool is_raw_filter_edge_guard_combine(
+    RawTimeChunkFilterEdgeGuardCombine value,
+    RawTimeChunkFilterEdgeGuardCombine combine) {
+    return value == combine;
+}
+
+inline bool is_raw_filter_edge_guard_combine(
+    std::string_view value, RawTimeChunkFilterEdgeGuardCombine combine) {
+    return value == to_string(combine);
+}
+
+inline bool is_sum_raw_filter_edge_guard_combine(
+    RawTimeChunkFilterEdgeGuardCombine value) {
+    return is_raw_filter_edge_guard_combine(
+        value, RawTimeChunkFilterEdgeGuardCombine::sum);
+}
+
+inline bool is_sum_raw_filter_edge_guard_combine(std::string_view value) {
+    return is_raw_filter_edge_guard_combine(
+        value, RawTimeChunkFilterEdgeGuardCombine::sum);
+}
+
+inline bool is_max_raw_filter_edge_guard_combine(
+    RawTimeChunkFilterEdgeGuardCombine value) {
+    return is_raw_filter_edge_guard_combine(
+        value, RawTimeChunkFilterEdgeGuardCombine::max);
+}
+
+inline bool is_max_raw_filter_edge_guard_combine(std::string_view value) {
+    return is_raw_filter_edge_guard_combine(
+        value, RawTimeChunkFilterEdgeGuardCombine::max);
+}
+
 inline bool is_processed_weighting_type(
     ProcessedTimeChunkWeightingType value,
     ProcessedTimeChunkWeightingType type) {
