@@ -168,17 +168,19 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
     engine().end_indices.clear();
     engine().nw_masks.clear();
 
-    std::vector<Eigen::VectorXd> nw_times(rawobs.kidsdata().size());
-    std::vector<Eigen::Index> nw_ids(rawobs.kidsdata().size(), -1);
+    const auto kids_data = rawobs.kidsdata();
+    std::vector<Eigen::VectorXd> nw_times(kids_data.size());
+    std::vector<Eigen::Index> nw_ids(kids_data.size(), -1);
 
     // clear gaps
     engine().gaps.clear();
 
     // loop through networks and build time vectors
-    int i = 0;
     double f_smp_roach = -1.0;
     double fsmp_ref = -1.0;
-    for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
+    for (Eigen::Index i = 0; i < static_cast<Eigen::Index>(kids_data.size());
+         ++i) {
+        const RawObs::DataItem &data_item = kids_data[i];
         try {
             // load data file
             NcFile fo(data_item.filepath(), NcFile::read);
@@ -204,7 +206,6 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
             Eigen::Index n_times = fo.getVar("Data.Toltec.Ts").getDim(1).getSize();
 
             // get time matrix
-            //Eigen::MatrixXi ts(n_times, n_pts);
             Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> ts(n_pts, n_times);
             fo.getVar("Data.Toltec.Ts").getVar(ts.data());
 
@@ -229,12 +230,13 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
                     ts_double, fpga_freq,
                     engine().interface_sync_offset[
                         "toltec"+std::to_string(roach_index)]);
-            i++;
 
             fo.close();
 
         } catch (NcException &e) {
-            throw std::runtime_error(fmt::format("unable to open file : {}", "data_item.filepath()", e.what()));
+            throw std::runtime_error(fmt::format(
+                "unable to open file {}: {}",
+                data_item.filepath(), e.what()));
         }
     }
 
