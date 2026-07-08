@@ -23,6 +23,33 @@ inline bool map_grouping_disallows_polarization(
             citlali::config::is_detector_map_grouping(map_grouping));
 }
 
+inline citlali::config::MapGrouping automatic_map_grouping_for_reduction(
+    citlali::config::ReductionType reduction_type) {
+    return citlali::config::is_beammap_reduction_type(reduction_type)
+               ? citlali::config::MapGrouping::detector
+               : citlali::config::MapGrouping::array;
+}
+
+inline bool detector_map_grouping_disallowed(
+    citlali::config::ReductionType reduction_type,
+    citlali::config::MapGrouping map_grouping) {
+    return citlali::config::is_detector_map_grouping(map_grouping) &&
+           !citlali::config::is_beammap_reduction_type(reduction_type);
+}
+
+inline citlali::config::MapGrouping effective_map_grouping_for_reduction(
+    citlali::config::ReductionType reduction_type,
+    citlali::config::MapGrouping requested_grouping) {
+    auto grouping = requested_grouping;
+    if (citlali::config::is_automatic_map_grouping(grouping)) {
+        grouping = automatic_map_grouping_for_reduction(reduction_type);
+    }
+    if (detector_map_grouping_disallowed(reduction_type, grouping)) {
+        grouping = citlali::config::MapGrouping::array;
+    }
+    return grouping;
+}
+
 template <class Logger>
 void enforce_map_grouping_polarization_policy(
     bool run_polarization, citlali::config::ReductionType reduction_type,
@@ -59,6 +86,33 @@ void sync_map_grouping_to_timestream_processors(
         std::string(citlali::config::to_string(map_grouping))};
     rtcproc.kernel.map_grouping = map_grouping_name;
     ptcproc.active_map_grouping = map_grouping_name;
+}
+
+template <class Calib>
+int base_map_count_for_grouping(citlali::config::MapGrouping grouping,
+                                const Calib &calib) {
+    if (citlali::config::is_detector_map_grouping(grouping)) {
+        return calib.n_dets;
+    }
+    if (citlali::config::is_network_map_grouping(grouping)) {
+        return calib.n_nws;
+    }
+    if (citlali::config::is_array_map_grouping(grouping)) {
+        return calib.n_arrays;
+    }
+    if (citlali::config::is_frequency_group_map_grouping(grouping)) {
+        return static_cast<int>(calib.fg.size()) * calib.n_arrays;
+    }
+    return 0;
+}
+
+template <class Polarization>
+int apply_polarization_map_count(int base_count, bool run_polarization,
+                                 const Polarization &polarization) {
+    return run_polarization
+               ? base_count *
+                     static_cast<int>(polarization.stokes_params.size())
+               : base_count;
 }
 
 template <class MapmakingConfig, class OutputMapBlock,
