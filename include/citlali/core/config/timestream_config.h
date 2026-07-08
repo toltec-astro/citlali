@@ -389,6 +389,39 @@ inline bool is_outer_tod_stream_output_mode(TodStreamOutputMode value) {
            value == TodStreamOutputMode::mini_outer;
 }
 
+inline bool is_raw_filter_edge_guard_mode(
+    RawTimeChunkFilterEdgeGuardMode value,
+    RawTimeChunkFilterEdgeGuardMode mode) {
+    return value == mode;
+}
+
+inline bool is_raw_filter_edge_guard_mode(
+    std::string_view value, RawTimeChunkFilterEdgeGuardMode mode) {
+    return value == to_string(mode);
+}
+
+inline bool is_flag_raw_filter_edge_guard_mode(
+    RawTimeChunkFilterEdgeGuardMode value) {
+    return is_raw_filter_edge_guard_mode(
+        value, RawTimeChunkFilterEdgeGuardMode::flag);
+}
+
+inline bool is_flag_raw_filter_edge_guard_mode(std::string_view value) {
+    return is_raw_filter_edge_guard_mode(
+        value, RawTimeChunkFilterEdgeGuardMode::flag);
+}
+
+inline bool is_none_raw_filter_edge_guard_mode(
+    RawTimeChunkFilterEdgeGuardMode value) {
+    return is_raw_filter_edge_guard_mode(
+        value, RawTimeChunkFilterEdgeGuardMode::none);
+}
+
+inline bool is_none_raw_filter_edge_guard_mode(std::string_view value) {
+    return is_raw_filter_edge_guard_mode(
+        value, RawTimeChunkFilterEdgeGuardMode::none);
+}
+
 inline bool is_indices_tod_output_selection_mode(
     TodOutputSelectionMode value) {
     return value == TodOutputSelectionMode::indices;

@@ -1542,7 +1542,9 @@ inline void RTCProc::configure_filter_edge_guard(double fs_hz) {
 
     filter_edge_guard.context_samples = base_context;
     filter_edge_guard.guard_samples = 0;
-    if (!filter_edge_guard.enabled || filter_edge_guard.mode == "none") {
+    if (!filter_edge_guard.enabled ||
+        citlali::config::is_none_raw_filter_edge_guard_mode(
+            filter_edge_guard.mode)) {
         return;
     }
 
@@ -1609,7 +1611,9 @@ void RTCProc::apply_filter_edge_guard(tc_t &in,
     const Eigen::Index guard_samples =
         guard_samples_override >= 0 ? guard_samples_override : filter_edge_guard.guard_samples;
 
-    if (!filter_edge_guard.enabled || filter_edge_guard.mode != "flag" ||
+    if (!filter_edge_guard.enabled ||
+        !citlali::config::is_flag_raw_filter_edge_guard_mode(
+            filter_edge_guard.mode) ||
         guard_samples <= 0 || n_samples <= 0 ||
         in.flags.data.rows() <= 0 || in.flags.data.cols() <= 0) {
         return;
