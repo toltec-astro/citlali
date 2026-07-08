@@ -8,14 +8,15 @@ template <class Config, class OutputMapBlock, class MissingKeys,
 void read_output_map_block_config(
     Config &config, OutputMapBlock &omb, MissingKeys &missing_keys,
     InvalidKeys &invalid_keys, const PixelAxes &pixel_axes,
-    const std::string &redu_type, double rad_to_arcsec,
+    citlali::config::ReductionType reduction_type, double rad_to_arcsec,
     MapmakingConfig &typed_mapmaking_config,
     PostProcessingConfig &typed_post_processing_config,
     const Logger &logger) {
     logger->info("getting omb config options");
     const auto missing_before = missing_keys.size();
     const auto invalid_before = invalid_keys.size();
-    omb.get_config(config, missing_keys, invalid_keys, pixel_axes, redu_type);
+    omb.get_config(
+        config, missing_keys, invalid_keys, pixel_axes, reduction_type);
     if (config_parse_clean(
             missing_keys, invalid_keys, missing_before, invalid_before)) {
         citlali::pipeline::mirror_output_map_block_config(
@@ -30,11 +31,12 @@ template <class Config, class CoaddMapBlock, class CoaddConfig,
 void read_coadd_map_block_config(
     Config &config, const CoaddConfig &typed_coadd_config, CoaddMapBlock &cmb,
     MissingKeys &missing_keys, InvalidKeys &invalid_keys,
-    const PixelAxes &pixel_axes, const std::string &redu_type,
+    const PixelAxes &pixel_axes, citlali::config::ReductionType reduction_type,
     const Logger &logger) {
     if (!citlali::config::coadd_active(typed_coadd_config)) {
         return;
     }
     logger->info("getting cmb config options");
-    cmb.get_config(config, missing_keys, invalid_keys, pixel_axes, redu_type);
+    cmb.get_config(
+        config, missing_keys, invalid_keys, pixel_axes, reduction_type);
 }

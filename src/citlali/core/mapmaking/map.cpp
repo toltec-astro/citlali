@@ -77,8 +77,9 @@ MapBuffer::MapBuffer(std::string _n): name(_n) {}
 
 // get config file
 void MapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::vector<std::string>> &missing_keys,
-                              std::vector<std::vector<std::string>> &invalid_keys, std::string pixel_axes,
-                              std::string redu_type) {
+                              std::vector<std::vector<std::string>> &invalid_keys,
+                              citlali::config::MapPixelAxes pixel_axes,
+                              citlali::config::ReductionType reduction_type) {
 
     // coverage cut
     get_config_value(config, cov_cut, missing_keys, invalid_keys,
@@ -146,7 +147,7 @@ void MapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::ve
         wcs.ctype.push_back("ELOFFSET");
 
         // arcsec if pointing or beammap
-        if (!citlali::config::is_science_reduction_type(redu_type)) {
+        if (!citlali::config::is_science_reduction_type(reduction_type)) {
             wcs.cunit.push_back("arcsec");
             wcs.cunit.push_back("arcsec");
             wcs.cdelt[0] *= RAD_TO_ASEC;

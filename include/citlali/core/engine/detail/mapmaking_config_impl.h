@@ -50,15 +50,17 @@ void Engine::get_mapmaking_config(CT &config) {
         mapmaking_config.pixel_axes_frame, logger);
 
     citlali::engine_detail::read_output_map_block_config(
-        config, omb, missing_keys, invalid_keys, telescope.pixel_axes,
-        redu_type, RAD_TO_ASEC, mapmaking_config,
+        config, omb, missing_keys, invalid_keys,
+        mapmaking_config.pixel_axes_frame, typed_config.runtime.reduction_type,
+        RAD_TO_ASEC, mapmaking_config,
         post_processing_config, logger);
 
     citlali::engine_detail::read_coadd_enabled_config(
         config, run_coadd, coadd_config, missing_keys, invalid_keys);
     citlali::engine_detail::read_coadd_map_block_config(
         config, coadd_config, cmb, missing_keys, invalid_keys,
-        telescope.pixel_axes, redu_type, logger);
+        mapmaking_config.pixel_axes_frame, typed_config.runtime.reduction_type,
+        logger);
 
     citlali::pipeline::apply_uncalibrated_map_units(
         rtcproc.run_calibrate, typed_config.timestream.type, omb, cmb);

@@ -12,6 +12,8 @@
 #include <tula/config/flatconfig.h>
 #include <tula/config/yamlconfig.h>
 
+#include <citlali/core/config/mapmaking_config.h>
+#include <citlali/core/config/runtime_config.h>
 #include <citlali/core/engine/config.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/fitting.h>
@@ -203,7 +205,9 @@ public:
 
     // get config file
     void get_config(tula::config::YamlConfig &, std::vector<std::vector<std::string>> &,
-                    std::vector<std::vector<std::string>> &, std::string, std::string);
+                    std::vector<std::vector<std::string>> &,
+                    citlali::config::MapPixelAxes,
+                    citlali::config::ReductionType);
 
     // normalize accumulated maps and finalize inverse-variance weights
     void normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr);
