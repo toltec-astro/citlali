@@ -6,7 +6,6 @@
 
 #include <cstdlib>
 #include <string>
-#include <string_view>
 #include <vector>
 
 namespace citlali::pipeline {
@@ -41,7 +40,6 @@ template <class Logger>
 void enforce_beammap_pixel_axes_policy(
                                        citlali::config::ReductionType reduction_type,
                                        citlali::config::MapPixelAxes pixel_axes,
-                                       std::string_view pixel_axes_name,
                                        const Logger &logger) {
     if (!citlali::config::is_beammap_reduction_type(reduction_type) ||
         citlali::config::is_altaz_map_pixel_axes(pixel_axes)) {
@@ -49,15 +47,18 @@ void enforce_beammap_pixel_axes_policy(
     }
     logger->error(
         "beammap reductions require mapmaking.pixel_axes='altaz'; got '{}'",
-        pixel_axes_name);
+        citlali::config::to_string(pixel_axes));
     std::exit(EXIT_FAILURE);
 }
 
 template <class RtcProc, class PtcProc>
 void sync_map_grouping_to_timestream_processors(
-    const std::string &map_grouping, RtcProc &rtcproc, PtcProc &ptcproc) {
-    rtcproc.kernel.map_grouping = map_grouping;
-    ptcproc.active_map_grouping = map_grouping;
+    citlali::config::MapGrouping map_grouping, RtcProc &rtcproc,
+    PtcProc &ptcproc) {
+    const std::string map_grouping_name{
+        std::string(citlali::config::to_string(map_grouping))};
+    rtcproc.kernel.map_grouping = map_grouping_name;
+    ptcproc.active_map_grouping = map_grouping_name;
 }
 
 template <class MapmakingConfig, class OutputMapBlock,

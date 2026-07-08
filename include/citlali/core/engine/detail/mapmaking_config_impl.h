@@ -32,7 +32,7 @@ void Engine::get_mapmaking_config(CT &config) {
         mapmaking_config.grouping, logger);
 
     citlali::pipeline::sync_map_grouping_to_timestream_processors(
-        map_grouping, rtcproc, ptcproc);
+        mapmaking_config.grouping, rtcproc, ptcproc);
 
     citlali::engine_detail::read_map_method_config(
         config, map_method, mapmaking_config, missing_keys,
@@ -47,7 +47,7 @@ void Engine::get_mapmaking_config(CT &config) {
         invalid_keys);
     citlali::pipeline::enforce_beammap_pixel_axes_policy(
         typed_config.runtime.reduction_type,
-        mapmaking_config.pixel_axes_frame, telescope.pixel_axes, logger);
+        mapmaking_config.pixel_axes_frame, logger);
 
     citlali::engine_detail::read_output_map_block_config(
         config, omb, missing_keys, invalid_keys, telescope.pixel_axes,
