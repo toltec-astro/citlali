@@ -12,44 +12,8 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
     const auto inventory =
         citlali::pipeline::read_rawobs_detector_inventory(
             rawobs, engine().toltec_io.nw_to_array_map, logger);
-
-    // explicitly clear the apt
-    engine().calib.apt.clear();
-
-    // resize the apt vectors
-    for (auto const& key : engine().calib.apt_header_keys) {
-        if (key=="x_t" || key=="y_t") {
-            engine().calib.apt[key].setZero(inventory.n_dets);
-        }
-        else {
-            engine().calib.apt[key].setOnes(inventory.n_dets);
-        }
-    }
-
-    // set all flags to good
-    engine().calib.apt["flag"].setZero(inventory.n_dets);
-
-    // add the nws and arrays to the apt table
-    Eigen::Index j = 0;
-    for (Eigen::Index i=0; i<inventory.nws.size(); ++i) {
-        engine().calib.apt["nw"].segment(j,inventory.dets[i])
-            .setConstant(inventory.nws[i]);
-        engine().calib.apt["array"].segment(j,inventory.dets[i])
-            .setConstant(inventory.arrays[i]);
-
-        j = j + inventory.dets[i];
-    }
-
-    // set uids
-    engine().calib.apt["uid"] =
-        Eigen::VectorXd::LinSpaced(
-            inventory.n_dets,0,inventory.n_dets-1);
-
-    // setup nws, arrays, etc.
-    engine().calib.setup();
-
-    // filepath
-    engine().calib.apt_filepath = "internally generated for beammap";
+    citlali::pipeline::populate_internal_apt_from_detector_inventory(
+        engine().calib, inventory);
 }
 
 template <class EngineType>

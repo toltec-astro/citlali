@@ -80,4 +80,35 @@ RawObsDetectorInventory read_rawobs_detector_inventory(
     return inventory;
 }
 
+template <class Calib>
+void populate_internal_apt_from_detector_inventory(
+    Calib &calib, const RawObsDetectorInventory &inventory) {
+    calib.apt.clear();
+
+    for (auto const& key : calib.apt_header_keys) {
+        if (key=="x_t" || key=="y_t") {
+            calib.apt[key].setZero(inventory.n_dets);
+        }
+        else {
+            calib.apt[key].setOnes(inventory.n_dets);
+        }
+    }
+
+    calib.apt["flag"].setZero(inventory.n_dets);
+
+    Eigen::Index j = 0;
+    for (Eigen::Index i=0; i<inventory.nws.size(); ++i) {
+        calib.apt["nw"].segment(j,inventory.dets[i])
+            .setConstant(inventory.nws[i]);
+        calib.apt["array"].segment(j,inventory.dets[i])
+            .setConstant(inventory.arrays[i]);
+        j = j + inventory.dets[i];
+    }
+
+    calib.apt["uid"] = Eigen::VectorXd::LinSpaced(
+        inventory.n_dets,0,inventory.n_dets-1);
+    calib.setup();
+    calib.apt_filepath = "internally generated for beammap";
+}
+
 }  // namespace citlali::pipeline
