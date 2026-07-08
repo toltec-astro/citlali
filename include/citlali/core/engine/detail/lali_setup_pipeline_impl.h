@@ -4,7 +4,7 @@
 
 #include <citlali/core/pipeline/map_diagnostics.h>
 #include <citlali/core/pipeline/output_policy.h>
-#include <citlali/core/pipeline/timestream_scan_context.h>
+#include <citlali/core/pipeline/timestream_scan_generation.h>
 
 void Lali::setup() {
     // run obsnum setup

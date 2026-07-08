@@ -4,7 +4,9 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/pipeline/timestream_output_context.h>
+#include <citlali/core/pipeline/timestream_run_context.h>
 #include <citlali/core/pipeline/timestream_scan_context.h>
+#include <citlali/core/pipeline/timestream_scan_generation.h>
 
 template <class KidsProc, class RawObs>
 void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs, bool write_outputs) {

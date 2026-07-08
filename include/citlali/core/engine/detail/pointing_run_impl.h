@@ -5,6 +5,7 @@
 #include <citlali/core/pipeline/mapmaking_dispatch.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/timestream_output_context.h>
+#include <citlali/core/pipeline/timestream_run_context.h>
 #include <citlali/core/pipeline/timestream_scan_context.h>
 
 template <class KidsProc>
