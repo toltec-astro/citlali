@@ -349,21 +349,25 @@ YAML::Node make_metadata(const BeammapState &beammap,
     fit_qc_meta["reference_detector_subtracted"] =
         beammap.beammap_subtract_reference;
     fit_qc_meta["reference_det"] = beammap.beammap_reference_det_found;
-    fit_qc_meta["rfi_mask_enabled"] = beammap.beammap_rfi_mask_enabled;
+    const auto &rfi_config = beammap.typed_config.beammap.rfi_mask;
+    const auto &scan_band_config =
+        beammap.typed_config.beammap.scan_band_mask;
+    fit_qc_meta["rfi_mask_enabled"] = rfi_config.enabled;
     fit_qc_meta["rfi_mask_block_size_samples"] =
-        beammap.beammap_rfi_mask_block_size_samples;
+        rfi_config.block_size_samples;
     fit_qc_meta["rfi_mask_min_good_samples"] =
-        beammap.beammap_rfi_mask_min_good_samples;
+        rfi_config.min_good_samples;
     fit_qc_meta["rfi_mask_dilate_blocks"] =
-        beammap.beammap_rfi_mask_dilate_blocks;
+        rfi_config.dilate_blocks;
     fit_qc_meta["rfi_mask_sigma_threshold"] =
-        beammap.beammap_rfi_mask_sigma_threshold;
+        rfi_config.sigma_threshold;
     fit_qc_meta["rfi_mask_sigma_floor"] =
-        beammap.beammap_rfi_mask_sigma_floor;
+        rfi_config.sigma_floor;
     fit_qc_meta["rfi_mask_max_flagged_fraction"] =
-        beammap.beammap_rfi_mask_max_flagged_fraction;
+        rfi_config.max_flagged_fraction;
     fit_qc_meta["detector_weighting_mode"] =
-        beammap.beammap_detector_weighting_mode;
+        std::string(citlali::config::to_string(
+            beammap.typed_config.beammap.detector_weighting_mode));
     fit_qc_meta["beammap_fit_radius_fwhm"] =
         beammap.beammap_fit_radius_fwhm;
     fit_qc_meta["rfi_mask_detectors_affected"] =
@@ -371,19 +375,19 @@ YAML::Node make_metadata(const BeammapState &beammap,
             (table_access.apt_or_zero("rfi_masked_scans").array() > 0.0)
                 .count());
     fit_qc_meta["scan_band_mask_enabled"] =
-        beammap.beammap_scan_band_mask_enabled;
+        scan_band_config.enabled;
     fit_qc_meta["scan_band_mask_edge_rows"] =
-        beammap.beammap_scan_band_mask_edge_rows;
+        scan_band_config.edge_rows;
     fit_qc_meta["scan_band_mask_min_row_pixels"] =
-        beammap.beammap_scan_band_mask_min_row_pixels;
+        scan_band_config.min_row_pixels;
     fit_qc_meta["scan_band_mask_min_contiguous_rows"] =
-        beammap.beammap_scan_band_mask_min_contiguous_rows;
+        scan_band_config.min_contiguous_rows;
     fit_qc_meta["scan_band_mask_row_median_sigma_threshold"] =
-        beammap.beammap_scan_band_mask_row_median_sigma_threshold;
+        scan_band_config.row_median_sigma_threshold;
     fit_qc_meta["scan_band_mask_row_sigma_ratio_threshold"] =
-        beammap.beammap_scan_band_mask_row_sigma_ratio_threshold;
+        scan_band_config.row_sigma_ratio_threshold;
     fit_qc_meta["scan_band_mask_max_flagged_fraction"] =
-        beammap.beammap_scan_band_mask_max_flagged_fraction;
+        scan_band_config.max_flagged_fraction;
     fit_qc_meta["scan_band_mask_detectors_affected"] =
         static_cast<int>(
             (table_access.apt_or_zero("scan_band_masked_rows").array() > 0.0)

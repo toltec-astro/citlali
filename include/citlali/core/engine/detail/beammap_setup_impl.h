@@ -230,14 +230,21 @@ void Beammap::setup() {
     calib.apt_meta["reference_detector_subtracted"] = beammap_subtract_reference;
     // reference detector
     calib.apt_meta["reference_det"] = beammap_reference_det_found;
-    calib.apt_meta["rfi_mask_enabled"] = beammap_rfi_mask_enabled;
-    calib.apt_meta["rfi_mask_block_size_samples"] = beammap_rfi_mask_block_size_samples;
-    calib.apt_meta["rfi_mask_min_good_samples"] = beammap_rfi_mask_min_good_samples;
-    calib.apt_meta["rfi_mask_dilate_blocks"] = beammap_rfi_mask_dilate_blocks;
-    calib.apt_meta["rfi_mask_sigma_threshold"] = beammap_rfi_mask_sigma_threshold;
-    calib.apt_meta["rfi_mask_sigma_floor"] = beammap_rfi_mask_sigma_floor;
-    calib.apt_meta["rfi_mask_max_flagged_fraction"] = beammap_rfi_mask_max_flagged_fraction;
-    calib.apt_meta["detector_weighting_mode"] = beammap_detector_weighting_mode;
+    const auto &rfi_config = typed_config.beammap.rfi_mask;
+    calib.apt_meta["rfi_mask_enabled"] = rfi_config.enabled;
+    calib.apt_meta["rfi_mask_block_size_samples"] =
+        rfi_config.block_size_samples;
+    calib.apt_meta["rfi_mask_min_good_samples"] =
+        rfi_config.min_good_samples;
+    calib.apt_meta["rfi_mask_dilate_blocks"] = rfi_config.dilate_blocks;
+    calib.apt_meta["rfi_mask_sigma_threshold"] =
+        rfi_config.sigma_threshold;
+    calib.apt_meta["rfi_mask_sigma_floor"] = rfi_config.sigma_floor;
+    calib.apt_meta["rfi_mask_max_flagged_fraction"] =
+        rfi_config.max_flagged_fraction;
+    calib.apt_meta["detector_weighting_mode"] =
+        std::string(citlali::config::to_string(
+            typed_config.beammap.detector_weighting_mode));
     calib.apt_meta["beammap_fit_radius_fwhm"] = beammap_fit_radius_fwhm;
     beammap_soft_prior_slots.clear();
     beammap_soft_priors_loaded = false;
