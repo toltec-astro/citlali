@@ -142,6 +142,56 @@ void Beammap::process_beammap_ptc_scan(
     diagnostics.calc_stats(ptcs[scan_index]);
 }
 
+void Beammap::populate_beammap_maps(
+    citlali::config::MapGrouping mapmaking_grouping,
+    citlali::config::MapMethod mapmaking_method,
+    const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
+    bool update_progress) {
+    logger->info("running mapmaking");
+
+    tula::logging::progressbar pb(
+        [&](const auto &msg) { logger->info("{}", msg); }, 100,
+        "PTC progress ");
+
+    if (mapmaking_grouping == citlali::config::MapGrouping::detector) {
+        bool run_omb = true;
+        for (std::size_t scan_vec_idx = 0; scan_vec_idx < ptcs.size(); ++scan_vec_idx) {
+            auto &ptc = ptcs[scan_vec_idx];
+            auto &scan_apt = calib_scans[scan_vec_idx].apt;
+            if (mapmaking_method == citlali::config::MapMethod::naive) {
+                naive_mm.populate_maps_naive_parallel(
+                    ptc, omb, cmb, ptc.map_indices.data, telescope.pixel_axes,
+                    scan_apt, telescope.d_fsmp, run_omb, run_noise,
+                    active_maps);
+            }
+            else if (mapmaking_method == citlali::config::MapMethod::jinc) {
+                citlali::pipeline::log_beammap_jinc_preflight(
+                    ptc, calib.apt["array"], omb, jinc_mm, logger);
+                jinc_mm.populate_maps_jinc_parallel(
+                    ptc, omb, cmb, ptc.map_indices.data, telescope.pixel_axes,
+                    scan_apt, telescope.d_fsmp, run_omb, run_noise,
+                    active_maps);
+            }
+            if (update_progress) {
+                pb.count(telescope.scan_indices.cols(), 1);
+            }
+        }
+        return;
+    }
+
+    grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
+        bool run_omb = true;
+        citlali::pipeline::populate_naive_or_jinc_maps(
+            mapmaking_method, naive_mm, jinc_mm, ptcs[i], omb, cmb,
+            ptcs[i].map_indices.data, telescope.pixel_axes,
+            calib_scans[i].apt, telescope.d_fsmp, run_omb, run_noise);
+        if (update_progress) {
+            pb.count(telescope.scan_indices.cols(), 1);
+        }
+        return 0;
+    });
+}
+
 template <class RandomBits, class Generator>
 void Beammap::run_beammap_mapmaking_pass(bool update_progress,
                                          RandomBits &rands,
@@ -184,53 +234,9 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
             citlali::pipeline::profile_stage(
                 "beammap.mapmaking.populate", logger, context.str());
 
-        tula::logging::progressbar pb(
-            [&](const auto &msg) { logger->info("{}", msg); }, 100,
-            "PTC progress ");
-
-        if (mapmaking_grouping ==
-            citlali::config::MapGrouping::detector) {
-            bool run_omb = true;
-            for (std::size_t scan_vec_idx = 0; scan_vec_idx < ptcs.size(); ++scan_vec_idx) {
-                auto &ptc = ptcs[scan_vec_idx];
-                auto &scan_apt = calib_scans[scan_vec_idx].apt;
-                if (mapmaking_method ==
-                    citlali::config::MapMethod::naive) {
-                    naive_mm.populate_maps_naive_parallel(
-                        ptc, omb, cmb, ptc.map_indices.data,
-                        telescope.pixel_axes, scan_apt,
-                        telescope.d_fsmp, run_omb, run_noise,
-                        active_maps_ptr);
-                }
-                else if (mapmaking_method ==
-                         citlali::config::MapMethod::jinc) {
-                    citlali::pipeline::log_beammap_jinc_preflight(
-                        ptc, calib.apt["array"], omb, jinc_mm, logger);
-                    jinc_mm.populate_maps_jinc_parallel(
-                        ptc, omb, cmb, ptc.map_indices.data,
-                        telescope.pixel_axes, scan_apt,
-                        telescope.d_fsmp, run_omb, run_noise,
-                        active_maps_ptr);
-                }
-                if (update_progress) {
-                    pb.count(telescope.scan_indices.cols(), 1);
-                }
-            }
-        }
-        else {
-            grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
-                bool run_omb = true;
-                citlali::pipeline::populate_naive_or_jinc_maps(
-                    mapmaking_method, naive_mm, jinc_mm, ptcs[i], omb,
-                    cmb, ptcs[i].map_indices.data,
-                    telescope.pixel_axes, calib_scans[i].apt,
-                    telescope.d_fsmp, run_omb, run_noise);
-                if (update_progress) {
-                    pb.count(telescope.scan_indices.cols(), 1);
-                }
-                return 0;
-            });
-        }
+        populate_beammap_maps(
+            mapmaking_grouping, mapmaking_method, active_maps_ptr,
+            update_progress);
     }
 
     logger->info("normalizing maps");

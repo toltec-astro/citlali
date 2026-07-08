@@ -206,6 +206,11 @@ public:
                                           bool detector_grouping);
     void apply_beammap_ptc_scan_weights(int scan_index, bool measurement_iter,
                                         bool detector_grouping);
+    void populate_beammap_maps(
+        citlali::config::MapGrouping mapmaking_grouping,
+        citlali::config::MapMethod mapmaking_method,
+        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
+        bool update_progress);
 
     // robust sample-level masking for short RFI bursts in detector beammaps
     RFIMaskScanSummary apply_rfi_sample_mask(TCData<TCDataKind::PTC,Eigen::MatrixXd> &);
