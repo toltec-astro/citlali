@@ -52,6 +52,19 @@ inline void add_pipeline_identity_vars(
     add_netcdf_var<std::string>(fo, "TYPE", tod_type);
 }
 
+inline void add_pipeline_identity_vars(
+    netCDF::NcFile &fo, const std::string &citlali_version,
+    const std::string &kids_version, const std::string &tula_version,
+    const std::string &project_id, citlali::config::ReductionType reduction_type,
+    const std::string &obs_goal, citlali::config::TodType tod_type) {
+    const std::string reduction_type_name{
+        citlali::config::to_string(reduction_type)};
+    const std::string tod_type_name{citlali::config::to_string(tod_type)};
+    add_pipeline_identity_vars(
+        fo, citlali_version, kids_version, tula_version, project_id,
+        reduction_type_name, obs_goal, tod_type_name);
+}
+
 inline void add_observation_date_source_vars(netCDF::NcFile &fo,
                                              const std::string &date_obs,
                                              const std::string &source_name) {

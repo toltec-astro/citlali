@@ -8,6 +8,7 @@
 #include <netcdf>
 
 #include <citlali/core/config/config_value.h>
+#include <citlali/core/config/runtime_config.h>
 #include <citlali/core/pipeline/output_netcdf_metadata.h>
 #include <citlali/core/pipeline/ptcdiag_netcdf.h>
 

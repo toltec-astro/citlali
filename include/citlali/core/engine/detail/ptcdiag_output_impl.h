@@ -4,18 +4,13 @@
 // Include this only after Engine has been declared.
 
 void Engine::create_ptcdiag_file() {
-    const std::string reduction_type_name{
-        citlali::config::to_string(typed_config.runtime.reduction_type)};
-    const std::string tod_type_name{
-        citlali::config::to_string(typed_config.timestream.type)};
-
     ptcdiag_filename =
         citlali::pipeline::diagnostic_output_netcdf_filename<
             engine_utils::toltecIO::toltec,
             engine_utils::toltecIO::ptcdiag,
             engine_utils::toltecIO::raw>(
             toltec_io, obsnum_dir_name, tod_output_subdir_name,
-            reduction_type_name, obsnum, telescope.sim_obs);
+            typed_config.runtime.reduction_type, obsnum, telescope.sim_obs);
 
     write_netcdf_atomic(ptcdiag_filename, [&](netCDF::NcFile &fo) {
     const int fill_int = citlali::pipeline::ptcdiag_fill_int();
@@ -37,8 +32,8 @@ void Engine::create_ptcdiag_file() {
 
     citlali::pipeline::add_pipeline_identity_vars(
         fo, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
-        telescope.project_id, reduction_type_name, telescope.obs_goal,
-        tod_type_name);
+        telescope.project_id, typed_config.runtime.reduction_type,
+        telescope.obs_goal, typed_config.timestream.type);
     add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
 
     citlali::pipeline::add_ptcdiag_file_config_vars(

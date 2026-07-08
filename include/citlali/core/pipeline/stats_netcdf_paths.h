@@ -29,11 +29,14 @@ inline std::string stats_netcdf_filename(const std::string &stats_filename) {
 template <auto DataType, auto ProductType, auto FilterType, class ToltecIo>
 std::string stats_output_netcdf_filename(
     ToltecIo &toltec_io, const std::string &stats_dir,
-    const std::string &reduction_type, const std::string &obsnum,
+    citlali::config::ReductionType reduction_type, const std::string &obsnum,
     bool simulated_observation) {
+    const std::string reduction_type_name{
+        citlali::config::to_string(reduction_type)};
     const auto filename =
         toltec_io.template create_filename<DataType, ProductType, FilterType>(
-            stats_dir, reduction_type, "", obsnum, simulated_observation);
+            stats_dir, reduction_type_name, "", obsnum,
+            simulated_observation);
     return stats_netcdf_filename(filename);
 }
 

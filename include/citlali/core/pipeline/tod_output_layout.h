@@ -36,18 +36,20 @@ std::string register_tod_output_file(TodFilenameMap &tod_filename,
 template <auto DataType, auto ProductType, auto FilterType, class ToltecIo>
 std::string tod_stream_output_filename(
     ToltecIo &toltec_io, const std::string &dir_name,
-    const std::string &reduction_type, const std::string &obsnum,
+    citlali::config::ReductionType reduction_type, const std::string &obsnum,
     bool simulated_observation) {
+    const std::string reduction_type_name{
+        citlali::config::to_string(reduction_type)};
     return toltec_io.template create_filename<DataType, ProductType,
                                               FilterType>(
-        dir_name, reduction_type, "", obsnum, simulated_observation);
+        dir_name, reduction_type_name, "", obsnum, simulated_observation);
 }
 
 template <auto DataType, auto ProductType, auto FilterType, class ToltecIo,
           class TodFilenameMap>
 std::string register_tod_stream_output_file(
     ToltecIo &toltec_io, TodFilenameMap &tod_filename,
-    const std::string &dir_name, const std::string &reduction_type,
+    const std::string &dir_name, citlali::config::ReductionType reduction_type,
     const std::string &obsnum, bool simulated_observation,
     citlali::config::TodOutputStream stream) {
     const auto filename =
