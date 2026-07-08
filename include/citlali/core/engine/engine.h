@@ -231,7 +231,8 @@ public:
     void setup_tod_output_chunk_selection();
     bool should_write_tod_chunk(Eigen::Index) const;
     Eigen::Index tod_output_scan_row(Eigen::Index) const;
-    Eigen::Index tod_output_scan_row(Eigen::Index, const std::string &) const;
+    Eigen::Index tod_output_scan_row(
+        Eigen::Index, citlali::config::TodOutputStream) const;
 
     // output obs summary at command line
     void cli_summary();

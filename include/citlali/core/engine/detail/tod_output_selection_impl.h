@@ -179,24 +179,29 @@ bool Engine::should_write_tod_chunk(Eigen::Index scan_index) const {
 
 Eigen::Index Engine::tod_output_scan_row(Eigen::Index scan_index) const {
     if (run_tod_output_rtc) {
-        return tod_output_scan_row(scan_index, "rtc");
+        return tod_output_scan_row(
+            scan_index, citlali::config::TodOutputStream::rtc);
     }
     if (run_tod_output_ptc) {
-        return tod_output_scan_row(scan_index, "ptc");
+        return tod_output_scan_row(
+            scan_index, citlali::config::TodOutputStream::ptc);
     }
     return -1;
 }
 
-Eigen::Index Engine::tod_output_scan_row(Eigen::Index scan_index, const std::string &stream_name) const {
+Eigen::Index Engine::tod_output_scan_row(
+    Eigen::Index scan_index, citlali::config::TodOutputStream stream) const {
     const Eigen::VectorXI *scan_to_output = nullptr;
-    if (stream_name == "rtc") {
+    if (citlali::config::is_rtc_tod_output_stream(stream)) {
         scan_to_output = &tod_scan_to_output_scan_rtc;
     }
-    else if (stream_name == "ptc") {
+    else if (citlali::config::is_ptc_tod_output_stream(stream)) {
         scan_to_output = &tod_scan_to_output_scan_ptc;
     }
     else {
-        logger->error("invalid TOD stream name '{}' for output row lookup", stream_name);
+        logger->error(
+            "invalid TOD stream '{}' for output row lookup",
+            citlali::config::to_string(stream));
         return -1;
     }
 

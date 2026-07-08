@@ -22,6 +22,11 @@ enum class TodType {
     qs
 };
 
+enum class TodOutputStream {
+    rtc,
+    ptc
+};
+
 enum class TodOutputType {
     none,
     rtc,
@@ -109,6 +114,12 @@ inline constexpr std::array<EnumName<TodType>, 4> tod_type_names{{
     {TodType::is, "is"},
     {TodType::qs, "qs"},
 }};
+
+inline constexpr std::array<EnumName<TodOutputStream>, 2>
+    tod_output_stream_names{{
+        {TodOutputStream::rtc, "rtc"},
+        {TodOutputStream::ptc, "ptc"},
+    }};
 
 inline constexpr std::array<EnumName<TodOutputType>, 4> tod_output_type_names{{
     {TodOutputType::none, "none"},
@@ -209,6 +220,11 @@ inline std::optional<TodType> parse_tod_type(std::string_view value) {
     return parse_enum(value, tod_type_names);
 }
 
+inline std::optional<TodOutputStream> parse_tod_output_stream(
+    std::string_view value) {
+    return parse_enum(value, tod_output_stream_names);
+}
+
 inline std::optional<TodOutputType> parse_tod_output_type(std::string_view value) {
     return parse_enum(value, tod_output_type_names);
 }
@@ -272,6 +288,10 @@ inline std::string_view to_string(TodType value) {
     return enum_name(value, tod_type_names);
 }
 
+inline std::string_view to_string(TodOutputStream value) {
+    return enum_name(value, tod_output_stream_names);
+}
+
 inline std::string_view to_string(TodOutputType value) {
     return enum_name(value, tod_output_type_names);
 }
@@ -318,6 +338,19 @@ inline std::string_view to_string(FruitLoopsWeightFeedbackReference value) {
 
 inline std::string_view to_string(FruitLoopsInterpModeOverride value) {
     return enum_name(value, fruit_loops_interp_mode_override_names);
+}
+
+inline bool is_tod_output_stream(TodOutputStream value,
+                                 TodOutputStream stream) {
+    return value == stream;
+}
+
+inline bool is_rtc_tod_output_stream(TodOutputStream value) {
+    return is_tod_output_stream(value, TodOutputStream::rtc);
+}
+
+inline bool is_ptc_tod_output_stream(TodOutputStream value) {
+    return is_tod_output_stream(value, TodOutputStream::ptc);
 }
 
 inline bool is_tod_output_enabled(TodOutputType value) {

@@ -100,7 +100,8 @@ auto Lali::run() -> run_stage_t {
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
         TCData<TCDataKind::RTC,Eigen::MatrixXd> rtc_outer_output;
-        const auto rtc_scan_row = tod_output_scan_row(rtcdata.index.data, "rtc");
+        const auto rtc_scan_row = tod_output_scan_row(
+            rtcdata.index.data, citlali::config::TodOutputStream::rtc);
         const bool write_this_rtc = write_rtc && rtc_scan_row >= 0;
         auto *rtc_outer_output_ptr =
             (write_this_rtc && rtcproc.tod_output_outer) ? &rtc_outer_output : nullptr;
@@ -248,7 +249,8 @@ auto Lali::run() -> run_stage_t {
             ptcdiag_writer->advance();
         }
 
-        const auto ptc_scan_row = tod_output_scan_row(ptcdata.index.data, "ptc");
+        const auto ptc_scan_row = tod_output_scan_row(
+            ptcdata.index.data, citlali::config::TodOutputStream::ptc);
         if (write_ptc && ptc_scan_row >= 0) {
             ptc_writer->wait_turn(ptc_scan_row);
             logger->info("writing processed time chunk");

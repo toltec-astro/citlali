@@ -66,7 +66,8 @@ void Beammap::write_beammap_processed_ptc_tod(int output_iter) {
     beammap_ptc_product_output_helpers::update_ptc_tod_fruitloops_iter(
         tod_filename, output_iter, logger);
     for (Eigen::Index i = 0; i < telescope.scan_indices.cols(); ++i) {
-        const auto ptc_scan_row = tod_output_scan_row(i, "ptc");
+        const auto ptc_scan_row = tod_output_scan_row(
+            i, citlali::config::TodOutputStream::ptc);
         if (ptc_scan_row < 0) {
             continue;
         }

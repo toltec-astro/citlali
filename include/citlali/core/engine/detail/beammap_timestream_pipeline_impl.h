@@ -141,7 +141,8 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;
         TCData<TCDataKind::RTC,Eigen::MatrixXd> rtc_outer_output;
-        const auto rtc_scan_row = tod_output_scan_row(rtcdata.index.data, "rtc");
+        const auto rtc_scan_row = tod_output_scan_row(
+            rtcdata.index.data, citlali::config::TodOutputStream::rtc);
         const bool write_this_rtc = write_rtc && rtc_scan_row >= 0;
         auto *rtc_outer_output_ptr =
             (write_this_rtc && rtcproc.tod_output_outer) ? &rtc_outer_output : nullptr;
