@@ -345,6 +345,46 @@ inline bool is_tod_output_stream(TodOutputStream value,
     return value == stream;
 }
 
+inline bool is_tod_type(TodType value, TodType type) {
+    return value == type;
+}
+
+inline bool is_tod_type(std::string_view value, TodType type) {
+    return value == to_string(type);
+}
+
+inline bool is_xs_tod_type(TodType value) {
+    return is_tod_type(value, TodType::xs);
+}
+
+inline bool is_xs_tod_type(std::string_view value) {
+    return is_tod_type(value, TodType::xs);
+}
+
+inline bool is_rs_tod_type(TodType value) {
+    return is_tod_type(value, TodType::rs);
+}
+
+inline bool is_rs_tod_type(std::string_view value) {
+    return is_tod_type(value, TodType::rs);
+}
+
+inline bool is_is_tod_type(TodType value) {
+    return is_tod_type(value, TodType::is);
+}
+
+inline bool is_is_tod_type(std::string_view value) {
+    return is_tod_type(value, TodType::is);
+}
+
+inline bool is_qs_tod_type(TodType value) {
+    return is_tod_type(value, TodType::qs);
+}
+
+inline bool is_qs_tod_type(std::string_view value) {
+    return is_tod_type(value, TodType::qs);
+}
+
 inline bool is_rtc_tod_output_stream(TodOutputStream value) {
     return is_tod_output_stream(value, TodOutputStream::rtc);
 }

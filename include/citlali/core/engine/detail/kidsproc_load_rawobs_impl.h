@@ -42,19 +42,19 @@ auto KidsDataProc::populate_rtc(loaded_t &loaded,
         Eigen::Index n_cols = result.data_out.xs.data.cols();
 
         // get xs
-        if (data_type == "xs") {
+        if (citlali::config::is_xs_tod_type(data_type)) {
             data.block(0, i, n_rows, n_cols) = result.data_out.xs.data;
         }
         // get rs
-        else if (data_type == "rs") {
+        else if (citlali::config::is_rs_tod_type(data_type)) {
             data.block(0, i, n_rows, n_cols) = result.data_out.rs.data;
         }
         // get is
-        else if (data_type == "is") {
+        else if (citlali::config::is_is_tod_type(data_type)) {
             data.block(0, i, n_rows, n_cols) = result.data.is.data;
         }
         // get qs
-        else if (data_type == "qs") {
+        else if (citlali::config::is_qs_tod_type(data_type)) {
             data.block(0, i, n_rows, n_cols) = result.data.qs.data;
         }
         // increment columns
@@ -74,4 +74,3 @@ auto KidsDataProc::populate_rtc(loaded_t &loaded,
 
     return data;
 }
-

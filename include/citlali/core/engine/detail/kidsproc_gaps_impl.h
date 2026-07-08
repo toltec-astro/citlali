@@ -181,13 +181,13 @@ auto KidsDataProc::populate_rtc_gaps(LoadedType &loaded, Eigen::DenseBase<Derive
         Eigen::MatrixXd block(n_rows, n_cols);
 
         // get xs
-        if (data_type == "xs") {
+        if (citlali::config::is_xs_tod_type(data_type)) {
             block = result.data_out.xs.data;
-        } else if (data_type == "rs") {
+        } else if (citlali::config::is_rs_tod_type(data_type)) {
             block = result.data_out.rs.data;
-        } else if (data_type == "is") {
+        } else if (citlali::config::is_is_tod_type(data_type)) {
             block = result.data.is.data;
-        } else if (data_type == "qs") {
+        } else if (citlali::config::is_qs_tod_type(data_type)) {
             block = result.data.qs.data;
         }
 
@@ -220,4 +220,3 @@ auto KidsDataProc::populate_rtc_gaps(LoadedType &loaded, Eigen::DenseBase<Derive
 
     return data;
 }
-

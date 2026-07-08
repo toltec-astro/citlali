@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include <utility>
 
+#include <citlali/core/config/timestream_config.h>
 #include <citlali/core/engine/io.h>
 
 /**

@@ -25,16 +25,16 @@ auto KidsDataProc::populate_rtc_from_rawobs(const RawObs &rawobs, const Eigen::I
         Eigen::Index n_cols = result.data_out.xs.data.cols();
 
         // copy requested channel
-        if (data_type == "xs") {
+        if (citlali::config::is_xs_tod_type(data_type)) {
             data.block(0, i, n_rows, n_cols) = result.data_out.xs.data;
         }
-        else if (data_type == "rs") {
+        else if (citlali::config::is_rs_tod_type(data_type)) {
             data.block(0, i, n_rows, n_cols) = result.data_out.rs.data;
         }
-        else if (data_type == "is") {
+        else if (citlali::config::is_is_tod_type(data_type)) {
             data.block(0, i, n_rows, n_cols) = result.data.is.data;
         }
-        else if (data_type == "qs") {
+        else if (citlali::config::is_qs_tod_type(data_type)) {
             data.block(0, i, n_rows, n_cols) = result.data.qs.data;
         }
 
@@ -55,4 +55,3 @@ auto KidsDataProc::populate_rtc_from_rawobs(const RawObs &rawobs, const Eigen::I
 
     return data;
 }
-
