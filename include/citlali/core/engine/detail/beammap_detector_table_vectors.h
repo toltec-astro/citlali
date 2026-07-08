@@ -9,6 +9,8 @@
 #include <limits>
 #include <string>
 
+#include <citlali/core/config/timestream_config.h>
+
 namespace beammap_detector_table_vectors {
 
 inline Eigen::VectorXd double_or_nan(const Eigen::VectorXd &values,
@@ -180,10 +182,12 @@ FruitLoopsSupportVectors fruitloops_support_vectors(
                     continue;
                 }
                 bool include_pixel = false;
-                if (ptcproc.fruit_mode == "upper") {
+                if (citlali::config::is_upper_fruit_loops_mode(
+                        ptcproc.fruit_mode)) {
                     include_pixel = signal >= threshold;
                 }
-                else if (ptcproc.fruit_mode == "lower") {
+                else if (citlali::config::is_lower_fruit_loops_mode(
+                             ptcproc.fruit_mode)) {
                     include_pixel = signal <= -std::abs(threshold);
                 }
                 else {

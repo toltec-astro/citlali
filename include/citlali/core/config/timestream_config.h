@@ -580,6 +580,93 @@ inline std::string_view canonical_fruit_loops_type(std::string_view value) {
     return value;
 }
 
+inline bool is_fruit_loops_mode(FruitLoopsMode value,
+                                FruitLoopsMode mode) {
+    return value == mode;
+}
+
+inline bool is_fruit_loops_mode(std::string_view value,
+                                FruitLoopsMode mode) {
+    return value == to_string(mode);
+}
+
+inline bool is_upper_fruit_loops_mode(FruitLoopsMode value) {
+    return is_fruit_loops_mode(value, FruitLoopsMode::upper);
+}
+
+inline bool is_upper_fruit_loops_mode(std::string_view value) {
+    return is_fruit_loops_mode(value, FruitLoopsMode::upper);
+}
+
+inline bool is_lower_fruit_loops_mode(FruitLoopsMode value) {
+    return is_fruit_loops_mode(value, FruitLoopsMode::lower);
+}
+
+inline bool is_lower_fruit_loops_mode(std::string_view value) {
+    return is_fruit_loops_mode(value, FruitLoopsMode::lower);
+}
+
+inline bool is_both_fruit_loops_mode(FruitLoopsMode value) {
+    return is_fruit_loops_mode(value, FruitLoopsMode::both);
+}
+
+inline bool is_both_fruit_loops_mode(std::string_view value) {
+    return is_fruit_loops_mode(value, FruitLoopsMode::both);
+}
+
+inline bool is_fruit_loops_weight_feedback_reference(
+    FruitLoopsWeightFeedbackReference value,
+    FruitLoopsWeightFeedbackReference reference) {
+    return value == reference;
+}
+
+inline bool is_fruit_loops_weight_feedback_reference(
+    std::string_view value, FruitLoopsWeightFeedbackReference reference) {
+    return value == to_string(reference);
+}
+
+inline bool is_p95_fruit_loops_weight_feedback_reference(
+    std::string_view value) {
+    return is_fruit_loops_weight_feedback_reference(
+        value, FruitLoopsWeightFeedbackReference::p95);
+}
+
+inline bool is_p90_fruit_loops_weight_feedback_reference(
+    std::string_view value) {
+    return is_fruit_loops_weight_feedback_reference(
+        value, FruitLoopsWeightFeedbackReference::p90);
+}
+
+inline bool is_p99_fruit_loops_weight_feedback_reference(
+    std::string_view value) {
+    return is_fruit_loops_weight_feedback_reference(
+        value, FruitLoopsWeightFeedbackReference::p99);
+}
+
+inline bool is_median_fruit_loops_weight_feedback_reference(
+    std::string_view value) {
+    return is_fruit_loops_weight_feedback_reference(
+        value, FruitLoopsWeightFeedbackReference::median);
+}
+
+inline bool is_p50_fruit_loops_weight_feedback_reference(
+    std::string_view value) {
+    return is_fruit_loops_weight_feedback_reference(
+        value, FruitLoopsWeightFeedbackReference::p50);
+}
+
+inline bool is_max_fruit_loops_weight_feedback_reference(
+    std::string_view value) {
+    return is_fruit_loops_weight_feedback_reference(
+        value, FruitLoopsWeightFeedbackReference::max);
+}
+
+inline bool is_peak_fruit_loops_weight_feedback_reference(
+    std::string_view value) {
+    return is_fruit_loops_weight_feedback_reference(
+        value, FruitLoopsWeightFeedbackReference::peak);
+}
+
 inline bool is_indices_tod_output_selection_mode(
     TodOutputSelectionMode value) {
     return value == TodOutputSelectionMode::indices;

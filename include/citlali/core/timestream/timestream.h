@@ -1539,16 +1539,18 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
         };
 
         const auto reference = to_lower(fruit_loops_weight_feedback_reference);
-        if (reference == "max" || reference == "peak") {
+        if (citlali::config::is_max_fruit_loops_weight_feedback_reference(reference) ||
+            citlali::config::is_peak_fruit_loops_weight_feedback_reference(reference)) {
             return *std::max_element(weights.begin(), weights.end());
         }
-        if (reference == "median" || reference == "p50") {
+        if (citlali::config::is_median_fruit_loops_weight_feedback_reference(reference) ||
+            citlali::config::is_p50_fruit_loops_weight_feedback_reference(reference)) {
             return quantile(0.50);
         }
-        if (reference == "p90") {
+        if (citlali::config::is_p90_fruit_loops_weight_feedback_reference(reference)) {
             return quantile(0.90);
         }
-        if (reference == "p99") {
+        if (citlali::config::is_p99_fruit_loops_weight_feedback_reference(reference)) {
             return quantile(0.99);
         }
         return quantile(0.95);
@@ -2691,21 +2693,24 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                                 adaptive_support_radius_rad;
                         }
                     }
-                    if (fruit_mode == "upper") {
+                    if (citlali::config::is_upper_fruit_loops_mode(
+                            fruit_mode)) {
                         run_pix_s2n = have_s2n && (signal / rms >= fruit_loops_sig2noise);
                         run_pix_flux = have_flux && (signal >= flux_limit);
                         run_pix_adaptive =
                             have_adaptive && run_adaptive_support &&
                             (signal >= adaptive_limit);
                     }
-                    else if (fruit_mode == "lower") {
+                    else if (citlali::config::is_lower_fruit_loops_mode(
+                                 fruit_mode)) {
                         run_pix_s2n = have_s2n && (signal / rms <= fruit_loops_sig2noise);
                         run_pix_flux = have_flux && (signal <= flux_limit);
                         run_pix_adaptive =
                             have_adaptive && run_adaptive_support &&
                             (signal <= -std::abs(adaptive_limit));
                     }
-                    else if (fruit_mode == "both") {
+                    else if (citlali::config::is_both_fruit_loops_mode(
+                                 fruit_mode)) {
                         run_pix_s2n = have_s2n && (std::abs(signal / rms) >= std::abs(fruit_loops_sig2noise));
                         run_pix_flux = have_flux && (std::abs(signal) >= std::abs(flux_limit));
                         run_pix_adaptive =
