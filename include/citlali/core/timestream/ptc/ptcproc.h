@@ -748,9 +748,8 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         get_config_value(config, fruit_mode, missing_keys, invalid_keys,
                          std::tuple{"timestream","fruit_loops","mode"}, {"upper", "lower", "both"});
         // let user specify "coadd" or "coadded"
-        if (fruit_loops_type == "coadded") {
-            fruit_loops_type = "coadd";
-        }
+        fruit_loops_type = std::string{
+            citlali::config::canonical_fruit_loops_type(fruit_loops_type)};
         // fruit loops signal-to-noise
         get_config_value(config, fruit_loops_sig2noise, missing_keys, invalid_keys,
                          std::tuple{"timestream","fruit_loops", "sig2noise_limit"});
@@ -855,9 +854,9 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         else {
             fruit_loops_interp_mode_override = "auto";
         }
-        if (fruit_loops_interp_mode_override == "legacy_nearest") {
-            fruit_loops_interp_mode_override = "trunc";
-        }
+        fruit_loops_interp_mode_override = std::string{
+            citlali::config::canonical_fruit_loops_interp_mode_override(
+                fruit_loops_interp_mode_override)};
 
         if (config.template has_typed<bool>(std::tuple{"timestream","fruit_loops","legacy_center"})) {
             get_config_value(config, fruit_loops_legacy_center, missing_keys, invalid_keys,

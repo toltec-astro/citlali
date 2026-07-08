@@ -565,6 +565,21 @@ inline bool is_signed_processed_corr_grouping_metric(std::string_view value) {
         value, ProcessedTimeChunkCorrGroupingMetric::signed_metric);
 }
 
+inline constexpr std::string_view fruit_loops_coadd_type() {
+    return "coadd";
+}
+
+inline constexpr std::string_view fruit_loops_coadded_type_alias() {
+    return "coadded";
+}
+
+inline std::string_view canonical_fruit_loops_type(std::string_view value) {
+    if (value == fruit_loops_coadded_type_alias()) {
+        return fruit_loops_coadd_type();
+    }
+    return value;
+}
+
 inline bool is_indices_tod_output_selection_mode(
     TodOutputSelectionMode value) {
     return value == TodOutputSelectionMode::indices;
@@ -581,8 +596,32 @@ inline bool is_uniform_source_tod_output_selection_mode(
 }
 
 inline bool is_fruit_loops_interp_mode(
+    FruitLoopsInterpModeOverride value, FruitLoopsInterpModeOverride mode) {
+    return value == mode;
+}
+
+inline bool is_fruit_loops_interp_mode(
     std::string_view value, FruitLoopsInterpModeOverride mode) {
     return value == to_string(mode);
+}
+
+inline constexpr std::string_view
+legacy_nearest_fruit_loops_interp_mode_override() {
+    return "legacy_nearest";
+}
+
+inline std::string_view canonical_fruit_loops_interp_mode_override(
+    std::string_view value) {
+    if (value == legacy_nearest_fruit_loops_interp_mode_override()) {
+        return to_string(FruitLoopsInterpModeOverride::trunc);
+    }
+    return value;
+}
+
+inline bool is_fruit_loops_auto_interp_mode(
+    FruitLoopsInterpModeOverride value) {
+    return is_fruit_loops_interp_mode(
+        value, FruitLoopsInterpModeOverride::automatic);
 }
 
 inline bool is_fruit_loops_auto_interp_mode(std::string_view value) {
@@ -590,9 +629,21 @@ inline bool is_fruit_loops_auto_interp_mode(std::string_view value) {
         value, FruitLoopsInterpModeOverride::automatic);
 }
 
+inline bool is_fruit_loops_nearest_interp_mode(
+    FruitLoopsInterpModeOverride value) {
+    return is_fruit_loops_interp_mode(
+        value, FruitLoopsInterpModeOverride::nearest);
+}
+
 inline bool is_fruit_loops_nearest_interp_mode(std::string_view value) {
     return is_fruit_loops_interp_mode(
         value, FruitLoopsInterpModeOverride::nearest);
+}
+
+inline bool is_fruit_loops_bilinear_interp_mode(
+    FruitLoopsInterpModeOverride value) {
+    return is_fruit_loops_interp_mode(
+        value, FruitLoopsInterpModeOverride::bilinear);
 }
 
 inline bool is_fruit_loops_bilinear_interp_mode(std::string_view value) {
@@ -600,9 +651,21 @@ inline bool is_fruit_loops_bilinear_interp_mode(std::string_view value) {
         value, FruitLoopsInterpModeOverride::bilinear);
 }
 
+inline bool is_fruit_loops_jinc_interp_mode(
+    FruitLoopsInterpModeOverride value) {
+    return is_fruit_loops_interp_mode(
+        value, FruitLoopsInterpModeOverride::jinc);
+}
+
 inline bool is_fruit_loops_jinc_interp_mode(std::string_view value) {
     return is_fruit_loops_interp_mode(
         value, FruitLoopsInterpModeOverride::jinc);
+}
+
+inline bool is_fruit_loops_trunc_interp_mode(
+    FruitLoopsInterpModeOverride value) {
+    return is_fruit_loops_interp_mode(
+        value, FruitLoopsInterpModeOverride::trunc);
 }
 
 inline bool is_fruit_loops_trunc_interp_mode(std::string_view value) {
