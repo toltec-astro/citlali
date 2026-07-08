@@ -200,8 +200,14 @@ public:
                                      bool detector_grouping,
                                      RandomBits &rands,
                                      Generator &eng);
+    template <class KidsProc, class RawObs>
+    bool maybe_run_beammap_source_aware_rtc(KidsProc &, RawObs &,
+                                            bool first_measurement_iter,
+                                            bool detector_grouping);
     void fit_beammap_maps(bool detector_grouping, bool measurement_iter);
     bool advance_beammap_iteration_state();
+    void write_or_clear_beammap_ptc_products_for_iter(int completed_iter,
+                                                      bool keep_going);
     void process_beammap_ptc_scan(
         int scan_index, bool locator_iter, bool measurement_iter,
         bool detector_grouping,

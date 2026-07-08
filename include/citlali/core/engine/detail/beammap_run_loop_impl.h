@@ -356,6 +356,34 @@ void Beammap::run_beammap_mapmaking_stage(bool locator_iter,
     fit_beammap_maps(detector_grouping, measurement_iter);
 }
 
+template <class KidsProc, class RawObs>
+bool Beammap::maybe_run_beammap_source_aware_rtc(KidsProc &kidsproc,
+                                                RawObs &rawobs,
+                                                bool first_measurement_iter,
+                                                bool detector_grouping) {
+    configure_detector_source_centers_from_previous_fit();
+
+    const bool detector_kernel_source_centers_active =
+        detector_grouping &&
+        rtcproc.run_kernel &&
+        rtcproc.kernel.has_source_centers();
+    const bool rerun_source_aware_rtc =
+        first_measurement_iter && detector_kernel_source_centers_active;
+    if (!rerun_source_aware_rtc) {
+        return false;
+    }
+
+    logger->info(
+        "beammap iter {} rerunning RTC with previous-fit detector source centers; regular RTC TOD output disabled for this internal pass",
+        current_iter);
+    const auto profile_scope =
+        citlali::pipeline::profile_stage(
+            "beammap.rtc.source_aware_rerun", logger,
+            "iter=" + std::to_string(current_iter));
+    timestream_pipeline(kidsproc, rawobs, false);
+    return true;
+}
+
 void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
     Eigen::VectorXi iter_bound_low = Eigen::VectorXi::Zero(map_fitter.n_params);
     Eigen::VectorXi iter_bound_high = Eigen::VectorXi::Zero(map_fitter.n_params);
@@ -835,6 +863,20 @@ bool Beammap::advance_beammap_iteration_state() {
     return keep_going;
 }
 
+void Beammap::write_or_clear_beammap_ptc_products_for_iter(int completed_iter,
+                                                           bool keep_going) {
+    const bool beammap_iter_is_final = !keep_going;
+    const bool write_beammap_ptc_this_iter =
+        (beammap_tod_output_iter < 0 && beammap_iter_is_final) ||
+        (beammap_tod_output_iter >= 0 && completed_iter == beammap_tod_output_iter);
+    if (write_beammap_ptc_this_iter) {
+        write_beammap_ptc_products(completed_iter);
+    }
+    else {
+        clear_beammap_ptc_diagnostics();
+    }
+}
+
 template <class KidsProc, class RawObs>
 void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
     // variable to control iteration
@@ -861,23 +903,9 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
             current_iter, beammap_iter_phase_name(current_iter),
             beammap_locator_iter, beammap_measurement_start_iter);
 
-        configure_detector_source_centers_from_previous_fit();
-        const bool detector_kernel_source_centers_active =
-            detector_grouping &&
-            rtcproc.run_kernel &&
-            rtcproc.kernel.has_source_centers();
         const bool rerun_source_aware_rtc =
-            first_measurement_iter && detector_kernel_source_centers_active;
-        if (rerun_source_aware_rtc) {
-            logger->info(
-                "beammap iter {} rerunning RTC with previous-fit detector source centers; regular RTC TOD output disabled for this internal pass",
-                current_iter);
-            const auto profile_scope =
-                citlali::pipeline::profile_stage(
-                    "beammap.rtc.source_aware_rerun", logger,
-                    "iter=" + std::to_string(current_iter));
-            timestream_pipeline(kidsproc, rawobs, false);
-        }
+            maybe_run_beammap_source_aware_rtc(
+                kidsproc, rawobs, first_measurement_iter, detector_grouping);
 
         prepare_beammap_iteration_state(
             rerun_source_aware_rtc, measurement_iter, first_measurement_iter,
@@ -892,16 +920,6 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
 
         const int completed_iter = current_iter;
         keep_going = advance_beammap_iteration_state();
-
-        const bool beammap_iter_is_final = !keep_going;
-        const bool write_beammap_ptc_this_iter =
-            (beammap_tod_output_iter < 0 && beammap_iter_is_final) ||
-            (beammap_tod_output_iter >= 0 && completed_iter == beammap_tod_output_iter);
-        if (write_beammap_ptc_this_iter) {
-            write_beammap_ptc_products(completed_iter);
-        }
-        else {
-            clear_beammap_ptc_diagnostics();
-        }
+        write_or_clear_beammap_ptc_products_for_iter(completed_iter, keep_going);
     }
 }
