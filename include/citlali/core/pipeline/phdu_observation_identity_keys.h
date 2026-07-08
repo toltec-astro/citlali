@@ -48,10 +48,18 @@ void add_phdu_pipeline_identity_keys(
     FitsEntry &fits_entry, const std::string &source_name, bool run_hwpr,
     const std::string &array_name, const std::string &citlali_version,
     const std::string &kids_version, const std::string &tula_version,
-    const std::string &project_id, const std::string &reduction_goal,
-    const std::string &obs_goal, const std::string &tod_type,
-    const std::string &map_grouping, const std::string &map_method) {
+    const std::string &project_id, citlali::config::ReductionType reduction_type,
+    const std::string &obs_goal, citlali::config::TodType tod_type,
+    citlali::config::MapGrouping map_grouping,
+    citlali::config::MapMethod map_method) {
     auto &hdu = fits_entry.pfits->pHDU();
+    const std::string reduction_type_name{
+        citlali::config::to_string(reduction_type)};
+    const std::string tod_type_name{citlali::config::to_string(tod_type)};
+    const std::string map_grouping_name{
+        citlali::config::to_string(map_grouping)};
+    const std::string map_method_name{citlali::config::to_string(map_method)};
+
     hdu.addKey("SOURCE", source_name, "Source name");
     hdu.addKey("INSTRUME", "TolTEC", "Instrument");
     hdu.addKey("HWPR", run_hwpr, "HWPR installed");
@@ -62,10 +70,9 @@ void add_phdu_pipeline_identity_keys(
     hdu.addKey("KIDS", kids_version, "KIDSCPP_GIT_VERSION");
     hdu.addKey("TULA", tula_version, "TULA_GIT_VERSION");
     hdu.addKey("PROJID", project_id, "Project ID");
-    hdu.addKey("GOAL", reduction_goal, "Reduction type");
+    hdu.addKey("GOAL", reduction_type_name, "Reduction type");
     hdu.addKey("OBSGOAL", obs_goal, "Obs goal");
-    hdu.addKey("TYPE", tod_type, "TOD Type");
-    hdu.addKey("GROUPING", map_grouping, "Map grouping");
-    hdu.addKey("METHOD", map_method, "Map method");
+    hdu.addKey("TYPE", tod_type_name, "TOD Type");
+    hdu.addKey("GROUPING", map_grouping_name, "Map grouping");
+    hdu.addKey("METHOD", map_method_name, "Map method");
 }
-

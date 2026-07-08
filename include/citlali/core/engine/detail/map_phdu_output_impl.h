@@ -18,14 +18,6 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         toltec_io.array_name_map, array_id);
     auto &fits_entry = fits_io->at(i);
     const auto reduction_type = typed_config.runtime.reduction_type;
-    const std::string reduction_type_name{
-        citlali::config::to_string(reduction_type)};
-    const std::string tod_type_name{
-        citlali::config::to_string(typed_config.timestream.type)};
-    const std::string map_grouping_name{
-        citlali::config::to_string(typed_config.mapmaking.grouping)};
-    const std::string map_method_name{
-        citlali::config::to_string(typed_config.mapmaking.method)};
     const auto &beammap_iteration_config = typed_config.beammap.iteration;
     const auto &beammap_phase_config = typed_config.beammap.phase_strategy;
     const auto &beammap_reference_config = typed_config.beammap.reference;
@@ -46,9 +38,10 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     citlali::engine_detail::add_phdu_identity_geometry_section(
         fits_entry, mb, telescope, calib, name, CITLALI_GIT_VERSION,
-        KIDSCPP_GIT_VERSION, TULA_GIT_VERSION, reduction_type_name,
-        tod_type_name, map_grouping_name, map_method_name, RAD_TO_DEG,
-        logger);
+        KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
+        typed_config.runtime.reduction_type, typed_config.timestream.type,
+        typed_config.mapmaking.grouping, typed_config.mapmaking.method,
+        RAD_TO_DEG, logger);
 
     logger->debug("adding beamsizes");
 

@@ -60,9 +60,11 @@ void add_phdu_identity_geometry_section(
     FitsEntry &fits_entry, const MapBuffer &mb, const Telescope &telescope,
     const Calib &calib, const std::string &array_name,
     const std::string &citlali_version, const std::string &kids_version,
-    const std::string &tula_version, const std::string &reduction_type,
-    const std::string &tod_type, const std::string &map_grouping,
-    const std::string &map_method, double rad_to_deg,
+    const std::string &tula_version,
+    citlali::config::ReductionType reduction_type,
+    citlali::config::TodType tod_type,
+    citlali::config::MapGrouping map_grouping,
+    citlali::config::MapMethod map_method, double rad_to_deg,
     const Logger &logger) {
     citlali::pipeline::add_phdu_pipeline_identity_keys(
         fits_entry, telescope.source_name, calib.run_hwpr, array_name,

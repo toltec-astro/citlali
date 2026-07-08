@@ -8,6 +8,8 @@
 #include <tuple>
 
 #include <citlali/core/config/mapmaking_config.h>
+#include <citlali/core/config/runtime_config.h>
+#include <citlali/core/config/timestream_config.h>
 #include <citlali/core/pipeline/phdu_telescope_values.h>
 
 

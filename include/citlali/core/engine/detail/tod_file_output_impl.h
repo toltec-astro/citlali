@@ -7,14 +7,6 @@
 
 template <class map_buffer_t>
 void Engine::add_tod_header(map_buffer_t &mb) {
-    const std::string reduction_type_name{
-        citlali::config::to_string(typed_config.runtime.reduction_type)};
-    const std::string tod_type_name{
-        citlali::config::to_string(typed_config.timestream.type)};
-    const std::string map_grouping_name{
-        citlali::config::to_string(typed_config.mapmaking.grouping)};
-    const std::string map_method_name{
-        citlali::config::to_string(typed_config.mapmaking.method)};
     const auto &beammap_iteration_config = typed_config.beammap.iteration;
     const auto &beammap_phase_config = typed_config.beammap.phase_strategy;
     const auto &beammap_reference_config = typed_config.beammap.reference;
@@ -45,9 +37,10 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
         citlali::pipeline::add_tod_identity_geometry_vars(
             fo, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
-            telescope.project_id, reduction_type_name, telescope.obs_goal,
-            tod_type_name, calib.run_hwpr, map_grouping_name,
-            map_method_name, omb.exposure_time, telescope.pixel_axes,
+            telescope.project_id, typed_config.runtime.reduction_type,
+            telescope.obs_goal, typed_config.timestream.type, calib.run_hwpr,
+            typed_config.mapmaking.grouping, typed_config.mapmaking.method,
+            omb.exposure_time, telescope.pixel_axes,
             telescope.tel_header["Header.Source.Ra"][0],
             telescope.tel_header["Header.Source.Dec"][0],
             RAD_TO_DEG * telescope.tel_data["TelElAct"].mean(),
