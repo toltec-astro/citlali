@@ -422,6 +422,72 @@ inline bool is_none_raw_filter_edge_guard_mode(std::string_view value) {
         value, RawTimeChunkFilterEdgeGuardMode::none);
 }
 
+inline bool is_processed_weighting_type(
+    ProcessedTimeChunkWeightingType value,
+    ProcessedTimeChunkWeightingType type) {
+    return value == type;
+}
+
+inline bool is_processed_weighting_type(
+    std::string_view value, ProcessedTimeChunkWeightingType type) {
+    return value == to_string(type);
+}
+
+inline bool is_full_processed_weighting_type(
+    ProcessedTimeChunkWeightingType value) {
+    return is_processed_weighting_type(
+        value, ProcessedTimeChunkWeightingType::full);
+}
+
+inline bool is_full_processed_weighting_type(std::string_view value) {
+    return is_processed_weighting_type(
+        value, ProcessedTimeChunkWeightingType::full);
+}
+
+inline bool is_approximate_processed_weighting_type(
+    ProcessedTimeChunkWeightingType value) {
+    return is_processed_weighting_type(
+        value, ProcessedTimeChunkWeightingType::approximate);
+}
+
+inline bool is_approximate_processed_weighting_type(std::string_view value) {
+    return is_processed_weighting_type(
+        value, ProcessedTimeChunkWeightingType::approximate);
+}
+
+inline bool is_hybrid_processed_weighting_type(
+    ProcessedTimeChunkWeightingType value) {
+    return is_processed_weighting_type(
+        value, ProcessedTimeChunkWeightingType::hybrid);
+}
+
+inline bool is_hybrid_processed_weighting_type(std::string_view value) {
+    return is_processed_weighting_type(
+        value, ProcessedTimeChunkWeightingType::hybrid);
+}
+
+inline bool is_validated_processed_weighting_type(
+    ProcessedTimeChunkWeightingType value) {
+    return is_processed_weighting_type(
+        value, ProcessedTimeChunkWeightingType::validated);
+}
+
+inline bool is_validated_processed_weighting_type(std::string_view value) {
+    return is_processed_weighting_type(
+        value, ProcessedTimeChunkWeightingType::validated);
+}
+
+inline bool is_constant_processed_weighting_type(
+    ProcessedTimeChunkWeightingType value) {
+    return is_processed_weighting_type(
+        value, ProcessedTimeChunkWeightingType::constant);
+}
+
+inline bool is_constant_processed_weighting_type(std::string_view value) {
+    return is_processed_weighting_type(
+        value, ProcessedTimeChunkWeightingType::constant);
+}
+
 inline bool is_indices_tod_output_selection_mode(
     TodOutputSelectionMode value) {
     return value == TodOutputSelectionMode::indices;

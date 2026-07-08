@@ -1316,13 +1316,16 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
     }
 
     weight_validation = WeightValidationOptions{};
-    weight_validation.enabled = (weighting_type == "validated");
+    const bool uses_validated_weighting =
+        citlali::config::is_validated_processed_weighting_type(
+            weighting_type);
+    weight_validation.enabled = uses_validated_weighting;
     if (config.template has_typed<bool>(
             std::tuple{"timestream","processed_time_chunk","weighting","validation","enabled"})) {
         get_config_value(config, weight_validation.enabled, missing_keys, invalid_keys,
                          std::tuple{"timestream","processed_time_chunk","weighting","validation","enabled"});
     }
-    if (weighting_type == "validated" && !weight_validation.enabled) {
+    if (uses_validated_weighting && !weight_validation.enabled) {
         logger->warn("weighting.type='validated' forces weighting.validation.enabled=true");
         weight_validation.enabled = true;
     }
@@ -1567,7 +1570,8 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
 }
 
 inline bool PTCProc::weight_validation_is_enabled() const {
-    return weight_validation.enabled || weighting_type == "validated";
+    return weight_validation.enabled ||
+           citlali::config::is_validated_processed_weighting_type(weighting_type);
 }
 
 inline bool PTCProc::should_accumulate_weight_validation(bool source_subtracted) const {
@@ -3389,12 +3393,24 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
     // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
     const auto scan_index_1based = static_cast<long long>(in.index.data) + 1;
+    const bool uses_approximate_weighting =
+        citlali::config::is_approximate_processed_weighting_type(
+            weighting_type);
+    const bool uses_full_weighting =
+        citlali::config::is_full_processed_weighting_type(weighting_type);
+    const bool uses_hybrid_weighting =
+        citlali::config::is_hybrid_processed_weighting_type(weighting_type);
+    const bool uses_validated_weighting =
+        citlali::config::is_validated_processed_weighting_type(
+            weighting_type);
+    const bool uses_constant_weighting =
+        citlali::config::is_constant_processed_weighting_type(weighting_type);
 
     // resize weights to number of detectors
     in.weights.data = Eigen::VectorXd::Zero(n_dets);
 
     // approximate weighting
-    if (weighting_type == "approximate") {
+    if (uses_approximate_weighting) {
         logger->debug("calculating weights using detector sensitivities");
         // unit conversion x flux calibration factor x 1/exp(-tau)
         double conversion_factor;
@@ -3428,7 +3444,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         }
     }
     // use full weighting
-    else if (weighting_type == "full"){
+    else if (uses_full_weighting) {
         logger->debug("calculating weights using timestream variance");
         const bool use_source_weight_mask =
             source_mask_radius_arcsec > 0.0 &&
@@ -3500,8 +3516,8 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         }
     }
     // hybrid/validated weighting: approximate calibration prior plus residual-variance diagnostics
-    else if (weighting_type == "hybrid" || weighting_type == "validated") {
-        if (weighting_type == "hybrid") {
+    else if (uses_hybrid_weighting || uses_validated_weighting) {
+        if (uses_hybrid_weighting) {
             logger->debug("calculating hybrid weights using detector sensitivities and residual variance");
         }
         else {
@@ -3649,7 +3665,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
             return safe_apt_int("array", i, 0);
         };
 
-        if (weighting_type == "validated" &&
+        if (uses_validated_weighting &&
             weight_validation.high_weight_validation_enabled) {
             std::map<Eigen::Index, std::vector<std::pair<Eigen::Index, double>>> log_weights_by_group;
             for (Eigen::Index i=0; i<n_dets; ++i) {
@@ -3728,7 +3744,7 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
             return 1.0;
         };
 
-        if (weighting_type == "hybrid") {
+        if (uses_hybrid_weighting) {
             for (Eigen::Index i=0; i<n_dets; ++i) {
                 if (approximate_weights(i) <= 0.0 || !std::isfinite(approximate_weights(i))) {
                     in.weights.data(i) = 0.0;
@@ -3953,14 +3969,14 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                 median_ratio_by_array.size(), n_high_weight_extreme,
                 n_high_weight_cap_recommended, n_high_weight_cap_applied);
         }
-        if (weighting_type == "validated" &&
+        if (uses_validated_weighting &&
             weight_validation.high_weight_validation_enabled) {
             std::lock_guard<std::mutex> lock(*diag_summary_mutex);
             high_weight_summary_by_scan[in.index.data] = std::move(high_weight_records);
         }
     }
     // constant weighting
-    else if (weighting_type == "const") {
+    else if (uses_constant_weighting) {
         for (Eigen::Index i=0; i<n_dets; ++i) {
             // only calculate weights if detector is unflagged
             if (apt["flag"](i)==0) {
