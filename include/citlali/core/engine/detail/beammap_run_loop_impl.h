@@ -70,8 +70,9 @@ void Beammap::apply_beammap_ptc_scan_weights(int scan_index,
                                              bool measurement_iter,
                                              bool detector_grouping) {
     if (detector_grouping) {
+        const auto &rfi_config = typed_config.beammap.rfi_mask;
         auto rfi_summary = apply_rfi_sample_mask(ptcs[scan_index]);
-        if (beammap_rfi_mask_enabled) {
+        if (rfi_config.enabled) {
             if (rfi_summary.n_samples_flagged > 0 ||
                 rfi_summary.n_det_rejected > 0) {
                 logger->info(
@@ -81,7 +82,7 @@ void Beammap::apply_beammap_ptc_scan_weights(int scan_index,
                     rfi_summary.n_det_flagged,
                     rfi_summary.n_det_candidates,
                     rfi_summary.n_det_rejected,
-                    beammap_rfi_mask_max_flagged_fraction);
+                    rfi_config.max_flagged_fraction);
             }
             else {
                 logger->debug(
@@ -220,7 +221,8 @@ void Beammap::prepare_beammap_iteration_state(bool rerun_source_aware_rtc,
     ptcs = ptcs0;
     calib_scans = calib_scans0;
 
-    if (beammap_rfi_mask_enabled && detector_grouping &&
+    const auto &rfi_config = typed_config.beammap.rfi_mask;
+    if (rfi_config.enabled && detector_grouping &&
         rfi_mask_samples_flagged.size() == calib.n_dets &&
         rfi_mask_scans_flagged.size() == calib.n_dets) {
         rfi_mask_samples_flagged.setZero();
@@ -336,9 +338,10 @@ void Beammap::run_beammap_mapmaking_stage(bool locator_iter,
         return;
     }
 
+    const auto &scan_band_config = typed_config.beammap.scan_band_mask;
     run_beammap_mapmaking_pass(true, rands, eng);
 
-    if (beammap_scan_band_mask_enabled && detector_grouping && locator_iter) {
+    if (scan_band_config.enabled && detector_grouping && locator_iter) {
         auto scan_band_summary = apply_scan_band_mask(omb);
         if (scan_band_summary.n_samples_flagged > 0) {
             logger->info(
@@ -347,14 +350,14 @@ void Beammap::run_beammap_mapmaking_stage(bool locator_iter,
                 scan_band_summary.n_rows_flagged,
                 scan_band_summary.n_det_flagged,
                 scan_band_summary.n_det_rejected,
-                beammap_scan_band_mask_max_flagged_fraction);
+                scan_band_config.max_flagged_fraction);
             run_beammap_mapmaking_pass(false, rands, eng);
         }
         else {
             logger->info(
                 "beammap scan-band mask summary: no edge bands flagged ({} detectors rejected by max_flagged_fraction={:.4f})",
                 scan_band_summary.n_det_rejected,
-                beammap_scan_band_mask_max_flagged_fraction);
+                scan_band_config.max_flagged_fraction);
         }
     }
 

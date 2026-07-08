@@ -9,31 +9,34 @@ void Beammap::log_beammap_masking_config() {
     const bool detector_grouping =
         typed_config.mapmaking.grouping ==
         citlali::config::MapGrouping::detector;
+    const auto &rfi_config = typed_config.beammap.rfi_mask;
+    const auto &scan_band_config = typed_config.beammap.scan_band_mask;
 
-    if (beammap_rfi_mask_enabled && detector_grouping) {
+    if (rfi_config.enabled && detector_grouping) {
         logger->info("beammap rfi mask enabled: block_size={} min_good={} sigma_threshold={:.4g} sigma_floor={:.4g} dilate_blocks={} max_flagged_fraction={:.4f}",
-                     beammap_rfi_mask_block_size_samples,
-                     beammap_rfi_mask_min_good_samples,
-                     beammap_rfi_mask_sigma_threshold,
-                     beammap_rfi_mask_sigma_floor,
-                     beammap_rfi_mask_dilate_blocks,
-                     beammap_rfi_mask_max_flagged_fraction);
+                     rfi_config.block_size_samples,
+                     rfi_config.min_good_samples,
+                     rfi_config.sigma_threshold,
+                     rfi_config.sigma_floor,
+                     rfi_config.dilate_blocks,
+                     rfi_config.max_flagged_fraction);
     }
-    if (beammap_scan_band_mask_enabled && detector_grouping) {
+    if (scan_band_config.enabled && detector_grouping) {
         logger->info(
             "beammap scan-band mask enabled: edge_rows={} min_row_pixels={} min_contiguous_rows={} row_median_sigma_threshold={:.4g} row_sigma_ratio_threshold={:.4g} max_flagged_fraction={:.4f}",
-            beammap_scan_band_mask_edge_rows,
-            beammap_scan_band_mask_min_row_pixels,
-            beammap_scan_band_mask_min_contiguous_rows,
-            beammap_scan_band_mask_row_median_sigma_threshold,
-            beammap_scan_band_mask_row_sigma_ratio_threshold,
-            beammap_scan_band_mask_max_flagged_fraction);
+            scan_band_config.edge_rows,
+            scan_band_config.min_row_pixels,
+            scan_band_config.min_contiguous_rows,
+            scan_band_config.row_median_sigma_threshold,
+            scan_band_config.row_sigma_ratio_threshold,
+            scan_band_config.max_flagged_fraction);
     }
 }
 
 Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PTC,Eigen::MatrixXd> &ptc) {
     RFIMaskScanSummary summary;
-    if (!beammap_rfi_mask_enabled) {
+    const auto &rfi_config = typed_config.beammap.rfi_mask;
+    if (!rfi_config.enabled) {
         return summary;
     }
 
@@ -43,12 +46,17 @@ Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PT
         return summary;
     }
 
-    const Eigen::Index block_size = std::max<Eigen::Index>(8, beammap_rfi_mask_block_size_samples);
-    const Eigen::Index min_good = std::max<Eigen::Index>(4, std::min<Eigen::Index>(beammap_rfi_mask_min_good_samples, block_size));
-    const int dilate_blocks = std::max(0, beammap_rfi_mask_dilate_blocks);
-    const double sigma_threshold = std::max(1.0, beammap_rfi_mask_sigma_threshold);
-    const double sigma_floor = std::max(0.0, beammap_rfi_mask_sigma_floor);
-    const double max_flagged_fraction = std::clamp(beammap_rfi_mask_max_flagged_fraction, 0.0, 1.0);
+    const Eigen::Index block_size =
+        std::max<Eigen::Index>(8, rfi_config.block_size_samples);
+    const Eigen::Index min_good =
+        std::max<Eigen::Index>(
+            4, std::min<Eigen::Index>(
+                   rfi_config.min_good_samples, block_size));
+    const int dilate_blocks = std::max(0, rfi_config.dilate_blocks);
+    const double sigma_threshold = std::max(1.0, rfi_config.sigma_threshold);
+    const double sigma_floor = std::max(0.0, rfi_config.sigma_floor);
+    const double max_flagged_fraction =
+        std::clamp(rfi_config.max_flagged_fraction, 0.0, 1.0);
     const double eps = std::numeric_limits<double>::epsilon();
 
     const Eigen::Index n_blocks = (n_samples + block_size - 1) / block_size;
@@ -183,8 +191,9 @@ Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PT
 
 Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer &map_buffer) {
     ScanBandMaskSummary summary;
+    const auto &scan_band_config = typed_config.beammap.scan_band_mask;
 
-    if (!beammap_scan_band_mask_enabled ||
+    if (!scan_band_config.enabled ||
         typed_config.mapmaking.grouping !=
             citlali::config::MapGrouping::detector) {
         return summary;
@@ -197,16 +206,22 @@ Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer 
     }
 
     const Eigen::Index search_rows = std::min<Eigen::Index>(
-        std::max<Eigen::Index>(1, beammap_scan_band_mask_edge_rows), map_buffer.n_rows / 2);
+        std::max<Eigen::Index>(1, scan_band_config.edge_rows),
+        map_buffer.n_rows / 2);
     if (search_rows <= 0) {
         return summary;
     }
 
-    const Eigen::Index min_row_pixels = std::max<Eigen::Index>(1, beammap_scan_band_mask_min_row_pixels);
-    const Eigen::Index min_contiguous_rows = std::max<Eigen::Index>(1, beammap_scan_band_mask_min_contiguous_rows);
-    const double median_sigma_threshold = std::max(0.0, beammap_scan_band_mask_row_median_sigma_threshold);
-    const double sigma_ratio_threshold = std::max(0.0, beammap_scan_band_mask_row_sigma_ratio_threshold);
-    const double max_flagged_fraction = std::clamp(beammap_scan_band_mask_max_flagged_fraction, 0.0, 1.0);
+    const Eigen::Index min_row_pixels =
+        std::max<Eigen::Index>(1, scan_band_config.min_row_pixels);
+    const Eigen::Index min_contiguous_rows =
+        std::max<Eigen::Index>(1, scan_band_config.min_contiguous_rows);
+    const double median_sigma_threshold =
+        std::max(0.0, scan_band_config.row_median_sigma_threshold);
+    const double sigma_ratio_threshold =
+        std::max(0.0, scan_band_config.row_sigma_ratio_threshold);
+    const double max_flagged_fraction =
+        std::clamp(scan_band_config.max_flagged_fraction, 0.0, 1.0);
     const double eps = std::numeric_limits<double>::epsilon();
     const double row0 = static_cast<double>(map_buffer.n_rows - 1) / 2.0;
 
