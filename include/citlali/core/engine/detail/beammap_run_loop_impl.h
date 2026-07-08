@@ -319,6 +319,43 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
     }
 }
 
+template <class RandomBits, class Generator>
+void Beammap::run_beammap_mapmaking_stage(bool locator_iter,
+                                          bool measurement_iter,
+                                          bool detector_grouping,
+                                          RandomBits &rands,
+                                          Generator &eng) {
+    logger->info("starting mapmaking");
+
+    if (!run_mapmaking) {
+        return;
+    }
+
+    run_beammap_mapmaking_pass(true, rands, eng);
+
+    if (beammap_scan_band_mask_enabled && detector_grouping && locator_iter) {
+        auto scan_band_summary = apply_scan_band_mask(omb);
+        if (scan_band_summary.n_samples_flagged > 0) {
+            logger->info(
+                "beammap scan-band mask summary: flagged {} samples in {} rows across {} detectors ({} rejected by max_flagged_fraction={:.4f}); rebuilding maps",
+                scan_band_summary.n_samples_flagged,
+                scan_band_summary.n_rows_flagged,
+                scan_band_summary.n_det_flagged,
+                scan_band_summary.n_det_rejected,
+                beammap_scan_band_mask_max_flagged_fraction);
+            run_beammap_mapmaking_pass(false, rands, eng);
+        }
+        else {
+            logger->info(
+                "beammap scan-band mask summary: no edge bands flagged ({} detectors rejected by max_flagged_fraction={:.4f})",
+                scan_band_summary.n_det_rejected,
+                beammap_scan_band_mask_max_flagged_fraction);
+        }
+    }
+
+    fit_beammap_maps(detector_grouping, measurement_iter);
+}
+
 void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
     Eigen::VectorXi iter_bound_low = Eigen::VectorXi::Zero(map_fitter.n_params);
     Eigen::VectorXi iter_bound_high = Eigen::VectorXi::Zero(map_fitter.n_params);
@@ -850,34 +887,8 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
         run_beammap_ptc_cleaning_pass(
             locator_iter, measurement_iter, detector_grouping);
 
-        logger->info("starting mapmaking");
-
-        if (run_mapmaking) {
-            run_beammap_mapmaking_pass(true, rands, eng);
-
-            if (beammap_scan_band_mask_enabled && detector_grouping &&
-                locator_iter) {
-                auto scan_band_summary = apply_scan_band_mask(omb);
-                if (scan_band_summary.n_samples_flagged > 0) {
-                    logger->info(
-                        "beammap scan-band mask summary: flagged {} samples in {} rows across {} detectors ({} rejected by max_flagged_fraction={:.4f}); rebuilding maps",
-                        scan_band_summary.n_samples_flagged,
-                        scan_band_summary.n_rows_flagged,
-                        scan_band_summary.n_det_flagged,
-                        scan_band_summary.n_det_rejected,
-                        beammap_scan_band_mask_max_flagged_fraction);
-                    run_beammap_mapmaking_pass(false, rands, eng);
-                }
-                else {
-                    logger->info(
-                        "beammap scan-band mask summary: no edge bands flagged ({} detectors rejected by max_flagged_fraction={:.4f})",
-                        scan_band_summary.n_det_rejected,
-                        beammap_scan_band_mask_max_flagged_fraction);
-                }
-            }
-
-            fit_beammap_maps(detector_grouping, measurement_iter);
-        }
+        run_beammap_mapmaking_stage(
+            locator_iter, measurement_iter, detector_grouping, rands, eng);
 
         const int completed_iter = current_iter;
         keep_going = advance_beammap_iteration_state();

@@ -194,6 +194,12 @@ public:
     void run_beammap_mapmaking_pass(bool update_progress,
                                     RandomBits &rands,
                                     Generator &eng);
+    template <class RandomBits, class Generator>
+    void run_beammap_mapmaking_stage(bool locator_iter,
+                                     bool measurement_iter,
+                                     bool detector_grouping,
+                                     RandomBits &rands,
+                                     Generator &eng);
     void fit_beammap_maps(bool detector_grouping, bool measurement_iter);
     bool advance_beammap_iteration_state();
     void process_beammap_ptc_scan(
