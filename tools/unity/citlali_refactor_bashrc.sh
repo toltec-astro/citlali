@@ -45,6 +45,24 @@ _citlali_refactor_cache_value() {
   sed -n "s/^${key}:[^=]*=//p" "${cache_file}" | head -n 1
 }
 
+_citlali_refactor_canonical_path() {
+  local path="$1"
+
+  if [[ -z "${path}" ]]; then
+    return 0
+  fi
+
+  if command -v realpath >/dev/null 2>&1; then
+    realpath "${path}" 2>/dev/null && return 0
+  fi
+
+  if command -v readlink >/dev/null 2>&1; then
+    readlink -f "${path}" 2>/dev/null && return 0
+  fi
+
+  echo "${path}"
+}
+
 _citlali_refactor_cmake_inputs_changed() {
   local previous_head="$1"
   local current_head="$2"
@@ -131,6 +149,7 @@ citlali_refactor_update() {
     echo "Set CITLALI_CONAN_CMD=/path/to/conan before running this helper if Conan lives elsewhere." >&2
     return 1
   fi
+  conan_cmd="$(_citlali_refactor_canonical_path "${conan_cmd}")"
 
   (
     set -e
@@ -184,6 +203,9 @@ citlali_refactor_update() {
       cmake_args+=(-U FETCHCONTENT_SOURCE_DIR_TULA)
     fi
 
+    local cached_conan_cmd=""
+    cached_conan_cmd="$(_citlali_refactor_canonical_path "$(_citlali_refactor_cache_value "${build_dir}" CONAN_CMD)")"
+
     local configure_reason=""
     case "${configure_mode}" in
       [Aa][Ll][Ww][Aa][Yy][Ss]|[Oo][Nn]|1|[Tt][Rr][Uu][Ee])
@@ -210,7 +232,7 @@ citlali_refactor_update() {
           configure_reason="USE_INSTALLED_NETCDF changed"
         elif [[ "$(_citlali_refactor_bool_norm "$(_citlali_refactor_cache_value "${build_dir}" FETCHCONTENT_UPDATES_DISCONNECTED)")" != ON ]]; then
           configure_reason="FETCHCONTENT_UPDATES_DISCONNECTED is not enabled in cache"
-        elif [[ -n "${conan_cmd}" && "$(_citlali_refactor_cache_value "${build_dir}" CONAN_CMD)" != "${conan_cmd}" ]]; then
+        elif [[ -n "${conan_cmd}" && "${cached_conan_cmd}" != "${conan_cmd}" ]]; then
           configure_reason="CONAN_CMD changed"
         elif [[ -n "${tula_dir}" && "$(_citlali_refactor_cache_value "${build_dir}" FETCHCONTENT_SOURCE_DIR_TULA)" != "${tula_dir}" ]]; then
           configure_reason="FETCHCONTENT_SOURCE_DIR_TULA changed"
