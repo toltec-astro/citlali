@@ -3,44 +3,14 @@
 // Implementation detail included by todproc.h.
 
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/rawobs_detector_inventory.h>
 #include <citlali/core/pipeline/reduction_output_dirs.h>
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
-    using namespace netCDF;
-    using namespace netCDF::exceptions;
-
-    // total number of detectors
-    Eigen::Index n_dets = 0;
-    // detector, nw and array names for each network
-    std::vector<Eigen::Index> dets, nws, arrays;
-
-    // loop through input files
-    for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
-        try {
-            // load data file
-            NcFile fo(data_item.filepath(), NcFile::read);
-
-            // get the interface
-            auto interface_id = std::stoi(data_item.interface().substr(6));
-            // add the current file's number of dets to the total
-            n_dets += fo.getVar("Data.Toltec.Is").getDim(1).getSize();
-
-            // get the number of dets in file
-            dets.push_back(fo.getVar("Data.Toltec.Is").getDim(1).getSize());
-            // get the nw from interface
-            nws.push_back(interface_id);
-            // get the array from the interface
-            arrays.push_back(engine().toltec_io.nw_to_array_map[interface_id]);
-
-            fo.close();
-
-        } catch (NcException &e) {
-            logger->error("{}", e.what());
-            throw DataIOError{fmt::format(
-                "failed to load data from netCDF file {}", data_item.filepath())};
-        }
-    }
+    const auto inventory =
+        citlali::pipeline::read_rawobs_detector_inventory(
+            rawobs, engine().toltec_io.nw_to_array_map, logger);
 
     // explicitly clear the apt
     engine().calib.apt.clear();
@@ -48,27 +18,31 @@ void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
     // resize the apt vectors
     for (auto const& key : engine().calib.apt_header_keys) {
         if (key=="x_t" || key=="y_t") {
-            engine().calib.apt[key].setZero(n_dets);
+            engine().calib.apt[key].setZero(inventory.n_dets);
         }
         else {
-            engine().calib.apt[key].setOnes(n_dets);
+            engine().calib.apt[key].setOnes(inventory.n_dets);
         }
     }
 
     // set all flags to good
-    engine().calib.apt["flag"].setZero(n_dets);
+    engine().calib.apt["flag"].setZero(inventory.n_dets);
 
     // add the nws and arrays to the apt table
     Eigen::Index j = 0;
-    for (Eigen::Index i=0; i<nws.size(); ++i) {
-        engine().calib.apt["nw"].segment(j,dets[i]).setConstant(nws[i]);
-        engine().calib.apt["array"].segment(j,dets[i]).setConstant(arrays[i]);
+    for (Eigen::Index i=0; i<inventory.nws.size(); ++i) {
+        engine().calib.apt["nw"].segment(j,inventory.dets[i])
+            .setConstant(inventory.nws[i]);
+        engine().calib.apt["array"].segment(j,inventory.dets[i])
+            .setConstant(inventory.arrays[i]);
 
-        j = j + dets[i];
+        j = j + inventory.dets[i];
     }
 
     // set uids
-    engine().calib.apt["uid"] = Eigen::VectorXd::LinSpaced(n_dets,0,n_dets-1);
+    engine().calib.apt["uid"] =
+        Eigen::VectorXd::LinSpaced(
+            inventory.n_dets,0,inventory.n_dets-1);
 
     // setup nws, arrays, etc.
     engine().calib.setup();
@@ -216,27 +190,8 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::check_inputs(const RawObs &rawobs) {
-    using namespace netCDF;
-    using namespace netCDF::exceptions;
-
-    Eigen::Index n_dets = 0;
-
-    // loop through input files
-    for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
-        try {
-            // load data file
-            NcFile fo(data_item.filepath(), NcFile::read);
-            // get number of dets from data and add to global value
-            n_dets += fo.getVar("Data.Toltec.Is").getDim(1).getSize();
-
-            fo.close();
-
-        } catch (NcException &e) {
-            logger->error("{}", e.what());
-            throw DataIOError{fmt::format(
-                "failed to load data from netCDF file {}", data_item.filepath())};
-        }
-    }
+    const Eigen::Index n_dets =
+        citlali::pipeline::read_rawobs_detector_count(rawobs, logger);
 
     // check if number of detectors in apt file is equal to those in files
     if (n_dets != engine().calib.n_dets) {
