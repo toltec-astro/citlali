@@ -3,6 +3,7 @@
 // Implementation detail included by lali.h.
 
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/timestream_scan_context.h>
 
 void Lali::setup() {
     // run obsnum setup
@@ -36,45 +37,21 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 // update progress bar
                 pb.count(telescope.scan_indices.cols(), 1);
 
-                // create rtcdata
                 TCData<TCDataKind::RTC, Eigen::MatrixXd> rtcdata;
-                // get scan indices
-                rtcdata.scan_indices.data = telescope.scan_indices.col(scan);
-                // current scan
-                rtcdata.index.data = scan;
+                const Eigen::Index scan_length =
+                    citlali::pipeline::initialize_rtc_scan(
+                        rtcdata, telescope, scan);
 
                 // populate noise matrix (do outside of parallelized region for thread safety)
-                if (citlali::pipeline::noise_maps_enabled(*this)) {
-                    if (omb.randomize_dets) {
-                        // n_noise x n_dets
-                        rtcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>::Zero(omb.n_noise, calib.n_dets)
-                                    .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
-                    } else {
-                        // n_noise
-                        rtcdata.noise.data = Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(omb.n_noise)
-                                    .unaryExpr([&](int dummy){ return 2 * rands(eng) - 1; });
-                    }
-                }
-                // current length of outer scans
-                Eigen::Index sl = rtcdata.scan_indices.data(3) - rtcdata.scan_indices.data(2) + 1;
+                citlali::pipeline::populate_noise_map_signs(
+                    rtcdata, omb, calib,
+                    citlali::pipeline::noise_maps_enabled(*this),
+                    rands, eng);
 
-                // get raw tod from files
-                if (!interp_over_gaps) {
-                    rtcdata.scans.data = kidsproc.populate_rtc_from_rawobs(rawobs, scan, telescope.scan_indices,
-                                                                           start_indices, end_indices,
-                                                                           sl, calib.n_dets,
-                                                                           typed_config.timestream.type);
-                }
-                else {
-                    // vector to store kids data
-                    auto scan_rawobs = kidsproc.load_rawobs_gaps(rawobs, scan, telescope.scan_indices, start_indices,
-                                                                 t_common, nw_times, 1 / (2 * telescope.fsmp));
-                    rtcdata.scans.data = kidsproc.populate_rtc_gaps(scan_rawobs, t_common, nw_times, masks, scan, 1 / (2 * telescope.fsmp),
-                                                                telescope.scan_indices, sl, calib.n_dets,
-                                                                typed_config.timestream.type);
-                    // try and clear input vector
-                    std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>().swap(scan_rawobs);
-                }
+                citlali::pipeline::populate_rtc_scan_samples(
+                    rtcdata, kidsproc, rawobs, scan, telescope, start_indices,
+                    end_indices, t_common, nw_times, masks, interp_over_gaps,
+                    scan_length, calib.n_dets, typed_config.timestream.type);
 
                 // increment scan
                 scan++;
