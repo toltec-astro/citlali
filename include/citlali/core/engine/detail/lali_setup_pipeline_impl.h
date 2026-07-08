@@ -2,6 +2,7 @@
 
 // Implementation detail included by lali.h.
 
+#include <citlali/core/pipeline/map_diagnostics.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/timestream_scan_context.h>
 
@@ -78,16 +79,9 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 omb.normalize_maps();
             }
         }
-        // calculate map psds
-        logger->info("calculating map psd");
-        omb.calc_map_psd();
-        // calculate map histograms
-        logger->info("calculating map histogram");
-        omb.calc_map_hist();
-        // calculate mean error
-        omb.calc_median_err();
-        // calculate mean rms
-        omb.calc_median_rms();
+        citlali::pipeline::calculate_map_diagnostics(
+            omb, logger, "calculating map psd",
+            "calculating map histogram");
 
         // write map summary
         if (verbose_mode) {

@@ -3,6 +3,8 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/pipeline/map_diagnostics.h>
+
 template <class KidsProc, class RawObs>
 void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     const bool detector_grouping =
@@ -234,11 +236,9 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     }
 
     else {
-        // calculate map psds
-        logger->info("calculating map psd");
-        omb.calc_map_psd();
-        // calculate map histograms
-        logger->info("calculating map histogram");
-        omb.calc_map_hist();
+        citlali::pipeline::calculate_map_psd_with_log(
+            omb, logger, "calculating map psd");
+        citlali::pipeline::calculate_map_histogram_with_log(
+            omb, logger, "calculating map histogram");
     }
 }
