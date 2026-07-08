@@ -5,7 +5,7 @@
 void Pointing::fit_maps() {
     fit_valid.setZero(n_maps);
 
-    if (!pointing_fit_gaussian_enabled) {
+    if (!typed_config.pointing.fit_gaussian) {
         logger->info("pointing Gaussian map fitting disabled");
         params.setZero(n_maps, map_fitter.n_params);
         perrors.setZero(n_maps, map_fitter.n_params);
@@ -59,4 +59,3 @@ void Pointing::fit_maps() {
         }
     }
 }
-

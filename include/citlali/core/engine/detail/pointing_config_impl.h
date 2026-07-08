@@ -69,8 +69,5 @@ void Engine::get_pointing_config(CT &config) {
         pointing_header_center_require_coverage;
 
     citlali::engine_detail::log_pointing_config(
-        pointing_source_strategy, pointing_fit_gaussian_enabled,
-        pointing_fruitloops_center_mode,
-        pointing_header_center_max_radius_arcsec,
-        pointing_header_center_require_coverage, ptcproc, logger);
+        pointing_config, ptcproc, logger);
 }

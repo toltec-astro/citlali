@@ -79,11 +79,8 @@ void add_phdu_fruit_loops_config(FitsEntry &fits_entry,
 template <class FitsEntry, class Logger>
 void add_phdu_pointing_config(
     FitsEntry &fits_entry, const std::string &array_name,
-    const Logger &logger, const std::string &pointing_source_strategy,
-    bool pointing_fit_gaussian_enabled,
-    const std::string &pointing_fruitloops_center_mode,
-    double pointing_header_center_max_radius_arcsec,
-    bool pointing_header_center_require_coverage) {
+    const Logger &logger,
+    const citlali::config::PointingConfig &pointing_config) {
     auto &hdu = fits_entry.pfits->pHDU();
     auto add_double_key = [&](const std::string &key, double value,
                               const std::string &comment,
@@ -92,19 +89,21 @@ void add_phdu_pointing_config(
                             comment, fallback);
     };
 
-    hdu.addKey("CONFIG.POINTING.STRATEGY", pointing_source_strategy,
+    hdu.addKey("CONFIG.POINTING.STRATEGY",
+               std::string(citlali::config::to_string(
+                   pointing_config.source_strategy)),
                "Pointing source strategy");
-    hdu.addKey("CONFIG.POINTING.FITGAUSS",
-               pointing_fit_gaussian_enabled,
+    hdu.addKey("CONFIG.POINTING.FITGAUSS", pointing_config.fit_gaussian,
                "Pointing Gaussian fit enabled");
     hdu.addKey("CONFIG.POINTING.SRCMODE",
-               pointing_fruitloops_center_mode,
+               std::string(citlali::config::to_string(
+                   pointing_config.fruitloops_center_mode)),
                "Pointing fruit loops source mode");
     add_double_key("CONFIG.POINTING.HDRMAXR",
-                   pointing_header_center_max_radius_arcsec,
+                   pointing_config.header_max_radius_arcsec,
                    "Pointing header center max radius");
     hdu.addKey("CONFIG.POINTING.HDRCOV",
-               pointing_header_center_require_coverage,
+               pointing_config.header_require_coverage,
                "Pointing header coverage guard");
 }
 
@@ -112,17 +111,10 @@ template <class FitsEntry, class Logger>
 void add_phdu_pointing_config_if_needed(
     FitsEntry &fits_entry, const std::string &array_name,
     const Logger &logger, const std::string &redu_type,
-    const std::string &pointing_source_strategy,
-    bool pointing_fit_gaussian_enabled,
-    const std::string &pointing_fruitloops_center_mode,
-    double pointing_header_center_max_radius_arcsec,
-    bool pointing_header_center_require_coverage) {
+    const citlali::config::PointingConfig &pointing_config) {
     if (!citlali::config::is_pointing_reduction_type(redu_type)) {
         return;
     }
     add_phdu_pointing_config(
-        fits_entry, array_name, logger, pointing_source_strategy,
-        pointing_fit_gaussian_enabled, pointing_fruitloops_center_mode,
-        pointing_header_center_max_radius_arcsec,
-        pointing_header_center_require_coverage);
+        fits_entry, array_name, logger, pointing_config);
 }

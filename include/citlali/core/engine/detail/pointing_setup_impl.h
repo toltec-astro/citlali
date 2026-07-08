@@ -77,13 +77,18 @@ void Pointing::setup() {
 
     // reference frame
     ppt_meta["Radesys"] = telescope.pixel_axes;
-    ppt_meta["pointing_source_strategy"] = pointing_source_strategy;
-    ppt_meta["pointing_fit_gaussian_enabled"] = pointing_fit_gaussian_enabled;
-    ppt_meta["fruitloops_source_center_mode"] = pointing_fruitloops_center_mode;
+    const auto &pointing_config = typed_config.pointing;
+    ppt_meta["pointing_source_strategy"] =
+        std::string(citlali::config::to_string(
+            pointing_config.source_strategy));
+    ppt_meta["pointing_fit_gaussian_enabled"] = pointing_config.fit_gaussian;
+    ppt_meta["fruitloops_source_center_mode"] =
+        std::string(citlali::config::to_string(
+            pointing_config.fruitloops_center_mode));
     ppt_meta["pointing_header_center_max_radius_arcsec"] =
-        pointing_header_center_max_radius_arcsec;
+        pointing_config.header_max_radius_arcsec;
     ppt_meta["pointing_header_center_require_coverage"] =
-        pointing_header_center_require_coverage;
+        pointing_config.header_require_coverage;
 
     // add array mapping
     for (const auto &[arr_index,arr_name]: toltec_io.array_name_map) {
@@ -115,4 +120,3 @@ void Pointing::setup() {
         ppt_meta["Header.M1.CmdPos"].push_back(telescope.tel_header["Header.M1.CmdPos"](i));
     }
 }
-

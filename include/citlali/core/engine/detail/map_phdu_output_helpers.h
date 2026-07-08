@@ -180,17 +180,9 @@ void add_phdu_pointing_telescope_header_section(
     FitsEntry &fits_entry, const MapBuffer &mb, const Telescope &telescope,
     const std::string &array_name, const Logger &logger,
     const std::string &reduction_type,
-    const std::string &pointing_source_strategy,
-    bool pointing_fit_gaussian_enabled,
-    const std::string &pointing_fruitloops_center_mode,
-    double pointing_header_center_max_radius_arcsec,
-    bool pointing_header_center_require_coverage) {
+    const citlali::config::PointingConfig &pointing_config) {
     citlali::pipeline::add_phdu_pointing_config_if_needed(
-        fits_entry, array_name, logger, reduction_type,
-        pointing_source_strategy, pointing_fit_gaussian_enabled,
-        pointing_fruitloops_center_mode,
-        pointing_header_center_max_radius_arcsec,
-        pointing_header_center_require_coverage);
+        fits_entry, array_name, logger, reduction_type, pointing_config);
 
     citlali::pipeline::add_phdu_telescope_header_keys_if_single_observation(
         fits_entry, mb->obsnums, array_name, logger, telescope.tel_header);
