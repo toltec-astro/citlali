@@ -48,6 +48,8 @@ public:
         double rms_arcsec = std::numeric_limits<double>::quiet_NaN();
     };
 
+    enum class BeammapFitInitMode { Blind, Previous, Prior };
+
     struct BeammapFitIterationStats {
         Eigen::VectorXi bound_low;
         Eigen::VectorXi bound_high;
@@ -236,6 +238,9 @@ public:
     void clear_beammap_fit_result(Eigen::Index map_index);
     bool has_beammap_prior_diagnostics() const;
     void reset_beammap_prior_diagnostics(Eigen::Index map_index);
+    void record_beammap_fit_attempt_stats(
+        BeammapFitIterationStats &fit_stats, BeammapFitInitMode init_mode,
+        bool good_fit, bool init_amp_zero, bool amp_bounds_zero);
     void log_beammap_fit_iteration_stats(
         const BeammapFitIterationStats &fit_stats);
     bool advance_beammap_iteration_state();

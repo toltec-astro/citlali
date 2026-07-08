@@ -416,6 +416,49 @@ void Beammap::reset_beammap_prior_diagnostics(Eigen::Index map_index) {
     prior_diag_values(map_index, prior_slot_index_col) = -1.0;
 }
 
+void Beammap::record_beammap_fit_attempt_stats(
+    BeammapFitIterationStats &fit_stats, BeammapFitInitMode init_mode,
+    bool good_fit, bool init_amp_zero, bool amp_bounds_zero) {
+    switch (init_mode) {
+        case BeammapFitInitMode::Previous:
+            fit_stats.attempt_prev++;
+            if (!good_fit) {
+                fit_stats.fail_prev++;
+            }
+            if (init_amp_zero) {
+                fit_stats.init_amp_zero_prev++;
+            }
+            if (amp_bounds_zero) {
+                fit_stats.amp_bounds_zero_prev++;
+            }
+            break;
+        case BeammapFitInitMode::Prior:
+            fit_stats.attempt_prior++;
+            if (!good_fit) {
+                fit_stats.fail_prior++;
+            }
+            if (init_amp_zero) {
+                fit_stats.init_amp_zero_prior++;
+            }
+            if (amp_bounds_zero) {
+                fit_stats.amp_bounds_zero_prior++;
+            }
+            break;
+        case BeammapFitInitMode::Blind:
+            fit_stats.attempt_blind++;
+            if (!good_fit) {
+                fit_stats.fail_blind++;
+            }
+            if (init_amp_zero) {
+                fit_stats.init_amp_zero_blind++;
+            }
+            if (amp_bounds_zero) {
+                fit_stats.amp_bounds_zero_blind++;
+            }
+            break;
+    }
+}
+
 void Beammap::log_beammap_fit_iteration_stats(
     const BeammapFitIterationStats &fit_stats) {
     logger->info("beammap init summary (iter {}): previous={} prior={} blind={} skipped={} prev_rejected_by_peak={}",
@@ -512,8 +555,7 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
             double init_col = -99.0;
             bool init_from_prev = false;
             bool init_from_prior = false;
-            enum class FitInitMode { Blind, Previous, Prior };
-            auto init_mode = FitInitMode::Blind;
+            auto init_mode = BeammapFitInitMode::Blind;
             const bool can_try_prior =
                 beammap_priors_enabled && beammap_soft_priors_loaded &&
                 detector_grouping;
@@ -604,7 +646,7 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
                     init_col = prev_col;
                     init_row = prev_row;
                     init_from_prev = true;
-                    init_mode = FitInitMode::Previous;
+                    init_mode = BeammapFitInitMode::Previous;
                     fit_stats.init_prev++;
                 }
                 else {
@@ -616,7 +658,7 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
             if (!init_from_prev && can_try_prior) {
                 if (choose_prior_guided_init(i, init_row, init_col)) {
                     init_from_prior = true;
-                    init_mode = FitInitMode::Prior;
+                    init_mode = BeammapFitInitMode::Prior;
                     fit_stats.init_prior++;
                 }
                 else if (!beammap_priors_fallback_blind) {
@@ -681,44 +723,9 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
                     std::isfinite(amp_low) && std::isfinite(amp_high) &&
                     std::abs(amp_high - amp_low) <= 1e-12;
             }
-            switch (init_mode) {
-                case FitInitMode::Previous:
-                    fit_stats.attempt_prev++;
-                    if (!good_fit) {
-                        fit_stats.fail_prev++;
-                    }
-                    if (init_amp_zero) {
-                        fit_stats.init_amp_zero_prev++;
-                    }
-                    if (amp_bounds_zero) {
-                        fit_stats.amp_bounds_zero_prev++;
-                    }
-                    break;
-                case FitInitMode::Prior:
-                    fit_stats.attempt_prior++;
-                    if (!good_fit) {
-                        fit_stats.fail_prior++;
-                    }
-                    if (init_amp_zero) {
-                        fit_stats.init_amp_zero_prior++;
-                    }
-                    if (amp_bounds_zero) {
-                        fit_stats.amp_bounds_zero_prior++;
-                    }
-                    break;
-                case FitInitMode::Blind:
-                    fit_stats.attempt_blind++;
-                    if (!good_fit) {
-                        fit_stats.fail_blind++;
-                    }
-                    if (init_amp_zero) {
-                        fit_stats.init_amp_zero_blind++;
-                    }
-                    if (amp_bounds_zero) {
-                        fit_stats.amp_bounds_zero_blind++;
-                    }
-                    break;
-            }
+            record_beammap_fit_attempt_stats(
+                fit_stats, init_mode, good_fit, init_amp_zero,
+                amp_bounds_zero);
 
             if (fit_diag.valid &&
                 fit_diag.init_params.size() == map_fitter.n_params &&
