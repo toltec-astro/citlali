@@ -2,6 +2,8 @@
 
 // Implementation detail included by todproc.h.
 
+#include <citlali/core/pipeline/map_dimension_policy.h>
+
 // calculate map dimensions
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &map_extents, std::vector<map_coord_t> &map_coords) {
@@ -103,30 +105,27 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
         double min_lon = det_lon_limits.col(0).minCoeff();
         double max_lon = det_lon_limits.col(1).maxCoeff();
 
-        // calculate dimensions
-        auto calc_map_dims = [&](double min_dim, double max_dim) {
-            int min_pix = static_cast<int>(ceil(abs(min_dim / omb.pixel_size_rad)));
-            int max_pix = static_cast<int>(ceil(abs(max_dim / omb.pixel_size_rad)));
-            return 2 * std::max(min_pix, max_pix) + 1;
-        };
-
         // get n_rows and n_cols
-        omb.n_rows = calc_map_dims(min_lat, max_lat);
-        omb.n_cols = calc_map_dims(min_lon, max_lon);
+        omb.n_rows = citlali::pipeline::symmetric_odd_pixel_count(
+            min_lat, max_lat, omb.pixel_size_rad);
+        omb.n_cols = citlali::pipeline::symmetric_odd_pixel_count(
+            min_lon, max_lon, omb.pixel_size_rad);
     }
 
     else {
         // Ensure odd dimensions
-        omb.n_rows = (omb.wcs.naxis[1] % 2 == 0) ? omb.wcs.naxis[1] + 1 : omb.wcs.naxis[1];
-        omb.n_cols = (omb.wcs.naxis[0] % 2 == 0) ? omb.wcs.naxis[0] + 1 : omb.wcs.naxis[0];
+        omb.n_rows =
+            citlali::pipeline::odd_dimension_from_config(omb.wcs.naxis[1]);
+        omb.n_cols =
+            citlali::pipeline::odd_dimension_from_config(omb.wcs.naxis[0]);
     }
 
-    const double omb_row_center = (omb.n_rows - 1) / 2.0;
-    const double omb_col_center = (omb.n_cols - 1) / 2.0;
-    Eigen::VectorXd rows_tan_vec = Eigen::VectorXd::LinSpaced(omb.n_rows, 0, omb.n_rows - 1).array() * omb.pixel_size_rad -
-                                   omb_row_center * omb.pixel_size_rad;
-    Eigen::VectorXd cols_tan_vec = Eigen::VectorXd::LinSpaced(omb.n_cols, 0, omb.n_cols - 1).array() * omb.pixel_size_rad -
-                                   omb_col_center * omb.pixel_size_rad;
+    Eigen::VectorXd rows_tan_vec =
+        citlali::pipeline::tangent_coordinate_vector(omb.n_rows,
+                                                     omb.pixel_size_rad);
+    Eigen::VectorXd cols_tan_vec =
+        citlali::pipeline::tangent_coordinate_vector(omb.n_cols,
+                                                     omb.pixel_size_rad);
 
 
     // push back map sizes and coordinates
@@ -139,36 +138,15 @@ template <class EngineType>
 void TimeOrderedDataProc<EngineType>::calc_cmb_size(std::vector<map_coord_t> &map_coords) {
     auto& cmb = engine().cmb;
 
-    // Initialize min/max values
-    double min_row = std::numeric_limits<double>::max();
-    double max_row = std::numeric_limits<double>::lowest();
-    double min_col = min_row;
-    double max_col = max_row;
-
-    // Find global min/max for rows and columns
-    for (const auto& coord : map_coords) {
-        min_row = std::min(min_row, coord.front().minCoeff());
-        max_row = std::max(max_row, coord.front().maxCoeff());
-        min_col = std::min(min_col, coord.back().minCoeff());
-        max_col = std::max(max_col, coord.back().maxCoeff());
-    }
-
-    // calculate dimensions
-    auto calc_map_dims = [&](auto min_dim, auto max_dim) {
-        int min_pix = static_cast<int>(ceil(abs(min_dim / engine().cmb.pixel_size_rad)));
-        int max_pix = static_cast<int>(ceil(abs(max_dim / engine().cmb.pixel_size_rad)));
-
-        int n_dim = 2 * std::max(min_pix, max_pix) + 1;
-        const double dim_center = (n_dim - 1) / 2.0;
-        Eigen::VectorXd dim_vec = Eigen::VectorXd::LinSpaced(n_dim, 0, n_dim - 1)
-                                          .array() * engine().cmb.pixel_size_rad - dim_center * engine().cmb.pixel_size_rad;
-
-        return std::make_tuple(n_dim, std::move(dim_vec));
-    };
+    const auto limits = citlali::pipeline::coordinate_limits(map_coords);
 
     // get dimensions and tangent coordinate vectorx
-    auto [n_rows, rows_tan_vec] = calc_map_dims(min_row, max_row);
-    auto [n_cols, cols_tan_vec] = calc_map_dims(min_col, max_col);
+    auto [n_rows, rows_tan_vec] =
+        citlali::pipeline::dimension_and_tangent_coordinates(
+            limits.min_row, limits.max_row, engine().cmb.pixel_size_rad);
+    auto [n_cols, cols_tan_vec] =
+        citlali::pipeline::dimension_and_tangent_coordinates(
+            limits.min_col, limits.max_col, engine().cmb.pixel_size_rad);
 
     // Set dimensions and wcs parameters
     cmb.n_rows = n_rows;
