@@ -40,13 +40,15 @@ void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs, bool write
                 if (!interp_over_gaps) {
                     rtcdata.scans.data = kidsproc.populate_rtc_from_rawobs(rawobs, scan, telescope.scan_indices,
                                                                            start_indices, end_indices,
-                                                                           sl, calib.n_dets, tod_type);
+                                                                           sl, calib.n_dets,
+                                                                           typed_config.timestream.type);
                 }
                 else {
                     auto scan_rawobs = kidsproc.load_rawobs_gaps(rawobs, scan, telescope.scan_indices, start_indices,
                                                                  t_common, nw_times, 1 / (2 * telescope.fsmp));
                     rtcdata.scans.data = kidsproc.populate_rtc_gaps(scan_rawobs, t_common, nw_times, masks, scan, 1 / (2 * telescope.fsmp),
-                                                                telescope.scan_indices, sl, calib.n_dets, tod_type);
+                                                                telescope.scan_indices, sl, calib.n_dets,
+                                                                typed_config.timestream.type);
                     std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>().swap(scan_rawobs);
                 }
 

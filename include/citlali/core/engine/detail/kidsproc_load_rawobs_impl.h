@@ -26,7 +26,7 @@ auto KidsDataProc::load_rawobs(const RawObs &rawobs, const Eigen::Index scan,
 template <typename loaded_t>
 auto KidsDataProc::populate_rtc(loaded_t &loaded,
                                 const int n_pts, const int n_det,
-                                const std::string data_type) {
+                                citlali::config::TodType data_type) {
     // resize data
     Eigen::MatrixXd data(n_pts, n_det);
 
@@ -36,27 +36,13 @@ auto KidsDataProc::populate_rtc(loaded_t &loaded,
          iterator it = loaded.begin(); it != loaded.end(); ++it) {
         // run the solver
         auto result = this->solver()(*it, Solver::Config{});
-        // get number of rows
-        Eigen::Index n_rows = result.data_out.xs.data.rows();
-        // get number of cols
-        Eigen::Index n_cols = result.data_out.xs.data.cols();
-
-        // get xs
-        if (citlali::config::is_xs_tod_type(data_type)) {
-            data.block(0, i, n_rows, n_cols) = result.data_out.xs.data;
-        }
-        // get rs
-        else if (citlali::config::is_rs_tod_type(data_type)) {
-            data.block(0, i, n_rows, n_cols) = result.data_out.rs.data;
-        }
-        // get is
-        else if (citlali::config::is_is_tod_type(data_type)) {
-            data.block(0, i, n_rows, n_cols) = result.data.is.data;
-        }
-        // get qs
-        else if (citlali::config::is_qs_tod_type(data_type)) {
-            data.block(0, i, n_rows, n_cols) = result.data.qs.data;
-        }
+        Eigen::Index n_cols = 0;
+        citlali::pipeline::visit_kids_tod_channel(
+            result, data_type, [&](const auto &channel) {
+                Eigen::Index n_rows = channel.rows();
+                n_cols = channel.cols();
+                data.block(0, i, n_rows, n_cols) = channel;
+            });
         // increment columns
         i += n_cols;
     }

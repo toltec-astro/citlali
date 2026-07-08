@@ -100,7 +100,8 @@ auto KidsDataProc::populate_rtc_gaps(LoadedType &loaded, Eigen::DenseBase<Derive
                                      const int scan,
                                      const double tol,
                                      Eigen::DenseBase<DerivedD>& scan_indices,
-                                     const int n_pts, const int n_det, const std::string data_type) {
+                                     const int n_pts, const int n_det,
+                                     citlali::config::TodType data_type) {
     // resize data
     Eigen::MatrixXd data(n_pts, n_det);
 
@@ -173,23 +174,13 @@ auto KidsDataProc::populate_rtc_gaps(LoadedType &loaded, Eigen::DenseBase<Derive
          iterator it = loaded.begin(); it != loaded.end(); ++it) {
         // run the solver
         auto result = this->solver()(*it, Solver::Config{});
-        // get number of rows
-        Eigen::Index n_rows = result.data_out.xs.data.rows();
-        // get number of cols
-        Eigen::Index n_cols = result.data_out.xs.data.cols();
-
-        Eigen::MatrixXd block(n_rows, n_cols);
-
-        // get xs
-        if (citlali::config::is_xs_tod_type(data_type)) {
-            block = result.data_out.xs.data;
-        } else if (citlali::config::is_rs_tod_type(data_type)) {
-            block = result.data_out.rs.data;
-        } else if (citlali::config::is_is_tod_type(data_type)) {
-            block = result.data.is.data;
-        } else if (citlali::config::is_qs_tod_type(data_type)) {
-            block = result.data.qs.data;
-        }
+        Eigen::Index n_cols = 0;
+        Eigen::MatrixXd block;
+        citlali::pipeline::visit_kids_tod_channel(
+            result, data_type, [&](const auto &channel) {
+                n_cols = channel.cols();
+                block = channel;
+            });
 
         if (j >= static_cast<Eigen::Index>(times.size()) || j >= static_cast<Eigen::Index>(masks.size())) {
             throw std::runtime_error("loaded KIDs stream count exceeds time or mask vector count");

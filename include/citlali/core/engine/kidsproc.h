@@ -13,6 +13,7 @@
 
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/engine/io.h>
+#include <citlali/core/pipeline/kids_tod_channel.h>
 
 /**
  * @brief The KIDs data solver struct
@@ -92,7 +93,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     // populate rtc
     template <typename loaded_t>
     auto populate_rtc(loaded_t &, const int, const int,
-                      const std::string);
+                      citlali::config::TodType);
 
     // read+solve rawobs directly into rtc matrix (avoids intermediate loaded vector)
     template <typename Derived>
@@ -100,7 +101,8 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
                                   Eigen::DenseBase<Derived> &,
                                   std::vector<Eigen::Index> &,
                                   std::vector<Eigen::Index> &,
-                                  const int, const int, const std::string);
+                                  const int, const int,
+                                  citlali::config::TodType);
 
     // load rawobs with gaps
     template <typename DerivedA, typename DerivedB, typename DerivedC>
@@ -118,7 +120,8 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
                           std::vector<DerivedC>&,
                           const int, const double,
                           Eigen::DenseBase<DerivedD>&,
-                          const int, const int, const std::string);
+                          const int, const int,
+                          citlali::config::TodType);
 
     // TODO fix the const correctness
     Fitter &fitter() { return m_fitter; }

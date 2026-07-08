@@ -61,7 +61,7 @@ void Engine::get_mapmaking_config(CT &config) {
         telescope.pixel_axes, redu_type, logger);
 
     citlali::pipeline::apply_uncalibrated_map_units(
-        rtcproc.run_calibrate, tod_type, omb, cmb);
+        rtcproc.run_calibrate, typed_config.timestream.type, omb, cmb);
 
     citlali::pipeline::sync_mapmaking_parallel_policy(
         parallel_policy, omb, cmb, jinc_mm);

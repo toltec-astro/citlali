@@ -2,6 +2,7 @@
 
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/runtime_config.h>
+#include <citlali/core/config/timestream_config.h>
 
 #include <cstdlib>
 #include <string>
@@ -85,14 +86,16 @@ void mirror_output_map_block_config(MapmakingConfig &target,
 
 template <class OutputMapBlock, class CoaddMapBlock>
 void apply_uncalibrated_map_units(bool run_calibrate,
-                                  const std::string &tod_type,
+                                  citlali::config::TodType tod_type,
                                   OutputMapBlock &omb,
                                   CoaddMapBlock &cmb) {
     if (run_calibrate) {
         return;
     }
-    omb.sig_unit = tod_type;
-    cmb.sig_unit = tod_type;
+    const std::string tod_type_name{
+        std::string(citlali::config::to_string(tod_type))};
+    omb.sig_unit = tod_type_name;
+    cmb.sig_unit = tod_type_name;
 }
 
 template <class OutputMapBlock, class CoaddMapBlock, class JincMapmaker,

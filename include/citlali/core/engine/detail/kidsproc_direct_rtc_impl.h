@@ -7,7 +7,8 @@ auto KidsDataProc::populate_rtc_from_rawobs(const RawObs &rawobs, const Eigen::I
                                             Eigen::DenseBase<Derived> &scan_indices,
                                             std::vector<Eigen::Index> &start_indices,
                                             std::vector<Eigen::Index> &end_indices,
-                                            const int n_pts, const int n_det, const std::string data_type) {
+                                            const int n_pts, const int n_det,
+                                            citlali::config::TodType data_type) {
     // resize data
     Eigen::MatrixXd data(n_pts, n_det);
 
@@ -19,24 +20,13 @@ auto KidsDataProc::populate_rtc_from_rawobs(const RawObs &rawobs, const Eigen::I
         auto rts = load_data_item(data_item, slice);
         auto result = this->solver()(rts, Solver::Config{});
 
-        // get number of rows
-        Eigen::Index n_rows = result.data_out.xs.data.rows();
-        // get number of cols
-        Eigen::Index n_cols = result.data_out.xs.data.cols();
-
-        // copy requested channel
-        if (citlali::config::is_xs_tod_type(data_type)) {
-            data.block(0, i, n_rows, n_cols) = result.data_out.xs.data;
-        }
-        else if (citlali::config::is_rs_tod_type(data_type)) {
-            data.block(0, i, n_rows, n_cols) = result.data_out.rs.data;
-        }
-        else if (citlali::config::is_is_tod_type(data_type)) {
-            data.block(0, i, n_rows, n_cols) = result.data.is.data;
-        }
-        else if (citlali::config::is_qs_tod_type(data_type)) {
-            data.block(0, i, n_rows, n_cols) = result.data.qs.data;
-        }
+        Eigen::Index n_cols = 0;
+        citlali::pipeline::visit_kids_tod_channel(
+            result, data_type, [&](const auto &channel) {
+                Eigen::Index n_rows = channel.rows();
+                n_cols = channel.cols();
+                data.block(0, i, n_rows, n_cols) = channel;
+            });
 
         // increment columns
         i += n_cols;
