@@ -19,7 +19,9 @@ void Engine::get_pointing_config(CT &config) {
         citlali::config::parse_pointing_source_strategy, missing_keys,
         invalid_keys, {"standard", "psf_preserve"});
 
-    pointing_fit_gaussian_enabled = (pointing_source_strategy == "standard");
+    pointing_fit_gaussian_enabled =
+        citlali::config::is_standard_pointing_source_strategy(
+            pointing_source_strategy);
     pointing_config.fit_gaussian = pointing_fit_gaussian_enabled;
     citlali::engine_detail::read_optional_mirrored_config_value(
         config, std::tuple{"pointing","source_strategy","fit_gaussian"},
@@ -27,7 +29,8 @@ void Engine::get_pointing_config(CT &config) {
         missing_keys, invalid_keys);
 
     pointing_fruitloops_center_mode =
-        (pointing_source_strategy == "psf_preserve") ? "map_center" : "auto";
+        citlali::config::is_psf_preserve_pointing_source_strategy(
+            pointing_source_strategy) ? "map_center" : "auto";
     if (auto parsed = citlali::config::parse_fruit_loops_center_mode(
             pointing_fruitloops_center_mode)) {
         pointing_config.fruitloops_center_mode = *parsed;
@@ -40,7 +43,8 @@ void Engine::get_pointing_config(CT &config) {
         invalid_keys, {"auto", "header", "peak", "map_center"});
 
     pointing_header_center_max_radius_arcsec = 0.0;
-    if (pointing_source_strategy == "standard" &&
+    if (citlali::config::is_standard_pointing_source_strategy(
+            pointing_source_strategy) &&
         std::isfinite(map_fitter.fitting_region_pix) && map_fitter.fitting_region_pix > 0.0 &&
         std::isfinite(omb.pixel_size_rad) && omb.pixel_size_rad > 0.0) {
         pointing_header_center_max_radius_arcsec =

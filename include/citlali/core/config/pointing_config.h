@@ -53,6 +53,36 @@ inline std::string_view to_string(FruitLoopsCenterMode value) {
     return enum_name(value, fruit_loops_center_mode_names);
 }
 
+inline bool is_pointing_source_strategy(std::string_view value,
+                                        PointingSourceStrategy strategy) {
+    return value == to_string(strategy);
+}
+
+inline bool is_pointing_source_strategy(PointingSourceStrategy value,
+                                        PointingSourceStrategy strategy) {
+    return value == strategy;
+}
+
+inline bool is_standard_pointing_source_strategy(std::string_view value) {
+    return is_pointing_source_strategy(value, PointingSourceStrategy::standard);
+}
+
+inline bool is_standard_pointing_source_strategy(
+    PointingSourceStrategy value) {
+    return is_pointing_source_strategy(value, PointingSourceStrategy::standard);
+}
+
+inline bool is_psf_preserve_pointing_source_strategy(std::string_view value) {
+    return is_pointing_source_strategy(
+        value, PointingSourceStrategy::psf_preserve);
+}
+
+inline bool is_psf_preserve_pointing_source_strategy(
+    PointingSourceStrategy value) {
+    return is_pointing_source_strategy(
+        value, PointingSourceStrategy::psf_preserve);
+}
+
 inline bool is_fruit_loops_center_mode(
     std::string_view value, FruitLoopsCenterMode mode) {
     return value == to_string(mode);
