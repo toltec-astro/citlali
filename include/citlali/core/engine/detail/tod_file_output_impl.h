@@ -15,6 +15,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         citlali::config::to_string(typed_config.mapmaking.grouping)};
     const std::string map_method_name{
         citlali::config::to_string(typed_config.mapmaking.method)};
+    const auto &beammap_iteration_config = typed_config.beammap.iteration;
+    const auto &beammap_phase_config = typed_config.beammap.phase_strategy;
 
     // loop through viles
     for (const auto & [fkey, fval]: tod_filename) {
@@ -36,9 +38,12 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             citlali::pipeline::add_beammap_tod_header_vars(
                 fo, calib, toltec_io.array_name_map,
                 beammap_fluxes_mJy_beam, beammap_fluxes_MJy_Sr,
-                beammap_iter_tolerance, beammap_convergence_radius_arcsec,
-                beammap_iter_max, beammap_phase_split_enabled,
-                beammap_locator_iter, beammap_measurement_start_iter,
+                beammap_iteration_config.tolerance,
+                beammap_iteration_config.convergence_radius_arcsec,
+                beammap_iteration_config.max_iterations,
+                beammap_phase_config.enabled,
+                beammap_phase_config.locator_iter,
+                beammap_phase_config.measurement_start_iter,
                 beammap_derotate, beammap_subtract_reference,
                 beammap_reference_det);
         }

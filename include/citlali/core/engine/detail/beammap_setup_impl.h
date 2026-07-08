@@ -85,9 +85,12 @@ void Beammap::setup() {
     // add project id to meta data
     calib.apt_meta["project_id"] = telescope.project_id;
 
-    calib.apt_meta["beammap_phase_split_enabled"] = beammap_phase_split_enabled;
-    calib.apt_meta["beammap_locator_iter"] = beammap_locator_iter;
-    calib.apt_meta["beammap_measurement_start_iter"] = beammap_measurement_start_iter;
+    const auto &beammap_phase_config = typed_config.beammap.phase_strategy;
+    calib.apt_meta["beammap_phase_split_enabled"] =
+        beammap_phase_config.enabled;
+    calib.apt_meta["beammap_locator_iter"] = beammap_phase_config.locator_iter;
+    calib.apt_meta["beammap_measurement_start_iter"] =
+        beammap_phase_config.measurement_start_iter;
 
     // add input source flux
     for (const auto &beammap_flux: beammap_fluxes_mJy_beam) {

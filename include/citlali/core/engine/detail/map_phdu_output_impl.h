@@ -25,6 +25,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         citlali::config::to_string(typed_config.mapmaking.grouping)};
     const std::string map_method_name{
         citlali::config::to_string(typed_config.mapmaking.method)};
+    const auto &beammap_iteration_config = typed_config.beammap.iteration;
+    const auto &beammap_phase_config = typed_config.beammap.phase_strategy;
 
     try {
     citlali::engine_detail::add_phdu_unit_conversion_section(
@@ -35,10 +37,11 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     citlali::engine_detail::add_phdu_beammap_observation_section(
         fits_entry, mb, name, logger, reduction_type_name,
         beammap_fluxes_mJy_beam,
-        beammap_fluxes_MJy_Sr, beammap_iter_tolerance,
-        beammap_convergence_radius_arcsec, beammap_iter_max,
-        beammap_phase_split_enabled, beammap_locator_iter,
-        beammap_measurement_start_iter, beammap_derotate,
+        beammap_fluxes_MJy_Sr, beammap_iteration_config.tolerance,
+        beammap_iteration_config.convergence_radius_arcsec,
+        beammap_iteration_config.max_iterations, beammap_phase_config.enabled,
+        beammap_phase_config.locator_iter,
+        beammap_phase_config.measurement_start_iter, beammap_derotate,
         beammap_subtract_reference, calib, beammap_reference_det, date_obs);
 
     logger->debug("adding obs info");
