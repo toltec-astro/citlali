@@ -43,10 +43,15 @@ void read_map_pixel_axes_config(Config &config, PixelAxes &pixel_axes,
                                 MapmakingConfig &typed_config,
                                 MissingKeys &missing_keys,
                                 InvalidKeys &invalid_keys) {
-    read_mirrored_config_value(
+    read_config_value_if_clean(
         config, std::tuple{"mapmaking", "pixel_axes"}, pixel_axes,
-        typed_config.pixel_axes, missing_keys, invalid_keys,
-        {"radec", "altaz", "galactic"});
+        [&typed_config](const auto &value) {
+            typed_config.pixel_axes = value;
+            if (auto parsed = citlali::config::parse_map_pixel_axes(value)) {
+                typed_config.pixel_axes_frame = *parsed;
+            }
+        },
+        missing_keys, invalid_keys, {"radec", "altaz", "galactic"});
 }
 
 template <class Config, class MissingKeys, class InvalidKeys>

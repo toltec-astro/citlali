@@ -184,8 +184,10 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 netCDF::NcVar det_ra_v = fo.getVar("det_ra");
                 netCDF::NcVar det_dec_v = fo.getVar("det_dec");
                 const bool write_tangent_pointing = !det_lat_v.isNull() && !det_lon_v.isNull();
-                const bool write_abs_pointing = telescope.pixel_axes == "radec" &&
-                                                !det_ra_v.isNull() && !det_dec_v.isNull();
+                const bool write_abs_pointing =
+                    citlali::config::is_radec_map_pixel_axes(
+                        telescope.pixel_axes) &&
+                    !det_ra_v.isNull() && !det_dec_v.isNull();
                 if (!write_tangent_pointing && !write_abs_pointing) {
                     logger->debug("tod file {} has no detector pointing variables; skipping final detector pointing update", val);
                     continue;

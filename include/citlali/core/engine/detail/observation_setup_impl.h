@@ -3,6 +3,7 @@
 // Engine member-function implementations split from engine.h.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/pipeline/output_policy.h>
 
 void Engine::obsnum_setup() {
@@ -67,7 +68,7 @@ void Engine::obsnum_setup() {
     }
 
     // set map wcs crvals to source ra/dec
-    if (telescope.pixel_axes == "radec") {
+    if (citlali::config::is_radec_map_pixel_axes(telescope.pixel_axes)) {
         omb.wcs.crval[0] = telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
         omb.wcs.crval[1] = telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
 
@@ -78,7 +79,8 @@ void Engine::obsnum_setup() {
     }
 
     // set map wcs crvals to source l/b
-    else if (telescope.pixel_axes == "galactic") {
+    else if (citlali::config::is_galactic_map_pixel_axes(
+                 telescope.pixel_axes)) {
         omb.wcs.crval[0] = telescope.tel_header["Header.Source.L"](0)*RAD_TO_DEG;
         omb.wcs.crval[1] = telescope.tel_header["Header.Source.B"](0)*RAD_TO_DEG;
 

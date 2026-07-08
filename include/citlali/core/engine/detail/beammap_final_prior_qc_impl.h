@@ -240,7 +240,8 @@ void Beammap::update_final_prior_match_diagnostics() {
             }
         }
 
-        if (beammap_soft_priors_are_derotated && telescope.pixel_axes == "altaz") {
+        if (beammap_soft_priors_are_derotated &&
+            citlali::config::is_altaz_map_pixel_axes(telescope.pixel_axes)) {
             double derot_elev_rad = calib.apt["derot_elev"](i);
             if (!std::isfinite(derot_elev_rad)) {
                 derot_elev_rad = telescope.tel_data["TelElAct"].mean();

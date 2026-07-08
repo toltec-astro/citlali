@@ -24,6 +24,12 @@ enum class MapMethod {
     maximum_likelihood
 };
 
+enum class MapPixelAxes {
+    radec,
+    altaz,
+    galactic
+};
+
 inline constexpr std::array<EnumName<MapGrouping>, 5> map_grouping_names{{
     {MapGrouping::automatic, "auto"},
     {MapGrouping::detector, "detector"},
@@ -38,6 +44,12 @@ inline constexpr std::array<EnumName<MapMethod>, 3> map_method_names{{
     {MapMethod::maximum_likelihood, "maximum_likelihood"},
 }};
 
+inline constexpr std::array<EnumName<MapPixelAxes>, 3> map_pixel_axes_names{{
+    {MapPixelAxes::radec, "radec"},
+    {MapPixelAxes::altaz, "altaz"},
+    {MapPixelAxes::galactic, "galactic"},
+}};
+
 inline std::optional<MapGrouping> parse_map_grouping(std::string_view value) {
     return parse_enum(value, map_grouping_names);
 }
@@ -46,12 +58,20 @@ inline std::optional<MapMethod> parse_map_method(std::string_view value) {
     return parse_enum(value, map_method_names);
 }
 
+inline std::optional<MapPixelAxes> parse_map_pixel_axes(std::string_view value) {
+    return parse_enum(value, map_pixel_axes_names);
+}
+
 inline std::string_view to_string(MapGrouping value) {
     return enum_name(value, map_grouping_names);
 }
 
 inline std::string_view to_string(MapMethod value) {
     return enum_name(value, map_method_names);
+}
+
+inline std::string_view to_string(MapPixelAxes value) {
+    return enum_name(value, map_pixel_axes_names);
 }
 
 inline bool is_map_grouping(std::string_view value, MapGrouping grouping) {
@@ -64,6 +84,14 @@ inline bool is_map_grouping(MapGrouping value, MapGrouping grouping) {
 
 inline bool is_map_method(MapMethod value, MapMethod method) {
     return value == method;
+}
+
+inline bool is_map_pixel_axes(std::string_view value, MapPixelAxes axes) {
+    return value == to_string(axes);
+}
+
+inline bool is_map_pixel_axes(MapPixelAxes value, MapPixelAxes axes) {
+    return value == axes;
 }
 
 inline bool is_detector_map_grouping(std::string_view value) {
@@ -114,6 +142,30 @@ inline bool is_maximum_likelihood_map_method(MapMethod value) {
     return is_map_method(value, MapMethod::maximum_likelihood);
 }
 
+inline bool is_radec_map_pixel_axes(std::string_view value) {
+    return is_map_pixel_axes(value, MapPixelAxes::radec);
+}
+
+inline bool is_radec_map_pixel_axes(MapPixelAxes value) {
+    return is_map_pixel_axes(value, MapPixelAxes::radec);
+}
+
+inline bool is_altaz_map_pixel_axes(std::string_view value) {
+    return is_map_pixel_axes(value, MapPixelAxes::altaz);
+}
+
+inline bool is_altaz_map_pixel_axes(MapPixelAxes value) {
+    return is_map_pixel_axes(value, MapPixelAxes::altaz);
+}
+
+inline bool is_galactic_map_pixel_axes(std::string_view value) {
+    return is_map_pixel_axes(value, MapPixelAxes::galactic);
+}
+
+inline bool is_galactic_map_pixel_axes(MapPixelAxes value) {
+    return is_map_pixel_axes(value, MapPixelAxes::galactic);
+}
+
 struct MapmakingConfig {
     bool enabled = true;
     double crpix1 = 0.0;
@@ -126,6 +178,7 @@ struct MapmakingConfig {
     MapGrouping grouping = MapGrouping::automatic;
     MapMethod method = MapMethod::naive;
     std::string pixel_axes = "radec";
+    MapPixelAxes pixel_axes_frame = MapPixelAxes::radec;
     double pixel_size_arcsec = 1.0;
     int x_size_pix = 0;
     int y_size_pix = 0;

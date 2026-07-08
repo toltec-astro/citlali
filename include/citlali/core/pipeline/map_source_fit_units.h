@@ -70,7 +70,7 @@ void rescale_source_fit_pixel_units(Params &params, PErrors &perrors,
 }
 
 inline bool source_fit_uses_radec_projection(const std::string &pixel_axes) {
-    return pixel_axes == "radec";
+    return citlali::config::is_radec_map_pixel_axes(pixel_axes);
 }
 
 template <class Params, class PErrors>
@@ -113,4 +113,3 @@ void rescale_source_fit_result(
         params, perrors, ara(0) * constants.rad_to_deg,
         adec(0) * constants.rad_to_deg, constants.arcsec_to_deg);
 }
-

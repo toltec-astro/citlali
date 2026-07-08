@@ -43,7 +43,8 @@ void Pointing::fit_maps() {
             perrors(i,4) = RAD_TO_ASEC*STD_TO_FWHM*omb.pixel_size_rad*(perrors(i,4));
 
             // if in radec calculate absolute pointing
-            if (telescope.pixel_axes=="radec") {
+            if (citlali::config::is_radec_map_pixel_axes(
+                    telescope.pixel_axes)) {
                 Eigen::VectorXd lat(1), lon(1);
                 lat << params(i,2)*ASEC_TO_RAD;
                 lon << params(i,1)*ASEC_TO_RAD;

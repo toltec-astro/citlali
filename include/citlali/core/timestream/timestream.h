@@ -3322,7 +3322,8 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
                 det_lon_v.putVar(start_index, size, lon_row.data());
             }
 
-            if (pixel_axes == "radec" && !det_ra_v.isNull() && !det_dec_v.isNull()) {
+            if (citlali::config::is_radec_map_pixel_axes(pixel_axes) &&
+                !det_ra_v.isNull() && !det_dec_v.isNull()) {
                 // get absolute pointing
                 auto [dec, ra] = engine_utils::tangent_to_abs(lat_row, lon_row, cra, cdec);
 

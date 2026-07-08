@@ -215,7 +215,8 @@ bool Beammap::observed_to_prior_frame(int array, double x_raw_arcsec, double y_r
         *center_y_arcsec = center_y;
     }
 
-    if (beammap_soft_priors_are_derotated && telescope.pixel_axes == "altaz") {
+    if (beammap_soft_priors_are_derotated &&
+        citlali::config::is_altaz_map_pixel_axes(telescope.pixel_axes)) {
         if (!std::isfinite(derot_elev_rad)) {
             derot_elev_rad = 0.0;
         }

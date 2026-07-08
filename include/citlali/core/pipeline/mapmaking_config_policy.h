@@ -5,6 +5,7 @@
 
 #include <cstdlib>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace citlali::pipeline {
@@ -38,15 +39,16 @@ void enforce_map_grouping_polarization_policy(
 template <class Logger>
 void enforce_beammap_pixel_axes_policy(
                                        citlali::config::ReductionType reduction_type,
-                                       const std::string &pixel_axes,
+                                       citlali::config::MapPixelAxes pixel_axes,
+                                       std::string_view pixel_axes_name,
                                        const Logger &logger) {
     if (!citlali::config::is_beammap_reduction_type(reduction_type) ||
-        pixel_axes == "altaz") {
+        citlali::config::is_altaz_map_pixel_axes(pixel_axes)) {
         return;
     }
     logger->error(
         "beammap reductions require mapmaking.pixel_axes='altaz'; got '{}'",
-        pixel_axes);
+        pixel_axes_name);
     std::exit(EXIT_FAILURE);
 }
 

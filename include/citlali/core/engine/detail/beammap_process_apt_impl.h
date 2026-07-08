@@ -180,9 +180,9 @@ void Beammap::process_apt() {
 
     // per-detector derotation elevation for altaz beammaps
     calib.apt["derot_elev"].setConstant(telescope.tel_data["TelElAct"].mean());
-    if (telescope.pixel_axes == "altaz" &&
-        typed_config.mapmaking.grouping ==
-            citlali::config::MapGrouping::detector &&
+    if (citlali::config::is_altaz_map_pixel_axes(telescope.pixel_axes) &&
+        citlali::config::is_detector_map_grouping(
+            typed_config.mapmaking.grouping) &&
         !ptcs.empty()) {
         Eigen::MatrixXd elev_best(omb.n_rows, omb.n_cols);
         Eigen::MatrixXd dist2_best(omb.n_rows, omb.n_cols);

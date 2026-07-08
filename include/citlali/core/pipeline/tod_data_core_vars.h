@@ -66,7 +66,7 @@ inline void add_tod_detector_pointing_vars(
     det_lon_v.putAtt("units", "rad");
     set_tod_var_chunking(det_lon_v, chunk_mode, chunk_sizes);
 
-    if (pixel_axes == "radec") {
+    if (citlali::config::is_radec_map_pixel_axes(pixel_axes)) {
         netCDF::NcVar det_ra_v = fo.addVar("det_ra", netCDF::ncDouble, dims);
         det_ra_v.putAtt("units", "rad");
         set_tod_var_chunking(det_ra_v, chunk_mode, chunk_sizes);
@@ -91,4 +91,3 @@ inline void add_tod_core_data_vars(
     add_tod_detector_pointing_vars(
         fo, dims, mini_output, pixel_axes, chunk_mode, chunk_sizes);
 }
-

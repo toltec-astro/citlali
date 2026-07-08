@@ -12,7 +12,10 @@ void Pointing::setup() {
     fit_valid.setZero(n_maps);
 
     // units for positions
-    std::string pos_units = (telescope.pixel_axes == "radec") ? "deg" : "arcsec";
+    std::string pos_units =
+        citlali::config::is_radec_map_pixel_axes(telescope.pixel_axes)
+            ? "deg"
+            : "arcsec";
 
     // units for ppt header
     ppt_header_units = {

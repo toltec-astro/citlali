@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/post_processing_config.h>
 #include <citlali/core/config/runtime_config.h>
 

@@ -46,7 +46,8 @@ void Engine::get_mapmaking_config(CT &config) {
         config, telescope.pixel_axes, mapmaking_config, missing_keys,
         invalid_keys);
     citlali::pipeline::enforce_beammap_pixel_axes_policy(
-        typed_config.runtime.reduction_type, telescope.pixel_axes, logger);
+        typed_config.runtime.reduction_type,
+        mapmaking_config.pixel_axes_frame, telescope.pixel_axes, logger);
 
     citlali::engine_detail::read_output_map_block_config(
         config, omb, missing_keys, invalid_keys, telescope.pixel_axes,

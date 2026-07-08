@@ -21,7 +21,9 @@ inline std::vector<std::string> source_table_header() {
 }
 
 inline std::string source_position_units(const std::string &pixel_axes) {
-    return pixel_axes == "radec" ? "deg" : "arcsec";
+    return citlali::config::is_radec_map_pixel_axes(pixel_axes)
+               ? "deg"
+               : "arcsec";
 }
 
 inline std::string source_obsnum_meta_key(Eigen::Index obsnum_index) {
@@ -200,4 +202,3 @@ void write_source_table_output(
     callbacks.write_source_table(
         source_filename, source_table, source_header, source_meta);
 }
-

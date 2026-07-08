@@ -211,7 +211,9 @@ void Beammap::set_apt_flags() {
         if (std::abs(prior_derot_elev_rad) > pi) {
             prior_derot_elev_rad *= DEG_TO_RAD;
         }
-        const bool apply_derot = beammap_soft_priors_are_derotated && telescope.pixel_axes == "altaz";
+        const bool apply_derot =
+            beammap_soft_priors_are_derotated &&
+            citlali::config::is_altaz_map_pixel_axes(telescope.pixel_axes);
         const double cos_rot = std::cos(-prior_derot_elev_rad);
         const double sin_rot = std::sin(-prior_derot_elev_rad);
         std::atomic<int> n_prior_dist_hits{0};
