@@ -43,7 +43,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     const auto mapdiag_metadata =
         citlali::pipeline::make_mapdiag_metadata_vars(
             stage_name, mb, map_regime, telescope.source_name,
-            telescope.project_id, telescope.obs_goal, wiener_filter);
+            telescope.project_id, telescope.obs_goal,
+            typed_config.post_processing.map_filtering.edge_guard);
     const auto mapdiag_labels =
         citlali::pipeline::make_mapdiag_label_vars(
             mapdiag_label_storage, mb->obsnums, obsnum, date_obs,

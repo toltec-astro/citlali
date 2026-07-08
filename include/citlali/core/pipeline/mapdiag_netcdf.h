@@ -7,6 +7,7 @@
 
 #include <netcdf>
 
+#include <citlali/core/config/post_processing_config.h>
 #include <citlali/core/pipeline/mapdiag_labels.h>
 #include <citlali/core/pipeline/output_netcdf_metadata.h>
 #include <citlali/core/utils/netcdf_io.h>

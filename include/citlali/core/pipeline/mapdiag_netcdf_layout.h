@@ -55,7 +55,7 @@ struct MapdiagEdgeGuardConfigVars {
     const std::string &weight_threshold_mode;
     const std::string &hits_threshold_mode;
     const std::string &fill_mode;
-    const std::string &taper_mode;
+    std::string taper_mode;
     double hits_core_fraction;
     double radius_fwhm;
     double taper_min_fraction;
@@ -67,23 +67,23 @@ struct MapdiagMetadataVars {
     MapdiagEdgeGuardConfigVars edge_guard;
 };
 
-template <class MapBuffer, class MapFilter>
+template <class MapBuffer>
 MapdiagMetadataVars make_mapdiag_metadata_vars(
     const std::string &stage_name, const MapBuffer &mb,
     const std::string &map_regime, const std::string &source_name,
     const std::string &project_id, const std::string &obs_goal,
-    const MapFilter &map_filter) {
+    const citlali::config::MapFilterEdgeGuardConfig &edge_guard_config) {
     return {
         {stage_name, mb->name, map_regime, source_name, project_id, obs_goal},
         {mb->pixel_size_rad, mb->cov_cut, mb->sig_unit},
-        {map_filter.edge_guard_enabled,
-         map_filter.edge_weight_threshold_mode,
-         map_filter.edge_hits_threshold_mode,
-         map_filter.edge_fill_mode,
-         map_filter.edge_taper_mode,
-         map_filter.edge_hits_core_fraction,
-         map_filter.edge_guard_radius_fwhm,
-         map_filter.edge_taper_min_fraction}};
+        {edge_guard_config.enabled,
+         edge_guard_config.weight_threshold_mode,
+         edge_guard_config.hits_threshold_mode,
+         edge_guard_config.fill_mode,
+         std::string(citlali::config::to_string(edge_guard_config.taper_mode)),
+         edge_guard_config.hits_core_fraction,
+         edge_guard_config.guard_radius_fwhm,
+         edge_guard_config.taper_min_fraction}};
 }
 
 struct MapdiagLabelVars {
@@ -154,4 +154,3 @@ inline std::size_t mapdiag_obs_flat_index(const MapdiagSizeContext &context,
                                           std::size_t obs_index) {
     return map_index * context.n_obsnums + obs_index;
 }
-
