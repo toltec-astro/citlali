@@ -386,35 +386,10 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
         nw_times.push_back(engine().calib.hwpr_recvt);
     }
 
-    // latest starting time of all networks
-    double max_init_time = std::numeric_limits<double>::lowest();
-    // earliest final time of all networks
-    double min_final_time = std::numeric_limits<double>::max();
-
-    // indices for max_init_time and min_final_time
-    Eigen::Index max_init_idx = 0;
-    Eigen::Index min_final_idx = 0;
-
-    // get global max init and min final times and indices
-    for (Eigen::Index i = 0; i < nw_times.size(); ++i) {
-        if (nw_times[i].size() == 0) {
-            throw std::runtime_error(fmt::format(
-                "empty time vector for interface index {} in align_timestreams_gaps", i));
-        }
-        double initial_time = nw_times[i](0);
-        double final_time = nw_times[i](nw_times[i].size() - 1);
-
-        // get latest starting network
-        if (initial_time > max_init_time) {
-            max_init_time = initial_time;
-            max_init_idx = i;
-        }
-        // get earliest ending network
-        if (final_time < min_final_time) {
-            min_final_time = final_time;
-            min_final_idx = i;
-        }
-    }
+    const auto overlap = citlali::pipeline::find_common_timestream_overlap(
+        nw_times, "align_timestreams_gaps");
+    const double max_init_time = overlap.max_start;
+    const double min_final_time = overlap.min_end;
 
     if (fsmp_ref <= 0.0) {
         logger->error("invalid or missing sample rate in align_timestreams_gaps");
@@ -434,24 +409,9 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
     Eigen::VectorXd t_common = Eigen::VectorXd::LinSpaced(n_samples, max_init_time, max_init_time + dt * (n_samples - 1));
     double tol = dt / 2.0;
 
-    std::vector<Eigen::VectorXi> masks;
-    masks.reserve(nw_times.size());
-
-    for (const auto &t : nw_times) {
-        Eigen::VectorXi mask = Eigen::VectorXi::Zero(n_samples);
-
-        for (int i = 0; i < t.size(); ++i) {
-            double time = t(i);
-            int idx = static_cast<int>(std::round((time - max_init_time) / dt));
-            if (idx >= 0 && idx < n_samples && std::abs(time - t_common(idx)) <= tol) {
-                mask(idx) = 1;
-            }
-        }
-
-        logger->warn("{}/{} samples were not aligned to the common time grid", mask.size() - mask.sum(), mask.size());
-
-        masks.push_back(std::move(mask));
-    }
+    std::vector<Eigen::VectorXi> masks =
+        citlali::pipeline::build_common_time_grid_masks(
+            nw_times, t_common, max_init_time, dt, tol, logger);
 
     // build a network-keyed mask table for downstream flagging
     for (Eigen::Index j = 0; j < static_cast<Eigen::Index>(nw_ids.size()); ++j) {
