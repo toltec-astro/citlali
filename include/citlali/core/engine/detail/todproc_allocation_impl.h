@@ -2,57 +2,27 @@
 
 // Implementation detail included by todproc.h.
 
+#include <citlali/core/pipeline/map_buffer_allocation.h>
+
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map_coord_t &map_coord) {
     auto& omb = engine().omb;
 
-    std::vector<Eigen::MatrixXd>().swap(omb.signal);
-    std::vector<Eigen::MatrixXd>().swap(omb.weight);
-    std::vector<Eigen::MatrixXd>().swap(omb.kernel);
-    std::vector<Eigen::MatrixXd>().swap(omb.coverage);
-    std::vector<Eigen::MatrixXd>().swap(omb.grid_weight);
-    std::vector<Eigen::MatrixXd>().swap(omb.pointing);
-    omb.clear_contribution_diag();
-
-    // set omb dimensions and wcs parameters
-    omb.n_rows = map_extent[0];
-    omb.n_cols = map_extent[1];
-    omb.wcs.naxis[0] = omb.n_cols;
-    omb.wcs.naxis[1] = omb.n_rows;
-    omb.wcs.crpix[0] = (omb.n_cols - 1) / 2.0;
-    omb.wcs.crpix[1] = (omb.n_rows - 1) / 2.0;
-    // set tangent plane coordinate vectors
-    omb.rows_tan_vec = map_coord[0];
-    omb.cols_tan_vec = map_coord[1];
-
-    Eigen::MatrixXd zero_matrix = Eigen::MatrixXd::Zero(omb.n_rows, omb.n_cols);
-
-    for (Eigen::Index i=0; i<engine().n_maps; ++i) {
-        omb.signal.push_back(zero_matrix);
-        omb.weight.push_back(zero_matrix);
-
-        if (engine().typed_config.mapmaking.method ==
-            citlali::config::MapMethod::jinc) {
-            omb.grid_weight.push_back(zero_matrix);
-        }
-
-        if (engine().rtcproc.run_kernel) {
-            omb.kernel.push_back(zero_matrix);
-        }
-
-        if (engine().typed_config.mapmaking.grouping !=
-            citlali::config::MapGrouping::detector) {
-            omb.coverage.push_back(zero_matrix);
-        }
-    }
-
-    if (engine().rtcproc.run_polarization) {
-        // allocate pointing matrix
-        for (Eigen::Index i=0; i<engine().n_maps/engine().rtcproc.polarization.stokes_params.size(); ++i) {
-            omb.pointing.emplace_back(omb.n_rows*omb.n_cols, 9);
-            engine().omb.pointing.back().setZero();
-        }
-    }
+    citlali::pipeline::clear_map_matrix_products(omb);
+    citlali::pipeline::apply_observation_map_geometry(
+        omb, map_extent, map_coord);
+    citlali::pipeline::allocate_map_matrices(
+        omb, engine().n_maps,
+        engine().typed_config.mapmaking.method ==
+            citlali::config::MapMethod::jinc,
+        engine().rtcproc.run_kernel,
+        engine().typed_config.mapmaking.grouping !=
+            citlali::config::MapGrouping::detector);
+    citlali::pipeline::allocate_polarization_pointing_matrices(
+        omb, engine().n_maps,
+        static_cast<Eigen::Index>(
+            engine().rtcproc.polarization.stokes_params.size()),
+        engine().rtcproc.run_polarization);
 }
 
 // allocate the coadded map buffer
@@ -60,40 +30,16 @@ template <class EngineType>
 void TimeOrderedDataProc<EngineType>::allocate_cmb() {
     auto& cmb = engine().cmb;
 
-    // clear map vectors
-    std::vector<Eigen::MatrixXd>().swap(cmb.signal);
-    std::vector<Eigen::MatrixXd>().swap(cmb.weight);
-    std::vector<Eigen::MatrixXd>().swap(cmb.kernel);
-    std::vector<Eigen::MatrixXd>().swap(cmb.coverage);
-    std::vector<Eigen::MatrixXd>().swap(cmb.grid_weight);
-    std::vector<Eigen::MatrixXd>().swap(cmb.pointing);
-    cmb.clear_contribution_diag();
-
-    Eigen::MatrixXd zero_matrix = Eigen::MatrixXd::Zero(cmb.n_rows, cmb.n_cols);
-
-    // loop through maps and allocate space
-    for (Eigen::Index i=0; i<engine().n_maps; ++i) {
-        cmb.signal.push_back(zero_matrix);
-        cmb.weight.push_back(zero_matrix);
-
-        if (engine().rtcproc.run_kernel) {
-            // allocate kernel
-            cmb.kernel.push_back(zero_matrix);
-        }
-        if (engine().typed_config.mapmaking.grouping !=
-            citlali::config::MapGrouping::detector) {
-            // allocate coverage
-            cmb.coverage.push_back(zero_matrix);
-        }
-    }
-
-    if (engine().rtcproc.run_polarization) {// && engine().run_noise) {
-        // allocate pointing matrix
-        for (Eigen::Index i=0; i<engine().n_maps/engine().rtcproc.polarization.stokes_params.size(); ++i) {
-            cmb.pointing.emplace_back(cmb.n_rows*cmb.n_cols, 9);
-            cmb.pointing.back().setZero();
-        }
-    }
+    citlali::pipeline::clear_map_matrix_products(cmb);
+    citlali::pipeline::allocate_map_matrices(
+        cmb, engine().n_maps, false, engine().rtcproc.run_kernel,
+        engine().typed_config.mapmaking.grouping !=
+            citlali::config::MapGrouping::detector);
+    citlali::pipeline::allocate_polarization_pointing_matrices(
+        cmb, engine().n_maps,
+        static_cast<Eigen::Index>(
+            engine().rtcproc.polarization.stokes_params.size()),
+        engine().rtcproc.run_polarization);
 }
 
 template <class EngineType>
