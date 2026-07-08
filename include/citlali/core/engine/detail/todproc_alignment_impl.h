@@ -18,19 +18,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
     // vector of network times
     std::vector<Eigen::VectorXd> nw_ts;
-    // start and end times
-    std::vector<double> nw_t0, nw_tn;
 
-    // maximum start time
-    double max_t0 = -99;
-
-    // minimum end time
-    double min_tn = std::numeric_limits<double>::max();
-    // indices of max start time and min end time
-    Eigen::Index max_t0_i, min_tn_i;
-
-    // set network
-    Eigen::Index nw = 0;
     // sample rate
     double fsmp = -1;
 
@@ -86,27 +74,6 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
                     engine().interface_sync_offset[
                         "toltec"+std::to_string(roach_index)]));
 
-            // push back start time
-            nw_t0.push_back(nw_ts.back()[0]);
-
-            // push back end time
-            nw_tn.push_back(nw_ts.back()[n_pts - 1]);
-
-            // get global max start time and index
-            if (nw_t0.back() > max_t0) {
-                max_t0 = nw_t0.back();
-                max_t0_i = nw;
-            }
-
-            // get global min end time and index
-            if (nw_tn.back() < min_tn) {
-                min_tn = nw_tn.back();
-                min_tn_i = nw;
-            }
-
-            // increment nw
-            nw++;
-
             fo.close();
 
         } catch (NcException &e) {
@@ -115,6 +82,13 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
                 "failed to load data from netCDF file {}", data_item.filepath())};
         }
     }
+
+    const auto network_overlap =
+        citlali::pipeline::find_common_timestream_overlap(
+            nw_ts, "align_timestreams");
+    double max_t0 = network_overlap.max_start;
+    double min_tn = network_overlap.min_end;
+    const Eigen::Index max_t0_i = network_overlap.max_start_index;
 
     // get hwpr timing
     if (engine().calib.run_hwpr) {
@@ -283,17 +257,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
         std::exit(EXIT_FAILURE);
     }
     double dt = 1.0 / fsmp_ref;
-    if (!std::isfinite(max_init_time) || !std::isfinite(min_final_time) || max_init_time > min_final_time) {
-        throw std::runtime_error(fmt::format(
-            "no common time overlap across input timestreams with gap interpolation: max_start={} min_end={}",
-            max_init_time, min_final_time));
-    }
-    Eigen::Index n_samples = static_cast<int>((min_final_time - max_init_time) / dt) + 1;
-    if (n_samples <= 0) {
-        throw std::runtime_error(fmt::format(
-            "invalid common sample count in align_timestreams_gaps: {}", n_samples));
-    }
-    Eigen::VectorXd t_common = Eigen::VectorXd::LinSpaced(n_samples, max_init_time, max_init_time + dt * (n_samples - 1));
+    Eigen::VectorXd t_common = citlali::pipeline::build_common_gap_time_grid(
+        max_init_time, min_final_time, dt, "align_timestreams_gaps");
     double tol = dt / 2.0;
 
     std::vector<Eigen::VectorXi> masks =

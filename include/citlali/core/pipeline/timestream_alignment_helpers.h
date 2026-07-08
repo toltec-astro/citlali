@@ -157,6 +157,26 @@ TimestreamSampleWindow find_common_sample_window(
     return window;
 }
 
+inline Eigen::VectorXd build_common_gap_time_grid(
+    double max_init_time, double min_final_time, double dt,
+    const std::string &context_label) {
+    if (!std::isfinite(max_init_time) || !std::isfinite(min_final_time) ||
+        max_init_time > min_final_time) {
+        throw std::runtime_error(fmt::format(
+            "no common time overlap across input timestreams with gap interpolation: max_start={} min_end={}",
+            max_init_time, min_final_time));
+    }
+    const Eigen::Index n_samples =
+        static_cast<int>((min_final_time - max_init_time) / dt) + 1;
+    if (n_samples <= 0) {
+        throw std::runtime_error(fmt::format(
+            "invalid common sample count in {}: {}",
+            context_label, n_samples));
+    }
+    return Eigen::VectorXd::LinSpaced(
+        n_samples, max_init_time, max_init_time + dt * (n_samples - 1));
+}
+
 template <class TimeVectors, class Logger>
 std::vector<Eigen::VectorXi> build_common_time_grid_masks(
     const TimeVectors &times, const Eigen::VectorXd &t_common,
