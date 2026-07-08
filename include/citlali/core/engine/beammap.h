@@ -116,6 +116,31 @@ public:
         std::map<std::string, Eigen::VectorXd> pointing_offsets;
     };
 
+    struct BeammapDetectorTodSelections {
+        int fill_int = -2147483647;
+        double fill_double = std::numeric_limits<double>::quiet_NaN();
+        float fill_float = std::numeric_limits<float>::quiet_NaN();
+        signed char fill_flag = static_cast<signed char>(-1);
+        std::vector<int> slot_scan_index;
+        std::vector<int> slot_kind;
+        std::vector<int> slot_n_samples;
+        std::vector<int> slot_inner_start;
+        std::vector<int> slot_inner_end;
+        std::vector<int> slot_outer_start;
+        std::vector<int> slot_outer_end;
+        std::vector<double> slot_source_distance_arcsec;
+        std::vector<int> det_center_scan_index;
+        std::vector<double> det_center_distance_arcsec;
+        std::vector<double> det_fit_x_arcsec;
+        std::vector<double> det_fit_y_arcsec;
+        std::vector<int> det_fit_good;
+        Eigen::Index n_det_fit_positions = 0;
+        Eigen::Index n_det_fallback_positions = 0;
+        std::string center_scan_summary;
+        double median_center_distance_arcsec =
+            std::numeric_limits<double>::quiet_NaN();
+    };
+
     bool beammap_soft_priors_loaded = false;
     bool beammap_soft_priors_are_centered = false;
     bool beammap_soft_priors_are_derotated = false;
@@ -389,6 +414,10 @@ public:
     BeammapDetectorTodPreflight prepare_detector_specific_ptc_tod_output();
     BeammapDetectorTodPointingSamples sample_detector_tod_pointing(
         Eigen::Index n_scans);
+    BeammapDetectorTodSelections make_detector_tod_selections(
+        const BeammapDetectorTodPreflight &preflight,
+        BeammapDetectorTodPointingSamples &pointing_samples,
+        const std::vector<Eigen::Index> &uniform_scans);
     void write_detector_specific_ptc_tod(int output_iter);
     void write_detector_table_outputs();
     void write_beammap_fit_qc_table(const std::string &apt_filename);

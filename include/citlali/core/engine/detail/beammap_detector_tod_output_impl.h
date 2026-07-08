@@ -72,6 +72,122 @@ Beammap::sample_detector_tod_pointing(Eigen::Index n_scans) {
     return samples;
 }
 
+Beammap::BeammapDetectorTodSelections
+Beammap::make_detector_tod_selections(
+    const BeammapDetectorTodPreflight &preflight,
+    BeammapDetectorTodPointingSamples &pointing_samples,
+    const std::vector<Eigen::Index> &uniform_scans) {
+    BeammapDetectorTodSelections selections;
+    const Eigen::Index n_scans = preflight.n_scans;
+    const int n_dense = preflight.n_dense;
+    const Eigen::Index n_slots = preflight.n_slots;
+    const auto total_det_slots =
+        static_cast<std::size_t>(calib.n_dets) *
+        static_cast<std::size_t>(n_slots);
+    selections.slot_scan_index.assign(total_det_slots, selections.fill_int);
+    selections.slot_kind.assign(total_det_slots, selections.fill_int);
+    selections.slot_n_samples.assign(total_det_slots, selections.fill_int);
+    selections.slot_inner_start.assign(total_det_slots, selections.fill_int);
+    selections.slot_inner_end.assign(total_det_slots, selections.fill_int);
+    selections.slot_outer_start.assign(total_det_slots, selections.fill_int);
+    selections.slot_outer_end.assign(total_det_slots, selections.fill_int);
+    selections.slot_source_distance_arcsec.assign(
+        total_det_slots, selections.fill_double);
+    selections.det_center_scan_index.assign(
+        static_cast<std::size_t>(calib.n_dets), selections.fill_int);
+    selections.det_center_distance_arcsec.assign(
+        static_cast<std::size_t>(calib.n_dets), selections.fill_double);
+    selections.det_fit_x_arcsec.assign(
+        static_cast<std::size_t>(calib.n_dets), selections.fill_double);
+    selections.det_fit_y_arcsec.assign(
+        static_cast<std::size_t>(calib.n_dets), selections.fill_double);
+    selections.det_fit_good.assign(
+        static_cast<std::size_t>(calib.n_dets), 0);
+
+    std::map<Eigen::Index, Eigen::Index> center_scan_counts;
+    std::vector<double> center_distances;
+    center_distances.reserve(static_cast<std::size_t>(calib.n_dets));
+
+    for (Eigen::Index det = 0; det < calib.n_dets; ++det) {
+        bool used_fit = false;
+        auto [x_arcsec, y_arcsec] =
+            beammap_detector_tod_selection::detector_source_position(
+                det, good_fits, params, calib.apt["x_t"], calib.apt["y_t"],
+                omb.pixel_size_rad, omb.n_cols, omb.n_rows, used_fit);
+        selections.det_fit_x_arcsec[static_cast<std::size_t>(det)] =
+            x_arcsec;
+        selections.det_fit_y_arcsec[static_cast<std::size_t>(det)] =
+            y_arcsec;
+        selections.det_fit_good[static_cast<std::size_t>(det)] =
+            used_fit ? 1 : 0;
+        if (used_fit) {
+            selections.n_det_fit_positions++;
+        }
+        else if (std::isfinite(x_arcsec) && std::isfinite(y_arcsec)) {
+            selections.n_det_fallback_positions++;
+        }
+
+        std::vector<double> distances_arcsec;
+        const Eigen::Index center_scan =
+            beammap_detector_tod_selection::scan_distances_for_detector_source(
+                det, x_arcsec, y_arcsec, n_scans,
+                pointing_samples.n_sampled, pointing_samples.sampled_scan,
+                pointing_samples.sampled_tel_data,
+                calib.apt["x_t"], calib.apt["y_t"],
+                telescope.pixel_axes, pointing_samples.pointing_offsets,
+                typed_config.mapmaking.grouping, distances_arcsec);
+        selections.det_center_scan_index[static_cast<std::size_t>(det)] =
+            static_cast<int>(center_scan + 1);
+        center_scan_counts[center_scan]++;
+        if (center_scan >= 0 && center_scan < n_scans &&
+            std::isfinite(distances_arcsec[static_cast<std::size_t>(center_scan)])) {
+            selections.det_center_distance_arcsec[static_cast<std::size_t>(det)] =
+                distances_arcsec[static_cast<std::size_t>(center_scan)];
+            center_distances.push_back(
+                distances_arcsec[static_cast<std::size_t>(center_scan)]);
+        }
+
+        Eigen::Index slot = 0;
+        for (const auto scan_index : uniform_scans) {
+            beammap_detector_tod_selection::fill_slot_scan_metadata(
+                det, slot, n_slots, scan_index, n_scans, 1,
+                telescope.scan_indices, ptcs, distances_arcsec,
+                selections.slot_scan_index, selections.slot_kind,
+                selections.slot_n_samples, selections.slot_inner_start,
+                selections.slot_inner_end, selections.slot_outer_start,
+                selections.slot_outer_end,
+                selections.slot_source_distance_arcsec);
+            slot++;
+        }
+        for (const auto scan_index :
+             beammap_detector_tod_selection::dense_scan_window(
+                 center_scan, n_dense, n_scans)) {
+            beammap_detector_tod_selection::fill_slot_scan_metadata(
+                det, slot, n_slots, scan_index, n_scans, 2,
+                telescope.scan_indices, ptcs, distances_arcsec,
+                selections.slot_scan_index, selections.slot_kind,
+                selections.slot_n_samples, selections.slot_inner_start,
+                selections.slot_inner_end, selections.slot_outer_start,
+                selections.slot_outer_end,
+                selections.slot_source_distance_arcsec);
+            slot++;
+        }
+    }
+
+    selections.center_scan_summary =
+        beammap_detector_tod_selection::format_center_scan_counts(
+            center_scan_counts);
+
+    if (!center_distances.empty()) {
+        Eigen::Map<Eigen::VectorXd> dist_vec(
+            center_distances.data(),
+            static_cast<Eigen::Index>(center_distances.size()));
+        selections.median_center_distance_arcsec = tula::alg::median(dist_vec);
+    }
+
+    return selections;
+}
+
 void Beammap::write_detector_specific_ptc_tod(int output_iter) {
     const auto preflight = prepare_detector_specific_ptc_tod_output();
     if (!preflight.write_output) {
@@ -91,95 +207,8 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         return;
     }
 
-    const int fill_int = -2147483647;
-    const double fill_double = std::numeric_limits<double>::quiet_NaN();
-    const float fill_float = std::numeric_limits<float>::quiet_NaN();
-    const signed char fill_flag = static_cast<signed char>(-1);
-    const auto total_det_slots =
-        static_cast<std::size_t>(calib.n_dets) * static_cast<std::size_t>(n_slots);
-    std::vector<int> slot_scan_index(total_det_slots, fill_int);
-    std::vector<int> slot_kind(total_det_slots, fill_int);
-    std::vector<int> slot_n_samples(total_det_slots, fill_int);
-    std::vector<int> slot_inner_start(total_det_slots, fill_int);
-    std::vector<int> slot_inner_end(total_det_slots, fill_int);
-    std::vector<int> slot_outer_start(total_det_slots, fill_int);
-    std::vector<int> slot_outer_end(total_det_slots, fill_int);
-    std::vector<double> slot_source_distance_arcsec(total_det_slots, fill_double);
-    std::vector<int> det_center_scan_index(static_cast<std::size_t>(calib.n_dets), fill_int);
-    std::vector<double> det_center_distance_arcsec(static_cast<std::size_t>(calib.n_dets), fill_double);
-    std::vector<double> det_fit_x_arcsec(static_cast<std::size_t>(calib.n_dets), fill_double);
-    std::vector<double> det_fit_y_arcsec(static_cast<std::size_t>(calib.n_dets), fill_double);
-    std::vector<int> det_fit_good(static_cast<std::size_t>(calib.n_dets), 0);
-    Eigen::Index n_det_fit_positions = 0;
-    Eigen::Index n_det_fallback_positions = 0;
-    std::map<Eigen::Index, Eigen::Index> center_scan_counts;
-    std::vector<double> center_distances;
-    center_distances.reserve(static_cast<std::size_t>(calib.n_dets));
-
-    for (Eigen::Index det = 0; det < calib.n_dets; ++det) {
-        bool used_fit = false;
-        auto [x_arcsec, y_arcsec] = beammap_detector_tod_selection::detector_source_position(
-            det, good_fits, params, calib.apt["x_t"], calib.apt["y_t"],
-            omb.pixel_size_rad, omb.n_cols, omb.n_rows, used_fit);
-        det_fit_x_arcsec[static_cast<std::size_t>(det)] = x_arcsec;
-        det_fit_y_arcsec[static_cast<std::size_t>(det)] = y_arcsec;
-        det_fit_good[static_cast<std::size_t>(det)] = used_fit ? 1 : 0;
-        if (used_fit) {
-            n_det_fit_positions++;
-        }
-        else if (std::isfinite(x_arcsec) && std::isfinite(y_arcsec)) {
-            n_det_fallback_positions++;
-        }
-        std::vector<double> distances_arcsec;
-        const Eigen::Index center_scan =
-            beammap_detector_tod_selection::scan_distances_for_detector_source(
-                det, x_arcsec, y_arcsec, n_scans,
-                pointing_samples.n_sampled, pointing_samples.sampled_scan,
-                pointing_samples.sampled_tel_data,
-                calib.apt["x_t"], calib.apt["y_t"],
-                telescope.pixel_axes, pointing_samples.pointing_offsets,
-                typed_config.mapmaking.grouping, distances_arcsec);
-        det_center_scan_index[static_cast<std::size_t>(det)] = static_cast<int>(center_scan + 1);
-        center_scan_counts[center_scan]++;
-        if (center_scan >= 0 && center_scan < n_scans &&
-            std::isfinite(distances_arcsec[static_cast<std::size_t>(center_scan)])) {
-            det_center_distance_arcsec[static_cast<std::size_t>(det)] =
-                distances_arcsec[static_cast<std::size_t>(center_scan)];
-            center_distances.push_back(distances_arcsec[static_cast<std::size_t>(center_scan)]);
-        }
-
-        Eigen::Index slot = 0;
-        for (const auto scan_index : uniform_scans) {
-            beammap_detector_tod_selection::fill_slot_scan_metadata(
-                det, slot, n_slots, scan_index, n_scans, 1,
-                telescope.scan_indices, ptcs, distances_arcsec,
-                slot_scan_index, slot_kind, slot_n_samples, slot_inner_start,
-                slot_inner_end, slot_outer_start, slot_outer_end,
-                slot_source_distance_arcsec);
-            slot++;
-        }
-        for (const auto scan_index : beammap_detector_tod_selection::dense_scan_window(center_scan, n_dense, n_scans)) {
-            beammap_detector_tod_selection::fill_slot_scan_metadata(
-                det, slot, n_slots, scan_index, n_scans, 2,
-                telescope.scan_indices, ptcs, distances_arcsec,
-                slot_scan_index, slot_kind, slot_n_samples, slot_inner_start,
-                slot_inner_end, slot_outer_start, slot_outer_end,
-                slot_source_distance_arcsec);
-            slot++;
-        }
-    }
-
-    const std::string center_scan_summary =
-        beammap_detector_tod_selection::format_center_scan_counts(
-            center_scan_counts);
-
-    double median_center_distance_arcsec = std::numeric_limits<double>::quiet_NaN();
-    if (!center_distances.empty()) {
-        Eigen::Map<Eigen::VectorXd> dist_vec(
-            center_distances.data(),
-            static_cast<Eigen::Index>(center_distances.size()));
-        median_center_distance_arcsec = tula::alg::median(dist_vec);
-    }
+    const auto selections = make_detector_tod_selections(
+        preflight, pointing_samples, uniform_scans);
 
     const auto output_paths = beammap_detector_tod_output_helpers::output_paths(
         obsnum_dir_name, beammap_detector_tod_output_subdir_name,
@@ -194,10 +223,10 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         n_slots,
         n_uniform,
         n_dense,
-        n_det_fit_positions,
-        n_det_fallback_positions,
-        median_center_distance_arcsec,
-        center_scan_summary);
+        selections.n_det_fit_positions,
+        selections.n_det_fallback_positions,
+        selections.median_center_distance_arcsec,
+        selections.center_scan_summary);
 
     write_netcdf_atomic(filename, [&](netCDF::NcFile &fo) {
         namespace tod_nc = beammap_detector_tod_netcdf_helpers;
@@ -218,67 +247,70 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
 
         tod_nc::put_detector_int(
             fo, det_dims, "detector_tod_uid", "detector UID along n_dets",
-            tod_nc::apt_int_values(calib.apt, "uid", calib.n_dets, fill_int));
+            tod_nc::apt_int_values(
+                calib.apt, "uid", calib.n_dets, selections.fill_int));
         tod_nc::put_detector_int(
             fo, det_dims, "detector_tod_array", "array index along n_dets",
-            tod_nc::apt_int_values(calib.apt, "array", calib.n_dets, fill_int));
+            tod_nc::apt_int_values(
+                calib.apt, "array", calib.n_dets, selections.fill_int));
         tod_nc::put_detector_int(
             fo, det_dims, "detector_tod_network", "network index along n_dets",
-            tod_nc::apt_int_values(calib.apt, "nw", calib.n_dets, fill_int));
+            tod_nc::apt_int_values(
+                calib.apt, "nw", calib.n_dets, selections.fill_int));
         tod_nc::put_detector_int(
             fo, det_dims, "detector_tod_fit_good",
             "1 when the source-crossing scan was centered on a good fit, else 0",
-            det_fit_good);
+            selections.det_fit_good);
         tod_nc::put_detector_int(
             fo, det_dims, "detector_tod_source_center_scan_index",
             "1-based full-observation scan with closest approach to the fitted detector source position",
-            det_center_scan_index);
+            selections.det_center_scan_index);
         tod_nc::put_detector_double(
             fo, det_dims, "detector_tod_source_center_distance_arcsec", "arcsec",
             "closest sampled distance from source in detector source-center scan",
-            det_center_distance_arcsec);
+            selections.det_center_distance_arcsec);
         tod_nc::put_detector_double(
             fo, det_dims, "detector_tod_fit_x_t_arcsec", "arcsec",
             "fitted detector source x_t used for dense scan selection",
-            det_fit_x_arcsec);
+            selections.det_fit_x_arcsec);
         tod_nc::put_detector_double(
             fo, det_dims, "detector_tod_fit_y_t_arcsec", "arcsec",
             "fitted detector source y_t used for dense scan selection",
-            det_fit_y_arcsec);
+            selections.det_fit_y_arcsec);
 
         tod_nc::put_slot_int(
             fo, det_slot_dims, det_slot_chunks, "detector_tod_slot_kind",
             "slot kind: 1=uniform over full raster, 2=dense around detector source crossing",
-            slot_kind);
+            selections.slot_kind);
         tod_nc::put_slot_int(
             fo, det_slot_dims, det_slot_chunks, "detector_tod_scan_index",
             "1-based full-observation scan index selected for this detector/slot",
-            slot_scan_index);
+            selections.slot_scan_index);
         tod_nc::put_slot_int(
             fo, det_slot_dims, det_slot_chunks, "detector_tod_n_samples",
             "number of PTC samples populated for this detector/slot",
-            slot_n_samples);
+            selections.slot_n_samples);
         tod_nc::put_slot_int(
             fo, det_slot_dims, det_slot_chunks, "detector_tod_scan_inner_start_sample",
             "raw inner-scan start sample from telescope scan definition",
-            slot_inner_start);
+            selections.slot_inner_start);
         tod_nc::put_slot_int(
             fo, det_slot_dims, det_slot_chunks, "detector_tod_scan_inner_end_sample",
             "raw inner-scan end sample from telescope scan definition",
-            slot_inner_end);
+            selections.slot_inner_end);
         tod_nc::put_slot_int(
             fo, det_slot_dims, det_slot_chunks, "detector_tod_scan_outer_start_sample",
             "raw outer-scan start sample from telescope scan definition",
-            slot_outer_start);
+            selections.slot_outer_start);
         tod_nc::put_slot_int(
             fo, det_slot_dims, det_slot_chunks, "detector_tod_scan_outer_end_sample",
             "raw outer-scan end sample from telescope scan definition",
-            slot_outer_end);
+            selections.slot_outer_end);
         tod_nc::put_slot_double(
             fo, det_slot_dims, det_slot_chunks, "detector_tod_source_distance_arcsec",
             "arcsec",
             "closest sampled source distance for this detector on this selected scan",
-            slot_source_distance_arcsec);
+            selections.slot_source_distance_arcsec);
 
         netCDF::NcVar signal_v = fo.addVar("signal", netCDF::ncFloat, data_dims);
         signal_v.putAtt("units", omb.sig_unit);
@@ -291,7 +323,8 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         set_netcdf_chunking_and_compression(flags_v, data_chunks, 1);
 
         tod_nc::put_detector_tod_signal_flags(
-            signal_v, flags_v, ptcs, slot_scan_index, calib.n_dets, n_slots,
-            n_samples_max, fill_float, fill_flag);
+            signal_v, flags_v, ptcs, selections.slot_scan_index, calib.n_dets,
+            n_slots, n_samples_max, selections.fill_float,
+            selections.fill_flag);
     });
 }
