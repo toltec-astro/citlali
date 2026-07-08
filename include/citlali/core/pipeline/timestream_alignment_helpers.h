@@ -2,6 +2,7 @@
 
 #include <fmt/core.h>
 #include <Eigen/Core>
+#include <tula/algorithm/mlinterp/mlinterp.hpp>
 
 #include <cmath>
 #include <limits>
@@ -119,6 +120,45 @@ std::vector<Eigen::VectorXi> build_common_time_grid_masks(
     }
 
     return masks;
+}
+
+template <class TelData>
+void interpolate_telescope_data_to_common_time(
+    TelData &tel_data, const Eigen::VectorXd &common_time,
+    bool skip_tel_utc_during_loop) {
+    Eigen::Matrix<Eigen::Index,1,1> nd;
+    nd << tel_data["TelTime"].size();
+
+    for (const auto &tel_it : tel_data) {
+        if (tel_it.first == "TelTime" ||
+            (skip_tel_utc_during_loop && tel_it.first == "TelUTC")) {
+            continue;
+        }
+        Eigen::VectorXd yd = tel_data[tel_it.first];
+        Eigen::VectorXd yi(common_time.size());
+
+        mlinterp::interp(nd.data(), common_time.size(),
+                         yd.data(), yi.data(),
+                         tel_data["TelTime"].data(), common_time.data());
+        tel_data[tel_it.first] = std::move(yi);
+    }
+
+    tel_data["TelTime"] = common_time;
+    tel_data["TelUTC"] = common_time;
+}
+
+inline void interpolate_hwpr_angle_to_common_time(
+    Eigen::VectorXd &hwpr_angle, const Eigen::VectorXd &hwpr_time,
+    const Eigen::VectorXd &common_time) {
+    Eigen::Matrix<Eigen::Index,1,1> hwpr_nd;
+    hwpr_nd << hwpr_time.size();
+    Eigen::VectorXd yd = hwpr_angle;
+    Eigen::VectorXd yi(common_time.size());
+
+    mlinterp::interp(hwpr_nd.data(), common_time.size(),
+                     yd.data(), yi.data(), hwpr_time.data(),
+                     common_time.data());
+    hwpr_angle = std::move(yi);
 }
 
 }  // namespace citlali::pipeline

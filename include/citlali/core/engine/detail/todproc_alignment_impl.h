@@ -228,47 +228,16 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         throw std::runtime_error("aligned common timestream length is not positive");
     }
 
-    // size of telescope data
-    Eigen::Matrix<Eigen::Index,1,1> nd;
-    nd << engine().telescope.tel_data["TelTime"].size();
-
     // shortest common data time vector
     Eigen::VectorXd xi = nw_ts[max_t0_i].segment(engine().start_indices[max_t0_i], min_size);
 
-    // interpolate telescope data
-    for (const auto &tel_it : engine().telescope.tel_data) {
-        if (tel_it.first !="TelTime") {
-            // telescope vector to interpolate
-            Eigen::VectorXd yd = engine().telescope.tel_data[tel_it.first];
-            // vector to store interpolated outputs in
-            Eigen::VectorXd yi(min_size);
-
-            mlinterp::interp(nd.data(), min_size, // nd, ni
-                             yd.data(), yi.data(), // yd, yi
-                             engine().telescope.tel_data["TelTime"].data(), xi.data()); // xd, xi
-
-            // move back into tel_data vector
-            engine().telescope.tel_data[tel_it.first] = std::move(yi);
-        }
-    }
-
-    // replace telescope time vectors
-    engine().telescope.tel_data["TelTime"] = xi;
-    engine().telescope.tel_data["TelUTC"] = xi;
+    citlali::pipeline::interpolate_telescope_data_to_common_time(
+        engine().telescope.tel_data, xi, false);
 
     // interpolate hwpr data
     if (engine().calib.run_hwpr) {
-        Eigen::Matrix<Eigen::Index,1,1> hwpr_nd;
-        hwpr_nd << engine().calib.hwpr_recvt.size();
-        Eigen::VectorXd yd = engine().calib.hwpr_angle;
-        // vector to store interpolated outputs in
-        Eigen::VectorXd yi(min_size);
-        mlinterp::interp(hwpr_nd.data(), min_size, // nd, ni
-                         yd.data(), yi.data(), // yd, yi
-                         engine().calib.hwpr_recvt.data(), xi.data()); // xd, xi
-
-        // move back into hwpr angle
-        engine().calib.hwpr_angle = std::move(yi);
+        citlali::pipeline::interpolate_hwpr_angle_to_common_time(
+            engine().calib.hwpr_angle, engine().calib.hwpr_recvt, xi);
     }
 }
 
@@ -421,46 +390,15 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
         engine().nw_masks[nw_ids[j]] = masks[j];
     }
 
-    // size of telescope data
-    Eigen::Matrix<Eigen::Index,1,1> nd;
-    nd << engine().telescope.tel_data["TelTime"].size();
-
-    // interpolate telescope data onto data timestream
-    for (const auto &tel_it : engine().telescope.tel_data) {
-        // don't interpolate telescope time itself
-        if (tel_it.first !="TelTime" && tel_it.first !="TelUTC") {
-            // telescope vector to interpolate
-            Eigen::VectorXd yd = engine().telescope.tel_data.at(tel_it.first);
-            // vector to store interpolated outputs in
-            Eigen::VectorXd yi(n_samples);
-
-            mlinterp::interp(nd.data(), n_samples, // nd, ni
-                                yd.data(), yi.data(), // yd, yi
-                                engine().telescope.tel_data.at("TelTime").data(), t_common.data()); // xd, xi
-
-            // move back into data vector
-            engine().telescope.tel_data[tel_it.first] = std::move(yi);
-        }
-    }
-
-    // replace telescope time vectors
-    engine().telescope.tel_data.at("TelTime") = t_common;
-    engine().telescope.tel_data.at("TelUTC") = t_common;
+    citlali::pipeline::interpolate_telescope_data_to_common_time(
+        engine().telescope.tel_data, t_common, true);
 
     // interpolate hwpr
     if (engine().calib.run_hwpr) {
         logger->debug("interpolating hwpr angle");
         int n_times = nw_times.size();
-        nd << nw_times[n_times - 1].size();
-
-        // vector to store interpolated outputs in
-        Eigen::VectorXd yi(n_samples);
-
-        mlinterp::interp(nd.data(), n_samples, // nd, ni
-                            engine().calib.hwpr_angle.data(), yi.data(), // yd, yi
-                            nw_times[n_times - 1].data(), t_common.data()); // xd, xi
-
-        engine().calib.hwpr_angle = std::move(yi);
+        citlali::pipeline::interpolate_hwpr_angle_to_common_time(
+            engine().calib.hwpr_angle, nw_times[n_times - 1], t_common);
     }
 
     engine().t_common = t_common;
