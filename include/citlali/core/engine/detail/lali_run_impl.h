@@ -64,11 +64,9 @@ auto Lali::run() -> run_stage_t {
         auto *rtc_outer_output_ptr =
             (write_this_rtc && rtcproc.tod_output_outer) ? &rtc_outer_output : nullptr;
 
-        {
-            std::lock_guard<std::mutex> lk(*scans_done_mutex);
-            logger->info("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done,
-                         telescope.scan_indices.cols());
-        }
+        citlali::pipeline::log_scan_start(
+            scans_done_mutex, logger, rtcdata.index.data, n_scans_done,
+            telescope);
 
         // run rtcproc
         logger->info("raw time chunk processing for scan {}", rtcdata.index.data + 1);
@@ -120,13 +118,11 @@ auto Lali::run() -> run_stage_t {
         apply_learned_ptc_sample_masks(ptcdata, calib_scan);
         apply_learned_ptc_detector_exclusions(ptcdata, calib_scan);
 
-        const bool use_fruit_noise_weights =
-            ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty();
-        const bool keep_source_subtracted_weights =
-            use_fruit_noise_weights && !ptcproc.fruit_loops_recompute_weights_after_addback;
+        const auto fruit_weight_policy =
+            citlali::pipeline::fruit_loop_weight_policy(ptcproc);
 
         // if running fruit loops and a map has been read in
-        if (use_fruit_noise_weights) {
+        if (fruit_weight_policy.use_noise_weights) {
             logger->info("subtracting map from tod");
             // subtract map
             ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(ptcproc.tod_mb, ptcdata, calib_scan,
@@ -138,7 +134,8 @@ auto Lali::run() -> run_stage_t {
 
         {
             std::lock_guard<std::mutex> lock(*ptc_line_audit_mutex);
-            apply_model_protected_ptc_line_audit(ptcdata, calib_scan, use_fruit_noise_weights);
+            apply_model_protected_ptc_line_audit(
+                ptcdata, calib_scan, fruit_weight_policy.use_noise_weights);
         }
 
         // run cleaning
@@ -148,7 +145,7 @@ auto Lali::run() -> run_stage_t {
             ptcproc.snapshot_second_pass_summary(ptcdata.index.data);
 
         // if running fruit loops and a map has been read in
-        if (use_fruit_noise_weights) {
+        if (fruit_weight_policy.use_noise_weights) {
             // calculate weights
             logger->info("calculating weights for scan {} (fruit loops noise-only pass)",
                          ptcdata.index.data + 1);
@@ -176,12 +173,12 @@ auto Lali::run() -> run_stage_t {
         // remove outliers after cleaning
         calib_scan = ptcproc.remove_bad_dets(ptcdata, calib_scan, map_grouping);
 
-        if (keep_source_subtracted_weights) {
+        if (fruit_weight_policy.keep_source_subtracted_weights) {
             logger->info("keeping source-subtracted weights for scan {}", ptcdata.index.data + 1);
         }
         else {
             // calculate weights
-            if (use_fruit_noise_weights) {
+            if (fruit_weight_policy.use_noise_weights) {
                 logger->info("recomputing weights after fruit loops add-back for scan {}",
                              ptcdata.index.data + 1);
             }
@@ -248,12 +245,9 @@ auto Lali::run() -> run_stage_t {
         }
 
         // increment number of completed scans
-        {
-            std::lock_guard<std::mutex> lk(*scans_done_mutex);
-            n_scans_done++;
-            logger->info("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done,
-                         telescope.scan_indices.cols());
-        }
+        citlali::pipeline::log_scan_done(
+            scans_done_mutex, logger, ptcdata.index.data, n_scans_done,
+            telescope);
     }};
     auto farm = grppi::farm(n_threads, std::move(farm_fn));
 

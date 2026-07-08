@@ -108,11 +108,9 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
         auto *rtc_outer_output_ptr =
             (write_this_rtc && rtcproc.tod_output_outer) ? &rtc_outer_output : nullptr;
 
-        {
-            std::lock_guard<std::mutex> lk(*scans_done_mutex);
-            logger->info("starting scan {}. {}/{} scans completed", rtcdata.index.data + 1, n_scans_done,
-                         telescope.scan_indices.cols());
-        }
+        citlali::pipeline::log_scan_start(
+            scans_done_mutex, logger, rtcdata.index.data, n_scans_done,
+            telescope);
 
         // run rtcproc
         logger->info("raw time chunk processing for scan {}", rtcdata.index.data + 1);
@@ -165,12 +163,9 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
         calib_scans0.at(ptcdata.index.data) = std::move(calib_scan);
 
         // increment number of completed scans
-        {
-            std::lock_guard<std::mutex> lk(*scans_done_mutex);
-            n_scans_done++;
-            logger->info("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done,
-                         telescope.scan_indices.cols());
-        }
+        citlali::pipeline::log_scan_done(
+            scans_done_mutex, logger, ptcdata.index.data, n_scans_done,
+            telescope);
 
         return ptcdata;
     });
