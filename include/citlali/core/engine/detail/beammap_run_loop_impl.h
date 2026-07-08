@@ -416,6 +416,25 @@ void Beammap::reset_beammap_prior_diagnostics(Eigen::Index map_index) {
     prior_diag_values(map_index, prior_slot_index_col) = -1.0;
 }
 
+Beammap::BeammapFitAttemptFlags Beammap::beammap_fit_attempt_flags(
+    const engine_utils::mapFitter::FitDiagnostics &fit_diag) const {
+    BeammapFitAttemptFlags flags;
+    if (fit_diag.valid &&
+        fit_diag.init_params.size() > 0 &&
+        fit_diag.lower_limits.size() > 0 &&
+        fit_diag.upper_limits.size() > 0) {
+        const double init_amp = fit_diag.init_params(0);
+        const double amp_low = fit_diag.lower_limits(0);
+        const double amp_high = fit_diag.upper_limits(0);
+        flags.init_amp_zero =
+            std::isfinite(init_amp) && std::abs(init_amp) <= 1e-12;
+        flags.amp_bounds_zero =
+            std::isfinite(amp_low) && std::isfinite(amp_high) &&
+            std::abs(amp_high - amp_low) <= 1e-12;
+    }
+    return flags;
+}
+
 void Beammap::record_beammap_fit_attempt_stats(
     BeammapFitIterationStats &fit_stats, BeammapFitInitMode init_mode,
     bool good_fit, bool init_amp_zero, bool amp_bounds_zero) {
@@ -456,6 +475,54 @@ void Beammap::record_beammap_fit_attempt_stats(
                 fit_stats.amp_bounds_zero_blind++;
             }
             break;
+    }
+}
+
+bool Beammap::has_complete_beammap_fit_diagnostics(
+    const engine_utils::mapFitter::FitDiagnostics &fit_diag) const {
+    return fit_diag.valid &&
+           fit_diag.init_params.size() == map_fitter.n_params &&
+           fit_diag.lower_limits.size() == map_fitter.n_params &&
+           fit_diag.upper_limits.size() == map_fitter.n_params &&
+           fit_diag.hit_lower.size() == map_fitter.n_params &&
+           fit_diag.hit_upper.size() == map_fitter.n_params;
+}
+
+void Beammap::record_beammap_fit_diagnostics(
+    Eigen::Index map_index,
+    const engine_utils::mapFitter::FitDiagnostics &fit_diag,
+    BeammapFitIterationStats &fit_stats) {
+    if (!has_complete_beammap_fit_diagnostics(fit_diag)) {
+        reset_beammap_fit_diagnostics(map_index);
+        return;
+    }
+
+    fit_diag_init_params.row(map_index) = fit_diag.init_params.transpose();
+    fit_diag_lower_limits.row(map_index) = fit_diag.lower_limits.transpose();
+    fit_diag_upper_limits.row(map_index) = fit_diag.upper_limits.transpose();
+    fit_diag_hit_lower.row(map_index) = fit_diag.hit_lower.transpose();
+    fit_diag_hit_upper.row(map_index) = fit_diag.hit_upper.transpose();
+
+    int bound_code = 0;
+    int bound_nhit = 0;
+    for (int p = 0; p < map_fitter.n_params; ++p) {
+        const bool hit_low = fit_diag.hit_lower(p) != 0;
+        const bool hit_high = fit_diag.hit_upper(p) != 0;
+        if (hit_low) {
+            bound_code |= (1 << (2 * p));
+            fit_stats.bound_low(p)++;
+            bound_nhit++;
+        }
+        if (hit_high) {
+            bound_code |= (1 << (2 * p + 1));
+            fit_stats.bound_high(p)++;
+            bound_nhit++;
+        }
+    }
+    fit_diag_bound_code(map_index) = bound_code;
+    fit_diag_bound_nhit(map_index) = bound_nhit;
+    if (bound_nhit > 0) {
+        fit_stats.bound_any++;
     }
 }
 
@@ -709,61 +776,11 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
             perrors.row(i) = det_perror;
             good_fits(i) = good_fit;
 
-            bool init_amp_zero = false;
-            bool amp_bounds_zero = false;
-            if (fit_diag.valid &&
-                fit_diag.init_params.size() > 0 &&
-                fit_diag.lower_limits.size() > 0 &&
-                fit_diag.upper_limits.size() > 0) {
-                const double init_amp = fit_diag.init_params(0);
-                const double amp_low = fit_diag.lower_limits(0);
-                const double amp_high = fit_diag.upper_limits(0);
-                init_amp_zero = std::isfinite(init_amp) && std::abs(init_amp) <= 1e-12;
-                amp_bounds_zero =
-                    std::isfinite(amp_low) && std::isfinite(amp_high) &&
-                    std::abs(amp_high - amp_low) <= 1e-12;
-            }
+            const auto fit_flags = beammap_fit_attempt_flags(fit_diag);
             record_beammap_fit_attempt_stats(
-                fit_stats, init_mode, good_fit, init_amp_zero,
-                amp_bounds_zero);
-
-            if (fit_diag.valid &&
-                fit_diag.init_params.size() == map_fitter.n_params &&
-                fit_diag.lower_limits.size() == map_fitter.n_params &&
-                fit_diag.upper_limits.size() == map_fitter.n_params &&
-                fit_diag.hit_lower.size() == map_fitter.n_params &&
-                fit_diag.hit_upper.size() == map_fitter.n_params) {
-                fit_diag_init_params.row(i) = fit_diag.init_params.transpose();
-                fit_diag_lower_limits.row(i) = fit_diag.lower_limits.transpose();
-                fit_diag_upper_limits.row(i) = fit_diag.upper_limits.transpose();
-                fit_diag_hit_lower.row(i) = fit_diag.hit_lower.transpose();
-                fit_diag_hit_upper.row(i) = fit_diag.hit_upper.transpose();
-
-                int bound_code = 0;
-                int bound_nhit = 0;
-                for (int p = 0; p < map_fitter.n_params; ++p) {
-                    const bool hit_low = fit_diag.hit_lower(p) != 0;
-                    const bool hit_high = fit_diag.hit_upper(p) != 0;
-                    if (hit_low) {
-                        bound_code |= (1 << (2 * p));
-                        fit_stats.bound_low(p)++;
-                        bound_nhit++;
-                    }
-                    if (hit_high) {
-                        bound_code |= (1 << (2 * p + 1));
-                        fit_stats.bound_high(p)++;
-                        bound_nhit++;
-                    }
-                }
-                fit_diag_bound_code(i) = bound_code;
-                fit_diag_bound_nhit(i) = bound_nhit;
-                if (bound_nhit > 0) {
-                    fit_stats.bound_any++;
-                }
-            }
-            else {
-                reset_beammap_fit_diagnostics(i);
-            }
+                fit_stats, init_mode, good_fit, fit_flags.init_amp_zero,
+                fit_flags.amp_bounds_zero);
+            record_beammap_fit_diagnostics(i, fit_diag, fit_stats);
         }
         // otherwise keep value from previous iteration
         else {

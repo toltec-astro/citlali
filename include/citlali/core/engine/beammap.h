@@ -50,6 +50,11 @@ public:
 
     enum class BeammapFitInitMode { Blind, Previous, Prior };
 
+    struct BeammapFitAttemptFlags {
+        bool init_amp_zero = false;
+        bool amp_bounds_zero = false;
+    };
+
     struct BeammapFitIterationStats {
         Eigen::VectorXi bound_low;
         Eigen::VectorXi bound_high;
@@ -238,9 +243,17 @@ public:
     void clear_beammap_fit_result(Eigen::Index map_index);
     bool has_beammap_prior_diagnostics() const;
     void reset_beammap_prior_diagnostics(Eigen::Index map_index);
+    BeammapFitAttemptFlags beammap_fit_attempt_flags(
+        const engine_utils::mapFitter::FitDiagnostics &fit_diag) const;
     void record_beammap_fit_attempt_stats(
         BeammapFitIterationStats &fit_stats, BeammapFitInitMode init_mode,
         bool good_fit, bool init_amp_zero, bool amp_bounds_zero);
+    bool has_complete_beammap_fit_diagnostics(
+        const engine_utils::mapFitter::FitDiagnostics &fit_diag) const;
+    void record_beammap_fit_diagnostics(
+        Eigen::Index map_index,
+        const engine_utils::mapFitter::FitDiagnostics &fit_diag,
+        BeammapFitIterationStats &fit_stats);
     void log_beammap_fit_iteration_stats(
         const BeammapFitIterationStats &fit_stats);
     bool advance_beammap_iteration_state();
