@@ -411,6 +411,29 @@ void Beammap::log_beammap_fit_map_stats(Eigen::Index map_index) const {
         sig.minCoeff(), sig.maxCoeff(), wt.minCoeff(), wt.maxCoeff());
 }
 
+bool Beammap::prepare_beammap_fit_map(Eigen::Index map_index) {
+    if (has_beammap_prior_diagnostics()) {
+        reset_beammap_prior_diagnostics(map_index);
+    }
+
+    const Eigen::Index n_weight_pos =
+        (omb.weight[map_index].array() > 0.0).count();
+    if (n_weight_pos < map_fitter.n_params) {
+        logger->warn(
+            "beammap fit map={} skipped: insufficient weighted pixels ({})",
+            map_index, n_weight_pos);
+        clear_beammap_fit_result(map_index);
+        return false;
+    }
+    return true;
+}
+
+double Beammap::beammap_init_fwhm_pix(Eigen::Index map_index) {
+    const auto array = maps_to_arrays(map_index);
+    return toltec_io.array_fwhm_arcsec[array] * ASEC_TO_RAD /
+           omb.pixel_size_rad;
+}
+
 void Beammap::reset_beammap_fit_diagnostics(Eigen::Index map_index) {
     fit_diag_init_params.row(map_index).setZero();
     fit_diag_lower_limits.row(map_index).setZero();
@@ -426,6 +449,11 @@ void Beammap::clear_beammap_fit_result(Eigen::Index map_index) {
     perrors.row(map_index).setZero();
     reset_beammap_fit_diagnostics(map_index);
     good_fits(map_index) = false;
+}
+
+void Beammap::restore_converged_beammap_fit_result(Eigen::Index map_index) {
+    params.row(map_index) = p0.row(map_index);
+    perrors.row(map_index) = perror0.row(map_index);
 }
 
 bool Beammap::has_beammap_prior_diagnostics() const {
@@ -807,21 +835,11 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
 
         // only fit if not converged
         if (!converged(i)) {
-            if (has_beammap_prior_diagnostics()) {
-                reset_beammap_prior_diagnostics(i);
-            }
-
-            const Eigen::Index n_weight_pos = (omb.weight[i].array() > 0.0).count();
-            if (n_weight_pos < map_fitter.n_params) {
-                logger->warn("beammap fit map={} skipped: insufficient weighted pixels ({})", i, n_weight_pos);
-                clear_beammap_fit_result(i);
+            if (!prepare_beammap_fit_map(i)) {
                 continue;
             }
 
-            // get array number
-            auto array = maps_to_arrays(i);
-            // get initial guess fwhm from theoretical fwhms for the arrays
-            double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
+            const double init_fwhm = beammap_init_fwhm_pix(i);
             const bool can_try_prior =
                 beammap_priors_enabled && beammap_soft_priors_loaded &&
                 detector_grouping;
@@ -861,8 +879,7 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
         }
         // otherwise keep value from previous iteration
         else {
-            params.row(i) = p0.row(i);
-            perrors.row(i) = perror0.row(i);
+            restore_converged_beammap_fit_result(i);
         }
 
         logger->debug("beammap fit checkpoint: map={} end good_fit={}", i, good_fits(i));

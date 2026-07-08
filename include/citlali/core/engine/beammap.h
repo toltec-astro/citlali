@@ -257,6 +257,9 @@ public:
     void fit_beammap_maps(bool detector_grouping, bool measurement_iter);
     void require_beammap_fit_map_geometry(Eigen::Index map_index) const;
     void log_beammap_fit_map_stats(Eigen::Index map_index) const;
+    bool prepare_beammap_fit_map(Eigen::Index map_index);
+    double beammap_init_fwhm_pix(Eigen::Index map_index);
+    void restore_converged_beammap_fit_result(Eigen::Index map_index);
     void reset_beammap_fit_diagnostics(Eigen::Index map_index);
     void clear_beammap_fit_result(Eigen::Index map_index);
     bool has_beammap_prior_diagnostics() const;
