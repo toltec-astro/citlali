@@ -5,6 +5,7 @@
 #include <citlali/core/pipeline/observation_coadd_accumulation.h>
 #include <citlali/core/pipeline/observation_map_files.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/product_index_file.h>
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::coadd() {
@@ -51,33 +52,5 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::make_index_file(std::string filepath) {
-    // get sortedfiles and directories in filepath
-    std::set<fs::path> sorted_by_name;
-    for (auto &entry : fs::directory_iterator(filepath))
-        sorted_by_name.insert(entry);
-
-    // yaml node to store names
-    YAML::Node node;
-    // data products
-    node["description"].push_back("citlali data products");
-    // datetime when file is created
-    node["date"].push_back(engine_utils::current_date_time());
-    // citlali version
-    node["citlali_version"].push_back(CITLALI_GIT_VERSION);
-    // kids version
-    node["kids_version"].push_back(KIDSCPP_GIT_VERSION);
-    // tula version
-    node["tula_version"].push_back(TULA_GIT_VERSION);
-
-    // call make_index_file recursively if current object is directory
-    for (const auto & entry : sorted_by_name) {
-        std::string path_string{entry.generic_string()};
-        if (fs::is_directory(entry)) {
-            make_index_file(path_string);
-        }
-        node["files/dirs"].push_back(path_string.substr(path_string.find_last_of("/") + 1));
-    }
-    // output yaml index file
-    std::ofstream fout(filepath + "/index.yaml");
-    fout << node;
+    citlali::pipeline::write_product_index_file(filepath);
 }
