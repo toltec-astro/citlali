@@ -971,16 +971,16 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
 
     const auto grouping = to_lower(expected_map_grouping);
     Eigen::Index expected_n_maps = 0;
-    if (grouping == "array") {
+    if (citlali::config::is_array_map_grouping(grouping)) {
         expected_n_maps = calib.arrays.size();
     }
-    else if (grouping == "nw") {
+    else if (citlali::config::is_network_map_grouping(grouping)) {
         expected_n_maps = calib.nws.size();
     }
-    else if (grouping == "fg") {
+    else if (citlali::config::is_frequency_group_map_grouping(grouping)) {
         expected_n_maps = calib.fg.size() * calib.arrays.size();
     }
-    else if (grouping == "detector") {
+    else if (citlali::config::is_detector_map_grouping(grouping)) {
         expected_n_maps = calib.n_dets;
     }
     else {
@@ -1017,7 +1017,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             return std::nullopt;
         }
 
-        if (grouping == "array") {
+        if (citlali::config::is_array_map_grouping(grouping)) {
             if (tokens.size() != 2) {
                 return std::nullopt;
             }
@@ -1041,7 +1041,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             return std::nullopt;
         }
 
-        if (grouping == "nw") {
+        if (citlali::config::is_network_map_grouping(grouping)) {
             if (group_token != "nw") {
                 return std::nullopt;
             }
@@ -1052,7 +1052,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             }
             return it->second;
         }
-        if (grouping == "fg") {
+        if (citlali::config::is_frequency_group_map_grouping(grouping)) {
             if (group_token != "fg") {
                 return std::nullopt;
             }
@@ -1068,7 +1068,7 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             }
             return fg_it->second + calib.fg.size() * arr_it->second;
         }
-        if (grouping == "detector") {
+        if (citlali::config::is_detector_map_grouping(grouping)) {
             if (group_token != "det") {
                 return std::nullopt;
             }
