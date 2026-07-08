@@ -488,6 +488,50 @@ inline bool is_constant_processed_weighting_type(std::string_view value) {
         value, ProcessedTimeChunkWeightingType::constant);
 }
 
+inline bool is_processed_weight_grouping(
+    ProcessedTimeChunkWeightGrouping value,
+    ProcessedTimeChunkWeightGrouping grouping) {
+    return value == grouping;
+}
+
+inline bool is_processed_weight_grouping(
+    std::string_view value, ProcessedTimeChunkWeightGrouping grouping) {
+    return value == to_string(grouping);
+}
+
+inline bool is_array_processed_weight_grouping(
+    ProcessedTimeChunkWeightGrouping value) {
+    return is_processed_weight_grouping(
+        value, ProcessedTimeChunkWeightGrouping::array);
+}
+
+inline bool is_array_processed_weight_grouping(std::string_view value) {
+    return is_processed_weight_grouping(
+        value, ProcessedTimeChunkWeightGrouping::array);
+}
+
+inline bool is_network_processed_weight_grouping(
+    ProcessedTimeChunkWeightGrouping value) {
+    return is_processed_weight_grouping(
+        value, ProcessedTimeChunkWeightGrouping::network);
+}
+
+inline bool is_network_processed_weight_grouping(std::string_view value) {
+    return is_processed_weight_grouping(
+        value, ProcessedTimeChunkWeightGrouping::network);
+}
+
+inline bool is_all_processed_weight_grouping(
+    ProcessedTimeChunkWeightGrouping value) {
+    return is_processed_weight_grouping(
+        value, ProcessedTimeChunkWeightGrouping::all);
+}
+
+inline bool is_all_processed_weight_grouping(std::string_view value) {
+    return is_processed_weight_grouping(
+        value, ProcessedTimeChunkWeightGrouping::all);
+}
+
 inline bool is_indices_tod_output_selection_mode(
     TodOutputSelectionMode value) {
     return value == TodOutputSelectionMode::indices;

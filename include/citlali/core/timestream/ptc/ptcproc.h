@@ -3146,10 +3146,14 @@ void PTCProc::accumulate_weight_validation_atmosphere(
         return i;
     };
     auto group_for = [&](Eigen::Index i) {
-        if (weight_validation.atmospheric_grouping == "all") {
+        if (citlali::config::is_all_processed_weight_grouping(
+                weight_validation.atmospheric_grouping)) {
             return static_cast<Eigen::Index>(0);
         }
-        const char *key = (weight_validation.atmospheric_grouping == "nw") ? "nw" : "array";
+        const char *key = citlali::config::is_network_processed_weight_grouping(
+                              weight_validation.atmospheric_grouping)
+                              ? "nw"
+                              : "array";
         auto grp_it = apt.find(key);
         if (grp_it != apt.end() && i < grp_it->second.size() &&
             std::isfinite(grp_it->second(i))) {
@@ -3656,10 +3660,12 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         };
 
         auto high_weight_group_for = [&](Eigen::Index i) {
-            if (weight_validation.high_weight_grouping == "all") {
+            if (citlali::config::is_all_processed_weight_grouping(
+                    weight_validation.high_weight_grouping)) {
                 return static_cast<Eigen::Index>(0);
             }
-            if (weight_validation.high_weight_grouping == "nw") {
+            if (citlali::config::is_network_processed_weight_grouping(
+                    weight_validation.high_weight_grouping)) {
                 return safe_apt_int("nw", i, 0);
             }
             return safe_apt_int("array", i, 0);
