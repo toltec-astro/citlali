@@ -72,4 +72,24 @@ std::string observation_output_filename(
         dir_name, reduction_type_name, array_name, obsnum, sim_obs);
 }
 
+template <auto DataType, auto ProductType, auto FilterType, class ToltecIo>
+std::string coadd_output_filename(
+    ToltecIo &toltec_io, const std::string &dir_name,
+    const std::string &array_name, bool sim_obs) {
+    return toltec_io.template create_filename<DataType, ProductType,
+                                              FilterType>(
+        dir_name, "", array_name, "", sim_obs);
+}
+
+template <auto DataType, auto ProductType, auto FilterType, class FitsFiles,
+          class ToltecIo>
+void append_coadd_map_fits_file(FitsFiles &fits_files, ToltecIo &toltec_io,
+                                const std::string &dir_name,
+                                const std::string &array_name,
+                                bool sim_obs) {
+    fits_files.emplace_back(
+        coadd_output_filename<DataType, ProductType, FilterType>(
+            toltec_io, dir_name, array_name, sim_obs));
+}
+
 }  // namespace citlali::pipeline

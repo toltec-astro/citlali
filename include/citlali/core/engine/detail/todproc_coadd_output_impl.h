@@ -2,6 +2,7 @@
 
 // Implementation detail included by todproc.h.
 
+#include <citlali/core/pipeline/observation_map_files.h>
 #include <citlali/core/pipeline/output_policy.h>
 
 template <class EngineType>
@@ -57,6 +58,12 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>().swap(engine().filtered_coadd_fits_io_vec);
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>().swap(engine().filtered_coadd_noise_fits_io_vec);
 
+    const bool write_noise_maps =
+        citlali::pipeline::noise_maps_enabled(engine()) &&
+        citlali::pipeline::noise_realization_outputs_enabled(engine());
+    const std::string raw_dir = engine().coadd_dir_name + "raw/";
+    const std::string filtered_dir = engine().coadd_dir_name + "filtered/";
+
     // loop through arrays
     for (Eigen::Index i=0; i<engine().calib.n_arrays; ++i) {
         // array index
@@ -64,27 +71,20 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
         // array name
         std::string array_name = engine().toltec_io.array_name_map[array];
         // map filename
-        auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
-                                                                    engine_utils::toltecIO::raw>(engine().coadd_dir_name + "raw/",
-                                                                                                 "", array_name, "",
-                                                                                                 engine().telescope.sim_obs);
-        // create fits_io class for current array file
-        fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
-        // append to fits_io vector
-        engine().coadd_fits_io_vec.push_back(std::move(fits_io));
+        citlali::pipeline::append_coadd_map_fits_file<
+            engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
+            engine_utils::toltecIO::raw>(
+            engine().coadd_fits_io_vec, engine().toltec_io, raw_dir,
+            array_name, engine().telescope.sim_obs);
 
         // if noise maps requested
-        if (citlali::pipeline::noise_maps_enabled(engine()) &&
-            citlali::pipeline::noise_realization_outputs_enabled(engine())) {
+        if (write_noise_maps) {
             // noise map filename
-            auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
-                                                                        engine_utils::toltecIO::raw>(engine().coadd_dir_name + "raw/",
-                                                                                                     "", array_name, "",
-                                                                                                     engine().telescope.sim_obs);
-            // create fits_io class for current array file
-            fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
-            // append to fits_io vector
-            engine().coadd_noise_fits_io_vec.push_back(std::move(fits_io));
+            citlali::pipeline::append_coadd_map_fits_file<
+                engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
+                engine_utils::toltecIO::raw>(
+                engine().coadd_noise_fits_io_vec, engine().toltec_io,
+                raw_dir, array_name, engine().telescope.sim_obs);
         }
     }
 
@@ -97,27 +97,22 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
             // array name
             std::string array_name = engine().toltec_io.array_name_map[array];
             // filtered map filename
-            auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
-                                                                        engine_utils::toltecIO::filtered>(engine().coadd_dir_name +
-                                                                                                          "filtered/","", array_name,
-                                                                                                          "", engine().telescope.sim_obs);
-            // create fits_io class for current array file
-            fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
-            // append to fits_io vector
-            engine().filtered_coadd_fits_io_vec.push_back(std::move(fits_io));
+            citlali::pipeline::append_coadd_map_fits_file<
+                engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
+                engine_utils::toltecIO::filtered>(
+                engine().filtered_coadd_fits_io_vec, engine().toltec_io,
+                filtered_dir, array_name, engine().telescope.sim_obs);
 
             // if noise maps requested
-            if (citlali::pipeline::noise_maps_enabled(engine()) &&
-                citlali::pipeline::noise_realization_outputs_enabled(engine())) {
+            if (write_noise_maps) {
                 // filtered noise map filename
-                auto filename = engine().toltec_io.template create_filename<engine_utils::toltecIO::toltec, engine_utils::toltecIO::noise,
-                                                                            engine_utils::toltecIO::filtered>(engine().coadd_dir_name +
-                                                                                                              "filtered/","", array_name,
-                                                                                                              "", engine().telescope.sim_obs);
-                // create fits_io class for current array file
-                fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*> fits_io(filename);
-                // append to fits_io vector
-                engine().filtered_coadd_noise_fits_io_vec.push_back(std::move(fits_io));
+                citlali::pipeline::append_coadd_map_fits_file<
+                    engine_utils::toltecIO::toltec,
+                    engine_utils::toltecIO::noise,
+                    engine_utils::toltecIO::filtered>(
+                    engine().filtered_coadd_noise_fits_io_vec,
+                    engine().toltec_io, filtered_dir, array_name,
+                    engine().telescope.sim_obs);
             }
         }
     }
