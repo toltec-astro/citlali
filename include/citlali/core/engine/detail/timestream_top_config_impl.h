@@ -20,6 +20,8 @@ void Engine::get_timestream_config(CT &config) {
     }
     citlali::engine_detail::read_timestream_type_config(
         config, tod_type, timestream_config, missing_keys, invalid_keys);
+    citlali::engine_detail::read_auxiliary_quadrature_channel_config(
+        config, timestream_config, missing_keys, invalid_keys);
 
     // run rtc or ptc tod output?
     // output rtc

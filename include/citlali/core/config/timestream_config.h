@@ -108,6 +108,12 @@ enum class FruitLoopsInterpModeOverride {
     trunc
 };
 
+enum class AuxiliaryMeasuredChannelCalibrationPolicy {
+    native,
+    primary_equivalent,
+    sky_equivalent
+};
+
 inline constexpr std::array<EnumName<TodType>, 4> tod_type_names{{
     {TodType::xs, "xs"},
     {TodType::rs, "rs"},
@@ -216,6 +222,15 @@ inline constexpr std::array<EnumName<FruitLoopsInterpModeOverride>, 5>
         {FruitLoopsInterpModeOverride::trunc, "trunc"},
     }};
 
+inline constexpr std::array<EnumName<AuxiliaryMeasuredChannelCalibrationPolicy>, 3>
+    auxiliary_measured_channel_calibration_policy_names{{
+        {AuxiliaryMeasuredChannelCalibrationPolicy::native, "native"},
+        {AuxiliaryMeasuredChannelCalibrationPolicy::primary_equivalent,
+         "primary_equivalent"},
+        {AuxiliaryMeasuredChannelCalibrationPolicy::sky_equivalent,
+         "sky_equivalent"},
+    }};
+
 inline std::optional<TodType> parse_tod_type(std::string_view value) {
     return parse_enum(value, tod_type_names);
 }
@@ -284,6 +299,11 @@ parse_fruit_loops_interp_mode_override(std::string_view value) {
     return parse_enum(value, fruit_loops_interp_mode_override_names);
 }
 
+inline std::optional<AuxiliaryMeasuredChannelCalibrationPolicy>
+parse_auxiliary_measured_channel_calibration_policy(std::string_view value) {
+    return parse_enum(value, auxiliary_measured_channel_calibration_policy_names);
+}
+
 inline std::string_view to_string(TodType value) {
     return enum_name(value, tod_type_names);
 }
@@ -338,6 +358,11 @@ inline std::string_view to_string(FruitLoopsWeightFeedbackReference value) {
 
 inline std::string_view to_string(FruitLoopsInterpModeOverride value) {
     return enum_name(value, fruit_loops_interp_mode_override_names);
+}
+
+inline std::string_view to_string(
+    AuxiliaryMeasuredChannelCalibrationPolicy value) {
+    return enum_name(value, auxiliary_measured_channel_calibration_policy_names);
 }
 
 inline bool is_tod_output_stream(TodOutputStream value,
@@ -1372,9 +1397,26 @@ struct TimestreamLearningConfig {
     TimestreamLearningScanNetworkPathologyConfig scan_network_pathology;
 };
 
+struct AuxiliaryMeasuredChannelConfig {
+    bool enabled = false;
+    std::string name = "r";
+    TodType source_type = TodType::rs;
+    std::string native_unit = "native";
+    AuxiliaryMeasuredChannelCalibrationPolicy calibration_policy =
+        AuxiliaryMeasuredChannelCalibrationPolicy::native;
+    bool apply_primary_linear_transfer = true;
+    bool use_for_science_map = false;
+    bool diagnostics_enabled = false;
+};
+
+struct TimestreamAuxiliaryChannelsConfig {
+    AuxiliaryMeasuredChannelConfig quadrature_r;
+};
+
 struct TimestreamConfig {
     bool enabled = true;
     TodType type = TodType::xs;
+    TimestreamAuxiliaryChannelsConfig auxiliary_channels;
     TimestreamOutputConfig output;
     TimestreamChunkingConfig chunking;
     RawTimeChunkConfig raw_time_chunk;
@@ -2418,6 +2460,26 @@ inline void validate(const TimestreamLearningConfig &config,
     validate(config.scan_network_pathology, report);
 }
 
+inline void validate(const AuxiliaryMeasuredChannelConfig &config,
+                     const ConfigPath &path, ValidationReport &report) {
+    if (config.enabled) {
+        report.add_warning(path,
+                           "auxiliary measured channel structure is parsed but "
+                           "not executed by the current pipeline");
+    }
+    if (config.use_for_science_map) {
+        report.add_warning(append_config_path(path, {"use_for_science_map"}),
+                           "auxiliary measured channels are not supported as "
+                           "science-map inputs yet");
+    }
+}
+
+inline void validate(const TimestreamAuxiliaryChannelsConfig &config,
+                     ValidationReport &report) {
+    validate(config.quadrature_r,
+             {"timestream", "auxiliary_channels", "quadrature_r"}, report);
+}
+
 inline void validate(const TimestreamConfig &config, ValidationReport &report) {
     if (!config.enabled) {
         report.add_error({"timestream", "enabled"},
@@ -2432,6 +2494,7 @@ inline void validate(const TimestreamConfig &config, ValidationReport &report) {
     validate(config.processed_time_chunk, report);
     validate(config.fruit_loops, report);
     validate(config.learning, report);
+    validate(config.auxiliary_channels, report);
 }
 
 }  // namespace citlali::config

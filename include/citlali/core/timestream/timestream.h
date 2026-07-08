@@ -33,6 +33,7 @@
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/pointing_config.h>
 #include <citlali/core/config/timestream_config.h>
+#include <citlali/core/timestream/auxiliary_stream.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
 #include <citlali/core/utils/toltec_io.h>
@@ -205,6 +206,8 @@ struct TimeStream : internal::TCDataBase<Derived>,
     // data status struct
     Status status;
 
+    // optional measured sidecar timestreams, such as quadrature r.
+    AuxiliaryMeasuredStreams auxiliary_measured_streams;
     // kernel timestreams
     data_t<Eigen::MatrixXd> kernel;
     // flag timestream
@@ -231,6 +234,16 @@ struct TimeStream : internal::TCDataBase<Derived>,
     data_t<Eigen::VectorXI> map_indices;
     // detector pointing
     data_t<std::map<std::string, Eigen::MatrixXd>> pointing;
+
+    [[nodiscard]] AuxiliaryMeasuredStream *auxiliary_measured_stream(
+        std::string_view name) {
+        return find_auxiliary_measured_stream(auxiliary_measured_streams, name);
+    }
+
+    [[nodiscard]] const AuxiliaryMeasuredStream *auxiliary_measured_stream(
+        std::string_view name) const {
+        return find_auxiliary_measured_stream(auxiliary_measured_streams, name);
+    }
 };
 
 template <typename RefType>

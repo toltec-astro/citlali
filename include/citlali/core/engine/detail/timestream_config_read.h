@@ -35,6 +35,69 @@ void read_timestream_type_config(Config &config, std::string &type,
 
 template <class Config, class MissingKeys, class InvalidKeys,
           class TimestreamConfig>
+void read_auxiliary_quadrature_channel_config(Config &config,
+                                              TimestreamConfig &typed_config,
+                                              MissingKeys &missing_keys,
+                                              InvalidKeys &invalid_keys) {
+    auto &channel = typed_config.auxiliary_channels.quadrature_r;
+    read_optional_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "auxiliary_channels", "quadrature_r",
+                   "enabled"},
+        channel.enabled, channel.enabled, missing_keys, invalid_keys);
+    read_optional_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "auxiliary_channels", "quadrature_r", "name"},
+        channel.name, channel.name, missing_keys, invalid_keys);
+
+    std::string source_type{
+        std::string(citlali::config::to_string(channel.source_type))};
+    read_optional_parsed_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "auxiliary_channels", "quadrature_r",
+                   "source_type"},
+        source_type, channel.source_type, citlali::config::parse_tod_type,
+        missing_keys, invalid_keys, {"xs", "rs", "is", "qs"});
+
+    read_optional_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "auxiliary_channels", "quadrature_r",
+                   "native_unit"},
+        channel.native_unit, channel.native_unit, missing_keys, invalid_keys);
+
+    std::string calibration_policy{std::string(
+        citlali::config::to_string(channel.calibration_policy))};
+    read_optional_parsed_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "auxiliary_channels", "quadrature_r",
+                   "calibration_policy"},
+        calibration_policy, channel.calibration_policy,
+        citlali::config::parse_auxiliary_measured_channel_calibration_policy,
+        missing_keys, invalid_keys,
+        {"native", "primary_equivalent", "sky_equivalent"});
+
+    read_optional_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "auxiliary_channels", "quadrature_r",
+                   "apply_primary_transfer"},
+        channel.apply_primary_linear_transfer,
+        channel.apply_primary_linear_transfer, missing_keys, invalid_keys);
+    read_optional_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "auxiliary_channels", "quadrature_r",
+                   "use_for_science_map"},
+        channel.use_for_science_map, channel.use_for_science_map,
+        missing_keys, invalid_keys);
+    read_optional_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "auxiliary_channels", "quadrature_r",
+                   "diagnostics_enabled"},
+        channel.diagnostics_enabled, channel.diagnostics_enabled,
+        missing_keys, invalid_keys);
+}
+
+template <class Config, class MissingKeys, class InvalidKeys,
+          class TimestreamConfig>
 void read_raw_tod_output_enabled_config(Config &config, bool &enabled,
                                         TimestreamConfig &typed_config,
                                         MissingKeys &missing_keys,
