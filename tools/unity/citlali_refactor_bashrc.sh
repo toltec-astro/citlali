@@ -88,6 +88,54 @@ _citlali_refactor_cmake_inputs_changed() {
     patches
 }
 
+_citlali_refactor_git_version_header_value() {
+  local header="$1"
+  local macro="$2"
+
+  if [[ ! -f "${header}" ]]; then
+    return 0
+  fi
+
+  sed -n "s/^#define ${macro} \"\\(.*\\)\"/\\1/p" "${header}" | head -n 1
+}
+
+_citlali_refactor_refresh_citlali_gitversion_header() {
+  local repo="$1"
+  local build_dir="$2"
+  local output_dir="${build_dir}/config_header/citlali_config"
+  local output_path="${output_dir}/gitversion.h"
+
+  if [[ ! -d "${build_dir}" ]]; then
+    return 0
+  fi
+
+  local revision
+  local version
+  revision="$(git -C "${repo}" rev-parse --short HEAD)"
+  version="$(git -C "${repo}" describe --tags --always --broken)"
+
+  local current_revision
+  local current_version
+  current_revision="$(_citlali_refactor_git_version_header_value "${output_path}" CITLALI_GIT_REVISION)"
+  current_version="$(_citlali_refactor_git_version_header_value "${output_path}" CITLALI_GIT_VERSION)"
+
+  if [[ "${current_revision}" == "${revision}" && "${current_version}" == "${version}" ]]; then
+    return 0
+  fi
+
+  local timestamp
+  timestamp="$(date -u +%Y-%m-%dT%H:%M:%S)"
+  mkdir -p "${output_dir}"
+  cat > "${output_path}" <<EOF
+#pragma once
+
+#define CITLALI_GIT_REVISION "${revision}"
+#define CITLALI_GIT_VERSION "${version}"
+#define CITLALI_BUILD_TIMESTAMP "${timestamp}"
+EOF
+  echo "Refreshed Citlali gitversion header: ${version} (${timestamp})"
+}
+
 citlali_refactor_update() {
   local repo="${CITLALI_REFACTOR_REPO:-${HOME}/work_toltec/citlali_dev/citlali_refactor}"
   local branch="${CITLALI_REFACTOR_BRANCH:-codex/structural-refactor}"
@@ -275,6 +323,7 @@ citlali_refactor_update() {
       cmake "${cmake_args[@]}"
     else
       echo "Skipping CMake configure; build tree is current. Set CITLALI_REFACTOR_CONFIGURE=always to force it."
+      _citlali_refactor_refresh_citlali_gitversion_header "${repo}" "${build_dir}"
     fi
 
     echo "Building ${target} with ${jobs} job(s)."
