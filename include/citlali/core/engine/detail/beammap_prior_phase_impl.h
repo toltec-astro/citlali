@@ -4,35 +4,42 @@
 // Include this only after Beammap has been declared.
 
 bool Beammap::is_beammap_locator_iter(Eigen::Index iter) const {
-    if (!beammap_phase_split_enabled) {
+    const auto &phase_config = typed_config.beammap.phase_strategy;
+    if (!phase_config.enabled) {
         return iter <= 0;
     }
-    return iter == static_cast<Eigen::Index>(beammap_locator_iter);
+    return iter == static_cast<Eigen::Index>(phase_config.locator_iter);
 }
 
 bool Beammap::is_beammap_measurement_iter(Eigen::Index iter) const {
-    if (!beammap_phase_split_enabled) {
+    const auto &phase_config = typed_config.beammap.phase_strategy;
+    if (!phase_config.enabled) {
         return iter > 0;
     }
-    return iter >= static_cast<Eigen::Index>(beammap_measurement_start_iter);
+    return iter >=
+           static_cast<Eigen::Index>(phase_config.measurement_start_iter);
 }
 
 bool Beammap::is_beammap_first_measurement_iter(Eigen::Index iter) const {
-    if (!beammap_phase_split_enabled) {
+    const auto &phase_config = typed_config.beammap.phase_strategy;
+    if (!phase_config.enabled) {
         return iter == 1;
     }
-    return iter == static_cast<Eigen::Index>(beammap_measurement_start_iter);
+    return iter ==
+           static_cast<Eigen::Index>(phase_config.measurement_start_iter);
 }
 
 bool Beammap::has_completed_beammap_measurement_iter(Eigen::Index iter) const {
-    if (!beammap_phase_split_enabled) {
+    const auto &phase_config = typed_config.beammap.phase_strategy;
+    if (!phase_config.enabled) {
         return iter > 1;
     }
-    return iter > static_cast<Eigen::Index>(beammap_measurement_start_iter);
+    return iter >
+           static_cast<Eigen::Index>(phase_config.measurement_start_iter);
 }
 
 std::string Beammap::beammap_iter_phase_name(Eigen::Index iter) const {
-    if (!beammap_phase_split_enabled) {
+    if (!typed_config.beammap.phase_strategy.enabled) {
         return "legacy";
     }
     if (is_beammap_locator_iter(iter)) {

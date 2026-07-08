@@ -82,7 +82,9 @@ double Beammap::calc_beammap_convergence_delta(Eigen::Index map_index) const {
         map_index >= static_cast<Eigen::Index>(omb_copy.signal.size())) {
         return std::numeric_limits<double>::quiet_NaN();
     }
-    if (beammap_convergence_radius_arcsec <= 0.0 || omb.pixel_size_rad <= 0.0) {
+    const double convergence_radius_arcsec =
+        typed_config.beammap.iteration.convergence_radius_arcsec;
+    if (convergence_radius_arcsec <= 0.0 || omb.pixel_size_rad <= 0.0) {
         return std::numeric_limits<double>::quiet_NaN();
     }
 
@@ -124,7 +126,8 @@ double Beammap::calc_beammap_convergence_delta(Eigen::Index map_index) const {
         return std::numeric_limits<double>::quiet_NaN();
     }
 
-    const double radius_pix = beammap_convergence_radius_arcsec * ASEC_TO_RAD / omb.pixel_size_rad;
+    const double radius_pix =
+        convergence_radius_arcsec * ASEC_TO_RAD / omb.pixel_size_rad;
     const double radius2 = radius_pix * radius_pix;
     const Eigen::Index row_min = std::max<Eigen::Index>(
         0, static_cast<Eigen::Index>(std::floor(center_row - radius_pix)));

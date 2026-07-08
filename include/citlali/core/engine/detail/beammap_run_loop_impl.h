@@ -238,7 +238,9 @@ void Beammap::prepare_beammap_iteration_state(bool rerun_source_aware_rtc,
     }
 
     // copy previous-iteration maps for source-aperture convergence tests
-    if (run_mapmaking && beammap_iter_tolerance > 0.0 && measurement_iter) {
+    const auto &iteration_config = typed_config.beammap.iteration;
+    if (run_mapmaking && iteration_config.tolerance > 0.0 &&
+        measurement_iter) {
         omb_copy.signal = omb.signal;
         omb_copy.weight = omb.weight;
     }
@@ -903,23 +905,26 @@ bool Beammap::update_beammap_convergence_state() {
     }
 
     // only do convergence test if tolerance is above zero, otherwise run all iterations
-    if (run_mapmaking && beammap_iter_tolerance > 0) {
+    const auto &iteration_config = typed_config.beammap.iteration;
+    if (run_mapmaking && iteration_config.tolerance > 0) {
         // loop through maps and check if it is converged
         logger->info("checking convergence in fitted-source aperture radius={:.3f} arcsec",
-                     beammap_convergence_radius_arcsec);
+                     iteration_config.convergence_radius_arcsec);
         const auto convergence_profile_scope =
             citlali::pipeline::profile_stage(
                 "beammap.convergence", logger,
                 "iter=" + std::to_string(current_iter) +
                     " radius_arcsec=" +
-                    std::to_string(beammap_convergence_radius_arcsec));
+                    std::to_string(
+                        iteration_config.convergence_radius_arcsec));
         Eigen::VectorXd convergence_delta =
             Eigen::VectorXd::Constant(n_maps, std::numeric_limits<double>::quiet_NaN());
         grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
             if (!converged(i)) {
                 const double delta = calc_beammap_convergence_delta(i);
                 convergence_delta(i) = delta;
-                if (std::isfinite(delta) && delta <= beammap_iter_tolerance) {
+                if (std::isfinite(delta) &&
+                    delta <= iteration_config.tolerance) {
                     // set as converged
                     converged(i) = true;
                     // set convergence iteration
@@ -965,7 +970,9 @@ bool Beammap::advance_beammap_iteration_state() {
     // increment loop iteration
     current_iter++;
 
-    if (current_iter < beammap_iter_max) {
+    if (current_iter <
+        static_cast<Eigen::Index>(
+            typed_config.beammap.iteration.max_iterations)) {
         // check if all detectors are converged
         if ((converged.array() == true).all()) {
             logger->info("all maps converged");
@@ -1025,7 +1032,8 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
         logger->info(
             "starting iter {} phase={} locator_iter={} measurement_start_iter={}",
             current_iter, beammap_iter_phase_name(current_iter),
-            beammap_locator_iter, beammap_measurement_start_iter);
+            typed_config.beammap.phase_strategy.locator_iter,
+            typed_config.beammap.phase_strategy.measurement_start_iter);
 
         const bool rerun_source_aware_rtc =
             maybe_run_beammap_source_aware_rtc(

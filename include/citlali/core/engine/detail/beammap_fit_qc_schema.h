@@ -337,15 +337,17 @@ YAML::Node make_metadata(const BeammapState &beammap,
     fit_qc_meta["creation_date"] = engine_utils::current_date_time();
     fit_qc_meta["date"] = beammap.date_obs.back();
     fit_qc_meta["map_grouping"] = beammap.map_grouping;
-    fit_qc_meta["beammap_iter_max"] = beammap.beammap_iter_max;
-    fit_qc_meta["beammap_iter_tolerance"] = beammap.beammap_iter_tolerance;
+    const auto &iteration_config = beammap.typed_config.beammap.iteration;
+    const auto &phase_config = beammap.typed_config.beammap.phase_strategy;
+    fit_qc_meta["beammap_iter_max"] = iteration_config.max_iterations;
+    fit_qc_meta["beammap_iter_tolerance"] = iteration_config.tolerance;
     fit_qc_meta["beammap_convergence_radius_arcsec"] =
-        beammap.beammap_convergence_radius_arcsec;
+        iteration_config.convergence_radius_arcsec;
     fit_qc_meta["beammap_phase_split_enabled"] =
-        beammap.beammap_phase_split_enabled;
-    fit_qc_meta["beammap_locator_iter"] = beammap.beammap_locator_iter;
+        phase_config.enabled;
+    fit_qc_meta["beammap_locator_iter"] = phase_config.locator_iter;
     fit_qc_meta["beammap_measurement_start_iter"] =
-        beammap.beammap_measurement_start_iter;
+        phase_config.measurement_start_iter;
     fit_qc_meta["reference_detector_subtracted"] =
         beammap.beammap_subtract_reference;
     fit_qc_meta["reference_det"] = beammap.beammap_reference_det_found;
