@@ -14,6 +14,7 @@
 #include <new>
 #include <stdexcept>
 #include <vector>
+#include <string_view>
 #include <unordered_map>
 #include <unordered_set>
 #include <Eigen/Core>
@@ -179,6 +180,24 @@ public:
             group = "nw";
         }
         return group;
+    }
+
+    static auto is_corr_nw_clean_group(std::string_view group) {
+        return group == "corr_nw";
+    }
+
+    static auto is_all_clean_group(std::string_view group) {
+        return group == "all";
+    }
+
+    static auto is_supported_clean_group(std::string group) {
+        group = normalize_group_name(std::move(group));
+        return is_all_clean_group(group) ||
+               citlali::config::is_array_map_grouping(group) ||
+               citlali::config::is_network_map_grouping(group) ||
+               citlali::config::is_detector_map_grouping(group) ||
+               citlali::config::is_frequency_group_map_grouping(group) ||
+               is_corr_nw_clean_group(group);
     }
 
     auto null_model_enabled_for_group(const std::string &group) const {

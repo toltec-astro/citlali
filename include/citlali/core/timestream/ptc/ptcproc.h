@@ -1051,7 +1051,7 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 std::unordered_set<std::string> seen;
                 for (const auto &g_raw : null_grouping) {
                     auto g = cleaner.normalize_group_name(g_raw);
-                    if (g != "all" && g != "array" && g != "nw" && g != "detector" && g != "fg" && g != "corr_nw") {
+                    if (!cleaner.is_supported_clean_group(g)) {
                         logger->warn("clean.null_model.grouping contains unsupported entry '{}'; ignoring", g_raw);
                         continue;
                     }
@@ -1123,7 +1123,7 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 std::unordered_set<std::string> seen;
                 for (const auto &g_raw : mp_grouping) {
                     auto g = cleaner.normalize_group_name(g_raw);
-                    if (g != "all" && g != "array" && g != "nw" && g != "detector" && g != "fg" && g != "corr_nw") {
+                    if (!cleaner.is_supported_clean_group(g)) {
                         logger->warn("clean.marchenko_pastur.grouping contains unsupported entry '{}'; ignoring", g_raw);
                         continue;
                     }
@@ -1241,7 +1241,7 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 std::unordered_set<std::string> seen;
                 for (const auto &g_raw : selector_grouping) {
                     auto g = cleaner.normalize_group_name(g_raw);
-                    if (g != "all" && g != "array" && g != "nw" && g != "detector" && g != "fg" && g != "corr_nw") {
+                    if (!cleaner.is_supported_clean_group(g)) {
                         logger->warn("clean.adaptive_selector.grouping contains unsupported entry '{}'; ignoring", g_raw);
                         continue;
                     }
@@ -1885,10 +1885,16 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         const bool adaptive_selector_enabled_global = cleaner_local.adaptive_selector.enabled;
         for (const auto & group: cleaner_local.grouping) {
             std::string effective_group = group;
-            if (group == "corr_nw" && !cleaner_local.corr_grouping.enabled) {
+            const bool group_is_corr_nw =
+                Cleaner::is_corr_nw_clean_group(group);
+            if (group_is_corr_nw && !cleaner_local.corr_grouping.enabled) {
                 logger->warn("cleaning group 'corr_nw' requested but clean.corr_grouping.enabled=false; falling back to nw");
                 effective_group = "nw";
             }
+            const auto effective_group_normalized =
+                Cleaner::normalize_group_name(effective_group);
+            const bool effective_group_is_corr_nw =
+                Cleaner::is_corr_nw_clean_group(effective_group_normalized);
             // optional per-group null-model gating
             const bool null_model_for_group =
                 null_model_enabled_global && cleaner_local.null_model_enabled_for_group(effective_group);
@@ -1903,8 +1909,8 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             const bool adaptive_selector_for_group =
                 adaptive_selector_enabled_global &&
                 cleaner_local.adaptive_selector_enabled_for_group(effective_group) &&
-                effective_group != "corr_nw";
-            if (adaptive_selector_enabled_global && effective_group == "corr_nw" &&
+                !effective_group_is_corr_nw;
+            if (adaptive_selector_enabled_global && effective_group_is_corr_nw &&
                 cleaner_local.adaptive_selector_enabled_for_group(effective_group)) {
                 logger->warn("clean.adaptive_selector currently skips corr_nw sub-groups; using configured fixed cut instead");
             }
@@ -1952,7 +1958,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             // map of tuples to hold detector limits
             std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> grp_limits;
 
-            if (group == "corr_nw" && cleaner_local.corr_grouping.enabled) {
+            if (group_is_corr_nw && cleaner_local.corr_grouping.enabled) {
                     Eigen::VectorXi corr_group_ids_scan = Eigen::VectorXi::Constant(in.scans.data.cols(), -1);
                     std::vector<CorrNWDiagSummary> corr_summary_scan;
                     corr_summary_scan.reserve(static_cast<std::size_t>(calib.n_nws));
@@ -2091,7 +2097,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             }
 
             // use all detectors for cleaning
-            if (effective_group == "all") {
+            if (Cleaner::is_all_clean_group(effective_group_normalized)) {
                 grp_limits[0] = std::make_tuple(0,in.scans.data.cols());
             }
             else {
@@ -2103,16 +2109,18 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 Eigen::Index arr_index;
                 Eigen::Index nw_index = -1;
                 // use all detectors
-                if (effective_group=="all") {
+                if (Cleaner::is_all_clean_group(effective_group_normalized)) {
                     arr_index = calib.arrays(0);
                 }
                 // use network grouping
-                else if (effective_group=="nw" || effective_group=="network") {
+                else if (citlali::config::is_network_map_grouping(
+                             effective_group_normalized)) {
                     nw_index = key;
                     arr_index = toltec_io.nw_to_array_map[key];
                 }
                 // use array grouping
-                else if (effective_group=="array") {
+                else if (citlali::config::is_array_map_grouping(
+                             effective_group_normalized)) {
                     arr_index = key;
                 }
 
