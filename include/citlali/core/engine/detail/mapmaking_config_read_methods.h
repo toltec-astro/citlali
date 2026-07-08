@@ -52,14 +52,13 @@ void read_method_specific_mapmaker_config(
     MaximumLikelihoodMapmaker &ml_mm, const ArrayNameMap &array_name_map,
     PtcProc &ptcproc, double pixel_size_rad, MissingKeys &missing_keys,
     InvalidKeys &invalid_keys) {
-    if (map_method == citlali::config::MapMethod::jinc) {
+    if (citlali::config::is_jinc_map_method(map_method)) {
         read_jinc_filter_config(
             config, jinc_mm, array_name_map, missing_keys, invalid_keys);
         citlali::pipeline::finalize_jinc_filter_config(
             jinc_mm, ptcproc, pixel_size_rad);
     }
-    else if (map_method ==
-             citlali::config::MapMethod::maximum_likelihood) {
+    else if (citlali::config::is_maximum_likelihood_map_method(map_method)) {
         read_maximum_likelihood_mapmaker_config(
             config, ml_mm, missing_keys, invalid_keys);
     }

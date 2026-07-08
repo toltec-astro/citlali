@@ -62,6 +62,10 @@ inline bool is_map_grouping(MapGrouping value, MapGrouping grouping) {
     return value == grouping;
 }
 
+inline bool is_map_method(MapMethod value, MapMethod method) {
+    return value == method;
+}
+
 inline bool is_detector_map_grouping(std::string_view value) {
     return is_map_grouping(value, MapGrouping::detector);
 }
@@ -96,6 +100,18 @@ inline bool is_frequency_group_map_grouping(std::string_view value) {
 
 inline bool is_frequency_group_map_grouping(MapGrouping value) {
     return is_map_grouping(value, MapGrouping::frequency_group);
+}
+
+inline bool is_naive_map_method(MapMethod value) {
+    return is_map_method(value, MapMethod::naive);
+}
+
+inline bool is_jinc_map_method(MapMethod value) {
+    return is_map_method(value, MapMethod::jinc);
+}
+
+inline bool is_maximum_likelihood_map_method(MapMethod value) {
+    return is_map_method(value, MapMethod::maximum_likelihood);
 }
 
 struct MapmakingConfig {

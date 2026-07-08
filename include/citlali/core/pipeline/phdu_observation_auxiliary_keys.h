@@ -50,7 +50,7 @@ void add_phdu_jinc_shape_keys_if_needed(
     FitsEntry &fits_entry, const std::string &array_name,
     const Logger &logger, citlali::config::MapMethod map_method,
     double r_max, ShapeMap &shape_params, const ArrayId &array_id) {
-    if (map_method != citlali::config::MapMethod::jinc) {
+    if (!citlali::config::is_jinc_map_method(map_method)) {
         return;
     }
     logger->debug("adding jinc params");

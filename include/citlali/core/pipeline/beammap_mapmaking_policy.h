@@ -58,7 +58,7 @@ template <class MapBuffer, class Logger>
 void ensure_jinc_grid_weight_maps(citlali::config::MapMethod method,
                                   MapBuffer &omb, Eigen::Index n_maps,
                                   const Logger &logger) {
-    if (method != citlali::config::MapMethod::jinc ||
+    if (!citlali::config::is_jinc_map_method(method) ||
         static_cast<Eigen::Index>(omb.grid_weight.size()) == n_maps) {
         return;
     }

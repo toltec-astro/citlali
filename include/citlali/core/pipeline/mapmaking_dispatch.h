@@ -14,12 +14,12 @@ void populate_naive_or_jinc_maps(citlali::config::MapMethod method,
                                  PixelAxes &pixel_axes, Apt &apt,
                                  double d_fsmp, bool run_omb,
                                  bool run_noise) {
-    if (method == citlali::config::MapMethod::naive) {
+    if (citlali::config::is_naive_map_method(method)) {
         naive_mm.populate_maps_naive(
             ptcdata, omb, cmb, map_indices, pixel_axes, apt, d_fsmp, run_omb,
             run_noise);
     }
-    else if (method == citlali::config::MapMethod::jinc) {
+    else if (citlali::config::is_jinc_map_method(method)) {
         jinc_mm.populate_maps_jinc(
             ptcdata, omb, cmb, map_indices, pixel_axes, apt, d_fsmp, run_omb,
             run_noise);
@@ -35,7 +35,7 @@ void populate_lali_maps(citlali::config::MapMethod method,
                         MapBuffer &cmb, MapIndices &map_indices,
                         PixelAxes &pixel_axes, CalibScan &calib_scan,
                         double d_fsmp, bool run_omb, bool run_noise) {
-    if (method == citlali::config::MapMethod::maximum_likelihood) {
+    if (citlali::config::is_maximum_likelihood_map_method(method)) {
         ml_mm.populate_maps_ml(
             ptcdata, omb, cmb, map_indices, pixel_axes, calib_scan, d_fsmp,
             run_omb, run_noise);

@@ -106,13 +106,13 @@ void Engine::setup_tod_output_chunk_selection() {
             effective_chunks.push_back(static_cast<Eigen::Index>(chunk));
         }
         bool effective_select_enabled = config.chunk_select_enabled;
-        if (config.selection_mode ==
-            citlali::config::TodOutputSelectionMode::all) {
+        if (citlali::config::is_all_tod_output_selection_mode(
+                config.selection_mode)) {
             effective_select_enabled = false;
             effective_chunks.clear();
         }
-        else if (config.selection_mode ==
-                 citlali::config::TodOutputSelectionMode::uniform_plus_source_crossing) {
+        else if (citlali::config::is_uniform_source_tod_output_selection_mode(
+                     config.selection_mode)) {
             effective_select_enabled = true;
             effective_chunks = build_uniform_plus_source_crossing_chunks(
                 stream_name, config.selection_n_uniform,
@@ -123,8 +123,8 @@ void Engine::setup_tod_output_chunk_selection() {
                 std::exit(EXIT_FAILURE);
             }
         }
-        else if (config.selection_mode !=
-                 citlali::config::TodOutputSelectionMode::indices) {
+        else if (!citlali::config::is_indices_tod_output_selection_mode(
+                     config.selection_mode)) {
             logger->error("{} TOD output selection mode '{}' is invalid",
                           stream_name,
                           citlali::config::to_string(config.selection_mode));

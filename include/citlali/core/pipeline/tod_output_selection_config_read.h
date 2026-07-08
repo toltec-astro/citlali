@@ -91,8 +91,7 @@ void validate_tod_selection_mode_counts(
     int n_source_dense,
     const std::string &mode_path, const std::string &n_uniform_path,
     const std::string &n_source_dense_path, const Logger &logger) {
-    if (mode !=
-            citlali::config::TodOutputSelectionMode::uniform_plus_source_crossing ||
+    if (!citlali::config::is_uniform_source_tod_output_selection_mode(mode) ||
         n_uniform + n_source_dense > 0) {
         return;
     }

@@ -16,7 +16,7 @@ void configure_fruit_loop_interpolation_mode(
     const std::string map_method_name{citlali::config::to_string(map_method)};
     const std::string fruit_interp_default{
         citlali::config::to_string(
-            (map_method == citlali::config::MapMethod::jinc)
+            citlali::config::is_jinc_map_method(map_method)
                 ? citlali::config::FruitLoopsInterpModeOverride::jinc
                 : citlali::config::FruitLoopsInterpModeOverride::bilinear)};
     ptcproc.fruit_loops_interp_mode = fruit_interp_default;
@@ -28,7 +28,7 @@ void configure_fruit_loop_interpolation_mode(
     }
     if (citlali::config::is_fruit_loops_jinc_interp_mode(
             ptcproc.fruit_loops_interp_mode) &&
-        map_method != citlali::config::MapMethod::jinc) {
+        !citlali::config::is_jinc_map_method(map_method)) {
         logger->warn(
             "fruit_loops.interp_mode_override='jinc' requires mapmaking.method='jinc'; using bilinear");
         ptcproc.fruit_loops_interp_mode = std::string{

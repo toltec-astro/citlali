@@ -175,18 +175,18 @@ void Beammap::populate_beammap_maps(
         [&](const auto &msg) { logger->info("{}", msg); }, 100,
         "PTC progress ");
 
-    if (mapmaking_grouping == citlali::config::MapGrouping::detector) {
+    if (citlali::config::is_detector_map_grouping(mapmaking_grouping)) {
         bool run_omb = true;
         for (std::size_t scan_vec_idx = 0; scan_vec_idx < ptcs.size(); ++scan_vec_idx) {
             auto &ptc = ptcs[scan_vec_idx];
             auto &scan_apt = calib_scans[scan_vec_idx].apt;
-            if (mapmaking_method == citlali::config::MapMethod::naive) {
+            if (citlali::config::is_naive_map_method(mapmaking_method)) {
                 naive_mm.populate_maps_naive_parallel(
                     ptc, omb, cmb, ptc.map_indices.data, telescope.pixel_axes,
                     scan_apt, telescope.d_fsmp, run_omb, run_noise,
                     active_maps);
             }
-            else if (mapmaking_method == citlali::config::MapMethod::jinc) {
+            else if (citlali::config::is_jinc_map_method(mapmaking_method)) {
                 citlali::pipeline::log_beammap_jinc_preflight(
                     ptc, calib.apt["array"], omb, jinc_mm, logger);
                 jinc_mm.populate_maps_jinc_parallel(

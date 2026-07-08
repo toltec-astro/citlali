@@ -21,7 +21,7 @@ void add_jinc_shape_config_vars_if_needed(
     netCDF::NcFile &fo, citlali::config::MapMethod map_method,
     const Arrays &arrays,
     ShapeParams &shape_params, ArrayNameMap &array_name_map, double r_max) {
-    if (map_method == citlali::config::MapMethod::jinc) {
+    if (citlali::config::is_jinc_map_method(map_method)) {
         add_jinc_shape_config_vars(
             fo, arrays, shape_params, array_name_map, r_max);
     }

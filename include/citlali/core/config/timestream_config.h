@@ -356,6 +356,21 @@ inline bool is_outer_tod_stream_output_mode(TodStreamOutputMode value) {
            value == TodStreamOutputMode::mini_outer;
 }
 
+inline bool is_indices_tod_output_selection_mode(
+    TodOutputSelectionMode value) {
+    return value == TodOutputSelectionMode::indices;
+}
+
+inline bool is_all_tod_output_selection_mode(TodOutputSelectionMode value) {
+    return value == TodOutputSelectionMode::all;
+}
+
+inline bool is_uniform_source_tod_output_selection_mode(
+    TodOutputSelectionMode value) {
+    return value ==
+           TodOutputSelectionMode::uniform_plus_source_crossing;
+}
+
 inline bool is_fruit_loops_interp_mode(
     std::string_view value, FruitLoopsInterpModeOverride mode) {
     return value == to_string(mode);
