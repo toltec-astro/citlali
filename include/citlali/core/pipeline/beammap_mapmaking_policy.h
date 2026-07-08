@@ -28,7 +28,7 @@ BeammapActiveMapSelection select_unconverged_beammap_maps(
     Eigen::Index n_maps, const Logger &logger) {
     BeammapActiveMapSelection selection;
     selection.n_active_maps = n_maps;
-    if (grouping != citlali::config::MapGrouping::detector ||
+    if (!citlali::config::is_detector_map_grouping(grouping) ||
         converged.size() != n_maps) {
         return selection;
     }

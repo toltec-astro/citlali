@@ -37,7 +37,7 @@ template <class FitsEntry, class MapBuffer, class FluxMap, class Calib,
           class DateObs, class Logger>
 void add_phdu_beammap_observation_section(
     FitsEntry &fits_entry, const MapBuffer &mb, const std::string &array_name,
-    const Logger &logger, const std::string &reduction_type,
+    const Logger &logger, citlali::config::ReductionType reduction_type,
     FluxMap &beammap_fluxes_mjy_beam, FluxMap &beammap_fluxes_mjy_sr,
     const citlali::config::BeammapIterationConfig &iteration_config,
     const citlali::config::BeammapPhaseStrategyConfig &phase_config,
@@ -93,7 +93,7 @@ void add_phdu_extinction_apt_oof_section(
     FitsEntry &fits_entry, const MapBuffer &mb, RtcProc &rtcproc,
     const Telescope &telescope, const Calib &calib, ToltecIo &toltec_io,
     Eigen::Index map_index, const ArrayId &array_id,
-    const std::string &array_name, const std::string &reduction_type,
+    const std::string &array_name, citlali::config::ReductionType reduction_type,
     const Logger &logger) {
     logger->debug("adding extinction");
     const double mean_tau = citlali::pipeline::phdu_mean_tau(
@@ -179,7 +179,7 @@ template <class FitsEntry, class MapBuffer, class Telescope, class Logger>
 void add_phdu_pointing_telescope_header_section(
     FitsEntry &fits_entry, const MapBuffer &mb, const Telescope &telescope,
     const std::string &array_name, const Logger &logger,
-    const std::string &reduction_type,
+    citlali::config::ReductionType reduction_type,
     const citlali::config::PointingConfig &pointing_config) {
     citlali::pipeline::add_phdu_pointing_config_if_needed(
         fits_entry, array_name, logger, reduction_type, pointing_config);

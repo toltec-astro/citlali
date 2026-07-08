@@ -13,20 +13,20 @@ std::string map_layer_name(Eigen::Index i, citlali::config::MapGrouping grouping
                            const Calib &calib) {
     std::string map_name;
 
-    if (grouping == citlali::config::MapGrouping::array) {
+    if (citlali::config::is_array_map_grouping(grouping)) {
         return map_name;
     }
 
-    if (grouping == citlali::config::MapGrouping::network) {
+    if (citlali::config::is_network_map_grouping(grouping)) {
         map_name += "nw_" + std::to_string(calib.nws(i)) + "_";
     }
-    else if (grouping == citlali::config::MapGrouping::frequency_group) {
+    else if (citlali::config::is_frequency_group_map_grouping(grouping)) {
         const Eigen::Index n_fg = calib.fg.size();
         if (n_fg > 0) {
             map_name += "fg_" + std::to_string(calib.fg(i % n_fg)) + "_";
         }
     }
-    else if (grouping == citlali::config::MapGrouping::detector) {
+    else if (citlali::config::is_detector_map_grouping(grouping)) {
         map_name += "det_" + std::to_string(i) + "_";
     }
 

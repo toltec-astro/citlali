@@ -18,8 +18,8 @@ inline bool map_grouping_disallows_polarization(
     citlali::config::MapGrouping map_grouping) {
     return run_polarization &&
            ((reduction_type == citlali::config::ReductionType::beammap &&
-             map_grouping == citlali::config::MapGrouping::automatic) ||
-            map_grouping == citlali::config::MapGrouping::detector);
+             citlali::config::is_automatic_map_grouping(map_grouping)) ||
+            citlali::config::is_detector_map_grouping(map_grouping));
 }
 
 template <class Logger>
@@ -36,10 +36,11 @@ void enforce_map_grouping_polarization_policy(
 }
 
 template <class Logger>
-void enforce_beammap_pixel_axes_policy(const std::string &redu_type,
+void enforce_beammap_pixel_axes_policy(
+                                       citlali::config::ReductionType reduction_type,
                                        const std::string &pixel_axes,
                                        const Logger &logger) {
-    if (!citlali::config::is_beammap_reduction_type(redu_type) ||
+    if (!citlali::config::is_beammap_reduction_type(reduction_type) ||
         pixel_axes == "altaz") {
         return;
     }

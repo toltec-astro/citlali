@@ -17,8 +17,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     std::string name = citlali::pipeline::phdu_array_name(
         toltec_io.array_name_map, array_id);
     auto &fits_entry = fits_io->at(i);
+    const auto reduction_type = typed_config.runtime.reduction_type;
     const std::string reduction_type_name{
-        citlali::config::to_string(typed_config.runtime.reduction_type)};
+        citlali::config::to_string(reduction_type)};
     const std::string tod_type_name{
         citlali::config::to_string(typed_config.timestream.type)};
     const std::string map_grouping_name{
@@ -36,7 +37,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         MJY_SR_TO_mJY_ASEC, logger);
 
     citlali::engine_detail::add_phdu_beammap_observation_section(
-        fits_entry, mb, name, logger, reduction_type_name,
+        fits_entry, mb, name, logger, reduction_type,
         beammap_fluxes_mJy_beam, beammap_fluxes_MJy_Sr,
         beammap_iteration_config, beammap_phase_config,
         beammap_reference_config, calib, date_obs);
@@ -66,7 +67,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     citlali::engine_detail::add_phdu_extinction_apt_oof_section(
         fits_entry, mb, rtcproc, telescope, calib, toltec_io, i, array_id,
-        name, reduction_type_name, logger);
+        name, reduction_type, logger);
 
     citlali::engine_detail::add_phdu_tod_runtime_config_section(
         fits_entry, name, logger, verbose_mode, rtcproc, ptcproc,
@@ -77,7 +78,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         array_id, mb->sig_unit);
 
     citlali::engine_detail::add_phdu_pointing_telescope_header_section(
-        fits_entry, mb, telescope, name, logger, reduction_type_name,
+        fits_entry, mb, telescope, name, logger, reduction_type,
         typed_config.pointing);
     } catch (const CCfits::FitsError &e) {
         throw std::runtime_error(

@@ -118,13 +118,13 @@ void add_phdu_beammap_reference(FitsEntry &fits_entry,
 template <class FitsEntry, class Logger, class FluxMap, class Calib>
 void add_phdu_beammap_keys_if_needed(
     FitsEntry &fits_entry, const std::string &array_name,
-    const Logger &logger, const std::string &redu_type,
+    const Logger &logger, citlali::config::ReductionType reduction_type,
     FluxMap &flux_mjy_beam, FluxMap &flux_mjy_sr,
     const citlali::config::BeammapIterationConfig &iteration_config,
     const citlali::config::BeammapPhaseStrategyConfig &phase_config,
     const citlali::config::BeammapReferenceConfig &reference_config,
     Calib &calib) {
-    if (!citlali::config::is_beammap_reduction_type(redu_type)) {
+    if (!citlali::config::is_beammap_reduction_type(reduction_type)) {
         return;
     }
 

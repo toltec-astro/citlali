@@ -110,9 +110,9 @@ void add_phdu_pointing_config(
 template <class FitsEntry, class Logger>
 void add_phdu_pointing_config_if_needed(
     FitsEntry &fits_entry, const std::string &array_name,
-    const Logger &logger, const std::string &redu_type,
+    const Logger &logger, citlali::config::ReductionType reduction_type,
     const citlali::config::PointingConfig &pointing_config) {
-    if (!citlali::config::is_pointing_reduction_type(redu_type)) {
+    if (!citlali::config::is_pointing_reduction_type(reduction_type)) {
         return;
     }
     add_phdu_pointing_config(

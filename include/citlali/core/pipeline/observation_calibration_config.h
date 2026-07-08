@@ -19,10 +19,9 @@ void load_photometry_config(Engine &engine, const RawObs &rawobs) {
 
 template <class Engine>
 bool should_make_apt_from_raw_files(const Engine &engine) {
-    return engine.typed_config.mapmaking.grouping ==
-               citlali::config::MapGrouping::detector ||
-           engine.typed_config.mapmaking.grouping ==
-               citlali::config::MapGrouping::automatic;
+    const auto grouping = engine.typed_config.mapmaking.grouping;
+    return citlali::config::is_detector_map_grouping(grouping) ||
+           citlali::config::is_automatic_map_grouping(grouping);
 }
 
 template <class TodProc, class RawObs, class Logger>

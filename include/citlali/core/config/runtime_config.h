@@ -60,7 +60,15 @@ inline bool is_science_reduction_type(std::string_view value) {
     return is_reduction_type(value, ReductionType::science);
 }
 
+inline bool is_science_reduction_type(ReductionType value) {
+    return is_reduction_type(value, ReductionType::science);
+}
+
 inline bool is_pointing_reduction_type(std::string_view value) {
+    return is_reduction_type(value, ReductionType::pointing);
+}
+
+inline bool is_pointing_reduction_type(ReductionType value) {
     return is_reduction_type(value, ReductionType::pointing);
 }
 

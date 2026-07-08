@@ -20,8 +20,8 @@ void Beammap::write_beammap_map_products(
     }
 
     const bool detector_grouping =
-        typed_config.mapmaking.grouping ==
-        citlali::config::MapGrouping::detector;
+        citlali::config::is_detector_map_grouping(
+            typed_config.mapmaking.grouping);
     const auto &split_config = typed_config.beammap.split_fits_by_flag;
     bool split_by_flag_mode = false;
     if constexpr (map_type == mapmaking::RawObs) {

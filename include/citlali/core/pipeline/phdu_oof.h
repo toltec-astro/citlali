@@ -13,17 +13,17 @@ namespace citlali::pipeline {
 
 template <class MapBuffer, class Logger>
 double phdu_oof_rms(const MapBuffer &mb, Eigen::Index map_index,
-                    const std::string &redu_type,
+                    citlali::config::ReductionType reduction_type,
                     const std::string &array_name,
                     const std::string &filepath, const Logger &logger) {
     double rms = 0.0;
 
-    if (!citlali::config::is_beammap_reduction_type(redu_type) &&
+    if (!citlali::config::is_beammap_reduction_type(reduction_type) &&
         std::isfinite(mb->median_err(map_index)) &&
         mb->median_err(map_index) > std::numeric_limits<double>::epsilon()) {
         rms = std::pow(mb->median_err(map_index), 0.5);
     }
-    else if (!citlali::config::is_beammap_reduction_type(redu_type) &&
+    else if (!citlali::config::is_beammap_reduction_type(reduction_type) &&
              std::isfinite(mb->median_err(map_index)) &&
              mb->median_err(map_index) < 0.0) {
         logger->warn("negative median_err for PHDU {} in {}; using OOF_RMS=0",
