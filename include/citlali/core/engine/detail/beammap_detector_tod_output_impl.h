@@ -7,12 +7,14 @@
 #include <citlali/core/engine/detail/beammap_detector_tod_netcdf_helpers.h>
 #include <citlali/core/engine/detail/beammap_detector_tod_output_helpers.h>
 
-void Beammap::write_detector_specific_ptc_tod(int output_iter) {
+Beammap::BeammapDetectorTodPreflight
+Beammap::prepare_detector_specific_ptc_tod_output() {
+    BeammapDetectorTodPreflight preflight;
     if (!beammap_detector_tod_output_enabled) {
-        return;
+        return preflight;
     }
-    const Eigen::Index n_scans = telescope.scan_indices.cols();
-    if (n_scans <= 0) {
+    preflight.n_scans = telescope.scan_indices.cols();
+    if (preflight.n_scans <= 0) {
         logger->error("cannot write detector-specific PTC TOD: no scans");
         std::exit(EXIT_FAILURE);
     }
@@ -20,24 +22,38 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         citlali::config::MapGrouping::detector) {
         logger->warn(
             "beammap.detector_tod_output requires detector map grouping; skipping detector-specific PTC TOD");
-        return;
+        return preflight;
     }
     const auto output_counts = beammap_detector_tod_output_helpers::output_counts(
         beammap_detector_tod_output_n_uniform,
         beammap_detector_tod_output_n_source_dense);
-    const int n_uniform = output_counts.n_uniform;
-    const int n_dense = output_counts.n_dense;
-    const Eigen::Index n_slots = output_counts.n_slots;
-    if (n_slots <= 0) {
+    preflight.n_uniform = output_counts.n_uniform;
+    preflight.n_dense = output_counts.n_dense;
+    preflight.n_slots = output_counts.n_slots;
+    if (preflight.n_slots <= 0) {
         logger->warn("beammap.detector_tod_output requested with no output slots; skipping");
-        return;
+        return preflight;
     }
-    const Eigen::Index n_samples_max =
+    preflight.n_samples_max =
         beammap_detector_tod_output_helpers::max_ptc_samples(ptcs);
-    if (n_samples_max <= 0) {
+    if (preflight.n_samples_max <= 0) {
         logger->warn("beammap.detector_tod_output has no PTC samples to write; skipping");
+        return preflight;
+    }
+    preflight.write_output = true;
+    return preflight;
+}
+
+void Beammap::write_detector_specific_ptc_tod(int output_iter) {
+    const auto preflight = prepare_detector_specific_ptc_tod_output();
+    if (!preflight.write_output) {
         return;
     }
+    const Eigen::Index n_scans = preflight.n_scans;
+    const int n_uniform = preflight.n_uniform;
+    const int n_dense = preflight.n_dense;
+    const Eigen::Index n_slots = preflight.n_slots;
+    const Eigen::Index n_samples_max = preflight.n_samples_max;
 
     std::vector<Eigen::Index> uniform_scans =
         beammap_detector_tod_selection::uniform_scan_indices(n_uniform, n_scans);

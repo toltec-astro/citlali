@@ -98,6 +98,15 @@ public:
               bound_high(Eigen::VectorXi::Zero(n_params)) {}
     };
 
+    struct BeammapDetectorTodPreflight {
+        bool write_output = false;
+        Eigen::Index n_scans = 0;
+        int n_uniform = 0;
+        int n_dense = 0;
+        Eigen::Index n_slots = 0;
+        Eigen::Index n_samples_max = 0;
+    };
+
     bool beammap_soft_priors_loaded = false;
     bool beammap_soft_priors_are_centered = false;
     bool beammap_soft_priors_are_derotated = false;
@@ -368,6 +377,7 @@ public:
     void write_beammap_ptc_diag_sidecar(int output_iter);
     void write_beammap_processed_ptc_tod(int output_iter);
     void write_beammap_detector_ptc_tod_stage(int output_iter);
+    BeammapDetectorTodPreflight prepare_detector_specific_ptc_tod_output();
     void write_detector_specific_ptc_tod(int output_iter);
     void write_detector_table_outputs();
     void write_beammap_fit_qc_table(const std::string &apt_filename);
