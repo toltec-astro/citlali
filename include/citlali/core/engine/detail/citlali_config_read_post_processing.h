@@ -38,7 +38,8 @@ void read_source_fitting_config(
         return;
     }
 
-    typed_post_processing_config.source_fitting.active = true;
+    citlali::config::set_source_fitting_active(
+        typed_post_processing_config, true);
 
     read_mirrored_config_value(
         config,

@@ -100,6 +100,14 @@ struct MapmakingConfig {
     double coverage_cut = 0.0;
 };
 
+inline void set_mapmaking_enabled(MapmakingConfig &config, bool enabled) {
+    config.enabled = enabled;
+}
+
+inline bool mapmaking_active(const MapmakingConfig &config) {
+    return config.enabled;
+}
+
 inline void validate(const MapmakingConfig &config, ValidationReport &report) {
     check_greater_than(config.pixel_size_arcsec, 0.0,
                        {"mapmaking", "pixel_size_arcsec"}, report);

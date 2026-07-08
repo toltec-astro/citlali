@@ -146,6 +146,15 @@ inline bool source_finding_active(const PostProcessingConfig &config) {
     return config.source_finding.enabled;
 }
 
+inline void set_source_fitting_active(PostProcessingConfig &config,
+                                      bool active) {
+    config.source_fitting.active = active;
+}
+
+inline bool source_fitting_active(const PostProcessingConfig &config) {
+    return config.source_fitting.active;
+}
+
 inline void validate(const MapFilterEdgeGuardConfig &config,
                      ValidationReport &report) {
     check_minimum(config.hits_core_fraction, 0.0,

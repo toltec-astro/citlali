@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/config/coadd_config.h>
+#include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/noise_config.h>
 #include <citlali/core/config/post_processing_config.h>
 
@@ -8,7 +9,7 @@ namespace citlali::pipeline {
 
 template <class Engine>
 bool mapmaking_enabled(const Engine &engine) {
-    return engine.typed_config.mapmaking.enabled;
+    return citlali::config::mapmaking_active(engine.typed_config.mapmaking);
 }
 
 template <class Engine>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/config/coadd_config.h>
+#include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/noise_config.h>
 #include <citlali/core/config/post_processing_config.h>
 
@@ -11,7 +12,7 @@ void disable_map_products_if_mapmaking_disabled(
     bool &run_coadd, bool &run_noise, bool &run_map_filter,
     bool &run_source_finder, ReductionConfig &typed_config,
     int &beammap_iter_max) {
-    if (typed_config.mapmaking.enabled) {
+    if (citlali::config::mapmaking_active(typed_config.mapmaking)) {
         return;
     }
     run_coadd = false;
@@ -24,7 +25,8 @@ void disable_map_products_if_mapmaking_disabled(
         typed_config.post_processing, false);
     citlali::config::set_source_finding_enabled(
         typed_config.post_processing, false);
-    typed_config.post_processing.source_fitting.active = false;
+    citlali::config::set_source_fitting_active(
+        typed_config.post_processing, false);
     // We don't need to do iterations if no maps are made.
     beammap_iter_max = 1;
     typed_config.beammap.iteration.max_iterations = 1;

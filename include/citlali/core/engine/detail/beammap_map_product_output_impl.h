@@ -5,6 +5,7 @@
 
 #include <citlali/core/engine/detail/beammap_map_product_headers.h>
 #include <citlali/core/engine/detail/beammap_map_product_split_helpers.h>
+#include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/pipeline/map_output_debug_breadcrumb.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
@@ -14,7 +15,7 @@ void Beammap::write_beammap_map_products(
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
     const std::string &dir_name) {
-    if (!typed_config.mapmaking.enabled) {
+    if (!citlali::config::mapmaking_active(typed_config.mapmaking)) {
         return;
     }
 
