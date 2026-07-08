@@ -62,6 +62,15 @@ public:
         double col = -99.0;
     };
 
+    struct BeammapFitInitSelection {
+        bool skip_fit = false;
+        bool from_previous = false;
+        bool from_prior = false;
+        BeammapFitInitMode mode = BeammapFitInitMode::Blind;
+        double row = -99.0;
+        double col = -99.0;
+    };
+
     struct BeammapFitIterationStats {
         Eigen::VectorXi bound_low;
         Eigen::VectorXi bound_high;
@@ -246,6 +255,8 @@ public:
                                             bool first_measurement_iter,
                                             bool detector_grouping);
     void fit_beammap_maps(bool detector_grouping, bool measurement_iter);
+    void require_beammap_fit_map_geometry(Eigen::Index map_index) const;
+    void log_beammap_fit_map_stats(Eigen::Index map_index) const;
     void reset_beammap_fit_diagnostics(Eigen::Index map_index);
     void clear_beammap_fit_result(Eigen::Index map_index);
     bool has_beammap_prior_diagnostics() const;
@@ -257,6 +268,12 @@ public:
     BeammapPreviousFitInit choose_previous_beammap_fit_init(
         Eigen::Index map_index, bool measurement_iter, bool can_try_prior,
         double init_fwhm);
+    void record_beammap_prior_init_mode(
+        Eigen::Index map_index, const BeammapFitInitSelection &init_selection);
+    BeammapFitInitSelection choose_beammap_fit_init(
+        Eigen::Index map_index, bool measurement_iter, bool can_try_prior,
+        double init_fwhm, BeammapFitIterationStats &fit_stats);
+    const char *beammap_fit_init_mode_name(BeammapFitInitMode init_mode) const;
     BeammapFitAttemptFlags beammap_fit_attempt_flags(
         const engine_utils::mapFitter::FitDiagnostics &fit_diag) const;
     void record_beammap_fit_attempt_stats(

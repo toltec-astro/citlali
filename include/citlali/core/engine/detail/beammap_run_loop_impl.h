@@ -358,9 +358,9 @@ void Beammap::run_beammap_mapmaking_stage(bool locator_iter,
 
 template <class KidsProc, class RawObs>
 bool Beammap::maybe_run_beammap_source_aware_rtc(KidsProc &kidsproc,
-                                                RawObs &rawobs,
-                                                bool first_measurement_iter,
-                                                bool detector_grouping) {
+                                                 RawObs &rawobs,
+                                                 bool first_measurement_iter,
+                                                 bool detector_grouping) {
     configure_detector_source_centers_from_previous_fit();
 
     const bool detector_kernel_source_centers_active =
@@ -382,6 +382,33 @@ bool Beammap::maybe_run_beammap_source_aware_rtc(KidsProc &kidsproc,
             "iter=" + std::to_string(current_iter));
     timestream_pipeline(kidsproc, rawobs, false);
     return true;
+}
+
+void Beammap::require_beammap_fit_map_geometry(Eigen::Index map_index) const {
+    if (omb.signal[map_index].rows() != omb.n_rows ||
+        omb.signal[map_index].cols() != omb.n_cols ||
+        omb.weight[map_index].rows() != omb.n_rows ||
+        omb.weight[map_index].cols() != omb.n_cols) {
+        logger->error(
+            "beammap fit map={} geometry mismatch: signal={}x{} weight={}x{} expected={}x{}",
+            map_index, omb.signal[map_index].rows(),
+            omb.signal[map_index].cols(), omb.weight[map_index].rows(),
+            omb.weight[map_index].cols(), omb.n_rows, omb.n_cols);
+        std::exit(EXIT_FAILURE);
+    }
+}
+
+void Beammap::log_beammap_fit_map_stats(Eigen::Index map_index) const {
+    const auto &sig = omb.signal[map_index];
+    const auto &wt = omb.weight[map_index];
+    const Eigen::Index n_pix = sig.size();
+    const Eigen::Index sig_finite = sig.array().isFinite().count();
+    const Eigen::Index wt_finite = wt.array().isFinite().count();
+    const Eigen::Index wt_pos = (wt.array() > 0.0).count();
+    logger->debug(
+        "beammap fit map={} stats: sig_finite={}/{} wt_finite={}/{} wt_pos={}/{} sig[min,max]=({:.6g}, {:.6g}) wt[min,max]=({:.6g}, {:.6g})",
+        map_index, sig_finite, n_pix, wt_finite, n_pix, wt_pos, n_pix,
+        sig.minCoeff(), sig.maxCoeff(), wt.minCoeff(), wt.maxCoeff());
 }
 
 void Beammap::reset_beammap_fit_diagnostics(Eigen::Index map_index) {
@@ -530,6 +557,84 @@ Beammap::BeammapPreviousFitInit Beammap::choose_previous_beammap_fit_init(
             map_index, prev_row, prev_col);
     }
     return result;
+}
+
+void Beammap::record_beammap_prior_init_mode(
+    Eigen::Index map_index, const BeammapFitInitSelection &init_selection) {
+    if (!has_beammap_prior_diagnostics()) {
+        return;
+    }
+    if (init_selection.from_previous) {
+        prior_diag_values(map_index, prior_init_mode_col) = 1.0;
+    }
+    else if (init_selection.from_prior) {
+        prior_diag_values(map_index, prior_init_mode_col) = 2.0;
+    }
+    else {
+        prior_diag_values(map_index, prior_init_mode_col) = 0.0;
+    }
+}
+
+Beammap::BeammapFitInitSelection Beammap::choose_beammap_fit_init(
+    Eigen::Index map_index, bool measurement_iter, bool can_try_prior,
+    double init_fwhm, BeammapFitIterationStats &fit_stats) {
+    BeammapFitInitSelection selection;
+
+    const auto prev_init = choose_previous_beammap_fit_init(
+        map_index, measurement_iter, can_try_prior, init_fwhm);
+    if (prev_init.rejected_by_peak) {
+        fit_stats.prev_rejected_by_peak++;
+    }
+    if (prev_init.valid) {
+        selection.col = prev_init.col;
+        selection.row = prev_init.row;
+        selection.from_previous = true;
+        selection.mode = BeammapFitInitMode::Previous;
+        fit_stats.init_prev++;
+        record_beammap_prior_init_mode(map_index, selection);
+        return selection;
+    }
+
+    if (can_try_prior) {
+        if (choose_prior_guided_init(map_index, selection.row, selection.col)) {
+            selection.from_prior = true;
+            selection.mode = BeammapFitInitMode::Prior;
+            fit_stats.init_prior++;
+        }
+        else if (!beammap_priors_fallback_blind) {
+            if (has_beammap_prior_diagnostics()) {
+                prior_diag_values(map_index, prior_init_mode_col) = -1.0;
+            }
+            logger->warn(
+                "beammap fit map={} skipped: no prior-guided init candidate and fallback_blind=false",
+                map_index);
+            fit_stats.init_skip++;
+            selection.skip_fit = true;
+            return selection;
+        }
+        else if (has_beammap_prior_diagnostics()) {
+            prior_diag_values(map_index, prior_fallback_blind_col) = 1.0;
+        }
+    }
+
+    if (!selection.from_prior) {
+        fit_stats.init_blind++;
+    }
+    record_beammap_prior_init_mode(map_index, selection);
+    return selection;
+}
+
+const char *Beammap::beammap_fit_init_mode_name(
+    BeammapFitInitMode init_mode) const {
+    switch (init_mode) {
+        case BeammapFitInitMode::Previous:
+            return "previous";
+        case BeammapFitInitMode::Prior:
+            return "prior";
+        case BeammapFitInitMode::Blind:
+            return "blind";
+    }
+    return "unknown";
 }
 
 Beammap::BeammapFitAttemptFlags Beammap::beammap_fit_attempt_flags(
@@ -697,24 +802,8 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         logger->debug("beammap fit checkpoint: map={} begin converged={}", i, converged(i));
 
-        if (omb.signal[i].rows() != omb.n_rows || omb.signal[i].cols() != omb.n_cols ||
-            omb.weight[i].rows() != omb.n_rows || omb.weight[i].cols() != omb.n_cols) {
-            logger->error("beammap fit map={} geometry mismatch: signal={}x{} weight={}x{} expected={}x{}",
-                          i, omb.signal[i].rows(), omb.signal[i].cols(),
-                          omb.weight[i].rows(), omb.weight[i].cols(),
-                          omb.n_rows, omb.n_cols);
-            std::exit(EXIT_FAILURE);
-        }
-
-        const auto &sig = omb.signal[i];
-        const auto &wt = omb.weight[i];
-        const Eigen::Index n_pix = sig.size();
-        const Eigen::Index sig_finite = sig.array().isFinite().count();
-        const Eigen::Index wt_finite = wt.array().isFinite().count();
-        const Eigen::Index wt_pos = (wt.array() > 0.0).count();
-        logger->debug("beammap fit map={} stats: sig_finite={}/{} wt_finite={}/{} wt_pos={}/{} sig[min,max]=({:.6g}, {:.6g}) wt[min,max]=({:.6g}, {:.6g})",
-                      i, sig_finite, n_pix, wt_finite, n_pix, wt_pos, n_pix,
-                      sig.minCoeff(), sig.maxCoeff(), wt.minCoeff(), wt.maxCoeff());
+        require_beammap_fit_map_geometry(i);
+        log_beammap_fit_map_stats(i);
 
         // only fit if not converged
         if (!converged(i)) {
@@ -733,69 +822,25 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
             auto array = maps_to_arrays(i);
             // get initial guess fwhm from theoretical fwhms for the arrays
             double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
-            // choose fit initialization
-            double init_row = -99.0;
-            double init_col = -99.0;
-            bool init_from_prev = false;
-            bool init_from_prior = false;
-            auto init_mode = BeammapFitInitMode::Blind;
             const bool can_try_prior =
                 beammap_priors_enabled && beammap_soft_priors_loaded &&
                 detector_grouping;
-            const auto prev_init = choose_previous_beammap_fit_init(
-                i, measurement_iter, can_try_prior, init_fwhm);
-            if (prev_init.rejected_by_peak) {
-                fit_stats.prev_rejected_by_peak++;
-            }
-            if (prev_init.valid) {
-                init_col = prev_init.col;
-                init_row = prev_init.row;
-                init_from_prev = true;
-                init_mode = BeammapFitInitMode::Previous;
-                fit_stats.init_prev++;
-            }
-            if (!init_from_prev && can_try_prior) {
-                if (choose_prior_guided_init(i, init_row, init_col)) {
-                    init_from_prior = true;
-                    init_mode = BeammapFitInitMode::Prior;
-                    fit_stats.init_prior++;
-                }
-                else if (!beammap_priors_fallback_blind) {
-                    if (has_beammap_prior_diagnostics()) {
-                        prior_diag_values(i, prior_init_mode_col) = -1.0;
-                    }
-                    logger->warn("beammap fit map={} skipped: no prior-guided init candidate and fallback_blind=false", i);
-                    clear_beammap_fit_result(i);
-                    fit_stats.init_skip++;
-                    continue;
-                }
-                else if (has_beammap_prior_diagnostics()) {
-                    prior_diag_values(i, prior_fallback_blind_col) = 1.0;
-                }
-            }
-            if (!init_from_prev && !init_from_prior) {
-                fit_stats.init_blind++;
-            }
-            if (has_beammap_prior_diagnostics()) {
-                if (init_from_prev) {
-                    prior_diag_values(i, prior_init_mode_col) = 1.0;
-                }
-                else if (init_from_prior) {
-                    prior_diag_values(i, prior_init_mode_col) = 2.0;
-                }
-                else {
-                    prior_diag_values(i, prior_init_mode_col) = 0.0;
-                }
+            const auto init_selection = choose_beammap_fit_init(
+                i, measurement_iter, can_try_prior, init_fwhm, fit_stats);
+            if (init_selection.skip_fit) {
+                clear_beammap_fit_result(i);
+                continue;
             }
             logger->debug("beammap fit map={} init mode={} row={:.3f} col={:.3f}",
-                          i, init_from_prev ? "previous" : (init_from_prior ? "prior" : "blind"),
-                          init_row, init_col);
+                          i, beammap_fit_init_mode_name(init_selection.mode),
+                          init_selection.row, init_selection.col);
             // fit the maps
             logger->debug("beammap fit checkpoint: map={} call fit_to_gaussian", i);
             engine_utils::mapFitter::FitDiagnostics fit_diag;
             auto [det_params, det_perror, good_fit] =
                 map_fitter.fit_to_gaussian<engine_utils::mapFitter::beammap>(omb.signal[i], omb.weight[i],
-                                                                             init_fwhm, init_row, init_col, &fit_diag);
+                                                                             init_fwhm, init_selection.row,
+                                                                             init_selection.col, &fit_diag);
             logger->debug("beammap fit checkpoint: map={} fit_to_gaussian returned good_fit={}", i, good_fit);
 
             if (!(det_params.array().isFinite().all() && det_perror.array().isFinite().all())) {
@@ -810,7 +855,7 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
 
             const auto fit_flags = beammap_fit_attempt_flags(fit_diag);
             record_beammap_fit_attempt_stats(
-                fit_stats, init_mode, good_fit, fit_flags.init_amp_zero,
+                fit_stats, init_selection.mode, good_fit, fit_flags.init_amp_zero,
                 fit_flags.amp_bounds_zero);
             record_beammap_fit_diagnostics(i, fit_diag, fit_stats);
         }
