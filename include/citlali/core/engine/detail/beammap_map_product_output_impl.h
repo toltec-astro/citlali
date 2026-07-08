@@ -14,17 +14,18 @@ void Beammap::write_beammap_map_products(
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
     const std::string &dir_name) {
-    if (!run_mapmaking) {
+    if (!typed_config.mapmaking.enabled) {
         return;
     }
 
     const bool detector_grouping =
         typed_config.mapmaking.grouping ==
         citlali::config::MapGrouping::detector;
+    const auto &split_config = typed_config.beammap.split_fits_by_flag;
     bool split_by_flag_mode = false;
     if constexpr (map_type == mapmaking::RawObs) {
-        split_by_flag_mode = detector_grouping && beammap_split_fits_by_flag;
-        if (split_by_flag_mode && beammap_split_flag_values.empty()) {
+        split_by_flag_mode = detector_grouping && split_config.enabled;
+        if (split_by_flag_mode && split_config.flag_values.empty()) {
             logger->warn("beammap.split_fits_by_flag enabled but no flag_values specified; using standard map output");
             split_by_flag_mode = false;
         }
@@ -109,7 +110,7 @@ void Beammap::write_beammap_map_products(
             }
             const Eigen::Index n_selected_maps =
                 beammap_map_product_split_helpers::count_maps_with_any_flag(
-                    calib.apt["flag"], n_maps, beammap_split_flag_values);
+                    calib.apt["flag"], n_maps, split_config.flag_values);
 
             if (n_selected_maps <= 0) {
                 logger->warn("beammap split_fits_by_flag selected no detector maps; using standard map output");
@@ -131,7 +132,7 @@ void Beammap::write_beammap_map_products(
 
                 using split_io_t = fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>;
 
-                for (const auto flag_value : beammap_split_flag_values) {
+                for (const auto flag_value : split_config.flag_values) {
                     const Eigen::Index n_flag_maps =
                         beammap_map_product_split_helpers::count_maps_with_flag(
                             calib.apt["flag"], n_maps, flag_value);
