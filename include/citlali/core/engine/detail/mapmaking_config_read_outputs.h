@@ -32,7 +32,7 @@ void read_coadd_map_block_config(
     MissingKeys &missing_keys, InvalidKeys &invalid_keys,
     const PixelAxes &pixel_axes, const std::string &redu_type,
     const Logger &logger) {
-    if (!typed_coadd_config.enabled) {
+    if (!citlali::config::coadd_active(typed_coadd_config)) {
         return;
     }
     logger->info("getting cmb config options");

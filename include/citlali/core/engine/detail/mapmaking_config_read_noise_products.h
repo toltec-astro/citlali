@@ -13,7 +13,7 @@ void read_noise_map_config(Config &config, bool &run_noise,
                            InvalidKeys &invalid_keys) {
     read_noise_maps_enabled_config(
         config, run_noise, typed_config, missing_keys, invalid_keys);
-    if (!typed_config.enabled) {
+    if (!citlali::config::noise_maps_active(typed_config)) {
         citlali::pipeline::disable_noise_map_settings(omb, cmb, typed_config);
         return;
     }
@@ -22,7 +22,7 @@ void read_noise_map_config(Config &config, bool &run_noise,
     read_noise_randomize_dets_config(
         config, omb.randomize_dets, typed_config, missing_keys,
         invalid_keys);
-    if (typed_coadd_config.enabled) {
+    if (citlali::config::coadd_active(typed_coadd_config)) {
         citlali::pipeline::mirror_noise_map_settings_to_coadd(omb, cmb);
     }
 }
@@ -38,9 +38,11 @@ void read_noise_product_config(Config &config, bool &write_realizations,
     read_noise_write_realizations_config(
         config, write_realizations, typed_config, missing_keys, invalid_keys);
     read_noise_products_enabled_config(
-        config, products_enabled, typed_config.enabled, typed_config,
+        config, products_enabled,
+        citlali::config::noise_maps_active(typed_config), typed_config,
         missing_keys, invalid_keys);
     read_noise_empirical_weights_config(
-        config, apply_empirical_weights, typed_config.enabled, typed_config,
+        config, apply_empirical_weights,
+        citlali::config::noise_maps_active(typed_config), typed_config,
         missing_keys, invalid_keys);
 }

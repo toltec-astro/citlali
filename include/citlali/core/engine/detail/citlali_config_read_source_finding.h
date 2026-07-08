@@ -38,5 +38,5 @@ void read_source_finding_config(
             omb.source_window_rad, arcsec_to_rad);
 
     citlali::pipeline::mirror_source_finding_config_to_coadd(
-        omb, cmb, typed_coadd_config.enabled);
+        omb, cmb, citlali::config::coadd_active(typed_coadd_config));
 }

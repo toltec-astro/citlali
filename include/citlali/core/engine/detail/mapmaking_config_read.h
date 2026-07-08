@@ -1,6 +1,8 @@
 #pragma once
 
+#include <citlali/core/config/coadd_config.h>
 #include <citlali/core/config/mapmaking_config.h>
+#include <citlali/core/config/noise_config.h>
 #include <citlali/core/engine/detail/config_parse_tracking.h>
 #include <citlali/core/pipeline/mapmaking_config_policy.h>
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/config/coadd_config.h>
+#include <citlali/core/config/noise_config.h>
 #include <citlali/core/config/post_processing_config.h>
 
 namespace citlali::pipeline {
@@ -11,27 +13,30 @@ bool mapmaking_enabled(const Engine &engine) {
 
 template <class Engine>
 bool coadd_enabled(const Engine &engine) {
-    return engine.typed_config.coadd.enabled;
+    return citlali::config::coadd_active(engine.typed_config.coadd);
 }
 
 template <class Engine>
 bool noise_maps_enabled(const Engine &engine) {
-    return engine.typed_config.noise.enabled;
+    return citlali::config::noise_maps_active(engine.typed_config.noise);
 }
 
 template <class Engine>
 bool noise_realization_outputs_enabled(const Engine &engine) {
-    return engine.typed_config.noise.write_realizations;
+    return citlali::config::noise_realization_outputs_active(
+        engine.typed_config.noise);
 }
 
 template <class Engine>
 bool noise_product_outputs_enabled(const Engine &engine) {
-    return engine.typed_config.noise.products_enabled;
+    return citlali::config::noise_product_outputs_active(
+        engine.typed_config.noise);
 }
 
 template <class Engine>
 bool empirical_noise_weights_enabled(const Engine &engine) {
-    return engine.typed_config.noise.apply_empirical_weights;
+    return citlali::config::empirical_noise_weights_active(
+        engine.typed_config.noise);
 }
 
 template <class Engine>

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/config/noise_config.h>
 #include <citlali/core/config/post_processing_config.h>
 #include <citlali/core/config/runtime_config.h>
 
@@ -76,7 +77,7 @@ void apply_map_filter_runtime_policy(
         wiener_filter.map_fitter = map_fitter;
     }
 
-    if (!typed_config.noise.enabled &&
+    if (!citlali::config::noise_maps_active(typed_config.noise) &&
         (!map_filter_config.lowpass_only &&
          map_filter_config.type ==
              citlali::config::MapFilterType::wiener_filter)) {

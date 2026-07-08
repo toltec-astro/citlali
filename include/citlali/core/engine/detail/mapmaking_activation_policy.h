@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/config/coadd_config.h>
+#include <citlali/core/config/noise_config.h>
 #include <citlali/core/config/post_processing_config.h>
 
 namespace citlali::engine_detail {
@@ -16,8 +18,8 @@ void disable_map_products_if_mapmaking_disabled(
     run_noise = false;
     run_map_filter = false;
     run_source_finder = false;
-    typed_config.coadd.enabled = false;
-    typed_config.noise.enabled = false;
+    citlali::config::set_coadd_enabled(typed_config.coadd, false);
+    citlali::config::set_noise_maps_enabled(typed_config.noise, false);
     citlali::config::set_map_filtering_enabled(
         typed_config.post_processing, false);
     citlali::config::set_source_finding_enabled(
