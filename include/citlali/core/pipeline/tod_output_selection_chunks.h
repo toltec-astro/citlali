@@ -78,3 +78,47 @@ inline std::vector<Eigen::Index> uniform_plus_source_tod_output_chunks(
     return selected_tod_output_chunks_1based(selected_0based);
 }
 
+enum class TodOutputSelectionStatus {
+    valid,
+    invalid_mode,
+    empty_uniform_source_selection
+};
+
+struct EffectiveTodOutputSelection {
+    bool select_enabled = false;
+    std::vector<Eigen::Index> chunks_1based;
+    TodOutputSelectionStatus status = TodOutputSelectionStatus::valid;
+};
+
+template <class TodStreamOutputConfig>
+EffectiveTodOutputSelection effective_tod_output_selection(
+    const TodStreamOutputConfig &config,
+    const std::vector<Eigen::Index> &uniform_source_chunks_1based) {
+    EffectiveTodOutputSelection selection;
+    selection.chunks_1based.reserve(config.chunks_1based.size());
+    for (const auto chunk : config.chunks_1based) {
+        selection.chunks_1based.push_back(static_cast<Eigen::Index>(chunk));
+    }
+    selection.select_enabled = config.chunk_select_enabled;
+
+    if (citlali::config::is_all_tod_output_selection_mode(
+            config.selection_mode)) {
+        selection.select_enabled = false;
+        selection.chunks_1based.clear();
+    }
+    else if (citlali::config::is_uniform_source_tod_output_selection_mode(
+                 config.selection_mode)) {
+        selection.select_enabled = true;
+        selection.chunks_1based = uniform_source_chunks_1based;
+        if (selection.chunks_1based.empty()) {
+            selection.status =
+                TodOutputSelectionStatus::empty_uniform_source_selection;
+        }
+    }
+    else if (!citlali::config::is_indices_tod_output_selection_mode(
+                 config.selection_mode)) {
+        selection.status = TodOutputSelectionStatus::invalid_mode;
+    }
+
+    return selection;
+}

@@ -100,38 +100,33 @@ void Engine::setup_tod_output_chunk_selection() {
             return;
         }
 
-        std::vector<Eigen::Index> effective_chunks;
-        effective_chunks.reserve(config.chunks_1based.size());
-        for (const auto chunk : config.chunks_1based) {
-            effective_chunks.push_back(static_cast<Eigen::Index>(chunk));
-        }
-        bool effective_select_enabled = config.chunk_select_enabled;
-        if (citlali::config::is_all_tod_output_selection_mode(
+        std::vector<Eigen::Index> uniform_source_chunks;
+        if (citlali::config::is_uniform_source_tod_output_selection_mode(
                 config.selection_mode)) {
-            effective_select_enabled = false;
-            effective_chunks.clear();
-        }
-        else if (citlali::config::is_uniform_source_tod_output_selection_mode(
-                     config.selection_mode)) {
-            effective_select_enabled = true;
-            effective_chunks = build_uniform_plus_source_crossing_chunks(
+            uniform_source_chunks = build_uniform_plus_source_crossing_chunks(
                 stream_name, config.selection_n_uniform,
                 config.selection_n_source_dense);
-            if (effective_chunks.empty()) {
-                logger->error("{} TOD output selection mode uniform_plus_source_crossing selected no chunks",
-                              stream_name);
-                std::exit(EXIT_FAILURE);
-            }
         }
-        else if (!citlali::config::is_indices_tod_output_selection_mode(
-                     config.selection_mode)) {
+        const auto selection =
+            citlali::pipeline::effective_tod_output_selection(
+                config, uniform_source_chunks);
+        if (selection.status ==
+            citlali::pipeline::TodOutputSelectionStatus::invalid_mode) {
             logger->error("{} TOD output selection mode '{}' is invalid",
                           stream_name,
                           citlali::config::to_string(config.selection_mode));
             std::exit(EXIT_FAILURE);
         }
+        if (selection.status ==
+            citlali::pipeline::TodOutputSelectionStatus::
+                empty_uniform_source_selection) {
+            logger->error(
+                "{} TOD output selection mode uniform_plus_source_crossing selected no chunks",
+                stream_name);
+            std::exit(EXIT_FAILURE);
+        }
 
-        if (!effective_select_enabled || effective_chunks.empty()) {
+        if (!selection.select_enabled || selection.chunks_1based.empty()) {
             n_output_scans =
                 citlali::pipeline::assign_all_tod_output_rows(
                     scan_to_output, n_scans);
@@ -140,7 +135,7 @@ void Engine::setup_tod_output_chunk_selection() {
             return;
         }
 
-        for (const auto chunk_1based : effective_chunks) {
+        for (const auto chunk_1based : selection.chunks_1based) {
             if (!citlali::pipeline::tod_output_chunk_is_valid(
                     chunk_1based, n_scans)) {
                 logger->error("{} TOD output indices contain {} but valid scan range is [1, {}]",
@@ -151,7 +146,7 @@ void Engine::setup_tod_output_chunk_selection() {
 
         n_output_scans =
             citlali::pipeline::assign_selected_tod_output_rows(
-                scan_to_output, n_scans, effective_chunks);
+                scan_to_output, n_scans, selection.chunks_1based);
         logger->info("{} TOD output chunk selection enabled: writing {} of {} chunks",
                      stream_name, n_output_scans, n_scans);
     };
