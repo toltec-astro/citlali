@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/config/beammap_config.h>
 #include <citlali/core/config/mapmaking_config.h>
 
 #include <Eigen/Core>
@@ -170,6 +171,14 @@ inline bool use_beammap_detector_ptc_weights(const std::string &mode,
                                              bool measurement_iter) {
     return mode == "ptc" ||
            (mode == "ptc_after_iter0" && measurement_iter);
+}
+
+inline bool use_beammap_detector_ptc_weights(
+    citlali::config::BeammapDetectorWeightingMode mode,
+    bool measurement_iter) {
+    using Mode = citlali::config::BeammapDetectorWeightingMode;
+    return mode == Mode::ptc ||
+           (mode == Mode::ptc_after_iter0 && measurement_iter);
 }
 
 }  // namespace citlali::pipeline

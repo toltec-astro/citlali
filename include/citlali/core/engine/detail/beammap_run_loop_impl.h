@@ -90,13 +90,18 @@ void Beammap::apply_beammap_ptc_scan_weights(int scan_index,
             }
         }
 
+        const auto detector_weighting_mode =
+            typed_config.beammap.detector_weighting_mode;
+        const auto detector_weighting_mode_name =
+            citlali::config::to_string(detector_weighting_mode);
         const bool use_ptc_weights =
             citlali::pipeline::use_beammap_detector_ptc_weights(
-                beammap_detector_weighting_mode, measurement_iter);
+                detector_weighting_mode, measurement_iter);
         if (use_ptc_weights) {
             logger->info(
                 "calculating detector-mode PTC weights for scan {} (mode={})",
-                ptcs[scan_index].index.data + 1, beammap_detector_weighting_mode);
+                ptcs[scan_index].index.data + 1,
+                detector_weighting_mode_name);
             ptcproc.calc_weights(ptcs[scan_index], calib_scans[scan_index].apt, telescope);
             calib_scans[scan_index] = ptcproc.reset_weights(
                 ptcs[scan_index], calib_scans[scan_index], map_grouping);
