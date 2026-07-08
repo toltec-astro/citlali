@@ -52,6 +52,13 @@ _citlali_refactor_canonical_path() {
     return 0
   fi
 
+  if [[ "${path}" == /work/toltec/* && -n "${HOME}" ]]; then
+    local unity_home_alias="${HOME}/work_toltec/${path#/work/toltec/}"
+    if [[ -e "${unity_home_alias}" ]]; then
+      path="${unity_home_alias}"
+    fi
+  fi
+
   if command -v realpath >/dev/null 2>&1; then
     realpath "${path}" 2>/dev/null && return 0
   fi
@@ -234,6 +241,8 @@ citlali_refactor_update() {
           configure_reason="FETCHCONTENT_UPDATES_DISCONNECTED is not enabled in cache"
         elif [[ -n "${conan_cmd}" && "${cached_conan_cmd}" != "${conan_cmd}" ]]; then
           configure_reason="CONAN_CMD changed"
+          echo "Selected CONAN_CMD: ${conan_cmd}"
+          echo "Cached CONAN_CMD: ${cached_conan_cmd}"
         elif [[ -n "${tula_dir}" && "$(_citlali_refactor_cache_value "${build_dir}" FETCHCONTENT_SOURCE_DIR_TULA)" != "${tula_dir}" ]]; then
           configure_reason="FETCHCONTENT_SOURCE_DIR_TULA changed"
         elif [[ -z "${tula_dir}" && -n "$(_citlali_refactor_cache_value "${build_dir}" FETCHCONTENT_SOURCE_DIR_TULA)" ]]; then
