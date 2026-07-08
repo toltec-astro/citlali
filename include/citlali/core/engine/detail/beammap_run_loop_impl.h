@@ -417,26 +417,7 @@ void Beammap::reset_beammap_prior_diagnostics(Eigen::Index map_index) {
 }
 
 void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
-    Eigen::VectorXi iter_bound_low = Eigen::VectorXi::Zero(map_fitter.n_params);
-    Eigen::VectorXi iter_bound_high = Eigen::VectorXi::Zero(map_fitter.n_params);
-    Eigen::Index iter_bound_any = 0;
-    Eigen::Index iter_init_prev = 0;
-    Eigen::Index iter_init_prior = 0;
-    Eigen::Index iter_init_blind = 0;
-    Eigen::Index iter_init_skip = 0;
-    Eigen::Index iter_attempt_prev = 0;
-    Eigen::Index iter_attempt_prior = 0;
-    Eigen::Index iter_attempt_blind = 0;
-    Eigen::Index iter_fail_prev = 0;
-    Eigen::Index iter_fail_prior = 0;
-    Eigen::Index iter_fail_blind = 0;
-    Eigen::Index iter_prev_rejected_by_peak = 0;
-    Eigen::Index iter_init_amp_zero_prev = 0;
-    Eigen::Index iter_init_amp_zero_prior = 0;
-    Eigen::Index iter_init_amp_zero_blind = 0;
-    Eigen::Index iter_amp_bounds_zero_prev = 0;
-    Eigen::Index iter_amp_bounds_zero_prior = 0;
-    Eigen::Index iter_amp_bounds_zero_blind = 0;
+    BeammapFitIterationStats fit_stats(map_fitter.n_params);
 
     logger->info("fitting maps");
     logger->info("beammap fit diagnostics enabled");
@@ -575,7 +556,7 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
                                 dist_pix > min_switch_dist_pix &&
                                 prior_allows_switch) {
                                 prev_seed_valid = false;
-                                iter_prev_rejected_by_peak++;
+                                fit_stats.prev_rejected_by_peak++;
                                 logger->debug(
                                     "beammap fit map={} rejected previous init: current weighted peak row={} col={} snr={} is {} pix from previous row={} col={} snr={}",
                                     i, peak_row, peak_col, peak_snr, dist_pix,
@@ -589,7 +570,7 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
                     init_row = prev_row;
                     init_from_prev = true;
                     init_mode = FitInitMode::Previous;
-                    iter_init_prev++;
+                    fit_stats.init_prev++;
                 }
                 else {
                     logger->debug(
@@ -601,7 +582,7 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
                 if (choose_prior_guided_init(i, init_row, init_col)) {
                     init_from_prior = true;
                     init_mode = FitInitMode::Prior;
-                    iter_init_prior++;
+                    fit_stats.init_prior++;
                 }
                 else if (!beammap_priors_fallback_blind) {
                     if (has_beammap_prior_diagnostics()) {
@@ -609,7 +590,7 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
                     }
                     logger->warn("beammap fit map={} skipped: no prior-guided init candidate and fallback_blind=false", i);
                     clear_beammap_fit_result(i);
-                    iter_init_skip++;
+                    fit_stats.init_skip++;
                     continue;
                 }
                 else if (has_beammap_prior_diagnostics()) {
@@ -617,7 +598,7 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
                 }
             }
             if (!init_from_prev && !init_from_prior) {
-                iter_init_blind++;
+                fit_stats.init_blind++;
             }
             if (has_beammap_prior_diagnostics()) {
                 if (init_from_prev) {
@@ -667,39 +648,39 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
             }
             switch (init_mode) {
                 case FitInitMode::Previous:
-                    iter_attempt_prev++;
+                    fit_stats.attempt_prev++;
                     if (!good_fit) {
-                        iter_fail_prev++;
+                        fit_stats.fail_prev++;
                     }
                     if (init_amp_zero) {
-                        iter_init_amp_zero_prev++;
+                        fit_stats.init_amp_zero_prev++;
                     }
                     if (amp_bounds_zero) {
-                        iter_amp_bounds_zero_prev++;
+                        fit_stats.amp_bounds_zero_prev++;
                     }
                     break;
                 case FitInitMode::Prior:
-                    iter_attempt_prior++;
+                    fit_stats.attempt_prior++;
                     if (!good_fit) {
-                        iter_fail_prior++;
+                        fit_stats.fail_prior++;
                     }
                     if (init_amp_zero) {
-                        iter_init_amp_zero_prior++;
+                        fit_stats.init_amp_zero_prior++;
                     }
                     if (amp_bounds_zero) {
-                        iter_amp_bounds_zero_prior++;
+                        fit_stats.amp_bounds_zero_prior++;
                     }
                     break;
                 case FitInitMode::Blind:
-                    iter_attempt_blind++;
+                    fit_stats.attempt_blind++;
                     if (!good_fit) {
-                        iter_fail_blind++;
+                        fit_stats.fail_blind++;
                     }
                     if (init_amp_zero) {
-                        iter_init_amp_zero_blind++;
+                        fit_stats.init_amp_zero_blind++;
                     }
                     if (amp_bounds_zero) {
-                        iter_amp_bounds_zero_blind++;
+                        fit_stats.amp_bounds_zero_blind++;
                     }
                     break;
             }
@@ -723,19 +704,19 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
                     const bool hit_high = fit_diag.hit_upper(p) != 0;
                     if (hit_low) {
                         bound_code |= (1 << (2 * p));
-                        iter_bound_low(p)++;
+                        fit_stats.bound_low(p)++;
                         bound_nhit++;
                     }
                     if (hit_high) {
                         bound_code |= (1 << (2 * p + 1));
-                        iter_bound_high(p)++;
+                        fit_stats.bound_high(p)++;
                         bound_nhit++;
                     }
                 }
                 fit_diag_bound_code(i) = bound_code;
                 fit_diag_bound_nhit(i) = bound_nhit;
                 if (bound_nhit > 0) {
-                    iter_bound_any++;
+                    fit_stats.bound_any++;
                 }
             }
             else {
@@ -753,34 +734,34 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
     }
 
     logger->info("beammap init summary (iter {}): previous={} prior={} blind={} skipped={} prev_rejected_by_peak={}",
-                 current_iter, iter_init_prev, iter_init_prior, iter_init_blind, iter_init_skip,
-                 iter_prev_rejected_by_peak);
+                 current_iter, fit_stats.init_prev, fit_stats.init_prior, fit_stats.init_blind, fit_stats.init_skip,
+                 fit_stats.prev_rejected_by_peak);
     logger->info(
         "beammap fit diagnostics (iter {}): prev fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{} | "
         "prior fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{} | "
         "blind fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{}",
         current_iter,
-        iter_fail_prev, iter_attempt_prev, iter_init_amp_zero_prev, iter_attempt_prev,
-        iter_amp_bounds_zero_prev, iter_attempt_prev,
-        iter_fail_prior, iter_attempt_prior, iter_init_amp_zero_prior, iter_attempt_prior,
-        iter_amp_bounds_zero_prior, iter_attempt_prior,
-        iter_fail_blind, iter_attempt_blind, iter_init_amp_zero_blind, iter_attempt_blind,
-        iter_amp_bounds_zero_blind, iter_attempt_blind);
+        fit_stats.fail_prev, fit_stats.attempt_prev, fit_stats.init_amp_zero_prev, fit_stats.attempt_prev,
+        fit_stats.amp_bounds_zero_prev, fit_stats.attempt_prev,
+        fit_stats.fail_prior, fit_stats.attempt_prior, fit_stats.init_amp_zero_prior, fit_stats.attempt_prior,
+        fit_stats.amp_bounds_zero_prior, fit_stats.attempt_prior,
+        fit_stats.fail_blind, fit_stats.attempt_blind, fit_stats.init_amp_zero_blind, fit_stats.attempt_blind,
+        fit_stats.amp_bounds_zero_blind, fit_stats.attempt_blind);
 
     if (map_fitter.n_params >= 6) {
         logger->info(
             "beammap fit bound summary (iter {}): any_hit={}/{} amp(lo/hi)={}/{} x(lo/hi)={}/{} y(lo/hi)={}/{} a(lo/hi)={}/{} b(lo/hi)={}/{} angle(lo/hi)={}/{}",
-            current_iter, iter_bound_any, n_maps,
-            iter_bound_low(0), iter_bound_high(0),
-            iter_bound_low(1), iter_bound_high(1),
-            iter_bound_low(2), iter_bound_high(2),
-            iter_bound_low(3), iter_bound_high(3),
-            iter_bound_low(4), iter_bound_high(4),
-            iter_bound_low(5), iter_bound_high(5));
+            current_iter, fit_stats.bound_any, n_maps,
+            fit_stats.bound_low(0), fit_stats.bound_high(0),
+            fit_stats.bound_low(1), fit_stats.bound_high(1),
+            fit_stats.bound_low(2), fit_stats.bound_high(2),
+            fit_stats.bound_low(3), fit_stats.bound_high(3),
+            fit_stats.bound_low(4), fit_stats.bound_high(4),
+            fit_stats.bound_low(5), fit_stats.bound_high(5));
     }
     else {
         logger->info("beammap fit bound summary (iter {}): any_hit={}/{}",
-                     current_iter, iter_bound_any, n_maps);
+                     current_iter, fit_stats.bound_any, n_maps);
     }
     logger->info("number of good fits {}/{}", static_cast<long long>(good_fits.cast<int>().sum()), n_maps);
 }

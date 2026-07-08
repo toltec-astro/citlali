@@ -48,6 +48,33 @@ public:
         double rms_arcsec = std::numeric_limits<double>::quiet_NaN();
     };
 
+    struct BeammapFitIterationStats {
+        Eigen::VectorXi bound_low;
+        Eigen::VectorXi bound_high;
+        Eigen::Index bound_any = 0;
+        Eigen::Index init_prev = 0;
+        Eigen::Index init_prior = 0;
+        Eigen::Index init_blind = 0;
+        Eigen::Index init_skip = 0;
+        Eigen::Index attempt_prev = 0;
+        Eigen::Index attempt_prior = 0;
+        Eigen::Index attempt_blind = 0;
+        Eigen::Index fail_prev = 0;
+        Eigen::Index fail_prior = 0;
+        Eigen::Index fail_blind = 0;
+        Eigen::Index prev_rejected_by_peak = 0;
+        Eigen::Index init_amp_zero_prev = 0;
+        Eigen::Index init_amp_zero_prior = 0;
+        Eigen::Index init_amp_zero_blind = 0;
+        Eigen::Index amp_bounds_zero_prev = 0;
+        Eigen::Index amp_bounds_zero_prior = 0;
+        Eigen::Index amp_bounds_zero_blind = 0;
+
+        explicit BeammapFitIterationStats(Eigen::Index n_params)
+            : bound_low(Eigen::VectorXi::Zero(n_params)),
+              bound_high(Eigen::VectorXi::Zero(n_params)) {}
+    };
+
     bool beammap_soft_priors_loaded = false;
     bool beammap_soft_priors_are_centered = false;
     bool beammap_soft_priors_are_derotated = false;
