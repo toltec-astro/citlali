@@ -20,8 +20,9 @@ inline std::string tod_output_directory(const std::string &obsnum_dir_name,
     return dir_name;
 }
 
-inline const char *tod_stream_output_key(bool is_rtc_stream) {
-    return is_rtc_stream ? "rtc" : "ptc";
+inline std::string tod_stream_output_key(
+    citlali::config::TodOutputStream stream) {
+    return std::string{citlali::config::to_string(stream)};
 }
 
 template <class TodFilenameMap>
@@ -48,13 +49,13 @@ std::string register_tod_stream_output_file(
     ToltecIo &toltec_io, TodFilenameMap &tod_filename,
     const std::string &dir_name, const std::string &reduction_type,
     const std::string &obsnum, bool simulated_observation,
-    bool is_rtc_stream) {
+    citlali::config::TodOutputStream stream) {
     const auto filename =
         tod_stream_output_filename<DataType, ProductType, FilterType>(
             toltec_io, dir_name, reduction_type, obsnum,
             simulated_observation);
     return register_tod_output_file(
-        tod_filename, tod_stream_output_key(is_rtc_stream), filename);
+        tod_filename, tod_stream_output_key(stream), filename);
 }
 
 struct TodFileDims {
@@ -103,11 +104,13 @@ inline TodFileCounts tod_file_counts(Eigen::Index n_output_scans,
 }
 
 template <class RtcProc, class PtcProc>
-TodStreamLayout tod_stream_layout(bool is_rtc_stream,
+TodStreamLayout tod_stream_layout(citlali::config::TodOutputStream stream,
                                   Eigen::Index n_rtc_output_scans,
                                   Eigen::Index n_ptc_output_scans,
                                   const RtcProc &rtcproc,
                                   const PtcProc &ptcproc) {
+    const bool is_rtc_stream =
+        citlali::config::is_rtc_tod_output_stream(stream);
     return {
         is_rtc_stream ? n_rtc_output_scans : n_ptc_output_scans,
         is_rtc_stream ? rtcproc.tod_output_mini : ptcproc.tod_output_mini,
@@ -159,6 +162,6 @@ inline void add_tod_output_type_label(netCDF::NcFile &fo,
 }
 
 inline void add_tod_stream_output_type_label(netCDF::NcFile &fo,
-                                             bool is_rtc_stream) {
-    add_tod_output_type_label(fo, tod_stream_output_key(is_rtc_stream));
+                                             citlali::config::TodOutputStream stream) {
+    add_tod_output_type_label(fo, tod_stream_output_key(stream));
 }

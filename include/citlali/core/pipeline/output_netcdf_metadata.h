@@ -13,6 +13,7 @@
 #include <citlali/core/config/config_value.h>
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/runtime_config.h>
+#include <citlali/core/config/timestream_config.h>
 #include <citlali/core/pipeline/phdu_beammap.h>
 #include <citlali/core/pipeline/phdu_observation_metadata.h>
 #include <citlali/core/utils/utils.h>

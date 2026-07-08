@@ -115,17 +115,20 @@ void Engine::create_tod_files() {
         obsnum_dir_name, tod_output_subdir_name);
     constexpr bool is_rtc_stream =
         prod_t == engine_utils::toltecIO::rtc_timestream;
+    constexpr auto output_stream =
+        is_rtc_stream ? citlali::config::TodOutputStream::rtc
+                      : citlali::config::TodOutputStream::ptc;
 
     const std::string name =
         citlali::pipeline::register_tod_stream_output_file<
             engine_utils::toltecIO::toltec, prod_t,
             engine_utils::toltecIO::raw>(
             toltec_io, tod_filename, dir_name, reduction_type_name, obsnum,
-            telescope.sim_obs, is_rtc_stream);
+            telescope.sim_obs, output_stream);
 
     write_netcdf_atomic(tod_filename[name], [&](netCDF::NcFile &fo) {
 
-    citlali::pipeline::add_tod_stream_output_type_label(fo, is_rtc_stream);
+    citlali::pipeline::add_tod_stream_output_type_label(fo, output_stream);
     if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
         citlali::pipeline::add_ptc_eigenvalue_dim(fo, ptcproc.cleaner.n_calc);
     }
@@ -142,7 +145,7 @@ void Engine::create_tod_files() {
     }
 
     const auto tod_layout = citlali::pipeline::prepare_tod_file_layout(
-        fo, is_rtc_stream, n_tod_output_scans_rtc,
+        fo, output_stream, n_tod_output_scans_rtc,
         n_tod_output_scans_ptc, rtcproc, ptcproc, telescope.scan_indices,
         calib.n_dets);
     const auto &tod_dims = tod_layout.dims;
