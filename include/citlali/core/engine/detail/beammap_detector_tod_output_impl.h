@@ -214,7 +214,7 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
 
     const auto output_paths = beammap_detector_tod_output_helpers::output_paths(
         obsnum_dir_name, typed_config.beammap.detector_tod_output.subdir_name,
-        telescope.sim_obs, redu_type, obsnum);
+        telescope.sim_obs, typed_config.runtime.reduction_type, obsnum);
     const std::string &filename = output_paths.filename;
 
     logger->info(
@@ -234,7 +234,8 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         namespace tod_nc = beammap_detector_tod_netcdf_helpers;
 
         tod_nc::put_output_metadata(
-            fo, obsnum, telescope, redu_type, tod_type,
+            fo, obsnum, telescope, typed_config.runtime.reduction_type,
+            typed_config.timestream.type,
             processed_time_chunk_fs_hz(), output_iter, n_uniform, n_dense);
 
         netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);

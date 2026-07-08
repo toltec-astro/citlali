@@ -4,16 +4,17 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/engine/detail/beammap_apt_table_output_helpers.h>
+#include <citlali/core/pipeline/observation_map_files.h>
 
 std::string Beammap::write_beammap_apt_table() {
     logger->info("writing apt table");
     auto apt_filename =
-        toltec_io
-            .create_filename<engine_utils::toltecIO::apt,
-                             engine_utils::toltecIO::map,
-                             engine_utils::toltecIO::raw>(
-                obsnum_dir_name + "raw/", redu_type, "", obsnum,
-                telescope.sim_obs);
+        citlali::pipeline::observation_output_filename<
+            engine_utils::toltecIO::apt, engine_utils::toltecIO::map,
+            engine_utils::toltecIO::raw>(
+            toltec_io, obsnum_dir_name + "raw/",
+            typed_config.runtime.reduction_type, "", obsnum,
+            telescope.sim_obs);
 
     Eigen::MatrixXd apt_table =
         beammap_apt_table_output_helpers::apt_table(calib, flag2);

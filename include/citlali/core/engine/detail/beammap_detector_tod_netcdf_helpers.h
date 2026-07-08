@@ -3,6 +3,8 @@
 // Beammap detector TOD NetCDF output helpers.
 
 #include <citlali/core/engine/detail/beammap_detector_tod_selection.h>
+#include <citlali/core/config/runtime_config.h>
+#include <citlali/core/config/timestream_config.h>
 
 #include <Eigen/Core>
 
@@ -19,12 +21,17 @@ template <class Telescope>
 inline void put_output_metadata(netCDF::NcFile &fo,
                                 const std::string &obsnum,
                                 Telescope &telescope,
-                                const std::string &redu_type,
-                                const std::string &tod_type,
+                                citlali::config::ReductionType reduction_type,
+                                citlali::config::TodType tod_type,
                                 double sample_rate_hz,
                                 int output_iter,
                                 int n_uniform,
                                 int n_dense) {
+    const std::string reduction_type_name{
+        citlali::config::to_string(reduction_type)};
+    const std::string tod_type_name{
+        citlali::config::to_string(tod_type)};
+
     netCDF::NcDim n_tod_output_type_dim = fo.addDim("n_tod_output_type", 1);
     netCDF::NcVar tod_output_type_var =
         fo.addVar("tod_output_type", netCDF::ncString,
@@ -39,9 +46,9 @@ inline void put_output_metadata(netCDF::NcFile &fo,
     obsnum_v.putVar(&obsnum_int);
     add_netcdf_var<std::string>(fo, "SOURCE", telescope.source_name);
     add_netcdf_var<std::string>(fo, "PROJID", telescope.project_id);
-    add_netcdf_var<std::string>(fo, "GOAL", redu_type);
+    add_netcdf_var<std::string>(fo, "GOAL", reduction_type_name);
     add_netcdf_var<std::string>(fo, "OBSGOAL", telescope.obs_goal);
-    add_netcdf_var<std::string>(fo, "TYPE", tod_type);
+    add_netcdf_var<std::string>(fo, "TYPE", tod_type_name);
     add_netcdf_var<std::string>(fo, "PIPELINE", "CITLALI");
     add_netcdf_var<std::string>(fo, "VERSION", CITLALI_GIT_VERSION);
     add_netcdf_var<std::string>(fo, "KIDS", KIDSCPP_GIT_VERSION);
