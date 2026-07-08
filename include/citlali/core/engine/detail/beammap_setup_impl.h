@@ -250,7 +250,8 @@ void Beammap::setup() {
     calib.apt_meta["detector_weighting_mode"] =
         std::string(citlali::config::to_string(
             typed_config.beammap.detector_weighting_mode));
-    calib.apt_meta["beammap_fit_radius_fwhm"] = beammap_fit_radius_fwhm;
+    calib.apt_meta["beammap_fit_radius_fwhm"] =
+        typed_config.beammap.fitting.fit_radius_fwhm;
     beammap_soft_prior_slots.clear();
     beammap_soft_priors_loaded = false;
     beammap_soft_priors_are_centered = false;

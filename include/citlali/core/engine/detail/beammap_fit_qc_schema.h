@@ -372,7 +372,7 @@ YAML::Node make_metadata(const BeammapState &beammap,
         std::string(citlali::config::to_string(
             beammap.typed_config.beammap.detector_weighting_mode));
     fit_qc_meta["beammap_fit_radius_fwhm"] =
-        beammap.beammap_fit_radius_fwhm;
+        beammap.typed_config.beammap.fitting.fit_radius_fwhm;
     fit_qc_meta["rfi_mask_detectors_affected"] =
         static_cast<int>(
             (table_access.apt_or_zero("rfi_masked_scans").array() > 0.0)

@@ -193,12 +193,15 @@ void Beammap::set_apt_flags() {
         return 0;
     });
 
+    const auto &flagging_config = typed_config.beammap.flagging;
+    const double max_prior_d2 = flagging_config.max_prior_d2;
     const bool prior_dist_flag_enabled =
-        beammap_flag_max_prior_d2 > 0.0 && beammap_soft_priors_loaded && !beammap_soft_prior_slots.empty();
-    if (beammap_flag_max_prior_d2 > 0.0 && !prior_dist_flag_enabled) {
+        max_prior_d2 > 0.0 && beammap_soft_priors_loaded &&
+        !beammap_soft_prior_slots.empty();
+    if (max_prior_d2 > 0.0 && !prior_dist_flag_enabled) {
         logger->warn(
             "beammap.flagging.max_prior_d2={} requested but soft priors are unavailable; skipping prior-distance flagging",
-            beammap_flag_max_prior_d2);
+            max_prior_d2);
     }
     if (prior_dist_flag_enabled) {
         double prior_derot_elev_rad = telescope.tel_data["TelElAct"].mean();
@@ -256,7 +259,7 @@ void Beammap::set_apt_flags() {
                     min_d2 = d2;
                 }
             }
-            if (!std::isfinite(min_d2) || min_d2 <= beammap_flag_max_prior_d2) {
+            if (!std::isfinite(min_d2) || min_d2 <= max_prior_d2) {
                 return 0;
             }
 
@@ -266,7 +269,7 @@ void Beammap::set_apt_flags() {
         });
 
         logger->info("beammap prior-distance flagging: {} detectors exceeded max_prior_d2={}",
-                     n_prior_dist_hits.load(), beammap_flag_max_prior_d2);
+                     n_prior_dist_hits.load(), max_prior_d2);
     }
 
     // print number of flagged detectors
