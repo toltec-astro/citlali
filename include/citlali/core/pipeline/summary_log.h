@@ -4,6 +4,10 @@
 #include <string>
 #include <string_view>
 
+#include <citlali/core/config/mapmaking_config.h>
+#include <citlali/core/config/runtime_config.h>
+#include <citlali/core/config/timestream_config.h>
+
 
 namespace citlali::pipeline {
 

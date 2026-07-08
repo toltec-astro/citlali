@@ -39,10 +39,6 @@ template <TCDataKind tc_t>
 void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
 
     logger->debug("writing summary files for chunk {}",in.index.data);
-    const auto reduction_type_name =
-        citlali::config::to_string(typed_config.runtime.reduction_type);
-    const auto tod_type_name =
-        citlali::config::to_string(typed_config.timestream.type);
 
     const auto filename =
         citlali::pipeline::chunk_summary_filename(in.index.data);
@@ -53,8 +49,9 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
 
     citlali::pipeline::write_chunk_summary_log(
         f, in, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION,
-        engine_utils::current_date_time(), reduction_type_name, tod_type_name,
-        omb.sig_unit, rtcproc, telescope.outer_scans_chunk,
+        engine_utils::current_date_time(), typed_config.runtime.reduction_type,
+        typed_config.timestream.type, omb.sig_unit, rtcproc,
+        telescope.outer_scans_chunk,
         (calib.apt["flag"].array()!=0).count(),
         tula::alg::median(in.scans.data),
         engine_utils::calc_std_dev(in.scans.data));
@@ -66,12 +63,6 @@ template <typename map_buffer_t>
 void Engine::write_map_summary(map_buffer_t &mb) {
 
     logger->debug("writing map summary files");
-    const auto reduction_type_name =
-        citlali::config::to_string(typed_config.runtime.reduction_type);
-    const auto tod_type_name =
-        citlali::config::to_string(typed_config.timestream.type);
-    const auto map_grouping_name =
-        citlali::config::to_string(typed_config.mapmaking.grouping);
 
     const auto filename = citlali::pipeline::map_summary_filename();
     std::ofstream f;
@@ -81,8 +72,9 @@ void Engine::write_map_summary(map_buffer_t &mb) {
         citlali::pipeline::count_map_summary_nonfinite(mb);
     citlali::pipeline::write_map_summary_log(
         f, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION,
-        engine_utils::current_date_time(), reduction_type_name, tod_type_name,
-        map_grouping_name, n_maps, mb, nonfinite_counts);
+        engine_utils::current_date_time(), typed_config.runtime.reduction_type,
+        typed_config.timestream.type, typed_config.mapmaking.grouping, n_maps,
+        mb, nonfinite_counts);
 }
 
 template <mapmaking::MapType map_t, engine_utils::toltecIO::DataType data_t, engine_utils::toltecIO::ProdType prod_t>

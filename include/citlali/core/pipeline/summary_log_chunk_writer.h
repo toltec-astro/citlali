@@ -7,19 +7,23 @@ void write_chunk_summary_log(std::ostream &stream, const TimeChunk &chunk,
                              const std::string &citlali_version,
                              const std::string &kids_version,
                              const std::string &write_time,
-                             std::string_view reduction_type,
-                             std::string_view tod_type,
+                             citlali::config::ReductionType reduction_type,
+                             citlali::config::TodType tod_type,
                              std::string_view signal_unit,
                              const RtcProc &rtcproc,
                              int outer_context_samples,
                              long long n_apt_flagged,
                              double data_median,
                              double data_stddev) {
+    const std::string reduction_type_name{
+        citlali::config::to_string(reduction_type)};
+    const std::string tod_type_name{citlali::config::to_string(tod_type)};
+
     stream << "Summary file for scan " << chunk.index.data << "\n";
     write_pipeline_version_summary(stream, citlali_version, kids_version);
     write_chunk_time_summary(stream, chunk.creation_time, write_time);
     write_chunk_identity_summary(
-        stream, reduction_type, tod_type, signal_unit, chunk.name);
+        stream, reduction_type_name, tod_type_name, signal_unit, chunk.name);
     write_chunk_processing_status_summary(stream, chunk.status);
     write_chunk_tod_filter_summary(stream, rtcproc, outer_context_samples);
     write_chunk_ptc_model_line_audit_summary(stream, rtcproc.line_audit);
@@ -35,4 +39,3 @@ void write_chunk_summary_log(std::ostream &stream, const TimeChunk &chunk,
     write_chunk_kernel_summary_if_generated(
         stream, chunk.status.kernel_generated, chunk.kernel, signal_unit);
 }
-

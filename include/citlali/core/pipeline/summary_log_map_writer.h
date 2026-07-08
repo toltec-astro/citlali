@@ -28,19 +28,23 @@ void write_map_summary_log(std::ostream &stream,
                            const std::string &citlali_version,
                            const std::string &kids_version,
                            const std::string &write_time,
-                           std::string_view reduction_type,
-                           std::string_view tod_type,
-                           std::string_view map_grouping,
+                           citlali::config::ReductionType reduction_type,
+                           citlali::config::TodType tod_type,
+                           citlali::config::MapGrouping map_grouping,
                            long long n_maps, const MapBuffer &mb,
                            const NonfiniteCounts &nonfinite_counts) {
+    const std::string reduction_type_name{
+        citlali::config::to_string(reduction_type)};
+    const std::string tod_type_name{citlali::config::to_string(tod_type)};
+    const std::string map_grouping_name{
+        citlali::config::to_string(map_grouping)};
+
     stream << "Summary file for maps\n";
     write_pipeline_version_summary(stream, citlali_version, kids_version);
     write_file_time_summary(stream, write_time);
     write_map_identity_summary(
-        stream, std::string(reduction_type), std::string(tod_type),
-        std::string(map_grouping), mb.n_rows, mb.n_cols, n_maps,
-        mb.sig_unit);
+        stream, reduction_type_name, tod_type_name, map_grouping_name,
+        mb.n_rows, mb.n_cols, n_maps, mb.sig_unit);
     write_map_product_presence_summary(stream, mb);
     write_map_nonfinite_summary(stream, nonfinite_counts);
 }
-
