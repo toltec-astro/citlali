@@ -5,6 +5,7 @@
 #include <citlali/core/pipeline/ordered_writer.h>
 #include <citlali/core/pipeline/mapmaking_dispatch.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/timestream_scan_context.h>
 
 template <class KidsProc>
 auto Pointing::run(KidsProc &kidsproc) {
@@ -41,60 +42,16 @@ auto Pointing::run(KidsProc &kidsproc) {
                                        make_noise_maps, write_rtc, write_ptc,
                                        write_rtcdiag, write_ptcdiag](auto &rtcdata) {
 
-        // starting index for scan
-        Eigen::Index si = rtcdata.scan_indices.data(2);
-
-        // current length of outer scans
-        Eigen::Index sl = rtcdata.scan_indices.data(3) - rtcdata.scan_indices.data(2) + 1;
-
-        // copy scan's telescope vectors
-        for (auto const& x: telescope.tel_data) {
-            rtcdata.tel_data.data[x.first] = telescope.tel_data[x.first].segment(si,sl);
-        }
-
-        // copy pointing offsets
-        for (auto const& [axis,offset]: pointing_offsets_arcsec) {
-            rtcdata.pointing_offsets_arcsec.data[axis] = offset.segment(si,sl);
-        }
-
-        // get hwpr
-        if (rtcproc.run_polarization) {
-            if (calib.run_hwpr) {
-                rtcdata.hwpr_angle.data = calib.hwpr_angle.segment(si + hwpr_start_indices, sl);
-            }
-        }
-
-        // set up flags
-        rtcdata.flags.data.resize(rtcdata.scans.data.rows(), rtcdata.scans.data.cols());
-        rtcdata.flags.data.setConstant(0);
-
+        const auto scan_window = citlali::pipeline::copy_rtc_scan_context(
+            rtcdata, telescope, pointing_offsets_arcsec);
+        citlali::pipeline::copy_hwpr_angle_if_enabled(
+            rtcdata, calib, rtcproc.run_polarization, calib.run_hwpr,
+            hwpr_start_indices, scan_window.start, scan_window.length);
+        citlali::pipeline::initialize_rtc_flags(rtcdata);
         if (interp_over_gaps) {
-            for (auto const& [key, val] : calib.nw_limits) {
-                auto mask_it = nw_masks.find(key);
-                if (mask_it == nw_masks.end()) {
-                    logger->error("missing gap mask for nw {}; cannot apply gap flagging", key);
-                    std::exit(EXIT_FAILURE);
-                }
-                auto& mask = mask_it->second;
-
-                Eigen::Index start = std::get<0>(calib.nw_limits[key]);
-                Eigen::Index end = std::get<1>(calib.nw_limits[key]) - 1;
-
-                for (int j = 0; j < rtcdata.flags.data.rows(); ++j) {
-                    int start_index = j;
-                    int size = 1;
-                    if (rtcproc.filter_edge_guard.context_samples > 0) {
-                        const int context = static_cast<int>(rtcproc.filter_edge_guard.context_samples);
-                        start_index = std::max(0, j - context);
-                        int end_index = std::min(j + context, static_cast<int>(rtcdata.flags.data.rows() - 1));
-                        size = end_index - start_index + 1;
-                    }
-                    if (mask(j + si) == 0) {
-                        rtcdata.flags.data.block(start_index, start, size, end - start + 1).setOnes();
-                    }
-                }
-                logger->debug("{}/{} gaps flagged", rtcdata.flags.data.col(start).template cast<int>().sum(), rtcdata.flags.data.rows());
-            }
+            citlali::pipeline::apply_gap_masks_to_rtc_flags(
+                rtcdata, calib, nw_masks, scan_window.start,
+                rtcproc.filter_edge_guard.context_samples, logger);
         }
 
         // create PTCData
