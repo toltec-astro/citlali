@@ -107,6 +107,15 @@ public:
         Eigen::Index n_samples_max = 0;
     };
 
+    struct BeammapDetectorTodPointingSamples {
+        bool valid = false;
+        Eigen::Index n_sampled = 0;
+        std::vector<Eigen::Index> sampled_indices;
+        std::vector<Eigen::Index> sampled_scan;
+        std::map<std::string, Eigen::VectorXd> sampled_tel_data;
+        std::map<std::string, Eigen::VectorXd> pointing_offsets;
+    };
+
     bool beammap_soft_priors_loaded = false;
     bool beammap_soft_priors_are_centered = false;
     bool beammap_soft_priors_are_derotated = false;
@@ -378,6 +387,8 @@ public:
     void write_beammap_processed_ptc_tod(int output_iter);
     void write_beammap_detector_ptc_tod_stage(int output_iter);
     BeammapDetectorTodPreflight prepare_detector_specific_ptc_tod_output();
+    BeammapDetectorTodPointingSamples sample_detector_tod_pointing(
+        Eigen::Index n_scans);
     void write_detector_specific_ptc_tod(int output_iter);
     void write_detector_table_outputs();
     void write_beammap_fit_qc_table(const std::string &apt_filename);

@@ -44,6 +44,34 @@ Beammap::prepare_detector_specific_ptc_tod_output() {
     return preflight;
 }
 
+Beammap::BeammapDetectorTodPointingSamples
+Beammap::sample_detector_tod_pointing(Eigen::Index n_scans) {
+    BeammapDetectorTodPointingSamples samples;
+    auto [sampled_indices, sampled_scan] =
+        beammap_detector_tod_selection::sampled_scan_samples(
+            telescope.scan_indices, telescope.tel_data, n_scans);
+    samples.sampled_indices = std::move(sampled_indices);
+    samples.sampled_scan = std::move(sampled_scan);
+    samples.n_sampled =
+        static_cast<Eigen::Index>(samples.sampled_indices.size());
+    if (samples.n_sampled <= 0) {
+        logger->warn("beammap.detector_tod_output cannot sample telescope pointing; skipping");
+        return samples;
+    }
+
+    samples.sampled_tel_data =
+        beammap_detector_tod_selection::sample_tel_data(
+            telescope.tel_data, samples.sampled_indices);
+    samples.pointing_offsets["az"] =
+        beammap_detector_tod_selection::sample_pointing_offset(
+            pointing_offsets_arcsec, "az", samples.sampled_indices);
+    samples.pointing_offsets["alt"] =
+        beammap_detector_tod_selection::sample_pointing_offset(
+            pointing_offsets_arcsec, "alt", samples.sampled_indices);
+    samples.valid = true;
+    return samples;
+}
+
 void Beammap::write_detector_specific_ptc_tod(int output_iter) {
     const auto preflight = prepare_detector_specific_ptc_tod_output();
     if (!preflight.write_output) {
@@ -58,25 +86,10 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
     std::vector<Eigen::Index> uniform_scans =
         beammap_detector_tod_selection::uniform_scan_indices(n_uniform, n_scans);
 
-    auto [sampled_indices, sampled_scan] =
-        beammap_detector_tod_selection::sampled_scan_samples(
-            telescope.scan_indices, telescope.tel_data, n_scans);
-    const Eigen::Index n_sampled = static_cast<Eigen::Index>(sampled_indices.size());
-    if (n_sampled <= 0) {
-        logger->warn("beammap.detector_tod_output cannot sample telescope pointing; skipping");
+    auto pointing_samples = sample_detector_tod_pointing(n_scans);
+    if (!pointing_samples.valid) {
         return;
     }
-
-    std::map<std::string, Eigen::VectorXd> sampled_tel_data =
-        beammap_detector_tod_selection::sample_tel_data(
-            telescope.tel_data, sampled_indices);
-    std::map<std::string, Eigen::VectorXd> pointing_offsets;
-    pointing_offsets["az"] =
-        beammap_detector_tod_selection::sample_pointing_offset(
-            pointing_offsets_arcsec, "az", sampled_indices);
-    pointing_offsets["alt"] =
-        beammap_detector_tod_selection::sample_pointing_offset(
-            pointing_offsets_arcsec, "alt", sampled_indices);
 
     const int fill_int = -2147483647;
     const double fill_double = std::numeric_limits<double>::quiet_NaN();
@@ -120,9 +133,11 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         std::vector<double> distances_arcsec;
         const Eigen::Index center_scan =
             beammap_detector_tod_selection::scan_distances_for_detector_source(
-                det, x_arcsec, y_arcsec, n_scans, n_sampled, sampled_scan,
-                sampled_tel_data, calib.apt["x_t"], calib.apt["y_t"],
-                telescope.pixel_axes, pointing_offsets,
+                det, x_arcsec, y_arcsec, n_scans,
+                pointing_samples.n_sampled, pointing_samples.sampled_scan,
+                pointing_samples.sampled_tel_data,
+                calib.apt["x_t"], calib.apt["y_t"],
+                telescope.pixel_axes, pointing_samples.pointing_offsets,
                 typed_config.mapmaking.grouping, distances_arcsec);
         det_center_scan_index[static_cast<std::size_t>(det)] = static_cast<int>(center_scan + 1);
         center_scan_counts[center_scan]++;
