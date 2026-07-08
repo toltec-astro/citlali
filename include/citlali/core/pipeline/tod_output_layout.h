@@ -12,9 +12,9 @@ constexpr int tod_output_fill_int() {
 }
 
 inline std::string tod_output_directory(const std::string &obsnum_dir_name,
-                                        const std::string &subdir_name) {
+    const std::string &subdir_name) {
     std::string dir_name = obsnum_dir_name + "raw/";
-    if (subdir_name != "null") {
+    if (citlali::config::has_config_value(subdir_name)) {
         dir_name += subdir_name + "/";
     }
     return dir_name;

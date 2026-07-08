@@ -8,7 +8,7 @@ inline std::string stats_raw_directory(const std::string &obsnum_dir_name) {
 
 inline bool stats_has_tod_output_subdir(
     const std::string &tod_output_subdir_name) {
-    return tod_output_subdir_name != "null";
+    return citlali::config::has_config_value(tod_output_subdir_name);
 }
 
 inline std::string stats_tod_output_subdir_path(
@@ -58,4 +58,3 @@ inline std::map<std::string, std::string>
 group_stats_units(const std::string &signal_unit) {
     return {{"median_weights", "1/(" + signal_unit + ")^2"}};
 }
-

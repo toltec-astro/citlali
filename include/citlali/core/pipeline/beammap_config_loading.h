@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/config/config_value.h>
 #include <citlali/core/config/beammap_config.h>
 
 #include <cstddef>

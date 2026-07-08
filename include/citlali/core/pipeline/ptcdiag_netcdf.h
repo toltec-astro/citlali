@@ -11,6 +11,7 @@
 #include <Eigen/Core>
 #include <netcdf>
 
+#include <citlali/core/config/config_value.h>
 #include <citlali/core/pipeline/reduction_config_netcdf.h>
 
 

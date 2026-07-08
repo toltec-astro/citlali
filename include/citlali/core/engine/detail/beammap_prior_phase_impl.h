@@ -3,6 +3,8 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/config/config_value.h>
+
 bool Beammap::is_beammap_locator_iter(Eigen::Index iter) const {
     const auto &phase_config = typed_config.beammap.phase_strategy;
     if (!phase_config.enabled) {
@@ -57,7 +59,8 @@ std::string Beammap::beammap_iter_phase_name(Eigen::Index iter) const {
 std::filesystem::path Beammap::resolve_soft_priors_filepath() const {
     namespace fs = std::filesystem;
 
-    if (beammap_priors_filepath.empty() || beammap_priors_filepath == "null") {
+    if (citlali::config::is_empty_or_null_config_value(
+            beammap_priors_filepath)) {
         return {};
     }
 

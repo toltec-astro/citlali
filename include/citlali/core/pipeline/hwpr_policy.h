@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/config/config_value.h>
+
 #include <string>
 
 namespace citlali::pipeline {
@@ -30,7 +32,7 @@ std::string hwpr_data_filepath(const RawObs &rawobs) {
 }
 
 inline bool is_valid_hwpr_filepath(const std::string &filepath) {
-    return filepath != "null";
+    return citlali::config::has_config_value(filepath);
 }
 
 }  // namespace citlali::pipeline

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/config/config_value.h>
 #include <citlali/core/pipeline/fruit_loop_map_io.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
 
@@ -11,7 +12,8 @@ template <class Engine>
 bool should_load_initial_fruit_loop_maps(const Engine &engine) {
     return engine.ptcproc.run_fruit_loops &&
            engine.fruit_iter == 0 &&
-           engine.ptcproc.fruit_loops_path != "null";
+           citlali::config::has_config_value(
+               engine.ptcproc.fruit_loops_path);
 }
 
 template <class Engine>

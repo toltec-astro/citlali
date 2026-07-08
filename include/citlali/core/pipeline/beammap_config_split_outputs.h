@@ -36,7 +36,7 @@ template <class Logger>
 void disable_missing_beammap_priors(bool &enabled,
                                     const std::string &filepath,
                                     const Logger &logger) {
-    if (!enabled || filepath != "null") {
+    if (!enabled || citlali::config::has_config_value(filepath)) {
         return;
     }
     logger->warn(
@@ -96,4 +96,3 @@ void read_beammap_sensitivity_config(
     sens_psd_limits_Hz = Eigen::Map<Eigen::VectorXd>(
         sens_psd_limits_Hz_vec.data(), sens_psd_limits_Hz_vec.size());
 }
-

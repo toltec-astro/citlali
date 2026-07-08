@@ -1,12 +1,15 @@
 #pragma once
 
+#include <citlali/core/config/config_value.h>
+
 namespace citlali::pipeline {
 
 template <class Engine>
 bool fruit_loop_learning_source_model_available(const Engine &engine) {
     return engine.ptcproc.run_fruit_loops &&
            (engine.fruit_iter > 0 ||
-            engine.ptcproc.fruit_loops_path != "null");
+            citlali::config::has_config_value(
+                engine.ptcproc.fruit_loops_path));
 }
 
 template <class Engine>

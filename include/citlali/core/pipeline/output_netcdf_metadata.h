@@ -10,6 +10,7 @@
 #include <Eigen/Core>
 #include <netcdf>
 
+#include <citlali/core/config/config_value.h>
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/pipeline/phdu_beammap.h>

@@ -4,6 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/config/mapmaking_config.h>
+#include <citlali/core/config/config_value.h>
 #include <citlali/core/pipeline/output_policy.h>
 
 void Engine::obsnum_setup() {
@@ -92,7 +93,7 @@ void Engine::obsnum_setup() {
 
     setup_tod_output_chunk_selection();
     // create output subdirectory if requested
-    if (tod_output_subdir_name != "null") {
+    if (citlali::config::has_config_value(tod_output_subdir_name)) {
         fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
     }
     // create timestream files

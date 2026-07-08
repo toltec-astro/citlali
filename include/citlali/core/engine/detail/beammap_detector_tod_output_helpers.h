@@ -2,6 +2,8 @@
 
 // Beammap detector-specific TOD output helpers.
 
+#include <citlali/core/config/config_value.h>
+
 #include <Eigen/Core>
 
 #include <algorithm>
@@ -49,7 +51,7 @@ inline OutputPaths output_paths(const std::string &obsnum_dir_name,
                                 const std::string &obsnum) {
     namespace fs = std::filesystem;
     OutputPaths paths{obsnum_dir_name + "raw/", ""};
-    if (subdir_name != "null") {
+    if (citlali::config::has_config_value(subdir_name)) {
         paths.dir_name += subdir_name + "/";
     }
     fs::create_directories(paths.dir_name);

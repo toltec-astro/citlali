@@ -3,6 +3,8 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/config/config_value.h>
+
 bool Beammap::load_soft_priors() {
     beammap_soft_prior_slots.clear();
     beammap_soft_priors_loaded = false;
@@ -13,7 +15,8 @@ bool Beammap::load_soft_priors() {
         return false;
     }
 
-    if (beammap_priors_filepath.empty() || beammap_priors_filepath == "null") {
+    if (citlali::config::is_empty_or_null_config_value(
+            beammap_priors_filepath)) {
         logger->warn("beammap priors filepath is empty/null");
         return false;
     }

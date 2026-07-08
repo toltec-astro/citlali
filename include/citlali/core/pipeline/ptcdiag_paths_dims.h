@@ -8,7 +8,7 @@ inline std::string diagnostic_raw_directory(
     const std::string &obsnum_dir_name,
     const std::string &tod_output_subdir_name) {
     std::string dir_name = obsnum_dir_name + "raw/";
-    if (tod_output_subdir_name != "null") {
+    if (citlali::config::has_config_value(tod_output_subdir_name)) {
         dir_name += tod_output_subdir_name + "/";
     }
     return dir_name;
@@ -108,4 +108,3 @@ inline void add_diagnostic_output_scan_index(netCDF::NcFile &fo,
     const auto values = diagnostic_output_scan_indices(n_scans, fill_value);
     v.putVar(values.data());
 }
-
