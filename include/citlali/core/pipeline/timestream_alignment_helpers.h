@@ -68,6 +68,21 @@ struct TimestreamOverlap {
     Eigen::Index min_end_index = 0;
 };
 
+struct TimestreamSampleRange {
+    Eigen::Index start_index = 0;
+    Eigen::Index end_index = 0;
+
+    Eigen::Index size() const {
+        return end_index - start_index + 1;
+    }
+};
+
+struct TimestreamSampleWindow {
+    std::vector<Eigen::Index> start_indices;
+    std::vector<Eigen::Index> end_indices;
+    Eigen::Index min_size = 0;
+};
+
 template <class TimeVectors>
 TimestreamOverlap find_common_timestream_overlap(
     const TimeVectors &times, const std::string &context_label) {
@@ -92,6 +107,54 @@ TimestreamOverlap find_common_timestream_overlap(
         }
     }
     return overlap;
+}
+
+inline TimestreamSampleRange find_common_sample_range(
+    const Eigen::VectorXd &times, double max_start, double min_end,
+    Eigen::Index interface_index) {
+    const Eigen::Index start_index = find_first_sample_at_or_after(
+        times, max_start,
+        fmt::format("failed to find aligned start sample for interface index {}",
+                    interface_index));
+    const Eigen::Index end_index = find_last_sample_at_or_before(
+        times, min_end, start_index,
+        fmt::format("failed to find aligned end sample for interface index {}",
+                    interface_index));
+    if (end_index < start_index) {
+        throw std::runtime_error(fmt::format(
+            "invalid aligned sample range for interface index {}: start={} end={}",
+            interface_index, start_index, end_index));
+    }
+    return {start_index, end_index};
+}
+
+template <class TimeVectors>
+TimestreamSampleWindow find_common_sample_window(
+    const TimeVectors &times, double max_start, double min_end) {
+    if (times.empty()) {
+        throw std::runtime_error("no timestreams available for sample alignment");
+    }
+
+    TimestreamSampleWindow window;
+    window.start_indices.reserve(times.size());
+    window.end_indices.reserve(times.size());
+    window.min_size = times[0].size();
+
+    for (Eigen::Index i = 0; i < static_cast<Eigen::Index>(times.size());
+         ++i) {
+        const auto range = find_common_sample_range(
+            times[i], max_start, min_end, i);
+        window.start_indices.push_back(range.start_index);
+        window.end_indices.push_back(range.end_index);
+        if (range.size() < window.min_size) {
+            window.min_size = range.size();
+        }
+    }
+
+    if (window.min_size <= 0) {
+        throw std::runtime_error("aligned common timestream length is not positive");
+    }
+    return window;
 }
 
 template <class TimeVectors, class Logger>

@@ -138,43 +138,11 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             max_t0, min_tn));
     }
 
-    // size of smallest data time vector
-    Eigen::Index min_size = nw_ts[0].size();
-
-    // loop through time vectors and get the smallest
-    for (Eigen::Index i=0; i<nw_ts.size(); ++i) {
-        // find start index that is larger than max start
-        Eigen::Index si = citlali::pipeline::find_first_sample_at_or_after(
-            nw_ts[i], max_t0,
-            fmt::format("failed to find aligned start sample for interface index {}", i));
-        // pushback start index on start index vector
-        engine().start_indices.push_back(si);
-
-        // find end index that is smaller than min end
-        Eigen::Index ei = citlali::pipeline::find_last_sample_at_or_before(
-            nw_ts[i], min_tn, si,
-            fmt::format("failed to find aligned end sample for interface index {}", i));
-        // pushback end index on end index vector
-        engine().end_indices.push_back(ei);
-    }
-
-    // get min size
-    for (Eigen::Index i=0; i<nw_ts.size(); ++i) {
-        // start indices
-        auto si = engine().start_indices[i];
-        // end indices
-        auto ei = engine().end_indices[i];
-        if (ei < si) {
-            throw std::runtime_error(fmt::format(
-                "invalid aligned sample range for interface index {}: start={} end={}",
-                i, si, ei));
-        }
-
-        // if smallest length, update min_size
-        if ((ei - si + 1) < min_size) {
-            min_size = ei - si + 1;
-        }
-    }
+    const auto sample_window = citlali::pipeline::find_common_sample_window(
+        nw_ts, max_t0, min_tn);
+    engine().start_indices = sample_window.start_indices;
+    engine().end_indices = sample_window.end_indices;
+    Eigen::Index min_size = sample_window.min_size;
 
     // if hwpr requested
     if (engine().calib.run_hwpr) {
@@ -238,7 +206,6 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
     double fsmp_ref = -1.0;
     for (const RawObs::DataItem &data_item : rawobs.kidsdata()) {
         try {
-            const RawObs::DataItem &data_item = rawobs.kidsdata()[i];
             // load data file
             NcFile fo(data_item.filepath(), NcFile::read);
 
@@ -273,8 +240,6 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
 
             // cast to double
             Eigen::MatrixXd ts_double = ts.cast<double>();
-
-            Eigen::MatrixXi ts_t = ts.transpose();
 
             // find gaps
             int gaps = citlali::pipeline::count_packet_counter_gaps(ts);
