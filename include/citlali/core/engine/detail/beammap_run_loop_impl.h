@@ -416,6 +416,122 @@ void Beammap::reset_beammap_prior_diagnostics(Eigen::Index map_index) {
     prior_diag_values(map_index, prior_slot_index_col) = -1.0;
 }
 
+bool Beammap::beammap_prior_allows_peak_switch(Eigen::Index map_index,
+                                               double prev_row, double prev_col,
+                                               Eigen::Index peak_row,
+                                               Eigen::Index peak_col) {
+    const int array_int = static_cast<int>(maps_to_arrays(map_index));
+    const int nw_int = static_cast<int>(std::lround(calib.apt["nw"](map_index)));
+    const double pix_to_arcsec = RAD_TO_ASEC * omb.pixel_size_rad;
+    const double col0 = static_cast<double>(omb.n_cols - 1) / 2.0;
+    const double row0 = static_cast<double>(omb.n_rows - 1) / 2.0;
+    const double derot_elev_rad = get_prior_derot_elev_rad();
+    const double prior_max_d2 = effective_prior_max_d2();
+
+    auto prior_compatible = [&](double row, double col, double &d2_out) {
+        const double x_raw = pix_to_arcsec * (col - col0);
+        const double y_raw = pix_to_arcsec * (row - row0);
+        double x_prior = std::numeric_limits<double>::quiet_NaN();
+        double y_prior = std::numeric_limits<double>::quiet_NaN();
+        d2_out = std::numeric_limits<double>::infinity();
+        int slot_index = -1;
+        if (!observed_to_prior_frame(array_int, x_raw, y_raw, derot_elev_rad,
+                                     x_prior, y_prior, nullptr, nullptr, true)) {
+            return false;
+        }
+        if (!match_prior_slot(array_int, nw_int, x_prior, y_prior,
+                              d2_out, slot_index)) {
+            return false;
+        }
+        static_cast<void>(slot_index);
+        return prior_max_d2 <= 0.0 || d2_out <= prior_max_d2;
+    };
+
+    double prev_prior_d2 = std::numeric_limits<double>::infinity();
+    double peak_prior_d2 = std::numeric_limits<double>::infinity();
+    const bool prev_prior_ok = prior_compatible(prev_row, prev_col, prev_prior_d2);
+    const bool peak_prior_ok = prior_compatible(
+        static_cast<double>(peak_row), static_cast<double>(peak_col),
+        peak_prior_d2);
+    const bool prior_allows_switch = peak_prior_ok || !prev_prior_ok;
+    if (!prior_allows_switch) {
+        logger->debug(
+            "beammap fit map={} kept previous init over stronger weighted peak because prior d2 prev={} peak={} max_d2={}",
+            map_index, prev_prior_d2, peak_prior_d2, prior_max_d2);
+    }
+    return prior_allows_switch;
+}
+
+Beammap::BeammapPreviousFitInit Beammap::choose_previous_beammap_fit_init(
+    Eigen::Index map_index, bool measurement_iter, bool can_try_prior,
+    double init_fwhm) {
+    BeammapPreviousFitInit result;
+
+    if (!(measurement_iter &&
+          good_fits(map_index) &&
+          p0.cols() > 2 &&
+          std::isfinite(p0(map_index, 0)) && p0(map_index, 0) > 0.0 &&
+          std::isfinite(p0(map_index, 1)) &&
+          std::isfinite(p0(map_index, 2)))) {
+        return result;
+    }
+
+    const double prev_col = p0(map_index, 1);
+    const double prev_row = p0(map_index, 2);
+    Eigen::Index prev_row_i =
+        static_cast<Eigen::Index>(std::llround(prev_row));
+    Eigen::Index prev_col_i =
+        static_cast<Eigen::Index>(std::llround(prev_col));
+    bool prev_seed_valid = false;
+    if (prev_row_i >= 0 && prev_row_i < omb.signal[map_index].rows() &&
+        prev_col_i >= 0 && prev_col_i < omb.signal[map_index].cols()) {
+        const double seed_w = omb.weight[map_index](prev_row_i, prev_col_i);
+        const double seed_s = omb.signal[map_index](prev_row_i, prev_col_i);
+        prev_seed_valid = std::isfinite(seed_w) && seed_w > 0.0 &&
+                          std::isfinite(seed_s) && seed_s > 0.0;
+        if (prev_seed_valid) {
+            Eigen::Index peak_row = -1;
+            Eigen::Index peak_col = -1;
+            double peak_snr = -std::numeric_limits<double>::infinity();
+            if (find_map_weighted_peak(map_index, peak_row, peak_col, peak_snr) &&
+                peak_row >= 0 && peak_col >= 0 && std::isfinite(peak_snr)) {
+                const double prev_snr = seed_s * std::sqrt(seed_w);
+                const double dr = static_cast<double>(peak_row) - prev_row;
+                const double dc = static_cast<double>(peak_col) - prev_col;
+                const double dist_pix = std::sqrt(dr * dr + dc * dc);
+                const double min_switch_dist_pix = std::max(1.0, init_fwhm);
+                constexpr double min_switch_snr_ratio = 1.25;
+                const bool prior_allows_switch =
+                    !can_try_prior ||
+                    beammap_prior_allows_peak_switch(
+                        map_index, prev_row, prev_col, peak_row, peak_col);
+                if (std::isfinite(prev_snr) &&
+                    peak_snr > min_switch_snr_ratio * prev_snr &&
+                    dist_pix > min_switch_dist_pix &&
+                    prior_allows_switch) {
+                    prev_seed_valid = false;
+                    result.rejected_by_peak = true;
+                    logger->debug(
+                        "beammap fit map={} rejected previous init: current weighted peak row={} col={} snr={} is {} pix from previous row={} col={} snr={}",
+                        map_index, peak_row, peak_col, peak_snr, dist_pix,
+                        prev_row, prev_col, prev_snr);
+                }
+            }
+        }
+    }
+    if (prev_seed_valid) {
+        result.valid = true;
+        result.col = prev_col;
+        result.row = prev_row;
+    }
+    else {
+        logger->debug(
+            "beammap fit map={} rejected previous init at row={} col={} due to invalid/no-weight/non-positive seed pixel",
+            map_index, prev_row, prev_col);
+    }
+    return result;
+}
+
 Beammap::BeammapFitAttemptFlags Beammap::beammap_fit_attempt_flags(
     const engine_utils::mapFitter::FitDiagnostics &fit_diag) const {
     BeammapFitAttemptFlags flags;
@@ -626,101 +742,17 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
             const bool can_try_prior =
                 beammap_priors_enabled && beammap_soft_priors_loaded &&
                 detector_grouping;
-            if (measurement_iter &&
-                good_fits(i) &&
-                p0.cols() > 2 &&
-                std::isfinite(p0(i,0)) && p0(i,0) > 0.0 &&
-                std::isfinite(p0(i,1)) && std::isfinite(p0(i,2))) {
-                const double prev_col = p0(i,1);
-                const double prev_row = p0(i,2);
-                Eigen::Index prev_row_i = static_cast<Eigen::Index>(std::llround(prev_row));
-                Eigen::Index prev_col_i = static_cast<Eigen::Index>(std::llround(prev_col));
-                bool prev_seed_valid = false;
-                if (prev_row_i >= 0 && prev_row_i < omb.signal[i].rows() &&
-                    prev_col_i >= 0 && prev_col_i < omb.signal[i].cols()) {
-                    const double seed_w = omb.weight[i](prev_row_i, prev_col_i);
-                    const double seed_s = omb.signal[i](prev_row_i, prev_col_i);
-                    prev_seed_valid = std::isfinite(seed_w) && seed_w > 0.0 &&
-                                      std::isfinite(seed_s) && seed_s > 0.0;
-                    if (prev_seed_valid) {
-                        Eigen::Index peak_row = -1;
-                        Eigen::Index peak_col = -1;
-                        double peak_snr = -std::numeric_limits<double>::infinity();
-                        if (find_map_weighted_peak(i, peak_row, peak_col, peak_snr) &&
-                            peak_row >= 0 && peak_col >= 0 && std::isfinite(peak_snr)) {
-                            const double prev_snr = seed_s * std::sqrt(seed_w);
-                            const double dr = static_cast<double>(peak_row) - prev_row;
-                            const double dc = static_cast<double>(peak_col) - prev_col;
-                            const double dist_pix = std::sqrt(dr * dr + dc * dc);
-                            const double min_switch_dist_pix = std::max(1.0, init_fwhm);
-                            constexpr double min_switch_snr_ratio = 1.25;
-                            bool prior_allows_switch = true;
-                            if (can_try_prior) {
-                                const int array_int = static_cast<int>(maps_to_arrays(i));
-                                const int nw_int = static_cast<int>(std::lround(calib.apt["nw"](i)));
-                                const double pix_to_arcsec = RAD_TO_ASEC * omb.pixel_size_rad;
-                                const double col0 = static_cast<double>(omb.n_cols - 1) / 2.0;
-                                const double row0 = static_cast<double>(omb.n_rows - 1) / 2.0;
-                                const double derot_elev_rad = get_prior_derot_elev_rad();
-                                const double prior_max_d2 = effective_prior_max_d2();
-
-                                auto prior_compatible = [&](double row, double col, double &d2_out) {
-                                    const double x_raw = pix_to_arcsec * (col - col0);
-                                    const double y_raw = pix_to_arcsec * (row - row0);
-                                    double x_prior = std::numeric_limits<double>::quiet_NaN();
-                                    double y_prior = std::numeric_limits<double>::quiet_NaN();
-                                    d2_out = std::numeric_limits<double>::infinity();
-                                    int slot_index = -1;
-                                    if (!observed_to_prior_frame(array_int, x_raw, y_raw, derot_elev_rad,
-                                                                 x_prior, y_prior, nullptr, nullptr, true)) {
-                                        return false;
-                                    }
-                                    if (!match_prior_slot(array_int, nw_int, x_prior, y_prior,
-                                                          d2_out, slot_index)) {
-                                        return false;
-                                    }
-                                    static_cast<void>(slot_index);
-                                    return prior_max_d2 <= 0.0 || d2_out <= prior_max_d2;
-                                };
-
-                                double prev_prior_d2 = std::numeric_limits<double>::infinity();
-                                double peak_prior_d2 = std::numeric_limits<double>::infinity();
-                                const bool prev_prior_ok = prior_compatible(prev_row, prev_col, prev_prior_d2);
-                                const bool peak_prior_ok = prior_compatible(
-                                    static_cast<double>(peak_row), static_cast<double>(peak_col), peak_prior_d2);
-                                prior_allows_switch = peak_prior_ok || !prev_prior_ok;
-                                if (!prior_allows_switch) {
-                                    logger->debug(
-                                        "beammap fit map={} kept previous init over stronger weighted peak because prior d2 prev={} peak={} max_d2={}",
-                                        i, prev_prior_d2, peak_prior_d2, prior_max_d2);
-                                }
-                            }
-                            if (std::isfinite(prev_snr) &&
-                                peak_snr > min_switch_snr_ratio * prev_snr &&
-                                dist_pix > min_switch_dist_pix &&
-                                prior_allows_switch) {
-                                prev_seed_valid = false;
-                                fit_stats.prev_rejected_by_peak++;
-                                logger->debug(
-                                    "beammap fit map={} rejected previous init: current weighted peak row={} col={} snr={} is {} pix from previous row={} col={} snr={}",
-                                    i, peak_row, peak_col, peak_snr, dist_pix,
-                                    prev_row, prev_col, prev_snr);
-                            }
-                        }
-                    }
-                }
-                if (prev_seed_valid) {
-                    init_col = prev_col;
-                    init_row = prev_row;
-                    init_from_prev = true;
-                    init_mode = BeammapFitInitMode::Previous;
-                    fit_stats.init_prev++;
-                }
-                else {
-                    logger->debug(
-                        "beammap fit map={} rejected previous init at row={} col={} due to invalid/no-weight/non-positive seed pixel",
-                        i, prev_row, prev_col);
-                }
+            const auto prev_init = choose_previous_beammap_fit_init(
+                i, measurement_iter, can_try_prior, init_fwhm);
+            if (prev_init.rejected_by_peak) {
+                fit_stats.prev_rejected_by_peak++;
+            }
+            if (prev_init.valid) {
+                init_col = prev_init.col;
+                init_row = prev_init.row;
+                init_from_prev = true;
+                init_mode = BeammapFitInitMode::Previous;
+                fit_stats.init_prev++;
             }
             if (!init_from_prev && can_try_prior) {
                 if (choose_prior_guided_init(i, init_row, init_col)) {

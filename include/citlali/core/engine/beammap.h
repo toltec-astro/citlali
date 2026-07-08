@@ -55,6 +55,13 @@ public:
         bool amp_bounds_zero = false;
     };
 
+    struct BeammapPreviousFitInit {
+        bool valid = false;
+        bool rejected_by_peak = false;
+        double row = -99.0;
+        double col = -99.0;
+    };
+
     struct BeammapFitIterationStats {
         Eigen::VectorXi bound_low;
         Eigen::VectorXi bound_high;
@@ -243,6 +250,13 @@ public:
     void clear_beammap_fit_result(Eigen::Index map_index);
     bool has_beammap_prior_diagnostics() const;
     void reset_beammap_prior_diagnostics(Eigen::Index map_index);
+    bool beammap_prior_allows_peak_switch(Eigen::Index map_index,
+                                          double prev_row, double prev_col,
+                                          Eigen::Index peak_row,
+                                          Eigen::Index peak_col);
+    BeammapPreviousFitInit choose_previous_beammap_fit_init(
+        Eigen::Index map_index, bool measurement_iter, bool can_try_prior,
+        double init_fwhm);
     BeammapFitAttemptFlags beammap_fit_attempt_flags(
         const engine_utils::mapFitter::FitDiagnostics &fit_diag) const;
     void record_beammap_fit_attempt_stats(
