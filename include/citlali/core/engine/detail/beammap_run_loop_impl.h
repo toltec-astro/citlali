@@ -416,6 +416,41 @@ void Beammap::reset_beammap_prior_diagnostics(Eigen::Index map_index) {
     prior_diag_values(map_index, prior_slot_index_col) = -1.0;
 }
 
+void Beammap::log_beammap_fit_iteration_stats(
+    const BeammapFitIterationStats &fit_stats) {
+    logger->info("beammap init summary (iter {}): previous={} prior={} blind={} skipped={} prev_rejected_by_peak={}",
+                 current_iter, fit_stats.init_prev, fit_stats.init_prior, fit_stats.init_blind, fit_stats.init_skip,
+                 fit_stats.prev_rejected_by_peak);
+    logger->info(
+        "beammap fit diagnostics (iter {}): prev fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{} | "
+        "prior fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{} | "
+        "blind fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{}",
+        current_iter,
+        fit_stats.fail_prev, fit_stats.attempt_prev, fit_stats.init_amp_zero_prev, fit_stats.attempt_prev,
+        fit_stats.amp_bounds_zero_prev, fit_stats.attempt_prev,
+        fit_stats.fail_prior, fit_stats.attempt_prior, fit_stats.init_amp_zero_prior, fit_stats.attempt_prior,
+        fit_stats.amp_bounds_zero_prior, fit_stats.attempt_prior,
+        fit_stats.fail_blind, fit_stats.attempt_blind, fit_stats.init_amp_zero_blind, fit_stats.attempt_blind,
+        fit_stats.amp_bounds_zero_blind, fit_stats.attempt_blind);
+
+    if (map_fitter.n_params >= 6) {
+        logger->info(
+            "beammap fit bound summary (iter {}): any_hit={}/{} amp(lo/hi)={}/{} x(lo/hi)={}/{} y(lo/hi)={}/{} a(lo/hi)={}/{} b(lo/hi)={}/{} angle(lo/hi)={}/{}",
+            current_iter, fit_stats.bound_any, n_maps,
+            fit_stats.bound_low(0), fit_stats.bound_high(0),
+            fit_stats.bound_low(1), fit_stats.bound_high(1),
+            fit_stats.bound_low(2), fit_stats.bound_high(2),
+            fit_stats.bound_low(3), fit_stats.bound_high(3),
+            fit_stats.bound_low(4), fit_stats.bound_high(4),
+            fit_stats.bound_low(5), fit_stats.bound_high(5));
+    }
+    else {
+        logger->info("beammap fit bound summary (iter {}): any_hit={}/{}",
+                     current_iter, fit_stats.bound_any, n_maps);
+    }
+    logger->info("number of good fits {}/{}", static_cast<long long>(good_fits.cast<int>().sum()), n_maps);
+}
+
 void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
     BeammapFitIterationStats fit_stats(map_fitter.n_params);
 
@@ -733,37 +768,7 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
     }
     }
 
-    logger->info("beammap init summary (iter {}): previous={} prior={} blind={} skipped={} prev_rejected_by_peak={}",
-                 current_iter, fit_stats.init_prev, fit_stats.init_prior, fit_stats.init_blind, fit_stats.init_skip,
-                 fit_stats.prev_rejected_by_peak);
-    logger->info(
-        "beammap fit diagnostics (iter {}): prev fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{} | "
-        "prior fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{} | "
-        "blind fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{}",
-        current_iter,
-        fit_stats.fail_prev, fit_stats.attempt_prev, fit_stats.init_amp_zero_prev, fit_stats.attempt_prev,
-        fit_stats.amp_bounds_zero_prev, fit_stats.attempt_prev,
-        fit_stats.fail_prior, fit_stats.attempt_prior, fit_stats.init_amp_zero_prior, fit_stats.attempt_prior,
-        fit_stats.amp_bounds_zero_prior, fit_stats.attempt_prior,
-        fit_stats.fail_blind, fit_stats.attempt_blind, fit_stats.init_amp_zero_blind, fit_stats.attempt_blind,
-        fit_stats.amp_bounds_zero_blind, fit_stats.attempt_blind);
-
-    if (map_fitter.n_params >= 6) {
-        logger->info(
-            "beammap fit bound summary (iter {}): any_hit={}/{} amp(lo/hi)={}/{} x(lo/hi)={}/{} y(lo/hi)={}/{} a(lo/hi)={}/{} b(lo/hi)={}/{} angle(lo/hi)={}/{}",
-            current_iter, fit_stats.bound_any, n_maps,
-            fit_stats.bound_low(0), fit_stats.bound_high(0),
-            fit_stats.bound_low(1), fit_stats.bound_high(1),
-            fit_stats.bound_low(2), fit_stats.bound_high(2),
-            fit_stats.bound_low(3), fit_stats.bound_high(3),
-            fit_stats.bound_low(4), fit_stats.bound_high(4),
-            fit_stats.bound_low(5), fit_stats.bound_high(5));
-    }
-    else {
-        logger->info("beammap fit bound summary (iter {}): any_hit={}/{}",
-                     current_iter, fit_stats.bound_any, n_maps);
-    }
-    logger->info("number of good fits {}/{}", static_cast<long long>(good_fits.cast<int>().sum()), n_maps);
+    log_beammap_fit_iteration_stats(fit_stats);
 }
 
 bool Beammap::advance_beammap_iteration_state() {
