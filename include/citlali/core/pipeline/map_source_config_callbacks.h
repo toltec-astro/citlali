@@ -35,8 +35,8 @@ inline double source_fitting_arcsec_to_pixels(double value_arcsec,
 inline bool source_fitting_config_needed(citlali::config::ReductionType reduction_type,
                                          bool run_map_filter,
                                          bool run_source_finder) {
-    return reduction_type == citlali::config::ReductionType::pointing ||
-           reduction_type == citlali::config::ReductionType::beammap ||
+    return citlali::config::is_pointing_reduction_type(reduction_type) ||
+           citlali::config::is_beammap_reduction_type(reduction_type) ||
            run_map_filter || run_source_finder;
 }
 

@@ -13,7 +13,7 @@ void apply_source_protection_activation(
     const Logger &logger) {
     // The pointing pipeline also covers PSF-preserving focus and holography-style reductions.
     const bool source_aware_reduction =
-        reduction_type == citlali::config::ReductionType::pointing;
+        citlali::config::is_pointing_reduction_type(reduction_type);
     rtcproc.despiker.source_protection_enabled =
         rtcproc.run_despike &&
         rtcproc.despike_source_protection_config_enabled &&

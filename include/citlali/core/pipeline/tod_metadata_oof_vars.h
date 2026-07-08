@@ -22,7 +22,7 @@ void add_oof_array_vars(netCDF::NcFile &fo, const MapBuffer &mb,
                         WavelengthMap &array_wavelength_map) {
     for (decltype(calib.arrays.size()) i=0; i<calib.arrays.size(); ++i) {
         double rms = 0.0;
-        if (reduction_type != citlali::config::ReductionType::beammap &&
+        if (!citlali::config::is_beammap_reduction_type(reduction_type) &&
             run_mapmaking) {
             rms = std::pow(mb->median_err(i), 0.5);
         }

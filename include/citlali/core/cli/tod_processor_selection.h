@@ -57,21 +57,21 @@ template <class TodProcVariant, class ScienceTodProc, class PointingTodProc,
 bool emplace_tod_processor_for_reduction_type(
     TodProcVariant &todproc, citlali::config::ReductionType reduction_type,
     Config &config, const Logger &logger) {
-    if (reduction_type == citlali::config::ReductionType::science) {
+    if (citlali::config::is_science_reduction_type(reduction_type)) {
         logger->info("reducing in science mode");
         todproc.template emplace<ScienceTodProc>(
             ScienceTodProc::from_config(config));
         return true;
     }
 
-    if (reduction_type == citlali::config::ReductionType::pointing) {
+    if (citlali::config::is_pointing_reduction_type(reduction_type)) {
         logger->info("reducing in pointing mode");
         todproc.template emplace<PointingTodProc>(
             PointingTodProc::from_config(config));
         return true;
     }
 
-    if (reduction_type == citlali::config::ReductionType::beammap) {
+    if (citlali::config::is_beammap_reduction_type(reduction_type)) {
         logger->info("reducing in beammap mode");
         todproc.template emplace<BeammapTodProc>(
             BeammapTodProc::from_config(config));

@@ -17,7 +17,7 @@ inline bool map_grouping_disallows_polarization(
     bool run_polarization, citlali::config::ReductionType reduction_type,
     citlali::config::MapGrouping map_grouping) {
     return run_polarization &&
-           ((reduction_type == citlali::config::ReductionType::beammap &&
+           ((citlali::config::is_beammap_reduction_type(reduction_type) &&
              citlali::config::is_automatic_map_grouping(map_grouping)) ||
             citlali::config::is_detector_map_grouping(map_grouping));
 }
