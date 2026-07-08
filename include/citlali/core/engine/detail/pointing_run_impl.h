@@ -2,9 +2,9 @@
 
 // Implementation detail included by pointing.h.
 
-#include <citlali/core/pipeline/ordered_writer.h>
 #include <citlali/core/pipeline/mapmaking_dispatch.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/timestream_output_context.h>
 #include <citlali/core/pipeline/timestream_scan_context.h>
 
 template <class KidsProc>
@@ -15,32 +15,16 @@ auto Pointing::run(KidsProc &kidsproc) {
     const bool make_maps = citlali::pipeline::mapmaking_enabled(*this);
     const bool make_noise_maps = citlali::pipeline::noise_maps_enabled(*this);
 
-    const bool write_rtc =
-        run_tod_output && run_tod_output_rtc && !tod_filename.empty();
-    const bool write_ptc =
-        run_tod_output && run_tod_output_ptc && !tod_filename.empty();
-    const bool write_rtcdiag = !rtcdiag_filename.empty();
-    const bool write_ptcdiag = !ptcdiag_filename.empty();
-
-    auto rtc_writer =
-        write_rtc ? std::make_shared<citlali::pipeline::OrderedWriter>()
-                  : nullptr;
-    auto ptc_writer =
-        write_ptc ? std::make_shared<citlali::pipeline::OrderedWriter>()
-                  : nullptr;
-    auto rtcdiag_writer =
-        write_rtcdiag ? std::make_shared<citlali::pipeline::OrderedWriter>()
-                      : nullptr;
-    auto ptcdiag_writer =
-        write_ptcdiag ? std::make_shared<citlali::pipeline::OrderedWriter>()
-                      : nullptr;
+    const auto output_flags =
+        citlali::pipeline::standard_timestream_output_flags(*this);
+    const auto output_writers =
+        citlali::pipeline::make_timestream_output_writers(output_flags);
 
     auto farm = grppi::farm(n_threads,[&, scans_done_mutex, ptc_line_audit_mutex,
-                                       rtc_writer, ptc_writer,
-                                       rtcdiag_writer, ptcdiag_writer,
+                                       output_writers,
                                        mapmaking_method, make_maps,
-                                       make_noise_maps, write_rtc, write_ptc,
-                                       write_rtcdiag, write_ptcdiag](auto &rtcdata) {
+                                       make_noise_maps,
+                                       output_flags](auto &rtcdata) {
 
         const auto scan_window = citlali::pipeline::copy_rtc_scan_context(
             rtcdata, telescope, pointing_offsets_arcsec);
@@ -59,7 +43,8 @@ auto Pointing::run(KidsProc &kidsproc) {
         TCData<TCDataKind::RTC,Eigen::MatrixXd> rtc_outer_output;
         const auto rtc_scan_row = tod_output_scan_row(
             rtcdata.index.data, citlali::config::TodOutputStream::rtc);
-        const bool write_this_rtc = write_rtc && rtc_scan_row >= 0;
+        const bool write_this_rtc =
+            output_flags.write_rtc && rtc_scan_row >= 0;
         auto *rtc_outer_output_ptr =
             (write_this_rtc && rtcproc.tod_output_outer) ? &rtc_outer_output : nullptr;
 
@@ -88,16 +73,16 @@ auto Pointing::run(KidsProc &kidsproc) {
 
         collect_rtc_learning_diagnostics(rtcdata, ptcdata, calib_scan, rtc_detector_summary);
 
-        if (write_rtcdiag) {
-            rtcdiag_writer->wait_turn(ptcdata.index.data);
+        if (output_flags.write_rtcdiag) {
+            output_writers.rtcdiag->wait_turn(ptcdata.index.data);
             logger->info("writing rtc diagnostics sidecar chunk");
             rtcproc.append_diag_to_netcdf(ptcdata, rtcdiag_filename, calib_scan, ptcdata.index.data);
-            rtcdiag_writer->advance();
+            output_writers.rtcdiag->advance();
         }
 
         // write rtc timestreams
         if (write_this_rtc) {
-            rtc_writer->wait_turn(rtc_scan_row);
+            output_writers.rtc->wait_turn(rtc_scan_row);
             if (rtcproc.tod_output_outer) {
                 logger->info("writing outer raw time chunk");
                 rtcproc.append_to_netcdf(rtc_outer_output, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
@@ -108,9 +93,9 @@ auto Pointing::run(KidsProc &kidsproc) {
                 rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
                                          ptcdata.pointing_offsets_arcsec.data, calib, false, rtc_scan_row);
             }
-            rtc_writer->advance();
+            output_writers.rtc->advance();
         }
-        if (write_rtc || write_rtcdiag) {
+        if (output_flags.write_rtc || output_flags.write_rtcdiag) {
             rtcproc.clear_cached_diagnostics(ptcdata.index.data);
         }
 
@@ -204,23 +189,23 @@ auto Pointing::run(KidsProc &kidsproc) {
             ptcdata, calib_scan, ptc_second_pass_summary, ptc_high_weight_summary);
 
         // write ptc timestreams
-        if (write_ptcdiag) {
-            ptcdiag_writer->wait_turn(ptcdata.index.data);
+        if (output_flags.write_ptcdiag) {
+            output_writers.ptcdiag->wait_turn(ptcdata.index.data);
             logger->info("writing ptc diagnostics sidecar chunk");
             ptcproc.append_diag_to_netcdf(ptcdata, ptcdiag_filename, calib_scan, ptcdata.index.data);
-            ptcdiag_writer->advance();
+            output_writers.ptcdiag->advance();
         }
 
         const auto ptc_scan_row = tod_output_scan_row(
             ptcdata.index.data, citlali::config::TodOutputStream::ptc);
-        if (write_ptc && ptc_scan_row >= 0) {
-            ptc_writer->wait_turn(ptc_scan_row);
+        if (output_flags.write_ptc && ptc_scan_row >= 0) {
+            output_writers.ptc->wait_turn(ptc_scan_row);
             logger->info("writing processed time chunk");
             ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc"], map_grouping, telescope.pixel_axes,
                                      ptcdata.pointing_offsets_arcsec.data, calib_scan, false, ptc_scan_row);
-            ptc_writer->advance();
+            output_writers.ptc->advance();
         }
-        if (write_ptc || write_ptcdiag) {
+        if (output_flags.write_ptc || output_flags.write_ptcdiag) {
             ptcproc.clear_cached_diagnostics(ptcdata.index.data);
         }
 

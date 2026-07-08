@@ -3,7 +3,7 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
-#include <citlali/core/pipeline/ordered_writer.h>
+#include <citlali/core/pipeline/timestream_output_context.h>
 #include <citlali/core/pipeline/timestream_scan_context.h>
 
 template <class KidsProc, class RawObs>
@@ -70,19 +70,16 @@ template <class KidsProc>
 auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
     auto scans_done_mutex = std::make_shared<std::mutex>();
 
-    const bool write_rtc =
-        write_outputs && run_tod_output && run_tod_output_rtc &&
-        !tod_filename.empty();
-    const bool write_rtcdiag = write_outputs && !rtcdiag_filename.empty();
-    auto rtc_writer =
-        write_rtc ? std::make_shared<citlali::pipeline::OrderedWriter>()
-                  : nullptr;
-    auto rtcdiag_writer =
-        write_rtcdiag ? std::make_shared<citlali::pipeline::OrderedWriter>()
-                      : nullptr;
+    const auto output_flags =
+        citlali::pipeline::beammap_timestream_output_flags(
+            *this, write_outputs);
+    const auto output_writers =
+        citlali::pipeline::make_timestream_output_writers(output_flags);
 
-    auto farm = grppi::farm(n_threads,[&, scans_done_mutex, rtc_writer, rtcdiag_writer,
-                                       write_rtc, write_rtcdiag](auto &rtcdata) -> TCData<TCDataKind::PTC,Eigen::MatrixXd> {
+    auto farm = grppi::farm(
+        n_threads, [&, scans_done_mutex, output_writers,
+                    output_flags](auto &rtcdata)
+                       -> TCData<TCDataKind::PTC, Eigen::MatrixXd> {
 
         // allocate up bitwise timestream flags
         rtcdata.flags2.data.setConstant(timestream::TimestreamFlags::Good);
@@ -104,7 +101,8 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
         TCData<TCDataKind::RTC,Eigen::MatrixXd> rtc_outer_output;
         const auto rtc_scan_row = tod_output_scan_row(
             rtcdata.index.data, citlali::config::TodOutputStream::rtc);
-        const bool write_this_rtc = write_rtc && rtc_scan_row >= 0;
+        const bool write_this_rtc =
+            output_flags.write_rtc && rtc_scan_row >= 0;
         auto *rtc_outer_output_ptr =
             (write_this_rtc && rtcproc.tod_output_outer) ? &rtc_outer_output : nullptr;
 
@@ -131,16 +129,16 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
             calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib_scan, map_grouping);
         }
 
-        if (write_rtcdiag) {
-            rtcdiag_writer->wait_turn(ptcdata.index.data);
+        if (output_flags.write_rtcdiag) {
+            output_writers.rtcdiag->wait_turn(ptcdata.index.data);
             logger->info("writing rtc diagnostics sidecar chunk");
             rtcproc.append_diag_to_netcdf(ptcdata, rtcdiag_filename, calib_scan, ptcdata.index.data);
-            rtcdiag_writer->advance();
+            output_writers.rtcdiag->advance();
         }
 
         // write rtc timestreams
         if (write_this_rtc) {
-            rtc_writer->wait_turn(rtc_scan_row);
+            output_writers.rtc->wait_turn(rtc_scan_row);
             if (rtcproc.tod_output_outer) {
                 logger->info("writing outer raw time chunk");
                 rtcproc.append_to_netcdf(rtc_outer_output, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
@@ -151,7 +149,7 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
                 rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
                                          ptcdata.pointing_offsets_arcsec.data, calib_scan, true, rtc_scan_row);
             }
-            rtc_writer->advance();
+            output_writers.rtc->advance();
         }
         rtcproc.clear_cached_diagnostics(ptcdata.index.data);
 
