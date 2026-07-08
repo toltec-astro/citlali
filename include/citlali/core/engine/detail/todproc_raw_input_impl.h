@@ -3,18 +3,7 @@
 // Implementation detail included by todproc.h.
 
 #include <citlali/core/pipeline/output_policy.h>
-#include <citlali/core/pipeline/stage_profile.h>
-
-namespace citlali::pipeline {
-
-template <class Logger>
-void log_reduction_version_stamp(const Logger &logger) {
-    logger->info("citlali version: {}", CITLALI_GIT_VERSION);
-    logger->info("kids version: {}", KIDSCPP_GIT_VERSION);
-    logger->info("tula version: {}", TULA_GIT_VERSION);
-}
-
-}  // namespace citlali::pipeline
+#include <citlali/core/pipeline/reduction_output_dirs.h>
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
@@ -203,75 +192,25 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
 
     // create reduction subdir
     if (engine().use_subdir) {
-        // redu number
-        engine().redu_dir_num = 0;
-
-        std::stringstream ss_redu_dir_num;
-        // add leading zero to redu_dir_num (i.e., '00', '01',...)
-        ss_redu_dir_num << std::setfill('0') << std::setw(2) << engine().redu_dir_num;
-
-        // create redu dir name ('redu00', 'redu01',...)
-        std::string redu_dir_name = "redu" + ss_redu_dir_num.str();
-
-        // iteratively check if current subdir with current redu number exists
-        while (fs::exists(fs::status(engine().output_dir + "/" + redu_dir_name))) {
-            // increment redu number if subdir exists
-            engine().redu_dir_num++;
-            std::stringstream ss_redu_dir_num_i;
-            ss_redu_dir_num_i << std::setfill('0') << std::setw(2) << engine().redu_dir_num;
-            redu_dir_name = "redu" + ss_redu_dir_num_i.str();
-        }
-
-        // final redu dir name is output directory from config + /reduNN
-        engine().redu_dir_name = engine().output_dir + "/" + redu_dir_name;
-
-        // create redu dir directory
+        engine().redu_dir_name =
+            citlali::pipeline::next_reduction_subdir_path(
+                engine().output_dir, engine().redu_dir_num);
         fs::create_directories(engine().redu_dir_name);
-        try {
-            auto log_path = citlali::logging::enable_reduction_gzip_logs(engine().redu_dir_name);
-            logger->info("reduction-local compressed log: {}", log_path);
-            citlali::pipeline::log_reduction_version_stamp(logger);
-        } catch (const std::exception &e) {
-            logger->warn("failed to enable reduction-local compressed log in {}: {}",
-                         engine().redu_dir_name, e.what());
-        }
-        citlali::pipeline::configure_stage_profile_output(
+        citlali::pipeline::configure_reduction_logging_and_profile(
             engine().redu_dir_name, logger);
     }
     else {
         engine().redu_dir_name = engine().output_dir + "/";
-        try {
-            auto log_path = citlali::logging::enable_reduction_gzip_logs(engine().redu_dir_name);
-            logger->info("reduction-local compressed log: {}", log_path);
-            citlali::pipeline::log_reduction_version_stamp(logger);
-        } catch (const std::exception &e) {
-            logger->warn("failed to enable reduction-local compressed log in {}: {}",
-                         engine().redu_dir_name, e.what());
-        }
-        citlali::pipeline::configure_stage_profile_output(
+        citlali::pipeline::configure_reduction_logging_and_profile(
             engine().redu_dir_name, logger);
     }
 
     // coadded subdir
     if (citlali::pipeline::coadd_outputs_enabled(engine())) {
         engine().coadd_dir_name = engine().redu_dir_name + "/coadded/";
-        // coadded raw subdir
-        if (!fs::exists(fs::status(engine().coadd_dir_name + "raw/"))) {
-            fs::create_directories(engine().coadd_dir_name + "raw/");
-        }
-        else {
-            logger->warn("directory {} already exists", engine().coadd_dir_name + "raw/");
-        }
-        // if map filtering is requested
-        if (citlali::pipeline::map_filter_outputs_enabled(engine())) {
-            // coadded filtered subdir
-            if (!fs::exists(fs::status(engine().coadd_dir_name + "filtered/"))) {
-                fs::create_directories(engine().coadd_dir_name + "filtered/");
-            }
-            else {
-                logger->warn("directory {} already exists", engine().coadd_dir_name + "filtered/");
-            }
-        }
+        citlali::pipeline::create_coadd_output_dirs(
+            engine().coadd_dir_name,
+            citlali::pipeline::map_filter_outputs_enabled(engine()), logger);
     }
 }
 
