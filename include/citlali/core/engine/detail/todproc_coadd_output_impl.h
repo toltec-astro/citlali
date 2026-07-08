@@ -2,52 +2,15 @@
 
 // Implementation detail included by todproc.h.
 
+#include <citlali/core/pipeline/observation_coadd_accumulation.h>
 #include <citlali/core/pipeline/observation_map_files.h>
 #include <citlali/core/pipeline/output_policy.h>
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::coadd() {
-    // calculate the offset between cmb and omb
-    int delta_row = 0.5*(engine().cmb.n_rows - engine().omb.n_rows);
-    int delta_col= 0.5*(engine().cmb.n_cols - engine().omb.n_cols);
-
-    // loop through the maps
-    for (Eigen::Index i=0; i<engine().n_maps; ++i) {
-        // define common block references
-        auto cmb_weight_block = engine().cmb.weight.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols);
-        auto cmb_signal_block = engine().cmb.signal.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols);
-
-        // update cmb.weight with omb.weight
-        cmb_weight_block += engine().omb.weight.at(i);
-
-        // update cmb.signal with omb.signal * omb.weight
-        cmb_signal_block += (engine().omb.signal.at(i).array() * engine().omb.weight.at(i).array()).matrix();
-
-        // update cmb.kernel with omb.kernel * omb.weight
-        if (engine().rtcproc.run_kernel) {
-            auto cmb_kernel_block = engine().cmb.kernel.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols);
-            cmb_kernel_block += (engine().omb.kernel.at(i).array() * engine().omb.weight.at(i).array()).matrix();
-        }
-
-        // update coverage
-        if (!engine().cmb.coverage.empty()) {
-            auto cmb_coverage_block = engine().cmb.coverage.at(i).block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols);
-            cmb_coverage_block += engine().omb.coverage.at(i);
-        }
-
-        if (!engine().cmb.noise.empty() && !engine().omb.noise.empty()) {
-            for (Eigen::Index n = 0; n < engine().cmb.n_noise; ++n) {
-                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> cmb_noise_matrix(
-                    engine().cmb.noise.at(i).data() + n * engine().cmb.n_rows * engine().cmb.n_cols,
-                    engine().cmb.n_rows, engine().cmb.n_cols);
-                Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> omb_noise_matrix(
-                    engine().omb.noise.at(i).data() + n * engine().omb.n_rows * engine().omb.n_cols,
-                    engine().omb.n_rows, engine().omb.n_cols);
-                auto cmb_noise_block = cmb_noise_matrix.block(delta_row, delta_col, engine().omb.n_rows, engine().omb.n_cols);
-                cmb_noise_block += (omb_noise_matrix.array() * engine().omb.weight.at(i).array()).matrix();
-            }
-        }
-    }
+    citlali::pipeline::accumulate_observation_into_coadd(
+        engine().cmb, engine().omb, engine().n_maps,
+        engine().rtcproc.run_kernel);
 }
 
 template <class EngineType>
