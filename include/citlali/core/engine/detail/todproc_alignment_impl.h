@@ -2,57 +2,7 @@
 
 // Implementation detail included by todproc.h.
 
-namespace todproc_alignment_detail {
-
-inline Eigen::Index find_first_sample_at_or_after(const Eigen::VectorXd &times,
-                                                  double target_time,
-                                                  const std::string &error_message) {
-    if (times.size() == 0) {
-        throw std::runtime_error(error_message);
-    }
-    Eigen::Index sample_index = 0;
-    (times.array() - target_time).abs().minCoeff(&sample_index);
-    while (sample_index < times.size() && times[sample_index] < target_time) {
-        sample_index++;
-    }
-    if (sample_index >= times.size()) {
-        throw std::runtime_error(error_message);
-    }
-    return sample_index;
-}
-
-inline Eigen::Index find_last_sample_at_or_before(const Eigen::VectorXd &times,
-                                                  double target_time,
-                                                  Eigen::Index start_index,
-                                                  const std::string &error_message) {
-    if (times.size() == 0) {
-        throw std::runtime_error(error_message);
-    }
-    Eigen::Index sample_index = 0;
-    (times.array() - target_time).abs().minCoeff(&sample_index);
-    while (sample_index >= 0 && times[sample_index] > target_time) {
-        sample_index--;
-    }
-    if (sample_index < 0 || sample_index < start_index) {
-        throw std::runtime_error(error_message);
-    }
-    return sample_index;
-}
-
-inline void validate_hwpr_alignment_inputs(const Eigen::VectorXd &recvt,
-                                           const Eigen::VectorXd &angle,
-                                           const std::string &alignment_label) {
-    if (recvt.size() == 0 || angle.size() == 0) {
-        throw std::runtime_error("HWPR is enabled but HWP time/angle data are empty");
-    }
-    if (recvt.size() != angle.size()) {
-        throw std::runtime_error(
-            fmt::format("HWPR time and angle vectors have different lengths before {} alignment",
-                        alignment_label));
-    }
-}
-
-} // namespace todproc_alignment_detail
+#include <citlali/core/pipeline/timestream_alignment_helpers.h>
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
@@ -194,7 +144,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
     // get hwpr timing
     if (engine().calib.run_hwpr) {
-        todproc_alignment_detail::validate_hwpr_alignment_inputs(
+        citlali::pipeline::validate_hwpr_alignment_inputs(
             engine().calib.hwpr_recvt, engine().calib.hwpr_angle, "no-gap");
         // if hwpr init time is larger than max start time, replace global max start time
         Eigen::Index hwpr_ts_n_pts = engine().calib.hwpr_recvt.size();
@@ -220,14 +170,14 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     // loop through time vectors and get the smallest
     for (Eigen::Index i=0; i<nw_ts.size(); ++i) {
         // find start index that is larger than max start
-        Eigen::Index si = todproc_alignment_detail::find_first_sample_at_or_after(
+        Eigen::Index si = citlali::pipeline::find_first_sample_at_or_after(
             nw_ts[i], max_t0,
             fmt::format("failed to find aligned start sample for interface index {}", i));
         // pushback start index on start index vector
         engine().start_indices.push_back(si);
 
         // find end index that is smaller than min end
-        Eigen::Index ei = todproc_alignment_detail::find_last_sample_at_or_before(
+        Eigen::Index ei = citlali::pipeline::find_last_sample_at_or_before(
             nw_ts[i], min_tn, si,
             fmt::format("failed to find aligned end sample for interface index {}", i));
         // pushback end index on end index vector
@@ -255,14 +205,14 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     // if hwpr requested
     if (engine().calib.run_hwpr) {
         // find start index that is larger than max start for hwpr
-        Eigen::Index si = todproc_alignment_detail::find_first_sample_at_or_after(
+        Eigen::Index si = citlali::pipeline::find_first_sample_at_or_after(
             engine().calib.hwpr_recvt, max_t0,
             "failed to find aligned HWPR start sample");
         // pushback start index on hwpr start index vector
         engine().hwpr_start_indices = si;
 
         // find end index that is smaller than min end for hwpr
-        Eigen::Index ei = todproc_alignment_detail::find_last_sample_at_or_before(
+        Eigen::Index ei = citlali::pipeline::find_last_sample_at_or_before(
             engine().calib.hwpr_recvt, min_tn, si,
             "failed to find aligned HWPR end sample");
         // pushback end index on hwpr end index vector
@@ -429,7 +379,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
 
     // get hwpr times if not ignored
     if (engine().calib.run_hwpr) {
-        todproc_alignment_detail::validate_hwpr_alignment_inputs(
+        citlali::pipeline::validate_hwpr_alignment_inputs(
             engine().calib.hwpr_recvt, engine().calib.hwpr_angle, "gap");
         logger->debug("calculating hwpr time");
         // hwpr gets added alongside networks
