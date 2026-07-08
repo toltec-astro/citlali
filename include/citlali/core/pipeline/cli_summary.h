@@ -20,14 +20,12 @@ inline double physical_memory_gb(long long physical_memory_kb) {
 
 inline bool should_report_rtc_tod_output(
     citlali::config::TodOutputType tod_output_type) {
-    return tod_output_type == citlali::config::TodOutputType::rtc ||
-           tod_output_type == citlali::config::TodOutputType::both;
+    return citlali::config::tod_output_includes_rtc(tod_output_type);
 }
 
 inline bool should_report_ptc_tod_output(
     citlali::config::TodOutputType tod_output_type) {
-    return tod_output_type == citlali::config::TodOutputType::ptc ||
-           tod_output_type == citlali::config::TodOutputType::both;
+    return citlali::config::tod_output_includes_ptc(tod_output_type);
 }
 
 template <class Logger>

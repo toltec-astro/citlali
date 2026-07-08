@@ -2,7 +2,6 @@
 
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/engine/detail/config_parse_tracking.h>
-#include <citlali/core/pipeline/tod_output_selection.h>
 
 #include <string>
 #include <tuple>
@@ -80,6 +79,8 @@ void read_tod_stream_output_mode_config(
         return;
     }
 
+    const auto missing_before = missing_keys.size();
+    const auto invalid_before = invalid_keys.size();
     read_config_value_if_clean(
         config, key, mode,
         [&typed_stream](const std::string &mode_name) {
@@ -89,7 +90,18 @@ void read_tod_stream_output_mode_config(
             }
         },
         missing_keys, invalid_keys, allowed_modes);
-    citlali::pipeline::apply_tod_output_mode_flags(mode, mini, outer);
+    citlali::config::TodStreamOutputMode parsed_mode =
+        citlali::config::TodStreamOutputMode::full;
+    if (auto parsed = citlali::config::parse_tod_stream_output_mode(mode)) {
+        parsed_mode = *parsed;
+    }
+    citlali::config::TodStreamOutputMode stream_mode =
+        config_parse_clean(
+            missing_keys, invalid_keys, missing_before, invalid_before)
+            ? typed_stream.mode
+            : parsed_mode;
+    mini = citlali::config::is_mini_tod_stream_output_mode(stream_mode);
+    outer = citlali::config::is_outer_tod_stream_output_mode(stream_mode);
 }
 
 template <class Config, class Key, class MissingKeys, class InvalidKeys,
@@ -117,10 +129,10 @@ void sync_tod_output_type_config(bool raw_time_chunk_enabled,
                                  bool &output_enabled,
                                  TimestreamConfig &typed_config) {
     output_enabled = false;
-    if (auto requested_output_type =
-            citlali::pipeline::requested_tod_output_type(
-                raw_time_chunk_enabled, processed_time_chunk_enabled)) {
-        typed_config.output.type = *requested_output_type;
+    const auto output_type = citlali::config::enabled_tod_output_type(
+        raw_time_chunk_enabled, processed_time_chunk_enabled);
+    if (citlali::config::is_tod_output_enabled(output_type)) {
+        typed_config.output.type = output_type;
         output_enabled = true;
         return;
     }

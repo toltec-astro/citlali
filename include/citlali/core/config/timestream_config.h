@@ -320,6 +320,42 @@ inline std::string_view to_string(FruitLoopsInterpModeOverride value) {
     return enum_name(value, fruit_loops_interp_mode_override_names);
 }
 
+inline bool is_tod_output_enabled(TodOutputType value) {
+    return value != TodOutputType::none;
+}
+
+inline bool tod_output_includes_rtc(TodOutputType value) {
+    return value == TodOutputType::rtc || value == TodOutputType::both;
+}
+
+inline bool tod_output_includes_ptc(TodOutputType value) {
+    return value == TodOutputType::ptc || value == TodOutputType::both;
+}
+
+inline TodOutputType enabled_tod_output_type(bool raw_time_chunk_enabled,
+                                             bool processed_time_chunk_enabled) {
+    if (raw_time_chunk_enabled && processed_time_chunk_enabled) {
+        return TodOutputType::both;
+    }
+    if (raw_time_chunk_enabled) {
+        return TodOutputType::rtc;
+    }
+    if (processed_time_chunk_enabled) {
+        return TodOutputType::ptc;
+    }
+    return TodOutputType::none;
+}
+
+inline bool is_mini_tod_stream_output_mode(TodStreamOutputMode value) {
+    return value == TodStreamOutputMode::mini ||
+           value == TodStreamOutputMode::mini_outer;
+}
+
+inline bool is_outer_tod_stream_output_mode(TodStreamOutputMode value) {
+    return value == TodStreamOutputMode::full_outer ||
+           value == TodStreamOutputMode::mini_outer;
+}
+
 inline bool is_fruit_loops_interp_mode(
     std::string_view value, FruitLoopsInterpModeOverride mode) {
     return value == to_string(mode);

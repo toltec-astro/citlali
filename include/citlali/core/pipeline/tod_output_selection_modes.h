@@ -4,20 +4,17 @@
 
 inline std::optional<citlali::config::TodOutputType> requested_tod_output_type(
     bool raw_time_chunk_enabled, bool processed_time_chunk_enabled) {
-    if (raw_time_chunk_enabled && processed_time_chunk_enabled) {
-        return citlali::config::TodOutputType::both;
-    }
-    if (raw_time_chunk_enabled) {
-        return citlali::config::TodOutputType::rtc;
-    }
-    if (processed_time_chunk_enabled) {
-        return citlali::config::TodOutputType::ptc;
+    const auto output_type = citlali::config::enabled_tod_output_type(
+        raw_time_chunk_enabled, processed_time_chunk_enabled);
+    if (citlali::config::is_tod_output_enabled(output_type)) {
+        return output_type;
     }
     return std::nullopt;
 }
 
-inline void apply_tod_output_mode_flags(const std::string &mode,
+inline void apply_tod_output_mode_flags(
+    citlali::config::TodStreamOutputMode mode,
                                         bool &mini, bool &outer) {
-    mini = (mode == "mini" || mode == "mini_outer");
-    outer = (mode == "full_outer" || mode == "mini_outer");
+    mini = citlali::config::is_mini_tod_stream_output_mode(mode);
+    outer = citlali::config::is_outer_tod_stream_output_mode(mode);
 }
