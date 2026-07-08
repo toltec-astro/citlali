@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <optional>
+#include <map>
 #include <set>
 #include <sstream>
 #include <string>
@@ -14,6 +15,7 @@
 
 #include <Eigen/Core>
 
+#include <citlali/core/utils/pointing.h>
 
 namespace citlali::pipeline {
 
@@ -22,5 +24,6 @@ namespace citlali::pipeline {
 #include <citlali/core/pipeline/tod_output_selection_modes.h>
 #include <citlali/core/pipeline/tod_output_selection_config_read.h>
 #include <citlali/core/pipeline/tod_output_selection_rows.h>
+#include <citlali/core/pipeline/tod_output_selection_source.h>
 
 }  // namespace citlali::pipeline
