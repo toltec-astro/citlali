@@ -9,7 +9,8 @@ void read_source_finding_config(
     const CoaddConfig &typed_coadd_config, double arcsec_to_rad,
     PostProcessingConfig &typed_post_processing_config, KeyList &missing_keys,
     KeyList &invalid_keys) {
-    if (!typed_post_processing_config.source_finding.enabled) {
+    if (!citlali::config::source_finding_active(
+            typed_post_processing_config)) {
         return;
     }
 

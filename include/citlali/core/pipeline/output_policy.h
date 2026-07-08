@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/config/post_processing_config.h>
+
 namespace citlali::pipeline {
 
 template <class Engine>
@@ -41,12 +43,14 @@ bool empirical_weight_calibration_enabled(const Engine &engine) {
 
 template <class Engine>
 bool map_filter_enabled(const Engine &engine) {
-    return engine.typed_config.post_processing.map_filtering.enabled;
+    return citlali::config::map_filtering_active(
+        engine.typed_config.post_processing);
 }
 
 template <class Engine>
 bool source_finding_enabled(const Engine &engine) {
-    return engine.typed_config.post_processing.source_finding.enabled;
+    return citlali::config::source_finding_active(
+        engine.typed_config.post_processing);
 }
 
 template <class Engine>

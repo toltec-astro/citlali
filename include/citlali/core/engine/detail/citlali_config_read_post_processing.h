@@ -11,8 +11,8 @@ void read_post_processing_activation_config(
         config, std::tuple{"post_processing", "map_filtering", "enabled"},
         run_map_filter,
         [&typed_post_processing_config](bool enabled) {
-            typed_post_processing_config.map_filtering_enabled = enabled;
-            typed_post_processing_config.map_filtering.enabled = enabled;
+            citlali::config::set_map_filtering_enabled(
+                typed_post_processing_config, enabled);
         },
         missing_keys, invalid_keys);
 
@@ -20,8 +20,8 @@ void read_post_processing_activation_config(
         config, std::tuple{"post_processing", "source_finding", "enabled"},
         run_source_finder,
         [&typed_post_processing_config](bool enabled) {
-            typed_post_processing_config.source_finding_enabled = enabled;
-            typed_post_processing_config.source_finding.enabled = enabled;
+            citlali::config::set_source_finding_enabled(
+                typed_post_processing_config, enabled);
         },
         missing_keys, invalid_keys);
 }

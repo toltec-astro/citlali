@@ -13,8 +13,8 @@ void mirror_wiener_filter_config(
     const WienerFilter &wiener_filter, double rad_to_arcsec,
     PostProcessingConfig &typed_post_processing_config) {
     auto &typed_map_filter = typed_post_processing_config.map_filtering;
-    typed_post_processing_config.map_filtering_enabled =
-        typed_map_filter.enabled;
+    citlali::config::set_map_filtering_enabled(
+        typed_post_processing_config, typed_map_filter.enabled);
     if (auto parsed =
             citlali::config::parse_map_filter_type(wiener_filter.filter_type)) {
         typed_map_filter.type = *parsed;

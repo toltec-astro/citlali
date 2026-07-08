@@ -126,6 +126,26 @@ struct PostProcessingConfig {
     SourceFittingConfig source_fitting;
 };
 
+inline void set_map_filtering_enabled(PostProcessingConfig &config,
+                                      bool enabled) {
+    config.map_filtering_enabled = enabled;
+    config.map_filtering.enabled = enabled;
+}
+
+inline bool map_filtering_active(const PostProcessingConfig &config) {
+    return config.map_filtering.enabled;
+}
+
+inline void set_source_finding_enabled(PostProcessingConfig &config,
+                                       bool enabled) {
+    config.source_finding_enabled = enabled;
+    config.source_finding.enabled = enabled;
+}
+
+inline bool source_finding_active(const PostProcessingConfig &config) {
+    return config.source_finding.enabled;
+}
+
 inline void validate(const MapFilterEdgeGuardConfig &config,
                      ValidationReport &report) {
     check_minimum(config.hits_core_fraction, 0.0,

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/config/post_processing_config.h>
+
 namespace citlali::engine_detail {
 
 template <class ReductionConfig>
@@ -16,10 +18,10 @@ void disable_map_products_if_mapmaking_disabled(
     run_source_finder = false;
     typed_config.coadd.enabled = false;
     typed_config.noise.enabled = false;
-    typed_config.post_processing.map_filtering_enabled = false;
-    typed_config.post_processing.map_filtering.enabled = false;
-    typed_config.post_processing.source_finding_enabled = false;
-    typed_config.post_processing.source_finding.enabled = false;
+    citlali::config::set_map_filtering_enabled(
+        typed_config.post_processing, false);
+    citlali::config::set_source_finding_enabled(
+        typed_config.post_processing, false);
     typed_config.post_processing.source_fitting.active = false;
     // We don't need to do iterations if no maps are made.
     beammap_iter_max = 1;

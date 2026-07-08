@@ -45,8 +45,9 @@ bool source_fitting_config_needed(
     citlali::config::ReductionType reduction_type,
     const PostProcessingConfig &post_processing_config) {
     return source_fitting_config_needed(
-        reduction_type, post_processing_config.map_filtering.enabled,
-        post_processing_config.source_finding.enabled);
+        reduction_type,
+        citlali::config::map_filtering_active(post_processing_config),
+        citlali::config::source_finding_active(post_processing_config));
 }
 
 template <class MapFitter>
