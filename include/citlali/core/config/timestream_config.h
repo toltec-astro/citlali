@@ -532,6 +532,39 @@ inline bool is_all_processed_weight_grouping(std::string_view value) {
         value, ProcessedTimeChunkWeightGrouping::all);
 }
 
+inline bool is_processed_corr_grouping_metric(
+    ProcessedTimeChunkCorrGroupingMetric value,
+    ProcessedTimeChunkCorrGroupingMetric metric) {
+    return value == metric;
+}
+
+inline bool is_processed_corr_grouping_metric(
+    std::string_view value, ProcessedTimeChunkCorrGroupingMetric metric) {
+    return value == to_string(metric);
+}
+
+inline bool is_abs_processed_corr_grouping_metric(
+    ProcessedTimeChunkCorrGroupingMetric value) {
+    return is_processed_corr_grouping_metric(
+        value, ProcessedTimeChunkCorrGroupingMetric::abs);
+}
+
+inline bool is_abs_processed_corr_grouping_metric(std::string_view value) {
+    return is_processed_corr_grouping_metric(
+        value, ProcessedTimeChunkCorrGroupingMetric::abs);
+}
+
+inline bool is_signed_processed_corr_grouping_metric(
+    ProcessedTimeChunkCorrGroupingMetric value) {
+    return is_processed_corr_grouping_metric(
+        value, ProcessedTimeChunkCorrGroupingMetric::signed_metric);
+}
+
+inline bool is_signed_processed_corr_grouping_metric(std::string_view value) {
+    return is_processed_corr_grouping_metric(
+        value, ProcessedTimeChunkCorrGroupingMetric::signed_metric);
+}
+
 inline bool is_indices_tod_output_selection_mode(
     TodOutputSelectionMode value) {
     return value == TodOutputSelectionMode::indices;

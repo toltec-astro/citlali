@@ -20,6 +20,7 @@
 #include <Eigen/Eigenvalues>
 #include <Spectra/SymEigsSolver.h>
 
+#include <citlali/core/config/timestream_config.h>
 #include <citlali/core/utils/utils.h>
 
 namespace timestream {
@@ -237,20 +238,26 @@ public:
         return null_model.enabled || marchenko_pastur.enabled;
     }
 
-    auto active_cleaner_label() const {
+    auto active_cleaner_mode() const {
+        using CleanerMode = citlali::config::ProcessedTimeChunkCleanerMode;
         if (adaptive_selector.enabled) {
-            return std::string{"adaptive_selector"};
+            return CleanerMode::adaptive_selector;
         }
         if (standard_pca.enabled) {
-            return std::string{"standard_pca"};
+            return CleanerMode::standard_pca;
         }
         if (null_model.enabled) {
-            return std::string{"null_model"};
+            return CleanerMode::null_model;
         }
         if (marchenko_pastur.enabled) {
-            return std::string{"marchenko_pastur"};
+            return CleanerMode::marchenko_pastur;
         }
-        return std::string{"none"};
+        return CleanerMode::none;
+    }
+
+    auto active_cleaner_label() const {
+        return std::string{
+            citlali::config::to_string(active_cleaner_mode())};
     }
 
     auto adaptive_mode_selection_max_modes() const {
@@ -891,7 +898,9 @@ auto Cleaner::get_corr_groups(const Eigen::DenseBase<DerivedA> &scans, const Eig
         }
 
         detail::DisjointSet dsu(n_used);
-        const bool use_abs = (corr_grouping.metric != "signed");
+        const bool use_abs =
+            !citlali::config::is_signed_processed_corr_grouping_metric(
+                corr_grouping.metric);
         const double thr = std::clamp(corr_grouping.corr_min, 0.0, 1.0);
         for (Eigen::Index i = 0; i < n_used; ++i) {
             for (Eigen::Index j = i + 1; j < n_used; ++j) {

@@ -70,10 +70,7 @@ void mirror_processed_clean_config(CleanConfig &target, const PtcProc &ptcproc,
         return;
     }
 
-    if (auto parsed = citlali::config::parse_processed_cleaner_mode(
-            ptcproc.cleaner.active_cleaner_label())) {
-        target.active = *parsed;
-    }
+    target.active = ptcproc.cleaner.active_cleaner_mode();
     target.grouping = ptcproc.cleaner.grouping;
     target.mask_radius_arcsec = ptcproc.mask_radius_arcsec;
     target.tau = ptcproc.cleaner.tau;
@@ -161,4 +158,3 @@ void mirror_processed_clean_config(CleanConfig &target, const PtcProc &ptcproc,
     typed_adaptive.log_candidates =
         ptcproc.cleaner.adaptive_selector.log_candidates;
 }
-
