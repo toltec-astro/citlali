@@ -364,6 +364,10 @@ public:
     void log_final_network_qc_summary();
     void clear_beammap_ptc_diagnostics();
     void write_beammap_ptc_products(int output_iter);
+    void write_beammap_ptc_chunk_summaries(int output_iter);
+    void write_beammap_ptc_diag_sidecar(int output_iter);
+    void write_beammap_processed_ptc_tod(int output_iter);
+    void write_beammap_detector_ptc_tod_stage(int output_iter);
     void write_detector_specific_ptc_tod(int output_iter);
     void write_detector_table_outputs();
     void write_beammap_fit_qc_table(const std::string &apt_filename);
