@@ -10,6 +10,8 @@
 #include <utility>
 #include <vector>
 
+#include <citlali/core/config/runtime_config.h>
+
 struct ReductionLearningState {
     enum class IterationPhase {
         Inactive,
@@ -283,6 +285,13 @@ struct ReductionLearningState {
         current_reduction_type = reduction_type;
         current_phase = phase_for_iteration(iter, source_model_available);
         begin_count++;
+    }
+
+    void begin_iteration(int iter, bool source_model_available,
+                         citlali::config::ReductionType reduction_type) {
+        begin_iteration(
+            iter, source_model_available,
+            std::string{citlali::config::to_string(reduction_type)});
     }
 
     void finalize_iteration(int iter) {

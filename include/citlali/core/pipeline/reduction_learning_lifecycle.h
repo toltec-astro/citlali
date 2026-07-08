@@ -33,7 +33,8 @@ void begin_reduction_learning_iteration(Engine &engine) {
     const bool learning_source_model_available =
         fruit_loop_learning_source_model_available(engine);
     engine.reduction_learning.begin_iteration(
-        engine.fruit_iter, learning_source_model_available, engine.redu_type);
+        engine.fruit_iter, learning_source_model_available,
+        engine.typed_config.runtime.reduction_type);
 }
 
 template <class Engine>
