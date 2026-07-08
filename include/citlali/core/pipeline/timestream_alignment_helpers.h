@@ -161,4 +161,37 @@ inline void interpolate_hwpr_angle_to_common_time(
     hwpr_angle = std::move(yi);
 }
 
+template <class TimeMatrix>
+int count_packet_counter_gaps(const TimeMatrix &ts) {
+    const Eigen::Index n_pts = ts.rows();
+    if (n_pts <= 1) {
+        return 0;
+    }
+    return ((ts.block(1,3,n_pts-1,1).array() -
+             ts.block(0,3,n_pts-1,1).array()).array() > 1).count();
+}
+
+inline Eigen::VectorXd network_time_from_timestream_matrix(
+    const Eigen::MatrixXd &ts_double, double fpga_freq,
+    double interface_sync_offset) {
+    auto sec = ts_double.col(0);
+    auto nsec = ts_double.col(5);
+    auto pps = ts_double.col(1);
+    auto msec = ts_double.col(2) / fpga_freq;
+    auto pps_msec = ts_double.col(4) / fpga_freq;
+
+    double start_time_dbl = sec[0] + nsec[0] * 1e-9;
+    const int start_time = int(start_time_dbl - 0.5);
+    start_time_dbl = start_time;
+
+    Eigen::VectorXd dt = msec - pps_msec;
+    dt = (dt.array() < 0).select(
+        msec.array() - pps_msec.array() +
+            (std::pow(2.0,32) - 1) / fpga_freq,
+        msec - pps_msec);
+
+    return start_time_dbl + pps.array() + dt.array() +
+           interface_sync_offset;
+}
+
 }  // namespace citlali::pipeline

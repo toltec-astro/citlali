@@ -69,10 +69,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             ts.transposeInPlace();
 
             // find gaps
-            int gaps = 0;
-            if (n_pts > 1) {
-                gaps = ((ts.block(1,3,n_pts-1,1).array() - ts.block(0,3,n_pts-1,1).array()).array() > 1).count();
-            }
+            int gaps = citlali::pipeline::count_packet_counter_gaps(ts);
 
             // add gaps to engine map
             if (gaps>0) {
@@ -83,34 +80,11 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             double fpga_freq;
             fo.getVar("Header.Toltec.FpgaFreq").getVar(&fpga_freq);
 
-            // ClockTime (sec)
-            auto sec0 = ts.cast <double> ().col(0);
-            // ClockTimeNanoSec (nsec)
-            auto nsec0 = ts.cast <double> ().col(5);
-            // PpsCount (pps ticks)
-            auto pps = ts.cast <double> ().col(1);
-            // ClockCount (clock ticks)
-            auto msec = ts.cast <double> ().col(2)/fpga_freq;
-            // PacketCount (packet ticks)
-            auto count = ts.cast <double> ().col(3);
-            // PpsTime (clock ticks)
-            auto pps_msec = ts.cast <double> ().col(4)/fpga_freq;
-            // get start time
-            auto t0 = sec0 + nsec0*1e-9;
-
-            // shift start time (offset determined empirically)
-            int start_t = int(t0[0] - 0.5);
-            //int start_t = int(t0[0]);
-
-            // convert start time to double
-            double start_t_dbl = start_t;
-            // clock count - clock ticks
-            Eigen::VectorXd dt = msec - pps_msec;
-            // remove overflow due to int32
-            dt = (dt.array() < 0).select(msec.array() - pps_msec.array() + (pow(2.0,32)-1)/fpga_freq,msec - pps_msec);
-            // get network time and add offsets
-            nw_ts.push_back(start_t_dbl + pps.array() + dt.array() +
-                            engine().interface_sync_offset["toltec"+std::to_string(roach_index)]);
+            nw_ts.push_back(
+                citlali::pipeline::network_time_from_timestream_matrix(
+                    ts.cast<double>(), fpga_freq,
+                    engine().interface_sync_offset[
+                        "toltec"+std::to_string(roach_index)]));
 
             // push back start time
             nw_t0.push_back(nw_ts.back()[0]);
@@ -303,40 +277,19 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
             Eigen::MatrixXi ts_t = ts.transpose();
 
             // find gaps
-            int gaps = 0;
-            if (n_pts > 1) {
-                gaps = ((ts.block(1,3,n_pts-1,1).array() - ts.block(0,3,n_pts-1,1).array()).array() > 1).count();
-            }
+            int gaps = citlali::pipeline::count_packet_counter_gaps(ts);
 
             // add gaps to engine map
             if (gaps>0) {
                 engine().gaps["Toltec" + std::to_string(roach_index)] = gaps;
             }
 
-            auto sec = ts_double.col(0);        // ClockTime (sec)
-            auto nsec = ts_double.col(5);       // ClockTimeNanoSec (nsec)
-            auto pps = ts_double.col(1);        // PpsCount (pps ticks)
-            auto msec = ts_double.col(2) / fpga_freq;  // ClockCount (clock ticks) to seconds
-            //Eigen::VectorXd count = ts_double.col(3);      // PacketCount (packet ticks)
-            auto pps_msec = ts_double.col(4) / fpga_freq; // PpsTime (clock ticks) to seconds
-
-            // determine start time with empirical offset
-            double start_time_dbl = sec[0] + nsec[0] * 1e-9;
-            int start_time = int(start_time_dbl - 0.5);
-            start_time_dbl = start_time;
-
-            // calculate clock count difference (dt)
-            Eigen::VectorXd dt = msec - pps_msec;
-
-            // handle overflow due to int32, using Eigen array logic
-            dt = (dt.array() < 0).select(msec.array() - pps_msec.array() + (pow(2.0, 32) - 1) / fpga_freq, msec - pps_msec);
-
-            // build the time vector for the current network
-            Eigen::VectorXd nw_time = start_time_dbl + pps.array() + dt.array()
-                                        + engine().interface_sync_offset["toltec"+std::to_string(roach_index)];
-
             // store all time vectors
-            nw_times[i] = std::move(nw_time);
+            nw_times[i] =
+                citlali::pipeline::network_time_from_timestream_matrix(
+                    ts_double, fpga_freq,
+                    engine().interface_sync_offset[
+                        "toltec"+std::to_string(roach_index)]);
             i++;
 
             fo.close();
