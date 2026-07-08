@@ -4,6 +4,10 @@
 // Include this only after Beammap has been declared.
 
 void Beammap::process_apt() {
+    const auto &reference_config = typed_config.beammap.reference;
+    const auto configured_reference_det =
+        static_cast<Eigen::Index>(reference_config.reference_detector);
+
     // reference detector x and y
     double ref_det_x_t = 0;
     double ref_det_y_t = 0;
@@ -12,18 +16,19 @@ void Beammap::process_apt() {
     beammap_reference_det_found = -99;
 
     // if particular reference detector is requested
-    if (beammap_subtract_reference) {
-        if (beammap_reference_det >= 0 && beammap_reference_det < calib.n_dets) {
-            beammap_reference_det_found = beammap_reference_det;
+    if (reference_config.subtract_reference_detector) {
+        if (configured_reference_det >= 0 &&
+            configured_reference_det < calib.n_dets) {
+            beammap_reference_det_found = configured_reference_det;
             // set reference x_t and y_t
             ref_det_x_t = calib.apt["x_t"](beammap_reference_det_found);
             ref_det_y_t = calib.apt["y_t"](beammap_reference_det_found);
         }
         // else use detector closest to the median of selected networks
         else {
-            if (beammap_reference_det >= 0) {
+            if (configured_reference_det >= 0) {
                 logger->warn("configured beammap_reference_det={} is out of range [0, {}); using automatic reference selection",
-                             beammap_reference_det, calib.n_dets);
+                             configured_reference_det, calib.n_dets);
             }
             logger->info("finding a reference detector");
             constexpr Eigen::Index min_reference_candidates = 25;
@@ -247,7 +252,7 @@ void Beammap::process_apt() {
     calib.apt["x_t_derot"] = -rot_az_off;
     calib.apt["y_t_derot"] = -rot_alt_off;
 
-    if (beammap_derotate) {
+    if (reference_config.derotate) {
         logger->info("derotating apt");
         // if derotation requested set default positions to derotated positions
         calib.apt["x_t"] = calib.apt["x_t_derot"];

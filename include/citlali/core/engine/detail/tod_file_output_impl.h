@@ -17,6 +17,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         citlali::config::to_string(typed_config.mapmaking.method)};
     const auto &beammap_iteration_config = typed_config.beammap.iteration;
     const auto &beammap_phase_config = typed_config.beammap.phase_strategy;
+    const auto &beammap_reference_config = typed_config.beammap.reference;
 
     // loop through viles
     for (const auto & [fkey, fval]: tod_filename) {
@@ -44,8 +45,9 @@ void Engine::add_tod_header(map_buffer_t &mb) {
                 beammap_phase_config.enabled,
                 beammap_phase_config.locator_iter,
                 beammap_phase_config.measurement_start_iter,
-                beammap_derotate, beammap_subtract_reference,
-                beammap_reference_det);
+                beammap_reference_config.derotate,
+                beammap_reference_config.subtract_reference_detector,
+                beammap_reference_config.reference_detector);
         }
 
         citlali::pipeline::add_tod_identity_geometry_vars(

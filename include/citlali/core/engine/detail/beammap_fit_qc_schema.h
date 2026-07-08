@@ -348,8 +348,9 @@ YAML::Node make_metadata(const BeammapState &beammap,
     fit_qc_meta["beammap_locator_iter"] = phase_config.locator_iter;
     fit_qc_meta["beammap_measurement_start_iter"] =
         phase_config.measurement_start_iter;
+    const auto &reference_config = beammap.typed_config.beammap.reference;
     fit_qc_meta["reference_detector_subtracted"] =
-        beammap.beammap_subtract_reference;
+        reference_config.subtract_reference_detector;
     fit_qc_meta["reference_det"] = beammap.beammap_reference_det_found;
     const auto &rfi_config = beammap.typed_config.beammap.rfi_mask;
     const auto &scan_band_config =

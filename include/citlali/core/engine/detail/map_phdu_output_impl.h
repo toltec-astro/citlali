@@ -27,6 +27,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         citlali::config::to_string(typed_config.mapmaking.method)};
     const auto &beammap_iteration_config = typed_config.beammap.iteration;
     const auto &beammap_phase_config = typed_config.beammap.phase_strategy;
+    const auto &beammap_reference_config = typed_config.beammap.reference;
 
     try {
     citlali::engine_detail::add_phdu_unit_conversion_section(
@@ -41,8 +42,11 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         beammap_iteration_config.convergence_radius_arcsec,
         beammap_iteration_config.max_iterations, beammap_phase_config.enabled,
         beammap_phase_config.locator_iter,
-        beammap_phase_config.measurement_start_iter, beammap_derotate,
-        beammap_subtract_reference, calib, beammap_reference_det, date_obs);
+        beammap_phase_config.measurement_start_iter,
+        beammap_reference_config.derotate,
+        beammap_reference_config.subtract_reference_detector, calib,
+        static_cast<Eigen::Index>(beammap_reference_config.reference_detector),
+        date_obs);
 
     logger->debug("adding obs info");
 

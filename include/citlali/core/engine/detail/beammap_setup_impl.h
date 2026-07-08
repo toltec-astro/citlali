@@ -227,10 +227,12 @@ void Beammap::setup() {
     calib.apt_header_units["flag2"] = "N/A";
     calib.apt_header_keys.push_back("flag2");
 
+    const auto &beammap_reference_config = typed_config.beammap.reference;
     // is the detector rotated?
-    calib.apt_meta["is_derotated"] = beammap_derotate;
+    calib.apt_meta["is_derotated"] = beammap_reference_config.derotate;
     // was a reference detector subtracted?
-    calib.apt_meta["reference_detector_subtracted"] = beammap_subtract_reference;
+    calib.apt_meta["reference_detector_subtracted"] =
+        beammap_reference_config.subtract_reference_detector;
     // reference detector
     calib.apt_meta["reference_det"] = beammap_reference_det_found;
     const auto &rfi_config = typed_config.beammap.rfi_mask;
