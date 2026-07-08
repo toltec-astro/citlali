@@ -10,7 +10,9 @@
 Beammap::BeammapDetectorTodPreflight
 Beammap::prepare_detector_specific_ptc_tod_output() {
     BeammapDetectorTodPreflight preflight;
-    if (!beammap_detector_tod_output_enabled) {
+    const auto &detector_tod_config =
+        typed_config.beammap.detector_tod_output;
+    if (!detector_tod_config.enabled) {
         return preflight;
     }
     preflight.n_scans = telescope.scan_indices.cols();
@@ -25,8 +27,8 @@ Beammap::prepare_detector_specific_ptc_tod_output() {
         return preflight;
     }
     const auto output_counts = beammap_detector_tod_output_helpers::output_counts(
-        beammap_detector_tod_output_n_uniform,
-        beammap_detector_tod_output_n_source_dense);
+        detector_tod_config.n_uniform,
+        detector_tod_config.n_source_dense);
     preflight.n_uniform = output_counts.n_uniform;
     preflight.n_dense = output_counts.n_dense;
     preflight.n_slots = output_counts.n_slots;
@@ -211,7 +213,7 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         preflight, pointing_samples, uniform_scans);
 
     const auto output_paths = beammap_detector_tod_output_helpers::output_paths(
-        obsnum_dir_name, beammap_detector_tod_output_subdir_name,
+        obsnum_dir_name, typed_config.beammap.detector_tod_output.subdir_name,
         telescope.sim_obs, redu_type, obsnum);
     const std::string &filename = output_paths.filename;
 
