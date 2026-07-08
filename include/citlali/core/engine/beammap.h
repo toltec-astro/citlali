@@ -290,6 +290,7 @@ public:
         BeammapFitIterationStats &fit_stats);
     void log_beammap_fit_iteration_stats(
         const BeammapFitIterationStats &fit_stats);
+    bool update_beammap_convergence_state();
     bool advance_beammap_iteration_state();
     void write_or_clear_beammap_ptc_products_for_iter(int completed_iter,
                                                       bool keep_going);

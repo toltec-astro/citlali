@@ -889,6 +889,68 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
     log_beammap_fit_iteration_stats(fit_stats);
 }
 
+bool Beammap::update_beammap_convergence_state() {
+    if (!has_completed_beammap_measurement_iter(current_iter)) {
+        return false;
+    }
+
+    // only do convergence test if tolerance is above zero, otherwise run all iterations
+    if (run_mapmaking && beammap_iter_tolerance > 0) {
+        // loop through maps and check if it is converged
+        logger->info("checking convergence in fitted-source aperture radius={:.3f} arcsec",
+                     beammap_convergence_radius_arcsec);
+        const auto convergence_profile_scope =
+            citlali::pipeline::profile_stage(
+                "beammap.convergence", logger,
+                "iter=" + std::to_string(current_iter) +
+                    " radius_arcsec=" +
+                    std::to_string(beammap_convergence_radius_arcsec));
+        Eigen::VectorXd convergence_delta =
+            Eigen::VectorXd::Constant(n_maps, std::numeric_limits<double>::quiet_NaN());
+        grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+            if (!converged(i)) {
+                const double delta = calc_beammap_convergence_delta(i);
+                convergence_delta(i) = delta;
+                if (std::isfinite(delta) && delta <= beammap_iter_tolerance) {
+                    // set as converged
+                    converged(i) = true;
+                    // set convergence iteration
+                    converge_iter(i) = current_iter;
+                }
+            }
+            return 0;
+        });
+
+        Eigen::Index n_delta_finite = 0;
+        Eigen::Index n_delta_invalid = 0;
+        double max_delta = 0.0;
+        for (Eigen::Index i = 0; i < convergence_delta.size(); ++i) {
+            if (std::isfinite(convergence_delta(i))) {
+                n_delta_finite++;
+                max_delta = std::max(max_delta, convergence_delta(i));
+            }
+            else if (!converged(i)) {
+                n_delta_invalid++;
+            }
+        }
+
+        logger->info(
+            "{} maps converged on iter {} (finite_metrics={} invalid_metrics={} max_delta={})",
+            (converged.array() == true).count(), current_iter,
+            n_delta_finite, n_delta_invalid, max_delta);
+
+        // stop if all maps converged
+        if ((converged.array() == true).all()) {
+            logger->info("all maps converged");
+            return true;
+        }
+    }
+    else {
+        logger->info("bypassing convergence check");
+    }
+    return false;
+}
+
 bool Beammap::advance_beammap_iteration_state() {
     bool keep_going = true;
 
@@ -901,61 +963,8 @@ bool Beammap::advance_beammap_iteration_state() {
             logger->info("all maps converged");
             keep_going = false;
         }
-        else if (has_completed_beammap_measurement_iter(current_iter)) {
-            // only do convergence test if tolerance is above zero, otherwise run all iterations
-            if (run_mapmaking && beammap_iter_tolerance > 0) {
-                // loop through maps and check if it is converged
-                logger->info("checking convergence in fitted-source aperture radius={:.3f} arcsec",
-                             beammap_convergence_radius_arcsec);
-                const auto convergence_profile_scope =
-                    citlali::pipeline::profile_stage(
-                        "beammap.convergence", logger,
-                        "iter=" + std::to_string(current_iter) +
-                            " radius_arcsec=" +
-                            std::to_string(beammap_convergence_radius_arcsec));
-                Eigen::VectorXd convergence_delta =
-                    Eigen::VectorXd::Constant(n_maps, std::numeric_limits<double>::quiet_NaN());
-                grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-                    if (!converged(i)) {
-                        const double delta = calc_beammap_convergence_delta(i);
-                        convergence_delta(i) = delta;
-                        if (std::isfinite(delta) && delta <= beammap_iter_tolerance) {
-                            // set as converged
-                            converged(i) = true;
-                            // set convergence iteration
-                            converge_iter(i) = current_iter;
-                        }
-                    }
-                    return 0;
-                });
-
-                Eigen::Index n_delta_finite = 0;
-                Eigen::Index n_delta_invalid = 0;
-                double max_delta = 0.0;
-                for (Eigen::Index i = 0; i < convergence_delta.size(); ++i) {
-                    if (std::isfinite(convergence_delta(i))) {
-                        n_delta_finite++;
-                        max_delta = std::max(max_delta, convergence_delta(i));
-                    }
-                    else if (!converged(i)) {
-                        n_delta_invalid++;
-                    }
-                }
-
-                logger->info(
-                    "{} maps converged on iter {} (finite_metrics={} invalid_metrics={} max_delta={})",
-                    (converged.array() == true).count(), current_iter,
-                    n_delta_finite, n_delta_invalid, max_delta);
-
-                // stop if all maps converged
-                if ((converged.array() == true).all()) {
-                    logger->info("all maps converged");
-                    keep_going = false;
-                }
-            }
-            else {
-                logger->info("bypassing convergence check");
-            }
+        else if (update_beammap_convergence_state()) {
+            keep_going = false;
         }
 
         // set previous iteration fits to current iteration fits
