@@ -142,13 +142,29 @@ void Beammap::process_beammap_ptc_scan(
     diagnostics.calc_stats(ptcs[scan_index]);
 }
 
+void Beammap::run_beammap_ptc_cleaning_pass(bool locator_iter,
+                                            bool measurement_iter,
+                                            bool detector_grouping) {
+    auto ptc_line_audit_mutex = std::make_shared<std::mutex>();
+
+    const auto profile_scope =
+        citlali::pipeline::profile_stage(
+            "beammap.ptc.cleaning", logger,
+            "iter=" + std::to_string(current_iter) +
+                " phase=" + beammap_iter_phase_name(current_iter));
+    grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
+        process_beammap_ptc_scan(
+            i, locator_iter, measurement_iter, detector_grouping,
+            ptc_line_audit_mutex);
+        return 0;
+    });
+}
+
 void Beammap::populate_beammap_maps(
     citlali::config::MapGrouping mapmaking_grouping,
     citlali::config::MapMethod mapmaking_method,
     const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
     bool update_progress) {
-    logger->info("running mapmaking");
-
     tula::logging::progressbar pb(
         [&](const auto &msg) { logger->info("{}", msg); }, 100,
         "PTC progress ");
@@ -190,6 +206,44 @@ void Beammap::populate_beammap_maps(
         }
         return 0;
     });
+}
+
+void Beammap::prepare_beammap_iteration_state(bool rerun_source_aware_rtc,
+                                              bool measurement_iter,
+                                              bool first_measurement_iter,
+                                              bool detector_grouping) {
+    ptcs = ptcs0;
+    calib_scans = calib_scans0;
+
+    if (beammap_rfi_mask_enabled && detector_grouping &&
+        rfi_mask_samples_flagged.size() == calib.n_dets &&
+        rfi_mask_scans_flagged.size() == calib.n_dets) {
+        rfi_mask_samples_flagged.setZero();
+        rfi_mask_scans_flagged.setZero();
+    }
+
+    const bool skip_centered_kernel_map_feedback = rerun_source_aware_rtc;
+    ptcproc.fruit_loops_kernel_feedback_enabled = !skip_centered_kernel_map_feedback;
+    if (skip_centered_kernel_map_feedback) {
+        logger->info(
+            "beammap detector kernel map feedback disabled on iter {} while building the first source-aware kernel map",
+            current_iter);
+    }
+
+    // copy previous-iteration maps for source-aperture convergence tests
+    if (run_mapmaking && beammap_iter_tolerance > 0.0 && measurement_iter) {
+        omb_copy.signal = omb.signal;
+        omb_copy.weight = omb.weight;
+    }
+
+    if (ptcproc.run_fruit_loops) {
+        if (first_measurement_iter && !omb.noise.empty()) {
+            omb.calc_median_rms();
+        }
+        if (measurement_iter) {
+            ptcproc.configure_fruit_loops_adaptive_gate(omb, calib, map_grouping, false);
+        }
+    }
 }
 
 template <class RandomBits, class Generator>
@@ -788,60 +842,13 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
             timestream_pipeline(kidsproc, rawobs, false);
         }
 
-        // copy ptcs
-        ptcs = ptcs0;
-        // copy calibs
-        calib_scans = calib_scans0;
-        if (beammap_rfi_mask_enabled && detector_grouping &&
-            rfi_mask_samples_flagged.size() == calib.n_dets &&
-            rfi_mask_scans_flagged.size() == calib.n_dets) {
-            rfi_mask_samples_flagged.setZero();
-            rfi_mask_scans_flagged.setZero();
-        }
-        const bool skip_centered_kernel_map_feedback =
-            rerun_source_aware_rtc;
-        ptcproc.fruit_loops_kernel_feedback_enabled = !skip_centered_kernel_map_feedback;
-        if (skip_centered_kernel_map_feedback) {
-            logger->info(
-                "beammap detector kernel map feedback disabled on iter {} while building the first source-aware kernel map",
-                current_iter);
-        }
-
-        // copy previous-iteration maps for source-aperture convergence tests
-        if (run_mapmaking && beammap_iter_tolerance > 0.0 && measurement_iter) {
-            omb_copy.signal = omb.signal;
-            omb_copy.weight = omb.weight;
-        }
-
-        if (ptcproc.run_fruit_loops) {
-            // calc mean rms
-            if (first_measurement_iter) {
-                // use obs map buffer
-                if (!omb.noise.empty()) {
-                    omb.calc_median_rms();
-                }
-            }
-            if (measurement_iter) {
-                ptcproc.configure_fruit_loops_adaptive_gate(omb, calib, map_grouping, false);
-            }
-        }
-
-        auto ptc_line_audit_mutex = std::make_shared<std::mutex>();
+        prepare_beammap_iteration_state(
+            rerun_source_aware_rtc, measurement_iter, first_measurement_iter,
+            detector_grouping);
 
         // cleaning (separate from mapmaking loop due to jinc mapmaking parallelization)
-        {
-            const auto profile_scope =
-                citlali::pipeline::profile_stage(
-                    "beammap.ptc.cleaning", logger,
-                    "iter=" + std::to_string(current_iter) +
-                        " phase=" + beammap_iter_phase_name(current_iter));
-            grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), scan_in_vec, scan_out_vec, [&](auto i) {
-                process_beammap_ptc_scan(
-                    i, locator_iter, measurement_iter, detector_grouping,
-                    ptc_line_audit_mutex);
-                return 0;
-            });
-        }
+        run_beammap_ptc_cleaning_pass(
+            locator_iter, measurement_iter, detector_grouping);
 
         logger->info("starting mapmaking");
 
