@@ -10,66 +10,48 @@
 
 #include <sstream>
 
-void Beammap::process_beammap_ptc_scan(
-    int scan_index, bool locator_iter, bool measurement_iter,
-    bool detector_grouping,
-    const std::shared_ptr<std::mutex> &ptc_line_audit_mutex) {
-    bool model_subtracted_for_ptc_line_audit = false;
-    if (run_mapmaking) {
-        if (measurement_iter) {
-            if (!ptcproc.run_fruit_loops) {
-                // if not running fruit loops use source fit
-                logger->info("subtracting gaussian from tod");
-                // subtract gaussian
-                ptcproc.add_gaussian<timestream::TCProc::SourceType::NegativeGaussian>(
-                    ptcs[scan_index], params, telescope.pixel_axes, map_grouping,
-                    calib.apt, omb.pixel_size_rad, omb.n_rows, omb.n_cols);
-            }
-            else {
-                logger->info("subtracting map from tod");
-                // subtract map
-                ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(
-                    omb, ptcs[scan_index], calib, ptcs[scan_index].map_indices.data,
-                    telescope.pixel_axes, map_grouping);
-                model_subtracted_for_ptc_line_audit = true;
-            }
-        }
+bool Beammap::subtract_beammap_model_for_ptc_scan(int scan_index,
+                                                  bool measurement_iter) {
+    if (!run_mapmaking || !measurement_iter) {
+        return false;
+    }
+    if (!ptcproc.run_fruit_loops) {
+        logger->info("subtracting gaussian from tod");
+        ptcproc.add_gaussian<timestream::TCProc::SourceType::NegativeGaussian>(
+            ptcs[scan_index], params, telescope.pixel_axes, map_grouping,
+            calib.apt, omb.pixel_size_rad, omb.n_rows, omb.n_cols);
+        return false;
     }
 
-    {
-        std::lock_guard<std::mutex> lock(*ptc_line_audit_mutex);
-        apply_model_protected_ptc_line_audit(
-            ptcs[scan_index], calib_scans[scan_index],
-            model_subtracted_for_ptc_line_audit);
-    }
-
-    // clean the maps
-    logger->info("processed time chunk processing for scan {}", scan_index + 1);
-    ptcproc.run(
-        ptcs[scan_index], ptcs[scan_index], calib_scans[scan_index],
+    logger->info("subtracting map from tod");
+    ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(
+        omb, ptcs[scan_index], calib, ptcs[scan_index].map_indices.data,
         telescope.pixel_axes, map_grouping);
+    return true;
+}
 
-    if (run_mapmaking) {
-        if (measurement_iter) {
-            // if not running fruit loops use source fit
-            if (!ptcproc.run_fruit_loops) {
-                logger->info("adding gaussian to tod");
-                // add gaussian back
-                ptcproc.add_gaussian<timestream::TCProc::SourceType::Gaussian>(
-                    ptcs[scan_index], params, telescope.pixel_axes, map_grouping,
-                    calib.apt, omb.pixel_size_rad, omb.n_rows, omb.n_cols);
-            }
-            else {
-                logger->info("adding map to tod");
-                // add map back
-                ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(
-                    omb, ptcs[scan_index], calib,
-                    ptcs[scan_index].map_indices.data, telescope.pixel_axes,
-                    map_grouping);
-            }
-        }
+void Beammap::restore_beammap_model_for_ptc_scan(int scan_index,
+                                                 bool measurement_iter) {
+    if (!run_mapmaking || !measurement_iter) {
+        return;
+    }
+    if (!ptcproc.run_fruit_loops) {
+        logger->info("adding gaussian to tod");
+        ptcproc.add_gaussian<timestream::TCProc::SourceType::Gaussian>(
+            ptcs[scan_index], params, telescope.pixel_axes, map_grouping,
+            calib.apt, omb.pixel_size_rad, omb.n_rows, omb.n_cols);
+        return;
     }
 
+    logger->info("adding map to tod");
+    ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(
+        omb, ptcs[scan_index], calib, ptcs[scan_index].map_indices.data,
+        telescope.pixel_axes, map_grouping);
+}
+
+void Beammap::remove_bad_beammap_dets_for_scan(int scan_index,
+                                               bool locator_iter,
+                                               bool detector_grouping) {
     // For detector-grouped beammaps, keep the locator pass permissive so
     // bright-source scans are less likely to be rejected before we have
     // any source-location estimate to feed back into later iterations.
@@ -77,13 +59,16 @@ void Beammap::process_beammap_ptc_scan(
         logger->info(
             "skipping remove_bad_dets on beammap locator iter {} for detector scan {}",
             current_iter, ptcs[scan_index].index.data + 1);
-    }
-    else {
-        // remove outliers after clean
-        calib_scans[scan_index] = ptcproc.remove_bad_dets(
-            ptcs[scan_index], calib_scans[scan_index], map_grouping);
+        return;
     }
 
+    calib_scans[scan_index] = ptcproc.remove_bad_dets(
+        ptcs[scan_index], calib_scans[scan_index], map_grouping);
+}
+
+void Beammap::apply_beammap_ptc_scan_weights(int scan_index,
+                                             bool measurement_iter,
+                                             bool detector_grouping) {
     if (detector_grouping) {
         auto rfi_summary = apply_rfi_sample_mask(ptcs[scan_index]);
         if (beammap_rfi_mask_enabled) {
@@ -104,6 +89,7 @@ void Beammap::process_beammap_ptc_scan(
                     ptcs[scan_index].index.data + 1);
             }
         }
+
         const bool use_ptc_weights =
             citlali::pipeline::use_beammap_detector_ptc_weights(
                 beammap_detector_weighting_mode, measurement_iter);
@@ -120,18 +106,38 @@ void Beammap::process_beammap_ptc_scan(
             ptcs[scan_index].weights.data.resize(ptcs[scan_index].scans.data.cols());
             ptcs[scan_index].weights.data.setOnes();
         }
-    }
-    else {
-        // calculate weights
-        logger->info("calculating weights for scan {}", ptcs[scan_index].index.data + 1);
-        ptcproc.calc_weights(ptcs[scan_index], calib_scans[scan_index].apt, telescope);
-
-        // reset weights to median
-        calib_scans[scan_index] = ptcproc.reset_weights(
-            ptcs[scan_index], calib_scans[scan_index], map_grouping);
+        return;
     }
 
-    // calc stats
+    logger->info("calculating weights for scan {}", ptcs[scan_index].index.data + 1);
+    ptcproc.calc_weights(ptcs[scan_index], calib_scans[scan_index].apt, telescope);
+    calib_scans[scan_index] = ptcproc.reset_weights(
+        ptcs[scan_index], calib_scans[scan_index], map_grouping);
+}
+
+void Beammap::process_beammap_ptc_scan(
+    int scan_index, bool locator_iter, bool measurement_iter,
+    bool detector_grouping,
+    const std::shared_ptr<std::mutex> &ptc_line_audit_mutex) {
+    const bool model_subtracted_for_ptc_line_audit =
+        subtract_beammap_model_for_ptc_scan(scan_index, measurement_iter);
+
+    {
+        std::lock_guard<std::mutex> lock(*ptc_line_audit_mutex);
+        apply_model_protected_ptc_line_audit(
+            ptcs[scan_index], calib_scans[scan_index],
+            model_subtracted_for_ptc_line_audit);
+    }
+
+    logger->info("processed time chunk processing for scan {}", scan_index + 1);
+    ptcproc.run(
+        ptcs[scan_index], ptcs[scan_index], calib_scans[scan_index],
+        telescope.pixel_axes, map_grouping);
+
+    restore_beammap_model_for_ptc_scan(scan_index, measurement_iter);
+    remove_bad_beammap_dets_for_scan(scan_index, locator_iter, detector_grouping);
+    apply_beammap_ptc_scan_weights(scan_index, measurement_iter, detector_grouping);
+
     logger->debug("calculating stats");
     diagnostics.calc_stats(ptcs[scan_index]);
 }
