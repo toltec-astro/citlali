@@ -6,6 +6,7 @@
 #include <Eigen/Sparse>
 #include <spdlog/spdlog.h>
 
+#include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/utils/toltec_io.h>
@@ -128,7 +129,7 @@ void MapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::ve
     }
 
     // setup wcs for radec frame
-    if (pixel_axes == "radec") {
+    if (citlali::config::is_radec_map_pixel_axes(pixel_axes)) {
         wcs.ctype.push_back("RA---TAN");
         wcs.ctype.push_back("DEC--TAN");
 
@@ -140,7 +141,7 @@ void MapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::ve
     }
 
     // setup wcs altaz frame
-    else if (pixel_axes == "altaz") {
+    else if (citlali::config::is_altaz_map_pixel_axes(pixel_axes)) {
         wcs.ctype.push_back("AZOFFSET");
         wcs.ctype.push_back("ELOFFSET");
 
@@ -161,7 +162,7 @@ void MapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::ve
     }
 
     // setup wcs altaz frame
-    else if (pixel_axes == "galactic") {
+    else if (citlali::config::is_galactic_map_pixel_axes(pixel_axes)) {
         wcs.ctype.push_back("GLON-TAN");
         wcs.ctype.push_back("GLAT-TAN");
 

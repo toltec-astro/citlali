@@ -4,6 +4,7 @@
 #include <tula/logging.h>
 #include <tula/algorithm/ei_stats.h>
 
+#include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/engine/telescope.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
@@ -185,19 +186,19 @@ void Telescope::calc_tan_pointing() {
     }
 
     // set tangential projection to radec
-    if (pixel_axes=="radec") {
+    if (citlali::config::is_radec_map_pixel_axes(pixel_axes)) {
         logger->info("using radec frame");
         tel_data["lat_phys"] = tel_data["dec_phys"];
         tel_data["lon_phys"] = tel_data["ra_phys"];
     }
     // set tangential projection to altaz
-    else if (pixel_axes=="altaz") {
+    else if (citlali::config::is_altaz_map_pixel_axes(pixel_axes)) {
         logger->info("using altaz frame");
         tel_data["lat_phys"] = tel_data["alt_phys"];
         tel_data["lon_phys"] = tel_data["az_phys"];
     }
     // set tangential projection to galactic
-    else if (pixel_axes=="galactic") {
+    else if (citlali::config::is_galactic_map_pixel_axes(pixel_axes)) {
         logger->info("using galactic frame");
         tel_data["lat_phys"] = tel_data["b_phys"];
         tel_data["lon_phys"] = tel_data["l_phys"];

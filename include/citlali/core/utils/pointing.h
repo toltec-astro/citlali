@@ -39,7 +39,7 @@ auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
                                   + sin(elev)*az_off + pointing_offsets["alt"].array();
 
     // radec map
-    if (pixel_axes=="radec") {
+    if (citlali::config::is_radec_map_pixel_axes(pixel_axes)) {
         // get parallactic angle
         auto& par_ang = tel_data["ActParAng"];
 
@@ -53,14 +53,14 @@ auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
     }
 
     // altaz map
-    else if (pixel_axes=="altaz") {
+    else if (citlali::config::is_altaz_map_pixel_axes(pixel_axes)) {
         // alt
         lat = (rot_alt_off.array()*ASEC_TO_RAD) + tel_data["alt_phys"].array();
         // az
         lon = (rot_az_off.array()*ASEC_TO_RAD) + tel_data["az_phys"].array();
     }
 
-    else if (pixel_axes=="galactic") {
+    else if (citlali::config::is_galactic_map_pixel_axes(pixel_axes)) {
         // get parallactic angle
         auto ang = tel_data["ActParAng"] + tel_data["ActGalAng"];
 
