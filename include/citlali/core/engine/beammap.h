@@ -205,6 +205,10 @@ public:
                                             bool first_measurement_iter,
                                             bool detector_grouping);
     void fit_beammap_maps(bool detector_grouping, bool measurement_iter);
+    void reset_beammap_fit_diagnostics(Eigen::Index map_index);
+    void clear_beammap_fit_result(Eigen::Index map_index);
+    bool has_beammap_prior_diagnostics() const;
+    void reset_beammap_prior_diagnostics(Eigen::Index map_index);
     bool advance_beammap_iteration_state();
     void write_or_clear_beammap_ptc_products_for_iter(int completed_iter,
                                                       bool keep_going);

@@ -384,6 +384,38 @@ bool Beammap::maybe_run_beammap_source_aware_rtc(KidsProc &kidsproc,
     return true;
 }
 
+void Beammap::reset_beammap_fit_diagnostics(Eigen::Index map_index) {
+    fit_diag_init_params.row(map_index).setZero();
+    fit_diag_lower_limits.row(map_index).setZero();
+    fit_diag_upper_limits.row(map_index).setZero();
+    fit_diag_hit_lower.row(map_index).setZero();
+    fit_diag_hit_upper.row(map_index).setZero();
+    fit_diag_bound_code(map_index) = 0;
+    fit_diag_bound_nhit(map_index) = 0;
+}
+
+void Beammap::clear_beammap_fit_result(Eigen::Index map_index) {
+    params.row(map_index).setZero();
+    perrors.row(map_index).setZero();
+    reset_beammap_fit_diagnostics(map_index);
+    good_fits(map_index) = false;
+}
+
+bool Beammap::has_beammap_prior_diagnostics() const {
+    return prior_diag_values.rows() == n_maps &&
+           prior_diag_values.cols() == n_prior_diag_cols;
+}
+
+void Beammap::reset_beammap_prior_diagnostics(Eigen::Index map_index) {
+    prior_diag_values.row(map_index).setConstant(
+        std::numeric_limits<double>::quiet_NaN());
+    prior_diag_values(map_index, prior_init_mode_col) = -1.0;
+    prior_diag_values(map_index, prior_used_col) = 0.0;
+    prior_diag_values(map_index, prior_fallback_blind_col) = 0.0;
+    prior_diag_values(map_index, prior_no_candidate_reason_col) = 0.0;
+    prior_diag_values(map_index, prior_slot_index_col) = -1.0;
+}
+
 void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
     Eigen::VectorXi iter_bound_low = Eigen::VectorXi::Zero(map_fitter.n_params);
     Eigen::VectorXi iter_bound_high = Eigen::VectorXi::Zero(map_fitter.n_params);
@@ -444,28 +476,14 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
 
         // only fit if not converged
         if (!converged(i)) {
-            if (prior_diag_values.rows() == n_maps && prior_diag_values.cols() == n_prior_diag_cols) {
-                prior_diag_values.row(i).setConstant(std::numeric_limits<double>::quiet_NaN());
-                prior_diag_values(i, prior_init_mode_col) = -1.0;
-                prior_diag_values(i, prior_used_col) = 0.0;
-                prior_diag_values(i, prior_fallback_blind_col) = 0.0;
-                prior_diag_values(i, prior_no_candidate_reason_col) = 0.0;
-                prior_diag_values(i, prior_slot_index_col) = -1.0;
+            if (has_beammap_prior_diagnostics()) {
+                reset_beammap_prior_diagnostics(i);
             }
 
             const Eigen::Index n_weight_pos = (omb.weight[i].array() > 0.0).count();
             if (n_weight_pos < map_fitter.n_params) {
                 logger->warn("beammap fit map={} skipped: insufficient weighted pixels ({})", i, n_weight_pos);
-                params.row(i).setZero();
-                perrors.row(i).setZero();
-                fit_diag_init_params.row(i).setZero();
-                fit_diag_lower_limits.row(i).setZero();
-                fit_diag_upper_limits.row(i).setZero();
-                fit_diag_hit_lower.row(i).setZero();
-                fit_diag_hit_upper.row(i).setZero();
-                fit_diag_bound_code(i) = 0;
-                fit_diag_bound_nhit(i) = 0;
-                good_fits(i) = false;
+                clear_beammap_fit_result(i);
                 continue;
             }
 
@@ -586,31 +604,22 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
                     iter_init_prior++;
                 }
                 else if (!beammap_priors_fallback_blind) {
-                    if (prior_diag_values.rows() == n_maps && prior_diag_values.cols() == n_prior_diag_cols) {
+                    if (has_beammap_prior_diagnostics()) {
                         prior_diag_values(i, prior_init_mode_col) = -1.0;
                     }
                     logger->warn("beammap fit map={} skipped: no prior-guided init candidate and fallback_blind=false", i);
-                    params.row(i).setZero();
-                    perrors.row(i).setZero();
-                    fit_diag_init_params.row(i).setZero();
-                    fit_diag_lower_limits.row(i).setZero();
-                    fit_diag_upper_limits.row(i).setZero();
-                    fit_diag_hit_lower.row(i).setZero();
-                    fit_diag_hit_upper.row(i).setZero();
-                    fit_diag_bound_code(i) = 0;
-                    fit_diag_bound_nhit(i) = 0;
-                    good_fits(i) = false;
+                    clear_beammap_fit_result(i);
                     iter_init_skip++;
                     continue;
                 }
-                else if (prior_diag_values.rows() == n_maps && prior_diag_values.cols() == n_prior_diag_cols) {
+                else if (has_beammap_prior_diagnostics()) {
                     prior_diag_values(i, prior_fallback_blind_col) = 1.0;
                 }
             }
             if (!init_from_prev && !init_from_prior) {
                 iter_init_blind++;
             }
-            if (prior_diag_values.rows() == n_maps && prior_diag_values.cols() == n_prior_diag_cols) {
+            if (has_beammap_prior_diagnostics()) {
                 if (init_from_prev) {
                     prior_diag_values(i, prior_init_mode_col) = 1.0;
                 }
@@ -730,13 +739,7 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
                 }
             }
             else {
-                fit_diag_init_params.row(i).setZero();
-                fit_diag_lower_limits.row(i).setZero();
-                fit_diag_upper_limits.row(i).setZero();
-                fit_diag_hit_lower.row(i).setZero();
-                fit_diag_hit_upper.row(i).setZero();
-                fit_diag_bound_code(i) = 0;
-                fit_diag_bound_nhit(i) = 0;
+                reset_beammap_fit_diagnostics(i);
             }
         }
         // otherwise keep value from previous iteration
