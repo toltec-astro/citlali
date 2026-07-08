@@ -34,25 +34,19 @@ void add_phdu_unit_conversion_section(
 }
 
 template <class FitsEntry, class MapBuffer, class FluxMap, class Calib,
-          class DateObs, class ReferenceDet, class Logger>
+          class DateObs, class Logger>
 void add_phdu_beammap_observation_section(
     FitsEntry &fits_entry, const MapBuffer &mb, const std::string &array_name,
     const Logger &logger, const std::string &reduction_type,
-    FluxMap &beammap_fluxes_mjy_beam,
-    FluxMap &beammap_fluxes_mjy_sr, double beammap_iter_tolerance,
-    double beammap_convergence_radius_arcsec, int beammap_iter_max,
-    bool beammap_phase_split_enabled, int beammap_locator_iter,
-    int beammap_measurement_start_iter, bool beammap_derotate,
-    bool beammap_subtract_reference, Calib &calib,
-    ReferenceDet beammap_reference_det, const DateObs &date_obs) {
+    FluxMap &beammap_fluxes_mjy_beam, FluxMap &beammap_fluxes_mjy_sr,
+    const citlali::config::BeammapIterationConfig &iteration_config,
+    const citlali::config::BeammapPhaseStrategyConfig &phase_config,
+    const citlali::config::BeammapReferenceConfig &reference_config,
+    Calib &calib, const DateObs &date_obs) {
     citlali::pipeline::add_phdu_beammap_keys_if_needed(
         fits_entry, array_name, logger, reduction_type,
         beammap_fluxes_mjy_beam, beammap_fluxes_mjy_sr,
-        beammap_iter_tolerance, beammap_convergence_radius_arcsec,
-        beammap_iter_max, beammap_phase_split_enabled,
-        beammap_locator_iter, beammap_measurement_start_iter,
-        beammap_derotate, beammap_subtract_reference, calib,
-        beammap_reference_det);
+        iteration_config, phase_config, reference_config, calib);
 
     logger->debug("adding obsnums");
     citlali::pipeline::add_phdu_obsnum_keys(fits_entry, mb->obsnums);

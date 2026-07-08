@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 
+#include <citlali/core/config/beammap_config.h>
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/pipeline/phdu_telescope_values.h>
 
@@ -60,29 +61,31 @@ template <class FitsEntry, class Logger>
 void add_phdu_beammap_tuning(FitsEntry &fits_entry,
                              const std::string &array_name,
                              const Logger &logger,
-                             double iter_tolerance,
-                             double convergence_radius_arcsec,
-                             int iter_max,
-                             bool phase_split_enabled,
-                             int locator_iter,
-                             int measurement_start_iter,
-                             bool is_derotated) {
+                             const citlali::config::BeammapIterationConfig
+                                 &iteration_config,
+                             const citlali::config::BeammapPhaseStrategyConfig
+                                 &phase_config,
+                             const citlali::config::BeammapReferenceConfig
+                                 &reference_config) {
     auto &hdu = fits_entry.pfits->pHDU();
     add_phdu_double_key(fits_entry, array_name, logger,
-                        "BEAMMAP.ITER_TOLERANCE", iter_tolerance,
+                        "BEAMMAP.ITER_TOLERANCE", iteration_config.tolerance,
                         "Beammap iteration tolerance");
     add_phdu_double_key(fits_entry, array_name, logger,
                         "BEAMMAP.CONVERGENCE_RADIUS_ARCSEC",
-                        convergence_radius_arcsec,
+                        iteration_config.convergence_radius_arcsec,
                         "Beammap convergence aperture radius (arcsec)");
-    hdu.addKey("BEAMMAP.ITER_MAX", iter_max, "Beammap max iterations");
-    hdu.addKey("BEAMMAP.PHASE_SPLIT_ENABLED", phase_split_enabled,
+    hdu.addKey("BEAMMAP.ITER_MAX", iteration_config.max_iterations,
+               "Beammap max iterations");
+    hdu.addKey("BEAMMAP.PHASE_SPLIT_ENABLED", phase_config.enabled,
                "Beammap locator/measurement phases enabled");
-    hdu.addKey("BEAMMAP.LOCATOR_ITER", locator_iter,
+    hdu.addKey("BEAMMAP.LOCATOR_ITER", phase_config.locator_iter,
                "Beammap locator iteration");
-    hdu.addKey("BEAMMAP.MEASUREMENT_START_ITER", measurement_start_iter,
+    hdu.addKey("BEAMMAP.MEASUREMENT_START_ITER",
+               phase_config.measurement_start_iter,
                "Beammap first measurement iteration");
-    hdu.addKey("BEAMMAP.IS_DEROTATED", is_derotated, "Beammap derotated");
+    hdu.addKey("BEAMMAP.IS_DEROTATED", reference_config.derotate,
+               "Beammap derotated");
 }
 
 template <class FitsEntry, class ReferenceValues, class Logger>
@@ -117,10 +120,10 @@ void add_phdu_beammap_keys_if_needed(
     FitsEntry &fits_entry, const std::string &array_name,
     const Logger &logger, const std::string &redu_type,
     FluxMap &flux_mjy_beam, FluxMap &flux_mjy_sr,
-    double iter_tolerance, double convergence_radius_arcsec, int iter_max,
-    bool phase_split_enabled, int locator_iter, int measurement_start_iter,
-    bool is_derotated, bool subtract_reference, Calib &calib,
-    Eigen::Index fallback_reference_det) {
+    const citlali::config::BeammapIterationConfig &iteration_config,
+    const citlali::config::BeammapPhaseStrategyConfig &phase_config,
+    const citlali::config::BeammapReferenceConfig &reference_config,
+    Calib &calib) {
     if (!citlali::config::is_beammap_reduction_type(redu_type)) {
         return;
     }
@@ -130,17 +133,19 @@ void add_phdu_beammap_keys_if_needed(
         flux_mjy_sr[array_name]);
 
     add_phdu_beammap_tuning(
-        fits_entry, array_name, logger, iter_tolerance,
-        convergence_radius_arcsec, iter_max, phase_split_enabled,
-        locator_iter, measurement_start_iter, is_derotated);
+        fits_entry, array_name, logger, iteration_config, phase_config,
+        reference_config);
 
     BeammapReferenceHeaderValues reference_values;
-    if (subtract_reference) {
+    if (reference_config.subtract_reference_detector) {
         reference_values =
-            beammap_reference_header_values(calib, fallback_reference_det);
+            beammap_reference_header_values(
+                calib, static_cast<Eigen::Index>(
+                    reference_config.reference_detector));
     }
     add_phdu_beammap_reference(
-        fits_entry, array_name, logger, subtract_reference, reference_values);
+        fits_entry, array_name, logger,
+        reference_config.subtract_reference_detector, reference_values);
 }
 
 }  // namespace citlali::pipeline

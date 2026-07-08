@@ -17,19 +17,22 @@ void add_beammap_source_flux_vars(netCDF::NcFile &fo, const Arrays &arrays,
 }
 
 inline void add_beammap_tuning_vars(
-    netCDF::NcFile &fo, double iter_tolerance,
-    double convergence_radius_arcsec, int iter_max, bool phase_split_enabled,
-    int locator_iter, int measurement_start_iter, bool is_derotated) {
-    add_netcdf_var(fo, "BEAMMAP.ITER_TOLERANCE", iter_tolerance);
+    netCDF::NcFile &fo,
+    const citlali::config::BeammapIterationConfig &iteration_config,
+    const citlali::config::BeammapPhaseStrategyConfig &phase_config,
+    const citlali::config::BeammapReferenceConfig &reference_config) {
+    add_netcdf_var(fo, "BEAMMAP.ITER_TOLERANCE",
+                   iteration_config.tolerance);
     add_netcdf_var(fo, "BEAMMAP.CONVERGENCE_RADIUS_ARCSEC",
-                   convergence_radius_arcsec);
-    add_netcdf_var(fo, "BEAMMAP.ITER_MAX", iter_max);
+                   iteration_config.convergence_radius_arcsec);
+    add_netcdf_var(fo, "BEAMMAP.ITER_MAX",
+                   iteration_config.max_iterations);
     add_netcdf_var(fo, "BEAMMAP.PHASE_SPLIT_ENABLED",
-                   phase_split_enabled);
-    add_netcdf_var(fo, "BEAMMAP.LOCATOR_ITER", locator_iter);
+                   phase_config.enabled);
+    add_netcdf_var(fo, "BEAMMAP.LOCATOR_ITER", phase_config.locator_iter);
     add_netcdf_var(fo, "BEAMMAP.MEASUREMENT_START_ITER",
-                   measurement_start_iter);
-    add_netcdf_var(fo, "BEAMMAP.IS_DEROTATED", is_derotated);
+                   phase_config.measurement_start_iter);
+    add_netcdf_var(fo, "BEAMMAP.IS_DEROTATED", reference_config.derotate);
 }
 
 inline void add_beammap_reference_vars(netCDF::NcFile &fo, int det_index,
@@ -39,31 +42,29 @@ inline void add_beammap_reference_vars(netCDF::NcFile &fo, int det_index,
     add_netcdf_var(fo, "BEAMMAP.REF_Y_T", ref_y_t);
 }
 
-template <class Calib, class ArrayNameMap, class FluxMap, class ReferenceDet>
+template <class Calib, class ArrayNameMap, class FluxMap>
 void add_beammap_tod_header_vars(
     netCDF::NcFile &fo, Calib &calib, ArrayNameMap &array_name_map,
-    FluxMap &flux_mjy_beam, FluxMap &flux_mjy_sr, double iter_tolerance,
-    double convergence_radius_arcsec, int iter_max,
-    bool phase_split_enabled, int locator_iter, int measurement_start_iter,
-    bool is_derotated, bool subtract_reference,
-    const ReferenceDet &reference_det) {
+    FluxMap &flux_mjy_beam, FluxMap &flux_mjy_sr,
+    const citlali::config::BeammapIterationConfig &iteration_config,
+    const citlali::config::BeammapPhaseStrategyConfig &phase_config,
+    const citlali::config::BeammapReferenceConfig &reference_config) {
     add_beammap_source_flux_vars(
         fo, calib.arrays, array_name_map, flux_mjy_beam, flux_mjy_sr);
     add_beammap_tuning_vars(
-        fo, iter_tolerance, convergence_radius_arcsec, iter_max,
-        phase_split_enabled, locator_iter, measurement_start_iter,
-        is_derotated);
+        fo, iteration_config, phase_config, reference_config);
 
     int ref_det_index = -99;
     double ref_x_t = -99.0;
     double ref_y_t = -99.0;
-    if (subtract_reference) {
+    if (reference_config.subtract_reference_detector) {
         const auto reference_values =
-            beammap_reference_header_values(calib, reference_det);
+            beammap_reference_header_values(
+                calib, static_cast<Eigen::Index>(
+                    reference_config.reference_detector));
         ref_det_index = reference_values.det_index;
         ref_x_t = reference_values.x_t;
         ref_y_t = reference_values.y_t;
     }
     add_beammap_reference_vars(fo, ref_det_index, ref_x_t, ref_y_t);
 }
-

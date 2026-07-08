@@ -39,15 +39,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             citlali::pipeline::add_beammap_tod_header_vars(
                 fo, calib, toltec_io.array_name_map,
                 beammap_fluxes_mJy_beam, beammap_fluxes_MJy_Sr,
-                beammap_iteration_config.tolerance,
-                beammap_iteration_config.convergence_radius_arcsec,
-                beammap_iteration_config.max_iterations,
-                beammap_phase_config.enabled,
-                beammap_phase_config.locator_iter,
-                beammap_phase_config.measurement_start_iter,
-                beammap_reference_config.derotate,
-                beammap_reference_config.subtract_reference_detector,
-                beammap_reference_config.reference_detector);
+                beammap_iteration_config, beammap_phase_config,
+                beammap_reference_config);
         }
 
         citlali::pipeline::add_tod_identity_geometry_vars(
