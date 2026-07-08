@@ -65,8 +65,10 @@ void apply_map_filter_runtime_policy(
     write_filtered_maps_partial =
         typed_config.runtime.reduction_type ==
         citlali::config::ReductionType::science;
+    const auto &map_filter_config = typed_config.post_processing.map_filtering;
 
-    if (wiener_filter.template_type == "kernel") {
+    if (map_filter_config.template_type ==
+        citlali::config::MapFilterTemplateType::kernel) {
         if (!rtcproc.run_kernel) {
             logger->error("wiener filter kernel template requires kernel");
             std::exit(EXIT_FAILURE);
@@ -75,8 +77,9 @@ void apply_map_filter_runtime_policy(
     }
 
     if (!typed_config.noise.enabled &&
-        (!wiener_filter.run_lowpass &&
-         wiener_filter.filter_type == "wiener_filter")) {
+        (!map_filter_config.lowpass_only &&
+         map_filter_config.type ==
+             citlali::config::MapFilterType::wiener_filter)) {
         logger->error("wiener filter requires noise maps");
         std::exit(EXIT_FAILURE);
     }
