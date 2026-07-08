@@ -3,7 +3,9 @@
 #include <string>
 #include <utility>
 
+#include <citlali/core/config/runtime_config.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/utils/toltec_io.h>
 
 namespace citlali::pipeline {
 
@@ -56,6 +58,18 @@ void append_observation_map_fits_file(FitsFiles &fits_files,
                                       const std::string &filename,
                                       MakeFits &&make_fits) {
     fits_files.push_back(make_fits(filename));
+}
+
+template <auto DataType, auto ProductType, auto FilterType, class ToltecIo>
+std::string observation_output_filename(
+    ToltecIo &toltec_io, const std::string &dir_name,
+    citlali::config::ReductionType reduction_type,
+    const std::string &array_name, const std::string &obsnum, bool sim_obs) {
+    const std::string reduction_type_name{
+        citlali::config::to_string(reduction_type)};
+    return toltec_io.template create_filename<DataType, ProductType,
+                                              FilterType>(
+        dir_name, reduction_type_name, array_name, obsnum, sim_obs);
 }
 
 }  // namespace citlali::pipeline

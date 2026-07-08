@@ -6,8 +6,6 @@
 
 template <mapmaking::MapType map_type>
 void Pointing::output() {
-    const std::string reduction_type_name{
-        citlali::config::to_string(typed_config.runtime.reduction_type)};
     // pointer to map buffer
     mapmaking::MapBuffer* mb = nullptr;
     // pointer to data file fits vector
@@ -29,10 +27,14 @@ void Pointing::output() {
         n_io = (map_type == mapmaking::RawObs) ? &noise_fits_io_vec : &filtered_noise_fits_io_vec;
 
         // filename for ppt table
-        auto ppt_filename = toltec_io.create_filename<engine_utils::toltecIO::ppt, engine_utils::toltecIO::map,
-                                                      (map_type == mapmaking::RawObs ? engine_utils::toltecIO::raw : engine_utils::toltecIO::filtered)>
-                            (dir_name, reduction_type_name, "", obsnum,
-                             telescope.sim_obs);
+        auto ppt_filename =
+            citlali::pipeline::observation_output_filename<
+                engine_utils::toltecIO::ppt, engine_utils::toltecIO::map,
+                (map_type == mapmaking::RawObs
+                     ? engine_utils::toltecIO::raw
+                     : engine_utils::toltecIO::filtered)>(
+                toltec_io, dir_name, typed_config.runtime.reduction_type, "",
+                obsnum, telescope.sim_obs);
 
         // add array and S/N to ppt
         for (Eigen::Index i = 0; i < n_maps; ++i) {
