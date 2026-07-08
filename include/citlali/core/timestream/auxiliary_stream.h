@@ -46,6 +46,31 @@ struct AuxiliaryMeasuredStream {
 
 using AuxiliaryMeasuredStreams = std::vector<AuxiliaryMeasuredStream>;
 
+inline AuxiliaryMeasuredStream make_auxiliary_measured_stream(
+    const citlali::config::AuxiliaryMeasuredChannelConfig &config,
+    TimestreamChannel channel = TimestreamChannel::quadrature_r) {
+    AuxiliaryMeasuredStream stream;
+    stream.channel = channel;
+    stream.name = config.name;
+    stream.source_type = config.source_type;
+    stream.native_unit = config.native_unit;
+    stream.calibration_policy = config.calibration_policy;
+    stream.apply_primary_linear_transfer =
+        config.apply_primary_linear_transfer;
+    stream.use_for_science_map = config.use_for_science_map;
+    stream.diagnostics_enabled = config.diagnostics_enabled;
+    return stream;
+}
+
+inline AuxiliaryMeasuredStreams make_enabled_auxiliary_measured_streams(
+    const citlali::config::TimestreamAuxiliaryChannelsConfig &config) {
+    AuxiliaryMeasuredStreams streams;
+    if (config.quadrature_r.enabled) {
+        streams.push_back(make_auxiliary_measured_stream(config.quadrature_r));
+    }
+    return streams;
+}
+
 inline AuxiliaryMeasuredStream *find_auxiliary_measured_stream(
     AuxiliaryMeasuredStreams &streams, std::string_view name) {
     auto it = std::find_if(streams.begin(), streams.end(),

@@ -235,6 +235,10 @@ struct TimeStream : internal::TCDataBase<Derived>,
     // detector pointing
     data_t<std::map<std::string, Eigen::MatrixXd>> pointing;
 
+    [[nodiscard]] bool has_auxiliary_measured_streams() const {
+        return !auxiliary_measured_streams.empty();
+    }
+
     [[nodiscard]] AuxiliaryMeasuredStream *auxiliary_measured_stream(
         std::string_view name) {
         return find_auxiliary_measured_stream(auxiliary_measured_streams, name);
