@@ -52,6 +52,14 @@ public:
         double rms_arcsec = std::numeric_limits<double>::quiet_NaN();
     };
 
+    struct BeammapPriorFrameCenterSamples {
+        std::map<int, std::vector<double>> x_by_array;
+        std::map<int, std::vector<double>> y_by_array;
+        std::set<int> arrays_missing;
+        Eigen::Index n_previous = 0;
+        Eigen::Index n_blind = 0;
+    };
+
     enum class BeammapFitInitMode { Blind, Previous, Prior };
 
     struct BeammapFitAttemptFlags {
@@ -427,6 +435,10 @@ public:
                           double &best_d2, int &best_slot, double *slot_x_arcsec = nullptr,
                           double *slot_y_arcsec = nullptr, double *slot_sx_arcsec = nullptr,
                           double *slot_sy_arcsec = nullptr) const;
+    void reset_beammap_prior_frame_estimates();
+    BeammapPriorFrameCenterSamples collect_beammap_prior_frame_center_samples();
+    void apply_beammap_prior_frame_center_samples(
+        const BeammapPriorFrameCenterSamples &center_samples);
     void update_prior_frame_estimates();
     bool choose_prior_guided_init(Eigen::Index map_index, double &init_row, double &init_col);
     void configure_detector_source_centers_from_previous_fit();

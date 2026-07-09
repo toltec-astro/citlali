@@ -6,19 +6,20 @@
 #include <citlali/core/engine/detail/beammap_prior_qc_stats.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
-void Beammap::update_prior_frame_estimates() {
+void Beammap::reset_beammap_prior_frame_estimates() {
     beammap_prior_array_center_x_arcsec.clear();
     beammap_prior_array_center_y_arcsec.clear();
     beammap_prior_array_alignment.clear();
+}
 
-    std::map<int, std::vector<double>> x_by_array;
-    std::map<int, std::vector<double>> y_by_array;
-    std::set<int> arrays_missing;
+Beammap::BeammapPriorFrameCenterSamples
+Beammap::collect_beammap_prior_frame_center_samples() {
+    BeammapPriorFrameCenterSamples center_samples;
     for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
-        arrays_missing.insert(static_cast<int>(map_indices.maps_to_arrays(i)));
+        center_samples.arrays_missing.insert(
+            static_cast<int>(map_indices.maps_to_arrays(i)));
     }
 
-    Eigen::Index n_prev = 0;
     if (is_beammap_measurement_iter(current_iter) && p0.rows() == map_indices.n_maps && p0.cols() > 2) {
         for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
             if (i < good_fits.size() && !good_fits(i)) {
@@ -36,18 +37,17 @@ void Beammap::update_prior_frame_estimates() {
                 RAD_TO_ASEC * omb.pixel_size_rad * (p0(i, 1) - (omb.n_cols - 1) / 2.0);
             const double y_arcsec =
                 RAD_TO_ASEC * omb.pixel_size_rad * (p0(i, 2) - (omb.n_rows - 1) / 2.0);
-            x_by_array[array].push_back(x_arcsec);
-            y_by_array[array].push_back(y_arcsec);
-            arrays_missing.erase(array);
-            n_prev++;
+            center_samples.x_by_array[array].push_back(x_arcsec);
+            center_samples.y_by_array[array].push_back(y_arcsec);
+            center_samples.arrays_missing.erase(array);
+            center_samples.n_previous++;
         }
     }
 
-    Eigen::Index n_blind = 0;
-    if (!arrays_missing.empty()) {
+    if (!center_samples.arrays_missing.empty()) {
         for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
             const int array = static_cast<int>(map_indices.maps_to_arrays(i));
-            if (!arrays_missing.count(array)) {
+            if (!center_samples.arrays_missing.count(array)) {
                 continue;
             }
 
@@ -62,25 +62,37 @@ void Beammap::update_prior_frame_estimates() {
                 RAD_TO_ASEC * omb.pixel_size_rad * (static_cast<double>(peak_col) - (omb.n_cols - 1) / 2.0);
             const double y_arcsec =
                 RAD_TO_ASEC * omb.pixel_size_rad * (static_cast<double>(peak_row) - (omb.n_rows - 1) / 2.0);
-            x_by_array[array].push_back(x_arcsec);
-            y_by_array[array].push_back(y_arcsec);
-            n_blind++;
+            center_samples.x_by_array[array].push_back(x_arcsec);
+            center_samples.y_by_array[array].push_back(y_arcsec);
+            center_samples.n_blind++;
         }
     }
 
-    for (const auto &[array, xs] : x_by_array) {
+    return center_samples;
+}
+
+void Beammap::apply_beammap_prior_frame_center_samples(
+    const Beammap::BeammapPriorFrameCenterSamples &center_samples) {
+    for (const auto &[array, xs] : center_samples.x_by_array) {
         if (xs.empty()) {
             continue;
         }
         Eigen::Map<const Eigen::VectorXd> x_vec(xs.data(), static_cast<Eigen::Index>(xs.size()));
-        auto y_it = y_by_array.find(array);
-        if (y_it == y_by_array.end() || y_it->second.size() != xs.size()) {
+        auto y_it = center_samples.y_by_array.find(array);
+        if (y_it == center_samples.y_by_array.end() || y_it->second.size() != xs.size()) {
             continue;
         }
         Eigen::Map<const Eigen::VectorXd> y_vec(y_it->second.data(), static_cast<Eigen::Index>(y_it->second.size()));
         beammap_prior_array_center_x_arcsec[array] = tula::alg::median(x_vec);
         beammap_prior_array_center_y_arcsec[array] = tula::alg::median(y_vec);
     }
+}
+
+void Beammap::update_prior_frame_estimates() {
+    reset_beammap_prior_frame_estimates();
+
+    const auto center_samples = collect_beammap_prior_frame_center_samples();
+    apply_beammap_prior_frame_center_samples(center_samples);
 
     const auto &priors_config =
         citlali::pipeline::beammap_config(*this).priors;
@@ -345,6 +357,7 @@ void Beammap::update_prior_frame_estimates() {
 
     logger->info(
         "beammap priors frame estimate (iter {}): previous={} blind={} arrays={} alignment_matches={} aligned_arrays={}",
-        current_iter, n_prev, n_blind, beammap_prior_array_center_x_arcsec.size(),
+        current_iter, center_samples.n_previous, center_samples.n_blind,
+        beammap_prior_array_center_x_arcsec.size(),
         n_alignment_matches, beammap_prior_array_alignment.size());
 }
