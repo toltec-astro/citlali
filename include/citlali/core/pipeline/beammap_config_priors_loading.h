@@ -2,27 +2,7 @@
 
 // Included by beammap_config_loading.h inside namespace citlali::pipeline.
 
-struct BeammapPriorsConfigValues {
-    bool enabled = false;
-    std::string filepath = "null";
-    int candidate_top_n = 64;
-    double min_snr = 0.0;
-    double max_d2 = 25.0;
-    double max_d2_iter0 = 25.0;
-    double max_d2_after_iter0 = 25.0;
-    double score_lambda = 2.0;
-    double score_lambda_iter0 = 2.0;
-    double score_lambda_after_iter0 = 2.0;
-    bool fallback_blind = true;
-    bool align_after_iter0 = true;
-    std::string alignment_scope = "array";
-    std::string alignment_common_support = "all";
-    double alignment_common_support_quantile = 0.02;
-    int alignment_min_matches = 30;
-    double alignment_max_d2 = 25.0;
-    bool alignment_fit_rotation = true;
-    double alignment_max_rotation_deg = 8.0;
-};
+using BeammapPriorsConfigValues = citlali::config::BeammapPriorsConfig;
 
 inline void set_beammap_priors_iteration_defaults(
     BeammapPriorsConfigValues &priors) {
