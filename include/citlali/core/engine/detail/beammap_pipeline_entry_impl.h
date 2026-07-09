@@ -3,6 +3,8 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/engine/detail/beammap_apt_keys.h>
+
 template <class KidsProc, class RawObs>
 void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     // only get kids params if not simulation
@@ -14,8 +16,8 @@ void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         // loop through kids header
         for (const auto &h: kids_model_header) {
             std::string name = h;
-            if (name=="flag") {
-                name = "kids_flag";
+            if (beammap_apt_keys::is_flag(name)) {
+                name = std::string{beammap_apt_keys::kids_flag()};
             }
             calib.apt[name].resize(calib.n_dets);
             Eigen::Index j = 0;

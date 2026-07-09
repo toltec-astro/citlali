@@ -6,9 +6,26 @@
 
 #include <cstdlib>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace citlali::pipeline {
+
+inline constexpr std::string_view jinc_matrix_backend_mode() {
+    return "matrix";
+}
+
+inline constexpr std::string_view jinc_splines_backend_mode() {
+    return "splines";
+}
+
+inline bool is_jinc_matrix_backend_mode(std::string_view mode) {
+    return mode == jinc_matrix_backend_mode();
+}
+
+inline bool is_jinc_splines_backend_mode(std::string_view mode) {
+    return mode == jinc_splines_backend_mode();
+}
 
 inline std::vector<std::string> allowed_map_regimes() {
     std::vector<std::string> values;
@@ -172,10 +189,10 @@ template <class JincMapmaker, class PtcProc>
 void finalize_jinc_filter_config(JincMapmaker &jinc_mm, PtcProc &ptcproc,
                                  double pixel_size_rad) {
     mirror_jinc_mapmaker_config_to_fruit_loops(jinc_mm, ptcproc);
-    if (jinc_mm.mode == "matrix") {
+    if (is_jinc_matrix_backend_mode(jinc_mm.mode)) {
         jinc_mm.allocate_jinc_matrix(pixel_size_rad);
     }
-    else if (jinc_mm.mode == "splines") {
+    else if (is_jinc_splines_backend_mode(jinc_mm.mode)) {
         jinc_mm.calculate_jinc_splines();
     }
 }

@@ -13,6 +13,7 @@
 
 #include <citlali/core/config/config_value.h>
 #include <citlali/core/config/runtime_config.h>
+#include <citlali/core/config/timestream_config.h>
 #include <citlali/core/pipeline/reduction_config_netcdf.h>
 
 

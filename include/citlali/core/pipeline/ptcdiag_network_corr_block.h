@@ -18,7 +18,8 @@ inline PtcDiagVarList ptcdiag_corr_network_int_vars() {
 template <class Ptcproc>
 bool ptcdiag_corr_nw_requested(const Ptcproc &ptcproc) {
     for (const auto &grouping : ptcproc.cleaner.grouping) {
-        if (grouping == "corr_nw") {
+        if (citlali::config::is_corr_network_processed_cleaner_grouping(
+                grouping)) {
             return true;
         }
     }
@@ -73,4 +74,3 @@ void add_ptcdiag_corr_network_block(netCDF::NcFile &fo, const Calib &calib,
         "network IDs corresponding to n_nws_corr axis",
         ptcdiag_corr_network_int_vars(), {}, fill_int, fill_double);
 }
-

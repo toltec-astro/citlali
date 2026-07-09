@@ -178,6 +178,10 @@ inline constexpr std::array<EnumName<ProcessedTimeChunkWeightGrouping>, 3>
         {ProcessedTimeChunkWeightGrouping::all, "all"},
     }};
 
+inline constexpr std::string_view corr_network_processed_cleaner_grouping() {
+    return "corr_nw";
+}
+
 inline constexpr std::array<EnumName<ProcessedTimeChunkCleanerMode>, 5>
     processed_cleaner_mode_names{{
         {ProcessedTimeChunkCleanerMode::none, "none"},
@@ -633,6 +637,11 @@ inline bool is_all_processed_weight_grouping(
 inline bool is_all_processed_weight_grouping(std::string_view value) {
     return is_processed_weight_grouping(
         value, ProcessedTimeChunkWeightGrouping::all);
+}
+
+inline bool is_corr_network_processed_cleaner_grouping(
+    std::string_view value) {
+    return value == corr_network_processed_cleaner_grouping();
 }
 
 inline bool is_processed_corr_grouping_metric(
