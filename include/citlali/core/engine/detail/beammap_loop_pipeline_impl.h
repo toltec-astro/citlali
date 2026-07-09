@@ -79,7 +79,7 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         if (scan_band_mask_rejected.size() == calib.n_dets) {
             calib.apt["scan_band_mask_rejected"] = scan_band_mask_rejected.cast<double>();
         }
-        if (beammap_rfi_mask_enabled &&
+        if (typed_config.beammap.rfi_mask.enabled &&
             rfi_mask_samples_flagged.size() == calib.n_dets &&
             rfi_mask_scans_flagged.size() == calib.n_dets) {
             const Eigen::Index n_det_masked = (rfi_mask_scans_flagged.array() > 0).count();

@@ -27,75 +27,11 @@ inline int default_beammap_tod_output_iter() {
     return -1;
 }
 
-template <class BeammapControls>
-void sync_beammap_core_controls(BeammapControls &controls,
-                                const BeammapCoreConfigValues &values) {
-    controls.beammap_iter_max = values.iteration.max_iterations;
-    controls.beammap_iter_tolerance = values.iteration.tolerance;
-    controls.beammap_convergence_radius_arcsec =
-        values.iteration.convergence_radius_arcsec;
-    controls.beammap_phase_split_enabled = values.phase_strategy.enabled;
-    controls.beammap_locator_iter = values.phase_strategy.locator_iter;
-    controls.beammap_measurement_start_iter =
-        values.phase_strategy.measurement_start_iter;
-    controls.beammap_subtract_reference =
-        values.reference.subtract_reference_detector;
-    controls.beammap_reference_det =
-        static_cast<std::decay_t<decltype(controls.beammap_reference_det)>>(
-            values.reference.reference_detector);
-    controls.beammap_derotate = values.reference.derotate;
-    controls.beammap_rfi_mask_enabled = values.rfi_mask.enabled;
-    controls.beammap_rfi_mask_block_size_samples =
-        values.rfi_mask.block_size_samples;
-    controls.beammap_rfi_mask_min_good_samples =
-        values.rfi_mask.min_good_samples;
-    controls.beammap_rfi_mask_dilate_blocks =
-        values.rfi_mask.dilate_blocks;
-    controls.beammap_rfi_mask_sigma_threshold =
-        values.rfi_mask.sigma_threshold;
-    controls.beammap_rfi_mask_sigma_floor = values.rfi_mask.sigma_floor;
-    controls.beammap_rfi_mask_max_flagged_fraction =
-        values.rfi_mask.max_flagged_fraction;
-}
-
-template <class BeammapControls, class MapFitter>
-void sync_beammap_map_controls(
-    BeammapControls &controls, const BeammapFittingConfigValues &fitting_values,
-    const citlali::config::BeammapScanBandMaskConfig &scan_band_mask,
-    const citlali::config::BeammapSplitFitsByFlagConfig &split_fits_by_flag,
-    MapFitter &map_fitter) {
-    controls.beammap_detector_weighting_mode =
-        std::string(citlali::config::to_string(
-            fitting_values.detector_weighting_mode));
-    controls.beammap_fit_radius_fwhm =
-        fitting_values.fitting.fit_radius_fwhm;
+template <class MapFitter>
+void sync_beammap_map_fitter(
+    const BeammapFittingConfigValues &fitting_values, MapFitter &map_fitter) {
     map_fitter.beammap_fit_radius_fwhm =
         fitting_values.fitting.fit_radius_fwhm;
-    controls.beammap_scan_band_mask_enabled = scan_band_mask.enabled;
-    controls.beammap_scan_band_mask_edge_rows = scan_band_mask.edge_rows;
-    controls.beammap_scan_band_mask_min_row_pixels =
-        scan_band_mask.min_row_pixels;
-    controls.beammap_scan_band_mask_min_contiguous_rows =
-        scan_band_mask.min_contiguous_rows;
-    controls.beammap_scan_band_mask_row_median_sigma_threshold =
-        scan_band_mask.row_median_sigma_threshold;
-    controls.beammap_scan_band_mask_row_sigma_ratio_threshold =
-        scan_band_mask.row_sigma_ratio_threshold;
-    controls.beammap_scan_band_mask_max_flagged_fraction =
-        scan_band_mask.max_flagged_fraction;
-    controls.beammap_split_fits_by_flag = split_fits_by_flag.enabled;
-    controls.beammap_split_flag_values = split_fits_by_flag.flag_values;
-}
-
-template <class BeammapControls>
-void sync_beammap_detector_tod_output_controls(
-    BeammapControls &controls,
-    const citlali::config::BeammapDetectorTodOutputConfig &values) {
-    controls.beammap_detector_tod_output_enabled = values.enabled;
-    controls.beammap_detector_tod_output_subdir_name = values.subdir_name;
-    controls.beammap_detector_tod_output_n_uniform = values.n_uniform;
-    controls.beammap_detector_tod_output_n_source_dense =
-        values.n_source_dense;
 }
 
 template <class BeammapControls, class ArrayNameMap>
@@ -104,7 +40,6 @@ void sync_beammap_flagging_controls(
     const citlali::config::BeammapFlaggingConfig &flagging,
     const BeammapSensitivityConfigValues &sensitivity,
     const ArrayNameMap &array_name_map) {
-    controls.beammap_flag_max_prior_d2 = flagging.max_prior_d2;
     assign_beammap_array_flag_limits(
         array_name_map, flagging, controls.lower_fwhm_arcsec,
         controls.upper_fwhm_arcsec, controls.lower_sig2noise,

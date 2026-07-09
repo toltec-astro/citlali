@@ -12,8 +12,6 @@ void Engine::get_beammap_config(CT &config) {
     const auto beammap_core_config =
         citlali::pipeline::read_beammap_core_config(
             config, missing_keys, invalid_keys, logger);
-    citlali::pipeline::sync_beammap_core_controls(
-        *this, beammap_core_config);
 
     const auto beammap_fitting_config =
         citlali::pipeline::read_beammap_fitting_config(
@@ -26,9 +24,8 @@ void Engine::get_beammap_config(CT &config) {
     const auto beammap_split_fits_config =
         citlali::pipeline::read_beammap_split_fits_config(
             config, missing_keys, invalid_keys, logger);
-    citlali::pipeline::sync_beammap_map_controls(
-        *this, beammap_fitting_config, beammap_scan_band_mask_config,
-        beammap_split_fits_config, map_fitter);
+    citlali::pipeline::sync_beammap_map_fitter(
+        beammap_fitting_config, map_fitter);
 
     const auto beammap_priors_config =
         citlali::pipeline::read_beammap_priors_config(
@@ -54,8 +51,6 @@ void Engine::get_beammap_config(CT &config) {
     const auto beammap_detector_tod_output_config =
         citlali::pipeline::read_beammap_detector_tod_output_config(
             config, missing_keys, invalid_keys);
-    citlali::pipeline::sync_beammap_detector_tod_output_controls(
-        *this, beammap_detector_tod_output_config);
 
     citlali::pipeline::apply_beammap_typed_config(
         beammap_config, beammap_core_config, beammap_fitting_config,

@@ -10,8 +10,7 @@ namespace citlali::engine_detail {
 template <class ReductionConfig>
 void disable_map_products_if_mapmaking_disabled(
     bool &run_coadd, bool &run_noise, bool &run_map_filter,
-    bool &run_source_finder, ReductionConfig &typed_config,
-    int &beammap_iter_max) {
+    bool &run_source_finder, ReductionConfig &typed_config) {
     if (citlali::config::mapmaking_active(typed_config.mapmaking)) {
         return;
     }
@@ -28,7 +27,6 @@ void disable_map_products_if_mapmaking_disabled(
     citlali::config::set_source_fitting_active(
         typed_config.post_processing, false);
     // We don't need to do iterations if no maps are made.
-    beammap_iter_max = 1;
     typed_config.beammap.iteration.max_iterations = 1;
 }
 

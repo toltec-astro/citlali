@@ -71,7 +71,7 @@ void Engine::get_citlali_config(CT &config) {
     // disable map related keys if map-making is disabled
     citlali::engine_detail::disable_map_products_if_mapmaking_disabled(
         run_coadd, run_noise, run_map_filter, run_source_finder,
-        typed_config, beammap_iter_max);
+        typed_config);
 
     citlali::engine_detail::validate_typed_config_mirrors(typed_config, logger);
 }
