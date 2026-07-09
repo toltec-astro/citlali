@@ -10,7 +10,7 @@
 template<typename CT>
 void Engine::get_citlali_config(CT &config) {
     citlali::engine_detail::read_interface_sync_offsets(
-        config, interface_sync_offset, logger);
+        config, interface_sync.offsets, logger);
 
     auto &runtime_config = typed_config.runtime;
     auto &timestream_config = typed_config.timestream;

@@ -11,6 +11,7 @@
 
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/engine/learning.h>
+#include <citlali/core/pipeline/interface_sync_state.h>
 #include <citlali/core/pipeline/map_fits_output_state.h>
 #include <citlali/core/pipeline/map_index_state.h>
 #include <citlali/core/pipeline/output_path_state.h>
@@ -38,8 +39,8 @@ struct EngineRuntimeState {
     // vectors to hold missing/invalid keys
     key_vec_t missing_keys, invalid_keys;
 
-    // manual offsets for nws and hwp
-    std::map<std::string, double> interface_sync_offset;
+    // manual interface timing offsets for networks and HWPR
+    citlali::pipeline::InterfaceSyncState interface_sync;
 
     // typed config mirror for staged config migration
     citlali::config::ReductionConfig typed_config;

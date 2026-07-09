@@ -68,7 +68,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             nw_ts.push_back(
                 citlali::pipeline::network_time_from_timestream_matrix(
                     ts.cast<double>(), fpga_freq,
-                    engine().interface_sync_offset[
+                    engine().interface_sync.offsets[
                         "toltec"+std::to_string(roach_index)]));
 
             fo.close();
@@ -219,7 +219,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
             nw_times[i] =
                 citlali::pipeline::network_time_from_timestream_matrix(
                     ts_double, fpga_freq,
-                    engine().interface_sync_offset[
+                    engine().interface_sync.offsets[
                         "toltec"+std::to_string(roach_index)]);
 
             fo.close();
