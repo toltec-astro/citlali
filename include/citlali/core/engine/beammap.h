@@ -647,6 +647,26 @@ public:
         Eigen::Index detector_index,
         AptFlags flag,
         std::atomic<int> &n_flagged_dets);
+    bool beammap_fit_quality_values_valid(
+        Eigen::Index detector_index,
+        double map_std_dev);
+    void update_beammap_fit_sig2noise(Eigen::Index detector_index);
+    bool beammap_az_fwhm_outlier(
+        Eigen::Index detector_index,
+        const citlali::pipeline::BeammapArrayFlaggingLimits &flag_limits,
+        const std::string &array_name);
+    bool beammap_el_fwhm_outlier(
+        Eigen::Index detector_index,
+        const citlali::pipeline::BeammapArrayFlaggingLimits &flag_limits,
+        const std::string &array_name);
+    bool beammap_map_sig2noise_outlier(
+        double map_sig2noise,
+        const citlali::pipeline::BeammapArrayFlaggingLimits &flag_limits,
+        const std::string &array_name);
+    void flag_beammap_fit_quality_detector(
+        Eigen::Index detector_index,
+        const citlali::pipeline::BeammapArrayFlaggingLimits &flag_limits,
+        std::atomic<int> &n_flagged_dets);
     void flag_beammap_fit_quality_outliers(
         const citlali::pipeline::BeammapArrayFlaggingLimits &flag_limits,
         const std::string &runtime_parallel_policy,
