@@ -23,7 +23,9 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         [&](const auto &msg) { logger->info("{}", msg); }, 100, "citlali progress ");
 
     // grppi generator function. gets time chunk data from files sequentially and passes them to grppi::farm
-    grppi::pipeline(tula::grppi_utils::dyn_ex(parallel_policy),
+    grppi::pipeline(
+        tula::grppi_utils::dyn_ex(
+            citlali::pipeline::runtime_parallel_policy_name(*this)),
         [&]() -> std::optional<input_t> {
             // variable to hold current scan
             static int scan = 0;

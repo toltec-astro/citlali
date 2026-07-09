@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 
+#include <citlali/core/pipeline/runtime_policy.h>
+
 void Beammap::apply_final_network_position_flags() {
     if (typed_config.mapmaking.grouping !=
         citlali::config::MapGrouping::detector) {
@@ -109,7 +111,9 @@ void Beammap::apply_final_network_position_flags() {
     }
 
     std::atomic<int> n_flagged{0};
-    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+    const auto runtime_parallel_policy =
+        citlali::pipeline::runtime_parallel_policy_name(*this);
+    grppi::map(tula::grppi_utils::dyn_ex(runtime_parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         if (calib.apt["flag"](i) != 0) {
             return 0;
         }

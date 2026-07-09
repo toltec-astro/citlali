@@ -3,6 +3,8 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/pipeline/runtime_policy.h>
+
 void Beammap::set_apt_flags() {
     // setup bitwise flags
     flag2.resize(calib.n_dets);
@@ -23,10 +25,12 @@ void Beammap::set_apt_flags() {
             toltec_io.array_name_map, flagging_config);
     const double lower_sens_factor = flagging_config.sens_factors[0];
     const double upper_sens_factor = flagging_config.sens_factors[1];
+    const auto runtime_parallel_policy =
+        citlali::pipeline::runtime_parallel_policy_name(*this);
 
     logger->info("flagging detectors");
     // first flag based on fit values and signal-to-noise
-    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+    grppi::map(tula::grppi_utils::dyn_ex(runtime_parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         // get array of current detector
         auto array_index = calib.apt["array"](i);
         std::string array_name = toltec_io.array_name_map[array_index];
@@ -122,7 +126,7 @@ void Beammap::set_apt_flags() {
 
     // flag too low/high sensitivies based on the median unflagged sensitivity of each nw
     logger->debug("flagging sensitivities");
-    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+    grppi::map(tula::grppi_utils::dyn_ex(runtime_parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         // get nw of current detector
         auto nw_index = calib.apt["nw"](i);
 
@@ -185,7 +189,7 @@ void Beammap::set_apt_flags() {
 
     // remove detectors above distance limits
     logger->debug("flagging detector positions");
-    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+    grppi::map(tula::grppi_utils::dyn_ex(runtime_parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         // get array of current detector
         auto array_index = calib.apt["array"](i);
         std::string array_name = toltec_io.array_name_map[array_index];
@@ -228,7 +232,7 @@ void Beammap::set_apt_flags() {
         std::atomic<int> n_prior_dist_hits{0};
 
         logger->debug("flagging detector prior distances");
-        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+        grppi::map(tula::grppi_utils::dyn_ex(runtime_parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
             const int array_index = static_cast<int>(std::lround(calib.apt["array"](i)));
             const int nw_index = static_cast<int>(std::lround(calib.apt["nw"](i)));
             std::string array_name = toltec_io.array_name_map[array_index];
@@ -292,7 +296,7 @@ void Beammap::set_apt_flags() {
 
     // calculate fcf
     logger->debug("calculating flux conversion factors");
-    grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+    grppi::map(tula::grppi_utils::dyn_ex(runtime_parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
         // get array of current detector
         auto array_index = calib.apt["array"](i);
         std::string array_name = toltec_io.array_name_map[array_index];

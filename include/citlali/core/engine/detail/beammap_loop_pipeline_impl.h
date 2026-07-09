@@ -24,15 +24,14 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     // empty initial ptcdata vector to save memory
     ptcs0.clear();
 
-    // set to input parallel policy
-    parallel_policy = omb.parallel_policy;
+    const auto map_parallel_policy = omb.parallel_policy;
 
     if (detector_grouping) {
         logger->info("calculating sensitivity");
         const auto &sens_psd_limits_hz =
             typed_config.beammap.flagging.sens_psd_limits_hz;
         // parallelize on detectors
-        grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+        grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
             Eigen::MatrixXd det_sens, noise_flux;
             // calc sensitivity within psd freq range
             calc_sensitivity(ptcs, det_sens, noise_flux, telescope.d_fsmp, i, {sens_psd_limits_hz[0], sens_psd_limits_hz[1]});
@@ -140,7 +139,7 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 Eigen::MatrixXd ptc_lat(ptcs[i].scans.data.rows(), ptcs[i].scans.data.cols());
                 Eigen::MatrixXd ptc_lon(ptcs[i].scans.data.rows(), ptcs[i].scans.data.cols());
                 // loop through detectors
-                grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto j) {
+                grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), det_in_vec, det_out_vec, [&](auto j) {
                     // det indices
                     auto det_index = j;
                     double az_off = calib.apt["x_t"](det_index);

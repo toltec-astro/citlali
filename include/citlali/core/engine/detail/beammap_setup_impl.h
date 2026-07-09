@@ -5,7 +5,7 @@
 
 void Beammap::setup() {
     // assign parallel policies
-    map_parallel_policy = parallel_policy;
+    map_parallel_policy = citlali::pipeline::runtime_parallel_policy_name(*this);
 
     // run obsnum setup
     obsnum_setup();

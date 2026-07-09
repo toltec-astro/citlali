@@ -27,7 +27,8 @@ void Engine::find_sources(map_buffer_t &mb) {
         [&](Eigen::Index map_index, Eigen::Index n_map_sources,
             double init_fwhm, Eigen::Index source_row_start) {
             citlali::pipeline::fit_source_candidates(
-                parallel_policy, n_map_sources, [&](auto j) {
+                citlali::pipeline::runtime_parallel_policy_name(*this),
+                n_map_sources, [&](auto j) {
                 const auto init_position =
                     citlali::pipeline::source_initial_position(
                         mb, map_index, j);

@@ -15,6 +15,7 @@ void Engine::get_map_filter_config(CT &config) {
     citlali::engine_detail::mirror_wiener_filter_config(
         wiener_filter, RAD_TO_ASEC, post_processing_config);
     citlali::engine_detail::apply_map_filter_runtime_policy(
-        typed_config, rtcproc, map_fitter, parallel_policy, wiener_filter,
-        logger);
+        typed_config, rtcproc, map_fitter,
+        citlali::pipeline::runtime_parallel_policy_name(*this),
+        wiener_filter, logger);
 }

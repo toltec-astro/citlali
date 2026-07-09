@@ -27,6 +27,9 @@ citlali::config::RuntimeConfig Engine::get_runtime_config(CT &config) {
         runtime_config.n_threads, missing_keys, invalid_keys);
 
     // overall parallel policy
+    std::string parallel_policy{
+        std::string(citlali::config::to_string(
+            runtime_config.parallel_policy))};
     citlali::engine_detail::read_parsed_mirrored_config_value(
         config, std::tuple{"runtime","parallel_policy"}, parallel_policy,
         runtime_config.parallel_policy, citlali::config::parse_parallel_policy,

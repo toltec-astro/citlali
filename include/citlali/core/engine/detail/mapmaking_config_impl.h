@@ -70,7 +70,8 @@ void Engine::get_mapmaking_config(CT &config) {
         rtcproc.run_calibrate, typed_config.timestream.type, omb, cmb);
 
     citlali::pipeline::sync_mapmaking_parallel_policy(
-        parallel_policy, omb, cmb, jinc_mm);
+        citlali::pipeline::runtime_parallel_policy_name(*this),
+        omb, cmb, jinc_mm);
 
     citlali::engine_detail::read_method_specific_mapmaker_config(
         config, mapmaking_config.method, jinc_mm, ml_mm,

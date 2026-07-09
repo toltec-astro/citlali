@@ -3,6 +3,7 @@
 // Implementation detail included by todproc.h.
 
 #include <citlali/core/pipeline/map_dimension_policy.h>
+#include <citlali/core/pipeline/runtime_policy.h>
 
 // calculate map dimensions
 template <class EngineType>
@@ -52,7 +53,11 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
             if (engine().typed_config.mapmaking.grouping !=
                 citlali::config::MapGrouping::detector) {
                 // loop through detectors
-                grppi::map(tula::grppi_utils::dyn_ex(engine().parallel_policy), det_in_vec, det_out_vec, [&](auto j) {
+                grppi::map(
+                    tula::grppi_utils::dyn_ex(
+                        citlali::pipeline::runtime_parallel_policy_name(
+                            engine())),
+                    det_in_vec, det_out_vec, [&](auto j) {
 
                     // get pointing
                     auto [lat, lon] = engine_utils::calc_det_pointing(

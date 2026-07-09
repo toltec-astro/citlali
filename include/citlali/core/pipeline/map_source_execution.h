@@ -10,7 +10,7 @@ std::vector<int> source_index_vector(SourceCount n_sources) {
 }
 
 template <class ParallelPolicy, class SourceCount, class FitSource>
-void fit_source_candidates(ParallelPolicy &parallel_policy,
+void fit_source_candidates(const ParallelPolicy &parallel_policy,
                            SourceCount n_map_sources,
                            const FitSource &fit_source) {
     const auto source_in_vec = source_index_vector(n_map_sources);
@@ -40,4 +40,3 @@ void find_map_sources_if_needed(Engine &engine, MapBuffer &map_buffer,
             engine, map_buffer, logger, log_message);
     }
 }
-

@@ -47,9 +47,6 @@ struct EngineRuntimeState {
     // vectors to hold missing/invalid keys
     key_vec_t missing_keys, invalid_keys;
 
-    // parallel execution policy
-    std::string parallel_policy;
-
     // number of scans completed
     int n_scans_done;
 
