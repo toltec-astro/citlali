@@ -48,51 +48,11 @@ void Engine::get_beammap_config(CT &config) {
         config, missing_keys, invalid_keys, beammap_split_fits_by_flag,
         beammap_split_flag_values, logger);
 
-    citlali::pipeline::initialize_beammap_priors_defaults(
-        beammap_priors_enabled, beammap_priors_filepath,
-        beammap_priors_candidate_top_n, beammap_priors_min_snr,
-        beammap_priors_max_d2, beammap_priors_max_d2_iter0,
-        beammap_priors_max_d2_after_iter0, beammap_priors_score_lambda,
-        beammap_priors_score_lambda_iter0,
-        beammap_priors_score_lambda_after_iter0,
-        beammap_priors_fallback_blind, beammap_priors_align_after_iter0,
-        beammap_priors_alignment_scope,
-        beammap_priors_alignment_common_support,
-        beammap_priors_alignment_common_support_quantile,
-        beammap_priors_alignment_min_matches,
-        beammap_priors_alignment_max_d2,
-        beammap_priors_alignment_fit_rotation,
-        beammap_priors_alignment_max_rotation_deg);
-
-    citlali::pipeline::read_beammap_priors_core_config(
-        config, missing_keys, invalid_keys, beammap_priors_enabled,
-        beammap_priors_filepath, beammap_priors_candidate_top_n,
-        beammap_priors_min_snr, beammap_priors_max_d2,
-        beammap_priors_score_lambda);
-    citlali::pipeline::set_beammap_priors_iteration_defaults(
-        beammap_priors_max_d2, beammap_priors_max_d2_iter0,
-        beammap_priors_max_d2_after_iter0, beammap_priors_score_lambda,
-        beammap_priors_score_lambda_iter0,
-        beammap_priors_score_lambda_after_iter0);
-    citlali::pipeline::read_beammap_priors_iteration_config(
-        config, missing_keys, invalid_keys, beammap_priors_max_d2_iter0,
-        beammap_priors_max_d2_after_iter0,
-        beammap_priors_score_lambda_iter0,
-        beammap_priors_score_lambda_after_iter0);
-    citlali::pipeline::read_beammap_priors_behavior_config(
-        config, missing_keys, invalid_keys, beammap_priors_fallback_blind,
-        beammap_priors_align_after_iter0);
-    citlali::pipeline::read_beammap_priors_alignment_config(
-        config, missing_keys, invalid_keys,
-        beammap_priors_alignment_scope,
-        beammap_priors_alignment_common_support,
-        beammap_priors_alignment_common_support_quantile,
-        beammap_priors_alignment_min_matches,
-        beammap_priors_alignment_max_d2,
-        beammap_priors_alignment_fit_rotation,
-        beammap_priors_alignment_max_rotation_deg);
-    citlali::pipeline::disable_missing_beammap_priors(
-        beammap_priors_enabled, beammap_priors_filepath, logger);
+    const auto beammap_priors_config =
+        citlali::pipeline::read_beammap_priors_config(
+            config, missing_keys, invalid_keys, logger);
+    citlali::pipeline::sync_beammap_priors_controls(
+        *this, beammap_priors_config);
 
     const auto flagging_vectors =
         citlali::pipeline::read_beammap_flagging_vectors(
@@ -146,20 +106,7 @@ void Engine::get_beammap_config(CT &config) {
         beammap_scan_band_mask_max_flagged_fraction,
         beammap_split_fits_by_flag, beammap_split_flag_values);
     citlali::pipeline::mirror_beammap_priors_config(
-        beammap_config, beammap_priors_enabled,
-        beammap_priors_filepath, beammap_priors_candidate_top_n,
-        beammap_priors_min_snr, beammap_priors_max_d2,
-        beammap_priors_max_d2_iter0, beammap_priors_max_d2_after_iter0,
-        beammap_priors_score_lambda, beammap_priors_score_lambda_iter0,
-        beammap_priors_score_lambda_after_iter0,
-        beammap_priors_fallback_blind, beammap_priors_align_after_iter0,
-        beammap_priors_alignment_scope,
-        beammap_priors_alignment_common_support,
-        beammap_priors_alignment_common_support_quantile,
-        beammap_priors_alignment_min_matches,
-        beammap_priors_alignment_max_d2,
-        beammap_priors_alignment_fit_rotation,
-        beammap_priors_alignment_max_rotation_deg);
+        beammap_config, beammap_priors_config);
     citlali::pipeline::mirror_beammap_output_and_flagging_config(
         beammap_config, beammap_detector_tod_output_enabled,
         beammap_detector_tod_output_subdir_name,
