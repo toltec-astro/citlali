@@ -6,6 +6,7 @@
 #include <citlali/core/engine/detail/beammap_mapmaking_stage_impl.h>
 #include <citlali/core/engine/detail/beammap_ptc_cleaning_impl.h>
 #include <citlali/core/engine/detail/beammap_fit_stage_impl.h>
+#include <citlali/core/pipeline/output_policy.h>
 
 bool Beammap::update_beammap_convergence_state() {
     if (!has_completed_beammap_measurement_iter(current_iter)) {
@@ -14,7 +15,8 @@ bool Beammap::update_beammap_convergence_state() {
 
     // only do convergence test if tolerance is above zero, otherwise run all iterations
     const auto &iteration_config = typed_config.beammap.iteration;
-    if (run_mapmaking && iteration_config.tolerance > 0) {
+    if (citlali::pipeline::mapmaking_enabled(*this) &&
+        iteration_config.tolerance > 0) {
         // loop through maps and check if it is converged
         logger->info("checking convergence in fitted-source aperture radius={:.3f} arcsec",
                      iteration_config.convergence_radius_arcsec);

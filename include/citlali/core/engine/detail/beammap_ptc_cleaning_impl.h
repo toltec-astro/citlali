@@ -4,11 +4,12 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/pipeline/beammap_mapmaking_policy.h>
+#include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
 bool Beammap::subtract_beammap_model_for_ptc_scan(int scan_index,
                                                   bool measurement_iter) {
-    if (!run_mapmaking || !measurement_iter) {
+    if (!citlali::pipeline::mapmaking_enabled(*this) || !measurement_iter) {
         return false;
     }
     if (!ptcproc.run_fruit_loops) {
@@ -28,7 +29,7 @@ bool Beammap::subtract_beammap_model_for_ptc_scan(int scan_index,
 
 void Beammap::restore_beammap_model_for_ptc_scan(int scan_index,
                                                  bool measurement_iter) {
-    if (!run_mapmaking || !measurement_iter) {
+    if (!citlali::pipeline::mapmaking_enabled(*this) || !measurement_iter) {
         return;
     }
     if (!ptcproc.run_fruit_loops) {

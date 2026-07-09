@@ -9,15 +9,10 @@ namespace citlali::engine_detail {
 
 template <class ReductionConfig>
 void disable_map_products_if_mapmaking_disabled(
-    bool &run_coadd, bool &run_noise, bool &run_map_filter,
-    bool &run_source_finder, ReductionConfig &typed_config) {
+    ReductionConfig &typed_config) {
     if (citlali::config::mapmaking_active(typed_config.mapmaking)) {
         return;
     }
-    run_coadd = false;
-    run_noise = false;
-    run_map_filter = false;
-    run_source_finder = false;
     citlali::config::set_coadd_enabled(typed_config.coadd, false);
     citlali::config::set_noise_maps_enabled(typed_config.noise, false);
     citlali::config::set_map_filtering_enabled(

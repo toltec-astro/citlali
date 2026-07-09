@@ -17,8 +17,9 @@ void Engine::get_mapmaking_config(CT &config) {
     coadd_config = citlali::config::CoaddConfig{};
     noise_config = citlali::config::NoiseConfig{};
 
+    bool mapmaking_enabled = mapmaking_config.enabled;
     citlali::engine_detail::read_mapmaking_enabled_config(
-        config, run_mapmaking, mapmaking_config, missing_keys,
+        config, mapmaking_enabled, mapmaking_config, missing_keys,
         invalid_keys);
     citlali::engine_detail::read_map_grouping_config(
         config, map_grouping, mapmaking_config, missing_keys,
@@ -55,8 +56,9 @@ void Engine::get_mapmaking_config(CT &config) {
         RAD_TO_ASEC, mapmaking_config,
         post_processing_config, logger);
 
+    bool coadd_enabled = coadd_config.enabled;
     citlali::engine_detail::read_coadd_enabled_config(
-        config, run_coadd, coadd_config, missing_keys, invalid_keys);
+        config, coadd_enabled, coadd_config, missing_keys, invalid_keys);
     citlali::engine_detail::read_coadd_map_block_config(
         config, coadd_config, cmb, missing_keys, invalid_keys,
         mapmaking_config.pixel_axes_frame, typed_config.runtime.reduction_type,
@@ -73,9 +75,14 @@ void Engine::get_mapmaking_config(CT &config) {
         toltec_io.array_name_map, ptcproc, omb.pixel_size_rad, missing_keys,
         invalid_keys);
 
+    bool noise_maps_enabled = noise_config.enabled;
     citlali::engine_detail::read_noise_map_config(
-        config, run_noise, coadd_config, omb, cmb, noise_config,
+        config, noise_maps_enabled, coadd_config, omb, cmb, noise_config,
         missing_keys, invalid_keys);
+    bool write_noise_realizations = noise_config.write_realizations;
+    bool run_noise_products = noise_config.products_enabled;
+    bool apply_empirical_noise_weights =
+        noise_config.apply_empirical_weights;
     citlali::engine_detail::read_noise_product_config(
         config, write_noise_realizations, run_noise_products,
         apply_empirical_noise_weights, noise_config, missing_keys,

@@ -6,6 +6,7 @@
 #include <citlali/core/pipeline/beammap_mapmaking_policy.h>
 #include <citlali/core/pipeline/beammap_normalize_support_logging.h>
 #include <citlali/core/pipeline/mapmaking_dispatch.h>
+#include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
 #include <sstream>
@@ -18,6 +19,8 @@ void Beammap::populate_beammap_maps(
     tula::logging::progressbar pb(
         [&](const auto &msg) { logger->info("{}", msg); }, 100,
         "PTC progress ");
+    const bool make_noise_maps =
+        citlali::pipeline::noise_maps_enabled(*this);
 
     if (citlali::config::is_detector_map_grouping(mapmaking_grouping)) {
         bool run_omb = true;
@@ -27,7 +30,7 @@ void Beammap::populate_beammap_maps(
             if (citlali::config::is_naive_map_method(mapmaking_method)) {
                 naive_mm.populate_maps_naive_parallel(
                     ptc, omb, cmb, ptc.map_indices.data, telescope.pixel_axes,
-                    scan_apt, telescope.d_fsmp, run_omb, run_noise,
+                    scan_apt, telescope.d_fsmp, run_omb, make_noise_maps,
                     active_maps);
             }
             else if (citlali::config::is_jinc_map_method(mapmaking_method)) {
@@ -35,7 +38,7 @@ void Beammap::populate_beammap_maps(
                     ptc, calib.apt["array"], omb, jinc_mm, logger);
                 jinc_mm.populate_maps_jinc_parallel(
                     ptc, omb, cmb, ptc.map_indices.data, telescope.pixel_axes,
-                    scan_apt, telescope.d_fsmp, run_omb, run_noise,
+                    scan_apt, telescope.d_fsmp, run_omb, make_noise_maps,
                     active_maps);
             }
             if (update_progress) {
@@ -50,7 +53,8 @@ void Beammap::populate_beammap_maps(
         citlali::pipeline::populate_naive_or_jinc_maps(
             mapmaking_method, naive_mm, jinc_mm, ptcs[i], omb, cmb,
             ptcs[i].map_indices.data, telescope.pixel_axes,
-            calib_scans[i].apt, telescope.d_fsmp, run_omb, run_noise);
+            calib_scans[i].apt, telescope.d_fsmp, run_omb,
+            make_noise_maps);
         if (update_progress) {
             pb.count(telescope.scan_indices.cols(), 1);
         }
@@ -83,7 +87,8 @@ void Beammap::prepare_beammap_iteration_state(bool rerun_source_aware_rtc,
 
     // copy previous-iteration maps for source-aperture convergence tests
     const auto &iteration_config = typed_config.beammap.iteration;
-    if (run_mapmaking && iteration_config.tolerance > 0.0 &&
+    if (citlali::pipeline::mapmaking_enabled(*this) &&
+        iteration_config.tolerance > 0.0 &&
         measurement_iter) {
         omb_copy.signal = omb.signal;
         omb_copy.weight = omb.weight;
@@ -129,7 +134,8 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
             mapmaking_method, omb, n_maps, logger);
 
         citlali::pipeline::reset_beammap_mapmaking_buffers(
-            omb, ptcs, n_maps, rtcproc.run_kernel, run_noise,
+            omb, ptcs, n_maps, rtcproc.run_kernel,
+            citlali::pipeline::noise_maps_enabled(*this),
             omb.randomize_dets, calib.n_dets, active_maps_ptr, rands,
             eng);
     }
@@ -180,7 +186,7 @@ void Beammap::run_beammap_mapmaking_stage(bool locator_iter,
                                           Generator &eng) {
     logger->info("starting mapmaking");
 
-    if (!run_mapmaking) {
+    if (!citlali::pipeline::mapmaking_enabled(*this)) {
         return;
     }
 

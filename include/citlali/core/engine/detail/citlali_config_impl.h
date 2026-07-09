@@ -33,6 +33,8 @@ void Engine::get_citlali_config(CT &config) {
     post_processing_config = citlali::config::PostProcessingConfig{};
     get_mapmaking_config(config);
 
+    bool run_map_filter = post_processing_config.map_filtering.enabled;
+    bool run_source_finder = post_processing_config.source_finding.enabled;
     citlali::engine_detail::read_post_processing_activation_config(
         config, run_map_filter, run_source_finder,
         post_processing_config, missing_keys, invalid_keys);
@@ -70,7 +72,6 @@ void Engine::get_citlali_config(CT &config) {
 
     // disable map related keys if map-making is disabled
     citlali::engine_detail::disable_map_products_if_mapmaking_disabled(
-        run_coadd, run_noise, run_map_filter, run_source_finder,
         typed_config);
 
     citlali::engine_detail::validate_typed_config_mirrors(typed_config, logger);

@@ -15,17 +15,6 @@ struct ReductionControls {
     // output timestreams
     bool run_tod_output;
 
-    // controls for mapmaking
-    bool run_mapmaking;
-    bool run_coadd;
-    bool run_noise;
-    bool write_noise_realizations;
-    bool run_noise_products;
-    bool apply_empirical_noise_weights;
-    bool run_map_filter;
-
-    // run source finding
-    bool run_source_finder;
 };
 
 struct BeammapFluxState {
