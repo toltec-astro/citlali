@@ -4,8 +4,12 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/pipeline/map_grouping_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 void Beammap::setup() {
+    auto &beammap_config = citlali::pipeline::beammap_config(*this);
+    const auto &mapmaking_config = citlali::pipeline::mapmaking_config(*this);
+
     // assign parallel policies
     map_parallel_policy = citlali::pipeline::runtime_parallel_policy_name(*this);
 
@@ -87,7 +91,7 @@ void Beammap::setup() {
     // add project id to meta data
     calib.apt_meta["project_id"] = telescope.project_id;
 
-    const auto &beammap_phase_config = typed_config.beammap.phase_strategy;
+    const auto &beammap_phase_config = beammap_config.phase_strategy;
     calib.apt_meta["beammap_phase_split_enabled"] =
         beammap_phase_config.enabled;
     calib.apt_meta["beammap_locator_iter"] = beammap_phase_config.locator_iter;
@@ -230,7 +234,7 @@ void Beammap::setup() {
     calib.apt_header_units["flag2"] = "N/A";
     calib.apt_header_keys.push_back("flag2");
 
-    const auto &beammap_reference_config = typed_config.beammap.reference;
+    const auto &beammap_reference_config = beammap_config.reference;
     // is the detector rotated?
     calib.apt_meta["is_derotated"] = beammap_reference_config.derotate;
     // was a reference detector subtracted?
@@ -238,7 +242,7 @@ void Beammap::setup() {
         beammap_reference_config.subtract_reference_detector;
     // reference detector
     calib.apt_meta["reference_det"] = beammap_reference_det_found;
-    const auto &rfi_config = typed_config.beammap.rfi_mask;
+    const auto &rfi_config = beammap_config.rfi_mask;
     calib.apt_meta["rfi_mask_enabled"] = rfi_config.enabled;
     calib.apt_meta["rfi_mask_block_size_samples"] =
         rfi_config.block_size_samples;
@@ -252,9 +256,9 @@ void Beammap::setup() {
         rfi_config.max_flagged_fraction;
     calib.apt_meta["detector_weighting_mode"] =
         std::string(citlali::config::to_string(
-            typed_config.beammap.detector_weighting_mode));
+            beammap_config.detector_weighting_mode));
     calib.apt_meta["beammap_fit_radius_fwhm"] =
-        typed_config.beammap.fitting.fit_radius_fwhm;
+        beammap_config.fitting.fit_radius_fwhm;
     beammap_soft_prior_slots.clear();
     beammap_soft_priors_loaded = false;
     beammap_soft_priors_are_centered = false;
@@ -262,9 +266,9 @@ void Beammap::setup() {
     beammap_prior_array_center_x_arcsec.clear();
     beammap_prior_array_center_y_arcsec.clear();
     beammap_prior_array_alignment.clear();
-    auto &priors_config = typed_config.beammap.priors;
+    auto &priors_config = beammap_config.priors;
     if (priors_config.enabled) {
-        if (typed_config.mapmaking.grouping !=
+        if (mapmaking_config.grouping !=
             citlali::config::MapGrouping::detector) {
             logger->warn("beammap priors requested but map_grouping={} (requires detector); disabling priors",
                          citlali::pipeline::active_map_grouping_name(*this));

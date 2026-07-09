@@ -6,11 +6,14 @@
 #include <citlali/core/engine/detail/beammap_apt_keys.h>
 #include <citlali/core/pipeline/map_diagnostics.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template <class KidsProc, class RawObs>
 void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+    const auto &mapmaking_config = citlali::pipeline::mapmaking_config(*this);
+    const auto &beammap_config = citlali::pipeline::beammap_config(*this);
     const bool detector_grouping =
-        typed_config.mapmaking.grouping ==
+        mapmaking_config.grouping ==
         citlali::config::MapGrouping::detector;
 
     // run iterative stage
@@ -30,7 +33,7 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     if (detector_grouping) {
         logger->info("calculating sensitivity");
         const auto &sens_psd_limits_hz =
-            typed_config.beammap.flagging.sens_psd_limits_hz;
+            beammap_config.flagging.sens_psd_limits_hz;
         // parallelize on detectors
         grppi::map(tula::grppi_utils::dyn_ex(map_parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
             Eigen::MatrixXd det_sens, noise_flux;
@@ -82,7 +85,7 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         if (scan_band_mask_rejected.size() == calib.n_dets) {
             calib.apt["scan_band_mask_rejected"] = scan_band_mask_rejected.cast<double>();
         }
-        if (typed_config.beammap.rfi_mask.enabled &&
+        if (beammap_config.rfi_mask.enabled &&
             rfi_mask_samples_flagged.size() == calib.n_dets &&
             rfi_mask_scans_flagged.size() == calib.n_dets) {
             const Eigen::Index n_det_masked = (rfi_mask_scans_flagged.array() > 0).count();
@@ -150,7 +153,7 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                     auto [det_lat, det_lon] = engine_utils::calc_det_pointing(ptcs[i].tel_data.data, az_off,
                                                                               el_off, telescope.pixel_axes,
                                                                               ptcs[i].pointing_offsets_arcsec.data,
-                                                                              typed_config.mapmaking.grouping, true);
+                                                                              mapmaking_config.grouping, true);
                     ptc_lat.col(j) = std::move(det_lat);
                     ptc_lon.col(j) = std::move(det_lon);
 
