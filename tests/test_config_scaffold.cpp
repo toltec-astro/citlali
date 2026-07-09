@@ -128,7 +128,9 @@ struct FakeCalib {
 };
 
 struct FakeEngine {
-    std::string obsnum;
+    struct {
+        std::string obsnum;
+    } observation_identity;
     std::string redu_type = "science";
     std::string redu_dir_name = "/tmp/redu01";
     std::string output_dir = "/tmp";
@@ -3099,7 +3101,7 @@ TEST(pipeline_execution, prepares_reduction_observation_inputs) {
     EXPECT_DOUBLE_EQ(todproc.engine().telescope.d_fsmp, 122.0);
     EXPECT_EQ(todproc.get_tone_freqs_from_files_calls, 1);
     EXPECT_EQ(todproc.get_adc_snap_from_files_calls, 1);
-    EXPECT_EQ(todproc.engine().obsnum, "000102");
+    EXPECT_EQ(todproc.engine().observation_identity.obsnum, "000102");
     EXPECT_EQ(todproc.engine().calib.calc_flux_calibration_calls, 1);
     EXPECT_EQ(todproc.engine().telescope.get_tel_data_calls, 1);
     EXPECT_EQ(todproc.engine().telescope.calc_scan_indices_calls, 1);
@@ -3792,7 +3794,7 @@ TEST(pipeline_output_layout, configures_observation_output_layout) {
 
     citlali::pipeline::configure_observation_output_layout(engine, 42);
 
-    EXPECT_EQ(engine.obsnum, "000042");
+    EXPECT_EQ(engine.observation_identity.obsnum, "000042");
     EXPECT_EQ(engine.obsnum_dir_name, "/tmp/redu01/000042/");
     ASSERT_EQ(engine.omb.obsnums.size(), 1U);
     EXPECT_EQ(engine.omb.obsnums.front(), "000042");
@@ -3836,7 +3838,7 @@ TEST(pipeline_output_layout, prepares_observation_layout_from_rawobs_meta) {
     citlali::pipeline::prepare_observation_output_layout_from_rawobs_meta(
         engine, rawobs_kids_meta, logger);
 
-    EXPECT_EQ(engine.obsnum, "000202");
+    EXPECT_EQ(engine.observation_identity.obsnum, "000202");
     EXPECT_EQ(engine.obsnum_dir_name,
               "/tmp/citlali_scaffold_redu/000202/");
     ASSERT_EQ(engine.omb.obsnums.size(), 1U);
@@ -3876,7 +3878,7 @@ TEST(pipeline_output_layout, derives_gaps_log_filepath) {
 
 TEST(pipeline_output_layout, warns_when_timing_gaps_are_present) {
     FakeEngine engine;
-    engine.obsnum = "152389";
+    engine.observation_identity.obsnum = "152389";
     engine.gaps["roach0"] = 2;
     engine.verbose_mode = false;
     auto logger = std::make_shared<FakeLogger>();

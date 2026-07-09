@@ -11,7 +11,7 @@ void Engine::create_rtcdiag_file() {
             engine_utils::toltecIO::raw>(
             toltec_io, output_paths.obsnum_dir_name,
             typed_config.timestream.output.subdir_name,
-            typed_config.runtime.reduction_type, obsnum, telescope.sim_obs);
+            typed_config.runtime.reduction_type, observation_identity.obsnum, telescope.sim_obs);
 
     write_netcdf_atomic(output_paths.rtcdiag_filename, [&](netCDF::NcFile &fo) {
 
@@ -23,7 +23,7 @@ void Engine::create_rtcdiag_file() {
             rtcproc, telescope.fsmp, telescope.d_fsmp);
 
     citlali::pipeline::add_diagnostic_file_identity_vars(
-        fo, "rtcdiag", std::stoi(obsnum),
+        fo, "rtcdiag", std::stoi(observation_identity.obsnum),
         telescope.tel_header["Header.Source.Ra"](0),
         telescope.tel_header["Header.Source.Dec"](0));
 

@@ -17,7 +17,7 @@ bool should_write_timing_gaps_log(const Engine &engine) {
 template <class Engine, class Logger>
 void warn_timing_gaps_found(const Engine &engine, const Logger &logger) {
     logger->warn("gaps found in obnsum {} data file timing!",
-                 engine.obsnum);
+                 engine.observation_identity.obsnum);
 }
 
 }  // namespace citlali::pipeline

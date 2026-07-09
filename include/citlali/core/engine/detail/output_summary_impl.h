@@ -9,7 +9,7 @@ void Engine::cli_summary() {
     const auto &tod_output_config = typed_config.timestream.output;
 
     citlali::pipeline::log_reduction_map_summary(
-        logger, obsnum, omb, rtcproc.run_polarization);
+        logger, observation_identity.obsnum, omb, rtcproc.run_polarization);
     const double mb_size_total =
         citlali::pipeline::log_map_memory_summary(
             logger, omb, cmb, coadd_config.enabled, noise_config.enabled);
@@ -80,7 +80,7 @@ void Engine::write_map_summary(map_buffer_t &mb) {
 template <mapmaking::MapType map_t, engine_utils::toltecIO::DataType data_t, engine_utils::toltecIO::ProdType prod_t>
 auto Engine::setup_filenames(std::string dir_name) {
     return citlali::pipeline::map_output_filename<map_t, data_t, prod_t>(
-        toltec_io, dir_name, typed_config.runtime.reduction_type, obsnum,
+        toltec_io, dir_name, typed_config.runtime.reduction_type, observation_identity.obsnum,
         telescope.sim_obs);
 }
 

@@ -28,12 +28,12 @@ void Engine::write_stats() {
             engine_utils::toltecIO::toltec,
             engine_utils::toltecIO::stats,
             engine_utils::toltecIO::raw>(
-            toltec_io, stats_dir, typed_config.runtime.reduction_type, obsnum,
+            toltec_io, stats_dir, typed_config.runtime.reduction_type, observation_identity.obsnum,
             telescope.sim_obs);
     write_netcdf_atomic(stats_netcdf_filename, [&](netCDF::NcFile &fo) {
 
     citlali::pipeline::add_stats_file_outputs(
-        fo, std::stoi(obsnum), calib, diagnostics, ptcproc.cleaner, logger,
+        fo, std::stoi(observation_identity.obsnum), calib, diagnostics, ptcproc.cleaner, logger,
         omb.sig_unit, telescope.scan_indices.cols(),
         citlali::pipeline::ptcdiag_fill_double());
     });

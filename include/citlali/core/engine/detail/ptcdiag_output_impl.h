@@ -11,7 +11,7 @@ void Engine::create_ptcdiag_file() {
             engine_utils::toltecIO::raw>(
             toltec_io, output_paths.obsnum_dir_name,
             typed_config.timestream.output.subdir_name,
-            typed_config.runtime.reduction_type, obsnum, telescope.sim_obs);
+            typed_config.runtime.reduction_type, observation_identity.obsnum, telescope.sim_obs);
 
     write_netcdf_atomic(output_paths.ptcdiag_filename, [&](netCDF::NcFile &fo) {
     const int fill_int = citlali::pipeline::ptcdiag_fill_int();
@@ -21,7 +21,7 @@ void Engine::create_ptcdiag_file() {
         citlali::pipeline::add_ptcdiag_dims(fo, n_scans, calib.n_dets);
 
     citlali::pipeline::add_diagnostic_file_identity_vars(
-        fo, "ptcdiag", std::stoi(obsnum),
+        fo, "ptcdiag", std::stoi(observation_identity.obsnum),
         telescope.tel_header["Header.Source.Ra"](0),
         telescope.tel_header["Header.Source.Dec"](0));
 

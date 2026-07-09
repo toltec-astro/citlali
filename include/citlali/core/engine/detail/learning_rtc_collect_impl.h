@@ -21,7 +21,7 @@ void Engine::collect_rtc_learning_diagnostics(rtc_t &rtcdata, ptc_t &ptcdata,
         rtcproc.snapshot_source_protection_diag_summary(scan_id);
     if (rtc_source_summary.enabled) {
         ReductionLearningState::SourceProtectionSummary source_summary;
-        source_summary.obsnum = obsnum;
+        source_summary.obsnum = observation_identity.obsnum;
         source_summary.producer = "rtc_despike";
         source_summary.mode = "map_center_radius";
         source_summary.iter = iteration.fruit_iter;
@@ -40,7 +40,7 @@ void Engine::collect_rtc_learning_diagnostics(rtc_t &rtcdata, ptc_t &ptcdata,
             return;
         }
         ReductionLearningState::LearnedSampleMask record;
-        record.obsnum = obsnum;
+        record.obsnum = observation_identity.obsnum;
         record.producer = "rtc_despike";
         record.reason = reason;
         record.iter = iteration.fruit_iter;

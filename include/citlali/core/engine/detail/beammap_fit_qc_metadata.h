@@ -19,7 +19,7 @@ YAML::Node make_metadata(const BeammapState &beammap,
                          const TableAccess &table_access,
                          const std::vector<std::string> &fit_qc_header) {
     YAML::Node fit_qc_meta;
-    fit_qc_meta["obsnum"] = beammap.obsnum;
+    fit_qc_meta["obsnum"] = beammap.observation_identity.obsnum;
     fit_qc_meta["source"] = beammap.telescope.source_name;
     fit_qc_meta["creation_date"] = engine_utils::current_date_time();
     fit_qc_meta["date"] =

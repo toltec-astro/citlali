@@ -13,7 +13,7 @@ std::string Beammap::write_beammap_apt_table() {
             engine_utils::toltecIO::apt, engine_utils::toltecIO::map,
             engine_utils::toltecIO::raw>(
             toltec_io, output_paths.obsnum_dir_name + "raw/",
-            typed_config.runtime.reduction_type, "", obsnum,
+            typed_config.runtime.reduction_type, "", observation_identity.obsnum,
             telescope.sim_obs);
 
     Eigen::MatrixXd apt_table =

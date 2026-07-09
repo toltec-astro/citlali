@@ -46,7 +46,7 @@ void Engine::create_obs_map_files() {
                 engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
                 engine_utils::toltecIO::raw>(
                 toltec_io, raw_dir, typed_config.runtime.reduction_type,
-                array_name, obsnum, telescope.sim_obs);
+                array_name, observation_identity.obsnum, telescope.sim_obs);
         append_fits_file(map_fits_outputs.obs, filename);
 
         // if noise maps are requested but coadding is not, populate noise fits vector
@@ -60,7 +60,7 @@ void Engine::create_obs_map_files() {
                         engine_utils::toltecIO::raw>(
                         toltec_io, raw_dir,
                         typed_config.runtime.reduction_type, array_name,
-                        obsnum, telescope.sim_obs);
+                        observation_identity.obsnum, telescope.sim_obs);
                 append_fits_file(map_fits_outputs.obs_noise, noise_filename);
             }
 
@@ -74,7 +74,7 @@ void Engine::create_obs_map_files() {
                         engine_utils::toltecIO::filtered>(
                         toltec_io, filtered_dir,
                         typed_config.runtime.reduction_type, array_name,
-                        obsnum, telescope.sim_obs);
+                        observation_identity.obsnum, telescope.sim_obs);
                 append_fits_file(map_fits_outputs.filtered_obs, filtered_filename);
 
                 // filtered noise maps
@@ -87,7 +87,7 @@ void Engine::create_obs_map_files() {
                             engine_utils::toltecIO::filtered>(
                             toltec_io, filtered_dir,
                             typed_config.runtime.reduction_type, array_name,
-                            obsnum, telescope.sim_obs);
+                            observation_identity.obsnum, telescope.sim_obs);
                     append_fits_file(map_fits_outputs.filtered_obs_noise,
                                      filtered_noise_filename);
                 }

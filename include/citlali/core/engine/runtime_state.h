@@ -16,6 +16,7 @@
 #include <citlali/core/pipeline/fruit_loop_iteration_state.h>
 #include <citlali/core/pipeline/map_fits_output_state.h>
 #include <citlali/core/pipeline/map_index_state.h>
+#include <citlali/core/pipeline/observation_identity_state.h>
 #include <citlali/core/pipeline/observation_date_state.h>
 #include <citlali/core/pipeline/output_path_state.h>
 #include <citlali/core/pipeline/pointing_offset_state.h>
@@ -45,8 +46,8 @@ struct EngineRuntimeState {
     // typed config mirror for staged config migration
     citlali::config::ReductionConfig typed_config;
 
-    // obsnum
-    std::string obsnum;
+    // active observation identity
+    citlali::pipeline::ObservationIdentityState observation_identity;
 
     // per-stream TOD output row maps
     citlali::pipeline::TodOutputState tod_outputs;

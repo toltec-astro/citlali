@@ -34,7 +34,7 @@ void Pointing::output() {
                      ? engine_utils::toltecIO::raw
                      : engine_utils::toltecIO::filtered)>(
                 toltec_io, dir_name, typed_config.runtime.reduction_type, "",
-                obsnum, telescope.sim_obs);
+                observation_identity.obsnum, telescope.sim_obs);
 
         // add array and S/N to ppt
         for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {

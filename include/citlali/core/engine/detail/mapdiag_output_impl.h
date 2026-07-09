@@ -48,7 +48,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             typed_config.post_processing.map_filtering.edge_guard);
     const auto mapdiag_labels =
         citlali::pipeline::make_mapdiag_label_vars(
-            mapdiag_label_storage, mb->obsnums, obsnum, observation_dates.date_obs,
+            mapdiag_label_storage, mb->obsnums, observation_identity.obsnum, observation_dates.date_obs,
             mapdiag_context);
     const auto mapdiag_values =
         citlali::pipeline::make_mapdiag_value_vars(
@@ -77,7 +77,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             ReductionLearningState::DetectorPenalty>(
             i, idx, write_indices.map_index, mb, core_mask, fill_double,
             fill_int, mapdiag_stats, RAD_TO_ASEC,
-            processed_time_chunk_fs_hz(), calib.arrays, obsnum,
+            processed_time_chunk_fs_hz(), calib.arrays, observation_identity.obsnum,
             mapdiag_record_producer, stage_name, iteration.fruit_iter,
             learning, map_workspace, logger);
 
@@ -99,7 +99,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         [&](netCDF::NcFile &fo) {
             const auto mapdiag_netcdf_vars =
                 citlali::pipeline::make_mapdiag_netcdf_vars(
-                    mapdiag_context, obsnum, mapdiag_metadata,
+                    mapdiag_context, observation_identity.obsnum, mapdiag_metadata,
                     mapdiag_labels, mapdiag_values);
             citlali::pipeline::add_mapdiag_netcdf_vars(
                 fo, mapdiag_netcdf_vars);

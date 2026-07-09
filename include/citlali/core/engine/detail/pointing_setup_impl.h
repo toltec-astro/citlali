@@ -53,7 +53,7 @@ void Pointing::setup() {
     };
 
     // add obsnum to meta data
-    ppt_meta["obsnum"] = obsnum;
+    ppt_meta["obsnum"] = observation_identity.obsnum;
 
     // add source name
     ppt_meta["source"] = telescope.source_name;

@@ -34,7 +34,7 @@ void Engine::configure_map_pixel_contribution_targets(mapmaking::MapBuffer &mb,
     {
         std::lock_guard<std::mutex> lock(*learning.mutex);
         for (const auto &record : learning.map_pixel_outliers) {
-            if (record.obsnum == obsnum &&
+            if (record.obsnum == observation_identity.obsnum &&
                 record.producer == producer &&
                 record.iter >= 0 &&
                 record.iter < iteration.fruit_iter &&
@@ -62,7 +62,7 @@ void Engine::configure_map_pixel_contribution_targets(mapmaking::MapBuffer &mb,
     {
         std::lock_guard<std::mutex> lock(*learning.mutex);
         for (const auto &record : learning.map_pixel_outliers) {
-            if (record.obsnum != obsnum ||
+            if (record.obsnum != observation_identity.obsnum ||
                 record.producer != producer ||
                 record.iter != target_iter ||
                 record.map_index < 0 ||
@@ -125,7 +125,7 @@ void Engine::configure_map_pixel_contribution_targets(mapmaking::MapBuffer &mb,
         mb.contribution_diag_enabled = true;
         logger->info(
             "map-pixel targeted contributor tracing enabled stage={} obsnum={} iter={} source_iter={} targets={}",
-            stage_name, obsnum, iteration.fruit_iter, target_iter, targets.size());
+            stage_name, observation_identity.obsnum, iteration.fruit_iter, target_iter, targets.size());
     }
 }
 

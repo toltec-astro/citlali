@@ -7,18 +7,21 @@ namespace citlali::pipeline {
 
 template <class Engine>
 void set_observation_output_obsnum(Engine &engine, int obsnum) {
-    engine.obsnum = format_obsnum(obsnum);
+    engine.observation_identity.obsnum = format_obsnum(obsnum);
 }
 
 template <class Engine>
 void set_observation_output_dir_name(Engine &engine) {
-    engine.output_paths.obsnum_dir_name = engine.output_paths.redu_dir_name + "/" + engine.obsnum + "/";
+    engine.output_paths.obsnum_dir_name = engine.output_paths.redu_dir_name +
+                                          "/" +
+                                          engine.observation_identity.obsnum +
+                                          "/";
 }
 
 template <class Engine>
 void set_observation_map_output_obsnum(Engine &engine) {
     engine.omb.obsnums.clear();
-    engine.omb.obsnums.push_back(engine.obsnum);
+    engine.omb.obsnums.push_back(engine.observation_identity.obsnum);
 }
 
 template <class Engine>
@@ -28,7 +31,7 @@ bool should_record_coadd_output_obsnum(const Engine &engine) {
 
 template <class Engine>
 void record_coadd_output_obsnum(Engine &engine) {
-    engine.cmb.obsnums.push_back(engine.obsnum);
+    engine.cmb.obsnums.push_back(engine.observation_identity.obsnum);
 }
 
 template <class Engine>

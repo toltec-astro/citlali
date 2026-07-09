@@ -117,7 +117,7 @@ void Engine::create_tod_files() {
             engine_utils::toltecIO::toltec, prod_t,
             engine_utils::toltecIO::raw>(
             toltec_io, output_paths.tod_filename, dir_name,
-            typed_config.runtime.reduction_type, obsnum, telescope.sim_obs,
+            typed_config.runtime.reduction_type, observation_identity.obsnum, telescope.sim_obs,
             output_stream);
 
     write_netcdf_atomic(output_paths.tod_filename[name], [&](netCDF::NcFile &fo) {
@@ -128,7 +128,7 @@ void Engine::create_tod_files() {
     }
 
     citlali::pipeline::add_observation_identity_vars(
-        fo, std::stoi(obsnum), telescope.tel_header["Header.Source.Ra"](0),
+        fo, std::stoi(observation_identity.obsnum), telescope.tel_header["Header.Source.Ra"](0),
         telescope.tel_header["Header.Source.Dec"](0));
 
     if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {

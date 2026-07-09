@@ -79,7 +79,7 @@ void Beammap::setup() {
     calib.apt_meta.reset();
 
     // add obsnum to meta data
-    calib.apt_meta["obsnum"] = obsnum;
+    calib.apt_meta["obsnum"] = observation_identity.obsnum;
 
     // add source name
     calib.apt_meta["source"] = telescope.source_name;

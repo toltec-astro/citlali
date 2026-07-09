@@ -19,7 +19,7 @@ void Engine::collect_ptc_learning_diagnostics(
 
     if (ptcproc.second_pass_local.source_protection_enabled) {
         ReductionLearningState::SourceProtectionSummary source_summary;
-        source_summary.obsnum = obsnum;
+        source_summary.obsnum = observation_identity.obsnum;
         source_summary.producer = "ptc_second_pass";
         source_summary.mode = "map_center_radius";
         source_summary.iter = iteration.fruit_iter;
@@ -42,7 +42,7 @@ void Engine::collect_ptc_learning_diagnostics(
 
     for (const auto &summary : high_weight_summary) {
         ReductionLearningState::HighWeightDetector record;
-        record.obsnum = obsnum;
+        record.obsnum = observation_identity.obsnum;
         record.grouping = summary.grouping;
         record.reason = summary.reason;
         record.iter = iteration.fruit_iter;
@@ -82,7 +82,7 @@ void Engine::collect_ptc_learning_diagnostics(
                   ptcproc.second_pass_local.high_score_event_override));
         if (has_candidate || has_residual || summary.busy_network_vetoed) {
             ReductionLearningState::BusyNetworkSummary record;
-            record.obsnum = obsnum;
+            record.obsnum = observation_identity.obsnum;
             record.producer = "ptc_second_pass";
             record.reason = summary.busy_network_vetoed
                 ? "busy_network_vetoed"
@@ -137,7 +137,7 @@ void Engine::collect_ptc_learning_diagnostics(
                     learning.options.scan_network_pathology_severe_max_residual_z;
             if (busy_pathology || severe_pathology) {
                 ReductionLearningState::DetectorPenalty penalty;
-                penalty.obsnum = obsnum;
+                penalty.obsnum = observation_identity.obsnum;
                 penalty.producer = "ptc_second_pass";
                 penalty.reason = "busy_network_pathology";
                 penalty.iter = iteration.fruit_iter;
@@ -169,7 +169,7 @@ void Engine::collect_ptc_learning_diagnostics(
             const Eigen::Index det =
                 citlali::pipeline::learning_find_det_by_uid(calib_scan.apt, event.uid);
             ReductionLearningState::LearnedSampleMask candidate_record;
-            candidate_record.obsnum = obsnum;
+            candidate_record.obsnum = observation_identity.obsnum;
             candidate_record.producer = "ptc_second_pass";
             candidate_record.reason = event.busy_network_vetoed
                 ? "busy_selective_accepted_event"
@@ -196,7 +196,7 @@ void Engine::collect_ptc_learning_diagnostics(
             const Eigen::Index det =
                 citlali::pipeline::learning_find_det_by_uid(calib_scan.apt, summary.top_event_uid);
             ReductionLearningState::LearnedSampleMask sample_record;
-            sample_record.obsnum = obsnum;
+            sample_record.obsnum = observation_identity.obsnum;
             sample_record.producer = "ptc_second_pass";
             sample_record.reason = "accepted_event";
             sample_record.iter = iteration.fruit_iter;
@@ -221,7 +221,7 @@ void Engine::collect_ptc_learning_diagnostics(
             const Eigen::Index det = citlali::pipeline::learning_find_det_by_uid(
                 calib_scan.apt, summary.max_unflagged_residual_uid);
             ReductionLearningState::DetectorPenalty penalty;
-            penalty.obsnum = obsnum;
+            penalty.obsnum = observation_identity.obsnum;
             penalty.producer = "ptc_second_pass";
             penalty.reason = "busy_vetoed_residual";
             penalty.iter = iteration.fruit_iter;

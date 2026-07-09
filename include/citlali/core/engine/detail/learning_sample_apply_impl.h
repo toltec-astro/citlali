@@ -25,7 +25,7 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
     {
         std::lock_guard<std::mutex> lock(*learning.mutex);
         for (const auto &record : learning.learned_sample_masks) {
-            if (record.obsnum == obsnum &&
+            if (record.obsnum == observation_identity.obsnum &&
                 record.scan == scan_id &&
                 record.iter >= 0 &&
                 record.iter < iteration.fruit_iter &&
@@ -39,7 +39,7 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
     }
 
     ReductionLearningState::LearnedMaskApplicationSummary summary;
-    summary.obsnum = obsnum;
+    summary.obsnum = observation_identity.obsnum;
     summary.producer = "learning_state";
     summary.stage = stage;
     summary.iter = iteration.fruit_iter;
