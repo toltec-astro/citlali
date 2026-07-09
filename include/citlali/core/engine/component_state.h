@@ -40,5 +40,3 @@ struct ReductionComponents {
     mapmaking::MLMapmaker ml_mm;
     mapmaking::WienerFilter wiener_filter;
 };
-
-using reduClasses = ReductionComponents;

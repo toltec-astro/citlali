@@ -69,5 +69,3 @@ struct EngineRuntimeState {
     citlali::pipeline::MapFitsOutputState<map_fits_output_handle_t>
         map_fits_outputs;
 };
-
-using EngineRunState = EngineRuntimeState;
