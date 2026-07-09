@@ -589,6 +589,16 @@ public:
         const Eigen::MatrixXd &templ,
         const BeammapEmpiricalTemplateGeometry &geometry,
         BeammapTemplateFitResult &fit_result);
+    double seed_empirical_template_detector_calibration(
+        Eigen::Index map_index);
+    void record_empirical_template_fit_result(
+        Eigen::Index map_index,
+        double fit_amp,
+        const BeammapTemplateFitResult &fit_result);
+    bool apply_empirical_template_detector_calibration(
+        Eigen::Index map_index,
+        const std::map<int, BeammapArrayTemplate> &templates,
+        const BeammapEmpiricalTemplateGeometry &geometry);
     void apply_empirical_template_calibration(
         const std::map<int, BeammapArrayTemplate> &templates,
         const BeammapEmpiricalTemplateGeometry &geometry);

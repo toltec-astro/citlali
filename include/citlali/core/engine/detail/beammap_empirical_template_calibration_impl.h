@@ -456,6 +456,56 @@ bool Beammap::solve_empirical_template(
     return fit_result.valid;
 }
 
+double Beammap::seed_empirical_template_detector_calibration(Eigen::Index map_index) {
+    const double fit_amp = params(map_index, 0);
+    calib.apt["cal_amp"](map_index) = fit_amp;
+    calib.apt["cal_amp_method"](map_index) = 0.0;
+    if (std::isfinite(fit_amp) && fit_amp > 0.0) {
+        calib.apt["cal_amp_over_fit_amp"](map_index) = 1.0;
+    }
+    return fit_amp;
+}
+
+void Beammap::record_empirical_template_fit_result(
+    Eigen::Index map_index,
+    double fit_amp,
+    const Beammap::BeammapTemplateFitResult &fit_result) {
+    calib.apt["template_amp"](map_index) = fit_result.amp;
+    calib.apt["template_offset"](map_index) = fit_result.offset;
+    calib.apt["template_resid_rms"](map_index) = fit_result.resid_rms;
+    calib.apt["template_npix"](map_index) = static_cast<double>(fit_result.npix);
+    if (std::isfinite(fit_amp) && fit_amp > 0.0) {
+        calib.apt["template_amp_over_fit_amp"](map_index) = fit_result.amp / fit_amp;
+    }
+
+    calib.apt["cal_amp"](map_index) = fit_result.amp;
+    calib.apt["cal_amp_method"](map_index) = 1.0;
+    if (std::isfinite(fit_amp) && fit_amp > 0.0) {
+        calib.apt["cal_amp_over_fit_amp"](map_index) = fit_result.amp / fit_amp;
+    }
+}
+
+bool Beammap::apply_empirical_template_detector_calibration(
+    Eigen::Index map_index,
+    const std::map<int, Beammap::BeammapArrayTemplate> &templates,
+    const Beammap::BeammapEmpiricalTemplateGeometry &geometry) {
+    const int array = static_cast<int>(std::lround(calib.apt["array"](map_index)));
+    const double fit_amp = seed_empirical_template_detector_calibration(map_index);
+
+    auto templ_it = templates.find(array);
+    if (templ_it == templates.end() || !templ_it->second.valid) {
+        return false;
+    }
+
+    BeammapTemplateFitResult fit_result;
+    if (!solve_empirical_template(map_index, templ_it->second.shape, geometry, fit_result)) {
+        return false;
+    }
+
+    record_empirical_template_fit_result(map_index, fit_amp, fit_result);
+    return true;
+}
+
 void Beammap::apply_empirical_template_calibration(
     const std::map<int, Beammap::BeammapArrayTemplate> &templates,
     const Beammap::BeammapEmpiricalTemplateGeometry &geometry) {
@@ -465,38 +515,9 @@ void Beammap::apply_empirical_template_calibration(
         if (i >= calib.n_dets) {
             continue;
         }
-        const int array = static_cast<int>(std::lround(calib.apt["array"](i)));
-        const double fit_amp = params(i, 0);
-        calib.apt["cal_amp"](i) = fit_amp;
-        calib.apt["cal_amp_method"](i) = 0.0;
-        if (std::isfinite(fit_amp) && fit_amp > 0.0) {
-            calib.apt["cal_amp_over_fit_amp"](i) = 1.0;
-        }
-
-        auto templ_it = templates.find(array);
-        if (templ_it == templates.end() || !templ_it->second.valid) {
+        if (!apply_empirical_template_detector_calibration(i, templates, geometry)) {
             n_template_fallback++;
             continue;
-        }
-
-        BeammapTemplateFitResult fit_result;
-        if (!solve_empirical_template(i, templ_it->second.shape, geometry, fit_result)) {
-            n_template_fallback++;
-            continue;
-        }
-
-        calib.apt["template_amp"](i) = fit_result.amp;
-        calib.apt["template_offset"](i) = fit_result.offset;
-        calib.apt["template_resid_rms"](i) = fit_result.resid_rms;
-        calib.apt["template_npix"](i) = static_cast<double>(fit_result.npix);
-        if (std::isfinite(fit_amp) && fit_amp > 0.0) {
-            calib.apt["template_amp_over_fit_amp"](i) = fit_result.amp / fit_amp;
-        }
-
-        calib.apt["cal_amp"](i) = fit_result.amp;
-        calib.apt["cal_amp_method"](i) = 1.0;
-        if (std::isfinite(fit_amp) && fit_amp > 0.0) {
-            calib.apt["cal_amp_over_fit_amp"](i) = fit_result.amp / fit_amp;
         }
         n_template_amp++;
     }
