@@ -332,6 +332,7 @@ public:
     // initial setup for each obs
     void setup_beammap_kids_tone_column();
     void resize_beammap_state_buffers();
+    void populate_beammap_setup_metadata();
     void init_beammap_diagnostic_apt_columns();
     void init_beammap_flag_metadata();
     void configure_beammap_soft_prior_setup();
