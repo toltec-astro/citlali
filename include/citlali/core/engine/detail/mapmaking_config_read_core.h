@@ -54,16 +54,20 @@ void read_map_pixel_axes_config(Config &config, PixelAxes &pixel_axes,
         missing_keys, invalid_keys, {"radec", "altaz", "galactic"});
 }
 
-template <class Config, class MissingKeys, class InvalidKeys>
+template <class Config, class MissingKeys, class InvalidKeys,
+          class MapmakingConfig>
 void read_map_regime_config(Config &config, std::string &map_regime,
+                            MapmakingConfig &typed_config,
                             MissingKeys &missing_keys,
                             InvalidKeys &invalid_keys) {
     map_regime = "unknown";
+    typed_config.source_map_regime = map_regime;
     const auto key = std::tuple{"source", "map_regime"};
     if (!config.template has_typed<std::string>(key)) {
         return;
     }
     map_regime = config.template get_typed<std::string>(key);
+    typed_config.source_map_regime = map_regime;
     ::check_allowed(map_regime, missing_keys, invalid_keys,
                     citlali::pipeline::allowed_map_regimes(), key);
 }

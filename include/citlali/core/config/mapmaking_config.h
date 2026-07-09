@@ -179,6 +179,7 @@ struct MapmakingConfig {
     MapMethod method = MapMethod::naive;
     std::string pixel_axes = "radec";
     MapPixelAxes pixel_axes_frame = MapPixelAxes::radec;
+    std::string source_map_regime = "unknown";
     double pixel_size_arcsec = 1.0;
     int x_size_pix = 0;
     int y_size_pix = 0;
