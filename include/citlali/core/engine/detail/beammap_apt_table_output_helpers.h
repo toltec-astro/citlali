@@ -2,6 +2,8 @@
 
 // Beammap APT table output helpers.
 
+#include <citlali/core/engine/detail/beammap_apt_keys.h>
+
 #include <Eigen/Core>
 
 namespace beammap_apt_table_output_helpers {
@@ -13,7 +15,7 @@ Eigen::MatrixXd apt_table(Calib &calib,
 
     Eigen::Index col = 0;
     for (const auto &key : calib.apt_header_keys) {
-        if (key != "flag2") {
+        if (!beammap_apt_keys::is_flag2(key)) {
             table.col(col) = calib.apt[key];
         }
         else {

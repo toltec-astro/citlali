@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/config/timestream_config.h>
+
 #include <iomanip>
 #include <sstream>
 #include <string>
@@ -9,16 +11,18 @@ namespace citlali::pipeline {
 inline std::string fruit_loop_map_dir(const std::string &base_dir,
                                       const std::string &fruit_loops_type,
                                       const std::string &obsnum) {
-    if (fruit_loops_type == "obsnum/raw") {
+    if (citlali::config::is_obsnum_raw_fruit_loops_type(fruit_loops_type)) {
         return base_dir + "/" + obsnum + "/raw/";
     }
-    if (fruit_loops_type == "obsnum/filtered") {
+    if (citlali::config::is_obsnum_filtered_fruit_loops_type(
+            fruit_loops_type)) {
         return base_dir + "/" + obsnum + "/filtered/";
     }
-    if (fruit_loops_type == "coadd/raw") {
+    if (citlali::config::is_coadd_raw_fruit_loops_type(fruit_loops_type)) {
         return base_dir + "/coadded/raw/";
     }
-    if (fruit_loops_type == "coadd/filtered") {
+    if (citlali::config::is_coadd_filtered_fruit_loops_type(
+            fruit_loops_type)) {
         return base_dir + "/coadded/filtered/";
     }
     return "";

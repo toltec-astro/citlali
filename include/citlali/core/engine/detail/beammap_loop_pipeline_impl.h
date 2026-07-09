@@ -3,6 +3,7 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/engine/detail/beammap_apt_keys.h>
 #include <citlali/core/pipeline/map_diagnostics.h>
 #include <citlali/core/pipeline/output_policy.h>
 
@@ -165,7 +166,7 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 netCDF::NcFile fo(val, netCDF::NcFile::write);
                 // overwrite apt table
                 for (auto const& x: calib.apt) {
-                    if (x.first!="flag2") {
+                    if (!beammap_apt_keys::is_flag2(x.first)) {
                         // start index for apt table
                         std::vector<std::size_t> start_index_apt = {0};
                         // size for apt

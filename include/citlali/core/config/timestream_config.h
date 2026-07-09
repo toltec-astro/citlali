@@ -671,11 +671,43 @@ inline constexpr std::string_view fruit_loops_coadded_type_alias() {
     return "coadded";
 }
 
+inline constexpr std::string_view fruit_loops_obsnum_raw_type() {
+    return "obsnum/raw";
+}
+
+inline constexpr std::string_view fruit_loops_obsnum_filtered_type() {
+    return "obsnum/filtered";
+}
+
+inline constexpr std::string_view fruit_loops_coadd_raw_type() {
+    return "coadd/raw";
+}
+
+inline constexpr std::string_view fruit_loops_coadd_filtered_type() {
+    return "coadd/filtered";
+}
+
 inline std::string_view canonical_fruit_loops_type(std::string_view value) {
     if (value == fruit_loops_coadded_type_alias()) {
         return fruit_loops_coadd_type();
     }
     return value;
+}
+
+inline bool is_obsnum_raw_fruit_loops_type(std::string_view value) {
+    return value == fruit_loops_obsnum_raw_type();
+}
+
+inline bool is_obsnum_filtered_fruit_loops_type(std::string_view value) {
+    return value == fruit_loops_obsnum_filtered_type();
+}
+
+inline bool is_coadd_raw_fruit_loops_type(std::string_view value) {
+    return value == fruit_loops_coadd_raw_type();
+}
+
+inline bool is_coadd_filtered_fruit_loops_type(std::string_view value) {
+    return value == fruit_loops_coadd_filtered_type();
 }
 
 inline bool is_fruit_loops_mode(FruitLoopsMode value,
