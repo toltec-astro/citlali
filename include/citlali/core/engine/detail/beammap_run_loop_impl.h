@@ -105,6 +105,10 @@ bool Beammap::advance_beammap_iteration_state() {
 void Beammap::write_or_clear_beammap_ptc_products_for_iter(int completed_iter,
                                                            bool keep_going) {
     const bool beammap_iter_is_final = !keep_going;
+    // The default is the actual last attempted iteration, including early
+    // convergence, so the saved PTC reflects the final cleaning state.
+    const int beammap_tod_output_iter =
+        citlali::pipeline::default_beammap_tod_output_iter();
     const bool write_beammap_ptc_this_iter =
         (beammap_tod_output_iter < 0 && beammap_iter_is_final) ||
         (beammap_tod_output_iter >= 0 && completed_iter == beammap_tod_output_iter);

@@ -39,12 +39,6 @@ void Engine::get_beammap_config(CT &config) {
         citlali::pipeline::read_beammap_sensitivity_config(
             config, invalid_keys);
 
-    // Beammap PTC TOD/diagnostics are written after the convergence decision.
-    // The default is the actual last attempted iteration, including early
-    // convergence, so the saved PTC reflects the final cleaning state.
-    beammap_tod_output_iter =
-        citlali::pipeline::default_beammap_tod_output_iter();
-
     const auto beammap_detector_tod_output_config =
         citlali::pipeline::read_beammap_detector_tod_output_config(
             config, missing_keys, invalid_keys);

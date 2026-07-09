@@ -29,19 +29,9 @@ struct ReductionControls {
 };
 
 struct BeammapControls {
-    // source name
-    std::string beammap_source_name;
-
-    // beammap source position
-    double beammap_ra_rad, beammap_dec_rad;
-
-    // fluxes and errs
-    std::map<std::string, double> beammap_fluxes_mJy_beam, beammap_err_mJy_beam;
-    std::map<std::string, double> beammap_fluxes_MJy_Sr, beammap_err_MJy_Sr;
-
-    // iteration to write out beammap PTC data; -1 means final attempted iteration
-    int beammap_tod_output_iter = -1;
-
+    // source fluxes used for beammap calibration and output metadata
+    std::map<std::string, double> beammap_fluxes_mJy_beam;
+    std::map<std::string, double> beammap_fluxes_MJy_Sr;
 };
 
 struct PointingControls {

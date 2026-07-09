@@ -5,9 +5,8 @@
 
 namespace citlali::engine_detail {
 
-template <class Config, class FluxMap, class ErrorMap, class SourceConfig>
+template <class Config, class FluxMap, class SourceConfig>
 void read_beammap_source_fluxes(Config &config, FluxMap &fluxes_mjy_beam,
-                                ErrorMap &errors_mjy_beam,
                                 SourceConfig &source_config) {
     const Eigen::Index n_fluxes =
         config.get_node(std::tuple{"beammap_source", "fluxes"}).size();
@@ -22,7 +21,6 @@ void read_beammap_source_fluxes(Config &config, FluxMap &fluxes_mjy_beam,
             std::tuple{"beammap_source", "fluxes", i, "uncertainty_mJy"});
 
         fluxes_mjy_beam[array] = flux;
-        errors_mjy_beam[array] = uncertainty_mjy;
         source_config.fluxes.push_back(
             citlali::config::BeammapSourceFluxConfig{
                 array, flux, uncertainty_mjy});
@@ -37,27 +35,19 @@ void Engine::get_photometry_config(CT &config) {
     source_config = citlali::config::BeammapSourceConfig{};
 
     // beammap source name
-    get_config_value(config, beammap_source_name, missing_keys, invalid_keys,
+    get_config_value(config, source_config.name, missing_keys, invalid_keys,
                      std::tuple{"beammap_source","name"});
-    source_config.name = beammap_source_name;
     // beammap source ra
-    get_config_value(config, beammap_ra_rad, missing_keys, invalid_keys,
+    get_config_value(config, source_config.ra_deg, missing_keys, invalid_keys,
                      std::tuple{"beammap_source","ra_deg"});
-    source_config.ra_deg = beammap_ra_rad;
-    // convert ra to radians
-    beammap_ra_rad = beammap_ra_rad*DEG_TO_RAD;
 
     // beammap source dec
-    get_config_value(config, beammap_dec_rad, missing_keys, invalid_keys,
+    get_config_value(config, source_config.dec_deg, missing_keys, invalid_keys,
                      std::tuple{"beammap_source","dec_deg"});
-    source_config.dec_deg = beammap_dec_rad;
-    // convert dec to radians
-    beammap_dec_rad = beammap_dec_rad*DEG_TO_RAD;
 
     // get source fluxes
     citlali::engine_detail::read_beammap_source_fluxes(
-        config, beammap_fluxes_mJy_beam, beammap_err_mJy_beam,
-        source_config);
+        config, beammap_fluxes_mJy_beam, source_config);
 
     if (typed_config.runtime.reduction_type ==
         citlali::config::ReductionType::beammap) {
