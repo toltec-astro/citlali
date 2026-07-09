@@ -23,7 +23,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         }
 
         citlali::pipeline::add_observation_date_source_vars(
-            fo, observation_dates.date_obs.back(), telescope.source_name);
+            fo, citlali::pipeline::latest_observation_date(observation_dates),
+            telescope.source_name);
 
         // add source flux for beammaps
         if (typed_config.runtime.reduction_type ==

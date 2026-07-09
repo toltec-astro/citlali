@@ -19,4 +19,9 @@ inline void clear_observation_dates(ObservationDateState &state) {
     state.date_obs.clear();
 }
 
+inline const std::string &latest_observation_date(
+    const ObservationDateState &state) {
+    return state.date_obs.back();
+}
+
 }  // namespace citlali::pipeline

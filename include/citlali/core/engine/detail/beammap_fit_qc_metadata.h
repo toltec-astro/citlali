@@ -22,7 +22,8 @@ YAML::Node make_metadata(const BeammapState &beammap,
     fit_qc_meta["obsnum"] = beammap.obsnum;
     fit_qc_meta["source"] = beammap.telescope.source_name;
     fit_qc_meta["creation_date"] = engine_utils::current_date_time();
-    fit_qc_meta["date"] = beammap.observation_dates.date_obs.back();
+    fit_qc_meta["date"] =
+        citlali::pipeline::latest_observation_date(beammap.observation_dates);
     fit_qc_meta["map_grouping"] =
         citlali::pipeline::active_map_grouping_name(beammap);
     const auto &iteration_config = beammap.typed_config.beammap.iteration;
