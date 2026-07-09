@@ -2,65 +2,65 @@
 
 // Included by beammap_config_loading.h inside namespace citlali::pipeline.
 
-template <class Config, class MissingKeys, class InvalidKeys,
-          class MapFitter>
-void read_beammap_fitting_config(Config &config, MissingKeys &missing_keys,
-                                 InvalidKeys &invalid_keys,
-                                 std::string &detector_weighting_mode,
-                                 double &fit_radius_fwhm,
-                                 MapFitter &map_fitter) {
-    detector_weighting_mode = "const";
+struct BeammapFittingConfigValues {
+    citlali::config::BeammapDetectorWeightingMode detector_weighting_mode =
+        citlali::config::BeammapDetectorWeightingMode::constant;
+    citlali::config::BeammapFittingConfig fitting;
+};
+
+template <class Config, class MissingKeys, class InvalidKeys>
+BeammapFittingConfigValues read_beammap_fitting_config(
+    Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys) {
+    BeammapFittingConfigValues values;
+    std::string detector_weighting_mode_name =
+        std::string(citlali::config::to_string(values.detector_weighting_mode));
     read_optional_beammap_config_value(
-        config, detector_weighting_mode, missing_keys, invalid_keys,
+        config, detector_weighting_mode_name, missing_keys, invalid_keys,
         std::tuple{"beammap", "detector_weighting", "mode"},
         {"const", "ptc", "ptc_after_iter0"});
-    fit_radius_fwhm = 0.0;
+    if (auto parsed = citlali::config::parse_beammap_detector_weighting_mode(
+            detector_weighting_mode_name)) {
+        values.detector_weighting_mode = *parsed;
+    }
     read_optional_beammap_config_value(
-        config, fit_radius_fwhm, missing_keys, invalid_keys,
+        config, values.fitting.fit_radius_fwhm, missing_keys, invalid_keys,
         std::tuple{"beammap", "fitting", "fit_radius_fwhm"}, {}, {0.0});
-    map_fitter.beammap_fit_radius_fwhm = fit_radius_fwhm;
+    return values;
 }
 
 template <class Config, class MissingKeys, class InvalidKeys>
-void read_beammap_scan_band_mask_config(
-    Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys,
-    bool &enabled, int &edge_rows, int &min_row_pixels,
-    int &min_contiguous_rows, double &row_median_sigma_threshold,
-    double &row_sigma_ratio_threshold, double &max_flagged_fraction) {
-    enabled = false;
-    edge_rows = 24;
-    min_row_pixels = 8;
-    min_contiguous_rows = 2;
-    row_median_sigma_threshold = 4.0;
-    row_sigma_ratio_threshold = 2.5;
-    max_flagged_fraction = 0.30;
+citlali::config::BeammapScanBandMaskConfig
+read_beammap_scan_band_mask_config(
+    Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys) {
+    citlali::config::BeammapScanBandMaskConfig values;
     read_optional_beammap_config_value(
-        config, enabled, missing_keys, invalid_keys,
+        config, values.enabled, missing_keys, invalid_keys,
         std::tuple{"beammap", "scan_band_mask", "enabled"});
     read_optional_beammap_config_value(
-        config, edge_rows, missing_keys, invalid_keys,
+        config, values.edge_rows, missing_keys, invalid_keys,
         std::tuple{"beammap", "scan_band_mask", "edge_rows"}, {}, {2});
     read_optional_beammap_config_value(
-        config, min_row_pixels, missing_keys, invalid_keys,
+        config, values.min_row_pixels, missing_keys, invalid_keys,
         std::tuple{"beammap", "scan_band_mask", "min_row_pixels"}, {}, {1});
     read_optional_beammap_config_value(
-        config, min_contiguous_rows, missing_keys, invalid_keys,
+        config, values.min_contiguous_rows, missing_keys, invalid_keys,
         std::tuple{"beammap", "scan_band_mask", "min_contiguous_rows"}, {},
         {1});
     read_optional_beammap_config_value(
-        config, row_median_sigma_threshold, missing_keys, invalid_keys,
+        config, values.row_median_sigma_threshold, missing_keys, invalid_keys,
         std::tuple{"beammap", "scan_band_mask",
                    "row_median_sigma_threshold"},
         {}, {0.0});
     read_optional_beammap_config_value(
-        config, row_sigma_ratio_threshold, missing_keys, invalid_keys,
+        config, values.row_sigma_ratio_threshold, missing_keys, invalid_keys,
         std::tuple{"beammap", "scan_band_mask",
                    "row_sigma_ratio_threshold"},
         {}, {0.0});
     read_optional_beammap_config_value(
-        config, max_flagged_fraction, missing_keys, invalid_keys,
+        config, values.max_flagged_fraction, missing_keys, invalid_keys,
         std::tuple{"beammap", "scan_band_mask", "max_flagged_fraction"}, {},
         {0.0}, {1.0});
+    return values;
 }
 
 template <class Config, class InvalidKeys>

@@ -9,44 +9,26 @@ template<typename CT>
 void Engine::get_beammap_config(CT &config) {
     logger->info("getting beammap config options");
     auto &beammap_config = typed_config.beammap;
-    citlali::pipeline::read_beammap_iteration_config(
-        config, missing_keys, invalid_keys, beammap_iter_max,
-        beammap_iter_tolerance, beammap_convergence_radius_arcsec);
+    const auto beammap_core_config =
+        citlali::pipeline::read_beammap_core_config(
+            config, missing_keys, invalid_keys, logger);
+    citlali::pipeline::sync_beammap_core_controls(
+        *this, beammap_core_config);
 
-    citlali::pipeline::read_beammap_phase_strategy_config(
-        config, missing_keys, invalid_keys, beammap_phase_split_enabled,
-        beammap_locator_iter, beammap_measurement_start_iter);
-    citlali::pipeline::normalize_beammap_phase_strategy(
-        beammap_iter_max, beammap_locator_iter,
-        beammap_measurement_start_iter, logger);
+    const auto beammap_fitting_config =
+        citlali::pipeline::read_beammap_fitting_config(
+            config, missing_keys, invalid_keys);
 
-    citlali::pipeline::read_beammap_reference_config(
-        config, missing_keys, invalid_keys, beammap_reference_det,
-        beammap_subtract_reference, beammap_derotate);
+    const auto beammap_scan_band_mask_config =
+        citlali::pipeline::read_beammap_scan_band_mask_config(
+            config, missing_keys, invalid_keys);
 
-    citlali::pipeline::read_beammap_rfi_mask_config(
-        config, missing_keys, invalid_keys, beammap_rfi_mask_enabled,
-        beammap_rfi_mask_block_size_samples,
-        beammap_rfi_mask_min_good_samples, beammap_rfi_mask_dilate_blocks,
-        beammap_rfi_mask_sigma_threshold, beammap_rfi_mask_sigma_floor,
-        beammap_rfi_mask_max_flagged_fraction);
-
-    citlali::pipeline::read_beammap_fitting_config(
-        config, missing_keys, invalid_keys, beammap_detector_weighting_mode,
-        beammap_fit_radius_fwhm, map_fitter);
-
-    citlali::pipeline::read_beammap_scan_band_mask_config(
-        config, missing_keys, invalid_keys, beammap_scan_band_mask_enabled,
-        beammap_scan_band_mask_edge_rows,
-        beammap_scan_band_mask_min_row_pixels,
-        beammap_scan_band_mask_min_contiguous_rows,
-        beammap_scan_band_mask_row_median_sigma_threshold,
-        beammap_scan_band_mask_row_sigma_ratio_threshold,
-        beammap_scan_band_mask_max_flagged_fraction);
-
-    citlali::pipeline::read_beammap_split_fits_config(
-        config, missing_keys, invalid_keys, beammap_split_fits_by_flag,
-        beammap_split_flag_values, logger);
+    const auto beammap_split_fits_config =
+        citlali::pipeline::read_beammap_split_fits_config(
+            config, missing_keys, invalid_keys, logger);
+    citlali::pipeline::sync_beammap_map_controls(
+        *this, beammap_fitting_config, beammap_scan_band_mask_config,
+        beammap_split_fits_config, map_fitter);
 
     const auto beammap_priors_config =
         citlali::pipeline::read_beammap_priors_config(
@@ -80,18 +62,17 @@ void Engine::get_beammap_config(CT &config) {
     beammap_tod_output_iter =
         citlali::pipeline::default_beammap_tod_output_iter();
 
-    citlali::pipeline::read_beammap_detector_tod_output_config(
-        config, missing_keys, invalid_keys,
-        beammap_detector_tod_output_enabled,
-        beammap_detector_tod_output_subdir_name,
-        beammap_detector_tod_output_n_uniform,
-        beammap_detector_tod_output_n_source_dense);
+    const auto beammap_detector_tod_output_config =
+        citlali::pipeline::read_beammap_detector_tod_output_config(
+            config, missing_keys, invalid_keys);
+    citlali::pipeline::sync_beammap_detector_tod_output_controls(
+        *this, beammap_detector_tod_output_config);
 
     citlali::pipeline::reset_beammap_config_mirror(beammap_config);
     citlali::pipeline::mirror_beammap_core_config(beammap_config, *this);
     citlali::pipeline::mirror_beammap_priors_config(
         beammap_config, beammap_priors_config);
     citlali::pipeline::mirror_beammap_output_and_flagging_config(
-        beammap_config, *this, flagging_vectors,
+        beammap_config, beammap_detector_tod_output_config, flagging_vectors,
         sens_factors_vec, sens_psd_limits_Hz_vec);
 }

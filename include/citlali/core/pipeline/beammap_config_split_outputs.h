@@ -10,29 +10,6 @@ inline std::vector<int> normalized_beammap_split_flag_values(
 }
 
 template <class Logger>
-void normalize_beammap_phase_strategy(int iter_max, int &locator_iter,
-                                      int &measurement_start_iter,
-                                      const Logger &logger) {
-    if (locator_iter != 0) {
-        logger->warn(
-            "beammap.phase_strategy.locator_iter={} requested, but the locator pass must be iter 0; using 0",
-            locator_iter);
-        locator_iter = 0;
-    }
-    if (measurement_start_iter <= locator_iter) {
-        logger->warn(
-            "beammap.phase_strategy.measurement_start_iter={} must be after locator_iter={}; using {}",
-            measurement_start_iter, locator_iter, locator_iter + 1);
-        measurement_start_iter = locator_iter + 1;
-    }
-    if (iter_max <= measurement_start_iter) {
-        logger->warn(
-            "beammap.iter_max={} will not run a measurement pass with measurement_start_iter={}",
-            iter_max, measurement_start_iter);
-    }
-}
-
-template <class Logger>
 void disable_missing_beammap_priors(bool &enabled,
                                     const std::string &filepath,
                                     const Logger &logger) {
@@ -63,17 +40,16 @@ void read_beammap_split_flag_values(Config &config,
 }
 
 template <class Config, class MissingKeys, class InvalidKeys, class Logger>
-void read_beammap_split_fits_config(Config &config, MissingKeys &missing_keys,
-                                    InvalidKeys &invalid_keys,
-                                    bool &enabled,
-                                    std::vector<int> &flag_values,
-                                    const Logger &logger) {
-    enabled = false;
-    flag_values = {0, 1};
+citlali::config::BeammapSplitFitsByFlagConfig
+read_beammap_split_fits_config(Config &config, MissingKeys &missing_keys,
+                               InvalidKeys &invalid_keys,
+                               const Logger &logger) {
+    citlali::config::BeammapSplitFitsByFlagConfig values;
     read_optional_beammap_config_value(
-        config, enabled, missing_keys, invalid_keys,
+        config, values.enabled, missing_keys, invalid_keys,
         std::tuple{"beammap", "split_fits_by_flag", "enabled"});
-    read_beammap_split_flag_values(config, flag_values, logger);
+    read_beammap_split_flag_values(config, values.flag_values, logger);
+    return values;
 }
 
 template <class Config, class InvalidKeys, class SensPsdLimits>
