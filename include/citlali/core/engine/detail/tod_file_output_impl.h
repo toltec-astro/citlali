@@ -7,9 +7,15 @@
 
 template <class map_buffer_t>
 void Engine::add_tod_header(map_buffer_t &mb) {
-    const auto &beammap_iteration_config = typed_config.beammap.iteration;
-    const auto &beammap_phase_config = typed_config.beammap.phase_strategy;
-    const auto &beammap_reference_config = typed_config.beammap.reference;
+    const auto &beammap_settings = citlali::pipeline::beammap_config(*this);
+    const auto &mapmaking_settings =
+        citlali::pipeline::mapmaking_config(*this);
+    const auto &runtime_settings = citlali::pipeline::runtime_config(*this);
+    const auto &timestream_settings =
+        citlali::pipeline::timestream_config(*this);
+    const auto &beammap_iteration_config = beammap_settings.iteration;
+    const auto &beammap_phase_config = beammap_settings.phase_strategy;
+    const auto &beammap_reference_config = beammap_settings.reference;
 
     // loop through viles
     for (const auto & [fkey, fval]: output_paths.tod_filename) {
@@ -27,7 +33,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             telescope.source_name);
 
         // add source flux for beammaps
-        if (typed_config.runtime.reduction_type ==
+        if (runtime_settings.reduction_type ==
             citlali::config::ReductionType::beammap) {
             citlali::pipeline::add_beammap_tod_header_vars(
                 fo, calib, toltec_io.array_name_map,
@@ -38,9 +44,9 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
         citlali::pipeline::add_tod_identity_geometry_vars(
             fo, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
-            telescope.project_id, typed_config.runtime.reduction_type,
-            telescope.obs_goal, typed_config.timestream.type, calib.run_hwpr,
-            typed_config.mapmaking.grouping, typed_config.mapmaking.method,
+            telescope.project_id, runtime_settings.reduction_type,
+            telescope.obs_goal, timestream_settings.type, calib.run_hwpr,
+            mapmaking_settings.grouping, mapmaking_settings.method,
             omb.exposure_time, telescope.pixel_axes,
             telescope.tel_header["Header.Source.Ra"][0],
             telescope.tel_header["Header.Source.Dec"][0],
@@ -51,7 +57,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             toltec_io.array_name_map, RAD_TO_DEG, pi / 2, omb.sig_unit);
 
         citlali::pipeline::add_jinc_shape_config_vars_if_needed(
-            fo, typed_config.mapmaking.method, calib.arrays, jinc_mm.shape_params,
+            fo, mapmaking_settings.method, calib.arrays, jinc_mm.shape_params,
             toltec_io.array_name_map, jinc_mm.r_max);
 
         citlali::pipeline::add_tod_mean_tau_vars(
@@ -90,7 +96,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
         citlali::pipeline::add_oof_header_vars_if_observed(
             fo, telescope.sim_obs, telescope.tel_header, mb,
-            typed_config.runtime.reduction_type,
+            runtime_settings.reduction_type,
             citlali::pipeline::mapmaking_enabled(*this), calib,
             toltec_io.array_name_map, toltec_io.array_wavelength_map);
 
@@ -105,7 +111,8 @@ template <engine_utils::toltecIO::ProdType prod_t>
 void Engine::create_tod_files() {
     // name for std map
     const std::string dir_name = citlali::pipeline::tod_output_directory(
-        output_paths.obsnum_dir_name, typed_config.timestream.output.subdir_name);
+        output_paths.obsnum_dir_name,
+        citlali::pipeline::timestream_config(*this).output.subdir_name);
     constexpr bool is_rtc_stream =
         prod_t == engine_utils::toltecIO::rtc_timestream;
     constexpr auto output_stream =
@@ -117,8 +124,8 @@ void Engine::create_tod_files() {
             engine_utils::toltecIO::toltec, prod_t,
             engine_utils::toltecIO::raw>(
             toltec_io, output_paths.tod_filename, dir_name,
-            typed_config.runtime.reduction_type, observation_identity.obsnum, telescope.sim_obs,
-            output_stream);
+            citlali::pipeline::runtime_config(*this).reduction_type,
+            observation_identity.obsnum, telescope.sim_obs, output_stream);
 
     write_netcdf_atomic(output_paths.tod_filename[name], [&](netCDF::NcFile &fo) {
 

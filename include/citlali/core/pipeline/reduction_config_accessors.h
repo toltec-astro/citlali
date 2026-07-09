@@ -53,6 +53,26 @@ const auto &coadd_config(const Engine &engine) {
 }
 
 template <class Engine>
+auto &beammap_config(Engine &engine) {
+    return reduction_config(engine).beammap;
+}
+
+template <class Engine>
+const auto &beammap_config(const Engine &engine) {
+    return reduction_config(engine).beammap;
+}
+
+template <class Engine>
+auto &pointing_config(Engine &engine) {
+    return reduction_config(engine).pointing;
+}
+
+template <class Engine>
+const auto &pointing_config(const Engine &engine) {
+    return reduction_config(engine).pointing;
+}
+
+template <class Engine>
 auto &noise_config(Engine &engine) {
     return reduction_config(engine).noise;
 }

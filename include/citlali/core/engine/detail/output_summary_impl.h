@@ -3,16 +3,20 @@
 // Engine output implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 void Engine::cli_summary() {
-    const auto &coadd_config = typed_config.coadd;
-    const auto &noise_config = typed_config.noise;
-    const auto &tod_output_config = typed_config.timestream.output;
+    const auto &coadd_settings = citlali::pipeline::coadd_config(*this);
+    const auto &noise_settings = citlali::pipeline::noise_config(*this);
+    const auto &tod_output_config =
+        citlali::pipeline::timestream_config(*this).output;
 
     citlali::pipeline::log_reduction_map_summary(
         logger, observation_identity.obsnum, omb, rtcproc.run_polarization);
     const double mb_size_total =
         citlali::pipeline::log_map_memory_summary(
-            logger, omb, cmb, coadd_config.enabled, noise_config.enabled);
+            logger, omb, cmb, coadd_settings.enabled,
+            noise_settings.enabled);
 
     logger->info("estimated size of all maps {:.2f} GB", mb_size_total);
     logger->info("number of scans: {}",telescope.scan_indices.cols());
@@ -49,8 +53,10 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
 
     citlali::pipeline::write_chunk_summary_log(
         f, in, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION,
-        engine_utils::current_date_time(), typed_config.runtime.reduction_type,
-        typed_config.timestream.type, omb.sig_unit, rtcproc,
+        engine_utils::current_date_time(),
+        citlali::pipeline::runtime_config(*this).reduction_type,
+        citlali::pipeline::timestream_config(*this).type,
+        omb.sig_unit, rtcproc,
         telescope.outer_scans_chunk,
         (calib.apt["flag"].array()!=0).count(),
         tula::alg::median(in.scans.data),
@@ -72,19 +78,23 @@ void Engine::write_map_summary(map_buffer_t &mb) {
         citlali::pipeline::count_map_summary_nonfinite(mb);
     citlali::pipeline::write_map_summary_log(
         f, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION,
-        engine_utils::current_date_time(), typed_config.runtime.reduction_type,
-        typed_config.timestream.type, typed_config.mapmaking.grouping, map_indices.n_maps,
+        engine_utils::current_date_time(),
+        citlali::pipeline::runtime_config(*this).reduction_type,
+        citlali::pipeline::timestream_config(*this).type,
+        citlali::pipeline::mapmaking_config(*this).grouping,
+        map_indices.n_maps,
         mb, nonfinite_counts);
 }
 
 template <mapmaking::MapType map_t, engine_utils::toltecIO::DataType data_t, engine_utils::toltecIO::ProdType prod_t>
 auto Engine::setup_filenames(std::string dir_name) {
     return citlali::pipeline::map_output_filename<map_t, data_t, prod_t>(
-        toltec_io, dir_name, typed_config.runtime.reduction_type, observation_identity.obsnum,
-        telescope.sim_obs);
+        toltec_io, dir_name,
+        citlali::pipeline::runtime_config(*this).reduction_type,
+        observation_identity.obsnum, telescope.sim_obs);
 }
 
 auto Engine::get_map_name(int i) {
     return citlali::pipeline::map_layer_name(
-        i, typed_config.mapmaking.grouping, calib);
+        i, citlali::pipeline::mapmaking_config(*this).grouping, calib);
 }

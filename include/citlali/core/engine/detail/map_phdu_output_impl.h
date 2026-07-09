@@ -4,6 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/engine/detail/map_phdu_output_helpers.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template <typename fits_io_type, class map_buffer_t>
 void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
@@ -17,10 +18,14 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     std::string name = citlali::pipeline::phdu_array_name(
         toltec_io.array_name_map, array_id);
     auto &fits_entry = fits_io->at(i);
-    const auto reduction_type = typed_config.runtime.reduction_type;
-    const auto &beammap_iteration_config = typed_config.beammap.iteration;
-    const auto &beammap_phase_config = typed_config.beammap.phase_strategy;
-    const auto &beammap_reference_config = typed_config.beammap.reference;
+    const auto reduction_type =
+        citlali::pipeline::runtime_config(*this).reduction_type;
+    const auto &beammap_settings = citlali::pipeline::beammap_config(*this);
+    const auto &mapmaking_settings =
+        citlali::pipeline::mapmaking_config(*this);
+    const auto &beammap_iteration_config = beammap_settings.iteration;
+    const auto &beammap_phase_config = beammap_settings.phase_strategy;
+    const auto &beammap_reference_config = beammap_settings.reference;
 
     try {
     citlali::engine_detail::add_phdu_unit_conversion_section(
@@ -39,8 +44,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     citlali::engine_detail::add_phdu_identity_geometry_section(
         fits_entry, mb, telescope, calib, name, CITLALI_GIT_VERSION,
         KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
-        typed_config.runtime.reduction_type, typed_config.timestream.type,
-        typed_config.mapmaking.grouping, typed_config.mapmaking.method,
+        reduction_type, citlali::pipeline::timestream_config(*this).type,
+        mapmaking_settings.grouping, mapmaking_settings.method,
         RAD_TO_DEG, logger);
 
     logger->debug("adding beamsizes");
@@ -55,7 +60,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     // add jinc shape params
     citlali::pipeline::add_phdu_jinc_shape_keys_if_needed(
-        fits_entry, name, logger, typed_config.mapmaking.method, jinc_mm.r_max,
+        fits_entry, name, logger, mapmaking_settings.method, jinc_mm.r_max,
         jinc_mm.shape_params, array_id);
 
     citlali::engine_detail::add_phdu_extinction_apt_oof_section(
@@ -74,7 +79,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     citlali::engine_detail::add_phdu_pointing_telescope_header_section(
         fits_entry, mb, telescope, name, logger, reduction_type,
-        typed_config.pointing);
+        citlali::pipeline::pointing_config(*this));
     } catch (const CCfits::FitsError &e) {
         throw std::runtime_error(
             citlali::pipeline::phdu_write_error_message(
