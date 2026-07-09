@@ -4,9 +4,11 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/config/config_value.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 bool Beammap::is_beammap_locator_iter(Eigen::Index iter) const {
-    const auto &phase_config = typed_config.beammap.phase_strategy;
+    const auto &phase_config =
+        citlali::pipeline::beammap_config(*this).phase_strategy;
     if (!phase_config.enabled) {
         return iter <= 0;
     }
@@ -14,7 +16,8 @@ bool Beammap::is_beammap_locator_iter(Eigen::Index iter) const {
 }
 
 bool Beammap::is_beammap_measurement_iter(Eigen::Index iter) const {
-    const auto &phase_config = typed_config.beammap.phase_strategy;
+    const auto &phase_config =
+        citlali::pipeline::beammap_config(*this).phase_strategy;
     if (!phase_config.enabled) {
         return iter > 0;
     }
@@ -23,7 +26,8 @@ bool Beammap::is_beammap_measurement_iter(Eigen::Index iter) const {
 }
 
 bool Beammap::is_beammap_first_measurement_iter(Eigen::Index iter) const {
-    const auto &phase_config = typed_config.beammap.phase_strategy;
+    const auto &phase_config =
+        citlali::pipeline::beammap_config(*this).phase_strategy;
     if (!phase_config.enabled) {
         return iter == 1;
     }
@@ -32,7 +36,8 @@ bool Beammap::is_beammap_first_measurement_iter(Eigen::Index iter) const {
 }
 
 bool Beammap::has_completed_beammap_measurement_iter(Eigen::Index iter) const {
-    const auto &phase_config = typed_config.beammap.phase_strategy;
+    const auto &phase_config =
+        citlali::pipeline::beammap_config(*this).phase_strategy;
     if (!phase_config.enabled) {
         return iter > 1;
     }
@@ -41,7 +46,7 @@ bool Beammap::has_completed_beammap_measurement_iter(Eigen::Index iter) const {
 }
 
 std::string Beammap::beammap_iter_phase_name(Eigen::Index iter) const {
-    if (!typed_config.beammap.phase_strategy.enabled) {
+    if (!citlali::pipeline::beammap_config(*this).phase_strategy.enabled) {
         return "legacy";
     }
     if (is_beammap_locator_iter(iter)) {
@@ -58,7 +63,8 @@ std::string Beammap::beammap_iter_phase_name(Eigen::Index iter) const {
 
 std::filesystem::path Beammap::resolve_soft_priors_filepath() const {
     namespace fs = std::filesystem;
-    const auto &priors_config = typed_config.beammap.priors;
+    const auto &priors_config =
+        citlali::pipeline::beammap_config(*this).priors;
 
     if (citlali::config::is_empty_or_null_config_value(
             priors_config.filepath)) {

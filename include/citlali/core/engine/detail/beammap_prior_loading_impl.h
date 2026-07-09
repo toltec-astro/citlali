@@ -4,9 +4,11 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/config/config_value.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 bool Beammap::load_soft_priors() {
-    auto &priors_config = typed_config.beammap.priors;
+    auto &priors_config =
+        citlali::pipeline::beammap_config(*this).priors;
     beammap_soft_prior_slots.clear();
     beammap_soft_priors_loaded = false;
     beammap_soft_priors_are_centered = false;

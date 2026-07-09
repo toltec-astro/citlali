@@ -4,6 +4,7 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/engine/detail/beammap_prior_qc_stats.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 void Beammap::update_prior_frame_estimates() {
     beammap_prior_array_center_x_arcsec.clear();
@@ -81,7 +82,8 @@ void Beammap::update_prior_frame_estimates() {
         beammap_prior_array_center_y_arcsec[array] = tula::alg::median(y_vec);
     }
 
-    const auto &priors_config = typed_config.beammap.priors;
+    const auto &priors_config =
+        citlali::pipeline::beammap_config(*this).priors;
     Eigen::Index n_alignment_matches = 0;
     if (priors_config.align_after_iter0 && is_beammap_measurement_iter(current_iter) &&
         p0.rows() == map_indices.n_maps && p0.cols() > 2) {

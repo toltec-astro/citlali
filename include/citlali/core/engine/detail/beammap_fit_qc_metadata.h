@@ -9,6 +9,7 @@
 
 #include <citlali/core/engine/detail/beammap_fit_qc_units_descriptions.h>
 #include <citlali/core/pipeline/map_grouping_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 namespace beammap_fit_qc_schema {
 
@@ -26,8 +27,10 @@ YAML::Node make_metadata(const BeammapState &beammap,
         citlali::pipeline::latest_observation_date(beammap.observation_dates);
     fit_qc_meta["map_grouping"] =
         citlali::pipeline::active_map_grouping_name(beammap);
-    const auto &iteration_config = beammap.typed_config.beammap.iteration;
-    const auto &phase_config = beammap.typed_config.beammap.phase_strategy;
+    const auto &beammap_config =
+        citlali::pipeline::beammap_config(beammap);
+    const auto &iteration_config = beammap_config.iteration;
+    const auto &phase_config = beammap_config.phase_strategy;
     fit_qc_meta["beammap_iter_max"] = iteration_config.max_iterations;
     fit_qc_meta["beammap_iter_tolerance"] = iteration_config.tolerance;
     fit_qc_meta["beammap_convergence_radius_arcsec"] =
@@ -37,13 +40,12 @@ YAML::Node make_metadata(const BeammapState &beammap,
     fit_qc_meta["beammap_locator_iter"] = phase_config.locator_iter;
     fit_qc_meta["beammap_measurement_start_iter"] =
         phase_config.measurement_start_iter;
-    const auto &reference_config = beammap.typed_config.beammap.reference;
+    const auto &reference_config = beammap_config.reference;
     fit_qc_meta["reference_detector_subtracted"] =
         reference_config.subtract_reference_detector;
     fit_qc_meta["reference_det"] = beammap.beammap_reference_det_found;
-    const auto &rfi_config = beammap.typed_config.beammap.rfi_mask;
-    const auto &scan_band_config =
-        beammap.typed_config.beammap.scan_band_mask;
+    const auto &rfi_config = beammap_config.rfi_mask;
+    const auto &scan_band_config = beammap_config.scan_band_mask;
     fit_qc_meta["rfi_mask_enabled"] = rfi_config.enabled;
     fit_qc_meta["rfi_mask_block_size_samples"] =
         rfi_config.block_size_samples;
@@ -59,9 +61,9 @@ YAML::Node make_metadata(const BeammapState &beammap,
         rfi_config.max_flagged_fraction;
     fit_qc_meta["detector_weighting_mode"] =
         std::string(citlali::config::to_string(
-            beammap.typed_config.beammap.detector_weighting_mode));
+            beammap_config.detector_weighting_mode));
     fit_qc_meta["beammap_fit_radius_fwhm"] =
-        beammap.typed_config.beammap.fitting.fit_radius_fwhm;
+        beammap_config.fitting.fit_radius_fwhm;
     fit_qc_meta["rfi_mask_detectors_affected"] =
         static_cast<int>(
             (table_access.apt_or_zero("rfi_masked_scans").array() > 0.0)
@@ -91,7 +93,7 @@ YAML::Node make_metadata(const BeammapState &beammap,
                 .count());
     fit_qc_meta["fit_bound_any"] =
         static_cast<int>((beammap.fit_diag_bound_nhit.array() > 0).count());
-    const auto &priors_config = beammap.typed_config.beammap.priors;
+    const auto &priors_config = beammap_config.priors;
     fit_qc_meta["beammap_priors_enabled"] =
         priors_config.enabled;
     fit_qc_meta["beammap_priors_filepath"] =

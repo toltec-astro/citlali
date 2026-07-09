@@ -6,6 +6,8 @@
 #include <cmath>
 #include <limits>
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 double Beammap::get_prior_derot_elev_rad() const {
     double derot_elev_rad = 0.0;
     auto tel_el_it = telescope.tel_data.find("TelElAct");
@@ -22,14 +24,16 @@ double Beammap::get_prior_derot_elev_rad() const {
 }
 
 double Beammap::effective_prior_max_d2() const {
-    const auto &priors_config = typed_config.beammap.priors;
+    const auto &priors_config =
+        citlali::pipeline::beammap_config(*this).priors;
     return is_beammap_measurement_iter(current_iter)
                ? priors_config.max_d2_after_iter0
                : priors_config.max_d2_iter0;
 }
 
 double Beammap::effective_prior_score_lambda() const {
-    const auto &priors_config = typed_config.beammap.priors;
+    const auto &priors_config =
+        citlali::pipeline::beammap_config(*this).priors;
     return is_beammap_measurement_iter(current_iter)
                ? priors_config.score_lambda_after_iter0
                : priors_config.score_lambda_iter0;
