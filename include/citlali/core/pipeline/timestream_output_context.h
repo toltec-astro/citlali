@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/ordered_writer.h>
+#include <citlali/core/pipeline/output_policy.h>
 
 #include <memory>
 
@@ -27,10 +28,8 @@ inline std::shared_ptr<OrderedWriter> make_ordered_writer_if(bool enabled) {
 template <class Engine>
 TimestreamOutputFlags standard_timestream_output_flags(const Engine &engine) {
     TimestreamOutputFlags flags;
-    flags.write_rtc = engine.run_tod_output && engine.run_tod_output_rtc &&
-                      !engine.tod_filename.empty();
-    flags.write_ptc = engine.run_tod_output && engine.run_tod_output_ptc &&
-                      !engine.tod_filename.empty();
+    flags.write_rtc = raw_tod_output_files_available(engine);
+    flags.write_ptc = processed_tod_output_files_available(engine);
     flags.write_rtcdiag = !engine.rtcdiag_filename.empty();
     flags.write_ptcdiag = !engine.ptcdiag_filename.empty();
     return flags;
@@ -40,9 +39,7 @@ template <class Engine>
 TimestreamOutputFlags beammap_timestream_output_flags(
     const Engine &engine, bool write_outputs) {
     TimestreamOutputFlags flags;
-    flags.write_rtc = write_outputs && engine.run_tod_output &&
-                      engine.run_tod_output_rtc &&
-                      !engine.tod_filename.empty();
+    flags.write_rtc = write_outputs && raw_tod_output_files_available(engine);
     flags.write_rtcdiag = write_outputs && !engine.rtcdiag_filename.empty();
     return flags;
 }

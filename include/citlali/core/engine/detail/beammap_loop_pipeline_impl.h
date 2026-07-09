@@ -4,6 +4,7 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/pipeline/map_diagnostics.h>
+#include <citlali/core/pipeline/output_policy.h>
 
 template <class KidsProc, class RawObs>
 void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
@@ -129,7 +130,7 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         log_final_network_qc_summary();
 
         // add final apt table to timestream files
-        if (run_tod_output && !tod_filename.empty()) {
+        if (citlali::pipeline::tod_output_files_available(*this)) {
             // vectors to hold tangent plane pointing for all ptcs (n_chunks x [n_pts x n_dets])
             std::vector<Eigen::MatrixXd> lat, lon;
 

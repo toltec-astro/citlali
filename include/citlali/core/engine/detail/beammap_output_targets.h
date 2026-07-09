@@ -53,7 +53,7 @@ void write_raw_obs_outputs(BeammapState &beammap,
     beammap.write_stats();
     output_targets.mb->calc_median_err();
 
-    if (beammap.run_tod_output && !beammap.tod_filename.empty()) {
+    if (citlali::pipeline::tod_output_files_available(beammap)) {
         beammap.add_tod_header(output_targets.mb);
     }
 

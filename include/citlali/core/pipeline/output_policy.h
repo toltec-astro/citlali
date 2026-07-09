@@ -4,8 +4,47 @@
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/noise_config.h>
 #include <citlali/core/config/post_processing_config.h>
+#include <citlali/core/config/timestream_config.h>
 
 namespace citlali::pipeline {
+
+template <class Engine>
+bool timestream_processing_enabled(const Engine &engine) {
+    return engine.typed_config.timestream.enabled;
+}
+
+template <class Engine>
+bool tod_output_enabled(const Engine &engine) {
+    return citlali::config::is_tod_output_enabled(
+        engine.typed_config.timestream.output.type);
+}
+
+template <class Engine>
+bool raw_tod_output_enabled(const Engine &engine) {
+    return citlali::config::tod_output_includes_rtc(
+        engine.typed_config.timestream.output.type);
+}
+
+template <class Engine>
+bool processed_tod_output_enabled(const Engine &engine) {
+    return citlali::config::tod_output_includes_ptc(
+        engine.typed_config.timestream.output.type);
+}
+
+template <class Engine>
+bool tod_output_files_available(const Engine &engine) {
+    return tod_output_enabled(engine) && !engine.tod_filename.empty();
+}
+
+template <class Engine>
+bool raw_tod_output_files_available(const Engine &engine) {
+    return raw_tod_output_enabled(engine) && !engine.tod_filename.empty();
+}
+
+template <class Engine>
+bool processed_tod_output_files_available(const Engine &engine) {
+    return processed_tod_output_enabled(engine) && !engine.tod_filename.empty();
+}
 
 template <class Engine>
 bool mapmaking_enabled(const Engine &engine) {

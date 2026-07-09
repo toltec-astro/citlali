@@ -26,7 +26,7 @@ void Lali::output() {
         if constexpr (map_type == mapmaking::RawObs) {
             // write stats file
             write_stats();
-            if (run_tod_output && !tod_filename.empty()) {
+            if (citlali::pipeline::tod_output_files_available(*this)) {
                 // add tod header information
                 add_tod_header(mb);
             }

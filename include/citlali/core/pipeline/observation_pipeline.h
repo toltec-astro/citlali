@@ -1,12 +1,13 @@
 #pragma once
 
+#include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
 namespace citlali::pipeline {
 
 template <class Engine>
 bool should_run_observation_tod(const Engine &engine) {
-    return engine.run_tod;
+    return timestream_processing_enabled(engine);
 }
 
 template <class Engine, class Logger>

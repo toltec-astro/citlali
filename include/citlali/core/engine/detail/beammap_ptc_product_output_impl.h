@@ -4,6 +4,7 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/engine/detail/beammap_ptc_product_output_helpers.h>
+#include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
 void Beammap::clear_beammap_ptc_diagnostics() {
@@ -44,15 +45,14 @@ void Beammap::write_beammap_ptc_diag_sidecar(int output_iter) {
         ptcproc.append_diag_to_netcdf(
             ptcs[i], ptcdiag_filename, calib_scans[i],
             ptcs[i].index.data);
-        if (!(run_tod_output && run_tod_output_ptc &&
-              !tod_filename.empty())) {
+        if (!citlali::pipeline::processed_tod_output_files_available(*this)) {
             ptcproc.clear_cached_diagnostics(ptcs[i].index.data);
         }
     }
 }
 
 void Beammap::write_beammap_processed_ptc_tod(int output_iter) {
-    if (!(run_tod_output && run_tod_output_ptc && !tod_filename.empty())) {
+    if (!citlali::pipeline::processed_tod_output_files_available(*this)) {
         return;
     }
     const auto profile_scope =

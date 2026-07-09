@@ -97,13 +97,13 @@ void Engine::obsnum_setup() {
         fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
     }
     // create timestream files
-    if (run_tod_output) {
+    if (citlali::pipeline::tod_output_enabled(*this)) {
         // make rtc tod output file
-        if (run_tod_output_rtc) {
+        if (citlali::pipeline::raw_tod_output_enabled(*this)) {
             create_tod_files<engine_utils::toltecIO::rtc_timestream>();
         }
         // make ptc tod output file
-        if (run_tod_output_ptc) {
+        if (citlali::pipeline::processed_tod_output_enabled(*this)) {
             create_tod_files<engine_utils::toltecIO::ptc_timestream>();
         }
     }

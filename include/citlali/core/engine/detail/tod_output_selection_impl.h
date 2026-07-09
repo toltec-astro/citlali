@@ -3,6 +3,8 @@
 // Engine member-function implementations split from engine.h.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/output_policy.h>
+
 void Engine::setup_tod_output_chunk_selection() {
     const Eigen::Index n_scans = telescope.scan_indices.cols();
 
@@ -65,7 +67,7 @@ void Engine::setup_tod_output_chunk_selection() {
             uniform_source_chunks, scan_to_output, n_output_scans, logger);
     };
 
-    if (!run_tod_output) {
+    if (!citlali::pipeline::tod_output_enabled(*this)) {
         tod_scan_to_output_scan_rtc.resize(0);
         tod_scan_to_output_scan_ptc.resize(0);
         n_tod_output_scans_rtc = 0;
@@ -75,10 +77,13 @@ void Engine::setup_tod_output_chunk_selection() {
         const auto &output_config = typed_config.timestream.output;
         const auto &rtc_output_config = output_config.raw_time_chunk;
         const auto &ptc_output_config = output_config.processed_time_chunk;
-        setup_one("RTC", run_tod_output_rtc, rtc_output_config,
-                  tod_scan_to_output_scan_rtc, n_tod_output_scans_rtc);
-        setup_one("PTC", run_tod_output_ptc, ptc_output_config,
-                  tod_scan_to_output_scan_ptc, n_tod_output_scans_ptc);
+        setup_one("RTC", citlali::pipeline::raw_tod_output_enabled(*this),
+                  rtc_output_config, tod_scan_to_output_scan_rtc,
+                  n_tod_output_scans_rtc);
+        setup_one("PTC",
+                  citlali::pipeline::processed_tod_output_enabled(*this),
+                  ptc_output_config, tod_scan_to_output_scan_ptc,
+                  n_tod_output_scans_ptc);
     }
 }
 
@@ -87,11 +92,11 @@ bool Engine::should_write_tod_chunk(Eigen::Index scan_index) const {
 }
 
 Eigen::Index Engine::tod_output_scan_row(Eigen::Index scan_index) const {
-    if (run_tod_output_rtc) {
+    if (citlali::pipeline::raw_tod_output_enabled(*this)) {
         return tod_output_scan_row(
             scan_index, citlali::config::TodOutputStream::rtc);
     }
-    if (run_tod_output_ptc) {
+    if (citlali::pipeline::processed_tod_output_enabled(*this)) {
         return tod_output_scan_row(
             scan_index, citlali::config::TodOutputStream::ptc);
     }

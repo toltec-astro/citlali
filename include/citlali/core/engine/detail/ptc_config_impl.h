@@ -3,6 +3,7 @@
 // Engine timestream config implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
 
 template<typename CT>
@@ -34,6 +35,7 @@ void Engine::get_ptc_config(CT &config) {
         typed_second_pass, ptcproc.second_pass_local);
 
     // copy tod output bool for eigenvalues
-    ptcproc.run_tod_output = run_tod_output;
+    ptcproc.run_tod_output =
+        citlali::pipeline::tod_output_enabled(*this);
     ptcproc.write_evals = diagnostics.write_evals;
 }
