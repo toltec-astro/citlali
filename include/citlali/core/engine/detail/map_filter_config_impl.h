@@ -10,7 +10,7 @@ void Engine::get_map_filter_config(CT &config) {
     logger->info("getting map filtering config options");
     auto &post_processing_config = typed_config.post_processing;
     // get wiener filter config options
-    wiener_filter.get_config(config, missing_keys, invalid_keys);
+    wiener_filter.get_config(config, config_diagnostics.missing_keys, config_diagnostics.invalid_keys);
 
     citlali::engine_detail::mirror_wiener_filter_config(
         wiener_filter, RAD_TO_ASEC, post_processing_config);

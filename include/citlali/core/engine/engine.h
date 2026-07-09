@@ -125,7 +125,7 @@ class Engine: public ReductionComponents,
               public EngineRuntimeState {
 public:
     // type for missing/invalid keys
-    using key_vec_t = EngineRuntimeState::key_vec_t;
+    using key_vec_t = citlali::pipeline::ConfigDiagnosticsState::key_vec_t;
 
     // per obsnum setup common to all redu types
     void obsnum_setup();

@@ -10,7 +10,7 @@ template<typename CT>
 void Engine::get_ptc_config(CT &config) {
     logger->info("getting ptc config options");
     // get ptcproc config
-    ptcproc.get_config(config, missing_keys, invalid_keys);
+    ptcproc.get_config(config, config_diagnostics.missing_keys, config_diagnostics.invalid_keys);
     auto &fruit_loops_config = typed_config.timestream.fruit_loops;
     auto &processed_config = typed_config.timestream.processed_time_chunk;
     citlali::pipeline::mirror_fruit_loops_config(

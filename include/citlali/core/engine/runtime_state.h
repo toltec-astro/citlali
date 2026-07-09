@@ -11,6 +11,7 @@
 
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/engine/learning.h>
+#include <citlali/core/pipeline/config_diagnostics_state.h>
 #include <citlali/core/pipeline/interface_sync_state.h>
 #include <citlali/core/pipeline/fruit_loop_iteration_state.h>
 #include <citlali/core/pipeline/map_fits_output_state.h>
@@ -23,9 +24,6 @@
 #include <citlali/core/utils/fits_io.h>
 
 struct EngineRuntimeState {
-    // type for missing/invalid keys
-    using key_vec_t = std::vector<std::vector<std::string>>;
-
     // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
@@ -38,8 +36,8 @@ struct EngineRuntimeState {
     // reduction, observation, coadd, and timestream output paths
     citlali::pipeline::OutputPathState output_paths;
 
-    // vectors to hold missing/invalid keys
-    key_vec_t missing_keys, invalid_keys;
+    // config parse diagnostics
+    citlali::pipeline::ConfigDiagnosticsState config_diagnostics;
 
     // manual interface timing offsets for networks and HWPR
     citlali::pipeline::InterfaceSyncState interface_sync;

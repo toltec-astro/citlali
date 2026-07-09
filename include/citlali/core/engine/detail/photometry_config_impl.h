@@ -35,14 +35,14 @@ void Engine::get_photometry_config(CT &config) {
     source_config = citlali::config::BeammapSourceConfig{};
 
     // beammap source name
-    get_config_value(config, source_config.name, missing_keys, invalid_keys,
+    get_config_value(config, source_config.name, config_diagnostics.missing_keys, config_diagnostics.invalid_keys,
                      std::tuple{"beammap_source","name"});
     // beammap source ra
-    get_config_value(config, source_config.ra_deg, missing_keys, invalid_keys,
+    get_config_value(config, source_config.ra_deg, config_diagnostics.missing_keys, config_diagnostics.invalid_keys,
                      std::tuple{"beammap_source","ra_deg"});
 
     // beammap source dec
-    get_config_value(config, source_config.dec_deg, missing_keys, invalid_keys,
+    get_config_value(config, source_config.dec_deg, config_diagnostics.missing_keys, config_diagnostics.invalid_keys,
                      std::tuple{"beammap_source","dec_deg"});
 
     // get source fluxes

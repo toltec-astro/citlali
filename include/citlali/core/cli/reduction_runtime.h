@@ -29,8 +29,12 @@ bool prepare_reduction_runtime(TodProc &todproc, Config &config,
 
 template <class Engine>
 void report_engine_config_errors(const Engine &engine, std::ostream &os) {
-    os << fmt::format("missing keys={}", engine.missing_keys) << "\n";
-    os << fmt::format("invalid keys={}", engine.invalid_keys) << "\n";
+    os << fmt::format("missing keys={}",
+                      engine.config_diagnostics.missing_keys)
+       << "\n";
+    os << fmt::format("invalid keys={}",
+                      engine.config_diagnostics.invalid_keys)
+       << "\n";
 }
 
 template <class TodProc, class Config, class Logger,

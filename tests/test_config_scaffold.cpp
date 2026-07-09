@@ -168,8 +168,10 @@ struct FakeEngine {
     int hwpr_end_indices = -1;
     std::string loaded_astrometry_config;
     std::string loaded_photometry_config;
-    std::vector<std::string> missing_keys;
-    std::vector<std::string> invalid_keys;
+    struct {
+        std::vector<std::string> missing_keys;
+        std::vector<std::string> invalid_keys;
+    } config_diagnostics;
     struct {
         std::vector<std::string> date_obs;
     } observation_dates;
@@ -1704,7 +1706,7 @@ TEST(cli_reduction_runtime, prepares_reduction_runtime) {
 
 TEST(cli_reduction_runtime, rejects_invalid_reduction_runtime) {
     FakeInitialObservationTodProc todproc;
-    todproc.engine().missing_keys = {"runtime"};
+    todproc.engine().config_diagnostics.missing_keys = {"runtime"};
     FakeCitlaliConfig config;
     auto logger = std::make_shared<FakeLogger>();
     int enable_debug_calls = 0;
@@ -2162,8 +2164,8 @@ TEST(pipeline_preflight, loads_valid_engine_config) {
 
 TEST(pipeline_preflight, rejects_invalid_engine_config) {
     FakeEngine engine;
-    engine.missing_keys = {"runtime"};
-    engine.invalid_keys = {"mapmaking.pixel_size"};
+    engine.config_diagnostics.missing_keys = {"runtime"};
+    engine.config_diagnostics.invalid_keys = {"mapmaking.pixel_size"};
     FakeCitlaliConfig config;
     auto logger = std::make_shared<FakeLogger>();
 

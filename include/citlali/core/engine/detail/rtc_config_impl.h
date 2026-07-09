@@ -9,7 +9,7 @@ template<typename CT>
 void Engine::get_rtc_config(CT &config) {
     logger->info("getting rtc config options");
     // get rtcproc config
-    rtcproc.get_config(config, missing_keys, invalid_keys);
+    rtcproc.get_config(config, config_diagnostics.missing_keys, config_diagnostics.invalid_keys);
     auto &raw_config = typed_config.timestream.raw_time_chunk;
     citlali::pipeline::mirror_raw_despike_config(
         raw_config.despike, rtcproc);
@@ -43,6 +43,6 @@ void Engine::get_rtc_config(CT &config) {
     citlali::pipeline::configure_raw_tod_output_context(telescope, rtcproc);
 
     // ignore hwpr?
-    get_config_value(config, calib.ignore_hwpr, missing_keys, invalid_keys,
+    get_config_value(config, calib.ignore_hwpr, config_diagnostics.missing_keys, config_diagnostics.invalid_keys,
                      std::tuple{"timestream","polarimetry", "ignore_hwpr"});
 }
