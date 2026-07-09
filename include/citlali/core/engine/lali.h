@@ -34,6 +34,10 @@ public:
     void finalize_lali_map_fits_outputs(
         std::vector<FitsOutput> &data_outputs,
         std::vector<FitsOutput> &noise_outputs);
+    template <typename FitsIoVector>
+    void write_lali_map_fits_products(FitsIoVector *f_io,
+                                      FitsIoVector *n_io,
+                                      mapmaking::MapBuffer *mb);
     template <mapmaking::MapType map_type>
     void output();
 };

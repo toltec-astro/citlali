@@ -48,6 +48,49 @@ void Lali::finalize_lali_map_fits_outputs(
     }
 }
 
+template <typename FitsIoVector>
+void Lali::write_lali_map_fits_products(FitsIoVector *f_io,
+                                        FitsIoVector *n_io,
+                                        mapmaking::MapBuffer *mb) {
+    if (f_io->empty()) {
+        return;
+    }
+
+    {
+        // progress bar
+        tula::logging::progressbar pb(
+            [&](const auto &msg) { logger->info("{}", msg); }, 100,
+            "output progress ");
+
+        for (Eigen::Index i=0; i<f_io->size(); ++i) {
+            // get the array for the given map
+            // add primary hdu
+            logger->debug("adding primary header to file {}",i);
+            add_phdu(f_io, mb, i);
+
+            // add primary hdu to noise maps
+            if (!mb->noise.empty() && !n_io->empty()) {
+                logger->debug("adding primary header to noise file {}",i);
+                add_phdu(n_io, mb, i);
+            }
+        }
+
+        logger->debug("done adding primary headers");
+
+        // write the maps
+        for (Eigen::Index i=0; i<map_indices.n_maps; ++i) {
+            // update progress bar
+            pb.count(map_indices.n_maps, 1);
+            write_maps(f_io,n_io,mb,i);
+        }
+    }
+
+    logger->info("maps have been written to:");
+    for (Eigen::Index i=0; i<f_io->size(); ++i) {
+        logger->info("{}.fits",f_io->at(i).filepath);
+    }
+}
+
 template <mapmaking::MapType map_type>
 void Lali::output() {
     // pointer to map buffer
@@ -85,40 +128,7 @@ void Lali::output() {
 
     if (citlali::pipeline::mapmaking_outputs_enabled(*this)) {
         // wiener filtered maps write before this and are deleted from the vector.
-        if (!f_io->empty()) {
-            {
-                // progress bar
-                tula::logging::progressbar pb(
-                    [&](const auto &msg) { logger->info("{}", msg); }, 100, "output progress ");
-
-                for (Eigen::Index i=0; i<f_io->size(); ++i) {
-                    // get the array for the given map
-                    // add primary hdu
-                    logger->debug("adding primary header to file {}",i);
-                    add_phdu(f_io, mb, i);
-
-                    // add primary hdu to noise maps
-                    if (!mb->noise.empty() && !n_io->empty()) {
-                        logger->debug("adding primary header to noise file {}",i);
-                        add_phdu(n_io, mb, i);
-                    }
-                }
-
-                logger->debug("done adding primary headers");
-
-                // write the maps
-                for (Eigen::Index i=0; i<map_indices.n_maps; ++i) {
-                    // update progress bar
-                    pb.count(map_indices.n_maps, 1);
-                    write_maps(f_io,n_io,mb,i);
-                }
-            }
-
-            logger->info("maps have been written to:");
-            for (Eigen::Index i=0; i<f_io->size(); ++i) {
-                logger->info("{}.fits",f_io->at(i).filepath);
-            }
-        }
+        write_lali_map_fits_products(f_io, n_io, mb);
 
         // clear fits file vectors to ensure its closed.
         finalize_lali_map_fits_outputs(*f_io, *n_io);
