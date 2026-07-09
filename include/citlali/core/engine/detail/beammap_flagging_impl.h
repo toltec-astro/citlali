@@ -235,6 +235,97 @@ void Beammap::flag_beammap_position_outliers(
     });
 }
 
+Beammap::BeammapPriorDistanceFrame Beammap::beammap_prior_distance_frame() {
+    double prior_derot_elev_rad = telescope.tel_data["TelElAct"].mean();
+    if (!std::isfinite(prior_derot_elev_rad)) {
+        prior_derot_elev_rad = 0.0;
+    }
+    if (std::abs(prior_derot_elev_rad) > pi) {
+        prior_derot_elev_rad *= DEG_TO_RAD;
+    }
+
+    BeammapPriorDistanceFrame frame;
+    frame.apply_derot =
+        beammap_soft_priors_are_derotated &&
+        citlali::config::is_altaz_map_pixel_axes(telescope.pixel_axes);
+    frame.cos_rot = std::cos(-prior_derot_elev_rad);
+    frame.sin_rot = std::sin(-prior_derot_elev_rad);
+    return frame;
+}
+
+bool Beammap::beammap_soft_prior_slot_valid(const SoftPriorSlot &slot) const {
+    return std::isfinite(slot.x_arcsec) && std::isfinite(slot.y_arcsec) &&
+           std::isfinite(slot.sx_arcsec) && std::isfinite(slot.sy_arcsec) &&
+           slot.sx_arcsec > 0.0 && slot.sy_arcsec > 0.0;
+}
+
+double Beammap::beammap_detector_prior_distance2(
+    Eigen::Index detector_index,
+    const Beammap::BeammapArrayPositionMedians &array_position_medians,
+    const Beammap::BeammapPriorDistanceFrame &frame) {
+    const int array_index = static_cast<int>(std::lround(calib.apt["array"](detector_index)));
+    const int nw_index = static_cast<int>(std::lround(calib.apt["nw"](detector_index)));
+    std::string array_name = toltec_io.array_name_map[array_index];
+
+    auto slots_it = beammap_soft_prior_slots.find({array_index, nw_index});
+    if (slots_it == beammap_soft_prior_slots.end() || slots_it->second.empty()) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+
+    double x_arcsec = calib.apt["x_t"](detector_index);
+    double y_arcsec = calib.apt["y_t"](detector_index);
+    if (!std::isfinite(x_arcsec) || !std::isfinite(y_arcsec)) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+
+    if (beammap_soft_priors_are_centered) {
+        auto x_it = array_position_medians.x_t.find(array_name);
+        auto y_it = array_position_medians.y_t.find(array_name);
+        const double median_x = (x_it != array_position_medians.x_t.end()) ? x_it->second : 0.0;
+        const double median_y = (y_it != array_position_medians.y_t.end()) ? y_it->second : 0.0;
+        x_arcsec -= median_x;
+        y_arcsec -= median_y;
+    }
+
+    if (frame.apply_derot) {
+        const double rot_az_off = frame.cos_rot * x_arcsec - frame.sin_rot * y_arcsec;
+        const double rot_alt_off = frame.sin_rot * x_arcsec + frame.cos_rot * y_arcsec;
+        x_arcsec = -rot_az_off;
+        y_arcsec = -rot_alt_off;
+    }
+
+    double min_d2 = std::numeric_limits<double>::infinity();
+    for (const auto &slot : slots_it->second) {
+        if (!beammap_soft_prior_slot_valid(slot)) {
+            continue;
+        }
+        const double dx = (x_arcsec - slot.x_arcsec) / slot.sx_arcsec;
+        const double dy = (y_arcsec - slot.y_arcsec) / slot.sy_arcsec;
+        const double d2 = dx * dx + dy * dy;
+        if (std::isfinite(d2) && d2 < min_d2) {
+            min_d2 = d2;
+        }
+    }
+    return min_d2;
+}
+
+void Beammap::flag_beammap_prior_distance_detector(
+    Eigen::Index detector_index,
+    double max_prior_d2,
+    const Beammap::BeammapArrayPositionMedians &array_position_medians,
+    const Beammap::BeammapPriorDistanceFrame &frame,
+    std::atomic<int> &n_prior_dist_hits,
+    std::atomic<int> &n_flagged_dets) {
+    const double min_d2 =
+        beammap_detector_prior_distance2(detector_index, array_position_medians, frame);
+    if (!std::isfinite(min_d2) || min_d2 <= max_prior_d2) {
+        return;
+    }
+
+    n_prior_dist_hits++;
+    mark_beammap_detector_flagged(detector_index, AptFlags::PriorDist, n_flagged_dets);
+}
+
 void Beammap::flag_beammap_prior_distance_outliers(
     double max_prior_d2,
     const Beammap::BeammapArrayPositionMedians &array_position_medians,
@@ -253,73 +344,14 @@ void Beammap::flag_beammap_prior_distance_outliers(
         return;
     }
 
-    double prior_derot_elev_rad = telescope.tel_data["TelElAct"].mean();
-    if (!std::isfinite(prior_derot_elev_rad)) {
-        prior_derot_elev_rad = 0.0;
-    }
-    if (std::abs(prior_derot_elev_rad) > pi) {
-        prior_derot_elev_rad *= DEG_TO_RAD;
-    }
-    const bool apply_derot =
-        beammap_soft_priors_are_derotated &&
-        citlali::config::is_altaz_map_pixel_axes(telescope.pixel_axes);
-    const double cos_rot = std::cos(-prior_derot_elev_rad);
-    const double sin_rot = std::sin(-prior_derot_elev_rad);
+    const auto frame = beammap_prior_distance_frame();
     std::atomic<int> n_prior_dist_hits{0};
 
     logger->debug("flagging detector prior distances");
     grppi::map(tula::grppi_utils::dyn_ex(runtime_parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-        const int array_index = static_cast<int>(std::lround(calib.apt["array"](i)));
-        const int nw_index = static_cast<int>(std::lround(calib.apt["nw"](i)));
-        std::string array_name = toltec_io.array_name_map[array_index];
-
-        auto slots_it = beammap_soft_prior_slots.find({array_index, nw_index});
-        if (slots_it == beammap_soft_prior_slots.end() || slots_it->second.empty()) {
-            return 0;
-        }
-
-        double x_arcsec = calib.apt["x_t"](i);
-        double y_arcsec = calib.apt["y_t"](i);
-        if (!std::isfinite(x_arcsec) || !std::isfinite(y_arcsec)) {
-            return 0;
-        }
-
-        if (beammap_soft_priors_are_centered) {
-            auto x_it = array_position_medians.x_t.find(array_name);
-            auto y_it = array_position_medians.y_t.find(array_name);
-            const double median_x = (x_it != array_position_medians.x_t.end()) ? x_it->second : 0.0;
-            const double median_y = (y_it != array_position_medians.y_t.end()) ? y_it->second : 0.0;
-            x_arcsec -= median_x;
-            y_arcsec -= median_y;
-        }
-
-        if (apply_derot) {
-            const double rot_az_off = cos_rot * x_arcsec - sin_rot * y_arcsec;
-            const double rot_alt_off = sin_rot * x_arcsec + cos_rot * y_arcsec;
-            x_arcsec = -rot_az_off;
-            y_arcsec = -rot_alt_off;
-        }
-
-        double min_d2 = std::numeric_limits<double>::infinity();
-        for (const auto &slot : slots_it->second) {
-            if (!std::isfinite(slot.x_arcsec) || !std::isfinite(slot.y_arcsec) ||
-                !std::isfinite(slot.sx_arcsec) || !std::isfinite(slot.sy_arcsec) ||
-                slot.sx_arcsec <= 0.0 || slot.sy_arcsec <= 0.0) {
-                continue;
-            }
-            const double dx = (x_arcsec - slot.x_arcsec) / slot.sx_arcsec;
-            const double dy = (y_arcsec - slot.y_arcsec) / slot.sy_arcsec;
-            const double d2 = dx * dx + dy * dy;
-            if (std::isfinite(d2) && d2 < min_d2) {
-                min_d2 = d2;
-            }
-        }
-        if (!std::isfinite(min_d2) || min_d2 <= max_prior_d2) {
-            return 0;
-        }
-
-        n_prior_dist_hits++;
-        mark_beammap_detector_flagged(i, AptFlags::PriorDist, n_flagged_dets);
+        flag_beammap_prior_distance_detector(
+            i, max_prior_d2, array_position_medians, frame,
+            n_prior_dist_hits, n_flagged_dets);
         return 0;
     });
 

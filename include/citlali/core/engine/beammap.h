@@ -225,6 +225,12 @@ public:
         std::map<std::string, double> y_t;
     };
 
+    struct BeammapPriorDistanceFrame {
+        bool apply_derot = false;
+        double cos_rot = 1.0;
+        double sin_rot = 0.0;
+    };
+
     bool beammap_soft_priors_loaded = false;
     bool beammap_soft_priors_are_centered = false;
     bool beammap_soft_priors_are_derotated = false;
@@ -683,6 +689,19 @@ public:
         const citlali::pipeline::BeammapArrayFlaggingLimits &flag_limits,
         BeammapArrayPositionMedians &array_position_medians,
         const std::string &runtime_parallel_policy,
+        std::atomic<int> &n_flagged_dets);
+    BeammapPriorDistanceFrame beammap_prior_distance_frame();
+    bool beammap_soft_prior_slot_valid(const SoftPriorSlot &slot) const;
+    double beammap_detector_prior_distance2(
+        Eigen::Index detector_index,
+        const BeammapArrayPositionMedians &array_position_medians,
+        const BeammapPriorDistanceFrame &frame);
+    void flag_beammap_prior_distance_detector(
+        Eigen::Index detector_index,
+        double max_prior_d2,
+        const BeammapArrayPositionMedians &array_position_medians,
+        const BeammapPriorDistanceFrame &frame,
+        std::atomic<int> &n_prior_dist_hits,
         std::atomic<int> &n_flagged_dets);
     void flag_beammap_prior_distance_outliers(
         double max_prior_d2,
