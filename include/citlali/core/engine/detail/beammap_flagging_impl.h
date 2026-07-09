@@ -4,6 +4,7 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/pipeline/runtime_policy.h>
+#include <citlali/core/pipeline/beammap_config_fitting_flagging.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 void Beammap::mark_beammap_detector_flagged(
@@ -15,6 +16,58 @@ void Beammap::mark_beammap_detector_flagged(
         calib.apt["flag"](detector_index) = 1;
     }
     flag2(detector_index) |= flag;
+}
+
+void Beammap::flag_beammap_fit_quality_outliers(
+    const citlali::pipeline::BeammapArrayFlaggingLimits &flag_limits,
+    const std::string &runtime_parallel_policy,
+    std::atomic<int> &n_flagged_dets) {
+    logger->info("flagging detectors");
+    grppi::map(tula::grppi_utils::dyn_ex(runtime_parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+        auto array_index = calib.apt["array"](i);
+        std::string array_name = toltec_io.array_name_map[array_index];
+
+        double map_std_dev = calc_map_support_stddev(i, true);
+        const bool valid_map_std = std::isfinite(map_std_dev) && map_std_dev > 0.0;
+
+        const bool finite_params = params.row(i).array().isFinite().all();
+        const bool finite_perrors = perrors.row(i).array().isFinite().all();
+        const bool positive_amp = std::isfinite(params(i,0)) && params(i,0) > 0.0;
+        const bool positive_fwhm =
+            std::isfinite(calib.apt["a_fwhm"](i)) && std::isfinite(calib.apt["b_fwhm"](i)) &&
+            calib.apt["a_fwhm"](i) > 0.0 && calib.apt["b_fwhm"](i) > 0.0;
+        if (!(finite_params && finite_perrors && positive_amp && positive_fwhm && valid_map_std)) {
+            good_fits(i) = false;
+        }
+
+        if (std::isfinite(perrors(i,0)) && perrors(i,0) > 0) {
+            calib.apt["sig2noise"](i) = params(i,0)/perrors(i,0);
+        } else {
+            calib.apt["sig2noise"](i) = 0;
+        }
+
+        if (!good_fits(i)) {
+            mark_beammap_detector_flagged(i, AptFlags::BadFit, n_flagged_dets);
+        }
+        if (calib.apt["a_fwhm"](i) < flag_limits.lower_fwhm_arcsec.at(array_name) ||
+            ((calib.apt["a_fwhm"](i) > flag_limits.upper_fwhm_arcsec.at(array_name)) &&
+             flag_limits.upper_fwhm_arcsec.at(array_name) > 0)) {
+            mark_beammap_detector_flagged(i, AptFlags::AzFWHM, n_flagged_dets);
+        }
+        if (calib.apt["b_fwhm"](i) < flag_limits.lower_fwhm_arcsec.at(array_name) ||
+            ((calib.apt["b_fwhm"](i) > flag_limits.upper_fwhm_arcsec.at(array_name) &&
+              flag_limits.upper_fwhm_arcsec.at(array_name) > 0))) {
+            mark_beammap_detector_flagged(i, AptFlags::ElFWHM, n_flagged_dets);
+        }
+        const double map_sig2noise = valid_map_std ? params(i,0)/map_std_dev : 0.0;
+        if (!std::isfinite(map_sig2noise) ||
+            (map_sig2noise < flag_limits.lower_sig2noise.at(array_name)) ||
+            ((map_sig2noise > flag_limits.upper_sig2noise.at(array_name)) &&
+             (flag_limits.upper_sig2noise.at(array_name) > 0))) {
+            mark_beammap_detector_flagged(i, AptFlags::Sig2Noise, n_flagged_dets);
+        }
+        return 0;
+    });
 }
 
 std::map<Eigen::Index, double> Beammap::beammap_network_median_sensitivities() {
@@ -51,6 +104,25 @@ std::map<Eigen::Index, double> Beammap::beammap_network_median_sensitivities() {
     }
 
     return nw_median_sens;
+}
+
+void Beammap::flag_beammap_sensitivity_outliers(
+    std::map<Eigen::Index, double> &nw_median_sens,
+    double lower_sens_factor,
+    double upper_sens_factor,
+    const std::string &runtime_parallel_policy,
+    std::atomic<int> &n_flagged_dets) {
+    logger->debug("flagging sensitivities");
+    grppi::map(tula::grppi_utils::dyn_ex(runtime_parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+        auto nw_index = calib.apt["nw"](i);
+
+        if (calib.apt["sens"](i) < lower_sens_factor*nw_median_sens[nw_index] ||
+            (calib.apt["sens"](i) > upper_sens_factor*nw_median_sens[nw_index] && upper_sens_factor > 0)) {
+            mark_beammap_detector_flagged(i, AptFlags::Sens, n_flagged_dets);
+        }
+
+        return 0;
+    });
 }
 
 Beammap::BeammapArrayPositionMedians Beammap::beammap_array_position_medians() {
@@ -95,6 +167,28 @@ Beammap::BeammapArrayPositionMedians Beammap::beammap_array_position_medians() {
     }
 
     return medians;
+}
+
+void Beammap::flag_beammap_position_outliers(
+    const citlali::pipeline::BeammapArrayFlaggingLimits &flag_limits,
+    Beammap::BeammapArrayPositionMedians &array_position_medians,
+    const std::string &runtime_parallel_policy,
+    std::atomic<int> &n_flagged_dets) {
+    logger->debug("flagging detector positions");
+    grppi::map(tula::grppi_utils::dyn_ex(runtime_parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
+        auto array_index = calib.apt["array"](i);
+        std::string array_name = toltec_io.array_name_map[array_index];
+
+        double dist = sqrt(pow(calib.apt["x_t"](i) - array_position_medians.x_t[array_name],2) +
+                           pow(calib.apt["y_t"](i) - array_position_medians.y_t[array_name],2));
+
+        if (dist > flag_limits.max_dist_arcsec.at(array_name) &&
+            flag_limits.max_dist_arcsec.at(array_name) > 0) {
+            mark_beammap_detector_flagged(i, AptFlags::Position, n_flagged_dets);
+        }
+
+        return 0;
+    });
 }
 
 void Beammap::flag_beammap_prior_distance_outliers(
@@ -251,99 +345,18 @@ void Beammap::set_apt_flags() {
     const auto runtime_parallel_policy =
         citlali::pipeline::runtime_parallel_policy_name(*this);
 
-    logger->info("flagging detectors");
-    // first flag based on fit values and signal-to-noise
-    grppi::map(tula::grppi_utils::dyn_ex(runtime_parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-        // get array of current detector
-        auto array_index = calib.apt["array"](i);
-        std::string array_name = toltec_io.array_name_map[array_index];
-
-        // calculate map standard deviation
-        double map_std_dev = calc_map_support_stddev(i, true);
-        const bool valid_map_std = std::isfinite(map_std_dev) && map_std_dev > 0.0;
-
-        // reject non-physical fit results before threshold checks
-        const bool finite_params = params.row(i).array().isFinite().all();
-        const bool finite_perrors = perrors.row(i).array().isFinite().all();
-        const bool positive_amp = std::isfinite(params(i,0)) && params(i,0) > 0.0;
-        const bool positive_fwhm =
-            std::isfinite(calib.apt["a_fwhm"](i)) && std::isfinite(calib.apt["b_fwhm"](i)) &&
-            calib.apt["a_fwhm"](i) > 0.0 && calib.apt["b_fwhm"](i) > 0.0;
-        if (!(finite_params && finite_perrors && positive_amp && positive_fwhm && valid_map_std)) {
-            good_fits(i) = false;
-        }
-
-        // set apt signal to noise
-        if (std::isfinite(perrors(i,0)) && perrors(i,0) > 0) {
-            calib.apt["sig2noise"](i) = params(i,0)/perrors(i,0);
-        } else {
-            calib.apt["sig2noise"](i) = 0;
-        }
-
-        // flag bad fits
-        if (!good_fits(i)) {
-            mark_beammap_detector_flagged(i, AptFlags::BadFit, n_flagged_dets);
-        }
-        // flag detectors with outlier a_fwhm values
-        if (calib.apt["a_fwhm"](i) < flag_limits.lower_fwhm_arcsec.at(array_name) ||
-            ((calib.apt["a_fwhm"](i) > flag_limits.upper_fwhm_arcsec.at(array_name)) &&
-             flag_limits.upper_fwhm_arcsec.at(array_name) > 0)) {
-            mark_beammap_detector_flagged(i, AptFlags::AzFWHM, n_flagged_dets);
-        }
-        // flag detectors with outlier b_fwhm values
-        if (calib.apt["b_fwhm"](i) < flag_limits.lower_fwhm_arcsec.at(array_name) ||
-            ((calib.apt["b_fwhm"](i) > flag_limits.upper_fwhm_arcsec.at(array_name) &&
-              flag_limits.upper_fwhm_arcsec.at(array_name) > 0))) {
-            mark_beammap_detector_flagged(i, AptFlags::ElFWHM, n_flagged_dets);
-        }
-        // flag detectors with outlier S/N values
-        const double map_sig2noise = valid_map_std ? params(i,0)/map_std_dev : 0.0;
-        if (!std::isfinite(map_sig2noise) ||
-            (map_sig2noise < flag_limits.lower_sig2noise.at(array_name)) ||
-            ((map_sig2noise > flag_limits.upper_sig2noise.at(array_name)) &&
-             (flag_limits.upper_sig2noise.at(array_name) > 0))) {
-            mark_beammap_detector_flagged(i, AptFlags::Sig2Noise, n_flagged_dets);
-        }
-        return 0;
-    });
+    flag_beammap_fit_quality_outliers(
+        flag_limits, runtime_parallel_policy, n_flagged_dets);
 
     auto nw_median_sens = beammap_network_median_sensitivities();
-    // flag too low/high sensitivies based on the median unflagged sensitivity of each nw
-    logger->debug("flagging sensitivities");
-    grppi::map(tula::grppi_utils::dyn_ex(runtime_parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-        // get nw of current detector
-        auto nw_index = calib.apt["nw"](i);
-
-        // flag outlier sensitivities
-        if (calib.apt["sens"](i) < lower_sens_factor*nw_median_sens[nw_index] ||
-            (calib.apt["sens"](i) > upper_sens_factor*nw_median_sens[nw_index] && upper_sens_factor > 0)) {
-            mark_beammap_detector_flagged(i, AptFlags::Sens, n_flagged_dets);
-        }
-
-        return 0;
-    });
+    flag_beammap_sensitivity_outliers(
+        nw_median_sens, lower_sens_factor, upper_sens_factor,
+        runtime_parallel_policy, n_flagged_dets);
 
     auto array_position_medians = beammap_array_position_medians();
-
-    // remove detectors above distance limits
-    logger->debug("flagging detector positions");
-    grppi::map(tula::grppi_utils::dyn_ex(runtime_parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
-        // get array of current detector
-        auto array_index = calib.apt["array"](i);
-        std::string array_name = toltec_io.array_name_map[array_index];
-
-        // calculate distance of detector from mean position of all detectors
-        double dist = sqrt(pow(calib.apt["x_t"](i) - array_position_medians.x_t[array_name],2) +
-                           pow(calib.apt["y_t"](i) - array_position_medians.y_t[array_name],2));
-
-        // flag detectors that are further than the mean value than the distance limit
-        if (dist > flag_limits.max_dist_arcsec.at(array_name) &&
-            flag_limits.max_dist_arcsec.at(array_name) > 0) {
-            mark_beammap_detector_flagged(i, AptFlags::Position, n_flagged_dets);
-        }
-
-        return 0;
-    });
+    flag_beammap_position_outliers(
+        flag_limits, array_position_medians,
+        runtime_parallel_policy, n_flagged_dets);
 
     flag_beammap_prior_distance_outliers(
         flagging_config.max_prior_d2, array_position_medians,

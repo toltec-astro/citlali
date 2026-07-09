@@ -27,6 +27,10 @@ using timestream::PTCProc;
 // selects the type of TCData
 using timestream::TCDataKind;
 
+namespace citlali::pipeline {
+struct BeammapArrayFlaggingLimits;
+}
+
 class Beammap: public Engine {
 public:
     struct SoftPriorSlot {
@@ -454,8 +458,23 @@ public:
         Eigen::Index detector_index,
         AptFlags flag,
         std::atomic<int> &n_flagged_dets);
+    void flag_beammap_fit_quality_outliers(
+        const citlali::pipeline::BeammapArrayFlaggingLimits &flag_limits,
+        const std::string &runtime_parallel_policy,
+        std::atomic<int> &n_flagged_dets);
     std::map<Eigen::Index, double> beammap_network_median_sensitivities();
+    void flag_beammap_sensitivity_outliers(
+        std::map<Eigen::Index, double> &nw_median_sens,
+        double lower_sens_factor,
+        double upper_sens_factor,
+        const std::string &runtime_parallel_policy,
+        std::atomic<int> &n_flagged_dets);
     BeammapArrayPositionMedians beammap_array_position_medians();
+    void flag_beammap_position_outliers(
+        const citlali::pipeline::BeammapArrayFlaggingLimits &flag_limits,
+        BeammapArrayPositionMedians &array_position_medians,
+        const std::string &runtime_parallel_policy,
+        std::atomic<int> &n_flagged_dets);
     void flag_beammap_prior_distance_outliers(
         double max_prior_d2,
         const BeammapArrayPositionMedians &array_position_medians,
