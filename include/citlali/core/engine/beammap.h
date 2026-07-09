@@ -513,8 +513,34 @@ public:
     BeammapPriorFrameCenterSamples collect_beammap_prior_frame_center_samples();
     void apply_beammap_prior_frame_center_samples(
         const BeammapPriorFrameCenterSamples &center_samples);
+    bool is_beammap_prior_alignment_sample_candidate(
+        Eigen::Index map_index);
+    bool make_beammap_prior_alignment_pair(
+        Eigen::Index map_index,
+        const citlali::config::BeammapPriorsConfig &priors_config,
+        double derot_elev_rad,
+        int &array,
+        BeammapPriorAlignmentPair &pair);
     BeammapPriorAlignmentSamples collect_beammap_prior_alignment_samples(
         const citlali::config::BeammapPriorsConfig &priors_config);
+    std::pair<double, double> median_beammap_prior_alignment_translation(
+        const std::vector<BeammapPriorAlignmentPair> &pairs) const;
+    double fit_beammap_prior_alignment_rotation(
+        const std::vector<BeammapPriorAlignmentPair> &pairs,
+        const citlali::config::BeammapPriorsConfig &priors_config,
+        const std::string &label,
+        double tx,
+        double ty) const;
+    std::pair<double, double> median_beammap_prior_alignment_translation_after_rotation(
+        const std::vector<BeammapPriorAlignmentPair> &pairs,
+        double cos_theta,
+        double sin_theta) const;
+    double beammap_prior_alignment_rms(
+        const std::vector<BeammapPriorAlignmentPair> &pairs,
+        double cos_theta,
+        double sin_theta,
+        double tx,
+        double ty) const;
     bool fit_beammap_prior_alignment(
         const std::vector<BeammapPriorAlignmentPair> &pairs,
         const citlali::config::BeammapPriorsConfig &priors_config,
