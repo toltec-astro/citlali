@@ -26,7 +26,7 @@ void Engine::get_mapmaking_config(CT &config) {
         invalid_keys);
 
     citlali::engine_detail::read_map_regime_config(
-        config, map_regime, mapmaking_config, missing_keys, invalid_keys);
+        config, mapmaking_config, missing_keys, invalid_keys);
 
     citlali::pipeline::enforce_map_grouping_polarization_policy(
         rtcproc.run_polarization, typed_config.runtime.reduction_type,

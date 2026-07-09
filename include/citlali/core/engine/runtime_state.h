@@ -38,9 +38,6 @@ struct EngineRuntimeState {
     // output directory and optional sub directory name
     std::string output_dir, redu_dir_name;
 
-    // expected sky regime for map interpretation
-    std::string map_regime = "unknown";
-
     // reduction directory number
     int redu_dir_num;
 

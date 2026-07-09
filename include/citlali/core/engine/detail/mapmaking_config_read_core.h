@@ -56,11 +56,10 @@ void read_map_pixel_axes_config(Config &config, PixelAxes &pixel_axes,
 
 template <class Config, class MissingKeys, class InvalidKeys,
           class MapmakingConfig>
-void read_map_regime_config(Config &config, std::string &map_regime,
-                            MapmakingConfig &typed_config,
+void read_map_regime_config(Config &config, MapmakingConfig &typed_config,
                             MissingKeys &missing_keys,
                             InvalidKeys &invalid_keys) {
-    map_regime = "unknown";
+    std::string map_regime{"unknown"};
     typed_config.source_map_regime =
         citlali::config::SourceMapRegime::unknown;
     const auto key = std::tuple{"source", "map_regime"};
