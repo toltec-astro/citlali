@@ -78,6 +78,14 @@ public:
         Eigen::Index n_matches = 0;
     };
 
+    struct BeammapPriorAlignmentOverlapBox {
+        bool valid = false;
+        double x_low = -std::numeric_limits<double>::infinity();
+        double x_high = std::numeric_limits<double>::infinity();
+        double y_low = -std::numeric_limits<double>::infinity();
+        double y_high = std::numeric_limits<double>::infinity();
+    };
+
     enum class BeammapFitInitMode { Blind, Previous, Prior };
 
     struct BeammapFitAttemptFlags {
@@ -546,6 +554,12 @@ public:
         const citlali::config::BeammapPriorsConfig &priors_config,
         const std::string &label,
         PriorArrayAlignment &alignment);
+    BeammapPriorAlignmentOverlapBox beammap_prior_alignment_overlap_box(
+        const BeammapPriorAlignmentSamples &alignment_samples,
+        const citlali::config::BeammapPriorsConfig &priors_config) const;
+    std::vector<BeammapPriorAlignmentPair> filter_beammap_prior_alignment_pairs_to_overlap_box(
+        const BeammapPriorAlignmentSamples &alignment_samples,
+        const BeammapPriorAlignmentOverlapBox &overlap_box) const;
     std::vector<BeammapPriorAlignmentPair> select_common_beammap_prior_alignment_pairs(
         const BeammapPriorAlignmentSamples &alignment_samples,
         const citlali::config::BeammapPriorsConfig &priors_config);
