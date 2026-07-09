@@ -6,6 +6,7 @@
 #include <citlali/core/pipeline/map_image_output_helpers.h>
 #include <citlali/core/pipeline/map_output_debug_breadcrumb.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template <typename fits_io_type, class map_buffer_t>
 Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_buffer_t &mb, Eigen::Index i) {
@@ -56,7 +57,7 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
         };
 
         const bool is_beammap =
-            typed_config.runtime.reduction_type ==
+            citlali::pipeline::runtime_config(*this).reduction_type ==
             citlali::config::ReductionType::beammap;
         const bool empirical_weight_calibration =
             citlali::pipeline::empirical_weight_calibration_enabled(*this);

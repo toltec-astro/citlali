@@ -3,6 +3,7 @@
 // Implementation detail included by pointing.h.
 
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template <mapmaking::MapType map_type>
 void Pointing::output() {
@@ -33,7 +34,7 @@ void Pointing::output() {
                 (map_type == mapmaking::RawObs
                      ? engine_utils::toltecIO::raw
                      : engine_utils::toltecIO::filtered)>(
-                toltec_io, dir_name, typed_config.runtime.reduction_type, "",
+                toltec_io, dir_name, citlali::pipeline::runtime_config(*this).reduction_type, "",
                 observation_identity.obsnum, telescope.sim_obs);
 
         // add array and S/N to ppt

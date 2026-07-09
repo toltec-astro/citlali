@@ -3,6 +3,8 @@
 // Engine diagnostic output implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 void Engine::create_rtcdiag_file() {
     output_paths.rtcdiag_filename =
         citlali::pipeline::diagnostic_output_netcdf_filename<
@@ -10,8 +12,8 @@ void Engine::create_rtcdiag_file() {
             engine_utils::toltecIO::rtcdiag,
             engine_utils::toltecIO::raw>(
             toltec_io, output_paths.obsnum_dir_name,
-            typed_config.timestream.output.subdir_name,
-            typed_config.runtime.reduction_type, observation_identity.obsnum, telescope.sim_obs);
+            citlali::pipeline::timestream_config(*this).output.subdir_name,
+            citlali::pipeline::runtime_config(*this).reduction_type, observation_identity.obsnum, telescope.sim_obs);
 
     write_netcdf_atomic(output_paths.rtcdiag_filename, [&](netCDF::NcFile &fo) {
 
@@ -59,8 +61,8 @@ void Engine::create_rtcdiag_file() {
 
     citlali::pipeline::add_pipeline_identity_vars(
         fo, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
-        telescope.project_id, typed_config.runtime.reduction_type,
-        telescope.obs_goal, typed_config.timestream.type);
+        telescope.project_id, citlali::pipeline::runtime_config(*this).reduction_type,
+        telescope.obs_goal, citlali::pipeline::timestream_config(*this).type);
     add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
     citlali::pipeline::add_rtcdiag_file_config_vars(
         fo, rtcproc, learning,

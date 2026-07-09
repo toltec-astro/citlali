@@ -7,6 +7,7 @@
 #include <citlali/core/engine/detail/beammap_detector_tod_netcdf_helpers.h>
 #include <citlali/core/engine/detail/beammap_detector_tod_output_helpers.h>
 #include <citlali/core/engine/detail/beammap_detector_tod_selection_impl.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 void Beammap::write_detector_specific_ptc_tod(int output_iter) {
     const auto preflight = prepare_detector_specific_ptc_tod_output();
@@ -33,7 +34,7 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
     const auto detector_tod_paths =
         beammap_detector_tod_output_helpers::output_paths(
         output_paths.obsnum_dir_name, typed_config.beammap.detector_tod_output.subdir_name,
-        telescope.sim_obs, typed_config.runtime.reduction_type, observation_identity.obsnum);
+        telescope.sim_obs, citlali::pipeline::runtime_config(*this).reduction_type, observation_identity.obsnum);
     const std::string &filename = detector_tod_paths.filename;
 
     logger->info(
@@ -53,8 +54,8 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         namespace tod_nc = beammap_detector_tod_netcdf_helpers;
 
         tod_nc::put_output_metadata(
-            fo, observation_identity.obsnum, telescope, typed_config.runtime.reduction_type,
-            typed_config.timestream.type,
+            fo, observation_identity.obsnum, telescope, citlali::pipeline::runtime_config(*this).reduction_type,
+            citlali::pipeline::timestream_config(*this).type,
             processed_time_chunk_fs_hz(), output_iter, n_uniform, n_dense);
 
         netCDF::NcDim n_dets_dim = fo.addDim("n_dets", calib.n_dets);

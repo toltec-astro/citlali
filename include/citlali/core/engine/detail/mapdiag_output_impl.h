@@ -5,6 +5,7 @@
 
 #include <citlali/core/engine/detail/mapdiag_observation_contribution.h>
 #include <citlali/core/pipeline/mapdiag_workspace.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
@@ -86,7 +87,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 mapdiag_context, i, idx, mb, core_mask, weight_sum[idx],
                 core_weight_sum[idx], n_valid_pixels[idx],
                 n_core_pixels[idx], toltec_io, output_paths.redu_dir_name,
-                typed_config.runtime.reduction_type, telescope.sim_obs,
+                citlali::pipeline::runtime_config(*this).reduction_type, telescope.sim_obs,
                 mapdiag_label_storage, obs_tables,
                 logger);
         citlali::pipeline::assign_mapdiag_obs_fractions_for_map(

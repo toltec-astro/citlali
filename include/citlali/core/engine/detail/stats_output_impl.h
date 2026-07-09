@@ -3,11 +3,13 @@
 // Engine diagnostic output implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 void Engine::write_stats() {
     std::string stats_dir =
         citlali::pipeline::stats_raw_directory(output_paths.obsnum_dir_name);
     const auto &tod_output_subdir_name =
-        typed_config.timestream.output.subdir_name;
+        citlali::pipeline::timestream_config(*this).output.subdir_name;
     // if using tod subdir, put stats file in it
     const bool has_tod_output_subdir =
         citlali::pipeline::stats_has_tod_output_subdir(
@@ -28,7 +30,7 @@ void Engine::write_stats() {
             engine_utils::toltecIO::toltec,
             engine_utils::toltecIO::stats,
             engine_utils::toltecIO::raw>(
-            toltec_io, stats_dir, typed_config.runtime.reduction_type, observation_identity.obsnum,
+            toltec_io, stats_dir, citlali::pipeline::runtime_config(*this).reduction_type, observation_identity.obsnum,
             telescope.sim_obs);
     write_netcdf_atomic(stats_netcdf_filename, [&](netCDF::NcFile &fo) {
 
