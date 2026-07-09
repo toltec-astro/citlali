@@ -109,33 +109,30 @@ inline void mirror_beammap_priors_config(
         priors.alignment_max_rotation_deg;
 }
 
-inline void mirror_beammap_output_and_flagging_config(
+template <class BeammapControls>
+void mirror_beammap_output_and_flagging_config(
     citlali::config::BeammapConfig &target,
-    bool detector_tod_output_enabled,
-    const std::string &detector_tod_output_subdir_name,
-    int detector_tod_output_n_uniform,
-    int detector_tod_output_n_source_dense,
-    const std::vector<double> &lower_fwhm_arcsec,
-    const std::vector<double> &upper_fwhm_arcsec,
-    const std::vector<double> &lower_sig2noise,
-    const std::vector<double> &upper_sig2noise,
-    const std::vector<double> &max_dist_arcsec,
-    const std::vector<double> &network_robust_z,
+    const BeammapControls &controls,
+    const BeammapFlaggingVectors &flagging_vectors,
     const std::vector<double> &sens_factors,
-    const std::vector<double> &sens_psd_limits_hz,
-    double max_prior_d2) {
-    target.detector_tod_output.enabled = detector_tod_output_enabled;
-    target.detector_tod_output.subdir_name = detector_tod_output_subdir_name;
-    target.detector_tod_output.n_uniform = detector_tod_output_n_uniform;
+    const std::vector<double> &sens_psd_limits_hz) {
+    target.detector_tod_output.enabled =
+        controls.beammap_detector_tod_output_enabled;
+    target.detector_tod_output.subdir_name =
+        controls.beammap_detector_tod_output_subdir_name;
+    target.detector_tod_output.n_uniform =
+        controls.beammap_detector_tod_output_n_uniform;
     target.detector_tod_output.n_source_dense =
-        detector_tod_output_n_source_dense;
-    target.flagging.array_lower_fwhm_arcsec = lower_fwhm_arcsec;
-    target.flagging.array_upper_fwhm_arcsec = upper_fwhm_arcsec;
-    target.flagging.array_lower_sig2noise = lower_sig2noise;
-    target.flagging.array_upper_sig2noise = upper_sig2noise;
-    target.flagging.array_max_dist_arcsec = max_dist_arcsec;
-    target.flagging.array_network_robust_z = network_robust_z;
+        controls.beammap_detector_tod_output_n_source_dense;
+    target.flagging.array_lower_fwhm_arcsec =
+        flagging_vectors.lower_fwhm_arcsec;
+    target.flagging.array_upper_fwhm_arcsec =
+        flagging_vectors.upper_fwhm_arcsec;
+    target.flagging.array_lower_sig2noise = flagging_vectors.lower_sig2noise;
+    target.flagging.array_upper_sig2noise = flagging_vectors.upper_sig2noise;
+    target.flagging.array_max_dist_arcsec = flagging_vectors.max_dist_arcsec;
+    target.flagging.array_network_robust_z = flagging_vectors.network_robust_z;
     target.flagging.sens_factors = sens_factors;
     target.flagging.sens_psd_limits_hz = sens_psd_limits_hz;
-    target.flagging.max_prior_d2 = max_prior_d2;
+    target.flagging.max_prior_d2 = controls.beammap_flag_max_prior_d2;
 }

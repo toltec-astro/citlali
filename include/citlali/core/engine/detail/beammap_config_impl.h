@@ -92,16 +92,6 @@ void Engine::get_beammap_config(CT &config) {
     citlali::pipeline::mirror_beammap_priors_config(
         beammap_config, beammap_priors_config);
     citlali::pipeline::mirror_beammap_output_and_flagging_config(
-        beammap_config, beammap_detector_tod_output_enabled,
-        beammap_detector_tod_output_subdir_name,
-        beammap_detector_tod_output_n_uniform,
-        beammap_detector_tod_output_n_source_dense,
-        flagging_vectors.lower_fwhm_arcsec,
-        flagging_vectors.upper_fwhm_arcsec,
-        flagging_vectors.lower_sig2noise,
-        flagging_vectors.upper_sig2noise,
-        flagging_vectors.max_dist_arcsec,
-        flagging_vectors.network_robust_z,
-        sens_factors_vec, sens_psd_limits_Hz_vec,
-        beammap_flag_max_prior_d2);
+        beammap_config, *this, flagging_vectors,
+        sens_factors_vec, sens_psd_limits_Hz_vec);
 }
