@@ -9,9 +9,6 @@
 template <class KidsProc, class RawObs>
 void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     using input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
-    // initialize number of completed scans
-    n_scans_done = 0;
-
     // declare random number generator
     boost::random::mt19937 eng;
 

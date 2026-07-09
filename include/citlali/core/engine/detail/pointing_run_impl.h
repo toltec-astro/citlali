@@ -13,6 +13,7 @@
 template <class KidsProc>
 auto Pointing::run(KidsProc &kidsproc) {
     auto scans_done_mutex = std::make_shared<std::mutex>();
+    auto scans_done_count = std::make_shared<int>(0);
     auto ptc_line_audit_mutex = std::make_shared<std::mutex>();
     const auto mapmaking_method = typed_config.mapmaking.method;
     const bool make_maps = citlali::pipeline::mapmaking_enabled(*this);
@@ -27,9 +28,9 @@ auto Pointing::run(KidsProc &kidsproc) {
 
     auto farm = grppi::farm(
         citlali::pipeline::runtime_thread_count(*this),
-        [&, scans_done_mutex, ptc_line_audit_mutex, output_writers,
-         mapmaking_method, make_maps, make_noise_maps, output_flags,
-         map_grouping_ptr](
+        [&, scans_done_mutex, scans_done_count, ptc_line_audit_mutex,
+         output_writers, mapmaking_method, make_maps, make_noise_maps,
+         output_flags, map_grouping_ptr](
             auto &rtcdata) {
         auto &map_grouping = *map_grouping_ptr;
 
@@ -57,7 +58,7 @@ auto Pointing::run(KidsProc &kidsproc) {
             (write_this_rtc && rtcproc.tod_output_outer) ? &rtc_outer_output : nullptr;
 
         citlali::pipeline::log_scan_start(
-            scans_done_mutex, logger, rtcdata.index.data, n_scans_done,
+            scans_done_mutex, logger, rtcdata.index.data, *scans_done_count,
             telescope);
 
         // run rtcproc
@@ -262,7 +263,7 @@ auto Pointing::run(KidsProc &kidsproc) {
         }
         // increment number of completed scans
         citlali::pipeline::log_scan_done(
-            scans_done_mutex, logger, ptcdata.index.data, n_scans_done,
+            scans_done_mutex, logger, ptcdata.index.data, *scans_done_count,
             telescope);
 
     });

@@ -47,9 +47,6 @@ struct EngineRuntimeState {
     // vectors to hold missing/invalid keys
     key_vec_t missing_keys, invalid_keys;
 
-    // number of scans completed
-    int n_scans_done;
-
     // manual offsets for nws and hwp
     std::map<std::string, double> interface_sync_offset;
 

@@ -13,9 +13,6 @@
 template <class KidsProc, class RawObs>
 void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs, bool write_outputs) {
     using input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
-    // initialize number of completed scans
-    n_scans_done = 0;
-
     // progress bar
     tula::logging::progressbar pb(
         [&](const auto &msg) { logger->info("{}", msg); }, 100, "RTC progress ");
@@ -61,6 +58,7 @@ void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs, bool write
 template <class KidsProc>
 auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
     auto scans_done_mutex = std::make_shared<std::mutex>();
+    auto scans_done_count = std::make_shared<int>(0);
 
     const auto output_flags =
         citlali::pipeline::beammap_timestream_output_flags(
@@ -72,7 +70,7 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
 
     auto farm = grppi::farm(
         citlali::pipeline::runtime_thread_count(*this),
-        [&, scans_done_mutex, output_writers, output_flags,
+        [&, scans_done_mutex, scans_done_count, output_writers, output_flags,
          map_grouping_ptr](auto &rtcdata)
                        -> TCData<TCDataKind::PTC, Eigen::MatrixXd> {
         auto &map_grouping = *map_grouping_ptr;
@@ -104,7 +102,7 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
             (write_this_rtc && rtcproc.tod_output_outer) ? &rtc_outer_output : nullptr;
 
         citlali::pipeline::log_scan_start(
-            scans_done_mutex, logger, rtcdata.index.data, n_scans_done,
+            scans_done_mutex, logger, rtcdata.index.data, *scans_done_count,
             telescope);
 
         // run rtcproc
@@ -159,7 +157,7 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
 
         // increment number of completed scans
         citlali::pipeline::log_scan_done(
-            scans_done_mutex, logger, ptcdata.index.data, n_scans_done,
+            scans_done_mutex, logger, ptcdata.index.data, *scans_done_count,
             telescope);
 
         return ptcdata;

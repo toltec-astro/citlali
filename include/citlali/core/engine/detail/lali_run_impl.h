@@ -11,6 +11,7 @@
 
 auto Lali::run() -> run_stage_t {
     auto scans_done_mutex = std::make_shared<std::mutex>();
+    auto scans_done_count = std::make_shared<int>(0);
     auto ptc_line_audit_mutex = std::make_shared<std::mutex>();
     const auto mapmaking_method = typed_config.mapmaking.method;
     const bool make_maps = citlali::pipeline::mapmaking_enabled(*this);
@@ -24,6 +25,7 @@ auto Lali::run() -> run_stage_t {
         citlali::pipeline::active_map_grouping_name(*this));
 
     auto farm_fn = std::function<void(input_t &)>{[&, scans_done_mutex,
+                                                   scans_done_count,
                                                    ptc_line_audit_mutex,
                                                    output_writers,
                                                    mapmaking_method, make_maps,
@@ -55,7 +57,7 @@ auto Lali::run() -> run_stage_t {
             (write_this_rtc && rtcproc.tod_output_outer) ? &rtc_outer_output : nullptr;
 
         citlali::pipeline::log_scan_start(
-            scans_done_mutex, logger, rtcdata.index.data, n_scans_done,
+            scans_done_mutex, logger, rtcdata.index.data, *scans_done_count,
             telescope);
 
         // run rtcproc
@@ -236,7 +238,7 @@ auto Lali::run() -> run_stage_t {
 
         // increment number of completed scans
         citlali::pipeline::log_scan_done(
-            scans_done_mutex, logger, ptcdata.index.data, n_scans_done,
+            scans_done_mutex, logger, ptcdata.index.data, *scans_done_count,
             telescope);
     }};
     auto farm = grppi::farm(
