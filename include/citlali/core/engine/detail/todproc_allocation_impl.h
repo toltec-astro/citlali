@@ -3,21 +3,22 @@
 // Implementation detail included by todproc.h.
 
 #include <citlali/core/pipeline/map_buffer_allocation.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map_coord_t &map_coord) {
     auto& omb = engine().omb;
+    const auto &mapmaking_settings =
+        citlali::pipeline::mapmaking_config(engine());
 
     citlali::pipeline::clear_map_matrix_products(omb);
     citlali::pipeline::apply_observation_map_geometry(
         omb, map_extent, map_coord);
     citlali::pipeline::allocate_map_matrices(
         omb, engine().map_indices.n_maps,
-        engine().typed_config.mapmaking.method ==
-            citlali::config::MapMethod::jinc,
+        mapmaking_settings.method == citlali::config::MapMethod::jinc,
         engine().rtcproc.run_kernel,
-        engine().typed_config.mapmaking.grouping !=
-            citlali::config::MapGrouping::detector);
+        mapmaking_settings.grouping != citlali::config::MapGrouping::detector);
     citlali::pipeline::allocate_polarization_pointing_matrices(
         omb, engine().map_indices.n_maps,
         static_cast<Eigen::Index>(
@@ -29,12 +30,13 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::allocate_cmb() {
     auto& cmb = engine().cmb;
+    const auto &mapmaking_settings =
+        citlali::pipeline::mapmaking_config(engine());
 
     citlali::pipeline::clear_map_matrix_products(cmb);
     citlali::pipeline::allocate_map_matrices(
         cmb, engine().map_indices.n_maps, false, engine().rtcproc.run_kernel,
-        engine().typed_config.mapmaking.grouping !=
-            citlali::config::MapGrouping::detector);
+        mapmaking_settings.grouping != citlali::config::MapGrouping::detector);
     citlali::pipeline::allocate_polarization_pointing_matrices(
         cmb, engine().map_indices.n_maps,
         static_cast<Eigen::Index>(

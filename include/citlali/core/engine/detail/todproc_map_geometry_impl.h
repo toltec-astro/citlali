@@ -4,6 +4,7 @@
 
 #include <citlali/core/config/calibration_config.h>
 #include <citlali/core/pipeline/map_dimension_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/runtime_policy.h>
 
 // calculate map dimensions
@@ -12,6 +13,8 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
 
     // reference to map buffer
     auto& omb = engine().omb;
+    const auto &mapmaking_settings =
+        citlali::pipeline::mapmaking_config(engine());
 
     // only run if manual map sizes have not been input
     if ((engine().omb.wcs.naxis[0] <= 0) || (engine().omb.wcs.naxis[1] <= 0)) {
@@ -55,7 +58,7 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
                     citlali::config::pointing_axis_alt()].segment(si, sl);
 
             // don't need to find the offsets if in detector mode
-            if (engine().typed_config.mapmaking.grouping !=
+            if (mapmaking_settings.grouping !=
                 citlali::config::MapGrouping::detector) {
                 // loop through detectors
                 grppi::map(
@@ -69,7 +72,7 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
                         tel_data, engine().calib.apt["x_t"](j),
                         engine().calib.apt["y_t"](j),
                         engine().telescope.pixel_axes, pointing_offsets_arcsec,
-                        engine().typed_config.mapmaking.grouping);
+                        mapmaking_settings.grouping);
                     // check for min and max
                     if (engine().calib.apt["flag"](j)==0) {
                         if (lat.minCoeff() < det_lat_limits(j,0)) {
@@ -93,7 +96,7 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
                 auto [lat, lon] = engine_utils::calc_det_pointing(
                     tel_data, 0., 0., engine().telescope.pixel_axes,
                     pointing_offsets_arcsec,
-                    engine().typed_config.mapmaking.grouping);
+                    mapmaking_settings.grouping);
                 if (lat.minCoeff() < det_lat_limits(0,0)) {
                     det_lat_limits.col(0).setConstant(lat.minCoeff());
                 }
