@@ -141,6 +141,35 @@ public:
             std::numeric_limits<double>::quiet_NaN();
     };
 
+    struct BeammapEmpiricalTemplateGeometry {
+        Eigen::Index template_radius_pix = 0;
+        Eigen::Index match_radius_pix = 0;
+        Eigen::Index peak_radius_pix = 0;
+        Eigen::Index template_peak_radius_pix = 0;
+        Eigen::Index side = 0;
+        Eigen::Index center = 0;
+    };
+
+    struct BeammapEmpiricalTemplateCandidate {
+        Eigen::Index map_index = -1;
+        double shape_score = std::numeric_limits<double>::infinity();
+        double snr = 0.0;
+    };
+
+    struct BeammapArrayTemplate {
+        bool valid = false;
+        Eigen::MatrixXd shape;
+        Eigen::Index n_detectors = 0;
+    };
+
+    struct BeammapTemplateFitResult {
+        bool valid = false;
+        double amp = std::numeric_limits<double>::quiet_NaN();
+        double offset = std::numeric_limits<double>::quiet_NaN();
+        double resid_rms = std::numeric_limits<double>::quiet_NaN();
+        Eigen::Index npix = 0;
+    };
+
     bool beammap_soft_priors_loaded = false;
     bool beammap_soft_priors_are_centered = false;
     bool beammap_soft_priors_are_derotated = false;
@@ -395,6 +424,26 @@ public:
     double calc_map_support_stddev(Eigen::Index map_index, bool exclude_fit_core = false) const;
     double calc_beammap_convergence_delta(Eigen::Index map_index) const;
     void init_empirical_template_calibration_columns();
+    void reset_empirical_template_calibration_columns();
+    void seed_empirical_template_gaussian_fallback(Eigen::Index n_fallback);
+    BeammapEmpiricalTemplateGeometry make_empirical_template_geometry(
+        double pix_to_arcsec) const;
+    bool empirical_template_inputs_available() const;
+    bool extract_empirical_template_normalized_cut(
+        Eigen::Index map_index,
+        const BeammapEmpiricalTemplateGeometry &geometry,
+        Eigen::MatrixXd &cut,
+        double &peak_amp);
+    std::map<int, BeammapArrayTemplate> build_empirical_template_library(
+        const BeammapEmpiricalTemplateGeometry &geometry);
+    bool solve_empirical_template(
+        Eigen::Index map_index,
+        const Eigen::MatrixXd &templ,
+        const BeammapEmpiricalTemplateGeometry &geometry,
+        BeammapTemplateFitResult &fit_result);
+    void apply_empirical_template_calibration(
+        const std::map<int, BeammapArrayTemplate> &templates,
+        const BeammapEmpiricalTemplateGeometry &geometry);
     void calc_empirical_template_calibration();
 
     // flag detectors
