@@ -8,6 +8,8 @@
 #include <cstdlib>
 #include <limits>
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 void Beammap::require_beammap_fit_map_geometry(Eigen::Index map_index) const {
     if (omb.signal[map_index].rows() != omb.n_rows ||
         omb.signal[map_index].cols() != omb.n_cols ||
@@ -253,7 +255,8 @@ Beammap::BeammapFitInitSelection Beammap::choose_beammap_fit_init(
             selection.mode = BeammapFitInitMode::Prior;
             fit_stats.init_prior++;
         }
-        else if (!typed_config.beammap.priors.fallback_blind) {
+        else if (!citlali::pipeline::beammap_config(*this)
+                      .priors.fallback_blind) {
             if (has_beammap_prior_diagnostics()) {
                 prior_diag_values(map_index, prior_init_mode_col) = -1.0;
             }

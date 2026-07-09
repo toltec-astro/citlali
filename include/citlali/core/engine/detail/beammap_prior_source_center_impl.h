@@ -8,6 +8,8 @@
 #include <limits>
 #include <vector>
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 bool Beammap::find_map_weighted_peak(Eigen::Index map_index, Eigen::Index &best_row,
                                      Eigen::Index &best_col, double &best_snr) const {
     best_row = -1;
@@ -67,7 +69,7 @@ bool Beammap::find_map_weighted_peak(Eigen::Index map_index, Eigen::Index &best_
 }
 
 void Beammap::configure_detector_source_centers_from_previous_fit() {
-    if (typed_config.mapmaking.grouping !=
+    if (citlali::pipeline::mapmaking_config(*this).grouping !=
         citlali::config::MapGrouping::detector) {
         ptcproc.fruit_loops_source_lat.resize(0);
         ptcproc.fruit_loops_source_lon.resize(0);

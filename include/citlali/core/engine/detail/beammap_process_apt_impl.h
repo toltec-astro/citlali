@@ -3,8 +3,11 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 void Beammap::process_apt() {
-    const auto &reference_config = typed_config.beammap.reference;
+    const auto &reference_config =
+        citlali::pipeline::beammap_config(*this).reference;
     const auto configured_reference_det =
         static_cast<Eigen::Index>(reference_config.reference_detector);
 
@@ -182,7 +185,7 @@ void Beammap::process_apt() {
     calib.apt["derot_elev"].setConstant(telescope.tel_data["TelElAct"].mean());
     if (citlali::config::is_altaz_map_pixel_axes(telescope.pixel_axes) &&
         citlali::config::is_detector_map_grouping(
-            typed_config.mapmaking.grouping) &&
+            citlali::pipeline::mapmaking_config(*this).grouping) &&
         !ptcs.empty()) {
         Eigen::MatrixXd elev_best(omb.n_rows, omb.n_cols);
         Eigen::MatrixXd dist2_best(omb.n_rows, omb.n_cols);

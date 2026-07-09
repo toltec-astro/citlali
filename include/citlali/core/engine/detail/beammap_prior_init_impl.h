@@ -3,6 +3,8 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row, double &init_col) {
     init_row = -99.0;
     init_col = -99.0;
@@ -22,7 +24,7 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
     constexpr int prior_reason_gate_rejected = 5;
 
     if (!beammap_soft_priors_loaded ||
-        typed_config.mapmaking.grouping !=
+        citlali::pipeline::mapmaking_config(*this).grouping !=
             citlali::config::MapGrouping::detector) {
         return false;
     }
@@ -91,7 +93,8 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
     if (!std::isfinite(wt_med) || wt_med <= std::numeric_limits<double>::epsilon()) {
         wt_med = 1.0;
     }
-    const auto &priors_config = typed_config.beammap.priors;
+    const auto &priors_config =
+        citlali::pipeline::beammap_config(*this).priors;
 
     std::vector<Candidate> candidates;
     candidates.reserve(static_cast<std::size_t>(sig.size()));

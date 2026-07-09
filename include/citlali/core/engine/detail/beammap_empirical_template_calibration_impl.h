@@ -5,6 +5,7 @@
 
 #include <citlali/core/engine/detail/beammap_empirical_template_schema.h>
 #include <citlali/core/engine/detail/beammap_empirical_template_utils.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 void Beammap::init_empirical_template_calibration_columns() {
     auto add_column = [&](const std::string &name,
@@ -62,7 +63,7 @@ void Beammap::calc_empirical_template_calibration() {
         }
     }
 
-    if (typed_config.mapmaking.grouping !=
+    if (citlali::pipeline::mapmaking_config(*this).grouping !=
             citlali::config::MapGrouping::detector ||
         static_cast<Eigen::Index>(omb.signal.size()) != map_indices.n_maps ||
         static_cast<Eigen::Index>(omb.weight.size()) != map_indices.n_maps ||
