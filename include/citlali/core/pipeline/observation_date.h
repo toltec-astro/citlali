@@ -6,7 +6,8 @@ namespace citlali::pipeline {
 
 template <class Engine, class DateObs>
 void append_observation_date(Engine &engine, DateObs &&date_obs) {
-    engine.date_obs.push_back(std::forward<DateObs>(date_obs));
+    engine.observation_dates.date_obs.push_back(
+        std::forward<DateObs>(date_obs));
 }
 
 template <class Engine, class DateObs>

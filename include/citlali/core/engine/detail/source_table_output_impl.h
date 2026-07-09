@@ -29,6 +29,6 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
         source_filename, *mb, map_fitter.n_params,
         typed_config.mapmaking.pixel_axes_frame,
         telescope.source_name, engine_utils::current_date_time(),
-        date_obs.back(), calib.apt_header_description,
+        observation_dates.date_obs.back(), calib.apt_header_description,
         source_table_callbacks);
 }

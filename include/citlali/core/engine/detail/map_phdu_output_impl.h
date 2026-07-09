@@ -32,7 +32,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_entry, mb, name, logger, reduction_type,
         beammap_fluxes_mJy_beam, beammap_fluxes_MJy_Sr,
         beammap_iteration_config, beammap_phase_config,
-        beammap_reference_config, calib, date_obs);
+        beammap_reference_config, calib, observation_dates.date_obs);
 
     logger->debug("adding obs info");
 

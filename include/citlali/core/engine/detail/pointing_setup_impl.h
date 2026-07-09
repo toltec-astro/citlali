@@ -65,7 +65,7 @@ void Pointing::setup() {
     ppt_meta["creation_date"] = engine_utils::current_date_time();
 
     // add observation date
-    ppt_meta["date"] = date_obs.back();
+    ppt_meta["date"] = observation_dates.date_obs.back();
 
     // mean Modified Julian Date
     ppt_meta["mjd"] = engine_utils::unix_to_modified_julian_date(telescope.tel_data["TelTime"].mean());

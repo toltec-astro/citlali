@@ -10,7 +10,7 @@ void reset_coadd_iteration_accumulators(Engine &engine) {
 
 template <class Engine>
 void clear_iteration_observation_dates(Engine &engine) {
-    engine.date_obs.clear();
+    engine.observation_dates.date_obs.clear();
 }
 
 }  // namespace citlali::pipeline

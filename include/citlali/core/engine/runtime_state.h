@@ -14,6 +14,7 @@
 #include <citlali/core/pipeline/interface_sync_state.h>
 #include <citlali/core/pipeline/map_fits_output_state.h>
 #include <citlali/core/pipeline/map_index_state.h>
+#include <citlali/core/pipeline/observation_date_state.h>
 #include <citlali/core/pipeline/output_path_state.h>
 #include <citlali/core/pipeline/pointing_offset_state.h>
 #include <citlali/core/pipeline/timestream_alignment_state.h>
@@ -30,8 +31,8 @@ struct EngineRuntimeState {
     // TOD alignment products and timing-gap masks
     citlali::pipeline::TimestreamAlignmentState alignment;
 
-    // date/time of each obs
-    std::vector<std::string> date_obs;
+    // observation date metadata for each input observation
+    citlali::pipeline::ObservationDateState observation_dates;
 
     // reduction, observation, coadd, and timestream output paths
     citlali::pipeline::OutputPathState output_paths;

@@ -168,7 +168,9 @@ struct FakeEngine {
     std::string loaded_photometry_config;
     std::vector<std::string> missing_keys;
     std::vector<std::string> invalid_keys;
-    std::vector<std::string> date_obs;
+    struct {
+        std::vector<std::string> date_obs;
+    } observation_dates;
     std::vector<int> start_indices = {7};
     std::vector<int> end_indices = {9};
     int write_learning_summary_calls = 0;
@@ -655,7 +657,9 @@ struct FakeReductionIterationEngine {
     std::string redu_dir_name = "/tmp/redu01";
     bool run_coadd = true;
     bool run_noise = true;
-    std::vector<std::string> date_obs = {"old"};
+    struct {
+        std::vector<std::string> date_obs = {"old"};
+    } observation_dates;
     FakeIterationPtcProc ptcproc;
     FakeReductionLearning reduction_learning;
     int write_learning_summary_calls = 0;
@@ -2433,11 +2437,11 @@ TEST(pipeline_preflight, accumulates_observation_exposure_time_for_coadd) {
 
 TEST(pipeline_preflight, appends_observation_date) {
     FakeEngine engine;
-    engine.date_obs = {"old"};
+    engine.observation_dates.date_obs = {"old"};
 
     citlali::pipeline::append_observation_date(engine, std::string{"new"});
 
-    EXPECT_EQ(engine.date_obs, (std::vector<std::string>{"old", "new"}));
+    EXPECT_EQ(engine.observation_dates.date_obs, (std::vector<std::string>{"old", "new"}));
 }
 
 TEST(pipeline_preflight, derives_date_obs_from_telescope_time) {
@@ -2727,7 +2731,7 @@ TEST(pipeline_execution, skips_coadd_noise_buffer_when_noise_disabled) {
 TEST(pipeline_execution, prepares_iteration_observation_buffers_for_coadd) {
     FakeCoaddTodProc todproc;
     todproc.engine().run_coadd = true;
-    todproc.engine().date_obs = {"old"};
+    todproc.engine().observation_dates.date_obs = {"old"};
     todproc.engine().cmb.obsnums = {"101"};
     todproc.engine().cmb.exposure_time = 6.0;
     auto logger = std::make_shared<FakeLogger>();
@@ -2735,7 +2739,7 @@ TEST(pipeline_execution, prepares_iteration_observation_buffers_for_coadd) {
     citlali::pipeline::prepare_iteration_observation_buffers(
         todproc, logger);
 
-    EXPECT_TRUE(todproc.engine().date_obs.empty());
+    EXPECT_TRUE(todproc.engine().observation_dates.date_obs.empty());
     EXPECT_EQ(todproc.allocate_cmb_calls, 1);
     EXPECT_TRUE(todproc.engine().cmb.obsnums.empty());
     EXPECT_DOUBLE_EQ(todproc.engine().cmb.exposure_time, 0.0);
@@ -2744,13 +2748,13 @@ TEST(pipeline_execution, prepares_iteration_observation_buffers_for_coadd) {
 TEST(pipeline_execution, prepares_iteration_observation_buffers_without_coadd) {
     FakeCoaddTodProc todproc;
     todproc.engine().run_coadd = false;
-    todproc.engine().date_obs = {"old"};
+    todproc.engine().observation_dates.date_obs = {"old"};
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::prepare_iteration_observation_buffers(
         todproc, logger);
 
-    EXPECT_TRUE(todproc.engine().date_obs.empty());
+    EXPECT_TRUE(todproc.engine().observation_dates.date_obs.empty());
     EXPECT_EQ(todproc.allocate_cmb_calls, 0);
     EXPECT_EQ(logger->info_calls, 0);
 }
@@ -2766,7 +2770,7 @@ TEST(pipeline_execution, begins_reduction_iteration) {
     EXPECT_EQ(todproc.engine().ptcproc.begin_weight_validation_iter, 0);
     EXPECT_EQ(todproc.engine().reduction_learning.begin_calls, 1);
     EXPECT_EQ(todproc.create_output_dir_calls, 1);
-    EXPECT_TRUE(todproc.engine().date_obs.empty());
+    EXPECT_TRUE(todproc.engine().observation_dates.date_obs.empty());
     EXPECT_EQ(todproc.allocate_cmb_calls, 1);
     EXPECT_EQ(todproc.allocate_nmb_calls, 1);
     EXPECT_TRUE(todproc.engine().cmb.obsnums.empty());
@@ -3094,7 +3098,7 @@ TEST(pipeline_execution, prepares_reduction_observation_inputs) {
     EXPECT_EQ(todproc.allocate_omb_calls, 1);
     EXPECT_EQ(todproc.last_map_extent, 11);
     EXPECT_EQ(todproc.last_map_coord, 22);
-    EXPECT_EQ(todproc.engine().date_obs,
+    EXPECT_EQ(todproc.engine().observation_dates.date_obs,
               (std::vector<std::string>{"2026-01-01T00:00:00"}));
     EXPECT_DOUBLE_EQ(todproc.engine().omb.exposure_time, 1.0);
 }
@@ -3116,7 +3120,7 @@ TEST(pipeline_execution,
         std::string{"2026-01-01T00:00:00"}, logger));
 
     EXPECT_EQ(todproc.get_tone_freqs_from_files_calls, 0);
-    EXPECT_TRUE(todproc.engine().date_obs.empty());
+    EXPECT_TRUE(todproc.engine().observation_dates.date_obs.empty());
     EXPECT_EQ(todproc.allocate_omb_calls, 0);
 }
 
@@ -3369,7 +3373,7 @@ TEST(pipeline_execution, runs_reduction_observation_at_index) {
     EXPECT_EQ(todproc.engine().setup_calls, 1);
     EXPECT_EQ(todproc.engine().pipeline_calls, 1);
     EXPECT_EQ(todproc.engine().output_calls, 1);
-    EXPECT_EQ(todproc.engine().date_obs,
+    EXPECT_EQ(todproc.engine().observation_dates.date_obs,
               (std::vector<std::string>{"2026-01-01T00:00:00"}));
 }
 
@@ -3392,7 +3396,7 @@ TEST(pipeline_execution, runs_reduction_iteration_observations) {
     EXPECT_EQ(todproc.engine().setup_calls, 2);
     EXPECT_EQ(todproc.engine().pipeline_calls, 2);
     EXPECT_EQ(todproc.engine().output_calls, 2);
-    EXPECT_EQ(todproc.engine().date_obs.size(), 2U);
+    EXPECT_EQ(todproc.engine().observation_dates.date_obs.size(), 2U);
 }
 
 TEST(pipeline_execution, rejects_reduction_iteration_observations_on_failure) {

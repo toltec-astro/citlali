@@ -48,7 +48,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             typed_config.post_processing.map_filtering.edge_guard);
     const auto mapdiag_labels =
         citlali::pipeline::make_mapdiag_label_vars(
-            mapdiag_label_storage, mb->obsnums, obsnum, date_obs,
+            mapdiag_label_storage, mb->obsnums, obsnum, observation_dates.date_obs,
             mapdiag_context);
     const auto mapdiag_values =
         citlali::pipeline::make_mapdiag_value_vars(
