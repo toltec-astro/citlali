@@ -4,6 +4,7 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/pipeline/runtime_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 void Beammap::set_apt_flags() {
     // setup bitwise flags
@@ -19,7 +20,8 @@ void Beammap::set_apt_flags() {
         }
         flag2(i) |= flag;
     };
-    const auto &flagging_config = typed_config.beammap.flagging;
+    const auto &flagging_config =
+        citlali::pipeline::beammap_config(*this).flagging;
     const auto flag_limits =
         citlali::pipeline::make_beammap_array_flagging_limits(
             toltec_io.array_name_map, flagging_config);

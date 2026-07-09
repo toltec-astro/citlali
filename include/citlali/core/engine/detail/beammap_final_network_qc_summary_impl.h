@@ -9,8 +9,10 @@
 #include <cmath>
 #include <vector>
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 void Beammap::log_final_network_qc_summary() {
-    if (typed_config.mapmaking.grouping !=
+    if (citlali::pipeline::mapmaking_config(*this).grouping !=
         citlali::config::MapGrouping::detector) {
         return;
     }

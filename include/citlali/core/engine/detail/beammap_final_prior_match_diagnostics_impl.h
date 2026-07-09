@@ -9,12 +9,14 @@
 #include <map>
 #include <vector>
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 void Beammap::update_final_prior_match_diagnostics() {
     final_prior_d2_diag = Eigen::VectorXd::Constant(
         calib.n_dets, std::numeric_limits<double>::quiet_NaN());
     final_prior_slot_index_diag = Eigen::VectorXi::Constant(calib.n_dets, -1);
 
-    if (typed_config.mapmaking.grouping !=
+    if (citlali::pipeline::mapmaking_config(*this).grouping !=
             citlali::config::MapGrouping::detector ||
         !beammap_soft_priors_loaded || beammap_soft_prior_slots.empty()) {
         return;

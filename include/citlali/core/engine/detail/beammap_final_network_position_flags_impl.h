@@ -10,16 +10,18 @@
 #include <vector>
 
 #include <citlali/core/pipeline/runtime_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 void Beammap::apply_final_network_position_flags() {
-    if (typed_config.mapmaking.grouping !=
+    if (citlali::pipeline::mapmaking_config(*this).grouping !=
         citlali::config::MapGrouping::detector) {
         return;
     }
 
     const auto flag_limits =
         citlali::pipeline::make_beammap_array_flagging_limits(
-            toltec_io.array_name_map, typed_config.beammap.flagging);
+            toltec_io.array_name_map,
+            citlali::pipeline::beammap_config(*this).flagging);
 
     bool enabled = false;
     for (const auto &[arr_index, arr_name] : toltec_io.array_name_map) {
