@@ -1,9 +1,7 @@
 #pragma once
 
-#include <map>
 #include <memory>
 #include <string>
-#include <vector>
 
 #include <CCfits/CCfits>
 #include <Eigen/Core>
@@ -64,11 +62,11 @@ struct EngineRuntimeState {
     // manual pointing offsets and optional MJD interpolation anchors
     citlali::pipeline::PointingOffsetState pointing_offsets;
 
-    using map_fits_io_t =
-        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>>;
+    using map_fits_output_handle_t =
+        fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>;
 
     // observation, coadd, filtered, and noise FITS output handles
-    citlali::pipeline::MapFitsOutputState<map_fits_io_t::value_type>
+    citlali::pipeline::MapFitsOutputState<map_fits_output_handle_t>
         map_fits_outputs;
 };
 
