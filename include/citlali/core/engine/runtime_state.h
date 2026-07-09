@@ -13,6 +13,7 @@
 #include <citlali/core/engine/learning.h>
 #include <citlali/core/pipeline/map_index_state.h>
 #include <citlali/core/pipeline/output_path_state.h>
+#include <citlali/core/pipeline/tod_output_state.h>
 #include <citlali/core/utils/fits_io.h>
 
 struct EngineRuntimeState {
@@ -56,10 +57,7 @@ struct EngineRuntimeState {
     std::string obsnum;
 
     // per-stream TOD output row maps
-    Eigen::VectorXI tod_scan_to_output_scan_rtc;
-    Eigen::VectorXI tod_scan_to_output_scan_ptc;
-    Eigen::Index n_tod_output_scans_rtc = 0;
-    Eigen::Index n_tod_output_scans_ptc = 0;
+    citlali::pipeline::TodOutputState tod_outputs;
 
     // map count and per-map index translations
     citlali::pipeline::MapIndexState map_indices;

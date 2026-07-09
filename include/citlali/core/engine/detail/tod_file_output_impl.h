@@ -138,8 +138,8 @@ void Engine::create_tod_files() {
     }
 
     const auto tod_layout = citlali::pipeline::prepare_tod_file_layout(
-        fo, output_stream, n_tod_output_scans_rtc,
-        n_tod_output_scans_ptc, rtcproc, ptcproc, telescope.scan_indices,
+        fo, output_stream, tod_outputs.n_rtc_output_scans,
+        tod_outputs.n_ptc_output_scans, rtcproc, ptcproc, telescope.scan_indices,
         calib.n_dets);
     const auto &tod_dims = tod_layout.dims;
     const auto &chunking = tod_layout.chunking;

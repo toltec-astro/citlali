@@ -68,22 +68,19 @@ void Engine::setup_tod_output_chunk_selection() {
     };
 
     if (!citlali::pipeline::tod_output_enabled(*this)) {
-        tod_scan_to_output_scan_rtc.resize(0);
-        tod_scan_to_output_scan_ptc.resize(0);
-        n_tod_output_scans_rtc = 0;
-        n_tod_output_scans_ptc = 0;
+        citlali::pipeline::reset(tod_outputs);
     }
     else {
         const auto &output_config = typed_config.timestream.output;
         const auto &rtc_output_config = output_config.raw_time_chunk;
         const auto &ptc_output_config = output_config.processed_time_chunk;
         setup_one("RTC", citlali::pipeline::raw_tod_output_enabled(*this),
-                  rtc_output_config, tod_scan_to_output_scan_rtc,
-                  n_tod_output_scans_rtc);
+                  rtc_output_config, tod_outputs.rtc_scan_to_output_scan,
+                  tod_outputs.n_rtc_output_scans);
         setup_one("PTC",
                   citlali::pipeline::processed_tod_output_enabled(*this),
-                  ptc_output_config, tod_scan_to_output_scan_ptc,
-                  n_tod_output_scans_ptc);
+                  ptc_output_config, tod_outputs.ptc_scan_to_output_scan,
+                  tod_outputs.n_ptc_output_scans);
     }
 }
 
@@ -107,10 +104,10 @@ Eigen::Index Engine::tod_output_scan_row(
     Eigen::Index scan_index, citlali::config::TodOutputStream stream) const {
     const Eigen::VectorXI *scan_to_output = nullptr;
     if (citlali::config::is_rtc_tod_output_stream(stream)) {
-        scan_to_output = &tod_scan_to_output_scan_rtc;
+        scan_to_output = &tod_outputs.rtc_scan_to_output_scan;
     }
     else if (citlali::config::is_ptc_tod_output_stream(stream)) {
-        scan_to_output = &tod_scan_to_output_scan_ptc;
+        scan_to_output = &tod_outputs.ptc_scan_to_output_scan;
     }
     else {
         logger->error(
