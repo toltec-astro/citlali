@@ -12,7 +12,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         setup_filenames<map_t, engine_utils::toltecIO::toltec,
                         engine_utils::toltecIO::mapdiag>(dir_name);
     const auto mapdiag_context = citlali::pipeline::make_mapdiag_size_context(
-        static_cast<std::size_t>(n_maps),
+        static_cast<std::size_t>(map_indices.n_maps),
         std::max<std::size_t>(1, mb->obsnums.size()),
         map_t == mapmaking::RawCoadd || map_t == mapmaking::FilteredCoadd);
     const double fill_double = citlali::pipeline::mapdiag_fill_double();
@@ -62,11 +62,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         return get_map_name(map_i);
     };
 
-    for (Eigen::Index i = 0; i < n_maps; ++i) {
+    for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
         const std::size_t idx = citlali::pipeline::mapdiag_size_index(i);
         const auto write_indices =
             citlali::pipeline::assign_mapdiag_label_entry(
-                i, arrays_to_maps, maps_to_stokes, maps_to_arrays,
+                i, map_indices.arrays_to_maps, map_indices.maps_to_stokes, map_indices.maps_to_arrays,
                 toltec_io.array_name_map, calib.arrays,
                 rtcproc.polarization.stokes_params, map_name_for_index,
                 mapdiag_label_storage);

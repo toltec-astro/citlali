@@ -10,7 +10,7 @@
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::coadd() {
     citlali::pipeline::accumulate_observation_into_coadd(
-        engine().cmb, engine().omb, engine().n_maps,
+        engine().cmb, engine().omb, engine().map_indices.n_maps,
         engine().rtcproc.run_kernel);
 }
 

@@ -90,15 +90,15 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                          n_det_masked, static_cast<long long>(rfi_mask_samples_flagged.cast<double>().sum()));
         }
 
-        if (fit_diag_bound_nhit.size() == n_maps &&
-            fit_diag_hit_lower.rows() == n_maps && fit_diag_hit_upper.rows() == n_maps &&
+        if (fit_diag_bound_nhit.size() == map_indices.n_maps &&
+            fit_diag_hit_lower.rows() == map_indices.n_maps && fit_diag_hit_upper.rows() == map_indices.n_maps &&
             fit_diag_hit_lower.cols() >= 6 && fit_diag_hit_upper.cols() >= 6) {
             const Eigen::Index n_bound_any = (fit_diag_bound_nhit.array() > 0).count();
             Eigen::VectorXi low_hits = fit_diag_hit_lower.colwise().sum().transpose();
             Eigen::VectorXi high_hits = fit_diag_hit_upper.colwise().sum().transpose();
             logger->info(
                 "beammap final bound-hit summary: any_hit={}/{} amp(lo/hi)={}/{} x(lo/hi)={}/{} y(lo/hi)={}/{} a(lo/hi)={}/{} b(lo/hi)={}/{} angle(lo/hi)={}/{}",
-                n_bound_any, n_maps,
+                n_bound_any, map_indices.n_maps,
                 low_hits(0), high_hits(0),
                 low_hits(1), high_hits(1),
                 low_hits(2), high_hits(2),

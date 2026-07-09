@@ -71,17 +71,17 @@ void Beammap::write_beammap_map_products(
                 const auto profile_scope =
                     citlali::pipeline::profile_stage(
                         "beammap.map_output.write_maps", logger,
-                        "dir=" + dir_name + " maps=" + std::to_string(n_maps));
-                for (Eigen::Index i=0; i<n_maps; ++i) {
+                        "dir=" + dir_name + " maps=" + std::to_string(map_indices.n_maps));
+                for (Eigen::Index i=0; i<map_indices.n_maps; ++i) {
                     // update progress bar
-                    pb.count(n_maps, 1);
+                    pb.count(map_indices.n_maps, 1);
                     logger->debug("adding map");
                     const Eigen::Index signal_hdu_index = write_maps(f_io,n_io,mb,i);
 
                     if (detector_grouping) {
                         if constexpr (map_type == mapmaking::RawObs) {
                             // get the array for the given map
-                            Eigen::Index map_index = arrays_to_maps(i);
+                            Eigen::Index map_index = map_indices.arrays_to_maps(i);
 
                             // add apt table
                             logger->debug("adding beammap header keys");
@@ -111,7 +111,7 @@ void Beammap::write_beammap_map_products(
             }
             const Eigen::Index n_selected_maps =
                 beammap_map_product_split_helpers::count_maps_with_any_flag(
-                    calib.apt["flag"], n_maps, split_config.flag_values);
+                    calib.apt["flag"], map_indices.n_maps, split_config.flag_values);
 
             if (n_selected_maps <= 0) {
                 logger->warn("beammap split_fits_by_flag selected no detector maps; using standard map output");
@@ -136,7 +136,7 @@ void Beammap::write_beammap_map_products(
                 for (const auto flag_value : split_config.flag_values) {
                     const Eigen::Index n_flag_maps =
                         beammap_map_product_split_helpers::count_maps_with_flag(
-                            calib.apt["flag"], n_maps, flag_value);
+                            calib.apt["flag"], map_indices.n_maps, flag_value);
 
                     if (n_flag_maps <= 0) {
                         logger->warn("beammap split_fits_by_flag: no detector maps found with flag={}; skipping", flag_value);
@@ -192,7 +192,7 @@ void Beammap::write_beammap_map_products(
                                 "dir=" + dir_name +
                                     " flag=" + std::to_string(flag_value) +
                                     " maps=" + std::to_string(n_flag_maps));
-                        for (Eigen::Index i = 0; i < n_maps; ++i) {
+                        for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
                             const int det_flag =
                                 beammap_map_product_split_helpers::detector_flag(
                                     calib.apt["flag"], i);
@@ -206,7 +206,7 @@ void Beammap::write_beammap_map_products(
 
                             if (detector_grouping) {
                                 if constexpr (map_type == mapmaking::RawObs) {
-                                    const Eigen::Index map_index = arrays_to_maps(i);
+                                    const Eigen::Index map_index = map_indices.arrays_to_maps(i);
 
                                     logger->debug("adding split beammap header keys");
                                     citlali::pipeline::update_map_output_debug_breadcrumb(

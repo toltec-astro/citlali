@@ -50,7 +50,7 @@ void Beammap::calc_empirical_template_calibration() {
     ensure_column("map_peak_amp", std::numeric_limits<double>::quiet_NaN());
     ensure_column("map_peak_amp_over_fit_amp", std::numeric_limits<double>::quiet_NaN());
 
-    const Eigen::Index n_fallback = std::min<Eigen::Index>(n_maps, std::min(calib.n_dets, params.rows()));
+    const Eigen::Index n_fallback = std::min<Eigen::Index>(map_indices.n_maps, std::min(calib.n_dets, params.rows()));
     if (params.cols() > 0) {
         for (Eigen::Index i = 0; i < n_fallback; ++i) {
             const double fit_amp = params(i, 0);
@@ -64,8 +64,8 @@ void Beammap::calc_empirical_template_calibration() {
 
     if (typed_config.mapmaking.grouping !=
             citlali::config::MapGrouping::detector ||
-        static_cast<Eigen::Index>(omb.signal.size()) != n_maps ||
-        static_cast<Eigen::Index>(omb.weight.size()) != n_maps ||
+        static_cast<Eigen::Index>(omb.signal.size()) != map_indices.n_maps ||
+        static_cast<Eigen::Index>(omb.weight.size()) != map_indices.n_maps ||
         omb.pixel_size_rad <= 0.0) {
         return;
     }
@@ -93,7 +93,7 @@ void Beammap::calc_empirical_template_calibration() {
     auto extract_normalized_cut = [&](Eigen::Index map_index,
                                       Eigen::MatrixXd &cut,
                                       double &peak_amp) -> bool {
-        if (map_index < 0 || map_index >= n_maps ||
+        if (map_index < 0 || map_index >= map_indices.n_maps ||
             map_index >= params.rows() || params.cols() < 3) {
             return false;
         }
@@ -127,7 +127,7 @@ void Beammap::calc_empirical_template_calibration() {
         const int array = static_cast<int>(calib.arrays(arr_i));
         std::vector<double> a_values;
         std::vector<double> b_values;
-        for (Eigen::Index i = 0; i < n_maps; ++i) {
+        for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
             if (i >= calib.n_dets || calib.apt["flag"](i) != 0 || !good_fits(i)) {
                 continue;
             }
@@ -148,14 +148,14 @@ void Beammap::calc_empirical_template_calibration() {
         }
 
         std::vector<TemplateCandidate> candidates;
-        for (Eigen::Index i = 0; i < n_maps; ++i) {
+        for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
             if (i >= calib.n_dets || calib.apt["flag"](i) != 0 || !good_fits(i)) {
                 continue;
             }
             if (static_cast<int>(std::lround(calib.apt["array"](i))) != array) {
                 continue;
             }
-            if (fit_diag_bound_nhit.size() == n_maps && fit_diag_bound_nhit(i) > 0) {
+            if (fit_diag_bound_nhit.size() == map_indices.n_maps && fit_diag_bound_nhit(i) > 0) {
                 continue;
             }
             const double rms = calc_map_support_stddev(i, true);
@@ -256,7 +256,7 @@ void Beammap::calc_empirical_template_calibration() {
         offset = std::numeric_limits<double>::quiet_NaN();
         resid_rms = std::numeric_limits<double>::quiet_NaN();
         npix = 0;
-        if (map_index < 0 || map_index >= n_maps ||
+        if (map_index < 0 || map_index >= map_indices.n_maps ||
             map_index >= params.rows() || params.cols() < 3) {
             return false;
         }
@@ -365,7 +365,7 @@ void Beammap::calc_empirical_template_calibration() {
 
     Eigen::Index n_template_amp = 0;
     Eigen::Index n_template_fallback = 0;
-    for (Eigen::Index i = 0; i < n_maps; ++i) {
+    for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
         if (i >= calib.n_dets) {
             continue;
         }

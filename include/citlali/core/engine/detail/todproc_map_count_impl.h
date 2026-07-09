@@ -27,7 +27,7 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
     engine().cmb.map_grouping = map_grouping_name;
     engine().rtcproc.kernel.map_grouping = map_grouping_name;
 
-    engine().n_maps = citlali::pipeline::apply_polarization_map_count(
+    const auto n_maps = citlali::pipeline::apply_polarization_map_count(
         citlali::pipeline::base_map_count_for_grouping(
             mapmaking_config.grouping, engine().calib),
         engine().rtcproc.run_polarization, engine().rtcproc.polarization);
@@ -36,8 +36,6 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
         citlali::pipeline::map_array_indices_for_grouping(
             mapmaking_config.grouping, engine().calib,
             engine().toltec_io.nw_to_array_map);
-    citlali::pipeline::populate_map_index_mappings(
-        array_indices, engine().n_maps, engine().rtcproc.polarization,
-        engine().maps_to_arrays, engine().maps_to_stokes,
-        engine().arrays_to_maps);
+    engine().map_indices = citlali::pipeline::make_map_index_state(
+        array_indices, n_maps, engine().rtcproc.polarization);
 }

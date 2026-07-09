@@ -11,7 +11,7 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
                         engine_utils::toltecIO::map>(dir_name);
 
     const auto map_to_array_index = [&](Eigen::Index map_index) {
-        return maps_to_arrays(map_index);
+        return map_indices.maps_to_arrays(map_index);
     };
     const auto calc_map_std_dev = [](auto &signal) {
         return engine_utils::calc_std_dev(signal);

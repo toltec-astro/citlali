@@ -56,9 +56,9 @@ void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     scan_out_vec.resize(ptcs0.size());
 
     // placeholder vectors of size ndet for grppi maps
-    det_in_vec.resize(n_maps);
+    det_in_vec.resize(map_indices.n_maps);
     std::iota(det_in_vec.begin(), det_in_vec.end(), 0);
-    det_out_vec.resize(n_maps);
+    det_out_vec.resize(map_indices.n_maps);
 
     // run iterative pipeline
     loop_pipeline(kidsproc, rawobs);

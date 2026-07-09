@@ -29,13 +29,13 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
             write_maps(fits, noise_fits, buffer, map_index);
         };
     const auto map_to_stokes_index = [&](Eigen::Index map_index) {
-        return maps_to_stokes(map_index);
+        return map_indices.maps_to_stokes(map_index);
     };
     const auto map_to_array_index = [&](Eigen::Index map_index) {
-        return maps_to_arrays(map_index);
+        return map_indices.maps_to_arrays(map_index);
     };
     const auto array_to_map_index = [&](Eigen::Index array_index) {
-        return arrays_to_maps(array_index);
+        return map_indices.arrays_to_maps(array_index);
     };
     const auto filter_callbacks =
         citlali::pipeline::make_map_filter_callbacks(
@@ -45,7 +45,7 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         citlali::pipeline::map_filter_run_options(*this);
 
     citlali::pipeline::run_map_filter_loop(
-        wiener_filter, mb, n_maps, filter_outputs,
+        wiener_filter, mb, map_indices.n_maps, filter_outputs,
         toltec_io.array_name_map, toltec_io.array_fwhm_arcsec,
         ASEC_TO_RAD, calib.apt, filter_options, &mb,
         rtcproc.run_polarization, rtcproc.polarization,

@@ -115,7 +115,7 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
     const auto mapmaking_method = typed_config.mapmaking.method;
     const auto active_maps =
         citlali::pipeline::select_unconverged_beammap_maps(
-            mapmaking_grouping, converged, n_maps, logger);
+            mapmaking_grouping, converged, map_indices.n_maps, logger);
     const auto *active_maps_ptr = active_maps.ptr();
 
     std::ostringstream context;
@@ -124,7 +124,7 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
             << " update_progress=" << (update_progress ? 1 : 0)
             << " grouping=" << static_cast<int>(mapmaking_grouping)
             << " method=" << static_cast<int>(mapmaking_method)
-            << " active_maps=" << active_maps.n_active_maps << "/" << n_maps;
+            << " active_maps=" << active_maps.n_active_maps << "/" << map_indices.n_maps;
     const auto profile_scope =
         citlali::pipeline::profile_stage(
             "beammap.mapmaking.pass", logger, context.str());
@@ -134,10 +134,10 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
             citlali::pipeline::profile_stage(
                 "beammap.mapmaking.reset_buffers", logger, context.str());
         citlali::pipeline::ensure_jinc_grid_weight_maps(
-            mapmaking_method, omb, n_maps, logger);
+            mapmaking_method, omb, map_indices.n_maps, logger);
 
         citlali::pipeline::reset_beammap_mapmaking_buffers(
-            omb, ptcs, n_maps, rtcproc.run_kernel,
+            omb, ptcs, map_indices.n_maps, rtcproc.run_kernel,
             citlali::pipeline::noise_maps_enabled(*this),
             omb.randomize_dets, calib.n_dets, active_maps_ptr, rands,
             eng);

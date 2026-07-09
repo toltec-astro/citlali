@@ -11,6 +11,7 @@
 
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/engine/learning.h>
+#include <citlali/core/pipeline/map_index_state.h>
 #include <citlali/core/utils/fits_io.h>
 
 struct EngineRuntimeState {
@@ -71,14 +72,8 @@ struct EngineRuntimeState {
     Eigen::Index n_tod_output_scans_rtc = 0;
     Eigen::Index n_tod_output_scans_ptc = 0;
 
-    // number of maps
-    int n_maps;
-
-    // mapping from index in map vector to array index
-    Eigen::VectorXI maps_to_arrays, arrays_to_maps;
-
-    // mapping from index in map vector to array index
-    Eigen::VectorXI maps_to_stokes;
+    // map count and per-map index translations
+    citlali::pipeline::MapIndexState map_indices;
 
     // current fruit loops iteration
     int fruit_iter;

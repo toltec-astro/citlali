@@ -5,7 +5,7 @@
 
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::find_sources(map_buffer_t &mb) {
-    citlali::pipeline::detect_map_sources(mb, n_maps, logger);
+    citlali::pipeline::detect_map_sources(mb, map_indices.n_maps, logger);
 
     citlali::pipeline::initialize_source_fit_tables(
         mb, map_fitter.n_params);
@@ -15,7 +15,7 @@ void Engine::find_sources(map_buffer_t &mb) {
             RAD_TO_ASEC, STD_TO_FWHM, ASEC_TO_RAD, RAD_TO_DEG,
             DEG_TO_RAD, ASEC_TO_DEG);
     const auto map_to_array_index = [&](Eigen::Index map_index) {
-        return maps_to_arrays(map_index);
+        return map_indices.maps_to_arrays(map_index);
     };
     const auto init_fwhm_for_array = [&](Eigen::Index array) {
         return citlali::pipeline::source_fit_initial_fwhm_for_array(
@@ -58,5 +58,5 @@ void Engine::find_sources(map_buffer_t &mb) {
         citlali::pipeline::make_source_fit_callbacks(
             map_to_array_index, init_fwhm_for_array, fit_map_sources);
     citlali::pipeline::fit_detected_map_sources(
-        mb, n_maps, source_fit_callbacks);
+        mb, map_indices.n_maps, source_fit_callbacks);
 }

@@ -17,7 +17,7 @@ void Pointing::output() {
     std::string dir_name;
 
     // matrix to hold pointing fit values and errors (n_params + 2 for array and S/N)
-    Eigen::MatrixXf ppt_table(n_maps, 2 * map_fitter.n_params + 2);
+    Eigen::MatrixXf ppt_table(map_indices.n_maps, 2 * map_fitter.n_params + 2);
 
     // determine pointers and directory name based on map_type
     if constexpr (map_type == mapmaking::RawObs || map_type == mapmaking::FilteredObs) {
@@ -37,8 +37,8 @@ void Pointing::output() {
                 obsnum, telescope.sim_obs);
 
         // add array and S/N to ppt
-        for (Eigen::Index i = 0; i < n_maps; ++i) {
-            ppt_table(i, 0) = maps_to_arrays(i);
+        for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
+            ppt_table(i, 0) = map_indices.maps_to_arrays(i);
             double map_std_dev = engine_utils::calc_std_dev(mb->signal[i]);
             ppt_table(i, 2 * map_fitter.n_params + 1) = params(i, 0) / map_std_dev;
         }
@@ -87,17 +87,17 @@ void Pointing::output() {
 
                 Eigen::Index k = 0;
 
-                for (Eigen::Index i=0; i<n_maps; i++) {
+                for (Eigen::Index i=0; i<map_indices.n_maps; i++) {
                     // update progress bar
-                    pb.count(n_maps, 1);
+                    pb.count(map_indices.n_maps, 1);
                     write_maps(f_io,n_io,mb,i);
 
-                    Eigen::Index map_index = arrays_to_maps(i);
+                    Eigen::Index map_index = map_indices.arrays_to_maps(i);
 
                     // check if we move from one file to the next
                     // if so go back to first hdu layer
                     if (i>0) {
-                        if (map_index > arrays_to_maps(i-1)) {
+                        if (map_index > map_indices.arrays_to_maps(i-1)) {
                             k = 0;
                         }
                     }

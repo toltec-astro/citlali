@@ -60,7 +60,7 @@ template <class EngineT>
 void setup_observation_timestream_processors(EngineT &engine) {
     // setup kernel
     if (engine.rtcproc.run_kernel) {
-        engine.rtcproc.kernel.setup(engine.n_maps);
+        engine.rtcproc.kernel.setup(engine.map_indices.n_maps);
     }
 
     // set despiker sample rate

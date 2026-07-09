@@ -3,12 +3,12 @@
 // Implementation detail included by pointing.h.
 
 void Pointing::fit_maps() {
-    fit_valid.setZero(n_maps);
+    fit_valid.setZero(map_indices.n_maps);
 
     if (!typed_config.pointing.fit_gaussian) {
         logger->info("pointing Gaussian map fitting disabled");
-        params.setZero(n_maps, map_fitter.n_params);
-        perrors.setZero(n_maps, map_fitter.n_params);
+        params.setZero(map_indices.n_maps, map_fitter.n_params);
+        perrors.setZero(map_indices.n_maps, map_fitter.n_params);
         return;
     }
 
@@ -19,8 +19,8 @@ void Pointing::fit_maps() {
 
     // Run pointing fits sequentially. Parallel Ceres covariance work has shown
     // allocator instability on some systems.
-    for (Eigen::Index i = 0; i < n_maps; ++i) {
-        auto array = maps_to_arrays(i);
+    for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
+        auto array = map_indices.maps_to_arrays(i);
         // init fwhm in pixels
         double init_fwhm = toltec_io.array_fwhm_arcsec[array]*ASEC_TO_RAD/omb.pixel_size_rad;
         auto [map_params, map_perror, good_fit] =

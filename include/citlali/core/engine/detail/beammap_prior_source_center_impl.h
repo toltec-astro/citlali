@@ -14,7 +14,7 @@ bool Beammap::find_map_weighted_peak(Eigen::Index map_index, Eigen::Index &best_
     best_col = -1;
     best_snr = -std::numeric_limits<double>::infinity();
 
-    if (map_index < 0 || map_index >= n_maps) {
+    if (map_index < 0 || map_index >= map_indices.n_maps) {
         return false;
     }
 
@@ -88,7 +88,7 @@ void Beammap::configure_detector_source_centers_from_previous_fit() {
         return;
     }
 
-    if (p0.rows() != n_maps || p0.cols() < 3 || good_fits.size() != n_maps) {
+    if (p0.rows() != map_indices.n_maps || p0.cols() < 3 || good_fits.size() != map_indices.n_maps) {
         ptcproc.fruit_loops_source_lat.resize(0);
         ptcproc.fruit_loops_source_lon.resize(0);
         ptcproc.fruit_loops_source_valid.resize(0);
@@ -100,16 +100,16 @@ void Beammap::configure_detector_source_centers_from_previous_fit() {
         return;
     }
 
-    ptcproc.fruit_loops_source_lat = Eigen::VectorXd::Zero(n_maps);
-    ptcproc.fruit_loops_source_lon = Eigen::VectorXd::Zero(n_maps);
-    ptcproc.fruit_loops_source_valid = Eigen::VectorXi::Zero(n_maps);
-    Eigen::VectorXd kernel_source_a_fwhm_rad = Eigen::VectorXd::Zero(n_maps);
-    Eigen::VectorXd kernel_source_b_fwhm_rad = Eigen::VectorXd::Zero(n_maps);
+    ptcproc.fruit_loops_source_lat = Eigen::VectorXd::Zero(map_indices.n_maps);
+    ptcproc.fruit_loops_source_lon = Eigen::VectorXd::Zero(map_indices.n_maps);
+    ptcproc.fruit_loops_source_valid = Eigen::VectorXi::Zero(map_indices.n_maps);
+    Eigen::VectorXd kernel_source_a_fwhm_rad = Eigen::VectorXd::Zero(map_indices.n_maps);
+    Eigen::VectorXd kernel_source_b_fwhm_rad = Eigen::VectorXd::Zero(map_indices.n_maps);
 
     Eigen::Index n_valid = 0;
     Eigen::Index n_valid_fwhm = 0;
     std::vector<double> fwhm_arcsec_values;
-    for (Eigen::Index i = 0; i < n_maps; ++i) {
+    for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
         if (!good_fits(i) ||
             !std::isfinite(p0(i, 0)) || p0(i, 0) <= 0.0 ||
             !std::isfinite(p0(i, 1)) || !std::isfinite(p0(i, 2))) {
@@ -139,7 +139,7 @@ void Beammap::configure_detector_source_centers_from_previous_fit() {
     logger->info(
         "beammap detector source centers using previous-fit centers for {}/{} detector maps "
         "on iter {} (ptc_mask_radius={:.3f} arcsec)",
-        n_valid, n_maps, current_iter, ptcproc.mask_radius_arcsec);
+        n_valid, map_indices.n_maps, current_iter, ptcproc.mask_radius_arcsec);
 
     if (rtcproc.run_kernel) {
         double median_fwhm_arcsec = std::numeric_limits<double>::quiet_NaN();
@@ -154,6 +154,6 @@ void Beammap::configure_detector_source_centers_from_previous_fit() {
                                           kernel_source_b_fwhm_rad);
         logger->info(
             "beammap detector kernel placement using previous-fit centers for {}/{} detector maps on iter {}; fitted kernel FWHM available for {}/{} maps (median={:.3f} arcsec)",
-            n_valid, n_maps, current_iter, n_valid_fwhm, n_maps, median_fwhm_arcsec);
+            n_valid, map_indices.n_maps, current_iter, n_valid_fwhm, map_indices.n_maps, median_fwhm_arcsec);
     }
 }

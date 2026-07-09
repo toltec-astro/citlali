@@ -40,24 +40,24 @@ void Beammap::setup() {
     calib_scans0.resize(telescope.scan_indices.cols());
 
     // resize the initial fit matrix
-    p0.setZero(n_maps, map_fitter.n_params);
+    p0.setZero(map_indices.n_maps, map_fitter.n_params);
     // resize the initial fit error matrix
-    perror0.setZero(n_maps, map_fitter.n_params);
+    perror0.setZero(map_indices.n_maps, map_fitter.n_params);
     // resize the current fit matrix
-    params.setZero(n_maps, map_fitter.n_params);
-    perrors.setZero(n_maps, map_fitter.n_params);
-    fit_diag_init_params.setZero(n_maps, map_fitter.n_params);
-    fit_diag_lower_limits.setZero(n_maps, map_fitter.n_params);
-    fit_diag_upper_limits.setZero(n_maps, map_fitter.n_params);
-    fit_diag_hit_lower.setZero(n_maps, map_fitter.n_params);
-    fit_diag_hit_upper.setZero(n_maps, map_fitter.n_params);
-    fit_diag_bound_code.setZero(n_maps);
-    fit_diag_bound_nhit.setZero(n_maps);
-    prior_diag_values.resize(n_maps, n_prior_diag_cols);
+    params.setZero(map_indices.n_maps, map_fitter.n_params);
+    perrors.setZero(map_indices.n_maps, map_fitter.n_params);
+    fit_diag_init_params.setZero(map_indices.n_maps, map_fitter.n_params);
+    fit_diag_lower_limits.setZero(map_indices.n_maps, map_fitter.n_params);
+    fit_diag_upper_limits.setZero(map_indices.n_maps, map_fitter.n_params);
+    fit_diag_hit_lower.setZero(map_indices.n_maps, map_fitter.n_params);
+    fit_diag_hit_upper.setZero(map_indices.n_maps, map_fitter.n_params);
+    fit_diag_bound_code.setZero(map_indices.n_maps);
+    fit_diag_bound_nhit.setZero(map_indices.n_maps);
+    prior_diag_values.resize(map_indices.n_maps, n_prior_diag_cols);
     prior_diag_values.setConstant(std::numeric_limits<double>::quiet_NaN());
 
     // resize good fits
-    good_fits.setZero(n_maps);
+    good_fits.setZero(map_indices.n_maps);
     rfi_mask_samples_flagged = Eigen::VectorXi::Zero(calib.n_dets);
     rfi_mask_scans_flagged = Eigen::VectorXi::Zero(calib.n_dets);
     scan_band_mask_samples_flagged = Eigen::VectorXi::Zero(calib.n_dets);
@@ -68,9 +68,9 @@ void Beammap::setup() {
     final_prior_slot_index_diag = Eigen::VectorXi::Constant(calib.n_dets, -1);
 
     // initially all detectors are unconverged
-    converged.setZero(n_maps);
+    converged.setZero(map_indices.n_maps);
     // convergence iteration
-    converge_iter.resize(n_maps);
+    converge_iter.resize(map_indices.n_maps);
     converge_iter.setConstant(1);
     // set the initial iteration
     current_iter = 0;

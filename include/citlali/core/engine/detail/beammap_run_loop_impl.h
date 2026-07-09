@@ -28,7 +28,7 @@ bool Beammap::update_beammap_convergence_state() {
                     std::to_string(
                         iteration_config.convergence_radius_arcsec));
         Eigen::VectorXd convergence_delta =
-            Eigen::VectorXd::Constant(n_maps, std::numeric_limits<double>::quiet_NaN());
+            Eigen::VectorXd::Constant(map_indices.n_maps, std::numeric_limits<double>::quiet_NaN());
         grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
             if (!converged(i)) {
                 const double delta = calc_beammap_convergence_delta(i);

@@ -24,7 +24,7 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
                 "beammap.fit_maps", logger,
                 "iter=" + std::to_string(current_iter) +
                     " phase=" + beammap_iter_phase_name(current_iter));
-        for (Eigen::Index i = 0; i < n_maps; ++i) {
+        for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
             logger->debug("beammap fit checkpoint: map={} begin converged={}", i, converged(i));
 
             require_beammap_fit_map_geometry(i);

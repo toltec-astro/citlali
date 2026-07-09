@@ -7,9 +7,9 @@ void Pointing::setup() {
     obsnum_setup();
 
     // resize the current fit matrix
-    params.setZero(n_maps, map_fitter.n_params);
-    perrors.setZero(n_maps, map_fitter.n_params);
-    fit_valid.setZero(n_maps);
+    params.setZero(map_indices.n_maps, map_fitter.n_params);
+    perrors.setZero(map_indices.n_maps, map_fitter.n_params);
+    fit_valid.setZero(map_indices.n_maps);
 
     // units for positions
     std::string pos_units =

@@ -26,14 +26,14 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
             citlali::config::MapGrouping::detector) {
         return false;
     }
-    if (map_index < 0 || map_index >= n_maps || map_index >= calib.n_dets) {
+    if (map_index < 0 || map_index >= map_indices.n_maps || map_index >= calib.n_dets) {
         return false;
     }
-    if (map_index >= maps_to_arrays.size() || map_index >= calib.apt["nw"].size()) {
+    if (map_index >= map_indices.maps_to_arrays.size() || map_index >= calib.apt["nw"].size()) {
         return false;
     }
 
-    const int array = static_cast<int>(maps_to_arrays(map_index));
+    const int array = static_cast<int>(map_indices.maps_to_arrays(map_index));
     const int nw = static_cast<int>(std::lround(calib.apt["nw"](map_index)));
     auto slots_it = beammap_soft_prior_slots.find({array, nw});
     if (slots_it == beammap_soft_prior_slots.end() || slots_it->second.empty()) {

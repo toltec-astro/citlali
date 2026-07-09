@@ -18,7 +18,7 @@ void Engine::write_psd(map_buffer_t &mb, std::string dir_name) {
     citlali::pipeline::add_spectral_psd_products_for_maps(
         fo, mb, toltec_io.array_name_map, calib.arrays,
         rtcproc.polarization.stokes_params, map_name_for_index,
-        arrays_to_maps, maps_to_stokes);
+        map_indices.arrays_to_maps, map_indices.maps_to_stokes);
     });
 }
 
@@ -39,7 +39,7 @@ void Engine::write_hist(map_buffer_t &mb, std::string dir_name) {
     citlali::pipeline::add_spectral_histogram_products_for_maps(
         fo, mb, hist_bins_dim, toltec_io.array_name_map, calib.arrays,
         rtcproc.polarization.stokes_params, map_name_for_index,
-        arrays_to_maps, maps_to_stokes);
+        map_indices.arrays_to_maps, map_indices.maps_to_stokes);
     });
 }
 

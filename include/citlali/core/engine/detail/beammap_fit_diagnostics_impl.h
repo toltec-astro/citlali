@@ -135,7 +135,7 @@ void Beammap::log_beammap_fit_iteration_stats(
     if (map_fitter.n_params >= 6) {
         logger->info(
             "beammap fit bound summary (iter {}): any_hit={}/{} amp(lo/hi)={}/{} x(lo/hi)={}/{} y(lo/hi)={}/{} a(lo/hi)={}/{} b(lo/hi)={}/{} angle(lo/hi)={}/{}",
-            current_iter, fit_stats.bound_any, n_maps,
+            current_iter, fit_stats.bound_any, map_indices.n_maps,
             fit_stats.bound_low(0), fit_stats.bound_high(0),
             fit_stats.bound_low(1), fit_stats.bound_high(1),
             fit_stats.bound_low(2), fit_stats.bound_high(2),
@@ -145,7 +145,7 @@ void Beammap::log_beammap_fit_iteration_stats(
     }
     else {
         logger->info("beammap fit bound summary (iter {}): any_hit={}/{}",
-                     current_iter, fit_stats.bound_any, n_maps);
+                     current_iter, fit_stats.bound_any, map_indices.n_maps);
     }
-    logger->info("number of good fits {}/{}", static_cast<long long>(good_fits.cast<int>().sum()), n_maps);
+    logger->info("number of good fits {}/{}", static_cast<long long>(good_fits.cast<int>().sum()), map_indices.n_maps);
 }

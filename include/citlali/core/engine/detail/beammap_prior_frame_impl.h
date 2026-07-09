@@ -13,24 +13,24 @@ void Beammap::update_prior_frame_estimates() {
     std::map<int, std::vector<double>> x_by_array;
     std::map<int, std::vector<double>> y_by_array;
     std::set<int> arrays_missing;
-    for (Eigen::Index i = 0; i < n_maps; ++i) {
-        arrays_missing.insert(static_cast<int>(maps_to_arrays(i)));
+    for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
+        arrays_missing.insert(static_cast<int>(map_indices.maps_to_arrays(i)));
     }
 
     Eigen::Index n_prev = 0;
-    if (is_beammap_measurement_iter(current_iter) && p0.rows() == n_maps && p0.cols() > 2) {
-        for (Eigen::Index i = 0; i < n_maps; ++i) {
+    if (is_beammap_measurement_iter(current_iter) && p0.rows() == map_indices.n_maps && p0.cols() > 2) {
+        for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
             if (i < good_fits.size() && !good_fits(i)) {
                 continue;
             }
-            if (fit_diag_bound_nhit.size() == n_maps && fit_diag_bound_nhit(i) > 0) {
+            if (fit_diag_bound_nhit.size() == map_indices.n_maps && fit_diag_bound_nhit(i) > 0) {
                 continue;
             }
             if (!(std::isfinite(p0(i, 0)) && p0(i, 0) > 0.0 &&
                   std::isfinite(p0(i, 1)) && std::isfinite(p0(i, 2)))) {
                 continue;
             }
-            const int array = static_cast<int>(maps_to_arrays(i));
+            const int array = static_cast<int>(map_indices.maps_to_arrays(i));
             const double x_arcsec =
                 RAD_TO_ASEC * omb.pixel_size_rad * (p0(i, 1) - (omb.n_cols - 1) / 2.0);
             const double y_arcsec =
@@ -44,8 +44,8 @@ void Beammap::update_prior_frame_estimates() {
 
     Eigen::Index n_blind = 0;
     if (!arrays_missing.empty()) {
-        for (Eigen::Index i = 0; i < n_maps; ++i) {
-            const int array = static_cast<int>(maps_to_arrays(i));
+        for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
+            const int array = static_cast<int>(map_indices.maps_to_arrays(i));
             if (!arrays_missing.count(array)) {
                 continue;
             }
@@ -84,7 +84,7 @@ void Beammap::update_prior_frame_estimates() {
     const auto &priors_config = typed_config.beammap.priors;
     Eigen::Index n_alignment_matches = 0;
     if (priors_config.align_after_iter0 && is_beammap_measurement_iter(current_iter) &&
-        p0.rows() == n_maps && p0.cols() > 2) {
+        p0.rows() == map_indices.n_maps && p0.cols() > 2) {
         struct PriorPair {
             double obs_x = 0.0;
             double obs_y = 0.0;
@@ -96,18 +96,18 @@ void Beammap::update_prior_frame_estimates() {
         std::set<int> arrays_with_alignment_pairs;
         const double derot_elev_rad = get_prior_derot_elev_rad();
 
-        for (Eigen::Index i = 0; i < n_maps; ++i) {
+        for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
             if (i >= good_fits.size() || !good_fits(i)) {
                 continue;
             }
-            if (fit_diag_bound_nhit.size() == n_maps && fit_diag_bound_nhit(i) > 0) {
+            if (fit_diag_bound_nhit.size() == map_indices.n_maps && fit_diag_bound_nhit(i) > 0) {
                 continue;
             }
             if (!(std::isfinite(p0(i, 0)) && p0(i, 0) > 0.0 &&
                   std::isfinite(p0(i, 1)) && std::isfinite(p0(i, 2)))) {
                 continue;
             }
-            const int array = static_cast<int>(maps_to_arrays(i));
+            const int array = static_cast<int>(map_indices.maps_to_arrays(i));
             const int nw = static_cast<int>(std::lround(calib.apt["nw"](i)));
             const double x_raw =
                 RAD_TO_ASEC * omb.pixel_size_rad * (p0(i, 1) - (omb.n_cols - 1) / 2.0);

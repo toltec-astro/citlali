@@ -73,7 +73,7 @@ void Engine::write_map_summary(map_buffer_t &mb) {
     citlali::pipeline::write_map_summary_log(
         f, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION,
         engine_utils::current_date_time(), typed_config.runtime.reduction_type,
-        typed_config.timestream.type, typed_config.mapmaking.grouping, n_maps,
+        typed_config.timestream.type, typed_config.mapmaking.grouping, map_indices.n_maps,
         mb, nonfinite_counts);
 }
 

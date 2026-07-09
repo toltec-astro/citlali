@@ -18,7 +18,7 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
 
     const auto write_indices =
         citlali::pipeline::map_write_indices(
-            i, arrays_to_maps, maps_to_stokes, maps_to_arrays);
+            i, map_indices.arrays_to_maps, map_indices.maps_to_stokes, map_indices.maps_to_arrays);
     const Eigen::Index map_index = write_indices.map_index;
     const Eigen::Index stokes_index = write_indices.stokes_index;
     const Eigen::Index array_id = write_indices.array_id;

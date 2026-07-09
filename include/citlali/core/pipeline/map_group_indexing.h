@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/config/mapmaking_config.h>
+#include <citlali/core/pipeline/map_index_state.h>
 
 #include <tula/eigen.h>
 
@@ -69,6 +70,18 @@ void populate_map_index_mappings(const Eigen::VectorXI &array_indices,
         }
         arrays_to_maps(i) = index;
     }
+}
+
+template <class Polarization>
+MapIndexState make_map_index_state(const Eigen::VectorXI &array_indices,
+                                   Eigen::Index n_maps,
+                                   const Polarization &polarization) {
+    MapIndexState state;
+    state.n_maps = n_maps;
+    populate_map_index_mappings(
+        array_indices, state.n_maps, polarization, state.maps_to_arrays,
+        state.maps_to_stokes, state.arrays_to_maps);
+    return state;
 }
 
 }  // namespace citlali::pipeline

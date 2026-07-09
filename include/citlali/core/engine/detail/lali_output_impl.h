@@ -63,9 +63,9 @@ void Lali::output() {
                 logger->debug("done adding primary headers");
 
                 // write the maps
-                for (Eigen::Index i=0; i<n_maps; ++i) {
+                for (Eigen::Index i=0; i<map_indices.n_maps; ++i) {
                     // update progress bar
-                    pb.count(n_maps, 1);
+                    pb.count(map_indices.n_maps, 1);
                     write_maps(f_io,n_io,mb,i);
                 }
             }

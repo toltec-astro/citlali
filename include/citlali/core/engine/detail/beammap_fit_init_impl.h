@@ -53,7 +53,7 @@ bool Beammap::prepare_beammap_fit_map(Eigen::Index map_index) {
 }
 
 double Beammap::beammap_init_fwhm_pix(Eigen::Index map_index) {
-    const auto array = maps_to_arrays(map_index);
+    const auto array = map_indices.maps_to_arrays(map_index);
     return toltec_io.array_fwhm_arcsec[array] * ASEC_TO_RAD /
            omb.pixel_size_rad;
 }
@@ -81,7 +81,7 @@ void Beammap::restore_converged_beammap_fit_result(Eigen::Index map_index) {
 }
 
 bool Beammap::has_beammap_prior_diagnostics() const {
-    return prior_diag_values.rows() == n_maps &&
+    return prior_diag_values.rows() == map_indices.n_maps &&
            prior_diag_values.cols() == n_prior_diag_cols;
 }
 
@@ -99,7 +99,7 @@ bool Beammap::beammap_prior_allows_peak_switch(Eigen::Index map_index,
                                                double prev_row, double prev_col,
                                                Eigen::Index peak_row,
                                                Eigen::Index peak_col) {
-    const int array_int = static_cast<int>(maps_to_arrays(map_index));
+    const int array_int = static_cast<int>(map_indices.maps_to_arrays(map_index));
     const int nw_int = static_cast<int>(std::lround(calib.apt["nw"](map_index)));
     const double pix_to_arcsec = RAD_TO_ASEC * omb.pixel_size_rad;
     const double col0 = static_cast<double>(omb.n_cols - 1) / 2.0;
