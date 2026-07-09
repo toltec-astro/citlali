@@ -89,7 +89,7 @@ auto Pointing::run(KidsProc &kidsproc) {
                 "timestream.rtcdiag.write_chunk", logger,
                 "scan=" + std::to_string(
                     static_cast<long long>(ptcdata.index.data + 1)));
-            rtcproc.append_diag_to_netcdf(ptcdata, rtcdiag_filename, calib_scan, ptcdata.index.data);
+            rtcproc.append_diag_to_netcdf(ptcdata, output_paths.rtcdiag_filename, calib_scan, ptcdata.index.data);
             output_writers.rtcdiag->advance();
         }
 
@@ -102,7 +102,7 @@ auto Pointing::run(KidsProc &kidsproc) {
                     "timestream.rtc_output.write_chunk", logger,
                     "scan=" + std::to_string(
                         static_cast<long long>(rtcdata.index.data + 1)));
-                rtcproc.append_to_netcdf(rtc_outer_output, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
+                rtcproc.append_to_netcdf(rtc_outer_output, output_paths.tod_filename["rtc"], map_grouping, telescope.pixel_axes,
                                          rtc_outer_output.pointing_offsets_arcsec.data, calib, false, rtc_scan_row);
             }
             else {
@@ -111,7 +111,7 @@ auto Pointing::run(KidsProc &kidsproc) {
                     "timestream.rtc_output.write_chunk", logger,
                     "scan=" + std::to_string(
                         static_cast<long long>(rtcdata.index.data + 1)));
-                rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
+                rtcproc.append_to_netcdf(ptcdata, output_paths.tod_filename["rtc"], map_grouping, telescope.pixel_axes,
                                          ptcdata.pointing_offsets_arcsec.data, calib, false, rtc_scan_row);
             }
             output_writers.rtc->advance();
@@ -217,7 +217,7 @@ auto Pointing::run(KidsProc &kidsproc) {
                 "timestream.ptcdiag.write_chunk", logger,
                 "scan=" + std::to_string(
                     static_cast<long long>(ptcdata.index.data + 1)));
-            ptcproc.append_diag_to_netcdf(ptcdata, ptcdiag_filename, calib_scan, ptcdata.index.data);
+            ptcproc.append_diag_to_netcdf(ptcdata, output_paths.ptcdiag_filename, calib_scan, ptcdata.index.data);
             output_writers.ptcdiag->advance();
         }
 
@@ -230,7 +230,7 @@ auto Pointing::run(KidsProc &kidsproc) {
                 "timestream.ptc_output.write_chunk", logger,
                 "scan=" + std::to_string(
                     static_cast<long long>(ptcdata.index.data + 1)));
-            ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc"], map_grouping, telescope.pixel_axes,
+            ptcproc.append_to_netcdf(ptcdata, output_paths.tod_filename["ptc"], map_grouping, telescope.pixel_axes,
                                      ptcdata.pointing_offsets_arcsec.data, calib_scan, false, ptc_scan_row);
             output_writers.ptc->advance();
         }

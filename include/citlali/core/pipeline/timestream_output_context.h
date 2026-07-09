@@ -30,8 +30,8 @@ TimestreamOutputFlags standard_timestream_output_flags(const Engine &engine) {
     TimestreamOutputFlags flags;
     flags.write_rtc = raw_tod_output_files_available(engine);
     flags.write_ptc = processed_tod_output_files_available(engine);
-    flags.write_rtcdiag = !engine.rtcdiag_filename.empty();
-    flags.write_ptcdiag = !engine.ptcdiag_filename.empty();
+    flags.write_rtcdiag = !engine.output_paths.rtcdiag_filename.empty();
+    flags.write_ptcdiag = !engine.output_paths.ptcdiag_filename.empty();
     return flags;
 }
 
@@ -40,7 +40,7 @@ TimestreamOutputFlags beammap_timestream_output_flags(
     const Engine &engine, bool write_outputs) {
     TimestreamOutputFlags flags;
     flags.write_rtc = write_outputs && raw_tod_output_files_available(engine);
-    flags.write_rtcdiag = write_outputs && !engine.rtcdiag_filename.empty();
+    flags.write_rtcdiag = write_outputs && !engine.output_paths.rtcdiag_filename.empty();
     return flags;
 }
 

@@ -21,22 +21,22 @@ Targets targets(BeammapState &beammap) {
     if constexpr (map_type == mapmaking::RawObs) {
         return {&beammap.omb, &beammap.fits_io_vec,
                 &beammap.noise_fits_io_vec,
-                beammap.obsnum_dir_name + "raw/"};
+                beammap.output_paths.obsnum_dir_name + "raw/"};
     }
     else if constexpr (map_type == mapmaking::FilteredObs) {
         return {&beammap.omb, &beammap.filtered_fits_io_vec,
                 &beammap.filtered_noise_fits_io_vec,
-                beammap.obsnum_dir_name + "filtered/"};
+                beammap.output_paths.obsnum_dir_name + "filtered/"};
     }
     else if constexpr (map_type == mapmaking::RawCoadd) {
         return {&beammap.cmb, &beammap.coadd_fits_io_vec,
                 &beammap.coadd_noise_fits_io_vec,
-                beammap.coadd_dir_name + "raw/"};
+                beammap.output_paths.coadd_dir_name + "raw/"};
     }
     else if constexpr (map_type == mapmaking::FilteredCoadd) {
         return {&beammap.cmb, &beammap.filtered_coadd_fits_io_vec,
                 &beammap.filtered_coadd_noise_fits_io_vec,
-                beammap.coadd_dir_name + "filtered/"};
+                beammap.output_paths.coadd_dir_name + "filtered/"};
     }
     else {
         static_assert(map_type == mapmaking::RawObs ||

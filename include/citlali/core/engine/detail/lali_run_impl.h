@@ -84,7 +84,7 @@ auto Lali::run() -> run_stage_t {
         if (output_flags.write_rtcdiag) {
             output_writers.rtcdiag->wait_turn(ptcdata.index.data);
             logger->info("writing rtc diagnostics sidecar chunk");
-            rtcproc.append_diag_to_netcdf(ptcdata, rtcdiag_filename, calib_scan, ptcdata.index.data);
+            rtcproc.append_diag_to_netcdf(ptcdata, output_paths.rtcdiag_filename, calib_scan, ptcdata.index.data);
             output_writers.rtcdiag->advance();
         }
 
@@ -93,12 +93,12 @@ auto Lali::run() -> run_stage_t {
             output_writers.rtc->wait_turn(rtc_scan_row);
             if (rtcproc.tod_output_outer) {
                 logger->info("writing outer raw time chunk");
-                rtcproc.append_to_netcdf(rtc_outer_output, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
+                rtcproc.append_to_netcdf(rtc_outer_output, output_paths.tod_filename["rtc"], map_grouping, telescope.pixel_axes,
                                          rtc_outer_output.pointing_offsets_arcsec.data, calib, false, rtc_scan_row);
             }
             else {
                 logger->info("writing raw time chunk");
-                rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
+                rtcproc.append_to_netcdf(ptcdata, output_paths.tod_filename["rtc"], map_grouping, telescope.pixel_axes,
                                          ptcdata.pointing_offsets_arcsec.data, calib, false, rtc_scan_row);
             }
             output_writers.rtc->advance();
@@ -192,7 +192,7 @@ auto Lali::run() -> run_stage_t {
         if (output_flags.write_ptcdiag) {
             output_writers.ptcdiag->wait_turn(ptcdata.index.data);
             logger->info("writing ptc diagnostics sidecar chunk");
-            ptcproc.append_diag_to_netcdf(ptcdata, ptcdiag_filename, calib_scan, ptcdata.index.data);
+            ptcproc.append_diag_to_netcdf(ptcdata, output_paths.ptcdiag_filename, calib_scan, ptcdata.index.data);
             output_writers.ptcdiag->advance();
         }
 
@@ -201,7 +201,7 @@ auto Lali::run() -> run_stage_t {
         if (output_flags.write_ptc && ptc_scan_row >= 0) {
             output_writers.ptc->wait_turn(ptc_scan_row);
             logger->info("writing processed time chunk");
-            ptcproc.append_to_netcdf(ptcdata, tod_filename["ptc"], map_grouping, telescope.pixel_axes,
+            ptcproc.append_to_netcdf(ptcdata, output_paths.tod_filename["ptc"], map_grouping, telescope.pixel_axes,
                                      ptcdata.pointing_offsets_arcsec.data, calib_scan, false, ptc_scan_row);
             output_writers.ptc->advance();
         }

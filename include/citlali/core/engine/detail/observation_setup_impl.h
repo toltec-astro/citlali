@@ -134,7 +134,7 @@ void setup_observation_tod_output_files(EngineT &engine) {
         auto profile_scope = citlali::pipeline::profile_stage(
             "observation.setup.tod_output_directory", engine.logger);
         fs::create_directories(
-            engine.obsnum_dir_name + "raw/" + tod_output_subdir_name);
+            engine.output_paths.obsnum_dir_name + "raw/" + tod_output_subdir_name);
     }
     // create timestream files
     if (citlali::pipeline::tod_output_enabled(engine)) {

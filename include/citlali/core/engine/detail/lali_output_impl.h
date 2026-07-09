@@ -19,7 +19,7 @@ void Lali::output() {
     // set common variables depending on map_type
     if constexpr (map_type == mapmaking::RawObs || map_type == mapmaking::FilteredObs) {
         mb = &omb;
-        dir_name = obsnum_dir_name + (map_type == mapmaking::RawObs ? "raw/" : "filtered/");
+        dir_name = output_paths.obsnum_dir_name + (map_type == mapmaking::RawObs ? "raw/" : "filtered/");
         f_io = (map_type == mapmaking::RawObs) ? &fits_io_vec : &filtered_fits_io_vec;
         n_io = (map_type == mapmaking::RawObs) ? &noise_fits_io_vec : &filtered_noise_fits_io_vec;
 
@@ -34,7 +34,7 @@ void Lali::output() {
     }
     else if constexpr (map_type == mapmaking::RawCoadd || map_type == mapmaking::FilteredCoadd) {
         mb = &cmb;
-        dir_name = coadd_dir_name + (map_type == mapmaking::RawCoadd ? "raw/" : "filtered/");
+        dir_name = output_paths.coadd_dir_name + (map_type == mapmaking::RawCoadd ? "raw/" : "filtered/");
         f_io = (map_type == mapmaking::RawCoadd) ? &coadd_fits_io_vec : &filtered_coadd_fits_io_vec;
         n_io = (map_type == mapmaking::RawCoadd) ? &coadd_noise_fits_io_vec : &filtered_coadd_noise_fits_io_vec;
     }

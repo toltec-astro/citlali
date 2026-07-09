@@ -35,7 +35,7 @@ void make_reduction_iteration_index_file(TodProc &todproc,
     auto &engine = todproc.engine();
 
     logger->info("making index files");
-    todproc.make_index_file(engine.redu_dir_name);
+    todproc.make_index_file(engine.output_paths.redu_dir_name);
 }
 
 template <class Engine>

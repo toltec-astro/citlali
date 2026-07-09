@@ -12,7 +12,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
     const auto &beammap_reference_config = typed_config.beammap.reference;
 
     // loop through viles
-    for (const auto & [fkey, fval]: tod_filename) {
+    for (const auto & [fkey, fval]: output_paths.tod_filename) {
         netCDF::NcFile fo(fval, netCDF::NcFile::write);
 
         // add unit conversions
@@ -104,7 +104,7 @@ template <engine_utils::toltecIO::ProdType prod_t>
 void Engine::create_tod_files() {
     // name for std map
     const std::string dir_name = citlali::pipeline::tod_output_directory(
-        obsnum_dir_name, typed_config.timestream.output.subdir_name);
+        output_paths.obsnum_dir_name, typed_config.timestream.output.subdir_name);
     constexpr bool is_rtc_stream =
         prod_t == engine_utils::toltecIO::rtc_timestream;
     constexpr auto output_stream =
@@ -115,11 +115,11 @@ void Engine::create_tod_files() {
         citlali::pipeline::register_tod_stream_output_file<
             engine_utils::toltecIO::toltec, prod_t,
             engine_utils::toltecIO::raw>(
-            toltec_io, tod_filename, dir_name,
+            toltec_io, output_paths.tod_filename, dir_name,
             typed_config.runtime.reduction_type, obsnum, telescope.sim_obs,
             output_stream);
 
-    write_netcdf_atomic(tod_filename[name], [&](netCDF::NcFile &fo) {
+    write_netcdf_atomic(output_paths.tod_filename[name], [&](netCDF::NcFile &fo) {
 
     citlali::pipeline::add_tod_stream_output_type_label(fo, output_stream);
     if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {

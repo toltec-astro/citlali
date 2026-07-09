@@ -26,10 +26,10 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
         citlali::pipeline::noise_maps_enabled(engine()) &&
         citlali::pipeline::noise_realization_outputs_enabled(engine());
     const std::string raw_dir =
-        citlali::pipeline::raw_coadd_map_directory(engine().coadd_dir_name);
+        citlali::pipeline::raw_coadd_map_directory(engine().output_paths.coadd_dir_name);
     const std::string filtered_dir =
         citlali::pipeline::filtered_coadd_map_directory(
-            engine().coadd_dir_name);
+            engine().output_paths.coadd_dir_name);
 
     citlali::pipeline::append_coadd_array_products<
         engine_utils::toltecIO::raw>(

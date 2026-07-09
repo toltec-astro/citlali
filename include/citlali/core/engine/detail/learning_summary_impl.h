@@ -9,12 +9,12 @@
 inline void Engine::write_learning_summary() {
     if (!reduction_learning.is_enabled() ||
         !reduction_learning.diagnostics_enabled() ||
-        redu_dir_name.empty()) {
+        output_paths.redu_dir_name.empty()) {
         return;
     }
 
     const auto filename =
-        citlali::pipeline::learning_summary_filename(redu_dir_name, fruit_iter);
+        citlali::pipeline::learning_summary_filename(output_paths.redu_dir_name, fruit_iter);
     std::ofstream out(filename);
     if (!out) {
         logger->warn("failed to open learning summary output {}", filename);

@@ -4,16 +4,16 @@
 // Include this only after Engine has been declared.
 
 void Engine::create_ptcdiag_file() {
-    ptcdiag_filename =
+    output_paths.ptcdiag_filename =
         citlali::pipeline::diagnostic_output_netcdf_filename<
             engine_utils::toltecIO::toltec,
             engine_utils::toltecIO::ptcdiag,
             engine_utils::toltecIO::raw>(
-            toltec_io, obsnum_dir_name,
+            toltec_io, output_paths.obsnum_dir_name,
             typed_config.timestream.output.subdir_name,
             typed_config.runtime.reduction_type, obsnum, telescope.sim_obs);
 
-    write_netcdf_atomic(ptcdiag_filename, [&](netCDF::NcFile &fo) {
+    write_netcdf_atomic(output_paths.ptcdiag_filename, [&](netCDF::NcFile &fo) {
     const int fill_int = citlali::pipeline::ptcdiag_fill_int();
     const double fill_double = citlali::pipeline::ptcdiag_fill_double();
     const Eigen::Index n_scans = telescope.scan_indices.cols();

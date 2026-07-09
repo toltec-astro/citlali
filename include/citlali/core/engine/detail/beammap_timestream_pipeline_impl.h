@@ -127,7 +127,7 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
         if (output_flags.write_rtcdiag) {
             output_writers.rtcdiag->wait_turn(ptcdata.index.data);
             logger->info("writing rtc diagnostics sidecar chunk");
-            rtcproc.append_diag_to_netcdf(ptcdata, rtcdiag_filename, calib_scan, ptcdata.index.data);
+            rtcproc.append_diag_to_netcdf(ptcdata, output_paths.rtcdiag_filename, calib_scan, ptcdata.index.data);
             output_writers.rtcdiag->advance();
         }
 
@@ -136,12 +136,12 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
             output_writers.rtc->wait_turn(rtc_scan_row);
             if (rtcproc.tod_output_outer) {
                 logger->info("writing outer raw time chunk");
-                rtcproc.append_to_netcdf(rtc_outer_output, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
+                rtcproc.append_to_netcdf(rtc_outer_output, output_paths.tod_filename["rtc"], map_grouping, telescope.pixel_axes,
                                          rtc_outer_output.pointing_offsets_arcsec.data, calib, true, rtc_scan_row);
             }
             else {
                 logger->info("writing raw time chunk");
-                rtcproc.append_to_netcdf(ptcdata, tod_filename["rtc"], map_grouping, telescope.pixel_axes,
+                rtcproc.append_to_netcdf(ptcdata, output_paths.tod_filename["rtc"], map_grouping, telescope.pixel_axes,
                                          ptcdata.pointing_offsets_arcsec.data, calib_scan, true, rtc_scan_row);
             }
             output_writers.rtc->advance();

@@ -162,7 +162,7 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
             logger->info("adding final apt and detector pointing to tod files");
             // loop through tod files
-            for (const auto & [key, val]: tod_filename) {
+            for (const auto & [key, val]: output_paths.tod_filename) {
                 netCDF::NcFile fo(val, netCDF::NcFile::write);
                 // overwrite apt table
                 for (auto const& x: calib.apt) {

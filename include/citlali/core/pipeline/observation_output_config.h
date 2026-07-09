@@ -12,7 +12,7 @@ void set_observation_output_obsnum(Engine &engine, int obsnum) {
 
 template <class Engine>
 void set_observation_output_dir_name(Engine &engine) {
-    engine.obsnum_dir_name = engine.redu_dir_name + "/" + engine.obsnum + "/";
+    engine.output_paths.obsnum_dir_name = engine.output_paths.redu_dir_name + "/" + engine.obsnum + "/";
 }
 
 template <class Engine>

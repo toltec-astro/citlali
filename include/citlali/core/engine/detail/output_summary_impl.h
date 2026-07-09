@@ -45,7 +45,7 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
 
     // write summary log file
     std::ofstream f;
-    f.open(citlali::pipeline::summary_log_path(obsnum_dir_name, filename));
+    f.open(citlali::pipeline::summary_log_path(output_paths.obsnum_dir_name, filename));
 
     citlali::pipeline::write_chunk_summary_log(
         f, in, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION,
@@ -66,7 +66,7 @@ void Engine::write_map_summary(map_buffer_t &mb) {
 
     const auto filename = citlali::pipeline::map_summary_filename();
     std::ofstream f;
-    f.open(citlali::pipeline::summary_log_path(obsnum_dir_name, filename));
+    f.open(citlali::pipeline::summary_log_path(output_paths.obsnum_dir_name, filename));
 
     const auto nonfinite_counts =
         citlali::pipeline::count_map_summary_nonfinite(mb);

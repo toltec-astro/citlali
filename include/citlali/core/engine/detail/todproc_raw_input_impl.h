@@ -34,31 +34,31 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::create_output_dir() {
     // redu subdir
-    engine().redu_dir_name = "";
+    engine().output_paths.redu_dir_name = "";
 
     // create reduction subdir
     if (citlali::config::reduction_subdirs_active(
             engine().typed_config.runtime)) {
-        engine().redu_dir_name =
+        engine().output_paths.redu_dir_name =
             citlali::pipeline::next_reduction_subdir_path(
                 citlali::pipeline::runtime_output_dir(engine()),
-                engine().redu_dir_num);
-        fs::create_directories(engine().redu_dir_name);
+                engine().output_paths.redu_dir_num);
+        fs::create_directories(engine().output_paths.redu_dir_name);
         citlali::pipeline::configure_reduction_logging_and_profile(
-            engine().redu_dir_name, logger);
+            engine().output_paths.redu_dir_name, logger);
     }
     else {
-        engine().redu_dir_name =
+        engine().output_paths.redu_dir_name =
             citlali::pipeline::runtime_output_dir(engine()) + "/";
         citlali::pipeline::configure_reduction_logging_and_profile(
-            engine().redu_dir_name, logger);
+            engine().output_paths.redu_dir_name, logger);
     }
 
     // coadded subdir
     if (citlali::pipeline::coadd_outputs_enabled(engine())) {
-        engine().coadd_dir_name = engine().redu_dir_name + "/coadded/";
+        engine().output_paths.coadd_dir_name = engine().output_paths.redu_dir_name + "/coadded/";
         citlali::pipeline::create_coadd_output_dirs(
-            engine().coadd_dir_name,
+            engine().output_paths.coadd_dir_name,
             citlali::pipeline::map_filter_outputs_enabled(engine()), logger);
     }
 }

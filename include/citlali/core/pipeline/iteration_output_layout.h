@@ -33,7 +33,7 @@ void prepare_iteration_output_layout_if_needed(
     if (should_prepare_iteration_output_layout(engine)) {
         create_iteration_output_directory(todproc);
         copy_iteration_config_files(
-            config_filepaths, engine.redu_dir_name, logger);
+            config_filepaths, engine.output_paths.redu_dir_name, logger);
     }
 }
 

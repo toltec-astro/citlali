@@ -12,6 +12,7 @@
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/engine/learning.h>
 #include <citlali/core/pipeline/map_index_state.h>
+#include <citlali/core/pipeline/output_path_state.h>
 #include <citlali/core/utils/fits_io.h>
 
 struct EngineRuntimeState {
@@ -33,17 +34,8 @@ struct EngineRuntimeState {
     // time gaps
     std::map<std::string, int> gaps;
 
-    // output reduction subdirectory name
-    std::string redu_dir_name;
-
-    // reduction directory number
-    int redu_dir_num;
-
-    // obsnum and coadded directory names
-    std::string obsnum_dir_name, coadd_dir_name;
-
-    // tod output file name
-    std::map<std::string, std::string> tod_filename;
+    // reduction, observation, coadd, and timestream output paths
+    citlali::pipeline::OutputPathState output_paths;
 
     // vectors to hold missing/invalid keys
     key_vec_t missing_keys, invalid_keys;
@@ -62,9 +54,6 @@ struct EngineRuntimeState {
 
     // obsnum
     std::string obsnum;
-
-    std::string rtcdiag_filename;
-    std::string ptcdiag_filename;
 
     // per-stream TOD output row maps
     Eigen::VectorXI tod_scan_to_output_scan_rtc;

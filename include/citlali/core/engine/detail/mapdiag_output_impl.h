@@ -85,7 +85,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             assign_mapdiag_observation_contributions_for_map(
                 mapdiag_context, i, idx, mb, core_mask, weight_sum[idx],
                 core_weight_sum[idx], n_valid_pixels[idx],
-                n_core_pixels[idx], toltec_io, redu_dir_name,
+                n_core_pixels[idx], toltec_io, output_paths.redu_dir_name,
                 typed_config.runtime.reduction_type, telescope.sim_obs,
                 mapdiag_label_storage, obs_tables,
                 logger);

@@ -9,10 +9,10 @@ void Engine::create_obs_map_files() {
         fits_io_vec, noise_fits_io_vec, filtered_fits_io_vec,
         filtered_noise_fits_io_vec);
     const std::string raw_dir =
-        citlali::pipeline::raw_observation_map_directory(obsnum_dir_name);
+        citlali::pipeline::raw_observation_map_directory(output_paths.obsnum_dir_name);
     const std::string filtered_dir =
         citlali::pipeline::filtered_observation_map_directory(
-            obsnum_dir_name);
+            output_paths.obsnum_dir_name);
     auto make_fits_io = [](const std::string &filename) {
         return fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>(filename);
     };

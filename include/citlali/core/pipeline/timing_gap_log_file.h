@@ -29,7 +29,7 @@ template <class Engine, class Logger>
 void write_timing_gaps_log_file(const Engine &engine, const Logger &logger) {
     logger->debug("writing gaps.log file");
     std::ofstream stream;
-    stream.open(gaps_log_filepath(engine.obsnum_dir_name));
+    stream.open(gaps_log_filepath(engine.output_paths.obsnum_dir_name));
     write_timing_gaps_log_header(stream);
     for (auto const &[key, value] : engine.gaps) {
         log_timing_gap_entry(key, value, logger);

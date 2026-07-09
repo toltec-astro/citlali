@@ -5,7 +5,7 @@
 
 void Engine::write_stats() {
     std::string stats_dir =
-        citlali::pipeline::stats_raw_directory(obsnum_dir_name);
+        citlali::pipeline::stats_raw_directory(output_paths.obsnum_dir_name);
     const auto &tod_output_subdir_name =
         typed_config.timestream.output.subdir_name;
     // if using tod subdir, put stats file in it

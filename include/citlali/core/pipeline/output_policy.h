@@ -35,17 +35,17 @@ bool processed_tod_output_enabled(const Engine &engine) {
 
 template <class Engine>
 bool tod_output_files_available(const Engine &engine) {
-    return tod_output_enabled(engine) && !engine.tod_filename.empty();
+    return tod_output_enabled(engine) && !engine.output_paths.tod_filename.empty();
 }
 
 template <class Engine>
 bool raw_tod_output_files_available(const Engine &engine) {
-    return raw_tod_output_enabled(engine) && !engine.tod_filename.empty();
+    return raw_tod_output_enabled(engine) && !engine.output_paths.tod_filename.empty();
 }
 
 template <class Engine>
 bool processed_tod_output_files_available(const Engine &engine) {
-    return processed_tod_output_enabled(engine) && !engine.tod_filename.empty();
+    return processed_tod_output_enabled(engine) && !engine.output_paths.tod_filename.empty();
 }
 
 template <class Engine>

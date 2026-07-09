@@ -31,7 +31,7 @@ void Beammap::write_beammap_ptc_chunk_summaries(int output_iter) {
 }
 
 void Beammap::write_beammap_ptc_diag_sidecar(int output_iter) {
-    if (ptcdiag_filename.empty()) {
+    if (output_paths.ptcdiag_filename.empty()) {
         return;
     }
     const auto profile_scope =
@@ -44,7 +44,7 @@ void Beammap::write_beammap_ptc_diag_sidecar(int output_iter) {
         output_iter);
     for (Eigen::Index i = 0; i < telescope.scan_indices.cols(); ++i) {
         ptcproc.append_diag_to_netcdf(
-            ptcs[i], ptcdiag_filename, calib_scans[i],
+            ptcs[i], output_paths.ptcdiag_filename, calib_scans[i],
             ptcs[i].index.data);
         if (!citlali::pipeline::processed_tod_output_files_available(*this)) {
             ptcproc.clear_cached_diagnostics(ptcs[i].index.data);
@@ -65,7 +65,7 @@ void Beammap::write_beammap_processed_ptc_tod(int output_iter) {
         "writing processed time chunk for beammap iteration {}",
         output_iter);
     beammap_ptc_product_output_helpers::update_ptc_tod_fruitloops_iter(
-        tod_filename, output_iter, logger);
+        output_paths.tod_filename, output_iter, logger);
     const auto map_grouping =
         citlali::pipeline::active_map_grouping_name(*this);
     for (Eigen::Index i = 0; i < telescope.scan_indices.cols(); ++i) {
@@ -75,7 +75,7 @@ void Beammap::write_beammap_processed_ptc_tod(int output_iter) {
             continue;
         }
         ptcproc.append_to_netcdf(
-            ptcs[i], tod_filename["ptc"], map_grouping,
+            ptcs[i], output_paths.tod_filename["ptc"], map_grouping,
             telescope.pixel_axes, ptcs[i].pointing_offsets_arcsec.data,
             calib_scans[i], true, ptc_scan_row);
         ptcproc.clear_cached_diagnostics(ptcs[i].index.data);

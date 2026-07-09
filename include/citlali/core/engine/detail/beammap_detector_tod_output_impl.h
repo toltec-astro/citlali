@@ -30,10 +30,11 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
     const auto selections = make_detector_tod_selections(
         preflight, pointing_samples, uniform_scans);
 
-    const auto output_paths = beammap_detector_tod_output_helpers::output_paths(
-        obsnum_dir_name, typed_config.beammap.detector_tod_output.subdir_name,
+    const auto detector_tod_paths =
+        beammap_detector_tod_output_helpers::output_paths(
+        output_paths.obsnum_dir_name, typed_config.beammap.detector_tod_output.subdir_name,
         telescope.sim_obs, typed_config.runtime.reduction_type, obsnum);
-    const std::string &filename = output_paths.filename;
+    const std::string &filename = detector_tod_paths.filename;
 
     logger->info(
         "writing detector-specific PTC TOD iter={} file={} n_dets={} n_slots={} n_uniform={} n_source_dense={} fit_positions={} fallback_positions={} median_center_distance_arcsec={} top_center_scans={}",
