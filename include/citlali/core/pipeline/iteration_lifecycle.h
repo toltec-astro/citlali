@@ -13,7 +13,7 @@ bool should_log_fruit_loop_iteration_start(const Engine &engine) {
 template <class Engine, class Logger>
 void begin_fruit_loop_iteration(Engine &engine, const Logger &logger) {
     if (should_log_fruit_loop_iteration_start(engine)) {
-        logger->info("starting fruit loops iteration {}", engine.fruit_iter);
+        logger->info("starting fruit loops iteration {}", engine.iteration.fruit_iter);
     }
     begin_iteration_weight_validation(engine);
 
@@ -40,7 +40,7 @@ void make_reduction_iteration_index_file(TodProc &todproc,
 
 template <class Engine>
 void advance_fruit_loop_iteration(Engine &engine) {
-    engine.fruit_iter++;
+    engine.iteration.fruit_iter++;
 }
 
 template <class TodProc, class Logger>

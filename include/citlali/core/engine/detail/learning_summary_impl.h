@@ -14,7 +14,7 @@ inline void Engine::write_learning_summary() {
     }
 
     const auto filename =
-        citlali::pipeline::learning_summary_filename(output_paths.redu_dir_name, fruit_iter);
+        citlali::pipeline::learning_summary_filename(output_paths.redu_dir_name, iteration.fruit_iter);
     std::ofstream out(filename);
     if (!out) {
         logger->warn("failed to open learning summary output {}", filename);

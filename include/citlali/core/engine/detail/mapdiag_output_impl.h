@@ -78,7 +78,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             i, idx, write_indices.map_index, mb, core_mask, fill_double,
             fill_int, mapdiag_stats, RAD_TO_ASEC,
             processed_time_chunk_fs_hz(), calib.arrays, obsnum,
-            mapdiag_record_producer, stage_name, fruit_iter,
+            mapdiag_record_producer, stage_name, iteration.fruit_iter,
             reduction_learning, map_workspace, logger);
 
         citlali::engine_detail::

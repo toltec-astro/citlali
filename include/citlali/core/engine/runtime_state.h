@@ -12,6 +12,7 @@
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/engine/learning.h>
 #include <citlali/core/pipeline/interface_sync_state.h>
+#include <citlali/core/pipeline/fruit_loop_iteration_state.h>
 #include <citlali/core/pipeline/map_fits_output_state.h>
 #include <citlali/core/pipeline/map_index_state.h>
 #include <citlali/core/pipeline/observation_date_state.h>
@@ -55,8 +56,8 @@ struct EngineRuntimeState {
     // map count and per-map index translations
     citlali::pipeline::MapIndexState map_indices;
 
-    // current fruit loops iteration
-    int fruit_iter;
+    // current fruit-loop iteration counter
+    citlali::pipeline::FruitLoopRuntimeState iteration;
 
     // shared state learned across RTC, PTC, and mapmaking phases
     ReductionLearningState reduction_learning;

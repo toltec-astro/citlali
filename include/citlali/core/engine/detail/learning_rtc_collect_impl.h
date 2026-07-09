@@ -24,7 +24,7 @@ void Engine::collect_rtc_learning_diagnostics(rtc_t &rtcdata, ptc_t &ptcdata,
         source_summary.obsnum = obsnum;
         source_summary.producer = "rtc_despike";
         source_summary.mode = "map_center_radius";
-        source_summary.iter = fruit_iter;
+        source_summary.iter = iteration.fruit_iter;
         source_summary.scan = static_cast<int>(scan_id);
         source_summary.protected_samples = rtc_source_summary.protected_samples;
         source_summary.total_samples = rtc_source_summary.total_samples;
@@ -43,7 +43,7 @@ void Engine::collect_rtc_learning_diagnostics(rtc_t &rtcdata, ptc_t &ptcdata,
         record.obsnum = obsnum;
         record.producer = "rtc_despike";
         record.reason = reason;
-        record.iter = fruit_iter;
+        record.iter = iteration.fruit_iter;
         record.scan = static_cast<int>(scan_id);
         record.uid = citlali::pipeline::learning_apt_int(calib_scan.apt, "uid", det,
                                               static_cast<int>(det));

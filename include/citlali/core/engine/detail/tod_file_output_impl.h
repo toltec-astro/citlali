@@ -62,7 +62,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             fo, telescope.fsmp,
             citlali::pipeline::apt_table_header_name(
                 calib.apt_filepath, logger),
-            fruit_iter);
+            iteration.fruit_iter);
 
         // add control/runtime parameters
         citlali::pipeline::add_tod_initial_runtime_config_vars(

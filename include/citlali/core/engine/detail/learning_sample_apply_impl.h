@@ -28,7 +28,7 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
             if (record.obsnum == obsnum &&
                 record.scan == scan_id &&
                 record.iter >= 0 &&
-                record.iter < fruit_iter &&
+                record.iter < iteration.fruit_iter &&
                 record.apply_pre_rtc == apply_pre_rtc) {
                 records.push_back(record);
             }
@@ -42,7 +42,7 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
     summary.obsnum = obsnum;
     summary.producer = "learning_state";
     summary.stage = stage;
-    summary.iter = fruit_iter;
+    summary.iter = iteration.fruit_iter;
     summary.scan = scan_id;
     summary.candidate_records = static_cast<int>(records.size());
     summary.max_new_flagged_fraction =
@@ -145,7 +145,7 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
     if (over_cap) {
         logger->warn(
             "learned {} sample-mask application rejected scan {} iter {}: candidates={} matched={} proposed={} newly_flagged={} newly_flagged_fraction={:.4f} cap={:.4f}",
-            stage, scan_id + 1, fruit_iter, summary.candidate_records,
+            stage, scan_id + 1, iteration.fruit_iter, summary.candidate_records,
             summary.matched_records, summary.proposed_samples,
             summary.newly_flagged_samples, summary.newly_flagged_fraction,
             reduction_learning.options.apply_max_new_flagged_fraction);
@@ -153,7 +153,7 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
     else if (summary.proposed_samples > 0) {
         logger->info(
             "learned {} sample masks applied scan {} iter {}: candidates={} matched={} proposed={} newly_flagged={} already_flagged={} source_protected={} newly_flagged_fraction={:.4f}",
-            stage, scan_id + 1, fruit_iter, summary.candidate_records,
+            stage, scan_id + 1, iteration.fruit_iter, summary.candidate_records,
             summary.matched_records, summary.proposed_samples,
             summary.newly_flagged_samples, summary.already_flagged_samples,
             summary.source_protected_samples, summary.newly_flagged_fraction);

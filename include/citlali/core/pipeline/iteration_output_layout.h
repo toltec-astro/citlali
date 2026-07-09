@@ -8,7 +8,7 @@ namespace citlali::pipeline {
 
 template <class Engine>
 bool should_prepare_iteration_output_layout(const Engine &engine) {
-    return engine.ptcproc.save_all_iters || engine.fruit_iter == 0;
+    return engine.ptcproc.save_all_iters || engine.iteration.fruit_iter == 0;
 }
 
 template <class TodProc>

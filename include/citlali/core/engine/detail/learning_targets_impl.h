@@ -22,7 +22,7 @@ void Engine::configure_map_pixel_contribution_targets(mapmaking::MapBuffer &mb,
         !reduction_learning.options.map_pixel_outlier_diagnostics_enabled ||
         !reduction_learning.options.map_pixel_outlier_targeted_contributor_diagnostics_enabled ||
         reduction_learning.options.map_pixel_outlier_targeted_contributor_max_pixels <= 0 ||
-        fruit_iter <= 0 ||
+        iteration.fruit_iter <= 0 ||
         mb.signal.empty() ||
         mb.n_rows <= 0 ||
         mb.n_cols <= 0) {
@@ -37,7 +37,7 @@ void Engine::configure_map_pixel_contribution_targets(mapmaking::MapBuffer &mb,
             if (record.obsnum == obsnum &&
                 record.producer == producer &&
                 record.iter >= 0 &&
-                record.iter < fruit_iter &&
+                record.iter < iteration.fruit_iter &&
                 record.map_index >= 0 &&
                 record.map_index < static_cast<int>(mb.signal.size()) &&
                 record.row >= 0 &&
@@ -125,7 +125,7 @@ void Engine::configure_map_pixel_contribution_targets(mapmaking::MapBuffer &mb,
         mb.contribution_diag_enabled = true;
         logger->info(
             "map-pixel targeted contributor tracing enabled stage={} obsnum={} iter={} source_iter={} targets={}",
-            stage_name, obsnum, fruit_iter, target_iter, targets.size());
+            stage_name, obsnum, iteration.fruit_iter, target_iter, targets.size());
     }
 }
 

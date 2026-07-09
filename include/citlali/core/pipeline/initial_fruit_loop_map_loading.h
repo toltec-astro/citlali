@@ -11,7 +11,7 @@ namespace citlali::pipeline {
 template <class Engine>
 bool should_load_initial_fruit_loop_maps(const Engine &engine) {
     return engine.ptcproc.run_fruit_loops &&
-           engine.fruit_iter == 0 &&
+           engine.iteration.fruit_iter == 0 &&
            citlali::config::has_config_value(
                engine.ptcproc.fruit_loops_path);
 }

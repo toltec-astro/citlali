@@ -145,7 +145,9 @@ struct FakeEngine {
     bool write_filtered_maps_partial = false;
     bool apply_empirical_noise_weights = false;
     int n_threads = 4;
-    int fruit_iter = 0;
+    struct {
+        int fruit_iter = 0;
+    } iteration;
     bool interp_over_gaps = false;
     std::string map_method = "jinc";
     std::string map_grouping = "array";
@@ -628,7 +630,9 @@ struct FakeReductionLearning {
 };
 
 struct FakeIterationEngine {
-    int fruit_iter = 0;
+    struct {
+        int fruit_iter = 0;
+    } iteration;
     std::string redu_type = "science";
     std::string redu_dir_name = "/tmp/redu01";
     FakeIterationPtcProc ptcproc;
@@ -652,7 +656,9 @@ struct FakeIterationTodProc {
 };
 
 struct FakeReductionIterationEngine {
-    int fruit_iter = 0;
+    struct {
+        int fruit_iter = 0;
+    } iteration;
     std::string redu_type = "science";
     std::string redu_dir_name = "/tmp/redu01";
     bool run_coadd = true;
@@ -2552,7 +2558,7 @@ TEST(pipeline_fruit_loop_paths, derives_previous_iteration_map_dir) {
 
 TEST(pipeline_iteration_lifecycle, detects_pending_fruit_loop_iteration) {
     FakeIterationEngine engine;
-    engine.fruit_iter = 1;
+    engine.iteration.fruit_iter = 1;
     engine.ptcproc.fruit_loops_iters = 3;
 
     EXPECT_TRUE(citlali::pipeline::fruit_loop_iteration_pending(
@@ -2561,7 +2567,7 @@ TEST(pipeline_iteration_lifecycle, detects_pending_fruit_loop_iteration) {
 
 TEST(pipeline_iteration_lifecycle, stops_when_fruit_loops_converge) {
     FakeIterationEngine engine;
-    engine.fruit_iter = 1;
+    engine.iteration.fruit_iter = 1;
     engine.ptcproc.fruit_loops_iters = 3;
 
     EXPECT_FALSE(citlali::pipeline::fruit_loop_iteration_pending(
@@ -2570,7 +2576,7 @@ TEST(pipeline_iteration_lifecycle, stops_when_fruit_loops_converge) {
 
 TEST(pipeline_iteration_lifecycle, stops_at_iteration_limit) {
     FakeIterationEngine engine;
-    engine.fruit_iter = 3;
+    engine.iteration.fruit_iter = 3;
     engine.ptcproc.fruit_loops_iters = 3;
 
     EXPECT_FALSE(citlali::pipeline::fruit_loop_iteration_pending(
@@ -2579,7 +2585,7 @@ TEST(pipeline_iteration_lifecycle, stops_at_iteration_limit) {
 
 TEST(pipeline_iteration_lifecycle, begins_non_fruit_loop_iteration) {
     FakeIterationEngine engine;
-    engine.fruit_iter = 0;
+    engine.iteration.fruit_iter = 0;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::begin_fruit_loop_iteration(engine, logger);
@@ -2594,7 +2600,7 @@ TEST(pipeline_iteration_lifecycle, begins_non_fruit_loop_iteration) {
 
 TEST(pipeline_iteration_lifecycle, begins_fruit_loop_iteration_with_source_model) {
     FakeIterationEngine engine;
-    engine.fruit_iter = 1;
+    engine.iteration.fruit_iter = 1;
     engine.ptcproc.run_fruit_loops = true;
     engine.reduction_learning.enabled = true;
     engine.reduction_learning.diagnostics = true;
@@ -2610,7 +2616,7 @@ TEST(pipeline_iteration_lifecycle, begins_fruit_loop_iteration_with_source_model
 
 TEST(pipeline_iteration_lifecycle, uses_configured_fruit_loop_path_as_source_model) {
     FakeIterationEngine engine;
-    engine.fruit_iter = 0;
+    engine.iteration.fruit_iter = 0;
     engine.ptcproc.run_fruit_loops = true;
     engine.ptcproc.fruit_loops_path = "/data/redu00";
     auto logger = std::make_shared<FakeLogger>();
@@ -2623,7 +2629,7 @@ TEST(pipeline_iteration_lifecycle, uses_configured_fruit_loop_path_as_source_mod
 
 TEST(pipeline_iteration_lifecycle, finalizes_iteration) {
     FakeIterationEngine engine;
-    engine.fruit_iter = 3;
+    engine.iteration.fruit_iter = 3;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::finalize_fruit_loop_iteration(engine, logger);
@@ -2637,7 +2643,7 @@ TEST(pipeline_iteration_lifecycle, finalizes_iteration) {
 
 TEST(pipeline_iteration_lifecycle, logs_finalize_diagnostics_when_enabled) {
     FakeIterationEngine engine;
-    engine.fruit_iter = 4;
+    engine.iteration.fruit_iter = 4;
     engine.reduction_learning.enabled = true;
     engine.reduction_learning.diagnostics = true;
     auto logger = std::make_shared<FakeLogger>();
@@ -2651,7 +2657,7 @@ TEST(pipeline_iteration_lifecycle, logs_finalize_diagnostics_when_enabled) {
 
 TEST(pipeline_iteration_lifecycle, finalizes_iteration_outputs) {
     FakeIterationTodProc todproc;
-    todproc.engine().fruit_iter = 3;
+    todproc.engine().iteration.fruit_iter = 3;
     todproc.engine().redu_dir_name = "/data/redu03";
     auto logger = std::make_shared<FakeLogger>();
 
@@ -2662,7 +2668,7 @@ TEST(pipeline_iteration_lifecycle, finalizes_iteration_outputs) {
     EXPECT_EQ(todproc.engine().write_learning_summary_calls, 1);
     EXPECT_EQ(todproc.make_index_file_calls, 1);
     EXPECT_EQ(todproc.indexed_path, "/data/redu03");
-    EXPECT_EQ(todproc.engine().fruit_iter, 4);
+    EXPECT_EQ(todproc.engine().iteration.fruit_iter, 4);
     EXPECT_EQ(logger->info_calls, 1);
 }
 
@@ -2779,7 +2785,7 @@ TEST(pipeline_execution, begins_reduction_iteration) {
 
 TEST(pipeline_execution, initializes_reduction_iterations) {
     FakeEngine engine;
-    engine.fruit_iter = 7;
+    engine.iteration.fruit_iter = 7;
     engine.ptcproc.run_fruit_loops = false;
     engine.ptcproc.fruit_loops_iters = 5;
     engine.ptcproc.save_all_iters = false;
@@ -2789,7 +2795,7 @@ TEST(pipeline_execution, initializes_reduction_iterations) {
     citlali::pipeline::initialize_reduction_iterations(
         engine, fruit_loops_converged, logger);
 
-    EXPECT_EQ(engine.fruit_iter, 0);
+    EXPECT_EQ(engine.iteration.fruit_iter, 0);
     EXPECT_FALSE(fruit_loops_converged);
     EXPECT_EQ(engine.ptcproc.fruit_loops_iters, 1);
     EXPECT_TRUE(engine.ptcproc.save_all_iters);
@@ -3449,7 +3455,7 @@ TEST(pipeline_execution, runs_reduction_iteration) {
     EXPECT_EQ(todproc.engine().write_learning_summary_calls, 1);
     EXPECT_EQ(todproc.make_index_file_calls, 1);
     EXPECT_EQ(todproc.indexed_path, "/tmp/redu01");
-    EXPECT_EQ(todproc.engine().fruit_iter, 1);
+    EXPECT_EQ(todproc.engine().iteration.fruit_iter, 1);
 }
 
 TEST(pipeline_execution, runs_reduction_iterations) {
@@ -3472,7 +3478,7 @@ TEST(pipeline_execution, runs_reduction_iterations) {
         [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
         logger));
 
-    EXPECT_EQ(todproc.engine().fruit_iter, 2);
+    EXPECT_EQ(todproc.engine().iteration.fruit_iter, 2);
     EXPECT_EQ(todproc.engine().setup_calls, 2);
     EXPECT_EQ(todproc.engine().pipeline_calls, 2);
     EXPECT_EQ(todproc.engine().output_calls, 2);
@@ -3503,7 +3509,7 @@ TEST(pipeline_execution, runs_reduction_pipeline) {
     EXPECT_EQ(todproc.engine().setup_calls, 1);
     EXPECT_EQ(todproc.engine().pipeline_calls, 1);
     EXPECT_EQ(todproc.engine().output_calls, 1);
-    EXPECT_EQ(todproc.engine().fruit_iter, 1);
+    EXPECT_EQ(todproc.engine().iteration.fruit_iter, 1);
 }
 
 TEST(pipeline_execution, writes_raw_coadd_outputs) {
@@ -3627,7 +3633,7 @@ TEST(pipeline_execution, writes_iteration_filtered_coadd_outputs) {
 TEST(pipeline_execution, finishes_reduction_iteration) {
     FakeReductionIterationTodProc todproc;
     todproc.engine().run_coadd = false;
-    todproc.engine().fruit_iter = 2;
+    todproc.engine().iteration.fruit_iter = 2;
     todproc.engine().redu_dir_name = "/data/redu02";
     auto logger = std::make_shared<FakeLogger>();
 
@@ -3639,12 +3645,12 @@ TEST(pipeline_execution, finishes_reduction_iteration) {
     EXPECT_EQ(todproc.engine().write_learning_summary_calls, 1);
     EXPECT_EQ(todproc.make_index_file_calls, 1);
     EXPECT_EQ(todproc.indexed_path, "/data/redu02");
-    EXPECT_EQ(todproc.engine().fruit_iter, 3);
+    EXPECT_EQ(todproc.engine().iteration.fruit_iter, 3);
 }
 
 TEST(pipeline_execution, loads_initial_fruit_loop_model_from_configured_path) {
     FakeEngine engine;
-    engine.fruit_iter = 0;
+    engine.iteration.fruit_iter = 0;
     engine.ptcproc.run_fruit_loops = true;
     engine.ptcproc.fruit_loops_path = "/data/fruit";
     engine.ptcproc.fruit_loops_type = "obsnum/raw";
@@ -3663,7 +3669,7 @@ TEST(pipeline_execution, loads_initial_fruit_loop_model_from_configured_path) {
 
 TEST(pipeline_execution, skips_initial_fruit_loop_model_without_path) {
     FakeEngine engine;
-    engine.fruit_iter = 0;
+    engine.iteration.fruit_iter = 0;
     engine.ptcproc.run_fruit_loops = true;
     engine.ptcproc.fruit_loops_path = "null";
     engine.omb.obsnums = {"152389"};
@@ -3675,7 +3681,7 @@ TEST(pipeline_execution, skips_initial_fruit_loop_model_without_path) {
 
 TEST(pipeline_execution, loads_previous_saved_fruit_loop_model) {
     FakeEngine engine;
-    engine.fruit_iter = 2;
+    engine.iteration.fruit_iter = 2;
     engine.output_dir = "/data/out";
     engine.redu_dir_num = 12;
     engine.ptcproc.save_all_iters = true;
@@ -3698,7 +3704,7 @@ TEST(pipeline_execution, loads_previous_saved_fruit_loop_model) {
 
 TEST(pipeline_execution, loads_previous_stored_fruit_loop_model) {
     FakeEngine engine;
-    engine.fruit_iter = 3;
+    engine.iteration.fruit_iter = 3;
     engine.redu_dir_name = "/data/current/redu12";
     engine.ptcproc.save_all_iters = false;
     engine.ptcproc.fruit_loops_type = "coadd/raw";
@@ -3718,7 +3724,7 @@ TEST(pipeline_execution, loads_previous_stored_fruit_loop_model) {
 
 TEST(pipeline_execution, skips_previous_fruit_loop_model_on_first_iteration) {
     FakeEngine engine;
-    engine.fruit_iter = 0;
+    engine.iteration.fruit_iter = 0;
     engine.ptcproc.save_all_iters = true;
     engine.omb.obsnums = {"152389"};
     auto logger = std::make_shared<FakeLogger>();
@@ -3732,7 +3738,7 @@ TEST(pipeline_execution, skips_previous_fruit_loop_model_on_first_iteration) {
 
 TEST(pipeline_execution, loads_observation_fruit_loop_models_for_non_beammap) {
     FakeEngine engine;
-    engine.fruit_iter = 0;
+    engine.iteration.fruit_iter = 0;
     engine.ptcproc.run_fruit_loops = true;
     engine.ptcproc.fruit_loops_path = "/data/fruit";
     engine.ptcproc.fruit_loops_type = "obsnum/raw";
@@ -3748,7 +3754,7 @@ TEST(pipeline_execution, loads_observation_fruit_loop_models_for_non_beammap) {
 
 TEST(pipeline_execution, skips_observation_fruit_loop_models_for_beammap) {
     FakeEngine engine;
-    engine.fruit_iter = 0;
+    engine.iteration.fruit_iter = 0;
     engine.ptcproc.run_fruit_loops = true;
     engine.ptcproc.fruit_loops_path = "/data/fruit";
     engine.omb.obsnums = {"000123"};
@@ -3838,7 +3844,7 @@ TEST(pipeline_output_layout, prepares_observation_layout_from_rawobs_meta) {
 
 TEST(pipeline_output_layout, prepares_iteration_output_layout_on_first_iter) {
     FakeCoaddTodProc todproc;
-    todproc.engine().fruit_iter = 0;
+    todproc.engine().iteration.fruit_iter = 0;
     std::vector<std::string> config_filepaths;
     auto logger = std::make_shared<FakeLogger>();
 
@@ -3850,7 +3856,7 @@ TEST(pipeline_output_layout, prepares_iteration_output_layout_on_first_iter) {
 
 TEST(pipeline_output_layout, skips_iteration_output_layout_when_not_saved) {
     FakeCoaddTodProc todproc;
-    todproc.engine().fruit_iter = 1;
+    todproc.engine().iteration.fruit_iter = 1;
     todproc.engine().ptcproc.save_all_iters = false;
     std::vector<std::string> config_filepaths;
     auto logger = std::make_shared<FakeLogger>();

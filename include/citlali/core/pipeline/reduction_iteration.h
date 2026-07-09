@@ -21,7 +21,7 @@ bool run_reduction_iteration(
     const Logger &logger) {
     const auto profile_scope = profile_stage(
         "reduction.iteration", logger,
-        "fruit_iter=" + std::to_string(todproc.engine().fruit_iter));
+        "fruit_iter=" + std::to_string(todproc.engine().iteration.fruit_iter));
 
     begin_reduction_iteration(todproc, config_filepaths, logger);
 

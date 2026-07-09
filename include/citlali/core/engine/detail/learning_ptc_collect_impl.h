@@ -22,7 +22,7 @@ void Engine::collect_ptc_learning_diagnostics(
         source_summary.obsnum = obsnum;
         source_summary.producer = "ptc_second_pass";
         source_summary.mode = "map_center_radius";
-        source_summary.iter = fruit_iter;
+        source_summary.iter = iteration.fruit_iter;
         source_summary.scan = static_cast<int>(scan_id);
         source_summary.total_samples =
             static_cast<int>(ptcdata.scans.data.rows() * ptcdata.scans.data.cols());
@@ -45,7 +45,7 @@ void Engine::collect_ptc_learning_diagnostics(
         record.obsnum = obsnum;
         record.grouping = summary.grouping;
         record.reason = summary.reason;
-        record.iter = fruit_iter;
+        record.iter = iteration.fruit_iter;
         record.scan = static_cast<int>(scan_id);
         record.uid = summary.uid;
         record.nw = static_cast<int>(summary.nw);
@@ -87,7 +87,7 @@ void Engine::collect_ptc_learning_diagnostics(
             record.reason = summary.busy_network_vetoed
                 ? "busy_network_vetoed"
                 : "candidate_or_residual";
-            record.iter = fruit_iter;
+            record.iter = iteration.fruit_iter;
             record.scan = static_cast<int>(scan_id);
             record.nw = static_cast<int>(summary.nw);
             record.n_candidate_clusters =
@@ -140,7 +140,7 @@ void Engine::collect_ptc_learning_diagnostics(
                 penalty.obsnum = obsnum;
                 penalty.producer = "ptc_second_pass";
                 penalty.reason = "busy_network_pathology";
-                penalty.iter = fruit_iter;
+                penalty.iter = iteration.fruit_iter;
                 penalty.scan = static_cast<int>(scan_id);
                 penalty.uid = -1;
                 penalty.nw = static_cast<int>(summary.nw);
@@ -174,7 +174,7 @@ void Engine::collect_ptc_learning_diagnostics(
             candidate_record.reason = event.busy_network_vetoed
                 ? "busy_selective_accepted_event"
                 : "candidate_event";
-            candidate_record.iter = fruit_iter;
+            candidate_record.iter = iteration.fruit_iter;
             candidate_record.scan = static_cast<int>(scan_id);
             candidate_record.uid = event.uid;
             candidate_record.nw = static_cast<int>(summary.nw);
@@ -199,7 +199,7 @@ void Engine::collect_ptc_learning_diagnostics(
             sample_record.obsnum = obsnum;
             sample_record.producer = "ptc_second_pass";
             sample_record.reason = "accepted_event";
-            sample_record.iter = fruit_iter;
+            sample_record.iter = iteration.fruit_iter;
             sample_record.scan = static_cast<int>(scan_id);
             sample_record.uid = summary.top_event_uid;
             sample_record.nw = static_cast<int>(summary.nw);
@@ -224,7 +224,7 @@ void Engine::collect_ptc_learning_diagnostics(
             penalty.obsnum = obsnum;
             penalty.producer = "ptc_second_pass";
             penalty.reason = "busy_vetoed_residual";
-            penalty.iter = fruit_iter;
+            penalty.iter = iteration.fruit_iter;
             penalty.scan = static_cast<int>(scan_id);
             penalty.uid = summary.max_unflagged_residual_uid;
             penalty.nw = static_cast<int>(summary.nw);

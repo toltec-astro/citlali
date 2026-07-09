@@ -10,7 +10,7 @@ namespace citlali::pipeline {
 
 template <class Engine>
 bool should_load_previous_fruit_loop_maps(const Engine &engine) {
-    return engine.fruit_iter > 0;
+    return engine.iteration.fruit_iter > 0;
 }
 
 template <class Engine>
@@ -36,7 +36,7 @@ std::string previous_fruit_loop_map_dir(const Engine &engine,
     }
 
     logger->info("loading previous iter maps for fruit loops iteration {}",
-                 engine.fruit_iter);
+                 engine.iteration.fruit_iter);
     return current_previous_fruit_loop_map_dir(engine);
 }
 
@@ -45,7 +45,7 @@ void load_previous_fruit_loop_maps(Engine &engine,
                                    const std::string &fruit_dir,
                                    const Logger &logger) {
     logger->info("reading in {} for fruit loops iteration {}", fruit_dir,
-                 engine.fruit_iter);
+                 engine.iteration.fruit_iter);
     load_fruit_loop_maps(engine, fruit_dir);
 }
 

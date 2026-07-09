@@ -48,7 +48,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
                 !record.scan_local ||
                 record.scan != scan_id ||
                 record.iter < 0 ||
-                record.iter >= fruit_iter ||
+                record.iter >= iteration.fruit_iter ||
                 !std::isfinite(record.factor) ||
                 record.factor > 0.0) {
                 continue;
@@ -82,7 +82,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
     summary.obsnum = obsnum;
     summary.producer = "learning_state";
     summary.stage = stage;
-    summary.iter = fruit_iter;
+    summary.iter = iteration.fruit_iter;
     summary.scan = scan_id;
     summary.candidate_records = static_cast<int>(records.size());
     const bool has_network_record = std::any_of(
@@ -263,7 +263,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
         if (apt_flag_preserved > 0) {
             logger->info(
                 "learned {} preserved {} scan-local APT flags in scan {} iter {} to keep nw/array groups valid",
-                stage, apt_flag_preserved, scan_id + 1, fruit_iter);
+                stage, apt_flag_preserved, scan_id + 1, iteration.fruit_iter);
         }
     }
 
@@ -271,7 +271,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
     if (over_cap) {
         logger->warn(
             "learned {} rejected scan {} iter {}: candidates={} matched={} dets={} newly_flagged={} newly_flagged_fraction={:.4f} cap={:.4f}",
-            stage, scan_id + 1, fruit_iter, summary.candidate_records,
+            stage, scan_id + 1, iteration.fruit_iter, summary.candidate_records,
             summary.matched_records, proposed_dets.size(),
             summary.newly_flagged_samples, summary.newly_flagged_fraction,
             summary.max_new_flagged_fraction);
@@ -279,7 +279,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
     else {
         logger->info(
             "learned {} applied scan {} iter {}: candidates={} matched={} dets={} newly_flagged={} already_flagged={} newly_flagged_fraction={:.4f}",
-            stage, scan_id + 1, fruit_iter, summary.candidate_records,
+            stage, scan_id + 1, iteration.fruit_iter, summary.candidate_records,
             summary.matched_records, proposed_dets.size(),
             summary.newly_flagged_samples, summary.already_flagged_samples,
             summary.newly_flagged_fraction);

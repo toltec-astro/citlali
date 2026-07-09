@@ -2,6 +2,10 @@
 
 namespace citlali::pipeline {
 
+struct FruitLoopRuntimeState {
+    int fruit_iter = 0;
+};
+
 struct ReductionIterationState {
     bool fruit_loops_converged = false;
 };
@@ -13,7 +17,7 @@ inline void reset_reduction_iteration_state(ReductionIterationState &state) {
 template <class Engine>
 bool fruit_loop_iteration_pending(const Engine &engine,
                                   bool fruit_loops_converged) {
-    return (engine.fruit_iter < engine.ptcproc.fruit_loops_iters) &&
+    return (engine.iteration.fruit_iter < engine.ptcproc.fruit_loops_iters) &&
            !fruit_loops_converged;
 }
 

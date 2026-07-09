@@ -51,7 +51,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         calib.array_pas[array_id], RAD_TO_DEG, pi/2);
 
     citlali::pipeline::add_phdu_auxiliary_scalar_keys(
-        fits_entry, mb->sig_unit, telescope.fsmp, fruit_iter);
+        fits_entry, mb->sig_unit, telescope.fsmp, iteration.fruit_iter);
 
     // add jinc shape params
     citlali::pipeline::add_phdu_jinc_shape_keys_if_needed(
