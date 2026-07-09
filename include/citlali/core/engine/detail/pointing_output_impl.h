@@ -82,7 +82,7 @@ void Pointing::output() {
     std::string dir_name;
 
     // matrix to hold pointing fit values and errors (n_params + 2 for array and S/N)
-    Eigen::MatrixXf ppt_table;
+    Eigen::MatrixXf ppt_table(map_indices.n_maps, 2 * map_fitter.n_params + 2);
 
     // determine pointers and directory name based on map_type
     if constexpr (map_type == mapmaking::RawObs || map_type == mapmaking::FilteredObs) {
