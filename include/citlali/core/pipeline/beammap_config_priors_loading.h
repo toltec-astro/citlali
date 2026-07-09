@@ -72,14 +72,29 @@ template <class Config, class MissingKeys, class InvalidKeys>
 void read_beammap_priors_alignment_config(
     Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys,
     BeammapPriorsConfigValues &priors) {
+    std::string alignment_scope_name =
+        std::string(citlali::config::to_string(priors.alignment_scope));
     read_optional_beammap_config_value(
-        config, priors.alignment_scope, missing_keys, invalid_keys,
+        config, alignment_scope_name, missing_keys, invalid_keys,
         std::tuple{"beammap", "priors", "alignment_scope"},
         {"array", "common"});
+    if (auto parsed = citlali::config::parse_beammap_prior_alignment_scope(
+            alignment_scope_name)) {
+        priors.alignment_scope = *parsed;
+    }
+
+    std::string alignment_support_name =
+        std::string(citlali::config::to_string(
+            priors.alignment_common_support));
     read_optional_beammap_config_value(
-        config, priors.alignment_common_support, missing_keys, invalid_keys,
+        config, alignment_support_name, missing_keys, invalid_keys,
         std::tuple{"beammap", "priors", "alignment_common_support"},
         {"all", "overlap_box"});
+    if (auto parsed = citlali::config::parse_beammap_prior_alignment_support(
+            alignment_support_name)) {
+        priors.alignment_common_support = *parsed;
+    }
+
     read_optional_beammap_config_value(
         config, priors.alignment_common_support_quantile,
         missing_keys, invalid_keys,

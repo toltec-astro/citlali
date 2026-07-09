@@ -110,9 +110,10 @@ YAML::Node make_metadata(const BeammapState &beammap,
     fit_qc_meta["beammap_priors_align_after_iter0"] =
         priors_config.align_after_iter0;
     fit_qc_meta["beammap_priors_alignment_scope"] =
-        priors_config.alignment_scope;
+        std::string(citlali::config::to_string(priors_config.alignment_scope));
     fit_qc_meta["beammap_priors_alignment_common_support"] =
-        priors_config.alignment_common_support;
+        std::string(citlali::config::to_string(
+            priors_config.alignment_common_support));
     fit_qc_meta["beammap_priors_alignment_common_support_quantile"] =
         priors_config.alignment_common_support_quantile;
     fit_qc_meta["beammap_priors_alignment_min_matches"] =

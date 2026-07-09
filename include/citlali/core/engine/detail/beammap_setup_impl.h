@@ -286,8 +286,11 @@ void Beammap::setup() {
     calib.apt_meta["beammap_priors_score_lambda_after_iter0"] = priors_config.score_lambda_after_iter0;
     calib.apt_meta["beammap_priors_fallback_blind"] = priors_config.fallback_blind;
     calib.apt_meta["beammap_priors_align_after_iter0"] = priors_config.align_after_iter0;
-    calib.apt_meta["beammap_priors_alignment_scope"] = priors_config.alignment_scope;
-    calib.apt_meta["beammap_priors_alignment_common_support"] = priors_config.alignment_common_support;
+    calib.apt_meta["beammap_priors_alignment_scope"] =
+        std::string(citlali::config::to_string(priors_config.alignment_scope));
+    calib.apt_meta["beammap_priors_alignment_common_support"] =
+        std::string(citlali::config::to_string(
+            priors_config.alignment_common_support));
     calib.apt_meta["beammap_priors_alignment_common_support_quantile"] =
         priors_config.alignment_common_support_quantile;
     calib.apt_meta["beammap_priors_alignment_min_matches"] = priors_config.alignment_min_matches;

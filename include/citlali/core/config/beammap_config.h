@@ -18,6 +18,16 @@ enum class BeammapDetectorWeightingMode {
     ptc_after_iter0
 };
 
+enum class BeammapPriorAlignmentScope {
+    array,
+    common
+};
+
+enum class BeammapPriorAlignmentSupport {
+    all,
+    overlap_box
+};
+
 inline constexpr std::array<EnumName<BeammapDetectorWeightingMode>, 3>
     beammap_detector_weighting_mode_names{{
         {BeammapDetectorWeightingMode::constant, "const"},
@@ -25,13 +35,43 @@ inline constexpr std::array<EnumName<BeammapDetectorWeightingMode>, 3>
         {BeammapDetectorWeightingMode::ptc_after_iter0, "ptc_after_iter0"},
     }};
 
+inline constexpr std::array<EnumName<BeammapPriorAlignmentScope>, 2>
+    beammap_prior_alignment_scope_names{{
+        {BeammapPriorAlignmentScope::array, "array"},
+        {BeammapPriorAlignmentScope::common, "common"},
+    }};
+
+inline constexpr std::array<EnumName<BeammapPriorAlignmentSupport>, 2>
+    beammap_prior_alignment_support_names{{
+        {BeammapPriorAlignmentSupport::all, "all"},
+        {BeammapPriorAlignmentSupport::overlap_box, "overlap_box"},
+    }};
+
 inline std::optional<BeammapDetectorWeightingMode>
 parse_beammap_detector_weighting_mode(std::string_view value) {
     return parse_enum(value, beammap_detector_weighting_mode_names);
 }
 
+inline std::optional<BeammapPriorAlignmentScope>
+parse_beammap_prior_alignment_scope(std::string_view value) {
+    return parse_enum(value, beammap_prior_alignment_scope_names);
+}
+
+inline std::optional<BeammapPriorAlignmentSupport>
+parse_beammap_prior_alignment_support(std::string_view value) {
+    return parse_enum(value, beammap_prior_alignment_support_names);
+}
+
 inline std::string_view to_string(BeammapDetectorWeightingMode value) {
     return enum_name(value, beammap_detector_weighting_mode_names);
+}
+
+inline std::string_view to_string(BeammapPriorAlignmentScope value) {
+    return enum_name(value, beammap_prior_alignment_scope_names);
+}
+
+inline std::string_view to_string(BeammapPriorAlignmentSupport value) {
+    return enum_name(value, beammap_prior_alignment_support_names);
 }
 
 struct BeammapIterationConfig {
@@ -94,8 +134,10 @@ struct BeammapPriorsConfig {
     double score_lambda_after_iter0 = 2.0;
     bool fallback_blind = true;
     bool align_after_iter0 = true;
-    std::string alignment_scope = "array";
-    std::string alignment_common_support = "all";
+    BeammapPriorAlignmentScope alignment_scope =
+        BeammapPriorAlignmentScope::array;
+    BeammapPriorAlignmentSupport alignment_common_support =
+        BeammapPriorAlignmentSupport::all;
     double alignment_common_support_quantile = 0.02;
     int alignment_min_matches = 30;
     double alignment_max_d2 = 25.0;
@@ -103,20 +145,15 @@ struct BeammapPriorsConfig {
     double alignment_max_rotation_deg = 8.0;
 };
 
-inline constexpr std::string_view beammap_prior_alignment_scope_common{
-    "common"};
-inline constexpr std::string_view beammap_prior_alignment_support_overlap_box{
-    "overlap_box"};
-
 inline bool uses_common_prior_alignment(
     const BeammapPriorsConfig &config) {
-    return config.alignment_scope == beammap_prior_alignment_scope_common;
+    return config.alignment_scope == BeammapPriorAlignmentScope::common;
 }
 
 inline bool uses_overlap_box_prior_alignment_support(
     const BeammapPriorsConfig &config) {
     return config.alignment_common_support ==
-           beammap_prior_alignment_support_overlap_box;
+           BeammapPriorAlignmentSupport::overlap_box;
 }
 
 struct BeammapDetectorTodOutputConfig {
