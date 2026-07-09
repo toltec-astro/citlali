@@ -11,7 +11,12 @@
 namespace citlali::pipeline {
 
 inline std::vector<std::string> allowed_map_regimes() {
-    return {"source_dominant", "source_faint", "blank_field", "unknown"};
+    std::vector<std::string> values;
+    values.reserve(citlali::config::source_map_regime_names.size());
+    for (const auto &entry : citlali::config::source_map_regime_names) {
+        values.emplace_back(entry.name);
+    }
+    return values;
 }
 
 inline bool map_grouping_disallows_polarization(

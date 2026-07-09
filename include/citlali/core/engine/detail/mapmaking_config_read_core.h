@@ -61,15 +61,13 @@ void read_map_regime_config(Config &config, std::string &map_regime,
                             MissingKeys &missing_keys,
                             InvalidKeys &invalid_keys) {
     map_regime = "unknown";
-    typed_config.source_map_regime = map_regime;
+    typed_config.source_map_regime =
+        citlali::config::SourceMapRegime::unknown;
     const auto key = std::tuple{"source", "map_regime"};
-    if (!config.template has_typed<std::string>(key)) {
-        return;
-    }
-    map_regime = config.template get_typed<std::string>(key);
-    typed_config.source_map_regime = map_regime;
-    ::check_allowed(map_regime, missing_keys, invalid_keys,
-                    citlali::pipeline::allowed_map_regimes(), key);
+    read_optional_parsed_mirrored_config_value(
+        config, key, map_regime, typed_config.source_map_regime,
+        citlali::config::parse_source_map_regime, missing_keys, invalid_keys,
+        citlali::pipeline::allowed_map_regimes());
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,

@@ -38,10 +38,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
 
     const std::string stage_name =
         citlali::pipeline::mapdiag_stage_name<map_t>();
+    const std::string source_map_regime{
+        std::string(citlali::config::to_string(
+            typed_config.mapmaking.source_map_regime))};
     const auto mapdiag_metadata =
         citlali::pipeline::make_mapdiag_metadata_vars(
-            stage_name, mb, typed_config.mapmaking.source_map_regime,
-            telescope.source_name, telescope.project_id, telescope.obs_goal,
+            stage_name, mb, source_map_regime, telescope.source_name,
+            telescope.project_id, telescope.obs_goal,
             typed_config.post_processing.map_filtering.edge_guard);
     const auto mapdiag_labels =
         citlali::pipeline::make_mapdiag_label_vars(

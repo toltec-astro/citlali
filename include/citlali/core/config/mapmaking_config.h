@@ -30,6 +30,13 @@ enum class MapPixelAxes {
     galactic
 };
 
+enum class SourceMapRegime {
+    source_dominant,
+    source_faint,
+    blank_field,
+    unknown
+};
+
 inline constexpr std::array<EnumName<MapGrouping>, 5> map_grouping_names{{
     {MapGrouping::automatic, "auto"},
     {MapGrouping::detector, "detector"},
@@ -50,6 +57,14 @@ inline constexpr std::array<EnumName<MapPixelAxes>, 3> map_pixel_axes_names{{
     {MapPixelAxes::galactic, "galactic"},
 }};
 
+inline constexpr std::array<EnumName<SourceMapRegime>, 4>
+    source_map_regime_names{{
+        {SourceMapRegime::source_dominant, "source_dominant"},
+        {SourceMapRegime::source_faint, "source_faint"},
+        {SourceMapRegime::blank_field, "blank_field"},
+        {SourceMapRegime::unknown, "unknown"},
+    }};
+
 inline std::optional<MapGrouping> parse_map_grouping(std::string_view value) {
     return parse_enum(value, map_grouping_names);
 }
@@ -62,6 +77,11 @@ inline std::optional<MapPixelAxes> parse_map_pixel_axes(std::string_view value) 
     return parse_enum(value, map_pixel_axes_names);
 }
 
+inline std::optional<SourceMapRegime> parse_source_map_regime(
+    std::string_view value) {
+    return parse_enum(value, source_map_regime_names);
+}
+
 inline std::string_view to_string(MapGrouping value) {
     return enum_name(value, map_grouping_names);
 }
@@ -72,6 +92,10 @@ inline std::string_view to_string(MapMethod value) {
 
 inline std::string_view to_string(MapPixelAxes value) {
     return enum_name(value, map_pixel_axes_names);
+}
+
+inline std::string_view to_string(SourceMapRegime value) {
+    return enum_name(value, source_map_regime_names);
 }
 
 inline bool is_map_grouping(std::string_view value, MapGrouping grouping) {
@@ -179,7 +203,7 @@ struct MapmakingConfig {
     MapMethod method = MapMethod::naive;
     std::string pixel_axes = "radec";
     MapPixelAxes pixel_axes_frame = MapPixelAxes::radec;
-    std::string source_map_regime = "unknown";
+    SourceMapRegime source_map_regime = SourceMapRegime::unknown;
     double pixel_size_arcsec = 1.0;
     int x_size_pix = 0;
     int y_size_pix = 0;
