@@ -242,9 +242,10 @@ void Beammap::update_prior_frame_estimates() {
             return true;
         };
 
-        if (priors_config.alignment_scope == "common") {
+        if (citlali::config::uses_common_prior_alignment(priors_config)) {
             auto common_pairs = all_pairs;
-            if (priors_config.alignment_common_support == "overlap_box" &&
+            if (citlali::config::uses_overlap_box_prior_alignment_support(
+                    priors_config) &&
                 pairs_by_array.size() >= 2) {
                 const double q_low =
                     priors_config.alignment_common_support_quantile;

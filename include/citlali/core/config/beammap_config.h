@@ -103,6 +103,22 @@ struct BeammapPriorsConfig {
     double alignment_max_rotation_deg = 8.0;
 };
 
+inline constexpr std::string_view beammap_prior_alignment_scope_common{
+    "common"};
+inline constexpr std::string_view beammap_prior_alignment_support_overlap_box{
+    "overlap_box"};
+
+inline bool uses_common_prior_alignment(
+    const BeammapPriorsConfig &config) {
+    return config.alignment_scope == beammap_prior_alignment_scope_common;
+}
+
+inline bool uses_overlap_box_prior_alignment_support(
+    const BeammapPriorsConfig &config) {
+    return config.alignment_common_support ==
+           beammap_prior_alignment_support_overlap_box;
+}
+
 struct BeammapDetectorTodOutputConfig {
     bool enabled = false;
     std::string subdir_name = "source_crossing_tod";

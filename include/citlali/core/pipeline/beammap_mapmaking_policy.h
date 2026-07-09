@@ -167,12 +167,6 @@ void log_beammap_jinc_preflight(
         array_counts[2]);
 }
 
-inline bool use_beammap_detector_ptc_weights(const std::string &mode,
-                                             bool measurement_iter) {
-    return mode == "ptc" ||
-           (mode == "ptc_after_iter0" && measurement_iter);
-}
-
 inline bool use_beammap_detector_ptc_weights(
     citlali::config::BeammapDetectorWeightingMode mode,
     bool measurement_iter) {
