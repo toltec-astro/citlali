@@ -83,54 +83,39 @@ std::vector<double> beammap_fixed_double_vector(
     return values;
 }
 
-struct BeammapFlaggingVectors {
-    std::vector<double> lower_fwhm_arcsec;
-    std::vector<double> upper_fwhm_arcsec;
-    std::vector<double> lower_sig2noise;
-    std::vector<double> upper_sig2noise;
-    std::vector<double> max_dist_arcsec;
-    std::vector<double> network_robust_z;
-    double max_prior_d2 = 0.0;
-};
-
 template <class Config, class MissingKeys, class InvalidKeys>
-BeammapFlaggingVectors read_beammap_flagging_vectors(
+citlali::config::BeammapFlaggingConfig read_beammap_flagging_config(
     Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys,
     std::size_t n_arrays) {
-    BeammapFlaggingVectors vectors;
-    vectors.lower_fwhm_arcsec = beammap_fixed_double_vector(
+    citlali::config::BeammapFlaggingConfig values;
+    values.array_lower_fwhm_arcsec = beammap_fixed_double_vector(
         config, {"beammap", "flagging", "array_lower_fwhm_arcsec"},
         n_arrays, invalid_keys);
-    vectors.upper_fwhm_arcsec = beammap_fixed_double_vector(
+    values.array_upper_fwhm_arcsec = beammap_fixed_double_vector(
         config, {"beammap", "flagging", "array_upper_fwhm_arcsec"},
         n_arrays, invalid_keys);
-    vectors.lower_sig2noise = beammap_fixed_double_vector(
+    values.array_lower_sig2noise = beammap_fixed_double_vector(
         config, {"beammap", "flagging", "array_lower_sig2noise"},
         n_arrays, invalid_keys);
-    vectors.upper_sig2noise = beammap_fixed_double_vector(
+    values.array_upper_sig2noise = beammap_fixed_double_vector(
         config, {"beammap", "flagging", "array_upper_sig2noise"},
         n_arrays, invalid_keys);
-    vectors.max_dist_arcsec = beammap_fixed_double_vector(
+    values.array_max_dist_arcsec = beammap_fixed_double_vector(
         config, {"beammap", "flagging", "array_max_dist_arcsec"},
         n_arrays, invalid_keys);
-    vectors.network_robust_z = beammap_fixed_double_vector(
+    values.array_network_robust_z = beammap_fixed_double_vector(
         config, {"beammap", "flagging", "array_network_robust_z"},
         n_arrays, invalid_keys);
     read_optional_beammap_config_value(
-        config, vectors.max_prior_d2, missing_keys, invalid_keys,
+        config, values.max_prior_d2, missing_keys, invalid_keys,
         std::tuple{"beammap", "flagging", "max_prior_d2"}, {}, {0.0});
-    return vectors;
+    return values;
 }
 
 template <class ArrayNameMap, class ValueMap>
 void assign_beammap_array_flag_limits(
     const ArrayNameMap &array_name_map,
-    const std::vector<double> &lower_fwhm_arcsec_vec,
-    const std::vector<double> &upper_fwhm_arcsec_vec,
-    const std::vector<double> &lower_sig2noise_vec,
-    const std::vector<double> &upper_sig2noise_vec,
-    const std::vector<double> &max_dist_arcsec_vec,
-    const std::vector<double> &network_robust_z_vec,
+    const citlali::config::BeammapFlaggingConfig &flagging,
     ValueMap &lower_fwhm_arcsec,
     ValueMap &upper_fwhm_arcsec,
     ValueMap &lower_sig2noise,
@@ -140,12 +125,18 @@ void assign_beammap_array_flag_limits(
     std::size_t i = 0;
     for (auto const& [arr_index, arr_name] : array_name_map) {
         (void)arr_index;
-        lower_fwhm_arcsec[arr_name] = lower_fwhm_arcsec_vec[i];
-        upper_fwhm_arcsec[arr_name] = upper_fwhm_arcsec_vec[i];
-        lower_sig2noise[arr_name] = lower_sig2noise_vec[i];
-        upper_sig2noise[arr_name] = upper_sig2noise_vec[i];
-        max_dist_arcsec[arr_name] = max_dist_arcsec_vec[i];
-        network_robust_z[arr_name] = network_robust_z_vec[i];
+        lower_fwhm_arcsec[arr_name] =
+            flagging.array_lower_fwhm_arcsec[i];
+        upper_fwhm_arcsec[arr_name] =
+            flagging.array_upper_fwhm_arcsec[i];
+        lower_sig2noise[arr_name] =
+            flagging.array_lower_sig2noise[i];
+        upper_sig2noise[arr_name] =
+            flagging.array_upper_sig2noise[i];
+        max_dist_arcsec[arr_name] =
+            flagging.array_max_dist_arcsec[i];
+        network_robust_z[arr_name] =
+            flagging.array_network_robust_z[i];
         ++i;
     }
 }

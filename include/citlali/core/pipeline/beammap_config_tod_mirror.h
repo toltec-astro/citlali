@@ -103,6 +103,29 @@ void sync_beammap_detector_tod_output_controls(
         values.n_source_dense;
 }
 
+template <class BeammapControls, class ArrayNameMap>
+void sync_beammap_flagging_controls(
+    BeammapControls &controls,
+    const citlali::config::BeammapFlaggingConfig &flagging,
+    const BeammapSensitivityConfigValues &sensitivity,
+    const ArrayNameMap &array_name_map) {
+    controls.beammap_flag_max_prior_d2 = flagging.max_prior_d2;
+    assign_beammap_array_flag_limits(
+        array_name_map, flagging, controls.lower_fwhm_arcsec,
+        controls.upper_fwhm_arcsec, controls.lower_sig2noise,
+        controls.upper_sig2noise, controls.max_dist_arcsec,
+        controls.network_robust_z);
+    controls.lower_sens_factor = sensitivity.sens_factors[0];
+    controls.upper_sens_factor = sensitivity.sens_factors[1];
+    controls.sens_psd_limits_Hz.resize(
+        static_cast<Eigen::Index>(sensitivity.sens_psd_limits_hz.size()));
+    controls.sens_psd_limits_Hz =
+        Eigen::Map<const Eigen::VectorXd>(
+            sensitivity.sens_psd_limits_hz.data(),
+            static_cast<Eigen::Index>(
+                sensitivity.sens_psd_limits_hz.size()));
+}
+
 void mirror_beammap_core_config(citlali::config::BeammapConfig &target,
                                 const BeammapCoreConfigValues &core_values,
                                 const BeammapFittingConfigValues &fitting_values,
@@ -149,19 +172,10 @@ inline void mirror_beammap_priors_config(
 void mirror_beammap_output_and_flagging_config(
     citlali::config::BeammapConfig &target,
     const citlali::config::BeammapDetectorTodOutputConfig &detector_tod_output,
-    const BeammapFlaggingVectors &flagging_vectors,
-    const std::vector<double> &sens_factors,
-    const std::vector<double> &sens_psd_limits_hz) {
+    const citlali::config::BeammapFlaggingConfig &flagging,
+    const BeammapSensitivityConfigValues &sensitivity) {
     target.detector_tod_output = detector_tod_output;
-    target.flagging.array_lower_fwhm_arcsec =
-        flagging_vectors.lower_fwhm_arcsec;
-    target.flagging.array_upper_fwhm_arcsec =
-        flagging_vectors.upper_fwhm_arcsec;
-    target.flagging.array_lower_sig2noise = flagging_vectors.lower_sig2noise;
-    target.flagging.array_upper_sig2noise = flagging_vectors.upper_sig2noise;
-    target.flagging.array_max_dist_arcsec = flagging_vectors.max_dist_arcsec;
-    target.flagging.array_network_robust_z = flagging_vectors.network_robust_z;
-    target.flagging.sens_factors = sens_factors;
-    target.flagging.sens_psd_limits_hz = sens_psd_limits_hz;
-    target.flagging.max_prior_d2 = flagging_vectors.max_prior_d2;
+    target.flagging = flagging;
+    target.flagging.sens_factors = sensitivity.sens_factors;
+    target.flagging.sens_psd_limits_hz = sensitivity.sens_psd_limits_hz;
 }

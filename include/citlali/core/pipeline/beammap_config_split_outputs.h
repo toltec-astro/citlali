@@ -52,20 +52,18 @@ read_beammap_split_fits_config(Config &config, MissingKeys &missing_keys,
     return values;
 }
 
-template <class Config, class InvalidKeys, class SensPsdLimits>
-void read_beammap_sensitivity_config(
-    Config &config, InvalidKeys &invalid_keys, double &lower_sens_factor,
-    double &upper_sens_factor, SensPsdLimits &sens_psd_limits_Hz,
-    std::vector<double> &sens_factors_vec,
-    std::vector<double> &sens_psd_limits_Hz_vec) {
-    sens_factors_vec = beammap_fixed_double_vector(
-        config, {"beammap", "flagging", "sens_factors"}, 2, invalid_keys);
-    lower_sens_factor = sens_factors_vec[0];
-    upper_sens_factor = sens_factors_vec[1];
+struct BeammapSensitivityConfigValues {
+    std::vector<double> sens_factors;
+    std::vector<double> sens_psd_limits_hz;
+};
 
-    sens_psd_limits_Hz.resize(2);
-    sens_psd_limits_Hz_vec = beammap_fixed_double_vector(
+template <class Config, class InvalidKeys>
+BeammapSensitivityConfigValues read_beammap_sensitivity_config(
+    Config &config, InvalidKeys &invalid_keys) {
+    BeammapSensitivityConfigValues values;
+    values.sens_factors = beammap_fixed_double_vector(
+        config, {"beammap", "flagging", "sens_factors"}, 2, invalid_keys);
+    values.sens_psd_limits_hz = beammap_fixed_double_vector(
         config, {"beammap", "sens_psd_limits_Hz"}, 2, invalid_keys);
-    sens_psd_limits_Hz = Eigen::Map<Eigen::VectorXd>(
-        sens_psd_limits_Hz_vec.data(), sens_psd_limits_Hz_vec.size());
+    return values;
 }
