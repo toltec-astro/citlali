@@ -377,10 +377,23 @@ public:
     void clear_beammap_fit_result(Eigen::Index map_index);
     bool has_beammap_prior_diagnostics() const;
     void reset_beammap_prior_diagnostics(Eigen::Index map_index);
+    bool beammap_prior_position_compatible(
+        Eigen::Index map_index, double row, double col,
+        double derot_elev_rad, double prior_max_d2,
+        double &d2_out);
     bool beammap_prior_allows_peak_switch(Eigen::Index map_index,
                                           double prev_row, double prev_col,
                                           Eigen::Index peak_row,
                                           Eigen::Index peak_col);
+    bool has_previous_beammap_fit_init_candidate(
+        Eigen::Index map_index, bool measurement_iter) const;
+    bool read_previous_beammap_fit_seed(
+        Eigen::Index map_index, double prev_row, double prev_col,
+        double &seed_signal, double &seed_weight) const;
+    bool should_reject_previous_beammap_fit_for_peak(
+        Eigen::Index map_index, double prev_row, double prev_col,
+        double seed_signal, double seed_weight, bool can_try_prior,
+        double init_fwhm);
     BeammapPreviousFitInit choose_previous_beammap_fit_init(
         Eigen::Index map_index, bool measurement_iter, bool can_try_prior,
         double init_fwhm);
