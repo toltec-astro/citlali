@@ -88,23 +88,7 @@ void Engine::get_beammap_config(CT &config) {
         beammap_detector_tod_output_n_source_dense);
 
     citlali::pipeline::reset_beammap_config_mirror(beammap_config);
-    citlali::pipeline::mirror_beammap_core_config(
-        beammap_config, beammap_iter_max, beammap_iter_tolerance,
-        beammap_convergence_radius_arcsec, beammap_phase_split_enabled,
-        beammap_locator_iter, beammap_measurement_start_iter,
-        beammap_subtract_reference, static_cast<long>(beammap_reference_det),
-        beammap_derotate, beammap_rfi_mask_enabled,
-        beammap_rfi_mask_block_size_samples, beammap_rfi_mask_min_good_samples,
-        beammap_rfi_mask_dilate_blocks, beammap_rfi_mask_sigma_threshold,
-        beammap_rfi_mask_sigma_floor, beammap_rfi_mask_max_flagged_fraction,
-        beammap_detector_weighting_mode, beammap_fit_radius_fwhm,
-        beammap_scan_band_mask_enabled, beammap_scan_band_mask_edge_rows,
-        beammap_scan_band_mask_min_row_pixels,
-        beammap_scan_band_mask_min_contiguous_rows,
-        beammap_scan_band_mask_row_median_sigma_threshold,
-        beammap_scan_band_mask_row_sigma_ratio_threshold,
-        beammap_scan_band_mask_max_flagged_fraction,
-        beammap_split_fits_by_flag, beammap_split_flag_values);
+    citlali::pipeline::mirror_beammap_core_config(beammap_config, *this);
     citlali::pipeline::mirror_beammap_priors_config(
         beammap_config, beammap_priors_config);
     citlali::pipeline::mirror_beammap_output_and_flagging_config(
