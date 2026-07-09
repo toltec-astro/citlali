@@ -88,6 +88,57 @@ void Beammap::apply_beammap_prior_frame_center_samples(
     }
 }
 
+Beammap::BeammapPriorAlignmentSamples
+Beammap::collect_beammap_prior_alignment_samples(
+    const citlali::config::BeammapPriorsConfig &priors_config) {
+    BeammapPriorAlignmentSamples alignment_samples;
+    const double derot_elev_rad = get_prior_derot_elev_rad();
+
+    for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
+        if (i >= good_fits.size() || !good_fits(i)) {
+            continue;
+        }
+        if (fit_diag_bound_nhit.size() == map_indices.n_maps && fit_diag_bound_nhit(i) > 0) {
+            continue;
+        }
+        if (!(std::isfinite(p0(i, 0)) && p0(i, 0) > 0.0 &&
+              std::isfinite(p0(i, 1)) && std::isfinite(p0(i, 2)))) {
+            continue;
+        }
+        const int array = static_cast<int>(map_indices.maps_to_arrays(i));
+        const int nw = static_cast<int>(std::lround(calib.apt["nw"](i)));
+        const double x_raw =
+            RAD_TO_ASEC * omb.pixel_size_rad * (p0(i, 1) - (omb.n_cols - 1) / 2.0);
+        const double y_raw =
+            RAD_TO_ASEC * omb.pixel_size_rad * (p0(i, 2) - (omb.n_rows - 1) / 2.0);
+        double x_prior = std::numeric_limits<double>::quiet_NaN();
+        double y_prior = std::numeric_limits<double>::quiet_NaN();
+        if (!observed_to_prior_frame(array, x_raw, y_raw, derot_elev_rad,
+                                     x_prior, y_prior, nullptr, nullptr, false)) {
+            continue;
+        }
+        double d2 = std::numeric_limits<double>::infinity();
+        int slot_index = -1;
+        double slot_x = std::numeric_limits<double>::quiet_NaN();
+        double slot_y = std::numeric_limits<double>::quiet_NaN();
+        if (!match_prior_slot(array, nw, x_prior, y_prior, d2, slot_index, &slot_x, &slot_y)) {
+            continue;
+        }
+        static_cast<void>(slot_index);
+        if (priors_config.alignment_max_d2 > 0.0 &&
+            d2 > priors_config.alignment_max_d2) {
+            continue;
+        }
+        BeammapPriorAlignmentPair pair{x_prior, y_prior, slot_x, slot_y};
+        alignment_samples.pairs_by_array[array].push_back(pair);
+        alignment_samples.all_pairs.push_back(pair);
+        alignment_samples.arrays_with_alignment_pairs.insert(array);
+        alignment_samples.n_matches++;
+    }
+
+    return alignment_samples;
+}
+
 void Beammap::update_prior_frame_estimates() {
     reset_beammap_prior_frame_estimates();
 
@@ -99,60 +150,11 @@ void Beammap::update_prior_frame_estimates() {
     Eigen::Index n_alignment_matches = 0;
     if (priors_config.align_after_iter0 && is_beammap_measurement_iter(current_iter) &&
         p0.rows() == map_indices.n_maps && p0.cols() > 2) {
-        struct PriorPair {
-            double obs_x = 0.0;
-            double obs_y = 0.0;
-            double slot_x = 0.0;
-            double slot_y = 0.0;
-        };
-        std::map<int, std::vector<PriorPair>> pairs_by_array;
-        std::vector<PriorPair> all_pairs;
-        std::set<int> arrays_with_alignment_pairs;
-        const double derot_elev_rad = get_prior_derot_elev_rad();
+        auto alignment_samples =
+            collect_beammap_prior_alignment_samples(priors_config);
+        n_alignment_matches = alignment_samples.n_matches;
 
-        for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
-            if (i >= good_fits.size() || !good_fits(i)) {
-                continue;
-            }
-            if (fit_diag_bound_nhit.size() == map_indices.n_maps && fit_diag_bound_nhit(i) > 0) {
-                continue;
-            }
-            if (!(std::isfinite(p0(i, 0)) && p0(i, 0) > 0.0 &&
-                  std::isfinite(p0(i, 1)) && std::isfinite(p0(i, 2)))) {
-                continue;
-            }
-            const int array = static_cast<int>(map_indices.maps_to_arrays(i));
-            const int nw = static_cast<int>(std::lround(calib.apt["nw"](i)));
-            const double x_raw =
-                RAD_TO_ASEC * omb.pixel_size_rad * (p0(i, 1) - (omb.n_cols - 1) / 2.0);
-            const double y_raw =
-                RAD_TO_ASEC * omb.pixel_size_rad * (p0(i, 2) - (omb.n_rows - 1) / 2.0);
-            double x_prior = std::numeric_limits<double>::quiet_NaN();
-            double y_prior = std::numeric_limits<double>::quiet_NaN();
-            if (!observed_to_prior_frame(array, x_raw, y_raw, derot_elev_rad,
-                                         x_prior, y_prior, nullptr, nullptr, false)) {
-                continue;
-            }
-            double d2 = std::numeric_limits<double>::infinity();
-            int slot_index = -1;
-            double slot_x = std::numeric_limits<double>::quiet_NaN();
-            double slot_y = std::numeric_limits<double>::quiet_NaN();
-            if (!match_prior_slot(array, nw, x_prior, y_prior, d2, slot_index, &slot_x, &slot_y)) {
-                continue;
-            }
-            static_cast<void>(slot_index);
-            if (priors_config.alignment_max_d2 > 0.0 &&
-                d2 > priors_config.alignment_max_d2) {
-                continue;
-            }
-            PriorPair pair{x_prior, y_prior, slot_x, slot_y};
-            pairs_by_array[array].push_back(pair);
-            all_pairs.push_back(pair);
-            arrays_with_alignment_pairs.insert(array);
-            n_alignment_matches++;
-        }
-
-        auto fit_prior_alignment = [&](const std::vector<PriorPair> &pairs,
+        auto fit_prior_alignment = [&](const std::vector<BeammapPriorAlignmentPair> &pairs,
                                        const std::string &label,
                                        PriorArrayAlignment &alignment) {
             if (pairs.size() < static_cast<std::size_t>(priors_config.alignment_min_matches)) {
@@ -257,10 +259,10 @@ void Beammap::update_prior_frame_estimates() {
         };
 
         if (citlali::config::uses_common_prior_alignment(priors_config)) {
-            auto common_pairs = all_pairs;
+            auto common_pairs = alignment_samples.all_pairs;
             if (citlali::config::uses_overlap_box_prior_alignment_support(
                     priors_config) &&
-                pairs_by_array.size() >= 2) {
+                alignment_samples.pairs_by_array.size() >= 2) {
                 const double q_low =
                     priors_config.alignment_common_support_quantile;
                 const double q_high =
@@ -271,7 +273,7 @@ void Beammap::update_prior_frame_estimates() {
                 double overlap_y_high = std::numeric_limits<double>::infinity();
                 bool overlap_valid = true;
 
-                for (const auto &[array, pairs] : pairs_by_array) {
+                for (const auto &[array, pairs] : alignment_samples.pairs_by_array) {
                     static_cast<void>(array);
                     std::vector<double> xs;
                     std::vector<double> ys;
@@ -300,9 +302,9 @@ void Beammap::update_prior_frame_estimates() {
 
                 if (overlap_valid && overlap_x_low < overlap_x_high &&
                     overlap_y_low < overlap_y_high) {
-                    std::vector<PriorPair> filtered_pairs;
-                    filtered_pairs.reserve(all_pairs.size());
-                    for (const auto &pair : all_pairs) {
+                    std::vector<BeammapPriorAlignmentPair> filtered_pairs;
+                    filtered_pairs.reserve(alignment_samples.all_pairs.size());
+                    for (const auto &pair : alignment_samples.all_pairs) {
                         if (pair.slot_x >= overlap_x_low && pair.slot_x <= overlap_x_high &&
                             pair.slot_y >= overlap_y_low && pair.slot_y <= overlap_y_high) {
                             filtered_pairs.push_back(pair);
@@ -318,7 +320,7 @@ void Beammap::update_prior_frame_estimates() {
                         current_iter,
                         priors_config.alignment_common_support_quantile,
                         overlap_x_low, overlap_x_high, overlap_y_low, overlap_y_high,
-                        common_pairs.size(), all_pairs.size());
+                        common_pairs.size(), alignment_samples.all_pairs.size());
                 }
                 else {
                     logger->debug(
@@ -329,18 +331,18 @@ void Beammap::update_prior_frame_estimates() {
 
             PriorArrayAlignment alignment;
             if (fit_prior_alignment(common_pairs, "scope=common", alignment)) {
-                for (int array : arrays_with_alignment_pairs) {
+                for (int array : alignment_samples.arrays_with_alignment_pairs) {
                     beammap_prior_array_alignment[array] = alignment;
                 }
                 logger->info(
                     "beammap prior empirical alignment (iter {} scope=common): arrays={} matches={} dx={} dy={} rot_deg={} rms={}",
-                    current_iter, arrays_with_alignment_pairs.size(), alignment.n_matches,
+                    current_iter, alignment_samples.arrays_with_alignment_pairs.size(), alignment.n_matches,
                     alignment.dx_arcsec, alignment.dy_arcsec,
                     alignment.theta_rad * RAD_TO_DEG, alignment.rms_arcsec);
             }
         }
         else {
-            for (auto &[array, pairs] : pairs_by_array) {
+            for (auto &[array, pairs] : alignment_samples.pairs_by_array) {
                 PriorArrayAlignment alignment;
                 if (!fit_prior_alignment(pairs, fmt::format("array={}", array), alignment)) {
                     continue;

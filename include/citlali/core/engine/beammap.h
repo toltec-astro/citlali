@@ -31,6 +31,10 @@ namespace citlali::pipeline {
 struct BeammapArrayFlaggingLimits;
 }
 
+namespace citlali::config {
+struct BeammapPriorsConfig;
+}
+
 class Beammap: public Engine {
 public:
     struct SoftPriorSlot {
@@ -58,6 +62,20 @@ public:
         std::set<int> arrays_missing;
         Eigen::Index n_previous = 0;
         Eigen::Index n_blind = 0;
+    };
+
+    struct BeammapPriorAlignmentPair {
+        double obs_x = 0.0;
+        double obs_y = 0.0;
+        double slot_x = 0.0;
+        double slot_y = 0.0;
+    };
+
+    struct BeammapPriorAlignmentSamples {
+        std::map<int, std::vector<BeammapPriorAlignmentPair>> pairs_by_array;
+        std::vector<BeammapPriorAlignmentPair> all_pairs;
+        std::set<int> arrays_with_alignment_pairs;
+        Eigen::Index n_matches = 0;
     };
 
     enum class BeammapFitInitMode { Blind, Previous, Prior };
@@ -439,6 +457,8 @@ public:
     BeammapPriorFrameCenterSamples collect_beammap_prior_frame_center_samples();
     void apply_beammap_prior_frame_center_samples(
         const BeammapPriorFrameCenterSamples &center_samples);
+    BeammapPriorAlignmentSamples collect_beammap_prior_alignment_samples(
+        const citlali::config::BeammapPriorsConfig &priors_config);
     void update_prior_frame_estimates();
     bool choose_prior_guided_init(Eigen::Index map_index, double &init_row, double &init_col);
     void configure_detector_source_centers_from_previous_fit();
