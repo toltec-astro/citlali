@@ -6,21 +6,10 @@
 #include <citlali/core/pipeline/map_grouping_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
-void Beammap::setup() {
-    auto &beammap_config = citlali::pipeline::beammap_config(*this);
-    const auto &mapmaking_config = citlali::pipeline::mapmaking_config(*this);
-
-    // assign parallel policies
-    map_parallel_policy = citlali::pipeline::runtime_parallel_policy_name(*this);
-
-    // run obsnum setup
-    obsnum_setup();
-
-    // create kids tone apt row
+void Beammap::setup_beammap_kids_tone_column() {
     calib.apt["kids_tone"].resize(calib.n_dets);
 
     Eigen::Index j = 0;
-    // set kids tone (det number on network)
     calib.apt["kids_tone"](0) = 0;
     for (Eigen::Index i=1; i<calib.n_dets; ++i) {
         if (calib.apt["nw"](i) > calib.apt["nw"](i-1)) {
@@ -33,21 +22,16 @@ void Beammap::setup() {
         calib.apt["kids_tone"](i) = j;
     }
 
-    // add kids tone to apt header
     calib.apt_header_keys.push_back("kids_tone");
     calib.apt_header_units["kids_tone"] = "N/A";
+}
 
-    // resize the PTCData vector to number of scans
+void Beammap::resize_beammap_state_buffers() {
     ptcs0.resize(telescope.scan_indices.cols());
-
-    // resize the calib vector to number of scans
     calib_scans0.resize(telescope.scan_indices.cols());
 
-    // resize the initial fit matrix
     p0.setZero(map_indices.n_maps, map_fitter.n_params);
-    // resize the initial fit error matrix
     perror0.setZero(map_indices.n_maps, map_fitter.n_params);
-    // resize the current fit matrix
     params.setZero(map_indices.n_maps, map_fitter.n_params);
     perrors.setZero(map_indices.n_maps, map_fitter.n_params);
     fit_diag_init_params.setZero(map_indices.n_maps, map_fitter.n_params);
@@ -60,7 +44,6 @@ void Beammap::setup() {
     prior_diag_values.resize(map_indices.n_maps, n_prior_diag_cols);
     prior_diag_values.setConstant(std::numeric_limits<double>::quiet_NaN());
 
-    // resize good fits
     good_fits.setZero(map_indices.n_maps);
     rfi_mask_samples_flagged = Eigen::VectorXi::Zero(calib.n_dets);
     rfi_mask_scans_flagged = Eigen::VectorXi::Zero(calib.n_dets);
@@ -71,13 +54,88 @@ void Beammap::setup() {
     final_prior_d2_diag = Eigen::VectorXd::Constant(calib.n_dets, std::numeric_limits<double>::quiet_NaN());
     final_prior_slot_index_diag = Eigen::VectorXi::Constant(calib.n_dets, -1);
 
-    // initially all detectors are unconverged
     converged.setZero(map_indices.n_maps);
-    // convergence iteration
     converge_iter.resize(map_indices.n_maps);
     converge_iter.setConstant(1);
-    // set the initial iteration
     current_iter = 0;
+}
+
+void Beammap::init_beammap_diagnostic_apt_columns() {
+    calib.apt["rfi_masked_samples"] = Eigen::VectorXd::Zero(calib.n_dets);
+    calib.apt_header_units["rfi_masked_samples"] = "samples";
+    calib.apt_header_keys.push_back("rfi_masked_samples");
+    calib.apt_meta["rfi_masked_samples"].push_back("units: samples");
+    calib.apt_meta["rfi_masked_samples"].push_back("number of timestream samples masked by beammap rfi_mask");
+
+    calib.apt["rfi_masked_scans"] = Eigen::VectorXd::Zero(calib.n_dets);
+    calib.apt_header_units["rfi_masked_scans"] = "scans";
+    calib.apt_header_keys.push_back("rfi_masked_scans");
+    calib.apt_meta["rfi_masked_scans"].push_back("units: scans");
+    calib.apt_meta["rfi_masked_scans"].push_back("number of scans with at least one sample masked by beammap rfi_mask");
+
+    calib.apt["scan_band_masked_samples"] = Eigen::VectorXd::Zero(calib.n_dets);
+    calib.apt_header_units["scan_band_masked_samples"] = "samples";
+    calib.apt_header_keys.push_back("scan_band_masked_samples");
+    calib.apt_meta["scan_band_masked_samples"].push_back("units: samples");
+    calib.apt_meta["scan_band_masked_samples"].push_back(
+        "number of timestream samples masked by beammap scan_band_mask");
+
+    calib.apt["scan_band_masked_rows"] = Eigen::VectorXd::Zero(calib.n_dets);
+    calib.apt_header_units["scan_band_masked_rows"] = "rows";
+    calib.apt_header_keys.push_back("scan_band_masked_rows");
+    calib.apt_meta["scan_band_masked_rows"].push_back("units: rows");
+    calib.apt_meta["scan_band_masked_rows"].push_back(
+        "number of detector-map edge rows flagged by beammap scan_band_mask");
+
+    calib.apt["scan_band_masked_edge"] = Eigen::VectorXd::Zero(calib.n_dets);
+    calib.apt_header_units["scan_band_masked_edge"] = "N/A";
+    calib.apt_header_keys.push_back("scan_band_masked_edge");
+    calib.apt_meta["scan_band_masked_edge"].push_back("units: N/A");
+    calib.apt_meta["scan_band_masked_edge"].push_back(
+        "scan-band edge code (0 none, 1 top, 2 bottom, 3 both)");
+    calib.apt_meta["scan_band_masked_edge"].push_back("0=none");
+    calib.apt_meta["scan_band_masked_edge"].push_back("1=top");
+    calib.apt_meta["scan_band_masked_edge"].push_back("2=bottom");
+    calib.apt_meta["scan_band_masked_edge"].push_back("3=both");
+
+    calib.apt["scan_band_mask_rejected"] = Eigen::VectorXd::Zero(calib.n_dets);
+    calib.apt_header_units["scan_band_mask_rejected"] = "N/A";
+    calib.apt_header_keys.push_back("scan_band_mask_rejected");
+    calib.apt_meta["scan_band_mask_rejected"].push_back("units: N/A");
+    calib.apt_meta["scan_band_mask_rejected"].push_back(
+        "1 if scan_band_mask proposed a mask but rejected it due to max_flagged_fraction");
+
+    calib.apt["final_prior_slot_index"] =
+        Eigen::VectorXd::Constant(calib.n_dets, -1.0);
+    calib.apt_header_units["final_prior_slot_index"] = "N/A";
+    calib.apt_header_keys.push_back("final_prior_slot_index");
+    calib.apt_meta["final_prior_slot_index"].push_back("units: N/A");
+    calib.apt_meta["final_prior_slot_index"].push_back(
+        "nearest prior slot index for final detector position in prior frame (-1 if unavailable)");
+
+    calib.apt["final_prior_d2"] =
+        Eigen::VectorXd::Constant(calib.n_dets, std::numeric_limits<double>::quiet_NaN());
+    calib.apt_header_units["final_prior_d2"] = "N/A";
+    calib.apt_header_keys.push_back("final_prior_d2");
+    calib.apt_meta["final_prior_d2"].push_back("units: N/A");
+    calib.apt_meta["final_prior_d2"].push_back(
+        "nearest-slot Mahalanobis d^2 for final detector position in the soft-prior frame");
+
+    init_empirical_template_calibration_columns();
+}
+
+void Beammap::setup() {
+    auto &beammap_config = citlali::pipeline::beammap_config(*this);
+    const auto &mapmaking_config = citlali::pipeline::mapmaking_config(*this);
+
+    // assign parallel policies
+    map_parallel_policy = citlali::pipeline::runtime_parallel_policy_name(*this);
+
+    // run obsnum setup
+    obsnum_setup();
+
+    setup_beammap_kids_tone_column();
+    resize_beammap_state_buffers();
 
     /* update apt table meta data */
     calib.apt_meta.reset();
@@ -150,68 +208,7 @@ void Beammap::setup() {
     calib.apt_meta["kids_tone"].push_back("units: N/A");
     calib.apt_meta["kids_tone"].push_back("index of tone in network");
 
-    // diagnostics for robust sample masking of beammap RFI
-    calib.apt["rfi_masked_samples"] = Eigen::VectorXd::Zero(calib.n_dets);
-    calib.apt_header_units["rfi_masked_samples"] = "samples";
-    calib.apt_header_keys.push_back("rfi_masked_samples");
-    calib.apt_meta["rfi_masked_samples"].push_back("units: samples");
-    calib.apt_meta["rfi_masked_samples"].push_back("number of timestream samples masked by beammap rfi_mask");
-
-    calib.apt["rfi_masked_scans"] = Eigen::VectorXd::Zero(calib.n_dets);
-    calib.apt_header_units["rfi_masked_scans"] = "scans";
-    calib.apt_header_keys.push_back("rfi_masked_scans");
-    calib.apt_meta["rfi_masked_scans"].push_back("units: scans");
-    calib.apt_meta["rfi_masked_scans"].push_back("number of scans with at least one sample masked by beammap rfi_mask");
-
-    calib.apt["scan_band_masked_samples"] = Eigen::VectorXd::Zero(calib.n_dets);
-    calib.apt_header_units["scan_band_masked_samples"] = "samples";
-    calib.apt_header_keys.push_back("scan_band_masked_samples");
-    calib.apt_meta["scan_band_masked_samples"].push_back("units: samples");
-    calib.apt_meta["scan_band_masked_samples"].push_back(
-        "number of timestream samples masked by beammap scan_band_mask");
-
-    calib.apt["scan_band_masked_rows"] = Eigen::VectorXd::Zero(calib.n_dets);
-    calib.apt_header_units["scan_band_masked_rows"] = "rows";
-    calib.apt_header_keys.push_back("scan_band_masked_rows");
-    calib.apt_meta["scan_band_masked_rows"].push_back("units: rows");
-    calib.apt_meta["scan_band_masked_rows"].push_back(
-        "number of detector-map edge rows flagged by beammap scan_band_mask");
-
-    calib.apt["scan_band_masked_edge"] = Eigen::VectorXd::Zero(calib.n_dets);
-    calib.apt_header_units["scan_band_masked_edge"] = "N/A";
-    calib.apt_header_keys.push_back("scan_band_masked_edge");
-    calib.apt_meta["scan_band_masked_edge"].push_back("units: N/A");
-    calib.apt_meta["scan_band_masked_edge"].push_back(
-        "scan-band edge code (0 none, 1 top, 2 bottom, 3 both)");
-    calib.apt_meta["scan_band_masked_edge"].push_back("0=none");
-    calib.apt_meta["scan_band_masked_edge"].push_back("1=top");
-    calib.apt_meta["scan_band_masked_edge"].push_back("2=bottom");
-    calib.apt_meta["scan_band_masked_edge"].push_back("3=both");
-
-    calib.apt["scan_band_mask_rejected"] = Eigen::VectorXd::Zero(calib.n_dets);
-    calib.apt_header_units["scan_band_mask_rejected"] = "N/A";
-    calib.apt_header_keys.push_back("scan_band_mask_rejected");
-    calib.apt_meta["scan_band_mask_rejected"].push_back("units: N/A");
-    calib.apt_meta["scan_band_mask_rejected"].push_back(
-        "1 if scan_band_mask proposed a mask but rejected it due to max_flagged_fraction");
-
-    calib.apt["final_prior_slot_index"] =
-        Eigen::VectorXd::Constant(calib.n_dets, -1.0);
-    calib.apt_header_units["final_prior_slot_index"] = "N/A";
-    calib.apt_header_keys.push_back("final_prior_slot_index");
-    calib.apt_meta["final_prior_slot_index"].push_back("units: N/A");
-    calib.apt_meta["final_prior_slot_index"].push_back(
-        "nearest prior slot index for final detector position in prior frame (-1 if unavailable)");
-
-    calib.apt["final_prior_d2"] =
-        Eigen::VectorXd::Constant(calib.n_dets, std::numeric_limits<double>::quiet_NaN());
-    calib.apt_header_units["final_prior_d2"] = "N/A";
-    calib.apt_header_keys.push_back("final_prior_d2");
-    calib.apt_meta["final_prior_d2"].push_back("units: N/A");
-    calib.apt_meta["final_prior_d2"].push_back(
-        "nearest-slot Mahalanobis d^2 for final detector position in the soft-prior frame");
-
-    init_empirical_template_calibration_columns();
+    init_beammap_diagnostic_apt_columns();
 
     // bitwise flag
     calib.apt_meta["flag2"].push_back("units: N/A");

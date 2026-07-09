@@ -330,6 +330,9 @@ public:
     std::vector<int> det_in_vec, det_out_vec;
 
     // initial setup for each obs
+    void setup_beammap_kids_tone_column();
+    void resize_beammap_state_buffers();
+    void init_beammap_diagnostic_apt_columns();
     void setup();
 
     // timestream grppi pipeline
