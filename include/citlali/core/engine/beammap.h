@@ -455,6 +455,24 @@ public:
 
     // detector-map edge-band masking for coherent bad scan legs
     ScanBandMaskSummary apply_scan_band_mask(mapmaking::MapBuffer &);
+    bool reject_scan_band_mask_candidate(
+        Eigen::Index det,
+        Eigen::Index n_bad_rows,
+        std::size_t n_proposed_flags,
+        double flagged_fraction,
+        double max_flagged_fraction,
+        ScanBandMaskSummary &summary);
+    void apply_scan_band_mask_flags(
+        Eigen::Index det,
+        const std::vector<std::pair<Eigen::Index, Eigen::Index>> &proposed_flags);
+    void record_scan_band_mask_success(
+        Eigen::Index det,
+        Eigen::Index n_bad_rows,
+        const std::vector<std::pair<Eigen::Index, Eigen::Index>> &proposed_flags,
+        const std::vector<Eigen::Index> &top_rows,
+        const std::vector<Eigen::Index> &bottom_rows,
+        double flagged_fraction,
+        ScanBandMaskSummary &summary);
     void log_beammap_masking_config();
 
     // optional prior-assisted peak initialization
