@@ -124,9 +124,78 @@ void Beammap::init_beammap_diagnostic_apt_columns() {
     init_empirical_template_calibration_columns();
 }
 
-void Beammap::setup() {
+void Beammap::init_beammap_flag_metadata() {
+    calib.apt_meta["flag2"].push_back("units: N/A");
+    calib.apt_meta["flag2"].push_back("bitwise flag");
+    calib.apt_meta["flag2"].push_back("Good=0");
+    calib.apt_meta["flag2"].push_back("BadFit=1");
+    calib.apt_meta["flag2"].push_back("AzFWHM=2");
+    calib.apt_meta["flag2"].push_back("ElFWHM=4");
+    calib.apt_meta["flag2"].push_back("Sig2Noise=8");
+    calib.apt_meta["flag2"].push_back("Sens=16");
+    calib.apt_meta["flag2"].push_back("Position=32");
+    calib.apt_meta["flag2"].push_back("PriorDist=64");
+    calib.apt_meta["flag2"].push_back("NetworkPos=128");
+
+    for (const auto &[arr_index,arr_name]: toltec_io.array_name_map) {
+        calib.apt_meta["array_order"].push_back(std::to_string(arr_index) + ": " + arr_name);
+    }
+
+    calib.apt_header_units["flag2"] = "N/A";
+    calib.apt_header_keys.push_back("flag2");
+}
+
+void Beammap::configure_beammap_soft_prior_setup() {
     auto &beammap_config = citlali::pipeline::beammap_config(*this);
     const auto &mapmaking_config = citlali::pipeline::mapmaking_config(*this);
+
+    beammap_soft_prior_slots.clear();
+    beammap_soft_priors_loaded = false;
+    beammap_soft_priors_are_centered = false;
+    beammap_soft_priors_are_derotated = false;
+    beammap_prior_array_center_x_arcsec.clear();
+    beammap_prior_array_center_y_arcsec.clear();
+    beammap_prior_array_alignment.clear();
+    auto &priors_config = beammap_config.priors;
+    if (priors_config.enabled) {
+        if (mapmaking_config.grouping !=
+            citlali::config::MapGrouping::detector) {
+            logger->warn("beammap priors requested but map_grouping={} (requires detector); disabling priors",
+                         citlali::pipeline::active_map_grouping_name(*this));
+            priors_config.enabled = false;
+        }
+        else if (!load_soft_priors()) {
+            logger->warn("beammap priors failed to load; disabling prior-guided initialization");
+            priors_config.enabled = false;
+        }
+    }
+    calib.apt_meta["beammap_priors_enabled"] = priors_config.enabled;
+    calib.apt_meta["beammap_priors_filepath"] = priors_config.filepath;
+    calib.apt_meta["beammap_priors_candidate_top_n"] = priors_config.candidate_top_n;
+    calib.apt_meta["beammap_priors_min_snr"] = priors_config.min_snr;
+    calib.apt_meta["beammap_priors_max_d2"] = priors_config.max_d2;
+    calib.apt_meta["beammap_priors_max_d2_iter0"] = priors_config.max_d2_iter0;
+    calib.apt_meta["beammap_priors_max_d2_after_iter0"] = priors_config.max_d2_after_iter0;
+    calib.apt_meta["beammap_priors_score_lambda"] = priors_config.score_lambda;
+    calib.apt_meta["beammap_priors_score_lambda_iter0"] = priors_config.score_lambda_iter0;
+    calib.apt_meta["beammap_priors_score_lambda_after_iter0"] = priors_config.score_lambda_after_iter0;
+    calib.apt_meta["beammap_priors_fallback_blind"] = priors_config.fallback_blind;
+    calib.apt_meta["beammap_priors_align_after_iter0"] = priors_config.align_after_iter0;
+    calib.apt_meta["beammap_priors_alignment_scope"] =
+        std::string(citlali::config::to_string(priors_config.alignment_scope));
+    calib.apt_meta["beammap_priors_alignment_common_support"] =
+        std::string(citlali::config::to_string(
+            priors_config.alignment_common_support));
+    calib.apt_meta["beammap_priors_alignment_common_support_quantile"] =
+        priors_config.alignment_common_support_quantile;
+    calib.apt_meta["beammap_priors_alignment_min_matches"] = priors_config.alignment_min_matches;
+    calib.apt_meta["beammap_priors_alignment_max_d2"] = priors_config.alignment_max_d2;
+    calib.apt_meta["beammap_priors_alignment_fit_rotation"] = priors_config.alignment_fit_rotation;
+    calib.apt_meta["beammap_priors_alignment_max_rotation_deg"] = priors_config.alignment_max_rotation_deg;
+}
+
+void Beammap::setup() {
+    auto &beammap_config = citlali::pipeline::beammap_config(*this);
 
     // assign parallel policies
     map_parallel_policy = citlali::pipeline::runtime_parallel_policy_name(*this);
@@ -210,26 +279,7 @@ void Beammap::setup() {
 
     init_beammap_diagnostic_apt_columns();
 
-    // bitwise flag
-    calib.apt_meta["flag2"].push_back("units: N/A");
-    calib.apt_meta["flag2"].push_back("bitwise flag");
-    calib.apt_meta["flag2"].push_back("Good=0");
-    calib.apt_meta["flag2"].push_back("BadFit=1");
-    calib.apt_meta["flag2"].push_back("AzFWHM=2");
-    calib.apt_meta["flag2"].push_back("ElFWHM=4");
-    calib.apt_meta["flag2"].push_back("Sig2Noise=8");
-    calib.apt_meta["flag2"].push_back("Sens=16");
-    calib.apt_meta["flag2"].push_back("Position=32");
-    calib.apt_meta["flag2"].push_back("PriorDist=64");
-    calib.apt_meta["flag2"].push_back("NetworkPos=128");
-
-    // add array mapping
-    for (const auto &[arr_index,arr_name]: toltec_io.array_name_map) {
-        calib.apt_meta["array_order"].push_back(std::to_string(arr_index) + ": " + arr_name);
-    }
-
-    calib.apt_header_units["flag2"] = "N/A";
-    calib.apt_header_keys.push_back("flag2");
+    init_beammap_flag_metadata();
 
     const auto &beammap_reference_config = beammap_config.reference;
     // is the detector rotated?
@@ -256,47 +306,5 @@ void Beammap::setup() {
             beammap_config.detector_weighting_mode));
     calib.apt_meta["beammap_fit_radius_fwhm"] =
         beammap_config.fitting.fit_radius_fwhm;
-    beammap_soft_prior_slots.clear();
-    beammap_soft_priors_loaded = false;
-    beammap_soft_priors_are_centered = false;
-    beammap_soft_priors_are_derotated = false;
-    beammap_prior_array_center_x_arcsec.clear();
-    beammap_prior_array_center_y_arcsec.clear();
-    beammap_prior_array_alignment.clear();
-    auto &priors_config = beammap_config.priors;
-    if (priors_config.enabled) {
-        if (mapmaking_config.grouping !=
-            citlali::config::MapGrouping::detector) {
-            logger->warn("beammap priors requested but map_grouping={} (requires detector); disabling priors",
-                         citlali::pipeline::active_map_grouping_name(*this));
-            priors_config.enabled = false;
-        }
-        else if (!load_soft_priors()) {
-            logger->warn("beammap priors failed to load; disabling prior-guided initialization");
-            priors_config.enabled = false;
-        }
-    }
-    calib.apt_meta["beammap_priors_enabled"] = priors_config.enabled;
-    calib.apt_meta["beammap_priors_filepath"] = priors_config.filepath;
-    calib.apt_meta["beammap_priors_candidate_top_n"] = priors_config.candidate_top_n;
-    calib.apt_meta["beammap_priors_min_snr"] = priors_config.min_snr;
-    calib.apt_meta["beammap_priors_max_d2"] = priors_config.max_d2;
-    calib.apt_meta["beammap_priors_max_d2_iter0"] = priors_config.max_d2_iter0;
-    calib.apt_meta["beammap_priors_max_d2_after_iter0"] = priors_config.max_d2_after_iter0;
-    calib.apt_meta["beammap_priors_score_lambda"] = priors_config.score_lambda;
-    calib.apt_meta["beammap_priors_score_lambda_iter0"] = priors_config.score_lambda_iter0;
-    calib.apt_meta["beammap_priors_score_lambda_after_iter0"] = priors_config.score_lambda_after_iter0;
-    calib.apt_meta["beammap_priors_fallback_blind"] = priors_config.fallback_blind;
-    calib.apt_meta["beammap_priors_align_after_iter0"] = priors_config.align_after_iter0;
-    calib.apt_meta["beammap_priors_alignment_scope"] =
-        std::string(citlali::config::to_string(priors_config.alignment_scope));
-    calib.apt_meta["beammap_priors_alignment_common_support"] =
-        std::string(citlali::config::to_string(
-            priors_config.alignment_common_support));
-    calib.apt_meta["beammap_priors_alignment_common_support_quantile"] =
-        priors_config.alignment_common_support_quantile;
-    calib.apt_meta["beammap_priors_alignment_min_matches"] = priors_config.alignment_min_matches;
-    calib.apt_meta["beammap_priors_alignment_max_d2"] = priors_config.alignment_max_d2;
-    calib.apt_meta["beammap_priors_alignment_fit_rotation"] = priors_config.alignment_fit_rotation;
-    calib.apt_meta["beammap_priors_alignment_max_rotation_deg"] = priors_config.alignment_max_rotation_deg;
+    configure_beammap_soft_prior_setup();
 }

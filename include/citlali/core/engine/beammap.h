@@ -333,6 +333,8 @@ public:
     void setup_beammap_kids_tone_column();
     void resize_beammap_state_buffers();
     void init_beammap_diagnostic_apt_columns();
+    void init_beammap_flag_metadata();
+    void configure_beammap_soft_prior_setup();
     void setup();
 
     // timestream grppi pipeline
