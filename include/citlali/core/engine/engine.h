@@ -123,7 +123,6 @@
 class Engine: public ReductionControls,
               public ReductionComponents,
               public BeammapFluxState,
-              public PointingControls,
               public EngineRuntimeState {
 public:
     // type for missing/invalid keys

@@ -34,17 +34,6 @@ struct BeammapFluxState {
     std::map<std::string, double> beammap_fluxes_MJy_Sr;
 };
 
-struct PointingControls {
-    // source-aware pointing strategy.  Gaussian fits are optional diagnostics;
-    // fruit loops remains empirical and uses previous maps.
-    std::string pointing_source_strategy = "standard";
-    bool pointing_fit_gaussian_enabled = true;
-    std::string pointing_fruitloops_center_mode = "auto";
-    double pointing_header_center_max_radius_arcsec = 0.0;
-    bool pointing_header_center_require_coverage = true;
-};
-
 using reduControls = ReductionControls;
 using BeammapControls = BeammapFluxState;
 using beammapControls = BeammapControls;
-using pointingControls = PointingControls;
