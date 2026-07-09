@@ -4,7 +4,7 @@
 
 inline bool map_filter_template_uses_fwhm(
     const std::string &template_type) {
-    return template_type == "gaussian" || template_type == "airy";
+    return citlali::config::map_filter_template_uses_fwhm(template_type);
 }
 
 inline double map_filter_initial_fwhm_pixels(
@@ -127,4 +127,3 @@ void finalize_map_filter_fits_outputs_if_needed(
             filtered_fits_io, filtered_noise_fits_io, map_label, logger);
     }
 }
-

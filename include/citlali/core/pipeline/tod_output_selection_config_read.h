@@ -17,7 +17,8 @@ void parse_tod_output_indices_config(
     if (config.template has_typed<std::string>(indices_key)) {
         const auto indices_value =
             config.template get_typed<std::string>(indices_key);
-        if (indices_value == "all") {
+        if (citlali::config::is_all_tod_output_selection_mode(
+                indices_value)) {
             return;
         }
         logger->error(

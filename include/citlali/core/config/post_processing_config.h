@@ -75,6 +75,23 @@ inline std::string_view to_string(MapFilterEdgeTaperMode value) {
     return enum_name(value, map_filter_edge_taper_mode_names);
 }
 
+inline bool is_map_filter_template_type(std::string_view value,
+                                        MapFilterTemplateType type) {
+    return value == to_string(type);
+}
+
+inline bool map_filter_template_uses_fwhm(MapFilterTemplateType value) {
+    return value == MapFilterTemplateType::gaussian ||
+           value == MapFilterTemplateType::airy;
+}
+
+inline bool map_filter_template_uses_fwhm(std::string_view value) {
+    if (auto parsed = parse_map_filter_template_type(value)) {
+        return map_filter_template_uses_fwhm(*parsed);
+    }
+    return false;
+}
+
 struct MapFilterEdgeGuardConfig {
     bool enabled = true;
     std::string weight_threshold_mode = "coverage_cut";

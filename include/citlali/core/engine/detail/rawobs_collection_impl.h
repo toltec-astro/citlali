@@ -2,6 +2,63 @@
 
 // Implementation detail included by io.h.
 
+namespace rawobs_data_item_ordering {
+
+inline constexpr const char *toltec_interface_prefix() {
+    return "toltec";
+}
+
+inline constexpr const char *lmt_interface_name() {
+    return "lmt";
+}
+
+inline constexpr const char *hwpr_interface_name() {
+    return "hwpr";
+}
+
+inline constexpr std::size_t toltec_interface_prefix_size() {
+    return 6;
+}
+
+inline bool is_toltec_interface(const std::string &iface) {
+    return iface.rfind(toltec_interface_prefix(), 0) == 0;
+}
+
+inline bool is_lmt_interface(const std::string &iface) {
+    return iface == lmt_interface_name();
+}
+
+inline bool is_hwpr_interface(const std::string &iface) {
+    return iface == hwpr_interface_name();
+}
+
+inline int toltec_interface_index(const std::string &iface) {
+    int idx = 0;
+    try {
+        idx = std::stoi(iface.substr(toltec_interface_prefix_size()));
+    } catch (...) {
+        idx = 0;
+    }
+    return idx;
+}
+
+inline auto sort_key(const RawObs::DataItem &item) {
+    const auto &iface = item.interface();
+    if (is_toltec_interface(iface)) {
+        return std::tuple<int, int, std::string>{
+            0, toltec_interface_index(iface), iface};
+    }
+    if (is_lmt_interface(iface)) {
+        return std::tuple<int, int, std::string>{1, 0, iface};
+    }
+    if (is_hwpr_interface(iface)) {
+        return std::tuple<int, int, std::string>{2, 0, iface};
+    }
+    return std::tuple<int, int, std::string>{3, 0, iface};
+}
+
+} // namespace rawobs_data_item_ordering
+
 void RawObs::collect_data_items() {
     m_data_items.clear();
     std::vector<DataItem> data_items{};
@@ -14,28 +71,11 @@ void RawObs::collect_data_items() {
     }
     m_data_items = std::move(data_items);
 
-    sort(m_data_items.begin(), m_data_items.end(), [] (const RawObs::DataItem& a, const RawObs::DataItem& b) {
-        auto key = [](const RawObs::DataItem& item) {
-            const auto& iface = item.interface();
-            if (iface.rfind("toltec", 0) == 0) {
-                int idx = 0;
-                try {
-                    idx = std::stoi(iface.substr(6));
-                } catch (...) {
-                    idx = 0;
-                }
-                return std::tuple<int, int, std::string>{0, idx, iface};
-            }
-            if (iface == "lmt") {
-                return std::tuple<int, int, std::string>{1, 0, iface};
-            }
-            if (iface == "hwpr") {
-                return std::tuple<int, int, std::string>{2, 0, iface};
-            }
-            return std::tuple<int, int, std::string>{3, 0, iface};
-        };
-        return key(a) < key(b);
-    });
+    sort(m_data_items.begin(), m_data_items.end(),
+         [] (const RawObs::DataItem& a, const RawObs::DataItem& b) {
+             return rawobs_data_item_ordering::sort_key(a) <
+                    rawobs_data_item_ordering::sort_key(b);
+         });
 
     SPDLOG_DEBUG("collected n_data_items={}\n{}", this->n_data_items(),
                  this->data_items());
@@ -139,4 +179,3 @@ void RawObs::collect_cal_items() {
  * high level methods in various ways to setup the MPI runtime
  * with node-local and cross-node environment.
  */
-

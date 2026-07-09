@@ -370,6 +370,11 @@ inline bool is_tod_output_stream(TodOutputStream value,
     return value == stream;
 }
 
+inline bool is_tod_output_selection_mode(
+    std::string_view value, TodOutputSelectionMode mode) {
+    return value == to_string(mode);
+}
+
 inline bool is_tod_type(TodType value, TodType type) {
     return value == type;
 }
@@ -804,6 +809,10 @@ inline bool is_indices_tod_output_selection_mode(
 
 inline bool is_all_tod_output_selection_mode(TodOutputSelectionMode value) {
     return value == TodOutputSelectionMode::all;
+}
+
+inline bool is_all_tod_output_selection_mode(std::string_view value) {
+    return is_tod_output_selection_mode(value, TodOutputSelectionMode::all);
 }
 
 inline bool is_uniform_source_tod_output_selection_mode(
