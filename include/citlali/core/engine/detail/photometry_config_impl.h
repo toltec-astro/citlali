@@ -3,6 +3,34 @@
 // Engine config loading implementation detail.
 // Include this only after Engine has been declared.
 
+namespace citlali::engine_detail {
+
+template <class Config, class FluxMap, class ErrorMap, class SourceConfig>
+void read_beammap_source_fluxes(Config &config, FluxMap &fluxes_mjy_beam,
+                                ErrorMap &errors_mjy_beam,
+                                SourceConfig &source_config) {
+    const Eigen::Index n_fluxes =
+        config.get_node(std::tuple{"beammap_source", "fluxes"}).size();
+
+    for (Eigen::Index i = 0; i < n_fluxes; ++i) {
+        const auto array =
+            config.get_str(std::tuple{"beammap_source", "fluxes", i,
+                                      "array_name"});
+        const auto flux = config.template get_typed<double>(
+            std::tuple{"beammap_source", "fluxes", i, "value_mJy"});
+        const auto uncertainty_mjy = config.template get_typed<double>(
+            std::tuple{"beammap_source", "fluxes", i, "uncertainty_mJy"});
+
+        fluxes_mjy_beam[array] = flux;
+        errors_mjy_beam[array] = uncertainty_mjy;
+        source_config.fluxes.push_back(
+            citlali::config::BeammapSourceFluxConfig{
+                array, flux, uncertainty_mjy});
+    }
+}
+
+}  // namespace citlali::engine_detail
+
 template<typename CT>
 void Engine::get_photometry_config(CT &config) {
     auto &source_config = typed_config.beammap.source;
@@ -26,23 +54,10 @@ void Engine::get_photometry_config(CT &config) {
     // convert dec to radians
     beammap_dec_rad = beammap_dec_rad*DEG_TO_RAD;
 
-    // number of fluxes
-    Eigen::Index n_fluxes = config.get_node(std::tuple{"beammap_source","fluxes"}).size();
-
     // get source fluxes
-    for (Eigen::Index i=0; i<n_fluxes; ++i) {
-        auto array = config.get_str(std::tuple{"beammap_source","fluxes",i,"array_name"});
-        // source flux in mJy/beam
-        auto flux = config.template get_typed<double>(std::tuple{"beammap_source","fluxes",i,"value_mJy"});
-        // source flux uncertainty in mJy/beam
-        auto uncertainty_mJy = config.template get_typed<double>(std::tuple{"beammap_source","fluxes",i,"uncertainty_mJy"});
-
-        // copy flux and uncertainty
-        beammap_fluxes_mJy_beam[array] = flux;
-        beammap_err_mJy_beam[array] = uncertainty_mJy;
-        source_config.fluxes.push_back(
-            citlali::config::BeammapSourceFluxConfig{array, flux, uncertainty_mJy});
-    }
+    citlali::engine_detail::read_beammap_source_fluxes(
+        config, beammap_fluxes_mJy_beam, beammap_err_mJy_beam,
+        source_config);
 
     if (typed_config.runtime.reduction_type ==
         citlali::config::ReductionType::beammap) {
