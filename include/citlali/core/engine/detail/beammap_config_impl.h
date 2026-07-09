@@ -38,9 +38,6 @@ void Engine::get_beammap_config(CT &config) {
     const auto beammap_sensitivity_config =
         citlali::pipeline::read_beammap_sensitivity_config(
             config, invalid_keys);
-    citlali::pipeline::sync_beammap_flagging_controls(
-        *this, beammap_flagging_config, beammap_sensitivity_config,
-        toltec_io.array_name_map);
 
     // Beammap PTC TOD/diagnostics are written after the convergence decision.
     // The default is the actual last attempted iteration, including early

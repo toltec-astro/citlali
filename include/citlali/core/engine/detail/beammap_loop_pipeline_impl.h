@@ -28,11 +28,13 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
     if (detector_grouping) {
         logger->info("calculating sensitivity");
+        const auto &sens_psd_limits_hz =
+            typed_config.beammap.flagging.sens_psd_limits_hz;
         // parallelize on detectors
         grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), det_in_vec, det_out_vec, [&](auto i) {
             Eigen::MatrixXd det_sens, noise_flux;
             // calc sensitivity within psd freq range
-            calc_sensitivity(ptcs, det_sens, noise_flux, telescope.d_fsmp, i, {sens_psd_limits_Hz(0), sens_psd_limits_Hz(1)});
+            calc_sensitivity(ptcs, det_sens, noise_flux, telescope.d_fsmp, i, {sens_psd_limits_hz[0], sens_psd_limits_hz[1]});
             // copy into apt table
             calib.apt["sens"](i) = tula::alg::median(det_sens);
 

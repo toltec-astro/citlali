@@ -34,28 +34,6 @@ void sync_beammap_map_fitter(
         fitting_values.fitting.fit_radius_fwhm;
 }
 
-template <class BeammapControls, class ArrayNameMap>
-void sync_beammap_flagging_controls(
-    BeammapControls &controls,
-    const citlali::config::BeammapFlaggingConfig &flagging,
-    const BeammapSensitivityConfigValues &sensitivity,
-    const ArrayNameMap &array_name_map) {
-    assign_beammap_array_flag_limits(
-        array_name_map, flagging, controls.lower_fwhm_arcsec,
-        controls.upper_fwhm_arcsec, controls.lower_sig2noise,
-        controls.upper_sig2noise, controls.max_dist_arcsec,
-        controls.network_robust_z);
-    controls.lower_sens_factor = sensitivity.sens_factors[0];
-    controls.upper_sens_factor = sensitivity.sens_factors[1];
-    controls.sens_psd_limits_Hz.resize(
-        static_cast<Eigen::Index>(sensitivity.sens_psd_limits_hz.size()));
-    controls.sens_psd_limits_Hz =
-        Eigen::Map<const Eigen::VectorXd>(
-            sensitivity.sens_psd_limits_hz.data(),
-            static_cast<Eigen::Index>(
-                sensitivity.sens_psd_limits_hz.size()));
-}
-
 inline void apply_beammap_typed_config(
     citlali::config::BeammapConfig &target,
     const BeammapCoreConfigValues &core_values,

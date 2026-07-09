@@ -17,6 +17,12 @@ void Beammap::set_apt_flags() {
         }
         flag2(i) |= flag;
     };
+    const auto &flagging_config = typed_config.beammap.flagging;
+    const auto flag_limits =
+        citlali::pipeline::make_beammap_array_flagging_limits(
+            toltec_io.array_name_map, flagging_config);
+    const double lower_sens_factor = flagging_config.sens_factors[0];
+    const double upper_sens_factor = flagging_config.sens_factors[1];
 
     logger->info("flagging detectors");
     // first flag based on fit values and signal-to-noise
@@ -52,20 +58,23 @@ void Beammap::set_apt_flags() {
             mark_detector_flagged(i, AptFlags::BadFit);
         }
         // flag detectors with outlier a_fwhm values
-        if (calib.apt["a_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
-            ((calib.apt["a_fwhm"](i) > upper_fwhm_arcsec[array_name]) && upper_fwhm_arcsec[array_name] > 0)) {
+        if (calib.apt["a_fwhm"](i) < flag_limits.lower_fwhm_arcsec.at(array_name) ||
+            ((calib.apt["a_fwhm"](i) > flag_limits.upper_fwhm_arcsec.at(array_name)) &&
+             flag_limits.upper_fwhm_arcsec.at(array_name) > 0)) {
             mark_detector_flagged(i, AptFlags::AzFWHM);
         }
         // flag detectors with outlier b_fwhm values
-        if (calib.apt["b_fwhm"](i) < lower_fwhm_arcsec[array_name] ||
-            ((calib.apt["b_fwhm"](i) > upper_fwhm_arcsec[array_name] && upper_fwhm_arcsec[array_name] > 0))) {
+        if (calib.apt["b_fwhm"](i) < flag_limits.lower_fwhm_arcsec.at(array_name) ||
+            ((calib.apt["b_fwhm"](i) > flag_limits.upper_fwhm_arcsec.at(array_name) &&
+              flag_limits.upper_fwhm_arcsec.at(array_name) > 0))) {
             mark_detector_flagged(i, AptFlags::ElFWHM);
         }
         // flag detectors with outlier S/N values
         const double map_sig2noise = valid_map_std ? params(i,0)/map_std_dev : 0.0;
         if (!std::isfinite(map_sig2noise) ||
-            (map_sig2noise < lower_sig2noise[array_name]) ||
-            ((map_sig2noise > upper_sig2noise[array_name]) && (upper_sig2noise[array_name] > 0))) {
+            (map_sig2noise < flag_limits.lower_sig2noise.at(array_name)) ||
+            ((map_sig2noise > flag_limits.upper_sig2noise.at(array_name)) &&
+             (flag_limits.upper_sig2noise.at(array_name) > 0))) {
             mark_detector_flagged(i, AptFlags::Sig2Noise);
         }
         return 0;
@@ -186,14 +195,14 @@ void Beammap::set_apt_flags() {
                            pow(calib.apt["y_t"](i) - array_median_y_t[array_name],2));
 
         // flag detectors that are further than the mean value than the distance limit
-        if (dist > max_dist_arcsec[array_name] && max_dist_arcsec[array_name] > 0) {
+        if (dist > flag_limits.max_dist_arcsec.at(array_name) &&
+            flag_limits.max_dist_arcsec.at(array_name) > 0) {
             mark_detector_flagged(i, AptFlags::Position);
         }
 
         return 0;
     });
 
-    const auto &flagging_config = typed_config.beammap.flagging;
     const double max_prior_d2 = flagging_config.max_prior_d2;
     const bool prior_dist_flag_enabled =
         max_prior_d2 > 0.0 && beammap_soft_priors_loaded &&

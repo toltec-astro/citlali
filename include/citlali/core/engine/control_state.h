@@ -2,9 +2,6 @@
 
 #include <map>
 #include <string>
-#include <vector>
-
-#include <Eigen/Core>
 
 struct ReductionControls {
     // interpolate over gaps in timestreams
@@ -45,15 +42,6 @@ struct BeammapControls {
     // iteration to write out beammap PTC data; -1 means final attempted iteration
     int beammap_tod_output_iter = -1;
 
-    // upper and lower limits of psd for sensitivity calc
-    Eigen::VectorXd sens_psd_limits_Hz;
-
-    // limits on fwhm, sig2noise, and distance from center for flagging
-    std::map<std::string, double> lower_fwhm_arcsec, upper_fwhm_arcsec, lower_sig2noise,
-        upper_sig2noise, max_dist_arcsec, network_robust_z;
-
-    // limits on sensitivity for flagging
-    double lower_sens_factor, upper_sens_factor;
 };
 
 struct PointingControls {

@@ -15,10 +15,14 @@ void Beammap::apply_final_network_position_flags() {
         return;
     }
 
+    const auto flag_limits =
+        citlali::pipeline::make_beammap_array_flagging_limits(
+            toltec_io.array_name_map, typed_config.beammap.flagging);
+
     bool enabled = false;
     for (const auto &[arr_index, arr_name] : toltec_io.array_name_map) {
-        auto it = network_robust_z.find(arr_name);
-        if (it != network_robust_z.end() && it->second > 0.0) {
+        auto it = flag_limits.network_robust_z.find(arr_name);
+        if (it != flag_limits.network_robust_z.end() && it->second > 0.0) {
             enabled = true;
             break;
         }
@@ -43,7 +47,7 @@ void Beammap::apply_final_network_position_flags() {
     for (Eigen::Index i = 0; i < calib.n_arrays; ++i) {
         Eigen::Index array = calib.arrays(i);
         std::string array_name = toltec_io.array_name_map[array];
-        const double threshold = network_robust_z[array_name];
+        const double threshold = flag_limits.network_robust_z.at(array_name);
         if (!(threshold > 0.0)) {
             continue;
         }

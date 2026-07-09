@@ -140,3 +140,25 @@ void assign_beammap_array_flag_limits(
         ++i;
     }
 }
+
+struct BeammapArrayFlaggingLimits {
+    std::map<std::string, double> lower_fwhm_arcsec;
+    std::map<std::string, double> upper_fwhm_arcsec;
+    std::map<std::string, double> lower_sig2noise;
+    std::map<std::string, double> upper_sig2noise;
+    std::map<std::string, double> max_dist_arcsec;
+    std::map<std::string, double> network_robust_z;
+};
+
+template <class ArrayNameMap>
+BeammapArrayFlaggingLimits make_beammap_array_flagging_limits(
+    const ArrayNameMap &array_name_map,
+    const citlali::config::BeammapFlaggingConfig &flagging) {
+    BeammapArrayFlaggingLimits limits;
+    assign_beammap_array_flag_limits(
+        array_name_map, flagging, limits.lower_fwhm_arcsec,
+        limits.upper_fwhm_arcsec, limits.lower_sig2noise,
+        limits.upper_sig2noise, limits.max_dist_arcsec,
+        limits.network_robust_z);
+    return limits;
+}

@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <algorithm>
+#include <map>
 #include <string>
 #include <tuple>
 #include <type_traits>
