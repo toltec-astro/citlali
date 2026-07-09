@@ -6,6 +6,7 @@
 #include <citlali/core/config/calibration_config.h>
 #include <citlali/core/engine/detail/beammap_detector_tod_selection.h>
 #include <citlali/core/engine/detail/beammap_detector_tod_output_helpers.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 #include <cstdlib>
 #include <map>
@@ -15,7 +16,7 @@ Beammap::BeammapDetectorTodPreflight
 Beammap::prepare_detector_specific_ptc_tod_output() {
     BeammapDetectorTodPreflight preflight;
     const auto &detector_tod_config =
-        typed_config.beammap.detector_tod_output;
+        citlali::pipeline::beammap_config(*this).detector_tod_output;
     if (!detector_tod_config.enabled) {
         return preflight;
     }
@@ -24,7 +25,7 @@ Beammap::prepare_detector_specific_ptc_tod_output() {
         logger->error("cannot write detector-specific PTC TOD: no scans");
         std::exit(EXIT_FAILURE);
     }
-    if (typed_config.mapmaking.grouping !=
+    if (citlali::pipeline::mapmaking_config(*this).grouping !=
         citlali::config::MapGrouping::detector) {
         logger->warn(
             "beammap.detector_tod_output requires detector map grouping; skipping detector-specific PTC TOD");
@@ -143,7 +144,8 @@ Beammap::make_detector_tod_selections(
                 pointing_samples.sampled_tel_data,
                 calib.apt["x_t"], calib.apt["y_t"],
                 telescope.pixel_axes, pointing_samples.pointing_offsets,
-                typed_config.mapmaking.grouping, distances_arcsec);
+                citlali::pipeline::mapmaking_config(*this).grouping,
+                distances_arcsec);
         selections.det_center_scan_index[static_cast<std::size_t>(det)] =
             static_cast<int>(center_scan + 1);
         center_scan_counts[center_scan]++;

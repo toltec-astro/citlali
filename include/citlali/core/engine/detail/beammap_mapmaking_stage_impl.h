@@ -8,6 +8,7 @@
 #include <citlali/core/pipeline/map_grouping_policy.h>
 #include <citlali/core/pipeline/mapmaking_dispatch.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
 #include <sstream>
@@ -70,7 +71,8 @@ void Beammap::prepare_beammap_iteration_state(bool rerun_source_aware_rtc,
     ptcs = ptcs0;
     calib_scans = calib_scans0;
 
-    const auto &rfi_config = typed_config.beammap.rfi_mask;
+    const auto &rfi_config =
+        citlali::pipeline::beammap_config(*this).rfi_mask;
     if (rfi_config.enabled && detector_grouping &&
         rfi_mask_samples_flagged.size() == calib.n_dets &&
         rfi_mask_scans_flagged.size() == calib.n_dets) {
@@ -87,7 +89,8 @@ void Beammap::prepare_beammap_iteration_state(bool rerun_source_aware_rtc,
     }
 
     // copy previous-iteration maps for source-aperture convergence tests
-    const auto &iteration_config = typed_config.beammap.iteration;
+    const auto &iteration_config =
+        citlali::pipeline::beammap_config(*this).iteration;
     if (citlali::pipeline::mapmaking_enabled(*this) &&
         iteration_config.tolerance > 0.0 &&
         measurement_iter) {
@@ -111,8 +114,9 @@ template <class RandomBits, class Generator>
 void Beammap::run_beammap_mapmaking_pass(bool update_progress,
                                          RandomBits &rands,
                                          Generator &eng) {
-    const auto mapmaking_grouping = typed_config.mapmaking.grouping;
-    const auto mapmaking_method = typed_config.mapmaking.method;
+    const auto &mapmaking = citlali::pipeline::mapmaking_config(*this);
+    const auto mapmaking_grouping = mapmaking.grouping;
+    const auto mapmaking_method = mapmaking.method;
     const auto active_maps =
         citlali::pipeline::select_unconverged_beammap_maps(
             mapmaking_grouping, converged, map_indices.n_maps, logger);
@@ -193,7 +197,8 @@ void Beammap::run_beammap_mapmaking_stage(bool locator_iter,
         return;
     }
 
-    const auto &scan_band_config = typed_config.beammap.scan_band_mask;
+    const auto &scan_band_config =
+        citlali::pipeline::beammap_config(*this).scan_band_mask;
     run_beammap_mapmaking_pass(true, rands, eng);
 
     if (scan_band_config.enabled && detector_grouping && locator_iter) {

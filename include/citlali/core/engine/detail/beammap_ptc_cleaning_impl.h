@@ -6,6 +6,7 @@
 #include <citlali/core/pipeline/beammap_mapmaking_policy.h>
 #include <citlali/core/pipeline/map_grouping_policy.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
 bool Beammap::subtract_beammap_model_for_ptc_scan(int scan_index,
@@ -76,7 +77,8 @@ void Beammap::apply_beammap_ptc_scan_weights(int scan_index,
     auto map_grouping =
         citlali::pipeline::active_map_grouping_name(*this);
     if (detector_grouping) {
-        const auto &rfi_config = typed_config.beammap.rfi_mask;
+        const auto &rfi_config =
+            citlali::pipeline::beammap_config(*this).rfi_mask;
         auto rfi_summary = apply_rfi_sample_mask(ptcs[scan_index]);
         if (rfi_config.enabled) {
             if (rfi_summary.n_samples_flagged > 0 ||
@@ -98,7 +100,8 @@ void Beammap::apply_beammap_ptc_scan_weights(int scan_index,
         }
 
         const auto detector_weighting_mode =
-            typed_config.beammap.detector_weighting_mode;
+            citlali::pipeline::beammap_config(*this)
+                .detector_weighting_mode;
         const auto detector_weighting_mode_name =
             citlali::config::to_string(detector_weighting_mode);
         const bool use_ptc_weights =

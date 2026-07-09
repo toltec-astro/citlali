@@ -7,6 +7,7 @@
 #include <citlali/core/engine/detail/beammap_ptc_cleaning_impl.h>
 #include <citlali/core/engine/detail/beammap_fit_stage_impl.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 bool Beammap::update_beammap_convergence_state() {
     if (!has_completed_beammap_measurement_iter(current_iter)) {
@@ -14,7 +15,8 @@ bool Beammap::update_beammap_convergence_state() {
     }
 
     // only do convergence test if tolerance is above zero, otherwise run all iterations
-    const auto &iteration_config = typed_config.beammap.iteration;
+    const auto &iteration_config =
+        citlali::pipeline::beammap_config(*this).iteration;
     if (citlali::pipeline::mapmaking_enabled(*this) &&
         iteration_config.tolerance > 0) {
         // loop through maps and check if it is converged
@@ -82,7 +84,8 @@ bool Beammap::advance_beammap_iteration_state() {
 
     if (current_iter <
         static_cast<Eigen::Index>(
-            typed_config.beammap.iteration.max_iterations)) {
+            citlali::pipeline::beammap_config(*this)
+                .iteration.max_iterations)) {
         // check if all detectors are converged
         if ((converged.array() == true).all()) {
             logger->info("all maps converged");
@@ -133,8 +136,10 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
     // boost random number generator (0,1)
     boost::random::uniform_int_distribution<> rands{0,1};
     const bool detector_grouping =
-        typed_config.mapmaking.grouping ==
+        citlali::pipeline::mapmaking_config(*this).grouping ==
         citlali::config::MapGrouping::detector;
+    const auto &phase_config =
+        citlali::pipeline::beammap_config(*this).phase_strategy;
 
     log_beammap_masking_config();
 
@@ -146,8 +151,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
         logger->info(
             "starting iter {} phase={} locator_iter={} measurement_start_iter={}",
             current_iter, beammap_iter_phase_name(current_iter),
-            typed_config.beammap.phase_strategy.locator_iter,
-            typed_config.beammap.phase_strategy.measurement_start_iter);
+            phase_config.locator_iter, phase_config.measurement_start_iter);
 
         const bool rerun_source_aware_rtc =
             maybe_run_beammap_source_aware_rtc(
