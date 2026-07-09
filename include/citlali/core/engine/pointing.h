@@ -57,6 +57,10 @@ public:
     void fit_maps();
 
     // output files
+    Eigen::MatrixXf make_pointing_ppt_table(mapmaking::MapBuffer *mb);
+    void add_pointing_fit_header_keys(CCfits::ExtHDU &hdu,
+                                      const Eigen::MatrixXf &ppt_table,
+                                      Eigen::Index map_row);
     template <mapmaking::MapType map_type>
     void output();
 };
