@@ -2,6 +2,45 @@
 
 // Included by citlali_config_read.h inside namespace citlali::engine_detail {
 
+template <class KeyList>
+void append_source_fitting_limit_key(KeyList &keys, const char *name,
+                                     Eigen::Index index) {
+    keys.push_back({"post_processing", "source_fitting", "gauss_model", name,
+                    std::to_string(index)});
+}
+
+template <class Config, class LimitVector, class LimitArray, class KeyList>
+void read_source_fitting_limit_factor(Config &config,
+                                      LimitVector &map_fitter_limits,
+                                      LimitArray &typed_limits,
+                                      const char *name, Eigen::Index index,
+                                      KeyList &missing_keys,
+                                      KeyList &invalid_keys) {
+    try {
+        const auto sequence_key =
+            std::tuple{"post_processing", "source_fitting", "gauss_model",
+                       name};
+        if (!config.has(sequence_key) ||
+            static_cast<std::size_t>(index) >=
+                config.get_node(sequence_key).size()) {
+            append_source_fitting_limit_key(missing_keys, name, index);
+            return;
+        }
+
+        const auto value = config.template get_typed<double>(
+            std::tuple{"post_processing", "source_fitting", "gauss_model",
+                       name, index});
+        map_fitter_limits(index) = value;
+        typed_limits[static_cast<std::size_t>(index)] = value;
+    }
+    catch (YAML::TypedBadConversion<double>) {
+        append_source_fitting_limit_key(invalid_keys, name, index);
+    }
+    catch (YAML::InvalidNode) {
+        append_source_fitting_limit_key(invalid_keys, name, index);
+    }
+}
+
 template <class Config, class KeyList, class PostProcessingConfig>
 void read_post_processing_activation_config(
     Config &config, bool &run_map_filter, bool &run_source_finder,
@@ -74,21 +113,15 @@ void read_source_fitting_config(
     map_fitter.flux_limits.resize(2);
     map_fitter.fwhm_limits.resize(2);
     for (Eigen::Index i = 0; i < map_fitter.flux_limits.size(); ++i) {
-        map_fitter.flux_limits(i) =
-            config.template get_typed<double>(
-                std::tuple{"post_processing", "source_fitting", "gauss_model",
-                           "amp_limit_factors", i});
-        typed_post_processing_config.source_fitting
-            .amp_limit_factors[static_cast<std::size_t>(i)] =
-            map_fitter.flux_limits(i);
+        read_source_fitting_limit_factor(
+            config, map_fitter.flux_limits,
+            typed_post_processing_config.source_fitting.amp_limit_factors,
+            "amp_limit_factors", i, missing_keys, invalid_keys);
 
-        map_fitter.fwhm_limits(i) =
-            config.template get_typed<double>(
-                std::tuple{"post_processing", "source_fitting", "gauss_model",
-                           "fwhm_limit_factors", i});
-        typed_post_processing_config.source_fitting
-            .fwhm_limit_factors[static_cast<std::size_t>(i)] =
-            map_fitter.fwhm_limits(i);
+        read_source_fitting_limit_factor(
+            config, map_fitter.fwhm_limits,
+            typed_post_processing_config.source_fitting.fwhm_limit_factors,
+            "fwhm_limit_factors", i, missing_keys, invalid_keys);
     }
 
     citlali::pipeline::apply_positive_source_fit_limits(map_fitter);
