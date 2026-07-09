@@ -90,6 +90,14 @@ struct RuntimeConfig {
     bool use_subdir = true;
 };
 
+inline bool reduction_subdirs_active(const RuntimeConfig &config) {
+    return config.use_subdir;
+}
+
+inline bool timing_gap_interpolation_active(const RuntimeConfig &config) {
+    return config.interp_over_gaps;
+}
+
 inline void validate(const RuntimeConfig &config, ValidationReport &report) {
     check_minimum(config.n_threads, 1, {"runtime", "n_threads"}, report);
     if (!config.interp_over_gaps) {

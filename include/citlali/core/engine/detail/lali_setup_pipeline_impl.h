@@ -51,7 +51,9 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
 
                 citlali::pipeline::populate_rtc_scan_samples(
                     rtcdata, kidsproc, rawobs, scan, telescope, start_indices,
-                    end_indices, t_common, nw_times, masks, interp_over_gaps,
+                    end_indices, t_common, nw_times, masks,
+                    citlali::config::timing_gap_interpolation_active(
+                        typed_config.runtime),
                     scan_length, calib.n_dets, typed_config.timestream.type);
 
                 // increment scan

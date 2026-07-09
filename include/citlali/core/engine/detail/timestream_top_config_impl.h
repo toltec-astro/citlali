@@ -11,6 +11,7 @@ void Engine::get_timestream_config(CT &config) {
     auto &timestream_config = typed_config.timestream;
     timestream_config = citlali::config::TimestreamConfig{};
 
+    bool run_tod = timestream_config.enabled;
     citlali::engine_detail::read_timestream_enabled_config(
         config, run_tod, timestream_config, missing_keys, invalid_keys);
     if (!run_tod) {
@@ -60,6 +61,7 @@ void Engine::get_timestream_config(CT &config) {
         ptcproc.tod_output_mini, ptcproc.tod_output_outer,
         timestream_config.output.processed_time_chunk, missing_keys,
         invalid_keys);
+    bool run_tod_output = false;
     citlali::engine_detail::sync_tod_output_type_config(
         run_tod_output_rtc, run_tod_output_ptc, run_tod_output,
         timestream_config);

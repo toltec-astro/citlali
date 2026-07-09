@@ -37,11 +37,13 @@ citlali::config::RuntimeConfig Engine::get_runtime_config(CT &config) {
         missing_keys, invalid_keys, {"science","pointing","beammap"});
 
     // create redu00, redu01... subdirectories
+    bool use_subdir = runtime_config.use_subdir;
     citlali::engine_detail::read_mirrored_config_value(
         config, std::tuple{"runtime","use_subdir"}, use_subdir,
         runtime_config.use_subdir, missing_keys, invalid_keys);
 
     // interp over gaps in align_timestream
+    bool interp_over_gaps = runtime_config.interp_over_gaps;
     citlali::engine_detail::read_mirrored_config_value(
         config, std::tuple{"runtime","interp_over_gaps"}, interp_over_gaps,
         runtime_config.interp_over_gaps, missing_keys, invalid_keys);

@@ -120,8 +120,7 @@
 #include <citlali/core/engine/kidsproc.h>
 #include <citlali/core/engine/todproc.h>
 
-class Engine: public ReductionControls,
-              public ReductionComponents,
+class Engine: public ReductionComponents,
               public BeammapFluxState,
               public EngineRuntimeState {
 public:

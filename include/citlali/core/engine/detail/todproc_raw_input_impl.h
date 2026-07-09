@@ -36,7 +36,8 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
     engine().redu_dir_name = "";
 
     // create reduction subdir
-    if (engine().use_subdir) {
+    if (citlali::config::reduction_subdirs_active(
+            engine().typed_config.runtime)) {
         engine().redu_dir_name =
             citlali::pipeline::next_reduction_subdir_path(
                 engine().output_dir, engine().redu_dir_num);

@@ -36,7 +36,9 @@ void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs, bool write
 
                 citlali::pipeline::populate_rtc_scan_samples(
                     rtcdata, kidsproc, rawobs, scan, telescope, start_indices,
-                    end_indices, t_common, nw_times, masks, interp_over_gaps,
+                    end_indices, t_common, nw_times, masks,
+                    citlali::config::timing_gap_interpolation_active(
+                        typed_config.runtime),
                     scan_length, calib.n_dets, typed_config.timestream.type);
 
                 // increment scan
@@ -76,7 +78,8 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
             rtcdata, calib, rtcproc.run_polarization, true,
             hwpr_start_indices, scan_window.start, scan_window.length);
         citlali::pipeline::initialize_rtc_flags(rtcdata);
-        if (interp_over_gaps) {
+        if (citlali::config::timing_gap_interpolation_active(
+                typed_config.runtime)) {
             citlali::pipeline::apply_gap_masks_to_rtc_flags(
                 rtcdata, calib, nw_masks, scan_window.start,
                 rtcproc.filter_edge_guard.context_samples, logger);
