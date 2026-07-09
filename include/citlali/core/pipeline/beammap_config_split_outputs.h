@@ -70,12 +70,9 @@ void read_beammap_split_fits_config(Config &config, MissingKeys &missing_keys,
                                     const Logger &logger) {
     enabled = false;
     flag_values = {0, 1};
-    if (config.template has_typed<bool>(
-            std::tuple{"beammap", "split_fits_by_flag", "enabled"})) {
-        ::get_config_value(
-            config, enabled, missing_keys, invalid_keys,
-            std::tuple{"beammap", "split_fits_by_flag", "enabled"});
-    }
+    read_optional_beammap_config_value(
+        config, enabled, missing_keys, invalid_keys,
+        std::tuple{"beammap", "split_fits_by_flag", "enabled"});
     read_beammap_split_flag_values(config, flag_values, logger);
 }
 

@@ -11,32 +11,19 @@ void read_beammap_detector_tod_output_config(
     subdir_name = "source_crossing_tod";
     n_uniform = 10;
     n_source_dense = 10;
-    if (config.template has_typed<bool>(
-            std::tuple{"beammap", "detector_tod_output", "enabled"})) {
-        ::get_config_value(
-            config, enabled, missing_keys, invalid_keys,
-            std::tuple{"beammap", "detector_tod_output", "enabled"});
-    }
-    if (config.template has_typed<std::string>(
-            std::tuple{"beammap", "detector_tod_output", "subdir_name"})) {
-        ::get_config_value(
-            config, subdir_name, missing_keys, invalid_keys,
-            std::tuple{"beammap", "detector_tod_output", "subdir_name"});
-    }
-    if (config.template has_typed<int>(
-            std::tuple{"beammap", "detector_tod_output", "n_uniform"})) {
-        ::get_config_value(
-            config, n_uniform, missing_keys, invalid_keys,
-            std::tuple{"beammap", "detector_tod_output", "n_uniform"},
-            {}, {0});
-    }
-    if (config.template has_typed<int>(
-            std::tuple{"beammap", "detector_tod_output", "n_source_dense"})) {
-        ::get_config_value(
-            config, n_source_dense, missing_keys, invalid_keys,
-            std::tuple{"beammap", "detector_tod_output", "n_source_dense"},
-            {}, {0});
-    }
+    read_optional_beammap_config_value(
+        config, enabled, missing_keys, invalid_keys,
+        std::tuple{"beammap", "detector_tod_output", "enabled"});
+    read_optional_beammap_config_value(
+        config, subdir_name, missing_keys, invalid_keys,
+        std::tuple{"beammap", "detector_tod_output", "subdir_name"});
+    read_optional_beammap_config_value(
+        config, n_uniform, missing_keys, invalid_keys,
+        std::tuple{"beammap", "detector_tod_output", "n_uniform"}, {}, {0});
+    read_optional_beammap_config_value(
+        config, n_source_dense, missing_keys, invalid_keys,
+        std::tuple{"beammap", "detector_tod_output", "n_source_dense"},
+        {}, {0});
 }
 
 inline int default_beammap_tod_output_iter() {
@@ -167,4 +154,3 @@ inline void mirror_beammap_output_and_flagging_config(
     target.flagging.sens_psd_limits_hz = sens_psd_limits_hz;
     target.flagging.max_prior_d2 = max_prior_d2;
 }
-

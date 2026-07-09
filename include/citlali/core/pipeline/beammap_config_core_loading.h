@@ -13,12 +13,9 @@ void read_beammap_iteration_config(Config &config, MissingKeys &missing_keys,
     ::get_config_value(config, iter_tolerance, missing_keys, invalid_keys,
                        std::tuple{"beammap", "iter_tolerance"});
     convergence_radius_arcsec = 10.0;
-    if (config.template has_typed<double>(
-            std::tuple{"beammap", "convergence_radius_arcsec"})) {
-        ::get_config_value(
-            config, convergence_radius_arcsec, missing_keys, invalid_keys,
-            std::tuple{"beammap", "convergence_radius_arcsec"}, {}, {0.0});
-    }
+    read_optional_beammap_config_value(
+        config, convergence_radius_arcsec, missing_keys, invalid_keys,
+        std::tuple{"beammap", "convergence_radius_arcsec"}, {}, {0.0});
 }
 
 template <class Config, class MissingKeys, class InvalidKeys>
@@ -31,27 +28,16 @@ void read_beammap_phase_strategy_config(Config &config,
     enabled = true;
     locator_iter = 0;
     measurement_start_iter = 1;
-    if (config.template has_typed<bool>(
-            std::tuple{"beammap", "phase_strategy", "enabled"})) {
-        ::get_config_value(
-            config, enabled, missing_keys, invalid_keys,
-            std::tuple{"beammap", "phase_strategy", "enabled"});
-    }
-    if (config.template has_typed<int>(
-            std::tuple{"beammap", "phase_strategy", "locator_iter"})) {
-        ::get_config_value(
-            config, locator_iter, missing_keys, invalid_keys,
-            std::tuple{"beammap", "phase_strategy", "locator_iter"}, {}, {0});
-    }
-    if (config.template has_typed<int>(
-            std::tuple{"beammap", "phase_strategy",
-                       "measurement_start_iter"})) {
-        ::get_config_value(
-            config, measurement_start_iter, missing_keys, invalid_keys,
-            std::tuple{"beammap", "phase_strategy",
-                       "measurement_start_iter"},
-            {}, {1});
-    }
+    read_optional_beammap_config_value(
+        config, enabled, missing_keys, invalid_keys,
+        std::tuple{"beammap", "phase_strategy", "enabled"});
+    read_optional_beammap_config_value(
+        config, locator_iter, missing_keys, invalid_keys,
+        std::tuple{"beammap", "phase_strategy", "locator_iter"}, {}, {0});
+    read_optional_beammap_config_value(
+        config, measurement_start_iter, missing_keys, invalid_keys,
+        std::tuple{"beammap", "phase_strategy", "measurement_start_iter"},
+        {}, {1});
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -82,46 +68,26 @@ void read_beammap_rfi_mask_config(
     sigma_threshold = 6.0;
     sigma_floor = 0.0;
     max_flagged_fraction = 0.35;
-    if (config.template has_typed<bool>(
-            std::tuple{"beammap", "rfi_mask", "enabled"})) {
-        ::get_config_value(config, enabled, missing_keys, invalid_keys,
-                           std::tuple{"beammap", "rfi_mask", "enabled"});
-    }
-    if (config.template has_typed<int>(
-            std::tuple{"beammap", "rfi_mask", "block_size_samples"})) {
-        ::get_config_value(
-            config, block_size_samples, missing_keys, invalid_keys,
-            std::tuple{"beammap", "rfi_mask", "block_size_samples"}, {}, {8});
-    }
-    if (config.template has_typed<int>(
-            std::tuple{"beammap", "rfi_mask", "min_good_samples"})) {
-        ::get_config_value(
-            config, min_good_samples, missing_keys, invalid_keys,
-            std::tuple{"beammap", "rfi_mask", "min_good_samples"}, {}, {4});
-    }
-    if (config.template has_typed<int>(
-            std::tuple{"beammap", "rfi_mask", "dilate_blocks"})) {
-        ::get_config_value(
-            config, dilate_blocks, missing_keys, invalid_keys,
-            std::tuple{"beammap", "rfi_mask", "dilate_blocks"}, {}, {0});
-    }
-    if (config.template has_typed<double>(
-            std::tuple{"beammap", "rfi_mask", "sigma_threshold"})) {
-        ::get_config_value(
-            config, sigma_threshold, missing_keys, invalid_keys,
-            std::tuple{"beammap", "rfi_mask", "sigma_threshold"}, {}, {1.0});
-    }
-    if (config.template has_typed<double>(
-            std::tuple{"beammap", "rfi_mask", "sigma_floor"})) {
-        ::get_config_value(
-            config, sigma_floor, missing_keys, invalid_keys,
-            std::tuple{"beammap", "rfi_mask", "sigma_floor"}, {}, {0.0});
-    }
-    if (config.template has_typed<double>(
-            std::tuple{"beammap", "rfi_mask", "max_flagged_fraction"})) {
-        ::get_config_value(
-            config, max_flagged_fraction, missing_keys, invalid_keys,
-            std::tuple{"beammap", "rfi_mask", "max_flagged_fraction"}, {},
-            {0.0}, {1.0});
-    }
+    read_optional_beammap_config_value(
+        config, enabled, missing_keys, invalid_keys,
+        std::tuple{"beammap", "rfi_mask", "enabled"});
+    read_optional_beammap_config_value(
+        config, block_size_samples, missing_keys, invalid_keys,
+        std::tuple{"beammap", "rfi_mask", "block_size_samples"}, {}, {8});
+    read_optional_beammap_config_value(
+        config, min_good_samples, missing_keys, invalid_keys,
+        std::tuple{"beammap", "rfi_mask", "min_good_samples"}, {}, {4});
+    read_optional_beammap_config_value(
+        config, dilate_blocks, missing_keys, invalid_keys,
+        std::tuple{"beammap", "rfi_mask", "dilate_blocks"}, {}, {0});
+    read_optional_beammap_config_value(
+        config, sigma_threshold, missing_keys, invalid_keys,
+        std::tuple{"beammap", "rfi_mask", "sigma_threshold"}, {}, {1.0});
+    read_optional_beammap_config_value(
+        config, sigma_floor, missing_keys, invalid_keys,
+        std::tuple{"beammap", "rfi_mask", "sigma_floor"}, {}, {0.0});
+    read_optional_beammap_config_value(
+        config, max_flagged_fraction, missing_keys, invalid_keys,
+        std::tuple{"beammap", "rfi_mask", "max_flagged_fraction"}, {},
+        {0.0}, {1.0});
 }
