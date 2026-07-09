@@ -78,7 +78,7 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
         /* coverage bool and signal-to-noise maps */
         const bool is_filtered_output =
             citlali::pipeline::is_filtered_map_output(
-                fits_io, filtered_fits_io_vec, filtered_coadd_fits_io_vec);
+                fits_io, map_fits_outputs.filtered_obs, map_fits_outputs.filtered_coadd);
         citlali::pipeline::add_coverage_support_image_hdus(
             fits_io->at(map_index), mb, i, map_name, stokes_suffix, mb->wcs,
             source_epoch, is_filtered_output, logger);

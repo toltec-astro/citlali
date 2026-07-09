@@ -20,8 +20,8 @@ void Lali::output() {
     if constexpr (map_type == mapmaking::RawObs || map_type == mapmaking::FilteredObs) {
         mb = &omb;
         dir_name = output_paths.obsnum_dir_name + (map_type == mapmaking::RawObs ? "raw/" : "filtered/");
-        f_io = (map_type == mapmaking::RawObs) ? &fits_io_vec : &filtered_fits_io_vec;
-        n_io = (map_type == mapmaking::RawObs) ? &noise_fits_io_vec : &filtered_noise_fits_io_vec;
+        f_io = (map_type == mapmaking::RawObs) ? &map_fits_outputs.obs : &map_fits_outputs.filtered_obs;
+        n_io = (map_type == mapmaking::RawObs) ? &map_fits_outputs.obs_noise : &map_fits_outputs.filtered_obs_noise;
 
         if constexpr (map_type == mapmaking::RawObs) {
             // write stats file
@@ -35,8 +35,8 @@ void Lali::output() {
     else if constexpr (map_type == mapmaking::RawCoadd || map_type == mapmaking::FilteredCoadd) {
         mb = &cmb;
         dir_name = output_paths.coadd_dir_name + (map_type == mapmaking::RawCoadd ? "raw/" : "filtered/");
-        f_io = (map_type == mapmaking::RawCoadd) ? &coadd_fits_io_vec : &filtered_coadd_fits_io_vec;
-        n_io = (map_type == mapmaking::RawCoadd) ? &coadd_noise_fits_io_vec : &filtered_coadd_noise_fits_io_vec;
+        f_io = (map_type == mapmaking::RawCoadd) ? &map_fits_outputs.coadd : &map_fits_outputs.filtered_coadd;
+        n_io = (map_type == mapmaking::RawCoadd) ? &map_fits_outputs.coadd_noise : &map_fits_outputs.filtered_coadd_noise;
     }
 
     if (citlali::pipeline::mapmaking_outputs_enabled(*this)) {

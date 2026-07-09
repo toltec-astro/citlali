@@ -18,9 +18,9 @@ template <class EngineType>
 void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
     // clear fits_io vectors
     citlali::pipeline::reset_coadd_map_fits_files(
-        engine().coadd_fits_io_vec, engine().coadd_noise_fits_io_vec,
-        engine().filtered_coadd_fits_io_vec,
-        engine().filtered_coadd_noise_fits_io_vec);
+        engine().map_fits_outputs.coadd, engine().map_fits_outputs.coadd_noise,
+        engine().map_fits_outputs.filtered_coadd,
+        engine().map_fits_outputs.filtered_coadd_noise);
 
     const bool write_noise_maps =
         citlali::pipeline::noise_maps_enabled(engine()) &&
@@ -33,7 +33,7 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
 
     citlali::pipeline::append_coadd_array_products<
         engine_utils::toltecIO::raw>(
-        engine().coadd_fits_io_vec, engine().coadd_noise_fits_io_vec,
+        engine().map_fits_outputs.coadd, engine().map_fits_outputs.coadd_noise,
         engine().toltec_io, raw_dir, engine().calib.arrays,
         engine().calib.n_arrays, engine().toltec_io.array_name_map,
         engine().telescope.sim_obs, write_noise_maps);
@@ -42,8 +42,8 @@ void TimeOrderedDataProc<EngineType>::create_coadded_map_files() {
     if (citlali::pipeline::map_filter_outputs_enabled(engine())) {
         citlali::pipeline::append_coadd_array_products<
             engine_utils::toltecIO::filtered>(
-            engine().filtered_coadd_fits_io_vec,
-            engine().filtered_coadd_noise_fits_io_vec, engine().toltec_io,
+            engine().map_fits_outputs.filtered_coadd,
+            engine().map_fits_outputs.filtered_coadd_noise, engine().toltec_io,
             filtered_dir, engine().calib.arrays, engine().calib.n_arrays,
             engine().toltec_io.array_name_map, engine().telescope.sim_obs,
             write_noise_maps);

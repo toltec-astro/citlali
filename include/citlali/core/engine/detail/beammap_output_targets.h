@@ -19,23 +19,23 @@ struct Targets {
 template <mapmaking::MapType map_type, class BeammapState>
 Targets targets(BeammapState &beammap) {
     if constexpr (map_type == mapmaking::RawObs) {
-        return {&beammap.omb, &beammap.fits_io_vec,
-                &beammap.noise_fits_io_vec,
+        return {&beammap.omb, &beammap.map_fits_outputs.obs,
+                &beammap.map_fits_outputs.obs_noise,
                 beammap.output_paths.obsnum_dir_name + "raw/"};
     }
     else if constexpr (map_type == mapmaking::FilteredObs) {
-        return {&beammap.omb, &beammap.filtered_fits_io_vec,
-                &beammap.filtered_noise_fits_io_vec,
+        return {&beammap.omb, &beammap.map_fits_outputs.filtered_obs,
+                &beammap.map_fits_outputs.filtered_obs_noise,
                 beammap.output_paths.obsnum_dir_name + "filtered/"};
     }
     else if constexpr (map_type == mapmaking::RawCoadd) {
-        return {&beammap.cmb, &beammap.coadd_fits_io_vec,
-                &beammap.coadd_noise_fits_io_vec,
+        return {&beammap.cmb, &beammap.map_fits_outputs.coadd,
+                &beammap.map_fits_outputs.coadd_noise,
                 beammap.output_paths.coadd_dir_name + "raw/"};
     }
     else if constexpr (map_type == mapmaking::FilteredCoadd) {
-        return {&beammap.cmb, &beammap.filtered_coadd_fits_io_vec,
-                &beammap.filtered_coadd_noise_fits_io_vec,
+        return {&beammap.cmb, &beammap.map_fits_outputs.filtered_coadd,
+                &beammap.map_fits_outputs.filtered_coadd_noise,
                 beammap.output_paths.coadd_dir_name + "filtered/"};
     }
     else {

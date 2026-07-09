@@ -15,8 +15,8 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
     };
     auto filter_outputs =
         citlali::pipeline::prepare_map_filter_outputs<map_t, FitsVector>(
-            filtered_fits_io_vec, filtered_noise_fits_io_vec,
-            filtered_coadd_fits_io_vec, filtered_coadd_noise_fits_io_vec,
+            map_fits_outputs.filtered_obs, map_fits_outputs.filtered_obs_noise,
+            map_fits_outputs.filtered_coadd, map_fits_outputs.filtered_coadd_noise,
             &mb, logger, add_phdu_for_filter);
     FitsVector *filtered_fits_io = filter_outputs.filtered_fits_io;
     FitsVector *filtered_noise_fits_io =

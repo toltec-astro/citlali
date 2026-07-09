@@ -11,6 +11,7 @@
 
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/engine/learning.h>
+#include <citlali/core/pipeline/map_fits_output_state.h>
 #include <citlali/core/pipeline/map_index_state.h>
 #include <citlali/core/pipeline/output_path_state.h>
 #include <citlali/core/pipeline/pointing_offset_state.h>
@@ -64,13 +65,9 @@ struct EngineRuntimeState {
     using map_fits_io_t =
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>>;
 
-    // map output files
-    map_fits_io_t fits_io_vec, noise_fits_io_vec;
-    map_fits_io_t filtered_fits_io_vec, filtered_noise_fits_io_vec;
-
-    // coadded map output files
-    map_fits_io_t coadd_fits_io_vec, coadd_noise_fits_io_vec;
-    map_fits_io_t filtered_coadd_fits_io_vec, filtered_coadd_noise_fits_io_vec;
+    // observation, coadd, filtered, and noise FITS output handles
+    citlali::pipeline::MapFitsOutputState<map_fits_io_t::value_type>
+        map_fits_outputs;
 };
 
 using EngineRunState = EngineRuntimeState;
