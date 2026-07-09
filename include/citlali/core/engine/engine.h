@@ -52,7 +52,7 @@
 
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/engine/config.h>
-#include <citlali/core/engine/control_state.h>
+#include <citlali/core/engine/beammap_flux_state.h>
 #include <citlali/core/engine/learning.h>
 #include <citlali/core/engine/runtime_state.h>
 #include <citlali/core/engine/calib.h>
