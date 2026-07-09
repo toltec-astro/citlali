@@ -6,11 +6,11 @@
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::interp_pointing() {
-    const auto az_it = engine().pointing_offsets_arcsec.find(
+    const auto az_it = engine().pointing_offsets.arcsec.find(
         citlali::config::pointing_axis_az());
-    const auto alt_it = engine().pointing_offsets_arcsec.find(
+    const auto alt_it = engine().pointing_offsets.arcsec.find(
         citlali::config::pointing_axis_alt());
-    if (az_it == engine().pointing_offsets_arcsec.end() || alt_it == engine().pointing_offsets_arcsec.end()) {
+    if (az_it == engine().pointing_offsets.arcsec.end() || alt_it == engine().pointing_offsets.arcsec.end()) {
         logger->error("pointing_offsets must include both az and alt vectors");
         std::exit(EXIT_FAILURE);
     }
@@ -41,9 +41,9 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
     for (const auto &key: altaz_keys) {
         // if only one value given
         if (n_offsets==1) {
-            double offset = engine().pointing_offsets_arcsec[key](0);
-            engine().pointing_offsets_arcsec[key].resize(ni);
-            engine().pointing_offsets_arcsec[key].setConstant(offset);
+            double offset = engine().pointing_offsets.arcsec[key](0);
+            engine().pointing_offsets.arcsec[key].resize(ni);
+            engine().pointing_offsets.arcsec[key].setConstant(offset);
         }
         else if (n_offsets==2) {
             // size of offset data
@@ -55,8 +55,8 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
 
             // start and end times of observation
             Eigen::VectorXd xd(n_offsets);
-            const bool use_mjd = (engine().pointing_offsets_modified_julian_date.size() == 2) &&
-                                 (engine().pointing_offsets_modified_julian_date > 0).all();
+            const bool use_mjd = (engine().pointing_offsets.modified_julian_date.size() == 2) &&
+                                 (engine().pointing_offsets.modified_julian_date > 0).all();
 
             // use start and end of current obs if MJD values are not specified
             if (!use_mjd) {
@@ -64,8 +64,8 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
             }
             // else use specified modified julian dates, convert to julian dates, and calc unix time
             else {
-                xd << engine_utils::modified_julian_date_to_unix(engine().pointing_offsets_modified_julian_date(0)),
-                    engine_utils::modified_julian_date_to_unix(engine().pointing_offsets_modified_julian_date(1));
+                xd << engine_utils::modified_julian_date_to_unix(engine().pointing_offsets.modified_julian_date(0)),
+                    engine_utils::modified_julian_date_to_unix(engine().pointing_offsets.modified_julian_date(1));
 
                 if (xd(1) <= xd(0)) {
                     logger->error("MJD range is invalid: end <= start");
@@ -80,11 +80,11 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
 
             // interpolate offset onto time vector
             mlinterp::interp(nd.data(), ni, // nd, ni
-                             engine().pointing_offsets_arcsec[key].data(), yi.data(), // yd, yi
+                             engine().pointing_offsets.arcsec[key].data(), yi.data(), // yd, yi
                              xd.data(), engine().telescope.tel_data["TelTime"].data()); // xd, xi
 
             // overwrite pointing offsets
-            engine().pointing_offsets_arcsec[key] = yi;
+            engine().pointing_offsets.arcsec[key] = yi;
         }
     }
 }

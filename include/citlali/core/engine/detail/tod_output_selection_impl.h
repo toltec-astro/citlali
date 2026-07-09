@@ -23,7 +23,7 @@ void Engine::setup_tod_output_chunk_selection() {
             try {
                 source_crossing =
                     citlali::pipeline::find_source_crossing_scan(
-                        telescope, pointing_offsets_arcsec,
+                        telescope, pointing_offsets.arcsec,
                         typed_config.mapmaking.grouping);
             }
             catch (const std::exception &e) {

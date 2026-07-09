@@ -13,6 +13,7 @@
 #include <citlali/core/engine/learning.h>
 #include <citlali/core/pipeline/map_index_state.h>
 #include <citlali/core/pipeline/output_path_state.h>
+#include <citlali/core/pipeline/pointing_offset_state.h>
 #include <citlali/core/pipeline/timestream_alignment_state.h>
 #include <citlali/core/pipeline/tod_output_state.h>
 #include <citlali/core/utils/fits_io.h>
@@ -57,10 +58,8 @@ struct EngineRuntimeState {
     // shared state learned across RTC, PTC, and mapmaking phases
     ReductionLearningState reduction_learning;
 
-    // manual pointing offsets
-    std::map<std::string, Eigen::VectorXd> pointing_offsets_arcsec;
-    // modified julian dates of pointing offsets
-    Eigen::ArrayXd pointing_offsets_modified_julian_date;
+    // manual pointing offsets and optional MJD interpolation anchors
+    citlali::pipeline::PointingOffsetState pointing_offsets;
 
     using map_fits_io_t =
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>>;

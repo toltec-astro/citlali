@@ -70,11 +70,11 @@ Beammap::sample_detector_tod_pointing(Eigen::Index n_scans) {
             telescope.tel_data, samples.sampled_indices);
     samples.pointing_offsets[citlali::config::pointing_axis_az()] =
         beammap_detector_tod_selection::sample_pointing_offset(
-            pointing_offsets_arcsec, citlali::config::pointing_axis_az(),
+            pointing_offsets.arcsec, citlali::config::pointing_axis_az(),
             samples.sampled_indices);
     samples.pointing_offsets[citlali::config::pointing_axis_alt()] =
         beammap_detector_tod_selection::sample_pointing_offset(
-            pointing_offsets_arcsec, citlali::config::pointing_axis_alt(),
+            pointing_offsets.arcsec, citlali::config::pointing_axis_alt(),
             samples.sampled_indices);
     samples.valid = true;
     return samples;

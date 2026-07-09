@@ -48,10 +48,10 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
 
             // get pointing offsets for current scan
             pointing_offsets_arcsec[citlali::config::pointing_axis_az()] =
-                engine().pointing_offsets_arcsec[
+                engine().pointing_offsets.arcsec[
                     citlali::config::pointing_axis_az()].segment(si, sl);
             pointing_offsets_arcsec[citlali::config::pointing_axis_alt()] =
-                engine().pointing_offsets_arcsec[
+                engine().pointing_offsets.arcsec[
                     citlali::config::pointing_axis_alt()].segment(si, sl);
 
             // don't need to find the offsets if in detector mode

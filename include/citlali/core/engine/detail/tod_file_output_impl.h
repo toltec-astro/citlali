@@ -152,7 +152,7 @@ void Engine::create_tod_files() {
 
     citlali::pipeline::add_tod_static_metadata_vars(
         fo, calib.apt, calib.apt_header_units, telescope.tel_data,
-        pointing_offsets_arcsec, logger, tod_dims.n_dets, tod_dims.n_pts,
+        pointing_offsets.arcsec, logger, tod_dims.n_dets, tod_dims.n_pts,
         chunkMode, chunkSizes);
 
     if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {

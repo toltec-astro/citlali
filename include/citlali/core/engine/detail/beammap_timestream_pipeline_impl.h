@@ -79,7 +79,7 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
         rtcdata.flags2.data.setConstant(timestream::TimestreamFlags::Good);
 
         const auto scan_window = citlali::pipeline::copy_rtc_scan_context(
-            rtcdata, telescope, pointing_offsets_arcsec);
+            rtcdata, telescope, pointing_offsets.arcsec);
         citlali::pipeline::copy_hwpr_angle_if_enabled(
             rtcdata, calib, rtcproc.run_polarization, true,
             alignment.hwpr_start_index, scan_window.start, scan_window.length);
