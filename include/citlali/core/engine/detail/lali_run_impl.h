@@ -5,6 +5,7 @@
 #include <citlali/core/pipeline/mapmaking_dispatch.h>
 #include <citlali/core/pipeline/map_grouping_policy.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_output_context.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
 #include <citlali/core/pipeline/timestream_scan_context.h>
@@ -13,7 +14,8 @@ auto Lali::run() -> run_stage_t {
     auto scans_done_mutex = std::make_shared<std::mutex>();
     auto scans_done_count = std::make_shared<int>(0);
     auto ptc_line_audit_mutex = std::make_shared<std::mutex>();
-    const auto mapmaking_method = typed_config.mapmaking.method;
+    const auto mapmaking_method =
+        citlali::pipeline::mapmaking_config(*this).method;
     const bool make_maps = citlali::pipeline::mapmaking_enabled(*this);
     const bool make_noise_maps = citlali::pipeline::noise_maps_enabled(*this);
 
@@ -40,7 +42,7 @@ auto Lali::run() -> run_stage_t {
             alignment.hwpr_start_index, scan_window.start, scan_window.length);
         citlali::pipeline::initialize_rtc_flags(rtcdata);
         if (citlali::config::timing_gap_interpolation_active(
-                typed_config.runtime)) {
+                citlali::pipeline::runtime_config(*this))) {
             citlali::pipeline::apply_gap_masks_to_rtc_flags(
                 rtcdata, calib, alignment.network_masks, scan_window.start,
                 rtcproc.filter_edge_guard.context_samples, logger);

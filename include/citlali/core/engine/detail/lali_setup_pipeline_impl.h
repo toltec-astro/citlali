@@ -4,6 +4,7 @@
 
 #include <citlali/core/pipeline/map_diagnostics.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_scan_generation.h>
 
 void Lali::setup() {
@@ -52,8 +53,9 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                     rtcdata, kidsproc, rawobs, scan, telescope, alignment.start_indices,
                     alignment.end_indices, alignment.common_time, alignment.network_times, alignment.masks,
                     citlali::config::timing_gap_interpolation_active(
-                        typed_config.runtime),
-                    scan_length, calib.n_dets, typed_config.timestream.type);
+                        citlali::pipeline::runtime_config(*this)),
+                    scan_length, calib.n_dets,
+                    citlali::pipeline::timestream_config(*this).type);
 
                 // increment scan
                 scan++;
@@ -71,7 +73,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     if (citlali::pipeline::mapmaking_enabled(*this)) {
         // normalize maps
         logger->info("normalizing maps");
-        if (typed_config.mapmaking.method !=
+        if (citlali::pipeline::mapmaking_config(*this).method !=
             citlali::config::MapMethod::maximum_likelihood) {
             if (rtcproc.run_polarization) {
                 omb.normalize_polarized_maps();
