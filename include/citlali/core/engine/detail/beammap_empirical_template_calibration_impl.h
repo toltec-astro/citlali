@@ -299,27 +299,12 @@ Beammap::build_empirical_template_library(
     return templates;
 }
 
-bool Beammap::solve_empirical_template(
+void Beammap::record_empirical_template_peak(
     Eigen::Index map_index,
-    const Eigen::MatrixXd &templ,
-    const Beammap::BeammapEmpiricalTemplateGeometry &geometry,
-    Beammap::BeammapTemplateFitResult &fit_result) {
-    fit_result = BeammapTemplateFitResult{};
-    if (map_index < 0 || map_index >= map_indices.n_maps ||
-        map_index >= params.rows() || params.cols() < 3) {
-        return false;
-    }
-    const double col0 = params(map_index, 1);
-    const double row0 = params(map_index, 2);
-    if (!std::isfinite(row0) || !std::isfinite(col0)) {
-        return false;
-    }
-    const double baseline =
-        beammap_empirical_template_utils::edge_baseline(
-            omb.signal[map_index], row0, col0, geometry.template_radius_pix);
-    if (!std::isfinite(baseline)) {
-        return false;
-    }
+    double row0,
+    double col0,
+    double baseline,
+    const Beammap::BeammapEmpiricalTemplateGeometry &geometry) {
     const double peak_amp =
         beammap_empirical_template_utils::local_peak(
             omb.signal[map_index], row0, col0, baseline, geometry.peak_radius_pix);
@@ -329,14 +314,20 @@ bool Beammap::solve_empirical_template(
             calib.apt["map_peak_amp_over_fit_amp"](map_index) = peak_amp / params(map_index, 0);
         }
     }
+}
 
+Beammap::BeammapTemplateFitSamples Beammap::collect_empirical_template_fit_samples(
+    Eigen::Index map_index,
+    const Eigen::MatrixXd &templ,
+    double row0,
+    double col0,
+    double baseline,
+    const Beammap::BeammapEmpiricalTemplateGeometry &geometry) {
     constexpr double min_template_value = 0.015;
-    std::vector<double> y;
-    std::vector<double> t;
-    std::vector<double> w;
-    y.reserve(static_cast<std::size_t>(geometry.side * geometry.side));
-    t.reserve(static_cast<std::size_t>(geometry.side * geometry.side));
-    w.reserve(static_cast<std::size_t>(geometry.side * geometry.side));
+    BeammapTemplateFitSamples samples;
+    samples.y.reserve(static_cast<std::size_t>(geometry.side * geometry.side));
+    samples.t.reserve(static_cast<std::size_t>(geometry.side * geometry.side));
+    samples.w.reserve(static_cast<std::size_t>(geometry.side * geometry.side));
 
     for (Eigen::Index rr = 0; rr < geometry.side; ++rr) {
         const Eigen::Index dr = rr - geometry.center;
@@ -358,36 +349,42 @@ bool Beammap::solve_empirical_template(
             if (!std::isfinite(signal_value) || !std::isfinite(weight_value) || weight_value <= 0.0) {
                 continue;
             }
-            y.push_back(signal_value - baseline);
-            t.push_back(template_value);
-            w.push_back(weight_value);
+            samples.y.push_back(signal_value - baseline);
+            samples.t.push_back(template_value);
+            samples.w.push_back(weight_value);
         }
     }
 
-    fit_result.npix = static_cast<Eigen::Index>(y.size());
-    if (fit_result.npix < 30) {
-        return false;
-    }
+    return samples;
+}
 
-    std::vector<double> w_sorted = w;
+double Beammap::empirical_template_weight_cap(const std::vector<double> &weights) const {
+    std::vector<double> w_sorted = weights;
     std::sort(w_sorted.begin(), w_sorted.end());
     const std::size_t q95_index =
         std::min<std::size_t>(w_sorted.size() - 1,
                               static_cast<std::size_t>(std::floor(0.95 * (w_sorted.size() - 1))));
-    const double w_cap = w_sorted[q95_index];
+    return w_sorted[q95_index];
+}
 
+bool Beammap::solve_empirical_template_linear_fit(
+    const Beammap::BeammapTemplateFitSamples &samples,
+    double weight_cap,
+    Beammap::BeammapTemplateFitResult &fit_result) const {
     double sw = 0.0;
     double st = 0.0;
     double sy = 0.0;
     double stt = 0.0;
     double sty = 0.0;
-    for (std::size_t k = 0; k < y.size(); ++k) {
-        const double wk = (std::isfinite(w_cap) && w_cap > 0.0) ? std::min(w[k], w_cap) : w[k];
+    for (std::size_t k = 0; k < samples.y.size(); ++k) {
+        const double wk = (std::isfinite(weight_cap) && weight_cap > 0.0)
+                              ? std::min(samples.w[k], weight_cap)
+                              : samples.w[k];
         sw += wk;
-        st += wk * t[k];
-        sy += wk * y[k];
-        stt += wk * t[k] * t[k];
-        sty += wk * t[k] * y[k];
+        st += wk * samples.t[k];
+        sy += wk * samples.y[k];
+        stt += wk * samples.t[k] * samples.t[k];
+        sty += wk * samples.t[k] * samples.y[k];
     }
     const double det = stt * sw - st * st;
     if (!std::isfinite(det) || std::abs(det) <= std::numeric_limits<double>::epsilon()) {
@@ -395,22 +392,66 @@ bool Beammap::solve_empirical_template(
     }
     fit_result.amp = (sty * sw - sy * st) / det;
     fit_result.offset = (stt * sy - st * sty) / det;
-    if (!std::isfinite(fit_result.amp) || !std::isfinite(fit_result.offset) ||
-        fit_result.amp <= 0.0) {
-        return false;
-    }
+    return std::isfinite(fit_result.amp) && std::isfinite(fit_result.offset) &&
+           fit_result.amp > 0.0;
+}
 
+double Beammap::empirical_template_resid_rms(
+    const Beammap::BeammapTemplateFitSamples &samples,
+    double weight_cap,
+    const Beammap::BeammapTemplateFitResult &fit_result) const {
     double resid2_sum = 0.0;
     double weight_sum = 0.0;
-    for (std::size_t k = 0; k < y.size(); ++k) {
-        const double wk = (std::isfinite(w_cap) && w_cap > 0.0) ? std::min(w[k], w_cap) : w[k];
-        const double resid = y[k] - (fit_result.amp * t[k] + fit_result.offset);
+    for (std::size_t k = 0; k < samples.y.size(); ++k) {
+        const double wk = (std::isfinite(weight_cap) && weight_cap > 0.0)
+                              ? std::min(samples.w[k], weight_cap)
+                              : samples.w[k];
+        const double resid = samples.y[k] - (fit_result.amp * samples.t[k] + fit_result.offset);
         resid2_sum += wk * resid * resid;
         weight_sum += wk;
     }
     if (weight_sum > 0.0) {
-        fit_result.resid_rms = std::sqrt(resid2_sum / weight_sum);
+        return std::sqrt(resid2_sum / weight_sum);
     }
+    return std::numeric_limits<double>::quiet_NaN();
+}
+
+bool Beammap::solve_empirical_template(
+    Eigen::Index map_index,
+    const Eigen::MatrixXd &templ,
+    const Beammap::BeammapEmpiricalTemplateGeometry &geometry,
+    Beammap::BeammapTemplateFitResult &fit_result) {
+    fit_result = BeammapTemplateFitResult{};
+    if (map_index < 0 || map_index >= map_indices.n_maps ||
+        map_index >= params.rows() || params.cols() < 3) {
+        return false;
+    }
+    const double col0 = params(map_index, 1);
+    const double row0 = params(map_index, 2);
+    if (!std::isfinite(row0) || !std::isfinite(col0)) {
+        return false;
+    }
+    const double baseline =
+        beammap_empirical_template_utils::edge_baseline(
+            omb.signal[map_index], row0, col0, geometry.template_radius_pix);
+    if (!std::isfinite(baseline)) {
+        return false;
+    }
+    record_empirical_template_peak(map_index, row0, col0, baseline, geometry);
+
+    const auto samples =
+        collect_empirical_template_fit_samples(map_index, templ, row0, col0, baseline, geometry);
+    fit_result.npix = static_cast<Eigen::Index>(samples.y.size());
+    if (fit_result.npix < 30) {
+        return false;
+    }
+
+    const double w_cap = empirical_template_weight_cap(samples.w);
+    if (!solve_empirical_template_linear_fit(samples, w_cap, fit_result)) {
+        return false;
+    }
+
+    fit_result.resid_rms = empirical_template_resid_rms(samples, w_cap, fit_result);
     fit_result.valid = std::isfinite(fit_result.resid_rms);
     return fit_result.valid;
 }

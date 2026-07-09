@@ -206,6 +206,12 @@ public:
         Eigen::Index npix = 0;
     };
 
+    struct BeammapTemplateFitSamples {
+        std::vector<double> y;
+        std::vector<double> t;
+        std::vector<double> w;
+    };
+
     struct BeammapArrayPositionMedians {
         std::map<std::string, double> x_t;
         std::map<std::string, double> y_t;
@@ -555,6 +561,29 @@ public:
         const BeammapEmpiricalTemplateGeometry &geometry) const;
     std::map<int, BeammapArrayTemplate> build_empirical_template_library(
         const BeammapEmpiricalTemplateGeometry &geometry);
+    void record_empirical_template_peak(
+        Eigen::Index map_index,
+        double row0,
+        double col0,
+        double baseline,
+        const BeammapEmpiricalTemplateGeometry &geometry);
+    BeammapTemplateFitSamples collect_empirical_template_fit_samples(
+        Eigen::Index map_index,
+        const Eigen::MatrixXd &templ,
+        double row0,
+        double col0,
+        double baseline,
+        const BeammapEmpiricalTemplateGeometry &geometry);
+    double empirical_template_weight_cap(
+        const std::vector<double> &weights) const;
+    bool solve_empirical_template_linear_fit(
+        const BeammapTemplateFitSamples &samples,
+        double weight_cap,
+        BeammapTemplateFitResult &fit_result) const;
+    double empirical_template_resid_rms(
+        const BeammapTemplateFitSamples &samples,
+        double weight_cap,
+        const BeammapTemplateFitResult &fit_result) const;
     bool solve_empirical_template(
         Eigen::Index map_index,
         const Eigen::MatrixXd &templ,
