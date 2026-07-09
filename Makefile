@@ -16,7 +16,7 @@ help:
 	@printf "  local-bootstrap-debug  Configure the standard local Debug build/ tree\n"
 
 local-bootstrap:
-	tools/local/configure-build-dir.sh
+	tools/macos/configure-build-dir.sh
 
 local-bootstrap-debug:
-	BUILD_TYPE=Debug tools/local/configure-build-dir.sh
+	BUILD_TYPE=Debug tools/macos/configure-build-dir.sh

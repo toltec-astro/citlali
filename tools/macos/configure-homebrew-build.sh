@@ -6,11 +6,17 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 build_type="${BUILD_TYPE:-Debug}"
 build_dir="${BUILD_DIR:-$repo_root/build_local_patched}"
+build_tests="${BUILD_TESTS:-OFF}"
 generator="${CMAKE_GENERATOR:-Ninja}"
 brew_prefix="${BREW_PREFIX:-$(brew --prefix)}"
 sdk_root="${CMAKE_OSX_SYSROOT:-$(xcrun --show-sdk-path)}"
 c_compiler="${CMAKE_C_COMPILER:-$(xcrun --find clang)}"
 cxx_compiler="${CMAKE_CXX_COMPILER:-$(xcrun --find clang++)}"
+tolteca_bin="${HOME}/tolteca/bin"
+
+if [[ -x "$tolteca_bin/conan" ]]; then
+  export PATH="$tolteca_bin:$PATH"
+fi
 
 reset_build_dir_if_needed() {
   local build_cache="$build_dir/CMakeCache.txt"
@@ -85,14 +91,32 @@ cmake_args=(
   -DCMAKE_C_COMPILER="$c_compiler"
   -DCMAKE_CXX_COMPILER="$cxx_compiler"
   -DCMAKE_OSX_SYSROOT="$sdk_root"
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5
   -DCMAKE_PREFIX_PATH="$cmake_prefix_path"
+  -DCITLALI_BUILD_TESTS="$build_tests"
+  -DUSE_INSTALLED_BOOST=ON
+  -DUSE_INSTALLED_CCFITS=ON
+  -DCCFITS_PREFIX="$brew_prefix"
+  -DUSE_INSTALLED_FFTW=ON
+  -DPKG_FFTW_INCLUDE_DIRS="$(brew --prefix fftw)/include"
+  -DPKG_FFTW_LIBRARY_DIRS="$(brew --prefix fftw)/lib"
   -DUSE_INSTALLED_NETCDF=ON
   -DUSE_INSTALLED_EIGEN3=ON
   -DFETCH_EIGEN3=OFF
+  -DCONAN_INSTALL_SPECTRA=OFF
+  -DFETCH_SPECTRA=ON
+  -DCONAN_INSTALL_CERES=OFF
+  -DFETCH_CERES=ON
+  -DCONAN_INSTALL_RE2=OFF
+  -DFETCH_RE2=ON
   -DCONAN_INSTALL_LOGGING_LIBS=OFF
   -DFETCH_LOGGING_LIBS=ON
+  -DFCH_FMT_TAG=main
   -DCONAN_INSTALL_YAML=OFF
   -DFETCH_YAML=ON
+  -DCONAN_INSTALL_TESTING_LIBS=OFF
+  -DFETCH_TESTING_LIBS=ON
+  -DFCH_GOOGLETEST_TAG=main
 )
 
 apply_git_patch() {
