@@ -467,6 +467,9 @@ public:
     std::vector<BeammapPriorAlignmentPair> select_common_beammap_prior_alignment_pairs(
         const BeammapPriorAlignmentSamples &alignment_samples,
         const citlali::config::BeammapPriorsConfig &priors_config);
+    void apply_beammap_prior_alignment_samples(
+        const BeammapPriorAlignmentSamples &alignment_samples,
+        const citlali::config::BeammapPriorsConfig &priors_config);
     void update_prior_frame_estimates();
     bool choose_prior_guided_init(Eigen::Index map_index, double &init_row, double &init_col);
     void configure_detector_source_centers_from_previous_fit();
