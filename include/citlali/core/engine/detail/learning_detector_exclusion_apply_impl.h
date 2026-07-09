@@ -3,6 +3,8 @@
 // Engine learned detector-exclusion application detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/map_grouping_policy.h>
+
 template <class tc_t, class calib_t>
 void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
                                                calib_t &calib_scan,
@@ -138,6 +140,8 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
         stage == "pre_mapmaking_detector_exclusion") {
         const double radius_arcsec =
             std::max(20.0, ptcproc.second_pass_local.source_protection_radius_arcsec);
+        const auto map_grouping =
+            citlali::pipeline::active_map_grouping_name(*this);
         auto [mask, source_info] = engine_utils::calc_source_protection_mask(
             tcdata, calib_scan.apt, telescope.pixel_axes, map_grouping,
             "map_center_radius", radius_arcsec);
@@ -281,4 +285,3 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
             summary.newly_flagged_fraction);
     }
 }
-

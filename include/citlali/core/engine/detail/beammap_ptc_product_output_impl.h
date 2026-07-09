@@ -4,6 +4,7 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/engine/detail/beammap_ptc_product_output_helpers.h>
+#include <citlali/core/pipeline/map_grouping_policy.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
@@ -65,6 +66,8 @@ void Beammap::write_beammap_processed_ptc_tod(int output_iter) {
         output_iter);
     beammap_ptc_product_output_helpers::update_ptc_tod_fruitloops_iter(
         tod_filename, output_iter, logger);
+    const auto map_grouping =
+        citlali::pipeline::active_map_grouping_name(*this);
     for (Eigen::Index i = 0; i < telescope.scan_indices.cols(); ++i) {
         const auto ptc_scan_row = tod_output_scan_row(
             i, citlali::config::TodOutputStream::ptc);

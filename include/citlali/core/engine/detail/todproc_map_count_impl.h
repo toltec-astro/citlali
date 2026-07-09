@@ -3,6 +3,7 @@
 // Implementation detail included by todproc.h.
 
 #include <citlali/core/pipeline/map_group_indexing.h>
+#include <citlali/core/pipeline/map_grouping_policy.h>
 #include <citlali/core/pipeline/mapmaking_config_policy.h>
 
 template <class EngineType>
@@ -20,11 +21,11 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
                      citlali::config::to_string(reduction_type));
     }
 
-    engine().map_grouping = std::string{citlali::config::to_string(
-        mapmaking_config.grouping)};
-    engine().omb.map_grouping = engine().map_grouping;
-    engine().cmb.map_grouping = engine().map_grouping;
-    engine().rtcproc.kernel.map_grouping = engine().map_grouping;
+    const auto map_grouping_name =
+        citlali::pipeline::active_map_grouping_name(engine());
+    engine().omb.map_grouping = map_grouping_name;
+    engine().cmb.map_grouping = map_grouping_name;
+    engine().rtcproc.kernel.map_grouping = map_grouping_name;
 
     engine().n_maps = citlali::pipeline::apply_polarization_map_count(
         citlali::pipeline::base_map_count_for_grouping(

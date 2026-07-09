@@ -3,6 +3,8 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/pipeline/map_grouping_policy.h>
+
 void Beammap::setup() {
     // assign parallel policies
     map_parallel_policy = citlali::pipeline::runtime_parallel_policy_name(*this);
@@ -264,7 +266,7 @@ void Beammap::setup() {
         if (typed_config.mapmaking.grouping !=
             citlali::config::MapGrouping::detector) {
             logger->warn("beammap priors requested but map_grouping={} (requires detector); disabling priors",
-                         map_grouping);
+                         citlali::pipeline::active_map_grouping_name(*this));
             priors_config.enabled = false;
         }
         else if (!load_soft_priors()) {

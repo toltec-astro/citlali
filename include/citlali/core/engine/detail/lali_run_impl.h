@@ -3,6 +3,7 @@
 // Implementation detail included by lali.h.
 
 #include <citlali/core/pipeline/mapmaking_dispatch.h>
+#include <citlali/core/pipeline/map_grouping_policy.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/timestream_output_context.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
@@ -19,13 +20,17 @@ auto Lali::run() -> run_stage_t {
         citlali::pipeline::standard_timestream_output_flags(*this);
     const auto output_writers =
         citlali::pipeline::make_timestream_output_writers(output_flags);
+    auto map_grouping_ptr = std::make_shared<std::string>(
+        citlali::pipeline::active_map_grouping_name(*this));
 
     auto farm_fn = std::function<void(input_t &)>{[&, scans_done_mutex,
                                                    ptc_line_audit_mutex,
                                                    output_writers,
                                                    mapmaking_method, make_maps,
                                                    make_noise_maps,
-                                                   output_flags](input_t &rtcdata) {
+                                                   output_flags,
+                                                   map_grouping_ptr](input_t &rtcdata) {
+        auto &map_grouping = *map_grouping_ptr;
         const auto scan_window = citlali::pipeline::copy_rtc_scan_context(
             rtcdata, telescope, pointing_offsets_arcsec);
         citlali::pipeline::copy_hwpr_angle_if_enabled(

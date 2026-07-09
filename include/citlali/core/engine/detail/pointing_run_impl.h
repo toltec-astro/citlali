@@ -3,6 +3,7 @@
 // Implementation detail included by pointing.h.
 
 #include <citlali/core/pipeline/mapmaking_dispatch.h>
+#include <citlali/core/pipeline/map_grouping_policy.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/stage_profile.h>
 #include <citlali/core/pipeline/timestream_output_context.h>
@@ -21,12 +22,16 @@ auto Pointing::run(KidsProc &kidsproc) {
         citlali::pipeline::standard_timestream_output_flags(*this);
     const auto output_writers =
         citlali::pipeline::make_timestream_output_writers(output_flags);
+    auto map_grouping_ptr = std::make_shared<std::string>(
+        citlali::pipeline::active_map_grouping_name(*this));
 
     auto farm = grppi::farm(
         citlali::pipeline::runtime_thread_count(*this),
         [&, scans_done_mutex, ptc_line_audit_mutex, output_writers,
-         mapmaking_method, make_maps, make_noise_maps, output_flags](
+         mapmaking_method, make_maps, make_noise_maps, output_flags,
+         map_grouping_ptr](
             auto &rtcdata) {
+        auto &map_grouping = *map_grouping_ptr;
 
         const auto scan_window = citlali::pipeline::copy_rtc_scan_context(
             rtcdata, telescope, pointing_offsets_arcsec);

@@ -4,6 +4,7 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/pipeline/beammap_mapmaking_policy.h>
+#include <citlali/core/pipeline/map_grouping_policy.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
@@ -12,6 +13,8 @@ bool Beammap::subtract_beammap_model_for_ptc_scan(int scan_index,
     if (!citlali::pipeline::mapmaking_enabled(*this) || !measurement_iter) {
         return false;
     }
+    auto map_grouping =
+        citlali::pipeline::active_map_grouping_name(*this);
     if (!ptcproc.run_fruit_loops) {
         logger->info("subtracting gaussian from tod");
         ptcproc.add_gaussian<timestream::TCProc::SourceType::NegativeGaussian>(
@@ -32,6 +35,8 @@ void Beammap::restore_beammap_model_for_ptc_scan(int scan_index,
     if (!citlali::pipeline::mapmaking_enabled(*this) || !measurement_iter) {
         return;
     }
+    auto map_grouping =
+        citlali::pipeline::active_map_grouping_name(*this);
     if (!ptcproc.run_fruit_loops) {
         logger->info("adding gaussian to tod");
         ptcproc.add_gaussian<timestream::TCProc::SourceType::Gaussian>(
@@ -59,6 +64,8 @@ void Beammap::remove_bad_beammap_dets_for_scan(int scan_index,
         return;
     }
 
+    auto map_grouping =
+        citlali::pipeline::active_map_grouping_name(*this);
     calib_scans[scan_index] = ptcproc.remove_bad_dets(
         ptcs[scan_index], calib_scans[scan_index], map_grouping);
 }
@@ -66,6 +73,8 @@ void Beammap::remove_bad_beammap_dets_for_scan(int scan_index,
 void Beammap::apply_beammap_ptc_scan_weights(int scan_index,
                                              bool measurement_iter,
                                              bool detector_grouping) {
+    auto map_grouping =
+        citlali::pipeline::active_map_grouping_name(*this);
     if (detector_grouping) {
         const auto &rfi_config = typed_config.beammap.rfi_mask;
         auto rfi_summary = apply_rfi_sample_mask(ptcs[scan_index]);
@@ -133,6 +142,8 @@ void Beammap::process_beammap_ptc_scan(
     }
 
     logger->info("processed time chunk processing for scan {}", scan_index + 1);
+    auto map_grouping =
+        citlali::pipeline::active_map_grouping_name(*this);
     ptcproc.run(
         ptcs[scan_index], ptcs[scan_index], calib_scans[scan_index],
         telescope.pixel_axes, map_grouping);

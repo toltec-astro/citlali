@@ -21,6 +21,8 @@ void Engine::get_mapmaking_config(CT &config) {
     citlali::engine_detail::read_mapmaking_enabled_config(
         config, mapmaking_enabled, mapmaking_config, missing_keys,
         invalid_keys);
+    std::string map_grouping{
+        std::string(citlali::config::to_string(mapmaking_config.grouping))};
     citlali::engine_detail::read_map_grouping_config(
         config, map_grouping, mapmaking_config, missing_keys,
         invalid_keys);

@@ -8,6 +8,7 @@
 #include <vector>
 
 #include <citlali/core/engine/detail/beammap_fit_qc_units_descriptions.h>
+#include <citlali/core/pipeline/map_grouping_policy.h>
 
 namespace beammap_fit_qc_schema {
 
@@ -22,7 +23,8 @@ YAML::Node make_metadata(const BeammapState &beammap,
     fit_qc_meta["source"] = beammap.telescope.source_name;
     fit_qc_meta["creation_date"] = engine_utils::current_date_time();
     fit_qc_meta["date"] = beammap.date_obs.back();
-    fit_qc_meta["map_grouping"] = beammap.map_grouping;
+    fit_qc_meta["map_grouping"] =
+        citlali::pipeline::active_map_grouping_name(beammap);
     const auto &iteration_config = beammap.typed_config.beammap.iteration;
     const auto &phase_config = beammap.typed_config.beammap.phase_strategy;
     fit_qc_meta["beammap_iter_max"] = iteration_config.max_iterations;

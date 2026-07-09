@@ -74,9 +74,6 @@ struct EngineRuntimeState {
     Eigen::Index n_tod_output_scans_rtc = 0;
     Eigen::Index n_tod_output_scans_ptc = 0;
 
-    // map grouping string passed to legacy timestream/mapmaking APIs
-    std::string map_grouping;
-
     // number of maps
     int n_maps;
 

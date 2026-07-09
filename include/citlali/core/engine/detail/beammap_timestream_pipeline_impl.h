@@ -4,6 +4,7 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/pipeline/timestream_output_context.h>
+#include <citlali/core/pipeline/map_grouping_policy.h>
 #include <citlali/core/pipeline/runtime_policy.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
 #include <citlali/core/pipeline/timestream_scan_context.h>
@@ -66,11 +67,15 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
             *this, write_outputs);
     const auto output_writers =
         citlali::pipeline::make_timestream_output_writers(output_flags);
+    auto map_grouping_ptr = std::make_shared<std::string>(
+        citlali::pipeline::active_map_grouping_name(*this));
 
     auto farm = grppi::farm(
         citlali::pipeline::runtime_thread_count(*this),
-        [&, scans_done_mutex, output_writers, output_flags](auto &rtcdata)
+        [&, scans_done_mutex, output_writers, output_flags,
+         map_grouping_ptr](auto &rtcdata)
                        -> TCData<TCDataKind::PTC, Eigen::MatrixXd> {
+        auto &map_grouping = *map_grouping_ptr;
 
         // allocate up bitwise timestream flags
         rtcdata.flags2.data.setConstant(timestream::TimestreamFlags::Good);

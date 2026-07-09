@@ -3,6 +3,8 @@
 // Engine learned sample-mask application detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/map_grouping_policy.h>
+
 template <class tc_t, class calib_t>
 void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
                                         bool apply_pre_rtc,
@@ -54,6 +56,8 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
     Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> source_mask;
     bool have_source_protection = false;
     if (source_protection_enabled && source_protection_radius_arcsec > 0.0) {
+        const auto map_grouping =
+            citlali::pipeline::active_map_grouping_name(*this);
         auto [mask, source_info] = engine_utils::calc_source_protection_mask(
             tcdata, calib_scan.apt, telescope.pixel_axes, map_grouping,
             "map_center_radius", source_protection_radius_arcsec);
@@ -155,4 +159,3 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
             summary.source_protected_samples, summary.newly_flagged_fraction);
     }
 }
-

@@ -5,6 +5,7 @@
 
 #include <citlali/core/pipeline/beammap_mapmaking_policy.h>
 #include <citlali/core/pipeline/beammap_normalize_support_logging.h>
+#include <citlali/core/pipeline/map_grouping_policy.h>
 #include <citlali/core/pipeline/mapmaking_dispatch.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/stage_profile.h>
@@ -99,7 +100,9 @@ void Beammap::prepare_beammap_iteration_state(bool rerun_source_aware_rtc,
             omb.calc_median_rms();
         }
         if (measurement_iter) {
-            ptcproc.configure_fruit_loops_adaptive_gate(omb, calib, map_grouping, false);
+            ptcproc.configure_fruit_loops_adaptive_gate(
+                omb, calib, citlali::pipeline::active_map_grouping_name(*this),
+                false);
         }
     }
 }

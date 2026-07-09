@@ -3,6 +3,8 @@
 // Engine PTC learning diagnostic collection detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/map_grouping_policy.h>
+
 template <class ptc_t, class calib_t>
 void Engine::collect_ptc_learning_diagnostics(
     ptc_t &ptcdata, calib_t &calib_scan,
@@ -26,6 +28,8 @@ void Engine::collect_ptc_learning_diagnostics(
             static_cast<int>(ptcdata.scans.data.rows() * ptcdata.scans.data.cols());
         source_summary.radius_arcsec =
             ptcproc.second_pass_local.source_protection_radius_arcsec;
+        const auto map_grouping =
+            citlali::pipeline::active_map_grouping_name(*this);
         auto [source_mask, source_info] = engine_utils::calc_source_protection_mask(
             ptcdata, calib_scan.apt, telescope.pixel_axes, map_grouping,
             "map_center_radius",
@@ -233,4 +237,3 @@ void Engine::collect_ptc_learning_diagnostics(
         }
     }
 }
-
