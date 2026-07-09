@@ -122,7 +122,7 @@
 
 class Engine: public ReductionControls,
               public ReductionComponents,
-              public BeammapControls,
+              public BeammapFluxState,
               public PointingControls,
               public EngineRuntimeState {
 public:
