@@ -3,7 +3,6 @@
 #include <CCfits/CCfits>
 
 #include <citlali/core/engine/learning.h>
-#include <citlali/core/pipeline/config_diagnostics_state.h>
 #include <citlali/core/pipeline/interface_sync_state.h>
 #include <citlali/core/pipeline/fruit_loop_iteration_state.h>
 #include <citlali/core/pipeline/logging_state.h>
@@ -28,9 +27,6 @@ struct EngineRuntimeState : public citlali::pipeline::LoggingState,
 
     // reduction, observation, coadd, and timestream output paths
     citlali::pipeline::OutputPathState output_paths;
-
-    // config parse diagnostics
-    citlali::pipeline::ConfigDiagnosticsState config_diagnostics;
 
     // manual interface timing offsets for networks and HWPR
     citlali::pipeline::InterfaceSyncState interface_sync;
