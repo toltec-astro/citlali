@@ -83,7 +83,7 @@ void configure_fruit_loop_iteration_policy(Engine &engine,
     }
 
     if (!engine.ptcproc.run_fruit_loops ||
-        engine.typed_config.runtime.reduction_type ==
+        runtime_config(engine).reduction_type ==
             citlali::config::ReductionType::beammap) {
         engine.ptcproc.fruit_loops_iters = 1;
         engine.ptcproc.save_all_iters = true;

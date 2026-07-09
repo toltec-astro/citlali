@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/config/runtime_config.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/simulated_observation_indices.h>
 
 namespace citlali::pipeline {
@@ -12,7 +14,7 @@ bool should_align_telescope_timestreams(const Engine &engine) {
 template <class Engine>
 bool should_interpolate_over_timing_gaps(const Engine &engine) {
     return citlali::config::timing_gap_interpolation_active(
-        engine.typed_config.runtime);
+        runtime_config(engine));
 }
 
 template <class TodProc, class RawObs>

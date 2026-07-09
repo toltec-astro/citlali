@@ -2,6 +2,7 @@
 
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/pipeline/array_properties_table.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 namespace citlali::pipeline {
 
@@ -19,7 +20,7 @@ void load_photometry_config(Engine &engine, const RawObs &rawobs) {
 
 template <class Engine>
 bool should_make_apt_from_raw_files(const Engine &engine) {
-    const auto grouping = engine.typed_config.mapmaking.grouping;
+    const auto grouping = mapmaking_config(engine).grouping;
     return citlali::config::is_detector_map_grouping(grouping) ||
            citlali::config::is_automatic_map_grouping(grouping);
 }

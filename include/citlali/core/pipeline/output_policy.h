@@ -6,31 +6,32 @@
 #include <citlali/core/config/post_processing_config.h>
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/config/timestream_config.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/runtime_policy.h>
 
 namespace citlali::pipeline {
 
 template <class Engine>
 bool timestream_processing_enabled(const Engine &engine) {
-    return engine.typed_config.timestream.enabled;
+    return timestream_config(engine).enabled;
 }
 
 template <class Engine>
 bool tod_output_enabled(const Engine &engine) {
     return citlali::config::is_tod_output_enabled(
-        engine.typed_config.timestream.output.type);
+        timestream_config(engine).output.type);
 }
 
 template <class Engine>
 bool raw_tod_output_enabled(const Engine &engine) {
     return citlali::config::tod_output_includes_rtc(
-        engine.typed_config.timestream.output.type);
+        timestream_config(engine).output.type);
 }
 
 template <class Engine>
 bool processed_tod_output_enabled(const Engine &engine) {
     return citlali::config::tod_output_includes_ptc(
-        engine.typed_config.timestream.output.type);
+        timestream_config(engine).output.type);
 }
 
 template <class Engine>
@@ -50,35 +51,35 @@ bool processed_tod_output_files_available(const Engine &engine) {
 
 template <class Engine>
 bool mapmaking_enabled(const Engine &engine) {
-    return citlali::config::mapmaking_active(engine.typed_config.mapmaking);
+    return citlali::config::mapmaking_active(mapmaking_config(engine));
 }
 
 template <class Engine>
 bool coadd_enabled(const Engine &engine) {
-    return citlali::config::coadd_active(engine.typed_config.coadd);
+    return citlali::config::coadd_active(coadd_config(engine));
 }
 
 template <class Engine>
 bool noise_maps_enabled(const Engine &engine) {
-    return citlali::config::noise_maps_active(engine.typed_config.noise);
+    return citlali::config::noise_maps_active(noise_config(engine));
 }
 
 template <class Engine>
 bool noise_realization_outputs_enabled(const Engine &engine) {
     return citlali::config::noise_realization_outputs_active(
-        engine.typed_config.noise);
+        noise_config(engine));
 }
 
 template <class Engine>
 bool noise_product_outputs_enabled(const Engine &engine) {
     return citlali::config::noise_product_outputs_active(
-        engine.typed_config.noise);
+        noise_config(engine));
 }
 
 template <class Engine>
 bool empirical_noise_weights_enabled(const Engine &engine) {
     return citlali::config::empirical_noise_weights_active(
-        engine.typed_config.noise);
+        noise_config(engine));
 }
 
 template <class Engine>
@@ -91,13 +92,13 @@ bool empirical_weight_calibration_enabled(const Engine &engine) {
 template <class Engine>
 bool map_filter_enabled(const Engine &engine) {
     return citlali::config::map_filtering_active(
-        engine.typed_config.post_processing);
+        post_processing_config(engine));
 }
 
 template <class Engine>
 bool source_finding_enabled(const Engine &engine) {
     return citlali::config::source_finding_active(
-        engine.typed_config.post_processing);
+        post_processing_config(engine));
 }
 
 template <class Engine>
@@ -127,7 +128,7 @@ bool should_write_filtered_outputs(const Engine &engine) {
 
 template <class Engine>
 bool filtered_maps_written_during_filtering(const Engine &engine) {
-    return engine.typed_config.runtime.reduction_type ==
+    return runtime_config(engine).reduction_type ==
            citlali::config::ReductionType::science;
 }
 

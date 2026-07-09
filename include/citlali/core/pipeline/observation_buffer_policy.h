@@ -19,7 +19,7 @@ template <class Engine>
 bool should_allocate_observation_noise_maps(const Engine &engine) {
     return noise_maps_enabled(engine) &&
            (!coadd_outputs_enabled(engine) ||
-            engine.typed_config.mapmaking.method ==
+            mapmaking_config(engine).method ==
                 citlali::config::MapMethod::jinc);
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/config/config_value.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 namespace citlali::pipeline {
 
@@ -34,7 +35,7 @@ void begin_reduction_learning_iteration(Engine &engine) {
         fruit_loop_learning_source_model_available(engine);
     engine.learning.begin_iteration(
         engine.iteration.fruit_iter, learning_source_model_available,
-        engine.typed_config.runtime.reduction_type);
+        runtime_config(engine).reduction_type);
 }
 
 template <class Engine>
