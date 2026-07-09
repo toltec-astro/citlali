@@ -4,6 +4,7 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/pipeline/timestream_output_context.h>
+#include <citlali/core/pipeline/runtime_policy.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
 #include <citlali/core/pipeline/timestream_scan_context.h>
 #include <citlali/core/pipeline/timestream_scan_generation.h>
@@ -65,8 +66,8 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
         citlali::pipeline::make_timestream_output_writers(output_flags);
 
     auto farm = grppi::farm(
-        n_threads, [&, scans_done_mutex, output_writers,
-                    output_flags](auto &rtcdata)
+        citlali::pipeline::runtime_thread_count(*this),
+        [&, scans_done_mutex, output_writers, output_flags](auto &rtcdata)
                        -> TCData<TCDataKind::PTC, Eigen::MatrixXd> {
 
         // allocate up bitwise timestream flags

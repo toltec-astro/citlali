@@ -4,6 +4,8 @@
 #include <fftw3.h>
 #include <omp.h>
 
+#include <citlali/core/pipeline/runtime_policy.h>
+
 namespace citlali::cli {
 
 inline int fftw_threads_for_runtime(int requested_threads,
@@ -20,7 +22,8 @@ void configure_runtime_threads(const Engine &engine, const Logger &logger,
                                SetEigenThreads &&set_eigen_threads,
                                InitFftwThreads &&init_fftw_threads,
                                PlanFftwThreads &&plan_fftw_threads) {
-    set_omp_threads(engine.n_threads);
+    const int n_threads = citlali::pipeline::runtime_thread_count(engine);
+    set_omp_threads(n_threads);
     set_eigen_threads(1);
 
     const int fftw_init_ok = init_fftw_threads();
@@ -31,7 +34,7 @@ void configure_runtime_threads(const Engine &engine, const Logger &logger,
     }
 
     const int fftw_n_threads =
-        fftw_threads_for_runtime(engine.n_threads, use_wiener_filter_omp);
+        fftw_threads_for_runtime(n_threads, use_wiener_filter_omp);
     plan_fftw_threads(fftw_n_threads);
     logger->info("configured FFTW plan threads={}", fftw_n_threads);
 }

@@ -21,6 +21,7 @@ citlali::config::RuntimeConfig Engine::get_runtime_config(CT &config) {
         runtime_config.output_dir, missing_keys, invalid_keys);
 
     // number of threads to use
+    int n_threads = runtime_config.n_threads;
     citlali::engine_detail::read_mirrored_config_value(
         config, std::tuple{"runtime","n_threads"}, n_threads,
         runtime_config.n_threads, missing_keys, invalid_keys);

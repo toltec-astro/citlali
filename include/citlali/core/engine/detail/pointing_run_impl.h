@@ -22,11 +22,11 @@ auto Pointing::run(KidsProc &kidsproc) {
     const auto output_writers =
         citlali::pipeline::make_timestream_output_writers(output_flags);
 
-    auto farm = grppi::farm(n_threads,[&, scans_done_mutex, ptc_line_audit_mutex,
-                                       output_writers,
-                                       mapmaking_method, make_maps,
-                                       make_noise_maps,
-                                       output_flags](auto &rtcdata) {
+    auto farm = grppi::farm(
+        citlali::pipeline::runtime_thread_count(*this),
+        [&, scans_done_mutex, ptc_line_audit_mutex, output_writers,
+         mapmaking_method, make_maps, make_noise_maps, output_flags](
+            auto &rtcdata) {
 
         const auto scan_window = citlali::pipeline::copy_rtc_scan_context(
             rtcdata, telescope, pointing_offsets_arcsec);

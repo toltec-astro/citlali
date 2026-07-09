@@ -234,7 +234,8 @@ auto Lali::run() -> run_stage_t {
             scans_done_mutex, logger, ptcdata.index.data, n_scans_done,
             telescope);
     }};
-    auto farm = grppi::farm(n_threads, std::move(farm_fn));
+    auto farm = grppi::farm(
+        citlali::pipeline::runtime_thread_count(*this), std::move(farm_fn));
 
     return farm;
 }
