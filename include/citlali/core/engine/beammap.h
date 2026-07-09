@@ -170,6 +170,11 @@ public:
         Eigen::Index npix = 0;
     };
 
+    struct BeammapArrayPositionMedians {
+        std::map<std::string, double> x_t;
+        std::map<std::string, double> y_t;
+    };
+
     bool beammap_soft_priors_loaded = false;
     bool beammap_soft_priors_are_centered = false;
     bool beammap_soft_priors_are_derotated = false;
@@ -445,6 +450,19 @@ public:
         const std::map<int, BeammapArrayTemplate> &templates,
         const BeammapEmpiricalTemplateGeometry &geometry);
     void calc_empirical_template_calibration();
+    void mark_beammap_detector_flagged(
+        Eigen::Index detector_index,
+        AptFlags flag,
+        std::atomic<int> &n_flagged_dets);
+    std::map<Eigen::Index, double> beammap_network_median_sensitivities();
+    BeammapArrayPositionMedians beammap_array_position_medians();
+    void flag_beammap_prior_distance_outliers(
+        double max_prior_d2,
+        const BeammapArrayPositionMedians &array_position_medians,
+        const std::string &runtime_parallel_policy,
+        std::atomic<int> &n_flagged_dets);
+    void calculate_beammap_flux_conversion_factors(
+        const std::string &runtime_parallel_policy);
 
     // flag detectors
     void set_apt_flags();
