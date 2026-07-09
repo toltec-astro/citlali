@@ -2,6 +2,8 @@
 
 // Implementation detail included by pointing.h.
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 void Pointing::setup() {
     // run obsnum setup
     obsnum_setup();
@@ -81,7 +83,8 @@ void Pointing::setup() {
 
     // reference frame
     ppt_meta["Radesys"] = telescope.pixel_axes;
-    const auto &pointing_config = typed_config.pointing;
+    const auto &pointing_config =
+        citlali::pipeline::pointing_config(*this);
     ppt_meta["pointing_source_strategy"] =
         std::string(citlali::config::to_string(
             pointing_config.source_strategy));
