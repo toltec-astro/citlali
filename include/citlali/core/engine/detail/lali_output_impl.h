@@ -4,6 +4,50 @@
 
 #include <citlali/core/pipeline/output_policy.h>
 
+void Lali::finalize_lali_map_fits_outputs(
+    std::vector<FitsOutput> &data_outputs,
+    std::vector<FitsOutput> &noise_outputs) {
+    std::vector<std::string> data_filepaths;
+    data_filepaths.reserve(data_outputs.size());
+    for (const auto &fio : data_outputs) {
+        data_filepaths.push_back(fio.filepath + ".fits");
+    }
+    std::vector<std::string> noise_filepaths;
+    noise_filepaths.reserve(noise_outputs.size());
+    for (const auto &nio : noise_outputs) {
+        noise_filepaths.push_back(nio.filepath + ".fits");
+    }
+    auto join_filepaths = [](const std::vector<std::string> &paths) {
+        std::string joined;
+        for (std::size_t idx = 0; idx < paths.size(); ++idx) {
+            if (idx > 0) {
+                joined += ", ";
+            }
+            joined += paths[idx];
+        }
+        return joined;
+    };
+
+    try {
+        std::vector<FitsOutput>().swap(data_outputs);
+        std::vector<FitsOutput>().swap(noise_outputs);
+    } catch (const CCfits::FitsError &e) {
+        throw std::runtime_error(
+            fmt::format(
+                "failed while finalizing FITS outputs data_files=[{}] noise_files=[{}]: {}",
+                join_filepaths(data_filepaths),
+                join_filepaths(noise_filepaths),
+                e.message()));
+    } catch (const std::exception &e) {
+        throw std::runtime_error(
+            fmt::format(
+                "failed while finalizing FITS outputs data_files=[{}] noise_files=[{}]: {}",
+                join_filepaths(data_filepaths),
+                join_filepaths(noise_filepaths),
+                e.what()));
+    }
+}
+
 template <mapmaking::MapType map_type>
 void Lali::output() {
     // pointer to map buffer
@@ -76,44 +120,8 @@ void Lali::output() {
             }
         }
 
-        std::vector<std::string> data_filepaths;
-        data_filepaths.reserve(f_io->size());
-        for (const auto &fio : *f_io) {
-            data_filepaths.push_back(fio.filepath + ".fits");
-        }
-        std::vector<std::string> noise_filepaths;
-        noise_filepaths.reserve(n_io->size());
-        for (const auto &nio : *n_io) {
-            noise_filepaths.push_back(nio.filepath + ".fits");
-        }
-        auto join_filepaths = [](const std::vector<std::string> &paths) {
-            std::string joined;
-            for (std::size_t idx = 0; idx < paths.size(); ++idx) {
-                if (idx > 0) {
-                    joined += ", ";
-                }
-                joined += paths[idx];
-            }
-            return joined;
-        };
-
         // clear fits file vectors to ensure its closed.
-        try {
-            std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>().swap(*f_io);
-            std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>>().swap(*n_io);
-        } catch (const CCfits::FitsError &e) {
-            throw std::runtime_error(
-                fmt::format("failed while finalizing FITS outputs data_files=[{}] noise_files=[{}]: {}",
-                            join_filepaths(data_filepaths),
-                            join_filepaths(noise_filepaths),
-                            e.message()));
-        } catch (const std::exception &e) {
-            throw std::runtime_error(
-                fmt::format("failed while finalizing FITS outputs data_files=[{}] noise_files=[{}]: {}",
-                            join_filepaths(data_filepaths),
-                            join_filepaths(noise_filepaths),
-                            e.what()));
-        }
+        finalize_lali_map_fits_outputs(*f_io, *n_io);
 
         // write psd and histogram files
         logger->debug("writing psds");

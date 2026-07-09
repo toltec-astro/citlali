@@ -15,6 +15,7 @@ using timestream::TCDataKind;
 
 class Lali: public Engine {
 public:
+    using FitsOutput = fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>;
     using input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
     using run_stage_t = decltype(grppi::farm(
         std::declval<int>(), std::declval<std::function<void(input_t &)>>() ));
@@ -30,6 +31,9 @@ public:
     auto run() -> run_stage_t;
 
     // output files
+    void finalize_lali_map_fits_outputs(
+        std::vector<FitsOutput> &data_outputs,
+        std::vector<FitsOutput> &noise_outputs);
     template <mapmaking::MapType map_type>
     void output();
 };
