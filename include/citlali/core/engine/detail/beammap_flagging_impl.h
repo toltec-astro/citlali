@@ -311,7 +311,7 @@ void Beammap::set_apt_flags() {
                 : params(i,0);
         // calc flux scale (always in mJy/beam)
         if (calib.apt["flag"](i) == 0 && std::isfinite(amp) && amp > 0.0) {
-            const double flxscale = beammap_fluxes_mJy_beam[array_name] / amp;
+            const double flxscale = source_flux_mJy_beam[array_name] / amp;
             if (std::isfinite(flxscale) && flxscale > 0.0) {
                 calib.apt["flxscale"](i) = flxscale;
                 calib.apt["sens"](i) = calib.apt["sens"](i) * flxscale;
@@ -339,6 +339,6 @@ void Beammap::set_apt_flags() {
         std::string array_name = toltec_io.array_name_map[array];
 
         // get source flux in MJy/Sr
-        beammap_fluxes_MJy_Sr[array_name] = mJY_ASEC_to_MJY_SR*(beammap_fluxes_mJy_beam[array_name])/calib.array_beam_areas[array];
+        source_flux_MJy_Sr[array_name] = mJY_ASEC_to_MJY_SR*(source_flux_mJy_beam[array_name])/calib.array_beam_areas[array];
     }
 }

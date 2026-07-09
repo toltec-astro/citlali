@@ -30,7 +30,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     citlali::engine_detail::add_phdu_beammap_observation_section(
         fits_entry, mb, name, logger, reduction_type,
-        beammap_fluxes_mJy_beam, beammap_fluxes_MJy_Sr,
+        source_flux_mJy_beam, source_flux_MJy_Sr,
         beammap_iteration_config, beammap_phase_config,
         beammap_reference_config, calib, observation_dates.date_obs);
 

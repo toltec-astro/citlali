@@ -95,7 +95,7 @@ void Beammap::setup() {
         beammap_phase_config.measurement_start_iter;
 
     // add input source flux
-    for (const auto &beammap_flux: beammap_fluxes_mJy_beam) {
+    for (const auto &beammap_flux: source_flux_mJy_beam) {
         auto key = beammap_flux.first + "_flux";
         calib.apt_meta[key].push_back(beammap_flux.second);
         calib.apt_meta[key].push_back("units: mJy/beam");

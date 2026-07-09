@@ -47,15 +47,15 @@ void Engine::get_photometry_config(CT &config) {
 
     // get source fluxes
     citlali::engine_detail::read_beammap_source_fluxes(
-        config, beammap_fluxes_mJy_beam, source_config);
+        config, source_flux_mJy_beam, source_config);
 
     if (typed_config.runtime.reduction_type ==
         citlali::config::ReductionType::beammap) {
         bool valid_flux_config = true;
         for (auto const& entry : toltec_io.array_name_map) {
             const auto &arr_name = entry.second;
-            auto flux_it = beammap_fluxes_mJy_beam.find(arr_name);
-            if (flux_it == beammap_fluxes_mJy_beam.end()) {
+            auto flux_it = source_flux_mJy_beam.find(arr_name);
+            if (flux_it == source_flux_mJy_beam.end()) {
                 logger->error(
                     "beammap reductions require a positive source flux for {}; no beammap_source.fluxes entry was found",
                     arr_name);

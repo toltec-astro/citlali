@@ -31,7 +31,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             citlali::config::ReductionType::beammap) {
             citlali::pipeline::add_beammap_tod_header_vars(
                 fo, calib, toltec_io.array_name_map,
-                beammap_fluxes_mJy_beam, beammap_fluxes_MJy_Sr,
+                source_flux_mJy_beam, source_flux_MJy_Sr,
                 beammap_iteration_config, beammap_phase_config,
                 beammap_reference_config);
         }

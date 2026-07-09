@@ -124,8 +124,8 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         for (Eigen::Index i = 0; i < calib.n_arrays; ++i) {
             Eigen::Index array = calib.arrays(i);
             std::string array_name = toltec_io.array_name_map[array];
-            beammap_fluxes_MJy_Sr[array_name] =
-                mJY_ASEC_to_MJY_SR * (beammap_fluxes_mJy_beam[array_name]) / calib.array_beam_areas[array];
+            source_flux_MJy_Sr[array_name] =
+                mJY_ASEC_to_MJY_SR * (source_flux_mJy_beam[array_name]) / calib.array_beam_areas[array];
         }
         log_final_network_qc_summary();
 
