@@ -35,6 +35,8 @@ void Engine::get_mapmaking_config(CT &config) {
     citlali::pipeline::sync_map_grouping_to_timestream_processors(
         mapmaking_config.grouping, rtcproc, ptcproc);
 
+    std::string map_method{
+        std::string(citlali::config::to_string(mapmaking_config.method))};
     citlali::engine_detail::read_map_method_config(
         config, map_method, mapmaking_config, missing_keys,
         invalid_keys);

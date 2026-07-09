@@ -31,8 +31,10 @@ citlali::config::RuntimeConfig Engine::get_runtime_config(CT &config) {
         missing_keys, invalid_keys, {"seq","omp"});
 
     // reduction type (science, pointing, beammap)
+    std::string reduction_type{
+        std::string(citlali::config::to_string(runtime_config.reduction_type))};
     citlali::engine_detail::read_parsed_mirrored_config_value(
-        config, std::tuple{"runtime","reduction_type"}, redu_type,
+        config, std::tuple{"runtime","reduction_type"}, reduction_type,
         runtime_config.reduction_type, citlali::config::parse_reduction_type,
         missing_keys, invalid_keys, {"science","pointing","beammap"});
 

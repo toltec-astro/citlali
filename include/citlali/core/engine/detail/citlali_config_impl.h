@@ -66,7 +66,7 @@ void Engine::get_citlali_config(CT &config) {
     /* get beammap config */
     if (runtime_config.reduction_type ==
         citlali::config::ReductionType::beammap) {
-        // needs redu_type config
+        // needs runtime reduction-type config
         get_beammap_config(config);
     }
 

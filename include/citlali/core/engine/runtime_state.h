@@ -71,12 +71,6 @@ struct EngineRuntimeState {
     // indices for hwpr alignment offsets
     Eigen::Index hwpr_start_indices, hwpr_end_indices;
 
-    // xs, rs, is, qs
-    std::string tod_type;
-
-    // reduction type (science, pointing, beammap)
-    std::string redu_type;
-
     // typed config mirror for staged config migration
     citlali::config::ReductionConfig typed_config;
 
@@ -86,10 +80,6 @@ struct EngineRuntimeState {
     // write filtered maps as they complete
     bool write_filtered_maps_partial;
 
-    // rtc or ptc types
-    std::string tod_output_subdir_name;
-    bool run_tod_output_rtc = false;
-    bool run_tod_output_ptc = false;
     std::string rtcdiag_filename;
     std::string ptcdiag_filename;
 
@@ -99,8 +89,8 @@ struct EngineRuntimeState {
     Eigen::Index n_tod_output_scans_rtc = 0;
     Eigen::Index n_tod_output_scans_ptc = 0;
 
-    // map grouping and algorithm
-    std::string map_grouping, map_method;
+    // map grouping string passed to legacy timestream/mapmaking APIs
+    std::string map_grouping;
 
     // number of maps
     int n_maps;

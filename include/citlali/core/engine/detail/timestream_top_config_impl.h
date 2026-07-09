@@ -19,6 +19,8 @@ void Engine::get_timestream_config(CT &config) {
                       "low_level.timestream.enabled: true in your reduce config.");
         std::exit(EXIT_FAILURE);
     }
+    std::string tod_type{
+        std::string(citlali::config::to_string(timestream_config.type))};
     citlali::engine_detail::read_timestream_type_config(
         config, tod_type, timestream_config, missing_keys, invalid_keys);
     citlali::engine_detail::read_auxiliary_quadrature_channel_config(
@@ -26,6 +28,7 @@ void Engine::get_timestream_config(CT &config) {
 
     // run rtc or ptc tod output?
     // output rtc
+    bool run_tod_output_rtc = false;
     citlali::engine_detail::read_raw_tod_output_enabled_config(
         config, run_tod_output_rtc, timestream_config, missing_keys,
         invalid_keys);
@@ -47,6 +50,7 @@ void Engine::get_timestream_config(CT &config) {
         timestream_config.output.raw_time_chunk, missing_keys,
         invalid_keys);
     // output ptc
+    bool run_tod_output_ptc = false;
     citlali::engine_detail::read_processed_tod_output_enabled_config(
         config, run_tod_output_ptc, timestream_config, missing_keys,
         invalid_keys);
@@ -66,6 +70,8 @@ void Engine::get_timestream_config(CT &config) {
         run_tod_output_rtc, run_tod_output_ptc, run_tod_output,
         timestream_config);
 
+    std::string tod_output_subdir_name =
+        timestream_config.output.subdir_name;
     citlali::engine_detail::read_mirrored_config_value(
         config, std::tuple{"timestream", "output", "subdir_name"},
         tod_output_subdir_name, timestream_config.output.subdir_name,

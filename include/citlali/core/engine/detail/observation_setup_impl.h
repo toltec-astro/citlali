@@ -97,6 +97,8 @@ void Engine::obsnum_setup() {
             "observation.setup.tod_output_selection", logger);
         setup_tod_output_chunk_selection();
     }
+    const auto &tod_output_subdir_name =
+        typed_config.timestream.output.subdir_name;
     // create output subdirectory if requested
     if (citlali::config::has_config_value(tod_output_subdir_name)) {
         auto profile_scope = citlali::pipeline::profile_stage(

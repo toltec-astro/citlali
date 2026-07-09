@@ -9,7 +9,8 @@ void Engine::create_rtcdiag_file() {
             engine_utils::toltecIO::toltec,
             engine_utils::toltecIO::rtcdiag,
             engine_utils::toltecIO::raw>(
-            toltec_io, obsnum_dir_name, tod_output_subdir_name,
+            toltec_io, obsnum_dir_name,
+            typed_config.timestream.output.subdir_name,
             typed_config.runtime.reduction_type, obsnum, telescope.sim_obs);
 
     write_netcdf_atomic(rtcdiag_filename, [&](netCDF::NcFile &fo) {

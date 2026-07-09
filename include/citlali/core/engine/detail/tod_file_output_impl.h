@@ -103,7 +103,7 @@ template <engine_utils::toltecIO::ProdType prod_t>
 void Engine::create_tod_files() {
     // name for std map
     const std::string dir_name = citlali::pipeline::tod_output_directory(
-        obsnum_dir_name, tod_output_subdir_name);
+        obsnum_dir_name, typed_config.timestream.output.subdir_name);
     constexpr bool is_rtc_stream =
         prod_t == engine_utils::toltecIO::rtc_timestream;
     constexpr auto output_stream =
