@@ -1,31 +1,25 @@
 #pragma once
 
-#include <memory>
-#include <string>
-
 #include <CCfits/CCfits>
-#include <Eigen/Core>
-#include <spdlog/spdlog.h>
 
-#include <citlali/core/config/reduction_config.h>
 #include <citlali/core/engine/learning.h>
 #include <citlali/core/pipeline/config_diagnostics_state.h>
 #include <citlali/core/pipeline/interface_sync_state.h>
 #include <citlali/core/pipeline/fruit_loop_iteration_state.h>
+#include <citlali/core/pipeline/logging_state.h>
 #include <citlali/core/pipeline/map_fits_output_state.h>
 #include <citlali/core/pipeline/map_index_state.h>
 #include <citlali/core/pipeline/observation_identity_state.h>
 #include <citlali/core/pipeline/observation_date_state.h>
 #include <citlali/core/pipeline/output_path_state.h>
 #include <citlali/core/pipeline/pointing_offset_state.h>
+#include <citlali/core/pipeline/reduction_config_state.h>
 #include <citlali/core/pipeline/timestream_alignment_state.h>
 #include <citlali/core/pipeline/tod_output_state.h>
 #include <citlali/core/utils/fits_io.h>
 
-struct EngineRuntimeState {
-    // get logger
-    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
-
+struct EngineRuntimeState : public citlali::pipeline::LoggingState,
+                            public citlali::pipeline::ReductionConfigState {
     // TOD alignment products and timing-gap masks
     citlali::pipeline::TimestreamAlignmentState alignment;
 
@@ -40,9 +34,6 @@ struct EngineRuntimeState {
 
     // manual interface timing offsets for networks and HWPR
     citlali::pipeline::InterfaceSyncState interface_sync;
-
-    // typed config mirror for staged config migration
-    citlali::config::ReductionConfig typed_config;
 
     // active observation identity
     citlali::pipeline::ObservationIdentityState observation_identity;
