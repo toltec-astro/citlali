@@ -19,24 +19,27 @@
 #include <citlali/core/utils/fitting.h>
 #include <citlali/core/utils/toltec_io.h>
 
-struct ReductionComponents {
-    // reduction classes
+struct ObservationComponents {
     engine::Calib calib;
     engine::Telescope telescope;
     engine_utils::toltecIO toltec_io;
     engine::Diagnostics diagnostics;
     engine_utils::mapFitter map_fitter;
+};
 
-    // rtc processing class
+struct TimestreamComponents {
     timestream::RTCProc rtcproc;
-
-    // ptc processing class
     timestream::PTCProc ptcproc;
+};
 
-    // map classes
+struct MapmakingComponents {
     mapmaking::MapBuffer omb{"omb"}, cmb{"cmb"};
     mapmaking::NaiveMapmaker naive_mm;
     mapmaking::JincMapmaker jinc_mm;
     mapmaking::MLMapmaker ml_mm;
     mapmaking::WienerFilter wiener_filter;
 };
+
+struct ReductionComponents : public ObservationComponents,
+                             public TimestreamComponents,
+                             public MapmakingComponents {};
