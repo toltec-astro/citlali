@@ -14,7 +14,7 @@ bool should_create_filtered_observation_output_dir(const Engine &engine) {
 
 template <class Engine>
 bool should_create_observation_logs_dir(const Engine &engine) {
-    return engine.verbose_mode;
+    return verbose_runtime_enabled(engine);
 }
 
 inline void create_output_dir(const std::string &path) {

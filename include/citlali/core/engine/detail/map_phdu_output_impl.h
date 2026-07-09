@@ -63,7 +63,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         name, reduction_type, logger);
 
     citlali::engine_detail::add_phdu_tod_runtime_config_section(
-        fits_entry, name, logger, verbose_mode, rtcproc, ptcproc,
+        fits_entry, name, logger,
+        citlali::pipeline::verbose_runtime_enabled(*this),
+        rtcproc, ptcproc,
         telescope.outer_scans_chunk);
 
     citlali::engine_detail::add_phdu_ptc_learning_config_section(

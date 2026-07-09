@@ -10,8 +10,9 @@ citlali::config::RuntimeConfig Engine::get_runtime_config(CT &config) {
     citlali::config::RuntimeConfig runtime_config;
 
     // verbose mode?
+    bool verbose = runtime_config.verbose;
     citlali::engine_detail::read_mirrored_config_value(
-        config, std::tuple{"runtime","verbose"}, verbose_mode,
+        config, std::tuple{"runtime","verbose"}, verbose,
         runtime_config.verbose, missing_keys, invalid_keys);
 
     // output directory

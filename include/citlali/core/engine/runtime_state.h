@@ -29,9 +29,6 @@ struct EngineRuntimeState {
     // date/time of each obs
     std::vector<std::string> date_obs;
 
-    // add extra output for debugging
-    bool verbose_mode;
-
     // time gaps
     std::map<std::string, int> gaps;
 

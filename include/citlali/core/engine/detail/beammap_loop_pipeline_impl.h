@@ -17,7 +17,7 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     ptcproc.fruit_loops_kernel_feedback_enabled = true;
 
     // write map summary
-    if (verbose_mode) {
+    if (citlali::pipeline::verbose_runtime_enabled(*this)) {
         write_map_summary(omb);
     }
 

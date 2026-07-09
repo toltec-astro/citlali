@@ -65,7 +65,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
         // add control/runtime parameters
         citlali::pipeline::add_tod_initial_runtime_config_vars(
-            fo, verbose_mode, rtcproc.run_polarization, rtcproc.run_despike);
+            fo, citlali::pipeline::verbose_runtime_enabled(*this),
+            rtcproc.run_polarization, rtcproc.run_despike);
         const bool run_any_tod_filter = rtcproc.run_tod_filter || rtcproc.run_tod_iir_highpass;
         citlali::pipeline::add_rtc_local_despike_config_vars(
             fo, rtcproc.despiker.local_residual);

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/pipeline/runtime_policy.h>
+
 namespace citlali::pipeline {
 
 template <class Engine>
@@ -28,7 +30,7 @@ template <class Engine, class Logger, class EnableDebugLogging>
 void configure_verbose_logging_if_requested(
     const Engine &engine, const Logger &logger,
     EnableDebugLogging &&enable_debug_logging) {
-    if (!engine.verbose_mode) {
+    if (!verbose_runtime_enabled(engine)) {
         return;
     }
 

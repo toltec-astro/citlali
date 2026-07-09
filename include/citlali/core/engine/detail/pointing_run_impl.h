@@ -233,7 +233,7 @@ auto Pointing::run(KidsProc &kidsproc) {
         }
 
         // write out chunk summary
-        if (verbose_mode) {
+        if (citlali::pipeline::verbose_runtime_enabled(*this)) {
             write_chunk_summary(ptcdata);
         }
 

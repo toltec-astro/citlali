@@ -14,7 +14,7 @@ void Beammap::clear_beammap_ptc_diagnostics() {
 }
 
 void Beammap::write_beammap_ptc_chunk_summaries(int output_iter) {
-    if (!verbose_mode) {
+    if (!citlali::pipeline::verbose_runtime_enabled(*this)) {
         return;
     }
     const auto profile_scope =

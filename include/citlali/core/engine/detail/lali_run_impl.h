@@ -203,7 +203,7 @@ auto Lali::run() -> run_stage_t {
         }
 
         // write out chunk summary
-        if (verbose_mode) {
+        if (citlali::pipeline::verbose_runtime_enabled(*this)) {
             write_chunk_summary(ptcdata);
         }
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/pipeline/runtime_policy.h>
+
 namespace citlali::pipeline {
 
 template <class Engine>
@@ -9,7 +11,7 @@ bool has_timing_gaps(const Engine &engine) {
 
 template <class Engine>
 bool should_write_timing_gaps_log(const Engine &engine) {
-    return engine.verbose_mode;
+    return verbose_runtime_enabled(engine);
 }
 
 template <class Engine, class Logger>

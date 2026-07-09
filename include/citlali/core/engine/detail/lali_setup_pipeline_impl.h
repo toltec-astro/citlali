@@ -86,7 +86,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             "calculating map histogram");
 
         // write map summary
-        if (verbose_mode) {
+        if (citlali::pipeline::verbose_runtime_enabled(*this)) {
             write_map_summary(omb);
         }
     }
