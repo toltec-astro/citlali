@@ -186,6 +186,12 @@ public:
         double snr = 0.0;
     };
 
+    struct BeammapEmpiricalTemplateShapeMedians {
+        bool valid = false;
+        double a_fwhm = std::numeric_limits<double>::quiet_NaN();
+        double b_fwhm = std::numeric_limits<double>::quiet_NaN();
+    };
+
     struct BeammapArrayTemplate {
         bool valid = false;
         Eigen::MatrixXd shape;
@@ -530,6 +536,23 @@ public:
         const BeammapEmpiricalTemplateGeometry &geometry,
         Eigen::MatrixXd &cut,
         double &peak_amp);
+    bool is_empirical_template_library_detector(
+        Eigen::Index map_index,
+        int array);
+    BeammapEmpiricalTemplateShapeMedians empirical_template_shape_medians(
+        int array);
+    std::vector<BeammapEmpiricalTemplateCandidate> collect_empirical_template_candidates(
+        int array,
+        const BeammapEmpiricalTemplateShapeMedians &shape_medians);
+    std::vector<Eigen::MatrixXd> collect_empirical_template_cuts(
+        const std::vector<BeammapEmpiricalTemplateCandidate> &candidates,
+        const BeammapEmpiricalTemplateGeometry &geometry);
+    Eigen::MatrixXd median_empirical_template_shape(
+        const std::vector<Eigen::MatrixXd> &cuts,
+        const BeammapEmpiricalTemplateGeometry &geometry) const;
+    double empirical_template_peak_value(
+        const Eigen::MatrixXd &templ,
+        const BeammapEmpiricalTemplateGeometry &geometry) const;
     std::map<int, BeammapArrayTemplate> build_empirical_template_library(
         const BeammapEmpiricalTemplateGeometry &geometry);
     bool solve_empirical_template(
