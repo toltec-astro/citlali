@@ -69,6 +69,73 @@ void Pointing::add_pointing_fit_header_keys(CCfits::ExtHDU &hdu,
     } catch (...) {}
 }
 
+template <typename FitsIoVector>
+void Pointing::write_pointing_map_fits_products(
+    FitsIoVector *f_io,
+    FitsIoVector *n_io,
+    mapmaking::MapBuffer *mb,
+    const Eigen::MatrixXf &ppt_table) {
+    if (f_io->empty()) {
+        return;
+    }
+
+    {
+        // progress bar
+        tula::logging::progressbar pb(
+            [&](const auto &msg) { logger->info("{}", msg); }, 100,
+            "output progress ");
+
+        for (Eigen::Index i=0; i<f_io->size(); i++) {
+            // add primary hdu
+            add_phdu(f_io, mb, i);
+
+            if (!mb->noise.empty() && !n_io->empty()) {
+                add_phdu(n_io, mb, i);
+            }
+        }
+
+        Eigen::Index k = 0;
+
+        for (Eigen::Index i=0; i<map_indices.n_maps; i++) {
+            // update progress bar
+            pb.count(map_indices.n_maps, 1);
+            write_maps(f_io,n_io,mb,i);
+
+            Eigen::Index map_index = map_indices.arrays_to_maps(i);
+
+            // check if we move from one file to the next
+            // if so go back to first hdu layer
+            if (i>0) {
+                if (map_index > map_indices.arrays_to_maps(i-1)) {
+                    k = 0;
+                }
+            }
+            // get current hdu extension name
+            std::string extname = f_io->at(map_index).hdus.at(k)->name();
+            // see if this is a signal extension
+            std::size_t found = extname.find("signal");
+
+            // find next signal extension
+            while (found==std::string::npos && k<f_io->at(map_index).hdus.size()) {
+                k = k + 1;
+                // get current hdu extension name
+                extname = f_io->at(map_index).hdus.at(k)->name();
+                // see if this is a signal extension
+                found = extname.find("signal");
+            }
+
+            add_pointing_fit_header_keys(
+                *f_io->at(map_index).hdus.at(k), ppt_table, i);
+            ++k; // Move to next extension
+        }
+    }
+
+    logger->info("maps have been written to:");
+    for (const auto& file: *f_io) {
+        logger->info("{}.fits", file.filepath);
+    }
+}
+
 template <mapmaking::MapType map_type>
 void Pointing::output() {
     // pointer to map buffer
@@ -122,62 +189,7 @@ void Pointing::output() {
     }
 
     if (citlali::pipeline::mapmaking_outputs_enabled(*this)) {
-        if (!f_io->empty()) {
-            {
-                // progress bar
-                tula::logging::progressbar pb(
-                    [&](const auto &msg) { logger->info("{}", msg); }, 100, "output progress ");
-
-                for (Eigen::Index i=0; i<f_io->size(); i++) {
-                    // add primary hdu
-                    add_phdu(f_io, mb, i);
-
-                    if (!mb->noise.empty() && !n_io->empty()) {
-                        add_phdu(n_io, mb, i);
-                    }
-                }
-
-                Eigen::Index k = 0;
-
-                for (Eigen::Index i=0; i<map_indices.n_maps; i++) {
-                    // update progress bar
-                    pb.count(map_indices.n_maps, 1);
-                    write_maps(f_io,n_io,mb,i);
-
-                    Eigen::Index map_index = map_indices.arrays_to_maps(i);
-
-                    // check if we move from one file to the next
-                    // if so go back to first hdu layer
-                    if (i>0) {
-                        if (map_index > map_indices.arrays_to_maps(i-1)) {
-                            k = 0;
-                        }
-                    }
-                    // get current hdu extension name
-                    std::string extname = f_io->at(map_index).hdus.at(k)->name();
-                    // see if this is a signal extension
-                    std::size_t found = extname.find("signal");
-
-                    // find next signal extension
-                    while (found==std::string::npos && k<f_io->at(map_index).hdus.size()) {
-                        k = k + 1;
-                        // get current hdu extension name
-                        extname = f_io->at(map_index).hdus.at(k)->name();
-                        // see if this is a signal extension
-                        found = extname.find("signal");
-                    }
-
-                    add_pointing_fit_header_keys(
-                        *f_io->at(map_index).hdus.at(k), ppt_table, i);
-                    ++k; // Move to next extension
-                }
-            }
-
-            logger->info("maps have been written to:");
-            for (const auto& file: *f_io) {
-                logger->info("{}.fits", file.filepath);
-            }
-        }
+        write_pointing_map_fits_products(f_io, n_io, mb, ppt_table);
 
         // clear fits file vectors to ensure its closed.
         f_io->clear();

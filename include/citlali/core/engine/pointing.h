@@ -61,6 +61,11 @@ public:
     void add_pointing_fit_header_keys(CCfits::ExtHDU &hdu,
                                       const Eigen::MatrixXf &ppt_table,
                                       Eigen::Index map_row);
+    template <typename FitsIoVector>
+    void write_pointing_map_fits_products(FitsIoVector *f_io,
+                                          FitsIoVector *n_io,
+                                          mapmaking::MapBuffer *mb,
+                                          const Eigen::MatrixXf &ppt_table);
     template <mapmaking::MapType map_type>
     void output();
 };
