@@ -93,27 +93,6 @@ struct BeammapControls {
     bool beammap_split_fits_by_flag = false;
     std::vector<int> beammap_split_flag_values = {0, 1};
 
-    // optional soft priors for beammap peak initialization
-    bool beammap_priors_enabled = false;
-    std::string beammap_priors_filepath = "null";
-    int beammap_priors_candidate_top_n = 64;
-    double beammap_priors_min_snr = 0.0;
-    double beammap_priors_max_d2 = 25.0;
-    double beammap_priors_max_d2_iter0 = 25.0;
-    double beammap_priors_max_d2_after_iter0 = 25.0;
-    double beammap_priors_score_lambda = 2.0;
-    double beammap_priors_score_lambda_iter0 = 2.0;
-    double beammap_priors_score_lambda_after_iter0 = 2.0;
-    bool beammap_priors_fallback_blind = true;
-    bool beammap_priors_align_after_iter0 = true;
-    std::string beammap_priors_alignment_scope = "array";
-    std::string beammap_priors_alignment_common_support = "all";
-    double beammap_priors_alignment_common_support_quantile = 0.02;
-    int beammap_priors_alignment_min_matches = 30;
-    double beammap_priors_alignment_max_d2 = 25.0;
-    bool beammap_priors_alignment_fit_rotation = true;
-    double beammap_priors_alignment_max_rotation_deg = 8.0;
-
     // iteration to write out beammap PTC data; -1 means final attempted iteration
     int beammap_tod_output_iter = -1;
 

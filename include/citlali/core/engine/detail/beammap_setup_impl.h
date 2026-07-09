@@ -259,36 +259,37 @@ void Beammap::setup() {
     beammap_prior_array_center_x_arcsec.clear();
     beammap_prior_array_center_y_arcsec.clear();
     beammap_prior_array_alignment.clear();
-    if (beammap_priors_enabled) {
+    auto &priors_config = typed_config.beammap.priors;
+    if (priors_config.enabled) {
         if (typed_config.mapmaking.grouping !=
             citlali::config::MapGrouping::detector) {
             logger->warn("beammap priors requested but map_grouping={} (requires detector); disabling priors",
                          map_grouping);
-            beammap_priors_enabled = false;
+            priors_config.enabled = false;
         }
         else if (!load_soft_priors()) {
             logger->warn("beammap priors failed to load; disabling prior-guided initialization");
-            beammap_priors_enabled = false;
+            priors_config.enabled = false;
         }
     }
-    calib.apt_meta["beammap_priors_enabled"] = beammap_priors_enabled;
-    calib.apt_meta["beammap_priors_filepath"] = beammap_priors_filepath;
-    calib.apt_meta["beammap_priors_candidate_top_n"] = beammap_priors_candidate_top_n;
-    calib.apt_meta["beammap_priors_min_snr"] = beammap_priors_min_snr;
-    calib.apt_meta["beammap_priors_max_d2"] = beammap_priors_max_d2;
-    calib.apt_meta["beammap_priors_max_d2_iter0"] = beammap_priors_max_d2_iter0;
-    calib.apt_meta["beammap_priors_max_d2_after_iter0"] = beammap_priors_max_d2_after_iter0;
-    calib.apt_meta["beammap_priors_score_lambda"] = beammap_priors_score_lambda;
-    calib.apt_meta["beammap_priors_score_lambda_iter0"] = beammap_priors_score_lambda_iter0;
-    calib.apt_meta["beammap_priors_score_lambda_after_iter0"] = beammap_priors_score_lambda_after_iter0;
-    calib.apt_meta["beammap_priors_fallback_blind"] = beammap_priors_fallback_blind;
-    calib.apt_meta["beammap_priors_align_after_iter0"] = beammap_priors_align_after_iter0;
-    calib.apt_meta["beammap_priors_alignment_scope"] = beammap_priors_alignment_scope;
-    calib.apt_meta["beammap_priors_alignment_common_support"] = beammap_priors_alignment_common_support;
+    calib.apt_meta["beammap_priors_enabled"] = priors_config.enabled;
+    calib.apt_meta["beammap_priors_filepath"] = priors_config.filepath;
+    calib.apt_meta["beammap_priors_candidate_top_n"] = priors_config.candidate_top_n;
+    calib.apt_meta["beammap_priors_min_snr"] = priors_config.min_snr;
+    calib.apt_meta["beammap_priors_max_d2"] = priors_config.max_d2;
+    calib.apt_meta["beammap_priors_max_d2_iter0"] = priors_config.max_d2_iter0;
+    calib.apt_meta["beammap_priors_max_d2_after_iter0"] = priors_config.max_d2_after_iter0;
+    calib.apt_meta["beammap_priors_score_lambda"] = priors_config.score_lambda;
+    calib.apt_meta["beammap_priors_score_lambda_iter0"] = priors_config.score_lambda_iter0;
+    calib.apt_meta["beammap_priors_score_lambda_after_iter0"] = priors_config.score_lambda_after_iter0;
+    calib.apt_meta["beammap_priors_fallback_blind"] = priors_config.fallback_blind;
+    calib.apt_meta["beammap_priors_align_after_iter0"] = priors_config.align_after_iter0;
+    calib.apt_meta["beammap_priors_alignment_scope"] = priors_config.alignment_scope;
+    calib.apt_meta["beammap_priors_alignment_common_support"] = priors_config.alignment_common_support;
     calib.apt_meta["beammap_priors_alignment_common_support_quantile"] =
-        beammap_priors_alignment_common_support_quantile;
-    calib.apt_meta["beammap_priors_alignment_min_matches"] = beammap_priors_alignment_min_matches;
-    calib.apt_meta["beammap_priors_alignment_max_d2"] = beammap_priors_alignment_max_d2;
-    calib.apt_meta["beammap_priors_alignment_fit_rotation"] = beammap_priors_alignment_fit_rotation;
-    calib.apt_meta["beammap_priors_alignment_max_rotation_deg"] = beammap_priors_alignment_max_rotation_deg;
+        priors_config.alignment_common_support_quantile;
+    calib.apt_meta["beammap_priors_alignment_min_matches"] = priors_config.alignment_min_matches;
+    calib.apt_meta["beammap_priors_alignment_max_d2"] = priors_config.alignment_max_d2;
+    calib.apt_meta["beammap_priors_alignment_fit_rotation"] = priors_config.alignment_fit_rotation;
+    calib.apt_meta["beammap_priors_alignment_max_rotation_deg"] = priors_config.alignment_max_rotation_deg;
 }

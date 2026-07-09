@@ -88,38 +88,39 @@ YAML::Node make_metadata(const BeammapState &beammap,
                 .count());
     fit_qc_meta["fit_bound_any"] =
         static_cast<int>((beammap.fit_diag_bound_nhit.array() > 0).count());
+    const auto &priors_config = beammap.typed_config.beammap.priors;
     fit_qc_meta["beammap_priors_enabled"] =
-        beammap.beammap_priors_enabled;
+        priors_config.enabled;
     fit_qc_meta["beammap_priors_filepath"] =
-        beammap.beammap_priors_filepath;
+        priors_config.filepath;
     fit_qc_meta["beammap_priors_centered"] =
         beammap.beammap_soft_priors_are_centered;
     fit_qc_meta["beammap_priors_derotated"] =
         beammap.beammap_soft_priors_are_derotated;
     fit_qc_meta["beammap_priors_max_d2_iter0"] =
-        beammap.beammap_priors_max_d2_iter0;
+        priors_config.max_d2_iter0;
     fit_qc_meta["beammap_priors_max_d2_after_iter0"] =
-        beammap.beammap_priors_max_d2_after_iter0;
+        priors_config.max_d2_after_iter0;
     fit_qc_meta["beammap_priors_score_lambda_iter0"] =
-        beammap.beammap_priors_score_lambda_iter0;
+        priors_config.score_lambda_iter0;
     fit_qc_meta["beammap_priors_score_lambda_after_iter0"] =
-        beammap.beammap_priors_score_lambda_after_iter0;
+        priors_config.score_lambda_after_iter0;
     fit_qc_meta["beammap_priors_align_after_iter0"] =
-        beammap.beammap_priors_align_after_iter0;
+        priors_config.align_after_iter0;
     fit_qc_meta["beammap_priors_alignment_scope"] =
-        beammap.beammap_priors_alignment_scope;
+        priors_config.alignment_scope;
     fit_qc_meta["beammap_priors_alignment_common_support"] =
-        beammap.beammap_priors_alignment_common_support;
+        priors_config.alignment_common_support;
     fit_qc_meta["beammap_priors_alignment_common_support_quantile"] =
-        beammap.beammap_priors_alignment_common_support_quantile;
+        priors_config.alignment_common_support_quantile;
     fit_qc_meta["beammap_priors_alignment_min_matches"] =
-        beammap.beammap_priors_alignment_min_matches;
+        priors_config.alignment_min_matches;
     fit_qc_meta["beammap_priors_alignment_max_d2"] =
-        beammap.beammap_priors_alignment_max_d2;
+        priors_config.alignment_max_d2;
     fit_qc_meta["beammap_priors_alignment_fit_rotation"] =
-        beammap.beammap_priors_alignment_fit_rotation;
+        priors_config.alignment_fit_rotation;
     fit_qc_meta["beammap_priors_alignment_max_rotation_deg"] =
-        beammap.beammap_priors_alignment_max_rotation_deg;
+        priors_config.alignment_max_rotation_deg;
     fit_qc_meta["beammap_priors_aligned_arrays"] =
         static_cast<int>(beammap.beammap_prior_array_alignment.size());
 

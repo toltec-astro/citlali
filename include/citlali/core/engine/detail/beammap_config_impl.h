@@ -33,8 +33,6 @@ void Engine::get_beammap_config(CT &config) {
     const auto beammap_priors_config =
         citlali::pipeline::read_beammap_priors_config(
             config, missing_keys, invalid_keys, logger);
-    citlali::pipeline::sync_beammap_priors_controls(
-        *this, beammap_priors_config);
 
     const auto beammap_flagging_config =
         citlali::pipeline::read_beammap_flagging_config(

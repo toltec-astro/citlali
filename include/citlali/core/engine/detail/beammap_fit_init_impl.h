@@ -253,7 +253,7 @@ Beammap::BeammapFitInitSelection Beammap::choose_beammap_fit_init(
             selection.mode = BeammapFitInitMode::Prior;
             fit_stats.init_prior++;
         }
-        else if (!beammap_priors_fallback_blind) {
+        else if (!typed_config.beammap.priors.fallback_blind) {
             if (has_beammap_prior_diagnostics()) {
                 prior_diag_values(map_index, prior_init_mode_col) = -1.0;
             }

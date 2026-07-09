@@ -91,6 +91,7 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
     if (!std::isfinite(wt_med) || wt_med <= std::numeric_limits<double>::epsilon()) {
         wt_med = 1.0;
     }
+    const auto &priors_config = typed_config.beammap.priors;
 
     std::vector<Candidate> candidates;
     candidates.reserve(static_cast<std::size_t>(sig.size()));
@@ -102,7 +103,7 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
                 continue;
             }
             const double snr = ((s - sig_med) / sig_sigma) * std::sqrt(w / wt_med);
-            if (!std::isfinite(snr) || snr < beammap_priors_min_snr) {
+            if (!std::isfinite(snr) || snr < priors_config.min_snr) {
                 continue;
             }
             candidates.push_back({snr, row, col});
@@ -110,7 +111,7 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
     }
     if (candidates.empty()) {
         logger->debug("beammap priors init map={} no candidates above min_snr={:.4g} (med={:.4g} sigma={:.4g} wt_med={:.4g})",
-                      map_index, beammap_priors_min_snr, sig_med, sig_sigma, wt_med);
+                      map_index, priors_config.min_snr, sig_med, sig_sigma, wt_med);
         set_prior_diag(prior_n_candidates_col, 0.0);
         set_prior_diag(prior_n_candidates_keep_col, 0.0);
         set_prior_diag(prior_n_candidates_gate_col, 0.0);
@@ -121,7 +122,7 @@ bool Beammap::choose_prior_guided_init(Eigen::Index map_index, double &init_row,
     set_prior_diag(prior_n_candidates_col, static_cast<double>(candidates.size()));
 
     const std::size_t n_keep = std::min<std::size_t>(
-        candidates.size(), static_cast<std::size_t>(std::max(1, beammap_priors_candidate_top_n)));
+        candidates.size(), static_cast<std::size_t>(std::max(1, priors_config.candidate_top_n)));
     set_prior_diag(prior_n_candidates_keep_col, static_cast<double>(n_keep));
     std::partial_sort(candidates.begin(), candidates.begin() + n_keep, candidates.end(),
                       [](const Candidate &a, const Candidate &b) { return a.snr > b.snr; });

@@ -118,33 +118,3 @@ BeammapPriorsConfigValues read_beammap_priors_config(
     disable_missing_beammap_priors(priors.enabled, priors.filepath, logger);
     return priors;
 }
-
-template <class BeammapControls>
-void sync_beammap_priors_controls(
-    BeammapControls &controls, const BeammapPriorsConfigValues &priors) {
-    controls.beammap_priors_enabled = priors.enabled;
-    controls.beammap_priors_filepath = priors.filepath;
-    controls.beammap_priors_candidate_top_n = priors.candidate_top_n;
-    controls.beammap_priors_min_snr = priors.min_snr;
-    controls.beammap_priors_max_d2 = priors.max_d2;
-    controls.beammap_priors_max_d2_iter0 = priors.max_d2_iter0;
-    controls.beammap_priors_max_d2_after_iter0 = priors.max_d2_after_iter0;
-    controls.beammap_priors_score_lambda = priors.score_lambda;
-    controls.beammap_priors_score_lambda_iter0 = priors.score_lambda_iter0;
-    controls.beammap_priors_score_lambda_after_iter0 =
-        priors.score_lambda_after_iter0;
-    controls.beammap_priors_fallback_blind = priors.fallback_blind;
-    controls.beammap_priors_align_after_iter0 = priors.align_after_iter0;
-    controls.beammap_priors_alignment_scope = priors.alignment_scope;
-    controls.beammap_priors_alignment_common_support =
-        priors.alignment_common_support;
-    controls.beammap_priors_alignment_common_support_quantile =
-        priors.alignment_common_support_quantile;
-    controls.beammap_priors_alignment_min_matches =
-        priors.alignment_min_matches;
-    controls.beammap_priors_alignment_max_d2 = priors.alignment_max_d2;
-    controls.beammap_priors_alignment_fit_rotation =
-        priors.alignment_fit_rotation;
-    controls.beammap_priors_alignment_max_rotation_deg =
-        priors.alignment_max_rotation_deg;
-}

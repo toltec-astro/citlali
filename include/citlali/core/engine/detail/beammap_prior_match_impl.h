@@ -22,15 +22,17 @@ double Beammap::get_prior_derot_elev_rad() const {
 }
 
 double Beammap::effective_prior_max_d2() const {
+    const auto &priors_config = typed_config.beammap.priors;
     return is_beammap_measurement_iter(current_iter)
-               ? beammap_priors_max_d2_after_iter0
-               : beammap_priors_max_d2_iter0;
+               ? priors_config.max_d2_after_iter0
+               : priors_config.max_d2_iter0;
 }
 
 double Beammap::effective_prior_score_lambda() const {
+    const auto &priors_config = typed_config.beammap.priors;
     return is_beammap_measurement_iter(current_iter)
-               ? beammap_priors_score_lambda_after_iter0
-               : beammap_priors_score_lambda_iter0;
+               ? priors_config.score_lambda_after_iter0
+               : priors_config.score_lambda_iter0;
 }
 
 bool Beammap::observed_to_prior_frame(int array, double x_raw_arcsec, double y_raw_arcsec,

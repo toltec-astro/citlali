@@ -12,7 +12,7 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
 
     logger->info("fitting maps");
     logger->info("beammap fit diagnostics enabled");
-    if (beammap_priors_enabled && beammap_soft_priors_loaded &&
+    if (typed_config.beammap.priors.enabled && beammap_soft_priors_loaded &&
         detector_grouping) {
         update_prior_frame_estimates();
     }
@@ -38,7 +38,7 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
 
                 const double init_fwhm = beammap_init_fwhm_pix(i);
                 const bool can_try_prior =
-                    beammap_priors_enabled && beammap_soft_priors_loaded &&
+                    typed_config.beammap.priors.enabled && beammap_soft_priors_loaded &&
                     detector_grouping;
                 const auto init_selection = choose_beammap_fit_init(
                     i, measurement_iter, can_try_prior, init_fwhm, fit_stats);

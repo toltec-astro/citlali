@@ -58,13 +58,14 @@ std::string Beammap::beammap_iter_phase_name(Eigen::Index iter) const {
 
 std::filesystem::path Beammap::resolve_soft_priors_filepath() const {
     namespace fs = std::filesystem;
+    const auto &priors_config = typed_config.beammap.priors;
 
     if (citlali::config::is_empty_or_null_config_value(
-            beammap_priors_filepath)) {
+            priors_config.filepath)) {
         return {};
     }
 
-    fs::path requested(beammap_priors_filepath);
+    fs::path requested(priors_config.filepath);
     std::vector<fs::path> candidates;
 
     if (requested.is_absolute()) {

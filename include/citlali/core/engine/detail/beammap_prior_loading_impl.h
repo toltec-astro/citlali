@@ -6,32 +6,33 @@
 #include <citlali/core/config/config_value.h>
 
 bool Beammap::load_soft_priors() {
+    auto &priors_config = typed_config.beammap.priors;
     beammap_soft_prior_slots.clear();
     beammap_soft_priors_loaded = false;
     beammap_soft_priors_are_centered = false;
     beammap_soft_priors_are_derotated = false;
 
-    if (!beammap_priors_enabled) {
+    if (!priors_config.enabled) {
         return false;
     }
 
     if (citlali::config::is_empty_or_null_config_value(
-            beammap_priors_filepath)) {
+            priors_config.filepath)) {
         logger->warn("beammap priors filepath is empty/null");
         return false;
     }
     const auto resolved_priors_filepath = resolve_soft_priors_filepath();
     if (resolved_priors_filepath.empty()) {
-        logger->warn("beammap priors file does not exist: {}", beammap_priors_filepath);
+        logger->warn("beammap priors file does not exist: {}", priors_config.filepath);
         return false;
     }
-    if (resolved_priors_filepath.string() != beammap_priors_filepath) {
-        logger->info("beammap priors resolved {} -> {}", beammap_priors_filepath, resolved_priors_filepath.string());
-        beammap_priors_filepath = resolved_priors_filepath.string();
+    if (resolved_priors_filepath.string() != priors_config.filepath) {
+        logger->info("beammap priors resolved {} -> {}", priors_config.filepath, resolved_priors_filepath.string());
+        priors_config.filepath = resolved_priors_filepath.string();
     }
 
     auto [priors_table, priors_header, priors_meta] =
-        to_map_from_ecsv_mixted_type(beammap_priors_filepath);
+        to_map_from_ecsv_mixted_type(priors_config.filepath);
     static_cast<void>(priors_header);
 
     auto prior_frame_it = priors_meta.find("prior_frame");
@@ -55,7 +56,7 @@ bool Beammap::load_soft_priors() {
 
     for (const auto &col : required_columns) {
         if (priors_table.find(col) == priors_table.end()) {
-            logger->warn("beammap priors missing required column '{}': {}", col, beammap_priors_filepath);
+            logger->warn("beammap priors missing required column '{}': {}", col, priors_config.filepath);
             return false;
         }
     }
@@ -69,7 +70,7 @@ bool Beammap::load_soft_priors() {
         }
     }
     if (n_rows <= 0) {
-        logger->warn("beammap priors table has no rows: {}", beammap_priors_filepath);
+        logger->warn("beammap priors table has no rows: {}", priors_config.filepath);
         return false;
     }
 
@@ -117,7 +118,7 @@ bool Beammap::load_soft_priors() {
     }
 
     if (beammap_soft_prior_slots.empty()) {
-        logger->warn("beammap priors produced no valid slots: {}", beammap_priors_filepath);
+        logger->warn("beammap priors produced no valid slots: {}", priors_config.filepath);
         return false;
     }
 
@@ -127,7 +128,7 @@ bool Beammap::load_soft_priors() {
     }
     beammap_soft_priors_loaded = true;
     logger->info("loaded beammap soft priors: {} slot rows across {} (array,nw) groups from {}",
-                 n_slots, beammap_soft_prior_slots.size(), beammap_priors_filepath);
+                 n_slots, beammap_soft_prior_slots.size(), priors_config.filepath);
     if (n_dropped_rows > 0) {
         logger->warn("dropped {} non-finite prior rows (kept {})", n_dropped_rows, n_valid_rows);
     }

@@ -81,8 +81,9 @@ void Beammap::update_prior_frame_estimates() {
         beammap_prior_array_center_y_arcsec[array] = tula::alg::median(y_vec);
     }
 
+    const auto &priors_config = typed_config.beammap.priors;
     Eigen::Index n_alignment_matches = 0;
-    if (beammap_priors_align_after_iter0 && is_beammap_measurement_iter(current_iter) &&
+    if (priors_config.align_after_iter0 && is_beammap_measurement_iter(current_iter) &&
         p0.rows() == n_maps && p0.cols() > 2) {
         struct PriorPair {
             double obs_x = 0.0;
@@ -126,7 +127,8 @@ void Beammap::update_prior_frame_estimates() {
                 continue;
             }
             static_cast<void>(slot_index);
-            if (beammap_priors_alignment_max_d2 > 0.0 && d2 > beammap_priors_alignment_max_d2) {
+            if (priors_config.alignment_max_d2 > 0.0 &&
+                d2 > priors_config.alignment_max_d2) {
                 continue;
             }
             PriorPair pair{x_prior, y_prior, slot_x, slot_y};
@@ -139,9 +141,9 @@ void Beammap::update_prior_frame_estimates() {
         auto fit_prior_alignment = [&](const std::vector<PriorPair> &pairs,
                                        const std::string &label,
                                        PriorArrayAlignment &alignment) {
-            if (pairs.size() < static_cast<std::size_t>(beammap_priors_alignment_min_matches)) {
+            if (pairs.size() < static_cast<std::size_t>(priors_config.alignment_min_matches)) {
                 logger->debug("beammap prior alignment skipped {} matches={} min_matches={}",
-                              label, pairs.size(), beammap_priors_alignment_min_matches);
+                              label, pairs.size(), priors_config.alignment_min_matches);
                 return false;
             }
 
@@ -159,7 +161,7 @@ void Beammap::update_prior_frame_estimates() {
             double ty = tula::alg::median(dy_vec);
 
             double theta = 0.0;
-            if (beammap_priors_alignment_fit_rotation) {
+            if (priors_config.alignment_fit_rotation) {
                 double obs_mean_x = 0.0;
                 double obs_mean_y = 0.0;
                 double slot_mean_x = 0.0;
@@ -190,11 +192,13 @@ void Beammap::update_prior_frame_estimates() {
                     (std::abs(a) > 0.0 || std::abs(b) > 0.0)) {
                     theta = std::atan2(b, a);
                 }
-                const double max_theta = beammap_priors_alignment_max_rotation_deg * DEG_TO_RAD;
+                const double max_theta =
+                    priors_config.alignment_max_rotation_deg * DEG_TO_RAD;
                 if (!std::isfinite(theta) || std::abs(theta) > max_theta) {
                     logger->debug(
                         "beammap prior alignment {} rejected residual rotation {} deg (limit={} deg)",
-                        label, theta * RAD_TO_DEG, beammap_priors_alignment_max_rotation_deg);
+                        label, theta * RAD_TO_DEG,
+                        priors_config.alignment_max_rotation_deg);
                     theta = 0.0;
                 }
             }
@@ -238,12 +242,14 @@ void Beammap::update_prior_frame_estimates() {
             return true;
         };
 
-        if (beammap_priors_alignment_scope == "common") {
+        if (priors_config.alignment_scope == "common") {
             auto common_pairs = all_pairs;
-            if (beammap_priors_alignment_common_support == "overlap_box" &&
+            if (priors_config.alignment_common_support == "overlap_box" &&
                 pairs_by_array.size() >= 2) {
-                const double q_low = beammap_priors_alignment_common_support_quantile;
-                const double q_high = 1.0 - beammap_priors_alignment_common_support_quantile;
+                const double q_low =
+                    priors_config.alignment_common_support_quantile;
+                const double q_high =
+                    1.0 - priors_config.alignment_common_support_quantile;
                 double overlap_x_low = -std::numeric_limits<double>::infinity();
                 double overlap_x_high = std::numeric_limits<double>::infinity();
                 double overlap_y_low = -std::numeric_limits<double>::infinity();
@@ -287,12 +293,15 @@ void Beammap::update_prior_frame_estimates() {
                             filtered_pairs.push_back(pair);
                         }
                     }
-                    if (filtered_pairs.size() >= static_cast<std::size_t>(beammap_priors_alignment_min_matches)) {
+                    if (filtered_pairs.size() >=
+                        static_cast<std::size_t>(
+                            priors_config.alignment_min_matches)) {
                         common_pairs.swap(filtered_pairs);
                     }
                     logger->info(
                         "beammap prior common alignment overlap_box (iter {}): q={} x=[{}, {}] y=[{}, {}] kept={}/{}",
-                        current_iter, beammap_priors_alignment_common_support_quantile,
+                        current_iter,
+                        priors_config.alignment_common_support_quantile,
                         overlap_x_low, overlap_x_high, overlap_y_low, overlap_y_high,
                         common_pairs.size(), all_pairs.size());
                 }
