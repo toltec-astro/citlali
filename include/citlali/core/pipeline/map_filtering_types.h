@@ -29,7 +29,8 @@ inline MapFilterRunOptions map_filter_run_options(
 template <class Engine>
 MapFilterRunOptions map_filter_run_options(const Engine &engine) {
     return map_filter_run_options(
-        noise_maps_enabled(engine), engine.write_filtered_maps_partial,
+        noise_maps_enabled(engine),
+        filtered_maps_written_during_filtering(engine),
         noise_product_outputs_enabled(engine),
         empirical_noise_weights_enabled(engine));
 }

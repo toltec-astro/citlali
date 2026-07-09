@@ -62,10 +62,7 @@ void apply_map_filter_runtime_policy(
     const ReductionConfig &typed_config,
     const RuntimeTimestreamProc &rtcproc, const MapFitter &map_fitter,
     const std::string &parallel_policy, WienerFilter &wiener_filter,
-    bool &write_filtered_maps_partial, const Logger &logger) {
-    write_filtered_maps_partial =
-        typed_config.runtime.reduction_type ==
-        citlali::config::ReductionType::science;
+    const Logger &logger) {
     const auto &map_filter_config = typed_config.post_processing.map_filtering;
 
     if (map_filter_config.template_type ==

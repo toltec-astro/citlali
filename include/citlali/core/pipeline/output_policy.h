@@ -4,6 +4,7 @@
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/noise_config.h>
 #include <citlali/core/config/post_processing_config.h>
+#include <citlali/core/config/runtime_config.h>
 #include <citlali/core/config/timestream_config.h>
 
 namespace citlali::pipeline {
@@ -125,7 +126,8 @@ bool should_write_filtered_outputs(const Engine &engine) {
 
 template <class Engine>
 bool filtered_maps_written_during_filtering(const Engine &engine) {
-    return engine.write_filtered_maps_partial;
+    return engine.typed_config.runtime.reduction_type ==
+           citlali::config::ReductionType::science;
 }
 
 template <class Engine>

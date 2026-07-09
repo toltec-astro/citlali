@@ -52,6 +52,6 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         filter_callbacks, logger);
 
     citlali::pipeline::finalize_map_filter_fits_outputs_if_needed(
-        write_filtered_maps_partial, filtered_fits_io,
+        filter_options.write_filtered_maps_partial, filtered_fits_io,
         filtered_noise_fits_io, map_label, logger);
 }

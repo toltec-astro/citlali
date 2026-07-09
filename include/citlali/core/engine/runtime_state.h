@@ -74,9 +74,6 @@ struct EngineRuntimeState {
     // obsnum
     std::string obsnum;
 
-    // write filtered maps as they complete
-    bool write_filtered_maps_partial;
-
     std::string rtcdiag_filename;
     std::string ptcdiag_filename;
 
