@@ -16,6 +16,11 @@ int runtime_thread_count(const Engine &engine) {
     return engine.typed_config.runtime.n_threads;
 }
 
+template <class Engine>
+const std::string &runtime_output_dir(const Engine &engine) {
+    return engine.typed_config.runtime.output_dir;
+}
+
 inline std::string runtime_parallel_policy_name(
     const citlali::config::RuntimeConfig &runtime_config) {
     return std::string(citlali::config::to_string(

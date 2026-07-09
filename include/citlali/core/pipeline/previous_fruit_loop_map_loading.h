@@ -2,6 +2,7 @@
 
 #include <citlali/core/pipeline/fruit_loop_map_io.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
+#include <citlali/core/pipeline/runtime_policy.h>
 
 #include <string>
 
@@ -15,7 +16,7 @@ bool should_load_previous_fruit_loop_maps(const Engine &engine) {
 template <class Engine>
 std::string saved_previous_fruit_loop_map_dir(const Engine &engine) {
     return previous_fruit_loop_map_dir(
-        engine.output_dir, engine.redu_dir_num,
+        runtime_output_dir(engine), engine.redu_dir_num,
         engine.ptcproc.fruit_loops_type,
         engine.omb.obsnums.back());
 }

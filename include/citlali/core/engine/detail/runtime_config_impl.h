@@ -16,6 +16,7 @@ citlali::config::RuntimeConfig Engine::get_runtime_config(CT &config) {
         runtime_config.verbose, missing_keys, invalid_keys);
 
     // output directory
+    std::string output_dir = runtime_config.output_dir;
     citlali::engine_detail::read_mirrored_config_value(
         config, std::tuple{"runtime","output_dir"}, output_dir,
         runtime_config.output_dir, missing_keys, invalid_keys);

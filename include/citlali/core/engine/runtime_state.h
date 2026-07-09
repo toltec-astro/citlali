@@ -32,8 +32,8 @@ struct EngineRuntimeState {
     // time gaps
     std::map<std::string, int> gaps;
 
-    // output directory and optional sub directory name
-    std::string output_dir, redu_dir_name;
+    // output reduction subdirectory name
+    std::string redu_dir_name;
 
     // reduction directory number
     int redu_dir_num;

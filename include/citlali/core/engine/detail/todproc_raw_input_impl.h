@@ -6,6 +6,7 @@
 #include <citlali/core/pipeline/rawobs_detector_inventory.h>
 #include <citlali/core/pipeline/rawobs_tone_frequency_inventory.h>
 #include <citlali/core/pipeline/reduction_output_dirs.h>
+#include <citlali/core/pipeline/runtime_policy.h>
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
@@ -40,13 +41,15 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
             engine().typed_config.runtime)) {
         engine().redu_dir_name =
             citlali::pipeline::next_reduction_subdir_path(
-                engine().output_dir, engine().redu_dir_num);
+                citlali::pipeline::runtime_output_dir(engine()),
+                engine().redu_dir_num);
         fs::create_directories(engine().redu_dir_name);
         citlali::pipeline::configure_reduction_logging_and_profile(
             engine().redu_dir_name, logger);
     }
     else {
-        engine().redu_dir_name = engine().output_dir + "/";
+        engine().redu_dir_name =
+            citlali::pipeline::runtime_output_dir(engine()) + "/";
         citlali::pipeline::configure_reduction_logging_and_profile(
             engine().redu_dir_name, logger);
     }
