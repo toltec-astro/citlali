@@ -5,6 +5,7 @@
 
 #include <citlali/core/engine/detail/beammap_fit_qc_schema.h>
 #include <citlali/core/engine/detail/beammap_detector_table_vectors.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 void Beammap::write_beammap_fit_qc_table(const std::string &apt_filename) {
     logger->info("writing beammap fit qc table");
@@ -149,7 +150,7 @@ void Beammap::write_beammap_fit_qc_table(const std::string &apt_filename) {
 }
 
 void Beammap::write_detector_table_outputs() {
-    if (typed_config.mapmaking.grouping !=
+    if (citlali::pipeline::mapmaking_config(*this).grouping !=
         citlali::config::MapGrouping::detector) {
         return;
     }

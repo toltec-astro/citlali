@@ -5,6 +5,7 @@
 
 #include <citlali/core/engine/detail/beammap_fit_diagnostics_impl.h>
 #include <citlali/core/engine/detail/beammap_fit_init_impl.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
 void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
@@ -12,8 +13,10 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
 
     logger->info("fitting maps");
     logger->info("beammap fit diagnostics enabled");
-    if (typed_config.beammap.priors.enabled && beammap_soft_priors_loaded &&
-        detector_grouping) {
+    const bool can_use_priors =
+        citlali::pipeline::beammap_config(*this).priors.enabled &&
+        beammap_soft_priors_loaded && detector_grouping;
+    if (can_use_priors) {
         update_prior_frame_estimates();
     }
     // Run beammap fits sequentially. This avoids allocator/covariance instability
@@ -37,11 +40,8 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
                 }
 
                 const double init_fwhm = beammap_init_fwhm_pix(i);
-                const bool can_try_prior =
-                    typed_config.beammap.priors.enabled && beammap_soft_priors_loaded &&
-                    detector_grouping;
                 const auto init_selection = choose_beammap_fit_init(
-                    i, measurement_iter, can_try_prior, init_fwhm, fit_stats);
+                    i, measurement_iter, can_use_priors, init_fwhm, fit_stats);
                 if (init_selection.skip_fit) {
                     clear_beammap_fit_result(i);
                     continue;

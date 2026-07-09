@@ -4,6 +4,7 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/engine/detail/beammap_masking_stats.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 #include <algorithm>
 #include <cmath>
@@ -13,7 +14,8 @@
 
 Beammap::RFIMaskScanSummary Beammap::apply_rfi_sample_mask(TCData<TCDataKind::PTC,Eigen::MatrixXd> &ptc) {
     RFIMaskScanSummary summary;
-    const auto &rfi_config = typed_config.beammap.rfi_mask;
+    const auto &rfi_config =
+        citlali::pipeline::beammap_config(*this).rfi_mask;
     if (!rfi_config.enabled) {
         return summary;
     }

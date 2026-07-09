@@ -3,6 +3,8 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 double Beammap::calc_map_support_stddev(Eigen::Index map_index, bool exclude_fit_core) const {
     if (map_index < 0 ||
         map_index >= static_cast<Eigen::Index>(omb.signal.size()) ||
@@ -83,7 +85,8 @@ double Beammap::calc_beammap_convergence_delta(Eigen::Index map_index) const {
         return std::numeric_limits<double>::quiet_NaN();
     }
     const double convergence_radius_arcsec =
-        typed_config.beammap.iteration.convergence_radius_arcsec;
+        citlali::pipeline::beammap_config(*this)
+            .iteration.convergence_radius_arcsec;
     if (convergence_radius_arcsec <= 0.0 || omb.pixel_size_rad <= 0.0) {
         return std::numeric_limits<double>::quiet_NaN();
     }

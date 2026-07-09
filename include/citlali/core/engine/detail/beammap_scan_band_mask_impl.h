@@ -4,6 +4,7 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/engine/detail/beammap_masking_stats.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 #include <algorithm>
 #include <cmath>
@@ -13,10 +14,11 @@
 
 Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer &map_buffer) {
     ScanBandMaskSummary summary;
-    const auto &scan_band_config = typed_config.beammap.scan_band_mask;
+    const auto &scan_band_config =
+        citlali::pipeline::beammap_config(*this).scan_band_mask;
 
     if (!scan_band_config.enabled ||
-        typed_config.mapmaking.grouping !=
+        citlali::pipeline::mapmaking_config(*this).grouping !=
             citlali::config::MapGrouping::detector) {
         return summary;
     }
@@ -190,7 +192,7 @@ Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer 
                     calib.apt["y_t"](det),
                     telescope.pixel_axes,
                     ptc.pointing_offsets_arcsec.data,
-                    typed_config.mapmaking.grouping);
+                    citlali::pipeline::mapmaking_config(*this).grouping);
                 lat = std::get<0>(latlon);
             }
             if (lat.size() != ptc.scans.data.rows()) {
