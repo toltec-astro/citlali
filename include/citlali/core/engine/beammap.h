@@ -418,6 +418,11 @@ public:
         const BeammapDetectorTodPreflight &preflight,
         BeammapDetectorTodPointingSamples &pointing_samples,
         const std::vector<Eigen::Index> &uniform_scans);
+    void write_detector_specific_ptc_tod_file(
+        const std::string &filename,
+        int output_iter,
+        const BeammapDetectorTodPreflight &preflight,
+        const BeammapDetectorTodSelections &selections);
     void write_detector_specific_ptc_tod(int output_iter);
     void write_detector_table_outputs();
     void write_beammap_fit_qc_table(const std::string &apt_filename);
