@@ -36,8 +36,8 @@ void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs, bool write
                         rtcdata, telescope, scan);
 
                 citlali::pipeline::populate_rtc_scan_samples(
-                    rtcdata, kidsproc, rawobs, scan, telescope, start_indices,
-                    end_indices, t_common, nw_times, masks,
+                    rtcdata, kidsproc, rawobs, scan, telescope, alignment.start_indices,
+                    alignment.end_indices, alignment.common_time, alignment.network_times, alignment.masks,
                     citlali::config::timing_gap_interpolation_active(
                         typed_config.runtime),
                     scan_length, calib.n_dets, typed_config.timestream.type);
@@ -82,12 +82,12 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
             rtcdata, telescope, pointing_offsets_arcsec);
         citlali::pipeline::copy_hwpr_angle_if_enabled(
             rtcdata, calib, rtcproc.run_polarization, true,
-            hwpr_start_indices, scan_window.start, scan_window.length);
+            alignment.hwpr_start_index, scan_window.start, scan_window.length);
         citlali::pipeline::initialize_rtc_flags(rtcdata);
         if (citlali::config::timing_gap_interpolation_active(
                 typed_config.runtime)) {
             citlali::pipeline::apply_gap_masks_to_rtc_flags(
-                rtcdata, calib, nw_masks, scan_window.start,
+                rtcdata, calib, alignment.network_masks, scan_window.start,
                 rtcproc.filter_edge_guard.context_samples, logger);
         }
 

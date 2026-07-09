@@ -3,18 +3,15 @@
 // Implementation detail included by todproc.h.
 
 #include <citlali/core/pipeline/timestream_alignment_helpers.h>
+#include <citlali/core/pipeline/timestream_alignment_state.h>
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     using namespace netCDF;
     using namespace netCDF::exceptions;
 
-    // clear start and end indices for each observation
-    engine().start_indices.clear();
-    engine().end_indices.clear();
-
-    // clear gaps
-    engine().gaps.clear();
+    citlali::pipeline::clear_alignment_windows(engine().alignment);
+    engine().alignment.gaps.clear();
 
     // vector of network times
     std::vector<Eigen::VectorXd> nw_ts;
@@ -61,7 +58,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
             // add gaps to engine map
             if (gaps>0) {
-                engine().gaps["Toltec" + std::to_string(roach_index)] = gaps;
+                engine().alignment.gaps["Toltec" + std::to_string(roach_index)] = gaps;
             }
 
             // get fpga frequency
@@ -114,8 +111,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
     const auto sample_window = citlali::pipeline::find_common_sample_window(
         nw_ts, max_t0, min_tn);
-    engine().start_indices = sample_window.start_indices;
-    engine().end_indices = sample_window.end_indices;
+    engine().alignment.start_indices = sample_window.start_indices;
+    engine().alignment.end_indices = sample_window.end_indices;
     Eigen::Index min_size = sample_window.min_size;
 
     // if hwpr requested
@@ -125,14 +122,14 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             engine().calib.hwpr_recvt, max_t0,
             "failed to find aligned HWPR start sample");
         // pushback start index on hwpr start index vector
-        engine().hwpr_start_indices = si;
+        engine().alignment.hwpr_start_index = si;
 
         // find end index that is smaller than min end for hwpr
         Eigen::Index ei = citlali::pipeline::find_last_sample_at_or_before(
             engine().calib.hwpr_recvt, min_tn, si,
             "failed to find aligned HWPR end sample");
         // pushback end index on hwpr end index vector
-        engine().hwpr_end_indices = ei;
+        engine().alignment.hwpr_end_index = ei;
 
         // update min_size for all time vectors if hwpr data is shorter (data and hwpr)
         if ((ei - si + 1) < min_size) {
@@ -145,7 +142,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     }
 
     // shortest common data time vector
-    Eigen::VectorXd xi = nw_ts[max_t0_i].segment(engine().start_indices[max_t0_i], min_size);
+    Eigen::VectorXd xi = nw_ts[max_t0_i].segment(engine().alignment.start_indices[max_t0_i], min_size);
 
     citlali::pipeline::interpolate_telescope_data_to_common_time(
         engine().telescope.tel_data, xi, false);
@@ -163,17 +160,11 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
     using namespace netCDF;
     using namespace netCDF::exceptions;
 
-    // clear start and end indices for each observation
-    engine().start_indices.clear();
-    engine().end_indices.clear();
-    engine().nw_masks.clear();
+    citlali::pipeline::clear_gap_alignment_state(engine().alignment);
 
     const auto kids_data = rawobs.kidsdata();
     std::vector<Eigen::VectorXd> nw_times(kids_data.size());
     std::vector<Eigen::Index> nw_ids(kids_data.size(), -1);
-
-    // clear gaps
-    engine().gaps.clear();
 
     // loop through networks and build time vectors
     double f_smp_roach = -1.0;
@@ -221,7 +212,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
 
             // add gaps to engine map
             if (gaps>0) {
-                engine().gaps["Toltec" + std::to_string(roach_index)] = gaps;
+                engine().alignment.gaps["Toltec" + std::to_string(roach_index)] = gaps;
             }
 
             // store all time vectors
@@ -272,7 +263,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
         if (nw_ids[j] < 0) {
             continue;
         }
-        engine().nw_masks[nw_ids[j]] = masks[j];
+        engine().alignment.network_masks[nw_ids[j]] = masks[j];
     }
 
     citlali::pipeline::interpolate_telescope_data_to_common_time(
@@ -286,7 +277,7 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
             engine().calib.hwpr_angle, nw_times[n_times - 1], t_common);
     }
 
-    engine().t_common = t_common;
-    engine().masks = masks;
-    engine().nw_times = nw_times;
+    engine().alignment.common_time = t_common;
+    engine().alignment.masks = masks;
+    engine().alignment.network_times = nw_times;
 }

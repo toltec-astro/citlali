@@ -1,22 +1,23 @@
 #pragma once
 
+#include <citlali/core/pipeline/timestream_alignment_state.h>
+
 namespace citlali::pipeline {
 
 template <class Engine, class RawObs>
 void reset_simulated_observation_indices(Engine &engine,
                                          const RawObs &rawobs) {
-    engine.start_indices.clear();
-    engine.end_indices.clear();
+    clear_alignment_windows(engine.alignment);
 
     for (const auto &data_item : rawobs.kidsdata()) {
         (void)data_item;
-        engine.start_indices.push_back(0);
-        engine.start_indices.push_back(0);
+        engine.alignment.start_indices.push_back(0);
+        engine.alignment.start_indices.push_back(0);
     }
 
     if (engine.calib.run_hwpr) {
-        engine.hwpr_start_indices = 0;
-        engine.hwpr_end_indices = 0;
+        engine.alignment.hwpr_start_index = 0;
+        engine.alignment.hwpr_end_index = 0;
     }
 }
 

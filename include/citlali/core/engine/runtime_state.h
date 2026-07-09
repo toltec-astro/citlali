@@ -13,6 +13,7 @@
 #include <citlali/core/engine/learning.h>
 #include <citlali/core/pipeline/map_index_state.h>
 #include <citlali/core/pipeline/output_path_state.h>
+#include <citlali/core/pipeline/timestream_alignment_state.h>
 #include <citlali/core/pipeline/tod_output_state.h>
 #include <citlali/core/utils/fits_io.h>
 
@@ -23,17 +24,11 @@ struct EngineRuntimeState {
     // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
-    // for timing
-    Eigen::VectorXd t_common;
-    std::vector<Eigen::VectorXi> masks;
-    std::map<Eigen::Index, Eigen::VectorXi> nw_masks;
-    std::vector<Eigen::VectorXd> nw_times;
+    // TOD alignment products and timing-gap masks
+    citlali::pipeline::TimestreamAlignmentState alignment;
 
     // date/time of each obs
     std::vector<std::string> date_obs;
-
-    // time gaps
-    std::map<std::string, int> gaps;
 
     // reduction, observation, coadd, and timestream output paths
     citlali::pipeline::OutputPathState output_paths;
@@ -43,12 +38,6 @@ struct EngineRuntimeState {
 
     // manual offsets for nws and hwp
     std::map<std::string, double> interface_sync_offset;
-
-    // vectors for tod alignment offsets
-    std::vector<Eigen::Index> start_indices, end_indices;
-
-    // indices for hwpr alignment offsets
-    Eigen::Index hwpr_start_indices, hwpr_end_indices;
 
     // typed config mirror for staged config migration
     citlali::config::ReductionConfig typed_config;

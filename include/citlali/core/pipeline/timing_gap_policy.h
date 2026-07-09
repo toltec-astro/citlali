@@ -6,7 +6,7 @@ namespace citlali::pipeline {
 
 template <class Engine>
 bool has_timing_gaps(const Engine &engine) {
-    return engine.gaps.size() > 0;
+    return engine.alignment.gaps.size() > 0;
 }
 
 template <class Engine>

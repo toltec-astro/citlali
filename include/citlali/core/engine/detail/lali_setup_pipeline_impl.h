@@ -49,8 +49,8 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                     rands, eng);
 
                 citlali::pipeline::populate_rtc_scan_samples(
-                    rtcdata, kidsproc, rawobs, scan, telescope, start_indices,
-                    end_indices, t_common, nw_times, masks,
+                    rtcdata, kidsproc, rawobs, scan, telescope, alignment.start_indices,
+                    alignment.end_indices, alignment.common_time, alignment.network_times, alignment.masks,
                     citlali::config::timing_gap_interpolation_active(
                         typed_config.runtime),
                     scan_length, calib.n_dets, typed_config.timestream.type);
