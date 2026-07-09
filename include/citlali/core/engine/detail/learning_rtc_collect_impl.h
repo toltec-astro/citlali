@@ -7,8 +7,8 @@ template <class rtc_t, class ptc_t, class calib_t>
 void Engine::collect_rtc_learning_diagnostics(rtc_t &rtcdata, ptc_t &ptcdata,
                                               calib_t &calib_scan,
                                               const std::vector<timestream::RTCProc::RTCDetectorDiagSummary> &det_summary) {
-    if (!reduction_learning.is_enabled() ||
-        !reduction_learning.diagnostics_enabled()) {
+    if (!learning.is_enabled() ||
+        !learning.diagnostics_enabled()) {
         return;
     }
 
@@ -29,7 +29,7 @@ void Engine::collect_rtc_learning_diagnostics(rtc_t &rtcdata, ptc_t &ptcdata,
         source_summary.protected_samples = rtc_source_summary.protected_samples;
         source_summary.total_samples = rtc_source_summary.total_samples;
         source_summary.radius_arcsec = rtc_source_summary.radius_arcsec;
-        reduction_learning.record_source_protection_summary(std::move(source_summary));
+        learning.record_source_protection_summary(std::move(source_summary));
     }
 
     auto record_event = [&](const auto &event, Eigen::Index det,
@@ -56,7 +56,7 @@ void Engine::collect_rtc_learning_diagnostics(rtc_t &rtcdata, ptc_t &ptcdata,
         record.confidence = 1.0;
         record.source_protected = false;
         record.apply_pre_rtc = true;
-        reduction_learning.record_learned_sample_mask(std::move(record));
+        learning.record_learned_sample_mask(std::move(record));
     };
 
     for (const auto &row : det_summary) {

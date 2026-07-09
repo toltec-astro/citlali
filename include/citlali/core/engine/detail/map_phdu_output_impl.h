@@ -69,7 +69,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         telescope.outer_scans_chunk);
 
     citlali::engine_detail::add_phdu_ptc_learning_config_section(
-        fits_entry, name, logger, ptcproc, calib, reduction_learning, i,
+        fits_entry, name, logger, ptcproc, calib, learning, i,
         array_id, mb->sig_unit);
 
     citlali::engine_detail::add_phdu_pointing_telescope_header_section(

@@ -147,12 +147,12 @@ void Engine::get_learning_config(CT &config) {
         typed_scan_pathology.max_new_flagged_fraction, config_diagnostics.missing_keys,
         config_diagnostics.invalid_keys, {0.0});
 
-    reduction_learning.configure(options);
+    learning.configure(options);
     const bool map_contribution_diag =
         citlali::engine_detail::learning_map_contribution_diagnostics_enabled(
-            reduction_learning.options);
+            learning.options);
     citlali::engine_detail::set_learning_map_contribution_diagnostics(
         map_contribution_diag, omb, cmb);
     citlali::engine_detail::log_reduction_learning_config(
-        reduction_learning.options, logger);
+        learning.options, logger);
 }

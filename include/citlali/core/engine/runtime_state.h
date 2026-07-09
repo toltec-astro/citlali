@@ -58,7 +58,7 @@ struct EngineRuntimeState {
     citlali::pipeline::FruitLoopRuntimeState iteration;
 
     // shared state learned across RTC, PTC, and mapmaking phases
-    ReductionLearningState reduction_learning;
+    ReductionLearningState learning;
 
     // manual pointing offsets and optional MJD interpolation anchors
     citlali::pipeline::PointingOffsetState pointing_offsets;

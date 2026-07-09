@@ -79,7 +79,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         citlali::pipeline::add_tod_processing_config_vars(fo, rtcproc);
         citlali::pipeline::add_weight_selection_config_vars(fo, ptcproc);
         citlali::pipeline::add_reduction_learning_config_vars(
-            fo, reduction_learning);
+            fo, learning);
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTLOW", rtcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTHIGH", rtcproc.upper_inv_var_factor);
         citlali::pipeline::add_rtc_event_mask_config_vars(fo, rtcproc);

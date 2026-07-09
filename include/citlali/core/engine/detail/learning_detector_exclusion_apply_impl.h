@@ -13,8 +13,8 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
                                                bool update_apt_flags,
                                                bool include_detector_records,
                                                bool include_network_records) {
-    if (!reduction_learning.is_enabled() ||
-        !reduction_learning.apply_active()) {
+    if (!learning.is_enabled() ||
+        !learning.apply_active()) {
         return;
     }
     if (tcdata.flags.data.rows() <= 0 || tcdata.flags.data.cols() <= 0) {
@@ -23,17 +23,17 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
 
     const bool mapdiag_detector_exclusion =
         include_detector_records &&
-        reduction_learning.options.map_pixel_outlier_detector_exclusion_enabled;
+        learning.options.map_pixel_outlier_detector_exclusion_enabled;
     const bool busy_detector_exclusion =
         include_detector_records &&
-        reduction_learning.options.busy_detector_exclusion_enabled;
+        learning.options.busy_detector_exclusion_enabled;
     const bool network_exclusion =
         include_network_records &&
-        reduction_learning.options.scan_network_pathology_enabled &&
+        learning.options.scan_network_pathology_enabled &&
         (stage == "pre_mapmaking_detector_exclusion"
-             ? reduction_learning.options.scan_network_pathology_apply_pre_mapmaking
-             : ((!pre_rtc && reduction_learning.options.scan_network_pathology_apply_pre_ptc) ||
-                (pre_rtc && reduction_learning.options.scan_network_pathology_apply_pre_rtc)));
+             ? learning.options.scan_network_pathology_apply_pre_mapmaking
+             : ((!pre_rtc && learning.options.scan_network_pathology_apply_pre_ptc) ||
+                (pre_rtc && learning.options.scan_network_pathology_apply_pre_rtc)));
     if (!mapdiag_detector_exclusion && !busy_detector_exclusion &&
         !network_exclusion) {
         return;
@@ -42,8 +42,8 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
     const int scan_id = static_cast<int>(tcdata.index.data);
     std::vector<ReductionLearningState::DetectorPenalty> records;
     {
-        std::lock_guard<std::mutex> lock(*reduction_learning.mutex);
-        for (const auto &record : reduction_learning.detector_penalties) {
+        std::lock_guard<std::mutex> lock(*learning.mutex);
+        for (const auto &record : learning.detector_penalties) {
             if (record.obsnum != obsnum ||
                 !record.scan_local ||
                 record.scan != scan_id ||
@@ -92,8 +92,8 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
                    record.reason == "busy_network_pathology";
         });
     summary.max_new_flagged_fraction = has_network_record
-        ? reduction_learning.options.scan_network_pathology_max_new_flagged_fraction
-        : reduction_learning.options.apply_max_new_flagged_fraction;
+        ? learning.options.scan_network_pathology_max_new_flagged_fraction
+        : learning.options.apply_max_new_flagged_fraction;
 
     const Eigen::Index n_pts = tcdata.flags.data.rows();
     const Eigen::Index n_dets = tcdata.flags.data.cols();
@@ -130,7 +130,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
         }
     }
     if (proposed_dets.empty()) {
-        reduction_learning.record_learned_mask_application(summary);
+        learning.record_learned_mask_application(summary);
         return;
     }
 
@@ -267,7 +267,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
         }
     }
 
-    reduction_learning.record_learned_mask_application(summary);
+    learning.record_learned_mask_application(summary);
     if (over_cap) {
         logger->warn(
             "learned {} rejected scan {} iter {}: candidates={} matched={} dets={} newly_flagged={} newly_flagged_fraction={:.4f} cap={:.4f}",

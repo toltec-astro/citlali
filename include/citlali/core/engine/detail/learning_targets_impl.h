@@ -6,10 +6,10 @@
 void Engine::configure_map_pixel_contribution_targets(mapmaking::MapBuffer &mb,
                                                       const std::string &stage_name) {
     const bool full_contribution_diag =
-        reduction_learning.options.enabled &&
-        reduction_learning.options.diagnostics_enabled &&
-        reduction_learning.options.map_pixel_outlier_diagnostics_enabled &&
-        reduction_learning.options.map_pixel_outlier_contributor_diagnostics_enabled;
+        learning.options.enabled &&
+        learning.options.diagnostics_enabled &&
+        learning.options.map_pixel_outlier_diagnostics_enabled &&
+        learning.options.map_pixel_outlier_contributor_diagnostics_enabled;
 
     mb.clear_contribution_targets();
     mb.contribution_diag_enabled = full_contribution_diag;
@@ -17,11 +17,11 @@ void Engine::configure_map_pixel_contribution_targets(mapmaking::MapBuffer &mb,
     if (full_contribution_diag) {
         return;
     }
-    if (!reduction_learning.is_enabled() ||
-        !reduction_learning.diagnostics_enabled() ||
-        !reduction_learning.options.map_pixel_outlier_diagnostics_enabled ||
-        !reduction_learning.options.map_pixel_outlier_targeted_contributor_diagnostics_enabled ||
-        reduction_learning.options.map_pixel_outlier_targeted_contributor_max_pixels <= 0 ||
+    if (!learning.is_enabled() ||
+        !learning.diagnostics_enabled() ||
+        !learning.options.map_pixel_outlier_diagnostics_enabled ||
+        !learning.options.map_pixel_outlier_targeted_contributor_diagnostics_enabled ||
+        learning.options.map_pixel_outlier_targeted_contributor_max_pixels <= 0 ||
         iteration.fruit_iter <= 0 ||
         mb.signal.empty() ||
         mb.n_rows <= 0 ||
@@ -32,8 +32,8 @@ void Engine::configure_map_pixel_contribution_targets(mapmaking::MapBuffer &mb,
     const std::string producer = "mapdiag:" + stage_name;
     int target_iter = -1;
     {
-        std::lock_guard<std::mutex> lock(*reduction_learning.mutex);
-        for (const auto &record : reduction_learning.map_pixel_outliers) {
+        std::lock_guard<std::mutex> lock(*learning.mutex);
+        for (const auto &record : learning.map_pixel_outliers) {
             if (record.obsnum == obsnum &&
                 record.producer == producer &&
                 record.iter >= 0 &&
@@ -60,8 +60,8 @@ void Engine::configure_map_pixel_contribution_targets(mapmaking::MapBuffer &mb,
     };
     std::vector<target_candidate_t> candidates;
     {
-        std::lock_guard<std::mutex> lock(*reduction_learning.mutex);
-        for (const auto &record : reduction_learning.map_pixel_outliers) {
+        std::lock_guard<std::mutex> lock(*learning.mutex);
+        for (const auto &record : learning.map_pixel_outliers) {
             if (record.obsnum != obsnum ||
                 record.producer != producer ||
                 record.iter != target_iter ||
@@ -96,7 +96,7 @@ void Engine::configure_map_pixel_contribution_targets(mapmaking::MapBuffer &mb,
 
     std::vector<std::tuple<Eigen::Index, Eigen::Index, Eigen::Index>> targets;
     targets.reserve(static_cast<std::size_t>(
-        reduction_learning.options.map_pixel_outlier_targeted_contributor_max_pixels));
+        learning.options.map_pixel_outlier_targeted_contributor_max_pixels));
     auto have_target = [&](const auto &candidate) {
         return std::find_if(targets.begin(), targets.end(),
                             [&](const auto &target) {
@@ -106,7 +106,7 @@ void Engine::configure_map_pixel_contribution_targets(mapmaking::MapBuffer &mb,
                             }) != targets.end();
     };
     const std::size_t max_targets = static_cast<std::size_t>(
-        reduction_learning.options.map_pixel_outlier_targeted_contributor_max_pixels);
+        learning.options.map_pixel_outlier_targeted_contributor_max_pixels);
     for (const auto &candidate : candidates) {
         if (targets.size() >= max_targets) {
             break;

@@ -10,8 +10,8 @@ void Engine::collect_ptc_learning_diagnostics(
     ptc_t &ptcdata, calib_t &calib_scan,
     const std::vector<timestream::PTCProc::SecondPassDiagSummary> &second_pass_summary,
     const std::vector<timestream::PTCProc::HighWeightDiagSummary> &high_weight_summary) {
-    if (!reduction_learning.is_enabled() ||
-        !reduction_learning.diagnostics_enabled()) {
+    if (!learning.is_enabled() ||
+        !learning.diagnostics_enabled()) {
         return;
     }
 
@@ -37,7 +37,7 @@ void Engine::collect_ptc_learning_diagnostics(
         (void) source_mask;
         source_summary.protected_samples =
             static_cast<int>(source_info.protected_samples);
-        reduction_learning.record_source_protection_summary(std::move(source_summary));
+        learning.record_source_protection_summary(std::move(source_summary));
     }
 
     for (const auto &summary : high_weight_summary) {
@@ -59,7 +59,7 @@ void Engine::collect_ptc_learning_diagnostics(
         record.cap_recommended = summary.cap_recommended;
         record.cap_applied = summary.cap_applied;
         record.validated = summary.validated;
-        reduction_learning.record_high_weight_detector(std::move(record));
+        learning.record_high_weight_detector(std::move(record));
     }
 
     if (second_pass_summary.empty()) {
@@ -112,10 +112,10 @@ void Engine::collect_ptc_learning_diagnostics(
             record.max_unflagged_residual_z = summary.max_unflagged_residual_z;
             record.busy_vetoed = summary.busy_network_vetoed;
             record.selective_acceptance_recommended = selective_acceptance_recommended;
-            reduction_learning.record_busy_network_summary(std::move(record));
+            learning.record_busy_network_summary(std::move(record));
         }
 
-        if (reduction_learning.options.scan_network_pathology_enabled &&
+        if (learning.options.scan_network_pathology_enabled &&
             summary.nw >= 0) {
             const int off_source_candidate_events = std::max<Eigen::Index>(
                 0, summary.n_candidate_events - summary.n_source_protected_events);
@@ -125,16 +125,16 @@ void Engine::collect_ptc_learning_diagnostics(
             const bool busy_pathology =
                 summary.busy_network_vetoed &&
                 summary.n_candidate_clusters >=
-                    reduction_learning.options.scan_network_pathology_min_candidate_clusters &&
+                    learning.options.scan_network_pathology_min_candidate_clusters &&
                 off_source_candidate_events >=
-                    reduction_learning.options.scan_network_pathology_min_candidate_events &&
+                    learning.options.scan_network_pathology_min_candidate_events &&
                 max_residual_z >=
-                    reduction_learning.options.scan_network_pathology_min_max_residual_z;
+                    learning.options.scan_network_pathology_min_max_residual_z;
             const bool severe_pathology =
                 off_source_candidate_events >=
-                    reduction_learning.options.scan_network_pathology_severe_candidate_events &&
+                    learning.options.scan_network_pathology_severe_candidate_events &&
                 max_residual_z >=
-                    reduction_learning.options.scan_network_pathology_severe_max_residual_z;
+                    learning.options.scan_network_pathology_severe_max_residual_z;
             if (busy_pathology || severe_pathology) {
                 ReductionLearningState::DetectorPenalty penalty;
                 penalty.obsnum = obsnum;
@@ -153,7 +153,7 @@ void Engine::collect_ptc_learning_diagnostics(
                         ? summary.top_candidate_cluster_peak_score
                         : 0.0);
                 penalty.scan_local = true;
-                reduction_learning.record_detector_penalty(std::move(penalty));
+                learning.record_detector_penalty(std::move(penalty));
             }
         }
 
@@ -188,7 +188,7 @@ void Engine::collect_ptc_learning_diagnostics(
             candidate_record.confidence = event.busy_network_vetoed ? 0.8 : 1.0;
             candidate_record.source_protected = event.source_protected;
             candidate_record.apply_pre_rtc = false;
-            reduction_learning.record_learned_sample_mask(std::move(candidate_record));
+            learning.record_learned_sample_mask(std::move(candidate_record));
         }
 
         if (summary.top_event.valid() && summary.top_event.accepted &&
@@ -212,7 +212,7 @@ void Engine::collect_ptc_learning_diagnostics(
             sample_record.confidence = 1.0;
             sample_record.source_protected = false;
             sample_record.apply_pre_rtc = false;
-            reduction_learning.record_learned_sample_mask(std::move(sample_record));
+            learning.record_learned_sample_mask(std::move(sample_record));
         }
 
         if (summary.busy_network_vetoed && has_residual &&
@@ -233,7 +233,7 @@ void Engine::collect_ptc_learning_diagnostics(
             penalty.factor = 0.0;
             penalty.score = summary.max_unflagged_residual_z;
             penalty.scan_local = true;
-            reduction_learning.record_detector_penalty(std::move(penalty));
+            learning.record_detector_penalty(std::move(penalty));
         }
     }
 }

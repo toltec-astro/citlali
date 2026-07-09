@@ -11,9 +11,9 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
                                         const std::string &stage,
                                         bool source_protection_enabled,
                                         double source_protection_radius_arcsec) {
-    if (!reduction_learning.is_enabled() ||
-        !reduction_learning.options.apply_sample_masks_enabled ||
-        !reduction_learning.apply_active()) {
+    if (!learning.is_enabled() ||
+        !learning.options.apply_sample_masks_enabled ||
+        !learning.apply_active()) {
         return;
     }
     if (tcdata.flags.data.rows() <= 0 || tcdata.flags.data.cols() <= 0) {
@@ -23,8 +23,8 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
     const int scan_id = static_cast<int>(tcdata.index.data);
     std::vector<ReductionLearningState::LearnedSampleMask> records;
     {
-        std::lock_guard<std::mutex> lock(*reduction_learning.mutex);
-        for (const auto &record : reduction_learning.learned_sample_masks) {
+        std::lock_guard<std::mutex> lock(*learning.mutex);
+        for (const auto &record : learning.learned_sample_masks) {
             if (record.obsnum == obsnum &&
                 record.scan == scan_id &&
                 record.iter >= 0 &&
@@ -46,7 +46,7 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
     summary.scan = scan_id;
     summary.candidate_records = static_cast<int>(records.size());
     summary.max_new_flagged_fraction =
-        reduction_learning.options.apply_max_new_flagged_fraction;
+        learning.options.apply_max_new_flagged_fraction;
 
     const Eigen::Index n_pts = tcdata.flags.data.rows();
     const Eigen::Index n_dets = tcdata.flags.data.cols();
@@ -127,9 +127,9 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
     summary.newly_flagged_fraction =
         static_cast<double>(summary.newly_flagged_samples) / denom;
     const bool over_cap =
-        reduction_learning.options.apply_max_new_flagged_fraction > 0.0 &&
+        learning.options.apply_max_new_flagged_fraction > 0.0 &&
         summary.newly_flagged_fraction >
-            reduction_learning.options.apply_max_new_flagged_fraction;
+            learning.options.apply_max_new_flagged_fraction;
     if (!over_cap) {
         for (Eigen::Index det = 0; det < n_dets; ++det) {
             for (Eigen::Index sample = 0; sample < n_pts; ++sample) {
@@ -141,14 +141,14 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
         summary.applied = true;
     }
 
-    reduction_learning.record_learned_mask_application(summary);
+    learning.record_learned_mask_application(summary);
     if (over_cap) {
         logger->warn(
             "learned {} sample-mask application rejected scan {} iter {}: candidates={} matched={} proposed={} newly_flagged={} newly_flagged_fraction={:.4f} cap={:.4f}",
             stage, scan_id + 1, iteration.fruit_iter, summary.candidate_records,
             summary.matched_records, summary.proposed_samples,
             summary.newly_flagged_samples, summary.newly_flagged_fraction,
-            reduction_learning.options.apply_max_new_flagged_fraction);
+            learning.options.apply_max_new_flagged_fraction);
     }
     else if (summary.proposed_samples > 0) {
         logger->info(

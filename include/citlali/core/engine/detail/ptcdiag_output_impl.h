@@ -38,7 +38,7 @@ void Engine::create_ptcdiag_file() {
     add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
 
     citlali::pipeline::add_ptcdiag_file_config_vars(
-        fo, ptcproc, reduction_learning);
+        fo, ptcproc, learning);
 
     citlali::pipeline::add_ptcdiag_standard_detector_diag(
         fo, ptcdiag_dims.det, ptcdiag_dims.det_chunks,

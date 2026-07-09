@@ -7,8 +7,8 @@
 #include <citlali/core/pipeline/learning_summary_csv.h>
 
 inline void Engine::write_learning_summary() {
-    if (!reduction_learning.is_enabled() ||
-        !reduction_learning.diagnostics_enabled() ||
+    if (!learning.is_enabled() ||
+        !learning.diagnostics_enabled() ||
         output_paths.redu_dir_name.empty()) {
         return;
     }
@@ -37,41 +37,41 @@ inline void Engine::write_learning_summary() {
         write_row(header);
     };
 
-    std::lock_guard<std::mutex> lock(*reduction_learning.mutex);
+    std::lock_guard<std::mutex> lock(*learning.mutex);
     write_common_header();
 
-    for (const auto &record : reduction_learning.learned_sample_masks) {
+    for (const auto &record : learning.learned_sample_masks) {
         write_row(citlali::pipeline::learning_summary_sample_mask_row(
             record, text, csv));
     }
 
-    for (const auto &record : reduction_learning.busy_network_summaries) {
+    for (const auto &record : learning.busy_network_summaries) {
         write_row(citlali::pipeline::learning_summary_busy_network_row(
             record, text, csv));
     }
 
-    for (const auto &record : reduction_learning.detector_penalties) {
+    for (const auto &record : learning.detector_penalties) {
         write_row(citlali::pipeline::learning_summary_detector_penalty_row(
             record, text, csv));
     }
 
-    for (const auto &record : reduction_learning.high_weight_detectors) {
+    for (const auto &record : learning.high_weight_detectors) {
         write_row(
             citlali::pipeline::learning_summary_high_weight_detector_row(
                 record, text, csv));
     }
 
-    for (const auto &record : reduction_learning.map_pixel_outliers) {
+    for (const auto &record : learning.map_pixel_outliers) {
         write_row(citlali::pipeline::learning_summary_map_pixel_outlier_row(
             record, text, csv));
     }
 
-    for (const auto &record : reduction_learning.source_protection_summaries) {
+    for (const auto &record : learning.source_protection_summaries) {
         write_row(citlali::pipeline::learning_summary_source_protection_row(
             record, text, csv));
     }
 
-    for (const auto &record : reduction_learning.learned_mask_applications) {
+    for (const auto &record : learning.learned_mask_applications) {
         write_row(citlali::pipeline::learning_summary_mask_application_row(
             record, text, csv));
     }

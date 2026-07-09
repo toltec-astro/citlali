@@ -330,7 +330,7 @@ struct FakeEngine {
         bool is_enabled() const { return enabled; }
         bool diagnostics_enabled() const { return diagnostics; }
         std::string summary_string() const { return "fake summary"; }
-    } reduction_learning;
+    } learning;
 
     template <class MapBuffer>
     void configure_map_pixel_contribution_targets(
@@ -638,7 +638,7 @@ struct FakeIterationEngine {
     std::string redu_type = "science";
     std::string redu_dir_name = "/tmp/redu01";
     FakeIterationPtcProc ptcproc;
-    FakeReductionLearning reduction_learning;
+    FakeReductionLearning learning;
     int write_learning_summary_calls = 0;
 
     void write_learning_summary() { ++write_learning_summary_calls; }
@@ -669,7 +669,7 @@ struct FakeReductionIterationEngine {
         std::vector<std::string> date_obs = {"old"};
     } observation_dates;
     FakeIterationPtcProc ptcproc;
-    FakeReductionLearning reduction_learning;
+    FakeReductionLearning learning;
     int write_learning_summary_calls = 0;
 
     struct {
@@ -2593,10 +2593,10 @@ TEST(pipeline_iteration_lifecycle, begins_non_fruit_loop_iteration) {
     citlali::pipeline::begin_fruit_loop_iteration(engine, logger);
 
     EXPECT_EQ(engine.ptcproc.begin_weight_validation_iter, 0);
-    EXPECT_EQ(engine.reduction_learning.begin_calls, 1);
-    EXPECT_EQ(engine.reduction_learning.begin_iter, 0);
-    EXPECT_FALSE(engine.reduction_learning.source_model_available);
-    EXPECT_EQ(engine.reduction_learning.redu_type, "science");
+    EXPECT_EQ(engine.learning.begin_calls, 1);
+    EXPECT_EQ(engine.learning.begin_iter, 0);
+    EXPECT_FALSE(engine.learning.source_model_available);
+    EXPECT_EQ(engine.learning.redu_type, "science");
     EXPECT_EQ(logger->info_calls, 0);
 }
 
@@ -2604,15 +2604,15 @@ TEST(pipeline_iteration_lifecycle, begins_fruit_loop_iteration_with_source_model
     FakeIterationEngine engine;
     engine.iteration.fruit_iter = 1;
     engine.ptcproc.run_fruit_loops = true;
-    engine.reduction_learning.enabled = true;
-    engine.reduction_learning.diagnostics = true;
+    engine.learning.enabled = true;
+    engine.learning.diagnostics = true;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::begin_fruit_loop_iteration(engine, logger);
 
     EXPECT_EQ(engine.ptcproc.begin_weight_validation_iter, 1);
-    EXPECT_EQ(engine.reduction_learning.begin_calls, 1);
-    EXPECT_TRUE(engine.reduction_learning.source_model_available);
+    EXPECT_EQ(engine.learning.begin_calls, 1);
+    EXPECT_TRUE(engine.learning.source_model_available);
     EXPECT_EQ(logger->info_calls, 2);
 }
 
@@ -2625,7 +2625,7 @@ TEST(pipeline_iteration_lifecycle, uses_configured_fruit_loop_path_as_source_mod
 
     citlali::pipeline::begin_fruit_loop_iteration(engine, logger);
 
-    EXPECT_TRUE(engine.reduction_learning.source_model_available);
+    EXPECT_TRUE(engine.learning.source_model_available);
     EXPECT_EQ(logger->info_calls, 1);
 }
 
@@ -2637,8 +2637,8 @@ TEST(pipeline_iteration_lifecycle, finalizes_iteration) {
     citlali::pipeline::finalize_fruit_loop_iteration(engine, logger);
 
     EXPECT_EQ(engine.ptcproc.finalize_weight_validation_iter, 3);
-    EXPECT_EQ(engine.reduction_learning.finalize_calls, 1);
-    EXPECT_EQ(engine.reduction_learning.finalize_iter, 3);
+    EXPECT_EQ(engine.learning.finalize_calls, 1);
+    EXPECT_EQ(engine.learning.finalize_iter, 3);
     EXPECT_EQ(engine.write_learning_summary_calls, 1);
     EXPECT_EQ(logger->info_calls, 0);
 }
@@ -2646,13 +2646,13 @@ TEST(pipeline_iteration_lifecycle, finalizes_iteration) {
 TEST(pipeline_iteration_lifecycle, logs_finalize_diagnostics_when_enabled) {
     FakeIterationEngine engine;
     engine.iteration.fruit_iter = 4;
-    engine.reduction_learning.enabled = true;
-    engine.reduction_learning.diagnostics = true;
+    engine.learning.enabled = true;
+    engine.learning.diagnostics = true;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::finalize_fruit_loop_iteration(engine, logger);
 
-    EXPECT_EQ(engine.reduction_learning.finalize_iter, 4);
+    EXPECT_EQ(engine.learning.finalize_iter, 4);
     EXPECT_EQ(engine.write_learning_summary_calls, 1);
     EXPECT_EQ(logger->info_calls, 1);
 }
@@ -2666,7 +2666,7 @@ TEST(pipeline_iteration_lifecycle, finalizes_iteration_outputs) {
     citlali::pipeline::finalize_iteration_outputs(todproc, logger);
 
     EXPECT_EQ(todproc.engine().ptcproc.finalize_weight_validation_iter, 3);
-    EXPECT_EQ(todproc.engine().reduction_learning.finalize_iter, 3);
+    EXPECT_EQ(todproc.engine().learning.finalize_iter, 3);
     EXPECT_EQ(todproc.engine().write_learning_summary_calls, 1);
     EXPECT_EQ(todproc.make_index_file_calls, 1);
     EXPECT_EQ(todproc.indexed_path, "/data/redu03");
@@ -2776,7 +2776,7 @@ TEST(pipeline_execution, begins_reduction_iteration) {
         todproc, config_filepaths, logger);
 
     EXPECT_EQ(todproc.engine().ptcproc.begin_weight_validation_iter, 0);
-    EXPECT_EQ(todproc.engine().reduction_learning.begin_calls, 1);
+    EXPECT_EQ(todproc.engine().learning.begin_calls, 1);
     EXPECT_EQ(todproc.create_output_dir_calls, 1);
     EXPECT_TRUE(todproc.engine().observation_dates.date_obs.empty());
     EXPECT_EQ(todproc.allocate_cmb_calls, 1);
@@ -3453,7 +3453,7 @@ TEST(pipeline_execution, runs_reduction_iteration) {
     EXPECT_EQ(todproc.engine().pipeline_calls, 2);
     EXPECT_EQ(todproc.engine().output_calls, 2);
     EXPECT_EQ(todproc.engine().ptcproc.finalize_weight_validation_iter, 0);
-    EXPECT_EQ(todproc.engine().reduction_learning.finalize_calls, 1);
+    EXPECT_EQ(todproc.engine().learning.finalize_calls, 1);
     EXPECT_EQ(todproc.engine().write_learning_summary_calls, 1);
     EXPECT_EQ(todproc.make_index_file_calls, 1);
     EXPECT_EQ(todproc.indexed_path, "/tmp/redu01");
@@ -3643,7 +3643,7 @@ TEST(pipeline_execution, finishes_reduction_iteration) {
         FakeMapType::RawCoadd, FakeMapType::FilteredCoadd>(todproc, logger);
 
     EXPECT_EQ(todproc.engine().ptcproc.finalize_weight_validation_iter, 2);
-    EXPECT_EQ(todproc.engine().reduction_learning.finalize_calls, 1);
+    EXPECT_EQ(todproc.engine().learning.finalize_calls, 1);
     EXPECT_EQ(todproc.engine().write_learning_summary_calls, 1);
     EXPECT_EQ(todproc.make_index_file_calls, 1);
     EXPECT_EQ(todproc.indexed_path, "/data/redu02");

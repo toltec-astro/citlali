@@ -146,7 +146,7 @@ public:
     template<typename CT>
     void get_learning_config(CT &);
 
-    // apply masks learned in earlier iterations; behavior is gated by reduction_learning phase
+    // apply masks learned in earlier iterations; behavior is gated by learning phase
     template <class rtc_t, class calib_t>
     void apply_learned_rtc_sample_masks(rtc_t &, calib_t &);
     template <class ptc_t, class calib_t>
