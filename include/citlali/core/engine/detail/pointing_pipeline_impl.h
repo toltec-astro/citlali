@@ -4,6 +4,7 @@
 
 #include <citlali/core/pipeline/map_diagnostics.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_scan_generation.h>
 
 template <class KidsProc, class RawObs>
@@ -46,8 +47,9 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                     rtcdata, kidsproc, rawobs, scan, telescope, alignment.start_indices,
                     alignment.end_indices, alignment.common_time, alignment.network_times, alignment.masks,
                     citlali::config::timing_gap_interpolation_active(
-                        typed_config.runtime),
-                    scan_length, calib.n_dets, typed_config.timestream.type);
+                        citlali::pipeline::runtime_config(*this)),
+                    scan_length, calib.n_dets,
+                    citlali::pipeline::timestream_config(*this).type);
 
                 // increment scan
                 scan++;

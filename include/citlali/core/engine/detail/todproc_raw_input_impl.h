@@ -5,6 +5,7 @@
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/rawobs_detector_inventory.h>
 #include <citlali/core/pipeline/rawobs_tone_frequency_inventory.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/reduction_output_dirs.h>
 #include <citlali/core/pipeline/runtime_policy.h>
 
@@ -38,7 +39,7 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
 
     // create reduction subdir
     if (citlali::config::reduction_subdirs_active(
-            engine().typed_config.runtime)) {
+            citlali::pipeline::runtime_config(engine()))) {
         engine().output_paths.redu_dir_name =
             citlali::pipeline::next_reduction_subdir_path(
                 citlali::pipeline::runtime_output_dir(engine()),

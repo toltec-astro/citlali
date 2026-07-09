@@ -5,6 +5,7 @@
 
 #include <citlali/core/pipeline/timestream_output_context.h>
 #include <citlali/core/pipeline/map_grouping_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/runtime_policy.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
 #include <citlali/core/pipeline/timestream_scan_context.h>
@@ -39,8 +40,9 @@ void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs, bool write
                     rtcdata, kidsproc, rawobs, scan, telescope, alignment.start_indices,
                     alignment.end_indices, alignment.common_time, alignment.network_times, alignment.masks,
                     citlali::config::timing_gap_interpolation_active(
-                        typed_config.runtime),
-                    scan_length, calib.n_dets, typed_config.timestream.type);
+                        citlali::pipeline::runtime_config(*this)),
+                    scan_length, calib.n_dets,
+                    citlali::pipeline::timestream_config(*this).type);
 
                 // increment scan
                 scan++;
@@ -85,7 +87,7 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
             alignment.hwpr_start_index, scan_window.start, scan_window.length);
         citlali::pipeline::initialize_rtc_flags(rtcdata);
         if (citlali::config::timing_gap_interpolation_active(
-                typed_config.runtime)) {
+                citlali::pipeline::runtime_config(*this))) {
             citlali::pipeline::apply_gap_masks_to_rtc_flags(
                 rtcdata, calib, alignment.network_masks, scan_window.start,
                 rtcproc.filter_edge_guard.context_samples, logger);
@@ -110,7 +112,7 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
         auto map_indices = rtcproc.run(rtcdata, ptcdata, calib, telescope, omb.pixel_size_rad, map_grouping,
                                        rtc_outer_output_ptr);
 
-        if (typed_config.mapmaking.grouping !=
+        if (citlali::pipeline::mapmaking_config(*this).grouping !=
             citlali::config::MapGrouping::detector) {
             // remove flagged detectors
             rtcproc.remove_flagged_dets(ptcdata, calib.apt);
