@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/config/calibration_config.h>
+
 #include <algorithm>
 #include <cctype>
 #include <string>
@@ -20,10 +22,12 @@ void mirror_typed_pointing_offsets(
     const MjdValues &pointing_offsets_modified_julian_date,
     TypedOffsets &typed_offsets) {
     typed_offsets.enabled = true;
-    const auto &az_offsets = pointing_offsets_arcsec.at("az");
+    const auto &az_offsets =
+        pointing_offsets_arcsec.at(citlali::config::pointing_axis_az());
     typed_offsets.az_arcsec.assign(
         az_offsets.data(), az_offsets.data() + az_offsets.size());
-    const auto &alt_offsets = pointing_offsets_arcsec.at("alt");
+    const auto &alt_offsets =
+        pointing_offsets_arcsec.at(citlali::config::pointing_axis_alt());
     typed_offsets.alt_arcsec.assign(
         alt_offsets.data(), alt_offsets.data() + alt_offsets.size());
     typed_offsets.modified_julian_date.assign(

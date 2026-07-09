@@ -67,10 +67,14 @@ TodSourceCrossingScan find_source_crossing_scan(
     }
 
     std::map<std::string, Eigen::VectorXd> pointing_offsets;
-    pointing_offsets["az"] = tod_output_pointing_offset_or_zero(
-        pointing_offsets_arcsec, "az", n_tel);
-    pointing_offsets["alt"] = tod_output_pointing_offset_or_zero(
-        pointing_offsets_arcsec, "alt", n_tel);
+    pointing_offsets[citlali::config::pointing_axis_az()] =
+        tod_output_pointing_offset_or_zero(
+            pointing_offsets_arcsec, citlali::config::pointing_axis_az(),
+            n_tel);
+    pointing_offsets[citlali::config::pointing_axis_alt()] =
+        tod_output_pointing_offset_or_zero(
+            pointing_offsets_arcsec, citlali::config::pointing_axis_alt(),
+            n_tel);
 
     auto [lat, lon] = ::engine_utils::calc_det_pointing(
         tel_data_copy, 0.0, 0.0, telescope.pixel_axes, pointing_offsets,

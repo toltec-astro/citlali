@@ -2,10 +2,14 @@
 
 // Implementation detail included by todproc.h.
 
+#include <citlali/core/config/calibration_config.h>
+
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::interp_pointing() {
-    const auto az_it = engine().pointing_offsets_arcsec.find("az");
-    const auto alt_it = engine().pointing_offsets_arcsec.find("alt");
+    const auto az_it = engine().pointing_offsets_arcsec.find(
+        citlali::config::pointing_axis_az());
+    const auto alt_it = engine().pointing_offsets_arcsec.find(
+        citlali::config::pointing_axis_alt());
     if (az_it == engine().pointing_offsets_arcsec.end() || alt_it == engine().pointing_offsets_arcsec.end()) {
         logger->error("pointing_offsets must include both az and alt vectors");
         std::exit(EXIT_FAILURE);
@@ -30,7 +34,9 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
     }
 
     // keys for pointing offsets
-    std::vector<std::string> altaz_keys = {"alt", "az"};
+    std::vector<std::string> altaz_keys = {
+        citlali::config::pointing_axis_alt(),
+        citlali::config::pointing_axis_az()};
 
     for (const auto &key: altaz_keys) {
         // if only one value given

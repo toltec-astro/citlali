@@ -3,6 +3,7 @@
 // Beammap detector TOD selection implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/config/calibration_config.h>
 #include <citlali/core/engine/detail/beammap_detector_tod_selection.h>
 #include <citlali/core/engine/detail/beammap_detector_tod_output_helpers.h>
 
@@ -67,12 +68,14 @@ Beammap::sample_detector_tod_pointing(Eigen::Index n_scans) {
     samples.sampled_tel_data =
         beammap_detector_tod_selection::sample_tel_data(
             telescope.tel_data, samples.sampled_indices);
-    samples.pointing_offsets["az"] =
+    samples.pointing_offsets[citlali::config::pointing_axis_az()] =
         beammap_detector_tod_selection::sample_pointing_offset(
-            pointing_offsets_arcsec, "az", samples.sampled_indices);
-    samples.pointing_offsets["alt"] =
+            pointing_offsets_arcsec, citlali::config::pointing_axis_az(),
+            samples.sampled_indices);
+    samples.pointing_offsets[citlali::config::pointing_axis_alt()] =
         beammap_detector_tod_selection::sample_pointing_offset(
-            pointing_offsets_arcsec, "alt", samples.sampled_indices);
+            pointing_offsets_arcsec, citlali::config::pointing_axis_alt(),
+            samples.sampled_indices);
     samples.valid = true;
     return samples;
 }

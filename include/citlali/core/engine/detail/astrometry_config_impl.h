@@ -27,7 +27,7 @@ void Engine::get_astrometry_config(CT &config) {
                 auto axis = citlali::engine_detail::normalized_pointing_axis_name(
                     config.get_str(
                         std::tuple{"pointing_offsets", i, "axes_name"}));
-                if (axis == "az" || axis == "alt") {
+                if (citlali::config::is_supported_pointing_axis(axis)) {
                     auto offset = config.template get_typed<std::vector<double>>(
                         std::tuple{"pointing_offsets", i, "value_arcsec"});
                     if (offset.empty()) {
@@ -39,7 +39,7 @@ void Engine::get_astrometry_config(CT &config) {
                     }
                     pointing_offsets_arcsec[axis] =
                         Eigen::Map<Eigen::VectorXd>(offset.data(), offset.size());
-                    if (axis == "az") {
+                    if (citlali::config::is_pointing_axis_az(axis)) {
                         has_az = true;
                     }
                     else {
@@ -68,7 +68,8 @@ void Engine::get_astrometry_config(CT &config) {
                 std::exit(EXIT_FAILURE);
             }
             logger->warn("pointing_offsets az parsed by positional index; consider setting axes_name: az");
-            pointing_offsets_arcsec["az"] = Eigen::Map<Eigen::VectorXd>(offset.data(), offset.size());
+            pointing_offsets_arcsec[citlali::config::pointing_axis_az()] =
+                Eigen::Map<Eigen::VectorXd>(offset.data(), offset.size());
             has_az = true;
         }
         if (!has_alt && config.has(std::tuple{"pointing_offsets", 1, "value_arcsec"})) {
@@ -78,7 +79,8 @@ void Engine::get_astrometry_config(CT &config) {
                 std::exit(EXIT_FAILURE);
             }
             logger->warn("pointing_offsets alt parsed by positional index; consider setting axes_name: alt");
-            pointing_offsets_arcsec["alt"] = Eigen::Map<Eigen::VectorXd>(offset.data(), offset.size());
+            pointing_offsets_arcsec[citlali::config::pointing_axis_alt()] =
+                Eigen::Map<Eigen::VectorXd>(offset.data(), offset.size());
             has_alt = true;
         }
         if (!has_mjd && config.has(std::tuple{"pointing_offsets", 2, "modified_julian_date"})) {
@@ -91,8 +93,10 @@ void Engine::get_astrometry_config(CT &config) {
             std::exit(EXIT_FAILURE);
         }
 
-        const auto n_az = pointing_offsets_arcsec["az"].size();
-        const auto n_alt = pointing_offsets_arcsec["alt"].size();
+        const auto n_az =
+            pointing_offsets_arcsec[citlali::config::pointing_axis_az()].size();
+        const auto n_alt =
+            pointing_offsets_arcsec[citlali::config::pointing_axis_alt()].size();
         if (n_az != n_alt) {
             logger->error("pointing_offsets az/alt lengths differ (az={} alt={})", n_az, n_alt);
             std::exit(EXIT_FAILURE);

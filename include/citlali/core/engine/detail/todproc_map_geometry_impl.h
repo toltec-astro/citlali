@@ -2,6 +2,7 @@
 
 // Implementation detail included by todproc.h.
 
+#include <citlali/core/config/calibration_config.h>
 #include <citlali/core/pipeline/map_dimension_policy.h>
 #include <citlali/core/pipeline/runtime_policy.h>
 
@@ -46,8 +47,12 @@ void TimeOrderedDataProc<EngineType>::calc_omb_size(std::vector<map_extent_t> &m
             }
 
             // get pointing offsets for current scan
-            pointing_offsets_arcsec["az"] = engine().pointing_offsets_arcsec["az"].segment(si,sl);
-            pointing_offsets_arcsec["alt"] = engine().pointing_offsets_arcsec["alt"].segment(si,sl);
+            pointing_offsets_arcsec[citlali::config::pointing_axis_az()] =
+                engine().pointing_offsets_arcsec[
+                    citlali::config::pointing_axis_az()].segment(si, sl);
+            pointing_offsets_arcsec[citlali::config::pointing_axis_alt()] =
+                engine().pointing_offsets_arcsec[
+                    citlali::config::pointing_axis_alt()].segment(si, sl);
 
             // don't need to find the offsets if in detector mode
             if (engine().typed_config.mapmaking.grouping !=

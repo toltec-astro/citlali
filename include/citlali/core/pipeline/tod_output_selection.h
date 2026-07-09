@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/config/calibration_config.h>
 #include <citlali/core/config/timestream_config.h>
 
 #include <algorithm>
