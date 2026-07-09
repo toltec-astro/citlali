@@ -8,6 +8,3 @@ struct BeammapFluxState {
     std::map<std::string, double> beammap_fluxes_mJy_beam;
     std::map<std::string, double> beammap_fluxes_MJy_Sr;
 };
-
-using BeammapControls = BeammapFluxState;
-using beammapControls = BeammapControls;
