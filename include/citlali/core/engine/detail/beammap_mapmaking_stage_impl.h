@@ -110,6 +110,33 @@ void Beammap::prepare_beammap_iteration_state(bool rerun_source_aware_rtc,
     }
 }
 
+void Beammap::normalize_beammap_maps_after_pass(
+    const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
+    const std::string &profile_context) {
+    logger->info("normalizing maps");
+    const auto normalize_profile_scope =
+        citlali::pipeline::profile_stage(
+            "beammap.mapmaking.normalize", logger, profile_context);
+    if (rtcproc.run_kernel && !omb.grid_weight.empty()) {
+        timestream::log_kernel_map_diag(
+            logger,
+            "beammap iter " + std::to_string(current_iter) + " before normalize",
+            omb.kernel,
+            active_maps,
+            &omb.grid_weight);
+    }
+    omb.normalize_maps(active_maps);
+    if (rtcproc.run_kernel) {
+        timestream::log_kernel_map_diag(
+            logger,
+            "beammap iter " + std::to_string(current_iter) + " after normalize",
+            omb.kernel,
+            active_maps);
+    }
+    citlali::pipeline::log_beammap_normalize_support_summary(
+        omb, calib, current_iter, logger);
+}
+
 template <class RandomBits, class Generator>
 void Beammap::run_beammap_mapmaking_pass(bool update_progress,
                                          RandomBits &rands,
@@ -159,30 +186,7 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
             update_progress);
     }
 
-    logger->info("normalizing maps");
-    {
-        const auto normalize_profile_scope =
-            citlali::pipeline::profile_stage(
-                "beammap.mapmaking.normalize", logger, context.str());
-        if (rtcproc.run_kernel && !omb.grid_weight.empty()) {
-            timestream::log_kernel_map_diag(
-                logger,
-                "beammap iter " + std::to_string(current_iter) + " before normalize",
-                omb.kernel,
-                active_maps_ptr,
-                &omb.grid_weight);
-        }
-        omb.normalize_maps(active_maps_ptr);
-        if (rtcproc.run_kernel) {
-            timestream::log_kernel_map_diag(
-                logger,
-                "beammap iter " + std::to_string(current_iter) + " after normalize",
-                omb.kernel,
-                active_maps_ptr);
-        }
-        citlali::pipeline::log_beammap_normalize_support_summary(
-            omb, calib, current_iter, logger);
-    }
+    normalize_beammap_maps_after_pass(active_maps_ptr, context.str());
 }
 
 template <class RandomBits, class Generator>

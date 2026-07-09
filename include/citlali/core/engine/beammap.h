@@ -442,6 +442,9 @@ public:
         citlali::config::MapMethod mapmaking_method,
         const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
         bool update_progress);
+    void normalize_beammap_maps_after_pass(
+        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
+        const std::string &profile_context);
     void prepare_beammap_iteration_state(bool rerun_source_aware_rtc,
                                          bool measurement_iter,
                                          bool first_measurement_iter,
