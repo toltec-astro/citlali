@@ -1,41 +1,31 @@
 #pragma once
 
-#include <CCfits/CCfits>
-
 #include <citlali/core/engine/learning.h>
 #include <citlali/core/pipeline/interface_sync_state.h>
 #include <citlali/core/pipeline/fruit_loop_iteration_state.h>
 #include <citlali/core/pipeline/logging_state.h>
-#include <citlali/core/pipeline/map_fits_output_state.h>
 #include <citlali/core/pipeline/map_index_state.h>
 #include <citlali/core/pipeline/observation_identity_state.h>
 #include <citlali/core/pipeline/observation_date_state.h>
-#include <citlali/core/pipeline/output_path_state.h>
 #include <citlali/core/pipeline/pointing_offset_state.h>
 #include <citlali/core/pipeline/reduction_config_state.h>
+#include <citlali/core/pipeline/reduction_output_state.h>
 #include <citlali/core/pipeline/timestream_alignment_state.h>
-#include <citlali/core/pipeline/tod_output_state.h>
-#include <citlali/core/utils/fits_io.h>
 
 struct EngineRuntimeState : public citlali::pipeline::LoggingState,
-                            public citlali::pipeline::ReductionConfigState {
+                            public citlali::pipeline::ReductionConfigState,
+                            public citlali::pipeline::ReductionOutputState {
     // TOD alignment products and timing-gap masks
     citlali::pipeline::TimestreamAlignmentState alignment;
 
     // observation date metadata for each input observation
     citlali::pipeline::ObservationDateState observation_dates;
 
-    // reduction, observation, coadd, and timestream output paths
-    citlali::pipeline::OutputPathState output_paths;
-
     // manual interface timing offsets for networks and HWPR
     citlali::pipeline::InterfaceSyncState interface_sync;
 
     // active observation identity
     citlali::pipeline::ObservationIdentityState observation_identity;
-
-    // per-stream TOD output row maps
-    citlali::pipeline::TodOutputState tod_outputs;
 
     // map count and per-map index translations
     citlali::pipeline::MapIndexState map_indices;
@@ -49,10 +39,4 @@ struct EngineRuntimeState : public citlali::pipeline::LoggingState,
     // manual pointing offsets and optional MJD interpolation anchors
     citlali::pipeline::PointingOffsetState pointing_offsets;
 
-    using map_fits_output_handle_t =
-        fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>;
-
-    // observation, coadd, filtered, and noise FITS output handles
-    citlali::pipeline::MapFitsOutputState<map_fits_output_handle_t>
-        map_fits_outputs;
 };
