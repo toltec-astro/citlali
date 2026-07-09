@@ -399,6 +399,10 @@ public:
         double init_fwhm);
     void record_beammap_prior_init_mode(
         Eigen::Index map_index, const BeammapFitInitSelection &init_selection);
+    bool try_beammap_prior_fit_init(
+        Eigen::Index map_index,
+        BeammapFitInitSelection &selection,
+        BeammapFitIterationStats &fit_stats);
     BeammapFitInitSelection choose_beammap_fit_init(
         Eigen::Index map_index, bool measurement_iter, bool can_try_prior,
         double init_fwhm, BeammapFitIterationStats &fit_stats);

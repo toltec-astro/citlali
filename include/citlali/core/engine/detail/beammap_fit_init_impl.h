@@ -269,6 +269,35 @@ void Beammap::record_beammap_prior_init_mode(
     }
 }
 
+bool Beammap::try_beammap_prior_fit_init(
+    Eigen::Index map_index,
+    BeammapFitInitSelection &selection,
+    BeammapFitIterationStats &fit_stats) {
+    if (choose_prior_guided_init(map_index, selection.row, selection.col)) {
+        selection.from_prior = true;
+        selection.mode = BeammapFitInitMode::Prior;
+        fit_stats.init_prior++;
+        return true;
+    }
+
+    if (!citlali::pipeline::beammap_config(*this).priors.fallback_blind) {
+        if (has_beammap_prior_diagnostics()) {
+            prior_diag_values(map_index, prior_init_mode_col) = -1.0;
+        }
+        logger->warn(
+            "beammap fit map={} skipped: no prior-guided init candidate and fallback_blind=false",
+            map_index);
+        fit_stats.init_skip++;
+        selection.skip_fit = true;
+        return true;
+    }
+
+    if (has_beammap_prior_diagnostics()) {
+        prior_diag_values(map_index, prior_fallback_blind_col) = 1.0;
+    }
+    return false;
+}
+
 Beammap::BeammapFitInitSelection Beammap::choose_beammap_fit_init(
     Eigen::Index map_index, bool measurement_iter, bool can_try_prior,
     double init_fwhm, BeammapFitIterationStats &fit_stats) {
@@ -290,25 +319,9 @@ Beammap::BeammapFitInitSelection Beammap::choose_beammap_fit_init(
     }
 
     if (can_try_prior) {
-        if (choose_prior_guided_init(map_index, selection.row, selection.col)) {
-            selection.from_prior = true;
-            selection.mode = BeammapFitInitMode::Prior;
-            fit_stats.init_prior++;
-        }
-        else if (!citlali::pipeline::beammap_config(*this)
-                      .priors.fallback_blind) {
-            if (has_beammap_prior_diagnostics()) {
-                prior_diag_values(map_index, prior_init_mode_col) = -1.0;
-            }
-            logger->warn(
-                "beammap fit map={} skipped: no prior-guided init candidate and fallback_blind=false",
-                map_index);
-            fit_stats.init_skip++;
-            selection.skip_fit = true;
+        if (try_beammap_prior_fit_init(map_index, selection, fit_stats) &&
+            selection.skip_fit) {
             return selection;
-        }
-        else if (has_beammap_prior_diagnostics()) {
-            prior_diag_values(map_index, prior_fallback_blind_col) = 1.0;
         }
     }
 
