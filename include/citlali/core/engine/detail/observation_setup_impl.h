@@ -6,6 +6,7 @@
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/config_value.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
 namespace citlali::engine_detail {
@@ -128,7 +129,7 @@ void setup_observation_tod_output_files(EngineT &engine) {
         engine.setup_tod_output_chunk_selection();
     }
     const auto &tod_output_subdir_name =
-        engine.typed_config.timestream.output.subdir_name;
+        citlali::pipeline::timestream_config(engine).output.subdir_name;
     // create output subdirectory if requested
     if (citlali::config::has_config_value(tod_output_subdir_name)) {
         auto profile_scope = citlali::pipeline::profile_stage(

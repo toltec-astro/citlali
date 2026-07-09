@@ -33,7 +33,9 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
 
     const auto detector_tod_paths =
         beammap_detector_tod_output_helpers::output_paths(
-        output_paths.obsnum_dir_name, typed_config.beammap.detector_tod_output.subdir_name,
+        output_paths.obsnum_dir_name,
+        citlali::pipeline::beammap_config(*this)
+            .detector_tod_output.subdir_name,
         telescope.sim_obs, citlali::pipeline::runtime_config(*this).reduction_type, observation_identity.obsnum);
     const std::string &filename = detector_tod_paths.filename;
 

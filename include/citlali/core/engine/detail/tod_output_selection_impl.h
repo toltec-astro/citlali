@@ -4,6 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 void Engine::setup_tod_output_chunk_selection() {
     const Eigen::Index n_scans = telescope.scan_indices.cols();
@@ -24,7 +25,7 @@ void Engine::setup_tod_output_chunk_selection() {
                 source_crossing =
                     citlali::pipeline::find_source_crossing_scan(
                         telescope, pointing_offsets.arcsec,
-                        typed_config.mapmaking.grouping);
+                        citlali::pipeline::mapmaking_config(*this).grouping);
             }
             catch (const std::exception &e) {
                 logger->warn(
@@ -71,7 +72,8 @@ void Engine::setup_tod_output_chunk_selection() {
         citlali::pipeline::reset(tod_outputs);
     }
     else {
-        const auto &output_config = typed_config.timestream.output;
+        const auto &output_config =
+            citlali::pipeline::timestream_config(*this).output;
         const auto &rtc_output_config = output_config.raw_time_chunk;
         const auto &ptc_output_config = output_config.processed_time_chunk;
         setup_one("RTC", citlali::pipeline::raw_tod_output_enabled(*this),

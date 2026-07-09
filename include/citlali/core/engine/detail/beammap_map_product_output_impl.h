@@ -7,6 +7,7 @@
 #include <citlali/core/engine/detail/beammap_map_product_split_helpers.h>
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/pipeline/map_output_debug_breadcrumb.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
 template <mapmaking::MapType map_type>
@@ -15,14 +16,17 @@ void Beammap::write_beammap_map_products(
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
     const std::string &dir_name) {
-    if (!citlali::config::mapmaking_active(typed_config.mapmaking)) {
+    const auto &mapmaking_config = citlali::pipeline::mapmaking_config(*this);
+    const auto &beammap_config = citlali::pipeline::beammap_config(*this);
+
+    if (!citlali::config::mapmaking_active(mapmaking_config)) {
         return;
     }
 
     const bool detector_grouping =
         citlali::config::is_detector_map_grouping(
-            typed_config.mapmaking.grouping);
-    const auto &split_config = typed_config.beammap.split_fits_by_flag;
+            mapmaking_config.grouping);
+    const auto &split_config = beammap_config.split_fits_by_flag;
     bool split_by_flag_mode = false;
     if constexpr (map_type == mapmaking::RawObs) {
         split_by_flag_mode = detector_grouping && split_config.enabled;
