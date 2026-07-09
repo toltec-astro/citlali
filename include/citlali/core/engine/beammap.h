@@ -430,6 +430,21 @@ public:
     template <mapmaking::MapType map_type>
     void output();
     template <mapmaking::MapType map_type>
+    void write_standard_beammap_map_products(
+        mapmaking::MapBuffer *mb,
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
+        const std::string &dir_name,
+        bool detector_grouping);
+    template <mapmaking::MapType map_type>
+    void write_split_beammap_map_products(
+        mapmaking::MapBuffer *mb,
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
+        const std::string &dir_name,
+        bool detector_grouping,
+        const std::vector<int> &flag_values);
+    template <mapmaking::MapType map_type>
     void write_beammap_map_products(
         mapmaking::MapBuffer *mb,
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
