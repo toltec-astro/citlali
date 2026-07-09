@@ -3,6 +3,8 @@
 // Engine post-processing implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::find_sources(map_buffer_t &mb) {
     citlali::pipeline::detect_map_sources(mb, map_indices.n_maps, logger);
@@ -48,7 +50,8 @@ void Engine::find_sources(map_buffer_t &mb) {
                     };
                     citlali::pipeline::normalize_and_store_source_fit_result(
                         mb, source_row_start, j, params, perrors,
-                        typed_config.mapmaking.pixel_axes_frame,
+                        citlali::pipeline::mapmaking_config(*this)
+                            .pixel_axes_frame,
                         source_fit_constants,
                         tangent_to_abs);
                 }

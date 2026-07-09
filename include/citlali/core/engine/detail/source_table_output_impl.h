@@ -3,6 +3,8 @@
 // Engine post-processing implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
     // get filename for source table
@@ -27,7 +29,7 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
             map_to_array_index, calc_map_std_dev, write_source_table);
     citlali::pipeline::write_source_table_output(
         source_filename, *mb, map_fitter.n_params,
-        typed_config.mapmaking.pixel_axes_frame,
+        citlali::pipeline::mapmaking_config(*this).pixel_axes_frame,
         telescope.source_name, engine_utils::current_date_time(),
         citlali::pipeline::latest_observation_date(observation_dates),
         calib.apt_header_description,

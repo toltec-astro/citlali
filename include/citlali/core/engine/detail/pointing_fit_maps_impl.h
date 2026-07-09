@@ -2,10 +2,12 @@
 
 // Implementation detail included by pointing.h.
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 void Pointing::fit_maps() {
     fit_valid.setZero(map_indices.n_maps);
 
-    if (!typed_config.pointing.fit_gaussian) {
+    if (!citlali::pipeline::pointing_config(*this).fit_gaussian) {
         logger->info("pointing Gaussian map fitting disabled");
         params.setZero(map_indices.n_maps, map_fitter.n_params);
         perrors.setZero(map_indices.n_maps, map_fitter.n_params);

@@ -127,7 +127,8 @@ void Pointing::output() {
                     }
                     try {
                         f_io->at(map_index).hdus.at(k)->addKey("POINTING.fit_enabled",
-                                                               static_cast<int>(typed_config.pointing.fit_gaussian),
+                                                               static_cast<int>(
+                                                                   citlali::pipeline::pointing_config(*this).fit_gaussian),
                                                                "Gaussian fit enabled");
                     } catch (...) {
                         f_io->at(map_index).hdus.at(k)->addKey("POINTING.fit_enabled", 0,
@@ -144,13 +145,13 @@ void Pointing::output() {
                     try {
                         f_io->at(map_index).hdus.at(k)->addKey("POINTING.source_strategy",
                                                                std::string(citlali::config::to_string(
-                                                                   typed_config.pointing.source_strategy)),
+                                                                   citlali::pipeline::pointing_config(*this).source_strategy)),
                                                                "Pointing source strategy");
                     } catch (...) {}
                     try {
                         f_io->at(map_index).hdus.at(k)->addKey("POINTING.source_center_mode",
                                                                std::string(citlali::config::to_string(
-                                                                   typed_config.pointing.fruitloops_center_mode)),
+                                                                   citlali::pipeline::pointing_config(*this).fruitloops_center_mode)),
                                                                "Fruit loops source center mode");
                     } catch (...) {}
                     ++k; // Move to next extension
