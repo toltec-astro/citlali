@@ -6,6 +6,7 @@
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/config_value.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/stage_profile.h>
 
 void Engine::obsnum_setup() {
     if (rtcproc.run_extinction) {
@@ -91,19 +92,29 @@ void Engine::obsnum_setup() {
         }
     }
 
-    setup_tod_output_chunk_selection();
+    {
+        auto profile_scope = citlali::pipeline::profile_stage(
+            "observation.setup.tod_output_selection", logger);
+        setup_tod_output_chunk_selection();
+    }
     // create output subdirectory if requested
     if (citlali::config::has_config_value(tod_output_subdir_name)) {
+        auto profile_scope = citlali::pipeline::profile_stage(
+            "observation.setup.tod_output_directory", logger);
         fs::create_directories(obsnum_dir_name + "raw/" + tod_output_subdir_name);
     }
     // create timestream files
     if (citlali::pipeline::tod_output_enabled(*this)) {
         // make rtc tod output file
         if (citlali::pipeline::raw_tod_output_enabled(*this)) {
+            auto profile_scope = citlali::pipeline::profile_stage(
+                "observation.setup.create_rtc_tod_file", logger);
             create_tod_files<engine_utils::toltecIO::rtc_timestream>();
         }
         // make ptc tod output file
         if (citlali::pipeline::processed_tod_output_enabled(*this)) {
+            auto profile_scope = citlali::pipeline::profile_stage(
+                "observation.setup.create_ptc_tod_file", logger);
             create_tod_files<engine_utils::toltecIO::ptc_timestream>();
         }
     }
@@ -111,19 +122,35 @@ void Engine::obsnum_setup() {
     else if (!diagnostics.write_evals) {
         ptcproc.cleaner.n_calc = 0;
     }
-    create_rtcdiag_file();
-    create_ptcdiag_file();
+    {
+        auto profile_scope = citlali::pipeline::profile_stage(
+            "observation.setup.create_rtcdiag_file", logger);
+        create_rtcdiag_file();
+    }
+    {
+        auto profile_scope = citlali::pipeline::profile_stage(
+            "observation.setup.create_ptcdiag_file", logger);
+        create_ptcdiag_file();
+    }
 
     // output basic info for obs reduction to command line
-    cli_summary();
+    {
+        auto profile_scope = citlali::pipeline::profile_stage(
+            "observation.setup.cli_summary", logger);
+        cli_summary();
+    }
 
     // set up per-det stats file values
-    for (const auto &stat: diagnostics.det_stats_header) {
-        diagnostics.stats[stat].setZero(calib.n_dets, telescope.scan_indices.cols());
-    }
-    // set up per-group stats file values
-    for (const auto &stat: diagnostics.grp_stats_header) {
-        diagnostics.stats[stat].setZero(calib.n_arrays, telescope.scan_indices.cols());
+    {
+        auto profile_scope = citlali::pipeline::profile_stage(
+            "observation.setup.stats_buffers", logger);
+        for (const auto &stat: diagnostics.det_stats_header) {
+            diagnostics.stats[stat].setZero(calib.n_dets, telescope.scan_indices.cols());
+        }
+        // set up per-group stats file values
+        for (const auto &stat: diagnostics.grp_stats_header) {
+            diagnostics.stats[stat].setZero(calib.n_arrays, telescope.scan_indices.cols());
+        }
     }
     // clear stored eigenvalues
     std::map<Eigen::Index, std::vector<std::vector<Eigen::VectorXd>>>().swap(diagnostics.evals);
