@@ -27,11 +27,6 @@ inline int default_beammap_tod_output_iter() {
     return -1;
 }
 
-inline void reset_beammap_config_mirror(
-    citlali::config::BeammapConfig &target) {
-    target = citlali::config::BeammapConfig{};
-}
-
 template <class BeammapControls>
 void sync_beammap_core_controls(BeammapControls &controls,
                                 const BeammapCoreConfigValues &values) {
@@ -126,13 +121,17 @@ void sync_beammap_flagging_controls(
                 sensitivity.sens_psd_limits_hz.size()));
 }
 
-void mirror_beammap_core_config(citlali::config::BeammapConfig &target,
-                                const BeammapCoreConfigValues &core_values,
-                                const BeammapFittingConfigValues &fitting_values,
-                                const citlali::config::BeammapScanBandMaskConfig
-                                    &scan_band_mask,
-                                const citlali::config::BeammapSplitFitsByFlagConfig
-                                    &split_fits_by_flag) {
+inline void apply_beammap_typed_config(
+    citlali::config::BeammapConfig &target,
+    const BeammapCoreConfigValues &core_values,
+    const BeammapFittingConfigValues &fitting_values,
+    const citlali::config::BeammapScanBandMaskConfig &scan_band_mask,
+    const citlali::config::BeammapSplitFitsByFlagConfig &split_fits_by_flag,
+    const BeammapPriorsConfigValues &priors,
+    const citlali::config::BeammapDetectorTodOutputConfig &detector_tod_output,
+    const citlali::config::BeammapFlaggingConfig &flagging,
+    const BeammapSensitivityConfigValues &sensitivity) {
+    target = citlali::config::BeammapConfig{};
     target.iteration = core_values.iteration;
     target.phase_strategy = core_values.phase_strategy;
     target.reference = core_values.reference;
@@ -141,39 +140,7 @@ void mirror_beammap_core_config(citlali::config::BeammapConfig &target,
     target.fitting = fitting_values.fitting;
     target.scan_band_mask = scan_band_mask;
     target.split_fits_by_flag = split_fits_by_flag;
-}
-
-inline void mirror_beammap_priors_config(
-    citlali::config::BeammapConfig &target,
-    const BeammapPriorsConfigValues &priors) {
-    target.priors.enabled = priors.enabled;
-    target.priors.filepath = priors.filepath;
-    target.priors.candidate_top_n = priors.candidate_top_n;
-    target.priors.min_snr = priors.min_snr;
-    target.priors.max_d2 = priors.max_d2;
-    target.priors.max_d2_iter0 = priors.max_d2_iter0;
-    target.priors.max_d2_after_iter0 = priors.max_d2_after_iter0;
-    target.priors.score_lambda = priors.score_lambda;
-    target.priors.score_lambda_iter0 = priors.score_lambda_iter0;
-    target.priors.score_lambda_after_iter0 = priors.score_lambda_after_iter0;
-    target.priors.fallback_blind = priors.fallback_blind;
-    target.priors.align_after_iter0 = priors.align_after_iter0;
-    target.priors.alignment_scope = priors.alignment_scope;
-    target.priors.alignment_common_support = priors.alignment_common_support;
-    target.priors.alignment_common_support_quantile =
-        priors.alignment_common_support_quantile;
-    target.priors.alignment_min_matches = priors.alignment_min_matches;
-    target.priors.alignment_max_d2 = priors.alignment_max_d2;
-    target.priors.alignment_fit_rotation = priors.alignment_fit_rotation;
-    target.priors.alignment_max_rotation_deg =
-        priors.alignment_max_rotation_deg;
-}
-
-void mirror_beammap_output_and_flagging_config(
-    citlali::config::BeammapConfig &target,
-    const citlali::config::BeammapDetectorTodOutputConfig &detector_tod_output,
-    const citlali::config::BeammapFlaggingConfig &flagging,
-    const BeammapSensitivityConfigValues &sensitivity) {
+    target.priors = priors;
     target.detector_tod_output = detector_tod_output;
     target.flagging = flagging;
     target.flagging.sens_factors = sensitivity.sens_factors;

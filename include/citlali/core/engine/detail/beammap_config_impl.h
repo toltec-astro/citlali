@@ -59,13 +59,9 @@ void Engine::get_beammap_config(CT &config) {
     citlali::pipeline::sync_beammap_detector_tod_output_controls(
         *this, beammap_detector_tod_output_config);
 
-    citlali::pipeline::reset_beammap_config_mirror(beammap_config);
-    citlali::pipeline::mirror_beammap_core_config(
+    citlali::pipeline::apply_beammap_typed_config(
         beammap_config, beammap_core_config, beammap_fitting_config,
-        beammap_scan_band_mask_config, beammap_split_fits_config);
-    citlali::pipeline::mirror_beammap_priors_config(
-        beammap_config, beammap_priors_config);
-    citlali::pipeline::mirror_beammap_output_and_flagging_config(
-        beammap_config, beammap_detector_tod_output_config,
+        beammap_scan_band_mask_config, beammap_split_fits_config,
+        beammap_priors_config, beammap_detector_tod_output_config,
         beammap_flagging_config, beammap_sensitivity_config);
 }
