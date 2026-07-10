@@ -12,6 +12,149 @@
 #include <utility>
 #include <vector>
 
+Beammap::ScanBandRowStats Beammap::calculate_scan_band_row_stats(
+    const Eigen::MatrixXd &signal,
+    const Eigen::MatrixXd &weight,
+    Eigen::Index n_rows,
+    Eigen::Index n_cols,
+    Eigen::Index search_rows,
+    Eigen::Index min_row_pixels) {
+    ScanBandRowStats row_stats;
+    row_stats.medians.assign(static_cast<std::size_t>(n_rows),
+                             std::numeric_limits<double>::quiet_NaN());
+    row_stats.sigmas.assign(static_cast<std::size_t>(n_rows),
+                            std::numeric_limits<double>::quiet_NaN());
+    row_stats.counts.assign(static_cast<std::size_t>(n_rows), 0);
+
+    std::vector<double> row_values;
+    for (Eigen::Index row = 0; row < n_rows; ++row) {
+        row_values.clear();
+        row_values.reserve(static_cast<std::size_t>(n_cols));
+        for (Eigen::Index col = 0; col < n_cols; ++col) {
+            const double w = weight(row, col);
+            const double s = signal(row, col);
+            if (!std::isfinite(w) || w <= 0.0 || !std::isfinite(s)) {
+                continue;
+            }
+            row_values.push_back(s);
+        }
+        row_stats.counts[static_cast<std::size_t>(row)] =
+            static_cast<Eigen::Index>(row_values.size());
+        if (row_stats.counts[static_cast<std::size_t>(row)] <
+            min_row_pixels) {
+            continue;
+        }
+        const auto stats = beammap_masking_stats::robust_stats(row_values);
+        if (!stats.valid) {
+            continue;
+        }
+        row_stats.medians[static_cast<std::size_t>(row)] = stats.median;
+        row_stats.sigmas[static_cast<std::size_t>(row)] = stats.sigma;
+        if (row >= search_rows && row < n_rows - search_rows) {
+            row_stats.interior_medians.push_back(stats.median);
+            if (std::isfinite(stats.sigma)) {
+                row_stats.interior_sigmas.push_back(stats.sigma);
+            }
+        }
+    }
+
+    return row_stats;
+}
+
+std::vector<Eigen::Index> Beammap::collect_scan_band_edge_rows(
+    const ScanBandRowStats &row_stats,
+    bool from_top,
+    Eigen::Index n_rows,
+    Eigen::Index search_rows,
+    Eigen::Index min_row_pixels,
+    Eigen::Index min_contiguous_rows,
+    double interior_median,
+    double interior_median_sigma,
+    double interior_row_sigma_median,
+    double median_sigma_threshold,
+    double sigma_ratio_threshold,
+    double eps) {
+    std::vector<Eigen::Index> flagged_rows;
+    bool saw_eligible_row = false;
+    for (Eigen::Index edge_idx = 0; edge_idx < search_rows; ++edge_idx) {
+        const Eigen::Index row =
+            from_top ? edge_idx : (n_rows - 1 - edge_idx);
+        if (row < 0 || row >= n_rows) {
+            continue;
+        }
+        if (row_stats.counts[static_cast<std::size_t>(row)] <
+                min_row_pixels ||
+            !std::isfinite(row_stats.medians[static_cast<std::size_t>(row)])) {
+            if (saw_eligible_row) {
+                break;
+            }
+            continue;
+        }
+        saw_eligible_row = true;
+        const bool bad = beammap_masking_stats::row_is_bad(
+            row_stats.medians[static_cast<std::size_t>(row)],
+            row_stats.sigmas[static_cast<std::size_t>(row)],
+            interior_median,
+            interior_median_sigma,
+            interior_row_sigma_median,
+            median_sigma_threshold,
+            sigma_ratio_threshold,
+            eps);
+        if (!bad) {
+            break;
+        }
+        flagged_rows.push_back(row);
+    }
+    if (flagged_rows.size() < static_cast<std::size_t>(min_contiguous_rows)) {
+        flagged_rows.clear();
+    }
+    return flagged_rows;
+}
+
+Beammap::ScanBandEdgeRows Beammap::select_scan_band_edge_rows(
+    const ScanBandRowStats &row_stats,
+    Eigen::Index n_rows,
+    Eigen::Index search_rows,
+    Eigen::Index min_row_pixels,
+    Eigen::Index min_contiguous_rows,
+    double median_sigma_threshold,
+    double sigma_ratio_threshold,
+    double eps) {
+    ScanBandEdgeRows edge_rows;
+    if (row_stats.interior_medians.size() <
+        static_cast<std::size_t>(min_contiguous_rows)) {
+        return edge_rows;
+    }
+
+    const auto interior_stats =
+        beammap_masking_stats::robust_stats(row_stats.interior_medians);
+    if (!interior_stats.valid) {
+        return edge_rows;
+    }
+    const double interior_median = interior_stats.median;
+    const double interior_median_sigma = interior_stats.sigma;
+
+    double interior_row_sigma_median =
+        std::numeric_limits<double>::quiet_NaN();
+    if (!row_stats.interior_sigmas.empty()) {
+        interior_row_sigma_median =
+            beammap_masking_stats::robust_stats(row_stats.interior_sigmas)
+                .median;
+    }
+
+    edge_rows.top = collect_scan_band_edge_rows(
+        row_stats, true, n_rows, search_rows, min_row_pixels,
+        min_contiguous_rows, interior_median, interior_median_sigma,
+        interior_row_sigma_median, median_sigma_threshold,
+        sigma_ratio_threshold, eps);
+    edge_rows.bottom = collect_scan_band_edge_rows(
+        row_stats, false, n_rows, search_rows, min_row_pixels,
+        min_contiguous_rows, interior_median, interior_median_sigma,
+        interior_row_sigma_median, median_sigma_threshold,
+        sigma_ratio_threshold, eps);
+    return edge_rows;
+}
+
 bool Beammap::reject_scan_band_mask_candidate(
     Eigen::Index det,
     Eigen::Index n_bad_rows,
@@ -124,111 +267,26 @@ Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer 
             continue;
         }
 
-        std::vector<double> row_medians(static_cast<std::size_t>(map_buffer.n_rows),
-                                        std::numeric_limits<double>::quiet_NaN());
-        std::vector<double> row_sigmas(static_cast<std::size_t>(map_buffer.n_rows),
-                                       std::numeric_limits<double>::quiet_NaN());
-        std::vector<Eigen::Index> row_counts(static_cast<std::size_t>(map_buffer.n_rows), 0);
-        std::vector<double> row_values;
-        std::vector<double> interior_row_medians;
-        std::vector<double> interior_row_sigmas;
-
-        for (Eigen::Index row = 0; row < map_buffer.n_rows; ++row) {
-            row_values.clear();
-            row_values.reserve(static_cast<std::size_t>(map_buffer.n_cols));
-            for (Eigen::Index col = 0; col < map_buffer.n_cols; ++col) {
-                const double w = wt(row, col);
-                const double s = sig(row, col);
-                if (!std::isfinite(w) || w <= 0.0 || !std::isfinite(s)) {
-                    continue;
-                }
-                row_values.push_back(s);
-            }
-            row_counts[static_cast<std::size_t>(row)] = static_cast<Eigen::Index>(row_values.size());
-            if (row_counts[static_cast<std::size_t>(row)] < min_row_pixels) {
-                continue;
-            }
-            const auto row_stats = beammap_masking_stats::robust_stats(row_values);
-            if (!row_stats.valid) {
-                continue;
-            }
-            row_medians[static_cast<std::size_t>(row)] = row_stats.median;
-            row_sigmas[static_cast<std::size_t>(row)] = row_stats.sigma;
-            if (row >= search_rows && row < map_buffer.n_rows - search_rows) {
-                interior_row_medians.push_back(row_stats.median);
-                if (std::isfinite(row_stats.sigma)) {
-                    interior_row_sigmas.push_back(row_stats.sigma);
-                }
-            }
-        }
-
-        if (interior_row_medians.size() < static_cast<std::size_t>(min_contiguous_rows)) {
-            continue;
-        }
-
-        const auto interior_stats = beammap_masking_stats::robust_stats(interior_row_medians);
-        if (!interior_stats.valid) {
-            continue;
-        }
-        const double interior_median = interior_stats.median;
-        const double interior_median_sigma = interior_stats.sigma;
-
-        double interior_row_sigma_median = std::numeric_limits<double>::quiet_NaN();
-        if (!interior_row_sigmas.empty()) {
-            interior_row_sigma_median = beammap_masking_stats::robust_stats(interior_row_sigmas).median;
-        }
-
-        auto collect_edge_rows = [&](bool from_top) {
-            std::vector<Eigen::Index> flagged_rows;
-            bool saw_eligible_row = false;
-            for (Eigen::Index edge_idx = 0; edge_idx < search_rows; ++edge_idx) {
-                const Eigen::Index row = from_top ? edge_idx : (map_buffer.n_rows - 1 - edge_idx);
-                if (row < 0 || row >= map_buffer.n_rows) {
-                    continue;
-                }
-                if (row_counts[static_cast<std::size_t>(row)] < min_row_pixels ||
-                    !std::isfinite(row_medians[static_cast<std::size_t>(row)])) {
-                    if (saw_eligible_row) {
-                        break;
-                    }
-                    continue;
-                }
-                saw_eligible_row = true;
-                const bool bad = beammap_masking_stats::row_is_bad(
-                    row_medians[static_cast<std::size_t>(row)],
-                    row_sigmas[static_cast<std::size_t>(row)],
-                    interior_median,
-                    interior_median_sigma,
-                    interior_row_sigma_median,
-                    median_sigma_threshold,
-                    sigma_ratio_threshold,
-                    eps);
-                if (!bad) {
-                    break;
-                }
-                flagged_rows.push_back(row);
-            }
-            if (flagged_rows.size() < static_cast<std::size_t>(min_contiguous_rows)) {
-                flagged_rows.clear();
-            }
-            return flagged_rows;
-        };
-
-        auto top_rows = collect_edge_rows(true);
-        auto bottom_rows = collect_edge_rows(false);
-        if (top_rows.empty() && bottom_rows.empty()) {
+        const auto row_stats = calculate_scan_band_row_stats(
+            sig, wt, map_buffer.n_rows, map_buffer.n_cols, search_rows,
+            min_row_pixels);
+        const auto edge_rows = select_scan_band_edge_rows(
+            row_stats, map_buffer.n_rows, search_rows, min_row_pixels,
+            min_contiguous_rows, median_sigma_threshold,
+            sigma_ratio_threshold, eps);
+        if (edge_rows.top.empty() && edge_rows.bottom.empty()) {
             continue;
         }
 
         std::vector<unsigned char> bad_row_mask(static_cast<std::size_t>(map_buffer.n_rows), 0);
         Eigen::Index n_bad_rows = 0;
-        for (const auto row : top_rows) {
+        for (const auto row : edge_rows.top) {
             if (!bad_row_mask[static_cast<std::size_t>(row)]) {
                 bad_row_mask[static_cast<std::size_t>(row)] = 1;
                 n_bad_rows++;
             }
         }
-        for (const auto row : bottom_rows) {
+        for (const auto row : edge_rows.bottom) {
             if (!bad_row_mask[static_cast<std::size_t>(row)]) {
                 bad_row_mask[static_cast<std::size_t>(row)] = 1;
                 n_bad_rows++;
@@ -300,7 +358,7 @@ Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer 
 
         apply_scan_band_mask_flags(det, proposed_flags);
         record_scan_band_mask_success(
-            det, n_bad_rows, proposed_flags, top_rows, bottom_rows,
+            det, n_bad_rows, proposed_flags, edge_rows.top, edge_rows.bottom,
             flagged_fraction, summary);
     }
 

@@ -223,4 +223,17 @@ struct ScanBandMaskSummary {
     Eigen::Index n_det_rejected = 0;
 };
 
+struct ScanBandRowStats {
+    std::vector<double> medians;
+    std::vector<double> sigmas;
+    std::vector<Eigen::Index> counts;
+    std::vector<double> interior_medians;
+    std::vector<double> interior_sigmas;
+};
+
+struct ScanBandEdgeRows {
+    std::vector<Eigen::Index> top;
+    std::vector<Eigen::Index> bottom;
+};
+
 } // namespace citlali::engine_detail::beammap

@@ -88,6 +88,10 @@ public:
         citlali::engine_detail::beammap::RFIMaskScanSummary;
     using ScanBandMaskSummary =
         citlali::engine_detail::beammap::ScanBandMaskSummary;
+    using ScanBandRowStats =
+        citlali::engine_detail::beammap::ScanBandRowStats;
+    using ScanBandEdgeRows =
+        citlali::engine_detail::beammap::ScanBandEdgeRows;
 
     bool beammap_soft_priors_loaded = false;
     bool beammap_soft_priors_are_centered = false;
@@ -362,6 +366,35 @@ public:
 
     // detector-map edge-band masking for coherent bad scan legs
     ScanBandMaskSummary apply_scan_band_mask(mapmaking::MapBuffer &);
+    ScanBandRowStats calculate_scan_band_row_stats(
+        const Eigen::MatrixXd &signal,
+        const Eigen::MatrixXd &weight,
+        Eigen::Index n_rows,
+        Eigen::Index n_cols,
+        Eigen::Index search_rows,
+        Eigen::Index min_row_pixels);
+    std::vector<Eigen::Index> collect_scan_band_edge_rows(
+        const ScanBandRowStats &row_stats,
+        bool from_top,
+        Eigen::Index n_rows,
+        Eigen::Index search_rows,
+        Eigen::Index min_row_pixels,
+        Eigen::Index min_contiguous_rows,
+        double interior_median,
+        double interior_median_sigma,
+        double interior_row_sigma_median,
+        double median_sigma_threshold,
+        double sigma_ratio_threshold,
+        double eps);
+    ScanBandEdgeRows select_scan_band_edge_rows(
+        const ScanBandRowStats &row_stats,
+        Eigen::Index n_rows,
+        Eigen::Index search_rows,
+        Eigen::Index min_row_pixels,
+        Eigen::Index min_contiguous_rows,
+        double median_sigma_threshold,
+        double sigma_ratio_threshold,
+        double eps);
     bool reject_scan_band_mask_candidate(
         Eigen::Index det,
         Eigen::Index n_bad_rows,
