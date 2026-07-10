@@ -335,6 +335,10 @@ public:
         bool good_fit, bool init_amp_zero, bool amp_bounds_zero);
     bool has_complete_beammap_fit_diagnostics(
         const engine_utils::mapFitter::FitDiagnostics &fit_diag) const;
+    void record_beammap_fit_bound_hits(
+        Eigen::Index map_index,
+        const engine_utils::mapFitter::FitDiagnostics &fit_diag,
+        BeammapFitIterationStats &fit_stats);
     void record_beammap_fit_diagnostics(
         Eigen::Index map_index,
         const engine_utils::mapFitter::FitDiagnostics &fit_diag,

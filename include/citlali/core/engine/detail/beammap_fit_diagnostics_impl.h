@@ -77,21 +77,10 @@ bool Beammap::has_complete_beammap_fit_diagnostics(
            fit_diag.hit_upper.size() == map_fitter.n_params;
 }
 
-void Beammap::record_beammap_fit_diagnostics(
+void Beammap::record_beammap_fit_bound_hits(
     Eigen::Index map_index,
     const engine_utils::mapFitter::FitDiagnostics &fit_diag,
     BeammapFitIterationStats &fit_stats) {
-    if (!has_complete_beammap_fit_diagnostics(fit_diag)) {
-        reset_beammap_fit_diagnostics(map_index);
-        return;
-    }
-
-    fit_diag_init_params.row(map_index) = fit_diag.init_params.transpose();
-    fit_diag_lower_limits.row(map_index) = fit_diag.lower_limits.transpose();
-    fit_diag_upper_limits.row(map_index) = fit_diag.upper_limits.transpose();
-    fit_diag_hit_lower.row(map_index) = fit_diag.hit_lower.transpose();
-    fit_diag_hit_upper.row(map_index) = fit_diag.hit_upper.transpose();
-
     int bound_code = 0;
     int bound_nhit = 0;
     for (int p = 0; p < map_fitter.n_params; ++p) {
@@ -113,6 +102,24 @@ void Beammap::record_beammap_fit_diagnostics(
     if (bound_nhit > 0) {
         fit_stats.bound_any++;
     }
+}
+
+void Beammap::record_beammap_fit_diagnostics(
+    Eigen::Index map_index,
+    const engine_utils::mapFitter::FitDiagnostics &fit_diag,
+    BeammapFitIterationStats &fit_stats) {
+    if (!has_complete_beammap_fit_diagnostics(fit_diag)) {
+        reset_beammap_fit_diagnostics(map_index);
+        return;
+    }
+
+    fit_diag_init_params.row(map_index) = fit_diag.init_params.transpose();
+    fit_diag_lower_limits.row(map_index) = fit_diag.lower_limits.transpose();
+    fit_diag_upper_limits.row(map_index) = fit_diag.upper_limits.transpose();
+    fit_diag_hit_lower.row(map_index) = fit_diag.hit_lower.transpose();
+    fit_diag_hit_upper.row(map_index) = fit_diag.hit_upper.transpose();
+
+    record_beammap_fit_bound_hits(map_index, fit_diag, fit_stats);
 }
 
 void Beammap::log_beammap_fit_iteration_stats(
