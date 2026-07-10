@@ -21,13 +21,17 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest inspected point reduction: `redu22`, produced by `84670829`.
+- Latest inspected point reduction: `redu24`, produced by `a9a7990e`.
+- `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
+  records and complete TOD/diagnostic products. Their common numeric products,
+  FITS maps, and pointing tables are exact; only profiling timing differs.
 - `redu21` and `redu22` had exact common numeric products with complete TOD
   comparison, but both contained 12 logged NetCDF errors.
-- The same YAML produced two provenance changes in `redu22`: an effective IIR
+- The same YAML exposed two provenance defects in `redu22`: an effective IIR
   default appeared for a disabled filter and an extinction sentinel changed.
+  The mirror fix is committed locally and awaits Unity validation.
 - Local `citlali_cli` build and compact-config preflight pass.
-- The inspected local build discovers zero tests because tests are disabled.
+- The local focused safety target discovers and passes 13 tests.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -46,15 +50,13 @@ failures must fail the reduction. There are no best-effort enabled products.
 
 Immediate work order:
 
-1. Diagnose and eliminate the recurring RTC/PTC NetCDF errors.
-2. Propagate required output failures and make ordered output cancellation-safe.
-3. Make enum parse failures and non-finite values hard validation failures.
-4. Restore correct disabled-IIR and extinction provenance semantics.
-5. Activate focused tests for failure propagation, cancellation, invalid
+1. Complete Unity validation of the required-output and provenance fixes.
+2. Make enum parse failures and non-finite values hard validation failures.
+3. Activate focused tests for failure propagation, cancellation, invalid
    config, and repeated runs in one process.
-6. Establish a strict, complete point comparator and a zero-unexpected-errors
+4. Establish a strict, complete point comparator and a zero-unexpected-errors
    audit gate.
-7. Record current matched OG/refactor baselines for point, beammap, science,
+5. Record current matched OG/refactor baselines for point, beammap, science,
    and OOF before advancing the architecture again.
 
 ### Phase 1 Progress
@@ -84,6 +86,15 @@ Immediate work order:
   serialization, cancellation, and cross-stream cancellation tests pass
   locally; a CLI-level injected-write test remains part of the Phase 1 exit
   gate.
+- The owner-thread failure state now lets Pointing, Lali, and Beammap rethrow
+  required output failures after GrPPI worker drainage, so the normal CLI error
+  boundary can report them without an exception escaping a worker thread.
+- Disabled IIR and extinction mirrors now preserve legacy effective provenance:
+  IIR uses frequency `0`/order `1`/zero-phase `false`, and extinction uses
+  `N/A`. Enabled values are unchanged. Four focused mirror tests pass.
+- Reduction audit comparison now treats any error-level log record as blocking;
+  `redu22` correctly fails the audit with 12 errors while the clean `redu23` to
+  `redu24` comparison passes.
 - The pre-existing `citlali_test` target was found to have substantial test
   infrastructure and source decay. It remains a separate Phase 1 repair item;
   the focused safety target does not conceal that debt or satisfy the complete
