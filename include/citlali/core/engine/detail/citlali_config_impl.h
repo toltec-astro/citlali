@@ -77,6 +77,6 @@ void Engine::get_citlali_config(CT &config) {
     citlali::engine_detail::disable_map_products_if_mapmaking_disabled(
         reduction_config);
 
-    citlali::engine_detail::validate_typed_config_mirrors(
+    citlali::pipeline::validate_typed_config_mirrors(
         reduction_config, logger);
 }

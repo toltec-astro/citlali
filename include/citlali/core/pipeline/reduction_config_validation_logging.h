@@ -5,7 +5,7 @@
 
 #include <string_view>
 
-namespace citlali::engine_detail {
+namespace citlali::pipeline {
 
 inline std::string_view config_diagnostic_severity_label(
     citlali::config::DiagnosticSeverity severity) {
@@ -46,4 +46,4 @@ void validate_typed_config_mirrors(
     log_typed_config_validation_report(report, logger);
 }
 
-}  // namespace citlali::engine_detail
+}  // namespace citlali::pipeline

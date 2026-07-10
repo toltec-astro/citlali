@@ -8,7 +8,7 @@
 #include <citlali/core/engine/detail/beammap_config_impl.h>
 #include <citlali/core/engine/detail/map_filter_config_impl.h>
 #include <citlali/core/engine/detail/runtime_config_impl.h>
-#include <citlali/core/engine/detail/typed_config_validation.h>
+#include <citlali/core/pipeline/reduction_config_validation_logging.h>
 #include <citlali/core/engine/detail/citlali_config_impl.h>
 #include <citlali/core/engine/detail/photometry_config_impl.h>
 #include <citlali/core/engine/detail/astrometry_config_impl.h>
