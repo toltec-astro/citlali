@@ -7,7 +7,7 @@
 #include <cstdlib>
 #include <string>
 
-namespace citlali::engine_detail {
+namespace citlali::pipeline {
 
 template <class WienerFilter, class PostProcessingConfig>
 void mirror_wiener_filter_config(
@@ -86,4 +86,4 @@ void apply_map_filter_runtime_policy(
     wiener_filter.parallel_policy = parallel_policy;
 }
 
-}  // namespace citlali::engine_detail
+}  // namespace citlali::pipeline

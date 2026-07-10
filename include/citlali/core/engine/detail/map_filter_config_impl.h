@@ -4,7 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/pipeline/config_parse_tracking.h>
-#include <citlali/core/engine/detail/map_filter_config_policy.h>
+#include <citlali/core/pipeline/map_filter_config_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template<typename CT>
@@ -18,9 +18,9 @@ void Engine::get_map_filter_config(CT &config) {
     citlali::pipeline::read_processor_config(
         wiener_filter, config, config_diag);
 
-    citlali::engine_detail::mirror_wiener_filter_config(
+    citlali::pipeline::mirror_wiener_filter_config(
         wiener_filter, RAD_TO_ASEC, post_processing_config);
-    citlali::engine_detail::apply_map_filter_runtime_policy(
+    citlali::pipeline::apply_map_filter_runtime_policy(
         reduction_config, rtcproc, map_fitter,
         citlali::pipeline::runtime_parallel_policy_name(*this),
         wiener_filter, logger);
