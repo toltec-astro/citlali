@@ -14,20 +14,20 @@ void read_source_finding_config(
         return;
     }
 
-    read_mirrored_config_value(
+    citlali::pipeline::read_mirrored_config_value(
         config, std::tuple{"post_processing", "source_finding", "source_sigma"},
         omb.source_sigma,
         typed_post_processing_config.source_finding.source_sigma, missing_keys,
         invalid_keys);
 
-    read_mirrored_config_value(
+    citlali::pipeline::read_mirrored_config_value(
         config,
         std::tuple{"post_processing", "source_finding", "source_window_arcsec"},
         omb.source_window_rad,
         typed_post_processing_config.source_finding.source_window_arcsec,
         missing_keys, invalid_keys);
 
-    read_mirrored_config_value(
+    citlali::pipeline::read_mirrored_config_value(
         config, std::tuple{"post_processing", "source_finding", "mode"},
         omb.source_finder_mode,
         typed_post_processing_config.source_finding.mode, missing_keys,

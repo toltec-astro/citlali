@@ -1,7 +1,7 @@
 #pragma once
 
 #include <citlali/core/config/timestream_config.h>
-#include <citlali/core/engine/detail/config_parse_tracking.h>
+#include <citlali/core/pipeline/config_parse_tracking.h>
 
 #include <string>
 #include <tuple>
@@ -17,7 +17,7 @@ void read_timestream_enabled_config(Config &config, bool &enabled,
                                     TimestreamConfig &typed_config,
                                     MissingKeys &missing_keys,
                                     InvalidKeys &invalid_keys) {
-    read_mirrored_config_value(
+    citlali::pipeline::read_mirrored_config_value(
         config, std::tuple{"timestream", "enabled"}, enabled,
         typed_config.enabled, missing_keys, invalid_keys);
 }
@@ -37,7 +37,7 @@ void read_timestream_type_config(Config &config, std::string &type,
                                  TimestreamConfig &typed_config,
                                  MissingKeys &missing_keys,
                                  InvalidKeys &invalid_keys) {
-    read_parsed_mirrored_config_value(
+    citlali::pipeline::read_parsed_mirrored_config_value(
         config, std::tuple{"timestream", "type"}, type, typed_config.type,
         citlali::config::parse_tod_type, missing_keys, invalid_keys);
 }
@@ -58,26 +58,26 @@ void read_auxiliary_quadrature_channel_config(Config &config,
                                               MissingKeys &missing_keys,
                                               InvalidKeys &invalid_keys) {
     auto &channel = typed_config.auxiliary_channels.quadrature_r;
-    read_optional_mirrored_config_value(
+    citlali::pipeline::read_optional_mirrored_config_value(
         config,
         std::tuple{"timestream", "auxiliary_channels", "quadrature_r",
                    "enabled"},
         channel.enabled, channel.enabled, missing_keys, invalid_keys);
-    read_optional_mirrored_config_value(
+    citlali::pipeline::read_optional_mirrored_config_value(
         config,
         std::tuple{"timestream", "auxiliary_channels", "quadrature_r", "name"},
         channel.name, channel.name, missing_keys, invalid_keys);
 
     std::string source_type{
         std::string(citlali::config::to_string(channel.source_type))};
-    read_optional_parsed_mirrored_config_value(
+    citlali::pipeline::read_optional_parsed_mirrored_config_value(
         config,
         std::tuple{"timestream", "auxiliary_channels", "quadrature_r",
                    "source_type"},
         source_type, channel.source_type, citlali::config::parse_tod_type,
         missing_keys, invalid_keys, {"xs", "rs", "is", "qs"});
 
-    read_optional_mirrored_config_value(
+    citlali::pipeline::read_optional_mirrored_config_value(
         config,
         std::tuple{"timestream", "auxiliary_channels", "quadrature_r",
                    "native_unit"},
@@ -85,7 +85,7 @@ void read_auxiliary_quadrature_channel_config(Config &config,
 
     std::string calibration_policy{std::string(
         citlali::config::to_string(channel.calibration_policy))};
-    read_optional_parsed_mirrored_config_value(
+    citlali::pipeline::read_optional_parsed_mirrored_config_value(
         config,
         std::tuple{"timestream", "auxiliary_channels", "quadrature_r",
                    "calibration_policy"},
@@ -94,19 +94,19 @@ void read_auxiliary_quadrature_channel_config(Config &config,
         missing_keys, invalid_keys,
         {"native", "primary_equivalent", "sky_equivalent"});
 
-    read_optional_mirrored_config_value(
+    citlali::pipeline::read_optional_mirrored_config_value(
         config,
         std::tuple{"timestream", "auxiliary_channels", "quadrature_r",
                    "apply_primary_transfer"},
         channel.apply_primary_linear_transfer,
         channel.apply_primary_linear_transfer, missing_keys, invalid_keys);
-    read_optional_mirrored_config_value(
+    citlali::pipeline::read_optional_mirrored_config_value(
         config,
         std::tuple{"timestream", "auxiliary_channels", "quadrature_r",
                    "use_for_science_map"},
         channel.use_for_science_map, channel.use_for_science_map,
         missing_keys, invalid_keys);
-    read_optional_mirrored_config_value(
+    citlali::pipeline::read_optional_mirrored_config_value(
         config,
         std::tuple{"timestream", "auxiliary_channels", "quadrature_r",
                    "diagnostics_enabled"},
@@ -129,7 +129,7 @@ void read_raw_tod_output_enabled_config(Config &config, bool &enabled,
                                         TimestreamConfig &typed_config,
                                         MissingKeys &missing_keys,
                                         InvalidKeys &invalid_keys) {
-    read_config_value_if_clean(
+    citlali::pipeline::read_config_value_if_clean(
         config,
         std::tuple{"timestream", "raw_time_chunk", "output", "enabled"},
         enabled,
@@ -155,7 +155,7 @@ void read_processed_tod_output_enabled_config(Config &config, bool &enabled,
                                               TimestreamConfig &typed_config,
                                               MissingKeys &missing_keys,
                                               InvalidKeys &invalid_keys) {
-    read_config_value_if_clean(
+    citlali::pipeline::read_config_value_if_clean(
         config,
         std::tuple{"timestream", "processed_time_chunk", "output",
                    "enabled"},
@@ -189,7 +189,7 @@ void read_tod_stream_output_mode_config(
 
     const auto missing_before = missing_keys.size();
     const auto invalid_before = invalid_keys.size();
-    read_config_value_if_clean(
+    citlali::pipeline::read_config_value_if_clean(
         config, key, mode,
         [&typed_stream](const std::string &mode_name) {
             if (auto parsed =
@@ -204,7 +204,7 @@ void read_tod_stream_output_mode_config(
         parsed_mode = *parsed;
     }
     citlali::config::TodStreamOutputMode stream_mode =
-        config_parse_clean(
+        citlali::pipeline::config_parse_clean(
             missing_keys, invalid_keys, missing_before, invalid_before)
             ? typed_stream.mode
             : parsed_mode;
@@ -236,7 +236,7 @@ void read_tod_stream_outer_context_config(
     }
 
     using value_type = std::decay_t<ContextSamples>;
-    read_config_value_if_clean(
+    citlali::pipeline::read_config_value_if_clean(
         config, key, outer_context_samples,
         [&typed_stream](value_type count) {
             typed_stream.outer_context_samples = static_cast<int>(count);

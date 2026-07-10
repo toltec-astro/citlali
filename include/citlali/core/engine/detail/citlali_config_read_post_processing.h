@@ -46,7 +46,7 @@ void read_post_processing_activation_config(
     Config &config, bool &run_map_filter, bool &run_source_finder,
     PostProcessingConfig &typed_post_processing_config,
     KeyList &missing_keys, KeyList &invalid_keys) {
-    read_config_value_if_clean(
+    citlali::pipeline::read_config_value_if_clean(
         config, std::tuple{"post_processing", "map_filtering", "enabled"},
         run_map_filter,
         [&typed_post_processing_config](bool enabled) {
@@ -55,7 +55,7 @@ void read_post_processing_activation_config(
         },
         missing_keys, invalid_keys);
 
-    read_config_value_if_clean(
+    citlali::pipeline::read_config_value_if_clean(
         config, std::tuple{"post_processing", "source_finding", "enabled"},
         run_source_finder,
         [&typed_post_processing_config](bool enabled) {
@@ -91,14 +91,14 @@ void read_source_fitting_config(
     citlali::config::set_source_fitting_active(
         typed_post_processing_config, true);
 
-    read_mirrored_config_value(
+    citlali::pipeline::read_mirrored_config_value(
         config,
         std::tuple{"post_processing", "source_fitting", "bounding_box_arcsec"},
         map_fitter.bounding_box_pix,
         typed_post_processing_config.source_fitting.bounding_box_arcsec,
         missing_keys, invalid_keys, {}, {0});
 
-    read_mirrored_config_value(
+    citlali::pipeline::read_mirrored_config_value(
         config,
         std::tuple{"post_processing", "source_fitting",
                    "fitting_radius_arcsec"},
@@ -106,7 +106,7 @@ void read_source_fitting_config(
         typed_post_processing_config.source_fitting.fitting_radius_arcsec,
         missing_keys, invalid_keys);
 
-    read_mirrored_config_value(
+    citlali::pipeline::read_mirrored_config_value(
         config,
         std::tuple{"post_processing", "source_fitting", "gauss_model",
                    "fit_rotation_angle"},

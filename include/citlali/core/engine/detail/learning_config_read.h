@@ -1,6 +1,6 @@
 #pragma once
 
-#include <citlali/core/engine/detail/config_parse_tracking.h>
+#include <citlali/core/pipeline/config_parse_tracking.h>
 
 #include <type_traits>
 #include <vector>
@@ -14,7 +14,7 @@ void read_optional_learning_config(Config &config, const Key &key,
                                    KeyVec &invalid_keys,
                                    std::vector<std::decay_t<Param>> min_val = {},
                                    std::vector<std::decay_t<Param>> max_val = {}) {
-    citlali::engine_detail::read_optional_mirrored_config_value(
+    citlali::pipeline::read_optional_mirrored_config_value(
         config, key, param, target, missing_keys, invalid_keys,
         {}, std::move(min_val), std::move(max_val));
 }

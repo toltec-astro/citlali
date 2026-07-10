@@ -17,7 +17,7 @@ void read_output_map_block_config(
     const auto invalid_before = invalid_keys.size();
     omb.get_config(
         config, missing_keys, invalid_keys, pixel_axes, reduction_type);
-    if (config_parse_clean(
+    if (citlali::pipeline::config_parse_clean(
             missing_keys, invalid_keys, missing_before, invalid_before)) {
         citlali::pipeline::mirror_output_map_block_config(
             typed_mapmaking_config, omb, rad_to_arcsec,
