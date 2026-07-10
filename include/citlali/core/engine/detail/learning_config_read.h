@@ -19,6 +19,18 @@ void read_optional_learning_config(Config &config, const Key &key,
         {}, std::move(min_val), std::move(max_val));
 }
 
+template <class Config, class Param, class Target, class Key,
+          class Diagnostics>
+void read_optional_learning_config(
+    Config &config, const Key &key, Param &param, Target &target,
+    Diagnostics &diagnostics,
+    std::vector<std::decay_t<Param>> min_val = {},
+    std::vector<std::decay_t<Param>> max_val = {}) {
+    read_optional_learning_config(
+        config, key, param, target, diagnostics.missing_keys,
+        diagnostics.invalid_keys, std::move(min_val), std::move(max_val));
+}
+
 template <class LearningOptions>
 bool learning_map_contribution_diagnostics_enabled(
     const LearningOptions &options) {
