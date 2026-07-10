@@ -58,6 +58,8 @@ public:
         citlali::engine_detail::beammap::BeammapDetectorSourceCenterStats;
     using BeammapPreviousFitInit =
         citlali::engine_detail::beammap::BeammapPreviousFitInit;
+    using BeammapPreviousFitSeed =
+        citlali::engine_detail::beammap::BeammapPreviousFitSeed;
     using BeammapFitInitSelection =
         citlali::engine_detail::beammap::BeammapFitInitSelection;
     using BeammapFitIterationStats =
@@ -308,18 +310,22 @@ public:
                                           Eigen::Index peak_col);
     bool has_previous_beammap_fit_init_candidate(
         Eigen::Index map_index, bool measurement_iter) const;
-    bool read_previous_beammap_fit_seed(
-        Eigen::Index map_index, double prev_row, double prev_col,
-        double &seed_signal, double &seed_weight) const;
+    BeammapPreviousFitSeed read_previous_beammap_fit_seed(
+        Eigen::Index map_index, double prev_row, double prev_col) const;
     bool should_reject_previous_beammap_fit_for_peak(
         Eigen::Index map_index, double prev_row, double prev_col,
-        double seed_signal, double seed_weight, bool can_try_prior,
+        const BeammapPreviousFitSeed &seed, bool can_try_prior,
         double init_fwhm);
     BeammapPreviousFitInit choose_previous_beammap_fit_init(
         Eigen::Index map_index, bool measurement_iter, bool can_try_prior,
         double init_fwhm);
     void record_beammap_prior_init_mode(
         Eigen::Index map_index, const BeammapFitInitSelection &init_selection);
+    bool skip_beammap_fit_without_prior_fallback(
+        Eigen::Index map_index,
+        BeammapFitInitSelection &selection,
+        BeammapFitIterationStats &fit_stats);
+    void record_beammap_fit_prior_fallback_blind(Eigen::Index map_index);
     bool try_beammap_prior_fit_init(
         Eigen::Index map_index,
         BeammapFitInitSelection &selection,

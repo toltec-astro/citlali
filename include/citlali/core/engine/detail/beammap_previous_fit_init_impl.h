@@ -13,30 +13,28 @@ bool Beammap::has_previous_beammap_fit_init_candidate(
            std::isfinite(p0(map_index, 2));
 }
 
-bool Beammap::read_previous_beammap_fit_seed(
-    Eigen::Index map_index, double prev_row, double prev_col,
-    double &seed_signal, double &seed_weight) const {
-    seed_signal = std::numeric_limits<double>::quiet_NaN();
-    seed_weight = std::numeric_limits<double>::quiet_NaN();
-
+Beammap::BeammapPreviousFitSeed Beammap::read_previous_beammap_fit_seed(
+    Eigen::Index map_index, double prev_row, double prev_col) const {
+    BeammapPreviousFitSeed seed;
     Eigen::Index prev_row_i =
         static_cast<Eigen::Index>(std::llround(prev_row));
     Eigen::Index prev_col_i =
         static_cast<Eigen::Index>(std::llround(prev_col));
     if (prev_row_i < 0 || prev_row_i >= omb.signal[map_index].rows() ||
         prev_col_i < 0 || prev_col_i >= omb.signal[map_index].cols()) {
-        return false;
+        return seed;
     }
 
-    seed_weight = omb.weight[map_index](prev_row_i, prev_col_i);
-    seed_signal = omb.signal[map_index](prev_row_i, prev_col_i);
-    return std::isfinite(seed_weight) && seed_weight > 0.0 &&
-           std::isfinite(seed_signal) && seed_signal > 0.0;
+    seed.weight = omb.weight[map_index](prev_row_i, prev_col_i);
+    seed.signal = omb.signal[map_index](prev_row_i, prev_col_i);
+    seed.valid = std::isfinite(seed.weight) && seed.weight > 0.0 &&
+                 std::isfinite(seed.signal) && seed.signal > 0.0;
+    return seed;
 }
 
 bool Beammap::should_reject_previous_beammap_fit_for_peak(
     Eigen::Index map_index, double prev_row, double prev_col,
-    double seed_signal, double seed_weight, bool can_try_prior,
+    const Beammap::BeammapPreviousFitSeed &seed, bool can_try_prior,
     double init_fwhm) {
     Eigen::Index peak_row = -1;
     Eigen::Index peak_col = -1;
@@ -46,7 +44,7 @@ bool Beammap::should_reject_previous_beammap_fit_for_peak(
         return false;
     }
 
-    const double prev_snr = seed_signal * std::sqrt(seed_weight);
+    const double prev_snr = seed.signal * std::sqrt(seed.weight);
     const double dr = static_cast<double>(peak_row) - prev_row;
     const double dc = static_cast<double>(peak_col) - prev_col;
     const double dist_pix = std::sqrt(dr * dr + dc * dc);
@@ -80,20 +78,17 @@ Beammap::BeammapPreviousFitInit Beammap::choose_previous_beammap_fit_init(
 
     const double prev_col = p0(map_index, 1);
     const double prev_row = p0(map_index, 2);
-    double seed_signal = std::numeric_limits<double>::quiet_NaN();
-    double seed_weight = std::numeric_limits<double>::quiet_NaN();
-    bool prev_seed_valid =
-        read_previous_beammap_fit_seed(
-            map_index, prev_row, prev_col, seed_signal, seed_weight);
-    if (prev_seed_valid &&
+    const auto seed =
+        read_previous_beammap_fit_seed(map_index, prev_row, prev_col);
+    bool use_previous_seed = seed.valid;
+    if (use_previous_seed &&
         should_reject_previous_beammap_fit_for_peak(
-            map_index, prev_row, prev_col, seed_signal, seed_weight,
-            can_try_prior, init_fwhm)) {
-        prev_seed_valid = false;
+            map_index, prev_row, prev_col, seed, can_try_prior, init_fwhm)) {
+        use_previous_seed = false;
         result.rejected_by_peak = true;
     }
 
-    if (prev_seed_valid) {
+    if (use_previous_seed) {
         result.valid = true;
         result.col = prev_col;
         result.row = prev_row;

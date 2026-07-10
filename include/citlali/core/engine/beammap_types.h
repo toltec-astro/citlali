@@ -73,6 +73,12 @@ struct BeammapPreviousFitInit {
     double col = -99.0;
 };
 
+struct BeammapPreviousFitSeed {
+    bool valid = false;
+    double signal = std::numeric_limits<double>::quiet_NaN();
+    double weight = std::numeric_limits<double>::quiet_NaN();
+};
+
 struct BeammapFitInitSelection {
     bool skip_fit = false;
     bool from_previous = false;

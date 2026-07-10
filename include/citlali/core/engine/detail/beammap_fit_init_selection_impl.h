@@ -19,6 +19,27 @@ void Beammap::record_beammap_prior_init_mode(
     }
 }
 
+bool Beammap::skip_beammap_fit_without_prior_fallback(
+    Eigen::Index map_index,
+    BeammapFitInitSelection &selection,
+    BeammapFitIterationStats &fit_stats) {
+    if (has_beammap_prior_diagnostics()) {
+        prior_diag_values(map_index, prior_init_mode_col) = -1.0;
+    }
+    logger->warn(
+        "beammap fit map={} skipped: no prior-guided init candidate and fallback_blind=false",
+        map_index);
+    fit_stats.init_skip++;
+    selection.skip_fit = true;
+    return true;
+}
+
+void Beammap::record_beammap_fit_prior_fallback_blind(Eigen::Index map_index) {
+    if (has_beammap_prior_diagnostics()) {
+        prior_diag_values(map_index, prior_fallback_blind_col) = 1.0;
+    }
+}
+
 bool Beammap::try_beammap_prior_fit_init(
     Eigen::Index map_index,
     BeammapFitInitSelection &selection,
@@ -31,20 +52,11 @@ bool Beammap::try_beammap_prior_fit_init(
     }
 
     if (!citlali::pipeline::beammap_config(*this).priors.fallback_blind) {
-        if (has_beammap_prior_diagnostics()) {
-            prior_diag_values(map_index, prior_init_mode_col) = -1.0;
-        }
-        logger->warn(
-            "beammap fit map={} skipped: no prior-guided init candidate and fallback_blind=false",
-            map_index);
-        fit_stats.init_skip++;
-        selection.skip_fit = true;
-        return true;
+        return skip_beammap_fit_without_prior_fallback(
+            map_index, selection, fit_stats);
     }
 
-    if (has_beammap_prior_diagnostics()) {
-        prior_diag_values(map_index, prior_fallback_blind_col) = 1.0;
-    }
+    record_beammap_fit_prior_fallback_blind(map_index);
     return false;
 }
 
