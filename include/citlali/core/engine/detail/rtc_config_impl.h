@@ -3,14 +3,17 @@
 // Engine timestream config implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/engine/detail/config_parse_tracking.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
 
 template<typename CT>
 void Engine::get_rtc_config(CT &config) {
     logger->info("getting rtc config options");
+    auto &config_diag = config_diagnostics;
     // get rtcproc config
-    rtcproc.get_config(config, config_diagnostics.missing_keys, config_diagnostics.invalid_keys);
+    citlali::engine_detail::read_processor_config(
+        rtcproc, config, config_diag);
     auto &raw_config =
         citlali::pipeline::timestream_config(*this).raw_time_chunk;
     citlali::pipeline::mirror_raw_despike_config(
@@ -45,6 +48,7 @@ void Engine::get_rtc_config(CT &config) {
     citlali::pipeline::configure_raw_tod_output_context(telescope, rtcproc);
 
     // ignore hwpr?
-    get_config_value(config, calib.ignore_hwpr, config_diagnostics.missing_keys, config_diagnostics.invalid_keys,
-                     std::tuple{"timestream","polarimetry", "ignore_hwpr"});
+    citlali::engine_detail::read_config_value(
+        config, calib.ignore_hwpr, config_diag,
+        std::tuple{"timestream","polarimetry", "ignore_hwpr"});
 }

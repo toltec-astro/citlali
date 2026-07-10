@@ -17,6 +17,25 @@ bool config_parse_clean(
            invalid_keys.size() == invalid_before;
 }
 
+template <class Config, class Param, class Diagnostics, class Key>
+void read_config_value(
+    Config &config, Param &param, Diagnostics &diagnostics, const Key &key,
+    std::vector<std::decay_t<Param>> accepted_values = {},
+    std::vector<std::decay_t<Param>> min_values = {},
+    std::vector<std::decay_t<Param>> max_values = {}) {
+    ::get_config_value(
+        config, param, diagnostics.missing_keys, diagnostics.invalid_keys, key,
+        std::move(accepted_values), std::move(min_values),
+        std::move(max_values));
+}
+
+template <class Processor, class Config, class Diagnostics>
+void read_processor_config(
+    Processor &processor, Config &config, Diagnostics &diagnostics) {
+    processor.get_config(
+        config, diagnostics.missing_keys, diagnostics.invalid_keys);
+}
+
 template <class Config, class Key, class Param, class Target,
           class MissingKeys, class InvalidKeys>
 void read_config_value_if_clean(

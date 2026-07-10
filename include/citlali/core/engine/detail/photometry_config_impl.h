@@ -3,6 +3,7 @@
 // Engine config loading implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/engine/detail/config_parse_tracking.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 namespace citlali::engine_detail {
@@ -34,18 +35,22 @@ void read_beammap_source_fluxes(Config &config, FluxMap &fluxes_mjy_beam,
 template<typename CT>
 void Engine::get_photometry_config(CT &config) {
     auto &source_config = citlali::pipeline::beammap_config(*this).source;
+    auto &config_diag = config_diagnostics;
     source_config = citlali::config::BeammapSourceConfig{};
 
     // beammap source name
-    get_config_value(config, source_config.name, config_diagnostics.missing_keys, config_diagnostics.invalid_keys,
-                     std::tuple{"beammap_source","name"});
+    citlali::engine_detail::read_config_value(
+        config, source_config.name, config_diag,
+        std::tuple{"beammap_source","name"});
     // beammap source ra
-    get_config_value(config, source_config.ra_deg, config_diagnostics.missing_keys, config_diagnostics.invalid_keys,
-                     std::tuple{"beammap_source","ra_deg"});
+    citlali::engine_detail::read_config_value(
+        config, source_config.ra_deg, config_diag,
+        std::tuple{"beammap_source","ra_deg"});
 
     // beammap source dec
-    get_config_value(config, source_config.dec_deg, config_diagnostics.missing_keys, config_diagnostics.invalid_keys,
-                     std::tuple{"beammap_source","dec_deg"});
+    citlali::engine_detail::read_config_value(
+        config, source_config.dec_deg, config_diag,
+        std::tuple{"beammap_source","dec_deg"});
 
     // get source fluxes
     citlali::engine_detail::read_beammap_source_fluxes(
