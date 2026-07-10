@@ -43,6 +43,16 @@ const auto &timestream_config(const Engine &engine) {
 }
 
 template <class Engine>
+auto &polarimetry_config(Engine &engine) {
+    return timestream_config(engine).polarimetry;
+}
+
+template <class Engine>
+const auto &polarimetry_config(const Engine &engine) {
+    return timestream_config(engine).polarimetry;
+}
+
+template <class Engine>
 auto &mapmaking_config(Engine &engine) {
     return reduction_config(engine).mapmaking;
 }

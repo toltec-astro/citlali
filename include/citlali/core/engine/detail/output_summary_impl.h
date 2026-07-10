@@ -10,9 +10,12 @@ void Engine::cli_summary() {
     const auto &noise_settings = citlali::pipeline::noise_config(*this);
     const auto &tod_output_config =
         citlali::pipeline::timestream_config(*this).output;
+    const auto &polarimetry_settings =
+        citlali::pipeline::polarimetry_config(*this);
 
     citlali::pipeline::log_reduction_map_summary(
-        logger, observation_identity.obsnum, omb, rtcproc.run_polarization);
+        logger, observation_identity.obsnum, omb,
+        polarimetry_settings.enabled);
     const double mb_size_total =
         citlali::pipeline::log_map_memory_summary(
             logger, omb, cmb, coadd_settings.enabled,

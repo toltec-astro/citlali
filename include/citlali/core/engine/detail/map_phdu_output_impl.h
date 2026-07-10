@@ -70,6 +70,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     citlali::engine_detail::add_phdu_tod_runtime_config_section(
         fits_entry, name, logger,
         citlali::pipeline::verbose_runtime_enabled(*this),
+        citlali::pipeline::polarimetry_config(*this).enabled,
         rtcproc, ptcproc,
         telescope.outer_scans_chunk);
 
