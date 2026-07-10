@@ -42,7 +42,9 @@ void mirror_raw_correction_flags(RawTimeChunkConfig &target,
                                  const RtcProc &rtcproc) {
     target.flux_calibration_enabled = rtcproc.run_calibrate;
     target.extinction_correction_enabled = rtcproc.run_extinction;
-    target.extinction_model = rtcproc.calibration.extinction_model;
+    target.extinction_model = rtcproc.run_extinction
+                                  ? rtcproc.calibration.extinction_model
+                                  : "N/A";
 }
 
 template <class FilterConfig, class RtcProc>
@@ -79,6 +81,10 @@ void mirror_raw_iir_filter_config(IirFilterConfig &target,
                                   const RtcProc &rtcproc) {
     target.enabled = rtcproc.run_tod_iir_highpass;
     if (!rtcproc.run_tod_iir_highpass) {
+        // Match the legacy effective state instead of exposing typed defaults.
+        target.freq_Hz = 0.0;
+        target.order = 1;
+        target.zero_phase = false;
         return;
     }
 

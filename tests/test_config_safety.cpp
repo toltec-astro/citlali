@@ -2,6 +2,10 @@
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/pipeline/config_parse_tracking.h>
 
+namespace citlali::pipeline {
+#include <citlali/core/pipeline/timestream_config_mirror_raw_filters.h>
+}  // namespace citlali::pipeline
+
 #include <gtest/gtest.h>
 
 #include <spdlog/sinks/null_sink.h>
@@ -27,6 +31,23 @@ struct StringConfig {
     T get_typed(const Key &) const {
         return T{value};
     }
+};
+
+struct FakeIirRtcProc {
+    bool run_tod_iir_highpass = false;
+    struct {
+        double iir_highpass_freq_Hz = 12.0;
+        int iir_highpass_order = 4;
+        bool iir_highpass_zero_phase = true;
+    } filter;
+};
+
+struct FakeCorrectionRtcProc {
+    bool run_calibrate = false;
+    bool run_extinction = false;
+    struct {
+        std::string extinction_model;
+    } calibration;
 };
 
 void ensure_test_logger() {
@@ -129,6 +150,57 @@ TEST(config_safety, authoritative_optional_range_allows_only_nan_nonfinite) {
     check_range(inf, missing_keys, invalid_keys, std::vector{0.0},
                 std::vector<double>{}, key, true);
     EXPECT_EQ(invalid_keys.size(), 1U);
+}
+
+TEST(config_safety, disabled_iir_mirror_uses_legacy_effective_values) {
+    citlali::config::RawTimeChunkIirFilterConfig target;
+    target.freq_Hz = 99.0;
+    target.order = 9;
+    target.zero_phase = true;
+
+    FakeIirRtcProc rtcproc;
+    citlali::pipeline::mirror_raw_iir_filter_config(target, rtcproc);
+
+    EXPECT_FALSE(target.enabled);
+    EXPECT_DOUBLE_EQ(target.freq_Hz, 0.0);
+    EXPECT_EQ(target.order, 1);
+    EXPECT_FALSE(target.zero_phase);
+}
+
+TEST(config_safety, enabled_iir_mirror_preserves_effective_values) {
+    citlali::config::RawTimeChunkIirFilterConfig target;
+    FakeIirRtcProc rtcproc;
+    rtcproc.run_tod_iir_highpass = true;
+
+    citlali::pipeline::mirror_raw_iir_filter_config(target, rtcproc);
+
+    EXPECT_TRUE(target.enabled);
+    EXPECT_DOUBLE_EQ(target.freq_Hz, 12.0);
+    EXPECT_EQ(target.order, 4);
+    EXPECT_TRUE(target.zero_phase);
+}
+
+TEST(config_safety, disabled_extinction_mirror_uses_na_sentinel) {
+    citlali::config::RawTimeChunkConfig target;
+    target.extinction_model = "stale-model";
+    FakeCorrectionRtcProc rtcproc;
+
+    citlali::pipeline::mirror_raw_correction_flags(target, rtcproc);
+
+    EXPECT_FALSE(target.extinction_correction_enabled);
+    EXPECT_EQ(target.extinction_model, "N/A");
+}
+
+TEST(config_safety, enabled_extinction_mirror_preserves_model) {
+    citlali::config::RawTimeChunkConfig target;
+    FakeCorrectionRtcProc rtcproc;
+    rtcproc.run_extinction = true;
+    rtcproc.calibration.extinction_model = "am_q50";
+
+    citlali::pipeline::mirror_raw_correction_flags(target, rtcproc);
+
+    EXPECT_TRUE(target.extinction_correction_enabled);
+    EXPECT_EQ(target.extinction_model, "am_q50");
 }
 
 }  // namespace
