@@ -1,5 +1,13 @@
 # Citlali Structural Refactor Plan - 2026-06-29
 
+> **Roadmap update (2026-07-10):** This document remains the historical
+> statement of intent. The adopted five-phase sequence, current phase, and exit
+> gates now live in [`REFACTOR_STATUS.md`](REFACTOR_STATUS.md), informed by the
+> [independent architecture review](../handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md).
+> Follow the living status document when sequencing differs. Safety
+> stabilization is the current phase; additional typed analysis-control wiring
+> and open-ended header subdivision are paused until its gates pass.
+
 This plan starts the long-running structural refactor from
 `handoff/HANDOFF_2026-06-29_STRUCTURAL_REFACTOR.md`.
 

@@ -1,5 +1,11 @@
 # Codex Notes
 
+> **Superseded workflow notice (2026-07-10):** Read `AGENTS.md` and
+> `doc/REFACTOR_STATUS.md` first. The local-build restrictions below describe an
+> earlier environment and are retained only as historical context. A working
+> local build now exists; the user still performs authoritative Unity builds and
+> reductions.
+
 ## Build/Test Environment
 
 The required local toolchain for compiling `citlali` has not been installed on this machine.
