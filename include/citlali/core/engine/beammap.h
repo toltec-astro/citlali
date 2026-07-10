@@ -242,6 +242,20 @@ public:
     // run the loop pipeline
     template <class KidsProc, class RawObs>
     void loop_pipeline(KidsProc &, RawObs &);
+    void calculate_beammap_detector_sensitivities(
+        const std::string &map_parallel_policy);
+    void populate_beammap_detector_fit_apt_columns();
+    void populate_beammap_mask_diagnostic_apt_columns();
+    void log_beammap_final_bound_summary();
+    void write_beammap_final_prior_diagnostics_to_apt();
+    void refresh_beammap_final_calibration_products();
+    void update_beammap_final_tod_pointing(
+        const std::string &map_parallel_policy,
+        citlali::config::MapGrouping mapmaking_grouping);
+    void finalize_beammap_detector_grouping_outputs(
+        const std::string &map_parallel_policy,
+        citlali::config::MapGrouping mapmaking_grouping);
+    void finalize_beammap_non_detector_grouping_outputs();
 
     // run the iterative stage
     template <class KidsProc, class RawObs>
