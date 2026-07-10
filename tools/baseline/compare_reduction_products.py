@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Compare numeric products from two Citlali reduction directories.
 
-This is a validation triage tool, not a strict deterministic gate.  It finds
-matching FITS, netCDF, CSV, and ECSV products, reports product-set differences,
-and ranks numeric array/column differences by size.
+By default this is a validation triage tool. It finds matching FITS, netCDF,
+CSV, and ECSV products, reports product-set differences, and ranks numeric
+array/column differences by size. ``--strict`` turns the same comparison into
+an acceptance gate that fails on missing, extra, changed, or skipped items.
 """
 
 from __future__ import annotations
@@ -479,6 +480,7 @@ def build_comparison(args: argparse.Namespace) -> dict[str, Any]:
     top_numeric = sorted(numeric_records, key=diff_rank, reverse=True)[: args.top]
 
     return {
+        "strict": bool(args.strict),
         "mode": args.mode,
         "baseline_root": str(baseline_root),
         "candidate_root": str(candidate_root),
@@ -494,6 +496,16 @@ def build_comparison(args: argparse.Namespace) -> dict[str, Any]:
         "changed_records": [compact_record(record) for record in changed_records[: args.max_records]],
         "skipped_records": [compact_record(record) for record in skipped_records[: args.max_records]],
     }
+
+
+def strict_exit_code(result: dict[str, Any]) -> int:
+    if result["missing_products"] or result["extra_products"]:
+        return 2
+    if result["skipped_record_count"]:
+        return 3
+    if result["changed_record_count"]:
+        return 4
+    return 0
 
 
 def fmt_float(value: Any) -> str:
@@ -524,6 +536,7 @@ def render_markdown(result: dict[str, Any], top: int) -> str:
         f"- Mode: `{result['mode']}`",
         f"- Baseline: `{result['baseline_root']}`",
         f"- Candidate: `{result['candidate_root']}`",
+        f"- Strict gate: `{result['strict']}`",
         f"- Common products: {result['common_product_count']}",
         f"- Changed records: {result['changed_record_count']}",
         f"- Skipped records: {result['skipped_record_count']}",
@@ -635,6 +648,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--rtol", type=float, default=1.0e-10)
     parser.add_argument("--top", type=int, default=25)
     parser.add_argument("--max-records", type=int, default=200)
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Fail on missing/extra products and any changed or skipped comparison item.",
+    )
     parser.add_argument("--json-out", default="", help="Optional path for machine-readable JSON.")
     parser.add_argument("--report-out", default="", help="Optional path for Markdown report.")
     return parser.parse_args(argv)
@@ -657,7 +675,7 @@ def main(argv: list[str]) -> int:
     if args.report_out:
         write_text(args.report_out, report)
     print(report, end="")
-    return 0
+    return strict_exit_code(result) if args.strict else 0
 
 
 if __name__ == "__main__":

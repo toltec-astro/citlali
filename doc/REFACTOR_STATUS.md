@@ -98,6 +98,11 @@ Immediate work order:
 - Reduction audit comparison now treats any error-level log record as blocking;
   `redu22` correctly fails the audit with 12 errors while the clean `redu23` to
   `redu24` comparison passes.
+- Reduction product comparison now has an explicit strict mode. It fails on
+  product-set differences, skipped items, or changed records. A complete TOD
+  comparison of `redu23` and `redu24` passes with zero changes/skips when the
+  volatile profile sidecar is explicitly excluded; retaining that sidecar or
+  the default large-array cap correctly fails the gate.
 - The pre-existing `citlali_test` target was found to have substantial test
   infrastructure and source decay. It remains a separate Phase 1 repair item;
   the focused safety target does not conceal that debt or satisfy the complete

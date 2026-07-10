@@ -88,6 +88,25 @@ manifest gate. It resolves `latest` `reduNN` directories, compares matching
 FITS/netCDF/table products, reports missing or extra products, and ranks numeric
 array/column differences by absolute and fractional size.
 
+For the Phase 1 complete-point acceptance gate, compare every TOD array and
+fail on missing, changed, or skipped required items. Profiling elapsed time is
+volatile and must be explicitly excluded:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/compare_reduction_products.py \
+  /path/to/baseline/reduNN \
+  /path/to/candidate/reduNN \
+  --mode point \
+  --include-timestream \
+  --max-array-elements 0 \
+  --exclude citlali_profile.ecsv \
+  --strict
+```
+
+Strict exit codes are `2` for product-set differences, `3` for skipped items,
+and `4` for changed items. The ordinary triage mode continues to report all
+findings while returning success.
+
 Pointing validation against the latest downloaded refactor run:
 
 ```bash
