@@ -3,7 +3,7 @@
 // Engine config loading implementation detail.
 // Include this only after Engine has been declared.
 
-#include <citlali/core/engine/detail/timestream_config_read.h>
+#include <citlali/core/pipeline/timestream_config_read.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template<typename CT>
@@ -14,7 +14,7 @@ void Engine::get_timestream_config(CT &config) {
     timestream_config = citlali::config::TimestreamConfig{};
 
     bool run_tod = timestream_config.enabled;
-    citlali::engine_detail::read_timestream_enabled_config(
+    citlali::pipeline::read_timestream_enabled_config(
         config, run_tod, timestream_config, config_diag);
     if (!run_tod) {
         logger->error("timestream.enabled is false. This reduction requires TOD processing; set "
@@ -23,26 +23,26 @@ void Engine::get_timestream_config(CT &config) {
     }
     std::string tod_type{
         std::string(citlali::config::to_string(timestream_config.type))};
-    citlali::engine_detail::read_timestream_type_config(
+    citlali::pipeline::read_timestream_type_config(
         config, tod_type, timestream_config, config_diag);
-    citlali::engine_detail::read_auxiliary_quadrature_channel_config(
+    citlali::pipeline::read_auxiliary_quadrature_channel_config(
         config, timestream_config, config_diag);
 
     // run rtc or ptc tod output?
     // output rtc
     bool run_tod_output_rtc = false;
-    citlali::engine_detail::read_raw_tod_output_enabled_config(
+    citlali::pipeline::read_raw_tod_output_enabled_config(
         config, run_tod_output_rtc, timestream_config, config_diag);
     rtcproc.tod_output_mini = false;
     rtcproc.tod_output_outer = false;
     rtcproc.tod_output_outer_context_samples = 0;
     std::string rtc_output_mode = "full";
-    citlali::engine_detail::read_tod_stream_output_mode_config(
+    citlali::pipeline::read_tod_stream_output_mode_config(
         config, std::tuple{"timestream", "raw_time_chunk", "output", "mode"},
         run_tod_output_rtc, {"full", "mini", "full_outer", "mini_outer"},
         rtc_output_mode, rtcproc.tod_output_mini, rtcproc.tod_output_outer,
         timestream_config.output.raw_time_chunk, config_diag);
-    citlali::engine_detail::read_tod_stream_outer_context_config(
+    citlali::pipeline::read_tod_stream_outer_context_config(
         config,
         std::tuple{"timestream", "raw_time_chunk", "output",
                    "outer_context_samples"},
@@ -50,20 +50,20 @@ void Engine::get_timestream_config(CT &config) {
         timestream_config.output.raw_time_chunk, config_diag);
     // output ptc
     bool run_tod_output_ptc = false;
-    citlali::engine_detail::read_processed_tod_output_enabled_config(
+    citlali::pipeline::read_processed_tod_output_enabled_config(
         config, run_tod_output_ptc, timestream_config, config_diag);
     ptcproc.tod_output_mini = false;
     ptcproc.tod_output_outer = false;
     ptcproc.tod_output_outer_context_samples = 0;
     std::string ptc_output_mode = "full";
-    citlali::engine_detail::read_tod_stream_output_mode_config(
+    citlali::pipeline::read_tod_stream_output_mode_config(
         config,
         std::tuple{"timestream", "processed_time_chunk", "output", "mode"},
         run_tod_output_ptc, {"full", "mini"}, ptc_output_mode,
         ptcproc.tod_output_mini, ptcproc.tod_output_outer,
         timestream_config.output.processed_time_chunk, config_diag);
     bool run_tod_output = false;
-    citlali::engine_detail::sync_tod_output_type_config(
+    citlali::pipeline::sync_tod_output_type_config(
         run_tod_output_rtc, run_tod_output_ptc, run_tod_output,
         timestream_config);
 

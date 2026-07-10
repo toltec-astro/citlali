@@ -5,7 +5,7 @@
 #include <type_traits>
 #include <vector>
 
-namespace citlali::engine_detail {
+namespace citlali::pipeline {
 
 template <class Config, class Param, class Target, class Key, class KeyVec>
 void read_optional_learning_config(Config &config, const Key &key,
@@ -48,4 +48,4 @@ void set_learning_map_contribution_diagnostics(bool enabled,
     cmb.contribution_diag_enabled = enabled;
 }
 
-}  // namespace citlali::engine_detail
+}  // namespace citlali::pipeline

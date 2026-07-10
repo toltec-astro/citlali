@@ -9,7 +9,7 @@
 #include <utility>
 #include <vector>
 
-namespace citlali::engine_detail {
+namespace citlali::pipeline {
 
 template <class Config, class MissingKeys, class InvalidKeys,
           class TimestreamConfig>
@@ -271,4 +271,4 @@ void sync_tod_output_type_config(bool raw_time_chunk_enabled,
     typed_config.output.type = citlali::config::TodOutputType::none;
 }
 
-}  // namespace citlali::engine_detail
+}  // namespace citlali::pipeline

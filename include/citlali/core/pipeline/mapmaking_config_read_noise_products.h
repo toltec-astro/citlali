@@ -1,6 +1,6 @@
 #pragma once
 
-// Included by mapmaking_config_read.h inside namespace citlali::engine_detail {
+// Included by mapmaking_config_read.h inside namespace citlali::pipeline {
 
 template <class Config, class OutputMapBlock, class CoaddMapBlock,
           class CoaddConfig,
