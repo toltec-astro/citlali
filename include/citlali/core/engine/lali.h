@@ -48,6 +48,15 @@ public:
         const citlali::pipeline::TimestreamOutputFlags &output_flags,
         const citlali::pipeline::TimestreamOutputWriters &output_writers,
         const std::string &map_grouping);
+    template <class CalibScan>
+    void populate_lali_final_maps(
+        TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
+        CalibScan &calib_scan,
+        Eigen::VectorXI &map_indices,
+        const std::string &map_grouping,
+        citlali::config::MapMethod mapmaking_method,
+        bool make_maps,
+        bool make_noise_maps);
 
     // output files
     void finalize_lali_map_fits_outputs(
@@ -64,5 +73,6 @@ public:
 
 #include <citlali/core/engine/detail/lali_setup_pipeline_impl.h>
 #include <citlali/core/engine/detail/lali_timestream_output_impl.h>
+#include <citlali/core/engine/detail/lali_map_population_impl.h>
 #include <citlali/core/engine/detail/lali_run_impl.h>
 #include <citlali/core/engine/detail/lali_output_impl.h>

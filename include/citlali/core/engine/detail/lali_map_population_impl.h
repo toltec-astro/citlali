@@ -1,0 +1,36 @@
+#pragma once
+
+// Lali map-population implementation detail.
+// Include this only after Lali has been declared.
+
+#include <citlali/core/pipeline/mapmaking_dispatch.h>
+#include <citlali/core/pipeline/timestream_run_context.h>
+
+template <class CalibScan>
+void Lali::populate_lali_final_maps(
+    TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
+    CalibScan &calib_scan,
+    Eigen::VectorXI &map_indices,
+    const std::string &map_grouping,
+    citlali::config::MapMethod mapmaking_method,
+    bool make_maps,
+    bool make_noise_maps) {
+    if (!make_maps) {
+        return;
+    }
+
+    // make signal, weight, kernel, and coverage maps
+    bool run_omb = true;
+    const bool run_noise_fruit =
+        citlali::pipeline::should_populate_final_noise_maps(
+            make_noise_maps, ptcproc.run_fruit_loops,
+            !ptcproc.tod_mb.signal.empty());
+
+    apply_learned_mapmaking_detector_exclusions(ptcdata, calib_scan);
+    // populate maps with current time chunk
+    logger->info("populating maps");
+    citlali::pipeline::populate_lali_maps(
+        mapmaking_method, naive_mm, jinc_mm, ml_mm, ptcdata, omb,
+        cmb, map_indices, telescope.pixel_axes, calib_scan,
+        telescope.d_fsmp, run_omb, run_noise_fruit);
+}

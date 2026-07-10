@@ -176,20 +176,9 @@ auto Pointing::run(KidsProc &kidsproc) {
         logger->debug("calculating stats");
         diagnostics.calc_stats(ptcdata);
 
-        // populate maps
-        if (make_maps) {
-            bool run_omb = true;
-            const bool run_noise_fruit =
-                citlali::pipeline::should_populate_final_noise_maps(
-                    make_noise_maps, ptcproc.run_fruit_loops,
-                    !ptcproc.tod_mb.signal.empty());
-            apply_learned_mapmaking_detector_exclusions(ptcdata, calib_scan);
-            logger->info("populating maps");
-            citlali::pipeline::populate_naive_or_jinc_maps(
-                mapmaking_method, naive_mm, jinc_mm, ptcdata, omb, cmb,
-                map_indices, telescope.pixel_axes, calib_scan.apt,
-                telescope.d_fsmp, run_omb, run_noise_fruit);
-        }
+        populate_pointing_final_maps(
+            ptcdata, calib_scan, map_indices, map_grouping,
+            mapmaking_method, make_maps, make_noise_maps);
         // increment number of completed scans
         citlali::pipeline::log_scan_done(
             scans_done_mutex, logger, ptcdata.index.data, *scans_done_count,
