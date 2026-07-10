@@ -93,6 +93,12 @@ inline void validate(const BeammapDetectorTodOutputConfig &config,
                   {"beammap", "detector_tod_output", "n_uniform"}, report);
     check_minimum(config.n_source_dense, 0,
                   {"beammap", "detector_tod_output", "n_source_dense"}, report);
+    if (config.enabled && config.n_uniform == 0 &&
+        config.n_source_dense == 0) {
+        report.add_error(
+            {"beammap", "detector_tod_output"},
+            "enabled output requires at least one uniform or source-dense slot");
+    }
 }
 
 inline void validate(const BeammapFlaggingConfig &config, ValidationReport &report) {

@@ -8,8 +8,8 @@
 #include <citlali/core/engine/detail/beammap_detector_tod_output_helpers.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
-#include <cstdlib>
 #include <map>
+#include <stdexcept>
 #include <vector>
 
 Beammap::BeammapDetectorTodPreflight
@@ -22,14 +22,13 @@ Beammap::prepare_detector_specific_ptc_tod_output() {
     }
     preflight.n_scans = telescope.scan_indices.cols();
     if (preflight.n_scans <= 0) {
-        logger->error("cannot write detector-specific PTC TOD: no scans");
-        std::exit(EXIT_FAILURE);
+        throw std::runtime_error(
+            "beammap.detector_tod_output.enabled=true but no scans are available");
     }
     if (citlali::pipeline::mapmaking_config(*this).grouping !=
         citlali::config::MapGrouping::detector) {
-        logger->warn(
-            "beammap.detector_tod_output requires detector map grouping; skipping detector-specific PTC TOD");
-        return preflight;
+        throw std::runtime_error(
+            "beammap.detector_tod_output.enabled=true requires mapmaking.grouping=detector");
     }
     const auto output_counts = beammap_detector_tod_output_helpers::output_counts(
         detector_tod_config.n_uniform,
@@ -38,14 +37,14 @@ Beammap::prepare_detector_specific_ptc_tod_output() {
     preflight.n_dense = output_counts.n_dense;
     preflight.n_slots = output_counts.n_slots;
     if (preflight.n_slots <= 0) {
-        logger->warn("beammap.detector_tod_output requested with no output slots; skipping");
-        return preflight;
+        throw std::runtime_error(
+            "beammap.detector_tod_output.enabled=true requires at least one output slot");
     }
     preflight.n_samples_max =
         beammap_detector_tod_output_helpers::max_ptc_samples(ptcs);
     if (preflight.n_samples_max <= 0) {
-        logger->warn("beammap.detector_tod_output has no PTC samples to write; skipping");
-        return preflight;
+        throw std::runtime_error(
+            "beammap.detector_tod_output.enabled=true but no PTC samples are available");
     }
     preflight.write_output = true;
     return preflight;
@@ -62,8 +61,8 @@ Beammap::sample_detector_tod_pointing(Eigen::Index n_scans) {
     samples.n_sampled =
         static_cast<Eigen::Index>(samples.sampled_indices.size());
     if (samples.n_sampled <= 0) {
-        logger->warn("beammap.detector_tod_output cannot sample telescope pointing; skipping");
-        return samples;
+        throw std::runtime_error(
+            "beammap.detector_tod_output.enabled=true but telescope pointing cannot be sampled");
     }
 
     samples.sampled_tel_data =
