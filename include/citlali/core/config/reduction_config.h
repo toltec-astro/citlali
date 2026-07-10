@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/config/beammap_config.h>
+#include <citlali/core/config/beammap_config_validation.h>
 #include <citlali/core/config/calibration_config.h>
 #include <citlali/core/config/coadd_config.h>
 #include <citlali/core/config/mapmaking_config.h>
