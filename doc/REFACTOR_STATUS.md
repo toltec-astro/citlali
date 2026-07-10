@@ -21,7 +21,7 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest inspected point reduction: `redu25`, produced by `c2ec8ae5`.
+- Latest inspected point reduction: `redu26`, produced by `9ef7da8a`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
@@ -139,6 +139,12 @@ Immediate work order:
   including explicit unavailable provenance and the two intended metadata
   differences. A standard-library validator enforces its core consistency
   rules.
+- `redu26` validates the full current Phase 1 checkpoint at `9ef7da8a`. It has
+  zero serious log records, the same complete 33-file product inventory and
+  merged-config hash as `redu25`, and zero changed or skipped records in the
+  strict comparison including every TOD array. Total logged runtime was 59.25
+  seconds versus 61.51 seconds for `redu25`; this is recorded as run variation,
+  not a performance conclusion.
 
 ## Five-Phase Roadmap
 
