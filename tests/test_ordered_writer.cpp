@@ -1,3 +1,4 @@
+#include <citlali/core/cli/exception_reporting.h>
 #include <citlali/core/pipeline/timestream_output_context.h>
 
 #include <gtest/gtest.h>
@@ -6,6 +7,7 @@
 
 #include <array>
 #include <atomic>
+#include <cstdlib>
 #include <filesystem>
 #include <future>
 #include <mutex>
@@ -155,6 +157,12 @@ TEST(ordered_writer, netcdf_failure_leaves_diagnosed_partial_product_and_next_ru
     EXPECT_FALSE(later_write_ran.load());
     EXPECT_TRUE(writers.failed());
     EXPECT_ANY_THROW(writers.rethrow_if_failed());
+    EXPECT_EQ(
+        citlali::cli::run_with_exception_reporting([&] {
+            writers.rethrow_if_failed();
+            return EXIT_SUCCESS;
+        }),
+        EXIT_FAILURE);
     EXPECT_EQ(read_rows(path), (std::array<int, 3>{10, -1, -1}));
 
     create_row_file(path);

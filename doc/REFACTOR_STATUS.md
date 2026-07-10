@@ -31,7 +31,7 @@ branch. The exact validated tree will remain available for forensic review.
   default appeared for a disabled filter and an extinction sentinel changed.
   The mirror fix is committed locally and awaits Unity validation.
 - Local `citlali_cli` build and compact-config preflight pass.
-- The local focused safety target discovers and passes 13 tests.
+- The local focused safety target discovers and passes 14 tests.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -83,9 +83,12 @@ Immediate work order:
   the failing path in an error diagnostic and propagate out of the reduction.
   Ordered writers cancel as one output domain, so a failure wakes workers
   waiting on the same or another product stream instead of deadlocking. Focused
-  serialization, cancellation, and cross-stream cancellation tests pass
-  locally; a CLI-level injected-write test remains part of the Phase 1 exit
-  gate.
+  serialization, cancellation, and cross-stream cancellation tests pass.
+- A real fixed-size NetCDF failure test now writes the first row, injects an
+  out-of-range second write, verifies that a waiting third writer is cancelled
+  and the partial product is explicit, confirms a nonzero CLI result, then
+  recreates and completes the product with a fresh writer domain in the same
+  process.
 - The owner-thread failure state now lets Pointing, Lali, and Beammap rethrow
   required output failures after GrPPI worker drainage, so the normal CLI error
   boundary can report them without an exception escaping a worker thread.
