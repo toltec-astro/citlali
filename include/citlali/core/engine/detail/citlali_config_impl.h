@@ -18,6 +18,7 @@ void Engine::get_citlali_config(CT &config) {
     auto &post_processing_config =
         citlali::pipeline::post_processing_config(*this);
     auto &coadd_config = citlali::pipeline::coadd_config(*this);
+    auto &diagnostics = config_diagnostics;
 
     runtime_config = get_runtime_config(config);
     if (!runtime_config.interp_over_gaps) {
@@ -39,14 +40,13 @@ void Engine::get_citlali_config(CT &config) {
     bool run_source_finder = post_processing_config.source_finding.enabled;
     citlali::engine_detail::read_post_processing_activation_config(
         config, run_map_filter, run_source_finder,
-        post_processing_config, config_diagnostics.missing_keys, config_diagnostics.invalid_keys);
+        post_processing_config, diagnostics);
 
     // map fitter options if in pointing or beammap mode or if map filtering or source finding are enabled
     citlali::engine_detail::read_source_fitting_config(
         config, runtime_config.reduction_type, map_fitter,
         omb.pixel_size_rad, ASEC_TO_RAD,
-        post_processing_config,
-        config_diagnostics.missing_keys, config_diagnostics.invalid_keys);
+        post_processing_config, diagnostics);
 
     /* get wiener filter config */
     if (citlali::config::map_filtering_active(post_processing_config)) {
@@ -57,7 +57,7 @@ void Engine::get_citlali_config(CT &config) {
     // get source finder config options
     citlali::engine_detail::read_source_finding_config(
         config, omb, cmb, coadd_config, ASEC_TO_RAD,
-        post_processing_config, config_diagnostics.missing_keys, config_diagnostics.invalid_keys);
+        post_processing_config, diagnostics);
 
     /* get pointing config */
     if (runtime_config.reduction_type ==

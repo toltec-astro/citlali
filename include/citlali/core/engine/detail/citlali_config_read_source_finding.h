@@ -40,3 +40,16 @@ void read_source_finding_config(
     citlali::pipeline::mirror_source_finding_config_to_coadd(
         omb, cmb, citlali::config::coadd_active(typed_coadd_config));
 }
+
+template <class Config, class ObservationMapBuffer, class CoaddMapBuffer,
+          class CoaddConfig, class PostProcessingConfig, class Diagnostics>
+void read_source_finding_config(
+    Config &config, ObservationMapBuffer &omb, CoaddMapBuffer &cmb,
+    const CoaddConfig &typed_coadd_config, double arcsec_to_rad,
+    PostProcessingConfig &typed_post_processing_config,
+    Diagnostics &diagnostics) {
+    read_source_finding_config(
+        config, omb, cmb, typed_coadd_config, arcsec_to_rad,
+        typed_post_processing_config, diagnostics.missing_keys,
+        diagnostics.invalid_keys);
+}

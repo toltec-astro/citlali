@@ -65,6 +65,17 @@ void read_post_processing_activation_config(
         missing_keys, invalid_keys);
 }
 
+template <class Config, class Diagnostics, class PostProcessingConfig>
+void read_post_processing_activation_config(
+    Config &config, bool &run_map_filter, bool &run_source_finder,
+    PostProcessingConfig &typed_post_processing_config,
+    Diagnostics &diagnostics) {
+    read_post_processing_activation_config(
+        config, run_map_filter, run_source_finder,
+        typed_post_processing_config, diagnostics.missing_keys,
+        diagnostics.invalid_keys);
+}
+
 template <class Config, class MapFitter, class PostProcessingConfig,
           class KeyList>
 void read_source_fitting_config(
@@ -125,4 +136,17 @@ void read_source_fitting_config(
     }
 
     citlali::pipeline::apply_positive_source_fit_limits(map_fitter);
+}
+
+template <class Config, class MapFitter, class PostProcessingConfig,
+          class Diagnostics>
+void read_source_fitting_config(
+    Config &config, citlali::config::ReductionType reduction_type,
+    MapFitter &map_fitter, double pixel_size_rad, double arcsec_to_rad,
+    PostProcessingConfig &typed_post_processing_config,
+    Diagnostics &diagnostics) {
+    read_source_fitting_config(
+        config, reduction_type, map_fitter, pixel_size_rad, arcsec_to_rad,
+        typed_post_processing_config, diagnostics.missing_keys,
+        diagnostics.invalid_keys);
 }
