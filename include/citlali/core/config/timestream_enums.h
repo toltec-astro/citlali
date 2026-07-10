@@ -15,6 +15,17 @@ enum class TodType {
     qs
 };
 
+enum class PolarimetryGrouping {
+    frequency_group,
+    detector_location
+};
+
+enum class PolarimetryHwprPolicy {
+    automatic,
+    ignore,
+    require
+};
+
 enum class TodOutputStream {
     rtc,
     ptc
@@ -113,6 +124,19 @@ inline constexpr std::array<EnumName<TodType>, 4> tod_type_names{{
     {TodType::is, "is"},
     {TodType::qs, "qs"},
 }};
+
+inline constexpr std::array<EnumName<PolarimetryGrouping>, 2>
+    polarimetry_grouping_names{{
+        {PolarimetryGrouping::frequency_group, "fg"},
+        {PolarimetryGrouping::detector_location, "loc"},
+    }};
+
+inline constexpr std::array<EnumName<PolarimetryHwprPolicy>, 3>
+    polarimetry_hwpr_policy_names{{
+        {PolarimetryHwprPolicy::automatic, "auto"},
+        {PolarimetryHwprPolicy::ignore, "true"},
+        {PolarimetryHwprPolicy::require, "false"},
+    }};
 
 inline constexpr std::array<EnumName<TodOutputStream>, 2>
     tod_output_stream_names{{
@@ -232,6 +256,16 @@ inline std::optional<TodType> parse_tod_type(std::string_view value) {
     return parse_enum(value, tod_type_names);
 }
 
+inline std::optional<PolarimetryGrouping> parse_polarimetry_grouping(
+    std::string_view value) {
+    return parse_enum(value, polarimetry_grouping_names);
+}
+
+inline std::optional<PolarimetryHwprPolicy> parse_polarimetry_hwpr_policy(
+    std::string_view value) {
+    return parse_enum(value, polarimetry_hwpr_policy_names);
+}
+
 inline std::optional<TodOutputStream> parse_tod_output_stream(
     std::string_view value) {
     return parse_enum(value, tod_output_stream_names);
@@ -303,6 +337,14 @@ parse_auxiliary_measured_channel_calibration_policy(std::string_view value) {
 
 inline std::string_view to_string(TodType value) {
     return enum_name(value, tod_type_names);
+}
+
+inline std::string_view to_string(PolarimetryGrouping value) {
+    return enum_name(value, polarimetry_grouping_names);
+}
+
+inline std::string_view to_string(PolarimetryHwprPolicy value) {
+    return enum_name(value, polarimetry_hwpr_policy_names);
 }
 
 inline std::string_view to_string(TodOutputStream value) {

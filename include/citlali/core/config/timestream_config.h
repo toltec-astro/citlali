@@ -565,10 +565,18 @@ struct TimestreamAuxiliaryChannelsConfig {
     AuxiliaryMeasuredChannelConfig quadrature_r;
 };
 
+struct TimestreamPolarimetryConfig {
+    bool enabled = false;
+    PolarimetryGrouping grouping = PolarimetryGrouping::frequency_group;
+    PolarimetryHwprPolicy hwpr_policy =
+        PolarimetryHwprPolicy::automatic;
+};
+
 struct TimestreamConfig {
     bool enabled = true;
     TodType type = TodType::xs;
     TimestreamAuxiliaryChannelsConfig auxiliary_channels;
+    TimestreamPolarimetryConfig polarimetry;
     TimestreamOutputConfig output;
     TimestreamChunkingConfig chunking;
     RawTimeChunkConfig raw_time_chunk;

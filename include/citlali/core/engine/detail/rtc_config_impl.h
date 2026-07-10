@@ -51,4 +51,7 @@ void Engine::get_rtc_config(CT &config) {
     citlali::pipeline::read_config_value(
         config, calib.ignore_hwpr, config_diag,
         std::tuple{"timestream","polarimetry", "ignore_hwpr"});
+    citlali::pipeline::mirror_polarimetry_config(
+        citlali::pipeline::timestream_config(*this).polarimetry,
+        rtcproc, calib.ignore_hwpr);
 }

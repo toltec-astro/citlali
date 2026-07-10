@@ -13,6 +13,7 @@ namespace citlali::pipeline {
 
 #include <citlali/core/pipeline/timestream_config_mirror_processed_clean.h>
 #include <citlali/core/pipeline/timestream_config_mirror_processed_weighting.h>
+#include <citlali/core/pipeline/timestream_config_mirror_polarimetry.h>
 #include <citlali/core/pipeline/timestream_config_mirror_raw_flagging.h>
 #include <citlali/core/pipeline/timestream_config_mirror_raw_filters.h>
 #include <citlali/core/pipeline/timestream_config_mirror_raw_output.h>

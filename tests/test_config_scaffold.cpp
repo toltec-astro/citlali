@@ -11,6 +11,7 @@
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
+#include <citlali/core/pipeline/timestream_config_mirror.h>
 
 #include <gtest/gtest.h>
 
@@ -1095,6 +1096,40 @@ TEST(config_scaffold, parses_existing_beammap_enum_values) {
     EXPECT_EQ(citlali::config::parse_beammap_detector_weighting_mode("ptc_after_iter0").value(),
               citlali::config::BeammapDetectorWeightingMode::ptc_after_iter0);
     EXPECT_FALSE(citlali::config::parse_beammap_detector_weighting_mode("weights").has_value());
+}
+
+TEST(config_scaffold, parses_polarimetry_enum_values) {
+    EXPECT_EQ(citlali::config::parse_polarimetry_grouping("fg").value(),
+              citlali::config::PolarimetryGrouping::frequency_group);
+    EXPECT_EQ(citlali::config::parse_polarimetry_grouping("loc").value(),
+              citlali::config::PolarimetryGrouping::detector_location);
+    EXPECT_FALSE(
+        citlali::config::parse_polarimetry_grouping("network").has_value());
+
+    EXPECT_EQ(citlali::config::parse_polarimetry_hwpr_policy("auto").value(),
+              citlali::config::PolarimetryHwprPolicy::automatic);
+    EXPECT_EQ(citlali::config::parse_polarimetry_hwpr_policy("true").value(),
+              citlali::config::PolarimetryHwprPolicy::ignore);
+    EXPECT_EQ(citlali::config::parse_polarimetry_hwpr_policy("false").value(),
+              citlali::config::PolarimetryHwprPolicy::require);
+}
+
+TEST(config_scaffold, mirrors_legacy_polarimetry_config) {
+    struct FakeRtcProc {
+        struct FakePolarization {
+            std::string grouping = "loc";
+        } polarization;
+        bool run_polarization = true;
+    } rtcproc;
+    citlali::config::TimestreamPolarimetryConfig config;
+
+    citlali::pipeline::mirror_polarimetry_config(config, rtcproc, "true");
+
+    EXPECT_TRUE(config.enabled);
+    EXPECT_EQ(config.grouping,
+              citlali::config::PolarimetryGrouping::detector_location);
+    EXPECT_EQ(config.hwpr_policy,
+              citlali::config::PolarimetryHwprPolicy::ignore);
 }
 
 TEST(config_scaffold, validates_top_level_config_values) {
