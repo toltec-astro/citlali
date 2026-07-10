@@ -3,14 +3,19 @@
 #include <citlali/core/config/beammap_config.h>
 #include <citlali/core/config/beammap_config_validation.h>
 #include <citlali/core/config/calibration_config.h>
+#include <citlali/core/config/calibration_config_validation.h>
 #include <citlali/core/config/coadd_config.h>
+#include <citlali/core/config/coadd_config_validation.h>
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/mapmaking_config_validation.h>
 #include <citlali/core/config/noise_config.h>
+#include <citlali/core/config/noise_config_validation.h>
 #include <citlali/core/config/pointing_config.h>
+#include <citlali/core/config/pointing_config_validation.h>
 #include <citlali/core/config/post_processing_config.h>
 #include <citlali/core/config/post_processing_config_validation.h>
 #include <citlali/core/config/runtime_config.h>
+#include <citlali/core/config/runtime_config_validation.h>
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/config/timestream_config_validation.h>
 

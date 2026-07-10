@@ -1,7 +1,5 @@
 #pragma once
 
-#include <citlali/core/config/config_error.h>
-
 namespace citlali::config {
 
 struct NoiseConfig {
@@ -31,12 +29,6 @@ inline bool noise_product_outputs_active(const NoiseConfig &config) {
 
 inline bool empirical_noise_weights_active(const NoiseConfig &config) {
     return config.apply_empirical_weights;
-}
-
-inline void validate(const NoiseConfig &config, ValidationReport &report) {
-    if (config.enabled) {
-        check_minimum(config.n_noise_maps, 0, {"noise_maps", "n_noise_maps"}, report);
-    }
 }
 
 }  // namespace citlali::config

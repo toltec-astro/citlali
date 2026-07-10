@@ -1,6 +1,5 @@
 #pragma once
 
-#include <citlali/core/config/config_error.h>
 #include <citlali/core/config/enum_parser.h>
 
 #include <array>
@@ -111,11 +110,5 @@ struct PointingConfig {
     double header_max_radius_arcsec = 0.0;
     bool header_require_coverage = true;
 };
-
-inline void validate(const PointingConfig &config, ValidationReport &report) {
-    check_minimum(config.header_max_radius_arcsec, 0.0,
-                  {"pointing", "source_strategy", "header_max_radius_arcsec"},
-                  report);
-}
 
 }  // namespace citlali::config
