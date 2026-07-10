@@ -13,21 +13,8 @@ void Engine::get_photometry_config(CT &config) {
     auto &config_diag = citlali::pipeline::config_diagnostics(*this);
     source_config = citlali::config::BeammapSourceConfig{};
 
-    // beammap source name
-    citlali::pipeline::read_config_value(
-        config, source_config.name, config_diag,
-        std::tuple{"beammap_source","name"});
-    // beammap source ra
-    citlali::pipeline::read_config_value(
-        config, source_config.ra_deg, config_diag,
-        std::tuple{"beammap_source","ra_deg"});
-
-    // beammap source dec
-    citlali::pipeline::read_config_value(
-        config, source_config.dec_deg, config_diag,
-        std::tuple{"beammap_source","dec_deg"});
-
-    // get source fluxes
+    citlali::pipeline::read_beammap_source_identity_config(
+        config, source_config, config_diag);
     citlali::pipeline::read_beammap_source_fluxes(
         config, source_flux_mJy_beam, source_config);
 

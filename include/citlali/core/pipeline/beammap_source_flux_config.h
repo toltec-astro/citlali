@@ -1,12 +1,28 @@
 #pragma once
 
 #include <citlali/core/config/beammap_config.h>
+#include <citlali/core/pipeline/config_parse_tracking.h>
 
 #include <Eigen/Core>
 
 #include <tuple>
 
 namespace citlali::pipeline {
+
+template <class Config, class SourceConfig, class Diagnostics>
+void read_beammap_source_identity_config(Config &config,
+                                         SourceConfig &source_config,
+                                         Diagnostics &diagnostics) {
+    read_config_value(
+        config, source_config.name, diagnostics,
+        std::tuple{"beammap_source", "name"});
+    read_config_value(
+        config, source_config.ra_deg, diagnostics,
+        std::tuple{"beammap_source", "ra_deg"});
+    read_config_value(
+        config, source_config.dec_deg, diagnostics,
+        std::tuple{"beammap_source", "dec_deg"});
+}
 
 template <class Config, class FluxMap, class SourceConfig>
 void read_beammap_source_fluxes(Config &config, FluxMap &fluxes_mjy_beam,
