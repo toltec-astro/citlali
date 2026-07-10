@@ -13,7 +13,7 @@ void Engine::get_learning_config(CT &config) {
     ReductionLearningState::Options options;
     auto &learning_config =
         citlali::pipeline::timestream_config(*this).learning;
-    auto &diagnostics = config_diagnostics;
+    auto &diagnostics = citlali::pipeline::config_diagnostics(*this);
 
     citlali::engine_detail::read_optional_learning_config(
         config, std::tuple{"timestream","learning","enabled"},

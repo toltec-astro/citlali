@@ -10,7 +10,7 @@ template<typename CT>
 void Engine::get_timestream_config(CT &config) {
     logger->info("getting timestream config options");
     auto &timestream_config = citlali::pipeline::timestream_config(*this);
-    auto &config_diag = config_diagnostics;
+    auto &config_diag = citlali::pipeline::config_diagnostics(*this);
     timestream_config = citlali::config::TimestreamConfig{};
 
     bool run_tod = timestream_config.enabled;

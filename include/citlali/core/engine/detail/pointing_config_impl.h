@@ -12,7 +12,7 @@ void Engine::get_pointing_config(CT &config) {
     logger->info("getting pointing config options");
     auto &pointing_config = citlali::pipeline::pointing_config(*this);
     pointing_config = citlali::config::PointingConfig{};
-    auto &diagnostics = config_diagnostics;
+    auto &diagnostics = citlali::pipeline::config_diagnostics(*this);
 
     std::string pointing_source_strategy = "standard";
     citlali::engine_detail::read_optional_parsed_mirrored_config_value(

@@ -10,7 +10,7 @@ template<typename CT>
 void Engine::get_beammap_config(CT &config) {
     logger->info("getting beammap config options");
     auto &beammap_config = citlali::pipeline::beammap_config(*this);
-    auto &config_diag = config_diagnostics;
+    auto &config_diag = citlali::pipeline::config_diagnostics(*this);
     const auto beammap_core_config =
         citlali::pipeline::read_beammap_core_config(
             config, config_diag, logger);

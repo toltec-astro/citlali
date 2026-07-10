@@ -19,7 +19,7 @@ void Engine::get_citlali_config(CT &config) {
         citlali::pipeline::post_processing_config(*this);
     auto &coadd_config = citlali::pipeline::coadd_config(*this);
     auto &reduction_config = citlali::pipeline::reduction_config(*this);
-    auto &diagnostics = config_diagnostics;
+    auto &diagnostics = citlali::pipeline::config_diagnostics(*this);
 
     runtime_config = get_runtime_config(config);
     if (!runtime_config.interp_over_gaps) {

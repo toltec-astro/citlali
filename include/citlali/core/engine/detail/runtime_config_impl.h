@@ -4,11 +4,12 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/engine/detail/config_parse_tracking.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template<typename CT>
 citlali::config::RuntimeConfig Engine::get_runtime_config(CT &config) {
     citlali::config::RuntimeConfig runtime_config;
-    auto &diagnostics = config_diagnostics;
+    auto &diagnostics = citlali::pipeline::config_diagnostics(*this);
 
     // verbose mode?
     bool verbose = runtime_config.verbose;

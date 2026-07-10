@@ -17,7 +17,7 @@ void Engine::get_mapmaking_config(CT &config) {
     auto &noise_config = citlali::pipeline::noise_config(*this);
     auto &post_processing_config =
         citlali::pipeline::post_processing_config(*this);
-    auto &diagnostics = config_diagnostics;
+    auto &diagnostics = citlali::pipeline::config_diagnostics(*this);
     mapmaking_config = citlali::config::MapmakingConfig{};
     coadd_config = citlali::config::CoaddConfig{};
     noise_config = citlali::config::NoiseConfig{};

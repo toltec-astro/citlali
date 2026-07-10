@@ -35,7 +35,7 @@ void read_beammap_source_fluxes(Config &config, FluxMap &fluxes_mjy_beam,
 template<typename CT>
 void Engine::get_photometry_config(CT &config) {
     auto &source_config = citlali::pipeline::beammap_config(*this).source;
-    auto &config_diag = config_diagnostics;
+    auto &config_diag = citlali::pipeline::config_diagnostics(*this);
     source_config = citlali::config::BeammapSourceConfig{};
 
     // beammap source name

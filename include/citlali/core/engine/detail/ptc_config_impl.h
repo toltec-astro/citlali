@@ -11,7 +11,7 @@
 template<typename CT>
 void Engine::get_ptc_config(CT &config) {
     logger->info("getting ptc config options");
-    auto &config_diag = config_diagnostics;
+    auto &config_diag = citlali::pipeline::config_diagnostics(*this);
     // get ptcproc config
     citlali::engine_detail::read_processor_config(
         ptcproc, config, config_diag);

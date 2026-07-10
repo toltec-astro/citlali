@@ -13,7 +13,7 @@ void Engine::get_map_filter_config(CT &config) {
     auto &post_processing_config =
         citlali::pipeline::post_processing_config(*this);
     const auto &reduction_config = citlali::pipeline::reduction_config(*this);
-    auto &config_diag = config_diagnostics;
+    auto &config_diag = citlali::pipeline::config_diagnostics(*this);
     // get wiener filter config options
     citlali::engine_detail::read_processor_config(
         wiener_filter, config, config_diag);
