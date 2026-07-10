@@ -53,6 +53,7 @@ def main(argv: list[str]) -> int:
         "tools/config/audit_compact_surface_coverage.py",
         "tools/config/classify_lowlevel_config.py",
         "tools/config/compare_lowlevel_yaml.py",
+        "tools/config/validate_config_authority_inventory.py",
     ]
     commands: list[list[str]] = [
         [sys.executable, "-m", "py_compile", *scripts],
@@ -76,6 +77,10 @@ def main(argv: list[str]) -> int:
             str(work_dir / "surface_coverage.csv"),
             "--markdown-out",
             str(work_dir / "surface_coverage.md"),
+        ],
+        [
+            sys.executable,
+            "tools/config/validate_config_authority_inventory.py",
         ],
     ]
     if args.require_all:

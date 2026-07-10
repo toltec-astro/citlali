@@ -281,6 +281,26 @@ compact profile. The first target for behavior-preserving work is zero
 differences against the existing `70_reduce.yaml` low-level block, excluding
 TolTECA-owned paths such as `runtime.output_dir`.
 
+## Config Authority Inventory
+
+`config_authority_inventory.json` records which representation currently
+controls each configuration domain, its typed owner and loading boundary, any
+temporary legacy target, and the gate for completing its migration. This is
+separate from `config_key_classification.yaml`: classification controls user
+exposure, while the authority inventory controls internal data flow.
+
+The permitted compatibility direction is one way: requested YAML is parsed
+into typed config, and typed config may temporarily populate legacy runtime
+objects. Legacy objects must not populate or override typed config.
+
+```bash
+$HOME/tolteca/bin/python tools/config/validate_config_authority_inventory.py
+```
+
+The validator is also part of `run_config_preflight.py`. Add or update an
+inventory domain whenever config ownership, a loading boundary, or a legacy
+adapter changes.
+
 ## Compact Compatibility Suite
 
 `run_compact_compatibility.py` runs a manifest of compact examples against

@@ -1,0 +1,171 @@
+{
+  "schema_version": "citlali-config-authority-v1",
+  "contract": {
+    "adapter_direction": "requested_yaml -> typed_config -> legacy_runtime",
+    "legacy_runtime_rule": "Legacy runtime objects may receive values from typed config but must not become a source for typed config.",
+    "raw_yaml_rule": "Raw YAML access is permitted in declared loading boundaries only. Execution code must consume typed config or a declared external subsystem config.",
+    "provenance_layers": [
+      "requested",
+      "effective",
+      "realized"
+    ]
+  },
+  "domains": [
+    {
+      "id": "runtime",
+      "config_prefixes": ["runtime"],
+      "typed_owner": "citlali::config::ReductionConfig::runtime",
+      "loader": "include/citlali/core/pipeline/runtime_config_read.h",
+      "execution_authority": "typed",
+      "legacy_targets": [],
+      "adapter_direction": "none",
+      "migration_status": "typed-authoritative",
+      "provenance_status": "partial",
+      "exit_gate": "Record requested and effective runtime policy separately, including normalized thread and parallel policy values."
+    },
+    {
+      "id": "timestream-core-output",
+      "config_prefixes": ["timestream.enabled", "timestream.chunking", "timestream.output"],
+      "typed_owner": "citlali::config::ReductionConfig::timestream",
+      "loader": "include/citlali/core/engine/detail/timestream_top_config_impl.h",
+      "execution_authority": "typed",
+      "legacy_targets": ["Engine::rtcproc", "Engine::ptcproc"],
+      "adapter_direction": "typed-to-legacy",
+      "migration_status": "mixed-adapter",
+      "provenance_status": "partial",
+      "exit_gate": "Move all output selection and chunking decisions to typed policies; retain processor fields only as write-only adapters."
+    },
+    {
+      "id": "raw-timestream",
+      "config_prefixes": ["timestream.raw_time_chunk"],
+      "typed_owner": "citlali::config::ReductionConfig::timestream.raw_time_chunk",
+      "loader": "include/citlali/core/engine/detail/rtc_config_impl.h",
+      "execution_authority": "mixed",
+      "legacy_targets": ["Engine::rtcproc"],
+      "adapter_direction": "typed-to-legacy",
+      "migration_status": "mixed-adapter",
+      "provenance_status": "partial",
+      "exit_gate": "Inventory every rtcproc execution read and replace policy reads with RawTimeChunkConfig accessors before removing mirrored fields."
+    },
+    {
+      "id": "processed-timestream",
+      "config_prefixes": ["timestream.processed_time_chunk", "timestream.fruit_loops"],
+      "typed_owner": "citlali::config::ReductionConfig::timestream",
+      "loader": "include/citlali/core/engine/detail/ptc_config_impl.h",
+      "execution_authority": "mixed",
+      "legacy_targets": ["Engine::ptcproc"],
+      "adapter_direction": "typed-to-legacy",
+      "migration_status": "mixed-adapter",
+      "provenance_status": "partial",
+      "exit_gate": "Inventory every ptcproc execution read and replace cleaner, weighting, flagging, and iteration policy reads with typed accessors."
+    },
+    {
+      "id": "polarimetry",
+      "config_prefixes": ["timestream.polarimetry", "calibration.ignore_hwpr"],
+      "typed_owner": "citlali::config::ReductionConfig::timestream.polarimetry",
+      "loader": "include/citlali/core/engine/detail/rtc_config_impl.h",
+      "execution_authority": "mixed",
+      "legacy_targets": ["Engine::rtcproc", "Engine::calib"],
+      "adapter_direction": "typed-to-legacy",
+      "migration_status": "mixed-adapter",
+      "provenance_status": "partial",
+      "exit_gate": "Resolve calibration-owned ignore_hwpr input into one effective typed polarimetry policy and record the resolution."
+    },
+    {
+      "id": "mapmaking",
+      "config_prefixes": ["mapmaking"],
+      "typed_owner": "citlali::config::ReductionConfig::mapmaking",
+      "loader": "include/citlali/core/engine/detail/mapmaking_config_impl.h",
+      "execution_authority": "mixed",
+      "legacy_targets": ["Engine::omb", "Engine::cmb"],
+      "adapter_direction": "typed-to-legacy",
+      "migration_status": "mixed-adapter",
+      "provenance_status": "partial",
+      "exit_gate": "Make method, grouping, geometry, and activation decisions consume an immutable effective mapmaking plan."
+    },
+    {
+      "id": "noise-products",
+      "config_prefixes": ["mapmaking.noise_maps", "mapmaking.noise_products"],
+      "typed_owner": "citlali::config::ReductionConfig::noise",
+      "loader": "include/citlali/core/engine/detail/mapmaking_config_impl.h",
+      "execution_authority": "typed",
+      "legacy_targets": [],
+      "adapter_direction": "none",
+      "migration_status": "typed-authoritative",
+      "provenance_status": "partial",
+      "exit_gate": "Record effective randomization seed/policy and realized noise-product counts."
+    },
+    {
+      "id": "coadd",
+      "config_prefixes": ["mapmaking.coadd"],
+      "typed_owner": "citlali::config::ReductionConfig::coadd",
+      "loader": "include/citlali/core/engine/detail/mapmaking_config_impl.h",
+      "execution_authority": "typed",
+      "legacy_targets": [],
+      "adapter_direction": "none",
+      "migration_status": "typed-authoritative",
+      "provenance_status": "partial",
+      "exit_gate": "Record effective coadd activation and realized product cardinality."
+    },
+    {
+      "id": "post-processing",
+      "config_prefixes": ["post_processing"],
+      "typed_owner": "citlali::config::ReductionConfig::post_processing",
+      "loader": "include/citlali/core/engine/detail/citlali_config_impl.h",
+      "execution_authority": "mixed",
+      "legacy_targets": ["Engine::wiener_filter", "Engine::map_fitter"],
+      "adapter_direction": "typed-to-legacy",
+      "migration_status": "mixed-adapter",
+      "provenance_status": "partial",
+      "exit_gate": "Separate requested activation from effective source fitting, finding, and filtering plans; eliminate execution-time legacy policy reads."
+    },
+    {
+      "id": "pointing",
+      "config_prefixes": ["pointing"],
+      "typed_owner": "citlali::config::ReductionConfig::pointing",
+      "loader": "include/citlali/core/engine/detail/citlali_config_impl.h",
+      "execution_authority": "typed",
+      "legacy_targets": [],
+      "adapter_direction": "none",
+      "migration_status": "typed-authoritative",
+      "provenance_status": "partial",
+      "exit_gate": "Record effective pointing source/fit policy and realized fit/product summary."
+    },
+    {
+      "id": "beammap",
+      "config_prefixes": ["beammap"],
+      "typed_owner": "citlali::config::ReductionConfig::beammap",
+      "loader": "include/citlali/core/engine/detail/beammap_config_impl.h",
+      "execution_authority": "typed",
+      "legacy_targets": ["Engine::map_fitter"],
+      "adapter_direction": "typed-to-legacy",
+      "migration_status": "typed-authoritative-with-adapter",
+      "provenance_status": "partial",
+      "exit_gate": "Remove the map_fitter synchronization adapter after beammap fitting consumes a typed effective fitting plan directly."
+    },
+    {
+      "id": "astrometry-photometry",
+      "config_prefixes": ["astrometry", "photometry"],
+      "typed_owner": "citlali::config::ReductionConfig::astrometry",
+      "loader": "include/citlali/core/engine/detail/photometry_config_impl.h",
+      "execution_authority": "mixed",
+      "legacy_targets": ["Engine::map_fitter"],
+      "adapter_direction": "typed-to-legacy",
+      "migration_status": "mixed-adapter",
+      "provenance_status": "partial",
+      "exit_gate": "Define a complete typed source-measurement plan and distinguish requested catalog settings from realized fits."
+    },
+    {
+      "id": "kids-external",
+      "config_prefixes": ["kids"],
+      "typed_owner": "external KIDs subsystem configuration",
+      "loader": "include/citlali/core/engine/kidsproc.h",
+      "execution_authority": "external",
+      "legacy_targets": ["Engine::kidsproc"],
+      "adapter_direction": "external",
+      "migration_status": "external-boundary",
+      "provenance_status": "missing",
+      "exit_gate": "Declare the KIDs schema/version boundary and persist the requested and effective external configuration identity."
+    }
+  ]
+}
