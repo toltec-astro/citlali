@@ -381,6 +381,9 @@ public:
         const std::string &description);
     void init_beammap_diagnostic_apt_columns();
     void init_beammap_flag_metadata();
+    void reset_beammap_soft_prior_setup_state();
+    void load_or_disable_beammap_soft_priors();
+    void populate_beammap_soft_prior_metadata();
     void configure_beammap_soft_prior_setup();
     void setup();
 
