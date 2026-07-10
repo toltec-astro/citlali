@@ -602,6 +602,26 @@ public:
 
     // derotate apt and subtract reference detector
     void process_apt();
+    bool gather_beammap_reference_candidates(
+        const std::vector<Eigen::Index> &ref_nws,
+        Eigen::VectorXd &x_t,
+        Eigen::VectorXd &y_t,
+        Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> &det_indices);
+    bool gather_all_unflagged_beammap_reference_candidates(
+        Eigen::VectorXd &x_t,
+        Eigen::VectorXd &y_t,
+        Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> &det_indices);
+    void resolve_automatic_beammap_reference_detector(
+        double &ref_det_x_t, double &ref_det_y_t);
+    void select_beammap_reference_detector(
+        double &ref_det_x_t, double &ref_det_y_t);
+    void record_beammap_reference_metadata(
+        double ref_det_x_t, double ref_det_y_t);
+    void preserve_beammap_raw_detector_offsets();
+    void populate_beammap_derotation_elevation();
+    void apply_beammap_reference_offsets(
+        double ref_det_x_t, double ref_det_y_t);
+    void apply_beammap_derotation(bool derotate);
     void apply_final_network_position_flags();
     void update_final_prior_match_diagnostics();
     void log_final_network_qc_summary();
