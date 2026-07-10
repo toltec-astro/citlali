@@ -42,6 +42,7 @@ void mirror_raw_correction_flags(RawTimeChunkConfig &target,
                                  const RtcProc &rtcproc) {
     target.flux_calibration_enabled = rtcproc.run_calibrate;
     target.extinction_correction_enabled = rtcproc.run_extinction;
+    target.extinction_model = rtcproc.calibration.extinction_model;
 }
 
 template <class FilterConfig, class RtcProc>
@@ -109,4 +110,3 @@ void mirror_raw_filter_edge_guard_config(EdgeGuardConfig &target,
     target.apply_iir_highpass = source.apply_iir_highpass;
     target.apply_downsample = source.apply_downsample;
 }
-

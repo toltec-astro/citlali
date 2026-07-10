@@ -73,28 +73,29 @@ inline void add_tod_initial_runtime_config_vars(netCDF::NcFile &fo,
     add_netcdf_var(fo, "CONFIG.DESPIKED", run_despike);
 }
 
-template <class RtcProc>
+template <class RawTimeChunkConfig>
 void add_tod_filter_runtime_config_vars(netCDF::NcFile &fo,
-                                        const RtcProc &rtcproc,
+                                        const RawTimeChunkConfig &config,
                                         bool run_any_tod_filter) {
     add_netcdf_var(fo, "CONFIG.TODFILTERED", run_any_tod_filter);
-    add_netcdf_var(fo, "CONFIG.TODNOTCH", rtcproc.run_tod_notch);
-    add_netcdf_var(fo, "CONFIG.TODIIRHP", rtcproc.run_tod_iir_highpass);
+    add_netcdf_var(fo, "CONFIG.TODNOTCH", config.filter.notch.enabled);
+    add_netcdf_var(fo, "CONFIG.TODIIRHP", config.iir_filter.enabled);
     add_netcdf_var(fo, "CONFIG.TODIIRHP.FREQ_HZ",
-                   rtcproc.filter.iir_highpass_freq_Hz);
+                   config.iir_filter.freq_Hz);
     add_netcdf_var(fo, "CONFIG.TODIIRHP.ORDER",
-                   rtcproc.filter.iir_highpass_order);
+                   config.iir_filter.order);
     add_netcdf_var(fo, "CONFIG.TODIIRHP.ZEROPHASE",
-                   rtcproc.filter.iir_highpass_zero_phase);
+                   config.iir_filter.zero_phase);
 }
 
-template <class RtcProc>
+template <class RawTimeChunkConfig>
 void add_tod_processing_config_vars(netCDF::NcFile &fo,
-                                    const RtcProc &rtcproc) {
-    add_netcdf_var(fo, "CONFIG.DOWNSAMPLED", rtcproc.run_downsample);
-    add_netcdf_var(fo, "CONFIG.CALIBRATED", rtcproc.run_calibrate);
-    add_netcdf_var(fo, "CONFIG.EXTINCTION", rtcproc.run_extinction);
+                                    const RawTimeChunkConfig &config) {
+    add_netcdf_var(fo, "CONFIG.DOWNSAMPLED", config.downsample.enabled);
+    add_netcdf_var(fo, "CONFIG.CALIBRATED",
+                   config.flux_calibration_enabled);
+    add_netcdf_var(fo, "CONFIG.EXTINCTION",
+                   config.extinction_correction_enabled);
     add_netcdf_var<std::string>(fo, "CONFIG.EXTINCTION.EXTMODEL",
-                                rtcproc.calibration.extinction_model);
+                                config.extinction_model);
 }
-

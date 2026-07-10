@@ -126,26 +126,28 @@ void add_phdu_extinction_apt_oof_section(
             1000. * 1e6);
 }
 
-template <class FitsEntry, class RtcProc, class PtcProc, class OuterContext,
-          class Logger>
+template <class FitsEntry, class RawTimeChunkConfig, class RtcProc,
+          class PtcProc, class OuterContext, class Logger>
 void add_phdu_tod_runtime_config_section(
     FitsEntry &fits_entry, const std::string &array_name,
     const Logger &logger, bool verbose_mode, bool polarimetry_enabled,
-    bool despike_enabled, const RtcProc &rtcproc, const PtcProc &ptcproc,
+    const RawTimeChunkConfig &raw_config, const RtcProc &rtcproc,
+    const PtcProc &ptcproc,
     OuterContext outer_context_samples) {
     logger->debug("adding config params");
     const bool run_any_tod_filter =
-        citlali::pipeline::phdu_any_tod_filter_enabled(rtcproc);
+        citlali::config::raw_time_chunk_filtering_active(raw_config);
     citlali::pipeline::add_phdu_initial_runtime_config(
         fits_entry, verbose_mode, polarimetry_enabled,
-        despike_enabled);
+        raw_config.despike.enabled);
     citlali::pipeline::add_phdu_rtc_local_despike_config(
         fits_entry, array_name, logger, rtcproc.despiker.local_residual);
     citlali::pipeline::add_phdu_tod_filter_runtime_config(
-        fits_entry, array_name, logger, rtcproc, run_any_tod_filter);
+        fits_entry, array_name, logger, raw_config, run_any_tod_filter);
     citlali::pipeline::add_phdu_tod_edge_guard_config(
         fits_entry, rtcproc.filter_edge_guard, outer_context_samples);
-    citlali::pipeline::add_phdu_tod_processing_config(fits_entry, rtcproc);
+    citlali::pipeline::add_phdu_tod_processing_config(
+        fits_entry, raw_config);
     citlali::pipeline::add_phdu_weight_selection_config(
         fits_entry, array_name, logger, ptcproc, rtcproc);
     citlali::pipeline::add_phdu_rtc_event_mask_config(

@@ -74,7 +74,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_entry, name, logger,
         citlali::pipeline::verbose_runtime_enabled(*this),
         citlali::pipeline::polarimetry_config(*this).enabled,
-        raw_timestream_settings.despike.enabled,
+        raw_timestream_settings,
         rtcproc, ptcproc,
         telescope.outer_scans_chunk);
 

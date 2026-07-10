@@ -84,26 +84,26 @@ void add_phdu_initial_runtime_config(FitsEntry &fits_entry,
     hdu.addKey("CONFIG.DESPIKED", run_despike, "Despiked");
 }
 
-template <class FitsEntry, class RtcProc, class Logger>
+template <class FitsEntry, class RawTimeChunkConfig, class Logger>
 void add_phdu_tod_filter_runtime_config(FitsEntry &fits_entry,
                                         const std::string &array_name,
                                         const Logger &logger,
-                                        const RtcProc &rtcproc,
+                                        const RawTimeChunkConfig &config,
                                         bool run_any_tod_filter) {
     auto &hdu = fits_entry.pfits->pHDU();
     hdu.addKey("CONFIG.TODFILTERED", run_any_tod_filter, "TOD Filtered");
-    hdu.addKey("CONFIG.TODNOTCH", rtcproc.run_tod_notch,
+    hdu.addKey("CONFIG.TODNOTCH", config.filter.notch.enabled,
                "TOD notch enabled");
-    hdu.addKey("CONFIG.TODIIRHP", rtcproc.run_tod_iir_highpass,
+    hdu.addKey("CONFIG.TODIIRHP", config.iir_filter.enabled,
                "TOD IIR highpass enabled");
     add_phdu_double_key(fits_entry, array_name, logger,
                         "CONFIG.TODIIRHP.FREQ_HZ",
-                        rtcproc.filter.iir_highpass_freq_Hz,
+                        config.iir_filter.freq_Hz,
                         "TOD IIR highpass cutoff frequency");
-    hdu.addKey("CONFIG.TODIIRHP.ORDER", rtcproc.filter.iir_highpass_order,
+    hdu.addKey("CONFIG.TODIIRHP.ORDER", config.iir_filter.order,
                "TOD IIR highpass cascaded order");
     hdu.addKey("CONFIG.TODIIRHP.ZEROPHASE",
-               rtcproc.filter.iir_highpass_zero_phase,
+               config.iir_filter.zero_phase,
                "TOD IIR highpass forward-backward");
 }
 
@@ -129,18 +129,17 @@ void add_phdu_tod_edge_guard_config(FitsEntry &fits_entry,
                "TOD loaded outer context samples");
 }
 
-template <class FitsEntry, class RtcProc>
+template <class FitsEntry, class RawTimeChunkConfig>
 void add_phdu_tod_processing_config(FitsEntry &fits_entry,
-                                    const RtcProc &rtcproc) {
+                                    const RawTimeChunkConfig &config) {
     auto &hdu = fits_entry.pfits->pHDU();
-    hdu.addKey("CONFIG.DOWNSAMPLED", rtcproc.run_downsample,
+    hdu.addKey("CONFIG.DOWNSAMPLED", config.downsample.enabled,
                "Downsampled");
-    hdu.addKey("CONFIG.CALIBRATED", rtcproc.run_calibrate,
+    hdu.addKey("CONFIG.CALIBRATED", config.flux_calibration_enabled,
                "Calibrated");
-    hdu.addKey("CONFIG.EXTINCTION", rtcproc.run_extinction,
+    hdu.addKey("CONFIG.EXTINCTION", config.extinction_correction_enabled,
                "Extinction corrected");
     hdu.addKey("CONFIG.EXTINCTION.EXTMODEL",
-               rtcproc.calibration.extinction_model,
+               config.extinction_model,
                "Extinction model");
 }
-

@@ -2,11 +2,6 @@
 
 // Included by phdu_reduction_config.h inside namespace citlali::pipeline.
 
-template <class RtcProc>
-bool phdu_any_tod_filter_enabled(const RtcProc &rtcproc) {
-    return rtcproc.run_tod_filter || rtcproc.run_tod_iir_highpass;
-}
-
 template <class PtcProc, class Arrays, class Index, class ArrayId>
 double phdu_fruit_loop_flux_limit(const PtcProc &ptcproc,
                                   const Arrays &arrays, Index i,
@@ -93,4 +88,3 @@ void add_phdu_unit_conversion_config(FitsEntry &fits_entry,
         hdu.addKey("to_Jy/pixel", 1, "Conversion to Jy/pixel");
     }
 }
-

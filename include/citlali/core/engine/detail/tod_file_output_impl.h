@@ -77,15 +77,18 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             fo, citlali::pipeline::verbose_runtime_enabled(*this),
             citlali::pipeline::polarimetry_config(*this).enabled,
             raw_timestream_settings.despike.enabled);
-        const bool run_any_tod_filter = rtcproc.run_tod_filter || rtcproc.run_tod_iir_highpass;
+        const bool run_any_tod_filter =
+            citlali::config::raw_time_chunk_filtering_active(
+                raw_timestream_settings);
         citlali::pipeline::add_rtc_local_despike_config_vars(
             fo, rtcproc.despiker.local_residual);
         citlali::pipeline::add_tod_filter_runtime_config_vars(
-            fo, rtcproc, run_any_tod_filter);
+            fo, raw_timestream_settings, run_any_tod_filter);
         citlali::pipeline::add_tod_filter_edge_guard_config_vars(
             fo, rtcproc.filter_edge_guard, telescope.outer_scans_chunk,
             rtcproc.tod_output_outer_context_samples);
-        citlali::pipeline::add_tod_processing_config_vars(fo, rtcproc);
+        citlali::pipeline::add_tod_processing_config_vars(
+            fo, raw_timestream_settings);
         citlali::pipeline::add_weight_selection_config_vars(fo, ptcproc);
         citlali::pipeline::add_reduction_learning_config_vars(
             fo, learning);

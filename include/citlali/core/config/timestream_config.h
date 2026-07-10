@@ -266,7 +266,13 @@ struct RawTimeChunkConfig {
     RawTimeChunkLineAuditConfig line_audit;
     bool flux_calibration_enabled = false;
     bool extinction_correction_enabled = false;
+    std::string extinction_model;
 };
+
+inline bool raw_time_chunk_filtering_active(
+    const RawTimeChunkConfig &config) {
+    return config.filter.enabled || config.iir_filter.enabled;
+}
 
 struct ProcessedTimeChunkSecondPassLocalConfig {
     bool enabled = false;
