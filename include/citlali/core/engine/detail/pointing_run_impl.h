@@ -134,18 +134,7 @@ auto Pointing::run(KidsProc &kidsproc) {
             auto &rtcdata) {
         auto &map_grouping = *map_grouping_ptr;
 
-        const auto scan_window = citlali::pipeline::copy_rtc_scan_context(
-            rtcdata, telescope, pointing_offsets.arcsec);
-        citlali::pipeline::copy_hwpr_angle_if_enabled(
-            rtcdata, calib, rtcproc.run_polarization, calib.run_hwpr,
-            alignment.hwpr_start_index, scan_window.start, scan_window.length);
-        citlali::pipeline::initialize_rtc_flags(rtcdata);
-        if (citlali::config::timing_gap_interpolation_active(
-                citlali::pipeline::runtime_config(*this))) {
-            citlali::pipeline::apply_gap_masks_to_rtc_flags(
-                rtcdata, calib, alignment.network_masks, scan_window.start,
-                rtcproc.filter_edge_guard.context_samples, logger);
-        }
+        citlali::pipeline::prepare_standard_rtc_scan_context(*this, rtcdata);
 
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;

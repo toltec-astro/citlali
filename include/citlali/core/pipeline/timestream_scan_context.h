@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 #include <Eigen/Core>
 
 #include <algorithm>
@@ -92,6 +94,26 @@ void apply_gap_masks_to_rtc_flags(
                       rtcdata.flags.data.col(start).template cast<int>().sum(),
                       rtcdata.flags.data.rows());
     }
+}
+
+template <class Engine, class RtcData>
+RtcScanSampleWindow prepare_standard_rtc_scan_context(
+    Engine &engine, RtcData &rtcdata) {
+    const auto scan_window = copy_rtc_scan_context(
+        rtcdata, engine.telescope, engine.pointing_offsets.arcsec);
+    copy_hwpr_angle_if_enabled(
+        rtcdata, engine.calib, engine.rtcproc.run_polarization,
+        engine.calib.run_hwpr, engine.alignment.hwpr_start_index,
+        scan_window.start, scan_window.length);
+    initialize_rtc_flags(rtcdata);
+    if (citlali::config::timing_gap_interpolation_active(
+            runtime_config(engine))) {
+        apply_gap_masks_to_rtc_flags(
+            rtcdata, engine.calib, engine.alignment.network_masks,
+            scan_window.start, engine.rtcproc.filter_edge_guard.context_samples,
+            engine.logger);
+    }
+    return scan_window;
 }
 
 }  // namespace citlali::pipeline
