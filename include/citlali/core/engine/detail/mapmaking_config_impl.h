@@ -5,14 +5,18 @@
 
 #include <citlali/core/engine/detail/mapmaking_config_read.h>
 #include <citlali/core/pipeline/mapmaking_config_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template<typename CT>
 void Engine::get_mapmaking_config(CT &config) {
     logger->info("getting mapmaking config options");
-    auto &mapmaking_config = typed_config.mapmaking;
-    auto &coadd_config = typed_config.coadd;
-    auto &noise_config = typed_config.noise;
-    auto &post_processing_config = typed_config.post_processing;
+    auto &runtime_config = citlali::pipeline::runtime_config(*this);
+    auto &timestream_config = citlali::pipeline::timestream_config(*this);
+    auto &mapmaking_config = citlali::pipeline::mapmaking_config(*this);
+    auto &coadd_config = citlali::pipeline::coadd_config(*this);
+    auto &noise_config = citlali::pipeline::noise_config(*this);
+    auto &post_processing_config =
+        citlali::pipeline::post_processing_config(*this);
     mapmaking_config = citlali::config::MapmakingConfig{};
     coadd_config = citlali::config::CoaddConfig{};
     noise_config = citlali::config::NoiseConfig{};
@@ -31,7 +35,7 @@ void Engine::get_mapmaking_config(CT &config) {
         config, mapmaking_config, config_diagnostics.missing_keys, config_diagnostics.invalid_keys);
 
     citlali::pipeline::enforce_map_grouping_polarization_policy(
-        rtcproc.run_polarization, typed_config.runtime.reduction_type,
+        rtcproc.run_polarization, runtime_config.reduction_type,
         mapmaking_config.grouping, logger);
 
     citlali::pipeline::sync_map_grouping_to_timestream_processors(
@@ -51,12 +55,12 @@ void Engine::get_mapmaking_config(CT &config) {
         config, telescope.pixel_axes, mapmaking_config, config_diagnostics.missing_keys,
         config_diagnostics.invalid_keys);
     citlali::pipeline::enforce_beammap_pixel_axes_policy(
-        typed_config.runtime.reduction_type,
+        runtime_config.reduction_type,
         mapmaking_config.pixel_axes_frame, logger);
 
     citlali::engine_detail::read_output_map_block_config(
         config, omb, config_diagnostics.missing_keys, config_diagnostics.invalid_keys,
-        mapmaking_config.pixel_axes_frame, typed_config.runtime.reduction_type,
+        mapmaking_config.pixel_axes_frame, runtime_config.reduction_type,
         RAD_TO_ASEC, mapmaking_config,
         post_processing_config, logger);
 
@@ -65,11 +69,11 @@ void Engine::get_mapmaking_config(CT &config) {
         config, coadd_enabled, coadd_config, config_diagnostics.missing_keys, config_diagnostics.invalid_keys);
     citlali::engine_detail::read_coadd_map_block_config(
         config, coadd_config, cmb, config_diagnostics.missing_keys, config_diagnostics.invalid_keys,
-        mapmaking_config.pixel_axes_frame, typed_config.runtime.reduction_type,
+        mapmaking_config.pixel_axes_frame, runtime_config.reduction_type,
         logger);
 
     citlali::pipeline::apply_uncalibrated_map_units(
-        rtcproc.run_calibrate, typed_config.timestream.type, omb, cmb);
+        rtcproc.run_calibrate, timestream_config.type, omb, cmb);
 
     citlali::pipeline::sync_mapmaking_parallel_policy(
         citlali::pipeline::runtime_parallel_policy_name(*this),

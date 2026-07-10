@@ -4,11 +4,12 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/pipeline/beammap_config_loading.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template<typename CT>
 void Engine::get_beammap_config(CT &config) {
     logger->info("getting beammap config options");
-    auto &beammap_config = typed_config.beammap;
+    auto &beammap_config = citlali::pipeline::beammap_config(*this);
     const auto beammap_core_config =
         citlali::pipeline::read_beammap_core_config(
             config, config_diagnostics.missing_keys, config_diagnostics.invalid_keys, logger);

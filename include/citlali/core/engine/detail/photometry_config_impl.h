@@ -3,6 +3,8 @@
 // Engine config loading implementation detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 namespace citlali::engine_detail {
 
 template <class Config, class FluxMap, class SourceConfig>
@@ -31,7 +33,7 @@ void read_beammap_source_fluxes(Config &config, FluxMap &fluxes_mjy_beam,
 
 template<typename CT>
 void Engine::get_photometry_config(CT &config) {
-    auto &source_config = typed_config.beammap.source;
+    auto &source_config = citlali::pipeline::beammap_config(*this).source;
     source_config = citlali::config::BeammapSourceConfig{};
 
     // beammap source name
@@ -49,7 +51,7 @@ void Engine::get_photometry_config(CT &config) {
     citlali::engine_detail::read_beammap_source_fluxes(
         config, source_flux_mJy_beam, source_config);
 
-    if (typed_config.runtime.reduction_type ==
+    if (citlali::pipeline::runtime_config(*this).reduction_type ==
         citlali::config::ReductionType::beammap) {
         bool valid_flux_config = true;
         for (auto const& entry : toltec_io.array_name_map) {

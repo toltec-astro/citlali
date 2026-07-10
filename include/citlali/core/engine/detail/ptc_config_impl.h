@@ -4,6 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
 
 template<typename CT>
@@ -11,8 +12,9 @@ void Engine::get_ptc_config(CT &config) {
     logger->info("getting ptc config options");
     // get ptcproc config
     ptcproc.get_config(config, config_diagnostics.missing_keys, config_diagnostics.invalid_keys);
-    auto &fruit_loops_config = typed_config.timestream.fruit_loops;
-    auto &processed_config = typed_config.timestream.processed_time_chunk;
+    auto &timestream_config = citlali::pipeline::timestream_config(*this);
+    auto &fruit_loops_config = timestream_config.fruit_loops;
+    auto &processed_config = timestream_config.processed_time_chunk;
     citlali::pipeline::mirror_fruit_loops_config(
         fruit_loops_config, ptcproc);
     citlali::pipeline::mirror_processed_clean_config(

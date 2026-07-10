@@ -6,16 +6,18 @@
 #include <citlali/core/engine/detail/citlali_config_read.h>
 #include <citlali/core/engine/detail/mapmaking_activation_policy.h>
 #include <citlali/core/engine/detail/source_protection_activation.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template<typename CT>
 void Engine::get_citlali_config(CT &config) {
     citlali::engine_detail::read_interface_sync_offsets(
         config, interface_sync.offsets, logger);
 
-    auto &runtime_config = typed_config.runtime;
-    auto &timestream_config = typed_config.timestream;
-    auto &post_processing_config = typed_config.post_processing;
-    auto &coadd_config = typed_config.coadd;
+    auto &runtime_config = citlali::pipeline::runtime_config(*this);
+    auto &timestream_config = citlali::pipeline::timestream_config(*this);
+    auto &post_processing_config =
+        citlali::pipeline::post_processing_config(*this);
+    auto &coadd_config = citlali::pipeline::coadd_config(*this);
 
     runtime_config = get_runtime_config(config);
     if (!runtime_config.interp_over_gaps) {

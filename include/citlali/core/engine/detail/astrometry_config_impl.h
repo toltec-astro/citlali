@@ -4,10 +4,11 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/engine/detail/pointing_offsets_config.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template<typename CT>
 void Engine::get_astrometry_config(CT &config) {
-    auto &astrometry_config = typed_config.astrometry;
+    auto &astrometry_config = citlali::pipeline::astrometry_config(*this);
     astrometry_config = citlali::config::AstrometryConfig{};
 
     // check if config file has pointing_offsets

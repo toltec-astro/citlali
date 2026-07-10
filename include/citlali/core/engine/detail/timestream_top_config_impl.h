@@ -4,11 +4,12 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/engine/detail/timestream_config_read.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template<typename CT>
 void Engine::get_timestream_config(CT &config) {
     logger->info("getting timestream config options");
-    auto &timestream_config = typed_config.timestream;
+    auto &timestream_config = citlali::pipeline::timestream_config(*this);
     timestream_config = citlali::config::TimestreamConfig{};
 
     bool run_tod = timestream_config.enabled;

@@ -5,11 +5,12 @@
 
 #include <citlali/core/engine/detail/config_parse_tracking.h>
 #include <citlali/core/engine/detail/pointing_config_logging.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template<typename CT>
 void Engine::get_pointing_config(CT &config) {
     logger->info("getting pointing config options");
-    auto &pointing_config = typed_config.pointing;
+    auto &pointing_config = citlali::pipeline::pointing_config(*this);
     pointing_config = citlali::config::PointingConfig{};
 
     std::string pointing_source_strategy = "standard";

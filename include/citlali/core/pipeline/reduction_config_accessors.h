@@ -92,4 +92,14 @@ const auto &post_processing_config(const Engine &engine) {
     return reduction_config(engine).post_processing;
 }
 
+template <class Engine>
+auto &astrometry_config(Engine &engine) {
+    return reduction_config(engine).astrometry;
+}
+
+template <class Engine>
+const auto &astrometry_config(const Engine &engine) {
+    return reduction_config(engine).astrometry;
+}
+
 }  // namespace citlali::pipeline
