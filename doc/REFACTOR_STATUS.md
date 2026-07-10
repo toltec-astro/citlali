@@ -104,9 +104,13 @@ Immediate work order:
   volatile profile sidecar is explicitly excluded; retaining that sidecar or
   the default large-array cap correctly fails the gate.
 - The pre-existing `citlali_test` target was found to have substantial test
-  infrastructure and source decay. It remains a separate Phase 1 repair item;
-  the focused safety target does not conceal that debt or satisfy the complete
-  test-activation gate by itself.
+  infrastructure and source decay. It has now been decoupled from the obsolete
+  Google Benchmark runner, modernized for typed config and explicit alignment
+  and output-path ownership, and reactivated with all 201 declared legacy tests
+  passing. The seven utility tests that had remained inside a block comment now
+  exercise the current Tula APIs with assertions. Together with the 18 focused
+  safety tests, CTest discovers and passes 219 tests with none skipped or
+  disabled. The local CLI build and complete config preflight continue to pass.
 - Enabled timestream products now carry mode- and config-derived expected write
   counts. Pointing, Lali, and Beammap verify RTC TOD, PTC TOD, `rtcdiag`, and
   `ptcdiag` cardinality after worker drainage and before map finalization, so a

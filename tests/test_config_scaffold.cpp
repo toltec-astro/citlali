@@ -1,5 +1,9 @@
 #include <citlali/core/config/calibration_config.h>
 #include <citlali/core/config/reduction_config.h>
+#include <citlali/core/config/reduction_config_validation.h>
+#include <citlali/core/pipeline/timestream_alignment_state.h>
+#include <citlali/core/pipeline/config_diagnostics_state.h>
+#include <citlali/core/pipeline/output_path_state.h>
 #include <citlali/core/cli/config_loading.h>
 #include <citlali/core/cli/reduction_runtime.h>
 #include <citlali/core/cli/runtime_setup.h>
@@ -25,6 +29,9 @@
 #include <vector>
 
 namespace {
+
+#define EXPECT_TEMPLATE_TRUE(...) EXPECT_TRUE((__VA_ARGS__))
+#define EXPECT_TEMPLATE_FALSE(...) EXPECT_FALSE((__VA_ARGS__))
 
 struct FakeLogger {
     int error_calls = 0;
@@ -130,6 +137,30 @@ struct FakeCalib {
 };
 
 struct FakeEngine {
+    citlali::config::ReductionConfig typed_config = [] {
+        citlali::config::ReductionConfig config;
+        config.runtime.verbose = false;
+        config.runtime.interp_over_gaps = false;
+        config.runtime.n_threads = 4;
+        config.mapmaking.method = citlali::config::MapMethod::jinc;
+        config.mapmaking.grouping = citlali::config::MapGrouping::array;
+        config.noise.enabled = true;
+        return config;
+    }();
+    citlali::pipeline::TimestreamAlignmentState alignment = [] {
+        citlali::pipeline::TimestreamAlignmentState state;
+        state.start_indices = {7};
+        state.end_indices = {9};
+        state.hwpr_start_index = -1;
+        state.hwpr_end_index = -1;
+        return state;
+    }();
+    citlali::pipeline::OutputPathState output_paths = [] {
+        citlali::pipeline::OutputPathState paths;
+        paths.redu_dir_name = "/tmp/redu01";
+        paths.redu_dir_num = 1;
+        return paths;
+    }();
     struct {
         std::string obsnum;
     } observation_identity;
@@ -142,20 +173,14 @@ struct FakeEngine {
     bool run_map_filter = false;
     bool run_mapmaking = true;
     bool run_tod = true;
-    bool verbose_mode = false;
     bool run_noise = true;
     bool run_noise_products = true;
     bool run_source_finder = false;
     bool write_filtered_maps_partial = false;
     bool apply_empirical_noise_weights = false;
-    int n_threads = 4;
     struct {
         int fruit_iter = 0;
     } iteration;
-    bool interp_over_gaps = false;
-    std::string map_method = "jinc";
-    std::string map_grouping = "array";
-    std::map<std::string, int> gaps;
     int configure_map_pixel_contribution_targets_calls = 0;
     std::string last_map_pixel_contribution_target;
     int create_obs_map_files_calls = 0;
@@ -168,19 +193,12 @@ struct FakeEngine {
     int get_astrometry_config_calls = 0;
     int get_photometry_config_calls = 0;
     int get_citlali_config_calls = 0;
-    int hwpr_start_indices = -1;
-    int hwpr_end_indices = -1;
     std::string loaded_astrometry_config;
     std::string loaded_photometry_config;
-    struct {
-        std::vector<std::string> missing_keys;
-        std::vector<std::string> invalid_keys;
-    } config_diagnostics;
+    citlali::pipeline::ConfigDiagnosticsState config_diagnostics;
     struct {
         std::vector<std::string> date_obs;
     } observation_dates;
-    std::vector<int> start_indices = {7};
-    std::vector<int> end_indices = {9};
     int write_learning_summary_calls = 0;
 
     struct {
@@ -319,11 +337,11 @@ struct FakeEngine {
         std::string redu_type;
 
         void begin_iteration(int iter, bool source_available,
-                             const std::string &type) {
+                             citlali::config::ReductionType type) {
             ++begin_calls;
             begin_iter = iter;
             source_model_available = source_available;
-            redu_type = type;
+            redu_type = std::string(citlali::config::to_string(type));
         }
 
         void finalize_iteration(int iter) {
@@ -574,6 +592,7 @@ struct FakeIOCoordinator {
 };
 
 struct FakeExecutionEngine {
+    citlali::config::ReductionConfig typed_config;
     bool run_tod = true;
     int setup_calls = 0;
     int pipeline_calls = 0;
@@ -618,11 +637,11 @@ struct FakeReductionLearning {
     std::string redu_type;
 
     void begin_iteration(int iter, bool source_available,
-                         const std::string &type) {
+                         citlali::config::ReductionType type) {
         ++begin_calls;
         begin_iter = iter;
         source_model_available = source_available;
-        redu_type = type;
+        redu_type = std::string(citlali::config::to_string(type));
     }
 
     void finalize_iteration(int iter) {
@@ -636,6 +655,12 @@ struct FakeReductionLearning {
 };
 
 struct FakeIterationEngine {
+    citlali::config::ReductionConfig typed_config;
+    citlali::pipeline::OutputPathState output_paths = [] {
+        citlali::pipeline::OutputPathState paths;
+        paths.redu_dir_name = "/tmp/redu01";
+        return paths;
+    }();
     struct {
         int fruit_iter = 0;
     } iteration;
@@ -662,6 +687,17 @@ struct FakeIterationTodProc {
 };
 
 struct FakeReductionIterationEngine {
+    citlali::config::ReductionConfig typed_config = [] {
+        citlali::config::ReductionConfig config;
+        config.coadd.enabled = true;
+        config.noise.enabled = true;
+        return config;
+    }();
+    citlali::pipeline::OutputPathState output_paths = [] {
+        citlali::pipeline::OutputPathState paths;
+        paths.redu_dir_name = "/tmp/redu01";
+        return paths;
+    }();
     struct {
         int fruit_iter = 0;
     } iteration;
@@ -669,19 +705,54 @@ struct FakeReductionIterationEngine {
     std::string redu_dir_name = "/tmp/redu01";
     bool run_coadd = true;
     bool run_noise = true;
+    bool apply_empirical_noise_weights = false;
+    bool run_source_finder = false;
     struct {
         std::vector<std::string> date_obs = {"old"};
     } observation_dates;
     FakeIterationPtcProc ptcproc;
     FakeReductionLearning learning;
     int write_learning_summary_calls = 0;
+    int output_calls = 0;
+    int run_wiener_filter_calls = 0;
+    int find_sources_calls = 0;
+
+    struct {
+        bool run_polarization = false;
+    } rtcproc;
+
+    struct {
+        bool normalize_error = false;
+    } wiener_filter;
 
     struct {
         std::vector<std::string> obsnums = {"101"};
         double exposure_time = 6.0;
+        void normalize_maps() {}
+        void normalize_polarized_maps() {}
+        void calc_noise_products(bool) {}
+        void calc_map_psd() {}
+        void calc_map_hist() {}
+        void calc_median_err() {}
+        void calc_median_rms() {}
     } cmb;
 
     void write_learning_summary() { ++write_learning_summary_calls; }
+
+    template <auto MapType>
+    void output() {
+        ++output_calls;
+    }
+
+    template <auto MapType, class MapBuffer>
+    void run_wiener_filter(MapBuffer &) {
+        ++run_wiener_filter_calls;
+    }
+
+    template <auto MapType, class MapBuffer>
+    void find_sources(MapBuffer &) {
+        ++find_sources_calls;
+    }
 };
 
 struct FakeReductionIterationTodProc {
@@ -690,6 +761,7 @@ struct FakeReductionIterationTodProc {
     int allocate_cmb_calls = 0;
     int allocate_nmb_calls = 0;
     int make_index_file_calls = 0;
+    int create_coadded_map_files_calls = 0;
     std::string indexed_path;
 
     FakeReductionIterationEngine &engine() { return engine_state; }
@@ -697,6 +769,8 @@ struct FakeReductionIterationTodProc {
     void create_output_dir() { ++create_output_dir_calls; }
 
     void allocate_cmb() { ++allocate_cmb_calls; }
+
+    void create_coadded_map_files() { ++create_coadded_map_files_calls; }
 
     template <class MapBuffer>
     void allocate_nmb(MapBuffer &) {
@@ -823,6 +897,9 @@ struct FakeInitialObservationTodProc : FakeTelescopeTodProc {
     int allocate_nmb_calls = 0;
     int get_apt_from_files_calls = 0;
     int make_index_file_calls = 0;
+    int allocate_cmb_calls = 0;
+    int coadd_calls = 0;
+    int create_coadded_map_files_calls = 0;
     int last_map_extent = 0;
     int last_map_coord = 0;
     int last_map_coord_count = 0;
@@ -848,6 +925,12 @@ struct FakeInitialObservationTodProc : FakeTelescopeTodProc {
     }
 
     void create_output_dir() { ++create_output_dir_calls; }
+
+    void allocate_cmb() { ++allocate_cmb_calls; }
+
+    void coadd() { ++coadd_calls; }
+
+    void create_coadded_map_files() { ++create_coadded_map_files_calls; }
 
     void make_index_file(const std::string &path) {
         ++make_index_file_calls;
@@ -1607,7 +1690,9 @@ TEST(config_scaffold, validates_source_finding_config_values) {
 
 TEST(config_scaffold, validates_beammap_config_values) {
     citlali::config::BeammapConfig config;
-    EXPECT_TRUE(citlali::config::validate(config).ok());
+    citlali::config::ValidationReport initial_report;
+    citlali::config::validate(config, initial_report);
+    EXPECT_TRUE(initial_report.ok());
 
     config.phase_strategy.measurement_start_iter = 0;
     config.rfi_mask.max_flagged_fraction = 1.5;
@@ -1635,8 +1720,10 @@ TEST(config_scaffold, validates_beammap_source_values) {
 
 TEST(config_scaffold, validates_astrometry_pointing_offsets_values) {
     citlali::config::AstrometryPointingOffsetsConfig config;
-    EXPECT_TRUE(citlali::config::validate(
-                    citlali::config::AstrometryConfig{}).ok());
+    citlali::config::ValidationReport initial_report;
+    citlali::config::validate(citlali::config::AstrometryConfig{},
+                              initial_report);
+    EXPECT_TRUE(initial_report.ok());
 
     config.enabled = true;
     config.az_arcsec = {1.0, 2.0, 3.0};
@@ -1690,7 +1777,7 @@ TEST(cli_runtime_setup, derives_fftw_threads) {
 
 TEST(cli_runtime_setup, configures_runtime_threads) {
     FakeEngine engine;
-    engine.n_threads = 6;
+    engine.typed_config.runtime.n_threads = 6;
     auto logger = std::make_shared<FakeLogger>();
     int omp_threads = 0;
     int eigen_threads = 0;
@@ -1712,7 +1799,7 @@ TEST(cli_runtime_setup, configures_runtime_threads) {
 
 TEST(cli_runtime_setup, configures_single_fftw_thread_for_wiener_omp) {
     FakeEngine engine;
-    engine.n_threads = 6;
+    engine.typed_config.runtime.n_threads = 6;
     auto logger = std::make_shared<FakeLogger>();
     int fftw_threads = 0;
 
@@ -1728,7 +1815,7 @@ TEST(cli_runtime_setup, configures_single_fftw_thread_for_wiener_omp) {
 
 TEST(cli_runtime_setup, warns_when_fftw_thread_init_fails) {
     FakeEngine engine;
-    engine.n_threads = 6;
+    engine.typed_config.runtime.n_threads = 6;
     auto logger = std::make_shared<FakeLogger>();
     int fftw_threads = 0;
 
@@ -1745,7 +1832,7 @@ TEST(cli_runtime_setup, warns_when_fftw_thread_init_fails) {
 
 TEST(cli_reduction_runtime, prepares_reduction_runtime) {
     FakeInitialObservationTodProc todproc;
-    todproc.engine().verbose_mode = true;
+    todproc.engine().typed_config.runtime.verbose = true;
     FakeCitlaliConfig config;
     auto logger = std::make_shared<FakeLogger>();
     int enable_debug_calls = 0;
@@ -1762,7 +1849,7 @@ TEST(cli_reduction_runtime, prepares_reduction_runtime) {
 
 TEST(cli_reduction_runtime, rejects_invalid_reduction_runtime) {
     FakeInitialObservationTodProc todproc;
-    todproc.engine().config_diagnostics.missing_keys = {"runtime"};
+    todproc.engine().config_diagnostics.missing_keys = {{"runtime"}};
     FakeCitlaliConfig config;
     auto logger = std::make_shared<FakeLogger>();
     int enable_debug_calls = 0;
@@ -1794,9 +1881,10 @@ TEST(cli_tod_processor_selection, selects_science_processor) {
     FakeTodConfig config{77};
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_TRUE(citlali::cli::emplace_tod_processor_for_reduction_type<
+    EXPECT_TEMPLATE_TRUE(citlali::cli::emplace_tod_processor_for_reduction_type<
         decltype(todproc), FakeScienceTodProc, FakePointingTodProc,
-        FakeBeammapTodProc>(todproc, "science", config, logger));
+        FakeBeammapTodProc>(todproc, citlali::config::ReductionType::science,
+                            config, logger));
 
     ASSERT_TRUE(std::holds_alternative<FakeScienceTodProc>(todproc));
     EXPECT_EQ(std::get<FakeScienceTodProc>(todproc).loaded_value, 77);
@@ -1836,9 +1924,10 @@ TEST(cli_tod_processor_selection, selects_pointing_processor) {
     FakeTodConfig config{88};
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_TRUE(citlali::cli::emplace_tod_processor_for_reduction_type<
+    EXPECT_TEMPLATE_TRUE(citlali::cli::emplace_tod_processor_for_reduction_type<
         decltype(todproc), FakeScienceTodProc, FakePointingTodProc,
-        FakeBeammapTodProc>(todproc, "pointing", config, logger));
+        FakeBeammapTodProc>(todproc, citlali::config::ReductionType::pointing,
+                            config, logger));
 
     ASSERT_TRUE(std::holds_alternative<FakePointingTodProc>(todproc));
     EXPECT_EQ(std::get<FakePointingTodProc>(todproc).loaded_value, 88);
@@ -1851,9 +1940,11 @@ TEST(cli_tod_processor_selection, rejects_unknown_processor_type) {
     FakeTodConfig config{99};
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_FALSE(citlali::cli::emplace_tod_processor_for_reduction_type<
+    EXPECT_TEMPLATE_FALSE(citlali::cli::emplace_tod_processor_for_reduction_type<
         decltype(todproc), FakeScienceTodProc, FakePointingTodProc,
-        FakeBeammapTodProc>(todproc, "unknown", config, logger));
+        FakeBeammapTodProc>(
+            todproc, static_cast<citlali::config::ReductionType>(-1), config,
+            logger));
 
     EXPECT_TRUE(std::holds_alternative<std::monostate>(todproc));
     EXPECT_EQ(logger->info_calls, 0);
@@ -1968,7 +2059,8 @@ TEST(pipeline_preflight, configures_non_beammap_observation_calibration) {
 
 TEST(pipeline_preflight, configures_beammap_detector_calibration_from_files) {
     FakeCalibrationTodProc todproc;
-    todproc.engine().map_grouping = "detector";
+    todproc.engine().typed_config.mapmaking.grouping =
+        citlali::config::MapGrouping::detector;
     FakeRawObs rawobs;
     rawobs.astrometry.value = "astro";
     rawobs.photometry.value = "photo";
@@ -1986,7 +2078,8 @@ TEST(pipeline_preflight, configures_beammap_detector_calibration_from_files) {
 
 TEST(pipeline_preflight, configures_beammap_array_calibration_from_apt) {
     FakeCalibrationTodProc todproc;
-    todproc.engine().map_grouping = "array";
+    todproc.engine().typed_config.mapmaking.grouping =
+        citlali::config::MapGrouping::array;
     FakeRawObs rawobs;
     auto logger = std::make_shared<FakeLogger>();
 
@@ -2041,10 +2134,11 @@ TEST(pipeline_preflight, resets_simulated_observation_indices) {
 
     citlali::pipeline::reset_simulated_observation_indices(engine, rawobs);
 
-    EXPECT_EQ(engine.start_indices, (std::vector<int>{0, 0, 0, 0, 0, 0}));
-    EXPECT_TRUE(engine.end_indices.empty());
-    EXPECT_EQ(engine.hwpr_start_indices, 0);
-    EXPECT_EQ(engine.hwpr_end_indices, 0);
+    EXPECT_EQ(engine.alignment.start_indices,
+              (std::vector<Eigen::Index>{0, 0, 0, 0, 0, 0}));
+    EXPECT_TRUE(engine.alignment.end_indices.empty());
+    EXPECT_EQ(engine.alignment.hwpr_start_index, 0);
+    EXPECT_EQ(engine.alignment.hwpr_end_index, 0);
 }
 
 TEST(pipeline_preflight, leaves_hwpr_indices_when_hwpr_disabled) {
@@ -2054,10 +2148,11 @@ TEST(pipeline_preflight, leaves_hwpr_indices_when_hwpr_disabled) {
 
     citlali::pipeline::reset_simulated_observation_indices(engine, rawobs);
 
-    EXPECT_EQ(engine.start_indices, (std::vector<int>{0, 0, 0, 0}));
-    EXPECT_TRUE(engine.end_indices.empty());
-    EXPECT_EQ(engine.hwpr_start_indices, -1);
-    EXPECT_EQ(engine.hwpr_end_indices, -1);
+    EXPECT_EQ(engine.alignment.start_indices,
+              (std::vector<Eigen::Index>{0, 0, 0, 0}));
+    EXPECT_TRUE(engine.alignment.end_indices.empty());
+    EXPECT_EQ(engine.alignment.hwpr_start_index, -1);
+    EXPECT_EQ(engine.alignment.hwpr_end_index, -1);
 }
 
 TEST(pipeline_preflight, loads_and_aligns_telescope_data) {
@@ -2078,7 +2173,7 @@ TEST(pipeline_preflight, loads_and_aligns_telescope_data) {
 
 TEST(pipeline_preflight, aligns_telescope_data_over_gaps) {
     FakeTelescopeTodProc todproc;
-    todproc.engine().interp_over_gaps = true;
+    todproc.engine().typed_config.runtime.interp_over_gaps = true;
     FakeRawObs rawobs;
     auto logger = std::make_shared<FakeLogger>();
 
@@ -2100,9 +2195,9 @@ TEST(pipeline_preflight, resets_indices_for_simulated_telescope_data) {
 
     EXPECT_EQ(todproc.align_timestreams_calls, 0);
     EXPECT_EQ(todproc.align_timestreams_gaps_calls, 0);
-    EXPECT_EQ(todproc.engine().start_indices,
-              (std::vector<int>{0, 0, 0, 0}));
-    EXPECT_TRUE(todproc.engine().end_indices.empty());
+    EXPECT_EQ(todproc.engine().alignment.start_indices,
+              (std::vector<Eigen::Index>{0, 0, 0, 0}));
+    EXPECT_TRUE(todproc.engine().alignment.end_indices.empty());
     EXPECT_EQ(logger->info_calls, 1);
 }
 
@@ -2220,8 +2315,8 @@ TEST(pipeline_preflight, loads_valid_engine_config) {
 
 TEST(pipeline_preflight, rejects_invalid_engine_config) {
     FakeEngine engine;
-    engine.config_diagnostics.missing_keys = {"runtime"};
-    engine.config_diagnostics.invalid_keys = {"mapmaking.pixel_size"};
+    engine.config_diagnostics.missing_keys = {{"runtime"}};
+    engine.config_diagnostics.invalid_keys = {{"mapmaking", "pixel_size"}};
     FakeCitlaliConfig config;
     auto logger = std::make_shared<FakeLogger>();
 
@@ -2234,7 +2329,7 @@ TEST(pipeline_preflight, rejects_invalid_engine_config) {
 
 TEST(pipeline_preflight, configures_verbose_logging_when_requested) {
     FakeEngine engine;
-    engine.verbose_mode = true;
+    engine.typed_config.runtime.verbose = true;
     auto logger = std::make_shared<FakeLogger>();
     int enable_debug_calls = 0;
 
@@ -2247,7 +2342,7 @@ TEST(pipeline_preflight, configures_verbose_logging_when_requested) {
 
 TEST(pipeline_preflight, skips_verbose_logging_when_not_requested) {
     FakeEngine engine;
-    engine.verbose_mode = false;
+    engine.typed_config.runtime.verbose = false;
     auto logger = std::make_shared<FakeLogger>();
     int enable_debug_calls = 0;
 
@@ -2489,7 +2584,7 @@ TEST(pipeline_preflight, updates_observation_exposure_time) {
 
 TEST(pipeline_preflight, accumulates_observation_exposure_time_for_coadd) {
     FakeEngine engine;
-    engine.run_coadd = true;
+    engine.typed_config.coadd.enabled = true;
     engine.cmb.exposure_time = 3.0;
     engine.telescope.tel_data["TelTime"].values = {10.0, 12.5, 14.0};
 
@@ -2538,7 +2633,8 @@ TEST(pipeline_preflight, configures_non_fruit_loop_as_single_iteration) {
 
 TEST(pipeline_preflight, configures_beammap_fruit_loop_as_single_iteration) {
     FakeEngine engine;
-    engine.redu_type = "beammap";
+    engine.typed_config.runtime.reduction_type =
+        citlali::config::ReductionType::beammap;
     engine.ptcproc.run_fruit_loops = true;
     engine.ptcproc.fruit_loops_iters = 5;
     engine.ptcproc.save_all_iters = false;
@@ -2554,7 +2650,7 @@ TEST(pipeline_preflight, configures_beammap_fruit_loop_as_single_iteration) {
 TEST(pipeline_preflight, warns_when_fruit_loop_noise_maps_disabled) {
     FakeEngine engine;
     engine.ptcproc.run_fruit_loops = true;
-    engine.run_noise = false;
+    engine.typed_config.noise.enabled = false;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::configure_fruit_loop_iteration_policy(
@@ -2565,7 +2661,8 @@ TEST(pipeline_preflight, warns_when_fruit_loop_noise_maps_disabled) {
 
 TEST(pipeline_preflight, preserves_science_fruit_loop_iteration_policy) {
     FakeEngine engine;
-    engine.redu_type = "science";
+    engine.typed_config.runtime.reduction_type =
+        citlali::config::ReductionType::science;
     engine.ptcproc.run_fruit_loops = true;
     engine.ptcproc.fruit_loops_iters = 5;
     engine.ptcproc.save_all_iters = false;
@@ -2716,7 +2813,7 @@ TEST(pipeline_iteration_lifecycle, logs_finalize_diagnostics_when_enabled) {
 TEST(pipeline_iteration_lifecycle, finalizes_iteration_outputs) {
     FakeIterationTodProc todproc;
     todproc.engine().iteration.fruit_iter = 3;
-    todproc.engine().redu_dir_name = "/data/redu03";
+    todproc.engine().output_paths.redu_dir_name = "/data/redu03";
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::finalize_iteration_outputs(todproc, logger);
@@ -2747,7 +2844,7 @@ TEST(pipeline_execution, setup_runs_before_enabled_pipeline) {
 
 TEST(pipeline_execution, setup_runs_when_tod_pipeline_disabled) {
     FakeExecutionEngine engine;
-    engine.run_tod = false;
+    engine.typed_config.timestream.enabled = false;
     FakeKidsProc kidsproc;
     FakeRawObs rawobs;
     auto logger = std::make_shared<FakeLogger>();
@@ -2762,7 +2859,7 @@ TEST(pipeline_execution, setup_runs_when_tod_pipeline_disabled) {
 
 TEST(pipeline_execution, prepares_coadd_iteration_buffers) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_noise = true;
+    todproc.engine().typed_config.noise.enabled = true;
     todproc.engine().cmb.obsnums = {"101", "102"};
     todproc.engine().cmb.exposure_time = 12.0;
     auto logger = std::make_shared<FakeLogger>();
@@ -2778,7 +2875,7 @@ TEST(pipeline_execution, prepares_coadd_iteration_buffers) {
 
 TEST(pipeline_execution, skips_coadd_noise_buffer_when_noise_disabled) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_noise = false;
+    todproc.engine().typed_config.noise.enabled = false;
     todproc.engine().cmb.obsnums = {"101"};
     todproc.engine().cmb.exposure_time = 6.0;
     auto logger = std::make_shared<FakeLogger>();
@@ -2794,7 +2891,7 @@ TEST(pipeline_execution, skips_coadd_noise_buffer_when_noise_disabled) {
 
 TEST(pipeline_execution, prepares_iteration_observation_buffers_for_coadd) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_coadd = true;
+    todproc.engine().typed_config.coadd.enabled = true;
     todproc.engine().observation_dates.date_obs = {"old"};
     todproc.engine().cmb.obsnums = {"101"};
     todproc.engine().cmb.exposure_time = 6.0;
@@ -2811,7 +2908,7 @@ TEST(pipeline_execution, prepares_iteration_observation_buffers_for_coadd) {
 
 TEST(pipeline_execution, prepares_iteration_observation_buffers_without_coadd) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_coadd = false;
+    todproc.engine().typed_config.coadd.enabled = false;
     todproc.engine().observation_dates.date_obs = {"old"};
     auto logger = std::make_shared<FakeLogger>();
 
@@ -2878,7 +2975,7 @@ TEST(pipeline_execution, calculates_initial_observation_map_dimensions) {
 TEST(pipeline_execution,
      skips_initial_observation_map_dimensions_when_mapmaking_disabled) {
     FakeObservationMapTodProc todproc;
-    todproc.engine().run_mapmaking = false;
+    todproc.engine().typed_config.mapmaking.enabled = false;
     std::vector<int> map_extents = {11};
     std::vector<int> map_coords = {22};
     auto logger = std::make_shared<FakeLogger>();
@@ -2906,7 +3003,7 @@ TEST(pipeline_execution, prepares_initial_observation_setup) {
     std::vector<int> map_coords;
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_TRUE(citlali::pipeline::prepare_initial_observation_setup<false>(
+    EXPECT_TEMPLATE_TRUE(citlali::pipeline::prepare_initial_observation_setup<false>(
         todproc, rawobs, rawobs_kids_meta, map_extents, map_coords, logger));
 
     EXPECT_EQ(todproc.engine().get_astrometry_config_calls, 1);
@@ -2931,7 +3028,7 @@ TEST(pipeline_execution, prepares_initial_observation) {
     std::vector<int> map_coords;
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_TRUE(citlali::pipeline::prepare_initial_observation<
+    EXPECT_TEMPLATE_TRUE(citlali::pipeline::prepare_initial_observation<
         false, FakeKidsProc>(
         todproc, config, rawobs, map_extents, map_coords, logger));
 
@@ -2951,7 +3048,7 @@ TEST(pipeline_execution, prepares_initial_observations) {
     std::vector<int> map_coords;
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_TRUE(citlali::pipeline::prepare_initial_observations<
+    EXPECT_TEMPLATE_TRUE(citlali::pipeline::prepare_initial_observations<
         false, FakeKidsProc>(
         todproc, co, config, map_extents, map_coords, logger));
 
@@ -2960,7 +3057,7 @@ TEST(pipeline_execution, prepares_initial_observations) {
     EXPECT_EQ(todproc.calc_omb_size_calls, 2);
     EXPECT_EQ(map_extents, (std::vector<int>{303, 303}));
     EXPECT_EQ(map_coords, (std::vector<int>{404, 404}));
-    EXPECT_EQ(logger->info_calls, 5);
+    EXPECT_EQ(logger->info_calls, 19);
 }
 
 TEST(pipeline_execution, rejects_initial_observations_on_failure) {
@@ -2973,7 +3070,7 @@ TEST(pipeline_execution, rejects_initial_observations_on_failure) {
     std::vector<int> map_coords;
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_FALSE(citlali::pipeline::prepare_initial_observations<
+    EXPECT_TEMPLATE_FALSE(citlali::pipeline::prepare_initial_observations<
         false, FakeKidsProc>(
         todproc, co, config, map_extents, map_coords, logger));
 
@@ -2985,14 +3082,14 @@ TEST(pipeline_execution, rejects_initial_observations_on_failure) {
 
 TEST(pipeline_execution, prepares_initial_reduction_geometry) {
     FakeInitialObservationTodProc todproc;
-    todproc.engine().run_coadd = true;
+    todproc.engine().typed_config.coadd.enabled = true;
     FakeCitlaliConfig config;
     FakeIOCoordinator co{{FakeRawObs{}, FakeRawObs{}}};
     std::vector<int> map_extents;
     std::vector<int> map_coords;
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_TRUE(citlali::pipeline::prepare_initial_reduction_geometry<
+    EXPECT_TEMPLATE_TRUE(citlali::pipeline::prepare_initial_reduction_geometry<
         false, FakeKidsProc>(
         todproc, co, config, map_extents, map_coords, logger));
 
@@ -3003,7 +3100,7 @@ TEST(pipeline_execution, prepares_initial_reduction_geometry) {
 
 TEST(pipeline_execution, rejects_initial_reduction_geometry_on_failure) {
     FakeInitialObservationTodProc todproc;
-    todproc.engine().run_coadd = true;
+    todproc.engine().typed_config.coadd.enabled = true;
     FakeCitlaliConfig config;
     FakeFlxscaleCorrection correction{-1.0};
     FakeRawObs bad_rawobs{&correction, "bad_obs"};
@@ -3012,7 +3109,7 @@ TEST(pipeline_execution, rejects_initial_reduction_geometry_on_failure) {
     std::vector<int> map_coords;
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_FALSE(citlali::pipeline::prepare_initial_reduction_geometry<
+    EXPECT_TEMPLATE_FALSE(citlali::pipeline::prepare_initial_reduction_geometry<
         false, FakeKidsProc>(
         todproc, co, config, map_extents, map_coords, logger));
 
@@ -3028,7 +3125,7 @@ TEST(pipeline_execution, rejects_initial_observation_setup_on_bad_flxscale) {
     std::vector<int> map_coords;
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_FALSE(citlali::pipeline::prepare_initial_observation_setup<false>(
+    EXPECT_TEMPLATE_FALSE(citlali::pipeline::prepare_initial_observation_setup<false>(
         todproc, rawobs, rawobs_kids_meta, map_extents, map_coords, logger));
 
     EXPECT_EQ(todproc.check_inputs_calls, 0);
@@ -3039,7 +3136,7 @@ TEST(pipeline_execution, rejects_initial_observation_setup_on_bad_flxscale) {
 
 TEST(pipeline_execution, calculates_initial_coadd_map_dimensions) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_coadd = true;
+    todproc.engine().typed_config.coadd.enabled = true;
     std::vector<int> map_coords = {1, 2, 3};
     auto logger = std::make_shared<FakeLogger>();
 
@@ -3054,7 +3151,7 @@ TEST(pipeline_execution, calculates_initial_coadd_map_dimensions) {
 TEST(pipeline_execution,
      skips_initial_coadd_map_dimensions_when_coadd_disabled) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_coadd = false;
+    todproc.engine().typed_config.coadd.enabled = false;
     std::vector<int> map_coords = {1, 2, 3};
     auto logger = std::make_shared<FakeLogger>();
 
@@ -3088,8 +3185,9 @@ TEST(pipeline_execution, allocates_observation_map_buffers) {
 
 TEST(pipeline_execution, skips_observation_noise_for_non_jinc_coadd) {
     FakeObservationMapTodProc todproc;
-    todproc.engine().run_coadd = true;
-    todproc.engine().map_method = "nearest";
+    todproc.engine().typed_config.coadd.enabled = true;
+    todproc.engine().typed_config.mapmaking.method =
+        citlali::config::MapMethod::naive;
     int map_extent = 11;
     int map_coord = 22;
     auto logger = std::make_shared<FakeLogger>();
@@ -3123,7 +3221,7 @@ TEST(pipeline_execution, allocates_observation_map_buffers_by_index) {
 TEST(pipeline_execution,
      skips_observation_map_buffer_indexing_when_mapmaking_disabled) {
     FakeObservationMapTodProc todproc;
-    todproc.engine().run_mapmaking = false;
+    todproc.engine().typed_config.mapmaking.enabled = false;
     std::vector<int> map_extents;
     std::vector<int> map_coords;
     auto logger = std::make_shared<FakeLogger>();
@@ -3146,7 +3244,7 @@ TEST(pipeline_execution, prepares_reduction_observation_inputs) {
     std::vector<int> map_coords = {22};
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_TRUE(citlali::pipeline::prepare_reduction_observation_inputs<false>(
+    EXPECT_TEMPLATE_TRUE(citlali::pipeline::prepare_reduction_observation_inputs<false>(
         todproc, rawobs, rawobs_kids_meta, true, map_extents, map_coords, 0,
         std::string{"2026-01-01T00:00:00"}, logger));
 
@@ -3179,7 +3277,7 @@ TEST(pipeline_execution,
     std::vector<int> map_coords = {22};
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_FALSE(citlali::pipeline::prepare_reduction_observation_inputs<false>(
+    EXPECT_TEMPLATE_FALSE(citlali::pipeline::prepare_reduction_observation_inputs<false>(
         todproc, rawobs, rawobs_kids_meta, true, map_extents, map_coords, 0,
         std::string{"2026-01-01T00:00:00"}, logger));
 
@@ -3195,7 +3293,7 @@ TEST(pipeline_execution, coadds_observation) {
     citlali::pipeline::coadd_observation(todproc, logger);
 
     EXPECT_EQ(todproc.coadd_calls, 1);
-    EXPECT_EQ(logger->info_calls, 1);
+    EXPECT_EQ(logger->info_calls, 2);
 }
 
 TEST(pipeline_execution, skips_coadd_for_polarization) {
@@ -3206,15 +3304,15 @@ TEST(pipeline_execution, skips_coadd_for_polarization) {
     citlali::pipeline::coadd_observation(todproc, logger);
 
     EXPECT_EQ(todproc.coadd_calls, 0);
-    EXPECT_EQ(logger->info_calls, 1);
+    EXPECT_EQ(logger->info_calls, 2);
 }
 
 TEST(pipeline_execution, writes_raw_observation_outputs) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_mapmaking = true;
-    todproc.engine().run_noise_products = true;
-    todproc.engine().run_noise = true;
-    todproc.engine().apply_empirical_noise_weights = true;
+    todproc.engine().typed_config.mapmaking.enabled = true;
+    todproc.engine().typed_config.noise.products_enabled = true;
+    todproc.engine().typed_config.noise.enabled = true;
+    todproc.engine().typed_config.noise.apply_empirical_weights = true;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::write_raw_observation_outputs<FakeMapType::RawObs>(
@@ -3224,13 +3322,13 @@ TEST(pipeline_execution, writes_raw_observation_outputs) {
     EXPECT_TRUE(todproc.engine().omb.last_apply_empirical_noise_weights);
     EXPECT_EQ(todproc.engine().create_obs_map_files_calls, 1);
     EXPECT_EQ(todproc.engine().output_calls, 1);
-    EXPECT_EQ(logger->info_calls, 2);
+    EXPECT_EQ(logger->info_calls, 5);
 }
 
 TEST(pipeline_execution, skips_raw_noise_products_when_disabled) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_mapmaking = true;
-    todproc.engine().run_noise_products = false;
+    todproc.engine().typed_config.mapmaking.enabled = true;
+    todproc.engine().typed_config.noise.products_enabled = false;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::write_raw_observation_outputs<FakeMapType::RawObs>(
@@ -3239,12 +3337,12 @@ TEST(pipeline_execution, skips_raw_noise_products_when_disabled) {
     EXPECT_EQ(todproc.engine().omb.calc_noise_products_calls, 0);
     EXPECT_EQ(todproc.engine().create_obs_map_files_calls, 1);
     EXPECT_EQ(todproc.engine().output_calls, 1);
-    EXPECT_EQ(logger->info_calls, 1);
+    EXPECT_EQ(logger->info_calls, 3);
 }
 
 TEST(pipeline_execution, skips_raw_outputs_when_mapmaking_disabled) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_mapmaking = false;
+    todproc.engine().typed_config.mapmaking.enabled = false;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::write_raw_observation_outputs<FakeMapType::RawObs>(
@@ -3253,14 +3351,17 @@ TEST(pipeline_execution, skips_raw_outputs_when_mapmaking_disabled) {
     EXPECT_EQ(todproc.engine().omb.calc_noise_products_calls, 0);
     EXPECT_EQ(todproc.engine().create_obs_map_files_calls, 0);
     EXPECT_EQ(todproc.engine().output_calls, 0);
-    EXPECT_EQ(logger->info_calls, 1);
+    EXPECT_EQ(logger->info_calls, 2);
 }
 
 TEST(pipeline_execution, writes_filtered_observation_outputs) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_noise_products = true;
-    todproc.engine().run_noise = true;
-    todproc.engine().run_source_finder = true;
+    todproc.engine().typed_config.runtime.reduction_type =
+        citlali::config::ReductionType::pointing;
+    todproc.engine().typed_config.noise.products_enabled = true;
+    todproc.engine().typed_config.noise.enabled = true;
+    citlali::config::set_source_finding_enabled(
+        todproc.engine().typed_config.post_processing, true);
     todproc.engine().wiener_filter.normalize_error = true;
     auto logger = std::make_shared<FakeLogger>();
 
@@ -3281,6 +3382,8 @@ TEST(pipeline_execution, writes_filtered_observation_outputs) {
 
 TEST(pipeline_execution, fits_filtered_observation_maps_when_requested) {
     FakeCoaddTodProc todproc;
+    todproc.engine().typed_config.runtime.reduction_type =
+        citlali::config::ReductionType::pointing;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::write_filtered_observation_outputs<
@@ -3290,9 +3393,8 @@ TEST(pipeline_execution, fits_filtered_observation_maps_when_requested) {
     EXPECT_EQ(todproc.engine().output_calls, 1);
 }
 
-TEST(pipeline_execution, skips_filtered_observation_output_when_partial_written) {
+TEST(pipeline_execution, skips_post_filter_observation_output_for_science) {
     FakeCoaddTodProc todproc;
-    todproc.engine().write_filtered_maps_partial = true;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::write_filtered_observation_outputs<
@@ -3300,14 +3402,15 @@ TEST(pipeline_execution, skips_filtered_observation_output_when_partial_written)
 
     EXPECT_EQ(todproc.engine().omb.calc_noise_products_calls, 0);
     EXPECT_EQ(todproc.engine().output_calls, 0);
-    EXPECT_EQ(logger->info_calls, 4);
+    EXPECT_EQ(logger->info_calls, 10);
 }
 
 TEST(pipeline_execution, writes_observation_outputs_without_accumulation) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_mapmaking = true;
-    todproc.engine().run_coadd = false;
-    todproc.engine().run_map_filter = false;
+    todproc.engine().typed_config.mapmaking.enabled = true;
+    todproc.engine().typed_config.coadd.enabled = false;
+    citlali::config::set_map_filtering_enabled(
+        todproc.engine().typed_config.post_processing, false);
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::write_observation_outputs_and_accumulate<
@@ -3321,8 +3424,8 @@ TEST(pipeline_execution, writes_observation_outputs_without_accumulation) {
 
 TEST(pipeline_execution, writes_observation_outputs_and_coadds) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_mapmaking = true;
-    todproc.engine().run_coadd = true;
+    todproc.engine().typed_config.mapmaking.enabled = true;
+    todproc.engine().typed_config.coadd.enabled = true;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::write_observation_outputs_and_accumulate<
@@ -3336,9 +3439,12 @@ TEST(pipeline_execution, writes_observation_outputs_and_coadds) {
 
 TEST(pipeline_execution, writes_observation_outputs_and_filters) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_mapmaking = true;
-    todproc.engine().run_coadd = false;
-    todproc.engine().run_map_filter = true;
+    todproc.engine().typed_config.runtime.reduction_type =
+        citlali::config::ReductionType::pointing;
+    todproc.engine().typed_config.mapmaking.enabled = true;
+    todproc.engine().typed_config.coadd.enabled = false;
+    citlali::config::set_map_filtering_enabled(
+        todproc.engine().typed_config.post_processing, true);
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::write_observation_outputs_and_accumulate<
@@ -3352,8 +3458,8 @@ TEST(pipeline_execution, writes_observation_outputs_and_filters) {
 
 TEST(pipeline_execution, runs_reduction_observation_pipeline) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_mapmaking = true;
-    todproc.engine().run_coadd = true;
+    todproc.engine().typed_config.mapmaking.enabled = true;
+    todproc.engine().typed_config.coadd.enabled = true;
     todproc.engine().ptcproc.run_fruit_loops = true;
     todproc.engine().ptcproc.fruit_loops_path = "/data/fruit";
     todproc.engine().omb.obsnums = {"000123"};
@@ -3374,7 +3480,7 @@ TEST(pipeline_execution, runs_reduction_observation_pipeline) {
 
 TEST(pipeline_execution, runs_reduction_observation) {
     FakeInitialObservationTodProc todproc;
-    todproc.engine().run_mapmaking = true;
+    todproc.engine().typed_config.mapmaking.enabled = true;
     FakeKidsProc kidsproc;
     FakeRawObs rawobs;
     std::vector<FakeRawObsMeta> rawobs_kids_meta = {{122.0, 102}};
@@ -3382,7 +3488,7 @@ TEST(pipeline_execution, runs_reduction_observation) {
     std::vector<int> map_coords = {22};
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_TRUE(citlali::pipeline::run_reduction_observation<
+    EXPECT_TEMPLATE_TRUE(citlali::pipeline::run_reduction_observation<
         false, FakeMapType::RawObs, FakeMapType::FilteredObs, false>(
         todproc, kidsproc, rawobs, rawobs_kids_meta, true, map_extents,
         map_coords, 0, std::string{"2026-01-01T00:00:00"}, logger));
@@ -3406,7 +3512,7 @@ TEST(pipeline_execution,
     std::vector<int> map_coords = {22};
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_FALSE(citlali::pipeline::run_reduction_observation<
+    EXPECT_TEMPLATE_FALSE(citlali::pipeline::run_reduction_observation<
         false, FakeMapType::RawObs, FakeMapType::FilteredObs, false>(
         todproc, kidsproc, rawobs, rawobs_kids_meta, true, map_extents,
         map_coords, 0, std::string{"2026-01-01T00:00:00"}, logger));
@@ -3424,7 +3530,7 @@ TEST(pipeline_execution, runs_reduction_observation_at_index) {
     std::vector<int> map_coords = {22, 44};
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_TRUE(citlali::pipeline::run_reduction_observation_at_index<
+    EXPECT_TEMPLATE_TRUE(citlali::pipeline::run_reduction_observation_at_index<
         false, FakeMapType::RawObs, FakeMapType::FilteredObs, false,
         FakeKidsProc>(
         todproc, co, config, map_extents, map_coords, 1,
@@ -3449,7 +3555,7 @@ TEST(pipeline_execution, runs_reduction_iteration_observations) {
     std::vector<int> map_coords = {22, 44};
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_TRUE(citlali::pipeline::run_reduction_iteration_observations<
+    EXPECT_TEMPLATE_TRUE(citlali::pipeline::run_reduction_iteration_observations<
         false, FakeMapType::RawObs, FakeMapType::FilteredObs, false,
         FakeKidsProc>(
         todproc, co, config, map_extents, map_coords,
@@ -3474,7 +3580,7 @@ TEST(pipeline_execution, rejects_reduction_iteration_observations_on_failure) {
     std::vector<int> map_coords = {22, 44};
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_FALSE(citlali::pipeline::run_reduction_iteration_observations<
+    EXPECT_TEMPLATE_FALSE(citlali::pipeline::run_reduction_iteration_observations<
         false, FakeMapType::RawObs, FakeMapType::FilteredObs, false,
         FakeKidsProc>(
         todproc, co, config, map_extents, map_coords,
@@ -3488,7 +3594,7 @@ TEST(pipeline_execution, rejects_reduction_iteration_observations_on_failure) {
 
 TEST(pipeline_execution, runs_reduction_iteration) {
     FakeInitialObservationTodProc todproc;
-    todproc.engine().redu_dir_name = "/tmp/redu01";
+    todproc.engine().output_paths.redu_dir_name = "/tmp/redu01";
     FakeCitlaliConfig config;
     FakeIOCoordinator co{{FakeRawObs{}, FakeRawObs{}}};
     std::vector<std::string> config_filepaths;
@@ -3496,7 +3602,7 @@ TEST(pipeline_execution, runs_reduction_iteration) {
     std::vector<int> map_coords = {22, 44};
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_TRUE(citlali::pipeline::run_reduction_iteration<
+    EXPECT_TEMPLATE_TRUE(citlali::pipeline::run_reduction_iteration<
         false, FakeMapType::RawObs, FakeMapType::FilteredObs,
         FakeMapType::RawCoadd, FakeMapType::FilteredCoadd, false,
         FakeKidsProc>(
@@ -3518,7 +3624,8 @@ TEST(pipeline_execution, runs_reduction_iteration) {
 
 TEST(pipeline_execution, runs_reduction_iterations) {
     FakeInitialObservationTodProc todproc;
-    todproc.engine().redu_type = "science";
+    todproc.engine().typed_config.runtime.reduction_type =
+        citlali::config::ReductionType::science;
     todproc.engine().ptcproc.run_fruit_loops = true;
     todproc.engine().ptcproc.fruit_loops_iters = 2;
     FakeCitlaliConfig config;
@@ -3528,7 +3635,7 @@ TEST(pipeline_execution, runs_reduction_iterations) {
     std::vector<int> map_coords = {22};
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_TRUE(citlali::pipeline::run_reduction_iterations<
+    EXPECT_TEMPLATE_TRUE(citlali::pipeline::run_reduction_iterations<
         false, FakeMapType::RawObs, FakeMapType::FilteredObs,
         FakeMapType::RawCoadd, FakeMapType::FilteredCoadd, false,
         FakeKidsProc>(
@@ -3553,7 +3660,7 @@ TEST(pipeline_execution, runs_reduction_pipeline) {
     std::vector<int> map_coords;
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_TRUE(citlali::pipeline::run_reduction_pipeline<
+    EXPECT_TEMPLATE_TRUE(citlali::pipeline::run_reduction_pipeline<
         false, FakeMapType::RawObs, FakeMapType::FilteredObs,
         FakeMapType::RawCoadd, FakeMapType::FilteredCoadd, false,
         FakeKidsProc>(
@@ -3572,7 +3679,7 @@ TEST(pipeline_execution, runs_reduction_pipeline) {
 
 TEST(pipeline_execution, writes_raw_coadd_outputs) {
     FakeCoaddTodProc todproc;
-    todproc.engine().apply_empirical_noise_weights = true;
+    todproc.engine().typed_config.noise.apply_empirical_weights = true;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::write_raw_coadd_outputs<FakeMapType::RawCoadd>(
@@ -3605,7 +3712,7 @@ TEST(pipeline_execution, writes_polarized_raw_coadd_outputs) {
 
 TEST(pipeline_execution, skips_raw_coadd_noise_products_when_disabled) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_noise_products = false;
+    todproc.engine().typed_config.noise.products_enabled = false;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::write_raw_coadd_outputs<FakeMapType::RawCoadd>(
@@ -3617,7 +3724,10 @@ TEST(pipeline_execution, skips_raw_coadd_noise_products_when_disabled) {
 
 TEST(pipeline_execution, writes_filtered_coadd_outputs) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_source_finder = true;
+    todproc.engine().typed_config.runtime.reduction_type =
+        citlali::config::ReductionType::pointing;
+    citlali::config::set_source_finding_enabled(
+        todproc.engine().typed_config.post_processing, true);
     todproc.engine().wiener_filter.normalize_error = true;
     auto logger = std::make_shared<FakeLogger>();
 
@@ -3635,9 +3745,8 @@ TEST(pipeline_execution, writes_filtered_coadd_outputs) {
     EXPECT_EQ(todproc.engine().output_calls, 1);
 }
 
-TEST(pipeline_execution, skips_filtered_coadd_output_when_partial_written) {
+TEST(pipeline_execution, skips_post_filter_coadd_output_for_science) {
     FakeCoaddTodProc todproc;
-    todproc.engine().write_filtered_maps_partial = true;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::write_filtered_coadd_outputs<
@@ -3645,12 +3754,12 @@ TEST(pipeline_execution, skips_filtered_coadd_output_when_partial_written) {
 
     EXPECT_EQ(todproc.engine().cmb.calc_noise_products_calls, 0);
     EXPECT_EQ(todproc.engine().output_calls, 0);
-    EXPECT_EQ(logger->info_calls, 4);
+    EXPECT_EQ(logger->info_calls, 10);
 }
 
 TEST(pipeline_execution, skips_iteration_coadd_outputs_when_coadd_disabled) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_coadd = false;
+    todproc.engine().typed_config.coadd.enabled = false;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::write_iteration_coadd_outputs_if_needed<
@@ -3662,8 +3771,9 @@ TEST(pipeline_execution, skips_iteration_coadd_outputs_when_coadd_disabled) {
 
 TEST(pipeline_execution, writes_iteration_raw_coadd_outputs) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_coadd = true;
-    todproc.engine().run_map_filter = false;
+    todproc.engine().typed_config.coadd.enabled = true;
+    citlali::config::set_map_filtering_enabled(
+        todproc.engine().typed_config.post_processing, false);
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::write_iteration_coadd_outputs_if_needed<
@@ -3676,8 +3786,11 @@ TEST(pipeline_execution, writes_iteration_raw_coadd_outputs) {
 
 TEST(pipeline_execution, writes_iteration_filtered_coadd_outputs) {
     FakeCoaddTodProc todproc;
-    todproc.engine().run_coadd = true;
-    todproc.engine().run_map_filter = true;
+    todproc.engine().typed_config.runtime.reduction_type =
+        citlali::config::ReductionType::pointing;
+    todproc.engine().typed_config.coadd.enabled = true;
+    citlali::config::set_map_filtering_enabled(
+        todproc.engine().typed_config.post_processing, true);
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::write_iteration_coadd_outputs_if_needed<
@@ -3690,9 +3803,9 @@ TEST(pipeline_execution, writes_iteration_filtered_coadd_outputs) {
 
 TEST(pipeline_execution, finishes_reduction_iteration) {
     FakeReductionIterationTodProc todproc;
-    todproc.engine().run_coadd = false;
+    todproc.engine().typed_config.coadd.enabled = false;
     todproc.engine().iteration.fruit_iter = 2;
-    todproc.engine().redu_dir_name = "/data/redu02";
+    todproc.engine().output_paths.redu_dir_name = "/data/redu02";
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::finish_reduction_iteration<
@@ -3706,7 +3819,7 @@ TEST(pipeline_execution, finishes_reduction_iteration) {
     EXPECT_EQ(todproc.engine().iteration.fruit_iter, 3);
 }
 
-TEST(pipeline_execution, loads_initial_fruit_loop_model_from_configured_path) {
+TEST(pipeline_execution, loads_initial_fruit_loop_map_from_configured_path) {
     FakeEngine engine;
     engine.iteration.fruit_iter = 0;
     engine.ptcproc.run_fruit_loops = true;
@@ -3716,7 +3829,7 @@ TEST(pipeline_execution, loads_initial_fruit_loop_model_from_configured_path) {
     engine.omb.cov_cut = 4.5;
     engine.omb.pixel_size_rad = 0.001;
 
-    citlali::pipeline::load_initial_fruit_loop_model_if_requested(engine);
+    citlali::pipeline::load_initial_fruit_loop_maps_if_requested(engine);
 
     EXPECT_EQ(engine.ptcproc.load_mb_calls, 1);
     EXPECT_EQ(engine.ptcproc.loaded_filepath, "/data/fruit/152389/raw/");
@@ -3725,30 +3838,30 @@ TEST(pipeline_execution, loads_initial_fruit_loop_model_from_configured_path) {
     EXPECT_DOUBLE_EQ(engine.ptcproc.tod_mb.cov_cut, 4.5);
 }
 
-TEST(pipeline_execution, skips_initial_fruit_loop_model_without_path) {
+TEST(pipeline_execution, skips_initial_fruit_loop_map_without_path) {
     FakeEngine engine;
     engine.iteration.fruit_iter = 0;
     engine.ptcproc.run_fruit_loops = true;
     engine.ptcproc.fruit_loops_path = "null";
     engine.omb.obsnums = {"152389"};
 
-    citlali::pipeline::load_initial_fruit_loop_model_if_requested(engine);
+    citlali::pipeline::load_initial_fruit_loop_maps_if_requested(engine);
 
     EXPECT_EQ(engine.ptcproc.load_mb_calls, 0);
 }
 
-TEST(pipeline_execution, loads_previous_saved_fruit_loop_model) {
+TEST(pipeline_execution, loads_previous_saved_fruit_loop_map) {
     FakeEngine engine;
     engine.iteration.fruit_iter = 2;
-    engine.output_dir = "/data/out";
-    engine.redu_dir_num = 12;
+    engine.typed_config.runtime.output_dir = "/data/out";
+    engine.output_paths.redu_dir_num = 12;
     engine.ptcproc.save_all_iters = true;
     engine.ptcproc.fruit_loops_type = "obsnum/filtered";
     engine.omb.obsnums = {"152389"};
     engine.omb.cov_cut = 5.5;
     auto logger = std::make_shared<FakeLogger>();
 
-    citlali::pipeline::load_previous_fruit_loop_model_if_needed(
+    citlali::pipeline::load_previous_fruit_loop_maps_if_needed(
         engine, logger);
 
     EXPECT_EQ(engine.ptcproc.load_mb_calls, 1);
@@ -3760,16 +3873,16 @@ TEST(pipeline_execution, loads_previous_saved_fruit_loop_model) {
     EXPECT_EQ(logger->info_calls, 1);
 }
 
-TEST(pipeline_execution, loads_previous_stored_fruit_loop_model) {
+TEST(pipeline_execution, loads_previous_stored_fruit_loop_map) {
     FakeEngine engine;
     engine.iteration.fruit_iter = 3;
-    engine.redu_dir_name = "/data/current/redu12";
+    engine.output_paths.redu_dir_name = "/data/current/redu12";
     engine.ptcproc.save_all_iters = false;
     engine.ptcproc.fruit_loops_type = "coadd/raw";
     engine.omb.obsnums = {"152389"};
     auto logger = std::make_shared<FakeLogger>();
 
-    citlali::pipeline::load_previous_fruit_loop_model_if_needed(
+    citlali::pipeline::load_previous_fruit_loop_maps_if_needed(
         engine, logger);
 
     EXPECT_EQ(engine.ptcproc.load_mb_calls, 1);
@@ -3780,21 +3893,21 @@ TEST(pipeline_execution, loads_previous_stored_fruit_loop_model) {
     EXPECT_EQ(logger->info_calls, 2);
 }
 
-TEST(pipeline_execution, skips_previous_fruit_loop_model_on_first_iteration) {
+TEST(pipeline_execution, skips_previous_fruit_loop_map_on_first_iteration) {
     FakeEngine engine;
     engine.iteration.fruit_iter = 0;
     engine.ptcproc.save_all_iters = true;
     engine.omb.obsnums = {"152389"};
     auto logger = std::make_shared<FakeLogger>();
 
-    citlali::pipeline::load_previous_fruit_loop_model_if_needed(
+    citlali::pipeline::load_previous_fruit_loop_maps_if_needed(
         engine, logger);
 
     EXPECT_EQ(engine.ptcproc.load_mb_calls, 0);
     EXPECT_EQ(logger->info_calls, 0);
 }
 
-TEST(pipeline_execution, loads_observation_fruit_loop_models_for_non_beammap) {
+TEST(pipeline_execution, loads_observation_fruit_loop_maps_for_non_beammap) {
     FakeEngine engine;
     engine.iteration.fruit_iter = 0;
     engine.ptcproc.run_fruit_loops = true;
@@ -3803,14 +3916,14 @@ TEST(pipeline_execution, loads_observation_fruit_loop_models_for_non_beammap) {
     engine.omb.obsnums = {"000123"};
     auto logger = std::make_shared<FakeLogger>();
 
-    citlali::pipeline::load_observation_fruit_loop_models_if_needed<false>(
+    citlali::pipeline::load_observation_fruit_loop_maps_if_needed<false>(
         engine, logger);
 
     EXPECT_EQ(engine.ptcproc.load_mb_calls, 1);
     EXPECT_EQ(engine.ptcproc.loaded_filepath, "/data/fruit/000123/raw/");
 }
 
-TEST(pipeline_execution, skips_observation_fruit_loop_models_for_beammap) {
+TEST(pipeline_execution, skips_observation_fruit_loop_maps_for_beammap) {
     FakeEngine engine;
     engine.iteration.fruit_iter = 0;
     engine.ptcproc.run_fruit_loops = true;
@@ -3818,7 +3931,7 @@ TEST(pipeline_execution, skips_observation_fruit_loop_models_for_beammap) {
     engine.omb.obsnums = {"000123"};
     auto logger = std::make_shared<FakeLogger>();
 
-    citlali::pipeline::load_observation_fruit_loop_models_if_needed<true>(
+    citlali::pipeline::load_observation_fruit_loop_maps_if_needed<true>(
         engine, logger);
 
     EXPECT_EQ(engine.ptcproc.load_mb_calls, 0);
@@ -3843,13 +3956,13 @@ TEST(pipeline_output_layout, formats_obsnums_with_legacy_padding) {
 
 TEST(pipeline_output_layout, configures_observation_output_layout) {
     FakeEngine engine;
-    engine.redu_dir_name = "/tmp/redu01";
+    engine.output_paths.redu_dir_name = "/tmp/redu01";
     engine.omb.obsnums = {"old"};
 
     citlali::pipeline::configure_observation_output_layout(engine, 42);
 
     EXPECT_EQ(engine.observation_identity.obsnum, "000042");
-    EXPECT_EQ(engine.obsnum_dir_name, "/tmp/redu01/000042/");
+    EXPECT_EQ(engine.output_paths.obsnum_dir_name, "/tmp/redu01/000042/");
     ASSERT_EQ(engine.omb.obsnums.size(), 1U);
     EXPECT_EQ(engine.omb.obsnums.front(), "000042");
     EXPECT_TRUE(engine.cmb.obsnums.empty());
@@ -3857,7 +3970,7 @@ TEST(pipeline_output_layout, configures_observation_output_layout) {
 
 TEST(pipeline_output_layout, adds_observation_number_to_coadd_layout) {
     FakeEngine engine;
-    engine.run_coadd = true;
+    engine.typed_config.coadd.enabled = true;
     engine.cmb.obsnums = {"000001"};
 
     citlali::pipeline::configure_observation_output_layout(engine, 42);
@@ -3882,7 +3995,7 @@ TEST(pipeline_output_layout, reads_obsnum_from_rawobs_meta) {
 
 TEST(pipeline_output_layout, prepares_observation_layout_from_rawobs_meta) {
     FakeEngine engine;
-    engine.redu_dir_name = "/tmp/citlali_scaffold_redu";
+    engine.output_paths.redu_dir_name = "/tmp/citlali_scaffold_redu";
     std::vector<FakeRawObsMeta> rawobs_kids_meta = {
         {75.0, 101},
         {122.0, 202},
@@ -3893,7 +4006,7 @@ TEST(pipeline_output_layout, prepares_observation_layout_from_rawobs_meta) {
         engine, rawobs_kids_meta, logger);
 
     EXPECT_EQ(engine.observation_identity.obsnum, "000202");
-    EXPECT_EQ(engine.obsnum_dir_name,
+    EXPECT_EQ(engine.output_paths.obsnum_dir_name,
               "/tmp/citlali_scaffold_redu/000202/");
     ASSERT_EQ(engine.omb.obsnums.size(), 1U);
     EXPECT_EQ(engine.omb.obsnums.front(), "000202");
@@ -3933,8 +4046,8 @@ TEST(pipeline_output_layout, derives_gaps_log_filepath) {
 TEST(pipeline_output_layout, warns_when_timing_gaps_are_present) {
     FakeEngine engine;
     engine.observation_identity.obsnum = "152389";
-    engine.gaps["roach0"] = 2;
-    engine.verbose_mode = false;
+    engine.alignment.gaps["roach0"] = 2;
+    engine.typed_config.runtime.verbose = false;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::record_timing_gaps_if_needed(engine, logger);

@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <tula/logging.h>
+#include <tula/algorithm/ei_iterclip.h>
+#include <tula/algorithm/index.h>
 #include <tula/formatter/matrix.h>
 #include "citlali/core/mapmaking/wiener_filter.h"
 #include "citlali/core/utils/utils.h"
@@ -199,105 +201,95 @@ TEST(timestream_filter, zero_phase_notch_preserves_constant_edges) {
     EXPECT_LT((data.array() - 3.5).abs().maxCoeff(), 1e-10);
 }
 
-/*
 class UtilsTest : public Test {
 public:
-    using blk_in_mat_t = std::tuple<Eigen::MatrixXd, Eigen::Block<Eigen::MatrixXd>>;
-    static blk_in_mat_t blk_in_mat(const double* blk_data, const std::vector<int>& mat_shape, const std::vector<int>& blk_shape) {
-        using namespace Eigen;
-        MatrixXd mat(mat_shape[0], mat_shape[1]);
-        mat.setConstant(std::nan(""));
-        auto blk = mat.block(blk_shape[0], blk_shape[1], blk_shape[2], blk_shape[3]);
-        blk = Map<const MatrixXd>(blk_data, blk_shape[2], blk_shape[3]);
-        SPDLOG_TRACE("mat{}", logging::pprint(mat));
-        SPDLOG_TRACE("blk inner_stride={} outer_stride={}", blk.innerStride(), blk.outerStride());
-        return std::make_tuple(std::move(mat), std::move(blk));
+    UtilsTest() : mat(Eigen::MatrixXd::Constant(10, 2, std::nan(""))) {
+        const Eigen::VectorXd values =
+            Eigen::VectorXd::LinSpaced(10, 1.0, 0.0);
+        mat.block(5, 0, 5, 2) =
+            Eigen::Map<const Eigen::MatrixXd>(values.data(), 5, 2);
     }
-    blk_in_mat_t blk_in_mat1 = blk_in_mat(Eigen::VectorXd::LinSpaced(10, 1., 0.).eval().data(),
-    {10, 2}, {5, 0, 5, 2});
 
+    auto block() { return mat.block(5, 0, 5, 2); }
+
+    Eigen::MatrixXd mat;
 };
 
 TEST_F(UtilsTest, generate_chunks) {
-    auto size = 11;
-    auto chunks = utils::generate_chunks(0, size, 2, 2);
-    for (std::size_t i = 0; i < chunks.size(); ++i) {
-        SPDLOG_TRACE("chunk #{} = {}, {}", i, chunks[i].first, chunks[i].second);
-    }
+    const auto chunks = tula::alg::indexchunks(0, 11, 2, 2);
+
+    EXPECT_EQ(chunks,
+              (std::vector<std::pair<int, int>>{{0, 7}, {5, 11}}));
 }
 
-TEST_F(UtilsTest, eigeniter) {
-    auto [mat, blk] = this->blk_in_mat1;
-    auto [begin, end] = eigeniter::iters(blk);
-    SPDLOG_TRACE("begin: {}", begin);
-    SPDLOG_TRACE("end: {}", end);
-    for (auto it = begin; it != end; ++it) {
-        SPDLOG_TRACE("{} *it={}", it, *it);
-    }
-    SUCCEED();
+TEST_F(UtilsTest, eigen_to_stdvec_iterates_in_storage_order) {
+    auto blk = block();
+    const auto values = tula::eigen_utils::to_stdvec(blk);
+
+    EXPECT_EQ(std::distance(values.begin(), values.end()), blk.size());
+    EXPECT_DOUBLE_EQ(*values.begin(), 1.0);
+    EXPECT_DOUBLE_EQ(*(values.end() - 1), 0.0);
 }
 
-TEST_F(UtilsTest, eigeniter_apply) {
-    auto [mat, blk] = this->blk_in_mat1;
-    auto [begin, end] = eigeniter::iters(blk);
-    auto sorted = eigeniter::apply(blk, [](auto && begin, auto&& end) {
-        return std::is_sorted(begin, end, std::greater<>());
-    });
-    EXPECT_EQ(true, sorted);
-    // sort
-    eigeniter::apply(blk, [](auto &&begin, auto&& end) {
-       std::sort(begin, end);
-    });
-    SPDLOG_TRACE("after sort mat{}", logging::pprint(mat));
-    SUCCEED();
+TEST_F(UtilsTest, eigen_to_stdvec_supports_standard_algorithms) {
+    auto blk = block();
+    auto values = tula::eigen_utils::to_stdvec(blk);
+
+    EXPECT_TRUE(
+        std::is_sorted(values.begin(), values.end(), std::greater<>()));
+    std::sort(values.begin(), values.end());
+    EXPECT_TRUE(std::is_sorted(values.begin(), values.end()));
 }
 
 TEST_F(UtilsTest, vector) {
-    auto [mat, blk] = this->blk_in_mat1;
-    auto v = utils::vector(blk);
-    SPDLOG_TRACE("blk{} vector={}", logging::pprint(blk), logging::pprint(v.data(), v.size()));
-    v = utils::vector(blk, Eigen::RowMajor);
-    SPDLOG_TRACE("blk{} vector(rmaj)={}", logging::pprint(blk), logging::pprint(v.data(), v.size()));
-    SUCCEED();
+    auto blk = block();
+    const auto column_major = tula::eigen_utils::to_stdvec(blk);
+    const auto row_major =
+        tula::eigen_utils::to_stdvec(blk, Eigen::RowMajor);
+
+    ASSERT_EQ(column_major.size(), 10U);
+    ASSERT_EQ(row_major.size(), 10U);
+    EXPECT_DOUBLE_EQ(column_major.front(), 1.0);
+    EXPECT_DOUBLE_EQ(column_major.back(), 0.0);
+    EXPECT_DOUBLE_EQ(row_major[0], 1.0);
+    EXPECT_DOUBLE_EQ(row_major[1], 4.0 / 9.0);
 }
 
 TEST_F(UtilsTest, meanstd) {
-    auto [mat, blk] = this->blk_in_mat1;
-    auto [m, s] = utils::meanstd(blk);
-    SPDLOG_TRACE("blk{} mean={} stddev={}", logging::pprint(blk), m, s);
+    auto blk = block();
+    auto [m, s] = tula::alg::meanstd(blk);
     std::vector<double> expected{0.5, 0.31914236925211265};
     EXPECT_THAT(expected, ElementsAre(DoubleEq(m), DoubleEq(s)));
-    // ddof
-    auto ddof = 1;
-    std::tie(std::ignore, s) = utils::meanstd(blk, ddof);
-    SPDLOG_TRACE("ddof={} stddev={}", ddof, s);
+    std::tie(std::ignore, s) = tula::alg::meanstd(blk, 1);
     EXPECT_DOUBLE_EQ(0.33640559489972127, s);
 }
 
 TEST_F(UtilsTest, medianmad) {
-    auto [mat, blk] = this->blk_in_mat1;
-    auto [m, s] = utils::medianmad(blk);
-    SPDLOG_TRACE("blk{} median={} mad={}", logging::pprint(blk), m, s);
+    auto blk = block();
+    auto [m, s] = tula::alg::medmad(blk);
     std::vector<double> expected{0.5, 0.27777777777777773};
     EXPECT_THAT(expected, ElementsAre(DoubleEq(m), DoubleEq(s)));
 }
 
 TEST_F(UtilsTest, indexofthresh) {
-    auto [mat, blk] = this->blk_in_mat1;
-    auto func = utils::iterclip(
+    auto blk = block();
+    const auto values = tula::eigen_utils::to_stdvec(blk);
+    const Eigen::VectorXd data = Eigen::Map<const Eigen::VectorXd>(
+        values.data(), static_cast<Eigen::Index>(values.size()));
+    auto func = tula::alg::iterclip(
             [](auto&& m) {
-        return utils::meanstd(m);
+        return tula::alg::meanstd(m);
     },
             [](auto v, auto m, auto s) {
-        auto  select = std::abs(v - m) > s;
-        SPDLOG_TRACE("{} v={} m={} s={}", select?"use ":"skip", v, m, s);
-        return select;
+        return std::abs(v - m) > s;
     }
             );
-    auto [ret, m, s, c] = func(blk);
-    SPDLOG_TRACE("blk{} mean={} stddev={}", logging::pprint(blk), m, s);
-    SPDLOG_TRACE("selected snr>1: {}", logging::pprint(ret.data(), ret.size()));
-}
-*/
+    auto [indices, converged, center, stddev] = func(data);
 
+    EXPECT_TRUE(converged);
+    EXPECT_FALSE(indices.empty());
+    for (const auto index : indices) {
+        EXPECT_GT(std::abs(data.coeff(index) - center), stddev);
+    }
+}
 }  // namespace
