@@ -4,6 +4,7 @@
 #include <condition_variable>
 
 #include <citlali/core/engine/engine.h>
+#include <citlali/core/pipeline/timestream_output_context.h>
 
 using timestream::TCData;
 using timestream::RTCProc;
@@ -52,6 +53,24 @@ public:
     // run the reduction for the obs
     template <class KidsProc>
     auto run(KidsProc &);
+    template <class CalibScan>
+    void write_pointing_rtc_outputs(
+        TCData<TCDataKind::RTC, Eigen::MatrixXd> &rtcdata,
+        TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
+        TCData<TCDataKind::RTC, Eigen::MatrixXd> &rtc_outer_output,
+        CalibScan &calib_scan,
+        const citlali::pipeline::TimestreamOutputFlags &output_flags,
+        const citlali::pipeline::TimestreamOutputWriters &output_writers,
+        Eigen::Index rtc_scan_row,
+        bool write_this_rtc,
+        const std::string &map_grouping);
+    template <class CalibScan>
+    void write_pointing_ptc_outputs(
+        TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
+        CalibScan &calib_scan,
+        const citlali::pipeline::TimestreamOutputFlags &output_flags,
+        const citlali::pipeline::TimestreamOutputWriters &output_writers,
+        const std::string &map_grouping);
 
     // fit the maps
     void fit_maps();
