@@ -67,6 +67,12 @@ Immediate work order:
   pass. Unity reduction validation is pending.
 - CTest is now enabled at the project boundary and the focused safety target is
   discoverable from the normal top-level build directory.
+- Parsed enum failures now enter the authoritative invalid-key diagnostics
+  instead of silently retaining their typed default. Legacy authoritative
+  range parsing and typed validation reject NaN and infinity for ordinary
+  numeric fields. The four documented line-frequency inheritance fields retain
+  their explicit NaN sentinel but reject either infinity. Focused parser and
+  finite-value tests pass locally.
 - The pre-existing `citlali_test` target was found to have substantial test
   infrastructure and source decay. It remains a separate Phase 1 repair item;
   the focused safety target does not conceal that debt or satisfy the complete

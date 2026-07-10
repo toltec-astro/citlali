@@ -823,12 +823,12 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","post_filter_line_min_hz"})) {
             get_config_value(config, line_audit.post_filter_line_min_hz, missing_keys, invalid_keys,
                              std::tuple{"timestream","raw_time_chunk","line_audit","post_filter_line_min_hz"},
-                             {}, {0.0});
+                             {}, {0.0}, {}, true);
         }
         if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","post_filter_line_max_hz"})) {
             get_config_value(config, line_audit.post_filter_line_max_hz, missing_keys, invalid_keys,
                              std::tuple{"timestream","raw_time_chunk","line_audit","post_filter_line_max_hz"},
-                             {}, {0.0});
+                             {}, {0.0}, {}, true);
         }
         if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","ptc_model_protected_enabled"})) {
             get_config_value(config, line_audit.ptc_model_protected_enabled, missing_keys, invalid_keys,
@@ -858,12 +858,12 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","ptc_line_min_hz"})) {
             get_config_value(config, line_audit.ptc_line_min_hz, missing_keys, invalid_keys,
                              std::tuple{"timestream","raw_time_chunk","line_audit","ptc_line_min_hz"},
-                             {}, {0.0});
+                             {}, {0.0}, {}, true);
         }
         if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","ptc_line_max_hz"})) {
             get_config_value(config, line_audit.ptc_line_max_hz, missing_keys, invalid_keys,
                              std::tuple{"timestream","raw_time_chunk","line_audit","ptc_line_max_hz"},
-                             {}, {0.0});
+                             {}, {0.0}, {}, true);
         }
         if (config.has(std::tuple{"timestream","raw_time_chunk","line_audit","fixed_notch_enabled"})) {
             get_config_value(config, line_audit.fixed_notch_enabled, missing_keys, invalid_keys,

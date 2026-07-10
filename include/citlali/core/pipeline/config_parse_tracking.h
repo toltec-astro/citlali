@@ -9,6 +9,14 @@
 
 namespace citlali::pipeline {
 
+template <class Key, class InvalidKeys>
+void add_invalid_config_key(const Key &key, InvalidKeys &invalid_keys) {
+    typename InvalidKeys::value_type path;
+    engine_utils::for_each_in_tuple(
+        key, [&path](const auto &component) { path.push_back(component); });
+    invalid_keys.push_back(std::move(path));
+}
+
 template <class KeyList>
 bool config_parse_clean(
     const KeyList &missing_keys, const KeyList &invalid_keys,
@@ -99,9 +107,11 @@ void read_parsed_mirrored_config_value(
     std::vector<std::decay_t<Param>> max_values = {}) {
     read_config_value_if_clean(
         config, key, param,
-        [&target, &parser](const auto &value) {
+        [&target, &parser, &key, &invalid_keys](const auto &value) {
             if (auto parsed = parser(value)) {
                 target = *parsed;
+            } else {
+                add_invalid_config_key(key, invalid_keys);
             }
         },
         missing_keys, invalid_keys, std::move(accepted_values),

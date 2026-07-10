@@ -7,6 +7,7 @@
 #include <iterator>
 #include <sstream>
 #include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -105,8 +106,23 @@ private:
 };
 
 template <typename T>
+bool check_finite_value(const T &value, const ConfigPath &path,
+                        ValidationReport &report) {
+    if constexpr (std::is_floating_point_v<T>) {
+        if (!std::isfinite(value)) {
+            report.add_error(path, "must be finite");
+            return false;
+        }
+    }
+    return true;
+}
+
+template <typename T>
 void check_minimum(const T &value, const T &minimum, const ConfigPath &path,
                    ValidationReport &report) {
+    if (!check_finite_value(value, path, report)) {
+        return;
+    }
     if (value < minimum) {
         report.add_error(path, "must be greater than or equal to " + std::to_string(minimum));
     }
@@ -115,6 +131,9 @@ void check_minimum(const T &value, const T &minimum, const ConfigPath &path,
 template <typename T>
 void check_greater_than(const T &value, const T &minimum, const ConfigPath &path,
                         ValidationReport &report) {
+    if (!check_finite_value(value, path, report)) {
+        return;
+    }
     if (value <= minimum) {
         report.add_error(path, "must be greater than " + std::to_string(minimum));
     }
@@ -123,6 +142,9 @@ void check_greater_than(const T &value, const T &minimum, const ConfigPath &path
 template <typename T>
 void check_maximum(const T &value, const T &maximum, const ConfigPath &path,
                    ValidationReport &report) {
+    if (!check_finite_value(value, path, report)) {
+        return;
+    }
     if (value > maximum) {
         report.add_error(path, "must be less than or equal to " + std::to_string(maximum));
     }
@@ -131,9 +153,10 @@ void check_maximum(const T &value, const T &maximum, const ConfigPath &path,
 inline void check_optional_minimum(const double value, const double minimum,
                                    const ConfigPath &path,
                                    ValidationReport &report) {
-    if (std::isfinite(value)) {
-        check_minimum(value, minimum, path, report);
+    if (std::isnan(value)) {
+        return;
     }
+    check_minimum(value, minimum, path, report);
 }
 
 }  // namespace citlali::config

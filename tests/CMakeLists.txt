@@ -31,7 +31,11 @@ set_target_properties(citlali_safety_test
     PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
 )
-target_sources(citlali_safety_test PRIVATE test_output_schema.cpp)
+target_sources(citlali_safety_test
+    PRIVATE
+        test_config_safety.cpp
+        test_output_schema.cpp
+)
 target_link_libraries(citlali_safety_test
     PRIVATE
         citlali::citlali

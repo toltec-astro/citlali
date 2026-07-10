@@ -2,6 +2,9 @@
 
 #include <citlali/core/utils/utils.h>
 
+#include <cmath>
+#include <type_traits>
+
 template<typename param_t, typename option_t, typename key_vec_t>
 void check_allowed(param_t param, key_vec_t &missing_keys, key_vec_t &invalid_keys,
                    std::vector<param_t> allowed, option_t option) {
@@ -22,19 +25,25 @@ void check_allowed(param_t param, key_vec_t &missing_keys, key_vec_t &invalid_ke
 template<typename param_t, typename option_t, typename key_vec_t>
 void check_range(param_t param, key_vec_t &missing_keys, key_vec_t &invalid_keys,
                  std::vector<param_t> min_val,  std::vector<param_t> max_val,
-                 option_t option) {
+                 option_t option, bool allow_nan = false) {
 
     bool invalid = false;
 
+    if constexpr (std::is_floating_point_v<param_t>) {
+        if (!std::isfinite(param)) {
+            invalid = !(allow_nan && std::isnan(param));
+        }
+    }
+
     // make sure param is larger than minimum
-    if (!min_val.empty()) {
+    if (!invalid && !min_val.empty()) {
         if (param < min_val.at(0)) {
             invalid = true;
         }
     }
 
     // make sure param is smaller than maximum
-    if (!max_val.empty()) {
+    if (!invalid && !max_val.empty()) {
         if (param > max_val.at(0)) {
             invalid = true;
         }
@@ -57,7 +66,8 @@ void check_range(param_t param, key_vec_t &missing_keys, key_vec_t &invalid_keys
 template <typename config_t, typename param_t, typename option_t, typename key_vec_t>
 void get_config_value(config_t config, param_t &param, key_vec_t &missing_keys,
                key_vec_t &invalid_keys, option_t option, std::vector<param_t> allowed={},
-               std::vector<param_t> min_val={}, std::vector<param_t> max_val={}) {
+               std::vector<param_t> min_val={}, std::vector<param_t> max_val={},
+               bool allow_nan=false) {
 
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
@@ -74,7 +84,8 @@ void get_config_value(config_t config, param_t &param, key_vec_t &missing_keys,
 
             // if a range is specified, check against them
             if (!min_val.empty() || !max_val.empty()) {
-                check_range(param, missing_keys, invalid_keys, min_val, max_val, option);
+                check_range(param, missing_keys, invalid_keys, min_val, max_val,
+                            option, allow_nan);
             }
 
             logger->debug("got {} from config",option);
