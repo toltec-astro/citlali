@@ -23,6 +23,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     const auto &beammap_settings = citlali::pipeline::beammap_config(*this);
     const auto &mapmaking_settings =
         citlali::pipeline::mapmaking_config(*this);
+    const auto &raw_timestream_settings =
+        citlali::pipeline::raw_time_chunk_config(*this);
     const auto &beammap_iteration_config = beammap_settings.iteration;
     const auto &beammap_phase_config = beammap_settings.phase_strategy;
     const auto &beammap_reference_config = beammap_settings.reference;
@@ -30,7 +32,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     try {
     citlali::engine_detail::add_phdu_unit_conversion_section(
         fits_entry, mb, calib, toltec_io, array_id, name,
-        rtcproc.run_calibrate, FWHM_TO_STD, ASEC_TO_RAD, pi,
+        raw_timestream_settings.flux_calibration_enabled,
+        FWHM_TO_STD, ASEC_TO_RAD, pi,
         MJY_SR_TO_mJY_ASEC, logger);
 
     citlali::engine_detail::add_phdu_beammap_observation_section(
@@ -71,6 +74,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_entry, name, logger,
         citlali::pipeline::verbose_runtime_enabled(*this),
         citlali::pipeline::polarimetry_config(*this).enabled,
+        raw_timestream_settings.despike.enabled,
         rtcproc, ptcproc,
         telescope.outer_scans_chunk);
 

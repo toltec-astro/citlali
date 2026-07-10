@@ -53,6 +53,26 @@ const auto &polarimetry_config(const Engine &engine) {
 }
 
 template <class Engine>
+auto &raw_time_chunk_config(Engine &engine) {
+    return timestream_config(engine).raw_time_chunk;
+}
+
+template <class Engine>
+const auto &raw_time_chunk_config(const Engine &engine) {
+    return timestream_config(engine).raw_time_chunk;
+}
+
+template <class Engine>
+auto &processed_time_chunk_config(Engine &engine) {
+    return timestream_config(engine).processed_time_chunk;
+}
+
+template <class Engine>
+const auto &processed_time_chunk_config(const Engine &engine) {
+    return timestream_config(engine).processed_time_chunk;
+}
+
+template <class Engine>
 auto &mapmaking_config(Engine &engine) {
     return reduction_config(engine).mapmaking;
 }

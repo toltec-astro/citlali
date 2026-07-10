@@ -13,6 +13,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
     const auto &runtime_settings = citlali::pipeline::runtime_config(*this);
     const auto &timestream_settings =
         citlali::pipeline::timestream_config(*this);
+    const auto &raw_timestream_settings =
+        citlali::pipeline::raw_time_chunk_config(*this);
     const auto &beammap_iteration_config = beammap_settings.iteration;
     const auto &beammap_phase_config = beammap_settings.phase_strategy;
     const auto &beammap_reference_config = beammap_settings.reference;
@@ -22,7 +24,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         netCDF::NcFile fo(fval, netCDF::NcFile::write);
 
         // add unit conversions
-        if (rtcproc.run_calibrate) {
+        if (raw_timestream_settings.flux_calibration_enabled) {
             citlali::pipeline::add_tod_unit_conversion_vars(
                 fo, calib, toltec_io, omb.sig_unit, omb.pixel_size_rad,
                 MJY_SR_TO_mJY_ASEC, FWHM_TO_STD, ASEC_TO_RAD, pi);
@@ -74,7 +76,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         citlali::pipeline::add_tod_initial_runtime_config_vars(
             fo, citlali::pipeline::verbose_runtime_enabled(*this),
             citlali::pipeline::polarimetry_config(*this).enabled,
-            rtcproc.run_despike);
+            raw_timestream_settings.despike.enabled);
         const bool run_any_tod_filter = rtcproc.run_tod_filter || rtcproc.run_tod_iir_highpass;
         citlali::pipeline::add_rtc_local_despike_config_vars(
             fo, rtcproc.despiker.local_residual);

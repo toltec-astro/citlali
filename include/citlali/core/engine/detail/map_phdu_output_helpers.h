@@ -131,14 +131,14 @@ template <class FitsEntry, class RtcProc, class PtcProc, class OuterContext,
 void add_phdu_tod_runtime_config_section(
     FitsEntry &fits_entry, const std::string &array_name,
     const Logger &logger, bool verbose_mode, bool polarimetry_enabled,
-    const RtcProc &rtcproc, const PtcProc &ptcproc,
+    bool despike_enabled, const RtcProc &rtcproc, const PtcProc &ptcproc,
     OuterContext outer_context_samples) {
     logger->debug("adding config params");
     const bool run_any_tod_filter =
         citlali::pipeline::phdu_any_tod_filter_enabled(rtcproc);
     citlali::pipeline::add_phdu_initial_runtime_config(
         fits_entry, verbose_mode, polarimetry_enabled,
-        rtcproc.run_despike);
+        despike_enabled);
     citlali::pipeline::add_phdu_rtc_local_despike_config(
         fits_entry, array_name, logger, rtcproc.despiker.local_residual);
     citlali::pipeline::add_phdu_tod_filter_runtime_config(
