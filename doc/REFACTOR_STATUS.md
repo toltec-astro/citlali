@@ -29,9 +29,11 @@ branch. The exact validated tree will remain available for forensic review.
   comparison, but both contained 12 logged NetCDF errors.
 - The same YAML exposed two provenance defects in `redu22`: an effective IIR
   default appeared for a disabled filter and an extinction sentinel changed.
-  The mirror fix is committed locally and awaits Unity validation.
+  `redu25` validates the intended disabled-state provenance correction with
+  exact scientific products.
 - Local `citlali_cli` build and compact-config preflight pass.
-- The local focused safety target discovers and passes 18 tests.
+- CTest discovers and passes 201 legacy tests plus 18 focused safety tests,
+  with none skipped or disabled.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -122,6 +124,21 @@ Immediate work order:
   complete 33-file/14 stable-product inventory as `redu24`. Scientific arrays,
   maps, and tables are exact. The only strict-comparison differences are the
   intended disabled-IIR effective-provenance changes in RTC/PTC metadata.
+- Beammap detector-specific TOD now obeys the required-output policy. Config
+  preflight rejects enabled output with no slots or non-detector map grouping;
+  unavailable scans, PTC samples, or pointing fail at runtime instead of
+  silently skipping the declared product.
+- Enabled learning diagnostics now fail on open, write, flush, or close errors.
+  Required Beammap PTC TOD metadata updates likewise fail when the file or
+  `FRUITLOOPS_ITER` variable is unavailable.
+- ECSV table output is now published atomically through a temporary file.
+  Failure removes the temporary product and propagates instead of silently
+  substituting a differently named ASCII table.
+- `validation/accepted_runs.json` is the checked-in machine-readable validation
+  ledger. Its first record captures the accepted `redu25` point checkpoint,
+  including explicit unavailable provenance and the two intended metadata
+  differences. A standard-library validator enforces its core consistency
+  rules.
 
 ## Five-Phase Roadmap
 
