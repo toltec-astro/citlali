@@ -33,6 +33,7 @@ struct BeammapArrayFlaggingLimits;
 
 namespace citlali::config {
 struct BeammapPriorsConfig;
+struct BeammapSplitFitsByFlagConfig;
 }
 
 class Beammap: public Engine {
@@ -798,6 +799,15 @@ public:
         bool detector_grouping,
         int flag_value,
         Eigen::Index n_flag_maps);
+    template <mapmaking::MapType map_type>
+    bool should_split_beammap_maps_by_flag(
+        bool detector_grouping,
+        const citlali::config::BeammapSplitFitsByFlagConfig &split_config);
+    template <mapmaking::MapType map_type>
+    void write_beammap_non_detector_map_diagnostics(
+        mapmaking::MapBuffer *mb,
+        const std::string &dir_name,
+        bool detector_grouping);
     template <mapmaking::MapType map_type>
     void write_standard_beammap_map_products(
         mapmaking::MapBuffer *mb,

@@ -187,6 +187,38 @@ void Beammap::write_split_beammap_flag_maps(
 }
 
 template <mapmaking::MapType map_type>
+bool Beammap::should_split_beammap_maps_by_flag(
+    bool detector_grouping,
+    const citlali::config::BeammapSplitFitsByFlagConfig &split_config) {
+    bool split_by_flag_mode = false;
+    if constexpr (map_type == mapmaking::RawObs) {
+        split_by_flag_mode = detector_grouping && split_config.enabled;
+        if (split_by_flag_mode && split_config.flag_values.empty()) {
+            logger->warn("beammap.split_fits_by_flag enabled but no flag_values specified; using standard map output");
+            split_by_flag_mode = false;
+        }
+    }
+    return split_by_flag_mode;
+}
+
+template <mapmaking::MapType map_type>
+void Beammap::write_beammap_non_detector_map_diagnostics(
+    mapmaking::MapBuffer *mb,
+    const std::string &dir_name,
+    bool detector_grouping) {
+    if (detector_grouping) {
+        return;
+    }
+
+    logger->debug("writing psds");
+    write_psd<map_type>(mb, dir_name);
+    logger->debug("writing histograms");
+    write_hist<map_type>(mb, dir_name);
+    logger->debug("writing map diagnostics");
+    write_mapdiag<map_type>(mb, dir_name);
+}
+
+template <mapmaking::MapType map_type>
 void Beammap::write_standard_beammap_map_products(
     mapmaking::MapBuffer *mb,
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
@@ -298,14 +330,9 @@ void Beammap::write_beammap_map_products(
         citlali::config::is_detector_map_grouping(
             mapmaking_config.grouping);
     const auto &split_config = beammap_config.split_fits_by_flag;
-    bool split_by_flag_mode = false;
-    if constexpr (map_type == mapmaking::RawObs) {
-        split_by_flag_mode = detector_grouping && split_config.enabled;
-        if (split_by_flag_mode && split_config.flag_values.empty()) {
-            logger->warn("beammap.split_fits_by_flag enabled but no flag_values specified; using standard map output");
-            split_by_flag_mode = false;
-        }
-    }
+    const bool split_by_flag_mode =
+        should_split_beammap_maps_by_flag<map_type>(
+            detector_grouping, split_config);
 
     // wiener filtered maps write before this and are deleted from the vector.
     if (!f_io->empty()) {
@@ -324,13 +351,6 @@ void Beammap::write_beammap_map_products(
     f_io->clear();
     n_io->clear();
 
-    if (!detector_grouping) {
-        // write psd and histogram files
-        logger->debug("writing psds");
-        write_psd<map_type>(mb, dir_name);
-        logger->debug("writing histograms");
-        write_hist<map_type>(mb, dir_name);
-        logger->debug("writing map diagnostics");
-        write_mapdiag<map_type>(mb, dir_name);
-    }
+    write_beammap_non_detector_map_diagnostics<map_type>(
+        mb, dir_name, detector_grouping);
 }
