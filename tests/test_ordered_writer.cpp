@@ -2,13 +2,38 @@
 
 #include <gtest/gtest.h>
 
+#include <netcdf>
+
+#include <array>
 #include <atomic>
+#include <filesystem>
 #include <future>
 #include <mutex>
 #include <stdexcept>
 #include <vector>
 
 namespace {
+
+void create_row_file(const std::filesystem::path &path) {
+    netCDF::NcFile file(path.string(), netCDF::NcFile::replace);
+    const auto rows = file.addDim("rows", 3);
+    const auto value = file.addVar("value", netCDF::ncInt, rows);
+    const std::array<int, 3> initial{-1, -1, -1};
+    value.putVar(initial.data());
+}
+
+void write_row(const std::filesystem::path &path, std::size_t row, int value) {
+    netCDF::NcFile file(path.string(), netCDF::NcFile::write);
+    file.getVar("value").putVar(
+        std::vector<std::size_t>{row}, std::vector<std::size_t>{1}, &value);
+}
+
+std::array<int, 3> read_rows(const std::filesystem::path &path) {
+    netCDF::NcFile file(path.string(), netCDF::NcFile::read);
+    std::array<int, 3> values{};
+    file.getVar("value").getVar(values.data());
+    return values;
+}
 
 TEST(ordered_writer, serializes_out_of_order_workers) {
     citlali::pipeline::OrderedWriter writer;
@@ -83,6 +108,69 @@ TEST(ordered_writer, required_output_failure_cancels_other_streams) {
     EXPECT_NO_THROW(waiting_ptc.get());
     EXPECT_FALSE(ptc_write_ran.load());
     EXPECT_THROW(writers.rethrow_if_failed(), std::runtime_error);
+}
+
+TEST(ordered_writer, netcdf_failure_leaves_diagnosed_partial_product_and_next_run_recovers) {
+    const auto path = std::filesystem::path(::testing::TempDir()) /
+                      "citlali_ordered_writer_failure.nc";
+    std::filesystem::remove(path);
+    create_row_file(path);
+
+    citlali::pipeline::TimestreamOutputFlags flags;
+    flags.write_rtc = true;
+    const auto writers =
+        citlali::pipeline::make_timestream_output_writers(flags);
+
+    std::atomic<bool> later_write_ran{false};
+    std::promise<void> later_started;
+    std::promise<void> failing_started;
+    auto later_ready = later_started.get_future();
+    auto failing_ready = failing_started.get_future();
+
+    auto later = std::async(std::launch::async, [&] {
+        later_started.set_value();
+        return writers.write_when_ready(writers.rtc, 2, [&] {
+            later_write_ran = true;
+            write_row(path, 2, 30);
+        });
+    });
+    later_ready.get();
+
+    auto failing = std::async(std::launch::async, [&] {
+        failing_started.set_value();
+        return writers.write_when_ready(
+            writers.rtc, 1,
+            [&] { write_row(path, 3, 20); });  // Fixed dimension is [0, 3).
+    });
+    failing_ready.get();
+
+    auto first = std::async(std::launch::async, [&] {
+        return writers.write_when_ready(
+            writers.rtc, 0, [&] { write_row(path, 0, 10); });
+    });
+
+    EXPECT_TRUE(first.get());
+    EXPECT_FALSE(failing.get());
+    EXPECT_FALSE(later.get());
+    EXPECT_FALSE(later_write_ran.load());
+    EXPECT_TRUE(writers.failed());
+    EXPECT_ANY_THROW(writers.rethrow_if_failed());
+    EXPECT_EQ(read_rows(path), (std::array<int, 3>{10, -1, -1}));
+
+    create_row_file(path);
+    const auto next_run_writers =
+        citlali::pipeline::make_timestream_output_writers(flags);
+    for (Eigen::Index row = 0; row < 3; ++row) {
+        EXPECT_TRUE(next_run_writers.write_when_ready(
+            next_run_writers.rtc, row,
+            [&, row] { write_row(path, static_cast<std::size_t>(row),
+                                 static_cast<int>((row + 1) * 10)); }));
+    }
+    EXPECT_FALSE(next_run_writers.failed());
+    EXPECT_NO_THROW(next_run_writers.rethrow_if_failed());
+    EXPECT_EQ(read_rows(path), (std::array<int, 3>{10, 20, 30}));
+
+    std::filesystem::remove(path);
 }
 
 }  // namespace
