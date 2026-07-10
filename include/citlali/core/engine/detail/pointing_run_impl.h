@@ -12,7 +12,8 @@
 template <class KidsProc>
 auto Pointing::run(
     KidsProc &kidsproc,
-    const std::shared_ptr<citlali::pipeline::OutputFailureState> &output_failure) {
+    const citlali::pipeline::TimestreamOutputFlags &output_flags,
+    const citlali::pipeline::TimestreamOutputWriters &output_writers) {
     auto scans_done_mutex = std::make_shared<std::mutex>();
     auto scans_done_count = std::make_shared<int>(0);
     auto ptc_line_audit_mutex = std::make_shared<std::mutex>();
@@ -21,11 +22,6 @@ auto Pointing::run(
     const bool make_maps = citlali::pipeline::mapmaking_enabled(*this);
     const bool make_noise_maps = citlali::pipeline::noise_maps_enabled(*this);
 
-    const auto output_flags =
-        citlali::pipeline::standard_timestream_output_flags(*this);
-    const auto output_writers =
-        citlali::pipeline::make_timestream_output_writers(
-            output_flags, output_failure);
     auto map_grouping_ptr = std::make_shared<std::string>(
         citlali::pipeline::active_map_grouping_name(*this));
 

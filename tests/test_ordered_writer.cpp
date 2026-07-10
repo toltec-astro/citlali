@@ -112,6 +112,60 @@ TEST(ordered_writer, required_output_failure_cancels_other_streams) {
     EXPECT_THROW(writers.rethrow_if_failed(), std::runtime_error);
 }
 
+TEST(ordered_writer, verifies_required_output_cardinality) {
+    citlali::pipeline::TimestreamOutputFlags flags;
+    flags.write_rtc = true;
+    flags.write_ptcdiag = true;
+    const auto writers =
+        citlali::pipeline::make_timestream_output_writers(flags);
+
+    EXPECT_TRUE(writers.write_when_ready(writers.rtc, 0, [] {}));
+    EXPECT_TRUE(writers.write_when_ready(writers.rtc, 1, [] {}));
+    EXPECT_TRUE(writers.write_when_ready(writers.ptcdiag, 0, [] {}));
+
+    const citlali::pipeline::TimestreamOutputExpectations exact{2, 0, 0, 1};
+    EXPECT_NO_THROW(writers.verify_complete(exact));
+
+    const citlali::pipeline::TimestreamOutputExpectations missing{3, 0, 0, 1};
+    EXPECT_THROW(writers.verify_complete(missing), std::runtime_error);
+}
+
+TEST(ordered_writer, derives_standard_and_beammap_output_expectations) {
+    struct FakeEngine {
+        struct {
+            Eigen::MatrixXi scan_indices;
+        } telescope;
+        struct {
+            Eigen::Index n_rtc_output_scans = 0;
+            Eigen::Index n_ptc_output_scans = 0;
+        } tod_outputs;
+    } engine;
+    engine.telescope.scan_indices.resize(2, 5);
+    engine.tod_outputs.n_rtc_output_scans = 2;
+    engine.tod_outputs.n_ptc_output_scans = 3;
+
+    citlali::pipeline::TimestreamOutputFlags flags;
+    flags.write_rtc = true;
+    flags.write_ptc = true;
+    flags.write_rtcdiag = true;
+    flags.write_ptcdiag = true;
+    const auto standard =
+        citlali::pipeline::standard_timestream_output_expectations(
+            engine, flags);
+    EXPECT_EQ(standard.rtc, 2);
+    EXPECT_EQ(standard.ptc, 3);
+    EXPECT_EQ(standard.rtcdiag, 5);
+    EXPECT_EQ(standard.ptcdiag, 5);
+
+    const auto beammap =
+        citlali::pipeline::beammap_timestream_output_expectations(
+            engine, flags);
+    EXPECT_EQ(beammap.rtc, 2);
+    EXPECT_EQ(beammap.ptc, 0);
+    EXPECT_EQ(beammap.rtcdiag, 5);
+    EXPECT_EQ(beammap.ptcdiag, 0);
+}
+
 TEST(ordered_writer, netcdf_failure_leaves_diagnosed_partial_product_and_next_run_recovers) {
     const auto path = std::filesystem::path(::testing::TempDir()) /
                       "citlali_ordered_writer_failure.nc";

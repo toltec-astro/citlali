@@ -14,8 +14,14 @@
 template <class KidsProc, class RawObs>
 void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs, bool write_outputs) {
     using input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
-    const auto output_failure =
-        std::make_shared<citlali::pipeline::OutputFailureState>();
+    const auto output_flags =
+        citlali::pipeline::beammap_timestream_output_flags(
+            *this, write_outputs);
+    const auto output_writers =
+        citlali::pipeline::make_timestream_output_writers(output_flags);
+    const auto output_expectations =
+        citlali::pipeline::beammap_timestream_output_expectations(
+            *this, output_flags);
     // progress bar
     tula::logging::progressbar pb(
         [&](const auto &msg) { logger->info("{}", msg); }, 100, "RTC progress ");
@@ -56,24 +62,20 @@ void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs, bool write
             return {};
         },
         // run the raw time chunk processing
-        run_timestream(kidsproc, write_outputs, output_failure));
+        run_timestream(kidsproc, output_flags, output_writers));
 
-    output_failure->rethrow_if_failed();
+    output_writers.rethrow_if_failed();
+    output_writers.verify_complete(output_expectations);
 }
 
 template <class KidsProc>
 auto Beammap::run_timestream(
-    KidsProc &kidsproc, bool write_outputs,
-    const std::shared_ptr<citlali::pipeline::OutputFailureState> &output_failure) {
+    KidsProc &kidsproc,
+    const citlali::pipeline::TimestreamOutputFlags &output_flags,
+    const citlali::pipeline::TimestreamOutputWriters &output_writers) {
     auto scans_done_mutex = std::make_shared<std::mutex>();
     auto scans_done_count = std::make_shared<int>(0);
 
-    const auto output_flags =
-        citlali::pipeline::beammap_timestream_output_flags(
-            *this, write_outputs);
-    const auto output_writers =
-        citlali::pipeline::make_timestream_output_writers(
-            output_flags, output_failure);
     auto map_grouping_ptr = std::make_shared<std::string>(
         citlali::pipeline::active_map_grouping_name(*this));
 

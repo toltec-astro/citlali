@@ -251,8 +251,8 @@ public:
     // run the raw time chunk processing
     template <class KidsProc>
     auto run_timestream(
-        KidsProc &, bool write_outputs,
-        const std::shared_ptr<citlali::pipeline::OutputFailureState> &);
+        KidsProc &, const citlali::pipeline::TimestreamOutputFlags &,
+        const citlali::pipeline::TimestreamOutputWriters &);
 
     // run the loop pipeline
     template <class KidsProc, class RawObs>

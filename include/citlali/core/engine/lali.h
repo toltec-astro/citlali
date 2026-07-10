@@ -30,7 +30,8 @@ public:
 
     // run the reduction for the obs
     auto run(
-        const std::shared_ptr<citlali::pipeline::OutputFailureState> &)
+        const citlali::pipeline::TimestreamOutputFlags &,
+        const citlali::pipeline::TimestreamOutputWriters &)
         -> run_stage_t;
     template <class CalibScan>
     bool write_lali_rtc_outputs(

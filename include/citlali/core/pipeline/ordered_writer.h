@@ -40,7 +40,7 @@ struct OutputFailureState {
 };
 
 struct OrderedWriter {
-    std::mutex mutex;
+    mutable std::mutex mutex;
     std::condition_variable cv;
     Eigen::Index next = 0;
     std::exception_ptr failure;
@@ -57,6 +57,11 @@ struct OrderedWriter {
         std::lock_guard<std::mutex> lock(mutex);
         ++next;
         cv.notify_all();
+    }
+
+    Eigen::Index completed_count() const noexcept {
+        std::lock_guard<std::mutex> lock(mutex);
+        return next;
     }
 
     void cancel(std::exception_ptr error) noexcept {

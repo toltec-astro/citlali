@@ -5,6 +5,8 @@
 
 #include <exception>
 #include <memory>
+#include <sstream>
+#include <string>
 #include <utility>
 
 namespace citlali::pipeline {
@@ -14,6 +16,13 @@ struct TimestreamOutputFlags {
     bool write_ptc = false;
     bool write_rtcdiag = false;
     bool write_ptcdiag = false;
+};
+
+struct TimestreamOutputExpectations {
+    Eigen::Index rtc = 0;
+    Eigen::Index ptc = 0;
+    Eigen::Index rtcdiag = 0;
+    Eigen::Index ptcdiag = 0;
 };
 
 struct TimestreamOutputWriters {
@@ -62,6 +71,25 @@ struct TimestreamOutputWriters {
             failure_state->rethrow_if_failed();
         }
     }
+
+    void verify_complete(const TimestreamOutputExpectations &expected) const {
+        const auto verify = [](const char *name,
+                               const std::shared_ptr<OrderedWriter> &writer,
+                               Eigen::Index count) {
+            const Eigen::Index completed =
+                writer == nullptr ? 0 : writer->completed_count();
+            if (completed != count) {
+                std::ostringstream message;
+                message << "incomplete required " << name << " output: expected "
+                        << count << " writes, completed " << completed;
+                throw std::runtime_error(message.str());
+            }
+        };
+        verify("RTC TOD", rtc, expected.rtc);
+        verify("PTC TOD", ptc, expected.ptc);
+        verify("RTC diagnostics", rtcdiag, expected.rtcdiag);
+        verify("PTC diagnostics", ptcdiag, expected.ptcdiag);
+    }
 };
 
 inline std::shared_ptr<OrderedWriter> make_ordered_writer_if(bool enabled) {
@@ -85,6 +113,30 @@ TimestreamOutputFlags beammap_timestream_output_flags(
     flags.write_rtc = write_outputs && raw_tod_output_files_available(engine);
     flags.write_rtcdiag = write_outputs && !engine.output_paths.rtcdiag_filename.empty();
     return flags;
+}
+
+template <class Engine>
+TimestreamOutputExpectations standard_timestream_output_expectations(
+    const Engine &engine, const TimestreamOutputFlags &flags) {
+    const Eigen::Index scan_count = engine.telescope.scan_indices.cols();
+    return {
+        flags.write_rtc ? engine.tod_outputs.n_rtc_output_scans : 0,
+        flags.write_ptc ? engine.tod_outputs.n_ptc_output_scans : 0,
+        flags.write_rtcdiag ? scan_count : 0,
+        flags.write_ptcdiag ? scan_count : 0,
+    };
+}
+
+template <class Engine>
+TimestreamOutputExpectations beammap_timestream_output_expectations(
+    const Engine &engine, const TimestreamOutputFlags &flags) {
+    const Eigen::Index scan_count = engine.telescope.scan_indices.cols();
+    return {
+        flags.write_rtc ? engine.tod_outputs.n_rtc_output_scans : 0,
+        0,
+        flags.write_rtcdiag ? scan_count : 0,
+        0,
+    };
 }
 
 inline TimestreamOutputWriters make_timestream_output_writers(
