@@ -503,6 +503,16 @@ struct FakeKidsProc {
     }
 };
 
+struct FakeFailingKidsProc : FakeKidsProc {
+    static FakeFailingKidsProc from_config(const Config &) {
+        return {};
+    }
+
+    std::vector<FakeRawObsMeta> get_rawobs_meta(const FakeRawObs &) {
+        throw std::runtime_error("No such file or directory");
+    }
+};
+
 struct FakeCitlaliConfig {
     int get_config_calls = 0;
     std::string requested_key;
@@ -3545,6 +3555,35 @@ TEST(pipeline_execution, runs_reduction_observation_at_index) {
     EXPECT_EQ(todproc.engine().output_calls, 1);
     EXPECT_EQ(todproc.engine().observation_dates.date_obs,
               (std::vector<std::string>{"2026-01-01T00:00:00"}));
+}
+
+TEST(pipeline_execution, reports_observation_context_when_metadata_load_fails) {
+    FakeInitialObservationTodProc todproc;
+    FakeCitlaliConfig config;
+    FakeRawObs rawobs;
+    rawobs.obs_name = "science_152392";
+    rawobs.tel.path = "missing_telescope.nc";
+    FakeIOCoordinator co{{rawobs}};
+    std::vector<int> map_extents = {11};
+    std::vector<int> map_coords = {22};
+    auto logger = std::make_shared<FakeLogger>();
+
+    try {
+        citlali::pipeline::run_reduction_observation_at_index<
+            false, FakeMapType::RawObs, FakeMapType::FilteredObs, false,
+            FakeFailingKidsProc>(
+            todproc, co, config, map_extents, map_coords, 0,
+            [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
+            logger);
+        FAIL() << "expected metadata load failure";
+    } catch (const std::runtime_error &error) {
+        const std::string message{error.what()};
+        EXPECT_NE(message.find("observation index 0"), std::string::npos);
+        EXPECT_NE(message.find("science_152392"), std::string::npos);
+        EXPECT_NE(message.find("missing_telescope.nc"), std::string::npos);
+        EXPECT_NE(message.find("No such file or directory"),
+                  std::string::npos);
+    }
 }
 
 TEST(pipeline_execution, runs_reduction_iteration_observations) {
