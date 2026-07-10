@@ -150,6 +150,6 @@ void read_tod_selection_mode_config(
     read_tod_selection_mode_config(
         config, mode_key, n_uniform_key, n_source_dense_key, output_enabled,
         mode_path, n_uniform_path, n_source_dense_path, mode, n_uniform,
-        n_source_dense, diagnostics.missing_keys, diagnostics.invalid_keys,
-        logger);
+        n_source_dense, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths(), logger);
 }

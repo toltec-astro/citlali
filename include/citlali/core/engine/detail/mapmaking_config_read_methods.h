@@ -36,8 +36,8 @@ void read_jinc_filter_config(Config &config, JincMapmaker &jinc_mm,
                              const ArrayNameMap &array_name_map,
                              Diagnostics &diagnostics) {
     read_jinc_filter_config(
-        config, jinc_mm, array_name_map, diagnostics.missing_keys,
-        diagnostics.invalid_keys);
+        config, jinc_mm, array_name_map, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }
 
 template <class Config, class MaximumLikelihoodMapmaker, class MissingKeys,
@@ -58,7 +58,8 @@ void read_maximum_likelihood_mapmaker_config(
     Config &config, MaximumLikelihoodMapmaker &ml_mm,
     Diagnostics &diagnostics) {
     read_maximum_likelihood_mapmaker_config(
-        config, ml_mm, diagnostics.missing_keys, diagnostics.invalid_keys);
+        config, ml_mm, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }
 
 template <class Config, class JincMapmaker, class MaximumLikelihoodMapmaker,
@@ -91,5 +92,6 @@ void read_method_specific_mapmaker_config(
     PtcProc &ptcproc, double pixel_size_rad, Diagnostics &diagnostics) {
     read_method_specific_mapmaker_config(
         config, map_method, jinc_mm, ml_mm, array_name_map, ptcproc,
-        pixel_size_rad, diagnostics.missing_keys, diagnostics.invalid_keys);
+        pixel_size_rad, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }

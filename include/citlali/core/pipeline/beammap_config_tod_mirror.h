@@ -28,7 +28,8 @@ citlali::config::BeammapDetectorTodOutputConfig
 read_beammap_detector_tod_output_config(
     Config &config, Diagnostics &diagnostics) {
     return read_beammap_detector_tod_output_config(
-        config, diagnostics.missing_keys, diagnostics.invalid_keys);
+        config, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }
 
 inline int default_beammap_tod_output_iter() {

@@ -36,7 +36,7 @@ void read_noise_map_config(Config &config, bool &run_noise,
                            Diagnostics &diagnostics) {
     read_noise_map_config(
         config, run_noise, typed_coadd_config, omb, cmb, typed_config,
-        diagnostics.missing_keys, diagnostics.invalid_keys);
+        diagnostics.missing_key_paths(), diagnostics.invalid_key_paths());
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -67,5 +67,6 @@ void read_noise_product_config(Config &config, bool &write_realizations,
                                Diagnostics &diagnostics) {
     read_noise_product_config(
         config, write_realizations, products_enabled, apply_empirical_weights,
-        typed_config, diagnostics.missing_keys, diagnostics.invalid_keys);
+        typed_config, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }

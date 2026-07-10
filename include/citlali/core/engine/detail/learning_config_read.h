@@ -27,8 +27,9 @@ void read_optional_learning_config(
     std::vector<std::decay_t<Param>> min_val = {},
     std::vector<std::decay_t<Param>> max_val = {}) {
     read_optional_learning_config(
-        config, key, param, target, diagnostics.missing_keys,
-        diagnostics.invalid_keys, std::move(min_val), std::move(max_val));
+        config, key, param, target, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths(), std::move(min_val),
+        std::move(max_val));
 }
 
 template <class LearningOptions>

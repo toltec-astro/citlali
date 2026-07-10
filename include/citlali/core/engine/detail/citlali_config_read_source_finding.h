@@ -50,6 +50,6 @@ void read_source_finding_config(
     Diagnostics &diagnostics) {
     read_source_finding_config(
         config, omb, cmb, typed_coadd_config, arcsec_to_rad,
-        typed_post_processing_config, diagnostics.missing_keys,
-        diagnostics.invalid_keys);
+        typed_post_processing_config, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }

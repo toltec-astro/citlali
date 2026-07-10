@@ -27,8 +27,8 @@ void read_timestream_enabled_config(Config &config, bool &enabled,
                                     TimestreamConfig &typed_config,
                                     Diagnostics &diagnostics) {
     read_timestream_enabled_config(
-        config, enabled, typed_config, diagnostics.missing_keys,
-        diagnostics.invalid_keys);
+        config, enabled, typed_config, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -47,8 +47,8 @@ void read_timestream_type_config(Config &config, std::string &type,
                                  TimestreamConfig &typed_config,
                                  Diagnostics &diagnostics) {
     read_timestream_type_config(
-        config, type, typed_config, diagnostics.missing_keys,
-        diagnostics.invalid_keys);
+        config, type, typed_config, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -119,8 +119,8 @@ void read_auxiliary_quadrature_channel_config(Config &config,
                                               TimestreamConfig &typed_config,
                                               Diagnostics &diagnostics) {
     read_auxiliary_quadrature_channel_config(
-        config, typed_config, diagnostics.missing_keys,
-        diagnostics.invalid_keys);
+        config, typed_config, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -145,8 +145,8 @@ void read_raw_tod_output_enabled_config(Config &config, bool &enabled,
                                         TimestreamConfig &typed_config,
                                         Diagnostics &diagnostics) {
     read_raw_tod_output_enabled_config(
-        config, enabled, typed_config, diagnostics.missing_keys,
-        diagnostics.invalid_keys);
+        config, enabled, typed_config, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -172,8 +172,8 @@ void read_processed_tod_output_enabled_config(Config &config, bool &enabled,
                                               TimestreamConfig &typed_config,
                                               Diagnostics &diagnostics) {
     read_processed_tod_output_enabled_config(
-        config, enabled, typed_config, diagnostics.missing_keys,
-        diagnostics.invalid_keys);
+        config, enabled, typed_config, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }
 
 template <class Config, class Key, class MissingKeys, class InvalidKeys,
@@ -221,7 +221,8 @@ void read_tod_stream_output_mode_config(
     Diagnostics &diagnostics) {
     read_tod_stream_output_mode_config(
         config, key, output_enabled, allowed_modes, mode, mini, outer,
-        typed_stream, diagnostics.missing_keys, diagnostics.invalid_keys);
+        typed_stream, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }
 
 template <class Config, class Key, class MissingKeys, class InvalidKeys,
@@ -251,7 +252,7 @@ void read_tod_stream_outer_context_config(
     Diagnostics &diagnostics) {
     read_tod_stream_outer_context_config(
         config, key, output_enabled, outer_context_samples, typed_stream,
-        diagnostics.missing_keys, diagnostics.invalid_keys);
+        diagnostics.missing_key_paths(), diagnostics.invalid_key_paths());
 }
 
 template <class TimestreamConfig>

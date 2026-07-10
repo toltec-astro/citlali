@@ -36,9 +36,10 @@ void read_output_map_block_config(
     PostProcessingConfig &typed_post_processing_config,
     const Logger &logger) {
     read_output_map_block_config(
-        config, omb, diagnostics.missing_keys, diagnostics.invalid_keys,
-        pixel_axes, reduction_type, rad_to_arcsec, typed_mapmaking_config,
-        typed_post_processing_config, logger);
+        config, omb, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths(), pixel_axes, reduction_type,
+        rad_to_arcsec, typed_mapmaking_config, typed_post_processing_config,
+        logger);
 }
 
 template <class Config, class CoaddMapBlock, class CoaddConfig,
@@ -64,6 +65,6 @@ void read_coadd_map_block_config(
     Diagnostics &diagnostics, const PixelAxes &pixel_axes,
     citlali::config::ReductionType reduction_type, const Logger &logger) {
     read_coadd_map_block_config(
-        config, typed_coadd_config, cmb, diagnostics.missing_keys,
-        diagnostics.invalid_keys, pixel_axes, reduction_type, logger);
+        config, typed_coadd_config, cmb, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths(), pixel_axes, reduction_type, logger);
 }

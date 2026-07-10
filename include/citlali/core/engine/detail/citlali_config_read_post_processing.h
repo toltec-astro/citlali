@@ -72,8 +72,8 @@ void read_post_processing_activation_config(
     Diagnostics &diagnostics) {
     read_post_processing_activation_config(
         config, run_map_filter, run_source_finder,
-        typed_post_processing_config, diagnostics.missing_keys,
-        diagnostics.invalid_keys);
+        typed_post_processing_config, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }
 
 template <class Config, class MapFitter, class PostProcessingConfig,
@@ -147,6 +147,6 @@ void read_source_fitting_config(
     Diagnostics &diagnostics) {
     read_source_fitting_config(
         config, reduction_type, map_fitter, pixel_size_rad, arcsec_to_rad,
-        typed_post_processing_config, diagnostics.missing_keys,
-        diagnostics.invalid_keys);
+        typed_post_processing_config, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }

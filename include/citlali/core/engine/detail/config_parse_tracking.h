@@ -24,7 +24,8 @@ void read_config_value(
     std::vector<std::decay_t<Param>> min_values = {},
     std::vector<std::decay_t<Param>> max_values = {}) {
     ::get_config_value(
-        config, param, diagnostics.missing_keys, diagnostics.invalid_keys, key,
+        config, param, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths(), key,
         std::move(accepted_values), std::move(min_values),
         std::move(max_values));
 }
@@ -33,7 +34,8 @@ template <class Processor, class Config, class Diagnostics>
 void read_processor_config(
     Processor &processor, Config &config, Diagnostics &diagnostics) {
     processor.get_config(
-        config, diagnostics.missing_keys, diagnostics.invalid_keys);
+        config, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }
 
 template <class Config, class Key, class Param, class Target,
@@ -134,7 +136,7 @@ void read_config_value_if_clean(
     std::vector<std::decay_t<Param>> max_values = {}) {
     read_config_value_if_clean(
         config, key, param, std::forward<Target>(on_parsed),
-        diagnostics.missing_keys, diagnostics.invalid_keys,
+        diagnostics.missing_key_paths(), diagnostics.invalid_key_paths(),
         std::move(accepted_values), std::move(min_values),
         std::move(max_values));
 }
@@ -148,8 +150,8 @@ void read_mirrored_config_value(
     std::vector<std::decay_t<Param>> min_values = {},
     std::vector<std::decay_t<Param>> max_values = {}) {
     read_mirrored_config_value(
-        config, key, param, target, diagnostics.missing_keys,
-        diagnostics.invalid_keys, std::move(accepted_values),
+        config, key, param, target, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths(), std::move(accepted_values),
         std::move(min_values), std::move(max_values));
 }
 
@@ -162,8 +164,8 @@ void read_optional_mirrored_config_value(
     std::vector<std::decay_t<Param>> min_values = {},
     std::vector<std::decay_t<Param>> max_values = {}) {
     read_optional_mirrored_config_value(
-        config, key, param, target, diagnostics.missing_keys,
-        diagnostics.invalid_keys, std::move(accepted_values),
+        config, key, param, target, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths(), std::move(accepted_values),
         std::move(min_values), std::move(max_values));
 }
 
@@ -176,8 +178,8 @@ void read_parsed_mirrored_config_value(
     std::vector<std::decay_t<Param>> min_values = {},
     std::vector<std::decay_t<Param>> max_values = {}) {
     read_parsed_mirrored_config_value(
-        config, key, param, target, parser, diagnostics.missing_keys,
-        diagnostics.invalid_keys, std::move(accepted_values),
+        config, key, param, target, parser, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths(), std::move(accepted_values),
         std::move(min_values), std::move(max_values));
 }
 
@@ -190,8 +192,8 @@ void read_optional_parsed_mirrored_config_value(
     std::vector<std::decay_t<Param>> min_values = {},
     std::vector<std::decay_t<Param>> max_values = {}) {
     read_optional_parsed_mirrored_config_value(
-        config, key, param, target, parser, diagnostics.missing_keys,
-        diagnostics.invalid_keys, std::move(accepted_values),
+        config, key, param, target, parser, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths(), std::move(accepted_values),
         std::move(min_values), std::move(max_values));
 }
 

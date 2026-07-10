@@ -18,8 +18,8 @@ void read_noise_maps_enabled_config(Config &config, bool &enabled,
                                     NoiseConfig &typed_config,
                                     Diagnostics &diagnostics) {
     read_noise_maps_enabled_config(
-        config, enabled, typed_config, diagnostics.missing_keys,
-        diagnostics.invalid_keys);
+        config, enabled, typed_config, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -47,8 +47,8 @@ void read_noise_map_count_config(Config &config, NoiseCount &n_noise,
                                  NoiseConfig &typed_config,
                                  Diagnostics &diagnostics) {
     read_noise_map_count_config(
-        config, n_noise, typed_config, diagnostics.missing_keys,
-        diagnostics.invalid_keys);
+        config, n_noise, typed_config, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -67,8 +67,8 @@ void read_noise_randomize_dets_config(Config &config, bool &randomize_dets,
                                       NoiseConfig &typed_config,
                                       Diagnostics &diagnostics) {
     read_noise_randomize_dets_config(
-        config, randomize_dets, typed_config, diagnostics.missing_keys,
-        diagnostics.invalid_keys);
+        config, randomize_dets, typed_config, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -91,8 +91,8 @@ void read_noise_write_realizations_config(Config &config,
                                           NoiseConfig &typed_config,
                                           Diagnostics &diagnostics) {
     read_noise_write_realizations_config(
-        config, write_realizations, typed_config, diagnostics.missing_keys,
-        diagnostics.invalid_keys);
+        config, write_realizations, typed_config, diagnostics.missing_key_paths(),
+        diagnostics.invalid_key_paths());
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -119,7 +119,7 @@ void read_noise_products_enabled_config(Config &config,
                                         Diagnostics &diagnostics) {
     read_noise_products_enabled_config(
         config, products_enabled, default_enabled, typed_config,
-        diagnostics.missing_keys, diagnostics.invalid_keys);
+        diagnostics.missing_key_paths(), diagnostics.invalid_key_paths());
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -147,5 +147,5 @@ void read_noise_empirical_weights_config(Config &config,
                                          Diagnostics &diagnostics) {
     read_noise_empirical_weights_config(
         config, apply_weights, default_enabled, typed_config,
-        diagnostics.missing_keys, diagnostics.invalid_keys);
+        diagnostics.missing_key_paths(), diagnostics.invalid_key_paths());
 }
