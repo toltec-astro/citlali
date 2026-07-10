@@ -79,6 +79,11 @@ struct BeammapPreviousFitSeed {
     double weight = std::numeric_limits<double>::quiet_NaN();
 };
 
+struct BeammapPriorPositionCheck {
+    bool compatible = false;
+    double d2 = std::numeric_limits<double>::infinity();
+};
+
 struct BeammapFitInitSelection {
     bool skip_fit = false;
     bool from_previous = false;

@@ -60,6 +60,8 @@ public:
         citlali::engine_detail::beammap::BeammapPreviousFitInit;
     using BeammapPreviousFitSeed =
         citlali::engine_detail::beammap::BeammapPreviousFitSeed;
+    using BeammapPriorPositionCheck =
+        citlali::engine_detail::beammap::BeammapPriorPositionCheck;
     using BeammapFitInitSelection =
         citlali::engine_detail::beammap::BeammapFitInitSelection;
     using BeammapFitIterationStats =
@@ -300,10 +302,9 @@ public:
     void clear_beammap_fit_result(Eigen::Index map_index);
     bool has_beammap_prior_diagnostics() const;
     void reset_beammap_prior_diagnostics(Eigen::Index map_index);
-    bool beammap_prior_position_compatible(
+    BeammapPriorPositionCheck beammap_prior_position_compatible(
         Eigen::Index map_index, double row, double col,
-        double derot_elev_rad, double prior_max_d2,
-        double &d2_out);
+        double derot_elev_rad, double prior_max_d2);
     bool beammap_prior_allows_peak_switch(Eigen::Index map_index,
                                           double prev_row, double prev_col,
                                           Eigen::Index peak_row,
