@@ -3,7 +3,7 @@
 // Engine config loading implementation detail.
 // Include this only after Engine has been declared.
 
-#include <citlali/core/engine/detail/pointing_offsets_config.h>
+#include <citlali/core/pipeline/pointing_offsets_config.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template<typename CT>
@@ -24,7 +24,7 @@ void Engine::get_astrometry_config(CT &config) {
 
         for (Eigen::Index i = 0; i < pointing_node.size(); ++i) {
             if (config.has(std::tuple{"pointing_offsets", i, "axes_name"})) {
-                auto axis = citlali::engine_detail::normalized_pointing_axis_name(
+                auto axis = citlali::pipeline::normalized_pointing_axis_name(
                     config.get_str(
                         std::tuple{"pointing_offsets", i, "axes_name"}));
                 if (citlali::config::is_supported_pointing_axis(axis)) {
@@ -128,7 +128,7 @@ void Engine::get_astrometry_config(CT &config) {
             }
         }
 
-        citlali::engine_detail::mirror_typed_pointing_offsets(
+        citlali::pipeline::mirror_typed_pointing_offsets(
             pointing_offsets.arcsec, pointing_offsets.modified_julian_date,
             astrometry_config.pointing_offsets);
     }

@@ -4,7 +4,7 @@
 
 #include <citlali/core/config/pointing_config.h>
 
-namespace citlali::engine_detail {
+namespace citlali::pipeline {
 
 template <class PtcProc, class Logger>
 void log_pointing_config(
@@ -58,4 +58,4 @@ void log_pointing_config(
     }
 }
 
-}  // namespace citlali::engine_detail
+}  // namespace citlali::pipeline

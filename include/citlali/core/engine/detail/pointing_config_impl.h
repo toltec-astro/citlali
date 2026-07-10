@@ -4,7 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/pipeline/config_parse_tracking.h>
-#include <citlali/core/engine/detail/pointing_config_logging.h>
+#include <citlali/core/pipeline/pointing_config_logging.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template<typename CT>
@@ -75,6 +75,6 @@ void Engine::get_pointing_config(CT &config) {
     ptcproc.fruit_loops_header_center_require_coverage =
         pointing_config.header_require_coverage;
 
-    citlali::engine_detail::log_pointing_config(
+    citlali::pipeline::log_pointing_config(
         pointing_config, ptcproc, logger);
 }

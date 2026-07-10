@@ -6,7 +6,7 @@
 #include <cctype>
 #include <string>
 
-namespace citlali::engine_detail {
+namespace citlali::pipeline {
 
 inline std::string normalized_pointing_axis_name(std::string axis_name) {
     std::transform(axis_name.begin(), axis_name.end(), axis_name.begin(),
@@ -36,4 +36,4 @@ void mirror_typed_pointing_offsets(
             pointing_offsets_modified_julian_date.size());
 }
 
-}  // namespace citlali::engine_detail
+}  // namespace citlali::pipeline
