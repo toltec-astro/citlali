@@ -364,7 +364,21 @@ public:
     // initial setup for each obs
     void setup_beammap_kids_tone_column();
     void resize_beammap_state_buffers();
+    void populate_beammap_identity_metadata();
+    void populate_beammap_phase_metadata();
+    void populate_beammap_flux_metadata();
+    void populate_beammap_time_and_frame_metadata();
+    void populate_beammap_tau_metadata();
+    void populate_beammap_header_metadata();
+    void populate_beammap_reference_metadata();
+    void populate_beammap_masking_metadata();
+    void populate_beammap_weighting_and_fit_metadata();
     void populate_beammap_setup_metadata();
+    void init_beammap_diagnostic_apt_column(
+        const std::string &name,
+        double fill_value,
+        const std::string &unit,
+        const std::string &description);
     void init_beammap_diagnostic_apt_columns();
     void init_beammap_flag_metadata();
     void configure_beammap_soft_prior_setup();

@@ -60,36 +60,41 @@ void Beammap::resize_beammap_state_buffers() {
     current_iter = 0;
 }
 
-void Beammap::populate_beammap_setup_metadata() {
-    auto &beammap_config = citlali::pipeline::beammap_config(*this);
-
-    calib.apt_meta.reset();
-
+void Beammap::populate_beammap_identity_metadata() {
     calib.apt_meta["obsnum"] = observation_identity.obsnum;
     calib.apt_meta["source"] = telescope.source_name;
     calib.apt_meta["project_id"] = telescope.project_id;
+}
 
+void Beammap::populate_beammap_phase_metadata() {
+    const auto &beammap_config = citlali::pipeline::beammap_config(*this);
     const auto &beammap_phase_config = beammap_config.phase_strategy;
     calib.apt_meta["beammap_phase_split_enabled"] =
         beammap_phase_config.enabled;
     calib.apt_meta["beammap_locator_iter"] = beammap_phase_config.locator_iter;
     calib.apt_meta["beammap_measurement_start_iter"] =
         beammap_phase_config.measurement_start_iter;
+}
 
+void Beammap::populate_beammap_flux_metadata() {
     for (const auto &beammap_flux: source_flux_mJy_beam) {
         auto key = beammap_flux.first + "_flux";
         calib.apt_meta[key].push_back(beammap_flux.second);
         calib.apt_meta[key].push_back("units: mJy/beam");
         calib.apt_meta[key].push_back(beammap_flux.first + " flux density");
     }
+}
 
+void Beammap::populate_beammap_time_and_frame_metadata() {
     calib.apt_meta["creation_date"] = engine_utils::current_date_time();
     calib.apt_meta["date"] =
         citlali::pipeline::latest_observation_date(observation_dates);
     calib.apt_meta["mjd"] =
         engine_utils::unix_to_modified_julian_date(telescope.tel_data["TelTime"].mean());
     calib.apt_meta["Radesys"] = telescope.pixel_axes;
+}
 
+void Beammap::populate_beammap_tau_metadata() {
     if (rtcproc.run_extinction) {
         Eigen::VectorXd tau_el(1);
         tau_el << telescope.tel_data["TelElAct"].mean();
@@ -106,7 +111,9 @@ void Beammap::populate_beammap_setup_metadata() {
             calib.apt_meta[toltec_io.array_name_map[calib.arrays(i)]+"_tau"] = 0.;
         }
     }
+}
 
+void Beammap::populate_beammap_header_metadata() {
     for (const auto &[param,unit]: calib.apt_header_units) {
         calib.apt_meta[param].push_back("units: " + unit);
     }
@@ -116,13 +123,19 @@ void Beammap::populate_beammap_setup_metadata() {
 
     calib.apt_meta["kids_tone"].push_back("units: N/A");
     calib.apt_meta["kids_tone"].push_back("index of tone in network");
+}
 
+void Beammap::populate_beammap_reference_metadata() {
+    const auto &beammap_config = citlali::pipeline::beammap_config(*this);
     const auto &beammap_reference_config = beammap_config.reference;
     calib.apt_meta["is_derotated"] = beammap_reference_config.derotate;
     calib.apt_meta["reference_detector_subtracted"] =
         beammap_reference_config.subtract_reference_detector;
     calib.apt_meta["reference_det"] = beammap_reference_det_found;
+}
 
+void Beammap::populate_beammap_masking_metadata() {
+    const auto &beammap_config = citlali::pipeline::beammap_config(*this);
     const auto &rfi_config = beammap_config.rfi_mask;
     calib.apt_meta["rfi_mask_enabled"] = rfi_config.enabled;
     calib.apt_meta["rfi_mask_block_size_samples"] =
@@ -135,6 +148,10 @@ void Beammap::populate_beammap_setup_metadata() {
     calib.apt_meta["rfi_mask_sigma_floor"] = rfi_config.sigma_floor;
     calib.apt_meta["rfi_mask_max_flagged_fraction"] =
         rfi_config.max_flagged_fraction;
+}
+
+void Beammap::populate_beammap_weighting_and_fit_metadata() {
+    const auto &beammap_config = citlali::pipeline::beammap_config(*this);
     calib.apt_meta["detector_weighting_mode"] =
         std::string(citlali::config::to_string(
             beammap_config.detector_weighting_mode));
@@ -142,37 +159,48 @@ void Beammap::populate_beammap_setup_metadata() {
         beammap_config.fitting.fit_radius_fwhm;
 }
 
+void Beammap::populate_beammap_setup_metadata() {
+    calib.apt_meta.reset();
+    populate_beammap_identity_metadata();
+    populate_beammap_phase_metadata();
+    populate_beammap_flux_metadata();
+    populate_beammap_time_and_frame_metadata();
+    populate_beammap_tau_metadata();
+    populate_beammap_header_metadata();
+    populate_beammap_reference_metadata();
+    populate_beammap_masking_metadata();
+    populate_beammap_weighting_and_fit_metadata();
+}
+
+void Beammap::init_beammap_diagnostic_apt_column(
+    const std::string &name,
+    double fill_value,
+    const std::string &unit,
+    const std::string &description) {
+    calib.apt[name] = Eigen::VectorXd::Constant(calib.n_dets, fill_value);
+    calib.apt_header_units[name] = unit;
+    calib.apt_header_keys.push_back(name);
+    calib.apt_meta[name].push_back("units: " + unit);
+    calib.apt_meta[name].push_back(description);
+}
+
 void Beammap::init_beammap_diagnostic_apt_columns() {
-    calib.apt["rfi_masked_samples"] = Eigen::VectorXd::Zero(calib.n_dets);
-    calib.apt_header_units["rfi_masked_samples"] = "samples";
-    calib.apt_header_keys.push_back("rfi_masked_samples");
-    calib.apt_meta["rfi_masked_samples"].push_back("units: samples");
-    calib.apt_meta["rfi_masked_samples"].push_back("number of timestream samples masked by beammap rfi_mask");
-
-    calib.apt["rfi_masked_scans"] = Eigen::VectorXd::Zero(calib.n_dets);
-    calib.apt_header_units["rfi_masked_scans"] = "scans";
-    calib.apt_header_keys.push_back("rfi_masked_scans");
-    calib.apt_meta["rfi_masked_scans"].push_back("units: scans");
-    calib.apt_meta["rfi_masked_scans"].push_back("number of scans with at least one sample masked by beammap rfi_mask");
-
-    calib.apt["scan_band_masked_samples"] = Eigen::VectorXd::Zero(calib.n_dets);
-    calib.apt_header_units["scan_band_masked_samples"] = "samples";
-    calib.apt_header_keys.push_back("scan_band_masked_samples");
-    calib.apt_meta["scan_band_masked_samples"].push_back("units: samples");
-    calib.apt_meta["scan_band_masked_samples"].push_back(
+    init_beammap_diagnostic_apt_column(
+        "rfi_masked_samples", 0.0, "samples",
+        "number of timestream samples masked by beammap rfi_mask");
+    init_beammap_diagnostic_apt_column(
+        "rfi_masked_scans", 0.0, "scans",
+        "number of scans with at least one sample masked by beammap rfi_mask");
+    init_beammap_diagnostic_apt_column(
+        "scan_band_masked_samples", 0.0, "samples",
         "number of timestream samples masked by beammap scan_band_mask");
-
-    calib.apt["scan_band_masked_rows"] = Eigen::VectorXd::Zero(calib.n_dets);
-    calib.apt_header_units["scan_band_masked_rows"] = "rows";
-    calib.apt_header_keys.push_back("scan_band_masked_rows");
-    calib.apt_meta["scan_band_masked_rows"].push_back("units: rows");
-    calib.apt_meta["scan_band_masked_rows"].push_back(
+    init_beammap_diagnostic_apt_column(
+        "scan_band_masked_rows", 0.0, "rows",
         "number of detector-map edge rows flagged by beammap scan_band_mask");
 
-    calib.apt["scan_band_masked_edge"] = Eigen::VectorXd::Zero(calib.n_dets);
-    calib.apt_header_units["scan_band_masked_edge"] = "N/A";
-    calib.apt_header_keys.push_back("scan_band_masked_edge");
-    calib.apt_meta["scan_band_masked_edge"].push_back("units: N/A");
+    init_beammap_diagnostic_apt_column(
+        "scan_band_masked_edge", 0.0, "N/A",
+        "scan-band edge code (0 none, 1 top, 2 bottom, 3 both)");
     calib.apt_meta["scan_band_masked_edge"].push_back(
         "scan-band edge code (0 none, 1 top, 2 bottom, 3 both)");
     calib.apt_meta["scan_band_masked_edge"].push_back("0=none");
@@ -180,27 +208,15 @@ void Beammap::init_beammap_diagnostic_apt_columns() {
     calib.apt_meta["scan_band_masked_edge"].push_back("2=bottom");
     calib.apt_meta["scan_band_masked_edge"].push_back("3=both");
 
-    calib.apt["scan_band_mask_rejected"] = Eigen::VectorXd::Zero(calib.n_dets);
-    calib.apt_header_units["scan_band_mask_rejected"] = "N/A";
-    calib.apt_header_keys.push_back("scan_band_mask_rejected");
-    calib.apt_meta["scan_band_mask_rejected"].push_back("units: N/A");
-    calib.apt_meta["scan_band_mask_rejected"].push_back(
+    init_beammap_diagnostic_apt_column(
+        "scan_band_mask_rejected", 0.0, "N/A",
         "1 if scan_band_mask proposed a mask but rejected it due to max_flagged_fraction");
 
-    calib.apt["final_prior_slot_index"] =
-        Eigen::VectorXd::Constant(calib.n_dets, -1.0);
-    calib.apt_header_units["final_prior_slot_index"] = "N/A";
-    calib.apt_header_keys.push_back("final_prior_slot_index");
-    calib.apt_meta["final_prior_slot_index"].push_back("units: N/A");
-    calib.apt_meta["final_prior_slot_index"].push_back(
+    init_beammap_diagnostic_apt_column(
+        "final_prior_slot_index", -1.0, "N/A",
         "nearest prior slot index for final detector position in prior frame (-1 if unavailable)");
-
-    calib.apt["final_prior_d2"] =
-        Eigen::VectorXd::Constant(calib.n_dets, std::numeric_limits<double>::quiet_NaN());
-    calib.apt_header_units["final_prior_d2"] = "N/A";
-    calib.apt_header_keys.push_back("final_prior_d2");
-    calib.apt_meta["final_prior_d2"].push_back("units: N/A");
-    calib.apt_meta["final_prior_d2"].push_back(
+    init_beammap_diagnostic_apt_column(
+        "final_prior_d2", std::numeric_limits<double>::quiet_NaN(), "N/A",
         "nearest-slot Mahalanobis d^2 for final detector position in the soft-prior frame");
 
     init_empirical_template_calibration_columns();
