@@ -81,14 +81,9 @@ auto Lali::run() -> run_stage_t {
         const auto fruit_weight_policy =
             citlali::pipeline::fruit_loop_weight_policy(ptcproc);
 
-        // if running fruit loops and a map has been read in
-        if (fruit_weight_policy.use_noise_weights) {
-            logger->info("subtracting map from tod");
-            // subtract map
-            ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(ptcproc.tod_mb, ptcdata, calib_scan,
-                                                                            map_indices, telescope.pixel_axes,
-                                                                            map_grouping);
-        }
+        maybe_subtract_lali_fruitloop_model(
+            ptcdata, calib_scan, map_indices, map_grouping,
+            fruit_weight_policy);
 
         ptcproc.accumulate_weight_validation_atmosphere(ptcdata, calib_scan.apt);
 
@@ -104,31 +99,10 @@ auto Lali::run() -> run_stage_t {
         const auto ptc_second_pass_summary =
             ptcproc.snapshot_second_pass_summary(ptcdata.index.data);
 
-        // if running fruit loops and a map has been read in
-        if (fruit_weight_policy.use_noise_weights) {
-            // calculate weights
-            logger->info("calculating weights for scan {} (fruit loops noise-only pass)",
-                         ptcdata.index.data + 1);
-            ptcproc.calc_weights(ptcdata, calib_scan.apt, telescope, true);
-
-            // reset weights to median
-            calib_scan = ptcproc.reset_weights(ptcdata, calib_scan, map_grouping);
-
-            if (make_maps && make_noise_maps) {
-                // populate noise maps only
-                bool run_omb = false;
-                logger->info("populating noise maps");
-                citlali::pipeline::populate_naive_or_jinc_maps(
-                    mapmaking_method, naive_mm, jinc_mm, ptcdata, omb, cmb,
-                    map_indices, telescope.pixel_axes, calib_scan.apt,
-                    telescope.d_fsmp, run_omb, make_noise_maps);
-            }
-            logger->info("adding map to tod");
-            // add map back
-            ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(ptcproc.tod_mb, ptcdata, calib_scan,
-                                                                    map_indices, telescope.pixel_axes,
-                                                                    map_grouping);
-        }
+        run_lali_fruitloop_noise_pass(
+            ptcdata, calib_scan, map_indices, map_grouping,
+            mapmaking_method, make_maps, make_noise_maps,
+            fruit_weight_policy);
 
         // remove outliers after cleaning
         calib_scan = ptcproc.remove_bad_dets(ptcdata, calib_scan, map_grouping);

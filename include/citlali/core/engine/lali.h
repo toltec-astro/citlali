@@ -57,6 +57,23 @@ public:
         citlali::config::MapMethod mapmaking_method,
         bool make_maps,
         bool make_noise_maps);
+    template <class CalibScan>
+    void maybe_subtract_lali_fruitloop_model(
+        TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
+        CalibScan &calib_scan,
+        Eigen::VectorXI &map_indices,
+        const std::string &map_grouping,
+        const citlali::pipeline::FruitLoopWeightPolicy &fruit_weight_policy);
+    template <class CalibScan>
+    void run_lali_fruitloop_noise_pass(
+        TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
+        CalibScan &calib_scan,
+        Eigen::VectorXI &map_indices,
+        const std::string &map_grouping,
+        citlali::config::MapMethod mapmaking_method,
+        bool make_maps,
+        bool make_noise_maps,
+        const citlali::pipeline::FruitLoopWeightPolicy &fruit_weight_policy);
 
     // output files
     void finalize_lali_map_fits_outputs(
@@ -74,5 +91,6 @@ public:
 #include <citlali/core/engine/detail/lali_setup_pipeline_impl.h>
 #include <citlali/core/engine/detail/lali_timestream_output_impl.h>
 #include <citlali/core/engine/detail/lali_map_population_impl.h>
+#include <citlali/core/engine/detail/lali_fruitloop_impl.h>
 #include <citlali/core/engine/detail/lali_run_impl.h>
 #include <citlali/core/engine/detail/lali_output_impl.h>
