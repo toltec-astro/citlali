@@ -22,6 +22,15 @@ void read_timestream_enabled_config(Config &config, bool &enabled,
         typed_config.enabled, missing_keys, invalid_keys);
 }
 
+template <class Config, class Diagnostics, class TimestreamConfig>
+void read_timestream_enabled_config(Config &config, bool &enabled,
+                                    TimestreamConfig &typed_config,
+                                    Diagnostics &diagnostics) {
+    read_timestream_enabled_config(
+        config, enabled, typed_config, diagnostics.missing_keys,
+        diagnostics.invalid_keys);
+}
+
 template <class Config, class MissingKeys, class InvalidKeys,
           class TimestreamConfig>
 void read_timestream_type_config(Config &config, std::string &type,
@@ -31,6 +40,15 @@ void read_timestream_type_config(Config &config, std::string &type,
     read_parsed_mirrored_config_value(
         config, std::tuple{"timestream", "type"}, type, typed_config.type,
         citlali::config::parse_tod_type, missing_keys, invalid_keys);
+}
+
+template <class Config, class Diagnostics, class TimestreamConfig>
+void read_timestream_type_config(Config &config, std::string &type,
+                                 TimestreamConfig &typed_config,
+                                 Diagnostics &diagnostics) {
+    read_timestream_type_config(
+        config, type, typed_config, diagnostics.missing_keys,
+        diagnostics.invalid_keys);
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -96,6 +114,15 @@ void read_auxiliary_quadrature_channel_config(Config &config,
         missing_keys, invalid_keys);
 }
 
+template <class Config, class Diagnostics, class TimestreamConfig>
+void read_auxiliary_quadrature_channel_config(Config &config,
+                                              TimestreamConfig &typed_config,
+                                              Diagnostics &diagnostics) {
+    read_auxiliary_quadrature_channel_config(
+        config, typed_config, diagnostics.missing_keys,
+        diagnostics.invalid_keys);
+}
+
 template <class Config, class MissingKeys, class InvalidKeys,
           class TimestreamConfig>
 void read_raw_tod_output_enabled_config(Config &config, bool &enabled,
@@ -111,6 +138,15 @@ void read_raw_tod_output_enabled_config(Config &config, bool &enabled,
             typed_config.output.raw_time_chunk.enabled = output_enabled;
         },
         missing_keys, invalid_keys);
+}
+
+template <class Config, class Diagnostics, class TimestreamConfig>
+void read_raw_tod_output_enabled_config(Config &config, bool &enabled,
+                                        TimestreamConfig &typed_config,
+                                        Diagnostics &diagnostics) {
+    read_raw_tod_output_enabled_config(
+        config, enabled, typed_config, diagnostics.missing_keys,
+        diagnostics.invalid_keys);
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -129,6 +165,15 @@ void read_processed_tod_output_enabled_config(Config &config, bool &enabled,
             typed_config.output.processed_time_chunk.enabled = output_enabled;
         },
         missing_keys, invalid_keys);
+}
+
+template <class Config, class Diagnostics, class TimestreamConfig>
+void read_processed_tod_output_enabled_config(Config &config, bool &enabled,
+                                              TimestreamConfig &typed_config,
+                                              Diagnostics &diagnostics) {
+    read_processed_tod_output_enabled_config(
+        config, enabled, typed_config, diagnostics.missing_keys,
+        diagnostics.invalid_keys);
 }
 
 template <class Config, class Key, class MissingKeys, class InvalidKeys,
@@ -167,6 +212,18 @@ void read_tod_stream_output_mode_config(
     outer = citlali::config::is_outer_tod_stream_output_mode(stream_mode);
 }
 
+template <class Config, class Key, class Diagnostics,
+          class StreamOutputConfig>
+void read_tod_stream_output_mode_config(
+    Config &config, const Key &key, bool output_enabled,
+    const std::vector<std::string> &allowed_modes, std::string &mode,
+    bool &mini, bool &outer, StreamOutputConfig &typed_stream,
+    Diagnostics &diagnostics) {
+    read_tod_stream_output_mode_config(
+        config, key, output_enabled, allowed_modes, mode, mini, outer,
+        typed_stream, diagnostics.missing_keys, diagnostics.invalid_keys);
+}
+
 template <class Config, class Key, class MissingKeys, class InvalidKeys,
           class ContextSamples, class StreamOutputConfig>
 void read_tod_stream_outer_context_config(
@@ -184,6 +241,17 @@ void read_tod_stream_outer_context_config(
             typed_stream.outer_context_samples = static_cast<int>(count);
         },
         missing_keys, invalid_keys, {}, {0});
+}
+
+template <class Config, class Key, class Diagnostics, class ContextSamples,
+          class StreamOutputConfig>
+void read_tod_stream_outer_context_config(
+    Config &config, const Key &key, bool output_enabled,
+    ContextSamples &outer_context_samples, StreamOutputConfig &typed_stream,
+    Diagnostics &diagnostics) {
+    read_tod_stream_outer_context_config(
+        config, key, output_enabled, outer_context_samples, typed_stream,
+        diagnostics.missing_keys, diagnostics.invalid_keys);
 }
 
 template <class TimestreamConfig>

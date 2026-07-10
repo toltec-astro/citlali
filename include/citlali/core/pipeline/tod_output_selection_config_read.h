@@ -137,3 +137,19 @@ void read_tod_selection_mode_config(
         mode, n_uniform, n_source_dense, mode_path, n_uniform_path,
         n_source_dense_path, logger);
 }
+
+template <class Config, class ModeKey, class UniformKey, class SourceDenseKey,
+          class Diagnostics, class Logger>
+void read_tod_selection_mode_config(
+    Config &config, const ModeKey &mode_key, const UniformKey &n_uniform_key,
+    const SourceDenseKey &n_source_dense_key, bool output_enabled,
+    const std::string &mode_path, const std::string &n_uniform_path,
+    const std::string &n_source_dense_path,
+    citlali::config::TodOutputSelectionMode &mode, int &n_uniform,
+    int &n_source_dense, Diagnostics &diagnostics, const Logger &logger) {
+    read_tod_selection_mode_config(
+        config, mode_key, n_uniform_key, n_source_dense_key, output_enabled,
+        mode_path, n_uniform_path, n_source_dense_path, mode, n_uniform,
+        n_source_dense, diagnostics.missing_keys, diagnostics.invalid_keys,
+        logger);
+}
