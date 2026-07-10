@@ -3,17 +3,9 @@
 #include <citlali/core/config/config_error.h>
 #include <citlali/core/config/timestream_config.h>
 
-#include <cmath>
-#include <initializer_list>
 #include <string>
 
 namespace citlali::config {
-
-inline ConfigPath append_config_path(ConfigPath path,
-                                     std::initializer_list<std::string> suffix) {
-    path.insert(path.end(), suffix.begin(), suffix.end());
-    return path;
-}
 
 inline void validate(const TodStreamOutputConfig &config,
                      const ConfigPath &path,
@@ -334,14 +326,6 @@ inline void validate(const RawTimeChunkAltAzDestripeConfig &config,
                   report);
 }
 
-inline void validate_optional_minimum(const double value, const double minimum,
-                                      const ConfigPath &path,
-                                      ValidationReport &report) {
-    if (std::isfinite(value)) {
-        check_minimum(value, minimum, path, report);
-    }
-}
-
 inline void validate(const RawTimeChunkLineAuditConfig &config,
                      ValidationReport &report) {
     const ConfigPath path{"timestream", "raw_time_chunk", "line_audit"};
@@ -406,22 +390,22 @@ inline void validate(const RawTimeChunkLineAuditConfig &config,
     check_minimum(config.post_filter_apply_iterations, 1,
                   append_config_path(path, {"post_filter_apply_iterations"}),
                   report);
-    validate_optional_minimum(config.post_filter_line_min_hz, 0.0,
-                              append_config_path(path,
-                                                 {"post_filter_line_min_hz"}),
-                              report);
-    validate_optional_minimum(config.post_filter_line_max_hz, 0.0,
-                              append_config_path(path,
-                                                 {"post_filter_line_max_hz"}),
-                              report);
+    check_optional_minimum(config.post_filter_line_min_hz, 0.0,
+                           append_config_path(path,
+                                              {"post_filter_line_min_hz"}),
+                           report);
+    check_optional_minimum(config.post_filter_line_max_hz, 0.0,
+                           append_config_path(path,
+                                              {"post_filter_line_max_hz"}),
+                           report);
     check_minimum(config.ptc_apply_iterations, 1,
                   append_config_path(path, {"ptc_apply_iterations"}), report);
-    validate_optional_minimum(config.ptc_line_min_hz, 0.0,
-                              append_config_path(path, {"ptc_line_min_hz"}),
-                              report);
-    validate_optional_minimum(config.ptc_line_max_hz, 0.0,
-                              append_config_path(path, {"ptc_line_max_hz"}),
-                              report);
+    check_optional_minimum(config.ptc_line_min_hz, 0.0,
+                           append_config_path(path, {"ptc_line_min_hz"}),
+                           report);
+    check_optional_minimum(config.ptc_line_max_hz, 0.0,
+                           append_config_path(path, {"ptc_line_max_hz"}),
+                           report);
     if (std::isfinite(config.ptc_line_min_hz) &&
         std::isfinite(config.ptc_line_max_hz) &&
         config.ptc_line_max_hz < config.ptc_line_min_hz) {

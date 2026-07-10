@@ -2,6 +2,8 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <cmath>
+#include <initializer_list>
 #include <iterator>
 #include <sstream>
 #include <string>
@@ -36,6 +38,12 @@ inline std::string format_path(const ConfigPath &path) {
         stream << path[i];
     }
     return stream.str();
+}
+
+inline ConfigPath append_config_path(ConfigPath path,
+                                     std::initializer_list<std::string> suffix) {
+    path.insert(path.end(), suffix.begin(), suffix.end());
+    return path;
 }
 
 class ValidationReport {
@@ -117,6 +125,14 @@ void check_maximum(const T &value, const T &maximum, const ConfigPath &path,
                    ValidationReport &report) {
     if (value > maximum) {
         report.add_error(path, "must be less than or equal to " + std::to_string(maximum));
+    }
+}
+
+inline void check_optional_minimum(const double value, const double minimum,
+                                   const ConfigPath &path,
+                                   ValidationReport &report) {
+    if (std::isfinite(value)) {
+        check_minimum(value, minimum, path, report);
     }
 }
 
