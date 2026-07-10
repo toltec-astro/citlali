@@ -81,6 +81,74 @@ bool Beammap::has_complete_beammap_detector_source_center_state() const {
            good_fits.size() == map_indices.n_maps;
 }
 
+bool Beammap::has_valid_previous_beammap_source_center(Eigen::Index map_index) const {
+    return good_fits(map_index) &&
+           std::isfinite(p0(map_index, 0)) && p0(map_index, 0) > 0.0 &&
+           std::isfinite(p0(map_index, 1)) &&
+           std::isfinite(p0(map_index, 2));
+}
+
+void Beammap::record_beammap_detector_source_center(
+    Eigen::Index map_index,
+    Eigen::VectorXd &kernel_source_a_fwhm_rad,
+    Eigen::VectorXd &kernel_source_b_fwhm_rad,
+    std::vector<double> &fwhm_arcsec_values,
+    Beammap::BeammapDetectorSourceCenterStats &source_center_stats) {
+    ptcproc.fruit_loops_source_lat(map_index) =
+        (p0(map_index, 2) - (omb.n_rows - 1) / 2.0) * omb.pixel_size_rad;
+    ptcproc.fruit_loops_source_lon(map_index) =
+        (p0(map_index, 1) - (omb.n_cols - 1) / 2.0) * omb.pixel_size_rad;
+    ptcproc.fruit_loops_source_valid(map_index) = 1;
+    source_center_stats.n_valid++;
+
+    if (p0.cols() > 4 &&
+        std::isfinite(p0(map_index, 3)) && p0(map_index, 3) > 0.0 &&
+        std::isfinite(p0(map_index, 4)) && p0(map_index, 4) > 0.0) {
+        kernel_source_a_fwhm_rad(map_index) =
+            STD_TO_FWHM * omb.pixel_size_rad * p0(map_index, 3);
+        kernel_source_b_fwhm_rad(map_index) =
+            STD_TO_FWHM * omb.pixel_size_rad * p0(map_index, 4);
+        const double mean_fwhm_arcsec =
+            RAD_TO_ASEC * (kernel_source_a_fwhm_rad(map_index) +
+                           kernel_source_b_fwhm_rad(map_index)) / 2.0;
+        if (std::isfinite(mean_fwhm_arcsec) && mean_fwhm_arcsec > 0.0) {
+            fwhm_arcsec_values.push_back(mean_fwhm_arcsec);
+            source_center_stats.n_valid_fwhm++;
+        }
+    }
+}
+
+double Beammap::median_beammap_source_fwhm_arcsec(
+    std::vector<double> fwhm_arcsec_values) const {
+    if (fwhm_arcsec_values.empty()) {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+    std::sort(fwhm_arcsec_values.begin(), fwhm_arcsec_values.end());
+    return fwhm_arcsec_values[fwhm_arcsec_values.size() / 2];
+}
+
+void Beammap::publish_beammap_detector_kernel_source_centers(
+    const Eigen::VectorXd &kernel_source_a_fwhm_rad,
+    const Eigen::VectorXd &kernel_source_b_fwhm_rad,
+    const std::vector<double> &fwhm_arcsec_values,
+    const Beammap::BeammapDetectorSourceCenterStats &source_center_stats) {
+    if (!rtcproc.run_kernel) {
+        return;
+    }
+
+    const double median_fwhm_arcsec =
+        median_beammap_source_fwhm_arcsec(fwhm_arcsec_values);
+    rtcproc.kernel.set_source_centers(ptcproc.fruit_loops_source_lat,
+                                      ptcproc.fruit_loops_source_lon,
+                                      ptcproc.fruit_loops_source_valid,
+                                      kernel_source_a_fwhm_rad,
+                                      kernel_source_b_fwhm_rad);
+    logger->info(
+        "beammap detector kernel placement using previous-fit centers for {}/{} detector maps on iter {}; fitted kernel FWHM available for {}/{} maps (median={:.3f} arcsec)",
+        source_center_stats.n_valid, map_indices.n_maps, current_iter,
+        source_center_stats.n_valid_fwhm, map_indices.n_maps, median_fwhm_arcsec);
+}
+
 void Beammap::configure_detector_source_centers_from_previous_fit() {
     if (citlali::pipeline::mapmaking_config(*this).grouping !=
         citlali::config::MapGrouping::detector) {
@@ -112,54 +180,24 @@ void Beammap::configure_detector_source_centers_from_previous_fit() {
     Eigen::VectorXd kernel_source_a_fwhm_rad = Eigen::VectorXd::Zero(map_indices.n_maps);
     Eigen::VectorXd kernel_source_b_fwhm_rad = Eigen::VectorXd::Zero(map_indices.n_maps);
 
-    Eigen::Index n_valid = 0;
-    Eigen::Index n_valid_fwhm = 0;
+    BeammapDetectorSourceCenterStats source_center_stats;
     std::vector<double> fwhm_arcsec_values;
     for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
-        if (!good_fits(i) ||
-            !std::isfinite(p0(i, 0)) || p0(i, 0) <= 0.0 ||
-            !std::isfinite(p0(i, 1)) || !std::isfinite(p0(i, 2))) {
+        if (!has_valid_previous_beammap_source_center(i)) {
             continue;
         }
-        ptcproc.fruit_loops_source_lat(i) =
-            (p0(i, 2) - (omb.n_rows - 1) / 2.0) * omb.pixel_size_rad;
-        ptcproc.fruit_loops_source_lon(i) =
-            (p0(i, 1) - (omb.n_cols - 1) / 2.0) * omb.pixel_size_rad;
-        ptcproc.fruit_loops_source_valid(i) = 1;
-        n_valid++;
-
-        if (p0.cols() > 4 &&
-            std::isfinite(p0(i, 3)) && p0(i, 3) > 0.0 &&
-            std::isfinite(p0(i, 4)) && p0(i, 4) > 0.0) {
-            kernel_source_a_fwhm_rad(i) = STD_TO_FWHM * omb.pixel_size_rad * p0(i, 3);
-            kernel_source_b_fwhm_rad(i) = STD_TO_FWHM * omb.pixel_size_rad * p0(i, 4);
-            const double mean_fwhm_arcsec =
-                RAD_TO_ASEC * (kernel_source_a_fwhm_rad(i) + kernel_source_b_fwhm_rad(i)) / 2.0;
-            if (std::isfinite(mean_fwhm_arcsec) && mean_fwhm_arcsec > 0.0) {
-                fwhm_arcsec_values.push_back(mean_fwhm_arcsec);
-                n_valid_fwhm++;
-            }
-        }
+        record_beammap_detector_source_center(
+            i, kernel_source_a_fwhm_rad, kernel_source_b_fwhm_rad,
+            fwhm_arcsec_values, source_center_stats);
     }
 
     logger->info(
         "beammap detector source centers using previous-fit centers for {}/{} detector maps "
         "on iter {} (ptc_mask_radius={:.3f} arcsec)",
-        n_valid, map_indices.n_maps, current_iter, ptcproc.mask_radius_arcsec);
+        source_center_stats.n_valid, map_indices.n_maps, current_iter,
+        ptcproc.mask_radius_arcsec);
 
-    if (rtcproc.run_kernel) {
-        double median_fwhm_arcsec = std::numeric_limits<double>::quiet_NaN();
-        if (!fwhm_arcsec_values.empty()) {
-            std::sort(fwhm_arcsec_values.begin(), fwhm_arcsec_values.end());
-            median_fwhm_arcsec = fwhm_arcsec_values[fwhm_arcsec_values.size() / 2];
-        }
-        rtcproc.kernel.set_source_centers(ptcproc.fruit_loops_source_lat,
-                                          ptcproc.fruit_loops_source_lon,
-                                          ptcproc.fruit_loops_source_valid,
-                                          kernel_source_a_fwhm_rad,
-                                          kernel_source_b_fwhm_rad);
-        logger->info(
-            "beammap detector kernel placement using previous-fit centers for {}/{} detector maps on iter {}; fitted kernel FWHM available for {}/{} maps (median={:.3f} arcsec)",
-            n_valid, map_indices.n_maps, current_iter, n_valid_fwhm, map_indices.n_maps, median_fwhm_arcsec);
-    }
+    publish_beammap_detector_kernel_source_centers(
+        kernel_source_a_fwhm_rad, kernel_source_b_fwhm_rad,
+        fwhm_arcsec_values, source_center_stats);
 }

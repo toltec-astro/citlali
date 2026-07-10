@@ -109,6 +109,11 @@ struct BeammapFitIterationStats {
           bound_high(Eigen::VectorXi::Zero(n_params)) {}
 };
 
+struct BeammapDetectorSourceCenterStats {
+    Eigen::Index n_valid = 0;
+    Eigen::Index n_valid_fwhm = 0;
+};
+
 struct BeammapDetectorTodPreflight {
     bool write_output = false;
     Eigen::Index n_scans = 0;

@@ -54,6 +54,8 @@ public:
         citlali::engine_detail::beammap::BeammapFitInitMode;
     using BeammapFitAttemptFlags =
         citlali::engine_detail::beammap::BeammapFitAttemptFlags;
+    using BeammapDetectorSourceCenterStats =
+        citlali::engine_detail::beammap::BeammapDetectorSourceCenterStats;
     using BeammapPreviousFitInit =
         citlali::engine_detail::beammap::BeammapPreviousFitInit;
     using BeammapFitInitSelection =
@@ -508,6 +510,20 @@ public:
     bool choose_prior_guided_init(Eigen::Index map_index, double &init_row, double &init_col);
     void clear_beammap_detector_source_centers();
     bool has_complete_beammap_detector_source_center_state() const;
+    bool has_valid_previous_beammap_source_center(Eigen::Index map_index) const;
+    void record_beammap_detector_source_center(
+        Eigen::Index map_index,
+        Eigen::VectorXd &kernel_source_a_fwhm_rad,
+        Eigen::VectorXd &kernel_source_b_fwhm_rad,
+        std::vector<double> &fwhm_arcsec_values,
+        BeammapDetectorSourceCenterStats &source_center_stats);
+    double median_beammap_source_fwhm_arcsec(
+        std::vector<double> fwhm_arcsec_values) const;
+    void publish_beammap_detector_kernel_source_centers(
+        const Eigen::VectorXd &kernel_source_a_fwhm_rad,
+        const Eigen::VectorXd &kernel_source_b_fwhm_rad,
+        const std::vector<double> &fwhm_arcsec_values,
+        const BeammapDetectorSourceCenterStats &source_center_stats);
     void configure_detector_source_centers_from_previous_fit();
     double calc_map_support_stddev(Eigen::Index map_index, bool exclude_fit_core = false) const;
     double calc_beammap_convergence_delta(Eigen::Index map_index) const;
