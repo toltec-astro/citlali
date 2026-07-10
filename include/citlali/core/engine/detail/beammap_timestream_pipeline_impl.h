@@ -25,41 +25,34 @@ void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs, bool write
     // progress bar
     tula::logging::progressbar pb(
         [&](const auto &msg) { logger->info("{}", msg); }, 100, "RTC progress ");
+    citlali::pipeline::ScanCursor scan_cursor(telescope.scan_indices.cols());
 
     // grppi generator function. gets time chunk data from files sequentially and passes them to grppi::farm
     grppi::pipeline(
         tula::grppi_utils::dyn_ex(
             citlali::pipeline::runtime_parallel_policy_name(*this)),
         [&]() -> std::optional<input_t> {
-
-            // variable to hold current scan
-            static int scan = 0;
-            // loop through scans
-            while (scan < telescope.scan_indices.cols()) {
-                // update progress bar
-                pb.count(telescope.scan_indices.cols(), 1);
-
-                TCData<TCDataKind::RTC, Eigen::MatrixXd> rtcdata;
-                const Eigen::Index scan_length =
-                    citlali::pipeline::initialize_rtc_scan(
-                        rtcdata, telescope, scan);
-
-                citlali::pipeline::populate_rtc_scan_samples(
-                    rtcdata, kidsproc, rawobs, scan, telescope, alignment.start_indices,
-                    alignment.end_indices, alignment.common_time, alignment.network_times, alignment.masks,
-                    citlali::config::timing_gap_interpolation_active(
-                        citlali::pipeline::runtime_config(*this)),
-                    scan_length, calib.n_dets,
-                    citlali::pipeline::timestream_config(*this).type);
-
-                // increment scan
-                scan++;
-                // return rtcdata
-                return rtcdata;
+            const auto next_scan = scan_cursor.next();
+            if (!next_scan.has_value()) {
+                return {};
             }
-            // reset scan to zero for each obs
-            scan = 0;
-            return {};
+            const Eigen::Index scan = *next_scan;
+            pb.count(telescope.scan_indices.cols(), 1);
+
+            TCData<TCDataKind::RTC, Eigen::MatrixXd> rtcdata;
+            const Eigen::Index scan_length =
+                citlali::pipeline::initialize_rtc_scan(
+                    rtcdata, telescope, scan);
+
+            citlali::pipeline::populate_rtc_scan_samples(
+                rtcdata, kidsproc, rawobs, scan, telescope, alignment.start_indices,
+                alignment.end_indices, alignment.common_time, alignment.network_times, alignment.masks,
+                citlali::config::timing_gap_interpolation_active(
+                    citlali::pipeline::runtime_config(*this)),
+                scan_length, calib.n_dets,
+                citlali::pipeline::timestream_config(*this).type);
+
+            return rtcdata;
         },
         // run the raw time chunk processing
         run_timestream(kidsproc, output_flags, output_writers));

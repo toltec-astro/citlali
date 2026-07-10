@@ -2,7 +2,25 @@
 
 #include <Eigen/Core>
 
+#include <optional>
+
 namespace citlali::pipeline {
+
+class ScanCursor {
+public:
+    explicit ScanCursor(Eigen::Index scan_count) : scan_count_(scan_count) {}
+
+    std::optional<Eigen::Index> next() noexcept {
+        if (next_scan_ >= scan_count_) {
+            return std::nullopt;
+        }
+        return next_scan_++;
+    }
+
+private:
+    Eigen::Index scan_count_ = 0;
+    Eigen::Index next_scan_ = 0;
+};
 
 template <class RtcData, class Telescope>
 Eigen::Index initialize_rtc_scan(
