@@ -1,6 +1,5 @@
 #pragma once
 
-#include <citlali/core/config/config_error.h>
 #include <citlali/core/config/enum_parser.h>
 
 #include <array>
@@ -216,13 +215,6 @@ inline void set_mapmaking_enabled(MapmakingConfig &config, bool enabled) {
 
 inline bool mapmaking_active(const MapmakingConfig &config) {
     return config.enabled;
-}
-
-inline void validate(const MapmakingConfig &config, ValidationReport &report) {
-    check_greater_than(config.pixel_size_arcsec, 0.0,
-                       {"mapmaking", "pixel_size_arcsec"}, report);
-    check_minimum(config.x_size_pix, 0, {"mapmaking", "x_size_pix"}, report);
-    check_minimum(config.y_size_pix, 0, {"mapmaking", "y_size_pix"}, report);
 }
 
 }  // namespace citlali::config
