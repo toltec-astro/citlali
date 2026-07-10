@@ -14,20 +14,12 @@ void Engine::get_timestream_config(CT &config) {
     auto &config_diag = citlali::pipeline::config_diagnostics(*this);
     timestream_config = citlali::config::TimestreamConfig{};
 
-    bool run_tod = timestream_config.enabled;
-    citlali::pipeline::read_timestream_enabled_config(
-        config, run_tod, timestream_config, config_diag);
-    if (!run_tod) {
+    if (!citlali::pipeline::read_timestream_core_config(
+            config, timestream_config, config_diag)) {
         logger->error("timestream.enabled is false. This reduction requires TOD processing; set "
                       "low_level.timestream.enabled: true in your reduce config.");
         std::exit(EXIT_FAILURE);
     }
-    std::string tod_type{
-        std::string(citlali::config::to_string(timestream_config.type))};
-    citlali::pipeline::read_timestream_type_config(
-        config, tod_type, timestream_config, config_diag);
-    citlali::pipeline::read_auxiliary_quadrature_channel_config(
-        config, timestream_config, config_diag);
 
     bool run_tod_output = false;
     bool run_tod_output_rtc = false;

@@ -123,6 +123,26 @@ void read_auxiliary_quadrature_channel_config(Config &config,
         diagnostics.invalid_key_paths());
 }
 
+template <class Config, class TimestreamConfig, class Diagnostics>
+bool read_timestream_core_config(Config &config,
+                                 TimestreamConfig &typed_config,
+                                 Diagnostics &diagnostics) {
+    bool enabled = typed_config.enabled;
+    read_timestream_enabled_config(
+        config, enabled, typed_config, diagnostics);
+    if (!enabled) {
+        return false;
+    }
+
+    std::string type{
+        std::string(citlali::config::to_string(typed_config.type))};
+    read_timestream_type_config(
+        config, type, typed_config, diagnostics);
+    read_auxiliary_quadrature_channel_config(
+        config, typed_config, diagnostics);
+    return true;
+}
+
 template <class Config, class MissingKeys, class InvalidKeys,
           class TimestreamConfig>
 void read_raw_tod_output_enabled_config(Config &config, bool &enabled,
