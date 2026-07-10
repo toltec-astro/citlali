@@ -142,6 +142,10 @@ $HOME/tolteca/bin/python tools/config/expand_compact_config.py \
 Profiles live in `tools/config/profiles/`, and example compact configs live in
 `tools/config/examples/`.
 
+Add `--fail-on-warnings` when using the expander in validation scripts. This
+turns ignored unknown compact keys and other warning-level issues into a
+non-zero exit without changing the default exploratory behavior.
+
 `--base-config` accepts either a full Citlali YAML file or a TolTECA YAML file
 containing `reduce.steps.*.config.low_level`. This is useful for compatibility
 work against an existing `70_reduce.yaml` baseline:
@@ -277,12 +281,14 @@ and science examples discussed in the refactor notes.
 $HOME/tolteca/bin/python tools/config/run_compact_compatibility.py \
   --work-dir /tmp/citlali_compact_compat \
   --json-out /tmp/citlali_compact_compat/results.json \
-  --markdown-out /tmp/citlali_compact_compat/results.md
+  --markdown-out /tmp/citlali_compact_compat/results.md \
+  --fail-on-warnings
 ```
 
 The suite skips missing baseline files by default, which keeps the tool usable
 on machines that do not have every local reduction copied over. Use
 `--require-all` when a full local validation data set is expected.
+`--fail-on-warnings` is recommended for CI-style compact-schema validation.
 
 The current suite includes eight cases:
 

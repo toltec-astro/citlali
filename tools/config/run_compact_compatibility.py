@@ -75,6 +75,7 @@ def run_case(
     profiles_dir: Path,
     work_dir: Path | None,
     require_all: bool,
+    fail_on_warnings: bool,
 ) -> dict[str, Any]:
     name = str(case.get("name", "unnamed"))
     compact_value = case.get("compact_config")
@@ -127,6 +128,11 @@ def run_case(
         baseline = load_yaml(base_path)
         compare_result = compare_lowlevel_yaml.compare(baseline, candidate, ignore_patterns)
         errors = evaluate_expectations(case, compare_result)
+        if fail_on_warnings and expansion_summary.get("warnings"):
+            errors.append(
+                "expansion emitted warnings: "
+                + "; ".join(str(warning) for warning in expansion_summary["warnings"])
+            )
     except Exception as exc:  # pragma: no cover - diagnostic path
         return {
             "name": name,
@@ -240,6 +246,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--json-out", default="", help="Optional suite JSON report path.")
     parser.add_argument("--markdown-out", default="", help="Optional suite Markdown report path.")
     parser.add_argument("--require-all", action="store_true", help="Treat missing baseline files as failures.")
+    parser.add_argument(
+        "--fail-on-warnings",
+        action="store_true",
+        help="Treat compact expansion warnings as compatibility failures.",
+    )
     parser.add_argument("--allow-empty", action="store_true", help="Return success when no case can run.")
     return parser.parse_args(argv)
 
@@ -263,6 +274,7 @@ def main(argv: list[str]) -> int:
             profiles_dir=profiles_dir,
             work_dir=work_dir,
             require_all=args.require_all,
+            fail_on_warnings=args.fail_on_warnings,
         )
         for case in suite["cases"]
     ]

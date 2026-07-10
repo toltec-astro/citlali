@@ -1143,6 +1143,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         help="Output full Citlali YAML, a bare low_level block, or a TolTECA reduce.steps.0.config.low_level wrapper.",
     )
     parser.add_argument("--summary-out", default="", help="Optional YAML expansion summary output path.")
+    parser.add_argument(
+        "--fail-on-warnings",
+        action="store_true",
+        help="Return non-zero when expansion emits warnings such as unknown compact keys.",
+    )
     parser.add_argument("--list-profiles", action="store_true", help="List available profiles and exit.")
     return parser.parse_args(argv)
 
@@ -1168,6 +1173,12 @@ def main(argv: list[str]) -> int:
     except (ConfigError, OSError, yaml.YAMLError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
+
+    if args.fail_on_warnings and summary["warnings"]:
+        for warning in summary["warnings"]:
+            print(f"warning: {warning}", file=sys.stderr)
+        print("error: compact config emitted warnings", file=sys.stderr)
+        return 1
 
     output_data = format_expanded_output(expanded, args.output_format)
     expanded_text = dump_yaml(output_data)
