@@ -38,56 +38,9 @@ void Engine::get_timestream_config(CT &config) {
     citlali::pipeline::read_timestream_output_metadata_config(
         config, timestream_config, diagnostics.write_evals, config_diag);
 
-    // optional selection of TOD chunks to write (1-based indices) under each output block.
-    // default is "all" for both rtc and ptc outputs.
-    bool rtc_chunk_select_enabled = false;
-    bool ptc_chunk_select_enabled = false;
-    std::vector<Eigen::Index> rtc_output_chunks, ptc_output_chunks;
-    auto rtc_selection_mode =
-        citlali::config::TodOutputSelectionMode::indices;
-    auto ptc_selection_mode =
-        citlali::config::TodOutputSelectionMode::indices;
-    int rtc_uniform_count = 10;
-    int ptc_uniform_count = 10;
-    int rtc_source_dense_count = 10;
-    int ptc_source_dense_count = 10;
-
-    citlali::pipeline::parse_tod_output_indices_configs(
+    citlali::pipeline::read_tod_output_selection_config(
         config, run_tod_output_rtc, run_tod_output_ptc,
-        rtc_chunk_select_enabled, rtc_output_chunks, ptc_chunk_select_enabled,
-        ptc_output_chunks, logger);
-
-    citlali::pipeline::read_tod_selection_mode_config(
-        config,
-        std::tuple{"timestream","raw_time_chunk","output","selection","mode"},
-        std::tuple{"timestream","raw_time_chunk","output","selection","n_uniform"},
-        std::tuple{"timestream","raw_time_chunk","output","selection","n_source_dense"},
-        run_tod_output_rtc,
-        "timestream.raw_time_chunk.output.selection.mode",
-        "timestream.raw_time_chunk.output.selection.n_uniform",
-        "timestream.raw_time_chunk.output.selection.n_source_dense",
-        rtc_selection_mode, rtc_uniform_count, rtc_source_dense_count,
-        config_diag,
-        logger);
-    citlali::pipeline::read_tod_selection_mode_config(
-        config,
-        std::tuple{"timestream","processed_time_chunk","output","selection","mode"},
-        std::tuple{"timestream","processed_time_chunk","output","selection","n_uniform"},
-        std::tuple{"timestream","processed_time_chunk","output","selection","n_source_dense"},
-        run_tod_output_ptc,
-        "timestream.processed_time_chunk.output.selection.mode",
-        "timestream.processed_time_chunk.output.selection.n_uniform",
-        "timestream.processed_time_chunk.output.selection.n_source_dense",
-        ptc_selection_mode, ptc_uniform_count, ptc_source_dense_count,
-        config_diag,
-        logger);
-
-    citlali::pipeline::mirror_tod_output_selections_config(
-        rtc_output_chunks, rtc_chunk_select_enabled,
-        rtc_selection_mode, rtc_uniform_count, rtc_source_dense_count,
-        ptc_output_chunks, ptc_chunk_select_enabled, ptc_selection_mode,
-        ptc_uniform_count, ptc_source_dense_count,
-        timestream_config.output);
+        timestream_config.output, config_diag, logger);
 
     citlali::pipeline::read_timestream_chunking_config(
         config, timestream_config, telescope, config_diag);
