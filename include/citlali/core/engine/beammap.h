@@ -231,6 +231,11 @@ public:
         double sin_rot = 0.0;
     };
 
+    struct BeammapSplitMapOutputFiles {
+        std::vector<std::string> base_filepaths;
+        std::vector<std::string> base_noise_filepaths;
+    };
+
     bool beammap_soft_priors_loaded = false;
     bool beammap_soft_priors_are_centered = false;
     bool beammap_soft_priors_are_derotated = false;
@@ -774,6 +779,25 @@ public:
         const std::string &profile_stage_name,
         const std::string &profile_context,
         int flag_value = -1);
+    BeammapSplitMapOutputFiles prepare_split_beammap_map_output_files(
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io);
+    template <mapmaking::MapType map_type>
+    void write_standard_beammap_map_entries(
+        mapmaking::MapBuffer *mb,
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
+        const std::string &dir_name,
+        bool detector_grouping);
+    template <mapmaking::MapType map_type>
+    void write_split_beammap_flag_maps(
+        mapmaking::MapBuffer *mb,
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *split_f_io,
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *split_n_io,
+        const std::string &dir_name,
+        bool detector_grouping,
+        int flag_value,
+        Eigen::Index n_flag_maps);
     template <mapmaking::MapType map_type>
     void write_standard_beammap_map_products(
         mapmaking::MapBuffer *mb,
