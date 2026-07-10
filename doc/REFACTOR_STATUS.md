@@ -145,6 +145,14 @@ Immediate work order:
   strict comparison including every TOD array. Total logged runtime was 59.25
   seconds versus 61.51 seconds for `redu25`; this is recorded as run variation,
   not a performance conclusion.
+- Phase 2 preparation now has a checked authority inventory covering 13 config
+  domains. It enforces the one-way requested-YAML to typed-config to legacy
+  adapter contract and records a concrete exit gate for each domain. Seven
+  domains remain materially mixed, four are typed-authoritative without an
+  adapter, Beammap is typed-authoritative with one fitting adapter, and KIDs is
+  an explicit external boundary. This checkpoint changes no runtime behavior;
+  operational authority migration remains gated on the active Beammap and
+  science validations.
 
 ## Five-Phase Roadmap
 
@@ -254,7 +262,10 @@ silently choose among these:
 
 ## Durable Evidence
 
-The project still needs a machine-readable validation ledger recording commit,
-binary version, mode, input/config identity, comparator version, tolerances,
-error count, timing, peak memory, and disposition. Until it exists, update this
-document and the dated handoff note with each accepted gate result.
+`validation/accepted_runs.json` is the machine-readable validation ledger. New
+accepted checkpoints must record commit, binary version, mode, input/config
+identity, comparator version, tolerances, error count, timing, available memory
+evidence, and disposition. Run
+`tools/baseline/validate_validation_ledger.py` after editing it. Continue to
+update this document and the dated handoff note at phase gates and material
+validation checkpoints.
