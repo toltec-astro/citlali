@@ -283,6 +283,12 @@ public:
                                             bool first_measurement_iter,
                                             bool detector_grouping);
     void fit_beammap_maps(bool detector_grouping, bool measurement_iter);
+    bool can_use_beammap_fit_priors(bool detector_grouping) const;
+    void maybe_update_beammap_prior_frame_for_fit(bool can_use_priors);
+    void fit_single_beammap_map(Eigen::Index map_index,
+                                bool measurement_iter,
+                                bool can_use_priors,
+                                BeammapFitIterationStats &fit_stats);
     void require_beammap_fit_map_geometry(Eigen::Index map_index) const;
     void log_beammap_fit_map_stats(Eigen::Index map_index) const;
     bool prepare_beammap_fit_map(Eigen::Index map_index);
