@@ -9,20 +9,20 @@ namespace citlali::engine_detail {
 
 template <class ReductionConfig>
 void disable_map_products_if_mapmaking_disabled(
-    ReductionConfig &typed_config) {
-    if (citlali::config::mapmaking_active(typed_config.mapmaking)) {
+    ReductionConfig &reduction_config) {
+    if (citlali::config::mapmaking_active(reduction_config.mapmaking)) {
         return;
     }
-    citlali::config::set_coadd_enabled(typed_config.coadd, false);
-    citlali::config::set_noise_maps_enabled(typed_config.noise, false);
+    citlali::config::set_coadd_enabled(reduction_config.coadd, false);
+    citlali::config::set_noise_maps_enabled(reduction_config.noise, false);
     citlali::config::set_map_filtering_enabled(
-        typed_config.post_processing, false);
+        reduction_config.post_processing, false);
     citlali::config::set_source_finding_enabled(
-        typed_config.post_processing, false);
+        reduction_config.post_processing, false);
     citlali::config::set_source_fitting_active(
-        typed_config.post_processing, false);
+        reduction_config.post_processing, false);
     // We don't need to do iterations if no maps are made.
-    typed_config.beammap.iteration.max_iterations = 1;
+    reduction_config.beammap.iteration.max_iterations = 1;
 }
 
 }  // namespace citlali::engine_detail

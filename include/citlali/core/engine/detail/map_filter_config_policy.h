@@ -59,11 +59,12 @@ template <class ReductionConfig, class WienerFilter,
           class RuntimeTimestreamProc, class MapFitter,
           class Logger>
 void apply_map_filter_runtime_policy(
-    const ReductionConfig &typed_config,
+    const ReductionConfig &reduction_config,
     const RuntimeTimestreamProc &rtcproc, const MapFitter &map_fitter,
     const std::string &parallel_policy, WienerFilter &wiener_filter,
     const Logger &logger) {
-    const auto &map_filter_config = typed_config.post_processing.map_filtering;
+    const auto &map_filter_config =
+        reduction_config.post_processing.map_filtering;
 
     if (map_filter_config.template_type ==
         citlali::config::MapFilterTemplateType::kernel) {
@@ -74,7 +75,7 @@ void apply_map_filter_runtime_policy(
         wiener_filter.map_fitter = map_fitter;
     }
 
-    if (!citlali::config::noise_maps_active(typed_config.noise) &&
+    if (!citlali::config::noise_maps_active(reduction_config.noise) &&
         (!map_filter_config.lowpass_only &&
          map_filter_config.type ==
              citlali::config::MapFilterType::wiener_filter)) {

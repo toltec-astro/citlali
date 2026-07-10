@@ -6,7 +6,7 @@ namespace citlali::pipeline {
 
 template <class Engine>
 bool engine_config_has_errors(const Engine &engine) {
-    return !engine.config_diagnostics.missing_keys.empty() || !engine.config_diagnostics.invalid_keys.empty();
+    return engine.config_diagnostics.has_errors();
 }
 
 template <class Engine, class Config, class Logger>

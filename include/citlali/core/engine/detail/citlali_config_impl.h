@@ -18,6 +18,7 @@ void Engine::get_citlali_config(CT &config) {
     auto &post_processing_config =
         citlali::pipeline::post_processing_config(*this);
     auto &coadd_config = citlali::pipeline::coadd_config(*this);
+    auto &reduction_config = citlali::pipeline::reduction_config(*this);
     auto &diagnostics = config_diagnostics;
 
     runtime_config = get_runtime_config(config);
@@ -74,7 +75,8 @@ void Engine::get_citlali_config(CT &config) {
 
     // disable map related keys if map-making is disabled
     citlali::engine_detail::disable_map_products_if_mapmaking_disabled(
-        typed_config);
+        reduction_config);
 
-    citlali::engine_detail::validate_typed_config_mirrors(typed_config, logger);
+    citlali::engine_detail::validate_typed_config_mirrors(
+        reduction_config, logger);
 }

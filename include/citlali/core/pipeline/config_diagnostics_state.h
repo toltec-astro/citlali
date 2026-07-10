@@ -10,6 +10,10 @@ struct ConfigDiagnosticsState {
 
     key_vec_t missing_keys;
     key_vec_t invalid_keys;
+
+    bool has_errors() const noexcept {
+        return !missing_keys.empty() || !invalid_keys.empty();
+    }
 };
 
 }  // namespace citlali::pipeline
