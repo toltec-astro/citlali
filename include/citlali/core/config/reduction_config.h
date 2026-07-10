@@ -9,6 +9,7 @@
 #include <citlali/core/config/post_processing_config.h>
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/config/timestream_config.h>
+#include <citlali/core/config/timestream_config_validation.h>
 
 namespace citlali::config {
 
