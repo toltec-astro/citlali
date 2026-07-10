@@ -506,6 +506,8 @@ public:
         Eigen::Index n_alignment_matches) const;
     void update_prior_frame_estimates();
     bool choose_prior_guided_init(Eigen::Index map_index, double &init_row, double &init_col);
+    void clear_beammap_detector_source_centers();
+    bool has_complete_beammap_detector_source_center_state() const;
     void configure_detector_source_centers_from_previous_fit();
     double calc_map_support_stddev(Eigen::Index map_index, bool exclude_fit_core = false) const;
     double calc_beammap_convergence_delta(Eigen::Index map_index) const;

@@ -68,21 +68,28 @@ bool Beammap::find_map_weighted_peak(Eigen::Index map_index, Eigen::Index &best_
     return scan(false);
 }
 
+void Beammap::clear_beammap_detector_source_centers() {
+    ptcproc.fruit_loops_source_lat.resize(0);
+    ptcproc.fruit_loops_source_lon.resize(0);
+    ptcproc.fruit_loops_source_valid.resize(0);
+    rtcproc.kernel.clear_source_centers();
+}
+
+bool Beammap::has_complete_beammap_detector_source_center_state() const {
+    return p0.rows() == map_indices.n_maps &&
+           p0.cols() >= 3 &&
+           good_fits.size() == map_indices.n_maps;
+}
+
 void Beammap::configure_detector_source_centers_from_previous_fit() {
     if (citlali::pipeline::mapmaking_config(*this).grouping !=
         citlali::config::MapGrouping::detector) {
-        ptcproc.fruit_loops_source_lat.resize(0);
-        ptcproc.fruit_loops_source_lon.resize(0);
-        ptcproc.fruit_loops_source_valid.resize(0);
-        rtcproc.kernel.clear_source_centers();
+        clear_beammap_detector_source_centers();
         return;
     }
 
     if (!is_beammap_measurement_iter(current_iter)) {
-        ptcproc.fruit_loops_source_lat.resize(0);
-        ptcproc.fruit_loops_source_lon.resize(0);
-        ptcproc.fruit_loops_source_valid.resize(0);
-        rtcproc.kernel.clear_source_centers();
+        clear_beammap_detector_source_centers();
         logger->info(
             "beammap detector source centers unavailable on iter {} phase={}: locator pass has no previous fits "
             "(ptc_mask_radius={:.3f} arcsec)",
@@ -90,11 +97,8 @@ void Beammap::configure_detector_source_centers_from_previous_fit() {
         return;
     }
 
-    if (p0.rows() != map_indices.n_maps || p0.cols() < 3 || good_fits.size() != map_indices.n_maps) {
-        ptcproc.fruit_loops_source_lat.resize(0);
-        ptcproc.fruit_loops_source_lon.resize(0);
-        ptcproc.fruit_loops_source_valid.resize(0);
-        rtcproc.kernel.clear_source_centers();
+    if (!has_complete_beammap_detector_source_center_state()) {
+        clear_beammap_detector_source_centers();
         logger->warn(
             "beammap detector source centers unavailable on iter {}: previous-fit state is incomplete "
             "(p0={}x{}, good_fits={})",
