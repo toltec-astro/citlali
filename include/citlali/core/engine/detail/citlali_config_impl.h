@@ -3,14 +3,14 @@
 // Engine config loading implementation detail.
 // Include this only after Engine has been declared.
 
-#include <citlali/core/engine/detail/citlali_config_read.h>
+#include <citlali/core/pipeline/citlali_config_read.h>
 #include <citlali/core/engine/detail/mapmaking_activation_policy.h>
 #include <citlali/core/engine/detail/source_protection_activation.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template<typename CT>
 void Engine::get_citlali_config(CT &config) {
-    citlali::engine_detail::read_interface_sync_offsets(
+    citlali::pipeline::read_interface_sync_offsets(
         config, interface_sync.offsets, logger);
 
     auto &runtime_config = citlali::pipeline::runtime_config(*this);
@@ -39,12 +39,12 @@ void Engine::get_citlali_config(CT &config) {
 
     bool run_map_filter = post_processing_config.map_filtering.enabled;
     bool run_source_finder = post_processing_config.source_finding.enabled;
-    citlali::engine_detail::read_post_processing_activation_config(
+    citlali::pipeline::read_post_processing_activation_config(
         config, run_map_filter, run_source_finder,
         post_processing_config, diagnostics);
 
     // map fitter options if in pointing or beammap mode or if map filtering or source finding are enabled
-    citlali::engine_detail::read_source_fitting_config(
+    citlali::pipeline::read_source_fitting_config(
         config, runtime_config.reduction_type, map_fitter,
         omb.pixel_size_rad, ASEC_TO_RAD,
         post_processing_config, diagnostics);
@@ -56,7 +56,7 @@ void Engine::get_citlali_config(CT &config) {
     }
 
     // get source finder config options
-    citlali::engine_detail::read_source_finding_config(
+    citlali::pipeline::read_source_finding_config(
         config, omb, cmb, coadd_config, ASEC_TO_RAD,
         post_processing_config, diagnostics);
 

@@ -1,6 +1,6 @@
 #pragma once
 
-// Included by citlali_config_read.h inside namespace citlali::engine_detail {
+// Included by citlali_config_read.h inside namespace citlali::pipeline {
 
 template <class Config, class ObservationMapBuffer, class CoaddMapBuffer,
           class CoaddConfig, class PostProcessingConfig, class KeyList>

@@ -1,6 +1,6 @@
 #pragma once
 
-// Included by citlali_config_read.h inside namespace citlali::engine_detail {
+// Included by citlali_config_read.h inside namespace citlali::pipeline {
 
 inline const std::vector<std::string> &interface_sync_offset_keys() {
     static const std::vector<std::string> keys = {

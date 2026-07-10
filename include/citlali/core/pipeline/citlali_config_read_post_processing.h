@@ -1,6 +1,6 @@
 #pragma once
 
-// Included by citlali_config_read.h inside namespace citlali::engine_detail {
+// Included by citlali_config_read.h inside namespace citlali::pipeline {
 
 template <class KeyList>
 void append_source_fitting_limit_key(KeyList &keys, const char *name,
