@@ -27,10 +27,11 @@ def log_finished(audit: dict[str, Any]) -> bool:
 
 
 def serious_issue_counts(audit: dict[str, Any]) -> dict[str, int]:
+    """Return every log severity that invalidates a successful reduction."""
     counts = audit.get("log", {}).get("issue_counts", {})
     return {
         key: int(counts.get(key, 0))
-        for key in ("fatal", "critical", "traceback")
+        for key in ("error", "fatal", "critical", "traceback")
         if int(counts.get(key, 0))
     }
 

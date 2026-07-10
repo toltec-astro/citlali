@@ -148,9 +148,11 @@ and split map output.
 
 Use `compare_reduction_audits.py` before the heavier product comparison when
 both OG and refactor runs are present. It checks both run identities, completion
-markers, stable product inventory counts, and timing deltas without opening
-large FITS/netCDF arrays. The profile sidecar `citlali_profile.ecsv` is reported
-separately and does not count as a stable product mismatch.
+markers, blocking log records, stable product inventory counts, and timing
+deltas without opening large FITS/netCDF arrays. Any error-level or more severe
+log record blocks a successful audit; warnings remain informational. The profile
+sidecar `citlali_profile.ecsv` is reported separately and does not count as a
+stable product mismatch.
 
 ## Files
 
