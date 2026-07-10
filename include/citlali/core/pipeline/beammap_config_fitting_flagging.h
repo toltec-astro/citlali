@@ -28,6 +28,13 @@ BeammapFittingConfigValues read_beammap_fitting_config(
     return values;
 }
 
+template <class Config, class Diagnostics>
+BeammapFittingConfigValues read_beammap_fitting_config(
+    Config &config, Diagnostics &diagnostics) {
+    return read_beammap_fitting_config(
+        config, diagnostics.missing_keys, diagnostics.invalid_keys);
+}
+
 template <class Config, class MissingKeys, class InvalidKeys>
 citlali::config::BeammapScanBandMaskConfig
 read_beammap_scan_band_mask_config(
@@ -61,6 +68,13 @@ read_beammap_scan_band_mask_config(
         std::tuple{"beammap", "scan_band_mask", "max_flagged_fraction"}, {},
         {0.0}, {1.0});
     return values;
+}
+
+template <class Config, class Diagnostics>
+citlali::config::BeammapScanBandMaskConfig
+read_beammap_scan_band_mask_config(Config &config, Diagnostics &diagnostics) {
+    return read_beammap_scan_band_mask_config(
+        config, diagnostics.missing_keys, diagnostics.invalid_keys);
 }
 
 template <class Config, class InvalidKeys>
@@ -110,6 +124,13 @@ citlali::config::BeammapFlaggingConfig read_beammap_flagging_config(
         config, values.max_prior_d2, missing_keys, invalid_keys,
         std::tuple{"beammap", "flagging", "max_prior_d2"}, {}, {0.0});
     return values;
+}
+
+template <class Config, class Diagnostics>
+citlali::config::BeammapFlaggingConfig read_beammap_flagging_config(
+    Config &config, Diagnostics &diagnostics, std::size_t n_arrays) {
+    return read_beammap_flagging_config(
+        config, diagnostics.missing_keys, diagnostics.invalid_keys, n_arrays);
 }
 
 template <class ArrayNameMap, class ValueMap>

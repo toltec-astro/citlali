@@ -124,3 +124,10 @@ BeammapCoreConfigValues read_beammap_core_config(
         read_beammap_rfi_mask_config(config, missing_keys, invalid_keys);
     return values;
 }
+
+template <class Config, class Diagnostics, class Logger>
+BeammapCoreConfigValues read_beammap_core_config(
+    Config &config, Diagnostics &diagnostics, const Logger &logger) {
+    return read_beammap_core_config(
+        config, diagnostics.missing_keys, diagnostics.invalid_keys, logger);
+}

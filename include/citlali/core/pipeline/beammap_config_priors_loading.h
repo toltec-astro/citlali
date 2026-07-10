@@ -133,3 +133,10 @@ BeammapPriorsConfigValues read_beammap_priors_config(
     disable_missing_beammap_priors(priors.enabled, priors.filepath, logger);
     return priors;
 }
+
+template <class Config, class Diagnostics, class Logger>
+BeammapPriorsConfigValues read_beammap_priors_config(
+    Config &config, Diagnostics &diagnostics, const Logger &logger) {
+    return read_beammap_priors_config(
+        config, diagnostics.missing_keys, diagnostics.invalid_keys, logger);
+}

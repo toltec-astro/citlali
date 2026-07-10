@@ -52,6 +52,14 @@ read_beammap_split_fits_config(Config &config, MissingKeys &missing_keys,
     return values;
 }
 
+template <class Config, class Diagnostics, class Logger>
+citlali::config::BeammapSplitFitsByFlagConfig
+read_beammap_split_fits_config(
+    Config &config, Diagnostics &diagnostics, const Logger &logger) {
+    return read_beammap_split_fits_config(
+        config, diagnostics.missing_keys, diagnostics.invalid_keys, logger);
+}
+
 struct BeammapSensitivityConfigValues {
     std::vector<double> sens_factors;
     std::vector<double> sens_psd_limits_hz;
