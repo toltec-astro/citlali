@@ -65,7 +65,8 @@ void Engine::create_rtcdiag_file() {
         telescope.obs_goal, citlali::pipeline::timestream_config(*this).type);
     add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
     citlali::pipeline::add_rtcdiag_file_config_vars(
-        fo, rtcproc, learning,
+        fo, rtcproc, citlali::pipeline::raw_time_chunk_config(*this),
+        learning,
         citlali::pipeline::verbose_runtime_enabled(*this),
         telescope.outer_scans_chunk, rtc_fsmp);
 
