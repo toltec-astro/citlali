@@ -155,6 +155,83 @@ Beammap::ScanBandEdgeRows Beammap::select_scan_band_edge_rows(
     return edge_rows;
 }
 
+std::vector<unsigned char> Beammap::make_scan_band_bad_row_mask(
+    const ScanBandEdgeRows &edge_rows,
+    Eigen::Index n_rows,
+    Eigen::Index &n_bad_rows) {
+    std::vector<unsigned char> bad_row_mask(
+        static_cast<std::size_t>(n_rows), 0);
+    n_bad_rows = 0;
+    for (const auto row : edge_rows.top) {
+        if (!bad_row_mask[static_cast<std::size_t>(row)]) {
+            bad_row_mask[static_cast<std::size_t>(row)] = 1;
+            n_bad_rows++;
+        }
+    }
+    for (const auto row : edge_rows.bottom) {
+        if (!bad_row_mask[static_cast<std::size_t>(row)]) {
+            bad_row_mask[static_cast<std::size_t>(row)] = 1;
+            n_bad_rows++;
+        }
+    }
+    return bad_row_mask;
+}
+
+Beammap::ScanBandProposedFlags Beammap::collect_scan_band_proposed_flags(
+    Eigen::Index det,
+    const mapmaking::MapBuffer &map_buffer,
+    const std::vector<unsigned char> &bad_row_mask,
+    double row0) {
+    ScanBandProposedFlags proposed;
+    for (Eigen::Index chunk_idx = 0;
+         chunk_idx < static_cast<Eigen::Index>(ptcs.size()); ++chunk_idx) {
+        auto &ptc = ptcs[chunk_idx];
+        if (det >= ptc.scans.data.cols() || det >= ptc.flags.data.cols()) {
+            continue;
+        }
+        Eigen::VectorXd lat;
+        auto lat_it = ptc.pointing.data.find("lat");
+        if (lat_it != ptc.pointing.data.end() &&
+            lat_it->second.rows() == ptc.scans.data.rows() &&
+            det < lat_it->second.cols()) {
+            lat = lat_it->second.col(det);
+        }
+        else {
+            auto latlon = engine_utils::calc_det_pointing(
+                ptc.tel_data.data,
+                calib.apt["x_t"](det),
+                calib.apt["y_t"](det),
+                telescope.pixel_axes,
+                ptc.pointing_offsets_arcsec.data,
+                citlali::pipeline::mapmaking_config(*this).grouping);
+            lat = std::get<0>(latlon);
+        }
+        if (lat.size() != ptc.scans.data.rows()) {
+            continue;
+        }
+        for (Eigen::Index t = 0; t < ptc.scans.data.rows(); ++t) {
+            const double s = ptc.scans.data(t, det);
+            if (ptc.flags.data(t, det) || !std::isfinite(s)) {
+                continue;
+            }
+            proposed.n_good_samples++;
+            const double lat_v = lat(t);
+            if (!std::isfinite(lat_v)) {
+                continue;
+            }
+            const Eigen::Index row = static_cast<Eigen::Index>(
+                std::llround(lat_v / map_buffer.pixel_size_rad + row0));
+            if (row < 0 || row >= map_buffer.n_rows) {
+                continue;
+            }
+            if (bad_row_mask[static_cast<std::size_t>(row)]) {
+                proposed.samples.emplace_back(chunk_idx, t);
+            }
+        }
+    }
+    return proposed;
+}
+
 bool Beammap::reject_scan_band_mask_candidate(
     Eigen::Index det,
     Eigen::Index n_bad_rows,
@@ -278,88 +355,34 @@ Beammap::ScanBandMaskSummary Beammap::apply_scan_band_mask(mapmaking::MapBuffer 
             continue;
         }
 
-        std::vector<unsigned char> bad_row_mask(static_cast<std::size_t>(map_buffer.n_rows), 0);
         Eigen::Index n_bad_rows = 0;
-        for (const auto row : edge_rows.top) {
-            if (!bad_row_mask[static_cast<std::size_t>(row)]) {
-                bad_row_mask[static_cast<std::size_t>(row)] = 1;
-                n_bad_rows++;
-            }
-        }
-        for (const auto row : edge_rows.bottom) {
-            if (!bad_row_mask[static_cast<std::size_t>(row)]) {
-                bad_row_mask[static_cast<std::size_t>(row)] = 1;
-                n_bad_rows++;
-            }
-        }
+        const auto bad_row_mask = make_scan_band_bad_row_mask(
+            edge_rows, map_buffer.n_rows, n_bad_rows);
         if (n_bad_rows <= 0) {
             continue;
         }
 
-        std::vector<std::pair<Eigen::Index, Eigen::Index>> proposed_flags;
-        Eigen::Index n_good_samples = 0;
-        for (Eigen::Index chunk_idx = 0; chunk_idx < static_cast<Eigen::Index>(ptcs.size()); ++chunk_idx) {
-            auto &ptc = ptcs[chunk_idx];
-            if (det >= ptc.scans.data.cols() || det >= ptc.flags.data.cols()) {
-                continue;
-            }
-            Eigen::VectorXd lat;
-            auto lat_it = ptc.pointing.data.find("lat");
-            if (lat_it != ptc.pointing.data.end() &&
-                lat_it->second.rows() == ptc.scans.data.rows() &&
-                det < lat_it->second.cols()) {
-                lat = lat_it->second.col(det);
-            }
-            else {
-                auto latlon = engine_utils::calc_det_pointing(
-                    ptc.tel_data.data,
-                    calib.apt["x_t"](det),
-                    calib.apt["y_t"](det),
-                    telescope.pixel_axes,
-                    ptc.pointing_offsets_arcsec.data,
-                    citlali::pipeline::mapmaking_config(*this).grouping);
-                lat = std::get<0>(latlon);
-            }
-            if (lat.size() != ptc.scans.data.rows()) {
-                continue;
-            }
-            for (Eigen::Index t = 0; t < ptc.scans.data.rows(); ++t) {
-                const double s = ptc.scans.data(t, det);
-                if (ptc.flags.data(t, det) || !std::isfinite(s)) {
-                    continue;
-                }
-                n_good_samples++;
-                const double lat_v = lat(t);
-                if (!std::isfinite(lat_v)) {
-                    continue;
-                }
-                const Eigen::Index row = static_cast<Eigen::Index>(std::llround(lat_v / map_buffer.pixel_size_rad + row0));
-                if (row < 0 || row >= map_buffer.n_rows) {
-                    continue;
-                }
-                if (bad_row_mask[static_cast<std::size_t>(row)]) {
-                    proposed_flags.emplace_back(chunk_idx, t);
-                }
-            }
-        }
-
-        if (proposed_flags.empty()) {
+        const auto proposed_flags = collect_scan_band_proposed_flags(
+            det, map_buffer, bad_row_mask, row0);
+        if (proposed_flags.samples.empty()) {
             continue;
         }
 
         const double flagged_fraction =
-            static_cast<double>(proposed_flags.size()) /
-            static_cast<double>(std::max<Eigen::Index>(1, n_good_samples));
+            static_cast<double>(proposed_flags.samples.size()) /
+            static_cast<double>(
+                std::max<Eigen::Index>(1, proposed_flags.n_good_samples));
         if (reject_scan_band_mask_candidate(
-                det, n_bad_rows, proposed_flags.size(), flagged_fraction,
+                det, n_bad_rows, proposed_flags.samples.size(),
+                flagged_fraction,
                 max_flagged_fraction, summary)) {
             continue;
         }
 
-        apply_scan_band_mask_flags(det, proposed_flags);
+        apply_scan_band_mask_flags(det, proposed_flags.samples);
         record_scan_band_mask_success(
-            det, n_bad_rows, proposed_flags, edge_rows.top, edge_rows.bottom,
-            flagged_fraction, summary);
+            det, n_bad_rows, proposed_flags.samples, edge_rows.top,
+            edge_rows.bottom, flagged_fraction, summary);
     }
 
     return summary;

@@ -236,4 +236,9 @@ struct ScanBandEdgeRows {
     std::vector<Eigen::Index> bottom;
 };
 
+struct ScanBandProposedFlags {
+    std::vector<std::pair<Eigen::Index, Eigen::Index>> samples;
+    Eigen::Index n_good_samples = 0;
+};
+
 } // namespace citlali::engine_detail::beammap

@@ -92,6 +92,8 @@ public:
         citlali::engine_detail::beammap::ScanBandRowStats;
     using ScanBandEdgeRows =
         citlali::engine_detail::beammap::ScanBandEdgeRows;
+    using ScanBandProposedFlags =
+        citlali::engine_detail::beammap::ScanBandProposedFlags;
 
     bool beammap_soft_priors_loaded = false;
     bool beammap_soft_priors_are_centered = false;
@@ -395,6 +397,15 @@ public:
         double median_sigma_threshold,
         double sigma_ratio_threshold,
         double eps);
+    std::vector<unsigned char> make_scan_band_bad_row_mask(
+        const ScanBandEdgeRows &edge_rows,
+        Eigen::Index n_rows,
+        Eigen::Index &n_bad_rows);
+    ScanBandProposedFlags collect_scan_band_proposed_flags(
+        Eigen::Index det,
+        const mapmaking::MapBuffer &map_buffer,
+        const std::vector<unsigned char> &bad_row_mask,
+        double row0);
     bool reject_scan_band_mask_candidate(
         Eigen::Index det,
         Eigen::Index n_bad_rows,
