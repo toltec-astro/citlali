@@ -5,6 +5,7 @@
 
 #include <citlali/core/pipeline/config_parse_tracking.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
+#include <citlali/core/pipeline/timestream_config_read.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
 
 template<typename CT>
@@ -48,10 +49,10 @@ void Engine::get_rtc_config(CT &config) {
     citlali::pipeline::configure_raw_tod_output_context(telescope, rtcproc);
 
     // ignore hwpr?
-    citlali::pipeline::read_config_value(
-        config, calib.ignore_hwpr, config_diag,
-        std::tuple{"timestream","polarimetry", "ignore_hwpr"});
+    auto &polarimetry_config =
+        citlali::pipeline::polarimetry_config(*this);
+    citlali::pipeline::read_polarimetry_hwpr_policy_config(
+        config, calib.ignore_hwpr, polarimetry_config, config_diag);
     citlali::pipeline::mirror_polarimetry_config(
-        citlali::pipeline::polarimetry_config(*this), rtcproc,
-        calib.ignore_hwpr);
+        polarimetry_config, rtcproc);
 }

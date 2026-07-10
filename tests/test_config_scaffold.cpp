@@ -1115,7 +1115,7 @@ TEST(config_scaffold, parses_polarimetry_enum_values) {
               citlali::config::PolarimetryHwprPolicy::require);
 }
 
-TEST(config_scaffold, mirrors_legacy_polarimetry_config) {
+TEST(config_scaffold, mirrors_legacy_polarimetry_runtime_config) {
     struct FakeRtcProc {
         struct FakePolarization {
             std::string grouping = "loc";
@@ -1124,13 +1124,13 @@ TEST(config_scaffold, mirrors_legacy_polarimetry_config) {
     } rtcproc;
     citlali::config::TimestreamPolarimetryConfig config;
 
-    citlali::pipeline::mirror_polarimetry_config(config, rtcproc, "true");
+    citlali::pipeline::mirror_polarimetry_config(config, rtcproc);
 
     EXPECT_TRUE(config.enabled);
     EXPECT_EQ(config.grouping,
               citlali::config::PolarimetryGrouping::detector_location);
     EXPECT_EQ(config.hwpr_policy,
-              citlali::config::PolarimetryHwprPolicy::ignore);
+              citlali::config::PolarimetryHwprPolicy::automatic);
 }
 
 TEST(config_scaffold, validates_beammap_source_fluxes) {
