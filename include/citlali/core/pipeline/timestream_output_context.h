@@ -21,8 +21,12 @@ struct TimestreamOutputWriters {
     std::shared_ptr<OrderedWriter> ptc;
     std::shared_ptr<OrderedWriter> rtcdiag;
     std::shared_ptr<OrderedWriter> ptcdiag;
+    std::shared_ptr<OutputFailureState> failure_state;
 
     void cancel_all(std::exception_ptr error) const noexcept {
+        if (failure_state != nullptr) {
+            failure_state->record(error);
+        }
         for (const auto &writer : {rtc, ptc, rtcdiag, ptcdiag}) {
             if (writer != nullptr) {
                 writer->cancel(error);
@@ -31,15 +35,31 @@ struct TimestreamOutputWriters {
     }
 
     template <class Write>
-    void write_when_ready(
+    bool write_when_ready(
         const std::shared_ptr<OrderedWriter> &writer,
         Eigen::Index index,
         Write &&write) const {
+        if (writer == nullptr) {
+            cancel_all(std::make_exception_ptr(
+                std::logic_error("required output writer is not configured")));
+            return false;
+        }
         try {
             writer->write_when_ready(index, std::forward<Write>(write));
         } catch (...) {
             cancel_all(std::current_exception());
-            throw;
+            return false;
+        }
+        return true;
+    }
+
+    bool failed() const noexcept {
+        return failure_state != nullptr && failure_state->failed();
+    }
+
+    void rethrow_if_failed() const {
+        if (failure_state != nullptr) {
+            failure_state->rethrow_if_failed();
         }
     }
 };
@@ -68,12 +88,15 @@ TimestreamOutputFlags beammap_timestream_output_flags(
 }
 
 inline TimestreamOutputWriters make_timestream_output_writers(
-    const TimestreamOutputFlags &flags) {
+    const TimestreamOutputFlags &flags,
+    std::shared_ptr<OutputFailureState> failure_state =
+        std::make_shared<OutputFailureState>()) {
     return {
         make_ordered_writer_if(flags.write_rtc),
         make_ordered_writer_if(flags.write_ptc),
         make_ordered_writer_if(flags.write_rtcdiag),
         make_ordered_writer_if(flags.write_ptcdiag),
+        std::move(failure_state),
     };
 }
 

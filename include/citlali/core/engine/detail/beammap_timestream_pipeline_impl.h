@@ -14,6 +14,8 @@
 template <class KidsProc, class RawObs>
 void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs, bool write_outputs) {
     using input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
+    const auto output_failure =
+        std::make_shared<citlali::pipeline::OutputFailureState>();
     // progress bar
     tula::logging::progressbar pb(
         [&](const auto &msg) { logger->info("{}", msg); }, 100, "RTC progress ");
@@ -54,11 +56,15 @@ void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs, bool write
             return {};
         },
         // run the raw time chunk processing
-        run_timestream(kidsproc, write_outputs));
+        run_timestream(kidsproc, write_outputs, output_failure));
+
+    output_failure->rethrow_if_failed();
 }
 
 template <class KidsProc>
-auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
+auto Beammap::run_timestream(
+    KidsProc &kidsproc, bool write_outputs,
+    const std::shared_ptr<citlali::pipeline::OutputFailureState> &output_failure) {
     auto scans_done_mutex = std::make_shared<std::mutex>();
     auto scans_done_count = std::make_shared<int>(0);
 
@@ -66,7 +72,8 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
         citlali::pipeline::beammap_timestream_output_flags(
             *this, write_outputs);
     const auto output_writers =
-        citlali::pipeline::make_timestream_output_writers(output_flags);
+        citlali::pipeline::make_timestream_output_writers(
+            output_flags, output_failure);
     auto map_grouping_ptr = std::make_shared<std::string>(
         citlali::pipeline::active_map_grouping_name(*this));
 
@@ -127,18 +134,20 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
         }
 
         if (output_flags.write_rtcdiag) {
-            output_writers.write_when_ready(
+            if (!output_writers.write_when_ready(
                 output_writers.rtcdiag, ptcdata.index.data, [&] {
                     logger->info("writing rtc diagnostics sidecar chunk");
                     rtcproc.append_diag_to_netcdf(
                         ptcdata, output_paths.rtcdiag_filename, calib_scan,
                         ptcdata.index.data);
-                });
+                })) {
+                return {};
+            }
         }
 
         // write rtc timestreams
         if (write_this_rtc) {
-            output_writers.write_when_ready(
+            if (!output_writers.write_when_ready(
                 output_writers.rtc, rtc_scan_row, [&] {
                     if (rtcproc.tod_output_outer) {
                         logger->info("writing outer raw time chunk");
@@ -156,7 +165,9 @@ auto Beammap::run_timestream(KidsProc &kidsproc, bool write_outputs) {
                             ptcdata.pointing_offsets_arcsec.data, calib_scan,
                             true, rtc_scan_row);
                     }
-                });
+                })) {
+                return {};
+            }
         }
         rtcproc.clear_cached_diagnostics(ptcdata.index.data);
 

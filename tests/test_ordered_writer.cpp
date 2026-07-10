@@ -76,13 +76,13 @@ TEST(ordered_writer, required_output_failure_cancels_other_streams) {
     });
     waiter_ready.get();
 
-    EXPECT_THROW(
+    EXPECT_NO_THROW(
         writers.write_when_ready(
             writers.rtc, 0,
-            [] { throw std::runtime_error("injected RTC write failure"); }),
-        std::runtime_error);
-    EXPECT_THROW(waiting_ptc.get(), std::runtime_error);
+            [] { throw std::runtime_error("injected RTC write failure"); }));
+    EXPECT_NO_THROW(waiting_ptc.get());
     EXPECT_FALSE(ptc_write_ran.load());
+    EXPECT_THROW(writers.rethrow_if_failed(), std::runtime_error);
 }
 
 }  // namespace

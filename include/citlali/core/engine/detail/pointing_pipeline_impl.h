@@ -10,6 +10,8 @@
 template <class KidsProc, class RawObs>
 void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     using input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
+    const auto output_failure =
+        std::make_shared<citlali::pipeline::OutputFailureState>();
     // declare random number generator
     boost::random::mt19937 eng;
 
@@ -60,7 +62,9 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             scan = 0;
             return {};
         },
-        run(kidsproc));
+        run(kidsproc, output_failure));
+
+    output_failure->rethrow_if_failed();
 
     if (citlali::pipeline::mapmaking_enabled(*this)) {
         // normalize maps

@@ -10,7 +10,9 @@
 #include <citlali/core/pipeline/timestream_scan_context.h>
 
 template <class KidsProc>
-auto Pointing::run(KidsProc &kidsproc) {
+auto Pointing::run(
+    KidsProc &kidsproc,
+    const std::shared_ptr<citlali::pipeline::OutputFailureState> &output_failure) {
     auto scans_done_mutex = std::make_shared<std::mutex>();
     auto scans_done_count = std::make_shared<int>(0);
     auto ptc_line_audit_mutex = std::make_shared<std::mutex>();
@@ -22,7 +24,8 @@ auto Pointing::run(KidsProc &kidsproc) {
     const auto output_flags =
         citlali::pipeline::standard_timestream_output_flags(*this);
     const auto output_writers =
-        citlali::pipeline::make_timestream_output_writers(output_flags);
+        citlali::pipeline::make_timestream_output_writers(
+            output_flags, output_failure);
     auto map_grouping_ptr = std::make_shared<std::string>(
         citlali::pipeline::active_map_grouping_name(*this));
 
@@ -74,6 +77,9 @@ auto Pointing::run(KidsProc &kidsproc) {
         write_pointing_rtc_outputs(
             rtcdata, ptcdata, rtc_outer_output, calib_scan, output_flags,
             output_writers, rtc_scan_row, write_this_rtc, map_grouping);
+        if (output_writers.failed()) {
+            return;
+        }
 
         apply_learned_ptc_sample_masks(ptcdata, calib_scan);
         apply_learned_ptc_detector_exclusions(ptcdata, calib_scan);
@@ -134,6 +140,9 @@ auto Pointing::run(KidsProc &kidsproc) {
 
         write_pointing_ptc_outputs(
             ptcdata, calib_scan, output_flags, output_writers, map_grouping);
+        if (output_writers.failed()) {
+            return;
+        }
 
         // write out chunk summary
         if (citlali::pipeline::verbose_runtime_enabled(*this)) {

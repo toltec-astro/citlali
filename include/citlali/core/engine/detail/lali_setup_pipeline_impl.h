@@ -15,6 +15,8 @@ void Lali::setup() {
 template <class KidsProc, class RawObs>
 void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     using tuple_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
+    const auto output_failure =
+        std::make_shared<citlali::pipeline::OutputFailureState>();
 
     // declare random number generator
     boost::random::mt19937 eng;
@@ -68,7 +70,9 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         },
 
         // run the farm
-        run());
+        run(output_failure));
+
+    output_failure->rethrow_if_failed();
 
     if (citlali::pipeline::mapmaking_enabled(*this)) {
         // normalize maps

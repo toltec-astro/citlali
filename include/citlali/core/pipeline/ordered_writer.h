@@ -4,11 +4,40 @@
 #include <exception>
 #include <functional>
 #include <mutex>
+#include <stdexcept>
 #include <utility>
 
 #include <Eigen/Core>
 
 namespace citlali::pipeline {
+
+struct OutputFailureState {
+    mutable std::mutex mutex;
+    std::exception_ptr failure;
+
+    void record(std::exception_ptr error) noexcept {
+        std::lock_guard<std::mutex> lock(mutex);
+        if (failure == nullptr) {
+            failure = std::move(error);
+        }
+    }
+
+    bool failed() const noexcept {
+        std::lock_guard<std::mutex> lock(mutex);
+        return failure != nullptr;
+    }
+
+    void rethrow_if_failed() const {
+        std::exception_ptr error;
+        {
+            std::lock_guard<std::mutex> lock(mutex);
+            error = failure;
+        }
+        if (error != nullptr) {
+            std::rethrow_exception(error);
+        }
+    }
+};
 
 struct OrderedWriter {
     std::mutex mutex;

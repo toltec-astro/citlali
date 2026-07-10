@@ -29,9 +29,11 @@ public:
     void pipeline(KidsProc &, RawObs &);
 
     // run the reduction for the obs
-    auto run() -> run_stage_t;
+    auto run(
+        const std::shared_ptr<citlali::pipeline::OutputFailureState> &)
+        -> run_stage_t;
     template <class CalibScan>
-    void write_lali_rtc_outputs(
+    bool write_lali_rtc_outputs(
         input_t &rtcdata,
         TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
         input_t &rtc_outer_output,
@@ -42,7 +44,7 @@ public:
         bool write_this_rtc,
         const std::string &map_grouping);
     template <class CalibScan>
-    void write_lali_ptc_outputs(
+    bool write_lali_ptc_outputs(
         TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
         CalibScan &calib_scan,
         const citlali::pipeline::TimestreamOutputFlags &output_flags,

@@ -52,9 +52,10 @@ public:
 
     // run the reduction for the obs
     template <class KidsProc>
-    auto run(KidsProc &);
+    auto run(KidsProc &,
+             const std::shared_ptr<citlali::pipeline::OutputFailureState> &);
     template <class CalibScan>
-    void write_pointing_rtc_outputs(
+    bool write_pointing_rtc_outputs(
         TCData<TCDataKind::RTC, Eigen::MatrixXd> &rtcdata,
         TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
         TCData<TCDataKind::RTC, Eigen::MatrixXd> &rtc_outer_output,
@@ -65,7 +66,7 @@ public:
         bool write_this_rtc,
         const std::string &map_grouping);
     template <class CalibScan>
-    void write_pointing_ptc_outputs(
+    bool write_pointing_ptc_outputs(
         TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
         CalibScan &calib_scan,
         const citlali::pipeline::TimestreamOutputFlags &output_flags,

@@ -19,6 +19,7 @@
 
 #include <citlali/core/engine/engine.h>
 #include <citlali/core/engine/beammap_types.h>
+#include <citlali/core/pipeline/timestream_output_context.h>
 #include <citlali/core/utils/ecsv_io.h>
 
 using timestream::TCData;
@@ -249,7 +250,9 @@ public:
 
     // run the raw time chunk processing
     template <class KidsProc>
-    auto run_timestream(KidsProc &, bool write_outputs = true);
+    auto run_timestream(
+        KidsProc &, bool write_outputs,
+        const std::shared_ptr<citlali::pipeline::OutputFailureState> &);
 
     // run the loop pipeline
     template <class KidsProc, class RawObs>
