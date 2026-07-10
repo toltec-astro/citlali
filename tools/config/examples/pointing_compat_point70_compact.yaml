@@ -31,7 +31,7 @@ products:
   noise_count: 5
   noise_products: true
   noise_realizations: false
-  tod: none
+  tod: both
   diagnostics: verbose
 
 processing:
