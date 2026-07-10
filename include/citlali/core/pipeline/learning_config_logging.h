@@ -1,21 +1,18 @@
 #pragma once
 
-namespace citlali::engine_detail {
+namespace citlali::pipeline {
 
-template <class Logger>
-void log_reduction_learning_config(
-    const ReductionLearningState::Options &options, const Logger &logger) {
+template <class LearningOptions, class Logger>
+void log_reduction_learning_config(const LearningOptions &options,
+                                   const Logger &logger) {
     logger->info(
         "reduction learning state configured: enabled={} diagnostics_enabled={} "
         "learn_iters={} apply_start_iter={} max_records_per_type={} "
         "apply_sample_masks_enabled={} apply_max_new_flagged_fraction={:.4g} "
         "map_pixel_outliers(enabled={} contributors={} targeted_contributors={} detector_exclusion={} top_n={} target_max={} exclude_min_pixels={} min_abs_z={} min_n_eff={} source_radius_arcsec={}) "
         "busy_detector_exclusion_enabled={} scan_network_pathology(enabled={} pre_rtc={} pre_ptc={} pre_mapmaking={} min_clusters={} min_events={} min_resid_z={} severe_events={} severe_resid_z={} max_new_flagged_fraction={:.4g})",
-        options.enabled,
-        options.diagnostics_enabled,
-        options.learn_iters,
-        options.apply_start_iter,
-        options.max_records_per_type,
+        options.enabled, options.diagnostics_enabled, options.learn_iters,
+        options.apply_start_iter, options.max_records_per_type,
         options.apply_sample_masks_enabled,
         options.apply_max_new_flagged_fraction,
         options.map_pixel_outlier_diagnostics_enabled,
@@ -41,4 +38,4 @@ void log_reduction_learning_config(
         options.scan_network_pathology_max_new_flagged_fraction);
 }
 
-}  // namespace citlali::engine_detail
+}  // namespace citlali::pipeline
