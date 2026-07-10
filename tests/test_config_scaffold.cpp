@@ -5,6 +5,7 @@
 #include <citlali/core/cli/runtime_setup.h>
 #include <citlali/core/cli/tod_processor_selection.h>
 #include <citlali/core/error/error.h>
+#include <citlali/core/pipeline/beammap_source_flux_config.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/map_geometry.h>
@@ -1130,6 +1131,24 @@ TEST(config_scaffold, mirrors_legacy_polarimetry_config) {
               citlali::config::PolarimetryGrouping::detector_location);
     EXPECT_EQ(config.hwpr_policy,
               citlali::config::PolarimetryHwprPolicy::ignore);
+}
+
+TEST(config_scaffold, validates_beammap_source_fluxes) {
+    const std::map<int, std::string> array_names = {
+        {0, "a1100"}, {1, "a1400"}, {2, "a2000"}};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::pipeline::validate_beammap_source_fluxes(
+        std::map<std::string, double>{{"a1100", 1.0},
+                                      {"a1400", 2.0},
+                                      {"a2000", 3.0}},
+        array_names, logger));
+    EXPECT_EQ(logger->error_calls, 0);
+
+    EXPECT_FALSE(citlali::pipeline::validate_beammap_source_fluxes(
+        std::map<std::string, double>{{"a1100", 1.0}, {"a1400", 0.0}},
+        array_names, logger));
+    EXPECT_EQ(logger->error_calls, 2);
 }
 
 TEST(config_scaffold, validates_top_level_config_values) {

@@ -5,6 +5,7 @@
 
 #include <Eigen/Core>
 
+#include <cmath>
 #include <tuple>
 
 namespace citlali::pipeline {
@@ -44,6 +45,32 @@ void read_beammap_source_fluxes(Config &config, FluxMap &fluxes_mjy_beam,
             citlali::config::BeammapSourceFluxConfig{
                 array, flux, uncertainty_mjy});
     }
+}
+
+template <class FluxMap, class ArrayNameMap, class Logger>
+bool validate_beammap_source_fluxes(const FluxMap &fluxes_mjy_beam,
+                                    const ArrayNameMap &array_name_map,
+                                    const Logger &logger) {
+    bool valid = true;
+    for (const auto &entry : array_name_map) {
+        const auto &array_name = entry.second;
+        const auto flux_it = fluxes_mjy_beam.find(array_name);
+        if (flux_it == fluxes_mjy_beam.end()) {
+            logger->error(
+                "beammap reductions require a positive source flux for {}; no beammap_source.fluxes entry was found",
+                array_name);
+            valid = false;
+            continue;
+        }
+        const double flux = flux_it->second;
+        if (!std::isfinite(flux) || flux <= 0.0) {
+            logger->error(
+                "beammap reductions require positive finite source fluxes; {} value_mJy={}",
+                array_name, flux);
+            valid = false;
+        }
+    }
+    return valid;
 }
 
 }  // namespace citlali::pipeline
