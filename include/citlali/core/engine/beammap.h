@@ -753,6 +753,12 @@ public:
     std::string write_beammap_apt_table();
     template <mapmaking::MapType map_type>
     void output();
+    void add_beammap_detector_map_header(
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
+        Eigen::Index detector_index,
+        Eigen::Index signal_hdu_index,
+        const char *breadcrumb,
+        int flag_value = -1);
     template <mapmaking::MapType map_type>
     void write_standard_beammap_map_products(
         mapmaking::MapBuffer *mb,

@@ -10,6 +10,35 @@
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
+void Beammap::add_beammap_detector_map_header(
+    std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
+    Eigen::Index detector_index,
+    Eigen::Index signal_hdu_index,
+    const char *breadcrumb,
+    int flag_value) {
+    const Eigen::Index map_index =
+        map_indices.arrays_to_maps(detector_index);
+
+    logger->debug("adding beammap header keys");
+    if (flag_value >= 0) {
+        citlali::pipeline::update_map_output_debug_breadcrumb(
+            breadcrumb, f_io->at(map_index).filepath.c_str(),
+            detector_index, map_index, -1, -1, signal_hdu_index,
+            static_cast<Eigen::Index>(f_io->at(map_index).hdus.size()),
+            flag_value);
+    }
+    else {
+        citlali::pipeline::update_map_output_debug_breadcrumb(
+            breadcrumb, f_io->at(map_index).filepath.c_str(),
+            detector_index, map_index, -1, -1, signal_hdu_index,
+            static_cast<Eigen::Index>(f_io->at(map_index).hdus.size()));
+    }
+    beammap_map_product_headers::add_detector_header_keys(
+        f_io->at(map_index).hdus.at(signal_hdu_index), calib,
+        flag2, detector_index);
+    citlali::pipeline::reset_map_output_debug_breadcrumb();
+}
+
 template <mapmaking::MapType map_type>
 void Beammap::write_standard_beammap_map_products(
     mapmaking::MapBuffer *mb,
@@ -59,20 +88,9 @@ void Beammap::write_standard_beammap_map_products(
 
             if (detector_grouping) {
                 if constexpr (map_type == mapmaking::RawObs) {
-                    const Eigen::Index map_index =
-                        map_indices.arrays_to_maps(i);
-
-                    logger->debug("adding beammap header keys");
-                    citlali::pipeline::update_map_output_debug_breadcrumb(
-                        "beammap-detector-header",
-                        f_io->at(map_index).filepath.c_str(), i, map_index,
-                        -1, -1, signal_hdu_index,
-                        static_cast<Eigen::Index>(
-                            f_io->at(map_index).hdus.size()));
-                    beammap_map_product_headers::add_detector_header_keys(
-                        f_io->at(map_index).hdus.at(signal_hdu_index), calib,
-                        flag2, i);
-                    citlali::pipeline::reset_map_output_debug_breadcrumb();
+                    add_beammap_detector_map_header(
+                        f_io, i, signal_hdu_index,
+                        "beammap-detector-header");
                 }
             }
         }
@@ -199,21 +217,9 @@ void Beammap::write_split_beammap_map_products(
 
                 if (detector_grouping) {
                     if constexpr (map_type == mapmaking::RawObs) {
-                        const Eigen::Index map_index =
-                            map_indices.arrays_to_maps(i);
-
-                        logger->debug("adding split beammap header keys");
-                        citlali::pipeline::update_map_output_debug_breadcrumb(
-                            "beammap-split-detector-header",
-                            split_f_io->at(map_index).filepath.c_str(),
-                            i, map_index, -1, -1, signal_hdu_index,
-                            static_cast<Eigen::Index>(
-                                split_f_io->at(map_index).hdus.size()),
-                            flag_value);
-                        beammap_map_product_headers::add_detector_header_keys(
-                            split_f_io->at(map_index).hdus.at(signal_hdu_index),
-                            calib, flag2, i);
-                        citlali::pipeline::reset_map_output_debug_breadcrumb();
+                        add_beammap_detector_map_header(
+                            split_f_io, i, signal_hdu_index,
+                            "beammap-split-detector-header", flag_value);
                     }
                 }
             }
