@@ -760,6 +760,21 @@ public:
         const char *breadcrumb,
         int flag_value = -1);
     template <mapmaking::MapType map_type>
+    void maybe_add_beammap_detector_map_header(
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
+        Eigen::Index detector_index,
+        Eigen::Index signal_hdu_index,
+        bool detector_grouping,
+        const char *breadcrumb,
+        int flag_value = -1);
+    void add_beammap_map_primary_headers(
+        mapmaking::MapBuffer *mb,
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
+        std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
+        const std::string &profile_stage_name,
+        const std::string &profile_context,
+        int flag_value = -1);
+    template <mapmaking::MapType map_type>
     void write_standard_beammap_map_products(
         mapmaking::MapBuffer *mb,
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
