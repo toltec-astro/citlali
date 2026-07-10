@@ -1,7 +1,7 @@
 #pragma once
 
 #include <citlali/core/config/config_error.h>
-#include <citlali/core/config/reduction_config.h>
+#include <citlali/core/config/reduction_config_validation.h>
 
 #include <string_view>
 
