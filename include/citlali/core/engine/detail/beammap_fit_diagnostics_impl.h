@@ -122,11 +122,15 @@ void Beammap::record_beammap_fit_diagnostics(
     record_beammap_fit_bound_hits(map_index, fit_diag, fit_stats);
 }
 
-void Beammap::log_beammap_fit_iteration_stats(
+void Beammap::log_beammap_fit_init_summary(
     const BeammapFitIterationStats &fit_stats) {
     logger->info("beammap init summary (iter {}): previous={} prior={} blind={} skipped={} prev_rejected_by_peak={}",
                  current_iter, fit_stats.init_prev, fit_stats.init_prior, fit_stats.init_blind, fit_stats.init_skip,
                  fit_stats.prev_rejected_by_peak);
+}
+
+void Beammap::log_beammap_fit_attempt_summary(
+    const BeammapFitIterationStats &fit_stats) {
     logger->info(
         "beammap fit diagnostics (iter {}): prev fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{} | "
         "prior fail={}/{} init_amp_zero={}/{} amp_bounds_zero={}/{} | "
@@ -138,7 +142,10 @@ void Beammap::log_beammap_fit_iteration_stats(
         fit_stats.amp_bounds_zero_prior, fit_stats.attempt_prior,
         fit_stats.fail_blind, fit_stats.attempt_blind, fit_stats.init_amp_zero_blind, fit_stats.attempt_blind,
         fit_stats.amp_bounds_zero_blind, fit_stats.attempt_blind);
+}
 
+void Beammap::log_beammap_fit_bound_iteration_summary(
+    const BeammapFitIterationStats &fit_stats) {
     if (map_fitter.n_params >= 6) {
         logger->info(
             "beammap fit bound summary (iter {}): any_hit={}/{} amp(lo/hi)={}/{} x(lo/hi)={}/{} y(lo/hi)={}/{} a(lo/hi)={}/{} b(lo/hi)={}/{} angle(lo/hi)={}/{}",
@@ -154,5 +161,12 @@ void Beammap::log_beammap_fit_iteration_stats(
         logger->info("beammap fit bound summary (iter {}): any_hit={}/{}",
                      current_iter, fit_stats.bound_any, map_indices.n_maps);
     }
+}
+
+void Beammap::log_beammap_fit_iteration_stats(
+    const BeammapFitIterationStats &fit_stats) {
+    log_beammap_fit_init_summary(fit_stats);
+    log_beammap_fit_attempt_summary(fit_stats);
+    log_beammap_fit_bound_iteration_summary(fit_stats);
     logger->info("number of good fits {}/{}", static_cast<long long>(good_fits.cast<int>().sum()), map_indices.n_maps);
 }

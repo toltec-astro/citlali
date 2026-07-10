@@ -350,6 +350,12 @@ public:
         Eigen::Index map_index,
         const engine_utils::mapFitter::FitDiagnostics &fit_diag,
         BeammapFitIterationStats &fit_stats);
+    void log_beammap_fit_init_summary(
+        const BeammapFitIterationStats &fit_stats);
+    void log_beammap_fit_attempt_summary(
+        const BeammapFitIterationStats &fit_stats);
+    void log_beammap_fit_bound_iteration_summary(
+        const BeammapFitIterationStats &fit_stats);
     void log_beammap_fit_iteration_stats(
         const BeammapFitIterationStats &fit_stats);
     bool update_beammap_convergence_state();
