@@ -10,6 +10,84 @@
 #include <citlali/core/pipeline/timestream_run_context.h>
 #include <citlali/core/pipeline/timestream_scan_context.h>
 
+template <class CalibScan>
+void Lali::write_lali_rtc_outputs(
+    input_t &rtcdata,
+    TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
+    input_t &rtc_outer_output,
+    CalibScan &calib_scan,
+    const citlali::pipeline::TimestreamOutputFlags &output_flags,
+    const citlali::pipeline::TimestreamOutputWriters &output_writers,
+    Eigen::Index rtc_scan_row,
+    bool write_this_rtc,
+    const std::string &map_grouping) {
+    if (output_flags.write_rtcdiag) {
+        output_writers.rtcdiag->wait_turn(ptcdata.index.data);
+        logger->info("writing rtc diagnostics sidecar chunk");
+        rtcproc.append_diag_to_netcdf(
+            ptcdata, output_paths.rtcdiag_filename, calib_scan,
+            ptcdata.index.data);
+        output_writers.rtcdiag->advance();
+    }
+
+    // write rtc timestreams
+    if (write_this_rtc) {
+        output_writers.rtc->wait_turn(rtc_scan_row);
+        if (rtcproc.tod_output_outer) {
+            logger->info("writing outer raw time chunk");
+            rtcproc.append_to_netcdf(
+                rtc_outer_output, output_paths.tod_filename["rtc"],
+                map_grouping, telescope.pixel_axes,
+                rtc_outer_output.pointing_offsets_arcsec.data, calib, false,
+                rtc_scan_row);
+        }
+        else {
+            logger->info("writing raw time chunk");
+            rtcproc.append_to_netcdf(
+                ptcdata, output_paths.tod_filename["rtc"], map_grouping,
+                telescope.pixel_axes, ptcdata.pointing_offsets_arcsec.data,
+                calib, false, rtc_scan_row);
+        }
+        output_writers.rtc->advance();
+    }
+    if (output_flags.write_rtc || output_flags.write_rtcdiag) {
+        rtcproc.clear_cached_diagnostics(ptcdata.index.data);
+    }
+}
+
+template <class CalibScan>
+void Lali::write_lali_ptc_outputs(
+    TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
+    CalibScan &calib_scan,
+    const citlali::pipeline::TimestreamOutputFlags &output_flags,
+    const citlali::pipeline::TimestreamOutputWriters &output_writers,
+    const std::string &map_grouping) {
+    // write ptc timestreams
+    if (output_flags.write_ptcdiag) {
+        output_writers.ptcdiag->wait_turn(ptcdata.index.data);
+        logger->info("writing ptc diagnostics sidecar chunk");
+        ptcproc.append_diag_to_netcdf(
+            ptcdata, output_paths.ptcdiag_filename, calib_scan,
+            ptcdata.index.data);
+        output_writers.ptcdiag->advance();
+    }
+
+    const auto ptc_scan_row = tod_output_scan_row(
+        ptcdata.index.data, citlali::config::TodOutputStream::ptc);
+    if (output_flags.write_ptc && ptc_scan_row >= 0) {
+        output_writers.ptc->wait_turn(ptc_scan_row);
+        logger->info("writing processed time chunk");
+        ptcproc.append_to_netcdf(
+            ptcdata, output_paths.tod_filename["ptc"], map_grouping,
+            telescope.pixel_axes, ptcdata.pointing_offsets_arcsec.data,
+            calib_scan, false, ptc_scan_row);
+        output_writers.ptc->advance();
+    }
+    if (output_flags.write_ptc || output_flags.write_ptcdiag) {
+        ptcproc.clear_cached_diagnostics(ptcdata.index.data);
+    }
+}
+
 auto Lali::run() -> run_stage_t {
     auto scans_done_mutex = std::make_shared<std::mutex>();
     auto scans_done_count = std::make_shared<int>(0);
@@ -83,31 +161,9 @@ auto Lali::run() -> run_stage_t {
 
         collect_rtc_learning_diagnostics(rtcdata, ptcdata, calib_scan, rtc_detector_summary);
 
-        if (output_flags.write_rtcdiag) {
-            output_writers.rtcdiag->wait_turn(ptcdata.index.data);
-            logger->info("writing rtc diagnostics sidecar chunk");
-            rtcproc.append_diag_to_netcdf(ptcdata, output_paths.rtcdiag_filename, calib_scan, ptcdata.index.data);
-            output_writers.rtcdiag->advance();
-        }
-
-        // write rtc timestreams
-        if (write_this_rtc) {
-            output_writers.rtc->wait_turn(rtc_scan_row);
-            if (rtcproc.tod_output_outer) {
-                logger->info("writing outer raw time chunk");
-                rtcproc.append_to_netcdf(rtc_outer_output, output_paths.tod_filename["rtc"], map_grouping, telescope.pixel_axes,
-                                         rtc_outer_output.pointing_offsets_arcsec.data, calib, false, rtc_scan_row);
-            }
-            else {
-                logger->info("writing raw time chunk");
-                rtcproc.append_to_netcdf(ptcdata, output_paths.tod_filename["rtc"], map_grouping, telescope.pixel_axes,
-                                         ptcdata.pointing_offsets_arcsec.data, calib, false, rtc_scan_row);
-            }
-            output_writers.rtc->advance();
-        }
-        if (output_flags.write_rtc || output_flags.write_rtcdiag) {
-            rtcproc.clear_cached_diagnostics(ptcdata.index.data);
-        }
+        write_lali_rtc_outputs(
+            rtcdata, ptcdata, rtc_outer_output, calib_scan, output_flags,
+            output_writers, rtc_scan_row, write_this_rtc, map_grouping);
 
         apply_learned_ptc_sample_masks(ptcdata, calib_scan);
         apply_learned_ptc_detector_exclusions(ptcdata, calib_scan);
@@ -190,26 +246,8 @@ auto Lali::run() -> run_stage_t {
         collect_ptc_learning_diagnostics(
             ptcdata, calib_scan, ptc_second_pass_summary, ptc_high_weight_summary);
 
-        // write ptc timestreams
-        if (output_flags.write_ptcdiag) {
-            output_writers.ptcdiag->wait_turn(ptcdata.index.data);
-            logger->info("writing ptc diagnostics sidecar chunk");
-            ptcproc.append_diag_to_netcdf(ptcdata, output_paths.ptcdiag_filename, calib_scan, ptcdata.index.data);
-            output_writers.ptcdiag->advance();
-        }
-
-        const auto ptc_scan_row = tod_output_scan_row(
-            ptcdata.index.data, citlali::config::TodOutputStream::ptc);
-        if (output_flags.write_ptc && ptc_scan_row >= 0) {
-            output_writers.ptc->wait_turn(ptc_scan_row);
-            logger->info("writing processed time chunk");
-            ptcproc.append_to_netcdf(ptcdata, output_paths.tod_filename["ptc"], map_grouping, telescope.pixel_axes,
-                                     ptcdata.pointing_offsets_arcsec.data, calib_scan, false, ptc_scan_row);
-            output_writers.ptc->advance();
-        }
-        if (output_flags.write_ptc || output_flags.write_ptcdiag) {
-            ptcproc.clear_cached_diagnostics(ptcdata.index.data);
-        }
+        write_lali_ptc_outputs(
+            ptcdata, calib_scan, output_flags, output_writers, map_grouping);
 
         // write out chunk summary
         if (citlali::pipeline::verbose_runtime_enabled(*this)) {

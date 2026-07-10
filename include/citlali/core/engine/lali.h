@@ -5,6 +5,7 @@
 #include <condition_variable>
 
 #include <citlali/core/engine/engine.h>
+#include <citlali/core/pipeline/timestream_output_context.h>
 
 using timestream::TCData;
 using timestream::RTCProc;
@@ -29,6 +30,24 @@ public:
 
     // run the reduction for the obs
     auto run() -> run_stage_t;
+    template <class CalibScan>
+    void write_lali_rtc_outputs(
+        input_t &rtcdata,
+        TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
+        input_t &rtc_outer_output,
+        CalibScan &calib_scan,
+        const citlali::pipeline::TimestreamOutputFlags &output_flags,
+        const citlali::pipeline::TimestreamOutputWriters &output_writers,
+        Eigen::Index rtc_scan_row,
+        bool write_this_rtc,
+        const std::string &map_grouping);
+    template <class CalibScan>
+    void write_lali_ptc_outputs(
+        TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
+        CalibScan &calib_scan,
+        const citlali::pipeline::TimestreamOutputFlags &output_flags,
+        const citlali::pipeline::TimestreamOutputWriters &output_writers,
+        const std::string &map_grouping);
 
     // output files
     void finalize_lali_map_fits_outputs(
