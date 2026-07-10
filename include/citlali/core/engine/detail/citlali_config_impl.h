@@ -4,8 +4,8 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/pipeline/citlali_config_read.h>
-#include <citlali/core/engine/detail/mapmaking_activation_policy.h>
-#include <citlali/core/engine/detail/source_protection_activation.h>
+#include <citlali/core/pipeline/mapmaking_activation_policy.h>
+#include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template<typename CT>
@@ -29,7 +29,7 @@ void Engine::get_citlali_config(CT &config) {
 
     /* get timestream config */
     get_timestream_config(config);
-    citlali::engine_detail::apply_source_protection_activation(
+    citlali::pipeline::apply_source_protection_activation(
         runtime_config.reduction_type, rtcproc, ptcproc, timestream_config,
         logger);
 
@@ -74,7 +74,7 @@ void Engine::get_citlali_config(CT &config) {
     }
 
     // disable map related keys if map-making is disabled
-    citlali::engine_detail::disable_map_products_if_mapmaking_disabled(
+    citlali::pipeline::disable_map_products_if_mapmaking_disabled(
         reduction_config);
 
     citlali::pipeline::validate_typed_config_mirrors(

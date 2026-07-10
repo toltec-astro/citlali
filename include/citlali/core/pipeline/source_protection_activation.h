@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace citlali::engine_detail {
+namespace citlali::pipeline {
 
 template <class RtcProc, class PtcProc, class TimestreamConfig, class Logger>
 void apply_source_protection_activation(
@@ -46,4 +46,4 @@ void apply_source_protection_activation(
     }
 }
 
-}  // namespace citlali::engine_detail
+}  // namespace citlali::pipeline

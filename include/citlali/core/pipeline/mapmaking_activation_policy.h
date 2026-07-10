@@ -5,7 +5,7 @@
 #include <citlali/core/config/noise_config.h>
 #include <citlali/core/config/post_processing_config.h>
 
-namespace citlali::engine_detail {
+namespace citlali::pipeline {
 
 template <class ReductionConfig>
 void disable_map_products_if_mapmaking_disabled(
@@ -25,4 +25,4 @@ void disable_map_products_if_mapmaking_disabled(
     reduction_config.beammap.iteration.max_iterations = 1;
 }
 
-}  // namespace citlali::engine_detail
+}  // namespace citlali::pipeline
