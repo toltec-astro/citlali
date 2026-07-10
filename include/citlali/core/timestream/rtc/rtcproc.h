@@ -6412,7 +6412,10 @@ void RTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
 
         logger->info("rtc diagnostics sidecar chunk written to {}", filepath);
     } catch (NcException &e) {
-        logger->error("{}", e.what());
+        logger->error(
+            "required RTC diagnostics write failed; partial output may remain at {}: {}",
+            filepath, e.what());
+        throw;
     }
 }
 
@@ -6437,7 +6440,10 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std
         logger->info("outer tod chunk written to {}", filepath);
 
     } catch (NcException &e) {
-        logger->error("{}", e.what());
+        logger->error(
+            "required outer RTC TOD write failed; partial output may remain at {}: {}",
+            filepath, e.what());
+        throw;
     }
 }
 
@@ -6469,7 +6475,10 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         logger->info("tod chunk written to {}", filepath);
 
     } catch (NcException &e) {
-        logger->error("{}", e.what());
+        logger->error(
+            "required RTC TOD write failed; partial output may remain at {}: {}",
+            filepath, e.what());
+        throw;
     }
 }
 

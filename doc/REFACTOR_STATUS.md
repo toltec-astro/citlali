@@ -40,6 +40,10 @@ rollout, and open-ended file splitting. Narrow work that repairs safety
 contracts, activates tests, clarifies authority, or prepares a measured
 compiled boundary remains in scope.
 
+Project-owner decision (2026-07-10): every output explicitly enabled in the
+configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
+failures must fail the reduction. There are no best-effort enabled products.
+
 Immediate work order:
 
 1. Diagnose and eliminate the recurring RTC/PTC NetCDF errors.
@@ -73,6 +77,13 @@ Immediate work order:
   numeric fields. The four documented line-frequency inheritance fields retain
   their explicit NaN sentinel but reject either infinity. Focused parser and
   finite-value tests pass locally.
+- Required RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` NetCDF failures now retain
+  the failing path in an error diagnostic and propagate out of the reduction.
+  Ordered writers cancel as one output domain, so a failure wakes workers
+  waiting on the same or another product stream instead of deadlocking. Focused
+  serialization, cancellation, and cross-stream cancellation tests pass
+  locally; a CLI-level injected-write test remains part of the Phase 1 exit
+  gate.
 - The pre-existing `citlali_test` target was found to have substantial test
   infrastructure and source decay. It remains a separate Phase 1 repair item;
   the focused safety target does not conceal that debt or satisfy the complete

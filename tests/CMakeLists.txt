@@ -34,6 +34,7 @@ set_target_properties(citlali_safety_test
 target_sources(citlali_safety_test
     PRIVATE
         test_config_safety.cpp
+        test_ordered_writer.cpp
         test_output_schema.cpp
 )
 target_link_libraries(citlali_safety_test

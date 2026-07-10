@@ -3,7 +3,9 @@
 #include <citlali/core/pipeline/ordered_writer.h>
 #include <citlali/core/pipeline/output_policy.h>
 
+#include <exception>
 #include <memory>
+#include <utility>
 
 namespace citlali::pipeline {
 
@@ -19,6 +21,27 @@ struct TimestreamOutputWriters {
     std::shared_ptr<OrderedWriter> ptc;
     std::shared_ptr<OrderedWriter> rtcdiag;
     std::shared_ptr<OrderedWriter> ptcdiag;
+
+    void cancel_all(std::exception_ptr error) const noexcept {
+        for (const auto &writer : {rtc, ptc, rtcdiag, ptcdiag}) {
+            if (writer != nullptr) {
+                writer->cancel(error);
+            }
+        }
+    }
+
+    template <class Write>
+    void write_when_ready(
+        const std::shared_ptr<OrderedWriter> &writer,
+        Eigen::Index index,
+        Write &&write) const {
+        try {
+            writer->write_when_ready(index, std::forward<Write>(write));
+        } catch (...) {
+            cancel_all(std::current_exception());
+            throw;
+        }
+    }
 };
 
 inline std::shared_ptr<OrderedWriter> make_ordered_writer_if(bool enabled) {

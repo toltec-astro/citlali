@@ -5289,7 +5289,10 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         logger->info("tod chunk written to {}", filepath);
 
     } catch (NcException &e) {
-        logger->error("{}", e.what());
+        logger->error(
+            "required PTC TOD write failed; partial output may remain at {}: {}",
+            filepath, e.what());
+        throw;
     }
 }
 
@@ -5905,7 +5908,10 @@ void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
         fo.close();
         logger->info("ptc diagnostics sidecar chunk written to {}", filepath);
     } catch (NcException &e) {
-        logger->error("{}", e.what());
+        logger->error(
+            "required PTC diagnostics write failed; partial output may remain at {}: {}",
+            filepath, e.what());
+        throw;
     }
 }
 
