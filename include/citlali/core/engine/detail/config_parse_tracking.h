@@ -105,4 +105,75 @@ void read_optional_parsed_mirrored_config_value(
         std::move(max_values));
 }
 
+template <class Config, class Key, class Param, class Target,
+          class Diagnostics>
+void read_config_value_if_clean(
+    Config &config, const Key &key, Param &param, Target &&on_parsed,
+    Diagnostics &diagnostics,
+    std::vector<std::decay_t<Param>> accepted_values = {},
+    std::vector<std::decay_t<Param>> min_values = {},
+    std::vector<std::decay_t<Param>> max_values = {}) {
+    read_config_value_if_clean(
+        config, key, param, std::forward<Target>(on_parsed),
+        diagnostics.missing_keys, diagnostics.invalid_keys,
+        std::move(accepted_values), std::move(min_values),
+        std::move(max_values));
+}
+
+template <class Config, class Key, class Param, class Target,
+          class Diagnostics>
+void read_mirrored_config_value(
+    Config &config, const Key &key, Param &param, Target &target,
+    Diagnostics &diagnostics,
+    std::vector<std::decay_t<Param>> accepted_values = {},
+    std::vector<std::decay_t<Param>> min_values = {},
+    std::vector<std::decay_t<Param>> max_values = {}) {
+    read_mirrored_config_value(
+        config, key, param, target, diagnostics.missing_keys,
+        diagnostics.invalid_keys, std::move(accepted_values),
+        std::move(min_values), std::move(max_values));
+}
+
+template <class Config, class Key, class Param, class Target,
+          class Diagnostics>
+void read_optional_mirrored_config_value(
+    Config &config, const Key &key, Param &param, Target &target,
+    Diagnostics &diagnostics,
+    std::vector<std::decay_t<Param>> accepted_values = {},
+    std::vector<std::decay_t<Param>> min_values = {},
+    std::vector<std::decay_t<Param>> max_values = {}) {
+    read_optional_mirrored_config_value(
+        config, key, param, target, diagnostics.missing_keys,
+        diagnostics.invalid_keys, std::move(accepted_values),
+        std::move(min_values), std::move(max_values));
+}
+
+template <class Config, class Key, class Param, class Target, class Parser,
+          class Diagnostics>
+void read_parsed_mirrored_config_value(
+    Config &config, const Key &key, Param &param, Target &target,
+    Parser parser, Diagnostics &diagnostics,
+    std::vector<std::decay_t<Param>> accepted_values = {},
+    std::vector<std::decay_t<Param>> min_values = {},
+    std::vector<std::decay_t<Param>> max_values = {}) {
+    read_parsed_mirrored_config_value(
+        config, key, param, target, parser, diagnostics.missing_keys,
+        diagnostics.invalid_keys, std::move(accepted_values),
+        std::move(min_values), std::move(max_values));
+}
+
+template <class Config, class Key, class Param, class Target, class Parser,
+          class Diagnostics>
+void read_optional_parsed_mirrored_config_value(
+    Config &config, const Key &key, Param &param, Target &target,
+    Parser parser, Diagnostics &diagnostics,
+    std::vector<std::decay_t<Param>> accepted_values = {},
+    std::vector<std::decay_t<Param>> min_values = {},
+    std::vector<std::decay_t<Param>> max_values = {}) {
+    read_optional_parsed_mirrored_config_value(
+        config, key, param, target, parser, diagnostics.missing_keys,
+        diagnostics.invalid_keys, std::move(accepted_values),
+        std::move(min_values), std::move(max_values));
+}
+
 }  // namespace citlali::engine_detail
