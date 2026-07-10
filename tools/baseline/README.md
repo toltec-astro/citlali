@@ -194,6 +194,9 @@ stable product mismatch.
   sidecars, and coarse timing deltas.
 - `compare_reduction_products.py`: reduction-aware product triage report for
   latest/direct `reduNN` pairs, with FITS/netCDF/table numeric differences.
+- `validate_validation_ledger.py`: validates required identity, config hash,
+  completion, comparison, and accepted-difference fields in the checked-in
+  `validation/accepted_runs.json` ledger.
 - `examples/tiny_reduction/`: a fake tiny output directory for checking the
   tools without a Citlali reduction.
 - `examples/tiny_manifest.json`: an illustrative manifest shape for the tiny
