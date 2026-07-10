@@ -53,6 +53,25 @@ Immediate work order:
 7. Record current matched OG/refactor baselines for point, beammap, science,
    and OOF before advancing the architecture again.
 
+### Phase 1 Progress
+
+- The 12 `NetCDF: Not a valid ID` errors in `redu21`/`redu22` were traced to
+  the PTC TOD stream, one error per requested output scan. The schema omitted
+  four second-pass rejection/source-protection variables that the append path
+  wrote unconditionally. Signal, flags, weights, and earlier diagnostics had
+  already been written before each exception, which explains why pairwise
+  numeric comparison passed despite incomplete diagnostics.
+- The PTC TOD schema now includes all four fields. A focused NetCDF schema test
+  creates the file layout and checks their presence. Local `citlali_cli` build
+  and `citlali::safety::ptc_tod_schema.includes_all_second_pass_summary_fields`
+  pass. Unity reduction validation is pending.
+- CTest is now enabled at the project boundary and the focused safety target is
+  discoverable from the normal top-level build directory.
+- The pre-existing `citlali_test` target was found to have substantial test
+  infrastructure and source decay. It remains a separate Phase 1 repair item;
+  the focused safety target does not conceal that debt or satisfy the complete
+  test-activation gate by itself.
+
 ## Five-Phase Roadmap
 
 ### Phase 1 - Safety Stabilization
@@ -165,4 +184,3 @@ The project still needs a machine-readable validation ledger recording commit,
 binary version, mode, input/config identity, comparator version, tolerances,
 error count, timing, peak memory, and disposition. Until it exists, update this
 document and the dated handoff note with each accepted gate result.
-

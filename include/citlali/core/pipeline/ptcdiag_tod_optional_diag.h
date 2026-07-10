@@ -11,13 +11,14 @@ void add_ptcdiag_tod_optional_diag(
     netCDF::NcDim n_scans_dim, netCDF::NcDim n_dets_dim,
     Eigen::Index n_scans, int fill_int, double fill_double) {
     if (ptcproc.second_pass_local.enabled) {
+        constexpr bool include_rejection_policy_vars = true;
         add_ptcdiag_second_pass_added_flag(
             fo, signal_dims, chunk_mode, chunk_sizes);
 
         add_ptcdiag_second_pass_network_block(
             fo, calib, n_scans_dim, n_scans,
             "1 if this network had more candidate second-pass clusters than the auto-flag limit and was diagnostic-only",
-            false, fill_int, fill_double);
+            include_rejection_policy_vars, fill_int, fill_double);
     }
 
     if (ptcproc.cleaner.corr_grouping.enabled &&
@@ -50,4 +51,3 @@ void add_ptcdiag_tod_optional_diag(
             fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
     }
 }
-

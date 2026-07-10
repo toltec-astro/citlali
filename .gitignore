@@ -4,3 +4,4 @@
 __pycache__/
 *.py[cod]
 foo/
+tests/cmake_test_discovery_*.json

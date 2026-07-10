@@ -118,6 +118,7 @@ if (CITLALI_STANDALONE)
     # Tests, examples, and docs
     option(CITLALI_BUILD_TESTS "Build tests" ON)
     if (CITLALI_BUILD_TESTS)
+        enable_testing()
         add_subdirectory(tests)
     endif()
 
