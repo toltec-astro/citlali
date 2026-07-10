@@ -1,12 +1,13 @@
 #pragma once
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/runtime_policy.h>
 
 namespace citlali::pipeline {
 
 template <class Engine>
 bool engine_config_has_errors(const Engine &engine) {
-    return engine.config_diagnostics.has_errors();
+    return config_diagnostics(engine).has_errors();
 }
 
 template <class Engine, class Config, class Logger>

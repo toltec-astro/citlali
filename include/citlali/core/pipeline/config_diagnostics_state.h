@@ -14,6 +14,14 @@ struct ConfigDiagnosticsState {
     bool has_errors() const noexcept {
         return !missing_keys.empty() || !invalid_keys.empty();
     }
+
+    const key_vec_t &missing_key_paths() const noexcept {
+        return missing_keys;
+    }
+
+    const key_vec_t &invalid_key_paths() const noexcept {
+        return invalid_keys;
+    }
 };
 
 }  // namespace citlali::pipeline

@@ -3,6 +3,16 @@
 namespace citlali::pipeline {
 
 template <class Engine>
+auto &config_diagnostics(Engine &engine) {
+    return engine.config_diagnostics;
+}
+
+template <class Engine>
+const auto &config_diagnostics(const Engine &engine) {
+    return engine.config_diagnostics;
+}
+
+template <class Engine>
 auto &reduction_config(Engine &engine) {
     return engine.typed_config;
 }

@@ -29,11 +29,12 @@ bool prepare_reduction_runtime(TodProc &todproc, Config &config,
 
 template <class Engine>
 void report_engine_config_errors(const Engine &engine, std::ostream &os) {
+    const auto &diagnostics = citlali::pipeline::config_diagnostics(engine);
     os << fmt::format("missing keys={}",
-                      engine.config_diagnostics.missing_keys)
+                      diagnostics.missing_key_paths())
        << "\n";
     os << fmt::format("invalid keys={}",
-                      engine.config_diagnostics.invalid_keys)
+                      diagnostics.invalid_key_paths())
        << "\n";
 }
 
