@@ -146,6 +146,17 @@ Add `--fail-on-warnings` when using the expander in validation scripts. This
 turns ignored unknown compact keys and other warning-level issues into a
 non-zero exit without changing the default exploratory behavior.
 
+For a single compact-config validation gate, run:
+
+```bash
+$HOME/tolteca/bin/python tools/config/run_config_preflight.py --require-all
+```
+
+The preflight compiles the config helper scripts, runs compact compatibility
+with `--fail-on-warnings`, and runs the compact-surface coverage audit with
+gap failures enabled. Reports are written under
+`/private/tmp/citlali_config_preflight` by default.
+
 `--base-config` accepts either a full Citlali YAML file or a TolTECA YAML file
 containing `reduce.steps.*.config.low_level`. This is useful for compatibility
 work against an existing `70_reduce.yaml` baseline:
