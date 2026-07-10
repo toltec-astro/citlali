@@ -8,7 +8,10 @@
 
 #include <tula/ecsv/core.h>
 #include <csv_parser/parser.hpp>
+#include <filesystem>
 #include <sstream>
+#include <stdexcept>
+#include <system_error>
 #include <tula/ecsv/table.h>
 #include <tula/formatter/container.h>
 #include <tula/formatter/matrix.h>
@@ -49,25 +52,33 @@ inline auto to_matrix_from_ecsv(std::string filepath) {
 template <typename Derived>
 inline void to_ecsv_from_matrix(std::string filepath, Eigen::DenseBase<Derived> &table, std::vector<std::string> header, YAML::Node meta) {
     namespace fs = std::filesystem;
-
-    // get logger
-    std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
-
+    const fs::path final_path(filepath + ".ecsv");
+    const fs::path temp_path(final_path.string() + ".tmp");
+    std::error_code ec;
+    fs::remove(temp_path, ec);
     try {
-        YAML::Node meta_;
-        datatable::write<datatable::Format::ecsv>(filepath + ".ecsv", table, header, std::vector<int>{}, meta);
-
-    } catch (datatable::ParseError &e) {
-        logger->warn("unable to read apt table file as ECSV {}: {}", filepath,
-                    e.what());
-        try {
-            datatable::write<datatable::Format::ascii>(filepath + ".ascii", table, header, std::vector<int>{});
-
-        } catch (datatable::ParseError &e) {
-            logger->warn("unable to write apt table file as ASCII {}: {}",
-                        filepath, e.what());
-            throw e;
+        datatable::write<datatable::Format::ecsv>(
+            temp_path.string(), table, header, std::vector<int>{}, meta);
+        ec.clear();
+        fs::remove(final_path, ec);
+        ec.clear();
+        fs::rename(temp_path, final_path, ec);
+        if (ec) {
+            throw std::runtime_error(
+                "failed to publish ECSV temp file " + temp_path.string() +
+                " -> " + final_path.string() + ": " + ec.message());
         }
+    } catch (const std::exception &e) {
+        ec.clear();
+        fs::remove(temp_path, ec);
+        throw std::runtime_error(
+            "failed to write required ECSV output " + final_path.string() +
+            ": " + e.what());
+    } catch (...) {
+        ec.clear();
+        fs::remove(temp_path, ec);
+        throw std::runtime_error(
+            "failed to write required ECSV output " + final_path.string());
     }
 }
 
