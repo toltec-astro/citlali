@@ -796,15 +796,18 @@ inline WienerFilter::FFTWContext &WienerFilter::get_thread_fft_context(int rows,
 }
 
 inline const Eigen::MatrixXcd &WienerFilter::get_filter_template_fft() {
-    if (!filter_template_fft_valid) {
-        auto &ctx = get_thread_fft_context(n_rows, n_cols);
-        Eigen::MatrixXcd in(n_rows, n_cols);
-        Eigen::MatrixXcd out(n_rows, n_cols);
-        in.real() = filter_template;
-        in.imag().setZero();
-        engine_utils::fft2_into<engine_utils::forward>(in, out, ctx.pf, ctx.a, ctx.b);
-        filter_template_fft = std::move(out);
-        filter_template_fft_valid = true;
+    #pragma omp critical (wfTemplateFFTCache)
+    {
+        if (!filter_template_fft_valid) {
+            auto &ctx = get_thread_fft_context(n_rows, n_cols);
+            Eigen::MatrixXcd in(n_rows, n_cols);
+            Eigen::MatrixXcd out(n_rows, n_cols);
+            in.real() = filter_template;
+            in.imag().setZero();
+            engine_utils::fft2_into<engine_utils::forward>(in, out, ctx.pf, ctx.a, ctx.b);
+            filter_template_fft = std::move(out);
+            filter_template_fft_valid = true;
+        }
     }
     return filter_template_fft;
 }
@@ -812,28 +815,44 @@ inline const Eigen::MatrixXcd &WienerFilter::get_filter_template_fft() {
 inline const Eigen::MatrixXcd &WienerFilter::get_filter_template_fft_scaled(bool normalize) {
     const double scale = static_cast<double>(n_rows) * static_cast<double>(n_cols);
     if (normalize) {
-        if (!filter_template_fft_normalized_scaled_valid) {
-            auto &ctx = get_thread_fft_context(n_rows, n_cols);
-            Eigen::MatrixXcd in(n_rows, n_cols);
-            Eigen::MatrixXcd out(n_rows, n_cols);
-            Eigen::MatrixXd kernel = filter_template;
-            const double kernel_sum = kernel.sum();
-            if (kernel_sum != 0.0 && std::isfinite(kernel_sum)) {
-                kernel /= kernel_sum;
+        #pragma omp critical (wfTemplateFFTCache)
+        {
+            if (!filter_template_fft_normalized_scaled_valid) {
+                auto &ctx = get_thread_fft_context(n_rows, n_cols);
+                Eigen::MatrixXcd in(n_rows, n_cols);
+                Eigen::MatrixXcd out(n_rows, n_cols);
+                Eigen::MatrixXd kernel = filter_template;
+                const double kernel_sum = kernel.sum();
+                if (kernel_sum != 0.0 && std::isfinite(kernel_sum)) {
+                    kernel /= kernel_sum;
+                }
+                in.real() = kernel;
+                in.imag().setZero();
+                engine_utils::fft2_into<engine_utils::forward>(in, out, ctx.pf, ctx.a, ctx.b);
+                out *= scale;
+                filter_template_fft_normalized_scaled = std::move(out);
+                filter_template_fft_normalized_scaled_valid = true;
             }
-            in.real() = kernel;
-            in.imag().setZero();
-            engine_utils::fft2_into<engine_utils::forward>(in, out, ctx.pf, ctx.a, ctx.b);
-            out *= scale;
-            filter_template_fft_normalized_scaled = std::move(out);
-            filter_template_fft_normalized_scaled_valid = true;
         }
         return filter_template_fft_normalized_scaled;
     }
-    if (!filter_template_fft_scaled_valid) {
-        filter_template_fft_scaled = get_filter_template_fft();
-        filter_template_fft_scaled *= scale;
-        filter_template_fft_scaled_valid = true;
+    #pragma omp critical (wfTemplateFFTCache)
+    {
+        if (!filter_template_fft_scaled_valid) {
+            if (!filter_template_fft_valid) {
+                auto &ctx = get_thread_fft_context(n_rows, n_cols);
+                Eigen::MatrixXcd in(n_rows, n_cols);
+                Eigen::MatrixXcd out(n_rows, n_cols);
+                in.real() = filter_template;
+                in.imag().setZero();
+                engine_utils::fft2_into<engine_utils::forward>(in, out, ctx.pf, ctx.a, ctx.b);
+                filter_template_fft = std::move(out);
+                filter_template_fft_valid = true;
+            }
+            filter_template_fft_scaled = filter_template_fft;
+            filter_template_fft_scaled *= scale;
+            filter_template_fft_scaled_valid = true;
+        }
     }
     return filter_template_fft_scaled;
 }
