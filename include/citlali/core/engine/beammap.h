@@ -362,7 +362,13 @@ public:
     std::vector<int> det_in_vec, det_out_vec;
 
     // initial setup for each obs
+    void assign_beammap_kids_tone_indices();
+    void register_beammap_kids_tone_column();
     void setup_beammap_kids_tone_column();
+    void resize_beammap_scan_buffers();
+    void reset_beammap_fit_buffers();
+    void reset_beammap_mask_diagnostics();
+    void reset_beammap_convergence_state();
     void resize_beammap_state_buffers();
     void populate_beammap_identity_metadata();
     void populate_beammap_phase_metadata();
