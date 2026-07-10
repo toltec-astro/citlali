@@ -3,7 +3,7 @@
 // Engine timestream config implementation detail.
 // Include this only after Engine has been declared.
 
-#include <citlali/core/engine/detail/config_parse_tracking.h>
+#include <citlali/core/pipeline/config_parse_tracking.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
 
@@ -12,7 +12,7 @@ void Engine::get_rtc_config(CT &config) {
     logger->info("getting rtc config options");
     auto &config_diag = citlali::pipeline::config_diagnostics(*this);
     // get rtcproc config
-    citlali::engine_detail::read_processor_config(
+    citlali::pipeline::read_processor_config(
         rtcproc, config, config_diag);
     auto &raw_config =
         citlali::pipeline::timestream_config(*this).raw_time_chunk;
@@ -48,7 +48,7 @@ void Engine::get_rtc_config(CT &config) {
     citlali::pipeline::configure_raw_tod_output_context(telescope, rtcproc);
 
     // ignore hwpr?
-    citlali::engine_detail::read_config_value(
+    citlali::pipeline::read_config_value(
         config, calib.ignore_hwpr, config_diag,
         std::tuple{"timestream","polarimetry", "ignore_hwpr"});
 }

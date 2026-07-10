@@ -4,7 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/engine/detail/learning_config_logging.h>
-#include <citlali/core/engine/detail/config_parse_tracking.h>
+#include <citlali/core/pipeline/config_parse_tracking.h>
 #include <citlali/core/engine/detail/learning_config_read.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 

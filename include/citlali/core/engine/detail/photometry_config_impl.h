@@ -3,7 +3,7 @@
 // Engine config loading implementation detail.
 // Include this only after Engine has been declared.
 
-#include <citlali/core/engine/detail/config_parse_tracking.h>
+#include <citlali/core/pipeline/config_parse_tracking.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 namespace citlali::engine_detail {
@@ -39,16 +39,16 @@ void Engine::get_photometry_config(CT &config) {
     source_config = citlali::config::BeammapSourceConfig{};
 
     // beammap source name
-    citlali::engine_detail::read_config_value(
+    citlali::pipeline::read_config_value(
         config, source_config.name, config_diag,
         std::tuple{"beammap_source","name"});
     // beammap source ra
-    citlali::engine_detail::read_config_value(
+    citlali::pipeline::read_config_value(
         config, source_config.ra_deg, config_diag,
         std::tuple{"beammap_source","ra_deg"});
 
     // beammap source dec
-    citlali::engine_detail::read_config_value(
+    citlali::pipeline::read_config_value(
         config, source_config.dec_deg, config_diag,
         std::tuple{"beammap_source","dec_deg"});
 

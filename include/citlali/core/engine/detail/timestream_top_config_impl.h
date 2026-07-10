@@ -69,11 +69,11 @@ void Engine::get_timestream_config(CT &config) {
 
     std::string tod_output_subdir_name =
         timestream_config.output.subdir_name;
-    citlali::engine_detail::read_mirrored_config_value(
+    citlali::pipeline::read_mirrored_config_value(
         config, std::tuple{"timestream", "output", "subdir_name"},
         tod_output_subdir_name, timestream_config.output.subdir_name,
         config_diag);
-    citlali::engine_detail::read_mirrored_config_value(
+    citlali::pipeline::read_mirrored_config_value(
         config, std::tuple{"timestream", "output", "stats", "eigenvalues"},
         diagnostics.write_evals,
         timestream_config.output.write_eigenvalues, config_diag);
@@ -129,15 +129,15 @@ void Engine::get_timestream_config(CT &config) {
         ptc_uniform_count, ptc_source_dense_count,
         timestream_config.output);
 
-    citlali::engine_detail::read_mirrored_config_value(
+    citlali::pipeline::read_mirrored_config_value(
         config, std::tuple{"timestream", "chunking", "chunk_mode"},
         telescope.chunk_mode, timestream_config.chunking.mode,
         config_diag);
-    citlali::engine_detail::read_mirrored_config_value(
+    citlali::pipeline::read_mirrored_config_value(
         config, std::tuple{"timestream", "chunking", "value"},
         telescope.chunking_value, timestream_config.chunking.value,
         config_diag);
-    citlali::engine_detail::read_mirrored_config_value(
+    citlali::pipeline::read_mirrored_config_value(
         config, std::tuple{"timestream", "chunking", "force_chunking"},
         telescope.force_chunk, timestream_config.chunking.force,
         config_diag);

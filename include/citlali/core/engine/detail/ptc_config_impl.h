@@ -3,7 +3,7 @@
 // Engine timestream config implementation detail.
 // Include this only after Engine has been declared.
 
-#include <citlali/core/engine/detail/config_parse_tracking.h>
+#include <citlali/core/pipeline/config_parse_tracking.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
@@ -13,7 +13,7 @@ void Engine::get_ptc_config(CT &config) {
     logger->info("getting ptc config options");
     auto &config_diag = citlali::pipeline::config_diagnostics(*this);
     // get ptcproc config
-    citlali::engine_detail::read_processor_config(
+    citlali::pipeline::read_processor_config(
         ptcproc, config, config_diag);
     auto &timestream_config = citlali::pipeline::timestream_config(*this);
     auto &fruit_loops_config = timestream_config.fruit_loops;

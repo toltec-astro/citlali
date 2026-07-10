@@ -3,7 +3,7 @@
 // Engine config loading implementation detail.
 // Include this only after Engine has been declared.
 
-#include <citlali/core/engine/detail/config_parse_tracking.h>
+#include <citlali/core/pipeline/config_parse_tracking.h>
 #include <citlali/core/engine/detail/pointing_config_logging.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
@@ -15,7 +15,7 @@ void Engine::get_pointing_config(CT &config) {
     auto &diagnostics = citlali::pipeline::config_diagnostics(*this);
 
     std::string pointing_source_strategy = "standard";
-    citlali::engine_detail::read_optional_parsed_mirrored_config_value(
+    citlali::pipeline::read_optional_parsed_mirrored_config_value(
         config, std::tuple{"pointing","source_strategy","mode"},
         pointing_source_strategy, pointing_config.source_strategy,
         citlali::config::parse_pointing_source_strategy, diagnostics,
@@ -25,7 +25,7 @@ void Engine::get_pointing_config(CT &config) {
         citlali::config::is_standard_pointing_source_strategy(
             pointing_config.source_strategy);
     pointing_config.fit_gaussian = pointing_fit_gaussian_enabled;
-    citlali::engine_detail::read_optional_mirrored_config_value(
+    citlali::pipeline::read_optional_mirrored_config_value(
         config, std::tuple{"pointing","source_strategy","fit_gaussian"},
         pointing_fit_gaussian_enabled, pointing_config.fit_gaussian,
         diagnostics);
@@ -37,7 +37,7 @@ void Engine::get_pointing_config(CT &config) {
             pointing_fruitloops_center_mode)) {
         pointing_config.fruitloops_center_mode = *parsed;
     }
-    citlali::engine_detail::read_optional_parsed_mirrored_config_value(
+    citlali::pipeline::read_optional_parsed_mirrored_config_value(
         config, std::tuple{"pointing","source_strategy","fruitloops_center_mode"},
         pointing_fruitloops_center_mode,
         pointing_config.fruitloops_center_mode,
@@ -54,7 +54,7 @@ void Engine::get_pointing_config(CT &config) {
     }
     pointing_config.header_max_radius_arcsec =
         pointing_header_center_max_radius_arcsec;
-    citlali::engine_detail::read_optional_mirrored_config_value(
+    citlali::pipeline::read_optional_mirrored_config_value(
         config, std::tuple{"pointing","source_strategy","header_max_radius_arcsec"},
         pointing_header_center_max_radius_arcsec,
         pointing_config.header_max_radius_arcsec, diagnostics, {}, {0.0});
@@ -62,7 +62,7 @@ void Engine::get_pointing_config(CT &config) {
     bool pointing_header_center_require_coverage = true;
     pointing_config.header_require_coverage =
         pointing_header_center_require_coverage;
-    citlali::engine_detail::read_optional_mirrored_config_value(
+    citlali::pipeline::read_optional_mirrored_config_value(
         config, std::tuple{"pointing","source_strategy","header_require_coverage"},
         pointing_header_center_require_coverage,
         pointing_config.header_require_coverage, diagnostics);

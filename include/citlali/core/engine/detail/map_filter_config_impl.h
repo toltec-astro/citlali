@@ -3,7 +3,7 @@
 // Engine config loading implementation detail.
 // Include this only after Engine has been declared.
 
-#include <citlali/core/engine/detail/config_parse_tracking.h>
+#include <citlali/core/pipeline/config_parse_tracking.h>
 #include <citlali/core/engine/detail/map_filter_config_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
@@ -15,7 +15,7 @@ void Engine::get_map_filter_config(CT &config) {
     const auto &reduction_config = citlali::pipeline::reduction_config(*this);
     auto &config_diag = citlali::pipeline::config_diagnostics(*this);
     // get wiener filter config options
-    citlali::engine_detail::read_processor_config(
+    citlali::pipeline::read_processor_config(
         wiener_filter, config, config_diag);
 
     citlali::engine_detail::mirror_wiener_filter_config(
