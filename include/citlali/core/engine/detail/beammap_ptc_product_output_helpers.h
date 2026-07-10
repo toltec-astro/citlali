@@ -6,6 +6,7 @@
 
 #include <exception>
 #include <map>
+#include <stdexcept>
 #include <string>
 
 namespace beammap_ptc_product_output_helpers {
@@ -14,11 +15,12 @@ template <class Logger>
 void update_ptc_tod_fruitloops_iter(
     const std::map<std::string, std::string> &tod_filename,
     int output_iter,
-    const Logger &logger) {
+    const Logger &) {
     auto ptc_filename_it = tod_filename.find("ptc");
     if (ptc_filename_it == tod_filename.end() ||
         ptc_filename_it->second.empty()) {
-        return;
+        throw std::runtime_error(
+            "processed TOD output is enabled but the PTC TOD filename is unavailable");
     }
 
     try {
@@ -30,13 +32,14 @@ void update_ptc_tod_fruitloops_iter(
             fruit_iter_var.putVar(&output_iter);
         }
         else {
-            logger->warn("PTC TOD file {} has no FRUITLOOPS_ITER variable",
-                         ptc_filename_it->second);
+            throw std::runtime_error(
+                "required PTC TOD file has no FRUITLOOPS_ITER variable");
         }
     }
     catch (const std::exception &e) {
-        logger->warn("failed to update PTC TOD FRUITLOOPS_ITER in {}: {}",
-                     ptc_filename_it->second, e.what());
+        throw std::runtime_error(
+            "failed to update required PTC TOD FRUITLOOPS_ITER in " +
+            ptc_filename_it->second + ": " + e.what());
     }
 }
 

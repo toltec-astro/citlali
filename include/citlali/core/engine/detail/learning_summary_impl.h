@@ -6,19 +6,24 @@
 #include <citlali/core/pipeline/csv_output.h>
 #include <citlali/core/pipeline/learning_summary_csv.h>
 
+#include <stdexcept>
+
 inline void Engine::write_learning_summary() {
     if (!learning.is_enabled() ||
-        !learning.diagnostics_enabled() ||
-        output_paths.redu_dir_name.empty()) {
+        !learning.diagnostics_enabled()) {
         return;
+    }
+    if (output_paths.redu_dir_name.empty()) {
+        throw std::runtime_error(
+            "timestream.learning diagnostics are enabled but the reduction output directory is empty");
     }
 
     const auto filename =
         citlali::pipeline::learning_summary_filename(output_paths.redu_dir_name, iteration.fruit_iter);
     std::ofstream out(filename);
     if (!out) {
-        logger->warn("failed to open learning summary output {}", filename);
-        return;
+        throw std::runtime_error(
+            "failed to open required learning summary output " + filename);
     }
 
     auto csv = citlali::pipeline::csv_escaped;
@@ -74,6 +79,17 @@ inline void Engine::write_learning_summary() {
     for (const auto &record : learning.learned_mask_applications) {
         write_row(citlali::pipeline::learning_summary_mask_application_row(
             record, text, csv));
+    }
+
+    out.flush();
+    if (!out) {
+        throw std::runtime_error(
+            "failed to write required learning summary output " + filename);
+    }
+    out.close();
+    if (!out) {
+        throw std::runtime_error(
+            "failed to finalize required learning summary output " + filename);
     }
 
     logger->info("wrote reduction learning summary {}", filename);
