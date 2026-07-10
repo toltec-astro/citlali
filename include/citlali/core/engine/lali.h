@@ -63,5 +63,6 @@ public:
 
 
 #include <citlali/core/engine/detail/lali_setup_pipeline_impl.h>
+#include <citlali/core/engine/detail/lali_timestream_output_impl.h>
 #include <citlali/core/engine/detail/lali_run_impl.h>
 #include <citlali/core/engine/detail/lali_output_impl.h>

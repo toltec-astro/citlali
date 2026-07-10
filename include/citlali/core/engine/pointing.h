@@ -92,6 +92,7 @@ public:
 
 #include <citlali/core/engine/detail/pointing_setup_impl.h>
 #include <citlali/core/engine/detail/pointing_pipeline_impl.h>
+#include <citlali/core/engine/detail/pointing_timestream_output_impl.h>
 #include <citlali/core/engine/detail/pointing_run_impl.h>
 #include <citlali/core/engine/detail/pointing_fit_maps_impl.h>
 #include <citlali/core/engine/detail/pointing_output_impl.h>
