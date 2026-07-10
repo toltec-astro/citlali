@@ -82,7 +82,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
                 raw_timestream_settings);
         citlali::pipeline::add_rtc_local_despike_config_vars(
             fo, rtcproc.despiker.local_residual);
-        citlali::pipeline::add_tod_filter_runtime_config_vars(
+        citlali::pipeline::add_tod_filter_config_vars(
             fo, raw_timestream_settings, run_any_tod_filter);
         citlali::pipeline::add_tod_filter_edge_guard_config_vars(
             fo, rtcproc.filter_edge_guard, telescope.outer_scans_chunk,

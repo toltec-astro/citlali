@@ -85,11 +85,11 @@ void add_phdu_initial_runtime_config(FitsEntry &fits_entry,
 }
 
 template <class FitsEntry, class RawTimeChunkConfig, class Logger>
-void add_phdu_tod_filter_runtime_config(FitsEntry &fits_entry,
-                                        const std::string &array_name,
-                                        const Logger &logger,
-                                        const RawTimeChunkConfig &config,
-                                        bool run_any_tod_filter) {
+void add_phdu_tod_filter_config(FitsEntry &fits_entry,
+                                const std::string &array_name,
+                                const Logger &logger,
+                                const RawTimeChunkConfig &config,
+                                bool run_any_tod_filter) {
     auto &hdu = fits_entry.pfits->pHDU();
     hdu.addKey("CONFIG.TODFILTERED", run_any_tod_filter, "TOD Filtered");
     hdu.addKey("CONFIG.TODNOTCH", config.filter.notch.enabled,

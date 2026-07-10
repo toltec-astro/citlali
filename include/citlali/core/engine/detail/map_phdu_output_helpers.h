@@ -142,7 +142,7 @@ void add_phdu_tod_runtime_config_section(
         raw_config.despike.enabled);
     citlali::pipeline::add_phdu_rtc_local_despike_config(
         fits_entry, array_name, logger, rtcproc.despiker.local_residual);
-    citlali::pipeline::add_phdu_tod_filter_runtime_config(
+    citlali::pipeline::add_phdu_tod_filter_config(
         fits_entry, array_name, logger, raw_config, run_any_tod_filter);
     citlali::pipeline::add_phdu_tod_edge_guard_config(
         fits_entry, rtcproc.filter_edge_guard, outer_context_samples);

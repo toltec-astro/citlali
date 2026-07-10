@@ -74,9 +74,9 @@ inline void add_tod_initial_runtime_config_vars(netCDF::NcFile &fo,
 }
 
 template <class RawTimeChunkConfig>
-void add_tod_filter_runtime_config_vars(netCDF::NcFile &fo,
-                                        const RawTimeChunkConfig &config,
-                                        bool run_any_tod_filter) {
+void add_tod_filter_config_vars(netCDF::NcFile &fo,
+                                const RawTimeChunkConfig &config,
+                                bool run_any_tod_filter) {
     add_netcdf_var(fo, "CONFIG.TODFILTERED", run_any_tod_filter);
     add_netcdf_var(fo, "CONFIG.TODNOTCH", config.filter.notch.enabled);
     add_netcdf_var(fo, "CONFIG.TODIIRHP", config.iir_filter.enabled);
