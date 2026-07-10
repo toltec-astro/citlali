@@ -21,7 +21,7 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest inspected point reduction: `redu24`, produced by `a9a7990e`.
+- Latest inspected point reduction: `redu25`, produced by `c2ec8ae5`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
@@ -31,7 +31,7 @@ branch. The exact validated tree will remain available for forensic review.
   default appeared for a disabled filter and an extinction sentinel changed.
   The mirror fix is committed locally and awaits Unity validation.
 - Local `citlali_cli` build and compact-config preflight pass.
-- The local focused safety target discovers and passes 14 tests.
+- The local focused safety target discovers and passes 18 tests.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -107,6 +107,17 @@ Immediate work order:
   infrastructure and source decay. It remains a separate Phase 1 repair item;
   the focused safety target does not conceal that debt or satisfy the complete
   test-activation gate by itself.
+- Enabled timestream products now carry mode- and config-derived expected write
+  counts. Pointing, Lali, and Beammap verify RTC TOD, PTC TOD, `rtcdiag`, and
+  `ptcdiag` cardinality after worker drainage and before map finalization, so a
+  silently omitted required chunk fails even when no individual write throws.
+- Main timestream scan generators now own their cursors per pipeline invocation
+  instead of sharing function-local static counters. Focused tests prove exact
+  enumeration and a clean scan-zero start after an earlier cursor is abandoned.
+- `redu25` (`c2ec8ae5`) finished with zero serious log issues and the same
+  complete 33-file/14 stable-product inventory as `redu24`. Scientific arrays,
+  maps, and tables are exact. The only strict-comparison differences are the
+  intended disabled-IIR effective-provenance changes in RTC/PTC metadata.
 
 ## Five-Phase Roadmap
 
