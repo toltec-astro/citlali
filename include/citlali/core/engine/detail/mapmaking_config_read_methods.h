@@ -30,6 +30,16 @@ void read_jinc_filter_config(Config &config, JincMapmaker &jinc_mm,
     }
 }
 
+template <class Config, class JincMapmaker, class ArrayNameMap,
+          class Diagnostics>
+void read_jinc_filter_config(Config &config, JincMapmaker &jinc_mm,
+                             const ArrayNameMap &array_name_map,
+                             Diagnostics &diagnostics) {
+    read_jinc_filter_config(
+        config, jinc_mm, array_name_map, diagnostics.missing_keys,
+        diagnostics.invalid_keys);
+}
+
 template <class Config, class MaximumLikelihoodMapmaker, class MissingKeys,
           class InvalidKeys>
 void read_maximum_likelihood_mapmaker_config(
@@ -41,6 +51,14 @@ void read_maximum_likelihood_mapmaker_config(
     ::get_config_value(
         config, ml_mm.max_iterations, missing_keys, invalid_keys,
         std::tuple{"mapmaking", "maximum_likelihood", "max_iterations"});
+}
+
+template <class Config, class MaximumLikelihoodMapmaker, class Diagnostics>
+void read_maximum_likelihood_mapmaker_config(
+    Config &config, MaximumLikelihoodMapmaker &ml_mm,
+    Diagnostics &diagnostics) {
+    read_maximum_likelihood_mapmaker_config(
+        config, ml_mm, diagnostics.missing_keys, diagnostics.invalid_keys);
 }
 
 template <class Config, class JincMapmaker, class MaximumLikelihoodMapmaker,
@@ -62,4 +80,16 @@ void read_method_specific_mapmaker_config(
         read_maximum_likelihood_mapmaker_config(
             config, ml_mm, missing_keys, invalid_keys);
     }
+}
+
+template <class Config, class JincMapmaker, class MaximumLikelihoodMapmaker,
+          class ArrayNameMap, class PtcProc, class Diagnostics>
+void read_method_specific_mapmaker_config(
+    Config &config, citlali::config::MapMethod map_method,
+    JincMapmaker &jinc_mm,
+    MaximumLikelihoodMapmaker &ml_mm, const ArrayNameMap &array_name_map,
+    PtcProc &ptcproc, double pixel_size_rad, Diagnostics &diagnostics) {
+    read_method_specific_mapmaker_config(
+        config, map_method, jinc_mm, ml_mm, array_name_map, ptcproc,
+        pixel_size_rad, diagnostics.missing_keys, diagnostics.invalid_keys);
 }

@@ -13,6 +13,15 @@ void read_noise_maps_enabled_config(Config &config, bool &enabled,
         typed_config.enabled, missing_keys, invalid_keys);
 }
 
+template <class Config, class Diagnostics, class NoiseConfig>
+void read_noise_maps_enabled_config(Config &config, bool &enabled,
+                                    NoiseConfig &typed_config,
+                                    Diagnostics &diagnostics) {
+    read_noise_maps_enabled_config(
+        config, enabled, typed_config, diagnostics.missing_keys,
+        diagnostics.invalid_keys);
+}
+
 template <class Config, class MissingKeys, class InvalidKeys,
           class NoiseCount, class NoiseConfig>
 void read_noise_map_count_config(Config &config, NoiseCount &n_noise,
@@ -32,6 +41,16 @@ void read_noise_map_count_config(Config &config, NoiseCount &n_noise,
         std::vector<value_type>{});
 }
 
+template <class Config, class Diagnostics, class NoiseCount,
+          class NoiseConfig>
+void read_noise_map_count_config(Config &config, NoiseCount &n_noise,
+                                 NoiseConfig &typed_config,
+                                 Diagnostics &diagnostics) {
+    read_noise_map_count_config(
+        config, n_noise, typed_config, diagnostics.missing_keys,
+        diagnostics.invalid_keys);
+}
+
 template <class Config, class MissingKeys, class InvalidKeys,
           class NoiseConfig>
 void read_noise_randomize_dets_config(Config &config, bool &randomize_dets,
@@ -41,6 +60,15 @@ void read_noise_randomize_dets_config(Config &config, bool &randomize_dets,
     read_mirrored_config_value(
         config, std::tuple{"noise_maps", "randomize_dets"}, randomize_dets,
         typed_config.randomize_dets, missing_keys, invalid_keys);
+}
+
+template <class Config, class Diagnostics, class NoiseConfig>
+void read_noise_randomize_dets_config(Config &config, bool &randomize_dets,
+                                      NoiseConfig &typed_config,
+                                      Diagnostics &diagnostics) {
+    read_noise_randomize_dets_config(
+        config, randomize_dets, typed_config, diagnostics.missing_keys,
+        diagnostics.invalid_keys);
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -55,6 +83,16 @@ void read_noise_write_realizations_config(Config &config,
     read_optional_mirrored_config_value(
         config, key, write_realizations, typed_config.write_realizations,
         missing_keys, invalid_keys);
+}
+
+template <class Config, class Diagnostics, class NoiseConfig>
+void read_noise_write_realizations_config(Config &config,
+                                          bool &write_realizations,
+                                          NoiseConfig &typed_config,
+                                          Diagnostics &diagnostics) {
+    read_noise_write_realizations_config(
+        config, write_realizations, typed_config, diagnostics.missing_keys,
+        diagnostics.invalid_keys);
 }
 
 template <class Config, class MissingKeys, class InvalidKeys,
@@ -73,6 +111,17 @@ void read_noise_products_enabled_config(Config &config,
         missing_keys, invalid_keys);
 }
 
+template <class Config, class Diagnostics, class NoiseConfig>
+void read_noise_products_enabled_config(Config &config,
+                                        bool &products_enabled,
+                                        bool default_enabled,
+                                        NoiseConfig &typed_config,
+                                        Diagnostics &diagnostics) {
+    read_noise_products_enabled_config(
+        config, products_enabled, default_enabled, typed_config,
+        diagnostics.missing_keys, diagnostics.invalid_keys);
+}
+
 template <class Config, class MissingKeys, class InvalidKeys,
           class NoiseConfig>
 void read_noise_empirical_weights_config(Config &config,
@@ -88,4 +137,15 @@ void read_noise_empirical_weights_config(Config &config,
     read_optional_mirrored_config_value(
         config, key, apply_weights, typed_config.apply_empirical_weights,
         missing_keys, invalid_keys);
+}
+
+template <class Config, class Diagnostics, class NoiseConfig>
+void read_noise_empirical_weights_config(Config &config,
+                                         bool &apply_weights,
+                                         bool default_enabled,
+                                         NoiseConfig &typed_config,
+                                         Diagnostics &diagnostics) {
+    read_noise_empirical_weights_config(
+        config, apply_weights, default_enabled, typed_config,
+        diagnostics.missing_keys, diagnostics.invalid_keys);
 }

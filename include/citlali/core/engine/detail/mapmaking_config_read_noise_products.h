@@ -27,6 +27,18 @@ void read_noise_map_config(Config &config, bool &run_noise,
     }
 }
 
+template <class Config, class OutputMapBlock, class CoaddMapBlock,
+          class CoaddConfig, class Diagnostics, class NoiseConfig>
+void read_noise_map_config(Config &config, bool &run_noise,
+                           const CoaddConfig &typed_coadd_config,
+                           OutputMapBlock &omb, CoaddMapBlock &cmb,
+                           NoiseConfig &typed_config,
+                           Diagnostics &diagnostics) {
+    read_noise_map_config(
+        config, run_noise, typed_coadd_config, omb, cmb, typed_config,
+        diagnostics.missing_keys, diagnostics.invalid_keys);
+}
+
 template <class Config, class MissingKeys, class InvalidKeys,
           class NoiseConfig>
 void read_noise_product_config(Config &config, bool &write_realizations,
@@ -45,4 +57,15 @@ void read_noise_product_config(Config &config, bool &write_realizations,
         config, apply_empirical_weights,
         citlali::config::noise_maps_active(typed_config), typed_config,
         missing_keys, invalid_keys);
+}
+
+template <class Config, class Diagnostics, class NoiseConfig>
+void read_noise_product_config(Config &config, bool &write_realizations,
+                               bool &products_enabled,
+                               bool &apply_empirical_weights,
+                               NoiseConfig &typed_config,
+                               Diagnostics &diagnostics) {
+    read_noise_product_config(
+        config, write_realizations, products_enabled, apply_empirical_weights,
+        typed_config, diagnostics.missing_keys, diagnostics.invalid_keys);
 }
