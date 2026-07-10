@@ -708,6 +708,11 @@ public:
         const BeammapArrayPositionMedians &array_position_medians,
         const std::string &runtime_parallel_policy,
         std::atomic<int> &n_flagged_dets);
+    double beammap_detector_flux_calibration_amp(Eigen::Index detector_index);
+    void clear_beammap_detector_flux_conversion(Eigen::Index detector_index);
+    void reject_beammap_detector_flux_conversion(Eigen::Index detector_index);
+    void calculate_beammap_detector_flux_conversion(Eigen::Index detector_index);
+    void update_beammap_array_source_flux_density();
     void calculate_beammap_flux_conversion_factors(
         const std::string &runtime_parallel_policy);
 
