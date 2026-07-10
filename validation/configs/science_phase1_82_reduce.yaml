@@ -1,0 +1,16 @@
+# Phase 1 science validation overlay.
+# Keep core science mapmaking and coaddition active while excluding the
+# expensive fruit-loop and Wiener-filter validation cases.
+reduce:
+  steps:
+    0:
+      config:
+        low_level:
+          timestream:
+            fruit_loops:
+              enabled: false
+          noise_maps:
+            enabled: false
+          post_processing:
+            map_filtering:
+              enabled: false
