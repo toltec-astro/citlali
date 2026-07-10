@@ -301,6 +301,22 @@ The validator is also part of `run_config_preflight.py`. Add or update an
 inventory domain whenever config ownership, a loading boundary, or a legacy
 adapter changes.
 
+`audit_config_authority_reads.py` complements that declared inventory with a
+source census. It classifies direct untyped config access as a typed loader,
+legacy parser, CLI boundary, external schema boundary, legacy entrypoint, or a
+site requiring review:
+
+```bash
+$HOME/tolteca/bin/python tools/config/audit_config_authority_reads.py \
+  --json-out /tmp/config_read_census.json \
+  --markdown-out /tmp/config_read_census.md \
+  --fail-on-review
+```
+
+The preflight fails if a direct access appears outside a recognized boundary.
+Classification is architectural bookkeeping, not permission to add raw YAML
+reads: new sites still require an explicit ownership decision.
+
 ## Compact Compatibility Suite
 
 `run_compact_compatibility.py` runs a manifest of compact examples against

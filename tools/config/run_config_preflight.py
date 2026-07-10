@@ -51,6 +51,7 @@ def main(argv: list[str]) -> int:
         "tools/config/lowlevel_to_compact_config.py",
         "tools/config/run_compact_compatibility.py",
         "tools/config/audit_compact_surface_coverage.py",
+        "tools/config/audit_config_authority_reads.py",
         "tools/config/classify_lowlevel_config.py",
         "tools/config/compare_lowlevel_yaml.py",
         "tools/config/validate_config_authority_inventory.py",
@@ -81,6 +82,15 @@ def main(argv: list[str]) -> int:
         [
             sys.executable,
             "tools/config/validate_config_authority_inventory.py",
+        ],
+        [
+            sys.executable,
+            "tools/config/audit_config_authority_reads.py",
+            "--json-out",
+            str(work_dir / "config_read_census.json"),
+            "--markdown-out",
+            str(work_dir / "config_read_census.md"),
+            "--fail-on-review",
         ],
     ]
     if args.require_all:

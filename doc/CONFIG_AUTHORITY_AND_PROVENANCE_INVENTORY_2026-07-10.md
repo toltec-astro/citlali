@@ -49,6 +49,23 @@ Every domain currently has incomplete provenance. Runtime and product logs
 already provide pieces of effective/realized state, but there is no uniform
 requested/effective/realized record yet.
 
+The companion lexical census currently finds 611 direct config-access
+expressions across 30 files:
+
+| Boundary | Files | Accesses |
+| --- | ---: | ---: |
+| Legacy processor/parser | 8 | 488 |
+| Typed loader | 10 | 32 |
+| External schema | 5 | 29 |
+| Legacy entrypoint | 4 | 55 |
+| CLI | 3 | 7 |
+
+No access is currently unclassified. The high legacy-parser count is a useful
+migration denominator, but it does not mean 488 execution-time fallbacks:
+these reads are concentrated in processor `get_config` implementations called
+during loading. The next operational work should move one coherent parser
+domain at a time, then prove that execution uses its typed effective plan.
+
 ## Migration Order
 
 1. **Freeze the inventory and loading boundaries.** Add a domain whenever a
@@ -90,4 +107,6 @@ Validate the inventory with:
 
 ```bash
 $HOME/tolteca/bin/python tools/config/validate_config_authority_inventory.py
+$HOME/tolteca/bin/python tools/config/audit_config_authority_reads.py \
+  --fail-on-review
 ```
