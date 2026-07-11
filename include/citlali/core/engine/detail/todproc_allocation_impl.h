@@ -3,6 +3,7 @@
 // Implementation detail included by todproc.h.
 
 #include <citlali/core/pipeline/map_buffer_allocation.h>
+#include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template <class EngineType>
@@ -17,7 +18,7 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
     citlali::pipeline::allocate_map_matrices(
         omb, engine().map_indices.n_maps,
         mapmaking_settings.method == citlali::config::MapMethod::jinc,
-        engine().rtcproc.run_kernel,
+        citlali::pipeline::raw_kernel_enabled(engine()),
         mapmaking_settings.grouping != citlali::config::MapGrouping::detector);
     citlali::pipeline::allocate_polarization_pointing_matrices(
         omb, engine().map_indices.n_maps,
@@ -35,7 +36,8 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb() {
 
     citlali::pipeline::clear_map_matrix_products(cmb);
     citlali::pipeline::allocate_map_matrices(
-        cmb, engine().map_indices.n_maps, false, engine().rtcproc.run_kernel,
+        cmb, engine().map_indices.n_maps, false,
+        citlali::pipeline::raw_kernel_enabled(engine()),
         mapmaking_settings.grouping != citlali::config::MapGrouping::detector);
     citlali::pipeline::allocate_polarization_pointing_matrices(
         cmb, engine().map_indices.n_maps,

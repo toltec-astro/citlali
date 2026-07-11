@@ -3,6 +3,8 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/pipeline/raw_timestream_policy.h>
+
 void Beammap::populate_beammap_identity_metadata() {
     calib.apt_meta["obsnum"] = observation_identity.obsnum;
     calib.apt_meta["source"] = telescope.source_name;
@@ -38,7 +40,7 @@ void Beammap::populate_beammap_time_and_frame_metadata() {
 }
 
 void Beammap::populate_beammap_tau_metadata() {
-    if (rtcproc.run_extinction) {
+    if (citlali::pipeline::raw_extinction_correction_enabled(*this)) {
         Eigen::VectorXd tau_el(1);
         tau_el << telescope.tel_data["TelElAct"].mean();
         auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);

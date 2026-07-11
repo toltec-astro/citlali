@@ -113,7 +113,11 @@ Effective sample-rate preflight now follows typed policy even when the legacy
 RTC mirror disagrees. A factor derived from requested frequency is written to
 both typed config and the RTC downsampler because the numerical downsampler
 still consumes that execution adapter. The domain remains `mixed-adapter` until
-the remaining RTC policy reads are migrated.
+the remaining RTC policy reads are migrated. Filter and kernel enablement now
+also drive observation setup, map allocation, TOD/FITS product shape,
+coaddition, and beammap orchestration from typed config. Flux-unit and
+extinction setup decisions use the same authority. Numerical filter, kernel,
+and calibration objects remain processor-owned execution state.
 
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:

@@ -6,6 +6,7 @@
 #include <citlali/core/pipeline/map_image_output_helpers.h>
 #include <citlali/core/pipeline/map_output_debug_breadcrumb.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template <typename fits_io_type, class map_buffer_t>
@@ -66,7 +67,7 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
             source_epoch, empirical_weight_calibration, is_beammap, logger);
 
         // kernel map
-        if (rtcproc.run_kernel) {
+        if (citlali::pipeline::raw_kernel_enabled(*this)) {
             const auto &array_fwhm =
                 citlali::pipeline::require_array_fwhm_for_id(
                     calib.array_fwhms, array_id, logger);

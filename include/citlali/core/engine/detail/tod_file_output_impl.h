@@ -4,6 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/raw_timestream_policy.h>
 
 template <class map_buffer_t>
 void Engine::add_tod_header(map_buffer_t &mb) {
@@ -165,7 +166,8 @@ void Engine::create_tod_files() {
 
     citlali::pipeline::add_tod_core_data_vars(
         fo, tod_dims.signal, tod_layout.stream.mini_output, omb.sig_unit,
-        rtcproc.run_kernel, telescope.pixel_axes, chunkMode, chunkSizes);
+        citlali::pipeline::raw_kernel_enabled(*this), telescope.pixel_axes,
+        chunkMode, chunkSizes);
 
     citlali::pipeline::add_tod_static_metadata_vars(
         fo, calib.apt, calib.apt_header_units, telescope.tel_data,

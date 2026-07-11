@@ -3,6 +3,8 @@
 // Beammap mapmaking stage implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/pipeline/raw_timestream_policy.h>
+
 void Beammap::normalize_beammap_maps_after_pass(
     const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
     const std::string &profile_context) {
@@ -10,7 +12,8 @@ void Beammap::normalize_beammap_maps_after_pass(
     const auto normalize_profile_scope =
         citlali::pipeline::profile_stage(
             "beammap.mapmaking.normalize", logger, profile_context);
-    if (rtcproc.run_kernel && !omb.grid_weight.empty()) {
+    if (citlali::pipeline::raw_kernel_enabled(*this) &&
+        !omb.grid_weight.empty()) {
         timestream::log_kernel_map_diag(
             logger,
             "beammap iter " + std::to_string(current_iter) + " before normalize",
@@ -19,7 +22,7 @@ void Beammap::normalize_beammap_maps_after_pass(
             &omb.grid_weight);
     }
     omb.normalize_maps(active_maps);
-    if (rtcproc.run_kernel) {
+    if (citlali::pipeline::raw_kernel_enabled(*this)) {
         timestream::log_kernel_map_diag(
             logger,
             "beammap iter " + std::to_string(current_iter) + " after normalize",
@@ -61,7 +64,8 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
             mapmaking_method, omb, map_indices.n_maps, logger);
 
         citlali::pipeline::reset_beammap_mapmaking_buffers(
-            omb, ptcs, map_indices.n_maps, rtcproc.run_kernel,
+            omb, ptcs, map_indices.n_maps,
+            citlali::pipeline::raw_kernel_enabled(*this),
             citlali::pipeline::noise_maps_enabled(*this),
             omb.randomize_dets, calib.n_dets, active_maps_ptr, rands,
             eng);

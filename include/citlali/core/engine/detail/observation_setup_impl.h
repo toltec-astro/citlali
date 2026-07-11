@@ -6,6 +6,7 @@
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/config_value.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/stage_profile.h>
 #include <citlali/core/pipeline/timestream_output_provenance.h>
@@ -14,7 +15,7 @@ namespace citlali::engine_detail {
 
 template <class EngineT>
 void setup_observation_extinction(EngineT &engine) {
-    if (engine.rtcproc.run_extinction) {
+    if (citlali::pipeline::raw_extinction_correction_enabled(engine)) {
         // get atm model
         engine.rtcproc.calibration.setup(engine.telescope.tau_225_GHz);
 
@@ -61,7 +62,7 @@ void validate_observation_polarization_inputs(EngineT &engine) {
 template <class EngineT>
 void setup_observation_timestream_processors(EngineT &engine) {
     // setup kernel
-    if (engine.rtcproc.run_kernel) {
+    if (citlali::pipeline::raw_kernel_enabled(engine)) {
         engine.rtcproc.kernel.setup(engine.map_indices.n_maps);
     }
 
@@ -71,18 +72,19 @@ void setup_observation_timestream_processors(EngineT &engine) {
     engine.ptcproc.cleaner.sample_rate_Hz = engine.telescope.d_fsmp;
 
     // if filter is requested, make it here
-    if (engine.rtcproc.run_tod_filter) {
+    if (citlali::pipeline::raw_fir_filter_enabled(engine)) {
         engine.rtcproc.filter.make_filter(engine.telescope.fsmp);
-        if (engine.rtcproc.run_tod_notch) {
+        if (citlali::pipeline::raw_notch_filter_enabled(engine)) {
             engine.rtcproc.filter.make_notch_filter(engine.telescope.fsmp);
         }
     }
-    if (engine.rtcproc.run_tod_iir_highpass) {
+    if (citlali::pipeline::raw_iir_filter_enabled(engine)) {
         const double nyquist_Hz = engine.telescope.fsmp / 2.0;
-        if (engine.rtcproc.filter.iir_highpass_freq_Hz >= nyquist_Hz) {
+        if (!citlali::pipeline::raw_iir_filter_below_nyquist(engine)) {
             engine.logger->error(
                 "timestream.raw_time_chunk.IIR_filter.freq_Hz ({}) must be less than Nyquist ({})",
-                engine.rtcproc.filter.iir_highpass_freq_Hz, nyquist_Hz);
+                citlali::pipeline::raw_iir_filter_frequency_hz(engine),
+                nyquist_Hz);
             std::exit(EXIT_FAILURE);
         }
     }

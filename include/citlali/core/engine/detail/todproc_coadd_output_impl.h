@@ -6,12 +6,13 @@
 #include <citlali/core/pipeline/observation_map_files.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/product_index_file.h>
+#include <citlali/core/pipeline/raw_timestream_policy.h>
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::coadd() {
     citlali::pipeline::accumulate_observation_into_coadd(
         engine().cmb, engine().omb, engine().map_indices.n_maps,
-        engine().rtcproc.run_kernel);
+        citlali::pipeline::raw_kernel_enabled(engine()));
 }
 
 template <class EngineType>

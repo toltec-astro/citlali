@@ -3,6 +3,8 @@
 // Beammap mapmaking stage implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/pipeline/raw_timestream_policy.h>
+
 template <class KidsProc, class RawObs>
 bool Beammap::maybe_run_beammap_source_aware_rtc(KidsProc &kidsproc,
                                                  RawObs &rawobs,
@@ -12,7 +14,7 @@ bool Beammap::maybe_run_beammap_source_aware_rtc(KidsProc &kidsproc,
 
     const bool detector_kernel_source_centers_active =
         detector_grouping &&
-        rtcproc.run_kernel &&
+        citlali::pipeline::raw_kernel_enabled(*this) &&
         rtcproc.kernel.has_source_centers();
     const bool rerun_source_aware_rtc =
         first_measurement_iter && detector_kernel_source_centers_active;

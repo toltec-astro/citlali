@@ -17,6 +17,7 @@
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
 #include <citlali/core/pipeline/output_netcdf_metadata.h>
+#include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/runtime_provenance_output.h>
 #include <citlali/core/pipeline/timestream_output_provenance.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
@@ -2828,6 +2829,37 @@ TEST(pipeline_preflight, sample_rate_policy_uses_typed_downsample_config) {
     EXPECT_TRUE(citlali::pipeline::configure_effective_sample_rate(
         engine, logger));
     EXPECT_DOUBLE_EQ(engine.telescope.d_fsmp, 20.0);
+}
+
+TEST(pipeline_preflight, raw_filter_policy_uses_typed_config) {
+    FakeEngine engine;
+    engine.telescope.fsmp = 100.0;
+    auto &raw = engine.typed_config.timestream.raw_time_chunk;
+    raw.kernel.enabled = true;
+    raw.flux_calibration_enabled = true;
+    raw.extinction_correction_enabled = true;
+    raw.filter.enabled = true;
+    raw.filter.notch.enabled = true;
+    raw.iir_filter.enabled = true;
+    raw.iir_filter.freq_Hz = 10.0;
+    engine.rtcproc.run_downsample = false;
+
+    EXPECT_TRUE(citlali::pipeline::raw_kernel_enabled(engine));
+    EXPECT_TRUE(citlali::pipeline::raw_flux_calibration_enabled(engine));
+    EXPECT_TRUE(
+        citlali::pipeline::raw_extinction_correction_enabled(engine));
+    EXPECT_TRUE(citlali::pipeline::raw_fir_filter_enabled(engine));
+    EXPECT_TRUE(citlali::pipeline::raw_notch_filter_enabled(engine));
+    EXPECT_TRUE(citlali::pipeline::raw_iir_filter_enabled(engine));
+    EXPECT_DOUBLE_EQ(citlali::pipeline::raw_iir_filter_frequency_hz(engine),
+                     10.0);
+    EXPECT_TRUE(citlali::pipeline::raw_iir_filter_below_nyquist(engine));
+
+    raw.filter.enabled = false;
+    raw.iir_filter.freq_Hz = 50.0;
+    EXPECT_FALSE(citlali::pipeline::raw_fir_filter_enabled(engine));
+    EXPECT_FALSE(citlali::pipeline::raw_notch_filter_enabled(engine));
+    EXPECT_FALSE(citlali::pipeline::raw_iir_filter_below_nyquist(engine));
 }
 
 TEST(pipeline_preflight, loads_hwpr_data_for_polarized_observation) {

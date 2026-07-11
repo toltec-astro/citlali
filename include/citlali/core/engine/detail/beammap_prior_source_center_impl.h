@@ -9,6 +9,7 @@
 #include <vector>
 
 #include <citlali/core/pipeline/reduction_config_accessors.h>
+#include <citlali/core/pipeline/raw_timestream_policy.h>
 
 bool Beammap::find_map_weighted_peak(Eigen::Index map_index, Eigen::Index &best_row,
                                      Eigen::Index &best_col, double &best_snr) const {
@@ -132,7 +133,7 @@ void Beammap::publish_beammap_detector_kernel_source_centers(
     const Eigen::VectorXd &kernel_source_b_fwhm_rad,
     const std::vector<double> &fwhm_arcsec_values,
     const Beammap::BeammapDetectorSourceCenterStats &source_center_stats) {
-    if (!rtcproc.run_kernel) {
+    if (!citlali::pipeline::raw_kernel_enabled(*this)) {
         return;
     }
 

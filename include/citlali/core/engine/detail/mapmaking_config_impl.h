@@ -5,6 +5,7 @@
 
 #include <citlali/core/pipeline/mapmaking_config_read.h>
 #include <citlali/core/pipeline/mapmaking_config_policy.h>
+#include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template<typename CT>
@@ -70,7 +71,8 @@ void Engine::get_mapmaking_config(CT &config) {
         logger);
 
     citlali::pipeline::apply_uncalibrated_map_units(
-        rtcproc.run_calibrate, timestream_config.type, omb, cmb);
+        citlali::pipeline::raw_flux_calibration_enabled(*this),
+        timestream_config.type, omb, cmb);
 
     citlali::pipeline::sync_mapmaking_parallel_policy(
         citlali::pipeline::runtime_parallel_policy_name(*this),

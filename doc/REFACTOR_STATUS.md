@@ -77,9 +77,12 @@ Work has started on the `raw-timestream` domain. Downsample enablement,
 requested factor/frequency, anti-alias validation, and effective sample-rate
 preflight now use typed raw-time-chunk configuration. Frequency-derived factors
 are synchronized into the RTC downsampler only as an execution adapter. A
-divergence test proves typed policy wins over stale processor mirrors; all 230
-tests pass. Remaining RTC filters, flagging, calibration, and diagnostics are
-still being inventoried and migrated in bounded clusters.
+divergence test proves typed policy wins over stale processor mirrors. Typed
+policy also controls FIR/notch/IIR setup, kernel-dependent allocation and
+products, flux-unit selection, and extinction setup; processor objects retain
+the corresponding numerical state. All 231 tests pass. Remaining RTC flagging,
+source-protection, line-audit, and diagnostics boundaries are being migrated in
+bounded clusters.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
