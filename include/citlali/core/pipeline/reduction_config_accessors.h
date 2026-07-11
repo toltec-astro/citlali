@@ -3,6 +3,31 @@
 namespace citlali::pipeline {
 
 template <class Engine>
+auto &runtime_config_provenance(Engine &engine) {
+    return engine.runtime_config_provenance;
+}
+
+template <class Engine>
+const auto &runtime_config_provenance(const Engine &engine) {
+    return engine.runtime_config_provenance;
+}
+
+template <class Engine>
+const auto &requested_runtime_config(const Engine &engine) {
+    return runtime_config_provenance(engine).requested;
+}
+
+template <class Engine>
+const auto &effective_runtime_config(const Engine &engine) {
+    return runtime_config_provenance(engine).effective;
+}
+
+template <class Engine>
+const auto &realized_runtime_config(const Engine &engine) {
+    return runtime_config_provenance(engine).realized;
+}
+
+template <class Engine>
 auto &config_diagnostics(Engine &engine) {
     return engine.config_diagnostics;
 }

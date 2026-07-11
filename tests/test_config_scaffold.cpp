@@ -1785,6 +1785,28 @@ TEST(cli_runtime_setup, derives_fftw_threads) {
     EXPECT_EQ(citlali::cli::fftw_threads_for_runtime(8, true), 1);
 }
 
+TEST(cli_runtime_setup, separates_requested_effective_and_realized_runtime) {
+    citlali::config::RuntimeConfig requested;
+    requested.n_threads = 6;
+    requested.parallel_policy = citlali::config::ParallelPolicy::omp;
+
+    auto provenance = citlali::config::make_runtime_config_provenance(
+        requested, true);
+
+    EXPECT_TRUE(provenance.initialized);
+    EXPECT_EQ(provenance.requested.n_threads, 6);
+    EXPECT_EQ(provenance.effective.values.n_threads, 6);
+    EXPECT_EQ(provenance.effective.threads.requested_threads, 6);
+    EXPECT_EQ(provenance.effective.threads.omp_threads, 6);
+    EXPECT_EQ(provenance.effective.threads.eigen_threads, 1);
+    EXPECT_EQ(provenance.effective.threads.fftw_plan_threads, 1);
+    EXPECT_TRUE(provenance.effective.threads.wiener_filter_omp);
+    EXPECT_FALSE(provenance.realized.fftw_threads_initialized);
+
+    provenance.effective.values.n_threads = 3;
+    EXPECT_EQ(provenance.requested.n_threads, 6);
+}
+
 TEST(cli_runtime_setup, configures_runtime_threads) {
     FakeEngine engine;
     engine.typed_config.runtime.n_threads = 6;
@@ -1793,7 +1815,7 @@ TEST(cli_runtime_setup, configures_runtime_threads) {
     int eigen_threads = 0;
     int fftw_threads = 0;
 
-    citlali::cli::configure_runtime_threads(
+    const auto realized = citlali::cli::configure_runtime_threads(
         engine, logger, false,
         [&](int n_threads) { omp_threads = n_threads; },
         [&](int n_threads) { eigen_threads = n_threads; },
@@ -1805,6 +1827,10 @@ TEST(cli_runtime_setup, configures_runtime_threads) {
     EXPECT_EQ(fftw_threads, 6);
     EXPECT_EQ(logger->info_calls, 1);
     EXPECT_EQ(logger->warn_calls, 0);
+    EXPECT_EQ(realized.omp_threads, 6);
+    EXPECT_EQ(realized.eigen_threads, 1);
+    EXPECT_EQ(realized.fftw_plan_threads, 6);
+    EXPECT_TRUE(realized.fftw_threads_initialized);
 }
 
 TEST(cli_runtime_setup, configures_single_fftw_thread_for_wiener_omp) {
@@ -1813,7 +1839,7 @@ TEST(cli_runtime_setup, configures_single_fftw_thread_for_wiener_omp) {
     auto logger = std::make_shared<FakeLogger>();
     int fftw_threads = 0;
 
-    citlali::cli::configure_runtime_threads(
+    const auto realized = citlali::cli::configure_runtime_threads(
         engine, logger, true,
         [](int) {},
         [](int) {},
@@ -1821,6 +1847,7 @@ TEST(cli_runtime_setup, configures_single_fftw_thread_for_wiener_omp) {
         [&](int n_threads) { fftw_threads = n_threads; });
 
     EXPECT_EQ(fftw_threads, 1);
+    EXPECT_EQ(realized.fftw_plan_threads, 1);
 }
 
 TEST(cli_runtime_setup, warns_when_fftw_thread_init_fails) {
@@ -1829,7 +1856,7 @@ TEST(cli_runtime_setup, warns_when_fftw_thread_init_fails) {
     auto logger = std::make_shared<FakeLogger>();
     int fftw_threads = 0;
 
-    citlali::cli::configure_runtime_threads(
+    const auto realized = citlali::cli::configure_runtime_threads(
         engine, logger, false,
         [](int) {},
         [](int) {},
@@ -1838,6 +1865,10 @@ TEST(cli_runtime_setup, warns_when_fftw_thread_init_fails) {
 
     EXPECT_EQ(fftw_threads, 0);
     EXPECT_EQ(logger->warn_calls, 1);
+    EXPECT_EQ(realized.omp_threads, 6);
+    EXPECT_EQ(realized.eigen_threads, 1);
+    EXPECT_EQ(realized.fftw_plan_threads, 0);
+    EXPECT_FALSE(realized.fftw_threads_initialized);
 }
 
 TEST(cli_reduction_runtime, prepares_reduction_runtime) {

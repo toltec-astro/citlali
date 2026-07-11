@@ -33,7 +33,7 @@ bool prepare_cli_reduction_runtime_or_report_errors(
     return prepare_reduction_runtime_or_report_errors(
         todproc, config, logger,
         []() { spdlog::set_level(spdlog::level::debug); },
-        [&](const auto &engine) {
+        [&](auto &engine) {
             configure_citlali_runtime_threads(engine, logger);
         },
         os);

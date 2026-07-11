@@ -22,6 +22,15 @@ void Engine::get_citlali_config(CT &config) {
     auto &diagnostics = citlali::pipeline::config_diagnostics(*this);
 
     runtime_config = get_runtime_config(config);
+    citlali::pipeline::runtime_config_provenance(*this) =
+        citlali::config::make_runtime_config_provenance(
+            runtime_config,
+#if defined(CITLALI_USE_WIENER_FILTER_OMP)
+            true
+#else
+            false
+#endif
+        );
     if (!runtime_config.interp_over_gaps) {
         logger->error("runtime.interp_over_gaps=false is unsupported; set runtime.interp_over_gaps: true");
         std::exit(EXIT_FAILURE);
