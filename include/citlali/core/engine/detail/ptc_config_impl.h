@@ -6,6 +6,7 @@
 #include <citlali/core/pipeline/config_parse_tracking.h>
 #include <citlali/core/pipeline/fruit_loops_config_read.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/processed_clean_config_read.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
 #include <citlali/core/pipeline/timestream_config_adapter_processed.h>
@@ -29,6 +30,8 @@ void Engine::get_ptc_config(CT &config) {
     citlali::pipeline::mirror_processed_clean_config(
         processed_config.clean, ptcproc,
         toltec_io.array_name_map);
+    citlali::pipeline::read_processed_clean_core_config(
+        config, processed_config.clean, config_diag);
     citlali::pipeline::apply_processed_clean_config_to_processor(
         processed_config.clean, toltec_io.array_name_map, ptcproc);
     auto &typed_weighting = processed_config.weighting;

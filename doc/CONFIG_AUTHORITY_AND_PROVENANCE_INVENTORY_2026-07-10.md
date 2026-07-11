@@ -217,6 +217,11 @@ correlation grouping, null-model, Marchenko-Pastur, and adaptive-selector
 policy, including explicit array-name to array-id translation for configured
 eigenmode counts. Realized cleaner outputs remain untouched after setup.
 
+Direct typed cleaning parsing now owns enablement, grouping, source-mask
+radius, cleaner regularization, and mutually exclusive cleaner-mode selection.
+Mode-specific expert parameters and standard-PCA eigen-count normalization
+remain seeded by the compatibility parser pending their focused extraction.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

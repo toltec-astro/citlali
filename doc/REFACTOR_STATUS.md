@@ -123,6 +123,11 @@ cleaner modes and correlation grouping. The local build caught and corrected
 an `int` versus `Eigen::Index` boundary conversion before Unity. All 236 tests,
 the CLI build, and full preflight pass.
 
+The cleaning reader now directly owns core activation and mode-selection
+policy before the one-way cleaner adapter runs. Expert mode parameters and
+eigen-count padding remain in the compatibility parser for the next slices.
+All 236 tests, all eight real config profiles, and full preflight pass.
+
 Raw input and metadata boundaries now use typed policy for duplicate-tone
 frequency separation, RTC diagnostic FIR/source-bandwidth ratios, and whether
 FITS/TOD tau metadata is calculated. The atmospheric calibration object remains
