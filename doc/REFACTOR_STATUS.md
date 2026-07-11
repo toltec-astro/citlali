@@ -128,6 +128,11 @@ policy before the one-way cleaner adapter runs. Expert mode parameters and
 eigen-count padding remain in the compatibility parser for the next slices.
 All 236 tests, all eight real config profiles, and full preflight pass.
 
+Direct cleaning parsing now includes standard-PCA eigen-count normalization
+and both current and legacy key aliases. Empty and short vectors receive the
+same defaulting and padding behavior before the one-way adapter runs. All 236
+tests, all eight real profiles, and full preflight pass.
+
 Raw input and metadata boundaries now use typed policy for duplicate-tone
 frequency separation, RTC diagnostic FIR/source-bandwidth ratios, and whether
 FITS/TOD tau metadata is calculated. The atmospheric calibration object remains

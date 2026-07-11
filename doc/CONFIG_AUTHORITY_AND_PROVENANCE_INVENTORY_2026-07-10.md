@@ -222,6 +222,12 @@ radius, cleaner regularization, and mutually exclusive cleaner-mode selection.
 Mode-specific expert parameters and standard-PCA eigen-count normalization
 remain seeded by the compatibility parser pending their focused extraction.
 
+Standard-PCA configuration now reads directly into typed state, including
+current and legacy key paths for per-array eigen counts, empty-vector defaults,
+group-count padding, standard-deviation limits, and calculated-mode limits.
+The typed reader therefore owns the compatibility normalization rules as well
+as the resulting values.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

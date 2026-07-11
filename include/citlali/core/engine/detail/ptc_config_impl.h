@@ -31,7 +31,8 @@ void Engine::get_ptc_config(CT &config) {
         processed_config.clean, ptcproc,
         toltec_io.array_name_map);
     citlali::pipeline::read_processed_clean_core_config(
-        config, processed_config.clean, config_diag);
+        config, processed_config.clean, config_diag,
+        toltec_io.array_name_map, logger);
     citlali::pipeline::apply_processed_clean_config_to_processor(
         processed_config.clean, toltec_io.array_name_map, ptcproc);
     auto &typed_weighting = processed_config.weighting;
