@@ -36,5 +36,6 @@ void Engine::get_pointing_config(CT &config) {
         pointing_config.header_require_coverage;
 
     citlali::pipeline::log_pointing_config(
-        pointing_config, ptcproc, logger);
+        pointing_config, citlali::pipeline::fruit_loops_config(*this),
+        logger);
 }

@@ -162,6 +162,12 @@ read the typed policy directly. The selected interpolation mode is copied to
 `PTCProc` as realized numerical state; processor mirrors no longer participate
 in choosing or reporting that policy.
 
+Fruit-loop configuration metadata in TOD NetCDF headers, PTC diagnostic
+NetCDF files, and map FITS headers now serializes the typed effective policy.
+Pointing policy warnings also use typed fruit-loop enablement and iteration
+count. Detector-specific fitted vectors remain processor-owned runtime results;
+only configuration values and array flux limits moved to typed authority.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

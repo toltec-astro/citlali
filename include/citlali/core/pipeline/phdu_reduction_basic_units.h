@@ -2,17 +2,17 @@
 
 // Included by phdu_reduction_config.h inside namespace citlali::pipeline.
 
-template <class PtcProc, class Arrays, class Index, class ArrayId>
-double phdu_fruit_loop_flux_limit(const PtcProc &ptcproc,
-                                  const Arrays &arrays, Index i,
-                                  const ArrayId &array_id) {
+template <class Arrays, class Index, class ArrayId>
+double phdu_fruit_loop_flux_limit(
+    const citlali::config::TimestreamFruitLoopsConfig &config,
+    const Arrays &arrays, Index i, const ArrayId &array_id) {
     double flux_limit = 0.0;
-    if (ptcproc.run_fruit_loops) {
-        if (ptcproc.fruit_loops_flux.size() == arrays.size()) {
-            flux_limit = ptcproc.fruit_loops_flux(i);
+    if (config.enabled) {
+        if (config.array_flux_limit.size() == arrays.size()) {
+            flux_limit = config.array_flux_limit[i];
         }
-        else if (array_id < ptcproc.fruit_loops_flux.size()) {
-            flux_limit = ptcproc.fruit_loops_flux(array_id);
+        else if (array_id < config.array_flux_limit.size()) {
+            flux_limit = config.array_flux_limit[array_id];
         }
     }
     return flux_limit;

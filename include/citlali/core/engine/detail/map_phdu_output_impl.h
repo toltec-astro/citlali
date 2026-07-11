@@ -81,7 +81,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     citlali::engine_detail::add_phdu_ptc_learning_config_section(
         fits_entry, name, logger, ptcproc, calib, learning, i,
-        array_id, mb->sig_unit);
+        array_id, mb->sig_unit,
+        citlali::pipeline::fruit_loops_config(*this),
+        citlali::pipeline::pointing_config(*this));
 
     citlali::engine_detail::add_phdu_pointing_telescope_header_section(
         fits_entry, mb, telescope, name, logger, reduction_type,

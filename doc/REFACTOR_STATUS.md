@@ -128,6 +128,11 @@ Interpolation override selection and fruit-loop runtime-policy logging now use
 the same typed authority; the processor retains only the realized interpolation
 mode required by map-to-TOD execution. All 234 tests pass.
 
+TOD, PTC-diagnostic, and FITS-map fruit-loop metadata now serializes typed
+effective configuration, including array flux limits and pointing source-center
+policy. Pointing warnings use the same authority. Runtime detector fit vectors
+remain in `PTCProc`. The CLI build, all 235 tests, and full preflight pass.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.

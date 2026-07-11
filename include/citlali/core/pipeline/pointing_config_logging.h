@@ -6,9 +6,10 @@
 
 namespace citlali::pipeline {
 
-template <class PtcProc, class Logger>
+template <class Logger>
 void log_pointing_config(
-    const citlali::config::PointingConfig &pointing_config, const PtcProc &ptcproc,
+    const citlali::config::PointingConfig &pointing_config,
+    const citlali::config::TimestreamFruitLoopsConfig &fruit_config,
     const Logger &logger) {
     const auto pointing_source_strategy =
         citlali::config::to_string(pointing_config.source_strategy);
@@ -22,14 +23,14 @@ void log_pointing_config(
         pointing_config.header_max_radius_arcsec,
         pointing_config.header_require_coverage);
 
-    if (!ptcproc.run_fruit_loops) {
+    if (!fruit_config.enabled) {
         logger->warn(
             "pointing source strategy is configured but timestream.fruit_loops.enabled=false");
     }
-    else if (ptcproc.fruit_loops_iters < 2) {
+    else if (fruit_config.max_iters < 2) {
         logger->warn(
             "pointing source-aware fruit loops uses previous maps; max_iters={} will not run a measurement iteration",
-            ptcproc.fruit_loops_iters);
+            fruit_config.max_iters);
     }
 
     if (pointing_config.source_strategy ==

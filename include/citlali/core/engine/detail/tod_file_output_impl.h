@@ -111,7 +111,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             toltec_io.array_name_map, toltec_io.array_wavelength_map);
 
         citlali::pipeline::add_fruit_loop_header_config_vars(
-            fo, ptcproc, calib, toltec_io.array_name_map);
+            fo, citlali::pipeline::fruit_loops_config(*this), calib,
+            toltec_io.array_name_map);
 
         fo.close();
     }

@@ -17,6 +17,7 @@
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
 #include <citlali/core/pipeline/output_netcdf_metadata.h>
+#include <citlali/core/pipeline/phdu_reduction_config.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/runtime_provenance_output.h>
 #include <citlali/core/pipeline/source_protection_activation.h>
@@ -4336,6 +4337,18 @@ TEST(pipeline_execution, uses_typed_fruit_loop_interpolation_policy) {
         engine, citlali::config::MapMethod::jinc, logger);
 
     EXPECT_EQ(engine.ptcproc.fruit_loops_interp_mode, "bilinear");
+}
+
+TEST(pipeline_execution, uses_typed_fruit_loop_flux_metadata) {
+    citlali::config::TimestreamFruitLoopsConfig config;
+    config.enabled = true;
+    config.array_flux_limit = {11.0, 22.0};
+    const std::vector<int> arrays{0, 2};
+
+    EXPECT_DOUBLE_EQ(
+        citlali::pipeline::phdu_fruit_loop_flux_limit(
+            config, arrays, 1, 2),
+        22.0);
 }
 
 TEST(pipeline_execution, skips_initial_fruit_loop_map_without_path) {
