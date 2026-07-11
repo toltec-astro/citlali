@@ -39,12 +39,18 @@ These facts are characterization evidence, not a production-equivalence claim.
 
 ## Active Phase
 
-**Phase 1 - Safety stabilization** is active.
+**Phase 2 - Config authority and provenance** is active as of 2026-07-11.
 
-Pause further typed analysis-control migration, compact-config production
-rollout, and open-ended file splitting. Narrow work that repairs safety
-contracts, activates tests, clarifies authority, or prepares a measured
-compiled boundary remains in scope.
+Phase 1 safety stabilization is complete for the currently available point,
+Beammap, and science validation modes. OOF validation is explicitly deferred
+by the project owner until its workflow is available, expected during the week
+after 2026-07-11; because OOF closely follows pointing, that deferral does not
+block Phase 2. It remains a required validation before final integration.
+
+Operational config migration must proceed one authority domain at a time with
+the one-way requested-to-effective-to-realized contract, focused tests, and the
+existing mode gates. Compact-config production rollout and open-ended file
+splitting remain out of scope.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
@@ -158,9 +164,13 @@ Immediate work order:
   stable products. Against same-config refactor `redu10` (`9ef7da8a`), all 24
   compared FITS/NetCDF products have zero changed or skipped records. Against
   deterministic OG science `redu15`, all nine FITS products remain within the
-  current tolerance, while 30 RTC/PTC diagnostic records differ. Those
-  diagnostic differences are characterized but not yet accepted as full
-  equivalence.
+  current tolerance, while 30 RTC/PTC diagnostic records differ under the
+  generic pointwise comparator. Scientific-owner review accepted those
+  differences on 2026-07-11: all integer diagnostics are exact, map RMS drift
+  is at most `2.31e-11`, PTC weight RMS drift is `2.14e-12`, and the largest
+  near-zero detector-median difference is `2.85e-5` absolute and `2.42e-4`
+  fractional. The versioned `science-scientific-equivalence-v1` gate enforces
+  the accepted bounds and the validation ledger records the checkpoint.
 - The intervening science `redu11` failed after observation 0 when observation
   1 metadata loading raised an unqualified NetCDF `No such file or directory`.
   Its merged config was identical to the successful runs. Metadata-load
