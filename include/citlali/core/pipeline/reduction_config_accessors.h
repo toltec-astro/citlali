@@ -103,6 +103,16 @@ const auto &processed_time_chunk_config(const Engine &engine) {
 }
 
 template <class Engine>
+auto &fruit_loops_config(Engine &engine) {
+    return timestream_config(engine).fruit_loops;
+}
+
+template <class Engine>
+const auto &fruit_loops_config(const Engine &engine) {
+    return timestream_config(engine).fruit_loops;
+}
+
+template <class Engine>
 auto &mapmaking_config(Engine &engine) {
     return reduction_config(engine).mapmaking;
 }

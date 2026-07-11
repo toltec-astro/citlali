@@ -112,6 +112,13 @@ decisions no longer depend on `RTCProc` mirrors. Remaining raw-timestream work
 is concentrated in numerical-method adapters internal to `RTCProc`; polarimetry
 is tracked as a separate authority domain.
 
+The first processed-timestream authority slice now routes fruit-loop
+enablement, effective iteration count, retained-iteration output layout,
+initial/previous model-map paths, and learning source-model availability
+through typed fruit-loop config. Beammap and disabled-loop normalization is
+recorded in typed effective state and copied into `PTCProc` only as an execution
+adapter. All 232 tests and the full config preflight pass.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 namespace citlali::pipeline {
 
 struct FruitLoopRuntimeState {
@@ -17,7 +19,8 @@ inline void reset_reduction_iteration_state(ReductionIterationState &state) {
 template <class Engine>
 bool fruit_loop_iteration_pending(const Engine &engine,
                                   bool fruit_loops_converged) {
-    return (engine.iteration.fruit_iter < engine.ptcproc.fruit_loops_iters) &&
+    return (engine.iteration.fruit_iter <
+            fruit_loops_config(engine).max_iters) &&
            !fruit_loops_converged;
 }
 

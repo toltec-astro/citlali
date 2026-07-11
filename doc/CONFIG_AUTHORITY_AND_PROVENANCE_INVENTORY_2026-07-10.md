@@ -139,6 +139,16 @@ impulsive-capture policy explicitly. This removes the remaining external raw
 product-shape decision from processor mirrors; internal RTC algorithms still
 consume numerical adapter structures.
 
+### Processed Timestream Authority Checkpoint - 2026-07-11
+
+The first `processed-timestream` slice moves fruit-loop lifecycle and map-path
+policy to `TimestreamFruitLoopsConfig`: enablement, effective iteration count,
+retained-iteration layout, initial model path/type, previous-iteration path,
+and learning source-model availability. Beammap and disabled-loop policy
+normalization updates typed effective state, then synchronizes iteration count
+and retention into `PTCProc` for the existing loop implementation. Divergence
+fixtures now establish that typed policy controls orchestration.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

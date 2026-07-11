@@ -3,6 +3,7 @@
 #include <citlali/core/config/config_value.h>
 #include <citlali/core/pipeline/fruit_loop_map_io.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 #include <string>
 
@@ -10,16 +11,16 @@ namespace citlali::pipeline {
 
 template <class Engine>
 bool should_load_initial_fruit_loop_maps(const Engine &engine) {
-    return engine.ptcproc.run_fruit_loops &&
+    return fruit_loops_config(engine).enabled &&
            engine.iteration.fruit_iter == 0 &&
            citlali::config::has_config_value(
-               engine.ptcproc.fruit_loops_path);
+               fruit_loops_config(engine).path);
 }
 
 template <class Engine>
 std::string initial_fruit_loop_map_dir(const Engine &engine) {
-    return fruit_loop_map_dir(engine.ptcproc.fruit_loops_path,
-                              engine.ptcproc.fruit_loops_type,
+    return fruit_loop_map_dir(fruit_loops_config(engine).path,
+                              fruit_loops_config(engine).type,
                               engine.omb.obsnums.back());
 }
 

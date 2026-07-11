@@ -7,10 +7,10 @@ namespace citlali::pipeline {
 
 template <class Engine>
 bool fruit_loop_learning_source_model_available(const Engine &engine) {
-    return engine.ptcproc.run_fruit_loops &&
+    return fruit_loops_config(engine).enabled &&
            (engine.iteration.fruit_iter > 0 ||
             citlali::config::has_config_value(
-                engine.ptcproc.fruit_loops_path));
+                fruit_loops_config(engine).path));
 }
 
 template <class Engine>

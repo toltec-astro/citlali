@@ -4,6 +4,7 @@
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 #include <string>
 
@@ -78,16 +79,19 @@ void mirror_jinc_mapmaker_config_to_fruit_loops(const JincMapmaker &jinc_mm,
 template <class Engine, class Logger>
 void configure_fruit_loop_iteration_policy(Engine &engine,
                                            const Logger &logger) {
-    if (engine.ptcproc.run_fruit_loops && !noise_maps_enabled(engine)) {
+    auto &config = fruit_loops_config(engine);
+    if (config.enabled && !noise_maps_enabled(engine)) {
         logger->warn("noise maps are not enabled for fruit loops");
     }
 
-    if (!engine.ptcproc.run_fruit_loops ||
+    if (!config.enabled ||
         runtime_reduction_type(engine) ==
             citlali::config::ReductionType::beammap) {
-        engine.ptcproc.fruit_loops_iters = 1;
-        engine.ptcproc.save_all_iters = true;
+        config.max_iters = 1;
+        config.save_all_iters = true;
     }
+    engine.ptcproc.fruit_loops_iters = config.max_iters;
+    engine.ptcproc.save_all_iters = config.save_all_iters;
 }
 
 }  // namespace citlali::pipeline

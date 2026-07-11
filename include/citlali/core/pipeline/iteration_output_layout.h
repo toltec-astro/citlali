@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/output_config_copy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 #include <string>
 
@@ -8,7 +9,8 @@ namespace citlali::pipeline {
 
 template <class Engine>
 bool should_prepare_iteration_output_layout(const Engine &engine) {
-    return engine.ptcproc.save_all_iters || engine.iteration.fruit_iter == 0;
+    return fruit_loops_config(engine).save_all_iters ||
+           engine.iteration.fruit_iter == 0;
 }
 
 template <class TodProc>

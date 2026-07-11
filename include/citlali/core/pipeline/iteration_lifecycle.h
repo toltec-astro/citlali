@@ -1,13 +1,14 @@
 #pragma once
 
 #include <citlali/core/pipeline/reduction_learning_lifecycle.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/weight_validation_lifecycle.h>
 
 namespace citlali::pipeline {
 
 template <class Engine>
 bool should_log_fruit_loop_iteration_start(const Engine &engine) {
-    return engine.ptcproc.run_fruit_loops;
+    return fruit_loops_config(engine).enabled;
 }
 
 template <class Engine, class Logger>

@@ -3,6 +3,7 @@
 #include <citlali/core/pipeline/fruit_loop_map_io.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
 #include <citlali/core/pipeline/runtime_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 #include <string>
 
@@ -17,21 +18,21 @@ template <class Engine>
 std::string saved_previous_fruit_loop_map_dir(const Engine &engine) {
     return previous_fruit_loop_map_dir(
         runtime_output_dir(engine), engine.output_paths.redu_dir_num,
-        engine.ptcproc.fruit_loops_type,
+        fruit_loops_config(engine).type,
         engine.omb.obsnums.back());
 }
 
 template <class Engine>
 std::string current_previous_fruit_loop_map_dir(const Engine &engine) {
     return fruit_loop_map_dir(engine.output_paths.redu_dir_name,
-                              engine.ptcproc.fruit_loops_type,
+                              fruit_loops_config(engine).type,
                               engine.omb.obsnums.back());
 }
 
 template <class Engine, class Logger>
 std::string previous_fruit_loop_map_dir(const Engine &engine,
                                         const Logger &logger) {
-    if (engine.ptcproc.save_all_iters) {
+    if (fruit_loops_config(engine).save_all_iters) {
         return saved_previous_fruit_loop_map_dir(engine);
     }
 
