@@ -128,7 +128,7 @@ bool should_write_filtered_outputs(const Engine &engine) {
 
 template <class Engine>
 bool filtered_maps_written_during_filtering(const Engine &engine) {
-    return runtime_config(engine).reduction_type ==
+    return runtime_reduction_type(engine) ==
            citlali::config::ReductionType::science;
 }
 

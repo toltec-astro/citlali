@@ -13,7 +13,8 @@ void Engine::create_rtcdiag_file() {
             engine_utils::toltecIO::raw>(
             toltec_io, output_paths.obsnum_dir_name,
             citlali::pipeline::timestream_config(*this).output.subdir_name,
-            citlali::pipeline::runtime_config(*this).reduction_type, observation_identity.obsnum, telescope.sim_obs);
+            citlali::pipeline::runtime_reduction_type(*this),
+            observation_identity.obsnum, telescope.sim_obs);
 
     write_netcdf_atomic(output_paths.rtcdiag_filename, [&](netCDF::NcFile &fo) {
 
@@ -61,7 +62,8 @@ void Engine::create_rtcdiag_file() {
 
     citlali::pipeline::add_pipeline_identity_vars(
         fo, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
-        telescope.project_id, citlali::pipeline::runtime_config(*this).reduction_type,
+        telescope.project_id,
+        citlali::pipeline::runtime_reduction_type(*this),
         telescope.obs_goal, citlali::pipeline::timestream_config(*this).type);
     add_netcdf_var(fo, "SAMPRATE", telescope.fsmp);
     citlali::pipeline::add_rtcdiag_file_config_vars(

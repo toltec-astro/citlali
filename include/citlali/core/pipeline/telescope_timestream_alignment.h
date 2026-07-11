@@ -14,7 +14,7 @@ bool should_align_telescope_timestreams(const Engine &engine) {
 template <class Engine>
 bool should_interpolate_over_timing_gaps(const Engine &engine) {
     return citlali::config::timing_gap_interpolation_active(
-        runtime_config(engine));
+        effective_runtime_values(engine));
 }
 
 template <class TodProc, class RawObs>

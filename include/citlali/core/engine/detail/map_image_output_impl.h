@@ -57,7 +57,7 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
         };
 
         const bool is_beammap =
-            citlali::pipeline::runtime_config(*this).reduction_type ==
+            citlali::pipeline::runtime_reduction_type(*this) ==
             citlali::config::ReductionType::beammap;
         const bool empirical_weight_calibration =
             citlali::pipeline::empirical_weight_calibration_enabled(*this);

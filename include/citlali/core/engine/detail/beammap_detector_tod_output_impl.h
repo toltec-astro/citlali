@@ -24,7 +24,7 @@ void Beammap::write_detector_specific_ptc_tod_file(
 
         tod_nc::put_output_metadata(
             fo, observation_identity.obsnum, telescope,
-            citlali::pipeline::runtime_config(*this).reduction_type,
+            citlali::pipeline::runtime_reduction_type(*this),
             citlali::pipeline::timestream_config(*this).type,
             processed_time_chunk_fs_hz(), output_iter, n_uniform, n_dense);
 
@@ -157,7 +157,8 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
         output_paths.obsnum_dir_name,
         citlali::pipeline::beammap_config(*this)
             .detector_tod_output.subdir_name,
-        telescope.sim_obs, citlali::pipeline::runtime_config(*this).reduction_type, observation_identity.obsnum);
+        telescope.sim_obs, citlali::pipeline::runtime_reduction_type(*this),
+        observation_identity.obsnum);
     const std::string &filename = detector_tod_paths.filename;
 
     logger->info(

@@ -48,7 +48,7 @@ void Beammap::timestream_pipeline(KidsProc &kidsproc, RawObs &rawobs, bool write
                 rtcdata, kidsproc, rawobs, scan, telescope, alignment.start_indices,
                 alignment.end_indices, alignment.common_time, alignment.network_times, alignment.masks,
                 citlali::config::timing_gap_interpolation_active(
-                    citlali::pipeline::runtime_config(*this)),
+                    citlali::pipeline::effective_runtime_values(*this)),
                 scan_length, calib.n_dets,
                 citlali::pipeline::timestream_config(*this).type);
 
@@ -89,7 +89,7 @@ auto Beammap::run_timestream(
             alignment.hwpr_start_index, scan_window.start, scan_window.length);
         citlali::pipeline::initialize_rtc_flags(rtcdata);
         if (citlali::config::timing_gap_interpolation_active(
-                citlali::pipeline::runtime_config(*this))) {
+                citlali::pipeline::effective_runtime_values(*this))) {
             citlali::pipeline::apply_gap_masks_to_rtc_flags(
                 rtcdata, calib, alignment.network_masks, scan_window.start,
                 rtcproc.filter_edge_guard.context_samples, logger);

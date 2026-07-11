@@ -89,7 +89,8 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 mapdiag_context, i, idx, mb, core_mask, weight_sum[idx],
                 core_weight_sum[idx], n_valid_pixels[idx],
                 n_core_pixels[idx], toltec_io, output_paths.redu_dir_name,
-                citlali::pipeline::runtime_config(*this).reduction_type, telescope.sim_obs,
+                citlali::pipeline::runtime_reduction_type(*this),
+                telescope.sim_obs,
                 mapdiag_label_storage, obs_tables,
                 logger);
         citlali::pipeline::assign_mapdiag_obs_fractions_for_map(

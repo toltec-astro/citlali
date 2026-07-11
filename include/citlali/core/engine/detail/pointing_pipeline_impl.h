@@ -55,7 +55,7 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
                 rtcdata, kidsproc, rawobs, scan, telescope, alignment.start_indices,
                 alignment.end_indices, alignment.common_time, alignment.network_times, alignment.masks,
                 citlali::config::timing_gap_interpolation_active(
-                    citlali::pipeline::runtime_config(*this)),
+                    citlali::pipeline::effective_runtime_values(*this)),
                 scan_length, calib.n_dets,
                 citlali::pipeline::timestream_config(*this).type);
 

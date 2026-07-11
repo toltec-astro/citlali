@@ -107,7 +107,7 @@ RtcScanSampleWindow prepare_standard_rtc_scan_context(
         scan_window.start, scan_window.length);
     initialize_rtc_flags(rtcdata);
     if (citlali::config::timing_gap_interpolation_active(
-            runtime_config(engine))) {
+            effective_runtime_values(engine))) {
         apply_gap_masks_to_rtc_flags(
             rtcdata, engine.calib, engine.alignment.network_masks,
             scan_window.start, engine.rtcproc.filter_edge_guard.context_samples,

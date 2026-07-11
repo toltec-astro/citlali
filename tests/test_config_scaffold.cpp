@@ -672,6 +672,9 @@ struct FakeReductionLearning {
 
 struct FakeIterationEngine {
     citlali::config::ReductionConfig typed_config;
+    citlali::config::RuntimeConfigProvenance runtime_config_provenance =
+        citlali::config::make_runtime_config_provenance(typed_config.runtime,
+                                                        false);
     citlali::pipeline::OutputPathState output_paths = [] {
         citlali::pipeline::OutputPathState paths;
         paths.redu_dir_name = "/tmp/redu01";
@@ -709,6 +712,9 @@ struct FakeReductionIterationEngine {
         config.noise.enabled = true;
         return config;
     }();
+    citlali::config::RuntimeConfigProvenance runtime_config_provenance =
+        citlali::config::make_runtime_config_provenance(typed_config.runtime,
+                                                        false);
     citlali::pipeline::OutputPathState output_paths = [] {
         citlali::pipeline::OutputPathState paths;
         paths.redu_dir_name = "/tmp/redu01";
@@ -770,6 +776,13 @@ struct FakeReductionIterationEngine {
         ++find_sources_calls;
     }
 };
+
+template <class Engine>
+void sync_fake_runtime_provenance(Engine &engine) {
+    engine.runtime_config_provenance =
+        citlali::config::make_runtime_config_provenance(
+            engine.typed_config.runtime, false);
+}
 
 struct FakeReductionIterationTodProc {
     FakeReductionIterationEngine engine_state;
@@ -2259,6 +2272,7 @@ TEST(pipeline_preflight, loads_and_aligns_telescope_data) {
 TEST(pipeline_preflight, aligns_telescope_data_over_gaps) {
     FakeTelescopeTodProc todproc;
     todproc.engine().typed_config.runtime.interp_over_gaps = true;
+    sync_fake_runtime_provenance(todproc.engine());
     FakeRawObs rawobs;
     auto logger = std::make_shared<FakeLogger>();
 
@@ -2723,6 +2737,7 @@ TEST(pipeline_preflight, configures_beammap_fruit_loop_as_single_iteration) {
     FakeEngine engine;
     engine.typed_config.runtime.reduction_type =
         citlali::config::ReductionType::beammap;
+    sync_fake_runtime_provenance(engine);
     engine.ptcproc.run_fruit_loops = true;
     engine.ptcproc.fruit_loops_iters = 5;
     engine.ptcproc.save_all_iters = false;
@@ -2751,6 +2766,7 @@ TEST(pipeline_preflight, preserves_science_fruit_loop_iteration_policy) {
     FakeEngine engine;
     engine.typed_config.runtime.reduction_type =
         citlali::config::ReductionType::science;
+    sync_fake_runtime_provenance(engine);
     engine.ptcproc.run_fruit_loops = true;
     engine.ptcproc.fruit_loops_iters = 5;
     engine.ptcproc.save_all_iters = false;
@@ -3446,6 +3462,7 @@ TEST(pipeline_execution, writes_filtered_observation_outputs) {
     FakeCoaddTodProc todproc;
     todproc.engine().typed_config.runtime.reduction_type =
         citlali::config::ReductionType::pointing;
+    sync_fake_runtime_provenance(todproc.engine());
     todproc.engine().typed_config.noise.products_enabled = true;
     todproc.engine().typed_config.noise.enabled = true;
     citlali::config::set_source_finding_enabled(
@@ -3472,6 +3489,7 @@ TEST(pipeline_execution, fits_filtered_observation_maps_when_requested) {
     FakeCoaddTodProc todproc;
     todproc.engine().typed_config.runtime.reduction_type =
         citlali::config::ReductionType::pointing;
+    sync_fake_runtime_provenance(todproc.engine());
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::write_filtered_observation_outputs<
@@ -3529,6 +3547,7 @@ TEST(pipeline_execution, writes_observation_outputs_and_filters) {
     FakeCoaddTodProc todproc;
     todproc.engine().typed_config.runtime.reduction_type =
         citlali::config::ReductionType::pointing;
+    sync_fake_runtime_provenance(todproc.engine());
     todproc.engine().typed_config.mapmaking.enabled = true;
     todproc.engine().typed_config.coadd.enabled = false;
     citlali::config::set_map_filtering_enabled(
@@ -3843,6 +3862,7 @@ TEST(pipeline_execution, writes_filtered_coadd_outputs) {
     FakeCoaddTodProc todproc;
     todproc.engine().typed_config.runtime.reduction_type =
         citlali::config::ReductionType::pointing;
+    sync_fake_runtime_provenance(todproc.engine());
     citlali::config::set_source_finding_enabled(
         todproc.engine().typed_config.post_processing, true);
     todproc.engine().wiener_filter.normalize_error = true;
@@ -3905,6 +3925,7 @@ TEST(pipeline_execution, writes_iteration_filtered_coadd_outputs) {
     FakeCoaddTodProc todproc;
     todproc.engine().typed_config.runtime.reduction_type =
         citlali::config::ReductionType::pointing;
+    sync_fake_runtime_provenance(todproc.engine());
     todproc.engine().typed_config.coadd.enabled = true;
     citlali::config::set_map_filtering_enabled(
         todproc.engine().typed_config.post_processing, true);

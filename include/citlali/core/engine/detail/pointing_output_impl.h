@@ -165,7 +165,8 @@ void Pointing::output() {
                 (map_type == mapmaking::RawObs
                      ? engine_utils::toltecIO::raw
                      : engine_utils::toltecIO::filtered)>(
-                toltec_io, dir_name, citlali::pipeline::runtime_config(*this).reduction_type, "",
+                toltec_io, dir_name,
+                citlali::pipeline::runtime_reduction_type(*this), "",
                 observation_identity.obsnum, telescope.sim_obs);
 
         ppt_table = make_pointing_ppt_table(mb);

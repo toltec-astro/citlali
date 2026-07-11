@@ -39,7 +39,7 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
 
     // create reduction subdir
     if (citlali::config::reduction_subdirs_active(
-            citlali::pipeline::runtime_config(engine()))) {
+            citlali::pipeline::effective_runtime_values(engine()))) {
         engine().output_paths.redu_dir_name =
             citlali::pipeline::next_reduction_subdir_path(
                 citlali::pipeline::runtime_output_dir(engine()),

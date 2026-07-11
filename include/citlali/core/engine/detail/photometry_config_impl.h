@@ -17,7 +17,7 @@ void Engine::get_photometry_config(CT &config) {
     citlali::pipeline::read_beammap_source_fluxes(
         config, source_flux_mJy_beam, source_config);
 
-    if (citlali::pipeline::runtime_config(*this).reduction_type ==
+    if (citlali::pipeline::runtime_reduction_type(*this) ==
             citlali::config::ReductionType::beammap &&
         !citlali::pipeline::validate_beammap_source_fluxes(
             source_flux_mJy_beam, toltec_io.array_name_map, logger)) {

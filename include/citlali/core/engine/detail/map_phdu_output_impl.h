@@ -19,7 +19,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         toltec_io.array_name_map, array_id);
     auto &fits_entry = fits_io->at(i);
     const auto reduction_type =
-        citlali::pipeline::runtime_config(*this).reduction_type;
+        citlali::pipeline::runtime_reduction_type(*this);
     const auto &beammap_settings = citlali::pipeline::beammap_config(*this);
     const auto &mapmaking_settings =
         citlali::pipeline::mapmaking_config(*this);

@@ -11,7 +11,7 @@ template <class EngineType>
 void TimeOrderedDataProc<EngineType>::calc_map_num() {
     auto &mapmaking_config = citlali::pipeline::mapmaking_config(engine());
     const auto reduction_type =
-        citlali::pipeline::runtime_config(engine()).reduction_type;
+        citlali::pipeline::runtime_reduction_type(engine());
     const auto requested_grouping = mapmaking_config.grouping;
     mapmaking_config.grouping =
         citlali::pipeline::effective_map_grouping_for_reduction(

@@ -30,7 +30,9 @@ void Engine::write_stats() {
             engine_utils::toltecIO::toltec,
             engine_utils::toltecIO::stats,
             engine_utils::toltecIO::raw>(
-            toltec_io, stats_dir, citlali::pipeline::runtime_config(*this).reduction_type, observation_identity.obsnum,
+            toltec_io, stats_dir,
+            citlali::pipeline::runtime_reduction_type(*this),
+            observation_identity.obsnum,
             telescope.sim_obs);
     write_netcdf_atomic(stats_netcdf_filename, [&](netCDF::NcFile &fo) {
 

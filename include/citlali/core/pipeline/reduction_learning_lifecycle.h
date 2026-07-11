@@ -35,7 +35,7 @@ void begin_reduction_learning_iteration(Engine &engine) {
         fruit_loop_learning_source_model_available(engine);
     engine.learning.begin_iteration(
         engine.iteration.fruit_iter, learning_source_model_available,
-        runtime_config(engine).reduction_type);
+        runtime_reduction_type(engine));
 }
 
 template <class Engine>

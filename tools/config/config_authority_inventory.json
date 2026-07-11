@@ -21,7 +21,7 @@
       "adapter_direction": "none",
       "migration_status": "typed-authoritative",
       "provenance_status": "partial",
-      "exit_gate": "Record requested and effective runtime policy separately, including normalized thread and parallel policy values."
+      "exit_gate": "Persist requested, effective, and realized runtime policy with a stable schema, then validate the emitted thread and parallel policy values."
     },
     {
       "id": "timestream-core-output",

@@ -52,6 +52,12 @@ the one-way requested-to-effective-to-realized contract, focused tests, and the
 existing mode gates. Compact-config production rollout and open-ended file
 splitting remain out of scope.
 
+The runtime domain is the first operational Phase 2 migration. Requested,
+effective, and realized runtime state are now separate in memory, and execution
+consumes the effective thread and runtime policy. Remaining direct mutable
+runtime reads are confined to config construction. Stable machine-readable
+provenance output and its validation remain before this domain is complete.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.

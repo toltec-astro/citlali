@@ -10,7 +10,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
     const auto &beammap_settings = citlali::pipeline::beammap_config(*this);
     const auto &mapmaking_settings =
         citlali::pipeline::mapmaking_config(*this);
-    const auto &runtime_settings = citlali::pipeline::runtime_config(*this);
+    const auto &runtime_settings =
+        citlali::pipeline::effective_runtime_values(*this);
     const auto &timestream_settings =
         citlali::pipeline::timestream_config(*this);
     const auto &raw_timestream_settings =
@@ -130,7 +131,7 @@ void Engine::create_tod_files() {
             engine_utils::toltecIO::toltec, prod_t,
             engine_utils::toltecIO::raw>(
             toltec_io, output_paths.tod_filename, dir_name,
-            citlali::pipeline::runtime_config(*this).reduction_type,
+            citlali::pipeline::runtime_reduction_type(*this),
             observation_identity.obsnum, telescope.sim_obs, output_stream);
 
     write_netcdf_atomic(output_paths.tod_filename[name], [&](netCDF::NcFile &fo) {

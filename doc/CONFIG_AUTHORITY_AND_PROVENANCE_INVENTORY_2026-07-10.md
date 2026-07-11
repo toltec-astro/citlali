@@ -49,6 +49,19 @@ Every domain currently has incomplete provenance. Runtime and product logs
 already provide pieces of effective/realized state, but there is no uniform
 requested/effective/realized record yet.
 
+### Runtime Authority Checkpoint - 2026-07-11
+
+Runtime now has separate requested, effective, and realized typed state.
+Execution-time thread setup, worker-farm sizing, runtime control flow, and
+output reduction-type routing consume the effective plan. Direct access to the
+mutable runtime mirror remains only at config construction boundaries. Focused
+tests prove that requested values remain unchanged when effective policy
+differs and that realized OMP, Eigen, and FFTW state is recorded.
+
+The runtime domain remains `provenance_status: partial`: its in-memory state
+does not yet have a stable machine-readable output schema. Persisting and
+validating that record is the remaining runtime exit gate.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 
@@ -98,10 +111,10 @@ A domain is complete only when all of the following are true:
 
 ## Near-Term Scope
 
-While Phase 1 Beammap and science validations run, Phase 2 work remains
-non-operational: inventory checks, provenance schema design, and read-site
-census tooling. Runtime authority will not switch until those validations land
-and the relevant domain has a focused test and rollback boundary.
+Phase 1 Beammap and science validation has landed. Runtime authority migration
+is now operational behind focused tests and a rollback boundary; persistence
+of its provenance record is the next runtime-domain step. Other domains remain
+subject to the same one-domain-at-a-time migration and validation gates.
 
 Validate the inventory with:
 
