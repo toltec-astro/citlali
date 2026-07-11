@@ -106,6 +106,12 @@ loading. A focused divergence test proves typed values overwrite adapter state.
 This enables direct typed parsing to replace legacy parsing incrementally. All
 236 tests and full preflight pass.
 
+Direct typed parsing now owns the core fruit-loop lifecycle and model-selection
+fields before the one-way processor adapter runs. This is a staged extraction:
+expert fruit-loop numerical fields still arrive through the legacy parser and
+typed mirror until their cohesive reader is moved. All eight real config
+profiles, all 236 tests, and full preflight pass.
+
 Raw input and metadata boundaries now use typed policy for duplicate-tone
 frequency separation, RTC diagnostic FIR/source-bandwidth ratios, and whether
 FITS/TOD tau metadata is calculated. The atmospheric calibration object remains

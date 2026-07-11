@@ -200,6 +200,12 @@ code receives a canonical typed-to-processor synchronization step. This is the
 replacement seam for moving fruit-loop parsing directly into the typed loader
 without simultaneously rewriting PTC algorithms.
 
+Core fruit-loop fields now have a direct typed reader: enablement, retained
+iterations, path/type, mode, S/N threshold, array flux limits, and iteration
+limit are read from YAML into `TimestreamFruitLoopsConfig` before the one-way
+adapter runs. Expert numerical fields remain mirrored during the staged parser
+extraction; the combined legacy parser is still invoked for those domains.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 
