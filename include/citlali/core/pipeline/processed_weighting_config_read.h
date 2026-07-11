@@ -165,4 +165,107 @@ void read_processed_weight_validation_config(
         validation.high_weight_min_validated_factor);
 }
 
+template <class Config, class Diagnostics>
+void read_processed_weighting_expert_config(
+    Config &config,
+    citlali::config::ProcessedTimeChunkWeightingConfig &weighting,
+    Diagnostics &diagnostics) {
+    auto &penalty = weighting.corr_penalty;
+    const auto penalty_key = [](const char *name) {
+        return std::tuple{"timestream", "processed_time_chunk", "weighting",
+                          "corr_penalty", name};
+    };
+    auto read_penalty_bool = [&](const char *name, bool &target) {
+        bool value = target;
+        read_optional_mirrored_config_value(
+            config, penalty_key(name), value, target, diagnostics);
+    };
+    auto read_penalty_int = [&](const char *name, int &target) {
+        int value = target;
+        read_optional_mirrored_config_value(
+            config, penalty_key(name), value, target, diagnostics);
+    };
+    auto read_penalty_double = [&](const char *name, double &target) {
+        double value = target;
+        read_optional_mirrored_config_value(
+            config, penalty_key(name), value, target, diagnostics);
+    };
+    read_penalty_bool("enabled", penalty.enabled);
+    if (penalty.enabled) {
+        read_penalty_double("min_good_frac", penalty.min_good_frac);
+        read_penalty_int("min_overlap", penalty.min_overlap);
+        read_penalty_int("max_samples", penalty.max_samples);
+        read_penalty_int("max_pairs", penalty.max_pairs);
+        read_penalty_int("seed", penalty.seed);
+        read_penalty_double("floor", penalty.floor);
+        read_penalty_double("exponent", penalty.exponent);
+
+        auto read_term = [&](const char *term_name, auto &term) {
+            const auto term_key = [&](const char *name) {
+                return std::tuple{"timestream", "processed_time_chunk",
+                                  "weighting", "corr_penalty", term_name,
+                                  name};
+            };
+            bool enabled = term.enabled;
+            read_optional_mirrored_config_value(
+                config, term_key("enabled"), enabled, term.enabled,
+                diagnostics);
+            for (auto [name, target] :
+                 {std::pair{"ref", &term.ref},
+                  std::pair{"span", &term.span},
+                  std::pair{"weight", &term.weight}}) {
+                double value = *target;
+                read_optional_mirrored_config_value(
+                    config, term_key(name), value, *target, diagnostics);
+            }
+        };
+        read_term("pair_corr", penalty.pair_corr);
+        read_term("cm_el_corr", penalty.cm_el_corr);
+        read_term("cm_low_mid_ratio", penalty.cm_low_mid_ratio);
+
+        auto read_band = [&](const char *name,
+                             std::array<double, 2> &target) {
+            const auto band_key = std::tuple{
+                "timestream", "processed_time_chunk", "weighting",
+                "corr_penalty", "cm_low_mid_ratio", name};
+            if (config.template has_typed<std::vector<double>>(band_key)) {
+                const auto value =
+                    config.template get_typed<std::vector<double>>(band_key);
+                if (value.size() == target.size()) {
+                    target = {value[0], value[1]};
+                }
+            }
+        };
+        read_band("low_band_Hz", penalty.cm_low_mid_ratio.low_band_Hz);
+        read_band("mid_band_Hz", penalty.cm_low_mid_ratio.mid_band_Hz);
+    }
+
+    auto &busy = weighting.busy_row_suppression;
+    const auto busy_key = [](const char *name) {
+        return std::tuple{"timestream", "processed_time_chunk", "weighting",
+                          "busy_row_suppression", name};
+    };
+    bool busy_enabled = busy.enabled;
+    read_optional_mirrored_config_value(
+        config, busy_key("enabled"), busy_enabled, busy.enabled,
+        diagnostics);
+    if (busy.enabled) {
+        bool require_veto = busy.require_busy_veto;
+        read_optional_mirrored_config_value(
+            config, busy_key("require_busy_veto"), require_veto,
+            busy.require_busy_veto, diagnostics);
+        int min_clusters = busy.min_candidate_clusters;
+        read_optional_mirrored_config_value(
+            config, busy_key("min_candidate_clusters"), min_clusters,
+            busy.min_candidate_clusters, diagnostics);
+        double min_residual = busy.min_max_unflagged_residual_z;
+        read_optional_mirrored_config_value(
+            config, busy_key("min_max_unflagged_residual_z"), min_residual,
+            busy.min_max_unflagged_residual_z, diagnostics);
+        double factor = busy.factor;
+        read_optional_mirrored_config_value(
+            config, busy_key("factor"), factor, busy.factor, diagnostics);
+    }
+}
+
 }  // namespace citlali::pipeline
