@@ -324,6 +324,7 @@ struct FakeEngine {
         bool save_all_iters = false;
         std::string fruit_loops_path = "null";
         std::string fruit_loops_type = "obsnum/raw";
+        std::string fruit_loops_interp_mode = "bilinear";
         struct {
             double cov_cut = 0.0;
             std::vector<double> signal;
@@ -4321,6 +4322,20 @@ TEST(pipeline_execution, uses_typed_fruit_loop_weight_policy) {
 
     EXPECT_TRUE(policy.use_noise_weights);
     EXPECT_TRUE(policy.keep_source_subtracted_weights);
+}
+
+TEST(pipeline_execution, uses_typed_fruit_loop_interpolation_policy) {
+    FakeEngine engine;
+    engine.typed_config.timestream.fruit_loops.enabled = true;
+    engine.typed_config.timestream.fruit_loops.interp_mode_override =
+        citlali::config::FruitLoopsInterpModeOverride::bilinear;
+    engine.ptcproc.run_fruit_loops = false;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::configure_fruit_loop_interpolation_mode(
+        engine, citlali::config::MapMethod::jinc, logger);
+
+    EXPECT_EQ(engine.ptcproc.fruit_loops_interp_mode, "bilinear");
 }
 
 TEST(pipeline_execution, skips_initial_fruit_loop_map_without_path) {

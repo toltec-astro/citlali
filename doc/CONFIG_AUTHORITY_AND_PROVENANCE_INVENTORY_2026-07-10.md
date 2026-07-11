@@ -157,6 +157,11 @@ typed configuration decides whether those operations run. A divergence test
 keeps the legacy processor mirrors intentionally contradictory and verifies
 that they cannot override typed policy.
 
+Fruit-loop interpolation override selection and runtime-policy logging also
+read the typed policy directly. The selected interpolation mode is copied to
+`PTCProc` as realized numerical state; processor mirrors no longer participate
+in choosing or reporting that policy.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

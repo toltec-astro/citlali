@@ -46,8 +46,8 @@ void Engine::get_mapmaking_config(CT &config) {
     citlali::pipeline::read_map_method_config(
         config, map_method, mapmaking_config, diagnostics);
     citlali::pipeline::configure_fruit_loop_interpolation_mode(
-        ptcproc, mapmaking_config.method, logger);
-    citlali::pipeline::log_fruit_loop_runtime_policy(ptcproc, logger);
+        *this, mapmaking_config.method, logger);
+    citlali::pipeline::log_fruit_loop_runtime_policy(*this, logger);
     citlali::pipeline::reset_fruit_loop_jinc_kernel_config(ptcproc);
 
     citlali::pipeline::read_map_pixel_axes_config(

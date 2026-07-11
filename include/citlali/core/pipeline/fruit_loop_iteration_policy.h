@@ -10,10 +10,12 @@
 
 namespace citlali::pipeline {
 
-template <class PtcProc, class Logger>
+template <class Engine, class Logger>
 void configure_fruit_loop_interpolation_mode(
-    PtcProc &ptcproc, citlali::config::MapMethod map_method,
+    Engine &engine, citlali::config::MapMethod map_method,
     const Logger &logger) {
+    const auto &config = fruit_loops_config(engine);
+    auto &ptcproc = engine.ptcproc;
     const std::string map_method_name{citlali::config::to_string(map_method)};
     const std::string fruit_interp_default{
         citlali::config::to_string(
@@ -21,11 +23,11 @@ void configure_fruit_loop_interpolation_mode(
                 ? citlali::config::FruitLoopsInterpModeOverride::jinc
                 : citlali::config::FruitLoopsInterpModeOverride::bilinear)};
     ptcproc.fruit_loops_interp_mode = fruit_interp_default;
-    if (ptcproc.run_fruit_loops &&
+    if (config.enabled &&
         !citlali::config::is_fruit_loops_auto_interp_mode(
-            ptcproc.fruit_loops_interp_mode_override)) {
-        ptcproc.fruit_loops_interp_mode =
-            ptcproc.fruit_loops_interp_mode_override;
+            config.interp_mode_override)) {
+        ptcproc.fruit_loops_interp_mode = std::string{
+            citlali::config::to_string(config.interp_mode_override)};
     }
     if (citlali::config::is_fruit_loops_jinc_interp_mode(
             ptcproc.fruit_loops_interp_mode) &&
@@ -42,23 +44,24 @@ void configure_fruit_loop_interpolation_mode(
         fruit_interp_default);
 }
 
-template <class PtcProc, class Logger>
-void log_fruit_loop_runtime_policy(const PtcProc &ptcproc,
+template <class Engine, class Logger>
+void log_fruit_loop_runtime_policy(const Engine &engine,
                                    const Logger &logger) {
+    const auto &config = fruit_loops_config(engine);
     logger->info("fruit loops center convention: {}",
-                 ptcproc.fruit_loops_legacy_center
+                 config.legacy_center
                      ? "legacy n/2"
                      : "current (n-1)/2");
     logger->info("fruit loops post-addback weight mode: {}",
-                 ptcproc.fruit_loops_recompute_weights_after_addback
+                 config.recompute_weights_after_addback
                      ? "recompute from add-back TOD"
                      : "keep source-subtracted");
     logger->info(
         "fruit loops weight feedback: enabled={} reference={} relative=[{}, {}]",
-        ptcproc.fruit_loops_weight_feedback_enabled,
-        ptcproc.fruit_loops_weight_feedback_reference,
-        ptcproc.fruit_loops_weight_feedback_low_relative_weight,
-        ptcproc.fruit_loops_weight_feedback_high_relative_weight);
+        config.weight_feedback.enabled,
+        citlali::config::to_string(config.weight_feedback.reference),
+        config.weight_feedback.low_relative_weight,
+        config.weight_feedback.high_relative_weight);
 }
 
 template <class PtcProc>
