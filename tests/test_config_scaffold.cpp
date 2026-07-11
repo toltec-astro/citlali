@@ -281,9 +281,14 @@ struct FakeEngine {
         std::map<std::string, FakeTelHeaderValue> tel_header;
         std::map<std::string, FakeTelTime> tel_data;
 
-        void get_tel_data(const std::string &tel_path) {
+        template <class ChunkingConfig>
+        void get_tel_data(const std::string &tel_path,
+                          const ChunkingConfig &chunking) {
             ++get_tel_data_calls;
             loaded_tel_path = tel_path;
+            scan_chunk_mode = chunking.mode;
+            scan_chunk_value = chunking.value;
+            scan_force_chunk = chunking.force;
         }
 
         void calc_tan_pointing() { ++calc_tan_pointing_calls; }
@@ -2386,6 +2391,9 @@ TEST(pipeline_preflight, leaves_hwpr_indices_when_hwpr_disabled) {
 
 TEST(pipeline_preflight, loads_and_aligns_telescope_data) {
     FakeTelescopeTodProc todproc;
+    todproc.engine().typed_config.timestream.chunking.mode = "duration";
+    todproc.engine().typed_config.timestream.chunking.value = 12.5;
+    todproc.engine().typed_config.timestream.chunking.force = true;
     FakeRawObs rawobs;
     rawobs.tel.path = "/data/tel.nc";
     auto logger = std::make_shared<FakeLogger>();
@@ -2395,6 +2403,9 @@ TEST(pipeline_preflight, loads_and_aligns_telescope_data) {
 
     EXPECT_EQ(todproc.engine().telescope.get_tel_data_calls, 1);
     EXPECT_EQ(todproc.engine().telescope.loaded_tel_path, "/data/tel.nc");
+    EXPECT_EQ(todproc.engine().telescope.scan_chunk_mode, "duration");
+    EXPECT_DOUBLE_EQ(todproc.engine().telescope.scan_chunk_value, 12.5);
+    EXPECT_TRUE(todproc.engine().telescope.scan_force_chunk);
     EXPECT_EQ(todproc.align_timestreams_calls, 1);
     EXPECT_EQ(todproc.align_timestreams_gaps_calls, 0);
     EXPECT_EQ(logger->info_calls, 2);

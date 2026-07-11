@@ -11,7 +11,9 @@
 
 namespace engine {
 
-void Telescope::get_tel_data(std::string &filepath) {
+void Telescope::get_tel_data(
+    std::string &filepath,
+    const citlali::config::TimestreamChunkingConfig &chunking) {
     using namespace netCDF;
     using namespace netCDF::exceptions;
 
@@ -66,7 +68,8 @@ void Telescope::get_tel_data(std::string &filepath) {
         }
 
         // cannot reduce in lissajous mode if chunk less than or equal to zero
-        if ((obs_pgm=="Lissajous" || (obs_pgm=="Map" && exec_mode==1)) && chunking_value<=0) {
+        if ((obs_pgm=="Lissajous" || (obs_pgm=="Map" && exec_mode==1)) &&
+            chunking.value <= 0) {
             logger->error("mapping mode is lissajous and time chunk size is zero");
             std::exit(EXIT_FAILURE);
         }

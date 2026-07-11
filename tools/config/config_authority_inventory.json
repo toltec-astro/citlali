@@ -31,9 +31,9 @@
       "execution_authority": "typed",
       "legacy_targets": ["Engine::rtcproc", "Engine::ptcproc"],
       "adapter_direction": "typed-to-legacy",
-      "migration_status": "mixed-adapter",
+      "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Move the early telescope chunk-validity check to typed config, add stable requested/effective/realized output provenance, and validate while retaining legacy fields only as write-only adapters."
+      "exit_gate": "Add stable requested/effective/realized output provenance and validate typed output shape, selection, cardinality, and chunking before removing write-only adapters."
     },
     {
       "id": "raw-timestream",

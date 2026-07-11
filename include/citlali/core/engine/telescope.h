@@ -277,7 +277,9 @@ public:
         {"Header.Sim.Jobkey","Header.Sim.Jobkey"}
     };
 
-    void get_tel_data(std::string &);
+    void get_tel_data(
+        std::string &,
+        const citlali::config::TimestreamChunkingConfig &chunking);
     void calc_tan_pointing();
     void calc_tan_radec();
     void calc_tan_altaz();

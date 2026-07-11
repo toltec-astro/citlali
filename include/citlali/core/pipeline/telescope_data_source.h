@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 #include <string>
 
 namespace citlali::pipeline {
@@ -13,7 +15,8 @@ template <class Engine, class Logger>
 void load_telescope_data_file(Engine &engine, std::string filepath,
                               const Logger &logger) {
     logger->info("getting telescope file {}", filepath);
-    engine.telescope.get_tel_data(filepath);
+    engine.telescope.get_tel_data(
+        filepath, timestream_config(engine).chunking);
 }
 
 }  // namespace citlali::pipeline

@@ -67,8 +67,9 @@ allocation, and associated metadata through typed output configuration. Legacy
 processor mode/context fields remain loader-only compatibility targets. Chunk
 selection already realizes typed policy into scan-to-output mappings and
 cardinalities, and scan-index construction now consumes typed chunking policy.
-The early telescope-file chunk-validity check and output provenance remain;
-this domain is not yet complete.
+The early telescope-file validity check now does as well, leaving the legacy
+output/chunking fields as write-only adapters. Output provenance and mode
+validation remain; this domain is not yet complete.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

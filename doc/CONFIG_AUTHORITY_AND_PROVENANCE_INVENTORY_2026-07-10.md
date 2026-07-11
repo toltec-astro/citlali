@@ -86,10 +86,12 @@ cardinalities in `TodOutputState`. Scan-index construction now also receives
 typed chunk mode, value, and force policy directly instead of reading the
 telescope mirror.
 
-The domain remains `mixed-adapter` with partial provenance. The remaining
-authority leak is the early telescope-file chunk-validity check. Stable
+The early telescope-file chunk-validity check now also receives typed chunking
+policy directly. No execution path reads the legacy TOD output mode/context or
+telescope chunking fields; they are write-only loader adapters. The domain is
+therefore `typed-authoritative-with-adapter`, with partial provenance. Stable
 requested/effective/realized output provenance and mode validation are still
-required before legacy fields can be removed.
+required before the adapters can be removed.
 
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
