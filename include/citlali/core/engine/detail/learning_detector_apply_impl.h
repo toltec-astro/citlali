@@ -3,6 +3,8 @@
 // Engine learned detector-exclusion application detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 template <class rtc_t, class calib_t>
 void Engine::apply_learned_rtc_sample_masks(rtc_t &rtcdata, calib_t &calib_scan) {
     apply_learned_detector_exclusions(
@@ -10,8 +12,10 @@ void Engine::apply_learned_rtc_sample_masks(rtc_t &rtcdata, calib_t &calib_scan)
         true, true);
     apply_learned_sample_masks(
         rtcdata, calib_scan, true, "pre_rtc",
-        rtcproc.despiker.source_protection_enabled,
-        rtcproc.despiker.source_protection_radius_arcsec);
+        citlali::pipeline::raw_time_chunk_config(*this)
+            .despike.source_protection.active,
+        citlali::pipeline::raw_time_chunk_config(*this)
+            .despike.source_protection.radius_arcsec);
 }
 
 template <class ptc_t, class calib_t>

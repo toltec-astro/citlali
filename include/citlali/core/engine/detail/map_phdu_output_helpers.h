@@ -151,7 +151,7 @@ void add_phdu_tod_runtime_config_section(
     citlali::pipeline::add_phdu_weight_selection_config(
         fits_entry, array_name, logger, ptcproc, rtcproc);
     citlali::pipeline::add_phdu_rtc_event_mask_config(
-        fits_entry, array_name, logger, rtcproc);
+        fits_entry, array_name, logger, raw_config.flagging);
 }
 
 template <class FitsEntry, class PtcProc, class Calib, class LearningState,

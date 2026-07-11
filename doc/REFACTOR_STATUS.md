@@ -84,6 +84,13 @@ the corresponding numerical state. All 231 tests pass. Remaining RTC flagging,
 source-protection, line-audit, and diagnostics boundaries are being migrated in
 bounded clusters.
 
+Raw source-protection activation now flows requested typed policy to realized
+typed state and then to the RTC execution adapter. Learned-mask application,
+FITS event-mask provenance, and RTC diagnostic impulsive-product shape consume
+typed policy directly. The shared processed source-protection activation follows
+the same direction. All 232 tests pass; line-audit and remaining diagnostic
+configuration are the next raw-timestream clusters.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.

@@ -85,7 +85,10 @@ void Engine::create_rtcdiag_file() {
         rtcdiag_dims.n_nw_values, fill_int, fill_double);
 
     citlali::pipeline::add_rtcdiag_impulsive_capture_file_outputs_if_needed(
-        fo, rtcproc.impulsive_capture, rtcdiag_dims.n_scans,
+        fo,
+        citlali::pipeline::raw_time_chunk_config(*this)
+            .flagging.impulsive_capture,
+        rtcdiag_dims.n_scans,
         rtcdiag_dims.n_nws, n_scans, calib.n_nws, rtc_fsmp, fill_int,
         fill_double);
 

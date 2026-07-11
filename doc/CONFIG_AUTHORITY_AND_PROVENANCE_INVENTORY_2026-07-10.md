@@ -118,6 +118,11 @@ also drive observation setup, map allocation, TOD/FITS product shape,
 coaddition, and beammap orchestration from typed config. Flux-unit and
 extinction setup decisions use the same authority. Numerical filter, kernel,
 and calibration objects remain processor-owned execution state.
+Source-protection activation is now derived from typed raw/processed policy and
+reduction type, recorded as typed realized state, then copied to processor
+objects only for numerical execution. Learned raw masks consume that typed
+state. FITS event-mask metadata and RTC diagnostic impulsive-product shape also
+derive from typed flagging config.
 
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:

@@ -19,6 +19,7 @@
 #include <citlali/core/pipeline/output_netcdf_metadata.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/runtime_provenance_output.h>
+#include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/timestream_output_provenance.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
 #include <citlali/core/pipeline/tod_output_state.h>
@@ -2860,6 +2861,51 @@ TEST(pipeline_preflight, raw_filter_policy_uses_typed_config) {
     EXPECT_FALSE(citlali::pipeline::raw_fir_filter_enabled(engine));
     EXPECT_FALSE(citlali::pipeline::raw_notch_filter_enabled(engine));
     EXPECT_FALSE(citlali::pipeline::raw_iir_filter_below_nyquist(engine));
+}
+
+TEST(pipeline_preflight, source_protection_activation_uses_typed_config) {
+    struct FakeRtcProc {
+        struct {
+            bool source_protection_enabled = false;
+            double source_protection_radius_arcsec = 0.0;
+        } despiker;
+    } rtcproc;
+    struct FakePtcProc {
+        struct {
+            bool source_protection_enabled = false;
+            double source_protection_radius_arcsec = 0.0;
+        } second_pass_local;
+    } ptcproc;
+    citlali::config::TimestreamConfig config;
+    auto &raw = config.raw_time_chunk.despike;
+    raw.enabled = true;
+    raw.source_protection.enabled = true;
+    raw.source_protection.radius_arcsec = 24.0;
+    auto &processed =
+        config.processed_time_chunk.flagging.second_pass_local;
+    processed.enabled = true;
+    processed.source_protection.enabled = true;
+    processed.source_protection.radius_arcsec = 31.0;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::apply_source_protection_activation(
+        citlali::config::ReductionType::pointing, rtcproc, ptcproc, config,
+        logger);
+    EXPECT_TRUE(raw.source_protection.active);
+    EXPECT_TRUE(processed.source_protection.active);
+    EXPECT_TRUE(rtcproc.despiker.source_protection_enabled);
+    EXPECT_DOUBLE_EQ(rtcproc.despiker.source_protection_radius_arcsec, 24.0);
+    EXPECT_TRUE(ptcproc.second_pass_local.source_protection_enabled);
+    EXPECT_DOUBLE_EQ(
+        ptcproc.second_pass_local.source_protection_radius_arcsec, 31.0);
+
+    citlali::pipeline::apply_source_protection_activation(
+        citlali::config::ReductionType::science, rtcproc, ptcproc, config,
+        logger);
+    EXPECT_FALSE(raw.source_protection.active);
+    EXPECT_FALSE(processed.source_protection.active);
+    EXPECT_FALSE(rtcproc.despiker.source_protection_enabled);
+    EXPECT_FALSE(ptcproc.second_pass_local.source_protection_enabled);
 }
 
 TEST(pipeline_preflight, loads_hwpr_data_for_polarized_observation) {
