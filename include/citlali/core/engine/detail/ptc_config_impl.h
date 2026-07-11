@@ -46,6 +46,8 @@ void Engine::get_ptc_config(CT &config) {
     const auto &weight_corr_penalty = ptcproc.weight_corr_penalty;
     citlali::pipeline::mirror_processed_weight_corr_penalty_config(
         typed_weighting.corr_penalty, weight_corr_penalty);
+    citlali::pipeline::apply_processed_weighting_config_to_processor(
+        typed_weighting, typed_flagging, ptcproc);
 
     auto &typed_second_pass = processed_config.flagging.second_pass_local;
     citlali::pipeline::mirror_second_pass_local_config(
