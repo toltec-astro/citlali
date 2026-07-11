@@ -184,6 +184,11 @@ PTC diagnostic sampling-window duration remains processor-owned because it is
 not yet represented in typed configuration; this exception is explicit at the
 serializer boundary rather than an implicit policy fallback.
 
+Optional PTC TOD diagnostic schema presence now uses typed processed policy
+for second-pass, correlation-grouping, correlation-penalty, busy-row, and
+adaptive-cleaner blocks. The schema boundary no longer asks `PTCProc` whether
+configured diagnostic families should exist.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

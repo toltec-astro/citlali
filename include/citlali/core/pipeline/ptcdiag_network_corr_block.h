@@ -15,11 +15,11 @@ inline PtcDiagVarList ptcdiag_corr_network_int_vars() {
     };
 }
 
-template <class Ptcproc>
-bool ptcdiag_corr_nw_requested(const Ptcproc &ptcproc) {
-    for (const auto &grouping : ptcproc.cleaner.grouping) {
+template <class Grouping>
+bool ptcdiag_corr_nw_requested(const Grouping &grouping) {
+    for (const auto &name : grouping) {
         if (citlali::config::is_corr_network_processed_cleaner_grouping(
-                grouping)) {
+                name)) {
             return true;
         }
     }

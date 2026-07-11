@@ -28,9 +28,10 @@ void add_rtc_tod_stream_diagnostic_outputs(
         stream_sample_rate, fill_int, fill_double);
 }
 
-template <class Calib, class PtcProc>
+template <class Calib>
 void add_ptc_tod_stream_weight_and_diagnostic_outputs(
-    netCDF::NcFile &fo, const Calib &calib, const PtcProc &ptcproc,
+    netCDF::NcFile &fo, const Calib &calib,
+    const citlali::config::ProcessedTimeChunkConfig &processed_config,
     const TodPreparedLayout &tod_layout, const std::string &signal_unit) {
     const std::vector<netCDF::NcDim> weight_dims = {
         tod_layout.dims.n_scans, tod_layout.dims.n_dets};
@@ -39,7 +40,7 @@ void add_ptc_tod_stream_weight_and_diagnostic_outputs(
     const int fill_int = ptcdiag_fill_int();
     const double fill_double = ptcdiag_fill_double();
     add_ptcdiag_tod_optional_diag(
-        fo, calib, ptcproc, tod_layout.dims.signal,
+        fo, calib, processed_config, tod_layout.dims.signal,
         tod_layout.chunking.mode, tod_layout.chunking.sizes,
         tod_layout.dims.n_scans, tod_layout.dims.n_dets,
         tod_layout.stream.n_output_scans, fill_int, fill_double);

@@ -198,7 +198,9 @@ void Engine::create_tod_files() {
     // add weights
     if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
         citlali::pipeline::add_ptc_tod_stream_weight_and_diagnostic_outputs(
-            fo, calib, ptcproc, tod_layout, omb.sig_unit);
+            fo, calib,
+            citlali::pipeline::processed_time_chunk_config(*this),
+            tod_layout, omb.sig_unit);
     }
 
     citlali::pipeline::add_tod_hwpr_var_if_requested(

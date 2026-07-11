@@ -2,15 +2,16 @@
 
 // Included by ptcdiag_netcdf.h inside namespace citlali::pipeline.
 
-template <class Calib, class Ptcproc>
+template <class Calib>
 void add_ptcdiag_tod_optional_diag(
-    netCDF::NcFile &fo, const Calib &calib, const Ptcproc &ptcproc,
+    netCDF::NcFile &fo, const Calib &calib,
+    const citlali::config::ProcessedTimeChunkConfig &config,
     const std::vector<netCDF::NcDim> &signal_dims,
     netCDF::NcVar::ChunkMode chunk_mode,
     const std::vector<std::size_t> &chunk_sizes,
     netCDF::NcDim n_scans_dim, netCDF::NcDim n_dets_dim,
     Eigen::Index n_scans, int fill_int, double fill_double) {
-    if (ptcproc.second_pass_local.enabled) {
+    if (config.flagging.second_pass_local.enabled) {
         constexpr bool include_rejection_policy_vars = true;
         add_ptcdiag_second_pass_added_flag(
             fo, signal_dims, chunk_mode, chunk_sizes);
@@ -21,8 +22,8 @@ void add_ptcdiag_tod_optional_diag(
             include_rejection_policy_vars, fill_int, fill_double);
     }
 
-    if (ptcproc.cleaner.corr_grouping.enabled &&
-        ptcdiag_corr_nw_requested(ptcproc)) {
+    if (config.clean.corr_grouping.enabled &&
+        ptcdiag_corr_nw_requested(config.clean.grouping)) {
         std::vector<netCDF::NcDim> corr_det_dims = {n_scans_dim, n_dets_dim};
         add_ptcdiag_corr_group_id(
             fo, corr_det_dims,
@@ -34,19 +35,19 @@ void add_ptcdiag_tod_optional_diag(
             fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
     }
 
-    if (ptcproc.weight_corr_penalty.enabled) {
+    if (config.weighting.corr_penalty.enabled) {
         add_ptcdiag_weight_corr_network_block(
             fo, calib, n_scans_dim, n_scans,
             "multiplicative weight penalty factor applied per network in each output scan",
             fill_int, fill_double);
     }
 
-    if (ptcproc.busy_row_suppression.enabled) {
+    if (config.weighting.busy_row_suppression.enabled) {
         add_ptcdiag_busy_row_network_block(
             fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
     }
 
-    if (ptcproc.cleaner.adaptive_selector.enabled) {
+    if (config.clean.adaptive_selector.enabled) {
         add_ptcdiag_adaptive_pca_network_block(
             fo, calib, n_scans_dim, n_scans, fill_int, fill_double);
     }
