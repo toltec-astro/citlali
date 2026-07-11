@@ -54,14 +54,16 @@ void Engine::get_ptc_config(CT &config) {
         config, typed_weighting.validation, config_diag);
     citlali::pipeline::read_processed_weighting_expert_config(
         config, typed_weighting, config_diag);
-    citlali::pipeline::apply_processed_weighting_config_to_processor(
-        typed_weighting, typed_flagging, ptcproc);
 
     auto &typed_second_pass = processed_config.flagging.second_pass_local;
     citlali::pipeline::mirror_second_pass_local_config(
         typed_second_pass, ptcproc.second_pass_local);
     citlali::pipeline::read_second_pass_local_config(
         config, typed_second_pass, config_diag);
+    citlali::pipeline::resolve_processed_weighting_dependencies(
+        typed_weighting, typed_flagging, logger);
+    citlali::pipeline::apply_processed_weighting_config_to_processor(
+        typed_weighting, typed_flagging, ptcproc);
     citlali::pipeline::apply_second_pass_local_config_to_processor(
         typed_second_pass, ptcproc);
 

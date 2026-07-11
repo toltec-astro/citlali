@@ -20,6 +20,7 @@
 #include <citlali/core/pipeline/phdu_reduction_config.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/processed_clean_config_read.h>
+#include <citlali/core/pipeline/processed_weighting_config_read.h>
 #include <citlali/core/pipeline/runtime_provenance_output.h>
 #include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/timestream_output_provenance.h>
@@ -4552,6 +4553,24 @@ TEST(config_scaffold, normalizes_processed_clean_group_aliases) {
     EXPECT_TRUE(citlali::pipeline::is_supported_processed_clean_group("fg"));
     EXPECT_FALSE(
         citlali::pipeline::is_supported_processed_clean_group("unknown"));
+}
+
+TEST(config_scaffold, resolves_processed_weighting_dependencies) {
+    citlali::config::ProcessedTimeChunkWeightingConfig weighting;
+    citlali::config::ProcessedTimeChunkFlaggingConfig flagging;
+    weighting.type =
+        citlali::config::ProcessedTimeChunkWeightingType::validated;
+    weighting.validation.enabled = false;
+    weighting.busy_row_suppression.enabled = true;
+    flagging.second_pass_local.enabled = false;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::resolve_processed_weighting_dependencies(
+        weighting, flagging, logger);
+
+    EXPECT_TRUE(weighting.validation.enabled);
+    EXPECT_FALSE(weighting.busy_row_suppression.enabled);
+    EXPECT_EQ(logger->warn_calls, 2);
 }
 
 TEST(pipeline_execution, skips_initial_fruit_loop_map_without_path) {
