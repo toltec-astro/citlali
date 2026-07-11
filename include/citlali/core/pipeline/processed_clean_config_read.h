@@ -5,7 +5,9 @@
 
 #include <Eigen/Core>
 
+#include <array>
 #include <tuple>
+#include <utility>
 #include <vector>
 
 namespace citlali::pipeline {
@@ -220,6 +222,118 @@ void read_processed_clean_core_config(
         read_null_int("max_modes", null_model.max_modes, 0);
         read_null_int("max_samples", null_model.max_samples, 0);
         read_null_int("seed", null_model.seed, 0);
+    }
+
+    if (typed.marchenko_pastur.enabled) {
+        auto &mp = typed.marchenko_pastur;
+        auto read_mp_int = [&](const char *name, int &target, int minimum) {
+            int value = target;
+            read_optional_mirrored_config_value(
+                config,
+                std::tuple{"timestream", "processed_time_chunk", "clean",
+                           "marchenko_pastur", name},
+                value, target, diagnostics, {}, {minimum});
+        };
+        auto read_mp_double = [&](const char *name, double &target,
+                                  double minimum,
+                                  std::vector<double> maximum = {}) {
+            double value = target;
+            read_optional_mirrored_config_value(
+                config,
+                std::tuple{"timestream", "processed_time_chunk", "clean",
+                           "marchenko_pastur", name},
+                value, target, diagnostics, {}, {minimum},
+                std::move(maximum));
+        };
+        read_mp_double("min_good_frac", mp.min_good_frac, 0.0, {1.0});
+        read_mp_int("max_modes", mp.max_modes, 0);
+        read_mp_int("max_samples", mp.max_samples, 0);
+        read_mp_double("band_low_Hz", mp.band_low_Hz, 0.0);
+        read_mp_double("band_high_Hz", mp.band_high_Hz, 0.0);
+        double clip_z = mp.clip_z;
+        read_optional_mirrored_config_value(
+            config,
+            std::tuple{"timestream", "processed_time_chunk", "clean",
+                       "marchenko_pastur", "clip_z"},
+            clip_z, mp.clip_z, diagnostics);
+        read_mp_double("bulk_keep_frac", mp.bulk_keep_frac, 0.1, {1.0});
+        read_mp_int("q_grid_size", mp.q_grid_size, 8);
+    }
+
+    if (typed.adaptive_selector.enabled) {
+        auto &adaptive = typed.adaptive_selector;
+        auto read_adaptive_int = [&](const char *name, int &target,
+                                     int minimum) {
+            int value = target;
+            read_optional_mirrored_config_value(
+                config,
+                std::tuple{"timestream", "processed_time_chunk", "clean",
+                           "adaptive_selector", name},
+                value, target, diagnostics, {}, {minimum});
+        };
+        auto read_adaptive_double = [&](const char *name, double &target,
+                                        std::vector<double> minimum = {}) {
+            double value = target;
+            read_optional_mirrored_config_value(
+                config,
+                std::tuple{"timestream", "processed_time_chunk", "clean",
+                           "adaptive_selector", name},
+                value, target, diagnostics, {}, std::move(minimum));
+        };
+        double min_good_frac = adaptive.min_good_frac;
+        read_optional_mirrored_config_value(
+            config,
+            std::tuple{"timestream", "processed_time_chunk", "clean",
+                       "adaptive_selector", "min_good_frac"},
+            min_good_frac, adaptive.min_good_frac, diagnostics, {}, {0.0},
+            {1.0});
+        read_adaptive_int("max_det", adaptive.max_det, 0);
+        read_adaptive_int("max_samples", adaptive.max_samples, 0);
+        read_adaptive_int("max_pairs", adaptive.max_pairs, 0);
+        read_adaptive_int("seed", adaptive.seed, 0);
+        read_adaptive_double("clip_z", adaptive.clip_z);
+        read_adaptive_double("low_weight", adaptive.low_weight, {0.0});
+        read_adaptive_double("tail_weight", adaptive.tail_weight, {0.0});
+        read_adaptive_double(
+            "topmode_weight", adaptive.topmode_weight, {0.0});
+        read_adaptive_double("reg_weight", adaptive.reg_weight, {0.0});
+        bool log_candidates = adaptive.log_candidates;
+        read_optional_mirrored_config_value(
+            config,
+            std::tuple{"timestream", "processed_time_chunk", "clean",
+                       "adaptive_selector", "log_candidates"},
+            log_candidates, adaptive.log_candidates, diagnostics);
+
+        const auto offsets_key = std::tuple{
+            "timestream", "processed_time_chunk", "clean",
+            "adaptive_selector", "candidate_offsets"};
+        if (config.template has_typed<std::vector<int>>(offsets_key)) {
+            const auto offsets =
+                config.template get_typed<std::vector<int>>(offsets_key);
+            if (!offsets.empty()) {
+                adaptive.candidate_offsets = offsets;
+            }
+        }
+        auto read_band = [&](const char *name,
+                             std::array<double, 2> &target) {
+            const auto key = std::tuple{
+                "timestream", "processed_time_chunk", "clean",
+                "adaptive_selector", name};
+            if (!config.template has_typed<std::vector<double>>(key)) {
+                return;
+            }
+            const auto band =
+                config.template get_typed<std::vector<double>>(key);
+            if (band.size() == 2 && band[0] >= 0.0 && band[1] > band[0]) {
+                target = {band[0], band[1]};
+            } else {
+                logger->warn(
+                    "clean.adaptive_selector.{} must be [fmin, fmax] with 0<=fmin<fmax",
+                    name);
+            }
+        };
+        read_band("low_band_Hz", adaptive.low_band_Hz);
+        read_band("mid_band_Hz", adaptive.mid_band_Hz);
     }
 
     typed.active = citlali::config::ProcessedTimeChunkCleanerMode::none;

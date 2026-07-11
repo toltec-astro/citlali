@@ -233,6 +233,11 @@ into typed cleaning state with the legacy bounds preserved. Cleaner-specific
 group-name canonicalization remains in the compatibility parser until that
 normalization is extracted as a shared policy helper.
 
+Marchenko-Pastur and adaptive-selector numerical policy now parses directly,
+including bounded scalar controls, adaptive candidate offsets, and validated
+frequency bands. Only cleaner-specific grouping-name canonicalization remains
+seeded by the compatibility parser in the cleaning domain.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

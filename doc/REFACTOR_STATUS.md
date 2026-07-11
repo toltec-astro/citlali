@@ -138,6 +138,11 @@ policy. Group-name canonicalization remains deliberately mirrored because it
 still depends on cleaner-specific helpers. All 236 tests, all eight real config
 profiles, and full preflight pass.
 
+Direct cleaning parsing now covers Marchenko-Pastur and adaptive-selector
+numerical policy, including adaptive frequency-band validation. The remaining
+cleaning-parser dependency is cleaner-specific grouping-name canonicalization.
+All 236 tests, all eight real profiles, and full preflight pass.
+
 Raw input and metadata boundaries now use typed policy for duplicate-tone
 frequency separation, RTC diagnostic FIR/source-bandwidth ratios, and whether
 FITS/TOD tau metadata is calculated. The atmospheric calibration object remains
