@@ -115,6 +115,8 @@ void read_processed_clean_core_config(
                 logger->warn(
                     "clean.{}.grouping contains unsupported entry '{}'; ignoring",
                     mode, raw_group);
+                add_invalid_config_key(
+                    key, diagnostics.invalid_key_paths());
                 continue;
             }
             if (seen.insert(group).second) {
@@ -377,6 +379,8 @@ void read_processed_clean_core_config(
                 logger->warn(
                     "clean.adaptive_selector.{} must be [fmin, fmax] with 0<=fmin<fmax",
                     name);
+                add_invalid_config_key(
+                    key, diagnostics.invalid_key_paths());
             }
         };
         read_band("low_band_Hz", adaptive.low_band_Hz);

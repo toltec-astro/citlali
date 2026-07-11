@@ -241,8 +241,12 @@ void read_processed_weighting_expert_config(
             if (config.template has_typed<std::vector<double>>(band_key)) {
                 const auto value =
                     config.template get_typed<std::vector<double>>(band_key);
-                if (value.size() == target.size()) {
+                if (value.size() == target.size() && value[0] >= 0.0 &&
+                    value[1] > value[0]) {
                     target = {value[0], value[1]};
+                } else {
+                    add_invalid_config_key(
+                        band_key, diagnostics.invalid_key_paths());
                 }
             }
         };
