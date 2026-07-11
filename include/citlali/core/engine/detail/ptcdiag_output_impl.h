@@ -43,6 +43,7 @@ void Engine::create_ptcdiag_file() {
 
     citlali::pipeline::add_ptcdiag_file_config_vars(
         fo, ptcproc, learning,
+        citlali::pipeline::processed_time_chunk_config(*this),
         citlali::pipeline::fruit_loops_config(*this));
 
     citlali::pipeline::add_ptcdiag_standard_detector_diag(

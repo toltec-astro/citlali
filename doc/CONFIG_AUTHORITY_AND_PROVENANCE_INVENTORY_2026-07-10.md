@@ -168,6 +168,11 @@ Pointing policy warnings also use typed fruit-loop enablement and iteration
 count. Detector-specific fitted vectors remain processor-owned runtime results;
 only configuration values and array flux limits moved to typed authority.
 
+The compact PTC-diagnostic metadata block now follows the same rule for
+cleaner selection, adaptive cleaning, correlation penalties, busy-row
+suppression, and second-pass event policy. Diagnostic arrays continue to
+describe realized processor state; `CONFIG.*` entries describe typed policy.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

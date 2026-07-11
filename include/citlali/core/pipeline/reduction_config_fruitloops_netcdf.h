@@ -80,29 +80,33 @@ void add_fruit_loop_header_config_vars(netCDF::NcFile &fo,
     add_fruit_loop_iteration_config_vars(fo, config);
 }
 
-template <class PtcProc>
 void add_ptcdiag_compact_config_vars(netCDF::NcFile &fo,
-                                     const PtcProc &ptcproc,
+                                     const citlali::config::ProcessedTimeChunkConfig
+                                         &processed_config,
                                      const citlali::config::TimestreamFruitLoopsConfig
                                          &fruit_config) {
+    const auto &clean = processed_config.clean;
+    const auto &weighting = processed_config.weighting;
+    const auto &second_pass = processed_config.flagging.second_pass_local;
     add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.ENABLED",
-                   ptcproc.weight_corr_penalty.enabled);
+                   weighting.corr_penalty.enabled);
     add_netcdf_var(fo, "CONFIG.WEIGHT.BUSY_ROW_SUPPRESS.ENABLED",
-                   ptcproc.busy_row_suppression.enabled);
-    add_netcdf_var(fo, "CONFIG.CLEANED", ptcproc.run_clean);
+                   weighting.busy_row_suppression.enabled);
+    add_netcdf_var(fo, "CONFIG.CLEANED", clean.enabled);
     add_netcdf_var<std::string>(fo, "CONFIG.CLEANED.MODESEL",
-                                ptcproc.cleaner.active_cleaner_label());
+                                std::string{citlali::config::to_string(
+                                    clean.active)});
     add_netcdf_var(fo, "CONFIG.CLEANED.ADAPT.ENABLED",
-                   ptcproc.cleaner.adaptive_selector.enabled);
+                   clean.adaptive_selector.enabled);
     add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.ENABLED",
-                   ptcproc.second_pass_local.enabled);
+                   second_pass.enabled);
     add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_SPIKE_SIGMA",
-                   ptcproc.second_pass_local.min_spike_sigma);
+                   second_pass.min_spike_sigma);
     add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.HIGH_SCORE_EVENT_OVERRIDE",
-                   ptcproc.second_pass_local.high_score_event_override);
+                   second_pass.high_score_event_override);
     add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MIN_CLUSTER_DETECTORS",
-                   ptcproc.second_pass_local.min_cluster_detectors);
+                   second_pass.min_cluster_detectors);
     add_netcdf_var(fo, "CONFIG.PTC.SECOND_PASS.MAX_AUTO_FLAG_CLUSTERS",
-                   ptcproc.second_pass_local.max_auto_flag_clusters_per_network);
+                   second_pass.max_auto_flag_clusters_per_network);
     add_fruit_loops_config_vars(fo, fruit_config);
 }
