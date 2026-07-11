@@ -87,7 +87,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             fo, raw_timestream_settings, run_any_tod_filter);
         citlali::pipeline::add_tod_filter_edge_guard_config_vars(
             fo, rtcproc.filter_edge_guard, telescope.outer_scans_chunk,
-            rtcproc.tod_output_outer_context_samples);
+            citlali::pipeline::raw_tod_outer_context_samples(*this));
         citlali::pipeline::add_tod_processing_config_vars(
             fo, raw_timestream_settings);
         citlali::pipeline::add_weight_selection_config_vars(fo, ptcproc);
@@ -154,8 +154,10 @@ void Engine::create_tod_files() {
 
     const auto tod_layout = citlali::pipeline::prepare_tod_file_layout(
         fo, output_stream, tod_outputs.n_rtc_output_scans,
-        tod_outputs.n_ptc_output_scans, rtcproc, ptcproc, telescope.scan_indices,
-        calib.n_dets);
+        tod_outputs.n_ptc_output_scans,
+        citlali::pipeline::raw_tod_stream_output_config(*this),
+        citlali::pipeline::processed_tod_stream_output_config(*this),
+        telescope.scan_indices, calib.n_dets);
     const auto &tod_dims = tod_layout.dims;
     const auto &chunking = tod_layout.chunking;
     const auto chunkMode = chunking.mode;

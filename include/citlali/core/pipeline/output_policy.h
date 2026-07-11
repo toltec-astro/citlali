@@ -35,6 +35,39 @@ bool processed_tod_output_enabled(const Engine &engine) {
 }
 
 template <class Engine>
+const auto &raw_tod_stream_output_config(const Engine &engine) {
+    return timestream_config(engine).output.raw_time_chunk;
+}
+
+template <class Engine>
+const auto &processed_tod_stream_output_config(const Engine &engine) {
+    return timestream_config(engine).output.processed_time_chunk;
+}
+
+template <class Engine>
+bool raw_tod_mini_output(const Engine &engine) {
+    return citlali::config::is_mini_tod_stream_output_mode(
+        raw_tod_stream_output_config(engine).mode);
+}
+
+template <class Engine>
+bool raw_tod_outer_output(const Engine &engine) {
+    return citlali::config::is_outer_tod_stream_output_mode(
+        raw_tod_stream_output_config(engine).mode);
+}
+
+template <class Engine>
+int raw_tod_outer_context_samples(const Engine &engine) {
+    return raw_tod_stream_output_config(engine).outer_context_samples;
+}
+
+template <class Engine>
+bool processed_tod_mini_output(const Engine &engine) {
+    return citlali::config::is_mini_tod_stream_output_mode(
+        processed_tod_stream_output_config(engine).mode);
+}
+
+template <class Engine>
 bool tod_output_files_available(const Engine &engine) {
     return tod_output_enabled(engine) && !engine.output_paths.tod_filename.empty();
 }

@@ -46,7 +46,9 @@ void Engine::get_rtc_config(CT &config) {
     rtcproc.configure_filter_edge_guard(telescope.fsmp);
     citlali::pipeline::mirror_raw_filter_edge_guard_config(
         typed_filter.edge_guard, rtcproc.filter_edge_guard);
-    citlali::pipeline::configure_raw_tod_output_context(telescope, rtcproc);
+    citlali::pipeline::configure_raw_tod_output_context(
+        telescope, rtcproc,
+        citlali::pipeline::timestream_config(*this).output.raw_time_chunk);
 
     // ignore hwpr?
     auto &polarimetry_config =

@@ -34,15 +34,16 @@ inline void add_tod_filter_edge_guard_scan_placeholders(
                                         add_scan_double_var);
 }
 
-template <class RtcProc, class PtcProc, class ScanIndices>
+template <class ScanIndices>
 TodPreparedLayout prepare_tod_file_layout(
     netCDF::NcFile &fo, citlali::config::TodOutputStream stream,
     Eigen::Index n_rtc_output_scans, Eigen::Index n_ptc_output_scans,
-    const RtcProc &rtcproc, const PtcProc &ptcproc,
+    const citlali::config::TodStreamOutputConfig &rtc_output,
+    const citlali::config::TodStreamOutputConfig &ptc_output,
     const ScanIndices &scan_indices, Eigen::Index n_dets) {
     auto stream_layout = tod_stream_layout(
-        stream, n_rtc_output_scans, n_ptc_output_scans, rtcproc,
-        ptcproc);
+        stream, n_rtc_output_scans, n_ptc_output_scans, rtc_output,
+        ptc_output);
     auto counts = tod_file_counts(
         stream_layout.n_output_scans, scan_indices.rows(), n_dets);
     auto dims = add_tod_file_dims(

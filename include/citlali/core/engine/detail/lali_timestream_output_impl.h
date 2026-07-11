@@ -32,7 +32,7 @@ bool Lali::write_lali_rtc_outputs(
     if (write_this_rtc) {
         if (!output_writers.write_when_ready(
             output_writers.rtc, rtc_scan_row, [&] {
-                if (rtcproc.tod_output_outer) {
+                if (citlali::pipeline::raw_tod_outer_output(*this)) {
                     logger->info("writing outer raw time chunk");
                     rtcproc.append_to_netcdf(
                         rtc_outer_output, output_paths.tod_filename["rtc"],

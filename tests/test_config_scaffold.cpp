@@ -16,6 +16,7 @@
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
+#include <citlali/core/pipeline/output_netcdf_metadata.h>
 #include <citlali/core/pipeline/runtime_provenance_output.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
 
@@ -1929,6 +1930,54 @@ TEST(cli_runtime_setup, runtime_provenance_write_failure_propagates) {
     EXPECT_FALSE(std::filesystem::exists(
         citlali::pipeline::runtime_provenance_path(missing_dir).string() +
         ".tmp"));
+}
+
+TEST(config_scaffold, typed_tod_output_shape_ignores_legacy_mirror_values) {
+    struct OutputEngine {
+        citlali::config::ReductionConfig typed_config;
+        struct {
+            bool tod_output_mini = false;
+            bool tod_output_outer = false;
+            int tod_output_outer_context_samples = 0;
+        } rtcproc;
+        struct {
+            bool tod_output_mini = false;
+        } ptcproc;
+    } engine;
+    engine.typed_config.timestream.output.raw_time_chunk.mode =
+        citlali::config::TodStreamOutputMode::mini_outer;
+    engine.typed_config.timestream.output.raw_time_chunk.outer_context_samples =
+        17;
+    engine.typed_config.timestream.output.processed_time_chunk.mode =
+        citlali::config::TodStreamOutputMode::mini;
+
+    EXPECT_TRUE(citlali::pipeline::raw_tod_mini_output(engine));
+    EXPECT_TRUE(citlali::pipeline::raw_tod_outer_output(engine));
+    EXPECT_EQ(citlali::pipeline::raw_tod_outer_context_samples(engine), 17);
+    EXPECT_TRUE(citlali::pipeline::processed_tod_mini_output(engine));
+    EXPECT_FALSE(engine.rtcproc.tod_output_mini);
+    EXPECT_FALSE(engine.rtcproc.tod_output_outer);
+    EXPECT_EQ(engine.rtcproc.tod_output_outer_context_samples, 0);
+    EXPECT_FALSE(engine.ptcproc.tod_output_mini);
+}
+
+TEST(config_scaffold, tod_file_layout_uses_typed_stream_modes) {
+    citlali::config::TodStreamOutputConfig rtc_output;
+    rtc_output.mode = citlali::config::TodStreamOutputMode::mini_outer;
+    citlali::config::TodStreamOutputConfig ptc_output;
+    ptc_output.mode = citlali::config::TodStreamOutputMode::full;
+
+    const auto rtc_layout = citlali::pipeline::tod_stream_layout(
+        citlali::config::TodOutputStream::rtc, 4, 7, rtc_output, ptc_output);
+    const auto ptc_layout = citlali::pipeline::tod_stream_layout(
+        citlali::config::TodOutputStream::ptc, 4, 7, rtc_output, ptc_output);
+
+    EXPECT_EQ(rtc_layout.n_output_scans, 4);
+    EXPECT_TRUE(rtc_layout.mini_output);
+    EXPECT_TRUE(rtc_layout.outer_output);
+    EXPECT_EQ(ptc_layout.n_output_scans, 7);
+    EXPECT_FALSE(ptc_layout.mini_output);
+    EXPECT_FALSE(ptc_layout.outer_output);
 }
 
 TEST(cli_runtime_setup, configures_runtime_threads) {

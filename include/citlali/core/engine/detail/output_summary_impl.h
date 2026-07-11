@@ -27,8 +27,10 @@ void Engine::cli_summary() {
         tod_output_config.processed_time_chunk_enabled) {
         citlali::pipeline::log_tod_output_selection_summary(
             logger, tod_output_config.type, tod_outputs.n_rtc_output_scans,
-            rtcproc.tod_output_mini, rtcproc.tod_output_outer,
-            tod_outputs.n_ptc_output_scans, ptcproc.tod_output_mini);
+            citlali::pipeline::raw_tod_mini_output(*this),
+            citlali::pipeline::raw_tod_outer_output(*this),
+            tod_outputs.n_ptc_output_scans,
+            citlali::pipeline::processed_tod_mini_output(*this));
     }
     citlali::pipeline::log_diagnostics_sidecar_summary(logger);
 

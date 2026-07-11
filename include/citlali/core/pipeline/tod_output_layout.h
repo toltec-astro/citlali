@@ -105,18 +105,19 @@ inline TodFileCounts tod_file_counts(Eigen::Index n_output_scans,
     };
 }
 
-template <class RtcProc, class PtcProc>
 TodStreamLayout tod_stream_layout(citlali::config::TodOutputStream stream,
                                   Eigen::Index n_rtc_output_scans,
                                   Eigen::Index n_ptc_output_scans,
-                                  const RtcProc &rtcproc,
-                                  const PtcProc &ptcproc) {
+                                  const citlali::config::TodStreamOutputConfig &rtc_output,
+                                  const citlali::config::TodStreamOutputConfig &ptc_output) {
     const bool is_rtc_stream =
         citlali::config::is_rtc_tod_output_stream(stream);
     return {
         is_rtc_stream ? n_rtc_output_scans : n_ptc_output_scans,
-        is_rtc_stream ? rtcproc.tod_output_mini : ptcproc.tod_output_mini,
-        is_rtc_stream ? rtcproc.tod_output_outer : ptcproc.tod_output_outer,
+        citlali::config::is_mini_tod_stream_output_mode(
+            is_rtc_stream ? rtc_output.mode : ptc_output.mode),
+        citlali::config::is_outer_tod_stream_output_mode(
+            is_rtc_stream ? rtc_output.mode : ptc_output.mode),
     };
 }
 

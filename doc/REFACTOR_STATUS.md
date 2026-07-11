@@ -62,6 +62,12 @@ zero serious log issues, and exact pre-existing point products. The runtime
 domain is complete; the next operational domain is timestream output selection
 and chunking.
 
+The first timestream-output slice now routes RTC/PTC output shape, outer-buffer
+allocation, and associated metadata through typed output configuration. Legacy
+processor mode/context fields remain loader-only compatibility targets. Chunk
+selection/cardinality authority and output provenance are the next steps; this
+domain is not yet complete.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.

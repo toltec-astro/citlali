@@ -103,7 +103,10 @@ auto Beammap::run_timestream(
         const bool write_this_rtc =
             output_flags.write_rtc && rtc_scan_row >= 0;
         auto *rtc_outer_output_ptr =
-            (write_this_rtc && rtcproc.tod_output_outer) ? &rtc_outer_output : nullptr;
+            (write_this_rtc &&
+             citlali::pipeline::raw_tod_outer_output(*this))
+                ? &rtc_outer_output
+                : nullptr;
 
         citlali::pipeline::log_scan_start(
             scans_done_mutex, logger, rtcdata.index.data, *scans_done_count,
@@ -144,7 +147,7 @@ auto Beammap::run_timestream(
         if (write_this_rtc) {
             if (!output_writers.write_when_ready(
                 output_writers.rtc, rtc_scan_row, [&] {
-                    if (rtcproc.tod_output_outer) {
+                    if (citlali::pipeline::raw_tod_outer_output(*this)) {
                         logger->info("writing outer raw time chunk");
                         rtcproc.append_to_netcdf(
                             rtc_outer_output, output_paths.tod_filename["rtc"],

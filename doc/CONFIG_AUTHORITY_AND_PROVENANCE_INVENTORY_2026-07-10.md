@@ -72,6 +72,20 @@ six OMP threads, one Eigen thread, initialized FFTW with one plan thread,
 parallel policy `omp`, and reduction type `pointing`. Runtime provenance is now
 `complete`.
 
+### Timestream Output Authority Checkpoint - 2026-07-11
+
+The first `timestream-core-output` slice moves TOD output shape to typed
+authority. RTC outer-buffer allocation, RTC/PTC mini/full layout, outer-context
+padding, summaries, and NetCDF metadata now derive from
+`TimestreamOutputConfig`. Legacy `rtcproc`/`ptcproc` mode and context fields are
+written only while loading and no longer control execution. Divergence tests
+prove typed modes win when those mirrors disagree.
+
+The domain remains `mixed-adapter` with partial provenance. Remaining work is
+typed chunk selection and cardinality authority, stable
+requested/effective/realized output provenance, and mode validation before
+legacy fields can be removed.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

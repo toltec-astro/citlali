@@ -70,7 +70,8 @@ void Engine::create_rtcdiag_file() {
         fo, rtcproc, citlali::pipeline::raw_time_chunk_config(*this),
         learning,
         citlali::pipeline::verbose_runtime_enabled(*this),
-        telescope.outer_scans_chunk, rtc_fsmp);
+        telescope.outer_scans_chunk,
+        citlali::pipeline::raw_tod_outer_context_samples(*this), rtc_fsmp);
 
     citlali::pipeline::add_rtcdiag_apt_double_vars(
         fo, calib, rtcdiag_dims.n_dets);

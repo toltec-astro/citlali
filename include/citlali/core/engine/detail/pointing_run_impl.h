@@ -43,7 +43,10 @@ auto Pointing::run(
         const bool write_this_rtc =
             output_flags.write_rtc && rtc_scan_row >= 0;
         auto *rtc_outer_output_ptr =
-            (write_this_rtc && rtcproc.tod_output_outer) ? &rtc_outer_output : nullptr;
+            (write_this_rtc &&
+             citlali::pipeline::raw_tod_outer_output(*this))
+                ? &rtc_outer_output
+                : nullptr;
 
         citlali::pipeline::log_scan_start(
             scans_done_mutex, logger, rtcdata.index.data, *scans_done_count,

@@ -37,7 +37,7 @@ bool Pointing::write_pointing_rtc_outputs(
     if (write_this_rtc) {
         if (!output_writers.write_when_ready(
             output_writers.rtc, rtc_scan_row, [&] {
-                if (rtcproc.tod_output_outer) {
+                if (citlali::pipeline::raw_tod_outer_output(*this)) {
                     logger->info("writing outer raw time chunk");
                     auto profile_scope = citlali::pipeline::profile_stage(
                         "timestream.rtc_output.write_chunk", logger,
