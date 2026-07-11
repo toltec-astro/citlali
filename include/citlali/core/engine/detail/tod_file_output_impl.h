@@ -102,7 +102,9 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         citlali::pipeline::add_rtc_line_audit_config_vars_if_absent(
             fo, raw_timestream_settings.line_audit);
         citlali::pipeline::add_ptc_cleaning_header_config_vars(
-            fo, ptcproc, calib, toltec_io.array_name_map);
+            fo, ptcproc,
+            citlali::pipeline::processed_time_chunk_config(*this),
+            calib, toltec_io.array_name_map);
 
         citlali::pipeline::add_oof_header_vars_if_observed(
             fo, telescope.sim_obs, telescope.tel_header, mb,

@@ -173,6 +173,11 @@ cleaner selection, adaptive cleaning, correlation penalties, busy-row
 suppression, and second-pass event policy. Diagnostic arrays continue to
 describe realized processor state; `CONFIG.*` entries describe typed policy.
 
+Full TOD NetCDF and map FITS cleaning metadata now follows that boundary too:
+cleaner mode, Marchenko-Pastur selection, adaptive selection, correlation
+penalties, busy-row suppression, and second-pass policy are typed. Per-array
+removed-eigenmode counts remain realized processor results by design.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

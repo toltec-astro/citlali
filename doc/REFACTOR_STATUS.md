@@ -138,6 +138,11 @@ weight-penalty, busy-row, and second-pass policy. This establishes a consistent
 boundary: typed configuration is serialized as policy, while processor-owned
 arrays remain realized diagnostics. All 235 tests and full preflight pass.
 
+TOD NetCDF and map FITS cleaning metadata now uses typed processed-timestream
+policy throughout. The only retained cleaner value at this output boundary is
+the per-array removed-eigenmode count, which is a realized result rather than
+configuration. The CLI build, all 235 tests, and full preflight pass.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.

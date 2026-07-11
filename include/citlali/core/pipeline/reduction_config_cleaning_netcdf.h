@@ -44,13 +44,13 @@ void add_weight_corr_penalty_config_vars(
     add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.WEIGHT",
                    penalty.cm_low_mid_ratio.weight);
     add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.LOWMIN_HZ",
-                   penalty.cm_low_mid_ratio.low_min_Hz);
+                   penalty.cm_low_mid_ratio.low_band_Hz[0]);
     add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.LOWMAX_HZ",
-                   penalty.cm_low_mid_ratio.low_max_Hz);
+                   penalty.cm_low_mid_ratio.low_band_Hz[1]);
     add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMIN_HZ",
-                   penalty.cm_low_mid_ratio.mid_min_Hz);
+                   penalty.cm_low_mid_ratio.mid_band_Hz[0]);
     add_netcdf_var(fo, "CONFIG.WEIGHT.CORR_PENALTY.LOWMID.MIDMAX_HZ",
-                   penalty.cm_low_mid_ratio.mid_max_Hz);
+                   penalty.cm_low_mid_ratio.mid_band_Hz[1]);
 }
 
 template <class BusyRowSuppression>
@@ -68,20 +68,21 @@ void add_busy_row_suppression_config_vars(
                    suppression.factor);
 }
 
-template <class PtcProc>
 void add_cleaner_mode_config_vars(netCDF::NcFile &fo,
-                                  const PtcProc &ptcproc) {
-    add_netcdf_var(fo, "CONFIG.CLEANED", ptcproc.run_clean);
+                                  const citlali::config::ProcessedTimeChunkCleanConfig
+                                      &clean) {
+    add_netcdf_var(fo, "CONFIG.CLEANED", clean.enabled);
     add_netcdf_var<std::string>(fo, "CONFIG.CLEANED.MODESEL",
-                                ptcproc.cleaner.active_cleaner_label());
+                                std::string{citlali::config::to_string(
+                                    clean.active)});
     add_netcdf_var(fo, "CONFIG.CLEANED.MP.ENABLED",
-                   ptcproc.cleaner.marchenko_pastur.enabled);
+                   clean.marchenko_pastur.enabled);
     add_netcdf_var(fo, "CONFIG.CLEANED.MP.BANDLOW_HZ",
-                   ptcproc.cleaner.marchenko_pastur.band_low_Hz);
+                   clean.marchenko_pastur.band_low_Hz);
     add_netcdf_var(fo, "CONFIG.CLEANED.MP.BANDHIGH_HZ",
-                   ptcproc.cleaner.marchenko_pastur.band_high_Hz);
+                   clean.marchenko_pastur.band_high_Hz);
     add_netcdf_var(fo, "CONFIG.CLEANED.MP.MAXMODES",
-                   ptcproc.cleaner.marchenko_pastur.max_modes);
+                   clean.marchenko_pastur.max_modes);
 }
 
 template <class AdaptiveSelector>
@@ -129,12 +130,13 @@ void add_adaptive_cleaner_config_vars(
 template <class PtcProc, class Calib, class ArrayNameMap>
 void add_cleaned_eigen_count_config_vars(netCDF::NcFile &fo,
                                          const PtcProc &ptcproc,
+                                         bool cleaning_enabled,
                                          const Calib &calib,
                                          ArrayNameMap &array_name_map) {
     for (decltype(calib.arrays.size()) i=0; i<calib.arrays.size(); ++i) {
         const auto array = calib.arrays(i);
         const auto key = "CONFIG.CLEANED.NEIG_" + array_name_map[array];
-        if (ptcproc.run_clean) {
+        if (cleaning_enabled) {
             add_netcdf_var(fo, key,
                            ptcproc.cleaner.n_eig_to_cut.at(array).sum());
         }
@@ -192,14 +194,20 @@ void add_ptc_second_pass_config_vars(netCDF::NcFile &fo,
 template <class PtcProc, class Calib, class ArrayNameMap>
 void add_ptc_cleaning_header_config_vars(netCDF::NcFile &fo,
                                          const PtcProc &ptcproc,
+                                         const citlali::config::ProcessedTimeChunkConfig
+                                             &config,
                                          const Calib &calib,
                                          ArrayNameMap &array_name_map) {
+    const auto &clean = config.clean;
+    const auto &weighting = config.weighting;
     add_ptc_weight_cutoff_config_vars(fo, ptcproc);
-    add_weight_corr_penalty_config_vars(fo, ptcproc.weight_corr_penalty);
-    add_busy_row_suppression_config_vars(fo, ptcproc.busy_row_suppression);
-    add_cleaner_mode_config_vars(fo, ptcproc);
-    add_adaptive_cleaner_config_vars(fo, ptcproc.cleaner.adaptive_selector);
-    add_ptc_second_pass_config_vars(fo, ptcproc.second_pass_local);
-    add_cleaned_eigen_count_config_vars(fo, ptcproc, calib, array_name_map);
+    add_weight_corr_penalty_config_vars(fo, weighting.corr_penalty);
+    add_busy_row_suppression_config_vars(
+        fo, weighting.busy_row_suppression);
+    add_cleaner_mode_config_vars(fo, clean);
+    add_adaptive_cleaner_config_vars(fo, clean.adaptive_selector);
+    add_ptc_second_pass_config_vars(
+        fo, config.flagging.second_pass_local);
+    add_cleaned_eigen_count_config_vars(
+        fo, ptcproc, clean.enabled, calib, array_name_map);
 }
-
