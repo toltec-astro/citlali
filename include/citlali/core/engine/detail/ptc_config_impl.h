@@ -7,6 +7,7 @@
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
+#include <citlali/core/pipeline/timestream_config_adapter_processed.h>
 
 template<typename CT>
 void Engine::get_ptc_config(CT &config) {
@@ -19,6 +20,8 @@ void Engine::get_ptc_config(CT &config) {
     auto &fruit_loops_config = timestream_config.fruit_loops;
     auto &processed_config = timestream_config.processed_time_chunk;
     citlali::pipeline::mirror_fruit_loops_config(
+        fruit_loops_config, ptcproc);
+    citlali::pipeline::apply_fruit_loops_config_to_processor(
         fruit_loops_config, ptcproc);
     citlali::pipeline::mirror_processed_clean_config(
         processed_config.clean, ptcproc,

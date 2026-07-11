@@ -23,6 +23,7 @@
 #include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/timestream_output_provenance.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
+#include <citlali/core/pipeline/timestream_config_adapter_processed.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
 #include <citlali/core/pipeline/tod_output_state.h>
 
@@ -666,6 +667,35 @@ struct FakeIterationPtcProc {
     void finalize_weight_validation_iteration(int iter) {
         finalize_weight_validation_iter = iter;
     }
+};
+
+struct FakeFruitLoopsAdapterPtcProc {
+    bool run_fruit_loops = false;
+    bool fruit_loops_recompute_weights_after_addback = false;
+    bool save_all_iters = false;
+    std::string fruit_loops_path;
+    std::string fruit_loops_type;
+    std::string fruit_mode;
+    double fruit_loops_sig2noise = 0.0;
+    Eigen::VectorXd fruit_loops_flux;
+    double fruit_loops_peak_fraction_limit = 0.0;
+    double fruit_loops_local_snr_floor = 0.0;
+    double fruit_loops_local_sigma_inner_radius_arcsec = 0.0;
+    double fruit_loops_local_sigma_outer_radius_arcsec = 0.0;
+    double fruit_loops_local_sigma_inner_fwhm = 0.0;
+    double fruit_loops_local_sigma_outer_fwhm = 0.0;
+    double fruit_loops_local_sigma_edge_guard_arcsec = 0.0;
+    int fruit_loops_local_sigma_min_pixels = 0;
+    double fruit_loops_adaptive_support_radius_arcsec = 0.0;
+    double fruit_loops_adaptive_support_radius_fwhm = 0.0;
+    bool fruit_loops_weight_feedback_enabled = false;
+    std::string fruit_loops_weight_feedback_reference;
+    double fruit_loops_weight_feedback_low_relative_weight = 0.0;
+    double fruit_loops_weight_feedback_high_relative_weight = 0.0;
+    double fruit_loops_center_keep_radius_arcsec = 0.0;
+    std::string fruit_loops_interp_mode_override;
+    bool fruit_loops_legacy_center = false;
+    int fruit_loops_iters = 0;
 };
 
 struct FakeReductionLearning {
@@ -4349,6 +4379,31 @@ TEST(pipeline_execution, uses_typed_fruit_loop_flux_metadata) {
         citlali::pipeline::phdu_fruit_loop_flux_limit(
             config, arrays, 1, 2),
         22.0);
+}
+
+TEST(pipeline_execution, adapts_typed_fruit_loop_policy_one_way) {
+    citlali::config::TimestreamFruitLoopsConfig config;
+    config.enabled = true;
+    config.save_all_iters = true;
+    config.path = "/typed/maps";
+    config.type = "obsnum/raw";
+    config.sig2noise_limit = 7.5;
+    config.array_flux_limit = {1.0, 2.0, 3.0};
+    config.weight_feedback.enabled = true;
+    config.max_iters = 4;
+    FakeFruitLoopsAdapterPtcProc ptcproc;
+
+    citlali::pipeline::apply_fruit_loops_config_to_processor(
+        config, ptcproc);
+
+    EXPECT_TRUE(ptcproc.run_fruit_loops);
+    EXPECT_TRUE(ptcproc.save_all_iters);
+    EXPECT_EQ(ptcproc.fruit_loops_path, "/typed/maps");
+    EXPECT_DOUBLE_EQ(ptcproc.fruit_loops_sig2noise, 7.5);
+    ASSERT_EQ(ptcproc.fruit_loops_flux.size(), 3);
+    EXPECT_DOUBLE_EQ(ptcproc.fruit_loops_flux(2), 3.0);
+    EXPECT_TRUE(ptcproc.fruit_loops_weight_feedback_enabled);
+    EXPECT_EQ(ptcproc.fruit_loops_iters, 4);
 }
 
 TEST(pipeline_execution, skips_initial_fruit_loop_map_without_path) {

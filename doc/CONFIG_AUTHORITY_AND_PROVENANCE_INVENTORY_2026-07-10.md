@@ -194,6 +194,12 @@ mapmaking detector exclusion now use typed second-pass source-protection state
 and thresholds. The synchronized `PTCProc` fields remain internal numerical
 adapter inputs, not external orchestration authority.
 
+A focused one-way adapter now copies typed fruit-loop effective policy into
+`PTCProc`. The current legacy parser still seeds the typed model, but numerical
+code receives a canonical typed-to-processor synchronization step. This is the
+replacement seam for moving fruit-loop parsing directly into the typed loader
+without simultaneously rewriting PTC algorithms.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

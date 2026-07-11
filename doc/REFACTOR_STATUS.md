@@ -100,6 +100,12 @@ object as a numerical adapter, and realized edge-context/guard sample counts
 remain processor state. The CLI build, all 232 tests, and full config preflight
 pass.
 
+The processed migration now has its first explicit one-way adapter:
+`TimestreamFruitLoopsConfig` synchronizes the numerical `PTCProc` fields after
+loading. A focused divergence test proves typed values overwrite adapter state.
+This enables direct typed parsing to replace legacy parsing incrementally. All
+236 tests and full preflight pass.
+
 Raw input and metadata boundaries now use typed policy for duplicate-tone
 frequency separation, RTC diagnostic FIR/source-bandwidth ratios, and whether
 FITS/TOD tau metadata is calculated. The atmospheric calibration object remains
