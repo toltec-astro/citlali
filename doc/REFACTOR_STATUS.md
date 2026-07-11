@@ -151,8 +151,8 @@ Immediate work order:
   domains remain materially mixed, four are typed-authoritative without an
   adapter, Beammap is typed-authoritative with one fitting adapter, and KIDs is
   an explicit external boundary. This checkpoint changes no runtime behavior;
-  operational authority migration remains gated on the active Beammap and
-  science validations.
+  operational authority migration remains gated on the remaining Phase 1
+  validation decisions.
 - Phase 1 science validation at refactor `redu12` (`59c35e60`) completed both
   observations with 248 PTC chunks, zero logged issues, and the expected 25
   stable products. Against same-config refactor `redu10` (`9ef7da8a`), all 24
@@ -170,12 +170,16 @@ Immediate work order:
 - Beammap refactor `redu10` (`f278bd32`) and `redu11` (`9ef7da8a`) use identical
   merged configs and are numerically repeatable: all six large split FITS
   products, both APT tables, RTC/PTC diagnostics, and the complete detector-TOD
-  `signal`/`flags` arrays have zero changed records. However, the matched OG
-  Beammap pair is also deterministic and OG `redu01` versus refactor `redu10`
-  has 4,196 detector-map records outside the current tight tolerance, including
-  percent-scale differences in some weight maps. This is an unresolved Phase 1
-  validation blocker; do not attribute it to parallel run variation or to
-  enabling detector-TOD output.
+  `signal`/`flags` arrays have zero changed records. The matched OG Beammap pair
+  is also deterministic. Scientific-owner review accepted the bounded OG to
+  refactor differences on 2026-07-11: detector identities and flags are exact;
+  the worst good-detector signal and weight RMS-relative differences are
+  0.625% and 0.308%; sensitivity differs by at most 0.255%; and positional and
+  FWHM differences are sub-microarcsecond. The versioned
+  `beammap-scientific-equivalence-v1` gate now enforces these limits and the
+  validation ledger records the accepted checkpoint. Any future threshold
+  breach is numerical creep and requires investigation rather than automatic
+  tolerance relaxation.
 
 ## Five-Phase Roadmap
 

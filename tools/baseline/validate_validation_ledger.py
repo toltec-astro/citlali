@@ -17,6 +17,7 @@ ACCEPTED_STATUSES = {
     "accepted",
     "accepted_with_intended_provenance_change",
     "accepted_with_intended_science_change",
+    "accepted_with_scientific_tolerance",
 }
 
 
@@ -122,7 +123,7 @@ def validate_record(record: Any, index: int) -> str:
         if not isinstance(products, list) or not products:
             raise LedgerError(f"{difference_context}.products: expected non-empty list")
         justified_changes += len(products)
-    if changed != justified_changes:
+    if status != "accepted_with_scientific_tolerance" and changed != justified_changes:
         raise LedgerError(
             f"{context}: changed_records={changed} but justified product changes="
             f"{justified_changes}")
