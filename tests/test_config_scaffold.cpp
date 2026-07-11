@@ -2745,9 +2745,10 @@ TEST(pipeline_preflight, configures_sample_rate_without_downsample) {
 TEST(pipeline_preflight, configures_sample_rate_with_downsample_factor) {
     FakeEngine engine;
     engine.telescope.fsmp = 100.0;
-    engine.rtcproc.run_downsample = true;
-    engine.rtcproc.downsampler.factor = 4;
-    engine.rtcproc.filter.freq_high_Hz = 10.0;
+    auto &raw = engine.typed_config.timestream.raw_time_chunk;
+    raw.downsample.enabled = true;
+    raw.downsample.factor = 4;
+    raw.filter.freq_high_Hz = 10.0;
     auto logger = std::make_shared<FakeLogger>();
 
     EXPECT_TRUE(citlali::pipeline::configure_effective_sample_rate(
@@ -2758,23 +2759,27 @@ TEST(pipeline_preflight, configures_sample_rate_with_downsample_factor) {
 TEST(pipeline_preflight, derives_downsample_factor_from_frequency) {
     FakeEngine engine;
     engine.telescope.fsmp = 100.0;
-    engine.rtcproc.run_downsample = true;
-    engine.rtcproc.downsampler.factor = 0;
-    engine.rtcproc.downsampler.downsampled_freq_Hz = 30.0;
-    engine.rtcproc.filter.freq_high_Hz = 10.0;
+    auto &raw = engine.typed_config.timestream.raw_time_chunk;
+    raw.downsample.enabled = true;
+    raw.downsample.factor = 0;
+    raw.downsample.downsampled_freq_Hz = 30.0;
+    raw.filter.freq_high_Hz = 10.0;
     auto logger = std::make_shared<FakeLogger>();
 
     EXPECT_TRUE(citlali::pipeline::configure_effective_sample_rate(
         engine, logger));
+    EXPECT_EQ(raw.downsample.factor, 3);
     EXPECT_EQ(engine.rtcproc.downsampler.factor, 3);
     EXPECT_DOUBLE_EQ(engine.telescope.d_fsmp, 100.0 / 3.0);
 }
 
 TEST(pipeline_preflight, rejects_invalid_downsample_frequency) {
     FakeEngine engine;
-    engine.rtcproc.run_downsample = true;
-    engine.rtcproc.downsampler.factor = 0;
-    engine.rtcproc.downsampler.downsampled_freq_Hz = 0.0;
+    auto &downsample =
+        engine.typed_config.timestream.raw_time_chunk.downsample;
+    downsample.enabled = true;
+    downsample.factor = 0;
+    downsample.downsampled_freq_Hz = 0.0;
     auto logger = std::make_shared<FakeLogger>();
 
     EXPECT_FALSE(citlali::pipeline::configure_effective_sample_rate(
@@ -2784,9 +2789,11 @@ TEST(pipeline_preflight, rejects_invalid_downsample_frequency) {
 TEST(pipeline_preflight, rejects_downsample_frequency_above_sample_rate) {
     FakeEngine engine;
     engine.telescope.fsmp = 100.0;
-    engine.rtcproc.run_downsample = true;
-    engine.rtcproc.downsampler.factor = 0;
-    engine.rtcproc.downsampler.downsampled_freq_Hz = 200.0;
+    auto &downsample =
+        engine.typed_config.timestream.raw_time_chunk.downsample;
+    downsample.enabled = true;
+    downsample.factor = 0;
+    downsample.downsampled_freq_Hz = 200.0;
     auto logger = std::make_shared<FakeLogger>();
 
     EXPECT_FALSE(citlali::pipeline::configure_effective_sample_rate(
@@ -2796,13 +2803,31 @@ TEST(pipeline_preflight, rejects_downsample_frequency_above_sample_rate) {
 TEST(pipeline_preflight, rejects_downsample_filter_above_nyquist) {
     FakeEngine engine;
     engine.telescope.fsmp = 100.0;
-    engine.rtcproc.run_downsample = true;
-    engine.rtcproc.downsampler.factor = 4;
-    engine.rtcproc.filter.freq_high_Hz = 20.0;
+    auto &raw = engine.typed_config.timestream.raw_time_chunk;
+    raw.downsample.enabled = true;
+    raw.downsample.factor = 4;
+    raw.filter.freq_high_Hz = 20.0;
     auto logger = std::make_shared<FakeLogger>();
 
     EXPECT_FALSE(citlali::pipeline::configure_effective_sample_rate(
         engine, logger));
+}
+
+TEST(pipeline_preflight, sample_rate_policy_uses_typed_downsample_config) {
+    FakeEngine engine;
+    engine.telescope.fsmp = 100.0;
+    auto &raw = engine.typed_config.timestream.raw_time_chunk;
+    raw.downsample.enabled = true;
+    raw.downsample.factor = 5;
+    raw.filter.freq_high_Hz = 8.0;
+    engine.rtcproc.run_downsample = false;
+    engine.rtcproc.downsampler.factor = 2;
+    engine.rtcproc.filter.freq_high_Hz = 40.0;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TRUE(citlali::pipeline::configure_effective_sample_rate(
+        engine, logger));
+    EXPECT_DOUBLE_EQ(engine.telescope.d_fsmp, 20.0);
 }
 
 TEST(pipeline_preflight, loads_hwpr_data_for_polarized_observation) {
@@ -3581,9 +3606,11 @@ TEST(pipeline_execution, prepares_reduction_observation_inputs) {
 TEST(pipeline_execution,
      rejects_reduction_observation_inputs_on_bad_sample_rate) {
     FakeInitialObservationTodProc todproc;
-    todproc.engine().rtcproc.run_downsample = true;
-    todproc.engine().rtcproc.downsampler.factor = 0;
-    todproc.engine().rtcproc.downsampler.downsampled_freq_Hz = 0.0;
+    auto &downsample = todproc.engine()
+                           .typed_config.timestream.raw_time_chunk.downsample;
+    downsample.enabled = true;
+    downsample.factor = 0;
+    downsample.downsampled_freq_Hz = 0.0;
     FakeRawObs rawobs;
     std::vector<FakeRawObsMeta> rawobs_kids_meta = {{122.0, 102}};
     std::vector<int> map_extents = {11};
@@ -3818,9 +3845,11 @@ TEST(pipeline_execution, runs_reduction_observation) {
 TEST(pipeline_execution,
      rejects_reduction_observation_when_prepare_fails) {
     FakeInitialObservationTodProc todproc;
-    todproc.engine().rtcproc.run_downsample = true;
-    todproc.engine().rtcproc.downsampler.factor = 0;
-    todproc.engine().rtcproc.downsampler.downsampled_freq_Hz = 0.0;
+    auto &downsample = todproc.engine()
+                           .typed_config.timestream.raw_time_chunk.downsample;
+    downsample.enabled = true;
+    downsample.factor = 0;
+    downsample.downsampled_freq_Hz = 0.0;
     FakeKidsProc kidsproc;
     FakeRawObs rawobs;
     std::vector<FakeRawObsMeta> rawobs_kids_meta = {{122.0, 102}};
@@ -3916,9 +3945,11 @@ TEST(pipeline_execution, runs_reduction_iteration_observations) {
 
 TEST(pipeline_execution, rejects_reduction_iteration_observations_on_failure) {
     FakeInitialObservationTodProc todproc;
-    todproc.engine().rtcproc.run_downsample = true;
-    todproc.engine().rtcproc.downsampler.factor = 0;
-    todproc.engine().rtcproc.downsampler.downsampled_freq_Hz = 0.0;
+    auto &downsample = todproc.engine()
+                           .typed_config.timestream.raw_time_chunk.downsample;
+    downsample.enabled = true;
+    downsample.factor = 0;
+    downsample.downsampled_freq_Hz = 0.0;
     FakeCitlaliConfig config;
     FakeIOCoordinator co{{FakeRawObs{}, FakeRawObs{}}};
     std::vector<int> map_extents = {11, 33};

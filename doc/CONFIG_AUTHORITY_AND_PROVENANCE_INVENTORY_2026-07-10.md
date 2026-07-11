@@ -105,6 +105,16 @@ run has zero serious log issues and exact pre-existing products relative to
 and test build, all 229 tests, and the complete eight-case config preflight pass.
 The domain is now `typed-authoritative` with complete provenance.
 
+### Raw Timestream Authority Checkpoint - 2026-07-11
+
+The first `raw-timestream` slice moves downsample enablement, requested factor
+or frequency, and anti-alias filter validation to `RawTimeChunkConfig`.
+Effective sample-rate preflight now follows typed policy even when the legacy
+RTC mirror disagrees. A factor derived from requested frequency is written to
+both typed config and the RTC downsampler because the numerical downsampler
+still consumes that execution adapter. The domain remains `mixed-adapter` until
+the remaining RTC policy reads are migrated.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

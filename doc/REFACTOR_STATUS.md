@@ -73,6 +73,14 @@ telescope chunking mirrors are removed; parser and writer boundaries receive
 typed values explicitly. The local CLI/test build, all 229 tests, and full
 config preflight pass. This domain is complete.
 
+Work has started on the `raw-timestream` domain. Downsample enablement,
+requested factor/frequency, anti-alias validation, and effective sample-rate
+preflight now use typed raw-time-chunk configuration. Frequency-derived factors
+are synchronized into the RTC downsampler only as an execution adapter. A
+divergence test proves typed policy wins over stale processor mirrors; all 230
+tests pass. Remaining RTC filters, flagging, calibration, and diagnostics are
+still being inventoried and migrated in bounded clusters.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.

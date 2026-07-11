@@ -1,22 +1,24 @@
 #pragma once
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 #include <cmath>
 
 namespace citlali::pipeline {
 
 template <class Engine>
 bool should_run_downsample(const Engine &engine) {
-    return engine.rtcproc.run_downsample;
+    return raw_time_chunk_config(engine).downsample.enabled;
 }
 
 template <class Engine>
 auto downsample_factor(const Engine &engine) {
-    return engine.rtcproc.downsampler.factor;
+    return raw_time_chunk_config(engine).downsample.factor;
 }
 
 template <class Engine>
 auto requested_downsample_frequency_hz(const Engine &engine) {
-    return engine.rtcproc.downsampler.downsampled_freq_Hz;
+    return raw_time_chunk_config(engine).downsample.downsampled_freq_Hz;
 }
 
 template <class Engine>
@@ -26,7 +28,7 @@ auto native_sample_rate_hz(const Engine &engine) {
 
 template <class Engine>
 auto filter_high_frequency_hz(const Engine &engine) {
-    return engine.rtcproc.filter.freq_high_Hz;
+    return raw_time_chunk_config(engine).filter.freq_high_Hz;
 }
 
 template <class Engine>
@@ -77,8 +79,9 @@ auto derived_downsample_factor_from_frequency(const Engine &engine) {
 
 template <class Engine>
 void derive_downsample_factor_from_frequency(Engine &engine) {
-    engine.rtcproc.downsampler.factor =
-        derived_downsample_factor_from_frequency(engine);
+    const auto factor = derived_downsample_factor_from_frequency(engine);
+    raw_time_chunk_config(engine).downsample.factor = factor;
+    engine.rtcproc.downsampler.factor = factor;
 }
 
 template <class Engine, class Logger>
