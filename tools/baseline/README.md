@@ -263,3 +263,22 @@ The command exits nonzero when any bound is exceeded. Use the generic
 `compare_reduction_products.py` for exact run-to-run determinism and product
 inventory checks; this profile is specifically for accepted OG/refactor
 scientific equivalence and must not be relaxed without scientific-owner review.
+
+# Science Scientific Equivalence
+
+`compare_science_scientific_equivalence.py` applies the accepted science gate
+in `validation/profiles/science_scientific_equivalence_v1.json`. It requires
+exact FITS/netCDF product sets and integer diagnostic state, then checks map,
+PTC weight, detector-median, and remaining floating diagnostic drift.
+
+```bash
+$HOME/tolteca/bin/python \
+  tools/baseline/compare_science_scientific_equivalence.py \
+  /path/to/science/citlali/reduced/reduNN \
+  /path/to/science/refactor/reduced/reduNN \
+  --json-out /tmp/science_equivalence.json \
+  --report-out /tmp/science_equivalence.md
+```
+
+The profile is an OG/refactor scientific-equivalence gate. Continue to use the
+generic comparator for exact same-build determinism checks.
