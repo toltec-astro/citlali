@@ -129,7 +129,7 @@ void read_processed_weight_validation_config(
         config, key("atmospheric_grouping"), atmospheric_grouping,
         validation.atmospheric_grouping,
         citlali::config::parse_processed_weight_grouping, diagnostics,
-        {"array", "network"});
+        {"array", "nw", "all"});
     read_int(
         "atmospheric_min_detectors", validation.atmospheric_min_detectors);
     read_double("atmospheric_ref", validation.atmospheric_ref);
@@ -148,7 +148,7 @@ void read_processed_weight_validation_config(
         config, key("high_weight_grouping"), high_weight_grouping,
         validation.high_weight_grouping,
         citlali::config::parse_processed_weight_grouping, diagnostics,
-        {"array", "network"});
+        {"array", "nw", "all"});
     read_int(
         "high_weight_min_group_detectors",
         validation.high_weight_min_group_detectors);

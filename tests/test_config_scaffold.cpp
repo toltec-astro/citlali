@@ -698,6 +698,84 @@ struct FakeFruitLoopsAdapterPtcProc {
     int fruit_loops_iters = 0;
 };
 
+struct FakeProcessedAdapterPtcProc {
+    std::string weighting_type;
+    double source_mask_radius_arcsec = 0.0;
+    double hybrid_correction_min_factor = 0.0;
+    double hybrid_correction_max_factor = 0.0;
+    double med_weight_factor = 0.0;
+    double lower_weight_factor = 0.0;
+    double upper_weight_factor = 0.0;
+    double lower_inv_var_factor = 0.0;
+    double upper_inv_var_factor = 0.0;
+    struct WeightValidation {
+        bool enabled = false;
+        int accumulation_iters = 0, apply_start_iter = 0, min_valid_scans = 0;
+        double min_factor = 0.0, unvalidated_factor = 0.0;
+        bool require_fruitloops_model = false, transient_ratio_enabled = false;
+        double ratio_power = 0.0, transient_ratio_power = 0.0;
+        bool upward_enabled = false;
+        double upward_max_factor = 0.0, upward_power = 0.0;
+        double upward_min_base_factor = 0.0;
+        bool upward_require_atmospheric = false;
+        double upward_min_atmospheric_factor = 0.0;
+        bool atmospheric_correlation_enabled = false;
+        std::string atmospheric_grouping;
+        int atmospheric_min_detectors = 0;
+        double atmospheric_ref = 0.0, atmospheric_span = 0.0;
+        double atmospheric_power = 0.0, min_good_frac = 0.0;
+        int min_overlap = 0, max_samples = 0;
+        bool high_weight_validation_enabled = false;
+        bool high_weight_apply_caps = false;
+        std::string high_weight_grouping;
+        int high_weight_min_group_detectors = 0;
+        double high_weight_log_robust_z = 0.0;
+        double high_weight_max_median_factor = 0.0;
+        double high_weight_cap_median_factor = 0.0;
+        double high_weight_min_validated_factor = 0.0;
+    } weight_validation;
+    struct PenaltyTerm {
+        bool enabled = false;
+        double ref = 0.0, span = 0.0, weight = 0.0;
+    };
+    struct PenaltyBand : PenaltyTerm {
+        double low_min_Hz = 0.0, low_max_Hz = 0.0;
+        double mid_min_Hz = 0.0, mid_max_Hz = 0.0;
+    };
+    struct WeightPenalty {
+        bool enabled = false;
+        double min_good_frac = 0.0;
+        int min_overlap = 0, max_samples = 0, max_pairs = 0;
+        std::uint32_t seed = 0;
+        double floor = 0.0, exponent = 0.0;
+        PenaltyTerm pair_corr, cm_el_corr;
+        PenaltyBand cm_low_mid_ratio;
+    } weight_corr_penalty;
+    struct BusyRow {
+        bool enabled = false, require_busy_veto = false;
+        int min_candidate_clusters = 0;
+        double min_max_unflagged_residual_z = 0.0, factor = 0.0;
+    } busy_row_suppression;
+    struct SecondPass {
+        bool enabled = false;
+        double min_spike_sigma = 0.0, min_good_frac = 0.0;
+        double baseline_window_sec = 0.0, sigma_scale = 0.0;
+        double delta_sigma_scale = 0.0, raw_candidate_rel_sigma_scale = 0.0;
+        double raw_window_sec = 0.0, raw_half_peak_frac = 0.0;
+        double raw_max_width_sec = 0.0, delta_window_sec = 0.0;
+        double delta_half_peak_frac = 0.0, delta_max_width_sec = 0.0;
+        double max_step_shift_z = 0.0, high_score_event_override = 0.0;
+        double merge_within_detector_sec = 0.0, cluster_events_sec = 0.0;
+        int min_cluster_detectors = 0;
+        double high_score_cluster_override = 0.0;
+        int max_auto_flag_clusters_per_network = 0;
+        bool selective_busy_network_acceptance_enabled = false;
+        bool source_protection_config_enabled = false;
+        bool source_protection_enabled = true;
+        double source_protection_radius_arcsec = 0.0;
+    } second_pass_local;
+};
+
 struct FakeReductionLearning {
     bool enabled = false;
     bool diagnostics = false;
@@ -4404,6 +4482,63 @@ TEST(pipeline_execution, adapts_typed_fruit_loop_policy_one_way) {
     EXPECT_DOUBLE_EQ(ptcproc.fruit_loops_flux(2), 3.0);
     EXPECT_TRUE(ptcproc.fruit_loops_weight_feedback_enabled);
     EXPECT_EQ(ptcproc.fruit_loops_iters, 4);
+}
+
+TEST(pipeline_execution, adapts_typed_processed_weighting_policy_one_way) {
+    citlali::config::ProcessedTimeChunkWeightingConfig weighting;
+    citlali::config::ProcessedTimeChunkFlaggingConfig flagging;
+    weighting.type = citlali::config::ProcessedTimeChunkWeightingType::hybrid;
+    weighting.source_mask_radius_arcsec = 17.0;
+    weighting.validation.enabled = true;
+    weighting.validation.atmospheric_grouping =
+        citlali::config::ProcessedTimeChunkWeightGrouping::network;
+    weighting.validation.high_weight_cap_median_factor = 3.5;
+    weighting.corr_penalty.enabled = true;
+    weighting.corr_penalty.seed = 42;
+    weighting.corr_penalty.cm_low_mid_ratio.low_band_Hz = {0.1, 0.4};
+    weighting.busy_row_suppression.enabled = true;
+    weighting.busy_row_suppression.factor = 0.25;
+    flagging.lower_tod_inv_var_factor = 0.2;
+    FakeProcessedAdapterPtcProc ptcproc;
+
+    citlali::pipeline::apply_processed_weighting_config_to_processor(
+        weighting, flagging, ptcproc);
+
+    EXPECT_EQ(ptcproc.weighting_type, "hybrid");
+    EXPECT_DOUBLE_EQ(ptcproc.source_mask_radius_arcsec, 17.0);
+    EXPECT_TRUE(ptcproc.weight_validation.enabled);
+    EXPECT_EQ(ptcproc.weight_validation.atmospheric_grouping, "nw");
+    EXPECT_DOUBLE_EQ(
+        ptcproc.weight_validation.high_weight_cap_median_factor, 3.5);
+    EXPECT_EQ(ptcproc.weight_corr_penalty.seed, 42U);
+    EXPECT_DOUBLE_EQ(
+        ptcproc.weight_corr_penalty.cm_low_mid_ratio.low_max_Hz, 0.4);
+    EXPECT_DOUBLE_EQ(ptcproc.busy_row_suppression.factor, 0.25);
+    EXPECT_DOUBLE_EQ(ptcproc.lower_inv_var_factor, 0.2);
+}
+
+TEST(pipeline_execution, adapts_typed_second_pass_policy_one_way) {
+    citlali::config::ProcessedTimeChunkSecondPassLocalConfig config;
+    config.enabled = true;
+    config.min_spike_sigma = 11.0;
+    config.min_cluster_detectors = 6;
+    config.selective_busy_network_acceptance_enabled = false;
+    config.source_protection.enabled = true;
+    config.source_protection.radius_arcsec = 31.0;
+    FakeProcessedAdapterPtcProc ptcproc;
+
+    citlali::pipeline::apply_second_pass_local_config_to_processor(
+        config, ptcproc);
+
+    EXPECT_TRUE(ptcproc.second_pass_local.enabled);
+    EXPECT_DOUBLE_EQ(ptcproc.second_pass_local.min_spike_sigma, 11.0);
+    EXPECT_EQ(ptcproc.second_pass_local.min_cluster_detectors, 6);
+    EXPECT_FALSE(
+        ptcproc.second_pass_local.selective_busy_network_acceptance_enabled);
+    EXPECT_TRUE(ptcproc.second_pass_local.source_protection_config_enabled);
+    EXPECT_DOUBLE_EQ(
+        ptcproc.second_pass_local.source_protection_radius_arcsec, 31.0);
+    EXPECT_TRUE(ptcproc.second_pass_local.source_protection_enabled);
 }
 
 TEST(pipeline_execution, skips_initial_fruit_loop_map_without_path) {
