@@ -702,6 +702,16 @@ inline void validate(const ProcessedTimeChunkCleanConfig &config,
     if (!config.enabled) {
         return;
     }
+    const auto enabled_cleaners =
+        static_cast<int>(config.standard_pca.enabled) +
+        static_cast<int>(config.null_model.enabled) +
+        static_cast<int>(config.marchenko_pastur.enabled) +
+        static_cast<int>(config.adaptive_selector.enabled);
+    if (enabled_cleaners != 1) {
+        report.add_error(
+            {"timestream", "processed_time_chunk", "clean"},
+            "exactly one cleaner must be enabled when cleaning is enabled");
+    }
     validate(config.standard_pca, report);
     validate(config.corr_grouping, report);
     validate(config.null_model, report);

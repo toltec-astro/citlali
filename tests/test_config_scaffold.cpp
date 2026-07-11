@@ -1670,6 +1670,22 @@ TEST(config_scaffold, validates_processed_time_chunk_clean_values) {
     EXPECT_EQ(report.error_count(), 1U);
 }
 
+TEST(config_scaffold, requires_exactly_one_processed_cleaner) {
+    citlali::config::ProcessedTimeChunkCleanConfig config;
+    config.enabled = true;
+    config.standard_pca.enabled = false;
+
+    citlali::config::ValidationReport none_enabled;
+    citlali::config::validate(config, none_enabled);
+    EXPECT_EQ(none_enabled.error_count(), 1U);
+
+    config.standard_pca.enabled = true;
+    config.null_model.enabled = true;
+    citlali::config::ValidationReport multiple_enabled;
+    citlali::config::validate(config, multiple_enabled);
+    EXPECT_EQ(multiple_enabled.error_count(), 1U);
+}
+
 TEST(config_scaffold, validates_processed_time_chunk_clean_expert_values) {
     citlali::config::ProcessedTimeChunkCleanConfig config;
     config.enabled = true;
@@ -1710,7 +1726,7 @@ TEST(config_scaffold, validates_processed_time_chunk_clean_expert_values) {
     citlali::config::ValidationReport report;
     citlali::config::validate(config, report);
     EXPECT_FALSE(report.ok());
-    EXPECT_EQ(report.error_count(), 29U);
+    EXPECT_EQ(report.error_count(), 30U);
 }
 
 TEST(config_scaffold, validates_processed_time_chunk_weight_validation_values) {
