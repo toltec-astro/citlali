@@ -8,6 +8,7 @@
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/reduction_output_dirs.h>
 #include <citlali/core/pipeline/runtime_policy.h>
+#include <citlali/core/pipeline/runtime_provenance_output.h>
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::get_apt_from_files(const RawObs &rawobs) {
@@ -54,6 +55,14 @@ void TimeOrderedDataProc<EngineType>::create_output_dir() {
         citlali::pipeline::configure_reduction_logging_and_profile(
             engine().output_paths.redu_dir_name, logger);
     }
+
+    citlali::pipeline::write_runtime_provenance_file(
+        engine().output_paths.redu_dir_name,
+        citlali::pipeline::runtime_config_provenance(engine()));
+    logger->info("runtime provenance sidecar: {}",
+                 citlali::pipeline::runtime_provenance_path(
+                     engine().output_paths.redu_dir_name)
+                     .string());
 
     // coadded subdir
     if (citlali::pipeline::coadd_outputs_enabled(engine())) {

@@ -55,8 +55,10 @@ splitting remain out of scope.
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution
 consumes the effective thread and runtime policy. Remaining direct mutable
-runtime reads are confined to config construction. Stable machine-readable
-provenance output and its validation remain before this domain is complete.
+runtime reads are confined to config construction. The required, atomically
+published `runtime_provenance.yaml` sidecar uses the stable
+`citlali-runtime-provenance-v1` schema. A Unity reduction must verify its
+realized values and product integration before this domain is marked complete.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

@@ -46,15 +46,17 @@ citlali::config::RealizedRuntimeConfig configure_runtime_threads(
 template <class Engine, class Logger>
 void configure_citlali_runtime_threads(Engine &engine,
                                        const Logger &logger) {
-    const auto &plan =
-        citlali::pipeline::effective_runtime_config(engine).threads;
-    citlali::pipeline::runtime_config_provenance(engine).realized =
-        configure_runtime_threads(
-            plan, logger,
+    const auto &effective =
+        citlali::pipeline::effective_runtime_config(engine);
+    auto realized = configure_runtime_threads(
+            effective.threads, logger,
             [](int n_threads) { omp_set_num_threads(n_threads); },
             [](int n_threads) { Eigen::setNbThreads(n_threads); },
             []() { return fftw_init_threads(); },
             [](int n_threads) { fftw_plan_with_nthreads(n_threads); });
+    realized.parallel_policy = effective.values.parallel_policy;
+    realized.reduction_type = effective.values.reduction_type;
+    citlali::pipeline::runtime_config_provenance(engine).realized = realized;
 }
 
 }  // namespace citlali::cli

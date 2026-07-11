@@ -58,9 +58,15 @@ mutable runtime mirror remains only at config construction boundaries. Focused
 tests prove that requested values remain unchanged when effective policy
 differs and that realized OMP, Eigen, and FFTW state is recorded.
 
-The runtime domain remains `provenance_status: partial`: its in-memory state
-does not yet have a stable machine-readable output schema. Persisting and
-validating that record is the remaining runtime exit gate.
+The versioned `citlali-runtime-provenance-v1` schema is emitted atomically as
+`runtime_provenance.yaml` in each reduction directory. It records every
+requested runtime value, effective runtime values and thread plan, and realized
+OMP, Eigen, FFTW, parallel-policy, and reduction-type state. Publication is a
+required output: write failure propagates and removes the temporary artifact.
+
+The runtime domain remains `provenance_status: partial` only until a Unity
+reduction verifies the sidecar's realized values and expected product
+integration. That mode validation is the remaining runtime exit gate.
 
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:

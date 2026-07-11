@@ -1,0 +1,95 @@
+#pragma once
+
+#include <citlali/core/config/runtime_execution_plan.h>
+
+#include <yaml-cpp/yaml.h>
+
+#include <filesystem>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <system_error>
+
+namespace citlali::pipeline {
+
+inline constexpr const char *runtime_provenance_schema_version =
+    "citlali-runtime-provenance-v1";
+inline constexpr const char *runtime_provenance_filename =
+    "runtime_provenance.yaml";
+
+inline YAML::Node runtime_config_node(
+    const citlali::config::RuntimeConfig &config) {
+    YAML::Node node;
+    node["verbose"] = config.verbose;
+    node["interp_over_gaps"] = config.interp_over_gaps;
+    node["n_threads"] = config.n_threads;
+    node["output_dir"] = config.output_dir;
+    node["parallel_policy"] = std::string(
+        citlali::config::to_string(config.parallel_policy));
+    node["reduction_type"] = std::string(
+        citlali::config::to_string(config.reduction_type));
+    node["use_subdir"] = config.use_subdir;
+    return node;
+}
+
+inline YAML::Node runtime_provenance_node(
+    const citlali::config::RuntimeConfigProvenance &provenance) {
+    YAML::Node root;
+    root["schema_version"] = runtime_provenance_schema_version;
+    root["initialized"] = provenance.initialized;
+    root["requested"] = runtime_config_node(provenance.requested);
+    root["effective"]["values"] =
+        runtime_config_node(provenance.effective.values);
+    root["effective"]["threads"]["requested"] =
+        provenance.effective.threads.requested_threads;
+    root["effective"]["threads"]["omp"] =
+        provenance.effective.threads.omp_threads;
+    root["effective"]["threads"]["eigen"] =
+        provenance.effective.threads.eigen_threads;
+    root["effective"]["threads"]["fftw_plan"] =
+        provenance.effective.threads.fftw_plan_threads;
+    root["effective"]["threads"]["wiener_filter_omp"] =
+        provenance.effective.threads.wiener_filter_omp;
+    root["realized"]["threads"]["omp"] =
+        provenance.realized.omp_threads;
+    root["realized"]["threads"]["eigen"] =
+        provenance.realized.eigen_threads;
+    root["realized"]["threads"]["fftw_plan"] =
+        provenance.realized.fftw_plan_threads;
+    root["realized"]["threads"]["fftw_initialized"] =
+        provenance.realized.fftw_threads_initialized;
+    root["realized"]["parallel_policy"] = std::string(
+        citlali::config::to_string(provenance.realized.parallel_policy));
+    root["realized"]["reduction_type"] = std::string(
+        citlali::config::to_string(provenance.realized.reduction_type));
+    return root;
+}
+
+inline std::filesystem::path runtime_provenance_path(
+    const std::filesystem::path &reduction_dir) {
+    return reduction_dir / runtime_provenance_filename;
+}
+
+inline void write_runtime_provenance_file(
+    const std::filesystem::path &reduction_dir,
+    const citlali::config::RuntimeConfigProvenance &provenance) {
+    const auto output_path = runtime_provenance_path(reduction_dir);
+    auto temporary_path = output_path;
+    temporary_path += ".tmp";
+
+    try {
+        std::ofstream stream(temporary_path, std::ios::out | std::ios::trunc);
+        stream.exceptions(std::ios::badbit | std::ios::failbit);
+        stream << runtime_provenance_node(provenance);
+        stream.flush();
+        stream.close();
+        std::filesystem::rename(temporary_path, output_path);
+    }
+    catch (...) {
+        std::error_code ignored;
+        std::filesystem::remove(temporary_path, ignored);
+        throw;
+    }
+}
+
+}  // namespace citlali::pipeline

@@ -22,6 +22,8 @@ struct RealizedRuntimeConfig {
     int eigen_threads = 0;
     int fftw_plan_threads = 0;
     bool fftw_threads_initialized = false;
+    ParallelPolicy parallel_policy = ParallelPolicy::seq;
+    ReductionType reduction_type = ReductionType::science;
 };
 
 struct RuntimeConfigProvenance {

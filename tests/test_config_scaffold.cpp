@@ -16,11 +16,13 @@
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
+#include <citlali/core/pipeline/runtime_provenance_output.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
 
 #include <gtest/gtest.h>
 
 #include <functional>
+#include <filesystem>
 #include <map>
 #include <memory>
 #include <optional>
@@ -1856,6 +1858,77 @@ TEST(cli_runtime_setup, uses_effective_runtime_values_as_policy_authority) {
     EXPECT_EQ(citlali::pipeline::runtime_reduction_type(engine),
               citlali::config::ReductionType::science);
     EXPECT_EQ(citlali::pipeline::runtime_parallel_policy_name(engine), "omp");
+}
+
+TEST(cli_runtime_setup, serializes_stable_runtime_provenance_schema) {
+    citlali::config::RuntimeConfig requested;
+    requested.n_threads = 6;
+    requested.parallel_policy = citlali::config::ParallelPolicy::omp;
+    requested.reduction_type = citlali::config::ReductionType::pointing;
+    auto provenance = citlali::config::make_runtime_config_provenance(
+        requested, true);
+    provenance.realized.omp_threads = 6;
+    provenance.realized.eigen_threads = 1;
+    provenance.realized.fftw_plan_threads = 1;
+    provenance.realized.fftw_threads_initialized = true;
+    provenance.realized.parallel_policy =
+        citlali::config::ParallelPolicy::omp;
+    provenance.realized.reduction_type =
+        citlali::config::ReductionType::pointing;
+
+    const auto node = citlali::pipeline::runtime_provenance_node(provenance);
+
+    EXPECT_EQ(node["schema_version"].as<std::string>(),
+              "citlali-runtime-provenance-v1");
+    EXPECT_EQ(node["requested"]["n_threads"].as<int>(), 6);
+    EXPECT_EQ(node["requested"]["parallel_policy"].as<std::string>(),
+              "omp");
+    EXPECT_EQ(node["effective"]["threads"]["fftw_plan"].as<int>(), 1);
+    EXPECT_TRUE(node["effective"]["threads"]["wiener_filter_omp"].as<bool>());
+    EXPECT_TRUE(node["realized"]["threads"]["fftw_initialized"].as<bool>());
+    EXPECT_EQ(node["realized"]["parallel_policy"].as<std::string>(), "omp");
+    EXPECT_EQ(node["realized"]["reduction_type"].as<std::string>(),
+              "pointing");
+}
+
+TEST(cli_runtime_setup, atomically_writes_runtime_provenance_sidecar) {
+    const auto output_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_runtime_provenance_output_test";
+    std::filesystem::remove_all(output_dir);
+    std::filesystem::create_directories(output_dir);
+    const auto provenance = citlali::config::make_runtime_config_provenance(
+        citlali::config::RuntimeConfig{}, false);
+
+    citlali::pipeline::write_runtime_provenance_file(output_dir, provenance);
+
+    const auto output_path =
+        citlali::pipeline::runtime_provenance_path(output_dir);
+    EXPECT_TRUE(std::filesystem::exists(output_path));
+    EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
+    const auto stored = YAML::LoadFile(output_path.string());
+    EXPECT_EQ(stored["schema_version"].as<std::string>(),
+              "citlali-runtime-provenance-v1");
+    EXPECT_TRUE(stored["initialized"].as<bool>());
+    std::filesystem::remove_all(output_dir);
+}
+
+TEST(cli_runtime_setup, runtime_provenance_write_failure_propagates) {
+    const auto missing_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_missing_runtime_provenance_dir" / "nested";
+    std::filesystem::remove_all(missing_dir.parent_path());
+    const auto provenance = citlali::config::make_runtime_config_provenance(
+        citlali::config::RuntimeConfig{}, false);
+
+    EXPECT_THROW(citlali::pipeline::write_runtime_provenance_file(
+                     missing_dir, provenance),
+                 std::ios_base::failure);
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::runtime_provenance_path(missing_dir)));
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::runtime_provenance_path(missing_dir).string() +
+        ".tmp"));
 }
 
 TEST(cli_runtime_setup, configures_runtime_threads) {
