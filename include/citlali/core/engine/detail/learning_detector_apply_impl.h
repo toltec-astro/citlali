@@ -20,10 +20,12 @@ void Engine::apply_learned_rtc_sample_masks(rtc_t &rtcdata, calib_t &calib_scan)
 
 template <class ptc_t, class calib_t>
 void Engine::apply_learned_ptc_sample_masks(ptc_t &ptcdata, calib_t &calib_scan) {
+    const auto &source_protection =
+        citlali::pipeline::processed_time_chunk_config(*this)
+            .flagging.second_pass_local.source_protection;
     apply_learned_sample_masks(
         ptcdata, calib_scan, false, "pre_ptc",
-        ptcproc.second_pass_local.source_protection_enabled,
-        ptcproc.second_pass_local.source_protection_radius_arcsec);
+        source_protection.active, source_protection.radius_arcsec);
 }
 
 template <class ptc_t, class calib_t>

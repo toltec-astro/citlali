@@ -189,6 +189,11 @@ for second-pass, correlation-grouping, correlation-penalty, busy-row, and
 adaptive-cleaner blocks. The schema boundary no longer asks `PTCProc` whether
 configured diagnostic families should exist.
 
+Learning diagnostics, learned PTC sample-mask application, and learned
+mapmaking detector exclusion now use typed second-pass source-protection state
+and thresholds. The synchronized `PTCProc` fields remain internal numerical
+adapter inputs, not external orchestration authority.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

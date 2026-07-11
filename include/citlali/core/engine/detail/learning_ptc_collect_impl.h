@@ -4,6 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/pipeline/map_grouping_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template <class ptc_t, class calib_t>
 void Engine::collect_ptc_learning_diagnostics(
@@ -16,8 +17,11 @@ void Engine::collect_ptc_learning_diagnostics(
     }
 
     const auto scan_id = ptcdata.index.data;
+    const auto &second_pass =
+        citlali::pipeline::processed_time_chunk_config(*this)
+            .flagging.second_pass_local;
 
-    if (ptcproc.second_pass_local.source_protection_enabled) {
+    if (second_pass.source_protection.active) {
         ReductionLearningState::SourceProtectionSummary source_summary;
         source_summary.obsnum = observation_identity.obsnum;
         source_summary.producer = "ptc_second_pass";
@@ -27,13 +31,13 @@ void Engine::collect_ptc_learning_diagnostics(
         source_summary.total_samples =
             static_cast<int>(ptcdata.scans.data.rows() * ptcdata.scans.data.cols());
         source_summary.radius_arcsec =
-            ptcproc.second_pass_local.source_protection_radius_arcsec;
+            second_pass.source_protection.radius_arcsec;
         const auto map_grouping =
             citlali::pipeline::active_map_grouping_name(*this);
         auto [source_mask, source_info] = engine_utils::calc_source_protection_mask(
             ptcdata, calib_scan.apt, telescope.pixel_axes, map_grouping,
             "map_center_radius",
-            ptcproc.second_pass_local.source_protection_radius_arcsec);
+            second_pass.source_protection.radius_arcsec);
         (void) source_mask;
         source_summary.protected_samples =
             static_cast<int>(source_info.protected_samples);
@@ -76,10 +80,10 @@ void Engine::collect_ptc_learning_diagnostics(
             summary.busy_network_vetoed &&
             ((std::isfinite(summary.top_candidate_cluster_peak_score) &&
               summary.top_candidate_cluster_peak_score >=
-                  ptcproc.second_pass_local.high_score_cluster_override) ||
+                  second_pass.high_score_cluster_override) ||
              (std::isfinite(summary.max_unflagged_residual_z) &&
               summary.max_unflagged_residual_z >=
-                  ptcproc.second_pass_local.high_score_event_override));
+                  second_pass.high_score_event_override));
         if (has_candidate || has_residual || summary.busy_network_vetoed) {
             ReductionLearningState::BusyNetworkSummary record;
             record.obsnum = observation_identity.obsnum;
@@ -217,7 +221,7 @@ void Engine::collect_ptc_learning_diagnostics(
 
         if (summary.busy_network_vetoed && has_residual &&
             summary.max_unflagged_residual_z >=
-                ptcproc.second_pass_local.high_score_event_override) {
+                second_pass.high_score_event_override) {
             const Eigen::Index det = citlali::pipeline::learning_find_det_by_uid(
                 calib_scan.apt, summary.max_unflagged_residual_uid);
             ReductionLearningState::DetectorPenalty penalty;

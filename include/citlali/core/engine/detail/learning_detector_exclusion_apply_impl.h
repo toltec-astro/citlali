@@ -138,8 +138,11 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
     bool have_network_source_protection = false;
     if (!network_proposed_dets.empty() &&
         stage == "pre_mapmaking_detector_exclusion") {
+        const auto &source_protection =
+            citlali::pipeline::processed_time_chunk_config(*this)
+                .flagging.second_pass_local.source_protection;
         const double radius_arcsec =
-            std::max(20.0, ptcproc.second_pass_local.source_protection_radius_arcsec);
+            std::max(20.0, source_protection.radius_arcsec);
         const auto map_grouping =
             citlali::pipeline::active_map_grouping_name(*this);
         auto [mask, source_info] = engine_utils::calc_source_protection_mask(

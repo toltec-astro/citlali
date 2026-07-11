@@ -106,6 +106,12 @@ FITS/TOD tau metadata is calculated. The atmospheric calibration object remains
 processor-owned numerical state. The CLI build, all 232 tests, and full config
 preflight pass.
 
+Learning collection and learned-mask/exclusion orchestration now reads typed
+second-pass source-protection activation, radius, and score thresholds. This
+removes another execution-facing dependency on `PTCProc` policy mirrors while
+leaving its numerical implementation unchanged. All 235 tests and preflight
+pass.
+
 RTC diagnostic and RTC TOD diagnostic schema construction now receives typed
 downsample and impulsive-capture policy explicitly. External raw product-shape
 decisions no longer depend on `RTCProc` mirrors. Remaining raw-timestream work
