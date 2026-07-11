@@ -146,6 +146,82 @@ void read_processed_clean_core_config(
             typed.standard_pca.n_calc, diagnostics, {}, {0});
     }
 
+    auto &corr = typed.corr_grouping;
+    bool corr_enabled = corr.enabled;
+    read_optional_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "processed_time_chunk", "clean",
+                   "corr_grouping", "enabled"},
+        corr_enabled, corr.enabled, diagnostics);
+    if (corr.enabled) {
+        std::string metric{citlali::config::to_string(corr.metric)};
+        read_optional_parsed_mirrored_config_value(
+            config,
+            std::tuple{"timestream", "processed_time_chunk", "clean",
+                       "corr_grouping", "metric"},
+            metric, corr.metric,
+            citlali::config::parse_processed_corr_grouping_metric,
+            diagnostics, {"abs", "signed"});
+        auto read_corr_double = [&](const char *name, double &target,
+                                    double minimum, double maximum) {
+            double value = target;
+            read_optional_mirrored_config_value(
+                config,
+                std::tuple{"timestream", "processed_time_chunk", "clean",
+                           "corr_grouping", name},
+                value, target, diagnostics, {}, {minimum}, {maximum});
+        };
+        auto read_corr_int = [&](const char *name, int &target,
+                                 int minimum) {
+            int value = target;
+            read_optional_mirrored_config_value(
+                config,
+                std::tuple{"timestream", "processed_time_chunk", "clean",
+                           "corr_grouping", name},
+                value, target, diagnostics, {}, {minimum});
+        };
+        read_corr_double("corr_min", corr.corr_min, 0.0, 1.0);
+        read_corr_int("min_overlap", corr.min_overlap, 1);
+        read_corr_double("min_good_frac", corr.min_good_frac, 0.0, 1.0);
+        read_corr_int("min_group_size", corr.min_group_size, 2);
+        read_corr_int("max_samples", corr.max_samples, 0);
+        bool clean_residual = corr.clean_residual;
+        read_optional_mirrored_config_value(
+            config,
+            std::tuple{"timestream", "processed_time_chunk", "clean",
+                       "corr_grouping", "clean_residual"},
+            clean_residual, corr.clean_residual, diagnostics);
+    }
+
+    if (typed.null_model.enabled) {
+        auto &null_model = typed.null_model;
+        auto read_null_int = [&](const char *name, int &target,
+                                 int minimum) {
+            int value = target;
+            read_optional_mirrored_config_value(
+                config,
+                std::tuple{"timestream", "processed_time_chunk", "clean",
+                           "null_model", name},
+                value, target, diagnostics, {}, {minimum});
+        };
+        auto read_null_double = [&](const char *name, double &target,
+                                    double minimum, double maximum) {
+            double value = target;
+            read_optional_mirrored_config_value(
+                config,
+                std::tuple{"timestream", "processed_time_chunk", "clean",
+                           "null_model", name},
+                value, target, diagnostics, {}, {minimum}, {maximum});
+        };
+        read_null_int("n_surrogates", null_model.n_surrogates, 4);
+        read_null_double("quantile", null_model.quantile, 0.5, 0.999999);
+        read_null_double(
+            "min_good_frac", null_model.min_good_frac, 0.0, 1.0);
+        read_null_int("max_modes", null_model.max_modes, 0);
+        read_null_int("max_samples", null_model.max_samples, 0);
+        read_null_int("seed", null_model.seed, 0);
+    }
+
     typed.active = citlali::config::ProcessedTimeChunkCleanerMode::none;
     if (typed.standard_pca.enabled) {
         typed.active =

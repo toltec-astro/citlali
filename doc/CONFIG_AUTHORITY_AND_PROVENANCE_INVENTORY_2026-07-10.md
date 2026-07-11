@@ -228,6 +228,11 @@ group-count padding, standard-deviation limits, and calculated-mode limits.
 The typed reader therefore owns the compatibility normalization rules as well
 as the resulting values.
 
+Correlation-grouping and null-model scalar policy now also parses directly
+into typed cleaning state with the legacy bounds preserved. Cleaner-specific
+group-name canonicalization remains in the compatibility parser until that
+normalization is extracted as a shared policy helper.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 
