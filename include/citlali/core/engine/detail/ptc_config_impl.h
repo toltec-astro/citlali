@@ -41,19 +41,18 @@ void Engine::get_ptc_config(CT &config) {
     auto &typed_flagging = processed_config.flagging;
     citlali::pipeline::mirror_processed_weighting_config(
         typed_weighting, typed_flagging, ptcproc);
+    const auto &weight_validation = ptcproc.weight_validation;
+    citlali::pipeline::mirror_processed_weight_validation_config(
+        typed_weighting.validation, weight_validation);
+    const auto &weight_corr_penalty = ptcproc.weight_corr_penalty;
+    citlali::pipeline::mirror_processed_weight_corr_penalty_config(
+        typed_weighting.corr_penalty, weight_corr_penalty);
     citlali::pipeline::read_processed_weighting_core_config(
         config, typed_weighting, typed_flagging, config_diag);
     citlali::pipeline::read_processed_weight_validation_config(
         config, typed_weighting.validation, config_diag);
     citlali::pipeline::read_processed_weighting_expert_config(
         config, typed_weighting, config_diag);
-    const auto &weight_validation = ptcproc.weight_validation;
-    citlali::pipeline::mirror_processed_weight_validation_config(
-        typed_weighting.validation, weight_validation);
-
-    const auto &weight_corr_penalty = ptcproc.weight_corr_penalty;
-    citlali::pipeline::mirror_processed_weight_corr_penalty_config(
-        typed_weighting.corr_penalty, weight_corr_penalty);
     citlali::pipeline::apply_processed_weighting_config_to_processor(
         typed_weighting, typed_flagging, ptcproc);
 
