@@ -84,7 +84,7 @@ auto Pointing::run(
         apply_learned_ptc_detector_exclusions(ptcdata, calib_scan);
 
         const auto fruit_weight_policy =
-            citlali::pipeline::fruit_loop_weight_policy(ptcproc);
+            citlali::pipeline::fruit_loop_weight_policy(*this);
 
         maybe_subtract_pointing_fruitloop_model(
             ptcdata, calib_scan, map_indices, map_grouping,

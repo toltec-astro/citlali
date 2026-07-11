@@ -22,6 +22,7 @@
 #include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/timestream_output_provenance.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
+#include <citlali/core/pipeline/timestream_run_context.h>
 #include <citlali/core/pipeline/tod_output_state.h>
 
 #include <gtest/gtest.h>
@@ -325,7 +326,9 @@ struct FakeEngine {
         std::string fruit_loops_type = "obsnum/raw";
         struct {
             double cov_cut = 0.0;
+            std::vector<double> signal;
         } tod_mb;
+        bool fruit_loops_recompute_weights_after_addback = true;
         int load_mb_calls = 0;
         int begin_weight_validation_iter = -1;
         int finalize_weight_validation_iter = -1;
@@ -4302,6 +4305,22 @@ TEST(pipeline_execution, loads_initial_fruit_loop_map_from_configured_path) {
     EXPECT_EQ(engine.ptcproc.loaded_noise_filepath,
               "/data/fruit/152389/raw/");
     EXPECT_DOUBLE_EQ(engine.ptcproc.tod_mb.cov_cut, 4.5);
+}
+
+TEST(pipeline_execution, uses_typed_fruit_loop_weight_policy) {
+    FakeEngine engine;
+    engine.typed_config.timestream.fruit_loops.enabled = true;
+    engine.typed_config.timestream.fruit_loops
+        .recompute_weights_after_addback = false;
+    engine.ptcproc.run_fruit_loops = false;
+    engine.ptcproc.fruit_loops_recompute_weights_after_addback = true;
+    engine.ptcproc.tod_mb.signal = {1.0};
+
+    const auto policy =
+        citlali::pipeline::fruit_loop_weight_policy(engine);
+
+    EXPECT_TRUE(policy.use_noise_weights);
+    EXPECT_TRUE(policy.keep_source_subtracted_weights);
 }
 
 TEST(pipeline_execution, skips_initial_fruit_loop_map_without_path) {

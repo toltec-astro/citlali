@@ -4,6 +4,7 @@
 // Include this only after Pointing has been declared.
 
 #include <citlali/core/pipeline/mapmaking_dispatch.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
 
 template <class CalibScan>
@@ -22,7 +23,8 @@ void Pointing::populate_pointing_final_maps(
     bool run_omb = true;
     const bool run_noise_fruit =
         citlali::pipeline::should_populate_final_noise_maps(
-            make_noise_maps, ptcproc.run_fruit_loops,
+            make_noise_maps,
+            citlali::pipeline::fruit_loops_config(*this).enabled,
             !ptcproc.tod_mb.signal.empty());
     apply_learned_mapmaking_detector_exclusions(ptcdata, calib_scan);
     logger->info("populating maps");

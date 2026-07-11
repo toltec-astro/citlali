@@ -2,6 +2,8 @@
 
 #include <Eigen/Core>
 
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 #include <memory>
 #include <mutex>
 
@@ -35,14 +37,16 @@ void log_scan_done(
                  telescope.scan_indices.cols());
 }
 
-template <class PtcProc>
-FruitLoopWeightPolicy fruit_loop_weight_policy(const PtcProc &ptcproc) {
+template <class Engine>
+FruitLoopWeightPolicy fruit_loop_weight_policy(const Engine &engine) {
+    const auto &config = fruit_loops_config(engine);
+    const auto &ptcproc = engine.ptcproc;
     FruitLoopWeightPolicy policy;
     policy.use_noise_weights =
-        ptcproc.run_fruit_loops && !ptcproc.tod_mb.signal.empty();
+        config.enabled && !ptcproc.tod_mb.signal.empty();
     policy.keep_source_subtracted_weights =
         policy.use_noise_weights &&
-        !ptcproc.fruit_loops_recompute_weights_after_addback;
+        !config.recompute_weights_after_addback;
     return policy;
 }
 

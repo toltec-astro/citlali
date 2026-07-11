@@ -149,6 +149,14 @@ normalization updates typed effective state, then synchronizes iteration count
 and retention into `PTCProc` for the existing loop implementation. Divergence
 fixtures now establish that typed policy controls orchestration.
 
+The next slice makes typed fruit-loop enablement and weight-recomputation
+policy authoritative for processed-timestream model subtraction/add-back,
+noise-weight retention, final noise-map population, and beammap adaptive-gate
+setup. Runtime model buffers and numerical operations remain processor-owned;
+typed configuration decides whether those operations run. A divergence test
+keeps the legacy processor mirrors intentionally contradictory and verifies
+that they cannot override typed policy.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

@@ -37,7 +37,7 @@ void Beammap::prepare_beammap_iteration_state(bool rerun_source_aware_rtc,
         omb_copy.weight = omb.weight;
     }
 
-    if (ptcproc.run_fruit_loops) {
+    if (citlali::pipeline::fruit_loops_config(*this).enabled) {
         if (first_measurement_iter && !omb.noise.empty()) {
             omb.calc_median_rms();
         }

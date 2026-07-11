@@ -119,6 +119,12 @@ through typed fruit-loop config. Beammap and disabled-loop normalization is
 recorded in typed effective state and copied into `PTCProc` only as an execution
 adapter. All 232 tests and the full config preflight pass.
 
+Processed-timestream orchestration now also uses typed fruit-loop policy for
+model subtraction/add-back, source-subtracted weight retention, final noise-map
+population, and beammap adaptive-gate setup. Processor state remains the home
+of runtime model buffers and numerical kernels, but no longer decides whether
+these operations are enabled. All 233 tests and the full config preflight pass.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.

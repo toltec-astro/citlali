@@ -16,7 +16,7 @@ bool Beammap::subtract_beammap_model_for_ptc_scan(int scan_index,
     }
     auto map_grouping =
         citlali::pipeline::active_map_grouping_name(*this);
-    if (!ptcproc.run_fruit_loops) {
+    if (!citlali::pipeline::fruit_loops_config(*this).enabled) {
         logger->info("subtracting gaussian from tod");
         ptcproc.add_gaussian<timestream::TCProc::SourceType::NegativeGaussian>(
             ptcs[scan_index], params, telescope.pixel_axes, map_grouping,
@@ -38,7 +38,7 @@ void Beammap::restore_beammap_model_for_ptc_scan(int scan_index,
     }
     auto map_grouping =
         citlali::pipeline::active_map_grouping_name(*this);
-    if (!ptcproc.run_fruit_loops) {
+    if (!citlali::pipeline::fruit_loops_config(*this).enabled) {
         logger->info("adding gaussian to tod");
         ptcproc.add_gaussian<timestream::TCProc::SourceType::Gaussian>(
             ptcs[scan_index], params, telescope.pixel_axes, map_grouping,
