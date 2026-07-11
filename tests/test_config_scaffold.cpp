@@ -403,6 +403,9 @@ struct FakeEngine {
     template <class Config>
     void get_citlali_config(Config &) {
         ++get_citlali_config_calls;
+        runtime_config_provenance =
+            citlali::config::make_runtime_config_provenance(
+                typed_config.runtime, false);
     }
 
     void write_learning_summary() { ++write_learning_summary_calls; }
@@ -1823,6 +1826,25 @@ TEST(cli_runtime_setup, uses_effective_thread_plan_as_runtime_authority) {
     EXPECT_EQ(citlali::pipeline::runtime_thread_count(engine), 3);
 }
 
+TEST(cli_runtime_setup, uses_effective_runtime_values_as_policy_authority) {
+    FakeEngine engine;
+    engine.runtime_config_provenance.requested.output_dir = "requested";
+    engine.runtime_config_provenance.requested.reduction_type =
+        citlali::config::ReductionType::pointing;
+    engine.runtime_config_provenance.effective.values.output_dir = "effective";
+    engine.runtime_config_provenance.effective.values.reduction_type =
+        citlali::config::ReductionType::science;
+    engine.runtime_config_provenance.effective.values.verbose = true;
+    engine.runtime_config_provenance.effective.values.parallel_policy =
+        citlali::config::ParallelPolicy::omp;
+
+    EXPECT_TRUE(citlali::pipeline::verbose_runtime_enabled(engine));
+    EXPECT_EQ(citlali::pipeline::runtime_output_dir(engine), "effective");
+    EXPECT_EQ(citlali::pipeline::runtime_reduction_type(engine),
+              citlali::config::ReductionType::science);
+    EXPECT_EQ(citlali::pipeline::runtime_parallel_policy_name(engine), "omp");
+}
+
 TEST(cli_runtime_setup, configures_runtime_threads) {
     FakeEngine engine;
     engine.typed_config.runtime.n_threads = 6;
@@ -2393,6 +2415,9 @@ TEST(pipeline_preflight, rejects_invalid_engine_config) {
 TEST(pipeline_preflight, configures_verbose_logging_when_requested) {
     FakeEngine engine;
     engine.typed_config.runtime.verbose = true;
+    engine.runtime_config_provenance =
+        citlali::config::make_runtime_config_provenance(
+            engine.typed_config.runtime, false);
     auto logger = std::make_shared<FakeLogger>();
     int enable_debug_calls = 0;
 
@@ -3946,6 +3971,9 @@ TEST(pipeline_execution, loads_previous_saved_fruit_loop_map) {
     FakeEngine engine;
     engine.iteration.fruit_iter = 2;
     engine.typed_config.runtime.output_dir = "/data/out";
+    engine.runtime_config_provenance =
+        citlali::config::make_runtime_config_provenance(
+            engine.typed_config.runtime, false);
     engine.output_paths.redu_dir_num = 12;
     engine.ptcproc.save_all_iters = true;
     engine.ptcproc.fruit_loops_type = "obsnum/filtered";

@@ -9,7 +9,7 @@ namespace citlali::pipeline {
 
 template <class Engine>
 bool verbose_runtime_enabled(const Engine &engine) {
-    return runtime_config(engine).verbose;
+    return effective_runtime_values(engine).verbose;
 }
 
 template <class Engine>
@@ -19,7 +19,12 @@ int runtime_thread_count(const Engine &engine) {
 
 template <class Engine>
 const std::string &runtime_output_dir(const Engine &engine) {
-    return runtime_config(engine).output_dir;
+    return effective_runtime_values(engine).output_dir;
+}
+
+template <class Engine>
+citlali::config::ReductionType runtime_reduction_type(const Engine &engine) {
+    return effective_runtime_values(engine).reduction_type;
 }
 
 inline std::string runtime_parallel_policy_name(
@@ -30,7 +35,7 @@ inline std::string runtime_parallel_policy_name(
 
 template <class Engine>
 std::string runtime_parallel_policy_name(const Engine &engine) {
-    return runtime_parallel_policy_name(runtime_config(engine));
+    return runtime_parallel_policy_name(effective_runtime_values(engine));
 }
 
 }  // namespace citlali::pipeline

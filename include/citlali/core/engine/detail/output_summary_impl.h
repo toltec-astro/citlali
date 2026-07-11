@@ -3,7 +3,7 @@
 // Engine output implementation detail.
 // Include this only after Engine has been declared.
 
-#include <citlali/core/pipeline/reduction_config_accessors.h>
+#include <citlali/core/pipeline/runtime_policy.h>
 
 void Engine::cli_summary() {
     const auto &coadd_settings = citlali::pipeline::coadd_config(*this);
@@ -57,7 +57,7 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     citlali::pipeline::write_chunk_summary_log(
         f, in, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION,
         engine_utils::current_date_time(),
-        citlali::pipeline::runtime_config(*this).reduction_type,
+        citlali::pipeline::runtime_reduction_type(*this),
         citlali::pipeline::timestream_config(*this).type,
         omb.sig_unit, rtcproc,
         telescope.outer_scans_chunk,
@@ -82,7 +82,7 @@ void Engine::write_map_summary(map_buffer_t &mb) {
     citlali::pipeline::write_map_summary_log(
         f, CITLALI_GIT_VERSION, KIDSCPP_GIT_VERSION,
         engine_utils::current_date_time(),
-        citlali::pipeline::runtime_config(*this).reduction_type,
+        citlali::pipeline::runtime_reduction_type(*this),
         citlali::pipeline::timestream_config(*this).type,
         citlali::pipeline::mapmaking_config(*this).grouping,
         map_indices.n_maps,
@@ -93,7 +93,7 @@ template <mapmaking::MapType map_t, engine_utils::toltecIO::DataType data_t, eng
 auto Engine::setup_filenames(std::string dir_name) {
     return citlali::pipeline::map_output_filename<map_t, data_t, prod_t>(
         toltec_io, dir_name,
-        citlali::pipeline::runtime_config(*this).reduction_type,
+        citlali::pipeline::runtime_reduction_type(*this),
         observation_identity.obsnum, telescope.sim_obs);
 }
 

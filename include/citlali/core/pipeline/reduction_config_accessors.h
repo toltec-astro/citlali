@@ -23,6 +23,11 @@ const auto &effective_runtime_config(const Engine &engine) {
 }
 
 template <class Engine>
+const auto &effective_runtime_values(const Engine &engine) {
+    return effective_runtime_config(engine).values;
+}
+
+template <class Engine>
 const auto &realized_runtime_config(const Engine &engine) {
     return runtime_config_provenance(engine).realized;
 }
