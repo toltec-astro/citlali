@@ -5,12 +5,32 @@
 
 #include <Eigen/Core>
 
+#include <algorithm>
 #include <array>
+#include <cctype>
+#include <string_view>
 #include <tuple>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
 namespace citlali::pipeline {
+
+inline std::string normalize_processed_clean_group(std::string group) {
+    std::transform(
+        group.begin(), group.end(), group.begin(), [](unsigned char value) {
+            return static_cast<char>(std::tolower(value));
+        });
+    if (group == "network") {
+        return "nw";
+    }
+    return group;
+}
+
+inline bool is_supported_processed_clean_group(std::string_view group) {
+    return group == "all" || group == "array" || group == "nw" ||
+           group == "detector" || group == "fg" || group == "corr_nw";
+}
 
 template <class Config, class Diagnostics, class ArrayNameMap, class Logger>
 void read_processed_clean_core_config(
@@ -77,6 +97,31 @@ void read_processed_clean_core_config(
             !(typed.null_model.enabled || typed.marchenko_pastur.enabled ||
               typed.adaptive_selector.enabled);
     }
+
+    auto read_mode_grouping = [&](const char *mode,
+                                  std::vector<std::string> &target) {
+        const auto key = std::tuple{
+            "timestream", "processed_time_chunk", "clean", mode,
+            "grouping"};
+        if (!config.template has_typed<std::vector<std::string>>(key)) {
+            return;
+        }
+        target.clear();
+        std::unordered_set<std::string> seen;
+        for (const auto &raw_group :
+             config.template get_typed<std::vector<std::string>>(key)) {
+            auto group = normalize_processed_clean_group(raw_group);
+            if (!is_supported_processed_clean_group(group)) {
+                logger->warn(
+                    "clean.{}.grouping contains unsupported entry '{}'; ignoring",
+                    mode, raw_group);
+                continue;
+            }
+            if (seen.insert(group).second) {
+                target.push_back(std::move(group));
+            }
+        }
+    };
 
     typed.standard_pca.n_eig_to_cut.clear();
     for (const auto &[array_id, array_name] : array_name_map) {
@@ -222,6 +267,7 @@ void read_processed_clean_core_config(
         read_null_int("max_modes", null_model.max_modes, 0);
         read_null_int("max_samples", null_model.max_samples, 0);
         read_null_int("seed", null_model.seed, 0);
+        read_mode_grouping("null_model", null_model.grouping);
     }
 
     if (typed.marchenko_pastur.enabled) {
@@ -258,6 +304,7 @@ void read_processed_clean_core_config(
             clip_z, mp.clip_z, diagnostics);
         read_mp_double("bulk_keep_frac", mp.bulk_keep_frac, 0.1, {1.0});
         read_mp_int("q_grid_size", mp.q_grid_size, 8);
+        read_mode_grouping("marchenko_pastur", mp.grouping);
     }
 
     if (typed.adaptive_selector.enabled) {
@@ -334,6 +381,7 @@ void read_processed_clean_core_config(
         };
         read_band("low_band_Hz", adaptive.low_band_Hz);
         read_band("mid_band_Hz", adaptive.mid_band_Hz);
+        read_mode_grouping("adaptive_selector", adaptive.grouping);
     }
 
     typed.active = citlali::config::ProcessedTimeChunkCleanerMode::none;

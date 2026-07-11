@@ -19,6 +19,7 @@
 #include <citlali/core/pipeline/output_netcdf_metadata.h>
 #include <citlali/core/pipeline/phdu_reduction_config.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
+#include <citlali/core/pipeline/processed_clean_config_read.h>
 #include <citlali/core/pipeline/runtime_provenance_output.h>
 #include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/timestream_output_provenance.h>
@@ -4539,6 +4540,18 @@ TEST(pipeline_execution, adapts_typed_second_pass_policy_one_way) {
     EXPECT_DOUBLE_EQ(
         ptcproc.second_pass_local.source_protection_radius_arcsec, 31.0);
     EXPECT_TRUE(ptcproc.second_pass_local.source_protection_enabled);
+}
+
+TEST(config_scaffold, normalizes_processed_clean_group_aliases) {
+    EXPECT_EQ(
+        citlali::pipeline::normalize_processed_clean_group("Network"),
+        "nw");
+    EXPECT_EQ(
+        citlali::pipeline::normalize_processed_clean_group("CORR_NW"),
+        "corr_nw");
+    EXPECT_TRUE(citlali::pipeline::is_supported_processed_clean_group("fg"));
+    EXPECT_FALSE(
+        citlali::pipeline::is_supported_processed_clean_group("unknown"));
 }
 
 TEST(pipeline_execution, skips_initial_fruit_loop_map_without_path) {
