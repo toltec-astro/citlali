@@ -212,6 +212,11 @@ legacy centering, and post-addback weight policy. The legacy combined parser
 still executes as a compatibility parser, but typed values are reread directly
 and then applied through the one-way adapter.
 
+A complete typed-to-processor cleaning adapter now synchronizes standard PCA,
+correlation grouping, null-model, Marchenko-Pastur, and adaptive-selector
+policy, including explicit array-name to array-id translation for configured
+eigenmode counts. Realized cleaner outputs remain untouched after setup.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

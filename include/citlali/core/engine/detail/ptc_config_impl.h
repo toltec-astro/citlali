@@ -29,6 +29,8 @@ void Engine::get_ptc_config(CT &config) {
     citlali::pipeline::mirror_processed_clean_config(
         processed_config.clean, ptcproc,
         toltec_io.array_name_map);
+    citlali::pipeline::apply_processed_clean_config_to_processor(
+        processed_config.clean, toltec_io.array_name_map, ptcproc);
     auto &typed_weighting = processed_config.weighting;
     auto &typed_flagging = processed_config.flagging;
     citlali::pipeline::mirror_processed_weighting_config(

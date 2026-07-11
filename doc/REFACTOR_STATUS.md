@@ -118,6 +118,11 @@ post-addback controls. The legacy combined PTC parser remains temporarily for
 other processed domains; fruit-loop execution state is overwritten only from
 typed policy through the adapter. All 236 tests and full preflight pass.
 
+Processed cleaning now has a complete one-way typed adapter covering all four
+cleaner modes and correlation grouping. The local build caught and corrected
+an `int` versus `Eigen::Index` boundary conversion before Unity. All 236 tests,
+the CLI build, and full preflight pass.
+
 Raw input and metadata boundaries now use typed policy for duplicate-tone
 frequency separation, RTC diagnostic FIR/source-bandwidth ratios, and whether
 FITS/TOD tau metadata is calculated. The atmospheric calibration object remains
