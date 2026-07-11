@@ -91,6 +91,15 @@ typed policy directly. The shared processed source-protection activation follows
 the same direction. All 232 tests pass; line-audit and remaining diagnostic
 configuration are the next raw-timestream clusters.
 
+The line-audit cluster now uses typed policy for model-protected PTC audit
+activation, model-subtraction requirements, notch-family selection, iteration
+counts, frequency overrides, and dynamic edge-guard decisions. RTC diagnostic
+sidecars, TOD headers, and chunk summaries serialize requested raw settings from
+typed config. Existing RTC notch methods still consume the processor options
+object as a numerical adapter, and realized edge-context/guard sample counts
+remain processor state. The CLI build, all 232 tests, and full config preflight
+pass.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.

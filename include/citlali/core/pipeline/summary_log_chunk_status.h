@@ -15,33 +15,35 @@ void write_chunk_processing_status_summary(std::ostream &stream,
     stream << "-Cleaned: " << status.cleaned << "\n";
 }
 
-template <class RtcProc>
+template <class RawTimeChunkConfig, class FilterEdgeGuard>
 void write_chunk_tod_filter_summary(std::ostream &stream,
-                                    const RtcProc &rtcproc,
+                                    const RawTimeChunkConfig &raw_config,
+                                    const FilterEdgeGuard &edge_guard,
                                     int outer_context_samples) {
-    stream << "-TOD notch enabled: " << rtcproc.run_tod_notch << "\n";
+    stream << "-TOD notch enabled: " << raw_config.filter.notch.enabled
+           << "\n";
     stream << "-TOD IIR highpass enabled: "
-           << rtcproc.run_tod_iir_highpass << "\n";
+           << raw_config.iir_filter.enabled << "\n";
     stream << "-TOD IIR highpass freq (Hz): "
-           << rtcproc.filter.iir_highpass_freq_Hz << "\n";
+           << raw_config.iir_filter.freq_Hz << "\n";
     stream << "-TOD IIR highpass order: "
-           << rtcproc.filter.iir_highpass_order << "\n";
+           << raw_config.iir_filter.order << "\n";
     stream << "-TOD IIR highpass zero-phase: "
-           << rtcproc.filter.iir_highpass_zero_phase << "\n";
+           << raw_config.iir_filter.zero_phase << "\n";
     stream << "-TOD filter edge guard enabled: "
-           << rtcproc.filter_edge_guard.enabled << "\n";
+           << edge_guard.enabled << "\n";
     stream << "-TOD filter edge guard context samples: "
-           << rtcproc.filter_edge_guard.context_samples << "\n";
+           << edge_guard.context_samples << "\n";
     stream << "-TOD filter edge guard samples per edge: "
-           << rtcproc.filter_edge_guard.guard_samples << "\n";
+           << edge_guard.guard_samples << "\n";
     stream << "-TOD loaded outer context samples: "
            << outer_context_samples << "\n";
     stream << "-RTC detector notch context samples: "
-           << rtcproc.line_audit.detector_notch_context_samples << "\n";
+           << raw_config.line_audit.detector_notch_context_samples << "\n";
     stream << "-RTC fixed line-audit notch enabled: "
-           << rtcproc.line_audit.fixed_notch_enabled << "\n";
+           << raw_config.line_audit.fixed_notch_enabled << "\n";
     stream << "-RTC fixed line-audit notch count: "
-           << rtcproc.line_audit.fixed_notch_freqs_hz.size() << "\n";
+           << raw_config.line_audit.fixed_notch_freqs_hz.size() << "\n";
 }
 
 template <class LineAudit>
@@ -56,4 +58,3 @@ void write_chunk_ptc_model_line_audit_summary(std::ostream &stream,
            << line_audit.ptc_apply_shared_notches << "/"
            << line_audit.ptc_apply_detector_notches << "\n";
 }
-

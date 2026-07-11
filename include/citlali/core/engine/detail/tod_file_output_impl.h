@@ -83,7 +83,7 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             citlali::config::raw_time_chunk_filtering_active(
                 raw_timestream_settings);
         citlali::pipeline::add_rtc_local_despike_config_vars(
-            fo, rtcproc.despiker.local_residual);
+            fo, raw_timestream_settings.despike.local_residual);
         citlali::pipeline::add_tod_filter_config_vars(
             fo, raw_timestream_settings, run_any_tod_filter);
         citlali::pipeline::add_tod_filter_edge_guard_config_vars(
@@ -96,9 +96,10 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             fo, learning);
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTLOW", rtcproc.lower_inv_var_factor);
         add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTHIGH", rtcproc.upper_inv_var_factor);
-        citlali::pipeline::add_rtc_event_mask_config_vars(fo, rtcproc);
+        citlali::pipeline::add_rtc_event_mask_config_vars(
+            fo, raw_timestream_settings.flagging);
         citlali::pipeline::add_rtc_line_audit_config_vars_if_absent(
-            fo, rtcproc.line_audit);
+            fo, raw_timestream_settings.line_audit);
         citlali::pipeline::add_ptc_cleaning_header_config_vars(
             fo, ptcproc, calib, toltec_io.array_name_map);
 
@@ -126,6 +127,8 @@ void Engine::create_tod_files() {
     constexpr auto output_stream =
         is_rtc_stream ? citlali::config::TodOutputStream::rtc
                       : citlali::config::TodOutputStream::ptc;
+    const auto &raw_timestream_settings =
+        citlali::pipeline::raw_time_chunk_config(*this);
 
     const std::string name =
         citlali::pipeline::register_tod_stream_output_file<
@@ -150,7 +153,7 @@ void Engine::create_tod_files() {
         // Keep the RTC line-audit tuning alongside the RTC TOD so offline audits
         // can recover the exact per-run thresholds without the sidecar YAML.
         citlali::pipeline::add_rtc_line_audit_config_vars(
-            fo, rtcproc.line_audit);
+            fo, raw_timestream_settings.line_audit);
     }
 
     const auto tod_layout = citlali::pipeline::prepare_tod_file_layout(

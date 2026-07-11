@@ -127,12 +127,11 @@ void add_rtc_impulsive_coincidence_config_vars(
                    impulsive_coincidence.max_flagged_fraction);
 }
 
-template <class RtcProc>
+template <class FlaggingConfig>
 void add_rtc_event_mask_config_vars(netCDF::NcFile &fo,
-                                    const RtcProc &rtcproc) {
-    add_rtc_step_mask_config_vars(fo, rtcproc.network_step_mask);
-    add_rtc_impulsive_capture_config_vars(fo, rtcproc.impulsive_capture);
+                                    const FlaggingConfig &flagging) {
+    add_rtc_step_mask_config_vars(fo, flagging.network_step_mask);
+    add_rtc_impulsive_capture_config_vars(fo, flagging.impulsive_capture);
     add_rtc_impulsive_coincidence_config_vars(
-        fo, rtcproc.impulsive_coincidence);
+        fo, flagging.impulsive_coincidence);
 }
-

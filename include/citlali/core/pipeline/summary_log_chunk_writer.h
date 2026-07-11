@@ -2,7 +2,7 @@
 
 // Included by summary_log.h inside namespace citlali::pipeline.
 
-template <class TimeChunk, class RtcProc>
+template <class TimeChunk, class RawTimeChunkConfig, class RtcProc>
 void write_chunk_summary_log(std::ostream &stream, const TimeChunk &chunk,
                              const std::string &citlali_version,
                              const std::string &kids_version,
@@ -10,6 +10,7 @@ void write_chunk_summary_log(std::ostream &stream, const TimeChunk &chunk,
                              citlali::config::ReductionType reduction_type,
                              citlali::config::TodType tod_type,
                              std::string_view signal_unit,
+                             const RawTimeChunkConfig &raw_config,
                              const RtcProc &rtcproc,
                              int outer_context_samples,
                              long long n_apt_flagged,
@@ -25,8 +26,11 @@ void write_chunk_summary_log(std::ostream &stream, const TimeChunk &chunk,
     write_chunk_identity_summary(
         stream, reduction_type_name, tod_type_name, signal_unit, chunk.name);
     write_chunk_processing_status_summary(stream, chunk.status);
-    write_chunk_tod_filter_summary(stream, rtcproc, outer_context_samples);
-    write_chunk_ptc_model_line_audit_summary(stream, rtcproc.line_audit);
+    write_chunk_tod_filter_summary(
+        stream, raw_config, rtcproc.filter_edge_guard,
+        outer_context_samples);
+    write_chunk_ptc_model_line_audit_summary(
+        stream, raw_config.line_audit);
     write_chunk_scan_shape_summary(
         stream, chunk.scans.data.rows(), chunk.scans.data.cols());
     write_chunk_detector_flag_summary(

@@ -123,6 +123,13 @@ reduction type, recorded as typed realized state, then copied to processor
 objects only for numerical execution. Learned raw masks consume that typed
 state. FITS event-mask metadata and RTC diagnostic impulsive-product shape also
 derive from typed flagging config.
+Model-protected PTC line-audit enablement, model requirements, selected notch
+families, iteration count, frequency overrides, and edge-guard policy now use
+typed raw config. The low-level RTC notch methods still accept their existing
+processor options type, which remains a numerical adapter. RTC diagnostic, TOD,
+and summary provenance serialize typed despike, event-mask, filter, and
+line-audit settings; processor edge-context values are retained only where they
+represent realized sample counts.
 
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:

@@ -28,9 +28,10 @@ void add_rtcdiag_file_config_vars(netCDF::NcFile &fo,
     add_netcdf_var(fo, "CONFIG.VERBOSE", verbose_mode);
     add_reduction_learning_config_vars(fo, learning, false);
     add_netcdf_var(fo, "CONFIG.DESPIKED", raw_config.despike.enabled);
-    add_rtc_local_despike_config_vars(fo, rtcproc.despiker.local_residual);
-    add_rtc_event_mask_config_vars(fo, rtcproc);
-    add_rtc_line_audit_config_vars(fo, rtcproc.line_audit);
+    add_rtc_local_despike_config_vars(
+        fo, raw_config.despike.local_residual);
+    add_rtc_event_mask_config_vars(fo, raw_config.flagging);
+    add_rtc_line_audit_config_vars(fo, raw_config.line_audit);
     add_netcdf_var(fo, "CONFIG.INV_VAR.WINDOW_SEC",
                    rtcproc.remove_bad_dets_window_sec);
 }
