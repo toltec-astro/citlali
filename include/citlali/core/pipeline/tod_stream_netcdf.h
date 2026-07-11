@@ -11,17 +11,19 @@
 
 namespace citlali::pipeline {
 
-template <class Calib, class RtcProc>
+template <class Calib, class ImpulsiveCapture>
 void add_rtc_tod_stream_diagnostic_outputs(
-    netCDF::NcFile &fo, const Calib &calib, const RtcProc &rtcproc,
+    netCDF::NcFile &fo, const Calib &calib,
+    bool downsample_enabled, const ImpulsiveCapture &impulsive_capture,
     const TodPreparedLayout &tod_layout, double fsmp,
     double downsampled_fsmp) {
     const int fill_int = rtcdiag_fill_int();
     const double fill_double = rtcdiag_fill_double();
     const double stream_sample_rate =
-        rtc_tod_stream_sample_rate(rtcproc, fsmp, downsampled_fsmp);
+        rtc_tod_stream_sample_rate(
+            downsample_enabled, fsmp, downsampled_fsmp);
     add_rtcdiag_tod_stream_diag(
-        fo, calib, rtcproc, tod_layout.dims.n_scans,
+        fo, calib, impulsive_capture, tod_layout.dims.n_scans,
         tod_layout.dims.n_dets, tod_layout.stream.n_output_scans,
         stream_sample_rate, fill_int, fill_double);
 }

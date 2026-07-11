@@ -106,6 +106,12 @@ FITS/TOD tau metadata is calculated. The atmospheric calibration object remains
 processor-owned numerical state. The CLI build, all 232 tests, and full config
 preflight pass.
 
+RTC diagnostic and RTC TOD diagnostic schema construction now receives typed
+downsample and impulsive-capture policy explicitly. External raw product-shape
+decisions no longer depend on `RTCProc` mirrors. Remaining raw-timestream work
+is concentrated in numerical-method adapters internal to `RTCProc`; polarimetry
+is tracked as a separate authority domain.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.

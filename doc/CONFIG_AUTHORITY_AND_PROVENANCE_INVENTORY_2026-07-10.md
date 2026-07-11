@@ -134,6 +134,10 @@ Duplicate-tone rejection now reads the typed minimum frequency separation, and
 RTC diagnostic source-bandwidth ratios read typed FIR enablement and cutoff.
 FITS and TOD tau metadata use typed extinction enablement while retaining the
 processor calibration object for the numerical atmospheric calculation.
+RTC diagnostic and RTC TOD diagnostic schemas now receive typed downsample and
+impulsive-capture policy explicitly. This removes the remaining external raw
+product-shape decision from processor mirrors; internal RTC algorithms still
+consume numerical adapter structures.
 
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:

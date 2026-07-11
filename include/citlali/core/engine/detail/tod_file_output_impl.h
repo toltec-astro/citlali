@@ -180,7 +180,9 @@ void Engine::create_tod_files() {
 
     if constexpr (prod_t == engine_utils::toltecIO::rtc_timestream) {
         citlali::pipeline::add_rtc_tod_stream_diagnostic_outputs(
-            fo, calib, rtcproc, tod_layout, telescope.fsmp,
+            fo, calib, raw_timestream_settings.downsample.enabled,
+            raw_timestream_settings.flagging.impulsive_capture,
+            tod_layout, telescope.fsmp,
             telescope.d_fsmp);
     }
 

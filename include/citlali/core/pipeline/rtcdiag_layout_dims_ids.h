@@ -10,10 +10,9 @@ constexpr int rtcdiag_fill_int() {
     return -2147483647;
 }
 
-template <class RtcProc>
-double rtc_tod_stream_sample_rate(const RtcProc &rtcproc, double fsmp,
+inline double rtc_tod_stream_sample_rate(bool downsample_enabled, double fsmp,
                                   double downsampled_fsmp) {
-    return rtcproc.run_downsample ? downsampled_fsmp : fsmp;
+    return downsample_enabled ? downsampled_fsmp : fsmp;
 }
 
 struct RtcDiagDims {
@@ -133,4 +132,3 @@ void add_rtcdiag_apt_double_vars(netCDF::NcFile &fo, Calib &calib,
         apt_v.putVar(x.second.data());
     }
 }
-

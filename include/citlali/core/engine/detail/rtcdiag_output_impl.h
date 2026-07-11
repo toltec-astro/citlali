@@ -23,7 +23,9 @@ void Engine::create_rtcdiag_file() {
     const Eigen::Index n_scans = telescope.scan_indices.cols();
     const double rtc_fsmp =
         citlali::pipeline::rtc_tod_stream_sample_rate(
-            rtcproc, telescope.fsmp, telescope.d_fsmp);
+            citlali::pipeline::raw_time_chunk_config(*this)
+                .downsample.enabled,
+            telescope.fsmp, telescope.d_fsmp);
 
     citlali::pipeline::add_diagnostic_file_identity_vars(
         fo, "rtcdiag", std::stoi(observation_identity.obsnum),

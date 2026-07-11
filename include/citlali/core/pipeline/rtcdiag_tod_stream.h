@@ -2,9 +2,9 @@
 
 // Included by rtcdiag_netcdf.h inside namespace citlali::pipeline.
 
-template <class Calib, class Rtcproc>
+template <class Calib, class ImpulsiveCapture>
 void add_rtcdiag_tod_stream_diag(netCDF::NcFile &fo, const Calib &calib,
-                                 const Rtcproc &rtcproc,
+                                 const ImpulsiveCapture &impulsive_capture,
                                  netCDF::NcDim n_scans_dim,
                                  netCDF::NcDim n_dets_dim,
                                  Eigen::Index n_scans,
@@ -52,19 +52,19 @@ void add_rtcdiag_tod_stream_diag(netCDF::NcFile &fo, const Calib &calib,
 
     add_rtcdiag_standard_network_diag(add_nw_int, add_nw_double);
 
-    if (!rtcproc.impulsive_capture.enabled) {
+    if (!impulsive_capture.enabled) {
         return;
     }
 
     const auto n_slots = static_cast<std::size_t>(
-        std::max<Eigen::Index>(rtcproc.impulsive_capture.max_events_per_network, 1));
+        std::max<Eigen::Index>(impulsive_capture.max_events_per_network, 1));
     const auto snippet_pre =
         rtcdiag_impulsive_window_samples(
-            rtcproc.impulsive_capture.snippet_pre_window_sec,
+            impulsive_capture.snippet_pre_window_sec,
             sample_rate_hz);
     const auto snippet_post =
         rtcdiag_impulsive_window_samples(
-            rtcproc.impulsive_capture.snippet_post_window_sec,
+            impulsive_capture.snippet_post_window_sec,
             sample_rate_hz);
     const auto n_snippet =
         rtcdiag_impulsive_snippet_sample_count(snippet_pre, snippet_post);
@@ -116,4 +116,3 @@ void add_rtcdiag_tod_stream_diag(netCDF::NcFile &fo, const Calib &calib,
         add_slot_int, add_slot_double, add_snippet_double, add_snippet_int,
         rtcdiag_impulsive_capture_stream_comments());
 }
-
