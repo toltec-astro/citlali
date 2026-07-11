@@ -18,7 +18,9 @@
 #include <citlali/core/pipeline/output_layout.h>
 #include <citlali/core/pipeline/output_netcdf_metadata.h>
 #include <citlali/core/pipeline/runtime_provenance_output.h>
+#include <citlali/core/pipeline/timestream_output_provenance.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
+#include <citlali/core/pipeline/tod_output_state.h>
 
 #include <gtest/gtest.h>
 
@@ -1992,6 +1994,65 @@ TEST(config_scaffold, tod_file_layout_uses_typed_stream_modes) {
     EXPECT_EQ(ptc_layout.n_output_scans, 7);
     EXPECT_FALSE(ptc_layout.mini_output);
     EXPECT_FALSE(ptc_layout.outer_output);
+}
+
+TEST(config_scaffold, writes_observation_tod_output_provenance) {
+    struct OutputEngine {
+        citlali::config::ReductionConfig typed_config;
+        citlali::pipeline::TodOutputState tod_outputs;
+        citlali::pipeline::OutputPathState output_paths;
+        struct {
+            Eigen::MatrixXI scan_indices;
+        } telescope;
+    } engine;
+    auto &output = engine.typed_config.timestream.output;
+    output.raw_time_chunk_enabled = true;
+    output.processed_time_chunk_enabled = true;
+    output.type = citlali::config::TodOutputType::both;
+    output.raw_time_chunk.enabled = true;
+    output.raw_time_chunk.mode =
+        citlali::config::TodStreamOutputMode::mini_outer;
+    output.processed_time_chunk.enabled = true;
+    output.processed_time_chunk.mode =
+        citlali::config::TodStreamOutputMode::full;
+    engine.typed_config.timestream.chunking = {"number", 3.0, true};
+    engine.telescope.scan_indices.resize(4, 3);
+    engine.tod_outputs.rtc_scan_to_output_scan.resize(3);
+    engine.tod_outputs.rtc_scan_to_output_scan << 0, -1, 1;
+    engine.tod_outputs.ptc_scan_to_output_scan.resize(3);
+    engine.tod_outputs.ptc_scan_to_output_scan << 0, 1, 2;
+    engine.tod_outputs.n_rtc_output_scans = 2;
+    engine.tod_outputs.n_ptc_output_scans = 3;
+    engine.output_paths.tod_filename["rtc"] = "/data/rtc.nc";
+    engine.output_paths.tod_filename["ptc"] = "/data/ptc.nc";
+    const auto output_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_timestream_output_provenance_test";
+    std::filesystem::remove_all(output_dir);
+    std::filesystem::create_directories(output_dir);
+    engine.output_paths.obsnum_dir_name = output_dir.string();
+
+    citlali::pipeline::write_timestream_output_provenance_file(engine);
+
+    const auto output_path =
+        citlali::pipeline::timestream_output_provenance_path(output_dir);
+    const auto stored = YAML::LoadFile(output_path.string());
+    EXPECT_EQ(stored["schema_version"].as<std::string>(),
+              "citlali-timestream-output-provenance-v1");
+    EXPECT_EQ(stored["requested"]["chunking"]["mode"].as<std::string>(),
+              "number");
+    EXPECT_EQ(stored["effective"]["output_type"].as<std::string>(), "both");
+    EXPECT_EQ(stored["effective"]["raw_time_chunk"]
+                    ["selected_chunks_1based"].as<std::vector<int>>(),
+              (std::vector<int>{1, 3}));
+    EXPECT_EQ(stored["realized"]["n_scans"].as<int>(), 3);
+    EXPECT_EQ(stored["realized"]["raw_time_chunk"]
+                    ["n_output_scans"].as<int>(),
+              2);
+    EXPECT_EQ(stored["realized"]["files"]["rtc"].as<std::string>(),
+              "/data/rtc.nc");
+    EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
+    std::filesystem::remove_all(output_dir);
 }
 
 TEST(cli_runtime_setup, configures_runtime_threads) {

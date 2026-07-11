@@ -8,6 +8,7 @@
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/stage_profile.h>
+#include <citlali/core/pipeline/timestream_output_provenance.h>
 
 namespace citlali::engine_detail {
 
@@ -158,6 +159,13 @@ void setup_observation_tod_output_files(EngineT &engine) {
     else if (!engine.diagnostics.write_evals) {
         engine.ptcproc.cleaner.n_calc = 0;
     }
+
+    citlali::pipeline::write_timestream_output_provenance_file(engine);
+    engine.logger->info(
+        "timestream output provenance sidecar: {}",
+        citlali::pipeline::timestream_output_provenance_path(
+            engine.output_paths.obsnum_dir_name)
+            .string());
 }
 
 template <class EngineT>

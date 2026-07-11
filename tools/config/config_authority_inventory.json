@@ -33,7 +33,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Add stable requested/effective/realized output provenance and validate typed output shape, selection, cardinality, and chunking before removing write-only adapters."
+      "exit_gate": "Validate the versioned per-observation requested/effective/realized output sidecar and exact existing products before removing write-only adapters."
     },
     {
       "id": "raw-timestream",

@@ -69,7 +69,10 @@ selection already realizes typed policy into scan-to-output mappings and
 cardinalities, and scan-index construction now consumes typed chunking policy.
 The early telescope-file validity check now does as well, leaving the legacy
 output/chunking fields as write-only adapters. Output provenance and mode
-validation remain; this domain is not yet complete.
+validation remain; this domain is not yet complete. The required, atomically
+published per-observation `timestream_output_provenance.yaml` now carries the
+versioned requested/effective/realized output record and awaits Unity point
+validation.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

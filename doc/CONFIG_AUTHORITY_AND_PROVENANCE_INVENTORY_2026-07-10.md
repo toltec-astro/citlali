@@ -93,6 +93,14 @@ therefore `typed-authoritative-with-adapter`, with partial provenance. Stable
 requested/effective/realized output provenance and mode validation are still
 required before the adapters can be removed.
 
+The versioned `citlali-timestream-output-provenance-v1` schema is now written
+atomically as `timestream_output_provenance.yaml` in each observation
+directory. It records requested stream and chunking controls, effective output
+type and selected chunks, and realized scan-to-output mappings, cardinalities,
+and registered TOD files. Per-observation placement preserves correct state for
+multi-observation science reductions. Unity point validation is the remaining
+provenance gate.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

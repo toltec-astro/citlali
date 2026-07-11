@@ -1,14 +1,12 @@
 #pragma once
 
 #include <citlali/core/config/runtime_execution_plan.h>
+#include <citlali/core/pipeline/atomic_yaml_output.h>
 
 #include <yaml-cpp/yaml.h>
 
 #include <filesystem>
-#include <fstream>
-#include <stdexcept>
 #include <string>
-#include <system_error>
 
 namespace citlali::pipeline {
 
@@ -74,22 +72,7 @@ inline void write_runtime_provenance_file(
     const std::filesystem::path &reduction_dir,
     const citlali::config::RuntimeConfigProvenance &provenance) {
     const auto output_path = runtime_provenance_path(reduction_dir);
-    auto temporary_path = output_path;
-    temporary_path += ".tmp";
-
-    try {
-        std::ofstream stream(temporary_path, std::ios::out | std::ios::trunc);
-        stream.exceptions(std::ios::badbit | std::ios::failbit);
-        stream << runtime_provenance_node(provenance);
-        stream.flush();
-        stream.close();
-        std::filesystem::rename(temporary_path, output_path);
-    }
-    catch (...) {
-        std::error_code ignored;
-        std::filesystem::remove(temporary_path, ignored);
-        throw;
-    }
+    write_yaml_file_atomic(output_path, runtime_provenance_node(provenance));
 }
 
 }  // namespace citlali::pipeline
