@@ -240,3 +240,26 @@ $HOME/tolteca/bin/python tools/baseline/compare_reduction_products.py \
   tools/baseline/examples/tiny_reduction \
   tools/baseline/examples/tiny_reduction
 ```
+
+# Beammap Scientific Equivalence
+
+`compare_beammap_scientific_equivalence.py` applies the scientific-owner
+accepted, scale-aware Beammap gate in
+`validation/profiles/beammap_scientific_equivalence_v1.json`. It requires exact
+detector identities, flags, and split-FITS product sets, then checks APT
+quantities and per-detector signal/weight/kernel RMS differences against the
+versioned profile.
+
+```bash
+$HOME/tolteca/bin/python \
+  tools/baseline/compare_beammap_scientific_equivalence.py \
+  /path/to/beammap/citlali/reduced/reduNN \
+  /path/to/beammap/refactor/reduced/reduNN \
+  --json-out /tmp/beammap_equivalence.json \
+  --report-out /tmp/beammap_equivalence.md
+```
+
+The command exits nonzero when any bound is exceeded. Use the generic
+`compare_reduction_products.py` for exact run-to-run determinism and product
+inventory checks; this profile is specifically for accepted OG/refactor
+scientific equivalence and must not be relaxed without scientific-owner review.

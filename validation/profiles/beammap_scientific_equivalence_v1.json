@@ -1,0 +1,29 @@
+{
+  "schema_version": "citlali-beammap-equivalence-profile-v1",
+  "profile_id": "beammap-scientific-equivalence-v1",
+  "description": "Scientific-owner accepted OG/refactor Beammap bounds for detector products.",
+  "requirements": {
+    "detector_identity_exact": true,
+    "detector_flags_exact": true,
+    "product_sets_exact": true
+  },
+  "thresholds": {
+    "good_signal_rms_relative_max": 0.01,
+    "good_weight_rms_relative_max": 0.005,
+    "good_kernel_rms_relative_max": 0.001,
+    "good_layer_rms_relative_p99_max": 0.00001,
+    "bad_signal_rms_relative_max": 0.02,
+    "bad_weight_rms_relative_max": 0.005,
+    "bad_kernel_rms_relative_max": 0.01,
+    "sensitivity_relative_max": 0.005,
+    "signal_to_noise_relative_max": 0.0001,
+    "position_absolute_arcsec_max": 0.0001,
+    "fwhm_absolute_arcsec_max": 0.0001
+  },
+  "rationale": [
+    "Detector classifications must not change.",
+    "Sub-percent map and sensitivity perturbations are scientifically negligible for this validation Beammap.",
+    "The p99 bound detects broad numerical drift even when isolated detectors remain within maximum bounds.",
+    "This profile does not authorize future changes to scientific algorithms or defaults."
+  ]
+}
