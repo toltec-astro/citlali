@@ -966,7 +966,8 @@ void PTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 "exactly one cleaner must be enabled when clean.enabled=true; got standard_pca={} null_model={} marchenko_pastur={} adaptive_selector={}",
                 cleaner.standard_pca.enabled, cleaner.null_model.enabled,
                 cleaner.marchenko_pastur.enabled, cleaner.adaptive_selector.enabled);
-            std::exit(EXIT_FAILURE);
+            invalid_keys.push_back(
+                {"timestream", "processed_time_chunk", "clean"});
         }
         logger->info("clean.active={}", cleaner.active_cleaner_label());
         // optional correlation-defined grouping inside each network

@@ -136,11 +136,6 @@ void read_fruit_loops_core_config(
         std::tuple{"timestream", "fruit_loops", "weight_feedback",
                    "high_relative_weight"},
         feedback.high_relative_weight);
-    if (feedback.enabled &&
-        feedback.high_relative_weight <= feedback.low_relative_weight) {
-        feedback.enabled = false;
-    }
-
     read_optional_double(
         std::tuple{"timestream", "fruit_loops", "center_keep_radius_arcsec"},
         typed_config.center_keep_radius_arcsec);
