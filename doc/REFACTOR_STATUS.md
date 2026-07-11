@@ -112,6 +112,12 @@ expert fruit-loop numerical fields still arrive through the legacy parser and
 typed mirror until their cohesive reader is moved. All eight real config
 profiles, all 236 tests, and full preflight pass.
 
+The direct fruit-loop reader now covers the complete typed fruit-loop surface,
+including expert local-noise, adaptive-support, feedback, interpolation, and
+post-addback controls. The legacy combined PTC parser remains temporarily for
+other processed domains; fruit-loop execution state is overwritten only from
+typed policy through the adapter. All 236 tests and full preflight pass.
+
 Raw input and metadata boundaries now use typed policy for duplicate-tone
 frequency separation, RTC diagnostic FIR/source-bandwidth ratios, and whether
 FITS/TOD tau metadata is calculated. The atmospheric calibration object remains

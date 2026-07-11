@@ -206,6 +206,12 @@ limit are read from YAML into `TimestreamFruitLoopsConfig` before the one-way
 adapter runs. Expert numerical fields remain mirrored during the staged parser
 extraction; the combined legacy parser is still invoked for those domains.
 
+The direct reader now also covers the expert fruit-loop surface: local-noise
+geometry, adaptive support, weight feedback, center retention, interpolation,
+legacy centering, and post-addback weight policy. The legacy combined parser
+still executes as a compatibility parser, but typed values are reread directly
+and then applied through the one-way adapter.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 
