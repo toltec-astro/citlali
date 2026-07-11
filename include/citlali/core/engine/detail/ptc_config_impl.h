@@ -7,6 +7,7 @@
 #include <citlali/core/pipeline/fruit_loops_config_read.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/processed_clean_config_read.h>
+#include <citlali/core/pipeline/processed_weighting_config_read.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
 #include <citlali/core/pipeline/timestream_config_adapter_processed.h>
@@ -39,6 +40,8 @@ void Engine::get_ptc_config(CT &config) {
     auto &typed_flagging = processed_config.flagging;
     citlali::pipeline::mirror_processed_weighting_config(
         typed_weighting, typed_flagging, ptcproc);
+    citlali::pipeline::read_processed_weighting_core_config(
+        config, typed_weighting, typed_flagging, config_diag);
     const auto &weight_validation = ptcproc.weight_validation;
     citlali::pipeline::mirror_processed_weight_validation_config(
         typed_weighting.validation, weight_validation);
