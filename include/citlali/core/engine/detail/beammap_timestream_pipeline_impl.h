@@ -153,7 +153,8 @@ auto Beammap::run_timestream(
                             rtc_outer_output, output_paths.tod_filename["rtc"],
                             map_grouping, telescope.pixel_axes,
                             rtc_outer_output.pointing_offsets_arcsec.data, calib,
-                            true, rtc_scan_row);
+                            true, rtc_scan_row,
+                            citlali::pipeline::raw_tod_mini_output(*this));
                     }
                     else {
                         logger->info("writing raw time chunk");
@@ -161,7 +162,8 @@ auto Beammap::run_timestream(
                             ptcdata, output_paths.tod_filename["rtc"],
                             map_grouping, telescope.pixel_axes,
                             ptcdata.pointing_offsets_arcsec.data, calib_scan,
-                            true, rtc_scan_row);
+                            true, rtc_scan_row,
+                            citlali::pipeline::raw_tod_mini_output(*this));
                     }
                 })) {
                 return {};

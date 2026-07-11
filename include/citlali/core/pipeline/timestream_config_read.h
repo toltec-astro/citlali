@@ -229,14 +229,12 @@ template <class Config, class Key, class MissingKeys, class InvalidKeys,
 void read_tod_stream_output_mode_config(
     Config &config, const Key &key, bool output_enabled,
     const std::vector<std::string> &allowed_modes, std::string &mode,
-    bool &mini, bool &outer, StreamOutputConfig &typed_stream,
+    StreamOutputConfig &typed_stream,
     MissingKeys &missing_keys, InvalidKeys &invalid_keys) {
     if (!output_enabled || !config.has(key)) {
         return;
     }
 
-    const auto missing_before = missing_keys.size();
-    const auto invalid_before = invalid_keys.size();
     citlali::pipeline::read_config_value_if_clean(
         config, key, mode,
         [&typed_stream](const std::string &mode_name) {
@@ -246,18 +244,6 @@ void read_tod_stream_output_mode_config(
             }
         },
         missing_keys, invalid_keys, allowed_modes);
-    citlali::config::TodStreamOutputMode parsed_mode =
-        citlali::config::TodStreamOutputMode::full;
-    if (auto parsed = citlali::config::parse_tod_stream_output_mode(mode)) {
-        parsed_mode = *parsed;
-    }
-    citlali::config::TodStreamOutputMode stream_mode =
-        citlali::pipeline::config_parse_clean(
-            missing_keys, invalid_keys, missing_before, invalid_before)
-            ? typed_stream.mode
-            : parsed_mode;
-    mini = citlali::config::is_mini_tod_stream_output_mode(stream_mode);
-    outer = citlali::config::is_outer_tod_stream_output_mode(stream_mode);
 }
 
 template <class Config, class Key, class Diagnostics,
@@ -265,41 +251,41 @@ template <class Config, class Key, class Diagnostics,
 void read_tod_stream_output_mode_config(
     Config &config, const Key &key, bool output_enabled,
     const std::vector<std::string> &allowed_modes, std::string &mode,
-    bool &mini, bool &outer, StreamOutputConfig &typed_stream,
+    StreamOutputConfig &typed_stream,
     Diagnostics &diagnostics) {
     read_tod_stream_output_mode_config(
-        config, key, output_enabled, allowed_modes, mode, mini, outer,
-        typed_stream, diagnostics.missing_key_paths(),
+        config, key, output_enabled, allowed_modes, mode, typed_stream,
+        diagnostics.missing_key_paths(),
         diagnostics.invalid_key_paths());
 }
 
 template <class Config, class Key, class MissingKeys, class InvalidKeys,
-          class ContextSamples, class StreamOutputConfig>
+          class StreamOutputConfig>
 void read_tod_stream_outer_context_config(
     Config &config, const Key &key, bool output_enabled,
-    ContextSamples &outer_context_samples, StreamOutputConfig &typed_stream,
+    StreamOutputConfig &typed_stream,
     MissingKeys &missing_keys, InvalidKeys &invalid_keys) {
     if (!output_enabled || !config.has(key)) {
         return;
     }
 
-    using value_type = std::decay_t<ContextSamples>;
+    int outer_context_samples = typed_stream.outer_context_samples;
     citlali::pipeline::read_config_value_if_clean(
         config, key, outer_context_samples,
-        [&typed_stream](value_type count) {
-            typed_stream.outer_context_samples = static_cast<int>(count);
+        [&typed_stream](int count) {
+            typed_stream.outer_context_samples = count;
         },
         missing_keys, invalid_keys, {}, {0});
 }
 
-template <class Config, class Key, class Diagnostics, class ContextSamples,
+template <class Config, class Key, class Diagnostics,
           class StreamOutputConfig>
 void read_tod_stream_outer_context_config(
     Config &config, const Key &key, bool output_enabled,
-    ContextSamples &outer_context_samples, StreamOutputConfig &typed_stream,
+    StreamOutputConfig &typed_stream,
     Diagnostics &diagnostics) {
     read_tod_stream_outer_context_config(
-        config, key, output_enabled, outer_context_samples, typed_stream,
+        config, key, output_enabled, typed_stream,
         diagnostics.missing_key_paths(), diagnostics.invalid_key_paths());
 }
 

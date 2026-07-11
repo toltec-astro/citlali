@@ -482,13 +482,13 @@ public:
     template <typename calib_t, typename pointing_offset_t>
     void append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
                           pointing_offset_t &, calib_t &, bool apply_det_offsets = false,
-                          Eigen::Index scan_row_index = -1);
+                          Eigen::Index scan_row_index = -1, bool mini_output = false);
 
     // append loaded outer RTC time chunk to tod netcdf file
     template <typename calib_t, typename pointing_offset_t>
     void append_to_netcdf(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, std::string, std::string, std::string &,
                           pointing_offset_t &, calib_t &, bool apply_det_offsets = false,
-                          Eigen::Index scan_row_index = -1);
+                          Eigen::Index scan_row_index = -1, bool mini_output = false);
 };
 
 // get config file
@@ -6422,7 +6422,7 @@ void RTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
 template <typename calib_t, typename pointing_offset_t>
 void RTCProc::append_to_netcdf(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string filepath, std::string map_grouping,
                                std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, calib_t &calib,
-                               bool apply_det_offsets, Eigen::Index scan_row_index) {
+                               bool apply_det_offsets, Eigen::Index scan_row_index, bool mini_output) {
     using netCDF::NcFile;
     using namespace netCDF::exceptions;
 
@@ -6432,7 +6432,7 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std
         NcFile fo(filepath, netCDF::NcFile::write);
 
         append_base_to_netcdf(fo, in, map_grouping, pixel_axes, pointing_offsets_arcsec, calib, apply_det_offsets,
-                              scan_row_index, true);
+                              scan_row_index, true, mini_output);
 
         fo.sync();
         fo.close();
@@ -6450,7 +6450,7 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std
 template <typename calib_t, typename pointing_offset_t>
 void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std::string filepath, std::string map_grouping,
                                std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, calib_t &calib,
-                               bool apply_det_offsets, Eigen::Index scan_row_index) {
+                               bool apply_det_offsets, Eigen::Index scan_row_index, bool mini_output) {
     using netCDF::NcFile;
     using namespace netCDF::exceptions;
 
@@ -6464,7 +6464,7 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 
         // append common time chunk variables
         append_base_to_netcdf(fo, in, map_grouping, pixel_axes, pointing_offsets_arcsec, calib, apply_det_offsets,
-                              scan_row_index);
+                              scan_row_index, false, mini_output);
         write_cached_diagnostics_to_netcdf(fo, in, calib, scan_row_index);
 
         // sync file to make sure it gets updated

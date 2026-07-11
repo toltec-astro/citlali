@@ -676,13 +676,6 @@ public:
 
     // tod output
     bool run_tod_output, write_evals;
-    // compact TOD output mode (float signal, byte flags, no per-detector pointing/kernel vars)
-    bool tod_output_mini = false;
-    // include the loaded outer scan context in the TOD output instead of only the inner science scan
-    bool tod_output_outer = false;
-    // minimum context samples per side to load when writing *_outer TOD output
-    Eigen::Index tod_output_outer_context_samples = 0;
-
     // run fruit loops
     bool run_fruit_loops;
     // path for input images
@@ -833,7 +826,8 @@ public:
     template <TCDataKind tcdata_t, class calib_t, typename pointing_offset_t>
     void append_base_to_netcdf(netCDF::NcFile &, TCData<tcdata_t, Eigen::MatrixXd> &, std::string,
                                std::string &, pointing_offset_t &, calib_t &, bool apply_det_offsets = false,
-                               Eigen::Index scan_row_index = -1, bool output_outer_scan = false);
+                               Eigen::Index scan_row_index = -1, bool output_outer_scan = false,
+                               bool mini_output = false);
 };
 
 template <class calib_t>
@@ -3225,7 +3219,8 @@ auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, 
 template <TCDataKind tcdata_t, class calib_t, typename pointing_offset_t>
 void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::MatrixXd> &in, std::string map_grouping,
                                    std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, calib_t &calib,
-                                   bool apply_det_offsets, Eigen::Index scan_row_index, bool output_outer_scan) {
+                                   bool apply_det_offsets, Eigen::Index scan_row_index, bool output_outer_scan,
+                                   bool mini_output) {
     using netCDF::NcDim;
     using netCDF::NcFile;
     using netCDF::NcType;
@@ -3305,7 +3300,7 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
     for (std::size_t i=0; i<TULA_SIZET(n_pts); ++i) {
         start_index[0] = n_pts_exists + i;
         // append scans
-        if (tod_output_mini) {
+        if (mini_output) {
             Eigen::VectorXf scans = in.scans.data.row(i).template cast<float>();
             signal_v.putVar(start_index, size, scans.data());
         }
@@ -3315,7 +3310,7 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
         }
 
         // append flags
-        if (tod_output_mini) {
+        if (mini_output) {
             Eigen::Matrix<signed char, 1, Eigen::Dynamic> flags_byte =
                 in.flags.data.row(i).template cast<signed char>();
             flags_v.putVar(start_index, size, flags_byte.data());

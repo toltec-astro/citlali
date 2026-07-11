@@ -62,19 +62,16 @@ zero serious log issues, and exact pre-existing point products. The runtime
 domain is complete; the next operational domain is timestream output selection
 and chunking.
 
-The first timestream-output slice now routes RTC/PTC output shape, outer-buffer
-allocation, and associated metadata through typed output configuration. Legacy
-processor mode/context fields remain loader-only compatibility targets. Chunk
-selection already realizes typed policy into scan-to-output mappings and
-cardinalities, and scan-index construction now consumes typed chunking policy.
-The early telescope-file validity check now does as well, leaving the legacy
-output/chunking fields as write-only adapters. Output provenance and mode
-validation remain; this domain is not yet complete. The required, atomically
-published per-observation `timestream_output_provenance.yaml` now carries the
-versioned requested/effective/realized output record and awaits Unity point
-validation. Unity `redu28` validates all 12 selected and realized RTC/PTC
-chunks, both registered TOD files, zero serious log issues, and exact existing
-products. Provenance is complete; write-only adapter removal remains.
+The timestream-output domain routes RTC/PTC output shape, outer-buffer
+allocation, NetCDF serialization mode, metadata, selection, and scan-index
+construction through typed configuration. The required, atomically published
+per-observation `timestream_output_provenance.yaml` carries the versioned
+requested/effective/realized output record. Unity `redu28` validates all 12
+selected and realized RTC/PTC chunks, both registered TOD files, zero serious
+log issues, and exact existing products. The former processor output-mode and
+telescope chunking mirrors are removed; parser and writer boundaries receive
+typed values explicitly. The local CLI/test build, all 229 tests, and full
+config preflight pass. This domain is complete.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

@@ -29,11 +29,11 @@
       "typed_owner": "citlali::config::ReductionConfig::timestream",
       "loader": "include/citlali/core/engine/detail/timestream_top_config_impl.h",
       "execution_authority": "typed",
-      "legacy_targets": ["Engine::rtcproc", "Engine::ptcproc"],
-      "adapter_direction": "typed-to-legacy",
-      "migration_status": "typed-authoritative-with-adapter",
+      "legacy_targets": [],
+      "adapter_direction": "none",
+      "migration_status": "typed-authoritative",
       "provenance_status": "complete",
-      "exit_gate": "Remove the validated write-only processor and telescope output/chunking adapters, then confirm local build and focused tests."
+      "exit_gate": "Complete: redu28 validated requested/effective/realized provenance and exact point products; legacy output/chunking adapters were removed with the CLI build, 229 tests, and full config preflight passing."
     },
     {
       "id": "raw-timestream",

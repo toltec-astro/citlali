@@ -77,36 +77,33 @@ parallel policy `omp`, and reduction type `pointing`. Runtime provenance is now
 The first `timestream-core-output` slice moves TOD output shape to typed
 authority. RTC outer-buffer allocation, RTC/PTC mini/full layout, outer-context
 padding, summaries, and NetCDF metadata now derive from
-`TimestreamOutputConfig`. Legacy `rtcproc`/`ptcproc` mode and context fields are
-written only while loading and no longer control execution. Divergence tests
-prove typed modes win when those mirrors disagree.
+`TimestreamOutputConfig`. Divergence tests established that typed modes win
+over the former processor mirrors before those mirrors were removed.
 
 Typed selection already produces realized scan-to-row mappings and output
 cardinalities in `TodOutputState`. Scan-index construction now also receives
 typed chunk mode, value, and force policy directly instead of reading the
 telescope mirror.
 
-The early telescope-file chunk-validity check now also receives typed chunking
-policy directly. No execution path reads the legacy TOD output mode/context or
-telescope chunking fields; they are write-only loader adapters. The domain is
-therefore `typed-authoritative-with-adapter`, with partial provenance. Stable
-requested/effective/realized output provenance and mode validation are still
-required before the adapters can be removed.
+The early telescope-file chunk-validity check also receives typed chunking
+policy directly. The former processor output-mode/context and telescope
+chunking fields have been removed; parser and NetCDF append boundaries now
+receive typed state explicitly.
 
 The versioned `citlali-timestream-output-provenance-v1` schema is now written
 atomically as `timestream_output_provenance.yaml` in each observation
 directory. It records requested stream and chunking controls, effective output
 type and selected chunks, and realized scan-to-output mappings, cardinalities,
 and registered TOD files. Per-observation placement preserves correct state for
-multi-observation science reductions. Unity point validation is the remaining
-provenance gate.
+multi-observation science reductions.
 
 Unity point reduction `redu28`, built from `5411a82e`, validates this schema.
 The unchanged merged config produces 12 effective RTC and PTC chunks, realized
 as contiguous output rows `0..11` with both registered TOD files present. The
 run has zero serious log issues and exact pre-existing products relative to
-`redu27`. Output provenance is complete; removal of the validated write-only
-adapters is the remaining domain task.
+`redu27`. After validation, the write-only adapters were removed. The local CLI
+and test build, all 229 tests, and the complete eight-case config preflight pass.
+The domain is now `typed-authoritative` with complete provenance.
 
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:

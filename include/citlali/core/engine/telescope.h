@@ -28,14 +28,6 @@ public:
     // tangent plane center
     //std::map<std::string, double> tan_center_rad;
 
-    std::string chunk_mode;
-
-    // time chunk size for lissajous/rastajous
-    double chunking_value;
-
-    // force chunking scan indices
-    bool force_chunk;
-
     // remove samples based on a velocity limit
     double velocity_limit;
 

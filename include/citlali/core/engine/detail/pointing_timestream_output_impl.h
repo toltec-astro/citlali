@@ -47,7 +47,8 @@ bool Pointing::write_pointing_rtc_outputs(
                         rtc_outer_output, output_paths.tod_filename["rtc"],
                         map_grouping, telescope.pixel_axes,
                         rtc_outer_output.pointing_offsets_arcsec.data, calib,
-                        false, rtc_scan_row);
+                        false, rtc_scan_row,
+                        citlali::pipeline::raw_tod_mini_output(*this));
                 }
                 else {
                     logger->info("writing raw time chunk");
@@ -59,7 +60,8 @@ bool Pointing::write_pointing_rtc_outputs(
                         ptcdata, output_paths.tod_filename["rtc"], map_grouping,
                         telescope.pixel_axes,
                         ptcdata.pointing_offsets_arcsec.data, calib, false,
-                        rtc_scan_row);
+                        rtc_scan_row,
+                        citlali::pipeline::raw_tod_mini_output(*this));
                 }
             })) {
             return false;
@@ -108,7 +110,8 @@ bool Pointing::write_pointing_ptc_outputs(
                 ptcproc.append_to_netcdf(
                     ptcdata, output_paths.tod_filename["ptc"], map_grouping,
                     telescope.pixel_axes, ptcdata.pointing_offsets_arcsec.data,
-                    calib_scan, false, ptc_scan_row);
+                    calib_scan, false, ptc_scan_row,
+                    citlali::pipeline::processed_tod_mini_output(*this));
             })) {
             return false;
         }

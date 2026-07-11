@@ -10,43 +10,34 @@
 
 namespace citlali::pipeline {
 
-template <class Config, class TimestreamConfig, class RtcProc,
-          class PtcProc, class Diagnostics>
+template <class Config, class TimestreamConfig, class Diagnostics>
 void read_tod_output_runtime_config(
-    Config &config, TimestreamConfig &timestream_config, RtcProc &rtcproc,
-    PtcProc &ptcproc, bool &run_tod_output_rtc, bool &run_tod_output_ptc,
+    Config &config, TimestreamConfig &timestream_config,
+    bool &run_tod_output_rtc, bool &run_tod_output_ptc,
     bool &run_tod_output, Diagnostics &diagnostics) {
     run_tod_output_rtc = false;
     read_raw_tod_output_enabled_config(
         config, run_tod_output_rtc, timestream_config, diagnostics);
-    rtcproc.tod_output_mini = false;
-    rtcproc.tod_output_outer = false;
-    rtcproc.tod_output_outer_context_samples = 0;
     std::string rtc_output_mode = "full";
     read_tod_stream_output_mode_config(
         config, std::tuple{"timestream", "raw_time_chunk", "output", "mode"},
         run_tod_output_rtc, {"full", "mini", "full_outer", "mini_outer"},
-        rtc_output_mode, rtcproc.tod_output_mini, rtcproc.tod_output_outer,
-        timestream_config.output.raw_time_chunk, diagnostics);
+        rtc_output_mode, timestream_config.output.raw_time_chunk, diagnostics);
     read_tod_stream_outer_context_config(
         config,
         std::tuple{"timestream", "raw_time_chunk", "output",
                    "outer_context_samples"},
-        run_tod_output_rtc, rtcproc.tod_output_outer_context_samples,
-        timestream_config.output.raw_time_chunk, diagnostics);
+        run_tod_output_rtc, timestream_config.output.raw_time_chunk,
+        diagnostics);
 
     run_tod_output_ptc = false;
     read_processed_tod_output_enabled_config(
         config, run_tod_output_ptc, timestream_config, diagnostics);
-    ptcproc.tod_output_mini = false;
-    ptcproc.tod_output_outer = false;
-    ptcproc.tod_output_outer_context_samples = 0;
     std::string ptc_output_mode = "full";
     read_tod_stream_output_mode_config(
         config,
         std::tuple{"timestream", "processed_time_chunk", "output", "mode"},
         run_tod_output_ptc, {"full", "mini"}, ptc_output_mode,
-        ptcproc.tod_output_mini, ptcproc.tod_output_outer,
         timestream_config.output.processed_time_chunk, diagnostics);
 
     run_tod_output = false;
@@ -71,24 +62,16 @@ void read_timestream_output_metadata_config(
         diagnostics);
 }
 
-template <class Config, class TimestreamConfig, class Telescope,
-          class Diagnostics>
+template <class Config, class TimestreamConfig, class Diagnostics>
 void read_timestream_chunking_config(Config &config,
                                      TimestreamConfig &timestream_config,
-                                     Telescope &telescope,
                                      Diagnostics &diagnostics) {
-    read_mirrored_config_value(
-        config, std::tuple{"timestream", "chunking", "chunk_mode"},
-        telescope.chunk_mode, timestream_config.chunking.mode,
-        diagnostics);
-    read_mirrored_config_value(
-        config, std::tuple{"timestream", "chunking", "value"},
-        telescope.chunking_value, timestream_config.chunking.value,
-        diagnostics);
-    read_mirrored_config_value(
-        config, std::tuple{"timestream", "chunking", "force_chunking"},
-        telescope.force_chunk, timestream_config.chunking.force,
-        diagnostics);
+    read_config_value(config, timestream_config.chunking.mode, diagnostics,
+                      std::tuple{"timestream", "chunking", "chunk_mode"});
+    read_config_value(config, timestream_config.chunking.value, diagnostics,
+                      std::tuple{"timestream", "chunking", "value"});
+    read_config_value(config, timestream_config.chunking.force, diagnostics,
+                      std::tuple{"timestream", "chunking", "force_chunking"});
 }
 
 template <class Config, class TimestreamOutputConfig, class Diagnostics,

@@ -25,8 +25,8 @@ void Engine::get_timestream_config(CT &config) {
     bool run_tod_output_rtc = false;
     bool run_tod_output_ptc = false;
     citlali::pipeline::read_tod_output_runtime_config(
-        config, timestream_config, rtcproc, ptcproc, run_tod_output_rtc,
-        run_tod_output_ptc, run_tod_output, config_diag);
+        config, timestream_config, run_tod_output_rtc, run_tod_output_ptc,
+        run_tod_output, config_diag);
     citlali::pipeline::read_timestream_output_metadata_config(
         config, timestream_config, diagnostics.write_evals, config_diag);
 
@@ -35,7 +35,7 @@ void Engine::get_timestream_config(CT &config) {
         timestream_config.output, config_diag, logger);
 
     citlali::pipeline::read_timestream_chunking_config(
-        config, timestream_config, telescope, config_diag);
+        config, timestream_config, config_diag);
 
     /* get raw time chunk config */
     get_rtc_config(config);
