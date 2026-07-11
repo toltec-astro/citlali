@@ -21,7 +21,7 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest inspected point reduction: `redu26`, produced by `9ef7da8a`.
+- Latest inspected point reduction: `redu27`, produced by `0dc08555`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
@@ -57,8 +57,10 @@ effective, and realized runtime state are now separate in memory, and execution
 consumes the effective thread and runtime policy. Remaining direct mutable
 runtime reads are confined to config construction. The required, atomically
 published `runtime_provenance.yaml` sidecar uses the stable
-`citlali-runtime-provenance-v1` schema. A Unity reduction must verify its
-realized values and product integration before this domain is marked complete.
+`citlali-runtime-provenance-v1` schema. Unity `redu27` validates the sidecar,
+zero serious log issues, and exact pre-existing point products. The runtime
+domain is complete; the next operational domain is timestream output selection
+and chunking.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

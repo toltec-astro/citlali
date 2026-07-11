@@ -20,8 +20,8 @@
       "legacy_targets": [],
       "adapter_direction": "none",
       "migration_status": "typed-authoritative",
-      "provenance_status": "partial",
-      "exit_gate": "Persist requested, effective, and realized runtime policy with a stable schema, then validate the emitted thread and parallel policy values."
+      "provenance_status": "complete",
+      "exit_gate": "Complete: redu27 validates the versioned requested, effective, and realized runtime sidecar and exact pre-existing point products."
     },
     {
       "id": "timestream-core-output",

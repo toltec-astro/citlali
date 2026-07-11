@@ -64,9 +64,13 @@ requested runtime value, effective runtime values and thread plan, and realized
 OMP, Eigen, FFTW, parallel-policy, and reduction-type state. Publication is a
 required output: write failure propagates and removes the temporary artifact.
 
-The runtime domain remains `provenance_status: partial` only until a Unity
-reduction verifies the sidecar's realized values and expected product
-integration. That mode validation is the remaining runtime exit gate.
+Unity point reduction `redu27`, built from `0dc08555`, closes the runtime gate.
+It has zero serious log issues, exact pre-existing products relative to
+`redu26`, and the intended additional `runtime_provenance.yaml`. The requested
+and effective values match the unchanged merged YAML; realized state records
+six OMP threads, one Eigen thread, initialized FFTW with one plan thread,
+parallel policy `omp`, and reduction type `pointing`. Runtime provenance is now
+`complete`.
 
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
