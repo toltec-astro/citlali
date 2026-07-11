@@ -126,13 +126,15 @@ void add_phdu_extinction_apt_oof_section(
             1000. * 1e6);
 }
 
-template <class FitsEntry, class RawTimeChunkConfig, class RtcProc,
-          class PtcProc, class OuterContext, class Logger>
+template <class FitsEntry, class RawTimeChunkConfig,
+          class ProcessedTimeChunkConfig, class RtcProc,
+          class OuterContext, class Logger>
 void add_phdu_tod_runtime_config_section(
     FitsEntry &fits_entry, const std::string &array_name,
     const Logger &logger, bool verbose_mode, bool polarimetry_enabled,
-    const RawTimeChunkConfig &raw_config, const RtcProc &rtcproc,
-    const PtcProc &ptcproc,
+    const RawTimeChunkConfig &raw_config,
+    const ProcessedTimeChunkConfig &processed_config,
+    const RtcProc &rtcproc,
     OuterContext outer_context_samples) {
     logger->debug("adding config params");
     const bool run_any_tod_filter =
@@ -149,7 +151,8 @@ void add_phdu_tod_runtime_config_section(
     citlali::pipeline::add_phdu_tod_processing_config(
         fits_entry, raw_config);
     citlali::pipeline::add_phdu_weight_selection_config(
-        fits_entry, array_name, logger, ptcproc, rtcproc);
+        fits_entry, array_name, logger, raw_config.flagging,
+        processed_config);
     citlali::pipeline::add_phdu_rtc_event_mask_config(
         fits_entry, array_name, logger, raw_config.flagging);
 }

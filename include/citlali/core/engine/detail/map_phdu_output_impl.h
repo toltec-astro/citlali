@@ -76,7 +76,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         citlali::pipeline::verbose_runtime_enabled(*this),
         citlali::pipeline::polarimetry_config(*this).enabled,
         raw_timestream_settings,
-        rtcproc, ptcproc,
+        citlali::pipeline::processed_time_chunk_config(*this), rtcproc,
         telescope.outer_scans_chunk);
 
     citlali::engine_detail::add_phdu_ptc_learning_config_section(

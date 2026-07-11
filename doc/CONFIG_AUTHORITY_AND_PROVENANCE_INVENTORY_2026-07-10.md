@@ -178,6 +178,12 @@ cleaner mode, Marchenko-Pastur selection, adaptive selection, correlation
 penalties, busy-row suppression, and second-pass policy are typed. Per-array
 removed-eigenmode counts remain realized processor results by design.
 
+Weight-selection, cutoff, validation, and raw/processed inverse-variance
+metadata in TOD, PTC-diagnostic, and FITS products now uses typed policy. The
+PTC diagnostic sampling-window duration remains processor-owned because it is
+not yet represented in typed configuration; this exception is explicit at the
+serializer boundary rather than an implicit policy fallback.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

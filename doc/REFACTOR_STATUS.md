@@ -143,6 +143,11 @@ policy throughout. The only retained cleaner value at this output boundary is
 the per-array removed-eigenmode count, which is a realized result rather than
 configuration. The CLI build, all 235 tests, and full preflight pass.
 
+Weighting metadata now uses typed raw and processed policy for scheme,
+cutoffs, hybrid correction, and validation settings. The PTC diagnostic
+sampling-window duration remains an explicit realized processor input pending
+a typed representation. The CLI build, all 235 tests, and preflight pass.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.

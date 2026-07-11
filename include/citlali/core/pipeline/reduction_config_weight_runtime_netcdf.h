@@ -27,40 +27,46 @@ void add_weight_validation_config_vars(
                    weight_validation.upward_min_atmospheric_factor);
     add_netcdf_var<std::string>(
         fo, "CONFIG.WEIGHT.VALIDATION.ATM_GROUPING",
-        weight_validation.atmospheric_grouping);
+        std::string{citlali::config::to_string(
+            weight_validation.atmospheric_grouping)});
 }
 
-template <class PtcProc>
 void add_weight_selection_config_vars(netCDF::NcFile &fo,
-                                      const PtcProc &ptcproc) {
+                                      const citlali::config::ProcessedTimeChunkWeightingConfig
+                                          &weighting) {
     add_netcdf_var<std::string>(fo, "CONFIG.WEIGHT.TYPE",
-                                ptcproc.weighting_type);
+                                std::string{citlali::config::to_string(
+                                    weighting.type)});
     add_netcdf_var(fo, "CONFIG.WEIGHT.SOURCE_MASK_RADIUS_ARCSEC",
-                   ptcproc.source_mask_radius_arcsec);
+                   weighting.source_mask_radius_arcsec);
     add_netcdf_var(fo, "CONFIG.WEIGHT.HYBRID_MIN_FACTOR",
-                   ptcproc.hybrid_correction_min_factor);
+                   weighting.hybrid_correction_min_factor);
     add_netcdf_var(fo, "CONFIG.WEIGHT.HYBRID_MAX_FACTOR",
-                   ptcproc.hybrid_correction_max_factor);
-    add_weight_validation_config_vars(fo, ptcproc.weight_validation);
+                   weighting.hybrid_correction_max_factor);
+    add_weight_validation_config_vars(fo, weighting.validation);
 }
 
-template <class PtcProc>
+template <class RuntimeWindow>
 void add_ptc_weight_cutoff_config_vars(netCDF::NcFile &fo,
-                                       const PtcProc &ptcproc,
+                                       const citlali::config::ProcessedTimeChunkConfig
+                                           &config,
+                                       RuntimeWindow inv_var_window_sec,
                                        bool include_inv_var_window = false) {
+    const auto &flagging = config.flagging;
+    const auto &weighting = config.weighting;
     add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTLOW",
-                   ptcproc.lower_inv_var_factor);
+                   flagging.lower_tod_inv_var_factor);
     add_netcdf_var(fo, "CONFIG.INV_VAR.PTC.WTHIGH",
-                   ptcproc.upper_inv_var_factor);
+                   flagging.upper_tod_inv_var_factor);
     add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTLOW",
-                   ptcproc.lower_weight_factor);
+                   weighting.lower_map_weight_factor);
     add_netcdf_var(fo, "CONFIG.WEIGHT.PTC.WTHIGH",
-                   ptcproc.upper_weight_factor);
+                   weighting.upper_map_weight_factor);
     add_netcdf_var(fo, "CONFIG.WEIGHT.MEDWTFACTOR",
-                   ptcproc.med_weight_factor);
+                   weighting.median_map_weight_factor);
     if (include_inv_var_window) {
         add_netcdf_var(fo, "CONFIG.INV_VAR.WINDOW_SEC",
-                       ptcproc.remove_bad_dets_window_sec);
+                       inv_var_window_sec);
     }
 }
 

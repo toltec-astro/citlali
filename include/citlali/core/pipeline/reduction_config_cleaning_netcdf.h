@@ -200,7 +200,8 @@ void add_ptc_cleaning_header_config_vars(netCDF::NcFile &fo,
                                          ArrayNameMap &array_name_map) {
     const auto &clean = config.clean;
     const auto &weighting = config.weighting;
-    add_ptc_weight_cutoff_config_vars(fo, ptcproc);
+    add_ptc_weight_cutoff_config_vars(
+        fo, config, ptcproc.remove_bad_dets_window_sec);
     add_weight_corr_penalty_config_vars(fo, weighting.corr_penalty);
     add_busy_row_suppression_config_vars(
         fo, weighting.busy_row_suppression);

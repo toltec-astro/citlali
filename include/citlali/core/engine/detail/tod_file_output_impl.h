@@ -92,11 +92,17 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             citlali::pipeline::raw_tod_outer_context_samples(*this));
         citlali::pipeline::add_tod_processing_config_vars(
             fo, raw_timestream_settings);
-        citlali::pipeline::add_weight_selection_config_vars(fo, ptcproc);
+        citlali::pipeline::add_weight_selection_config_vars(
+            fo,
+            citlali::pipeline::processed_time_chunk_config(*this).weighting);
         citlali::pipeline::add_reduction_learning_config_vars(
             fo, learning);
-        add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTLOW", rtcproc.lower_inv_var_factor);
-        add_netcdf_var(fo, "CONFIG.INV_VAR.RTC.WTHIGH", rtcproc.upper_inv_var_factor);
+        add_netcdf_var(
+            fo, "CONFIG.INV_VAR.RTC.WTLOW",
+            raw_timestream_settings.flagging.lower_tod_inv_var_factor);
+        add_netcdf_var(
+            fo, "CONFIG.INV_VAR.RTC.WTHIGH",
+            raw_timestream_settings.flagging.upper_tod_inv_var_factor);
         citlali::pipeline::add_rtc_event_mask_config_vars(
             fo, raw_timestream_settings.flagging);
         citlali::pipeline::add_rtc_line_audit_config_vars_if_absent(

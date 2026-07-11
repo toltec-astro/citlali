@@ -10,9 +10,10 @@ void add_ptcdiag_file_config_vars(netCDF::NcFile &fo,
                                       &processed_config,
                                   const citlali::config::TimestreamFruitLoopsConfig
                                       &fruit_config) {
-    add_weight_selection_config_vars(fo, ptcproc);
+    add_weight_selection_config_vars(fo, processed_config.weighting);
     add_reduction_learning_config_vars(fo, learning);
-    add_ptc_weight_cutoff_config_vars(fo, ptcproc, true);
+    add_ptc_weight_cutoff_config_vars(
+        fo, processed_config, ptcproc.remove_bad_dets_window_sec, true);
     add_ptcdiag_compact_config_vars(
         fo, processed_config, fruit_config);
 }
