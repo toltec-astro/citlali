@@ -147,6 +147,9 @@ struct FakeEngine {
         config.noise.enabled = true;
         return config;
     }();
+    citlali::config::RuntimeConfigProvenance runtime_config_provenance =
+        citlali::config::make_runtime_config_provenance(typed_config.runtime,
+                                                        false);
     citlali::pipeline::TimestreamAlignmentState alignment = [] {
         citlali::pipeline::TimestreamAlignmentState state;
         state.start_indices = {7};
@@ -1807,16 +1810,31 @@ TEST(cli_runtime_setup, separates_requested_effective_and_realized_runtime) {
     EXPECT_EQ(provenance.requested.n_threads, 6);
 }
 
+TEST(cli_runtime_setup, uses_effective_thread_plan_as_runtime_authority) {
+    FakeEngine engine;
+    engine.runtime_config_provenance =
+        citlali::config::make_runtime_config_provenance(
+            engine.typed_config.runtime, false);
+    engine.runtime_config_provenance.requested.n_threads = 6;
+    engine.runtime_config_provenance.effective.threads =
+        citlali::config::make_runtime_thread_plan(3, false);
+
+    EXPECT_EQ(engine.runtime_config_provenance.requested.n_threads, 6);
+    EXPECT_EQ(citlali::pipeline::runtime_thread_count(engine), 3);
+}
+
 TEST(cli_runtime_setup, configures_runtime_threads) {
     FakeEngine engine;
     engine.typed_config.runtime.n_threads = 6;
+    const auto plan =
+        citlali::config::make_runtime_thread_plan(6, false);
     auto logger = std::make_shared<FakeLogger>();
     int omp_threads = 0;
     int eigen_threads = 0;
     int fftw_threads = 0;
 
     const auto realized = citlali::cli::configure_runtime_threads(
-        engine, logger, false,
+        plan, logger,
         [&](int n_threads) { omp_threads = n_threads; },
         [&](int n_threads) { eigen_threads = n_threads; },
         []() { return 1; },
@@ -1836,11 +1854,13 @@ TEST(cli_runtime_setup, configures_runtime_threads) {
 TEST(cli_runtime_setup, configures_single_fftw_thread_for_wiener_omp) {
     FakeEngine engine;
     engine.typed_config.runtime.n_threads = 6;
+    const auto plan =
+        citlali::config::make_runtime_thread_plan(6, true);
     auto logger = std::make_shared<FakeLogger>();
     int fftw_threads = 0;
 
     const auto realized = citlali::cli::configure_runtime_threads(
-        engine, logger, true,
+        plan, logger,
         [](int) {},
         [](int) {},
         []() { return 1; },
@@ -1853,11 +1873,13 @@ TEST(cli_runtime_setup, configures_single_fftw_thread_for_wiener_omp) {
 TEST(cli_runtime_setup, warns_when_fftw_thread_init_fails) {
     FakeEngine engine;
     engine.typed_config.runtime.n_threads = 6;
+    const auto plan =
+        citlali::config::make_runtime_thread_plan(6, false);
     auto logger = std::make_shared<FakeLogger>();
     int fftw_threads = 0;
 
     const auto realized = citlali::cli::configure_runtime_threads(
-        engine, logger, false,
+        plan, logger,
         [](int) {},
         [](int) {},
         []() { return 0; },

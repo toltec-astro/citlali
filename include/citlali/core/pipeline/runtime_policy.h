@@ -14,7 +14,7 @@ bool verbose_runtime_enabled(const Engine &engine) {
 
 template <class Engine>
 int runtime_thread_count(const Engine &engine) {
-    return runtime_config(engine).n_threads;
+    return effective_runtime_config(engine).threads.omp_threads;
 }
 
 template <class Engine>
