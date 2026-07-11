@@ -268,4 +268,38 @@ void apply_processed_weighting_config_to_processor(
     ptcproc.busy_row_suppression.factor = busy_row.factor;
 }
 
+template <class PtcProc>
+void apply_second_pass_local_config_to_processor(
+    const citlali::config::ProcessedTimeChunkSecondPassLocalConfig &config,
+    PtcProc &ptcproc) {
+    auto &target = ptcproc.second_pass_local;
+    target.enabled = config.enabled;
+    target.min_spike_sigma = config.min_spike_sigma;
+    target.min_good_frac = config.min_good_frac;
+    target.baseline_window_sec = config.baseline_window_sec;
+    target.sigma_scale = config.sigma_scale;
+    target.delta_sigma_scale = config.delta_sigma_scale;
+    target.raw_candidate_rel_sigma_scale =
+        config.raw_candidate_rel_sigma_scale;
+    target.raw_window_sec = config.raw_window_sec;
+    target.raw_half_peak_frac = config.raw_half_peak_frac;
+    target.raw_max_width_sec = config.raw_max_width_sec;
+    target.delta_window_sec = config.delta_window_sec;
+    target.delta_half_peak_frac = config.delta_half_peak_frac;
+    target.delta_max_width_sec = config.delta_max_width_sec;
+    target.max_step_shift_z = config.max_step_shift_z;
+    target.high_score_event_override = config.high_score_event_override;
+    target.merge_within_detector_sec = config.merge_within_detector_sec;
+    target.cluster_events_sec = config.cluster_events_sec;
+    target.min_cluster_detectors = config.min_cluster_detectors;
+    target.high_score_cluster_override = config.high_score_cluster_override;
+    target.max_auto_flag_clusters_per_network =
+        config.max_auto_flag_clusters_per_network;
+    target.selective_busy_network_acceptance_enabled =
+        config.selective_busy_network_acceptance_enabled;
+    target.source_protection_config_enabled = config.source_protection.enabled;
+    target.source_protection_radius_arcsec =
+        config.source_protection.radius_arcsec;
+}
+
 }  // namespace citlali::pipeline

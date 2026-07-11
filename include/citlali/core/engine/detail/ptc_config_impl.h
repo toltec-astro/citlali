@@ -9,6 +9,7 @@
 #include <citlali/core/pipeline/processed_clean_config_read.h>
 #include <citlali/core/pipeline/processed_weighting_config_read.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
+#include <citlali/core/pipeline/second_pass_local_config_read.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
 #include <citlali/core/pipeline/timestream_config_adapter_processed.h>
 
@@ -59,6 +60,10 @@ void Engine::get_ptc_config(CT &config) {
     auto &typed_second_pass = processed_config.flagging.second_pass_local;
     citlali::pipeline::mirror_second_pass_local_config(
         typed_second_pass, ptcproc.second_pass_local);
+    citlali::pipeline::read_second_pass_local_config(
+        config, typed_second_pass, config_diag);
+    citlali::pipeline::apply_second_pass_local_config_to_processor(
+        typed_second_pass, ptcproc);
 
     // copy tod output bool for eigenvalues
     ptcproc.run_tod_output =
