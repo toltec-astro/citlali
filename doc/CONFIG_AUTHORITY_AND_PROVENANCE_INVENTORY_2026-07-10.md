@@ -101,6 +101,13 @@ and registered TOD files. Per-observation placement preserves correct state for
 multi-observation science reductions. Unity point validation is the remaining
 provenance gate.
 
+Unity point reduction `redu28`, built from `5411a82e`, validates this schema.
+The unchanged merged config produces 12 effective RTC and PTC chunks, realized
+as contiguous output rows `0..11` with both registered TOD files present. The
+run has zero serious log issues and exact pre-existing products relative to
+`redu27`. Output provenance is complete; removal of the validated write-only
+adapters is the remaining domain task.
+
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
 

@@ -32,8 +32,8 @@
       "legacy_targets": ["Engine::rtcproc", "Engine::ptcproc"],
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
-      "provenance_status": "partial",
-      "exit_gate": "Validate the versioned per-observation requested/effective/realized output sidecar and exact existing products before removing write-only adapters."
+      "provenance_status": "complete",
+      "exit_gate": "Remove the validated write-only processor and telescope output/chunking adapters, then confirm local build and focused tests."
     },
     {
       "id": "raw-timestream",
