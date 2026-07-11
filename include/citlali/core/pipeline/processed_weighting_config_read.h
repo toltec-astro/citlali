@@ -12,6 +12,7 @@ void read_processed_weighting_core_config(
     Config &config,
     citlali::config::ProcessedTimeChunkWeightingConfig &weighting,
     citlali::config::ProcessedTimeChunkFlaggingConfig &flagging,
+    const citlali::config::ProcessedTimeChunkCleanConfig &clean,
     Diagnostics &diagnostics) {
     std::string weighting_type{
         citlali::config::to_string(weighting.type)};
@@ -60,8 +61,17 @@ void read_processed_weighting_core_config(
                        name},
             value, target, diagnostics);
     };
-    read_optional_weighting_double(
-        "source_mask_radius_arcsec", weighting.source_mask_radius_arcsec);
+    const auto source_mask_key = std::tuple{
+        "timestream", "processed_time_chunk", "weighting",
+        "source_mask_radius_arcsec"};
+    if (config.template has_typed<double>(source_mask_key)) {
+        double source_mask = weighting.source_mask_radius_arcsec;
+        read_mirrored_config_value(
+            config, source_mask_key, source_mask,
+            weighting.source_mask_radius_arcsec, diagnostics, {}, {0.0});
+    } else {
+        weighting.source_mask_radius_arcsec = clean.mask_radius_arcsec;
+    }
     read_optional_weighting_double(
         "hybrid_correction_min_factor",
         weighting.hybrid_correction_min_factor);

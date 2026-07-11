@@ -48,7 +48,8 @@ void Engine::get_ptc_config(CT &config) {
     citlali::pipeline::mirror_processed_weight_corr_penalty_config(
         typed_weighting.corr_penalty, weight_corr_penalty);
     citlali::pipeline::read_processed_weighting_core_config(
-        config, typed_weighting, typed_flagging, config_diag);
+        config, typed_weighting, typed_flagging, processed_config.clean,
+        config_diag);
     citlali::pipeline::read_processed_weight_validation_config(
         config, typed_weighting.validation, config_diag);
     citlali::pipeline::read_processed_weighting_expert_config(

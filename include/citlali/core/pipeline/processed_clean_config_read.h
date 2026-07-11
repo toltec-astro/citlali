@@ -103,10 +103,10 @@ void read_processed_clean_core_config(
         const auto key = std::tuple{
             "timestream", "processed_time_chunk", "clean", mode,
             "grouping"};
+        target.clear();
         if (!config.template has_typed<std::vector<std::string>>(key)) {
             return;
         }
-        target.clear();
         std::unordered_set<std::string> seen;
         for (const auto &raw_group :
              config.template get_typed<std::vector<std::string>>(key)) {
