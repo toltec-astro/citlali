@@ -33,7 +33,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "mixed-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Complete typed chunk selection and cardinality authority, add stable requested/effective/realized output provenance, and validate while retaining processor fields only as write-only adapters."
+      "exit_gate": "Move the early telescope chunk-validity check to typed config, add stable requested/effective/realized output provenance, and validate while retaining legacy fields only as write-only adapters."
     },
     {
       "id": "raw-timestream",

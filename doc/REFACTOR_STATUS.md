@@ -65,8 +65,10 @@ and chunking.
 The first timestream-output slice now routes RTC/PTC output shape, outer-buffer
 allocation, and associated metadata through typed output configuration. Legacy
 processor mode/context fields remain loader-only compatibility targets. Chunk
-selection/cardinality authority and output provenance are the next steps; this
-domain is not yet complete.
+selection already realizes typed policy into scan-to-output mappings and
+cardinalities, and scan-index construction now consumes typed chunking policy.
+The early telescope-file chunk-validity check and output provenance remain;
+this domain is not yet complete.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

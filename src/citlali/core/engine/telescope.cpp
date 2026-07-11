@@ -279,7 +279,8 @@ void Telescope::calc_tan_galactic() {
     engine_utils::gnomonic_projection(l, b, l0, b0, tel_data["l_phys"], tel_data["b_phys"]);
 }
 
-void Telescope::calc_scan_indices() {
+void Telescope::calc_scan_indices(
+    const citlali::config::TimestreamChunkingConfig &chunking) {
     // number of scans
     Eigen::Index n_scans = 0;
 
@@ -302,7 +303,7 @@ void Telescope::calc_scan_indices() {
     };
 
     // get scans for raster pattern
-    if ((obs_pgm=="Map" && exec_mode==0) && !force_chunk) {
+    if ((obs_pgm=="Map" && exec_mode==0) && !chunking.force) {
         logger->info("calculating scans for raster mode");
 
         // convert the hold signal to a bool
@@ -410,7 +411,8 @@ void Telescope::calc_scan_indices() {
     }
 
     // get scan indices for Lissajous/Rastajous pattern
-    else if (obs_pgm=="Lissajous" || (obs_pgm=="Map" && exec_mode==1) || force_chunk) {
+    else if (obs_pgm=="Lissajous" || (obs_pgm=="Map" && exec_mode==1) ||
+             chunking.force) {
         logger->info("calculating scans for lissajous/rastajous mode");
 
         // index of first scan
@@ -421,12 +423,12 @@ void Telescope::calc_scan_indices() {
         double period;
         Eigen::Index period_i;
 
-        if (chunk_mode == "duration") {
+        if (chunking.mode == "duration") {
 
             // period (time_chunk x fsmp in seconds x Hz)
-            period_i = std::floor(chunking_value*fsmp);
+            period_i = std::floor(chunking.value*fsmp);
 
-            period = std::floor(chunking_value*fsmp);
+            period = std::floor(chunking.value*fsmp);
 
             if (period > (last_scan_i - first_scan_i + 1)) {
                 period = last_scan_i - first_scan_i + 1;
@@ -436,19 +438,19 @@ void Telescope::calc_scan_indices() {
             if (period_i <= 0) {
                 throw std::runtime_error(fmt::format(
                     "cannot calculate scans for lissajous/rastajous mode: invalid chunk duration "
-                    "(chunking_value={}, fsmp={})", chunking_value, fsmp));
+                    "(chunking_value={}, fsmp={})", chunking.value, fsmp));
             }
 
             // calculate number of scans
             n_scans = std::floor((last_scan_i - first_scan_i + 1)*1./period);
         }
-        else if (chunk_mode == "number") {
-            n_scans = chunking_value;
+        else if (chunking.mode == "number") {
+            n_scans = chunking.value;
 
             if (n_scans <= 0) {
                 throw std::runtime_error(fmt::format(
                     "cannot calculate scans for lissajous/rastajous mode: invalid chunk count {}",
-                    chunking_value));
+                    chunking.value));
             }
 
             period = (last_scan_i - first_scan_i + 1) / n_scans;
@@ -457,7 +459,7 @@ void Telescope::calc_scan_indices() {
         else {
             throw std::runtime_error(fmt::format(
                 "cannot calculate scans for lissajous/rastajous mode: unsupported chunk_mode='{}'",
-                chunk_mode));
+                chunking.mode));
         }
 
         if (period_i <= 0 || n_scans <= 0) {

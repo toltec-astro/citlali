@@ -274,6 +274,9 @@ struct FakeEngine {
         int get_tel_data_calls = 0;
         int calc_tan_pointing_calls = 0;
         int calc_scan_indices_calls = 0;
+        std::string scan_chunk_mode;
+        double scan_chunk_value = 0.0;
+        bool scan_force_chunk = false;
         std::string loaded_tel_path;
         std::map<std::string, FakeTelHeaderValue> tel_header;
         std::map<std::string, FakeTelTime> tel_data;
@@ -284,7 +287,13 @@ struct FakeEngine {
         }
 
         void calc_tan_pointing() { ++calc_tan_pointing_calls; }
-        void calc_scan_indices() { ++calc_scan_indices_calls; }
+        template <class ChunkingConfig>
+        void calc_scan_indices(const ChunkingConfig &chunking) {
+            ++calc_scan_indices_calls;
+            scan_chunk_mode = chunking.mode;
+            scan_chunk_value = chunking.value;
+            scan_force_chunk = chunking.force;
+        }
     } telescope;
 
     struct {
@@ -2465,11 +2474,17 @@ TEST(pipeline_preflight, reloads_and_points_telescope_when_needed) {
 
 TEST(pipeline_preflight, calculates_scan_indices) {
     FakeEngine engine;
+    engine.typed_config.timestream.chunking.mode = "number";
+    engine.typed_config.timestream.chunking.value = 7.0;
+    engine.typed_config.timestream.chunking.force = true;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::calculate_scan_indices(engine, logger);
 
     EXPECT_EQ(engine.telescope.calc_scan_indices_calls, 1);
+    EXPECT_EQ(engine.telescope.scan_chunk_mode, "number");
+    EXPECT_DOUBLE_EQ(engine.telescope.scan_chunk_value, 7.0);
+    EXPECT_TRUE(engine.telescope.scan_force_chunk);
     EXPECT_EQ(logger->info_calls, 1);
 }
 

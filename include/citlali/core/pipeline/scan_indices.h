@@ -9,7 +9,7 @@ void log_scan_index_calculation(const Logger &logger) {
 
 template <class Engine>
 void calculate_telescope_scan_indices(Engine &engine) {
-    engine.telescope.calc_scan_indices();
+    engine.telescope.calc_scan_indices(timestream_config(engine).chunking);
 }
 
 template <class Engine, class Logger>

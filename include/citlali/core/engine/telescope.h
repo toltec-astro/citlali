@@ -6,6 +6,7 @@
 
 #include <citlali/core/utils/netcdf_io.h>
 #include <citlali/core/utils/constants.h>
+#include <citlali/core/config/timestream_config.h>
 
 namespace engine {
 
@@ -281,7 +282,8 @@ public:
     void calc_tan_radec();
     void calc_tan_altaz();
     void calc_tan_galactic();
-    void calc_scan_indices();
+    void calc_scan_indices(
+        const citlali::config::TimestreamChunkingConfig &chunking);
 };
 
 } // namespace engine

@@ -81,10 +81,15 @@ padding, summaries, and NetCDF metadata now derive from
 written only while loading and no longer control execution. Divergence tests
 prove typed modes win when those mirrors disagree.
 
-The domain remains `mixed-adapter` with partial provenance. Remaining work is
-typed chunk selection and cardinality authority, stable
-requested/effective/realized output provenance, and mode validation before
-legacy fields can be removed.
+Typed selection already produces realized scan-to-row mappings and output
+cardinalities in `TodOutputState`. Scan-index construction now also receives
+typed chunk mode, value, and force policy directly instead of reading the
+telescope mirror.
+
+The domain remains `mixed-adapter` with partial provenance. The remaining
+authority leak is the early telescope-file chunk-validity check. Stable
+requested/effective/realized output provenance and mode validation are still
+required before legacy fields can be removed.
 
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:
