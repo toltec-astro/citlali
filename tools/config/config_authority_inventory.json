@@ -57,7 +57,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "mixed-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Inventory every ptcproc execution read and replace cleaner, weighting, flagging, and iteration policy reads with typed accessors."
+      "exit_gate": "Transitional typed-to-legacy adapters now cover fruit loops, cleaning, weighting, validation, correlation penalties, busy-row suppression, and second-pass flagging; redu32 validates exact complete-TOD point products. Remaining: classify requested/effective/realized state, inventory residual ptcproc execution reads, and remove processor-owned YAML parsing only after mode-appropriate parity gates."
     },
     {
       "id": "polarimetry",
