@@ -42,6 +42,8 @@ void Engine::get_ptc_config(CT &config) {
         typed_weighting, typed_flagging, ptcproc);
     citlali::pipeline::read_processed_weighting_core_config(
         config, typed_weighting, typed_flagging, config_diag);
+    citlali::pipeline::read_processed_weight_validation_config(
+        config, typed_weighting.validation, config_diag);
     const auto &weight_validation = ptcproc.weight_validation;
     citlali::pipeline::mirror_processed_weight_validation_config(
         typed_weighting.validation, weight_validation);
