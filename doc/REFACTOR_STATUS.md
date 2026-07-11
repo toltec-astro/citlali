@@ -153,6 +153,29 @@ Immediate work order:
   an explicit external boundary. This checkpoint changes no runtime behavior;
   operational authority migration remains gated on the active Beammap and
   science validations.
+- Phase 1 science validation at refactor `redu12` (`59c35e60`) completed both
+  observations with 248 PTC chunks, zero logged issues, and the expected 25
+  stable products. Against same-config refactor `redu10` (`9ef7da8a`), all 24
+  compared FITS/NetCDF products have zero changed or skipped records. Against
+  deterministic OG science `redu15`, all nine FITS products remain within the
+  current tolerance, while 30 RTC/PTC diagnostic records differ. Those
+  diagnostic differences are characterized but not yet accepted as full
+  equivalence.
+- The intervening science `redu11` failed after observation 0 when observation
+  1 metadata loading raised an unqualified NetCDF `No such file or directory`.
+  Its merged config was identical to the successful runs. Metadata-load
+  failures now report observation index, name, and telescope filepath; all 220
+  local tests pass. The successful `redu12` shows this was not a persistent
+  numerical or lifecycle failure.
+- Beammap refactor `redu10` (`f278bd32`) and `redu11` (`9ef7da8a`) use identical
+  merged configs and are numerically repeatable: all six large split FITS
+  products, both APT tables, RTC/PTC diagnostics, and the complete detector-TOD
+  `signal`/`flags` arrays have zero changed records. However, the matched OG
+  Beammap pair is also deterministic and OG `redu01` versus refactor `redu10`
+  has 4,196 detector-map records outside the current tight tolerance, including
+  percent-scale differences in some weight maps. This is an unresolved Phase 1
+  validation blocker; do not attribute it to parallel run variation or to
+  enabling detector-TOD output.
 
 ## Five-Phase Roadmap
 
