@@ -48,10 +48,11 @@ void add_zero_mean_tau_vars(netCDF::NcFile &fo, const Calib &calib,
 }
 
 template <class Rtcproc, class TelescopeData, class Calib, class ArrayNameMap>
-void add_tod_mean_tau_vars(netCDF::NcFile &fo, Rtcproc &rtcproc,
+void add_tod_mean_tau_vars(netCDF::NcFile &fo, bool extinction_enabled,
+                           Rtcproc &rtcproc,
                            TelescopeData &tel_data, double tau_225_ghz,
                            const Calib &calib, ArrayNameMap &array_name_map) {
-    if (rtcproc.run_extinction) {
+    if (extinction_enabled) {
         Eigen::VectorXd tau_el(1);
         tau_el << tel_data["TelElAct"].mean();
         auto tau_freq = rtcproc.calibration.calc_tau(tau_el, tau_225_ghz);

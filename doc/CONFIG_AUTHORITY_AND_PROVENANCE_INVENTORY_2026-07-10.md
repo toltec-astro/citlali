@@ -130,6 +130,10 @@ processor options type, which remains a numerical adapter. RTC diagnostic, TOD,
 and summary provenance serialize typed despike, event-mask, filter, and
 line-audit settings; processor edge-context values are retained only where they
 represent realized sample counts.
+Duplicate-tone rejection now reads the typed minimum frequency separation, and
+RTC diagnostic source-bandwidth ratios read typed FIR enablement and cutoff.
+FITS and TOD tau metadata use typed extinction enablement while retaining the
+processor calibration object for the numerical atmospheric calculation.
 
 The companion lexical census currently finds 611 direct config-access
 expressions across 30 files:

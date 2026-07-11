@@ -7,11 +7,12 @@
 namespace citlali::pipeline {
 
 template <class RTCProc, class Telescope, class Calib, class Logger>
-double phdu_mean_tau(RTCProc &rtcproc, const Telescope &telescope,
+double phdu_mean_tau(bool extinction_enabled, RTCProc &rtcproc,
+                     const Telescope &telescope,
                      const Calib &calib, Eigen::Index array_slot,
                      const Logger &logger) {
     double mean_tau = 0.0;
-    if (!rtcproc.run_extinction) {
+    if (!extinction_enabled) {
         return mean_tau;
     }
 

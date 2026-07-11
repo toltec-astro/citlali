@@ -65,7 +65,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             toltec_io.array_name_map, jinc_mm.r_max);
 
         citlali::pipeline::add_tod_mean_tau_vars(
-            fo, rtcproc, telescope.tel_data, telescope.tau_225_GHz,
+            fo, raw_timestream_settings.extinction_correction_enabled,
+            rtcproc, telescope.tel_data, telescope.tau_225_GHz,
             calib, toltec_io.array_name_map);
 
         citlali::pipeline::add_tod_auxiliary_metadata_vars(

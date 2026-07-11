@@ -68,7 +68,8 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
 
     citlali::engine_detail::add_phdu_extinction_apt_oof_section(
         fits_entry, mb, rtcproc, telescope, calib, toltec_io, i, array_id,
-        name, reduction_type, logger);
+        name, reduction_type,
+        raw_timestream_settings.extinction_correction_enabled, logger);
 
     citlali::engine_detail::add_phdu_tod_runtime_config_section(
         fits_entry, name, logger,

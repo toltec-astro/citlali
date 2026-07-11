@@ -194,9 +194,9 @@ struct RtcDiagScanArraySummaryData {
     std::vector<double> tod_lowpass_to_source_power_half_ratio;
 };
 
-template <class Calib, class RtcProc>
+template <class Calib, class RawTimeChunkConfig>
 RtcDiagScanArraySummaryData calculate_rtcdiag_scan_array_summary(
-    const Calib &calib, const RtcProc &rtcproc,
+    const Calib &calib, const RawTimeChunkConfig &raw_config,
     const std::vector<double> &scan_speed_p995_arcsec_s,
     Eigen::Index n_scans, std::size_t n_array_values,
     std::size_t n_scan_array_values, double pi_value, double fwhm_to_std,
@@ -231,11 +231,11 @@ RtcDiagScanArraySummaryData calculate_rtcdiag_scan_array_summary(
                                 static_cast<std::size_t>(arr_i);
             values.source_power_half_bandwidth_hz[flat_i] = f_half_hz;
             const bool has_lowpass_ratio =
-                rtcproc.run_tod_filter &&
-                rtcproc.filter.freq_high_Hz > 0.0 && f_half_hz > 0.0;
+                raw_config.filter.enabled &&
+                raw_config.filter.freq_high_Hz > 0.0 && f_half_hz > 0.0;
             if (has_lowpass_ratio) {
                 values.tod_lowpass_to_source_power_half_ratio[flat_i] =
-                    rtcproc.filter.freq_high_Hz / f_half_hz;
+                    raw_config.filter.freq_high_Hz / f_half_hz;
             }
         }
     }
@@ -259,4 +259,3 @@ inline void add_rtcdiag_scan_array_summary_outputs(
         {values.source_power_half_bandwidth_hz,
          values.tod_lowpass_to_source_power_half_ratio});
 }
-

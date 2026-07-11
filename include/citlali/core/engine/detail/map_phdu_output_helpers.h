@@ -96,10 +96,10 @@ void add_phdu_extinction_apt_oof_section(
     const Telescope &telescope, const Calib &calib, ToltecIo &toltec_io,
     Eigen::Index map_index, const ArrayId &array_id,
     const std::string &array_name, citlali::config::ReductionType reduction_type,
-    const Logger &logger) {
+    bool extinction_enabled, const Logger &logger) {
     logger->debug("adding extinction");
     const double mean_tau = citlali::pipeline::phdu_mean_tau(
-        rtcproc, telescope, calib, map_index, logger);
+        extinction_enabled, rtcproc, telescope, calib, map_index, logger);
     citlali::pipeline::add_phdu_double_key(
         fits_entry, array_name, logger, "MEAN_TAU", mean_tau,
         "mean tau (" + array_name + ")");

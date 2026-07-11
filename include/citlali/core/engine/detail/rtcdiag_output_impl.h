@@ -49,7 +49,8 @@ void Engine::create_rtcdiag_file() {
 
     const auto scan_array_summary =
         citlali::pipeline::calculate_rtcdiag_scan_array_summary(
-            calib, rtcproc, scan_summary.scan_speed_p995_arcsec_s,
+            calib, citlali::pipeline::raw_time_chunk_config(*this),
+            scan_summary.scan_speed_p995_arcsec_s,
             n_scans, rtcdiag_dims.n_array_values,
             rtcdiag_dims.n_scan_array_values, pi, FWHM_TO_STD,
             fill_double);

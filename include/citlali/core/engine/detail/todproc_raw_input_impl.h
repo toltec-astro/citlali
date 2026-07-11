@@ -28,7 +28,10 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
 
     if (!engine().telescope.sim_obs) {
         citlali::pipeline::flag_duplicate_tones(
-            engine().calib, engine().rtcproc.delta_f_min_Hz, logger);
+            engine().calib,
+            citlali::pipeline::raw_time_chunk_config(engine())
+                .flagging.delta_f_min_Hz,
+            logger);
     }
 }
 

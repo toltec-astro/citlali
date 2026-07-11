@@ -100,6 +100,12 @@ object as a numerical adapter, and realized edge-context/guard sample counts
 remain processor state. The CLI build, all 232 tests, and full config preflight
 pass.
 
+Raw input and metadata boundaries now use typed policy for duplicate-tone
+frequency separation, RTC diagnostic FIR/source-bandwidth ratios, and whether
+FITS/TOD tau metadata is calculated. The atmospheric calibration object remains
+processor-owned numerical state. The CLI build, all 232 tests, and full config
+preflight pass.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.
