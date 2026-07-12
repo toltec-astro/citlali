@@ -57,7 +57,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "mixed-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Transitional typed-to-legacy adapters now cover fruit loops, cleaning, weighting, validation, correlation penalties, busy-row suppression, and second-pass flagging; redu32 validates exact complete-TOD point products. The requested/effective/realized classification and parser-removal gate are defined in doc/processed_timestream_config_transition.md. Remove processor-owned YAML parsing only after its focused tests, provenance, and mode-appropriate reduction gates pass."
+      "exit_gate": "All 171 frozen legacy PTC paths are mechanically assigned to direct typed readers, with explicit alias support and preflight failure on coverage drift. Transitional typed-to-legacy adapters cover fruit loops, cleaning, weighting, validation, correlation penalties, busy-row suppression, and second-pass flagging; redu32 validates exact complete-TOD point products. The requested/effective/realized classification and parser-removal gate are defined in doc/processed_timestream_config_transition.md. Remove processor-owned YAML parsing only after the remaining focused tests, provenance, and mode-appropriate reduction gates pass."
     },
     {
       "id": "polarimetry",

@@ -67,7 +67,8 @@ after all of the following are true:
 
 - every one of the 171 unique YAML paths currently read by
   `PTCProc::get_config` has a direct typed reader or an explicitly documented
-  compatibility alias;
+  compatibility alias (currently enforced at 171/171 by
+  `audit_processed_timestream_boundary.py`);
 - focused tests cover typed-to-processor parity for fruit loops, cleaning,
   weighting, validation, correlation penalties, busy-row suppression, and
   second-pass flagging;

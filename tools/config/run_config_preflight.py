@@ -53,12 +53,19 @@ def main(argv: list[str]) -> int:
         "tools/config/audit_compact_surface_coverage.py",
         "tools/config/audit_config_authority_reads.py",
         "tools/config/audit_processed_timestream_boundary.py",
+        "tools/config/test_audit_processed_timestream_boundary.py",
         "tools/config/classify_lowlevel_config.py",
         "tools/config/compare_lowlevel_yaml.py",
         "tools/config/validate_config_authority_inventory.py",
     ]
     commands: list[list[str]] = [
         [sys.executable, "-m", "py_compile", *scripts],
+        [
+            sys.executable,
+            "-m",
+            "unittest",
+            "tools.config.test_audit_processed_timestream_boundary",
+        ],
         [
             sys.executable,
             "tools/config/run_compact_compatibility.py",
@@ -101,13 +108,14 @@ def main(argv: list[str]) -> int:
             "--markdown-out",
             str(work_dir / "processed_timestream_boundary.md"),
             "--fail-on-drift",
+            "--fail-on-uncovered",
         ],
     ]
     if args.require_all:
-        commands[1].append("--require-all")
         commands[2].append("--require-all")
+        commands[3].append("--require-all")
     if not args.allow_gaps:
-        commands[2].append("--fail-on-gaps")
+        commands[3].append("--fail-on-gaps")
 
     for command in commands:
         rc = run(command, cwd=repo_root)

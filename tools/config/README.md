@@ -317,6 +317,18 @@ The preflight fails if a direct access appears outside a recognized boundary.
 Classification is architectural bookkeeping, not permission to add raw YAML
 reads: new sites still require an explicit ownership decision.
 
+`audit_processed_timestream_boundary.py` freezes the legacy `PTCProc` path
+set and also routes every path to its direct typed reader. Coverage requires
+the leaf key to occur in the declared reader source; intentional spelling
+differences must be listed as explicit compatibility aliases in the audit.
+The standard preflight fails on path drift, direct process exits, uncovered
+paths, or stale aliases.
+
+```bash
+$HOME/tolteca/bin/python tools/config/audit_processed_timestream_boundary.py \
+  --fail-on-drift --fail-on-uncovered
+```
+
 ## Compact Compatibility Suite
 
 `run_compact_compatibility.py` runs a manifest of compact examples against

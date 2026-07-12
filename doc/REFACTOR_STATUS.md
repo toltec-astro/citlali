@@ -214,6 +214,11 @@ values. A non-wired `ProcessedTimestreamExecutionPlan` now provides separate
 requested, effective, effective-resolution, and realized storage without
 claiming complete output provenance. The CLI and test builds, all 243 tests,
 all eight config profiles, and the frozen 171-path PTC boundary audit pass.
+The boundary audit now also routes all 171 paths to their declared typed
+reader, requires each leaf key in that source, and fails preflight on uncovered
+paths or stale compatibility aliases. This mechanically satisfies the path-
+coverage prerequisite for removing the legacy parser; the provenance and
+cross-mode validation prerequisites remain open.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
