@@ -21,6 +21,7 @@
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/processed_clean_config_read.h>
 #include <citlali/core/pipeline/processed_weighting_config_read.h>
+#include <citlali/core/pipeline/processed_weighting_resolution.h>
 #include <citlali/core/pipeline/runtime_provenance_output.h>
 #include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/timestream_output_provenance.h>
@@ -4580,6 +4581,16 @@ TEST(config_scaffold, resolves_processed_weighting_dependencies) {
     weighting.busy_row_suppression.enabled = true;
     flagging.second_pass_local.enabled = false;
     auto logger = std::make_shared<FakeLogger>();
+
+    const auto resolution = citlali::pipeline::resolve_processed_weighting(
+        weighting, flagging);
+
+    EXPECT_FALSE(weighting.validation.enabled);
+    EXPECT_TRUE(weighting.busy_row_suppression.enabled);
+    EXPECT_TRUE(resolution.effective.validation.enabled);
+    EXPECT_FALSE(resolution.effective.busy_row_suppression.enabled);
+    EXPECT_TRUE(resolution.validation_forced_by_weighting_type);
+    EXPECT_TRUE(resolution.busy_row_disabled_without_second_pass);
 
     citlali::pipeline::resolve_processed_weighting_dependencies(
         weighting, flagging, logger);

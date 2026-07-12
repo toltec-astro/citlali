@@ -8,6 +8,7 @@
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/processed_clean_config_read.h>
 #include <citlali/core/pipeline/processed_weighting_config_read.h>
+#include <citlali/core/pipeline/processed_weighting_resolution.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/second_pass_local_config_read.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>

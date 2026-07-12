@@ -282,24 +282,4 @@ void read_processed_weighting_expert_config(
     }
 }
 
-template <class Logger>
-void resolve_processed_weighting_dependencies(
-    citlali::config::ProcessedTimeChunkWeightingConfig &weighting,
-    const citlali::config::ProcessedTimeChunkFlaggingConfig &flagging,
-    const Logger &logger) {
-    if (citlali::config::is_validated_processed_weighting_type(
-            weighting.type) &&
-        !weighting.validation.enabled) {
-        logger->warn(
-            "weighting.type='validated' forces weighting.validation.enabled=true");
-        weighting.validation.enabled = true;
-    }
-    if (weighting.busy_row_suppression.enabled &&
-        !flagging.second_pass_local.enabled) {
-        logger->warn(
-            "weighting.busy_row_suppression requires flagging.second_pass_local.enabled; disabling busy-row suppression");
-        weighting.busy_row_suppression.enabled = false;
-    }
-}
-
 }  // namespace citlali::pipeline
