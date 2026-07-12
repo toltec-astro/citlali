@@ -77,8 +77,18 @@ reduction; no partial provenance document is accepted.
 Point provenance was accepted on 2026-07-12. `81020d46` `redu35` contains all
 required v1 sections and availability records, and remains scientifically exact
 against accepted `redu34`, including every RTC/PTC timestream array. Beammap and
-science must still exercise and validate their mode-specific effective and
+science must also exercise and validate their mode-specific effective and
 realized records before legacy parser removal.
+
+Beammap provenance was accepted on 2026-07-12. `50235fd6` `redu15` is exact
+against accepted `redu14` across all comparable scientific products and records
+the expected forced single fruit-loop iteration, inherited 15-arcsec source
+mask, JINC interpolation, and one completed iteration. Science `redu20` from
+the same revision is provenance-valid and complete, but remains pending because
+its six localized coadded noise-normalization differences exceed the currently
+adopted science-equivalence profile. Do not remove the parser until that result
+is either accepted by the scientific owner under an explicit bounded policy or
+replaced by a passing matched run.
 
 ## State classification
 

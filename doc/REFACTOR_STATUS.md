@@ -260,7 +260,7 @@ contains all five effective-resolution and all three realized-state records;
 its schema and hash are recorded in the validation ledger. Against accepted
 `redu34`, the merged 489-leaf config and all 13 scientific product families,
 including complete RTC/PTC timestreams, are exact with zero skipped records.
-Point provenance is accepted; matched beammap and science provenance remain
+Point and beammap provenance are accepted; matched science provenance remains
 before compatibility-parser removal.
 Parser-removal preparation now includes a complete default-snapshot parity
 test using a real value-initialized `PTCProc`. Typed defaults and the legacy
@@ -273,6 +273,17 @@ The six PTC-to-typed mirror calls are now consolidated behind
 the same compatibility seeding, typed reads, resolution, and one-way adapter
 steps, but the legacy parser exit is now one named boundary. Local CLI/test
 builds, all 253 C++ tests, config preflight, and provenance-audit tests pass.
+Unity beammap `redu15` at `50235fd6` closes the beammap processed-provenance
+gate. Its 529-leaf config is exact against accepted `redu14`; all 12 comparable
+FITS, NetCDF, and ECSV products are exact with no skipped records; the required
+sidecar passes semantic audit; and wall time improved from 3576.607 to 3458.917
+seconds. Science `redu20` is complete and provenance-valid with an exact
+502-leaf config and exact product inventories against accepted `redu16`, but
+the current science profile rejects six localized coadded noise-normalization
+differences: maximum map RMS drift is `3.0384e-5` versus the `1e-8` profile
+bound. Integer diagnostics, PTC weights, detector medians, and other core
+products pass. Scientific-owner disposition is required before the legacy
+processed parser is removed.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
