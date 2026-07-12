@@ -159,14 +159,19 @@ def compatibility_boundary(source_text: str) -> dict[str, object]:
         and len(seed_positions) == 1
         and parser_positions[0] < seed_positions[0]
     )
-    isolated = ordered and not direct_mirror_counts
+    retired = (
+        not parser_positions
+        and not seed_positions
+        and not direct_mirror_counts
+    )
     return {
         "source": LEGACY_COMPATIBILITY_SOURCE,
         "legacy_parser_call_count": len(parser_positions),
         "compatibility_seed_call_count": len(seed_positions),
         "parser_precedes_seed": ordered,
         "direct_mirror_call_counts": direct_mirror_counts,
-        "isolated": isolated,
+        "isolated": ordered and not direct_mirror_counts,
+        "retired": retired,
     }
 
 
@@ -206,7 +211,7 @@ def main() -> int:
     serialization_complete = not unserialized
     all_coverage_complete = coverage_complete and serialization_complete
     result = {
-        "schema_version": "citlali-processed-config-boundary-audit-v3",
+        "schema_version": "citlali-processed-config-boundary-audit-v4",
         "source": str(source.relative_to(repo_root)),
         "literal_path_count": len(paths),
         "literal_path_sha256": digest,
@@ -258,8 +263,8 @@ def main() -> int:
             f"- Path digest: `{digest}`\n"
             f"- Path drift: `{drift}`\n"
             f"- Direct process exit: `{bool(direct_exit)}`\n"
-            f"- Legacy compatibility boundary isolated: "
-            f"`{compatibility['isolated']}`\n"
+            f"- Legacy compatibility boundary retired: "
+            f"`{compatibility['retired']}`\n"
             f"- Legacy parser calls: "
             f"`{compatibility['legacy_parser_call_count']}`\n"
             f"- Compatibility seed calls: "
@@ -287,13 +292,13 @@ def main() -> int:
     print(
         "processed config boundary: "
         f"paths={len(paths)} drift={drift} direct_exit={bool(direct_exit)} "
-        f"compatibility_isolated={compatibility['isolated']} "
+        f"compatibility_retired={compatibility['retired']} "
         f"typed_coverage={len(coverage)}/{len(paths)} "
         f"serialized={len(serialized)}/{len(paths)} "
         f"coverage_complete={all_coverage_complete} families={counts}"
     )
     if args.fail_on_drift and (
-        drift or direct_exit or not compatibility["isolated"]
+        drift or direct_exit or not compatibility["retired"]
     ):
         return 1
     if args.fail_on_uncovered and not all_coverage_complete:

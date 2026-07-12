@@ -317,12 +317,14 @@ The preflight fails if a direct access appears outside a recognized boundary.
 Classification is architectural bookkeeping, not permission to add raw YAML
 reads: new sites still require an explicit ownership decision.
 
-`audit_processed_timestream_boundary.py` freezes the legacy `PTCProc` path
-set and also routes every path to its direct typed reader. Coverage requires
+`audit_processed_timestream_boundary.py` freezes the retired legacy `PTCProc`
+path set and routes every path to its direct typed reader. Coverage requires
 the leaf key to occur in the declared reader source; intentional spelling
 differences must be listed as explicit compatibility aliases in the audit.
 The standard preflight fails on path drift, direct process exits, uncovered
-paths, stale aliases, or paths omitted from the processed snapshot serializer.
+paths, stale aliases, paths omitted from the processed snapshot serializer, or
+any reintroduced legacy parser, compatibility seed, or direct mirror call in
+`Engine::get_ptc_config`.
 
 ```bash
 $HOME/tolteca/bin/python tools/config/audit_processed_timestream_boundary.py \

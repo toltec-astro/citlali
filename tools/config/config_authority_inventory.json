@@ -52,12 +52,12 @@
       "config_prefixes": ["timestream.processed_time_chunk", "timestream.fruit_loops"],
       "typed_owner": "citlali::config::ReductionConfig::timestream",
       "loader": "include/citlali/core/engine/detail/ptc_config_impl.h",
-      "execution_authority": "mixed",
+      "execution_authority": "typed",
       "legacy_targets": ["Engine::ptcproc"],
       "adapter_direction": "typed-to-legacy",
-      "migration_status": "mixed-adapter",
-      "provenance_status": "partial",
-      "exit_gate": "All 171 frozen legacy PTC paths are mechanically assigned to direct typed readers, with explicit alias support and preflight failure on coverage drift. Transitional typed-to-legacy adapters cover fruit loops, cleaning, weighting, validation, correlation penalties, busy-row suppression, and second-pass flagging; redu32 validates exact complete-TOD point products. The requested/effective/realized classification and parser-removal gate are defined in doc/processed_timestream_config_transition.md. Remove processor-owned YAML parsing only after the remaining focused tests, provenance, and mode-appropriate reduction gates pass."
+      "migration_status": "typed-authoritative-with-adapter",
+      "provenance_status": "complete",
+      "exit_gate": "Complete: all 171 frozen paths have direct typed readers and serializers; point, beammap, and science requested/effective/realized provenance gates are accepted; production legacy parsing and PTC-to-typed mirrors are removed. PTCProc remains a one-way numerical execution target."
     },
     {
       "id": "polarimetry",

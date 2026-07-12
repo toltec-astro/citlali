@@ -3,10 +3,8 @@
 // Engine timestream config implementation detail.
 // Include this only after Engine has been declared.
 
-#include <citlali/core/pipeline/config_parse_tracking.h>
 #include <citlali/core/pipeline/fruit_loops_config_read.h>
 #include <citlali/core/pipeline/output_policy.h>
-#include <citlali/core/pipeline/processed_timestream_compatibility_seed.h>
 #include <citlali/core/pipeline/processed_clean_config_read.h>
 #include <citlali/core/pipeline/processed_weighting_config_read.h>
 #include <citlali/core/pipeline/processed_weighting_resolution.h>
@@ -18,14 +16,9 @@ template<typename CT>
 void Engine::get_ptc_config(CT &config) {
     logger->info("getting ptc config options");
     auto &config_diag = citlali::pipeline::config_diagnostics(*this);
-    // get ptcproc config
-    citlali::pipeline::read_processor_config(
-        ptcproc, config, config_diag);
     auto &timestream_config = citlali::pipeline::timestream_config(*this);
     auto &fruit_loops_config = timestream_config.fruit_loops;
     auto &processed_config = timestream_config.processed_time_chunk;
-    citlali::pipeline::seed_processed_timestream_config_from_legacy(
-        timestream_config, ptcproc, toltec_io.array_name_map);
     citlali::pipeline::read_fruit_loops_core_config(
         config, fruit_loops_config, config_diag);
     citlali::pipeline::read_processed_clean_core_config(

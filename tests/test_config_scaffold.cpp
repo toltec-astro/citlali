@@ -22,7 +22,6 @@
 #include <citlali/core/pipeline/processed_clean_config_read.h>
 #include <citlali/core/pipeline/processed_clean_resolution.h>
 #include <citlali/core/pipeline/processed_timestream_config_serialization.h>
-#include <citlali/core/pipeline/processed_timestream_compatibility_seed.h>
 #include <citlali/core/pipeline/processed_timestream_execution_plan.h>
 #include <citlali/core/pipeline/processed_timestream_provenance.h>
 #include <citlali/core/pipeline/processed_weighting_config_read.h>
@@ -34,9 +33,6 @@
 #include <citlali/core/pipeline/timestream_config_adapter_processed.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
 #include <citlali/core/pipeline/tod_output_state.h>
-#include <kids/toltec/toltec.h>
-#include <citlali/core/utils/fits_io.h>
-#include <citlali/core/timestream/ptc/ptcproc.h>
 
 #include <gtest/gtest.h>
 
@@ -5121,27 +5117,6 @@ TEST(config_scaffold, separates_processed_requested_and_effective_state) {
     EXPECT_TRUE(plan.effective_resolutions.fruit_loop_iterations
                     ->forced_single_iteration_for_beammap);
     EXPECT_FALSE(plan.realized.fruit_loop_iterations_completed.has_value());
-}
-
-TEST(config_scaffold, typed_processed_defaults_match_legacy_seed_defaults) {
-    citlali::config::TimestreamConfig typed_defaults;
-    citlali::config::TimestreamConfig legacy_seeded;
-    timestream::PTCProc ptcproc{};
-    const std::map<int, std::string> array_name_map{
-        {0, "a1100"}, {1, "a1400"}, {2, "a2000"}};
-
-    citlali::pipeline::seed_processed_timestream_config_from_legacy(
-        legacy_seeded, ptcproc, array_name_map);
-
-    EXPECT_EQ(
-        YAML::Dump(
-            citlali::pipeline::processed_timestream_config_snapshot_node(
-                citlali::pipeline::snapshot_processed_timestream_config(
-                    typed_defaults))),
-        YAML::Dump(
-            citlali::pipeline::processed_timestream_config_snapshot_node(
-                citlali::pipeline::snapshot_processed_timestream_config(
-                    legacy_seeded))));
 }
 
 TEST(config_scaffold, resets_all_processed_plan_state_between_runs) {

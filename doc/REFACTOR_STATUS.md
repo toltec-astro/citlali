@@ -287,6 +287,16 @@ layers peak at 0.986%; product sets and integer diagnostics are exact; all
 other numerical bounds pass. Refactor wall time is 2686.252 seconds versus
 2754.146 seconds for OG. The science processed-provenance gate is accepted and
 recorded in the validation ledger.
+The processed authority migration is now operationally complete in production:
+`Engine::get_ptc_config` starts from typed defaults, reads all 171 paths through
+typed readers, resolves the effective plan, and populates `PTCProc` only through
+one-way execution adapters. The legacy parser call, compatibility seed, and all
+processed PTC-to-typed mirrors are removed. The retired-boundary audit rejects
+their reintroduction while preserving 171/171 reader and serializer coverage.
+Local CLI/test builds, all 252 C++ tests, all eight config profiles, and 13
+focused Python tests pass. The unused `PTCProc::get_config` body remains solely
+as the frozen path-audit source until that inventory moves to a standalone
+manifest; it is not reachable from production.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

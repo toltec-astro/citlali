@@ -10,18 +10,14 @@ finite removal gate. It applies to:
 
 ## Current authority
 
-The intended transitional sequence in `Engine::get_ptc_config` is:
+The authoritative sequence in `Engine::get_ptc_config` is now:
 
-1. Run the legacy `PTCProc::get_config` parser through
-   `read_processor_config(ptcproc, ...)` as a compatibility seed.
-2. Call `seed_processed_timestream_config_from_legacy(...)` once to mirror
-   legacy values into the typed model only to retain compatibility defaults
-   and behavior not yet independently resolved.
-3. Read the low-level YAML directly into typed request fields.
-4. Resolve context-free effective decisions in typed helpers.
-5. Populate `PTCProc` through one-way typed-to-legacy adapters.
+1. Begin from deterministic typed defaults.
+2. Read the low-level YAML directly into typed request fields.
+3. Resolve context-free effective decisions in typed helpers.
+4. Populate `PTCProc` through one-way typed-to-legacy execution adapters.
 
-No processor value written in step 5 may subsequently overwrite the typed
+No processor value written in step 4 may subsequently overwrite the typed
 request or effective plan.
 
 `ProcessedTimestreamExecutionPlan` is the transitional in-memory shape for
@@ -29,10 +25,11 @@ this contract. It provides independent requested and effective snapshots,
 typed effective-resolution records, and a separate realized-state record.
 Following acceptance of the matched beammap checkpoint, it is now owned and
 initialized by `Engine`; processed runtime accessors select the effective
-snapshot once initialized. The legacy parser remains the compatibility seed,
-and the root typed config is synchronized for compatibility consumers that
-have not moved to the processed accessors. Successful reductions publish this
-plan as versioned processed-timestream provenance.
+snapshot once initialized. The root typed config is synchronized for
+compatibility consumers that have not moved to the processed accessors.
+Successful reductions publish this plan as versioned processed-timestream
+provenance. Production no longer invokes the legacy parser or any PTC-to-typed
+mirror.
 
 For repeated reductions in one process, reset the complete plan from a fresh
 request. Disabled sections retain the values supplied in the requested and
@@ -126,9 +123,9 @@ diagnostic summaries.
 
 ## Legacy parser removal gate
 
-Remove `read_processor_config(ptcproc, ...)` and
-`seed_processed_timestream_config_from_legacy(...)` only after all of the
-following are true:
+The production calls to `read_processor_config(ptcproc, ...)` and
+`seed_processed_timestream_config_from_legacy(...)` were removed only after all
+of the following became true:
 
 - every one of the 171 unique YAML paths currently read by
   `PTCProc::get_config` has a direct typed reader or an explicitly documented
@@ -149,10 +146,11 @@ following are true:
   versioned and labeled without treating processor runtime state as the
   immutable request.
 
-The boundary audit also requires exactly one legacy parser call followed by
-exactly one compatibility seed call in `Engine::get_ptc_config`, with no direct
-mirror calls remaining there. This keeps the temporary bridge isolated until
-the removal gate closes.
+The boundary audit now requires zero legacy parser, compatibility-seed, or
+direct processed-mirror calls in `Engine::get_ptc_config`. The unused legacy
+parser body remains temporarily as the frozen 171-path audit source. Moving
+that path set to a standalone manifest and deleting the dead body is a later
+mechanical cleanup, not a config-authority change.
 
 OOF may reuse the pointing execution gate while that relationship remains an
 explicit supported contract. Polarimetry requires its own gate before any

@@ -97,25 +97,23 @@ class ProcessedTimestreamBoundaryAuditTest(unittest.TestCase):
         self.assertEqual(covered, [])
         self.assertEqual(uncovered, [path])
 
-    def test_accepts_one_ordered_isolated_compatibility_boundary(self) -> None:
-        result = audit.compatibility_boundary(
-            "read_processor_config(ptcproc);\n"
-            "seed_processed_timestream_config_from_legacy(config);\n"
-        )
+    def test_accepts_retired_compatibility_boundary(self) -> None:
+        result = audit.compatibility_boundary("typed_reader(config);\n")
 
-        self.assertTrue(result["isolated"])
-        self.assertTrue(result["parser_precedes_seed"])
-        self.assertEqual(result["legacy_parser_call_count"], 1)
-        self.assertEqual(result["compatibility_seed_call_count"], 1)
+        self.assertTrue(result["retired"])
+        self.assertFalse(result["isolated"])
+        self.assertFalse(result["parser_precedes_seed"])
+        self.assertEqual(result["legacy_parser_call_count"], 0)
+        self.assertEqual(result["compatibility_seed_call_count"], 0)
         self.assertEqual(result["direct_mirror_call_counts"], {})
 
-    def test_rejects_distributed_or_reordered_compatibility_calls(self) -> None:
+    def test_rejects_any_reintroduced_compatibility_call(self) -> None:
         result = audit.compatibility_boundary(
-            "seed_processed_timestream_config_from_legacy(config);\n"
             "read_processor_config(ptcproc);\n"
             "mirror_processed_clean_config(clean, ptcproc);\n"
         )
 
+        self.assertFalse(result["retired"])
         self.assertFalse(result["isolated"])
         self.assertFalse(result["parser_precedes_seed"])
         self.assertEqual(
