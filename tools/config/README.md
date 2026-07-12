@@ -322,7 +322,7 @@ set and also routes every path to its direct typed reader. Coverage requires
 the leaf key to occur in the declared reader source; intentional spelling
 differences must be listed as explicit compatibility aliases in the audit.
 The standard preflight fails on path drift, direct process exits, uncovered
-paths, or stale aliases.
+paths, stale aliases, or paths omitted from the processed snapshot serializer.
 
 ```bash
 $HOME/tolteca/bin/python tools/config/audit_processed_timestream_boundary.py \

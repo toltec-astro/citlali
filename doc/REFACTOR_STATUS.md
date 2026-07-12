@@ -230,6 +230,13 @@ Disabled sections retain their requested parameter values while remaining
 inactive, and reset clears all prior effective-resolution and realized state.
 All 245 C++ tests pass. Current legacy reader objects are not reset piecemeal;
 the contract becomes operational only when the complete plan is wired.
+Pure YAML component serializers now cover the complete requested/effective
+processed snapshot surface. The boundary audit enforces serialization of all
+171 frozen legacy paths as well as typed-reader coverage. There is deliberately
+no final provenance schema version, output filename, or writer yet; effective-
+resolution and realized-state serialization plus Engine wiring remain gated on
+the matched beammap review. All 246 C++ tests and the full config preflight
+pass.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

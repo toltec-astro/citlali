@@ -27,6 +27,10 @@ TYPED_READER_SOURCES = {
 # Map a frozen legacy path to a typed path only when the typed reader
 # intentionally accepts it under a different spelling.
 COMPATIBILITY_ALIASES: dict[str, str] = {}
+PROCESSED_CONFIG_SERIALIZER_SOURCE = (
+    "include/citlali/core/pipeline/"
+    "processed_timestream_config_serialization.h"
+)
 
 
 def parser_body(path: Path) -> str:
@@ -109,6 +113,20 @@ def typed_reader_coverage(
     return records, sorted(uncovered), stale_aliases
 
 
+def serializer_coverage(
+    paths: list[str], repo_root: Path
+) -> tuple[list[str], list[str]]:
+    source_text = (repo_root / PROCESSED_CONFIG_SERIALIZER_SOURCE).read_text()
+    covered: list[str] = []
+    uncovered: list[str] = []
+    for legacy_path in paths:
+        typed_path = COMPATIBILITY_ALIASES.get(legacy_path, legacy_path)
+        leaf = typed_path.rsplit(".", 1)[-1]
+        destination = covered if f'"{leaf}"' in source_text else uncovered
+        destination.append(legacy_path)
+    return sorted(covered), sorted(uncovered)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo-root", default=None)
@@ -134,10 +152,13 @@ def main() -> int:
     counts = dict(sorted(Counter(map(family, paths)).items()))
     drift = len(paths) != EXPECTED_PATH_COUNT or digest != EXPECTED_PATH_SHA256
     coverage, uncovered, stale_aliases = typed_reader_coverage(paths, repo_root)
+    serialized, unserialized = serializer_coverage(paths, repo_root)
     reader_counts = dict(
         sorted(Counter(record["reader"] for record in coverage).items())
     )
     coverage_complete = not uncovered and not stale_aliases
+    serialization_complete = not unserialized
+    all_coverage_complete = coverage_complete and serialization_complete
     result = {
         "schema_version": "citlali-processed-config-boundary-audit-v2",
         "source": str(source.relative_to(repo_root)),
@@ -154,6 +175,10 @@ def main() -> int:
         "uncovered_paths": uncovered,
         "stale_compatibility_aliases": stale_aliases,
         "typed_reader_coverage": coverage,
+        "serialization_coverage_complete": serialization_complete,
+        "serialized_path_count": len(serialized),
+        "unserialized_paths": unserialized,
+        "serializer_source": PROCESSED_CONFIG_SERIALIZER_SOURCE,
         "paths": paths,
         "note": (
             "Literal tuple paths freeze the legacy boundary; dynamic tuple "
@@ -188,22 +213,34 @@ def main() -> int:
             f"- Direct process exit: `{bool(direct_exit)}`\n"
             f"- Typed reader coverage: `{len(coverage)}/{len(paths)}`\n"
             f"- Typed reader coverage complete: `{coverage_complete}`\n\n"
+            f"- Snapshot serialization coverage: "
+            f"`{len(serialized)}/{len(paths)}`\n"
+            f"- Snapshot serialization coverage complete: "
+            f"`{serialization_complete}`\n\n"
             "| Family | Paths |\n| --- | ---: |\n"
             f"{rows}\n\n"
             "| Typed reader | Paths |\n| --- | ---: |\n"
             f"{reader_rows}\n\n"
             "## Uncovered Paths\n\n"
-            f"{uncovered_rows}\n"
+            f"{uncovered_rows}\n\n"
+            "## Unserialized Paths\n\n"
+            + (
+                "\n".join(f"- `{path}`" for path in unserialized)
+                if unserialized
+                else "- None"
+            )
+            + "\n"
         )
     print(
         "processed config boundary: "
         f"paths={len(paths)} drift={drift} direct_exit={bool(direct_exit)} "
         f"typed_coverage={len(coverage)}/{len(paths)} "
-        f"coverage_complete={coverage_complete} families={counts}"
+        f"serialized={len(serialized)}/{len(paths)} "
+        f"coverage_complete={all_coverage_complete} families={counts}"
     )
     if args.fail_on_drift and (drift or direct_exit):
         return 1
-    if args.fail_on_uncovered and not coverage_complete:
+    if args.fail_on_uncovered and not all_coverage_complete:
         return 1
     return 0
 

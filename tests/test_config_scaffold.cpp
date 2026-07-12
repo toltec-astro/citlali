@@ -21,6 +21,7 @@
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/processed_clean_config_read.h>
 #include <citlali/core/pipeline/processed_clean_resolution.h>
+#include <citlali/core/pipeline/processed_timestream_config_serialization.h>
 #include <citlali/core/pipeline/processed_timestream_execution_plan.h>
 #include <citlali/core/pipeline/processed_weighting_config_read.h>
 #include <citlali/core/pipeline/processed_weighting_resolution.h>
@@ -5146,6 +5147,86 @@ TEST(config_scaffold, resets_all_processed_plan_state_between_runs) {
     EXPECT_FALSE(plan.realized.source_protection.has_value());
     EXPECT_FALSE(plan.realized.fruit_loop_iterations_completed.has_value());
     EXPECT_FALSE(plan.realized.fruit_loops_converged.has_value());
+}
+
+TEST(config_scaffold, serializes_processed_config_snapshot_deterministically) {
+    citlali::config::TimestreamConfig config;
+    config.fruit_loops.enabled = true;
+    config.fruit_loops.mode = citlali::config::FruitLoopsMode::both;
+    config.fruit_loops.array_flux_limit = {1.0, 2.0};
+    config.fruit_loops.weight_feedback.reference =
+        citlali::config::FruitLoopsWeightFeedbackReference::median;
+    auto &clean = config.processed_time_chunk.clean;
+    clean.enabled = true;
+    clean.active =
+        citlali::config::ProcessedTimeChunkCleanerMode::standard_pca;
+    clean.grouping = {"array", "nw"};
+    clean.standard_pca.n_eig_to_cut["a1100"] = {2, 3};
+    clean.corr_grouping.metric =
+        citlali::config::ProcessedTimeChunkCorrGroupingMetric::signed_metric;
+    clean.null_model.grouping = {};
+    clean.adaptive_selector.low_band_Hz = {0.1, 0.5};
+    auto &weighting = config.processed_time_chunk.weighting;
+    weighting.type =
+        citlali::config::ProcessedTimeChunkWeightingType::validated;
+    weighting.validation.atmospheric_grouping =
+        citlali::config::ProcessedTimeChunkWeightGrouping::network;
+    weighting.corr_penalty.seed = 42;
+    weighting.corr_penalty.cm_low_mid_ratio.mid_band_Hz = {0.6, 2.1};
+    weighting.busy_row_suppression.enabled = true;
+    auto &second_pass =
+        config.processed_time_chunk.flagging.second_pass_local;
+    second_pass.enabled = true;
+    second_pass.source_protection.enabled = true;
+    second_pass.source_protection.active = true;
+    const auto snapshot =
+        citlali::pipeline::snapshot_processed_timestream_config(config);
+
+    const auto node =
+        citlali::pipeline::processed_timestream_config_snapshot_node(
+            snapshot);
+
+    EXPECT_TRUE(node["fruit_loops"]["enabled"].as<bool>());
+    EXPECT_EQ(node["fruit_loops"]["mode"].as<std::string>(), "both");
+    EXPECT_EQ(node["fruit_loops"]["array_flux_limit"].size(), 2U);
+    EXPECT_EQ(node["fruit_loops"]["weight_feedback"]["reference"]
+                  .as<std::string>(),
+              "median");
+    const auto clean_node = node["processed_time_chunk"]["clean"];
+    EXPECT_EQ(clean_node["active"].as<std::string>(), "standard_pca");
+    EXPECT_EQ(clean_node["grouping"].size(), 2U);
+    EXPECT_EQ(clean_node["standard_pca"]["n_eig_to_cut"]["a1100"][1]
+                  .as<int>(),
+              3);
+    EXPECT_EQ(clean_node["corr_grouping"]["metric"].as<std::string>(),
+              "signed");
+    EXPECT_TRUE(clean_node["null_model"]["grouping"].IsSequence());
+    EXPECT_EQ(clean_node["null_model"]["grouping"].size(), 0U);
+    EXPECT_DOUBLE_EQ(
+        clean_node["adaptive_selector"]["low_band_Hz"][1].as<double>(),
+        0.5);
+    const auto weighting_node =
+        node["processed_time_chunk"]["weighting"];
+    EXPECT_EQ(weighting_node["type"].as<std::string>(), "validated");
+    EXPECT_EQ(weighting_node["validation"]["atmospheric_grouping"]
+                  .as<std::string>(),
+              "nw");
+    EXPECT_EQ(weighting_node["corr_penalty"]["seed"].as<int>(), 42);
+    EXPECT_DOUBLE_EQ(
+        weighting_node["corr_penalty"]["cm_low_mid_ratio"]
+                      ["mid_band_Hz"][1]
+                          .as<double>(),
+        2.1);
+    EXPECT_TRUE(
+        weighting_node["busy_row_suppression"]["enabled"].as<bool>());
+    const auto second_pass_node = node["processed_time_chunk"]["flagging"]
+                                      ["second_pass_local"];
+    EXPECT_TRUE(second_pass_node["enabled"].as<bool>());
+    EXPECT_TRUE(second_pass_node["source_protection"]["enabled"].as<bool>());
+    EXPECT_TRUE(second_pass_node["source_protection"]["active"].as<bool>());
+    EXPECT_EQ(YAML::Dump(node), YAML::Dump(
+        citlali::pipeline::processed_timestream_config_snapshot_node(
+            snapshot)));
 }
 
 TEST(config_scaffold, resolves_processed_weighting_dependencies) {

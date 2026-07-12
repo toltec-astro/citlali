@@ -16,6 +16,9 @@ class ProcessedTimestreamBoundaryAuditTest(unittest.TestCase):
             target = self.repo_root / source
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text("")
+        serializer = self.repo_root / audit.PROCESSED_CONFIG_SERIALIZER_SOURCE
+        serializer.parent.mkdir(parents=True, exist_ok=True)
+        serializer.write_text("")
 
     def tearDown(self) -> None:
         self.temp_dir.cleanup()
@@ -75,6 +78,24 @@ class ProcessedTimestreamBoundaryAuditTest(unittest.TestCase):
         self.assertEqual(
             stale, ["timestream.fruit_loops.obsolete"]
         )
+
+    def test_requires_leaf_key_in_snapshot_serializer(self) -> None:
+        path = "timestream.fruit_loops.max_iters"
+        serializer = self.repo_root / audit.PROCESSED_CONFIG_SERIALIZER_SOURCE
+        serializer.write_text('node["max_iters"] = value;')
+
+        covered, uncovered = audit.serializer_coverage(
+            [path], self.repo_root
+        )
+        self.assertEqual(covered, [path])
+        self.assertEqual(uncovered, [])
+
+        serializer.write_text('node["different_key"] = value;')
+        covered, uncovered = audit.serializer_coverage(
+            [path], self.repo_root
+        )
+        self.assertEqual(covered, [])
+        self.assertEqual(uncovered, [path])
 
 
 if __name__ == "__main__":
