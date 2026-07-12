@@ -73,6 +73,12 @@ resolution record where the typed snapshot cannot itself retain YAML
 presence. An uninitialized plan or any create/write/rename failure fails the
 reduction; no partial provenance document is accepted.
 
+Point provenance was accepted on 2026-07-12. `81020d46` `redu35` contains all
+required v1 sections and availability records, and remains scientifically exact
+against accepted `redu34`, including every RTC/PTC timestream array. Beammap and
+science must still exercise and validate their mode-specific effective and
+realized records before legacy parser removal.
+
 ## State classification
 
 ### Requested

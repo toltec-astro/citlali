@@ -255,7 +255,13 @@ boundary. It writes the authoritative plan only after completed iterations,
 uses the shared atomic YAML writer, and fails the reduction on uninitialized
 state or filesystem failure. Local CLI/test builds, all 252 tests, all eight
 config profiles, and the 171/171 boundary audit pass. Unity output validation
-of the new required sidecar is pending.
+of the new required sidecar passes at `81020d46` point `redu35`. The sidecar
+contains all five effective-resolution and all three realized-state records;
+its schema and hash are recorded in the validation ledger. Against accepted
+`redu34`, the merged 489-leaf config and all 13 scientific product families,
+including complete RTC/PTC timestreams, are exact with zero skipped records.
+Point provenance is accepted; matched beammap and science provenance remain
+before compatibility-parser removal.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
