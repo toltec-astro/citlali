@@ -48,9 +48,10 @@ validation.
 The matched beammap prerequisite was accepted on 2026-07-12: refactor
 `4b0126e7` `redu14` is exact against accepted refactor `redu11` and passes
 `beammap-scientific-equivalence-v1` against OG `b83c8750` `redu01`. Engine
-wiring was then implemented as one bounded authority change and is pending
-Unity validation; this does not by itself satisfy the provenance or legacy-
-parser-removal gates below.
+wiring was then implemented as one bounded authority change. Unity point
+`86c47fa7` `redu34` is exact against accepted `redu33`, including all RTC/PTC
+timestream arrays, so the authority change is accepted. This does not by itself
+satisfy the provenance or legacy-parser-removal gates below.
 
 ## State classification
 

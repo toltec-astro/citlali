@@ -245,9 +245,11 @@ plan, processed runtime accessors select its effective snapshot, and cleaner,
 weighting, source-protection, interpolation, iteration-policy, and completed-
 iteration decisions populate explicit resolution or realized records. The
 legacy parser remains only as the compatibility seed and no provenance file is
-published yet. The CLI build, all 249 C++ tests, and the full config preflight
-pass locally; Unity compile and point validation are pending for this authority
-change.
+published yet. Unity point `redu34` (`86c47fa7`) passes the strict complete-
+product gate against accepted `redu33`: its 489-leaf config is exact, all 13
+scientific product families are present, and every RTC/PTC timestream and map
+record is exact with zero skipped records. The Engine authority change is
+accepted; the versioned provenance root and atomic writer are next.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
