@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import gzip
+import hashlib
 import json
 import re
 import sys
@@ -31,6 +32,41 @@ TIMESTAMP_RE = re.compile(r"^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3})\]")
 VALIDATION_PATH_RE = re.compile(r"/2026-refactor/(?P<mode>[^/]+)/(?P<label>[^/]+)/reduced/?")
 PRODUCT_SUFFIXES = {".fits", ".fit", ".nc", ".nc4", ".cdf", ".csv", ".ecsv"}
 PROFILE_SIDECAR_NAMES = {"citlali_profile.ecsv"}
+PROVENANCE_SIDECARS = {
+    "runtime": {
+        "filename": "runtime_provenance.yaml",
+        "schema_version": "citlali-runtime-provenance-v1",
+        "required_paths": (
+            ("initialized",),
+            ("requested",),
+            ("effective",),
+            ("realized",),
+        ),
+        "allow_multiple": False,
+    },
+    "timestream_output": {
+        "filename": "timestream_output_provenance.yaml",
+        "schema_version": "citlali-timestream-output-provenance-v1",
+        "required_paths": (
+            ("requested",),
+            ("effective",),
+            ("realized",),
+        ),
+        "allow_multiple": True,
+    },
+    "processed_timestream": {
+        "filename": "processed_timestream_provenance.yaml",
+        "schema_version": "citlali-processed-timestream-provenance-v1",
+        "required_paths": (
+            ("initialized",),
+            ("requested",),
+            ("effective", "config"),
+            ("effective", "resolutions"),
+            ("realized",),
+        ),
+        "allow_multiple": False,
+    },
+}
 LOG_MARKERS = (
     ("start", "reduction-local compressed log"),
     ("version", "citlali version:"),
@@ -141,6 +177,128 @@ def find_nested_key(value: Any, key: str) -> list[Any]:
             found.extend(find_nested_key(child, key))
         return found
     return []
+
+
+def has_nested_path(value: Any, path: tuple[str, ...]) -> bool:
+    current = value
+    for key in path:
+        if not isinstance(current, dict) or key not in current:
+            return False
+        current = current[key]
+    return True
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def find_provenance_files(redu: Path, filename: str) -> list[Path]:
+    return sorted(redu.rglob(filename))
+
+
+def audit_provenance_sidecars(
+    redu: Path, require_processed: bool = False
+) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for name, spec in PROVENANCE_SIDECARS.items():
+        required = name == "processed_timestream" and require_processed
+        paths = find_provenance_files(redu, str(spec["filename"]))
+        record: dict[str, Any] = {
+            "paths": [str(path) for path in paths],
+            "count": len(paths),
+            "present": bool(paths),
+            "required": required,
+            "valid": not required,
+        }
+        if not paths:
+            result[name] = record
+            continue
+        file_records = []
+        for path in paths:
+            item: dict[str, Any] = {"path": str(path), "valid": False}
+            try:
+                data = load_yaml(path)
+                if not isinstance(data, dict):
+                    raise ValueError("provenance root must be a mapping")
+                schema_version = data.get("schema_version")
+                missing_paths = [
+                    ".".join(section)
+                    for section in spec["required_paths"]
+                    if not has_nested_path(data, section)
+                ]
+                initialized_ok = data.get("initialized") is not False
+                item.update(
+                    {
+                        "schema_version": schema_version,
+                        "schema_ok":
+                            schema_version == spec["schema_version"],
+                        "missing_paths": missing_paths,
+                        "initialized_ok": initialized_ok,
+                        "sha256": sha256_file(path),
+                    }
+                )
+                item["valid"] = bool(
+                    item["schema_ok"]
+                    and not missing_paths
+                    and initialized_ok
+                )
+            except Exception as exc:
+                item["error"] = str(exc)
+            file_records.append(item)
+        cardinality_ok = bool(spec["allow_multiple"] or len(paths) == 1)
+        record.update(
+            {
+                "files": file_records,
+                "cardinality_ok": cardinality_ok,
+                "schema_version": file_records[0].get("schema_version"),
+                "schema_ok": all(
+                    bool(item.get("schema_ok")) for item in file_records
+                ),
+                "initialized_ok": all(
+                    bool(item.get("initialized_ok"))
+                    for item in file_records
+                ),
+                "missing_paths": file_records[0].get("missing_paths", [])
+                    if len(file_records) == 1 else {
+                        item["path"]: item.get("missing_paths", [])
+                        for item in file_records
+                        if item.get("missing_paths")
+                    },
+                "sha256": file_records[0].get("sha256", "")
+                    if len(file_records) == 1 else {
+                        item["path"]: item.get("sha256", "")
+                        for item in file_records
+                    },
+            }
+        )
+        record["valid"] = bool(
+            cardinality_ok
+            and all(bool(item.get("valid")) for item in file_records)
+        )
+        result[name] = record
+    return result
+
+
+def provenance_ok(audit: dict[str, Any]) -> bool:
+    return all(
+        bool(record.get("valid"))
+        for record in audit.get("provenance", {}).values()
+    )
+
+
+def provenance_hash_summary(record: dict[str, Any]) -> str:
+    hashes = record.get("sha256", "")
+    if isinstance(hashes, str):
+        return hashes
+    if not isinstance(hashes, dict):
+        return ""
+    unique = sorted({str(value) for value in hashes.values() if value})
+    prefixes = ", ".join(value[:12] for value in unique)
+    return f"{len(hashes)} files; {len(unique)} unique: {prefixes}"
 
 
 def find_config(path: Path) -> Path | None:
@@ -326,6 +484,9 @@ def build_audit(args: argparse.Namespace) -> dict[str, Any]:
         "mode_ok": None,
         "config": config,
         "log": log,
+        "provenance": audit_provenance_sidecars(
+            redu, getattr(args, "require_processed_provenance", False)
+        ),
         "products": audit_products(redu, args.top),
     }
     if args.expected_label:
@@ -386,6 +547,31 @@ def render_markdown(result: dict[str, Any]) -> str:
         for key, value in intervals.items():
             lines.append(f"| `{key}` | {fmt_seconds(value)} |")
 
+    provenance = result["provenance"]
+    lines.extend(
+        [
+            "",
+            "## Provenance",
+            "",
+            "| Sidecar | Present | Required | Valid | Schema | SHA-256 |",
+            "| --- | ---: | ---: | ---: | --- | --- |",
+        ]
+    )
+    for name, record in provenance.items():
+        lines.append(
+            f"| `{name}` | `{record['present']}` | `{record['required']}` | "
+            f"`{record['valid']}` | `{record.get('schema_version', '')}` | "
+            f"`{provenance_hash_summary(record)}` |"
+        )
+        if record.get("missing_paths"):
+            lines.append(
+                f"\nMissing `{name}` paths: `"
+                + "`, `".join(record["missing_paths"])
+                + "`"
+            )
+        if record.get("error"):
+            lines.append(f"\n`{name}` error: `{record['error']}`")
+
     products = result["products"]
     lines.extend(["", "## Products", ""])
     lines.append(f"- Files: `{products['file_count']}`")
@@ -413,6 +599,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--expected-mode", default="", help="Expected validation mode, e.g. beammap.")
     parser.add_argument("--expected-label", default="", help="Expected validation label, e.g. refactor or citlali.")
     parser.add_argument("--top", type=int, default=12, help="Number of largest products to list.")
+    parser.add_argument(
+        "--require-processed-provenance",
+        action="store_true",
+        help="Fail unless processed_timestream_provenance.yaml is present and valid.",
+    )
     parser.add_argument("--json-out", default="", help="Optional path for machine-readable JSON.")
     parser.add_argument("--report-out", default="", help="Optional path for Markdown output.")
     return parser.parse_args(argv)
@@ -435,6 +626,8 @@ def main(argv: list[str]) -> int:
     print(report, end="")
     if result["label_ok"] is False or result["mode_ok"] is False:
         return 2
+    if not provenance_ok(result):
+        return 3
     return 0
 
 

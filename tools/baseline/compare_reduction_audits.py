@@ -12,12 +12,16 @@ from typing import Any
 import audit_reduction_run
 
 
-def audit_for(path: str, expected_mode: str, expected_label: str, top: int) -> dict[str, Any]:
+def audit_for(
+    path: str, expected_mode: str, expected_label: str, top: int,
+    require_processed_provenance: bool = False,
+) -> dict[str, Any]:
     args = argparse.Namespace(
         reduction=path,
         expected_mode=expected_mode,
         expected_label=expected_label,
         top=top,
+        require_processed_provenance=require_processed_provenance,
     )
     return audit_reduction_run.build_audit(args)
 
@@ -42,6 +46,7 @@ def status_ok(audit: dict[str, Any]) -> bool:
         audit.get("label_ok") is not False,
         log_finished(audit),
         not serious_issue_counts(audit),
+        audit_reduction_run.provenance_ok(audit),
     ]
     return all(checks)
 
@@ -86,8 +91,13 @@ def markdown_table(rows: list[list[str]]) -> str:
 
 
 def compare_audits(args: argparse.Namespace) -> dict[str, Any]:
-    baseline = audit_for(args.baseline, args.expected_mode, args.baseline_label, args.top)
-    candidate = audit_for(args.candidate, args.expected_mode, args.candidate_label, args.top)
+    baseline = audit_for(
+        args.baseline, args.expected_mode, args.baseline_label, args.top
+    )
+    candidate = audit_for(
+        args.candidate, args.expected_mode, args.candidate_label, args.top,
+        getattr(args, "require_candidate_processed_provenance", False),
+    )
     base_intervals = baseline.get("log", {}).get("interval_seconds", {})
     cand_intervals = candidate.get("log", {}).get("interval_seconds", {})
     timing = []
@@ -127,6 +137,16 @@ def render_identity(audit: dict[str, Any]) -> str:
         f"labels: `{label_text}`<br>"
         f"mode OK: `{audit.get('mode_ok')}` label OK: `{audit.get('label_ok')}`<br>"
         f"finished: `{log_finished(audit)}` serious issues: `{serious_issue_counts(audit)}`"
+    )
+
+
+def render_provenance(record: dict[str, Any]) -> str:
+    if not record.get("present"):
+        return f"absent; required={record.get('required', False)}"
+    digest = audit_reduction_run.provenance_hash_summary(record)
+    return (
+        f"valid={record.get('valid')} schema={record.get('schema_version', '')} "
+        f"sha256={digest}"
     )
 
 
@@ -192,6 +212,29 @@ def render_markdown(result: dict[str, Any]) -> str:
             ]
         ),
         "",
+        "## Provenance",
+        "",
+        markdown_table(
+            [
+                ["sidecar", "baseline", "candidate"],
+                *[
+                    [
+                        name,
+                        render_provenance(
+                            baseline.get("provenance", {}).get(name, {})
+                        ),
+                        render_provenance(
+                            candidate.get("provenance", {}).get(name, {})
+                        ),
+                    ]
+                    for name in sorted(
+                        set(baseline.get("provenance", {}))
+                        | set(candidate.get("provenance", {}))
+                    )
+                ],
+            ]
+        ),
+        "",
         "## Timing",
         "",
     ]
@@ -219,6 +262,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--baseline-label", default="citlali")
     parser.add_argument("--candidate-label", default="refactor")
     parser.add_argument("--top", type=int, default=12)
+    parser.add_argument(
+        "--require-candidate-processed-provenance",
+        action="store_true",
+        help="Require a valid processed provenance sidecar only for the candidate.",
+    )
     parser.add_argument("--json-out", default="", help="Optional path for machine-readable JSON.")
     parser.add_argument("--report-out", default="", help="Optional path for Markdown output.")
     return parser.parse_args(argv)

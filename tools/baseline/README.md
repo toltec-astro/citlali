@@ -140,6 +140,25 @@ $HOME/tolteca/bin/python tools/baseline/compare_reduction_products.py \
   --report-out /tmp/beammap_product_compare.md
 ```
 
+After processed-timestream provenance is enabled, require a valid versioned
+sidecar on a single run with `--require-processed-provenance`. When comparing
+against an older accepted baseline that predates the sidecar, require it only
+on the candidate:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/compare_reduction_audits.py \
+  /path/to/accepted/reduNN \
+  /path/to/candidate/reduNN \
+  --expected-mode point \
+  --baseline-label refactor \
+  --candidate-label refactor \
+  --require-candidate-processed-provenance
+```
+
+The audit verifies every matching provenance file. This matters for science
+reductions, which contain one timestream-output provenance sidecar per
+observation.
+
 Science coadd triage, with an explicit baseline/candidate pair when the latest
 directories are not the intended comparison:
 
