@@ -3,6 +3,7 @@ from __future__ import annotations
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from tools.config import audit_raw_timestream_boundary as audit
 
@@ -78,6 +79,49 @@ class RawTimestreamBoundaryAuditTest(unittest.TestCase):
             ["mirror_raw_untracked_config"],
         )
         self.assertEqual(result["non_unit_mirror_call_counts"], {first: 2})
+
+    def test_typed_reader_coverage_accepts_parent_and_compatibility_alias(self) -> None:
+        legacy_alias = next(iter(audit.COMPATIBILITY_ALIASES))
+        typed_alias = audit.COMPATIBILITY_ALIASES[legacy_alias]
+        frozen = [
+            "timestream.raw_time_chunk.filter.notch",
+            "timestream.raw_time_chunk.filter.notch.enabled",
+            legacy_alias,
+        ]
+        declared = [
+            "timestream.raw_time_chunk.filter.notch.enabled",
+            typed_alias,
+        ]
+
+        covered, uncovered, stale = audit.typed_reader_coverage(
+            frozen, declared
+        )
+
+        self.assertEqual(covered, sorted(frozen))
+        self.assertEqual(uncovered, [])
+        self.assertEqual(stale, [])
+
+    def test_serializer_coverage_reports_missing_leaf(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir)
+            source = repo_root / "serializer.h"
+            source.write_text('node["enabled"] = true;\n')
+            with patch.object(audit, "RAW_SERIALIZER_SOURCE", "serializer.h"):
+                covered, uncovered = audit.serializer_coverage(
+                    [
+                        "timestream.raw_time_chunk.filter.enabled",
+                        "timestream.raw_time_chunk.filter.freq_high_Hz",
+                    ],
+                    repo_root,
+                )
+
+        self.assertEqual(
+            covered, ["timestream.raw_time_chunk.filter.enabled"]
+        )
+        self.assertEqual(
+            uncovered,
+            ["timestream.raw_time_chunk.filter.freq_high_Hz"],
+        )
 
 
 if __name__ == "__main__":

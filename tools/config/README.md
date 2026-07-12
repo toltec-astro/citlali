@@ -348,6 +348,18 @@ $HOME/tolteca/bin/python tools/config/audit_raw_timestream_boundary.py \
   --fail-on-drift
 ```
 
+`audit_raw_timestream_execution_reads.py` classifies direct `rtcproc` accesses
+outside the parser and compatibility mirrors. Numerical executor calls may
+remain; raw policy reads, observation-state mutation, and output/realized state
+need explicit typed contracts. Polarimetry accesses remain a separate domain.
+The preflight fails on census drift or an unreviewed access.
+
+```bash
+$HOME/tolteca/bin/python \
+  tools/config/audit_raw_timestream_execution_reads.py \
+  --fail-on-drift --fail-on-review
+```
+
 ## Compact Compatibility Suite
 
 `run_compact_compatibility.py` runs a manifest of compact examples against

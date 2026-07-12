@@ -20,6 +20,24 @@ EXPECTED_PATH_SHA256 = (
     "5f10271aae40942ae1be587a105b70229b86c885f4d0bc4b02edcf312bc088c0"
 )
 EXPECTED_DIRECT_EXIT_COUNT = 14
+TYPED_READER_SOURCES = (
+    "include/citlali/core/pipeline/raw_filtering_config_read.h",
+    "include/citlali/core/pipeline/raw_flagging_config_read.h",
+    "include/citlali/core/pipeline/raw_line_audit_config_read.h",
+)
+RAW_SERIALIZER_SOURCE = (
+    "include/citlali/core/pipeline/raw_timestream_config_serialization.h"
+)
+EXPECTED_DECLARED_TYPED_READER_PATH_COUNT = 156
+EXPECTED_DECLARED_TYPED_READER_PATH_SHA256 = (
+    "39f59b97de6ec9ae52b718c4ab8971485576b9d51264144e80678800a3e89a05"
+)
+COMPATIBILITY_ALIASES = {
+    "timestream.raw_time_chunk.despike.local_residual.compact_raw_gate."
+    "candidate_sigma_scale":
+        "timestream.raw_time_chunk.despike.local_residual.compact_raw_gate."
+        "candidate_rel_sigma_scale",
+}
 LEGACY_PARSER_CALL = "read_processor_config"
 LEGACY_TO_TYPED_MIRROR_CALLS = (
     "mirror_raw_despike_config",
@@ -69,6 +87,57 @@ def family(path: str) -> str:
 
 def direct_exit_count(body: str) -> int:
     return len(re.findall(r"\bstd::exit\s*\(", body))
+
+
+def declared_typed_reader_paths(repo_root: Path) -> list[str]:
+    paths: set[str] = set()
+    for source in TYPED_READER_SOURCES:
+        paths.update(
+            re.findall(
+                r'"(timestream\.raw_time_chunk\.[^"]+)"',
+                (repo_root / source).read_text(),
+            )
+        )
+    return sorted(paths)
+
+
+def typed_reader_coverage(
+    frozen_paths: list[str], declared_paths: list[str]
+) -> tuple[list[str], list[str], list[str]]:
+    declared = set(declared_paths)
+    covered: list[str] = []
+    uncovered: list[str] = []
+    for frozen_path in frozen_paths:
+        typed_path = COMPATIBILITY_ALIASES.get(frozen_path, frozen_path)
+        destination = (
+            covered
+            if typed_path in declared
+            or any(path.startswith(typed_path + ".") for path in declared)
+            else uncovered
+        )
+        destination.append(frozen_path)
+    frozen_typed_paths = {
+        COMPATIBILITY_ALIASES.get(path, path) for path in frozen_paths
+    }
+    stale = sorted(
+        path for path in declared
+        if path not in frozen_typed_paths and path not in COMPATIBILITY_ALIASES
+    )
+    return sorted(covered), sorted(uncovered), stale
+
+
+def serializer_coverage(
+    frozen_paths: list[str], repo_root: Path
+) -> tuple[list[str], list[str]]:
+    source_text = (repo_root / RAW_SERIALIZER_SOURCE).read_text()
+    covered: list[str] = []
+    uncovered: list[str] = []
+    for frozen_path in frozen_paths:
+        typed_path = COMPATIBILITY_ALIASES.get(frozen_path, frozen_path)
+        leaf = typed_path.rsplit(".", 1)[-1]
+        destination = covered if f'"{leaf}"' in source_text else uncovered
+        destination.append(frozen_path)
+    return sorted(covered), sorted(uncovered)
 
 
 def legacy_boundary(source_text: str) -> dict[str, object]:
@@ -145,6 +214,15 @@ def main() -> int:
     counts = dict(sorted(Counter(map(family, paths)).items()))
     exits = direct_exit_count(body)
     boundary = legacy_boundary((repo_root / BOUNDARY_SOURCE).read_text())
+    raw_paths = [
+        path for path in paths if family(path) == "raw_timestream"
+    ]
+    declared_reader_paths = declared_typed_reader_paths(repo_root)
+    declared_reader_digest = path_digest(declared_reader_paths)
+    reader_covered, reader_uncovered, stale_reader_paths = (
+        typed_reader_coverage(raw_paths, declared_reader_paths)
+    )
+    serialized, unserialized = serializer_coverage(raw_paths, repo_root)
     drift = (
         len(paths) != EXPECTED_PATH_COUNT
         or counts.get("raw_timestream") != EXPECTED_RAW_PATH_COUNT
@@ -153,6 +231,13 @@ def main() -> int:
         or digest != EXPECTED_PATH_SHA256
         or exits != EXPECTED_DIRECT_EXIT_COUNT
         or not boundary["exact"]
+        or len(declared_reader_paths)
+            != EXPECTED_DECLARED_TYPED_READER_PATH_COUNT
+        or declared_reader_digest
+            != EXPECTED_DECLARED_TYPED_READER_PATH_SHA256
+        or bool(stale_reader_paths)
+        or bool(reader_uncovered)
+        or bool(unserialized)
     )
     result = {
         "schema_version": "citlali-raw-config-boundary-audit-v1",
@@ -166,6 +251,15 @@ def main() -> int:
         "expected_direct_process_exit_count": EXPECTED_DIRECT_EXIT_COUNT,
         "path_or_boundary_drift": drift,
         "legacy_boundary": boundary,
+        "declared_typed_reader_path_count": len(declared_reader_paths),
+        "declared_typed_reader_path_sha256": declared_reader_digest,
+        "typed_reader_sources": list(TYPED_READER_SOURCES),
+        "typed_reader_covered_frozen_path_count": len(reader_covered),
+        "typed_reader_uncovered_paths": reader_uncovered,
+        "stale_declared_typed_reader_paths": stale_reader_paths,
+        "serializer_source": RAW_SERIALIZER_SOURCE,
+        "serialized_path_count": len(serialized),
+        "unserialized_paths": unserialized,
         "paths": paths,
         "note": (
             "This is a characterization gate, not an approval of the current "
@@ -196,6 +290,12 @@ def main() -> int:
             f"- Path digest: `{digest}`\n"
             f"- Direct parser exits: `{exits}`\n"
             f"- Boundary exact: `{boundary['exact']}`\n"
+            f"- Declared direct typed-reader paths: "
+            f"`{len(declared_reader_paths)}`\n"
+            f"- Frozen paths covered by typed readers: "
+            f"`{len(reader_covered)}/{len(raw_paths)}`\n"
+            f"- Frozen paths covered by request serializer: "
+            f"`{len(serialized)}/{len(raw_paths)}`\n"
             f"- Drift: `{drift}`\n\n"
             "| Family | Paths |\n| --- | ---: |\n"
             f"{family_rows}\n\n"
@@ -208,6 +308,8 @@ def main() -> int:
         f"polarimetry={counts.get('polarimetry', 0)} exits={exits} "
         f"legacy_parser_calls={boundary['legacy_parser_call_count']} "
         f"legacy_to_typed_mirrors={len(boundary['legacy_to_typed_mirror_call_counts'])} "
+        f"typed_reader_coverage={len(reader_covered)}/{len(raw_paths)} "
+        f"serialized={len(serialized)}/{len(raw_paths)} "
         f"drift={drift}"
     )
     return 1 if args.fail_on_drift and drift else 0

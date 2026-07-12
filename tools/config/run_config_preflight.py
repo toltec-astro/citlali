@@ -56,6 +56,8 @@ def main(argv: list[str]) -> int:
         "tools/config/test_audit_processed_timestream_boundary.py",
         "tools/config/audit_raw_timestream_boundary.py",
         "tools/config/test_audit_raw_timestream_boundary.py",
+        "tools/config/audit_raw_timestream_execution_reads.py",
+        "tools/config/test_audit_raw_timestream_execution_reads.py",
         "tools/config/test_validate_config_authority_inventory.py",
         "tools/config/classify_lowlevel_config.py",
         "tools/config/compare_lowlevel_yaml.py",
@@ -69,6 +71,7 @@ def main(argv: list[str]) -> int:
             "unittest",
             "tools.config.test_audit_processed_timestream_boundary",
             "tools.config.test_audit_raw_timestream_boundary",
+            "tools.config.test_audit_raw_timestream_execution_reads",
             "tools.config.test_validate_config_authority_inventory",
         ],
         [
@@ -123,6 +126,16 @@ def main(argv: list[str]) -> int:
             "--markdown-out",
             str(work_dir / "raw_timestream_boundary.md"),
             "--fail-on-drift",
+        ],
+        [
+            sys.executable,
+            "tools/config/audit_raw_timestream_execution_reads.py",
+            "--json-out",
+            str(work_dir / "raw_timestream_execution_reads.json"),
+            "--markdown-out",
+            str(work_dir / "raw_timestream_execution_reads.md"),
+            "--fail-on-drift",
+            "--fail-on-review",
         ],
     ]
     if args.require_all:

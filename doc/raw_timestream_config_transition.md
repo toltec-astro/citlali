@@ -41,6 +41,30 @@ This audit is a drift detector, not an endorsement of the current direction.
 Intentional migration steps update its expected state only after focused tests
 make the new boundary explicit.
 
+## Preparation checkpoint
+
+The non-wired migration prerequisites are implemented locally. All 169 frozen
+raw paths have declared direct typed readers and deterministic request
+serialization. The deprecated compact-raw `candidate_sigma_scale` spelling is
+an explicit compatibility alias for `candidate_rel_sigma_scale`. Disabled
+sections retain supplied expert values in the request; source-protection
+activity and the observation-derived extinction model are deliberately absent
+from request serialization.
+
+The external RTC access census contains 40 reviewed access shapes: 22 numerical
+executor operations, six observation-state accesses, seven output/realized
+state accesses, one remaining external raw policy read, and four polarimetry
+accesses outside this domain. New or reclassified accesses fail config
+preflight until reviewed.
+
+An unwired `RawTimestreamExecutionPlan` now separates requested, context-free
+effective, per-observation, and realized state. Context-free resolution records
+filter/notch activation, downsample request form and filter dependency,
+source-protection intent, and correction intent. Beginning a new observation
+clears observation and realized state without modifying the request. Production
+does not yet construct or consume this plan; `RTCProc::get_config` and the ten
+legacy-to-typed mirrors remain authoritative.
+
 ## Target state
 
 The target one-way flow is:
@@ -101,10 +125,9 @@ not flow back into the request.
 
 ## Migration sequence
 
-1. Keep the frozen parser/mirror audit and create a reviewed census of every
-   raw policy field read during RTC setup, execution, diagnostics, and output.
-2. Add direct typed readers and deterministic request serialization for all 169
-   raw paths while the legacy parser remains the comparison oracle.
+1. Keep the frozen parser/mirror audit and reviewed external execution census.
+2. Maintain direct typed readers and deterministic request serialization for
+   all 169 raw paths while the legacy parser remains the comparison oracle.
 3. Add pure effective and observation-resolution functions with tests for
    omitted, disabled, repeated-run, finite/range, sample-rate, and calibration
    cases.

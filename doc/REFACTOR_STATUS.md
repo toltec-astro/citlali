@@ -316,8 +316,16 @@ direct parser exits, one production parser call, and ten legacy-to-typed mirror
 helpers. The authority inventory now labels raw execution as legacy-authoritative
 instead of incorrectly claiming a typed-to-legacy adapter. The finite transition
 contract is `doc/raw_timestream_config_transition.md`. No RTC execution behavior
-has changed; direct typed readers and the execution-policy read census are the
-next implementation prerequisites.
+has changed. The non-wired preparation checkpoint now has 169/169 direct typed-
+reader and request-serializer coverage. A 40-record external RTC access census
+classifies 22 executor operations, six observation-state accesses, seven
+output/realized-state accesses, one raw policy read, and four separate-domain
+polarimetry accesses, with zero unreviewed records. An unwired execution plan
+separates requested, context-free effective, per-observation, and realized
+state and resets observation state between runs. All 260 C++ tests, 21 focused
+config-tool tests, and all eight config profiles pass. Production remains
+legacy-authoritative; typed-to-RTC adapter parity and observation-resolution
+functions are the next gates before Engine wiring.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
