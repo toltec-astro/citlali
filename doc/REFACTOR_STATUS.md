@@ -268,6 +268,11 @@ compatibility snapshot are identical across every serialized processed field.
 Together with 171/171 reader coverage and exhaustive one-way adapter tests,
 this closes the deterministic omitted-default prerequisite without changing
 production parsing. All 253 C++ tests pass.
+The six PTC-to-typed mirror calls are now consolidated behind
+`seed_processed_timestream_config_from_legacy(...)`. Production still performs
+the same compatibility seeding, typed reads, resolution, and one-way adapter
+steps, but the legacy parser exit is now one named boundary. Local CLI/test
+builds, all 253 C++ tests, config preflight, and provenance-audit tests pass.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

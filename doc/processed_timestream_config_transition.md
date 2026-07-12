@@ -12,9 +12,11 @@ finite removal gate. It applies to:
 
 The intended transitional sequence in `Engine::get_ptc_config` is:
 
-1. Run the legacy `PTCProc::get_config` parser as a compatibility seed.
-2. Mirror legacy values into the typed model only to retain compatibility
-   defaults and behavior not yet independently resolved.
+1. Run the legacy `PTCProc::get_config` parser through
+   `read_processor_config(ptcproc, ...)` as a compatibility seed.
+2. Call `seed_processed_timestream_config_from_legacy(...)` once to mirror
+   legacy values into the typed model only to retain compatibility defaults
+   and behavior not yet independently resolved.
 3. Read the low-level YAML directly into typed request fields.
 4. Resolve context-free effective decisions in typed helpers.
 5. Populate `PTCProc` through one-way typed-to-legacy adapters.
@@ -29,8 +31,8 @@ Following acceptance of the matched beammap checkpoint, it is now owned and
 initialized by `Engine`; processed runtime accessors select the effective
 snapshot once initialized. The legacy parser remains the compatibility seed,
 and the root typed config is synchronized for compatibility consumers that
-have not moved to the processed accessors. The plan is not yet published as
-complete processed-timestream provenance.
+have not moved to the processed accessors. Successful reductions publish this
+plan as versioned processed-timestream provenance.
 
 For repeated reductions in one process, reset the complete plan from a fresh
 request. Disabled sections retain the values supplied in the requested and
@@ -39,10 +41,9 @@ effective-resolution and realized state from a prior run is always cleared.
 Do not reset individual subfields piecemeal.
 
 Pure snapshot serializers cover all 171 frozen legacy fields and are enforced
-by the boundary audit. They are reusable components, not a published
-provenance format. Effective-resolution and realized-state components are also
-serializable with explicit availability markers. The final schema and writer
-were added only after the Engine wiring passed Unity validation.
+by the boundary audit. Effective-resolution and realized-state components use
+explicit availability markers. The versioned provenance schema composes these
+components and was added only after the Engine wiring passed Unity validation.
 
 The matched beammap prerequisite was accepted on 2026-07-12: refactor
 `4b0126e7` `redu14` is exact against accepted refactor `redu11` and passes
@@ -112,8 +113,9 @@ diagnostic summaries.
 
 ## Legacy parser removal gate
 
-Remove `read_processor_config(ptcproc, ...)` and the PTC-to-typed mirrors only
-after all of the following are true:
+Remove `read_processor_config(ptcproc, ...)` and
+`seed_processed_timestream_config_from_legacy(...)` only after all of the
+following are true:
 
 - every one of the 171 unique YAML paths currently read by
   `PTCProc::get_config` has a direct typed reader or an explicitly documented

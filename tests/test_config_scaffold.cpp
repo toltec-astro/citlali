@@ -22,6 +22,7 @@
 #include <citlali/core/pipeline/processed_clean_config_read.h>
 #include <citlali/core/pipeline/processed_clean_resolution.h>
 #include <citlali/core/pipeline/processed_timestream_config_serialization.h>
+#include <citlali/core/pipeline/processed_timestream_compatibility_seed.h>
 #include <citlali/core/pipeline/processed_timestream_execution_plan.h>
 #include <citlali/core/pipeline/processed_timestream_provenance.h>
 #include <citlali/core/pipeline/processed_weighting_config_read.h>
@@ -5129,22 +5130,8 @@ TEST(config_scaffold, typed_processed_defaults_match_legacy_seed_defaults) {
     const std::map<int, std::string> array_name_map{
         {0, "a1100"}, {1, "a1400"}, {2, "a2000"}};
 
-    citlali::pipeline::mirror_fruit_loops_config(
-        legacy_seeded.fruit_loops, ptcproc);
-    citlali::pipeline::mirror_processed_clean_config(
-        legacy_seeded.processed_time_chunk.clean, ptcproc,
-        array_name_map);
-    auto &legacy_weighting =
-        legacy_seeded.processed_time_chunk.weighting;
-    auto &legacy_flagging = legacy_seeded.processed_time_chunk.flagging;
-    citlali::pipeline::mirror_processed_weighting_config(
-        legacy_weighting, legacy_flagging, ptcproc);
-    citlali::pipeline::mirror_processed_weight_validation_config(
-        legacy_weighting.validation, ptcproc.weight_validation);
-    citlali::pipeline::mirror_processed_weight_corr_penalty_config(
-        legacy_weighting.corr_penalty, ptcproc.weight_corr_penalty);
-    citlali::pipeline::mirror_second_pass_local_config(
-        legacy_flagging.second_pass_local, ptcproc.second_pass_local);
+    citlali::pipeline::seed_processed_timestream_config_from_legacy(
+        legacy_seeded, ptcproc, array_name_map);
 
     EXPECT_EQ(
         YAML::Dump(

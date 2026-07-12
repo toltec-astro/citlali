@@ -6,12 +6,12 @@
 #include <citlali/core/pipeline/config_parse_tracking.h>
 #include <citlali/core/pipeline/fruit_loops_config_read.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/processed_timestream_compatibility_seed.h>
 #include <citlali/core/pipeline/processed_clean_config_read.h>
 #include <citlali/core/pipeline/processed_weighting_config_read.h>
 #include <citlali/core/pipeline/processed_weighting_resolution.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/second_pass_local_config_read.h>
-#include <citlali/core/pipeline/timestream_config_mirror.h>
 #include <citlali/core/pipeline/timestream_config_adapter_processed.h>
 
 template<typename CT>
@@ -24,26 +24,15 @@ void Engine::get_ptc_config(CT &config) {
     auto &timestream_config = citlali::pipeline::timestream_config(*this);
     auto &fruit_loops_config = timestream_config.fruit_loops;
     auto &processed_config = timestream_config.processed_time_chunk;
-    citlali::pipeline::mirror_fruit_loops_config(
-        fruit_loops_config, ptcproc);
+    citlali::pipeline::seed_processed_timestream_config_from_legacy(
+        timestream_config, ptcproc, toltec_io.array_name_map);
     citlali::pipeline::read_fruit_loops_core_config(
         config, fruit_loops_config, config_diag);
-    citlali::pipeline::mirror_processed_clean_config(
-        processed_config.clean, ptcproc,
-        toltec_io.array_name_map);
     citlali::pipeline::read_processed_clean_core_config(
         config, processed_config.clean, config_diag,
         toltec_io.array_name_map, logger);
     auto &typed_weighting = processed_config.weighting;
     auto &typed_flagging = processed_config.flagging;
-    citlali::pipeline::mirror_processed_weighting_config(
-        typed_weighting, typed_flagging, ptcproc);
-    const auto &weight_validation = ptcproc.weight_validation;
-    citlali::pipeline::mirror_processed_weight_validation_config(
-        typed_weighting.validation, weight_validation);
-    const auto &weight_corr_penalty = ptcproc.weight_corr_penalty;
-    citlali::pipeline::mirror_processed_weight_corr_penalty_config(
-        typed_weighting.corr_penalty, weight_corr_penalty);
     citlali::pipeline::read_processed_weighting_core_config(
         config, typed_weighting, typed_flagging, processed_config.clean,
         config_diag);
@@ -53,8 +42,6 @@ void Engine::get_ptc_config(CT &config) {
         config, typed_weighting, config_diag);
 
     auto &typed_second_pass = processed_config.flagging.second_pass_local;
-    citlali::pipeline::mirror_second_pass_local_config(
-        typed_second_pass, ptcproc.second_pass_local);
     citlali::pipeline::read_second_pass_local_config(
         config, typed_second_pass, config_diag);
 
