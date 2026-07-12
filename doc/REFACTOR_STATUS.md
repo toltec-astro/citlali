@@ -391,11 +391,15 @@ writers and observation products have completed. The observation lifecycle owns
 the completed-scan count and expected required TOD-write count; flagged-sample
 and dynamic-notch counts remain explicitly unavailable rather than being
 guessed from mutable RTC state. Publication failure propagates and fails the
-reduction. Repeated-observation tests prove state reset and independent
-sidecars, while a filesystem-failure test proves required-output propagation.
-The run-audit tooling can require and semantically validate every observation's
-sidecar, including science reductions. Local CLI/test builds, all 286 C++ tests,
-eight provenance-audit tests, and full config preflight pass. Unity point,
+reduction, and the writer rejects observation, completion, or realized-count
+state that is incomplete. Repeated-observation tests prove state reset and
+independent sidecars, while a filesystem-failure test proves required-output
+propagation. The run-audit tooling can require and semantically validate every
+observation's sidecar, including science reductions. It pairs setup-time output
+provenance with completion-time raw provenance, rejects missing observation
+sidecars, cross-checks scan counts, and validates resolved sample-rate state.
+Local CLI/test builds, all 287 C++ tests, 11 provenance-audit tests, and full
+config preflight pass. Unity point,
 beammap, and science acceptance of the newly wired sidecar remains pending; raw
 execution therefore remains legacy-authoritative.
 

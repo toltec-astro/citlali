@@ -126,7 +126,20 @@ def valid_raw_document() -> dict:
         "initialized": True,
         "requested": {},
         "effective": {"config": {}, "resolutions": {}},
-        "observation": {"available": True, "value": {}},
+        "observation": {
+            "available": True,
+            "value": {
+                "native_sample_rate_hz": {"available": True, "value": 100.0},
+                "effective_sample_rate_hz": {"available": True, "value": 50.0},
+                "downsample_factor": {"available": True, "value": 2},
+                "filter_edge_guard_samples": {"available": True, "value": 4},
+                "filter_outer_context_samples": {"available": True, "value": 8},
+                "filter_edge_guard_parity_deferred": False,
+                "source_protection_active": {"available": True, "value": False},
+                "extinction_active": {"available": True, "value": False},
+                "extinction_model": {"available": True, "value": "N/A"},
+            },
+        },
         "realized": {
             "execution_completed": True,
             "completed_scan_count": {"available": True, "value": 4},
@@ -137,6 +150,15 @@ def valid_raw_document() -> dict:
                 "value": 13,
             },
         },
+    }
+
+
+def valid_output_document() -> dict:
+    return {
+        "schema_version": "citlali-timestream-output-provenance-v1",
+        "requested": {},
+        "effective": {},
+        "realized": {"n_scans": 4},
     }
 
 
@@ -151,6 +173,10 @@ class ProvenanceAuditTest(unittest.TestCase):
                     yaml.safe_dump(valid_raw_document(), sort_keys=False),
                     encoding="utf-8",
                 )
+                (observation / "timestream_output_provenance.yaml").write_text(
+                    yaml.safe_dump(valid_output_document(), sort_keys=False),
+                    encoding="utf-8",
+                )
 
             raw = audit.audit_provenance_sidecars(
                 redu, require_raw=True
@@ -159,6 +185,7 @@ class ProvenanceAuditTest(unittest.TestCase):
             self.assertTrue(raw["required"])
             self.assertTrue(raw["valid"])
             self.assertEqual(raw["count"], 2)
+            self.assertTrue(raw["observation_coverage_ok"])
 
     def test_rejects_incomplete_raw_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -170,6 +197,10 @@ class ProvenanceAuditTest(unittest.TestCase):
             }
             (redu / "raw_timestream_provenance.yaml").write_text(
                 yaml.safe_dump(document, sort_keys=False),
+                encoding="utf-8",
+            )
+            (redu / "timestream_output_provenance.yaml").write_text(
+                yaml.safe_dump(valid_output_document(), sort_keys=False),
                 encoding="utf-8",
             )
 
@@ -193,6 +224,83 @@ class ProvenanceAuditTest(unittest.TestCase):
             )
 
             self.assertFalse(records["raw_timestream"]["valid"])
+
+    def test_rejects_missing_raw_observation_sidecar(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            for obsnum in ("1", "2"):
+                observation = redu / obsnum
+                observation.mkdir()
+                (observation / "timestream_output_provenance.yaml").write_text(
+                    yaml.safe_dump(valid_output_document(), sort_keys=False),
+                    encoding="utf-8",
+                )
+            (redu / "1" / "raw_timestream_provenance.yaml").write_text(
+                yaml.safe_dump(valid_raw_document(), sort_keys=False),
+                encoding="utf-8",
+            )
+
+            raw = audit.audit_provenance_sidecars(
+                redu, require_raw=True
+            )["raw_timestream"]
+
+            self.assertFalse(raw["valid"])
+            self.assertFalse(raw["observation_coverage_ok"])
+            self.assertEqual(raw["missing_observation_dirs"], [str(redu / "2")])
+
+    def test_rejects_raw_scan_count_mismatch(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "raw_timestream_provenance.yaml").write_text(
+                yaml.safe_dump(valid_raw_document(), sort_keys=False),
+                encoding="utf-8",
+            )
+            output = valid_output_document()
+            output["realized"]["n_scans"] = 5
+            (redu / "timestream_output_provenance.yaml").write_text(
+                yaml.safe_dump(output, sort_keys=False),
+                encoding="utf-8",
+            )
+
+            raw = audit.audit_provenance_sidecars(
+                redu, require_raw=True
+            )["raw_timestream"]
+
+            self.assertFalse(raw["valid"])
+            self.assertEqual(
+                raw["files"][0]["semantic_errors"],
+                [
+                    "completed scan count does not match "
+                    "timestream-output provenance"
+                ],
+            )
+
+    def test_rejects_inconsistent_raw_sample_rates(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            document = valid_raw_document()
+            document["observation"]["value"]["effective_sample_rate_hz"][
+                "value"
+            ] = 40.0
+            (redu / "raw_timestream_provenance.yaml").write_text(
+                yaml.safe_dump(document, sort_keys=False),
+                encoding="utf-8",
+            )
+            (redu / "timestream_output_provenance.yaml").write_text(
+                yaml.safe_dump(valid_output_document(), sort_keys=False),
+                encoding="utf-8",
+            )
+
+            raw = audit.audit_provenance_sidecars(
+                redu, require_raw=True
+            )["raw_timestream"]
+
+            self.assertFalse(raw["valid"])
+            self.assertIn(
+                "effective sample rate does not match native "
+                "rate/downsample factor",
+                raw["files"][0]["semantic_errors"],
+            )
 
     def test_accepts_complete_processed_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

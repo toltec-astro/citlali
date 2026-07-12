@@ -114,7 +114,10 @@ counters. Publication occurs only after required TOD writes and observation
 outputs complete. The observation lifecycle owns completed-scan and required
 TOD-write counts; flagged-sample and dynamic-notch counts remain explicitly
 unavailable until their execution owners are migrated. Publication failures
-propagate and fail the reduction.
+propagate and fail the reduction. The writer rejects incomplete observation,
+completion, or required-count state. Validation pairs every completed sidecar
+with its setup-time timestream-output sidecar, checks observation coverage and
+scan-count agreement, and validates resolved sample-rate relationships.
 
 The legacy parser no longer terminates the process for cross-field validation.
 All former exit sites record exact invalid-key paths in the existing diagnostic

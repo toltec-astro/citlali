@@ -5703,6 +5703,8 @@ TEST(config_scaffold, atomically_writes_raw_timestream_provenance) {
     std::filesystem::create_directories(output_dir);
     citlali::pipeline::RawTimestreamExecutionPlan plan;
     plan.reset_from_request(citlali::config::RawTimeChunkConfig{});
+    plan.begin_observation();
+    citlali::pipeline::complete_raw_timestream_observation(plan, 0, 0);
 
     citlali::pipeline::write_raw_timestream_provenance_file(
         output_dir, plan);
@@ -5725,6 +5727,8 @@ TEST(config_scaffold, raw_timestream_provenance_failure_propagates) {
     std::filesystem::remove_all(missing_dir.parent_path());
     citlali::pipeline::RawTimestreamExecutionPlan plan;
     plan.reset_from_request(citlali::config::RawTimeChunkConfig{});
+    plan.begin_observation();
+    citlali::pipeline::complete_raw_timestream_observation(plan, 0, 0);
 
     EXPECT_THROW(
         citlali::pipeline::write_raw_timestream_provenance_file(
@@ -5742,6 +5746,36 @@ TEST(config_scaffold, raw_timestream_provenance_failure_propagates) {
             missing_dir,
             citlali::pipeline::RawTimestreamExecutionPlan{}),
         std::logic_error);
+}
+
+TEST(config_scaffold, rejects_incomplete_raw_timestream_provenance) {
+    const auto output_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_incomplete_raw_timestream_provenance_test";
+    std::filesystem::remove_all(output_dir);
+    std::filesystem::create_directories(output_dir);
+
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(citlali::config::RawTimeChunkConfig{});
+    EXPECT_THROW(
+        citlali::pipeline::write_raw_timestream_provenance_file(
+            output_dir, plan),
+        std::logic_error);
+
+    plan.begin_observation();
+    EXPECT_THROW(
+        citlali::pipeline::write_raw_timestream_provenance_file(
+            output_dir, plan),
+        std::logic_error);
+
+    plan.realized.execution_completed = true;
+    EXPECT_THROW(
+        citlali::pipeline::write_raw_timestream_provenance_file(
+            output_dir, plan),
+        std::logic_error);
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::raw_timestream_provenance_path(output_dir)));
+    std::filesystem::remove_all(output_dir);
 }
 
 TEST(config_scaffold, completes_raw_timestream_realized_state_explicitly) {

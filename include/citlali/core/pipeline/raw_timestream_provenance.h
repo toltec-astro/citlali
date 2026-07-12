@@ -161,6 +161,19 @@ inline void write_raw_timestream_provenance_file(
         throw std::logic_error(
             "cannot write uninitialized raw timestream provenance");
     }
+    if (!plan.observation.has_value()) {
+        throw std::logic_error(
+            "cannot write raw timestream provenance before observation begins");
+    }
+    if (!plan.realized.execution_completed) {
+        throw std::logic_error(
+            "cannot write incomplete raw timestream provenance");
+    }
+    if (!plan.realized.completed_scan_count.has_value()
+        || !plan.realized.required_timestream_write_count.has_value()) {
+        throw std::logic_error(
+            "cannot write raw timestream provenance without realized counts");
+    }
     write_yaml_file_atomic(
         raw_timestream_provenance_path(reduction_dir),
         raw_timestream_provenance_node(plan));

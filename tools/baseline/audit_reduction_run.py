@@ -13,6 +13,7 @@ import argparse
 import gzip
 import hashlib
 import json
+import math
 import re
 import sys
 from collections import Counter
@@ -330,6 +331,86 @@ def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
             errors.append("resolved observation state is unavailable")
         elif not isinstance(observation.get("value"), dict):
             errors.append("resolved observation state value is not a mapping")
+        else:
+            value = observation["value"]
+            resolved: dict[str, Any] = {}
+            for name in (
+                "native_sample_rate_hz",
+                "effective_sample_rate_hz",
+                "downsample_factor",
+                "filter_edge_guard_samples",
+                "filter_outer_context_samples",
+                "source_protection_active",
+                "extinction_active",
+                "extinction_model",
+            ):
+                record = value.get(name)
+                if (
+                    not isinstance(record, dict)
+                    or record.get("available") is not True
+                ):
+                    errors.append(f"observation {name} is unavailable")
+                else:
+                    resolved[name] = record.get("value")
+
+            for name in ("native_sample_rate_hz", "effective_sample_rate_hz"):
+                if name not in resolved:
+                    continue
+                number = resolved.get(name)
+                if (
+                    isinstance(number, bool)
+                    or not isinstance(number, (int, float))
+                    or not math.isfinite(float(number))
+                    or number <= 0
+                ):
+                    errors.append(f"observation {name} must be finite and positive")
+            for name, minimum in (
+                ("downsample_factor", 1),
+                ("filter_edge_guard_samples", 0),
+                ("filter_outer_context_samples", 0),
+            ):
+                if name not in resolved:
+                    continue
+                number = resolved.get(name)
+                if type(number) is not int or number < minimum:
+                    errors.append(
+                        f"observation {name} must be an integer >= {minimum}"
+                    )
+            for name in ("source_protection_active", "extinction_active"):
+                if name not in resolved:
+                    continue
+                if type(resolved.get(name)) is not bool:
+                    errors.append(f"observation {name} must be boolean")
+            if (
+                "extinction_model" in resolved
+                and not isinstance(resolved.get("extinction_model"), str)
+            ):
+                errors.append("observation extinction_model must be a string")
+            if type(value.get("filter_edge_guard_parity_deferred")) is not bool:
+                errors.append(
+                    "observation filter_edge_guard_parity_deferred must be boolean"
+                )
+
+            native = resolved.get("native_sample_rate_hz")
+            effective = resolved.get("effective_sample_rate_hz")
+            factor = resolved.get("downsample_factor")
+            if (
+                isinstance(native, (int, float))
+                and not isinstance(native, bool)
+                and isinstance(effective, (int, float))
+                and not isinstance(effective, bool)
+                and type(factor) is int
+                and factor >= 1
+                and math.isfinite(float(native))
+                and math.isfinite(float(effective))
+                and not math.isclose(
+                    float(effective), float(native) / factor,
+                    rel_tol=1.0e-9, abs_tol=1.0e-12,
+                )
+            ):
+                errors.append(
+                    "effective sample rate does not match native rate/downsample factor"
+                )
 
         realized = data["realized"]
         if realized["execution_completed"] is not True:
@@ -347,7 +428,7 @@ def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
                 errors.append(
                     f"realized {name} must be a nonnegative integer"
                 )
-    except (KeyError, TypeError) as exc:
+    except (AttributeError, KeyError, TypeError) as exc:
         errors.append(f"cannot evaluate raw provenance semantics: {exc}")
     return errors
 
@@ -458,6 +539,71 @@ def audit_provenance_sidecars(
             and all(bool(item.get("valid")) for item in file_records)
         )
         result[name] = record
+
+    raw = result["raw_timestream"]
+    output = result["timestream_output"]
+    if raw["present"] or raw["required"]:
+        output_by_dir = {
+            str(Path(path).parent): path for path in output.get("paths", [])
+        }
+        raw_by_dir = {
+            str(Path(path).parent): path for path in raw.get("paths", [])
+        }
+        missing_dirs = sorted(set(output_by_dir) - set(raw_by_dir))
+        unexpected_dirs = sorted(set(raw_by_dir) - set(output_by_dir))
+        coverage_ok = bool(
+            output_by_dir and not missing_dirs and not unexpected_dirs
+        )
+        raw.update(
+            {
+                "observation_coverage_ok": coverage_ok,
+                "missing_observation_dirs": missing_dirs,
+                "unexpected_observation_dirs": unexpected_dirs,
+            }
+        )
+
+        raw_items = {
+            str(Path(item["path"]).parent): item
+            for item in raw.get("files", [])
+        }
+        output_items = {
+            str(Path(item["path"]).parent): item
+            for item in output.get("files", [])
+        }
+        for observation_dir in sorted(set(output_by_dir) & set(raw_by_dir)):
+            item = raw_items[observation_dir]
+            if (
+                not item.get("valid")
+                or not output_items[observation_dir].get("valid")
+            ):
+                continue
+            try:
+                raw_data = load_yaml(Path(raw_by_dir[observation_dir]))
+                output_data = load_yaml(Path(output_by_dir[observation_dir]))
+                raw_scans = nested_value(
+                    raw_data,
+                    ("realized", "completed_scan_count", "value"),
+                )
+                output_scans = nested_value(
+                    output_data, ("realized", "n_scans")
+                )
+                if raw_scans != output_scans:
+                    item["semantic_errors"].append(
+                        "completed scan count does not match "
+                        "timestream-output provenance"
+                    )
+                    item["valid"] = False
+            except Exception as exc:
+                item["semantic_errors"].append(
+                    f"cannot cross-check observation provenance: {exc}"
+                )
+                item["valid"] = False
+
+        raw["valid"] = bool(
+            raw["valid"]
+            and coverage_ok
+            and all(item.get("valid") for item in raw.get("files", []))
+        )
     return result
 
 
@@ -758,6 +904,18 @@ def render_markdown(result: dict[str, Any]) -> str:
                     + "`; `".join(item["semantic_errors"])
                     + "`"
                 )
+        if record.get("missing_observation_dirs"):
+            lines.append(
+                f"\n`{name}` missing observation directories: `"
+                + "`, `".join(record["missing_observation_dirs"])
+                + "`"
+            )
+        if record.get("unexpected_observation_dirs"):
+            lines.append(
+                f"\n`{name}` unexpected observation directories: `"
+                + "`, `".join(record["unexpected_observation_dirs"])
+                + "`"
+            )
 
     products = result["products"]
     lines.extend(["", "## Products", ""])

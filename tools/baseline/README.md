@@ -173,8 +173,10 @@ The audit verifies every matching provenance file. This matters for science
 reductions, which contain one timestream-output and one raw-timestream
 provenance sidecar per observation. Raw semantic checks require an initialized
 and completed observation plus available, nonnegative scan and required-write
-counts. Flagged-sample and dynamic-notch counts remain explicitly unavailable
-until their lifecycle owners are migrated.
+counts. The audit pairs raw and timestream-output sidecars by observation,
+rejects missing completion sidecars, cross-checks scan counts, and validates
+resolved sample-rate/downsample relationships. Flagged-sample and dynamic-notch
+counts remain explicitly unavailable until their lifecycle owners are migrated.
 
 For processed provenance, structural validation is followed by semantic
 checks: resolution records must agree with requested/effective cleaner,
