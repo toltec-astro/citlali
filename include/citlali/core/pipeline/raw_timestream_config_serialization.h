@@ -4,6 +4,8 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <string>
+
 namespace citlali::pipeline {
 
 inline YAML::Node raw_source_protection_request_node(
@@ -80,8 +82,10 @@ inline YAML::Node raw_filter_request_node(
     const auto &guard = config.edge_guard;
     auto guard_node = node["edge_guard"];
     guard_node["enabled"] = guard.enabled;
-    guard_node["mode"] = citlali::config::to_string(guard.mode);
-    guard_node["combine"] = citlali::config::to_string(guard.combine);
+    guard_node["mode"] =
+        std::string{citlali::config::to_string(guard.mode)};
+    guard_node["combine"] =
+        std::string{citlali::config::to_string(guard.combine)};
     guard_node["min_samples"] = guard.min_samples;
     guard_node["extra_samples"] = guard.extra_samples;
     guard_node["max_samples"] = guard.max_samples;

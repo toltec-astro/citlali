@@ -152,6 +152,16 @@ def serializer_coverage(
     return sorted(covered), sorted(uncovered)
 
 
+def unsafe_yaml_string_view_assignment_lines(source_text: str) -> list[int]:
+    pattern = re.compile(
+        r"\]\s*=\s*citlali::config::to_string\s*\("
+    )
+    return [
+        source_text.count("\n", 0, match.start()) + 1
+        for match in pattern.finditer(source_text)
+    ]
+
+
 def adapter_coverage(
     frozen_paths: list[str], repo_root: Path
 ) -> tuple[list[str], list[str]]:
@@ -284,7 +294,11 @@ def main() -> int:
     reader_covered, reader_uncovered, stale_reader_paths = (
         typed_reader_coverage(raw_paths, declared_reader_paths)
     )
+    serializer_text = (repo_root / RAW_SERIALIZER_SOURCE).read_text()
     serialized, unserialized = serializer_coverage(raw_paths, repo_root)
+    unsafe_yaml_assignments = unsafe_yaml_string_view_assignment_lines(
+        serializer_text
+    )
     adapted, unadapted = adapter_coverage(raw_paths, repo_root)
     drift = (
         len(paths) != EXPECTED_PATH_COUNT
@@ -301,6 +315,7 @@ def main() -> int:
         or bool(stale_reader_paths)
         or bool(reader_uncovered)
         or bool(unserialized)
+        or bool(unsafe_yaml_assignments)
         or bool(unadapted)
     )
     result = {
@@ -324,6 +339,7 @@ def main() -> int:
         "serializer_source": RAW_SERIALIZER_SOURCE,
         "serialized_path_count": len(serialized),
         "unserialized_paths": unserialized,
+        "unsafe_yaml_string_view_assignment_lines": unsafe_yaml_assignments,
         "adapter_sources": list(RAW_ADAPTER_SOURCES),
         "adapter_covered_path_count": len(adapted),
         "unadapted_paths": unadapted,

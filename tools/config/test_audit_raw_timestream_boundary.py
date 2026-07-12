@@ -147,6 +147,16 @@ class RawTimestreamBoundaryAuditTest(unittest.TestCase):
             ["timestream.raw_time_chunk.filter.freq_high_Hz"],
         )
 
+    def test_rejects_yaml_string_view_assignment(self) -> None:
+        source = '''
+        node["unsafe"] = citlali::config::to_string(value);
+        node["safe"] = std::string{citlali::config::to_string(value)};
+        '''
+
+        self.assertEqual(
+            audit.unsafe_yaml_string_view_assignment_lines(source), [2]
+        )
+
     def test_adapter_coverage_reports_missing_leaf(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             repo_root = Path(temp_dir)
