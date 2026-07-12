@@ -31,6 +31,19 @@ PROCESSED_CONFIG_SERIALIZER_SOURCE = (
     "include/citlali/core/pipeline/"
     "processed_timestream_config_serialization.h"
 )
+LEGACY_COMPATIBILITY_SOURCE = (
+    "include/citlali/core/engine/detail/ptc_config_impl.h"
+)
+LEGACY_PARSER_CALL = "read_processor_config"
+LEGACY_SEED_CALL = "seed_processed_timestream_config_from_legacy"
+DIRECT_MIRROR_CALLS = (
+    "mirror_fruit_loops_config",
+    "mirror_processed_clean_config",
+    "mirror_processed_weighting_config",
+    "mirror_processed_weight_validation_config",
+    "mirror_processed_weight_corr_penalty_config",
+    "mirror_second_pass_local_config",
+)
 
 
 def parser_body(path: Path) -> str:
@@ -127,6 +140,36 @@ def serializer_coverage(
     return sorted(covered), sorted(uncovered)
 
 
+def compatibility_boundary(source_text: str) -> dict[str, object]:
+    def call_positions(name: str) -> list[int]:
+        return [
+            match.start()
+            for match in re.finditer(rf"\b{re.escape(name)}\s*\(", source_text)
+        ]
+
+    parser_positions = call_positions(LEGACY_PARSER_CALL)
+    seed_positions = call_positions(LEGACY_SEED_CALL)
+    direct_mirror_counts = {}
+    for name in DIRECT_MIRROR_CALLS:
+        count = len(call_positions(name))
+        if count:
+            direct_mirror_counts[name] = count
+    ordered = (
+        len(parser_positions) == 1
+        and len(seed_positions) == 1
+        and parser_positions[0] < seed_positions[0]
+    )
+    isolated = ordered and not direct_mirror_counts
+    return {
+        "source": LEGACY_COMPATIBILITY_SOURCE,
+        "legacy_parser_call_count": len(parser_positions),
+        "compatibility_seed_call_count": len(seed_positions),
+        "parser_precedes_seed": ordered,
+        "direct_mirror_call_counts": direct_mirror_counts,
+        "isolated": isolated,
+    }
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo-root", default=None)
@@ -153,6 +196,9 @@ def main() -> int:
     drift = len(paths) != EXPECTED_PATH_COUNT or digest != EXPECTED_PATH_SHA256
     coverage, uncovered, stale_aliases = typed_reader_coverage(paths, repo_root)
     serialized, unserialized = serializer_coverage(paths, repo_root)
+    compatibility = compatibility_boundary(
+        (repo_root / LEGACY_COMPATIBILITY_SOURCE).read_text()
+    )
     reader_counts = dict(
         sorted(Counter(record["reader"] for record in coverage).items())
     )
@@ -160,7 +206,7 @@ def main() -> int:
     serialization_complete = not unserialized
     all_coverage_complete = coverage_complete and serialization_complete
     result = {
-        "schema_version": "citlali-processed-config-boundary-audit-v2",
+        "schema_version": "citlali-processed-config-boundary-audit-v3",
         "source": str(source.relative_to(repo_root)),
         "literal_path_count": len(paths),
         "literal_path_sha256": digest,
@@ -179,6 +225,7 @@ def main() -> int:
         "serialized_path_count": len(serialized),
         "unserialized_paths": unserialized,
         "serializer_source": PROCESSED_CONFIG_SERIALIZER_SOURCE,
+        "legacy_compatibility_boundary": compatibility,
         "paths": paths,
         "note": (
             "Literal tuple paths freeze the legacy boundary; dynamic tuple "
@@ -211,6 +258,12 @@ def main() -> int:
             f"- Path digest: `{digest}`\n"
             f"- Path drift: `{drift}`\n"
             f"- Direct process exit: `{bool(direct_exit)}`\n"
+            f"- Legacy compatibility boundary isolated: "
+            f"`{compatibility['isolated']}`\n"
+            f"- Legacy parser calls: "
+            f"`{compatibility['legacy_parser_call_count']}`\n"
+            f"- Compatibility seed calls: "
+            f"`{compatibility['compatibility_seed_call_count']}`\n"
             f"- Typed reader coverage: `{len(coverage)}/{len(paths)}`\n"
             f"- Typed reader coverage complete: `{coverage_complete}`\n\n"
             f"- Snapshot serialization coverage: "
@@ -234,11 +287,14 @@ def main() -> int:
     print(
         "processed config boundary: "
         f"paths={len(paths)} drift={drift} direct_exit={bool(direct_exit)} "
+        f"compatibility_isolated={compatibility['isolated']} "
         f"typed_coverage={len(coverage)}/{len(paths)} "
         f"serialized={len(serialized)}/{len(paths)} "
         f"coverage_complete={all_coverage_complete} families={counts}"
     )
-    if args.fail_on_drift and (drift or direct_exit):
+    if args.fail_on_drift and (
+        drift or direct_exit or not compatibility["isolated"]
+    ):
         return 1
     if args.fail_on_uncovered and not all_coverage_complete:
         return 1

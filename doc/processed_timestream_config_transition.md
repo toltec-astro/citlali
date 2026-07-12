@@ -136,6 +136,11 @@ following are true:
   versioned and labeled without treating processor runtime state as the
   immutable request.
 
+The boundary audit also requires exactly one legacy parser call followed by
+exactly one compatibility seed call in `Engine::get_ptc_config`, with no direct
+mirror calls remaining there. This keeps the temporary bridge isolated until
+the removal gate closes.
+
 OOF may reuse the pointing execution gate while that relationship remains an
 explicit supported contract. Polarimetry requires its own gate before any
 polarimetry-specific PTC behavior becomes typed-authoritative.
