@@ -21,7 +21,7 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest inspected point reduction: `redu27`, produced by `0dc08555`.
+- Latest inspected point reduction: `redu38`, produced by `6bbc12ce`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
@@ -31,9 +31,9 @@ branch. The exact validated tree will remain available for forensic review.
   default appeared for a disabled filter and an extinction sentinel changed.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
-- Local `citlali_cli` build and compact-config preflight pass.
-- CTest discovers and passes 201 legacy tests plus 18 focused safety tests,
-  with none skipped or disabled.
+- Local `citlali_cli`/test builds and full config preflight pass.
+- CTest discovers and passes all 287 tests with none skipped or disabled; all
+  13 baseline-tool tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -399,8 +399,14 @@ observation's sidecar, including science reductions. It pairs setup-time output
 provenance with completion-time raw provenance, rejects missing observation
 sidecars, cross-checks scan counts, and validates resolved sample-rate state.
 Local CLI/test builds, all 287 C++ tests, 11 provenance-audit tests, and full
-config preflight pass. Unity point,
-beammap, and science acceptance of the newly wired sidecar remains pending; raw
+config preflight pass. Unity point `redu38` accepts the required raw provenance
+at `6bbc12ce`. It has the identical merged config and stable 14-product inventory
+as accepted `redu37`, zero serious log issues, and a valid observation sidecar
+recording 12 completed scans and 48 required writes. Strict comparison opened
+all RTC/PTC arrays across 13 common product families and found zero missing,
+extra, changed, or skipped records. Logged runtime was 51.459 seconds versus
+51.723 seconds for `redu37`. The point publication gate is closed and recorded
+in the validation ledger. Beammap and science acceptance remain pending; raw
 execution therefore remains legacy-authoritative.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
