@@ -250,6 +250,12 @@ product gate against accepted `redu33`: its 489-leaf config is exact, all 13
 scientific product families are present, and every RTC/PTC timestream and map
 record is exact with zero skipped records. The Engine authority change is
 accepted; the versioned provenance root and atomic writer are next.
+The v1 processed provenance sidecar is now implemented at the CLI success
+boundary. It writes the authoritative plan only after completed iterations,
+uses the shared atomic YAML writer, and fails the reduction on uninitialized
+state or filesystem failure. Local CLI/test builds, all 252 tests, all eight
+config profiles, and the 171/171 boundary audit pass. Unity output validation
+of the new required sidecar is pending.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

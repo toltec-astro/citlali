@@ -41,9 +41,8 @@ Do not reset individual subfields piecemeal.
 Pure snapshot serializers cover all 171 frozen legacy fields and are enforced
 by the boundary audit. They are reusable components, not a published
 provenance format. Effective-resolution and realized-state components are also
-serializable with explicit availability markers. Do not add a final schema
-version, filename, or output writer until the Engine wiring passes Unity
-validation.
+serializable with explicit availability markers. The final schema and writer
+were added only after the Engine wiring passed Unity validation.
 
 The matched beammap prerequisite was accepted on 2026-07-12: refactor
 `4b0126e7` `redu14` is exact against accepted refactor `redu11` and passes
@@ -53,11 +52,33 @@ wiring was then implemented as one bounded authority change. Unity point
 timestream arrays, so the authority change is accepted. This does not by itself
 satisfy the provenance or legacy-parser-removal gates below.
 
+## Versioned provenance
+
+`processed_timestream_provenance.yaml` uses schema
+`citlali-processed-timestream-provenance-v1` and is written atomically in the
+reduction directory after successful completion. It contains:
+
+- `requested`: the accepted canonical typed request after parsing,
+  compatibility defaults, and canonical enum/group representation;
+- `effective.config`: the processed configuration used by runtime accessors;
+- `effective.resolutions`: explicit availability and decision records for
+  cleaner mode, source-mask inheritance, weighting dependencies, fruit-loop
+  interpolation, and iteration policy;
+- `realized`: source-protection activation, completed iteration count, and
+  convergence state.
+
+The merged low-level YAML remains the source-level record. In particular,
+absence versus an explicit value is represented by the corresponding
+resolution record where the typed snapshot cannot itself retain YAML
+presence. An uninitialized plan or any create/write/rename failure fails the
+reduction; no partial provenance document is accepted.
+
 ## State classification
 
 ### Requested
 
-Values explicitly supplied by the merged low-level Citlali YAML, including
+Canonical accepted values derived from the merged low-level Citlali YAML,
+including compatibility defaults and parse-time canonical representation, for
 cleaner selection and settings, weighting settings, validation policy,
 correlation penalties, busy-row policy, second-pass flagging, source
 protection intent, and fruit-loop policy.

@@ -23,6 +23,7 @@
 #include <citlali/core/pipeline/processed_clean_resolution.h>
 #include <citlali/core/pipeline/processed_timestream_config_serialization.h>
 #include <citlali/core/pipeline/processed_timestream_execution_plan.h>
+#include <citlali/core/pipeline/processed_timestream_provenance.h>
 #include <citlali/core/pipeline/processed_weighting_config_read.h>
 #include <citlali/core/pipeline/processed_weighting_resolution.h>
 #include <citlali/core/pipeline/runtime_provenance_output.h>
@@ -5199,6 +5200,94 @@ TEST(config_scaffold, records_processed_iteration_result) {
     EXPECT_EQ(*plan.realized.fruit_loop_iterations_completed, 3);
     ASSERT_TRUE(plan.realized.fruit_loops_converged.has_value());
     EXPECT_TRUE(*plan.realized.fruit_loops_converged);
+}
+
+TEST(config_scaffold, serializes_versioned_processed_provenance) {
+    citlali::config::TimestreamConfig config;
+    config.fruit_loops.enabled = true;
+    config.fruit_loops.max_iters = 3;
+    auto plan =
+        citlali::pipeline::make_processed_timestream_execution_plan(config);
+    plan.effective.fruit_loops.max_iters = 1;
+    plan.effective_resolutions.fruit_loop_iterations =
+        citlali::pipeline::resolve_fruit_loop_iteration_policy(
+            config.fruit_loops,
+            citlali::config::ReductionType::beammap);
+    citlali::pipeline::record_processed_timestream_iteration_result(
+        plan, 1, false);
+
+    const auto node =
+        citlali::pipeline::processed_timestream_provenance_node(plan);
+
+    EXPECT_EQ(node["schema_version"].as<std::string>(),
+              "citlali-processed-timestream-provenance-v1");
+    EXPECT_TRUE(node["initialized"].as<bool>());
+    EXPECT_EQ(node["requested"]["fruit_loops"]["max_iters"].as<int>(),
+              3);
+    EXPECT_EQ(
+        node["effective"]["config"]["fruit_loops"]["max_iters"]
+            .as<int>(),
+        1);
+    EXPECT_TRUE(node["effective"]["resolutions"]
+                    ["fruit_loop_iterations"]["available"]
+                        .as<bool>());
+    EXPECT_EQ(node["realized"]["fruit_loop_iterations_completed"]
+                       ["value"]
+                           .as<int>(),
+              1);
+}
+
+TEST(config_scaffold, atomically_writes_processed_provenance) {
+    const auto output_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_processed_timestream_provenance_test";
+    std::filesystem::remove_all(output_dir);
+    std::filesystem::create_directories(output_dir);
+    const auto plan =
+        citlali::pipeline::make_processed_timestream_execution_plan(
+            citlali::config::TimestreamConfig{});
+
+    citlali::pipeline::write_processed_timestream_provenance_file(
+        output_dir, plan);
+
+    const auto output_path =
+        citlali::pipeline::processed_timestream_provenance_path(output_dir);
+    EXPECT_TRUE(std::filesystem::exists(output_path));
+    EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
+    const auto stored = YAML::LoadFile(output_path.string());
+    EXPECT_EQ(stored["schema_version"].as<std::string>(),
+              "citlali-processed-timestream-provenance-v1");
+    EXPECT_TRUE(stored["initialized"].as<bool>());
+    std::filesystem::remove_all(output_dir);
+}
+
+TEST(config_scaffold, processed_provenance_write_failure_propagates) {
+    const auto missing_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_missing_processed_provenance_dir" / "nested";
+    std::filesystem::remove_all(missing_dir.parent_path());
+    const auto plan =
+        citlali::pipeline::make_processed_timestream_execution_plan(
+            citlali::config::TimestreamConfig{});
+
+    EXPECT_THROW(
+        citlali::pipeline::write_processed_timestream_provenance_file(
+            missing_dir, plan),
+        std::ios_base::failure);
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::processed_timestream_provenance_path(
+            missing_dir)));
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::processed_timestream_provenance_path(
+            missing_dir)
+            .string() +
+        ".tmp"));
+
+    EXPECT_THROW(
+        citlali::pipeline::write_processed_timestream_provenance_file(
+            missing_dir,
+            citlali::pipeline::ProcessedTimestreamExecutionPlan{}),
+        std::logic_error);
 }
 
 TEST(config_scaffold, serializes_processed_config_snapshot_deterministically) {

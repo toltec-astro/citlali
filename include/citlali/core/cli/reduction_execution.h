@@ -7,6 +7,7 @@
 #include <citlali/core/cli/tod_processor_selection.h>
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/pipeline/map_geometry.h>
+#include <citlali/core/pipeline/processed_timestream_provenance.h>
 #include <citlali/core/pipeline/reduction_pipeline.h>
 #include <spdlog/spdlog.h>
 
@@ -110,6 +111,17 @@ int run_cli_reduction_processor(
             todproc, co, config, config_filepaths, logger, os)) {
         return EXIT_FAILURE;
     }
+
+    auto &engine = todproc.engine();
+    const auto &plan =
+        citlali::pipeline::processed_timestream_plan(engine);
+    citlali::pipeline::write_processed_timestream_provenance_file(
+        engine.output_paths.redu_dir_name, plan);
+    logger->info(
+        "processed timestream provenance sidecar: {}",
+        citlali::pipeline::processed_timestream_provenance_path(
+            engine.output_paths.redu_dir_name)
+            .string());
 
     log_reduction_complete(logger);
     return EXIT_SUCCESS;
