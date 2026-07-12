@@ -11,6 +11,7 @@
 #include <boost/math/special_functions/bessel.hpp>
 
 #include <citlali/core/utils/constants.h>
+#include <citlali/core/timestream/filter_transient_samples.h>
 
 namespace timestream {
 
@@ -151,32 +152,9 @@ inline void Filter::make_notch_filter(double fsmp) {
 
 inline Eigen::Index Filter::notch_settle_samples_for_width(
     double fsmp, double width_Hz, double attenuation) {
-    if (fsmp <= 0.0 || width_Hz <= 0.0) {
-        return 0;
-    }
-    if (!(attenuation > 0.0 && attenuation < 1.0)) {
-        attenuation = 0.01;
-    }
-
-    const double bw = 2.0 * pi * width_Hz / fsmp;
-    const double beta = std::tan(bw / 2.0);
-    if (!std::isfinite(beta) || beta <= 0.0) {
-        return 0;
-    }
-    const double gain = 1.0 / (1.0 + beta);
-    const double radius2 = 2.0 * gain - 1.0;
-    if (!(radius2 > 0.0)) {
-        return 1;
-    }
-    const double radius = std::sqrt(radius2);
-    if (!(radius > 0.0 && radius < 1.0)) {
-        return 0;
-    }
-    const double n_samples = std::log(attenuation) / std::log(radius);
-    if (!std::isfinite(n_samples) || n_samples <= 0.0) {
-        return 0;
-    }
-    return static_cast<Eigen::Index>(std::ceil(n_samples));
+    return static_cast<Eigen::Index>(
+        transient::notch_settle_samples_for_width(
+            fsmp, width_Hz, attenuation));
 }
 
 inline Eigen::Index Filter::notch_settle_samples(double fsmp, double attenuation) const {
@@ -359,15 +337,9 @@ void Filter::iir_highpass(Eigen::DenseBase<Derived> &in, double fsmp) {
 }
 
 inline Eigen::Index Filter::iir_highpass_settle_samples(double fsmp) const {
-    if (fsmp <= 0.0 || iir_highpass_freq_Hz <= 0.0 || iir_highpass_order <= 0) {
-        return 0;
-    }
-
-    // Drop five RC time constants per stage to suppress IIR startup transients at scan edges.
-    const double tau_sec = 1.0 / (2.0 * pi * iir_highpass_freq_Hz);
-    const double settle_samples =
-        5.0 * tau_sec * fsmp * static_cast<double>(std::max(1, iir_highpass_order));
-    return static_cast<Eigen::Index>(std::ceil(std::max(0.0, settle_samples)));
+    return static_cast<Eigen::Index>(
+        transient::iir_highpass_settle_samples(
+            fsmp, iir_highpass_freq_Hz, iir_highpass_order));
 }
 
 } // namespace timestream

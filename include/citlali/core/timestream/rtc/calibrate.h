@@ -6,6 +6,7 @@
 #include <Eigen/Core>
 
 #include <citlali/core/utils/constants.h>
+#include <citlali/core/timestream/extinction_model_selection.h>
 #include <citlali/core/timestream/timestream.h>
 
 namespace timestream {
@@ -30,35 +31,8 @@ public:
     };
 
     void setup(double tau_225_zenith) {
-        // cos of zenith angle
-        auto cz = cos(pi/2 - 80.0*DEG_TO_RAD);
-        // 1/cos(zenith angle)
-        auto secz = 1. / cz;
-        // airmass
-        auto A = secz * (1. - 0.0012 * (pow(secz, 2) - 1.));
-
-        // tau at 225 GHz at 80deg from atm model and airmass
-        Eigen::VectorXd tau_225_calc(tx_225_zenith.size());
-
-        // calc tau at 225 GHz at 80deg from each model
-        int i = 0;
-        for (const auto &[key,val]: tx_225_zenith) {
-            tau_225_calc(i) = -log(val)/A;
-            i++;
-        }
-
-        // set initial model to am_q0
-        extinction_model = "am_q0";
-
-        // find model with closest tau to telescope tau and use that model
-        // for extinction correction
-        i = 0;
-        for (const auto &[key,val]: tx_225_zenith) {
-            if (tau_225_calc(i) <= tau_225_zenith) {
-                extinction_model = key;
-            }
-            i++;
-        }
+        extinction_model =
+            select_extinction_model(tau_225_zenith, tx_225_zenith);
 
         // allocate transmission coefficients (order 6 polynomial)
         tx_ratio_coeff["a1100"].resize(7);

@@ -329,8 +329,15 @@ legacy-authoritative. The complete unwired typed-to-RTC adapter now covers all
 checks, and a separate observation-state overlay for sample rate, downsampling,
 edge context, source protection, and extinction. The frozen audit enforces
 169/169 adapter coverage. All 264 C++ tests, 22 focused config-tool tests, and
-all eight config profiles pass. Pure observation-resolution construction and
-shadow parity at the Engine boundary are the next gates before authority flips.
+all eight config profiles pass. Pure observation resolution now covers native
+and effective sample rate, derived downsample factor and anti-alias checks,
+filter edge guard/context contributions, source-protection activation, and
+extinction-model selection. Filter transient estimates and extinction-model
+selection are shared by the typed resolver and legacy processors rather than
+duplicated. Focused tests prove edge-guard parity for sum/max policies and
+extinction parity across representative tau values. All 271 C++ tests and full
+preflight pass. Constructing the typed plan as a non-authoritative production
+shadow is the next gate before the authority flip.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

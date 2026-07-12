@@ -75,6 +75,17 @@ resolution authoritative. Production does not construct or consume this plan,
 and `RTCProc::get_config` plus the ten legacy-to-typed mirrors remain the
 production authority.
 
+Pure observation resolution is also implemented but unwired. It returns an
+explicit sample-rate error category while resolving native/effective rate,
+downsample factor, and anti-alias Nyquist; computes each filter-edge transient
+contribution and final guard/context counts; resolves raw source-protection
+activity by reduction type; and selects the observation extinction model.
+Legacy `Filter` and `Calibration` delegate to the same extracted pure numerical
+policies, so shadow parity does not rely on duplicated formulas. Focused tests
+match the real legacy processor for sum/max edge policies and representative
+tau values. The next step is to construct this plan at the Engine boundary as
+a read-only shadow while legacy state continues to drive execution.
+
 ## Target state
 
 The target one-way flow is:

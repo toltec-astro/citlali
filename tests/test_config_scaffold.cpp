@@ -20,6 +20,7 @@
 #include <citlali/core/pipeline/phdu_reduction_config.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/raw_timestream_execution_plan.h>
+#include <citlali/core/pipeline/raw_timestream_observation_resolution.h>
 #include <citlali/core/pipeline/raw_filtering_config_read.h>
 #include <citlali/core/pipeline/raw_flagging_config_read.h>
 #include <citlali/core/pipeline/raw_timestream_config_serialization.h>
@@ -5649,6 +5650,216 @@ TEST(config_scaffold, overlays_raw_observation_state_without_mutating_plan) {
     auto &next_observation = plan.begin_observation();
     ASSERT_FALSE(next_observation.native_sample_rate_hz.has_value());
     ASSERT_FALSE(next_observation.source_protection_active.has_value());
+}
+
+TEST(config_scaffold, resolves_raw_sample_rate_without_mutating_request) {
+    citlali::config::RawTimeChunkConfig request;
+    request.filter.enabled = true;
+    request.filter.freq_high_Hz = 10.0;
+    request.downsample.enabled = true;
+    request.downsample.factor = 0;
+    request.downsample.downsampled_freq_Hz = 30.0;
+
+    const auto resolution =
+        citlali::pipeline::resolve_raw_sample_rate(request, 100.0);
+
+    ASSERT_TRUE(resolution.valid());
+    EXPECT_DOUBLE_EQ(resolution.native_sample_rate_hz, 100.0);
+    EXPECT_EQ(resolution.downsample_factor, 3);
+    EXPECT_DOUBLE_EQ(
+        resolution.effective_sample_rate_hz, 100.0 / 3.0);
+    EXPECT_DOUBLE_EQ(
+        resolution.downsample_nyquist_hz, 100.0 / 6.0);
+    EXPECT_EQ(request.downsample.factor, 0);
+}
+
+TEST(config_scaffold, classifies_raw_sample_rate_resolution_failures) {
+    using Error = citlali::pipeline::RawSampleRateResolutionError;
+    citlali::config::RawTimeChunkConfig request;
+    request.filter.enabled = true;
+    request.filter.freq_high_Hz = 10.0;
+    request.downsample.enabled = true;
+
+    EXPECT_EQ(citlali::pipeline::resolve_raw_sample_rate(request, 0.0).error,
+              Error::invalid_native_sample_rate);
+
+    request.downsample.factor = 0;
+    request.downsample.downsampled_freq_Hz = 0.0;
+    EXPECT_EQ(
+        citlali::pipeline::resolve_raw_sample_rate(request, 100.0).error,
+        Error::invalid_target_frequency);
+
+    request.downsample.downsampled_freq_Hz = 101.0;
+    EXPECT_EQ(
+        citlali::pipeline::resolve_raw_sample_rate(request, 100.0).error,
+        Error::target_frequency_above_native);
+
+    request.downsample.downsampled_freq_Hz =
+        std::numeric_limits<double>::min();
+    EXPECT_EQ(
+        citlali::pipeline::resolve_raw_sample_rate(request, 100.0).error,
+        Error::invalid_downsample_factor);
+
+    request.downsample.factor = 4;
+    request.filter.freq_high_Hz = 20.0;
+    EXPECT_EQ(
+        citlali::pipeline::resolve_raw_sample_rate(request, 100.0).error,
+        Error::antialias_filter_above_nyquist);
+}
+
+TEST(config_scaffold, raw_filter_edge_guard_matches_legacy_rtc_resolution) {
+    citlali::config::RawTimeChunkConfig request;
+    request.filter.enabled = true;
+    request.filter.freq_high_Hz = 10.0;
+    request.filter.n_terms = 32;
+    request.filter.notch.enabled = true;
+    request.filter.notch.freqs_Hz = {8.0, 12.0};
+    request.filter.notch.delta_f_Hz = {0.25};
+    request.filter.edge_guard.enabled = true;
+    request.filter.edge_guard.combine =
+        citlali::config::RawTimeChunkFilterEdgeGuardCombine::sum;
+    request.filter.edge_guard.min_samples = 4;
+    request.filter.edge_guard.extra_samples = 3;
+    request.filter.edge_guard.max_samples = 100000;
+    request.iir_filter.enabled = true;
+    request.iir_filter.freq_Hz = 0.2;
+    request.iir_filter.order = 2;
+    request.iir_filter.zero_phase = true;
+    request.downsample.enabled = true;
+    request.downsample.factor = 4;
+    request.line_audit.enabled = true;
+    request.line_audit.pre_filter_enabled = true;
+    request.line_audit.fixed_notch_enabled = true;
+    request.line_audit.fixed_notch_freqs_hz = {5.0, 15.0, 60.0};
+    request.line_audit.fixed_notch_widths_hz = {0.3};
+    request.line_audit.apply_shared_notches = true;
+    request.line_audit.apply_max_notches = 2;
+    request.line_audit.apply_min_width_hz = 0.25;
+
+    const auto sample_rate =
+        citlali::pipeline::resolve_raw_sample_rate(request, 100.0);
+    ASSERT_TRUE(sample_rate.valid());
+    const auto typed = citlali::pipeline::resolve_raw_filter_edge_guard(
+        request, sample_rate);
+
+    timestream::RTCProc rtcproc;
+    citlali::pipeline::adapt_raw_timestream_config_one_way(
+        request, rtcproc, 1.0, 1.0);
+    rtcproc.configure_filter_edge_guard(100.0);
+
+    EXPECT_EQ(typed.guard_samples, rtcproc.filter_edge_guard.guard_samples);
+    EXPECT_EQ(
+        typed.context_samples, rtcproc.filter_edge_guard.context_samples);
+    EXPECT_GT(typed.fixed_notch_samples, 0);
+    EXPECT_GT(typed.line_audit_fixed_notch_samples, 0);
+    EXPECT_GT(typed.line_audit_dynamic_notch_samples, 0);
+    EXPECT_GT(typed.iir_highpass_samples, 0);
+    EXPECT_EQ(typed.downsample_samples, 3);
+}
+
+TEST(config_scaffold, raw_filter_edge_guard_max_policy_matches_legacy_rtc) {
+    citlali::config::RawTimeChunkConfig request;
+    request.filter.enabled = true;
+    request.filter.freq_high_Hz = 8.0;
+    request.filter.n_terms = 16;
+    request.filter.notch.enabled = true;
+    request.filter.notch.freqs_Hz = {6.0};
+    request.filter.notch.delta_f_Hz = {0.4};
+    request.filter.edge_guard.enabled = true;
+    request.filter.edge_guard.combine =
+        citlali::config::RawTimeChunkFilterEdgeGuardCombine::max;
+    request.filter.edge_guard.extra_samples = 2;
+
+    const auto sample_rate =
+        citlali::pipeline::resolve_raw_sample_rate(request, 100.0);
+    const auto typed = citlali::pipeline::resolve_raw_filter_edge_guard(
+        request, sample_rate);
+    timestream::RTCProc rtcproc;
+    citlali::pipeline::adapt_raw_timestream_config_one_way(
+        request, rtcproc, 1.0, 1.0);
+    rtcproc.configure_filter_edge_guard(100.0);
+
+    EXPECT_EQ(typed.guard_samples, rtcproc.filter_edge_guard.guard_samples);
+    EXPECT_EQ(
+        typed.context_samples, rtcproc.filter_edge_guard.context_samples);
+}
+
+TEST(config_scaffold, raw_source_protection_matches_shared_resolution) {
+    citlali::config::TimestreamConfig config;
+    auto &raw = config.raw_time_chunk.despike;
+    raw.enabled = true;
+    raw.source_protection.enabled = true;
+
+    for (const auto reduction_type : {
+             citlali::config::ReductionType::pointing,
+             citlali::config::ReductionType::science}) {
+        const auto raw_resolution =
+            citlali::pipeline::resolve_raw_source_protection_observation(
+                reduction_type, raw);
+        const auto shared_resolution =
+            citlali::pipeline::resolve_source_protection(
+                reduction_type, config);
+        EXPECT_EQ(raw_resolution.requested,
+                  shared_resolution.raw_activation_requested);
+        EXPECT_EQ(raw_resolution.source_aware_reduction,
+                  shared_resolution.source_aware_reduction);
+        EXPECT_EQ(raw_resolution.active, shared_resolution.raw_active);
+    }
+}
+
+TEST(config_scaffold, raw_extinction_model_matches_legacy_calibration) {
+    timestream::Calibration calibration;
+    for (const double tau_225_ghz : {0.0, 0.03, 0.08, 0.2}) {
+        const auto resolution =
+            citlali::pipeline::resolve_raw_extinction_observation(
+                true, tau_225_ghz, calibration.tx_225_zenith);
+        calibration.setup(tau_225_ghz);
+        EXPECT_TRUE(resolution.requested);
+        EXPECT_TRUE(resolution.active);
+        EXPECT_EQ(resolution.model, calibration.extinction_model);
+    }
+
+    const auto disabled =
+        citlali::pipeline::resolve_raw_extinction_observation(
+            false, 0.08, calibration.tx_225_zenith);
+    EXPECT_FALSE(disabled.requested);
+    EXPECT_FALSE(disabled.active);
+    EXPECT_EQ(disabled.model, "N/A");
+}
+
+TEST(config_scaffold, constructs_complete_raw_observation_state) {
+    citlali::config::RawTimeChunkConfig request;
+    request.filter.enabled = true;
+    request.filter.freq_high_Hz = 10.0;
+    request.downsample.enabled = true;
+    request.downsample.factor = 4;
+    const auto sample_rate =
+        citlali::pipeline::resolve_raw_sample_rate(request, 100.0);
+    const auto edge_guard =
+        citlali::pipeline::resolve_raw_filter_edge_guard(
+            request, sample_rate);
+    const auto source =
+        citlali::pipeline::resolve_raw_source_protection_observation(
+            citlali::config::ReductionType::pointing, request.despike);
+    timestream::Calibration calibration;
+    const auto extinction =
+        citlali::pipeline::resolve_raw_extinction_observation(
+            true, 0.08, calibration.tx_225_zenith);
+
+    const auto state =
+        citlali::pipeline::make_raw_timestream_observation_state(
+            sample_rate, edge_guard, source, extinction);
+
+    ASSERT_TRUE(state.native_sample_rate_hz.has_value());
+    EXPECT_DOUBLE_EQ(*state.native_sample_rate_hz, 100.0);
+    EXPECT_DOUBLE_EQ(*state.effective_sample_rate_hz, 25.0);
+    EXPECT_EQ(*state.downsample_factor, 4);
+    EXPECT_EQ(*state.filter_edge_guard_samples, edge_guard.guard_samples);
+    EXPECT_EQ(
+        *state.filter_outer_context_samples, edge_guard.context_samples);
+    EXPECT_FALSE(*state.source_protection_active);
+    EXPECT_TRUE(*state.extinction_active);
+    EXPECT_EQ(*state.extinction_model, extinction.model);
 }
 
 TEST(config_scaffold, separates_processed_requested_and_effective_state) {
