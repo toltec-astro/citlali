@@ -2611,6 +2611,180 @@
         "Flagged-sample and dynamic-notch realized counts remain explicitly unavailable pending migration of their natural execution owners.",
         "This point gate accepts required raw provenance publication; Beammap and science evidence remain required before typed raw authority cutover."
       ]
+    },
+    {
+      "record_id": "beammap-148670-refactor-2d6f80a3-redu17",
+      "recorded_date": "2026-07-12",
+      "mode": "beammap",
+      "status": "accepted",
+      "candidate": {
+        "label": "refactor",
+        "branch": "codex/structural-refactor",
+        "citlali_sha": "2d6f80a3",
+        "citlali_version": "v4.0.0-3435-g2d6f80a3",
+        "dirty": false,
+        "dependencies": {"kids_sha": "04088da", "tula_sha": "f30f81d"},
+        "build": {"host": "unity", "compiler": null, "build_type": "Release", "cmake_flags": null}
+      },
+      "baseline": {
+        "label": "refactor",
+        "citlali_sha": "50235fd6",
+        "citlali_version": "v4.0.0-3414-g50235fd6",
+        "dependencies": {"kids_sha": "04088da", "tula_sha": "f30f81d"},
+        "reduction_id": "redu15"
+      },
+      "config": {
+        "ordered_sources": [
+          {
+            "role": "merged_low_level_citlali_input",
+            "path": "citlali_o148670_0_2_c1.yaml",
+            "precedence": 0,
+            "sha256": "aa956b28465eaef8b23763e877857b5b8929e95ca4fbdc976db6d7b2a775636d"
+          }
+        ],
+        "overlay_sources_retained": false,
+        "canonical_merged_sha256": "aa956b28465eaef8b23763e877857b5b8929e95ca4fbdc976db6d7b2a775636d",
+        "requested_sha256": null,
+        "effective_sha256": null,
+        "realized_sha256": null,
+        "runtime_provenance": {"path": "runtime_provenance.yaml", "schema_version": "citlali-runtime-provenance-v1", "sha256": "cf41f8780362cf9480977f6693336b22605dda5e9afc8a8db60fbdebd5bebfdc"},
+        "timestream_output_provenance": {"path": "148670/timestream_output_provenance.yaml", "schema_version": "citlali-timestream-output-provenance-v1", "sha256": "7f3d434180ad3534e56bf723b9d158f1dd1831b3f2d6ffbc2fabbff64a074831"},
+        "processed_timestream_provenance": {"path": "processed_timestream_provenance.yaml", "schema_version": "citlali-processed-timestream-provenance-v1", "sha256": "32ac037ee092e34da8d66e5314e8578fc555e0fb4966e676919f3fb92737607d"},
+        "raw_timestream_provenance": {
+          "path": "148670/raw_timestream_provenance.yaml",
+          "schema_version": "citlali-raw-timestream-provenance-v1",
+          "sha256": "ec6ad70a6583c44aba2a277ee40b93426eee39d67de4285dff318df3d845b610",
+          "semantic_audit": {"observation_coverage_ok": true, "execution_completed": true, "completed_scan_count": 198, "required_timestream_write_count": 198}
+        }
+      },
+      "dataset": {"obsnum": "148670", "identity": "TolTEC commissioning Beammap observation 148670", "content_hash": null},
+      "invocation": {
+        "command": null,
+        "launcher": "tolteca reduce",
+        "runtime_policy": {"n_threads": 16, "parallel_policy": "omp", "kids_solver_parallel_policy": "seq"},
+        "exit_code": 0
+      },
+      "audit": {
+        "finished": true,
+        "serious_log_counts": {},
+        "file_count": 23,
+        "comparable_product_count": 13,
+        "stable_comparable_product_count": 12,
+        "stable_product_counts_by_kind": {"ecsv": 2, "fits": 6, "netcdf": 4},
+        "required_product_inventory_matches": "beammap-148670-refactor-50235fd6-redu15"
+      },
+      "comparison": {
+        "tool": "tools/baseline/compare_reduction_products.py",
+        "tool_sha": "c2ec8ae5",
+        "options": ["--mode", "beammap", "--strict", "--include-timestream", "--max-array-elements", "0", "--exclude", "citlali_profile.ecsv"],
+        "volatile_allowlist": ["citlali_profile.ecsv"],
+        "tolerances": {"atol": 2E-8, "rtol": 1E-10, "fraction_floor": 1E-12},
+        "common_products": 12,
+        "skipped_records": 0,
+        "changed_records": 0,
+        "scientific_products_exact": true,
+        "verdict": "accepted_exact"
+      },
+      "accepted_differences": [],
+      "performance": {"wall_time_log_seconds": 3397.522, "observation_pipeline_seconds": null, "map_output_seconds": null, "peak_rss_kb": null, "baseline_wall_time_log_seconds": 3458.917},
+      "artifacts": {
+        "candidate_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced/redu17",
+        "candidate_unity_path": "/work/toltec/commissioning2025-test/2026-refactor/beammap/refactor/reduced/redu17",
+        "baseline_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced/redu15"
+      },
+      "limitations": [
+        "The original ordered TolTECA NN*.yaml overlay files and their hashes were not retained in the reduction directory.",
+        "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained.",
+        "Flagged-sample and dynamic-notch realized counts remain explicitly unavailable pending migration of their natural execution owners."
+      ]
+    },
+    {
+      "record_id": "science-152390-152392-refactor-2d6f80a3-redu29",
+      "recorded_date": "2026-07-12",
+      "mode": "science",
+      "status": "accepted",
+      "candidate": {
+        "label": "refactor",
+        "branch": "codex/structural-refactor",
+        "citlali_sha": "2d6f80a3",
+        "citlali_version": "v4.0.0-3435-g2d6f80a3",
+        "dirty": false,
+        "dependencies": {"kids_sha": "04088da", "tula_sha": "f30f81d"},
+        "build": {"host": "unity", "compiler": null, "build_type": "Release", "cmake_flags": null}
+      },
+      "baseline": {
+        "label": "refactor",
+        "citlali_sha": "50235fd6",
+        "citlali_version": "v4.0.0-3414-g50235fd6",
+        "dependencies": {"kids_sha": "04088da", "tula_sha": "f30f81d"},
+        "reduction_id": "redu24"
+      },
+      "config": {
+        "ordered_sources": [
+          {
+            "role": "merged_low_level_citlali_input",
+            "path": "citlali_o152390_0_2_c2.yaml",
+            "precedence": 0,
+            "sha256": "cd860b8b712810f9f8651c325a6f1642e8453aa6148410cf7ff7a7058de286a3"
+          }
+        ],
+        "overlay_sources_retained": false,
+        "canonical_merged_sha256": "cd860b8b712810f9f8651c325a6f1642e8453aa6148410cf7ff7a7058de286a3",
+        "requested_sha256": null,
+        "effective_sha256": null,
+        "realized_sha256": null,
+        "runtime_provenance": {"path": "runtime_provenance.yaml", "schema_version": "citlali-runtime-provenance-v1", "sha256": "0eb7cdef063e4937efa79804827ada3e63cb20c3136105c3554b2a3aa612eb7b"},
+        "timestream_output_provenance": {"paths": ["152390/timestream_output_provenance.yaml", "152392/timestream_output_provenance.yaml"], "schema_version": "citlali-timestream-output-provenance-v1", "sha256": "829f10951abb32dc77bf88e36ae05b8994812fa8d657f8dae55d6af2ff694fb2"},
+        "processed_timestream_provenance": {"path": "processed_timestream_provenance.yaml", "schema_version": "citlali-processed-timestream-provenance-v1", "sha256": "7b6768eb04f4482ffa5044fcedc6d6593ad9da1f0ed23825e867195a7edc17c2"},
+        "raw_timestream_provenance": {
+          "paths": ["152390/raw_timestream_provenance.yaml", "152392/raw_timestream_provenance.yaml"],
+          "schema_version": "citlali-raw-timestream-provenance-v1",
+          "sha256": "127f4dea2fd519e4ed940ee83d490d195f5efcd7aeba40814efa9db393f62455",
+          "semantic_audit": {"observation_coverage_ok": true, "observation_count": 2, "completed_scan_count_each": 124, "required_timestream_write_count_each": 248}
+        }
+      },
+      "dataset": {"obsnum": "152390,152392", "identity": "TolTEC commissioning science observations 152390 and 152392", "content_hash": null},
+      "invocation": {
+        "command": null,
+        "launcher": "tolteca reduce",
+        "runtime_policy": {"n_threads": 16, "parallel_policy": "omp", "kids_solver_parallel_policy": "seq"},
+        "exit_code": 0
+      },
+      "audit": {
+        "finished": true,
+        "serious_log_counts": {},
+        "file_count": 44,
+        "comparable_product_count": 28,
+        "stable_comparable_product_count": 28,
+        "stable_product_counts_by_kind": {"csv": 1, "fits": 12, "netcdf": 15},
+        "required_product_inventory_matches": "science-152390-152392-og-ffc6b907-refactor-50235fd6"
+      },
+      "comparison": {
+        "tool": "tools/baseline/compare_reduction_products.py",
+        "tool_sha": "c2ec8ae5",
+        "options": ["--mode", "science", "--strict", "--include-timestream", "--max-array-elements", "0", "--exclude", "citlali_profile.ecsv"],
+        "volatile_allowlist": ["citlali_profile.ecsv"],
+        "tolerances": {"atol": 2E-8, "rtol": 1E-10, "fraction_floor": 1E-12},
+        "common_products": 27,
+        "skipped_records": 0,
+        "changed_records": 0,
+        "scientific_products_exact": false,
+        "measured": {"max_absolute_difference": 4.45198E-10, "max_fractional_difference": 2.27348E-8},
+        "verdict": "accepted_within_strict_tolerance"
+      },
+      "accepted_differences": [],
+      "performance": {"wall_time_log_seconds": 697.572, "observation_pipeline_seconds": null, "map_output_seconds": null, "peak_rss_kb": null, "baseline_wall_time_log_seconds": 705.784},
+      "artifacts": {
+        "candidate_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/science/refactor/reduced/redu29",
+        "candidate_unity_path": "/work/toltec/commissioning2025-test/2026-refactor/science/refactor/reduced/redu29",
+        "baseline_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/science/refactor/reduced/redu24"
+      },
+      "limitations": [
+        "The four redu directories per executable are retained fruit-loop iterations, not repeated independent reductions; only final refactor redu24 and redu29 are compared.",
+        "The original ordered TolTECA NN*.yaml overlay files and their hashes were not retained in the reduction directories.",
+        "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained.",
+        "Flagged-sample and dynamic-notch realized counts remain explicitly unavailable pending migration of their natural execution owners."
+      ]
     }
   ]
 }

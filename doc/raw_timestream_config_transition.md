@@ -201,7 +201,9 @@ not flow back into the request.
 6. Accept a strict point run with complete RTC/PTC timestream comparison, then
    accept affected beammap and science gates. OOF may reuse the explicit
    pointing execution gate. Polarimetry requires its own authority and
-   validation decision.
+   validation decision. Point `redu38`, Beammap `redu17`, and science `redu29`
+   are accepted at the publication/shadow boundary; the authority cutover is
+   now the next bounded step.
 7. Remove the 169-path legacy parser and all raw legacy-to-typed mirrors. If the
    two adjacent polarimetry reads are not yet migrated, isolate them behind a
    named, finite compatibility boundary rather than retaining a generic raw

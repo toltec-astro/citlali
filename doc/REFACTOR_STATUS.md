@@ -418,6 +418,19 @@ state still records the physical identity factor 1 and unchanged sample rate.
 A focused science-style test preserves enabled-factor divergence detection and
 accepts the disabled legacy sentinel. Local CLI/test builds, all 288 C++ tests,
 and full config preflight pass. The science and Beammap gates must be rerun.
+The repaired `2d6f80a3` candidate closes both cross-mode publication gates.
+Beammap `redu17` has one complete raw sidecar with 198 scans and 198 required
+writes; all 12 complete product families are exact against accepted `redu15`,
+with zero skipped records and runtime 3397.522 versus 3458.917 seconds. Science
+final iteration `redu29` has two complete raw sidecars, each with 124 scans and
+248 required writes; all 27 complete product families pass the strict gate
+against accepted `redu24` with zero changed or skipped records. Its largest
+absolute difference is `4.452e-10`, within established tolerance, and runtime
+is 697.572 versus 705.784 seconds. Both runs have zero serious log issues and
+log each published sidecar path. The validation ledger records both accepted
+checkpoints. Point, Beammap, and science prerequisites are now satisfied for
+the bounded raw execution-authority cutover; OOF reuses the accepted pointing
+execution gate, and polarimetry remains outside this authority claim.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
