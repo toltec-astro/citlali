@@ -123,7 +123,8 @@ after all of the following are true:
   weighting, validation, correlation penalties, busy-row suppression, and
   second-pass flagging (currently exhaustive for every adapter assignment);
 - tests cover every effective decision listed above, including absent-key and
-  repeated-configuration behavior;
+  repeated-configuration behavior (a real value-initialized `PTCProc` snapshot
+  now also matches the complete typed processed default snapshot);
 - the complete config preflight passes for pointing, OOF, beammap, and science;
 - current matched pointing, beammap, and science reductions pass strict
   product comparison, with complete TOD comparison where applicable;

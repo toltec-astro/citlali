@@ -262,6 +262,12 @@ its schema and hash are recorded in the validation ledger. Against accepted
 including complete RTC/PTC timestreams, are exact with zero skipped records.
 Point provenance is accepted; matched beammap and science provenance remain
 before compatibility-parser removal.
+Parser-removal preparation now includes a complete default-snapshot parity
+test using a real value-initialized `PTCProc`. Typed defaults and the legacy
+compatibility snapshot are identical across every serialized processed field.
+Together with 171/171 reader coverage and exhaustive one-way adapter tests,
+this closes the deterministic omitted-default prerequisite without changing
+production parsing. All 253 C++ tests pass.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

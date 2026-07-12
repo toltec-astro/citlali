@@ -33,6 +33,9 @@
 #include <citlali/core/pipeline/timestream_config_adapter_processed.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
 #include <citlali/core/pipeline/tod_output_state.h>
+#include <kids/toltec/toltec.h>
+#include <citlali/core/utils/fits_io.h>
+#include <citlali/core/timestream/ptc/ptcproc.h>
 
 #include <gtest/gtest.h>
 
@@ -5117,6 +5120,41 @@ TEST(config_scaffold, separates_processed_requested_and_effective_state) {
     EXPECT_TRUE(plan.effective_resolutions.fruit_loop_iterations
                     ->forced_single_iteration_for_beammap);
     EXPECT_FALSE(plan.realized.fruit_loop_iterations_completed.has_value());
+}
+
+TEST(config_scaffold, typed_processed_defaults_match_legacy_seed_defaults) {
+    citlali::config::TimestreamConfig typed_defaults;
+    citlali::config::TimestreamConfig legacy_seeded;
+    timestream::PTCProc ptcproc{};
+    const std::map<int, std::string> array_name_map{
+        {0, "a1100"}, {1, "a1400"}, {2, "a2000"}};
+
+    citlali::pipeline::mirror_fruit_loops_config(
+        legacy_seeded.fruit_loops, ptcproc);
+    citlali::pipeline::mirror_processed_clean_config(
+        legacy_seeded.processed_time_chunk.clean, ptcproc,
+        array_name_map);
+    auto &legacy_weighting =
+        legacy_seeded.processed_time_chunk.weighting;
+    auto &legacy_flagging = legacy_seeded.processed_time_chunk.flagging;
+    citlali::pipeline::mirror_processed_weighting_config(
+        legacy_weighting, legacy_flagging, ptcproc);
+    citlali::pipeline::mirror_processed_weight_validation_config(
+        legacy_weighting.validation, ptcproc.weight_validation);
+    citlali::pipeline::mirror_processed_weight_corr_penalty_config(
+        legacy_weighting.corr_penalty, ptcproc.weight_corr_penalty);
+    citlali::pipeline::mirror_second_pass_local_config(
+        legacy_flagging.second_pass_local, ptcproc.second_pass_local);
+
+    EXPECT_EQ(
+        YAML::Dump(
+            citlali::pipeline::processed_timestream_config_snapshot_node(
+                citlali::pipeline::snapshot_processed_timestream_config(
+                    typed_defaults))),
+        YAML::Dump(
+            citlali::pipeline::processed_timestream_config_snapshot_node(
+                citlali::pipeline::snapshot_processed_timestream_config(
+                    legacy_seeded))));
 }
 
 TEST(config_scaffold, resets_all_processed_plan_state_between_runs) {
