@@ -40,12 +40,12 @@
       "config_prefixes": ["timestream.raw_time_chunk"],
       "typed_owner": "citlali::config::ReductionConfig::timestream.raw_time_chunk",
       "loader": "include/citlali/core/engine/detail/rtc_config_impl.h",
-      "execution_authority": "legacy",
+      "execution_authority": "typed",
       "legacy_targets": ["Engine::rtcproc"],
-      "adapter_direction": "legacy-to-typed",
-      "migration_status": "legacy-authoritative-with-typed-mirror",
-      "provenance_status": "partial",
-      "exit_gate": "The direct typed reader, complete typed-to-RTC adapter, and per-observation resolution run as strict production shadows while legacy RTC state remains authoritative. Required per-observation requested/effective/observation/realized provenance is accepted on Unity point redu38, Beammap redu17, and science redu29; flagged-sample and dynamic-notch counts remain explicitly unavailable. Next flip execution authority, validate the cutover, and only then remove the frozen 169-path parser and legacy-to-typed mirrors."
+      "adapter_direction": "typed-to-legacy",
+      "migration_status": "typed-authoritative-with-adapter",
+      "provenance_status": "complete",
+      "exit_gate": "The bounded authority cutover is implemented locally: direct typed parsing initializes requested/effective state and the one-way RTC execution adapter. The frozen legacy parser and ten mirrors now populate only a temporary comparison oracle. Required provenance is accepted on Unity point redu38, Beammap redu17, and science redu29; flagged-sample and dynamic-notch counts remain explicitly unavailable. Validate the cutover on Unity point, Beammap, and science before retiring the oracle parser and mirrors."
     },
     {
       "id": "processed-timestream",

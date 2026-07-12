@@ -4,6 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/pipeline/config_parse_tracking.h>
+#include <citlali/core/pipeline/raw_timestream_authority.h>
 #include <citlali/core/pipeline/raw_timestream_config_read.h>
 #include <citlali/core/pipeline/raw_timestream_shadow_parity.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
@@ -11,69 +12,84 @@
 #include <citlali/core/pipeline/timestream_config_mirror.h>
 
 #include <stdexcept>
+#include <type_traits>
 
 template<typename CT>
 void Engine::get_rtc_config(CT &config) {
     logger->info("getting rtc config options");
     auto &config_diag = citlali::pipeline::config_diagnostics(*this);
-    citlali::pipeline::ConfigDiagnosticsState shadow_diagnostics;
+    citlali::pipeline::ConfigDiagnosticsState legacy_diagnostics;
     citlali::config::RawTimeChunkConfig typed_request;
     citlali::pipeline::raw_timestream_plan(*this) = {};
     citlali::pipeline::read_raw_timestream_request_config(
-        config, typed_request, shadow_diagnostics);
-    // get rtcproc config
+        config, typed_request, config_diag);
+
+    using RtcProc = std::remove_reference_t<decltype(rtcproc)>;
+    RtcProc legacy_rtcproc;
     citlali::pipeline::read_processor_config(
-        rtcproc, config, config_diag);
-    auto &raw_config =
-        citlali::pipeline::timestream_config(*this).raw_time_chunk;
+        legacy_rtcproc, config, legacy_diagnostics);
+    citlali::config::RawTimeChunkConfig legacy_oracle;
     citlali::pipeline::mirror_raw_despike_config(
-        raw_config.despike, rtcproc);
+        legacy_oracle.despike, legacy_rtcproc);
 
     citlali::pipeline::mirror_raw_flagging_config(
-        raw_config.flagging, rtcproc);
+        legacy_oracle.flagging, legacy_rtcproc);
 
     citlali::pipeline::mirror_raw_kernel_config(
-        raw_config.kernel, rtcproc, RAD_TO_ASEC);
+        legacy_oracle.kernel, legacy_rtcproc, RAD_TO_ASEC);
 
     citlali::pipeline::mirror_raw_altaz_destripe_config(
-        raw_config.altaz_destripe, rtcproc);
+        legacy_oracle.altaz_destripe, legacy_rtcproc);
 
     citlali::pipeline::mirror_raw_line_audit_config(
-        raw_config.line_audit, rtcproc.line_audit);
+        legacy_oracle.line_audit, legacy_rtcproc.line_audit);
 
     citlali::pipeline::mirror_raw_downsample_config(
-        raw_config.downsample, rtcproc);
+        legacy_oracle.downsample, legacy_rtcproc);
 
-    auto &typed_filter = raw_config.filter;
-    citlali::pipeline::mirror_raw_filter_config(typed_filter, rtcproc);
+    citlali::pipeline::mirror_raw_filter_config(
+        legacy_oracle.filter, legacy_rtcproc);
 
     citlali::pipeline::mirror_raw_iir_filter_config(
-        raw_config.iir_filter, rtcproc);
+        legacy_oracle.iir_filter, legacy_rtcproc);
 
-    citlali::pipeline::mirror_raw_correction_flags(raw_config, rtcproc);
+    citlali::pipeline::mirror_raw_correction_flags(
+        legacy_oracle, legacy_rtcproc);
 
-    rtcproc.configure_filter_edge_guard(telescope.fsmp);
+    legacy_rtcproc.configure_filter_edge_guard(telescope.fsmp);
     citlali::pipeline::mirror_raw_filter_edge_guard_config(
-        typed_filter.edge_guard, rtcproc.filter_edge_guard);
+        legacy_oracle.filter.edge_guard,
+        legacy_rtcproc.filter_edge_guard);
+
+    auto &raw_config =
+        citlali::pipeline::timestream_config(*this).raw_time_chunk;
+    if (!config_diag.has_errors() && !legacy_diagnostics.has_errors()) {
+        citlali::pipeline::initialize_raw_timestream_authority(
+            typed_request,
+            citlali::pipeline::raw_timestream_plan(*this), raw_config,
+            rtcproc, telescope.fsmp, ASEC_TO_RAD, FWHM_TO_STD);
+
+        const auto parity =
+            citlali::pipeline::compare_raw_timestream_authority(
+                legacy_oracle, rtcproc, RAD_TO_ASEC);
+        if (!parity.exact) {
+            logger->error(
+                "typed raw RTC authority differs from legacy oracle\nlegacy:\n{}\ntyped authority:\n{}",
+                parity.legacy_oracle_snapshot,
+                parity.typed_authority_snapshot);
+            throw std::runtime_error(
+                "typed raw RTC authority parity failure");
+        }
+    } else if (!config_diag.has_errors()) {
+        logger->error(
+            "legacy raw RTC oracle rejected configuration accepted by typed parsing");
+        throw std::runtime_error(
+            "legacy raw RTC oracle diagnostics diverged from typed parsing");
+    }
+
     citlali::pipeline::configure_raw_tod_output_context(
         telescope, rtcproc,
         citlali::pipeline::timestream_config(*this).output.raw_time_chunk);
-
-    if (!shadow_diagnostics.has_errors()) {
-        citlali::pipeline::raw_timestream_plan(*this).reset_from_request(
-            typed_request);
-        const auto shadow =
-            citlali::pipeline::compare_raw_timestream_shadow(
-                typed_request, rtcproc, telescope.fsmp, ASEC_TO_RAD,
-                RAD_TO_ASEC, FWHM_TO_STD);
-        if (!shadow.exact) {
-            logger->error(
-                "typed raw RTC shadow differs from legacy parser\nlegacy:\n{}\ntyped adapter:\n{}",
-                shadow.legacy_snapshot, shadow.typed_adapter_snapshot);
-            throw std::runtime_error(
-                "typed raw RTC shadow parity failure");
-        }
-    }
 
     // ignore hwpr?
     auto &polarimetry_config =

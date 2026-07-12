@@ -431,6 +431,16 @@ log each published sidecar path. The validation ledger records both accepted
 checkpoints. Point, Beammap, and science prerequisites are now satisfied for
 the bounded raw execution-authority cutover; OOF reuses the accepted pointing
 execution gate, and polarimetry remains outside this authority claim.
+The bounded raw execution-authority cutover is now implemented locally. Direct
+typed parsing initializes requested/effective plan state and the one-way
+production `RTCProc` adapter. The legacy parser and ten mirrors remain only as
+a temporary read-only oracle whose deterministic snapshot must match the
+production RTC before execution. Focused tests prove stale processor state is
+overwritten, disabled requested values remain intact, and divergence fails.
+The CLI build, all 291 C++ tests, all eight real config profiles, the complete
+169-path boundary audit, and the frozen 44-record execution-read census pass.
+Unity point, Beammap, and science cutover validation is the next gate; parser
+and mirror retirement is prohibited until it passes.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

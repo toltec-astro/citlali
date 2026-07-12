@@ -19,6 +19,7 @@
 #include <citlali/core/pipeline/output_layout.h>
 #include <citlali/core/pipeline/output_netcdf_metadata.h>
 #include <citlali/core/pipeline/phdu_reduction_config.h>
+#include <citlali/core/pipeline/raw_timestream_authority.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/raw_timestream_execution_plan.h>
 #include <citlali/core/pipeline/raw_timestream_observation_resolution.h>
@@ -6394,6 +6395,101 @@ TEST(config_scaffold, default_raw_request_matches_legacy_parser_shadow) {
     EXPECT_TRUE(report.exact)
         << "legacy:\n" << report.legacy_snapshot
         << "typed adapter:\n" << report.typed_adapter_snapshot;
+}
+
+TEST(config_scaffold, initializes_typed_raw_execution_authority) {
+    citlali::config::RawTimeChunkConfig request;
+    request.filter.enabled = true;
+    request.filter.freq_high_Hz = 10.0;
+    request.filter.n_terms = 32;
+    request.filter.edge_guard.enabled = true;
+    request.downsample.enabled = true;
+    request.downsample.factor = 4;
+    request.despike.enabled = true;
+    request.despike.min_spike_sigma = 9.0;
+
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    citlali::config::RawTimeChunkConfig effective;
+    effective.filter.n_terms = 7;
+    timestream::RTCProc production;
+    production.filter.n_terms = 11;
+    production.despiker.min_spike_sigma = 3.0;
+
+    citlali::pipeline::initialize_raw_timestream_authority(
+        request, plan, effective, production, 100.0, 1.0, 1.0);
+
+    EXPECT_TRUE(plan.initialized);
+    EXPECT_EQ(plan.requested.filter.n_terms, 32);
+    EXPECT_EQ(plan.effective.filter.n_terms, 32);
+    EXPECT_EQ(effective.filter.n_terms, 32);
+    EXPECT_EQ(production.filter.n_terms, 32);
+    EXPECT_DOUBLE_EQ(production.despiker.min_spike_sigma, 9.0);
+    EXPECT_EQ(production.downsampler.factor, 4);
+    EXPECT_GT(production.filter_edge_guard.guard_samples, 0);
+}
+
+TEST(config_scaffold, raw_authority_matches_legacy_oracle) {
+    citlali::config::RawTimeChunkConfig request;
+    request.filter.enabled = true;
+    request.filter.freq_high_Hz = 10.0;
+    request.filter.n_terms = 32;
+    request.despike.enabled = true;
+    request.despike.min_spike_sigma = 8.0;
+
+    timestream::RTCProc legacy;
+    citlali::pipeline::adapt_raw_timestream_config_one_way(
+        request, legacy, 1.0, 1.0);
+    legacy.configure_filter_edge_guard(100.0);
+    const auto legacy_oracle =
+        citlali::pipeline::snapshot_raw_rtc_config(legacy, 1.0);
+
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    citlali::config::RawTimeChunkConfig effective;
+    timestream::RTCProc production;
+    citlali::pipeline::initialize_raw_timestream_authority(
+        request, plan, effective, production, 100.0, 1.0, 1.0);
+
+    const auto exact =
+        citlali::pipeline::compare_raw_timestream_authority(
+            legacy_oracle, production, 1.0);
+    EXPECT_TRUE(exact.exact)
+        << "legacy:\n" << exact.legacy_oracle_snapshot
+        << "typed authority:\n" << exact.typed_authority_snapshot;
+
+    production.filter.n_terms = 64;
+    const auto divergent =
+        citlali::pipeline::compare_raw_timestream_authority(
+            legacy_oracle, production, 1.0);
+    EXPECT_FALSE(divergent.exact);
+    EXPECT_NE(
+        divergent.legacy_oracle_snapshot,
+        divergent.typed_authority_snapshot);
+}
+
+TEST(config_scaffold, raw_authority_preserves_disabled_request_values) {
+    citlali::config::RawTimeChunkConfig request;
+    request.filter.enabled = false;
+    request.filter.n_terms = 73;
+    request.iir_filter.enabled = false;
+    request.iir_filter.freq_Hz = 0.4;
+    request.downsample.enabled = false;
+    request.downsample.factor = 1;
+
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    citlali::config::RawTimeChunkConfig effective;
+    timestream::RTCProc production;
+    citlali::pipeline::initialize_raw_timestream_authority(
+        request, plan, effective, production, 100.0, 1.0, 1.0);
+
+    EXPECT_FALSE(production.run_tod_filter);
+    EXPECT_EQ(production.filter.n_terms, 0);
+    EXPECT_FALSE(production.run_tod_iir_highpass);
+    EXPECT_DOUBLE_EQ(production.filter.iir_highpass_freq_Hz, 0.0);
+    EXPECT_FALSE(production.run_downsample);
+    EXPECT_EQ(plan.requested.filter.n_terms, 73);
+    EXPECT_EQ(plan.effective.filter.n_terms, 73);
+    EXPECT_EQ(effective.filter.n_terms, 73);
+    EXPECT_EQ(effective.downsample.factor, 1);
 }
 
 TEST(config_scaffold,

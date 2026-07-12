@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit the legacy-authoritative raw-timestream config boundary."""
+"""Audit the typed-authoritative raw-timestream config boundary."""
 
 from __future__ import annotations
 
@@ -49,8 +49,9 @@ ADAPTER_MEMBER_ALIASES = {
     "timestream.raw_time_chunk.despike.legacy": "legacy_enabled",
 }
 LEGACY_PARSER_CALL = "read_processor_config"
-TYPED_SHADOW_READ_CALL = "read_raw_timestream_request_config"
-TYPED_SHADOW_COMPARE_CALL = "compare_raw_timestream_shadow"
+TYPED_REQUEST_READ_CALL = "read_raw_timestream_request_config"
+TYPED_AUTHORITY_INIT_CALL = "initialize_raw_timestream_authority"
+TYPED_AUTHORITY_COMPARE_CALL = "compare_raw_timestream_authority"
 LEGACY_TO_TYPED_MIRROR_CALLS = (
     "mirror_raw_despike_config",
     "mirror_raw_flagging_config",
@@ -184,23 +185,29 @@ def adapter_coverage(
     return sorted(covered), sorted(uncovered)
 
 
-def legacy_boundary(source_text: str) -> dict[str, object]:
+def authority_boundary(source_text: str) -> dict[str, object]:
     parser_positions = [
         match.start()
         for match in re.finditer(
             rf"\b{re.escape(LEGACY_PARSER_CALL)}\s*\(", source_text
         )
     ]
-    shadow_read_positions = [
+    typed_read_positions = [
         match.start()
         for match in re.finditer(
-            rf"\b{re.escape(TYPED_SHADOW_READ_CALL)}\s*\(", source_text
+            rf"\b{re.escape(TYPED_REQUEST_READ_CALL)}\s*\(", source_text
         )
     ]
-    shadow_compare_positions = [
+    authority_init_positions = [
         match.start()
         for match in re.finditer(
-            rf"\b{re.escape(TYPED_SHADOW_COMPARE_CALL)}\s*\(", source_text
+            rf"\b{re.escape(TYPED_AUTHORITY_INIT_CALL)}\s*\(", source_text
+        )
+    ]
+    authority_compare_positions = [
+        match.start()
+        for match in re.finditer(
+            rf"\b{re.escape(TYPED_AUTHORITY_COMPARE_CALL)}\s*\(", source_text
         )
     ]
     observed_mirrors = Counter(
@@ -221,19 +228,30 @@ def legacy_boundary(source_text: str) -> dict[str, object]:
         ),
         default=-1,
     )
+    last_mirror = max(
+        (
+            source_text.index(name)
+            for name in LEGACY_TO_TYPED_MIRROR_CALLS
+            if name in source_text
+        ),
+        default=-1,
+    )
     parser_precedes_mirrors = (
         len(parser_positions) == 1
         and first_mirror >= 0
         and parser_positions[0] < first_mirror
     )
-    shadow_order_exact = (
-        len(shadow_read_positions) == 1
+    authority_order_exact = (
+        len(typed_read_positions) == 1
         and len(parser_positions) == 1
         and first_mirror >= 0
-        and len(shadow_compare_positions) == 1
-        and shadow_read_positions[0] < parser_positions[0]
+        and last_mirror >= first_mirror
+        and len(authority_init_positions) == 1
+        and len(authority_compare_positions) == 1
+        and typed_read_positions[0] < parser_positions[0]
         and parser_positions[0] < first_mirror
-        and first_mirror < shadow_compare_positions[0]
+        and last_mirror < authority_init_positions[0]
+        and authority_init_positions[0] < authority_compare_positions[0]
     )
     exact = (
         len(parser_positions) == 1
@@ -241,25 +259,32 @@ def legacy_boundary(source_text: str) -> dict[str, object]:
         and not unexpected
         and not repeated
         and parser_precedes_mirrors
-        and shadow_order_exact
+        and authority_order_exact
     )
     return {
         "source": BOUNDARY_SOURCE,
         "legacy_parser_call_count": len(parser_positions),
-        "typed_shadow_read_call_count": len(shadow_read_positions),
-        "typed_shadow_compare_call_count": len(shadow_compare_positions),
+        "typed_request_read_call_count": len(typed_read_positions),
+        "typed_authority_init_call_count": len(authority_init_positions),
+        "typed_authority_compare_call_count": len(
+            authority_compare_positions
+        ),
         "legacy_to_typed_mirror_call_counts": dict(sorted(observed_mirrors.items())),
         "missing_mirror_calls": missing,
         "unexpected_mirror_calls": unexpected,
         "non_unit_mirror_call_counts": repeated,
         "parser_precedes_mirrors": parser_precedes_mirrors,
-        "shadow_order_exact": shadow_order_exact,
+        "authority_order_exact": authority_order_exact,
         "exact": exact,
         "current_direction": (
-            "requested_yaml -> typed_shadow; requested_yaml -> legacy_rtcproc "
-            "-> typed_snapshot; typed_shadow == legacy_snapshot gate"
+            "requested_yaml -> typed_plan -> production_rtcproc; "
+            "requested_yaml -> legacy_oracle -> typed_snapshot; "
+            "production_rtcproc == legacy_oracle gate"
         ),
-        "target_direction": "requested_yaml -> typed_plan -> legacy_rtcproc",
+        "target_direction": (
+            "requested_yaml -> typed_plan -> production_rtcproc; "
+            "retire legacy oracle after cross-mode validation"
+        ),
     }
 
 
@@ -285,7 +310,7 @@ def main() -> int:
     digest = path_digest(paths)
     counts = dict(sorted(Counter(map(family, paths)).items()))
     exits = direct_exit_count(body)
-    boundary = legacy_boundary((repo_root / BOUNDARY_SOURCE).read_text())
+    boundary = authority_boundary((repo_root / BOUNDARY_SOURCE).read_text())
     raw_paths = [
         path for path in paths if family(path) == "raw_timestream"
     ]
@@ -374,8 +399,8 @@ def main() -> int:
             f"- Path digest: `{digest}`\n"
             f"- Direct parser exits: `{exits}`\n"
             f"- Boundary exact: `{boundary['exact']}`\n"
-            f"- Typed shadow order exact: "
-            f"`{boundary['shadow_order_exact']}`\n"
+            f"- Typed authority order exact: "
+            f"`{boundary['authority_order_exact']}`\n"
             f"- Declared direct typed-reader paths: "
             f"`{len(declared_reader_paths)}`\n"
             f"- Frozen paths covered by typed readers: "
@@ -387,7 +412,7 @@ def main() -> int:
             f"- Drift: `{drift}`\n\n"
             "| Family | Paths |\n| --- | ---: |\n"
             f"{family_rows}\n\n"
-            "| Legacy-to-typed mirror | Calls |\n| --- | ---: |\n"
+            "| Legacy-oracle mirror | Calls |\n| --- | ---: |\n"
             f"{mirror_rows}\n"
         )
     print(
@@ -395,9 +420,10 @@ def main() -> int:
         f"paths={len(paths)} raw={counts.get('raw_timestream', 0)} "
         f"polarimetry={counts.get('polarimetry', 0)} exits={exits} "
         f"legacy_parser_calls={boundary['legacy_parser_call_count']} "
-        f"typed_shadow_reads={boundary['typed_shadow_read_call_count']} "
-        f"typed_shadow_compares={boundary['typed_shadow_compare_call_count']} "
-        f"legacy_to_typed_mirrors={len(boundary['legacy_to_typed_mirror_call_counts'])} "
+        f"typed_request_reads={boundary['typed_request_read_call_count']} "
+        f"typed_authority_inits={boundary['typed_authority_init_call_count']} "
+        f"typed_authority_compares={boundary['typed_authority_compare_call_count']} "
+        f"legacy_oracle_mirrors={len(boundary['legacy_to_typed_mirror_call_counts'])} "
         f"typed_reader_coverage={len(reader_covered)}/{len(raw_paths)} "
         f"serialized={len(serialized)}/{len(raw_paths)} "
         f"adapted={len(adapted)}/{len(raw_paths)} "

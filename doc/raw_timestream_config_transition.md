@@ -19,16 +19,22 @@ execution also remains outside this transition.
 
 ## Current boundary
 
-The legacy-authoritative direction is:
+The typed-authoritative cutover candidate uses this direction:
 
-`merged YAML -> RTCProc::get_config -> RTCProc fields -> typed raw snapshot`
+`merged YAML -> typed request -> effective plan -> RTCProc execution adapter`
+
+During cutover validation, a separate read-only oracle remains:
+
+`merged YAML -> temporary RTCProc parser -> temporary typed snapshot`
 
 `RTCProc::get_config` contains 171 unique literal paths: 169 raw-timestream and
 two polarimetry paths. Its original 14 direct process exits have been replaced
-by propagated invalid-key diagnostics. After parsing,
-`Engine::get_rtc_config` invokes ten legacy-to-typed mirror helpers. The typed
-raw object already supplies several downstream policy accessors, but it is a
-snapshot of legacy processor state rather than the accepted request authority.
+by propagated invalid-key diagnostics. `Engine::get_rtc_config` parses that
+legacy surface only into a temporary `RTCProc` and invokes ten legacy-to-typed
+mirror helpers only to construct the oracle snapshot. Direct typed parsing
+initializes requested/effective plan state, and one typed-to-RTC adapter
+initializes the production `rtcproc`. Deterministic snapshots must match before
+execution.
 
 `tools/config/audit_raw_timestream_boundary.py` freezes this characterization:
 
@@ -36,11 +42,11 @@ snapshot of legacy processor state rather than the accepted request authority.
 - raw versus adjacent polarimetry path counts;
 - zero direct parser exits;
 - the single legacy parser call; and
-- the exact ordered parser-before-mirrors boundary with ten mirror helpers.
+- the exact typed-read, oracle-parser, ten-mirror, authority-initialization,
+  and parity-comparison order.
 
-This audit is a drift detector, not an endorsement of the current direction.
-Intentional migration steps update its expected state only after focused tests
-make the new boundary explicit.
+This audit is a drift detector. The oracle is temporary validation scaffolding,
+not a second production authority.
 
 ## Preparation checkpoint
 
@@ -73,8 +79,9 @@ from observation state. A complete request round trip through the existing
 legacy mirrors, disabled-sentinel checks, and repeated-observation tests pass.
 The boundary audit enforces 169/169 reader, serializer, and adapter coverage.
 This proves field-transfer parity; it does not make typed observation
-resolution authoritative. Production constructs and records the plan only as
-a shadow. `RTCProc::get_config` plus the ten legacy-to-typed mirrors remain the
+resolution authoritative. At that preparation checkpoint, production
+constructed and recorded the plan only as a shadow, and
+`RTCProc::get_config` plus the ten legacy-to-typed mirrors remained the
 production execution authority.
 
 Pure observation resolution is implemented. It returns an
@@ -87,7 +94,7 @@ policies, so shadow parity does not rely on duplicated formulas. Focused tests
 match the real legacy processor for sum/max edge policies and representative
 tau values.
 
-The context-free production shadow is now wired. `Engine::get_rtc_config`
+The context-free production shadow was then wired. `Engine::get_rtc_config`
 directly reads an isolated typed request before invoking the legacy parser,
 stores the typed execution plan, adapts the request into a temporary RTC policy
 object, and compares deterministic snapshots after the ten legacy mirrors.
@@ -96,12 +103,22 @@ temporary object never drives numerical execution. The boundary audit requires
 the typed read, legacy parser, mirrors, and shadow comparison exactly once in
 that order.
 
-The per-observation production shadow is also wired. Input preparation records
+The bounded authority cutover is now implemented locally. The direct typed
+request initializes requested/effective plan state and the production
+`RTCProc` through one adapter. Legacy parsing and all ten mirrors target only a
+temporary oracle. Focused tests prove stale production fields are overwritten,
+disabled requested values remain intact, and oracle divergence is detected.
+The CLI build, all 291 C++ tests, all eight real config profiles, and the frozen
+169-path reader/serializer/adapter and 44-record execution-read audits pass.
+Unity cutover validation is pending; the oracle parser and mirrors remain until
+that evidence is accepted.
+
+The per-observation production shadow was also wired. Input preparation records
 and compares native/effective sample rate, downsample factor, filter edge
 guard/context, and source-protection activity. Observation setup completes and
 compares extinction activity/model. A second observation resets observation
-and realized state. Mismatches fail with field-level diagnostics while the
-legacy processor still drives execution. Frequency-derived downsampling has one
+and realized state. Mismatches fail with field-level diagnostics. Frequency-
+derived downsampling has one
 explicitly deferred edge-guard comparison because legacy configures the guard
 before deriving the per-observation factor; the typed expected guard and the
 deferral are recorded without changing legacy behavior.
@@ -202,9 +219,10 @@ not flow back into the request.
    accept affected beammap and science gates. OOF may reuse the explicit
    pointing execution gate. Polarimetry requires its own authority and
    validation decision. Point `redu38`, Beammap `redu17`, and science `redu29`
-   are accepted at the publication/shadow boundary; the authority cutover is
-   now the next bounded step.
-7. Remove the 169-path legacy parser and all raw legacy-to-typed mirrors. If the
+   are accepted at the publication/shadow boundary. The authority cutover is
+   implemented locally and now requires the same Unity mode gates.
+7. After accepting the cutover gates, remove the 169-path legacy parser and all
+   raw legacy-to-typed mirrors. If the
    two adjacent polarimetry reads are not yet migrated, isolate them behind a
    named, finite compatibility boundary rather than retaining a generic raw
    parser.

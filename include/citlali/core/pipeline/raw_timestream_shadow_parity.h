@@ -34,6 +34,27 @@ struct RawTimestreamShadowParityReport {
     std::string typed_adapter_snapshot;
 };
 
+struct RawTimestreamAuthorityParityReport {
+    bool exact = false;
+    std::string legacy_oracle_snapshot;
+    std::string typed_authority_snapshot;
+};
+
+template <class RtcProc>
+RawTimestreamAuthorityParityReport compare_raw_timestream_authority(
+    const citlali::config::RawTimeChunkConfig &legacy_oracle,
+    const RtcProc &typed_authority, double radians_to_arcsec) {
+    RawTimestreamAuthorityParityReport report;
+    report.legacy_oracle_snapshot = YAML::Dump(
+        raw_timestream_request_node(legacy_oracle));
+    report.typed_authority_snapshot = YAML::Dump(
+        raw_timestream_request_node(snapshot_raw_rtc_config(
+            typed_authority, radians_to_arcsec)));
+    report.exact =
+        report.legacy_oracle_snapshot == report.typed_authority_snapshot;
+    return report;
+}
+
 template <class RtcProc>
 RawTimestreamShadowParityReport compare_raw_timestream_shadow(
     const citlali::config::RawTimeChunkConfig &request,
