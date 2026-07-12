@@ -61,9 +61,19 @@ An unwired `RawTimestreamExecutionPlan` now separates requested, context-free
 effective, per-observation, and realized state. Context-free resolution records
 filter/notch activation, downsample request form and filter dependency,
 source-protection intent, and correction intent. Beginning a new observation
-clears observation and realized state without modifying the request. Production
-does not yet construct or consume this plan; `RTCProc::get_config` and the ten
-legacy-to-typed mirrors remain authoritative.
+clears observation and realized state without modifying the request.
+
+The unwired one-way adapter covers all 169 raw paths. Context-free request
+fields are copied into the real `RTCProc` compatibility object, while native
+sample rate, derived downsample factor, edge guard/context counts, source-
+protection activity, and extinction availability/model are applied separately
+from observation state. A complete request round trip through the existing
+legacy mirrors, disabled-sentinel checks, and repeated-observation tests pass.
+The boundary audit enforces 169/169 reader, serializer, and adapter coverage.
+This proves field-transfer parity; it does not yet make typed observation
+resolution authoritative. Production does not construct or consume this plan,
+and `RTCProc::get_config` plus the ten legacy-to-typed mirrors remain the
+production authority.
 
 ## Target state
 

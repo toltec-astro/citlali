@@ -22,6 +22,10 @@ EXCLUDED_FILES = {
     "include/citlali/core/pipeline/timestream_config_mirror_raw_filters.h",
     "include/citlali/core/pipeline/timestream_config_mirror_raw_flagging.h",
     "include/citlali/core/pipeline/timestream_config_mirror_raw_output.h",
+    "include/citlali/core/pipeline/timestream_config_adapter_raw.h",
+    "include/citlali/core/pipeline/timestream_config_adapter_raw_filtering.h",
+    "include/citlali/core/pipeline/timestream_config_adapter_raw_flagging.h",
+    "include/citlali/core/pipeline/timestream_config_adapter_raw_line_audit.h",
 }
 EXPECTED_RECORD_COUNT = 40
 EXPECTED_RECORD_SHA256 = (
@@ -179,7 +183,9 @@ def main() -> int:
         "excluded_compatibility_boundaries": sorted(EXCLUDED_FILES),
         "records": records,
         "note": (
-            "Numerical method calls may remain on RTCProc. Raw policy reads, "
+            "The named one-way adapter and legacy mirrors are compatibility "
+            "boundaries, not external consumers. Numerical method calls may "
+            "remain on RTCProc. Raw policy reads, "
             "observation-state mutation, and output/realized state must move "
             "to explicit typed plans or metadata contracts. Polarimetry is a "
             "separate authority domain."

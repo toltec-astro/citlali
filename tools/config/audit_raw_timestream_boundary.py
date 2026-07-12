@@ -28,6 +28,12 @@ TYPED_READER_SOURCES = (
 RAW_SERIALIZER_SOURCE = (
     "include/citlali/core/pipeline/raw_timestream_config_serialization.h"
 )
+RAW_ADAPTER_SOURCES = (
+    "include/citlali/core/pipeline/timestream_config_adapter_raw.h",
+    "include/citlali/core/pipeline/timestream_config_adapter_raw_filtering.h",
+    "include/citlali/core/pipeline/timestream_config_adapter_raw_flagging.h",
+    "include/citlali/core/pipeline/timestream_config_adapter_raw_line_audit.h",
+)
 EXPECTED_DECLARED_TYPED_READER_PATH_COUNT = 156
 EXPECTED_DECLARED_TYPED_READER_PATH_SHA256 = (
     "39f59b97de6ec9ae52b718c4ab8971485576b9d51264144e80678800a3e89a05"
@@ -37,6 +43,10 @@ COMPATIBILITY_ALIASES = {
     "candidate_sigma_scale":
         "timestream.raw_time_chunk.despike.local_residual.compact_raw_gate."
         "candidate_rel_sigma_scale",
+}
+ADAPTER_MEMBER_ALIASES = {
+    "timestream.raw_time_chunk.IIR_filter": "iir_filter",
+    "timestream.raw_time_chunk.despike.legacy": "legacy_enabled",
 }
 LEGACY_PARSER_CALL = "read_processor_config"
 LEGACY_TO_TYPED_MIRROR_CALLS = (
@@ -140,6 +150,28 @@ def serializer_coverage(
     return sorted(covered), sorted(uncovered)
 
 
+def adapter_coverage(
+    frozen_paths: list[str], repo_root: Path
+) -> tuple[list[str], list[str]]:
+    source_text = "\n".join(
+        (repo_root / source).read_text() for source in RAW_ADAPTER_SOURCES
+    )
+    covered: list[str] = []
+    uncovered: list[str] = []
+    for frozen_path in frozen_paths:
+        typed_path = COMPATIBILITY_ALIASES.get(frozen_path, frozen_path)
+        leaf = ADAPTER_MEMBER_ALIASES.get(
+            frozen_path, typed_path.rsplit(".", 1)[-1]
+        )
+        destination = (
+            covered
+            if re.search(rf"\b{re.escape(leaf)}\b", source_text)
+            else uncovered
+        )
+        destination.append(frozen_path)
+    return sorted(covered), sorted(uncovered)
+
+
 def legacy_boundary(source_text: str) -> dict[str, object]:
     parser_positions = [
         match.start()
@@ -223,6 +255,7 @@ def main() -> int:
         typed_reader_coverage(raw_paths, declared_reader_paths)
     )
     serialized, unserialized = serializer_coverage(raw_paths, repo_root)
+    adapted, unadapted = adapter_coverage(raw_paths, repo_root)
     drift = (
         len(paths) != EXPECTED_PATH_COUNT
         or counts.get("raw_timestream") != EXPECTED_RAW_PATH_COUNT
@@ -238,6 +271,7 @@ def main() -> int:
         or bool(stale_reader_paths)
         or bool(reader_uncovered)
         or bool(unserialized)
+        or bool(unadapted)
     )
     result = {
         "schema_version": "citlali-raw-config-boundary-audit-v1",
@@ -260,6 +294,9 @@ def main() -> int:
         "serializer_source": RAW_SERIALIZER_SOURCE,
         "serialized_path_count": len(serialized),
         "unserialized_paths": unserialized,
+        "adapter_sources": list(RAW_ADAPTER_SOURCES),
+        "adapter_covered_path_count": len(adapted),
+        "unadapted_paths": unadapted,
         "paths": paths,
         "note": (
             "This is a characterization gate, not an approval of the current "
@@ -296,6 +333,8 @@ def main() -> int:
             f"`{len(reader_covered)}/{len(raw_paths)}`\n"
             f"- Frozen paths covered by request serializer: "
             f"`{len(serialized)}/{len(raw_paths)}`\n"
+            f"- Frozen paths covered by typed-to-RTC adapter: "
+            f"`{len(adapted)}/{len(raw_paths)}`\n"
             f"- Drift: `{drift}`\n\n"
             "| Family | Paths |\n| --- | ---: |\n"
             f"{family_rows}\n\n"
@@ -310,6 +349,7 @@ def main() -> int:
         f"legacy_to_typed_mirrors={len(boundary['legacy_to_typed_mirror_call_counts'])} "
         f"typed_reader_coverage={len(reader_covered)}/{len(raw_paths)} "
         f"serialized={len(serialized)}/{len(raw_paths)} "
+        f"adapted={len(adapted)}/{len(raw_paths)} "
         f"drift={drift}"
     )
     return 1 if args.fail_on_drift and drift else 0

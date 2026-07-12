@@ -324,8 +324,13 @@ polarimetry accesses, with zero unreviewed records. An unwired execution plan
 separates requested, context-free effective, per-observation, and realized
 state and resets observation state between runs. All 260 C++ tests, 21 focused
 config-tool tests, and all eight config profiles pass. Production remains
-legacy-authoritative; typed-to-RTC adapter parity and observation-resolution
-functions are the next gates before Engine wiring.
+legacy-authoritative. The complete unwired typed-to-RTC adapter now covers all
+169 raw paths, with a real-`RTCProc` request round trip, disabled-sentinel
+checks, and a separate observation-state overlay for sample rate, downsampling,
+edge context, source protection, and extinction. The frozen audit enforces
+169/169 adapter coverage. All 264 C++ tests, 22 focused config-tool tests, and
+all eight config profiles pass. Pure observation-resolution construction and
+shadow parity at the Engine boundary are the next gates before authority flips.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

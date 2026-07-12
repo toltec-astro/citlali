@@ -339,9 +339,11 @@ $HOME/tolteca/bin/python tools/config/audit_processed_timestream_boundary.py \
 `audit_raw_timestream_boundary.py` characterizes the next migration boundary.
 It freezes the active `RTCProc` parser's 169 raw-timestream paths, the two
 adjacent polarimetry paths, 14 direct parser exits, and the ten
-legacy-to-typed raw mirror calls. This is deliberately a characterization gate:
-the desired direction is typed-to-legacy, but the audit must describe current
-authority accurately while migration is in progress.
+legacy-to-typed raw mirror calls. It also requires all 169 raw paths to appear
+in the direct typed readers, deterministic request serializer, and unwired
+typed-to-RTC adapter. This remains a characterization gate: production
+authority is still legacy-to-typed until the Engine boundary is deliberately
+wired and validated.
 
 ```bash
 $HOME/tolteca/bin/python tools/config/audit_raw_timestream_boundary.py \

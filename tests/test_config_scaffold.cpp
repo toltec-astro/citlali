@@ -36,8 +36,12 @@
 #include <citlali/core/pipeline/timestream_output_provenance.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
 #include <citlali/core/pipeline/timestream_config_adapter_processed.h>
+#include <citlali/core/pipeline/timestream_config_adapter_raw.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
 #include <citlali/core/pipeline/tod_output_state.h>
+#include <citlali/core/utils/fits_io.h>
+#include <kids/toltec/toltec.h>
+#include <citlali/core/timestream/rtc/rtcproc.h>
 
 #include <gtest/gtest.h>
 #include <spdlog/sinks/null_sink.h>
@@ -5458,6 +5462,193 @@ TEST(config_scaffold, resets_raw_observation_and_realized_state) {
 TEST(config_scaffold, rejects_raw_observation_before_plan_initialization) {
     citlali::pipeline::RawTimestreamExecutionPlan plan;
     EXPECT_THROW(plan.begin_observation(), std::logic_error);
+}
+
+TEST(config_scaffold, adapts_complete_raw_request_to_legacy_rtc_one_way) {
+    citlali::config::RawTimeChunkConfig request;
+    request.kernel.enabled = true;
+    request.kernel.filepath = "kernel.fits";
+    request.kernel.type = "fits";
+    request.kernel.fwhm_arcsec = 7.5;
+    request.kernel.image_ext_names = {"a1100", "a1400", "a2000"};
+    request.filter.enabled = true;
+    request.filter.a_gibbs = 43.0;
+    request.filter.freq_low_Hz = 0.2;
+    request.filter.freq_high_Hz = 18.0;
+    request.filter.n_terms = 48;
+    request.filter.notch.enabled = true;
+    request.filter.notch.zero_phase = true;
+    request.filter.notch.freqs_Hz = {10.0, 20.0};
+    request.filter.notch.delta_f_Hz = {0.5, 1.0};
+    request.filter.edge_guard.enabled = true;
+    request.filter.edge_guard.mode =
+        citlali::config::RawTimeChunkFilterEdgeGuardMode::flag;
+    request.filter.edge_guard.combine =
+        citlali::config::RawTimeChunkFilterEdgeGuardCombine::max;
+    request.filter.edge_guard.min_samples = 3;
+    request.filter.edge_guard.extra_samples = 5;
+    request.filter.edge_guard.max_samples = 96;
+    request.filter.edge_guard.iir_settle_attenuation = 0.02;
+    request.filter.edge_guard.apply_notch = false;
+    request.iir_filter.enabled = true;
+    request.iir_filter.freq_Hz = 0.25;
+    request.iir_filter.order = 3;
+    request.iir_filter.zero_phase = true;
+    request.downsample.enabled = true;
+    request.downsample.factor = 4;
+    request.downsample.downsampled_freq_Hz = 30.0;
+    request.despike.enabled = true;
+    request.despike.min_spike_sigma = 9.0;
+    request.despike.time_constant_sec = 0.02;
+    request.despike.window_size = 48.0;
+    request.despike.legacy_enabled = false;
+    request.despike.source_protection.enabled = true;
+    request.despike.source_protection.radius_arcsec = 27.0;
+    request.despike.local_residual.enabled = true;
+    request.despike.local_residual.window_sec = 0.3;
+    request.despike.local_residual.compact_raw_gate.max_width_sec = 0.2;
+    request.flagging.delta_f_min_Hz = 70000.0;
+    request.flagging.lower_tod_inv_var_factor = 0.2;
+    request.flagging.upper_tod_inv_var_factor = 4.5;
+    request.flagging.network_step_mask.enabled = true;
+    request.flagging.network_step_mask.min_det_used = 24;
+    request.flagging.impulsive_capture.enabled = true;
+    request.flagging.impulsive_capture.max_events_per_network = 5;
+    request.flagging.impulsive_coincidence.enabled = true;
+    request.flagging.impulsive_coincidence.min_networks_aligned = 4;
+    request.flagging.impulsive_coincidence.high_score_override_thresh = 8.0;
+    request.altaz_destripe.enabled = true;
+    request.altaz_destripe.grouping = "array";
+    request.altaz_destripe.fit_time_trend = false;
+    request.altaz_destripe.min_samples = 80;
+    request.line_audit.enabled = true;
+    request.line_audit.line_min_hz = 2.0;
+    request.line_audit.post_filter_enabled = true;
+    request.line_audit.post_filter_apply_iterations = 2;
+    request.line_audit.fixed_notch_enabled = true;
+    request.line_audit.fixed_notch_freqs_hz = {12.0, 24.0};
+    request.line_audit.fixed_notch_widths_hz = {0.2, 0.3};
+    request.line_audit.apply_shared_notches = true;
+    request.line_audit.detector_notch_context_samples = 32;
+    request.flux_calibration_enabled = true;
+    request.extinction_correction_enabled = true;
+
+    timestream::RTCProc rtcproc;
+    citlali::pipeline::adapt_raw_timestream_config_one_way(
+        request, rtcproc, 1.0, 1.0);
+
+    citlali::config::RawTimeChunkConfig roundtrip;
+    citlali::pipeline::mirror_raw_despike_config(
+        roundtrip.despike, rtcproc);
+    citlali::pipeline::mirror_raw_flagging_config(
+        roundtrip.flagging, rtcproc);
+    citlali::pipeline::mirror_raw_kernel_config(
+        roundtrip.kernel, rtcproc, 1.0);
+    citlali::pipeline::mirror_raw_altaz_destripe_config(
+        roundtrip.altaz_destripe, rtcproc);
+    citlali::pipeline::mirror_raw_line_audit_config(
+        roundtrip.line_audit, rtcproc.line_audit);
+    citlali::pipeline::mirror_raw_downsample_config(
+        roundtrip.downsample, rtcproc);
+    citlali::pipeline::mirror_raw_filter_config(
+        roundtrip.filter, rtcproc);
+    citlali::pipeline::mirror_raw_iir_filter_config(
+        roundtrip.iir_filter, rtcproc);
+    citlali::pipeline::mirror_raw_correction_flags(roundtrip, rtcproc);
+    citlali::pipeline::mirror_raw_filter_edge_guard_config(
+        roundtrip.filter.edge_guard, rtcproc.filter_edge_guard);
+
+    EXPECT_EQ(
+        YAML::Dump(citlali::pipeline::raw_timestream_request_node(request)),
+        YAML::Dump(citlali::pipeline::raw_timestream_request_node(roundtrip)));
+    EXPECT_FALSE(rtcproc.despiker.source_protection_enabled);
+    EXPECT_DOUBLE_EQ(rtcproc.kernel.sigma_rad, 7.5);
+}
+
+TEST(config_scaffold, keeps_disabled_raw_request_values_out_of_rtc_sentinels) {
+    citlali::config::RawTimeChunkConfig request;
+    request.filter.enabled = false;
+    request.filter.n_terms = 73;
+    request.filter.notch.enabled = true;
+    request.filter.notch.freqs_Hz = {15.0};
+    request.filter.notch.delta_f_Hz = {0.25};
+    request.iir_filter.enabled = false;
+    request.iir_filter.freq_Hz = 0.4;
+    request.iir_filter.order = 5;
+    request.iir_filter.zero_phase = true;
+    request.despike.enabled = false;
+    request.despike.window_size = 55.0;
+
+    timestream::RTCProc rtcproc;
+    citlali::pipeline::adapt_raw_timestream_config_one_way(
+        request, rtcproc, 1.0, 1.0);
+
+    EXPECT_FALSE(rtcproc.run_tod_filter);
+    EXPECT_EQ(rtcproc.filter.n_terms, 0);
+    EXPECT_FALSE(rtcproc.run_tod_notch);
+    EXPECT_TRUE(rtcproc.filter.qs.empty());
+    EXPECT_FALSE(rtcproc.run_tod_iir_highpass);
+    EXPECT_DOUBLE_EQ(rtcproc.filter.iir_highpass_freq_Hz, 0.0);
+    EXPECT_EQ(rtcproc.filter.iir_highpass_order, 1);
+    EXPECT_FALSE(rtcproc.filter.iir_highpass_zero_phase);
+    EXPECT_FALSE(rtcproc.run_despike);
+    EXPECT_DOUBLE_EQ(rtcproc.despiker.window_size, 55.0);
+    EXPECT_EQ(request.filter.n_terms, 73);
+    EXPECT_DOUBLE_EQ(request.iir_filter.freq_Hz, 0.4);
+}
+
+TEST(config_scaffold, expands_legacy_line_audit_width_only_in_rtc_target) {
+    citlali::config::RawTimeChunkConfig request;
+    request.line_audit.fixed_notch_enabled = true;
+    request.line_audit.fixed_notch_freqs_hz = {12.0, 24.0};
+    request.line_audit.fixed_notch_widths_hz = {0.3};
+
+    timestream::RTCProc rtcproc;
+    citlali::pipeline::adapt_raw_timestream_config_one_way(
+        request, rtcproc, 1.0, 1.0);
+
+    EXPECT_EQ(request.line_audit.fixed_notch_widths_hz,
+              (std::vector<double>{0.3}));
+    EXPECT_EQ(rtcproc.line_audit.fixed_notch_widths_hz,
+              (std::vector<double>{0.3, 0.3}));
+}
+
+TEST(config_scaffold, overlays_raw_observation_state_without_mutating_plan) {
+    citlali::config::RawTimeChunkConfig request;
+    request.downsample.factor = 0;
+    request.despike.source_protection.enabled = true;
+    request.extinction_correction_enabled = true;
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(request);
+    auto &observation = plan.begin_observation();
+    observation.native_sample_rate_hz = 488.0;
+    observation.effective_sample_rate_hz = 122.0;
+    observation.downsample_factor = 4;
+    observation.filter_edge_guard_samples = 19;
+    observation.filter_outer_context_samples = 23;
+    observation.source_protection_active = true;
+    observation.extinction_active = false;
+    observation.extinction_model = "am_q25";
+
+    timestream::RTCProc rtcproc;
+    citlali::pipeline::adapt_raw_timestream_config_one_way(
+        plan.effective, rtcproc, 1.0, 1.0);
+    citlali::pipeline::adapt_raw_timestream_observation_state_one_way(
+        *plan.observation, rtcproc);
+
+    EXPECT_DOUBLE_EQ(rtcproc.despiker.fsmp, 488.0);
+    EXPECT_EQ(rtcproc.downsampler.factor, 4);
+    EXPECT_EQ(rtcproc.filter_edge_guard.guard_samples, 19);
+    EXPECT_EQ(rtcproc.filter_edge_guard.context_samples, 23);
+    EXPECT_TRUE(rtcproc.despiker.source_protection_enabled);
+    EXPECT_FALSE(rtcproc.run_extinction);
+    EXPECT_EQ(rtcproc.calibration.extinction_model, "am_q25");
+    EXPECT_EQ(plan.requested.downsample.factor, 0);
+    EXPECT_EQ(plan.effective.downsample.factor, 0);
+
+    auto &next_observation = plan.begin_observation();
+    ASSERT_FALSE(next_observation.native_sample_rate_hz.has_value());
+    ASSERT_FALSE(next_observation.source_protection_active.has_value());
 }
 
 TEST(config_scaffold, separates_processed_requested_and_effective_state) {

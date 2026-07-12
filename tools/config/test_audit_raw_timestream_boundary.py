@@ -123,6 +123,30 @@ class RawTimestreamBoundaryAuditTest(unittest.TestCase):
             ["timestream.raw_time_chunk.filter.freq_high_Hz"],
         )
 
+    def test_adapter_coverage_reports_missing_leaf(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir)
+            source = repo_root / "adapter.h"
+            source.write_text("target.enabled = source.enabled;\n")
+            with patch.object(
+                audit, "RAW_ADAPTER_SOURCES", ("adapter.h",)
+            ):
+                covered, uncovered = audit.adapter_coverage(
+                    [
+                        "timestream.raw_time_chunk.filter.enabled",
+                        "timestream.raw_time_chunk.filter.freq_high_Hz",
+                    ],
+                    repo_root,
+                )
+
+        self.assertEqual(
+            covered, ["timestream.raw_time_chunk.filter.enabled"]
+        )
+        self.assertEqual(
+            uncovered,
+            ["timestream.raw_time_chunk.filter.freq_high_Hz"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

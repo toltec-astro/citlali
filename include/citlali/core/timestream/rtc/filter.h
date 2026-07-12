@@ -45,7 +45,7 @@ public:
     Eigen::Index iir_highpass_settle_samples(double) const;
 };
 
-void Filter::make_filter(double fsmp) {
+inline void Filter::make_filter(double fsmp) {
     // calculate nyquist frequency
     double nyquist = fsmp / 2.;
     // scale upper frequency cutoff to Nyquist frequency
@@ -100,7 +100,7 @@ void Filter::make_filter(double fsmp) {
     //filter = filter.array() / filter_sum;
 }
 
-void Filter::make_notch_filter(double fsmp) {
+inline void Filter::make_notch_filter(double fsmp) {
     notch_a.clear();
     notch_b.clear();
     for (Eigen::Index i=0; i<w0s.size(); i++) {
