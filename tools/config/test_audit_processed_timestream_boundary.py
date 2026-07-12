@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -25,6 +26,42 @@ class ProcessedTimestreamBoundaryAuditTest(unittest.TestCase):
 
     def write_reader(self, name: str, text: str) -> None:
         (self.repo_root / audit.TYPED_READER_SOURCES[name]).write_text(text)
+
+    def write_manifest(self, paths: list[str]) -> Path:
+        manifest = self.repo_root / audit.FROZEN_PATH_MANIFEST_SOURCE
+        manifest.parent.mkdir(parents=True, exist_ok=True)
+        manifest.write_text(
+            json.dumps(
+                {
+                    "schema_version": audit.PATH_MANIFEST_SCHEMA_VERSION,
+                    "source": "test",
+                    "path_count": len(paths),
+                    "path_sha256": audit.path_digest(paths),
+                    "paths": paths,
+                }
+            )
+        )
+        return manifest
+
+    def test_loads_canonical_frozen_path_manifest(self) -> None:
+        paths = ["timestream.fruit_loops.enabled"]
+        manifest = self.write_manifest(paths)
+
+        source, loaded, digest = audit.load_frozen_paths(self.repo_root)
+
+        self.assertEqual(source, manifest)
+        self.assertEqual(loaded, paths)
+        self.assertEqual(digest, audit.path_digest(paths))
+
+    def test_rejects_duplicate_or_unsorted_manifest_paths(self) -> None:
+        paths = [
+            "timestream.fruit_loops.max_iters",
+            "timestream.fruit_loops.enabled",
+        ]
+        self.write_manifest(paths)
+
+        with self.assertRaisesRegex(ValueError, "unique and canonically sorted"):
+            audit.load_frozen_paths(self.repo_root)
 
     def test_routes_second_pass_separately_from_general_flagging(self) -> None:
         self.assertEqual(

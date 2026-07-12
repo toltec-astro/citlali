@@ -317,13 +317,15 @@ The preflight fails if a direct access appears outside a recognized boundary.
 Classification is architectural bookkeeping, not permission to add raw YAML
 reads: new sites still require an explicit ownership decision.
 
-`audit_processed_timestream_boundary.py` freezes the retired legacy `PTCProc`
-path set and routes every path to its direct typed reader. Coverage requires
-the leaf key to occur in the declared reader source; intentional spelling
-differences must be listed as explicit compatibility aliases in the audit.
-The standard preflight fails on path drift, direct process exits, uncovered
-paths, stale aliases, paths omitted from the processed snapshot serializer, or
-any reintroduced legacy parser, compatibility seed, or direct mirror call in
+`processed_timestream_legacy_paths.json` is the versioned, canonical inventory
+of paths formerly read by the retired `PTCProc` parser.
+`audit_processed_timestream_boundary.py` validates the manifest's ordering,
+count, and digest and routes every path to its direct typed reader. Coverage
+requires the leaf key to occur in the declared reader source; intentional
+spelling differences must be listed as explicit compatibility aliases in the
+audit. The standard preflight fails on manifest or path drift, uncovered paths,
+stale aliases, paths omitted from the processed snapshot serializer, or any
+reintroduced legacy parser, compatibility seed, or direct mirror call in
 `Engine::get_ptc_config`.
 
 ```bash

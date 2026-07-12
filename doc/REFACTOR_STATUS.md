@@ -294,9 +294,7 @@ one-way execution adapters. The legacy parser call, compatibility seed, and all
 processed PTC-to-typed mirrors are removed. The retired-boundary audit rejects
 their reintroduction while preserving 171/171 reader and serializer coverage.
 Local CLI/test builds, all 252 C++ tests, all eight config profiles, and 13
-focused Python tests pass. The unused `PTCProc::get_config` body remains solely
-as the frozen path-audit source until that inventory moves to a standalone
-manifest; it is not reachable from production.
+focused Python tests pass.
 Unity point `redu36` at `c22bc127` closes the production parser-retirement
 gate. Its merged config is an exact 489-leaf match to accepted `redu35`; all 13
 scientific product families, including every RTC/PTC array, are exact with zero
@@ -304,9 +302,14 @@ missing, extra, changed, or skipped records. Processed and runtime provenance
 are byte-identical; timestream-output provenance differs only in the expected
 `redu35`/`redu36` paths. The run completed without serious log issues in 53.277
 seconds versus 60.159 seconds for the baseline. This acceptance is recorded in
-the validation ledger. Moving the frozen 171-path inventory to a standalone
-manifest and deleting the unreachable parser body is now a mechanical cleanup,
-not another authority migration.
+the validation ledger. The frozen 171-path inventory now lives in the versioned
+`processed_timestream_legacy_paths.json` manifest. Boundary-audit schema v5
+validates its canonical ordering, declared count, and digest before checking
+171/171 typed-reader and serializer coverage. The unreachable
+`PTCProc::get_config` declaration and roughly 1,190-line body are deleted.
+Local CLI/test builds, all 252 C++ tests, all eight config profiles, and eight
+focused boundary-audit tests pass after deletion. The processed-timestream
+authority migration and its legacy-parser cleanup are complete.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

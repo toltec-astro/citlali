@@ -147,10 +147,11 @@ of the following became true:
   immutable request.
 
 The boundary audit now requires zero legacy parser, compatibility-seed, or
-direct processed-mirror calls in `Engine::get_ptc_config`. The unused legacy
-parser body remains temporarily as the frozen 171-path audit source. Moving
-that path set to a standalone manifest and deleting the dead body is a later
-mechanical cleanup, not a config-authority change.
+direct processed-mirror calls in `Engine::get_ptc_config`. The frozen 171-path
+set lives in the versioned, canonically ordered
+`tools/config/processed_timestream_legacy_paths.json` manifest. Audit schema v5
+validates the manifest count and digest before checking typed-reader and
+serializer coverage.
 
 The post-removal point gate was accepted on 2026-07-12. Unity point `redu36`
 at `c22bc127` exactly reproduces accepted `redu35`: 489 config leaves and all
@@ -160,7 +161,11 @@ are byte-identical, and the output-provenance difference is limited to expected
 reduction-directory paths. The run has no serious log issues and completed in
 53.277 seconds versus 60.159 seconds for the baseline. The production parser
 retirement is therefore accepted; the standalone-manifest extraction may
-proceed without reopening the authority decision.
+proceed without reopening the authority decision. That mechanical cleanup is
+now complete: the `PTCProc::get_config` declaration and implementation are
+deleted, while the standalone manifest preserves the exact historical path set
+and digest. Local CLI/test builds, all 252 C++ tests, the complete config
+preflight, and eight focused boundary-audit tests pass after deletion.
 
 OOF may reuse the pointing execution gate while that relationship remains an
 explicit supported contract. Polarimetry requires its own gate before any

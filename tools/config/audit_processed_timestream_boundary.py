@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit the transitional YAML boundary in PTCProc::get_config."""
+"""Audit the retired processed-timestream YAML boundary."""
 
 from __future__ import annotations
 
@@ -14,6 +14,10 @@ from pathlib import Path
 EXPECTED_PATH_COUNT = 171
 EXPECTED_PATH_SHA256 = (
     "b2bc50c1cf73064a1279c0335bf03a3033938ec1589095f390fdcac9c0fc67b6"
+)
+PATH_MANIFEST_SCHEMA_VERSION = "citlali-processed-config-path-manifest-v1"
+FROZEN_PATH_MANIFEST_SOURCE = (
+    "tools/config/processed_timestream_legacy_paths.json"
 )
 
 TYPED_READER_SOURCES = {
@@ -46,24 +50,35 @@ DIRECT_MIRROR_CALLS = (
 )
 
 
-def parser_body(path: Path) -> str:
-    text = path.read_text()
-    start = text.index("void PTCProc::get_config")
-    end = text.find("\ntemplate", start + 1)
-    if end < 0:
-        raise ValueError(f"unable to find end of PTCProc::get_config in {path}")
-    return text[start:end]
+def path_digest(paths: list[str]) -> str:
+    return hashlib.sha256("\n".join(paths).encode()).hexdigest()
 
 
-def literal_paths(body: str) -> list[str]:
-    tuple_pattern = re.compile(r"std::tuple\s*\{([^}]*)\}", re.DOTALL)
-    string_pattern = re.compile(r'"([^"]+)"')
-    paths = {
-        ".".join(string_pattern.findall(match.group(1)))
-        for match in tuple_pattern.finditer(body)
-        if string_pattern.findall(match.group(1))
-    }
-    return sorted(paths)
+def load_frozen_paths(repo_root: Path) -> tuple[Path, list[str], str]:
+    source = repo_root / FROZEN_PATH_MANIFEST_SOURCE
+    data = json.loads(source.read_text())
+    if not isinstance(data, dict):
+        raise ValueError(f"processed path manifest must be an object: {source}")
+    if data.get("schema_version") != PATH_MANIFEST_SCHEMA_VERSION:
+        raise ValueError(
+            "unsupported processed path manifest schema: "
+            f"{data.get('schema_version')!r}"
+        )
+    paths = data.get("paths")
+    if not isinstance(paths, list) or not all(
+        isinstance(path, str) and path for path in paths
+    ):
+        raise ValueError("processed path manifest paths must be nonempty strings")
+    if paths != sorted(set(paths)):
+        raise ValueError(
+            "processed path manifest paths must be unique and canonically sorted"
+        )
+    digest = path_digest(paths)
+    if data.get("path_count") != len(paths):
+        raise ValueError("processed path manifest path_count does not match paths")
+    if data.get("path_sha256") != digest:
+        raise ValueError("processed path manifest path_sha256 does not match paths")
+    return source, paths, digest
 
 
 def family(path: str) -> str:
@@ -192,11 +207,7 @@ def main() -> int:
         if args.repo_root
         else Path(__file__).resolve().parents[2]
     )
-    source = repo_root / "include/citlali/core/timestream/ptc/ptcproc.h"
-    body = parser_body(source)
-    paths = literal_paths(body)
-    digest = hashlib.sha256("\n".join(paths).encode()).hexdigest()
-    direct_exit = "std::exit" in body or re.search(r"(?<![\w:])exit\s*\(", body)
+    source, paths, digest = load_frozen_paths(repo_root)
     counts = dict(sorted(Counter(map(family, paths)).items()))
     drift = len(paths) != EXPECTED_PATH_COUNT or digest != EXPECTED_PATH_SHA256
     coverage, uncovered, stale_aliases = typed_reader_coverage(paths, repo_root)
@@ -211,15 +222,15 @@ def main() -> int:
     serialization_complete = not unserialized
     all_coverage_complete = coverage_complete and serialization_complete
     result = {
-        "schema_version": "citlali-processed-config-boundary-audit-v4",
+        "schema_version": "citlali-processed-config-boundary-audit-v5",
         "source": str(source.relative_to(repo_root)),
+        "path_manifest_schema_version": PATH_MANIFEST_SCHEMA_VERSION,
         "literal_path_count": len(paths),
         "literal_path_sha256": digest,
         "expected_path_count": EXPECTED_PATH_COUNT,
         "expected_path_sha256": EXPECTED_PATH_SHA256,
         "family_counts": counts,
         "path_drift": drift,
-        "direct_process_exit": bool(direct_exit),
         "typed_reader_coverage_complete": coverage_complete,
         "typed_reader_covered_path_count": len(coverage),
         "typed_reader_counts": reader_counts,
@@ -233,8 +244,9 @@ def main() -> int:
         "legacy_compatibility_boundary": compatibility,
         "paths": paths,
         "note": (
-            "Literal tuple paths freeze the legacy boundary; dynamic tuple "
-            "components are represented by their literal prefix. Typed "
+            "The versioned standalone manifest freezes the retired legacy "
+            "boundary. Dynamic tuple components from the retired parser are "
+            "represented by their literal prefix. Typed "
             "coverage routes each frozen path to its declared reader and "
             "requires the leaf key in that source; spelling differences "
             "require an explicit compatibility alias."
@@ -262,7 +274,7 @@ def main() -> int:
             f"- Literal paths: `{len(paths)}`\n"
             f"- Path digest: `{digest}`\n"
             f"- Path drift: `{drift}`\n"
-            f"- Direct process exit: `{bool(direct_exit)}`\n"
+            f"- Path manifest schema: `{PATH_MANIFEST_SCHEMA_VERSION}`\n"
             f"- Legacy compatibility boundary retired: "
             f"`{compatibility['retired']}`\n"
             f"- Legacy parser calls: "
@@ -291,14 +303,14 @@ def main() -> int:
         )
     print(
         "processed config boundary: "
-        f"paths={len(paths)} drift={drift} direct_exit={bool(direct_exit)} "
+        f"paths={len(paths)} drift={drift} "
         f"compatibility_retired={compatibility['retired']} "
         f"typed_coverage={len(coverage)}/{len(paths)} "
         f"serialized={len(serialized)}/{len(paths)} "
         f"coverage_complete={all_coverage_complete} families={counts}"
     )
     if args.fail_on_drift and (
-        drift or direct_exit or not compatibility["retired"]
+        drift or not compatibility["retired"]
     ):
         return 1
     if args.fail_on_uncovered and not all_coverage_complete:
