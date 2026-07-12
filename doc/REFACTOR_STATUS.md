@@ -219,6 +219,12 @@ reader, requires each leaf key in that source, and fails preflight on uncovered
 paths or stale compatibility aliases. This mechanically satisfies the path-
 coverage prerequisite for removing the legacy parser; the provenance and
 cross-mode validation prerequisites remain open.
+Focused adapter tests now assign and verify every field copied from typed
+fruit-loop, cleaning, weighting, validation, correlation-penalty, busy-row,
+and second-pass configuration into the processor compatibility targets. The
+full C++ suite passes all 244 tests. The concrete `PTCProc` header remains a
+contextual include rather than an isolated test dependency; that existing
+header-boundary defect belongs to Phase 3 and was not expanded in this phase.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

@@ -703,6 +703,71 @@ struct FakeFruitLoopsAdapterPtcProc {
     int fruit_loops_iters = 0;
 };
 
+struct FakeProcessedCleanAdapterPtcProc {
+    bool run_clean = false;
+    double mask_radius_arcsec = 0.0;
+    struct Cleaner {
+        std::vector<std::string> grouping;
+        double tau = 0.0;
+        struct StandardPca {
+            bool enabled = false;
+        } standard_pca;
+        double stddev_limit = 0.0;
+        int n_calc = 0;
+        std::map<int, Eigen::VectorXI> n_eig_to_cut;
+        struct CorrGrouping {
+            bool enabled = false;
+            std::string metric;
+            double corr_min = 0.0;
+            int min_overlap = 0;
+            double min_good_frac = 0.0;
+            int min_group_size = 0;
+            int max_samples = 0;
+            bool clean_residual = false;
+        } corr_grouping;
+        struct NullModel {
+            bool enabled = false;
+            int n_surrogates = 0;
+            double quantile = 0.0;
+            double min_good_frac = 0.0;
+            int max_modes = 0;
+            int max_samples = 0;
+            std::uint32_t seed = 0;
+            std::vector<std::string> grouping;
+        } null_model;
+        struct MarchenkoPastur {
+            bool enabled = false;
+            double min_good_frac = 0.0;
+            int max_modes = 0;
+            int max_samples = 0;
+            double band_low_Hz = 0.0;
+            double band_high_Hz = 0.0;
+            double clip_z = 0.0;
+            double bulk_keep_frac = 0.0;
+            int q_grid_size = 0;
+            std::vector<std::string> grouping;
+        } marchenko_pastur;
+        struct AdaptiveSelector {
+            bool enabled = false;
+            double min_good_frac = 0.0;
+            int max_det = 0;
+            int max_samples = 0;
+            int max_pairs = 0;
+            std::uint32_t seed = 0;
+            double clip_z = 0.0;
+            double low_weight = 0.0;
+            double tail_weight = 0.0;
+            double topmode_weight = 0.0;
+            double reg_weight = 0.0;
+            std::array<double, 2> low_band_Hz{};
+            std::array<double, 2> mid_band_Hz{};
+            std::vector<int> candidate_offsets;
+            std::vector<std::string> grouping;
+            bool log_candidates = false;
+        } adaptive_selector;
+    } cleaner;
+};
+
 struct FakeProcessedAdapterPtcProc {
     std::string weighting_type;
     double source_mask_radius_arcsec = 0.0;
@@ -4546,11 +4611,31 @@ TEST(pipeline_execution, adapts_typed_fruit_loop_policy_one_way) {
     citlali::config::TimestreamFruitLoopsConfig config;
     config.enabled = true;
     config.save_all_iters = true;
+    config.recompute_weights_after_addback = true;
     config.path = "/typed/maps";
     config.type = "obsnum/raw";
+    config.mode = citlali::config::FruitLoopsMode::both;
     config.sig2noise_limit = 7.5;
     config.array_flux_limit = {1.0, 2.0, 3.0};
+    config.peak_fraction_limit = 0.8;
+    config.local_snr_floor = 4.1;
+    config.local_sigma_inner_radius_arcsec = 11.0;
+    config.local_sigma_outer_radius_arcsec = 36.0;
+    config.local_sigma_inner_fwhm = 1.6;
+    config.local_sigma_outer_fwhm = 4.2;
+    config.local_sigma_edge_guard_arcsec = 6.0;
+    config.local_sigma_min_pixels = 55;
+    config.adaptive_support_radius_arcsec = 13.0;
+    config.adaptive_support_radius_fwhm = 1.7;
     config.weight_feedback.enabled = true;
+    config.weight_feedback.reference =
+        citlali::config::FruitLoopsWeightFeedbackReference::median;
+    config.weight_feedback.low_relative_weight = 0.03;
+    config.weight_feedback.high_relative_weight = 0.12;
+    config.center_keep_radius_arcsec = 8.0;
+    config.interp_mode_override =
+        citlali::config::FruitLoopsInterpModeOverride::nearest;
+    config.legacy_center = true;
     config.max_iters = 4;
     FakeFruitLoopsAdapterPtcProc ptcproc;
 
@@ -4559,12 +4644,163 @@ TEST(pipeline_execution, adapts_typed_fruit_loop_policy_one_way) {
 
     EXPECT_TRUE(ptcproc.run_fruit_loops);
     EXPECT_TRUE(ptcproc.save_all_iters);
+    EXPECT_TRUE(ptcproc.fruit_loops_recompute_weights_after_addback);
     EXPECT_EQ(ptcproc.fruit_loops_path, "/typed/maps");
+    EXPECT_EQ(ptcproc.fruit_loops_type, "obsnum/raw");
+    EXPECT_EQ(ptcproc.fruit_mode, "both");
     EXPECT_DOUBLE_EQ(ptcproc.fruit_loops_sig2noise, 7.5);
     ASSERT_EQ(ptcproc.fruit_loops_flux.size(), 3);
     EXPECT_DOUBLE_EQ(ptcproc.fruit_loops_flux(2), 3.0);
+    EXPECT_DOUBLE_EQ(ptcproc.fruit_loops_peak_fraction_limit, 0.8);
+    EXPECT_DOUBLE_EQ(ptcproc.fruit_loops_local_snr_floor, 4.1);
+    EXPECT_DOUBLE_EQ(
+        ptcproc.fruit_loops_local_sigma_inner_radius_arcsec, 11.0);
+    EXPECT_DOUBLE_EQ(
+        ptcproc.fruit_loops_local_sigma_outer_radius_arcsec, 36.0);
+    EXPECT_DOUBLE_EQ(ptcproc.fruit_loops_local_sigma_inner_fwhm, 1.6);
+    EXPECT_DOUBLE_EQ(ptcproc.fruit_loops_local_sigma_outer_fwhm, 4.2);
+    EXPECT_DOUBLE_EQ(
+        ptcproc.fruit_loops_local_sigma_edge_guard_arcsec, 6.0);
+    EXPECT_EQ(ptcproc.fruit_loops_local_sigma_min_pixels, 55);
+    EXPECT_DOUBLE_EQ(
+        ptcproc.fruit_loops_adaptive_support_radius_arcsec, 13.0);
+    EXPECT_DOUBLE_EQ(
+        ptcproc.fruit_loops_adaptive_support_radius_fwhm, 1.7);
     EXPECT_TRUE(ptcproc.fruit_loops_weight_feedback_enabled);
+    EXPECT_EQ(ptcproc.fruit_loops_weight_feedback_reference, "median");
+    EXPECT_DOUBLE_EQ(
+        ptcproc.fruit_loops_weight_feedback_low_relative_weight, 0.03);
+    EXPECT_DOUBLE_EQ(
+        ptcproc.fruit_loops_weight_feedback_high_relative_weight, 0.12);
+    EXPECT_DOUBLE_EQ(ptcproc.fruit_loops_center_keep_radius_arcsec, 8.0);
+    EXPECT_EQ(ptcproc.fruit_loops_interp_mode_override, "nearest");
+    EXPECT_TRUE(ptcproc.fruit_loops_legacy_center);
     EXPECT_EQ(ptcproc.fruit_loops_iters, 4);
+}
+
+TEST(pipeline_execution, adapts_typed_processed_clean_policy_one_way) {
+    citlali::config::ProcessedTimeChunkCleanConfig config;
+    config.enabled = true;
+    config.grouping = {"array", "nw"};
+    config.mask_radius_arcsec = 19.0;
+    config.tau = 0.23;
+    config.standard_pca.enabled = true;
+    config.standard_pca.stddev_limit = 4.5;
+    config.standard_pca.n_calc = 17;
+    config.standard_pca.n_eig_to_cut["a1100"] = {2, 3};
+    auto &corr = config.corr_grouping;
+    corr.enabled = true;
+    corr.metric =
+        citlali::config::ProcessedTimeChunkCorrGroupingMetric::signed_metric;
+    corr.corr_min = 0.61;
+    corr.min_overlap = 301;
+    corr.min_good_frac = 0.81;
+    corr.min_group_size = 11;
+    corr.max_samples = 20001;
+    corr.clean_residual = false;
+    auto &null_model = config.null_model;
+    null_model.enabled = true;
+    null_model.n_surrogates = 18;
+    null_model.quantile = 0.98;
+    null_model.min_good_frac = 0.82;
+    null_model.max_modes = 61;
+    null_model.max_samples = 19000;
+    null_model.seed = 23456;
+    null_model.grouping = {"nw"};
+    auto &mp = config.marchenko_pastur;
+    mp.enabled = true;
+    mp.min_good_frac = 0.83;
+    mp.max_modes = 62;
+    mp.max_samples = 18000;
+    mp.band_low_Hz = 0.06;
+    mp.band_high_Hz = 2.1;
+    mp.clip_z = 11.0;
+    mp.bulk_keep_frac = 0.79;
+    mp.q_grid_size = 63;
+    mp.grouping = {"array"};
+    auto &adaptive = config.adaptive_selector;
+    adaptive.enabled = true;
+    adaptive.min_good_frac = 0.71;
+    adaptive.max_det = 121;
+    adaptive.max_samples = 1025;
+    adaptive.max_pairs = 2001;
+    adaptive.seed = 34567;
+    adaptive.clip_z = 49.0;
+    adaptive.low_weight = 0.9;
+    adaptive.tail_weight = 0.2;
+    adaptive.topmode_weight = 0.3;
+    adaptive.reg_weight = 0.4;
+    adaptive.low_band_Hz = {0.07, 0.51};
+    adaptive.mid_band_Hz = {0.52, 2.2};
+    adaptive.candidate_offsets = {-1, 1, 3};
+    adaptive.grouping = {"all"};
+    adaptive.log_candidates = true;
+    const std::map<int, std::string> array_name_map{{0, "a1100"}};
+    FakeProcessedCleanAdapterPtcProc ptcproc;
+
+    citlali::pipeline::apply_processed_clean_config_to_processor(
+        config, array_name_map, ptcproc);
+
+    EXPECT_TRUE(ptcproc.run_clean);
+    EXPECT_EQ(ptcproc.cleaner.grouping,
+              (std::vector<std::string>{"array", "nw"}));
+    EXPECT_DOUBLE_EQ(ptcproc.mask_radius_arcsec, 19.0);
+    EXPECT_DOUBLE_EQ(ptcproc.cleaner.tau, 0.23);
+    EXPECT_TRUE(ptcproc.cleaner.standard_pca.enabled);
+    EXPECT_DOUBLE_EQ(ptcproc.cleaner.stddev_limit, 4.5);
+    EXPECT_EQ(ptcproc.cleaner.n_calc, 17);
+    ASSERT_EQ(ptcproc.cleaner.n_eig_to_cut.count(0), 1U);
+    ASSERT_EQ(ptcproc.cleaner.n_eig_to_cut.at(0).size(), 2);
+    EXPECT_EQ(ptcproc.cleaner.n_eig_to_cut.at(0)(0), 2);
+    EXPECT_EQ(ptcproc.cleaner.n_eig_to_cut.at(0)(1), 3);
+    EXPECT_TRUE(ptcproc.cleaner.corr_grouping.enabled);
+    EXPECT_EQ(ptcproc.cleaner.corr_grouping.metric, "signed");
+    EXPECT_DOUBLE_EQ(ptcproc.cleaner.corr_grouping.corr_min, 0.61);
+    EXPECT_EQ(ptcproc.cleaner.corr_grouping.min_overlap, 301);
+    EXPECT_DOUBLE_EQ(ptcproc.cleaner.corr_grouping.min_good_frac, 0.81);
+    EXPECT_EQ(ptcproc.cleaner.corr_grouping.min_group_size, 11);
+    EXPECT_EQ(ptcproc.cleaner.corr_grouping.max_samples, 20001);
+    EXPECT_FALSE(ptcproc.cleaner.corr_grouping.clean_residual);
+    EXPECT_TRUE(ptcproc.cleaner.null_model.enabled);
+    EXPECT_EQ(ptcproc.cleaner.null_model.n_surrogates, 18);
+    EXPECT_DOUBLE_EQ(ptcproc.cleaner.null_model.quantile, 0.98);
+    EXPECT_DOUBLE_EQ(ptcproc.cleaner.null_model.min_good_frac, 0.82);
+    EXPECT_EQ(ptcproc.cleaner.null_model.max_modes, 61);
+    EXPECT_EQ(ptcproc.cleaner.null_model.max_samples, 19000);
+    EXPECT_EQ(ptcproc.cleaner.null_model.seed, 23456U);
+    EXPECT_EQ(ptcproc.cleaner.null_model.grouping,
+              (std::vector<std::string>{"nw"}));
+    EXPECT_TRUE(ptcproc.cleaner.marchenko_pastur.enabled);
+    EXPECT_DOUBLE_EQ(ptcproc.cleaner.marchenko_pastur.min_good_frac, 0.83);
+    EXPECT_EQ(ptcproc.cleaner.marchenko_pastur.max_modes, 62);
+    EXPECT_EQ(ptcproc.cleaner.marchenko_pastur.max_samples, 18000);
+    EXPECT_DOUBLE_EQ(ptcproc.cleaner.marchenko_pastur.band_low_Hz, 0.06);
+    EXPECT_DOUBLE_EQ(ptcproc.cleaner.marchenko_pastur.band_high_Hz, 2.1);
+    EXPECT_DOUBLE_EQ(ptcproc.cleaner.marchenko_pastur.clip_z, 11.0);
+    EXPECT_DOUBLE_EQ(ptcproc.cleaner.marchenko_pastur.bulk_keep_frac, 0.79);
+    EXPECT_EQ(ptcproc.cleaner.marchenko_pastur.q_grid_size, 63);
+    EXPECT_EQ(ptcproc.cleaner.marchenko_pastur.grouping,
+              (std::vector<std::string>{"array"}));
+    EXPECT_TRUE(ptcproc.cleaner.adaptive_selector.enabled);
+    EXPECT_DOUBLE_EQ(ptcproc.cleaner.adaptive_selector.min_good_frac, 0.71);
+    EXPECT_EQ(ptcproc.cleaner.adaptive_selector.max_det, 121);
+    EXPECT_EQ(ptcproc.cleaner.adaptive_selector.max_samples, 1025);
+    EXPECT_EQ(ptcproc.cleaner.adaptive_selector.max_pairs, 2001);
+    EXPECT_EQ(ptcproc.cleaner.adaptive_selector.seed, 34567U);
+    EXPECT_DOUBLE_EQ(ptcproc.cleaner.adaptive_selector.clip_z, 49.0);
+    EXPECT_DOUBLE_EQ(ptcproc.cleaner.adaptive_selector.low_weight, 0.9);
+    EXPECT_DOUBLE_EQ(ptcproc.cleaner.adaptive_selector.tail_weight, 0.2);
+    EXPECT_DOUBLE_EQ(ptcproc.cleaner.adaptive_selector.topmode_weight, 0.3);
+    EXPECT_DOUBLE_EQ(ptcproc.cleaner.adaptive_selector.reg_weight, 0.4);
+    EXPECT_EQ(ptcproc.cleaner.adaptive_selector.low_band_Hz,
+              (std::array<double, 2>{0.07, 0.51}));
+    EXPECT_EQ(ptcproc.cleaner.adaptive_selector.mid_band_Hz,
+              (std::array<double, 2>{0.52, 2.2}));
+    EXPECT_EQ(ptcproc.cleaner.adaptive_selector.candidate_offsets,
+              (std::vector<int>{-1, 1, 3}));
+    EXPECT_EQ(ptcproc.cleaner.adaptive_selector.grouping,
+              (std::vector<std::string>{"all"}));
+    EXPECT_TRUE(ptcproc.cleaner.adaptive_selector.log_candidates);
 }
 
 TEST(pipeline_execution, adapts_typed_processed_weighting_policy_one_way) {
@@ -4572,16 +4808,72 @@ TEST(pipeline_execution, adapts_typed_processed_weighting_policy_one_way) {
     citlali::config::ProcessedTimeChunkFlaggingConfig flagging;
     weighting.type = citlali::config::ProcessedTimeChunkWeightingType::hybrid;
     weighting.source_mask_radius_arcsec = 17.0;
-    weighting.validation.enabled = true;
-    weighting.validation.atmospheric_grouping =
+    weighting.hybrid_correction_min_factor = 0.4;
+    weighting.hybrid_correction_max_factor = 2.4;
+    weighting.median_map_weight_factor = 1.1;
+    weighting.lower_map_weight_factor = 0.2;
+    weighting.upper_map_weight_factor = 3.2;
+    auto &validation = weighting.validation;
+    validation.enabled = true;
+    validation.accumulation_iters = 2;
+    validation.apply_start_iter = 3;
+    validation.min_valid_scans = 4;
+    validation.min_factor = 0.15;
+    validation.unvalidated_factor = 0.85;
+    validation.require_fruitloops_model = false;
+    validation.transient_ratio_enabled = true;
+    validation.ratio_power = 1.2;
+    validation.transient_ratio_power = 1.3;
+    validation.upward_enabled = true;
+    validation.upward_max_factor = 1.4;
+    validation.upward_power = 1.5;
+    validation.upward_min_base_factor = 0.75;
+    validation.upward_require_atmospheric = false;
+    validation.upward_min_atmospheric_factor = 0.65;
+    validation.atmospheric_correlation_enabled = false;
+    validation.atmospheric_grouping =
         citlali::config::ProcessedTimeChunkWeightGrouping::network;
-    weighting.validation.high_weight_cap_median_factor = 3.5;
-    weighting.corr_penalty.enabled = true;
-    weighting.corr_penalty.seed = 42;
-    weighting.corr_penalty.cm_low_mid_ratio.low_band_Hz = {0.1, 0.4};
-    weighting.busy_row_suppression.enabled = true;
-    weighting.busy_row_suppression.factor = 0.25;
+    validation.atmospheric_min_detectors = 7;
+    validation.atmospheric_ref = 0.11;
+    validation.atmospheric_span = 0.22;
+    validation.atmospheric_power = 1.7;
+    validation.min_good_frac = 0.55;
+    validation.min_overlap = 123;
+    validation.max_samples = 456;
+    validation.high_weight_validation_enabled = false;
+    validation.high_weight_apply_caps = false;
+    validation.high_weight_grouping =
+        citlali::config::ProcessedTimeChunkWeightGrouping::all;
+    validation.high_weight_min_group_detectors = 8;
+    validation.high_weight_log_robust_z = 5.5;
+    validation.high_weight_max_median_factor = 7.5;
+    validation.high_weight_cap_median_factor = 3.5;
+    validation.high_weight_min_validated_factor = 0.92;
+    auto &penalty = weighting.corr_penalty;
+    penalty.enabled = true;
+    penalty.min_good_frac = 0.66;
+    penalty.min_overlap = 234;
+    penalty.max_samples = 567;
+    penalty.max_pairs = 89;
+    penalty.seed = 42;
+    penalty.floor = 0.07;
+    penalty.exponent = 2.3;
+    penalty.pair_corr = {false, 0.12, 0.23, 0.34};
+    penalty.cm_el_corr = {true, 0.45, 0.56, 0.67};
+    penalty.cm_low_mid_ratio.enabled = true;
+    penalty.cm_low_mid_ratio.ref = 0.78;
+    penalty.cm_low_mid_ratio.span = 0.89;
+    penalty.cm_low_mid_ratio.weight = 0.91;
+    penalty.cm_low_mid_ratio.low_band_Hz = {0.1, 0.4};
+    penalty.cm_low_mid_ratio.mid_band_Hz = {0.5, 2.5};
+    auto &busy = weighting.busy_row_suppression;
+    busy.enabled = true;
+    busy.require_busy_veto = false;
+    busy.min_candidate_clusters = 9;
+    busy.min_max_unflagged_residual_z = 23.0;
+    busy.factor = 0.25;
     flagging.lower_tod_inv_var_factor = 0.2;
+    flagging.upper_tod_inv_var_factor = 4.2;
     FakeProcessedAdapterPtcProc ptcproc;
 
     citlali::pipeline::apply_processed_weighting_config_to_processor(
@@ -4589,22 +4881,106 @@ TEST(pipeline_execution, adapts_typed_processed_weighting_policy_one_way) {
 
     EXPECT_EQ(ptcproc.weighting_type, "hybrid");
     EXPECT_DOUBLE_EQ(ptcproc.source_mask_radius_arcsec, 17.0);
-    EXPECT_TRUE(ptcproc.weight_validation.enabled);
-    EXPECT_EQ(ptcproc.weight_validation.atmospheric_grouping, "nw");
-    EXPECT_DOUBLE_EQ(
-        ptcproc.weight_validation.high_weight_cap_median_factor, 3.5);
-    EXPECT_EQ(ptcproc.weight_corr_penalty.seed, 42U);
-    EXPECT_DOUBLE_EQ(
-        ptcproc.weight_corr_penalty.cm_low_mid_ratio.low_max_Hz, 0.4);
-    EXPECT_DOUBLE_EQ(ptcproc.busy_row_suppression.factor, 0.25);
+    EXPECT_DOUBLE_EQ(ptcproc.hybrid_correction_min_factor, 0.4);
+    EXPECT_DOUBLE_EQ(ptcproc.hybrid_correction_max_factor, 2.4);
+    EXPECT_DOUBLE_EQ(ptcproc.med_weight_factor, 1.1);
+    EXPECT_DOUBLE_EQ(ptcproc.lower_weight_factor, 0.2);
+    EXPECT_DOUBLE_EQ(ptcproc.upper_weight_factor, 3.2);
     EXPECT_DOUBLE_EQ(ptcproc.lower_inv_var_factor, 0.2);
+    EXPECT_DOUBLE_EQ(ptcproc.upper_inv_var_factor, 4.2);
+
+    const auto &actual_validation = ptcproc.weight_validation;
+    EXPECT_TRUE(actual_validation.enabled);
+    EXPECT_EQ(actual_validation.accumulation_iters, 2);
+    EXPECT_EQ(actual_validation.apply_start_iter, 3);
+    EXPECT_EQ(actual_validation.min_valid_scans, 4);
+    EXPECT_DOUBLE_EQ(actual_validation.min_factor, 0.15);
+    EXPECT_DOUBLE_EQ(actual_validation.unvalidated_factor, 0.85);
+    EXPECT_FALSE(actual_validation.require_fruitloops_model);
+    EXPECT_TRUE(actual_validation.transient_ratio_enabled);
+    EXPECT_DOUBLE_EQ(actual_validation.ratio_power, 1.2);
+    EXPECT_DOUBLE_EQ(actual_validation.transient_ratio_power, 1.3);
+    EXPECT_TRUE(actual_validation.upward_enabled);
+    EXPECT_DOUBLE_EQ(actual_validation.upward_max_factor, 1.4);
+    EXPECT_DOUBLE_EQ(actual_validation.upward_power, 1.5);
+    EXPECT_DOUBLE_EQ(actual_validation.upward_min_base_factor, 0.75);
+    EXPECT_FALSE(actual_validation.upward_require_atmospheric);
+    EXPECT_DOUBLE_EQ(actual_validation.upward_min_atmospheric_factor, 0.65);
+    EXPECT_FALSE(actual_validation.atmospheric_correlation_enabled);
+    EXPECT_EQ(actual_validation.atmospheric_grouping, "nw");
+    EXPECT_EQ(actual_validation.atmospheric_min_detectors, 7);
+    EXPECT_DOUBLE_EQ(actual_validation.atmospheric_ref, 0.11);
+    EXPECT_DOUBLE_EQ(actual_validation.atmospheric_span, 0.22);
+    EXPECT_DOUBLE_EQ(actual_validation.atmospheric_power, 1.7);
+    EXPECT_DOUBLE_EQ(actual_validation.min_good_frac, 0.55);
+    EXPECT_EQ(actual_validation.min_overlap, 123);
+    EXPECT_EQ(actual_validation.max_samples, 456);
+    EXPECT_FALSE(actual_validation.high_weight_validation_enabled);
+    EXPECT_FALSE(actual_validation.high_weight_apply_caps);
+    EXPECT_EQ(actual_validation.high_weight_grouping, "all");
+    EXPECT_EQ(actual_validation.high_weight_min_group_detectors, 8);
+    EXPECT_DOUBLE_EQ(actual_validation.high_weight_log_robust_z, 5.5);
+    EXPECT_DOUBLE_EQ(actual_validation.high_weight_max_median_factor, 7.5);
+    EXPECT_DOUBLE_EQ(actual_validation.high_weight_cap_median_factor, 3.5);
+    EXPECT_DOUBLE_EQ(actual_validation.high_weight_min_validated_factor,
+                     0.92);
+
+    const auto &actual_penalty = ptcproc.weight_corr_penalty;
+    EXPECT_TRUE(actual_penalty.enabled);
+    EXPECT_DOUBLE_EQ(actual_penalty.min_good_frac, 0.66);
+    EXPECT_EQ(actual_penalty.min_overlap, 234);
+    EXPECT_EQ(actual_penalty.max_samples, 567);
+    EXPECT_EQ(actual_penalty.max_pairs, 89);
+    EXPECT_EQ(actual_penalty.seed, 42U);
+    EXPECT_DOUBLE_EQ(actual_penalty.floor, 0.07);
+    EXPECT_DOUBLE_EQ(actual_penalty.exponent, 2.3);
+    EXPECT_FALSE(actual_penalty.pair_corr.enabled);
+    EXPECT_DOUBLE_EQ(actual_penalty.pair_corr.ref, 0.12);
+    EXPECT_DOUBLE_EQ(actual_penalty.pair_corr.span, 0.23);
+    EXPECT_DOUBLE_EQ(actual_penalty.pair_corr.weight, 0.34);
+    EXPECT_TRUE(actual_penalty.cm_el_corr.enabled);
+    EXPECT_DOUBLE_EQ(actual_penalty.cm_el_corr.ref, 0.45);
+    EXPECT_DOUBLE_EQ(actual_penalty.cm_el_corr.span, 0.56);
+    EXPECT_DOUBLE_EQ(actual_penalty.cm_el_corr.weight, 0.67);
+    EXPECT_TRUE(actual_penalty.cm_low_mid_ratio.enabled);
+    EXPECT_DOUBLE_EQ(actual_penalty.cm_low_mid_ratio.ref, 0.78);
+    EXPECT_DOUBLE_EQ(actual_penalty.cm_low_mid_ratio.span, 0.89);
+    EXPECT_DOUBLE_EQ(actual_penalty.cm_low_mid_ratio.weight, 0.91);
+    EXPECT_DOUBLE_EQ(actual_penalty.cm_low_mid_ratio.low_min_Hz, 0.1);
+    EXPECT_DOUBLE_EQ(actual_penalty.cm_low_mid_ratio.low_max_Hz, 0.4);
+    EXPECT_DOUBLE_EQ(actual_penalty.cm_low_mid_ratio.mid_min_Hz, 0.5);
+    EXPECT_DOUBLE_EQ(actual_penalty.cm_low_mid_ratio.mid_max_Hz, 2.5);
+
+    EXPECT_TRUE(ptcproc.busy_row_suppression.enabled);
+    EXPECT_FALSE(ptcproc.busy_row_suppression.require_busy_veto);
+    EXPECT_EQ(ptcproc.busy_row_suppression.min_candidate_clusters, 9);
+    EXPECT_DOUBLE_EQ(
+        ptcproc.busy_row_suppression.min_max_unflagged_residual_z, 23.0);
+    EXPECT_DOUBLE_EQ(ptcproc.busy_row_suppression.factor, 0.25);
 }
 
 TEST(pipeline_execution, adapts_typed_second_pass_policy_one_way) {
     citlali::config::ProcessedTimeChunkSecondPassLocalConfig config;
     config.enabled = true;
     config.min_spike_sigma = 11.0;
+    config.min_good_frac = 0.6;
+    config.baseline_window_sec = 0.31;
+    config.sigma_scale = 0.72;
+    config.delta_sigma_scale = 0.73;
+    config.raw_candidate_rel_sigma_scale = 1.2;
+    config.raw_window_sec = 0.19;
+    config.raw_half_peak_frac = 0.51;
+    config.raw_max_width_sec = 0.21;
+    config.delta_window_sec = 0.13;
+    config.delta_half_peak_frac = 0.52;
+    config.delta_max_width_sec = 0.11;
+    config.max_step_shift_z = 3.2;
+    config.high_score_event_override = 21.0;
+    config.merge_within_detector_sec = 0.09;
+    config.cluster_events_sec = 0.10;
     config.min_cluster_detectors = 6;
+    config.high_score_cluster_override = 9.5;
+    config.max_auto_flag_clusters_per_network = 4;
     config.selective_busy_network_acceptance_enabled = false;
     config.source_protection.enabled = true;
     config.source_protection.radius_arcsec = 31.0;
@@ -4615,7 +4991,29 @@ TEST(pipeline_execution, adapts_typed_second_pass_policy_one_way) {
 
     EXPECT_TRUE(ptcproc.second_pass_local.enabled);
     EXPECT_DOUBLE_EQ(ptcproc.second_pass_local.min_spike_sigma, 11.0);
+    EXPECT_DOUBLE_EQ(ptcproc.second_pass_local.min_good_frac, 0.6);
+    EXPECT_DOUBLE_EQ(ptcproc.second_pass_local.baseline_window_sec, 0.31);
+    EXPECT_DOUBLE_EQ(ptcproc.second_pass_local.sigma_scale, 0.72);
+    EXPECT_DOUBLE_EQ(ptcproc.second_pass_local.delta_sigma_scale, 0.73);
+    EXPECT_DOUBLE_EQ(
+        ptcproc.second_pass_local.raw_candidate_rel_sigma_scale, 1.2);
+    EXPECT_DOUBLE_EQ(ptcproc.second_pass_local.raw_window_sec, 0.19);
+    EXPECT_DOUBLE_EQ(ptcproc.second_pass_local.raw_half_peak_frac, 0.51);
+    EXPECT_DOUBLE_EQ(ptcproc.second_pass_local.raw_max_width_sec, 0.21);
+    EXPECT_DOUBLE_EQ(ptcproc.second_pass_local.delta_window_sec, 0.13);
+    EXPECT_DOUBLE_EQ(ptcproc.second_pass_local.delta_half_peak_frac, 0.52);
+    EXPECT_DOUBLE_EQ(ptcproc.second_pass_local.delta_max_width_sec, 0.11);
+    EXPECT_DOUBLE_EQ(ptcproc.second_pass_local.max_step_shift_z, 3.2);
+    EXPECT_DOUBLE_EQ(
+        ptcproc.second_pass_local.high_score_event_override, 21.0);
+    EXPECT_DOUBLE_EQ(
+        ptcproc.second_pass_local.merge_within_detector_sec, 0.09);
+    EXPECT_DOUBLE_EQ(ptcproc.second_pass_local.cluster_events_sec, 0.10);
     EXPECT_EQ(ptcproc.second_pass_local.min_cluster_detectors, 6);
+    EXPECT_DOUBLE_EQ(
+        ptcproc.second_pass_local.high_score_cluster_override, 9.5);
+    EXPECT_EQ(
+        ptcproc.second_pass_local.max_auto_flag_clusters_per_network, 4);
     EXPECT_FALSE(
         ptcproc.second_pass_local.selective_busy_network_acceptance_enabled);
     EXPECT_TRUE(ptcproc.second_pass_local.source_protection_config_enabled);

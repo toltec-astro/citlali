@@ -71,7 +71,7 @@ after all of the following are true:
   `audit_processed_timestream_boundary.py`);
 - focused tests cover typed-to-processor parity for fruit loops, cleaning,
   weighting, validation, correlation penalties, busy-row suppression, and
-  second-pass flagging;
+  second-pass flagging (currently exhaustive for every adapter assignment);
 - tests cover every effective decision listed above, including absent-key and
   repeated-configuration behavior;
 - the complete config preflight passes for pointing, OOF, beammap, and science;
