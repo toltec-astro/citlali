@@ -1,3 +1,4 @@
+#include <citlali_config/default_config.h>
 #include <citlali/core/config/calibration_config.h>
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/config/reduction_config_validation.h>
@@ -21,6 +22,8 @@
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/raw_timestream_execution_plan.h>
 #include <citlali/core/pipeline/raw_timestream_observation_resolution.h>
+#include <citlali/core/pipeline/raw_timestream_shadow_parity.h>
+#include <citlali/core/pipeline/config_parse_tracking.h>
 #include <citlali/core/pipeline/raw_filtering_config_read.h>
 #include <citlali/core/pipeline/raw_flagging_config_read.h>
 #include <citlali/core/pipeline/raw_timestream_config_serialization.h>
@@ -5579,6 +5582,11 @@ TEST(config_scaffold, keeps_disabled_raw_request_values_out_of_rtc_sentinels) {
     request.iir_filter.zero_phase = true;
     request.despike.enabled = false;
     request.despike.window_size = 55.0;
+    request.despike.source_protection.enabled = false;
+    request.despike.source_protection.radius_arcsec = 37.0;
+    request.kernel.enabled = true;
+    request.kernel.type = "gaussian";
+    request.kernel.image_ext_names = {"ignored-request-value"};
 
     timestream::RTCProc rtcproc;
     citlali::pipeline::adapt_raw_timestream_config_one_way(
@@ -5594,8 +5602,16 @@ TEST(config_scaffold, keeps_disabled_raw_request_values_out_of_rtc_sentinels) {
     EXPECT_FALSE(rtcproc.filter.iir_highpass_zero_phase);
     EXPECT_FALSE(rtcproc.run_despike);
     EXPECT_DOUBLE_EQ(rtcproc.despiker.window_size, 55.0);
+    EXPECT_TRUE(rtcproc.despike_source_protection_config_enabled);
+    EXPECT_DOUBLE_EQ(
+        rtcproc.despiker.source_protection_radius_arcsec, 20.0);
+    EXPECT_TRUE(rtcproc.kernel.img_ext_names.empty());
     EXPECT_EQ(request.filter.n_terms, 73);
     EXPECT_DOUBLE_EQ(request.iir_filter.freq_Hz, 0.4);
+    EXPECT_FALSE(request.despike.source_protection.enabled);
+    EXPECT_DOUBLE_EQ(
+        request.despike.source_protection.radius_arcsec, 37.0);
+    EXPECT_EQ(request.kernel.image_ext_names.size(), 1U);
 }
 
 TEST(config_scaffold, expands_legacy_line_audit_width_only_in_rtc_target) {
@@ -5860,6 +5876,69 @@ TEST(config_scaffold, constructs_complete_raw_observation_state) {
     EXPECT_FALSE(*state.source_protection_active);
     EXPECT_TRUE(*state.extinction_active);
     EXPECT_EQ(*state.extinction_model, extinction.model);
+}
+
+TEST(config_scaffold, default_raw_request_matches_legacy_parser_shadow) {
+    ensure_citlali_test_logger();
+    auto config = tula::config::YamlConfig::from_str(
+        citlali::citlali_default_config_content);
+    timestream::RTCProc legacy;
+    citlali::pipeline::ConfigDiagnosticsState legacy_diagnostics;
+    citlali::pipeline::read_processor_config(
+        legacy, config, legacy_diagnostics);
+    ASSERT_FALSE(legacy_diagnostics.has_errors());
+    legacy.configure_filter_edge_guard(122.0);
+
+    citlali::config::RawTimeChunkConfig request;
+    citlali::pipeline::ConfigDiagnosticsState typed_diagnostics;
+    citlali::pipeline::read_raw_timestream_request_config(
+        config, request, typed_diagnostics);
+    ASSERT_FALSE(typed_diagnostics.has_errors());
+
+    const auto report = citlali::pipeline::compare_raw_timestream_shadow(
+        request, legacy, 122.0, 1.0, 1.0, 1.0);
+    EXPECT_TRUE(report.exact)
+        << "legacy:\n" << report.legacy_snapshot
+        << "typed adapter:\n" << report.typed_adapter_snapshot;
+}
+
+TEST(config_scaffold, raw_shadow_reports_adapter_divergence) {
+    citlali::config::RawTimeChunkConfig request;
+    request.filter.enabled = true;
+    request.filter.freq_high_Hz = 10.0;
+    request.filter.n_terms = 32;
+    timestream::RTCProc legacy;
+    citlali::pipeline::adapt_raw_timestream_config_one_way(
+        request, legacy, 1.0, 1.0);
+    legacy.configure_filter_edge_guard(100.0);
+    legacy.filter.freq_high_Hz = 11.0;
+
+    const auto report = citlali::pipeline::compare_raw_timestream_shadow(
+        request, legacy, 100.0, 1.0, 1.0, 1.0);
+
+    EXPECT_FALSE(report.exact);
+    EXPECT_NE(report.legacy_snapshot, report.typed_adapter_snapshot);
+}
+
+TEST(config_scaffold, raw_shadow_matches_disabled_expert_effective_state) {
+    citlali::config::RawTimeChunkConfig request;
+    request.despike.enabled = false;
+    request.despike.source_protection.enabled = false;
+    request.despike.source_protection.radius_arcsec = 37.0;
+    request.kernel.enabled = true;
+    request.kernel.type = "gaussian";
+    request.kernel.image_ext_names = {"ignored-request-value"};
+
+    timestream::RTCProc legacy;
+    citlali::pipeline::adapt_raw_timestream_config_one_way(
+        request, legacy, 1.0, 1.0);
+    legacy.configure_filter_edge_guard(100.0);
+    const auto report = citlali::pipeline::compare_raw_timestream_shadow(
+        request, legacy, 100.0, 1.0, 1.0, 1.0);
+
+    EXPECT_TRUE(report.exact);
+    EXPECT_FALSE(request.despike.source_protection.enabled);
+    EXPECT_EQ(request.kernel.image_ext_names.size(), 1U);
 }
 
 TEST(config_scaffold, separates_processed_requested_and_effective_state) {

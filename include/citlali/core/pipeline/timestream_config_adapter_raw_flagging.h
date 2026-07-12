@@ -18,10 +18,10 @@ void adapt_raw_flagging_config_one_way(
     rtcproc.despiker.run_legacy = despike.legacy_enabled;
     rtcproc.despiker.grouping = "nw";
     rtcproc.despike_source_protection_config_enabled =
-        despike.source_protection.enabled;
+        despike.enabled ? despike.source_protection.enabled : true;
     rtcproc.despiker.source_protection_enabled = false;
     rtcproc.despiker.source_protection_radius_arcsec =
-        despike.source_protection.radius_arcsec;
+        despike.enabled ? despike.source_protection.radius_arcsec : 20.0;
 
     const auto &local = despike.local_residual;
     auto &target_local = rtcproc.despiker.local_residual;

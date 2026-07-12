@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <string>
+#include <vector>
 
 namespace citlali::pipeline {
 
@@ -18,7 +19,10 @@ void adapt_raw_filtering_config_one_way(
     rtcproc.kernel.type = kernel.type;
     rtcproc.kernel.fwhm_rad = kernel.fwhm_arcsec * arcsec_to_rad;
     rtcproc.kernel.sigma_rad = rtcproc.kernel.fwhm_rad * fwhm_to_std;
-    rtcproc.kernel.img_ext_names = kernel.image_ext_names;
+    rtcproc.kernel.img_ext_names =
+        kernel.enabled && kernel.type == "fits"
+            ? kernel.image_ext_names
+            : std::vector<std::string>{};
 
     const auto &filter = raw.filter;
     rtcproc.run_tod_filter = filter.enabled;

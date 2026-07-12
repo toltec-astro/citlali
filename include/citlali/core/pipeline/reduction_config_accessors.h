@@ -8,6 +8,19 @@ namespace citlali::pipeline {
 template <class Engine, class = void>
 struct has_processed_timestream_plan : std::false_type {};
 
+template <class Engine, class = void>
+struct has_raw_timestream_plan : std::false_type {};
+
+template <class Engine>
+struct has_raw_timestream_plan<
+    Engine,
+    std::void_t<decltype(std::declval<Engine &>().raw_timestream_plan)>>
+    : std::true_type {};
+
+template <class Engine>
+inline constexpr bool has_raw_timestream_plan_v =
+    has_raw_timestream_plan<Engine>::value;
+
 template <class Engine>
 struct has_processed_timestream_plan<
     Engine,
@@ -107,6 +120,16 @@ auto &raw_time_chunk_config(Engine &engine) {
 template <class Engine>
 const auto &raw_time_chunk_config(const Engine &engine) {
     return timestream_config(engine).raw_time_chunk;
+}
+
+template <class Engine>
+auto &raw_timestream_plan(Engine &engine) {
+    return engine.raw_timestream_plan;
+}
+
+template <class Engine>
+const auto &raw_timestream_plan(const Engine &engine) {
+    return engine.raw_timestream_plan;
 }
 
 template <class Engine>

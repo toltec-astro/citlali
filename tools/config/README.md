@@ -341,9 +341,11 @@ It freezes the active `RTCProc` parser's 169 raw-timestream paths, the two
 adjacent polarimetry paths, 14 direct parser exits, and the ten
 legacy-to-typed raw mirror calls. It also requires all 169 raw paths to appear
 in the direct typed readers, deterministic request serializer, and unwired
-typed-to-RTC adapter. This remains a characterization gate: production
-authority is still legacy-to-typed until the Engine boundary is deliberately
-wired and validated.
+typed-to-RTC adapter. The direct reader and adapter now run as a strict
+production shadow; the audit requires exactly one typed shadow read before the
+legacy parser and exactly one comparison after the legacy mirrors. Production
+execution authority is still legacy-to-typed until the shadow is validated and
+the Engine boundary is deliberately flipped.
 
 ```bash
 $HOME/tolteca/bin/python tools/config/audit_raw_timestream_boundary.py \

@@ -337,7 +337,15 @@ selection are shared by the typed resolver and legacy processors rather than
 duplicated. Focused tests prove edge-guard parity for sum/max policies and
 extinction parity across representative tau values. All 271 C++ tests and full
 preflight pass. Constructing the typed plan as a non-authoritative production
-shadow is the next gate before the authority flip.
+shadow is the next gate before the authority flip. That context-free shadow is
+now active: the Engine directly reads an isolated typed request, constructs the
+raw execution plan, adapts into a temporary RTC policy object, and requires its
+deterministic 169-path snapshot to equal the legacy parser/mirror snapshot.
+Legacy `rtcproc` still drives execution. The frozen audit requires one typed
+read before the parser and one comparison after all ten mirrors. The generated
+default config, disabled expert semantics, and injected divergence behavior are
+covered by focused tests. All 274 C++ tests and full preflight pass. The next
+gate is per-observation shadow population/parity before any authority flip.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

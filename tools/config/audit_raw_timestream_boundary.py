@@ -49,6 +49,8 @@ ADAPTER_MEMBER_ALIASES = {
     "timestream.raw_time_chunk.despike.legacy": "legacy_enabled",
 }
 LEGACY_PARSER_CALL = "read_processor_config"
+TYPED_SHADOW_READ_CALL = "read_raw_timestream_request_config"
+TYPED_SHADOW_COMPARE_CALL = "compare_raw_timestream_shadow"
 LEGACY_TO_TYPED_MIRROR_CALLS = (
     "mirror_raw_despike_config",
     "mirror_raw_flagging_config",
@@ -179,6 +181,18 @@ def legacy_boundary(source_text: str) -> dict[str, object]:
             rf"\b{re.escape(LEGACY_PARSER_CALL)}\s*\(", source_text
         )
     ]
+    shadow_read_positions = [
+        match.start()
+        for match in re.finditer(
+            rf"\b{re.escape(TYPED_SHADOW_READ_CALL)}\s*\(", source_text
+        )
+    ]
+    shadow_compare_positions = [
+        match.start()
+        for match in re.finditer(
+            rf"\b{re.escape(TYPED_SHADOW_COMPARE_CALL)}\s*\(", source_text
+        )
+    ]
     observed_mirrors = Counter(
         re.findall(r"\b(mirror_raw_[A-Za-z0-9_]+)\s*\(", source_text)
     )
@@ -202,23 +216,39 @@ def legacy_boundary(source_text: str) -> dict[str, object]:
         and first_mirror >= 0
         and parser_positions[0] < first_mirror
     )
+    shadow_order_exact = (
+        len(shadow_read_positions) == 1
+        and len(parser_positions) == 1
+        and first_mirror >= 0
+        and len(shadow_compare_positions) == 1
+        and shadow_read_positions[0] < parser_positions[0]
+        and parser_positions[0] < first_mirror
+        and first_mirror < shadow_compare_positions[0]
+    )
     exact = (
         len(parser_positions) == 1
         and not missing
         and not unexpected
         and not repeated
         and parser_precedes_mirrors
+        and shadow_order_exact
     )
     return {
         "source": BOUNDARY_SOURCE,
         "legacy_parser_call_count": len(parser_positions),
+        "typed_shadow_read_call_count": len(shadow_read_positions),
+        "typed_shadow_compare_call_count": len(shadow_compare_positions),
         "legacy_to_typed_mirror_call_counts": dict(sorted(observed_mirrors.items())),
         "missing_mirror_calls": missing,
         "unexpected_mirror_calls": unexpected,
         "non_unit_mirror_call_counts": repeated,
         "parser_precedes_mirrors": parser_precedes_mirrors,
+        "shadow_order_exact": shadow_order_exact,
         "exact": exact,
-        "current_direction": "requested_yaml -> legacy_rtcproc -> typed_snapshot",
+        "current_direction": (
+            "requested_yaml -> typed_shadow; requested_yaml -> legacy_rtcproc "
+            "-> typed_snapshot; typed_shadow == legacy_snapshot gate"
+        ),
         "target_direction": "requested_yaml -> typed_plan -> legacy_rtcproc",
     }
 
@@ -327,6 +357,8 @@ def main() -> int:
             f"- Path digest: `{digest}`\n"
             f"- Direct parser exits: `{exits}`\n"
             f"- Boundary exact: `{boundary['exact']}`\n"
+            f"- Typed shadow order exact: "
+            f"`{boundary['shadow_order_exact']}`\n"
             f"- Declared direct typed-reader paths: "
             f"`{len(declared_reader_paths)}`\n"
             f"- Frozen paths covered by typed readers: "
@@ -346,6 +378,8 @@ def main() -> int:
         f"paths={len(paths)} raw={counts.get('raw_timestream', 0)} "
         f"polarimetry={counts.get('polarimetry', 0)} exits={exits} "
         f"legacy_parser_calls={boundary['legacy_parser_call_count']} "
+        f"typed_shadow_reads={boundary['typed_shadow_read_call_count']} "
+        f"typed_shadow_compares={boundary['typed_shadow_compare_call_count']} "
         f"legacy_to_typed_mirrors={len(boundary['legacy_to_typed_mirror_call_counts'])} "
         f"typed_reader_coverage={len(reader_covered)}/{len(raw_paths)} "
         f"serialized={len(serialized)}/{len(raw_paths)} "

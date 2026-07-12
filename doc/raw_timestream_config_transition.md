@@ -86,6 +86,16 @@ match the real legacy processor for sum/max edge policies and representative
 tau values. The next step is to construct this plan at the Engine boundary as
 a read-only shadow while legacy state continues to drive execution.
 
+The context-free production shadow is now wired. `Engine::get_rtc_config`
+directly reads an isolated typed request before invoking the legacy parser,
+stores the typed execution plan, adapts the request into a temporary RTC policy
+object, and compares deterministic snapshots after the ten legacy mirrors.
+Mismatch is a hard configuration failure with both snapshots logged; the
+temporary object never drives numerical execution. The boundary audit requires
+the typed read, legacy parser, mirrors, and shadow comparison exactly once in
+that order. Per-observation resolution remains unwired and is the next shadow
+gate.
+
 ## Target state
 
 The target one-way flow is:

@@ -47,15 +47,20 @@ class RawTimestreamBoundaryAuditTest(unittest.TestCase):
         self.assertEqual(audit.family("mapmaking.enabled"), "unclassified")
 
     def test_accepts_exact_legacy_to_typed_boundary(self) -> None:
-        lines = ["read_processor_config(rtcproc, config);"]
+        lines = [
+            "read_raw_timestream_request_config(config, request, diag);",
+            "read_processor_config(rtcproc, config);",
+        ]
         lines.extend(
             f"{name}(typed, rtcproc);"
             for name in audit.LEGACY_TO_TYPED_MIRROR_CALLS
         )
+        lines.append("compare_raw_timestream_shadow(request, rtcproc);")
         result = audit.legacy_boundary("\n".join(lines))
 
         self.assertTrue(result["exact"])
         self.assertTrue(result["parser_precedes_mirrors"])
+        self.assertTrue(result["shadow_order_exact"])
         self.assertEqual(result["missing_mirror_calls"], [])
         self.assertEqual(result["unexpected_mirror_calls"], [])
         self.assertEqual(result["non_unit_mirror_call_counts"], {})
@@ -79,6 +84,25 @@ class RawTimestreamBoundaryAuditTest(unittest.TestCase):
             ["mirror_raw_untracked_config"],
         )
         self.assertEqual(result["non_unit_mirror_call_counts"], {first: 2})
+
+    def test_rejects_missing_or_misordered_typed_shadow(self) -> None:
+        lines = ["read_processor_config(rtcproc, config);"]
+        lines.extend(
+            f"{name}(typed, rtcproc);"
+            for name in audit.LEGACY_TO_TYPED_MIRROR_CALLS
+        )
+        without_shadow = audit.legacy_boundary("\n".join(lines))
+        self.assertFalse(without_shadow["exact"])
+        self.assertFalse(without_shadow["shadow_order_exact"])
+
+        lines.insert(
+            1,
+            "read_raw_timestream_request_config(config, request, diag);",
+        )
+        lines.append("compare_raw_timestream_shadow(request, rtcproc);")
+        misordered = audit.legacy_boundary("\n".join(lines))
+        self.assertFalse(misordered["exact"])
+        self.assertFalse(misordered["shadow_order_exact"])
 
     def test_typed_reader_coverage_accepts_parent_and_compatibility_alias(self) -> None:
         legacy_alias = next(iter(audit.COMPATIBILITY_ALIASES))
