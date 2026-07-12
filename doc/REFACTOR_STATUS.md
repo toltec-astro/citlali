@@ -372,6 +372,18 @@ diagnostics and continue safely through malformed notch vector shapes; the CLI
 validation boundary remains responsible for rejecting the reduction. Valid
 configuration behavior is unchanged. The frozen raw boundary now requires zero
 direct parser exits. Local builds, all 282 C++ tests, and full preflight pass.
+Unity point `redu37` accepts the complete raw-shadow checkpoint at `cd8da24f`.
+The run used the same 489-leaf merged config hash as accepted `redu36`, completed
+all 12 PTC chunks with zero logged issues, and retained the exact 36-file/14
+stable-product inventory. Strict comparison including complete RTC/PTC
+timestreams found 13 common product families, zero missing or extra products,
+zero changed records, and zero skipped records. Runtime and processed
+provenance are byte-identical; output provenance differs only in expected
+`redu36`/`redu37` paths. Logged runtime was 51.723 seconds versus 53.277 seconds
+for `redu36`. This closes the Unity point gate for observation shadowing,
+prepared raw provenance, propagated parser diagnostics, and yaml-cpp 0.7
+compatibility. Beammap/science evidence remains required before raw authority
+flip and parser/mirror retirement.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
