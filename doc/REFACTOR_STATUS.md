@@ -260,8 +260,8 @@ contains all five effective-resolution and all three realized-state records;
 its schema and hash are recorded in the validation ledger. Against accepted
 `redu34`, the merged 489-leaf config and all 13 scientific product families,
 including complete RTC/PTC timestreams, are exact with zero skipped records.
-Point and beammap provenance are accepted; matched science provenance remains
-before compatibility-parser removal.
+Point, beammap, and science processed provenance are accepted. The documented
+compatibility-parser removal gate is closed.
 Parser-removal preparation now includes a complete default-snapshot parity
 test using a real value-initialized `PTCProc`. Typed defaults and the legacy
 compatibility snapshot are identical across every serialized processed field.
@@ -277,13 +277,16 @@ Unity beammap `redu15` at `50235fd6` closes the beammap processed-provenance
 gate. Its 529-leaf config is exact against accepted `redu14`; all 12 comparable
 FITS, NetCDF, and ECSV products are exact with no skipped records; the required
 sidecar passes semantic audit; and wall time improved from 3576.607 to 3458.917
-seconds. Science `redu20` is complete and provenance-valid with an exact
-502-leaf config and exact product inventories against accepted `redu16`, but
-the current science profile rejects six localized coadded noise-normalization
-differences: maximum map RMS drift is `3.0384e-5` versus the `1e-8` profile
-bound. Integer diagnostics, PTC weights, detector medians, and other core
-products pass. Scientific-owner disposition is required before the legacy
-processed parser is removed.
+seconds. The final matched science pair is OG `ffc6b907` `redu27` and refactor
+`50235fd6` `redu24`; the intermediate `reduNN` directories are retained
+fruit-loop iterations, not independent runs. Their 502-leaf configs differ only
+in input/output path strings. Science-equivalence profile v2 preserves the
+`1e-8` raw-map bound and separately enforces the owner-approved 1.5% filtered-
+map bound. All 63 raw layers remain within `2.33e-11`; the 21 Wiener-filtered
+layers peak at 0.986%; product sets and integer diagnostics are exact; all
+other numerical bounds pass. Refactor wall time is 2686.252 seconds versus
+2754.146 seconds for OG. The science processed-provenance gate is accepted and
+recorded in the validation ledger.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

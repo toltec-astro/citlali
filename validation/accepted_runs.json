@@ -2022,6 +2022,170 @@
         "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained.",
         "This is a refactor-to-refactor checkpoint; OG equivalence remains documented by beammap-148670-og-b83c8750-refactor-4b0126e7."
       ]
+    },
+    {
+      "record_id": "science-152390-152392-og-ffc6b907-refactor-50235fd6",
+      "recorded_date": "2026-07-12",
+      "mode": "science",
+      "status": "accepted_with_scientific_tolerance",
+      "candidate": {
+        "label": "refactor",
+        "branch": "codex/structural-refactor",
+        "citlali_sha": "50235fd6",
+        "citlali_version": "v4.0.0-3414-g50235fd6",
+        "dirty": false,
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "build": {
+          "host": "unity",
+          "compiler": null,
+          "build_type": "Release",
+          "cmake_flags": null
+        }
+      },
+      "baseline": {
+        "label": "citlali",
+        "citlali_sha": "ffc6b907",
+        "citlali_version": "v4.0.0-423-gffc6b907",
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "reduction_id": "redu27",
+        "config_sha256": "b14ea67cea24e40a070a3ed40eedb829a0da84efe6b7c7c9dc82602087e2f335"
+      },
+      "config": {
+        "ordered_sources": [
+          {
+            "role": "merged_low_level_citlali_input",
+            "path": "citlali_o152390_0_2_c2.yaml",
+            "precedence": 0,
+            "sha256": "cd860b8b712810f9f8651c325a6f1642e8453aa6148410cf7ff7a7058de286a3"
+          }
+        ],
+        "overlay_sources_retained": false,
+        "canonical_merged_sha256": "cd860b8b712810f9f8651c325a6f1642e8453aa6148410cf7ff7a7058de286a3",
+        "requested_sha256": null,
+        "effective_sha256": null,
+        "realized_sha256": null,
+        "runtime_provenance": {
+          "path": "runtime_provenance.yaml",
+          "schema_version": "citlali-runtime-provenance-v1",
+          "sha256": "0eb7cdef063e4937efa79804827ada3e63cb20c3136105c3554b2a3aa612eb7b"
+        },
+        "timestream_output_provenance": {
+          "paths": [
+            "152390/timestream_output_provenance.yaml",
+            "152392/timestream_output_provenance.yaml"
+          ],
+          "schema_version": "citlali-timestream-output-provenance-v1",
+          "sha256": "829f10951abb32dc77bf88e36ae05b8994812fa8d657f8dae55d6af2ff694fb2"
+        },
+        "processed_timestream_provenance": {
+          "path": "processed_timestream_provenance.yaml",
+          "schema_version": "citlali-processed-timestream-provenance-v1",
+          "sha256": "7b6768eb04f4482ffa5044fcedc6d6593ad9da1f0ed23825e867195a7edc17c2"
+        }
+      },
+      "dataset": {
+        "obsnum": "152390,152392",
+        "identity": "TolTEC commissioning science observations 152390 and 152392",
+        "content_hash": null,
+        "matched_input_hashes": {
+          "recomputed_telescope_152390_sha256": "7c2882290f1a3212c78b3ba0c19b5c36e08774d1482f8b304398c0616cd3fb98",
+          "recomputed_telescope_152392_sha256": "16bb5954bed49d602f39ca4a9d206b50055d03907b8543ae940d46c6b012ede9"
+        }
+      },
+      "invocation": {
+        "command": null,
+        "launcher": "tolteca reduce",
+        "runtime_policy": {
+          "n_threads": 16,
+          "parallel_policy": "omp",
+          "kids_solver_parallel_policy": "seq"
+        },
+        "exit_code": 0
+      },
+      "audit": {
+        "finished": true,
+        "serious_log_counts": {},
+        "file_count": 42,
+        "comparable_product_count": 28,
+        "stable_comparable_product_count": 28,
+        "stable_product_counts_by_kind": {
+          "csv": 1,
+          "fits": 12,
+          "netcdf": 15
+        },
+        "required_product_inventory_matches": "science-152390-152392-og-ffc6b907-refactor-59c35e60"
+      },
+      "comparison": {
+        "tool": "tools/baseline/compare_science_scientific_equivalence.py",
+        "tool_sha": "c8c90ef3",
+        "profile": "validation/profiles/science_scientific_equivalence_v2.json",
+        "profile_id": "science-scientific-equivalence-v2",
+        "options": [],
+        "volatile_allowlist": [
+          "citlali_profile.ecsv",
+          "NetCDF container metadata",
+          "runtime and output path provenance"
+        ],
+        "tolerances": {
+          "raw_map_rms_relative_max": 1E-8,
+          "filtered_map_rms_relative_max": 0.015,
+          "ptc_weight_rms_relative_max": 1E-9,
+          "detector_median_absolute_max": 0.00005,
+          "detector_median_fractional_max": 0.001,
+          "other_diagnostic_rms_relative_max": 1E-7
+        },
+        "common_products": 27,
+        "skipped_records": 0,
+        "changed_records": 42,
+        "scientific_products_exact": false,
+        "measured": {
+          "raw_map_layer_count": 63,
+          "raw_map_rms_relative_max": 2.3287000100968197E-11,
+          "filtered_map_layer_count": 21,
+          "filtered_map_rms_relative_max": 0.009855613812995653,
+          "integer_diagnostics_exact": true,
+          "ptc_weight_rms_relative_max": 2.184888357323412E-12,
+          "detector_median_absolute_max": 0.00002850078817573376,
+          "detector_median_fractional_max": 0.00018694685869124897,
+          "other_diagnostic_rms_relative_max": 3.860374960739472E-9
+        },
+        "verdict": "accepted_with_scientific_tolerance"
+      },
+      "accepted_differences": [
+        {
+          "kind": "owner_accepted_filtered_map_tolerance",
+          "item": "Wiener-filtered coadd signal, kernel, weight, and derived SNR layers",
+          "products": [
+            "coadded/filtered/toltec_commissioning_a1100_filtered_citlali.fits",
+            "coadded/filtered/toltec_commissioning_a1400_filtered_citlali.fits",
+            "coadded/filtered/toltec_commissioning_a2000_filtered_citlali.fits"
+          ],
+          "rationale": "The scientific owner previously accepted the localized filtered-map differences as negligible and requested monitoring for creep. Raw maps remain under the strict 1e-8 RMS-relative bound; the measured filtered maximum is 0.986% under the dedicated 1.5% bound."
+        }
+      ],
+      "performance": {
+        "wall_time_log_seconds": 2686.252,
+        "observation_pipeline_seconds": null,
+        "map_output_seconds": null,
+        "peak_rss_kb": null,
+        "baseline_wall_time_log_seconds": 2754.146
+      },
+      "artifacts": {
+        "candidate_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/science/refactor/reduced/redu24",
+        "candidate_unity_path": "/work/toltec/commissioning2025-test/2026-refactor/science/refactor/reduced/redu24",
+        "baseline_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/science/citlali/reduced/redu27"
+      },
+      "limitations": [
+        "The four redu directories per executable are retained fruit-loop iterations, not repeated independent reductions; only final OG redu27 and refactor redu24 are compared.",
+        "The original ordered TolTECA NN*.yaml overlay files and their hashes were not retained in the reduction directories.",
+        "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained."
+      ]
     }
   ]
 }

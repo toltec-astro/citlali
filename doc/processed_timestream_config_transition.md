@@ -77,18 +77,21 @@ reduction; no partial provenance document is accepted.
 Point provenance was accepted on 2026-07-12. `81020d46` `redu35` contains all
 required v1 sections and availability records, and remains scientifically exact
 against accepted `redu34`, including every RTC/PTC timestream array. Beammap and
-science must also exercise and validate their mode-specific effective and
-realized records before legacy parser removal.
+science also exercise their mode-specific effective and realized records.
 
 Beammap provenance was accepted on 2026-07-12. `50235fd6` `redu15` is exact
 against accepted `redu14` across all comparable scientific products and records
 the expected forced single fruit-loop iteration, inherited 15-arcsec source
-mask, JINC interpolation, and one completed iteration. Science `redu20` from
-the same revision is provenance-valid and complete, but remains pending because
-its six localized coadded noise-normalization differences exceed the currently
-adopted science-equivalence profile. Do not remove the parser until that result
-is either accepted by the scientific owner under an explicit bounded policy or
-replaced by a passing matched run.
+mask, JINC interpolation, and one completed iteration. The final matched science
+pair, OG `ffc6b907` `redu27` and refactor `50235fd6` `redu24`, passes science-
+equivalence profile v2. Raw maps retain the strict `1e-8` bound and measure
+`2.33e-11`; owner-accepted Wiener-filtered maps measure 0.986% against their
+separate 1.5% bound; product sets and integer diagnostics are exact; PTC weight,
+detector-median, and other diagnostic bounds pass. The science sidecar records
+four effective and completed fruit-loop iterations, inherited source-mask
+policy, JINC interpolation, and source-protection intent without falsely marking
+ordinary science as source-aware. All cross-mode removal prerequisites are now
+satisfied.
 
 ## State classification
 
