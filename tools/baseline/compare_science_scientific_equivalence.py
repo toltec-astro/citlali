@@ -14,8 +14,11 @@ import numpy as np
 from astropy.io import fits
 
 
-SCHEMA_VERSION = "citlali-science-equivalence-result-v1"
-PROFILE_SCHEMA_VERSION = "citlali-science-equivalence-profile-v1"
+SCHEMA_VERSION = "citlali-science-equivalence-result-v2"
+PROFILE_SCHEMA_VERSIONS = {
+    "citlali-science-equivalence-profile-v1",
+    "citlali-science-equivalence-profile-v2",
+}
 
 
 def product_map(root: Path, pattern: str) -> dict[str, Path]:
@@ -40,6 +43,8 @@ def fits_metrics(baseline_root: Path, candidate_root: Path) -> dict[str, Any]:
     candidate_products = product_map(candidate_root, "*.fits")
     sets_exact = baseline_products.keys() == candidate_products.keys()
     layer_metrics: list[float] = []
+    raw_layer_metrics: list[float] = []
+    filtered_layer_metrics: list[float] = []
     compared_layers = 0
     for name in sorted(baseline_products.keys() & candidate_products.keys()):
         with fits.open(baseline_products[name], memmap=True) as baseline_hdus, fits.open(
@@ -56,19 +61,39 @@ def fits_metrics(baseline_root: Path, candidate_root: Path) -> dict[str, Any]:
                     continue
                 if baseline_hdu.data is None or candidate_hdu.data is None:
                     continue
-                layer_metrics.append(
-                    rms_relative(baseline_hdu.data, candidate_hdu.data)
+                metric = rms_relative(
+                    baseline_hdu.data, candidate_hdu.data
                 )
+                layer_metrics.append(metric)
+                destination = (
+                    filtered_layer_metrics
+                    if "/filtered/" in f"/{name}"
+                    else raw_layer_metrics
+                )
+                destination.append(metric)
                 compared_layers += 1
     values = np.asarray(layer_metrics, dtype=float)
+    raw_values = np.asarray(raw_layer_metrics, dtype=float)
+    filtered_values = np.asarray(filtered_layer_metrics, dtype=float)
+
+    def maximum(metrics: np.ndarray) -> float:
+        return float(metrics.max(initial=0.0))
+
+    def percentile_99(metrics: np.ndarray) -> float:
+        return float(np.quantile(metrics, 0.99)) if metrics.size else 0.0
+
     return {
         "fits_product_sets_exact": sets_exact,
         "fits_product_count": len(baseline_products),
         "map_layer_count": compared_layers,
-        "map_rms_relative_max": float(values.max(initial=0.0)),
-        "map_rms_relative_p99": (
-            float(np.quantile(values, 0.99)) if values.size else 0.0
-        ),
+        "map_rms_relative_max": maximum(values),
+        "map_rms_relative_p99": percentile_99(values),
+        "raw_map_layer_count": len(raw_layer_metrics),
+        "raw_map_rms_relative_max": maximum(raw_values),
+        "raw_map_rms_relative_p99": percentile_99(raw_values),
+        "filtered_map_layer_count": len(filtered_layer_metrics),
+        "filtered_map_rms_relative_max": maximum(filtered_values),
+        "filtered_map_rms_relative_p99": percentile_99(filtered_values),
     }
 
 
@@ -191,7 +216,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument(
         "--profile",
         type=Path,
-        default=Path("validation/profiles/science_scientific_equivalence_v1.json"),
+        default=Path("validation/profiles/science_scientific_equivalence_v2.json"),
     )
     parser.add_argument("--json-out", type=Path)
     parser.add_argument("--report-out", type=Path)
@@ -201,7 +226,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 def main(argv: list[str]) -> int:
     args = parse_args(argv)
     profile = json.loads(args.profile.read_text(encoding="utf-8"))
-    if profile.get("schema_version") != PROFILE_SCHEMA_VERSION:
+    if profile.get("schema_version") not in PROFILE_SCHEMA_VERSIONS:
         raise ValueError("unsupported science equivalence profile schema")
     metrics = {
         **fits_metrics(args.baseline, args.candidate),

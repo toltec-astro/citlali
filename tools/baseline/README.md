@@ -292,9 +292,11 @@ scientific equivalence and must not be relaxed without scientific-owner review.
 # Science Scientific Equivalence
 
 `compare_science_scientific_equivalence.py` applies the accepted science gate
-in `validation/profiles/science_scientific_equivalence_v1.json`. It requires
-exact FITS/netCDF product sets and integer diagnostic state, then checks map,
-PTC weight, detector-median, and remaining floating diagnostic drift.
+in `validation/profiles/science_scientific_equivalence_v2.json`. It requires
+exact FITS/netCDF product sets and integer diagnostic state, keeps a strict
+raw-map bound, and separately checks the owner-approved Wiener-filtered map,
+PTC weight, detector-median, and remaining floating diagnostic bounds. The v1
+profile remains available for historical ledger records.
 
 ```bash
 $HOME/tolteca/bin/python \
