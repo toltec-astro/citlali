@@ -64,4 +64,11 @@ inline void reset_processed_timestream_execution_plan(
     plan = make_processed_timestream_execution_plan(requested);
 }
 
+inline void record_processed_timestream_iteration_result(
+    ProcessedTimestreamExecutionPlan &plan, int iterations_completed,
+    bool converged) {
+    plan.realized.fruit_loop_iterations_completed = iterations_completed;
+    plan.realized.fruit_loops_converged = converged;
+}
+
 }  // namespace citlali::pipeline

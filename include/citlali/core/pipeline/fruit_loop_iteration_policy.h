@@ -82,6 +82,10 @@ void configure_fruit_loop_interpolation_mode(
     const std::string map_method_name{citlali::config::to_string(map_method)};
     const auto resolution = resolve_fruit_loop_interpolation(
         config, map_method);
+    auto &plan = processed_timestream_plan(engine);
+    if (plan.initialized) {
+        plan.effective_resolutions.fruit_loop_interpolation = resolution;
+    }
     const std::string fruit_interp_default{
         citlali::config::to_string(resolution.mapmaking_default)};
     ptcproc.fruit_loops_interp_mode =
@@ -141,6 +145,10 @@ void configure_fruit_loop_iteration_policy(Engine &engine,
 
     const auto resolution = resolve_fruit_loop_iteration_policy(
         config, runtime_reduction_type(engine));
+    auto &plan = processed_timestream_plan(engine);
+    if (plan.initialized) {
+        plan.effective_resolutions.fruit_loop_iterations = resolution;
+    }
     config.max_iters = resolution.effective_max_iters;
     config.save_all_iters = resolution.effective_save_all_iters;
     engine.ptcproc.fruit_loops_iters = config.max_iters;

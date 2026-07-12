@@ -38,9 +38,21 @@ void Engine::get_citlali_config(CT &config) {
 
     /* get timestream config */
     get_timestream_config(config);
+    const auto source_protection_resolution =
+        citlali::pipeline::resolve_source_protection(
+            runtime_config.reduction_type, timestream_config);
     citlali::pipeline::apply_source_protection_activation(
         runtime_config.reduction_type, rtcproc, ptcproc, timestream_config,
         logger);
+    auto &processed_plan =
+        citlali::pipeline::processed_timestream_plan(*this);
+    if (processed_plan.initialized) {
+        processed_plan.realized.source_protection =
+            source_protection_resolution;
+        processed_plan.effective.processed_time_chunk.flagging
+            .second_pass_local.source_protection.active =
+            source_protection_resolution.processed_active;
+    }
 
     /* get mapmaking config */
     post_processing_config = citlali::config::PostProcessingConfig{};

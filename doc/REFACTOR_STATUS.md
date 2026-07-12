@@ -229,7 +229,8 @@ The non-wired execution plan now has an atomic repeated-run reset operation.
 Disabled sections retain their requested parameter values while remaining
 inactive, and reset clears all prior effective-resolution and realized state.
 All 245 C++ tests pass. Current legacy reader objects are not reset piecemeal;
-the contract becomes operational only when the complete plan is wired.
+the contract became operational only with the complete Engine wiring described
+below.
 Pure YAML component serializers now cover the complete requested/effective
 processed snapshot surface. The boundary audit enforces serialization of all
 171 frozen legacy paths as well as typed-reader coverage. There is deliberately
@@ -239,8 +240,14 @@ availability records. Beammap `redu14` (`4b0126e7`) completed cleanly and
 exactly reproduces accepted refactor `redu11` across all 5,234 detector maps.
 It also passes the versioned OG scientific-equivalence profile with exact
 detector identities, flags, and product sets. The matched beammap gate is
-therefore closed and bounded Engine wiring is the next authority change. All
-247 C++ tests and the full config preflight pass.
+therefore closed. `Engine` now owns and initializes the processed execution
+plan, processed runtime accessors select its effective snapshot, and cleaner,
+weighting, source-protection, interpolation, iteration-policy, and completed-
+iteration decisions populate explicit resolution or realized records. The
+legacy parser remains only as the compatibility seed and no provenance file is
+published yet. The CLI build, all 249 C++ tests, and the full config preflight
+pass locally; Unity compile and point validation are pending for this authority
+change.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

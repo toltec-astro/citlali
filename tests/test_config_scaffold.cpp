@@ -166,6 +166,8 @@ struct FakeEngine {
     citlali::config::RuntimeConfigProvenance runtime_config_provenance =
         citlali::config::make_runtime_config_provenance(typed_config.runtime,
                                                         false);
+    citlali::pipeline::ProcessedTimestreamExecutionPlan
+        processed_timestream_plan;
     citlali::pipeline::TimestreamAlignmentState alignment = [] {
         citlali::pipeline::TimestreamAlignmentState state;
         state.start_indices = {7};
@@ -4328,6 +4330,9 @@ TEST(pipeline_execution, runs_reduction_iterations) {
         citlali::config::ReductionType::science;
     todproc.engine().typed_config.timestream.fruit_loops.enabled = true;
     todproc.engine().typed_config.timestream.fruit_loops.max_iters = 2;
+    citlali::pipeline::reset_processed_timestream_execution_plan(
+        todproc.engine().processed_timestream_plan,
+        todproc.engine().typed_config.timestream);
     FakeCitlaliConfig config;
     FakeIOCoordinator co{{FakeRawObs{}}};
     std::vector<std::string> config_filepaths;
@@ -4349,6 +4354,15 @@ TEST(pipeline_execution, runs_reduction_iterations) {
     EXPECT_EQ(todproc.engine().output_calls, 2);
     EXPECT_EQ(todproc.make_index_file_calls, 2);
     EXPECT_EQ(todproc.create_output_dir_calls, 1);
+    ASSERT_TRUE(todproc.engine().processed_timestream_plan.realized
+                    .fruit_loop_iterations_completed.has_value());
+    EXPECT_EQ(*todproc.engine().processed_timestream_plan.realized
+                   .fruit_loop_iterations_completed,
+              2);
+    ASSERT_TRUE(todproc.engine().processed_timestream_plan.realized
+                    .fruit_loops_converged.has_value());
+    EXPECT_FALSE(*todproc.engine().processed_timestream_plan.realized
+                      .fruit_loops_converged);
 }
 
 TEST(pipeline_execution, runs_reduction_pipeline) {
@@ -5147,6 +5161,44 @@ TEST(config_scaffold, resets_all_processed_plan_state_between_runs) {
     EXPECT_FALSE(plan.realized.source_protection.has_value());
     EXPECT_FALSE(plan.realized.fruit_loop_iterations_completed.has_value());
     EXPECT_FALSE(plan.realized.fruit_loops_converged.has_value());
+}
+
+TEST(config_scaffold, routes_processed_accessors_through_effective_plan) {
+    FakeEngine engine;
+    engine.typed_config.timestream.fruit_loops.max_iters = 7;
+    engine.typed_config.timestream.processed_time_chunk.clean
+        .mask_radius_arcsec = 18.0;
+    citlali::pipeline::reset_processed_timestream_execution_plan(
+        engine.processed_timestream_plan,
+        engine.typed_config.timestream);
+    engine.processed_timestream_plan.effective.fruit_loops.max_iters = 2;
+    engine.processed_timestream_plan.effective.processed_time_chunk.clean
+        .mask_radius_arcsec = 24.0;
+
+    EXPECT_EQ(citlali::pipeline::fruit_loops_config(engine).max_iters, 2);
+    EXPECT_DOUBLE_EQ(
+        citlali::pipeline::processed_time_chunk_config(engine)
+            .clean.mask_radius_arcsec,
+        24.0);
+    EXPECT_EQ(engine.typed_config.timestream.fruit_loops.max_iters, 7);
+    EXPECT_DOUBLE_EQ(
+        engine.typed_config.timestream.processed_time_chunk.clean
+            .mask_radius_arcsec,
+        18.0);
+}
+
+TEST(config_scaffold, records_processed_iteration_result) {
+    citlali::config::TimestreamConfig config;
+    auto plan =
+        citlali::pipeline::make_processed_timestream_execution_plan(config);
+
+    citlali::pipeline::record_processed_timestream_iteration_result(
+        plan, 3, true);
+
+    ASSERT_TRUE(plan.realized.fruit_loop_iterations_completed.has_value());
+    EXPECT_EQ(*plan.realized.fruit_loop_iterations_completed, 3);
+    ASSERT_TRUE(plan.realized.fruit_loops_converged.has_value());
+    EXPECT_TRUE(*plan.realized.fruit_loops_converged);
 }
 
 TEST(config_scaffold, serializes_processed_config_snapshot_deterministically) {

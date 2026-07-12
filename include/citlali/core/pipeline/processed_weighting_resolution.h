@@ -50,11 +50,8 @@ inline ProcessedWeightingResolution resolve_processed_weighting(
 }
 
 template <class Logger>
-void resolve_processed_weighting_dependencies(
-    citlali::config::ProcessedTimeChunkWeightingConfig &weighting,
-    const citlali::config::ProcessedTimeChunkFlaggingConfig &flagging,
-    const Logger &logger) {
-    auto resolution = resolve_processed_weighting(weighting, flagging);
+void log_processed_weighting_resolution(
+    const ProcessedWeightingResolution &resolution, const Logger &logger) {
     if (resolution.validation_forced_by_weighting_type) {
         logger->warn(
             "weighting.type='validated' forces weighting.validation.enabled=true");
@@ -63,6 +60,15 @@ void resolve_processed_weighting_dependencies(
         logger->warn(
             "weighting.busy_row_suppression requires flagging.second_pass_local.enabled; disabling busy-row suppression");
     }
+}
+
+template <class Logger>
+void resolve_processed_weighting_dependencies(
+    citlali::config::ProcessedTimeChunkWeightingConfig &weighting,
+    const citlali::config::ProcessedTimeChunkFlaggingConfig &flagging,
+    const Logger &logger) {
+    auto resolution = resolve_processed_weighting(weighting, flagging);
+    log_processed_weighting_resolution(resolution, logger);
     weighting = std::move(resolution.effective);
 }
 

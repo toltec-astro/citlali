@@ -23,12 +23,14 @@ No processor value written in step 5 may subsequently overwrite the typed
 request or effective plan.
 
 `ProcessedTimestreamExecutionPlan` is the transitional in-memory shape for
-this contract. It currently provides independent requested and effective
-snapshots, typed effective-resolution records, and a separate realized-state
-record. It is deliberately not wired into `Engine` or output yet: the existing
-typed config remains execution authority until the matched beammap checkpoint
-is reviewed and the plan can replace it in one bounded change. A partial plan
-must not be serialized as complete processed-timestream provenance.
+this contract. It provides independent requested and effective snapshots,
+typed effective-resolution records, and a separate realized-state record.
+Following acceptance of the matched beammap checkpoint, it is now owned and
+initialized by `Engine`; processed runtime accessors select the effective
+snapshot once initialized. The legacy parser remains the compatibility seed,
+and the root typed config is synchronized for compatibility consumers that
+have not moved to the processed accessors. The plan is not yet published as
+complete processed-timestream provenance.
 
 For repeated reductions in one process, reset the complete plan from a fresh
 request. Disabled sections retain the values supplied in the requested and
@@ -40,13 +42,15 @@ Pure snapshot serializers cover all 171 frozen legacy fields and are enforced
 by the boundary audit. They are reusable components, not a published
 provenance format. Effective-resolution and realized-state components are also
 serializable with explicit availability markers. Do not add a final schema
-version, filename, or output writer until the plan is execution authority.
+version, filename, or output writer until the Engine wiring passes Unity
+validation.
 
 The matched beammap prerequisite was accepted on 2026-07-12: refactor
 `4b0126e7` `redu14` is exact against accepted refactor `redu11` and passes
 `beammap-scientific-equivalence-v1` against OG `b83c8750` `redu01`. Engine
-wiring may now proceed as one bounded authority change; this does not by itself
-satisfy the provenance or legacy-parser-removal gates below.
+wiring was then implemented as one bounded authority change and is pending
+Unity validation; this does not by itself satisfy the provenance or legacy-
+parser-removal gates below.
 
 ## State classification
 
