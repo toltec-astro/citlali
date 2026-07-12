@@ -385,4 +385,131 @@ inline YAML::Node processed_timestream_config_snapshot_node(
     return node;
 }
 
+template <class Value, class Serialize>
+YAML::Node processed_optional_record_node(
+    const std::optional<Value> &value, Serialize serialize) {
+    YAML::Node node;
+    node["available"] = value.has_value();
+    if (value) {
+        node["value"] = serialize(*value);
+    }
+    return node;
+}
+
+template <class Value>
+YAML::Node processed_optional_scalar_node(
+    const std::optional<Value> &value) {
+    return processed_optional_record_node(
+        value, [](const auto &item) {
+            YAML::Node node;
+            node = item;
+            return node;
+        });
+}
+
+inline YAML::Node processed_cleaner_mode_resolution_node(
+    const ProcessedCleanerModeResolution &resolution) {
+    YAML::Node node;
+    node["effective"] =
+        std::string{citlali::config::to_string(resolution.effective)};
+    node["enabled_mode_count"] = resolution.enabled_mode_count;
+    return node;
+}
+
+inline YAML::Node processed_weighting_source_mask_resolution_node(
+    const ProcessedWeightingSourceMaskResolution &resolution) {
+    YAML::Node node;
+    node["requested_present"] = resolution.requested.has_value();
+    if (resolution.requested) {
+        node["requested"] = *resolution.requested;
+    }
+    node["effective"] = resolution.effective;
+    node["inherited_from_cleaning"] = resolution.inherited_from_cleaning;
+    return node;
+}
+
+inline YAML::Node processed_weighting_resolution_node(
+    const ProcessedWeightingResolution &resolution) {
+    YAML::Node node;
+    node["validation_forced_by_weighting_type"] =
+        resolution.validation_forced_by_weighting_type;
+    node["busy_row_disabled_without_second_pass"] =
+        resolution.busy_row_disabled_without_second_pass;
+    return node;
+}
+
+inline YAML::Node fruit_loop_iteration_resolution_node(
+    const FruitLoopIterationResolution &resolution) {
+    YAML::Node node;
+    node["effective_max_iters"] = resolution.effective_max_iters;
+    node["effective_save_all_iters"] =
+        resolution.effective_save_all_iters;
+    node["forced_single_iteration_while_disabled"] =
+        resolution.forced_single_iteration_while_disabled;
+    node["forced_single_iteration_for_beammap"] =
+        resolution.forced_single_iteration_for_beammap;
+    return node;
+}
+
+inline YAML::Node fruit_loop_interpolation_resolution_node(
+    const FruitLoopInterpolationResolution &resolution) {
+    YAML::Node node;
+    node["requested"] =
+        std::string{citlali::config::to_string(resolution.requested)};
+    node["mapmaking_default"] = std::string{
+        citlali::config::to_string(resolution.mapmaking_default)};
+    node["effective"] =
+        std::string{citlali::config::to_string(resolution.effective)};
+    node["override_applied"] = resolution.override_applied;
+    node["jinc_fell_back_to_bilinear"] =
+        resolution.jinc_fell_back_to_bilinear;
+    return node;
+}
+
+inline YAML::Node source_protection_resolution_node(
+    const SourceProtectionActivationResolution &resolution) {
+    YAML::Node node;
+    node["source_aware_reduction"] = resolution.source_aware_reduction;
+    node["raw_activation_requested"] =
+        resolution.raw_activation_requested;
+    node["processed_activation_requested"] =
+        resolution.processed_activation_requested;
+    node["raw_active"] = resolution.raw_active;
+    node["processed_active"] = resolution.processed_active;
+    return node;
+}
+
+inline YAML::Node processed_timestream_effective_resolutions_node(
+    const ProcessedTimestreamEffectiveResolutionRecord &resolutions) {
+    YAML::Node node;
+    node["cleaner_mode"] = processed_optional_record_node(
+        resolutions.cleaner_mode, processed_cleaner_mode_resolution_node);
+    node["weighting_source_mask"] = processed_optional_record_node(
+        resolutions.weighting_source_mask,
+        processed_weighting_source_mask_resolution_node);
+    node["weighting_dependencies"] = processed_optional_record_node(
+        resolutions.weighting_dependencies,
+        processed_weighting_resolution_node);
+    node["fruit_loop_iterations"] = processed_optional_record_node(
+        resolutions.fruit_loop_iterations,
+        fruit_loop_iteration_resolution_node);
+    node["fruit_loop_interpolation"] = processed_optional_record_node(
+        resolutions.fruit_loop_interpolation,
+        fruit_loop_interpolation_resolution_node);
+    return node;
+}
+
+inline YAML::Node processed_timestream_realized_state_node(
+    const ProcessedTimestreamRealizedState &realized) {
+    YAML::Node node;
+    node["source_protection"] = processed_optional_record_node(
+        realized.source_protection, source_protection_resolution_node);
+    node["fruit_loop_iterations_completed"] =
+        processed_optional_scalar_node(
+            realized.fruit_loop_iterations_completed);
+    node["fruit_loops_converged"] =
+        processed_optional_scalar_node(realized.fruit_loops_converged);
+    return node;
+}
+
 }  // namespace citlali::pipeline

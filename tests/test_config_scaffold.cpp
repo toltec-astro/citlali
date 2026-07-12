@@ -5229,6 +5229,77 @@ TEST(config_scaffold, serializes_processed_config_snapshot_deterministically) {
             snapshot)));
 }
 
+TEST(config_scaffold, serializes_processed_resolution_availability) {
+    citlali::config::TimestreamConfig config;
+    auto plan =
+        citlali::pipeline::make_processed_timestream_execution_plan(config);
+
+    const auto empty_effective =
+        citlali::pipeline::processed_timestream_effective_resolutions_node(
+            plan.effective_resolutions);
+    const auto empty_realized =
+        citlali::pipeline::processed_timestream_realized_state_node(
+            plan.realized);
+    EXPECT_FALSE(empty_effective["cleaner_mode"]["available"].as<bool>());
+    EXPECT_FALSE(
+        empty_effective["fruit_loop_interpolation"]["available"].as<bool>());
+    EXPECT_FALSE(
+        empty_realized["fruit_loop_iterations_completed"]["available"]
+            .as<bool>());
+
+    config.processed_time_chunk.clean.enabled = true;
+    config.processed_time_chunk.clean.standard_pca.enabled = true;
+    plan.effective_resolutions.cleaner_mode =
+        citlali::pipeline::resolve_processed_cleaner_mode(
+            config.processed_time_chunk.clean);
+    plan.effective_resolutions.weighting_source_mask =
+        citlali::pipeline::resolve_processed_weighting_source_mask(
+            std::nullopt, 18.0);
+    plan.effective_resolutions.weighting_dependencies =
+        citlali::pipeline::resolve_processed_weighting(
+            config.processed_time_chunk.weighting,
+            config.processed_time_chunk.flagging);
+    plan.effective_resolutions.fruit_loop_iterations =
+        citlali::pipeline::resolve_fruit_loop_iteration_policy(
+            config.fruit_loops,
+            citlali::config::ReductionType::beammap);
+    plan.effective_resolutions.fruit_loop_interpolation =
+        citlali::pipeline::resolve_fruit_loop_interpolation(
+            config.fruit_loops, citlali::config::MapMethod::jinc);
+    plan.realized.source_protection =
+        citlali::pipeline::resolve_source_protection(
+            citlali::config::ReductionType::pointing, config);
+    plan.realized.fruit_loop_iterations_completed = 3;
+    plan.realized.fruit_loops_converged = false;
+
+    const auto effective =
+        citlali::pipeline::processed_timestream_effective_resolutions_node(
+            plan.effective_resolutions);
+    const auto realized =
+        citlali::pipeline::processed_timestream_realized_state_node(
+            plan.realized);
+    EXPECT_TRUE(effective["cleaner_mode"]["available"].as<bool>());
+    EXPECT_EQ(effective["cleaner_mode"]["value"]["effective"]
+                  .as<std::string>(),
+              "standard_pca");
+    EXPECT_TRUE(
+        effective["weighting_source_mask"]["value"]
+                 ["inherited_from_cleaning"]
+                     .as<bool>());
+    EXPECT_TRUE(effective["fruit_loop_iterations"]["value"]
+                         ["forced_single_iteration_for_beammap"]
+                             .as<bool>());
+    EXPECT_EQ(effective["fruit_loop_interpolation"]["value"]["effective"]
+                  .as<std::string>(),
+              "jinc");
+    EXPECT_TRUE(realized["source_protection"]["available"].as<bool>());
+    EXPECT_FALSE(
+        realized["source_protection"]["value"]["raw_active"].as<bool>());
+    EXPECT_EQ(realized["fruit_loop_iterations_completed"]["value"].as<int>(),
+              3);
+    EXPECT_FALSE(realized["fruit_loops_converged"]["value"].as<bool>());
+}
+
 TEST(config_scaffold, resolves_processed_weighting_dependencies) {
     citlali::config::ProcessedTimeChunkWeightingConfig weighting;
     citlali::config::ProcessedTimeChunkFlaggingConfig flagging;

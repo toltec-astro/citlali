@@ -38,9 +38,9 @@ Do not reset individual subfields piecemeal.
 
 Pure snapshot serializers cover all 171 frozen legacy fields and are enforced
 by the boundary audit. They are reusable components, not a published
-provenance format. Do not add a final schema version, filename, or output writer
-until effective-resolution and realized-state serialization are complete and
-the plan is execution authority.
+provenance format. Effective-resolution and realized-state components are also
+serializable with explicit availability markers. Do not add a final schema
+version, filename, or output writer until the plan is execution authority.
 
 ## State classification
 
