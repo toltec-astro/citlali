@@ -42,6 +42,12 @@ provenance format. Effective-resolution and realized-state components are also
 serializable with explicit availability markers. Do not add a final schema
 version, filename, or output writer until the plan is execution authority.
 
+The matched beammap prerequisite was accepted on 2026-07-12: refactor
+`4b0126e7` `redu14` is exact against accepted refactor `redu11` and passes
+`beammap-scientific-equivalence-v1` against OG `b83c8750` `redu01`. Engine
+wiring may now proceed as one bounded authority change; this does not by itself
+satisfy the provenance or legacy-parser-removal gates below.
+
 ## State classification
 
 ### Requested

@@ -669,6 +669,142 @@
       ]
     },
     {
+      "record_id": "beammap-148670-og-b83c8750-refactor-4b0126e7",
+      "recorded_date": "2026-07-12",
+      "mode": "beammap",
+      "status": "accepted_with_scientific_tolerance",
+      "candidate": {
+        "label": "refactor",
+        "branch": "codex/structural-refactor",
+        "citlali_sha": "4b0126e7",
+        "citlali_version": "v4.0.0-3392-g4b0126e7",
+        "dirty": false,
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "build": {
+          "host": "unity",
+          "compiler": null,
+          "build_type": "Release",
+          "cmake_flags": null
+        }
+      },
+      "baseline": {
+        "label": "citlali",
+        "citlali_sha": "b83c8750",
+        "citlali_version": "v4.0.0-422-gb83c8750",
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "reduction_id": "redu01",
+        "config_sha256": "e7314eb7a7612cd70dd8127d752d8b085f789485d53443c08263a914abbf8606"
+      },
+      "config": {
+        "ordered_sources": [
+          {
+            "role": "merged_low_level_citlali_input",
+            "path": "citlali_o148670_0_2_c1.yaml",
+            "precedence": 0,
+            "sha256": "aa956b28465eaef8b23763e877857b5b8929e95ca4fbdc976db6d7b2a775636d"
+          }
+        ],
+        "overlay_sources_retained": false,
+        "canonical_merged_sha256": "aa956b28465eaef8b23763e877857b5b8929e95ca4fbdc976db6d7b2a775636d",
+        "requested_sha256": null,
+        "effective_sha256": null,
+        "realized_sha256": null
+      },
+      "dataset": {
+        "obsnum": "148670",
+        "identity": "TolTEC commissioning Beammap observation 148670",
+        "content_hash": null,
+        "matched_input_hashes": {
+          "apt_sha256": "19182ba57ff8a94b036cd35f9d4a14c6a9f9201ceb08ba6a0202d12b15e80a39",
+          "recomputed_telescope_sha256": "e39f5b9e3066fd20086105964dd915ff67709142d699e8a18bb58cfd9da6b7ae"
+        }
+      },
+      "invocation": {
+        "command": null,
+        "launcher": "tolteca reduce",
+        "runtime_policy": {
+          "n_threads": 16,
+          "parallel_policy": "omp",
+          "kids_solver_parallel_policy": "seq"
+        },
+        "exit_code": 0
+      },
+      "audit": {
+        "finished": true,
+        "serious_log_counts": {},
+        "file_count": 21,
+        "comparable_product_count": 13,
+        "stable_comparable_product_count": 12,
+        "stable_product_counts_by_kind": {
+          "ecsv": 2,
+          "fits": 6,
+          "netcdf": 4
+        }
+      },
+      "comparison": {
+        "tool": "tools/baseline/compare_beammap_scientific_equivalence.py",
+        "tool_sha": "aaebe21c",
+        "profile": "validation/profiles/beammap_scientific_equivalence_v1.json",
+        "profile_id": "beammap-scientific-equivalence-v1",
+        "options": [],
+        "volatile_allowlist": [
+          "citlali_profile.ecsv",
+          "NetCDF container metadata"
+        ],
+        "tolerances": {
+          "good_signal_rms_relative_max": 0.01,
+          "good_weight_rms_relative_max": 0.005,
+          "good_kernel_rms_relative_max": 0.001,
+          "good_layer_rms_relative_p99_max": 0.00001,
+          "sensitivity_relative_max": 0.005,
+          "position_absolute_arcsec_max": 0.0001,
+          "fwhm_absolute_arcsec_max": 0.0001
+        },
+        "common_products": 8,
+        "skipped_records": 0,
+        "changed_records": 0,
+        "scientific_products_exact": false,
+        "measured": {
+          "detector_count": 5234,
+          "detector_flags_exact": true,
+          "good_signal_rms_relative_max": 0.006245649370084341,
+          "good_weight_rms_relative_max": 0.003082030472883721,
+          "good_kernel_rms_relative_max": 0.000016090855411976455,
+          "good_signal_rms_relative_p99": 6.617104937942514E-9,
+          "sensitivity_relative_max": 0.0025522925191927654,
+          "position_absolute_arcsec_max": 7.313107772688454E-7,
+          "fwhm_absolute_arcsec_max": 0.0000012775058673142325
+        },
+        "verdict": "accepted_with_scientific_tolerance"
+      },
+      "accepted_differences": [],
+      "performance": {
+        "wall_time_log_seconds": 3576.607,
+        "observation_pipeline_seconds": null,
+        "map_output_seconds": null,
+        "peak_rss_kb": null
+      },
+      "artifacts": {
+        "candidate_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced/redu14",
+        "candidate_unity_path": "/work/toltec/commissioning2025-test/2026-refactor/beammap/refactor/reduced/redu14",
+        "baseline_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/beammap/citlali/reduced/redu01",
+        "determinism_reference_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced/redu11"
+      },
+      "limitations": [
+        "The candidate is exact against accepted refactor redu11, while OG equivalence uses the versioned scientific profile.",
+        "The OG config used mapmaking.grouping=auto and disabled detector TOD; the refactor config used the equivalent detector grouping explicitly and enabled detector TOD.",
+        "The original ordered TolTECA NN*.yaml overlay files and their hashes were not retained in the reduction directories.",
+        "Requested, effective, and realized config documents do not yet have separately emitted canonical hashes.",
+        "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained."
+      ]
+    },
+    {
       "record_id": "science-152390-152392-og-ffc6b907-refactor-59c35e60",
       "recorded_date": "2026-07-11",
       "mode": "science",
