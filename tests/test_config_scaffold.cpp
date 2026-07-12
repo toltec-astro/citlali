@@ -23,6 +23,7 @@
 #include <citlali/core/pipeline/raw_timestream_execution_plan.h>
 #include <citlali/core/pipeline/raw_timestream_observation_resolution.h>
 #include <citlali/core/pipeline/raw_timestream_observation_shadow.h>
+#include <citlali/core/pipeline/raw_timestream_provenance.h>
 #include <citlali/core/pipeline/raw_timestream_shadow_parity.h>
 #include <citlali/core/pipeline/config_parse_tracking.h>
 #include <citlali/core/pipeline/raw_filtering_config_read.h>
@@ -5603,6 +5604,129 @@ TEST(config_scaffold,
     EXPECT_EQ(*plan.observation->filter_edge_guard_samples, 2);
     EXPECT_TRUE(plan.observation->filter_edge_guard_parity_deferred);
     EXPECT_EQ(plan.requested.downsample.factor, 0);
+}
+
+TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
+    citlali::config::RawTimeChunkConfig request;
+    request.downsample.enabled = true;
+    request.downsample.factor = 0;
+    request.downsample.downsampled_freq_Hz = 40.0;
+    request.despike.enabled = true;
+    request.despike.source_protection.enabled = true;
+    request.extinction_correction_enabled = true;
+
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(request);
+    plan.effective.downsample.factor = 3;
+    auto &observation = plan.begin_observation();
+    observation.native_sample_rate_hz = 120.0;
+    observation.effective_sample_rate_hz = 40.0;
+    observation.downsample_factor = 3;
+    observation.filter_edge_guard_samples = 2;
+    observation.filter_outer_context_samples = 4;
+    observation.filter_edge_guard_parity_deferred = true;
+    observation.source_protection_active = false;
+    observation.extinction_active = true;
+    observation.extinction_model = "am_q50";
+    plan.realized.execution_completed = true;
+    plan.realized.completed_scan_count = 12;
+    plan.realized.flagged_sample_count = 34;
+    plan.realized.dynamic_notch_count = 2;
+    plan.realized.required_output_count = 24;
+
+    const auto node =
+        citlali::pipeline::raw_timestream_provenance_node(plan);
+
+    EXPECT_EQ(node["schema_version"].as<std::string>(),
+              "citlali-raw-timestream-provenance-v1");
+    EXPECT_TRUE(node["initialized"].as<bool>());
+    EXPECT_EQ(node["requested"]["downsample"]["factor"].as<int>(), 0);
+    EXPECT_EQ(
+        node["effective"]["config"]["downsample"]["factor"].as<int>(),
+        3);
+    EXPECT_EQ(node["effective"]["resolutions"]["downsampling"]["kind"]
+                  .as<std::string>(),
+              "target_frequency");
+    EXPECT_TRUE(node["observation"]["available"].as<bool>());
+    EXPECT_DOUBLE_EQ(
+        node["observation"]["value"]["effective_sample_rate_hz"]
+            ["value"]
+                .as<double>(),
+        40.0);
+    EXPECT_TRUE(node["observation"]["value"]
+                    ["filter_edge_guard_parity_deferred"]
+                        .as<bool>());
+    EXPECT_EQ(node["observation"]["value"]["extinction_model"]["value"]
+                  .as<std::string>(),
+              "am_q50");
+    EXPECT_TRUE(node["realized"]["execution_completed"].as<bool>());
+    EXPECT_EQ(node["realized"]["completed_scan_count"].as<std::size_t>(),
+              12U);
+    EXPECT_EQ(node["realized"]["required_output_count"].as<std::size_t>(),
+              24U);
+}
+
+TEST(config_scaffold, serializes_unavailable_raw_observation_explicitly) {
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(citlali::config::RawTimeChunkConfig{});
+
+    const auto node =
+        citlali::pipeline::raw_timestream_provenance_node(plan);
+
+    EXPECT_FALSE(node["observation"]["available"].as<bool>());
+    EXPECT_FALSE(node["observation"]["value"].IsDefined());
+    EXPECT_FALSE(node["realized"]["execution_completed"].as<bool>());
+    EXPECT_EQ(node["realized"]["completed_scan_count"].as<std::size_t>(),
+              0U);
+}
+
+TEST(config_scaffold, atomically_writes_raw_timestream_provenance) {
+    const auto output_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_raw_timestream_provenance_test";
+    std::filesystem::remove_all(output_dir);
+    std::filesystem::create_directories(output_dir);
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(citlali::config::RawTimeChunkConfig{});
+
+    citlali::pipeline::write_raw_timestream_provenance_file(
+        output_dir, plan);
+
+    const auto output_path =
+        citlali::pipeline::raw_timestream_provenance_path(output_dir);
+    EXPECT_TRUE(std::filesystem::exists(output_path));
+    EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
+    const auto stored = YAML::LoadFile(output_path.string());
+    EXPECT_EQ(stored["schema_version"].as<std::string>(),
+              "citlali-raw-timestream-provenance-v1");
+    EXPECT_TRUE(stored["initialized"].as<bool>());
+    std::filesystem::remove_all(output_dir);
+}
+
+TEST(config_scaffold, raw_timestream_provenance_failure_propagates) {
+    const auto missing_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_missing_raw_provenance_dir" / "nested";
+    std::filesystem::remove_all(missing_dir.parent_path());
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(citlali::config::RawTimeChunkConfig{});
+
+    EXPECT_THROW(
+        citlali::pipeline::write_raw_timestream_provenance_file(
+            missing_dir, plan),
+        std::ios_base::failure);
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::raw_timestream_provenance_path(missing_dir)));
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::raw_timestream_provenance_path(missing_dir)
+            .string() +
+        ".tmp"));
+
+    EXPECT_THROW(
+        citlali::pipeline::write_raw_timestream_provenance_file(
+            missing_dir,
+            citlali::pipeline::RawTimestreamExecutionPlan{}),
+        std::logic_error);
 }
 
 TEST(config_scaffold, rejects_raw_observation_before_plan_initialization) {

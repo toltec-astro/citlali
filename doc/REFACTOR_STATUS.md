@@ -358,6 +358,14 @@ classified records with zero review-required entries. Local CLI/test builds,
 all 277 C++ tests, 23 focused config-tool tests, all eight profiles, and full
 preflight pass. Unity validation of this shadow checkpoint is pending; no raw
 authority flip or parser/mirror retirement is permitted before that gate.
+The versioned `citlali-raw-timestream-provenance-v1` schema is prepared but not
+wired to production output. It serializes the complete requested/effective
+config, context-free resolutions, explicit observation-field availability and
+edge-guard deferral, an execution-completed marker, and realized counters. Its
+atomic writer rejects uninitialized plans and propagates publication failures.
+All 281 C++ tests and full preflight pass. Production publication remains
+deferred so required-output placement and lifecycle completion can be reviewed
+with the Unity shadow checkpoint rather than introduced without mode evidence.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
