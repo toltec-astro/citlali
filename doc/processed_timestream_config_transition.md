@@ -152,6 +152,16 @@ parser body remains temporarily as the frozen 171-path audit source. Moving
 that path set to a standalone manifest and deleting the dead body is a later
 mechanical cleanup, not a config-authority change.
 
+The post-removal point gate was accepted on 2026-07-12. Unity point `redu36`
+at `c22bc127` exactly reproduces accepted `redu35`: 489 config leaves and all
+13 scientific product families match, including every RTC/PTC array, with no
+missing, extra, changed, or skipped records. Processed and runtime provenance
+are byte-identical, and the output-provenance difference is limited to expected
+reduction-directory paths. The run has no serious log issues and completed in
+53.277 seconds versus 60.159 seconds for the baseline. The production parser
+retirement is therefore accepted; the standalone-manifest extraction may
+proceed without reopening the authority decision.
+
 OOF may reuse the pointing execution gate while that relationship remains an
 explicit supported contract. Polarimetry requires its own gate before any
 polarimetry-specific PTC behavior becomes typed-authoritative.

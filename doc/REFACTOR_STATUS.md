@@ -297,6 +297,16 @@ Local CLI/test builds, all 252 C++ tests, all eight config profiles, and 13
 focused Python tests pass. The unused `PTCProc::get_config` body remains solely
 as the frozen path-audit source until that inventory moves to a standalone
 manifest; it is not reachable from production.
+Unity point `redu36` at `c22bc127` closes the production parser-retirement
+gate. Its merged config is an exact 489-leaf match to accepted `redu35`; all 13
+scientific product families, including every RTC/PTC array, are exact with zero
+missing, extra, changed, or skipped records. Processed and runtime provenance
+are byte-identical; timestream-output provenance differs only in the expected
+`redu35`/`redu36` paths. The run completed without serious log issues in 53.277
+seconds versus 60.159 seconds for the baseline. This acceptance is recorded in
+the validation ledger. Moving the frozen 171-path inventory to a standalone
+manifest and deleting the unreachable parser body is now a mechanical cleanup,
+not another authority migration.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
