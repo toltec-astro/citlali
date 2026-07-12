@@ -20,6 +20,7 @@
 #include <citlali/core/pipeline/phdu_reduction_config.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/processed_clean_config_read.h>
+#include <citlali/core/pipeline/processed_clean_resolution.h>
 #include <citlali/core/pipeline/processed_weighting_config_read.h>
 #include <citlali/core/pipeline/processed_weighting_resolution.h>
 #include <citlali/core/pipeline/runtime_provenance_output.h>
@@ -3170,6 +3171,17 @@ TEST(pipeline_preflight, configures_non_fruit_loop_as_single_iteration) {
     fruit_loops.save_all_iters = false;
     auto logger = std::make_shared<FakeLogger>();
 
+    const auto resolution =
+        citlali::pipeline::resolve_fruit_loop_iteration_policy(
+            fruit_loops, citlali::config::ReductionType::science);
+
+    EXPECT_EQ(fruit_loops.max_iters, 5);
+    EXPECT_FALSE(fruit_loops.save_all_iters);
+    EXPECT_EQ(resolution.effective_max_iters, 1);
+    EXPECT_TRUE(resolution.effective_save_all_iters);
+    EXPECT_TRUE(resolution.forced_single_iteration_while_disabled);
+    EXPECT_FALSE(resolution.forced_single_iteration_for_beammap);
+
     citlali::pipeline::configure_fruit_loop_iteration_policy(
         engine, logger);
 
@@ -3190,6 +3202,13 @@ TEST(pipeline_preflight, configures_beammap_fruit_loop_as_single_iteration) {
     fruit_loops.max_iters = 5;
     fruit_loops.save_all_iters = false;
     auto logger = std::make_shared<FakeLogger>();
+
+    const auto resolution =
+        citlali::pipeline::resolve_fruit_loop_iteration_policy(
+            fruit_loops, citlali::config::ReductionType::beammap);
+
+    EXPECT_FALSE(resolution.forced_single_iteration_while_disabled);
+    EXPECT_TRUE(resolution.forced_single_iteration_for_beammap);
 
     citlali::pipeline::configure_fruit_loop_iteration_policy(
         engine, logger);
@@ -4570,6 +4589,33 @@ TEST(config_scaffold, normalizes_processed_clean_group_aliases) {
     EXPECT_TRUE(citlali::pipeline::is_supported_processed_clean_group("fg"));
     EXPECT_FALSE(
         citlali::pipeline::is_supported_processed_clean_group("unknown"));
+
+    const auto resolution =
+        citlali::pipeline::resolve_processed_clean_grouping(
+            {"Network", "nw", "ARRAY", "unknown"});
+    EXPECT_EQ(resolution.effective,
+              (std::vector<std::string>{"nw", "array"}));
+    EXPECT_EQ(resolution.unsupported,
+              (std::vector<std::string>{"unknown"}));
+    EXPECT_EQ(resolution.duplicates, (std::vector<std::string>{"nw"}));
+    EXPECT_EQ(resolution.aliases_normalized, 2);
+}
+
+TEST(config_scaffold, resolves_processed_weighting_source_mask_inheritance) {
+    const auto inherited =
+        citlali::pipeline::resolve_processed_weighting_source_mask(
+            std::nullopt, 24.0);
+    EXPECT_FALSE(inherited.requested.has_value());
+    EXPECT_DOUBLE_EQ(inherited.effective, 24.0);
+    EXPECT_TRUE(inherited.inherited_from_cleaning);
+
+    const auto explicit_zero =
+        citlali::pipeline::resolve_processed_weighting_source_mask(0.0,
+                                                                   24.0);
+    ASSERT_TRUE(explicit_zero.requested.has_value());
+    EXPECT_DOUBLE_EQ(*explicit_zero.requested, 0.0);
+    EXPECT_DOUBLE_EQ(explicit_zero.effective, 0.0);
+    EXPECT_FALSE(explicit_zero.inherited_from_cleaning);
 }
 
 TEST(config_scaffold, resolves_processed_weighting_dependencies) {

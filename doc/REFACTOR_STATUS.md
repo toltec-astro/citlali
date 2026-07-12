@@ -202,6 +202,15 @@ Second-pass, correlation, busy-row, and adaptive-cleaner schema decisions no
 longer depend on processor mirrors. The CLI build, all 235 tests, and full
 preflight pass.
 
+Processed effective-policy resolution is now being separated from YAML
+parsing. Pure result types preserve requested values while recording cleaner
+group canonicalization, weighting source-mask inheritance, validated-weighting
+and busy-row dependency decisions, and disabled/beammap fruit-loop iteration
+normalization. Existing mutating calls remain thin compatibility adapters with
+unchanged warnings and processor values. The CLI and test builds, all 242
+tests, all eight config profiles, and the frozen 171-path PTC boundary audit
+pass.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.

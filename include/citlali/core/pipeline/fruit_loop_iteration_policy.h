@@ -10,6 +10,30 @@
 
 namespace citlali::pipeline {
 
+struct FruitLoopIterationResolution {
+    int effective_max_iters = 1;
+    bool effective_save_all_iters = false;
+    bool forced_single_iteration_while_disabled = false;
+    bool forced_single_iteration_for_beammap = false;
+};
+
+inline FruitLoopIterationResolution resolve_fruit_loop_iteration_policy(
+    const citlali::config::TimestreamFruitLoopsConfig &requested,
+    citlali::config::ReductionType reduction_type) {
+    FruitLoopIterationResolution resolution{
+        requested.max_iters,
+        requested.save_all_iters,
+        !requested.enabled,
+        citlali::config::is_beammap_reduction_type(reduction_type),
+    };
+    if (resolution.forced_single_iteration_while_disabled ||
+        resolution.forced_single_iteration_for_beammap) {
+        resolution.effective_max_iters = 1;
+        resolution.effective_save_all_iters = true;
+    }
+    return resolution;
+}
+
 template <class Engine, class Logger>
 void configure_fruit_loop_interpolation_mode(
     Engine &engine, citlali::config::MapMethod map_method,
@@ -87,12 +111,10 @@ void configure_fruit_loop_iteration_policy(Engine &engine,
         logger->warn("noise maps are not enabled for fruit loops");
     }
 
-    if (!config.enabled ||
-        runtime_reduction_type(engine) ==
-            citlali::config::ReductionType::beammap) {
-        config.max_iters = 1;
-        config.save_all_iters = true;
-    }
+    const auto resolution = resolve_fruit_loop_iteration_policy(
+        config, runtime_reduction_type(engine));
+    config.max_iters = resolution.effective_max_iters;
+    config.save_all_iters = resolution.effective_save_all_iters;
     engine.ptcproc.fruit_loops_iters = config.max_iters;
     engine.ptcproc.save_all_iters = config.save_all_iters;
 }

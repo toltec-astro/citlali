@@ -2,6 +2,7 @@
 
 #include <citlali/core/config/timestream_config.h>
 
+#include <optional>
 #include <utility>
 
 namespace citlali::pipeline {
@@ -11,6 +12,22 @@ struct ProcessedWeightingResolution {
     bool validation_forced_by_weighting_type = false;
     bool busy_row_disabled_without_second_pass = false;
 };
+
+struct ProcessedWeightingSourceMaskResolution {
+    std::optional<double> requested;
+    double effective = 0.0;
+    bool inherited_from_cleaning = false;
+};
+
+inline ProcessedWeightingSourceMaskResolution
+resolve_processed_weighting_source_mask(
+    std::optional<double> requested, double clean_mask_radius_arcsec) {
+    return ProcessedWeightingSourceMaskResolution{
+        requested,
+        requested.value_or(clean_mask_radius_arcsec),
+        !requested.has_value(),
+    };
+}
 
 inline ProcessedWeightingResolution resolve_processed_weighting(
     const citlali::config::ProcessedTimeChunkWeightingConfig &requested,

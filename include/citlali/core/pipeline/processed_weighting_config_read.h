@@ -2,7 +2,9 @@
 
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/pipeline/config_parse_tracking.h>
+#include <citlali/core/pipeline/processed_weighting_resolution.h>
 
+#include <optional>
 #include <tuple>
 
 namespace citlali::pipeline {
@@ -66,11 +68,20 @@ void read_processed_weighting_core_config(
         "source_mask_radius_arcsec"};
     if (config.template has_typed<double>(source_mask_key)) {
         double source_mask = weighting.source_mask_radius_arcsec;
-        read_mirrored_config_value(
+        read_config_value_if_clean(
             config, source_mask_key, source_mask,
-            weighting.source_mask_radius_arcsec, diagnostics, {}, {0.0});
+            [&weighting, &clean](double value) {
+                weighting.source_mask_radius_arcsec =
+                    resolve_processed_weighting_source_mask(
+                        value, clean.mask_radius_arcsec)
+                        .effective;
+            },
+            diagnostics, {}, {0.0});
     } else {
-        weighting.source_mask_radius_arcsec = clean.mask_radius_arcsec;
+        weighting.source_mask_radius_arcsec =
+            resolve_processed_weighting_source_mask(
+                std::nullopt, clean.mask_radius_arcsec)
+                .effective;
     }
     read_optional_weighting_double(
         "hybrid_correction_min_factor",

@@ -2,35 +2,16 @@
 
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/pipeline/config_parse_tracking.h>
+#include <citlali/core/pipeline/processed_clean_resolution.h>
 
 #include <Eigen/Core>
 
-#include <algorithm>
 #include <array>
-#include <cctype>
-#include <string_view>
 #include <tuple>
-#include <unordered_set>
 #include <utility>
 #include <vector>
 
 namespace citlali::pipeline {
-
-inline std::string normalize_processed_clean_group(std::string group) {
-    std::transform(
-        group.begin(), group.end(), group.begin(), [](unsigned char value) {
-            return static_cast<char>(std::tolower(value));
-        });
-    if (group == "network") {
-        return "nw";
-    }
-    return group;
-}
-
-inline bool is_supported_processed_clean_group(std::string_view group) {
-    return group == "all" || group == "array" || group == "nw" ||
-           group == "detector" || group == "fg" || group == "corr_nw";
-}
 
 template <class Config, class Diagnostics, class ArrayNameMap, class Logger>
 void read_processed_clean_core_config(
@@ -107,21 +88,14 @@ void read_processed_clean_core_config(
         if (!config.template has_typed<std::vector<std::string>>(key)) {
             return;
         }
-        std::unordered_set<std::string> seen;
-        for (const auto &raw_group :
-             config.template get_typed<std::vector<std::string>>(key)) {
-            auto group = normalize_processed_clean_group(raw_group);
-            if (!is_supported_processed_clean_group(group)) {
-                logger->warn(
-                    "clean.{}.grouping contains unsupported entry '{}'; ignoring",
-                    mode, raw_group);
-                add_invalid_config_key(
-                    key, diagnostics.invalid_key_paths());
-                continue;
-            }
-            if (seen.insert(group).second) {
-                target.push_back(std::move(group));
-            }
+        auto resolution = resolve_processed_clean_grouping(
+            config.template get_typed<std::vector<std::string>>(key));
+        target = std::move(resolution.effective);
+        for (const auto &raw_group : resolution.unsupported) {
+            logger->warn(
+                "clean.{}.grouping contains unsupported entry '{}'; ignoring",
+                mode, raw_group);
+            add_invalid_config_key(key, diagnostics.invalid_key_paths());
         }
     };
 
