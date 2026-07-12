@@ -110,9 +110,11 @@ RawTimestreamObservationShadowReport begin_raw_timestream_observation_shadow(
     compare_raw_observation_shadow_value(
         report, "downsample.enabled", plan.requested.downsample.enabled,
         rtcproc.run_downsample);
-    compare_raw_observation_shadow_value(
-        report, "downsample.factor", sample_rate.downsample_factor,
-        rtcproc.downsampler.factor);
+    if (plan.requested.downsample.enabled) {
+        compare_raw_observation_shadow_value(
+            report, "downsample.factor", sample_rate.downsample_factor,
+            rtcproc.downsampler.factor);
+    }
     compare_raw_observation_shadow_value(
         report, "source_protection.active", source_protection.active,
         rtcproc.despiker.source_protection_enabled);

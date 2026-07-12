@@ -32,7 +32,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 287 tests with none skipped or disabled; all
+- CTest discovers and passes all 288 tests with none skipped or disabled; all
   13 baseline-tool tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
@@ -408,6 +408,16 @@ extra, changed, or skipped records. Logged runtime was 51.459 seconds versus
 51.723 seconds for `redu37`. The point publication gate is closed and recorded
 in the validation ledger. Beammap and science acceptance remain pending; raw
 execution therefore remains legacy-authoritative.
+A science cross-mode attempt at `5d403887` stopped before observation numerical
+processing because the shadow compared typed physical downsample factor 1 with
+legacy RTC's disabled value 0. Legacy initializes and reads that factor only
+when downsampling is enabled, so inspecting it while disabled is outside the
+legacy contract and can read inactive state. Observation parity now always
+compares enablement and compares factor only when enabled; typed observation
+state still records the physical identity factor 1 and unchanged sample rate.
+A focused science-style test preserves enabled-factor divergence detection and
+accepts the disabled legacy sentinel. Local CLI/test builds, all 288 C++ tests,
+and full config preflight pass. The science and Beammap gates must be rerun.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

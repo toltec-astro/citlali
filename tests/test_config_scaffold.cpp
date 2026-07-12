@@ -5541,6 +5541,31 @@ TEST(config_scaffold, shadows_raw_observation_legacy_state_without_mutation) {
     EXPECT_FALSE(plan.realized.completed_scan_count.has_value());
 }
 
+TEST(config_scaffold,
+     ignores_inactive_legacy_downsample_factor_in_observation_shadow) {
+    citlali::config::RawTimeChunkConfig request;
+    request.downsample.enabled = false;
+    request.downsample.factor = 1;
+
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(request);
+    timestream::RTCProc rtcproc;
+    rtcproc.run_downsample = false;
+    rtcproc.downsampler.factor = 0;
+
+    const auto report =
+        citlali::pipeline::begin_raw_timestream_observation_shadow(
+            plan, citlali::config::ReductionType::science,
+            122.0703125, 122.0703125, rtcproc);
+
+    EXPECT_TRUE(report.exact) << report.diagnostic();
+    ASSERT_TRUE(plan.observation.has_value());
+    EXPECT_EQ(*plan.observation->downsample_factor, 1);
+    EXPECT_DOUBLE_EQ(
+        *plan.observation->effective_sample_rate_hz, 122.0703125);
+    EXPECT_FALSE(plan.observation->filter_edge_guard_parity_deferred);
+}
+
 TEST(config_scaffold, reports_raw_observation_shadow_divergence) {
     citlali::config::RawTimeChunkConfig request;
     request.downsample.enabled = true;
