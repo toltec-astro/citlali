@@ -53,8 +53,10 @@
 #include <spdlog/sinks/null_sink.h>
 #include <tula/config/yamlconfig.h>
 
+#include <algorithm>
 #include <functional>
 #include <filesystem>
+#include <initializer_list>
 #include <map>
 #include <memory>
 #include <optional>
@@ -6166,6 +6168,84 @@ TEST(config_scaffold, default_raw_request_matches_legacy_parser_shadow) {
     EXPECT_TRUE(report.exact)
         << "legacy:\n" << report.legacy_snapshot
         << "typed adapter:\n" << report.typed_adapter_snapshot;
+}
+
+TEST(config_scaffold,
+     legacy_raw_parser_collects_cross_field_errors_without_exiting) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    auto raw = root["timestream"]["raw_time_chunk"];
+    raw["filter"]["enabled"] = true;
+    raw["filter"]["freq_low_Hz"] = 10.0;
+    raw["filter"]["freq_high_Hz"] = 5.0;
+    raw["filter"]["notch"]["enabled"] = true;
+    raw["filter"]["notch"]["zero_phase"] = false;
+    raw["filter"]["notch"]["freqs_Hz"] =
+        std::vector<double>{12.0, 24.0, 36.0};
+    raw["filter"]["notch"]["delta_f_Hz"] =
+        std::vector<double>{0.2, 0.3};
+    raw["IIR_filter"]["enabled"] = true;
+    raw["IIR_filter"]["freq_Hz"] = 0.0;
+    raw["IIR_filter"]["zero_phase"] = false;
+    raw["line_audit"]["apply_min_width_hz"] = 1.0;
+    raw["line_audit"]["apply_max_width_hz"] = 0.5;
+    raw["line_audit"]["fixed_notch_enabled"] = true;
+    raw["line_audit"]["fixed_notch_freqs_hz"] =
+        std::vector<double>{10.0, 20.0, 30.0};
+    raw["line_audit"]["fixed_notch_widths_hz"] =
+        std::vector<double>{0.2, 0.3};
+    auto config = tula::config::YamlConfig::from_str(YAML::Dump(root));
+    timestream::RTCProc rtcproc;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_processor_config(
+        rtcproc, config, diagnostics);
+
+    auto has_path = [&diagnostics](
+                        std::initializer_list<std::string> expected) {
+        const std::vector<std::string> path(expected);
+        const auto &invalid = diagnostics.invalid_key_paths();
+        return std::find(invalid.begin(), invalid.end(), path) !=
+               invalid.end();
+    };
+    EXPECT_TRUE(has_path({"timestream", "raw_time_chunk", "filter",
+                          "freq_high_Hz"}));
+    EXPECT_TRUE(has_path({"timestream", "raw_time_chunk", "filter",
+                          "notch", "zero_phase"}));
+    EXPECT_TRUE(has_path({"timestream", "raw_time_chunk", "filter",
+                          "notch", "delta_f_Hz"}));
+    EXPECT_TRUE(has_path({"timestream", "raw_time_chunk", "IIR_filter",
+                          "freq_Hz"}));
+    EXPECT_TRUE(has_path({"timestream", "raw_time_chunk", "IIR_filter",
+                          "zero_phase"}));
+    EXPECT_TRUE(has_path({"timestream", "raw_time_chunk", "line_audit",
+                          "apply_max_width_hz"}));
+    EXPECT_TRUE(has_path({"timestream", "raw_time_chunk", "line_audit",
+                          "fixed_notch_widths_hz"}));
+
+    auto downsample_root =
+        YAML::Load(citlali::citlali_default_config_content);
+    auto downsample_raw =
+        downsample_root["timestream"]["raw_time_chunk"];
+    downsample_raw["filter"]["enabled"] = false;
+    downsample_raw["downsample"]["enabled"] = true;
+    auto downsample_config = tula::config::YamlConfig::from_str(
+        YAML::Dump(downsample_root));
+    timestream::RTCProc downsample_rtcproc;
+    citlali::pipeline::ConfigDiagnosticsState downsample_diagnostics;
+
+    citlali::pipeline::read_processor_config(
+        downsample_rtcproc, downsample_config,
+        downsample_diagnostics);
+
+    const auto &downsample_invalid =
+        downsample_diagnostics.invalid_key_paths();
+    EXPECT_NE(
+        std::find(
+            downsample_invalid.begin(), downsample_invalid.end(),
+            (std::vector<std::string>{
+                "timestream", "raw_time_chunk", "downsample", "enabled"})),
+        downsample_invalid.end());
 }
 
 TEST(config_scaffold, raw_shadow_reports_adapter_divergence) {

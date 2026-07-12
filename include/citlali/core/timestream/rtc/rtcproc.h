@@ -11,6 +11,7 @@
 #include <memory>
 #include <mutex>
 #include <numeric>
+#include <utility>
 #include <vector>
 
 #include <citlali/core/config/mapmaking_config.h>
@@ -495,6 +496,14 @@ public:
 template <typename config_t>
 void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>> &missing_keys,
                          std::vector<std::vector<std::string>> &invalid_keys) {
+    auto record_invalid = [&invalid_keys](const auto &key) {
+        std::vector<std::string> path;
+        engine_utils::for_each_in_tuple(
+            key, [&path](const auto &component) {
+                path.push_back(component);
+            });
+        invalid_keys.push_back(std::move(path));
+    };
     // lower inv var factor
     get_config_value(config, lower_inv_var_factor, missing_keys, invalid_keys,
                      std::tuple{"timestream","raw_time_chunk","flagging","lower_tod_inv_var_factor"});
@@ -966,7 +975,9 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 "timestream.raw_time_chunk.line_audit.apply_max_width_hz ({}) must be >= apply_min_width_hz ({})",
                 line_audit.apply_max_width_hz,
                 line_audit.apply_min_width_hz);
-            std::exit(EXIT_FAILURE);
+            record_invalid(std::tuple{
+                "timestream", "raw_time_chunk", "line_audit",
+                "apply_max_width_hz"});
         }
         if (std::isfinite(line_audit.ptc_line_min_hz) &&
             std::isfinite(line_audit.ptc_line_max_hz) &&
@@ -975,14 +986,18 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 "timestream.raw_time_chunk.line_audit.ptc_line_max_hz ({}) must be >= ptc_line_min_hz ({})",
                 line_audit.ptc_line_max_hz,
                 line_audit.ptc_line_min_hz);
-            std::exit(EXIT_FAILURE);
+            record_invalid(std::tuple{
+                "timestream", "raw_time_chunk", "line_audit",
+                "ptc_line_max_hz"});
         }
         if (line_audit.detector_notch_max_width_hz < line_audit.detector_notch_min_width_hz) {
             logger->error(
                 "timestream.raw_time_chunk.line_audit.detector_notch_max_width_hz ({}) must be >= detector_notch_min_width_hz ({})",
                 line_audit.detector_notch_max_width_hz,
                 line_audit.detector_notch_min_width_hz);
-            std::exit(EXIT_FAILURE);
+            record_invalid(std::tuple{
+                "timestream", "raw_time_chunk", "line_audit",
+                "detector_notch_max_width_hz"});
         }
         if (line_audit.fixed_notch_widths_hz.empty()) {
             line_audit.fixed_notch_widths_hz.push_back(0.25);
@@ -991,7 +1006,9 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             if (line_audit.fixed_notch_freqs_hz.empty()) {
                 logger->error(
                     "timestream.raw_time_chunk.line_audit.fixed_notch_enabled is true but fixed_notch_freqs_hz is empty");
-                std::exit(EXIT_FAILURE);
+                record_invalid(std::tuple{
+                    "timestream", "raw_time_chunk", "line_audit",
+                    "fixed_notch_freqs_hz"});
             }
             if (line_audit.fixed_notch_widths_hz.size() == 1 &&
                 line_audit.fixed_notch_freqs_hz.size() > 1) {
@@ -1002,16 +1019,26 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             if (line_audit.fixed_notch_widths_hz.size() != line_audit.fixed_notch_freqs_hz.size()) {
                 logger->error(
                     "timestream.raw_time_chunk.line_audit.fixed_notch_widths_hz must have length 1 or match fixed_notch_freqs_hz");
-                std::exit(EXIT_FAILURE);
+                record_invalid(std::tuple{
+                    "timestream", "raw_time_chunk", "line_audit",
+                    "fixed_notch_widths_hz"});
             }
-            for (std::size_t i = 0; i < line_audit.fixed_notch_freqs_hz.size(); ++i) {
+            const auto fixed_notch_count = std::min(
+                line_audit.fixed_notch_freqs_hz.size(),
+                line_audit.fixed_notch_widths_hz.size());
+            for (std::size_t i = 0; i < fixed_notch_count; ++i) {
                 if (!std::isfinite(line_audit.fixed_notch_freqs_hz[i]) ||
                     line_audit.fixed_notch_freqs_hz[i] <= 0.0 ||
                     !std::isfinite(line_audit.fixed_notch_widths_hz[i]) ||
                     line_audit.fixed_notch_widths_hz[i] <= 0.0) {
                     logger->error(
                         "timestream.raw_time_chunk.line_audit fixed notch frequencies and widths must be finite and > 0");
-                    std::exit(EXIT_FAILURE);
+                    record_invalid(std::tuple{
+                        "timestream", "raw_time_chunk", "line_audit",
+                        "fixed_notch_freqs_hz"});
+                    record_invalid(std::tuple{
+                        "timestream", "raw_time_chunk", "line_audit",
+                        "fixed_notch_widths_hz"});
                 }
             }
         }
@@ -1319,7 +1346,9 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             filter.freq_high_Hz < filter.freq_low_Hz) {
             logger->error("timestream.raw_time_chunk.filter.freq_high_Hz ({}) must be >= freq_low_Hz ({})",
                           filter.freq_high_Hz, filter.freq_low_Hz);
-            std::exit(EXIT_FAILURE);
+            record_invalid(std::tuple{
+                "timestream", "raw_time_chunk", "filter",
+                "freq_high_Hz"});
         }
         // filter size
         get_config_value(config, filter.n_terms, missing_keys, invalid_keys,
@@ -1341,7 +1370,9 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                 }
                 if (!filter.notch_zero_phase) {
                     logger->error("timestream.raw_time_chunk.filter.notch.zero_phase must be true to avoid phase shifts");
-                    std::exit(EXIT_FAILURE);
+                    record_invalid(std::tuple{
+                        "timestream", "raw_time_chunk", "filter", "notch",
+                        "zero_phase"});
                 }
                 auto freqs = config.template get_typed<std::vector<double>>(
                     std::tuple{"timestream","raw_time_chunk","filter","notch","freqs_Hz"});
@@ -1349,21 +1380,36 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
                     std::tuple{"timestream","raw_time_chunk","filter","notch","delta_f_Hz"});
                 if (freqs.empty()) {
                     logger->error("notch enabled but freqs_Hz is empty");
-                    std::exit(EXIT_FAILURE);
+                    record_invalid(std::tuple{
+                        "timestream", "raw_time_chunk", "filter", "notch",
+                        "freqs_Hz"});
                 }
                 if (deltas.size() == 1 && freqs.size() > 1) {
                     deltas.resize(freqs.size(), deltas[0]);
                 }
                 if (deltas.size() != freqs.size()) {
                     logger->error("notch freqs_Hz and delta_f_Hz must have same length (or delta_f_Hz length 1)");
-                    std::exit(EXIT_FAILURE);
+                    record_invalid(std::tuple{
+                        "timestream", "raw_time_chunk", "filter", "notch",
+                        "delta_f_Hz"});
                 }
                 filter.w0s.clear();
                 filter.qs.clear();
-                for (std::size_t i = 0; i < freqs.size(); ++i) {
+                const auto notch_count = std::min(freqs.size(), deltas.size());
+                for (std::size_t i = 0; i < notch_count; ++i) {
                     if (freqs[i] <= 0.0 || deltas[i] <= 0.0) {
                         logger->error("notch freqs_Hz and delta_f_Hz must be > 0");
-                        std::exit(EXIT_FAILURE);
+                        if (freqs[i] <= 0.0) {
+                            record_invalid(std::tuple{
+                                "timestream", "raw_time_chunk", "filter",
+                                "notch", "freqs_Hz"});
+                        }
+                        if (deltas[i] <= 0.0) {
+                            record_invalid(std::tuple{
+                                "timestream", "raw_time_chunk", "filter",
+                                "notch", "delta_f_Hz"});
+                        }
+                        continue;
                     }
                     filter.w0s.push_back(freqs[i]);
                     filter.qs.push_back(freqs[i] / deltas[i]);
@@ -1397,11 +1443,15 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             if (has_iir_freq && filter.iir_highpass_freq_Hz <= 0.0) {
                 logger->error("timestream.raw_time_chunk.IIR_filter.freq_Hz ({}) must be > 0",
                               filter.iir_highpass_freq_Hz);
-                std::exit(EXIT_FAILURE);
+                record_invalid(std::tuple{
+                    "timestream", "raw_time_chunk", "IIR_filter",
+                    "freq_Hz"});
             }
             if (!filter.iir_highpass_zero_phase) {
                 logger->error("timestream.raw_time_chunk.IIR_filter.zero_phase must be true to avoid phase shifts");
-                std::exit(EXIT_FAILURE);
+                record_invalid(std::tuple{
+                    "timestream", "raw_time_chunk", "IIR_filter",
+                    "zero_phase"});
             }
         }
     }
@@ -1418,7 +1468,8 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
         // check if tod filtering is enabled
         if (!run_tod_filter) {
             logger->error("running downsampling without tod filtering will lose data!");
-            std::exit(EXIT_FAILURE);
+            record_invalid(std::tuple{
+                "timestream", "raw_time_chunk", "downsample", "enabled"});
         }
         // downsample factor
         get_config_value(config, downsampler.factor, missing_keys, invalid_keys,

@@ -338,7 +338,7 @@ $HOME/tolteca/bin/python tools/config/audit_processed_timestream_boundary.py \
 
 `audit_raw_timestream_boundary.py` characterizes the next migration boundary.
 It freezes the active `RTCProc` parser's 169 raw-timestream paths, the two
-adjacent polarimetry paths, 14 direct parser exits, and the ten
+adjacent polarimetry paths, zero direct parser exits, and the ten
 legacy-to-typed raw mirror calls. It also requires all 169 raw paths to appear
 in the direct typed readers, deterministic request serializer, and unwired
 typed-to-RTC adapter. The direct reader and adapter now run as a strict

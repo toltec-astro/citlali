@@ -24,7 +24,8 @@ The legacy-authoritative direction is:
 `merged YAML -> RTCProc::get_config -> RTCProc fields -> typed raw snapshot`
 
 `RTCProc::get_config` contains 171 unique literal paths: 169 raw-timestream and
-two polarimetry paths. It has 14 direct process exits. After parsing,
+two polarimetry paths. Its original 14 direct process exits have been replaced
+by propagated invalid-key diagnostics. After parsing,
 `Engine::get_rtc_config` invokes ten legacy-to-typed mirror helpers. The typed
 raw object already supplies several downstream policy accessors, but it is a
 snapshot of legacy processor state rather than the accepted request authority.
@@ -33,7 +34,7 @@ snapshot of legacy processor state rather than the accepted request authority.
 
 - parser path count and SHA-256 digest;
 - raw versus adjacent polarimetry path counts;
-- direct parser-exit count;
+- zero direct parser exits;
 - the single legacy parser call; and
 - the exact ordered parser-before-mirrors boundary with ten mirror helpers.
 
@@ -110,6 +111,12 @@ but intentionally unwired. The schema distinguishes requested/effective config,
 context-free resolutions, observation-field availability, edge-guard parity
 deferral, execution completion, and realized counters. Production publication
 waits for shadow validation and an explicit lifecycle/output placement decision.
+
+The legacy parser no longer terminates the process for cross-field validation.
+All former exit sites record exact invalid-key paths in the existing diagnostic
+state, and malformed notch vector lengths are bounded before iteration. This
+keeps invalid YAML on the normal CLI error path and satisfies the parser-exit
+removal gate without changing valid configuration behavior.
 
 ## Target state
 
@@ -201,7 +208,7 @@ The raw parser and mirrors may be retired only when:
 - requested, effective, observation-resolved, and realized states have one
   owner and repeated-observation tests;
 - adapter parity passes at the context-free and observation-resolved phases;
-- direct parser exits are replaced by propagated validation failures;
+- direct parser exits remain replaced by propagated validation failures;
 - provenance is schema-versioned, atomically required, and semantically
   audited;
 - point, beammap, and science evidence is accepted with zero unexpected errors;

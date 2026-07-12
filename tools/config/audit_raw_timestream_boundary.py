@@ -19,7 +19,7 @@ EXPECTED_POLARIMETRY_PATH_COUNT = 2
 EXPECTED_PATH_SHA256 = (
     "5f10271aae40942ae1be587a105b70229b86c885f4d0bc4b02edcf312bc088c0"
 )
-EXPECTED_DIRECT_EXIT_COUNT = 14
+EXPECTED_DIRECT_EXIT_COUNT = 0
 TYPED_READER_SOURCES = (
     "include/citlali/core/pipeline/raw_filtering_config_read.h",
     "include/citlali/core/pipeline/raw_flagging_config_read.h",
@@ -332,7 +332,8 @@ def main() -> int:
             "This is a characterization gate, not an approval of the current "
             "direction. The two polarimetry paths are recorded as an adjacent "
             "domain and are excluded from the raw-timestream migration. Direct "
-            "parser exits and legacy-to-typed mirrors are known removal debt."
+            "parser exits are forbidden; legacy-to-typed mirrors remain known "
+            "removal debt."
         ),
     }
     if args.json_out:

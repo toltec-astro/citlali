@@ -311,9 +311,9 @@ Local CLI/test builds, all 252 C++ tests, all eight config profiles, and eight
 focused boundary-audit tests pass after deletion. The processed-timestream
 authority migration and its legacy-parser cleanup are complete.
 Raw-timestream characterization is the next bounded Phase 2 domain. The frozen
-RTC boundary contains 169 raw paths plus two adjacent polarimetry paths, 14
-direct parser exits, one production parser call, and ten legacy-to-typed mirror
-helpers. The authority inventory now labels raw execution as legacy-authoritative
+RTC boundary contains 169 raw paths plus two adjacent polarimetry paths,
+originally 14 direct parser exits, one production parser call, and ten
+legacy-to-typed mirror helpers. The authority inventory now labels raw execution as legacy-authoritative
 instead of incorrectly claiming a typed-to-legacy adapter. The finite transition
 contract is `doc/raw_timestream_config_transition.md`. No RTC execution behavior
 has changed. The non-wired preparation checkpoint now has 169/169 direct typed-
@@ -366,6 +366,12 @@ atomic writer rejects uninitialized plans and propagates publication failures.
 All 281 C++ tests and full preflight pass. Production publication remains
 deferred so required-output placement and lifecycle completion can be reviewed
 with the Unity shadow checkpoint rather than introduced without mode evidence.
+The remaining 14 direct exits in `RTCProc::get_config` are removed. Legacy
+cross-field checks now append exact invalid-key paths to the existing config
+diagnostics and continue safely through malformed notch vector shapes; the CLI
+validation boundary remains responsible for rejecting the reduction. Valid
+configuration behavior is unchanged. The frozen raw boundary now requires zero
+direct parser exits. Local builds, all 282 C++ tests, and full preflight pass.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
