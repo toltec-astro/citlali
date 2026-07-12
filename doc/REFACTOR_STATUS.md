@@ -225,6 +225,11 @@ and second-pass configuration into the processor compatibility targets. The
 full C++ suite passes all 244 tests. The concrete `PTCProc` header remains a
 contextual include rather than an isolated test dependency; that existing
 header-boundary defect belongs to Phase 3 and was not expanded in this phase.
+The non-wired execution plan now has an atomic repeated-run reset operation.
+Disabled sections retain their requested parameter values while remaining
+inactive, and reset clears all prior effective-resolution and realized state.
+All 245 C++ tests pass. Current legacy reader objects are not reset piecemeal;
+the contract becomes operational only when the complete plan is wired.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

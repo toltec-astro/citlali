@@ -58,4 +58,10 @@ inline ProcessedTimestreamExecutionPlan make_processed_timestream_execution_plan
     };
 }
 
+inline void reset_processed_timestream_execution_plan(
+    ProcessedTimestreamExecutionPlan &plan,
+    const citlali::config::TimestreamConfig &requested) {
+    plan = make_processed_timestream_execution_plan(requested);
+}
+
 }  // namespace citlali::pipeline

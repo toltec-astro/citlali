@@ -30,6 +30,12 @@ typed config remains execution authority until the matched beammap checkpoint
 is reviewed and the plan can replace it in one bounded change. A partial plan
 must not be serialized as complete processed-timestream provenance.
 
+For repeated reductions in one process, reset the complete plan from a fresh
+request. Disabled sections retain the values supplied in the requested and
+effective snapshots, while their activation flag prevents execution; stale
+effective-resolution and realized state from a prior run is always cleared.
+Do not reset individual subfields piecemeal.
+
 ## State classification
 
 ### Requested

@@ -5103,6 +5103,51 @@ TEST(config_scaffold, separates_processed_requested_and_effective_state) {
     EXPECT_FALSE(plan.realized.fruit_loop_iterations_completed.has_value());
 }
 
+TEST(config_scaffold, resets_all_processed_plan_state_between_runs) {
+    citlali::config::TimestreamConfig first_request;
+    first_request.fruit_loops.enabled = true;
+    first_request.fruit_loops.max_iters = 4;
+    auto plan =
+        citlali::pipeline::make_processed_timestream_execution_plan(
+            first_request);
+    plan.effective.fruit_loops.max_iters = 1;
+    plan.effective_resolutions.fruit_loop_iterations =
+        citlali::pipeline::resolve_fruit_loop_iteration_policy(
+            first_request.fruit_loops,
+            citlali::config::ReductionType::beammap);
+    plan.realized.fruit_loop_iterations_completed = 1;
+    plan.realized.fruit_loops_converged = true;
+    plan.realized.source_protection =
+        citlali::pipeline::SourceProtectionActivationResolution{
+            true, true, true, true, true};
+
+    citlali::config::TimestreamConfig second_request;
+    second_request.fruit_loops.enabled = false;
+    second_request.fruit_loops.max_iters = 7;
+    second_request.processed_time_chunk.weighting.validation.enabled = false;
+    second_request.processed_time_chunk.weighting.validation.min_factor =
+        0.37;
+
+    citlali::pipeline::reset_processed_timestream_execution_plan(
+        plan, second_request);
+
+    EXPECT_TRUE(plan.initialized);
+    EXPECT_FALSE(plan.requested.fruit_loops.enabled);
+    EXPECT_EQ(plan.requested.fruit_loops.max_iters, 7);
+    EXPECT_DOUBLE_EQ(
+        plan.requested.processed_time_chunk.weighting.validation.min_factor,
+        0.37);
+    EXPECT_FALSE(plan.effective.fruit_loops.enabled);
+    EXPECT_EQ(plan.effective.fruit_loops.max_iters, 7);
+    EXPECT_FALSE(
+        plan.effective_resolutions.fruit_loop_iterations.has_value());
+    EXPECT_FALSE(
+        plan.effective_resolutions.weighting_dependencies.has_value());
+    EXPECT_FALSE(plan.realized.source_protection.has_value());
+    EXPECT_FALSE(plan.realized.fruit_loop_iterations_completed.has_value());
+    EXPECT_FALSE(plan.realized.fruit_loops_converged.has_value());
+}
+
 TEST(config_scaffold, resolves_processed_weighting_dependencies) {
     citlali::config::ProcessedTimeChunkWeightingConfig weighting;
     citlali::config::ProcessedTimeChunkFlaggingConfig flagging;
