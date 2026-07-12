@@ -10,13 +10,19 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA_VERSION = "citlali-config-authority-v1"
-EXECUTION_AUTHORITIES = {"typed", "mixed", "external"}
-ADAPTER_DIRECTIONS = {"none", "typed-to-legacy", "external"}
+SCHEMA_VERSION = "citlali-config-authority-v2"
+EXECUTION_AUTHORITIES = {"typed", "legacy", "mixed", "external"}
+ADAPTER_DIRECTIONS = {
+    "none",
+    "typed-to-legacy",
+    "legacy-to-typed",
+    "external",
+}
 MIGRATION_STATUSES = {
     "typed-authoritative",
     "typed-authoritative-with-adapter",
     "mixed-adapter",
+    "legacy-authoritative-with-typed-mirror",
     "external-boundary",
 }
 PROVENANCE_STATUSES = {"missing", "partial", "complete"}
@@ -56,8 +62,13 @@ def validate(data: Any, repo_root: Path) -> list[str]:
     contract = data.get("contract")
     if not isinstance(contract, dict):
         errors.append("contract must be an object")
-    elif contract.get("adapter_direction") != "requested_yaml -> typed_config -> legacy_runtime":
-        errors.append("contract.adapter_direction must preserve one-way typed-to-legacy flow")
+    elif contract.get("target_adapter_direction") != (
+        "requested_yaml -> typed_config -> legacy_runtime"
+    ):
+        errors.append(
+            "contract.target_adapter_direction must preserve one-way "
+            "typed-to-legacy flow"
+        )
 
     domains = data.get("domains")
     if not isinstance(domains, list) or not domains:
@@ -118,8 +129,18 @@ def validate(data: Any, repo_root: Path) -> list[str]:
             errors.append(f"{label}: only external authority may use an external adapter")
         if direction == "typed-to-legacy" and not targets:
             errors.append(f"{label}: typed-to-legacy adapter requires legacy_targets")
+        if direction == "legacy-to-typed" and not targets:
+            errors.append(f"{label}: legacy-to-typed mirror requires legacy_targets")
         if direction == "none" and targets:
             errors.append(f"{label}: legacy_targets require a declared adapter")
+        if authority == "legacy" and direction != "legacy-to-typed":
+            errors.append(
+                f"{label}: legacy authority requires a legacy-to-typed mirror"
+            )
+        if direction == "legacy-to-typed" and authority != "legacy":
+            errors.append(
+                f"{label}: legacy-to-typed mirror requires legacy authority"
+            )
 
     return errors
 

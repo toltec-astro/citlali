@@ -289,9 +289,12 @@ temporary legacy target, and the gate for completing its migration. This is
 separate from `config_key_classification.yaml`: classification controls user
 exposure, while the authority inventory controls internal data flow.
 
-The permitted compatibility direction is one way: requested YAML is parsed
-into typed config, and typed config may temporarily populate legacy runtime
-objects. Legacy objects must not populate or override typed config.
+The target compatibility direction is one way: requested YAML is parsed into
+typed config, and typed config may temporarily populate legacy runtime objects.
+Schema v2 can explicitly record a pre-existing legacy-to-typed mirror so the
+inventory describes current authority honestly. That label is migration debt,
+not permission to add another reverse mirror; its exit gate must restore the
+target direction.
 
 ```bash
 $HOME/tolteca/bin/python tools/config/validate_config_authority_inventory.py
@@ -331,6 +334,18 @@ reintroduced legacy parser, compatibility seed, or direct mirror call in
 ```bash
 $HOME/tolteca/bin/python tools/config/audit_processed_timestream_boundary.py \
   --fail-on-drift --fail-on-uncovered
+```
+
+`audit_raw_timestream_boundary.py` characterizes the next migration boundary.
+It freezes the active `RTCProc` parser's 169 raw-timestream paths, the two
+adjacent polarimetry paths, 14 direct parser exits, and the ten
+legacy-to-typed raw mirror calls. This is deliberately a characterization gate:
+the desired direction is typed-to-legacy, but the audit must describe current
+authority accurately while migration is in progress.
+
+```bash
+$HOME/tolteca/bin/python tools/config/audit_raw_timestream_boundary.py \
+  --fail-on-drift
 ```
 
 ## Compact Compatibility Suite

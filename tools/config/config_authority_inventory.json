@@ -1,7 +1,7 @@
 {
-  "schema_version": "citlali-config-authority-v1",
+  "schema_version": "citlali-config-authority-v2",
   "contract": {
-    "adapter_direction": "requested_yaml -> typed_config -> legacy_runtime",
+    "target_adapter_direction": "requested_yaml -> typed_config -> legacy_runtime",
     "legacy_runtime_rule": "Legacy runtime objects may receive values from typed config but must not become a source for typed config.",
     "raw_yaml_rule": "Raw YAML access is permitted in declared loading boundaries only. Execution code must consume typed config or a declared external subsystem config.",
     "provenance_layers": [
@@ -40,12 +40,12 @@
       "config_prefixes": ["timestream.raw_time_chunk"],
       "typed_owner": "citlali::config::ReductionConfig::timestream.raw_time_chunk",
       "loader": "include/citlali/core/engine/detail/rtc_config_impl.h",
-      "execution_authority": "mixed",
+      "execution_authority": "legacy",
       "legacy_targets": ["Engine::rtcproc"],
-      "adapter_direction": "typed-to-legacy",
-      "migration_status": "mixed-adapter",
+      "adapter_direction": "legacy-to-typed",
+      "migration_status": "legacy-authoritative-with-typed-mirror",
       "provenance_status": "partial",
-      "exit_gate": "Inventory every rtcproc execution read and replace policy reads with RawTimeChunkConfig accessors before removing mirrored fields."
+      "exit_gate": "Replace the frozen 169-path RTC parser with direct typed readers, resolve observation-dependent filter/downsample/correction policy explicitly, reverse the adapter to typed-to-legacy, inventory every rtcproc execution policy read, publish requested/effective/realized provenance, and pass point plus affected cross-mode gates before removing legacy fields."
     },
     {
       "id": "processed-timestream",

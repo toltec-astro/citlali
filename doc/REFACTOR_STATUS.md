@@ -310,6 +310,14 @@ validates its canonical ordering, declared count, and digest before checking
 Local CLI/test builds, all 252 C++ tests, all eight config profiles, and eight
 focused boundary-audit tests pass after deletion. The processed-timestream
 authority migration and its legacy-parser cleanup are complete.
+Raw-timestream characterization is the next bounded Phase 2 domain. The frozen
+RTC boundary contains 169 raw paths plus two adjacent polarimetry paths, 14
+direct parser exits, one production parser call, and ten legacy-to-typed mirror
+helpers. The authority inventory now labels raw execution as legacy-authoritative
+instead of incorrectly claiming a typed-to-legacy adapter. The finite transition
+contract is `doc/raw_timestream_config_transition.md`. No RTC execution behavior
+has changed; direct typed readers and the execution-policy read census are the
+next implementation prerequisites.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

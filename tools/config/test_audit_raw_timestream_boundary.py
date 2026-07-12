@@ -1,0 +1,84 @@
+from __future__ import annotations
+
+import tempfile
+import unittest
+from pathlib import Path
+
+from tools.config import audit_raw_timestream_boundary as audit
+
+
+class RawTimestreamBoundaryAuditTest(unittest.TestCase):
+    def test_extracts_sorted_unique_literal_paths(self) -> None:
+        body = '''
+        std::tuple{"timestream", "raw_time_chunk", "filter", "enabled"};
+        std::tuple{"timestream", "raw_time_chunk", "despike", "enabled"};
+        std::tuple{"timestream", "raw_time_chunk", "filter", "enabled"};
+        '''
+        self.assertEqual(
+            audit.literal_paths(body),
+            [
+                "timestream.raw_time_chunk.despike.enabled",
+                "timestream.raw_time_chunk.filter.enabled",
+            ],
+        )
+
+    def test_extracts_only_rtc_parser_body(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source = Path(temp_dir) / "rtcproc.h"
+            source.write_text(
+                "void RTCProc::get_config() { parser(); }\n"
+                "template <typename T>\nvoid next(T value) {}\n"
+            )
+            self.assertEqual(
+                audit.parser_body(source),
+                "void RTCProc::get_config() { parser(); }",
+            )
+
+    def test_classifies_raw_and_adjacent_polarimetry_paths(self) -> None:
+        self.assertEqual(
+            audit.family("timestream.raw_time_chunk.filter.enabled"),
+            "raw_timestream",
+        )
+        self.assertEqual(
+            audit.family("timestream.polarimetry.enabled"),
+            "polarimetry",
+        )
+        self.assertEqual(audit.family("mapmaking.enabled"), "unclassified")
+
+    def test_accepts_exact_legacy_to_typed_boundary(self) -> None:
+        lines = ["read_processor_config(rtcproc, config);"]
+        lines.extend(
+            f"{name}(typed, rtcproc);"
+            for name in audit.LEGACY_TO_TYPED_MIRROR_CALLS
+        )
+        result = audit.legacy_boundary("\n".join(lines))
+
+        self.assertTrue(result["exact"])
+        self.assertTrue(result["parser_precedes_mirrors"])
+        self.assertEqual(result["missing_mirror_calls"], [])
+        self.assertEqual(result["unexpected_mirror_calls"], [])
+        self.assertEqual(result["non_unit_mirror_call_counts"], {})
+
+    def test_rejects_missing_repeated_or_unexpected_mirrors(self) -> None:
+        first = audit.LEGACY_TO_TYPED_MIRROR_CALLS[0]
+        result = audit.legacy_boundary(
+            "read_processor_config(rtcproc, config);\n"
+            f"{first}(typed, rtcproc);\n"
+            f"{first}(typed, rtcproc);\n"
+            "mirror_raw_untracked_config(typed, rtcproc);\n"
+        )
+
+        self.assertFalse(result["exact"])
+        self.assertIn(
+            audit.LEGACY_TO_TYPED_MIRROR_CALLS[1],
+            result["missing_mirror_calls"],
+        )
+        self.assertEqual(
+            result["unexpected_mirror_calls"],
+            ["mirror_raw_untracked_config"],
+        )
+        self.assertEqual(result["non_unit_mirror_call_counts"], {first: 2})
+
+
+if __name__ == "__main__":
+    unittest.main()
