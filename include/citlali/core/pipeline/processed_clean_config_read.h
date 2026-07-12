@@ -362,20 +362,7 @@ void read_processed_clean_core_config(
         read_mode_grouping("adaptive_selector", adaptive.grouping);
     }
 
-    typed.active = citlali::config::ProcessedTimeChunkCleanerMode::none;
-    if (typed.standard_pca.enabled) {
-        typed.active =
-            citlali::config::ProcessedTimeChunkCleanerMode::standard_pca;
-    } else if (typed.null_model.enabled) {
-        typed.active =
-            citlali::config::ProcessedTimeChunkCleanerMode::null_model;
-    } else if (typed.marchenko_pastur.enabled) {
-        typed.active =
-            citlali::config::ProcessedTimeChunkCleanerMode::marchenko_pastur;
-    } else if (typed.adaptive_selector.enabled) {
-        typed.active =
-            citlali::config::ProcessedTimeChunkCleanerMode::adaptive_selector;
-    }
+    typed.active = resolve_processed_cleaner_mode(typed).effective;
 }
 
 }  // namespace citlali::pipeline

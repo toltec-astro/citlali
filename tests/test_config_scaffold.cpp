@@ -3021,6 +3021,15 @@ TEST(pipeline_preflight, source_protection_activation_uses_typed_config) {
     processed.source_protection.radius_arcsec = 31.0;
     auto logger = std::make_shared<FakeLogger>();
 
+    const auto pointing_resolution =
+        citlali::pipeline::resolve_source_protection(
+            citlali::config::ReductionType::pointing, config);
+    EXPECT_TRUE(pointing_resolution.source_aware_reduction);
+    EXPECT_TRUE(pointing_resolution.raw_activation_requested);
+    EXPECT_TRUE(pointing_resolution.processed_activation_requested);
+    EXPECT_TRUE(pointing_resolution.raw_active);
+    EXPECT_TRUE(pointing_resolution.processed_active);
+
     citlali::pipeline::apply_source_protection_activation(
         citlali::config::ReductionType::pointing, rtcproc, ptcproc, config,
         logger);
@@ -3031,6 +3040,15 @@ TEST(pipeline_preflight, source_protection_activation_uses_typed_config) {
     EXPECT_TRUE(ptcproc.second_pass_local.source_protection_enabled);
     EXPECT_DOUBLE_EQ(
         ptcproc.second_pass_local.source_protection_radius_arcsec, 31.0);
+
+    const auto science_resolution =
+        citlali::pipeline::resolve_source_protection(
+            citlali::config::ReductionType::science, config);
+    EXPECT_FALSE(science_resolution.source_aware_reduction);
+    EXPECT_TRUE(science_resolution.raw_activation_requested);
+    EXPECT_TRUE(science_resolution.processed_activation_requested);
+    EXPECT_FALSE(science_resolution.raw_active);
+    EXPECT_FALSE(science_resolution.processed_active);
 
     citlali::pipeline::apply_source_protection_activation(
         citlali::config::ReductionType::science, rtcproc, ptcproc, config,
@@ -4479,10 +4497,36 @@ TEST(pipeline_execution, uses_typed_fruit_loop_interpolation_policy) {
     engine.ptcproc.run_fruit_loops = false;
     auto logger = std::make_shared<FakeLogger>();
 
+    const auto resolution =
+        citlali::pipeline::resolve_fruit_loop_interpolation(
+            engine.typed_config.timestream.fruit_loops,
+            citlali::config::MapMethod::jinc);
+
+    EXPECT_EQ(
+        resolution.requested,
+        citlali::config::FruitLoopsInterpModeOverride::bilinear);
+    EXPECT_EQ(resolution.mapmaking_default,
+              citlali::config::FruitLoopsInterpModeOverride::jinc);
+    EXPECT_EQ(resolution.effective,
+              citlali::config::FruitLoopsInterpModeOverride::bilinear);
+    EXPECT_TRUE(resolution.override_applied);
+    EXPECT_FALSE(resolution.jinc_fell_back_to_bilinear);
+
     citlali::pipeline::configure_fruit_loop_interpolation_mode(
         engine, citlali::config::MapMethod::jinc, logger);
 
     EXPECT_EQ(engine.ptcproc.fruit_loops_interp_mode, "bilinear");
+
+    engine.typed_config.timestream.fruit_loops.interp_mode_override =
+        citlali::config::FruitLoopsInterpModeOverride::jinc;
+    const auto fallback =
+        citlali::pipeline::resolve_fruit_loop_interpolation(
+            engine.typed_config.timestream.fruit_loops,
+            citlali::config::MapMethod::naive);
+    EXPECT_EQ(fallback.effective,
+              citlali::config::FruitLoopsInterpModeOverride::bilinear);
+    EXPECT_TRUE(fallback.override_applied);
+    EXPECT_TRUE(fallback.jinc_fell_back_to_bilinear);
 }
 
 TEST(pipeline_execution, uses_typed_fruit_loop_flux_metadata) {
@@ -4599,6 +4643,17 @@ TEST(config_scaffold, normalizes_processed_clean_group_aliases) {
               (std::vector<std::string>{"unknown"}));
     EXPECT_EQ(resolution.duplicates, (std::vector<std::string>{"nw"}));
     EXPECT_EQ(resolution.aliases_normalized, 2);
+
+    citlali::config::ProcessedTimeChunkCleanConfig cleaners;
+    cleaners.enabled = true;
+    cleaners.standard_pca.enabled = true;
+    cleaners.null_model.enabled = true;
+    const auto mode_resolution =
+        citlali::pipeline::resolve_processed_cleaner_mode(cleaners);
+    EXPECT_EQ(
+        mode_resolution.effective,
+        citlali::config::ProcessedTimeChunkCleanerMode::standard_pca);
+    EXPECT_EQ(mode_resolution.enabled_mode_count, 2);
 }
 
 TEST(config_scaffold, resolves_processed_weighting_source_mask_inheritance) {

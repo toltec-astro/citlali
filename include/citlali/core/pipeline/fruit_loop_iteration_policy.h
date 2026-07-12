@@ -17,6 +17,45 @@ struct FruitLoopIterationResolution {
     bool forced_single_iteration_for_beammap = false;
 };
 
+struct FruitLoopInterpolationResolution {
+    citlali::config::FruitLoopsInterpModeOverride requested =
+        citlali::config::FruitLoopsInterpModeOverride::automatic;
+    citlali::config::FruitLoopsInterpModeOverride mapmaking_default =
+        citlali::config::FruitLoopsInterpModeOverride::bilinear;
+    citlali::config::FruitLoopsInterpModeOverride effective =
+        citlali::config::FruitLoopsInterpModeOverride::bilinear;
+    bool override_applied = false;
+    bool jinc_fell_back_to_bilinear = false;
+};
+
+inline FruitLoopInterpolationResolution resolve_fruit_loop_interpolation(
+    const citlali::config::TimestreamFruitLoopsConfig &requested,
+    citlali::config::MapMethod map_method) {
+    const auto mapmaking_default = citlali::config::is_jinc_map_method(
+                                       map_method)
+        ? citlali::config::FruitLoopsInterpModeOverride::jinc
+        : citlali::config::FruitLoopsInterpModeOverride::bilinear;
+    FruitLoopInterpolationResolution resolution{
+        requested.interp_mode_override,
+        mapmaking_default,
+        mapmaking_default,
+    };
+    if (requested.enabled &&
+        !citlali::config::is_fruit_loops_auto_interp_mode(
+            requested.interp_mode_override)) {
+        resolution.effective = requested.interp_mode_override;
+        resolution.override_applied = true;
+    }
+    if (citlali::config::is_fruit_loops_jinc_interp_mode(
+            resolution.effective) &&
+        !citlali::config::is_jinc_map_method(map_method)) {
+        resolution.effective =
+            citlali::config::FruitLoopsInterpModeOverride::bilinear;
+        resolution.jinc_fell_back_to_bilinear = true;
+    }
+    return resolution;
+}
+
 inline FruitLoopIterationResolution resolve_fruit_loop_iteration_policy(
     const citlali::config::TimestreamFruitLoopsConfig &requested,
     citlali::config::ReductionType reduction_type) {
@@ -41,26 +80,15 @@ void configure_fruit_loop_interpolation_mode(
     const auto &config = fruit_loops_config(engine);
     auto &ptcproc = engine.ptcproc;
     const std::string map_method_name{citlali::config::to_string(map_method)};
+    const auto resolution = resolve_fruit_loop_interpolation(
+        config, map_method);
     const std::string fruit_interp_default{
-        citlali::config::to_string(
-            citlali::config::is_jinc_map_method(map_method)
-                ? citlali::config::FruitLoopsInterpModeOverride::jinc
-                : citlali::config::FruitLoopsInterpModeOverride::bilinear)};
-    ptcproc.fruit_loops_interp_mode = fruit_interp_default;
-    if (config.enabled &&
-        !citlali::config::is_fruit_loops_auto_interp_mode(
-            config.interp_mode_override)) {
-        ptcproc.fruit_loops_interp_mode = std::string{
-            citlali::config::to_string(config.interp_mode_override)};
-    }
-    if (citlali::config::is_fruit_loops_jinc_interp_mode(
-            ptcproc.fruit_loops_interp_mode) &&
-        !citlali::config::is_jinc_map_method(map_method)) {
+        citlali::config::to_string(resolution.mapmaking_default)};
+    ptcproc.fruit_loops_interp_mode =
+        std::string{citlali::config::to_string(resolution.effective)};
+    if (resolution.jinc_fell_back_to_bilinear) {
         logger->warn(
             "fruit_loops.interp_mode_override='jinc' requires mapmaking.method='jinc'; using bilinear");
-        ptcproc.fruit_loops_interp_mode = std::string{
-            citlali::config::to_string(
-                citlali::config::FruitLoopsInterpModeOverride::bilinear)};
     }
     logger->info(
         "fruit loops interpolation mode: {} (default from mapmaking.method='{}' is {})",

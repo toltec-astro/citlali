@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/config/timestream_config.h>
+
 #include <algorithm>
 #include <cctype>
 #include <string>
@@ -32,6 +34,41 @@ struct ProcessedCleanGroupingResolution {
     std::vector<std::string> duplicates;
     int aliases_normalized = 0;
 };
+
+struct ProcessedCleanerModeResolution {
+    citlali::config::ProcessedTimeChunkCleanerMode effective =
+        citlali::config::ProcessedTimeChunkCleanerMode::none;
+    int enabled_mode_count = 0;
+};
+
+inline ProcessedCleanerModeResolution resolve_processed_cleaner_mode(
+    const citlali::config::ProcessedTimeChunkCleanConfig &requested) {
+    ProcessedCleanerModeResolution resolution;
+    const auto select = [&](bool enabled, auto mode) {
+        if (!enabled) {
+            return;
+        }
+        ++resolution.enabled_mode_count;
+        if (resolution.effective ==
+            citlali::config::ProcessedTimeChunkCleanerMode::none) {
+            resolution.effective = mode;
+        }
+    };
+    if (!requested.enabled) {
+        return resolution;
+    }
+    select(requested.standard_pca.enabled,
+           citlali::config::ProcessedTimeChunkCleanerMode::standard_pca);
+    select(requested.null_model.enabled,
+           citlali::config::ProcessedTimeChunkCleanerMode::null_model);
+    select(
+        requested.marchenko_pastur.enabled,
+        citlali::config::ProcessedTimeChunkCleanerMode::marchenko_pastur);
+    select(
+        requested.adaptive_selector.enabled,
+        citlali::config::ProcessedTimeChunkCleanerMode::adaptive_selector);
+    return resolution;
+}
 
 inline ProcessedCleanGroupingResolution resolve_processed_clean_grouping(
     const std::vector<std::string> &requested) {
