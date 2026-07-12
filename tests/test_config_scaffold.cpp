@@ -24,6 +24,7 @@
 #include <citlali/core/pipeline/raw_timestream_observation_resolution.h>
 #include <citlali/core/pipeline/raw_timestream_observation_shadow.h>
 #include <citlali/core/pipeline/raw_timestream_provenance.h>
+#include <citlali/core/pipeline/raw_timestream_provenance_lifecycle.h>
 #include <citlali/core/pipeline/raw_timestream_shadow_parity.h>
 #include <citlali/core/pipeline/config_parse_tracking.h>
 #include <citlali/core/pipeline/raw_filtering_config_read.h>
@@ -472,6 +473,16 @@ struct FakeEngine {
     }
 
     void write_learning_summary() { ++write_learning_summary_calls; }
+};
+
+struct FakeRawProvenanceEngine {
+    citlali::config::ReductionConfig typed_config;
+    citlali::pipeline::RawTimestreamExecutionPlan raw_timestream_plan;
+    citlali::pipeline::OutputPathState output_paths;
+    citlali::pipeline::TodOutputState tod_outputs;
+    struct {
+        Eigen::MatrixXi scan_indices;
+    } telescope;
 };
 
 struct FakeFlxscaleCorrection {
@@ -5457,14 +5468,14 @@ TEST(config_scaffold, resets_raw_observation_and_realized_state) {
         plan.effective_resolutions.downsampling.kind,
         citlali::pipeline::RawDownsampleRequestKind::disabled);
     EXPECT_FALSE(plan.observation.has_value());
-    EXPECT_EQ(plan.realized.dynamic_notch_count, 0U);
+    EXPECT_FALSE(plan.realized.dynamic_notch_count.has_value());
 
     plan.begin_observation().filter_edge_guard_samples = 8;
     plan.realized.completed_scan_count = 2;
     plan.begin_observation();
     ASSERT_TRUE(plan.observation.has_value());
     EXPECT_FALSE(plan.observation->filter_edge_guard_samples.has_value());
-    EXPECT_EQ(plan.realized.completed_scan_count, 0U);
+    EXPECT_FALSE(plan.realized.completed_scan_count.has_value());
 }
 
 TEST(config_scaffold, shadows_raw_observation_legacy_state_without_mutation) {
@@ -5527,7 +5538,7 @@ TEST(config_scaffold, shadows_raw_observation_legacy_state_without_mutation) {
     EXPECT_DOUBLE_EQ(*plan.observation->native_sample_rate_hz, 120.0);
     EXPECT_FALSE(plan.observation->extinction_active.has_value());
     EXPECT_FALSE(plan.observation->extinction_model.has_value());
-    EXPECT_EQ(plan.realized.completed_scan_count, 0U);
+    EXPECT_FALSE(plan.realized.completed_scan_count.has_value());
 }
 
 TEST(config_scaffold, reports_raw_observation_shadow_divergence) {
@@ -5634,7 +5645,7 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
     plan.realized.completed_scan_count = 12;
     plan.realized.flagged_sample_count = 34;
     plan.realized.dynamic_notch_count = 2;
-    plan.realized.required_output_count = 24;
+    plan.realized.required_timestream_write_count = 24;
 
     const auto node =
         citlali::pipeline::raw_timestream_provenance_node(plan);
@@ -5662,9 +5673,11 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
                   .as<std::string>(),
               "am_q50");
     EXPECT_TRUE(node["realized"]["execution_completed"].as<bool>());
-    EXPECT_EQ(node["realized"]["completed_scan_count"].as<std::size_t>(),
+    EXPECT_EQ(node["realized"]["completed_scan_count"]["value"]
+                  .as<std::size_t>(),
               12U);
-    EXPECT_EQ(node["realized"]["required_output_count"].as<std::size_t>(),
+    EXPECT_EQ(node["realized"]["required_timestream_write_count"]["value"]
+                  .as<std::size_t>(),
               24U);
 }
 
@@ -5678,8 +5691,8 @@ TEST(config_scaffold, serializes_unavailable_raw_observation_explicitly) {
     EXPECT_FALSE(node["observation"]["available"].as<bool>());
     EXPECT_FALSE(node["observation"]["value"].IsDefined());
     EXPECT_FALSE(node["realized"]["execution_completed"].as<bool>());
-    EXPECT_EQ(node["realized"]["completed_scan_count"].as<std::size_t>(),
-              0U);
+    EXPECT_FALSE(
+        node["realized"]["completed_scan_count"]["available"].as<bool>());
 }
 
 TEST(config_scaffold, atomically_writes_raw_timestream_provenance) {
@@ -5729,6 +5742,154 @@ TEST(config_scaffold, raw_timestream_provenance_failure_propagates) {
             missing_dir,
             citlali::pipeline::RawTimestreamExecutionPlan{}),
         std::logic_error);
+}
+
+TEST(config_scaffold, completes_raw_timestream_realized_state_explicitly) {
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(citlali::config::RawTimeChunkConfig{});
+
+    EXPECT_THROW(
+        citlali::pipeline::complete_raw_timestream_observation(
+            plan, 4, 12),
+        std::logic_error);
+
+    plan.begin_observation();
+    citlali::pipeline::complete_raw_timestream_observation(
+        plan, 4, 12);
+
+    EXPECT_TRUE(plan.realized.execution_completed);
+    EXPECT_EQ(plan.realized.completed_scan_count, 4U);
+    EXPECT_EQ(plan.realized.required_timestream_write_count, 12U);
+    EXPECT_FALSE(plan.realized.flagged_sample_count.has_value());
+    EXPECT_FALSE(plan.realized.dynamic_notch_count.has_value());
+
+    plan.begin_observation();
+    EXPECT_FALSE(plan.realized.execution_completed);
+    EXPECT_FALSE(plan.realized.completed_scan_count.has_value());
+    EXPECT_FALSE(
+        plan.realized.required_timestream_write_count.has_value());
+}
+
+TEST(config_scaffold, counts_required_raw_timestream_writes_by_mode) {
+    const citlali::pipeline::TimestreamOutputExpectations standard{
+        2, 3, 4, 4};
+    const citlali::pipeline::TimestreamOutputExpectations beammap{
+        2, 0, 4, 0};
+
+    EXPECT_EQ(
+        citlali::pipeline::raw_required_timestream_write_count(standard),
+        13U);
+    EXPECT_EQ(
+        citlali::pipeline::raw_required_timestream_write_count(beammap),
+        6U);
+    EXPECT_THROW(
+        citlali::pipeline::raw_required_timestream_write_count(
+            {-1, 0, 0, 0}),
+        std::logic_error);
+}
+
+TEST(config_scaffold,
+     publishes_sequential_raw_observation_provenance_without_state_leakage) {
+    const auto root =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_raw_observation_provenance_lifecycle_test";
+    std::filesystem::remove_all(root);
+    const auto first_dir = root / "000101";
+    const auto second_dir = root / "000102";
+    std::filesystem::create_directories(first_dir);
+    std::filesystem::create_directories(second_dir);
+
+    FakeRawProvenanceEngine engine;
+    engine.typed_config.timestream.output.type =
+        citlali::config::TodOutputType::both;
+    engine.output_paths.tod_filename["rtc"] = "rtc.nc";
+    engine.output_paths.rtcdiag_filename = "rtcdiag.nc";
+    engine.output_paths.ptcdiag_filename = "ptcdiag.nc";
+    engine.tod_outputs.n_rtc_output_scans = 2;
+    engine.tod_outputs.n_ptc_output_scans = 3;
+    engine.telescope.scan_indices.resize(2, 4);
+    engine.raw_timestream_plan.reset_from_request(
+        citlali::config::RawTimeChunkConfig{});
+    engine.raw_timestream_plan.begin_observation()
+        .native_sample_rate_hz = 100.0;
+    engine.output_paths.obsnum_dir_name = first_dir.string();
+
+    citlali::pipeline::publish_completed_raw_timestream_provenance<false>(
+        engine);
+
+    const auto first_path =
+        citlali::pipeline::raw_timestream_provenance_path(first_dir);
+    ASSERT_TRUE(std::filesystem::exists(first_path));
+    const auto first = YAML::LoadFile(first_path.string());
+    EXPECT_TRUE(first["realized"]["execution_completed"].as<bool>());
+    EXPECT_EQ(first["realized"]["completed_scan_count"]["value"]
+                  .as<std::size_t>(),
+              4U);
+    EXPECT_EQ(first["realized"]["required_timestream_write_count"]
+                   ["value"]
+                       .as<std::size_t>(),
+              13U);
+    EXPECT_FALSE(first["realized"]["flagged_sample_count"]["available"]
+                     .as<bool>());
+
+    engine.raw_timestream_plan.begin_observation()
+        .native_sample_rate_hz = 120.0;
+    engine.tod_outputs.n_rtc_output_scans = 1;
+    engine.tod_outputs.n_ptc_output_scans = 1;
+    engine.telescope.scan_indices.resize(2, 3);
+    engine.output_paths.obsnum_dir_name = second_dir.string();
+
+    citlali::pipeline::publish_completed_raw_timestream_provenance<false>(
+        engine);
+
+    const auto second_path =
+        citlali::pipeline::raw_timestream_provenance_path(second_dir);
+    ASSERT_TRUE(std::filesystem::exists(second_path));
+    const auto second = YAML::LoadFile(second_path.string());
+    EXPECT_DOUBLE_EQ(
+        second["observation"]["value"]["native_sample_rate_hz"]["value"]
+            .as<double>(),
+        120.0);
+    EXPECT_EQ(second["realized"]["completed_scan_count"]["value"]
+                  .as<std::size_t>(),
+              3U);
+    EXPECT_EQ(second["realized"]["required_timestream_write_count"]
+                   ["value"]
+                       .as<std::size_t>(),
+              8U);
+
+    const auto first_after_second = YAML::LoadFile(first_path.string());
+    EXPECT_DOUBLE_EQ(
+        first_after_second["observation"]["value"]
+                          ["native_sample_rate_hz"]["value"]
+                              .as<double>(),
+        100.0);
+    std::filesystem::remove_all(root);
+}
+
+TEST(config_scaffold, raw_observation_provenance_write_failure_propagates) {
+    const auto missing_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_missing_raw_observation_provenance" / "nested";
+    std::filesystem::remove_all(missing_dir.parent_path());
+
+    FakeRawProvenanceEngine engine;
+    engine.raw_timestream_plan.reset_from_request(
+        citlali::config::RawTimeChunkConfig{});
+    engine.raw_timestream_plan.begin_observation();
+    engine.telescope.scan_indices.resize(2, 1);
+    engine.output_paths.obsnum_dir_name = missing_dir.string();
+
+    EXPECT_THROW(
+        citlali::pipeline::publish_completed_raw_timestream_provenance<false>(
+            engine),
+        std::ios_base::failure);
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::raw_timestream_provenance_path(missing_dir)));
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::raw_timestream_provenance_path(missing_dir)
+            .string() +
+        ".tmp"));
 }
 
 TEST(config_scaffold, rejects_raw_observation_before_plan_initialization) {

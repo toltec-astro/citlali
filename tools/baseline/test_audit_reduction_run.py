@@ -120,7 +120,80 @@ def valid_processed_document() -> dict:
     }
 
 
+def valid_raw_document() -> dict:
+    return {
+        "schema_version": "citlali-raw-timestream-provenance-v1",
+        "initialized": True,
+        "requested": {},
+        "effective": {"config": {}, "resolutions": {}},
+        "observation": {"available": True, "value": {}},
+        "realized": {
+            "execution_completed": True,
+            "completed_scan_count": {"available": True, "value": 4},
+            "flagged_sample_count": {"available": False},
+            "dynamic_notch_count": {"available": False},
+            "required_timestream_write_count": {
+                "available": True,
+                "value": 13,
+            },
+        },
+    }
+
+
 class ProvenanceAuditTest(unittest.TestCase):
+    def test_accepts_raw_provenance_for_every_observation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            for obsnum in ("1", "2"):
+                observation = redu / obsnum
+                observation.mkdir()
+                (observation / "raw_timestream_provenance.yaml").write_text(
+                    yaml.safe_dump(valid_raw_document(), sort_keys=False),
+                    encoding="utf-8",
+                )
+
+            raw = audit.audit_provenance_sidecars(
+                redu, require_raw=True
+            )["raw_timestream"]
+
+            self.assertTrue(raw["required"])
+            self.assertTrue(raw["valid"])
+            self.assertEqual(raw["count"], 2)
+
+    def test_rejects_incomplete_raw_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            document = valid_raw_document()
+            document["realized"]["execution_completed"] = False
+            document["realized"]["completed_scan_count"] = {
+                "available": False
+            }
+            (redu / "raw_timestream_provenance.yaml").write_text(
+                yaml.safe_dump(document, sort_keys=False),
+                encoding="utf-8",
+            )
+
+            raw = audit.audit_provenance_sidecars(
+                redu, require_raw=True
+            )["raw_timestream"]
+
+            self.assertFalse(raw["valid"])
+            self.assertEqual(
+                raw["files"][0]["semantic_errors"],
+                [
+                    "raw observation execution is not complete",
+                    "realized completed_scan_count is unavailable",
+                ],
+            )
+
+    def test_rejects_missing_required_raw_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            records = audit.audit_provenance_sidecars(
+                Path(directory), require_raw=True
+            )
+
+            self.assertFalse(records["raw_timestream"]["valid"])
+
     def test_accepts_complete_processed_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             redu = Path(directory)

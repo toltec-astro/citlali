@@ -155,9 +155,26 @@ $HOME/tolteca/bin/python tools/baseline/compare_reduction_audits.py \
   --require-candidate-processed-provenance
 ```
 
+Raw-timestream provenance is required per observation after its production
+publication boundary is enabled. Require it on a single candidate with
+`--require-raw-provenance`, or against an older accepted baseline with:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/compare_reduction_audits.py \
+  /path/to/accepted/reduNN \
+  /path/to/candidate/reduNN \
+  --expected-mode point \
+  --baseline-label refactor \
+  --candidate-label refactor \
+  --require-candidate-raw-provenance
+```
+
 The audit verifies every matching provenance file. This matters for science
-reductions, which contain one timestream-output provenance sidecar per
-observation.
+reductions, which contain one timestream-output and one raw-timestream
+provenance sidecar per observation. Raw semantic checks require an initialized
+and completed observation plus available, nonnegative scan and required-write
+counts. Flagged-sample and dynamic-notch counts remain explicitly unavailable
+until their lifecycle owners are migrated.
 
 For processed provenance, structural validation is followed by semantic
 checks: resolution records must agree with requested/effective cleaner,

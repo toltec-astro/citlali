@@ -106,11 +106,15 @@ explicitly deferred edge-guard comparison because legacy configures the guard
 before deriving the per-observation factor; the typed expected guard and the
 deferral are recorded without changing legacy behavior.
 
-The `citlali-raw-timestream-provenance-v1` schema and atomic writer are prepared
-but intentionally unwired. The schema distinguishes requested/effective config,
-context-free resolutions, observation-field availability, edge-guard parity
-deferral, execution completion, and realized counters. Production publication
-waits for shadow validation and an explicit lifecycle/output placement decision.
+The `citlali-raw-timestream-provenance-v1` schema and atomic writer are wired as
+a required per-observation product. The schema distinguishes
+requested/effective config, context-free resolutions, observation-field
+availability, edge-guard parity deferral, execution completion, and realized
+counters. Publication occurs only after required TOD writes and observation
+outputs complete. The observation lifecycle owns completed-scan and required
+TOD-write counts; flagged-sample and dynamic-notch counts remain explicitly
+unavailable until their execution owners are migrated. Publication failures
+propagate and fail the reduction.
 
 The legacy parser no longer terminates the process for cross-field validation.
 All former exit sites record exact invalid-key paths in the existing diagnostic
@@ -187,8 +191,10 @@ not flow back into the request.
 4. Maintain one typed-to-`RTCProc` adapter. Compare complete processor policy state
    immediately after context-free resolution and again after observation
    resolution. Do not compare later learned/diagnostic state as config parity.
-5. Wire the prepared versioned requested/effective/observation/realized
-   provenance at the approved lifecycle boundary and validate its semantics.
+5. Maintain the required versioned requested/effective/observation/realized
+   provenance at the successful observation boundary and validate every
+   observation's semantics. This wiring is complete locally; Unity mode
+   acceptance is pending.
 6. Accept a strict point run with complete RTC/PTC timestream comparison, then
    accept affected beammap and science gates. OOF may reuse the explicit
    pointing execution gate. Polarimetry requires its own authority and

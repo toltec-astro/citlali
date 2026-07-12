@@ -15,6 +15,7 @@ import audit_reduction_run
 def audit_for(
     path: str, expected_mode: str, expected_label: str, top: int,
     require_processed_provenance: bool = False,
+    require_raw_provenance: bool = False,
 ) -> dict[str, Any]:
     args = argparse.Namespace(
         reduction=path,
@@ -22,6 +23,7 @@ def audit_for(
         expected_label=expected_label,
         top=top,
         require_processed_provenance=require_processed_provenance,
+        require_raw_provenance=require_raw_provenance,
     )
     return audit_reduction_run.build_audit(args)
 
@@ -97,6 +99,7 @@ def compare_audits(args: argparse.Namespace) -> dict[str, Any]:
     candidate = audit_for(
         args.candidate, args.expected_mode, args.candidate_label, args.top,
         getattr(args, "require_candidate_processed_provenance", False),
+        getattr(args, "require_candidate_raw_provenance", False),
     )
     base_intervals = baseline.get("log", {}).get("interval_seconds", {})
     cand_intervals = candidate.get("log", {}).get("interval_seconds", {})
@@ -266,6 +269,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         "--require-candidate-processed-provenance",
         action="store_true",
         help="Require a valid processed provenance sidecar only for the candidate.",
+    )
+    parser.add_argument(
+        "--require-candidate-raw-provenance",
+        action="store_true",
+        help="Require valid raw provenance for every candidate observation.",
     )
     parser.add_argument("--json-out", default="", help="Optional path for machine-readable JSON.")
     parser.add_argument("--report-out", default="", help="Optional path for Markdown output.")

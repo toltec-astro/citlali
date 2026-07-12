@@ -24,10 +24,10 @@ struct RawTimestreamObservationState {
 
 struct RawTimestreamRealizedState {
     bool execution_completed = false;
-    std::size_t completed_scan_count = 0;
-    std::size_t flagged_sample_count = 0;
-    std::size_t dynamic_notch_count = 0;
-    std::size_t required_output_count = 0;
+    std::optional<std::size_t> completed_scan_count;
+    std::optional<std::size_t> flagged_sample_count;
+    std::optional<std::size_t> dynamic_notch_count;
+    std::optional<std::size_t> required_timestream_write_count;
 };
 
 struct RawTimestreamExecutionPlan {

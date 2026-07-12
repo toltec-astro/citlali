@@ -358,13 +358,13 @@ classified records with zero review-required entries. Local CLI/test builds,
 all 277 C++ tests, 23 focused config-tool tests, all eight profiles, and full
 preflight pass. Unity validation of this shadow checkpoint is pending; no raw
 authority flip or parser/mirror retirement is permitted before that gate.
-The versioned `citlali-raw-timestream-provenance-v1` schema is prepared but not
-wired to production output. It serializes the complete requested/effective
+The versioned `citlali-raw-timestream-provenance-v1` schema was prepared but not
+yet wired at this checkpoint. It serializes the complete requested/effective
 config, context-free resolutions, explicit observation-field availability and
 edge-guard deferral, an execution-completed marker, and realized counters. Its
 atomic writer rejects uninitialized plans and propagates publication failures.
-All 281 C++ tests and full preflight pass. Production publication remains
-deferred so required-output placement and lifecycle completion can be reviewed
+All 281 C++ tests and full preflight pass. Production publication remained
+deferred so required-output placement and lifecycle completion could be reviewed
 with the Unity shadow checkpoint rather than introduced without mode evidence.
 The remaining 14 direct exits in `RTCProc::get_config` are removed. Legacy
 cross-field checks now append exact invalid-key paths to the existing config
@@ -384,6 +384,20 @@ for `redu36`. This closes the Unity point gate for observation shadowing,
 prepared raw provenance, propagated parser diagnostics, and yaml-cpp 0.7
 compatibility. Beammap/science evidence remains required before raw authority
 flip and parser/mirror retirement.
+The accepted point shadow gate now permits required production raw provenance.
+Each successfully completed observation atomically publishes
+`raw_timestream_provenance.yaml` in its observation directory after required TOD
+writers and observation products have completed. The observation lifecycle owns
+the completed-scan count and expected required TOD-write count; flagged-sample
+and dynamic-notch counts remain explicitly unavailable rather than being
+guessed from mutable RTC state. Publication failure propagates and fails the
+reduction. Repeated-observation tests prove state reset and independent
+sidecars, while a filesystem-failure test proves required-output propagation.
+The run-audit tooling can require and semantically validate every observation's
+sidecar, including science reductions. Local CLI/test builds, all 286 C++ tests,
+eight provenance-audit tests, and full config preflight pass. Unity point,
+beammap, and science acceptance of the newly wired sidecar remains pending; raw
+execution therefore remains legacy-authoritative.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

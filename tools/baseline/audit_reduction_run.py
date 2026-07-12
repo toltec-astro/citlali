@@ -66,6 +66,23 @@ PROVENANCE_SIDECARS = {
         ),
         "allow_multiple": False,
     },
+    "raw_timestream": {
+        "filename": "raw_timestream_provenance.yaml",
+        "schema_version": "citlali-raw-timestream-provenance-v1",
+        "required_paths": (
+            ("initialized",),
+            ("requested",),
+            ("effective", "config"),
+            ("effective", "resolutions"),
+            ("observation",),
+            ("realized", "execution_completed"),
+            ("realized", "completed_scan_count"),
+            ("realized", "flagged_sample_count"),
+            ("realized", "dynamic_notch_count"),
+            ("realized", "required_timestream_write_count"),
+        ),
+        "allow_multiple": True,
+    },
 }
 LOG_MARKERS = (
     ("start", "reduction-local compressed log"),
@@ -302,6 +319,39 @@ def processed_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
     return errors
 
 
+def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    try:
+        if data["initialized"] is not True:
+            errors.append("raw execution plan is not initialized")
+
+        observation = data["observation"]
+        if observation.get("available") is not True:
+            errors.append("resolved observation state is unavailable")
+        elif not isinstance(observation.get("value"), dict):
+            errors.append("resolved observation state value is not a mapping")
+
+        realized = data["realized"]
+        if realized["execution_completed"] is not True:
+            errors.append("raw observation execution is not complete")
+        for name in (
+            "completed_scan_count",
+            "required_timestream_write_count",
+        ):
+            record = realized[name]
+            if record.get("available") is not True:
+                errors.append(f"realized {name} is unavailable")
+                continue
+            value = record.get("value")
+            if type(value) is not int or value < 0:
+                errors.append(
+                    f"realized {name} must be a nonnegative integer"
+                )
+    except (KeyError, TypeError) as exc:
+        errors.append(f"cannot evaluate raw provenance semantics: {exc}")
+    return errors
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -315,11 +365,15 @@ def find_provenance_files(redu: Path, filename: str) -> list[Path]:
 
 
 def audit_provenance_sidecars(
-    redu: Path, require_processed: bool = False
+    redu: Path, require_processed: bool = False,
+    require_raw: bool = False,
 ) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for name, spec in PROVENANCE_SIDECARS.items():
-        required = name == "processed_timestream" and require_processed
+        required = bool(
+            (name == "processed_timestream" and require_processed)
+            or (name == "raw_timestream" and require_raw)
+        )
         paths = find_provenance_files(redu, str(spec["filename"]))
         record: dict[str, Any] = {
             "paths": [str(path) for path in paths],
@@ -355,11 +409,14 @@ def audit_provenance_sidecars(
                         "sha256": sha256_file(path),
                     }
                 )
-                semantic_errors = (
-                    processed_provenance_semantic_errors(data)
-                    if name == "processed_timestream" and not missing_paths
-                    else []
-                )
+                semantic_errors = []
+                if not missing_paths:
+                    if name == "processed_timestream":
+                        semantic_errors = (
+                            processed_provenance_semantic_errors(data)
+                        )
+                    elif name == "raw_timestream":
+                        semantic_errors = raw_provenance_semantic_errors(data)
                 item["semantic_errors"] = semantic_errors
                 item["valid"] = bool(
                     item["schema_ok"]
@@ -606,7 +663,9 @@ def build_audit(args: argparse.Namespace) -> dict[str, Any]:
         "config": config,
         "log": log,
         "provenance": audit_provenance_sidecars(
-            redu, getattr(args, "require_processed_provenance", False)
+            redu,
+            getattr(args, "require_processed_provenance", False),
+            getattr(args, "require_raw_provenance", False),
         ),
         "products": audit_products(redu, args.top),
     }
@@ -731,6 +790,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         "--require-processed-provenance",
         action="store_true",
         help="Fail unless processed_timestream_provenance.yaml is present and valid.",
+    )
+    parser.add_argument(
+        "--require-raw-provenance",
+        action="store_true",
+        help="Fail unless every raw_timestream_provenance.yaml is valid.",
     )
     parser.add_argument("--json-out", default="", help="Optional path for machine-readable JSON.")
     parser.add_argument("--report-out", default="", help="Optional path for Markdown output.")

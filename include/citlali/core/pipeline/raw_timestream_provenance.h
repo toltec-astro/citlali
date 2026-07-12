@@ -119,10 +119,15 @@ inline YAML::Node raw_timestream_realized_state_node(
     const RawTimestreamRealizedState &realized) {
     YAML::Node node;
     node["execution_completed"] = realized.execution_completed;
-    node["completed_scan_count"] = realized.completed_scan_count;
-    node["flagged_sample_count"] = realized.flagged_sample_count;
-    node["dynamic_notch_count"] = realized.dynamic_notch_count;
-    node["required_output_count"] = realized.required_output_count;
+    node["completed_scan_count"] =
+        raw_optional_scalar_node(realized.completed_scan_count);
+    node["flagged_sample_count"] =
+        raw_optional_scalar_node(realized.flagged_sample_count);
+    node["dynamic_notch_count"] =
+        raw_optional_scalar_node(realized.dynamic_notch_count);
+    node["required_timestream_write_count"] =
+        raw_optional_scalar_node(
+            realized.required_timestream_write_count);
     return node;
 }
 

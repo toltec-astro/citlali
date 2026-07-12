@@ -3,6 +3,7 @@
 #include <citlali/core/pipeline/observation_fruit_loop_map_loading.h>
 #include <citlali/core/pipeline/observation_output_execution.h>
 #include <citlali/core/pipeline/observation_pipeline.h>
+#include <citlali/core/pipeline/raw_timestream_provenance_lifecycle.h>
 
 namespace citlali::pipeline {
 
@@ -17,6 +18,7 @@ void run_reduction_observation_pipeline(TodProc &todproc, KidsProc &kidsproc,
     setup_and_run_observation_pipeline(engine, kidsproc, rawobs, logger);
     write_observation_outputs_and_accumulate<RawObsMap, FilteredObsMap,
                                              FitMaps>(todproc, logger);
+    publish_completed_raw_timestream_provenance<IsBeammap>(engine);
 }
 
 }  // namespace citlali::pipeline
