@@ -22,6 +22,14 @@ The intended transitional sequence in `Engine::get_ptc_config` is:
 No processor value written in step 5 may subsequently overwrite the typed
 request or effective plan.
 
+`ProcessedTimestreamExecutionPlan` is the transitional in-memory shape for
+this contract. It currently provides independent requested and effective
+snapshots, typed effective-resolution records, and a separate realized-state
+record. It is deliberately not wired into `Engine` or output yet: the existing
+typed config remains execution authority until the matched beammap checkpoint
+is reviewed and the plan can replace it in one bounded change. A partial plan
+must not be serialized as complete processed-timestream provenance.
+
 ## State classification
 
 ### Requested

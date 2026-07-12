@@ -21,6 +21,7 @@
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/processed_clean_config_read.h>
 #include <citlali/core/pipeline/processed_clean_resolution.h>
+#include <citlali/core/pipeline/processed_timestream_execution_plan.h>
 #include <citlali/core/pipeline/processed_weighting_config_read.h>
 #include <citlali/core/pipeline/processed_weighting_resolution.h>
 #include <citlali/core/pipeline/runtime_provenance_output.h>
@@ -4671,6 +4672,37 @@ TEST(config_scaffold, resolves_processed_weighting_source_mask_inheritance) {
     EXPECT_DOUBLE_EQ(*explicit_zero.requested, 0.0);
     EXPECT_DOUBLE_EQ(explicit_zero.effective, 0.0);
     EXPECT_FALSE(explicit_zero.inherited_from_cleaning);
+}
+
+TEST(config_scaffold, separates_processed_requested_and_effective_state) {
+    citlali::config::TimestreamConfig requested;
+    requested.fruit_loops.enabled = true;
+    requested.fruit_loops.max_iters = 4;
+    requested.processed_time_chunk.clean.enabled = true;
+    requested.processed_time_chunk.clean.mask_radius_arcsec = 18.0;
+
+    auto plan =
+        citlali::pipeline::make_processed_timestream_execution_plan(
+            requested);
+    plan.effective.fruit_loops.max_iters = 1;
+    plan.effective.processed_time_chunk.clean.mask_radius_arcsec = 24.0;
+    plan.effective_resolutions.fruit_loop_iterations =
+        citlali::pipeline::resolve_fruit_loop_iteration_policy(
+            requested.fruit_loops,
+            citlali::config::ReductionType::beammap);
+
+    EXPECT_TRUE(plan.initialized);
+    EXPECT_EQ(plan.requested.fruit_loops.max_iters, 4);
+    EXPECT_DOUBLE_EQ(
+        plan.requested.processed_time_chunk.clean.mask_radius_arcsec, 18.0);
+    EXPECT_EQ(plan.effective.fruit_loops.max_iters, 1);
+    EXPECT_DOUBLE_EQ(
+        plan.effective.processed_time_chunk.clean.mask_radius_arcsec, 24.0);
+    ASSERT_TRUE(
+        plan.effective_resolutions.fruit_loop_iterations.has_value());
+    EXPECT_TRUE(plan.effective_resolutions.fruit_loop_iterations
+                    ->forced_single_iteration_for_beammap);
+    EXPECT_FALSE(plan.realized.fruit_loop_iterations_completed.has_value());
 }
 
 TEST(config_scaffold, resolves_processed_weighting_dependencies) {
