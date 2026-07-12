@@ -5848,11 +5848,14 @@ TEST(config_scaffold,
         .native_sample_rate_hz = 100.0;
     engine.output_paths.obsnum_dir_name = first_dir.string();
 
-    citlali::pipeline::publish_completed_raw_timestream_provenance<false>(
-        engine);
+    const auto first_published =
+        citlali::pipeline::publish_completed_raw_timestream_provenance<false>(
+            engine);
 
     const auto first_path =
         citlali::pipeline::raw_timestream_provenance_path(first_dir);
+    ASSERT_TRUE(first_published.has_value());
+    EXPECT_EQ(*first_published, first_path);
     ASSERT_TRUE(std::filesystem::exists(first_path));
     const auto first = YAML::LoadFile(first_path.string());
     EXPECT_TRUE(first["realized"]["execution_completed"].as<bool>());
@@ -5873,11 +5876,14 @@ TEST(config_scaffold,
     engine.telescope.scan_indices.resize(2, 3);
     engine.output_paths.obsnum_dir_name = second_dir.string();
 
-    citlali::pipeline::publish_completed_raw_timestream_provenance<false>(
-        engine);
+    const auto second_published =
+        citlali::pipeline::publish_completed_raw_timestream_provenance<false>(
+            engine);
 
     const auto second_path =
         citlali::pipeline::raw_timestream_provenance_path(second_dir);
+    ASSERT_TRUE(second_published.has_value());
+    EXPECT_EQ(*second_published, second_path);
     ASSERT_TRUE(std::filesystem::exists(second_path));
     const auto second = YAML::LoadFile(second_path.string());
     EXPECT_DOUBLE_EQ(

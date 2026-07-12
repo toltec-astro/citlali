@@ -18,7 +18,12 @@ void run_reduction_observation_pipeline(TodProc &todproc, KidsProc &kidsproc,
     setup_and_run_observation_pipeline(engine, kidsproc, rawobs, logger);
     write_observation_outputs_and_accumulate<RawObsMap, FilteredObsMap,
                                              FitMaps>(todproc, logger);
-    publish_completed_raw_timestream_provenance<IsBeammap>(engine);
+    const auto raw_provenance_path =
+        publish_completed_raw_timestream_provenance<IsBeammap>(engine);
+    if (raw_provenance_path) {
+        logger->info("raw timestream provenance sidecar: {}",
+                     raw_provenance_path->string());
+    }
 }
 
 }  // namespace citlali::pipeline

@@ -7,7 +7,9 @@
 
 #include <array>
 #include <cstddef>
+#include <filesystem>
 #include <limits>
+#include <optional>
 #include <stdexcept>
 #include <string>
 
@@ -74,7 +76,8 @@ TimestreamOutputExpectations raw_observation_output_expectations(
 }
 
 template <bool IsBeammap, class Engine>
-void publish_completed_raw_timestream_provenance(Engine &engine) {
+std::optional<std::filesystem::path>
+publish_completed_raw_timestream_provenance(Engine &engine) {
     if constexpr (has_raw_timestream_plan_v<Engine>) {
         auto &plan = raw_timestream_plan(engine);
         const auto expectations =
@@ -86,9 +89,13 @@ void publish_completed_raw_timestream_provenance(Engine &engine) {
         complete_raw_timestream_observation(
             plan, raw_realized_count(scan_count, "completed scan count"),
             raw_required_timestream_write_count(expectations));
+        const auto path = raw_timestream_provenance_path(
+            engine.output_paths.obsnum_dir_name);
         write_raw_timestream_provenance_file(
             engine.output_paths.obsnum_dir_name, plan);
+        return path;
     }
+    return std::nullopt;
 }
 
 }  // namespace citlali::pipeline
