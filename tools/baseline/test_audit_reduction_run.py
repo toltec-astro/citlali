@@ -4,7 +4,120 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import yaml
+
 from tools.baseline import audit_reduction_run as audit
+
+
+def valid_processed_document() -> dict:
+    requested = {
+        "fruit_loops": {
+            "enabled": False,
+            "save_all_iters": False,
+            "max_iters": 1,
+        },
+        "processed_time_chunk": {
+            "clean": {"active": "standard_pca"},
+            "weighting": {
+                "source_mask_radius_arcsec": 30,
+                "validation": {"enabled": True},
+                "busy_row_suppression": {"enabled": False},
+            },
+            "flagging": {
+                "second_pass_local": {
+                    "enabled": True,
+                    "source_protection": {
+                        "enabled": True,
+                        "active": False,
+                    },
+                }
+            },
+        },
+    }
+    effective = {
+        "fruit_loops": {
+            "enabled": False,
+            "save_all_iters": True,
+            "max_iters": 1,
+        },
+        "processed_time_chunk": {
+            "clean": {"active": "standard_pca"},
+            "weighting": {
+                "source_mask_radius_arcsec": 30,
+                "validation": {"enabled": True},
+                "busy_row_suppression": {"enabled": False},
+            },
+            "flagging": {
+                "second_pass_local": {
+                    "enabled": True,
+                    "source_protection": {
+                        "enabled": True,
+                        "active": True,
+                    },
+                }
+            },
+        },
+    }
+    return {
+        "schema_version": "citlali-processed-timestream-provenance-v1",
+        "initialized": True,
+        "requested": requested,
+        "effective": {
+            "config": effective,
+            "resolutions": {
+                "cleaner_mode": {
+                    "available": True,
+                    "value": {"effective": "standard_pca"},
+                },
+                "weighting_source_mask": {
+                    "available": True,
+                    "value": {
+                        "requested_present": True,
+                        "requested": 30,
+                        "effective": 30,
+                        "inherited_from_cleaning": False,
+                    },
+                },
+                "weighting_dependencies": {
+                    "available": True,
+                    "value": {
+                        "validation_forced_by_weighting_type": False,
+                        "busy_row_disabled_without_second_pass": False,
+                    },
+                },
+                "fruit_loop_iterations": {
+                    "available": True,
+                    "value": {
+                        "effective_max_iters": 1,
+                        "effective_save_all_iters": True,
+                        "forced_single_iteration_while_disabled": True,
+                    },
+                },
+                "fruit_loop_interpolation": {
+                    "available": True,
+                    "value": {"effective": "jinc"},
+                },
+            },
+        },
+        "realized": {
+            "source_protection": {
+                "available": True,
+                "value": {
+                    "processed_activation_requested": True,
+                    "source_aware_reduction": True,
+                    "processed_active": True,
+                },
+            },
+            "fruit_loop_iterations_completed": {
+                "available": True,
+                "value": 1,
+            },
+            "fruit_loops_converged": {
+                "available": True,
+                "value": False,
+            },
+        },
+    }
 
 
 class ProvenanceAuditTest(unittest.TestCase):
@@ -12,15 +125,7 @@ class ProvenanceAuditTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             redu = Path(directory)
             (redu / "processed_timestream_provenance.yaml").write_text(
-                """\
-schema_version: citlali-processed-timestream-provenance-v1
-initialized: true
-requested: {}
-effective:
-  config: {}
-  resolutions: {}
-realized: {}
-""",
+                yaml.safe_dump(valid_processed_document(), sort_keys=False),
                 encoding="utf-8",
             )
 
@@ -37,14 +142,10 @@ realized: {}
     def test_rejects_missing_processed_sections(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             redu = Path(directory)
+            document = valid_processed_document()
+            del document["effective"]["resolutions"]
             (redu / "processed_timestream_provenance.yaml").write_text(
-                """\
-schema_version: citlali-processed-timestream-provenance-v1
-initialized: true
-requested: {}
-effective:
-  config: {}
-""",
+                yaml.safe_dump(document, sort_keys=False),
                 encoding="utf-8",
             )
 
@@ -55,7 +156,7 @@ effective:
             self.assertFalse(processed["valid"])
             self.assertEqual(
                 processed["missing_paths"],
-                ["effective.resolutions", "realized"],
+                ["effective.resolutions"],
             )
 
     def test_rejects_missing_required_processed_sidecar(self) -> None:
@@ -68,6 +169,26 @@ effective:
 
             self.assertFalse(records["processed_timestream"]["valid"])
             self.assertFalse(audit.provenance_ok({"provenance": records}))
+
+    def test_rejects_inconsistent_processed_resolution(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            document = valid_processed_document()
+            document["effective"]["config"]["fruit_loops"]["max_iters"] = 2
+            (redu / "processed_timestream_provenance.yaml").write_text(
+                yaml.safe_dump(document, sort_keys=False),
+                encoding="utf-8",
+            )
+
+            processed = audit.audit_provenance_sidecars(
+                redu, require_processed=True
+            )["processed_timestream"]
+
+            self.assertFalse(processed["valid"])
+            self.assertEqual(
+                processed["files"][0]["semantic_errors"],
+                ["iteration resolution does not match effective max_iters"],
+            )
 
     def test_validates_every_observation_provenance_sidecar(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

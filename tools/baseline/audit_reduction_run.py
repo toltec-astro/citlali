@@ -188,6 +188,120 @@ def has_nested_path(value: Any, path: tuple[str, ...]) -> bool:
     return True
 
 
+def nested_value(value: Any, path: tuple[str, ...]) -> Any:
+    current = value
+    for key in path:
+        if not isinstance(current, dict) or key not in current:
+            raise KeyError(".".join(path))
+        current = current[key]
+    return current
+
+
+def processed_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    required_records = {
+        "effective.cleaner_mode":
+            ("effective", "resolutions", "cleaner_mode"),
+        "effective.weighting_source_mask":
+            ("effective", "resolutions", "weighting_source_mask"),
+        "effective.weighting_dependencies":
+            ("effective", "resolutions", "weighting_dependencies"),
+        "effective.fruit_loop_iterations":
+            ("effective", "resolutions", "fruit_loop_iterations"),
+        "effective.fruit_loop_interpolation":
+            ("effective", "resolutions", "fruit_loop_interpolation"),
+        "realized.source_protection":
+            ("realized", "source_protection"),
+        "realized.fruit_loop_iterations_completed":
+            ("realized", "fruit_loop_iterations_completed"),
+        "realized.fruit_loops_converged":
+            ("realized", "fruit_loops_converged"),
+    }
+    try:
+        for label, path in required_records.items():
+            if nested_value(data, path).get("available") is not True:
+                errors.append(f"{label} is unavailable")
+        if errors:
+            return errors
+
+        requested = nested_value(data, ("requested",))
+        effective = nested_value(data, ("effective", "config"))
+        resolutions = nested_value(data, ("effective", "resolutions"))
+        realized = nested_value(data, ("realized",))
+
+        cleaner = resolutions["cleaner_mode"]["value"]
+        if effective["processed_time_chunk"]["clean"]["active"] != cleaner["effective"]:
+            errors.append("cleaner resolution does not match effective clean.active")
+
+        source_mask = resolutions["weighting_source_mask"]["value"]
+        requested_weighting = requested["processed_time_chunk"]["weighting"]
+        effective_weighting = effective["processed_time_chunk"]["weighting"]
+        if effective_weighting["source_mask_radius_arcsec"] != source_mask["effective"]:
+            errors.append("source-mask resolution does not match effective weighting")
+        if source_mask["requested_present"]:
+            if requested_weighting["source_mask_radius_arcsec"] != source_mask.get("requested"):
+                errors.append("source-mask resolution does not match requested weighting")
+        elif not source_mask["inherited_from_cleaning"]:
+            errors.append("absent source mask is not marked as inherited")
+
+        weighting = resolutions["weighting_dependencies"]["value"]
+        requested_validation = requested_weighting["validation"]["enabled"]
+        effective_validation = effective_weighting["validation"]["enabled"]
+        expected_validation = bool(
+            requested_validation
+            or weighting["validation_forced_by_weighting_type"]
+        )
+        if effective_validation != expected_validation:
+            errors.append("weight-validation resolution does not match effective config")
+        requested_busy = requested_weighting["busy_row_suppression"]["enabled"]
+        effective_busy = effective_weighting["busy_row_suppression"]["enabled"]
+        expected_busy = bool(
+            requested_busy
+            and not weighting["busy_row_disabled_without_second_pass"]
+        )
+        if effective_busy != expected_busy:
+            errors.append("busy-row resolution does not match effective config")
+
+        fruit = resolutions["fruit_loop_iterations"]["value"]
+        effective_fruit = effective["fruit_loops"]
+        if effective_fruit["max_iters"] != fruit["effective_max_iters"]:
+            errors.append("iteration resolution does not match effective max_iters")
+        if effective_fruit["save_all_iters"] != fruit["effective_save_all_iters"]:
+            errors.append("iteration resolution does not match effective save_all_iters")
+        if fruit["forced_single_iteration_while_disabled"] != (
+            not requested["fruit_loops"]["enabled"]
+        ):
+            errors.append("disabled fruit-loop iteration decision is inconsistent")
+
+        source = realized["source_protection"]["value"]
+        requested_second_pass = requested["processed_time_chunk"]["flagging"]["second_pass_local"]
+        effective_second_pass = effective["processed_time_chunk"]["flagging"]["second_pass_local"]
+        expected_activation_request = bool(
+            requested_second_pass["enabled"]
+            and requested_second_pass["source_protection"]["enabled"]
+        )
+        if source["processed_activation_requested"] != expected_activation_request:
+            errors.append("source-protection request record is inconsistent")
+        expected_active = bool(
+            expected_activation_request and source["source_aware_reduction"]
+        )
+        if source["processed_active"] != expected_active:
+            errors.append("source-protection realization is inconsistent")
+        if effective_second_pass["source_protection"]["active"] != source["processed_active"]:
+            errors.append("source-protection realization does not match effective config")
+
+        completed = realized["fruit_loop_iterations_completed"]["value"]
+        if not isinstance(completed, int) or completed < 1:
+            errors.append("completed iteration count must be a positive integer")
+        elif completed > effective_fruit["max_iters"]:
+            errors.append("completed iteration count exceeds effective max_iters")
+        if not isinstance(realized["fruit_loops_converged"]["value"], bool):
+            errors.append("fruit-loop convergence realization must be boolean")
+    except (KeyError, TypeError) as exc:
+        errors.append(f"cannot evaluate processed provenance semantics: {exc}")
+    return errors
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -241,10 +355,17 @@ def audit_provenance_sidecars(
                         "sha256": sha256_file(path),
                     }
                 )
+                semantic_errors = (
+                    processed_provenance_semantic_errors(data)
+                    if name == "processed_timestream" and not missing_paths
+                    else []
+                )
+                item["semantic_errors"] = semantic_errors
                 item["valid"] = bool(
                     item["schema_ok"]
                     and not missing_paths
                     and initialized_ok
+                    and not semantic_errors
                 )
             except Exception as exc:
                 item["error"] = str(exc)
@@ -571,6 +692,13 @@ def render_markdown(result: dict[str, Any]) -> str:
             )
         if record.get("error"):
             lines.append(f"\n`{name}` error: `{record['error']}`")
+        for item in record.get("files", []):
+            if item.get("semantic_errors"):
+                lines.append(
+                    f"\n`{name}` semantic errors for `{item['path']}`: `"
+                    + "`; `".join(item["semantic_errors"])
+                    + "`"
+                )
 
     products = result["products"]
     lines.extend(["", "## Products", ""])

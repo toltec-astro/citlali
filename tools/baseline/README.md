@@ -159,6 +159,12 @@ The audit verifies every matching provenance file. This matters for science
 reductions, which contain one timestream-output provenance sidecar per
 observation.
 
+For processed provenance, structural validation is followed by semantic
+checks: resolution records must agree with requested/effective cleaner,
+source-mask, weighting, and fruit-loop state; realized source protection and
+iteration counts must agree with the effective plan. A disagreement fails the
+audit even when the YAML schema is complete.
+
 Science coadd triage, with an explicit baseline/candidate pair when the latest
 directories are not the intended comparison:
 
