@@ -6,10 +6,13 @@
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/config_value.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/raw_timestream_observation_shadow.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/stage_profile.h>
 #include <citlali/core/pipeline/timestream_output_provenance.h>
+
+#include <stdexcept>
 
 namespace citlali::engine_detail {
 
@@ -44,6 +47,25 @@ void setup_observation_extinction(EngineT &engine) {
     }
     else {
         engine.rtcproc.calibration.extinction_model = "N/A";
+    }
+
+    if constexpr (citlali::pipeline::has_raw_timestream_plan_v<EngineT>) {
+        auto &plan = citlali::pipeline::raw_timestream_plan(engine);
+        if (plan.initialized) {
+            const auto shadow =
+                citlali::pipeline::complete_raw_timestream_extinction_shadow(
+                    plan, engine.telescope.tau_225_GHz,
+                    engine.rtcproc.calibration.tx_225_zenith,
+                    engine.rtcproc.run_extinction,
+                    engine.rtcproc.calibration.extinction_model);
+            if (!shadow.exact) {
+                engine.logger->error(
+                    "typed raw extinction shadow differs from legacy state: {}",
+                    shadow.diagnostic());
+                throw std::runtime_error(
+                    "typed raw extinction shadow parity failure");
+            }
+        }
     }
 }
 

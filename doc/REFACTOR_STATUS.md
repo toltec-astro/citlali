@@ -344,8 +344,20 @@ deterministic 169-path snapshot to equal the legacy parser/mirror snapshot.
 Legacy `rtcproc` still drives execution. The frozen audit requires one typed
 read before the parser and one comparison after all ten mirrors. The generated
 default config, disabled expert semantics, and injected divergence behavior are
-covered by focused tests. All 274 C++ tests and full preflight pass. The next
-gate is per-observation shadow population/parity before any authority flip.
+covered by focused tests. The per-observation shadow is now active at the
+existing lifecycle boundaries: input preparation records and compares native
+and effective sample rate, downsample factor, edge guard/context, and raw source
+protection; observation setup records and compares extinction activation and
+model. Legacy `rtcproc` remains the execution authority. A second observation
+resets the first observation's state and realized counters. Frequency-derived
+downsampling exposes a pre-existing ordering gap because legacy configures its
+edge guard before deriving the factor; that single comparison is explicitly
+marked deferred rather than changing numerical behavior. All other divergence
+fails with field-level diagnostics. The external RTC census is frozen at 44
+classified records with zero review-required entries. Local CLI/test builds,
+all 277 C++ tests, 23 focused config-tool tests, all eight profiles, and full
+preflight pass. Unity validation of this shadow checkpoint is pending; no raw
+authority flip or parser/mirror retirement is permitted before that gate.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

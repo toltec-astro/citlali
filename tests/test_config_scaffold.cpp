@@ -22,6 +22,7 @@
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/raw_timestream_execution_plan.h>
 #include <citlali/core/pipeline/raw_timestream_observation_resolution.h>
+#include <citlali/core/pipeline/raw_timestream_observation_shadow.h>
 #include <citlali/core/pipeline/raw_timestream_shadow_parity.h>
 #include <citlali/core/pipeline/config_parse_tracking.h>
 #include <citlali/core/pipeline/raw_filtering_config_read.h>
@@ -5461,6 +5462,147 @@ TEST(config_scaffold, resets_raw_observation_and_realized_state) {
     ASSERT_TRUE(plan.observation.has_value());
     EXPECT_FALSE(plan.observation->filter_edge_guard_samples.has_value());
     EXPECT_EQ(plan.realized.completed_scan_count, 0U);
+}
+
+TEST(config_scaffold, shadows_raw_observation_legacy_state_without_mutation) {
+    citlali::config::RawTimeChunkConfig request;
+    request.downsample.enabled = true;
+    request.downsample.factor = 2;
+    request.filter.edge_guard.enabled = true;
+    request.filter.edge_guard.min_samples = 4;
+    request.despike.enabled = true;
+    request.despike.source_protection.enabled = true;
+    request.extinction_correction_enabled = true;
+
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(request);
+    timestream::RTCProc rtcproc;
+    rtcproc.run_downsample = true;
+    rtcproc.downsampler.factor = 2;
+    rtcproc.filter_edge_guard.guard_samples = 4;
+    rtcproc.filter_edge_guard.context_samples = 4;
+    rtcproc.despiker.source_protection_enabled = true;
+
+    const auto begin =
+        citlali::pipeline::begin_raw_timestream_observation_shadow(
+            plan, citlali::config::ReductionType::pointing,
+            100.0, 50.0, rtcproc);
+
+    EXPECT_TRUE(begin.exact) << begin.diagnostic();
+    EXPECT_FALSE(begin.edge_guard_deferred);
+    ASSERT_TRUE(plan.observation.has_value());
+    EXPECT_DOUBLE_EQ(*plan.observation->native_sample_rate_hz, 100.0);
+    EXPECT_DOUBLE_EQ(*plan.observation->effective_sample_rate_hz, 50.0);
+    EXPECT_EQ(*plan.observation->downsample_factor, 2);
+    EXPECT_EQ(*plan.observation->filter_edge_guard_samples, 4);
+    EXPECT_FALSE(plan.observation->filter_edge_guard_parity_deferred);
+    EXPECT_TRUE(*plan.observation->source_protection_active);
+    EXPECT_FALSE(plan.observation->extinction_active.has_value());
+    EXPECT_EQ(plan.requested.downsample.factor, 2);
+
+    rtcproc.run_extinction = true;
+    rtcproc.calibration.setup(0.1);
+    const auto extinction =
+        citlali::pipeline::complete_raw_timestream_extinction_shadow(
+            plan, 0.1, rtcproc.calibration.tx_225_zenith,
+            rtcproc.run_extinction,
+            rtcproc.calibration.extinction_model);
+
+    EXPECT_TRUE(extinction.exact) << extinction.diagnostic();
+    EXPECT_TRUE(*plan.observation->extinction_active);
+    EXPECT_EQ(*plan.observation->extinction_model,
+              rtcproc.calibration.extinction_model);
+
+    plan.realized.completed_scan_count = 7;
+    const auto second =
+        citlali::pipeline::begin_raw_timestream_observation_shadow(
+            plan, citlali::config::ReductionType::pointing,
+            120.0, 60.0, rtcproc);
+
+    EXPECT_TRUE(second.exact) << second.diagnostic();
+    ASSERT_TRUE(plan.observation.has_value());
+    EXPECT_DOUBLE_EQ(*plan.observation->native_sample_rate_hz, 120.0);
+    EXPECT_FALSE(plan.observation->extinction_active.has_value());
+    EXPECT_FALSE(plan.observation->extinction_model.has_value());
+    EXPECT_EQ(plan.realized.completed_scan_count, 0U);
+}
+
+TEST(config_scaffold, reports_raw_observation_shadow_divergence) {
+    citlali::config::RawTimeChunkConfig request;
+    request.downsample.enabled = true;
+    request.downsample.factor = 2;
+    request.filter.edge_guard.enabled = true;
+    request.filter.edge_guard.min_samples = 4;
+    request.despike.enabled = true;
+    request.despike.source_protection.enabled = true;
+    request.extinction_correction_enabled = true;
+
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(request);
+    timestream::RTCProc rtcproc;
+    rtcproc.run_downsample = true;
+    rtcproc.downsampler.factor = 3;
+    rtcproc.filter_edge_guard.guard_samples = 5;
+    rtcproc.filter_edge_guard.context_samples = 6;
+    rtcproc.despiker.source_protection_enabled = false;
+
+    const auto begin =
+        citlali::pipeline::begin_raw_timestream_observation_shadow(
+            plan, citlali::config::ReductionType::pointing,
+            100.0, 49.0, rtcproc);
+
+    EXPECT_FALSE(begin.exact);
+    EXPECT_NE(begin.diagnostic().find("effective_sample_rate_hz"),
+              std::string::npos);
+    EXPECT_NE(begin.diagnostic().find("downsample.factor"),
+              std::string::npos);
+    EXPECT_NE(begin.diagnostic().find("source_protection.active"),
+              std::string::npos);
+    EXPECT_NE(begin.diagnostic().find("filter_edge_guard.guard_samples"),
+              std::string::npos);
+    EXPECT_NE(begin.diagnostic().find("filter_edge_guard.context_samples"),
+              std::string::npos);
+
+    const auto extinction =
+        citlali::pipeline::complete_raw_timestream_extinction_shadow(
+            plan, 0.1, rtcproc.calibration.tx_225_zenith,
+            false, "N/A");
+    EXPECT_FALSE(extinction.exact);
+    EXPECT_NE(extinction.diagnostic().find("extinction.active"),
+              std::string::npos);
+    EXPECT_NE(extinction.diagnostic().find("extinction.model"),
+              std::string::npos);
+}
+
+TEST(config_scaffold,
+     defers_frequency_derived_downsample_edge_guard_shadow_parity) {
+    citlali::config::RawTimeChunkConfig request;
+    request.downsample.enabled = true;
+    request.downsample.factor = 0;
+    request.downsample.downsampled_freq_Hz = 40.0;
+    request.filter.edge_guard.enabled = true;
+    request.filter.edge_guard.apply_downsample = true;
+
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(request);
+    timestream::RTCProc rtcproc;
+    rtcproc.run_downsample = true;
+    rtcproc.downsampler.factor = 3;
+    rtcproc.filter_edge_guard.guard_samples = 0;
+    rtcproc.filter_edge_guard.context_samples = 0;
+
+    const auto report =
+        citlali::pipeline::begin_raw_timestream_observation_shadow(
+            plan, citlali::config::ReductionType::science,
+            120.0, 40.0, rtcproc);
+
+    EXPECT_TRUE(report.exact) << report.diagnostic();
+    EXPECT_TRUE(report.edge_guard_deferred);
+    ASSERT_TRUE(plan.observation.has_value());
+    EXPECT_EQ(*plan.observation->downsample_factor, 3);
+    EXPECT_EQ(*plan.observation->filter_edge_guard_samples, 2);
+    EXPECT_TRUE(plan.observation->filter_edge_guard_parity_deferred);
+    EXPECT_EQ(plan.requested.downsample.factor, 0);
 }
 
 TEST(config_scaffold, rejects_raw_observation_before_plan_initialization) {

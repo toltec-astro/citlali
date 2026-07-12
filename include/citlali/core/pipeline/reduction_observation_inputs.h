@@ -7,7 +7,9 @@
 #include <citlali/core/pipeline/observation_date.h>
 #include <citlali/core/pipeline/observation_exposure_time.h>
 #include <citlali/core/pipeline/observation_sample_rate.h>
+#include <citlali/core/pipeline/raw_timestream_observation_shadow.h>
 #include <citlali/core/pipeline/reduction_observation_calibration.h>
+#include <citlali/core/pipeline/runtime_policy.h>
 #include <citlali/core/pipeline/rawobs_observation_output_layout.h>
 #include <citlali/core/pipeline/scan_indices.h>
 #include <citlali/core/pipeline/telescope_pointing.h>
@@ -31,7 +33,28 @@ bool prepare_reduction_observation_calibration_state(
 template <class Engine, class Logger>
 bool prepare_reduction_observation_sample_rate(Engine &engine,
                                                const Logger &logger) {
-    return configure_effective_sample_rate(engine, logger);
+    if (!configure_effective_sample_rate(engine, logger)) {
+        return false;
+    }
+    if constexpr (has_raw_timestream_plan_v<Engine>) {
+        auto &plan = raw_timestream_plan(engine);
+        if (plan.initialized) {
+            const auto shadow = begin_raw_timestream_observation_shadow(
+                plan, runtime_reduction_type(engine), engine.telescope.fsmp,
+                engine.telescope.d_fsmp, engine.rtcproc);
+            if (!shadow.exact) {
+                logger->error(
+                    "typed raw observation shadow differs from legacy state: {}",
+                    shadow.diagnostic());
+                return false;
+            }
+            if (shadow.edge_guard_deferred) {
+                logger->debug(
+                    "typed raw observation shadow deferred edge-guard parity for frequency-derived downsample factor");
+            }
+        }
+    }
+    return true;
 }
 
 template <bool IsBeammap, class TodProc, class RawObs, class RawObsKidsMeta,

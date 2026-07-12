@@ -16,6 +16,7 @@ struct RawTimestreamObservationState {
     std::optional<int> downsample_factor;
     std::optional<int> filter_edge_guard_samples;
     std::optional<int> filter_outer_context_samples;
+    bool filter_edge_guard_parity_deferred = false;
     std::optional<bool> source_protection_active;
     std::optional<bool> extinction_active;
     std::optional<std::string> extinction_model;

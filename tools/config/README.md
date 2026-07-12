@@ -345,7 +345,10 @@ typed-to-RTC adapter. The direct reader and adapter now run as a strict
 production shadow; the audit requires exactly one typed shadow read before the
 legacy parser and exactly one comparison after the legacy mirrors. Production
 execution authority is still legacy-to-typed until the shadow is validated and
-the Engine boundary is deliberately flipped.
+the Engine boundary is deliberately flipped. Per-observation sample-rate,
+downsample, edge-context, source-protection, and extinction state is also
+recorded and compared at its existing lifecycle boundaries without driving
+execution.
 
 ```bash
 $HOME/tolteca/bin/python tools/config/audit_raw_timestream_boundary.py \
@@ -356,7 +359,8 @@ $HOME/tolteca/bin/python tools/config/audit_raw_timestream_boundary.py \
 outside the parser and compatibility mirrors. Numerical executor calls may
 remain; raw policy reads, observation-state mutation, and output/realized state
 need explicit typed contracts. Polarimetry accesses remain a separate domain.
-The preflight fails on census drift or an unreviewed access.
+The frozen census contains 44 classified access shapes and no unreviewed
+accesses. The preflight fails on census drift or an unreviewed access.
 
 ```bash
 $HOME/tolteca/bin/python \

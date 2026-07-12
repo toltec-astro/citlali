@@ -19,7 +19,7 @@ execution also remains outside this transition.
 
 ## Current boundary
 
-The current direction is:
+The legacy-authoritative direction is:
 
 `merged YAML -> RTCProc::get_config -> RTCProc fields -> typed raw snapshot`
 
@@ -51,11 +51,12 @@ sections retain supplied expert values in the request; source-protection
 activity and the observation-derived extinction model are deliberately absent
 from request serialization.
 
-The external RTC access census contains 40 reviewed access shapes: 22 numerical
-executor operations, six observation-state accesses, seven output/realized
-state accesses, one remaining external raw policy read, and four polarimetry
-accesses outside this domain. New or reclassified accesses fail config
-preflight until reviewed.
+The external RTC access census contains 44 reviewed access shapes: 22 numerical
+executor operations, seven observation-state accesses, eight output/realized
+state accesses, three raw policy reads, and four polarimetry accesses outside
+this domain. The additional reads are the temporary typed/legacy observation
+shadow boundary. New or reclassified accesses fail config preflight until
+reviewed.
 
 An unwired `RawTimestreamExecutionPlan` now separates requested, context-free
 effective, per-observation, and realized state. Context-free resolution records
@@ -70,12 +71,12 @@ protection activity, and extinction availability/model are applied separately
 from observation state. A complete request round trip through the existing
 legacy mirrors, disabled-sentinel checks, and repeated-observation tests pass.
 The boundary audit enforces 169/169 reader, serializer, and adapter coverage.
-This proves field-transfer parity; it does not yet make typed observation
-resolution authoritative. Production does not construct or consume this plan,
-and `RTCProc::get_config` plus the ten legacy-to-typed mirrors remain the
-production authority.
+This proves field-transfer parity; it does not make typed observation
+resolution authoritative. Production constructs and records the plan only as
+a shadow. `RTCProc::get_config` plus the ten legacy-to-typed mirrors remain the
+production execution authority.
 
-Pure observation resolution is also implemented but unwired. It returns an
+Pure observation resolution is implemented. It returns an
 explicit sample-rate error category while resolving native/effective rate,
 downsample factor, and anti-alias Nyquist; computes each filter-edge transient
 contribution and final guard/context counts; resolves raw source-protection
@@ -83,8 +84,7 @@ activity by reduction type; and selects the observation extinction model.
 Legacy `Filter` and `Calibration` delegate to the same extracted pure numerical
 policies, so shadow parity does not rely on duplicated formulas. Focused tests
 match the real legacy processor for sum/max edge policies and representative
-tau values. The next step is to construct this plan at the Engine boundary as
-a read-only shadow while legacy state continues to drive execution.
+tau values.
 
 The context-free production shadow is now wired. `Engine::get_rtc_config`
 directly reads an isolated typed request before invoking the legacy parser,
@@ -93,8 +93,17 @@ object, and compares deterministic snapshots after the ten legacy mirrors.
 Mismatch is a hard configuration failure with both snapshots logged; the
 temporary object never drives numerical execution. The boundary audit requires
 the typed read, legacy parser, mirrors, and shadow comparison exactly once in
-that order. Per-observation resolution remains unwired and is the next shadow
-gate.
+that order.
+
+The per-observation production shadow is also wired. Input preparation records
+and compares native/effective sample rate, downsample factor, filter edge
+guard/context, and source-protection activity. Observation setup completes and
+compares extinction activity/model. A second observation resets observation
+and realized state. Mismatches fail with field-level diagnostics while the
+legacy processor still drives execution. Frequency-derived downsampling has one
+explicitly deferred edge-guard comparison because legacy configures the guard
+before deriving the per-observation factor; the typed expected guard and the
+deferral are recorded without changing legacy behavior.
 
 ## Target state
 
@@ -162,7 +171,7 @@ not flow back into the request.
 3. Add pure effective and observation-resolution functions with tests for
    omitted, disabled, repeated-run, finite/range, sample-rate, and calibration
    cases.
-4. Add one typed-to-`RTCProc` adapter. Compare complete processor policy state
+4. Maintain one typed-to-`RTCProc` adapter. Compare complete processor policy state
    immediately after context-free resolution and again after observation
    resolution. Do not compare later learned/diagnostic state as config parity.
 5. Publish versioned requested/effective/observation/realized provenance and

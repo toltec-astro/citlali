@@ -28,6 +28,17 @@ class RawTimestreamExecutionReadAuditTest(unittest.TestCase):
             "observation_state",
         )
         self.assertEqual(
+            audit.classify_access("calibration.tx_225_zenith"),
+            "observation_state",
+        )
+        self.assertEqual(
+            audit.classify_access("filter_edge_guard.guard_samples"),
+            "output_or_realized_state",
+        )
+        self.assertEqual(
+            audit.classify_access("run_extinction"), "raw_policy_read"
+        )
+        self.assertEqual(
             audit.classify_access("append_to_netcdf"),
             "executor_operation",
         )

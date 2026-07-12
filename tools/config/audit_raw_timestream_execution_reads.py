@@ -27,9 +27,9 @@ EXCLUDED_FILES = {
     "include/citlali/core/pipeline/timestream_config_adapter_raw_flagging.h",
     "include/citlali/core/pipeline/timestream_config_adapter_raw_line_audit.h",
 }
-EXPECTED_RECORD_COUNT = 40
+EXPECTED_RECORD_COUNT = 44
 EXPECTED_RECORD_SHA256 = (
-    "bc88d2b3f32dac97616132e6ad7bcc0878f8f87642b980d88794fcb6e66e0e84"
+    "0241d5632d0ab6057cb09415307bc9894fd5f15ea1c7b26e0b631edf2ce494f6"
 )
 
 EXECUTOR_OPERATIONS = {
@@ -58,6 +58,7 @@ EXECUTOR_OPERATIONS = {
 }
 OBSERVATION_STATE = {
     "calibration.extinction_model",
+    "calibration.tx_225_zenith",
     "despiker.fsmp",
     "despiker.source_protection_enabled",
     "despiker.source_protection_radius_arcsec",
@@ -68,12 +69,13 @@ OUTPUT_OR_REALIZED_STATE = {
     "despiker.local_residual",
     "filter_edge_guard",
     "filter_edge_guard.context_samples",
+    "filter_edge_guard.guard_samples",
     "kernel",
     "kernel.has_source_centers",
     "line_audit",
     "remove_bad_dets_window_sec",
 }
-RAW_POLICY_READS = {"run_kernel"}
+RAW_POLICY_READS = {"run_downsample", "run_extinction", "run_kernel"}
 
 
 def strip_non_code(text: str) -> str:
@@ -185,7 +187,8 @@ def main() -> int:
         "note": (
             "The named one-way adapter and legacy mirrors are compatibility "
             "boundaries, not external consumers. Numerical method calls may "
-            "remain on RTCProc. Raw policy reads, "
+            "remain on RTCProc. Temporary raw policy reads are limited to "
+            "typed/legacy shadow comparisons. Other raw policy reads, "
             "observation-state mutation, and output/realized state must move "
             "to explicit typed plans or metadata contracts. Polarimetry is a "
             "separate authority domain."
