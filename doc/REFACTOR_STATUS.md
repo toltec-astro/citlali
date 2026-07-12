@@ -441,6 +441,16 @@ The CLI build, all 291 C++ tests, all eight real config profiles, the complete
 169-path boundary audit, and the frozen 44-record execution-read census pass.
 Unity point, Beammap, and science cutover validation is the next gate; parser
 and mirror retirement is prohibited until it passes.
+The first Unity point cutover attempt at `475bf8e22` reached map output but
+failed because the production `RTCProc` no longer received the adjacent legacy
+polarimetry initialization. For an unpolarized run, that parser side effect
+creates the mandatory Stokes-I entry; without it, `stokes_params` was empty and
+map indexing read invalid state. A narrow legacy-polarimetry runtime adapter now
+copies only enablement, grouping, and Stokes labels from the temporary parser
+object. Polarimetry remains outside the raw authority claim. A focused
+regression test and the boundary audit require this transfer. The repaired
+candidate builds locally, all 292 C++ tests and all eight profiles pass, and
+full preflight has zero drift. Unity point cutover validation must be rerun.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

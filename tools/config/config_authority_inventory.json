@@ -45,7 +45,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "complete",
-      "exit_gate": "The bounded authority cutover is implemented locally: direct typed parsing initializes requested/effective state and the one-way RTC execution adapter. The frozen legacy parser and ten mirrors now populate only a temporary comparison oracle. Required provenance is accepted on Unity point redu38, Beammap redu17, and science redu29; flagged-sample and dynamic-notch counts remain explicitly unavailable. Validate the cutover on Unity point, Beammap, and science before retiring the oracle parser and mirrors."
+      "exit_gate": "The bounded authority cutover is implemented locally: direct typed parsing initializes requested/effective state and the one-way RTC execution adapter. The frozen legacy parser and ten raw mirrors now populate only a temporary comparison oracle; a narrow adjacent-domain adapter preserves legacy polarimetry enablement, grouping, and Stokes initialization without populating raw typed state. Required provenance is accepted on Unity point redu38, Beammap redu17, and science redu29; flagged-sample and dynamic-notch counts remain explicitly unavailable. Validate the repaired cutover on Unity point, Beammap, and science before retiring the oracle parser and mirrors."
     },
     {
       "id": "processed-timestream",

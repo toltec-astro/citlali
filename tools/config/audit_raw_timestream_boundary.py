@@ -52,6 +52,7 @@ LEGACY_PARSER_CALL = "read_processor_config"
 TYPED_REQUEST_READ_CALL = "read_raw_timestream_request_config"
 TYPED_AUTHORITY_INIT_CALL = "initialize_raw_timestream_authority"
 TYPED_AUTHORITY_COMPARE_CALL = "compare_raw_timestream_authority"
+POLARIMETRY_RUNTIME_ADAPTER_CALL = "adapt_legacy_polarimetry_runtime"
 LEGACY_TO_TYPED_MIRROR_CALLS = (
     "mirror_raw_despike_config",
     "mirror_raw_flagging_config",
@@ -210,6 +211,13 @@ def authority_boundary(source_text: str) -> dict[str, object]:
             rf"\b{re.escape(TYPED_AUTHORITY_COMPARE_CALL)}\s*\(", source_text
         )
     ]
+    polarimetry_adapter_positions = [
+        match.start()
+        for match in re.finditer(
+            rf"\b{re.escape(POLARIMETRY_RUNTIME_ADAPTER_CALL)}\s*\(",
+            source_text,
+        )
+    ]
     observed_mirrors = Counter(
         re.findall(r"\b(mirror_raw_[A-Za-z0-9_]+)\s*\(", source_text)
     )
@@ -248,10 +256,15 @@ def authority_boundary(source_text: str) -> dict[str, object]:
         and last_mirror >= first_mirror
         and len(authority_init_positions) == 1
         and len(authority_compare_positions) == 1
+        and len(polarimetry_adapter_positions) == 1
         and typed_read_positions[0] < parser_positions[0]
         and parser_positions[0] < first_mirror
         and last_mirror < authority_init_positions[0]
         and authority_init_positions[0] < authority_compare_positions[0]
+        and (
+            authority_compare_positions[0]
+            < polarimetry_adapter_positions[0]
+        )
     )
     exact = (
         len(parser_positions) == 1
@@ -268,6 +281,9 @@ def authority_boundary(source_text: str) -> dict[str, object]:
         "typed_authority_init_call_count": len(authority_init_positions),
         "typed_authority_compare_call_count": len(
             authority_compare_positions
+        ),
+        "polarimetry_runtime_adapter_call_count": len(
+            polarimetry_adapter_positions
         ),
         "legacy_to_typed_mirror_call_counts": dict(sorted(observed_mirrors.items())),
         "missing_mirror_calls": missing,
@@ -423,6 +439,7 @@ def main() -> int:
         f"typed_request_reads={boundary['typed_request_read_call_count']} "
         f"typed_authority_inits={boundary['typed_authority_init_call_count']} "
         f"typed_authority_compares={boundary['typed_authority_compare_call_count']} "
+        f"polarimetry_runtime_adapters={boundary['polarimetry_runtime_adapter_call_count']} "
         f"legacy_oracle_mirrors={len(boundary['legacy_to_typed_mirror_call_counts'])} "
         f"typed_reader_coverage={len(reader_covered)}/{len(raw_paths)} "
         f"serialized={len(serialized)}/{len(raw_paths)} "

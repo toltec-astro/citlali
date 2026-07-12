@@ -27,6 +27,10 @@ During cutover validation, a separate read-only oracle remains:
 
 `merged YAML -> temporary RTCProc parser -> temporary typed snapshot`
 
+The same temporary parser preserves the adjacent polarimetry runtime through a
+narrow adapter for enablement, grouping, and Stokes labels. This is not part of
+the raw authority claim and does not populate raw typed state.
+
 `RTCProc::get_config` contains 171 unique literal paths: 169 raw-timestream and
 two polarimetry paths. Its original 14 direct process exits have been replaced
 by propagated invalid-key diagnostics. `Engine::get_rtc_config` parses that
@@ -112,6 +116,14 @@ The CLI build, all 291 C++ tests, all eight real config profiles, and the frozen
 169-path reader/serializer/adapter and 44-record execution-read audits pass.
 Unity cutover validation is pending; the oracle parser and mirrors remain until
 that evidence is accepted.
+
+The first Unity point cutover attempt exposed one omitted adjacent-parser side
+effect: an unpolarized legacy parse creates the Stokes-I entry used by map
+indexing. The repaired candidate explicitly transfers only legacy polarimetry
+enablement, grouping, and Stokes labels from the temporary parser into the
+production RTC object. The boundary audit requires this transfer after raw
+authority parity, and a focused test proves it leaves raw state untouched. All
+292 C++ tests and full preflight pass locally; the point gate must be rerun.
 
 The per-observation production shadow was also wired. Input preparation records
 and compares native/effective sample rate, downsample factor, filter edge

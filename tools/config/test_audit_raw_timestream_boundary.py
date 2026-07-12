@@ -61,6 +61,9 @@ class RawTimestreamBoundaryAuditTest(unittest.TestCase):
         lines.append(
             "compare_raw_timestream_authority(oracle, rtcproc);"
         )
+        lines.append(
+            "adapt_legacy_polarimetry_runtime(legacy, rtcproc);"
+        )
         result = audit.authority_boundary("\n".join(lines))
 
         self.assertTrue(result["exact"])
@@ -110,9 +113,34 @@ class RawTimestreamBoundaryAuditTest(unittest.TestCase):
         lines.append(
             "compare_raw_timestream_authority(oracle, rtcproc);"
         )
+        lines.append(
+            "adapt_legacy_polarimetry_runtime(legacy, rtcproc);"
+        )
         misordered = audit.authority_boundary("\n".join(lines))
         self.assertFalse(misordered["exact"])
         self.assertFalse(misordered["authority_order_exact"])
+
+    def test_rejects_missing_polarimetry_runtime_adapter(self) -> None:
+        lines = [
+            "read_raw_timestream_request_config(config, request, diag);",
+            "read_processor_config(legacy, config);",
+        ]
+        lines.extend(
+            f"{name}(oracle, legacy);"
+            for name in audit.LEGACY_TO_TYPED_MIRROR_CALLS
+        )
+        lines.append(
+            "initialize_raw_timestream_authority(request, plan, typed, rtcproc);"
+        )
+        lines.append(
+            "compare_raw_timestream_authority(oracle, rtcproc);"
+        )
+
+        result = audit.authority_boundary("\n".join(lines))
+
+        self.assertFalse(result["exact"])
+        self.assertFalse(result["authority_order_exact"])
+        self.assertEqual(result["polarimetry_runtime_adapter_call_count"], 0)
 
     def test_typed_reader_coverage_accepts_parent_and_compatibility_alias(self) -> None:
         legacy_alias = next(iter(audit.COMPATIBILITY_ALIASES))

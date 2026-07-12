@@ -43,6 +43,7 @@
 #include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/timestream_output_provenance.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
+#include <citlali/core/pipeline/timestream_config_adapter_polarimetry.h>
 #include <citlali/core/pipeline/timestream_config_adapter_processed.h>
 #include <citlali/core/pipeline/timestream_config_adapter_raw.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
@@ -1490,6 +1491,40 @@ TEST(config_scaffold, mirrors_legacy_polarimetry_runtime_config) {
               citlali::config::PolarimetryGrouping::detector_location);
     EXPECT_EQ(config.hwpr_policy,
               citlali::config::PolarimetryHwprPolicy::automatic);
+}
+
+TEST(config_scaffold, preserves_adjacent_legacy_polarimetry_runtime) {
+    ensure_citlali_test_logger();
+    auto config = tula::config::YamlConfig::from_str(
+        citlali::citlali_default_config_content);
+    timestream::RTCProc legacy;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+    citlali::pipeline::read_processor_config(
+        legacy, config, diagnostics);
+    ASSERT_FALSE(diagnostics.has_errors());
+    ASSERT_FALSE(legacy.run_polarization);
+    ASSERT_EQ(
+        legacy.polarization.stokes_params,
+        (std::map<int, std::string>{{0, "I"}}));
+
+    timestream::RTCProc production;
+    production.run_polarization = true;
+    production.polarization.grouping = "fg";
+    production.polarization.stokes_params = {
+        {0, "I"}, {1, "Q"}, {2, "U"}};
+    production.filter.n_terms = 41;
+
+    citlali::pipeline::adapt_legacy_polarimetry_runtime(
+        legacy, production);
+
+    EXPECT_FALSE(production.run_polarization);
+    EXPECT_EQ(
+        production.polarization.grouping,
+        legacy.polarization.grouping);
+    EXPECT_EQ(
+        production.polarization.stokes_params,
+        (std::map<int, std::string>{{0, "I"}}));
+    EXPECT_EQ(production.filter.n_terms, 41);
 }
 
 TEST(config_scaffold, validates_beammap_source_fluxes) {

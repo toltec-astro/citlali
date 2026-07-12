@@ -9,6 +9,7 @@
 #include <citlali/core/pipeline/raw_timestream_shadow_parity.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_config_read.h>
+#include <citlali/core/pipeline/timestream_config_adapter_polarimetry.h>
 #include <citlali/core/pipeline/timestream_config_mirror.h>
 
 #include <stdexcept>
@@ -86,6 +87,9 @@ void Engine::get_rtc_config(CT &config) {
         throw std::runtime_error(
             "legacy raw RTC oracle diagnostics diverged from typed parsing");
     }
+
+    citlali::pipeline::adapt_legacy_polarimetry_runtime(
+        legacy_rtcproc, rtcproc);
 
     citlali::pipeline::configure_raw_tod_output_context(
         telescope, rtcproc,
