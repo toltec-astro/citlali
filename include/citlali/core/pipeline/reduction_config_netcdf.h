@@ -4,6 +4,7 @@
 
 #include <netcdf>
 
+#include <citlali/core/pipeline/raw_iir_filter_metadata.h>
 #include <citlali/core/pipeline/string_join.h>
 #include <citlali/core/utils/netcdf_io.h>
 

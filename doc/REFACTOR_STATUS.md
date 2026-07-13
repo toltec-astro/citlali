@@ -451,6 +451,18 @@ object. Polarimetry remains outside the raw authority claim. A focused
 regression test and the boundary audit require this transfer. The repaired
 candidate builds locally, all 292 C++ tests and all eight profiles pass, and
 full preflight has zero drift. Unity point cutover validation must be rerun.
+The repaired point run `redu40` completes with zero serious issues, all required
+provenance valid, and exact scientific products and complete timestream arrays
+against accepted `redu38`. The strict gate nevertheless rejects two metadata
+records: disabled `CONFIG.TODIIRHP.FREQ_HZ` changed from the established
+processor-effective sentinel `0.0` to the preserved inactive request `0.1` in
+the RTC and PTC NetCDF products. Raw provenance correctly retains the request
+and explicit disabled resolution, so the fix is a pure FITS/NetCDF metadata
+projection rather than a plan mutation or processor readback. Disabled IIR
+metadata now resolves to frequency `0.0`, order `1`, and zero-phase `false`;
+enabled values pass through. All 293 C++ tests and full preflight pass locally.
+One final point rerun is required before starting the expensive Beammap and
+science cutover gates.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

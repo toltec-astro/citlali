@@ -19,6 +19,7 @@
 #include <citlali/core/pipeline/output_layout.h>
 #include <citlali/core/pipeline/output_netcdf_metadata.h>
 #include <citlali/core/pipeline/phdu_reduction_config.h>
+#include <citlali/core/pipeline/raw_iir_filter_metadata.h>
 #include <citlali/core/pipeline/raw_timestream_authority.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/raw_timestream_execution_plan.h>
@@ -6525,6 +6526,32 @@ TEST(config_scaffold, raw_authority_preserves_disabled_request_values) {
     EXPECT_EQ(plan.effective.filter.n_terms, 73);
     EXPECT_EQ(effective.filter.n_terms, 73);
     EXPECT_EQ(effective.downsample.factor, 1);
+}
+
+TEST(config_scaffold, projects_effective_raw_iir_output_metadata) {
+    citlali::config::RawTimeChunkIirFilterConfig config;
+    config.enabled = false;
+    config.freq_Hz = 0.4;
+    config.order = 5;
+    config.zero_phase = true;
+
+    const auto disabled =
+        citlali::pipeline::raw_iir_filter_metadata(config);
+    EXPECT_FALSE(disabled.enabled);
+    EXPECT_DOUBLE_EQ(disabled.frequency_hz, 0.0);
+    EXPECT_EQ(disabled.order, 1);
+    EXPECT_FALSE(disabled.zero_phase);
+    EXPECT_DOUBLE_EQ(config.freq_Hz, 0.4);
+    EXPECT_EQ(config.order, 5);
+    EXPECT_TRUE(config.zero_phase);
+
+    config.enabled = true;
+    const auto enabled =
+        citlali::pipeline::raw_iir_filter_metadata(config);
+    EXPECT_TRUE(enabled.enabled);
+    EXPECT_DOUBLE_EQ(enabled.frequency_hz, 0.4);
+    EXPECT_EQ(enabled.order, 5);
+    EXPECT_TRUE(enabled.zero_phase);
 }
 
 TEST(config_scaffold,

@@ -125,6 +125,15 @@ production RTC object. The boundary audit requires this transfer after raw
 authority parity, and a focused test proves it leaves raw state untouched. All
 292 C++ tests and full preflight pass locally; the point gate must be rerun.
 
+That rerun (`redu40`) is scientifically exact against accepted `redu38`, has
+complete timestream comparison and valid provenance, and contains no serious
+log issues. Its strict gate exposed a metadata-only distinction: disabled IIR
+request values belong in raw provenance, while historical FITS/NetCDF
+`CONFIG.TODIIRHP.*` fields describe processor-effective state. A pure metadata
+projection now emits the established disabled sentinels without mutating the
+typed plan or reading processor state. Local builds, all 293 C++ tests, and full
+preflight pass; one final point rerun remains required.
+
 The per-observation production shadow was also wired. Input preparation records
 and compares native/effective sample rate, downsample factor, filter edge
 guard/context, and source-protection activity. Observation setup completes and

@@ -83,15 +83,13 @@ template <class RawTimeChunkConfig>
 void add_tod_filter_config_vars(netCDF::NcFile &fo,
                                 const RawTimeChunkConfig &config,
                                 bool run_any_tod_filter) {
+    const auto iir = raw_iir_filter_metadata(config.iir_filter);
     add_netcdf_var(fo, "CONFIG.TODFILTERED", run_any_tod_filter);
     add_netcdf_var(fo, "CONFIG.TODNOTCH", config.filter.notch.enabled);
-    add_netcdf_var(fo, "CONFIG.TODIIRHP", config.iir_filter.enabled);
-    add_netcdf_var(fo, "CONFIG.TODIIRHP.FREQ_HZ",
-                   config.iir_filter.freq_Hz);
-    add_netcdf_var(fo, "CONFIG.TODIIRHP.ORDER",
-                   config.iir_filter.order);
-    add_netcdf_var(fo, "CONFIG.TODIIRHP.ZEROPHASE",
-                   config.iir_filter.zero_phase);
+    add_netcdf_var(fo, "CONFIG.TODIIRHP", iir.enabled);
+    add_netcdf_var(fo, "CONFIG.TODIIRHP.FREQ_HZ", iir.frequency_hz);
+    add_netcdf_var(fo, "CONFIG.TODIIRHP.ORDER", iir.order);
+    add_netcdf_var(fo, "CONFIG.TODIIRHP.ZEROPHASE", iir.zero_phase);
 }
 
 template <class RawTimeChunkConfig>

@@ -104,19 +104,19 @@ void add_phdu_tod_filter_config(FitsEntry &fits_entry,
                                 const RawTimeChunkConfig &config,
                                 bool run_any_tod_filter) {
     auto &hdu = fits_entry.pfits->pHDU();
+    const auto iir = raw_iir_filter_metadata(config.iir_filter);
     hdu.addKey("CONFIG.TODFILTERED", run_any_tod_filter, "TOD Filtered");
     hdu.addKey("CONFIG.TODNOTCH", config.filter.notch.enabled,
                "TOD notch enabled");
-    hdu.addKey("CONFIG.TODIIRHP", config.iir_filter.enabled,
+    hdu.addKey("CONFIG.TODIIRHP", iir.enabled,
                "TOD IIR highpass enabled");
     add_phdu_double_key(fits_entry, array_name, logger,
                         "CONFIG.TODIIRHP.FREQ_HZ",
-                        config.iir_filter.freq_Hz,
+                        iir.frequency_hz,
                         "TOD IIR highpass cutoff frequency");
-    hdu.addKey("CONFIG.TODIIRHP.ORDER", config.iir_filter.order,
+    hdu.addKey("CONFIG.TODIIRHP.ORDER", iir.order,
                "TOD IIR highpass cascaded order");
-    hdu.addKey("CONFIG.TODIIRHP.ZEROPHASE",
-               config.iir_filter.zero_phase,
+    hdu.addKey("CONFIG.TODIIRHP.ZEROPHASE", iir.zero_phase,
                "TOD IIR highpass forward-backward");
 }
 
