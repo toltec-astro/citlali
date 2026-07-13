@@ -45,7 +45,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "complete",
-      "exit_gate": "The typed execution-authority cutover is accepted on Unity point redu42, Beammap redu18, and science redu33 with complete product comparisons, zero skipped records, valid required provenance, and zero serious issues. The 169-path legacy parser, ten raw reverse mirrors, and parity oracle are retired locally; the versioned manifest preserves the former 171-path surface and the audit rejects reintroduction. A narrow adjacent-domain compatibility reader and adapter preserve polarimetry enablement, grouping, and Stokes initialization without populating raw typed state. Flagged-sample and dynamic-notch counts remain explicitly unavailable. Unity point validation of parser retirement is pending."
+      "exit_gate": "Complete: the typed execution-authority cutover is accepted on Unity point redu42, Beammap redu18, and science redu33. The 169-path legacy parser, ten raw reverse mirrors, and parity oracle are retired, with Unity point redu43 validating exact complete products and no performance regression. The versioned manifest preserves the former 171-path surface and the audit rejects reintroduction. A narrow adjacent-domain compatibility reader and adapter preserve polarimetry enablement, grouping, and Stokes initialization without populating raw typed state. Flagged-sample and dynamic-notch counts remain explicitly unavailable."
     },
     {
       "id": "processed-timestream",

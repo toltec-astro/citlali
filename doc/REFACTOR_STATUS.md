@@ -21,7 +21,7 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest inspected point reduction: `redu42`, produced by `880869b3`.
+- Latest inspected point reduction: `redu43`, produced by `11afd6f6`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
@@ -493,7 +493,15 @@ context helper formerly hidden in the mirror umbrella now has its own named
 header. Fresh local CLI, primary-test, and safety-test builds pass all 285 C++
 tests; 12 focused raw-boundary audit tests, the unchanged 44-record execution
 census, all config profiles, full preflight, and the validation ledger pass.
-Unity point validation of this retirement candidate is the remaining gate.
+Unity point `redu43` at `11afd6f6` closes the retirement gate against accepted
+`redu42`. The merged 489-leaf config is exact, all 13 product families and
+complete RTC/PTC arrays are exact with zero changed or skipped records, all
+required provenance is valid, and raw, processed, and runtime sidecars are
+byte-identical. Output provenance differs only in the expected reduction-number
+file paths. The run has zero serious issues and completed in 54.182 seconds
+versus 54.412 seconds. The validation ledger records the acceptance. The raw-
+timestream authority migration, including legacy parser/oracle cleanup, is now
+complete; polarimetry remains a separate compatibility domain.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
