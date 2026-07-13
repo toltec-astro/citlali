@@ -541,7 +541,7 @@ every accepted good/bad signal, weight, and kernel map. Point, science, and
 Beammap runtimes are 55.341, 699.904, and 3483.362 seconds, respectively,
 versus 54.182, 704.234, and 3580.078 seconds for their baselines.
 
-Version-2 cardinality validation is partially accepted at `e8e42945`. Point
+Version-2 cardinality validation is accepted at `e8e42945`. Point
 `redu45` is exact against `redu44`: its 489-leaf merged config is unchanged,
 all 13 product families including complete RTC/PTC arrays compare exactly, the
 strict audit reports zero issues, and runtime is 56.176 seconds versus 55.341
@@ -550,8 +550,14 @@ seconds. Final science iteration `redu07` is accepted against `redu03`: its
 skips, the dedicated science-equivalence profile reports a maximum map RMS-
 relative difference of `6.23e-14`, and runtime is 709.597 seconds versus
 699.904 seconds. Both version-2 sidecars report complete, internally
-consistent observation/coadd cardinality. The matched Beammap result remains
-pending, so the cardinality gate and mapmaking domain are not yet closed.
+consistent observation/coadd cardinality. Beammap `redu01` is exact against
+`redu00`: its 529-leaf merged config is unchanged, all non-map ECSV/NetCDF
+products compare exactly, all 5,234 detector identities and flags are exact,
+and every accepted good/bad signal, weight, and kernel map has zero RMS
+difference. Its strict audit reports zero issues, 198 completed PTC chunks,
+and one completed 5,234-map observation with no coadd; runtime is 3449.262
+seconds versus 3483.362 seconds. The validation ledger records all three
+accepted runs. The mapmaking authority and provenance domain is complete.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
@@ -559,14 +565,12 @@ failures must fail the reduction. There are no best-effort enabled products.
 
 Immediate work order:
 
-1. Inspect the pending matched Beammap run against its accepted baseline;
-   point and science version-2 cardinality gates are accepted. OOF remains
-   owner-deferred.
-2. Accept the mapmaking authority domain only if all three runs have complete,
-   internally consistent cardinality and retain their existing numerical and
-   zero-unexpected-error acceptance profiles.
-3. Reassess Phase 2 domain priority using the authority inventory. Do not
-   broaden polarimetry without the pending scientific-policy decisions.
+1. Begin the bounded coadd authority domain: preserve the requested flag,
+   resolve effective activation without mutating it, and record realized coadd
+   output cardinality. Do not alter coaddition numerics.
+2. Validate coadd first with focused/local tests and point, then use science to
+   exercise enabled coadd output. OOF remains owner-deferred.
+3. Do not broaden polarimetry without the pending scientific-policy decisions.
 4. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
    the active domain gates close.
 
