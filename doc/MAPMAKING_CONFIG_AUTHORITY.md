@@ -23,9 +23,9 @@ No adapter writes back into typed request state.
   effective map unit resolves to the TOD type while the requested `cunit`
   remains unchanged.
 - `observations` contains one identified record per input in the final fruit-
-  loop iteration. Each record carries its input index, obsnum, map count,
-  effective pixel size, required logical map-write count, and successful output
-  completion state.
+  loop iteration. Each record carries its input index, positive numeric obsnum,
+  map count, effective pixel size, required logical map-write count, and
+  successful output completion state.
 - `coadd` is present only when coadd map output ran. It records the coadd map
   count, required logical map-write count, and successful output completion.
 - `realized` records successful reduction completion, whether mapmaking ran,

@@ -4,8 +4,11 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <charconv>
 #include <optional>
+#include <stdexcept>
 #include <string>
+#include <system_error>
 
 namespace citlali::pipeline {
 
@@ -83,11 +86,24 @@ YAML::Node mapmaking_optional_value_node(
     return node;
 }
 
+inline unsigned long long mapmaking_observation_number(
+    const std::string &obsnum) {
+    unsigned long long value = 0;
+    const auto result = std::from_chars(
+        obsnum.data(), obsnum.data() + obsnum.size(), value);
+    if (result.ec != std::errc{} ||
+        result.ptr != obsnum.data() + obsnum.size() || value == 0) {
+        throw std::logic_error(
+            "mapmaking obsnum must be a positive integer");
+    }
+    return value;
+}
+
 inline YAML::Node mapmaking_observation_state_node(
     const MapmakingObservationState &observation) {
     YAML::Node node;
     node["observation_index"] = observation.observation_index;
-    node["obsnum"] = observation.obsnum;
+    node["obsnum"] = mapmaking_observation_number(observation.obsnum);
     node["map_count"] = observation.map_count;
     node["effective_pixel_size_rad"] =
         observation.effective_pixel_size_rad;

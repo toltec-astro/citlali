@@ -21,7 +21,7 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest inspected point reduction: `redu44`, produced by `5c8f5eb4`.
+- Latest inspected point reduction: `redu45`, produced by `e8e42945`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
@@ -32,7 +32,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 304 tests with none skipped or disabled; all
+- CTest discovers and passes all 305 tests with none skipped or disabled; all
   32 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
@@ -523,7 +523,7 @@ counts. The audit accepts historical version-1 sidecars but applies strict
 cardinality semantics to version 2. The boundary preflight freezes the
 22-path digest, enforces 22/22 reader
 coverage, rejects retired parser symbols, and checks the production authority
-sequence and provenance writer. Local CLI/test/safety builds, all 304 C++
+sequence and provenance writer. Local CLI/test/safety builds, all 305 C++
 tests, all eight config profiles, and the full preflight pass. A strict point
 run is required first to validate the lifecycle wiring and new sidecar;
 Beammap and science runs then validate their mode-specific output cardinality.
@@ -541,15 +541,27 @@ every accepted good/bad signal, weight, and kernel map. Point, science, and
 Beammap runtimes are 55.341, 699.904, and 3483.362 seconds, respectively,
 versus 54.182, 704.234, and 3580.078 seconds for their baselines.
 
+Version-2 cardinality validation is partially accepted at `e8e42945`. Point
+`redu45` is exact against `redu44`: its 489-leaf merged config is unchanged,
+all 13 product families including complete RTC/PTC arrays compare exactly, the
+strict audit reports zero issues, and runtime is 56.176 seconds versus 55.341
+seconds. Final science iteration `redu07` is accepted against `redu03`: its
+502-leaf merged config is unchanged, all 27 products are present with no
+skips, the dedicated science-equivalence profile reports a maximum map RMS-
+relative difference of `6.23e-14`, and runtime is 709.597 seconds versus
+699.904 seconds. Both version-2 sidecars report complete, internally
+consistent observation/coadd cardinality. The matched Beammap result remains
+pending, so the cardinality gate and mapmaking domain are not yet closed.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.
 
 Immediate work order:
 
-1. Re-run the point gate against version-2 mapmaking provenance, then matched
-   Beammap and science gates because cardinality wiring surrounds their mode-
-   specific output lifecycle; OOF remains owner-deferred.
+1. Inspect the pending matched Beammap run against its accepted baseline;
+   point and science version-2 cardinality gates are accepted. OOF remains
+   owner-deferred.
 2. Accept the mapmaking authority domain only if all three runs have complete,
    internally consistent cardinality and retain their existing numerical and
    zero-unexpected-error acceptance profiles.

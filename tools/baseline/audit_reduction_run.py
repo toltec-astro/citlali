@@ -548,6 +548,17 @@ def valid_map_product_cardinality(record: Any) -> bool:
     )
 
 
+def normalized_mapmaking_obsnum(value: Any) -> str | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return str(value) if value > 0 else None
+    if isinstance(value, str) and value.isdigit():
+        numeric = int(value)
+        return str(numeric) if numeric > 0 else None
+    return None
+
+
 def mapmaking_cardinality_semantic_errors(
     data: dict[str, Any],
 ) -> list[str]:
@@ -571,8 +582,8 @@ def mapmaking_cardinality_semantic_errors(
                 errors.append(
                     f"mapmaking observation {expected_index} has inconsistent index"
                 )
-            obsnum = observation.get("obsnum")
-            if not isinstance(obsnum, str) or not obsnum:
+            obsnum = normalized_mapmaking_obsnum(observation.get("obsnum"))
+            if obsnum is None:
                 errors.append(
                     f"mapmaking observation {expected_index} has invalid obsnum"
                 )

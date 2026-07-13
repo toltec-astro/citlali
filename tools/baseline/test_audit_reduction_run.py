@@ -193,7 +193,7 @@ def valid_mapmaking_document() -> dict:
         "observations": [
             {
                 "observation_index": 0,
-                "obsnum": "152389",
+                "obsnum": 152389,
                 "map_count": 3,
                 "effective_pixel_size_rad": 9.696273622e-6,
                 "required_map_write_count": 3,
@@ -201,7 +201,7 @@ def valid_mapmaking_document() -> dict:
             },
             {
                 "observation_index": 1,
-                "obsnum": "152390",
+                "obsnum": 152390,
                 "map_count": 3,
                 "effective_pixel_size_rad": 9.696273622e-6,
                 "required_map_write_count": 3,
@@ -344,6 +344,23 @@ class ProvenanceAuditTest(unittest.TestCase):
                 "completed observation count does not match observations",
                 mapmaking["files"][0]["semantic_errors"],
             )
+
+    def test_accepts_digit_string_mapmaking_obsnums(self) -> None:
+        document = valid_mapmaking_document()
+        document["observations"][0]["obsnum"] = "00152389"
+
+        self.assertEqual(
+            audit.mapmaking_cardinality_semantic_errors(document), []
+        )
+
+    def test_rejects_duplicate_mapmaking_numeric_identity(self) -> None:
+        document = valid_mapmaking_document()
+        document["observations"][1]["obsnum"] = "0152389"
+
+        self.assertIn(
+            "duplicate mapmaking obsnum: 152389",
+            audit.mapmaking_cardinality_semantic_errors(document),
+        )
 
     def test_accepts_raw_provenance_for_every_observation(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

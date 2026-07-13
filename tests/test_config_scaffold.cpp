@@ -1620,8 +1620,7 @@ TEST(config_scaffold, serializes_versioned_mapmaking_provenance) {
     EXPECT_EQ(node["observations"][0]["observation_index"]
                   .as<std::size_t>(),
               0U);
-    EXPECT_EQ(node["observations"][0]["obsnum"].as<std::string>(),
-              "148670");
+    EXPECT_EQ(node["observations"][0]["obsnum"].as<int>(), 148670);
     EXPECT_EQ(node["observations"][0]["map_count"].as<std::size_t>(),
               5234U);
     EXPECT_EQ(node["observations"][0]["required_map_write_count"]
@@ -1660,6 +1659,16 @@ TEST(config_scaffold, resets_mapmaking_cardinality_per_iteration) {
     ASSERT_TRUE(plan.realized.completed_coadd_count.has_value());
     EXPECT_EQ(*plan.realized.completed_observation_count, 0U);
     EXPECT_EQ(*plan.realized.completed_coadd_count, 0U);
+}
+
+TEST(config_scaffold, serializes_zero_padded_obsnum_as_numeric_identity) {
+    citlali::pipeline::MapmakingObservationState observation{
+        0, "000042", 3, 4.848136811e-6, 3, true};
+
+    const auto node =
+        citlali::pipeline::mapmaking_observation_state_node(observation);
+
+    EXPECT_EQ(node["obsnum"].as<int>(), 42);
 }
 
 TEST(config_scaffold, rejects_incomplete_mapmaking_cardinality) {
