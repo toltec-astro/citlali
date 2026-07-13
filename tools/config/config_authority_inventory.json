@@ -81,7 +81,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Local authority mechanics complete: all 22 frozen paths have direct typed readers and versioned provenance, processor and map-buffer YAML parsers are retired, and execution consumes the immutable effective plan. Close with strict Unity point WCS/provenance validation, Beammap and science JINC validation, and explicit realized observation/product cardinality."
+      "exit_gate": "Authority accepted on Unity at 5c8f5eb4: point redu44, final science redu03, and Beammap redu00 have exact merged configs, zero serious issues, valid versioned provenance, complete products, and accepted performance. Point products including TOD are exact; science passes the scale-aware profile; all 5,234 Beammap detector results are exact. Close the remaining partial-provenance gate by publishing explicit realized observation and product cardinality."
     },
     {
       "id": "noise-products",

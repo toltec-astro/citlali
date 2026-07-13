@@ -21,7 +21,7 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest inspected point reduction: `redu43`, produced by `11afd6f6`.
+- Latest inspected point reduction: `redu44`, produced by `5c8f5eb4`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
@@ -503,8 +503,8 @@ versus 54.412 seconds. The validation ledger records the acceptance. The raw-
 timestream authority migration, including legacy parser/oracle cleanup, is now
 complete; polarimetry remains a separate compatibility domain.
 
-The mapmaking authority migration is locally complete and awaiting Unity mode
-gates. All 22 frozen `mapmaking.*` leaves now enter typed request state through
+The mapmaking authority migration has passed its first Unity mode gates. All
+22 frozen `mapmaking.*` leaves now enter typed request state through
 one boundary. `MapBuffer`, JINC, maximum-likelihood, observation-map, and
 coadd-map configuration no longer parse YAML. One-way adapters construct the
 legacy numerical mapmakers and WCS buffers from typed state. The immutable
@@ -521,7 +521,18 @@ tests, all eight config profiles, and the full preflight pass. A strict point
 run is required first to validate WCS construction and the new sidecar;
 Beammap and science runs then validate the JINC adapter. Realized per-
 observation and product cardinality remain explicitly unavailable and are the
-last mapmaking provenance sub-gate.
+last mapmaking provenance sub-gate. Unity point `redu44`, final science
+iteration `redu03`, and Beammap `redu00` all embed `5c8f5eb4`; their merged
+configs are exact against accepted `redu43`, `redu33`, and `redu18`
+respectively. All three runs have zero serious log issues and valid mapmaking,
+raw, processed, output, and runtime provenance. Point has 13 exact complete
+product families including RTC/PTC TOD. Science has all 27 products with zero
+skips and passes the scientific-equivalence profile; its largest map
+RMS-relative difference is `5.87e-14`. Beammap has exact non-map products,
+exact identity and flags for all 5,234 detectors, and zero RMS difference in
+every accepted good/bad signal, weight, and kernel map. Point, science, and
+Beammap runtimes are 55.341, 699.904, and 3483.362 seconds, respectively,
+versus 54.182, 704.234, and 3580.078 seconds for their baselines.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
@@ -529,15 +540,14 @@ failures must fail the reduction. There are no best-effort enabled products.
 
 Immediate work order:
 
-1. Build on Unity and run the standard point gate for the mapmaking authority
-   cutover, including strict products, zero errors, and the new sidecar.
-2. Run matched Beammap and science gates to exercise typed JINC parsing and
-   one-way adaptation; OOF remains owner-deferred.
-3. Populate and validate realized mapmaking observation/product cardinality
+1. Populate and validate realized mapmaking observation/product cardinality
    without moving numerical algorithms.
-4. Reassess Phase 2 domain priority using the authority inventory. Do not
+2. Re-run the point gate first, then matched Beammap and science gates if the
+   cardinality wiring touches their mode-specific output lifecycle; OOF remains
+   owner-deferred.
+3. Reassess Phase 2 domain priority using the authority inventory. Do not
    broaden polarimetry without the pending scientific-policy decisions.
-5. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
+4. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
    the active domain gates close.
 
 ### Phase 1 Progress
