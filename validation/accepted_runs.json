@@ -4223,6 +4223,102 @@
         "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained.",
         "Flagged-sample and dynamic-notch realized counts remain explicitly unavailable pending migration of their natural execution owners."
       ]
+    },
+    {
+      "record_id": "point-152389-refactor-c2e053b3-redu46",
+      "recorded_date": "2026-07-13",
+      "mode": "point",
+      "status": "accepted",
+      "candidate": {
+        "label": "refactor",
+        "branch": "codex/structural-refactor",
+        "citlali_sha": "c2e053b3",
+        "citlali_version": "v4.0.0-3450-gc2e053b3",
+        "dirty": false,
+        "dependencies": {"kids_sha": "04088da", "tula_sha": "f30f81d"},
+        "build": {"host": "unity", "compiler": null, "build_type": "Release", "cmake_flags": null}
+      },
+      "baseline": {
+        "label": "refactor",
+        "citlali_sha": "e8e42945",
+        "citlali_version": "v4.0.0-3447-ge8e42945",
+        "dependencies": {"kids_sha": "04088da", "tula_sha": "f30f81d"},
+        "reduction_id": "redu45"
+      },
+      "config": {
+        "ordered_sources": [{
+          "role": "merged_low_level_citlali_input",
+          "path": "citlali_o152389_0_2_c1.yaml",
+          "precedence": 0,
+          "sha256": "4c76ddfc77a3151f1515ba022120d74a4a113735fc3847e3ec897203f7eb5477"
+        }],
+        "overlay_sources_retained": false,
+        "canonical_merged_sha256": "4c76ddfc77a3151f1515ba022120d74a4a113735fc3847e3ec897203f7eb5477",
+        "requested_sha256": null,
+        "effective_sha256": null,
+        "realized_sha256": null,
+        "runtime_provenance": {"path": "runtime_provenance.yaml", "schema_version": "citlali-runtime-provenance-v1", "sha256": "e0bed303c45f268557cf468bbf399f8b777538b8e1a826522555c3823a8dedda"},
+        "timestream_output_provenance": {"path": "152389/timestream_output_provenance.yaml", "schema_version": "citlali-timestream-output-provenance-v1", "sha256": "342180630c743093d87863d2fc04ae59a5ef039e2fce2c1cfabbeb5dc2ffc6cb"},
+        "processed_timestream_provenance": {"path": "processed_timestream_provenance.yaml", "schema_version": "citlali-processed-timestream-provenance-v1", "sha256": "0bac5bc40ee1c14008e79f678e25106db667d2de0fd75ccddc1a45bc3364ee37"},
+        "raw_timestream_provenance": {
+          "path": "152389/raw_timestream_provenance.yaml",
+          "schema_version": "citlali-raw-timestream-provenance-v1",
+          "sha256": "f641a72b923e6d0d530fbafa909cc2ee435af46234edbf58b63ef0648a75d9f7",
+          "semantic_audit": {"observation_coverage_ok": true, "execution_completed": true, "completed_scan_count": 12, "required_timestream_write_count": 48}
+        },
+        "mapmaking_provenance": {
+          "path": "mapmaking_provenance.yaml",
+          "schema_version": "citlali-mapmaking-provenance-v2",
+          "sha256": "cf0b54f512e562bf4496d54e65dfaa3d46f692dba21fc1619b196b0ca5919618",
+          "semantic_audit": {"requested_grouping": "auto", "effective_grouping": "array", "method": "jinc", "reduction_completed": true, "mapmaking_executed": true, "observation_count": 1, "map_count_each": 3, "required_map_write_count_each": 3, "coadd_available": false, "completed_observation_count": 1, "completed_coadd_count": 0}
+        },
+        "coadd_provenance": {
+          "path": "coadd_provenance.yaml",
+          "schema_version": "citlali-coadd-provenance-v1",
+          "sha256": "65f1741458eacd42c5c1b4225a101eb2be9acac8e5b2da03d7bd255a7e121a7f",
+          "semantic_audit": {"requested_enabled": false, "mapmaking_enabled": true, "effective_enabled": false, "coadd_executed": false, "cardinality_available": false, "reduction_completed": true}
+        }
+      },
+      "dataset": {"obsnum": "152389", "identity": "TolTEC commissioning pointing observation 152389", "content_hash": null},
+      "invocation": {
+        "command": null,
+        "launcher": "tolteca reduce",
+        "runtime_policy": {"n_threads": 6, "parallel_policy": "omp", "kids_solver_parallel_policy": "seq"},
+        "exit_code": 0
+      },
+      "audit": {
+        "finished": true,
+        "serious_log_counts": {},
+        "file_count": 39,
+        "comparable_product_count": 15,
+        "stable_comparable_product_count": 14,
+        "stable_product_counts_by_kind": {"csv": 1, "ecsv": 2, "fits": 3, "netcdf": 8},
+        "required_product_inventory_matches": "point-152389-refactor-e8e42945-redu45 plus required coadd_provenance.yaml"
+      },
+      "comparison": {
+        "tool": "tools/baseline/compare_reduction_products.py",
+        "tool_sha": "c2ec8ae5d",
+        "options": ["--mode", "point", "--strict", "--include-timestream", "--max-array-elements", "0", "--atol", "0", "--rtol", "0", "--exclude", "citlali_profile.ecsv"],
+        "volatile_allowlist": ["citlali_profile.ecsv", "reduction-number paths in timestream_output_provenance.yaml"],
+        "tolerances": {"atol": 0.0, "rtol": 0.0, "fraction_floor": 1e-12},
+        "common_products": 13,
+        "skipped_records": 0,
+        "changed_records": 0,
+        "scientific_products_exact": true,
+        "verdict": "accepted_exact"
+      },
+      "accepted_differences": [],
+      "performance": {"wall_time_log_seconds": 53.804, "observation_pipeline_seconds": null, "map_output_seconds": null, "peak_rss_kb": null, "baseline_wall_time_log_seconds": 56.176},
+      "artifacts": {
+        "candidate_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu46",
+        "candidate_unity_path": "/work/toltec/commissioning2025-test/2026-refactor/point/refactor/reduced/redu46",
+        "baseline_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu45"
+      },
+      "limitations": [
+        "The original ordered TolTECA NN*.yaml overlay files and their hashes were not retained in the reduction directory.",
+        "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained.",
+        "Flagged-sample and dynamic-notch realized counts remain explicitly unavailable pending migration of their natural execution owners."
+      ]
     }
   ]
 }

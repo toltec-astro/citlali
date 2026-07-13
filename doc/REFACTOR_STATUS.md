@@ -21,7 +21,7 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest inspected point reduction: `redu45`, produced by `e8e42945`.
+- Latest inspected point reduction: `redu46`, produced by `c2e053b3`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
@@ -569,8 +569,15 @@ is a one-way snapshot of the already validated mapmaking coadd lifecycle, and
 the reduction audit rejects disagreement between the two sidecars. The legacy
 coadd reader and reverse mutation helper are removed. Local CLI/test builds,
 all 314 C++ tests, all 38 focused config tests, 24 reduction-audit tests, all
-eight config profiles, full preflight, and the 31-record validation ledger
-pass. Unity point and science gates remain open.
+eight config profiles and full preflight pass. Unity point `redu46` at
+`c2e053b3` closes the disabled-coadd gate against accepted `redu45`: all 489
+config leaves and all 13 complete scientific product families, including RTC
+and PTC timestream arrays, are exact with zero skipped records or serious log
+issues. The new coadd sidecar records requested/effective disabled activation,
+no execution or cardinality, and agrees with the unchanged mapmaking sidecar.
+All prior provenance is byte-identical except the expected reduction-number
+TOD paths. Runtime is 53.804 seconds versus 56.176 seconds. The 32-record
+validation ledger passes; only the enabled-coadd science gate remains open.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
@@ -578,10 +585,9 @@ failures must fail the reduction. There are no best-effort enabled products.
 
 Immediate work order:
 
-1. Validate the local coadd checkpoint with Unity point to exercise the
-   disabled/no-output path and required sidecar.
-2. Validate science to exercise enabled coadd output and the cross-checked
-   realized cardinality. Accept and ledger the domain only after both gates.
+1. Validate science to exercise enabled coadd output and the cross-checked
+   realized cardinality. Accept and ledger the domain after this final gate.
+2. Keep the accepted point `redu46` as the disabled/no-output coadd baseline.
 3. Do not broaden polarimetry without the pending scientific-policy decisions.
 4. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
    the active domain gates close.
