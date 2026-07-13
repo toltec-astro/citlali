@@ -27,7 +27,7 @@ EXPECTED_PATH_COUNT = 22
 EXPECTED_PATH_SHA256 = (
     "fe72da6e9e0b6af1d63ad0cc465a0d00950332899d7938559276c0d873a54460"
 )
-EXPECTED_PROVENANCE_SCHEMA = "citlali-mapmaking-provenance-v1"
+EXPECTED_PROVENANCE_SCHEMA = "citlali-mapmaking-provenance-v2"
 
 CORE_PATHS = {
     "mapmaking.enabled",

@@ -81,7 +81,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Authority accepted on Unity at 5c8f5eb4: point redu44, final science redu03, and Beammap redu00 have exact merged configs, zero serious issues, valid versioned provenance, complete products, and accepted performance. Point products including TOD are exact; science passes the scale-aware profile; all 5,234 Beammap detector results are exact. Close the remaining partial-provenance gate by publishing explicit realized observation and product cardinality."
+      "exit_gate": "Authority accepted on Unity at 5c8f5eb4: point redu44, final science redu03, and Beammap redu00 have exact merged configs, zero serious issues, valid versioned provenance, complete products, and accepted performance. Version-2 provenance now publishes final-iteration observation identity, map count, effective pixel size, required logical map-product counts, optional coadd state, and realized completion cardinality; local CLI/test/safety builds and strict audit tests pass. Close the remaining partial-provenance gate with matched point, Beammap, and science Unity validation of the version-2 lifecycle wiring."
     },
     {
       "id": "noise-products",

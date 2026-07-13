@@ -2,6 +2,7 @@
 
 #include <citlali/core/pipeline/observation_buffer_allocation.h>
 #include <citlali/core/pipeline/observation_map_access.h>
+#include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
 
 #include <cstddef>
 
@@ -21,6 +22,7 @@ void allocate_observation_map_buffers_if_needed(
         todproc, observation_map_extent_at(map_extents, observation_index),
         observation_map_coord_at(map_coords, observation_index),
         logger);
+    begin_mapmaking_observation_if_available(engine, observation_index);
 }
 
 template <class TodProc, class MapExtents, class MapCoords, class Logger>

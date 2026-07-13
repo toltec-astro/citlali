@@ -174,7 +174,7 @@ def valid_mapmaking_document() -> dict:
         "cunit": "mJy/beam",
     }
     return {
-        "schema_version": "citlali-mapmaking-provenance-v1",
+        "schema_version": "citlali-mapmaking-provenance-v2",
         "initialized": True,
         "requested": requested,
         "effective": {
@@ -190,14 +190,50 @@ def valid_mapmaking_document() -> dict:
                 "uncalibrated_unit_substituted": False,
             },
         },
-        "observation": {"available": False},
+        "observations": [
+            {
+                "observation_index": 0,
+                "obsnum": "152389",
+                "map_count": 3,
+                "effective_pixel_size_rad": 9.696273622e-6,
+                "required_map_write_count": 3,
+                "outputs_completed": True,
+            },
+            {
+                "observation_index": 1,
+                "obsnum": "152390",
+                "map_count": 3,
+                "effective_pixel_size_rad": 9.696273622e-6,
+                "required_map_write_count": 3,
+                "outputs_completed": True,
+            },
+        ],
+        "coadd": {
+            "available": True,
+            "map_count": 3,
+            "required_map_write_count": 6,
+            "outputs_completed": True,
+        },
         "realized": {
             "reduction_completed": True,
             "mapmaking_executed": True,
-            "completed_observation_count": {"available": False},
-            "completed_coadd_count": {"available": False},
+            "completed_observation_count": {"available": True, "value": 2},
+            "completed_coadd_count": {"available": True, "value": 1},
         },
     }
+
+
+def valid_mapmaking_v1_document() -> dict:
+    document = valid_mapmaking_document()
+    document["schema_version"] = "citlali-mapmaking-provenance-v1"
+    document["observation"] = {"available": False}
+    document.pop("observations")
+    document.pop("coadd")
+    document["realized"]["completed_observation_count"] = {
+        "available": False
+    }
+    document["realized"]["completed_coadd_count"] = {"available": False}
+    return document
 
 
 class ProvenanceAuditTest(unittest.TestCase):
@@ -217,6 +253,26 @@ class ProvenanceAuditTest(unittest.TestCase):
             self.assertTrue(mapmaking["required"])
             self.assertTrue(mapmaking["valid"])
             self.assertEqual(len(mapmaking["sha256"]), 64)
+
+    def test_accepts_historical_mapmaking_v1_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "mapmaking_provenance.yaml").write_text(
+                yaml.safe_dump(
+                    valid_mapmaking_v1_document(), sort_keys=False
+                ),
+                encoding="utf-8",
+            )
+
+            mapmaking = audit.audit_provenance_sidecars(
+                redu, require_mapmaking=True
+            )["mapmaking"]
+
+            self.assertTrue(mapmaking["valid"])
+            self.assertEqual(
+                mapmaking["schema_version"],
+                "citlali-mapmaking-provenance-v1",
+            )
 
     def test_rejects_missing_required_mapmaking_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -267,6 +323,26 @@ class ProvenanceAuditTest(unittest.TestCase):
             self.assertEqual(
                 mapmaking["files"][0]["semantic_errors"],
                 ["mapmaking reduction is not complete"],
+            )
+
+    def test_rejects_inconsistent_mapmaking_cardinality(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            document = valid_mapmaking_document()
+            document["realized"]["completed_observation_count"]["value"] = 1
+            (redu / "mapmaking_provenance.yaml").write_text(
+                yaml.safe_dump(document, sort_keys=False),
+                encoding="utf-8",
+            )
+
+            mapmaking = audit.audit_provenance_sidecars(
+                redu, require_mapmaking=True
+            )["mapmaking"]
+
+            self.assertFalse(mapmaking["valid"])
+            self.assertIn(
+                "completed observation count does not match observations",
+                mapmaking["files"][0]["semantic_errors"],
             )
 
     def test_accepts_raw_provenance_for_every_observation(self) -> None:

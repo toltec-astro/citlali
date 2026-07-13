@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/filtered_observation_outputs.h>
+#include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
 #include <citlali/core/pipeline/observation_coadd_accumulation.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/raw_observation_outputs.h>
@@ -43,6 +44,7 @@ void write_observation_outputs_and_accumulate(TodProc &todproc,
         write_noncoadded_observation_outputs<FilteredObsMap, FitMaps>(
             todproc, logger);
     }
+    complete_mapmaking_observation_if_available(engine);
 }
 
 }  // namespace citlali::pipeline

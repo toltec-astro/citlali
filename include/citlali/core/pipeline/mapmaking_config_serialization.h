@@ -84,20 +84,39 @@ YAML::Node mapmaking_optional_value_node(
 }
 
 inline YAML::Node mapmaking_observation_state_node(
-    const std::optional<MapmakingObservationState> &observation) {
+    const MapmakingObservationState &observation) {
     YAML::Node node;
-    node["available"] = observation.has_value();
-    if (!observation) {
+    node["observation_index"] = observation.observation_index;
+    node["obsnum"] = observation.obsnum;
+    node["map_count"] = observation.map_count;
+    node["effective_pixel_size_rad"] =
+        observation.effective_pixel_size_rad;
+    node["required_map_write_count"] =
+        observation.required_map_write_count;
+    node["outputs_completed"] = observation.outputs_completed;
+    return node;
+}
+
+inline YAML::Node mapmaking_observations_node(
+    const std::vector<MapmakingObservationState> &observations) {
+    YAML::Node node(YAML::NodeType::Sequence);
+    for (const auto &observation : observations) {
+        node.push_back(mapmaking_observation_state_node(observation));
+    }
+    return node;
+}
+
+inline YAML::Node mapmaking_coadd_state_node(
+    const std::optional<MapmakingCoaddState> &coadd) {
+    YAML::Node node;
+    node["available"] = coadd.has_value();
+    if (!coadd) {
         return node;
     }
-    node["map_count"] =
-        mapmaking_optional_value_node(observation->map_count);
-    node["effective_pixel_size_rad"] =
-        mapmaking_optional_value_node(
-            observation->effective_pixel_size_rad);
+    node["map_count"] = coadd->map_count;
     node["required_map_write_count"] =
-        mapmaking_optional_value_node(
-            observation->required_map_write_count);
+        coadd->required_map_write_count;
+    node["outputs_completed"] = coadd->outputs_completed;
     return node;
 }
 

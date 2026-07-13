@@ -32,7 +32,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 297 tests with none skipped or disabled; all
+- CTest discovers and passes all 304 tests with none skipped or disabled; all
   32 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
@@ -513,15 +513,22 @@ effective grouping to downstream accessors; the transitional root request is
 no longer mutated by map-count setup. Successful reductions must atomically
 publish versioned `mapmaking_provenance.yaml`, and write failures propagate.
 The effective plan also records the uncalibrated TOD-type unit substitution
-without changing the requested `cunit`. The boundary preflight freezes the
+without changing the requested `cunit`. Version-2 provenance now records one
+identified observation per input in the final fruit-loop iteration, each
+observation's map count, effective pixel size, required logical map-product
+count, optional coadd cardinality, and completion state. Lifecycle counters
+reset between fruit-loop iterations and advance only after required output
+stages return successfully; CLI completion rejects incomplete or inconsistent
+counts. The audit accepts historical version-1 sidecars but applies strict
+cardinality semantics to version 2. The boundary preflight freezes the
 22-path digest, enforces 22/22 reader
 coverage, rejects retired parser symbols, and checks the production authority
-sequence and provenance writer. Local CLI/test/safety builds, all 297 C++
+sequence and provenance writer. Local CLI/test/safety builds, all 304 C++
 tests, all eight config profiles, and the full preflight pass. A strict point
-run is required first to validate WCS construction and the new sidecar;
-Beammap and science runs then validate the JINC adapter. Realized per-
-observation and product cardinality remain explicitly unavailable and are the
-last mapmaking provenance sub-gate. Unity point `redu44`, final science
+run is required first to validate the lifecycle wiring and new sidecar;
+Beammap and science runs then validate their mode-specific output cardinality.
+This Unity validation is the last mapmaking provenance sub-gate. Unity point
+`redu44`, final science
 iteration `redu03`, and Beammap `redu00` all embed `5c8f5eb4`; their merged
 configs are exact against accepted `redu43`, `redu33`, and `redu18`
 respectively. All three runs have zero serious log issues and valid mapmaking,
@@ -540,11 +547,12 @@ failures must fail the reduction. There are no best-effort enabled products.
 
 Immediate work order:
 
-1. Populate and validate realized mapmaking observation/product cardinality
-   without moving numerical algorithms.
-2. Re-run the point gate first, then matched Beammap and science gates if the
-   cardinality wiring touches their mode-specific output lifecycle; OOF remains
-   owner-deferred.
+1. Re-run the point gate against version-2 mapmaking provenance, then matched
+   Beammap and science gates because cardinality wiring surrounds their mode-
+   specific output lifecycle; OOF remains owner-deferred.
+2. Accept the mapmaking authority domain only if all three runs have complete,
+   internally consistent cardinality and retain their existing numerical and
+   zero-unexpected-error acceptance profiles.
 3. Reassess Phase 2 domain priority using the authority inventory. Do not
    broaden polarimetry without the pending scientific-policy decisions.
 4. Keep compact-config rollout and Phase 3 compiled-boundary work paused until

@@ -5,6 +5,7 @@
 #include <citlali/core/pipeline/iteration_buffers.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/iteration_output_layout.h>
+#include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
 
 namespace citlali::pipeline {
 
@@ -15,6 +16,7 @@ void begin_reduction_iteration(TodProc &todproc,
     auto &engine = todproc.engine();
 
     begin_fruit_loop_iteration(engine, logger);
+    begin_mapmaking_iteration_if_available(engine);
     prepare_iteration_output_layout_if_needed(todproc, config_filepaths,
                                               logger);
     prepare_iteration_observation_buffers(todproc, logger);

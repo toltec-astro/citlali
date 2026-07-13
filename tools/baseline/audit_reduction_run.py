@@ -47,16 +47,32 @@ PROVENANCE_SIDECARS = {
     },
     "mapmaking": {
         "filename": "mapmaking_provenance.yaml",
-        "schema_version": "citlali-mapmaking-provenance-v1",
+        "schema_version": "citlali-mapmaking-provenance-v2",
+        "accepted_schema_versions": (
+            "citlali-mapmaking-provenance-v1",
+            "citlali-mapmaking-provenance-v2",
+        ),
         "required_paths": (
             ("initialized",),
             ("requested",),
             ("effective", "config"),
             ("effective", "resolution"),
-            ("observation",),
+            ("observations",),
+            ("coadd",),
             ("realized", "reduction_completed"),
             ("realized", "mapmaking_executed"),
         ),
+        "required_paths_by_schema": {
+            "citlali-mapmaking-provenance-v1": (
+                ("initialized",),
+                ("requested",),
+                ("effective", "config"),
+                ("effective", "resolution"),
+                ("observation",),
+                ("realized", "reduction_completed"),
+                ("realized", "mapmaking_executed"),
+            ),
+        },
         "allow_multiple": False,
     },
     "timestream_output": {
@@ -500,8 +516,124 @@ def mapmaking_provenance_semantic_errors(
             errors.append(
                 "mapmaking execution record does not match effective config"
             )
+        if data.get("schema_version") == "citlali-mapmaking-provenance-v2":
+            errors.extend(mapmaking_cardinality_semantic_errors(data))
     except (KeyError, TypeError) as exc:
         errors.append(f"cannot evaluate mapmaking provenance semantics: {exc}")
+    return errors
+
+
+def available_count(record: Any, field: str) -> int:
+    if not isinstance(record, dict) or record.get("available") is not True:
+        raise ValueError(f"{field} is unavailable")
+    value = record.get("value")
+    if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+        raise ValueError(f"{field} must be a nonnegative integer")
+    return value
+
+
+def valid_map_product_cardinality(record: Any) -> bool:
+    if not isinstance(record, dict):
+        return False
+    map_count = record.get("map_count")
+    write_count = record.get("required_map_write_count")
+    return bool(
+        isinstance(map_count, int)
+        and not isinstance(map_count, bool)
+        and map_count > 0
+        and isinstance(write_count, int)
+        and not isinstance(write_count, bool)
+        and write_count >= map_count
+        and write_count % map_count == 0
+    )
+
+
+def mapmaking_cardinality_semantic_errors(
+    data: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        observations = data["observations"]
+        coadd = data["coadd"]
+        realized = data["realized"]
+        effective = data["effective"]["config"]
+        if not isinstance(observations, list):
+            return ["mapmaking observations must be a sequence"]
+
+        seen_obsnums: set[str] = set()
+        for expected_index, observation in enumerate(observations):
+            if not isinstance(observation, dict):
+                errors.append(
+                    f"mapmaking observation {expected_index} is not a mapping"
+                )
+                continue
+            if observation.get("observation_index") != expected_index:
+                errors.append(
+                    f"mapmaking observation {expected_index} has inconsistent index"
+                )
+            obsnum = observation.get("obsnum")
+            if not isinstance(obsnum, str) or not obsnum:
+                errors.append(
+                    f"mapmaking observation {expected_index} has invalid obsnum"
+                )
+            elif obsnum in seen_obsnums:
+                errors.append(f"duplicate mapmaking obsnum: {obsnum}")
+            else:
+                seen_obsnums.add(obsnum)
+            if not valid_map_product_cardinality(observation):
+                errors.append(
+                    f"mapmaking observation {expected_index} has invalid product cardinality"
+                )
+            pixel_size = observation.get("effective_pixel_size_rad")
+            if (
+                not isinstance(pixel_size, (int, float))
+                or isinstance(pixel_size, bool)
+                or not math.isfinite(pixel_size)
+                or pixel_size <= 0.0
+            ):
+                errors.append(
+                    f"mapmaking observation {expected_index} has invalid pixel size"
+                )
+            if observation.get("outputs_completed") is not True:
+                errors.append(
+                    f"mapmaking observation {expected_index} outputs are incomplete"
+                )
+
+        completed_observations = available_count(
+            realized["completed_observation_count"],
+            "completed_observation_count",
+        )
+        if completed_observations != len(observations):
+            errors.append(
+                "completed observation count does not match observations"
+            )
+
+        if not isinstance(coadd, dict) or not isinstance(
+            coadd.get("available"), bool
+        ):
+            errors.append("mapmaking coadd availability is invalid")
+            expected_coadds = 0
+        elif coadd["available"]:
+            expected_coadds = 1
+            if not valid_map_product_cardinality(coadd):
+                errors.append("mapmaking coadd has invalid product cardinality")
+            if coadd.get("outputs_completed") is not True:
+                errors.append("mapmaking coadd outputs are incomplete")
+        else:
+            expected_coadds = 0
+
+        completed_coadds = available_count(
+            realized["completed_coadd_count"], "completed_coadd_count"
+        )
+        if completed_coadds != expected_coadds:
+            errors.append("completed coadd count does not match coadd state")
+
+        if effective["enabled"] and not observations:
+            errors.append("enabled mapmaking has no completed observations")
+        if not effective["enabled"] and (observations or expected_coadds):
+            errors.append("disabled mapmaking records map products")
+    except (KeyError, TypeError, ValueError) as exc:
+        errors.append(f"cannot evaluate mapmaking cardinality: {exc}")
     return errors
 
 
@@ -548,17 +680,22 @@ def audit_provenance_sidecars(
                 if not isinstance(data, dict):
                     raise ValueError("provenance root must be a mapping")
                 schema_version = data.get("schema_version")
+                required_paths = spec.get(
+                    "required_paths_by_schema", {}
+                ).get(schema_version, spec["required_paths"])
                 missing_paths = [
                     ".".join(section)
-                    for section in spec["required_paths"]
+                    for section in required_paths
                     if not has_nested_path(data, section)
                 ]
+                accepted_schema_versions = spec.get(
+                    "accepted_schema_versions", (spec["schema_version"],)
+                )
                 initialized_ok = data.get("initialized") is not False
                 item.update(
                     {
                         "schema_version": schema_version,
-                        "schema_ok":
-                            schema_version == spec["schema_version"],
+                        "schema_ok": schema_version in accepted_schema_versions,
                         "missing_paths": missing_paths,
                         "initialized_ok": initialized_ok,
                         "sha256": sha256_file(path),

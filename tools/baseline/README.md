@@ -202,8 +202,10 @@ $HOME/tolteca/bin/python tools/baseline/compare_reduction_audits.py \
 The mapmaking audit checks that requested and effective grouping and units
 agree with their resolution records, that automatic/fallback decisions are
 internally consistent, and that the run completed with the expected
-mapmaking-executed state. Observation and product cardinalities remain
-explicitly unavailable until their lifecycle owners are wired.
+mapmaking-executed state. Version-2 sidecars additionally require a contiguous
+sequence of identified, completed observations; finite positive pixel sizes;
+consistent logical map-product counts; and matching observation/coadd
+completion cardinality. Historical version-1 sidecars remain readable.
 
 Science coadd triage, with an explicit baseline/candidate pair when the latest
 directories are not the intended comparison:

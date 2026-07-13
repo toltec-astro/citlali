@@ -11,7 +11,7 @@
 namespace citlali::pipeline {
 
 inline constexpr const char *mapmaking_provenance_schema_version =
-    "citlali-mapmaking-provenance-v1";
+    "citlali-mapmaking-provenance-v2";
 inline constexpr const char *mapmaking_provenance_filename =
     "mapmaking_provenance.yaml";
 
@@ -24,8 +24,9 @@ inline YAML::Node mapmaking_provenance_node(
     root["effective"]["config"] = mapmaking_config_node(plan.effective);
     root["effective"]["resolution"] =
         mapmaking_effective_resolution_node(plan.effective_resolution);
-    root["observation"] =
-        mapmaking_observation_state_node(plan.observation);
+    root["observations"] =
+        mapmaking_observations_node(plan.observations);
+    root["coadd"] = mapmaking_coadd_state_node(plan.coadd);
     root["realized"] = mapmaking_realized_state_node(plan.realized);
     return root;
 }

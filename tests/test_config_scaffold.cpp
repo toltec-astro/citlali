@@ -14,10 +14,12 @@
 #include <citlali/core/pipeline/fruit_loop_paths.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/map_geometry.h>
+#include <citlali/core/pipeline/map_index_state.h>
 #include <citlali/core/pipeline/mapmaking_execution_plan.h>
 #include <citlali/core/pipeline/mapmaking_method_config.h>
 #include <citlali/core/pipeline/mapmaking_output_config.h>
 #include <citlali/core/pipeline/mapmaking_provenance.h>
+#include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
@@ -206,6 +208,7 @@ struct FakeEngine {
     citlali::pipeline::ProcessedTimestreamExecutionPlan
         processed_timestream_plan;
     citlali::pipeline::MapmakingExecutionPlan mapmaking_plan;
+    citlali::pipeline::MapIndexState map_indices;
     citlali::pipeline::TimestreamAlignmentState alignment = [] {
         citlali::pipeline::TimestreamAlignmentState state;
         state.start_indices = {7};
@@ -244,6 +247,7 @@ struct FakeEngine {
     std::string last_map_pixel_contribution_target;
     int create_obs_map_files_calls = 0;
     int output_calls = 0;
+    bool output_throws = false;
     int run_wiener_filter_calls = 0;
     int find_sources_calls = 0;
     int fit_maps_calls = 0;
@@ -442,6 +446,9 @@ struct FakeEngine {
     template <auto MapType>
     void output() {
         ++output_calls;
+        if (output_throws) {
+            throw std::runtime_error("injected map output failure");
+        }
     }
 
     template <auto MapType, class MapBuffer>
@@ -1581,14 +1588,19 @@ TEST(config_scaffold, serializes_versioned_mapmaking_provenance) {
     citlali::pipeline::MapmakingExecutionPlan plan;
     plan.reset_from_request(
         request, citlali::config::ReductionType::beammap);
-    plan.begin_observation().map_count = 5234;
+    plan.begin_iteration();
+    plan.begin_observation(0, "148670", 5234, 4.848136811e-6,
+                           10468);
+    citlali::pipeline::complete_mapmaking_observation(plan);
+    plan.begin_coadd(5234, 10468);
+    citlali::pipeline::complete_mapmaking_coadd(plan);
     citlali::pipeline::record_mapmaking_run_completed(plan);
 
     const auto node =
         citlali::pipeline::mapmaking_provenance_node(plan);
 
     EXPECT_EQ(node["schema_version"].as<std::string>(),
-              "citlali-mapmaking-provenance-v1");
+              "citlali-mapmaking-provenance-v2");
     EXPECT_TRUE(node["initialized"].as<bool>());
     EXPECT_EQ(node["requested"]["grouping"].as<std::string>(),
               "auto");
@@ -1604,10 +1616,97 @@ TEST(config_scaffold, serializes_versioned_mapmaking_provenance) {
     EXPECT_EQ(node["effective"]["resolution"]["effective_unit"]
                   .as<std::string>(),
               "mJy/beam");
-    EXPECT_EQ(node["observation"]["map_count"]["value"].as<int>(),
-              5234);
+    ASSERT_EQ(node["observations"].size(), 1U);
+    EXPECT_EQ(node["observations"][0]["observation_index"]
+                  .as<std::size_t>(),
+              0U);
+    EXPECT_EQ(node["observations"][0]["obsnum"].as<std::string>(),
+              "148670");
+    EXPECT_EQ(node["observations"][0]["map_count"].as<std::size_t>(),
+              5234U);
+    EXPECT_EQ(node["observations"][0]["required_map_write_count"]
+                  .as<std::size_t>(),
+              10468U);
+    EXPECT_TRUE(
+        node["observations"][0]["outputs_completed"].as<bool>());
+    EXPECT_TRUE(node["coadd"]["available"].as<bool>());
+    EXPECT_EQ(node["coadd"]["map_count"].as<std::size_t>(), 5234U);
     EXPECT_TRUE(node["realized"]["reduction_completed"].as<bool>());
     EXPECT_TRUE(node["realized"]["mapmaking_executed"].as<bool>());
+    EXPECT_EQ(node["realized"]["completed_observation_count"]["value"]
+                  .as<std::size_t>(),
+              1U);
+    EXPECT_EQ(node["realized"]["completed_coadd_count"]["value"]
+                  .as<std::size_t>(),
+              1U);
+}
+
+TEST(config_scaffold, resets_mapmaking_cardinality_per_iteration) {
+    citlali::pipeline::MapmakingExecutionPlan plan;
+    plan.reset_from_request(
+        citlali::config::MapmakingConfig{},
+        citlali::config::ReductionType::science);
+    plan.begin_iteration();
+    plan.begin_observation(0, "152389", 3, 9.696273622e-6, 3);
+    citlali::pipeline::complete_mapmaking_observation(plan);
+    plan.begin_coadd(3, 6);
+    citlali::pipeline::complete_mapmaking_coadd(plan);
+
+    plan.begin_iteration();
+
+    EXPECT_TRUE(plan.observations.empty());
+    EXPECT_FALSE(plan.coadd.has_value());
+    ASSERT_TRUE(plan.realized.completed_observation_count.has_value());
+    ASSERT_TRUE(plan.realized.completed_coadd_count.has_value());
+    EXPECT_EQ(*plan.realized.completed_observation_count, 0U);
+    EXPECT_EQ(*plan.realized.completed_coadd_count, 0U);
+}
+
+TEST(config_scaffold, rejects_incomplete_mapmaking_cardinality) {
+    citlali::pipeline::MapmakingExecutionPlan plan;
+    plan.reset_from_request(
+        citlali::config::MapmakingConfig{},
+        citlali::config::ReductionType::science);
+
+    EXPECT_THROW(
+        citlali::pipeline::record_mapmaking_run_completed(plan),
+        std::logic_error);
+
+    plan.begin_iteration();
+    plan.begin_observation(0, "152389", 3, 9.696273622e-6, 3);
+    EXPECT_THROW(
+        citlali::pipeline::record_mapmaking_run_completed(plan),
+        std::logic_error);
+}
+
+TEST(config_scaffold, records_zero_cardinality_when_mapmaking_disabled) {
+    citlali::config::MapmakingConfig request;
+    request.enabled = false;
+    citlali::pipeline::MapmakingExecutionPlan plan;
+    plan.reset_from_request(
+        request, citlali::config::ReductionType::science);
+    plan.begin_iteration();
+
+    citlali::pipeline::record_mapmaking_run_completed(plan);
+
+    EXPECT_TRUE(plan.realized.reduction_completed);
+    EXPECT_FALSE(plan.realized.mapmaking_executed);
+    EXPECT_EQ(*plan.realized.completed_observation_count, 0U);
+    EXPECT_EQ(*plan.realized.completed_coadd_count, 0U);
+}
+
+TEST(config_scaffold, calculates_required_mapmaking_write_count) {
+    EXPECT_EQ(citlali::pipeline::required_mapmaking_write_count(3, 1),
+              3U);
+    EXPECT_EQ(citlali::pipeline::required_mapmaking_write_count(3, 2),
+              6U);
+    EXPECT_THROW(
+        citlali::pipeline::required_mapmaking_write_count(0, 1),
+        std::logic_error);
+    EXPECT_THROW(
+        citlali::pipeline::required_mapmaking_write_count(
+            std::numeric_limits<std::size_t>::max(), 2),
+        std::overflow_error);
 }
 
 TEST(config_scaffold, atomically_writes_mapmaking_provenance) {
@@ -1620,6 +1719,10 @@ TEST(config_scaffold, atomically_writes_mapmaking_provenance) {
     plan.reset_from_request(
         citlali::config::MapmakingConfig{},
         citlali::config::ReductionType::science);
+    plan.begin_iteration();
+    plan.begin_observation(0, "152389", 3, 9.696273622e-6, 3);
+    citlali::pipeline::complete_mapmaking_observation(plan);
+    citlali::pipeline::record_mapmaking_run_completed(plan);
 
     citlali::pipeline::write_mapmaking_provenance_file(
         output_dir, plan);
@@ -1630,7 +1733,7 @@ TEST(config_scaffold, atomically_writes_mapmaking_provenance) {
     EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
     const auto stored = YAML::LoadFile(output_path.string());
     EXPECT_EQ(stored["schema_version"].as<std::string>(),
-              "citlali-mapmaking-provenance-v1");
+              "citlali-mapmaking-provenance-v2");
     std::filesystem::remove_all(output_dir);
 }
 
@@ -1643,6 +1746,10 @@ TEST(config_scaffold, mapmaking_provenance_failure_propagates) {
     plan.reset_from_request(
         citlali::config::MapmakingConfig{},
         citlali::config::ReductionType::science);
+    plan.begin_iteration();
+    plan.begin_observation(0, "152389", 3, 9.696273622e-6, 3);
+    citlali::pipeline::complete_mapmaking_observation(plan);
+    citlali::pipeline::record_mapmaking_run_completed(plan);
 
     EXPECT_THROW(
         citlali::pipeline::write_mapmaking_provenance_file(
@@ -4356,6 +4463,39 @@ TEST(pipeline_execution, allocates_observation_map_buffers_by_index) {
     EXPECT_EQ(logger->info_calls, 3);
 }
 
+TEST(pipeline_execution, records_observation_mapmaking_cardinality) {
+    FakeObservationMapTodProc todproc;
+    auto &engine = todproc.engine();
+    engine.mapmaking_plan.reset_from_request(
+        engine.typed_config.mapmaking,
+        citlali::config::ReductionType::pointing);
+    engine.mapmaking_plan.begin_iteration();
+    engine.map_indices.n_maps = 3;
+    engine.omb.pixel_size_rad = 4.848136811e-6;
+    engine.observation_identity.obsnum = "152389";
+    citlali::config::set_map_filtering_enabled(
+        engine.typed_config.post_processing, true);
+    std::vector<int> map_extents = {11};
+    std::vector<int> map_coords = {22};
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::allocate_observation_map_buffers_if_needed(
+        todproc, map_extents, map_coords, 0, logger);
+    citlali::pipeline::complete_mapmaking_observation_if_available(engine);
+
+    ASSERT_EQ(engine.mapmaking_plan.observations.size(), 1U);
+    const auto &observation = engine.mapmaking_plan.observations.front();
+    EXPECT_EQ(observation.observation_index, 0U);
+    EXPECT_EQ(observation.obsnum, "152389");
+    EXPECT_EQ(observation.map_count, 3U);
+    EXPECT_DOUBLE_EQ(observation.effective_pixel_size_rad,
+                     4.848136811e-6);
+    EXPECT_EQ(observation.required_map_write_count, 6U);
+    EXPECT_TRUE(observation.outputs_completed);
+    EXPECT_EQ(*engine.mapmaking_plan.realized.completed_observation_count,
+              1U);
+}
+
 TEST(pipeline_execution,
      skips_observation_map_buffer_indexing_when_mapmaking_disabled) {
     FakeObservationMapTodProc todproc;
@@ -4597,6 +4737,38 @@ TEST(pipeline_execution, writes_observation_outputs_and_filters) {
     EXPECT_EQ(todproc.engine().output_calls, 2);
     EXPECT_EQ(todproc.coadd_calls, 0);
     EXPECT_EQ(todproc.engine().run_wiener_filter_calls, 1);
+}
+
+TEST(pipeline_execution,
+     map_output_failure_does_not_complete_observation_cardinality) {
+    FakeCoaddTodProc todproc;
+    auto &engine = todproc.engine();
+    engine.mapmaking_plan.reset_from_request(
+        engine.typed_config.mapmaking,
+        citlali::config::ReductionType::pointing);
+    engine.mapmaking_plan.begin_iteration();
+    engine.mapmaking_plan.begin_observation(
+        0, "152389", 3, 4.848136811e-6, 3);
+    engine.output_throws = true;
+    engine.typed_config.coadd.enabled = false;
+    citlali::config::set_map_filtering_enabled(
+        engine.typed_config.post_processing, false);
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_THROW(
+        (citlali::pipeline::write_observation_outputs_and_accumulate<
+            FakeMapType::RawObs, FakeMapType::FilteredObs, false>(
+            todproc, logger)),
+        std::runtime_error);
+
+    EXPECT_FALSE(
+        engine.mapmaking_plan.observations.front().outputs_completed);
+    EXPECT_EQ(*engine.mapmaking_plan.realized.completed_observation_count,
+              0U);
+    EXPECT_THROW(
+        citlali::pipeline::record_mapmaking_run_completed(
+            engine.mapmaking_plan),
+        std::logic_error);
 }
 
 TEST(pipeline_execution, runs_reduction_observation_pipeline) {
@@ -4990,6 +5162,32 @@ TEST(pipeline_execution, writes_iteration_filtered_coadd_outputs) {
     EXPECT_EQ(todproc.create_coadded_map_files_calls, 1);
     EXPECT_EQ(todproc.engine().run_wiener_filter_calls, 1);
     EXPECT_EQ(todproc.engine().output_calls, 2);
+}
+
+TEST(pipeline_execution, records_coadd_mapmaking_cardinality) {
+    FakeCoaddTodProc todproc;
+    auto &engine = todproc.engine();
+    engine.typed_config.runtime.reduction_type =
+        citlali::config::ReductionType::pointing;
+    sync_fake_runtime_provenance(engine);
+    engine.typed_config.coadd.enabled = true;
+    citlali::config::set_map_filtering_enabled(
+        engine.typed_config.post_processing, true);
+    engine.mapmaking_plan.reset_from_request(
+        engine.typed_config.mapmaking,
+        citlali::config::ReductionType::pointing);
+    engine.mapmaking_plan.begin_iteration();
+    engine.map_indices.n_maps = 3;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_iteration_coadd_outputs_if_needed<
+        FakeMapType::RawCoadd, FakeMapType::FilteredCoadd>(todproc, logger);
+
+    ASSERT_TRUE(engine.mapmaking_plan.coadd.has_value());
+    EXPECT_EQ(engine.mapmaking_plan.coadd->map_count, 3U);
+    EXPECT_EQ(engine.mapmaking_plan.coadd->required_map_write_count, 6U);
+    EXPECT_TRUE(engine.mapmaking_plan.coadd->outputs_completed);
+    EXPECT_EQ(*engine.mapmaking_plan.realized.completed_coadd_count, 1U);
 }
 
 TEST(pipeline_execution, finishes_reduction_iteration) {
