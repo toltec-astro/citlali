@@ -5,6 +5,8 @@
 #include <citlali/core/config/noise_config.h>
 #include <citlali/core/pipeline/config_parse_tracking.h>
 #include <citlali/core/pipeline/mapmaking_config_policy.h>
+#include <citlali/core/pipeline/mapmaking_method_config.h>
+#include <citlali/core/pipeline/mapmaking_output_config.h>
 
 #include <string>
 #include <tuple>
@@ -18,8 +20,6 @@ namespace citlali::pipeline {
 
 #include <citlali/core/pipeline/mapmaking_config_read_core.h>
 #include <citlali/core/pipeline/mapmaking_config_read_noise.h>
-#include <citlali/core/pipeline/mapmaking_config_read_outputs.h>
-#include <citlali/core/pipeline/mapmaking_config_read_methods.h>
 #include <citlali/core/pipeline/mapmaking_config_read_noise_products.h>
 
 }  // namespace citlali::pipeline

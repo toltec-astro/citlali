@@ -3,6 +3,7 @@
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/config/timestream_config.h>
+#include <citlali/core/pipeline/mapmaking_resolution.h>
 
 #include <cstdlib>
 #include <string>
@@ -43,33 +44,6 @@ inline bool map_grouping_disallows_polarization(
            ((citlali::config::is_beammap_reduction_type(reduction_type) &&
              citlali::config::is_automatic_map_grouping(map_grouping)) ||
             citlali::config::is_detector_map_grouping(map_grouping));
-}
-
-inline citlali::config::MapGrouping automatic_map_grouping_for_reduction(
-    citlali::config::ReductionType reduction_type) {
-    return citlali::config::is_beammap_reduction_type(reduction_type)
-               ? citlali::config::MapGrouping::detector
-               : citlali::config::MapGrouping::array;
-}
-
-inline bool detector_map_grouping_disallowed(
-    citlali::config::ReductionType reduction_type,
-    citlali::config::MapGrouping map_grouping) {
-    return citlali::config::is_detector_map_grouping(map_grouping) &&
-           !citlali::config::is_beammap_reduction_type(reduction_type);
-}
-
-inline citlali::config::MapGrouping effective_map_grouping_for_reduction(
-    citlali::config::ReductionType reduction_type,
-    citlali::config::MapGrouping requested_grouping) {
-    auto grouping = requested_grouping;
-    if (citlali::config::is_automatic_map_grouping(grouping)) {
-        grouping = automatic_map_grouping_for_reduction(reduction_type);
-    }
-    if (detector_map_grouping_disallowed(reduction_type, grouping)) {
-        grouping = citlali::config::MapGrouping::array;
-    }
-    return grouping;
 }
 
 template <class Logger>
@@ -135,30 +109,6 @@ int apply_polarization_map_count(int base_count, bool run_polarization,
                ? base_count *
                      static_cast<int>(polarization.stokes_params.size())
                : base_count;
-}
-
-template <class MapmakingConfig, class OutputMapBlock,
-          class PostProcessingConfig>
-void mirror_output_map_block_config(MapmakingConfig &target,
-                                    const OutputMapBlock &omb,
-                                    double rad_to_arcsec,
-                                    PostProcessingConfig &post_processing) {
-    target.coverage_cut = omb.cov_cut;
-    target.pixel_size_arcsec = omb.pixel_size_rad * rad_to_arcsec;
-    target.unit = omb.sig_unit;
-    if (omb.wcs.naxis.size() >= 2) {
-        target.x_size_pix = static_cast<int>(omb.wcs.naxis[0]);
-        target.y_size_pix = static_cast<int>(omb.wcs.naxis[1]);
-    }
-    if (omb.wcs.crpix.size() >= 2) {
-        target.crpix1 = omb.wcs.crpix[0];
-        target.crpix2 = omb.wcs.crpix[1];
-    }
-    if (omb.crval_config.size() >= 2) {
-        target.crval1_j2000 = omb.crval_config[0];
-        target.crval2_j2000 = omb.crval_config[1];
-    }
-    post_processing.map_histogram_n_bins = omb.hist_n_bins;
 }
 
 template <class OutputMapBlock, class CoaddMapBlock>

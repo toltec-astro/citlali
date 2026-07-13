@@ -6,8 +6,6 @@
 #include <Eigen/Sparse>
 #include <spdlog/spdlog.h>
 
-#include <citlali/core/config/mapmaking_config.h>
-#include <citlali/core/config/runtime_config.h>
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/utils/toltec_io.h>
 
@@ -74,119 +72,6 @@ MapBuffer::MapBuffer() {}
 
 // constructor
 MapBuffer::MapBuffer(std::string _n): name(_n) {}
-
-// get config file
-void MapBuffer::get_config(tula::config::YamlConfig &config, std::vector<std::vector<std::string>> &missing_keys,
-                              std::vector<std::vector<std::string>> &invalid_keys,
-                              citlali::config::MapPixelAxes pixel_axes,
-                              citlali::config::ReductionType reduction_type) {
-
-    // coverage cut
-    get_config_value(config, cov_cut, missing_keys, invalid_keys,
-                     std::tuple{"mapmaking","coverage_cut"});
-    // number of histogram bins
-    get_config_value(config, hist_n_bins, missing_keys, invalid_keys,
-                     std::tuple{"post_processing","map_histogram_n_bins"},{},{0});
-    // pixel size
-    get_config_value(config, pixel_size_rad, missing_keys, invalid_keys,
-                     std::tuple{"mapmaking","pixel_size_arcsec"},{},{0});
-    // map units
-    get_config_value(config, sig_unit, missing_keys, invalid_keys,
-                     std::tuple{"mapmaking","cunit"},{"mJy/beam","MJy/sr","uK", "Jy/pixel"});
-
-    // convert pixel size to to radians
-    pixel_size_rad *= ASEC_TO_RAD;
-
-    // set wcs cdelt for cols
-    wcs.cdelt.push_back(-pixel_size_rad);
-    // set wcs cdelt for rows
-    wcs.cdelt.push_back(pixel_size_rad);
-
-    // variable to get wcs config options
-    double wcs_double;
-
-    // get wcs naxis
-    std::vector<std::string> naxis = {"x_size_pix","y_size_pix"};
-    for (const auto &key: naxis) {
-        get_config_value(config, wcs_double, missing_keys, invalid_keys,
-                         std::tuple{"mapmaking",key});
-        wcs.naxis.push_back(wcs_double);
-    }
-
-    // get wcs crpix
-    std::vector<std::string> crpix = {"crpix1","crpix2"};
-    for (const auto &key: crpix) {
-        get_config_value(config, wcs_double, missing_keys, invalid_keys,
-                         std::tuple{"mapmaking",key});
-        wcs.crpix.push_back(wcs_double);
-    }
-
-    // get wcs crval
-    std::vector<std::string> crval = {"crval1_J2000","crval2_J2000"};
-    for (const auto &key: crval) {
-        get_config_value(config, wcs_double, missing_keys, invalid_keys,
-                         std::tuple{"mapmaking",key});
-        crval_config.push_back(wcs_double);
-    }
-
-    // setup wcs for radec frame
-    if (citlali::config::is_radec_map_pixel_axes(pixel_axes)) {
-        wcs.ctype.push_back("RA---TAN");
-        wcs.ctype.push_back("DEC--TAN");
-
-        wcs.cunit.push_back("deg");
-        wcs.cunit.push_back("deg");
-
-        wcs.cdelt[0] *= RAD_TO_DEG;
-        wcs.cdelt[1] *= RAD_TO_DEG;
-    }
-
-    // setup wcs altaz frame
-    else if (citlali::config::is_altaz_map_pixel_axes(pixel_axes)) {
-        wcs.ctype.push_back("AZOFFSET");
-        wcs.ctype.push_back("ELOFFSET");
-
-        // arcsec if pointing or beammap
-        if (!citlali::config::is_science_reduction_type(reduction_type)) {
-            wcs.cunit.push_back("arcsec");
-            wcs.cunit.push_back("arcsec");
-            wcs.cdelt[0] *= RAD_TO_ASEC;
-            wcs.cdelt[1] *= RAD_TO_ASEC;
-        }
-        // degrees if science
-        else {
-            wcs.cunit.push_back("deg");
-            wcs.cunit.push_back("deg");
-            wcs.cdelt[0] *= RAD_TO_DEG;
-            wcs.cdelt[1] *= RAD_TO_DEG;
-        }
-    }
-
-    // setup wcs altaz frame
-    else if (citlali::config::is_galactic_map_pixel_axes(pixel_axes)) {
-        wcs.ctype.push_back("GLON-TAN");
-        wcs.ctype.push_back("GLAT-TAN");
-
-        wcs.cunit.push_back("deg");
-        wcs.cunit.push_back("deg");
-
-        wcs.cdelt[0] *= RAD_TO_DEG;
-        wcs.cdelt[1] *= RAD_TO_DEG;
-    }
-
-    // set wcs cdelt for freq and stokes
-    wcs.cdelt.insert(wcs.cdelt.end(),{1,1});
-    // set wcs crpix for freq and stokes
-    wcs.crpix.insert(wcs.crpix.end(),{0,0});
-    // set wcs crval to initial defaults
-    wcs.crval.resize(4,0.);
-    // set wcs naxis for freq and stokes
-    wcs.naxis.insert(wcs.naxis.end(),{1,1});
-    // set wcs ctypes for freq and stokes
-    wcs.ctype.insert(wcs.ctype.end(),{"FREQ","STOKES"});
-    // set wcs cunits for freq and stokes
-    wcs.cunit.insert(wcs.cunit.end(),{"Hz",""});
-}
 
 void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
     // vectors for maps

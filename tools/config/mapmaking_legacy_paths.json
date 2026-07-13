@@ -1,0 +1,35 @@
+{
+  "schema_version": "citlali-frozen-mapmaking-config-paths-v1",
+  "retired_parser_sources": [
+    "include/citlali/core/mapmaking/map.h",
+    "include/citlali/core/pipeline/mapmaking_config_read_methods.h",
+    "include/citlali/core/pipeline/mapmaking_config_read_outputs.h",
+    "src/citlali/core/mapmaking/map.cpp"
+  ],
+  "path_count": 22,
+  "path_sha256": "fe72da6e9e0b6af1d63ad0cc465a0d00950332899d7938559276c0d873a54460",
+  "paths": [
+    "mapmaking.coverage_cut",
+    "mapmaking.crpix1",
+    "mapmaking.crpix2",
+    "mapmaking.crval1_J2000",
+    "mapmaking.crval2_J2000",
+    "mapmaking.cunit",
+    "mapmaking.enabled",
+    "mapmaking.grouping",
+    "mapmaking.jinc_filter.r_max",
+    "mapmaking.jinc_filter.shape_params.a1100",
+    "mapmaking.jinc_filter.shape_params.a1400",
+    "mapmaking.jinc_filter.shape_params.a2000",
+    "mapmaking.jinc_filter.subpixel_n",
+    "mapmaking.maximum_likelihood.max_iterations",
+    "mapmaking.maximum_likelihood.tolerance",
+    "mapmaking.method",
+    "mapmaking.pixel_axes",
+    "mapmaking.pixel_size_arcsec",
+    "mapmaking.tan_dec",
+    "mapmaking.tan_ra",
+    "mapmaking.x_size_pix",
+    "mapmaking.y_size_pix"
+  ]
+}

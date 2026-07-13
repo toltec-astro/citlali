@@ -32,8 +32,8 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 285 tests with none skipped or disabled; all
-  13 baseline-tool tests pass.
+- CTest discovers and passes all 297 tests with none skipped or disabled; all
+  32 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -503,20 +503,42 @@ versus 54.412 seconds. The validation ledger records the acceptance. The raw-
 timestream authority migration, including legacy parser/oracle cleanup, is now
 complete; polarimetry remains a separate compatibility domain.
 
+The mapmaking authority migration is locally complete and awaiting Unity mode
+gates. All 22 frozen `mapmaking.*` leaves now enter typed request state through
+one boundary. `MapBuffer`, JINC, maximum-likelihood, observation-map, and
+coadd-map configuration no longer parse YAML. One-way adapters construct the
+legacy numerical mapmakers and WCS buffers from typed state. The immutable
+execution plan preserves the requested grouping while exposing the resolved
+effective grouping to downstream accessors; the transitional root request is
+no longer mutated by map-count setup. Successful reductions must atomically
+publish versioned `mapmaking_provenance.yaml`, and write failures propagate.
+The effective plan also records the uncalibrated TOD-type unit substitution
+without changing the requested `cunit`. The boundary preflight freezes the
+22-path digest, enforces 22/22 reader
+coverage, rejects retired parser symbols, and checks the production authority
+sequence and provenance writer. Local CLI/test/safety builds, all 297 C++
+tests, all eight config profiles, and the full preflight pass. A strict point
+run is required first to validate WCS construction and the new sidecar;
+Beammap and science runs then validate the JINC adapter. Realized per-
+observation and product cardinality remain explicitly unavailable and are the
+last mapmaking provenance sub-gate.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.
 
 Immediate work order:
 
-1. Complete Unity validation of the required-output and provenance fixes.
-2. Make enum parse failures and non-finite values hard validation failures.
-3. Activate focused tests for failure propagation, cancellation, invalid
-   config, and repeated runs in one process.
-4. Establish a strict, complete point comparator and a zero-unexpected-errors
-   audit gate.
-5. Record current matched OG/refactor baselines for point, beammap, science,
-   and OOF before advancing the architecture again.
+1. Build on Unity and run the standard point gate for the mapmaking authority
+   cutover, including strict products, zero errors, and the new sidecar.
+2. Run matched Beammap and science gates to exercise typed JINC parsing and
+   one-way adaptation; OOF remains owner-deferred.
+3. Populate and validate realized mapmaking observation/product cardinality
+   without moving numerical algorithms.
+4. Reassess Phase 2 domain priority using the authority inventory. Do not
+   broaden polarimetry without the pending scientific-policy decisions.
+5. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
+   the active domain gates close.
 
 ### Phase 1 Progress
 

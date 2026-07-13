@@ -14,6 +14,10 @@
 #include <citlali/core/pipeline/fruit_loop_paths.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/map_geometry.h>
+#include <citlali/core/pipeline/mapmaking_execution_plan.h>
+#include <citlali/core/pipeline/mapmaking_method_config.h>
+#include <citlali/core/pipeline/mapmaking_output_config.h>
+#include <citlali/core/pipeline/mapmaking_provenance.h>
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
@@ -58,6 +62,7 @@
 #include <tula/config/yamlconfig.h>
 
 #include <algorithm>
+#include <array>
 #include <functional>
 #include <filesystem>
 #include <initializer_list>
@@ -200,6 +205,7 @@ struct FakeEngine {
                                                         false);
     citlali::pipeline::ProcessedTimestreamExecutionPlan
         processed_timestream_plan;
+    citlali::pipeline::MapmakingExecutionPlan mapmaking_plan;
     citlali::pipeline::TimestreamAlignmentState alignment = [] {
         citlali::pipeline::TimestreamAlignmentState state;
         state.start_indices = {7};
@@ -1291,6 +1297,379 @@ TEST(config_scaffold, parses_existing_mapmaking_enum_values) {
               citlali::config::MapMethod::jinc);
     EXPECT_EQ(citlali::config::parse_map_method("maximum_likelihood").value(),
               citlali::config::MapMethod::maximum_likelihood);
+}
+
+TEST(config_scaffold, reads_and_adapts_typed_jinc_filter_config) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    root["mapmaking"]["jinc_filter"]["r_max"] = 4.25;
+    root["mapmaking"]["jinc_filter"]["subpixel_n"] = 3;
+    root["mapmaking"]["jinc_filter"]["shape_params"]["a1100"] =
+        std::vector<double>{1.2, 1.8, 2.4};
+    auto yaml_config =
+        tula::config::YamlConfig::from_str(YAML::Dump(root));
+    const std::map<int, std::string> array_names = {
+        {0, "a1100"}, {1, "a1400"}, {2, "a2000"}};
+    citlali::config::MapmakingConfig request;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_mapmaking_method_request_config(
+        yaml_config, citlali::config::MapMethod::jinc, array_names,
+        request, diagnostics);
+
+    ASSERT_FALSE(diagnostics.has_errors());
+    EXPECT_DOUBLE_EQ(request.jinc_filter.r_max, 4.25);
+    EXPECT_EQ(request.jinc_filter.subpixel_n, 3);
+    EXPECT_EQ(request.jinc_filter.shape_params.at("a1100"),
+              (std::array<double, 3>{1.2, 1.8, 2.4}));
+
+    struct FakeJincMapmaker {
+        double r_max = -1.0;
+        int subpixel_n = -1;
+        std::map<int, Eigen::VectorXd> shape_params = {
+            {99, Eigen::VectorXd::Constant(3, -1.0)}};
+    } legacy;
+    citlali::pipeline::adapt_jinc_filter_config_one_way(
+        request.jinc_filter, array_names, legacy);
+
+    EXPECT_DOUBLE_EQ(legacy.r_max, 4.25);
+    EXPECT_EQ(legacy.subpixel_n, 3);
+    EXPECT_EQ(legacy.shape_params.size(), 3U);
+    EXPECT_EQ(legacy.shape_params.at(0).size(), 3);
+    EXPECT_DOUBLE_EQ(legacy.shape_params.at(0)(0), 1.2);
+    EXPECT_DOUBLE_EQ(legacy.shape_params.at(0)(1), 1.8);
+    EXPECT_DOUBLE_EQ(legacy.shape_params.at(0)(2), 2.4);
+}
+
+TEST(config_scaffold, rejects_malformed_typed_jinc_shape) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    root["mapmaking"]["jinc_filter"]["shape_params"]["a1400"] =
+        std::vector<double>{1.0, 2.0};
+    auto yaml_config =
+        tula::config::YamlConfig::from_str(YAML::Dump(root));
+    const std::map<int, std::string> array_names = {
+        {0, "a1100"}, {1, "a1400"}, {2, "a2000"}};
+    citlali::config::MapmakingConfig request;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_mapmaking_method_request_config(
+        yaml_config, citlali::config::MapMethod::jinc, array_names,
+        request, diagnostics);
+
+    ASSERT_TRUE(diagnostics.has_errors());
+    ASSERT_EQ(diagnostics.invalid_keys.size(), 1U);
+    EXPECT_EQ(
+        diagnostics.invalid_keys.front(),
+        (std::vector<std::string>{
+            "mapmaking", "jinc_filter", "shape_params", "a1400"}));
+}
+
+TEST(config_scaffold,
+     reads_and_adapts_typed_maximum_likelihood_config) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    root["mapmaking"]["maximum_likelihood"]["max_iterations"] = 17;
+    root["mapmaking"]["maximum_likelihood"]["tolerance"] = 2.5e-8;
+    auto yaml_config =
+        tula::config::YamlConfig::from_str(YAML::Dump(root));
+    citlali::config::MapmakingConfig request;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+    const std::map<int, std::string> array_names;
+
+    citlali::pipeline::read_mapmaking_method_request_config(
+        yaml_config, citlali::config::MapMethod::maximum_likelihood,
+        array_names, request, diagnostics);
+
+    ASSERT_FALSE(diagnostics.has_errors());
+    EXPECT_EQ(request.maximum_likelihood.max_iterations, 17);
+    EXPECT_DOUBLE_EQ(request.maximum_likelihood.tolerance, 2.5e-8);
+
+    struct FakeMaximumLikelihoodMapmaker {
+        int max_iterations = -1;
+        double tolerance = -1.0;
+    } legacy;
+    citlali::pipeline::adapt_maximum_likelihood_config_one_way(
+        request.maximum_likelihood, legacy);
+    EXPECT_EQ(legacy.max_iterations, 17);
+    EXPECT_DOUBLE_EQ(legacy.tolerance, 2.5e-8);
+}
+
+TEST(config_scaffold, reads_typed_mapmaking_output_request) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    root["mapmaking"]["coverage_cut"] = 0.35;
+    root["mapmaking"]["pixel_size_arcsec"] = 2.0;
+    root["mapmaking"]["cunit"] = "MJy/sr";
+    root["mapmaking"]["x_size_pix"] = 7;
+    root["mapmaking"]["y_size_pix"] = 9;
+    root["mapmaking"]["crpix1"] = 3.5;
+    root["mapmaking"]["crpix2"] = 4.5;
+    root["mapmaking"]["crval1_J2000"] = 11.0;
+    root["mapmaking"]["crval2_J2000"] = 12.0;
+    root["mapmaking"]["tan_ra"] = 13.0;
+    root["mapmaking"]["tan_dec"] = 14.0;
+    root["post_processing"]["map_histogram_n_bins"] = 31;
+    auto yaml_config =
+        tula::config::YamlConfig::from_str(YAML::Dump(root));
+    citlali::config::MapmakingConfig request;
+    citlali::config::PostProcessingConfig post_processing;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_mapmaking_output_request_config(
+        yaml_config, request, post_processing, diagnostics);
+
+    ASSERT_FALSE(diagnostics.has_errors());
+    EXPECT_DOUBLE_EQ(request.coverage_cut, 0.35);
+    EXPECT_DOUBLE_EQ(request.pixel_size_arcsec, 2.0);
+    EXPECT_EQ(request.unit, "MJy/sr");
+    EXPECT_EQ(request.x_size_pix, 7);
+    EXPECT_EQ(request.y_size_pix, 9);
+    EXPECT_DOUBLE_EQ(request.crpix1, 3.5);
+    EXPECT_DOUBLE_EQ(request.crpix2, 4.5);
+    EXPECT_DOUBLE_EQ(request.crval1_j2000, 11.0);
+    EXPECT_DOUBLE_EQ(request.crval2_j2000, 12.0);
+    EXPECT_DOUBLE_EQ(request.tan_ra, 13.0);
+    EXPECT_DOUBLE_EQ(request.tan_dec, 14.0);
+    EXPECT_EQ(post_processing.map_histogram_n_bins, 31);
+}
+
+TEST(config_scaffold,
+     adapts_typed_mapmaking_output_to_legacy_wcs_one_way) {
+    struct FakeWcs {
+        std::vector<float> cdelt;
+        std::vector<int> naxis;
+        std::vector<float> crpix;
+        std::vector<float> crval;
+        std::vector<std::string> cunit;
+        std::vector<std::string> ctype;
+    };
+    struct FakeOutputMapBlock {
+        double cov_cut = -1.0;
+        int hist_n_bins = -1;
+        double pixel_size_rad = -1.0;
+        std::string sig_unit = "stale";
+        FakeWcs wcs;
+        std::vector<float> crval_config;
+    } legacy;
+    citlali::config::MapmakingConfig request;
+    request.coverage_cut = 0.35;
+    request.pixel_size_arcsec = 2.0;
+    request.unit = "MJy/sr";
+    request.x_size_pix = 7;
+    request.y_size_pix = 9;
+    request.crpix1 = 3.5;
+    request.crpix2 = 4.5;
+    request.crval1_j2000 = 11.0;
+    request.crval2_j2000 = 12.0;
+    citlali::config::PostProcessingConfig post_processing;
+    post_processing.map_histogram_n_bins = 31;
+
+    citlali::pipeline::adapt_mapmaking_output_config_one_way(
+        request, post_processing, citlali::config::MapPixelAxes::radec,
+        citlali::config::ReductionType::science, 0.25, 4.0, 8.0,
+        legacy);
+
+    EXPECT_DOUBLE_EQ(legacy.cov_cut, 0.35);
+    EXPECT_EQ(legacy.hist_n_bins, 31);
+    EXPECT_DOUBLE_EQ(legacy.pixel_size_rad, 0.5);
+    EXPECT_EQ(legacy.sig_unit, "MJy/sr");
+    EXPECT_EQ(legacy.wcs.cdelt,
+              (std::vector<float>{-2.0F, 2.0F, 1.0F, 1.0F}));
+    EXPECT_EQ(legacy.wcs.naxis, (std::vector<int>{7, 9, 1, 1}));
+    EXPECT_EQ(legacy.wcs.crpix,
+              (std::vector<float>{3.5F, 4.5F, 0.0F, 0.0F}));
+    EXPECT_EQ(legacy.wcs.crval,
+              (std::vector<float>{0.0F, 0.0F, 0.0F, 0.0F}));
+    EXPECT_EQ(legacy.wcs.ctype,
+              (std::vector<std::string>{
+                  "RA---TAN", "DEC--TAN", "FREQ", "STOKES"}));
+    EXPECT_EQ(legacy.wcs.cunit,
+              (std::vector<std::string>{"deg", "deg", "Hz", ""}));
+    EXPECT_EQ(legacy.crval_config,
+              (std::vector<float>{11.0F, 12.0F}));
+
+    citlali::pipeline::adapt_mapmaking_output_config_one_way(
+        request, post_processing, citlali::config::MapPixelAxes::altaz,
+        citlali::config::ReductionType::beammap, 0.25, 4.0, 8.0,
+        legacy);
+
+    EXPECT_EQ(legacy.wcs.cdelt,
+              (std::vector<float>{-4.0F, 4.0F, 1.0F, 1.0F}));
+    EXPECT_EQ(legacy.wcs.ctype,
+              (std::vector<std::string>{
+                  "AZOFFSET", "ELOFFSET", "FREQ", "STOKES"}));
+    EXPECT_EQ(legacy.wcs.cunit,
+              (std::vector<std::string>{
+                  "arcsec", "arcsec", "Hz", ""}));
+    EXPECT_EQ(legacy.crval_config,
+              (std::vector<float>{11.0F, 12.0F}));
+}
+
+TEST(config_scaffold,
+     mapmaking_execution_plan_preserves_request_and_resolves_grouping) {
+    citlali::config::MapmakingConfig request;
+    request.grouping = citlali::config::MapGrouping::automatic;
+    citlali::pipeline::MapmakingExecutionPlan plan;
+
+    plan.reset_from_request(
+        request, citlali::config::ReductionType::science);
+    EXPECT_EQ(plan.requested.grouping,
+              citlali::config::MapGrouping::automatic);
+    EXPECT_EQ(plan.effective.grouping,
+              citlali::config::MapGrouping::array);
+    EXPECT_TRUE(plan.effective_resolution.automatic_grouping_resolved);
+    EXPECT_FALSE(
+        plan.effective_resolution.detector_grouping_fell_back_to_array);
+
+    plan.reset_from_request(
+        request, citlali::config::ReductionType::beammap);
+    EXPECT_EQ(plan.requested.grouping,
+              citlali::config::MapGrouping::automatic);
+    EXPECT_EQ(plan.effective.grouping,
+              citlali::config::MapGrouping::detector);
+
+    request.grouping = citlali::config::MapGrouping::detector;
+    plan.reset_from_request(
+        request, citlali::config::ReductionType::pointing);
+    EXPECT_EQ(plan.requested.grouping,
+              citlali::config::MapGrouping::detector);
+    EXPECT_EQ(plan.effective.grouping,
+              citlali::config::MapGrouping::array);
+    EXPECT_TRUE(
+        plan.effective_resolution.detector_grouping_fell_back_to_array);
+}
+
+TEST(config_scaffold, routes_mapmaking_accessor_through_effective_plan) {
+    FakeEngine engine;
+    engine.typed_config.mapmaking.grouping =
+        citlali::config::MapGrouping::automatic;
+    engine.mapmaking_plan.reset_from_request(
+        engine.typed_config.mapmaking,
+        citlali::config::ReductionType::beammap);
+
+    EXPECT_EQ(engine.typed_config.mapmaking.grouping,
+              citlali::config::MapGrouping::automatic);
+    EXPECT_EQ(engine.mapmaking_plan.requested.grouping,
+              citlali::config::MapGrouping::automatic);
+    EXPECT_EQ(citlali::pipeline::mapmaking_config(engine).grouping,
+              citlali::config::MapGrouping::detector);
+}
+
+TEST(config_scaffold, records_uncalibrated_effective_map_unit) {
+    citlali::config::MapmakingConfig request;
+    request.unit = "mJy/beam";
+    citlali::pipeline::MapmakingExecutionPlan plan;
+
+    plan.reset_from_request(
+        request, citlali::config::ReductionType::science, false,
+        citlali::config::TodType::rs);
+
+    EXPECT_EQ(plan.requested.unit, "mJy/beam");
+    EXPECT_EQ(plan.effective.unit, "rs");
+    EXPECT_EQ(plan.effective_resolution.requested_unit, "mJy/beam");
+    EXPECT_EQ(plan.effective_resolution.effective_unit, "rs");
+    EXPECT_TRUE(
+        plan.effective_resolution.uncalibrated_unit_substituted);
+}
+
+TEST(config_scaffold, serializes_versioned_mapmaking_provenance) {
+    citlali::config::MapmakingConfig request;
+    request.grouping = citlali::config::MapGrouping::automatic;
+    request.method = citlali::config::MapMethod::jinc;
+    request.pixel_size_arcsec = 1.5;
+    citlali::pipeline::MapmakingExecutionPlan plan;
+    plan.reset_from_request(
+        request, citlali::config::ReductionType::beammap);
+    plan.begin_observation().map_count = 5234;
+    citlali::pipeline::record_mapmaking_run_completed(plan);
+
+    const auto node =
+        citlali::pipeline::mapmaking_provenance_node(plan);
+
+    EXPECT_EQ(node["schema_version"].as<std::string>(),
+              "citlali-mapmaking-provenance-v1");
+    EXPECT_TRUE(node["initialized"].as<bool>());
+    EXPECT_EQ(node["requested"]["grouping"].as<std::string>(),
+              "auto");
+    EXPECT_EQ(node["requested"]["method"].as<std::string>(), "jinc");
+    EXPECT_DOUBLE_EQ(
+        node["requested"]["pixel_size_arcsec"].as<double>(), 1.5);
+    EXPECT_EQ(node["effective"]["config"]["grouping"]
+                  .as<std::string>(),
+              "detector");
+    EXPECT_EQ(node["effective"]["resolution"]["reduction_type"]
+                  .as<std::string>(),
+              "beammap");
+    EXPECT_EQ(node["effective"]["resolution"]["effective_unit"]
+                  .as<std::string>(),
+              "mJy/beam");
+    EXPECT_EQ(node["observation"]["map_count"]["value"].as<int>(),
+              5234);
+    EXPECT_TRUE(node["realized"]["reduction_completed"].as<bool>());
+    EXPECT_TRUE(node["realized"]["mapmaking_executed"].as<bool>());
+}
+
+TEST(config_scaffold, atomically_writes_mapmaking_provenance) {
+    const auto output_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_mapmaking_provenance_test";
+    std::filesystem::remove_all(output_dir);
+    std::filesystem::create_directories(output_dir);
+    citlali::pipeline::MapmakingExecutionPlan plan;
+    plan.reset_from_request(
+        citlali::config::MapmakingConfig{},
+        citlali::config::ReductionType::science);
+
+    citlali::pipeline::write_mapmaking_provenance_file(
+        output_dir, plan);
+
+    const auto output_path =
+        citlali::pipeline::mapmaking_provenance_path(output_dir);
+    EXPECT_TRUE(std::filesystem::exists(output_path));
+    EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
+    const auto stored = YAML::LoadFile(output_path.string());
+    EXPECT_EQ(stored["schema_version"].as<std::string>(),
+              "citlali-mapmaking-provenance-v1");
+    std::filesystem::remove_all(output_dir);
+}
+
+TEST(config_scaffold, mapmaking_provenance_failure_propagates) {
+    const auto missing_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_missing_mapmaking_provenance_dir" / "nested";
+    std::filesystem::remove_all(missing_dir.parent_path());
+    citlali::pipeline::MapmakingExecutionPlan plan;
+    plan.reset_from_request(
+        citlali::config::MapmakingConfig{},
+        citlali::config::ReductionType::science);
+
+    EXPECT_THROW(
+        citlali::pipeline::write_mapmaking_provenance_file(
+            missing_dir, plan),
+        std::ios_base::failure);
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::mapmaking_provenance_path(missing_dir)));
+    EXPECT_THROW(
+        citlali::pipeline::write_mapmaking_provenance_file(
+            missing_dir, citlali::pipeline::MapmakingExecutionPlan{}),
+        std::logic_error);
+}
+
+TEST(config_scaffold, validates_typed_mapmaking_method_values) {
+    citlali::config::MapmakingConfig config;
+    config.jinc_filter.r_max = 0.0;
+    config.jinc_filter.subpixel_n = 0;
+    config.jinc_filter.shape_params["a1100"][1] =
+        std::numeric_limits<double>::quiet_NaN();
+    config.maximum_likelihood.max_iterations = 0;
+    config.maximum_likelihood.tolerance = 0.0;
+    citlali::config::ValidationReport report;
+
+    citlali::config::validate(config, report);
+
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 5U);
 }
 
 TEST(config_scaffold, parses_existing_timestream_enum_values) {

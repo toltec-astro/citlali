@@ -7,6 +7,7 @@
 #include <citlali/core/cli/tod_processor_selection.h>
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/pipeline/map_geometry.h>
+#include <citlali/core/pipeline/mapmaking_provenance.h>
 #include <citlali/core/pipeline/processed_timestream_provenance.h>
 #include <citlali/core/pipeline/reduction_pipeline.h>
 #include <spdlog/spdlog.h>
@@ -120,6 +121,17 @@ int run_cli_reduction_processor(
     logger->info(
         "processed timestream provenance sidecar: {}",
         citlali::pipeline::processed_timestream_provenance_path(
+            engine.output_paths.redu_dir_name)
+            .string());
+
+    auto &mapmaking_plan =
+        citlali::pipeline::mapmaking_plan(engine);
+    citlali::pipeline::record_mapmaking_run_completed(mapmaking_plan);
+    citlali::pipeline::write_mapmaking_provenance_file(
+        engine.output_paths.redu_dir_name, mapmaking_plan);
+    logger->info(
+        "mapmaking provenance sidecar: {}",
+        citlali::pipeline::mapmaking_provenance_path(
             engine.output_paths.redu_dir_name)
             .string());
 

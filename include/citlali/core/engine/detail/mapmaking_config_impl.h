@@ -13,7 +13,10 @@ void Engine::get_mapmaking_config(CT &config) {
     logger->info("getting mapmaking config options");
     auto &runtime_config = citlali::pipeline::runtime_config(*this);
     auto &timestream_config = citlali::pipeline::timestream_config(*this);
-    auto &mapmaking_config = citlali::pipeline::mapmaking_config(*this);
+    auto &mapmaking_plan = citlali::pipeline::mapmaking_plan(*this);
+    mapmaking_plan = {};
+    auto &mapmaking_config =
+        citlali::pipeline::reduction_config(*this).mapmaking;
     auto &coadd_config = citlali::pipeline::coadd_config(*this);
     auto &noise_config = citlali::pipeline::noise_config(*this);
     auto &post_processing_config =
@@ -38,9 +41,6 @@ void Engine::get_mapmaking_config(CT &config) {
         rtcproc.run_polarization, runtime_config.reduction_type,
         mapmaking_config.grouping, logger);
 
-    citlali::pipeline::sync_map_grouping_to_timestream_processors(
-        mapmaking_config.grouping, rtcproc, ptcproc);
-
     std::string map_method{
         std::string(citlali::config::to_string(mapmaking_config.method))};
     citlali::pipeline::read_map_method_config(
@@ -56,31 +56,72 @@ void Engine::get_mapmaking_config(CT &config) {
         runtime_config.reduction_type,
         mapmaking_config.pixel_axes_frame, logger);
 
-    citlali::pipeline::read_output_map_block_config(
-        config, omb, diagnostics,
-        mapmaking_config.pixel_axes_frame, runtime_config.reduction_type,
-        RAD_TO_ASEC, mapmaking_config,
-        post_processing_config, logger);
+    logger->info("getting omb config options");
+    const auto output_missing_before =
+        diagnostics.missing_key_paths().size();
+    const auto output_invalid_before =
+        diagnostics.invalid_key_paths().size();
+    citlali::pipeline::read_mapmaking_output_request_config(
+        config, mapmaking_config, post_processing_config, diagnostics);
+    const bool output_config_clean =
+        citlali::pipeline::config_parse_clean(
+            diagnostics.missing_key_paths(),
+            diagnostics.invalid_key_paths(), output_missing_before,
+            output_invalid_before);
+    if (output_config_clean) {
+        citlali::pipeline::adapt_mapmaking_output_config_one_way(
+            mapmaking_config, post_processing_config,
+            mapmaking_config.pixel_axes_frame,
+            runtime_config.reduction_type, ASEC_TO_RAD, RAD_TO_DEG,
+            RAD_TO_ASEC, omb);
+    }
 
     bool coadd_enabled = coadd_config.enabled;
     citlali::pipeline::read_coadd_enabled_config(
         config, coadd_enabled, coadd_config, diagnostics);
-    citlali::pipeline::read_coadd_map_block_config(
-        config, coadd_config, cmb, diagnostics,
-        mapmaking_config.pixel_axes_frame, runtime_config.reduction_type,
-        logger);
+    if (output_config_clean &&
+        citlali::config::coadd_active(coadd_config)) {
+        logger->info("getting cmb config options");
+        citlali::pipeline::adapt_mapmaking_output_config_one_way(
+            mapmaking_config, post_processing_config,
+            mapmaking_config.pixel_axes_frame,
+            runtime_config.reduction_type, ASEC_TO_RAD, RAD_TO_DEG,
+            RAD_TO_ASEC, cmb);
+    }
 
+    const bool flux_calibration_enabled =
+        citlali::pipeline::raw_flux_calibration_enabled(*this);
     citlali::pipeline::apply_uncalibrated_map_units(
-        citlali::pipeline::raw_flux_calibration_enabled(*this),
-        timestream_config.type, omb, cmb);
+        flux_calibration_enabled, timestream_config.type, omb, cmb);
 
     citlali::pipeline::sync_mapmaking_parallel_policy(
         citlali::pipeline::runtime_parallel_policy_name(*this),
         omb, cmb, jinc_mm);
 
-    citlali::pipeline::read_method_specific_mapmaker_config(
-        config, mapmaking_config.method, jinc_mm, ml_mm,
-        toltec_io.array_name_map, ptcproc, omb.pixel_size_rad, diagnostics);
+    const auto method_missing_before =
+        diagnostics.missing_key_paths().size();
+    const auto method_invalid_before =
+        diagnostics.invalid_key_paths().size();
+    citlali::pipeline::read_mapmaking_method_request_config(
+        config, mapmaking_config.method, toltec_io.array_name_map,
+        mapmaking_config, diagnostics);
+    if (citlali::pipeline::config_parse_clean(
+            diagnostics.missing_key_paths(),
+            diagnostics.invalid_key_paths(), method_missing_before,
+            method_invalid_before)) {
+        if (citlali::config::is_jinc_map_method(
+                mapmaking_config.method)) {
+            citlali::pipeline::adapt_jinc_filter_config_one_way(
+                mapmaking_config.jinc_filter, toltec_io.array_name_map,
+                jinc_mm);
+            citlali::pipeline::finalize_jinc_filter_config(
+                jinc_mm, ptcproc, omb.pixel_size_rad);
+        } else if (citlali::config::is_maximum_likelihood_map_method(
+                       mapmaking_config.method)) {
+            citlali::pipeline::adapt_maximum_likelihood_config_one_way(
+                mapmaking_config.maximum_likelihood, ml_mm);
+        }
+    }
 
     bool noise_maps_enabled = noise_config.enabled;
     citlali::pipeline::read_noise_map_config(
@@ -96,4 +137,10 @@ void Engine::get_mapmaking_config(CT &config) {
 
     citlali::pipeline::set_mapmaker_polarization(
         rtcproc.run_polarization, naive_mm, jinc_mm);
+
+    mapmaking_plan.reset_from_request(
+        mapmaking_config, runtime_config.reduction_type,
+        flux_calibration_enabled, timestream_config.type);
+    citlali::pipeline::sync_map_grouping_to_timestream_processors(
+        mapmaking_plan.effective.grouping, rtcproc, ptcproc);
 }

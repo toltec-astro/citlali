@@ -3,6 +3,7 @@
 #include <citlali/core/config/enum_parser.h>
 
 #include <array>
+#include <map>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -34,6 +35,21 @@ enum class SourceMapRegime {
     source_faint,
     blank_field,
     unknown
+};
+
+struct MapmakingJincFilterConfig {
+    double r_max = 3.0;
+    int subpixel_n = 1;
+    std::map<std::string, std::array<double, 3>> shape_params{
+        {"a1100", {1.1, 1.67, 2.0}},
+        {"a1400", {1.1, 2.17, 2.0}},
+        {"a2000", {1.1, 3.17, 2.0}},
+    };
+};
+
+struct MapmakingMaximumLikelihoodConfig {
+    int max_iterations = 50;
+    double tolerance = 1e-20;
 };
 
 inline constexpr std::array<EnumName<MapGrouping>, 5> map_grouping_names{{
@@ -207,6 +223,8 @@ struct MapmakingConfig {
     int x_size_pix = 0;
     int y_size_pix = 0;
     double coverage_cut = 0.0;
+    MapmakingJincFilterConfig jinc_filter;
+    MapmakingMaximumLikelihoodConfig maximum_likelihood;
 };
 
 inline void set_mapmaking_enabled(MapmakingConfig &config, bool enabled) {

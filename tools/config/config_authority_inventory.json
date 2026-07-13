@@ -76,12 +76,12 @@
       "config_prefixes": ["mapmaking"],
       "typed_owner": "citlali::config::ReductionConfig::mapmaking",
       "loader": "include/citlali/core/engine/detail/mapmaking_config_impl.h",
-      "execution_authority": "mixed",
-      "legacy_targets": ["Engine::omb", "Engine::cmb"],
+      "execution_authority": "typed",
+      "legacy_targets": ["Engine::omb", "Engine::cmb", "Engine::jinc_mm", "Engine::ml_mm", "Engine::ptcproc", "Engine::rtcproc"],
       "adapter_direction": "typed-to-legacy",
-      "migration_status": "mixed-adapter",
+      "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Make method, grouping, geometry, and activation decisions consume an immutable effective mapmaking plan."
+      "exit_gate": "Local authority mechanics complete: all 22 frozen paths have direct typed readers and versioned provenance, processor and map-buffer YAML parsers are retired, and execution consumes the immutable effective plan. Close with strict Unity point WCS/provenance validation, Beammap and science JINC validation, and explicit realized observation/product cardinality."
     },
     {
       "id": "noise-products",
