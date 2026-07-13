@@ -236,6 +236,38 @@ def valid_mapmaking_v1_document() -> dict:
     return document
 
 
+def valid_coadd_document(enabled: bool = True) -> dict:
+    return {
+        "schema_version": "citlali-coadd-provenance-v1",
+        "initialized": True,
+        "requested": {"enabled": enabled},
+        "effective": {
+            "config": {"enabled": enabled},
+            "resolution": {
+                "mapmaking_enabled": True,
+                "requested_enabled": enabled,
+                "effective_enabled": enabled,
+                "disabled_by_mapmaking": False,
+            },
+        },
+        "realized": {
+            "reduction_completed": True,
+            "coadd_executed": enabled,
+            "map_count": (
+                {"available": True, "value": 3}
+                if enabled
+                else {"available": False}
+            ),
+            "required_map_write_count": (
+                {"available": True, "value": 6}
+                if enabled
+                else {"available": False}
+            ),
+            "outputs_completed": enabled,
+        },
+    }
+
+
 class ProvenanceAuditTest(unittest.TestCase):
     def test_accepts_complete_mapmaking_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -361,6 +393,73 @@ class ProvenanceAuditTest(unittest.TestCase):
             "duplicate mapmaking obsnum: 152389",
             audit.mapmaking_cardinality_semantic_errors(document),
         )
+
+    def test_accepts_complete_coadd_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "coadd_provenance.yaml").write_text(
+                yaml.safe_dump(valid_coadd_document(), sort_keys=False),
+                encoding="utf-8",
+            )
+
+            coadd = audit.audit_provenance_sidecars(
+                redu, require_coadd=True
+            )["coadd"]
+
+            self.assertTrue(coadd["present"])
+            self.assertTrue(coadd["required"])
+            self.assertTrue(coadd["valid"])
+
+    def test_accepts_effectively_disabled_coadd_provenance(self) -> None:
+        document = valid_coadd_document(enabled=False)
+
+        self.assertEqual(
+            audit.coadd_provenance_semantic_errors(document), []
+        )
+
+    def test_rejects_inconsistent_coadd_activation(self) -> None:
+        document = valid_coadd_document()
+        document["effective"]["config"]["enabled"] = False
+
+        self.assertIn(
+            "coadd effective resolution is inconsistent",
+            audit.coadd_provenance_semantic_errors(document),
+        )
+
+    def test_rejects_non_boolean_coadd_resolution(self) -> None:
+        document = valid_coadd_document()
+        document["effective"]["resolution"]["mapmaking_enabled"] = 1
+
+        self.assertIn(
+            "coadd resolution values must be boolean",
+            audit.coadd_provenance_semantic_errors(document),
+        )
+
+    def test_rejects_coadd_mapmaking_cardinality_mismatch(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            mapmaking = valid_mapmaking_document()
+            coadd = valid_coadd_document()
+            coadd["realized"]["map_count"]["value"] = 6
+            (redu / "mapmaking_provenance.yaml").write_text(
+                yaml.safe_dump(mapmaking, sort_keys=False),
+                encoding="utf-8",
+            )
+            (redu / "coadd_provenance.yaml").write_text(
+                yaml.safe_dump(coadd, sort_keys=False),
+                encoding="utf-8",
+            )
+
+            records = audit.audit_provenance_sidecars(
+                redu, require_mapmaking=True, require_coadd=True
+            )
+
+            self.assertTrue(records["mapmaking"]["valid"])
+            self.assertFalse(records["coadd"]["valid"])
+            self.assertEqual(
+                records["coadd"]["cross_check_errors"],
+                ["coadd cardinality differs from mapmaking provenance"],
+            )
 
     def test_accepts_raw_provenance_for_every_observation(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

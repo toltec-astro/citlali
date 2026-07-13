@@ -75,6 +75,22 @@ PROVENANCE_SIDECARS = {
         },
         "allow_multiple": False,
     },
+    "coadd": {
+        "filename": "coadd_provenance.yaml",
+        "schema_version": "citlali-coadd-provenance-v1",
+        "required_paths": (
+            ("initialized",),
+            ("requested", "enabled"),
+            ("effective", "config", "enabled"),
+            ("effective", "resolution"),
+            ("realized", "reduction_completed"),
+            ("realized", "coadd_executed"),
+            ("realized", "map_count"),
+            ("realized", "required_map_write_count"),
+            ("realized", "outputs_completed"),
+        ),
+        "allow_multiple": False,
+    },
     "timestream_output": {
         "filename": "timestream_output_provenance.yaml",
         "schema_version": "citlali-timestream-output-provenance-v1",
@@ -648,6 +664,83 @@ def mapmaking_cardinality_semantic_errors(
     return errors
 
 
+def coadd_provenance_semantic_errors(
+    data: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        if data["initialized"] is not True:
+            errors.append("coadd execution plan is not initialized")
+
+        requested = data["requested"]["enabled"]
+        effective = data["effective"]["config"]["enabled"]
+        resolution = data["effective"]["resolution"]
+        realized = data["realized"]
+        if not isinstance(requested, bool) or not isinstance(effective, bool):
+            errors.append("coadd activation values must be boolean")
+            return errors
+
+        mapmaking_enabled = resolution["mapmaking_enabled"]
+        resolution_values = (
+            mapmaking_enabled,
+            resolution["requested_enabled"],
+            resolution["effective_enabled"],
+            resolution["disabled_by_mapmaking"],
+        )
+        if not all(isinstance(value, bool) for value in resolution_values):
+            errors.append("coadd resolution values must be boolean")
+            return errors
+        realized_values = (
+            realized["reduction_completed"],
+            realized["coadd_executed"],
+            realized["outputs_completed"],
+        )
+        if not all(isinstance(value, bool) for value in realized_values):
+            errors.append("coadd realized-state values must be boolean")
+            return errors
+
+        expected_effective = requested and mapmaking_enabled
+        if resolution["requested_enabled"] != requested:
+            errors.append("coadd requested resolution is inconsistent")
+        if resolution["effective_enabled"] != effective:
+            errors.append("coadd effective resolution is inconsistent")
+        if effective != expected_effective:
+            errors.append("coadd activation does not follow mapmaking policy")
+        if resolution["disabled_by_mapmaking"] != (
+            requested and not mapmaking_enabled
+        ):
+            errors.append("coadd mapmaking-disable resolution is inconsistent")
+
+        if realized["reduction_completed"] is not True:
+            errors.append("coadd reduction is not complete")
+        if realized["coadd_executed"] != effective:
+            errors.append("coadd execution does not match effective policy")
+
+        map_count_record = realized["map_count"]
+        write_count_record = realized["required_map_write_count"]
+        if effective:
+            map_count = available_count(map_count_record, "coadd map_count")
+            write_count = available_count(
+                write_count_record, "coadd required_map_write_count"
+            )
+            if map_count <= 0 or write_count < map_count or (
+                write_count % map_count
+            ):
+                errors.append("coadd realized cardinality is invalid")
+            if realized["outputs_completed"] is not True:
+                errors.append("coadd outputs are incomplete")
+        else:
+            if map_count_record.get("available") is not False or (
+                write_count_record.get("available") is not False
+            ):
+                errors.append("disabled coadd records product cardinality")
+            if realized["outputs_completed"] is not False:
+                errors.append("disabled coadd records completed outputs")
+    except (AttributeError, KeyError, TypeError, ValueError) as exc:
+        errors.append(f"cannot evaluate coadd provenance semantics: {exc}")
+    return errors
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -664,6 +757,7 @@ def audit_provenance_sidecars(
     redu: Path, require_processed: bool = False,
     require_raw: bool = False,
     require_mapmaking: bool = False,
+    require_coadd: bool = False,
 ) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for name, spec in PROVENANCE_SIDECARS.items():
@@ -671,6 +765,7 @@ def audit_provenance_sidecars(
             (name == "processed_timestream" and require_processed)
             or (name == "raw_timestream" and require_raw)
             or (name == "mapmaking" and require_mapmaking)
+            or (name == "coadd" and require_coadd)
         )
         paths = find_provenance_files(redu, str(spec["filename"]))
         record: dict[str, Any] = {
@@ -723,6 +818,10 @@ def audit_provenance_sidecars(
                     elif name == "mapmaking":
                         semantic_errors = (
                             mapmaking_provenance_semantic_errors(data)
+                        )
+                    elif name == "coadd":
+                        semantic_errors = coadd_provenance_semantic_errors(
+                            data
                         )
                 item["semantic_errors"] = semantic_errors
                 item["valid"] = bool(
@@ -830,6 +929,37 @@ def audit_provenance_sidecars(
             and coverage_ok
             and all(item.get("valid") for item in raw.get("files", []))
         )
+
+    mapmaking = result["mapmaking"]
+    coadd = result["coadd"]
+    if mapmaking["present"] and coadd["present"] and (
+        mapmaking["valid"] and coadd["valid"]
+    ):
+        try:
+            mapmaking_data = load_yaml(Path(mapmaking["paths"][0]))
+            coadd_data = load_yaml(Path(coadd["paths"][0]))
+            mapmaking_coadd = mapmaking_data["coadd"]
+            coadd_realized = coadd_data["realized"]
+            available = mapmaking_coadd["available"]
+            if available != coadd_realized["coadd_executed"]:
+                raise ValueError(
+                    "coadd execution differs from mapmaking provenance"
+                )
+            if available:
+                if (
+                    mapmaking_coadd["map_count"]
+                    != coadd_realized["map_count"]["value"]
+                    or mapmaking_coadd["required_map_write_count"]
+                    != coadd_realized["required_map_write_count"]["value"]
+                    or mapmaking_coadd["outputs_completed"]
+                    != coadd_realized["outputs_completed"]
+                ):
+                    raise ValueError(
+                        "coadd cardinality differs from mapmaking provenance"
+                    )
+        except Exception as exc:
+            coadd["valid"] = False
+            coadd.setdefault("cross_check_errors", []).append(str(exc))
     return result
 
 
@@ -1039,6 +1169,7 @@ def build_audit(args: argparse.Namespace) -> dict[str, Any]:
             getattr(args, "require_processed_provenance", False),
             getattr(args, "require_raw_provenance", False),
             getattr(args, "require_mapmaking_provenance", False),
+            getattr(args, "require_coadd_provenance", False),
         ),
         "products": audit_products(redu, args.top),
     }
@@ -1131,6 +1262,12 @@ def render_markdown(result: dict[str, Any]) -> str:
                     + "`; `".join(item["semantic_errors"])
                     + "`"
                 )
+        if record.get("cross_check_errors"):
+            lines.append(
+                f"\n`{name}` cross-check errors: `"
+                + "`; `".join(record["cross_check_errors"])
+                + "`"
+            )
         if record.get("missing_observation_dirs"):
             lines.append(
                 f"\n`{name}` missing observation directories: `"
@@ -1185,6 +1322,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         "--require-mapmaking-provenance",
         action="store_true",
         help="Fail unless mapmaking_provenance.yaml is present and valid.",
+    )
+    parser.add_argument(
+        "--require-coadd-provenance",
+        action="store_true",
+        help="Fail unless coadd_provenance.yaml is present and valid.",
     )
     parser.add_argument("--json-out", default="", help="Optional path for machine-readable JSON.")
     parser.add_argument("--report-out", default="", help="Optional path for Markdown output.")

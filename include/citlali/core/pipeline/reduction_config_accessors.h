@@ -14,6 +14,9 @@ struct has_raw_timestream_plan : std::false_type {};
 template <class Engine, class = void>
 struct has_mapmaking_plan : std::false_type {};
 
+template <class Engine, class = void>
+struct has_coadd_plan : std::false_type {};
+
 template <class Engine>
 struct has_raw_timestream_plan<
     Engine,
@@ -44,6 +47,15 @@ struct has_mapmaking_plan<
 template <class Engine>
 inline constexpr bool has_mapmaking_plan_v =
     has_mapmaking_plan<Engine>::value;
+
+template <class Engine>
+struct has_coadd_plan<
+    Engine,
+    std::void_t<decltype(std::declval<Engine &>().coadd_plan)>>
+    : std::true_type {};
+
+template <class Engine>
+inline constexpr bool has_coadd_plan_v = has_coadd_plan<Engine>::value;
 
 template <class Engine>
 auto &runtime_config_provenance(Engine &engine) {
@@ -229,12 +241,32 @@ const auto &mapmaking_config(const Engine &engine) {
 
 template <class Engine>
 auto &coadd_config(Engine &engine) {
+    if constexpr (has_coadd_plan_v<Engine>) {
+        if (engine.coadd_plan.initialized) {
+            return engine.coadd_plan.effective;
+        }
+    }
     return reduction_config(engine).coadd;
 }
 
 template <class Engine>
 const auto &coadd_config(const Engine &engine) {
+    if constexpr (has_coadd_plan_v<Engine>) {
+        if (engine.coadd_plan.initialized) {
+            return engine.coadd_plan.effective;
+        }
+    }
     return reduction_config(engine).coadd;
+}
+
+template <class Engine>
+auto &coadd_plan(Engine &engine) {
+    return engine.coadd_plan;
+}
+
+template <class Engine>
+const auto &coadd_plan(const Engine &engine) {
+    return engine.coadd_plan;
 }
 
 template <class Engine>

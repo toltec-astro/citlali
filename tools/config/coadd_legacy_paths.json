@@ -1,0 +1,8 @@
+{
+  "schema_version": "citlali-frozen-coadd-config-paths-v1",
+  "path_count": 1,
+  "path_sha256": "b4b87923304067219ffbc2da502fded0b867f850fa9f5254204fd9f7b537e957",
+  "paths": [
+    "coadd.enabled"
+  ]
+}

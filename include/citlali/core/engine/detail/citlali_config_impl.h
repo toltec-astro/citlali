@@ -17,7 +17,6 @@ void Engine::get_citlali_config(CT &config) {
     auto &timestream_config = citlali::pipeline::timestream_config(*this);
     auto &post_processing_config =
         citlali::pipeline::post_processing_config(*this);
-    auto &coadd_config = citlali::pipeline::coadd_config(*this);
     auto &reduction_config = citlali::pipeline::reduction_config(*this);
     auto &diagnostics = citlali::pipeline::config_diagnostics(*this);
 
@@ -78,7 +77,7 @@ void Engine::get_citlali_config(CT &config) {
 
     // get source finder config options
     citlali::pipeline::read_source_finding_config(
-        config, omb, cmb, coadd_config, ASEC_TO_RAD,
+        config, omb, cmb, citlali::pipeline::coadd_config(*this), ASEC_TO_RAD,
         post_processing_config, diagnostics);
 
     /* get pointing config */

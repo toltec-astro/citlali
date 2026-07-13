@@ -99,13 +99,13 @@
       "id": "coadd",
       "config_prefixes": ["mapmaking.coadd"],
       "typed_owner": "citlali::config::ReductionConfig::coadd",
-      "loader": "include/citlali/core/engine/detail/mapmaking_config_impl.h",
+      "loader": "include/citlali/core/pipeline/coadd_config_read.h",
       "execution_authority": "typed",
       "legacy_targets": [],
       "adapter_direction": "none",
       "migration_status": "typed-authoritative",
       "provenance_status": "partial",
-      "exit_gate": "Record effective coadd activation and realized product cardinality."
+      "exit_gate": "The one-path request reader, immutable effective plan, required versioned provenance, and mapmaking-cardinality cross-check are implemented locally. Close with point disabled-output and science enabled-output Unity gates."
     },
     {
       "id": "post-processing",

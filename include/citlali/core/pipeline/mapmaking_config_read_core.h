@@ -113,23 +113,3 @@ void read_map_regime_config(Config &config, MapmakingConfig &typed_config,
         config, typed_config, diagnostics.missing_key_paths(),
         diagnostics.invalid_key_paths());
 }
-
-template <class Config, class MissingKeys, class InvalidKeys,
-          class CoaddConfig>
-void read_coadd_enabled_config(Config &config, bool &enabled,
-                               CoaddConfig &typed_config,
-                               MissingKeys &missing_keys,
-                               InvalidKeys &invalid_keys) {
-    citlali::pipeline::read_mirrored_config_value(
-        config, std::tuple{"coadd", "enabled"}, enabled,
-        typed_config.enabled, missing_keys, invalid_keys);
-}
-
-template <class Config, class Diagnostics, class CoaddConfig>
-void read_coadd_enabled_config(Config &config, bool &enabled,
-                               CoaddConfig &typed_config,
-                               Diagnostics &diagnostics) {
-    read_coadd_enabled_config(
-        config, enabled, typed_config, diagnostics.missing_key_paths(),
-        diagnostics.invalid_key_paths());
-}

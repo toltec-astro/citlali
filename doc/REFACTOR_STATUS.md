@@ -32,8 +32,8 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 305 tests with none skipped or disabled; all
-  32 config-boundary/preflight tests pass.
+- CTest discovers and passes all 314 tests with none skipped or disabled; all
+  38 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -559,17 +559,29 @@ and one completed 5,234-map observation with no coadd; runtime is 3449.262
 seconds versus 3483.362 seconds. The validation ledger records all three
 accepted runs. The mapmaking authority and provenance domain is complete.
 
+The bounded coadd authority domain is implemented locally without changing
+coaddition numerics. Its frozen one-path reader owns `coadd.enabled` and
+preserves the requested value. `CoaddExecutionPlan` resolves effective
+activation from the mapmaking plan without mutating that request. Successful
+CLI reductions require atomic `coadd_provenance.yaml` using schema
+`citlali-coadd-provenance-v1`; its realized map and required-write cardinality
+is a one-way snapshot of the already validated mapmaking coadd lifecycle, and
+the reduction audit rejects disagreement between the two sidecars. The legacy
+coadd reader and reverse mutation helper are removed. Local CLI/test builds,
+all 314 C++ tests, all 38 focused config tests, 24 reduction-audit tests, all
+eight config profiles, full preflight, and the 31-record validation ledger
+pass. Unity point and science gates remain open.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.
 
 Immediate work order:
 
-1. Begin the bounded coadd authority domain: preserve the requested flag,
-   resolve effective activation without mutating it, and record realized coadd
-   output cardinality. Do not alter coaddition numerics.
-2. Validate coadd first with focused/local tests and point, then use science to
-   exercise enabled coadd output. OOF remains owner-deferred.
+1. Validate the local coadd checkpoint with Unity point to exercise the
+   disabled/no-output path and required sidecar.
+2. Validate science to exercise enabled coadd output and the cross-checked
+   realized cardinality. Accept and ledger the domain only after both gates.
 3. Do not broaden polarimetry without the pending scientific-policy decisions.
 4. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
    the active domain gates close.

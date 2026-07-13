@@ -11,6 +11,9 @@
 #include <citlali/core/cli/tod_processor_selection.h>
 #include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/beammap_source_flux_config.h>
+#include <citlali/core/pipeline/coadd_config_read.h>
+#include <citlali/core/pipeline/coadd_execution_plan.h>
+#include <citlali/core/pipeline/coadd_provenance.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/map_geometry.h>
@@ -208,6 +211,7 @@ struct FakeEngine {
     citlali::pipeline::ProcessedTimestreamExecutionPlan
         processed_timestream_plan;
     citlali::pipeline::MapmakingExecutionPlan mapmaking_plan;
+    citlali::pipeline::CoaddExecutionPlan coadd_plan;
     citlali::pipeline::MapIndexState map_indices;
     citlali::pipeline::TimestreamAlignmentState alignment = [] {
         citlali::pipeline::TimestreamAlignmentState state;
@@ -1441,6 +1445,116 @@ TEST(config_scaffold, reads_typed_mapmaking_output_request) {
     EXPECT_EQ(post_processing.map_histogram_n_bins, 31);
 }
 
+TEST(config_scaffold, reads_typed_coadd_request) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    root["coadd"]["enabled"] = true;
+    auto yaml_config =
+        tula::config::YamlConfig::from_str(YAML::Dump(root));
+    citlali::config::CoaddConfig request;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_coadd_request_config(
+        yaml_config, request, diagnostics);
+
+    ASSERT_FALSE(diagnostics.has_errors());
+    EXPECT_TRUE(request.enabled);
+}
+
+TEST(config_scaffold, coadd_plan_preserves_disabled_request) {
+    citlali::config::CoaddConfig request;
+    request.enabled = true;
+    citlali::pipeline::CoaddExecutionPlan plan;
+
+    plan.reset_from_request(request, false);
+
+    EXPECT_TRUE(plan.requested.enabled);
+    EXPECT_FALSE(plan.effective.enabled);
+    EXPECT_FALSE(plan.effective_resolution.mapmaking_enabled);
+    EXPECT_TRUE(plan.effective_resolution.requested_enabled);
+    EXPECT_FALSE(plan.effective_resolution.effective_enabled);
+    EXPECT_TRUE(plan.effective_resolution.disabled_by_mapmaking);
+}
+
+TEST(config_scaffold, routes_coadd_accessor_through_effective_plan) {
+    FakeEngine engine;
+    engine.typed_config.coadd.enabled = true;
+    engine.coadd_plan.reset_from_request(
+        engine.typed_config.coadd, false);
+
+    EXPECT_TRUE(engine.typed_config.coadd.enabled);
+    EXPECT_TRUE(engine.coadd_plan.requested.enabled);
+    EXPECT_FALSE(citlali::pipeline::coadd_config(engine).enabled);
+}
+
+TEST(config_scaffold, records_enabled_coadd_realized_cardinality) {
+    citlali::pipeline::MapmakingExecutionPlan mapmaking;
+    mapmaking.reset_from_request(
+        citlali::config::MapmakingConfig{},
+        citlali::config::ReductionType::science);
+    mapmaking.begin_iteration();
+    mapmaking.begin_observation(0, "152390", 3, 9.696273622e-6, 3);
+    citlali::pipeline::complete_mapmaking_observation(mapmaking);
+    mapmaking.begin_coadd(3, 6);
+    citlali::pipeline::complete_mapmaking_coadd(mapmaking);
+    citlali::pipeline::record_mapmaking_run_completed(mapmaking);
+    citlali::config::CoaddConfig request;
+    request.enabled = true;
+    citlali::pipeline::CoaddExecutionPlan coadd;
+    coadd.reset_from_request(request, true);
+
+    citlali::pipeline::record_coadd_run_completed(coadd, mapmaking);
+
+    EXPECT_TRUE(coadd.realized.reduction_completed);
+    EXPECT_TRUE(coadd.realized.coadd_executed);
+    EXPECT_EQ(*coadd.realized.map_count, 3U);
+    EXPECT_EQ(*coadd.realized.required_map_write_count, 6U);
+    EXPECT_TRUE(coadd.realized.outputs_completed);
+}
+
+TEST(config_scaffold, records_effectively_disabled_coadd) {
+    citlali::config::MapmakingConfig mapmaking_request;
+    mapmaking_request.enabled = false;
+    citlali::pipeline::MapmakingExecutionPlan mapmaking;
+    mapmaking.reset_from_request(
+        mapmaking_request, citlali::config::ReductionType::science);
+    mapmaking.begin_iteration();
+    citlali::pipeline::record_mapmaking_run_completed(mapmaking);
+    citlali::config::CoaddConfig coadd_request;
+    coadd_request.enabled = true;
+    citlali::pipeline::CoaddExecutionPlan coadd;
+    coadd.reset_from_request(coadd_request, false);
+
+    citlali::pipeline::record_coadd_run_completed(coadd, mapmaking);
+
+    EXPECT_TRUE(coadd.requested.enabled);
+    EXPECT_FALSE(coadd.effective.enabled);
+    EXPECT_TRUE(coadd.realized.reduction_completed);
+    EXPECT_FALSE(coadd.realized.coadd_executed);
+    EXPECT_FALSE(coadd.realized.map_count.has_value());
+    EXPECT_FALSE(coadd.realized.required_map_write_count.has_value());
+    EXPECT_FALSE(coadd.realized.outputs_completed);
+}
+
+TEST(config_scaffold, rejects_inconsistent_coadd_realized_state) {
+    citlali::pipeline::MapmakingExecutionPlan mapmaking;
+    mapmaking.reset_from_request(
+        citlali::config::MapmakingConfig{},
+        citlali::config::ReductionType::science);
+    mapmaking.begin_iteration();
+    mapmaking.begin_observation(0, "152390", 3, 9.696273622e-6, 3);
+    citlali::pipeline::complete_mapmaking_observation(mapmaking);
+    citlali::pipeline::record_mapmaking_run_completed(mapmaking);
+    citlali::config::CoaddConfig request;
+    request.enabled = true;
+    citlali::pipeline::CoaddExecutionPlan coadd;
+    coadd.reset_from_request(request, true);
+
+    EXPECT_THROW(
+        citlali::pipeline::record_coadd_run_completed(coadd, mapmaking),
+        std::logic_error);
+}
+
 TEST(config_scaffold,
      adapts_typed_mapmaking_output_to_legacy_wcs_one_way) {
     struct FakeWcs {
@@ -1769,6 +1883,76 @@ TEST(config_scaffold, mapmaking_provenance_failure_propagates) {
     EXPECT_THROW(
         citlali::pipeline::write_mapmaking_provenance_file(
             missing_dir, citlali::pipeline::MapmakingExecutionPlan{}),
+        std::logic_error);
+}
+
+TEST(config_scaffold, serializes_versioned_coadd_provenance) {
+    citlali::config::CoaddConfig request;
+    request.enabled = true;
+    citlali::pipeline::CoaddExecutionPlan plan;
+    plan.reset_from_request(request, true);
+    plan.realized = citlali::pipeline::CoaddRealizedState{
+        true, true, 3U, 6U, true};
+
+    const auto node = citlali::pipeline::coadd_provenance_node(plan);
+
+    EXPECT_EQ(node["schema_version"].as<std::string>(),
+              "citlali-coadd-provenance-v1");
+    EXPECT_TRUE(node["requested"]["enabled"].as<bool>());
+    EXPECT_TRUE(node["effective"]["config"]["enabled"].as<bool>());
+    EXPECT_FALSE(node["effective"]["resolution"]
+                        ["disabled_by_mapmaking"]
+                            .as<bool>());
+    EXPECT_TRUE(node["realized"]["coadd_executed"].as<bool>());
+    EXPECT_EQ(node["realized"]["map_count"]["value"]
+                  .as<std::size_t>(),
+              3U);
+    EXPECT_EQ(node["realized"]["required_map_write_count"]["value"]
+                  .as<std::size_t>(),
+              6U);
+    EXPECT_TRUE(node["realized"]["outputs_completed"].as<bool>());
+}
+
+TEST(config_scaffold, atomically_writes_coadd_provenance) {
+    const auto output_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_coadd_provenance_test";
+    std::filesystem::remove_all(output_dir);
+    std::filesystem::create_directories(output_dir);
+    citlali::pipeline::CoaddExecutionPlan plan;
+    plan.reset_from_request(citlali::config::CoaddConfig{}, true);
+    plan.realized.reduction_completed = true;
+
+    citlali::pipeline::write_coadd_provenance_file(output_dir, plan);
+
+    const auto output_path =
+        citlali::pipeline::coadd_provenance_path(output_dir);
+    EXPECT_TRUE(std::filesystem::exists(output_path));
+    EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
+    const auto stored = YAML::LoadFile(output_path.string());
+    EXPECT_EQ(stored["schema_version"].as<std::string>(),
+              "citlali-coadd-provenance-v1");
+    std::filesystem::remove_all(output_dir);
+}
+
+TEST(config_scaffold, coadd_provenance_failure_propagates) {
+    const auto missing_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_missing_coadd_provenance_dir" / "nested";
+    std::filesystem::remove_all(missing_dir.parent_path());
+    citlali::pipeline::CoaddExecutionPlan plan;
+    plan.reset_from_request(citlali::config::CoaddConfig{}, true);
+    plan.realized.reduction_completed = true;
+
+    EXPECT_THROW(
+        citlali::pipeline::write_coadd_provenance_file(
+            missing_dir, plan),
+        std::ios_base::failure);
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::coadd_provenance_path(missing_dir)));
+    EXPECT_THROW(
+        citlali::pipeline::write_coadd_provenance_file(
+            missing_dir, citlali::pipeline::CoaddExecutionPlan{}),
         std::logic_error);
 }
 

@@ -4,6 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/pipeline/mapmaking_config_read.h>
+#include <citlali/core/pipeline/coadd_config_read.h>
 #include <citlali/core/pipeline/mapmaking_config_policy.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
@@ -15,6 +16,8 @@ void Engine::get_mapmaking_config(CT &config) {
     auto &timestream_config = citlali::pipeline::timestream_config(*this);
     auto &mapmaking_plan = citlali::pipeline::mapmaking_plan(*this);
     mapmaking_plan = {};
+    auto &coadd_plan = citlali::pipeline::coadd_plan(*this);
+    coadd_plan = {};
     auto &mapmaking_config =
         citlali::pipeline::reduction_config(*this).mapmaking;
     auto &coadd_config = citlali::pipeline::coadd_config(*this);
@@ -76,9 +79,8 @@ void Engine::get_mapmaking_config(CT &config) {
             RAD_TO_ASEC, omb);
     }
 
-    bool coadd_enabled = coadd_config.enabled;
-    citlali::pipeline::read_coadd_enabled_config(
-        config, coadd_enabled, coadd_config, diagnostics);
+    citlali::pipeline::read_coadd_request_config(
+        config, coadd_config, diagnostics);
     if (output_config_clean &&
         citlali::config::coadd_active(coadd_config)) {
         logger->info("getting cmb config options");
@@ -141,6 +143,8 @@ void Engine::get_mapmaking_config(CT &config) {
     mapmaking_plan.reset_from_request(
         mapmaking_config, runtime_config.reduction_type,
         flux_calibration_enabled, timestream_config.type);
+    coadd_plan.reset_from_request(
+        coadd_config, mapmaking_plan.effective.enabled);
     citlali::pipeline::sync_map_grouping_to_timestream_processors(
         mapmaking_plan.effective.grouping, rtcproc, ptcproc);
 }

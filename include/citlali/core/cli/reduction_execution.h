@@ -8,6 +8,7 @@
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/pipeline/map_geometry.h>
 #include <citlali/core/pipeline/mapmaking_provenance.h>
+#include <citlali/core/pipeline/coadd_provenance.h>
 #include <citlali/core/pipeline/processed_timestream_provenance.h>
 #include <citlali/core/pipeline/reduction_pipeline.h>
 #include <spdlog/spdlog.h>
@@ -132,6 +133,17 @@ int run_cli_reduction_processor(
     logger->info(
         "mapmaking provenance sidecar: {}",
         citlali::pipeline::mapmaking_provenance_path(
+            engine.output_paths.redu_dir_name)
+            .string());
+
+    auto &coadd_plan = citlali::pipeline::coadd_plan(engine);
+    citlali::pipeline::record_coadd_run_completed(
+        coadd_plan, mapmaking_plan);
+    citlali::pipeline::write_coadd_provenance_file(
+        engine.output_paths.redu_dir_name, coadd_plan);
+    logger->info(
+        "coadd provenance sidecar: {}",
+        citlali::pipeline::coadd_provenance_path(
             engine.output_paths.redu_dir_name)
             .string());
 
