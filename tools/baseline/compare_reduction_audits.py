@@ -16,6 +16,7 @@ def audit_for(
     path: str, expected_mode: str, expected_label: str, top: int,
     require_processed_provenance: bool = False,
     require_raw_provenance: bool = False,
+    require_mapmaking_provenance: bool = False,
 ) -> dict[str, Any]:
     args = argparse.Namespace(
         reduction=path,
@@ -24,6 +25,7 @@ def audit_for(
         top=top,
         require_processed_provenance=require_processed_provenance,
         require_raw_provenance=require_raw_provenance,
+        require_mapmaking_provenance=require_mapmaking_provenance,
     )
     return audit_reduction_run.build_audit(args)
 
@@ -100,6 +102,7 @@ def compare_audits(args: argparse.Namespace) -> dict[str, Any]:
         args.candidate, args.expected_mode, args.candidate_label, args.top,
         getattr(args, "require_candidate_processed_provenance", False),
         getattr(args, "require_candidate_raw_provenance", False),
+        getattr(args, "require_candidate_mapmaking_provenance", False),
     )
     base_intervals = baseline.get("log", {}).get("interval_seconds", {})
     cand_intervals = candidate.get("log", {}).get("interval_seconds", {})
@@ -274,6 +277,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         "--require-candidate-raw-provenance",
         action="store_true",
         help="Require valid raw provenance for every candidate observation.",
+    )
+    parser.add_argument(
+        "--require-candidate-mapmaking-provenance",
+        action="store_true",
+        help="Require valid mapmaking provenance only for the candidate.",
     )
     parser.add_argument("--json-out", default="", help="Optional path for machine-readable JSON.")
     parser.add_argument("--report-out", default="", help="Optional path for Markdown output.")

@@ -45,6 +45,20 @@ PROVENANCE_SIDECARS = {
         ),
         "allow_multiple": False,
     },
+    "mapmaking": {
+        "filename": "mapmaking_provenance.yaml",
+        "schema_version": "citlali-mapmaking-provenance-v1",
+        "required_paths": (
+            ("initialized",),
+            ("requested",),
+            ("effective", "config"),
+            ("effective", "resolution"),
+            ("observation",),
+            ("realized", "reduction_completed"),
+            ("realized", "mapmaking_executed"),
+        ),
+        "allow_multiple": False,
+    },
     "timestream_output": {
         "filename": "timestream_output_provenance.yaml",
         "schema_version": "citlali-timestream-output-provenance-v1",
@@ -433,6 +447,64 @@ def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
     return errors
 
 
+def mapmaking_provenance_semantic_errors(
+    data: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        if data["initialized"] is not True:
+            errors.append("mapmaking execution plan is not initialized")
+
+        requested = data["requested"]
+        effective = data["effective"]["config"]
+        resolution = data["effective"]["resolution"]
+        realized = data["realized"]
+
+        if effective["grouping"] != resolution["effective_grouping"]:
+            errors.append(
+                "grouping resolution does not match effective config"
+            )
+        if requested["grouping"] != resolution["requested_grouping"]:
+            errors.append(
+                "grouping resolution does not match requested config"
+            )
+        if effective["cunit"] != resolution["effective_unit"]:
+            errors.append("unit resolution does not match effective config")
+        if requested["cunit"] != resolution["requested_unit"]:
+            errors.append("unit resolution does not match requested config")
+
+        expected_automatic = requested["grouping"] == "auto"
+        if resolution["automatic_grouping_resolved"] != expected_automatic:
+            errors.append("automatic-grouping resolution is inconsistent")
+
+        expected_fallback = bool(
+            requested["grouping"] == "detector"
+            and effective["grouping"] == "array"
+        )
+        if (
+            resolution["detector_grouping_fell_back_to_array"]
+            != expected_fallback
+        ):
+            errors.append("detector-grouping fallback is inconsistent")
+
+        expected_substitution = requested["cunit"] != effective["cunit"]
+        if (
+            resolution["uncalibrated_unit_substituted"]
+            != expected_substitution
+        ):
+            errors.append("unit-substitution resolution is inconsistent")
+
+        if realized["reduction_completed"] is not True:
+            errors.append("mapmaking reduction is not complete")
+        if realized["mapmaking_executed"] != effective["enabled"]:
+            errors.append(
+                "mapmaking execution record does not match effective config"
+            )
+    except (KeyError, TypeError) as exc:
+        errors.append(f"cannot evaluate mapmaking provenance semantics: {exc}")
+    return errors
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -448,12 +520,14 @@ def find_provenance_files(redu: Path, filename: str) -> list[Path]:
 def audit_provenance_sidecars(
     redu: Path, require_processed: bool = False,
     require_raw: bool = False,
+    require_mapmaking: bool = False,
 ) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for name, spec in PROVENANCE_SIDECARS.items():
         required = bool(
             (name == "processed_timestream" and require_processed)
             or (name == "raw_timestream" and require_raw)
+            or (name == "mapmaking" and require_mapmaking)
         )
         paths = find_provenance_files(redu, str(spec["filename"]))
         record: dict[str, Any] = {
@@ -498,6 +572,10 @@ def audit_provenance_sidecars(
                         )
                     elif name == "raw_timestream":
                         semantic_errors = raw_provenance_semantic_errors(data)
+                    elif name == "mapmaking":
+                        semantic_errors = (
+                            mapmaking_provenance_semantic_errors(data)
+                        )
                 item["semantic_errors"] = semantic_errors
                 item["valid"] = bool(
                     item["schema_ok"]
@@ -812,6 +890,7 @@ def build_audit(args: argparse.Namespace) -> dict[str, Any]:
             redu,
             getattr(args, "require_processed_provenance", False),
             getattr(args, "require_raw_provenance", False),
+            getattr(args, "require_mapmaking_provenance", False),
         ),
         "products": audit_products(redu, args.top),
     }
@@ -953,6 +1032,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         "--require-raw-provenance",
         action="store_true",
         help="Fail unless every raw_timestream_provenance.yaml is valid.",
+    )
+    parser.add_argument(
+        "--require-mapmaking-provenance",
+        action="store_true",
+        help="Fail unless mapmaking_provenance.yaml is present and valid.",
     )
     parser.add_argument("--json-out", default="", help="Optional path for machine-readable JSON.")
     parser.add_argument("--report-out", default="", help="Optional path for Markdown output.")

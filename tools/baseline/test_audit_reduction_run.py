@@ -162,7 +162,113 @@ def valid_output_document() -> dict:
     }
 
 
+def valid_mapmaking_document() -> dict:
+    requested = {
+        "enabled": True,
+        "grouping": "auto",
+        "cunit": "mJy/beam",
+    }
+    effective = {
+        "enabled": True,
+        "grouping": "array",
+        "cunit": "mJy/beam",
+    }
+    return {
+        "schema_version": "citlali-mapmaking-provenance-v1",
+        "initialized": True,
+        "requested": requested,
+        "effective": {
+            "config": effective,
+            "resolution": {
+                "reduction_type": "science",
+                "requested_grouping": "auto",
+                "effective_grouping": "array",
+                "automatic_grouping_resolved": True,
+                "detector_grouping_fell_back_to_array": False,
+                "requested_unit": "mJy/beam",
+                "effective_unit": "mJy/beam",
+                "uncalibrated_unit_substituted": False,
+            },
+        },
+        "observation": {"available": False},
+        "realized": {
+            "reduction_completed": True,
+            "mapmaking_executed": True,
+            "completed_observation_count": {"available": False},
+            "completed_coadd_count": {"available": False},
+        },
+    }
+
+
 class ProvenanceAuditTest(unittest.TestCase):
+    def test_accepts_complete_mapmaking_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "mapmaking_provenance.yaml").write_text(
+                yaml.safe_dump(valid_mapmaking_document(), sort_keys=False),
+                encoding="utf-8",
+            )
+
+            mapmaking = audit.audit_provenance_sidecars(
+                redu, require_mapmaking=True
+            )["mapmaking"]
+
+            self.assertTrue(mapmaking["present"])
+            self.assertTrue(mapmaking["required"])
+            self.assertTrue(mapmaking["valid"])
+            self.assertEqual(len(mapmaking["sha256"]), 64)
+
+    def test_rejects_missing_required_mapmaking_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            records = audit.audit_provenance_sidecars(
+                Path(directory), require_mapmaking=True
+            )
+
+            self.assertFalse(records["mapmaking"]["valid"])
+            self.assertFalse(audit.provenance_ok({"provenance": records}))
+
+    def test_rejects_inconsistent_mapmaking_resolution(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            document = valid_mapmaking_document()
+            document["effective"]["config"]["grouping"] = "detector"
+            (redu / "mapmaking_provenance.yaml").write_text(
+                yaml.safe_dump(document, sort_keys=False),
+                encoding="utf-8",
+            )
+
+            mapmaking = audit.audit_provenance_sidecars(
+                redu, require_mapmaking=True
+            )["mapmaking"]
+
+            self.assertFalse(mapmaking["valid"])
+            self.assertEqual(
+                mapmaking["files"][0]["semantic_errors"],
+                [
+                    "grouping resolution does not match effective config",
+                ],
+            )
+
+    def test_rejects_incomplete_mapmaking_reduction(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            document = valid_mapmaking_document()
+            document["realized"]["reduction_completed"] = False
+            (redu / "mapmaking_provenance.yaml").write_text(
+                yaml.safe_dump(document, sort_keys=False),
+                encoding="utf-8",
+            )
+
+            mapmaking = audit.audit_provenance_sidecars(
+                redu, require_mapmaking=True
+            )["mapmaking"]
+
+            self.assertFalse(mapmaking["valid"])
+            self.assertEqual(
+                mapmaking["files"][0]["semantic_errors"],
+                ["mapmaking reduction is not complete"],
+            )
+
     def test_accepts_raw_provenance_for_every_observation(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             redu = Path(directory)

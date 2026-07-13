@@ -124,7 +124,8 @@ Beammap validation once the long run has landed:
 $HOME/tolteca/bin/python tools/baseline/audit_reduction_run.py \
   /Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced \
   --expected-mode beammap \
-  --expected-label refactor
+  --expected-label refactor \
+  --require-mapmaking-provenance
 
 $HOME/tolteca/bin/python tools/baseline/compare_reduction_audits.py \
   /Users/gwilson/work_toltec/local_data/2026-refactor/beammap/citlali/reduced \
@@ -183,6 +184,26 @@ checks: resolution records must agree with requested/effective cleaner,
 source-mask, weighting, and fruit-loop state; realized source protection and
 iteration counts must agree with the effective plan. A disagreement fails the
 audit even when the YAML schema is complete.
+
+Mapmaking provenance is required after its production publication boundary is
+enabled. Require it on a single run with `--require-mapmaking-provenance`, or
+only on a newer comparison candidate with:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/compare_reduction_audits.py \
+  /path/to/accepted/reduNN \
+  /path/to/candidate/reduNN \
+  --expected-mode beammap \
+  --baseline-label refactor \
+  --candidate-label refactor \
+  --require-candidate-mapmaking-provenance
+```
+
+The mapmaking audit checks that requested and effective grouping and units
+agree with their resolution records, that automatic/fallback decisions are
+internally consistent, and that the run completed with the expected
+mapmaking-executed state. Observation and product cardinalities remain
+explicitly unavailable until their lifecycle owners are wired.
 
 Science coadd triage, with an explicit baseline/candidate pair when the latest
 directories are not the intended comparison:
