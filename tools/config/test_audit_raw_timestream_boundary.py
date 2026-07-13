@@ -9,31 +9,35 @@ from tools.config import audit_raw_timestream_boundary as audit
 
 
 class RawTimestreamBoundaryAuditTest(unittest.TestCase):
-    def test_extracts_sorted_unique_literal_paths(self) -> None:
-        body = '''
-        std::tuple{"timestream", "raw_time_chunk", "filter", "enabled"};
-        std::tuple{"timestream", "raw_time_chunk", "despike", "enabled"};
-        std::tuple{"timestream", "raw_time_chunk", "filter", "enabled"};
-        '''
-        self.assertEqual(
-            audit.literal_paths(body),
-            [
-                "timestream.raw_time_chunk.despike.enabled",
-                "timestream.raw_time_chunk.filter.enabled",
-            ],
-        )
+    def test_accepts_canonical_frozen_manifest(self) -> None:
+        paths = [
+            "timestream.polarimetry.enabled",
+            "timestream.polarimetry.grouping",
+            "timestream.raw_time_chunk.filter.enabled",
+        ]
+        with patch.object(audit, "EXPECTED_PATH_COUNT", 3), patch.object(
+            audit, "EXPECTED_RAW_PATH_COUNT", 1
+        ), patch.object(audit, "EXPECTED_PATH_SHA256", audit.path_digest(paths)):
+            state = audit.manifest_state(
+                {
+                    "schema_version": audit.EXPECTED_MANIFEST_SCHEMA,
+                    "retired_parser_source": audit.PARSER_SOURCE,
+                    "path_count": 3,
+                    "path_sha256": audit.path_digest(paths),
+                    "paths": paths,
+                }
+            )
+        self.assertTrue(state["exact"])
 
-    def test_extracts_only_rtc_parser_body(self) -> None:
+    def test_rejects_unsorted_or_duplicate_manifest_paths(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
-            source = Path(temp_dir) / "rtcproc.h"
+            source = Path(temp_dir) / "manifest.json"
             source.write_text(
-                "void RTCProc::get_config() { parser(); }\n"
-                "template <typename T>\nvoid next(T value) {}\n"
+                '{"paths":["timestream.raw_time_chunk.z",'
+                '"timestream.raw_time_chunk.a"]}'
             )
-            self.assertEqual(
-                audit.parser_body(source),
-                "void RTCProc::get_config() { parser(); }",
-            )
+            with self.assertRaisesRegex(ValueError, "sorted and unique"):
+                audit.load_frozen_manifest(source)
 
     def test_classifies_raw_and_adjacent_polarimetry_paths(self) -> None:
         self.assertEqual(
@@ -41,106 +45,58 @@ class RawTimestreamBoundaryAuditTest(unittest.TestCase):
             "raw_timestream",
         )
         self.assertEqual(
-            audit.family("timestream.polarimetry.enabled"),
-            "polarimetry",
+            audit.family("timestream.polarimetry.enabled"), "polarimetry"
         )
         self.assertEqual(audit.family("mapmaking.enabled"), "unclassified")
 
-    def test_accepts_exact_typed_authority_boundary(self) -> None:
-        lines = [
-            "read_raw_timestream_request_config(config, request, diag);",
-            "read_processor_config(rtcproc, config);",
-        ]
-        lines.extend(
-            f"{name}(typed, rtcproc);"
-            for name in audit.LEGACY_TO_TYPED_MIRROR_CALLS
-        )
-        lines.append(
-            "initialize_raw_timestream_authority(request, plan, typed, rtcproc);"
-        )
-        lines.append(
-            "compare_raw_timestream_authority(oracle, rtcproc);"
-        )
-        lines.append(
-            "adapt_legacy_polarimetry_runtime(legacy, rtcproc);"
-        )
-        result = audit.authority_boundary("\n".join(lines))
+    def test_accepts_retired_parser(self) -> None:
+        self.assertTrue(audit.retired_parser_state("class RTCProc {};")["retired"])
 
+    def test_rejects_parser_declaration_or_definition(self) -> None:
+        declaration = audit.retired_parser_state("void get_config(Config &);")
+        definition = audit.retired_parser_state(
+            "void RTCProc::get_config(Config &) {}"
+        )
+        self.assertFalse(declaration["retired"])
+        self.assertFalse(definition["retired"])
+
+    def exact_boundary_lines(self) -> list[str]:
+        return [
+            "read_raw_timestream_request_config(config, request, diag);",
+            "read_legacy_polarimetry_runtime_config(config, legacy, diag);",
+            "initialize_raw_timestream_authority(request, plan, typed, rtc);",
+            "adapt_legacy_polarimetry_runtime(legacy, rtc);",
+        ]
+
+    def test_accepts_exact_retired_authority_boundary(self) -> None:
+        result = audit.authority_boundary("\n".join(self.exact_boundary_lines()))
         self.assertTrue(result["exact"])
-        self.assertTrue(result["parser_precedes_mirrors"])
         self.assertTrue(result["authority_order_exact"])
-        self.assertEqual(result["missing_mirror_calls"], [])
-        self.assertEqual(result["unexpected_mirror_calls"], [])
-        self.assertEqual(result["non_unit_mirror_call_counts"], {})
+        self.assertEqual(result["legacy_parser_call_count"], 0)
+        self.assertEqual(result["legacy_to_typed_mirror_call_counts"], {})
 
-    def test_rejects_missing_repeated_or_unexpected_mirrors(self) -> None:
-        first = audit.LEGACY_TO_TYPED_MIRROR_CALLS[0]
-        result = audit.authority_boundary(
-            "read_processor_config(rtcproc, config);\n"
-            f"{first}(typed, rtcproc);\n"
-            f"{first}(typed, rtcproc);\n"
-            "mirror_raw_untracked_config(typed, rtcproc);\n"
-        )
-
-        self.assertFalse(result["exact"])
-        self.assertIn(
-            audit.LEGACY_TO_TYPED_MIRROR_CALLS[1],
-            result["missing_mirror_calls"],
-        )
-        self.assertEqual(
-            result["unexpected_mirror_calls"],
-            ["mirror_raw_untracked_config"],
-        )
-        self.assertEqual(result["non_unit_mirror_call_counts"], {first: 2})
-
-    def test_rejects_missing_or_misordered_typed_authority(self) -> None:
-        lines = ["read_processor_config(rtcproc, config);"]
-        lines.extend(
-            f"{name}(typed, rtcproc);"
-            for name in audit.LEGACY_TO_TYPED_MIRROR_CALLS
-        )
-        without_authority = audit.authority_boundary("\n".join(lines))
-        self.assertFalse(without_authority["exact"])
-        self.assertFalse(without_authority["authority_order_exact"])
-
-        lines.insert(
-            1,
-            "read_raw_timestream_request_config(config, request, diag);",
-        )
-        lines.append(
-            "initialize_raw_timestream_authority(request, plan, typed, rtcproc);"
-        )
-        lines.append(
-            "compare_raw_timestream_authority(oracle, rtcproc);"
-        )
-        lines.append(
-            "adapt_legacy_polarimetry_runtime(legacy, rtcproc);"
-        )
-        misordered = audit.authority_boundary("\n".join(lines))
-        self.assertFalse(misordered["exact"])
-        self.assertFalse(misordered["authority_order_exact"])
-
-    def test_rejects_missing_polarimetry_runtime_adapter(self) -> None:
-        lines = [
-            "read_raw_timestream_request_config(config, request, diag);",
+    def test_rejects_legacy_parser_mirror_or_compare(self) -> None:
+        forbidden = [
             "read_processor_config(legacy, config);",
+            "mirror_raw_filter_config(typed, legacy);",
+            "compare_raw_timestream_authority(typed, legacy);",
         ]
-        lines.extend(
-            f"{name}(oracle, legacy);"
-            for name in audit.LEGACY_TO_TYPED_MIRROR_CALLS
-        )
-        lines.append(
-            "initialize_raw_timestream_authority(request, plan, typed, rtcproc);"
-        )
-        lines.append(
-            "compare_raw_timestream_authority(oracle, rtcproc);"
-        )
+        for line in forbidden:
+            with self.subTest(line=line):
+                result = audit.authority_boundary(
+                    "\n".join(self.exact_boundary_lines() + [line])
+                )
+                self.assertFalse(result["exact"])
 
-        result = audit.authority_boundary("\n".join(lines))
-
-        self.assertFalse(result["exact"])
-        self.assertFalse(result["authority_order_exact"])
-        self.assertEqual(result["polarimetry_runtime_adapter_call_count"], 0)
+    def test_rejects_missing_or_misordered_authority_calls(self) -> None:
+        missing_reader = self.exact_boundary_lines()[1:]
+        self.assertFalse(
+            audit.authority_boundary("\n".join(missing_reader))["exact"]
+        )
+        misordered = list(reversed(self.exact_boundary_lines()))
+        self.assertFalse(
+            audit.authority_boundary("\n".join(misordered))["exact"]
+        )
 
     def test_typed_reader_coverage_accepts_parent_and_compatibility_alias(self) -> None:
         legacy_alias = next(iter(audit.COMPATIBILITY_ALIASES))
@@ -154,11 +110,9 @@ class RawTimestreamBoundaryAuditTest(unittest.TestCase):
             "timestream.raw_time_chunk.filter.notch.enabled",
             typed_alias,
         ]
-
         covered, uncovered, stale = audit.typed_reader_coverage(
             frozen, declared
         )
-
         self.assertEqual(covered, sorted(frozen))
         self.assertEqual(uncovered, [])
         self.assertEqual(stale, [])
@@ -176,13 +130,9 @@ class RawTimestreamBoundaryAuditTest(unittest.TestCase):
                     ],
                     repo_root,
                 )
-
+        self.assertEqual(covered, ["timestream.raw_time_chunk.filter.enabled"])
         self.assertEqual(
-            covered, ["timestream.raw_time_chunk.filter.enabled"]
-        )
-        self.assertEqual(
-            uncovered,
-            ["timestream.raw_time_chunk.filter.freq_high_Hz"],
+            uncovered, ["timestream.raw_time_chunk.filter.freq_high_Hz"]
         )
 
     def test_rejects_yaml_string_view_assignment(self) -> None:
@@ -190,7 +140,6 @@ class RawTimestreamBoundaryAuditTest(unittest.TestCase):
         node["unsafe"] = citlali::config::to_string(value);
         node["safe"] = std::string{citlali::config::to_string(value)};
         '''
-
         self.assertEqual(
             audit.unsafe_yaml_string_view_assignment_lines(source), [2]
         )
@@ -200,9 +149,7 @@ class RawTimestreamBoundaryAuditTest(unittest.TestCase):
             repo_root = Path(temp_dir)
             source = repo_root / "adapter.h"
             source.write_text("target.enabled = source.enabled;\n")
-            with patch.object(
-                audit, "RAW_ADAPTER_SOURCES", ("adapter.h",)
-            ):
+            with patch.object(audit, "RAW_ADAPTER_SOURCES", ("adapter.h",)):
                 covered, uncovered = audit.adapter_coverage(
                     [
                         "timestream.raw_time_chunk.filter.enabled",
@@ -210,13 +157,9 @@ class RawTimestreamBoundaryAuditTest(unittest.TestCase):
                     ],
                     repo_root,
                 )
-
+        self.assertEqual(covered, ["timestream.raw_time_chunk.filter.enabled"])
         self.assertEqual(
-            covered, ["timestream.raw_time_chunk.filter.enabled"]
-        )
-        self.assertEqual(
-            uncovered,
-            ["timestream.raw_time_chunk.filter.freq_high_Hz"],
+            uncovered, ["timestream.raw_time_chunk.filter.freq_high_Hz"]
         )
 
 

@@ -19,6 +19,7 @@
 #include <citlali/core/pipeline/output_layout.h>
 #include <citlali/core/pipeline/output_netcdf_metadata.h>
 #include <citlali/core/pipeline/phdu_reduction_config.h>
+#include <citlali/core/pipeline/polarimetry_compatibility_config.h>
 #include <citlali/core/pipeline/raw_iir_filter_metadata.h>
 #include <citlali/core/pipeline/raw_timestream_authority.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
@@ -27,7 +28,6 @@
 #include <citlali/core/pipeline/raw_timestream_observation_shadow.h>
 #include <citlali/core/pipeline/raw_timestream_provenance.h>
 #include <citlali/core/pipeline/raw_timestream_provenance_lifecycle.h>
-#include <citlali/core/pipeline/raw_timestream_shadow_parity.h>
 #include <citlali/core/pipeline/config_parse_tracking.h>
 #include <citlali/core/pipeline/raw_filtering_config_read.h>
 #include <citlali/core/pipeline/raw_flagging_config_read.h>
@@ -43,10 +43,10 @@
 #include <citlali/core/pipeline/runtime_provenance_output.h>
 #include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/timestream_output_provenance.h>
-#include <citlali/core/pipeline/timestream_config_mirror.h>
 #include <citlali/core/pipeline/timestream_config_adapter_polarimetry.h>
 #include <citlali/core/pipeline/timestream_config_adapter_processed.h>
 #include <citlali/core/pipeline/timestream_config_adapter_raw.h>
+#include <citlali/core/pipeline/timestream_config_mirror_polarimetry.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
 #include <citlali/core/pipeline/tod_output_state.h>
 #include <citlali/core/utils/fits_io.h>
@@ -1500,8 +1500,8 @@ TEST(config_scaffold, preserves_adjacent_legacy_polarimetry_runtime) {
         citlali::citlali_default_config_content);
     timestream::RTCProc legacy;
     citlali::pipeline::ConfigDiagnosticsState diagnostics;
-    citlali::pipeline::read_processor_config(
-        legacy, config, diagnostics);
+    citlali::pipeline::read_legacy_polarimetry_runtime_config(
+        config, legacy, diagnostics);
     ASSERT_FALSE(diagnostics.has_errors());
     ASSERT_FALSE(legacy.run_polarization);
     ASSERT_EQ(
@@ -1526,6 +1526,26 @@ TEST(config_scaffold, preserves_adjacent_legacy_polarimetry_runtime) {
         production.polarization.stokes_params,
         (std::map<int, std::string>{{0, "I"}}));
     EXPECT_EQ(production.filter.n_terms, 41);
+}
+
+TEST(config_scaffold, reads_enabled_polarimetry_compatibility_runtime) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    root["timestream"]["polarimetry"]["enabled"] = true;
+    root["timestream"]["polarimetry"]["grouping"] = "fg";
+    auto config = tula::config::YamlConfig::from_str(YAML::Dump(root));
+    timestream::RTCProc runtime;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_legacy_polarimetry_runtime_config(
+        config, runtime, diagnostics);
+
+    EXPECT_FALSE(diagnostics.has_errors());
+    EXPECT_TRUE(runtime.run_polarization);
+    EXPECT_EQ(runtime.polarization.grouping, "fg");
+    EXPECT_EQ(
+        runtime.polarization.stokes_params,
+        (std::map<int, std::string>{{0, "I"}, {1, "Q"}, {2, "U"}}));
 }
 
 TEST(config_scaffold, validates_beammap_source_fluxes) {
@@ -6072,30 +6092,26 @@ TEST(config_scaffold, adapts_complete_raw_request_to_legacy_rtc_one_way) {
     citlali::pipeline::adapt_raw_timestream_config_one_way(
         request, rtcproc, 1.0, 1.0);
 
-    citlali::config::RawTimeChunkConfig roundtrip;
-    citlali::pipeline::mirror_raw_despike_config(
-        roundtrip.despike, rtcproc);
-    citlali::pipeline::mirror_raw_flagging_config(
-        roundtrip.flagging, rtcproc);
-    citlali::pipeline::mirror_raw_kernel_config(
-        roundtrip.kernel, rtcproc, 1.0);
-    citlali::pipeline::mirror_raw_altaz_destripe_config(
-        roundtrip.altaz_destripe, rtcproc);
-    citlali::pipeline::mirror_raw_line_audit_config(
-        roundtrip.line_audit, rtcproc.line_audit);
-    citlali::pipeline::mirror_raw_downsample_config(
-        roundtrip.downsample, rtcproc);
-    citlali::pipeline::mirror_raw_filter_config(
-        roundtrip.filter, rtcproc);
-    citlali::pipeline::mirror_raw_iir_filter_config(
-        roundtrip.iir_filter, rtcproc);
-    citlali::pipeline::mirror_raw_correction_flags(roundtrip, rtcproc);
-    citlali::pipeline::mirror_raw_filter_edge_guard_config(
-        roundtrip.filter.edge_guard, rtcproc.filter_edge_guard);
-
-    EXPECT_EQ(
-        YAML::Dump(citlali::pipeline::raw_timestream_request_node(request)),
-        YAML::Dump(citlali::pipeline::raw_timestream_request_node(roundtrip)));
+    EXPECT_TRUE(rtcproc.run_kernel);
+    EXPECT_EQ(rtcproc.kernel.filepath, "kernel.fits");
+    EXPECT_EQ(rtcproc.kernel.img_ext_names, request.kernel.image_ext_names);
+    EXPECT_TRUE(rtcproc.run_tod_filter);
+    EXPECT_EQ(rtcproc.filter.n_terms, 48);
+    EXPECT_TRUE(rtcproc.run_tod_notch);
+    EXPECT_EQ(rtcproc.filter.qs, (std::vector<double>{20.0, 20.0}));
+    EXPECT_TRUE(rtcproc.run_tod_iir_highpass);
+    EXPECT_DOUBLE_EQ(rtcproc.filter.iir_highpass_freq_Hz, 0.25);
+    EXPECT_TRUE(rtcproc.run_downsample);
+    EXPECT_EQ(rtcproc.downsampler.factor, 4);
+    EXPECT_TRUE(rtcproc.run_despike);
+    EXPECT_DOUBLE_EQ(rtcproc.despiker.min_spike_sigma, 9.0);
+    EXPECT_TRUE(rtcproc.network_step_mask.enabled);
+    EXPECT_TRUE(rtcproc.impulsive_capture.enabled);
+    EXPECT_TRUE(rtcproc.impulsive_coincidence.enabled);
+    EXPECT_TRUE(rtcproc.altaz_destripe.enabled);
+    EXPECT_TRUE(rtcproc.line_audit.enabled);
+    EXPECT_TRUE(rtcproc.run_calibrate);
+    EXPECT_TRUE(rtcproc.run_extinction);
     EXPECT_FALSE(rtcproc.despiker.source_protection_enabled);
     EXPECT_DOUBLE_EQ(rtcproc.kernel.sigma_rad, 7.5);
 }
@@ -6409,30 +6425,6 @@ TEST(config_scaffold, constructs_complete_raw_observation_state) {
     EXPECT_EQ(*state.extinction_model, extinction.model);
 }
 
-TEST(config_scaffold, default_raw_request_matches_legacy_parser_shadow) {
-    ensure_citlali_test_logger();
-    auto config = tula::config::YamlConfig::from_str(
-        citlali::citlali_default_config_content);
-    timestream::RTCProc legacy;
-    citlali::pipeline::ConfigDiagnosticsState legacy_diagnostics;
-    citlali::pipeline::read_processor_config(
-        legacy, config, legacy_diagnostics);
-    ASSERT_FALSE(legacy_diagnostics.has_errors());
-    legacy.configure_filter_edge_guard(122.0);
-
-    citlali::config::RawTimeChunkConfig request;
-    citlali::pipeline::ConfigDiagnosticsState typed_diagnostics;
-    citlali::pipeline::read_raw_timestream_request_config(
-        config, request, typed_diagnostics);
-    ASSERT_FALSE(typed_diagnostics.has_errors());
-
-    const auto report = citlali::pipeline::compare_raw_timestream_shadow(
-        request, legacy, 122.0, 1.0, 1.0, 1.0);
-    EXPECT_TRUE(report.exact)
-        << "legacy:\n" << report.legacy_snapshot
-        << "typed adapter:\n" << report.typed_adapter_snapshot;
-}
-
 TEST(config_scaffold, initializes_typed_raw_execution_authority) {
     citlali::config::RawTimeChunkConfig request;
     request.filter.enabled = true;
@@ -6462,44 +6454,6 @@ TEST(config_scaffold, initializes_typed_raw_execution_authority) {
     EXPECT_DOUBLE_EQ(production.despiker.min_spike_sigma, 9.0);
     EXPECT_EQ(production.downsampler.factor, 4);
     EXPECT_GT(production.filter_edge_guard.guard_samples, 0);
-}
-
-TEST(config_scaffold, raw_authority_matches_legacy_oracle) {
-    citlali::config::RawTimeChunkConfig request;
-    request.filter.enabled = true;
-    request.filter.freq_high_Hz = 10.0;
-    request.filter.n_terms = 32;
-    request.despike.enabled = true;
-    request.despike.min_spike_sigma = 8.0;
-
-    timestream::RTCProc legacy;
-    citlali::pipeline::adapt_raw_timestream_config_one_way(
-        request, legacy, 1.0, 1.0);
-    legacy.configure_filter_edge_guard(100.0);
-    const auto legacy_oracle =
-        citlali::pipeline::snapshot_raw_rtc_config(legacy, 1.0);
-
-    citlali::pipeline::RawTimestreamExecutionPlan plan;
-    citlali::config::RawTimeChunkConfig effective;
-    timestream::RTCProc production;
-    citlali::pipeline::initialize_raw_timestream_authority(
-        request, plan, effective, production, 100.0, 1.0, 1.0);
-
-    const auto exact =
-        citlali::pipeline::compare_raw_timestream_authority(
-            legacy_oracle, production, 1.0);
-    EXPECT_TRUE(exact.exact)
-        << "legacy:\n" << exact.legacy_oracle_snapshot
-        << "typed authority:\n" << exact.typed_authority_snapshot;
-
-    production.filter.n_terms = 64;
-    const auto divergent =
-        citlali::pipeline::compare_raw_timestream_authority(
-            legacy_oracle, production, 1.0);
-    EXPECT_FALSE(divergent.exact);
-    EXPECT_NE(
-        divergent.legacy_oracle_snapshot,
-        divergent.typed_authority_snapshot);
 }
 
 TEST(config_scaffold, raw_authority_preserves_disabled_request_values) {
@@ -6552,123 +6506,6 @@ TEST(config_scaffold, projects_effective_raw_iir_output_metadata) {
     EXPECT_DOUBLE_EQ(enabled.frequency_hz, 0.4);
     EXPECT_EQ(enabled.order, 5);
     EXPECT_TRUE(enabled.zero_phase);
-}
-
-TEST(config_scaffold,
-     legacy_raw_parser_collects_cross_field_errors_without_exiting) {
-    ensure_citlali_test_logger();
-    auto root = YAML::Load(citlali::citlali_default_config_content);
-    auto raw = root["timestream"]["raw_time_chunk"];
-    raw["filter"]["enabled"] = true;
-    raw["filter"]["freq_low_Hz"] = 10.0;
-    raw["filter"]["freq_high_Hz"] = 5.0;
-    raw["filter"]["notch"]["enabled"] = true;
-    raw["filter"]["notch"]["zero_phase"] = false;
-    raw["filter"]["notch"]["freqs_Hz"] =
-        std::vector<double>{12.0, 24.0, 36.0};
-    raw["filter"]["notch"]["delta_f_Hz"] =
-        std::vector<double>{0.2, 0.3};
-    raw["IIR_filter"]["enabled"] = true;
-    raw["IIR_filter"]["freq_Hz"] = 0.0;
-    raw["IIR_filter"]["zero_phase"] = false;
-    raw["line_audit"]["apply_min_width_hz"] = 1.0;
-    raw["line_audit"]["apply_max_width_hz"] = 0.5;
-    raw["line_audit"]["fixed_notch_enabled"] = true;
-    raw["line_audit"]["fixed_notch_freqs_hz"] =
-        std::vector<double>{10.0, 20.0, 30.0};
-    raw["line_audit"]["fixed_notch_widths_hz"] =
-        std::vector<double>{0.2, 0.3};
-    auto config = tula::config::YamlConfig::from_str(YAML::Dump(root));
-    timestream::RTCProc rtcproc;
-    citlali::pipeline::ConfigDiagnosticsState diagnostics;
-
-    citlali::pipeline::read_processor_config(
-        rtcproc, config, diagnostics);
-
-    auto has_path = [&diagnostics](
-                        std::initializer_list<std::string> expected) {
-        const std::vector<std::string> path(expected);
-        const auto &invalid = diagnostics.invalid_key_paths();
-        return std::find(invalid.begin(), invalid.end(), path) !=
-               invalid.end();
-    };
-    EXPECT_TRUE(has_path({"timestream", "raw_time_chunk", "filter",
-                          "freq_high_Hz"}));
-    EXPECT_TRUE(has_path({"timestream", "raw_time_chunk", "filter",
-                          "notch", "zero_phase"}));
-    EXPECT_TRUE(has_path({"timestream", "raw_time_chunk", "filter",
-                          "notch", "delta_f_Hz"}));
-    EXPECT_TRUE(has_path({"timestream", "raw_time_chunk", "IIR_filter",
-                          "freq_Hz"}));
-    EXPECT_TRUE(has_path({"timestream", "raw_time_chunk", "IIR_filter",
-                          "zero_phase"}));
-    EXPECT_TRUE(has_path({"timestream", "raw_time_chunk", "line_audit",
-                          "apply_max_width_hz"}));
-    EXPECT_TRUE(has_path({"timestream", "raw_time_chunk", "line_audit",
-                          "fixed_notch_widths_hz"}));
-
-    auto downsample_root =
-        YAML::Load(citlali::citlali_default_config_content);
-    auto downsample_raw =
-        downsample_root["timestream"]["raw_time_chunk"];
-    downsample_raw["filter"]["enabled"] = false;
-    downsample_raw["downsample"]["enabled"] = true;
-    auto downsample_config = tula::config::YamlConfig::from_str(
-        YAML::Dump(downsample_root));
-    timestream::RTCProc downsample_rtcproc;
-    citlali::pipeline::ConfigDiagnosticsState downsample_diagnostics;
-
-    citlali::pipeline::read_processor_config(
-        downsample_rtcproc, downsample_config,
-        downsample_diagnostics);
-
-    const auto &downsample_invalid =
-        downsample_diagnostics.invalid_key_paths();
-    EXPECT_NE(
-        std::find(
-            downsample_invalid.begin(), downsample_invalid.end(),
-            (std::vector<std::string>{
-                "timestream", "raw_time_chunk", "downsample", "enabled"})),
-        downsample_invalid.end());
-}
-
-TEST(config_scaffold, raw_shadow_reports_adapter_divergence) {
-    citlali::config::RawTimeChunkConfig request;
-    request.filter.enabled = true;
-    request.filter.freq_high_Hz = 10.0;
-    request.filter.n_terms = 32;
-    timestream::RTCProc legacy;
-    citlali::pipeline::adapt_raw_timestream_config_one_way(
-        request, legacy, 1.0, 1.0);
-    legacy.configure_filter_edge_guard(100.0);
-    legacy.filter.freq_high_Hz = 11.0;
-
-    const auto report = citlali::pipeline::compare_raw_timestream_shadow(
-        request, legacy, 100.0, 1.0, 1.0, 1.0);
-
-    EXPECT_FALSE(report.exact);
-    EXPECT_NE(report.legacy_snapshot, report.typed_adapter_snapshot);
-}
-
-TEST(config_scaffold, raw_shadow_matches_disabled_expert_effective_state) {
-    citlali::config::RawTimeChunkConfig request;
-    request.despike.enabled = false;
-    request.despike.source_protection.enabled = false;
-    request.despike.source_protection.radius_arcsec = 37.0;
-    request.kernel.enabled = true;
-    request.kernel.type = "gaussian";
-    request.kernel.image_ext_names = {"ignored-request-value"};
-
-    timestream::RTCProc legacy;
-    citlali::pipeline::adapt_raw_timestream_config_one_way(
-        request, legacy, 1.0, 1.0);
-    legacy.configure_filter_edge_guard(100.0);
-    const auto report = citlali::pipeline::compare_raw_timestream_shadow(
-        request, legacy, 100.0, 1.0, 1.0, 1.0);
-
-    EXPECT_TRUE(report.exact);
-    EXPECT_FALSE(request.despike.source_protection.enabled);
-    EXPECT_EQ(request.kernel.image_ext_names.size(), 1U);
 }
 
 TEST(config_scaffold, separates_processed_requested_and_effective_state) {

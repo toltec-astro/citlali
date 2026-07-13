@@ -1,6 +1,8 @@
 #pragma once
 
-// Included by timestream_config_mirror.h inside namespace citlali::pipeline.
+#include <citlali/core/config/timestream_config.h>
+
+namespace citlali::pipeline {
 
 template <class PolarimetryConfig, class RtcProc>
 void mirror_polarimetry_config(PolarimetryConfig &target,
@@ -11,3 +13,5 @@ void mirror_polarimetry_config(PolarimetryConfig &target,
         target.grouping = *grouping;
     }
 }
+
+}  // namespace citlali::pipeline

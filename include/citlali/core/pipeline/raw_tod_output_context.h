@@ -1,6 +1,12 @@
 #pragma once
 
-// Included by timestream_config_mirror.h inside namespace citlali::pipeline.
+#include <citlali/core/config/timestream_config.h>
+
+#include <Eigen/Core>
+
+#include <algorithm>
+
+namespace citlali::pipeline {
 
 template <class Telescope, class RtcProc, class RawOutputConfig>
 void configure_raw_tod_output_context(Telescope &telescope,
@@ -15,7 +21,8 @@ void configure_raw_tod_output_context(Telescope &telescope,
             std::max<Eigen::Index>(
                 0, output_config.outer_context_samples));
     }
-    if (rtcproc.line_audit.enabled && rtcproc.line_audit.post_filter_enabled &&
+    if (rtcproc.line_audit.enabled &&
+        rtcproc.line_audit.post_filter_enabled &&
         rtcproc.line_audit.post_filter_apply_detector_notches) {
         telescope.outer_scans_chunk = std::max<Eigen::Index>(
             telescope.outer_scans_chunk,
@@ -23,3 +30,5 @@ void configure_raw_tod_output_context(Telescope &telescope,
                 0, rtcproc.line_audit.detector_notch_context_samples));
     }
 }
+
+}  // namespace citlali::pipeline

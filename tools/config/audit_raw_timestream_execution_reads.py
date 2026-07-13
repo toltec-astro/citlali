@@ -18,10 +18,9 @@ SOURCE_ROOTS = (
 )
 EXCLUDED_FILES = {
     "include/citlali/core/engine/detail/rtc_config_impl.h",
+    "include/citlali/core/pipeline/polarimetry_compatibility_config.h",
+    "include/citlali/core/pipeline/raw_tod_output_context.h",
     "include/citlali/core/pipeline/timestream_config_mirror_polarimetry.h",
-    "include/citlali/core/pipeline/timestream_config_mirror_raw_filters.h",
-    "include/citlali/core/pipeline/timestream_config_mirror_raw_flagging.h",
-    "include/citlali/core/pipeline/timestream_config_mirror_raw_output.h",
     "include/citlali/core/pipeline/raw_timestream_authority.h",
     "include/citlali/core/pipeline/timestream_config_adapter_raw.h",
     "include/citlali/core/pipeline/timestream_config_adapter_raw_filtering.h",

@@ -336,19 +336,14 @@ $HOME/tolteca/bin/python tools/config/audit_processed_timestream_boundary.py \
   --fail-on-drift --fail-on-uncovered
 ```
 
-`audit_raw_timestream_boundary.py` characterizes the next migration boundary.
-It freezes the active `RTCProc` parser's 169 raw-timestream paths, the two
-adjacent polarimetry paths, zero direct parser exits, and the ten
-legacy-to-typed raw mirror calls. It also requires all 169 raw paths to appear
-in the direct typed readers, deterministic request serializer, and unwired
-typed-to-RTC adapter. The direct reader and adapter now run as a strict
-production shadow; the audit requires exactly one typed shadow read before the
-legacy parser and exactly one comparison after the legacy mirrors. Production
-execution authority is still legacy-to-typed until the shadow is validated and
-the Engine boundary is deliberately flipped. Per-observation sample-rate,
-downsample, edge-context, source-protection, and extinction state is also
-recorded and compared at its existing lifecycle boundaries without driving
-execution.
+`audit_raw_timestream_boundary.py` guards the retired raw parser boundary. The
+versioned manifest freezes the former `RTCProc` parser's 169 raw-timestream
+paths and two adjacent polarimetry paths. The audit requires the parser
+declaration/body, raw reverse mirrors, and parity oracle to remain absent while
+all 169 raw paths remain covered by direct typed readers, deterministic request
+serialization, and the one-way typed-to-RTC adapter. It also requires exactly
+one production typed read/authority initialization and one separate named
+polarimetry compatibility read/runtime adapter in the required order.
 
 ```bash
 $HOME/tolteca/bin/python tools/config/audit_raw_timestream_boundary.py \
@@ -356,9 +351,10 @@ $HOME/tolteca/bin/python tools/config/audit_raw_timestream_boundary.py \
 ```
 
 `audit_raw_timestream_execution_reads.py` classifies direct `rtcproc` accesses
-outside the parser and compatibility mirrors. Numerical executor calls may
-remain; raw policy reads, observation-state mutation, and output/realized state
-need explicit typed contracts. Polarimetry accesses remain a separate domain.
+outside the named typed-authority, adapter, output-context, and polarimetry
+boundaries. Numerical executor calls may remain; raw policy reads,
+observation-state mutation, and output/realized state need explicit typed
+contracts. Polarimetry accesses remain a separate domain.
 The frozen census contains 44 classified access shapes and no unreviewed
 accesses. The preflight fails on census drift or an unreviewed access.
 

@@ -32,7 +32,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 288 tests with none skipped or disabled; all
+- CTest discovers and passes all 285 tests with none skipped or disabled; all
   13 baseline-tool tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
@@ -479,6 +479,21 @@ The validation ledger records all three accepted gates. OOF reuses the point
 execution gate; polarimetry remains separate. The temporary 169-path raw parser
 and ten oracle mirrors may now be retired as the next bounded change while
 retaining the narrow adjacent polarimetry compatibility boundary.
+
+The authorized raw-parser retirement is complete locally. The declaration and
+roughly 1,080-line `RTCProc::get_config` implementation, all ten raw reverse
+mirrors, and the context-free parity oracle are removed. The versioned
+`raw_timestream_legacy_paths.json` manifest preserves the canonical 171-path
+historical surface and digest. The boundary audit now rejects reintroduction of
+the parser, a raw mirror, or the parity comparison while continuing to enforce
+169/169 direct-reader, serializer, and typed-to-RTC adapter coverage. The two
+adjacent polarimetry keys use a dedicated compatibility reader and one-way
+runtime adapter; they do not repopulate raw typed state. A forward TOD output-
+context helper formerly hidden in the mirror umbrella now has its own named
+header. Fresh local CLI, primary-test, and safety-test builds pass all 285 C++
+tests; 12 focused raw-boundary audit tests, the unchanged 44-record execution
+census, all config profiles, full preflight, and the validation ledger pass.
+Unity point validation of this retirement candidate is the remaining gate.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

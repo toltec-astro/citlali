@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit the typed-authoritative raw-timestream config boundary."""
+"""Audit the retired raw-timestream parser and typed authority boundary."""
 
 from __future__ import annotations
 
@@ -11,15 +11,16 @@ from collections import Counter
 from pathlib import Path
 
 
+MANIFEST_SOURCE = "tools/config/raw_timestream_legacy_paths.json"
 PARSER_SOURCE = "include/citlali/core/timestream/rtc/rtcproc.h"
 BOUNDARY_SOURCE = "include/citlali/core/engine/detail/rtc_config_impl.h"
+EXPECTED_MANIFEST_SCHEMA = "citlali-frozen-raw-config-paths-v1"
 EXPECTED_PATH_COUNT = 171
 EXPECTED_RAW_PATH_COUNT = 169
 EXPECTED_POLARIMETRY_PATH_COUNT = 2
 EXPECTED_PATH_SHA256 = (
     "5f10271aae40942ae1be587a105b70229b86c885f4d0bc4b02edcf312bc088c0"
 )
-EXPECTED_DIRECT_EXIT_COUNT = 0
 TYPED_READER_SOURCES = (
     "include/citlali/core/pipeline/raw_filtering_config_read.h",
     "include/citlali/core/pipeline/raw_flagging_config_read.h",
@@ -52,39 +53,10 @@ LEGACY_PARSER_CALL = "read_processor_config"
 TYPED_REQUEST_READ_CALL = "read_raw_timestream_request_config"
 TYPED_AUTHORITY_INIT_CALL = "initialize_raw_timestream_authority"
 TYPED_AUTHORITY_COMPARE_CALL = "compare_raw_timestream_authority"
-POLARIMETRY_RUNTIME_ADAPTER_CALL = "adapt_legacy_polarimetry_runtime"
-LEGACY_TO_TYPED_MIRROR_CALLS = (
-    "mirror_raw_despike_config",
-    "mirror_raw_flagging_config",
-    "mirror_raw_kernel_config",
-    "mirror_raw_altaz_destripe_config",
-    "mirror_raw_line_audit_config",
-    "mirror_raw_downsample_config",
-    "mirror_raw_filter_config",
-    "mirror_raw_iir_filter_config",
-    "mirror_raw_correction_flags",
-    "mirror_raw_filter_edge_guard_config",
+POLARIMETRY_COMPATIBILITY_READ_CALL = (
+    "read_legacy_polarimetry_runtime_config"
 )
-
-
-def parser_body(path: Path) -> str:
-    text = path.read_text()
-    start = text.index("void RTCProc::get_config")
-    end = text.find("\ntemplate", start + 1)
-    if end < 0:
-        raise ValueError(f"unable to find end of RTCProc::get_config in {path}")
-    return text[start:end]
-
-
-def literal_paths(body: str) -> list[str]:
-    tuple_pattern = re.compile(r"std::tuple\s*\{([^}]*)\}", re.DOTALL)
-    string_pattern = re.compile(r'"([^"]+)"')
-    paths = {
-        ".".join(string_pattern.findall(match.group(1)))
-        for match in tuple_pattern.finditer(body)
-        if string_pattern.findall(match.group(1))
-    }
-    return sorted(paths)
+POLARIMETRY_RUNTIME_ADAPTER_CALL = "adapt_legacy_polarimetry_runtime"
 
 
 def path_digest(paths: list[str]) -> str:
@@ -99,8 +71,56 @@ def family(path: str) -> str:
     return "unclassified"
 
 
-def direct_exit_count(body: str) -> int:
-    return len(re.findall(r"\bstd::exit\s*\(", body))
+def load_frozen_manifest(path: Path) -> dict[str, object]:
+    manifest = json.loads(path.read_text())
+    paths = manifest.get("paths")
+    if not isinstance(paths, list) or not all(
+        isinstance(item, str) for item in paths
+    ):
+        raise ValueError(f"invalid paths in {path}")
+    if paths != sorted(set(paths)):
+        raise ValueError(f"paths must be sorted and unique in {path}")
+    return manifest
+
+
+def manifest_state(manifest: dict[str, object]) -> dict[str, object]:
+    paths = list(manifest["paths"])
+    digest = path_digest(paths)
+    counts = dict(sorted(Counter(map(family, paths)).items()))
+    exact = (
+        manifest.get("schema_version") == EXPECTED_MANIFEST_SCHEMA
+        and manifest.get("retired_parser_source") == PARSER_SOURCE
+        and manifest.get("path_count") == len(paths) == EXPECTED_PATH_COUNT
+        and manifest.get("path_sha256") == digest == EXPECTED_PATH_SHA256
+        and counts.get("raw_timestream") == EXPECTED_RAW_PATH_COUNT
+        and counts.get("polarimetry") == EXPECTED_POLARIMETRY_PATH_COUNT
+        and set(counts) == {"polarimetry", "raw_timestream"}
+    )
+    return {
+        "source": MANIFEST_SOURCE,
+        "schema_version": manifest.get("schema_version"),
+        "retired_parser_source": manifest.get("retired_parser_source"),
+        "literal_path_count": len(paths),
+        "literal_path_sha256": digest,
+        "family_counts": counts,
+        "exact": exact,
+        "paths": paths,
+    }
+
+
+def retired_parser_state(source_text: str) -> dict[str, object]:
+    definition_count = len(
+        re.findall(r"\bRTCProc::get_config\s*\(", source_text)
+    )
+    declaration_count = len(
+        re.findall(r"\bvoid\s+get_config\s*\(", source_text)
+    )
+    return {
+        "source": PARSER_SOURCE,
+        "definition_count": definition_count,
+        "declaration_count": declaration_count,
+        "retired": definition_count == 0 and declaration_count == 0,
+    }
 
 
 def declared_typed_reader_paths(repo_root: Path) -> list[str]:
@@ -134,7 +154,8 @@ def typed_reader_coverage(
         COMPATIBILITY_ALIASES.get(path, path) for path in frozen_paths
     }
     stale = sorted(
-        path for path in declared
+        path
+        for path in declared
         if path not in frozen_typed_paths and path not in COMPATIBILITY_ALIASES
     )
     return sorted(covered), sorted(uncovered), stale
@@ -155,9 +176,7 @@ def serializer_coverage(
 
 
 def unsafe_yaml_string_view_assignment_lines(source_text: str) -> list[int]:
-    pattern = re.compile(
-        r"\]\s*=\s*citlali::config::to_string\s*\("
-    )
+    pattern = re.compile(r"\]\s*=\s*citlali::config::to_string\s*\(")
     return [
         source_text.count("\n", 0, match.start()) + 1
         for match in pattern.finditer(source_text)
@@ -186,120 +205,69 @@ def adapter_coverage(
     return sorted(covered), sorted(uncovered)
 
 
+def call_positions(source_text: str, name: str) -> list[int]:
+    return [
+        match.start()
+        for match in re.finditer(
+            rf"\b{re.escape(name)}\s*\(", source_text
+        )
+    ]
+
+
 def authority_boundary(source_text: str) -> dict[str, object]:
-    parser_positions = [
-        match.start()
-        for match in re.finditer(
-            rf"\b{re.escape(LEGACY_PARSER_CALL)}\s*\(", source_text
-        )
-    ]
-    typed_read_positions = [
-        match.start()
-        for match in re.finditer(
-            rf"\b{re.escape(TYPED_REQUEST_READ_CALL)}\s*\(", source_text
-        )
-    ]
-    authority_init_positions = [
-        match.start()
-        for match in re.finditer(
-            rf"\b{re.escape(TYPED_AUTHORITY_INIT_CALL)}\s*\(", source_text
-        )
-    ]
-    authority_compare_positions = [
-        match.start()
-        for match in re.finditer(
-            rf"\b{re.escape(TYPED_AUTHORITY_COMPARE_CALL)}\s*\(", source_text
-        )
-    ]
-    polarimetry_adapter_positions = [
-        match.start()
-        for match in re.finditer(
-            rf"\b{re.escape(POLARIMETRY_RUNTIME_ADAPTER_CALL)}\s*\(",
-            source_text,
-        )
-    ]
-    observed_mirrors = Counter(
-        re.findall(r"\b(mirror_raw_[A-Za-z0-9_]+)\s*\(", source_text)
+    typed_reads = call_positions(source_text, TYPED_REQUEST_READ_CALL)
+    authority_inits = call_positions(source_text, TYPED_AUTHORITY_INIT_CALL)
+    polarimetry_reads = call_positions(
+        source_text, POLARIMETRY_COMPATIBILITY_READ_CALL
     )
-    expected_mirrors = set(LEGACY_TO_TYPED_MIRROR_CALLS)
-    missing = sorted(expected_mirrors - observed_mirrors.keys())
-    unexpected = sorted(observed_mirrors.keys() - expected_mirrors)
-    repeated = {
-        name: count for name, count in sorted(observed_mirrors.items())
-        if count != 1
-    }
-    first_mirror = min(
-        (
-            source_text.index(name)
-            for name in LEGACY_TO_TYPED_MIRROR_CALLS
-            if name in source_text
-        ),
-        default=-1,
+    polarimetry_adapters = call_positions(
+        source_text, POLARIMETRY_RUNTIME_ADAPTER_CALL
     )
-    last_mirror = max(
-        (
-            source_text.index(name)
-            for name in LEGACY_TO_TYPED_MIRROR_CALLS
-            if name in source_text
-        ),
-        default=-1,
-    )
-    parser_precedes_mirrors = (
-        len(parser_positions) == 1
-        and first_mirror >= 0
-        and parser_positions[0] < first_mirror
+    parser_calls = call_positions(source_text, LEGACY_PARSER_CALL)
+    compare_calls = call_positions(source_text, TYPED_AUTHORITY_COMPARE_CALL)
+    mirror_calls = re.findall(
+        r"\b(mirror_raw_[A-Za-z0-9_]+)\s*\(", source_text
     )
     authority_order_exact = (
-        len(typed_read_positions) == 1
-        and len(parser_positions) == 1
-        and first_mirror >= 0
-        and last_mirror >= first_mirror
-        and len(authority_init_positions) == 1
-        and len(authority_compare_positions) == 1
-        and len(polarimetry_adapter_positions) == 1
-        and typed_read_positions[0] < parser_positions[0]
-        and parser_positions[0] < first_mirror
-        and last_mirror < authority_init_positions[0]
-        and authority_init_positions[0] < authority_compare_positions[0]
-        and (
-            authority_compare_positions[0]
-            < polarimetry_adapter_positions[0]
-        )
+        len(typed_reads) == 1
+        and len(polarimetry_reads) == 1
+        and len(authority_inits) == 1
+        and len(polarimetry_adapters) == 1
+        and typed_reads[0] < polarimetry_reads[0]
+        and polarimetry_reads[0] < authority_inits[0]
+        and authority_inits[0] < polarimetry_adapters[0]
     )
     exact = (
-        len(parser_positions) == 1
-        and not missing
-        and not unexpected
-        and not repeated
-        and parser_precedes_mirrors
-        and authority_order_exact
+        authority_order_exact
+        and not parser_calls
+        and not compare_calls
+        and not mirror_calls
     )
     return {
         "source": BOUNDARY_SOURCE,
-        "legacy_parser_call_count": len(parser_positions),
-        "typed_request_read_call_count": len(typed_read_positions),
-        "typed_authority_init_call_count": len(authority_init_positions),
-        "typed_authority_compare_call_count": len(
-            authority_compare_positions
+        "typed_request_read_call_count": len(typed_reads),
+        "typed_authority_init_call_count": len(authority_inits),
+        "legacy_parser_call_count": len(parser_calls),
+        "typed_authority_compare_call_count": len(compare_calls),
+        "legacy_to_typed_mirror_call_counts": dict(
+            sorted(Counter(mirror_calls).items())
+        ),
+        "polarimetry_compatibility_read_call_count": len(
+            polarimetry_reads
         ),
         "polarimetry_runtime_adapter_call_count": len(
-            polarimetry_adapter_positions
+            polarimetry_adapters
         ),
-        "legacy_to_typed_mirror_call_counts": dict(sorted(observed_mirrors.items())),
-        "missing_mirror_calls": missing,
-        "unexpected_mirror_calls": unexpected,
-        "non_unit_mirror_call_counts": repeated,
-        "parser_precedes_mirrors": parser_precedes_mirrors,
         "authority_order_exact": authority_order_exact,
         "exact": exact,
         "current_direction": (
             "requested_yaml -> typed_plan -> production_rtcproc; "
-            "requested_yaml -> legacy_oracle -> typed_snapshot; "
-            "production_rtcproc == legacy_oracle gate"
+            "polarimetry_yaml -> named_compatibility_reader -> "
+            "production_rtcproc"
         ),
         "target_direction": (
             "requested_yaml -> typed_plan -> production_rtcproc; "
-            "retire legacy oracle after cross-mode validation"
+            "migrate polarimetry under its separate authority decision"
         ),
     }
 
@@ -320,16 +288,13 @@ def main() -> int:
         if args.repo_root
         else Path(__file__).resolve().parents[2]
     )
-    source = repo_root / PARSER_SOURCE
-    body = parser_body(source)
-    paths = literal_paths(body)
-    digest = path_digest(paths)
-    counts = dict(sorted(Counter(map(family, paths)).items()))
-    exits = direct_exit_count(body)
+    manifest = manifest_state(
+        load_frozen_manifest(repo_root / MANIFEST_SOURCE)
+    )
+    paths = list(manifest["paths"])
+    raw_paths = [path for path in paths if family(path) == "raw_timestream"]
+    parser = retired_parser_state((repo_root / PARSER_SOURCE).read_text())
     boundary = authority_boundary((repo_root / BOUNDARY_SOURCE).read_text())
-    raw_paths = [
-        path for path in paths if family(path) == "raw_timestream"
-    ]
     declared_reader_paths = declared_typed_reader_paths(repo_root)
     declared_reader_digest = path_digest(declared_reader_paths)
     reader_covered, reader_uncovered, stale_reader_paths = (
@@ -342,17 +307,13 @@ def main() -> int:
     )
     adapted, unadapted = adapter_coverage(raw_paths, repo_root)
     drift = (
-        len(paths) != EXPECTED_PATH_COUNT
-        or counts.get("raw_timestream") != EXPECTED_RAW_PATH_COUNT
-        or counts.get("polarimetry") != EXPECTED_POLARIMETRY_PATH_COUNT
-        or set(counts) != {"polarimetry", "raw_timestream"}
-        or digest != EXPECTED_PATH_SHA256
-        or exits != EXPECTED_DIRECT_EXIT_COUNT
+        not manifest["exact"]
+        or not parser["retired"]
         or not boundary["exact"]
         or len(declared_reader_paths)
-            != EXPECTED_DECLARED_TYPED_READER_PATH_COUNT
+        != EXPECTED_DECLARED_TYPED_READER_PATH_COUNT
         or declared_reader_digest
-            != EXPECTED_DECLARED_TYPED_READER_PATH_SHA256
+        != EXPECTED_DECLARED_TYPED_READER_PATH_SHA256
         or bool(stale_reader_paths)
         or bool(reader_uncovered)
         or bool(unserialized)
@@ -360,17 +321,11 @@ def main() -> int:
         or bool(unadapted)
     )
     result = {
-        "schema_version": "citlali-raw-config-boundary-audit-v1",
-        "source": PARSER_SOURCE,
-        "literal_path_count": len(paths),
-        "literal_path_sha256": digest,
-        "expected_path_count": EXPECTED_PATH_COUNT,
-        "expected_path_sha256": EXPECTED_PATH_SHA256,
-        "family_counts": counts,
-        "direct_process_exit_count": exits,
-        "expected_direct_process_exit_count": EXPECTED_DIRECT_EXIT_COUNT,
+        "schema_version": "citlali-raw-config-boundary-audit-v2",
+        "manifest": manifest,
+        "retired_parser": parser,
+        "typed_authority_boundary": boundary,
         "path_or_boundary_drift": drift,
-        "legacy_boundary": boundary,
         "declared_typed_reader_path_count": len(declared_reader_paths),
         "declared_typed_reader_path_sha256": declared_reader_digest,
         "typed_reader_sources": list(TYPED_READER_SOURCES),
@@ -384,13 +339,11 @@ def main() -> int:
         "adapter_sources": list(RAW_ADAPTER_SOURCES),
         "adapter_covered_path_count": len(adapted),
         "unadapted_paths": unadapted,
-        "paths": paths,
         "note": (
-            "This is a characterization gate, not an approval of the current "
-            "direction. The two polarimetry paths are recorded as an adjacent "
-            "domain and are excluded from the raw-timestream migration. Direct "
-            "parser exits are forbidden; legacy-to-typed mirrors remain known "
-            "removal debt."
+            "The versioned manifest preserves the retired 169-path raw "
+            "surface and two adjacent polarimetry paths. Production raw "
+            "configuration is one-way typed authority. Polarimetry remains "
+            "a separate named compatibility boundary."
         ),
     }
     if args.json_out:
@@ -401,24 +354,15 @@ def main() -> int:
         output = Path(args.markdown_out)
         output.parent.mkdir(parents=True, exist_ok=True)
         family_rows = "\n".join(
-            f"| {name} | {count} |" for name, count in counts.items()
-        )
-        mirror_rows = "\n".join(
-            f"| `{name}` | {count} |"
-            for name, count in boundary[
-                "legacy_to_typed_mirror_call_counts"
-            ].items()
+            f"| {name} | {count} |"
+            for name, count in manifest["family_counts"].items()
         )
         output.write_text(
             "# Raw Timestream Boundary Audit\n\n"
-            f"- Literal paths: `{len(paths)}`\n"
-            f"- Path digest: `{digest}`\n"
-            f"- Direct parser exits: `{exits}`\n"
-            f"- Boundary exact: `{boundary['exact']}`\n"
-            f"- Typed authority order exact: "
-            f"`{boundary['authority_order_exact']}`\n"
-            f"- Declared direct typed-reader paths: "
-            f"`{len(declared_reader_paths)}`\n"
+            f"- Frozen paths: `{len(paths)}`\n"
+            f"- Path digest: `{manifest['literal_path_sha256']}`\n"
+            f"- Legacy parser retired: `{parser['retired']}`\n"
+            f"- Typed authority boundary exact: `{boundary['exact']}`\n"
             f"- Frozen paths covered by typed readers: "
             f"`{len(reader_covered)}/{len(raw_paths)}`\n"
             f"- Frozen paths covered by request serializer: "
@@ -427,24 +371,26 @@ def main() -> int:
             f"`{len(adapted)}/{len(raw_paths)}`\n"
             f"- Drift: `{drift}`\n\n"
             "| Family | Paths |\n| --- | ---: |\n"
-            f"{family_rows}\n\n"
-            "| Legacy-oracle mirror | Calls |\n| --- | ---: |\n"
-            f"{mirror_rows}\n"
+            f"{family_rows}\n"
         )
     print(
         "raw config boundary: "
-        f"paths={len(paths)} raw={counts.get('raw_timestream', 0)} "
-        f"polarimetry={counts.get('polarimetry', 0)} exits={exits} "
-        f"legacy_parser_calls={boundary['legacy_parser_call_count']} "
+        f"paths={len(paths)} "
+        f"raw={manifest['family_counts'].get('raw_timestream', 0)} "
+        f"polarimetry={manifest['family_counts'].get('polarimetry', 0)} "
+        f"parser_retired={parser['retired']} "
         f"typed_request_reads={boundary['typed_request_read_call_count']} "
         f"typed_authority_inits={boundary['typed_authority_init_call_count']} "
-        f"typed_authority_compares={boundary['typed_authority_compare_call_count']} "
-        f"polarimetry_runtime_adapters={boundary['polarimetry_runtime_adapter_call_count']} "
-        f"legacy_oracle_mirrors={len(boundary['legacy_to_typed_mirror_call_counts'])} "
+        f"legacy_parser_calls={boundary['legacy_parser_call_count']} "
+        f"legacy_oracle_mirrors="
+        f"{len(boundary['legacy_to_typed_mirror_call_counts'])} "
+        f"polarimetry_reads="
+        f"{boundary['polarimetry_compatibility_read_call_count']} "
+        f"polarimetry_adapters="
+        f"{boundary['polarimetry_runtime_adapter_call_count']} "
         f"typed_reader_coverage={len(reader_covered)}/{len(raw_paths)} "
         f"serialized={len(serialized)}/{len(raw_paths)} "
-        f"adapted={len(adapted)}/{len(raw_paths)} "
-        f"drift={drift}"
+        f"adapted={len(adapted)}/{len(raw_paths)} drift={drift}"
     )
     return 1 if args.fail_on_drift and drift else 0
 

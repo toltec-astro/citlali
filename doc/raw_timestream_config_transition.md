@@ -11,46 +11,44 @@ The raw-timestream domain owns the 169 frozen YAML paths below
 and IIR filtering, filter edge guards, downsampling, calibration/correction
 requests, kernels, AltAz destriping, and line-audit policy.
 
-The two `timestream.polarimetry` paths currently parsed by the same
+The two `timestream.polarimetry` paths historically parsed by the same
 `RTCProc::get_config` body belong to the separate polarimetry authority domain.
-They are inventoried by the boundary audit so they cannot disappear silently,
-but they are not covered by a raw-timestream authority claim. R measured-channel
-execution also remains outside this transition.
+They remain inventoried by the boundary audit so they cannot disappear
+silently, but they are not covered by a raw-timestream authority claim. R
+measured-channel execution also remains outside this transition.
 
 ## Current boundary
 
-The typed-authoritative cutover candidate uses this direction:
+The production boundary now uses this direction:
 
 `merged YAML -> typed request -> effective plan -> RTCProc execution adapter`
 
-During cutover validation, a separate read-only oracle remains:
+The generic legacy parser, reverse mirrors, and read-only parity oracle have
+been retired. Their former 171-path surface is preserved in the versioned
+`tools/config/raw_timestream_legacy_paths.json` manifest.
 
-`merged YAML -> temporary RTCProc parser -> temporary typed snapshot`
+The two adjacent polarimetry keys use a separate finite boundary:
 
-The same temporary parser preserves the adjacent polarimetry runtime through a
-narrow adapter for enablement, grouping, and Stokes labels. This is not part of
-the raw authority claim and does not populate raw typed state.
+`merged YAML -> named polarimetry compatibility reader -> RTCProc runtime adapter`
 
-`RTCProc::get_config` contains 171 unique literal paths: 169 raw-timestream and
-two polarimetry paths. Its original 14 direct process exits have been replaced
-by propagated invalid-key diagnostics. `Engine::get_rtc_config` parses that
-legacy surface only into a temporary `RTCProc` and invokes ten legacy-to-typed
-mirror helpers only to construct the oracle snapshot. Direct typed parsing
-initializes requested/effective plan state, and one typed-to-RTC adapter
-initializes the production `rtcproc`. Deterministic snapshots must match before
-execution.
+That reader owns only enablement, grouping, and Stokes-label initialization. It
+does not populate raw typed state and is not part of the raw authority claim.
+The original 14 direct parser exits were replaced by typed validation before
+the parser was removed.
 
-`tools/config/audit_raw_timestream_boundary.py` freezes this characterization:
+`tools/config/audit_raw_timestream_boundary.py` enforces retirement and
+coverage:
 
-- parser path count and SHA-256 digest;
+- canonical manifest schema, path count, and SHA-256 digest;
 - raw versus adjacent polarimetry path counts;
-- zero direct parser exits;
-- the single legacy parser call; and
-- the exact typed-read, oracle-parser, ten-mirror, authority-initialization,
-  and parity-comparison order.
+- no `RTCProc::get_config` declaration or definition;
+- no legacy parser call, raw reverse mirror, or parity comparison;
+- 169/169 typed-reader, serializer, and typed-to-RTC adapter coverage; and
+- exactly one typed authority initialization plus one separate polarimetry
+  compatibility read/adapter in the required order.
 
-This audit is a drift detector. The oracle is temporary validation scaffolding,
-not a second production authority.
+This audit is now a retirement gate, not a characterization of a second
+production authority.
 
 ## Preparation checkpoint
 
@@ -253,15 +251,14 @@ not flow back into the request.
    pointing execution gate. Polarimetry requires its own authority and
    validation decision. Point `redu42`, Beammap `redu18`, and science `redu33`
    accept the authority cutover. This step is complete.
-7. Remove the 169-path legacy parser and all
-   raw legacy-to-typed mirrors. If the
-   two adjacent polarimetry reads are not yet migrated, isolate them behind a
-   named, finite compatibility boundary rather than retaining a generic raw
-   parser.
+7. Remove the 169-path legacy parser and all raw legacy-to-typed mirrors. The
+   two adjacent polarimetry reads are isolated behind a named, finite
+   compatibility boundary rather than retaining the generic parser. This step
+   is complete locally; Unity point validation is pending.
 
 ## Removal gates
 
-The raw parser and mirrors may be retired only when:
+The raw parser and mirrors were retired after all of these gates passed:
 
 - all 169 paths have direct typed readers, validation, and deterministic
   serialization;
