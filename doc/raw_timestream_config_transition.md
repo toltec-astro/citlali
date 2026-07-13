@@ -134,6 +134,18 @@ projection now emits the established disabled sentinels without mutating the
 typed plan or reading processor state. Local builds, all 293 C++ tests, and full
 preflight pass; one final point rerun remains required.
 
+All cutover gates are now accepted. Point `redu42` at `880869b3` is exact
+against `redu38` across all 13 product families and complete RTC/PTC arrays,
+with zero changed or skipped records. Beammap `redu18` at `398d5127` is
+numerically exact against `redu17` across all 5,234 detector products; six
+intentional rtcdiag metadata changes expose configured values beneath a
+disabled local-residual section rather than legacy defaults. Science final
+iteration `redu33` at `398d5127` passes against `redu29` with zero changed or
+skipped records and maximum absolute difference `3.746e-10`. Every run has
+valid provenance and zero serious issues. The durable ledger records these
+acceptances. Parser/oracle retirement is now authorized; polarimetry remains a
+separate compatibility boundary.
+
 The per-observation production shadow was also wired. Input preparation records
 and compares native/effective sample rate, downsample factor, filter edge
 guard/context, and source-protection activity. Observation setup completes and
@@ -239,10 +251,9 @@ not flow back into the request.
 6. Accept a strict point run with complete RTC/PTC timestream comparison, then
    accept affected beammap and science gates. OOF may reuse the explicit
    pointing execution gate. Polarimetry requires its own authority and
-   validation decision. Point `redu38`, Beammap `redu17`, and science `redu29`
-   are accepted at the publication/shadow boundary. The authority cutover is
-   implemented locally and now requires the same Unity mode gates.
-7. After accepting the cutover gates, remove the 169-path legacy parser and all
+   validation decision. Point `redu42`, Beammap `redu18`, and science `redu33`
+   accept the authority cutover. This step is complete.
+7. Remove the 169-path legacy parser and all
    raw legacy-to-typed mirrors. If the
    two adjacent polarimetry reads are not yet migrated, isolate them behind a
    named, finite compatibility boundary rather than retaining a generic raw

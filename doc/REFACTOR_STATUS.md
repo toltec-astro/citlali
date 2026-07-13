@@ -21,7 +21,7 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest inspected point reduction: `redu38`, produced by `6bbc12ce`.
+- Latest inspected point reduction: `redu42`, produced by `880869b3`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
@@ -463,6 +463,22 @@ metadata now resolves to frequency `0.0`, order `1`, and zero-phase `false`;
 enabled values pass through. All 293 C++ tests and full preflight pass locally.
 One final point rerun is required before starting the expensive Beammap and
 science cutover gates.
+The raw execution-authority cutover validation gate is closed. Point `redu42`
+at `880869b3` passes the complete strict comparison against accepted `redu38`:
+13 common product families, zero changed or skipped records, valid byte-stable
+raw/processed/runtime provenance, zero serious issues, and runtime 54.412 versus
+51.459 seconds. Beammap `redu18` at `398d5127` has exact numerical products and
+all 5,234 detector results against `redu17`, zero skipped records, valid
+byte-stable provenance, and zero serious issues. Its six accepted rtcdiag
+metadata changes expose configured values beneath a disabled local-residual
+section instead of legacy processor defaults. Science final iteration `redu33`
+at `398d5127` passes against `redu29` with 27 common products, zero changed or
+skipped records, maximum absolute difference `3.746e-10`, byte-stable
+provenance, zero serious issues, and runtime 704.234 versus 697.572 seconds.
+The validation ledger records all three accepted gates. OOF reuses the point
+execution gate; polarimetry remains separate. The temporary 169-path raw parser
+and ten oracle mirrors may now be retired as the next bounded change while
+retaining the narrow adjacent polarimetry compatibility boundary.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
