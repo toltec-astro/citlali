@@ -14,30 +14,6 @@ struct PtcTodSchemaCalib {
     Eigen::VectorXi nws = Eigen::VectorXi::Zero(1);
 };
 
-struct PtcTodSchemaProc {
-    struct {
-        bool enabled = true;
-    } second_pass_local;
-
-    struct {
-        struct {
-            bool enabled = false;
-        } corr_grouping;
-        struct {
-            bool enabled = false;
-        } adaptive_selector;
-        std::vector<std::string> grouping;
-    } cleaner;
-
-    struct {
-        bool enabled = false;
-    } weight_corr_penalty;
-
-    struct {
-        bool enabled = false;
-    } busy_row_suppression;
-};
-
 TEST(ptc_tod_schema, includes_all_second_pass_summary_fields) {
     const auto path =
         std::filesystem::path(::testing::TempDir()) /
@@ -51,9 +27,11 @@ TEST(ptc_tod_schema, includes_all_second_pass_summary_fields) {
         const auto n_dets = file.addDim("n_dets", 2);
         const std::vector<netCDF::NcDim> signal_dims = {n_pts, n_dets};
         const std::vector<std::size_t> chunk_sizes = {1, 2};
+        citlali::config::ProcessedTimeChunkConfig config;
+        config.flagging.second_pass_local.enabled = true;
 
         citlali::pipeline::add_ptcdiag_tod_optional_diag(
-            file, PtcTodSchemaCalib{}, PtcTodSchemaProc{}, signal_dims,
+            file, PtcTodSchemaCalib{}, config, signal_dims,
             netCDF::NcVar::nc_CHUNKED, chunk_sizes, n_scans, n_dets, 1,
             citlali::pipeline::ptcdiag_fill_int(),
             citlali::pipeline::ptcdiag_fill_double());
