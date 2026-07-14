@@ -862,6 +862,59 @@ Immediate work order:
 4. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
    the active post-processing domain gates close.
 
+### Parallel Review Synthesis - 2026-07-14
+
+Three read-only reviews were completed and adopted as advisory detail under
+this living roadmap:
+
+- [Phase 2 completion census](../handoff/PHASE2_COMPLETION_CENSUS_2026-07-14.md)
+- [Beammap authority design review](../handoff/BEAMMAP_AUTHORITY_DESIGN_REVIEW_2026-07-14.md)
+- [compact configuration and TolTECA usability review](../handoff/CONFIG_USABILITY_TOLTECA_REVIEW_2026-07-14.md)
+
+They agree with the active sequence and expose no reason to reopen the eight
+completed authority domains. Phase 2 remains incomplete: post-processing is
+awaiting its science and Beammap runtime gates; Beammap and the minimal KIDs
+external boundary are implementation-ready; polarimetry and atomic
+astrometry/photometry still require scientific-policy decisions. Domain-level
+completion must not be mistaken for the global Phase 2 exit gate.
+
+After the post-processing gates close, the adopted shortest sequence is:
+
+1. Complete the bounded Beammap effective-plan and provenance migration,
+   preserving all mature numerical algorithms.
+2. Complete atomic astrometry/photometry observation configuration, including
+   replacement rather than merging of per-observation Beammap source flux.
+3. Record the minimal external KIDs schema/config identity and the durable
+   ordered configuration-source manifest.
+4. Mechanically disposition polarimetry as either supported and validated or
+   rejected as an unavailable capability.
+5. Run current matched point, OOF, Beammap, and science snapshots on the final
+   Phase 2 candidate before beginning Phase 3.
+
+The frozen 74-leaf `beammap.*` manifest is the correct Beammap policy boundary,
+not a claim to contain every scientific input used by a Beammap reduction.
+`beammap_source.*` remains an adjacent astrometry/photometry authority. The
+review identified a concrete stale-state risk there: a later observation can
+inherit a per-array source flux omitted from its own input. The Beammap work
+must therefore reference an atomically constructed observation source value;
+it must not absorb that adjacent domain or preserve merge semantics.
+
+For Phase 2, "reviewed overlay fixtures" means retained matched low-level mode
+overlays plus durable ordered-source evidence. Compact-config production
+deployment and its full hermetic TolTECA numbered-overlay acceptance suite are
+explicitly deferred rollout blockers, not Phase 2 exit requirements. Current
+`*_standard` compact profiles remain translation prototypes and must not be
+presented as approved operational defaults. Normal compact controls must also
+be audited in both directions: user-facing low-level paths must be reachable,
+and ordinary compact fields must not write expert-only policy.
+
+Open scientific and operational choices listed in the reviews will be asked
+only when the next implementation depends on them. They must not be inferred
+silently. In particular, Beammap source-flux failure behavior, phase/prior/
+split/reference fallbacks, HWPR and polarimetry capability, astrometry frame
+and time rules, supported KIDs types, and ownership of ordered TolTECA source
+provenance remain owner decisions.
+
 ### Phase 1 Progress
 
 - The 12 `NetCDF: Not a valid ID` errors in `redu21`/`redu22` were traced to
