@@ -151,6 +151,24 @@ PROVENANCE_SIDECARS = {
         },
         "allow_multiple": False,
     },
+    "post_processing": {
+        "filename": "post_processing_provenance.yaml",
+        "schema_version": "citlali-post-processing-provenance-v1",
+        "required_paths": (
+            ("initialized",),
+            ("requested",),
+            ("effective", "values"),
+            ("effective", "resolution"),
+            ("realized", "reduction_completed"),
+            ("realized", "observation"),
+            ("realized", "coadd"),
+            ("realized", "pointing_fits", "raw"),
+            ("realized", "pointing_fits", "filtered"),
+            ("realized", "beammap_fits"),
+            ("realized", "outputs_completed"),
+        ),
+        "allow_multiple": False,
+    },
     "timestream_output": {
         "filename": "timestream_output_provenance.yaml",
         "schema_version": "citlali-timestream-output-provenance-v1",
@@ -1393,6 +1411,304 @@ def pointing_mapmaking_cross_check_errors(
     return errors
 
 
+def post_processing_fit_cardinality_errors(
+    cardinality: Any, label: str,
+) -> list[str]:
+    if not isinstance(cardinality, dict):
+        return [f"{label} must be a mapping"]
+    errors: list[str] = []
+    counts: dict[str, int] = {}
+    for name in ("context_count", "attempt_count", "valid_count"):
+        value = cardinality.get(name)
+        if type(value) is not int or value < 0:
+            errors.append(f"{label}.{name} must be a nonnegative integer")
+        else:
+            counts[name] = value
+    if not errors and counts["valid_count"] > counts["attempt_count"]:
+        errors.append(f"{label} valid fits exceed attempted fits")
+    return errors
+
+
+def post_processing_map_context_errors(
+    state: Any, label: str, source_finding_enabled: bool,
+) -> list[str]:
+    if not isinstance(state, dict):
+        return [f"{label} must be a mapping"]
+    errors: list[str] = []
+    counts: dict[str, int] = {}
+    for name in (
+        "filter_context_count",
+        "filtered_map_count",
+        "source_finding_context_count",
+        "detected_source_count",
+        "source_table_write_count",
+        "source_table_row_count",
+    ):
+        value = state.get(name)
+        if type(value) is not int or value < 0:
+            errors.append(f"{label}.{name} must be a nonnegative integer")
+        else:
+            counts[name] = value
+    errors.extend(
+        post_processing_fit_cardinality_errors(
+            state.get("catalog_fits"), f"{label}.catalog_fits"
+        )
+    )
+    if errors:
+        return errors
+    fits = state["catalog_fits"]
+    expected_source_contexts = (
+        counts["filter_context_count"] if source_finding_enabled else 0
+    )
+    if counts["source_finding_context_count"] != expected_source_contexts:
+        errors.append(f"{label} source-finding context count is inconsistent")
+    if counts["source_table_write_count"] != expected_source_contexts:
+        errors.append(f"{label} source-table write count is inconsistent")
+    if fits["context_count"] != expected_source_contexts:
+        errors.append(f"{label} catalog-fit context count is inconsistent")
+    if fits["attempt_count"] != counts["detected_source_count"]:
+        errors.append(f"{label} detected-source count is inconsistent")
+    if counts["source_table_row_count"] != counts["detected_source_count"]:
+        errors.append(f"{label} source-table row count is inconsistent")
+    return errors
+
+
+def post_processing_provenance_semantic_errors(
+    data: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        if data["initialized"] is not True:
+            errors.append("post-processing execution plan is not initialized")
+        requested = data["requested"]
+        effective = data["effective"]["values"]
+        resolution = data["effective"]["resolution"]
+        realized = data["realized"]
+        if not all(isinstance(value, dict) for value in (requested, effective)):
+            return ["post-processing requested/effective config must be mappings"]
+
+        requested_filter = requested["map_filtering"]["enabled"]
+        effective_filter = effective["map_filtering"]["enabled"]
+        requested_source = requested["source_finding"]["enabled"]
+        effective_source = effective["source_finding"]["enabled"]
+        effective_fitting = effective["source_fitting"]["active"]
+        bool_values = (
+            requested_filter,
+            effective_filter,
+            requested_source,
+            effective_source,
+            effective_fitting,
+            resolution["mapmaking_enabled"],
+            resolution["coadd_enabled"],
+            resolution["map_filtering_requested"],
+            resolution["map_filtering_effective"],
+            resolution["map_filtering_disabled_by_mapmaking"],
+            resolution["source_finding_requested"],
+            resolution["source_finding_effective"],
+            resolution["source_finding_disabled_by_mapmaking"],
+            resolution["source_fitting_required_by_reduction"],
+            resolution["source_fitting_required_by_map_filtering"],
+            resolution["source_fitting_required_by_source_finding"],
+            resolution["source_fitting_effective"],
+            resolution["source_fitting_disabled_by_mapmaking"],
+        )
+        if not all(type(value) is bool for value in bool_values):
+            return ["post-processing activation values must be boolean"]
+        if requested_source and not requested_filter:
+            errors.append("source finding is requested without map filtering")
+        if resolution["map_filtering_requested"] != requested_filter:
+            errors.append("map-filter request resolution is inconsistent")
+        if resolution["map_filtering_effective"] != effective_filter:
+            errors.append("map-filter effective resolution is inconsistent")
+        if resolution["source_finding_requested"] != requested_source:
+            errors.append("source-finding request resolution is inconsistent")
+        if resolution["source_finding_effective"] != effective_source:
+            errors.append("source-finding effective resolution is inconsistent")
+        if resolution["source_fitting_effective"] != effective_fitting:
+            errors.append("source-fitting effective resolution is inconsistent")
+        mapmaking_enabled = resolution["mapmaking_enabled"]
+        if effective_filter != (requested_filter and mapmaking_enabled):
+            errors.append("map-filter activation does not follow mapmaking policy")
+        if effective_source != (requested_source and mapmaking_enabled):
+            errors.append("source-finding activation does not follow mapmaking policy")
+        if effective_source and not effective_filter:
+            errors.append("effective source finding lacks effective map filtering")
+        if resolution["map_filtering_disabled_by_mapmaking"] != (
+            requested_filter and not mapmaking_enabled
+        ):
+            errors.append("map-filter disable resolution is inconsistent")
+        if resolution["source_finding_disabled_by_mapmaking"] != (
+            requested_source and not mapmaking_enabled
+        ):
+            errors.append("source-finding disable resolution is inconsistent")
+
+        reduction_type = resolution["reduction_type"]
+        if reduction_type not in ("science", "pointing", "beammap"):
+            errors.append("post-processing reduction type is invalid")
+            return errors
+        required_by_reduction = reduction_type in ("pointing", "beammap")
+        fitting_required = (
+            required_by_reduction or requested_filter or requested_source
+        )
+        if resolution["source_fitting_required_by_reduction"] != (
+            required_by_reduction
+        ):
+            errors.append("source-fitting reduction requirement is inconsistent")
+        if resolution["source_fitting_required_by_map_filtering"] != (
+            requested_filter
+        ):
+            errors.append("source-fitting filter requirement is inconsistent")
+        if resolution["source_fitting_required_by_source_finding"] != (
+            requested_source
+        ):
+            errors.append("source-fitting finder requirement is inconsistent")
+        if effective_fitting != (mapmaking_enabled and fitting_required):
+            errors.append("source-fitting activation resolution is inconsistent")
+        if resolution["source_fitting_disabled_by_mapmaking"] != (
+            fitting_required and not mapmaking_enabled
+        ):
+            errors.append("source-fitting disable resolution is inconsistent")
+
+        for name in ("reduction_completed", "outputs_completed"):
+            if realized.get(name) is not True:
+                errors.append(f"post-processing {name} is not true")
+        errors.extend(
+            post_processing_map_context_errors(
+                realized["observation"], "observation", effective_source
+            )
+        )
+        errors.extend(
+            post_processing_map_context_errors(
+                realized["coadd"], "coadd", effective_source
+            )
+        )
+        for name, cardinality in (
+            ("pointing raw fits", realized["pointing_fits"]["raw"]),
+            ("pointing filtered fits", realized["pointing_fits"]["filtered"]),
+            ("beammap fits", realized["beammap_fits"]),
+        ):
+            errors.extend(
+                post_processing_fit_cardinality_errors(cardinality, name)
+            )
+
+        raw_contexts = realized["pointing_fits"]["raw"]["context_count"]
+        filtered_contexts = realized["pointing_fits"]["filtered"]["context_count"]
+        beammap_contexts = realized["beammap_fits"]["context_count"]
+        if reduction_type == "pointing" and mapmaking_enabled:
+            if raw_contexts == 0:
+                errors.append("pointing reduction records no raw fit context")
+            expected_filtered = realized["observation"]["filter_context_count"]
+            if filtered_contexts != expected_filtered:
+                errors.append("pointing filtered-fit context count is inconsistent")
+        elif raw_contexts or filtered_contexts:
+            errors.append("non-pointing reduction records pointing fits")
+        if reduction_type == "beammap" and mapmaking_enabled:
+            if beammap_contexts == 0:
+                errors.append("beammap reduction records no fit context")
+        elif beammap_contexts:
+            errors.append("non-beammap reduction records beammap fits")
+    except (KeyError, TypeError) as exc:
+        errors.append(f"cannot evaluate post-processing provenance semantics: {exc}")
+    return errors
+
+
+def post_processing_mapmaking_cross_check_errors(
+    post_processing: dict[str, Any], mapmaking: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        if mapmaking.get("schema_version") != (
+            "citlali-mapmaking-provenance-v2"
+        ):
+            return [
+                "post-processing cross-check requires mapmaking provenance v2"
+            ]
+        resolution = post_processing["effective"]["resolution"]
+        realized = post_processing["realized"]
+        mapmaking_effective = mapmaking["effective"]["config"]
+        if resolution["mapmaking_enabled"] != mapmaking_effective["enabled"]:
+            errors.append("post-processing mapmaking activation differs from mapmaking provenance")
+        if not resolution["map_filtering_effective"]:
+            expected_observation_contexts = 0
+            expected_observation_maps = 0
+            expected_coadd_contexts = 0
+            expected_coadd_maps = 0
+        elif resolution["coadd_enabled"]:
+            coadd = mapmaking["coadd"]
+            expected_observation_contexts = 0
+            expected_observation_maps = 0
+            expected_coadd_contexts = 1
+            expected_coadd_maps = (
+                coadd["map_count"] if coadd["available"] else -1
+            )
+        else:
+            observations = mapmaking["observations"]
+            expected_observation_contexts = len(observations)
+            expected_observation_maps = sum(
+                item["map_count"] for item in observations
+            )
+            expected_coadd_contexts = 0
+            expected_coadd_maps = 0
+        expected = (
+            (
+                realized["observation"],
+                expected_observation_contexts,
+                expected_observation_maps,
+            ),
+            (realized["coadd"], expected_coadd_contexts, expected_coadd_maps),
+        )
+        for state, contexts, maps in expected:
+            if (
+                state["filter_context_count"] != contexts
+                or state["filtered_map_count"] != maps
+            ):
+                errors.append(
+                    "post-processing filter cardinality differs from "
+                    "mapmaking provenance"
+                )
+                break
+    except (KeyError, TypeError) as exc:
+        errors.append(
+            "cannot cross-check post-processing and mapmaking provenance: "
+            f"{exc}"
+        )
+    return errors
+
+
+def post_processing_pointing_cross_check_errors(
+    post_processing: dict[str, Any], pointing: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        if pointing.get("schema_version") != (
+            "citlali-pointing-provenance-v2"
+        ):
+            return [
+                "post-processing cross-check requires pointing provenance v2"
+            ]
+        pp_fits = post_processing["realized"]["pointing_fits"]
+        pointing_realized = pointing["realized"]
+        pairs = (
+            ("raw", "raw_fit_attempt_count", "raw_valid_fit_count"),
+            ("filtered", "filtered_fit_attempt_count", "filtered_valid_fit_count"),
+        )
+        for stage, attempt_name, valid_name in pairs:
+            if (
+                pp_fits[stage]["attempt_count"] != pointing_realized[attempt_name]
+                or pp_fits[stage]["valid_count"] != pointing_realized[valid_name]
+            ):
+                errors.append(
+                    f"post-processing {stage} fits differ from pointing "
+                    "provenance"
+                )
+    except (KeyError, TypeError) as exc:
+        errors.append(
+            "cannot cross-check post-processing and pointing provenance: "
+            f"{exc}"
+        )
+    return errors
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -1412,6 +1728,7 @@ def audit_provenance_sidecars(
     require_coadd: bool = False,
     require_noise_products: bool = False,
     require_pointing: bool = False,
+    require_post_processing: bool = False,
 ) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for name, spec in PROVENANCE_SIDECARS.items():
@@ -1422,6 +1739,7 @@ def audit_provenance_sidecars(
             or (name == "coadd" and require_coadd)
             or (name == "noise_products" and require_noise_products)
             or (name == "pointing" and require_pointing)
+            or (name == "post_processing" and require_post_processing)
         )
         paths = find_provenance_files(redu, str(spec["filename"]))
         record: dict[str, Any] = {
@@ -1486,6 +1804,10 @@ def audit_provenance_sidecars(
                     elif name == "pointing":
                         semantic_errors = (
                             pointing_provenance_semantic_errors(data)
+                        )
+                    elif name == "post_processing":
+                        semantic_errors = (
+                            post_processing_provenance_semantic_errors(data)
                         )
                 item["semantic_errors"] = semantic_errors
                 item["valid"] = bool(
@@ -1658,6 +1980,52 @@ def audit_provenance_sidecars(
         except Exception as exc:
             pointing["valid"] = False
             pointing.setdefault("cross_check_errors", []).append(str(exc))
+
+    post_processing = result["post_processing"]
+    if mapmaking["present"] and post_processing["present"] and (
+        mapmaking["valid"] and post_processing["valid"]
+    ):
+        try:
+            mapmaking_data = load_yaml(Path(mapmaking["paths"][0]))
+            post_processing_data = load_yaml(
+                Path(post_processing["paths"][0])
+            )
+            cross_check_errors = (
+                post_processing_mapmaking_cross_check_errors(
+                    post_processing_data, mapmaking_data
+                )
+            )
+            if cross_check_errors:
+                post_processing["valid"] = False
+                post_processing["cross_check_errors"] = cross_check_errors
+        except Exception as exc:
+            post_processing["valid"] = False
+            post_processing.setdefault("cross_check_errors", []).append(
+                str(exc)
+            )
+    if pointing["present"] and post_processing["present"] and (
+        pointing["valid"] and post_processing["valid"]
+    ):
+        try:
+            pointing_data = load_yaml(Path(pointing["paths"][0]))
+            post_processing_data = load_yaml(
+                Path(post_processing["paths"][0])
+            )
+            cross_check_errors = (
+                post_processing_pointing_cross_check_errors(
+                    post_processing_data, pointing_data
+                )
+            )
+            if cross_check_errors:
+                post_processing["valid"] = False
+                post_processing.setdefault(
+                    "cross_check_errors", []
+                ).extend(cross_check_errors)
+        except Exception as exc:
+            post_processing["valid"] = False
+            post_processing.setdefault("cross_check_errors", []).append(
+                str(exc)
+            )
     return result
 
 
@@ -1870,6 +2238,7 @@ def build_audit(args: argparse.Namespace) -> dict[str, Any]:
             getattr(args, "require_coadd_provenance", False),
             getattr(args, "require_noise_products_provenance", False),
             getattr(args, "require_pointing_provenance", False),
+            getattr(args, "require_post_processing_provenance", False),
         ),
         "products": audit_products(redu, args.top),
     }
@@ -2039,6 +2408,13 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         "--require-pointing-provenance",
         action="store_true",
         help="Fail unless pointing_provenance.yaml is present and valid.",
+    )
+    parser.add_argument(
+        "--require-post-processing-provenance",
+        action="store_true",
+        help=(
+            "Fail unless post_processing_provenance.yaml is present and valid."
+        ),
     )
     parser.add_argument("--json-out", default="", help="Optional path for machine-readable JSON.")
     parser.add_argument("--report-out", default="", help="Optional path for Markdown output.")

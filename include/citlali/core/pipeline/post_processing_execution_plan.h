@@ -3,6 +3,9 @@
 #include <citlali/core/config/post_processing_config.h>
 #include <citlali/core/config/runtime_config.h>
 
+#include <cstddef>
+#include <stdexcept>
+
 namespace citlali::pipeline {
 
 inline bool post_processing_source_fitting_required(
@@ -32,11 +35,29 @@ struct PostProcessingEffectiveResolutionRecord {
     bool source_fitting_disabled_by_mapmaking = false;
 };
 
+struct PostProcessingFitCardinality {
+    std::size_t context_count = 0;
+    std::size_t attempt_count = 0;
+    std::size_t valid_count = 0;
+};
+
+struct PostProcessingMapContextRealizedState {
+    std::size_t filter_context_count = 0;
+    std::size_t filtered_map_count = 0;
+    std::size_t source_finding_context_count = 0;
+    std::size_t detected_source_count = 0;
+    std::size_t source_table_write_count = 0;
+    std::size_t source_table_row_count = 0;
+    PostProcessingFitCardinality catalog_fits;
+};
+
 struct PostProcessingRealizedState {
     bool reduction_completed = false;
-    bool map_filtering_executed = false;
-    bool source_finding_executed = false;
-    bool source_fitting_executed = false;
+    PostProcessingMapContextRealizedState observation;
+    PostProcessingMapContextRealizedState coadd;
+    PostProcessingFitCardinality pointing_raw_fits;
+    PostProcessingFitCardinality pointing_filtered_fits;
+    PostProcessingFitCardinality beammap_fits;
     bool outputs_completed = false;
 };
 
@@ -84,6 +105,14 @@ struct PostProcessingExecutionPlan {
             effective.source_fitting.active,
             fitting_required && !mapmaking_enabled,
         };
+        realized = {};
+    }
+
+    void begin_iteration() {
+        if (!initialized) {
+            throw std::logic_error(
+                "post-processing plan is not initialized");
+        }
         realized = {};
     }
 };

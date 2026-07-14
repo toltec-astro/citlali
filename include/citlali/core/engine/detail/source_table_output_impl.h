@@ -4,6 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/pipeline/reduction_config_accessors.h>
+#include <citlali/core/pipeline/post_processing_provenance_lifecycle.h>
 
 template <mapmaking::MapType map_t, class map_buffer_t>
 void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
@@ -34,4 +35,15 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::latest_observation_date(observation_dates),
         calib.apt_header_description,
         source_table_callbacks);
+
+    if constexpr (map_t == mapmaking::FilteredObs ||
+                  map_t == mapmaking::FilteredCoadd) {
+        constexpr auto context =
+            map_t == mapmaking::FilteredObs
+                ? citlali::pipeline::PostProcessingMapContext::observation
+                : citlali::pipeline::PostProcessingMapContext::coadd;
+        citlali::pipeline::record_post_processing_source_table_written(
+            citlali::pipeline::post_processing_plan(*this), context,
+            static_cast<std::size_t>(mb->source_params.rows()));
+    }
 }

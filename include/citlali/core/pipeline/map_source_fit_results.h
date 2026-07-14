@@ -55,9 +55,11 @@ auto next_source_fit_row_start(SourceRow source_row_start,
 }
 
 template <class MapBuffer, class MapCount, class SourceFitCallbacks>
-void fit_detected_map_sources(MapBuffer &map_buffer, MapCount n_maps,
-                              const SourceFitCallbacks &callbacks) {
+SourceFitCardinality fit_detected_map_sources(
+    MapBuffer &map_buffer, MapCount n_maps,
+    const SourceFitCallbacks &callbacks) {
     Eigen::Index source_row_start = 0;
+    SourceFitCardinality cardinality;
 
     for (Eigen::Index i = 0; i < n_maps; ++i) {
         const auto n_map_sources = map_buffer.n_sources[i];
@@ -67,9 +69,12 @@ void fit_detected_map_sources(MapBuffer &map_buffer, MapCount n_maps,
 
         const auto array = callbacks.maps_to_arrays(i);
         const auto init_fwhm = callbacks.init_fwhm_for_array(array);
-        callbacks.fit_map_sources(
+        cardinality.attempt_count +=
+            static_cast<std::size_t>(n_map_sources);
+        cardinality.valid_count += callbacks.fit_map_sources(
             i, n_map_sources, init_fwhm, source_row_start);
         source_row_start =
             next_source_fit_row_start(source_row_start, n_map_sources);
     }
+    return cardinality;
 }

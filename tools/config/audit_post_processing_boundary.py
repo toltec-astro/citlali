@@ -16,6 +16,9 @@ MANIFEST_SOURCE = "tools/config/post_processing_legacy_paths.json"
 DEFAULT_CONFIG_SOURCE = "data/config.yaml"
 AUTHORITY_SOURCE = "tools/config/config_authority_inventory.json"
 CONFIG_SOURCE = "include/citlali/core/config/post_processing_config.h"
+VALIDATION_SOURCE = (
+    "include/citlali/core/config/post_processing_config_validation.h"
+)
 DIRECT_READER_SOURCE = (
     "include/citlali/core/pipeline/post_processing_config_read.h"
 )
@@ -25,6 +28,16 @@ SHADOW_SOURCE = (
 PLAN_SOURCE = (
     "include/citlali/core/pipeline/post_processing_execution_plan.h"
 )
+LIFECYCLE_SOURCE = (
+    "include/citlali/core/pipeline/post_processing_provenance_lifecycle.h"
+)
+SERIALIZATION_SOURCE = (
+    "include/citlali/core/pipeline/post_processing_config_serialization.h"
+)
+PROVENANCE_SOURCE = (
+    "include/citlali/core/pipeline/post_processing_provenance.h"
+)
+CLI_EXECUTION_SOURCE = "include/citlali/core/cli/reduction_execution.h"
 ENGINE_BOUNDARY_SOURCE = "include/citlali/core/engine/detail/citlali_config_impl.h"
 FILTER_BOUNDARY_SOURCE = "include/citlali/core/engine/detail/map_filter_config_impl.h"
 LEGACY_FILTER_SOURCE = "include/citlali/core/mapmaking/wiener_filter.h"
@@ -142,9 +155,14 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         if item["id"] == "post-processing"
     )
     config_source = (repo_root / CONFIG_SOURCE).read_text()
+    validation_source = (repo_root / VALIDATION_SOURCE).read_text()
     direct_reader = (repo_root / DIRECT_READER_SOURCE).read_text()
     shadow_source = (repo_root / SHADOW_SOURCE).read_text()
     plan_source = (repo_root / PLAN_SOURCE).read_text()
+    lifecycle_source = (repo_root / LIFECYCLE_SOURCE).read_text()
+    serialization_source = (repo_root / SERIALIZATION_SOURCE).read_text()
+    provenance_source = (repo_root / PROVENANCE_SOURCE).read_text()
+    cli_execution_source = (repo_root / CLI_EXECUTION_SOURCE).read_text()
     engine = (repo_root / ENGINE_BOUNDARY_SOURCE).read_text()
     filter_boundary = (repo_root / FILTER_BOUNDARY_SOURCE).read_text()
     legacy_filter = (repo_root / LEGACY_FILTER_SOURCE).read_text()
@@ -193,6 +211,66 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
             and "requested" in plan_source
             and "effective" in plan_source
             and "realized" in plan_source
+        ),
+        "realized_cardinality_present": all(
+            field in plan_source
+            for field in (
+                "filter_context_count",
+                "filtered_map_count",
+                "source_finding_context_count",
+                "detected_source_count",
+                "source_table_write_count",
+                "source_table_row_count",
+                "pointing_raw_fits",
+                "pointing_filtered_fits",
+                "beammap_fits",
+                "attempt_count",
+                "valid_count",
+            )
+        ),
+        "source_finding_requires_filtering": (
+            "config.source_finding.enabled &&"
+            " !config.map_filtering.enabled" in validation_source
+            and "requires post_processing.map_filtering.enabled=true"
+            in validation_source
+        ),
+        "realized_lifecycle_present": all(
+            name in lifecycle_source
+            for name in (
+                "record_post_processing_filter_completed",
+                "record_post_processing_catalog_fits_completed",
+                "record_post_processing_source_table_written",
+                "record_post_processing_pointing_fits_completed",
+                "record_post_processing_beammap_fits_completed",
+                "record_post_processing_run_completed",
+            )
+        ),
+        "realized_lifecycle_checks_cardinality": all(
+            text in lifecycle_source
+            for text in (
+                "source row cardinality is inconsistent",
+                "pointing fit cardinality is incomplete",
+                "beammap reduction recorded no fitting contexts",
+            )
+        ),
+        "provenance_schema_present": (
+            "citlali-post-processing-provenance-v1" in provenance_source
+            and "post_processing_provenance.yaml" in provenance_source
+            and "post_processing_config_node(plan.requested)"
+            in provenance_source
+            and "post_processing_config_node(plan.effective)"
+            in provenance_source
+            and "post_processing_realized_state_node(plan.realized)"
+            in provenance_source
+            and "write_yaml_file_atomic" in provenance_source
+            and "post_processing_fit_cardinality_node"
+            in serialization_source
+        ),
+        "cli_completion_call_count": call_count(
+            cli_execution_source, "record_post_processing_run_completed"
+        ),
+        "cli_provenance_write_call_count": call_count(
+            cli_execution_source, "write_post_processing_provenance_file"
         ),
         "execution_plan_reset_call_count": call_count(
             engine, "post_processing_plan.reset_from_request"
@@ -336,6 +414,13 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         and checks["shadow_comparison_call_count"] == 1
         and checks["shadow_report_present"]
         and checks["execution_plan_present"]
+        and checks["realized_cardinality_present"]
+        and checks["source_finding_requires_filtering"]
+        and checks["realized_lifecycle_present"]
+        and checks["realized_lifecycle_checks_cardinality"]
+        and checks["provenance_schema_present"]
+        and checks["cli_completion_call_count"] == 1
+        and checks["cli_provenance_write_call_count"] == 1
         and checks["execution_plan_reset_call_count"] == 1
         and checks["execution_plan_accessor_count"] == 2
         and checks["serial_filter_parser_retired"]

@@ -92,6 +92,16 @@ class PostProcessingBoundaryAuditTest(unittest.TestCase):
         self.assertTrue(checks["effective_source_fitting_policy_used"])
         self.assertTrue(checks["source_fitting_shadow_details_retired"])
 
+    def test_realized_post_processing_contract_is_enforced(self) -> None:
+        checks = audit.audit(REPO_ROOT)["mixed_boundary"]["checks"]
+        self.assertTrue(checks["realized_cardinality_present"])
+        self.assertTrue(checks["source_finding_requires_filtering"])
+        self.assertTrue(checks["realized_lifecycle_present"])
+        self.assertTrue(checks["realized_lifecycle_checks_cardinality"])
+        self.assertTrue(checks["provenance_schema_present"])
+        self.assertEqual(checks["cli_completion_call_count"], 1)
+        self.assertEqual(checks["cli_provenance_write_call_count"], 1)
+
     def test_rejects_default_surface_drift(self) -> None:
         manifest = json.loads(
             (REPO_ROOT / audit.MANIFEST_SOURCE).read_text()

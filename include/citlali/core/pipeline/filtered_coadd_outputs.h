@@ -10,6 +10,8 @@ template <auto FilteredCoaddMap, class Engine, class Logger>
 void filter_coadd_maps(Engine &engine, const Logger &logger) {
     filter_maps<FilteredCoaddMap>(
         engine, engine.cmb, logger, "filtering coadded maps");
+    record_post_processing_filter_completed_if_available(
+        engine, PostProcessingMapContext::coadd);
 }
 
 template <class Engine, class Logger>
@@ -33,7 +35,8 @@ void find_filtered_coadd_sources_if_needed(Engine &engine,
                                            const Logger &logger) {
     find_filtered_map_sources_if_needed<FilteredCoaddMap>(
         engine, engine.cmb, logger,
-        "finding filtered coadded map sources");
+        "finding filtered coadded map sources",
+        PostProcessingMapContext::coadd);
 }
 
 template <auto FilteredCoaddMap, class Engine, class Logger>

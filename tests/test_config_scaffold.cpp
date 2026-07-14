@@ -35,6 +35,8 @@
 #include <citlali/core/pipeline/post_processing_config_read.h>
 #include <citlali/core/pipeline/post_processing_execution_plan.h>
 #include <citlali/core/pipeline/post_processing_config_shadow.h>
+#include <citlali/core/pipeline/post_processing_provenance.h>
+#include <citlali/core/pipeline/post_processing_provenance_lifecycle.h>
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
@@ -518,8 +520,9 @@ struct FakeEngine {
     }
 
     template <auto MapType, class MapBuffer>
-    void find_sources(MapBuffer &) {
+    citlali::pipeline::SourceFitCardinality find_sources(MapBuffer &) {
         ++find_sources_calls;
+        return {};
     }
 
     void fit_maps(citlali::pipeline::PointingFitStage) {
@@ -1097,8 +1100,9 @@ struct FakeReductionIterationEngine {
     }
 
     template <auto MapType, class MapBuffer>
-    void find_sources(MapBuffer &) {
+    citlali::pipeline::SourceFitCardinality find_sources(MapBuffer &) {
         ++find_sources_calls;
+        return {};
     }
 };
 
@@ -1848,6 +1852,193 @@ TEST(config_scaffold, adapts_effective_source_fitting_config_one_way) {
     EXPECT_DOUBLE_EQ(default_target.flux_high, 2.0);
     EXPECT_DOUBLE_EQ(default_target.fwhm_low, 0.1);
     EXPECT_DOUBLE_EQ(default_target.fwhm_high, 2.0);
+}
+
+TEST(config_scaffold, records_complete_post_processing_point_iteration) {
+    citlali::config::PostProcessingConfig request;
+    citlali::config::set_map_filtering_enabled(request, true);
+    citlali::config::set_source_finding_enabled(request, true);
+    citlali::pipeline::PostProcessingExecutionPlan plan;
+    plan.reset_from_request(
+        request, citlali::config::ReductionType::pointing, true, false);
+    plan.begin_iteration();
+
+    citlali::config::MapmakingConfig mapmaking_request;
+    mapmaking_request.enabled = true;
+    citlali::pipeline::MapmakingExecutionPlan mapmaking;
+    mapmaking.reset_from_request(
+        mapmaking_request, citlali::config::ReductionType::pointing);
+    mapmaking.begin_iteration();
+    mapmaking.begin_observation(0, "152389", 3, 1.0e-5, 6);
+    citlali::pipeline::complete_mapmaking_observation(mapmaking);
+    citlali::pipeline::record_mapmaking_run_completed(mapmaking);
+
+    citlali::pipeline::record_post_processing_filter_completed(
+        plan, citlali::pipeline::PostProcessingMapContext::observation, 3);
+    citlali::pipeline::record_post_processing_catalog_fits_completed(
+        plan, citlali::pipeline::PostProcessingMapContext::observation,
+        195, 190);
+    citlali::pipeline::record_post_processing_source_table_written(
+        plan, citlali::pipeline::PostProcessingMapContext::observation,
+        195);
+    citlali::pipeline::record_post_processing_pointing_fits_completed(
+        plan, false, 3, 3);
+    citlali::pipeline::record_post_processing_pointing_fits_completed(
+        plan, true, 3, 3);
+    citlali::pipeline::record_post_processing_run_completed(
+        plan, mapmaking);
+
+    EXPECT_TRUE(plan.realized.reduction_completed);
+    EXPECT_TRUE(plan.realized.outputs_completed);
+    EXPECT_EQ(plan.realized.observation.filtered_map_count, 3U);
+    EXPECT_EQ(plan.realized.observation.detected_source_count, 195U);
+    EXPECT_EQ(plan.realized.observation.source_table_row_count, 195U);
+    EXPECT_EQ(plan.realized.observation.catalog_fits.valid_count, 190U);
+    EXPECT_EQ(plan.realized.pointing_raw_fits.attempt_count, 3U);
+    EXPECT_EQ(plan.realized.pointing_filtered_fits.attempt_count, 3U);
+}
+
+TEST(config_scaffold, rejects_incomplete_post_processing_source_table) {
+    citlali::config::PostProcessingConfig request;
+    citlali::config::set_map_filtering_enabled(request, true);
+    citlali::config::set_source_finding_enabled(request, true);
+    citlali::pipeline::PostProcessingExecutionPlan plan;
+    plan.reset_from_request(
+        request, citlali::config::ReductionType::science, true, true);
+    plan.begin_iteration();
+
+    citlali::config::MapmakingConfig mapmaking_request;
+    mapmaking_request.enabled = true;
+    citlali::pipeline::MapmakingExecutionPlan mapmaking;
+    mapmaking.reset_from_request(
+        mapmaking_request, citlali::config::ReductionType::science);
+    mapmaking.begin_iteration();
+    mapmaking.begin_observation(0, "science", 3, 1.0e-5, 3);
+    citlali::pipeline::complete_mapmaking_observation(mapmaking);
+    mapmaking.begin_coadd(3, 6);
+    citlali::pipeline::complete_mapmaking_coadd(mapmaking);
+    citlali::pipeline::record_mapmaking_run_completed(mapmaking);
+
+    citlali::pipeline::record_post_processing_filter_completed(
+        plan, citlali::pipeline::PostProcessingMapContext::coadd, 3);
+    citlali::pipeline::record_post_processing_catalog_fits_completed(
+        plan, citlali::pipeline::PostProcessingMapContext::coadd, 8, 7);
+    EXPECT_THROW(
+        citlali::pipeline::record_post_processing_run_completed(
+            plan, mapmaking),
+        std::logic_error);
+    EXPECT_FALSE(plan.realized.reduction_completed);
+}
+
+TEST(config_scaffold, records_complete_post_processing_science_coadd) {
+    citlali::config::PostProcessingConfig request;
+    citlali::config::set_map_filtering_enabled(request, true);
+    citlali::config::set_source_finding_enabled(request, true);
+    citlali::pipeline::PostProcessingExecutionPlan plan;
+    plan.reset_from_request(
+        request, citlali::config::ReductionType::science, true, true);
+    plan.begin_iteration();
+
+    citlali::config::MapmakingConfig mapmaking_request;
+    mapmaking_request.enabled = true;
+    citlali::pipeline::MapmakingExecutionPlan mapmaking;
+    mapmaking.reset_from_request(
+        mapmaking_request, citlali::config::ReductionType::science);
+    mapmaking.begin_iteration();
+    mapmaking.begin_observation(0, "science", 3, 1.0e-5, 3);
+    citlali::pipeline::complete_mapmaking_observation(mapmaking);
+    mapmaking.begin_coadd(3, 6);
+    citlali::pipeline::complete_mapmaking_coadd(mapmaking);
+    citlali::pipeline::record_mapmaking_run_completed(mapmaking);
+
+    citlali::pipeline::record_post_processing_filter_completed(
+        plan, citlali::pipeline::PostProcessingMapContext::coadd, 3);
+    citlali::pipeline::record_post_processing_catalog_fits_completed(
+        plan, citlali::pipeline::PostProcessingMapContext::coadd, 8, 7);
+    citlali::pipeline::record_post_processing_source_table_written(
+        plan, citlali::pipeline::PostProcessingMapContext::coadd, 8);
+    citlali::pipeline::record_post_processing_run_completed(
+        plan, mapmaking);
+
+    EXPECT_EQ(plan.realized.observation.filter_context_count, 0U);
+    EXPECT_EQ(plan.realized.coadd.filter_context_count, 1U);
+    EXPECT_EQ(plan.realized.coadd.filtered_map_count, 3U);
+    EXPECT_EQ(plan.realized.coadd.source_table_row_count, 8U);
+}
+
+TEST(config_scaffold, records_complete_post_processing_beammap_fits) {
+    citlali::pipeline::PostProcessingExecutionPlan plan;
+    plan.reset_from_request(
+        citlali::config::PostProcessingConfig{},
+        citlali::config::ReductionType::beammap, true, false);
+    plan.begin_iteration();
+
+    citlali::config::MapmakingConfig mapmaking_request;
+    mapmaking_request.enabled = true;
+    citlali::pipeline::MapmakingExecutionPlan mapmaking;
+    mapmaking.reset_from_request(
+        mapmaking_request, citlali::config::ReductionType::beammap);
+    mapmaking.begin_iteration();
+    mapmaking.begin_observation(0, "beammap", 5234, 1.0e-5, 5234);
+    citlali::pipeline::complete_mapmaking_observation(mapmaking);
+    citlali::pipeline::record_mapmaking_run_completed(mapmaking);
+
+    citlali::pipeline::record_post_processing_beammap_fits_completed(
+        plan, 5234, 5135);
+    citlali::pipeline::record_post_processing_run_completed(
+        plan, mapmaking);
+
+    EXPECT_EQ(plan.realized.beammap_fits.context_count, 1U);
+    EXPECT_EQ(plan.realized.beammap_fits.attempt_count, 5234U);
+    EXPECT_EQ(plan.realized.beammap_fits.valid_count, 5135U);
+}
+
+TEST(config_scaffold, atomically_writes_post_processing_provenance) {
+    const auto output_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_post_processing_provenance_test";
+    std::filesystem::remove_all(output_dir);
+    std::filesystem::create_directories(output_dir);
+
+    citlali::pipeline::PostProcessingExecutionPlan plan;
+    plan.reset_from_request(
+        citlali::config::PostProcessingConfig{},
+        citlali::config::ReductionType::science, false, false);
+    plan.begin_iteration();
+    plan.realized.reduction_completed = true;
+    plan.realized.outputs_completed = true;
+    citlali::pipeline::write_post_processing_provenance_file(
+        output_dir, plan);
+
+    const auto output_path =
+        citlali::pipeline::post_processing_provenance_path(output_dir);
+    EXPECT_TRUE(std::filesystem::exists(output_path));
+    EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
+    const auto stored = YAML::LoadFile(output_path.string());
+    EXPECT_EQ(stored["schema_version"].as<std::string>(),
+              "citlali-post-processing-provenance-v1");
+    EXPECT_FALSE(stored["requested"]["map_filtering"]["enabled"]
+                     .as<bool>());
+    EXPECT_TRUE(stored["realized"]["outputs_completed"].as<bool>());
+    std::filesystem::remove_all(output_dir);
+}
+
+TEST(config_scaffold, post_processing_provenance_failure_propagates) {
+    const auto missing_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_missing_post_processing_provenance_dir" / "nested";
+    std::filesystem::remove_all(missing_dir.parent_path());
+    citlali::pipeline::PostProcessingExecutionPlan plan;
+    plan.reset_from_request(
+        citlali::config::PostProcessingConfig{},
+        citlali::config::ReductionType::science, false, false);
+    plan.realized.reduction_completed = true;
+    plan.realized.outputs_completed = true;
+
+    EXPECT_THROW(
+        citlali::pipeline::write_post_processing_provenance_file(
+            missing_dir, plan),
+        std::exception);
 }
 
 TEST(config_scaffold, reads_typed_coadd_request) {
@@ -3710,6 +3901,22 @@ TEST(config_scaffold, validates_source_finding_config_values) {
     citlali::config::validate(config, report);
     EXPECT_FALSE(report.ok());
     EXPECT_EQ(report.error_count(), 3U);
+}
+
+TEST(config_scaffold, source_finding_requires_map_filtering) {
+    citlali::config::PostProcessingConfig config;
+    citlali::config::set_source_finding_enabled(config, true);
+    config.source_finding.source_sigma = 5.0;
+    config.source_finding.source_window_arcsec = 30.0;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+
+    ASSERT_FALSE(report.ok());
+    ASSERT_EQ(report.error_count(), 1U);
+    EXPECT_NE(report.format_for_cli().find(
+                  "post_processing.source_finding.enabled"),
+              std::string::npos);
 }
 
 TEST(config_scaffold, validates_beammap_config_values) {

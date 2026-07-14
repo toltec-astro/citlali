@@ -281,7 +281,7 @@ public:
 
     // find sources in the maps
     template <mapmaking::MapType map_t, class map_buffer_t>
-    void find_sources(map_buffer_t &);
+    citlali::pipeline::SourceFitCardinality find_sources(map_buffer_t &);
 
     // write the sources to ecsv table
     template <mapmaking::MapType map_t, class map_buffer_t>

@@ -12,6 +12,8 @@
 #include <citlali/core/pipeline/noise_provenance.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/pointing_provenance.h>
+#include <citlali/core/pipeline/post_processing_provenance.h>
+#include <citlali/core/pipeline/post_processing_provenance_lifecycle.h>
 #include <citlali/core/pipeline/processed_timestream_provenance.h>
 #include <citlali/core/pipeline/reduction_pipeline.h>
 #include <spdlog/spdlog.h>
@@ -159,6 +161,18 @@ int run_cli_reduction_processor(
     logger->info(
         "noise-products provenance sidecar: {}",
         citlali::pipeline::noise_provenance_path(
+            engine.output_paths.redu_dir_name)
+            .string());
+
+    auto &post_processing_plan =
+        citlali::pipeline::post_processing_plan(engine);
+    citlali::pipeline::record_post_processing_run_completed(
+        post_processing_plan, mapmaking_plan);
+    citlali::pipeline::write_post_processing_provenance_file(
+        engine.output_paths.redu_dir_name, post_processing_plan);
+    logger->info(
+        "post-processing provenance sidecar: {}",
+        citlali::pipeline::post_processing_provenance_path(
             engine.output_paths.redu_dir_name)
             .string());
 

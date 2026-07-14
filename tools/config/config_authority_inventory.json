@@ -117,7 +117,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "mixed-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Active: Unity point redu56 at 9f8ad50e validates source fitting with bit-for-bit identity across all 2,041 records against redu55; redu55 validates source finding and redu54 map filtering. Add required realized state/provenance at actual filtering, source-table, and fit completion events."
+      "exit_gate": "Active: realized filter, catalog-fit, source-table, pointing-fit, and Beammap-fit cardinality plus required atomic post-processing provenance are locally implemented. Validate the new sidecar and unchanged products on Unity point against accepted redu56, then validate science coadd routing and Beammap fitting before retiring the remaining activation shadow and marking the domain complete."
     },
     {
       "id": "pointing",

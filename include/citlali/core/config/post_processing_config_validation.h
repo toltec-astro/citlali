@@ -84,6 +84,11 @@ inline void validate(const PostProcessingConfig &config, ValidationReport &repor
     check_minimum(config.map_histogram_n_bins, 0,
                   {"post_processing", "map_histogram_n_bins"}, report);
     validate(config.source_finding, report);
+    if (config.source_finding.enabled && !config.map_filtering.enabled) {
+        report.add_error(
+            {"post_processing", "source_finding", "enabled"},
+            "requires post_processing.map_filtering.enabled=true");
+    }
     validate(config.source_fitting, report);
 }
 

@@ -7,6 +7,7 @@
 #include <citlali/core/pipeline/map_source_finding.h>
 #include <citlali/core/pipeline/noise_weight_policy.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/post_processing_provenance_lifecycle.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
 namespace citlali::pipeline {
@@ -62,12 +63,17 @@ void calculate_filtered_map_diagnostics(
 template <auto FilteredMap, class Engine, class MapBuffer, class Logger>
 void find_filtered_map_sources_if_needed(
     Engine &engine, MapBuffer &map_buffer, const Logger &logger,
-    const char *log_message) {
+    const char *log_message, PostProcessingMapContext context) {
     const auto profile_scope =
         profile_stage("map.source_finding", logger, log_message);
-    find_map_sources_if_needed<FilteredMap>(
+    const auto cardinality = find_map_sources_if_needed<FilteredMap>(
         engine, map_buffer, logger, should_find_filtered_map_sources(engine),
         log_message);
+    if (cardinality.has_value()) {
+        record_post_processing_catalog_fits_completed_if_available(
+            engine, context,
+            cardinality->attempt_count, cardinality->valid_count);
+    }
 }
 
 template <auto FilteredMap, class Engine, class Logger>

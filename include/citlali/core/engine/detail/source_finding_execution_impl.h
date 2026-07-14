@@ -6,7 +6,8 @@
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template <mapmaking::MapType map_t, class map_buffer_t>
-void Engine::find_sources(map_buffer_t &mb) {
+citlali::pipeline::SourceFitCardinality Engine::find_sources(
+    map_buffer_t &mb) {
     citlali::pipeline::detect_map_sources(mb, map_indices.n_maps, logger);
 
     citlali::pipeline::initialize_source_fit_tables(
@@ -28,7 +29,7 @@ void Engine::find_sources(map_buffer_t &mb) {
     const auto fit_map_sources =
         [&](Eigen::Index map_index, Eigen::Index n_map_sources,
             double init_fwhm, Eigen::Index source_row_start) {
-            citlali::pipeline::fit_source_candidates(
+            return citlali::pipeline::fit_source_candidates(
                 citlali::pipeline::runtime_parallel_policy_name(*this),
                 n_map_sources, [&](auto j) {
                 const auto init_position =
@@ -55,11 +56,12 @@ void Engine::find_sources(map_buffer_t &mb) {
                         source_fit_constants,
                         tangent_to_abs);
                 }
+                return good_fit;
             });
         };
     const auto source_fit_callbacks =
         citlali::pipeline::make_source_fit_callbacks(
             map_to_array_index, init_fwhm_for_array, fit_map_sources);
-    citlali::pipeline::fit_detected_map_sources(
+    return citlali::pipeline::fit_detected_map_sources(
         mb, map_indices.n_maps, source_fit_callbacks);
 }

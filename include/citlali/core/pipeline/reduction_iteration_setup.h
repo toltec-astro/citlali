@@ -7,6 +7,7 @@
 #include <citlali/core/pipeline/iteration_output_layout.h>
 #include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
 #include <citlali/core/pipeline/pointing_provenance_lifecycle.h>
+#include <citlali/core/pipeline/post_processing_provenance_lifecycle.h>
 
 namespace citlali::pipeline {
 
@@ -19,6 +20,7 @@ void begin_reduction_iteration(TodProc &todproc,
     begin_fruit_loop_iteration(engine, logger);
     begin_mapmaking_iteration_if_available(engine);
     begin_pointing_iteration_if_available(engine);
+    begin_post_processing_iteration_if_available(engine);
     prepare_iteration_output_layout_if_needed(todproc, config_filepaths,
                                               logger);
     prepare_iteration_observation_buffers(todproc, logger);

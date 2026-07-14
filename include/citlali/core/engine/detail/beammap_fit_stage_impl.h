@@ -6,6 +6,7 @@
 #include <citlali/core/engine/detail/beammap_fit_diagnostics_impl.h>
 #include <citlali/core/engine/detail/beammap_fit_init_impl.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
+#include <citlali/core/pipeline/post_processing_provenance_lifecycle.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
 bool Beammap::can_use_beammap_fit_priors(bool detector_grouping) const {
@@ -107,4 +108,13 @@ void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
     }
 
     log_beammap_fit_iteration_stats(fit_stats);
+
+    const auto attempt_count = fit_stats.attempt_prev +
+        fit_stats.attempt_prior + fit_stats.attempt_blind;
+    const auto failure_count = fit_stats.fail_prev +
+        fit_stats.fail_prior + fit_stats.fail_blind;
+    citlali::pipeline::record_post_processing_beammap_fits_completed(
+        citlali::pipeline::post_processing_plan(*this),
+        static_cast<std::size_t>(attempt_count),
+        static_cast<std::size_t>(attempt_count - failure_count));
 }

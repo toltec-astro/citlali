@@ -11,6 +11,8 @@ template <auto FilteredObsMap, class Engine, class Logger>
 void filter_observation_maps(Engine &engine, const Logger &logger) {
     filter_maps<FilteredObsMap>(
         engine, engine.omb, logger, "filtering obs maps");
+    record_post_processing_filter_completed_if_available(
+        engine, PostProcessingMapContext::observation);
 }
 
 template <class Engine, class Logger>
@@ -43,7 +45,8 @@ template <auto FilteredObsMap, bool FitMaps, class Engine, class Logger>
 void find_and_fit_filtered_observation_maps_if_needed(
     Engine &engine, const Logger &logger) {
     find_filtered_map_sources_if_needed<FilteredObsMap>(
-        engine, engine.omb, logger, "finding filtered obs map sources");
+        engine, engine.omb, logger, "finding filtered obs map sources",
+        PostProcessingMapContext::observation);
 
     fit_filtered_observation_maps_if_requested<FitMaps>(engine, logger);
 }

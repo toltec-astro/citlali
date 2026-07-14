@@ -38,8 +38,8 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 347 tests with none skipped or disabled; all
-  60 config-boundary/preflight tests pass.
+- CTest discovers and passes all 357 tests with none skipped or disabled; all
+  63 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -783,6 +783,38 @@ products against `redu55`, including the 195-row source table and complete
 RTC/PTC timestreams. Realized post-processing state and required provenance are
 now the active bounded work.
 
+The realized post-processing implementation is locally complete and awaits
+Unity validation. Per-iteration state now records observation and coadd filter
+contexts and map counts; source-finding contexts, detected candidates, catalog
+fit attempts/valid fits, and successfully written source-table rows; raw and
+filtered pointing fit contexts; and Beammap fit contexts. These fitter families
+remain separate by project-owner decision rather than being collapsed into one
+ambiguous total. Completion rejects missing or inconsistent cardinality and is
+cross-checked against completed mapmaking. Source finding without map filtering
+is now a fail-fast configuration error because the supported execution path
+operates only on filtered maps.
+
+The CLI publishes required atomic `post_processing_provenance.yaml` using
+`citlali-post-processing-provenance-v1` only after successful pipeline output
+and realized-state completion; write or lifecycle failures fail the reduction.
+The reduction auditor validates internal cardinality and activation semantics,
+cross-checks filter map counts with mapmaking v2, and cross-checks raw/filtered
+pointing fit totals with pointing v2. The frozen source-boundary audit requires
+the lifecycle hooks, schema, atomic writer, and single CLI completion/write
+calls. Local `citlali_cli` and `citlali_test` builds pass, all 357 CTests pass,
+43 reduction-auditor tests pass, all eight compact profiles pass, and full
+config preflight is clean. No filter, source-detection, Gaussian-fit, or map
+numerical algorithm was changed.
+
+The immediate Unity gate is the unchanged enabled-filtering point overlay
+against exact baseline `redu56`. It must produce the new valid sidecar with one
+observation filter/source/table context, 195 source rows, and separate three-map
+raw/filtered pointing fit contexts while preserving exact existing products.
+After point acceptance, run science to exercise coadd-only filtering/source
+routing and Beammap to exercise iterative detector-fit cardinality. The domain
+remains active until those mode gates pass and the remaining activation-only
+legacy shadow is retired.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.
@@ -794,8 +826,8 @@ Immediate work order:
 2. Separate requested map-filtering, source-finding, and source-fitting policy
    from effective activation and realized outputs. Retain only one-way adapters
    into the mature Wiener-filter and map-fitter implementations.
-3. Wire realized post-processing state and required provenance to actual
-   filtering, source-table, and fit completion events, using accepted exact
+3. Validate the locally complete realized-state and required-provenance
+   implementation on point, science coadd, and Beammap, using accepted exact
    point `redu56` as the immediate baseline. Preserve exact merged-config
    identity for every OG/refactor pair.
 4. Do not broaden polarimetry without the pending scientific-policy decisions.

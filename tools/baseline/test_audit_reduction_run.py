@@ -450,7 +450,172 @@ def valid_pointing_v1_document() -> dict[str, object]:
     return document
 
 
+def valid_post_processing_document(
+    reduction_type: str = "science",
+) -> dict[str, object]:
+    pointing = reduction_type == "pointing"
+    coadd = not pointing
+    observation_contexts = 2 if pointing else 0
+    observation_maps = 6 if pointing else 0
+    coadd_contexts = 1 if coadd else 0
+    coadd_maps = 3 if coadd else 0
+
+    def map_context(contexts: int, maps: int, sources: int) -> dict:
+        return {
+            "filter_context_count": contexts,
+            "filtered_map_count": maps,
+            "source_finding_context_count": contexts,
+            "detected_source_count": sources,
+            "source_table_write_count": contexts,
+            "source_table_row_count": sources,
+            "catalog_fits": {
+                "context_count": contexts,
+                "attempt_count": sources,
+                "valid_count": max(0, sources - 1),
+            },
+        }
+
+    requested = {
+        "map_filtering": {"enabled": True},
+        "source_finding": {"enabled": True},
+        "source_fitting": {"active": False},
+    }
+    effective = {
+        "map_filtering": {"enabled": True},
+        "source_finding": {"enabled": True},
+        "source_fitting": {"active": True},
+    }
+    return {
+        "schema_version": "citlali-post-processing-provenance-v1",
+        "initialized": True,
+        "requested": requested,
+        "effective": {
+            "values": effective,
+            "resolution": {
+                "reduction_type": reduction_type,
+                "mapmaking_enabled": True,
+                "coadd_enabled": coadd,
+                "map_filtering_requested": True,
+                "map_filtering_effective": True,
+                "map_filtering_disabled_by_mapmaking": False,
+                "source_finding_requested": True,
+                "source_finding_effective": True,
+                "source_finding_disabled_by_mapmaking": False,
+                "source_fitting_required_by_reduction": pointing,
+                "source_fitting_required_by_map_filtering": True,
+                "source_fitting_required_by_source_finding": True,
+                "source_fitting_effective": True,
+                "source_fitting_disabled_by_mapmaking": False,
+            },
+        },
+        "realized": {
+            "reduction_completed": True,
+            "observation": map_context(
+                observation_contexts, observation_maps,
+                5 if pointing else 0,
+            ),
+            "coadd": map_context(
+                coadd_contexts, coadd_maps, 4 if coadd else 0,
+            ),
+            "pointing_fits": {
+                "raw": {
+                    "context_count": 2 if pointing else 0,
+                    "attempt_count": 6 if pointing else 0,
+                    "valid_count": 5 if pointing else 0,
+                },
+                "filtered": {
+                    "context_count": 2 if pointing else 0,
+                    "attempt_count": 6 if pointing else 0,
+                    "valid_count": 5 if pointing else 0,
+                },
+            },
+            "beammap_fits": {
+                "context_count": 0,
+                "attempt_count": 0,
+                "valid_count": 0,
+            },
+            "outputs_completed": True,
+        },
+    }
+
+
 class ProvenanceAuditTest(unittest.TestCase):
+    def test_accepts_complete_post_processing_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "post_processing_provenance.yaml").write_text(
+                yaml.safe_dump(
+                    valid_post_processing_document(), sort_keys=False
+                ),
+                encoding="utf-8",
+            )
+
+            post_processing = audit.audit_provenance_sidecars(
+                redu, require_post_processing=True
+            )["post_processing"]
+
+            self.assertTrue(post_processing["present"])
+            self.assertTrue(post_processing["required"])
+            self.assertTrue(post_processing["valid"])
+
+    def test_rejects_post_processing_source_row_mismatch(self) -> None:
+        document = valid_post_processing_document()
+        document["realized"]["coadd"]["source_table_row_count"] = 3
+
+        self.assertIn(
+            "coadd source-table row count is inconsistent",
+            audit.post_processing_provenance_semantic_errors(document),
+        )
+
+    def test_cross_checks_post_processing_pointing_and_mapmaking(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            mapmaking = valid_mapmaking_document()
+            mapmaking["effective"]["resolution"]["reduction_type"] = (
+                "pointing"
+            )
+            mapmaking["coadd"] = {"available": False}
+            mapmaking["realized"]["completed_coadd_count"] = {
+                "available": True,
+                "value": 0,
+            }
+            documents = {
+                "mapmaking_provenance.yaml": mapmaking,
+                "pointing_provenance.yaml": valid_pointing_document(),
+                "post_processing_provenance.yaml": (
+                    valid_post_processing_document("pointing")
+                ),
+            }
+            for filename, document in documents.items():
+                (redu / filename).write_text(
+                    yaml.safe_dump(document, sort_keys=False),
+                    encoding="utf-8",
+                )
+
+            records = audit.audit_provenance_sidecars(
+                redu,
+                require_mapmaking=True,
+                require_pointing=True,
+                require_post_processing=True,
+            )
+
+            self.assertTrue(records["mapmaking"]["valid"])
+            self.assertTrue(records["pointing"]["valid"])
+            self.assertTrue(records["post_processing"]["valid"])
+
+    def test_rejects_post_processing_pointing_cross_check_drift(self) -> None:
+        post_processing = valid_post_processing_document("pointing")
+        post_processing["realized"]["pointing_fits"]["raw"][
+            "valid_count"
+        ] = 4
+
+        self.assertEqual(
+            audit.post_processing_pointing_cross_check_errors(
+                post_processing, valid_pointing_document()
+            ),
+            ["post-processing raw fits differ from pointing provenance"],
+        )
+
     def test_accepts_complete_mapmaking_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             redu = Path(directory)

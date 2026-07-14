@@ -21,6 +21,11 @@ struct SourceInitialPosition {
     double col;
 };
 
+struct SourceFitCardinality {
+    std::size_t attempt_count = 0;
+    std::size_t valid_count = 0;
+};
+
 template <class MapsToArrays, class InitFwhmForArray, class FitMapSources>
 struct SourceFitCallbacks {
     MapsToArrays maps_to_arrays;
