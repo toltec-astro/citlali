@@ -634,7 +634,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         default="",
         help="Root containing <mode>/<label>/reduced trees, e.g. .../2026-refactor.",
     )
-    parser.add_argument("--mode", default="auto", choices=["auto", "point", "beammap", "science"])
+    parser.add_argument(
+        "--mode",
+        default="auto",
+        choices=["auto", "point", "oof", "beammap", "science"],
+    )
     parser.add_argument("--baseline-label", default="citlali")
     parser.add_argument("--candidate-label", default="refactor")
     parser.add_argument("--baseline-redu", default="latest", help="'latest' or an explicit reduNN.")

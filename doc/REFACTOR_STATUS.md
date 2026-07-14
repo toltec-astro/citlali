@@ -21,8 +21,8 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest accepted point reduction: realized post-processing provenance `redu57`,
-  produced by `f8a4a596`; typed source-fitting `redu56`, source-finding `redu55`, map-filter `redu54`,
+- Latest accepted point reduction: post-processing authority cleanup `redu58`,
+  produced by `dd6fdfc9`; realized provenance `redu57`, typed source-fitting `redu56`, source-finding `redu55`, map-filter `redu54`,
   enabled-filtering `redu53`,
   unfiltered `redu51`, and bounded full-noise-output `redu49` remain the
   immediate post-processing, pointing, and noise-products control fixtures.
@@ -826,7 +826,10 @@ responsibility. The established no-map Beammap single-iteration optimization
 is preserved separately. Both local targets build, all 355 CTests and 63
 config-boundary tests pass, all eight compact profiles pass, and full preflight
 is clean. This cleanup still requires a point run after Unity compilation; it
-is not covered by the preceding `redu57` acceptance.
+is not covered by the preceding `redu57` acceptance. Unity point `redu58` now
+closes that gate with the same config and post-processing provenance hashes,
+zero serious log issues, and exact identity across all 2,041 records in the 21
+common products, including full RTC/PTC timestreams.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
@@ -834,12 +837,14 @@ failures must fail the reduction. There are no best-effort enabled products.
 
 Immediate work order:
 
-1. Compile and run point after the local activation-shadow cleanup, using
-   accepted exact `redu57` as the immediate baseline.
-2. Validate the required provenance on science coadd routing and Beammap
+1. Validate the required provenance on science coadd routing and Beammap
    iterative detector fitting; preserve exact merged-config identity for every
    OG/refactor pair.
-3. Mark post-processing complete only after all three mode gates pass and the
+2. Establish the deferred matched OOF baseline through the pointing engine,
+   using the explicit PSF-preserving source strategy and paired OG/refactor
+   overlays.
+3. Mark post-processing complete only after the point, science, and Beammap
+   gates pass and the inventory has no remaining mixed authority.
    inventory has no remaining mixed authority.
 4. Do not broaden polarimetry without the pending scientific-policy decisions.
 5. Keep compact-config rollout and Phase 3 compiled-boundary work paused until

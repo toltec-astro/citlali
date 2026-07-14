@@ -118,6 +118,18 @@ $HOME/tolteca/bin/python tools/baseline/compare_reduction_products.py \
   --report-out /tmp/point_product_compare.md
 ```
 
+OOF uses Citlali's `pointing` execution type but remains a distinct validation
+intent and directory. Compare paired OOF products with:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/compare_reduction_products.py \
+  --base-root /Users/gwilson/work_toltec/local_data/2026-refactor \
+  --mode oof \
+  --baseline-redu latest \
+  --candidate-redu latest \
+  --report-out /tmp/oof_product_compare.md
+```
+
 Beammap validation once the long run has landed:
 
 ```bash
