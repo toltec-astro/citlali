@@ -22,6 +22,8 @@ branch. The exact validated tree will remain available for forensic review.
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
 - Latest inspected point reduction: `redu46`, produced by `c2e053b3`.
+- Latest inspected science reduction: final iteration `redu11`, produced by
+  `c2e053b3`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
@@ -576,8 +578,16 @@ and PTC timestream arrays, are exact with zero skipped records or serious log
 issues. The new coadd sidecar records requested/effective disabled activation,
 no execution or cardinality, and agrees with the unchanged mapmaking sidecar.
 All prior provenance is byte-identical except the expected reduction-number
-TOD paths. Runtime is 53.804 seconds versus 56.176 seconds. The 32-record
-validation ledger passes; only the enabled-coadd science gate remains open.
+TOD paths. Runtime is 53.804 seconds versus 56.176 seconds. Final science
+iteration `redu11` at `c2e053b3` closes the enabled-coadd gate against accepted
+`redu07`: all 502 config leaves match, all 27 products are present with zero
+skipped records or serious log issues, and the science-equivalence profile
+accepts a maximum map RMS-relative difference of `7.65e-14`. Coadd provenance
+records requested/effective enabled, successful execution, three maps, six
+required logical writes, and completed outputs; every value agrees with
+mapmaking provenance. Runtime is 719.154 seconds versus 709.597 seconds. The
+33-record validation ledger passes. The coadd authority and provenance domain
+is complete.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
@@ -585,9 +595,11 @@ failures must fail the reduction. There are no best-effort enabled products.
 
 Immediate work order:
 
-1. Validate science to exercise enabled coadd output and the cross-checked
-   realized cardinality. Accept and ledger the domain after this final gate.
-2. Keep the accepted point `redu46` as the disabled/no-output coadd baseline.
+1. Begin the bounded noise-products domain by freezing its current requested
+   surface and characterizing effective randomization/seed policy and realized
+   product cardinality. Do not alter noise-generation numerics.
+2. Preserve point `redu46` and science `redu11` as the accepted disabled and
+   enabled coadd baselines.
 3. Do not broaden polarimetry without the pending scientific-policy decisions.
 4. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
    the active domain gates close.

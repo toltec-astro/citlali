@@ -104,8 +104,8 @@
       "legacy_targets": [],
       "adapter_direction": "none",
       "migration_status": "typed-authoritative",
-      "provenance_status": "partial",
-      "exit_gate": "Point redu46 at c2e053b3 accepts the disabled/no-output path with exact products and valid provenance. Close the domain with the science enabled-output and cardinality gate."
+      "provenance_status": "complete",
+      "exit_gate": "Complete: point redu46 validates disabled/no-output coadd with exact products; final science redu11 validates enabled coadd with three maps, six required writes, complete outputs, cross-sidecar agreement, and accepted scientific equivalence."
     },
     {
       "id": "post-processing",
