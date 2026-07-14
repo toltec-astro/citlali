@@ -5340,6 +5340,176 @@
         "Science coadd and Beammap detector-fit cardinality remain separate post-processing mode gates.",
         "The 78.908-second log interval is one observation and is recorded without a performance conclusion."
       ]
+    },
+    {
+      "record_id": "oof-152385-152387-og-unrecorded-refactor-342a021c",
+      "recorded_date": "2026-07-14",
+      "mode": "oof",
+      "status": "accepted_with_intended_provenance_change",
+      "candidate": {
+        "label": "refactor",
+        "branch": "codex/structural-refactor",
+        "citlali_sha": "342a021c",
+        "citlali_version": "v4.0.0-3477-g342a021c",
+        "dirty": false,
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "build": {
+          "host": "unity",
+          "compiler": null,
+          "build_type": "Release",
+          "cmake_flags": null
+        }
+      },
+      "baseline": {
+        "label": "citlali",
+        "citlali_sha": null,
+        "citlali_version": null,
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "reduction_id": "redu00",
+        "config_sha256": "be59b2e2db3b46a251b8ff219884f9e0b2ef535a4ade9a2750e64b31634a924e"
+      },
+      "config": {
+        "ordered_sources": [
+          {
+            "role": "merged_low_level_citlali_input",
+            "path": "citlali_o152385_0_1_c3.yaml",
+            "precedence": 0,
+            "sha256": "aebfc3b764f4abeca1f7f7cfe60723714f000ca849f60b167cd495294f87bdbc"
+          }
+        ],
+        "overlay_sources_retained": false,
+        "canonical_merged_sha256": "aebfc3b764f4abeca1f7f7cfe60723714f000ca849f60b167cd495294f87bdbc",
+        "post_processing_provenance": {
+          "path": "post_processing_provenance.yaml",
+          "schema_version": "citlali-post-processing-provenance-v1",
+          "sha256": "5c9f82572f722eda8c3e1fe6e877808595dfc76e81ba294d78412585f6d2aedd"
+        }
+      },
+      "dataset": {
+        "obsnum": "152385-152387",
+        "identity": "TolTEC commissioning OOF sequence 152385, 152386, and 152387",
+        "content_hash": null
+      },
+      "invocation": {
+        "command": null,
+        "launcher": "tolteca reduce",
+        "runtime_policy": {
+          "n_threads": 6,
+          "parallel_policy": "omp",
+          "kids_solver_parallel_policy": "seq"
+        },
+        "exit_code": 0
+      },
+      "audit": {
+        "finished": true,
+        "serious_log_counts": {},
+        "file_count": 74,
+        "comparable_product_count": 31,
+        "stable_comparable_product_count": 30,
+        "stable_product_counts_by_kind": {
+          "ecsv": 3,
+          "fits": 9,
+          "netcdf": 18
+        },
+        "ptc_chunk_count": 18,
+        "required_provenance_valid": true
+      },
+      "comparison": {
+        "tool": "tools/baseline/compare_reduction_products.py",
+        "tool_sha": "342a021c1",
+        "options": [
+          "--mode",
+          "oof",
+          "--include-timestream",
+          "--max-array-elements",
+          "0",
+          "--exclude",
+          "citlali_profile.ecsv",
+          "--atol",
+          "2e-8",
+          "--rtol",
+          "1e-10"
+        ],
+        "volatile_allowlist": [
+          "citlali_profile.ecsv",
+          "refactor provenance sidecars"
+        ],
+        "tolerances": {
+          "atol": 2e-8,
+          "rtol": 1e-10,
+          "fraction_floor": 1e-12
+        },
+        "common_products": 30,
+        "skipped_records": 0,
+        "changed_records": 9,
+        "scientific_products_exact": false,
+        "scientific_products_within_tolerance": true,
+        "verdict": "accepted_with_intended_provenance_change",
+        "measured": {
+          "record_count": 1941,
+          "pointing_table_count": 3,
+          "pointing_tables_exact": true,
+          "observation_dates_exact": true,
+          "strict_non_rtcdiag_common_products": 27,
+          "strict_non_rtcdiag_changed_records": 0
+        }
+      },
+      "accepted_differences": [
+        {
+          "kind": "inactive_config_metadata",
+          "item": "CONFIG.DESPIKE.LOCAL.ENABLED",
+          "rationale": "The parent despiker is disabled in both runs; the typed path records the requested child setting while OG retains the legacy default.",
+          "products": [
+            "152385/raw/toltec_commissioning_pointing_152385_rtcdiag.nc",
+            "152386/raw/toltec_commissioning_pointing_152386_rtcdiag.nc",
+            "152387/raw/toltec_commissioning_pointing_152387_rtcdiag.nc"
+          ]
+        },
+        {
+          "kind": "inactive_config_metadata",
+          "item": "CONFIG.DESPIKE.LOCAL.EVENT_PADDING_SEC",
+          "rationale": "The parent despiker is disabled in both runs; the typed path records the requested child setting while OG retains the legacy default.",
+          "products": [
+            "152385/raw/toltec_commissioning_pointing_152385_rtcdiag.nc",
+            "152386/raw/toltec_commissioning_pointing_152386_rtcdiag.nc",
+            "152387/raw/toltec_commissioning_pointing_152387_rtcdiag.nc"
+          ]
+        },
+        {
+          "kind": "inactive_config_metadata",
+          "item": "CONFIG.DESPIKE.LOCAL.MAX_ADDED_FLAGGED_FRAC",
+          "rationale": "The parent despiker is disabled in both runs; the typed path records the requested child setting while OG retains the legacy default.",
+          "products": [
+            "152385/raw/toltec_commissioning_pointing_152385_rtcdiag.nc",
+            "152386/raw/toltec_commissioning_pointing_152386_rtcdiag.nc",
+            "152387/raw/toltec_commissioning_pointing_152387_rtcdiag.nc"
+          ]
+        }
+      ],
+      "performance": {
+        "wall_time_log_seconds": 45.503,
+        "observation_pipeline_seconds": null,
+        "map_output_seconds": null,
+        "peak_rss_kb": null,
+        "baseline_wall_time_log_seconds": 56.47
+      },
+      "artifacts": {
+        "candidate_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/oof/refactor/reduced/redu01",
+        "candidate_unity_path": "/work/toltec/commissioning2025-test/2026-refactor/oof/refactor/reduced/redu01",
+        "baseline_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/oof/citlali/reduced/redu00"
+      },
+      "limitations": [
+        "The OG executable predates reduction-local version logging, so its exact Git revision was not retained with this run.",
+        "The original ordered TolTECA NN*.yaml overlay sources were not retained in the reduction directory.",
+        "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained.",
+        "Acceptance covers this three-observation OOF sequence and the standard full-product numerical tolerance; it is not a bytewise identity claim."
+      ]
     }
   ]
 }
