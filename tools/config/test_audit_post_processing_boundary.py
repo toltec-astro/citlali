@@ -33,6 +33,20 @@ class PostProcessingBoundaryAuditTest(unittest.TestCase):
         manifest["config_prefixes"] = ["post_processing"]
         self.assertFalse(audit.manifest_state(manifest)["exact"])
 
+    def test_typed_request_has_no_known_path_gaps(self) -> None:
+        result = audit.audit(REPO_ROOT)
+        self.assertEqual(result["manifest"]["known_typed_gaps"], [])
+        self.assertTrue(
+            result["mixed_boundary"]["checks"]
+            ["complete_request_reader_present"]
+        )
+        self.assertTrue(
+            result["mixed_boundary"]["checks"]["source_model_typed"]
+        )
+        self.assertTrue(
+            result["mixed_boundary"]["checks"]["kernel_tail_typed"]
+        )
+
     def test_rejects_default_surface_drift(self) -> None:
         manifest = json.loads(
             (REPO_ROOT / audit.MANIFEST_SOURCE).read_text()

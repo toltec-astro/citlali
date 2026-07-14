@@ -16,6 +16,9 @@ MANIFEST_SOURCE = "tools/config/post_processing_legacy_paths.json"
 DEFAULT_CONFIG_SOURCE = "data/config.yaml"
 AUTHORITY_SOURCE = "tools/config/config_authority_inventory.json"
 CONFIG_SOURCE = "include/citlali/core/config/post_processing_config.h"
+DIRECT_READER_SOURCE = (
+    "include/citlali/core/pipeline/post_processing_config_read.h"
+)
 ENGINE_BOUNDARY_SOURCE = "include/citlali/core/engine/detail/citlali_config_impl.h"
 FILTER_BOUNDARY_SOURCE = "include/citlali/core/engine/detail/map_filter_config_impl.h"
 LEGACY_FILTER_SOURCE = "include/citlali/core/mapmaking/wiener_filter.h"
@@ -35,10 +38,7 @@ EXPECTED_PATH_COUNT = 35
 EXPECTED_PATH_SHA256 = (
     "cb39f13ee971f1e079a91ee595f8c0b15b9364326c479bedbf21f2d0ef6ae2a7"
 )
-EXPECTED_TYPED_GAPS = [
-    "post_processing.source_fitting.model",
-    "wiener_filter.kernel_template_tail_mode",
-]
+EXPECTED_TYPED_GAPS: list[str] = []
 
 
 def call_count(source: str, name: str) -> int:
@@ -117,6 +117,7 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         if item["id"] == "post-processing"
     )
     config_source = (repo_root / CONFIG_SOURCE).read_text()
+    direct_reader = (repo_root / DIRECT_READER_SOURCE).read_text()
     engine = (repo_root / ENGINE_BOUNDARY_SOURCE).read_text()
     filter_boundary = (repo_root / FILTER_BOUNDARY_SOURCE).read_text()
     legacy_filter = (repo_root / LEGACY_FILTER_SOURCE).read_text()
@@ -132,6 +133,12 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
     )
     checks = {
         "authority_prefixes_exact": domain["config_prefixes"] == EXPECTED_PREFIXES,
+        "complete_request_reader_present": (
+            "void read_post_processing_request_config" in direct_reader
+            and "void read_map_filter_request_config" in direct_reader
+            and "void read_source_finding_request_config" in direct_reader
+            and "void read_source_fitting_request_config" in direct_reader
+        ),
         "legacy_filter_parser_present": (
             legacy_filter.count("void WienerFilter::get_config") == 1
         ),
@@ -156,9 +163,15 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         "request_accessor_count": accessor.count(
             "return reduction_config(engine).post_processing;"
         ),
-        "source_model_typed": bool(source_model_pattern.search(post_reader)),
+        "source_model_typed": (
+            "SourceFitModel model" in config_source
+            and bool(source_model_pattern.search(direct_reader))
+        ),
         "kernel_tail_legacy": "kernel_template_tail_mode" in legacy_filter,
-        "kernel_tail_typed": "kernel_template_tail_mode" in config_source,
+        "kernel_tail_typed": (
+            "MapFilterKernelTailMode kernel_template_tail_mode" in config_source
+            and '"kernel_template_tail_mode"' in direct_reader
+        ),
         "reverse_filter_mirror_present": (
             "void mirror_wiener_filter_config" in mirror
         ),
@@ -173,6 +186,7 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
     }
     exact = bool(
         checks["authority_prefixes_exact"]
+        and checks["complete_request_reader_present"]
         and checks["legacy_filter_parser_present"]
         and checks["legacy_filter_boundary_call_count"] == 1
         and checks["reverse_filter_mirror_call_count"] == 1
@@ -181,9 +195,9 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         and checks["source_finding_reader_call_count"] == 1
         and checks["post_load_request_mutation_count"] == 1
         and checks["request_accessor_count"] == 2
-        and not checks["source_model_typed"]
+        and checks["source_model_typed"]
         and checks["kernel_tail_legacy"]
-        and not checks["kernel_tail_typed"]
+        and checks["kernel_tail_typed"]
         and checks["reverse_filter_mirror_present"]
         and checks["source_finding_reverse_mirror_present"]
         and checks["request_mutation_present"]
@@ -216,6 +230,7 @@ def audit(repo_root: Path) -> dict[str, object]:
 
 
 def markdown_report(result: dict[str, object]) -> str:
+    typed_gaps = result["manifest"]["known_typed_gaps"] or ["none"]
     return "\n".join([
         "# Post-Processing Config Boundary Audit",
         "",
@@ -224,7 +239,7 @@ def markdown_report(result: dict[str, object]) -> str:
         f"- Default surface exact: `{result['default_surface']['exact']}`",
         f"- Mixed boundary exact: `{result['mixed_boundary']['exact']}`",
         "- Known typed gaps: `" + ", ".join(
-            result["manifest"]["known_typed_gaps"]
+            typed_gaps
         ) + "`",
         "",
     ])

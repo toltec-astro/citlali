@@ -3,10 +3,7 @@
   "path_count": 35,
   "path_sha256": "cb39f13ee971f1e079a91ee595f8c0b15b9364326c479bedbf21f2d0ef6ae2a7",
   "config_prefixes": ["post_processing", "wiener_filter"],
-  "known_typed_gaps": [
-    "post_processing.source_fitting.model",
-    "wiener_filter.kernel_template_tail_mode"
-  ],
+  "known_typed_gaps": [],
   "paths": [
     "post_processing.map_filtering.edge_guard.enabled",
     "post_processing.map_filtering.edge_guard.fill_mode",

@@ -667,11 +667,14 @@ prefix. The latter controls filter template construction and convergence and
 therefore belongs to the same authority domain. The starting boundary is
 intentionally mixed: the legacy Wiener parser still reads 21 leaves and
 reverse-mirrors most of them into typed state, while direct typed readers cover
-13 other leaves. The two explicit typed-request gaps are
+13 other leaves. The initial typed-request gaps,
 `post_processing.source_fitting.model` and
-`wiener_filter.kernel_template_tail_mode`. The frozen manifest, boundary audit,
-and focused tests are now part of config preflight; this checkpoint changes no
-runtime behavior. See `doc/POST_PROCESSING_CONFIG_AUTHORITY.md`.
+`wiener_filter.kernel_template_tail_mode`, now have closed-enum representation
+in a complete 35-leaf direct request reader. That reader is tested but not yet
+wired into `Engine`; execution remains unchanged while the next checkpoint
+adds read-only parser-shadow parity. The CLI/test builds and all 339 CTests
+pass. The frozen manifest, boundary audit, and focused tests are part of config
+preflight. See `doc/POST_PROCESSING_CONFIG_AUTHORITY.md`.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

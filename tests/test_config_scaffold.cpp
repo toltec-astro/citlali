@@ -31,6 +31,7 @@
 #include <citlali/core/pipeline/pointing_config_read.h>
 #include <citlali/core/pipeline/pointing_execution_plan.h>
 #include <citlali/core/pipeline/pointing_provenance.h>
+#include <citlali/core/pipeline/post_processing_config_read.h>
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
@@ -1454,6 +1455,96 @@ TEST(config_scaffold, reads_typed_mapmaking_output_request) {
     EXPECT_DOUBLE_EQ(request.tan_ra, 13.0);
     EXPECT_DOUBLE_EQ(request.tan_dec, 14.0);
     EXPECT_EQ(post_processing.map_histogram_n_bins, 31);
+}
+
+TEST(config_scaffold, reads_complete_post_processing_request) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    root["post_processing"]["map_filtering"]["enabled"] = true;
+    root["post_processing"]["map_filtering"]["type"] = "convolve";
+    root["post_processing"]["map_filtering"]["edge_guard"]
+        ["taper_mode"] = "cosine";
+    root["post_processing"]["source_fitting"]["model"] = "gaussian";
+    root["post_processing"]["source_finding"]["enabled"] = true;
+    root["post_processing"]["source_finding"]["mode"] = "both";
+    root["wiener_filter"]["template_type"] = "airy";
+    root["wiener_filter"]["kernel_template_tail_mode"] = "zero";
+    root["wiener_filter"]["template_fwhm_arcsec"]["a1100"] = 7.5;
+    auto yaml_config =
+        tula::config::YamlConfig::from_str(YAML::Dump(root));
+    citlali::config::PostProcessingConfig request;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_post_processing_request_config(
+        yaml_config, request, diagnostics);
+
+    ASSERT_FALSE(diagnostics.has_errors());
+    EXPECT_TRUE(request.map_filtering.enabled);
+    EXPECT_TRUE(request.map_filtering_enabled);
+    EXPECT_EQ(
+        request.map_filtering.type,
+        citlali::config::MapFilterType::convolve);
+    EXPECT_EQ(
+        request.map_filtering.edge_guard.taper_mode,
+        citlali::config::MapFilterEdgeTaperMode::cosine);
+    EXPECT_EQ(
+        request.map_filtering.template_type,
+        citlali::config::MapFilterTemplateType::airy);
+    EXPECT_EQ(
+        request.map_filtering.kernel_template_tail_mode,
+        citlali::config::MapFilterKernelTailMode::zero);
+    EXPECT_DOUBLE_EQ(
+        request.map_filtering.template_fwhm_arcsec.at("a1100"), 7.5);
+    EXPECT_EQ(
+        request.source_fitting.model,
+        citlali::config::SourceFitModel::gaussian);
+    EXPECT_TRUE(request.source_finding.enabled);
+    EXPECT_TRUE(request.source_finding_enabled);
+    EXPECT_EQ(request.source_finding.mode, "both");
+}
+
+TEST(config_scaffold, post_processing_request_preserves_disabled_values) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    root["post_processing"]["map_filtering"]["enabled"] = false;
+    root["post_processing"]["source_finding"]["enabled"] = false;
+    root["post_processing"]["source_finding"]["source_sigma"] = 8.5;
+    root["post_processing"]["source_fitting"]["fitting_radius_arcsec"] =
+        42.0;
+    root["wiener_filter"]["denom_check_iters"] = 9;
+    auto yaml_config =
+        tula::config::YamlConfig::from_str(YAML::Dump(root));
+    citlali::config::PostProcessingConfig request;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_post_processing_request_config(
+        yaml_config, request, diagnostics);
+
+    ASSERT_FALSE(diagnostics.has_errors());
+    EXPECT_FALSE(request.map_filtering.enabled);
+    EXPECT_EQ(request.map_filtering.denom_check_iters, 9);
+    EXPECT_FALSE(request.source_finding.enabled);
+    EXPECT_DOUBLE_EQ(request.source_finding.source_sigma, 8.5);
+    EXPECT_DOUBLE_EQ(request.source_fitting.fitting_radius_arcsec, 42.0);
+}
+
+TEST(config_scaffold, post_processing_request_rejects_invalid_enum) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    root["wiener_filter"]["kernel_template_tail_mode"] = "invalid";
+    auto yaml_config =
+        tula::config::YamlConfig::from_str(YAML::Dump(root));
+    citlali::config::PostProcessingConfig request;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_post_processing_request_config(
+        yaml_config, request, diagnostics);
+
+    ASSERT_TRUE(diagnostics.has_errors());
+    EXPECT_EQ(
+        diagnostics.invalid_keys,
+        (std::vector<std::vector<std::string>>{{
+            "wiener_filter", "kernel_template_tail_mode"}}));
 }
 
 TEST(config_scaffold, reads_typed_coadd_request) {

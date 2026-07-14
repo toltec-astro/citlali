@@ -28,6 +28,16 @@ enum class MapFilterEdgeTaperMode {
     cosine
 };
 
+enum class MapFilterKernelTailMode {
+    constant,
+    zero,
+    cosine
+};
+
+enum class SourceFitModel {
+    gaussian
+};
+
 inline constexpr std::array<EnumName<MapFilterType>, 3> map_filter_type_names{{
     {MapFilterType::wiener_filter, "wiener_filter"},
     {MapFilterType::convolve, "convolve"},
@@ -48,6 +58,18 @@ inline constexpr std::array<EnumName<MapFilterEdgeTaperMode>, 2>
         {MapFilterEdgeTaperMode::cosine, "cosine"},
     }};
 
+inline constexpr std::array<EnumName<MapFilterKernelTailMode>, 3>
+    map_filter_kernel_tail_mode_names{{
+        {MapFilterKernelTailMode::constant, "constant"},
+        {MapFilterKernelTailMode::zero, "zero"},
+        {MapFilterKernelTailMode::cosine, "cosine"},
+    }};
+
+inline constexpr std::array<EnumName<SourceFitModel>, 1>
+    source_fit_model_names{{
+        {SourceFitModel::gaussian, "gaussian"},
+    }};
+
 inline std::optional<MapFilterType> parse_map_filter_type(std::string_view value) {
     return parse_enum(value, map_filter_type_names);
 }
@@ -62,6 +84,16 @@ inline std::optional<MapFilterEdgeTaperMode> parse_map_filter_edge_taper_mode(
     return parse_enum(value, map_filter_edge_taper_mode_names);
 }
 
+inline std::optional<MapFilterKernelTailMode>
+parse_map_filter_kernel_tail_mode(std::string_view value) {
+    return parse_enum(value, map_filter_kernel_tail_mode_names);
+}
+
+inline std::optional<SourceFitModel> parse_source_fit_model(
+    std::string_view value) {
+    return parse_enum(value, source_fit_model_names);
+}
+
 inline std::string_view to_string(MapFilterType value) {
     return enum_name(value, map_filter_type_names);
 }
@@ -72,6 +104,14 @@ inline std::string_view to_string(MapFilterTemplateType value) {
 
 inline std::string_view to_string(MapFilterEdgeTaperMode value) {
     return enum_name(value, map_filter_edge_taper_mode_names);
+}
+
+inline std::string_view to_string(MapFilterKernelTailMode value) {
+    return enum_name(value, map_filter_kernel_tail_mode_names);
+}
+
+inline std::string_view to_string(SourceFitModel value) {
+    return enum_name(value, source_fit_model_names);
 }
 
 inline bool is_map_filter_template_type(std::string_view value,
@@ -106,6 +146,8 @@ struct MapFilterConfig {
     bool enabled = false;
     MapFilterType type = MapFilterType::convolve;
     MapFilterTemplateType template_type = MapFilterTemplateType::kernel;
+    MapFilterKernelTailMode kernel_template_tail_mode =
+        MapFilterKernelTailMode::constant;
     bool lowpass_only = false;
     bool normalize_errors = false;
     MapFilterEdgeGuardConfig edge_guard;
@@ -126,6 +168,7 @@ struct SourceFindingConfig {
 
 struct SourceFittingConfig {
     bool active = false;
+    SourceFitModel model = SourceFitModel::gaussian;
     double bounding_box_arcsec = 0.0;
     double fitting_radius_arcsec = 0.0;
     bool fit_rotation_angle = false;

@@ -117,7 +117,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "mixed-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Active: freeze the complete post-processing surface, separate requested filtering/finding/fitting policy from effective execution and realized outputs, eliminate execution-time legacy policy reads, and validate matched pointing overlays."
+      "exit_gate": "Active: complete direct typed request reader is behavior-neutral and unwired; next prove parser-shadow parity, separate effective execution and realized outputs, eliminate execution-time legacy policy reads, and validate matched pointing overlays."
     },
     {
       "id": "pointing",

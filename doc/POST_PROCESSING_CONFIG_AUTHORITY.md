@@ -28,16 +28,21 @@ target architecture:
 - `WienerFilter::get_config` parses 21 filtering leaves before copying most of
   them backward into `PostProcessingConfig`.
 - Existing direct or mirrored readers populate 13 other typed leaves.
-- `post_processing.source_fitting.model` is documented as ignored and is not
-  represented in typed request state.
-- `wiener_filter.kernel_template_tail_mode` executes in the legacy filter but
-  is not represented in typed request state.
+- The initial typed request omitted `post_processing.source_fitting.model` and
+  `wiener_filter.kernel_template_tail_mode`; both are now represented by closed
+  enums in the complete 35-leaf direct request reader.
 - Mapmaking-disabled policy mutates the typed request after parsing.
 - Source-finding settings are copied from the observation map buffer to the
   coadd map buffer.
 
 These facts are migration inputs. They are not endorsements of reverse mirrors
 or mutable requested configuration.
+
+The direct request reader is currently a verified, behavior-neutral boundary:
+it is not yet wired into `Engine` execution. Focused tests prove complete
+default parsing, disabled-value preservation, and invalid-enum diagnostics.
+The next checkpoint will compare this request against the existing parser as a
+read-only shadow before authority changes.
 
 ## Target Contract
 
