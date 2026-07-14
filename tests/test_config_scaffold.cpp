@@ -2374,21 +2374,34 @@ TEST(config_scaffold, records_pointing_observation_lifecycle) {
     EXPECT_TRUE(pointing.realized.outputs_completed);
 }
 
-TEST(config_scaffold, resolves_unavailable_pointing_fit_output_path) {
+TEST(config_scaffold, keeps_pointing_fit_independent_of_filtered_outputs) {
     citlali::pipeline::PointingExecutionPlan plan;
     plan.reset_from_request(
         citlali::config::PointingConfig{}, {}, true, false, false, 30.0);
     plan.begin_iteration();
     plan.begin_observation(0, "152389", 3);
 
+    citlali::pipeline::record_pointing_fit_results(plan, 3, 2);
+
     citlali::pipeline::complete_pointing_observation(plan);
+
+    EXPECT_TRUE(plan.effective.fit_gaussian);
+    EXPECT_TRUE(plan.effective_resolution.fit_output_path_available);
+    EXPECT_FALSE(
+        plan.effective_resolution.fit_disabled_by_output_policy);
+    EXPECT_TRUE(plan.observations.front().fit_results_recorded);
+    EXPECT_EQ(plan.observations.front().fit_attempt_count, 3U);
+}
+
+TEST(config_scaffold, disables_pointing_fit_without_mapmaking) {
+    citlali::pipeline::PointingExecutionPlan plan;
+    plan.reset_from_request(
+        citlali::config::PointingConfig{}, {}, false, true, false, 30.0);
 
     EXPECT_FALSE(plan.effective.fit_gaussian);
     EXPECT_FALSE(plan.effective_resolution.fit_output_path_available);
-    EXPECT_TRUE(
-        plan.effective_resolution.fit_disabled_by_output_policy);
-    EXPECT_TRUE(plan.observations.front().fit_results_recorded);
-    EXPECT_EQ(plan.observations.front().fit_attempt_count, 0U);
+    EXPECT_TRUE(plan.effective_resolution.fit_disabled_by_mapmaking);
+    EXPECT_FALSE(plan.effective_resolution.fit_disabled_by_output_policy);
 }
 
 TEST(config_scaffold, pointing_adapter_is_one_way) {

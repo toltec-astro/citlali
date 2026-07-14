@@ -244,8 +244,8 @@ $HOME/tolteca/bin/python tools/baseline/compare_reduction_audits.py \
 
 The pointing audit verifies requested/effective policy resolution, contiguous
 observation identities, map and fit counts, required output completion, and
-agreement with mapmaking provenance. It also records when fitting is disabled
-because mapmaking or the filtered-observation output path is unavailable.
+agreement with mapmaking provenance. Raw pointing fits require mapmaking but
+remain independent of optional filtered-observation and coadd outputs.
 
 Science coadd triage, with an explicit baseline/candidate pair when the latest
 directories are not the intended comparison:

@@ -627,16 +627,29 @@ authority and provenance domain is complete.
 The bounded pointing implementation is locally complete. Its frozen five-key
 surface now has a direct typed request reader, a separate effective execution
 plan, and a one-way adapter for the three mature PTC source-center fields.
-Effective fit activation explicitly resolves mapmaking, map-filter, and coadd
-output-path dependencies while preserving the request. Required atomic
+Effective fit activation preserves the request and depends only on availability
+of normalized observation maps from mapmaking. Optional filtering and coaddition
+occur downstream and do not disable raw pointing fits. Required atomic
 `pointing_provenance.yaml` records the request, resolution decisions,
 per-observation map/fit cardinality, and realized completion. The reduction
 auditor validates those semantics and cross-checks observation identity and
-map counts against mapmaking v2 provenance. The CLI/test builds, all 335 CTest
+map counts against mapmaking v2 provenance. The CLI/test builds, all 336 CTest
 cases, the frozen boundary audit, all eight compact profiles, and full config
 preflight pass. Gaussian fitting, Ceres use, source finding, and map numerics
 are unchanged. Unity point validation remains the sole exit gate before this
 domain is complete.
+
+The first Unity candidate, point `redu50` at `98d2a5d2`, correctly exposed an
+effective-policy error. Its 489-leaf config, maps, timestreams, diagnostics, and
+all non-fit products are exact against disabled-noise `redu47`, and it has zero
+serious log issues. However, the new plan incorrectly treated disabled map
+filtering as making pointing fits unavailable. The resulting three-row pointing
+table zeroed all 11 fitted columns instead of preserving the accepted fits. The
+gate is failed. Pointing fit availability now follows mapmaking alone; the
+semantic auditor rejects the invalid `redu50` sidecar, and focused tests cover
+both filter-independent fitting and mapmaking-disabled fitting. Local builds,
+all 336 CTests, 43 baseline-tool tests, 54 config tests, all eight profiles, and
+full preflight pass. A corrected Unity point run remains required.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
@@ -650,8 +663,12 @@ Immediate work order:
    matching-config point baseline.
 2. Record the validated snapshot and close the pointing authority/provenance
    domain only after that gate passes.
-3. Do not broaden polarimetry without the pending scientific-policy decisions.
-4. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
+3. Start the post-processing authority domain. Validate it with matched
+   OG/refactor pointing overlays that separately exercise filtering and source-
+   finding/fitting activation, retaining exact merged-config identity for each
+   pair.
+4. Do not broaden polarimetry without the pending scientific-policy decisions.
+5. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
    the active pointing domain gates close.
 
 ### Phase 1 Progress

@@ -679,6 +679,30 @@ class ProvenanceAuditTest(unittest.TestCase):
             [],
         )
 
+    def test_accepts_pointing_fit_without_filtered_or_coadd_outputs(self) -> None:
+        document = valid_pointing_document()
+        resolution = document["effective"]["resolution"]
+        resolution["map_filter_enabled"] = False
+        resolution["coadd_enabled"] = True
+
+        self.assertEqual(
+            audit.pointing_provenance_semantic_errors(document),
+            [],
+        )
+
+    def test_rejects_pointing_fit_disabled_by_map_filter_policy(self) -> None:
+        document = valid_pointing_document()
+        document["effective"]["config"]["fit_gaussian"] = False
+        resolution = document["effective"]["resolution"]
+        resolution["map_filter_enabled"] = False
+        resolution["fit_output_path_available"] = False
+        resolution["fit_disabled_by_output_policy"] = True
+
+        self.assertIn(
+            "pointing fit activation does not follow mapmaking policy",
+            audit.pointing_provenance_semantic_errors(document),
+        )
+
     def test_rejects_missing_required_pointing_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             records = audit.audit_provenance_sidecars(

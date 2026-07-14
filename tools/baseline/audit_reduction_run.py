@@ -1165,11 +1165,9 @@ def pointing_provenance_semantic_errors(
             return errors
 
         mapmaking_enabled = resolution["mapmaking_enabled"]
-        fit_output_path_available = (
-            mapmaking_enabled
-            and resolution["map_filter_enabled"]
-            and not resolution["coadd_enabled"]
-        )
+        # Raw pointing fits consume normalized observation maps before the
+        # optional filtering and coadd stages.
+        fit_output_path_available = mapmaking_enabled
         expected_fit = (
             requested["fit_gaussian"] and fit_output_path_available
         )
@@ -1184,7 +1182,7 @@ def pointing_provenance_semantic_errors(
         ]:
             errors.append("pointing effective coverage policy differs from request")
         if effective["fit_gaussian"] != expected_fit:
-            errors.append("pointing fit activation does not follow output policy")
+            errors.append("pointing fit activation does not follow mapmaking policy")
         if resolution["fit_output_path_available"] != (
             fit_output_path_available
         ):

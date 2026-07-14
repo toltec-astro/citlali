@@ -131,7 +131,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Active: the frozen five-key request/effective/realized boundary, one-way PTC adapter, required pointing provenance, and local gates are complete. Unity point validation of exact pre-existing products and valid cross-checked provenance remains."
+      "exit_gate": "Active: the frozen five-key request/effective/realized boundary, one-way PTC adapter, required pointing provenance, and local gates are complete. Unity redu50 failed because filtering was incorrectly allowed to suppress raw pointing fits; the corrected mapmaking-only availability policy requires a new exact-product Unity point validation."
     },
     {
       "id": "beammap",

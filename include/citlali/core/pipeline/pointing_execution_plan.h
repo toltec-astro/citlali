@@ -77,8 +77,9 @@ struct PointingExecutionPlan {
             effective.header_max_radius_arcsec =
                 resolved_default_header_max_radius_arcsec;
         }
-        const bool fit_output_path_available =
-            mapmaking_enabled && map_filter_enabled && !coadd_enabled;
+        // Pointing fits consume normalized observation maps before optional
+        // filtering or coaddition, so only mapmaking controls availability.
+        const bool fit_output_path_available = mapmaking_enabled;
         effective.fit_gaussian =
             request.fit_gaussian && fit_output_path_available;
         effective_resolution = PointingEffectiveResolutionRecord{
@@ -88,8 +89,7 @@ struct PointingExecutionPlan {
             fit_output_path_available,
             presence,
             request.fit_gaussian && !mapmaking_enabled,
-            request.fit_gaussian && mapmaking_enabled &&
-                !fit_output_path_available,
+            false,
             resolved_default_header_max_radius_arcsec,
             !presence.header_max_radius_arcsec,
         };
