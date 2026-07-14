@@ -21,9 +21,10 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest inspected point reduction: `redu46`, produced by `c2e053b3`.
-- Latest inspected science reduction: final iteration `redu11`, produced by
-  `c2e053b3`.
+- Latest inspected point reductions: disabled-noise `redu47` and bounded
+  full-output `redu49`, both produced by `1faec7cc`.
+- Latest inspected science reduction: final iteration `redu15`, produced by
+  `1faec7cc`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
@@ -589,7 +590,7 @@ mapmaking provenance. Runtime is 719.154 seconds versus 709.597 seconds. The
 33-record validation ledger passes. The coadd authority and provenance domain
 is complete.
 
-The bounded `noise-products` implementation checkpoint is locally complete.
+The bounded `noise-products` implementation checkpoint is complete.
 The six frozen `noise_maps.*` inputs now have one direct typed reader, a
 requested/effective/realized `NoiseExecutionPlan`, and a one-way adapter into
 the mature observation/coadd map buffers. The existing deterministic Boost
@@ -602,8 +603,26 @@ semantics and cross-checks scientific-map cardinality against mapmaking v2
 provenance. The legacy noise readers and reverse request mutations are retired.
 The CLI/test build, all 328 CTest cases, all eight config profiles, the frozen
 six-path audit, 48 config-boundary tests, and full preflight pass. No noise-
-generation or product algorithm changed. This domain remains open until its
-Unity gates are accepted.
+generation or product algorithm changed.
+
+Unity point `redu47` at `1faec7cc` closes the disabled-noise path against
+accepted `redu46`: all 489 config leaves and all 13 complete product families
+are exact, with no skipped records or serious log issues. Point `redu49`
+closes the bounded full-output fixture with ten realizations per scientific
+map, three empirical-product maps, and 30 realization-image writes. Its
+realization, empirical-variance, and empirical-weight outputs agree with the
+matching OG fixture at maximum RMS-relative differences of `7.65e-14`,
+`8.84e-14`, and `6.42e-14`, respectively. The final science iteration
+`redu15` closes the generation-only coadd path: six observation maps produce
+60 realizations and three coadd maps produce 30, for exactly 90 total with no
+optional empirical products or realization files. Its 502-leaf config is
+exact against accepted `redu11`; all 27 scientific products are present with
+no skips, and the science-equivalence profile accepts a maximum map RMS-
+relative difference of `6.93e-14`. Against the matching OG science run, the
+profile accepts the previously approved filtered-map differences with maximum
+map RMS-relative difference `0.00986`. All three candidate runs have valid
+version-1 noise provenance and zero serious log issues. The noise-products
+authority and provenance domain is complete.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
@@ -611,16 +630,15 @@ failures must fail the reduction. There are no best-effort enabled products.
 
 Immediate work order:
 
-1. Run the bounded noise-products Unity gates: disabled point, existing
-   generation-only science, and a small full-output fixture with empirical
-   products and realization writes enabled. Require the version-1 sidecar,
-   exact cardinality, zero unexpected error-level messages, and accepted
-   scientific equivalence.
-2. Preserve point `redu46` and science `redu11` as the pre-noise-authority
-   baselines and record accepted successors in the validation ledger.
+1. Use the already typed five-key pointing policy as the next bounded domain.
+   Preserve requested source/fit settings, resolve the effective default fit
+   radius separately, and record realized fit/product summary without changing
+   Gaussian fitting or source-finding numerics.
+2. Freeze the pointing path inventory and add focused requested/effective/
+   realized lifecycle tests before publishing provenance.
 3. Do not broaden polarimetry without the pending scientific-policy decisions.
 4. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
-   the active domain gates close.
+   the active pointing domain gates close.
 
 ### Phase 1 Progress
 

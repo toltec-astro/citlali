@@ -92,8 +92,8 @@
       "legacy_targets": ["Engine::omb", "Engine::cmb"],
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
-      "provenance_status": "partial",
-      "exit_gate": "Accept the required version-1 requested/effective/realized noise-products sidecar on Unity with disabled point, generation-only science, and a bounded full-output fixture; verify fixed RNG identity, exact product cardinality, and numerical equivalence without changing noise-generation algorithms."
+      "provenance_status": "complete",
+      "exit_gate": "Complete: Unity point redu47 validates disabled noise with exact products; point redu49 validates ten realizations per map, empirical products, 30 realization writes, fixed RNG identity, and roundoff-scale OG agreement; final science redu15 validates 60 observation plus 30 coadd realizations with accepted scientific equivalence."
     },
     {
       "id": "coadd",
@@ -129,7 +129,7 @@
       "adapter_direction": "none",
       "migration_status": "typed-authoritative",
       "provenance_status": "partial",
-      "exit_gate": "Record effective pointing source/fit policy and realized fit/product summary."
+      "exit_gate": "Active: preserve the five requested source-strategy fields, resolve the effective fit-radius and activation policy separately, and record realized fit/product summary without changing fitting numerics."
     },
     {
       "id": "beammap",
