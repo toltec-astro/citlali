@@ -87,12 +87,12 @@ filtering, source-table, and fit cardinality.
 
 Consumer migration is ordered map filtering, source finding, then source
 fitting. Map filtering is complete and accepted by Unity point `redu54`.
-Source finding is complete locally and awaits the matched Unity point gate;
-source fitting remains on the mixed boundary. Each slice
+Source finding is accepted exactly by Unity point `redu55`; source fitting
+remains on the mixed boundary. Each slice
 replaces a reverse mirror or policy read with one one-way typed adapter while
 keeping the mature numerical object as the execution target. A consumer
 cutover, unlike plan construction alone, requires the matched enabled-filtering
-point gate, with accepted `redu54` now serving as the immediate baseline.
+point gate, with accepted `redu55` now serving as the immediate baseline.
 
 The source-finding adapter projects the effective threshold, angular window,
 and finder mode directly into observation and optional coadd map buffers. It

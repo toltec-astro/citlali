@@ -21,10 +21,10 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest accepted point reduction: typed map-filter consumer `redu54`, produced
-  by `a89e0ee5`; enabled-filtering `redu53`, unfiltered `redu51`, and bounded
-  full-noise-output `redu49` remain the immediate post-processing, pointing,
-  and noise-products control fixtures.
+- Latest accepted point reduction: typed source-finding consumer `redu55`,
+  produced by `aa593a2b`; typed map-filter `redu54`, enabled-filtering `redu53`,
+  unfiltered `redu51`, and bounded full-noise-output `redu49` remain the
+  immediate post-processing, pointing, and noise-products control fixtures.
 - Latest inspected science reduction: final iteration `redu15`, produced by
   `1faec7cc`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
@@ -755,9 +755,13 @@ the same effective authority. The legacy shadow retains activation parity but
 no longer compares details that legacy state does not own. Detection, fitting,
 map arrays, source tables, and output order are unchanged. Both local targets
 build, all 349 CTests and 61 config-boundary tests pass, all eight compatibility
-profiles pass, and full preflight is clean. This slice requires the unchanged
-enabled-filtering/source-finding point overlay on Unity before source fitting
-moves off the legacy mixed boundary.
+profiles pass, and full preflight is clean. Unity point `redu55` at `aa593a2b`
+closes this gate with zero serious log issues, all required provenance valid,
+and bit-for-bit identity across all 2,041 records in the 21 common products
+against `redu54`, including full RTC/PTC timestreams, 195 source rows, and both
+pointing tables. The 490-leaf config is byte-identical to `redu54`; all 639
+non-PTC records also pass against matching OG `redu09`. Source fitting is now
+the active bounded consumer cutover.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
@@ -770,9 +774,8 @@ Immediate work order:
 2. Separate requested map-filtering, source-finding, and source-fitting policy
    from effective activation and realized outputs. Retain only one-way adapters
    into the mature Wiener-filter and map-fitter implementations.
-3. Validate the locally complete source-finding cutover with the unchanged
-   enabled-filtering overlay, then cut source fitting over in its own bounded
-   slice; map filtering is accepted at `redu54`. Preserve exact merged-
+3. Cut source fitting over in its own bounded slice; source finding is accepted
+   exactly at `redu55` and map filtering at `redu54`. Preserve exact merged-
    config identity for every OG/refactor pair.
 4. Do not broaden polarimetry without the pending scientific-policy decisions.
 5. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
