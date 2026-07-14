@@ -369,9 +369,12 @@ def valid_pointing_document(enabled: bool = True) -> dict:
             "observation_index": index,
             "obsnum": obsnum,
             "map_count": 3,
-            "fit_attempt_count": 3,
-            "valid_fit_count": valid_count,
-            "fit_results_recorded": True,
+            "raw_fit_attempt_count": 3,
+            "raw_valid_fit_count": valid_count,
+            "raw_fit_results_recorded": True,
+            "filtered_fit_attempt_count": 3,
+            "filtered_valid_fit_count": valid_count,
+            "filtered_fit_results_recorded": True,
             "outputs_completed": True,
         }
         for index, (obsnum, valid_count) in enumerate(
@@ -379,7 +382,7 @@ def valid_pointing_document(enabled: bool = True) -> dict:
         )
     ] if enabled else []
     return {
-        "schema_version": "citlali-pointing-provenance-v1",
+        "schema_version": "citlali-pointing-provenance-v2",
         "initialized": True,
         "requested": requested,
         "effective": {
@@ -408,11 +411,43 @@ def valid_pointing_document(enabled: bool = True) -> dict:
             "pointing_executed": enabled,
             "completed_observation_count": len(observations),
             "scientific_map_count": 3 * len(observations),
-            "fit_attempt_count": 3 * len(observations),
-            "valid_fit_count": 5 if enabled else 0,
+            "raw_fit_attempt_count": 3 * len(observations),
+            "raw_valid_fit_count": 5 if enabled else 0,
+            "filtered_fit_attempt_count": 3 * len(observations),
+            "filtered_valid_fit_count": 5 if enabled else 0,
             "outputs_completed": True,
         },
     }
+
+
+def valid_pointing_v1_document() -> dict[str, object]:
+    document = valid_pointing_document()
+    document["schema_version"] = "citlali-pointing-provenance-v1"
+    observations = document["observations"]
+    assert isinstance(observations, list)
+    for observation in observations:
+        assert isinstance(observation, dict)
+        observation["fit_attempt_count"] = observation.pop(
+            "raw_fit_attempt_count"
+        )
+        observation["valid_fit_count"] = observation.pop(
+            "raw_valid_fit_count"
+        )
+        observation["fit_results_recorded"] = observation.pop(
+            "raw_fit_results_recorded"
+        )
+        observation.pop("filtered_fit_attempt_count")
+        observation.pop("filtered_valid_fit_count")
+        observation.pop("filtered_fit_results_recorded")
+    realized = document["realized"]
+    assert isinstance(realized, dict)
+    realized["fit_attempt_count"] = realized.pop(
+        "raw_fit_attempt_count"
+    )
+    realized["valid_fit_count"] = realized.pop("raw_valid_fit_count")
+    realized.pop("filtered_fit_attempt_count")
+    realized.pop("filtered_valid_fit_count")
+    return document
 
 
 class ProvenanceAuditTest(unittest.TestCase):
@@ -671,6 +706,26 @@ class ProvenanceAuditTest(unittest.TestCase):
             self.assertTrue(pointing["required"])
             self.assertTrue(pointing["valid"])
 
+    def test_accepts_historical_pointing_v1_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "pointing_provenance.yaml").write_text(
+                yaml.safe_dump(
+                    valid_pointing_v1_document(), sort_keys=False
+                ),
+                encoding="utf-8",
+            )
+
+            pointing = audit.audit_provenance_sidecars(
+                redu, require_pointing=True
+            )["pointing"]
+
+            self.assertTrue(pointing["valid"])
+            self.assertEqual(
+                pointing["schema_version"],
+                "citlali-pointing-provenance-v1",
+            )
+
     def test_accepts_effectively_disabled_pointing(self) -> None:
         self.assertEqual(
             audit.pointing_provenance_semantic_errors(
@@ -684,6 +739,12 @@ class ProvenanceAuditTest(unittest.TestCase):
         resolution = document["effective"]["resolution"]
         resolution["map_filter_enabled"] = False
         resolution["coadd_enabled"] = True
+        for observation in document["observations"]:
+            observation["filtered_fit_attempt_count"] = 0
+            observation["filtered_valid_fit_count"] = 0
+            observation["filtered_fit_results_recorded"] = False
+        document["realized"]["filtered_fit_attempt_count"] = 0
+        document["realized"]["filtered_valid_fit_count"] = 0
 
         self.assertEqual(
             audit.pointing_provenance_semantic_errors(document),
@@ -713,10 +774,10 @@ class ProvenanceAuditTest(unittest.TestCase):
 
     def test_rejects_inconsistent_pointing_fit_count(self) -> None:
         document = valid_pointing_document()
-        document["observations"][0]["fit_attempt_count"] = 2
+        document["observations"][0]["raw_fit_attempt_count"] = 2
 
         self.assertIn(
-            "pointing observation 0 fit attempts are inconsistent",
+            "pointing observation 0 raw_fit attempts are inconsistent",
             audit.pointing_provenance_semantic_errors(document),
         )
 

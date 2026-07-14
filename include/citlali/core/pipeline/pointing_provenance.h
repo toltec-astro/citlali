@@ -11,7 +11,7 @@
 namespace citlali::pipeline {
 
 inline constexpr const char *pointing_provenance_schema_version =
-    "citlali-pointing-provenance-v1";
+    "citlali-pointing-provenance-v2";
 inline constexpr const char *pointing_provenance_filename =
     "pointing_provenance.yaml";
 

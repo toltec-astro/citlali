@@ -76,6 +76,6 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             "calculating map histogram");
 
         // fit maps
-        fit_maps();
+        fit_maps(citlali::pipeline::PointingFitStage::raw_observation);
     }
 }

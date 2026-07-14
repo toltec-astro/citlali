@@ -4,6 +4,7 @@
 #include <condition_variable>
 
 #include <citlali/core/engine/engine.h>
+#include <citlali/core/pipeline/pointing_execution_plan.h>
 #include <citlali/core/pipeline/timestream_output_context.h>
 
 using timestream::TCData;
@@ -101,7 +102,7 @@ public:
         const citlali::pipeline::FruitLoopWeightPolicy &fruit_weight_policy);
 
     // fit the maps
-    void fit_maps();
+    void fit_maps(citlali::pipeline::PointingFitStage stage);
 
     // output files
     Eigen::MatrixXf make_pointing_ppt_table(mapmaking::MapBuffer *mb);

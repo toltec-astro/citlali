@@ -11,6 +11,17 @@
 
 namespace citlali::pipeline {
 
+enum class PointingFitStage {
+    raw_observation,
+    filtered_observation,
+};
+
+inline const char *pointing_fit_stage_name(PointingFitStage stage) {
+    return stage == PointingFitStage::raw_observation
+               ? "raw observation"
+               : "filtered observation";
+}
+
 struct PointingRequestPresence {
     bool source_strategy = false;
     bool fit_gaussian = false;
@@ -31,13 +42,18 @@ struct PointingEffectiveResolutionRecord {
     bool header_max_radius_defaulted = false;
 };
 
+struct PointingFitResultState {
+    std::size_t attempt_count = 0;
+    std::size_t valid_count = 0;
+    bool recorded = false;
+};
+
 struct PointingObservationState {
     std::size_t observation_index = 0;
     std::string obsnum;
     std::size_t map_count = 0;
-    std::size_t fit_attempt_count = 0;
-    std::size_t valid_fit_count = 0;
-    bool fit_results_recorded = false;
+    PointingFitResultState raw_fit;
+    PointingFitResultState filtered_fit;
     bool outputs_completed = false;
 };
 
@@ -46,8 +62,10 @@ struct PointingRealizedState {
     bool pointing_executed = false;
     std::size_t completed_observation_count = 0;
     std::size_t scientific_map_count = 0;
-    std::size_t fit_attempt_count = 0;
-    std::size_t valid_fit_count = 0;
+    std::size_t raw_fit_attempt_count = 0;
+    std::size_t raw_valid_fit_count = 0;
+    std::size_t filtered_fit_attempt_count = 0;
+    std::size_t filtered_valid_fit_count = 0;
     bool outputs_completed = false;
 };
 
@@ -122,17 +140,41 @@ struct PointingExecutionPlan {
     }
 };
 
+inline PointingFitResultState &pointing_fit_result_state(
+    PointingObservationState &observation, PointingFitStage stage) {
+    return stage == PointingFitStage::raw_observation
+               ? observation.raw_fit
+               : observation.filtered_fit;
+}
+
+inline bool pointing_fit_stage_expected(
+    const PointingExecutionPlan &plan, PointingFitStage stage) {
+    if (stage == PointingFitStage::raw_observation) {
+        return plan.effective_resolution.mapmaking_enabled;
+    }
+    return plan.effective_resolution.mapmaking_enabled &&
+           plan.effective_resolution.map_filter_enabled &&
+           !plan.effective_resolution.coadd_enabled;
+}
+
 inline void record_pointing_fit_results(
-    PointingExecutionPlan &plan, std::size_t fit_attempt_count,
-    std::size_t valid_fit_count) {
+    PointingExecutionPlan &plan, PointingFitStage stage,
+    std::size_t fit_attempt_count, std::size_t valid_fit_count) {
     if (!plan.initialized || plan.observations.empty()) {
         throw std::logic_error(
             "cannot record pointing fits before an observation begins");
     }
     auto &observation = plan.observations.back();
-    if (observation.fit_results_recorded) {
+    auto &fit = pointing_fit_result_state(observation, stage);
+    if (!pointing_fit_stage_expected(plan, stage)) {
         throw std::logic_error(
-            "pointing fit results already recorded");
+            std::string{"pointing fit stage is not expected: "} +
+            pointing_fit_stage_name(stage));
+    }
+    if (fit.recorded) {
+        throw std::logic_error(
+            std::string{"pointing fit results already recorded: "} +
+            pointing_fit_stage_name(stage));
     }
     const std::size_t expected_attempts =
         plan.effective.fit_gaussian ? observation.map_count : 0;
@@ -141,9 +183,9 @@ inline void record_pointing_fit_results(
         throw std::logic_error(
             "pointing fit cardinality is inconsistent");
     }
-    observation.fit_attempt_count = fit_attempt_count;
-    observation.valid_fit_count = valid_fit_count;
-    observation.fit_results_recorded = true;
+    fit.attempt_count = fit_attempt_count;
+    fit.valid_count = valid_fit_count;
+    fit.recorded = true;
 }
 
 inline void complete_pointing_observation(
@@ -153,12 +195,28 @@ inline void complete_pointing_observation(
             "cannot complete pointing observation before it begins");
     }
     auto &observation = plan.observations.back();
-    if (!observation.fit_results_recorded) {
-        if (plan.effective.fit_gaussian) {
-            throw std::logic_error(
-                "pointing observation has no fit summary");
+    for (const auto stage : {
+             PointingFitStage::raw_observation,
+             PointingFitStage::filtered_observation}) {
+        auto &fit = pointing_fit_result_state(observation, stage);
+        const bool expected = pointing_fit_stage_expected(plan, stage);
+        if (!expected) {
+            if (fit.recorded) {
+                throw std::logic_error(
+                    std::string{
+                        "unexpected pointing fit stage was recorded: "} +
+                    pointing_fit_stage_name(stage));
+            }
+            continue;
         }
-        record_pointing_fit_results(plan, 0, 0);
+        if (!fit.recorded) {
+            if (plan.effective.fit_gaussian) {
+                throw std::logic_error(
+                    std::string{"pointing observation has no fit summary: "} +
+                    pointing_fit_stage_name(stage));
+            }
+            record_pointing_fit_results(plan, stage, 0, 0);
+        }
     }
     if (observation.outputs_completed) {
         throw std::logic_error(
@@ -199,8 +257,13 @@ inline void record_pointing_run_completed(
         }
         ++realized.completed_observation_count;
         realized.scientific_map_count += pointing.map_count;
-        realized.fit_attempt_count += pointing.fit_attempt_count;
-        realized.valid_fit_count += pointing.valid_fit_count;
+        realized.raw_fit_attempt_count +=
+            pointing.raw_fit.attempt_count;
+        realized.raw_valid_fit_count += pointing.raw_fit.valid_count;
+        realized.filtered_fit_attempt_count +=
+            pointing.filtered_fit.attempt_count;
+        realized.filtered_valid_fit_count +=
+            pointing.filtered_fit.valid_count;
     }
     if (plan.effective_resolution.mapmaking_enabled &&
         plan.observations.empty()) {

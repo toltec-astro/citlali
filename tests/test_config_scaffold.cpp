@@ -478,7 +478,9 @@ struct FakeEngine {
         ++find_sources_calls;
     }
 
-    void fit_maps() { ++fit_maps_calls; }
+    void fit_maps(citlali::pipeline::PointingFitStage) {
+        ++fit_maps_calls;
+    }
 
     void setup() { ++setup_calls; }
 
@@ -2523,7 +2525,12 @@ TEST(config_scaffold, records_pointing_observation_lifecycle) {
     pointing.begin_iteration();
     pointing.begin_observation(0, "152389", 3);
     citlali::pipeline::record_pointing_fit_results(
-        pointing, 3, 2);
+        pointing, citlali::pipeline::PointingFitStage::raw_observation,
+        3, 2);
+    citlali::pipeline::record_pointing_fit_results(
+        pointing,
+        citlali::pipeline::PointingFitStage::filtered_observation,
+        3, 1);
     citlali::pipeline::complete_pointing_observation(pointing);
 
     citlali::pipeline::MapmakingExecutionPlan mapmaking;
@@ -2542,8 +2549,10 @@ TEST(config_scaffold, records_pointing_observation_lifecycle) {
     EXPECT_TRUE(pointing.realized.pointing_executed);
     EXPECT_EQ(pointing.realized.completed_observation_count, 1U);
     EXPECT_EQ(pointing.realized.scientific_map_count, 3U);
-    EXPECT_EQ(pointing.realized.fit_attempt_count, 3U);
-    EXPECT_EQ(pointing.realized.valid_fit_count, 2U);
+    EXPECT_EQ(pointing.realized.raw_fit_attempt_count, 3U);
+    EXPECT_EQ(pointing.realized.raw_valid_fit_count, 2U);
+    EXPECT_EQ(pointing.realized.filtered_fit_attempt_count, 3U);
+    EXPECT_EQ(pointing.realized.filtered_valid_fit_count, 1U);
     EXPECT_TRUE(pointing.realized.outputs_completed);
 }
 
@@ -2554,7 +2563,9 @@ TEST(config_scaffold, keeps_pointing_fit_independent_of_filtered_outputs) {
     plan.begin_iteration();
     plan.begin_observation(0, "152389", 3);
 
-    citlali::pipeline::record_pointing_fit_results(plan, 3, 2);
+    citlali::pipeline::record_pointing_fit_results(
+        plan, citlali::pipeline::PointingFitStage::raw_observation,
+        3, 2);
 
     citlali::pipeline::complete_pointing_observation(plan);
 
@@ -2562,8 +2573,48 @@ TEST(config_scaffold, keeps_pointing_fit_independent_of_filtered_outputs) {
     EXPECT_TRUE(plan.effective_resolution.fit_output_path_available);
     EXPECT_FALSE(
         plan.effective_resolution.fit_disabled_by_output_policy);
-    EXPECT_TRUE(plan.observations.front().fit_results_recorded);
-    EXPECT_EQ(plan.observations.front().fit_attempt_count, 3U);
+    EXPECT_TRUE(plan.observations.front().raw_fit.recorded);
+    EXPECT_EQ(plan.observations.front().raw_fit.attempt_count, 3U);
+    EXPECT_FALSE(plan.observations.front().filtered_fit.recorded);
+}
+
+TEST(config_scaffold, rejects_duplicate_pointing_fit_stage_results) {
+    citlali::pipeline::PointingExecutionPlan plan;
+    plan.reset_from_request(
+        citlali::config::PointingConfig{}, {}, true, true, false, 30.0);
+    plan.begin_iteration();
+    plan.begin_observation(0, "152389", 3);
+
+    citlali::pipeline::record_pointing_fit_results(
+        plan, citlali::pipeline::PointingFitStage::raw_observation,
+        3, 2);
+
+    EXPECT_THROW(
+        citlali::pipeline::record_pointing_fit_results(
+            plan,
+            citlali::pipeline::PointingFitStage::raw_observation,
+            3, 2),
+        std::logic_error);
+    EXPECT_NO_THROW(
+        citlali::pipeline::record_pointing_fit_results(
+            plan,
+            citlali::pipeline::PointingFitStage::filtered_observation,
+            3, 2));
+}
+
+TEST(config_scaffold, requires_filtered_pointing_fit_when_filtering) {
+    citlali::pipeline::PointingExecutionPlan plan;
+    plan.reset_from_request(
+        citlali::config::PointingConfig{}, {}, true, true, false, 30.0);
+    plan.begin_iteration();
+    plan.begin_observation(0, "152389", 3);
+    citlali::pipeline::record_pointing_fit_results(
+        plan, citlali::pipeline::PointingFitStage::raw_observation,
+        3, 2);
+
+    EXPECT_THROW(
+        citlali::pipeline::complete_pointing_observation(plan),
+        std::logic_error);
 }
 
 TEST(config_scaffold, disables_pointing_fit_without_mapmaking) {
@@ -2605,16 +2656,29 @@ TEST(config_scaffold, serializes_versioned_pointing_provenance) {
         citlali::config::PointingConfig{}, {}, true, true, false, 30.0);
     plan.begin_iteration();
     plan.begin_observation(0, "152389", 3);
-    citlali::pipeline::record_pointing_fit_results(plan, 3, 2);
+    citlali::pipeline::record_pointing_fit_results(
+        plan, citlali::pipeline::PointingFitStage::raw_observation,
+        3, 2);
+    citlali::pipeline::record_pointing_fit_results(
+        plan,
+        citlali::pipeline::PointingFitStage::filtered_observation,
+        3, 1);
     citlali::pipeline::complete_pointing_observation(plan);
-    plan.realized = citlali::pipeline::PointingRealizedState{
-        true, true, 1U, 3U, 3U, 2U, true};
+    plan.realized.reduction_completed = true;
+    plan.realized.pointing_executed = true;
+    plan.realized.completed_observation_count = 1U;
+    plan.realized.scientific_map_count = 3U;
+    plan.realized.raw_fit_attempt_count = 3U;
+    plan.realized.raw_valid_fit_count = 2U;
+    plan.realized.filtered_fit_attempt_count = 3U;
+    plan.realized.filtered_valid_fit_count = 1U;
+    plan.realized.outputs_completed = true;
 
     const auto node =
         citlali::pipeline::pointing_provenance_node(plan);
 
     EXPECT_EQ(node["schema_version"].as<std::string>(),
-              "citlali-pointing-provenance-v1");
+              "citlali-pointing-provenance-v2");
     EXPECT_DOUBLE_EQ(
         node["requested"]["header_max_radius_arcsec"].as<double>(),
         0.0);
@@ -2625,9 +2689,12 @@ TEST(config_scaffold, serializes_versioned_pointing_provenance) {
     EXPECT_TRUE(
         node["effective"]["resolution"]
             ["header_max_radius_defaulted"].as<bool>());
-    EXPECT_EQ(node["observations"][0]["valid_fit_count"]
+    EXPECT_EQ(node["observations"][0]["raw_valid_fit_count"]
                   .as<std::size_t>(),
               2U);
+    EXPECT_EQ(node["observations"][0]["filtered_valid_fit_count"]
+                  .as<std::size_t>(),
+              1U);
     EXPECT_TRUE(node["realized"]["outputs_completed"].as<bool>());
 }
 
@@ -2652,7 +2719,7 @@ TEST(config_scaffold, pointing_provenance_write_contract) {
     EXPECT_EQ(
         YAML::LoadFile(output_path.string())["schema_version"]
             .as<std::string>(),
-        "citlali-pointing-provenance-v1");
+        "citlali-pointing-provenance-v2");
     std::filesystem::remove_all(output_dir);
 
     const auto missing_dir = output_dir / "missing";

@@ -680,6 +680,22 @@ values, and mismatch diagnostics. The CLI/test builds, all 342 CTests, 60
 config tests, all eight compatibility profiles, and full preflight pass. See
 `doc/POST_PROCESSING_CONFIG_AUTHORITY.md`.
 
+Unity point `redu52` at `d9db1183`, the first enabled-filtering overlay,
+reached both the raw and filtered
+pointing-fit stages, then failed during lifecycle recording with `pointing fit
+results already recorded`. This exposed a provenance-model defect rather than
+a fitting or mapmaking failure: version 1 represented only one fit event per
+observation even though filtered pointing output deliberately fits the maps a
+second time. The execution plan now names the raw and filtered fit stages,
+enforces exactly one result per expected stage, and records their cardinalities
+separately in `citlali-pointing-provenance-v2`. The reduction auditor accepts
+both historical v1 and current v2 sidecars and validates stage expectations
+against filtering/coadd policy. Numerical fitting and product-writing order are
+unchanged. Local `citlali_cli`/test builds, all 344 CTests, 45 provenance-tool
+tests, 60 config tests, all eight compact profiles, and full preflight pass. The
+same enabled-filtering point overlay must pass on Unity before post-processing
+authority migration proceeds.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.
@@ -691,9 +707,10 @@ Immediate work order:
 2. Separate requested map-filtering, source-finding, and source-fitting policy
    from effective activation and realized outputs. Retain only one-way adapters
    into the mature Wiener-filter and map-fitter implementations.
-3. Validate matched OG/refactor pointing overlays that independently exercise
-   disabled filtering, enabled filtering, and source-finding/fitting policy,
-   with exact merged-config identity for every pair.
+3. Rerun the current enabled-filtering refactor point overlay to validate the
+   stage-aware pointing lifecycle, then compare its matched OG/refactor pair.
+   Continue with overlays that independently exercise source-finding/fitting
+   policy, with exact merged-config identity for every pair.
 4. Do not broaden polarimetry without the pending scientific-policy decisions.
 5. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
    the active post-processing domain gates close.

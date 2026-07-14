@@ -28,7 +28,7 @@ EXPECTED_PATHS = [
 EXPECTED_PATH_SHA256 = (
     "fdda04ef21cdea0c36f9f8b9766fac9b5ad4b7d2b673bbb4ed74cd627f688f13"
 )
-EXPECTED_PROVENANCE_SCHEMA = "citlali-pointing-provenance-v1"
+EXPECTED_PROVENANCE_SCHEMA = "citlali-pointing-provenance-v2"
 RETIRED_SYMBOLS = ("read_pointing_source_strategy_config",)
 
 

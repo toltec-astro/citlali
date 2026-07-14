@@ -2,6 +2,7 @@
 
 #include <citlali/core/pipeline/filtered_map_outputs.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/pointing_execution_plan.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
 namespace citlali::pipeline {
@@ -34,7 +35,7 @@ void fit_filtered_observation_maps_if_requested(Engine &engine,
     if constexpr (FitMaps) {
         const auto profile_scope =
             profile_stage("filtered_observation.fit_maps", logger);
-        engine.fit_maps();
+        engine.fit_maps(PointingFitStage::filtered_observation);
     }
 }
 

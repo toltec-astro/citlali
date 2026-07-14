@@ -5,7 +5,7 @@
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/pointing_execution_plan.h>
 
-void Pointing::fit_maps() {
+void Pointing::fit_maps(citlali::pipeline::PointingFitStage stage) {
     fit_valid.setZero(map_indices.n_maps);
 
     if (!citlali::pipeline::pointing_config(*this).fit_gaussian) {
@@ -13,7 +13,7 @@ void Pointing::fit_maps() {
         params.setZero(map_indices.n_maps, map_fitter.n_params);
         perrors.setZero(map_indices.n_maps, map_fitter.n_params);
         citlali::pipeline::record_pointing_fit_results(
-            citlali::pipeline::pointing_plan(*this), 0, 0);
+            citlali::pipeline::pointing_plan(*this), stage, 0, 0);
         return;
     }
 
@@ -65,7 +65,7 @@ void Pointing::fit_maps() {
         }
     }
     citlali::pipeline::record_pointing_fit_results(
-        citlali::pipeline::pointing_plan(*this),
+        citlali::pipeline::pointing_plan(*this), stage,
         static_cast<std::size_t>(map_indices.n_maps),
         static_cast<std::size_t>((fit_valid.array() != 0).count()));
 }

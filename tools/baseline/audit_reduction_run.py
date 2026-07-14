@@ -112,7 +112,11 @@ PROVENANCE_SIDECARS = {
     },
     "pointing": {
         "filename": "pointing_provenance.yaml",
-        "schema_version": "citlali-pointing-provenance-v1",
+        "schema_version": "citlali-pointing-provenance-v2",
+        "accepted_schema_versions": (
+            "citlali-pointing-provenance-v1",
+            "citlali-pointing-provenance-v2",
+        ),
         "required_paths": (
             ("initialized",),
             ("requested",),
@@ -123,10 +127,28 @@ PROVENANCE_SIDECARS = {
             ("realized", "pointing_executed"),
             ("realized", "completed_observation_count"),
             ("realized", "scientific_map_count"),
-            ("realized", "fit_attempt_count"),
-            ("realized", "valid_fit_count"),
+            ("realized", "raw_fit_attempt_count"),
+            ("realized", "raw_valid_fit_count"),
+            ("realized", "filtered_fit_attempt_count"),
+            ("realized", "filtered_valid_fit_count"),
             ("realized", "outputs_completed"),
         ),
+        "required_paths_by_schema": {
+            "citlali-pointing-provenance-v1": (
+                ("initialized",),
+                ("requested",),
+                ("effective", "config"),
+                ("effective", "resolution"),
+                ("observations",),
+                ("realized", "reduction_completed"),
+                ("realized", "pointing_executed"),
+                ("realized", "completed_observation_count"),
+                ("realized", "scientific_map_count"),
+                ("realized", "fit_attempt_count"),
+                ("realized", "valid_fit_count"),
+                ("realized", "outputs_completed"),
+            ),
+        },
         "allow_multiple": False,
     },
     "timestream_output": {
@@ -1150,11 +1172,21 @@ def pointing_provenance_semantic_errors(
         ):
             if type(realized.get(name)) is not bool:
                 errors.append(f"pointing realized {name} must be boolean")
+        schema_version = data.get("schema_version")
+        fit_count_names = (
+            ("fit_attempt_count", "valid_fit_count")
+            if schema_version == "citlali-pointing-provenance-v1"
+            else (
+                "raw_fit_attempt_count",
+                "raw_valid_fit_count",
+                "filtered_fit_attempt_count",
+                "filtered_valid_fit_count",
+            )
+        )
         count_names = (
             "completed_observation_count",
             "scientific_map_count",
-            "fit_attempt_count",
-            "valid_fit_count",
+            *fit_count_names,
         )
         for name in count_names:
             if type(realized.get(name)) is not int or realized[name] < 0:
@@ -1220,8 +1252,7 @@ def pointing_provenance_semantic_errors(
         totals = {
             "completed_observation_count": 0,
             "scientific_map_count": 0,
-            "fit_attempt_count": 0,
-            "valid_fit_count": 0,
+            **{name: 0 for name in fit_count_names},
         }
         seen_obsnums: set[str] = set()
         for expected_index, observation in enumerate(observations):
@@ -1242,12 +1273,7 @@ def pointing_provenance_semantic_errors(
             else:
                 seen_obsnums.add(obsnum)
             map_count = observation.get("map_count")
-            attempts = observation.get("fit_attempt_count")
-            valid = observation.get("valid_fit_count")
-            if any(
-                type(value) is not int or value < 0
-                for value in (map_count, attempts, valid)
-            ):
+            if type(map_count) is not int or map_count < 0:
                 errors.append(
                     f"pointing observation {expected_index} has invalid cardinality"
                 )
@@ -1256,26 +1282,60 @@ def pointing_provenance_semantic_errors(
                 errors.append(
                     f"pointing observation {expected_index} has no scientific maps"
                 )
-            if attempts != (map_count if effective["fit_gaussian"] else 0):
-                errors.append(
-                    f"pointing observation {expected_index} fit attempts are inconsistent"
+            if schema_version == "citlali-pointing-provenance-v1":
+                stage_specs = (("", True),)
+            else:
+                stage_specs = (
+                    ("raw_", True),
+                    (
+                        "filtered_",
+                        resolution["map_filter_enabled"]
+                        and not resolution["coadd_enabled"],
+                    ),
                 )
-            if valid > attempts:
-                errors.append(
-                    f"pointing observation {expected_index} valid fits exceed attempts"
+            for prefix, stage_expected in stage_specs:
+                attempts_name = f"{prefix}fit_attempt_count"
+                valid_name = f"{prefix}valid_fit_count"
+                recorded_name = f"{prefix}fit_results_recorded"
+                attempts = observation.get(attempts_name)
+                valid = observation.get(valid_name)
+                if any(
+                    type(value) is not int or value < 0
+                    for value in (attempts, valid)
+                ):
+                    errors.append(
+                        f"pointing observation {expected_index} "
+                        f"{prefix}fit cardinality is invalid"
+                    )
+                    continue
+                expected_attempts = (
+                    map_count
+                    if stage_expected and effective["fit_gaussian"]
+                    else 0
                 )
-            if observation.get("fit_results_recorded") is not True:
-                errors.append(
-                    f"pointing observation {expected_index} fit results are incomplete"
-                )
+                if attempts != expected_attempts:
+                    errors.append(
+                        f"pointing observation {expected_index} "
+                        f"{prefix}fit attempts are inconsistent"
+                    )
+                if valid > attempts:
+                    errors.append(
+                        f"pointing observation {expected_index} "
+                        f"{prefix}valid fits exceed attempts"
+                    )
+                if observation.get(recorded_name) is not stage_expected:
+                    errors.append(
+                        f"pointing observation {expected_index} "
+                        f"{prefix}fit stage record is inconsistent"
+                    )
+                totals[attempts_name] += attempts
+                totals[valid_name] += valid
             if observation.get("outputs_completed") is not True:
                 errors.append(
                     f"pointing observation {expected_index} outputs are incomplete"
                 )
             totals["completed_observation_count"] += 1
             totals["scientific_map_count"] += map_count
-            totals["fit_attempt_count"] += attempts
-            totals["valid_fit_count"] += valid
 
         if mapmaking_enabled and not observations:
             errors.append("enabled pointing has no completed observations")

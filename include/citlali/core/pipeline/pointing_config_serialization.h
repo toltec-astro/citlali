@@ -63,9 +63,15 @@ inline YAML::Node pointing_observation_node(
     node["observation_index"] = observation.observation_index;
     node["obsnum"] = observation.obsnum;
     node["map_count"] = observation.map_count;
-    node["fit_attempt_count"] = observation.fit_attempt_count;
-    node["valid_fit_count"] = observation.valid_fit_count;
-    node["fit_results_recorded"] = observation.fit_results_recorded;
+    node["raw_fit_attempt_count"] = observation.raw_fit.attempt_count;
+    node["raw_valid_fit_count"] = observation.raw_fit.valid_count;
+    node["raw_fit_results_recorded"] = observation.raw_fit.recorded;
+    node["filtered_fit_attempt_count"] =
+        observation.filtered_fit.attempt_count;
+    node["filtered_valid_fit_count"] =
+        observation.filtered_fit.valid_count;
+    node["filtered_fit_results_recorded"] =
+        observation.filtered_fit.recorded;
     node["outputs_completed"] = observation.outputs_completed;
     return node;
 }
@@ -78,8 +84,12 @@ inline YAML::Node pointing_realized_state_node(
     node["completed_observation_count"] =
         realized.completed_observation_count;
     node["scientific_map_count"] = realized.scientific_map_count;
-    node["fit_attempt_count"] = realized.fit_attempt_count;
-    node["valid_fit_count"] = realized.valid_fit_count;
+    node["raw_fit_attempt_count"] = realized.raw_fit_attempt_count;
+    node["raw_valid_fit_count"] = realized.raw_valid_fit_count;
+    node["filtered_fit_attempt_count"] =
+        realized.filtered_fit_attempt_count;
+    node["filtered_valid_fit_count"] =
+        realized.filtered_valid_fit_count;
     node["outputs_completed"] = realized.outputs_completed;
     return node;
 }
