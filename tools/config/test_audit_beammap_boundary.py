@@ -18,6 +18,29 @@ class BeammapBoundaryAuditTest(unittest.TestCase):
         self.assertTrue(result["manifest"]["exact"])
         self.assertEqual(result["provenance"]["status"], "missing")
 
+    def test_reader_covers_all_frozen_paths(self) -> None:
+        state = audit.audit(REPO_ROOT)["reader_coverage"]
+        self.assertTrue(state["exact"])
+        self.assertEqual(state["root_count"], 59)
+        self.assertEqual(state["covered_path_count"], 74)
+        self.assertEqual(state["missing_paths"], [])
+        self.assertEqual(state["extra_roots"], [])
+
+    def test_serializer_covers_all_frozen_paths(self) -> None:
+        state = audit.audit(REPO_ROOT)["serializer_coverage"]
+        self.assertTrue(state["exact"])
+        self.assertEqual(state["root_count"], 59)
+        self.assertEqual(state["covered_path_count"], 74)
+        self.assertEqual(state["missing_paths"], [])
+        self.assertEqual(state["extra_roots"], [])
+
+    def test_execution_plan_is_prepared_but_unwired(self) -> None:
+        state = audit.audit(REPO_ROOT)["execution_plan"]
+        self.assertTrue(state["exact"])
+        self.assertEqual(state["status"], "prepared-unwired")
+        self.assertEqual(state["production_references"], [])
+        self.assertEqual(state["serializer_production_references"], [])
+
     def test_rejects_manifest_digest_drift(self) -> None:
         manifest = audit.load_manifest(REPO_ROOT / audit.MANIFEST_SOURCE)
         with patch.object(audit, "EXPECTED_PATH_SHA256", "wrong"):

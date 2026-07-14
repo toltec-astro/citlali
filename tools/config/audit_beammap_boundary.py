@@ -18,8 +18,19 @@ AUTHORITY_SOURCE = "tools/config/config_authority_inventory.json"
 MODEL_SOURCE = "include/citlali/core/config/beammap_config.h"
 BOUNDARY_SOURCE = "include/citlali/core/engine/detail/beammap_config_impl.h"
 ADAPTER_SOURCE = "include/citlali/core/pipeline/beammap_config_tod_mirror.h"
+SERIALIZER_SOURCE = (
+    "include/citlali/core/pipeline/beammap_config_serialization.h"
+)
+PLAN_SOURCE = "include/citlali/core/pipeline/beammap_execution_plan.h"
 PROVENANCE_SOURCE = "include/citlali/core/pipeline/beammap_provenance.h"
 CLI_SOURCE = "include/citlali/core/cli/reduction_execution.h"
+READER_SOURCES = (
+    "include/citlali/core/pipeline/beammap_config_core_loading.h",
+    "include/citlali/core/pipeline/beammap_config_fitting_flagging.h",
+    "include/citlali/core/pipeline/beammap_config_priors_loading.h",
+    "include/citlali/core/pipeline/beammap_config_split_outputs.h",
+    "include/citlali/core/pipeline/beammap_config_tod_mirror.h",
+)
 
 EXPECTED_SCHEMA = "citlali-frozen-beammap-config-paths-v1"
 EXPECTED_PATH_COUNT = 74
@@ -151,6 +162,127 @@ def literal_boundary_state(repo_root: Path) -> dict[str, object]:
     }
 
 
+def expand_path_roots(
+    manifest_paths: list[str], roots: set[str]
+) -> dict[str, object]:
+    covered = sorted(
+        path
+        for path in manifest_paths
+        if any(path == root or path.startswith(root + ".") for root in roots)
+    )
+    extra_roots = sorted(
+        root
+        for root in roots
+        if not any(
+            path == root or path.startswith(root + ".")
+            for path in manifest_paths
+        )
+    )
+    missing = sorted(set(manifest_paths) - set(covered))
+    return {
+        "root_count": len(roots),
+        "roots": sorted(roots),
+        "covered_path_count": len(covered),
+        "covered_paths": covered,
+        "missing_paths": missing,
+        "extra_roots": extra_roots,
+        "exact": not missing and not extra_roots,
+    }
+
+
+def reader_coverage_state(
+    repo_root: Path, manifest_paths: list[str]
+) -> dict[str, object]:
+    pattern = re.compile(
+        r'(?:std::tuple\s*)?\{\s*"beammap"'
+        r'(?P<body>(?:\s*,\s*"[^"]+")+?)\s*\}'
+    )
+    roots: set[str] = set()
+    for source in READER_SOURCES:
+        text = (repo_root / source).read_text(encoding="utf-8")
+        for match in pattern.finditer(text):
+            roots.add(".".join(re.findall(r'"([^"]+)"', match.group(0))))
+    state = expand_path_roots(manifest_paths, roots)
+    state["sources"] = list(READER_SOURCES)
+    return state
+
+
+def serializer_coverage_state(
+    repo_root: Path, manifest_paths: list[str]
+) -> dict[str, object]:
+    source = (repo_root / SERIALIZER_SOURCE).read_text(encoding="utf-8")
+    pattern = re.compile(
+        r'\bnode(?P<body>(?:\s*\[\s*"[^"]+"\s*\])+)'
+    )
+    roots = {
+        "beammap."
+        + ".".join(re.findall(r'"([^"]+)"', match.group("body")))
+        for match in pattern.finditer(source)
+    }
+    state = expand_path_roots(manifest_paths, roots)
+    state["source"] = SERIALIZER_SOURCE
+    return state
+
+
+def production_references(
+    repo_root: Path, excluded_source: str, needles: tuple[str, ...]
+) -> list[str]:
+    references: list[str] = []
+    for source_root in (repo_root / "include", repo_root / "src"):
+        for suffix in ("*.h", "*.cpp"):
+            for path in source_root.rglob(suffix):
+                relative = path.relative_to(repo_root).as_posix()
+                if relative == excluded_source:
+                    continue
+                text = path.read_text(encoding="utf-8")
+                if any(needle in text for needle in needles):
+                    references.append(relative)
+    return sorted(set(references))
+
+
+def execution_plan_state(repo_root: Path) -> dict[str, object]:
+    path = repo_root / PLAN_SOURCE
+    source_exists = path.exists()
+    source = path.read_text(encoding="utf-8") if source_exists else ""
+    plan_references = production_references(
+        repo_root,
+        PLAN_SOURCE,
+        ("beammap_execution_plan.h", "BeammapExecutionPlan"),
+    )
+    serializer_references = production_references(
+        repo_root,
+        SERIALIZER_SOURCE,
+        ("beammap_config_serialization.h", "beammap_config_node("),
+    )
+    contract_present = all(
+        token in source
+        for token in (
+            "class BeammapExecutionPlan",
+            "BeammapConfig requested_",
+            "BeammapConfig effective_",
+            "BeammapEffectiveResolutionRecord resolution_",
+            "reset_from_request",
+        )
+    )
+    return {
+        "source": PLAN_SOURCE,
+        "source_exists": source_exists,
+        "contract_present": contract_present,
+        "production_references": plan_references,
+        "serializer_production_references": serializer_references,
+        "status": "prepared-unwired"
+        if source_exists
+        and contract_present
+        and not plan_references
+        and not serializer_references
+        else "unexpected",
+        "exact": source_exists
+        and contract_present
+        and not plan_references
+        and not serializer_references,
+    }
+
+
 def typed_model_state(source: str) -> dict[str, object]:
     present = sorted(
         name for name in EXPECTED_STRUCTS if f"struct {name}" in source
@@ -233,6 +365,9 @@ def audit(repo_root: Path) -> dict[str, object]:
     manifest = manifest_state(load_manifest(repo_root / MANIFEST_SOURCE))
     defaults = default_surface_state(repo_root, manifest["paths"])
     literals = literal_boundary_state(repo_root)
+    readers = reader_coverage_state(repo_root, manifest["paths"])
+    serializer = serializer_coverage_state(repo_root, manifest["paths"])
+    plan = execution_plan_state(repo_root)
     model = typed_model_state((repo_root / MODEL_SOURCE).read_text())
     boundary = authority_boundary_state(
         (repo_root / BOUNDARY_SOURCE).read_text(),
@@ -245,6 +380,9 @@ def audit(repo_root: Path) -> dict[str, object]:
             manifest["exact"],
             defaults["exact"],
             literals["exact"],
+            readers["exact"],
+            serializer["exact"],
+            plan["exact"],
             model["exact"],
             boundary["exact"],
             inventory["exact"],
@@ -255,6 +393,9 @@ def audit(repo_root: Path) -> dict[str, object]:
         "manifest": manifest,
         "default_surface": defaults,
         "config_literal_boundary": literals,
+        "reader_coverage": readers,
+        "serializer_coverage": serializer,
+        "execution_plan": plan,
         "typed_model": model,
         "authority_boundary": boundary,
         "inventory": inventory,
@@ -272,6 +413,13 @@ def markdown_report(result: dict[str, object]) -> str:
             f"- Frozen paths: `{result['manifest']['path_count']}`",
             f"- Default surface exact: `{result['default_surface']['exact']}`",
             f"- Typed model exact: `{result['typed_model']['exact']}`",
+            f"- Reader coverage: `"
+            f"{result['reader_coverage']['covered_path_count']}/"
+            f"{result['manifest']['path_count']}`",
+            f"- Serializer coverage: `"
+            f"{result['serializer_coverage']['covered_path_count']}/"
+            f"{result['manifest']['path_count']}`",
+            f"- Execution plan status: `{result['execution_plan']['status']}`",
             f"- Config literal boundary exact: `"
             f"{result['config_literal_boundary']['exact']}`",
             f"- Authority boundary exact: `"
@@ -312,6 +460,11 @@ def main() -> int:
         f"paths={result['manifest']['path_count']} "
         f"defaults={result['default_surface']['exact']} "
         f"typed_model={result['typed_model']['exact']} "
+        f"readers={result['reader_coverage']['covered_path_count']}/"
+        f"{result['manifest']['path_count']} "
+        f"serializer={result['serializer_coverage']['covered_path_count']}/"
+        f"{result['manifest']['path_count']} "
+        f"plan={result['execution_plan']['status']} "
         f"literal_boundary={result['config_literal_boundary']['exact']} "
         f"authority={result['authority_boundary']['exact']} "
         f"provenance={result['provenance']['status']} "

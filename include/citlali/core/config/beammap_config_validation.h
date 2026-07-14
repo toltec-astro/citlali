@@ -4,11 +4,17 @@
 #include <citlali/core/config/config_error.h>
 
 #include <cmath>
+#include <cstddef>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace citlali::config {
 
 inline void validate(const BeammapIterationConfig &config, ValidationReport &report) {
     check_minimum(config.max_iterations, 1, {"beammap", "iter_max"}, report);
+    check_finite_value(config.tolerance,
+                       {"beammap", "iter_tolerance"}, report);
     check_minimum(config.convergence_radius_arcsec, 0.0,
                   {"beammap", "convergence_radius_arcsec"}, report);
 }
@@ -64,6 +70,8 @@ inline void validate(const BeammapScanBandMaskConfig &config, ValidationReport &
 inline void validate(const BeammapPriorsConfig &config, ValidationReport &report) {
     check_minimum(config.candidate_top_n, 1,
                   {"beammap", "priors", "candidate_top_n"}, report);
+    check_finite_value(config.min_snr,
+                       {"beammap", "priors", "min_snr"}, report);
     check_minimum(config.max_d2, 0.0, {"beammap", "priors", "max_d2"}, report);
     check_minimum(config.max_d2_iter0, 0.0,
                   {"beammap", "priors", "max_d2_iter0"}, report);
@@ -99,11 +107,84 @@ inline void validate(const BeammapDetectorTodOutputConfig &config,
             {"beammap", "detector_tod_output"},
             "enabled output requires at least one uniform or source-dense slot");
     }
+    if (config.enabled && config.subdir_name.empty()) {
+        report.add_error(
+            {"beammap", "detector_tod_output", "subdir_name"},
+            "must not be empty when detector TOD output is enabled");
+    }
+}
+
+inline void validate_finite_beammap_vector(
+    const std::vector<double> &values, const ConfigPath &path,
+    ValidationReport &report) {
+    for (std::size_t index = 0; index < values.size(); ++index) {
+        check_finite_value(
+            values[index], append_config_path(path, {std::to_string(index)}),
+            report);
+    }
+}
+
+inline void validate_beammap_vector_size(
+    const std::vector<double> &values, std::size_t expected_size,
+    const ConfigPath &path, ValidationReport &report) {
+    if (!values.empty() && values.size() != expected_size) {
+        report.add_error(
+            path, "must contain exactly " + std::to_string(expected_size) +
+                      " values");
+    }
 }
 
 inline void validate(const BeammapFlaggingConfig &config, ValidationReport &report) {
     check_minimum(config.max_prior_d2, 0.0,
                   {"beammap", "flagging", "max_prior_d2"}, report);
+
+    const std::vector<std::pair<const std::vector<double> *, ConfigPath>>
+        array_vectors{
+            {&config.array_lower_fwhm_arcsec,
+             {"beammap", "flagging", "array_lower_fwhm_arcsec"}},
+            {&config.array_upper_fwhm_arcsec,
+             {"beammap", "flagging", "array_upper_fwhm_arcsec"}},
+            {&config.array_lower_sig2noise,
+             {"beammap", "flagging", "array_lower_sig2noise"}},
+            {&config.array_upper_sig2noise,
+             {"beammap", "flagging", "array_upper_sig2noise"}},
+            {&config.array_max_dist_arcsec,
+             {"beammap", "flagging", "array_max_dist_arcsec"}},
+            {&config.array_network_robust_z,
+             {"beammap", "flagging", "array_network_robust_z"}},
+        };
+
+    std::size_t array_count = 0;
+    for (const auto &[values, path] : array_vectors) {
+        validate_finite_beammap_vector(*values, path, report);
+        if (array_count == 0 && !values->empty()) {
+            array_count = values->size();
+        }
+    }
+    if (array_count > 0) {
+        for (const auto &[values, path] : array_vectors) {
+            if (values->size() == array_count) {
+                continue;
+            }
+            report.add_error(
+                path, "must have the same array cardinality as the other "
+                      "beammap flagging vectors");
+        }
+    }
+
+    const ConfigPath sensitivity_factor_path{
+        "beammap", "flagging", "sens_factors"};
+    validate_finite_beammap_vector(
+        config.sens_factors, sensitivity_factor_path, report);
+    validate_beammap_vector_size(
+        config.sens_factors, 2, sensitivity_factor_path, report);
+
+    const ConfigPath sensitivity_band_path{
+        "beammap", "sens_psd_limits_Hz"};
+    validate_finite_beammap_vector(
+        config.sens_psd_limits_hz, sensitivity_band_path, report);
+    validate_beammap_vector_size(
+        config.sens_psd_limits_hz, 2, sensitivity_band_path, report);
 }
 
 inline void validate(const BeammapSourceFluxConfig &config, ValidationReport &report) {

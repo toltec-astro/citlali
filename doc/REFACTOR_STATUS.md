@@ -1058,6 +1058,23 @@ provenance remain owner decisions.
   breach is numerical creep and requires investigation rather than automatic
   tolerance relaxation.
 
+The first Beammap authority preparation checkpoint is complete locally without
+changing production execution. Mechanical boundary checks expand 59 typed
+reader roots and 59 serializer roots to exact 74/74 frozen-path coverage. A
+pure, production-unwired `BeammapExecutionPlan` preserves requested values and
+separately characterizes current phase correction, prior inheritance and
+missing-path disablement, split-flag normalization, convergence availability,
+and mapmaking-disabled iteration policy. Cold-boundary validation now rejects
+non-finite Beammap vector and scalar values and enforces reader-established
+vector cardinality. The existing typed request and one-way fitting adapter
+remain production authority, and dedicated Beammap provenance remains missing;
+this is preparation for a later bounded consumer cutover, not a completed
+migration claim.
+The local CLI and test targets build, all 363 CTests pass, and full config
+preflight passes 74 boundary tests, all eight compatibility profiles, and the
+complete authority audit suite. Because the plan and serializer are explicitly
+unwired, this checkpoint does not require a Unity reduction.
+
 ## Five-Phase Roadmap
 
 ### Phase 1 - Safety Stabilization
