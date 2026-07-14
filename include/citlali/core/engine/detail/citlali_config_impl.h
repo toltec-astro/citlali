@@ -5,8 +5,12 @@
 
 #include <citlali/core/pipeline/citlali_config_read.h>
 #include <citlali/core/pipeline/mapmaking_activation_policy.h>
+#include <citlali/core/pipeline/post_processing_config_read.h>
+#include <citlali/core/pipeline/post_processing_config_shadow.h>
 #include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
+
+#include <stdexcept>
 
 template<typename CT>
 void Engine::get_citlali_config(CT &config) {
@@ -57,6 +61,10 @@ void Engine::get_citlali_config(CT &config) {
     post_processing_config = citlali::config::PostProcessingConfig{};
     get_mapmaking_config(config);
 
+    citlali::config::PostProcessingConfig post_processing_request_shadow;
+    citlali::pipeline::read_post_processing_request_config(
+        config, post_processing_request_shadow, diagnostics);
+
     bool run_map_filter = post_processing_config.map_filtering.enabled;
     bool run_source_finder = post_processing_config.source_finding.enabled;
     citlali::pipeline::read_post_processing_activation_config(
@@ -79,6 +87,18 @@ void Engine::get_citlali_config(CT &config) {
     citlali::pipeline::read_source_finding_config(
         config, omb, cmb, citlali::pipeline::coadd_config(*this), ASEC_TO_RAD,
         post_processing_config, diagnostics);
+
+    const auto post_processing_shadow =
+        citlali::pipeline::compare_post_processing_config_shadow(
+            post_processing_request_shadow, post_processing_config,
+            runtime_config.reduction_type);
+    if (!post_processing_shadow.exact) {
+        logger->error(
+            "typed post-processing request differs from legacy state: {}",
+            post_processing_shadow.diagnostic());
+        throw std::runtime_error(
+            "typed post-processing request shadow mismatch");
+    }
 
     /* get pointing config */
     if (runtime_config.reduction_type ==

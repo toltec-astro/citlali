@@ -32,6 +32,7 @@
 #include <citlali/core/pipeline/pointing_execution_plan.h>
 #include <citlali/core/pipeline/pointing_provenance.h>
 #include <citlali/core/pipeline/post_processing_config_read.h>
+#include <citlali/core/pipeline/post_processing_config_shadow.h>
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
@@ -1545,6 +1546,87 @@ TEST(config_scaffold, post_processing_request_rejects_invalid_enum) {
         diagnostics.invalid_keys,
         (std::vector<std::vector<std::string>>{{
             "wiener_filter", "kernel_template_tail_mode"}}));
+}
+
+TEST(config_scaffold, post_processing_shadow_compares_only_active_details) {
+    citlali::config::PostProcessingConfig requested;
+    requested.map_filtering.enabled = false;
+    requested.map_filtering.denom_check_iters = 17;
+    requested.source_finding.enabled = false;
+    requested.source_finding.source_sigma = 8.0;
+    requested.source_fitting.fitting_radius_arcsec = 23.0;
+
+    citlali::config::PostProcessingConfig legacy;
+    legacy.map_filtering.enabled = false;
+    legacy.source_finding.enabled = false;
+    legacy.map_histogram_n_bins = requested.map_histogram_n_bins;
+
+    const auto report =
+        citlali::pipeline::compare_post_processing_config_shadow(
+            requested, legacy, citlali::config::ReductionType::science);
+
+    EXPECT_TRUE(report.exact) << report.diagnostic();
+    EXPECT_FALSE(report.compared_map_filter_details);
+    EXPECT_FALSE(report.compared_source_finding_details);
+    EXPECT_FALSE(report.compared_source_fitting_details);
+}
+
+TEST(config_scaffold, post_processing_shadow_compares_pointing_fit_values) {
+    citlali::config::PostProcessingConfig requested;
+    requested.source_fitting.bounding_box_arcsec = 10.0;
+    requested.source_fitting.fitting_radius_arcsec = 30.0;
+    requested.source_fitting.fit_rotation_angle = true;
+    requested.source_fitting.amp_limit_factors = {0.5, 2.0};
+    requested.source_fitting.fwhm_limit_factors = {0.6, 1.8};
+
+    auto legacy = requested;
+    legacy.source_fitting.active = true;
+    const auto exact =
+        citlali::pipeline::compare_post_processing_config_shadow(
+            requested, legacy, citlali::config::ReductionType::pointing);
+    EXPECT_TRUE(exact.exact) << exact.diagnostic();
+    EXPECT_TRUE(exact.compared_source_fitting_details);
+
+    legacy.source_fitting.fitting_radius_arcsec = 31.0;
+    const auto mismatch =
+        citlali::pipeline::compare_post_processing_config_shadow(
+            requested, legacy, citlali::config::ReductionType::pointing);
+    EXPECT_FALSE(mismatch.exact);
+    EXPECT_NE(
+        mismatch.diagnostic().find("source_fitting.fitting_radius_arcsec"),
+        std::string::npos);
+}
+
+TEST(config_scaffold, post_processing_shadow_compares_active_filter_values) {
+    citlali::config::PostProcessingConfig requested;
+    requested.map_filtering.enabled = true;
+    requested.map_filtering.type =
+        citlali::config::MapFilterType::wiener_filter;
+    requested.map_filtering.template_type =
+        citlali::config::MapFilterTemplateType::airy;
+    requested.map_filtering.kernel_template_tail_mode =
+        citlali::config::MapFilterKernelTailMode::cosine;
+    requested.map_filtering.template_fwhm_arcsec = {
+        {"a1100", 5.0}, {"a1400", 6.3}, {"a2000", 9.5}};
+
+    auto legacy = requested;
+    legacy.source_fitting.active = true;
+    const auto exact =
+        citlali::pipeline::compare_post_processing_config_shadow(
+            requested, legacy, citlali::config::ReductionType::science);
+    EXPECT_TRUE(exact.exact) << exact.diagnostic();
+    EXPECT_TRUE(exact.compared_map_filter_details);
+    EXPECT_TRUE(exact.compared_source_fitting_details);
+
+    legacy.map_filtering.kernel_template_tail_mode =
+        citlali::config::MapFilterKernelTailMode::zero;
+    const auto mismatch =
+        citlali::pipeline::compare_post_processing_config_shadow(
+            requested, legacy, citlali::config::ReductionType::science);
+    EXPECT_FALSE(mismatch.exact);
+    EXPECT_NE(
+        mismatch.diagnostic().find("kernel_template_tail_mode"),
+        std::string::npos);
 }
 
 TEST(config_scaffold, reads_typed_coadd_request) {

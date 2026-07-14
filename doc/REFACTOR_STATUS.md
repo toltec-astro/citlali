@@ -670,11 +670,15 @@ reverse-mirrors most of them into typed state, while direct typed readers cover
 13 other leaves. The initial typed-request gaps,
 `post_processing.source_fitting.model` and
 `wiener_filter.kernel_template_tail_mode`, now have closed-enum representation
-in a complete 35-leaf direct request reader. That reader is tested but not yet
-wired into `Engine`; execution remains unchanged while the next checkpoint
-adds read-only parser-shadow parity. The CLI/test builds and all 339 CTests
-pass. The frozen manifest, boundary audit, and focused tests are part of config
-preflight. See `doc/POST_PROCESSING_CONFIG_AUTHORITY.md`.
+in a complete 35-leaf direct request reader. That reader now runs during
+`Engine` config loading as a fail-fast, read-only shadow. Activation and
+histogram always compare; detail fields compare only when the legacy path
+loads them, so disabled requested values are preserved without false mismatch
+reports. The legacy parser and reverse mirrors still drive execution. Focused
+shadow tests cover inactive science policy, pointing fit values, active filter
+values, and mismatch diagnostics. The CLI/test builds, all 342 CTests, 60
+config tests, all eight compatibility profiles, and full preflight pass. See
+`doc/POST_PROCESSING_CONFIG_AUTHORITY.md`.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

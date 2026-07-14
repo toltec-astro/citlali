@@ -19,6 +19,9 @@ CONFIG_SOURCE = "include/citlali/core/config/post_processing_config.h"
 DIRECT_READER_SOURCE = (
     "include/citlali/core/pipeline/post_processing_config_read.h"
 )
+SHADOW_SOURCE = (
+    "include/citlali/core/pipeline/post_processing_config_shadow.h"
+)
 ENGINE_BOUNDARY_SOURCE = "include/citlali/core/engine/detail/citlali_config_impl.h"
 FILTER_BOUNDARY_SOURCE = "include/citlali/core/engine/detail/map_filter_config_impl.h"
 LEGACY_FILTER_SOURCE = "include/citlali/core/mapmaking/wiener_filter.h"
@@ -118,6 +121,7 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
     )
     config_source = (repo_root / CONFIG_SOURCE).read_text()
     direct_reader = (repo_root / DIRECT_READER_SOURCE).read_text()
+    shadow_source = (repo_root / SHADOW_SOURCE).read_text()
     engine = (repo_root / ENGINE_BOUNDARY_SOURCE).read_text()
     filter_boundary = (repo_root / FILTER_BOUNDARY_SOURCE).read_text()
     legacy_filter = (repo_root / LEGACY_FILTER_SOURCE).read_text()
@@ -138,6 +142,18 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
             and "void read_map_filter_request_config" in direct_reader
             and "void read_source_finding_request_config" in direct_reader
             and "void read_source_fitting_request_config" in direct_reader
+        ),
+        "direct_request_reader_call_count": call_count(
+            engine, "read_post_processing_request_config"
+        ),
+        "shadow_comparison_call_count": call_count(
+            engine, "compare_post_processing_config_shadow"
+        ),
+        "shadow_report_present": (
+            "struct PostProcessingConfigShadowReport" in shadow_source
+            and "compared_map_filter_details" in shadow_source
+            and "compared_source_finding_details" in shadow_source
+            and "compared_source_fitting_details" in shadow_source
         ),
         "legacy_filter_parser_present": (
             legacy_filter.count("void WienerFilter::get_config") == 1
@@ -175,6 +191,9 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         "reverse_filter_mirror_present": (
             "void mirror_wiener_filter_config" in mirror
         ),
+        "kernel_tail_reverse_mirrored": (
+            "parse_map_filter_kernel_tail_mode" in mirror
+        ),
         "source_finding_reverse_mirror_present": (
             "mirror_source_finding_config_to_coadd" in finding_reader
         ),
@@ -187,6 +206,9 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
     exact = bool(
         checks["authority_prefixes_exact"]
         and checks["complete_request_reader_present"]
+        and checks["direct_request_reader_call_count"] == 1
+        and checks["shadow_comparison_call_count"] == 1
+        and checks["shadow_report_present"]
         and checks["legacy_filter_parser_present"]
         and checks["legacy_filter_boundary_call_count"] == 1
         and checks["reverse_filter_mirror_call_count"] == 1
@@ -199,6 +221,7 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         and checks["kernel_tail_legacy"]
         and checks["kernel_tail_typed"]
         and checks["reverse_filter_mirror_present"]
+        and checks["kernel_tail_reverse_mirrored"]
         and checks["source_finding_reverse_mirror_present"]
         and checks["request_mutation_present"]
     )

@@ -38,11 +38,13 @@ target architecture:
 These facts are migration inputs. They are not endorsements of reverse mirrors
 or mutable requested configuration.
 
-The direct request reader is currently a verified, behavior-neutral boundary:
-it is not yet wired into `Engine` execution. Focused tests prove complete
-default parsing, disabled-value preservation, and invalid-enum diagnostics.
-The next checkpoint will compare this request against the existing parser as a
-read-only shadow before authority changes.
+The direct request reader now runs as a fail-fast, read-only shadow during
+`Engine` config loading. Focused tests prove complete default parsing,
+disabled-value preservation, invalid-enum diagnostics, active-field parity,
+and useful mismatch diagnostics. The shadow compares activation and histogram
+unconditionally, but compares detail fields only where the legacy path
+actually loads them. This prevents disabled legacy defaults from masquerading
+as requested-value mismatches. Legacy state still drives execution.
 
 ## Target Contract
 

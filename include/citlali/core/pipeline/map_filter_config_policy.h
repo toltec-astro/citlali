@@ -24,6 +24,10 @@ void mirror_wiener_filter_config(
             wiener_filter.template_type)) {
         typed_map_filter.template_type = *parsed;
     }
+    if (auto parsed = citlali::config::parse_map_filter_kernel_tail_mode(
+            wiener_filter.kernel_template_tail_mode)) {
+        typed_map_filter.kernel_template_tail_mode = *parsed;
+    }
     typed_map_filter.lowpass_only = wiener_filter.run_lowpass;
     typed_map_filter.normalize_errors = wiener_filter.normalize_error;
     typed_map_filter.edge_guard.enabled = wiener_filter.edge_guard_enabled;
