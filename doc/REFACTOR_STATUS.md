@@ -21,8 +21,8 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest inspected point reductions: disabled-noise `redu47` and bounded
-  full-output `redu49`, both produced by `1faec7cc`.
+- Latest accepted point reduction: `redu51`, produced by `a9d17fa1`; bounded
+  full-noise-output `redu49` remains the noise-products fixture.
 - Latest inspected science reduction: final iteration `redu15`, produced by
   `1faec7cc`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
@@ -35,7 +35,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 335 tests with none skipped or disabled; all
+- CTest discovers and passes all 336 tests with none skipped or disabled; all
   54 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
@@ -651,25 +651,33 @@ both filter-independent fitting and mapmaking-disabled fitting. Local builds,
 all 336 CTests, 43 baseline-tool tests, 54 config tests, all eight profiles, and
 full preflight pass. A corrected Unity point run remains required.
 
+Corrected Unity point `redu51` at `a9d17fa1` closes the pointing gate. Its
+489-leaf merged config is exact against accepted disabled-noise `redu47`; all
+13 scientific product families, including every RTC/PTC timestream record and
+all pointing-fit columns, are exact with zero changed or skipped records. The
+candidate has zero serious log issues and valid pointing provenance recording
+one observation, three scientific maps, three fit attempts, and three valid
+fits. Runtime is 59.971 seconds versus 58.627 seconds. The validation ledger
+records the accepted checkpoint. The pointing authority and provenance domain
+is complete; post-processing is now the active bounded domain.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.
 
 Immediate work order:
 
-1. Build on Unity and run the unchanged standard point fixture. Require valid
-   mapmaking and pointing provenance on the candidate, zero serious log
-   records, and exact pre-existing scientific products against the accepted
-   matching-config point baseline.
-2. Record the validated snapshot and close the pointing authority/provenance
-   domain only after that gate passes.
-3. Start the post-processing authority domain. Validate it with matched
-   OG/refactor pointing overlays that separately exercise filtering and source-
-   finding/fitting activation, retaining exact merged-config identity for each
-   pair.
+1. Freeze and audit the complete `post_processing.*` input surface and current
+   execution consumers before changing authority.
+2. Separate requested map-filtering, source-finding, and source-fitting policy
+   from effective activation and realized outputs. Retain only one-way adapters
+   into the mature Wiener-filter and map-fitter implementations.
+3. Validate matched OG/refactor pointing overlays that independently exercise
+   disabled filtering, enabled filtering, and source-finding/fitting policy,
+   with exact merged-config identity for every pair.
 4. Do not broaden polarimetry without the pending scientific-policy decisions.
 5. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
-   the active pointing domain gates close.
+   the active post-processing domain gates close.
 
 ### Phase 1 Progress
 

@@ -4653,6 +4653,93 @@
         "The original ordered TolTECA NN*.yaml overlay files and their hashes were not retained in the reduction directories.",
         "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained."
       ]
+    },
+    {
+      "record_id": "point-152389-refactor-a9d17fa1-redu51",
+      "recorded_date": "2026-07-14",
+      "mode": "point",
+      "status": "accepted",
+      "candidate": {
+        "label": "refactor",
+        "branch": "codex/structural-refactor",
+        "citlali_sha": "a9d17fa1",
+        "citlali_version": "v4.0.0-3457-ga9d17fa1",
+        "dirty": false,
+        "dependencies": {"kids_sha": "04088da", "tula_sha": "f30f81d"},
+        "build": {"host": "unity", "compiler": null, "build_type": "Release", "cmake_flags": null}
+      },
+      "baseline": {
+        "label": "refactor",
+        "citlali_sha": "1faec7cc",
+        "citlali_version": "v4.0.0-3453-g1faec7cc",
+        "dependencies": {"kids_sha": "04088da", "tula_sha": "f30f81d"},
+        "reduction_id": "redu47"
+      },
+      "config": {
+        "ordered_sources": [{
+          "role": "merged_low_level_citlali_input",
+          "path": "citlali_o152389_0_2_c1.yaml",
+          "precedence": 0,
+          "sha256": "4c76ddfc77a3151f1515ba022120d74a4a113735fc3847e3ec897203f7eb5477"
+        }],
+        "overlay_sources_retained": false,
+        "canonical_merged_sha256": "4c76ddfc77a3151f1515ba022120d74a4a113735fc3847e3ec897203f7eb5477",
+        "pointing_provenance": {
+          "path": "pointing_provenance.yaml",
+          "schema_version": "citlali-pointing-provenance-v1",
+          "sha256": "6c5839db91a3b5f040eee5f055d6db486525494ddddea6e7886897548cb9dcba",
+          "semantic_audit": {
+            "requested_fit_gaussian": true,
+            "effective_fit_gaussian": true,
+            "mapmaking_enabled": true,
+            "map_filter_enabled": false,
+            "observation_count": 1,
+            "scientific_map_count": 3,
+            "fit_attempt_count": 3,
+            "valid_fit_count": 3,
+            "outputs_completed": true
+          }
+        }
+      },
+      "dataset": {"obsnum": "152389", "identity": "TolTEC commissioning pointing observation 152389", "content_hash": null},
+      "invocation": {
+        "command": null,
+        "launcher": "tolteca reduce",
+        "runtime_policy": {"n_threads": 6, "parallel_policy": "omp", "kids_solver_parallel_policy": "seq"},
+        "exit_code": 0
+      },
+      "audit": {
+        "finished": true,
+        "serious_log_counts": {},
+        "file_count": 41,
+        "comparable_product_count": 15,
+        "stable_comparable_product_count": 14,
+        "stable_product_counts_by_kind": {"csv": 1, "ecsv": 2, "fits": 3, "netcdf": 8},
+        "required_product_inventory_matches": "point-152389-refactor-1faec7cc-redu47 plus required pointing_provenance.yaml"
+      },
+      "comparison": {
+        "tool": "tools/baseline/compare_reduction_products.py",
+        "tool_sha": "a9d17fa1d",
+        "options": ["--mode", "point", "--strict", "--include-timestream", "--max-array-elements", "0", "--atol", "0", "--rtol", "0", "--exclude", "citlali_profile.ecsv"],
+        "volatile_allowlist": ["citlali_profile.ecsv", "reduction-number paths in timestream_output_provenance.yaml"],
+        "tolerances": {"atol": 0.0, "rtol": 0.0, "fraction_floor": 1e-12},
+        "common_products": 13,
+        "skipped_records": 0,
+        "changed_records": 0,
+        "scientific_products_exact": true,
+        "verdict": "accepted_exact"
+      },
+      "accepted_differences": [],
+      "performance": {"wall_time_log_seconds": 59.971, "observation_pipeline_seconds": null, "map_output_seconds": null, "peak_rss_kb": null, "baseline_wall_time_log_seconds": 58.627},
+      "artifacts": {
+        "candidate_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu51",
+        "candidate_unity_path": "/work/toltec/commissioning2025-test/2026-refactor/point/refactor/reduced/redu51",
+        "baseline_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu47"
+      },
+      "limitations": [
+        "The original ordered TolTECA NN*.yaml overlay files and their hashes were not retained in the reduction directory.",
+        "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained."
+      ]
     }
   ]
 }
