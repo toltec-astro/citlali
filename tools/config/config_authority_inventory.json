@@ -109,7 +109,7 @@
     },
     {
       "id": "post-processing",
-      "config_prefixes": ["post_processing"],
+      "config_prefixes": ["post_processing", "wiener_filter"],
       "typed_owner": "citlali::config::ReductionConfig::post_processing",
       "loader": "include/citlali/core/engine/detail/citlali_config_impl.h",
       "execution_authority": "mixed",

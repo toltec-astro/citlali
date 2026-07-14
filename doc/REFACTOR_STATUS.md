@@ -661,14 +661,26 @@ fits. Runtime is 59.971 seconds versus 58.627 seconds. The validation ledger
 records the accepted checkpoint. The pointing authority and provenance domain
 is complete; post-processing is now the active bounded domain.
 
+Post-processing characterization freezes 35 supported leaves: 24 under
+`post_processing.*` and 11 under the historical top-level `wiener_filter.*`
+prefix. The latter controls filter template construction and convergence and
+therefore belongs to the same authority domain. The starting boundary is
+intentionally mixed: the legacy Wiener parser still reads 21 leaves and
+reverse-mirrors most of them into typed state, while direct typed readers cover
+13 other leaves. The two explicit typed-request gaps are
+`post_processing.source_fitting.model` and
+`wiener_filter.kernel_template_tail_mode`. The frozen manifest, boundary audit,
+and focused tests are now part of config preflight; this checkpoint changes no
+runtime behavior. See `doc/POST_PROCESSING_CONFIG_AUTHORITY.md`.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.
 
 Immediate work order:
 
-1. Freeze and audit the complete `post_processing.*` input surface and current
-   execution consumers before changing authority.
+1. Use the frozen 35-leaf `post_processing.*` plus `wiener_filter.*` surface
+   and current-consumer audit as the migration boundary.
 2. Separate requested map-filtering, source-finding, and source-fitting policy
    from effective activation and realized outputs. Retain only one-way adapters
    into the mature Wiener-filter and map-fitter implementations.
