@@ -49,7 +49,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 372 tests with none skipped or disabled; all
+- CTest discovers and passes all 373 tests with none skipped or disabled; all
   75 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
@@ -1138,6 +1138,21 @@ reference decisions, adjacent atomic `beammap_source.*` state, and any
 additional Beammap-specific optional-product cardinalities required by the
 design review remain bounded follow-up work; this checkpoint does not claim
 the Beammap domain complete.
+
+Enabled detector-specific Beammap PTC TOD is now an explicit required
+observation product in the realized plan. The record is updated only after the
+existing atomic NetCDF writer returns and captures the output iteration plus
+detector, slot, and maximum-sample dimensions. Observation completion requires
+exactly one such write when `beammap.detector_tod_output.enabled=true`, rejects
+duplicates, and requires zero writes when disabled. This implements the
+project-wide enabled-output decision without selecting new scan slots or
+changing the detector-TOD numerical content.
+
+The CLI and test targets build, all 373 CTests pass, and full preflight remains
+clean with 75 Python tests and all eight compatibility profiles. This is part
+of the pending Beammap Unity validation candidate, not a separately accepted
+domain gate. Prior/reference and split-output fallback policies remain
+unchanged and unresolved owner decisions are not inferred.
 
 ## Five-Phase Roadmap
 

@@ -48,6 +48,12 @@ mapmaking, post-processing, and observation-output completion; publication
 failure propagates to the CLI. The static audit requires the complete ordered
 lifecycle and exactly one completion/write path.
 
+Enabled detector-specific PTC TOD is also part of the observation contract.
+After its atomic NetCDF writer returns, the plan records exactly one write,
+its Beammap output iteration, and its detector/slot/maximum-sample shape.
+Observation completion rejects a missing or duplicate enabled write. Disabled
+detector TOD records zero cardinality rather than a fabricated product.
+
 ## Preparation Checkpoint
 
 The boundary audit mechanically expands the 59 reader roots and 59 config
@@ -79,7 +85,8 @@ Realized state describes attempted/completed iterations and completion without
 duplicating mapmaking or post-processing authority. Observation output
 completion is recorded only after the existing Beammap output calls return.
 More detailed Beammap-specific optional-product cardinality remains a bounded
-follow-up rather than a reason to copy established map and fit aggregates.
+follow-up rather than a reason to copy established map and fit aggregates;
+enabled detector-specific PTC TOD cardinality is already enforced.
 
 ## Stop Rule
 

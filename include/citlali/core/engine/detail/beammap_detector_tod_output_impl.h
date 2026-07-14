@@ -7,6 +7,7 @@
 #include <citlali/core/engine/detail/beammap_detector_tod_netcdf_helpers.h>
 #include <citlali/core/engine/detail/beammap_detector_tod_output_helpers.h>
 #include <citlali/core/engine/detail/beammap_detector_tod_selection_impl.h>
+#include <citlali/core/pipeline/beammap_provenance_lifecycle.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 void Beammap::write_detector_specific_ptc_tod_file(
@@ -176,4 +177,7 @@ void Beammap::write_detector_specific_ptc_tod(int output_iter) {
 
     write_detector_specific_ptc_tod_file(
         filename, output_iter, preflight, selections);
+    citlali::pipeline::record_beammap_detector_tod_written_if_available(
+        *this, output_iter, calib.n_dets, n_slots,
+        preflight.n_samples_max);
 }

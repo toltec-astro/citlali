@@ -108,6 +108,15 @@ struct BeammapIterationState {
     bool completed = false;
 };
 
+struct BeammapDetectorTodRealizedState {
+    bool required = false;
+    std::size_t completed_write_count = 0;
+    std::optional<std::size_t> output_iteration;
+    std::optional<std::size_t> detector_count;
+    std::optional<std::size_t> slot_count;
+    std::optional<std::size_t> maximum_sample_count;
+};
+
 struct BeammapObservationState {
     std::size_t observation_index = 0;
     std::string obsnum;
@@ -118,6 +127,7 @@ struct BeammapObservationState {
     std::optional<std::size_t> terminal_iteration;
     BeammapTerminationReason termination_reason =
         BeammapTerminationReason::none;
+    BeammapDetectorTodRealizedState detector_tod;
     bool outputs_completed = false;
 };
 
@@ -297,6 +307,8 @@ public:
         observations_.push_back(BeammapObservationState{
             observation_index, std::move(obsnum), detector_count,
             map_count, scan_count});
+        observations_.back().detector_tod.required =
+            effective_.detector_tod_output.enabled;
         return observations_.back();
     }
 
@@ -353,6 +365,33 @@ public:
                 "beammap fitting completed before mapmaking");
         }
         iteration.fitting_completed = true;
+    }
+
+    void record_detector_tod_written(
+        std::size_t output_iteration, std::size_t detector_count,
+        std::size_t slot_count, std::size_t maximum_sample_count) {
+        const auto &iteration = current_internal_iteration();
+        auto &observation = current_observation();
+        auto &detector_tod = observation.detector_tod;
+        if (!detector_tod.required) {
+            throw std::logic_error(
+                "unexpected beammap detector TOD write");
+        }
+        if (detector_tod.completed_write_count != 0) {
+            throw std::logic_error(
+                "beammap detector TOD was written more than once");
+        }
+        if (output_iteration != iteration.iteration_index ||
+            detector_count != observation.detector_count ||
+            slot_count == 0 || maximum_sample_count == 0) {
+            throw std::logic_error(
+                "beammap detector TOD output shape is inconsistent");
+        }
+        detector_tod.completed_write_count = 1;
+        detector_tod.output_iteration = output_iteration;
+        detector_tod.detector_count = detector_count;
+        detector_tod.slot_count = slot_count;
+        detector_tod.maximum_sample_count = maximum_sample_count;
     }
 
     void complete_internal_iteration(
@@ -421,6 +460,14 @@ public:
                 BeammapTerminationReason::none) {
             throw std::logic_error(
                 "beammap observation has no completed terminal iteration");
+        }
+        const auto &detector_tod = observation.detector_tod;
+        const std::size_t expected_detector_tod_writes =
+            detector_tod.required ? 1 : 0;
+        if (detector_tod.completed_write_count !=
+            expected_detector_tod_writes) {
+            throw std::logic_error(
+                "beammap detector TOD write cardinality is incomplete");
         }
         observation.terminal_iteration =
             observation.iterations.back().iteration_index;

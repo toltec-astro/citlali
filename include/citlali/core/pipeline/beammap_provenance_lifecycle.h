@@ -147,6 +147,30 @@ void record_beammap_fitting_completed_if_available(Engine &engine) {
     }
 }
 
+template <class Engine, class OutputIteration, class DetectorCount,
+          class SlotCount, class MaximumSampleCount>
+void record_beammap_detector_tod_written_if_available(
+    Engine &engine, OutputIteration output_iteration,
+    DetectorCount detector_count, SlotCount slot_count,
+    MaximumSampleCount maximum_sample_count) {
+    if constexpr (has_beammap_plan_v<Engine>) {
+        auto &plan = beammap_plan(engine);
+        if (plan.initialized() &&
+            plan.resolution().mapmaking_enabled) {
+            plan.record_detector_tod_written(
+                checked_beammap_nonnegative_count(
+                    output_iteration, "detector TOD output iteration"),
+                checked_beammap_count(
+                    detector_count, "detector TOD detector count"),
+                checked_beammap_count(
+                    slot_count, "detector TOD slot count"),
+                checked_beammap_count(
+                    maximum_sample_count,
+                    "detector TOD maximum sample count"));
+        }
+    }
+}
+
 template <class Engine, class ConvergedCount>
 void complete_beammap_internal_iteration_if_available(
     Engine &engine, ConvergedCount converged_count,

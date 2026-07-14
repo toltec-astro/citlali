@@ -391,6 +391,53 @@ TEST(BeammapExecutionPlan, RecordsDisabledExecutionWithoutFakeProducts) {
     EXPECT_EQ(plan.realized().completed_iteration_count, 0U);
 }
 
+TEST(BeammapExecutionPlan, RequiresExactlyOneEnabledDetectorTodWrite) {
+    auto request = valid_complete_beammap_config();
+    request.iteration.max_iterations = 1;
+    request.detector_tod_output.enabled = true;
+
+    citlali::pipeline::BeammapExecutionPlan missing;
+    missing.reset_from_request(request, {}, true);
+    missing.begin_iteration();
+    missing.begin_observation(0, "148670", 5, 5, 198);
+    missing.begin_internal_iteration(
+        0, citlali::pipeline::BeammapIterationPhase::locator, 5);
+    missing.record_source_aware_rtc_rerun(false);
+    missing.record_mapmaking_pass_completed();
+    missing.record_fitting_completed();
+    missing.complete_internal_iteration(
+        0,
+        citlali::pipeline::BeammapTerminationReason::maximum_iterations);
+    EXPECT_THROW(missing.complete_observation(), std::logic_error);
+
+    citlali::pipeline::BeammapExecutionPlan complete;
+    complete.reset_from_request(request, {}, true);
+    complete.begin_iteration();
+    complete.begin_observation(0, "148670", 5, 5, 198);
+    complete.begin_internal_iteration(
+        0, citlali::pipeline::BeammapIterationPhase::locator, 5);
+    complete.record_source_aware_rtc_rerun(false);
+    complete.record_mapmaking_pass_completed();
+    complete.record_fitting_completed();
+    complete.record_detector_tod_written(0, 5, 8, 1200);
+    EXPECT_THROW(
+        complete.record_detector_tod_written(0, 5, 8, 1200),
+        std::logic_error);
+    complete.complete_internal_iteration(
+        0,
+        citlali::pipeline::BeammapTerminationReason::maximum_iterations);
+    complete.complete_observation();
+
+    const auto &detector_tod =
+        complete.observations().front().detector_tod;
+    EXPECT_TRUE(detector_tod.required);
+    EXPECT_EQ(detector_tod.completed_write_count, 1U);
+    EXPECT_EQ(detector_tod.output_iteration, 0U);
+    EXPECT_EQ(detector_tod.detector_count, 5U);
+    EXPECT_EQ(detector_tod.slot_count, 8U);
+    EXPECT_EQ(detector_tod.maximum_sample_count, 1200U);
+}
+
 TEST(BeammapExecutionPlan, RepeatedIterationResetClearsRealizedState) {
     auto plan = completed_beammap_plan();
 
@@ -420,6 +467,12 @@ TEST(BeammapProvenance, SerializesRequestedEffectiveAndRealizedState) {
                     .as<bool>());
     ASSERT_EQ(node["observations"].size(), 1U);
     ASSERT_EQ(node["observations"][0]["iterations"].size(), 3U);
+    EXPECT_FALSE(node["observations"][0]["detector_tod"]["required"]
+                     .as<bool>());
+    EXPECT_EQ(node["observations"][0]["detector_tod"]
+                  ["completed_write_count"]
+                      .as<std::size_t>(),
+              0U);
     EXPECT_EQ(node["observations"][0]["iterations"][1]
                   ["mapmaking_pass_count"]
                       .as<std::size_t>(),

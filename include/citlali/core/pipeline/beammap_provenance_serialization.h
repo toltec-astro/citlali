@@ -114,6 +114,23 @@ inline YAML::Node beammap_iteration_states_node(
     return node;
 }
 
+inline YAML::Node beammap_detector_tod_realized_state_node(
+    const BeammapDetectorTodRealizedState &detector_tod) {
+    YAML::Node node;
+    node["required"] = detector_tod.required;
+    node["completed_write_count"] =
+        detector_tod.completed_write_count;
+    node["output_iteration"] =
+        beammap_optional_value_node(detector_tod.output_iteration);
+    node["detector_count"] =
+        beammap_optional_value_node(detector_tod.detector_count);
+    node["slot_count"] =
+        beammap_optional_value_node(detector_tod.slot_count);
+    node["maximum_sample_count"] =
+        beammap_optional_value_node(detector_tod.maximum_sample_count);
+    return node;
+}
+
 inline YAML::Node beammap_observation_state_node(
     const BeammapObservationState &observation) {
     YAML::Node node;
@@ -128,6 +145,9 @@ inline YAML::Node beammap_observation_state_node(
         beammap_optional_value_node(observation.terminal_iteration);
     node["termination_reason"] = std::string{
         beammap_termination_reason_name(observation.termination_reason)};
+    node["detector_tod"] =
+        beammap_detector_tod_realized_state_node(
+            observation.detector_tod);
     node["outputs_completed"] = observation.outputs_completed;
     return node;
 }

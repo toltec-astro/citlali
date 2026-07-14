@@ -45,6 +45,9 @@ EXPECTED_LIFECYCLE_CALLS = {
     "include/citlali/core/engine/detail/beammap_fit_stage_impl.h": {
         "record_beammap_fitting_completed_if_available": 1,
     },
+    "include/citlali/core/engine/detail/beammap_detector_tod_output_impl.h": {
+        "record_beammap_detector_tod_written_if_available": 1,
+    },
     "include/citlali/core/pipeline/observation_output_execution.h": {
         "complete_beammap_observation_if_available": 1,
     },
