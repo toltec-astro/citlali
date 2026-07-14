@@ -21,8 +21,9 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest accepted point reduction: `redu51`, produced by `a9d17fa1`; bounded
-  full-noise-output `redu49` remains the noise-products fixture.
+- Latest accepted point reduction: enabled-filtering `redu53`, produced by
+  `c75f079b`; unfiltered `redu51` and bounded full-noise-output `redu49` remain
+  the pointing and noise-products control fixtures.
 - Latest inspected science reduction: final iteration `redu15`, produced by
   `1faec7cc`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
@@ -35,8 +36,8 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 336 tests with none skipped or disabled; all
-  54 config-boundary/preflight tests pass.
+- CTest discovers and passes all 344 tests with none skipped or disabled; all
+  60 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -696,6 +697,19 @@ tests, 60 config tests, all eight compact profiles, and full preflight pass. The
 same enabled-filtering point overlay must pass on Unity before post-processing
 authority migration proceeds.
 
+Unity point `redu53` at `c75f079b` closes that repair and enabled-filtering
+gate. It completes in 59.772 seconds with zero serious log issues. Its v2
+pointing sidecar records one observation, three raw and three filtered fit
+attempts, all valid, and completed output. All 13 products shared with accepted
+unfiltered refactor `redu51` are exact, proving the overlay and lifecycle repair
+did not alter the raw path. Against matching OG point `redu09`, all eight
+filtered products are present with no skipped or changed records under the
+standard numerical gate; the three-row pointing-fit table and 195-row source
+table are exact. Maximum filtered signal absolute difference is `2.97e-11`.
+The 490-leaf merged configs differ only in their two expected output paths.
+The validation ledger records the accepted checkpoint. Post-processing may now
+advance from request shadowing to a separate effective execution plan.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.
@@ -707,10 +721,10 @@ Immediate work order:
 2. Separate requested map-filtering, source-finding, and source-fitting policy
    from effective activation and realized outputs. Retain only one-way adapters
    into the mature Wiener-filter and map-fitter implementations.
-3. Rerun the current enabled-filtering refactor point overlay to validate the
-   stage-aware pointing lifecycle, then compare its matched OG/refactor pair.
-   Continue with overlays that independently exercise source-finding/fitting
-   policy, with exact merged-config identity for every pair.
+3. Introduce the effective post-processing plan without changing legacy
+   execution, then cut consumers over in bounded filtering, source-finding, and
+   source-fitting slices. Reuse the accepted `redu53` overlay at each relevant
+   gate and preserve exact merged-config identity for every OG/refactor pair.
 4. Do not broaden polarimetry without the pending scientific-policy decisions.
 5. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
    the active post-processing domain gates close.
