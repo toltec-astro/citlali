@@ -35,8 +35,8 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 328 tests with none skipped or disabled; all
-  48 config-boundary/preflight tests pass.
+- CTest discovers and passes all 335 tests with none skipped or disabled; all
+  54 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -624,18 +624,32 @@ map RMS-relative difference `0.00986`. All three candidate runs have valid
 version-1 noise provenance and zero serious log issues. The noise-products
 authority and provenance domain is complete.
 
+The bounded pointing implementation is locally complete. Its frozen five-key
+surface now has a direct typed request reader, a separate effective execution
+plan, and a one-way adapter for the three mature PTC source-center fields.
+Effective fit activation explicitly resolves mapmaking, map-filter, and coadd
+output-path dependencies while preserving the request. Required atomic
+`pointing_provenance.yaml` records the request, resolution decisions,
+per-observation map/fit cardinality, and realized completion. The reduction
+auditor validates those semantics and cross-checks observation identity and
+map counts against mapmaking v2 provenance. The CLI/test builds, all 335 CTest
+cases, the frozen boundary audit, all eight compact profiles, and full config
+preflight pass. Gaussian fitting, Ceres use, source finding, and map numerics
+are unchanged. Unity point validation remains the sole exit gate before this
+domain is complete.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.
 
 Immediate work order:
 
-1. Use the already typed five-key pointing policy as the next bounded domain.
-   Preserve requested source/fit settings, resolve the effective default fit
-   radius separately, and record realized fit/product summary without changing
-   Gaussian fitting or source-finding numerics.
-2. Freeze the pointing path inventory and add focused requested/effective/
-   realized lifecycle tests before publishing provenance.
+1. Build on Unity and run the unchanged standard point fixture. Require valid
+   mapmaking and pointing provenance on the candidate, zero serious log
+   records, and exact pre-existing scientific products against the accepted
+   matching-config point baseline.
+2. Record the validated snapshot and close the pointing authority/provenance
+   domain only after that gate passes.
 3. Do not broaden polarimetry without the pending scientific-policy decisions.
 4. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
    the active pointing domain gates close.

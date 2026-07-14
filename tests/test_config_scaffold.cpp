@@ -27,6 +27,10 @@
 #include <citlali/core/pipeline/noise_config_read.h>
 #include <citlali/core/pipeline/noise_execution_plan.h>
 #include <citlali/core/pipeline/noise_provenance.h>
+#include <citlali/core/pipeline/pointing_config_adapter.h>
+#include <citlali/core/pipeline/pointing_config_read.h>
+#include <citlali/core/pipeline/pointing_execution_plan.h>
+#include <citlali/core/pipeline/pointing_provenance.h>
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
 #include <citlali/core/pipeline/output_layout.h>
@@ -2275,6 +2279,205 @@ TEST(config_scaffold, noise_provenance_failure_propagates) {
     EXPECT_THROW(
         citlali::pipeline::write_noise_provenance_file(
             missing_dir, citlali::pipeline::NoiseExecutionPlan{}),
+        std::logic_error);
+}
+
+TEST(config_scaffold, resolves_pointing_request_without_mutating_it) {
+    citlali::config::PointingConfig request;
+    request.header_max_radius_arcsec = 0.0;
+    citlali::pipeline::PointingRequestPresence presence;
+    citlali::pipeline::PointingExecutionPlan plan;
+
+    plan.reset_from_request(request, presence, true, true, false, 30.0);
+
+    EXPECT_DOUBLE_EQ(plan.requested.header_max_radius_arcsec, 0.0);
+    EXPECT_DOUBLE_EQ(plan.effective.header_max_radius_arcsec, 30.0);
+    EXPECT_TRUE(plan.effective.fit_gaussian);
+    EXPECT_TRUE(
+        plan.effective_resolution.header_max_radius_defaulted);
+    EXPECT_FALSE(plan.effective_resolution.fit_disabled_by_mapmaking);
+
+    request.source_strategy =
+        citlali::config::PointingSourceStrategy::psf_preserve;
+    request.fit_gaussian = false;
+    request.fruitloops_center_mode =
+        citlali::config::FruitLoopsCenterMode::map_center;
+    plan.reset_from_request(request, presence, true, true, false, 30.0);
+    EXPECT_DOUBLE_EQ(plan.effective.header_max_radius_arcsec, 0.0);
+}
+
+TEST(config_scaffold, reads_complete_typed_pointing_request) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    root["pointing"]["source_strategy"]["mode"] = "psf_preserve";
+    root["pointing"]["source_strategy"]["fit_gaussian"] = false;
+    root["pointing"]["source_strategy"]["fruitloops_center_mode"] =
+        "map_center";
+    root["pointing"]["source_strategy"]
+        ["header_max_radius_arcsec"] = 17.5;
+    root["pointing"]["source_strategy"]
+        ["header_require_coverage"] = false;
+    auto yaml_config =
+        tula::config::YamlConfig::from_str(YAML::Dump(root));
+    citlali::config::PointingConfig request;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    const auto presence =
+        citlali::pipeline::read_pointing_request_config(
+            yaml_config, request, diagnostics);
+
+    ASSERT_FALSE(diagnostics.has_errors());
+    EXPECT_TRUE(presence.source_strategy);
+    EXPECT_TRUE(presence.fit_gaussian);
+    EXPECT_TRUE(presence.fruitloops_center_mode);
+    EXPECT_TRUE(presence.header_max_radius_arcsec);
+    EXPECT_TRUE(presence.header_require_coverage);
+    EXPECT_EQ(
+        request.source_strategy,
+        citlali::config::PointingSourceStrategy::psf_preserve);
+    EXPECT_FALSE(request.fit_gaussian);
+    EXPECT_EQ(
+        request.fruitloops_center_mode,
+        citlali::config::FruitLoopsCenterMode::map_center);
+    EXPECT_DOUBLE_EQ(request.header_max_radius_arcsec, 17.5);
+    EXPECT_FALSE(request.header_require_coverage);
+}
+
+TEST(config_scaffold, records_pointing_observation_lifecycle) {
+    citlali::pipeline::PointingExecutionPlan pointing;
+    pointing.reset_from_request(
+        citlali::config::PointingConfig{}, {}, true, true, false, 30.0);
+    pointing.begin_iteration();
+    pointing.begin_observation(0, "152389", 3);
+    citlali::pipeline::record_pointing_fit_results(
+        pointing, 3, 2);
+    citlali::pipeline::complete_pointing_observation(pointing);
+
+    citlali::pipeline::MapmakingExecutionPlan mapmaking;
+    mapmaking.reset_from_request(
+        citlali::config::MapmakingConfig{},
+        citlali::config::ReductionType::pointing);
+    mapmaking.begin_iteration();
+    mapmaking.begin_observation(0, "152389", 3, 1.0e-5, 3);
+    citlali::pipeline::complete_mapmaking_observation(mapmaking);
+    citlali::pipeline::record_mapmaking_run_completed(mapmaking);
+
+    citlali::pipeline::record_pointing_run_completed(
+        pointing, mapmaking);
+
+    EXPECT_TRUE(pointing.realized.reduction_completed);
+    EXPECT_TRUE(pointing.realized.pointing_executed);
+    EXPECT_EQ(pointing.realized.completed_observation_count, 1U);
+    EXPECT_EQ(pointing.realized.scientific_map_count, 3U);
+    EXPECT_EQ(pointing.realized.fit_attempt_count, 3U);
+    EXPECT_EQ(pointing.realized.valid_fit_count, 2U);
+    EXPECT_TRUE(pointing.realized.outputs_completed);
+}
+
+TEST(config_scaffold, resolves_unavailable_pointing_fit_output_path) {
+    citlali::pipeline::PointingExecutionPlan plan;
+    plan.reset_from_request(
+        citlali::config::PointingConfig{}, {}, true, false, false, 30.0);
+    plan.begin_iteration();
+    plan.begin_observation(0, "152389", 3);
+
+    citlali::pipeline::complete_pointing_observation(plan);
+
+    EXPECT_FALSE(plan.effective.fit_gaussian);
+    EXPECT_FALSE(plan.effective_resolution.fit_output_path_available);
+    EXPECT_TRUE(
+        plan.effective_resolution.fit_disabled_by_output_policy);
+    EXPECT_TRUE(plan.observations.front().fit_results_recorded);
+    EXPECT_EQ(plan.observations.front().fit_attempt_count, 0U);
+}
+
+TEST(config_scaffold, pointing_adapter_is_one_way) {
+    struct Processor {
+        std::string fruit_loops_source_center_mode;
+        double fruit_loops_header_center_max_radius_arcsec = 0.0;
+        bool fruit_loops_header_center_require_coverage = false;
+    } processor;
+    citlali::config::PointingConfig effective;
+    effective.fruitloops_center_mode =
+        citlali::config::FruitLoopsCenterMode::header;
+    effective.header_max_radius_arcsec = 25.0;
+    effective.header_require_coverage = true;
+
+    citlali::pipeline::adapt_pointing_config_one_way(
+        effective, processor);
+
+    EXPECT_EQ(processor.fruit_loops_source_center_mode, "header");
+    EXPECT_DOUBLE_EQ(
+        processor.fruit_loops_header_center_max_radius_arcsec, 25.0);
+    EXPECT_TRUE(
+        processor.fruit_loops_header_center_require_coverage);
+}
+
+TEST(config_scaffold, serializes_versioned_pointing_provenance) {
+    citlali::pipeline::PointingExecutionPlan plan;
+    plan.reset_from_request(
+        citlali::config::PointingConfig{}, {}, true, true, false, 30.0);
+    plan.begin_iteration();
+    plan.begin_observation(0, "152389", 3);
+    citlali::pipeline::record_pointing_fit_results(plan, 3, 2);
+    citlali::pipeline::complete_pointing_observation(plan);
+    plan.realized = citlali::pipeline::PointingRealizedState{
+        true, true, 1U, 3U, 3U, 2U, true};
+
+    const auto node =
+        citlali::pipeline::pointing_provenance_node(plan);
+
+    EXPECT_EQ(node["schema_version"].as<std::string>(),
+              "citlali-pointing-provenance-v1");
+    EXPECT_DOUBLE_EQ(
+        node["requested"]["header_max_radius_arcsec"].as<double>(),
+        0.0);
+    EXPECT_DOUBLE_EQ(
+        node["effective"]["config"]
+            ["header_max_radius_arcsec"].as<double>(),
+        30.0);
+    EXPECT_TRUE(
+        node["effective"]["resolution"]
+            ["header_max_radius_defaulted"].as<bool>());
+    EXPECT_EQ(node["observations"][0]["valid_fit_count"]
+                  .as<std::size_t>(),
+              2U);
+    EXPECT_TRUE(node["realized"]["outputs_completed"].as<bool>());
+}
+
+TEST(config_scaffold, pointing_provenance_write_contract) {
+    const auto output_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_pointing_provenance_test";
+    std::filesystem::remove_all(output_dir);
+    std::filesystem::create_directories(output_dir);
+    citlali::pipeline::PointingExecutionPlan plan;
+    plan.reset_from_request(
+        citlali::config::PointingConfig{}, {}, false, false, false, 0.0);
+    plan.realized.reduction_completed = true;
+
+    citlali::pipeline::write_pointing_provenance_file(
+        output_dir, plan);
+
+    const auto output_path =
+        citlali::pipeline::pointing_provenance_path(output_dir);
+    EXPECT_TRUE(std::filesystem::exists(output_path));
+    EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
+    EXPECT_EQ(
+        YAML::LoadFile(output_path.string())["schema_version"]
+            .as<std::string>(),
+        "citlali-pointing-provenance-v1");
+    std::filesystem::remove_all(output_dir);
+
+    const auto missing_dir = output_dir / "missing";
+    EXPECT_THROW(
+        citlali::pipeline::write_pointing_provenance_file(
+            missing_dir, plan),
+        std::ios_base::failure);
+    EXPECT_THROW(
+        citlali::pipeline::write_pointing_provenance_file(
+            output_dir,
+            citlali::pipeline::PointingExecutionPlan{}),
         std::logic_error);
 }
 

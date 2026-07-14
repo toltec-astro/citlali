@@ -123,13 +123,15 @@
       "id": "pointing",
       "config_prefixes": ["pointing"],
       "typed_owner": "citlali::config::ReductionConfig::pointing",
-      "loader": "include/citlali/core/engine/detail/citlali_config_impl.h",
+      "loader": "include/citlali/core/engine/detail/pointing_config_impl.h",
       "execution_authority": "typed",
-      "legacy_targets": [],
-      "adapter_direction": "none",
-      "migration_status": "typed-authoritative",
+      "legacy_targets": [
+        "Engine::ptcproc"
+      ],
+      "adapter_direction": "typed-to-legacy",
+      "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Active: preserve the five requested source-strategy fields, resolve the effective fit-radius and activation policy separately, and record realized fit/product summary without changing fitting numerics."
+      "exit_gate": "Active: the frozen five-key request/effective/realized boundary, one-way PTC adapter, required pointing provenance, and local gates are complete. Unity point validation of exact pre-existing products and valid cross-checked provenance remains."
     },
     {
       "id": "beammap",

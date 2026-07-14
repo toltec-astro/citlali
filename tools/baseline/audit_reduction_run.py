@@ -110,6 +110,25 @@ PROVENANCE_SIDECARS = {
         ),
         "allow_multiple": False,
     },
+    "pointing": {
+        "filename": "pointing_provenance.yaml",
+        "schema_version": "citlali-pointing-provenance-v1",
+        "required_paths": (
+            ("initialized",),
+            ("requested",),
+            ("effective", "config"),
+            ("effective", "resolution"),
+            ("observations",),
+            ("realized", "reduction_completed"),
+            ("realized", "pointing_executed"),
+            ("realized", "completed_observation_count"),
+            ("realized", "scientific_map_count"),
+            ("realized", "fit_attempt_count"),
+            ("realized", "valid_fit_count"),
+            ("realized", "outputs_completed"),
+        ),
+        "allow_multiple": False,
+    },
     "timestream_output": {
         "filename": "timestream_output_provenance.yaml",
         "schema_version": "citlali-timestream-output-provenance-v1",
@@ -1046,6 +1065,276 @@ def noise_mapmaking_cross_check_errors(
     return errors
 
 
+def valid_pointing_config(config: Any, label: str) -> list[str]:
+    errors: list[str] = []
+    if not isinstance(config, dict):
+        return [f"{label} pointing config must be a mapping"]
+    strategy = config.get("source_strategy")
+    if strategy not in ("standard", "psf_preserve"):
+        errors.append(f"{label} pointing source_strategy is invalid")
+    center_mode = config.get("fruitloops_center_mode")
+    if center_mode not in ("auto", "header", "peak", "map_center"):
+        errors.append(f"{label} pointing fruitloops_center_mode is invalid")
+    for name in ("fit_gaussian", "header_require_coverage"):
+        if type(config.get(name)) is not bool:
+            errors.append(f"{label} pointing {name} must be boolean")
+    radius = config.get("header_max_radius_arcsec")
+    if (
+        isinstance(radius, bool)
+        or not isinstance(radius, (int, float))
+        or not math.isfinite(radius)
+        or radius < 0
+    ):
+        errors.append(
+            f"{label} pointing header_max_radius_arcsec must be finite and nonnegative"
+        )
+    return errors
+
+
+def pointing_provenance_semantic_errors(
+    data: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        if data["initialized"] is not True:
+            errors.append("pointing execution plan is not initialized")
+
+        requested = data["requested"]
+        effective = data["effective"]["config"]
+        resolution = data["effective"]["resolution"]
+        observations = data["observations"]
+        realized = data["realized"]
+        errors.extend(valid_pointing_config(requested, "requested"))
+        errors.extend(valid_pointing_config(effective, "effective"))
+        if not isinstance(observations, list):
+            errors.append("pointing observations must be a sequence")
+        if errors:
+            return errors
+
+        explicit = resolution.get("explicit_request")
+        if not isinstance(explicit, dict) or any(
+            type(explicit.get(name)) is not bool
+            for name in (
+                "source_strategy",
+                "fit_gaussian",
+                "fruitloops_center_mode",
+                "header_max_radius_arcsec",
+                "header_require_coverage",
+            )
+        ):
+            errors.append("pointing explicit-request record is invalid")
+            return errors
+        for name in (
+            "mapmaking_enabled",
+            "map_filter_enabled",
+            "coadd_enabled",
+            "fit_output_path_available",
+            "fit_disabled_by_mapmaking",
+            "fit_disabled_by_output_policy",
+            "header_max_radius_defaulted",
+        ):
+            if type(resolution.get(name)) is not bool:
+                errors.append(f"pointing resolution {name} must be boolean")
+        default_radius = resolution.get("default_header_max_radius_arcsec")
+        if (
+            isinstance(default_radius, bool)
+            or not isinstance(default_radius, (int, float))
+            or not math.isfinite(default_radius)
+            or default_radius < 0
+        ):
+            errors.append("pointing default header radius is invalid")
+        for name in (
+            "reduction_completed",
+            "pointing_executed",
+            "outputs_completed",
+        ):
+            if type(realized.get(name)) is not bool:
+                errors.append(f"pointing realized {name} must be boolean")
+        count_names = (
+            "completed_observation_count",
+            "scientific_map_count",
+            "fit_attempt_count",
+            "valid_fit_count",
+        )
+        for name in count_names:
+            if type(realized.get(name)) is not int or realized[name] < 0:
+                errors.append(
+                    f"pointing realized {name} must be a nonnegative integer"
+                )
+        if errors:
+            return errors
+
+        mapmaking_enabled = resolution["mapmaking_enabled"]
+        fit_output_path_available = (
+            mapmaking_enabled
+            and resolution["map_filter_enabled"]
+            and not resolution["coadd_enabled"]
+        )
+        expected_fit = (
+            requested["fit_gaussian"] and fit_output_path_available
+        )
+        if effective["source_strategy"] != requested["source_strategy"]:
+            errors.append("pointing effective source strategy differs from request")
+        if effective["fruitloops_center_mode"] != requested[
+            "fruitloops_center_mode"
+        ]:
+            errors.append("pointing effective center mode differs from request")
+        if effective["header_require_coverage"] != requested[
+            "header_require_coverage"
+        ]:
+            errors.append("pointing effective coverage policy differs from request")
+        if effective["fit_gaussian"] != expected_fit:
+            errors.append("pointing fit activation does not follow output policy")
+        if resolution["fit_output_path_available"] != (
+            fit_output_path_available
+        ):
+            errors.append("pointing fit-output resolution is inconsistent")
+        if resolution["fit_disabled_by_mapmaking"] != (
+            requested["fit_gaussian"] and not mapmaking_enabled
+        ):
+            errors.append("pointing fit-disable resolution is inconsistent")
+        if resolution["fit_disabled_by_output_policy"] != (
+            requested["fit_gaussian"]
+            and mapmaking_enabled
+            and not fit_output_path_available
+        ):
+            errors.append(
+                "pointing output-policy fit-disable resolution is inconsistent"
+            )
+        radius_defaulted = not explicit["header_max_radius_arcsec"]
+        if resolution["header_max_radius_defaulted"] != radius_defaulted:
+            errors.append("pointing radius-default resolution is inconsistent")
+        expected_radius = (
+            default_radius
+            if radius_defaulted
+            else requested["header_max_radius_arcsec"]
+        )
+        if effective["header_max_radius_arcsec"] != expected_radius:
+            errors.append("pointing effective header radius is inconsistent")
+
+        if realized["reduction_completed"] is not True:
+            errors.append("pointing reduction is not complete")
+        if realized["pointing_executed"] != mapmaking_enabled:
+            errors.append("pointing execution differs from mapmaking policy")
+        if realized["outputs_completed"] is not True:
+            errors.append("pointing outputs are incomplete")
+
+        totals = {
+            "completed_observation_count": 0,
+            "scientific_map_count": 0,
+            "fit_attempt_count": 0,
+            "valid_fit_count": 0,
+        }
+        seen_obsnums: set[str] = set()
+        for expected_index, observation in enumerate(observations):
+            if not isinstance(observation, dict):
+                errors.append(
+                    f"pointing observation {expected_index} must be a mapping"
+                )
+                continue
+            if observation.get("observation_index") != expected_index:
+                errors.append("pointing observation indices are not contiguous")
+            obsnum = normalized_mapmaking_obsnum(observation.get("obsnum"))
+            if obsnum is None:
+                errors.append(
+                    f"pointing observation {expected_index} has invalid obsnum"
+                )
+            elif obsnum in seen_obsnums:
+                errors.append(f"duplicate pointing obsnum: {obsnum}")
+            else:
+                seen_obsnums.add(obsnum)
+            map_count = observation.get("map_count")
+            attempts = observation.get("fit_attempt_count")
+            valid = observation.get("valid_fit_count")
+            if any(
+                type(value) is not int or value < 0
+                for value in (map_count, attempts, valid)
+            ):
+                errors.append(
+                    f"pointing observation {expected_index} has invalid cardinality"
+                )
+                continue
+            if map_count == 0:
+                errors.append(
+                    f"pointing observation {expected_index} has no scientific maps"
+                )
+            if attempts != (map_count if effective["fit_gaussian"] else 0):
+                errors.append(
+                    f"pointing observation {expected_index} fit attempts are inconsistent"
+                )
+            if valid > attempts:
+                errors.append(
+                    f"pointing observation {expected_index} valid fits exceed attempts"
+                )
+            if observation.get("fit_results_recorded") is not True:
+                errors.append(
+                    f"pointing observation {expected_index} fit results are incomplete"
+                )
+            if observation.get("outputs_completed") is not True:
+                errors.append(
+                    f"pointing observation {expected_index} outputs are incomplete"
+                )
+            totals["completed_observation_count"] += 1
+            totals["scientific_map_count"] += map_count
+            totals["fit_attempt_count"] += attempts
+            totals["valid_fit_count"] += valid
+
+        if mapmaking_enabled and not observations:
+            errors.append("enabled pointing has no completed observations")
+        if not mapmaking_enabled and observations:
+            errors.append("disabled pointing records observation products")
+        for name, expected in totals.items():
+            if realized[name] != expected:
+                errors.append(f"pointing realized {name} is inconsistent")
+    except (AttributeError, KeyError, TypeError, ValueError) as exc:
+        errors.append(f"cannot evaluate pointing provenance semantics: {exc}")
+    return errors
+
+
+def pointing_mapmaking_cross_check_errors(
+    pointing: dict[str, Any], mapmaking: dict[str, Any]
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        if mapmaking.get("schema_version") != (
+            "citlali-mapmaking-provenance-v2"
+        ):
+            return ["pointing cross-check requires mapmaking provenance v2"]
+        pointing_resolution = pointing["effective"]["resolution"]
+        mapmaking_effective = mapmaking["effective"]["config"]
+        if pointing_resolution["mapmaking_enabled"] != (
+            mapmaking_effective["enabled"]
+        ):
+            errors.append(
+                "pointing mapmaking activation differs from mapmaking provenance"
+            )
+        pointing_observations = pointing["observations"]
+        mapmaking_observations = mapmaking["observations"]
+        if len(pointing_observations) != len(mapmaking_observations):
+            errors.append(
+                "pointing observation count differs from mapmaking provenance"
+            )
+            return errors
+        for index, (pointing_obs, mapmaking_obs) in enumerate(
+            zip(pointing_observations, mapmaking_observations)
+        ):
+            if (
+                pointing_obs["observation_index"]
+                != mapmaking_obs["observation_index"]
+                or normalized_mapmaking_obsnum(pointing_obs["obsnum"])
+                != normalized_mapmaking_obsnum(mapmaking_obs["obsnum"])
+                or pointing_obs["map_count"] != mapmaking_obs["map_count"]
+                or pointing_obs["outputs_completed"]
+                != mapmaking_obs["outputs_completed"]
+            ):
+                errors.append(
+                    f"pointing observation {index} differs from mapmaking provenance"
+                )
+    except (KeyError, TypeError, ValueError) as exc:
+        errors.append(f"cannot cross-check pointing and mapmaking provenance: {exc}")
+    return errors
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -1064,6 +1353,7 @@ def audit_provenance_sidecars(
     require_mapmaking: bool = False,
     require_coadd: bool = False,
     require_noise_products: bool = False,
+    require_pointing: bool = False,
 ) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for name, spec in PROVENANCE_SIDECARS.items():
@@ -1073,6 +1363,7 @@ def audit_provenance_sidecars(
             or (name == "mapmaking" and require_mapmaking)
             or (name == "coadd" and require_coadd)
             or (name == "noise_products" and require_noise_products)
+            or (name == "pointing" and require_pointing)
         )
         paths = find_provenance_files(redu, str(spec["filename"]))
         record: dict[str, Any] = {
@@ -1133,6 +1424,10 @@ def audit_provenance_sidecars(
                     elif name == "noise_products":
                         semantic_errors = (
                             noise_provenance_semantic_errors(data)
+                        )
+                    elif name == "pointing":
+                        semantic_errors = (
+                            pointing_provenance_semantic_errors(data)
                         )
                 item["semantic_errors"] = semantic_errors
                 item["valid"] = bool(
@@ -1288,6 +1583,23 @@ def audit_provenance_sidecars(
         except Exception as exc:
             noise["valid"] = False
             noise.setdefault("cross_check_errors", []).append(str(exc))
+
+    pointing = result["pointing"]
+    if mapmaking["present"] and pointing["present"] and (
+        mapmaking["valid"] and pointing["valid"]
+    ):
+        try:
+            mapmaking_data = load_yaml(Path(mapmaking["paths"][0]))
+            pointing_data = load_yaml(Path(pointing["paths"][0]))
+            cross_check_errors = pointing_mapmaking_cross_check_errors(
+                pointing_data, mapmaking_data
+            )
+            if cross_check_errors:
+                pointing["valid"] = False
+                pointing["cross_check_errors"] = cross_check_errors
+        except Exception as exc:
+            pointing["valid"] = False
+            pointing.setdefault("cross_check_errors", []).append(str(exc))
     return result
 
 
@@ -1499,6 +1811,7 @@ def build_audit(args: argparse.Namespace) -> dict[str, Any]:
             getattr(args, "require_mapmaking_provenance", False),
             getattr(args, "require_coadd_provenance", False),
             getattr(args, "require_noise_products_provenance", False),
+            getattr(args, "require_pointing_provenance", False),
         ),
         "products": audit_products(redu, args.top),
     }
@@ -1663,6 +1976,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         help=(
             "Fail unless noise_products_provenance.yaml is present and valid."
         ),
+    )
+    parser.add_argument(
+        "--require-pointing-provenance",
+        action="store_true",
+        help="Fail unless pointing_provenance.yaml is present and valid.",
     )
     parser.add_argument("--json-out", default="", help="Optional path for machine-readable JSON.")
     parser.add_argument("--report-out", default="", help="Optional path for Markdown output.")

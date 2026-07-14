@@ -20,6 +20,9 @@ struct has_coadd_plan : std::false_type {};
 template <class Engine, class = void>
 struct has_noise_plan : std::false_type {};
 
+template <class Engine, class = void>
+struct has_pointing_plan : std::false_type {};
+
 template <class Engine>
 struct has_raw_timestream_plan<
     Engine,
@@ -68,6 +71,16 @@ struct has_noise_plan<
 
 template <class Engine>
 inline constexpr bool has_noise_plan_v = has_noise_plan<Engine>::value;
+
+template <class Engine>
+struct has_pointing_plan<
+    Engine,
+    std::void_t<decltype(std::declval<Engine &>().pointing_plan)>>
+    : std::true_type {};
+
+template <class Engine>
+inline constexpr bool has_pointing_plan_v =
+    has_pointing_plan<Engine>::value;
 
 template <class Engine>
 auto &runtime_config_provenance(Engine &engine) {
@@ -293,12 +306,32 @@ const auto &beammap_config(const Engine &engine) {
 
 template <class Engine>
 auto &pointing_config(Engine &engine) {
+    if constexpr (has_pointing_plan_v<Engine>) {
+        if (engine.pointing_plan.initialized) {
+            return engine.pointing_plan.effective;
+        }
+    }
     return reduction_config(engine).pointing;
 }
 
 template <class Engine>
 const auto &pointing_config(const Engine &engine) {
+    if constexpr (has_pointing_plan_v<Engine>) {
+        if (engine.pointing_plan.initialized) {
+            return engine.pointing_plan.effective;
+        }
+    }
     return reduction_config(engine).pointing;
+}
+
+template <class Engine>
+auto &pointing_plan(Engine &engine) {
+    return engine.pointing_plan;
+}
+
+template <class Engine>
+const auto &pointing_plan(const Engine &engine) {
+    return engine.pointing_plan;
 }
 
 template <class Engine>

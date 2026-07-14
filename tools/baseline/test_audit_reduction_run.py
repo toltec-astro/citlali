@@ -351,6 +351,70 @@ def valid_noise_document(enabled: bool = True) -> dict:
     }
 
 
+def valid_pointing_document(enabled: bool = True) -> dict:
+    requested = {
+        "source_strategy": "standard",
+        "fit_gaussian": True,
+        "fruitloops_center_mode": "auto",
+        "header_max_radius_arcsec": 0.0,
+        "header_require_coverage": True,
+    }
+    effective = {
+        **requested,
+        "fit_gaussian": enabled,
+        "header_max_radius_arcsec": 30.0,
+    }
+    observations = [
+        {
+            "observation_index": index,
+            "obsnum": obsnum,
+            "map_count": 3,
+            "fit_attempt_count": 3,
+            "valid_fit_count": valid_count,
+            "fit_results_recorded": True,
+            "outputs_completed": True,
+        }
+        for index, (obsnum, valid_count) in enumerate(
+            (("152389", 2), ("152390", 3))
+        )
+    ] if enabled else []
+    return {
+        "schema_version": "citlali-pointing-provenance-v1",
+        "initialized": True,
+        "requested": requested,
+        "effective": {
+            "config": effective,
+            "resolution": {
+                "mapmaking_enabled": enabled,
+                "map_filter_enabled": True,
+                "coadd_enabled": False,
+                "fit_output_path_available": enabled,
+                "explicit_request": {
+                    "source_strategy": False,
+                    "fit_gaussian": False,
+                    "fruitloops_center_mode": False,
+                    "header_max_radius_arcsec": False,
+                    "header_require_coverage": False,
+                },
+                "fit_disabled_by_mapmaking": not enabled,
+                "fit_disabled_by_output_policy": False,
+                "default_header_max_radius_arcsec": 30.0,
+                "header_max_radius_defaulted": True,
+            },
+        },
+        "observations": observations,
+        "realized": {
+            "reduction_completed": True,
+            "pointing_executed": enabled,
+            "completed_observation_count": len(observations),
+            "scientific_map_count": 3 * len(observations),
+            "fit_attempt_count": 3 * len(observations),
+            "valid_fit_count": 5 if enabled else 0,
+            "outputs_completed": True,
+        },
+    }
+
+
 class ProvenanceAuditTest(unittest.TestCase):
     def test_accepts_complete_mapmaking_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -587,6 +651,79 @@ class ProvenanceAuditTest(unittest.TestCase):
             self.assertEqual(
                 records["noise_products"]["cross_check_errors"],
                 ["noise coadd map count differs from mapmaking provenance"],
+            )
+
+    def test_accepts_complete_pointing_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "pointing_provenance.yaml").write_text(
+                yaml.safe_dump(
+                    valid_pointing_document(), sort_keys=False
+                ),
+                encoding="utf-8",
+            )
+
+            pointing = audit.audit_provenance_sidecars(
+                redu, require_pointing=True
+            )["pointing"]
+
+            self.assertTrue(pointing["present"])
+            self.assertTrue(pointing["required"])
+            self.assertTrue(pointing["valid"])
+
+    def test_accepts_effectively_disabled_pointing(self) -> None:
+        self.assertEqual(
+            audit.pointing_provenance_semantic_errors(
+                valid_pointing_document(enabled=False)
+            ),
+            [],
+        )
+
+    def test_rejects_missing_required_pointing_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            records = audit.audit_provenance_sidecars(
+                Path(directory), require_pointing=True
+            )
+
+            self.assertFalse(records["pointing"]["valid"])
+
+    def test_rejects_inconsistent_pointing_fit_count(self) -> None:
+        document = valid_pointing_document()
+        document["observations"][0]["fit_attempt_count"] = 2
+
+        self.assertIn(
+            "pointing observation 0 fit attempts are inconsistent",
+            audit.pointing_provenance_semantic_errors(document),
+        )
+
+    def test_rejects_pointing_mapmaking_identity_mismatch(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            mapmaking = valid_mapmaking_document()
+            pointing = valid_pointing_document()
+            pointing["observations"][1]["obsnum"] = "152391"
+            (redu / "mapmaking_provenance.yaml").write_text(
+                yaml.safe_dump(mapmaking, sort_keys=False),
+                encoding="utf-8",
+            )
+            (redu / "pointing_provenance.yaml").write_text(
+                yaml.safe_dump(pointing, sort_keys=False),
+                encoding="utf-8",
+            )
+
+            records = audit.audit_provenance_sidecars(
+                redu,
+                require_mapmaking=True,
+                require_pointing=True,
+            )
+
+            self.assertTrue(records["mapmaking"]["valid"])
+            self.assertFalse(records["pointing"]["valid"])
+            self.assertEqual(
+                records["pointing"]["cross_check_errors"],
+                [
+                    "pointing observation 1 differs from mapmaking provenance"
+                ],
             )
 
     def test_rejects_inconsistent_coadd_activation(self) -> None:

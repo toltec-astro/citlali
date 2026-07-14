@@ -1,0 +1,12 @@
+{
+  "schema_version": "citlali-frozen-pointing-config-paths-v1",
+  "path_count": 5,
+  "path_sha256": "fdda04ef21cdea0c36f9f8b9766fac9b5ad4b7d2b673bbb4ed74cd627f688f13",
+  "paths": [
+    "pointing.source_strategy.fit_gaussian",
+    "pointing.source_strategy.fruitloops_center_mode",
+    "pointing.source_strategy.header_max_radius_arcsec",
+    "pointing.source_strategy.header_require_coverage",
+    "pointing.source_strategy.mode"
+  ]
+}

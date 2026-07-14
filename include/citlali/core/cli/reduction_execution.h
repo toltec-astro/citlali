@@ -11,6 +11,7 @@
 #include <citlali/core/pipeline/coadd_provenance.h>
 #include <citlali/core/pipeline/noise_provenance.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/pointing_provenance.h>
 #include <citlali/core/pipeline/processed_timestream_provenance.h>
 #include <citlali/core/pipeline/reduction_pipeline.h>
 #include <spdlog/spdlog.h>
@@ -160,6 +161,20 @@ int run_cli_reduction_processor(
         citlali::pipeline::noise_provenance_path(
             engine.output_paths.redu_dir_name)
             .string());
+
+    if constexpr (FitMaps) {
+        auto &pointing_plan =
+            citlali::pipeline::pointing_plan(engine);
+        citlali::pipeline::record_pointing_run_completed(
+            pointing_plan, mapmaking_plan);
+        citlali::pipeline::write_pointing_provenance_file(
+            engine.output_paths.redu_dir_name, pointing_plan);
+        logger->info(
+            "pointing provenance sidecar: {}",
+            citlali::pipeline::pointing_provenance_path(
+                engine.output_paths.redu_dir_name)
+                .string());
+    }
 
     log_reduction_complete(logger);
     return EXIT_SUCCESS;

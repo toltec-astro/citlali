@@ -6,6 +6,7 @@
 #include <citlali/core/pipeline/config_diagnostics_state.h>
 #include <citlali/core/pipeline/mapmaking_execution_plan.h>
 #include <citlali/core/pipeline/noise_execution_plan.h>
+#include <citlali/core/pipeline/pointing_execution_plan.h>
 #include <citlali/core/pipeline/processed_timestream_execution_plan.h>
 #include <citlali/core/pipeline/raw_timestream_execution_plan.h>
 
@@ -20,6 +21,7 @@ struct ReductionConfigState {
     MapmakingExecutionPlan mapmaking_plan;
     CoaddExecutionPlan coadd_plan;
     NoiseExecutionPlan noise_plan;
+    PointingExecutionPlan pointing_plan;
 };
 
 }  // namespace citlali::pipeline

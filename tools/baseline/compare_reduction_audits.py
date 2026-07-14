@@ -22,6 +22,7 @@ def audit_for(
     require_mapmaking_provenance: bool = False,
     require_coadd_provenance: bool = False,
     require_noise_products_provenance: bool = False,
+    require_pointing_provenance: bool = False,
 ) -> dict[str, Any]:
     args = argparse.Namespace(
         reduction=path,
@@ -35,6 +36,7 @@ def audit_for(
         require_noise_products_provenance=(
             require_noise_products_provenance
         ),
+        require_pointing_provenance=require_pointing_provenance,
     )
     return audit_reduction_run.build_audit(args)
 
@@ -126,6 +128,9 @@ def compare_audits(args: argparse.Namespace) -> dict[str, Any]:
         ),
         require_noise_products_provenance=getattr(
             args, "require_candidate_noise_products_provenance", False
+        ),
+        require_pointing_provenance=getattr(
+            args, "require_candidate_pointing_provenance", False
         ),
     )
     base_intervals = baseline.get("log", {}).get("interval_seconds", {})
@@ -316,6 +321,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         "--require-candidate-noise-products-provenance",
         action="store_true",
         help="Require valid noise-products provenance only for the candidate.",
+    )
+    parser.add_argument(
+        "--require-candidate-pointing-provenance",
+        action="store_true",
+        help="Require valid pointing provenance only for the candidate.",
     )
     parser.add_argument("--json-out", default="", help="Optional path for machine-readable JSON.")
     parser.add_argument("--report-out", default="", help="Optional path for Markdown output.")

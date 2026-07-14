@@ -227,6 +227,26 @@ checks the fixed random-number-generator identity, realization counts for
 observations and coadds, optional product and realization-write cardinality,
 and consistency with mapmaking and coadd provenance.
 
+Pointing provenance records the five-key source policy, its resolved fit and
+header-radius behavior, and per-observation fit cardinality. Require it only on
+a newer pointing candidate when comparing with a pre-sidecar baseline:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/compare_reduction_audits.py \
+  /path/to/accepted/reduNN \
+  /path/to/candidate/reduNN \
+  --expected-mode point \
+  --baseline-label refactor \
+  --candidate-label refactor \
+  --require-candidate-mapmaking-provenance \
+  --require-candidate-pointing-provenance
+```
+
+The pointing audit verifies requested/effective policy resolution, contiguous
+observation identities, map and fit counts, required output completion, and
+agreement with mapmaking provenance. It also records when fitting is disabled
+because mapmaking or the filtered-observation output path is unavailable.
+
 Science coadd triage, with an explicit baseline/candidate pair when the latest
 directories are not the intended comparison:
 
