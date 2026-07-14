@@ -38,9 +38,10 @@ inline int default_beammap_tod_output_iter() {
 
 template <class MapFitter>
 void sync_beammap_map_fitter(
-    const BeammapFittingConfigValues &fitting_values, MapFitter &map_fitter) {
+    const citlali::config::BeammapFittingConfig &fitting,
+    MapFitter &map_fitter) {
     map_fitter.beammap_fit_radius_fwhm =
-        fitting_values.fitting.fit_radius_fwhm;
+        fitting.fit_radius_fwhm;
 }
 
 inline void apply_beammap_typed_config(

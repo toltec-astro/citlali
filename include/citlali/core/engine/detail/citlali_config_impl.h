@@ -4,7 +4,6 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/pipeline/citlali_config_read.h>
-#include <citlali/core/pipeline/mapmaking_activation_policy.h>
 #include <citlali/core/pipeline/post_processing_config_read.h>
 #include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
@@ -102,14 +101,13 @@ void Engine::get_citlali_config(CT &config) {
     }
 
     /* get beammap config */
+    citlali::pipeline::beammap_plan(*this) = {};
+    reduction_config.beammap = {};
     if (runtime_config.reduction_type ==
         citlali::config::ReductionType::beammap) {
         // needs runtime reduction-type config
         get_beammap_config(config);
     }
-
-    citlali::pipeline::normalize_beammap_iterations_if_mapmaking_disabled(
-        reduction_config);
 
     citlali::pipeline::validate_typed_config_mirrors(
         reduction_config, logger);

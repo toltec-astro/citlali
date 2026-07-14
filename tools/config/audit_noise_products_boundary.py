@@ -16,7 +16,6 @@ CONFIG_SOURCE = "include/citlali/core/config/noise_config.h"
 BOUNDARY_SOURCE = "include/citlali/core/engine/detail/mapmaking_config_impl.h"
 ACCESSOR_SOURCE = "include/citlali/core/pipeline/reduction_config_accessors.h"
 ADAPTER_SOURCE = "include/citlali/core/pipeline/noise_config_adapter.h"
-ACTIVATION_SOURCE = "include/citlali/core/pipeline/mapmaking_activation_policy.h"
 MAP_FILTER_POLICY_SOURCE = (
     "include/citlali/core/pipeline/map_filter_config_policy.h"
 )
@@ -143,7 +142,6 @@ def reader_state(source_text: str) -> dict[str, object]:
 
 def authority_state(
     config: str, boundary: str, accessor: str, adapter: str,
-    activation: str,
 ) -> dict[str, object]:
     read_count = call_count(boundary, "read_noise_request_config")
     reset_count = len(re.findall(
@@ -155,7 +153,7 @@ def authority_state(
     adapter_position = boundary.find("adapt_noise_config_one_way(")
     effective_accessor = "engine.noise_plan.effective" in accessor
     one_way_adapter = "const citlali::config::NoiseConfig &effective" in adapter
-    combined = "\n".join((config, boundary, adapter, activation))
+    combined = "\n".join((config, boundary, adapter))
     retired_counts = {
         symbol: combined.count(symbol) for symbol in RETIRED_SYMBOLS
     }
@@ -236,7 +234,6 @@ def audit(repo_root: Path) -> dict[str, object]:
         (repo_root / BOUNDARY_SOURCE).read_text(),
         (repo_root / ACCESSOR_SOURCE).read_text(),
         (repo_root / ADAPTER_SOURCE).read_text(),
-        (repo_root / ACTIVATION_SOURCE).read_text(),
     )
     rng = rng_state([
         (repo_root / source).read_text() for source in RNG_SOURCES

@@ -1,15 +1,30 @@
+#include <citlali_config/default_config.h>
 #include <citlali/core/config/beammap_config_validation.h>
+#include <citlali/core/pipeline/beammap_config_loading.h>
 #include <citlali/core/pipeline/beammap_config_serialization.h>
+#include <citlali/core/pipeline/config_diagnostics_state.h>
 #include <citlali/core/pipeline/beammap_execution_plan.h>
 
 #include <gtest/gtest.h>
+#include <spdlog/sinks/null_sink.h>
+#include <spdlog/spdlog.h>
+#include <tula/config/yamlconfig.h>
 
 #include <limits>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
 
 namespace {
+
+void ensure_citlali_test_logger() {
+    if (!spdlog::get("citlali_logger")) {
+        auto sink = std::make_shared<spdlog::sinks::null_sink_mt>();
+        spdlog::register_logger(
+            std::make_shared<spdlog::logger>("citlali_logger", sink));
+    }
+}
 
 void collect_yaml_leaf_paths(const YAML::Node &node, const std::string &prefix,
                              std::set<std::string> &paths) {
@@ -170,6 +185,65 @@ TEST(BeammapExecutionPlan, ResetClearsPriorResolutionState) {
     EXPECT_FALSE(plan.resolution().max_d2_iter0_inherited);
     EXPECT_FALSE(plan.resolution().split_flag_values_defaulted);
     EXPECT_EQ(plan.resolution().requested_split_flag_count, 3U);
+}
+
+TEST(BeammapExecutionPlan, ReadsRawRequestBeforeResolvingEffectivePolicy) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    auto beammap = root["beammap"];
+    beammap["iter_max"] = 6;
+    beammap["phase_strategy"]["locator_iter"] = 2;
+    beammap["phase_strategy"]["measurement_start_iter"] = 1;
+    beammap["split_fits_by_flag"]["flag_values"] =
+        std::vector<int>{5, 1, 5};
+    beammap["priors"]["enabled"] = true;
+    beammap["priors"]["filepath"] = "null";
+    beammap["priors"]["max_d2"] = 12.0;
+    beammap["priors"]["score_lambda"] = 3.0;
+    beammap["priors"]["max_d2_iter0"] = 7.0;
+    beammap["priors"]["max_d2_after_iter0"] = 8.0;
+    beammap["priors"]["score_lambda_iter0"] = 9.0;
+    beammap["priors"]["score_lambda_after_iter0"] = 10.0;
+    auto yaml_config =
+        tula::config::YamlConfig::from_str(YAML::Dump(root));
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    const auto read = citlali::pipeline::read_beammap_request_config(
+        yaml_config, diagnostics, 3);
+
+    ASSERT_FALSE(diagnostics.has_errors());
+    EXPECT_EQ(read.request.iteration.max_iterations, 6);
+    EXPECT_EQ(read.request.phase_strategy.locator_iter, 2);
+    EXPECT_EQ(read.request.phase_strategy.measurement_start_iter, 1);
+    EXPECT_TRUE(read.request.priors.enabled);
+    EXPECT_EQ(read.request.split_fits_by_flag.flag_values,
+              (std::vector<int>{5, 1, 5}));
+    EXPECT_TRUE(read.presence.max_d2_iter0);
+    EXPECT_TRUE(read.presence.max_d2_after_iter0);
+    EXPECT_TRUE(read.presence.score_lambda_iter0);
+    EXPECT_TRUE(read.presence.score_lambda_after_iter0);
+    EXPECT_TRUE(read.presence.split_flag_values);
+
+    citlali::pipeline::BeammapExecutionPlan plan;
+    plan.reset_from_request(read.request, read.presence, true);
+    EXPECT_EQ(plan.requested().phase_strategy.locator_iter, 2);
+    EXPECT_TRUE(plan.requested().priors.enabled);
+    EXPECT_EQ(plan.effective().phase_strategy.locator_iter, 0);
+    EXPECT_DOUBLE_EQ(plan.effective().priors.max_d2_iter0, 7.0);
+    EXPECT_DOUBLE_EQ(plan.effective().priors.max_d2_after_iter0, 8.0);
+    EXPECT_DOUBLE_EQ(plan.effective().priors.score_lambda_iter0, 9.0);
+    EXPECT_DOUBLE_EQ(plan.effective().priors.score_lambda_after_iter0, 10.0);
+    EXPECT_FALSE(plan.effective().priors.enabled);
+    EXPECT_EQ(plan.effective().split_fits_by_flag.flag_values,
+              (std::vector<int>{1, 5}));
+
+    citlali::config::BeammapConfig compatibility;
+    citlali::pipeline::install_beammap_effective_compatibility_config(
+        plan, compatibility);
+    EXPECT_EQ(compatibility.phase_strategy.locator_iter, 0);
+    EXPECT_FALSE(compatibility.priors.enabled);
+    EXPECT_EQ(compatibility.split_fits_by_flag.flag_values,
+              (std::vector<int>{1, 5}));
 }
 
 TEST(BeammapConfigValidation, AcceptsDefaultAndCompleteShapes) {

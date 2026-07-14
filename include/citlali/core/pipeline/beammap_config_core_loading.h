@@ -9,29 +9,6 @@ struct BeammapCoreConfigValues {
     citlali::config::BeammapRfiMaskConfig rfi_mask;
 };
 
-template <class Logger>
-void normalize_beammap_phase_strategy(int iter_max, int &locator_iter,
-                                      int &measurement_start_iter,
-                                      const Logger &logger) {
-    if (locator_iter != 0) {
-        logger->warn(
-            "beammap.phase_strategy.locator_iter={} requested, but the locator pass must be iter 0; using 0",
-            locator_iter);
-        locator_iter = 0;
-    }
-    if (measurement_start_iter <= locator_iter) {
-        logger->warn(
-            "beammap.phase_strategy.measurement_start_iter={} must be after locator_iter={}; using {}",
-            measurement_start_iter, locator_iter, locator_iter + 1);
-        measurement_start_iter = locator_iter + 1;
-    }
-    if (iter_max <= measurement_start_iter) {
-        logger->warn(
-            "beammap.iter_max={} will not run a measurement pass with measurement_start_iter={}",
-            iter_max, measurement_start_iter);
-    }
-}
-
 template <class Config, class MissingKeys, class InvalidKeys>
 citlali::config::BeammapIterationConfig read_beammap_iteration_config(
     Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys) {
@@ -106,18 +83,14 @@ citlali::config::BeammapRfiMaskConfig read_beammap_rfi_mask_config(
     return values;
 }
 
-template <class Config, class MissingKeys, class InvalidKeys, class Logger>
+template <class Config, class MissingKeys, class InvalidKeys>
 BeammapCoreConfigValues read_beammap_core_config(
-    Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys,
-    const Logger &logger) {
+    Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys) {
     BeammapCoreConfigValues values;
     values.iteration =
         read_beammap_iteration_config(config, missing_keys, invalid_keys);
     values.phase_strategy =
         read_beammap_phase_strategy_config(config, missing_keys, invalid_keys);
-    normalize_beammap_phase_strategy(
-        values.iteration.max_iterations, values.phase_strategy.locator_iter,
-        values.phase_strategy.measurement_start_iter, logger);
     values.reference =
         read_beammap_reference_config(config, missing_keys, invalid_keys);
     values.rfi_mask =
@@ -125,10 +98,10 @@ BeammapCoreConfigValues read_beammap_core_config(
     return values;
 }
 
-template <class Config, class Diagnostics, class Logger>
+template <class Config, class Diagnostics>
 BeammapCoreConfigValues read_beammap_core_config(
-    Config &config, Diagnostics &diagnostics, const Logger &logger) {
+    Config &config, Diagnostics &diagnostics) {
     return read_beammap_core_config(
         config, diagnostics.missing_key_paths(),
-        diagnostics.invalid_key_paths(), logger);
+        diagnostics.invalid_key_paths());
 }

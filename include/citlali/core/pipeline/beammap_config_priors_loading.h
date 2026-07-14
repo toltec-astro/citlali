@@ -4,14 +4,6 @@
 
 using BeammapPriorsConfigValues = citlali::config::BeammapPriorsConfig;
 
-inline void set_beammap_priors_iteration_defaults(
-    BeammapPriorsConfigValues &priors) {
-    priors.max_d2_iter0 = priors.max_d2;
-    priors.max_d2_after_iter0 = priors.max_d2;
-    priors.score_lambda_iter0 = priors.score_lambda;
-    priors.score_lambda_after_iter0 = priors.score_lambda;
-}
-
 template <class Config, class MissingKeys, class InvalidKeys>
 void read_beammap_priors_core_config(
     Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys,
@@ -116,28 +108,25 @@ void read_beammap_priors_alignment_config(
         {0.0});
 }
 
-template <class Config, class MissingKeys, class InvalidKeys, class Logger>
+template <class Config, class MissingKeys, class InvalidKeys>
 BeammapPriorsConfigValues read_beammap_priors_config(
-    Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys,
-    const Logger &logger) {
+    Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys) {
     BeammapPriorsConfigValues priors;
     read_beammap_priors_core_config(
         config, missing_keys, invalid_keys, priors);
-    set_beammap_priors_iteration_defaults(priors);
     read_beammap_priors_iteration_config(
         config, missing_keys, invalid_keys, priors);
     read_beammap_priors_behavior_config(
         config, missing_keys, invalid_keys, priors);
     read_beammap_priors_alignment_config(
         config, missing_keys, invalid_keys, priors);
-    disable_missing_beammap_priors(priors.enabled, priors.filepath, logger);
     return priors;
 }
 
-template <class Config, class Diagnostics, class Logger>
+template <class Config, class Diagnostics>
 BeammapPriorsConfigValues read_beammap_priors_config(
-    Config &config, Diagnostics &diagnostics, const Logger &logger) {
+    Config &config, Diagnostics &diagnostics) {
     return read_beammap_priors_config(
         config, diagnostics.missing_key_paths(),
-        diagnostics.invalid_key_paths(), logger);
+        diagnostics.invalid_key_paths());
 }

@@ -66,7 +66,7 @@ class NoiseProductsBoundaryAuditTest(unittest.TestCase):
         ])
         state = audit.authority_state(
             "", boundary, "return engine.noise_plan.effective;",
-            "const citlali::config::NoiseConfig &effective", ""
+            "const citlali::config::NoiseConfig &effective"
         )
         self.assertTrue(state["exact"])
 
@@ -79,7 +79,7 @@ class NoiseProductsBoundaryAuditTest(unittest.TestCase):
         state = audit.authority_state(
             "set_noise_maps_enabled();", boundary,
             "return engine.noise_plan.effective;",
-            "const citlali::config::NoiseConfig &effective", ""
+            "const citlali::config::NoiseConfig &effective"
         )
         self.assertFalse(state["exact"])
 

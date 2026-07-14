@@ -25,6 +25,7 @@ PLAN_SOURCE = "include/citlali/core/pipeline/beammap_execution_plan.h"
 PROVENANCE_SOURCE = "include/citlali/core/pipeline/beammap_provenance.h"
 CLI_SOURCE = "include/citlali/core/cli/reduction_execution.h"
 READER_SOURCES = (
+    "include/citlali/core/pipeline/beammap_config_loading.h",
     "include/citlali/core/pipeline/beammap_config_core_loading.h",
     "include/citlali/core/pipeline/beammap_config_fitting_flagging.h",
     "include/citlali/core/pipeline/beammap_config_priors_loading.h",
@@ -40,6 +41,7 @@ EXPECTED_PATH_SHA256 = (
 EXPECTED_LITERAL_FILES = {
     "include/citlali/core/config/beammap_config_validation.h",
     "include/citlali/core/config/reduction_config_validation.h",
+    "include/citlali/core/pipeline/beammap_config_loading.h",
     "include/citlali/core/pipeline/beammap_config_core_loading.h",
     "include/citlali/core/pipeline/beammap_config_fitting_flagging.h",
     "include/citlali/core/pipeline/beammap_config_priors_loading.h",
@@ -60,17 +62,18 @@ EXPECTED_STRUCTS = {
     "BeammapSplitFitsByFlagConfig",
 }
 EXPECTED_BOUNDARY_CALLS = {
-    "read_beammap_core_config": 1,
-    "read_beammap_fitting_config": 1,
-    "read_beammap_scan_band_mask_config": 1,
-    "read_beammap_split_fits_config": 1,
+    "read_beammap_request_config": 1,
+    "reset_from_request": 1,
+    "log_beammap_effective_resolution": 1,
+    "install_beammap_effective_compatibility_config": 1,
     "sync_beammap_map_fitter": 1,
-    "read_beammap_priors_config": 1,
-    "read_beammap_flagging_config": 1,
-    "read_beammap_sensitivity_config": 1,
-    "read_beammap_detector_tod_output_config": 1,
-    "apply_beammap_typed_config": 1,
 }
+RETIRED_READER_MUTATION_HELPERS = (
+    "normalize_beammap_phase_strategy",
+    "set_beammap_priors_iteration_defaults",
+    "disable_missing_beammap_priors",
+    "normalized_beammap_split_flag_values",
+)
 
 
 def path_digest(paths: list[str]) -> str:
@@ -204,6 +207,17 @@ def reader_coverage_state(
             roots.add(".".join(re.findall(r'"([^"]+)"', match.group(0))))
     state = expand_path_roots(manifest_paths, roots)
     state["sources"] = list(READER_SOURCES)
+    state["retired_mutation_helper_counts"] = {
+        helper: sum(
+            (repo_root / source).read_text(encoding="utf-8").count(helper)
+            for source in READER_SOURCES
+        )
+        for helper in RETIRED_READER_MUTATION_HELPERS
+    }
+    state["mutation_helpers_retired"] = not any(
+        state["retired_mutation_helper_counts"].values()
+    )
+    state["exact"] = state["exact"] and state["mutation_helpers_retired"]
     return state
 
 
@@ -264,21 +278,38 @@ def execution_plan_state(repo_root: Path) -> dict[str, object]:
             "reset_from_request",
         )
     )
+    expected_plan_references = [
+        "include/citlali/core/pipeline/beammap_config_loading.h",
+        "include/citlali/core/pipeline/reduction_config_state.h",
+    ]
+    boundary = (repo_root / BOUNDARY_SOURCE).read_text(encoding="utf-8")
+    wired = all(
+        token in boundary
+        for token in (
+            "beammap_plan.reset_from_request(",
+            "install_beammap_effective_compatibility_config(",
+            "beammap_plan.effective().fitting",
+        )
+    )
     return {
         "source": PLAN_SOURCE,
         "source_exists": source_exists,
         "contract_present": contract_present,
         "production_references": plan_references,
+        "expected_production_references": expected_plan_references,
         "serializer_production_references": serializer_references,
-        "status": "prepared-unwired"
+        "wired_at_boundary": wired,
+        "status": "wired-effective-compatibility-consumers"
         if source_exists
         and contract_present
-        and not plan_references
+        and plan_references == expected_plan_references
+        and wired
         and not serializer_references
         else "unexpected",
         "exact": source_exists
         and contract_present
-        and not plan_references
+        and plan_references == expected_plan_references
+        and wired
         and not serializer_references,
     }
 
@@ -304,23 +335,22 @@ def authority_boundary_state(boundary: str, adapter: str) -> dict[str, object]:
     calls = {
         name: call_count(boundary, name) for name in EXPECTED_BOUNDARY_CALLS
     }
-    reader_positions = [
-        boundary.find(f"{name}(")
-        for name in EXPECTED_BOUNDARY_CALLS
-        if name not in {"sync_beammap_map_fitter", "apply_beammap_typed_config"}
+    ordered_calls = [
+        "read_beammap_request_config",
+        "reset_from_request",
+        "log_beammap_effective_resolution",
+        "install_beammap_effective_compatibility_config",
+        "sync_beammap_map_fitter",
     ]
-    adapter_position = boundary.find("sync_beammap_map_fitter(")
-    apply_position = boundary.find("apply_beammap_typed_config(")
+    positions = [boundary.find(f"{name}(") for name in ordered_calls]
     order_exact = (
-        all(position >= 0 for position in reader_positions)
-        and adapter_position >= 0
-        and apply_position > adapter_position
-        and apply_position > max(reader_positions)
+        all(position >= 0 for position in positions)
+        and positions == sorted(positions)
     )
     adapter_exact = (
         call_count(adapter, "sync_beammap_map_fitter") == 1
         and "map_fitter.beammap_fit_radius_fwhm =" in adapter
-        and "fitting_values.fitting.fit_radius_fwhm" in adapter
+        and "fitting.fit_radius_fwhm" in adapter
     )
     return {
         "source": BOUNDARY_SOURCE,

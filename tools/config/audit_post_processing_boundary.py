@@ -67,7 +67,9 @@ SOURCE_CALLBACK_SOURCE = (
     "include/citlali/core/pipeline/map_source_config_callbacks.h"
 )
 ACCESSOR_SOURCE = "include/citlali/core/pipeline/reduction_config_accessors.h"
-ACTIVATION_SOURCE = "include/citlali/core/pipeline/mapmaking_activation_policy.h"
+BEAMMAP_PLAN_SOURCE = (
+    "include/citlali/core/pipeline/beammap_execution_plan.h"
+)
 OUTPUT_POLICY_SOURCE = "include/citlali/core/pipeline/output_policy.h"
 MAPDIAG_OUTPUT_SOURCE = (
     "include/citlali/core/engine/detail/mapdiag_output_impl.h"
@@ -188,7 +190,7 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
     finding_policy = (repo_root / FINDING_POLICY_SOURCE).read_text()
     source_callbacks = (repo_root / SOURCE_CALLBACK_SOURCE).read_text()
     accessor = (repo_root / ACCESSOR_SOURCE).read_text()
-    activation = (repo_root / ACTIVATION_SOURCE).read_text()
+    beammap_plan = (repo_root / BEAMMAP_PLAN_SOURCE).read_text()
     output_policy = (repo_root / OUTPUT_POLICY_SOURCE).read_text()
     mapdiag_output = (repo_root / MAPDIAG_OUTPUT_SOURCE).read_text()
 
@@ -419,16 +421,15 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
             or "mirror_source_finding_config_to_coadd" in source_callbacks
         ),
         "post_processing_request_mutation_retired": (
-            "reduction_config.post_processing" not in activation
-            and "set_map_filtering_enabled" not in activation
-            and "set_source_finding_enabled" not in activation
-            and "set_source_fitting_active" not in activation
+            "disable_map_products_if_mapmaking_disabled" not in engine
+            and "set_map_filtering_enabled" not in engine
+            and "set_source_finding_enabled" not in engine
+            and "set_source_fitting_active" not in engine
         ),
-        "beammap_disabled_iteration_policy_preserved": (
-            "normalize_beammap_iterations_if_mapmaking_disabled"
-            in activation
-            and "reduction_config.beammap.iteration.max_iterations = 1"
-            in activation
+        "beammap_disabled_iteration_policy_moved_to_plan": (
+            "if (!mapmaking_enabled)" in beammap_plan
+            and "effective_.iteration.max_iterations = 1" in beammap_plan
+            and "max_iterations_forced_without_mapmaking" in beammap_plan
         ),
     }
     exact = bool(
@@ -473,7 +474,7 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         and checks["source_finding_output_policy_is_effective"]
         and checks["source_finding_shadow_details_retired"]
         and checks["post_load_request_mutation_count"] == 0
-        and checks["beammap_disabled_iteration_call_count"] == 1
+        and checks["beammap_disabled_iteration_call_count"] == 0
         and checks["request_accessor_count"] == 2
         and checks["source_model_typed"]
         and checks["kernel_tail_numerical_target"]
@@ -482,7 +483,7 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         and not checks["kernel_tail_reverse_mirrored"]
         and not checks["source_finding_reverse_mirror_present"]
         and checks["post_processing_request_mutation_retired"]
-        and checks["beammap_disabled_iteration_policy_preserved"]
+        and checks["beammap_disabled_iteration_policy_moved_to_plan"]
     )
     return {"checks": checks, "exact": exact}
 

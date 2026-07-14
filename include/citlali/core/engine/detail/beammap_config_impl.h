@@ -10,44 +10,19 @@ template<typename CT>
 void Engine::get_beammap_config(CT &config) {
     logger->info("getting beammap config options");
     auto &beammap_config = citlali::pipeline::beammap_config(*this);
+    auto &beammap_plan = citlali::pipeline::beammap_plan(*this);
     auto &config_diag = citlali::pipeline::config_diagnostics(*this);
-    const auto beammap_core_config =
-        citlali::pipeline::read_beammap_core_config(
-            config, config_diag, logger);
-
-    const auto beammap_fitting_config =
-        citlali::pipeline::read_beammap_fitting_config(
-            config, config_diag);
-
-    const auto beammap_scan_band_mask_config =
-        citlali::pipeline::read_beammap_scan_band_mask_config(
-            config, config_diag);
-
-    const auto beammap_split_fits_config =
-        citlali::pipeline::read_beammap_split_fits_config(
-            config, config_diag, logger);
-    citlali::pipeline::sync_beammap_map_fitter(
-        beammap_fitting_config, map_fitter);
-
-    const auto beammap_priors_config =
-        citlali::pipeline::read_beammap_priors_config(
-            config, config_diag, logger);
-
-    const auto beammap_flagging_config =
-        citlali::pipeline::read_beammap_flagging_config(
+    const auto read_result =
+        citlali::pipeline::read_beammap_request_config(
             config, config_diag, toltec_io.array_name_map.size());
-
-    const auto beammap_sensitivity_config =
-        citlali::pipeline::read_beammap_sensitivity_config(
-            config, config_diag.invalid_keys);
-
-    const auto beammap_detector_tod_output_config =
-        citlali::pipeline::read_beammap_detector_tod_output_config(
-            config, config_diag);
-
-    citlali::pipeline::apply_beammap_typed_config(
-        beammap_config, beammap_core_config, beammap_fitting_config,
-        beammap_scan_band_mask_config, beammap_split_fits_config,
-        beammap_priors_config, beammap_detector_tod_output_config,
-        beammap_flagging_config, beammap_sensitivity_config);
+    beammap_plan.reset_from_request(
+        read_result.request, read_result.presence,
+        citlali::config::mapmaking_active(
+            citlali::pipeline::mapmaking_config(*this)));
+    citlali::pipeline::log_beammap_effective_resolution(
+        beammap_plan, logger);
+    citlali::pipeline::install_beammap_effective_compatibility_config(
+        beammap_plan, beammap_config);
+    citlali::pipeline::sync_beammap_map_fitter(
+        beammap_plan.effective().fitting, map_fitter);
 }

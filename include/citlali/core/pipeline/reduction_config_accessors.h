@@ -26,6 +26,9 @@ struct has_pointing_plan : std::false_type {};
 template <class Engine, class = void>
 struct has_post_processing_plan : std::false_type {};
 
+template <class Engine, class = void>
+struct has_beammap_plan : std::false_type {};
+
 template <class Engine>
 struct has_raw_timestream_plan<
     Engine,
@@ -94,6 +97,16 @@ struct has_post_processing_plan<
 template <class Engine>
 inline constexpr bool has_post_processing_plan_v =
     has_post_processing_plan<Engine>::value;
+
+template <class Engine>
+struct has_beammap_plan<
+    Engine,
+    std::void_t<decltype(std::declval<Engine &>().beammap_plan)>>
+    : std::true_type {};
+
+template <class Engine>
+inline constexpr bool has_beammap_plan_v =
+    has_beammap_plan<Engine>::value;
 
 template <class Engine>
 auto &runtime_config_provenance(Engine &engine) {
@@ -315,6 +328,16 @@ auto &beammap_config(Engine &engine) {
 template <class Engine>
 const auto &beammap_config(const Engine &engine) {
     return reduction_config(engine).beammap;
+}
+
+template <class Engine>
+auto &beammap_plan(Engine &engine) {
+    return engine.beammap_plan;
+}
+
+template <class Engine>
+const auto &beammap_plan(const Engine &engine) {
+    return engine.beammap_plan;
 }
 
 template <class Engine>

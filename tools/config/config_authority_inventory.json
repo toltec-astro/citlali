@@ -143,7 +143,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "partial",
-      "exit_gate": "The complete 74-leaf serializer and pure effective plan are prepared but unwired. Construct the plan from an immutable request, move bounded consumers to effective policy, publish required realized provenance, and remove the map_fitter synchronization adapter after fitting consumes the effective plan directly."
+      "exit_gate": "The immutable 74-leaf request and separate effective plan are now constructed at the production boundary. Mature Beammap consumers temporarily receive a one-way effective compatibility snapshot, while the fit-radius adapter reads the effective plan directly. Record realized iteration/output cardinality, publish required atomic provenance, migrate bounded consumers where that removes real ambiguity, and retire the compatibility snapshot only when its consumers have explicit effective inputs."
     },
     {
       "id": "astrometry-photometry",

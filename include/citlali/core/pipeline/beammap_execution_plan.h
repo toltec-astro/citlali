@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <stdexcept>
 #include <vector>
 
 namespace citlali::pipeline {
@@ -18,6 +19,7 @@ struct BeammapRequestPresence {
 };
 
 struct BeammapEffectiveResolutionRecord {
+    BeammapRequestPresence explicit_request;
     bool mapmaking_enabled = false;
     int requested_max_iterations = 1;
     int effective_max_iterations = 1;
@@ -90,6 +92,7 @@ public:
         requested_ = request;
         effective_ = request;
         resolution_ = {};
+        resolution_.explicit_request = presence;
         resolution_.mapmaking_enabled = mapmaking_enabled;
         resolution_.requested_max_iterations =
             request.iteration.max_iterations;
@@ -178,5 +181,55 @@ private:
     citlali::config::BeammapConfig effective_;
     BeammapEffectiveResolutionRecord resolution_;
 };
+
+inline void install_beammap_effective_compatibility_config(
+    const BeammapExecutionPlan &plan,
+    citlali::config::BeammapConfig &target) {
+    if (!plan.initialized()) {
+        throw std::logic_error(
+            "cannot install an uninitialized beammap execution plan");
+    }
+    target = plan.effective();
+}
+
+template <class Logger>
+void log_beammap_effective_resolution(
+    const BeammapExecutionPlan &plan, const Logger &logger) {
+    if (!plan.initialized()) {
+        throw std::logic_error(
+            "cannot log an uninitialized beammap execution plan");
+    }
+    const auto &requested = plan.requested();
+    const auto &effective = plan.effective();
+    const auto &resolution = plan.resolution();
+    if (resolution.locator_iter_forced_zero) {
+        logger->warn(
+            "beammap.phase_strategy.locator_iter={} requested, but the locator pass must be iter 0; using 0",
+            resolution.requested_locator_iter);
+    }
+    if (resolution.measurement_start_iter_adjusted) {
+        logger->warn(
+            "beammap.phase_strategy.measurement_start_iter={} must be after locator_iter={}; using {}",
+            resolution.requested_measurement_start_iter,
+            effective.phase_strategy.locator_iter,
+            resolution.effective_measurement_start_iter);
+    }
+    if (resolution.requested_max_iterations <=
+        resolution.effective_measurement_start_iter) {
+        logger->warn(
+            "beammap.iter_max={} will not run a measurement pass with measurement_start_iter={}",
+            resolution.requested_max_iterations,
+            resolution.effective_measurement_start_iter);
+    }
+    if (resolution.explicit_request.split_flag_values &&
+        requested.split_fits_by_flag.flag_values.empty()) {
+        logger->warn(
+            "beammap.split_fits_by_flag.flag_values is empty; using defaults [0, 1]");
+    }
+    if (resolution.priors_disabled_by_missing_path) {
+        logger->warn(
+            "beammap.priors.enabled=true but beammap.priors.filepath is null; disabling priors");
+    }
+}
 
 }  // namespace citlali::pipeline

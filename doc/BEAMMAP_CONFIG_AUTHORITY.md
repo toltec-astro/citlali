@@ -1,7 +1,7 @@
 # Beammap Config Authority
 
-This document characterizes the next bounded Phase 2 authority domain. It does
-not change Beammap execution or numerical behavior.
+This document records the bounded Phase 2 Beammap authority migration. It does
+not redesign Beammap execution or numerical behavior.
 
 ## Frozen Surface
 
@@ -18,24 +18,25 @@ is materially further along than a legacy-authoritative starting point.
 ## Remaining Boundary
 
 Configuration enters through one `Engine::get_beammap_config` boundary. Its
-family readers construct typed values and `apply_beammap_typed_config` installs
-one request snapshot. One compatibility adapter,
-`sync_beammap_map_fitter`, copies `beammap.fitting.fit_radius_fwhm` into the
-shared numerical fitter. The fitter remains the owner of fit workspaces and
-realized fit results; it must not become a source of requested policy.
-
-The domain now has a pure, non-wired `BeammapExecutionPlan` preparation
-checkpoint. It preserves a requested snapshot and separately resolves the
-current phase correction, missing-prior-path disablement, per-phase prior
+family readers now assemble one raw typed request without applying effective
+policy. `BeammapExecutionPlan` preserves that immutable request and separately
+resolves phase correction, missing-prior-path disablement, per-phase prior
 inheritance, split-flag normalization, convergence availability, and
-mapmaking-disabled iteration policy. Production does not yet construct or
-consume this plan. The current typed object and fitting adapter therefore
-remain the execution boundary.
+mapmaking-disabled iteration policy.
+
+Production constructs the plan at that boundary. Mature Beammap consumers
+temporarily receive a one-way copy of the effective snapshot through
+`ReductionConfig::beammap`; this is a compatibility projection, not a second
+authority. `sync_beammap_map_fitter` reads the plan's effective fitting policy
+directly and copies only `fit_radius_fwhm` into the shared numerical fitter.
+The fitter remains the owner of fit workspaces and realized fit results; it
+must not become a source of requested policy.
 
 There is still no versioned Beammap config provenance. This absence is
-explicit, not silently treated as completion. The static audit requires the
-current adapter, the unwired plan state, and missing provenance until a later
-implementation checkpoint deliberately changes those claims.
+explicit, not silently treated as completion. The static audit requires plan
+construction, ordered one-way compatibility installation, the current fitter
+adapter, and missing provenance until a later implementation checkpoint
+deliberately changes those claims.
 
 ## Preparation Checkpoint
 
@@ -59,11 +60,10 @@ merged YAML -> immutable Beammap request -> effective Beammap plan
             -> narrow numerical adapters -> realized iteration/output record
 ```
 
-The prepared effective plan records normalization currently performed while
-loading, including phase-strategy correction, prior enablement when a path is
-missing, split-flag normalization, and mode-dependent iteration behavior.
-The next checkpoint must construct it from an immutable request before
-switching one bounded consumer.
+The effective plan records normalization formerly performed while loading,
+including phase-strategy correction, prior enablement when a path is missing,
+split-flag normalization, and mode-dependent iteration behavior. Reader-side
+mutation helpers are retired and the audit rejects their reintroduction.
 Realized state should describe attempted/completed iterations, detector-fit
 cardinality, required output cardinality, and completion without duplicating
 the post-processing fit record.
@@ -71,7 +71,7 @@ the post-processing fit record.
 ## Stop Rule
 
 Do not redesign Gaussian fitting, prior matching, flagging, or detector-map
-algorithms in this domain. First replace the shared fitting-radius policy read
-with a typed effective input and add provenance around the established
-execution. Any algorithmic change requires separate scientific ownership and
-validation evidence.
+algorithms in this domain. Next add realized lifecycle and provenance around
+the established execution, then replace compatibility consumers only where an
+explicit effective input clarifies ownership. Any algorithmic change requires
+separate scientific ownership and validation evidence.

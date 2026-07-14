@@ -44,7 +44,7 @@ class CoaddBoundaryAuditTest(unittest.TestCase):
             ]
         )
         accessor = "return engine.coadd_plan.effective;"
-        state = audit.authority_state("", boundary, accessor, "")
+        state = audit.authority_state("", boundary, accessor)
         self.assertTrue(state["exact"])
 
     def test_rejects_requested_config_mutation(self) -> None:
@@ -58,7 +58,6 @@ class CoaddBoundaryAuditTest(unittest.TestCase):
             "set_coadd_enabled();",
             boundary,
             "return engine.coadd_plan.effective;",
-            "",
         )
         self.assertFalse(state["exact"])
 

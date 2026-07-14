@@ -49,8 +49,8 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 355 tests with none skipped or disabled; all
-  71 config-boundary/preflight tests pass.
+- CTest discovers and passes all 364 tests with none skipped or disabled; all
+  74 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -1074,6 +1074,33 @@ The local CLI and test targets build, all 363 CTests pass, and full config
 preflight passes 74 boundary tests, all eight compatibility profiles, and the
 complete authority audit suite. Because the plan and serializer are explicitly
 unwired, this checkpoint does not require a Unity reduction.
+
+## Beammap Effective-Plan Boundary Activated
+
+The next bounded checkpoint constructs `BeammapExecutionPlan` in production
+from one raw 74-leaf request plus explicit-key presence. Policy correction no
+longer mutates values inside the family YAML readers. The immutable request is
+preserved while a separate effective snapshot records phase correction, prior
+inheritance and missing-path disablement, split-flag normalization, convergence
+availability, and mapmaking-disabled iteration behavior.
+
+Existing mature Beammap algorithms temporarily consume a one-way copy of the
+effective snapshot through `ReductionConfig::beammap`, preserving their current
+inputs without creating reverse synchronization. The existing map-fitter
+radius adapter is the first bounded consumer to read effective plan policy
+directly. The boundary audit enforces the ordered read/resolve/install/adapt
+sequence and rejects reintroduction of the retired reader-side mutation
+helpers. Dedicated Beammap realized lifecycle and provenance remain missing,
+and the component serializer remains unpublished.
+
+Local verification is clean: `citlali_cli` and `citlali_test` build, all 364
+CTest cases pass, and full config preflight passes 74 tests, all eight compact
+compatibility profiles, 100% compact-surface coverage, and every authority
+audit. This changes production configuration construction, so the eventual
+Beammap provenance checkpoint requires a Unity compile and matched Beammap
+reduction before the domain can be accepted. The next local work is realized
+iteration/output state and required atomic provenance; do not spend a Beammap
+run on this intermediate commit alone.
 
 ## Five-Phase Roadmap
 

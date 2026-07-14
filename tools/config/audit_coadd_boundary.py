@@ -15,7 +15,6 @@ READER_SOURCE = "include/citlali/core/pipeline/coadd_config_read.h"
 CONFIG_SOURCE = "include/citlali/core/config/coadd_config.h"
 BOUNDARY_SOURCE = "include/citlali/core/engine/detail/mapmaking_config_impl.h"
 ACCESSOR_SOURCE = "include/citlali/core/pipeline/reduction_config_accessors.h"
-ACTIVATION_SOURCE = "include/citlali/core/pipeline/mapmaking_activation_policy.h"
 PROVENANCE_SOURCE = "include/citlali/core/pipeline/coadd_provenance.h"
 CLI_SOURCE = "include/citlali/core/cli/reduction_execution.h"
 EXPECTED_MANIFEST_SCHEMA = "citlali-frozen-coadd-config-paths-v1"
@@ -76,7 +75,7 @@ def reader_state(source_text: str) -> dict[str, object]:
 
 
 def authority_state(
-    config: str, boundary: str, accessor: str, activation: str
+    config: str, boundary: str, accessor: str
 ) -> dict[str, object]:
     read_count = call_count(boundary, "read_coadd_request_config")
     reset_count = len(
@@ -86,11 +85,7 @@ def authority_state(
     reset_position = boundary.find("coadd_plan.reset_from_request(")
     effective_accessor = "engine.coadd_plan.effective" in accessor
     retired_counts = {
-        symbol: (
-            config.count(symbol)
-            + activation.count(symbol)
-            + boundary.count(symbol)
-        )
+        symbol: config.count(symbol) + boundary.count(symbol)
         for symbol in RETIRED_SYMBOLS
     }
     exact = bool(
@@ -134,7 +129,6 @@ def audit(repo_root: Path) -> dict[str, object]:
         (repo_root / CONFIG_SOURCE).read_text(),
         (repo_root / BOUNDARY_SOURCE).read_text(),
         (repo_root / ACCESSOR_SOURCE).read_text(),
-        (repo_root / ACTIVATION_SOURCE).read_text(),
     )
     provenance = provenance_state(
         (repo_root / PROVENANCE_SOURCE).read_text(),

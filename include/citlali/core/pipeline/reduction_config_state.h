@@ -2,6 +2,7 @@
 
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/config/runtime_execution_plan.h>
+#include <citlali/core/pipeline/beammap_execution_plan.h>
 #include <citlali/core/pipeline/coadd_execution_plan.h>
 #include <citlali/core/pipeline/config_diagnostics_state.h>
 #include <citlali/core/pipeline/mapmaking_execution_plan.h>
@@ -24,6 +25,7 @@ struct ReductionConfigState {
     NoiseExecutionPlan noise_plan;
     PointingExecutionPlan pointing_plan;
     PostProcessingExecutionPlan post_processing_plan;
+    BeammapExecutionPlan beammap_plan;
 };
 
 }  // namespace citlali::pipeline

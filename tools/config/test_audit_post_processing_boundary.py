@@ -55,8 +55,10 @@ class PostProcessingBoundaryAuditTest(unittest.TestCase):
         self.assertTrue(checks["typed_request_precedes_mapmaking_setup"])
         self.assertTrue(checks["duplicate_histogram_reader_retired"])
         self.assertTrue(checks["post_processing_request_mutation_retired"])
-        self.assertTrue(checks["beammap_disabled_iteration_policy_preserved"])
-        self.assertEqual(checks["beammap_disabled_iteration_call_count"], 1)
+        self.assertTrue(
+            checks["beammap_disabled_iteration_policy_moved_to_plan"]
+        )
+        self.assertEqual(checks["beammap_disabled_iteration_call_count"], 0)
         self.assertTrue(checks["execution_plan_present"])
         self.assertEqual(checks["execution_plan_reset_call_count"], 1)
         self.assertEqual(checks["execution_plan_accessor_count"], 2)

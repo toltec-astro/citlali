@@ -25,6 +25,11 @@ class BeammapBoundaryAuditTest(unittest.TestCase):
         self.assertEqual(state["covered_path_count"], 74)
         self.assertEqual(state["missing_paths"], [])
         self.assertEqual(state["extra_roots"], [])
+        self.assertTrue(state["mutation_helpers_retired"])
+        self.assertEqual(
+            state["retired_mutation_helper_counts"],
+            {helper: 0 for helper in audit.RETIRED_READER_MUTATION_HELPERS},
+        )
 
     def test_serializer_covers_all_frozen_paths(self) -> None:
         state = audit.audit(REPO_ROOT)["serializer_coverage"]
@@ -34,11 +39,17 @@ class BeammapBoundaryAuditTest(unittest.TestCase):
         self.assertEqual(state["missing_paths"], [])
         self.assertEqual(state["extra_roots"], [])
 
-    def test_execution_plan_is_prepared_but_unwired(self) -> None:
+    def test_execution_plan_is_wired_with_compatibility_consumers(self) -> None:
         state = audit.audit(REPO_ROOT)["execution_plan"]
         self.assertTrue(state["exact"])
-        self.assertEqual(state["status"], "prepared-unwired")
-        self.assertEqual(state["production_references"], [])
+        self.assertEqual(
+            state["status"], "wired-effective-compatibility-consumers"
+        )
+        self.assertEqual(
+            state["production_references"],
+            state["expected_production_references"],
+        )
+        self.assertTrue(state["wired_at_boundary"])
         self.assertEqual(state["serializer_production_references"], [])
 
     def test_rejects_manifest_digest_drift(self) -> None:

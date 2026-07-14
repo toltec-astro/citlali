@@ -10,6 +10,7 @@
 #include <citlali/core/cli/runtime_setup.h>
 #include <citlali/core/cli/tod_processor_selection.h>
 #include <citlali/core/error/error.h>
+#include <citlali/core/pipeline/beammap_execution_plan.h>
 #include <citlali/core/pipeline/beammap_source_flux_config.h>
 #include <citlali/core/pipeline/coadd_config_read.h>
 #include <citlali/core/pipeline/coadd_execution_plan.h>
@@ -18,7 +19,6 @@
 #include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/map_geometry.h>
 #include <citlali/core/pipeline/map_index_state.h>
-#include <citlali/core/pipeline/mapmaking_activation_policy.h>
 #include <citlali/core/pipeline/mapmaking_execution_plan.h>
 #include <citlali/core/pipeline/mapmaking_method_config.h>
 #include <citlali/core/pipeline/mapmaking_output_config.h>
@@ -1671,21 +1671,15 @@ TEST(config_scaffold,
         plan.effective_resolution.source_fitting_disabled_by_mapmaking);
 }
 
-TEST(config_scaffold, mapmaking_disable_preserves_post_processing_request) {
-    citlali::config::ReductionConfig config;
-    config.mapmaking.enabled = false;
-    citlali::config::set_map_filtering_enabled(
-        config.post_processing, true);
-    citlali::config::set_source_finding_enabled(
-        config.post_processing, true);
-    config.beammap.iteration.max_iterations = 7;
+TEST(config_scaffold, beammap_plan_preserves_request_without_mapmaking) {
+    citlali::config::BeammapConfig request;
+    request.iteration.max_iterations = 7;
+    citlali::pipeline::BeammapExecutionPlan plan;
 
-    citlali::pipeline::normalize_beammap_iterations_if_mapmaking_disabled(
-        config);
+    plan.reset_from_request(request, {}, false);
 
-    EXPECT_TRUE(config.post_processing.map_filtering.enabled);
-    EXPECT_TRUE(config.post_processing.source_finding.enabled);
-    EXPECT_EQ(config.beammap.iteration.max_iterations, 1);
+    EXPECT_EQ(plan.requested().iteration.max_iterations, 7);
+    EXPECT_EQ(plan.effective().iteration.max_iterations, 1);
 }
 
 TEST(config_scaffold, adapts_effective_map_filter_config_one_way) {
