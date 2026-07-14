@@ -117,7 +117,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "mixed-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Active: Unity point redu55 at aa593a2b validates the one-way source-finding adapter with bit-for-bit identity across all 2,041 compared records; redu54 validates map filtering. Source fitting is locally cut over with both targets, all 350 CTests, and full preflight passing; rerun the same point fixture before adding required realized provenance."
+      "exit_gate": "Active: Unity point redu56 at 9f8ad50e validates source fitting with bit-for-bit identity across all 2,041 records against redu55; redu55 validates source finding and redu54 map filtering. Add required realized state/provenance at actual filtering, source-table, and fit completion events."
     },
     {
       "id": "pointing",

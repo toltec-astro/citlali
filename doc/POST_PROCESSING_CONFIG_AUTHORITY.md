@@ -62,8 +62,7 @@ filter snapshot into either numerical implementation, including the legacy
 conditional FWHM loading and arcsecond-to-radian conversion. Filter activation,
 required-output policy, runtime dependency checks, and map-diagnostic edge-
 guard metadata consume the effective plan. The mature filtering algorithms are
-unchanged. Source finding is also accepted. Source fitting is complete locally
-and awaits its Unity point gate.
+unchanged. Source finding and source fitting are also accepted.
 
 ## Target Contract
 
@@ -88,12 +87,13 @@ filtering, source-table, and fit cardinality.
 
 Consumer migration is ordered map filtering, source finding, then source
 fitting. Map filtering is complete and accepted by Unity point `redu54`.
-Source finding is accepted exactly by Unity point `redu55`; the source-fitting
-consumer is locally cut over and awaits the same point fixture. Each slice
+Source finding is accepted exactly by Unity point `redu55`; source fitting is
+accepted exactly by Unity point `redu56`. Each slice
 replaces a reverse mirror or policy read with one one-way typed adapter while
 keeping the mature numerical object as the execution target. A consumer
 cutover, unlike plan construction alone, requires the matched enabled-filtering
-point gate, with accepted `redu55` now serving as the immediate baseline.
+point gate. Accepted `redu56` is now the immediate baseline for realized-state
+and provenance work.
 
 The source-finding adapter projects the effective threshold, angular window,
 and finder mode directly into observation and optional coadd map buffers. It
