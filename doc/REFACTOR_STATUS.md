@@ -49,8 +49,8 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 364 tests with none skipped or disabled; all
-  74 config-boundary/preflight tests pass.
+- CTest discovers and passes all 372 tests with none skipped or disabled; all
+  75 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -1101,6 +1101,43 @@ Beammap provenance checkpoint requires a Unity compile and matched Beammap
 reduction before the domain can be accepted. The next local work is realized
 iteration/output state and required atomic provenance; do not spend a Beammap
 run on this intermediate commit alone.
+
+## Beammap Realized Lifecycle And Provenance Prepared
+
+The next local checkpoint adds an explicit Beammap observation and internal-
+iteration lifecycle around the established execution without changing its
+numerical control flow. Each enabled-mapmaking observation records identity,
+detector/map/scan counts, contiguous iteration indices and phases, active map
+counts, one or two completed mapmaking passes, the source-aware RTC decision,
+fit completion, newly/total converged maps, and maximum-iteration or all-maps-
+converged termination. Disabled mapmaking records a successful zero-product
+execution instead of manufacturing observations or fit contexts.
+
+Completion requires every internal stage and observation output to finish. It
+then cross-checks Beammap observation identity/map counts against the completed
+mapmaking plan and requires the post-processing Beammap fit-context count to
+equal the exact number of completed internal iterations. Map write counts and
+fit attempt/valid aggregates remain owned by their existing plans rather than
+being copied into Beammap state.
+
+Successful Beammap reductions now require atomically published
+`beammap_provenance.yaml` with schema `citlali-beammap-provenance-v1`. The file
+contains the complete requested and effective 74-leaf snapshots, effective-
+resolution reasons, observation/iteration lifecycle, and terminal realized
+state. Incomplete lifecycle and publication failures propagate to the CLI.
+The strengthened boundary audit requires all lifecycle hooks, exact 74/74
+reader and config-serializer coverage, and one ordered CLI completion/write
+path.
+
+Local verification is clean: both build targets pass, all 372 CTests pass,
+and full preflight passes 75 Python tests, all eight compatibility profiles,
+100% compact-surface coverage, and every authority audit. The authority
+inventory deliberately remains `partial` until a matched Unity Beammap run
+accepts this sidecar and scientific products. Observation-resolved prior and
+reference decisions, adjacent atomic `beammap_source.*` state, and any
+additional Beammap-specific optional-product cardinalities required by the
+design review remain bounded follow-up work; this checkpoint does not claim
+the Beammap domain complete.
 
 ## Five-Phase Roadmap
 

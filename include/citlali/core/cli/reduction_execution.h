@@ -6,6 +6,8 @@
 #include <citlali/core/cli/runtime_setup.h>
 #include <citlali/core/cli/tod_processor_selection.h>
 #include <citlali/core/mapmaking/map.h>
+#include <citlali/core/pipeline/beammap_provenance.h>
+#include <citlali/core/pipeline/beammap_provenance_lifecycle.h>
 #include <citlali/core/pipeline/map_geometry.h>
 #include <citlali/core/pipeline/mapmaking_provenance.h>
 #include <citlali/core/pipeline/coadd_provenance.h>
@@ -168,6 +170,11 @@ int run_cli_reduction_processor(
         citlali::pipeline::post_processing_plan(engine);
     citlali::pipeline::record_post_processing_run_completed(
         post_processing_plan, mapmaking_plan);
+    if constexpr (IsBeammap) {
+        citlali::pipeline::record_beammap_run_completed(
+            citlali::pipeline::beammap_plan(engine), mapmaking_plan,
+            post_processing_plan);
+    }
     citlali::pipeline::write_post_processing_provenance_file(
         engine.output_paths.redu_dir_name, post_processing_plan);
     logger->info(
@@ -175,6 +182,17 @@ int run_cli_reduction_processor(
         citlali::pipeline::post_processing_provenance_path(
             engine.output_paths.redu_dir_name)
             .string());
+
+    if constexpr (IsBeammap) {
+        auto &beammap_plan = citlali::pipeline::beammap_plan(engine);
+        citlali::pipeline::write_beammap_provenance_file(
+            engine.output_paths.redu_dir_name, beammap_plan);
+        logger->info(
+            "beammap provenance sidecar: {}",
+            citlali::pipeline::beammap_provenance_path(
+                engine.output_paths.redu_dir_name)
+                .string());
+    }
 
     if constexpr (FitMaps) {
         auto &pointing_plan =

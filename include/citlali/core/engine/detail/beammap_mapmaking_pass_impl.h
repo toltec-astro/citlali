@@ -3,6 +3,7 @@
 // Beammap mapmaking stage implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/pipeline/beammap_provenance_lifecycle.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 
 void Beammap::normalize_beammap_maps_after_pass(
@@ -84,6 +85,8 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
     }
 
     normalize_beammap_maps_after_pass(active_maps_ptr, context.str());
+    citlali::pipeline::record_beammap_mapmaking_pass_completed_if_available(
+        *this);
 }
 
 template <class RandomBits, class Generator>

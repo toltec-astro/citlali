@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/pipeline/beammap_provenance_lifecycle.h>
 #include <citlali/core/pipeline/filtered_observation_outputs.h>
 #include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
 #include <citlali/core/pipeline/observation_coadd_accumulation.h>
@@ -47,6 +48,7 @@ void write_observation_outputs_and_accumulate(TodProc &todproc,
     }
     complete_mapmaking_observation_if_available(engine);
     complete_pointing_observation_if_available(engine);
+    complete_beammap_observation_if_available(engine);
 }
 
 }  // namespace citlali::pipeline

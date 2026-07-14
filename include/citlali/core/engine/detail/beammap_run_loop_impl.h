@@ -6,6 +6,7 @@
 #include <citlali/core/engine/detail/beammap_mapmaking_stage_impl.h>
 #include <citlali/core/engine/detail/beammap_ptc_cleaning_impl.h>
 #include <citlali/core/engine/detail/beammap_fit_stage_impl.h>
+#include <citlali/core/pipeline/beammap_provenance_lifecycle.h>
 #include <citlali/core/pipeline/noise_execution_plan.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
@@ -149,6 +150,10 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
         const bool locator_iter = is_beammap_locator_iter(current_iter);
         const bool measurement_iter = is_beammap_measurement_iter(current_iter);
         const bool first_measurement_iter = is_beammap_first_measurement_iter(current_iter);
+        citlali::pipeline::begin_beammap_internal_iteration_if_available(
+            *this, current_iter, locator_iter, measurement_iter,
+            first_measurement_iter,
+            (converged.array() == false).count());
         logger->info(
             "starting iter {} phase={} locator_iter={} measurement_start_iter={}",
             current_iter, beammap_iter_phase_name(current_iter),
@@ -157,6 +162,8 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
         const bool rerun_source_aware_rtc =
             maybe_run_beammap_source_aware_rtc(
                 kidsproc, rawobs, first_measurement_iter, detector_grouping);
+        citlali::pipeline::record_beammap_source_aware_rtc_if_available(
+            *this, rerun_source_aware_rtc);
 
         prepare_beammap_iteration_state(
             rerun_source_aware_rtc, measurement_iter, first_measurement_iter,
@@ -172,5 +179,18 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
         const int completed_iter = current_iter;
         keep_going = advance_beammap_iteration_state();
         write_or_clear_beammap_ptc_products_for_iter(completed_iter, keep_going);
+        auto termination_reason =
+            citlali::pipeline::BeammapTerminationReason::none;
+        if (!keep_going) {
+            termination_reason =
+                current_iter >= static_cast<Eigen::Index>(
+                    citlali::pipeline::beammap_config(*this)
+                        .iteration.max_iterations)
+                    ? citlali::pipeline::BeammapTerminationReason::maximum_iterations
+                    : citlali::pipeline::BeammapTerminationReason::all_maps_converged;
+        }
+        citlali::pipeline::complete_beammap_internal_iteration_if_available(
+            *this, (converged.array() == true).count(),
+            termination_reason);
     }
 }

@@ -4,6 +4,7 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/engine/detail/beammap_apt_keys.h>
+#include <citlali/core/pipeline/beammap_provenance_lifecycle.h>
 
 template <class KidsProc, class RawObs>
 void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
@@ -49,6 +50,9 @@ void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     // run timestream pipeline
     rtcproc.kernel.clear_source_centers();
     timestream_pipeline(kidsproc, rawobs);
+
+    citlali::pipeline::begin_beammap_observation_if_available(
+        *this, calib.n_dets, ptcs0.size());
 
     // placeholder vectors of size nscans for grppi maps
     scan_in_vec.resize(ptcs0.size());

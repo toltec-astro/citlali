@@ -32,18 +32,29 @@ directly and copies only `fit_radius_fwhm` into the shared numerical fitter.
 The fitter remains the owner of fit workspaces and realized fit results; it
 must not become a source of requested policy.
 
-There is still no versioned Beammap config provenance. This absence is
-explicit, not silently treated as completion. The static audit requires plan
-construction, ordered one-way compatibility installation, the current fitter
-adapter, and missing provenance until a later implementation checkpoint
-deliberately changes those claims.
+The plan now also owns the cold observation and internal-iteration lifecycle.
+It records observation identity and detector/map/scan counts; iteration phase,
+active-map count, mapmaking-pass count, source-aware RTC rerun, fit completion,
+and convergence; and terminal reason. Final completion cross-checks
+observation identity and map count against mapmaking provenance and requires
+exact agreement between completed Beammap iterations and post-processing fit
+contexts. It does not copy map writes or fit attempt/valid counts from those
+authoritative domains.
+
+Successful Beammap reductions publish required atomic
+`beammap_provenance.yaml` using schema
+`citlali-beammap-provenance-v1`. Publication is allowed only after lifecycle,
+mapmaking, post-processing, and observation-output completion; publication
+failure propagates to the CLI. The static audit requires the complete ordered
+lifecycle and exactly one completion/write path.
 
 ## Preparation Checkpoint
 
-The boundary audit mechanically expands the 59 reader roots and 59 serializer
-roots over the fixed-length vector leaves. Both cover all 74 frozen paths with
-no missing or extra roots. The serializer is a component serializer only; it
-is not a published provenance schema.
+The boundary audit mechanically expands the 59 reader roots and 59 config
+serializer roots over the fixed-length vector leaves. Both cover all 74 frozen
+paths with no missing or extra roots. That 74-leaf component serializer now
+feeds the versioned provenance envelope together with effective-resolution and
+realized-state serializers.
 
 Cold-boundary validation now rejects non-finite iteration tolerance, prior
 SNR, flagging-vector, and sensitivity-band values. It also enforces the vector
@@ -64,14 +75,18 @@ The effective plan records normalization formerly performed while loading,
 including phase-strategy correction, prior enablement when a path is missing,
 split-flag normalization, and mode-dependent iteration behavior. Reader-side
 mutation helpers are retired and the audit rejects their reintroduction.
-Realized state should describe attempted/completed iterations, detector-fit
-cardinality, required output cardinality, and completion without duplicating
-the post-processing fit record.
+Realized state describes attempted/completed iterations and completion without
+duplicating mapmaking or post-processing authority. Observation output
+completion is recorded only after the existing Beammap output calls return.
+More detailed Beammap-specific optional-product cardinality remains a bounded
+follow-up rather than a reason to copy established map and fit aggregates.
 
 ## Stop Rule
 
 Do not redesign Gaussian fitting, prior matching, flagging, or detector-map
-algorithms in this domain. Next add realized lifecycle and provenance around
-the established execution, then replace compatibility consumers only where an
-explicit effective input clarifies ownership. Any algorithmic change requires
-separate scientific ownership and validation evidence.
+algorithms in this domain. Next validate this lifecycle/provenance checkpoint
+with a matched Unity Beammap run, then add only the observation-resolved prior,
+reference, and Beammap-specific product facts needed to close the documented
+domain gates. Replace compatibility consumers only where an explicit effective
+input clarifies ownership. Any algorithmic change requires separate scientific
+ownership and validation evidence.

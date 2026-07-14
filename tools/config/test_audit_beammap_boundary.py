@@ -16,7 +16,9 @@ class BeammapBoundaryAuditTest(unittest.TestCase):
         result = audit.audit(REPO_ROOT)
         self.assertFalse(result["drift"])
         self.assertTrue(result["manifest"]["exact"])
-        self.assertEqual(result["provenance"]["status"], "missing")
+        self.assertEqual(
+            result["provenance"]["status"], "required-atomic-v1"
+        )
 
     def test_reader_covers_all_frozen_paths(self) -> None:
         state = audit.audit(REPO_ROOT)["reader_coverage"]
@@ -43,14 +45,17 @@ class BeammapBoundaryAuditTest(unittest.TestCase):
         state = audit.audit(REPO_ROOT)["execution_plan"]
         self.assertTrue(state["exact"])
         self.assertEqual(
-            state["status"], "wired-effective-compatibility-consumers"
+            state["status"], "wired-realized-provenance"
         )
         self.assertEqual(
             state["production_references"],
             state["expected_production_references"],
         )
         self.assertTrue(state["wired_at_boundary"])
-        self.assertEqual(state["serializer_production_references"], [])
+        self.assertEqual(
+            state["serializer_production_references"],
+            [audit.PROVENANCE_SOURCE],
+        )
 
     def test_rejects_manifest_digest_drift(self) -> None:
         manifest = audit.load_manifest(REPO_ROOT / audit.MANIFEST_SOURCE)
@@ -76,10 +81,25 @@ class BeammapBoundaryAuditTest(unittest.TestCase):
         self.assertTrue(result["exact"])
         self.assertEqual(result["unexpected_files"], [])
 
-    def test_inventory_does_not_claim_complete_provenance(self) -> None:
+    def test_provenance_and_lifecycle_are_required_and_exact(self) -> None:
+        result = audit.audit(REPO_ROOT)
+        self.assertTrue(result["provenance"]["exact"])
+        self.assertEqual(result["provenance"]["cli_write_count"], 1)
+        self.assertEqual(result["provenance"]["cli_completion_count"], 1)
+        self.assertTrue(result["provenance"]["completion_before_write"])
+        self.assertTrue(result["lifecycle"]["exact"])
+        self.assertEqual(
+            result["lifecycle"]["call_counts"],
+            audit.EXPECTED_LIFECYCLE_CALLS,
+        )
+
+    def test_inventory_awaits_unity_acceptance(self) -> None:
         result = audit.audit(REPO_ROOT)
         self.assertTrue(result["inventory"]["exact"])
-        self.assertTrue(result["provenance"]["expected_missing"])
+        self.assertEqual(
+            result["inventory"]["domain"]["provenance_status"],
+            "partial",
+        )
 
 
 if __name__ == "__main__":

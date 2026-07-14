@@ -2,14 +2,19 @@
 #include <citlali/core/config/beammap_config_validation.h>
 #include <citlali/core/pipeline/beammap_config_loading.h>
 #include <citlali/core/pipeline/beammap_config_serialization.h>
+#include <citlali/core/pipeline/beammap_provenance.h>
+#include <citlali/core/pipeline/beammap_provenance_lifecycle.h>
 #include <citlali/core/pipeline/config_diagnostics_state.h>
 #include <citlali/core/pipeline/beammap_execution_plan.h>
+#include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
+#include <citlali/core/pipeline/post_processing_provenance_lifecycle.h>
 
 #include <gtest/gtest.h>
 #include <spdlog/sinks/null_sink.h>
 #include <spdlog/spdlog.h>
 #include <tula/config/yamlconfig.h>
 
+#include <filesystem>
 #include <limits>
 #include <memory>
 #include <set>
@@ -80,6 +85,79 @@ citlali::config::BeammapConfig valid_complete_beammap_config() {
     config.phase_strategy.locator_iter = 0;
     config.phase_strategy.measurement_start_iter = 1;
     return config;
+}
+
+citlali::pipeline::MapmakingExecutionPlan completed_beammap_mapmaking_plan(
+    std::size_t map_count = 5) {
+    citlali::config::MapmakingConfig request;
+    request.enabled = true;
+    request.grouping = citlali::config::MapGrouping::detector;
+    citlali::pipeline::MapmakingExecutionPlan plan;
+    plan.reset_from_request(
+        request, citlali::config::ReductionType::beammap);
+    plan.begin_iteration();
+    plan.begin_observation(0, "148670", map_count, 1.0e-5, map_count);
+    citlali::pipeline::complete_mapmaking_observation(plan);
+    citlali::pipeline::record_mapmaking_run_completed(plan);
+    return plan;
+}
+
+citlali::pipeline::PostProcessingExecutionPlan
+completed_beammap_post_processing_plan(
+    const citlali::pipeline::MapmakingExecutionPlan &mapmaking,
+    std::size_t fit_context_count, std::size_t map_count = 5) {
+    citlali::config::PostProcessingConfig request;
+    request.map_filtering.enabled = false;
+    request.source_finding.enabled = false;
+    citlali::pipeline::PostProcessingExecutionPlan plan;
+    plan.reset_from_request(
+        request, citlali::config::ReductionType::beammap, true, false);
+    plan.begin_iteration();
+    for (std::size_t index = 0; index < fit_context_count; ++index) {
+        citlali::pipeline::record_post_processing_beammap_fits_completed(
+            plan, map_count, map_count - 1);
+    }
+    citlali::pipeline::record_post_processing_run_completed(
+        plan, mapmaking);
+    return plan;
+}
+
+citlali::pipeline::BeammapExecutionPlan completed_beammap_plan() {
+    auto request = valid_complete_beammap_config();
+    request.iteration.max_iterations = 3;
+    citlali::pipeline::BeammapExecutionPlan plan;
+    plan.reset_from_request(request, {}, true);
+    plan.begin_iteration();
+    plan.begin_observation(0, "148670", 5, 5, 198);
+
+    plan.begin_internal_iteration(
+        0, citlali::pipeline::BeammapIterationPhase::locator, 5);
+    plan.record_source_aware_rtc_rerun(false);
+    plan.record_mapmaking_pass_completed();
+    plan.record_fitting_completed();
+    plan.complete_internal_iteration(
+        0, citlali::pipeline::BeammapTerminationReason::none);
+
+    plan.begin_internal_iteration(
+        1, citlali::pipeline::BeammapIterationPhase::measurement_start,
+        5);
+    plan.record_source_aware_rtc_rerun(true);
+    plan.record_mapmaking_pass_completed();
+    plan.record_mapmaking_pass_completed();
+    plan.record_fitting_completed();
+    plan.complete_internal_iteration(
+        2, citlali::pipeline::BeammapTerminationReason::none);
+
+    plan.begin_internal_iteration(
+        2, citlali::pipeline::BeammapIterationPhase::measurement, 3);
+    plan.record_source_aware_rtc_rerun(false);
+    plan.record_mapmaking_pass_completed();
+    plan.record_fitting_completed();
+    plan.complete_internal_iteration(
+        5,
+        citlali::pipeline::BeammapTerminationReason::maximum_iterations);
+    plan.complete_observation();
+    return plan;
 }
 
 TEST(BeammapConfigSerialization, CoversFrozenSeventyFourLeafSurface) {
@@ -185,6 +263,203 @@ TEST(BeammapExecutionPlan, ResetClearsPriorResolutionState) {
     EXPECT_FALSE(plan.resolution().max_d2_iter0_inherited);
     EXPECT_FALSE(plan.resolution().split_flag_values_defaulted);
     EXPECT_EQ(plan.resolution().requested_split_flag_count, 3U);
+}
+
+TEST(BeammapExecutionPlan, RecordsCompletedObservationLifecycle) {
+    auto plan = completed_beammap_plan();
+    const auto mapmaking = completed_beammap_mapmaking_plan();
+    const auto post_processing =
+        completed_beammap_post_processing_plan(mapmaking, 3);
+
+    citlali::pipeline::record_beammap_run_completed(
+        plan, mapmaking, post_processing);
+
+    ASSERT_EQ(plan.observations().size(), 1U);
+    const auto &observation = plan.observations().front();
+    ASSERT_EQ(observation.iterations.size(), 3U);
+    EXPECT_EQ(observation.detector_count, 5U);
+    EXPECT_EQ(observation.scan_count, 198U);
+    EXPECT_EQ(observation.terminal_iteration, 2U);
+    EXPECT_EQ(
+        observation.termination_reason,
+        citlali::pipeline::BeammapTerminationReason::maximum_iterations);
+    EXPECT_EQ(observation.iterations[1].mapmaking_pass_count, 2U);
+    EXPECT_EQ(observation.iterations[1].newly_converged_map_count, 2U);
+    EXPECT_EQ(observation.iterations[2].newly_converged_map_count, 3U);
+    EXPECT_TRUE(plan.realized().reduction_completed);
+    EXPECT_TRUE(plan.realized().beammap_executed);
+    EXPECT_EQ(plan.realized().completed_observation_count, 1U);
+    EXPECT_EQ(plan.realized().completed_iteration_count, 3U);
+}
+
+TEST(BeammapExecutionPlan, RequiresEveryInternalStageBeforeCompletion) {
+    auto request = valid_complete_beammap_config();
+    request.iteration.max_iterations = 1;
+    citlali::pipeline::BeammapExecutionPlan plan;
+    plan.reset_from_request(request, {}, true);
+    plan.begin_iteration();
+    plan.begin_observation(0, "148670", 5, 5, 198);
+    plan.begin_internal_iteration(
+        0, citlali::pipeline::BeammapIterationPhase::locator, 5);
+    plan.record_mapmaking_pass_completed();
+    plan.record_fitting_completed();
+
+    EXPECT_THROW(
+        plan.complete_internal_iteration(
+            0,
+            citlali::pipeline::BeammapTerminationReason::maximum_iterations),
+        std::logic_error);
+}
+
+TEST(BeammapExecutionPlan, RejectsFitContextCardinalityMismatch) {
+    auto plan = completed_beammap_plan();
+    const auto mapmaking = completed_beammap_mapmaking_plan();
+    const auto post_processing =
+        completed_beammap_post_processing_plan(mapmaking, 2);
+
+    EXPECT_THROW(
+        citlali::pipeline::record_beammap_run_completed(
+            plan, mapmaking, post_processing),
+        std::logic_error);
+}
+
+TEST(BeammapExecutionPlan, RecordsEarlyConvergenceTermination) {
+    auto request = valid_complete_beammap_config();
+    request.iteration.max_iterations = 3;
+    citlali::pipeline::BeammapExecutionPlan plan;
+    plan.reset_from_request(request, {}, true);
+    plan.begin_iteration();
+    plan.begin_observation(0, "148670", 5, 5, 198);
+    plan.begin_internal_iteration(
+        0, citlali::pipeline::BeammapIterationPhase::locator, 5);
+    plan.record_source_aware_rtc_rerun(false);
+    plan.record_mapmaking_pass_completed();
+    plan.record_fitting_completed();
+    plan.complete_internal_iteration(
+        0, citlali::pipeline::BeammapTerminationReason::none);
+    plan.begin_internal_iteration(
+        1, citlali::pipeline::BeammapIterationPhase::measurement_start,
+        5);
+    plan.record_source_aware_rtc_rerun(true);
+    plan.record_mapmaking_pass_completed();
+    plan.record_fitting_completed();
+    plan.complete_internal_iteration(
+        5,
+        citlali::pipeline::BeammapTerminationReason::all_maps_converged);
+    plan.complete_observation();
+    const auto mapmaking = completed_beammap_mapmaking_plan();
+    const auto post_processing =
+        completed_beammap_post_processing_plan(mapmaking, 2);
+
+    citlali::pipeline::record_beammap_run_completed(
+        plan, mapmaking, post_processing);
+
+    EXPECT_EQ(
+        plan.observations().front().termination_reason,
+        citlali::pipeline::BeammapTerminationReason::all_maps_converged);
+    EXPECT_EQ(plan.realized().completed_iteration_count, 2U);
+}
+
+TEST(BeammapExecutionPlan, RecordsDisabledExecutionWithoutFakeProducts) {
+    citlali::config::MapmakingConfig mapmaking_request;
+    mapmaking_request.enabled = false;
+    citlali::pipeline::MapmakingExecutionPlan mapmaking;
+    mapmaking.reset_from_request(
+        mapmaking_request, citlali::config::ReductionType::beammap);
+    mapmaking.begin_iteration();
+    citlali::pipeline::record_mapmaking_run_completed(mapmaking);
+
+    citlali::config::PostProcessingConfig post_request;
+    citlali::pipeline::PostProcessingExecutionPlan post_processing;
+    post_processing.reset_from_request(
+        post_request, citlali::config::ReductionType::beammap,
+        false, false);
+    post_processing.begin_iteration();
+    citlali::pipeline::record_post_processing_run_completed(
+        post_processing, mapmaking);
+
+    citlali::pipeline::BeammapExecutionPlan plan;
+    plan.reset_from_request(valid_complete_beammap_config(), {}, false);
+    plan.begin_iteration();
+    citlali::pipeline::record_beammap_run_completed(
+        plan, mapmaking, post_processing);
+
+    EXPECT_TRUE(plan.observations().empty());
+    EXPECT_TRUE(plan.realized().reduction_completed);
+    EXPECT_FALSE(plan.realized().beammap_executed);
+    EXPECT_EQ(plan.realized().completed_observation_count, 0U);
+    EXPECT_EQ(plan.realized().completed_iteration_count, 0U);
+}
+
+TEST(BeammapExecutionPlan, RepeatedIterationResetClearsRealizedState) {
+    auto plan = completed_beammap_plan();
+
+    plan.begin_iteration();
+
+    EXPECT_TRUE(plan.observations().empty());
+    EXPECT_FALSE(plan.realized().reduction_completed);
+    EXPECT_EQ(plan.realized().completed_observation_count, 0U);
+    EXPECT_EQ(plan.realized().completed_iteration_count, 0U);
+}
+
+TEST(BeammapProvenance, SerializesRequestedEffectiveAndRealizedState) {
+    auto plan = completed_beammap_plan();
+    const auto mapmaking = completed_beammap_mapmaking_plan();
+    const auto post_processing =
+        completed_beammap_post_processing_plan(mapmaking, 3);
+    citlali::pipeline::record_beammap_run_completed(
+        plan, mapmaking, post_processing);
+
+    const auto node = citlali::pipeline::beammap_provenance_node(plan);
+
+    EXPECT_EQ(node["schema_version"].as<std::string>(),
+              "citlali-beammap-provenance-v1");
+    EXPECT_EQ(node["requested"]["iter_max"].as<int>(), 3);
+    EXPECT_EQ(node["effective"]["config"]["iter_max"].as<int>(), 3);
+    EXPECT_TRUE(node["effective"]["resolution"]["mapmaking_enabled"]
+                    .as<bool>());
+    ASSERT_EQ(node["observations"].size(), 1U);
+    ASSERT_EQ(node["observations"][0]["iterations"].size(), 3U);
+    EXPECT_EQ(node["observations"][0]["iterations"][1]
+                  ["mapmaking_pass_count"]
+                      .as<std::size_t>(),
+              2U);
+    EXPECT_EQ(node["realized"]["completed_iteration_count"]
+                  .as<std::size_t>(),
+              3U);
+}
+
+TEST(BeammapProvenance, RequiresCompletionAndPropagatesWriteFailure) {
+    auto incomplete = completed_beammap_plan();
+    const auto directory = std::filesystem::temp_directory_path() /
+        "citlali_beammap_provenance_test";
+    std::filesystem::remove_all(directory);
+    std::filesystem::create_directories(directory);
+
+    EXPECT_THROW(
+        citlali::pipeline::write_beammap_provenance_file(
+            directory, incomplete),
+        std::logic_error);
+
+    const auto mapmaking = completed_beammap_mapmaking_plan();
+    const auto post_processing =
+        completed_beammap_post_processing_plan(mapmaking, 3);
+    citlali::pipeline::record_beammap_run_completed(
+        incomplete, mapmaking, post_processing);
+    EXPECT_NO_THROW(
+        citlali::pipeline::write_beammap_provenance_file(
+            directory, incomplete));
+    EXPECT_TRUE(std::filesystem::exists(
+        directory / citlali::pipeline::beammap_provenance_filename));
+    EXPECT_THROW(
+        citlali::pipeline::write_beammap_provenance_file(
+            directory / "missing", incomplete),
+        std::ios_base::failure);
+    EXPECT_FALSE(std::filesystem::exists(
+        directory / "missing" /
+        (std::string{citlali::pipeline::beammap_provenance_filename} +
+         ".tmp")));
+    std::filesystem::remove_all(directory);
 }
 
 TEST(BeammapExecutionPlan, ReadsRawRequestBeforeResolvingEffectivePolicy) {

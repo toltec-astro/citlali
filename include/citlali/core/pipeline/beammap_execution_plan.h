@@ -5,7 +5,10 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <optional>
 #include <stdexcept>
+#include <string>
+#include <utility>
 #include <vector>
 
 namespace citlali::pipeline {
@@ -47,6 +50,85 @@ struct BeammapEffectiveResolutionRecord {
     std::size_t effective_split_flag_count = 0;
 };
 
+enum class BeammapIterationPhase {
+    legacy,
+    locator,
+    pre_measurement,
+    measurement_start,
+    measurement,
+};
+
+inline const char *beammap_iteration_phase_name(
+    BeammapIterationPhase phase) {
+    switch (phase) {
+        case BeammapIterationPhase::legacy:
+            return "legacy";
+        case BeammapIterationPhase::locator:
+            return "locator";
+        case BeammapIterationPhase::pre_measurement:
+            return "pre_measurement";
+        case BeammapIterationPhase::measurement_start:
+            return "measurement_start";
+        case BeammapIterationPhase::measurement:
+            return "measurement";
+    }
+    throw std::logic_error("unknown beammap iteration phase");
+}
+
+enum class BeammapTerminationReason {
+    none,
+    maximum_iterations,
+    all_maps_converged,
+};
+
+inline const char *beammap_termination_reason_name(
+    BeammapTerminationReason reason) {
+    switch (reason) {
+        case BeammapTerminationReason::none:
+            return "none";
+        case BeammapTerminationReason::maximum_iterations:
+            return "maximum_iterations";
+        case BeammapTerminationReason::all_maps_converged:
+            return "all_maps_converged";
+    }
+    throw std::logic_error("unknown beammap termination reason");
+}
+
+struct BeammapIterationState {
+    std::size_t iteration_index = 0;
+    BeammapIterationPhase phase = BeammapIterationPhase::legacy;
+    std::size_t active_map_count = 0;
+    std::size_t mapmaking_pass_count = 0;
+    std::optional<bool> source_aware_rtc_rerun;
+    bool fitting_completed = false;
+    std::size_t newly_converged_map_count = 0;
+    std::size_t total_converged_map_count = 0;
+    BeammapTerminationReason termination_reason =
+        BeammapTerminationReason::none;
+    bool completed = false;
+};
+
+struct BeammapObservationState {
+    std::size_t observation_index = 0;
+    std::string obsnum;
+    std::size_t detector_count = 0;
+    std::size_t map_count = 0;
+    std::size_t scan_count = 0;
+    std::vector<BeammapIterationState> iterations;
+    std::optional<std::size_t> terminal_iteration;
+    BeammapTerminationReason termination_reason =
+        BeammapTerminationReason::none;
+    bool outputs_completed = false;
+};
+
+struct BeammapRealizedState {
+    bool reduction_completed = false;
+    bool beammap_executed = false;
+    std::optional<std::size_t> completed_observation_count;
+    std::size_t completed_iteration_count = 0;
+    bool outputs_completed = false;
+};
+
 inline std::vector<int> resolve_beammap_split_flag_values(
     const std::vector<int> &requested,
     BeammapEffectiveResolutionRecord &resolution) {
@@ -83,6 +165,15 @@ public:
 
     [[nodiscard]] const BeammapEffectiveResolutionRecord &resolution() const {
         return resolution_;
+    }
+
+    [[nodiscard]] const std::vector<BeammapObservationState> &observations()
+        const {
+        return observations_;
+    }
+
+    [[nodiscard]] const BeammapRealizedState &realized() const {
+        return realized_;
     }
 
     void reset_from_request(
@@ -172,14 +263,265 @@ public:
                     ? request.split_fits_by_flag.flag_values
                     : std::vector<int>{},
                 resolution_);
+        observations_.clear();
+        realized_ = {};
         initialized_ = true;
     }
 
+    void begin_iteration() {
+        require_initialized();
+        observations_.clear();
+        realized_ = {};
+        realized_.completed_observation_count = std::size_t{0};
+    }
+
+    BeammapObservationState &begin_observation(
+        std::size_t observation_index, std::string obsnum,
+        std::size_t detector_count, std::size_t map_count,
+        std::size_t scan_count) {
+        require_active_iteration();
+        if (!resolution_.mapmaking_enabled) {
+            throw std::logic_error(
+                "beammap observation requires enabled mapmaking");
+        }
+        if (obsnum.empty() || detector_count == 0 || map_count == 0 ||
+            scan_count == 0) {
+            throw std::logic_error(
+                "beammap observation identity and counts must be positive");
+        }
+        if (!observations_.empty() &&
+            !observations_.back().outputs_completed) {
+            throw std::logic_error(
+                "previous beammap observation is incomplete");
+        }
+        observations_.push_back(BeammapObservationState{
+            observation_index, std::move(obsnum), detector_count,
+            map_count, scan_count});
+        return observations_.back();
+    }
+
+    BeammapIterationState &begin_internal_iteration(
+        std::size_t iteration_index, BeammapIterationPhase phase,
+        std::size_t active_map_count) {
+        auto &observation = current_observation();
+        if (observation.outputs_completed ||
+            observation.terminal_iteration.has_value()) {
+            throw std::logic_error(
+                "cannot begin iteration for completed beammap observation");
+        }
+        if (!observation.iterations.empty() &&
+            !observation.iterations.back().completed) {
+            throw std::logic_error(
+                "previous beammap iteration is incomplete");
+        }
+        if (iteration_index != observation.iterations.size()) {
+            throw std::logic_error(
+                "beammap iteration indices must be contiguous from zero");
+        }
+        if (active_map_count == 0 ||
+            active_map_count > observation.map_count) {
+            throw std::logic_error(
+                "beammap active map count is inconsistent");
+        }
+        observation.iterations.push_back(BeammapIterationState{
+            iteration_index, phase, active_map_count});
+        return observation.iterations.back();
+    }
+
+    void record_source_aware_rtc_rerun(bool rerun) {
+        auto &iteration = current_internal_iteration();
+        if (iteration.source_aware_rtc_rerun.has_value()) {
+            throw std::logic_error(
+                "beammap source-aware RTC decision already recorded");
+        }
+        iteration.source_aware_rtc_rerun = rerun;
+    }
+
+    void record_mapmaking_pass_completed() {
+        auto &iteration = current_internal_iteration();
+        ++iteration.mapmaking_pass_count;
+    }
+
+    void record_fitting_completed() {
+        auto &iteration = current_internal_iteration();
+        if (iteration.fitting_completed) {
+            throw std::logic_error(
+                "beammap fitting completion already recorded");
+        }
+        if (iteration.mapmaking_pass_count == 0) {
+            throw std::logic_error(
+                "beammap fitting completed before mapmaking");
+        }
+        iteration.fitting_completed = true;
+    }
+
+    void complete_internal_iteration(
+        std::size_t total_converged_map_count,
+        BeammapTerminationReason termination_reason) {
+        auto &observation = current_observation();
+        auto &iteration = current_internal_iteration();
+        if (!iteration.source_aware_rtc_rerun.has_value() ||
+            iteration.mapmaking_pass_count == 0 ||
+            !iteration.fitting_completed) {
+            throw std::logic_error(
+                "beammap iteration lifecycle is incomplete");
+        }
+        if (total_converged_map_count > observation.map_count) {
+            throw std::logic_error(
+                "beammap converged map count exceeds map count");
+        }
+        const std::size_t previous_converged =
+            observation.iterations.size() > 1
+                ? observation.iterations[
+                      observation.iterations.size() - 2]
+                      .total_converged_map_count
+                : 0;
+        if (total_converged_map_count < previous_converged) {
+            throw std::logic_error(
+                "beammap converged map count decreased");
+        }
+        const auto completed_count = iteration.iteration_index + 1;
+        const auto maximum_iterations = static_cast<std::size_t>(
+            effective_.iteration.max_iterations);
+        if (termination_reason ==
+                BeammapTerminationReason::maximum_iterations &&
+            completed_count != maximum_iterations) {
+            throw std::logic_error(
+                "beammap maximum-iteration termination is inconsistent");
+        }
+        if (termination_reason ==
+                BeammapTerminationReason::all_maps_converged &&
+            total_converged_map_count != observation.map_count) {
+            throw std::logic_error(
+                "beammap convergence termination is incomplete");
+        }
+        if (termination_reason == BeammapTerminationReason::none &&
+            (completed_count >= maximum_iterations ||
+             total_converged_map_count == observation.map_count)) {
+            throw std::logic_error(
+                "non-terminal beammap iteration has terminal state");
+        }
+        iteration.newly_converged_map_count =
+            total_converged_map_count - previous_converged;
+        iteration.total_converged_map_count =
+            total_converged_map_count;
+        iteration.termination_reason = termination_reason;
+        iteration.completed = true;
+    }
+
+    void complete_observation() {
+        auto &observation = current_observation();
+        if (observation.outputs_completed) {
+            throw std::logic_error(
+                "beammap observation outputs already completed");
+        }
+        if (observation.iterations.empty() ||
+            !observation.iterations.back().completed ||
+            observation.iterations.back().termination_reason ==
+                BeammapTerminationReason::none) {
+            throw std::logic_error(
+                "beammap observation has no completed terminal iteration");
+        }
+        observation.terminal_iteration =
+            observation.iterations.back().iteration_index;
+        observation.termination_reason =
+            observation.iterations.back().termination_reason;
+        observation.outputs_completed = true;
+        ++*realized_.completed_observation_count;
+        realized_.completed_iteration_count +=
+            observation.iterations.size();
+    }
+
+    void complete_reduction(bool beammap_executed) {
+        require_active_iteration();
+        if (realized_.reduction_completed) {
+            throw std::logic_error(
+                "beammap reduction is already completed");
+        }
+        if (beammap_executed != resolution_.mapmaking_enabled) {
+            throw std::logic_error(
+                "beammap execution state differs from effective policy");
+        }
+        const auto completed_observations = static_cast<std::size_t>(
+            std::count_if(
+                observations_.begin(), observations_.end(),
+                [](const auto &observation) {
+                    return observation.outputs_completed;
+                }));
+        std::size_t completed_iterations = 0;
+        for (const auto &observation : observations_) {
+            completed_iterations += static_cast<std::size_t>(
+                std::count_if(
+                    observation.iterations.begin(),
+                    observation.iterations.end(),
+                    [](const auto &iteration) {
+                        return iteration.completed;
+                    }));
+        }
+        if (*realized_.completed_observation_count !=
+                completed_observations ||
+            completed_observations != observations_.size() ||
+            realized_.completed_iteration_count != completed_iterations) {
+            throw std::logic_error(
+                "beammap lifecycle cardinality is incomplete");
+        }
+        if (beammap_executed && observations_.empty()) {
+            throw std::logic_error(
+                "beammap completed without observations");
+        }
+        if (!beammap_executed && !observations_.empty()) {
+            throw std::logic_error(
+                "disabled beammap recorded observations");
+        }
+        realized_.beammap_executed = beammap_executed;
+        realized_.outputs_completed = true;
+        realized_.reduction_completed = true;
+    }
+
 private:
+    void require_initialized() const {
+        if (!initialized_) {
+            throw std::logic_error("beammap plan is not initialized");
+        }
+    }
+
+    void require_active_iteration() const {
+        require_initialized();
+        if (!realized_.completed_observation_count.has_value()) {
+            throw std::logic_error(
+                "beammap reduction iteration was not initialized");
+        }
+    }
+
+    BeammapObservationState &current_observation() {
+        require_active_iteration();
+        if (observations_.empty()) {
+            throw std::logic_error(
+                "beammap observation has not begun");
+        }
+        return observations_.back();
+    }
+
+    BeammapIterationState &current_internal_iteration() {
+        auto &observation = current_observation();
+        if (observation.iterations.empty()) {
+            throw std::logic_error(
+                "beammap internal iteration has not begun");
+        }
+        auto &iteration = observation.iterations.back();
+        if (iteration.completed) {
+            throw std::logic_error(
+                "beammap internal iteration is already completed");
+        }
+        return iteration;
+    }
+
     bool initialized_ = false;
     citlali::config::BeammapConfig requested_;
     citlali::config::BeammapConfig effective_;
     BeammapEffectiveResolutionRecord resolution_;
+    std::vector<BeammapObservationState> observations_;
+    BeammapRealizedState realized_;
 };
 
 inline void install_beammap_effective_compatibility_config(

@@ -24,6 +24,35 @@ SERIALIZER_SOURCE = (
 PLAN_SOURCE = "include/citlali/core/pipeline/beammap_execution_plan.h"
 PROVENANCE_SOURCE = "include/citlali/core/pipeline/beammap_provenance.h"
 CLI_SOURCE = "include/citlali/core/cli/reduction_execution.h"
+LIFECYCLE_SOURCE = (
+    "include/citlali/core/pipeline/beammap_provenance_lifecycle.h"
+)
+EXPECTED_LIFECYCLE_CALLS = {
+    "include/citlali/core/pipeline/reduction_iteration_setup.h": {
+        "begin_beammap_run_if_available": 1,
+    },
+    "include/citlali/core/engine/detail/beammap_pipeline_entry_impl.h": {
+        "begin_beammap_observation_if_available": 1,
+    },
+    "include/citlali/core/engine/detail/beammap_run_loop_impl.h": {
+        "begin_beammap_internal_iteration_if_available": 1,
+        "record_beammap_source_aware_rtc_if_available": 1,
+        "complete_beammap_internal_iteration_if_available": 1,
+    },
+    "include/citlali/core/engine/detail/beammap_mapmaking_pass_impl.h": {
+        "record_beammap_mapmaking_pass_completed_if_available": 1,
+    },
+    "include/citlali/core/engine/detail/beammap_fit_stage_impl.h": {
+        "record_beammap_fitting_completed_if_available": 1,
+    },
+    "include/citlali/core/pipeline/observation_output_execution.h": {
+        "complete_beammap_observation_if_available": 1,
+    },
+    CLI_SOURCE: {
+        "record_beammap_run_completed": 1,
+        "write_beammap_provenance_file": 1,
+    },
+}
 READER_SOURCES = (
     "include/citlali/core/pipeline/beammap_config_loading.h",
     "include/citlali/core/pipeline/beammap_config_core_loading.h",
@@ -280,8 +309,12 @@ def execution_plan_state(repo_root: Path) -> dict[str, object]:
     )
     expected_plan_references = [
         "include/citlali/core/pipeline/beammap_config_loading.h",
+        "include/citlali/core/pipeline/beammap_provenance.h",
+        LIFECYCLE_SOURCE,
+        "include/citlali/core/pipeline/beammap_provenance_serialization.h",
         "include/citlali/core/pipeline/reduction_config_state.h",
     ]
+    expected_serializer_references = [PROVENANCE_SOURCE]
     boundary = (repo_root / BOUNDARY_SOURCE).read_text(encoding="utf-8")
     wired = all(
         token in boundary
@@ -299,18 +332,18 @@ def execution_plan_state(repo_root: Path) -> dict[str, object]:
         "expected_production_references": expected_plan_references,
         "serializer_production_references": serializer_references,
         "wired_at_boundary": wired,
-        "status": "wired-effective-compatibility-consumers"
+        "status": "wired-realized-provenance"
         if source_exists
         and contract_present
         and plan_references == expected_plan_references
         and wired
-        and not serializer_references
+        and serializer_references == expected_serializer_references
         else "unexpected",
         "exact": source_exists
         and contract_present
         and plan_references == expected_plan_references
         and wired
-        and not serializer_references,
+        and serializer_references == expected_serializer_references,
     }
 
 
@@ -380,14 +413,67 @@ def inventory_state(repo_root: Path) -> dict[str, object]:
 
 def provenance_state(repo_root: Path) -> dict[str, object]:
     source_exists = (repo_root / PROVENANCE_SOURCE).exists()
+    source = (
+        (repo_root / PROVENANCE_SOURCE).read_text(encoding="utf-8")
+        if source_exists
+        else ""
+    )
     cli = (repo_root / CLI_SOURCE).read_text(encoding="utf-8")
     write_count = call_count(cli, "write_beammap_provenance_file")
+    completion_count = call_count(cli, "record_beammap_run_completed")
+    contract_exact = all(
+        token in source
+        for token in (
+            '"citlali-beammap-provenance-v1"',
+            '"beammap_provenance.yaml"',
+            "plan.realized().reduction_completed",
+            "plan.realized().outputs_completed",
+            "write_yaml_file_atomic(",
+        )
+    )
+    completion_position = cli.find("record_beammap_run_completed(")
+    write_position = cli.find("write_beammap_provenance_file(")
+    ordered = (
+        completion_position >= 0
+        and write_position > completion_position
+    )
+    exact = bool(
+        source_exists
+        and write_count == 1
+        and completion_count == 1
+        and contract_exact
+        and ordered
+    )
     return {
         "source": PROVENANCE_SOURCE,
         "source_exists": source_exists,
         "cli_write_count": write_count,
-        "status": "missing" if not source_exists and write_count == 0 else "present",
-        "expected_missing": not source_exists and write_count == 0,
+        "cli_completion_count": completion_count,
+        "contract_exact": contract_exact,
+        "completion_before_write": ordered,
+        "status": "required-atomic-v1" if exact else "unexpected",
+        "exact": exact,
+    }
+
+
+def lifecycle_state(repo_root: Path) -> dict[str, object]:
+    source_exists = (repo_root / LIFECYCLE_SOURCE).exists()
+    call_counts: dict[str, dict[str, int]] = {}
+    for source, expected in EXPECTED_LIFECYCLE_CALLS.items():
+        text = (repo_root / source).read_text(encoding="utf-8")
+        call_counts[source] = {
+            name: call_count(text, name) for name in expected
+        }
+    exact = bool(
+        source_exists
+        and call_counts == EXPECTED_LIFECYCLE_CALLS
+    )
+    return {
+        "source": LIFECYCLE_SOURCE,
+        "source_exists": source_exists,
+        "call_counts": call_counts,
+        "expected_call_counts": EXPECTED_LIFECYCLE_CALLS,
+        "exact": exact,
     }
 
 
@@ -405,6 +491,7 @@ def audit(repo_root: Path) -> dict[str, object]:
     )
     inventory = inventory_state(repo_root)
     provenance = provenance_state(repo_root)
+    lifecycle = lifecycle_state(repo_root)
     drift = not all(
         (
             manifest["exact"],
@@ -416,7 +503,8 @@ def audit(repo_root: Path) -> dict[str, object]:
             model["exact"],
             boundary["exact"],
             inventory["exact"],
-            provenance["expected_missing"],
+            provenance["exact"],
+            lifecycle["exact"],
         )
     )
     return {
@@ -430,6 +518,7 @@ def audit(repo_root: Path) -> dict[str, object]:
         "authority_boundary": boundary,
         "inventory": inventory,
         "provenance": provenance,
+        "lifecycle": lifecycle,
         "drift": drift,
     }
 
