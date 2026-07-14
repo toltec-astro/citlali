@@ -5142,6 +5142,110 @@
         "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained.",
         "The 76.638-second log interval is one observation and is recorded without a performance conclusion."
       ]
+    },
+    {
+      "record_id": "point-152389-refactor-f8a4a596-redu57",
+      "recorded_date": "2026-07-14",
+      "mode": "point",
+      "status": "accepted",
+      "candidate": {
+        "label": "refactor",
+        "branch": "codex/structural-refactor",
+        "citlali_sha": "f8a4a596",
+        "citlali_version": "v4.0.0-3471-gf8a4a596",
+        "dirty": false,
+        "dependencies": {"kids_sha": "04088da", "tula_sha": "f30f81d"},
+        "build": {"host": "unity", "compiler": null, "build_type": "Release", "cmake_flags": null}
+      },
+      "baseline": {
+        "label": "refactor",
+        "citlali_sha": "9f8ad50e",
+        "citlali_version": "v4.0.0-3469-g9f8ad50e",
+        "dependencies": {"kids_sha": "04088da", "tula_sha": "f30f81d"},
+        "reduction_id": "redu56"
+      },
+      "config": {
+        "ordered_sources": [{
+          "role": "merged_low_level_citlali_input",
+          "path": "citlali_o152389_0_2_c1.yaml",
+          "precedence": 0,
+          "sha256": "b494d8671fb162f47d6eaadc1299755594db5c8c27353d7e8b4ac8ffe8566ed8"
+        }],
+        "overlay_sources_retained": false,
+        "canonical_merged_sha256": "b494d8671fb162f47d6eaadc1299755594db5c8c27353d7e8b4ac8ffe8566ed8",
+        "post_processing_provenance": {
+          "path": "post_processing_provenance.yaml",
+          "schema_version": "citlali-post-processing-provenance-v1",
+          "sha256": "3ec29c57335f3aec0ea82ca002e2edbe86dd2e97fd6c1ce99cd52068e77f9eae",
+          "semantic_audit": {
+            "map_filtering_requested": true,
+            "map_filtering_effective": true,
+            "source_finding_requested": true,
+            "source_finding_effective": true,
+            "source_fitting_effective": true,
+            "observation_filter_context_count": 1,
+            "observation_filtered_map_count": 3,
+            "observation_source_finding_context_count": 1,
+            "detected_source_count": 195,
+            "source_table_write_count": 1,
+            "source_table_row_count": 195,
+            "catalog_fit_attempt_count": 195,
+            "catalog_valid_fit_count": 195,
+            "raw_pointing_fit_attempt_count": 3,
+            "raw_pointing_valid_fit_count": 3,
+            "filtered_pointing_fit_attempt_count": 3,
+            "filtered_pointing_valid_fit_count": 3,
+            "outputs_completed": true
+          }
+        }
+      },
+      "dataset": {"obsnum": "152389", "identity": "TolTEC commissioning pointing observation 152389", "content_hash": null},
+      "invocation": {
+        "command": null,
+        "launcher": "tolteca reduce",
+        "runtime_policy": {"n_threads": 6, "parallel_policy": "omp", "kids_solver_parallel_policy": "seq"},
+        "exit_code": 0
+      },
+      "audit": {
+        "finished": true,
+        "serious_log_counts": {},
+        "file_count": 51,
+        "comparable_product_count": 23,
+        "stable_comparable_product_count": 22,
+        "stable_product_counts_by_kind": {"csv": 1, "ecsv": 4, "fits": 6, "netcdf": 11},
+        "required_product_inventory_matches": "point-152389-refactor-9f8ad50e-redu56"
+      },
+      "comparison": {
+        "tool": "tools/baseline/compare_reduction_products.py",
+        "tool_sha": "f8a4a596e",
+        "options": ["--mode", "point", "--include-timestream", "--max-array-elements", "0", "--exclude", "citlali_profile.ecsv", "--atol", "0", "--rtol", "0", "--strict"],
+        "volatile_allowlist": ["citlali_profile.ecsv", "refactor provenance sidecars"],
+        "tolerances": {"atol": 0.0, "rtol": 0.0, "fraction_floor": 1e-12},
+        "common_products": 21,
+        "skipped_records": 0,
+        "changed_records": 0,
+        "scientific_products_exact": true,
+        "verdict": "accepted_exact",
+        "measured": {
+          "record_count": 2041,
+          "source_table_exact": true,
+          "source_row_count": 195,
+          "pointing_table_exact": true
+        }
+      },
+      "accepted_differences": [],
+      "performance": {"wall_time_log_seconds": 77.513, "observation_pipeline_seconds": null, "map_output_seconds": null, "peak_rss_kb": null, "baseline_wall_time_log_seconds": 76.638},
+      "artifacts": {
+        "candidate_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu57",
+        "candidate_unity_path": "/work/toltec/commissioning2025-test/2026-refactor/point/refactor/reduced/redu57",
+        "baseline_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu56"
+      },
+      "limitations": [
+        "The original ordered TolTECA NN*.yaml overlay sources were not retained in the reduction directory.",
+        "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained.",
+        "Science coadd and Beammap detector-fit cardinality remain separate post-processing mode gates.",
+        "The 77.513-second log interval is one observation and is recorded without a performance conclusion."
+      ]
     }
   ]
 }

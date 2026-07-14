@@ -21,8 +21,8 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest accepted point reduction: typed source-fitting consumer `redu56`,
-  produced by `9f8ad50e`; typed source-finding `redu55`, map-filter `redu54`,
+- Latest accepted point reduction: realized post-processing provenance `redu57`,
+  produced by `f8a4a596`; typed source-fitting `redu56`, source-finding `redu55`, map-filter `redu54`,
   enabled-filtering `redu53`,
   unfiltered `redu51`, and bounded full-noise-output `redu49` remain the
   immediate post-processing, pointing, and noise-products control fixtures.
@@ -783,8 +783,8 @@ products against `redu55`, including the 195-row source table and complete
 RTC/PTC timestreams. Realized post-processing state and required provenance are
 now the active bounded work.
 
-The realized post-processing implementation is locally complete and awaits
-Unity validation. Per-iteration state now records observation and coadd filter
+The realized post-processing implementation is complete and accepted for the
+point workflow. Per-iteration state records observation and coadd filter
 contexts and map counts; source-finding contexts, detected candidates, catalog
 fit attempts/valid fits, and successfully written source-table rows; raw and
 filtered pointing fit contexts; and Beammap fit contexts. These fitter families
@@ -806,14 +806,15 @@ calls. Local `citlali_cli` and `citlali_test` builds pass, all 357 CTests pass,
 config preflight is clean. No filter, source-detection, Gaussian-fit, or map
 numerical algorithm was changed.
 
-The immediate Unity gate is the unchanged enabled-filtering point overlay
-against exact baseline `redu56`. It must produce the new valid sidecar with one
-observation filter/source/table context, 195 source rows, and separate three-map
-raw/filtered pointing fit contexts while preserving exact existing products.
-After point acceptance, run science to exercise coadd-only filtering/source
-routing and Beammap to exercise iterative detector-fit cardinality. The domain
-remains active until those mode gates pass and the remaining activation-only
-legacy shadow is retired.
+Unity point `redu57` at `f8a4a596` closes the point gate. It has zero serious
+log issues, a valid required sidecar with one observation filter/source/table
+context, 195 source rows, and separate three-map raw/filtered pointing fit
+contexts. Its 490-leaf merged config is byte-identical to `redu56`, and all
+2,041 records in the 21 common products, including full RTC/PTC timestreams,
+are exact. Science must still exercise coadd-only filtering/source routing and
+Beammap must exercise iterative detector-fit cardinality. Those expensive mode
+gates are intentionally batched until after the remaining activation-only
+legacy shadow is retired locally; the domain is not complete until both pass.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
