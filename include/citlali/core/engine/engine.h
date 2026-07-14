@@ -185,8 +185,7 @@ public:
     void get_mapmaking_config(CT &);
 
     // get map filtering config options
-    template<typename CT>
-    void get_map_filter_config(CT &);
+    void get_map_filter_config();
 
     // get runtime config options
     template<typename CT>

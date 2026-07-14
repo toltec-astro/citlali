@@ -125,7 +125,7 @@ bool empirical_weight_calibration_enabled(const Engine &engine) {
 template <class Engine>
 bool map_filter_enabled(const Engine &engine) {
     return citlali::config::map_filtering_active(
-        post_processing_config(engine));
+        effective_post_processing_config(engine));
 }
 
 template <class Engine>

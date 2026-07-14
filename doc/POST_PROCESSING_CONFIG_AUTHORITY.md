@@ -22,8 +22,8 @@ legacy Wiener controls.
 
 ## Characterized Starting State
 
-The current boundary is intentionally recorded as mixed, not accepted as the
-target architecture:
+The characterized starting boundary was intentionally recorded as mixed, not
+accepted as the target architecture:
 
 - `WienerFilter::get_config` parses 21 filtering leaves before copying most of
   them backward into `PostProcessingConfig`.
@@ -38,22 +38,31 @@ target architecture:
 These facts are migration inputs. They are not endorsements of reverse mirrors
 or mutable requested configuration.
 
-The direct request reader now runs as a fail-fast, read-only shadow during
+The direct request reader first ran as a fail-fast, read-only shadow during
 `Engine` config loading. Focused tests prove complete default parsing,
 disabled-value preservation, invalid-enum diagnostics, active-field parity,
 and useful mismatch diagnostics. The shadow compares activation and histogram
 unconditionally, but compares detail fields only where the legacy path
 actually loads them. This prevents disabled legacy defaults from masquerading
-as requested-value mismatches. Legacy state still drives execution.
+as requested-value mismatches.
 
 The first target-contract checkpoint now constructs a separate
 `PostProcessingExecutionPlan` from that request. The plan preserves every
 requested value, resolves mapmaking-dependent filtering and finding into an
 effective snapshot, records why activation changed, derives fitting need from
 reduction type and requested downstream work, and clears realized state for a
-new reduction. This is intentionally parallel to the existing execution
-boundary: no production consumer reads the effective snapshot yet, and no
-numerical implementation changed.
+new reduction. At that checkpoint it was intentionally parallel to the
+existing execution boundary: no production consumer read the effective
+snapshot, and no numerical implementation changed.
+
+The map-filtering consumer cutover is now complete locally. Both duplicated
+serial/OpenMP `WienerFilter::get_config` YAML parsers and the reverse
+Wiener-to-typed mirror are retired. One adapter copies the effective typed map-
+filter snapshot into either numerical implementation, including the legacy
+conditional FWHM loading and arcsecond-to-radian conversion. Filter activation,
+required-output policy, runtime dependency checks, and map-diagnostic edge-
+guard metadata consume the effective plan. The mature filtering algorithms are
+unchanged. The remaining mixed boundary is source finding and source fitting.
 
 ## Target Contract
 
@@ -77,10 +86,11 @@ effective activation and resolution reasons, and realized observation/coadd
 filtering, source-table, and fit cardinality.
 
 Consumer migration is ordered map filtering, source finding, then source
-fitting. Each slice replaces a reverse mirror or policy read with one one-way
-typed adapter while keeping the mature numerical object as the execution
-target. A consumer cutover, unlike plan construction alone, requires the
-matched enabled-filtering point gate based on accepted `redu53`.
+fitting. Map filtering is complete locally; the latter two remain. Each slice
+replaces a reverse mirror or policy read with one one-way typed adapter while
+keeping the mature numerical object as the execution target. A consumer
+cutover, unlike plan construction alone, requires the matched enabled-filtering
+point gate based on accepted `redu53`.
 
 ## Validation
 

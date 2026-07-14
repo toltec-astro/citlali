@@ -23,6 +23,9 @@ struct has_noise_plan : std::false_type {};
 template <class Engine, class = void>
 struct has_pointing_plan : std::false_type {};
 
+template <class Engine, class = void>
+struct has_post_processing_plan : std::false_type {};
+
 template <class Engine>
 struct has_raw_timestream_plan<
     Engine,
@@ -81,6 +84,16 @@ struct has_pointing_plan<
 template <class Engine>
 inline constexpr bool has_pointing_plan_v =
     has_pointing_plan<Engine>::value;
+
+template <class Engine>
+struct has_post_processing_plan<
+    Engine,
+    std::void_t<decltype(std::declval<Engine &>().post_processing_plan)>>
+    : std::true_type {};
+
+template <class Engine>
+inline constexpr bool has_post_processing_plan_v =
+    has_post_processing_plan<Engine>::value;
 
 template <class Engine>
 auto &runtime_config_provenance(Engine &engine) {
@@ -391,7 +404,12 @@ const auto &requested_post_processing_config(const Engine &engine) {
 
 template <class Engine>
 const auto &effective_post_processing_config(const Engine &engine) {
-    return post_processing_plan(engine).effective;
+    if constexpr (has_post_processing_plan_v<Engine>) {
+        if (engine.post_processing_plan.initialized) {
+            return engine.post_processing_plan.effective;
+        }
+    }
+    return post_processing_config(engine);
 }
 
 template <class Engine>

@@ -47,7 +47,7 @@ class PostProcessingBoundaryAuditTest(unittest.TestCase):
             result["mixed_boundary"]["checks"]["kernel_tail_typed"]
         )
 
-    def test_direct_request_populates_plan_beside_legacy_shadow(self) -> None:
+    def test_map_filter_uses_one_way_effective_adapter(self) -> None:
         checks = audit.audit(REPO_ROOT)["mixed_boundary"]["checks"]
         self.assertEqual(checks["direct_request_reader_call_count"], 1)
         self.assertEqual(checks["shadow_comparison_call_count"], 1)
@@ -55,7 +55,15 @@ class PostProcessingBoundaryAuditTest(unittest.TestCase):
         self.assertTrue(checks["execution_plan_present"])
         self.assertEqual(checks["execution_plan_reset_call_count"], 1)
         self.assertEqual(checks["execution_plan_accessor_count"], 2)
-        self.assertTrue(checks["reverse_filter_mirror_present"])
+        self.assertTrue(checks["serial_filter_parser_retired"])
+        self.assertTrue(checks["omp_filter_parser_retired"])
+        self.assertEqual(checks["legacy_filter_boundary_call_count"], 0)
+        self.assertEqual(checks["reverse_filter_mirror_call_count"], 0)
+        self.assertTrue(checks["typed_filter_adapter_present"])
+        self.assertEqual(checks["typed_filter_adapter_call_count"], 1)
+        self.assertEqual(checks["effective_filter_accessor_call_count"], 1)
+        self.assertTrue(checks["filter_output_policy_is_effective"])
+        self.assertFalse(checks["reverse_filter_mirror_present"])
 
     def test_rejects_default_surface_drift(self) -> None:
         manifest = json.loads(

@@ -28,6 +28,9 @@ PLAN_SOURCE = (
 ENGINE_BOUNDARY_SOURCE = "include/citlali/core/engine/detail/citlali_config_impl.h"
 FILTER_BOUNDARY_SOURCE = "include/citlali/core/engine/detail/map_filter_config_impl.h"
 LEGACY_FILTER_SOURCE = "include/citlali/core/mapmaking/wiener_filter.h"
+LEGACY_FILTER_OMP_SOURCE = (
+    "include/citlali/core/mapmaking/wiener_filter_omp.h"
+)
 MIRROR_SOURCE = "include/citlali/core/pipeline/map_filter_config_policy.h"
 POST_READER_SOURCE = (
     "include/citlali/core/pipeline/citlali_config_read_post_processing.h"
@@ -37,6 +40,10 @@ FINDING_READER_SOURCE = (
 )
 ACCESSOR_SOURCE = "include/citlali/core/pipeline/reduction_config_accessors.h"
 ACTIVATION_SOURCE = "include/citlali/core/pipeline/mapmaking_activation_policy.h"
+OUTPUT_POLICY_SOURCE = "include/citlali/core/pipeline/output_policy.h"
+MAPDIAG_OUTPUT_SOURCE = (
+    "include/citlali/core/engine/detail/mapdiag_output_impl.h"
+)
 
 EXPECTED_SCHEMA = "citlali-frozen-post-processing-config-paths-v1"
 EXPECTED_PREFIXES = ["post_processing", "wiener_filter"]
@@ -129,11 +136,14 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
     engine = (repo_root / ENGINE_BOUNDARY_SOURCE).read_text()
     filter_boundary = (repo_root / FILTER_BOUNDARY_SOURCE).read_text()
     legacy_filter = (repo_root / LEGACY_FILTER_SOURCE).read_text()
+    legacy_filter_omp = (repo_root / LEGACY_FILTER_OMP_SOURCE).read_text()
     mirror = (repo_root / MIRROR_SOURCE).read_text()
     post_reader = (repo_root / POST_READER_SOURCE).read_text()
     finding_reader = (repo_root / FINDING_READER_SOURCE).read_text()
     accessor = (repo_root / ACCESSOR_SOURCE).read_text()
     activation = (repo_root / ACTIVATION_SOURCE).read_text()
+    output_policy = (repo_root / OUTPUT_POLICY_SOURCE).read_text()
+    mapdiag_output = (repo_root / MAPDIAG_OUTPUT_SOURCE).read_text()
 
     source_model_pattern = re.compile(
         r'std::tuple\s*\{\s*"post_processing"\s*,\s*"source_fitting"'
@@ -155,7 +165,6 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         ),
         "shadow_report_present": (
             "struct PostProcessingConfigShadowReport" in shadow_source
-            and "compared_map_filter_details" in shadow_source
             and "compared_source_finding_details" in shadow_source
             and "compared_source_fitting_details" in shadow_source
         ),
@@ -173,14 +182,34 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         "execution_plan_accessor_count": accessor.count(
             "return engine.post_processing_plan;"
         ),
-        "legacy_filter_parser_present": (
-            legacy_filter.count("void WienerFilter::get_config") == 1
+        "serial_filter_parser_retired": (
+            "WienerFilter::get_config" not in legacy_filter
+            and "void get_config" not in legacy_filter
+        ),
+        "omp_filter_parser_retired": (
+            "WienerFilter::get_config" not in legacy_filter_omp
+            and "void get_config" not in legacy_filter_omp
         ),
         "legacy_filter_boundary_call_count": call_count(
             filter_boundary, "read_processor_config"
         ),
         "reverse_filter_mirror_call_count": call_count(
             filter_boundary, "mirror_wiener_filter_config"
+        ),
+        "typed_filter_adapter_present": (
+            "void adapt_map_filter_config_one_way" in mirror
+            and "template_fwhm_rad.clear" in mirror
+            and "map_filter_template_uses_fwhm" in mirror
+        ),
+        "typed_filter_adapter_call_count": call_count(
+            filter_boundary, "adapt_map_filter_config_one_way"
+        ),
+        "effective_filter_accessor_call_count": call_count(
+            filter_boundary, "effective_post_processing_config"
+        ),
+        "filter_output_policy_is_effective": (
+            "effective_post_processing_config(engine)" in output_policy
+            and "effective_post_processing_config(*this)" in mapdiag_output
         ),
         "activation_reader_call_count": call_count(
             engine, "read_post_processing_activation_config"
@@ -201,7 +230,10 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
             "SourceFitModel model" in config_source
             and bool(source_model_pattern.search(direct_reader))
         ),
-        "kernel_tail_legacy": "kernel_template_tail_mode" in legacy_filter,
+        "kernel_tail_numerical_target": (
+            "kernel_template_tail_mode" in legacy_filter
+            and "kernel_template_tail_mode" in legacy_filter_omp
+        ),
         "kernel_tail_typed": (
             "MapFilterKernelTailMode kernel_template_tail_mode" in config_source
             and '"kernel_template_tail_mode"' in direct_reader
@@ -230,19 +262,24 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         and checks["execution_plan_present"]
         and checks["execution_plan_reset_call_count"] == 1
         and checks["execution_plan_accessor_count"] == 2
-        and checks["legacy_filter_parser_present"]
-        and checks["legacy_filter_boundary_call_count"] == 1
-        and checks["reverse_filter_mirror_call_count"] == 1
+        and checks["serial_filter_parser_retired"]
+        and checks["omp_filter_parser_retired"]
+        and checks["legacy_filter_boundary_call_count"] == 0
+        and checks["reverse_filter_mirror_call_count"] == 0
+        and checks["typed_filter_adapter_present"]
+        and checks["typed_filter_adapter_call_count"] == 1
+        and checks["effective_filter_accessor_call_count"] == 1
+        and checks["filter_output_policy_is_effective"]
         and checks["activation_reader_call_count"] == 1
         and checks["source_fitting_reader_call_count"] == 1
         and checks["source_finding_reader_call_count"] == 1
         and checks["post_load_request_mutation_count"] == 1
         and checks["request_accessor_count"] == 2
         and checks["source_model_typed"]
-        and checks["kernel_tail_legacy"]
+        and checks["kernel_tail_numerical_target"]
         and checks["kernel_tail_typed"]
-        and checks["reverse_filter_mirror_present"]
-        and checks["kernel_tail_reverse_mirrored"]
+        and not checks["reverse_filter_mirror_present"]
+        and not checks["kernel_tail_reverse_mirrored"]
         and checks["source_finding_reverse_mirror_present"]
         and checks["request_mutation_present"]
     )

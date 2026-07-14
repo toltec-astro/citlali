@@ -9,68 +9,57 @@
 
 namespace citlali::pipeline {
 
-template <class WienerFilter, class PostProcessingConfig>
-void mirror_wiener_filter_config(
-    const WienerFilter &wiener_filter, double rad_to_arcsec,
-    PostProcessingConfig &typed_post_processing_config) {
-    auto &typed_map_filter = typed_post_processing_config.map_filtering;
-    citlali::config::set_map_filtering_enabled(
-        typed_post_processing_config, typed_map_filter.enabled);
-    if (auto parsed =
-            citlali::config::parse_map_filter_type(wiener_filter.filter_type)) {
-        typed_map_filter.type = *parsed;
-    }
-    if (auto parsed = citlali::config::parse_map_filter_template_type(
-            wiener_filter.template_type)) {
-        typed_map_filter.template_type = *parsed;
-    }
-    if (auto parsed = citlali::config::parse_map_filter_kernel_tail_mode(
-            wiener_filter.kernel_template_tail_mode)) {
-        typed_map_filter.kernel_template_tail_mode = *parsed;
-    }
-    typed_map_filter.lowpass_only = wiener_filter.run_lowpass;
-    typed_map_filter.normalize_errors = wiener_filter.normalize_error;
-    typed_map_filter.edge_guard.enabled = wiener_filter.edge_guard_enabled;
-    typed_map_filter.edge_guard.weight_threshold_mode =
-        wiener_filter.edge_weight_threshold_mode;
-    typed_map_filter.edge_guard.hits_threshold_mode =
-        wiener_filter.edge_hits_threshold_mode;
-    typed_map_filter.edge_guard.hits_core_fraction =
-        wiener_filter.edge_hits_core_fraction;
-    typed_map_filter.edge_guard.guard_radius_fwhm =
-        wiener_filter.edge_guard_radius_fwhm;
-    typed_map_filter.edge_guard.fill_mode = wiener_filter.edge_fill_mode;
-    if (auto parsed = citlali::config::parse_map_filter_edge_taper_mode(
-            wiener_filter.edge_taper_mode)) {
-        typed_map_filter.edge_guard.taper_mode = *parsed;
-    }
-    typed_map_filter.edge_guard.taper_min_fraction =
-        wiener_filter.edge_taper_min_fraction;
-    typed_map_filter.denom_rel_tol = wiener_filter.denom_rel_tol;
-    typed_map_filter.tail_frac_tol = wiener_filter.tail_frac_tol;
-    typed_map_filter.max_loops = wiener_filter.max_loops;
-    typed_map_filter.denom_check_iters = wiener_filter.denom_check_iters;
-    typed_map_filter.max_denom_iters = wiener_filter.max_denom_iters;
-    typed_map_filter.template_fwhm_arcsec.clear();
-    for (const auto &[array_name, fwhm_rad] :
-         wiener_filter.template_fwhm_rad) {
-        typed_map_filter.template_fwhm_arcsec[array_name] =
-            fwhm_rad * rad_to_arcsec;
+template <class WienerFilter>
+void adapt_map_filter_config_one_way(
+    const citlali::config::MapFilterConfig &config,
+    double arcsec_to_rad, WienerFilter &wiener_filter) {
+    wiener_filter.filter_type =
+        std::string{citlali::config::to_string(config.type)};
+    wiener_filter.template_type =
+        std::string{citlali::config::to_string(config.template_type)};
+    wiener_filter.kernel_template_tail_mode = std::string{
+        citlali::config::to_string(config.kernel_template_tail_mode)};
+    wiener_filter.run_lowpass = config.lowpass_only;
+    wiener_filter.normalize_error = config.normalize_errors;
+    wiener_filter.edge_guard_enabled = config.edge_guard.enabled;
+    wiener_filter.edge_weight_threshold_mode =
+        config.edge_guard.weight_threshold_mode;
+    wiener_filter.edge_hits_threshold_mode =
+        config.edge_guard.hits_threshold_mode;
+    wiener_filter.edge_hits_core_fraction =
+        config.edge_guard.hits_core_fraction;
+    wiener_filter.edge_guard_radius_fwhm =
+        config.edge_guard.guard_radius_fwhm;
+    wiener_filter.edge_fill_mode = config.edge_guard.fill_mode;
+    wiener_filter.edge_taper_mode =
+        std::string{citlali::config::to_string(config.edge_guard.taper_mode)};
+    wiener_filter.edge_taper_min_fraction =
+        config.edge_guard.taper_min_fraction;
+    wiener_filter.denom_rel_tol = config.denom_rel_tol;
+    wiener_filter.tail_frac_tol = config.tail_frac_tol;
+    wiener_filter.max_loops = config.max_loops;
+    wiener_filter.denom_check_iters = config.denom_check_iters;
+    wiener_filter.max_denom_iters = config.max_denom_iters;
+    wiener_filter.template_fwhm_rad.clear();
+    if (citlali::config::map_filter_template_uses_fwhm(
+            config.template_type)) {
+        for (const auto &[array_name, fwhm_arcsec] :
+             config.template_fwhm_arcsec) {
+            wiener_filter.template_fwhm_rad[array_name] =
+                fwhm_arcsec * arcsec_to_rad;
+        }
     }
 }
 
-template <class NoiseConfig, class PostProcessingConfig, class WienerFilter,
+template <class NoiseConfig, class WienerFilter,
           class RuntimeTimestreamProc, class MapFitter,
           class Logger>
 void apply_map_filter_runtime_policy(
     const NoiseConfig &noise_config,
-    const PostProcessingConfig &post_processing_config,
+    const citlali::config::MapFilterConfig &map_filter_config,
     const RuntimeTimestreamProc &rtcproc, const MapFitter &map_fitter,
     const std::string &parallel_policy, WienerFilter &wiener_filter,
     const Logger &logger) {
-    const auto &map_filter_config =
-        post_processing_config.map_filtering;
-
     if (map_filter_config.template_type ==
         citlali::config::MapFilterTemplateType::kernel) {
         if (!rtcproc.run_kernel) {

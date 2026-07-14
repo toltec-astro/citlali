@@ -23,6 +23,7 @@
 #include <citlali/core/pipeline/mapmaking_output_config.h>
 #include <citlali/core/pipeline/mapmaking_provenance.h>
 #include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
+#include <citlali/core/pipeline/map_filter_config_policy.h>
 #include <citlali/core/pipeline/noise_config_adapter.h>
 #include <citlali/core/pipeline/noise_config_read.h>
 #include <citlali/core/pipeline/noise_execution_plan.h>
@@ -114,6 +115,28 @@ struct FakeLogger {
     void warn(const char *, Args &&...) {
         ++warn_calls;
     }
+};
+
+struct FakeWienerFilterConfigTarget {
+    std::string filter_type = "stale";
+    std::string template_type = "stale";
+    std::string kernel_template_tail_mode = "stale";
+    bool run_lowpass = false;
+    bool normalize_error = false;
+    bool edge_guard_enabled = false;
+    std::string edge_weight_threshold_mode = "stale";
+    std::string edge_hits_threshold_mode = "stale";
+    double edge_hits_core_fraction = -1.0;
+    double edge_guard_radius_fwhm = -1.0;
+    std::string edge_fill_mode = "stale";
+    std::string edge_taper_mode = "stale";
+    double edge_taper_min_fraction = -1.0;
+    double denom_rel_tol = -1.0;
+    double tail_frac_tol = -1.0;
+    int max_loops = -1;
+    int denom_check_iters = -1;
+    int max_denom_iters = -1;
+    std::map<std::string, double> template_fwhm_rad{{"stale", -1.0}};
 };
 
 void ensure_citlali_test_logger() {
@@ -1642,7 +1665,6 @@ TEST(config_scaffold, post_processing_shadow_compares_only_active_details) {
             requested, legacy, citlali::config::ReductionType::science);
 
     EXPECT_TRUE(report.exact) << report.diagnostic();
-    EXPECT_FALSE(report.compared_map_filter_details);
     EXPECT_FALSE(report.compared_source_finding_details);
     EXPECT_FALSE(report.compared_source_fitting_details);
 }
@@ -1673,36 +1695,62 @@ TEST(config_scaffold, post_processing_shadow_compares_pointing_fit_values) {
         std::string::npos);
 }
 
-TEST(config_scaffold, post_processing_shadow_compares_active_filter_values) {
-    citlali::config::PostProcessingConfig requested;
-    requested.map_filtering.enabled = true;
-    requested.map_filtering.type =
-        citlali::config::MapFilterType::wiener_filter;
-    requested.map_filtering.template_type =
-        citlali::config::MapFilterTemplateType::airy;
-    requested.map_filtering.kernel_template_tail_mode =
+TEST(config_scaffold, adapts_effective_map_filter_config_one_way) {
+    citlali::config::MapFilterConfig config;
+    config.enabled = true;
+    config.type = citlali::config::MapFilterType::wiener_filter;
+    config.template_type = citlali::config::MapFilterTemplateType::airy;
+    config.kernel_template_tail_mode =
         citlali::config::MapFilterKernelTailMode::cosine;
-    requested.map_filtering.template_fwhm_arcsec = {
+    config.lowpass_only = true;
+    config.normalize_errors = true;
+    config.edge_guard.enabled = true;
+    config.edge_guard.weight_threshold_mode = "coverage_cut";
+    config.edge_guard.hits_threshold_mode = "core_median_fraction";
+    config.edge_guard.hits_core_fraction = 0.2;
+    config.edge_guard.guard_radius_fwhm = 1.5;
+    config.edge_guard.fill_mode = "core_median";
+    config.edge_guard.taper_mode =
+        citlali::config::MapFilterEdgeTaperMode::cosine;
+    config.edge_guard.taper_min_fraction = 0.3;
+    config.denom_rel_tol = 2.0e-4;
+    config.tail_frac_tol = 4.0e-2;
+    config.max_loops = 321;
+    config.denom_check_iters = 7;
+    config.max_denom_iters = 123;
+    config.template_fwhm_arcsec = {
         {"a1100", 5.0}, {"a1400", 6.3}, {"a2000", 9.5}};
+    FakeWienerFilterConfigTarget target;
 
-    auto legacy = requested;
-    legacy.source_fitting.active = true;
-    const auto exact =
-        citlali::pipeline::compare_post_processing_config_shadow(
-            requested, legacy, citlali::config::ReductionType::science);
-    EXPECT_TRUE(exact.exact) << exact.diagnostic();
-    EXPECT_TRUE(exact.compared_map_filter_details);
-    EXPECT_TRUE(exact.compared_source_fitting_details);
+    citlali::pipeline::adapt_map_filter_config_one_way(
+        config, 0.25, target);
 
-    legacy.map_filtering.kernel_template_tail_mode =
-        citlali::config::MapFilterKernelTailMode::zero;
-    const auto mismatch =
-        citlali::pipeline::compare_post_processing_config_shadow(
-            requested, legacy, citlali::config::ReductionType::science);
-    EXPECT_FALSE(mismatch.exact);
-    EXPECT_NE(
-        mismatch.diagnostic().find("kernel_template_tail_mode"),
-        std::string::npos);
+    EXPECT_EQ(target.filter_type, "wiener_filter");
+    EXPECT_EQ(target.template_type, "airy");
+    EXPECT_EQ(target.kernel_template_tail_mode, "cosine");
+    EXPECT_TRUE(target.run_lowpass);
+    EXPECT_TRUE(target.normalize_error);
+    EXPECT_TRUE(target.edge_guard_enabled);
+    EXPECT_EQ(target.edge_weight_threshold_mode, "coverage_cut");
+    EXPECT_EQ(target.edge_hits_threshold_mode, "core_median_fraction");
+    EXPECT_DOUBLE_EQ(target.edge_hits_core_fraction, 0.2);
+    EXPECT_DOUBLE_EQ(target.edge_guard_radius_fwhm, 1.5);
+    EXPECT_EQ(target.edge_fill_mode, "core_median");
+    EXPECT_EQ(target.edge_taper_mode, "cosine");
+    EXPECT_DOUBLE_EQ(target.edge_taper_min_fraction, 0.3);
+    EXPECT_DOUBLE_EQ(target.denom_rel_tol, 2.0e-4);
+    EXPECT_DOUBLE_EQ(target.tail_frac_tol, 4.0e-2);
+    EXPECT_EQ(target.max_loops, 321);
+    EXPECT_EQ(target.denom_check_iters, 7);
+    EXPECT_EQ(target.max_denom_iters, 123);
+    EXPECT_DOUBLE_EQ(target.template_fwhm_rad.at("a1100"), 1.25);
+    EXPECT_DOUBLE_EQ(target.template_fwhm_rad.at("a1400"), 1.575);
+    EXPECT_DOUBLE_EQ(target.template_fwhm_rad.at("a2000"), 2.375);
+
+    config.template_type = citlali::config::MapFilterTemplateType::kernel;
+    citlali::pipeline::adapt_map_filter_config_one_way(
+        config, 0.25, target);
+    EXPECT_TRUE(target.template_fwhm_rad.empty());
 }
 
 TEST(config_scaffold, reads_typed_coadd_request) {

@@ -1,9 +1,12 @@
 #pragma once
 
 #include <string>
+#include <complex>
+#include <cstdlib>
 #include <chrono>
 #include <algorithm>
 #include <map>
+#include <memory>
 #include <vector>
 #include <cmath>
 #include <limits>
@@ -24,7 +27,6 @@
 
 #include <citlali/core/utils/gauss_models.h>
 #include <citlali/core/utils/fitting.h>
-#include <citlali/core/utils/toltec_io.h>
 #include <citlali/core/mapmaking/edge_guard_state.h>
 
 namespace mapmaking {
@@ -135,10 +137,6 @@ public:
 
     // declare fitter class
     engine_utils::mapFitter map_fitter;
-
-    // get config file
-    template <typename config_t>
-    void get_config(config_t &, std::vector<std::vector<std::string>> &, std::vector<std::vector<std::string>> &);
 
     template<class MB>
     void make_gaussian_template(MB &mb, const double);
@@ -875,77 +873,6 @@ inline Eigen::MatrixXd WienerFilter::divide_by_denom(const Eigen::MatrixXd &nume
     Eigen::MatrixXd ratio = Eigen::MatrixXd::Zero(numerator.rows(), numerator.cols());
     ratio.array() = (denominator.array() != 0.0).select(numerator.array() / denominator.array(), 0.0);
     return ratio;
-}
-
-// get config file
-template <typename config_t>
-void WienerFilter::get_config(config_t &config, std::vector<std::vector<std::string>> &missing_keys,
-                              std::vector<std::vector<std::string>> &invalid_keys) {
-
-    // for array names
-    engine_utils::toltecIO toltec_io;
-
-    // get filter type
-    get_config_value(config, filter_type, missing_keys, invalid_keys,
-                     std::tuple{"post_processing","map_filtering","type"},{"wiener_filter","convolve","destripe"});
-    // get template type
-    get_config_value(config, template_type, missing_keys, invalid_keys,
-                     std::tuple{"wiener_filter","template_type"},{"kernel","gaussian","airy","highpass"});
-    if (config.template has_typed<std::string>(std::tuple{"wiener_filter","kernel_template_tail_mode"})) {
-        get_config_value(config, kernel_template_tail_mode, missing_keys, invalid_keys,
-                         std::tuple{"wiener_filter","kernel_template_tail_mode"},{"constant","zero","cosine"});
-    }
-    // run lowpass only?
-    get_config_value(config, run_lowpass, missing_keys, invalid_keys,
-                     std::tuple{"wiener_filter","lowpass_only"});
-    // re-normalize weight maps?
-    get_config_value(config, normalize_error, missing_keys, invalid_keys,
-                     std::tuple{"post_processing","map_filtering","normalize_errors"});
-    get_config_value(config, edge_guard_enabled, missing_keys, invalid_keys,
-                     std::tuple{"post_processing","map_filtering","edge_guard","enabled"});
-    get_config_value(config, edge_weight_threshold_mode, missing_keys, invalid_keys,
-                     std::tuple{"post_processing","map_filtering","edge_guard","weight_threshold_mode"},
-                     {"coverage_cut"});
-    get_config_value(config, edge_hits_threshold_mode, missing_keys, invalid_keys,
-                     std::tuple{"post_processing","map_filtering","edge_guard","hits_threshold_mode"},
-                     {"core_median_fraction"});
-    get_config_value(config, edge_hits_core_fraction, missing_keys, invalid_keys,
-                     std::tuple{"post_processing","map_filtering","edge_guard","hits_core_fraction"},
-                     {}, {0.0});
-    get_config_value(config, edge_guard_radius_fwhm, missing_keys, invalid_keys,
-                     std::tuple{"post_processing","map_filtering","edge_guard","guard_radius_fwhm"},
-                     {}, {0.0});
-    get_config_value(config, edge_fill_mode, missing_keys, invalid_keys,
-                     std::tuple{"post_processing","map_filtering","edge_guard","fill_mode"},
-                     {"core_median"});
-        get_config_value(config, edge_taper_mode, missing_keys, invalid_keys,
-                         std::tuple{"post_processing","map_filtering","edge_guard","taper_mode"},
-                         {"none","cosine"});
-        get_config_value(config, edge_taper_min_fraction, missing_keys, invalid_keys,
-                         std::tuple{"post_processing","map_filtering","edge_guard","taper_min_fraction"},
-                         {}, {0.0}, {1.0});
-    // denominator convergence thresholds
-    get_config_value(config, denom_rel_tol, missing_keys, invalid_keys,
-                     std::tuple{"wiener_filter","denom_rel_tol"}, {}, {0.0}, {1.0});
-    get_config_value(config, tail_frac_tol, missing_keys, invalid_keys,
-                     std::tuple{"wiener_filter","tail_frac_tol"}, {}, {0.0}, {1.0});
-    get_config_value(config, max_loops, missing_keys, invalid_keys,
-                     std::tuple{"wiener_filter","max_loops"}, {}, {1});
-    get_config_value(config, denom_check_iters, missing_keys, invalid_keys,
-                     std::tuple{"wiener_filter","denom_check_iters"}, {}, {0});
-    get_config_value(config, max_denom_iters, missing_keys, invalid_keys,
-                     std::tuple{"wiener_filter","max_denom_iters"}, {}, {0});
-
-    // gaussian or airy template fwhms
-    if (template_type=="gaussian" || template_type=="airy") {
-        for (auto const& [arr_index, arr_name] : toltec_io.array_name_map) {
-            get_config_value(config, template_fwhm_rad[arr_name], missing_keys, invalid_keys,
-                             std::tuple{"wiener_filter","template_fwhm_arcsec",arr_name});
-        }
-        for (auto const& pair : template_fwhm_rad) {
-            template_fwhm_rad[pair.first] = template_fwhm_rad[pair.first]*ASEC_TO_RAD;
-        }
-    }
 }
 
 template<class MB>

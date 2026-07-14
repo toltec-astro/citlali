@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
-#include <map>
 #include <sstream>
 #include <string>
 #include <type_traits>
@@ -18,7 +17,6 @@ namespace citlali::pipeline {
 
 struct PostProcessingConfigShadowReport {
     bool exact = true;
-    bool compared_map_filter_details = false;
     bool compared_source_finding_details = false;
     bool compared_source_fitting_details = false;
     std::vector<std::string> mismatches;
@@ -87,32 +85,6 @@ inline void compare_post_processing_shadow_value(
         post_processing_shadow_value_string(actual));
 }
 
-inline void compare_post_processing_fwhm_shadow(
-    PostProcessingConfigShadowReport &report,
-    const std::map<std::string, double> &expected,
-    const std::map<std::string, double> &actual) {
-    if (expected.size() != actual.size()) {
-        report.add_mismatch(
-            "map_filtering.template_fwhm_arcsec size expected=" +
-            std::to_string(expected.size()) + " actual=" +
-            std::to_string(actual.size()));
-        return;
-    }
-    for (const auto &[array_name, expected_fwhm] : expected) {
-        const auto found = actual.find(array_name);
-        if (found == actual.end()) {
-            report.add_mismatch(
-                "map_filtering.template_fwhm_arcsec missing array=" +
-                array_name);
-            continue;
-        }
-        const auto field =
-            "map_filtering.template_fwhm_arcsec." + array_name;
-        compare_post_processing_shadow_value(
-            report, field.c_str(), expected_fwhm, found->second);
-    }
-}
-
 inline PostProcessingConfigShadowReport compare_post_processing_config_shadow(
     const citlali::config::PostProcessingConfig &requested,
     const citlali::config::PostProcessingConfig &legacy,
@@ -127,77 +99,6 @@ inline PostProcessingConfigShadowReport compare_post_processing_config_shadow(
     compare_post_processing_shadow_value(
         report, "source_finding.enabled", requested.source_finding.enabled,
         legacy.source_finding.enabled);
-
-    if (requested.map_filtering.enabled) {
-        report.compared_map_filter_details = true;
-        const auto &expected = requested.map_filtering;
-        const auto &actual = legacy.map_filtering;
-        compare_post_processing_shadow_value(
-            report, "map_filtering.type", expected.type, actual.type);
-        compare_post_processing_shadow_value(
-            report, "map_filtering.template_type", expected.template_type,
-            actual.template_type);
-        compare_post_processing_shadow_value(
-            report, "map_filtering.kernel_template_tail_mode",
-            expected.kernel_template_tail_mode,
-            actual.kernel_template_tail_mode);
-        compare_post_processing_shadow_value(
-            report, "map_filtering.lowpass_only", expected.lowpass_only,
-            actual.lowpass_only);
-        compare_post_processing_shadow_value(
-            report, "map_filtering.normalize_errors",
-            expected.normalize_errors, actual.normalize_errors);
-        compare_post_processing_shadow_value(
-            report, "map_filtering.edge_guard.enabled",
-            expected.edge_guard.enabled, actual.edge_guard.enabled);
-        compare_post_processing_shadow_value(
-            report, "map_filtering.edge_guard.weight_threshold_mode",
-            expected.edge_guard.weight_threshold_mode,
-            actual.edge_guard.weight_threshold_mode);
-        compare_post_processing_shadow_value(
-            report, "map_filtering.edge_guard.hits_threshold_mode",
-            expected.edge_guard.hits_threshold_mode,
-            actual.edge_guard.hits_threshold_mode);
-        compare_post_processing_shadow_value(
-            report, "map_filtering.edge_guard.hits_core_fraction",
-            expected.edge_guard.hits_core_fraction,
-            actual.edge_guard.hits_core_fraction);
-        compare_post_processing_shadow_value(
-            report, "map_filtering.edge_guard.guard_radius_fwhm",
-            expected.edge_guard.guard_radius_fwhm,
-            actual.edge_guard.guard_radius_fwhm);
-        compare_post_processing_shadow_value(
-            report, "map_filtering.edge_guard.fill_mode",
-            expected.edge_guard.fill_mode, actual.edge_guard.fill_mode);
-        compare_post_processing_shadow_value(
-            report, "map_filtering.edge_guard.taper_mode",
-            expected.edge_guard.taper_mode, actual.edge_guard.taper_mode);
-        compare_post_processing_shadow_value(
-            report, "map_filtering.edge_guard.taper_min_fraction",
-            expected.edge_guard.taper_min_fraction,
-            actual.edge_guard.taper_min_fraction);
-        compare_post_processing_shadow_value(
-            report, "map_filtering.denom_rel_tol", expected.denom_rel_tol,
-            actual.denom_rel_tol);
-        compare_post_processing_shadow_value(
-            report, "map_filtering.tail_frac_tol", expected.tail_frac_tol,
-            actual.tail_frac_tol);
-        compare_post_processing_shadow_value(
-            report, "map_filtering.max_loops", expected.max_loops,
-            actual.max_loops);
-        compare_post_processing_shadow_value(
-            report, "map_filtering.denom_check_iters",
-            expected.denom_check_iters, actual.denom_check_iters);
-        compare_post_processing_shadow_value(
-            report, "map_filtering.max_denom_iters",
-            expected.max_denom_iters, actual.max_denom_iters);
-        if (citlali::config::map_filter_template_uses_fwhm(
-                expected.template_type)) {
-            compare_post_processing_fwhm_shadow(
-                report, expected.template_fwhm_arcsec,
-                actual.template_fwhm_arcsec);
-        }
-    }
 
     if (requested.source_finding.enabled) {
         report.compared_source_finding_details = true;

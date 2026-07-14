@@ -117,7 +117,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "mixed-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Active: enabled-filtering point redu53 validates the complete direct typed request shadow; requested/effective/realized post-processing plan construction is now the next bounded checkpoint before one-way consumer cutover and required provenance."
+      "exit_gate": "Active: redu53 validates the request shadow; the execution plan and map-filter one-way consumer adapter are complete locally. Next validate that cutover with the unchanged enabled-filtering point overlay, then migrate source finding and source fitting before required realized provenance."
     },
     {
       "id": "pointing",

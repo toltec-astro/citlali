@@ -721,9 +721,24 @@ compared against its request. Production filtering, finding, fitting, and
 output consumers have not been switched yet, so this checkpoint changes no
 numerical or output behavior. Focused plan and frozen-boundary tests, all 347
 CTest cases, all eight compatibility profiles, and full config preflight pass.
-The next bounded cutover is the one-way typed map-filter adapter, followed by
-source finding and source fitting; reuse accepted `redu53` after a consumer
-cutover rather than for this plan-only checkpoint.
+The next bounded cutover at that checkpoint was the one-way typed map-filter
+adapter, followed by source finding and source fitting; accepted `redu53` is
+the validation baseline after a consumer cutover, not for plan construction
+alone.
+
+The map-filter consumer cutover is complete locally. The duplicate serial and
+OpenMP Wiener YAML parsers and the reverse Wiener-to-typed mirror are removed.
+A single one-way adapter copies the effective typed filter snapshot into the
+mature numerical target while preserving conditional Gaussian/Airy FWHM
+loading and arcsecond-to-radian conversion. Filter activation, runtime noise/
+kernel dependency checks, required filtered-output policy, and map-diagnostic
+edge-guard metadata now consume effective typed policy. The Wiener algorithms,
+map arrays, and output ordering are unchanged. The frozen audit rejects parser,
+reverse-mirror, output-policy, or adapter drift. Local CLI/test builds, all 347
+CTest cases, 60 config tests, all eight compatibility profiles, and full
+preflight pass. This consumer change requires the accepted `redu53` enabled-
+filtering point overlay on Unity. Source finding and source fitting remain on
+the legacy mixed boundary until that gate passes.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

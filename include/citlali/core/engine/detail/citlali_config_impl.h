@@ -86,9 +86,9 @@ void Engine::get_citlali_config(CT &config) {
         post_processing_config, diagnostics);
 
     /* get wiener filter config */
-    if (citlali::config::map_filtering_active(post_processing_config)) {
-        // needs map fitter config
-        get_map_filter_config(config);
+    if (citlali::config::map_filtering_active(
+            post_processing_plan.effective)) {
+        get_map_filter_config();
     }
 
     // get source finder config options
