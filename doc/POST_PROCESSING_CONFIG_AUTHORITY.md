@@ -86,11 +86,12 @@ effective activation and resolution reasons, and realized observation/coadd
 filtering, source-table, and fit cardinality.
 
 Consumer migration is ordered map filtering, source finding, then source
-fitting. Map filtering is complete locally; the latter two remain. Each slice
+fitting. Map filtering is complete and accepted by Unity point `redu54`; the
+latter two remain. Each slice
 replaces a reverse mirror or policy read with one one-way typed adapter while
 keeping the mature numerical object as the execution target. A consumer
 cutover, unlike plan construction alone, requires the matched enabled-filtering
-point gate based on accepted `redu53`.
+point gate, with accepted `redu54` now serving as the immediate baseline.
 
 ## Validation
 

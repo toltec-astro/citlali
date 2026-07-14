@@ -117,7 +117,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "mixed-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Active: redu53 validates the request shadow; the execution plan and map-filter one-way consumer adapter are complete locally. Next validate that cutover with the unchanged enabled-filtering point overlay, then migrate source finding and source fitting before required realized provenance."
+      "exit_gate": "Active: Unity point redu54 at a89e0ee5 validates the one-way map-filter consumer adapter with unchanged merged config, zero serious issues, complete products, and accepted numerical equivalence. Next migrate source finding, then source fitting, before required realized provenance."
     },
     {
       "id": "pointing",

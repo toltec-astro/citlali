@@ -21,9 +21,10 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest accepted point reduction: enabled-filtering `redu53`, produced by
-  `c75f079b`; unfiltered `redu51` and bounded full-noise-output `redu49` remain
-  the pointing and noise-products control fixtures.
+- Latest accepted point reduction: typed map-filter consumer `redu54`, produced
+  by `a89e0ee5`; enabled-filtering `redu53`, unfiltered `redu51`, and bounded
+  full-noise-output `redu49` remain the immediate post-processing, pointing,
+  and noise-products control fixtures.
 - Latest inspected science reduction: final iteration `redu15`, produced by
   `1faec7cc`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
@@ -726,7 +727,7 @@ adapter, followed by source finding and source fitting; accepted `redu53` is
 the validation baseline after a consumer cutover, not for plan construction
 alone.
 
-The map-filter consumer cutover is complete locally. The duplicate serial and
+The map-filter consumer cutover is complete and accepted. The duplicate serial and
 OpenMP Wiener YAML parsers and the reverse Wiener-to-typed mirror are removed.
 A single one-way adapter copies the effective typed filter snapshot into the
 mature numerical target while preserving conditional Gaussian/Airy FWHM
@@ -736,9 +737,15 @@ edge-guard metadata now consume effective typed policy. The Wiener algorithms,
 map arrays, and output ordering are unchanged. The frozen audit rejects parser,
 reverse-mirror, output-policy, or adapter drift. Local CLI/test builds, all 347
 CTest cases, 60 config tests, all eight compatibility profiles, and full
-preflight pass. This consumer change requires the accepted `redu53` enabled-
-filtering point overlay on Unity. Source finding and source fitting remain on
-the legacy mixed boundary until that gate passes.
+preflight pass. Unity point `redu54` at `a89e0ee5` reruns the unchanged
+enabled-filtering overlay with zero serious log issues, all required provenance
+valid, and the same 21-product inventory as `redu53`. Its 490-leaf merged
+low-level config is byte-identical to `redu53`; all 2,041 compared records pass
+the established tolerance with no skips, and all 639 non-PTC records compared
+against matching OG `redu09` pass as well. The 16 non-bitwise records are
+confined to three filtered a1400 products, have no finite-mask mismatch, and
+have maximum absolute difference `8.73e-11`. Source finding is now the active
+bounded consumer cutover; source fitting remains on the legacy mixed boundary.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
@@ -752,8 +759,9 @@ Immediate work order:
    from effective activation and realized outputs. Retain only one-way adapters
    into the mature Wiener-filter and map-fitter implementations.
 3. Cut consumers over from the now-established effective post-processing plan
-   in bounded filtering, source-finding, and source-fitting slices. Reuse the
-   accepted `redu53` overlay at each relevant gate and preserve exact merged-
+   in bounded source-finding and source-fitting slices; map filtering is
+   accepted at `redu54`. Reuse the unchanged enabled-filtering overlay at each
+   relevant gate and preserve exact merged-
    config identity for every OG/refactor pair.
 4. Do not broaden polarimetry without the pending scientific-policy decisions.
 5. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
