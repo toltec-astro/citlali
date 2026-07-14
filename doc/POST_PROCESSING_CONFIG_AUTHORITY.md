@@ -55,14 +55,15 @@ new reduction. At that checkpoint it was intentionally parallel to the
 existing execution boundary: no production consumer read the effective
 snapshot, and no numerical implementation changed.
 
-The map-filtering consumer cutover is now complete locally. Both duplicated
+The map-filtering consumer cutover is complete and accepted. Both duplicated
 serial/OpenMP `WienerFilter::get_config` YAML parsers and the reverse
 Wiener-to-typed mirror are retired. One adapter copies the effective typed map-
 filter snapshot into either numerical implementation, including the legacy
 conditional FWHM loading and arcsecond-to-radian conversion. Filter activation,
 required-output policy, runtime dependency checks, and map-diagnostic edge-
 guard metadata consume the effective plan. The mature filtering algorithms are
-unchanged. The remaining mixed boundary is source finding and source fitting.
+unchanged. Source finding is also accepted. Source fitting is complete locally
+and awaits its Unity point gate.
 
 ## Target Contract
 
@@ -87,8 +88,8 @@ filtering, source-table, and fit cardinality.
 
 Consumer migration is ordered map filtering, source finding, then source
 fitting. Map filtering is complete and accepted by Unity point `redu54`.
-Source finding is accepted exactly by Unity point `redu55`; source fitting
-remains on the mixed boundary. Each slice
+Source finding is accepted exactly by Unity point `redu55`; the source-fitting
+consumer is locally cut over and awaits the same point fixture. Each slice
 replaces a reverse mirror or policy read with one one-way typed adapter while
 keeping the mature numerical object as the execution target. A consumer
 cutover, unlike plan construction alone, requires the matched enabled-filtering
@@ -98,6 +99,13 @@ The source-finding adapter projects the effective threshold, angular window,
 and finder mode directly into observation and optional coadd map buffers. It
 does not copy coadd policy from realized observation state. Source detection,
 Gaussian fitting, and table production remain mature numerical consumers.
+
+The source-fitting adapter projects the effective bounding box, fitting
+radius, fit-angle policy, and amplitude/FWHM limit factors into the mature
+`mapFitter`. It preserves the historical angular conversion and zero-limit
+sentinel behavior. The Gaussian model remains the only accepted typed model;
+the fitter algorithm itself is unchanged. The legacy shadow no longer owns or
+compares fitting details.
 
 ## Validation
 

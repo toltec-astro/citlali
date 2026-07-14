@@ -763,6 +763,21 @@ pointing tables. The 490-leaf config is byte-identical to `redu54`; all 639
 non-PTC records also pass against matching OG `redu09`. Source fitting is now
 the active bounded consumer cutover.
 
+The source-fitting consumer cutover is complete locally and awaits the Unity
+point gate. The mixed YAML-to-`mapFitter` parser is removed. A standalone
+one-way adapter now projects the effective typed fitting request into the
+mature fitter target, preserving arcsecond-to-pixel conversion, fit-angle
+policy, two-element amplitude/FWHM vectors, and the historical rule that a
+nonpositive limit factor retains the fitter's established default. The
+Gaussian fitting implementation and its numerical inputs are otherwise
+unchanged. Source-fitting details are no longer copied into or compared
+against legacy config state; the temporary legacy shadow now covers only the
+remaining activation and histogram values it actually owns. Both local
+targets build, all 350 CTests and 62 config-boundary tests pass, all eight
+compatibility profiles pass, and full preflight is clean. Rerun the unchanged
+enabled-filtering point overlay against accepted `redu55` before wiring
+post-processing realized state and required provenance.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.
@@ -774,9 +789,10 @@ Immediate work order:
 2. Separate requested map-filtering, source-finding, and source-fitting policy
    from effective activation and realized outputs. Retain only one-way adapters
    into the mature Wiener-filter and map-fitter implementations.
-3. Cut source fitting over in its own bounded slice; source finding is accepted
-   exactly at `redu55` and map filtering at `redu54`. Preserve exact merged-
-   config identity for every OG/refactor pair.
+3. Validate the locally complete source-fitting cutover against exact point
+   baseline `redu55`, then wire realized post-processing state and required
+   provenance to actual filtering, source-table, and fit events. Preserve
+   exact merged-config identity for every OG/refactor pair.
 4. Do not broaden polarimetry without the pending scientific-policy decisions.
 5. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
    the active post-processing domain gates close.

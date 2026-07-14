@@ -33,6 +33,7 @@
 #include <citlali/core/pipeline/pointing_execution_plan.h>
 #include <citlali/core/pipeline/pointing_provenance.h>
 #include <citlali/core/pipeline/post_processing_config_read.h>
+#include <citlali/core/pipeline/post_processing_execution_plan.h>
 #include <citlali/core/pipeline/post_processing_config_shadow.h>
 #include <citlali/core/pipeline/observation_execution.h>
 #include <citlali/core/pipeline/observation_preflight.h>
@@ -64,6 +65,7 @@
 #include <citlali/core/pipeline/processed_weighting_resolution.h>
 #include <citlali/core/pipeline/runtime_provenance_output.h>
 #include <citlali/core/pipeline/source_finding_config_policy.h>
+#include <citlali/core/pipeline/source_fitting_config_policy.h>
 #include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/timestream_output_provenance.h>
 #include <citlali/core/pipeline/timestream_config_adapter_polarimetry.h>
@@ -144,6 +146,18 @@ struct FakeSourceFindingConfigTarget {
     double source_sigma = -1.0;
     double source_window_rad = -1.0;
     std::string source_finder_mode = "stale";
+};
+
+struct FakeSourceFittingConfigTarget {
+    double bounding_box_pix = -1.0;
+    double fitting_region_pix = -1.0;
+    bool fit_angle = false;
+    Eigen::VectorXd flux_limits;
+    Eigen::VectorXd fwhm_limits;
+    double flux_low = 0.1;
+    double flux_high = 2.0;
+    double fwhm_low = 0.1;
+    double fwhm_high = 2.0;
 };
 
 void ensure_citlali_test_logger() {
@@ -1654,7 +1668,7 @@ TEST(config_scaffold,
         plan.effective_resolution.source_fitting_disabled_by_mapmaking);
 }
 
-TEST(config_scaffold, post_processing_shadow_compares_only_active_details) {
+TEST(config_scaffold, post_processing_shadow_compares_legacy_activation) {
     citlali::config::PostProcessingConfig requested;
     requested.map_filtering.enabled = false;
     requested.map_filtering.denom_check_iters = 17;
@@ -1669,10 +1683,9 @@ TEST(config_scaffold, post_processing_shadow_compares_only_active_details) {
 
     const auto report =
         citlali::pipeline::compare_post_processing_config_shadow(
-            requested, legacy, citlali::config::ReductionType::science);
+            requested, legacy);
 
     EXPECT_TRUE(report.exact) << report.diagnostic();
-    EXPECT_FALSE(report.compared_source_fitting_details);
 }
 
 TEST(config_scaffold, post_processing_shadow_leaves_source_finding_details_typed) {
@@ -1684,15 +1697,14 @@ TEST(config_scaffold, post_processing_shadow_leaves_source_finding_details_typed
 
     citlali::config::PostProcessingConfig legacy;
     citlali::config::set_source_finding_enabled(legacy, true);
-    citlali::config::set_source_fitting_active(legacy, true);
     const auto report =
         citlali::pipeline::compare_post_processing_config_shadow(
-            requested, legacy, citlali::config::ReductionType::science);
+            requested, legacy);
 
     EXPECT_TRUE(report.exact) << report.diagnostic();
 }
 
-TEST(config_scaffold, post_processing_shadow_compares_pointing_fit_values) {
+TEST(config_scaffold, post_processing_shadow_leaves_source_fitting_details_typed) {
     citlali::config::PostProcessingConfig requested;
     requested.source_fitting.bounding_box_arcsec = 10.0;
     requested.source_fitting.fitting_radius_arcsec = 30.0;
@@ -1700,22 +1712,12 @@ TEST(config_scaffold, post_processing_shadow_compares_pointing_fit_values) {
     requested.source_fitting.amp_limit_factors = {0.5, 2.0};
     requested.source_fitting.fwhm_limit_factors = {0.6, 1.8};
 
-    auto legacy = requested;
-    legacy.source_fitting.active = true;
-    const auto exact =
+    citlali::config::PostProcessingConfig legacy;
+    const auto report =
         citlali::pipeline::compare_post_processing_config_shadow(
-            requested, legacy, citlali::config::ReductionType::pointing);
-    EXPECT_TRUE(exact.exact) << exact.diagnostic();
-    EXPECT_TRUE(exact.compared_source_fitting_details);
+            requested, legacy);
 
-    legacy.source_fitting.fitting_radius_arcsec = 31.0;
-    const auto mismatch =
-        citlali::pipeline::compare_post_processing_config_shadow(
-            requested, legacy, citlali::config::ReductionType::pointing);
-    EXPECT_FALSE(mismatch.exact);
-    EXPECT_NE(
-        mismatch.diagnostic().find("source_fitting.fitting_radius_arcsec"),
-        std::string::npos);
+    EXPECT_TRUE(report.exact) << report.diagnostic();
 }
 
 TEST(config_scaffold, adapts_effective_map_filter_config_one_way) {
@@ -1808,6 +1810,44 @@ TEST(config_scaffold, adapts_effective_source_finding_config_one_way) {
     EXPECT_DOUBLE_EQ(coadd_maps.source_sigma, -1.0);
     EXPECT_DOUBLE_EQ(coadd_maps.source_window_rad, -1.0);
     EXPECT_EQ(coadd_maps.source_finder_mode, "stale");
+}
+
+TEST(config_scaffold, adapts_effective_source_fitting_config_one_way) {
+    citlali::config::SourceFittingConfig config;
+    config.active = true;
+    config.bounding_box_arcsec = 30.0;
+    config.fitting_radius_arcsec = 40.0;
+    config.fit_rotation_angle = true;
+    config.amp_limit_factors = {0.5, 2.5};
+    config.fwhm_limit_factors = {0.6, 1.8};
+    FakeSourceFittingConfigTarget target;
+
+    citlali::pipeline::adapt_source_fitting_config_one_way(
+        config, 0.25, 0.5, target);
+
+    EXPECT_DOUBLE_EQ(target.bounding_box_pix, 60.0);
+    EXPECT_DOUBLE_EQ(target.fitting_region_pix, 80.0);
+    EXPECT_TRUE(target.fit_angle);
+    ASSERT_EQ(target.flux_limits.size(), 2);
+    ASSERT_EQ(target.fwhm_limits.size(), 2);
+    EXPECT_DOUBLE_EQ(target.flux_limits(0), 0.5);
+    EXPECT_DOUBLE_EQ(target.flux_limits(1), 2.5);
+    EXPECT_DOUBLE_EQ(target.fwhm_limits(0), 0.6);
+    EXPECT_DOUBLE_EQ(target.fwhm_limits(1), 1.8);
+    EXPECT_DOUBLE_EQ(target.flux_low, 0.5);
+    EXPECT_DOUBLE_EQ(target.flux_high, 2.5);
+    EXPECT_DOUBLE_EQ(target.fwhm_low, 0.6);
+    EXPECT_DOUBLE_EQ(target.fwhm_high, 1.8);
+
+    config.amp_limit_factors = {0.0, 0.0};
+    config.fwhm_limit_factors = {0.0, 0.0};
+    FakeSourceFittingConfigTarget default_target;
+    citlali::pipeline::adapt_source_fitting_config_one_way(
+        config, 0.25, 0.5, default_target);
+    EXPECT_DOUBLE_EQ(default_target.flux_low, 0.1);
+    EXPECT_DOUBLE_EQ(default_target.flux_high, 2.0);
+    EXPECT_DOUBLE_EQ(default_target.fwhm_low, 0.1);
+    EXPECT_DOUBLE_EQ(default_target.fwhm_high, 2.0);
 }
 
 TEST(config_scaffold, reads_typed_coadd_request) {

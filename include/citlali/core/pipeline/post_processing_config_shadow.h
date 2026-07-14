@@ -1,8 +1,6 @@
 #pragma once
 
 #include <citlali/core/config/post_processing_config.h>
-#include <citlali/core/config/runtime_config.h>
-#include <citlali/core/pipeline/post_processing_execution_plan.h>
 
 #include <algorithm>
 #include <cmath>
@@ -17,7 +15,6 @@ namespace citlali::pipeline {
 
 struct PostProcessingConfigShadowReport {
     bool exact = true;
-    bool compared_source_fitting_details = false;
     std::vector<std::string> mismatches;
 
     void add_mismatch(std::string mismatch) {
@@ -86,8 +83,7 @@ inline void compare_post_processing_shadow_value(
 
 inline PostProcessingConfigShadowReport compare_post_processing_config_shadow(
     const citlali::config::PostProcessingConfig &requested,
-    const citlali::config::PostProcessingConfig &legacy,
-    citlali::config::ReductionType reduction_type) {
+    const citlali::config::PostProcessingConfig &legacy) {
     PostProcessingConfigShadowReport report;
     compare_post_processing_shadow_value(
         report, "map_filtering.enabled", requested.map_filtering.enabled,
@@ -99,43 +95,6 @@ inline PostProcessingConfigShadowReport compare_post_processing_config_shadow(
         report, "source_finding.enabled", requested.source_finding.enabled,
         legacy.source_finding.enabled);
 
-    const bool fitting_required = post_processing_source_fitting_required(
-        reduction_type, requested);
-    compare_post_processing_shadow_value(
-        report, "source_fitting.active", fitting_required,
-        legacy.source_fitting.active);
-    if (fitting_required) {
-        report.compared_source_fitting_details = true;
-        const auto &expected = requested.source_fitting;
-        const auto &actual = legacy.source_fitting;
-        compare_post_processing_shadow_value(
-            report, "source_fitting.model", expected.model, actual.model);
-        compare_post_processing_shadow_value(
-            report, "source_fitting.bounding_box_arcsec",
-            expected.bounding_box_arcsec, actual.bounding_box_arcsec);
-        compare_post_processing_shadow_value(
-            report, "source_fitting.fitting_radius_arcsec",
-            expected.fitting_radius_arcsec, actual.fitting_radius_arcsec);
-        compare_post_processing_shadow_value(
-            report, "source_fitting.fit_rotation_angle",
-            expected.fit_rotation_angle, actual.fit_rotation_angle);
-        for (std::size_t index = 0; index < 2; ++index) {
-            const auto amp_field =
-                "source_fitting.amp_limit_factors." +
-                std::to_string(index);
-            compare_post_processing_shadow_value(
-                report, amp_field.c_str(),
-                expected.amp_limit_factors[index],
-                actual.amp_limit_factors[index]);
-            const auto fwhm_field =
-                "source_fitting.fwhm_limit_factors." +
-                std::to_string(index);
-            compare_post_processing_shadow_value(
-                report, fwhm_field.c_str(),
-                expected.fwhm_limit_factors[index],
-                actual.fwhm_limit_factors[index]);
-        }
-    }
     return report;
 }
 

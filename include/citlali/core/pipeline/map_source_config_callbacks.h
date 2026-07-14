@@ -21,46 +21,6 @@ struct SourceInitialPosition {
     double col;
 };
 
-inline double source_fitting_arcsec_to_pixels(double value_arcsec,
-                                              double arcsec_to_rad,
-                                              double pixel_size_rad) {
-    return arcsec_to_rad * value_arcsec / pixel_size_rad;
-}
-
-inline bool source_fitting_config_needed(citlali::config::ReductionType reduction_type,
-                                         bool run_map_filter,
-                                         bool run_source_finder) {
-    return citlali::config::is_pointing_reduction_type(reduction_type) ||
-           citlali::config::is_beammap_reduction_type(reduction_type) ||
-           run_map_filter || run_source_finder;
-}
-
-template <class PostProcessingConfig>
-bool source_fitting_config_needed(
-    citlali::config::ReductionType reduction_type,
-    const PostProcessingConfig &post_processing_config) {
-    return source_fitting_config_needed(
-        reduction_type,
-        citlali::config::map_filtering_active(post_processing_config),
-        citlali::config::source_finding_active(post_processing_config));
-}
-
-template <class MapFitter>
-void apply_positive_source_fit_limits(MapFitter &map_fitter) {
-    if (map_fitter.flux_limits(0) > 0) {
-        map_fitter.flux_low = map_fitter.flux_limits(0);
-    }
-    if (map_fitter.flux_limits(1) > 0) {
-        map_fitter.flux_high = map_fitter.flux_limits(1);
-    }
-    if (map_fitter.fwhm_limits(0) > 0) {
-        map_fitter.fwhm_low = map_fitter.fwhm_limits(0);
-    }
-    if (map_fitter.fwhm_limits(1) > 0) {
-        map_fitter.fwhm_high = map_fitter.fwhm_limits(1);
-    }
-}
-
 template <class MapsToArrays, class InitFwhmForArray, class FitMapSources>
 struct SourceFitCallbacks {
     MapsToArrays maps_to_arrays;

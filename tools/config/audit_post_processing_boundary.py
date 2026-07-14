@@ -32,8 +32,14 @@ LEGACY_FILTER_OMP_SOURCE = (
     "include/citlali/core/mapmaking/wiener_filter_omp.h"
 )
 MIRROR_SOURCE = "include/citlali/core/pipeline/map_filter_config_policy.h"
-POST_READER_SOURCE = (
+ACTIVATION_READER_SOURCE = (
+    "include/citlali/core/pipeline/post_processing_activation_config_read.h"
+)
+LEGACY_FITTING_READER_SOURCE = (
     "include/citlali/core/pipeline/citlali_config_read_post_processing.h"
+)
+FITTING_POLICY_SOURCE = (
+    "include/citlali/core/pipeline/source_fitting_config_policy.h"
 )
 LEGACY_FINDING_READER_SOURCE = (
     "include/citlali/core/pipeline/citlali_config_read_source_finding.h"
@@ -144,7 +150,9 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
     legacy_filter = (repo_root / LEGACY_FILTER_SOURCE).read_text()
     legacy_filter_omp = (repo_root / LEGACY_FILTER_OMP_SOURCE).read_text()
     mirror = (repo_root / MIRROR_SOURCE).read_text()
-    post_reader = (repo_root / POST_READER_SOURCE).read_text()
+    activation_reader = (repo_root / ACTIVATION_READER_SOURCE).read_text()
+    legacy_fitting_reader_path = repo_root / LEGACY_FITTING_READER_SOURCE
+    fitting_policy = (repo_root / FITTING_POLICY_SOURCE).read_text()
     legacy_finding_reader_path = repo_root / LEGACY_FINDING_READER_SOURCE
     legacy_finding_reader = (
         legacy_finding_reader_path.read_text()
@@ -177,7 +185,6 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         ),
         "shadow_report_present": (
             "struct PostProcessingConfigShadowReport" in shadow_source
-            and "compared_source_fitting_details" in shadow_source
         ),
         "execution_plan_present": (
             "struct PostProcessingExecutionPlan" in plan_source
@@ -225,8 +232,35 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         "activation_reader_call_count": call_count(
             engine, "read_post_processing_activation_config"
         ),
-        "source_fitting_reader_call_count": call_count(
+        "activation_reader_present": (
+            "void read_post_processing_activation_config"
+            in activation_reader
+        ),
+        "source_fitting_parser_retired": (
+            not legacy_fitting_reader_path.exists()
+            and "read_source_fitting_config" not in engine
+        ),
+        "source_fitting_parser_call_count": call_count(
             engine, "read_source_fitting_config"
+        ),
+        "typed_source_fitting_adapter_present": (
+            "void adapt_source_fitting_config_one_way" in fitting_policy
+            and "config.bounding_box_arcsec" in fitting_policy
+            and "config.fitting_radius_arcsec" in fitting_policy
+            and "config.fit_rotation_angle" in fitting_policy
+            and "config.amp_limit_factors" in fitting_policy
+            and "config.fwhm_limit_factors" in fitting_policy
+        ),
+        "typed_source_fitting_adapter_call_count": call_count(
+            engine, "adapt_source_fitting_config_one_way"
+        ),
+        "effective_source_fitting_policy_used": (
+            "source_fitting_active(" in engine
+            and "post_processing_plan.effective.source_fitting" in engine
+        ),
+        "source_fitting_shadow_details_retired": (
+            "compared_source_fitting_details" not in shadow_source
+            and '"source_fitting.' not in shadow_source
         ),
         "source_finding_parser_retired": (
             not legacy_finding_reader_path.exists()
@@ -312,8 +346,14 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         and checks["typed_filter_adapter_call_count"] == 1
         and checks["effective_filter_accessor_call_count"] == 1
         and checks["filter_output_policy_is_effective"]
+        and checks["activation_reader_present"]
         and checks["activation_reader_call_count"] == 1
-        and checks["source_fitting_reader_call_count"] == 1
+        and checks["source_fitting_parser_retired"]
+        and checks["source_fitting_parser_call_count"] == 0
+        and checks["typed_source_fitting_adapter_present"]
+        and checks["typed_source_fitting_adapter_call_count"] == 1
+        and checks["effective_source_fitting_policy_used"]
+        and checks["source_fitting_shadow_details_retired"]
         and checks["source_finding_parser_retired"]
         and checks["source_finding_parser_call_count"] == 0
         and checks["typed_source_finding_adapter_present"]

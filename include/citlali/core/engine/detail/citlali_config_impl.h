@@ -5,11 +5,13 @@
 
 #include <citlali/core/pipeline/citlali_config_read.h>
 #include <citlali/core/pipeline/mapmaking_activation_policy.h>
+#include <citlali/core/pipeline/post_processing_activation_config_read.h>
 #include <citlali/core/pipeline/post_processing_config_read.h>
 #include <citlali/core/pipeline/post_processing_config_shadow.h>
 #include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/source_finding_config_policy.h>
+#include <citlali/core/pipeline/source_fitting_config_policy.h>
 
 #include <stdexcept>
 
@@ -80,11 +82,12 @@ void Engine::get_citlali_config(CT &config) {
         config, run_map_filter, run_source_finder,
         post_processing_config, diagnostics);
 
-    // map fitter options if in pointing or beammap mode or if map filtering or source finding are enabled
-    citlali::pipeline::read_source_fitting_config(
-        config, runtime_config.reduction_type, map_fitter,
-        omb.pixel_size_rad, ASEC_TO_RAD,
-        post_processing_config, diagnostics);
+    if (citlali::config::source_fitting_active(
+            post_processing_plan.effective)) {
+        citlali::pipeline::adapt_source_fitting_config_one_way(
+            post_processing_plan.effective.source_fitting,
+            omb.pixel_size_rad, ASEC_TO_RAD, map_fitter);
+    }
 
     /* get wiener filter config */
     if (citlali::config::map_filtering_active(
@@ -103,8 +106,7 @@ void Engine::get_citlali_config(CT &config) {
 
     const auto post_processing_shadow =
         citlali::pipeline::compare_post_processing_config_shadow(
-            post_processing_plan.requested, post_processing_config,
-            runtime_config.reduction_type);
+            post_processing_plan.requested, post_processing_config);
     if (!post_processing_shadow.exact) {
         logger->error(
             "typed post-processing request differs from legacy state: {}",

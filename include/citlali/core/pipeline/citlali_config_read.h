@@ -16,6 +16,5 @@
 namespace citlali::pipeline {
 
 #include <citlali/core/pipeline/citlali_config_read_sync_offsets.h>
-#include <citlali/core/pipeline/citlali_config_read_post_processing.h>
 
 }  // namespace citlali::pipeline
