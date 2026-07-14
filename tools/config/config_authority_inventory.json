@@ -85,15 +85,15 @@
     },
     {
       "id": "noise-products",
-      "config_prefixes": ["mapmaking.noise_maps", "mapmaking.noise_products"],
+      "config_prefixes": ["mapmaking.noise_maps"],
       "typed_owner": "citlali::config::ReductionConfig::noise",
-      "loader": "include/citlali/core/engine/detail/mapmaking_config_impl.h",
+      "loader": "include/citlali/core/pipeline/noise_config_read.h",
       "execution_authority": "typed",
-      "legacy_targets": [],
-      "adapter_direction": "none",
-      "migration_status": "typed-authoritative",
+      "legacy_targets": ["Engine::omb", "Engine::cmb"],
+      "adapter_direction": "typed-to-legacy",
+      "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Record effective randomization seed/policy and realized noise-product counts."
+      "exit_gate": "Accept the required version-1 requested/effective/realized noise-products sidecar on Unity with disabled point, generation-only science, and a bounded full-output fixture; verify fixed RNG identity, exact product cardinality, and numerical equivalence without changing noise-generation algorithms."
     },
     {
       "id": "coadd",

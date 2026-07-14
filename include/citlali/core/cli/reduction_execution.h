@@ -9,6 +9,8 @@
 #include <citlali/core/pipeline/map_geometry.h>
 #include <citlali/core/pipeline/mapmaking_provenance.h>
 #include <citlali/core/pipeline/coadd_provenance.h>
+#include <citlali/core/pipeline/noise_provenance.h>
+#include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/processed_timestream_provenance.h>
 #include <citlali/core/pipeline/reduction_pipeline.h>
 #include <spdlog/spdlog.h>
@@ -144,6 +146,18 @@ int run_cli_reduction_processor(
     logger->info(
         "coadd provenance sidecar: {}",
         citlali::pipeline::coadd_provenance_path(
+            engine.output_paths.redu_dir_name)
+            .string());
+
+    auto &noise_plan = citlali::pipeline::noise_plan(engine);
+    citlali::pipeline::record_noise_run_completed(
+        noise_plan, mapmaking_plan,
+        citlali::pipeline::map_filter_outputs_enabled(engine));
+    citlali::pipeline::write_noise_provenance_file(
+        engine.output_paths.redu_dir_name, noise_plan);
+    logger->info(
+        "noise-products provenance sidecar: {}",
+        citlali::pipeline::noise_provenance_path(
             engine.output_paths.redu_dir_name)
             .string());
 

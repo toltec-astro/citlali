@@ -34,8 +34,8 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 314 tests with none skipped or disabled; all
-  38 config-boundary/preflight tests pass.
+- CTest discovers and passes all 328 tests with none skipped or disabled; all
+  48 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -589,17 +589,35 @@ mapmaking provenance. Runtime is 719.154 seconds versus 709.597 seconds. The
 33-record validation ledger passes. The coadd authority and provenance domain
 is complete.
 
+The bounded `noise-products` implementation checkpoint is locally complete.
+The six frozen `noise_maps.*` inputs now have one direct typed reader, a
+requested/effective/realized `NoiseExecutionPlan`, and a one-way adapter into
+the mature observation/coadd map buffers. The existing deterministic Boost
+MT19937 identity is now explicit and versioned as fixed internal seed `5489`;
+no user-facing seed knob was added. Required atomic
+`noise_products_provenance.yaml` records activation/count resolution, final-
+iteration observation/coadd realization cardinality, empirical-product count,
+realization-image count, and completion. The reduction auditor validates those
+semantics and cross-checks scientific-map cardinality against mapmaking v2
+provenance. The legacy noise readers and reverse request mutations are retired.
+The CLI/test build, all 328 CTest cases, all eight config profiles, the frozen
+six-path audit, 48 config-boundary tests, and full preflight pass. No noise-
+generation or product algorithm changed. This domain remains open until its
+Unity gates are accepted.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.
 
 Immediate work order:
 
-1. Begin the bounded noise-products domain by freezing its current requested
-   surface and characterizing effective randomization/seed policy and realized
-   product cardinality. Do not alter noise-generation numerics.
-2. Preserve point `redu46` and science `redu11` as the accepted disabled and
-   enabled coadd baselines.
+1. Run the bounded noise-products Unity gates: disabled point, existing
+   generation-only science, and a small full-output fixture with empirical
+   products and realization writes enabled. Require the version-1 sidecar,
+   exact cardinality, zero unexpected error-level messages, and accepted
+   scientific equivalence.
+2. Preserve point `redu46` and science `redu11` as the pre-noise-authority
+   baselines and record accepted successors in the validation ledger.
 3. Do not broaden polarimetry without the pending scientific-policy decisions.
 4. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
    the active domain gates close.

@@ -91,6 +91,25 @@ PROVENANCE_SIDECARS = {
         ),
         "allow_multiple": False,
     },
+    "noise_products": {
+        "filename": "noise_products_provenance.yaml",
+        "schema_version": "citlali-noise-products-provenance-v1",
+        "required_paths": (
+            ("initialized",),
+            ("requested", "enabled"),
+            ("requested", "n_noise_maps"),
+            ("requested", "randomize_dets"),
+            ("requested", "write_realizations"),
+            ("requested", "products", "enabled"),
+            ("requested", "products", "apply_empirical_weights"),
+            ("effective", "config"),
+            ("effective", "resolution"),
+            ("realized", "reduction_completed"),
+            ("realized", "generation_executed"),
+            ("realized", "outputs_completed"),
+        ),
+        "allow_multiple": False,
+    },
     "timestream_output": {
         "filename": "timestream_output_provenance.yaml",
         "schema_version": "citlali-timestream-output-provenance-v1",
@@ -741,6 +760,292 @@ def coadd_provenance_semantic_errors(
     return errors
 
 
+def valid_noise_config(config: Any, label: str) -> list[str]:
+    errors: list[str] = []
+    if not isinstance(config, dict):
+        return [f"{label} noise config must be a mapping"]
+    for path in (
+        ("enabled",),
+        ("randomize_dets",),
+        ("write_realizations",),
+        ("products", "enabled"),
+        ("products", "apply_empirical_weights"),
+    ):
+        try:
+            value = nested_value(config, path)
+        except KeyError:
+            errors.append(
+                f"{label} noise config is missing {'.'.join(path)}"
+            )
+            continue
+        if type(value) is not bool:
+            errors.append(
+                f"{label} noise config {'.'.join(path)} must be boolean"
+            )
+    count = config.get("n_noise_maps")
+    if type(count) is not int or count < 0:
+        errors.append(
+            f"{label} noise config n_noise_maps must be a nonnegative integer"
+        )
+    return errors
+
+
+def unavailable_count(record: Any, field: str) -> bool:
+    if not isinstance(record, dict) or record.get("available") is not False:
+        return False
+    return "value" not in record
+
+
+def noise_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    try:
+        if data["initialized"] is not True:
+            errors.append("noise-products execution plan is not initialized")
+
+        requested = data["requested"]
+        effective = data["effective"]["config"]
+        resolution = data["effective"]["resolution"]
+        realized = data["realized"]
+        errors.extend(valid_noise_config(requested, "requested"))
+        errors.extend(valid_noise_config(effective, "effective"))
+        if errors:
+            return errors
+
+        for name in (
+            "mapmaking_enabled",
+            "requested_enabled",
+            "effective_enabled",
+            "disabled_by_mapmaking",
+            "count_zeroed_while_disabled",
+        ):
+            if type(resolution.get(name)) is not bool:
+                errors.append(f"noise resolution {name} must be boolean")
+        for name in (
+            "requested_n_noise_maps",
+            "effective_n_noise_maps",
+        ):
+            value = resolution.get(name)
+            if type(value) is not int or value < 0:
+                errors.append(
+                    f"noise resolution {name} must be a nonnegative integer"
+                )
+        if errors:
+            return errors
+
+        requested_enabled = requested["enabled"]
+        mapmaking_enabled = resolution["mapmaking_enabled"]
+        expected_effective = requested_enabled and mapmaking_enabled
+        expected_count = (
+            requested["n_noise_maps"] if expected_effective else 0
+        )
+        if resolution["requested_enabled"] != requested_enabled:
+            errors.append("noise requested activation resolution is inconsistent")
+        if resolution["effective_enabled"] != effective["enabled"]:
+            errors.append("noise effective activation resolution is inconsistent")
+        if effective["enabled"] != expected_effective:
+            errors.append("noise activation does not follow mapmaking policy")
+        if resolution["disabled_by_mapmaking"] != (
+            requested_enabled and not mapmaking_enabled
+        ):
+            errors.append("noise mapmaking-disable resolution is inconsistent")
+        if resolution["requested_n_noise_maps"] != requested["n_noise_maps"]:
+            errors.append("noise requested count resolution is inconsistent")
+        if resolution["effective_n_noise_maps"] != effective["n_noise_maps"]:
+            errors.append("noise effective count resolution is inconsistent")
+        if effective["n_noise_maps"] != expected_count:
+            errors.append("noise effective count does not follow activation policy")
+        if resolution["count_zeroed_while_disabled"] != (
+            requested["n_noise_maps"] != effective["n_noise_maps"]
+        ):
+            errors.append("noise count-zeroing resolution is inconsistent")
+
+        for name in (
+            "randomize_dets",
+            "write_realizations",
+        ):
+            if effective[name] != requested[name]:
+                errors.append(f"noise effective {name} differs from request")
+        for name in ("enabled", "apply_empirical_weights"):
+            if effective["products"][name] != requested["products"][name]:
+                errors.append(
+                    f"noise effective products.{name} differs from request"
+                )
+
+        randomization = resolution.get("randomization")
+        expected_randomization = {
+            "engine": "boost::random::mt19937",
+            "seed": 5489,
+            "seed_policy": "fixed_internal_default",
+            "generator_scope": "reduction_pipeline_invocation",
+        }
+        if not isinstance(randomization, dict) or any(
+            randomization.get(name) != value
+            for name, value in expected_randomization.items()
+        ):
+            errors.append("noise randomization identity is inconsistent")
+
+        for name in (
+            "reduction_completed",
+            "generation_executed",
+            "outputs_completed",
+        ):
+            if type(realized.get(name)) is not bool:
+                errors.append(f"noise realized {name} must be boolean")
+        if errors:
+            return errors
+        if realized["reduction_completed"] is not True:
+            errors.append("noise-products reduction is not complete")
+
+        count_names = (
+            "noise_maps_per_scientific_map",
+            "observation_scientific_map_count",
+            "observation_noise_realization_count",
+            "coadd_scientific_map_count",
+            "coadd_noise_realization_count",
+            "total_noise_realization_count",
+            "empirical_product_map_count",
+            "realization_image_write_count",
+        )
+        if not effective["enabled"]:
+            if realized["generation_executed"]:
+                errors.append("disabled noise-products records generation")
+            if realized["outputs_completed"]:
+                errors.append("disabled noise-products records completed outputs")
+            for name in count_names:
+                if not unavailable_count(realized.get(name), name):
+                    errors.append(
+                        f"disabled noise-products records {name}"
+                    )
+            return errors
+
+        counts: dict[str, int] = {}
+        for name in count_names:
+            try:
+                counts[name] = available_count(realized[name], name)
+            except ValueError as exc:
+                errors.append(str(exc))
+        if errors:
+            return errors
+        if counts["noise_maps_per_scientific_map"] != effective["n_noise_maps"]:
+            errors.append("noise realized per-map count differs from effective config")
+        if realized["generation_executed"] != (
+            effective["n_noise_maps"] > 0
+        ):
+            errors.append("noise generation record differs from effective count")
+        expected_observation_realizations = (
+            counts["observation_scientific_map_count"]
+            * effective["n_noise_maps"]
+        )
+        expected_coadd_realizations = (
+            counts["coadd_scientific_map_count"]
+            * effective["n_noise_maps"]
+        )
+        if counts["observation_noise_realization_count"] != (
+            expected_observation_realizations
+        ):
+            errors.append("noise observation realization count is inconsistent")
+        if counts["coadd_noise_realization_count"] != (
+            expected_coadd_realizations
+        ):
+            errors.append("noise coadd realization count is inconsistent")
+        if counts["total_noise_realization_count"] != (
+            expected_observation_realizations + expected_coadd_realizations
+        ):
+            errors.append("noise total realization count is inconsistent")
+
+        active_product_maps = (
+            counts["observation_scientific_map_count"]
+            + counts["coadd_scientific_map_count"]
+        )
+        product_count = counts["empirical_product_map_count"]
+        if not effective["products"]["enabled"]:
+            if product_count != 0:
+                errors.append("disabled empirical products have nonzero count")
+        elif active_product_maps == 0 and product_count != 0:
+            errors.append("empirical products exist without scientific maps")
+        elif active_product_maps and product_count not in (
+            active_product_maps, 2 * active_product_maps
+        ):
+            errors.append("empirical product count has invalid output-stage cardinality")
+
+        output_realizations = (
+            expected_coadd_realizations
+            if counts["coadd_scientific_map_count"] > 0
+            else expected_observation_realizations
+        )
+        write_count = counts["realization_image_write_count"]
+        if not effective["write_realizations"]:
+            if write_count != 0:
+                errors.append("disabled realization outputs have nonzero count")
+        elif output_realizations == 0 and write_count != 0:
+            errors.append("realization outputs exist without realizations")
+        elif output_realizations and write_count not in (
+            output_realizations, 2 * output_realizations
+        ):
+            errors.append("realization write count has invalid output-stage cardinality")
+        if realized["outputs_completed"] is not True:
+            errors.append("enabled noise-products outputs are incomplete")
+    except (AttributeError, KeyError, TypeError) as exc:
+        errors.append(f"cannot evaluate noise-products provenance semantics: {exc}")
+    return errors
+
+
+def noise_mapmaking_cross_check_errors(
+    noise: dict[str, Any], mapmaking: dict[str, Any]
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        if mapmaking.get("schema_version") != (
+            "citlali-mapmaking-provenance-v2"
+        ):
+            return ["noise-products cross-check requires mapmaking provenance v2"]
+        noise_resolution = noise["effective"]["resolution"]
+        noise_effective = noise["effective"]["config"]
+        noise_realized = noise["realized"]
+        mapmaking_effective = mapmaking["effective"]["config"]
+        if noise_resolution["mapmaking_enabled"] != (
+            mapmaking_effective["enabled"]
+        ):
+            errors.append(
+                "noise mapmaking activation differs from mapmaking provenance"
+            )
+        if not noise_effective["enabled"]:
+            return errors
+
+        observation_map_count = sum(
+            observation["map_count"]
+            for observation in mapmaking["observations"]
+        )
+        coadd = mapmaking["coadd"]
+        coadd_available = coadd["available"]
+        coadd_map_count = coadd["map_count"] if coadd_available else 0
+        observation_noise_generated = (
+            not coadd_available or mapmaking_effective["method"] == "jinc"
+        )
+        expected_observation_maps = (
+            observation_map_count if observation_noise_generated else 0
+        )
+        realized_observation_maps = available_count(
+            noise_realized["observation_scientific_map_count"],
+            "observation_scientific_map_count",
+        )
+        realized_coadd_maps = available_count(
+            noise_realized["coadd_scientific_map_count"],
+            "coadd_scientific_map_count",
+        )
+        if realized_observation_maps != expected_observation_maps:
+            errors.append(
+                "noise observation map count differs from mapmaking provenance"
+            )
+        if realized_coadd_maps != coadd_map_count:
+            errors.append(
+                "noise coadd map count differs from mapmaking provenance"
+            )
+    except (KeyError, TypeError, ValueError) as exc:
+        errors.append(f"cannot cross-check noise and mapmaking provenance: {exc}")
+    return errors
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -758,6 +1063,7 @@ def audit_provenance_sidecars(
     require_raw: bool = False,
     require_mapmaking: bool = False,
     require_coadd: bool = False,
+    require_noise_products: bool = False,
 ) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for name, spec in PROVENANCE_SIDECARS.items():
@@ -766,6 +1072,7 @@ def audit_provenance_sidecars(
             or (name == "raw_timestream" and require_raw)
             or (name == "mapmaking" and require_mapmaking)
             or (name == "coadd" and require_coadd)
+            or (name == "noise_products" and require_noise_products)
         )
         paths = find_provenance_files(redu, str(spec["filename"]))
         record: dict[str, Any] = {
@@ -822,6 +1129,10 @@ def audit_provenance_sidecars(
                     elif name == "coadd":
                         semantic_errors = coadd_provenance_semantic_errors(
                             data
+                        )
+                    elif name == "noise_products":
+                        semantic_errors = (
+                            noise_provenance_semantic_errors(data)
                         )
                 item["semantic_errors"] = semantic_errors
                 item["valid"] = bool(
@@ -960,6 +1271,23 @@ def audit_provenance_sidecars(
         except Exception as exc:
             coadd["valid"] = False
             coadd.setdefault("cross_check_errors", []).append(str(exc))
+
+    noise = result["noise_products"]
+    if mapmaking["present"] and noise["present"] and (
+        mapmaking["valid"] and noise["valid"]
+    ):
+        try:
+            mapmaking_data = load_yaml(Path(mapmaking["paths"][0]))
+            noise_data = load_yaml(Path(noise["paths"][0]))
+            cross_check_errors = noise_mapmaking_cross_check_errors(
+                noise_data, mapmaking_data
+            )
+            if cross_check_errors:
+                noise["valid"] = False
+                noise["cross_check_errors"] = cross_check_errors
+        except Exception as exc:
+            noise["valid"] = False
+            noise.setdefault("cross_check_errors", []).append(str(exc))
     return result
 
 
@@ -1170,6 +1498,7 @@ def build_audit(args: argparse.Namespace) -> dict[str, Any]:
             getattr(args, "require_raw_provenance", False),
             getattr(args, "require_mapmaking_provenance", False),
             getattr(args, "require_coadd_provenance", False),
+            getattr(args, "require_noise_products_provenance", False),
         ),
         "products": audit_products(redu, args.top),
     }
@@ -1327,6 +1656,13 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         "--require-coadd-provenance",
         action="store_true",
         help="Fail unless coadd_provenance.yaml is present and valid.",
+    )
+    parser.add_argument(
+        "--require-noise-products-provenance",
+        action="store_true",
+        help=(
+            "Fail unless noise_products_provenance.yaml is present and valid."
+        ),
     )
     parser.add_argument("--json-out", default="", help="Optional path for machine-readable JSON.")
     parser.add_argument("--report-out", default="", help="Optional path for Markdown output.")

@@ -11,10 +11,6 @@ struct NoiseConfig {
     bool apply_empirical_weights = true;
 };
 
-inline void set_noise_maps_enabled(NoiseConfig &config, bool enabled) {
-    config.enabled = enabled;
-}
-
 inline bool noise_maps_active(const NoiseConfig &config) {
     return config.enabled;
 }

@@ -6,6 +6,8 @@
 #include <citlali/core/pipeline/mapmaking_config_read.h>
 #include <citlali/core/pipeline/coadd_config_read.h>
 #include <citlali/core/pipeline/mapmaking_config_policy.h>
+#include <citlali/core/pipeline/noise_config_adapter.h>
+#include <citlali/core/pipeline/noise_config_read.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
@@ -18,6 +20,8 @@ void Engine::get_mapmaking_config(CT &config) {
     mapmaking_plan = {};
     auto &coadd_plan = citlali::pipeline::coadd_plan(*this);
     coadd_plan = {};
+    auto &noise_plan = citlali::pipeline::noise_plan(*this);
+    noise_plan = {};
     auto &mapmaking_config =
         citlali::pipeline::reduction_config(*this).mapmaking;
     auto &coadd_config = citlali::pipeline::coadd_config(*this);
@@ -125,17 +129,8 @@ void Engine::get_mapmaking_config(CT &config) {
         }
     }
 
-    bool noise_maps_enabled = noise_config.enabled;
-    citlali::pipeline::read_noise_map_config(
-        config, noise_maps_enabled, coadd_config, omb, cmb, noise_config,
-        diagnostics);
-    bool write_noise_realizations = noise_config.write_realizations;
-    bool run_noise_products = noise_config.products_enabled;
-    bool apply_empirical_noise_weights =
-        noise_config.apply_empirical_weights;
-    citlali::pipeline::read_noise_product_config(
-        config, write_noise_realizations, run_noise_products,
-        apply_empirical_noise_weights, noise_config, diagnostics);
+    citlali::pipeline::read_noise_request_config(
+        config, noise_config, diagnostics);
 
     citlali::pipeline::set_mapmaker_polarization(
         rtcproc.run_polarization, naive_mm, jinc_mm);
@@ -145,6 +140,10 @@ void Engine::get_mapmaking_config(CT &config) {
         flux_calibration_enabled, timestream_config.type);
     coadd_plan.reset_from_request(
         coadd_config, mapmaking_plan.effective.enabled);
+    noise_plan.reset_from_request(
+        noise_config, mapmaking_plan.effective.enabled);
+    citlali::pipeline::adapt_noise_config_one_way(
+        noise_plan.effective, coadd_plan.effective.enabled, omb, cmb);
     citlali::pipeline::sync_map_grouping_to_timestream_processors(
         mapmaking_plan.effective.grouping, rtcproc, ptcproc);
 }

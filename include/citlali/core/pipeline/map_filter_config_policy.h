@@ -55,16 +55,17 @@ void mirror_wiener_filter_config(
     }
 }
 
-template <class ReductionConfig, class WienerFilter,
+template <class NoiseConfig, class PostProcessingConfig, class WienerFilter,
           class RuntimeTimestreamProc, class MapFitter,
           class Logger>
 void apply_map_filter_runtime_policy(
-    const ReductionConfig &reduction_config,
+    const NoiseConfig &noise_config,
+    const PostProcessingConfig &post_processing_config,
     const RuntimeTimestreamProc &rtcproc, const MapFitter &map_fitter,
     const std::string &parallel_policy, WienerFilter &wiener_filter,
     const Logger &logger) {
     const auto &map_filter_config =
-        reduction_config.post_processing.map_filtering;
+        post_processing_config.map_filtering;
 
     if (map_filter_config.template_type ==
         citlali::config::MapFilterTemplateType::kernel) {
@@ -75,7 +76,7 @@ void apply_map_filter_runtime_policy(
         wiener_filter.map_fitter = map_fitter;
     }
 
-    if (!citlali::config::noise_maps_active(reduction_config.noise) &&
+    if (!citlali::config::noise_maps_active(noise_config) &&
         (!map_filter_config.lowpass_only &&
          map_filter_config.type ==
              citlali::config::MapFilterType::wiener_filter)) {

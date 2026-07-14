@@ -3,6 +3,7 @@
 // Implementation detail included by lali.h.
 
 #include <citlali/core/pipeline/map_diagnostics.h>
+#include <citlali/core/pipeline/noise_execution_plan.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_scan_generation.h>
@@ -24,7 +25,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             *this, output_flags);
 
     // declare random number generator
-    boost::random::mt19937 eng;
+    boost::random::mt19937 eng{citlali::pipeline::noise_random_seed};
 
     // boost random number generator (0,1)
     boost::random::uniform_int_distribution<> rands{0,1};

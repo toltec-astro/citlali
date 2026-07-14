@@ -1,0 +1,13 @@
+{
+  "schema_version": "citlali-frozen-noise-products-config-paths-v1",
+  "path_count": 6,
+  "path_sha256": "e5e23109f40bb155047bef945faf8e0ae28e08783ee5a0a7a49abd56eb82023b",
+  "paths": [
+    "noise_maps.enabled",
+    "noise_maps.n_noise_maps",
+    "noise_maps.products.apply_empirical_weights",
+    "noise_maps.products.enabled",
+    "noise_maps.randomize_dets",
+    "noise_maps.write_realizations"
+  ]
+}

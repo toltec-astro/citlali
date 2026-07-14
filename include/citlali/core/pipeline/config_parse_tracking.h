@@ -38,6 +38,21 @@ void read_config_value(
         std::move(max_values));
 }
 
+template <class Config, class Param, class Diagnostics, class Key>
+void read_optional_config_value(
+    Config &config, Param &param, Diagnostics &diagnostics, const Key &key,
+    std::vector<std::decay_t<Param>> accepted_values = {},
+    std::vector<std::decay_t<Param>> min_values = {},
+    std::vector<std::decay_t<Param>> max_values = {}) {
+    using value_type = std::decay_t<Param>;
+    if (!config.template has_typed<value_type>(key)) {
+        return;
+    }
+    read_config_value(
+        config, param, diagnostics, key, std::move(accepted_values),
+        std::move(min_values), std::move(max_values));
+}
+
 template <class Processor, class Config, class Diagnostics>
 void read_processor_config(
     Processor &processor, Config &config, Diagnostics &diagnostics) {

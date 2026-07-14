@@ -1,7 +1,6 @@
 #pragma once
 
 #include <citlali/core/config/mapmaking_config.h>
-#include <citlali/core/config/noise_config.h>
 #include <citlali/core/config/post_processing_config.h>
 
 namespace citlali::pipeline {
@@ -12,7 +11,6 @@ void disable_map_products_if_mapmaking_disabled(
     if (citlali::config::mapmaking_active(reduction_config.mapmaking)) {
         return;
     }
-    citlali::config::set_noise_maps_enabled(reduction_config.noise, false);
     citlali::config::set_map_filtering_enabled(
         reduction_config.post_processing, false);
     citlali::config::set_source_finding_enabled(

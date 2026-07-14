@@ -6,6 +6,7 @@
 #include <citlali/core/engine/detail/beammap_mapmaking_stage_impl.h>
 #include <citlali/core/engine/detail/beammap_ptc_cleaning_impl.h>
 #include <citlali/core/engine/detail/beammap_fit_stage_impl.h>
+#include <citlali/core/pipeline/noise_execution_plan.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
@@ -131,7 +132,7 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
     bool keep_going = true;
 
     // declare random number generator
-    boost::random::mt19937 eng;
+    boost::random::mt19937 eng{citlali::pipeline::noise_random_seed};
 
     // boost random number generator (0,1)
     boost::random::uniform_int_distribution<> rands{0,1};

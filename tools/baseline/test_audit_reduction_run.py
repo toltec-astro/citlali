@@ -172,6 +172,7 @@ def valid_mapmaking_document() -> dict:
         "enabled": True,
         "grouping": "array",
         "cunit": "mJy/beam",
+        "method": "jinc",
     }
     return {
         "schema_version": "citlali-mapmaking-provenance-v2",
@@ -265,6 +266,88 @@ def valid_coadd_document(enabled: bool = True) -> dict:
             ),
             "outputs_completed": enabled,
         },
+    }
+
+
+def valid_noise_document(enabled: bool = True) -> dict:
+    requested_count = 10
+    effective_count = requested_count if enabled else 0
+    requested = {
+        "enabled": enabled,
+        "n_noise_maps": requested_count,
+        "randomize_dets": False,
+        "write_realizations": False,
+        "products": {
+            "enabled": False,
+            "apply_empirical_weights": True,
+        },
+    }
+    effective = {
+        **requested,
+        "n_noise_maps": effective_count,
+        "products": dict(requested["products"]),
+    }
+    unavailable = {"available": False}
+    realized = {
+        "reduction_completed": True,
+        "generation_executed": enabled,
+        "noise_maps_per_scientific_map": (
+            {"available": True, "value": effective_count}
+            if enabled else dict(unavailable)
+        ),
+        "observation_scientific_map_count": (
+            {"available": True, "value": 6}
+            if enabled else dict(unavailable)
+        ),
+        "observation_noise_realization_count": (
+            {"available": True, "value": 60}
+            if enabled else dict(unavailable)
+        ),
+        "coadd_scientific_map_count": (
+            {"available": True, "value": 3}
+            if enabled else dict(unavailable)
+        ),
+        "coadd_noise_realization_count": (
+            {"available": True, "value": 30}
+            if enabled else dict(unavailable)
+        ),
+        "total_noise_realization_count": (
+            {"available": True, "value": 90}
+            if enabled else dict(unavailable)
+        ),
+        "empirical_product_map_count": (
+            {"available": True, "value": 0}
+            if enabled else dict(unavailable)
+        ),
+        "realization_image_write_count": (
+            {"available": True, "value": 0}
+            if enabled else dict(unavailable)
+        ),
+        "outputs_completed": enabled,
+    }
+    return {
+        "schema_version": "citlali-noise-products-provenance-v1",
+        "initialized": True,
+        "requested": requested,
+        "effective": {
+            "config": effective,
+            "resolution": {
+                "mapmaking_enabled": True,
+                "requested_enabled": enabled,
+                "effective_enabled": enabled,
+                "disabled_by_mapmaking": False,
+                "requested_n_noise_maps": requested_count,
+                "effective_n_noise_maps": effective_count,
+                "count_zeroed_while_disabled": not enabled,
+                "randomization": {
+                    "engine": "boost::random::mt19937",
+                    "seed": 5489,
+                    "seed_policy": "fixed_internal_default",
+                    "generator_scope": "reduction_pipeline_invocation",
+                },
+            },
+        },
+        "realized": realized,
     }
 
 
@@ -416,6 +499,95 @@ class ProvenanceAuditTest(unittest.TestCase):
         self.assertEqual(
             audit.coadd_provenance_semantic_errors(document), []
         )
+
+    def test_accepts_complete_noise_products_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "noise_products_provenance.yaml").write_text(
+                yaml.safe_dump(valid_noise_document(), sort_keys=False),
+                encoding="utf-8",
+            )
+
+            noise = audit.audit_provenance_sidecars(
+                redu, require_noise_products=True
+            )["noise_products"]
+
+            self.assertTrue(noise["present"])
+            self.assertTrue(noise["required"])
+            self.assertTrue(noise["valid"])
+
+    def test_accepts_effectively_disabled_noise_products(self) -> None:
+        self.assertEqual(
+            audit.noise_provenance_semantic_errors(
+                valid_noise_document(enabled=False)
+            ),
+            [],
+        )
+
+    def test_rejects_missing_required_noise_products_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            records = audit.audit_provenance_sidecars(
+                Path(directory), require_noise_products=True
+            )
+
+            self.assertFalse(records["noise_products"]["valid"])
+
+    def test_rejects_inconsistent_noise_activation(self) -> None:
+        document = valid_noise_document()
+        document["effective"]["config"]["enabled"] = False
+
+        self.assertIn(
+            "noise effective activation resolution is inconsistent",
+            audit.noise_provenance_semantic_errors(document),
+        )
+
+    def test_rejects_inconsistent_noise_realization_count(self) -> None:
+        document = valid_noise_document()
+        document["realized"]["total_noise_realization_count"]["value"] = 89
+
+        self.assertIn(
+            "noise total realization count is inconsistent",
+            audit.noise_provenance_semantic_errors(document),
+        )
+
+    def test_rejects_noise_rng_identity_drift(self) -> None:
+        document = valid_noise_document()
+        document["effective"]["resolution"]["randomization"]["seed"] = 1
+
+        self.assertIn(
+            "noise randomization identity is inconsistent",
+            audit.noise_provenance_semantic_errors(document),
+        )
+
+    def test_rejects_noise_mapmaking_cardinality_mismatch(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            mapmaking = valid_mapmaking_document()
+            noise = valid_noise_document()
+            noise["realized"]["coadd_scientific_map_count"]["value"] = 6
+            noise["realized"]["coadd_noise_realization_count"]["value"] = 60
+            noise["realized"]["total_noise_realization_count"]["value"] = 120
+            (redu / "mapmaking_provenance.yaml").write_text(
+                yaml.safe_dump(mapmaking, sort_keys=False),
+                encoding="utf-8",
+            )
+            (redu / "noise_products_provenance.yaml").write_text(
+                yaml.safe_dump(noise, sort_keys=False),
+                encoding="utf-8",
+            )
+
+            records = audit.audit_provenance_sidecars(
+                redu,
+                require_mapmaking=True,
+                require_noise_products=True,
+            )
+
+            self.assertTrue(records["mapmaking"]["valid"])
+            self.assertFalse(records["noise_products"]["valid"])
+            self.assertEqual(
+                records["noise_products"]["cross_check_errors"],
+                ["noise coadd map count differs from mapmaking provenance"],
+            )
 
     def test_rejects_inconsistent_coadd_activation(self) -> None:
         document = valid_coadd_document()
