@@ -207,6 +207,26 @@ sequence of identified, completed observations; finite positive pixel sizes;
 consistent logical map-product counts; and matching observation/coadd
 completion cardinality. Historical version-1 sidecars remain readable.
 
+Coadd and noise-product provenance can be required on a newer candidate while
+retaining an accepted baseline that predates those sidecars:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/compare_reduction_audits.py \
+  /path/to/accepted/reduNN \
+  /path/to/candidate/reduNN \
+  --expected-mode science \
+  --baseline-label refactor \
+  --candidate-label refactor \
+  --require-candidate-coadd-provenance \
+  --require-candidate-noise-products-provenance
+```
+
+The coadd audit cross-checks requested, effective, and realized activation,
+map cardinality, and required-write completion. The noise audit additionally
+checks the fixed random-number-generator identity, realization counts for
+observations and coadds, optional product and realization-write cardinality,
+and consistency with mapmaking and coadd provenance.
+
 Science coadd triage, with an explicit baseline/candidate pair when the latest
 directories are not the intended comparison:
 

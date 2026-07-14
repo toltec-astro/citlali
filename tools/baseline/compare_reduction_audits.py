@@ -9,7 +9,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
-import audit_reduction_run
+if __package__:
+    from . import audit_reduction_run
+else:
+    import audit_reduction_run
 
 
 def audit_for(
@@ -17,6 +20,8 @@ def audit_for(
     require_processed_provenance: bool = False,
     require_raw_provenance: bool = False,
     require_mapmaking_provenance: bool = False,
+    require_coadd_provenance: bool = False,
+    require_noise_products_provenance: bool = False,
 ) -> dict[str, Any]:
     args = argparse.Namespace(
         reduction=path,
@@ -26,6 +31,10 @@ def audit_for(
         require_processed_provenance=require_processed_provenance,
         require_raw_provenance=require_raw_provenance,
         require_mapmaking_provenance=require_mapmaking_provenance,
+        require_coadd_provenance=require_coadd_provenance,
+        require_noise_products_provenance=(
+            require_noise_products_provenance
+        ),
     )
     return audit_reduction_run.build_audit(args)
 
@@ -99,10 +108,25 @@ def compare_audits(args: argparse.Namespace) -> dict[str, Any]:
         args.baseline, args.expected_mode, args.baseline_label, args.top
     )
     candidate = audit_for(
-        args.candidate, args.expected_mode, args.candidate_label, args.top,
-        getattr(args, "require_candidate_processed_provenance", False),
-        getattr(args, "require_candidate_raw_provenance", False),
-        getattr(args, "require_candidate_mapmaking_provenance", False),
+        args.candidate,
+        args.expected_mode,
+        args.candidate_label,
+        args.top,
+        require_processed_provenance=getattr(
+            args, "require_candidate_processed_provenance", False
+        ),
+        require_raw_provenance=getattr(
+            args, "require_candidate_raw_provenance", False
+        ),
+        require_mapmaking_provenance=getattr(
+            args, "require_candidate_mapmaking_provenance", False
+        ),
+        require_coadd_provenance=getattr(
+            args, "require_candidate_coadd_provenance", False
+        ),
+        require_noise_products_provenance=getattr(
+            args, "require_candidate_noise_products_provenance", False
+        ),
     )
     base_intervals = baseline.get("log", {}).get("interval_seconds", {})
     cand_intervals = candidate.get("log", {}).get("interval_seconds", {})
@@ -282,6 +306,16 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         "--require-candidate-mapmaking-provenance",
         action="store_true",
         help="Require valid mapmaking provenance only for the candidate.",
+    )
+    parser.add_argument(
+        "--require-candidate-coadd-provenance",
+        action="store_true",
+        help="Require valid coadd provenance only for the candidate.",
+    )
+    parser.add_argument(
+        "--require-candidate-noise-products-provenance",
+        action="store_true",
+        help="Require valid noise-products provenance only for the candidate.",
     )
     parser.add_argument("--json-out", default="", help="Optional path for machine-readable JSON.")
     parser.add_argument("--report-out", default="", help="Optional path for Markdown output.")
