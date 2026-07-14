@@ -44,3 +44,22 @@ Validate the ledger before committing an entry:
 ```bash
 $HOME/tolteca/bin/python tools/baseline/validate_validation_ledger.py
 ```
+
+## Mode-Gate Overlays
+
+The files under `validation/configs` are high-precedence TolTECA overlays for
+specific acceptance gates. Copy the same overlay into the corresponding OG and
+refactor workdirs; TolTECA merges it after the lower-numbered `NN*.yaml` files.
+
+- `science_post_processing_84_reduce.yaml` keeps science mapmaking,
+  coaddition, and Wiener filtering active while disabling fruit loops, noise
+  realizations, and source finding. It isolates coadd filtering and should
+  produce one reduction directory rather than a retained fruit-loop series.
+- `beammap_post_processing_80_reduce.yaml` fixes the Beammap gate at three
+  fitting iterations while disabling unrelated map filtering, source finding,
+  and noise realizations. Beammap source fitting remains required by reduction
+  mode.
+
+Before accepting a pair, confirm that the merged low-level configs differ only
+in expected executable/output paths and run the mode-appropriate product and
+provenance audits.

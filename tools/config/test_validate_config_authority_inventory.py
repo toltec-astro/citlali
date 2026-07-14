@@ -65,6 +65,30 @@ class ConfigAuthorityInventoryValidationTest(unittest.TestCase):
             errors,
         )
 
+    def test_rejects_migration_label_that_disagrees_with_authority(self) -> None:
+        domain = self.data["domains"][0]
+        domain["execution_authority"] = "mixed"
+        domain["adapter_direction"] = "typed-to-legacy"
+        domain["migration_status"] = "typed-authoritative-with-adapter"
+
+        errors = inventory.validate(self.data, self.repo_root)
+
+        self.assertIn(
+            "domains[0]: migration status "
+            "'typed-authoritative-with-adapter' requires "
+            "execution_authority='typed' and "
+            "adapter_direction='typed-to-legacy'",
+            errors,
+        )
+
+    def test_accepts_typed_authority_with_one_way_adapter(self) -> None:
+        domain = self.data["domains"][0]
+        domain["execution_authority"] = "typed"
+        domain["adapter_direction"] = "typed-to-legacy"
+        domain["migration_status"] = "typed-authoritative-with-adapter"
+
+        self.assertEqual(inventory.validate(self.data, self.repo_root), [])
+
 
 if __name__ == "__main__":
     unittest.main()

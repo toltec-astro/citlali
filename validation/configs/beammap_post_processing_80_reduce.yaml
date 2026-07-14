@@ -1,0 +1,18 @@
+# Phase 2 post-processing Beammap gate.
+# Retain enough iterations to validate repeated detector fitting while
+# excluding unrelated optional post-processing. Apply this identical overlay
+# to the OG and refactor workdirs.
+reduce:
+  steps:
+    0:
+      config:
+        low_level:
+          beammap:
+            iter_max: 3
+          noise_maps:
+            enabled: false
+          post_processing:
+            map_filtering:
+              enabled: false
+            source_finding:
+              enabled: false

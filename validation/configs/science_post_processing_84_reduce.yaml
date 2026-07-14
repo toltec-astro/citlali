@@ -1,0 +1,19 @@
+# Phase 2 post-processing science gate.
+# Exercise observation and coadd map filtering without fruit-loop or noise-map
+# costs. Apply this identical overlay to the OG and refactor workdirs.
+reduce:
+  steps:
+    0:
+      config:
+        low_level:
+          timestream:
+            fruit_loops:
+              enabled: false
+          noise_maps:
+            enabled: false
+          post_processing:
+            map_filtering:
+              enabled: true
+              normalize_errors: false
+            source_finding:
+              enabled: false

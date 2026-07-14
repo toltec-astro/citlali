@@ -26,6 +26,15 @@ MIGRATION_STATUSES = {
     "external-boundary",
 }
 PROVENANCE_STATUSES = {"missing", "partial", "complete"}
+MIGRATION_CONTRACTS = {
+    "typed-authoritative": ("typed", "none"),
+    "typed-authoritative-with-adapter": ("typed", "typed-to-legacy"),
+    "legacy-authoritative-with-typed-mirror": (
+        "legacy",
+        "legacy-to-typed",
+    ),
+    "external-boundary": ("external", "external"),
+}
 REQUIRED_DOMAIN_FIELDS = {
     "id",
     "config_prefixes",
@@ -141,6 +150,16 @@ def validate(data: Any, repo_root: Path) -> list[str]:
             errors.append(
                 f"{label}: legacy-to-typed mirror requires legacy authority"
             )
+
+        status = domain["migration_status"]
+        if status in MIGRATION_CONTRACTS:
+            expected_authority, expected_direction = MIGRATION_CONTRACTS[status]
+            if authority != expected_authority or direction != expected_direction:
+                errors.append(
+                    f"{label}: migration status {status!r} requires "
+                    f"execution_authority={expected_authority!r} and "
+                    f"adapter_direction={expected_direction!r}"
+                )
 
     return errors
 

@@ -46,7 +46,7 @@ branch. The exact validated tree will remain available for forensic review.
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
 - CTest discovers and passes all 355 tests with none skipped or disabled; all
-  63 config-boundary/preflight tests pass.
+  65 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -843,16 +843,13 @@ failures must fail the reduction. There are no best-effort enabled products.
 Immediate work order:
 
 1. Validate the required provenance on science coadd routing and Beammap
-   iterative detector fitting; preserve exact merged-config identity for every
+   iterative detector fitting using the matched overlays in
+   `validation/configs`. Preserve exact merged-config identity for every
    OG/refactor pair.
-2. Establish the deferred matched OOF baseline through the pointing engine,
-   using the explicit PSF-preserving source strategy and paired OG/refactor
-   overlays.
-3. Mark post-processing complete only after the point, science, and Beammap
-   gates pass and the inventory has no remaining mixed authority.
-   inventory has no remaining mixed authority.
-4. Do not broaden polarimetry without the pending scientific-policy decisions.
-5. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
+2. Mark post-processing complete only after the science and Beammap gates pass;
+   the point gate and typed-authority inventory are already complete.
+3. Do not broaden polarimetry without the pending scientific-policy decisions.
+4. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
    the active post-processing domain gates close.
 
 ### Phase 1 Progress

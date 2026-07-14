@@ -107,6 +107,13 @@ sentinel behavior. The Gaussian model remains the only accepted typed model;
 the fitter algorithm itself is unchanged. The legacy shadow no longer owns or
 compares fitting details.
 
+The remaining activation-only shadow and duplicate histogram reader are now
+retired. Unity point `redu58` accepts the resulting single typed authority with
+exact products and unchanged requested/effective provenance. The domain has no
+remaining reverse or mixed-authority path. Its provenance status remains
+partial only until science validates coadd filtering and Beammap validates
+iterative detector-fit cardinality.
+
 ## Validation
 
 Fast validation uses matched OG/refactor pointing overlays with identical
@@ -114,3 +121,9 @@ merged low-level configuration. Cases should independently cover filtering
 disabled, filtering enabled, and source finding/fitting activation. A science
 gate is required if migration changes coadd-specific filtering or output
 routing. Numerical algorithms and accepted tolerances are unchanged.
+
+The reusable overlays in `validation/configs` isolate those final gates. The
+science overlay disables fruit loops and noise products while retaining coadd
+map filtering. The Beammap overlay retains three iterations and disables
+unrelated optional post-processing. Apply each identical overlay to the OG and
+refactor workdirs so TolTECA's ordered merge preserves a matched comparison.

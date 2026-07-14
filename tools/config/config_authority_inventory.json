@@ -112,12 +112,12 @@
       "config_prefixes": ["post_processing", "wiener_filter"],
       "typed_owner": "citlali::config::ReductionConfig::post_processing",
       "loader": "include/citlali/core/engine/detail/citlali_config_impl.h",
-      "execution_authority": "mixed",
+      "execution_authority": "typed",
       "legacy_targets": ["Engine::wiener_filter", "Engine::map_fitter"],
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Active: Unity point redu57 accepts realized provenance and exact products. The activation shadow and duplicate histogram reader are retired locally, leaving typed requested/effective state authoritative with one-way numerical adapters. Validate that cleanup on point, then validate science coadd routing and Beammap fitting before marking provenance and the domain complete."
+      "exit_gate": "Active: Unity point redu58 accepts the retired activation shadow, typed requested/effective authority, realized provenance, and exact products. Validate science coadd filtering and Beammap iterative fitting before marking provenance and the domain complete."
     },
     {
       "id": "pointing",
