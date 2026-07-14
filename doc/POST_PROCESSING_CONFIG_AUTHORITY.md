@@ -110,9 +110,12 @@ compares fitting details.
 The remaining activation-only shadow and duplicate histogram reader are now
 retired. Unity point `redu58` accepts the resulting single typed authority with
 exact products and unchanged requested/effective provenance. The domain has no
-remaining reverse or mixed-authority path. Its provenance status remains
-partial only until science validates coadd filtering and Beammap validates
-iterative detector-fit cardinality.
+remaining reverse or mixed-authority path. Science final iteration `redu19`
+validates one coadd filter context and three filtered maps. Beammap `redu02`
+validates three iterative detector-fit contexts with 15,407 attempted and valid
+fits. Both runs use commit `342a021c`, publish valid required provenance, contain
+zero serious log records, and preserve their complete matched product sets.
+Post-processing authority and provenance are complete.
 
 ## Validation
 

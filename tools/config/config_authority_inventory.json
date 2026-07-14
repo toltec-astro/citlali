@@ -116,8 +116,8 @@
       "legacy_targets": ["Engine::wiener_filter", "Engine::map_fitter"],
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
-      "provenance_status": "partial",
-      "exit_gate": "Active: Unity point redu58 accepts the retired activation shadow, typed requested/effective authority, realized provenance, and exact products. Validate science coadd filtering and Beammap iterative fitting before marking provenance and the domain complete."
+      "provenance_status": "complete",
+      "exit_gate": "Complete: Unity point redu58 accepts the retired activation shadow and exact products; science final iteration redu19 validates one coadd filter context and three filtered maps; Beammap redu02 validates three iterative fit contexts with 15407 attempted and valid fits. Both mode gates have valid required provenance, zero serious log issues, and no missing, changed, or skipped required products against their matched prior refactor baselines."
     },
     {
       "id": "pointing",

@@ -33,8 +33,12 @@ branch. The exact validated tree will remain available for forensic review.
   standard `2e-8 + 1e-10 * abs(reference)` tolerance. The only accepted
   differences are inactive RTC-despike config metadata recorded differently
   by the legacy and typed paths.
-- Latest inspected science reduction: final iteration `redu15`, produced by
-  `1faec7cc`.
+- Latest accepted science reduction: final iteration `redu19`, produced by
+  `342a021c`; its post-processing provenance records one coadd filter context
+  and three filtered maps.
+- Latest accepted Beammap reduction: `redu02`, produced by `342a021c`; its
+  post-processing provenance records three detector-fit contexts with 15,407
+  attempted and valid fits.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
@@ -843,8 +847,24 @@ loading and validation boundary. One typed-to-legacy adapter copies only the
 fit support radius into the mature `map_fitter`. Dedicated requested/effective/
 realized Beammap provenance is explicitly missing. The six-test static audit
 is part of the full preflight and will reject surface, reader-boundary,
-authority, or adapter drift. Implementation remains paused until the active
-post-processing science and Beammap gates close.
+authority, or adapter drift.
+
+The final post-processing mode gates are accepted. Science final iteration
+`redu19` at `342a021c` has zero serious log records and valid required
+provenance. Its realized record contains no observation filter contexts and
+exactly one coadd filter context with three filtered maps. Against accepted
+science `redu15`, the low-level config is byte-identical and the strict full-
+depth comparison finds 27 common products, no missing or extra products, no
+skipped records, and no changed records outside the standard tolerance.
+
+Beammap `redu02` at the same commit has zero serious log records and valid
+required provenance. Its realized record contains exactly three detector-fit
+contexts with 15,407 attempts and 15,407 valid fits. Against accepted Beammap
+`redu01`, the low-level config is byte-identical and the strict full-depth
+comparison, including complete detector TOD and split FITS maps, finds 12
+common products with no missing, extra, skipped, or changed records. The
+profiling sidecar differs only in elapsed timing and is excluded from the
+scientific gate. Post-processing authority and provenance are complete.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
@@ -852,15 +872,15 @@ failures must fail the reduction. There are no best-effort enabled products.
 
 Immediate work order:
 
-1. Validate the required provenance on science coadd routing and Beammap
-   iterative detector fitting using the matched overlays in
-   `validation/configs`. Preserve exact merged-config identity for every
-   OG/refactor pair.
-2. Mark post-processing complete only after the science and Beammap gates pass;
-   the point gate and typed-authority inventory are already complete.
-3. Do not broaden polarimetry without the pending scientific-policy decisions.
-4. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
-   the active post-processing domain gates close.
+1. Begin the bounded Beammap effective-plan and provenance migration using the
+   accepted sequence in the Beammap authority review.
+2. Ask only the owner questions needed by the first Beammap implementation
+   cut; do not silently change phase, prior, split, reference, or source-flux
+   behavior.
+3. Preserve Gaussian fitting, prior matching, detector flagging, RTC/PTC,
+   mapmaking, and all other mature numerical algorithms.
+4. Keep compact-config rollout, polarimetry expansion, and Phase 3 compiled-
+   boundary work paused.
 
 ### Parallel Review Synthesis - 2026-07-14
 
@@ -871,10 +891,9 @@ this living roadmap:
 - [Beammap authority design review](../handoff/BEAMMAP_AUTHORITY_DESIGN_REVIEW_2026-07-14.md)
 - [compact configuration and TolTECA usability review](../handoff/CONFIG_USABILITY_TOLTECA_REVIEW_2026-07-14.md)
 
-They agree with the active sequence and expose no reason to reopen the eight
-completed authority domains. Phase 2 remains incomplete: post-processing is
-awaiting its science and Beammap runtime gates; Beammap and the minimal KIDs
-external boundary are implementation-ready; polarimetry and atomic
+They agree with the active sequence and expose no reason to reopen the nine
+completed authority domains. Phase 2 remains incomplete: Beammap and the
+minimal KIDs external boundary are implementation-ready; polarimetry and atomic
 astrometry/photometry still require scientific-policy decisions. Domain-level
 completion must not be mistaken for the global Phase 2 exit gate.
 
