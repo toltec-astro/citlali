@@ -46,7 +46,7 @@ branch. The exact validated tree will remain available for forensic review.
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
 - CTest discovers and passes all 355 tests with none skipped or disabled; all
-  65 config-boundary/preflight tests pass.
+  71 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -835,6 +835,16 @@ is not covered by the preceding `redu57` acceptance. Unity point `redu58` now
 closes that gate with the same config and post-processing provenance hashes,
 zero serious log issues, and exact identity across all 2,041 records in the 21
 common products, including full RTC/PTC timestreams.
+
+The next Beammap authority domain is characterized without changing runtime
+behavior. A versioned manifest freezes all 74 `beammap.*` leaves; there are no
+known typed-model gaps, and config literals remain confined to the declared
+loading and validation boundary. One typed-to-legacy adapter copies only the
+fit support radius into the mature `map_fitter`. Dedicated requested/effective/
+realized Beammap provenance is explicitly missing. The six-test static audit
+is part of the full preflight and will reject surface, reader-boundary,
+authority, or adapter drift. Implementation remains paused until the active
+post-processing science and Beammap gates close.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write

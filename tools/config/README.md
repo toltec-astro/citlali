@@ -364,6 +364,18 @@ $HOME/tolteca/bin/python \
   --fail-on-drift --fail-on-review
 ```
 
+`audit_beammap_boundary.py` freezes the 74-leaf `beammap.*` surface and
+characterizes the next Phase 2 boundary without changing execution. It checks
+the default surface, typed model, config-literal file boundary, single typed
+installation, and one fitting-radius adapter. The audit intentionally requires
+dedicated Beammap provenance to remain reported as missing until that
+implementation is added and the audit contract is advanced deliberately.
+
+```bash
+$HOME/tolteca/bin/python tools/config/audit_beammap_boundary.py \
+  --fail-on-drift
+```
+
 ## Compact Compatibility Suite
 
 `run_compact_compatibility.py` runs a manifest of compact examples against
