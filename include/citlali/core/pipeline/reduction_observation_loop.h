@@ -4,7 +4,6 @@
 #include <citlali/core/pipeline/reduction_observation.h>
 #include <citlali/core/pipeline/reduction_observation_access.h>
 #include <citlali/core/pipeline/reduction_observation_context.h>
-#include <citlali/core/pipeline/reduction_observation_date.h>
 #include <citlali/core/pipeline/reduction_observation_logging.h>
 
 #include <cstddef>
@@ -25,15 +24,12 @@ bool run_reduction_observation_at_index(
     auto kidsproc =
         make_reduction_observation_kids_proc<KidsDataProc>(citlali_config);
     auto observation_context = make_reduction_observation_context(
-        kidsproc, co, observation_index,
-        make_reduction_observation_date_obs(date_obs_factory,
-                                            todproc.engine()),
-        logger);
+        kidsproc, co, observation_index, logger);
 
     return run_reduction_observation_context<
         IsBeammap, RawObsMap, FilteredObsMap, FitMaps>(
         todproc, kidsproc, observation_context, map_extents, map_coords,
-        logger);
+        date_obs_factory, logger);
 }
 
 template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap, bool FitMaps,

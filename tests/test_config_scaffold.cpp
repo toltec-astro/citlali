@@ -5885,7 +5885,12 @@ TEST(pipeline_execution, prepares_reduction_observation_inputs) {
 
     EXPECT_TEMPLATE_TRUE(citlali::pipeline::prepare_reduction_observation_inputs<false>(
         todproc, rawobs, rawobs_kids_meta, true, map_extents, map_coords, 0,
-        std::string{"2026-01-01T00:00:00"}, logger));
+        [](auto &engine) {
+            return engine.telescope.get_tel_data_calls == 1
+                       ? std::string{"2026-01-01T00:00:00"}
+                       : std::string{"stale-telescope-state"};
+        },
+        logger));
 
     EXPECT_EQ(todproc.engine().get_astrometry_config_calls, 1);
     EXPECT_DOUBLE_EQ(todproc.engine().telescope.fsmp, 122.0);
@@ -5920,7 +5925,8 @@ TEST(pipeline_execution,
 
     EXPECT_TEMPLATE_FALSE(citlali::pipeline::prepare_reduction_observation_inputs<false>(
         todproc, rawobs, rawobs_kids_meta, true, map_extents, map_coords, 0,
-        std::string{"2026-01-01T00:00:00"}, logger));
+        [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
+        logger));
 
     EXPECT_EQ(todproc.get_tone_freqs_from_files_calls, 0);
     EXPECT_TRUE(todproc.engine().observation_dates.date_obs.empty());
@@ -6168,7 +6174,9 @@ TEST(pipeline_execution, runs_reduction_observation) {
     EXPECT_TEMPLATE_TRUE(citlali::pipeline::run_reduction_observation<
         false, FakeMapType::RawObs, FakeMapType::FilteredObs, false>(
         todproc, kidsproc, rawobs, rawobs_kids_meta, true, map_extents,
-        map_coords, 0, std::string{"2026-01-01T00:00:00"}, logger));
+        map_coords, 0,
+        [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
+        logger));
 
     EXPECT_EQ(todproc.engine().setup_calls, 1);
     EXPECT_EQ(todproc.engine().pipeline_calls, 1);
@@ -6194,7 +6202,9 @@ TEST(pipeline_execution,
     EXPECT_TEMPLATE_FALSE(citlali::pipeline::run_reduction_observation<
         false, FakeMapType::RawObs, FakeMapType::FilteredObs, false>(
         todproc, kidsproc, rawobs, rawobs_kids_meta, true, map_extents,
-        map_coords, 0, std::string{"2026-01-01T00:00:00"}, logger));
+        map_coords, 0,
+        [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
+        logger));
 
     EXPECT_EQ(todproc.engine().setup_calls, 0);
     EXPECT_EQ(todproc.engine().pipeline_calls, 0);
@@ -6213,7 +6223,10 @@ TEST(pipeline_execution, runs_reduction_observation_at_index) {
         false, FakeMapType::RawObs, FakeMapType::FilteredObs, false,
         FakeKidsProc>(
         todproc, co, config, map_extents, map_coords, 1,
-        [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
+        [](auto &engine) {
+            return "telescope-loaded-" +
+                   std::to_string(engine.telescope.get_tel_data_calls);
+        },
         logger));
 
     EXPECT_EQ(config.get_config_calls, 1);
@@ -6223,7 +6236,7 @@ TEST(pipeline_execution, runs_reduction_observation_at_index) {
     EXPECT_EQ(todproc.engine().pipeline_calls, 1);
     EXPECT_EQ(todproc.engine().output_calls, 1);
     EXPECT_EQ(todproc.engine().observation_dates.date_obs,
-              (std::vector<std::string>{"2026-01-01T00:00:00"}));
+              (std::vector<std::string>{"telescope-loaded-1"}));
 }
 
 TEST(pipeline_execution, reports_observation_context_when_metadata_load_fails) {
@@ -6267,14 +6280,19 @@ TEST(pipeline_execution, runs_reduction_iteration_observations) {
         false, FakeMapType::RawObs, FakeMapType::FilteredObs, false,
         FakeKidsProc>(
         todproc, co, config, map_extents, map_coords,
-        [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
+        [](auto &engine) {
+            return "telescope-loaded-" +
+                   std::to_string(engine.telescope.get_tel_data_calls);
+        },
         logger));
 
     EXPECT_EQ(config.get_config_calls, 2);
     EXPECT_EQ(todproc.engine().setup_calls, 2);
     EXPECT_EQ(todproc.engine().pipeline_calls, 2);
     EXPECT_EQ(todproc.engine().output_calls, 2);
-    EXPECT_EQ(todproc.engine().observation_dates.date_obs.size(), 2U);
+    EXPECT_EQ(todproc.engine().observation_dates.date_obs,
+              (std::vector<std::string>{"telescope-loaded-1",
+                                        "telescope-loaded-2"}));
 }
 
 TEST(pipeline_execution, rejects_reduction_iteration_observations_on_failure) {

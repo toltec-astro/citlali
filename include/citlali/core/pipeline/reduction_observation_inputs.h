@@ -5,6 +5,7 @@
 #include <citlali/core/pipeline/observation_buffers.h>
 #include <citlali/core/pipeline/observation_detector_diagnostics.h>
 #include <citlali/core/pipeline/observation_date.h>
+#include <citlali/core/pipeline/reduction_observation_date.h>
 #include <citlali/core/pipeline/observation_exposure_time.h>
 #include <citlali/core/pipeline/observation_sample_rate.h>
 #include <citlali/core/pipeline/raw_timestream_observation_shadow.h>
@@ -58,12 +59,13 @@ bool prepare_reduction_observation_sample_rate(Engine &engine,
 }
 
 template <bool IsBeammap, class TodProc, class RawObs, class RawObsKidsMeta,
-          class MapExtents, class MapCoords, class DateObs, class Logger>
+          class MapExtents, class MapCoords, class DateObsFactory, class Logger>
 bool prepare_reduction_observation_inputs(
     TodProc &todproc, const RawObs &rawobs,
     const RawObsKidsMeta &rawobs_kids_meta, bool has_multiple_inputs,
     MapExtents &map_extents, MapCoords &map_coords,
-    std::size_t observation_index, DateObs &&date_obs, const Logger &logger) {
+    std::size_t observation_index, DateObsFactory &&date_obs_factory,
+    const Logger &logger) {
     auto &engine = todproc.engine();
 
     if (!prepare_reduction_observation_calibration_state<IsBeammap>(
@@ -83,7 +85,8 @@ bool prepare_reduction_observation_inputs(
     load_and_point_reduction_observation_telescope_data_if_needed(
         todproc, rawobs, has_multiple_inputs, logger);
     append_reduction_observation_date(
-        engine, std::forward<DateObs>(date_obs));
+        engine, make_reduction_observation_date_obs(
+                    std::forward<DateObsFactory>(date_obs_factory), engine));
     record_reduction_observation_timing_gaps_if_needed(engine, logger);
     calculate_reduction_observation_scan_indices_if_needed(
         engine, has_multiple_inputs, logger);

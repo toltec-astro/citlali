@@ -11,13 +11,12 @@
 
 namespace citlali::pipeline {
 
-template <class RawObs, class RawObsKidsMeta, class DateObs>
+template <class RawObs, class RawObsKidsMeta>
 struct ReductionObservationContext {
     const RawObs &rawobs;
     RawObsKidsMeta rawobs_kids_meta;
     bool has_multiple_inputs;
     std::size_t observation_index;
-    DateObs date_obs;
 };
 
 template <class RawObs>
@@ -32,11 +31,10 @@ std::string reduction_observation_load_error(
     return message.str();
 }
 
-template <class KidsProc, class IOCoordinator, class DateObs, class Logger>
+template <class KidsProc, class IOCoordinator, class Logger>
 auto make_reduction_observation_context(
     KidsProc &kidsproc, const IOCoordinator &co,
-    std::size_t observation_index, DateObs &&date_obs,
-    const Logger &logger) {
+    std::size_t observation_index, const Logger &logger) {
     const auto &rawobs = reduction_observation_input_at(co, observation_index);
     auto rawobs_kids_meta = [&]() {
         try {
@@ -51,13 +49,10 @@ auto make_reduction_observation_context(
     using rawobs_t =
         std::remove_cv_t<std::remove_reference_t<decltype(rawobs)>>;
     using rawobs_kids_meta_t = decltype(rawobs_kids_meta);
-    using date_obs_t = std::decay_t<DateObs>;
 
-    return ReductionObservationContext<
-        rawobs_t, rawobs_kids_meta_t, date_obs_t>{
+    return ReductionObservationContext<rawobs_t, rawobs_kids_meta_t>{
         rawobs, std::move(rawobs_kids_meta),
-        has_multiple_reduction_observations(co), observation_index,
-        std::forward<DateObs>(date_obs)};
+        has_multiple_reduction_observations(co), observation_index};
 }
 
 }  // namespace citlali::pipeline

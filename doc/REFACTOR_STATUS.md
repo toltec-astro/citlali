@@ -26,6 +26,14 @@ branch. The exact validated tree will remain available for forensic review.
   enabled-filtering `redu53`,
   unfiltered `redu51`, and bounded full-noise-output `redu49` remain the
   immediate post-processing, pointing, and noise-products control fixtures.
+- First paired OOF reduction: OG/refactor `redu00` for observations
+  152385-152387. All 30 comparable products are present with no skipped
+  records; pointing-table data are exact and all scientific numeric
+  differences pass the standard `2e-8 + 1e-10 * abs(reference)` tolerance.
+  This is not yet an accepted gate because the run exposed rotated observation
+  dates in refactor ECSV metadata and FITS `DATEOBS0` headers. A local lifecycle
+  fix now derives the date after loading each observation's telescope data and
+  awaits a Unity rerun.
 - Latest inspected science reduction: final iteration `redu15`, produced by
   `1faec7cc`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
@@ -47,11 +55,11 @@ These facts are characterization evidence, not a production-equivalence claim.
 
 **Phase 2 - Config authority and provenance** is active as of 2026-07-11.
 
-Phase 1 safety stabilization is complete for the currently available point,
-Beammap, and science validation modes. OOF validation is explicitly deferred
-by the project owner until its workflow is available, expected during the week
-after 2026-07-11; because OOF closely follows pointing, that deferral does not
-block Phase 2. It remains a required validation before final integration.
+Phase 1 safety stabilization is complete for point, Beammap, and science. The
+OOF workflow is now available and its first paired run is scientifically
+equivalent, but acceptance remains open until the multi-observation date-header
+fix passes a Unity rerun. This bounded correction does not block unrelated
+Phase 2 work.
 
 Operational config migration must proceed one authority domain at a time with
 the one-way requested-to-effective-to-realized contract, focused tests, and the
