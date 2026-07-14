@@ -17,7 +17,6 @@ namespace citlali::pipeline {
 
 struct PostProcessingConfigShadowReport {
     bool exact = true;
-    bool compared_source_finding_details = false;
     bool compared_source_fitting_details = false;
     std::vector<std::string> mismatches;
 
@@ -99,21 +98,6 @@ inline PostProcessingConfigShadowReport compare_post_processing_config_shadow(
     compare_post_processing_shadow_value(
         report, "source_finding.enabled", requested.source_finding.enabled,
         legacy.source_finding.enabled);
-
-    if (requested.source_finding.enabled) {
-        report.compared_source_finding_details = true;
-        compare_post_processing_shadow_value(
-            report, "source_finding.source_sigma",
-            requested.source_finding.source_sigma,
-            legacy.source_finding.source_sigma);
-        compare_post_processing_shadow_value(
-            report, "source_finding.source_window_arcsec",
-            requested.source_finding.source_window_arcsec,
-            legacy.source_finding.source_window_arcsec);
-        compare_post_processing_shadow_value(
-            report, "source_finding.mode", requested.source_finding.mode,
-            legacy.source_finding.mode);
-    }
 
     const bool fitting_required = post_processing_source_fitting_required(
         reduction_type, requested);

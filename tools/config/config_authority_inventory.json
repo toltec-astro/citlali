@@ -117,7 +117,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "mixed-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Active: Unity point redu54 at a89e0ee5 validates the one-way map-filter consumer adapter with unchanged merged config, zero serious issues, complete products, and accepted numerical equivalence. Next migrate source finding, then source fitting, before required realized provenance."
+      "exit_gate": "Active: Unity point redu54 at a89e0ee5 validates the one-way map-filter consumer adapter. The source-finding duplicate parser and observation-to-coadd reverse mirror are retired locally in favor of one effective-plan adapter; validate that slice with the unchanged point overlay, then migrate source fitting before required realized provenance."
     },
     {
       "id": "pointing",

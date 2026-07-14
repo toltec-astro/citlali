@@ -63,6 +63,7 @@
 #include <boost/random/mersenne_twister.hpp>
 #include <citlali/core/pipeline/processed_weighting_resolution.h>
 #include <citlali/core/pipeline/runtime_provenance_output.h>
+#include <citlali/core/pipeline/source_finding_config_policy.h>
 #include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/timestream_output_provenance.h>
 #include <citlali/core/pipeline/timestream_config_adapter_polarimetry.h>
@@ -137,6 +138,12 @@ struct FakeWienerFilterConfigTarget {
     int denom_check_iters = -1;
     int max_denom_iters = -1;
     std::map<std::string, double> template_fwhm_rad{{"stale", -1.0}};
+};
+
+struct FakeSourceFindingConfigTarget {
+    double source_sigma = -1.0;
+    double source_window_rad = -1.0;
+    std::string source_finder_mode = "stale";
 };
 
 void ensure_citlali_test_logger() {
@@ -1665,8 +1672,24 @@ TEST(config_scaffold, post_processing_shadow_compares_only_active_details) {
             requested, legacy, citlali::config::ReductionType::science);
 
     EXPECT_TRUE(report.exact) << report.diagnostic();
-    EXPECT_FALSE(report.compared_source_finding_details);
     EXPECT_FALSE(report.compared_source_fitting_details);
+}
+
+TEST(config_scaffold, post_processing_shadow_leaves_source_finding_details_typed) {
+    citlali::config::PostProcessingConfig requested;
+    citlali::config::set_source_finding_enabled(requested, true);
+    requested.source_finding.source_sigma = 8.0;
+    requested.source_finding.source_window_arcsec = 15.0;
+    requested.source_finding.mode = "both";
+
+    citlali::config::PostProcessingConfig legacy;
+    citlali::config::set_source_finding_enabled(legacy, true);
+    citlali::config::set_source_fitting_active(legacy, true);
+    const auto report =
+        citlali::pipeline::compare_post_processing_config_shadow(
+            requested, legacy, citlali::config::ReductionType::science);
+
+    EXPECT_TRUE(report.exact) << report.diagnostic();
 }
 
 TEST(config_scaffold, post_processing_shadow_compares_pointing_fit_values) {
@@ -1751,6 +1774,40 @@ TEST(config_scaffold, adapts_effective_map_filter_config_one_way) {
     citlali::pipeline::adapt_map_filter_config_one_way(
         config, 0.25, target);
     EXPECT_TRUE(target.template_fwhm_rad.empty());
+}
+
+TEST(config_scaffold, adapts_effective_source_finding_config_one_way) {
+    citlali::config::SourceFindingConfig config;
+    config.enabled = true;
+    config.source_sigma = 7.5;
+    config.source_window_arcsec = 12.0;
+    config.mode = "both";
+    FakeSourceFindingConfigTarget observation_maps;
+    FakeSourceFindingConfigTarget coadd_maps;
+
+    citlali::pipeline::adapt_source_finding_config_one_way(
+        config, 0.25, true, observation_maps, coadd_maps);
+
+    EXPECT_DOUBLE_EQ(observation_maps.source_sigma, 7.5);
+    EXPECT_DOUBLE_EQ(observation_maps.source_window_rad, 3.0);
+    EXPECT_EQ(observation_maps.source_finder_mode, "both");
+    EXPECT_DOUBLE_EQ(coadd_maps.source_sigma, 7.5);
+    EXPECT_DOUBLE_EQ(coadd_maps.source_window_rad, 3.0);
+    EXPECT_EQ(coadd_maps.source_finder_mode, "both");
+
+    config.source_sigma = 6.0;
+    config.source_window_arcsec = 8.0;
+    config.mode = "negative";
+    coadd_maps = {};
+    citlali::pipeline::adapt_source_finding_config_one_way(
+        config, 0.5, false, observation_maps, coadd_maps);
+
+    EXPECT_DOUBLE_EQ(observation_maps.source_sigma, 6.0);
+    EXPECT_DOUBLE_EQ(observation_maps.source_window_rad, 4.0);
+    EXPECT_EQ(observation_maps.source_finder_mode, "negative");
+    EXPECT_DOUBLE_EQ(coadd_maps.source_sigma, -1.0);
+    EXPECT_DOUBLE_EQ(coadd_maps.source_window_rad, -1.0);
+    EXPECT_EQ(coadd_maps.source_finder_mode, "stale");
 }
 
 TEST(config_scaffold, reads_typed_coadd_request) {

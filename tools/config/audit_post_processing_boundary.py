@@ -35,8 +35,14 @@ MIRROR_SOURCE = "include/citlali/core/pipeline/map_filter_config_policy.h"
 POST_READER_SOURCE = (
     "include/citlali/core/pipeline/citlali_config_read_post_processing.h"
 )
-FINDING_READER_SOURCE = (
+LEGACY_FINDING_READER_SOURCE = (
     "include/citlali/core/pipeline/citlali_config_read_source_finding.h"
+)
+FINDING_POLICY_SOURCE = (
+    "include/citlali/core/pipeline/source_finding_config_policy.h"
+)
+SOURCE_CALLBACK_SOURCE = (
+    "include/citlali/core/pipeline/map_source_config_callbacks.h"
 )
 ACCESSOR_SOURCE = "include/citlali/core/pipeline/reduction_config_accessors.h"
 ACTIVATION_SOURCE = "include/citlali/core/pipeline/mapmaking_activation_policy.h"
@@ -139,7 +145,13 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
     legacy_filter_omp = (repo_root / LEGACY_FILTER_OMP_SOURCE).read_text()
     mirror = (repo_root / MIRROR_SOURCE).read_text()
     post_reader = (repo_root / POST_READER_SOURCE).read_text()
-    finding_reader = (repo_root / FINDING_READER_SOURCE).read_text()
+    legacy_finding_reader_path = repo_root / LEGACY_FINDING_READER_SOURCE
+    legacy_finding_reader = (
+        legacy_finding_reader_path.read_text()
+        if legacy_finding_reader_path.exists() else ""
+    )
+    finding_policy = (repo_root / FINDING_POLICY_SOURCE).read_text()
+    source_callbacks = (repo_root / SOURCE_CALLBACK_SOURCE).read_text()
     accessor = (repo_root / ACCESSOR_SOURCE).read_text()
     activation = (repo_root / ACTIVATION_SOURCE).read_text()
     output_policy = (repo_root / OUTPUT_POLICY_SOURCE).read_text()
@@ -165,7 +177,6 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         ),
         "shadow_report_present": (
             "struct PostProcessingConfigShadowReport" in shadow_source
-            and "compared_source_finding_details" in shadow_source
             and "compared_source_fitting_details" in shadow_source
         ),
         "execution_plan_present": (
@@ -217,8 +228,38 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         "source_fitting_reader_call_count": call_count(
             engine, "read_source_fitting_config"
         ),
-        "source_finding_reader_call_count": call_count(
+        "source_finding_parser_retired": (
+            not legacy_finding_reader_path.exists()
+            and "read_source_finding_config" not in engine
+        ),
+        "source_finding_parser_call_count": call_count(
             engine, "read_source_finding_config"
+        ),
+        "typed_source_finding_adapter_present": (
+            "void adapt_source_finding_config_one_way" in finding_policy
+            and "config.source_sigma" in finding_policy
+            and "config.source_window_arcsec * arcsec_to_rad"
+            in finding_policy
+            and "config.mode" in finding_policy
+        ),
+        "typed_source_finding_adapter_call_count": call_count(
+            engine, "adapt_source_finding_config_one_way"
+        ),
+        "effective_source_finding_policy_used": (
+            "source_finding_active(\n            post_processing_plan.effective)"
+            in engine
+            and "post_processing_plan.effective.source_finding" in engine
+        ),
+        "source_finding_output_policy_is_effective": (
+            "bool source_finding_enabled" in output_policy
+            and "source_finding_active(\n        effective_post_processing_config(engine))"
+            in output_policy
+        ),
+        "source_finding_shadow_details_retired": (
+            "compared_source_finding_details" not in shadow_source
+            and '"source_finding.source_sigma"' not in shadow_source
+            and '"source_finding.source_window_arcsec"' not in shadow_source
+            and '"source_finding.mode"' not in shadow_source
         ),
         "post_load_request_mutation_count": call_count(
             engine, "disable_map_products_if_mapmaking_disabled"
@@ -245,7 +286,8 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
             "parse_map_filter_kernel_tail_mode" in mirror
         ),
         "source_finding_reverse_mirror_present": (
-            "mirror_source_finding_config_to_coadd" in finding_reader
+            "mirror_source_finding_config_to_coadd" in legacy_finding_reader
+            or "mirror_source_finding_config_to_coadd" in source_callbacks
         ),
         "request_mutation_present": (
             "set_map_filtering_enabled" in activation
@@ -272,7 +314,13 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         and checks["filter_output_policy_is_effective"]
         and checks["activation_reader_call_count"] == 1
         and checks["source_fitting_reader_call_count"] == 1
-        and checks["source_finding_reader_call_count"] == 1
+        and checks["source_finding_parser_retired"]
+        and checks["source_finding_parser_call_count"] == 0
+        and checks["typed_source_finding_adapter_present"]
+        and checks["typed_source_finding_adapter_call_count"] == 1
+        and checks["effective_source_finding_policy_used"]
+        and checks["source_finding_output_policy_is_effective"]
+        and checks["source_finding_shadow_details_retired"]
         and checks["post_load_request_mutation_count"] == 1
         and checks["request_accessor_count"] == 2
         and checks["source_model_typed"]
@@ -280,7 +328,7 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         and checks["kernel_tail_typed"]
         and not checks["reverse_filter_mirror_present"]
         and not checks["kernel_tail_reverse_mirrored"]
-        and checks["source_finding_reverse_mirror_present"]
+        and not checks["source_finding_reverse_mirror_present"]
         and checks["request_mutation_present"]
     )
     return {"checks": checks, "exact": exact}

@@ -131,7 +131,7 @@ bool map_filter_enabled(const Engine &engine) {
 template <class Engine>
 bool source_finding_enabled(const Engine &engine) {
     return citlali::config::source_finding_active(
-        post_processing_config(engine));
+        effective_post_processing_config(engine));
 }
 
 template <class Engine>

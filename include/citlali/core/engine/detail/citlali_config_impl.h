@@ -9,6 +9,7 @@
 #include <citlali/core/pipeline/post_processing_config_shadow.h>
 #include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
+#include <citlali/core/pipeline/source_finding_config_policy.h>
 
 #include <stdexcept>
 
@@ -91,10 +92,14 @@ void Engine::get_citlali_config(CT &config) {
         get_map_filter_config();
     }
 
-    // get source finder config options
-    citlali::pipeline::read_source_finding_config(
-        config, omb, cmb, citlali::pipeline::coadd_config(*this), ASEC_TO_RAD,
-        post_processing_config, diagnostics);
+    if (citlali::config::source_finding_active(
+            post_processing_plan.effective)) {
+        citlali::pipeline::adapt_source_finding_config_one_way(
+            post_processing_plan.effective.source_finding, ASEC_TO_RAD,
+            citlali::config::coadd_active(
+                citlali::pipeline::coadd_config(*this)),
+            omb, cmb);
+    }
 
     const auto post_processing_shadow =
         citlali::pipeline::compare_post_processing_config_shadow(

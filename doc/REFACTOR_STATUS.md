@@ -744,8 +744,20 @@ low-level config is byte-identical to `redu53`; all 2,041 compared records pass
 the established tolerance with no skips, and all 639 non-PTC records compared
 against matching OG `redu09` pass as well. The 16 non-bitwise records are
 confined to three filtered a1400 products, have no finite-mask mismatch, and
-have maximum absolute difference `8.73e-11`. Source finding is now the active
-bounded consumer cutover; source fitting remains on the legacy mixed boundary.
+have maximum absolute difference `8.73e-11`.
+
+The source-finding consumer cutover is complete locally. Its duplicate YAML
+parser and observation-to-coadd reverse mirror are removed. One adapter writes
+`source_sigma`, the arcsecond-to-radian source window, and finder mode directly
+from the effective typed plan to the observation map buffer and, when enabled,
+the coadd map buffer. Source-finding execution and output activation now use
+the same effective authority. The legacy shadow retains activation parity but
+no longer compares details that legacy state does not own. Detection, fitting,
+map arrays, source tables, and output order are unchanged. Both local targets
+build, all 349 CTests and 61 config-boundary tests pass, all eight compatibility
+profiles pass, and full preflight is clean. This slice requires the unchanged
+enabled-filtering/source-finding point overlay on Unity before source fitting
+moves off the legacy mixed boundary.
 
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
@@ -758,10 +770,9 @@ Immediate work order:
 2. Separate requested map-filtering, source-finding, and source-fitting policy
    from effective activation and realized outputs. Retain only one-way adapters
    into the mature Wiener-filter and map-fitter implementations.
-3. Cut consumers over from the now-established effective post-processing plan
-   in bounded source-finding and source-fitting slices; map filtering is
-   accepted at `redu54`. Reuse the unchanged enabled-filtering overlay at each
-   relevant gate and preserve exact merged-
+3. Validate the locally complete source-finding cutover with the unchanged
+   enabled-filtering overlay, then cut source fitting over in its own bounded
+   slice; map filtering is accepted at `redu54`. Preserve exact merged-
    config identity for every OG/refactor pair.
 4. Do not broaden polarimetry without the pending scientific-policy decisions.
 5. Keep compact-config rollout and Phase 3 compiled-boundary work paused until

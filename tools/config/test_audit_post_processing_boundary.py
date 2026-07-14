@@ -65,6 +65,21 @@ class PostProcessingBoundaryAuditTest(unittest.TestCase):
         self.assertTrue(checks["filter_output_policy_is_effective"])
         self.assertFalse(checks["reverse_filter_mirror_present"])
 
+    def test_source_finding_uses_one_way_effective_adapter(self) -> None:
+        checks = audit.audit(REPO_ROOT)["mixed_boundary"]["checks"]
+        self.assertTrue(checks["source_finding_parser_retired"])
+        self.assertEqual(checks["source_finding_parser_call_count"], 0)
+        self.assertTrue(checks["typed_source_finding_adapter_present"])
+        self.assertEqual(
+            checks["typed_source_finding_adapter_call_count"], 1
+        )
+        self.assertTrue(checks["effective_source_finding_policy_used"])
+        self.assertTrue(
+            checks["source_finding_output_policy_is_effective"]
+        )
+        self.assertTrue(checks["source_finding_shadow_details_retired"])
+        self.assertFalse(checks["source_finding_reverse_mirror_present"])
+
     def test_rejects_default_surface_drift(self) -> None:
         manifest = json.loads(
             (REPO_ROOT / audit.MANIFEST_SOURCE).read_text()

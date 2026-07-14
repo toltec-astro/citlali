@@ -21,11 +21,6 @@ struct SourceInitialPosition {
     double col;
 };
 
-inline double source_window_arcsec_to_rad(double source_window_arcsec,
-                                          double arcsec_to_rad) {
-    return source_window_arcsec * arcsec_to_rad;
-}
-
 inline double source_fitting_arcsec_to_pixels(double value_arcsec,
                                               double arcsec_to_rad,
                                               double pixel_size_rad) {
@@ -64,18 +59,6 @@ void apply_positive_source_fit_limits(MapFitter &map_fitter) {
     if (map_fitter.fwhm_limits(1) > 0) {
         map_fitter.fwhm_high = map_fitter.fwhm_limits(1);
     }
-}
-
-template <class ObservationMapBuffer, class CoaddMapBuffer>
-void mirror_source_finding_config_to_coadd(
-    const ObservationMapBuffer &omb, CoaddMapBuffer &cmb,
-    bool run_coadd) {
-    if (!run_coadd) {
-        return;
-    }
-    cmb.source_sigma = omb.source_sigma;
-    cmb.source_window_rad = omb.source_window_rad;
-    cmb.source_finder_mode = omb.source_finder_mode;
 }
 
 template <class MapsToArrays, class InitFwhmForArray, class FitMapSources>
