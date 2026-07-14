@@ -38,7 +38,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 357 tests with none skipped or disabled; all
+- CTest discovers and passes all 355 tests with none skipped or disabled; all
   63 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
@@ -816,21 +816,31 @@ Beammap must exercise iterative detector-fit cardinality. Those expensive mode
 gates are intentionally batched until after the remaining activation-only
 legacy shadow is retired locally; the domain is not complete until both pass.
 
+The activation-only compatibility shadow is now retired locally. The complete
+typed post-processing request is loaded once before mapmaking setup, owns the
+histogram setting that map buffers consume through the existing one-way
+adapter, and initializes the effective execution plan without a second YAML
+activation pass. Disabling mapmaking no longer mutates requested filtering,
+finding, or fitting policy; effective suppression remains the execution plan's
+responsibility. The established no-map Beammap single-iteration optimization
+is preserved separately. Both local targets build, all 355 CTests and 63
+config-boundary tests pass, all eight compact profiles pass, and full preflight
+is clean. This cleanup still requires a point run after Unity compilation; it
+is not covered by the preceding `redu57` acceptance.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.
 
 Immediate work order:
 
-1. Use the frozen 35-leaf `post_processing.*` plus `wiener_filter.*` surface
-   and current-consumer audit as the migration boundary.
-2. Separate requested map-filtering, source-finding, and source-fitting policy
-   from effective activation and realized outputs. Retain only one-way adapters
-   into the mature Wiener-filter and map-fitter implementations.
-3. Validate the locally complete realized-state and required-provenance
-   implementation on point, science coadd, and Beammap, using accepted exact
-   point `redu56` as the immediate baseline. Preserve exact merged-config
-   identity for every OG/refactor pair.
+1. Compile and run point after the local activation-shadow cleanup, using
+   accepted exact `redu57` as the immediate baseline.
+2. Validate the required provenance on science coadd routing and Beammap
+   iterative detector fitting; preserve exact merged-config identity for every
+   OG/refactor pair.
+3. Mark post-processing complete only after all three mode gates pass and the
+   inventory has no remaining mixed authority.
 4. Do not broaden polarimetry without the pending scientific-policy decisions.
 5. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
    the active post-processing domain gates close.

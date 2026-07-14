@@ -69,7 +69,7 @@ void Engine::get_mapmaking_config(CT &config) {
     const auto output_invalid_before =
         diagnostics.invalid_key_paths().size();
     citlali::pipeline::read_mapmaking_output_request_config(
-        config, mapmaking_config, post_processing_config, diagnostics);
+        config, mapmaking_config, diagnostics);
     const bool output_config_clean =
         citlali::pipeline::config_parse_clean(
             diagnostics.missing_key_paths(),

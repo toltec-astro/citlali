@@ -18,6 +18,7 @@
 #include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/map_geometry.h>
 #include <citlali/core/pipeline/map_index_state.h>
+#include <citlali/core/pipeline/mapmaking_activation_policy.h>
 #include <citlali/core/pipeline/mapmaking_execution_plan.h>
 #include <citlali/core/pipeline/mapmaking_method_config.h>
 #include <citlali/core/pipeline/mapmaking_output_config.h>
@@ -34,7 +35,6 @@
 #include <citlali/core/pipeline/pointing_provenance.h>
 #include <citlali/core/pipeline/post_processing_config_read.h>
 #include <citlali/core/pipeline/post_processing_execution_plan.h>
-#include <citlali/core/pipeline/post_processing_config_shadow.h>
 #include <citlali/core/pipeline/post_processing_provenance.h>
 #include <citlali/core/pipeline/post_processing_provenance_lifecycle.h>
 #include <citlali/core/pipeline/observation_execution.h>
@@ -1483,15 +1483,13 @@ TEST(config_scaffold, reads_typed_mapmaking_output_request) {
     root["mapmaking"]["crval2_J2000"] = 12.0;
     root["mapmaking"]["tan_ra"] = 13.0;
     root["mapmaking"]["tan_dec"] = 14.0;
-    root["post_processing"]["map_histogram_n_bins"] = 31;
     auto yaml_config =
         tula::config::YamlConfig::from_str(YAML::Dump(root));
     citlali::config::MapmakingConfig request;
-    citlali::config::PostProcessingConfig post_processing;
     citlali::pipeline::ConfigDiagnosticsState diagnostics;
 
     citlali::pipeline::read_mapmaking_output_request_config(
-        yaml_config, request, post_processing, diagnostics);
+        yaml_config, request, diagnostics);
 
     ASSERT_FALSE(diagnostics.has_errors());
     EXPECT_DOUBLE_EQ(request.coverage_cut, 0.35);
@@ -1505,7 +1503,6 @@ TEST(config_scaffold, reads_typed_mapmaking_output_request) {
     EXPECT_DOUBLE_EQ(request.crval2_j2000, 12.0);
     EXPECT_DOUBLE_EQ(request.tan_ra, 13.0);
     EXPECT_DOUBLE_EQ(request.tan_dec, 14.0);
-    EXPECT_EQ(post_processing.map_histogram_n_bins, 31);
 }
 
 TEST(config_scaffold, reads_complete_post_processing_request) {
@@ -1518,6 +1515,7 @@ TEST(config_scaffold, reads_complete_post_processing_request) {
     root["post_processing"]["source_fitting"]["model"] = "gaussian";
     root["post_processing"]["source_finding"]["enabled"] = true;
     root["post_processing"]["source_finding"]["mode"] = "both";
+    root["post_processing"]["map_histogram_n_bins"] = 31;
     root["wiener_filter"]["template_type"] = "airy";
     root["wiener_filter"]["kernel_template_tail_mode"] = "zero";
     root["wiener_filter"]["template_fwhm_arcsec"]["a1100"] = 7.5;
@@ -1552,6 +1550,7 @@ TEST(config_scaffold, reads_complete_post_processing_request) {
     EXPECT_TRUE(request.source_finding.enabled);
     EXPECT_TRUE(request.source_finding_enabled);
     EXPECT_EQ(request.source_finding.mode, "both");
+    EXPECT_EQ(request.map_histogram_n_bins, 31);
 }
 
 TEST(config_scaffold, post_processing_request_preserves_disabled_values) {
@@ -1672,56 +1671,21 @@ TEST(config_scaffold,
         plan.effective_resolution.source_fitting_disabled_by_mapmaking);
 }
 
-TEST(config_scaffold, post_processing_shadow_compares_legacy_activation) {
-    citlali::config::PostProcessingConfig requested;
-    requested.map_filtering.enabled = false;
-    requested.map_filtering.denom_check_iters = 17;
-    requested.source_finding.enabled = false;
-    requested.source_finding.source_sigma = 8.0;
-    requested.source_fitting.fitting_radius_arcsec = 23.0;
+TEST(config_scaffold, mapmaking_disable_preserves_post_processing_request) {
+    citlali::config::ReductionConfig config;
+    config.mapmaking.enabled = false;
+    citlali::config::set_map_filtering_enabled(
+        config.post_processing, true);
+    citlali::config::set_source_finding_enabled(
+        config.post_processing, true);
+    config.beammap.iteration.max_iterations = 7;
 
-    citlali::config::PostProcessingConfig legacy;
-    legacy.map_filtering.enabled = false;
-    legacy.source_finding.enabled = false;
-    legacy.map_histogram_n_bins = requested.map_histogram_n_bins;
+    citlali::pipeline::normalize_beammap_iterations_if_mapmaking_disabled(
+        config);
 
-    const auto report =
-        citlali::pipeline::compare_post_processing_config_shadow(
-            requested, legacy);
-
-    EXPECT_TRUE(report.exact) << report.diagnostic();
-}
-
-TEST(config_scaffold, post_processing_shadow_leaves_source_finding_details_typed) {
-    citlali::config::PostProcessingConfig requested;
-    citlali::config::set_source_finding_enabled(requested, true);
-    requested.source_finding.source_sigma = 8.0;
-    requested.source_finding.source_window_arcsec = 15.0;
-    requested.source_finding.mode = "both";
-
-    citlali::config::PostProcessingConfig legacy;
-    citlali::config::set_source_finding_enabled(legacy, true);
-    const auto report =
-        citlali::pipeline::compare_post_processing_config_shadow(
-            requested, legacy);
-
-    EXPECT_TRUE(report.exact) << report.diagnostic();
-}
-
-TEST(config_scaffold, post_processing_shadow_leaves_source_fitting_details_typed) {
-    citlali::config::PostProcessingConfig requested;
-    requested.source_fitting.bounding_box_arcsec = 10.0;
-    requested.source_fitting.fitting_radius_arcsec = 30.0;
-    requested.source_fitting.fit_rotation_angle = true;
-    requested.source_fitting.amp_limit_factors = {0.5, 2.0};
-    requested.source_fitting.fwhm_limit_factors = {0.6, 1.8};
-
-    citlali::config::PostProcessingConfig legacy;
-    const auto report =
-        citlali::pipeline::compare_post_processing_config_shadow(
-            requested, legacy);
-
-    EXPECT_TRUE(report.exact) << report.diagnostic();
+    EXPECT_TRUE(config.post_processing.map_filtering.enabled);
+    EXPECT_TRUE(config.post_processing.source_finding.enabled);
+    EXPECT_EQ(config.beammap.iteration.max_iterations, 1);
 }
 
 TEST(config_scaffold, adapts_effective_map_filter_config_one_way) {

@@ -5,15 +5,13 @@
 
 #include <citlali/core/pipeline/citlali_config_read.h>
 #include <citlali/core/pipeline/mapmaking_activation_policy.h>
-#include <citlali/core/pipeline/post_processing_activation_config_read.h>
 #include <citlali/core/pipeline/post_processing_config_read.h>
-#include <citlali/core/pipeline/post_processing_config_shadow.h>
 #include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/source_finding_config_policy.h>
 #include <citlali/core/pipeline/source_fitting_config_policy.h>
 
-#include <stdexcept>
+#include <cstdlib>
 
 template<typename CT>
 void Engine::get_citlali_config(CT &config) {
@@ -62,25 +60,18 @@ void Engine::get_citlali_config(CT &config) {
 
     /* get mapmaking config */
     post_processing_config = citlali::config::PostProcessingConfig{};
+    citlali::pipeline::read_post_processing_request_config(
+        config, post_processing_config, diagnostics);
     get_mapmaking_config(config);
 
-    citlali::config::PostProcessingConfig post_processing_request;
-    citlali::pipeline::read_post_processing_request_config(
-        config, post_processing_request, diagnostics);
     auto &post_processing_plan =
         citlali::pipeline::post_processing_plan(*this);
     post_processing_plan.reset_from_request(
-        post_processing_request, runtime_config.reduction_type,
+        post_processing_config, runtime_config.reduction_type,
         citlali::config::mapmaking_active(
             citlali::pipeline::mapmaking_config(*this)),
         citlali::config::coadd_active(
             citlali::pipeline::coadd_config(*this)));
-
-    bool run_map_filter = post_processing_config.map_filtering.enabled;
-    bool run_source_finder = post_processing_config.source_finding.enabled;
-    citlali::pipeline::read_post_processing_activation_config(
-        config, run_map_filter, run_source_finder,
-        post_processing_config, diagnostics);
 
     if (citlali::config::source_fitting_active(
             post_processing_plan.effective)) {
@@ -104,17 +95,6 @@ void Engine::get_citlali_config(CT &config) {
             omb, cmb);
     }
 
-    const auto post_processing_shadow =
-        citlali::pipeline::compare_post_processing_config_shadow(
-            post_processing_plan.requested, post_processing_config);
-    if (!post_processing_shadow.exact) {
-        logger->error(
-            "typed post-processing request differs from legacy state: {}",
-            post_processing_shadow.diagnostic());
-        throw std::runtime_error(
-            "typed post-processing request shadow mismatch");
-    }
-
     /* get pointing config */
     if (runtime_config.reduction_type ==
         citlali::config::ReductionType::pointing) {
@@ -128,8 +108,7 @@ void Engine::get_citlali_config(CT &config) {
         get_beammap_config(config);
     }
 
-    // disable map related keys if map-making is disabled
-    citlali::pipeline::disable_map_products_if_mapmaking_disabled(
+    citlali::pipeline::normalize_beammap_iterations_if_mapmaking_disabled(
         reduction_config);
 
     citlali::pipeline::validate_typed_config_mirrors(

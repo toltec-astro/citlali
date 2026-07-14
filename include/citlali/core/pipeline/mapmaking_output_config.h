@@ -1,7 +1,6 @@
 #pragma once
 
 #include <citlali/core/config/mapmaking_config.h>
-#include <citlali/core/config/post_processing_config.h>
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/pipeline/config_parse_tracking.h>
 
@@ -13,14 +12,10 @@ namespace citlali::pipeline {
 template <class Config, class Diagnostics>
 void read_mapmaking_output_request_config(
     Config &config, citlali::config::MapmakingConfig &mapmaking,
-    citlali::config::PostProcessingConfig &post_processing,
     Diagnostics &diagnostics) {
     read_config_value(
         config, mapmaking.coverage_cut, diagnostics,
         std::tuple{"mapmaking", "coverage_cut"});
-    read_config_value(
-        config, post_processing.map_histogram_n_bins, diagnostics,
-        std::tuple{"post_processing", "map_histogram_n_bins"}, {}, {0});
     read_config_value(
         config, mapmaking.pixel_size_arcsec, diagnostics,
         std::tuple{"mapmaking", "pixel_size_arcsec"}, {}, {0.0});

@@ -37,21 +37,26 @@ class PostProcessingBoundaryAuditTest(unittest.TestCase):
         result = audit.audit(REPO_ROOT)
         self.assertEqual(result["manifest"]["known_typed_gaps"], [])
         self.assertTrue(
-            result["mixed_boundary"]["checks"]
+            result["authority_boundary"]["checks"]
             ["complete_request_reader_present"]
         )
         self.assertTrue(
-            result["mixed_boundary"]["checks"]["source_model_typed"]
+            result["authority_boundary"]["checks"]["source_model_typed"]
         )
         self.assertTrue(
-            result["mixed_boundary"]["checks"]["kernel_tail_typed"]
+            result["authority_boundary"]["checks"]["kernel_tail_typed"]
         )
 
     def test_map_filter_uses_one_way_effective_adapter(self) -> None:
-        checks = audit.audit(REPO_ROOT)["mixed_boundary"]["checks"]
+        checks = audit.audit(REPO_ROOT)["authority_boundary"]["checks"]
         self.assertEqual(checks["direct_request_reader_call_count"], 1)
-        self.assertEqual(checks["shadow_comparison_call_count"], 1)
-        self.assertTrue(checks["shadow_report_present"])
+        self.assertEqual(checks["shadow_comparison_call_count"], 0)
+        self.assertTrue(checks["legacy_shadow_retired"])
+        self.assertTrue(checks["typed_request_precedes_mapmaking_setup"])
+        self.assertTrue(checks["duplicate_histogram_reader_retired"])
+        self.assertTrue(checks["post_processing_request_mutation_retired"])
+        self.assertTrue(checks["beammap_disabled_iteration_policy_preserved"])
+        self.assertEqual(checks["beammap_disabled_iteration_call_count"], 1)
         self.assertTrue(checks["execution_plan_present"])
         self.assertEqual(checks["execution_plan_reset_call_count"], 1)
         self.assertEqual(checks["execution_plan_accessor_count"], 2)
@@ -66,7 +71,7 @@ class PostProcessingBoundaryAuditTest(unittest.TestCase):
         self.assertFalse(checks["reverse_filter_mirror_present"])
 
     def test_source_finding_uses_one_way_effective_adapter(self) -> None:
-        checks = audit.audit(REPO_ROOT)["mixed_boundary"]["checks"]
+        checks = audit.audit(REPO_ROOT)["authority_boundary"]["checks"]
         self.assertTrue(checks["source_finding_parser_retired"])
         self.assertEqual(checks["source_finding_parser_call_count"], 0)
         self.assertTrue(checks["typed_source_finding_adapter_present"])
@@ -81,8 +86,9 @@ class PostProcessingBoundaryAuditTest(unittest.TestCase):
         self.assertFalse(checks["source_finding_reverse_mirror_present"])
 
     def test_source_fitting_uses_one_way_effective_adapter(self) -> None:
-        checks = audit.audit(REPO_ROOT)["mixed_boundary"]["checks"]
-        self.assertTrue(checks["activation_reader_present"])
+        checks = audit.audit(REPO_ROOT)["authority_boundary"]["checks"]
+        self.assertTrue(checks["activation_reader_retired"])
+        self.assertEqual(checks["activation_reader_call_count"], 0)
         self.assertTrue(checks["source_fitting_parser_retired"])
         self.assertEqual(checks["source_fitting_parser_call_count"], 0)
         self.assertTrue(checks["typed_source_fitting_adapter_present"])
@@ -93,7 +99,7 @@ class PostProcessingBoundaryAuditTest(unittest.TestCase):
         self.assertTrue(checks["source_fitting_shadow_details_retired"])
 
     def test_realized_post_processing_contract_is_enforced(self) -> None:
-        checks = audit.audit(REPO_ROOT)["mixed_boundary"]["checks"]
+        checks = audit.audit(REPO_ROOT)["authority_boundary"]["checks"]
         self.assertTrue(checks["realized_cardinality_present"])
         self.assertTrue(checks["source_finding_requires_filtering"])
         self.assertTrue(checks["realized_lifecycle_present"])

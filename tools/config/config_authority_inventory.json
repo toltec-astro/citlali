@@ -64,7 +64,7 @@
       "config_prefixes": ["timestream.polarimetry", "calibration.ignore_hwpr"],
       "typed_owner": "citlali::config::ReductionConfig::timestream.polarimetry",
       "loader": "include/citlali/core/engine/detail/rtc_config_impl.h",
-      "execution_authority": "mixed",
+      "execution_authority": "typed",
       "legacy_targets": ["Engine::rtcproc", "Engine::calib"],
       "adapter_direction": "typed-to-legacy",
       "migration_status": "mixed-adapter",
@@ -115,9 +115,9 @@
       "execution_authority": "mixed",
       "legacy_targets": ["Engine::wiener_filter", "Engine::map_fitter"],
       "adapter_direction": "typed-to-legacy",
-      "migration_status": "mixed-adapter",
+      "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Active: realized filter, catalog-fit, source-table, pointing-fit, and Beammap-fit cardinality plus required atomic post-processing provenance are locally implemented. Validate the new sidecar and unchanged products on Unity point against accepted redu56, then validate science coadd routing and Beammap fitting before retiring the remaining activation shadow and marking the domain complete."
+      "exit_gate": "Active: Unity point redu57 accepts realized provenance and exact products. The activation shadow and duplicate histogram reader are retired locally, leaving typed requested/effective state authoritative with one-way numerical adapters. Validate that cleanup on point, then validate science coadd routing and Beammap fitting before marking provenance and the domain complete."
     },
     {
       "id": "pointing",

@@ -48,6 +48,9 @@ MIRROR_SOURCE = "include/citlali/core/pipeline/map_filter_config_policy.h"
 ACTIVATION_READER_SOURCE = (
     "include/citlali/core/pipeline/post_processing_activation_config_read.h"
 )
+MAPMAKING_OUTPUT_SOURCE = (
+    "include/citlali/core/pipeline/mapmaking_output_config.h"
+)
 LEGACY_FITTING_READER_SOURCE = (
     "include/citlali/core/pipeline/citlali_config_read_post_processing.h"
 )
@@ -157,7 +160,8 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
     config_source = (repo_root / CONFIG_SOURCE).read_text()
     validation_source = (repo_root / VALIDATION_SOURCE).read_text()
     direct_reader = (repo_root / DIRECT_READER_SOURCE).read_text()
-    shadow_source = (repo_root / SHADOW_SOURCE).read_text()
+    shadow_path = repo_root / SHADOW_SOURCE
+    shadow_source = shadow_path.read_text() if shadow_path.exists() else ""
     plan_source = (repo_root / PLAN_SOURCE).read_text()
     lifecycle_source = (repo_root / LIFECYCLE_SOURCE).read_text()
     serialization_source = (repo_root / SERIALIZATION_SOURCE).read_text()
@@ -168,7 +172,12 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
     legacy_filter = (repo_root / LEGACY_FILTER_SOURCE).read_text()
     legacy_filter_omp = (repo_root / LEGACY_FILTER_OMP_SOURCE).read_text()
     mirror = (repo_root / MIRROR_SOURCE).read_text()
-    activation_reader = (repo_root / ACTIVATION_READER_SOURCE).read_text()
+    activation_reader_path = repo_root / ACTIVATION_READER_SOURCE
+    activation_reader = (
+        activation_reader_path.read_text()
+        if activation_reader_path.exists() else ""
+    )
+    mapmaking_output = (repo_root / MAPMAKING_OUTPUT_SOURCE).read_text()
     legacy_fitting_reader_path = repo_root / LEGACY_FITTING_READER_SOURCE
     fitting_policy = (repo_root / FITTING_POLICY_SOURCE).read_text()
     legacy_finding_reader_path = repo_root / LEGACY_FINDING_READER_SOURCE
@@ -201,8 +210,17 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         "shadow_comparison_call_count": call_count(
             engine, "compare_post_processing_config_shadow"
         ),
-        "shadow_report_present": (
-            "struct PostProcessingConfigShadowReport" in shadow_source
+        "legacy_shadow_retired": (
+            not shadow_path.exists()
+            and "compare_post_processing_config_shadow" not in engine
+        ),
+        "typed_request_precedes_mapmaking_setup": (
+            engine.index("read_post_processing_request_config")
+            < engine.index("get_mapmaking_config")
+        ),
+        "duplicate_histogram_reader_retired": (
+            'std::tuple{"post_processing", "map_histogram_n_bins"}'
+            not in mapmaking_output
         ),
         "execution_plan_present": (
             "struct PostProcessingExecutionPlan" in plan_source
@@ -310,9 +328,9 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         "activation_reader_call_count": call_count(
             engine, "read_post_processing_activation_config"
         ),
-        "activation_reader_present": (
-            "void read_post_processing_activation_config"
-            in activation_reader
+        "activation_reader_retired": (
+            not activation_reader_path.exists()
+            and "read_post_processing_activation_config" not in engine
         ),
         "source_fitting_parser_retired": (
             not legacy_fitting_reader_path.exists()
@@ -337,8 +355,7 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
             and "post_processing_plan.effective.source_fitting" in engine
         ),
         "source_fitting_shadow_details_retired": (
-            "compared_source_fitting_details" not in shadow_source
-            and '"source_fitting.' not in shadow_source
+            not shadow_source
         ),
         "source_finding_parser_retired": (
             not legacy_finding_reader_path.exists()
@@ -368,13 +385,13 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
             in output_policy
         ),
         "source_finding_shadow_details_retired": (
-            "compared_source_finding_details" not in shadow_source
-            and '"source_finding.source_sigma"' not in shadow_source
-            and '"source_finding.source_window_arcsec"' not in shadow_source
-            and '"source_finding.mode"' not in shadow_source
+            not shadow_source
         ),
         "post_load_request_mutation_count": call_count(
             engine, "disable_map_products_if_mapmaking_disabled"
+        ),
+        "beammap_disabled_iteration_call_count": call_count(
+            engine, "normalize_beammap_iterations_if_mapmaking_disabled"
         ),
         "request_accessor_count": accessor.count(
             "return reduction_config(engine).post_processing;"
@@ -401,18 +418,27 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
             "mirror_source_finding_config_to_coadd" in legacy_finding_reader
             or "mirror_source_finding_config_to_coadd" in source_callbacks
         ),
-        "request_mutation_present": (
-            "set_map_filtering_enabled" in activation
-            and "set_source_finding_enabled" in activation
-            and "set_source_fitting_active" in activation
+        "post_processing_request_mutation_retired": (
+            "reduction_config.post_processing" not in activation
+            and "set_map_filtering_enabled" not in activation
+            and "set_source_finding_enabled" not in activation
+            and "set_source_fitting_active" not in activation
+        ),
+        "beammap_disabled_iteration_policy_preserved": (
+            "normalize_beammap_iterations_if_mapmaking_disabled"
+            in activation
+            and "reduction_config.beammap.iteration.max_iterations = 1"
+            in activation
         ),
     }
     exact = bool(
         checks["authority_prefixes_exact"]
         and checks["complete_request_reader_present"]
         and checks["direct_request_reader_call_count"] == 1
-        and checks["shadow_comparison_call_count"] == 1
-        and checks["shadow_report_present"]
+        and checks["shadow_comparison_call_count"] == 0
+        and checks["legacy_shadow_retired"]
+        and checks["typed_request_precedes_mapmaking_setup"]
+        and checks["duplicate_histogram_reader_retired"]
         and checks["execution_plan_present"]
         and checks["realized_cardinality_present"]
         and checks["source_finding_requires_filtering"]
@@ -431,8 +457,8 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         and checks["typed_filter_adapter_call_count"] == 1
         and checks["effective_filter_accessor_call_count"] == 1
         and checks["filter_output_policy_is_effective"]
-        and checks["activation_reader_present"]
-        and checks["activation_reader_call_count"] == 1
+        and checks["activation_reader_retired"]
+        and checks["activation_reader_call_count"] == 0
         and checks["source_fitting_parser_retired"]
         and checks["source_fitting_parser_call_count"] == 0
         and checks["typed_source_fitting_adapter_present"]
@@ -446,7 +472,8 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         and checks["effective_source_finding_policy_used"]
         and checks["source_finding_output_policy_is_effective"]
         and checks["source_finding_shadow_details_retired"]
-        and checks["post_load_request_mutation_count"] == 1
+        and checks["post_load_request_mutation_count"] == 0
+        and checks["beammap_disabled_iteration_call_count"] == 1
         and checks["request_accessor_count"] == 2
         and checks["source_model_typed"]
         and checks["kernel_tail_numerical_target"]
@@ -454,7 +481,8 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         and not checks["reverse_filter_mirror_present"]
         and not checks["kernel_tail_reverse_mirrored"]
         and not checks["source_finding_reverse_mirror_present"]
-        and checks["request_mutation_present"]
+        and checks["post_processing_request_mutation_retired"]
+        and checks["beammap_disabled_iteration_policy_preserved"]
     )
     return {"checks": checks, "exact": exact}
 
@@ -474,7 +502,7 @@ def audit(repo_root: Path) -> dict[str, object]:
     return {
         "manifest": manifest,
         "default_surface": default_surface,
-        "mixed_boundary": boundary,
+        "authority_boundary": boundary,
         "drift": not (
             manifest["exact"]
             and default_surface["exact"]
@@ -491,7 +519,7 @@ def markdown_report(result: dict[str, object]) -> str:
         f"- Drift: `{result['drift']}`",
         f"- Frozen paths: `{result['manifest']['path_count']}`",
         f"- Default surface exact: `{result['default_surface']['exact']}`",
-        f"- Mixed boundary exact: `{result['mixed_boundary']['exact']}`",
+        f"- Authority boundary exact: `{result['authority_boundary']['exact']}`",
         "- Known typed gaps: `" + ", ".join(
             typed_gaps
         ) + "`",
