@@ -36,7 +36,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 344 tests with none skipped or disabled; all
+- CTest discovers and passes all 347 tests with none skipped or disabled; all
   60 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
@@ -710,6 +710,21 @@ The 490-leaf merged configs differ only in their two expected output paths.
 The validation ledger records the accepted checkpoint. Post-processing may now
 advance from request shadowing to a separate effective execution plan.
 
+The first post-processing authority checkpoint is complete locally. A
+`PostProcessingExecutionPlan` now owns the immutable 35-leaf request, a
+separate effective snapshot, explicit resolution reasons, and reset realized
+state. Effective map filtering and source finding are suppressed only when
+mapmaking is unavailable; pointing and Beammap source fitting remains required
+whenever mapmaking is available, independent of optional filtering. The plan
+is constructed once during config loading and the legacy state is still
+compared against its request. Production filtering, finding, fitting, and
+output consumers have not been switched yet, so this checkpoint changes no
+numerical or output behavior. Focused plan and frozen-boundary tests, all 347
+CTest cases, all eight compatibility profiles, and full config preflight pass.
+The next bounded cutover is the one-way typed map-filter adapter, followed by
+source finding and source fitting; reuse accepted `redu53` after a consumer
+cutover rather than for this plan-only checkpoint.
+
 Project-owner decision (2026-07-10): every output explicitly enabled in the
 configuration is required. RTC TOD, PTC TOD, `rtcdiag`, and `ptcdiag` write
 failures must fail the reduction. There are no best-effort enabled products.
@@ -721,10 +736,10 @@ Immediate work order:
 2. Separate requested map-filtering, source-finding, and source-fitting policy
    from effective activation and realized outputs. Retain only one-way adapters
    into the mature Wiener-filter and map-fitter implementations.
-3. Introduce the effective post-processing plan without changing legacy
-   execution, then cut consumers over in bounded filtering, source-finding, and
-   source-fitting slices. Reuse the accepted `redu53` overlay at each relevant
-   gate and preserve exact merged-config identity for every OG/refactor pair.
+3. Cut consumers over from the now-established effective post-processing plan
+   in bounded filtering, source-finding, and source-fitting slices. Reuse the
+   accepted `redu53` overlay at each relevant gate and preserve exact merged-
+   config identity for every OG/refactor pair.
 4. Do not broaden polarimetry without the pending scientific-policy decisions.
 5. Keep compact-config rollout and Phase 3 compiled-boundary work paused until
    the active post-processing domain gates close.

@@ -22,6 +22,9 @@ DIRECT_READER_SOURCE = (
 SHADOW_SOURCE = (
     "include/citlali/core/pipeline/post_processing_config_shadow.h"
 )
+PLAN_SOURCE = (
+    "include/citlali/core/pipeline/post_processing_execution_plan.h"
+)
 ENGINE_BOUNDARY_SOURCE = "include/citlali/core/engine/detail/citlali_config_impl.h"
 FILTER_BOUNDARY_SOURCE = "include/citlali/core/engine/detail/map_filter_config_impl.h"
 LEGACY_FILTER_SOURCE = "include/citlali/core/mapmaking/wiener_filter.h"
@@ -122,6 +125,7 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
     config_source = (repo_root / CONFIG_SOURCE).read_text()
     direct_reader = (repo_root / DIRECT_READER_SOURCE).read_text()
     shadow_source = (repo_root / SHADOW_SOURCE).read_text()
+    plan_source = (repo_root / PLAN_SOURCE).read_text()
     engine = (repo_root / ENGINE_BOUNDARY_SOURCE).read_text()
     filter_boundary = (repo_root / FILTER_BOUNDARY_SOURCE).read_text()
     legacy_filter = (repo_root / LEGACY_FILTER_SOURCE).read_text()
@@ -154,6 +158,20 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
             and "compared_map_filter_details" in shadow_source
             and "compared_source_finding_details" in shadow_source
             and "compared_source_fitting_details" in shadow_source
+        ),
+        "execution_plan_present": (
+            "struct PostProcessingExecutionPlan" in plan_source
+            and "PostProcessingEffectiveResolutionRecord" in plan_source
+            and "PostProcessingRealizedState" in plan_source
+            and "requested" in plan_source
+            and "effective" in plan_source
+            and "realized" in plan_source
+        ),
+        "execution_plan_reset_call_count": call_count(
+            engine, "post_processing_plan.reset_from_request"
+        ),
+        "execution_plan_accessor_count": accessor.count(
+            "return engine.post_processing_plan;"
         ),
         "legacy_filter_parser_present": (
             legacy_filter.count("void WienerFilter::get_config") == 1
@@ -209,6 +227,9 @@ def boundary_state(repo_root: Path) -> dict[str, object]:
         and checks["direct_request_reader_call_count"] == 1
         and checks["shadow_comparison_call_count"] == 1
         and checks["shadow_report_present"]
+        and checks["execution_plan_present"]
+        and checks["execution_plan_reset_call_count"] == 1
+        and checks["execution_plan_accessor_count"] == 2
         and checks["legacy_filter_parser_present"]
         and checks["legacy_filter_boundary_call_count"] == 1
         and checks["reverse_filter_mirror_call_count"] == 1

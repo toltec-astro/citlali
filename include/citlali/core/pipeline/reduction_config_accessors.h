@@ -375,6 +375,26 @@ const auto &post_processing_config(const Engine &engine) {
 }
 
 template <class Engine>
+auto &post_processing_plan(Engine &engine) {
+    return engine.post_processing_plan;
+}
+
+template <class Engine>
+const auto &post_processing_plan(const Engine &engine) {
+    return engine.post_processing_plan;
+}
+
+template <class Engine>
+const auto &requested_post_processing_config(const Engine &engine) {
+    return post_processing_plan(engine).requested;
+}
+
+template <class Engine>
+const auto &effective_post_processing_config(const Engine &engine) {
+    return post_processing_plan(engine).effective;
+}
+
+template <class Engine>
 auto &astrometry_config(Engine &engine) {
     return reduction_config(engine).astrometry;
 }

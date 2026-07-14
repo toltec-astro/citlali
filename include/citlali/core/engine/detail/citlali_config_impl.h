@@ -61,9 +61,17 @@ void Engine::get_citlali_config(CT &config) {
     post_processing_config = citlali::config::PostProcessingConfig{};
     get_mapmaking_config(config);
 
-    citlali::config::PostProcessingConfig post_processing_request_shadow;
+    citlali::config::PostProcessingConfig post_processing_request;
     citlali::pipeline::read_post_processing_request_config(
-        config, post_processing_request_shadow, diagnostics);
+        config, post_processing_request, diagnostics);
+    auto &post_processing_plan =
+        citlali::pipeline::post_processing_plan(*this);
+    post_processing_plan.reset_from_request(
+        post_processing_request, runtime_config.reduction_type,
+        citlali::config::mapmaking_active(
+            citlali::pipeline::mapmaking_config(*this)),
+        citlali::config::coadd_active(
+            citlali::pipeline::coadd_config(*this)));
 
     bool run_map_filter = post_processing_config.map_filtering.enabled;
     bool run_source_finder = post_processing_config.source_finding.enabled;
@@ -90,7 +98,7 @@ void Engine::get_citlali_config(CT &config) {
 
     const auto post_processing_shadow =
         citlali::pipeline::compare_post_processing_config_shadow(
-            post_processing_request_shadow, post_processing_config,
+            post_processing_plan.requested, post_processing_config,
             runtime_config.reduction_type);
     if (!post_processing_shadow.exact) {
         logger->error(

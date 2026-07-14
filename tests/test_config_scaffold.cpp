@@ -1550,6 +1550,80 @@ TEST(config_scaffold, post_processing_request_rejects_invalid_enum) {
             "wiener_filter", "kernel_template_tail_mode"}}));
 }
 
+TEST(config_scaffold,
+     post_processing_plan_preserves_request_and_resolves_activation) {
+    citlali::config::PostProcessingConfig request;
+    citlali::config::set_map_filtering_enabled(request, true);
+    citlali::config::set_source_finding_enabled(request, true);
+    request.map_filtering.template_type =
+        citlali::config::MapFilterTemplateType::gaussian;
+    request.map_filtering.template_fwhm_arcsec["a1100"] = 5.0;
+    citlali::pipeline::PostProcessingExecutionPlan plan;
+
+    plan.reset_from_request(
+        request, citlali::config::ReductionType::science, true, true);
+
+    EXPECT_TRUE(plan.initialized);
+    EXPECT_TRUE(plan.requested.map_filtering.enabled);
+    EXPECT_TRUE(plan.requested.source_finding.enabled);
+    EXPECT_TRUE(plan.effective.map_filtering.enabled);
+    EXPECT_TRUE(plan.effective.source_finding.enabled);
+    EXPECT_TRUE(plan.effective.source_fitting.active);
+    EXPECT_TRUE(
+        plan.effective_resolution.source_fitting_required_by_map_filtering);
+    EXPECT_TRUE(
+        plan.effective_resolution.source_fitting_required_by_source_finding);
+    EXPECT_FALSE(
+        plan.effective_resolution.source_fitting_required_by_reduction);
+    EXPECT_TRUE(plan.effective_resolution.coadd_enabled);
+    EXPECT_DOUBLE_EQ(
+        plan.requested.map_filtering.template_fwhm_arcsec.at("a1100"),
+        5.0);
+}
+
+TEST(config_scaffold,
+     post_processing_plan_suppresses_products_without_mapmaking) {
+    citlali::config::PostProcessingConfig request;
+    citlali::config::set_map_filtering_enabled(request, true);
+    citlali::config::set_source_finding_enabled(request, true);
+    citlali::pipeline::PostProcessingExecutionPlan plan;
+
+    plan.reset_from_request(
+        request, citlali::config::ReductionType::pointing, false, false);
+
+    EXPECT_TRUE(plan.requested.map_filtering.enabled);
+    EXPECT_TRUE(plan.requested.source_finding.enabled);
+    EXPECT_FALSE(plan.requested.source_fitting.active);
+    EXPECT_FALSE(plan.effective.map_filtering.enabled);
+    EXPECT_FALSE(plan.effective.source_finding.enabled);
+    EXPECT_FALSE(plan.effective.source_fitting.active);
+    EXPECT_TRUE(
+        plan.effective_resolution.map_filtering_disabled_by_mapmaking);
+    EXPECT_TRUE(
+        plan.effective_resolution.source_finding_disabled_by_mapmaking);
+    EXPECT_TRUE(
+        plan.effective_resolution.source_fitting_required_by_reduction);
+    EXPECT_TRUE(
+        plan.effective_resolution.source_fitting_disabled_by_mapmaking);
+}
+
+TEST(config_scaffold,
+     post_processing_plan_enables_pointing_fitter_without_filtering) {
+    citlali::config::PostProcessingConfig request;
+    citlali::pipeline::PostProcessingExecutionPlan plan;
+
+    plan.reset_from_request(
+        request, citlali::config::ReductionType::pointing, true, false);
+
+    EXPECT_FALSE(plan.effective.map_filtering.enabled);
+    EXPECT_FALSE(plan.effective.source_finding.enabled);
+    EXPECT_TRUE(plan.effective.source_fitting.active);
+    EXPECT_TRUE(
+        plan.effective_resolution.source_fitting_required_by_reduction);
+    EXPECT_FALSE(
+        plan.effective_resolution.source_fitting_disabled_by_mapmaking);
+}
+
 TEST(config_scaffold, post_processing_shadow_compares_only_active_details) {
     citlali::config::PostProcessingConfig requested;
     requested.map_filtering.enabled = false;

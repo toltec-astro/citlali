@@ -2,6 +2,7 @@
 
 #include <citlali/core/config/post_processing_config.h>
 #include <citlali/core/config/runtime_config.h>
+#include <citlali/core/pipeline/post_processing_execution_plan.h>
 
 #include <algorithm>
 #include <cmath>
@@ -110,15 +111,6 @@ inline void compare_post_processing_fwhm_shadow(
         compare_post_processing_shadow_value(
             report, field.c_str(), expected_fwhm, found->second);
     }
-}
-
-inline bool post_processing_source_fitting_required(
-    citlali::config::ReductionType reduction_type,
-    const citlali::config::PostProcessingConfig &requested) {
-    return citlali::config::is_pointing_reduction_type(reduction_type) ||
-           citlali::config::is_beammap_reduction_type(reduction_type) ||
-           requested.map_filtering.enabled ||
-           requested.source_finding.enabled;
 }
 
 inline PostProcessingConfigShadowReport compare_post_processing_config_shadow(

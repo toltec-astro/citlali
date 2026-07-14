@@ -47,11 +47,14 @@ class PostProcessingBoundaryAuditTest(unittest.TestCase):
             result["mixed_boundary"]["checks"]["kernel_tail_typed"]
         )
 
-    def test_direct_request_is_wired_only_as_a_shadow(self) -> None:
+    def test_direct_request_populates_plan_beside_legacy_shadow(self) -> None:
         checks = audit.audit(REPO_ROOT)["mixed_boundary"]["checks"]
         self.assertEqual(checks["direct_request_reader_call_count"], 1)
         self.assertEqual(checks["shadow_comparison_call_count"], 1)
         self.assertTrue(checks["shadow_report_present"])
+        self.assertTrue(checks["execution_plan_present"])
+        self.assertEqual(checks["execution_plan_reset_call_count"], 1)
+        self.assertEqual(checks["execution_plan_accessor_count"], 2)
         self.assertTrue(checks["reverse_filter_mirror_present"])
 
     def test_rejects_default_surface_drift(self) -> None:

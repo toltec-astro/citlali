@@ -46,6 +46,15 @@ unconditionally, but compares detail fields only where the legacy path
 actually loads them. This prevents disabled legacy defaults from masquerading
 as requested-value mismatches. Legacy state still drives execution.
 
+The first target-contract checkpoint now constructs a separate
+`PostProcessingExecutionPlan` from that request. The plan preserves every
+requested value, resolves mapmaking-dependent filtering and finding into an
+effective snapshot, records why activation changed, derives fitting need from
+reduction type and requested downstream work, and clears realized state for a
+new reduction. This is intentionally parallel to the existing execution
+boundary: no production consumer reads the effective snapshot yet, and no
+numerical implementation changed.
+
 ## Target Contract
 
 The domain will follow one direction:
@@ -66,6 +75,12 @@ override typed policy.
 Required provenance will distinguish requested filtering/finding/fitting,
 effective activation and resolution reasons, and realized observation/coadd
 filtering, source-table, and fit cardinality.
+
+Consumer migration is ordered map filtering, source finding, then source
+fitting. Each slice replaces a reverse mirror or policy read with one one-way
+typed adapter while keeping the mature numerical object as the execution
+target. A consumer cutover, unlike plan construction alone, requires the
+matched enabled-filtering point gate based on accepted `redu53`.
 
 ## Validation
 
