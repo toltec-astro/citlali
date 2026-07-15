@@ -1,0 +1,10 @@
+{
+  "schema_version": "citlali-frozen-polarimetry-config-paths-v1",
+  "path_count": 3,
+  "path_sha256": "07e30fc112500049a6564619a7a15c607ca86acdc661e40eff1d65faedc7448d",
+  "paths": [
+    "timestream.polarimetry.enabled",
+    "timestream.polarimetry.grouping",
+    "timestream.polarimetry.ignore_hwpr"
+  ]
+}

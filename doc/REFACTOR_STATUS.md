@@ -52,8 +52,8 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 382 tests with none skipped or disabled; all
-  78 config-boundary/preflight tests pass.
+- CTest discovers and passes all 386 tests with none skipped or disabled; all
+  82 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -1265,6 +1265,32 @@ extra records. The external KIDs and Citlali CLI config-source checkpoint is
 accepted. Complete upstream `NN*.yaml` provenance remains a future TolTECA
 interface responsibility rather than a Citlali reconstruction task.
 
+## Polarimetry Capability Disposition Prepared
+
+The project owner intends Citlali to become the center of polarimetry
+reductions, but not in the present refactor and not without an enabled
+validation dataset. Phase 2 therefore preserves polarimetry as a planned
+capability while mechanically rejecting `timestream.polarimetry.enabled: true`
+before reduction execution. The exit condition is an approved polarimetry/HWPR
+scientific contract plus an enabled end-to-end reference gate.
+
+The frozen three-leaf request now has one direct typed reader, one immutable
+request/effective capability plan, and one forward adapter into `RTCProc` and
+`Calib`. The temporary legacy compatibility reader and reverse mirror are
+removed. There is no separate `calibration.ignore_hwpr` YAML input; that name
+was stale inventory text referring to the legacy adapter target. Disabled
+reductions retain Stokes-I initialization and the established default values.
+
+Successful reductions now require atomic
+`citlali-polarimetry-provenance-v1`, recording the capability disposition,
+requested/effective policy, accepted resolution, and realized non-execution.
+The dedicated static audit freezes the boundary, while the reduction auditor
+semantically rejects enabled or executed polarimetry in a successful run.
+Local CLI and test builds, all 386 CTests, 54 reduction-audit tests, and the
+full 82-test config preflight pass. A strict unchanged Unity point run with the
+new required sidecar is the remaining acceptance gate; no enabled polarimetry
+run will be requested.
+
 ## Five-Phase Roadmap
 
 ### Phase 1 - Safety Stabilization
@@ -1359,8 +1385,8 @@ silently choose among these:
 - Which output products are required versus optional in each reduction mode.
 - How disabled filters and extinction states appear in requested, effective,
   and realized provenance.
-- The exact meaning of hardware-polarization ignore/enable controls and whether
-  polarimetry is a supported release capability.
+- The future scientific meaning of hardware-polarization controls and the
+  contract required to make enabled polarimetry a supported capability.
 - Allowed calibration or analysis fallbacks and their required diagnostics.
 - Canonical detector/network/array identities, coordinate frames, units,
   missing-value sentinels, and table schemas.

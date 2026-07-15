@@ -9,6 +9,7 @@
 #include <citlali/core/pipeline/mapmaking_execution_plan.h>
 #include <citlali/core/pipeline/noise_execution_plan.h>
 #include <citlali/core/pipeline/pointing_execution_plan.h>
+#include <citlali/core/pipeline/polarimetry_execution_plan.h>
 #include <citlali/core/pipeline/post_processing_execution_plan.h>
 #include <citlali/core/pipeline/processed_timestream_execution_plan.h>
 #include <citlali/core/pipeline/raw_timestream_execution_plan.h>
@@ -26,6 +27,7 @@ struct ReductionConfigState {
     CoaddExecutionPlan coadd_plan;
     NoiseExecutionPlan noise_plan;
     PointingExecutionPlan pointing_plan;
+    PolarimetryExecutionPlan polarimetry_plan;
     PostProcessingExecutionPlan post_processing_plan;
     BeammapExecutionPlan beammap_plan;
 };

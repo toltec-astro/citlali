@@ -729,6 +729,39 @@ def valid_kids_external_document() -> dict:
     }
 
 
+def valid_polarimetry_document() -> dict:
+    config = {
+        "enabled": False,
+        "grouping": "fg",
+        "ignore_hwpr": "auto",
+    }
+    return {
+        "schema_version": "citlali-polarimetry-provenance-v1",
+        "initialized": True,
+        "capability": {
+            "status": "planned-unavailable",
+            "enabled_supported": False,
+            "reason": "no approved contract or enabled reference dataset",
+            "exit_condition": "approve the contract and pass validation",
+        },
+        "requested": config,
+        "effective": {
+            "config": config,
+            "capability_resolution": {
+                "enabled_capability_available": False,
+                "requested_enabled": False,
+                "request_accepted": True,
+                "disabled_by_capability": False,
+            },
+        },
+        "realized": {
+            "reduction_completed": True,
+            "polarimetry_executed": False,
+            "hwpr_loaded": False,
+        },
+    }
+
+
 def write_valid_config_source_manifest(redu: Path) -> None:
     source = redu / "70_reduce.yaml"
     merged = redu / "citlali_merged_config.yaml"
@@ -765,6 +798,33 @@ def write_valid_config_source_manifest(redu: Path) -> None:
 
 
 class ProvenanceAuditTest(unittest.TestCase):
+    def test_accepts_disabled_polarimetry_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "polarimetry_provenance.yaml").write_text(
+                yaml.safe_dump(
+                    valid_polarimetry_document(), sort_keys=False
+                ),
+                encoding="utf-8",
+            )
+
+            record = audit.audit_provenance_sidecars(
+                redu, require_polarimetry=True
+            )["polarimetry"]
+
+            self.assertTrue(record["present"])
+            self.assertTrue(record["required"])
+            self.assertTrue(record["valid"])
+
+    def test_rejects_executed_unavailable_polarimetry(self) -> None:
+        document = valid_polarimetry_document()
+        document["realized"]["polarimetry_executed"] = True
+
+        self.assertIn(
+            "unavailable polarimetry was executed",
+            audit.polarimetry_provenance_semantic_errors(document),
+        )
+
     def test_accepts_required_external_config_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             redu = Path(directory)

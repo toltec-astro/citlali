@@ -32,6 +32,9 @@ struct has_beammap_plan : std::false_type {};
 template <class Engine, class = void>
 struct has_kids_external_plan : std::false_type {};
 
+template <class Engine, class = void>
+struct has_polarimetry_plan : std::false_type {};
+
 template <class Engine>
 struct has_raw_timestream_plan<
     Engine,
@@ -122,6 +125,16 @@ inline constexpr bool has_kids_external_plan_v =
     has_kids_external_plan<Engine>::value;
 
 template <class Engine>
+struct has_polarimetry_plan<
+    Engine,
+    std::void_t<decltype(std::declval<Engine &>().polarimetry_plan)>>
+    : std::true_type {};
+
+template <class Engine>
+inline constexpr bool has_polarimetry_plan_v =
+    has_polarimetry_plan<Engine>::value;
+
+template <class Engine>
 auto &runtime_config_provenance(Engine &engine) {
     return engine.runtime_config_provenance;
 }
@@ -209,6 +222,16 @@ auto &polarimetry_config(Engine &engine) {
 template <class Engine>
 const auto &polarimetry_config(const Engine &engine) {
     return timestream_config(engine).polarimetry;
+}
+
+template <class Engine>
+auto &polarimetry_plan(Engine &engine) {
+    return engine.polarimetry_plan;
+}
+
+template <class Engine>
+const auto &polarimetry_plan(const Engine &engine) {
+    return engine.polarimetry_plan;
 }
 
 template <class Engine>

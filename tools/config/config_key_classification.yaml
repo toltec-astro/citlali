@@ -292,9 +292,9 @@ rules:
     reason: Advanced but legitimate performance/scan subdivision choice.
   - id: user-polarimetry
     pattern: timestream.polarimetry*
-    classification: user-facing
-    owner: compact
-    reason: User-facing only for polarimetry profiles.
+    classification: expert
+    owner: citlali
+    reason: Planned capability retained for future development; enabled execution is unavailable until its scientific contract and reference gate are approved.
   - id: user-rtc-output
     pattern: timestream.raw_time_chunk.output.enabled
     classification: user-facing

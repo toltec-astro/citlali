@@ -42,7 +42,9 @@
 #include <citlali/core/pipeline/output_layout.h>
 #include <citlali/core/pipeline/output_netcdf_metadata.h>
 #include <citlali/core/pipeline/phdu_reduction_config.h>
-#include <citlali/core/pipeline/polarimetry_compatibility_config.h>
+#include <citlali/core/pipeline/polarimetry_config_read.h>
+#include <citlali/core/pipeline/polarimetry_execution_plan.h>
+#include <citlali/core/pipeline/polarimetry_provenance.h>
 #include <citlali/core/pipeline/raw_iir_filter_metadata.h>
 #include <citlali/core/pipeline/raw_timestream_authority.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
@@ -73,7 +75,6 @@
 #include <citlali/core/pipeline/timestream_config_adapter_polarimetry.h>
 #include <citlali/core/pipeline/timestream_config_adapter_processed.h>
 #include <citlali/core/pipeline/timestream_config_adapter_raw.h>
-#include <citlali/core/pipeline/timestream_config_mirror_polarimetry.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
 #include <citlali/core/pipeline/tod_output_state.h>
 #include <citlali/core/utils/fits_io.h>
@@ -3301,76 +3302,161 @@ TEST(config_scaffold, parses_polarimetry_enum_values) {
               citlali::config::PolarimetryHwprPolicy::require);
 }
 
-TEST(config_scaffold, mirrors_legacy_polarimetry_runtime_config) {
-    struct FakeRtcProc {
-        struct FakePolarization {
-            std::string grouping = "loc";
-        } polarization;
-        bool run_polarization = true;
-    } rtcproc;
-    citlali::config::TimestreamPolarimetryConfig config;
-
-    citlali::pipeline::mirror_polarimetry_config(config, rtcproc);
-
-    EXPECT_TRUE(config.enabled);
-    EXPECT_EQ(config.grouping,
-              citlali::config::PolarimetryGrouping::detector_location);
-    EXPECT_EQ(config.hwpr_policy,
-              citlali::config::PolarimetryHwprPolicy::automatic);
-}
-
-TEST(config_scaffold, preserves_adjacent_legacy_polarimetry_runtime) {
+TEST(config_scaffold, reads_disabled_polarimetry_request) {
     ensure_citlali_test_logger();
     auto config = tula::config::YamlConfig::from_str(
         citlali::citlali_default_config_content);
-    timestream::RTCProc legacy;
+    citlali::config::TimestreamPolarimetryConfig request;
+    request.enabled = true;
+    request.grouping =
+        citlali::config::PolarimetryGrouping::detector_location;
+    request.hwpr_policy =
+        citlali::config::PolarimetryHwprPolicy::require;
     citlali::pipeline::ConfigDiagnosticsState diagnostics;
-    citlali::pipeline::read_legacy_polarimetry_runtime_config(
-        config, legacy, diagnostics);
+
+    citlali::pipeline::read_polarimetry_request_config(
+        config, request, diagnostics);
+
     ASSERT_FALSE(diagnostics.has_errors());
-    ASSERT_FALSE(legacy.run_polarization);
-    ASSERT_EQ(
-        legacy.polarization.stokes_params,
-        (std::map<int, std::string>{{0, "I"}}));
-
-    timestream::RTCProc production;
-    production.run_polarization = true;
-    production.polarization.grouping = "fg";
-    production.polarization.stokes_params = {
-        {0, "I"}, {1, "Q"}, {2, "U"}};
-    production.filter.n_terms = 41;
-
-    citlali::pipeline::adapt_legacy_polarimetry_runtime(
-        legacy, production);
-
-    EXPECT_FALSE(production.run_polarization);
-    EXPECT_EQ(
-        production.polarization.grouping,
-        legacy.polarization.grouping);
-    EXPECT_EQ(
-        production.polarization.stokes_params,
-        (std::map<int, std::string>{{0, "I"}}));
-    EXPECT_EQ(production.filter.n_terms, 41);
+    EXPECT_FALSE(request.enabled);
+    EXPECT_EQ(request.grouping,
+              citlali::config::PolarimetryGrouping::frequency_group);
+    EXPECT_EQ(request.hwpr_policy,
+              citlali::config::PolarimetryHwprPolicy::automatic);
 }
 
-TEST(config_scaffold, reads_enabled_polarimetry_compatibility_runtime) {
+TEST(config_scaffold, reads_enabled_polarimetry_request) {
     ensure_citlali_test_logger();
     auto root = YAML::Load(citlali::citlali_default_config_content);
     root["timestream"]["polarimetry"]["enabled"] = true;
-    root["timestream"]["polarimetry"]["grouping"] = "fg";
+    root["timestream"]["polarimetry"]["grouping"] = "loc";
+    root["timestream"]["polarimetry"]["ignore_hwpr"] = "true";
     auto config = tula::config::YamlConfig::from_str(YAML::Dump(root));
-    timestream::RTCProc runtime;
+    citlali::config::TimestreamPolarimetryConfig request;
     citlali::pipeline::ConfigDiagnosticsState diagnostics;
 
-    citlali::pipeline::read_legacy_polarimetry_runtime_config(
-        config, runtime, diagnostics);
+    citlali::pipeline::read_polarimetry_request_config(
+        config, request, diagnostics);
 
-    EXPECT_FALSE(diagnostics.has_errors());
-    EXPECT_TRUE(runtime.run_polarization);
-    EXPECT_EQ(runtime.polarization.grouping, "fg");
-    EXPECT_EQ(
-        runtime.polarization.stokes_params,
-        (std::map<int, std::string>{{0, "I"}, {1, "Q"}, {2, "U"}}));
+    ASSERT_FALSE(diagnostics.has_errors());
+    EXPECT_TRUE(request.enabled);
+    EXPECT_EQ(request.grouping,
+              citlali::config::PolarimetryGrouping::detector_location);
+    EXPECT_EQ(request.hwpr_policy,
+              citlali::config::PolarimetryHwprPolicy::ignore);
+}
+
+TEST(config_scaffold, rejects_invalid_polarimetry_enum) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    root["timestream"]["polarimetry"]["grouping"] = "network";
+    auto config = tula::config::YamlConfig::from_str(YAML::Dump(root));
+    citlali::config::TimestreamPolarimetryConfig request;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_polarimetry_request_config(
+        config, request, diagnostics);
+
+    ASSERT_TRUE(diagnostics.has_errors());
+    EXPECT_EQ(diagnostics.invalid_key_paths(),
+              (citlali::pipeline::ConfigDiagnosticsState::key_vec_t{
+                  {"timestream", "polarimetry", "grouping"}}));
+}
+
+TEST(config_scaffold, adapts_typed_polarimetry_config_one_way) {
+    struct FakeRtcProc {
+        struct FakePolarization {
+            std::string grouping = "loc";
+            std::map<int, std::string> stokes_params;
+        } polarization;
+        bool run_polarization = true;
+    } rtcproc;
+    struct FakeCalib {
+        std::string ignore_hwpr = "false";
+        int untouched = 41;
+    } calib;
+    citlali::config::TimestreamPolarimetryConfig config;
+
+    citlali::pipeline::adapt_polarimetry_config(config, rtcproc, calib);
+
+    EXPECT_FALSE(rtcproc.run_polarization);
+    EXPECT_EQ(rtcproc.polarization.grouping, "fg");
+    EXPECT_EQ(rtcproc.polarization.stokes_params,
+              (std::map<int, std::string>{{0, "I"}}));
+    EXPECT_EQ(calib.ignore_hwpr, "auto");
+    EXPECT_EQ(calib.untouched, 41);
+}
+
+TEST(config_scaffold, rejects_enabled_polarimetry_capability) {
+    citlali::config::TimestreamPolarimetryConfig request;
+    request.enabled = true;
+    citlali::pipeline::PolarimetryExecutionPlan plan;
+
+    plan.reset_from_request(request);
+
+    ASSERT_TRUE(plan.initialized);
+    EXPECT_TRUE(plan.requested.enabled);
+    EXPECT_FALSE(plan.effective.enabled);
+    EXPECT_FALSE(plan.capability.enabled_capability_available);
+    EXPECT_FALSE(plan.capability.request_accepted);
+    EXPECT_TRUE(plan.capability.disabled_by_capability);
+}
+
+TEST(config_scaffold, records_disabled_polarimetry_provenance) {
+    citlali::config::TimestreamPolarimetryConfig request;
+    citlali::pipeline::PolarimetryExecutionPlan plan;
+    plan.reset_from_request(request);
+
+    citlali::pipeline::record_polarimetry_run_completed(plan);
+    const auto node =
+        citlali::pipeline::polarimetry_provenance_node(plan);
+
+    EXPECT_EQ(node["schema_version"].as<std::string>(),
+              "citlali-polarimetry-provenance-v1");
+    EXPECT_EQ(node["capability"]["status"].as<std::string>(),
+              "planned-unavailable");
+    EXPECT_FALSE(
+        node["capability"]["enabled_supported"].as<bool>());
+    EXPECT_TRUE(node["effective"]["capability_resolution"]
+                    ["request_accepted"]
+                        .as<bool>());
+    EXPECT_TRUE(node["realized"]["reduction_completed"].as<bool>());
+    EXPECT_FALSE(node["realized"]["polarimetry_executed"].as<bool>());
+}
+
+TEST(config_scaffold, polarimetry_provenance_write_contract) {
+    const auto output_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_polarimetry_provenance_test";
+    std::filesystem::remove_all(output_dir);
+    std::filesystem::create_directories(output_dir);
+    citlali::pipeline::PolarimetryExecutionPlan plan;
+    plan.reset_from_request(
+        citlali::config::TimestreamPolarimetryConfig{});
+    citlali::pipeline::record_polarimetry_run_completed(plan);
+
+    citlali::pipeline::write_polarimetry_provenance_file(
+        output_dir, plan);
+
+    const auto output_path =
+        citlali::pipeline::polarimetry_provenance_path(output_dir);
+    EXPECT_TRUE(std::filesystem::exists(output_path));
+    EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
+    EXPECT_EQ(YAML::LoadFile(output_path.string())["capability"]["status"]
+                  .as<std::string>(),
+              "planned-unavailable");
+    std::filesystem::remove_all(output_dir);
+
+    const auto missing_dir = output_dir / "missing" / "nested";
+    EXPECT_THROW(
+        citlali::pipeline::write_polarimetry_provenance_file(
+            missing_dir, plan),
+        std::ios_base::failure);
+    EXPECT_THROW(
+        citlali::pipeline::write_polarimetry_provenance_file(
+            output_dir,
+            citlali::pipeline::PolarimetryExecutionPlan{}),
+        std::logic_error);
 }
 
 TEST(config_scaffold, validates_beammap_source_fluxes) {

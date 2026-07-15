@@ -27,12 +27,13 @@ The generic legacy parser, reverse mirrors, and read-only parity oracle have
 been retired. Their former 171-path surface is preserved in the versioned
 `tools/config/raw_timestream_legacy_paths.json` manifest.
 
-The two adjacent polarimetry keys use a separate finite boundary:
+The two adjacent polarimetry keys now participate in a separate finite domain:
 
-`merged YAML -> named polarimetry compatibility reader -> RTCProc runtime adapter`
+`merged YAML -> typed polarimetry capability plan -> RTCProc/Calib adapter`
 
-That reader owns only enablement, grouping, and Stokes-label initialization. It
-does not populate raw typed state and is not part of the raw authority claim.
+That domain owns enablement, grouping, HWPR policy, and Stokes-label
+initialization. It does not populate raw typed state and is not part of the raw
+authority claim.
 The original 14 direct parser exits were replaced by typed validation before
 the parser was removed.
 
@@ -44,8 +45,8 @@ coverage:
 - no `RTCProc::get_config` declaration or definition;
 - no legacy parser call, raw reverse mirror, or parity comparison;
 - 169/169 typed-reader, serializer, and typed-to-RTC adapter coverage; and
-- exactly one typed authority initialization plus one separate polarimetry
-  compatibility read/adapter in the required order.
+- exactly one raw typed-authority initialization plus one separate typed
+  polarimetry request read/adapter in the required order.
 
 This audit is now a retirement gate, not a characterization of a second
 production authority.
@@ -63,9 +64,7 @@ from request serialization.
 The external RTC access census contains 44 reviewed access shapes: 22 numerical
 executor operations, seven observation-state accesses, eight output/realized
 state accesses, three raw policy reads, and four polarimetry accesses outside
-this domain. The additional reads are the temporary typed/legacy observation
-shadow boundary. New or reclassified accesses fail config preflight until
-reviewed.
+this domain. New or reclassified accesses fail config preflight until reviewed.
 
 An unwired `RawTimestreamExecutionPlan` now separates requested, context-free
 effective, per-observation, and realized state. Context-free resolution records
@@ -142,7 +141,7 @@ iteration `redu33` at `398d5127` passes against `redu29` with zero changed or
 skipped records and maximum absolute difference `3.746e-10`. Every run has
 valid provenance and zero serious issues. The durable ledger records these
 acceptances. Parser/oracle retirement is now authorized; polarimetry remains a
-separate compatibility boundary.
+separate authority domain.
 
 The per-observation production shadow was also wired. Input preparation records
 and compares native/effective sample rate, downsample factor, filter edge
@@ -252,9 +251,10 @@ not flow back into the request.
    validation decision. Point `redu42`, Beammap `redu18`, and science `redu33`
    accept the authority cutover. This step is complete.
 7. Remove the 169-path legacy parser and all raw legacy-to-typed mirrors. The
-   two adjacent polarimetry reads are isolated behind a named, finite
-   compatibility boundary rather than retaining the generic parser. This step
-   is complete locally; Unity point validation is pending.
+   two adjacent polarimetry reads were first isolated behind a named, finite
+   compatibility boundary rather than retaining the generic parser. They now
+   belong to a separate typed capability plan. This raw-domain step is
+   complete.
 
 ## Removal gates
 

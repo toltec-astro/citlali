@@ -34,6 +34,24 @@ VALIDATION_PATH_RE = re.compile(r"/2026-refactor/(?P<mode>[^/]+)/(?P<label>[^/]+
 PRODUCT_SUFFIXES = {".fits", ".fit", ".nc", ".nc4", ".cdf", ".csv", ".ecsv"}
 PROFILE_SIDECAR_NAMES = {"citlali_profile.ecsv"}
 PROVENANCE_SIDECARS = {
+    "polarimetry": {
+        "filename": "polarimetry_provenance.yaml",
+        "schema_version": "citlali-polarimetry-provenance-v1",
+        "required_paths": (
+            ("initialized",),
+            ("capability", "status"),
+            ("capability", "enabled_supported"),
+            ("capability", "reason"),
+            ("capability", "exit_condition"),
+            ("requested",),
+            ("effective", "config"),
+            ("effective", "capability_resolution"),
+            ("realized", "reduction_completed"),
+            ("realized", "polarimetry_executed"),
+            ("realized", "hwpr_loaded"),
+        ),
+        "allow_multiple": False,
+    },
     "kids_external": {
         "filename": "kids_external_provenance.yaml",
         "schema_version": "citlali-kids-external-provenance-v1",
@@ -2270,6 +2288,74 @@ def kids_external_provenance_semantic_errors(
     return errors
 
 
+def polarimetry_provenance_semantic_errors(
+    data: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        if data["initialized"] is not True:
+            errors.append("polarimetry execution plan is not initialized")
+        capability = data["capability"]
+        if capability["status"] != "planned-unavailable":
+            errors.append("polarimetry capability status is invalid")
+        if capability["enabled_supported"] is not False:
+            errors.append("enabled polarimetry must remain unavailable")
+        for name in ("reason", "exit_condition"):
+            if not isinstance(capability[name], str) or not capability[name]:
+                errors.append(f"polarimetry capability {name} is empty")
+
+        requested = data["requested"]
+        effective = data["effective"]["config"]
+        for label, config in (
+            ("requested", requested),
+            ("effective", effective),
+        ):
+            if type(config["enabled"]) is not bool:
+                errors.append(f"{label} polarimetry enabled must be boolean")
+            if config["grouping"] not in {"fg", "loc"}:
+                errors.append(f"{label} polarimetry grouping is invalid")
+            if config["ignore_hwpr"] not in {"auto", "true", "false"}:
+                errors.append(f"{label} polarimetry ignore_hwpr is invalid")
+
+        resolution = data["effective"]["capability_resolution"]
+        for name in (
+            "enabled_capability_available",
+            "requested_enabled",
+            "request_accepted",
+            "disabled_by_capability",
+        ):
+            if type(resolution[name]) is not bool:
+                errors.append(
+                    f"polarimetry capability resolution {name} must be boolean"
+                )
+        if requested["enabled"] is not False:
+            errors.append("successful run requested enabled polarimetry")
+        if effective["enabled"] is not False:
+            errors.append("successful run has effective enabled polarimetry")
+        if resolution != {
+            "enabled_capability_available": False,
+            "requested_enabled": False,
+            "request_accepted": True,
+            "disabled_by_capability": False,
+        }:
+            errors.append(
+                "disabled polarimetry capability resolution is inconsistent"
+            )
+
+        realized = data["realized"]
+        if realized["reduction_completed"] is not True:
+            errors.append("polarimetry reduction is not complete")
+        if realized["polarimetry_executed"] is not False:
+            errors.append("unavailable polarimetry was executed")
+        if realized["hwpr_loaded"] is not False:
+            errors.append("unavailable polarimetry loaded HWPR data")
+    except (KeyError, TypeError) as exc:
+        errors.append(
+            f"cannot evaluate polarimetry provenance semantics: {exc}"
+        )
+    return errors
+
+
 def config_source_manifest_semantic_errors(
     data: dict[str, Any], manifest_path: Path,
 ) -> list[str]:
@@ -2354,6 +2440,7 @@ def audit_provenance_sidecars(
     require_beammap: bool = False,
     require_kids_external: bool = False,
     require_config_source_manifest: bool = False,
+    require_polarimetry: bool = False,
 ) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for name, spec in PROVENANCE_SIDECARS.items():
@@ -2367,6 +2454,7 @@ def audit_provenance_sidecars(
             or (name == "post_processing" and require_post_processing)
             or (name == "beammap" and require_beammap)
             or (name == "kids_external" and require_kids_external)
+            or (name == "polarimetry" and require_polarimetry)
             or (
                 name == "config_source_manifest"
                 and require_config_source_manifest
@@ -2414,7 +2502,11 @@ def audit_provenance_sidecars(
                 )
                 semantic_errors = []
                 if not missing_paths:
-                    if name == "kids_external":
+                    if name == "polarimetry":
+                        semantic_errors = (
+                            polarimetry_provenance_semantic_errors(data)
+                        )
+                    elif name == "kids_external":
                         semantic_errors = (
                             kids_external_provenance_semantic_errors(data)
                         )
@@ -2923,6 +3015,7 @@ def build_audit(args: argparse.Namespace) -> dict[str, Any]:
             getattr(args, "require_beammap_provenance", False),
             getattr(args, "require_kids_external_provenance", False),
             getattr(args, "require_config_source_manifest", False),
+            getattr(args, "require_polarimetry_provenance", False),
         ),
         "products": audit_products(redu, args.top),
     }
@@ -3111,6 +3204,14 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         help=(
             "Fail unless kids_external_provenance.yaml identifies a valid "
             "kidscpp bridge."
+        ),
+    )
+    parser.add_argument(
+        "--require-polarimetry-provenance",
+        action="store_true",
+        help=(
+            "Fail unless polarimetry_provenance.yaml records the disabled "
+            "planned capability contract."
         ),
     )
     parser.add_argument(

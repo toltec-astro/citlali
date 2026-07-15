@@ -184,10 +184,10 @@ timestream: # timestream reduction parameters
     scan_network_pathology_severe_candidate_events: 250 # off-source detector-event count that can trigger exclusion even without a busy veto
     scan_network_pathology_severe_max_residual_z: 50.0 # severe residual z that can trigger exclusion even without a busy veto
     scan_network_pathology_max_new_flagged_fraction: 0.35 # reject network-exclusion application if it newly flags more than this detector-sample fraction
-  polarimetry: # polarized reduction
-    enabled: false # enable or disable polarized reduction
-    ignore_hwpr: auto # override automatic hwpr finding (true, false, auto)
-    grouping: fg # use all matched detectors (fg) or only matched detectors with a pair (loc)
+  polarimetry: # planned polarized-reduction capability
+    enabled: false # true currently fails preflight pending an approved scientific contract and reference gate
+    ignore_hwpr: auto # retained future HWPR policy spelling (true, false, auto)
+    grouping: fg # retained future grouping: all matched detectors (fg) or matched pairs (loc)
   output: # controls options for writing out TOD as netCDF file
     subdir_name: null # optional subdirectory name for tod output files (ignored if null)
     stats: # controls for what variables to include in stats file

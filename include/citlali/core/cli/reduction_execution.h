@@ -16,6 +16,7 @@
 #include <citlali/core/pipeline/noise_provenance.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/pointing_provenance.h>
+#include <citlali/core/pipeline/polarimetry_provenance.h>
 #include <citlali/core/pipeline/post_processing_provenance.h>
 #include <citlali/core/pipeline/post_processing_provenance_lifecycle.h>
 #include <citlali/core/pipeline/processed_timestream_provenance.h>
@@ -140,6 +141,21 @@ int run_cli_reduction_processor(
         logger->info(
             "KIDs external provenance sidecar: {}",
             citlali::pipeline::kids_external_provenance_path(
+                engine.output_paths.redu_dir_name)
+                .string());
+    }
+
+    if constexpr (citlali::pipeline::has_polarimetry_plan_v<
+                      decltype(engine)>) {
+        auto &polarimetry_plan =
+            citlali::pipeline::polarimetry_plan(engine);
+        citlali::pipeline::record_polarimetry_run_completed(
+            polarimetry_plan);
+        citlali::pipeline::write_polarimetry_provenance_file(
+            engine.output_paths.redu_dir_name, polarimetry_plan);
+        logger->info(
+            "polarimetry provenance sidecar: {}",
+            citlali::pipeline::polarimetry_provenance_path(
                 engine.output_paths.redu_dir_name)
                 .string());
     }

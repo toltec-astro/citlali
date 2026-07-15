@@ -45,7 +45,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "complete",
-      "exit_gate": "Complete: the typed execution-authority cutover is accepted on Unity point redu42, Beammap redu18, and science redu33. The 169-path legacy parser, ten raw reverse mirrors, and parity oracle are retired, with Unity point redu43 validating exact complete products and no performance regression. The versioned manifest preserves the former 171-path surface and the audit rejects reintroduction. A narrow adjacent-domain compatibility reader and adapter preserve polarimetry enablement, grouping, and Stokes initialization without populating raw typed state. Flagged-sample and dynamic-notch counts remain explicitly unavailable."
+      "exit_gate": "Complete: the typed execution-authority cutover is accepted on Unity point redu42, Beammap redu18, and science redu33. The 169-path legacy parser, ten raw reverse mirrors, and parity oracle are retired, with Unity point redu43 validating exact complete products and no performance regression. The versioned manifest preserves the former 171-path surface and the audit rejects reintroduction. The adjacent polarimetry domain now has its own typed capability plan and one-way adapter. Flagged-sample and dynamic-notch counts remain explicitly unavailable."
     },
     {
       "id": "processed-timestream",
@@ -61,15 +61,15 @@
     },
     {
       "id": "polarimetry",
-      "config_prefixes": ["timestream.polarimetry", "calibration.ignore_hwpr"],
+      "config_prefixes": ["timestream.polarimetry"],
       "typed_owner": "citlali::config::ReductionConfig::timestream.polarimetry",
-      "loader": "include/citlali/core/engine/detail/rtc_config_impl.h",
+      "loader": "include/citlali/core/pipeline/polarimetry_config_read.h",
       "execution_authority": "typed",
       "legacy_targets": ["Engine::rtcproc", "Engine::calib"],
       "adapter_direction": "typed-to-legacy",
-      "migration_status": "mixed-adapter",
+      "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Resolve calibration-owned ignore_hwpr input into one effective typed polarimetry policy and record the resolution."
+      "exit_gate": "Candidate complete locally: the frozen three-leaf request has direct typed authority, one capability plan, one forward RTCProc/Calib adapter, required disabled-capability provenance, and a mechanical preflight rejection for enabled requests. Accept an unchanged Unity point run with valid polarimetry_provenance.yaml; enabled polarimetry remains planned but unavailable until its scientific/HWPR contract and reference dataset are approved."
     },
     {
       "id": "mapmaking",

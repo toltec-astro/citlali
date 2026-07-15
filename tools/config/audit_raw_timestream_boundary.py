@@ -53,10 +53,8 @@ LEGACY_PARSER_CALL = "read_processor_config"
 TYPED_REQUEST_READ_CALL = "read_raw_timestream_request_config"
 TYPED_AUTHORITY_INIT_CALL = "initialize_raw_timestream_authority"
 TYPED_AUTHORITY_COMPARE_CALL = "compare_raw_timestream_authority"
-POLARIMETRY_COMPATIBILITY_READ_CALL = (
-    "read_legacy_polarimetry_runtime_config"
-)
-POLARIMETRY_RUNTIME_ADAPTER_CALL = "adapt_legacy_polarimetry_runtime"
+POLARIMETRY_TYPED_REQUEST_READ_CALL = "read_polarimetry_request_config"
+POLARIMETRY_RUNTIME_ADAPTER_CALL = "adapt_polarimetry_config"
 
 
 def path_digest(paths: list[str]) -> str:
@@ -218,7 +216,7 @@ def authority_boundary(source_text: str) -> dict[str, object]:
     typed_reads = call_positions(source_text, TYPED_REQUEST_READ_CALL)
     authority_inits = call_positions(source_text, TYPED_AUTHORITY_INIT_CALL)
     polarimetry_reads = call_positions(
-        source_text, POLARIMETRY_COMPATIBILITY_READ_CALL
+        source_text, POLARIMETRY_TYPED_REQUEST_READ_CALL
     )
     polarimetry_adapters = call_positions(
         source_text, POLARIMETRY_RUNTIME_ADAPTER_CALL
@@ -252,7 +250,7 @@ def authority_boundary(source_text: str) -> dict[str, object]:
         "legacy_to_typed_mirror_call_counts": dict(
             sorted(Counter(mirror_calls).items())
         ),
-        "polarimetry_compatibility_read_call_count": len(
+        "polarimetry_typed_request_read_call_count": len(
             polarimetry_reads
         ),
         "polarimetry_runtime_adapter_call_count": len(
@@ -262,12 +260,12 @@ def authority_boundary(source_text: str) -> dict[str, object]:
         "exact": exact,
         "current_direction": (
             "requested_yaml -> typed_plan -> production_rtcproc; "
-            "polarimetry_yaml -> named_compatibility_reader -> "
-            "production_rtcproc"
+            "polarimetry_yaml -> typed_capability_plan -> "
+            "production_rtcproc/calib"
         ),
         "target_direction": (
             "requested_yaml -> typed_plan -> production_rtcproc; "
-            "migrate polarimetry under its separate authority decision"
+            "retain polarimetry as a separately audited typed domain"
         ),
     }
 
@@ -342,8 +340,8 @@ def main() -> int:
         "note": (
             "The versioned manifest preserves the retired 169-path raw "
             "surface and two adjacent polarimetry paths. Production raw "
-            "configuration is one-way typed authority. Polarimetry remains "
-            "a separate named compatibility boundary."
+            "configuration is one-way typed authority. Polarimetry has its "
+            "own one-way typed capability boundary."
         ),
     }
     if args.json_out:
@@ -385,7 +383,7 @@ def main() -> int:
         f"legacy_oracle_mirrors="
         f"{len(boundary['legacy_to_typed_mirror_call_counts'])} "
         f"polarimetry_reads="
-        f"{boundary['polarimetry_compatibility_read_call_count']} "
+        f"{boundary['polarimetry_typed_request_read_call_count']} "
         f"polarimetry_adapters="
         f"{boundary['polarimetry_runtime_adapter_call_count']} "
         f"typed_reader_coverage={len(reader_covered)}/{len(raw_paths)} "

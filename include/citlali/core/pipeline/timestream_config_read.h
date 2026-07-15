@@ -143,34 +143,6 @@ bool read_timestream_core_config(Config &config,
     return true;
 }
 
-template <class Config, class IgnoreHwpr, class PolarimetryConfig,
-          class MissingKeys, class InvalidKeys>
-void read_polarimetry_hwpr_policy_config(
-    Config &config, IgnoreHwpr &ignore_hwpr,
-    PolarimetryConfig &typed_config, MissingKeys &missing_keys,
-    InvalidKeys &invalid_keys) {
-    citlali::pipeline::read_config_value_if_clean(
-        config, std::tuple{"timestream", "polarimetry", "ignore_hwpr"},
-        ignore_hwpr,
-        [&typed_config](const auto &value) {
-            if (const auto policy =
-                    citlali::config::parse_polarimetry_hwpr_policy(value)) {
-                typed_config.hwpr_policy = *policy;
-            }
-        },
-        missing_keys, invalid_keys);
-}
-
-template <class Config, class IgnoreHwpr, class PolarimetryConfig,
-          class Diagnostics>
-void read_polarimetry_hwpr_policy_config(
-    Config &config, IgnoreHwpr &ignore_hwpr,
-    PolarimetryConfig &typed_config, Diagnostics &diagnostics) {
-    read_polarimetry_hwpr_policy_config(
-        config, ignore_hwpr, typed_config,
-        diagnostics.missing_key_paths(), diagnostics.invalid_key_paths());
-}
-
 template <class Config, class MissingKeys, class InvalidKeys,
           class TimestreamConfig>
 void read_raw_tod_output_enabled_config(Config &config, bool &enabled,

@@ -63,9 +63,9 @@ class RawTimestreamBoundaryAuditTest(unittest.TestCase):
     def exact_boundary_lines(self) -> list[str]:
         return [
             "read_raw_timestream_request_config(config, request, diag);",
-            "read_legacy_polarimetry_runtime_config(config, legacy, diag);",
+            "read_polarimetry_request_config(config, request, diag);",
             "initialize_raw_timestream_authority(request, plan, typed, rtc);",
-            "adapt_legacy_polarimetry_runtime(legacy, rtc);",
+            "adapt_polarimetry_config(plan.effective, rtc, calib);",
         ]
 
     def test_accepts_exact_retired_authority_boundary(self) -> None:
