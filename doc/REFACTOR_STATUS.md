@@ -21,8 +21,10 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest accepted point reduction: observation-resolved astrometry provenance
-  `redu61`, produced by `9ea6d7f01`; disabled polarimetry capability provenance
+- Latest accepted point reduction: Phase 2 closeout `redu62`, produced by
+  `9a3901e91`, validates typed learning and interface-sync authority with exact
+  complete products against `redu61`. Observation-resolved astrometry
+  provenance `redu61`, disabled polarimetry capability provenance
   `redu60`, external KIDs/config-source provenance
   `redu59`, post-processing authority cleanup `redu58`,
   realized provenance `redu57`, typed source-fitting `redu56`, source-finding `redu55`, map-filter `redu54`,
@@ -65,13 +67,14 @@ These facts are characterization evidence, not a production-equivalence claim.
 
 ## Active Phase
 
-**Phase 2 - Config authority and provenance** is a release candidate as of
-2026-07-15. Local implementation and F.1 audit gates pass; one current Unity
-point compile/reduction gate remains before Phase 2 can be marked complete.
+**Phase 3 - Library, session, and first compiled boundary** is active as of
+2026-07-15. Phase 2 config authority and provenance is complete: local F.1
+gates pass and Unity point `redu62` accepts the final candidate.
 
 Phase 1 safety stabilization is complete for point, Beammap, science, and OOF.
 OOF refactor `redu01` closes the multi-observation date-header gate and is the
-accepted comparison against OG `redu00`. Phase 2 remains active.
+accepted comparison against OG `redu00`. Do not reopen typed analysis-control
+migration during Phase 3.
 
 Operational config migration must proceed one authority domain at a time with
 the one-way requested-to-effective-to-realized contract, focused tests, and the
@@ -1510,12 +1513,34 @@ The detailed [Phase 2 F.1 closeout](../handoff/PHASE2_F1_CLOSEOUT_2026-07-15.md)
 maps every adopted checklist item to code, audit, and reduction evidence. Local
 `citlali_cli` and test builds, all 410 CTests, all 96 config tests, eight compact
 compatibility fixtures, 100% compact-surface coverage, and every boundary audit
-pass. The final Phase 2 gate is one Unity point reduction from the exact
-candidate commit. It must have zero unexpected serious records, exact complete
-products against the immediately preceding accepted point fixture, processed
-learning provenance, raw-timestream provenance v2 with all 14 interface
-offsets, and a valid configuration-source manifest. Do not begin Phase 3 until
-that gate is accepted and the inventory/status are updated.
+pass. Unity point `redu62` closes the final gate as recorded below.
+
+## Phase 2 Final Point Gate Accepted
+
+Unity point `redu62` identifies `v4.0.0-3503-g9a3901e9` and the expected commit
+`9a3901e91`. Its generated low-level input is byte-identical to accepted
+`redu61`. It completed all 12 PTC chunks with zero error-, critical-, or
+fatal-level records. Every required provenance sidecar passes semantic audit.
+
+Processed-timestream provenance contains the complete 28-leaf requested and
+effective learning policy exercised by the standard point fixture. Raw-
+timestream provenance v2 contains all 13 TolTEC interface offsets plus HWPR in
+requested and effective state, with unit seconds and exact equality. The
+configuration-source manifest and canonical merged input are valid.
+
+The strict zero-tolerance full-depth comparison reads all 21 stable products
+and 2,041 records, including every RTC/PTC array. It reports zero changed,
+skipped, missing, or extra records. The final F.1 gate is accepted; all 15
+authority domains now have complete disposition and Phase 2 is complete.
+
+The run took 176.435 seconds versus 63.671 seconds for `redu61`. The difference
+is isolated to filesystem-facing stages: observation file setup increased from
+1.758 to 28.723 seconds, raw/filtered output from 6.136 to 52.767 seconds, and
+the 48 chunk-write calls averaged 4.172 rather than 2.482 seconds. Map
+filtering, diagnostics, fitting, and other computational stages remained near
+their prior timings. Treat this as an uncontrolled Unity/VAST I/O observation,
+not a Phase 2 code-performance regression. A same-SHA rerun may characterize
+the storage variance but is not required for scientific acceptance.
 
 ## Five-Phase Roadmap
 

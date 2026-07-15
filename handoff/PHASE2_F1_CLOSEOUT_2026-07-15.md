@@ -2,9 +2,8 @@
 
 ## Decision
 
-Phase 2, configuration authority and provenance, is a release candidate. Its
-implementation and local audit gates are complete. It is not yet closed: one
-Unity point reduction from the exact candidate commit remains required.
+Phase 2, configuration authority and provenance, is complete. Its
+implementation, local audit gates, and final Unity point gate are accepted.
 
 The owner approved the generated low-level Citlali YAML as Citlali's immutable
 configuration and source-provenance boundary. TolTECA owns discovery, ordering,
@@ -141,29 +140,24 @@ completeness. A done marker alone is never sufficient evidence.
 - Config-read census: zero review-required sites.
 - Learning and interface-sync boundary audits: no drift.
 
-## Final Unity Gate
+## Final Unity Gate Accepted
 
-Build and run the standard point fixture from the exact candidate commit. The
-run is accepted only if all of the following hold:
+Unity point `redu62` reports `v4.0.0-3503-g9a3901e9` from candidate commit
+`9a3901e91`. It has zero serious log records and valid required provenance. Its
+low-level input is byte-identical to `redu61`; the strict zero-tolerance
+full-depth comparison covers 21 stable products and 2,041 records, including
+every RTC/PTC array, with zero changed, skipped, missing, or extra records.
 
-1. The executable reports the expected candidate revision.
-2. The reduction completes with zero unexpected error-, critical-, or
-   fatal-level records.
-3. The low-level input is byte-identical to the immediately preceding accepted
-   point configuration.
-4. Every stable product, including complete RTC/PTC TOD and metadata, is exact
-   against the matched accepted point fixture.
-5. Processed-timestream provenance contains the full requested/effective
-   learning policy exercised by the standard point configuration.
-6. Raw-timestream provenance uses schema v2 and records all 13 TolTEC offsets
-   plus HWPR, with requested/effective equality and unit seconds.
-7. The required configuration-source manifest and all applicable provenance
-   sidecars pass semantic audit.
+Processed provenance records the complete enabled learning request and
+effective policy. Raw provenance v2 records all 13 TolTEC offsets plus HWPR in
+requested and effective state with unit seconds. The source manifest and all
+applicable sidecars pass semantic audit. The `learning` and `interface-sync`
+inventory entries are complete.
 
-After acceptance, update the `learning` and `interface-sync` inventory entries
-from partial to complete, record the run and revision in `REFACTOR_STATUS.md`,
-mark Phase 2 complete, and begin Phase 3. Do not add more Phase 2 analysis-
-control migrations while this candidate is awaiting validation.
+The 176.435-second runtime is an I/O outlier rather than a computational change:
+file setup, chunk writes, and map-product writes account for nearly all of the
+increase over 63.671-second `redu61`, while computational stage timings remain
+stable. This does not block scientific acceptance or Phase 2 closure.
 
 ## Phase 3 Entry
 

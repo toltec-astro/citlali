@@ -44,8 +44,8 @@
       "legacy_targets": ["Engine::interface_sync.offsets"],
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
-      "provenance_status": "partial",
-      "exit_gate": "Implementation complete, Unity gate pending: all 14 finite offsets parse atomically into typed request state, duplicate and unknown entries fail validation, one adapter populates the established alignment map, and raw provenance v2 records requested/effective offsets with seconds as the explicit unit. Accept exact point products before marking provenance complete."
+      "provenance_status": "complete",
+      "exit_gate": "Complete: Unity point redu62 at 9a3901e91 validates atomic typed parsing and the one-way alignment-map adapter. Raw provenance v2 records all 13 TolTEC offsets plus HWPR in requested and effective state with unit seconds. The config is byte-identical to redu61, all required sidecars pass semantic audit, and all 21 stable products including complete RTC/PTC arrays are exact."
     },
     {
       "id": "raw-timestream",
@@ -80,8 +80,8 @@
       "legacy_targets": ["Engine::learning.options"],
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
-      "provenance_status": "partial",
-      "exit_gate": "Implementation complete, Unity gate pending: all 28 leaves parse into immutable typed request, one typed-to-legacy adapter builds the unchanged numerical Options value, and requested/effective processed provenance contains the full learning policy. Accept an enabled-learning point run with exact complete products before marking provenance complete."
+      "provenance_status": "complete",
+      "exit_gate": "Complete: enabled-learning Unity point redu62 at 9a3901e91 records all 28 leaves in requested and effective processed provenance, exercises the one-way numerical Options adapter, has zero serious log records, and preserves all 21 stable products including complete RTC/PTC arrays exactly against redu61."
     },
     {
       "id": "polarimetry",
