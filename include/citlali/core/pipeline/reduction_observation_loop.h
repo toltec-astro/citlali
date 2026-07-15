@@ -5,6 +5,7 @@
 #include <citlali/core/pipeline/reduction_observation_access.h>
 #include <citlali/core/pipeline/reduction_observation_context.h>
 #include <citlali/core/pipeline/reduction_observation_logging.h>
+#include <citlali/core/pipeline/stage_profile.h>
 
 #include <cstddef>
 
@@ -18,6 +19,7 @@ bool run_reduction_observation_at_index(
     TodProc &todproc, const IOCoordinator &co, CitlaliConfig &citlali_config,
     MapExtents &map_extents, MapCoords &map_coords,
     std::size_t observation_index, DateObsFactory &&date_obs_factory,
+    StageProfileCollector &stage_profile,
     const Logger &logger) {
     log_reduction_observation_start(
         observation_index, reduction_observation_count(co), logger);
@@ -29,7 +31,7 @@ bool run_reduction_observation_at_index(
     return run_reduction_observation_context<
         IsBeammap, RawObsMap, FilteredObsMap, FitMaps>(
         todproc, kidsproc, observation_context, map_extents, map_coords,
-        date_obs_factory, logger);
+        date_obs_factory, stage_profile, logger);
 }
 
 template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap, bool FitMaps,
@@ -39,7 +41,8 @@ template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap, bool FitMaps,
 bool run_reduction_iteration_observations(
     TodProc &todproc, const IOCoordinator &co, CitlaliConfig &citlali_config,
     MapExtents &map_extents, MapCoords &map_coords,
-    DateObsFactory &&date_obs_factory, const Logger &logger) {
+    DateObsFactory &&date_obs_factory, StageProfileCollector &stage_profile,
+    const Logger &logger) {
     const auto n_observations = reduction_observation_count(co);
     for (std::size_t observation_index = 0; observation_index < n_observations;
          ++observation_index) {
@@ -47,7 +50,7 @@ bool run_reduction_iteration_observations(
                 IsBeammap, RawObsMap, FilteredObsMap, FitMaps,
                 KidsDataProc>(
                 todproc, co, citlali_config, map_extents, map_coords,
-                observation_index, date_obs_factory, logger)) {
+                observation_index, date_obs_factory, stage_profile, logger)) {
             return false;
         }
     }

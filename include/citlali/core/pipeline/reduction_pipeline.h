@@ -17,7 +17,6 @@ bool run_reduction_pipeline(
     MapCoords &map_coords, DateObsFactory &&date_obs_factory,
     StageProfileCollector &stage_profile,
     const Logger &logger) {
-    (void)stage_profile;
     reset_stage_profile();
 
     {
@@ -35,7 +34,7 @@ bool run_reduction_pipeline(
         IsBeammap, RawObsMap, FilteredObsMap, RawCoaddMap, FilteredCoaddMap,
         FitMaps, KidsDataProc>(
         todproc, co, citlali_config, config_filepaths, map_extents,
-        map_coords, date_obs_factory, logger);
+        map_coords, date_obs_factory, stage_profile, logger);
 }
 
 }  // namespace citlali::pipeline

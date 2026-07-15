@@ -18,7 +18,9 @@ bool run_reduction_observation(
     const RawObsKidsMeta &rawobs_kids_meta, bool has_multiple_inputs,
     MapExtents &map_extents, MapCoords &map_coords,
     std::size_t observation_index, DateObsFactory &&date_obs_factory,
+    StageProfileCollector &stage_profile,
     const Logger &logger) {
+    (void)stage_profile;
     const auto profile_context =
         "observation_index=" + std::to_string(observation_index);
 
@@ -50,13 +52,15 @@ template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap, bool FitMaps,
 bool run_reduction_observation_context(
     TodProc &todproc, KidsProc &kidsproc, ObservationContext &context,
     MapExtents &map_extents, MapCoords &map_coords,
-    DateObsFactory &&date_obs_factory, const Logger &logger) {
+    DateObsFactory &&date_obs_factory, StageProfileCollector &stage_profile,
+    const Logger &logger) {
     return run_reduction_observation<IsBeammap, RawObsMap, FilteredObsMap,
                                      FitMaps>(
         todproc, kidsproc, context.rawobs, context.rawobs_kids_meta,
         context.has_multiple_inputs, map_extents, map_coords,
         context.observation_index,
-        std::forward<DateObsFactory>(date_obs_factory), logger);
+        std::forward<DateObsFactory>(date_obs_factory), stage_profile,
+        logger);
 }
 
 }  // namespace citlali::pipeline

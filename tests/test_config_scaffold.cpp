@@ -6732,6 +6732,7 @@ TEST(pipeline_execution, runs_reduction_observation) {
     std::vector<FakeRawObsMeta> rawobs_kids_meta = {{122.0, 102}};
     std::vector<int> map_extents = {11};
     std::vector<int> map_coords = {22};
+    citlali::pipeline::StageProfileCollector stage_profile;
     auto logger = std::make_shared<FakeLogger>();
 
     EXPECT_TEMPLATE_TRUE(citlali::pipeline::run_reduction_observation<
@@ -6739,7 +6740,7 @@ TEST(pipeline_execution, runs_reduction_observation) {
         todproc, kidsproc, rawobs, rawobs_kids_meta, true, map_extents,
         map_coords, 0,
         [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
-        logger));
+        stage_profile, logger));
 
     EXPECT_EQ(todproc.engine().setup_calls, 1);
     EXPECT_EQ(todproc.engine().pipeline_calls, 1);
@@ -6760,6 +6761,7 @@ TEST(pipeline_execution,
     std::vector<FakeRawObsMeta> rawobs_kids_meta = {{122.0, 102}};
     std::vector<int> map_extents = {11};
     std::vector<int> map_coords = {22};
+    citlali::pipeline::StageProfileCollector stage_profile;
     auto logger = std::make_shared<FakeLogger>();
 
     EXPECT_TEMPLATE_FALSE(citlali::pipeline::run_reduction_observation<
@@ -6767,7 +6769,7 @@ TEST(pipeline_execution,
         todproc, kidsproc, rawobs, rawobs_kids_meta, true, map_extents,
         map_coords, 0,
         [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
-        logger));
+        stage_profile, logger));
 
     EXPECT_EQ(todproc.engine().setup_calls, 0);
     EXPECT_EQ(todproc.engine().pipeline_calls, 0);
@@ -6780,6 +6782,7 @@ TEST(pipeline_execution, runs_reduction_observation_at_index) {
     FakeIOCoordinator co{{FakeRawObs{}, FakeRawObs{}}};
     std::vector<int> map_extents = {11, 33};
     std::vector<int> map_coords = {22, 44};
+    citlali::pipeline::StageProfileCollector stage_profile;
     auto logger = std::make_shared<FakeLogger>();
 
     EXPECT_TEMPLATE_TRUE(citlali::pipeline::run_reduction_observation_at_index<
@@ -6790,7 +6793,7 @@ TEST(pipeline_execution, runs_reduction_observation_at_index) {
             return "telescope-loaded-" +
                    std::to_string(engine.telescope.get_tel_data_calls);
         },
-        logger));
+        stage_profile, logger));
 
     EXPECT_EQ(config.get_config_calls, 1);
     EXPECT_EQ(todproc.last_map_extent, 33);
@@ -6811,6 +6814,7 @@ TEST(pipeline_execution, reports_observation_context_when_metadata_load_fails) {
     FakeIOCoordinator co{{rawobs}};
     std::vector<int> map_extents = {11};
     std::vector<int> map_coords = {22};
+    citlali::pipeline::StageProfileCollector stage_profile;
     auto logger = std::make_shared<FakeLogger>();
 
     try {
@@ -6819,7 +6823,7 @@ TEST(pipeline_execution, reports_observation_context_when_metadata_load_fails) {
             FakeFailingKidsProc>(
             todproc, co, config, map_extents, map_coords, 0,
             [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
-            logger);
+            stage_profile, logger);
         FAIL() << "expected metadata load failure";
     } catch (const std::runtime_error &error) {
         const std::string message{error.what()};
@@ -6837,6 +6841,7 @@ TEST(pipeline_execution, runs_reduction_iteration_observations) {
     FakeIOCoordinator co{{FakeRawObs{}, FakeRawObs{}}};
     std::vector<int> map_extents = {11, 33};
     std::vector<int> map_coords = {22, 44};
+    citlali::pipeline::StageProfileCollector stage_profile;
     auto logger = std::make_shared<FakeLogger>();
 
     EXPECT_TEMPLATE_TRUE(citlali::pipeline::run_reduction_iteration_observations<
@@ -6847,7 +6852,7 @@ TEST(pipeline_execution, runs_reduction_iteration_observations) {
             return "telescope-loaded-" +
                    std::to_string(engine.telescope.get_tel_data_calls);
         },
-        logger));
+        stage_profile, logger));
 
     EXPECT_EQ(config.get_config_calls, 2);
     EXPECT_EQ(todproc.engine().setup_calls, 2);
@@ -6869,6 +6874,7 @@ TEST(pipeline_execution, rejects_reduction_iteration_observations_on_failure) {
     FakeIOCoordinator co{{FakeRawObs{}, FakeRawObs{}}};
     std::vector<int> map_extents = {11, 33};
     std::vector<int> map_coords = {22, 44};
+    citlali::pipeline::StageProfileCollector stage_profile;
     auto logger = std::make_shared<FakeLogger>();
 
     EXPECT_TEMPLATE_FALSE(citlali::pipeline::run_reduction_iteration_observations<
@@ -6876,7 +6882,7 @@ TEST(pipeline_execution, rejects_reduction_iteration_observations_on_failure) {
         FakeKidsProc>(
         todproc, co, config, map_extents, map_coords,
         [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
-        logger));
+        stage_profile, logger));
 
     EXPECT_EQ(config.get_config_calls, 1);
     EXPECT_EQ(todproc.engine().setup_calls, 0);
@@ -6891,6 +6897,7 @@ TEST(pipeline_execution, runs_reduction_iteration) {
     std::vector<std::string> config_filepaths;
     std::vector<int> map_extents = {11, 33};
     std::vector<int> map_coords = {22, 44};
+    citlali::pipeline::StageProfileCollector stage_profile;
     auto logger = std::make_shared<FakeLogger>();
 
     EXPECT_TEMPLATE_TRUE(citlali::pipeline::run_reduction_iteration<
@@ -6899,7 +6906,7 @@ TEST(pipeline_execution, runs_reduction_iteration) {
         FakeKidsProc>(
         todproc, co, config, config_filepaths, map_extents, map_coords,
         [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
-        logger));
+        stage_profile, logger));
 
     EXPECT_EQ(todproc.create_output_dir_calls, 1);
     EXPECT_EQ(todproc.engine().setup_calls, 2);
@@ -6927,6 +6934,7 @@ TEST(pipeline_execution, runs_reduction_iterations) {
     std::vector<std::string> config_filepaths;
     std::vector<int> map_extents = {11};
     std::vector<int> map_coords = {22};
+    citlali::pipeline::StageProfileCollector stage_profile;
     auto logger = std::make_shared<FakeLogger>();
 
     EXPECT_TEMPLATE_TRUE(citlali::pipeline::run_reduction_iterations<
@@ -6935,7 +6943,7 @@ TEST(pipeline_execution, runs_reduction_iterations) {
         FakeKidsProc>(
         todproc, co, config, config_filepaths, map_extents, map_coords,
         [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
-        logger));
+        stage_profile, logger));
 
     EXPECT_EQ(todproc.engine().iteration.fruit_iter, 2);
     EXPECT_EQ(todproc.engine().setup_calls, 2);

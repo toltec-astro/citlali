@@ -18,6 +18,7 @@ bool run_reduction_iteration(
     TodProc &todproc, const IOCoordinator &co, CitlaliConfig &citlali_config,
     const ConfigFilepaths &config_filepaths, MapExtents &map_extents,
     MapCoords &map_coords, DateObsFactory &&date_obs_factory,
+    StageProfileCollector &stage_profile,
     const Logger &logger) {
     const auto profile_scope = profile_stage(
         "reduction.iteration", logger,
@@ -28,7 +29,7 @@ bool run_reduction_iteration(
     if (!run_reduction_iteration_observations<
             IsBeammap, RawObsMap, FilteredObsMap, FitMaps, KidsDataProc>(
             todproc, co, citlali_config, map_extents, map_coords,
-            date_obs_factory, logger)) {
+            date_obs_factory, stage_profile, logger)) {
         return false;
     }
 
