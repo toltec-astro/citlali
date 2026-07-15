@@ -6,10 +6,14 @@
 #include <citlali/core/pipeline/pointing_offsets_config_read.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
+#include <utility>
+
 template<typename CT>
 void Engine::get_astrometry_config(CT &config) {
     auto &astrometry_config = citlali::pipeline::astrometry_config(*this);
-    astrometry_config = citlali::config::AstrometryConfig{};
-    citlali::pipeline::read_pointing_offsets_config(
-        config, pointing_offsets, astrometry_config, logger);
+    auto observation =
+        citlali::pipeline::read_astrometry_config(config, logger);
+    citlali::pipeline::require_valid_astrometry_config(observation, logger);
+    citlali::pipeline::install_astrometry_config(
+        std::move(observation), astrometry_config, pointing_offsets);
 }

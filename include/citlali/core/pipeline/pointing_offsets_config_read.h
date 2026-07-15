@@ -1,28 +1,29 @@
 #pragma once
 
-#include <citlali/core/pipeline/pointing_offset_state.h>
+#include <citlali/core/config/calibration_config_validation.h>
+#include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/pointing_offsets_config.h>
 
-#include <Eigen/Core>
-
 #include <algorithm>
-#include <cstdlib>
+#include <cmath>
 #include <tuple>
+#include <utility>
 #include <vector>
 
 namespace citlali::pipeline {
 
-template <class Config, class AstrometryConfig, class Logger>
-void read_pointing_offsets_config(Config &config,
-                                  PointingOffsetState &pointing_offsets,
-                                  AstrometryConfig &astrometry_config,
-                                  const Logger &logger) {
+template <class Config, class Logger>
+citlali::config::AstrometryConfig read_astrometry_config(
+    Config &config, const Logger &logger) {
     if (!config.has("pointing_offsets")) {
         logger->error("pointing_offsets not found in config");
-        std::exit(EXIT_FAILURE);
+        throw citlali::error::invalid_config(
+            "invalid astrometry pointing_offsets configuration");
     }
 
-    clear_pointing_offsets(pointing_offsets);
+    citlali::config::AstrometryConfig astrometry;
+    auto &request = astrometry.pointing_offsets;
+    request.enabled = true;
 
     auto pointing_node = config.get_node(std::tuple{"pointing_offsets"});
     bool has_az = false;
@@ -38,23 +39,18 @@ void read_pointing_offsets_config(Config &config,
             if (citlali::config::is_supported_pointing_axis(axis)) {
                 auto offset = config.template get_typed<std::vector<double>>(
                     std::tuple{"pointing_offsets", i, "value_arcsec"});
-                if (offset.empty()) {
-                    logger->error(
-                        "pointing_offsets {} has empty value_arcsec", axis);
-                    std::exit(EXIT_FAILURE);
-                }
-                if (pointing_offsets.arcsec.find(axis) !=
-                    pointing_offsets.arcsec.end()) {
+                if ((citlali::config::is_pointing_axis_az(axis) && has_az) ||
+                    (citlali::config::is_pointing_axis_alt(axis) && has_alt)) {
                     logger->warn(
                         "pointing_offsets {} specified multiple times; using last value",
                         axis);
                 }
-                pointing_offsets.arcsec[axis] =
-                    Eigen::Map<Eigen::VectorXd>(offset.data(), offset.size());
                 if (citlali::config::is_pointing_axis_az(axis)) {
+                    request.az_arcsec = std::move(offset);
                     has_az = true;
                 }
                 else {
+                    request.alt_arcsec = std::move(offset);
                     has_alt = true;
                 }
             }
@@ -82,28 +78,18 @@ void read_pointing_offsets_config(Config &config,
                                          "value_arcsec"})) {
         auto offset = config.template get_typed<std::vector<double>>(
             std::tuple{"pointing_offsets", 0, "value_arcsec"});
-        if (offset.empty()) {
-            logger->error("pointing_offsets az has empty value_arcsec");
-            std::exit(EXIT_FAILURE);
-        }
         logger->warn(
             "pointing_offsets az parsed by positional index; consider setting axes_name: az");
-        pointing_offsets.arcsec[citlali::config::pointing_axis_az()] =
-            Eigen::Map<Eigen::VectorXd>(offset.data(), offset.size());
+        request.az_arcsec = std::move(offset);
         has_az = true;
     }
     if (!has_alt && config.has(std::tuple{"pointing_offsets", 1,
                                           "value_arcsec"})) {
         auto offset = config.template get_typed<std::vector<double>>(
             std::tuple{"pointing_offsets", 1, "value_arcsec"});
-        if (offset.empty()) {
-            logger->error("pointing_offsets alt has empty value_arcsec");
-            std::exit(EXIT_FAILURE);
-        }
         logger->warn(
             "pointing_offsets alt parsed by positional index; consider setting axes_name: alt");
-        pointing_offsets.arcsec[citlali::config::pointing_axis_alt()] =
-            Eigen::Map<Eigen::VectorXd>(offset.data(), offset.size());
+        request.alt_arcsec = std::move(offset);
         has_alt = true;
     }
     if (!has_mjd &&
@@ -114,54 +100,49 @@ void read_pointing_offsets_config(Config &config,
         has_mjd = true;
     }
 
-    if (!has_az || !has_alt) {
-        logger->error("pointing_offsets must include both az and alt entries");
-        std::exit(EXIT_FAILURE);
-    }
-
-    const auto n_az =
-        pointing_offsets.arcsec[citlali::config::pointing_axis_az()].size();
-    const auto n_alt =
-        pointing_offsets.arcsec[citlali::config::pointing_axis_alt()].size();
-    if (n_az != n_alt) {
-        logger->error(
-            "pointing_offsets az/alt lengths differ (az={} alt={})", n_az,
-            n_alt);
-        std::exit(EXIT_FAILURE);
-    }
-    if (n_az != 1 && n_az != 2) {
-        logger->error(
-            "pointing_offsets supports only one or two values per axis (got {})",
-            n_az);
-        std::exit(EXIT_FAILURE);
-    }
+    const auto n_az = request.az_arcsec.size();
 
     if (has_mjd) {
         if (mjd_values.size() == 2) {
-            pointing_offsets.modified_julian_date =
-                Eigen::Map<Eigen::VectorXd>(mjd_values.data(),
-                                            mjd_values.size());
+            request.modified_julian_date = std::move(mjd_values);
         }
         else if (!mjd_values.empty() &&
                  std::all_of(mjd_values.begin(), mjd_values.end(),
-                             [](double v) { return v <= 0.0; })) {
-            pointing_offsets.modified_julian_date.setZero(2);
+                             [](double value) {
+                                 return std::isfinite(value) && value <= 0.0;
+                             })) {
+            request.modified_julian_date = {0.0, 0.0};
         }
-        else if (mjd_values.size() == 1 && n_az == 1) {
+        else if (mjd_values.size() == 1 && n_az == 1 &&
+                 std::isfinite(mjd_values.front())) {
             logger->warn(
                 "ignoring single pointing_offsets.modified_julian_date for single pointing offset; using a constant offset across the observation");
-            pointing_offsets.modified_julian_date.setZero(2);
+            request.modified_julian_date = {0.0, 0.0};
         }
         else {
-            logger->error(
-                "pointing_offsets.modified_julian_date must contain 2 values when interpolating two offsets, or non-positive sentinels");
-            std::exit(EXIT_FAILURE);
+            request.modified_julian_date = std::move(mjd_values);
         }
     }
+    else {
+        request.modified_julian_date = {0.0, 0.0};
+    }
 
-    mirror_typed_pointing_offsets(
-        pointing_offsets.arcsec, pointing_offsets.modified_julian_date,
-        astrometry_config.pointing_offsets);
+    return astrometry;
+}
+
+template <class Logger>
+void require_valid_astrometry_config(
+    const citlali::config::AstrometryConfig &config, const Logger &logger) {
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    if (report.ok()) {
+        return;
+    }
+    logger->error(
+        "invalid astrometry pointing_offsets configuration:\n{}",
+        report.format_for_cli());
+    throw citlali::error::invalid_config(
+        "invalid astrometry pointing_offsets configuration");
 }
 
 }  // namespace citlali::pipeline

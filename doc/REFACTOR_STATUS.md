@@ -53,7 +53,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 386 tests with none skipped or disabled; all
+- CTest discovers and passes all 391 tests with none skipped or disabled; all
   82 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
@@ -1300,6 +1300,27 @@ scientific products, including complete RTC/PTC timestreams, with no changed,
 skipped, missing, or extra records. The disabled capability boundary is
 accepted. Enabled polarimetry remains planned but unavailable until its
 scientific/HWPR contract and enabled reference gate are approved.
+
+## Atomic Astrometry Observation Loading Prepared
+
+The astrometry calibration-item loader now constructs the complete typed
+pointing-offset request before touching observation runtime state. Structural
+and finite-value validation runs on that temporary value, and a single forward
+adapter then replaces both the typed request and the legacy Eigen vectors.
+Invalid input throws the normal typed invalid-config error; the loader no
+longer calls `exit()` or builds typed policy by mirroring partially mutated
+runtime state. Legacy named axes, positional axes, one/two-value shapes, and
+non-positive MJD sentinel normalization are preserved. The interpolation
+kernel and its existing no-extrapolation behavior are unchanged.
+
+Focused tests cover atomic stale-state replacement, named two-point input,
+legacy positional input, sentinel normalization, missing axes, and non-finite
+or explicitly empty time values. The CLI and test targets build and all 391
+CTests pass. The combined
+astrometry/photometry domain is now typed-authoritative with one-way adapters,
+but remains incomplete: observation-resolved requested/effective/realized
+astrometry provenance and owner approval of the coordinate/time contract are
+the next gate.
 
 ## Five-Phase Roadmap
 

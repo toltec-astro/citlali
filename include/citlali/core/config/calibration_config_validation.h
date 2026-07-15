@@ -3,6 +3,7 @@
 #include <citlali/core/config/calibration_config.h>
 #include <citlali/core/config/config_error.h>
 
+#include <algorithm>
 #include <cmath>
 
 namespace citlali::config {
@@ -28,17 +29,34 @@ inline void validate(const AstrometryPointingOffsetsConfig &config,
     if (config.az_arcsec.size() != config.alt_arcsec.size()) {
         report.add_error(path, "az and alt value_arcsec lengths must match");
     }
+    if (std::any_of(config.az_arcsec.begin(), config.az_arcsec.end(),
+                    [](double value) { return !std::isfinite(value); })) {
+        report.add_error({"inputs", "cal_items", "astrometry",
+                          "pointing_offsets", "az", "value_arcsec"},
+                         "must contain only finite values");
+    }
+    if (std::any_of(config.alt_arcsec.begin(), config.alt_arcsec.end(),
+                    [](double value) { return !std::isfinite(value); })) {
+        report.add_error({"inputs", "cal_items", "astrometry",
+                          "pointing_offsets", "alt", "value_arcsec"},
+                         "must contain only finite values");
+    }
     const auto n_offsets = config.az_arcsec.size();
     if (n_offsets != 1 && n_offsets != 2) {
         report.add_error(path,
                          "must contain one or two values per pointing axis");
     }
-    if (!config.modified_julian_date.empty() &&
-        config.modified_julian_date.size() != 2) {
+    if (config.modified_julian_date.size() != 2) {
         report.add_error({"inputs", "cal_items", "astrometry",
                           "pointing_offsets", "modified_julian_date"},
-                         "must be empty or contain two values after legacy "
-                         "normalization");
+                         "must contain two values after legacy normalization");
+    }
+    if (std::any_of(config.modified_julian_date.begin(),
+                    config.modified_julian_date.end(),
+                    [](double value) { return !std::isfinite(value); })) {
+        report.add_error({"inputs", "cal_items", "astrometry",
+                          "pointing_offsets", "modified_julian_date"},
+                         "must contain only finite values");
     }
 }
 

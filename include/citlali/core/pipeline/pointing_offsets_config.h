@@ -1,10 +1,12 @@
 #pragma once
 
 #include <citlali/core/config/calibration_config.h>
+#include <citlali/core/pipeline/pointing_offset_state.h>
 
 #include <algorithm>
 #include <cctype>
 #include <string>
+#include <utility>
 
 namespace citlali::pipeline {
 
@@ -16,24 +18,29 @@ inline std::string normalized_pointing_axis_name(std::string axis_name) {
     return axis_name;
 }
 
-template <class PointingOffsetMap, class MjdValues, class TypedOffsets>
-void mirror_typed_pointing_offsets(
-    const PointingOffsetMap &pointing_offsets_arcsec,
-    const MjdValues &pointing_offsets_modified_julian_date,
-    TypedOffsets &typed_offsets) {
-    typed_offsets.enabled = true;
-    const auto &az_offsets =
-        pointing_offsets_arcsec.at(citlali::config::pointing_axis_az());
-    typed_offsets.az_arcsec.assign(
-        az_offsets.data(), az_offsets.data() + az_offsets.size());
-    const auto &alt_offsets =
-        pointing_offsets_arcsec.at(citlali::config::pointing_axis_alt());
-    typed_offsets.alt_arcsec.assign(
-        alt_offsets.data(), alt_offsets.data() + alt_offsets.size());
-    typed_offsets.modified_julian_date.assign(
-        pointing_offsets_modified_julian_date.data(),
-        pointing_offsets_modified_julian_date.data() +
-            pointing_offsets_modified_julian_date.size());
+inline PointingOffsetState make_pointing_offset_state(
+    const citlali::config::AstrometryPointingOffsetsConfig &config) {
+    PointingOffsetState state;
+    state.arcsec[citlali::config::pointing_axis_az()] =
+        Eigen::Map<const Eigen::VectorXd>(
+            config.az_arcsec.data(), config.az_arcsec.size());
+    state.arcsec[citlali::config::pointing_axis_alt()] =
+        Eigen::Map<const Eigen::VectorXd>(
+            config.alt_arcsec.data(), config.alt_arcsec.size());
+    state.modified_julian_date = Eigen::Map<const Eigen::ArrayXd>(
+        config.modified_julian_date.data(),
+        config.modified_julian_date.size());
+    return state;
+}
+
+inline void install_astrometry_config(
+    citlali::config::AstrometryConfig observation,
+    citlali::config::AstrometryConfig &target,
+    PointingOffsetState &pointing_offsets) {
+    auto next_pointing_offsets =
+        make_pointing_offset_state(observation.pointing_offsets);
+    target = std::move(observation);
+    pointing_offsets = std::move(next_pointing_offsets);
 }
 
 }  // namespace citlali::pipeline

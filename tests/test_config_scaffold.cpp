@@ -33,6 +33,7 @@
 #include <citlali/core/pipeline/pointing_config_read.h>
 #include <citlali/core/pipeline/pointing_execution_plan.h>
 #include <citlali/core/pipeline/pointing_provenance.h>
+#include <citlali/core/pipeline/pointing_offsets_config_read.h>
 #include <citlali/core/pipeline/post_processing_config_read.h>
 #include <citlali/core/pipeline/post_processing_execution_plan.h>
 #include <citlali/core/pipeline/post_processing_provenance.h>
@@ -3559,6 +3560,123 @@ TEST(config_scaffold, replaces_beammap_photometry_atomically) {
         fluxes_mjy_beam,
         (std::map<std::string, double>{{"a1400", 2.0}}));
     EXPECT_TRUE(fluxes_mjy_sr.empty());
+}
+
+TEST(config_scaffold, reads_and_adapts_astrometry_atomically) {
+    auto config = tula::config::YamlConfig::from_str(R"yaml(
+pointing_offsets:
+  - axes_name: AZ
+    value_arcsec: [1.5, 2.5]
+  - axes_name: alt
+    value_arcsec: [-3.5, -4.5]
+  - modified_julian_date: [60000.0, 60001.0]
+)yaml");
+    auto logger = std::make_shared<FakeLogger>();
+
+    auto observation =
+        citlali::pipeline::read_astrometry_config(config, logger);
+    citlali::pipeline::require_valid_astrometry_config(
+        observation, logger);
+
+    citlali::config::AstrometryConfig target;
+    target.pointing_offsets.az_arcsec = {99.0};
+    citlali::pipeline::PointingOffsetState state;
+    state.arcsec["stale"] = Eigen::VectorXd::Constant(1, 99.0);
+    citlali::pipeline::install_astrometry_config(
+        std::move(observation), target, state);
+
+    EXPECT_EQ(target.pointing_offsets.az_arcsec,
+              (std::vector<double>{1.5, 2.5}));
+    EXPECT_EQ(target.pointing_offsets.alt_arcsec,
+              (std::vector<double>{-3.5, -4.5}));
+    EXPECT_EQ(target.pointing_offsets.modified_julian_date,
+              (std::vector<double>{60000.0, 60001.0}));
+    EXPECT_EQ(state.arcsec.count("stale"), 0U);
+    EXPECT_TRUE(state.arcsec.at("az").isApprox(
+        (Eigen::Vector2d{} << 1.5, 2.5).finished()));
+    EXPECT_TRUE(state.arcsec.at("alt").isApprox(
+        (Eigen::Vector2d{} << -3.5, -4.5).finished()));
+    EXPECT_TRUE(state.modified_julian_date.matrix().isApprox(
+        (Eigen::Vector2d{} << 60000.0, 60001.0).finished()));
+}
+
+TEST(config_scaffold, preserves_positional_astrometry_and_mjd_sentinel) {
+    auto config = tula::config::YamlConfig::from_str(R"yaml(
+pointing_offsets:
+  - value_arcsec: [1.0]
+  - value_arcsec: [2.0]
+  - modified_julian_date: [-1.0]
+)yaml");
+    auto logger = std::make_shared<FakeLogger>();
+
+    const auto observation =
+        citlali::pipeline::read_astrometry_config(config, logger);
+    citlali::pipeline::require_valid_astrometry_config(
+        observation, logger);
+
+    EXPECT_EQ(observation.pointing_offsets.az_arcsec,
+              (std::vector<double>{1.0}));
+    EXPECT_EQ(observation.pointing_offsets.alt_arcsec,
+              (std::vector<double>{2.0}));
+    EXPECT_EQ(observation.pointing_offsets.modified_julian_date,
+              (std::vector<double>{0.0, 0.0}));
+    EXPECT_EQ(logger->warn_calls, 4);
+}
+
+TEST(config_scaffold, rejects_nonfinite_astrometry_before_install) {
+    auto config = tula::config::YamlConfig::from_str(R"yaml(
+pointing_offsets:
+  - axes_name: az
+    value_arcsec: [.nan]
+  - axes_name: alt
+    value_arcsec: [0.0]
+)yaml");
+    auto logger = std::make_shared<FakeLogger>();
+    const auto observation =
+        citlali::pipeline::read_astrometry_config(config, logger);
+
+    EXPECT_THROW(
+        citlali::pipeline::require_valid_astrometry_config(
+            observation, logger),
+        citlali::error::Error);
+    EXPECT_EQ(logger->error_calls, 1);
+}
+
+TEST(config_scaffold, rejects_explicit_empty_astrometry_mjd) {
+    auto config = tula::config::YamlConfig::from_str(R"yaml(
+pointing_offsets:
+  - axes_name: az
+    value_arcsec: [0.0]
+  - axes_name: alt
+    value_arcsec: [0.0]
+  - modified_julian_date: []
+)yaml");
+    auto logger = std::make_shared<FakeLogger>();
+    const auto observation =
+        citlali::pipeline::read_astrometry_config(config, logger);
+
+    EXPECT_THROW(
+        citlali::pipeline::require_valid_astrometry_config(
+            observation, logger),
+        citlali::error::Error);
+    EXPECT_EQ(logger->error_calls, 1);
+}
+
+TEST(config_scaffold, rejects_incomplete_astrometry_before_install) {
+    auto config = tula::config::YamlConfig::from_str(R"yaml(
+pointing_offsets:
+  - axes_name: az
+    value_arcsec: [1.0]
+)yaml");
+    auto logger = std::make_shared<FakeLogger>();
+    const auto observation =
+        citlali::pipeline::read_astrometry_config(config, logger);
+
+    EXPECT_THROW(
+        citlali::pipeline::require_valid_astrometry_config(
+            observation, logger),
+        citlali::error::Error);
+    EXPECT_EQ(logger->error_calls, 1);
 }
 
 TEST(config_scaffold, validates_top_level_config_values) {
