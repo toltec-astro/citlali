@@ -95,7 +95,7 @@ void read_tod_output_selection_config(
     parse_tod_output_indices_configs(
         config, run_tod_output_rtc, run_tod_output_ptc,
         rtc_chunk_select_enabled, rtc_output_chunks, ptc_chunk_select_enabled,
-        ptc_output_chunks, logger);
+        ptc_output_chunks, diagnostics, logger);
 
     read_tod_selection_mode_config(
         config,

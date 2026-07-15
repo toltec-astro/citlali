@@ -18,7 +18,9 @@ void Engine::get_timestream_config(CT &config) {
             config, timestream_config, config_diag)) {
         logger->error("timestream.enabled is false. This reduction requires TOD processing; set "
                       "low_level.timestream.enabled: true in your reduce config.");
-        std::exit(EXIT_FAILURE);
+        config_diag.invalid_key_paths().push_back(
+            {"timestream", "enabled"});
+        return;
     }
 
     bool run_tod_output = false;

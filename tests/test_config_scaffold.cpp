@@ -150,6 +150,8 @@ struct FakeWienerFilterConfigTarget {
     int max_loops = -1;
     int denom_check_iters = -1;
     int max_denom_iters = -1;
+    int map_fitter = -1;
+    std::string parallel_policy = "stale";
     std::map<std::string, double> template_fwhm_rad{{"stale", -1.0}};
 };
 
@@ -1755,6 +1757,34 @@ TEST(config_scaffold, adapts_effective_map_filter_config_one_way) {
     citlali::pipeline::adapt_map_filter_config_one_way(
         config, 0.25, target);
     EXPECT_TRUE(target.template_fwhm_rad.empty());
+}
+
+TEST(config_scaffold, map_filter_prerequisites_throw_canonical_config_error) {
+    citlali::config::NoiseConfig noise;
+    noise.enabled = true;
+    citlali::config::MapFilterConfig filter;
+    filter.enabled = true;
+    filter.template_type = citlali::config::MapFilterTemplateType::kernel;
+    struct {
+        bool run_kernel = false;
+    } rtcproc;
+    FakeWienerFilterConfigTarget target;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_THROW(
+        citlali::pipeline::apply_map_filter_runtime_policy(
+            noise, filter, rtcproc, 7, "seq", target, logger),
+        citlali::error::Error);
+
+    filter.template_type = citlali::config::MapFilterTemplateType::gaussian;
+    filter.type = citlali::config::MapFilterType::wiener_filter;
+    filter.lowpass_only = false;
+    noise.enabled = false;
+    EXPECT_THROW(
+        citlali::pipeline::apply_map_filter_runtime_policy(
+            noise, filter, rtcproc, 7, "seq", target, logger),
+        citlali::error::Error);
+    EXPECT_EQ(logger->error_calls, 2);
 }
 
 TEST(config_scaffold, adapts_effective_source_finding_config_one_way) {

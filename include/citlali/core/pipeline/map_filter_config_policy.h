@@ -3,8 +3,8 @@
 #include <citlali/core/config/noise_config.h>
 #include <citlali/core/config/post_processing_config.h>
 #include <citlali/core/config/runtime_config.h>
+#include <citlali/core/error/error.h>
 
-#include <cstdlib>
 #include <string>
 
 namespace citlali::pipeline {
@@ -64,7 +64,8 @@ void apply_map_filter_runtime_policy(
         citlali::config::MapFilterTemplateType::kernel) {
         if (!rtcproc.run_kernel) {
             logger->error("wiener filter kernel template requires kernel");
-            std::exit(EXIT_FAILURE);
+            throw citlali::error::invalid_config(
+                "wiener filter kernel template requires kernel");
         }
         wiener_filter.map_fitter = map_fitter;
     }
@@ -74,7 +75,8 @@ void apply_map_filter_runtime_policy(
          map_filter_config.type ==
              citlali::config::MapFilterType::wiener_filter)) {
         logger->error("wiener filter requires noise maps");
-        std::exit(EXIT_FAILURE);
+        throw citlali::error::invalid_config(
+            "wiener filter requires noise maps");
     }
 
     wiener_filter.parallel_policy = parallel_policy;

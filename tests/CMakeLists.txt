@@ -13,6 +13,11 @@ target_sources(citlali_test
         test_beammap_config_plan.cpp
         test_config_scaffold.cpp
         test_external_config_provenance.cpp
+        reduction_session_header_result.cpp
+        reduction_session_header_state.cpp
+        test_reduction_session.cpp
+        test_session_failure_boundaries.cpp
+        test_tod_output_selection_config.cpp
         test_utils.cpp
 )
 target_link_libraries(citlali_test

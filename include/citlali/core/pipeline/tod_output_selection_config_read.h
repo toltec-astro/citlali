@@ -2,11 +2,12 @@
 
 // Included by tod_output_selection.h inside namespace citlali::pipeline.
 
-template <class Config, class Key, class Logger>
+template <class Config, class Key, class InvalidKeys, class Logger>
 void parse_tod_output_indices_config(
     Config &config, const Key &indices_key, bool output_enabled,
     const std::string &config_path, bool &select_enabled,
-    std::vector<Eigen::Index> &chunks_out, const Logger &logger) {
+    std::vector<Eigen::Index> &chunks_out, InvalidKeys &invalid_keys,
+    const Logger &logger) {
     select_enabled = false;
     chunks_out.clear();
 
@@ -24,7 +25,8 @@ void parse_tod_output_indices_config(
         logger->error(
             "{} must be \"all\" or a non-empty list of 1-based positive integers. Found \"{}\"",
             config_path, indices_value);
-        std::exit(EXIT_FAILURE);
+        add_invalid_config_key(indices_key, invalid_keys);
+        return;
     }
 
     if (config.template has_typed<std::vector<int>>(indices_key)) {
@@ -33,63 +35,73 @@ void parse_tod_output_indices_config(
             logger->error(
                 "{} must be \"all\" or a non-empty list of 1-based positive integers",
                 config_path);
-            std::exit(EXIT_FAILURE);
+            add_invalid_config_key(indices_key, invalid_keys);
+            return;
         }
-        select_enabled = true;
+        std::vector<Eigen::Index> parsed_chunks;
+        parsed_chunks.reserve(chunks.size());
         for (const auto chunk_index : chunks) {
             if (chunk_index <= 0) {
                 logger->error("{} must be 1-based positive integers. Found {}",
                               config_path, chunk_index);
-                std::exit(EXIT_FAILURE);
+                add_invalid_config_key(indices_key, invalid_keys);
+                return;
             }
-            chunks_out.push_back(static_cast<Eigen::Index>(chunk_index));
+            parsed_chunks.push_back(static_cast<Eigen::Index>(chunk_index));
         }
+        select_enabled = true;
+        chunks_out = std::move(parsed_chunks);
         return;
     }
 
     logger->error("{} must be \"all\" or a list of 1-based positive integers",
                   config_path);
-    std::exit(EXIT_FAILURE);
+    add_invalid_config_key(indices_key, invalid_keys);
 }
 
-template <class Config, class Logger>
+template <class Config, class Diagnostics, class Logger>
 void parse_tod_output_indices_configs(
     Config &config, bool raw_time_chunk_enabled,
     bool processed_time_chunk_enabled, bool &raw_select_enabled,
     std::vector<Eigen::Index> &raw_chunks,
     bool &processed_select_enabled,
-    std::vector<Eigen::Index> &processed_chunks, const Logger &logger) {
+    std::vector<Eigen::Index> &processed_chunks, Diagnostics &diagnostics,
+    const Logger &logger) {
     parse_tod_output_indices_config(
         config, std::tuple{"timestream", "raw_time_chunk", "output",
                            "indices"},
         raw_time_chunk_enabled, "timestream.raw_time_chunk.output.indices",
-        raw_select_enabled, raw_chunks, logger);
+        raw_select_enabled, raw_chunks, diagnostics.invalid_key_paths(), logger);
     parse_tod_output_indices_config(
         config, std::tuple{"timestream", "processed_time_chunk", "output",
                            "indices"},
         processed_time_chunk_enabled,
         "timestream.processed_time_chunk.output.indices",
-        processed_select_enabled, processed_chunks, logger);
+        processed_select_enabled, processed_chunks,
+        diagnostics.invalid_key_paths(), logger);
 }
 
-template <class Config, class Key, class Logger>
+template <class Config, class Key, class InvalidKeys, class Logger>
 void read_tod_selection_count_config(
     Config &config, const Key &key, const std::string &config_path,
-    int &value, const Logger &logger) {
+    int &value, InvalidKeys &invalid_keys, const Logger &logger) {
     if (!config.template has_typed<int>(key)) {
         return;
     }
-    value = config.template get_typed<int>(key);
-    if (value < 0) {
-        logger->error("{} must be non-negative. Found {}", config_path, value);
-        std::exit(EXIT_FAILURE);
+    const int candidate = config.template get_typed<int>(key);
+    if (candidate < 0) {
+        logger->error("{} must be non-negative. Found {}", config_path,
+                      candidate);
+        add_invalid_config_key(key, invalid_keys);
+        return;
     }
+    value = candidate;
 }
 
-template <class Logger>
+template <class ModeKey, class InvalidKeys, class Logger>
 void validate_tod_selection_mode_counts(
     citlali::config::TodOutputSelectionMode mode, int n_uniform,
-    int n_source_dense,
+    int n_source_dense, const ModeKey &mode_key, InvalidKeys &invalid_keys,
     const std::string &mode_path, const std::string &n_uniform_path,
     const std::string &n_source_dense_path, const Logger &logger) {
     if (!citlali::config::is_uniform_source_tod_output_selection_mode(mode) ||
@@ -98,7 +110,7 @@ void validate_tod_selection_mode_counts(
     }
     logger->error("{} selects uniform_plus_source_crossing but {} + {} is zero",
                   mode_path, n_uniform_path, n_source_dense_path);
-    std::exit(EXIT_FAILURE);
+    add_invalid_config_key(mode_key, invalid_keys);
 }
 
 template <class Config, class ModeKey, class UniformKey, class SourceDenseKey,
@@ -129,13 +141,13 @@ void read_tod_selection_mode_config(
         }
     }
     read_tod_selection_count_config(
-        config, n_uniform_key, n_uniform_path, n_uniform, logger);
+        config, n_uniform_key, n_uniform_path, n_uniform, invalid_keys, logger);
     read_tod_selection_count_config(
         config, n_source_dense_key, n_source_dense_path, n_source_dense,
-        logger);
+        invalid_keys, logger);
     validate_tod_selection_mode_counts(
-        mode, n_uniform, n_source_dense, mode_path, n_uniform_path,
-        n_source_dense_path, logger);
+        mode, n_uniform, n_source_dense, mode_key, invalid_keys, mode_path,
+        n_uniform_path, n_source_dense_path, logger);
 }
 
 template <class Config, class ModeKey, class UniformKey, class SourceDenseKey,

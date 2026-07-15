@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/rawobs_detector_inventory.h>
 
 #include <fmt/core.h>
@@ -8,7 +9,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <cstdlib>
 #include <map>
 #include <tuple>
 
@@ -65,7 +65,8 @@ void assign_tone_frequencies_by_network(
         auto it = tone_freqs.find(nw);
         if (it == tone_freqs.end()) {
             logger->error("missing tone freqs for nw {}", nw);
-            std::exit(EXIT_FAILURE);
+            throw citlali::error::io(
+                fmt::format("missing tone frequencies for network {}", nw));
         }
 
         const auto& tf = it->second;
@@ -77,13 +78,16 @@ void assign_tone_frequencies_by_network(
 
         if (n_sweeps < 1) {
             logger->error("no tone freq sweeps for nw {}", nw);
-            std::exit(EXIT_FAILURE);
+            throw citlali::error::io(
+                fmt::format("no tone frequency sweeps for network {}", nw));
         }
         if (n_tones != expected) {
             logger->error(
                 "tone freq size mismatch for nw {} (tones={}, expected dets={})",
                 nw, n_tones, expected);
-            std::exit(EXIT_FAILURE);
+            throw citlali::error::io(fmt::format(
+                "tone frequency size mismatch for network {}: tones={}, expected detectors={}",
+                nw, n_tones, expected));
         }
         if (n_sweeps > 1) {
             logger->warn(

@@ -12,8 +12,6 @@
 #include <citlali/core/pipeline/source_finding_config_policy.h>
 #include <citlali/core/pipeline/source_fitting_config_policy.h>
 
-#include <cstdlib>
-
 template<typename CT>
 void Engine::get_citlali_config(CT &config) {
     auto &runtime_config = citlali::pipeline::runtime_config(*this);
@@ -44,7 +42,8 @@ void Engine::get_citlali_config(CT &config) {
         );
     if (!runtime_config.interp_over_gaps) {
         logger->error("runtime.interp_over_gaps=false is unsupported; set runtime.interp_over_gaps: true");
-        std::exit(EXIT_FAILURE);
+        diagnostics.invalid_key_paths().push_back(
+            {"runtime", "interp_over_gaps"});
     }
 
     /* get timestream config */

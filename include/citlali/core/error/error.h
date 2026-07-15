@@ -9,6 +9,7 @@ namespace citlali::error {
 enum class Code {
     invalid_config,
     io,
+    output,
     runtime,
     internal
 };
@@ -32,6 +33,10 @@ inline Error invalid_config(std::string message) {
 
 inline Error io(std::string message) {
     return Error{Code::io, std::move(message)};
+}
+
+inline Error output(std::string message) {
+    return Error{Code::output, std::move(message)};
 }
 
 inline Error runtime(std::string message) {

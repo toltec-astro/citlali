@@ -1,0 +1,30 @@
+{
+  "schema_version": "citlali-session-exit-audit-v1",
+  "entries": [
+    "include/citlali/core/cli/standard_reduction_execution.h"
+  ],
+  "library_exit_counts_by_file": {
+    "include/citlali/core/engine/detail/beammap_fit_map_preparation_impl.h": 1,
+    "include/citlali/core/engine/detail/kidsproc_direct_rtc_impl.h": 2,
+    "include/citlali/core/engine/detail/kidsproc_gaps_impl.h": 2,
+    "include/citlali/core/engine/detail/kidsproc_load_rawobs_impl.h": 2,
+    "include/citlali/core/engine/detail/observation_setup_impl.h": 3,
+    "include/citlali/core/engine/detail/todproc_alignment_impl.h": 3,
+    "include/citlali/core/engine/detail/todproc_raw_input_impl.h": 1,
+    "include/citlali/core/mapmaking/wiener_filter.h": 4,
+    "include/citlali/core/mapmaking/wiener_filter_omp.h": 7,
+    "include/citlali/core/pipeline/fits_image_products.h": 2,
+    "include/citlali/core/pipeline/fits_image_write_slots.h": 5,
+    "include/citlali/core/pipeline/map_filtering_template_noise.h": 1,
+    "include/citlali/core/pipeline/mapmaking_config_policy.h": 2,
+    "include/citlali/core/pipeline/phdu_observation_slots_units.h": 2,
+    "include/citlali/core/pipeline/tod_output_selection_config_read.h": 6,
+    "include/citlali/core/pipeline/tod_output_selection_rows.h": 3,
+    "include/citlali/core/timestream/ptc/ptcproc.h": 2,
+    "include/citlali/core/timestream/rtc/kernel.h": 1,
+    "include/citlali/core/timestream/timestream.h": 40,
+    "include/citlali/core/utils/ecsv_io.h": 1,
+    "include/citlali/core/utils/fits_io.h": 3,
+    "include/citlali/core/utils/utils.h": 1
+  }
+}

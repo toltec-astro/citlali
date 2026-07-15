@@ -2,6 +2,7 @@
 
 #include <citlali/core/config/calibration_config.h>
 #include <citlali/core/config/timestream_config.h>
+#include <citlali/core/pipeline/config_parse_tracking.h>
 
 #include <algorithm>
 #include <cmath>
@@ -12,6 +13,7 @@
 #include <sstream>
 #include <string>
 #include <tuple>
+#include <utility>
 #include <vector>
 
 #include <Eigen/Core>

@@ -1,11 +1,13 @@
 #pragma once
 
+#include <citlali/core/config/runtime_config.h>
+#include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 #include <Eigen/Core>
+#include <fmt/core.h>
 
 #include <algorithm>
-#include <cstdlib>
 #include <tuple>
 
 namespace citlali::pipeline {
@@ -66,7 +68,9 @@ void apply_gap_masks_to_rtc_flags(
             logger->error(
                 "missing gap mask for nw {}; cannot apply gap flagging",
                 network_id);
-            std::exit(EXIT_FAILURE);
+            throw citlali::error::runtime(fmt::format(
+                "missing gap mask for network {}; cannot apply gap flagging",
+                network_id));
         }
         const auto &mask = mask_it->second;
 

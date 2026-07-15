@@ -59,7 +59,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 410 tests. All 96 config-boundary/preflight
+- CTest discovers and passes all 426 tests. All 96 config-boundary/preflight
   tests pass; the checked leaf contract covers 573 leaves and the generated
   startup schema covers 724 normalized YAML nodes.
 
@@ -80,6 +80,39 @@ Operational config migration must proceed one authority domain at a time with
 the one-way requested-to-effective-to-realized contract, focused tests, and the
 existing mode gates. Compact-config production rollout and open-ended file
 splitting remain out of scope.
+
+The initial Phase 3 session boundary is implemented locally. A non-copyable
+`citlali::session::ReductionSession` owns sequential run state and returns a
+structured `ReductionResult` containing status, diagnostics, product roots,
+and published provenance artifacts. Standard reduction loading and processor
+selection now execute inside that session. The CLI remains the only layer that
+prints result diagnostics and translates success to a process exit code.
+Focused tests cover success, exception conversion, failure recovery, two
+sequential runs, nested-run rejection, CLI policy separation, independent
+header compilation, and multi-translation-unit linkage. Both local test
+targets build, all 426 CTests pass, and full config preflight passes. This is
+the facade checkpoint, not the Phase 3 exit gate: reachable library exits,
+run-owned profiling, complete internal failure classification, lifecycle
+ownership cuts, and the first measured `.cpp` boundary remain open. The
+[bounded ownership plan](PHASE3_LIBRARY_SESSION_PLAN_2026-07-15.md) records the
+sequence and stop rules.
+
+The first failure-boundary and exit-census slice is also complete locally.
+`ReductionSession` classifies canonical config, I/O, output, runtime, and
+internal errors without terminating the process. Eight direct setup exits are
+retired without touching numerical loops. An independent scan-context test
+found and repaired a real include-order dependency on typed runtime policy.
+The new conservative session audit follows 667 project-header dependencies
+from the reusable entry and freezes a no-growth baseline of 94 direct library
+exits across 22 files, with no CLI exits in the graph. The
+[exit census](PHASE3_SESSION_EXIT_CENSUS_2026-07-15.md) defines the bounded
+retirement order and separates low-risk setup/output work from mature
+timestream and Wiener kernels. The first post-baseline cluster removes all six
+TOD output-selection config exits. Invalid strings, empty or nonpositive chunk
+lists, negative counts, and impossible selection modes now accumulate atomic,
+path-aware config diagnostics; the current dependency-reachable count is 88.
+Its isolated test also characterized the remaining ambient named-logger
+dependency in the legacy `get_config_value` helper for later ownership work.
 
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution

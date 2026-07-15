@@ -22,6 +22,7 @@
 #include <citlali/core/pipeline/post_processing_provenance_lifecycle.h>
 #include <citlali/core/pipeline/processed_timestream_provenance.h>
 #include <citlali/core/pipeline/reduction_pipeline.h>
+#include <citlali/core/session/reduction_result.h>
 #include <spdlog/spdlog.h>
 
 #include <cstdlib>
@@ -32,6 +33,25 @@
 
 namespace citlali::cli {
 
+template <class Engine>
+citlali::session::ReductionResult invalid_config_reduction_result(
+    const Engine &engine) {
+    auto result = citlali::session::failed_reduction_result(
+        citlali::session::ReductionStatus::invalid_request,
+        "config.invalid", "reduction configuration is invalid");
+    const auto &diagnostics = citlali::pipeline::config_diagnostics(engine);
+    for (const auto &path : diagnostics.missing_key_paths()) {
+        result.add_diagnostic(
+            "config.missing_key", "required configuration key is missing",
+            path);
+    }
+    for (const auto &path : diagnostics.invalid_key_paths()) {
+        result.add_diagnostic(
+            "config.invalid_key", "configuration value is invalid", path);
+    }
+    return result;
+}
+
 template <class TodProc, class BeammapTodProc>
 inline constexpr bool is_beammap_tod_processor_v =
     std::is_same_v<TodProc, BeammapTodProc>;
@@ -41,16 +61,14 @@ inline constexpr bool fits_maps_for_tod_processor_v =
     std::is_same_v<TodProc, PointingTodProc>;
 
 template <class TodProc, class Config, class Logger>
-bool prepare_cli_reduction_runtime_or_report_errors(
-    TodProc &todproc, Config &config, const Logger &logger,
-    std::ostream &os) {
-    return prepare_reduction_runtime_or_report_errors(
+bool prepare_cli_reduction_runtime(
+    TodProc &todproc, Config &config, const Logger &logger) {
+    return prepare_reduction_runtime(
         todproc, config, logger,
         []() { spdlog::set_level(spdlog::level::debug); },
         [&](auto &engine) {
             configure_citlali_runtime_threads(engine, logger);
-        },
-        os);
+        });
 }
 
 template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap,
@@ -82,9 +100,8 @@ template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap,
 bool prepare_and_run_cli_reduction_pipeline(
     TodProc &todproc, const IOCoordinator &co, Config &config,
     const ConfigFilepaths &config_filepaths, MapGeometry &map_geometry,
-    const Logger &logger, std::ostream &os) {
-    if (!prepare_cli_reduction_runtime_or_report_errors(
-            todproc, config, logger, os)) {
+    const Logger &logger) {
+    if (!prepare_cli_reduction_runtime(todproc, config, logger)) {
         return false;
     }
 
@@ -100,34 +117,43 @@ template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap,
           class Config, class ConfigFilepaths, class Logger>
 bool prepare_and_run_cli_reduction_pipeline(
     TodProc &todproc, const IOCoordinator &co, Config &config,
-    const ConfigFilepaths &config_filepaths, const Logger &logger,
-    std::ostream &os) {
+    const ConfigFilepaths &config_filepaths, const Logger &logger) {
     auto map_geometry =
         citlali::pipeline::make_reduction_map_geometry<TodProc>();
     return prepare_and_run_cli_reduction_pipeline<
         IsBeammap, RawObsMap, FilteredObsMap, RawCoaddMap, FilteredCoaddMap,
         FitMaps, KidsDataProc>(
-        todproc, co, config, config_filepaths, map_geometry, logger, os);
+        todproc, co, config, config_filepaths, map_geometry, logger);
 }
 
 template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap,
           auto RawCoaddMap, auto FilteredCoaddMap, bool FitMaps,
           class KidsDataProc, class TodProc, class IOCoordinator,
           class Config, class ConfigFilepaths, class Logger>
-int run_cli_reduction_processor(
+citlali::session::ReductionResult run_reduction_processor_session(
     TodProc &todproc, const IOCoordinator &co, Config &config,
-    const ConfigFilepaths &config_filepaths, const Logger &logger,
-    std::ostream &os) {
+    const ConfigFilepaths &config_filepaths, const Logger &logger) {
     if (!prepare_and_run_cli_reduction_pipeline<
             IsBeammap, RawObsMap, FilteredObsMap, RawCoaddMap,
             FilteredCoaddMap, FitMaps, KidsDataProc>(
-            todproc, co, config, config_filepaths, logger, os)) {
-        return EXIT_FAILURE;
+            todproc, co, config, config_filepaths, logger)) {
+        if (citlali::pipeline::config_diagnostics(todproc.engine())
+                .has_errors()) {
+            return invalid_config_reduction_result(todproc.engine());
+        }
+        return citlali::session::failed_reduction_result(
+            citlali::session::ReductionStatus::execution_failed,
+            "pipeline.failed", "reduction pipeline did not complete");
     }
 
     auto &engine = todproc.engine();
+    auto result = citlali::session::successful_reduction_result();
+    result.product_roots.emplace_back(engine.output_paths.redu_dir_name);
     citlali::pipeline::write_config_source_manifest(
         engine.output_paths.redu_dir_name, config_filepaths, config.to_str());
+    result.provenance_artifacts.push_back(
+        citlali::pipeline::config_source_manifest_path(
+            engine.output_paths.redu_dir_name));
     logger->info(
         "config source manifest: {}",
         citlali::pipeline::config_source_manifest_path(
@@ -139,6 +165,9 @@ int run_cli_reduction_processor(
         citlali::pipeline::write_kids_external_provenance_file(
             engine.output_paths.redu_dir_name,
             citlali::pipeline::kids_external_plan(engine));
+        result.provenance_artifacts.push_back(
+            citlali::pipeline::kids_external_provenance_path(
+                engine.output_paths.redu_dir_name));
         logger->info(
             "KIDs external provenance sidecar: {}",
             citlali::pipeline::kids_external_provenance_path(
@@ -154,6 +183,9 @@ int run_cli_reduction_processor(
             polarimetry_plan);
         citlali::pipeline::write_polarimetry_provenance_file(
             engine.output_paths.redu_dir_name, polarimetry_plan);
+        result.provenance_artifacts.push_back(
+            citlali::pipeline::polarimetry_provenance_path(
+                engine.output_paths.redu_dir_name));
         logger->info(
             "polarimetry provenance sidecar: {}",
             citlali::pipeline::polarimetry_provenance_path(
@@ -169,6 +201,9 @@ int run_cli_reduction_processor(
             astrometry_plan);
         citlali::pipeline::write_astrometry_provenance_file(
             engine.output_paths.redu_dir_name, astrometry_plan);
+        result.provenance_artifacts.push_back(
+            citlali::pipeline::astrometry_provenance_path(
+                engine.output_paths.redu_dir_name));
         logger->info(
             "astrometry provenance sidecar: {}",
             citlali::pipeline::astrometry_provenance_path(
@@ -180,6 +215,9 @@ int run_cli_reduction_processor(
         citlali::pipeline::processed_timestream_plan(engine);
     citlali::pipeline::write_processed_timestream_provenance_file(
         engine.output_paths.redu_dir_name, plan);
+    result.provenance_artifacts.push_back(
+        citlali::pipeline::processed_timestream_provenance_path(
+            engine.output_paths.redu_dir_name));
     logger->info(
         "processed timestream provenance sidecar: {}",
         citlali::pipeline::processed_timestream_provenance_path(
@@ -191,6 +229,9 @@ int run_cli_reduction_processor(
     citlali::pipeline::record_mapmaking_run_completed(mapmaking_plan);
     citlali::pipeline::write_mapmaking_provenance_file(
         engine.output_paths.redu_dir_name, mapmaking_plan);
+    result.provenance_artifacts.push_back(
+        citlali::pipeline::mapmaking_provenance_path(
+            engine.output_paths.redu_dir_name));
     logger->info(
         "mapmaking provenance sidecar: {}",
         citlali::pipeline::mapmaking_provenance_path(
@@ -202,6 +243,9 @@ int run_cli_reduction_processor(
         coadd_plan, mapmaking_plan);
     citlali::pipeline::write_coadd_provenance_file(
         engine.output_paths.redu_dir_name, coadd_plan);
+    result.provenance_artifacts.push_back(
+        citlali::pipeline::coadd_provenance_path(
+            engine.output_paths.redu_dir_name));
     logger->info(
         "coadd provenance sidecar: {}",
         citlali::pipeline::coadd_provenance_path(
@@ -214,6 +258,9 @@ int run_cli_reduction_processor(
         citlali::pipeline::map_filter_outputs_enabled(engine));
     citlali::pipeline::write_noise_provenance_file(
         engine.output_paths.redu_dir_name, noise_plan);
+    result.provenance_artifacts.push_back(
+        citlali::pipeline::noise_provenance_path(
+            engine.output_paths.redu_dir_name));
     logger->info(
         "noise-products provenance sidecar: {}",
         citlali::pipeline::noise_provenance_path(
@@ -231,6 +278,9 @@ int run_cli_reduction_processor(
     }
     citlali::pipeline::write_post_processing_provenance_file(
         engine.output_paths.redu_dir_name, post_processing_plan);
+    result.provenance_artifacts.push_back(
+        citlali::pipeline::post_processing_provenance_path(
+            engine.output_paths.redu_dir_name));
     logger->info(
         "post-processing provenance sidecar: {}",
         citlali::pipeline::post_processing_provenance_path(
@@ -241,6 +291,9 @@ int run_cli_reduction_processor(
         auto &beammap_plan = citlali::pipeline::beammap_plan(engine);
         citlali::pipeline::write_beammap_provenance_file(
             engine.output_paths.redu_dir_name, beammap_plan);
+        result.provenance_artifacts.push_back(
+            citlali::pipeline::beammap_provenance_path(
+                engine.output_paths.redu_dir_name));
         logger->info(
             "beammap provenance sidecar: {}",
             citlali::pipeline::beammap_provenance_path(
@@ -255,6 +308,9 @@ int run_cli_reduction_processor(
             pointing_plan, mapmaking_plan);
         citlali::pipeline::write_pointing_provenance_file(
             engine.output_paths.redu_dir_name, pointing_plan);
+        result.provenance_artifacts.push_back(
+            citlali::pipeline::pointing_provenance_path(
+                engine.output_paths.redu_dir_name));
         logger->info(
             "pointing provenance sidecar: {}",
             citlali::pipeline::pointing_provenance_path(
@@ -263,47 +319,48 @@ int run_cli_reduction_processor(
     }
 
     log_reduction_complete(logger);
-    return EXIT_SUCCESS;
+    return result;
 }
 
 template <class TodProc, class BeammapTodProc, class PointingTodProc,
           auto RawObsMap, auto FilteredObsMap, auto RawCoaddMap,
           auto FilteredCoaddMap, class KidsDataProc, class IOCoordinator,
           class Config, class ConfigFilepaths, class Logger>
-int run_cli_reduction_processor_for_mode(
+citlali::session::ReductionResult run_reduction_processor_session_for_mode(
     TodProc &todproc, const IOCoordinator &co, Config &config,
-    const ConfigFilepaths &config_filepaths, const Logger &logger,
-    std::ostream &os) {
-    return run_cli_reduction_processor<
+    const ConfigFilepaths &config_filepaths, const Logger &logger) {
+    return run_reduction_processor_session<
         is_beammap_tod_processor_v<TodProc, BeammapTodProc>, RawObsMap,
         FilteredObsMap, RawCoaddMap, FilteredCoaddMap,
         fits_maps_for_tod_processor_v<TodProc, PointingTodProc>,
         KidsDataProc>(
-        todproc, co, config, config_filepaths, logger, os);
+        todproc, co, config, config_filepaths, logger);
 }
 
 template <class TodProc, class BeammapTodProc, class PointingTodProc,
           class KidsDataProc, class IOCoordinator, class Config,
           class ConfigFilepaths, class Logger>
-int run_standard_cli_reduction_processor(
+citlali::session::ReductionResult run_standard_reduction_processor_session(
     TodProc &todproc, const IOCoordinator &co, Config &config,
-    const ConfigFilepaths &config_filepaths, const Logger &logger,
-    std::ostream &os) {
-    return run_cli_reduction_processor_for_mode<
+    const ConfigFilepaths &config_filepaths, const Logger &logger) {
+    return run_reduction_processor_session_for_mode<
         TodProc, BeammapTodProc, PointingTodProc, mapmaking::RawObs,
         mapmaking::FilteredObs, mapmaking::RawCoadd,
         mapmaking::FilteredCoadd, KidsDataProc>(
-        todproc, co, config, config_filepaths, logger, os);
+        todproc, co, config, config_filepaths, logger);
 }
 
 template <class TodProcVariant, class RunProcessor>
-int visit_tod_processor_or_failure(TodProcVariant &todproc,
-                                   RunProcessor &&run_processor) {
+citlali::session::ReductionResult visit_tod_processor_or_failure(
+    TodProcVariant &todproc, RunProcessor &&run_processor) {
     return std::visit(
         [&](auto &selected_todproc) {
             using todproc_t = std::decay_t<decltype(selected_todproc)>;
             if constexpr (is_empty_tod_processor_v<todproc_t>) {
-                return EXIT_FAILURE;
+                return citlali::session::failed_reduction_result(
+                    citlali::session::ReductionStatus::processor_selection_failed,
+                    "processor.not_selected",
+                    "no reduction processor was selected");
             }
             else {
                 return run_processor(selected_todproc);
@@ -315,17 +372,16 @@ int visit_tod_processor_or_failure(TodProcVariant &todproc,
 template <class BeammapTodProc, class PointingTodProc, class KidsDataProc,
           class TodProcVariant, class IOCoordinator, class Config,
           class ConfigFilepaths, class Logger>
-int run_standard_cli_reduction_variant(
+citlali::session::ReductionResult run_standard_reduction_variant_session(
     TodProcVariant &todproc, const IOCoordinator &co, Config &config,
-    const ConfigFilepaths &config_filepaths, const Logger &logger,
-    std::ostream &os) {
+    const ConfigFilepaths &config_filepaths, const Logger &logger) {
     return visit_tod_processor_or_failure(
         todproc,
         [&](auto &selected_todproc) {
             using todproc_t = std::decay_t<decltype(selected_todproc)>;
-            return run_standard_cli_reduction_processor<
+            return run_standard_reduction_processor_session<
                 todproc_t, BeammapTodProc, PointingTodProc, KidsDataProc>(
-                selected_todproc, co, config, config_filepaths, logger, os);
+                selected_todproc, co, config, config_filepaths, logger);
         });
 }
 
