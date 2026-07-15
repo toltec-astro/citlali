@@ -22,7 +22,7 @@ void Beammap::write_beammap_ptc_chunk_summaries(
         return;
     }
     const auto profile_scope =
-        citlali::pipeline::profile_stage(
+        citlali::pipeline::profile_stage(stage_profile,
             "beammap.ptc_output.chunk_summaries", logger,
             "iter=" + std::to_string(output_iter));
     logger->debug(
@@ -41,7 +41,7 @@ void Beammap::write_beammap_ptc_diag_sidecar(
         return;
     }
     const auto profile_scope =
-        citlali::pipeline::profile_stage(
+        citlali::pipeline::profile_stage(stage_profile,
             "beammap.ptc_output.diag_sidecar", logger,
             "iter=" + std::to_string(output_iter) +
                 " scans=" + std::to_string(telescope.scan_indices.cols()));
@@ -66,7 +66,7 @@ void Beammap::write_beammap_processed_ptc_tod(
         return;
     }
     const auto profile_scope =
-        citlali::pipeline::profile_stage(
+        citlali::pipeline::profile_stage(stage_profile,
             "beammap.ptc_output.processed_tod", logger,
             "iter=" + std::to_string(output_iter) +
                 " scans=" + std::to_string(telescope.scan_indices.cols()));
@@ -97,7 +97,7 @@ void Beammap::write_beammap_detector_ptc_tod_stage(
     citlali::pipeline::StageProfileCollector &stage_profile) {
     (void)stage_profile;
     const auto profile_scope =
-        citlali::pipeline::profile_stage(
+        citlali::pipeline::profile_stage(stage_profile,
             "beammap.ptc_output.detector_tod", logger,
             "iter=" + std::to_string(output_iter));
     write_detector_specific_ptc_tod(output_iter);
@@ -108,7 +108,7 @@ void Beammap::write_beammap_ptc_products(
     citlali::pipeline::StageProfileCollector &stage_profile) {
     (void)stage_profile;
     const auto total_profile_scope =
-        citlali::pipeline::profile_stage(
+        citlali::pipeline::profile_stage(stage_profile,
             "beammap.ptc_output.total", logger,
             "iter=" + std::to_string(output_iter));
     write_beammap_ptc_chunk_summaries(output_iter, stage_profile);

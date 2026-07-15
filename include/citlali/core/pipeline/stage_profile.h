@@ -141,21 +141,13 @@ private:
     std::int64_t next_index_ = 0;
 };
 
-inline StageProfileCollector &stage_profile_collector() {
-    static StageProfileCollector collector;
-    return collector;
-}
-
-inline void reset_stage_profile() {
-    stage_profile_collector().reset();
-}
-
 template <class Logger>
-void configure_stage_profile_output(const std::string &reduction_dir,
+void configure_stage_profile_output(StageProfileCollector &collector,
+                                    const std::string &reduction_dir,
                                     const Logger &logger) noexcept {
     try {
-        stage_profile_collector().configure_output_dir(reduction_dir);
-        const auto output_path = stage_profile_collector().output_path();
+        collector.configure_output_dir(reduction_dir);
+        const auto output_path = collector.output_path();
         if (logger && !output_path.empty()) {
             logger->info("stage profile sidecar: {}", output_path);
         }
@@ -226,15 +218,6 @@ StageProfileScope<Logger> profile_stage(StageProfileCollector &collector,
                                         std::string context = {}) {
     return StageProfileScope<Logger>(
         collector, std::string(stage), std::move(context), logger);
-}
-
-template <class Logger>
-StageProfileScope<Logger> profile_stage(const char *stage,
-                                        const Logger &logger,
-                                        std::string context = {}) {
-    return StageProfileScope<Logger>(
-        stage_profile_collector(), std::string(stage), std::move(context),
-        logger);
 }
 
 }  // namespace citlali::pipeline

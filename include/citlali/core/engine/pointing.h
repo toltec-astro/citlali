@@ -56,7 +56,8 @@ public:
     template <class KidsProc>
     auto run(KidsProc &,
              const citlali::pipeline::TimestreamOutputFlags &,
-             const citlali::pipeline::TimestreamOutputWriters &);
+             const citlali::pipeline::TimestreamOutputWriters &,
+             citlali::pipeline::StageProfileCollector &);
     template <class CalibScan>
     bool write_pointing_rtc_outputs(
         TCData<TCDataKind::RTC, Eigen::MatrixXd> &rtcdata,
@@ -65,6 +66,7 @@ public:
         CalibScan &calib_scan,
         const citlali::pipeline::TimestreamOutputFlags &output_flags,
         const citlali::pipeline::TimestreamOutputWriters &output_writers,
+        citlali::pipeline::StageProfileCollector &stage_profile,
         Eigen::Index rtc_scan_row,
         bool write_this_rtc,
         const std::string &map_grouping);
@@ -74,6 +76,7 @@ public:
         CalibScan &calib_scan,
         const citlali::pipeline::TimestreamOutputFlags &output_flags,
         const citlali::pipeline::TimestreamOutputWriters &output_writers,
+        citlali::pipeline::StageProfileCollector &stage_profile,
         const std::string &map_grouping);
     template <class CalibScan>
     void populate_pointing_final_maps(

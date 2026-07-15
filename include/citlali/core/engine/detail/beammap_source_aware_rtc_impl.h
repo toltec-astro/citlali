@@ -28,7 +28,7 @@ bool Beammap::maybe_run_beammap_source_aware_rtc(KidsProc &kidsproc,
         "beammap iter {} rerunning RTC with previous-fit detector source centers; regular RTC TOD output disabled for this internal pass",
         current_iter);
     const auto profile_scope =
-        citlali::pipeline::profile_stage(
+        citlali::pipeline::profile_stage(stage_profile,
             "beammap.rtc.source_aware_rerun", logger,
             "iter=" + std::to_string(current_iter));
     timestream_pipeline(kidsproc, rawobs, stage_profile, false);

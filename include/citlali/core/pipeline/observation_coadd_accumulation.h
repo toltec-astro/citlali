@@ -105,7 +105,7 @@ void coadd_observation(TodProc &todproc,
     (void)stage_profile;
 
     logger->info("coadding");
-    const auto profile_scope = profile_stage("observation.coadd", logger);
+    const auto profile_scope = profile_stage(stage_profile, "observation.coadd", logger);
     if (should_run_observation_coadd(engine)) {
         todproc.coadd();
     }

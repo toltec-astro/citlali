@@ -8,10 +8,12 @@
 
 void Beammap::normalize_beammap_maps_after_pass(
     const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
-    const std::string &profile_context) {
+    const std::string &profile_context,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     logger->info("normalizing maps");
     const auto normalize_profile_scope =
-        citlali::pipeline::profile_stage(
+        citlali::pipeline::profile_stage(stage_profile,
             "beammap.mapmaking.normalize", logger, profile_context);
     if (citlali::pipeline::raw_kernel_enabled(*this) &&
         !omb.grid_weight.empty()) {
@@ -56,12 +58,12 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
             << " method=" << static_cast<int>(mapmaking_method)
             << " active_maps=" << active_maps.n_active_maps << "/" << map_indices.n_maps;
     const auto profile_scope =
-        citlali::pipeline::profile_stage(
+        citlali::pipeline::profile_stage(stage_profile,
             "beammap.mapmaking.pass", logger, context.str());
 
     {
         const auto reset_profile_scope =
-            citlali::pipeline::profile_stage(
+            citlali::pipeline::profile_stage(stage_profile,
                 "beammap.mapmaking.reset_buffers", logger, context.str());
         citlali::pipeline::ensure_jinc_grid_weight_maps(
             mapmaking_method, omb, map_indices.n_maps, logger);
@@ -78,7 +80,7 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
 
     {
         const auto populate_profile_scope =
-            citlali::pipeline::profile_stage(
+            citlali::pipeline::profile_stage(stage_profile,
                 "beammap.mapmaking.populate", logger, context.str());
 
         populate_beammap_maps(
@@ -86,7 +88,8 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
             update_progress);
     }
 
-    normalize_beammap_maps_after_pass(active_maps_ptr, context.str());
+    normalize_beammap_maps_after_pass(
+        active_maps_ptr, context.str(), stage_profile);
     citlali::pipeline::record_beammap_mapmaking_pass_completed_if_available(
         *this);
 }

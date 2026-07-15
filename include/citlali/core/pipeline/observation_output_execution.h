@@ -39,7 +39,7 @@ void write_observation_outputs_and_accumulate(TodProc &todproc,
     auto &engine = todproc.engine();
     (void)stage_profile;
     const auto profile_scope =
-        profile_stage("observation.outputs_and_accumulation", logger);
+        profile_stage(stage_profile, "observation.outputs_and_accumulation", logger);
 
     write_raw_observation_outputs<RawObsMap>(
         todproc, stage_profile, logger);

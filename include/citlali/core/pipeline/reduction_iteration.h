@@ -20,7 +20,7 @@ bool run_reduction_iteration(
     MapCoords &map_coords, DateObsFactory &&date_obs_factory,
     StageProfileCollector &stage_profile,
     const Logger &logger) {
-    const auto profile_scope = profile_stage(
+    const auto profile_scope = profile_stage(stage_profile,
         "reduction.iteration", logger,
         "fruit_iter=" + std::to_string(todproc.engine().iteration.fruit_iter));
 

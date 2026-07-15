@@ -102,7 +102,7 @@ void Beammap::fit_beammap_maps(
     // observed with parallel Ceres fits on some systems.
     {
         const auto fit_profile_scope =
-            citlali::pipeline::profile_stage(
+            citlali::pipeline::profile_stage(stage_profile,
                 "beammap.fit_maps", logger,
                 "iter=" + std::to_string(current_iter) +
                     " phase=" + beammap_iter_phase_name(current_iter));

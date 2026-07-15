@@ -14,14 +14,16 @@ bool Pointing::write_pointing_rtc_outputs(
     CalibScan &calib_scan,
     const citlali::pipeline::TimestreamOutputFlags &output_flags,
     const citlali::pipeline::TimestreamOutputWriters &output_writers,
+    citlali::pipeline::StageProfileCollector &stage_profile,
     Eigen::Index rtc_scan_row,
     bool write_this_rtc,
     const std::string &map_grouping) {
+    (void)stage_profile;
     if (output_flags.write_rtcdiag) {
         if (!output_writers.write_when_ready(
             output_writers.rtcdiag, ptcdata.index.data, [&] {
                 logger->info("writing rtc diagnostics sidecar chunk");
-                auto profile_scope = citlali::pipeline::profile_stage(
+                auto profile_scope = citlali::pipeline::profile_stage(stage_profile,
                     "timestream.rtcdiag.write_chunk", logger,
                     "scan=" + std::to_string(static_cast<long long>(
                                   ptcdata.index.data + 1)));
@@ -39,7 +41,7 @@ bool Pointing::write_pointing_rtc_outputs(
             output_writers.rtc, rtc_scan_row, [&] {
                 if (citlali::pipeline::raw_tod_outer_output(*this)) {
                     logger->info("writing outer raw time chunk");
-                    auto profile_scope = citlali::pipeline::profile_stage(
+                    auto profile_scope = citlali::pipeline::profile_stage(stage_profile,
                         "timestream.rtc_output.write_chunk", logger,
                         "scan=" + std::to_string(static_cast<long long>(
                                       rtcdata.index.data + 1)));
@@ -52,7 +54,7 @@ bool Pointing::write_pointing_rtc_outputs(
                 }
                 else {
                     logger->info("writing raw time chunk");
-                    auto profile_scope = citlali::pipeline::profile_stage(
+                    auto profile_scope = citlali::pipeline::profile_stage(stage_profile,
                         "timestream.rtc_output.write_chunk", logger,
                         "scan=" + std::to_string(static_cast<long long>(
                                       rtcdata.index.data + 1)));
@@ -79,13 +81,15 @@ bool Pointing::write_pointing_ptc_outputs(
     CalibScan &calib_scan,
     const citlali::pipeline::TimestreamOutputFlags &output_flags,
     const citlali::pipeline::TimestreamOutputWriters &output_writers,
+    citlali::pipeline::StageProfileCollector &stage_profile,
     const std::string &map_grouping) {
+    (void)stage_profile;
     // write ptc timestreams
     if (output_flags.write_ptcdiag) {
         if (!output_writers.write_when_ready(
             output_writers.ptcdiag, ptcdata.index.data, [&] {
                 logger->info("writing ptc diagnostics sidecar chunk");
-                auto profile_scope = citlali::pipeline::profile_stage(
+                auto profile_scope = citlali::pipeline::profile_stage(stage_profile,
                     "timestream.ptcdiag.write_chunk", logger,
                     "scan=" + std::to_string(static_cast<long long>(
                                   ptcdata.index.data + 1)));
@@ -103,7 +107,7 @@ bool Pointing::write_pointing_ptc_outputs(
         if (!output_writers.write_when_ready(
             output_writers.ptc, ptc_scan_row, [&] {
                 logger->info("writing processed time chunk");
-                auto profile_scope = citlali::pipeline::profile_stage(
+                auto profile_scope = citlali::pipeline::profile_stage(stage_profile,
                     "timestream.ptc_output.write_chunk", logger,
                     "scan=" + std::to_string(static_cast<long long>(
                                   ptcdata.index.data + 1)));

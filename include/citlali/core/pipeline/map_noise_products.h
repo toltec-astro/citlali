@@ -12,7 +12,7 @@ void calculate_map_noise_products_with_log(
     (void)stage_profile;
     logger->info("{}", log_message);
     const auto profile_scope =
-        profile_stage("map.noise_products", logger, log_message);
+        profile_stage(stage_profile, "map.noise_products", logger, log_message);
     map_buffer.calc_noise_products(apply_empirical_noise_weights);
 }
 

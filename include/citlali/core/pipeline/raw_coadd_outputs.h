@@ -24,7 +24,7 @@ void prepare_raw_coadd_maps(TodProc &todproc,
                             const Logger &logger) {
     auto &engine = todproc.engine();
     (void)stage_profile;
-    const auto profile_scope = profile_stage("raw_coadd.prepare", logger);
+    const auto profile_scope = profile_stage(stage_profile, "raw_coadd.prepare", logger);
 
     prepare_raw_coadd_map_files(todproc, logger);
     logger->info("normalizing coadded maps");
@@ -68,7 +68,7 @@ void write_raw_coadd_outputs(TodProc &todproc,
                              const Logger &logger) {
     auto &engine = todproc.engine();
     (void)stage_profile;
-    const auto profile_scope = profile_stage("raw_coadd.outputs", logger);
+    const auto profile_scope = profile_stage(stage_profile, "raw_coadd.outputs", logger);
 
     prepare_raw_coadd_maps(todproc, stage_profile, logger);
     calculate_raw_coadd_noise_products_if_needed(

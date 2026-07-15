@@ -17,11 +17,11 @@ bool run_reduction_pipeline(
     MapCoords &map_coords, DateObsFactory &&date_obs_factory,
     StageProfileCollector &stage_profile,
     const Logger &logger) {
-    reset_stage_profile();
+    stage_profile.reset();
 
     {
         const auto profile_scope =
-            profile_stage("reduction.prepare_initial_geometry", logger);
+            profile_stage(stage_profile, "reduction.prepare_initial_geometry", logger);
         if (!prepare_initial_reduction_geometry<IsBeammap, KidsDataProc>(
                 todproc, co, citlali_config, map_extents, map_coords,
                 logger)) {
@@ -29,7 +29,7 @@ bool run_reduction_pipeline(
         }
     }
 
-    const auto profile_scope = profile_stage("reduction.iterations", logger);
+    const auto profile_scope = profile_stage(stage_profile, "reduction.iterations", logger);
     return run_reduction_iterations<
         IsBeammap, RawObsMap, FilteredObsMap, RawCoaddMap, FilteredCoaddMap,
         FitMaps, KidsDataProc>(

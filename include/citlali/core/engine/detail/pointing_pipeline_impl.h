@@ -64,7 +64,7 @@ void Pointing::pipeline(
 
             return rtcdata;
         },
-        run(kidsproc, output_flags, output_writers));
+        run(kidsproc, output_flags, output_writers, stage_profile));
 
     output_writers.rethrow_if_failed();
     output_writers.verify_complete(output_expectations);

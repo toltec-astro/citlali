@@ -27,7 +27,7 @@ bool Beammap::update_beammap_convergence_state(
         logger->info("checking convergence in fitted-source aperture radius={:.3f} arcsec",
                      iteration_config.convergence_radius_arcsec);
         const auto convergence_profile_scope =
-            citlali::pipeline::profile_stage(
+            citlali::pipeline::profile_stage(stage_profile,
                 "beammap.convergence", logger,
                 "iter=" + std::to_string(current_iter) +
                     " radius_arcsec=" +

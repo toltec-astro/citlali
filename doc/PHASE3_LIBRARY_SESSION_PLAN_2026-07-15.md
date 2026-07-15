@@ -37,7 +37,7 @@ enumerated yet.
 | Observation | local KIDs processor and `ReductionObservationContext`; `ObservationRuntimeState` remains embedded in `Engine` | Name the context as owner and narrow adapters into engine state one cluster at a time. |
 | Scan/chunk | scan contexts and processor-local cursors, with remaining mutable state spread through RTC/PTC and engine detail | Convert only boundaries needed for reentrancy or reachable-exit removal. Keep hot numerical loops unchanged. |
 | Ordered output | `OrderedWriter` and explicit output/provenance execution plans | Preserve Phase 1 cancellation and required-write contracts; make failures populate the session result. |
-| Profiling | process-lifetime static `StageProfileCollector` | Replace with run-owned state before claiming complete sequential isolation. Profiling remains optional and must not change reduction success. |
+| Profiling | run-owned `StageProfileCollector`, passed explicitly through production scopes | Verify unchanged sidecar behavior on Unity. Profiling remains optional and must not change reduction success. |
 | Configuration | Phase 2 requested/effective/realized plans, stored through the compatibility engine | Freeze Phase 2 authority. Do not resume control migration in Phase 3. |
 
 `Engine` is frozen as a compatibility boundary: Phase 3 may remove or narrow
@@ -62,17 +62,20 @@ passing an explicit owner or context.
 7. Re-run local gates, then use a Unity point reduction for the session cut;
    add science or Beammap only when the touched boundary is mode-specific.
 
-The first part of step 3 is implemented: `ReductionSession` owns and resets a
-collector, the scope API accepts that owner explicitly, and a sequential-run
-test proves isolation. Production profile call chains still use the temporary
-static adapter; step 3 is not complete until those sites receive the explicit
-owner and the adapter is deleted.
+Step 3 is implemented locally as one atomic ownership cutover.
+`ReductionSession` owns and resets the collector, and that explicit owner now
+reaches every production profiling scope and sidecar operation. The temporary
+process-static collector and implicit adapter are deleted. Sequential-run tests
+prove reset isolation, and a pipeline test verifies representative reduction,
+observation, and map-output records in the supplied collector. Local CLI and
+test builds, all 448 CTests, and full config preflight pass. Step 3 is accepted
+only after a Unity point reduction confirms unchanged products and profile
+sidecar behavior.
 
-The owner is also wired through non-CLI loading, processor selection, and mode
-dispatch to the root scientific pipeline signature. It is intentionally unused
-at that root for now: production profile recording and sidecar output must
-switch together after the owner reaches every nested scope, avoiding a
-transitional split between two collectors.
+The next bounded task is step 4: identify one concrete observation- or
+scan-lifecycle stale-state hazard and repair that ownership boundary. Broad
+state movement is out of scope. Once that evidence-driven cut is complete, the
+first measured `.cpp` boundary can proceed.
 
 ## Stop Rules
 

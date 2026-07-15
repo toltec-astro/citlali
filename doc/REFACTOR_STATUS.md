@@ -92,8 +92,8 @@ sequential runs, nested-run rejection, CLI policy separation, independent
 header compilation, and multi-translation-unit linkage. Both local test
 targets build, all 448 CTests pass, and full config preflight passes. This is
 the facade checkpoint, not the Phase 3 exit gate: reachable library exits,
-run-owned profiling, complete internal failure classification, lifecycle
-ownership cuts, and the first measured `.cpp` boundary remain open. The
+complete internal failure classification, lifecycle ownership cuts, and the
+first measured `.cpp` boundary remain open. The
 [bounded ownership plan](PHASE3_LIBRARY_SESSION_PLAN_2026-07-15.md) records the
 sequence and stop rules.
 
@@ -159,21 +159,21 @@ timestream, and Wiener implementations. Further retirement must proceed by
 measured algorithm-boundary tranche with corresponding mode validation, not by
 mechanical replacement.
 
-Run-owned profiling migration has started without changing production timing
-records. `ReductionSession` now owns a non-copyable `StageProfileCollector`,
-resets it before each run, and passes it explicitly to the run operation. An
-explicit `profile_stage(collector, ...)` scope API records into that owner, and
-a sequential-run test proves that records, indices, and output path state do
-not leak between runs. Existing production profile sites still use the legacy
-static adapter and therefore remain an open Phase 3 gate; they will be migrated
-by call-chain tranche before that adapter is removed.
+Run-owned profiling migration is complete locally without changing production
+timing records. `ReductionSession` owns and resets a non-copyable
+`StageProfileCollector`; the explicit owner now crosses loading, processor
+selection, reduction, iteration, observation, generic output, engine setup and
+pipeline, Pointing ordered-output, and Beammap internal and specialized-output
+boundaries. Output-directory configuration, every production timing scope,
+and sidecar publication use that owner. The process-static collector and the
+legacy implicit adapter are deleted, and the collector is not stored in
+`Engine`.
 
-The explicit collector now crosses the complete non-CLI orchestration boundary
-from `ReductionSession`, through processor selection, to
-`run_reduction_pipeline`. This signature-only wiring leaves legacy static
-recording and sidecar output untouched, so current timing products retain their
-existing behavior while deeper call chains are migrated. The full 448-test
-suite passes after the boundary change.
+Tests prove sequential-run reset behavior and verify representative reduction,
+observation, and map-output records in the supplied collector. Both local build
+targets pass, all 448 CTests pass, and full config preflight passes after the
+atomic cutover. A Unity point reduction must confirm unchanged products and
+profile-sidecar behavior before this Phase 3 gate is accepted as validated.
 
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution

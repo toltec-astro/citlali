@@ -43,6 +43,7 @@ inline std::string next_reduction_subdir_path(const std::string &output_dir,
 
 template <class Logger>
 void configure_reduction_logging_and_profile(const std::string &redu_dir_name,
+                                             StageProfileCollector &stage_profile,
                                              const Logger &logger) {
     try {
         const auto log_path =
@@ -55,7 +56,7 @@ void configure_reduction_logging_and_profile(const std::string &redu_dir_name,
             "failed to enable reduction-local compressed log in {}: {}",
             redu_dir_name, e.what());
     }
-    configure_stage_profile_output(redu_dir_name, logger);
+    configure_stage_profile_output(stage_profile, redu_dir_name, logger);
 }
 
 template <class Logger>

@@ -40,7 +40,6 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::create_output_dir(
     citlali::pipeline::StageProfileCollector &stage_profile) {
-    (void)stage_profile;
     // redu subdir
     engine().output_paths.redu_dir_name = "";
 
@@ -53,13 +52,13 @@ void TimeOrderedDataProc<EngineType>::create_output_dir(
                 engine().output_paths.redu_dir_num);
         fs::create_directories(engine().output_paths.redu_dir_name);
         citlali::pipeline::configure_reduction_logging_and_profile(
-            engine().output_paths.redu_dir_name, logger);
+            engine().output_paths.redu_dir_name, stage_profile, logger);
     }
     else {
         engine().output_paths.redu_dir_name =
             citlali::pipeline::runtime_output_dir(engine()) + "/";
         citlali::pipeline::configure_reduction_logging_and_profile(
-            engine().output_paths.redu_dir_name, logger);
+            engine().output_paths.redu_dir_name, stage_profile, logger);
     }
 
     citlali::pipeline::write_runtime_provenance_file(

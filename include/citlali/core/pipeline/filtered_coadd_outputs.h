@@ -62,7 +62,7 @@ void write_filtered_coadd_outputs(TodProc &todproc,
     auto &engine = todproc.engine();
     (void)stage_profile;
     const auto profile_scope =
-        profile_stage("filtered_coadd.outputs", logger);
+        profile_stage(stage_profile, "filtered_coadd.outputs", logger);
 
     filter_coadd_maps<FilteredCoaddMap>(engine, stage_profile, logger);
     calculate_filtered_coadd_noise_products_if_needed(

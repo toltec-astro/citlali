@@ -398,7 +398,8 @@ public:
         bool update_progress);
     void normalize_beammap_maps_after_pass(
         const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
-        const std::string &profile_context);
+        const std::string &profile_context,
+        citlali::pipeline::StageProfileCollector &);
     void prepare_beammap_iteration_state(bool rerun_source_aware_rtc,
                                          bool measurement_iter,
                                          bool first_measurement_iter,

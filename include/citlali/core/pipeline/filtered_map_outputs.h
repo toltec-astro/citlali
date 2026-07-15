@@ -39,7 +39,7 @@ void filter_maps(Engine &engine, MapBuffer &map_buffer,
                  const Logger &logger, const char *log_message) {
     (void)stage_profile;
     const auto profile_scope =
-        profile_stage("map.filter", logger, log_message);
+        profile_stage(stage_profile, "map.filter", logger, log_message);
     run_wiener_filter_with_log<FilteredMap>(
         engine, map_buffer, logger, log_message);
 }
@@ -72,7 +72,7 @@ void find_filtered_map_sources_if_needed(
     const char *log_message, PostProcessingMapContext context) {
     (void)stage_profile;
     const auto profile_scope =
-        profile_stage("map.source_finding", logger, log_message);
+        profile_stage(stage_profile, "map.source_finding", logger, log_message);
     const auto cardinality = find_map_sources_if_needed<FilteredMap>(
         engine, map_buffer, logger, should_find_filtered_map_sources(engine),
         log_message);

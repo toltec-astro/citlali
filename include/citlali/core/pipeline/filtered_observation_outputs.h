@@ -43,7 +43,7 @@ void fit_filtered_observation_maps_if_requested(Engine &engine,
     (void)stage_profile;
     if constexpr (FitMaps) {
         const auto profile_scope =
-            profile_stage("filtered_observation.fit_maps", logger);
+            profile_stage(stage_profile, "filtered_observation.fit_maps", logger);
         engine.fit_maps(PointingFitStage::filtered_observation);
     }
 }
@@ -78,7 +78,7 @@ void write_filtered_observation_outputs(TodProc &todproc,
     auto &engine = todproc.engine();
     (void)stage_profile;
     const auto profile_scope =
-        profile_stage("filtered_observation.outputs", logger);
+        profile_stage(stage_profile, "filtered_observation.outputs", logger);
 
     filter_observation_maps<FilteredObsMap>(engine, stage_profile, logger);
     calculate_filtered_observation_noise_products_if_needed(

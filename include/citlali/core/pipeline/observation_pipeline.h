@@ -15,7 +15,7 @@ void setup_observation_pipeline(Engine &engine,
                                 StageProfileCollector &stage_profile,
                                 const Logger &logger) {
     logger->info("pipeline setup");
-    const auto profile_scope = profile_stage("observation.setup", logger);
+    const auto profile_scope = profile_stage(stage_profile, "observation.setup", logger);
     engine.setup(stage_profile);
 }
 
@@ -25,7 +25,7 @@ void run_observation_tod_pipeline(Engine &engine, KidsProc &kidsproc,
     StageProfileCollector &stage_profile,
     const Logger &logger) {
     logger->info("running pipeline");
-    const auto profile_scope = profile_stage("observation.tod_pipeline", logger);
+    const auto profile_scope = profile_stage(stage_profile, "observation.tod_pipeline", logger);
     engine.pipeline(kidsproc, rawobs, stage_profile);
 }
 

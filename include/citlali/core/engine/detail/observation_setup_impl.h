@@ -142,7 +142,7 @@ void setup_observation_tod_output_files(
     EngineT &engine, citlali::pipeline::StageProfileCollector &stage_profile) {
     (void)stage_profile;
     {
-        auto profile_scope = citlali::pipeline::profile_stage(
+        auto profile_scope = citlali::pipeline::profile_stage(stage_profile,
             "observation.setup.tod_output_selection", engine.logger);
         engine.setup_tod_output_chunk_selection();
     }
@@ -150,7 +150,7 @@ void setup_observation_tod_output_files(
         citlali::pipeline::timestream_config(engine).output.subdir_name;
     // create output subdirectory if requested
     if (citlali::config::has_config_value(tod_output_subdir_name)) {
-        auto profile_scope = citlali::pipeline::profile_stage(
+        auto profile_scope = citlali::pipeline::profile_stage(stage_profile,
             "observation.setup.tod_output_directory", engine.logger);
         fs::create_directories(
             engine.output_paths.obsnum_dir_name + "raw/" + tod_output_subdir_name);
@@ -159,14 +159,14 @@ void setup_observation_tod_output_files(
     if (citlali::pipeline::tod_output_enabled(engine)) {
         // make rtc tod output file
         if (citlali::pipeline::raw_tod_output_enabled(engine)) {
-            auto profile_scope = citlali::pipeline::profile_stage(
+            auto profile_scope = citlali::pipeline::profile_stage(stage_profile,
                 "observation.setup.create_rtc_tod_file", engine.logger);
             engine.template create_tod_files<
                 engine_utils::toltecIO::rtc_timestream>();
         }
         // make ptc tod output file
         if (citlali::pipeline::processed_tod_output_enabled(engine)) {
-            auto profile_scope = citlali::pipeline::profile_stage(
+            auto profile_scope = citlali::pipeline::profile_stage(stage_profile,
                 "observation.setup.create_ptc_tod_file", engine.logger);
             engine.template create_tod_files<
                 engine_utils::toltecIO::ptc_timestream>();
@@ -190,12 +190,12 @@ void create_observation_diagnostic_files(
     EngineT &engine, citlali::pipeline::StageProfileCollector &stage_profile) {
     (void)stage_profile;
     {
-        auto profile_scope = citlali::pipeline::profile_stage(
+        auto profile_scope = citlali::pipeline::profile_stage(stage_profile,
             "observation.setup.create_rtcdiag_file", engine.logger);
         engine.create_rtcdiag_file();
     }
     {
-        auto profile_scope = citlali::pipeline::profile_stage(
+        auto profile_scope = citlali::pipeline::profile_stage(stage_profile,
             "observation.setup.create_ptcdiag_file", engine.logger);
         engine.create_ptcdiag_file();
     }
@@ -207,7 +207,7 @@ void log_observation_cli_summary(
     (void)stage_profile;
     // output basic info for obs reduction to command line
     {
-        auto profile_scope = citlali::pipeline::profile_stage(
+        auto profile_scope = citlali::pipeline::profile_stage(stage_profile,
             "observation.setup.cli_summary", engine.logger);
         engine.cli_summary();
     }
@@ -219,7 +219,7 @@ void setup_observation_stats_buffers(
     (void)stage_profile;
     // set up per-det stats file values
     {
-        auto profile_scope = citlali::pipeline::profile_stage(
+        auto profile_scope = citlali::pipeline::profile_stage(stage_profile,
             "observation.setup.stats_buffers", engine.logger);
         for (const auto &stat: engine.diagnostics.det_stats_header) {
             engine.diagnostics.stats[stat].setZero(

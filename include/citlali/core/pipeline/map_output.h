@@ -12,7 +12,7 @@ void output_map_with_log(Engine &engine,
     (void)stage_profile;
     logger->info("{}", log_message);
     const auto profile_scope =
-        profile_stage("map.output", logger, log_message);
+        profile_stage(stage_profile, "map.output", logger, log_message);
     engine.template output<MapType>(stage_profile);
 }
 

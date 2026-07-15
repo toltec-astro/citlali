@@ -167,7 +167,7 @@ void Beammap::run_beammap_ptc_cleaning_pass(bool locator_iter,
     auto ptc_line_audit_mutex = std::make_shared<std::mutex>();
 
     const auto profile_scope =
-        citlali::pipeline::profile_stage(
+        citlali::pipeline::profile_stage(stage_profile,
             "beammap.ptc.cleaning", logger,
             "iter=" + std::to_string(current_iter) +
                 " phase=" + beammap_iter_phase_name(current_iter));

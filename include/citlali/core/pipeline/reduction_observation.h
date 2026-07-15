@@ -24,7 +24,7 @@ bool run_reduction_observation(
         "observation_index=" + std::to_string(observation_index);
 
     {
-        const auto profile_scope = profile_stage(
+        const auto profile_scope = profile_stage(stage_profile,
             "observation.prepare_inputs", logger, profile_context);
         if (!prepare_reduction_observation_inputs<IsBeammap>(
                 todproc, rawobs, rawobs_kids_meta, has_multiple_inputs,
@@ -35,7 +35,7 @@ bool run_reduction_observation(
     }
 
     {
-        const auto profile_scope = profile_stage(
+        const auto profile_scope = profile_stage(stage_profile,
             "observation.pipeline", logger, profile_context);
         run_reduction_observation_pipeline<IsBeammap, RawObsMap,
                                            FilteredObsMap, FitMaps>(

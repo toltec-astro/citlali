@@ -17,7 +17,7 @@ void Beammap::write_standard_beammap_map_entries(
         "output progress ");
 
     const auto profile_scope =
-        citlali::pipeline::profile_stage(
+        citlali::pipeline::profile_stage(stage_profile,
             "beammap.map_output.write_maps", logger,
             "dir=" + dir_name +
                 " maps=" + std::to_string(map_indices.n_maps));
@@ -49,7 +49,7 @@ void Beammap::write_split_beammap_flag_maps(
         "output progress (flag=" + std::to_string(flag_value) + ") ");
 
     const auto profile_scope =
-        citlali::pipeline::profile_stage(
+        citlali::pipeline::profile_stage(stage_profile,
             "beammap.map_output.split_write_maps", logger,
             "dir=" + dir_name +
                 " flag=" + std::to_string(flag_value) +

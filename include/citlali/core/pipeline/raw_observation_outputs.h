@@ -40,7 +40,7 @@ void write_raw_observation_outputs(TodProc &todproc,
     auto &engine = todproc.engine();
     (void)stage_profile;
     const auto profile_scope =
-        profile_stage("raw_observation.outputs", logger);
+        profile_stage(stage_profile, "raw_observation.outputs", logger);
 
     calculate_raw_observation_noise_products_if_needed(
         engine, stage_profile, logger);

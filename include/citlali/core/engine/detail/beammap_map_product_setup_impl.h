@@ -59,7 +59,7 @@ void Beammap::add_beammap_map_primary_headers(
     int flag_value) {
     (void)stage_profile;
     const auto profile_scope =
-        citlali::pipeline::profile_stage(
+        citlali::pipeline::profile_stage(stage_profile,
             profile_stage_name.c_str(), logger, profile_context);
     for (Eigen::Index i=0; i<f_io->size(); ++i) {
         if (flag_value >= 0) {

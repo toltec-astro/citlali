@@ -13,7 +13,8 @@ template <class KidsProc>
 auto Pointing::run(
     KidsProc &kidsproc,
     const citlali::pipeline::TimestreamOutputFlags &output_flags,
-    const citlali::pipeline::TimestreamOutputWriters &output_writers) {
+    const citlali::pipeline::TimestreamOutputWriters &output_writers,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
     auto scans_done_mutex = std::make_shared<std::mutex>();
     auto scans_done_count = std::make_shared<int>(0);
     auto ptc_line_audit_mutex = std::make_shared<std::mutex>();
@@ -75,7 +76,8 @@ auto Pointing::run(
 
         write_pointing_rtc_outputs(
             rtcdata, ptcdata, rtc_outer_output, calib_scan, output_flags,
-            output_writers, rtc_scan_row, write_this_rtc, map_grouping);
+            output_writers, stage_profile, rtc_scan_row, write_this_rtc,
+            map_grouping);
         if (output_writers.failed()) {
             return;
         }
@@ -138,7 +140,8 @@ auto Pointing::run(
             ptcdata, calib_scan, ptc_second_pass_summary, ptc_high_weight_summary);
 
         write_pointing_ptc_outputs(
-            ptcdata, calib_scan, output_flags, output_writers, map_grouping);
+            ptcdata, calib_scan, output_flags, output_writers, stage_profile,
+            map_grouping);
         if (output_writers.failed()) {
             return;
         }

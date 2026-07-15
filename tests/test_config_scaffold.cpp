@@ -7011,6 +7011,15 @@ TEST(pipeline_execution, runs_reduction_pipeline) {
     EXPECT_EQ(todproc.engine().pipeline_calls, 1);
     EXPECT_EQ(todproc.engine().output_calls, 1);
     EXPECT_EQ(todproc.engine().iteration.fruit_iter, 1);
+    const auto profile_records = stage_profile.records();
+    const auto has_profile_stage = [&](const std::string &stage) {
+        return std::any_of(
+            profile_records.begin(), profile_records.end(),
+            [&](const auto &record) { return record.stage == stage; });
+    };
+    EXPECT_TRUE(has_profile_stage("reduction.iterations"));
+    EXPECT_TRUE(has_profile_stage("observation.pipeline"));
+    EXPECT_TRUE(has_profile_stage("map.output"));
 }
 
 TEST(pipeline_execution, writes_raw_coadd_outputs) {

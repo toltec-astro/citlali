@@ -19,7 +19,7 @@ void write_iteration_coadd_outputs_if_needed(TodProc &todproc,
         return;
     }
 
-    const auto profile_scope = profile_stage("iteration.coadd_outputs", logger);
+    const auto profile_scope = profile_stage(stage_profile, "iteration.coadd_outputs", logger);
     begin_mapmaking_coadd_if_available(engine);
     write_raw_coadd_outputs<RawCoaddMap>(todproc, stage_profile, logger);
     write_filtered_coadd_outputs_if_needed<FilteredCoaddMap>(
