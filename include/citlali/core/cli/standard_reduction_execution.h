@@ -69,7 +69,7 @@ template <class KidsDataProc, class IOCoordinator, class RuntimeConfig,
 citlali::session::ReductionResult load_and_run_standard_citlali_reduction(
     citlali::session::ReductionSession &session,
     const RuntimeConfig &runtime_config, const Logger &logger) {
-    return session.run([&] {
+    return session.run([&](auto &) {
         auto inputs = load_standard_reduction_inputs<IOCoordinator>(
             runtime_config, logger);
         return run_standard_citlali_reduction_inputs<KidsDataProc>(

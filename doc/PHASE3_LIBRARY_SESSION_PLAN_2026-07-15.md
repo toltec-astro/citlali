@@ -62,6 +62,12 @@ passing an explicit owner or context.
 7. Re-run local gates, then use a Unity point reduction for the session cut;
    add science or Beammap only when the touched boundary is mode-specific.
 
+The first part of step 3 is implemented: `ReductionSession` owns and resets a
+collector, the scope API accepts that owner explicitly, and a sequential-run
+test proves isolation. Production profile call chains still use the temporary
+static adapter; step 3 is not complete until those sites receive the explicit
+owner and the adapter is deleted.
+
 ## Stop Rules
 
 Phase 3 is complete when the governing exit gates pass and the following are

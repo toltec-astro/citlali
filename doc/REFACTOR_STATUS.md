@@ -59,7 +59,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 447 tests. All 96 config-boundary/preflight
+- CTest discovers and passes all 448 tests. All 96 config-boundary/preflight
   tests pass; the checked leaf contract covers 573 leaves and the generated
   startup schema covers 724 normalized YAML nodes.
 
@@ -90,7 +90,7 @@ prints result diagnostics and translates success to a process exit code.
 Focused tests cover success, exception conversion, failure recovery, two
 sequential runs, nested-run rejection, CLI policy separation, independent
 header compilation, and multi-translation-unit linkage. Both local test
-targets build, all 447 CTests pass, and full config preflight passes. This is
+targets build, all 448 CTests pass, and full config preflight passes. This is
 the facade checkpoint, not the Phase 3 exit gate: reachable library exits,
 run-owned profiling, complete internal failure classification, lifecycle
 ownership cuts, and the first measured `.cpp` boundary remain open. The
@@ -158,6 +158,15 @@ dependency-reachable library exits, all confined to mature RTC, PTC,
 timestream, and Wiener implementations. Further retirement must proceed by
 measured algorithm-boundary tranche with corresponding mode validation, not by
 mechanical replacement.
+
+Run-owned profiling migration has started without changing production timing
+records. `ReductionSession` now owns a non-copyable `StageProfileCollector`,
+resets it before each run, and passes it explicitly to the run operation. An
+explicit `profile_stage(collector, ...)` scope API records into that owner, and
+a sequential-run test proves that records, indices, and output path state do
+not leak between runs. Existing production profile sites still use the legacy
+static adapter and therefore remain an open Phase 3 gate; they will be migrated
+by call-chain tranche before that adapter is removed.
 
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution

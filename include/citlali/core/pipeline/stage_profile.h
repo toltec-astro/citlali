@@ -22,6 +22,12 @@ struct StageProfileRecord {
 
 class StageProfileCollector {
 public:
+    StageProfileCollector() = default;
+    StageProfileCollector(const StageProfileCollector &) = delete;
+    StageProfileCollector &operator=(const StageProfileCollector &) = delete;
+    StageProfileCollector(StageProfileCollector &&) = delete;
+    StageProfileCollector &operator=(StageProfileCollector &&) = delete;
+
     void reset() {
         std::lock_guard<std::mutex> lock(mutex_);
         output_path_.clear();
@@ -82,6 +88,11 @@ public:
     std::string output_path() const {
         std::lock_guard<std::mutex> lock(mutex_);
         return output_path_;
+    }
+
+    std::vector<StageProfileRecord> records() const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return records_;
     }
 
 private:
@@ -164,9 +175,10 @@ void configure_stage_profile_output(const std::string &reduction_dir,
 template <class Logger>
 class StageProfileScope {
 public:
-    StageProfileScope(std::string stage, std::string context,
-                      Logger logger)
-        : stage_(std::move(stage)),
+    StageProfileScope(StageProfileCollector &collector, std::string stage,
+                      std::string context, Logger logger)
+        : collector_(collector),
+          stage_(std::move(stage)),
           context_(std::move(context)),
           logger_(std::move(logger)),
           start_(Clock::now()) {}
@@ -175,7 +187,8 @@ public:
     StageProfileScope &operator=(const StageProfileScope &) = delete;
 
     StageProfileScope(StageProfileScope &&other) noexcept
-        : stage_(std::move(other.stage_)),
+        : collector_(other.collector_),
+          stage_(std::move(other.stage_)),
           context_(std::move(other.context_)),
           logger_(std::move(other.logger_)),
           start_(other.start_),
@@ -192,12 +205,13 @@ public:
 
         const auto elapsed =
             std::chrono::duration<double>(Clock::now() - start_).count();
-        stage_profile_collector().record(stage_, context_, elapsed, logger_);
+        collector_.record(stage_, context_, elapsed, logger_);
     }
 
 private:
     using Clock = std::chrono::steady_clock;
 
+    StageProfileCollector &collector_;
     std::string stage_;
     std::string context_;
     Logger logger_;
@@ -206,11 +220,21 @@ private:
 };
 
 template <class Logger>
+StageProfileScope<Logger> profile_stage(StageProfileCollector &collector,
+                                        const char *stage,
+                                        const Logger &logger,
+                                        std::string context = {}) {
+    return StageProfileScope<Logger>(
+        collector, std::string(stage), std::move(context), logger);
+}
+
+template <class Logger>
 StageProfileScope<Logger> profile_stage(const char *stage,
                                         const Logger &logger,
                                         std::string context = {}) {
     return StageProfileScope<Logger>(
-        std::string(stage), std::move(context), logger);
+        stage_profile_collector(), std::string(stage), std::move(context),
+        logger);
 }
 
 }  // namespace citlali::pipeline

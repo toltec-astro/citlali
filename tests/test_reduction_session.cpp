@@ -4,16 +4,26 @@
 #include <gtest/gtest.h>
 
 #include <filesystem>
+#include <memory>
 #include <sstream>
 #include <stdexcept>
 
 std::size_t reduction_session_header_state_from_translation_unit();
 bool reduction_session_header_result_from_translation_unit();
 
+namespace {
+
+struct SessionProfileLogger {
+    template <class... Args>
+    void info(const char *, Args &&...) {}
+};
+
+}  // namespace
+
 TEST(reduction_session, returns_structured_success) {
     citlali::session::ReductionSession session;
 
-    const auto result = session.run([] {
+    const auto result = session.run([](auto &) {
         auto result = citlali::session::successful_reduction_result();
         result.product_roots.emplace_back("/data/redu01");
         result.provenance_artifacts.emplace_back(
@@ -37,7 +47,7 @@ TEST(reduction_session, converts_exceptions_to_diagnostics) {
     citlali::session::ReductionSession session;
 
     const auto result = session.run(
-        []() -> citlali::session::ReductionResult {
+        [](auto &) -> citlali::session::ReductionResult {
             throw std::runtime_error("required output failed");
         });
 
@@ -77,7 +87,7 @@ TEST(reduction_session, classifies_canonical_library_errors) {
 
     for (const auto &test_case : cases) {
         citlali::session::ReductionSession session;
-        const auto result = session.run([&]()
+        const auto result = session.run([&](auto &)
             -> citlali::session::ReductionResult {
             throw citlali::error::Error{test_case.code, "injected failure"};
         });
@@ -93,12 +103,12 @@ TEST(reduction_session, classifies_canonical_library_errors) {
 TEST(reduction_session, supports_success_after_failure) {
     citlali::session::ReductionSession session;
 
-    const auto failed = session.run([] {
+    const auto failed = session.run([](auto &) {
         return citlali::session::failed_reduction_result(
             citlali::session::ReductionStatus::execution_failed,
             "pipeline.failed", "injected failure");
     });
-    const auto succeeded = session.run([] {
+    const auto succeeded = session.run([](auto &) {
         return citlali::session::successful_reduction_result();
     });
 
@@ -112,10 +122,10 @@ TEST(reduction_session, supports_success_after_failure) {
 TEST(reduction_session, supports_two_sequential_successes) {
     citlali::session::ReductionSession session;
 
-    const auto first = session.run([] {
+    const auto first = session.run([](auto &) {
         return citlali::session::successful_reduction_result();
     });
-    const auto second = session.run([] {
+    const auto second = session.run([](auto &) {
         return citlali::session::successful_reduction_result();
     });
 
@@ -128,8 +138,8 @@ TEST(reduction_session, rejects_nested_run_without_losing_outer_state) {
     citlali::session::ReductionSession session;
     citlali::session::ReductionResult nested;
 
-    const auto outer = session.run([&] {
-        nested = session.run([] {
+    const auto outer = session.run([&](auto &) {
+        nested = session.run([](auto &) {
             return citlali::session::successful_reduction_result();
         });
         return citlali::session::successful_reduction_result();
@@ -143,6 +153,40 @@ TEST(reduction_session, rejects_nested_run_without_losing_outer_state) {
     EXPECT_EQ(session.state(),
               citlali::session::ReductionSessionState::succeeded);
     EXPECT_EQ(session.runs_started(), 1U);
+}
+
+TEST(reduction_session, resets_owned_profile_between_sequential_runs) {
+    citlali::session::ReductionSession session;
+    auto logger = std::make_shared<SessionProfileLogger>();
+
+    const auto first = session.run([&](auto &profile) {
+        {
+            const auto scope = citlali::pipeline::profile_stage(
+                profile, "first.run", logger);
+        }
+        const auto records = profile.records();
+        EXPECT_EQ(records.size(), 1U);
+        EXPECT_EQ(records.front().index, 0);
+        EXPECT_EQ(records.front().stage, "first.run");
+        return citlali::session::successful_reduction_result();
+    });
+
+    const auto second = session.run([&](auto &profile) {
+        EXPECT_TRUE(profile.records().empty());
+        EXPECT_TRUE(profile.output_path().empty());
+        {
+            const auto scope = citlali::pipeline::profile_stage(
+                profile, "second.run", logger);
+        }
+        return citlali::session::successful_reduction_result();
+    });
+
+    EXPECT_TRUE(first.succeeded());
+    EXPECT_TRUE(second.succeeded());
+    const auto records = session.stage_profile().records();
+    ASSERT_EQ(records.size(), 1U);
+    EXPECT_EQ(records.front().index, 0);
+    EXPECT_EQ(records.front().stage, "second.run");
 }
 
 TEST(reduction_session, keeps_cli_reporting_outside_session_policy) {
