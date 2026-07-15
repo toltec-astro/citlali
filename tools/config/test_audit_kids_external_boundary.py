@@ -23,12 +23,12 @@ class KidsExternalBoundaryAuditTest(unittest.TestCase):
             {name: 1 for name in audit.EXPECTED_TYPES},
         )
 
-    def test_inventory_remains_partial_until_unity_acceptance(self) -> None:
+    def test_inventory_records_unity_acceptance(self) -> None:
         result = audit.audit(REPO_ROOT)
         self.assertTrue(result["inventory"]["exact"])
         self.assertEqual(
             result["inventory"]["domain"]["provenance_status"],
-            "partial",
+            "complete",
         )
 
 

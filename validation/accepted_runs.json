@@ -5985,6 +5985,167 @@
         "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained.",
         "Acceptance covers the version-two Beammap source-identity and photometry-ownership contract; generic astrometry remains a separate incomplete authority domain."
       ]
+    },
+    {
+      "record_id": "point-152389-refactor-d016e1a6-redu59",
+      "recorded_date": "2026-07-15",
+      "mode": "point",
+      "status": "accepted",
+      "candidate": {
+        "label": "refactor",
+        "branch": "codex/structural-refactor",
+        "citlali_sha": "d016e1a641024819ff1156e8a69307e3c05d8de5",
+        "citlali_version": "v4.0.0-3491-gd016e1a6",
+        "dirty": false,
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "build": {
+          "host": "unity",
+          "compiler": null,
+          "build_type": "Release",
+          "cmake_flags": null
+        }
+      },
+      "baseline": {
+        "label": "refactor",
+        "citlali_sha": "dd6fdfc91290f6efa4f680637e0b56b66c85d1ca",
+        "citlali_version": "v4.0.0-3473-gdd6fdfc9",
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "reduction_id": "redu58"
+      },
+      "config": {
+        "ordered_sources": [
+          {
+            "role": "merged_low_level_citlali_input",
+            "path": "citlali_o152389_0_2_c1.yaml",
+            "precedence": 0,
+            "sha256": "b494d8671fb162f47d6eaadc1299755594db5c8c27353d7e8b4ac8ffe8566ed8"
+          }
+        ],
+        "overlay_sources_retained": false,
+        "canonical_merged_sha256": "b8dbf222ae15aed7e48de52e1c216ac67b27eb9efb5da3a45c6944aa9b4d5c4d",
+        "kids_external_provenance": {
+          "path": "kids_external_provenance.yaml",
+          "schema_version": "citlali-kids-external-provenance-v1",
+          "sha256": "b956ee9fddf9dd68a86948a3f347a1d6b7d5502fc3cc353741b22cf1a7632bdc",
+          "semantic_audit": {
+            "authority": "kidscpp",
+            "config_schema": "citlali-kidscpp-bridge-v1",
+            "data_schema": "toltec.1",
+            "dependency_version": "04088da",
+            "supported_tod_types": ["xs", "rs", "is", "qs"],
+            "selected_tod_type": "xs",
+            "requested_effective_identity_matches": true,
+            "solver_extra_output_effective": false
+          }
+        },
+        "config_source_manifest": {
+          "path": "config_source_manifest.yaml",
+          "schema_version": "citlali-config-source-manifest-v1",
+          "sha256": "04a55153ea7a619cfb7dee822927aacea0f5e167e1be056439179b1f0619fe5c",
+          "semantic_audit": {
+            "merge_authority": "citlali_cli",
+            "merge_semantics": "ordered_later_sources_override",
+            "source_count": 1,
+            "source_sizes_and_hashes_match": true,
+            "merged_snapshot_sizes_and_hashes_match": true,
+            "tolteca_ordered_sources_provided": false
+          }
+        }
+      },
+      "dataset": {
+        "obsnum": "152389",
+        "identity": "TolTEC commissioning pointing observation 152389",
+        "content_hash": null
+      },
+      "invocation": {
+        "command": null,
+        "launcher": "tolteca reduce",
+        "runtime_policy": {
+          "n_threads": 6,
+          "parallel_policy": "omp",
+          "kids_solver_parallel_policy": "seq"
+        },
+        "exit_code": 0
+      },
+      "audit": {
+        "finished": true,
+        "serious_log_counts": {},
+        "file_count": 54,
+        "comparable_product_count": 23,
+        "stable_comparable_product_count": 22,
+        "stable_product_counts_by_kind": {
+          "csv": 1,
+          "ecsv": 4,
+          "fits": 6,
+          "netcdf": 11
+        },
+        "required_product_inventory_matches": "point-152389-refactor-dd6fdfc9-redu58 plus required KIDs external and config-source provenance"
+      },
+      "comparison": {
+        "tool": "tools/baseline/compare_reduction_products.py",
+        "tool_sha": "3cd7250b9",
+        "options": [
+          "--mode",
+          "point",
+          "--include-timestream",
+          "--max-array-elements",
+          "0",
+          "--exclude",
+          "citlali_profile.ecsv",
+          "--atol",
+          "0",
+          "--rtol",
+          "0",
+          "--strict"
+        ],
+        "volatile_allowlist": [
+          "citlali_profile.ecsv",
+          "refactor provenance sidecars"
+        ],
+        "tolerances": {
+          "atol": 0.0,
+          "rtol": 0.0,
+          "fraction_floor": 1e-12
+        },
+        "common_products": 21,
+        "skipped_records": 0,
+        "changed_records": 0,
+        "scientific_products_exact": true,
+        "verdict": "accepted_exact",
+        "measured": {
+          "record_count": 2041,
+          "complete_rtc_tod_compared": true,
+          "complete_ptc_tod_compared": true,
+          "source_table_exact": true,
+          "source_row_count": 195,
+          "pointing_table_exact": true
+        }
+      },
+      "accepted_differences": [],
+      "performance": {
+        "wall_time_log_seconds": 63.94,
+        "observation_pipeline_seconds": null,
+        "map_output_seconds": null,
+        "peak_rss_kb": null,
+        "baseline_wall_time_log_seconds": 78.908
+      },
+      "artifacts": {
+        "candidate_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu59",
+        "candidate_unity_path": "/work/toltec/commissioning2025-test/2026-refactor/point/refactor/reduced/redu59",
+        "baseline_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu58"
+      },
+      "limitations": [
+        "TolTECA did not provide Citlali the original ordered NN*.yaml authoring-source list; the manifest records only the exact low-level CLI input and canonical merged snapshot.",
+        "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained.",
+        "The point run exercises selected KIDs TOD type xs; declarations for rs, is, and qs are covered by local contract tests rather than this dataset.",
+        "The 63.940-second log interval is one observation and is recorded without a performance conclusion."
+      ]
     }
   ]
 }

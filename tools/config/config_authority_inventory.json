@@ -166,8 +166,8 @@
       "legacy_targets": ["Engine::kidsproc"],
       "adapter_direction": "external",
       "migration_status": "external-boundary",
-      "provenance_status": "partial",
-      "exit_gate": "The external Kidscpp bridge now declares its config and TolTEC data schemas, all four supported TOD types (xs, rs, is, qs), dependency version, requested/effective identities, and one required atomic provenance write. The ordered Citlali config-source manifest records exact inputs separately. Accept a matched Unity point run before marking this boundary complete."
+      "provenance_status": "complete",
+      "exit_gate": "Accepted Unity point redu59 at d016e1a64 records the Kidscpp bridge config and TolTEC data schemas, all four supported TOD types (xs, rs, is, qs), dependency version, requested/effective identities, and one required atomic provenance write. The ordered Citlali config-source manifest and merged snapshot pass size and SHA-256 verification, and all scientific products are exact against redu58."
     }
   ]
 }

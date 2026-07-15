@@ -105,7 +105,7 @@ def audit(repo_root: Path) -> dict[str, object]:
             domain["execution_authority"] == "external"
             and domain["adapter_direction"] == "external"
             and domain["migration_status"] == "external-boundary"
-            and domain["provenance_status"] == "partial"
+            and domain["provenance_status"] == "complete"
             and domain["loader"] == IDENTITY_BOUNDARY_SOURCE
         ),
     }

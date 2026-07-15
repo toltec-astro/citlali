@@ -21,8 +21,9 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest accepted point reduction: post-processing authority cleanup `redu58`,
-  produced by `dd6fdfc9`; realized provenance `redu57`, typed source-fitting `redu56`, source-finding `redu55`, map-filter `redu54`,
+- Latest accepted point reduction: external KIDs/config-source provenance
+  `redu59`, produced by `d016e1a64`; post-processing authority cleanup `redu58`,
+  realized provenance `redu57`, typed source-fitting `redu56`, source-finding `redu55`, map-filter `redu54`,
   enabled-filtering `redu53`,
   unfiltered `redu51`, and bounded full-noise-output `redu49` remain the
   immediate post-processing, pointing, and noise-products control fixtures.
@@ -1255,10 +1256,14 @@ that TolTECA's complete ordered authoring-source list is not currently passed
 to Citlali. Citlali does not guess or duplicate that merge.
 
 Local CLI and test builds, all 382 CTests, 52 reduction-audit tests, and the
-full 78-test config preflight pass. The reduction auditor can require both
-records and recomputes every copied-input and merged-snapshot digest. A matched
-Unity point run is still required before this external boundary and manifest
-checkpoint can be accepted.
+full 78-test config preflight pass. Unity point `redu59` identifies
+`d016e1a64`, has zero serious log records, and passes semantic and digest
+audits for both new records. Its low-level config is byte-identical to accepted
+`redu58`; the strict full-depth comparison reads all 21 scientific products,
+including complete RTC/PTC timestreams, with zero changed, skipped, missing, or
+extra records. The external KIDs and Citlali CLI config-source checkpoint is
+accepted. Complete upstream `NN*.yaml` provenance remains a future TolTECA
+interface responsibility rather than a Citlali reconstruction task.
 
 ## Five-Phase Roadmap
 
