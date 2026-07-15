@@ -43,11 +43,10 @@ branch. The exact validated tree will remain available for forensic review.
   accepted `redu16` through `redu19`, and the final provenance records explicit-
   MJD astrometry for both observations, one coadd filter context, and three
   filtered maps.
-- Latest accepted Beammap reduction: `redu04`, produced by `7e577c819`; it
-  validates the version-two source-identity and photometry-ownership contract,
-  atomic per-observation flux replacement, and the previously accepted
-  lifecycle/detector-TOD contract while retaining exact scientific identity
-  with `redu03`.
+- Latest accepted Beammap reduction: `redu05`, produced by `9ea6d7f01`; it
+  retains exact version-two source-identity, photometry-ownership, lifecycle,
+  detector-TOD, detector-fit, and split-map products from accepted `redu04`
+  while adding valid astrometry provenance.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
@@ -1418,6 +1417,38 @@ records at `2e-8 + 1e-10 * abs(reference)`. A zero-tolerance probe sees only the
 expected tiny OMP run-to-run drift. The science and explicit-MJD interpolation
 checkpoint is accepted. Beammap is the final mode gate for the combined
 astrometry/photometry authority domain.
+
+## Astrometry And Photometry Beammap Gate Accepted
+
+Unity Beammap `redu05` was produced by `v4.0.0-3496-g9ea6d7f0` from the same
+byte-identical low-level configuration as accepted `redu04`. It completed all
+198 PTC chunks with zero error-, critical-, or fatal-level records. Every
+Beammap-applicable required provenance record passes semantic audit.
+
+The version-two Beammap provenance is identical to `redu04`: one 5,234-map
+observation, three completed iterations, 15,407 valid detector fits, exact
+telescope-data source identity and TolProj flux authority, three atomically
+installed array fluxes, and one required 5,234-detector by 20-slot TOD write.
+The added astrometry record captures one constant zero-offset application over
+383,699 telescope samples without changing that accepted photometry contract.
+
+The zero-tolerance full-depth comparison reads all 12 products and 16,453
+records, including complete detector TOD and six split FITS cubes, with zero
+changed, skipped, missing, or extra records. The dedicated Beammap scientific-
+equivalence profile reports exact detector identities, flags, APT quantities,
+and signal/weight/kernel maps for all 4,980 good and 254 bad detectors.
+
+The 4,136.440-second total interval is 13.0% slower than `redu04`, but the
+dominant mapmaking interval is 1.3% faster. The increase is concentrated in PTC
+and diagnostics I/O before mapmaking, outside the astrometry change. Record the
+variation without attributing it or treating one uncontrolled Unity comparison
+as a performance conclusion; controlled performance/RSS certification remains
+Phase 4 work.
+
+The combined astrometry/photometry authority domain is complete. All 13 Phase 2
+authority domains now have complete migration/provenance disposition. A final
+F.1 closeout census and document/ledger reconciliation remain before changing
+the active phase to Phase 3.
 
 ## Five-Phase Roadmap
 

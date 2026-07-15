@@ -154,8 +154,8 @@
       "legacy_targets": ["Engine::pointing_offsets", "Engine::source_flux_mJy_beam"],
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
-      "provenance_status": "partial",
-      "exit_gate": "Unity Beammap redu04 validates per-array photometry parsed and validated as one observation value, installed by replacement, and recorded in version-two Beammap provenance with exact products. The owner-approved astrometry candidate preserves OG constant/linear application, requires increasing positive MJD support to bracket the observation without extrapolation, and records observation-indexed requested/effective/realized state in required atomic provenance. TolTECA owns support selection while Citlali owns application and does not infer unavailable origin metadata. Accept point, multi-observation OOF, and Beammap Unity gates before marking combined provenance complete."
+      "provenance_status": "complete",
+      "exit_gate": "Complete: Unity point redu61 at 9ea6d7f01 accepts required observation-resolved astrometry provenance and exact full-depth products. OOF redu02 proves three-observation replacement and repeated application with exact products. Science redu20-redu23 proves positive-MJD linear interpolation across two observations and four fruit-loop iterations within the accepted scientific tolerance. Beammap redu05 preserves exact version-two photometry ownership, detector identities, flags, fits, detector TOD, and split maps while adding valid astrometry provenance. TolTECA owns support selection, Citlali owns application, and unavailable origin metadata is not inferred."
     },
     {
       "id": "kids-external",

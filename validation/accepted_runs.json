@@ -6837,6 +6837,190 @@
         "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained.",
         "The 711.330-second final-iteration log interval is recorded without a performance conclusion."
       ]
+    },
+    {
+      "record_id": "beammap-148670-refactor-9ea6d7f0-redu05",
+      "recorded_date": "2026-07-15",
+      "mode": "beammap",
+      "status": "accepted",
+      "candidate": {
+        "label": "refactor",
+        "branch": "codex/structural-refactor",
+        "citlali_sha": "9ea6d7f013c0a40e6159b0da1512897ddb6a7c5c",
+        "citlali_version": "v4.0.0-3496-g9ea6d7f0",
+        "dirty": false,
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "build": {
+          "host": "unity",
+          "compiler": null,
+          "build_type": "Release",
+          "cmake_flags": null
+        }
+      },
+      "baseline": {
+        "label": "refactor",
+        "citlali_sha": "7e577c81963a6350e485c95cfb22ba1e61a41d79",
+        "citlali_version": "v4.0.0-3489-g7e577c81",
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "reduction_id": "redu04"
+      },
+      "config": {
+        "ordered_sources": [
+          {
+            "role": "merged_low_level_citlali_input",
+            "path": "citlali_o148670_0_2_c1.yaml",
+            "precedence": 0,
+            "sha256": "aa956b28465eaef8b23763e877857b5b8929e95ca4fbdc976db6d7b2a775636d"
+          }
+        ],
+        "overlay_sources_retained": false,
+        "canonical_merged_sha256": "79f3d34d8a5bf000f0c011788f93aecbff397c55ff7d3c66124977754cc67e1b",
+        "astrometry_provenance": {
+          "path": "astrometry_provenance.yaml",
+          "schema_version": "citlali-astrometry-provenance-v1",
+          "sha256": "346166f5e86c8ae25947f03f565858d7d5e32ea52dacf555fc428ca7f8f69167",
+          "semantic_audit": {
+            "calibration_selection_authority": "tolteca",
+            "application_authority": "citlali",
+            "support_origin_metadata_available": false,
+            "expected_observation_count": 1,
+            "observation_index": 0,
+            "obsnum": 148670,
+            "application_mode": "constant",
+            "installation_count": 1,
+            "application_count": 1,
+            "telescope_sample_count": 383699,
+            "reduction_completed": true
+          }
+        },
+        "beammap_provenance": {
+          "path": "beammap_provenance.yaml",
+          "schema_version": "citlali-beammap-provenance-v2",
+          "sha256": "0512e4e5cbfc2b260044303142deec573a563182246027933f373659659e6f28",
+          "semantic_audit": {
+            "source_identity_authority": "telescope_data",
+            "calibrator_flux_authority": "tolproj",
+            "required_flux_policy": "fail_reduction",
+            "installed_flux_count": 3,
+            "completed_observation_count": 1,
+            "completed_iteration_count": 3,
+            "detector_count": 5234,
+            "map_count": 5234,
+            "scan_count": 198,
+            "termination_reason": "maximum_iterations",
+            "detector_tod_required": true,
+            "detector_tod_write_count": 1,
+            "detector_tod_output_iteration": 2,
+            "detector_tod_slot_count": 20,
+            "detector_tod_maximum_sample_count": 788,
+            "outputs_completed": true
+          }
+        }
+      },
+      "dataset": {
+        "obsnum": "148670",
+        "identity": "TolTEC commissioning Beammap observation 148670",
+        "content_hash": null
+      },
+      "invocation": {
+        "command": null,
+        "launcher": "tolteca reduce",
+        "runtime_policy": {
+          "n_threads": 16,
+          "parallel_policy": "omp",
+          "kids_solver_parallel_policy": "seq"
+        },
+        "exit_code": 0
+      },
+      "audit": {
+        "tool": "tools/baseline/audit_reduction_run.py",
+        "tool_sha": "9ea6d7f013c0a40e6159b0da1512897ddb6a7c5c",
+        "finished": true,
+        "serious_log_counts": {},
+        "file_count": 33,
+        "comparable_product_count": 13,
+        "stable_comparable_product_count": 12,
+        "stable_product_counts_by_kind": {
+          "ecsv": 2,
+          "fits": 6,
+          "netcdf": 4
+        },
+        "ptc_chunk_count": 198,
+        "required_provenance_valid": true
+      },
+      "comparison": {
+        "tool": "tools/baseline/compare_reduction_products.py",
+        "tool_sha": "3cd7250b9a7276ecc64790e97aa015a334368055",
+        "options": [
+          "--mode",
+          "beammap",
+          "--include-timestream",
+          "--max-array-elements",
+          "0",
+          "--exclude",
+          "citlali_profile.ecsv",
+          "--atol",
+          "0",
+          "--rtol",
+          "0",
+          "--strict"
+        ],
+        "volatile_allowlist": [
+          "citlali_profile.ecsv",
+          "astrometry_provenance.yaml",
+          "later required provenance sidecars"
+        ],
+        "tolerances": {
+          "atol": 0.0,
+          "rtol": 0.0,
+          "fraction_floor": 1e-12
+        },
+        "common_products": 12,
+        "skipped_records": 0,
+        "changed_records": 0,
+        "scientific_products_exact": true,
+        "verdict": "accepted_exact",
+        "measured": {
+          "record_count": 16453,
+          "beammap_profile": "beammap-scientific-equivalence-v1",
+          "detector_identity_exact": true,
+          "detector_flags_exact": true,
+          "apt_numeric_max_difference": 0.0,
+          "map_layer_rms_relative_max": 0.0,
+          "good_detector_map_count": 4980,
+          "bad_detector_map_count": 254,
+          "complete_detector_tod_compared": true,
+          "split_fits_product_count": 6
+        }
+      },
+      "accepted_differences": [],
+      "performance": {
+        "wall_time_log_seconds": 4136.44,
+        "observation_pipeline_seconds": 4119.908589,
+        "mapmaking_interval_seconds": 2957.212,
+        "ptc_first_to_last_chunk_seconds": 415.165,
+        "peak_rss_kb": null,
+        "baseline_wall_time_log_seconds": 3661.793,
+        "baseline_mapmaking_interval_seconds": 2994.922,
+        "baseline_ptc_first_to_last_chunk_seconds": 167.615
+      },
+      "artifacts": {
+        "candidate_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced/redu05",
+        "candidate_unity_path": "/work/toltec/commissioning2025-test/2026-refactor/beammap/refactor/reduced/redu05",
+        "baseline_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced/redu04"
+      },
+      "limitations": [
+        "This Beammap received one constant zero-offset astrometry request; explicit-MJD interpolation is validated by the accepted science run instead.",
+        "The 13.0% total-time increase is concentrated in PTC and diagnostics I/O while mapmaking is 1.3% faster; the uncontrolled Unity comparison is retained without attribution or a performance conclusion.",
+        "TolTECA did not provide Citlali the original ordered NN*.yaml authoring-source list.",
+        "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained."
+      ]
     }
   ]
 }
