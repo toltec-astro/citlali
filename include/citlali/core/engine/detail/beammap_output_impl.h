@@ -6,7 +6,8 @@
 #include <citlali/core/engine/detail/beammap_output_targets.h>
 
 template <mapmaking::MapType map_type>
-void Beammap::output() {
+void Beammap::output(
+    citlali::pipeline::StageProfileCollector &stage_profile) {
     auto output_targets =
         beammap_output_targets::targets<map_type>(*this);
 
@@ -18,5 +19,5 @@ void Beammap::output() {
 
     write_beammap_map_products<map_type>(
         output_targets.mb, output_targets.f_io, output_targets.n_io,
-        output_targets.dir_name);
+        stage_profile, output_targets.dir_name);
 }

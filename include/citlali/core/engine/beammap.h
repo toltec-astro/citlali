@@ -749,7 +749,7 @@ public:
     // output files
     std::string write_beammap_apt_table();
     template <mapmaking::MapType map_type>
-    void output();
+    void output(citlali::pipeline::StageProfileCollector &);
     void add_beammap_detector_map_header(
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
         Eigen::Index detector_index,
@@ -768,6 +768,7 @@ public:
         mapmaking::MapBuffer *mb,
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
+        citlali::pipeline::StageProfileCollector &stage_profile,
         const std::string &profile_stage_name,
         const std::string &profile_context,
         int flag_value = -1);
@@ -779,6 +780,7 @@ public:
         mapmaking::MapBuffer *mb,
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
+        citlali::pipeline::StageProfileCollector &stage_profile,
         const std::string &dir_name,
         bool detector_grouping);
     template <mapmaking::MapType map_type>
@@ -786,6 +788,7 @@ public:
         mapmaking::MapBuffer *mb,
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *split_f_io,
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *split_n_io,
+        citlali::pipeline::StageProfileCollector &stage_profile,
         const std::string &dir_name,
         bool detector_grouping,
         int flag_value,
@@ -804,6 +807,7 @@ public:
         mapmaking::MapBuffer *mb,
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
+        citlali::pipeline::StageProfileCollector &stage_profile,
         const std::string &dir_name,
         bool detector_grouping);
     template <mapmaking::MapType map_type>
@@ -811,6 +815,7 @@ public:
         mapmaking::MapBuffer *mb,
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
+        citlali::pipeline::StageProfileCollector &stage_profile,
         const std::string &dir_name,
         bool detector_grouping,
         const std::vector<int> &flag_values);
@@ -819,6 +824,7 @@ public:
         mapmaking::MapBuffer *mb,
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
+        citlali::pipeline::StageProfileCollector &stage_profile,
         const std::string &dir_name);
 };
 

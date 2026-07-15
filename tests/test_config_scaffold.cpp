@@ -519,7 +519,7 @@ struct FakeEngine {
     void create_obs_map_files() { ++create_obs_map_files_calls; }
 
     template <auto MapType>
-    void output() {
+    void output(citlali::pipeline::StageProfileCollector &) {
         ++output_calls;
         if (output_throws) {
             throw std::runtime_error("injected map output failure");
@@ -1111,7 +1111,7 @@ struct FakeReductionIterationEngine {
     void write_learning_summary() { ++write_learning_summary_calls; }
 
     template <auto MapType>
-    void output() {
+    void output(citlali::pipeline::StageProfileCollector &) {
         ++output_calls;
     }
 

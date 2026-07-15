@@ -137,7 +137,9 @@ void Pointing::write_pointing_map_fits_products(
 }
 
 template <mapmaking::MapType map_type>
-void Pointing::output() {
+void Pointing::output(
+    citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     // pointer to map buffer
     mapmaking::MapBuffer* mb = nullptr;
     // pointer to data file fits vector

@@ -88,7 +88,7 @@ public:
                                       FitsIoVector *n_io,
                                       mapmaking::MapBuffer *mb);
     template <mapmaking::MapType map_type>
-    void output();
+    void output(citlali::pipeline::StageProfileCollector &);
 };
 
 

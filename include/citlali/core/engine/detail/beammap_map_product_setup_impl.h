@@ -53,9 +53,11 @@ void Beammap::add_beammap_map_primary_headers(
     mapmaking::MapBuffer *mb,
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
+    citlali::pipeline::StageProfileCollector &stage_profile,
     const std::string &profile_stage_name,
     const std::string &profile_context,
     int flag_value) {
+    (void)stage_profile;
     const auto profile_scope =
         citlali::pipeline::profile_stage(
             profile_stage_name.c_str(), logger, profile_context);

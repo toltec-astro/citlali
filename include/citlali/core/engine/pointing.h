@@ -116,7 +116,7 @@ public:
                                           mapmaking::MapBuffer *mb,
                                           const Eigen::MatrixXf &ppt_table);
     template <mapmaking::MapType map_type>
-    void output();
+    void output(citlali::pipeline::StageProfileCollector &);
 };
 
 

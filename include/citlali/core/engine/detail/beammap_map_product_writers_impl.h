@@ -8,8 +8,10 @@ void Beammap::write_standard_beammap_map_entries(
     mapmaking::MapBuffer *mb,
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
+    citlali::pipeline::StageProfileCollector &stage_profile,
     const std::string &dir_name,
     bool detector_grouping) {
+    (void)stage_profile;
     tula::logging::progressbar pb(
         [&](const auto &msg) { logger->info("{}", msg); }, 100,
         "output progress ");
@@ -36,10 +38,12 @@ void Beammap::write_split_beammap_flag_maps(
     mapmaking::MapBuffer *mb,
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *split_f_io,
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *split_n_io,
+    citlali::pipeline::StageProfileCollector &stage_profile,
     const std::string &dir_name,
     bool detector_grouping,
     int flag_value,
     Eigen::Index n_flag_maps) {
+    (void)stage_profile;
     tula::logging::progressbar pb(
         [&](const auto &msg) { logger->info("{}", msg); }, 100,
         "output progress (flag=" + std::to_string(flag_value) + ") ");
@@ -107,10 +111,12 @@ void Beammap::write_standard_beammap_map_products(
     mapmaking::MapBuffer *mb,
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
+    citlali::pipeline::StageProfileCollector &stage_profile,
     const std::string &dir_name,
     bool detector_grouping) {
     add_beammap_map_primary_headers(
-        mb, f_io, n_io, "beammap.map_output.primary_headers",
+        mb, f_io, n_io, stage_profile,
+        "beammap.map_output.primary_headers",
         "dir=" + dir_name);
     logger->debug("done adding primary headers");
 
@@ -121,7 +127,7 @@ void Beammap::write_standard_beammap_map_products(
     }
 
     write_standard_beammap_map_entries<map_type>(
-        mb, f_io, n_io, dir_name, detector_grouping);
+        mb, f_io, n_io, stage_profile, dir_name, detector_grouping);
 
     beammap_map_product_split_helpers::log_output_filepaths(logger, *f_io);
 }
@@ -131,6 +137,7 @@ void Beammap::write_split_beammap_map_products(
     mapmaking::MapBuffer *mb,
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
+    citlali::pipeline::StageProfileCollector &stage_profile,
     const std::string &dir_name,
     bool detector_grouping,
     const std::vector<int> &flag_values) {
@@ -146,7 +153,7 @@ void Beammap::write_split_beammap_map_products(
     if (n_selected_maps <= 0) {
         logger->warn("beammap split_fits_by_flag selected no detector maps; using standard map output");
         write_standard_beammap_map_products<map_type>(
-            mb, f_io, n_io, dir_name, detector_grouping);
+            mb, f_io, n_io, stage_profile, dir_name, detector_grouping);
         return;
     }
 
@@ -183,13 +190,14 @@ void Beammap::write_split_beammap_map_products(
         auto split_n_io = &split_n_io_vec;
 
         add_beammap_map_primary_headers(
-            mb, split_f_io, split_n_io,
+            mb, split_f_io, split_n_io, stage_profile,
             "beammap.map_output.split_primary_headers",
             "dir=" + dir_name + " flag=" + std::to_string(flag_value),
             flag_value);
 
         write_split_beammap_flag_maps<map_type>(
-            mb, split_f_io, split_n_io, dir_name, detector_grouping,
+            mb, split_f_io, split_n_io, stage_profile, dir_name,
+            detector_grouping,
             flag_value, n_flag_maps);
 
         beammap_map_product_split_helpers::log_split_output_filepaths(
@@ -202,6 +210,7 @@ void Beammap::write_beammap_map_products(
     mapmaking::MapBuffer *mb,
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *f_io,
     std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
+    citlali::pipeline::StageProfileCollector &stage_profile,
     const std::string &dir_name) {
     const auto &mapmaking_config = citlali::pipeline::mapmaking_config(*this);
     const auto &beammap_config = citlali::pipeline::beammap_config(*this);
@@ -222,12 +231,12 @@ void Beammap::write_beammap_map_products(
     if (!f_io->empty()) {
         if (split_by_flag_mode) {
             write_split_beammap_map_products<map_type>(
-                mb, f_io, n_io, dir_name, detector_grouping,
+                mb, f_io, n_io, stage_profile, dir_name, detector_grouping,
                 split_config.flag_values);
         }
         else {
             write_standard_beammap_map_products<map_type>(
-                mb, f_io, n_io, dir_name, detector_grouping);
+                mb, f_io, n_io, stage_profile, dir_name, detector_grouping);
         }
     }
 

@@ -92,7 +92,8 @@ void Lali::write_lali_map_fits_products(FitsIoVector *f_io,
 }
 
 template <mapmaking::MapType map_type>
-void Lali::output() {
+void Lali::output(citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     // pointer to map buffer
     mapmaking::MapBuffer* mb = nullptr;
     // pointer to data file fits vector
