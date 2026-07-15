@@ -21,8 +21,9 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest accepted point reduction: external KIDs/config-source provenance
-  `redu59`, produced by `d016e1a64`; post-processing authority cleanup `redu58`,
+- Latest accepted point reduction: disabled polarimetry capability provenance
+  `redu60`, produced by `db22bca1f`; external KIDs/config-source provenance
+  `redu59`, post-processing authority cleanup `redu58`,
   realized provenance `redu57`, typed source-fitting `redu56`, source-finding `redu55`, map-filter `redu54`,
   enabled-filtering `redu53`,
   unfiltered `redu51`, and bounded full-noise-output `redu49` remain the
@@ -1265,7 +1266,7 @@ extra records. The external KIDs and Citlali CLI config-source checkpoint is
 accepted. Complete upstream `NN*.yaml` provenance remains a future TolTECA
 interface responsibility rather than a Citlali reconstruction task.
 
-## Polarimetry Capability Disposition Prepared
+## Polarimetry Capability Disposition Accepted
 
 The project owner intends Citlali to become the center of polarimetry
 reductions, but not in the present refactor and not without an enabled
@@ -1287,9 +1288,18 @@ requested/effective policy, accepted resolution, and realized non-execution.
 The dedicated static audit freezes the boundary, while the reduction auditor
 semantically rejects enabled or executed polarimetry in a successful run.
 Local CLI and test builds, all 386 CTests, 54 reduction-audit tests, and the
-full 82-test config preflight pass. A strict unchanged Unity point run with the
-new required sidecar is the remaining acceptance gate; no enabled polarimetry
-run will be requested.
+full 82-test config preflight pass.
+
+Unity point `redu60` identifies `db22bca1f`, completes all 12 PTC chunks in a
+67.032-second total log interval, and has zero error-, critical-, or fatal-level
+records. Its required v1 sidecar records the planned-unavailable capability,
+an accepted disabled request, a disabled effective plan, completed reduction,
+and no polarimetry or HWPR execution. The low-level input is byte-identical to
+accepted `redu59`; the strict zero-tolerance comparison reads all 21 stable
+scientific products, including complete RTC/PTC timestreams, with no changed,
+skipped, missing, or extra records. The disabled capability boundary is
+accepted. Enabled polarimetry remains planned but unavailable until its
+scientific/HWPR contract and enabled reference gate are approved.
 
 ## Five-Phase Roadmap
 

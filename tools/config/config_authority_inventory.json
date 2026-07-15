@@ -68,8 +68,8 @@
       "legacy_targets": ["Engine::rtcproc", "Engine::calib"],
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
-      "provenance_status": "partial",
-      "exit_gate": "Candidate complete locally: the frozen three-leaf request has direct typed authority, one capability plan, one forward RTCProc/Calib adapter, required disabled-capability provenance, and a mechanical preflight rejection for enabled requests. Accept an unchanged Unity point run with valid polarimetry_provenance.yaml; enabled polarimetry remains planned but unavailable until its scientific/HWPR contract and reference dataset are approved."
+      "provenance_status": "complete",
+      "exit_gate": "Complete for the present disabled-capability contract: Unity point redu60 at db22bca1f records the planned-unavailable capability, accepted disabled request, disabled effective plan, completed reduction, and no polarimetry or HWPR execution. Its config and all 21 stable scientific products, including complete RTC/PTC timestreams, are exact against redu59. Enabled polarimetry remains planned but unavailable until its scientific/HWPR contract and enabled reference dataset are approved."
     },
     {
       "id": "mapmaking",
