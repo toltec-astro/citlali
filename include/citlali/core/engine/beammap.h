@@ -242,7 +242,7 @@ public:
     void load_or_disable_beammap_soft_priors();
     void populate_beammap_soft_prior_metadata();
     void configure_beammap_soft_prior_setup();
-    void setup();
+    void setup(citlali::pipeline::StageProfileCollector &);
 
     // timestream grppi pipeline
     template <class KidsProc, class RawObs>
@@ -743,7 +743,8 @@ public:
     void write_beammap_fit_qc_table(const std::string &apt_filename);
     // main pipeline process
     template <class KidsProc, class RawObs>
-    void pipeline(KidsProc &, RawObs &);
+    void pipeline(KidsProc &, RawObs &,
+                  citlali::pipeline::StageProfileCollector &);
 
     // output files
     std::string write_beammap_apt_table();

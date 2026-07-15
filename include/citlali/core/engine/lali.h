@@ -22,11 +22,12 @@ public:
         std::declval<int>(), std::declval<std::function<void(input_t &)>>() ));
 
     // initial setup for each obs
-    void setup();
+    void setup(citlali::pipeline::StageProfileCollector &);
 
     // main grppi pipeline
     template <class KidsProc, class RawObs>
-    void pipeline(KidsProc &, RawObs &);
+    void pipeline(KidsProc &, RawObs &,
+                  citlali::pipeline::StageProfileCollector &);
 
     // run the reduction for the obs
     auto run(

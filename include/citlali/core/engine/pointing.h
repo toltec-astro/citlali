@@ -45,11 +45,12 @@ public:
     std::map<std::string,std::string> ppt_header_units;
 
     // initial setup for each obs
-    void setup();
+    void setup(citlali::pipeline::StageProfileCollector &);
 
     // main grppi pipeline
     template <class KidsProc, class RawObs>
-    void pipeline(KidsProc &, RawObs &);
+    void pipeline(KidsProc &, RawObs &,
+                  citlali::pipeline::StageProfileCollector &);
 
     // run the reduction for the obs
     template <class KidsProc>

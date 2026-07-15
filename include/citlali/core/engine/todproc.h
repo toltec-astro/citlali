@@ -96,7 +96,7 @@ struct TimeOrderedDataProc : ConfigMapper<TimeOrderedDataProc<EngineType>> {
     // get adc snap data from raw files
     void get_adc_snap_from_files(const RawObs &rawobs);
     // create output directories
-    void create_output_dir();
+    void create_output_dir(citlali::pipeline::StageProfileCollector &);
     // count up detectors from input files and check for mismatch with apt
     void check_inputs(const RawObs &rawobs);
     // align networks and hwpr vectors in time

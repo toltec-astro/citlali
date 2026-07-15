@@ -9,7 +9,9 @@
 #include <citlali/core/pipeline/timestream_scan_generation.h>
 
 template <class KidsProc, class RawObs>
-void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+void Pointing::pipeline(
+    KidsProc &kidsproc, RawObs &rawobs,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
     using input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
     const auto output_flags =
         citlali::pipeline::standard_timestream_output_flags(*this);
@@ -72,7 +74,7 @@ void Pointing::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
         logger->info("normalizing maps");
         omb.normalize_maps();
         citlali::pipeline::calculate_map_diagnostics(
-            omb, logger, "calculating map psd",
+            omb, stage_profile, logger, "calculating map psd",
             "calculating map histogram");
 
         // fit maps

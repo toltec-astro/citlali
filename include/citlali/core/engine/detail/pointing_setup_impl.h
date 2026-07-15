@@ -4,9 +4,9 @@
 
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
-void Pointing::setup() {
+void Pointing::setup(citlali::pipeline::StageProfileCollector &stage_profile) {
     // run obsnum setup
-    obsnum_setup();
+    obsnum_setup(stage_profile);
 
     // resize the current fit matrix
     params.setZero(map_indices.n_maps, map_fitter.n_params);

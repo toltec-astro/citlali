@@ -9,12 +9,14 @@
 #include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
 #include <citlali/core/pipeline/pointing_provenance_lifecycle.h>
 #include <citlali/core/pipeline/post_processing_provenance_lifecycle.h>
+#include <citlali/core/pipeline/stage_profile.h>
 
 namespace citlali::pipeline {
 
 template <class TodProc, class ConfigFilepaths, class Logger>
 void begin_reduction_iteration(TodProc &todproc,
                                const ConfigFilepaths &config_filepaths,
+                               StageProfileCollector &stage_profile,
                                const Logger &logger) {
     auto &engine = todproc.engine();
 
@@ -24,7 +26,7 @@ void begin_reduction_iteration(TodProc &todproc,
     begin_post_processing_iteration_if_available(engine);
     begin_beammap_run_if_available(engine);
     prepare_iteration_output_layout_if_needed(todproc, config_filepaths,
-                                              logger);
+                                              stage_profile, logger);
     prepare_iteration_observation_buffers(todproc, logger);
 }
 

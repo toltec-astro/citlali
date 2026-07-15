@@ -541,10 +541,11 @@ struct FakeEngine {
         ++fit_maps_calls;
     }
 
-    void setup() { ++setup_calls; }
+    void setup(citlali::pipeline::StageProfileCollector &) { ++setup_calls; }
 
     template <class KidsProc, class RawObs>
-    void pipeline(KidsProc &, const RawObs &) {
+    void pipeline(KidsProc &, const RawObs &,
+                  citlali::pipeline::StageProfileCollector &) {
         ++pipeline_calls;
     }
 
@@ -789,12 +790,13 @@ struct FakeExecutionEngine {
     int pipeline_calls = 0;
     std::vector<std::string> event_order;
 
-    void setup() {
+    void setup(citlali::pipeline::StageProfileCollector &) {
         ++setup_calls;
         event_order.push_back("setup");
     }
 
-    void pipeline(FakeKidsProc &, const FakeRawObs &) {
+    void pipeline(FakeKidsProc &, const FakeRawObs &,
+                  citlali::pipeline::StageProfileCollector &) {
         ++pipeline_calls;
         event_order.push_back("pipeline");
     }
@@ -1143,7 +1145,9 @@ struct FakeReductionIterationTodProc {
 
     FakeReductionIterationEngine &engine() { return engine_state; }
 
-    void create_output_dir() { ++create_output_dir_calls; }
+    void create_output_dir(citlali::pipeline::StageProfileCollector &) {
+        ++create_output_dir_calls;
+    }
 
     void allocate_cmb() { ++allocate_cmb_calls; }
 
@@ -1172,7 +1176,9 @@ struct FakeCoaddTodProc {
 
     FakeEngine &engine() { return engine_state; }
 
-    void create_output_dir() { ++create_output_dir_calls; }
+    void create_output_dir(citlali::pipeline::StageProfileCollector &) {
+        ++create_output_dir_calls;
+    }
 
     template <class MapCoords>
     void calc_cmb_size(MapCoords &map_coords) {
@@ -1301,7 +1307,9 @@ struct FakeInitialObservationTodProc : FakeTelescopeTodProc {
         ++get_apt_from_files_calls;
     }
 
-    void create_output_dir() { ++create_output_dir_calls; }
+    void create_output_dir(citlali::pipeline::StageProfileCollector &) {
+        ++create_output_dir_calls;
+    }
 
     void allocate_cmb() { ++allocate_cmb_calls; }
 
@@ -6094,10 +6102,11 @@ TEST(pipeline_execution, prepares_iteration_observation_buffers_without_coadd) {
 TEST(pipeline_execution, begins_reduction_iteration) {
     FakeReductionIterationTodProc todproc;
     std::vector<std::string> config_filepaths;
+    citlali::pipeline::StageProfileCollector stage_profile;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::begin_reduction_iteration(
-        todproc, config_filepaths, logger);
+        todproc, config_filepaths, stage_profile, logger);
 
     EXPECT_EQ(todproc.engine().ptcproc.begin_weight_validation_iter, 0);
     EXPECT_EQ(todproc.engine().learning.begin_calls, 1);
@@ -9646,10 +9655,11 @@ TEST(pipeline_output_layout, prepares_iteration_output_layout_on_first_iter) {
     FakeCoaddTodProc todproc;
     todproc.engine().iteration.fruit_iter = 0;
     std::vector<std::string> config_filepaths;
+    citlali::pipeline::StageProfileCollector stage_profile;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::prepare_iteration_output_layout_if_needed(
-        todproc, config_filepaths, logger);
+        todproc, config_filepaths, stage_profile, logger);
 
     EXPECT_EQ(todproc.create_output_dir_calls, 1);
 }
@@ -9659,10 +9669,11 @@ TEST(pipeline_output_layout, skips_iteration_output_layout_when_not_saved) {
     todproc.engine().iteration.fruit_iter = 1;
     todproc.engine().ptcproc.save_all_iters = false;
     std::vector<std::string> config_filepaths;
+    citlali::pipeline::StageProfileCollector stage_profile;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::prepare_iteration_output_layout_if_needed(
-        todproc, config_filepaths, logger);
+        todproc, config_filepaths, stage_profile, logger);
 
     EXPECT_EQ(todproc.create_output_dir_calls, 0);
 }

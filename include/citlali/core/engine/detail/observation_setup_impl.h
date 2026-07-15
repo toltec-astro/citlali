@@ -138,7 +138,9 @@ void setup_observation_map_wcs(EngineT &engine) {
 }
 
 template <class EngineT>
-void setup_observation_tod_output_files(EngineT &engine) {
+void setup_observation_tod_output_files(
+    EngineT &engine, citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     {
         auto profile_scope = citlali::pipeline::profile_stage(
             "observation.setup.tod_output_selection", engine.logger);
@@ -184,7 +186,9 @@ void setup_observation_tod_output_files(EngineT &engine) {
 }
 
 template <class EngineT>
-void create_observation_diagnostic_files(EngineT &engine) {
+void create_observation_diagnostic_files(
+    EngineT &engine, citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     {
         auto profile_scope = citlali::pipeline::profile_stage(
             "observation.setup.create_rtcdiag_file", engine.logger);
@@ -198,7 +202,9 @@ void create_observation_diagnostic_files(EngineT &engine) {
 }
 
 template <class EngineT>
-void log_observation_cli_summary(EngineT &engine) {
+void log_observation_cli_summary(
+    EngineT &engine, citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     // output basic info for obs reduction to command line
     {
         auto profile_scope = citlali::pipeline::profile_stage(
@@ -208,7 +214,9 @@ void log_observation_cli_summary(EngineT &engine) {
 }
 
 template <class EngineT>
-void setup_observation_stats_buffers(EngineT &engine) {
+void setup_observation_stats_buffers(
+    EngineT &engine, citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     // set up per-det stats file values
     {
         auto profile_scope = citlali::pipeline::profile_stage(
@@ -230,13 +238,18 @@ void setup_observation_stats_buffers(EngineT &engine) {
 
 }  // namespace citlali::engine_detail
 
-void Engine::obsnum_setup() {
+void Engine::obsnum_setup(
+    citlali::pipeline::StageProfileCollector &stage_profile) {
     citlali::engine_detail::setup_observation_extinction(*this);
     citlali::engine_detail::validate_observation_polarization_inputs(*this);
     citlali::engine_detail::setup_observation_timestream_processors(*this);
     citlali::engine_detail::setup_observation_map_wcs(*this);
-    citlali::engine_detail::setup_observation_tod_output_files(*this);
-    citlali::engine_detail::create_observation_diagnostic_files(*this);
-    citlali::engine_detail::log_observation_cli_summary(*this);
-    citlali::engine_detail::setup_observation_stats_buffers(*this);
+    citlali::engine_detail::setup_observation_tod_output_files(
+        *this, stage_profile);
+    citlali::engine_detail::create_observation_diagnostic_files(
+        *this, stage_profile);
+    citlali::engine_detail::log_observation_cli_summary(
+        *this, stage_profile);
+    citlali::engine_detail::setup_observation_stats_buffers(
+        *this, stage_profile);
 }

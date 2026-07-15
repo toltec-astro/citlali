@@ -7,7 +7,10 @@
 #include <citlali/core/pipeline/beammap_provenance_lifecycle.h>
 
 template <class KidsProc, class RawObs>
-void Beammap::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+void Beammap::pipeline(
+    KidsProc &kidsproc, RawObs &rawobs,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     // only get kids params if not simulation
     if (!telescope.sim_obs) {
         // add kids models to apt

@@ -38,7 +38,9 @@ void TimeOrderedDataProc<EngineType>::get_tone_freqs_from_files(const RawObs &ra
 
 // create output directories
 template <class EngineType>
-void TimeOrderedDataProc<EngineType>::create_output_dir() {
+void TimeOrderedDataProc<EngineType>::create_output_dir(
+    citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     // redu subdir
     engine().output_paths.redu_dir_name = "";
 

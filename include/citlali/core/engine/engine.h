@@ -111,6 +111,7 @@
 #include <citlali/core/pipeline/rtcdiag_netcdf.h>
 #include <citlali/core/pipeline/spectral_diagnostics_netcdf.h>
 #include <citlali/core/pipeline/stats_netcdf.h>
+#include <citlali/core/pipeline/stage_profile.h>
 #include <citlali/core/pipeline/summary_log.h>
 #include <citlali/core/pipeline/tod_stream_netcdf.h>
 #include <citlali/core/pipeline/tod_output_selection.h>
@@ -128,7 +129,7 @@ public:
     using key_vec_t = citlali::pipeline::ConfigDiagnosticsState::key_vec_t;
 
     // per obsnum setup common to all redu types
-    void obsnum_setup();
+    void obsnum_setup(citlali::pipeline::StageProfileCollector &);
 
     // get RTC config options
     template<typename CT>

@@ -8,13 +8,15 @@
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_scan_generation.h>
 
-void Lali::setup() {
+void Lali::setup(citlali::pipeline::StageProfileCollector &stage_profile) {
     // run obsnum setup
-    obsnum_setup();
+    obsnum_setup(stage_profile);
 }
 
 template <class KidsProc, class RawObs>
-void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+void Lali::pipeline(
+    KidsProc &kidsproc, RawObs &rawobs,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
     using tuple_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
     const auto output_flags =
         citlali::pipeline::standard_timestream_output_flags(*this);
@@ -88,7 +90,7 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             }
         }
         citlali::pipeline::calculate_map_diagnostics(
-            omb, logger, "calculating map psd",
+            omb, stage_profile, logger, "calculating map psd",
             "calculating map histogram");
 
         // write map summary

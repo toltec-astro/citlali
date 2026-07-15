@@ -2,6 +2,7 @@
 
 #include <citlali/core/pipeline/output_config_copy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
+#include <citlali/core/pipeline/stage_profile.h>
 
 #include <string>
 
@@ -14,8 +15,9 @@ bool should_prepare_iteration_output_layout(const Engine &engine) {
 }
 
 template <class TodProc>
-void create_iteration_output_directory(TodProc &todproc) {
-    todproc.create_output_dir();
+void create_iteration_output_directory(
+    TodProc &todproc, StageProfileCollector &stage_profile) {
+    todproc.create_output_dir(stage_profile);
 }
 
 template <class ConfigFilepaths, class Logger>
@@ -29,11 +31,12 @@ void copy_iteration_config_files(const ConfigFilepaths &config_filepaths,
 template <class TodProc, class ConfigFilepaths, class Logger>
 void prepare_iteration_output_layout_if_needed(
     TodProc &todproc, const ConfigFilepaths &config_filepaths,
+    StageProfileCollector &stage_profile,
     const Logger &logger) {
     auto &engine = todproc.engine();
 
     if (should_prepare_iteration_output_layout(engine)) {
-        create_iteration_output_directory(todproc);
+        create_iteration_output_directory(todproc, stage_profile);
         copy_iteration_config_files(
             config_filepaths, engine.output_paths.redu_dir_name, logger);
     }

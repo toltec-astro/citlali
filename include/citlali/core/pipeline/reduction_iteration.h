@@ -24,7 +24,8 @@ bool run_reduction_iteration(
         "reduction.iteration", logger,
         "fruit_iter=" + std::to_string(todproc.engine().iteration.fruit_iter));
 
-    begin_reduction_iteration(todproc, config_filepaths, logger);
+    begin_reduction_iteration(
+        todproc, config_filepaths, stage_profile, logger);
 
     if (!run_reduction_iteration_observations<
             IsBeammap, RawObsMap, FilteredObsMap, FitMaps, KidsDataProc>(

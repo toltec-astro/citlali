@@ -11,12 +11,12 @@
 #include <citlali/core/engine/detail/beammap_setup_diagnostics_impl.h>
 #include <citlali/core/engine/detail/beammap_setup_soft_prior_impl.h>
 
-void Beammap::setup() {
+void Beammap::setup(citlali::pipeline::StageProfileCollector &stage_profile) {
     // assign parallel policies
     map_parallel_policy = citlali::pipeline::runtime_parallel_policy_name(*this);
 
     // run obsnum setup
-    obsnum_setup();
+    obsnum_setup(stage_profile);
 
     setup_beammap_kids_tone_column();
     resize_beammap_state_buffers();
