@@ -35,7 +35,9 @@ bool filtered_map_noise_products_apply_empirical_weights(
 
 template <auto FilteredMap, class Engine, class MapBuffer, class Logger>
 void filter_maps(Engine &engine, MapBuffer &map_buffer,
+                 StageProfileCollector &stage_profile,
                  const Logger &logger, const char *log_message) {
+    (void)stage_profile;
     const auto profile_scope =
         profile_stage("map.filter", logger, log_message);
     run_wiener_filter_with_log<FilteredMap>(
@@ -44,26 +46,31 @@ void filter_maps(Engine &engine, MapBuffer &map_buffer,
 
 template <class Engine, class MapBuffer, class Logger>
 void calculate_filtered_map_noise_products_if_needed(
-    Engine &engine, MapBuffer &map_buffer, const Logger &logger,
+    Engine &engine, MapBuffer &map_buffer,
+    StageProfileCollector &stage_profile, const Logger &logger,
     const char *log_message) {
     calculate_map_noise_products_if_needed(
         map_buffer, should_calculate_filtered_map_noise_products(engine),
         filtered_map_noise_products_apply_empirical_weights(engine),
-        logger, log_message);
+        stage_profile, logger, log_message);
 }
 
 template <class MapBuffer, class Logger>
 void calculate_filtered_map_diagnostics(
-    MapBuffer &map_buffer, const Logger &logger, const char *psd_log_message,
+    MapBuffer &map_buffer, StageProfileCollector &stage_profile,
+    const Logger &logger, const char *psd_log_message,
     const char *histogram_log_message) {
     calculate_map_diagnostics(
-        map_buffer, logger, psd_log_message, histogram_log_message);
+        map_buffer, stage_profile, logger, psd_log_message,
+        histogram_log_message);
 }
 
 template <auto FilteredMap, class Engine, class MapBuffer, class Logger>
 void find_filtered_map_sources_if_needed(
-    Engine &engine, MapBuffer &map_buffer, const Logger &logger,
+    Engine &engine, MapBuffer &map_buffer,
+    StageProfileCollector &stage_profile, const Logger &logger,
     const char *log_message, PostProcessingMapContext context) {
+    (void)stage_profile;
     const auto profile_scope =
         profile_stage("map.source_finding", logger, log_message);
     const auto cardinality = find_map_sources_if_needed<FilteredMap>(
@@ -78,10 +85,12 @@ void find_filtered_map_sources_if_needed(
 
 template <auto FilteredMap, class Engine, class Logger>
 void output_filtered_maps_if_needed(
-    Engine &engine, const Logger &logger, const char *output_log_message,
+    Engine &engine, StageProfileCollector &stage_profile,
+    const Logger &logger, const char *output_log_message,
     const char *skip_log_message) {
     output_map_if_needed<FilteredMap>(
-        engine, logger, !filtered_map_written_during_filtering(engine),
+        engine, stage_profile, logger,
+        !filtered_map_written_during_filtering(engine),
         output_log_message, skip_log_message);
 }
 

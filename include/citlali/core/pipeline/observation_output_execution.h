@@ -18,33 +18,38 @@ bool should_accumulate_observation_coadd(const Engine &engine) {
 
 template <class TodProc, class Logger>
 void write_coadded_observation_outputs(TodProc &todproc,
+                                       StageProfileCollector &stage_profile,
                                        const Logger &logger) {
-    coadd_observation(todproc, logger);
+    coadd_observation(todproc, stage_profile, logger);
 }
 
 template <auto FilteredObsMap, bool FitMaps, class TodProc, class Logger>
 void write_noncoadded_observation_outputs(TodProc &todproc,
+                                          StageProfileCollector &stage_profile,
                                           const Logger &logger) {
     write_filtered_observation_outputs_if_needed<FilteredObsMap, FitMaps>(
-        todproc, logger);
+        todproc, stage_profile, logger);
 }
 
 template <auto RawObsMap, auto FilteredObsMap, bool FitMaps, class TodProc,
           class Logger>
 void write_observation_outputs_and_accumulate(TodProc &todproc,
+                                              StageProfileCollector &stage_profile,
                                               const Logger &logger) {
     auto &engine = todproc.engine();
+    (void)stage_profile;
     const auto profile_scope =
         profile_stage("observation.outputs_and_accumulation", logger);
 
-    write_raw_observation_outputs<RawObsMap>(todproc, logger);
+    write_raw_observation_outputs<RawObsMap>(
+        todproc, stage_profile, logger);
 
     if (should_accumulate_observation_coadd(engine)) {
-        write_coadded_observation_outputs(todproc, logger);
+        write_coadded_observation_outputs(todproc, stage_profile, logger);
     }
     else {
         write_noncoadded_observation_outputs<FilteredObsMap, FitMaps>(
-            todproc, logger);
+            todproc, stage_profile, logger);
     }
     complete_mapmaking_observation_if_available(engine);
     complete_pointing_observation_if_available(engine);

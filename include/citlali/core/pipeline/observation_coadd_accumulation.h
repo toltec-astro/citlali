@@ -98,8 +98,11 @@ bool should_run_observation_coadd(const Engine &engine) {
 }
 
 template <class TodProc, class Logger>
-void coadd_observation(TodProc &todproc, const Logger &logger) {
+void coadd_observation(TodProc &todproc,
+                       StageProfileCollector &stage_profile,
+                       const Logger &logger) {
     auto &engine = todproc.engine();
+    (void)stage_profile;
 
     logger->info("coadding");
     const auto profile_scope = profile_stage("observation.coadd", logger);

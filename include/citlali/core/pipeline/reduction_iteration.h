@@ -33,8 +33,8 @@ bool run_reduction_iteration(
         return false;
     }
 
-    finish_reduction_iteration<RawCoaddMap, FilteredCoaddMap>(todproc,
-                                                              logger);
+    finish_reduction_iteration<RawCoaddMap, FilteredCoaddMap>(
+        todproc, stage_profile, logger);
     return true;
 }
 

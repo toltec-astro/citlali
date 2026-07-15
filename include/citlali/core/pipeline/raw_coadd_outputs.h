@@ -19,8 +19,11 @@ void prepare_raw_coadd_map_files(TodProc &todproc,
 }
 
 template <class TodProc, class Logger>
-void prepare_raw_coadd_maps(TodProc &todproc, const Logger &logger) {
+void prepare_raw_coadd_maps(TodProc &todproc,
+                            StageProfileCollector &stage_profile,
+                            const Logger &logger) {
     auto &engine = todproc.engine();
+    (void)stage_profile;
     const auto profile_scope = profile_stage("raw_coadd.prepare", logger);
 
     prepare_raw_coadd_map_files(todproc, logger);
@@ -35,35 +38,43 @@ void prepare_raw_coadd_maps(TodProc &todproc, const Logger &logger) {
 
 template <class Engine, class Logger>
 void calculate_raw_coadd_noise_products_if_needed(
-    Engine &engine, const Logger &logger) {
+    Engine &engine, StageProfileCollector &stage_profile,
+    const Logger &logger) {
     calculate_unfiltered_map_noise_products_if_needed(
-        engine, engine.cmb, logger, false,
+        engine, engine.cmb, stage_profile, logger, false,
         "calculating raw coadd empirical noise products");
 }
 
 template <class Engine, class Logger>
 void calculate_raw_coadd_map_diagnostics(Engine &engine,
+                                         StageProfileCollector &stage_profile,
                                          const Logger &logger) {
     calculate_map_diagnostics(
-        engine.cmb, logger, "calculating coadded map psd",
+        engine.cmb, stage_profile, logger, "calculating coadded map psd",
         "calculating coadded map histogram");
 }
 
 template <auto RawCoaddMap, class Engine, class Logger>
-void output_raw_coadd_maps(Engine &engine, const Logger &logger) {
+void output_raw_coadd_maps(Engine &engine,
+                           StageProfileCollector &stage_profile,
+                           const Logger &logger) {
     output_unfiltered_maps_with_log<RawCoaddMap>(
-        engine, logger, "outputting raw coadded files");
+        engine, stage_profile, logger, "outputting raw coadded files");
 }
 
 template <auto RawCoaddMap, class TodProc, class Logger>
-void write_raw_coadd_outputs(TodProc &todproc, const Logger &logger) {
+void write_raw_coadd_outputs(TodProc &todproc,
+                             StageProfileCollector &stage_profile,
+                             const Logger &logger) {
     auto &engine = todproc.engine();
+    (void)stage_profile;
     const auto profile_scope = profile_stage("raw_coadd.outputs", logger);
 
-    prepare_raw_coadd_maps(todproc, logger);
-    calculate_raw_coadd_noise_products_if_needed(engine, logger);
-    calculate_raw_coadd_map_diagnostics(engine, logger);
-    output_raw_coadd_maps<RawCoaddMap>(engine, logger);
+    prepare_raw_coadd_maps(todproc, stage_profile, logger);
+    calculate_raw_coadd_noise_products_if_needed(
+        engine, stage_profile, logger);
+    calculate_raw_coadd_map_diagnostics(engine, stage_profile, logger);
+    output_raw_coadd_maps<RawCoaddMap>(engine, stage_profile, logger);
 }
 
 }  // namespace citlali::pipeline

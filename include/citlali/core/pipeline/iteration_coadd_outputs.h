@@ -11,6 +11,7 @@ namespace citlali::pipeline {
 template <auto RawCoaddMap, auto FilteredCoaddMap, class TodProc,
           class Logger>
 void write_iteration_coadd_outputs_if_needed(TodProc &todproc,
+                                             StageProfileCollector &stage_profile,
                                              const Logger &logger) {
     auto &engine = todproc.engine();
 
@@ -20,8 +21,9 @@ void write_iteration_coadd_outputs_if_needed(TodProc &todproc,
 
     const auto profile_scope = profile_stage("iteration.coadd_outputs", logger);
     begin_mapmaking_coadd_if_available(engine);
-    write_raw_coadd_outputs<RawCoaddMap>(todproc, logger);
-    write_filtered_coadd_outputs_if_needed<FilteredCoaddMap>(todproc, logger);
+    write_raw_coadd_outputs<RawCoaddMap>(todproc, stage_profile, logger);
+    write_filtered_coadd_outputs_if_needed<FilteredCoaddMap>(
+        todproc, stage_profile, logger);
     complete_mapmaking_coadd_if_available(engine);
 }
 

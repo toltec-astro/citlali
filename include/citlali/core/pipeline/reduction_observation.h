@@ -20,7 +20,6 @@ bool run_reduction_observation(
     std::size_t observation_index, DateObsFactory &&date_obs_factory,
     StageProfileCollector &stage_profile,
     const Logger &logger) {
-    (void)stage_profile;
     const auto profile_context =
         "observation_index=" + std::to_string(observation_index);
 
@@ -40,7 +39,7 @@ bool run_reduction_observation(
             "observation.pipeline", logger, profile_context);
         run_reduction_observation_pipeline<IsBeammap, RawObsMap,
                                            FilteredObsMap, FitMaps>(
-            todproc, kidsproc, rawobs, logger);
+            todproc, kidsproc, rawobs, stage_profile, logger);
     }
     return true;
 }

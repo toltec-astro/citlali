@@ -11,7 +11,10 @@ bool should_run_observation_tod(const Engine &engine) {
 }
 
 template <class Engine, class Logger>
-void setup_observation_pipeline(Engine &engine, const Logger &logger) {
+void setup_observation_pipeline(Engine &engine,
+                                StageProfileCollector &stage_profile,
+                                const Logger &logger) {
+    (void)stage_profile;
     logger->info("pipeline setup");
     const auto profile_scope = profile_stage("observation.setup", logger);
     engine.setup();
@@ -20,7 +23,9 @@ void setup_observation_pipeline(Engine &engine, const Logger &logger) {
 template <class Engine, class KidsProc, class RawObs, class Logger>
 void run_observation_tod_pipeline(Engine &engine, KidsProc &kidsproc,
     const RawObs &rawobs,
+    StageProfileCollector &stage_profile,
     const Logger &logger) {
+    (void)stage_profile;
     logger->info("running pipeline");
     const auto profile_scope = profile_stage("observation.tod_pipeline", logger);
     engine.pipeline(kidsproc, rawobs);
@@ -30,19 +35,22 @@ template <class Engine, class KidsProc, class RawObs, class Logger>
 void run_observation_tod_pipeline_if_needed(Engine &engine,
                                             KidsProc &kidsproc,
                                             const RawObs &rawobs,
+                                            StageProfileCollector &stage_profile,
                                             const Logger &logger) {
     if (should_run_observation_tod(engine)) {
-        run_observation_tod_pipeline(engine, kidsproc, rawobs, logger);
+        run_observation_tod_pipeline(
+            engine, kidsproc, rawobs, stage_profile, logger);
     }
 }
 
 template <class Engine, class KidsProc, class RawObs, class Logger>
 void setup_and_run_observation_pipeline(Engine &engine, KidsProc &kidsproc,
                                         const RawObs &rawobs,
+                                        StageProfileCollector &stage_profile,
                                         const Logger &logger) {
-    setup_observation_pipeline(engine, logger);
+    setup_observation_pipeline(engine, stage_profile, logger);
     run_observation_tod_pipeline_if_needed(
-        engine, kidsproc, rawobs, logger);
+        engine, kidsproc, rawobs, stage_profile, logger);
 }
 
 }  // namespace citlali::pipeline
