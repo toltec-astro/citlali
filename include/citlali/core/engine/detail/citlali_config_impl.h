@@ -5,6 +5,7 @@
 
 #include <citlali/core/pipeline/citlali_config_read.h>
 #include <citlali/core/pipeline/kids_external_config.h>
+#include <citlali/core/pipeline/interface_sync_config_adapter.h>
 #include <citlali/core/pipeline/post_processing_config_read.h>
 #include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
@@ -15,15 +16,21 @@
 
 template<typename CT>
 void Engine::get_citlali_config(CT &config) {
-    citlali::pipeline::read_interface_sync_offsets(
-        config, interface_sync.offsets, logger);
-
     auto &runtime_config = citlali::pipeline::runtime_config(*this);
+    auto &interface_sync_config =
+        citlali::pipeline::interface_sync_config(*this);
     auto &timestream_config = citlali::pipeline::timestream_config(*this);
     auto &post_processing_config =
         citlali::pipeline::post_processing_config(*this);
     auto &reduction_config = citlali::pipeline::reduction_config(*this);
     auto &diagnostics = citlali::pipeline::config_diagnostics(*this);
+
+    interface_sync_config =
+        citlali::config::InterfaceSyncOffsetConfig{};
+    citlali::pipeline::read_interface_sync_offsets(
+        config, interface_sync_config, diagnostics, logger);
+    citlali::pipeline::adapt_interface_sync_config_one_way(
+        interface_sync_config, interface_sync.offsets);
 
     runtime_config = get_runtime_config(config);
     citlali::pipeline::runtime_config_provenance(*this) =
@@ -114,6 +121,6 @@ void Engine::get_citlali_config(CT &config) {
         get_beammap_config(config);
     }
 
-    citlali::pipeline::validate_typed_config_mirrors(
-        reduction_config, logger);
+    citlali::pipeline::validate_typed_config(
+        reduction_config, diagnostics, logger);
 }

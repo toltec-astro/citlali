@@ -3,6 +3,7 @@
 #include <citlali/core/config/beammap_config_validation.h>
 #include <citlali/core/config/calibration_config_validation.h>
 #include <citlali/core/config/coadd_config_validation.h>
+#include <citlali/core/config/interface_sync_config_validation.h>
 #include <citlali/core/config/mapmaking_config_validation.h>
 #include <citlali/core/config/noise_config_validation.h>
 #include <citlali/core/config/pointing_config_validation.h>
@@ -16,6 +17,7 @@ namespace citlali::config {
 inline ValidationReport validate(const ReductionConfig &config) {
     ValidationReport report;
     validate(config.runtime, report);
+    validate(config.interface_sync, report);
     validate(config.timestream, report);
     validate(config.mapmaking, report);
     validate(config.coadd, report);

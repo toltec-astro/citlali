@@ -153,6 +153,24 @@ def valid_raw_document() -> dict:
     }
 
 
+def valid_raw_v2_document() -> dict:
+    document = valid_raw_document()
+    document["schema_version"] = "citlali-raw-timestream-provenance-v2"
+    interface_sync = {
+        "unit": "s",
+        "offsets": {
+            **{f"toltec{index}": 0.0 for index in range(13)},
+            "hwpr": 0.0,
+        },
+    }
+    document["requested"]["interface_sync_offset"] = interface_sync
+    document["effective"]["config"]["interface_sync_offset"] = {
+        "unit": interface_sync["unit"],
+        "offsets": dict(interface_sync["offsets"]),
+    }
+    return document
+
+
 def valid_output_document() -> dict:
     return {
         "schema_version": "citlali-timestream-output-provenance-v1",
@@ -1563,6 +1581,21 @@ class ProvenanceAuditTest(unittest.TestCase):
             self.assertTrue(raw["valid"])
             self.assertEqual(raw["count"], 2)
             self.assertTrue(raw["observation_coverage_ok"])
+
+    def test_accepts_finite_interface_sync_provenance_v2(self) -> None:
+        document = valid_raw_v2_document()
+
+        self.assertEqual(
+            audit.raw_provenance_semantic_errors(document), []
+        )
+
+        document["effective"]["config"]["interface_sync_offset"][
+            "offsets"
+        ]["toltec12"] = float("nan")
+        self.assertIn(
+            "effective interface-sync offset toltec12 is not finite",
+            audit.raw_provenance_semantic_errors(document),
+        )
 
     def test_rejects_incomplete_raw_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

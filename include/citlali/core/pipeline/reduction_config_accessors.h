@@ -228,6 +228,16 @@ const auto &runtime_config(const Engine &engine) {
 }
 
 template <class Engine>
+auto &interface_sync_config(Engine &engine) {
+    return reduction_config(engine).interface_sync;
+}
+
+template <class Engine>
+const auto &interface_sync_config(const Engine &engine) {
+    return reduction_config(engine).interface_sync;
+}
+
+template <class Engine>
 auto &timestream_config(Engine &engine) {
     return reduction_config(engine).timestream;
 }

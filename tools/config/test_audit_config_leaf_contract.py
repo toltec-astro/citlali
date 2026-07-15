@@ -33,6 +33,19 @@ class ConfigLeafContractTest(unittest.TestCase):
             {"kind": "ignored", "finite_required": False},
         )
 
+    def test_rule_can_strengthen_observed_numeric_domain(self) -> None:
+        rule = {
+            "id": "offset",
+            "allowed_domain": {
+                "kind": "typed-real",
+                "finite_required": True,
+            },
+        }
+        self.assertEqual(
+            audit.resolved_allowed_domain(rule, {"int"}, True),
+            {"kind": "typed-real", "finite_required": True},
+        )
+
     def test_semantic_view_ignores_machine_local_missing_inputs(self) -> None:
         value = {
             "summary": {"leaf_count": 1, "missing_optional_inputs": ["/tmp/x"]},

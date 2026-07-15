@@ -292,7 +292,11 @@ PROVENANCE_SIDECARS = {
     },
     "raw_timestream": {
         "filename": "raw_timestream_provenance.yaml",
-        "schema_version": "citlali-raw-timestream-provenance-v1",
+        "schema_version": "citlali-raw-timestream-provenance-v2",
+        "accepted_schema_versions": (
+            "citlali-raw-timestream-provenance-v1",
+            "citlali-raw-timestream-provenance-v2",
+        ),
         "required_paths": (
             ("initialized",),
             ("requested",),
@@ -548,6 +552,39 @@ def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
     try:
         if data["initialized"] is not True:
             errors.append("raw execution plan is not initialized")
+
+        if data.get("schema_version") == "citlali-raw-timestream-provenance-v2":
+            requested_offsets = data["requested"]["interface_sync_offset"]
+            effective_offsets = data["effective"]["config"][
+                "interface_sync_offset"
+            ]
+            expected_keys = {
+                *(f"toltec{index}" for index in range(13)),
+                "hwpr",
+            }
+            for label, record in (
+                ("requested", requested_offsets),
+                ("effective", effective_offsets),
+            ):
+                if record.get("unit") != "s":
+                    errors.append(f"{label} interface-sync unit is not seconds")
+                offsets = record.get("offsets")
+                if not isinstance(offsets, dict) or set(offsets) != expected_keys:
+                    errors.append(
+                        f"{label} interface-sync offsets are incomplete"
+                    )
+                    continue
+                for key, value in offsets.items():
+                    if (
+                        isinstance(value, bool)
+                        or not isinstance(value, (int, float))
+                        or not math.isfinite(float(value))
+                    ):
+                        errors.append(
+                            f"{label} interface-sync offset {key} is not finite"
+                        )
+            if requested_offsets != effective_offsets:
+                errors.append("interface-sync requested/effective values differ")
 
         observation = data["observation"]
         if observation.get("available") is not True:

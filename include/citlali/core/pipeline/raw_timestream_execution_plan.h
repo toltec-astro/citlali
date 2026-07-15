@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/config/interface_sync_config.h>
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/pipeline/raw_timestream_resolution.h>
 
@@ -34,15 +35,21 @@ struct RawTimestreamExecutionPlan {
     bool initialized = false;
     citlali::config::RawTimeChunkConfig requested;
     citlali::config::RawTimeChunkConfig effective;
+    citlali::config::InterfaceSyncOffsetConfig interface_sync_requested;
+    citlali::config::InterfaceSyncOffsetConfig interface_sync_effective;
     RawTimestreamEffectiveResolutions effective_resolutions;
     std::optional<RawTimestreamObservationState> observation;
     RawTimestreamRealizedState realized;
 
     void reset_from_request(
-        const citlali::config::RawTimeChunkConfig &request) {
+        const citlali::config::RawTimeChunkConfig &request,
+        const citlali::config::InterfaceSyncOffsetConfig
+            &interface_sync_request = {}) {
         initialized = true;
         requested = request;
         effective = request;
+        interface_sync_requested = interface_sync_request;
+        interface_sync_effective = interface_sync_request;
         effective_resolutions =
             resolve_raw_timestream_effective_request(request);
         observation.reset();

@@ -57,14 +57,17 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 398 tests with none skipped or disabled; all
-  84 config-boundary/preflight tests pass.
+- CTest discovers and passes all 410 tests. All 96 config-boundary/preflight
+  tests pass; the checked leaf contract covers 573 leaves and the generated
+  startup schema covers 724 normalized YAML nodes.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
 ## Active Phase
 
-**Phase 2 - Config authority and provenance** is active as of 2026-07-11.
+**Phase 2 - Config authority and provenance** is a release candidate as of
+2026-07-15. Local implementation and F.1 audit gates pass; one current Unity
+point compile/reduction gate remains before Phase 2 can be marked complete.
 
 Phase 1 safety stabilization is complete for point, Beammap, science, and OOF.
 OOF refactor `redu01` closes the multi-observation date-header gate and is the
@@ -1468,14 +1471,13 @@ classification, resolution stage, and validation source. The preflight fails
 on an uncovered leaf or drift from the resolved manifest.
 
 This census exposed two real closeout omissions hidden by the earlier broad
-subsystem grouping: 28 `timestream.learning` leaves still execute from a legacy
+subsystem grouping: 28 `timestream.learning` leaves executed from a legacy
 options object populated in parallel with the typed request, and 14
-`interface_sync_offset` leaves still execute from an untyped mutable map with
+`interface_sync_offset` leaves executed from an untyped mutable map with
 permissive duplicate handling. They are now explicit `learning` and
-`interface-sync` authority domains. Migrate each through immutable typed
-request, one-way adapter, validation, and existing provenance before declaring
-Phase 2 complete. No scientific algorithm or reduction behavior changed at
-this checkpoint.
+`interface-sync` authority domains. Both are locally migrated through immutable
+typed request, one-way adapter, validation, and versioned provenance. No
+scientific algorithm or reduction behavior changed in either migration.
 
 The learning omission is now locally migrated. All 28 leaves parse directly
 into immutable `TimestreamLearningConfig`; one one-way adapter constructs the
@@ -1486,6 +1488,34 @@ reader drift, incomplete adapter coverage, or missing serialization. Local CLI
 and test builds plus focused reader/adapter tests pass. Because the standard
 point fixture enables learning, an exact point Unity gate is the remaining
 condition before marking this closeout domain complete.
+
+The interface-sync omission is also locally migrated. All 14 TolTEC/HWPR
+offsets parse atomically into immutable typed request state. Duplicate,
+unknown, malformed, and non-finite entries are fatal; omitted interfaces retain
+the established zero-second default with an explicit warning. One adapter
+populates the unchanged alignment map. Raw-timestream provenance version 2
+records requested and effective offsets with seconds as the explicit unit. A
+frozen 14-path audit rejects reader, adapter, or provenance drift.
+
+The F.1 startup gate is now operational rather than documentary. A generated
+allowlist covers every normalized node in the checked 573-leaf contract and
+the retained default configuration. Unknown nodes, including unknown empty
+containers, enter fatal config diagnostics before execution. The `inputs`
+subtree is deliberately excluded because its schema is owned by TolTECA; all
+other low-level nodes are Citlali-owned. Typed validation errors now enter the
+same fatal diagnostics instead of being logged as advisory mirror warnings.
+The existing observation-scoped astrometry and photometry gates remain atomic.
+
+The detailed [Phase 2 F.1 closeout](../handoff/PHASE2_F1_CLOSEOUT_2026-07-15.md)
+maps every adopted checklist item to code, audit, and reduction evidence. Local
+`citlali_cli` and test builds, all 410 CTests, all 96 config tests, eight compact
+compatibility fixtures, 100% compact-surface coverage, and every boundary audit
+pass. The final Phase 2 gate is one Unity point reduction from the exact
+candidate commit. It must have zero unexpected serious records, exact complete
+products against the immediately preceding accepted point fixture, processed
+learning provenance, raw-timestream provenance v2 with all 14 interface
+offsets, and a valid configuration-source manifest. Do not begin Phase 3 until
+that gate is accepted and the inventory/status are updated.
 
 ## Five-Phase Roadmap
 

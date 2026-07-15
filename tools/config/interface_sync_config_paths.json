@@ -1,0 +1,21 @@
+{
+  "schema_version": "citlali-frozen-interface-sync-config-paths-v1",
+  "path_count": 14,
+  "path_sha256": "5b16c3e0faa1fa9f841c04c616c12513a3d6f935816d3e9274837dfc3b6c4e94",
+  "paths": [
+    "interface_sync_offset[].hwpr",
+    "interface_sync_offset[].toltec0",
+    "interface_sync_offset[].toltec1",
+    "interface_sync_offset[].toltec10",
+    "interface_sync_offset[].toltec11",
+    "interface_sync_offset[].toltec12",
+    "interface_sync_offset[].toltec2",
+    "interface_sync_offset[].toltec3",
+    "interface_sync_offset[].toltec4",
+    "interface_sync_offset[].toltec5",
+    "interface_sync_offset[].toltec6",
+    "interface_sync_offset[].toltec7",
+    "interface_sync_offset[].toltec8",
+    "interface_sync_offset[].toltec9"
+  ]
+}

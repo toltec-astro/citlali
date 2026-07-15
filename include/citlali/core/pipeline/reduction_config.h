@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/pipeline/config_schema_validation.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/runtime_policy.h>
 
@@ -14,6 +15,9 @@ template <class Engine, class Config, class Logger>
 bool load_and_validate_engine_config(Engine &engine, Config &config,
                                      const Logger &logger) {
     logger->info("getting citlali config");
+    auto &diagnostics = config_diagnostics(engine);
+    diagnostics = {};
+    validate_low_level_config_schema(config, diagnostics);
     engine.get_citlali_config(config);
 
     if (!engine_config_has_errors(engine)) {

@@ -80,6 +80,9 @@ authority_rules:
     state_class: requested
     resolution_stage: observation
     validation_source: include/citlali/core/pipeline/citlali_config_read_sync_offsets.h
+    allowed_domain:
+      kind: typed-real
+      finite_required: true
 
   - id: raw-timestream
     patterns: ['timestream.raw_time_chunk*']

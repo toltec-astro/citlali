@@ -4,6 +4,7 @@
 #include <citlali/core/config/reduction_config_validation.h>
 #include <citlali/core/pipeline/timestream_alignment_state.h>
 #include <citlali/core/pipeline/config_diagnostics_state.h>
+#include <citlali/core/pipeline/config_schema_validation.h>
 #include <citlali/core/pipeline/output_path_state.h>
 #include <citlali/core/cli/config_loading.h>
 #include <citlali/core/cli/reduction_runtime.h>
@@ -15,10 +16,12 @@
 #include <citlali/core/pipeline/coadd_config_read.h>
 #include <citlali/core/pipeline/coadd_execution_plan.h>
 #include <citlali/core/pipeline/coadd_provenance.h>
+#include <citlali/core/pipeline/citlali_config_read.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/learning_config_adapter.h>
 #include <citlali/core/pipeline/learning_config_read.h>
+#include <citlali/core/pipeline/interface_sync_config_adapter.h>
 #include <citlali/core/pipeline/map_geometry.h>
 #include <citlali/core/pipeline/map_index_state.h>
 #include <citlali/core/pipeline/mapmaking_execution_plan.h>
@@ -61,6 +64,7 @@
 #include <citlali/core/pipeline/raw_flagging_config_read.h>
 #include <citlali/core/pipeline/raw_timestream_config_serialization.h>
 #include <citlali/core/pipeline/raw_timestream_config_read.h>
+#include <citlali/core/pipeline/reduction_config_validation_logging.h>
 #include <citlali/core/pipeline/processed_clean_config_read.h>
 #include <citlali/core/pipeline/processed_clean_resolution.h>
 #include <citlali/core/pipeline/processed_timestream_config_serialization.h>
@@ -93,6 +97,7 @@
 #include <functional>
 #include <filesystem>
 #include <initializer_list>
+#include <limits>
 #include <map>
 #include <memory>
 #include <optional>
@@ -323,6 +328,7 @@ struct FakeEngine {
     int get_astrometry_config_calls = 0;
     int get_photometry_config_calls = 0;
     int get_citlali_config_calls = 0;
+    bool inject_config_error = false;
     std::string loaded_astrometry_config;
     std::string loaded_photometry_config;
     citlali::pipeline::ConfigDiagnosticsState config_diagnostics;
@@ -553,6 +559,10 @@ struct FakeEngine {
     template <class Config>
     void get_citlali_config(Config &) {
         ++get_citlali_config_calls;
+        if (inject_config_error) {
+            config_diagnostics.invalid_keys.push_back(
+                {"mapmaking", "pixel_size"});
+        }
         runtime_config_provenance =
             citlali::config::make_runtime_config_provenance(
                 typed_config.runtime, false);
@@ -682,6 +692,9 @@ struct FakeFailingKidsProc : FakeKidsProc {
 struct FakeCitlaliConfig {
     int get_config_calls = 0;
     std::string requested_key;
+    YAML::Node root = YAML::Load("{}");
+
+    const YAML::Node &get_node() const { return root; }
 
     FakeKidsProc::Config get_config(const std::string &key) {
         ++get_config_calls;
@@ -3701,6 +3714,77 @@ TEST(config_scaffold, validates_top_level_config_values) {
     EXPECT_EQ(report.error_count(), 8U);
 }
 
+TEST(config_scaffold, accepts_checked_low_level_config_schema) {
+    const auto config = tula::config::YamlConfig::from_str(
+        citlali::citlali_default_config_content);
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    EXPECT_TRUE(citlali::pipeline::validate_low_level_config_schema(
+        config, diagnostics));
+    EXPECT_FALSE(diagnostics.has_errors());
+}
+
+TEST(config_scaffold, rejects_unknown_low_level_config_nodes) {
+    const auto config = tula::config::YamlConfig::from_str(R"yaml(
+runtime:
+  reduction_type: pointing
+  unexpected_policy: true
+unknown_empty_section: {}
+)yaml");
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    EXPECT_FALSE(citlali::pipeline::validate_low_level_config_schema(
+        config, diagnostics));
+    EXPECT_EQ(
+        diagnostics.invalid_key_paths(),
+        (citlali::pipeline::ConfigDiagnosticsState::key_vec_t{
+            {"runtime", "unexpected_policy"},
+            {"unknown_empty_section"},
+        }));
+}
+
+TEST(config_scaffold, accepts_known_optional_low_level_config_node) {
+    const auto config = tula::config::YamlConfig::from_str(R"yaml(
+pointing:
+  source_strategy:
+    fit_gaussian: false
+)yaml");
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    EXPECT_TRUE(citlali::pipeline::validate_low_level_config_schema(
+        config, diagnostics));
+}
+
+TEST(config_scaffold, leaves_tolteca_input_subtree_to_external_schema) {
+    const auto config = tula::config::YamlConfig::from_str(R"yaml(
+inputs:
+  - meta:
+      future_tolteca_metadata: retained
+)yaml");
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    EXPECT_TRUE(citlali::pipeline::validate_low_level_config_schema(
+        config, diagnostics));
+    EXPECT_FALSE(diagnostics.has_errors());
+}
+
+TEST(config_scaffold, typed_validation_errors_are_fatal_diagnostics) {
+    citlali::config::ReductionConfig config;
+    config.interface_sync.toltec_offset_sec[3] =
+        std::numeric_limits<double>::quiet_NaN();
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::validate_typed_config(
+        config, diagnostics, logger);
+
+    ASSERT_TRUE(diagnostics.has_errors());
+    EXPECT_EQ(
+        diagnostics.invalid_key_paths().front(),
+        (std::vector<std::string>{"interface_sync_offset", "toltec3"}));
+    EXPECT_GT(logger->error_calls, 0);
+}
+
 TEST(config_scaffold, reads_learning_into_typed_request) {
     ensure_citlali_test_logger();
     auto config = tula::config::YamlConfig::from_str(R"yaml(
@@ -3776,6 +3860,94 @@ TEST(config_scaffold, adapts_learning_request_one_way) {
         learning.options.scan_network_pathology_max_new_flagged_fraction,
         0.25);
     EXPECT_EQ(request.learn_iters, 5);
+}
+
+TEST(config_scaffold, reads_interface_sync_offsets_into_typed_request) {
+    ensure_citlali_test_logger();
+    auto config = tula::config::YamlConfig::from_str(R"yaml(
+interface_sync_offset:
+  - toltec0: 0.25
+  - toltec12: -0.125
+  - hwpr: 0.5
+)yaml");
+    citlali::config::InterfaceSyncOffsetConfig request;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    const bool clean = citlali::pipeline::read_interface_sync_offsets(
+        config, request, diagnostics,
+        spdlog::get("citlali_logger"));
+
+    EXPECT_TRUE(clean);
+    EXPECT_FALSE(diagnostics.has_errors());
+    EXPECT_DOUBLE_EQ(request.toltec_offset_sec[0], 0.25);
+    EXPECT_DOUBLE_EQ(request.toltec_offset_sec[12], -0.125);
+    EXPECT_DOUBLE_EQ(request.hwpr_offset_sec, 0.5);
+}
+
+TEST(config_scaffold, rejects_interface_sync_duplicates_atomically) {
+    ensure_citlali_test_logger();
+    auto config = tula::config::YamlConfig::from_str(R"yaml(
+interface_sync_offset:
+  - toltec0: 0.25
+  - toltec0: 0.5
+)yaml");
+    citlali::config::InterfaceSyncOffsetConfig request;
+    request.toltec_offset_sec[0] = 9.0;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    const bool clean = citlali::pipeline::read_interface_sync_offsets(
+        config, request, diagnostics,
+        spdlog::get("citlali_logger"));
+
+    EXPECT_FALSE(clean);
+    EXPECT_TRUE(diagnostics.has_errors());
+    EXPECT_DOUBLE_EQ(request.toltec_offset_sec[0], 9.0);
+}
+
+TEST(config_scaffold, rejects_unknown_interface_sync_entry) {
+    ensure_citlali_test_logger();
+    auto config = tula::config::YamlConfig::from_str(R"yaml(
+interface_sync_offset:
+  - unknown_interface: 0.25
+)yaml");
+    citlali::config::InterfaceSyncOffsetConfig request;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    EXPECT_FALSE(citlali::pipeline::read_interface_sync_offsets(
+        config, request, diagnostics,
+        spdlog::get("citlali_logger")));
+    EXPECT_TRUE(diagnostics.has_errors());
+}
+
+TEST(config_scaffold, rejects_nonfinite_interface_sync_offset) {
+    ensure_citlali_test_logger();
+    auto config = tula::config::YamlConfig::from_str(R"yaml(
+interface_sync_offset:
+  - toltec0: .nan
+)yaml");
+    citlali::config::InterfaceSyncOffsetConfig request;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    EXPECT_FALSE(citlali::pipeline::read_interface_sync_offsets(
+        config, request, diagnostics,
+        spdlog::get("citlali_logger")));
+    EXPECT_TRUE(diagnostics.has_errors());
+}
+
+TEST(config_scaffold, adapts_interface_sync_request_one_way) {
+    citlali::config::InterfaceSyncOffsetConfig request;
+    request.toltec_offset_sec[0] = 0.25;
+    request.toltec_offset_sec[12] = -0.125;
+    request.hwpr_offset_sec = 0.5;
+    std::map<std::string, double> offsets;
+
+    citlali::pipeline::adapt_interface_sync_config_one_way(
+        request, offsets);
+
+    EXPECT_EQ(offsets.size(), 14U);
+    EXPECT_DOUBLE_EQ(offsets.at("toltec0"), 0.25);
+    EXPECT_DOUBLE_EQ(offsets.at("toltec12"), -0.125);
+    EXPECT_DOUBLE_EQ(offsets.at("hwpr"), 0.5);
 }
 
 TEST(config_scaffold, validates_timestream_output_selection_values) {
@@ -4653,7 +4825,7 @@ TEST(cli_reduction_runtime, prepares_reduction_runtime) {
 
 TEST(cli_reduction_runtime, rejects_invalid_reduction_runtime) {
     FakeInitialObservationTodProc todproc;
-    todproc.engine().config_diagnostics.missing_keys = {{"runtime"}};
+    todproc.engine().inject_config_error = true;
     FakeCitlaliConfig config;
     auto logger = std::make_shared<FakeLogger>();
     int enable_debug_calls = 0;
@@ -5132,8 +5304,7 @@ TEST(pipeline_preflight, loads_valid_engine_config) {
 
 TEST(pipeline_preflight, rejects_invalid_engine_config) {
     FakeEngine engine;
-    engine.config_diagnostics.missing_keys = {{"runtime"}};
-    engine.config_diagnostics.invalid_keys = {{"mapmaking", "pixel_size"}};
+    engine.inject_config_error = true;
     FakeCitlaliConfig config;
     auto logger = std::make_shared<FakeLogger>();
 
@@ -8029,7 +8200,10 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
     request.extinction_correction_enabled = true;
 
     citlali::pipeline::RawTimestreamExecutionPlan plan;
-    plan.reset_from_request(request);
+    citlali::config::InterfaceSyncOffsetConfig interface_sync_request;
+    interface_sync_request.toltec_offset_sec[0] = 0.25;
+    interface_sync_request.hwpr_offset_sec = -0.5;
+    plan.reset_from_request(request, interface_sync_request);
     plan.effective.downsample.factor = 3;
     auto &observation = plan.begin_observation();
     observation.native_sample_rate_hz = 120.0;
@@ -8051,9 +8225,23 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
         citlali::pipeline::raw_timestream_provenance_node(plan);
 
     EXPECT_EQ(node["schema_version"].as<std::string>(),
-              "citlali-raw-timestream-provenance-v1");
+              "citlali-raw-timestream-provenance-v2");
     EXPECT_TRUE(node["initialized"].as<bool>());
     EXPECT_EQ(node["requested"]["downsample"]["factor"].as<int>(), 0);
+    EXPECT_EQ(
+        node["requested"]["interface_sync_offset"]["unit"]
+            .as<std::string>(),
+        "s");
+    EXPECT_DOUBLE_EQ(
+        node["requested"]["interface_sync_offset"]["offsets"]
+            ["toltec0"]
+                .as<double>(),
+        0.25);
+    EXPECT_DOUBLE_EQ(
+        node["effective"]["config"]["interface_sync_offset"]
+            ["offsets"]["hwpr"]
+                .as<double>(),
+        -0.5);
     EXPECT_EQ(
         node["effective"]["config"]["downsample"]["factor"].as<int>(),
         3);
@@ -8115,7 +8303,7 @@ TEST(config_scaffold, atomically_writes_raw_timestream_provenance) {
     EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
     const auto stored = YAML::LoadFile(output_path.string());
     EXPECT_EQ(stored["schema_version"].as<std::string>(),
-              "citlali-raw-timestream-provenance-v1");
+              "citlali-raw-timestream-provenance-v2");
     EXPECT_TRUE(stored["initialized"].as<bool>());
     std::filesystem::remove_all(output_dir);
 }
@@ -8762,7 +8950,7 @@ TEST(config_scaffold, initializes_typed_raw_execution_authority) {
     production.despiker.min_spike_sigma = 3.0;
 
     citlali::pipeline::initialize_raw_timestream_authority(
-        request, plan, effective, production, 100.0, 1.0, 1.0);
+        request, {}, plan, effective, production, 100.0, 1.0, 1.0);
 
     EXPECT_TRUE(plan.initialized);
     EXPECT_EQ(plan.requested.filter.n_terms, 32);
@@ -8787,7 +8975,7 @@ TEST(config_scaffold, raw_authority_preserves_disabled_request_values) {
     citlali::config::RawTimeChunkConfig effective;
     timestream::RTCProc production;
     citlali::pipeline::initialize_raw_timestream_authority(
-        request, plan, effective, production, 100.0, 1.0, 1.0);
+        request, {}, plan, effective, production, 100.0, 1.0, 1.0);
 
     EXPECT_FALSE(production.run_tod_filter);
     EXPECT_EQ(production.filter.n_terms, 0);

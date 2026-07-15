@@ -38,14 +38,14 @@
     {
       "id": "interface-sync",
       "config_prefixes": ["interface_sync_offset"],
-      "typed_owner": "planned citlali::config::InterfaceSyncOffsetConfig",
+      "typed_owner": "citlali::config::ReductionConfig::interface_sync",
       "loader": "include/citlali/core/pipeline/citlali_config_read_sync_offsets.h",
-      "execution_authority": "legacy",
-      "legacy_targets": [],
-      "adapter_direction": "none",
-      "migration_status": "legacy-authoritative",
-      "provenance_status": "missing",
-      "exit_gate": "Phase 2 closeout gap: atomically parse all 14 finite interface offsets into typed requested state, reject duplicate or unknown entries, adapt one way into the established alignment map, preserve requested/effective values in raw-timestream provenance, and accept exact point products."
+      "execution_authority": "typed",
+      "legacy_targets": ["Engine::interface_sync.offsets"],
+      "adapter_direction": "typed-to-legacy",
+      "migration_status": "typed-authoritative-with-adapter",
+      "provenance_status": "partial",
+      "exit_gate": "Implementation complete, Unity gate pending: all 14 finite offsets parse atomically into typed request state, duplicate and unknown entries fail validation, one adapter populates the established alignment map, and raw provenance v2 records requested/effective offsets with seconds as the explicit unit. Accept exact point products before marking provenance complete."
     },
     {
       "id": "raw-timestream",

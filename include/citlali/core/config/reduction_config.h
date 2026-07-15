@@ -3,6 +3,7 @@
 #include <citlali/core/config/beammap_config.h>
 #include <citlali/core/config/calibration_config.h>
 #include <citlali/core/config/coadd_config.h>
+#include <citlali/core/config/interface_sync_config.h>
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/noise_config.h>
 #include <citlali/core/config/pointing_config.h>
@@ -14,6 +15,7 @@ namespace citlali::config {
 
 struct ReductionConfig {
     RuntimeConfig runtime;
+    InterfaceSyncOffsetConfig interface_sync;
     TimestreamConfig timestream;
     MapmakingConfig mapmaking;
     CoaddConfig coadd;

@@ -14,7 +14,7 @@
 namespace citlali::pipeline {
 
 inline constexpr const char *raw_timestream_provenance_schema_version =
-    "citlali-raw-timestream-provenance-v1";
+    "citlali-raw-timestream-provenance-v2";
 inline constexpr const char *raw_timestream_provenance_filename =
     "raw_timestream_provenance.yaml";
 
@@ -25,6 +25,19 @@ YAML::Node raw_optional_scalar_node(const std::optional<Value> &value) {
     if (value) {
         node["value"] = *value;
     }
+    return node;
+}
+
+inline YAML::Node interface_sync_offset_config_node(
+    const citlali::config::InterfaceSyncOffsetConfig &config) {
+    YAML::Node node;
+    node["unit"] = "s";
+    for (std::size_t index = 0;
+         index < citlali::config::toltec_interface_count; ++index) {
+        node["offsets"]["toltec" + std::to_string(index)] =
+            config.toltec_offset_sec[index];
+    }
+    node["offsets"]["hwpr"] = config.hwpr_offset_sec;
     return node;
 }
 
@@ -136,9 +149,14 @@ inline YAML::Node raw_timestream_provenance_node(
     YAML::Node root;
     root["schema_version"] = raw_timestream_provenance_schema_version;
     root["initialized"] = plan.initialized;
-    root["requested"] = raw_timestream_request_node(plan.requested);
-    root["effective"]["config"] =
-        raw_timestream_request_node(plan.effective);
+    auto requested = raw_timestream_request_node(plan.requested);
+    requested["interface_sync_offset"] =
+        interface_sync_offset_config_node(plan.interface_sync_requested);
+    root["requested"] = requested;
+    auto effective = raw_timestream_request_node(plan.effective);
+    effective["interface_sync_offset"] =
+        interface_sync_offset_config_node(plan.interface_sync_effective);
+    root["effective"]["config"] = effective;
     root["effective"]["resolutions"] =
         raw_timestream_effective_resolutions_node(
             plan.effective_resolutions);

@@ -80,6 +80,9 @@ EXPECTED_LITERAL_FILES = {
     "include/citlali/core/pipeline/beammap_config_split_outputs.h",
     "include/citlali/core/pipeline/beammap_config_tod_mirror.h",
 }
+LITERAL_SCAN_EXCLUDED_FILES = {
+    "include/citlali/core/pipeline/config_leaf_schema_generated.h",
+}
 EXPECTED_STRUCTS = {
     "BeammapConfig",
     "BeammapDetectorTodOutputConfig",
@@ -181,8 +184,11 @@ def beammap_literal_files(repo_root: Path) -> set[str]:
     for source_root in (repo_root / "include", repo_root / "src"):
         for suffix in ("*.h", "*.cpp"):
             for path in source_root.rglob(suffix):
+                relative = path.relative_to(repo_root).as_posix()
+                if relative in LITERAL_SCAN_EXCLUDED_FILES:
+                    continue
                 if pattern.search(path.read_text(encoding="utf-8")):
-                    found.add(path.relative_to(repo_root).as_posix())
+                    found.add(relative)
     return found
 
 

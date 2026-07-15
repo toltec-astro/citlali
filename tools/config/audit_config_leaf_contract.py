@@ -143,6 +143,23 @@ def allowed_domain(value_types: set[str], executable: bool) -> dict[str, Any]:
     return {"kind": "typed-structured", "finite_required": "float" in value_types}
 
 
+def resolved_allowed_domain(
+    rule: dict[str, Any], value_types: set[str], executable: bool
+) -> dict[str, Any]:
+    override = rule.get("allowed_domain")
+    if override is None:
+        return allowed_domain(value_types, executable)
+    if (
+        not isinstance(override, dict)
+        or not isinstance(override.get("kind"), str)
+        or not isinstance(override.get("finite_required"), bool)
+    ):
+        raise ContractError(
+            f"rule {rule.get('id')!r} has an invalid allowed_domain"
+        )
+    return dict(override)
+
+
 def build_contract(
     repo_root: Path,
     rules_path: Path,
@@ -213,7 +230,9 @@ def build_contract(
                 "authority": authority,
                 "owner": owner,
                 "unit": resolved_unit(path, value_types, rules.get("unit_rules", [])),
-                "allowed_domain": allowed_domain(value_types, executable),
+                "allowed_domain": resolved_allowed_domain(
+                    rule, value_types, executable
+                ),
                 "applicable_modes": sorted(applicable_modes),
                 "observed_modes": sorted(observed_modes),
                 "state_class": state_class,
