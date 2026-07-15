@@ -2,6 +2,7 @@
 
 #include <citlali/core/config/calibration_config.h>
 #include <citlali/core/config/timestream_config.h>
+#include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/config_parse_tracking.h>
 
 #include <algorithm>

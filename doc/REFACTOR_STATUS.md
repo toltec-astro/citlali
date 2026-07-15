@@ -59,7 +59,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 426 tests. All 96 config-boundary/preflight
+- CTest discovers and passes all 429 tests. All 96 config-boundary/preflight
   tests pass; the checked leaf contract covers 573 leaves and the generated
   startup schema covers 724 normalized YAML nodes.
 
@@ -90,7 +90,7 @@ prints result diagnostics and translates success to a process exit code.
 Focused tests cover success, exception conversion, failure recovery, two
 sequential runs, nested-run rejection, CLI policy separation, independent
 header compilation, and multi-translation-unit linkage. Both local test
-targets build, all 426 CTests pass, and full config preflight passes. This is
+targets build, all 429 CTests pass, and full config preflight passes. This is
 the facade checkpoint, not the Phase 3 exit gate: reachable library exits,
 run-owned profiling, complete internal failure classification, lifecycle
 ownership cuts, and the first measured `.cpp` boundary remain open. The
@@ -110,9 +110,12 @@ retirement order and separates low-risk setup/output work from mature
 timestream and Wiener kernels. The first post-baseline cluster removes all six
 TOD output-selection config exits. Invalid strings, empty or nonpositive chunk
 lists, negative counts, and impossible selection modes now accumulate atomic,
-path-aware config diagnostics; the current dependency-reachable count is 88.
-Its isolated test also characterized the remaining ambient named-logger
-dependency in the legacy `get_config_value` helper for later ownership work.
+path-aware config diagnostics. The adjacent effective row-selection boundary
+now converts invalid effective modes, empty source-crossing selections, and
+out-of-range chunks to canonical errors while preserving valid row assignment.
+The current dependency-reachable count is 85. Its isolated test also
+characterized the remaining ambient named-logger dependency in the legacy
+`get_config_value` helper for later ownership work.
 
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution

@@ -17,6 +17,9 @@ namespace {
 struct SelectionLogger {
     template <class... Args>
     void error(const char *, Args &&...) {}
+
+    template <class... Args>
+    void info(const char *, Args &&...) {}
 };
 
 using ConfigPath = std::vector<std::string>;
@@ -110,4 +113,49 @@ timestream:
     EXPECT_TRUE(contains_path(
         diagnostics,
         {"timestream", "raw_time_chunk", "output", "selection", "mode"}));
+}
+
+TEST(tod_output_selection_config, rejects_invalid_effective_mode) {
+    citlali::config::TodStreamOutputConfig config;
+    config.selection_mode =
+        static_cast<citlali::config::TodOutputSelectionMode>(-1);
+    Eigen::VectorXI scan_to_output;
+    Eigen::Index n_output_scans = 0;
+    auto logger = make_selection_logger();
+
+    EXPECT_THROW(
+        citlali::pipeline::configure_tod_output_stream_selection(
+            "raw", true, config, 2, {}, scan_to_output, n_output_scans,
+            logger),
+        citlali::error::Error);
+}
+
+TEST(tod_output_selection_config, rejects_empty_source_crossing_selection) {
+    citlali::config::TodStreamOutputConfig config;
+    config.selection_mode =
+        citlali::config::TodOutputSelectionMode::uniform_plus_source_crossing;
+    Eigen::VectorXI scan_to_output;
+    Eigen::Index n_output_scans = 0;
+    auto logger = make_selection_logger();
+
+    EXPECT_THROW(
+        citlali::pipeline::configure_tod_output_stream_selection(
+            "raw", true, config, 2, {}, scan_to_output, n_output_scans,
+            logger),
+        citlali::error::Error);
+}
+
+TEST(tod_output_selection_config, rejects_chunk_outside_scan_range) {
+    citlali::config::TodStreamOutputConfig config;
+    config.chunk_select_enabled = true;
+    config.chunks_1based = {1, 3};
+    Eigen::VectorXI scan_to_output;
+    Eigen::Index n_output_scans = 0;
+    auto logger = make_selection_logger();
+
+    EXPECT_THROW(
+        citlali::pipeline::configure_tod_output_stream_selection(
+            "raw", true, config, 2, {}, scan_to_output, n_output_scans,
+            logger),
+        citlali::error::Error);
 }

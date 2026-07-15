@@ -59,14 +59,17 @@ void configure_tod_output_stream_selection(
         logger->error("{} TOD output selection mode '{}' is invalid",
                       stream_name,
                       citlali::config::to_string(config.selection_mode));
-        std::exit(EXIT_FAILURE);
+        throw citlali::error::invalid_config(
+            stream_name + " TOD output selection mode is invalid");
     }
     if (selection.status ==
         TodOutputSelectionStatus::empty_uniform_source_selection) {
         logger->error(
             "{} TOD output selection mode uniform_plus_source_crossing selected no chunks",
             stream_name);
-        std::exit(EXIT_FAILURE);
+        throw citlali::error::runtime(
+            stream_name +
+            " TOD output uniform-plus-source selection produced no chunks");
     }
 
     if (!selection.select_enabled || selection.chunks_1based.empty()) {
@@ -81,7 +84,8 @@ void configure_tod_output_stream_selection(
         if (!tod_output_chunk_is_valid(chunk_1based, n_scans)) {
             logger->error("{} TOD output indices contain {} but valid scan range is [1, {}]",
                           stream_name, chunk_1based, n_scans);
-            std::exit(EXIT_FAILURE);
+            throw citlali::error::invalid_config(
+                stream_name + " TOD output chunk index is outside scan range");
         }
     }
 

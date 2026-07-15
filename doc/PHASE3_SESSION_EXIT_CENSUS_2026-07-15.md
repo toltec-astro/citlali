@@ -31,15 +31,18 @@ and a missing timing-gap mask throws a canonical runtime error.
 
 The first post-baseline retirement removes the six TOD output-selection config
 exits. Invalid values now append path-aware diagnostics without partially
-installing chunk lists or counts. The current audit reports 88 library exits;
-the 94-exit baseline remains intentionally frozen as a no-growth ceiling that
-permits monotonic retirement.
+installing chunk lists or counts. The adjacent TOD row-selection tranche
+removes three more exits: invalid effective modes and out-of-range chunks are
+canonical config errors, while an empty source-crossing selection is a
+canonical runtime error. Valid row assignment is unchanged. The current audit
+reports 85 library exits; the 94-exit baseline remains intentionally frozen as
+a no-growth ceiling that permits monotonic retirement.
 
 ## Retirement Order
 
-1. Config and output-selection readers: six exits in TOD selection config and
-   three in TOD row selection. Invalid requests should reach `ReductionResult`
-   with actionable paths.
+1. Config and output-selection readers: the six TOD selection-config exits and
+   three TOD row-selection exits are retired. Invalid requests now reach
+   `ReductionResult` through canonical errors or path-aware config diagnostics.
 2. Observation/input setup: fourteen exits across observation setup, KIDs/raw
    loading, gap alignment, and Beammap fit preparation. Convert by owning
    boundary with focused malformed-input and recovery tests.
