@@ -9,6 +9,8 @@
 #include <citlali/core/pipeline/telescope_data_loading.h>
 #include <citlali/core/pipeline/telescope_pointing.h>
 
+#include <cstddef>
+
 namespace citlali::pipeline {
 
 template <bool IsBeammap, class TodProc, class RawObs, class RawObsKidsMeta,
@@ -17,10 +19,12 @@ bool prepare_initial_observation_setup(TodProc &todproc, const RawObs &rawobs,
                                        const RawObsKidsMeta &rawobs_kids_meta,
                                        MapExtents &map_extents,
                                        MapCoords &map_coords,
+                                       std::size_t observation_index,
                                        const Logger &logger) {
     auto &engine = todproc.engine();
 
-    configure_observation_calibration<IsBeammap>(todproc, rawobs, logger);
+    configure_observation_calibration_with_context<IsBeammap>(
+        todproc, rawobs, rawobs_kids_meta, observation_index, logger);
     if (!apply_flxscale_correction(engine, rawobs, logger)) {
         return false;
     }

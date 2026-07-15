@@ -170,6 +170,15 @@ $HOME/tolteca/bin/python tools/baseline/audit_reduction_run.py REDU_DIR \
   --require-config-source-manifest
 ```
 
+The astrometry boundary audit also freezes the direct typed observation loader,
+one-way runtime adapter, preserved OG constant/linear interpolation contract,
+and required atomic provenance. Validate a candidate reduction with:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/audit_reduction_run.py REDU_DIR \
+  --require-astrometry-provenance
+```
+
 `--base-config` accepts either a full Citlali YAML file or a TolTECA YAML file
 containing `reduce.steps.*.config.low_level`. This is useful for compatibility
 work against an existing `70_reduce.yaml` baseline:

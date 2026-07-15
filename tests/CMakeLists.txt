@@ -9,6 +9,7 @@ set_target_properties(citlali_test
 )
 target_sources(citlali_test
     PRIVATE
+        test_astrometry_config_plan.cpp
         test_beammap_config_plan.cpp
         test_config_scaffold.cpp
         test_external_config_provenance.cpp

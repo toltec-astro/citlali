@@ -14,11 +14,13 @@ class ReductionAuditComparisonTest(unittest.TestCase):
             "--require-candidate-coadd-provenance",
             "--require-candidate-noise-products-provenance",
             "--require-candidate-pointing-provenance",
+            "--require-candidate-astrometry-provenance",
         ])
 
         self.assertTrue(args.require_candidate_coadd_provenance)
         self.assertTrue(args.require_candidate_noise_products_provenance)
         self.assertTrue(args.require_candidate_pointing_provenance)
+        self.assertTrue(args.require_candidate_astrometry_provenance)
 
     def test_audit_for_forwards_candidate_provenance_requirements(self) -> None:
         with mock.patch.object(
@@ -32,12 +34,14 @@ class ReductionAuditComparisonTest(unittest.TestCase):
                 require_coadd_provenance=True,
                 require_noise_products_provenance=True,
                 require_pointing_provenance=True,
+                require_astrometry_provenance=True,
             )
 
         args = build_audit.call_args.args[0]
         self.assertTrue(args.require_coadd_provenance)
         self.assertTrue(args.require_noise_products_provenance)
         self.assertTrue(args.require_pointing_provenance)
+        self.assertTrue(args.require_astrometry_provenance)
 
     def test_compare_forwards_candidate_only_requirements(self) -> None:
         args = compare.parse_args([
@@ -46,6 +50,7 @@ class ReductionAuditComparisonTest(unittest.TestCase):
             "--require-candidate-coadd-provenance",
             "--require-candidate-noise-products-provenance",
             "--require-candidate-pointing-provenance",
+            "--require-candidate-astrometry-provenance",
         ])
         empty_audit = {
             "log": {},
@@ -64,6 +69,9 @@ class ReductionAuditComparisonTest(unittest.TestCase):
         )
         self.assertTrue(
             candidate_call.kwargs["require_pointing_provenance"]
+        )
+        self.assertTrue(
+            candidate_call.kwargs["require_astrometry_provenance"]
         )
 
 

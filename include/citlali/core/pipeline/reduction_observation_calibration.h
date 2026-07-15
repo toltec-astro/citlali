@@ -4,6 +4,8 @@
 #include <citlali/core/pipeline/kids_metadata.h>
 #include <citlali/core/pipeline/observation_calibration_config.h>
 
+#include <cstddef>
+
 namespace citlali::pipeline {
 
 template <bool IsBeammap, class TodProc, class RawObs, class RawObsKidsMeta,
@@ -11,13 +13,14 @@ template <bool IsBeammap, class TodProc, class RawObs, class RawObsKidsMeta,
 bool configure_reduction_observation_calibration_if_needed(
     TodProc &todproc, const RawObs &rawobs,
     const RawObsKidsMeta &rawobs_kids_meta, bool should_configure,
-    const Logger &logger) {
+    std::size_t observation_index, const Logger &logger) {
     if (!should_configure) {
         return true;
     }
 
     auto &engine = todproc.engine();
-    configure_observation_calibration<IsBeammap>(todproc, rawobs, logger);
+    configure_observation_calibration_with_context<IsBeammap>(
+        todproc, rawobs, rawobs_kids_meta, observation_index, logger);
     if (!apply_flxscale_correction(engine, rawobs, logger)) {
         return false;
     }

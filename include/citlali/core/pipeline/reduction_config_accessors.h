@@ -35,6 +35,9 @@ struct has_kids_external_plan : std::false_type {};
 template <class Engine, class = void>
 struct has_polarimetry_plan : std::false_type {};
 
+template <class Engine, class = void>
+struct has_astrometry_plan : std::false_type {};
+
 template <class Engine>
 struct has_raw_timestream_plan<
     Engine,
@@ -135,6 +138,16 @@ inline constexpr bool has_polarimetry_plan_v =
     has_polarimetry_plan<Engine>::value;
 
 template <class Engine>
+struct has_astrometry_plan<
+    Engine,
+    std::void_t<decltype(std::declval<Engine &>().astrometry_plan)>>
+    : std::true_type {};
+
+template <class Engine>
+inline constexpr bool has_astrometry_plan_v =
+    has_astrometry_plan<Engine>::value;
+
+template <class Engine>
 auto &runtime_config_provenance(Engine &engine) {
     return engine.runtime_config_provenance;
 }
@@ -172,6 +185,16 @@ auto &kids_external_plan(Engine &engine) {
 template <class Engine>
 const auto &kids_external_plan(const Engine &engine) {
     return engine.kids_external_plan;
+}
+
+template <class Engine>
+auto &astrometry_plan(Engine &engine) {
+    return engine.astrometry_plan;
+}
+
+template <class Engine>
+const auto &astrometry_plan(const Engine &engine) {
+    return engine.astrometry_plan;
 }
 
 template <class Engine>

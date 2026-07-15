@@ -34,6 +34,31 @@ VALIDATION_PATH_RE = re.compile(r"/2026-refactor/(?P<mode>[^/]+)/(?P<label>[^/]+
 PRODUCT_SUFFIXES = {".fits", ".fit", ".nc", ".nc4", ".cdf", ".csv", ".ecsv"}
 PROFILE_SIDECAR_NAMES = {"citlali_profile.ecsv"}
 PROVENANCE_SIDECARS = {
+    "astrometry": {
+        "filename": "astrometry_provenance.yaml",
+        "schema_version": "citlali-astrometry-provenance-v1",
+        "required_paths": (
+            ("initialized",),
+            ("authority", "calibration_selection"),
+            ("authority", "application"),
+            ("authority", "support_origin_metadata_available"),
+            ("authority", "configured_values_origin"),
+            ("identity", "axes"),
+            ("identity", "offset_unit"),
+            ("identity", "time_support"),
+            ("identity", "algorithm"),
+            ("contract", "upstream_selection_owner"),
+            ("contract", "one_configured_value"),
+            ("contract", "two_values_without_positive_mjd_pair"),
+            ("contract", "two_values_with_positive_mjd_pair"),
+            ("contract", "explicit_mjd_requires_observation_bracketing"),
+            ("contract", "extrapolation"),
+            ("expected_observation_count",),
+            ("observations",),
+            ("reduction_completed",),
+        ),
+        "allow_multiple": False,
+    },
     "polarimetry": {
         "filename": "polarimetry_provenance.yaml",
         "schema_version": "citlali-polarimetry-provenance-v1",
@@ -2356,6 +2381,168 @@ def polarimetry_provenance_semantic_errors(
     return errors
 
 
+def valid_astrometry_config(config: Any, label: str) -> list[str]:
+    errors: list[str] = []
+    try:
+        offsets = config["pointing_offsets"]
+        if offsets["enabled"] is not True:
+            errors.append(f"{label} astrometry pointing offsets are not enabled")
+        az = offsets["az_arcsec"]
+        alt = offsets["alt_arcsec"]
+        mjd = offsets["modified_julian_date"]
+        if not isinstance(az, list) or len(az) not in (1, 2):
+            errors.append(f"{label} astrometry az offsets must have length one or two")
+        if not isinstance(alt, list) or len(alt) != len(az):
+            errors.append(f"{label} astrometry alt offsets must match az offsets")
+        if not isinstance(mjd, list) or len(mjd) != 2:
+            errors.append(f"{label} astrometry MJD support must have length two")
+        for name, values in (("az", az), ("alt", alt), ("MJD", mjd)):
+            if not isinstance(values, list):
+                continue
+            if any(
+                isinstance(value, bool)
+                or not isinstance(value, (int, float))
+                or not math.isfinite(float(value))
+                for value in values
+            ):
+                errors.append(f"{label} astrometry {name} values must be finite")
+    except (KeyError, TypeError) as exc:
+        errors.append(f"cannot evaluate {label} astrometry config: {exc}")
+    return errors
+
+
+def astrometry_provenance_semantic_errors(
+    data: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        if data["initialized"] is not True:
+            errors.append("astrometry execution plan is not initialized")
+        if data["reduction_completed"] is not True:
+            errors.append("astrometry reduction is not complete")
+
+        authority = data["authority"]
+        if authority["calibration_selection"] != "tolteca":
+            errors.append("astrometry calibration-selection authority must be tolteca")
+        if authority["application"] != "citlali":
+            errors.append("astrometry application authority must be citlali")
+        if authority["support_origin_metadata_available"] is not False:
+            errors.append("astrometry support-origin availability is inconsistent")
+        if authority["configured_values_origin"] != "upstream-unspecified":
+            errors.append("astrometry configured-values origin is inconsistent")
+
+        identity = data["identity"]
+        expected_identity = {
+            "axes": ["az", "alt"],
+            "offset_unit": "arcsec",
+            "time_support": "modified-julian-date",
+            "algorithm": "legacy-citlali-constant-or-linear-v1",
+        }
+        if identity != expected_identity:
+            errors.append("astrometry scientific identity is inconsistent")
+
+        contract = data["contract"]
+        expected_contract = {
+            "upstream_selection_owner": "tolteca",
+            "one_configured_value": "constant",
+            "two_values_without_positive_mjd_pair": "observation-span-linear",
+            "two_values_with_positive_mjd_pair": "explicit-mjd-linear",
+            "explicit_mjd_requires_observation_bracketing": True,
+            "extrapolation": "forbidden",
+        }
+        if contract != expected_contract:
+            errors.append("astrometry application contract is inconsistent")
+
+        observations = data["observations"]
+        expected_count = data["expected_observation_count"]
+        if type(expected_count) is not int or expected_count <= 0:
+            errors.append("astrometry expected observation count must be positive")
+            return errors
+        if not isinstance(observations, list):
+            errors.append("astrometry observations must be a sequence")
+            return errors
+        if len(observations) != expected_count:
+            errors.append("astrometry observation count differs from expectation")
+
+        for expected_index, observation in enumerate(observations):
+            label = f"astrometry observation {expected_index}"
+            if not isinstance(observation, dict):
+                errors.append(f"{label} is not a mapping")
+                continue
+            if observation.get("observation_index") != expected_index:
+                errors.append(f"{label} has inconsistent index")
+            obsnum = observation.get("obsnum")
+            if type(obsnum) is not int or obsnum <= 0:
+                errors.append(f"{label} has invalid obsnum")
+
+            requested = observation.get("requested")
+            effective_record = observation.get("effective")
+            if not isinstance(requested, dict) or not isinstance(
+                effective_record, dict
+            ):
+                errors.append(f"{label} config records are malformed")
+                continue
+            effective = effective_record.get("config")
+            resolution = effective_record.get("resolution")
+            errors.extend(valid_astrometry_config(requested, f"{label} requested"))
+            errors.extend(valid_astrometry_config(effective, f"{label} effective"))
+            if requested != effective:
+                errors.append(f"{label} effective config differs from request")
+            if not isinstance(resolution, dict):
+                errors.append(f"{label} resolution is not a mapping")
+                continue
+
+            offsets = requested.get("pointing_offsets", {})
+            az = offsets.get("az_arcsec", [])
+            mjd = offsets.get("modified_julian_date", [])
+            explicit_mjd = bool(
+                len(az) == 2
+                and isinstance(mjd, list)
+                and len(mjd) == 2
+                and all(
+                    isinstance(value, (int, float))
+                    and not isinstance(value, bool)
+                    and value > 0
+                    for value in mjd
+                )
+            )
+            expected_mode = (
+                "constant"
+                if len(az) == 1
+                else "explicit-mjd-linear"
+                if explicit_mjd
+                else "observation-span-linear"
+            )
+            if resolution.get("application_mode") != expected_mode:
+                errors.append(f"{label} application mode is inconsistent")
+            if resolution.get("explicit_mjd_support") is not explicit_mjd:
+                errors.append(f"{label} MJD resolution is inconsistent")
+
+            realized = observation.get("realized")
+            if not isinstance(realized, dict):
+                errors.append(f"{label} realized state is not a mapping")
+                continue
+            installation_count = realized.get("installation_count")
+            application_count = realized.get("application_count")
+            sample_count = realized.get("telescope_sample_count")
+            for name, value in (
+                ("installation_count", installation_count),
+                ("application_count", application_count),
+                ("telescope_sample_count", sample_count),
+            ):
+                if type(value) is not int or value <= 0:
+                    errors.append(f"{label} {name} must be positive")
+            if (
+                type(installation_count) is int
+                and type(application_count) is int
+                and installation_count != application_count
+            ):
+                errors.append(f"{label} installation/application counts differ")
+    except (AttributeError, KeyError, TypeError) as exc:
+        errors.append(f"cannot evaluate astrometry provenance semantics: {exc}")
+    return errors
+
+
 def config_source_manifest_semantic_errors(
     data: dict[str, Any], manifest_path: Path,
 ) -> list[str]:
@@ -2441,6 +2628,7 @@ def audit_provenance_sidecars(
     require_kids_external: bool = False,
     require_config_source_manifest: bool = False,
     require_polarimetry: bool = False,
+    require_astrometry: bool = False,
 ) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for name, spec in PROVENANCE_SIDECARS.items():
@@ -2455,6 +2643,7 @@ def audit_provenance_sidecars(
             or (name == "beammap" and require_beammap)
             or (name == "kids_external" and require_kids_external)
             or (name == "polarimetry" and require_polarimetry)
+            or (name == "astrometry" and require_astrometry)
             or (
                 name == "config_source_manifest"
                 and require_config_source_manifest
@@ -2502,7 +2691,11 @@ def audit_provenance_sidecars(
                 )
                 semantic_errors = []
                 if not missing_paths:
-                    if name == "polarimetry":
+                    if name == "astrometry":
+                        semantic_errors = (
+                            astrometry_provenance_semantic_errors(data)
+                        )
+                    elif name == "polarimetry":
                         semantic_errors = (
                             polarimetry_provenance_semantic_errors(data)
                         )
@@ -3016,6 +3209,7 @@ def build_audit(args: argparse.Namespace) -> dict[str, Any]:
             getattr(args, "require_kids_external_provenance", False),
             getattr(args, "require_config_source_manifest", False),
             getattr(args, "require_polarimetry_provenance", False),
+            getattr(args, "require_astrometry_provenance", False),
         ),
         "products": audit_products(redu, args.top),
     }
@@ -3212,6 +3406,14 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         help=(
             "Fail unless polarimetry_provenance.yaml records the disabled "
             "planned capability contract."
+        ),
+    )
+    parser.add_argument(
+        "--require-astrometry-provenance",
+        action="store_true",
+        help=(
+            "Fail unless astrometry_provenance.yaml records a complete "
+            "observation-indexed pointing-offset application contract."
         ),
     )
     parser.add_argument(

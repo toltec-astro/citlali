@@ -6,6 +6,7 @@
 #include <citlali/core/cli/runtime_setup.h>
 #include <citlali/core/cli/tod_processor_selection.h>
 #include <citlali/core/mapmaking/map.h>
+#include <citlali/core/pipeline/astrometry_provenance.h>
 #include <citlali/core/pipeline/beammap_provenance.h>
 #include <citlali/core/pipeline/beammap_provenance_lifecycle.h>
 #include <citlali/core/pipeline/config_source_manifest.h>
@@ -156,6 +157,21 @@ int run_cli_reduction_processor(
         logger->info(
             "polarimetry provenance sidecar: {}",
             citlali::pipeline::polarimetry_provenance_path(
+                engine.output_paths.redu_dir_name)
+                .string());
+    }
+
+    if constexpr (citlali::pipeline::has_astrometry_plan_v<
+                      decltype(engine)>) {
+        auto &astrometry_plan =
+            citlali::pipeline::astrometry_plan(engine);
+        citlali::pipeline::record_astrometry_reduction_completed(
+            astrometry_plan);
+        citlali::pipeline::write_astrometry_provenance_file(
+            engine.output_paths.redu_dir_name, astrometry_plan);
+        logger->info(
+            "astrometry provenance sidecar: {}",
+            citlali::pipeline::astrometry_provenance_path(
                 engine.output_paths.redu_dir_name)
                 .string());
     }

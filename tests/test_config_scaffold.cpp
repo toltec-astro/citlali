@@ -4824,7 +4824,7 @@ TEST(pipeline_preflight, skips_reduction_calibration_when_not_needed) {
 
     EXPECT_TRUE(
         citlali::pipeline::configure_reduction_observation_calibration_if_needed<
-            false>(todproc, rawobs, rawobs_kids_meta, false, logger));
+            false>(todproc, rawobs, rawobs_kids_meta, false, 0, logger));
 
     EXPECT_EQ(todproc.engine().get_astrometry_config_calls, 0);
     EXPECT_EQ(todproc.engine().calib.get_apt_calls, 0);
@@ -4840,7 +4840,7 @@ TEST(pipeline_preflight, configures_reduction_calibration_when_needed) {
 
     EXPECT_TRUE(
         citlali::pipeline::configure_reduction_observation_calibration_if_needed<
-            false>(todproc, rawobs, rawobs_kids_meta, true, logger));
+            false>(todproc, rawobs, rawobs_kids_meta, true, 0, logger));
 
     EXPECT_EQ(todproc.engine().get_astrometry_config_calls, 1);
     EXPECT_EQ(todproc.engine().loaded_astrometry_config, "astro");
@@ -5893,7 +5893,7 @@ TEST(pipeline_execution, prepares_initial_observation_setup) {
     auto logger = std::make_shared<FakeLogger>();
 
     EXPECT_TEMPLATE_TRUE(citlali::pipeline::prepare_initial_observation_setup<false>(
-        todproc, rawobs, rawobs_kids_meta, map_extents, map_coords, logger));
+        todproc, rawobs, rawobs_kids_meta, map_extents, map_coords, 0, logger));
 
     EXPECT_EQ(todproc.engine().get_astrometry_config_calls, 1);
     EXPECT_EQ(todproc.engine().calib.get_apt_calls, 1);
@@ -5919,7 +5919,7 @@ TEST(pipeline_execution, prepares_initial_observation) {
 
     EXPECT_TEMPLATE_TRUE(citlali::pipeline::prepare_initial_observation<
         false, FakeKidsProc>(
-        todproc, config, rawobs, map_extents, map_coords, logger));
+        todproc, config, rawobs, map_extents, map_coords, 0, logger));
 
     EXPECT_EQ(config.get_config_calls, 1);
     EXPECT_EQ(config.requested_key, "kids");
@@ -6015,7 +6015,7 @@ TEST(pipeline_execution, rejects_initial_observation_setup_on_bad_flxscale) {
     auto logger = std::make_shared<FakeLogger>();
 
     EXPECT_TEMPLATE_FALSE(citlali::pipeline::prepare_initial_observation_setup<false>(
-        todproc, rawobs, rawobs_kids_meta, map_extents, map_coords, logger));
+        todproc, rawobs, rawobs_kids_meta, map_extents, map_coords, 0, logger));
 
     EXPECT_EQ(todproc.check_inputs_calls, 0);
     EXPECT_EQ(todproc.calc_map_num_calls, 0);

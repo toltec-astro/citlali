@@ -294,6 +294,13 @@ log record blocks a successful audit; warnings remain informational. The profile
 sidecar `citlali_profile.ecsv` is reported separately and does not count as a
 stable product mismatch.
 
+For candidates that include the observation-resolved astrometry contract, add
+`--require-astrometry-provenance` to `audit_reduction_run.py`, or
+`--require-candidate-astrometry-provenance` to
+`compare_reduction_audits.py`. These gates validate authority, configured
+offsets, effective application mode, observation coverage, and realized
+installation/interpolation counts without reading large products.
+
 ## Files
 
 - `run_manifest_template.yaml`: human-fillable run record template for Unity or

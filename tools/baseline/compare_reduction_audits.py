@@ -23,6 +23,7 @@ def audit_for(
     require_coadd_provenance: bool = False,
     require_noise_products_provenance: bool = False,
     require_pointing_provenance: bool = False,
+    require_astrometry_provenance: bool = False,
 ) -> dict[str, Any]:
     args = argparse.Namespace(
         reduction=path,
@@ -37,6 +38,7 @@ def audit_for(
             require_noise_products_provenance
         ),
         require_pointing_provenance=require_pointing_provenance,
+        require_astrometry_provenance=require_astrometry_provenance,
     )
     return audit_reduction_run.build_audit(args)
 
@@ -131,6 +133,9 @@ def compare_audits(args: argparse.Namespace) -> dict[str, Any]:
         ),
         require_pointing_provenance=getattr(
             args, "require_candidate_pointing_provenance", False
+        ),
+        require_astrometry_provenance=getattr(
+            args, "require_candidate_astrometry_provenance", False
         ),
     )
     base_intervals = baseline.get("log", {}).get("interval_seconds", {})
@@ -326,6 +331,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         "--require-candidate-pointing-provenance",
         action="store_true",
         help="Require valid pointing provenance only for the candidate.",
+    )
+    parser.add_argument(
+        "--require-candidate-astrometry-provenance",
+        action="store_true",
+        help="Require valid astrometry provenance only for the candidate.",
     )
     parser.add_argument("--json-out", default="", help="Optional path for machine-readable JSON.")
     parser.add_argument("--report-out", default="", help="Optional path for Markdown output.")

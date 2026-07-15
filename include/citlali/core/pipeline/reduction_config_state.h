@@ -2,6 +2,7 @@
 
 #include <citlali/core/config/reduction_config.h>
 #include <citlali/core/config/runtime_execution_plan.h>
+#include <citlali/core/pipeline/astrometry_execution_plan.h>
 #include <citlali/core/pipeline/beammap_execution_plan.h>
 #include <citlali/core/pipeline/coadd_execution_plan.h>
 #include <citlali/core/pipeline/config_diagnostics_state.h>
@@ -21,6 +22,7 @@ struct ReductionConfigState {
     citlali::config::ReductionConfig typed_config;
     citlali::config::RuntimeConfigProvenance runtime_config_provenance;
     KidsExternalConfigPlan kids_external_plan;
+    AstrometryExecutionPlan astrometry_plan;
     RawTimestreamExecutionPlan raw_timestream_plan;
     ProcessedTimestreamExecutionPlan processed_timestream_plan;
     MapmakingExecutionPlan mapmaking_plan;

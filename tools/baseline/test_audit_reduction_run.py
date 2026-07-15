@@ -762,6 +762,62 @@ def valid_polarimetry_document() -> dict:
     }
 
 
+def valid_astrometry_document() -> dict:
+    config = {
+        "pointing_offsets": {
+            "enabled": True,
+            "az_arcsec": [1.0, 2.0],
+            "alt_arcsec": [3.0, 4.0],
+            "modified_julian_date": [60000.0, 60001.0],
+        }
+    }
+    return {
+        "schema_version": "citlali-astrometry-provenance-v1",
+        "initialized": True,
+        "authority": {
+            "calibration_selection": "tolteca",
+            "application": "citlali",
+            "support_origin_metadata_available": False,
+            "configured_values_origin": "upstream-unspecified",
+        },
+        "identity": {
+            "axes": ["az", "alt"],
+            "offset_unit": "arcsec",
+            "time_support": "modified-julian-date",
+            "algorithm": "legacy-citlali-constant-or-linear-v1",
+        },
+        "contract": {
+            "upstream_selection_owner": "tolteca",
+            "one_configured_value": "constant",
+            "two_values_without_positive_mjd_pair": "observation-span-linear",
+            "two_values_with_positive_mjd_pair": "explicit-mjd-linear",
+            "explicit_mjd_requires_observation_bracketing": True,
+            "extrapolation": "forbidden",
+        },
+        "expected_observation_count": 1,
+        "observations": [
+            {
+                "observation_index": 0,
+                "obsnum": 152389,
+                "requested": config,
+                "effective": {
+                    "config": config,
+                    "resolution": {
+                        "application_mode": "explicit-mjd-linear",
+                        "explicit_mjd_support": True,
+                    },
+                },
+                "realized": {
+                    "installation_count": 2,
+                    "application_count": 2,
+                    "telescope_sample_count": 303,
+                },
+            }
+        ],
+        "reduction_completed": True,
+    }
+
+
 def write_valid_config_source_manifest(redu: Path) -> None:
     source = redu / "70_reduce.yaml"
     merged = redu / "citlali_merged_config.yaml"
@@ -798,6 +854,41 @@ def write_valid_config_source_manifest(redu: Path) -> None:
 
 
 class ProvenanceAuditTest(unittest.TestCase):
+    def test_accepts_complete_astrometry_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "astrometry_provenance.yaml").write_text(
+                yaml.safe_dump(valid_astrometry_document(), sort_keys=False),
+                encoding="utf-8",
+            )
+
+            record = audit.audit_provenance_sidecars(
+                redu, require_astrometry=True
+            )["astrometry"]
+
+            self.assertTrue(record["present"])
+            self.assertTrue(record["required"])
+            self.assertTrue(record["valid"])
+
+    def test_rejects_inconsistent_astrometry_application_mode(self) -> None:
+        document = valid_astrometry_document()
+        document["observations"][0]["effective"]["resolution"][
+            "application_mode"
+        ] = "constant"
+
+        self.assertIn(
+            "astrometry observation 0 application mode is inconsistent",
+            audit.astrometry_provenance_semantic_errors(document),
+        )
+
+    def test_rejects_missing_required_astrometry_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            record = audit.audit_provenance_sidecars(
+                Path(directory), require_astrometry=True
+            )["astrometry"]
+
+            self.assertFalse(record["valid"])
+
     def test_accepts_disabled_polarimetry_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             redu = Path(directory)

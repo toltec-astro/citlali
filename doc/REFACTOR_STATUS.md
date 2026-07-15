@@ -53,8 +53,8 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 391 tests with none skipped or disabled; all
-  82 config-boundary/preflight tests pass.
+- CTest discovers and passes all 398 tests with none skipped or disabled; all
+  84 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -1301,7 +1301,7 @@ skipped, missing, or extra records. The disabled capability boundary is
 accepted. Enabled polarimetry remains planned but unavailable until its
 scientific/HWPR contract and enabled reference gate are approved.
 
-## Atomic Astrometry Observation Loading Prepared
+## Observation-Resolved Astrometry Candidate
 
 The astrometry calibration-item loader now constructs the complete typed
 pointing-offset request before touching observation runtime state. Structural
@@ -1311,16 +1311,37 @@ Invalid input throws the normal typed invalid-config error; the loader no
 longer calls `exit()` or builds typed policy by mirroring partially mutated
 runtime state. Legacy named axes, positional axes, one/two-value shapes, and
 non-positive MJD sentinel normalization are preserved. The interpolation
-kernel and its existing no-extrapolation behavior are unchanged.
+kernel and its existing no-extrapolation behavior are unchanged. The remaining
+interpolation failures now propagate as typed exceptions rather than terminating
+the process from library code; successful numerical behavior is unchanged.
 
-Focused tests cover atomic stale-state replacement, named two-point input,
-legacy positional input, sentinel normalization, missing axes, and non-finite
-or explicitly empty time values. The CLI and test targets build and all 391
-CTests pass. The combined
-astrometry/photometry domain is now typed-authoritative with one-way adapters,
-but remains incomplete: observation-resolved requested/effective/realized
-astrometry provenance and owner approval of the coordinate/time contract are
-the next gate.
+The project owner approved the legacy application contract. TolTECA selects
+pointing support: two bracketing pointing observations produce interpolated
+offsets, one pointing produces constant offsets, and no pointing observations
+leave the explicitly configured offsets in force. Citlali applies the supplied
+values. Positive MJD endpoints must remain strictly increasing, bracket the
+whole observation, and are never extrapolated. Citlali does not receive the
+upstream support-selection metadata, so it records that origin as unspecified
+rather than inferring whether a constant came from one pointing or direct
+configuration.
+
+An observation-indexed execution plan now retains each immutable request,
+effective application mode (`constant`, `observation-span-linear`, or
+`explicit-mjd-linear`), observation number, installation/application counts,
+and telescope sample count. Successful CLI completion requires atomic
+`citlali-astrometry-provenance-v1`. Its authority record names TolTECA for
+calibration selection and Citlali for application. A semantic reduction audit
+and a static config-boundary audit reject incomplete lifecycle, malformed
+offsets, inconsistent modes, authority drift, reverse mirrors, process exits,
+or a missing required write.
+
+The CLI and test targets build; all 398 CTests, 60 reduction-audit tests, and the
+full 84-test config preflight pass. The combined astrometry/photometry domain is
+still marked partial until Unity validates the new required sidecar and
+scientific equivalence. The next gate should include a point reduction, then a
+multi-observation OOF reduction because that fixture exercises observation
+identity and stale-state isolation most directly. Beammap should follow before
+the combined domain is marked complete.
 
 ## Five-Phase Roadmap
 

@@ -26,9 +26,10 @@ template <bool IsBeammap, class TodProc, class RawObs, class RawObsKidsMeta,
 bool prepare_reduction_observation_calibration_state(
     TodProc &todproc, const RawObs &rawobs,
     const RawObsKidsMeta &rawobs_kids_meta, bool has_multiple_inputs,
-    const Logger &logger) {
+    std::size_t observation_index, const Logger &logger) {
     return configure_reduction_observation_calibration_if_needed<IsBeammap>(
-        todproc, rawobs, rawobs_kids_meta, has_multiple_inputs, logger);
+        todproc, rawobs, rawobs_kids_meta, has_multiple_inputs,
+        observation_index, logger);
 }
 
 template <class Engine, class Logger>
@@ -69,7 +70,8 @@ bool prepare_reduction_observation_inputs(
     auto &engine = todproc.engine();
 
     if (!prepare_reduction_observation_calibration_state<IsBeammap>(
-            todproc, rawobs, rawobs_kids_meta, has_multiple_inputs, logger)) {
+            todproc, rawobs, rawobs_kids_meta, has_multiple_inputs,
+            observation_index, logger)) {
         return false;
     }
 
