@@ -68,6 +68,12 @@ test proves isolation. Production profile call chains still use the temporary
 static adapter; step 3 is not complete until those sites receive the explicit
 owner and the adapter is deleted.
 
+The owner is also wired through non-CLI loading, processor selection, and mode
+dispatch to the root scientific pipeline signature. It is intentionally unused
+at that root for now: production profile recording and sidecar output must
+switch together after the owner reaches every nested scope, avoiding a
+transitional split between two collectors.
+
 ## Stop Rules
 
 Phase 3 is complete when the governing exit gates pass and the following are

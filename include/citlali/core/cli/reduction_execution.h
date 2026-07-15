@@ -80,6 +80,7 @@ bool run_cli_reduction_pipeline(TodProc &todproc, const IOCoordinator &co,
                                 Config &config,
                                 const ConfigFilepaths &config_filepaths,
                                 MapGeometry &map_geometry,
+                                citlali::pipeline::StageProfileCollector &stage_profile,
                                 const Logger &logger) {
     return citlali::pipeline::run_reduction_pipeline<
         IsBeammap, RawObsMap, FilteredObsMap, RawCoaddMap, FilteredCoaddMap,
@@ -89,7 +90,7 @@ bool run_cli_reduction_pipeline(TodProc &todproc, const IOCoordinator &co,
         [](auto &engine) {
             return date_obs_from_engine_telescope_time(engine);
         },
-        logger);
+        stage_profile, logger);
 }
 
 template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap,
@@ -100,6 +101,7 @@ template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap,
 bool prepare_and_run_cli_reduction_pipeline(
     TodProc &todproc, const IOCoordinator &co, Config &config,
     const ConfigFilepaths &config_filepaths, MapGeometry &map_geometry,
+    citlali::pipeline::StageProfileCollector &stage_profile,
     const Logger &logger) {
     if (!prepare_cli_reduction_runtime(todproc, config, logger)) {
         return false;
@@ -108,7 +110,8 @@ bool prepare_and_run_cli_reduction_pipeline(
     return run_cli_reduction_pipeline<
         IsBeammap, RawObsMap, FilteredObsMap, RawCoaddMap, FilteredCoaddMap,
         FitMaps, KidsDataProc>(
-        todproc, co, config, config_filepaths, map_geometry, logger);
+        todproc, co, config, config_filepaths, map_geometry, stage_profile,
+        logger);
 }
 
 template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap,
@@ -117,13 +120,16 @@ template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap,
           class Config, class ConfigFilepaths, class Logger>
 bool prepare_and_run_cli_reduction_pipeline(
     TodProc &todproc, const IOCoordinator &co, Config &config,
-    const ConfigFilepaths &config_filepaths, const Logger &logger) {
+    const ConfigFilepaths &config_filepaths,
+    citlali::pipeline::StageProfileCollector &stage_profile,
+    const Logger &logger) {
     auto map_geometry =
         citlali::pipeline::make_reduction_map_geometry<TodProc>();
     return prepare_and_run_cli_reduction_pipeline<
         IsBeammap, RawObsMap, FilteredObsMap, RawCoaddMap, FilteredCoaddMap,
         FitMaps, KidsDataProc>(
-        todproc, co, config, config_filepaths, map_geometry, logger);
+        todproc, co, config, config_filepaths, map_geometry, stage_profile,
+        logger);
 }
 
 template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap,
@@ -132,11 +138,13 @@ template <bool IsBeammap, auto RawObsMap, auto FilteredObsMap,
           class Config, class ConfigFilepaths, class Logger>
 citlali::session::ReductionResult run_reduction_processor_session(
     TodProc &todproc, const IOCoordinator &co, Config &config,
-    const ConfigFilepaths &config_filepaths, const Logger &logger) {
+    const ConfigFilepaths &config_filepaths,
+    citlali::pipeline::StageProfileCollector &stage_profile,
+    const Logger &logger) {
     if (!prepare_and_run_cli_reduction_pipeline<
             IsBeammap, RawObsMap, FilteredObsMap, RawCoaddMap,
             FilteredCoaddMap, FitMaps, KidsDataProc>(
-            todproc, co, config, config_filepaths, logger)) {
+            todproc, co, config, config_filepaths, stage_profile, logger)) {
         if (citlali::pipeline::config_diagnostics(todproc.engine())
                 .has_errors()) {
             return invalid_config_reduction_result(todproc.engine());
@@ -328,13 +336,15 @@ template <class TodProc, class BeammapTodProc, class PointingTodProc,
           class Config, class ConfigFilepaths, class Logger>
 citlali::session::ReductionResult run_reduction_processor_session_for_mode(
     TodProc &todproc, const IOCoordinator &co, Config &config,
-    const ConfigFilepaths &config_filepaths, const Logger &logger) {
+    const ConfigFilepaths &config_filepaths,
+    citlali::pipeline::StageProfileCollector &stage_profile,
+    const Logger &logger) {
     return run_reduction_processor_session<
         is_beammap_tod_processor_v<TodProc, BeammapTodProc>, RawObsMap,
         FilteredObsMap, RawCoaddMap, FilteredCoaddMap,
         fits_maps_for_tod_processor_v<TodProc, PointingTodProc>,
         KidsDataProc>(
-        todproc, co, config, config_filepaths, logger);
+        todproc, co, config, config_filepaths, stage_profile, logger);
 }
 
 template <class TodProc, class BeammapTodProc, class PointingTodProc,
@@ -342,12 +352,14 @@ template <class TodProc, class BeammapTodProc, class PointingTodProc,
           class ConfigFilepaths, class Logger>
 citlali::session::ReductionResult run_standard_reduction_processor_session(
     TodProc &todproc, const IOCoordinator &co, Config &config,
-    const ConfigFilepaths &config_filepaths, const Logger &logger) {
+    const ConfigFilepaths &config_filepaths,
+    citlali::pipeline::StageProfileCollector &stage_profile,
+    const Logger &logger) {
     return run_reduction_processor_session_for_mode<
         TodProc, BeammapTodProc, PointingTodProc, mapmaking::RawObs,
         mapmaking::FilteredObs, mapmaking::RawCoadd,
         mapmaking::FilteredCoadd, KidsDataProc>(
-        todproc, co, config, config_filepaths, logger);
+        todproc, co, config, config_filepaths, stage_profile, logger);
 }
 
 template <class TodProcVariant, class RunProcessor>
@@ -374,14 +386,17 @@ template <class BeammapTodProc, class PointingTodProc, class KidsDataProc,
           class ConfigFilepaths, class Logger>
 citlali::session::ReductionResult run_standard_reduction_variant_session(
     TodProcVariant &todproc, const IOCoordinator &co, Config &config,
-    const ConfigFilepaths &config_filepaths, const Logger &logger) {
+    const ConfigFilepaths &config_filepaths,
+    citlali::pipeline::StageProfileCollector &stage_profile,
+    const Logger &logger) {
     return visit_tod_processor_or_failure(
         todproc,
         [&](auto &selected_todproc) {
             using todproc_t = std::decay_t<decltype(selected_todproc)>;
             return run_standard_reduction_processor_session<
                 todproc_t, BeammapTodProc, PointingTodProc, KidsDataProc>(
-                selected_todproc, co, config, config_filepaths, logger);
+                selected_todproc, co, config, config_filepaths, stage_profile,
+                logger);
         });
 }
 

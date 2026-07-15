@@ -168,6 +168,13 @@ not leak between runs. Existing production profile sites still use the legacy
 static adapter and therefore remain an open Phase 3 gate; they will be migrated
 by call-chain tranche before that adapter is removed.
 
+The explicit collector now crosses the complete non-CLI orchestration boundary
+from `ReductionSession`, through processor selection, to
+`run_reduction_pipeline`. This signature-only wiring leaves legacy static
+recording and sidecar output untouched, so current timing products retain their
+existing behavior while deeper call chains are migrated. The full 448-test
+suite passes after the boundary change.
+
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution
 consumes the effective thread and runtime policy. Remaining direct mutable

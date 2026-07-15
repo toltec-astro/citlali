@@ -15,7 +15,9 @@ bool run_reduction_pipeline(
     TodProc &todproc, const IOCoordinator &co, CitlaliConfig &citlali_config,
     const ConfigFilepaths &config_filepaths, MapExtents &map_extents,
     MapCoords &map_coords, DateObsFactory &&date_obs_factory,
+    StageProfileCollector &stage_profile,
     const Logger &logger) {
+    (void)stage_profile;
     reset_stage_profile();
 
     {

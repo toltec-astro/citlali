@@ -6961,6 +6961,7 @@ TEST(pipeline_execution, runs_reduction_pipeline) {
     std::vector<std::string> config_filepaths;
     std::vector<int> map_extents;
     std::vector<int> map_coords;
+    citlali::pipeline::StageProfileCollector stage_profile;
     auto logger = std::make_shared<FakeLogger>();
 
     EXPECT_TEMPLATE_TRUE(citlali::pipeline::run_reduction_pipeline<
@@ -6969,7 +6970,7 @@ TEST(pipeline_execution, runs_reduction_pipeline) {
         FakeKidsProc>(
         todproc, co, config, config_filepaths, map_extents, map_coords,
         [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
-        logger));
+        stage_profile, logger));
 
     EXPECT_EQ(todproc.calc_omb_size_calls, 1);
     EXPECT_EQ(map_extents, (std::vector<int>{303}));

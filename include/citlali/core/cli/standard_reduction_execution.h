@@ -32,17 +32,21 @@ template <class KidsDataProc, class IOCoordinator, class Config,
 citlali::session::ReductionResult run_standard_citlali_reduction_variant(
     StandardTodProcessorVariant &todproc, const IOCoordinator &co,
     Config &config, const ConfigFilepaths &config_filepaths,
+    citlali::pipeline::StageProfileCollector &stage_profile,
     const Logger &logger) {
     return run_standard_reduction_variant_session<
         StandardBeammapTodProcessor, StandardPointingTodProcessor,
-        KidsDataProc>(todproc, co, config, config_filepaths, logger);
+        KidsDataProc>(todproc, co, config, config_filepaths, stage_profile,
+                      logger);
 }
 
 template <class KidsDataProc, class IOCoordinator, class Config,
           class ConfigFilepaths, class Logger>
 citlali::session::ReductionResult select_and_run_standard_citlali_reduction(
     const IOCoordinator &co, Config &config,
-    const ConfigFilepaths &config_filepaths, const Logger &logger) {
+    const ConfigFilepaths &config_filepaths,
+    citlali::pipeline::StageProfileCollector &stage_profile,
+    const Logger &logger) {
     StandardTodProcessorVariant todproc;
     const auto selection_status = select_standard_citlali_tod_processor(
         todproc, config, logger);
@@ -51,17 +55,18 @@ citlali::session::ReductionResult select_and_run_standard_citlali_reduction(
     }
 
     return run_standard_citlali_reduction_variant<KidsDataProc>(
-        todproc, co, config, config_filepaths, logger);
+        todproc, co, config, config_filepaths, stage_profile, logger);
 }
 
 template <class KidsDataProc, class Config, class IOCoordinator,
           class Logger>
 citlali::session::ReductionResult run_standard_citlali_reduction_inputs(
     StandardReductionInputs<Config, IOCoordinator> &inputs,
+    citlali::pipeline::StageProfileCollector &stage_profile,
     const Logger &logger) {
     return select_and_run_standard_citlali_reduction<KidsDataProc>(
         inputs.coordinator, inputs.loaded_config.config,
-        inputs.loaded_config.filepaths, logger);
+        inputs.loaded_config.filepaths, stage_profile, logger);
 }
 
 template <class KidsDataProc, class IOCoordinator, class RuntimeConfig,
@@ -69,11 +74,11 @@ template <class KidsDataProc, class IOCoordinator, class RuntimeConfig,
 citlali::session::ReductionResult load_and_run_standard_citlali_reduction(
     citlali::session::ReductionSession &session,
     const RuntimeConfig &runtime_config, const Logger &logger) {
-    return session.run([&](auto &) {
+    return session.run([&](auto &stage_profile) {
         auto inputs = load_standard_reduction_inputs<IOCoordinator>(
             runtime_config, logger);
         return run_standard_citlali_reduction_inputs<KidsDataProc>(
-            inputs, logger);
+            inputs, stage_profile, logger);
     });
 }
 
