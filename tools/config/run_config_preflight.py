@@ -54,6 +54,8 @@ def main(argv: list[str]) -> int:
         "tools/config/audit_config_authority_reads.py",
         "tools/config/audit_config_leaf_contract.py",
         "tools/config/test_audit_config_leaf_contract.py",
+        "tools/config/audit_learning_boundary.py",
+        "tools/config/test_audit_learning_boundary.py",
         "tools/config/audit_mapmaking_boundary.py",
         "tools/config/test_audit_mapmaking_boundary.py",
         "tools/config/audit_coadd_boundary.py",
@@ -106,6 +108,7 @@ def main(argv: list[str]) -> int:
             "tools.config.test_audit_raw_timestream_execution_reads",
             "tools.config.test_validate_config_authority_inventory",
             "tools.config.test_audit_config_leaf_contract",
+            "tools.config.test_audit_learning_boundary",
         ],
         [
             sys.executable,
@@ -146,6 +149,13 @@ def main(argv: list[str]) -> int:
             "--markdown-out",
             str(work_dir / "config_read_census.md"),
             "--fail-on-review",
+        ],
+        [
+            sys.executable,
+            "tools/config/audit_learning_boundary.py",
+            "--json-out",
+            str(work_dir / "learning_boundary.json"),
+            "--fail-on-drift",
         ],
         [
             sys.executable,

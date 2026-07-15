@@ -76,12 +76,12 @@
       "config_prefixes": ["timestream.learning"],
       "typed_owner": "citlali::config::ReductionConfig::timestream.learning",
       "loader": "include/citlali/core/pipeline/learning_config_read.h",
-      "execution_authority": "legacy",
+      "execution_authority": "typed",
       "legacy_targets": ["Engine::learning.options"],
-      "adapter_direction": "legacy-to-typed",
-      "migration_status": "legacy-authoritative-with-typed-mirror",
+      "adapter_direction": "typed-to-legacy",
+      "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Phase 2 closeout gap: parse all 28 leaves into immutable typed request, build the legacy numerical Options value through one typed-to-legacy adapter, include learning policy in requested/effective processed provenance, and accept an enabled-learning point gate with exact complete products."
+      "exit_gate": "Implementation complete, Unity gate pending: all 28 leaves parse into immutable typed request, one typed-to-legacy adapter builds the unchanged numerical Options value, and requested/effective processed provenance contains the full learning policy. Accept an enabled-learning point run with exact complete products before marking provenance complete."
     },
     {
       "id": "polarimetry",

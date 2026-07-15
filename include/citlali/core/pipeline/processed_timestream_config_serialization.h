@@ -87,6 +87,58 @@ inline YAML::Node fruit_loops_config_node(
     return node;
 }
 
+inline YAML::Node learning_config_node(
+    const citlali::config::TimestreamLearningConfig &config) {
+    YAML::Node node;
+    node["enabled"] = config.enabled;
+    node["diagnostics_enabled"] = config.diagnostics_enabled;
+    node["learn_iters"] = config.learn_iters;
+    node["apply_start_iter"] = config.apply_start_iter;
+    node["max_records_per_type"] = config.max_records_per_type;
+    node["apply_sample_masks_enabled"] = config.apply_sample_masks_enabled;
+    node["apply_max_new_flagged_fraction"] =
+        config.apply_max_new_flagged_fraction;
+    const auto &outlier = config.map_pixel_outlier;
+    node["map_pixel_outlier_diagnostics_enabled"] =
+        outlier.diagnostics_enabled;
+    node["map_pixel_outlier_contributor_diagnostics_enabled"] =
+        outlier.contributor_diagnostics_enabled;
+    node["map_pixel_outlier_targeted_contributor_diagnostics_enabled"] =
+        outlier.targeted_contributor_diagnostics_enabled;
+    node["map_pixel_outlier_detector_exclusion_enabled"] =
+        outlier.detector_exclusion_enabled;
+    node["map_pixel_outlier_top_n"] = outlier.top_n;
+    node["map_pixel_outlier_targeted_contributor_max_pixels"] =
+        outlier.targeted_contributor_max_pixels;
+    node["map_pixel_outlier_detector_exclusion_min_pixels"] =
+        outlier.detector_exclusion_min_pixels;
+    node["map_pixel_outlier_min_abs_z"] = outlier.min_abs_z;
+    node["map_pixel_outlier_min_n_eff"] = outlier.min_n_eff;
+    node["map_pixel_outlier_source_radius_arcsec"] =
+        outlier.source_radius_arcsec;
+    node["busy_detector_exclusion_enabled"] =
+        config.busy_detector.exclusion_enabled;
+    const auto &pathology = config.scan_network_pathology;
+    node["scan_network_pathology_enabled"] = pathology.enabled;
+    node["scan_network_pathology_apply_pre_rtc"] = pathology.apply_pre_rtc;
+    node["scan_network_pathology_apply_pre_ptc"] = pathology.apply_pre_ptc;
+    node["scan_network_pathology_apply_pre_mapmaking"] =
+        pathology.apply_pre_mapmaking;
+    node["scan_network_pathology_min_candidate_clusters"] =
+        pathology.min_candidate_clusters;
+    node["scan_network_pathology_min_candidate_events"] =
+        pathology.min_candidate_events;
+    node["scan_network_pathology_min_max_residual_z"] =
+        pathology.min_max_residual_z;
+    node["scan_network_pathology_severe_candidate_events"] =
+        pathology.severe_candidate_events;
+    node["scan_network_pathology_severe_max_residual_z"] =
+        pathology.severe_max_residual_z;
+    node["scan_network_pathology_max_new_flagged_fraction"] =
+        pathology.max_new_flagged_fraction;
+    return node;
+}
+
 inline YAML::Node processed_second_pass_local_config_node(
     const citlali::config::ProcessedTimeChunkSecondPassLocalConfig &config) {
     YAML::Node node;
@@ -380,6 +432,7 @@ inline YAML::Node processed_timestream_config_snapshot_node(
     const ProcessedTimestreamConfigSnapshot &snapshot) {
     YAML::Node node;
     node["fruit_loops"] = fruit_loops_config_node(snapshot.fruit_loops);
+    node["learning"] = learning_config_node(snapshot.learning);
     node["processed_time_chunk"] =
         processed_time_chunk_config_node(snapshot.processed_time_chunk);
     return node;

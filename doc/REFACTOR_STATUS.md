@@ -1477,6 +1477,16 @@ request, one-way adapter, validation, and existing provenance before declaring
 Phase 2 complete. No scientific algorithm or reduction behavior changed at
 this checkpoint.
 
+The learning omission is now locally migrated. All 28 leaves parse directly
+into immutable `TimestreamLearningConfig`; one one-way adapter constructs the
+unchanged `ReductionLearningState::Options` numerical input. The processed-
+timestream requested/effective snapshots and versioned provenance now include
+the complete learning policy. A frozen 28-path audit rejects reverse mirrors,
+reader drift, incomplete adapter coverage, or missing serialization. Local CLI
+and test builds plus focused reader/adapter tests pass. Because the standard
+point fixture enables learning, an exact point Unity gate is the remaining
+condition before marking this closeout domain complete.
+
 ## Five-Phase Roadmap
 
 ### Phase 1 - Safety Stabilization

@@ -12,6 +12,7 @@ namespace citlali::pipeline {
 
 struct ProcessedTimestreamConfigSnapshot {
     citlali::config::TimestreamFruitLoopsConfig fruit_loops;
+    citlali::config::TimestreamLearningConfig learning;
     citlali::config::ProcessedTimeChunkConfig processed_time_chunk;
 };
 
@@ -19,6 +20,7 @@ inline ProcessedTimestreamConfigSnapshot snapshot_processed_timestream_config(
     const citlali::config::TimestreamConfig &config) {
     return ProcessedTimestreamConfigSnapshot{
         config.fruit_loops,
+        config.learning,
         config.processed_time_chunk,
     };
 }

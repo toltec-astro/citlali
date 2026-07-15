@@ -40,9 +40,9 @@ void Engine::get_timestream_config(CT &config) {
     /* get raw time chunk config */
     get_rtc_config(config);
 
-    /* get processed time chunk config */
-    get_ptc_config(config);
-
     /* get shared reduction-learning config */
     get_learning_config(config);
+
+    /* get processed time chunk config */
+    get_ptc_config(config);
 }

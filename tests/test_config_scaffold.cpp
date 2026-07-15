@@ -17,6 +17,8 @@
 #include <citlali/core/pipeline/coadd_provenance.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>
+#include <citlali/core/pipeline/learning_config_adapter.h>
+#include <citlali/core/pipeline/learning_config_read.h>
 #include <citlali/core/pipeline/map_geometry.h>
 #include <citlali/core/pipeline/map_index_state.h>
 #include <citlali/core/pipeline/mapmaking_execution_plan.h>
@@ -3697,6 +3699,83 @@ TEST(config_scaffold, validates_top_level_config_values) {
     auto report = citlali::config::validate(config);
     EXPECT_FALSE(report.ok());
     EXPECT_EQ(report.error_count(), 8U);
+}
+
+TEST(config_scaffold, reads_learning_into_typed_request) {
+    ensure_citlali_test_logger();
+    auto config = tula::config::YamlConfig::from_str(R"yaml(
+timestream:
+  learning:
+    enabled: true
+    learn_iters: 4
+    map_pixel_outlier_top_n: 17
+    scan_network_pathology_max_new_flagged_fraction: 0.2
+)yaml");
+    citlali::config::TimestreamLearningConfig request;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_learning_config(
+        config, request, diagnostics);
+
+    ASSERT_FALSE(diagnostics.has_errors());
+    EXPECT_TRUE(request.enabled);
+    EXPECT_EQ(request.learn_iters, 4);
+    EXPECT_EQ(request.map_pixel_outlier.top_n, 17);
+    EXPECT_DOUBLE_EQ(
+        request.scan_network_pathology.max_new_flagged_fraction, 0.2);
+}
+
+TEST(config_scaffold, adapts_learning_request_one_way) {
+    struct FakeOptions {
+        bool enabled = false;
+        bool diagnostics_enabled = false;
+        int learn_iters = 0;
+        int apply_start_iter = 0;
+        int max_records_per_type = 0;
+        bool apply_sample_masks_enabled = false;
+        double apply_max_new_flagged_fraction = 0.0;
+        bool map_pixel_outlier_diagnostics_enabled = false;
+        bool map_pixel_outlier_contributor_diagnostics_enabled = false;
+        bool map_pixel_outlier_targeted_contributor_diagnostics_enabled = false;
+        bool map_pixel_outlier_detector_exclusion_enabled = false;
+        int map_pixel_outlier_top_n = 0;
+        int map_pixel_outlier_targeted_contributor_max_pixels = 0;
+        int map_pixel_outlier_detector_exclusion_min_pixels = 0;
+        double map_pixel_outlier_min_abs_z = 0.0;
+        double map_pixel_outlier_min_n_eff = 0.0;
+        double map_pixel_outlier_source_radius_arcsec = 0.0;
+        bool busy_detector_exclusion_enabled = false;
+        bool scan_network_pathology_enabled = false;
+        bool scan_network_pathology_apply_pre_rtc = false;
+        bool scan_network_pathology_apply_pre_ptc = false;
+        bool scan_network_pathology_apply_pre_mapmaking = false;
+        int scan_network_pathology_min_candidate_clusters = 0;
+        int scan_network_pathology_min_candidate_events = 0;
+        double scan_network_pathology_min_max_residual_z = 0.0;
+        int scan_network_pathology_severe_candidate_events = 0;
+        double scan_network_pathology_severe_max_residual_z = 0.0;
+        double scan_network_pathology_max_new_flagged_fraction = 0.0;
+    };
+    struct FakeLearning {
+        using Options = FakeOptions;
+        FakeOptions options;
+        void configure(FakeOptions value) { options = value; }
+    } learning;
+    citlali::config::TimestreamLearningConfig request;
+    request.enabled = true;
+    request.learn_iters = 5;
+    request.map_pixel_outlier.top_n = 19;
+    request.scan_network_pathology.max_new_flagged_fraction = 0.25;
+
+    citlali::pipeline::adapt_learning_config_one_way(request, learning);
+
+    EXPECT_TRUE(learning.options.enabled);
+    EXPECT_EQ(learning.options.learn_iters, 5);
+    EXPECT_EQ(learning.options.map_pixel_outlier_top_n, 19);
+    EXPECT_DOUBLE_EQ(
+        learning.options.scan_network_pathology_max_new_flagged_fraction,
+        0.25);
+    EXPECT_EQ(request.learn_iters, 5);
 }
 
 TEST(config_scaffold, validates_timestream_output_selection_values) {
