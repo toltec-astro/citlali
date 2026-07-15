@@ -85,6 +85,7 @@ void begin_beammap_observation_if_available(
         const auto &observation = maps.observations.back();
         plan.begin_observation(
             observation.observation_index, observation.obsnum,
+            beammap_config(engine).source,
             checked_beammap_count(detector_count, "detector count"),
             observation.map_count,
             checked_beammap_count(scan_count, "scan count"));

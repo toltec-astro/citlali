@@ -1,14 +1,23 @@
 #pragma once
 
 #include <citlali/core/config/beammap_config.h>
+#include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/config_parse_tracking.h>
 
 #include <Eigen/Core>
 
 #include <cmath>
+#include <map>
+#include <string>
 #include <tuple>
+#include <utility>
 
 namespace citlali::pipeline {
+
+struct BeammapSourceObservationConfig {
+    citlali::config::BeammapSourceConfig source;
+    std::map<std::string, double> fluxes_mjy_beam;
+};
 
 template <class Config, class SourceConfig, class Diagnostics>
 void read_beammap_source_identity_config(Config &config,
@@ -47,6 +56,17 @@ void read_beammap_source_fluxes(Config &config, FluxMap &fluxes_mjy_beam,
     }
 }
 
+template <class Config, class Diagnostics>
+BeammapSourceObservationConfig read_beammap_source_observation_config(
+    Config &config, Diagnostics &diagnostics) {
+    BeammapSourceObservationConfig observation;
+    read_beammap_source_identity_config(
+        config, observation.source, diagnostics);
+    read_beammap_source_fluxes(
+        config, observation.fluxes_mjy_beam, observation.source);
+    return observation;
+}
+
 template <class FluxMap, class ArrayNameMap, class Logger>
 bool validate_beammap_source_fluxes(const FluxMap &fluxes_mjy_beam,
                                     const ArrayNameMap &array_name_map,
@@ -71,6 +91,27 @@ bool validate_beammap_source_fluxes(const FluxMap &fluxes_mjy_beam,
         }
     }
     return valid;
+}
+
+template <class ArrayNameMap, class Logger>
+void require_valid_beammap_source_fluxes(
+    const BeammapSourceObservationConfig &observation,
+    const ArrayNameMap &array_name_map, const Logger &logger) {
+    if (!validate_beammap_source_fluxes(
+            observation.fluxes_mjy_beam, array_name_map, logger)) {
+        throw citlali::error::invalid_config(
+            "invalid beammap_source flux configuration");
+    }
+}
+
+template <class SourceConfig, class FluxMap>
+void install_beammap_source_observation_config(
+    BeammapSourceObservationConfig observation,
+    SourceConfig &source_config, FluxMap &fluxes_mjy_beam,
+    FluxMap &fluxes_mjy_sr) {
+    source_config = std::move(observation.source);
+    fluxes_mjy_beam = std::move(observation.fluxes_mjy_beam);
+    fluxes_mjy_sr.clear();
 }
 
 }  // namespace citlali::pipeline

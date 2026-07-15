@@ -10,17 +10,16 @@ template<typename CT>
 void Engine::get_photometry_config(CT &config) {
     auto &source_config = citlali::pipeline::beammap_config(*this).source;
     auto &config_diag = citlali::pipeline::config_diagnostics(*this);
-    source_config = citlali::config::BeammapSourceConfig{};
-
-    citlali::pipeline::read_beammap_source_identity_config(
-        config, source_config, config_diag);
-    citlali::pipeline::read_beammap_source_fluxes(
-        config, source_flux_mJy_beam, source_config);
+    auto observation =
+        citlali::pipeline::read_beammap_source_observation_config(
+            config, config_diag);
 
     if (citlali::pipeline::runtime_reduction_type(*this) ==
-            citlali::config::ReductionType::beammap &&
-        !citlali::pipeline::validate_beammap_source_fluxes(
-            source_flux_mJy_beam, toltec_io.array_name_map, logger)) {
-        std::exit(EXIT_FAILURE);
+        citlali::config::ReductionType::beammap) {
+        citlali::pipeline::require_valid_beammap_source_fluxes(
+            observation, toltec_io.array_name_map, logger);
     }
+    citlali::pipeline::install_beammap_source_observation_config(
+        std::move(observation), source_config, source_flux_mJy_beam,
+        source_flux_MJy_Sr);
 }

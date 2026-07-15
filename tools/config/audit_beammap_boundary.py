@@ -427,7 +427,7 @@ def provenance_state(repo_root: Path) -> dict[str, object]:
     contract_exact = all(
         token in source
         for token in (
-            '"citlali-beammap-provenance-v1"',
+            '"citlali-beammap-provenance-v2"',
             '"beammap_provenance.yaml"',
             "plan.realized().reduction_completed",
             "plan.realized().outputs_completed",
@@ -454,7 +454,7 @@ def provenance_state(repo_root: Path) -> dict[str, object]:
         "cli_completion_count": completion_count,
         "contract_exact": contract_exact,
         "completion_before_write": ordered,
-        "status": "required-atomic-v1" if exact else "unexpected",
+        "status": "required-atomic-v2" if exact else "unexpected",
         "exact": exact,
     }
 

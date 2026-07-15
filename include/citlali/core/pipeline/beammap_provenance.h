@@ -12,7 +12,7 @@
 namespace citlali::pipeline {
 
 inline constexpr const char *beammap_provenance_schema_version =
-    "citlali-beammap-provenance-v1";
+    "citlali-beammap-provenance-v2";
 inline constexpr const char *beammap_provenance_filename =
     "beammap_provenance.yaml";
 

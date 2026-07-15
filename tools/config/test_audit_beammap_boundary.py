@@ -17,7 +17,7 @@ class BeammapBoundaryAuditTest(unittest.TestCase):
         self.assertFalse(result["drift"])
         self.assertTrue(result["manifest"]["exact"])
         self.assertEqual(
-            result["provenance"]["status"], "required-atomic-v1"
+            result["provenance"]["status"], "required-atomic-v2"
         )
 
     def test_reader_covers_all_frozen_paths(self) -> None:

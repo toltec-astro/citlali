@@ -143,7 +143,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "partial",
-      "exit_gate": "The immutable 74-leaf request and separate effective plan are now constructed at the production boundary. Mature Beammap consumers temporarily receive a one-way effective compatibility snapshot, while the fit-radius adapter reads the effective plan directly. Record realized iteration/output cardinality, publish required atomic provenance, migrate bounded consumers where that removes real ambiguity, and retire the compatibility snapshot only when its consumers have explicit effective inputs."
+      "exit_gate": "Unity redu03 accepts the immutable 74-leaf request, effective plan, realized lifecycle, required detector-TOD cardinality, and version-one atomic provenance with exact scientific products. Version-two provenance now references an atomically replaced observation source value. Complete observation-resolved prior/reference decisions and any approved required output cardinalities, validate the version-two candidate, and retire the compatibility snapshot only when its consumers have explicit effective inputs."
     },
     {
       "id": "astrometry-photometry",
@@ -155,7 +155,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "mixed-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Define a complete typed source-measurement plan and distinguish requested catalog settings from realized fits."
+      "exit_gate": "Beammap source identity and per-array photometry are now parsed and validated as one observation value, installed by replacement, and referenced by Beammap provenance. Approve coordinate frame/range/wrap and missing-flux policy, complete astrometry lifecycle/provenance, and distinguish requested catalog settings from realized fits."
     },
     {
       "id": "kids-external",

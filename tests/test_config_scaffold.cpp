@@ -3391,6 +3391,53 @@ TEST(config_scaffold, validates_beammap_source_fluxes) {
     EXPECT_EQ(logger->error_calls, 2);
 }
 
+TEST(config_scaffold, rejects_invalid_beammap_source_observation) {
+    const std::map<int, std::string> array_names = {
+        {0, "a1100"}, {1, "a1400"}, {2, "a2000"}};
+    auto logger = std::make_shared<FakeLogger>();
+    citlali::pipeline::BeammapSourceObservationConfig observation;
+    observation.fluxes_mjy_beam = {
+        {"a1100", 1.0}, {"a1400", 2.0}};
+
+    try {
+        citlali::pipeline::require_valid_beammap_source_fluxes(
+            observation, array_names, logger);
+        FAIL() << "expected invalid beammap source configuration";
+    }
+    catch (const citlali::error::Error &error) {
+        EXPECT_EQ(error.code(), citlali::error::Code::invalid_config);
+        EXPECT_STREQ(
+            error.what(), "invalid beammap_source flux configuration");
+    }
+}
+
+TEST(config_scaffold, replaces_beammap_source_observation_atomically) {
+    citlali::config::BeammapSourceConfig source;
+    source.name = "old-source";
+    source.fluxes = {{"a1100", 99.0, 0.0}};
+    std::map<std::string, double> fluxes_mjy_beam = {
+        {"a1100", 99.0}, {"stale-array", 88.0}};
+    std::map<std::string, double> fluxes_mjy_sr = {
+        {"a1100", 9.0}, {"stale-array", 8.0}};
+
+    citlali::pipeline::BeammapSourceObservationConfig observation;
+    observation.source.name = "new-source";
+    observation.source.fluxes = {{"a1400", 2.0, 0.1}};
+    observation.fluxes_mjy_beam = {{"a1400", 2.0}};
+
+    citlali::pipeline::install_beammap_source_observation_config(
+        std::move(observation), source, fluxes_mjy_beam,
+        fluxes_mjy_sr);
+
+    EXPECT_EQ(source.name, "new-source");
+    ASSERT_EQ(source.fluxes.size(), 1U);
+    EXPECT_EQ(source.fluxes.front().array_name, "a1400");
+    EXPECT_EQ(
+        fluxes_mjy_beam,
+        (std::map<std::string, double>{{"a1400", 2.0}}));
+    EXPECT_TRUE(fluxes_mjy_sr.empty());
+}
+
 TEST(config_scaffold, validates_top_level_config_values) {
     citlali::config::ReductionConfig config;
     EXPECT_TRUE(citlali::config::validate(config).ok());

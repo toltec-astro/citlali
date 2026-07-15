@@ -482,6 +482,29 @@ def valid_beammap_document(
             {
                 "observation_index": 0,
                 "obsnum": 148670,
+                "source": {
+                    "name": "3C273",
+                    "ra_deg": 187.277917,
+                    "dec_deg": 2.052388,
+                    "coordinate_contract": "as_supplied",
+                    "fluxes": [
+                        {
+                            "array_name": "a1100",
+                            "value_mJy": 1000.0,
+                            "uncertainty_mJy": 10.0,
+                        },
+                        {
+                            "array_name": "a1400",
+                            "value_mJy": 900.0,
+                            "uncertainty_mJy": 9.0,
+                        },
+                        {
+                            "array_name": "a2000",
+                            "value_mJy": 800.0,
+                            "uncertainty_mJy": 8.0,
+                        },
+                    ],
+                },
                 "detector_count": 5234,
                 "map_count": 5234,
                 "scan_count": 198,
@@ -518,7 +541,7 @@ def valid_beammap_document(
             }
         )
     return {
-        "schema_version": "citlali-beammap-provenance-v1",
+        "schema_version": "citlali-beammap-provenance-v2",
         "initialized": True,
         "requested": {
             "iter_max": 3,
@@ -714,6 +737,38 @@ class ProvenanceAuditTest(unittest.TestCase):
 
             self.assertFalse(records["beammap"]["valid"])
             self.assertFalse(audit.provenance_ok({"provenance": records}))
+
+    def test_accepts_historical_beammap_v1_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            document = valid_beammap_document()
+            document["schema_version"] = "citlali-beammap-provenance-v1"
+            document["observations"][0].pop("source")
+            (redu / "beammap_provenance.yaml").write_text(
+                yaml.safe_dump(document, sort_keys=False),
+                encoding="utf-8",
+            )
+
+            beammap = audit.audit_provenance_sidecars(
+                redu, require_beammap=True
+            )["beammap"]
+
+            self.assertTrue(beammap["valid"])
+            self.assertEqual(
+                beammap["schema_version"],
+                "citlali-beammap-provenance-v1",
+            )
+
+    def test_rejects_invalid_beammap_v2_source_flux(self) -> None:
+        document = valid_beammap_document()
+        document["observations"][0]["source"]["fluxes"][0][
+            "value_mJy"
+        ] = 0.0
+
+        self.assertIn(
+            "beammap observation 0 source flux 0 value must be positive and finite",
+            audit.beammap_provenance_semantic_errors(document),
+        )
 
     def test_rejects_incomplete_beammap_detector_tod(self) -> None:
         document = valid_beammap_document()

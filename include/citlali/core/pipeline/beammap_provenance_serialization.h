@@ -131,11 +131,30 @@ inline YAML::Node beammap_detector_tod_realized_state_node(
     return node;
 }
 
+inline YAML::Node beammap_observation_source_node(
+    const citlali::config::BeammapSourceConfig &source) {
+    YAML::Node node;
+    node["name"] = source.name;
+    node["ra_deg"] = source.ra_deg;
+    node["dec_deg"] = source.dec_deg;
+    node["coordinate_contract"] = "as_supplied";
+    node["fluxes"] = YAML::Node{YAML::NodeType::Sequence};
+    for (const auto &flux : source.fluxes) {
+        YAML::Node flux_node;
+        flux_node["array_name"] = flux.array_name;
+        flux_node["value_mJy"] = flux.value_mjy;
+        flux_node["uncertainty_mJy"] = flux.uncertainty_mjy;
+        node["fluxes"].push_back(flux_node);
+    }
+    return node;
+}
+
 inline YAML::Node beammap_observation_state_node(
     const BeammapObservationState &observation) {
     YAML::Node node;
     node["observation_index"] = observation.observation_index;
     node["obsnum"] = observation.obsnum;
+    node["source"] = beammap_observation_source_node(observation.source);
     node["detector_count"] = observation.detector_count;
     node["map_count"] = observation.map_count;
     node["scan_count"] = observation.scan_count;

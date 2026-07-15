@@ -43,7 +43,10 @@ authoritative domains.
 
 Successful Beammap reductions publish required atomic
 `beammap_provenance.yaml` using schema
-`citlali-beammap-provenance-v1`. Publication is allowed only after lifecycle,
+`citlali-beammap-provenance-v2`. Version two adds the atomically installed
+observation source identity and per-array flux values; coordinates are labeled
+`as_supplied` rather than assigned an unapproved frame. Publication is allowed
+only after lifecycle,
 mapmaking, post-processing, and observation-output completion; publication
 failure propagates to the CLI. The static audit requires the complete ordered
 lifecycle and exactly one completion/write path.
@@ -53,6 +56,17 @@ After its atomic NetCDF writer returns, the plan records exactly one write,
 its Beammap output iteration, and its detector/slot/maximum-sample shape.
 Observation completion rejects a missing or duplicate enabled write. Disabled
 detector TOD records zero cardinality rather than a fabricated product.
+
+The adjacent `beammap_source.*` input is deliberately outside the 74-leaf
+Beammap policy surface. It is now parsed into one temporary observation value,
+validated before installation, and installed by replacement into both typed
+and compatibility state. A successful later observation cannot inherit
+per-array or derived flux entries from an earlier observation. Missing or
+nonpositive required array flux retains the existing fatal reduction policy,
+but failure now propagates as an invalid-config exception instead of calling
+`exit()` from library code. The owner must still approve source coordinate
+frame/range/wrap rules and any alternative missing-flux fallback before those
+policies can be added.
 
 ## Preparation Checkpoint
 
@@ -91,9 +105,10 @@ enabled detector-specific PTC TOD cardinality is already enforced.
 ## Stop Rule
 
 Do not redesign Gaussian fitting, prior matching, flagging, or detector-map
-algorithms in this domain. Next validate this lifecycle/provenance checkpoint
-with a matched Unity Beammap run, then add only the observation-resolved prior,
-reference, and Beammap-specific product facts needed to close the documented
-domain gates. Replace compatibility consumers only where an explicit effective
-input clarifies ownership. Any algorithmic change requires separate scientific
+algorithms in this domain. Version-one lifecycle provenance is accepted by
+Unity `redu03`; version-two atomic source provenance remains a pending matched
+Beammap gate. Add only the observation-resolved prior, reference, and
+Beammap-specific product facts needed to close the documented domain gates.
+Replace compatibility consumers only where an explicit effective input
+clarifies ownership. Any algorithmic change requires separate scientific
 ownership and validation evidence.

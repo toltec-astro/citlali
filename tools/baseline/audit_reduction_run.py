@@ -153,7 +153,11 @@ PROVENANCE_SIDECARS = {
     },
     "beammap": {
         "filename": "beammap_provenance.yaml",
-        "schema_version": "citlali-beammap-provenance-v1",
+        "schema_version": "citlali-beammap-provenance-v2",
+        "accepted_schema_versions": (
+            "citlali-beammap-provenance-v1",
+            "citlali-beammap-provenance-v2",
+        ),
         "required_paths": (
             ("initialized",),
             ("requested",),
@@ -1503,6 +1507,66 @@ def beammap_provenance_semantic_errors(
                 errors.append(f"duplicate beammap obsnum: {obsnum}")
             else:
                 seen_obsnums.add(obsnum)
+
+            if data.get("schema_version") == (
+                "citlali-beammap-provenance-v2"
+            ):
+                source = observation.get("source")
+                source_label = f"beammap observation {expected_index} source"
+                if not isinstance(source, dict):
+                    errors.append(f"{source_label} must be a mapping")
+                else:
+                    if not isinstance(source.get("name"), str):
+                        errors.append(f"{source_label} name must be a string")
+                    if source.get("coordinate_contract") != "as_supplied":
+                        errors.append(
+                            f"{source_label} coordinate contract is invalid"
+                        )
+                    for coordinate in ("ra_deg", "dec_deg"):
+                        value = source.get(coordinate)
+                        if (
+                            isinstance(value, bool)
+                            or not isinstance(value, (int, float))
+                            or not math.isfinite(value)
+                        ):
+                            errors.append(
+                                f"{source_label} {coordinate} must be finite"
+                            )
+                    fluxes = source.get("fluxes")
+                    if not isinstance(fluxes, list) or not fluxes:
+                        errors.append(f"{source_label} fluxes must be a sequence")
+                    else:
+                        for flux_index, flux in enumerate(fluxes):
+                            flux_label = f"{source_label} flux {flux_index}"
+                            if not isinstance(flux, dict):
+                                errors.append(f"{flux_label} must be a mapping")
+                                continue
+                            if not isinstance(flux.get("array_name"), str) or not flux[
+                                "array_name"
+                            ]:
+                                errors.append(
+                                    f"{flux_label} array name must not be empty"
+                                )
+                            value = flux.get("value_mJy")
+                            uncertainty = flux.get("uncertainty_mJy")
+                            if (
+                                isinstance(value, bool)
+                                or not isinstance(value, (int, float))
+                                or not math.isfinite(value)
+                                or value <= 0.0
+                            ):
+                                errors.append(
+                                    f"{flux_label} value must be positive and finite"
+                                )
+                            if (
+                                isinstance(uncertainty, bool)
+                                or not isinstance(uncertainty, (int, float))
+                                or not math.isfinite(uncertainty)
+                                or uncertainty < 0.0
+                            ):
+                                errors.append(
+                                    f"{flux_label} uncertainty must be nonnegative and finite"
+                                )
 
             count_names = ("detector_count", "map_count", "scan_count")
             counts = {name: observation.get(name) for name in count_names}

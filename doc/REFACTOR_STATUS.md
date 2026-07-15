@@ -50,7 +50,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 373 tests with none skipped or disabled; all
+- CTest discovers and passes all 375 tests with none skipped or disabled; all
   75 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
@@ -1184,6 +1184,31 @@ validation checkpoint, but the Beammap authority domain remains partial until
 observation-resolved prior/reference state and adjacent atomic
 `beammap_source.*` handling are completed. No unresolved fallback policy is
 inferred by this gate.
+
+## Atomic Beammap Source State Prepared
+
+The first adjacent astrometry/photometry safety cut removes the concrete
+cross-observation source-flux hazard without changing successful numerical
+behavior. `beammap_source.*` is parsed into a temporary observation value and
+all required runtime-array fluxes are validated before any Engine state is
+mutated. Successful installation replaces the typed source and legacy mJy/beam
+map and clears the derived MJy/sr map; it never merges with an earlier
+observation. Missing or invalid required flux retains the established fatal
+reduction outcome, but now throws a typed invalid-config error instead of
+calling `exit()` inside `Engine::get_photometry_config`.
+
+Beammap provenance advances to `citlali-beammap-provenance-v2` and records the
+installed source name, RA/Dec degree values, and per-array flux/uncertainty for
+each observation. The coordinate contract is explicitly `as_supplied`; this
+records current input without silently choosing frame, range, or wrapping
+semantics. The reduction audit accepts historical v1 sidecars and requires the
+new source record for v2.
+
+Both local targets build, all four focused source tests and all 375 CTests pass,
+and the full config preflight remains clean. This candidate needs a matched
+Unity Beammap run before v2 provenance is accepted. The owner decisions on
+canonical source coordinate semantics and whether missing array flux may ever
+use a fallback remain open; current fatal behavior is preserved meanwhile.
 
 ## Five-Phase Roadmap
 

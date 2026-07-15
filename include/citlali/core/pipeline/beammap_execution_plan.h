@@ -120,6 +120,7 @@ struct BeammapDetectorTodRealizedState {
 struct BeammapObservationState {
     std::size_t observation_index = 0;
     std::string obsnum;
+    citlali::config::BeammapSourceConfig source;
     std::size_t detector_count = 0;
     std::size_t map_count = 0;
     std::size_t scan_count = 0;
@@ -287,6 +288,7 @@ public:
 
     BeammapObservationState &begin_observation(
         std::size_t observation_index, std::string obsnum,
+        citlali::config::BeammapSourceConfig source,
         std::size_t detector_count, std::size_t map_count,
         std::size_t scan_count) {
         require_active_iteration();
@@ -305,8 +307,8 @@ public:
                 "previous beammap observation is incomplete");
         }
         observations_.push_back(BeammapObservationState{
-            observation_index, std::move(obsnum), detector_count,
-            map_count, scan_count});
+            observation_index, std::move(obsnum), std::move(source),
+            detector_count, map_count, scan_count});
         observations_.back().detector_tod.required =
             effective_.detector_tod_output.enabled;
         return observations_.back();
