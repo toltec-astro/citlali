@@ -21,9 +21,12 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest accepted point reduction: Phase 2 closeout `redu62`, produced by
-  `9a3901e91`, validates typed learning and interface-sync authority with exact
-  complete products against `redu61`. Observation-resolved astrometry
+- Latest accepted point reduction: Phase 3 session/compiled-boundary checkpoint
+  `redu63`, produced by `375aed5d8`, is exact against Phase 2 closeout `redu62`
+  across all 21 stable products and 2,041 complete comparison records. It
+  validates the run-owned profile boundary, first compiled implementation
+  boundary, and valid PTC weighting path without changing scientific products.
+  Observation-resolved astrometry
   provenance `redu61`, disabled polarimetry capability provenance
   `redu60`, external KIDs/config-source provenance
   `redu59`, post-processing authority cleanup `redu58`,
@@ -59,7 +62,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 448 tests. All 96 config-boundary/preflight
+- CTest discovers and passes all 451 tests. All 96 config-boundary/preflight
   tests pass; the checked leaf contract covers 573 leaves and the generated
   startup schema covers 724 normalized YAML nodes.
 
@@ -171,9 +174,11 @@ legacy implicit adapter are deleted, and the collector is not stored in
 
 Tests prove sequential-run reset behavior and verify representative reduction,
 observation, and map-output records in the supplied collector. Both local build
-targets pass, all 448 CTests pass, and full config preflight passes after the
-atomic cutover. A Unity point reduction must confirm unchanged products and
-profile-sidecar behavior before this Phase 3 gate is accepted as validated.
+targets pass, all 451 CTests pass, and full config preflight passes after the
+atomic cutover. Unity point `redu63` confirms unchanged products and profile-
+sidecar behavior. Its profile contains the same 76 stage/context records as
+accepted `redu62`; only elapsed values and the natural completion order of
+concurrent chunk writes differ.
 
 The first concrete lifecycle cut after profiling removes a duplicate collector
 reset from `run_reduction_pipeline`. Reset policy now belongs only to
@@ -182,25 +187,27 @@ scientific-pipeline entry survive in the same run-owned collector. This is the
 bounded stale-state repair required by Phase 3 step 4; no observation or scan
 state was moved without a demonstrated hazard.
 
-The first real compiled implementation boundary is also a local candidate.
+The first real compiled implementation boundary is accepted.
 Timestream enum name tables and parse/format definitions now compile once in
 `src/citlali/core/config/timestream_enums.cpp`; the public header retains enum
 declarations and small predicates. The header shrank from 946 to 712 lines and
 the new source is linked through `citlali`. One immediate before/after CLI
 compile pair was 62.4 versus 63.7 seconds, so this slice demonstrates neither a
 build-time win nor a material regression. All three local targets build, all
-451 CTests pass, and full config preflight passes. Unity compile and point-run
-evidence remain required before accepting this Phase 3 boundary.
+451 CTests pass, and full config preflight passes. Unity compile and point
+`redu63` accept the boundary with zero product differences and no runtime
+regression attributable to the extraction.
 
-The first bounded mature-implementation exit tranche is complete locally.
+The first bounded mature-implementation exit tranche is accepted for its point
+coverage.
 Two PTC weighting exits now classify non-contiguous network grouping as input
 I/O failure and impossible counters as an internal failure. RTC kernel setup
 classifies mismatched kernel-image cardinality as invalid configuration. Valid
 paths and numerical loops are unchanged; focused contracts cover each error
 class. The dependency audit now reports 51 library exits and zero CLI exits.
-The next production tranche is fruit-loop map ingestion and requires matched
-science and Beammap validation, so it is not stacked onto the pending Unity
-point checkpoint.
+Point `redu63` exercises the unchanged valid PTC weighting path exactly. The
+next production tranche is fruit-loop map ingestion and requires matched
+science and Beammap validation after its local checkpoint.
 
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution
