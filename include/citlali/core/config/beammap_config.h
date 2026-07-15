@@ -173,21 +173,7 @@ struct BeammapFlaggingConfig {
     double max_prior_d2 = 0.0;
 };
 
-struct BeammapSourceFluxConfig {
-    std::string array_name;
-    double value_mjy = 0.0;
-    double uncertainty_mjy = 0.0;
-};
-
-struct BeammapSourceConfig {
-    std::string name;
-    double ra_deg = 0.0;
-    double dec_deg = 0.0;
-    std::vector<BeammapSourceFluxConfig> fluxes;
-};
-
 struct BeammapConfig {
-    BeammapSourceConfig source;
     BeammapIterationConfig iteration;
     BeammapPhaseStrategyConfig phase_strategy;
     BeammapReferenceConfig reference;

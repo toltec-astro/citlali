@@ -3391,11 +3391,37 @@ TEST(config_scaffold, validates_beammap_source_fluxes) {
     EXPECT_EQ(logger->error_calls, 2);
 }
 
+TEST(config_scaffold, reads_beammap_photometry_without_source_identity) {
+    auto config = tula::config::YamlConfig::from_str(R"yaml(
+beammap_source:
+  fluxes:
+    - array_name: a1100
+      value_mJy: 1000.0
+      uncertainty_mJy: 10.0
+    - array_name: a1400
+      value_mJy: 900.0
+      uncertainty_mJy: 9.0
+)yaml");
+
+    const auto observation =
+        citlali::pipeline::read_beammap_photometry_config(config);
+
+    ASSERT_EQ(observation.photometry.fluxes.size(), 2U);
+    EXPECT_EQ(
+        observation.photometry.fluxes.front().array_name, "a1100");
+    EXPECT_DOUBLE_EQ(
+        observation.photometry.fluxes.front().value_mjy, 1000.0);
+    EXPECT_EQ(
+        observation.fluxes_mjy_beam,
+        (std::map<std::string, double>{{"a1100", 1000.0},
+                                       {"a1400", 900.0}}));
+}
+
 TEST(config_scaffold, rejects_invalid_beammap_source_observation) {
     const std::map<int, std::string> array_names = {
         {0, "a1100"}, {1, "a1400"}, {2, "a2000"}};
     auto logger = std::make_shared<FakeLogger>();
-    citlali::pipeline::BeammapSourceObservationConfig observation;
+    citlali::pipeline::BeammapPhotometryObservationConfig observation;
     observation.fluxes_mjy_beam = {
         {"a1100", 1.0}, {"a1400", 2.0}};
 
@@ -3411,27 +3437,38 @@ TEST(config_scaffold, rejects_invalid_beammap_source_observation) {
     }
 }
 
-TEST(config_scaffold, replaces_beammap_source_observation_atomically) {
-    citlali::config::BeammapSourceConfig source;
-    source.name = "old-source";
-    source.fluxes = {{"a1100", 99.0, 0.0}};
+TEST(config_scaffold, rejects_invalid_beammap_flux_uncertainty) {
+    const std::map<int, std::string> array_names = {{0, "a1100"}};
+    auto logger = std::make_shared<FakeLogger>();
+    citlali::pipeline::BeammapPhotometryObservationConfig observation;
+    observation.photometry.fluxes = {{"a1100", 1.0, -1.0}};
+    observation.fluxes_mjy_beam = {{"a1100", 1.0}};
+
+    EXPECT_THROW(
+        citlali::pipeline::require_valid_beammap_source_fluxes(
+            observation, array_names, logger),
+        citlali::error::Error);
+    EXPECT_EQ(logger->error_calls, 1);
+}
+
+TEST(config_scaffold, replaces_beammap_photometry_atomically) {
+    citlali::config::BeammapPhotometryConfig photometry;
+    photometry.fluxes = {{"a1100", 99.0, 0.0}};
     std::map<std::string, double> fluxes_mjy_beam = {
         {"a1100", 99.0}, {"stale-array", 88.0}};
     std::map<std::string, double> fluxes_mjy_sr = {
         {"a1100", 9.0}, {"stale-array", 8.0}};
 
-    citlali::pipeline::BeammapSourceObservationConfig observation;
-    observation.source.name = "new-source";
-    observation.source.fluxes = {{"a1400", 2.0, 0.1}};
+    citlali::pipeline::BeammapPhotometryObservationConfig observation;
+    observation.photometry.fluxes = {{"a1400", 2.0, 0.1}};
     observation.fluxes_mjy_beam = {{"a1400", 2.0}};
 
-    citlali::pipeline::install_beammap_source_observation_config(
-        std::move(observation), source, fluxes_mjy_beam,
+    citlali::pipeline::install_beammap_photometry_config(
+        std::move(observation), photometry, fluxes_mjy_beam,
         fluxes_mjy_sr);
 
-    EXPECT_EQ(source.name, "new-source");
-    ASSERT_EQ(source.fluxes.size(), 1U);
-    EXPECT_EQ(source.fluxes.front().array_name, "a1400");
+    ASSERT_EQ(photometry.fluxes.size(), 1U);
+    EXPECT_EQ(photometry.fluxes.front().array_name, "a1400");
     EXPECT_EQ(
         fluxes_mjy_beam,
         (std::map<std::string, double>{{"a1400", 2.0}}));
@@ -3944,9 +3981,10 @@ TEST(config_scaffold, validates_beammap_config_values) {
     EXPECT_EQ(report.error_count(), 7U);
 }
 
-TEST(config_scaffold, validates_beammap_source_values) {
-    citlali::config::BeammapSourceConfig config;
-    config.fluxes.push_back(citlali::config::BeammapSourceFluxConfig{"", 0.0, -1.0});
+TEST(config_scaffold, validates_beammap_photometry_values) {
+    citlali::config::BeammapPhotometryConfig config;
+    config.fluxes.push_back(
+        citlali::config::BeammapArrayFluxConfig{"", 0.0, -1.0});
 
     citlali::config::ValidationReport report;
     citlali::config::validate(config, report);

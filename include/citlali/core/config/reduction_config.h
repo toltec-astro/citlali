@@ -21,6 +21,7 @@ struct ReductionConfig {
     PostProcessingConfig post_processing;
     PointingConfig pointing;
     BeammapConfig beammap;
+    BeammapPhotometryConfig beammap_photometry;
     AstrometryConfig astrometry;
 };
 

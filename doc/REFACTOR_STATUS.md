@@ -902,8 +902,9 @@ After the post-processing gates close, the adopted shortest sequence is:
 
 1. Complete the bounded Beammap effective-plan and provenance migration,
    preserving all mature numerical algorithms.
-2. Complete atomic astrometry/photometry observation configuration, including
-   replacement rather than merging of per-observation Beammap source flux.
+2. Complete atomic Beammap photometry observation configuration, including
+   replacement rather than merging of per-observation calibrator flux. Keep
+   source identity in telescope data and leave flux estimation to TolProj.
 3. Record the minimal external KIDs schema/config identity and the durable
    ordered configuration-source manifest.
 4. Mechanically disposition polarimetry as either supported and validated or
@@ -913,10 +914,10 @@ After the post-processing gates close, the adopted shortest sequence is:
 
 The frozen 74-leaf `beammap.*` manifest is the correct Beammap policy boundary,
 not a claim to contain every scientific input used by a Beammap reduction.
-`beammap_source.*` remains an adjacent astrometry/photometry authority. The
+`beammap_source.fluxes` remains an adjacent photometry input. The
 review identified a concrete stale-state risk there: a later observation can
 inherit a per-array source flux omitted from its own input. The Beammap work
-must therefore reference an atomically constructed observation source value;
+must therefore reference an atomically constructed observation photometry value;
 it must not absorb that adjacent domain or preserve merge semantics.
 
 For Phase 2, "reviewed overlay fixtures" means retained matched low-level mode
@@ -1135,7 +1136,7 @@ and full preflight passes 75 Python tests, all eight compatibility profiles,
 100% compact-surface coverage, and every authority audit. The authority
 inventory deliberately remains `partial` until a matched Unity Beammap run
 accepts this sidecar and scientific products. Observation-resolved prior and
-reference decisions, adjacent atomic `beammap_source.*` state, and any
+reference decisions, adjacent atomic `beammap_source.fluxes` state, and any
 additional Beammap-specific optional-product cardinalities required by the
 design review remain bounded follow-up work; this checkpoint does not claim
 the Beammap domain complete.
@@ -1185,30 +1186,36 @@ observation-resolved prior/reference state and adjacent atomic
 `beammap_source.*` handling are completed. No unresolved fallback policy is
 inferred by this gate.
 
-## Atomic Beammap Source State Prepared
+## Atomic Beammap Photometry State Prepared
 
-The first adjacent astrometry/photometry safety cut removes the concrete
+The adjacent photometry safety cut removes the concrete
 cross-observation source-flux hazard without changing successful numerical
 behavior. `beammap_source.*` is parsed into a temporary observation value and
 all required runtime-array fluxes are validated before any Engine state is
-mutated. Successful installation replaces the typed source and legacy mJy/beam
-map and clears the derived MJy/sr map; it never merges with an earlier
-observation. Missing or invalid required flux retains the established fatal
-reduction outcome, but now throws a typed invalid-config error instead of
-calling `exit()` inside `Engine::get_photometry_config`.
+mutated. Successful installation replaces typed photometry and the legacy
+mJy/beam map and clears the derived MJy/sr map; it never merges with an
+earlier observation. Missing or invalid required flux retains the established
+fatal reduction outcome, but now throws a typed invalid-config error instead
+of calling `exit()` inside `Engine::get_photometry_config`.
 
-Beammap provenance advances to `citlali-beammap-provenance-v2` and records the
-installed source name, RA/Dec degree values, and per-array flux/uncertainty for
-each observation. The coordinate contract is explicitly `as_supplied`; this
-records current input without silently choosing frame, range, or wrapping
-semantics. The reduction audit accepts historical v1 sidecars and requires the
-new source record for v2.
+Project-owner clarification (2026-07-15): source identity belongs to telescope
+data and TolProj owns calibrator selection and flux estimation. Citlali must
+not mirror source name or coordinates into this config domain. Beammap
+provenance therefore advances to `citlali-beammap-provenance-v2` with
+`telescope_data` named as the source-identity authority and only the installed
+per-array flux/uncertainty recorded as Citlali photometry input. The reduction
+audit accepts historical v1 sidecars and requires this ownership record for
+v2.
 
-Both local targets build, all four focused source tests and all 375 CTests pass,
-and the full config preflight remains clean. This candidate needs a matched
-Unity Beammap run before v2 provenance is accepted. The owner decisions on
-canonical source coordinate semantics and whether missing array flux may ever
-use a fallback remain open; current fatal behavior is preserved meanwhile.
+Project-owner decision (2026-07-15): every runtime array requires a positive,
+finite calibrator flux; missing or invalid required flux fails the reduction.
+No fallback is permitted. This candidate needs a matched Unity Beammap run
+before v2 provenance is accepted.
+
+Both local targets build; all 24 focused Beammap/photometry tests, all 377
+CTests, and all 49 reduction-audit tests pass. Full config preflight passes 75
+tests, all eight compatibility profiles, 100% compact coverage, and every
+authority audit.
 
 ## Five-Phase Roadmap
 
@@ -1310,7 +1317,6 @@ silently choose among these:
 - Allowed calibration or analysis fallbacks and their required diagnostics.
 - Canonical detector/network/array identities, coordinate frames, units,
   missing-value sentinels, and table schemas.
-- Beammap source-flux fallback and reset behavior.
 - OOF scientific intent and the acceptance tolerances for each mode.
 - Whether any future caller needs concurrent reductions in one process.
 - The measured-channel contract and missing-data policy for future R analysis.

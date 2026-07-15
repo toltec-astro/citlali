@@ -143,19 +143,19 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Unity redu03 accepts the immutable 74-leaf request, effective plan, realized lifecycle, required detector-TOD cardinality, and version-one atomic provenance with exact scientific products. Version-two provenance now references an atomically replaced observation source value. Complete observation-resolved prior/reference decisions and any approved required output cardinalities, validate the version-two candidate, and retire the compatibility snapshot only when its consumers have explicit effective inputs."
+      "exit_gate": "Unity redu03 accepts the immutable 74-leaf request, effective plan, realized lifecycle, required detector-TOD cardinality, and version-one atomic provenance with exact scientific products. Version-two provenance now references atomically replaced observation photometry while leaving source identity authoritative in telescope data. Complete observation-resolved prior/reference decisions and any approved required output cardinalities, validate the version-two candidate, and retire the compatibility snapshot only when its consumers have explicit effective inputs."
     },
     {
       "id": "astrometry-photometry",
       "config_prefixes": ["astrometry", "photometry"],
-      "typed_owner": "citlali::config::ReductionConfig::astrometry",
+      "typed_owner": "citlali::config::ReductionConfig::astrometry and citlali::config::ReductionConfig::beammap_photometry",
       "loader": "include/citlali/core/engine/detail/photometry_config_impl.h",
       "execution_authority": "mixed",
       "legacy_targets": ["Engine::map_fitter"],
       "adapter_direction": "typed-to-legacy",
       "migration_status": "mixed-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Beammap source identity and per-array photometry are now parsed and validated as one observation value, installed by replacement, and referenced by Beammap provenance. Approve coordinate frame/range/wrap and missing-flux policy, complete astrometry lifecycle/provenance, and distinguish requested catalog settings from realized fits."
+      "exit_gate": "Per-array Beammap photometry is parsed and validated as one observation value, installed by replacement, and referenced by Beammap provenance. Source identity remains authoritative in telescope data and TolProj owns calibrator selection and flux estimation. Missing or invalid required array flux fails without fallback. Complete the separate astrometry lifecycle/provenance and distinguish requested catalog settings from realized fits."
     },
     {
       "id": "kids-external",

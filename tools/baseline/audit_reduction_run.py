@@ -1511,33 +1511,50 @@ def beammap_provenance_semantic_errors(
             if data.get("schema_version") == (
                 "citlali-beammap-provenance-v2"
             ):
-                source = observation.get("source")
-                source_label = f"beammap observation {expected_index} source"
-                if not isinstance(source, dict):
-                    errors.append(f"{source_label} must be a mapping")
+                observation_label = f"beammap observation {expected_index}"
+                if (
+                    observation.get("source_identity_authority")
+                    != "telescope_data"
+                ):
+                    errors.append(
+                        f"{observation_label} source identity authority is invalid"
+                    )
+                photometry = observation.get("photometry")
+                photometry_label = f"{observation_label} photometry"
+                if not isinstance(photometry, dict):
+                    errors.append(f"{photometry_label} must be a mapping")
                 else:
-                    if not isinstance(source.get("name"), str):
-                        errors.append(f"{source_label} name must be a string")
-                    if source.get("coordinate_contract") != "as_supplied":
+                    if (
+                        photometry.get("calibrator_flux_authority")
+                        != "tolproj"
+                    ):
                         errors.append(
-                            f"{source_label} coordinate contract is invalid"
+                            f"{photometry_label} calibrator flux authority is invalid"
                         )
-                    for coordinate in ("ra_deg", "dec_deg"):
-                        value = source.get(coordinate)
-                        if (
-                            isinstance(value, bool)
-                            or not isinstance(value, (int, float))
-                            or not math.isfinite(value)
-                        ):
-                            errors.append(
-                                f"{source_label} {coordinate} must be finite"
-                            )
-                    fluxes = source.get("fluxes")
+                    if (
+                        photometry.get("flux_input_path")
+                        != "beammap_source.fluxes"
+                    ):
+                        errors.append(
+                            f"{photometry_label} flux input path is invalid"
+                        )
+                    if (
+                        photometry.get("required_flux_policy")
+                        != "fail_reduction"
+                    ):
+                        errors.append(
+                            f"{photometry_label} required flux policy is invalid"
+                        )
+                    fluxes = photometry.get("fluxes")
                     if not isinstance(fluxes, list) or not fluxes:
-                        errors.append(f"{source_label} fluxes must be a sequence")
+                        errors.append(
+                            f"{photometry_label} fluxes must be a sequence"
+                        )
                     else:
                         for flux_index, flux in enumerate(fluxes):
-                            flux_label = f"{source_label} flux {flux_index}"
+                            flux_label = (
+                                f"{photometry_label} flux {flux_index}"
+                            )
                             if not isinstance(flux, dict):
                                 errors.append(f"{flux_label} must be a mapping")
                                 continue

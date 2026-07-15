@@ -131,15 +131,14 @@ inline YAML::Node beammap_detector_tod_realized_state_node(
     return node;
 }
 
-inline YAML::Node beammap_observation_source_node(
-    const citlali::config::BeammapSourceConfig &source) {
+inline YAML::Node beammap_observation_photometry_node(
+    const citlali::config::BeammapPhotometryConfig &photometry) {
     YAML::Node node;
-    node["name"] = source.name;
-    node["ra_deg"] = source.ra_deg;
-    node["dec_deg"] = source.dec_deg;
-    node["coordinate_contract"] = "as_supplied";
+    node["calibrator_flux_authority"] = "tolproj";
+    node["flux_input_path"] = "beammap_source.fluxes";
+    node["required_flux_policy"] = "fail_reduction";
     node["fluxes"] = YAML::Node{YAML::NodeType::Sequence};
-    for (const auto &flux : source.fluxes) {
+    for (const auto &flux : photometry.fluxes) {
         YAML::Node flux_node;
         flux_node["array_name"] = flux.array_name;
         flux_node["value_mJy"] = flux.value_mjy;
@@ -154,7 +153,9 @@ inline YAML::Node beammap_observation_state_node(
     YAML::Node node;
     node["observation_index"] = observation.observation_index;
     node["obsnum"] = observation.obsnum;
-    node["source"] = beammap_observation_source_node(observation.source);
+    node["source_identity_authority"] = "telescope_data";
+    node["photometry"] =
+        beammap_observation_photometry_node(observation.photometry);
     node["detector_count"] = observation.detector_count;
     node["map_count"] = observation.map_count;
     node["scan_count"] = observation.scan_count;

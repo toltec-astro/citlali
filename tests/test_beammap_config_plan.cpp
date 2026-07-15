@@ -87,17 +87,14 @@ citlali::config::BeammapConfig valid_complete_beammap_config() {
     return config;
 }
 
-citlali::config::BeammapSourceConfig complete_beammap_source() {
-    citlali::config::BeammapSourceConfig source;
-    source.name = "3C273";
-    source.ra_deg = 187.277917;
-    source.dec_deg = 2.052388;
-    source.fluxes = {
+citlali::config::BeammapPhotometryConfig complete_beammap_photometry() {
+    citlali::config::BeammapPhotometryConfig photometry;
+    photometry.fluxes = {
         {"a1100", 1000.0, 10.0},
         {"a1400", 900.0, 9.0},
         {"a2000", 800.0, 8.0},
     };
-    return source;
+    return photometry;
 }
 
 citlali::pipeline::MapmakingExecutionPlan completed_beammap_mapmaking_plan(
@@ -142,7 +139,7 @@ citlali::pipeline::BeammapExecutionPlan completed_beammap_plan() {
     plan.reset_from_request(request, {}, true);
     plan.begin_iteration();
     plan.begin_observation(
-        0, "148670", complete_beammap_source(), 5, 5, 198);
+        0, "148670", complete_beammap_photometry(), 5, 5, 198);
 
     plan.begin_internal_iteration(
         0, citlali::pipeline::BeammapIterationPhase::locator, 5);
@@ -313,7 +310,7 @@ TEST(BeammapExecutionPlan, RequiresEveryInternalStageBeforeCompletion) {
     plan.reset_from_request(request, {}, true);
     plan.begin_iteration();
     plan.begin_observation(
-        0, "148670", complete_beammap_source(), 5, 5, 198);
+        0, "148670", complete_beammap_photometry(), 5, 5, 198);
     plan.begin_internal_iteration(
         0, citlali::pipeline::BeammapIterationPhase::locator, 5);
     plan.record_mapmaking_pass_completed();
@@ -345,7 +342,7 @@ TEST(BeammapExecutionPlan, RecordsEarlyConvergenceTermination) {
     plan.reset_from_request(request, {}, true);
     plan.begin_iteration();
     plan.begin_observation(
-        0, "148670", complete_beammap_source(), 5, 5, 198);
+        0, "148670", complete_beammap_photometry(), 5, 5, 198);
     plan.begin_internal_iteration(
         0, citlali::pipeline::BeammapIterationPhase::locator, 5);
     plan.record_source_aware_rtc_rerun(false);
@@ -416,7 +413,7 @@ TEST(BeammapExecutionPlan, RequiresExactlyOneEnabledDetectorTodWrite) {
     missing.reset_from_request(request, {}, true);
     missing.begin_iteration();
     missing.begin_observation(
-        0, "148670", complete_beammap_source(), 5, 5, 198);
+        0, "148670", complete_beammap_photometry(), 5, 5, 198);
     missing.begin_internal_iteration(
         0, citlali::pipeline::BeammapIterationPhase::locator, 5);
     missing.record_source_aware_rtc_rerun(false);
@@ -431,7 +428,7 @@ TEST(BeammapExecutionPlan, RequiresExactlyOneEnabledDetectorTodWrite) {
     complete.reset_from_request(request, {}, true);
     complete.begin_iteration();
     complete.begin_observation(
-        0, "148670", complete_beammap_source(), 5, 5, 198);
+        0, "148670", complete_beammap_photometry(), 5, 5, 198);
     complete.begin_internal_iteration(
         0, citlali::pipeline::BeammapIterationPhase::locator, 5);
     complete.record_source_aware_rtc_rerun(false);
@@ -485,15 +482,25 @@ TEST(BeammapProvenance, SerializesRequestedEffectiveAndRealizedState) {
                     .as<bool>());
     ASSERT_EQ(node["observations"].size(), 1U);
     EXPECT_EQ(
-        node["observations"][0]["source"]["name"].as<std::string>(),
-        "3C273");
-    EXPECT_EQ(
-        node["observations"][0]["source"]["coordinate_contract"]
+        node["observations"][0]["source_identity_authority"]
             .as<std::string>(),
-        "as_supplied");
-    ASSERT_EQ(node["observations"][0]["source"]["fluxes"].size(), 3U);
+        "telescope_data");
     EXPECT_EQ(
-        node["observations"][0]["source"]["fluxes"][0]
+        node["observations"][0]["photometry"]
+            ["required_flux_policy"].as<std::string>(),
+        "fail_reduction");
+    EXPECT_EQ(
+        node["observations"][0]["photometry"]
+            ["calibrator_flux_authority"].as<std::string>(),
+        "tolproj");
+    EXPECT_EQ(
+        node["observations"][0]["photometry"]
+            ["flux_input_path"].as<std::string>(),
+        "beammap_source.fluxes");
+    ASSERT_EQ(
+        node["observations"][0]["photometry"]["fluxes"].size(), 3U);
+    EXPECT_EQ(
+        node["observations"][0]["photometry"]["fluxes"][0]
             ["array_name"].as<std::string>(),
         "a1100");
     ASSERT_EQ(node["observations"][0]["iterations"].size(), 3U);

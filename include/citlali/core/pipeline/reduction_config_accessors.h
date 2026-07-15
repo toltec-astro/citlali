@@ -331,6 +331,16 @@ const auto &beammap_config(const Engine &engine) {
 }
 
 template <class Engine>
+auto &beammap_photometry_config(Engine &engine) {
+    return reduction_config(engine).beammap_photometry;
+}
+
+template <class Engine>
+const auto &beammap_photometry_config(const Engine &engine) {
+    return reduction_config(engine).beammap_photometry;
+}
+
+template <class Engine>
 auto &beammap_plan(Engine &engine) {
     return engine.beammap_plan;
 }

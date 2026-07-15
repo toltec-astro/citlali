@@ -1,8 +1,7 @@
 #pragma once
 
-#include <citlali/core/config/beammap_config.h>
+#include <citlali/core/config/calibration_config_validation.h>
 #include <citlali/core/error/error.h>
-#include <citlali/core/pipeline/config_parse_tracking.h>
 
 #include <Eigen/Core>
 
@@ -14,29 +13,14 @@
 
 namespace citlali::pipeline {
 
-struct BeammapSourceObservationConfig {
-    citlali::config::BeammapSourceConfig source;
+struct BeammapPhotometryObservationConfig {
+    citlali::config::BeammapPhotometryConfig photometry;
     std::map<std::string, double> fluxes_mjy_beam;
 };
 
-template <class Config, class SourceConfig, class Diagnostics>
-void read_beammap_source_identity_config(Config &config,
-                                         SourceConfig &source_config,
-                                         Diagnostics &diagnostics) {
-    read_config_value(
-        config, source_config.name, diagnostics,
-        std::tuple{"beammap_source", "name"});
-    read_config_value(
-        config, source_config.ra_deg, diagnostics,
-        std::tuple{"beammap_source", "ra_deg"});
-    read_config_value(
-        config, source_config.dec_deg, diagnostics,
-        std::tuple{"beammap_source", "dec_deg"});
-}
-
-template <class Config, class FluxMap, class SourceConfig>
+template <class Config, class FluxMap, class PhotometryConfig>
 void read_beammap_source_fluxes(Config &config, FluxMap &fluxes_mjy_beam,
-                                SourceConfig &source_config) {
+                                PhotometryConfig &photometry) {
     const Eigen::Index n_fluxes =
         config.get_node(std::tuple{"beammap_source", "fluxes"}).size();
 
@@ -50,20 +34,18 @@ void read_beammap_source_fluxes(Config &config, FluxMap &fluxes_mjy_beam,
             std::tuple{"beammap_source", "fluxes", i, "uncertainty_mJy"});
 
         fluxes_mjy_beam[array] = flux;
-        source_config.fluxes.push_back(
-            citlali::config::BeammapSourceFluxConfig{
+        photometry.fluxes.push_back(
+            citlali::config::BeammapArrayFluxConfig{
                 array, flux, uncertainty_mjy});
     }
 }
 
-template <class Config, class Diagnostics>
-BeammapSourceObservationConfig read_beammap_source_observation_config(
-    Config &config, Diagnostics &diagnostics) {
-    BeammapSourceObservationConfig observation;
-    read_beammap_source_identity_config(
-        config, observation.source, diagnostics);
+template <class Config>
+BeammapPhotometryObservationConfig read_beammap_photometry_config(
+    Config &config) {
+    BeammapPhotometryObservationConfig observation;
     read_beammap_source_fluxes(
-        config, observation.fluxes_mjy_beam, observation.source);
+        config, observation.fluxes_mjy_beam, observation.photometry);
     return observation;
 }
 
@@ -95,8 +77,17 @@ bool validate_beammap_source_fluxes(const FluxMap &fluxes_mjy_beam,
 
 template <class ArrayNameMap, class Logger>
 void require_valid_beammap_source_fluxes(
-    const BeammapSourceObservationConfig &observation,
+    const BeammapPhotometryObservationConfig &observation,
     const ArrayNameMap &array_name_map, const Logger &logger) {
+    citlali::config::ValidationReport report;
+    citlali::config::validate(observation.photometry, report);
+    if (!report.ok()) {
+        logger->error(
+            "invalid beammap_source flux configuration:\n{}",
+            report.format_for_cli());
+        throw citlali::error::invalid_config(
+            "invalid beammap_source flux configuration");
+    }
     if (!validate_beammap_source_fluxes(
             observation.fluxes_mjy_beam, array_name_map, logger)) {
         throw citlali::error::invalid_config(
@@ -104,12 +95,12 @@ void require_valid_beammap_source_fluxes(
     }
 }
 
-template <class SourceConfig, class FluxMap>
-void install_beammap_source_observation_config(
-    BeammapSourceObservationConfig observation,
-    SourceConfig &source_config, FluxMap &fluxes_mjy_beam,
+template <class PhotometryConfig, class FluxMap>
+void install_beammap_photometry_config(
+    BeammapPhotometryObservationConfig observation,
+    PhotometryConfig &photometry, FluxMap &fluxes_mjy_beam,
     FluxMap &fluxes_mjy_sr) {
-    source_config = std::move(observation.source);
+    photometry = std::move(observation.photometry);
     fluxes_mjy_beam = std::move(observation.fluxes_mjy_beam);
     fluxes_mjy_sr.clear();
 }

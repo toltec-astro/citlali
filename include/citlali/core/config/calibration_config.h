@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <string_view>
 #include <vector>
 
@@ -34,6 +35,16 @@ struct AstrometryPointingOffsetsConfig {
 
 struct AstrometryConfig {
     AstrometryPointingOffsetsConfig pointing_offsets;
+};
+
+struct BeammapArrayFluxConfig {
+    std::string array_name;
+    double value_mjy = 0.0;
+    double uncertainty_mjy = 0.0;
+};
+
+struct BeammapPhotometryConfig {
+    std::vector<BeammapArrayFluxConfig> fluxes;
 };
 
 }  // namespace citlali::config

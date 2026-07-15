@@ -23,6 +23,7 @@ inline ValidationReport validate(const ReductionConfig &config) {
     validate(config.post_processing, report);
     validate(config.pointing, report);
     validate(config.beammap, report);
+    validate(config.beammap_photometry, report);
     validate(config.astrometry, report);
     if (config.beammap.detector_tod_output.enabled &&
         config.mapmaking.grouping != MapGrouping::detector) {

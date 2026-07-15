@@ -482,11 +482,11 @@ def valid_beammap_document(
             {
                 "observation_index": 0,
                 "obsnum": 148670,
-                "source": {
-                    "name": "3C273",
-                    "ra_deg": 187.277917,
-                    "dec_deg": 2.052388,
-                    "coordinate_contract": "as_supplied",
+                "source_identity_authority": "telescope_data",
+                "photometry": {
+                    "calibrator_flux_authority": "tolproj",
+                    "flux_input_path": "beammap_source.fluxes",
+                    "required_flux_policy": "fail_reduction",
                     "fluxes": [
                         {
                             "array_name": "a1100",
@@ -743,7 +743,8 @@ class ProvenanceAuditTest(unittest.TestCase):
             redu = Path(directory)
             document = valid_beammap_document()
             document["schema_version"] = "citlali-beammap-provenance-v1"
-            document["observations"][0].pop("source")
+            document["observations"][0].pop("source_identity_authority")
+            document["observations"][0].pop("photometry")
             (redu / "beammap_provenance.yaml").write_text(
                 yaml.safe_dump(document, sort_keys=False),
                 encoding="utf-8",
@@ -759,14 +760,14 @@ class ProvenanceAuditTest(unittest.TestCase):
                 "citlali-beammap-provenance-v1",
             )
 
-    def test_rejects_invalid_beammap_v2_source_flux(self) -> None:
+    def test_rejects_invalid_beammap_v2_photometry_flux(self) -> None:
         document = valid_beammap_document()
-        document["observations"][0]["source"]["fluxes"][0][
+        document["observations"][0]["photometry"]["fluxes"][0][
             "value_mJy"
         ] = 0.0
 
         self.assertIn(
-            "beammap observation 0 source flux 0 value must be positive and finite",
+            "beammap observation 0 photometry flux 0 value must be positive and finite",
             audit.beammap_provenance_semantic_errors(document),
         )
 

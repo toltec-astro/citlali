@@ -187,35 +187,7 @@ inline void validate(const BeammapFlaggingConfig &config, ValidationReport &repo
         config.sens_psd_limits_hz, 2, sensitivity_band_path, report);
 }
 
-inline void validate(const BeammapSourceFluxConfig &config, ValidationReport &report) {
-    if (config.array_name.empty()) {
-        report.add_error({"beammap_source", "fluxes", "array_name"},
-                         "must not be empty");
-    }
-    if (!std::isfinite(config.value_mjy) || config.value_mjy <= 0.0) {
-        report.add_error({"beammap_source", "fluxes", "value_mJy"},
-                         "must be positive and finite");
-    }
-    if (!std::isfinite(config.uncertainty_mjy) || config.uncertainty_mjy < 0.0) {
-        report.add_error({"beammap_source", "fluxes", "uncertainty_mJy"},
-                         "must be greater than or equal to 0 and finite");
-    }
-}
-
-inline void validate(const BeammapSourceConfig &config, ValidationReport &report) {
-    if (!std::isfinite(config.ra_deg)) {
-        report.add_error({"beammap_source", "ra_deg"}, "must be finite");
-    }
-    if (!std::isfinite(config.dec_deg)) {
-        report.add_error({"beammap_source", "dec_deg"}, "must be finite");
-    }
-    for (const auto &flux : config.fluxes) {
-        validate(flux, report);
-    }
-}
-
 inline void validate(const BeammapConfig &config, ValidationReport &report) {
-    validate(config.source, report);
     validate(config.iteration, report);
     validate(config.phase_strategy, report);
     validate(config.rfi_mask, report);
