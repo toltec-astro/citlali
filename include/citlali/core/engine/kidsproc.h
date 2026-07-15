@@ -14,6 +14,7 @@
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/engine/io.h>
 #include <citlali/core/pipeline/kids_external_config.h>
+#include <citlali/core/pipeline/kids_input_validation.h>
 #include <citlali/core/pipeline/kids_tod_channel.h>
 
 /**

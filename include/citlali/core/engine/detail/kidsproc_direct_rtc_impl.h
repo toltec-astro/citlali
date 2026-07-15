@@ -32,16 +32,8 @@ auto KidsDataProc::populate_rtc_from_rawobs(const RawObs &rawobs, const Eigen::I
         i += n_cols;
     }
 
-    // check for nans
-    if ((data.array().isNaN()).any()) {
-        logger->error("nan found in data! Check that your KIDs data dir is correct.");
-        std::exit(EXIT_FAILURE);
-    }
-    // check for infs
-    if ((data.array().isInf()).any()) {
-        logger->error("inf found in data! Check that your KIDs data dir is correct.");
-        std::exit(EXIT_FAILURE);
-    }
+    citlali::pipeline::require_finite_kids_input(
+        data, "direct RTC KIDs input");
 
     return data;
 }

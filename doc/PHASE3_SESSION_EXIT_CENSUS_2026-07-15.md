@@ -38,13 +38,19 @@ canonical runtime error. Valid row assignment is unchanged. The current audit
 reports 85 library exits; the 94-exit baseline remains intentionally frozen as
 a no-growth ceiling that permits monotonic retirement.
 
+The first observation-input tranche removes six duplicated exits after KIDs
+matrices are populated by direct, loaded, and gap-aligned paths. A shared
+finite-input contract preserves valid matrices and classifies NaN or infinite
+input as canonical I/O failures. The current audit reports 79 library exits.
+
 ## Retirement Order
 
 1. Config and output-selection readers: the six TOD selection-config exits and
    three TOD row-selection exits are retired. Invalid requests now reach
    `ReductionResult` through canonical errors or path-aware config diagnostics.
 2. Observation/input setup: fourteen exits across observation setup, KIDs/raw
-   loading, gap alignment, and Beammap fit preparation. Convert by owning
+   loading, gap alignment, and Beammap fit preparation. Six duplicated KIDs
+   non-finite-input exits are retired; convert the remaining eight by owning
    boundary with focused malformed-input and recovery tests.
 3. FITS/ECSV and output-slot validation: fourteen exits. Required output
    failures should become canonical output errors and preserve the Phase 1
