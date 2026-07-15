@@ -161,13 +161,13 @@
       "id": "kids-external",
       "config_prefixes": ["kids"],
       "typed_owner": "external KIDs subsystem configuration",
-      "loader": "include/citlali/core/engine/kidsproc.h",
+      "loader": "include/citlali/core/pipeline/kids_external_config.h",
       "execution_authority": "external",
       "legacy_targets": ["Engine::kidsproc"],
       "adapter_direction": "external",
       "migration_status": "external-boundary",
-      "provenance_status": "missing",
-      "exit_gate": "Declare the KIDs schema/version boundary and persist the requested and effective external configuration identity."
+      "provenance_status": "partial",
+      "exit_gate": "The external Kidscpp bridge now declares its config and TolTEC data schemas, all four supported TOD types (xs, rs, is, qs), dependency version, requested/effective identities, and one required atomic provenance write. The ordered Citlali config-source manifest records exact inputs separately. Accept a matched Unity point run before marking this boundary complete."
     }
   ]
 }

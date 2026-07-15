@@ -51,8 +51,8 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 377 tests with none skipped or disabled; all
-  75 config-boundary/preflight tests pass.
+- CTest discovers and passes all 382 tests with none skipped or disabled; all
+  78 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -1235,6 +1235,31 @@ CTests, and all 49 reduction-audit tests pass. Full config preflight passes 75
 tests, all eight compatibility profiles, 100% compact coverage, and every
 authority audit.
 
+## External KIDs And Config-Source Provenance Prepared
+
+The bounded external KIDs checkpoint preserves Kidscpp as the numerical
+execution authority while recording the exact bridge identity Citlali uses.
+All four solved TOD representations (`xs`, `rs`, `is`, and `qs`) are supported.
+The requested fitter/solver values, effective values, selected TOD type,
+TolTEC data schema, and Kidscpp build version are separate fields in the
+required atomic `citlali-kids-external-provenance-v1` sidecar. Historical
+`solver.extra_output` behavior remains disabled and is now recorded explicitly
+instead of being controlled by a header-level global.
+
+The same successful CLI boundary now requires
+`citlali-config-source-manifest-v1`. It records the ordered files actually
+passed to Citlali, collision-safe copies, byte sizes, SHA-256 digests, and the
+canonical merged YAML snapshot. TolTECA remains the owner of numbered
+`NN*.yaml` discovery and upstream merge provenance; the record explicitly says
+that TolTECA's complete ordered authoring-source list is not currently passed
+to Citlali. Citlali does not guess or duplicate that merge.
+
+Local CLI and test builds, all 382 CTests, 52 reduction-audit tests, and the
+full 78-test config preflight pass. The reduction auditor can require both
+records and recomputes every copied-input and merged-snapshot digest. A matched
+Unity point run is still required before this external boundary and manifest
+checkpoint can be accepted.
+
 ## Five-Phase Roadmap
 
 ### Phase 1 - Safety Stabilization
@@ -1327,7 +1352,6 @@ Ask the project owner when implementation first depends on an answer. Do not
 silently choose among these:
 
 - Which output products are required versus optional in each reduction mode.
-- Which TOD types are supported and how unknown values must fail.
 - How disabled filters and extinction states appear in requested, effective,
   and realized provenance.
 - The exact meaning of hardware-polarization ignore/enable controls and whether

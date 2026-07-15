@@ -34,6 +34,41 @@ VALIDATION_PATH_RE = re.compile(r"/2026-refactor/(?P<mode>[^/]+)/(?P<label>[^/]+
 PRODUCT_SUFFIXES = {".fits", ".fit", ".nc", ".nc4", ".cdf", ".csv", ".ecsv"}
 PROFILE_SIDECAR_NAMES = {"citlali_profile.ecsv"}
 PROVENANCE_SIDECARS = {
+    "kids_external": {
+        "filename": "kids_external_provenance.yaml",
+        "schema_version": "citlali-kids-external-provenance-v1",
+        "required_paths": (
+            ("initialized",),
+            ("authority",),
+            ("config_schema",),
+            ("data_schema",),
+            ("dependency", "name"),
+            ("dependency", "version"),
+            ("supported_tod_types",),
+            ("selected_tod_type",),
+            ("requested", "values"),
+            ("requested", "solver_extra_output_present"),
+            ("effective", "values"),
+            ("effective", "resolution"),
+        ),
+        "allow_multiple": False,
+    },
+    "config_source_manifest": {
+        "filename": "config_source_manifest.yaml",
+        "schema_version": "citlali-config-source-manifest-v1",
+        "required_paths": (
+            ("merge_authority",),
+            ("merge_semantics",),
+            ("upstream", "authority"),
+            ("upstream", "ordered_sources_provided"),
+            ("sources",),
+            ("merged", "snapshot_filename"),
+            ("merged", "serialization"),
+            ("merged", "size_bytes"),
+            ("merged", "sha256"),
+        ),
+        "allow_multiple": False,
+    },
     "runtime": {
         "filename": "runtime_provenance.yaml",
         "schema_version": "citlali-runtime-provenance-v1",
@@ -2150,6 +2185,152 @@ def post_processing_pointing_cross_check_errors(
     return errors
 
 
+def kids_external_provenance_semantic_errors(
+    data: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        if data["initialized"] is not True:
+            errors.append("KIDs external config plan is not initialized")
+        if data["authority"] != "kidscpp":
+            errors.append("KIDs external authority must be kidscpp")
+        if data["config_schema"] != "citlali-kidscpp-bridge-v1":
+            errors.append("KIDs external config schema is not recognized")
+        if not isinstance(data["data_schema"], str) or not data["data_schema"]:
+            errors.append("KIDs external data schema is empty")
+        dependency = data["dependency"]
+        if dependency["name"] != "kidscpp":
+            errors.append("KIDs dependency name must be kidscpp")
+        if (
+            not isinstance(dependency["version"], str)
+            or not dependency["version"]
+        ):
+            errors.append("KIDs dependency version is empty")
+        supported = data["supported_tod_types"]
+        if supported != ["xs", "rs", "is", "qs"]:
+            errors.append("KIDs supported TOD types must be xs, rs, is, qs")
+        if data["selected_tod_type"] not in supported:
+            errors.append("selected KIDs TOD type is not supported")
+        requested = data["requested"]["values"]
+        effective = data["effective"]["values"]
+        if not isinstance(
+            data["requested"]["solver_extra_output_present"], bool
+        ):
+            errors.append("KIDs solver extra-output presence must be boolean")
+        for label, identity in (
+            ("requested", requested),
+            ("effective", effective),
+        ):
+            if not isinstance(identity["fitter"]["modelspec"], str):
+                errors.append(f"KIDs {label} fitter modelspec must be a string")
+            if not isinstance(
+                identity["fitter"]["weight_window"]["type"], str
+            ):
+                errors.append(
+                    f"KIDs {label} weight-window type must be a string"
+                )
+            fwhm_hz = identity["fitter"]["weight_window"]["fwhm_Hz"]
+            if not isinstance(fwhm_hz, (int, float)) or not math.isfinite(
+                fwhm_hz
+            ):
+                errors.append(f"KIDs {label} weight-window FWHM must be finite")
+            if not isinstance(identity["solver"]["extra_output"], bool):
+                errors.append(f"KIDs {label} solver extra_output must be boolean")
+            if not isinstance(identity["solver"]["fitreportdir"], str):
+                errors.append(
+                    f"KIDs {label} solver fitreportdir must be a string"
+                )
+            if not isinstance(identity["solver"]["parallel_policy"], str):
+                errors.append(
+                    f"KIDs {label} solver parallel policy must be a string"
+                )
+        if requested["fitter"] != effective["fitter"]:
+            errors.append("KIDs effective fitter identity differs from request")
+        for name in ("fitreportdir", "parallel_policy"):
+            if requested["solver"][name] != effective["solver"][name]:
+                errors.append(
+                    f"KIDs effective solver {name} differs from request"
+                )
+        if effective["solver"]["extra_output"] is not False:
+            errors.append(
+                "KIDs effective solver extra_output must remain disabled"
+            )
+        forced = data["effective"]["resolution"][
+            "solver_extra_output_forced_disabled"
+        ]
+        if not isinstance(forced, bool):
+            errors.append("KIDs solver extra-output resolution must be boolean")
+        expected_forced = bool(requested["solver"]["extra_output"])
+        if forced != expected_forced:
+            errors.append("KIDs solver extra-output resolution is inconsistent")
+    except (KeyError, TypeError) as exc:
+        errors.append(
+            f"cannot evaluate KIDs external provenance semantics: {exc}"
+        )
+    return errors
+
+
+def config_source_manifest_semantic_errors(
+    data: dict[str, Any], manifest_path: Path,
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        if data["merge_authority"] != "citlali_cli":
+            errors.append("config merge authority must be citlali_cli")
+        if data["merge_semantics"] != "ordered_later_sources_override":
+            errors.append("config merge semantics are not recognized")
+        upstream = data["upstream"]
+        if upstream["authority"] != "tolteca":
+            errors.append("upstream config authority must be tolteca")
+        if upstream["ordered_sources_provided"] is not False:
+            errors.append("TolTECA ordered-source availability must be false")
+
+        sources = data["sources"]
+        if not isinstance(sources, list) or not sources:
+            return errors + ["config source manifest has no input sources"]
+        copied_filenames: list[str] = []
+        for index, source in enumerate(sources):
+            label = f"config source {index}"
+            if source["precedence"] != index:
+                errors.append(f"{label} precedence is not contiguous")
+            if source["role"] != "citlali_cli_config":
+                errors.append(f"{label} role is not recognized")
+            copied_filename = source["copied_filename"]
+            if not isinstance(copied_filename, str) or not copied_filename:
+                errors.append(f"{label} copied filename is empty")
+                continue
+            copied_filenames.append(copied_filename)
+            copied_path = manifest_path.parent / copied_filename
+            if not copied_path.is_file():
+                errors.append(f"{label} copied file is missing")
+                continue
+            if source["size_bytes"] != copied_path.stat().st_size:
+                errors.append(f"{label} copied file size differs")
+            if source["sha256"] != sha256_file(copied_path):
+                errors.append(f"{label} copied file SHA-256 differs")
+        if len(copied_filenames) != len(set(copied_filenames)):
+            errors.append("config source copied filenames are not unique")
+
+        merged = data["merged"]
+        if merged["serialization"] != "yaml_cpp_dump":
+            errors.append("merged config serialization is not recognized")
+        snapshot_filename = merged["snapshot_filename"]
+        if snapshot_filename != "citlali_merged_config.yaml":
+            errors.append("merged config snapshot filename is not recognized")
+        else:
+            snapshot_path = manifest_path.parent / snapshot_filename
+            if not snapshot_path.is_file():
+                errors.append("merged config snapshot is missing")
+            else:
+                if merged["size_bytes"] != snapshot_path.stat().st_size:
+                    errors.append("merged config snapshot size differs")
+                if merged["sha256"] != sha256_file(snapshot_path):
+                    errors.append("merged config snapshot SHA-256 differs")
+    except (KeyError, TypeError) as exc:
+        errors.append(f"cannot evaluate config source manifest semantics: {exc}")
+    return errors
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -2171,6 +2352,8 @@ def audit_provenance_sidecars(
     require_pointing: bool = False,
     require_post_processing: bool = False,
     require_beammap: bool = False,
+    require_kids_external: bool = False,
+    require_config_source_manifest: bool = False,
 ) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for name, spec in PROVENANCE_SIDECARS.items():
@@ -2183,6 +2366,11 @@ def audit_provenance_sidecars(
             or (name == "pointing" and require_pointing)
             or (name == "post_processing" and require_post_processing)
             or (name == "beammap" and require_beammap)
+            or (name == "kids_external" and require_kids_external)
+            or (
+                name == "config_source_manifest"
+                and require_config_source_manifest
+            )
         )
         paths = find_provenance_files(redu, str(spec["filename"]))
         record: dict[str, Any] = {
@@ -2226,7 +2414,15 @@ def audit_provenance_sidecars(
                 )
                 semantic_errors = []
                 if not missing_paths:
-                    if name == "processed_timestream":
+                    if name == "kids_external":
+                        semantic_errors = (
+                            kids_external_provenance_semantic_errors(data)
+                        )
+                    elif name == "config_source_manifest":
+                        semantic_errors = (
+                            config_source_manifest_semantic_errors(data, path)
+                        )
+                    elif name == "processed_timestream":
                         semantic_errors = (
                             processed_provenance_semantic_errors(data)
                         )
@@ -2725,6 +2921,8 @@ def build_audit(args: argparse.Namespace) -> dict[str, Any]:
             getattr(args, "require_pointing_provenance", False),
             getattr(args, "require_post_processing_provenance", False),
             getattr(args, "require_beammap_provenance", False),
+            getattr(args, "require_kids_external_provenance", False),
+            getattr(args, "require_config_source_manifest", False),
         ),
         "products": audit_products(redu, args.top),
     }
@@ -2906,6 +3104,22 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         "--require-beammap-provenance",
         action="store_true",
         help="Fail unless beammap_provenance.yaml is present and valid.",
+    )
+    parser.add_argument(
+        "--require-kids-external-provenance",
+        action="store_true",
+        help=(
+            "Fail unless kids_external_provenance.yaml identifies a valid "
+            "kidscpp bridge."
+        ),
+    )
+    parser.add_argument(
+        "--require-config-source-manifest",
+        action="store_true",
+        help=(
+            "Fail unless the ordered config-source manifest and its copied "
+            "inputs match their recorded hashes."
+        ),
     )
     parser.add_argument("--json-out", default="", help="Optional path for machine-readable JSON.")
     parser.add_argument("--report-out", default="", help="Optional path for Markdown output.")

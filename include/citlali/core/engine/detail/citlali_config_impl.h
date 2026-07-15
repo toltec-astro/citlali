@@ -4,6 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/pipeline/citlali_config_read.h>
+#include <citlali/core/pipeline/kids_external_config.h>
 #include <citlali/core/pipeline/post_processing_config_read.h>
 #include <citlali/core/pipeline/source_protection_activation.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
@@ -41,6 +42,10 @@ void Engine::get_citlali_config(CT &config) {
 
     /* get timestream config */
     get_timestream_config(config);
+    citlali::pipeline::kids_external_plan(*this) =
+        citlali::pipeline::make_kids_external_config_plan(
+            config, timestream_config.type,
+            std::string{predefs::kidsdata::name}, KIDSCPP_GIT_VERSION);
     const auto source_protection_resolution =
         citlali::pipeline::resolve_source_protection(
             runtime_config.reduction_type, timestream_config);

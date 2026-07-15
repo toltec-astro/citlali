@@ -13,6 +13,7 @@
 
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/engine/io.h>
+#include <citlali/core/pipeline/kids_external_config.h>
 #include <citlali/core/pipeline/kids_tod_channel.h>
 
 /**
@@ -20,7 +21,6 @@
  * This wraps around the kids config
  */
 
-bool extra_output = 0;
 struct KidsDataProc : ConfigMapper<KidsDataProc> {
     using Base = ConfigMapper<KidsDataProc>;
     using Fitter = kids::SweepFitter;
@@ -40,7 +40,8 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
            m_solver{Solver::Config{
               {"fitreportdir", this->config().get_str(std::tuple{"solver", "fitreportdir"})},
               {"exmode", this->config().get_str(std::tuple{"solver", "parallel_policy"})},
-              {"extra_output", extra_output},
+              {"extra_output",
+               citlali::pipeline::kids_solver_extra_output_effective},
           }} {}
 
     static auto check_config(const config_t &config)

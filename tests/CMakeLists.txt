@@ -11,6 +11,7 @@ target_sources(citlali_test
     PRIVATE
         test_beammap_config_plan.cpp
         test_config_scaffold.cpp
+        test_external_config_provenance.cpp
         test_utils.cpp
 )
 target_link_libraries(citlali_test

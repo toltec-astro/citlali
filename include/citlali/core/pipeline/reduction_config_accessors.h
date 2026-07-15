@@ -29,6 +29,9 @@ struct has_post_processing_plan : std::false_type {};
 template <class Engine, class = void>
 struct has_beammap_plan : std::false_type {};
 
+template <class Engine, class = void>
+struct has_kids_external_plan : std::false_type {};
+
 template <class Engine>
 struct has_raw_timestream_plan<
     Engine,
@@ -109,6 +112,16 @@ inline constexpr bool has_beammap_plan_v =
     has_beammap_plan<Engine>::value;
 
 template <class Engine>
+struct has_kids_external_plan<
+    Engine,
+    std::void_t<decltype(std::declval<Engine &>().kids_external_plan)>>
+    : std::true_type {};
+
+template <class Engine>
+inline constexpr bool has_kids_external_plan_v =
+    has_kids_external_plan<Engine>::value;
+
+template <class Engine>
 auto &runtime_config_provenance(Engine &engine) {
     return engine.runtime_config_provenance;
 }
@@ -136,6 +149,16 @@ const auto &effective_runtime_values(const Engine &engine) {
 template <class Engine>
 const auto &realized_runtime_config(const Engine &engine) {
     return runtime_config_provenance(engine).realized;
+}
+
+template <class Engine>
+auto &kids_external_plan(Engine &engine) {
+    return engine.kids_external_plan;
+}
+
+template <class Engine>
+const auto &kids_external_plan(const Engine &engine) {
+    return engine.kids_external_plan;
 }
 
 template <class Engine>

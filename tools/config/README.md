@@ -157,6 +157,19 @@ with `--fail-on-warnings`, and runs the compact-surface coverage audit with
 gap failures enabled. Reports are written under
 `/private/tmp/citlali_config_preflight` by default.
 
+The same preflight also audits the deliberately external Kidscpp boundary and
+the ordered Citlali CLI config-source manifest. These gates require all four
+supported KIDs TOD types, one atomic external-dependency provenance writer,
+collision-safe config copies, a merged YAML snapshot, and SHA-256 identity for
+both source and merged files. Runtime reduction directories can enforce the
+corresponding records with:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/audit_reduction_run.py REDU_DIR \
+  --require-kids-external-provenance \
+  --require-config-source-manifest
+```
+
 `--base-config` accepts either a full Citlali YAML file or a TolTECA YAML file
 containing `reduce.steps.*.config.low_level`. This is useful for compatibility
 work against an existing `70_reduce.yaml` baseline:

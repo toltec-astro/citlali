@@ -697,7 +697,121 @@ def valid_post_processing_document(
     }
 
 
+def valid_kids_external_document() -> dict:
+    values = {
+        "fitter": {
+            "modelspec": "gainlintrend",
+            "weight_window": {"type": "lorentz", "fwhm_Hz": 15000.0},
+        },
+        "solver": {
+            "fitreportdir": "/tmp/fits",
+            "parallel_policy": "seq",
+            "extra_output": False,
+        },
+    }
+    return {
+        "schema_version": "citlali-kids-external-provenance-v1",
+        "initialized": True,
+        "authority": "kidscpp",
+        "config_schema": "citlali-kidscpp-bridge-v1",
+        "data_schema": "toltec.1",
+        "dependency": {"name": "kidscpp", "version": "04088da"},
+        "supported_tod_types": ["xs", "rs", "is", "qs"],
+        "selected_tod_type": "xs",
+        "requested": {
+            "values": values,
+            "solver_extra_output_present": True,
+        },
+        "effective": {
+            "values": values,
+            "resolution": {"solver_extra_output_forced_disabled": False},
+        },
+    }
+
+
+def write_valid_config_source_manifest(redu: Path) -> None:
+    source = redu / "70_reduce.yaml"
+    merged = redu / "citlali_merged_config.yaml"
+    source.write_text("value: 1\n", encoding="utf-8")
+    merged.write_text("value: 1\n", encoding="utf-8")
+    document = {
+        "schema_version": "citlali-config-source-manifest-v1",
+        "merge_authority": "citlali_cli",
+        "merge_semantics": "ordered_later_sources_override",
+        "upstream": {
+            "authority": "tolteca",
+            "ordered_sources_provided": False,
+        },
+        "sources": [
+            {
+                "precedence": 0,
+                "role": "citlali_cli_config",
+                "source_path": "/upstream/70_reduce.yaml",
+                "copied_filename": source.name,
+                "size_bytes": source.stat().st_size,
+                "sha256": audit.sha256_file(source),
+            }
+        ],
+        "merged": {
+            "snapshot_filename": merged.name,
+            "serialization": "yaml_cpp_dump",
+            "size_bytes": merged.stat().st_size,
+            "sha256": audit.sha256_file(merged),
+        },
+    }
+    (redu / "config_source_manifest.yaml").write_text(
+        yaml.safe_dump(document, sort_keys=False), encoding="utf-8"
+    )
+
+
 class ProvenanceAuditTest(unittest.TestCase):
+    def test_accepts_required_external_config_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "kids_external_provenance.yaml").write_text(
+                yaml.safe_dump(
+                    valid_kids_external_document(), sort_keys=False
+                ),
+                encoding="utf-8",
+            )
+            write_valid_config_source_manifest(redu)
+
+            records = audit.audit_provenance_sidecars(
+                redu,
+                require_kids_external=True,
+                require_config_source_manifest=True,
+            )
+
+            self.assertTrue(records["kids_external"]["valid"])
+            self.assertTrue(records["config_source_manifest"]["valid"])
+
+    def test_rejects_config_source_hash_drift(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            write_valid_config_source_manifest(redu)
+            (redu / "70_reduce.yaml").write_text(
+                "value: changed\n", encoding="utf-8"
+            )
+
+            record = audit.audit_provenance_sidecars(
+                redu, require_config_source_manifest=True
+            )["config_source_manifest"]
+
+            self.assertFalse(record["valid"])
+            self.assertIn(
+                "config source 0 copied file SHA-256 differs",
+                record["files"][0]["semantic_errors"],
+            )
+
+    def test_rejects_incomplete_kids_tod_contract(self) -> None:
+        document = valid_kids_external_document()
+        document["supported_tod_types"] = ["xs"]
+
+        self.assertIn(
+            "KIDs supported TOD types must be xs, rs, is, qs",
+            audit.kids_external_provenance_semantic_errors(document),
+        )
+
     def test_accepts_complete_beammap_provenance_and_cross_checks(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             redu = Path(directory)

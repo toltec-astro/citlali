@@ -8,6 +8,8 @@
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/pipeline/beammap_provenance.h>
 #include <citlali/core/pipeline/beammap_provenance_lifecycle.h>
+#include <citlali/core/pipeline/config_source_manifest.h>
+#include <citlali/core/pipeline/kids_external_provenance.h>
 #include <citlali/core/pipeline/map_geometry.h>
 #include <citlali/core/pipeline/mapmaking_provenance.h>
 #include <citlali/core/pipeline/coadd_provenance.h>
@@ -122,6 +124,26 @@ int run_cli_reduction_processor(
     }
 
     auto &engine = todproc.engine();
+    citlali::pipeline::write_config_source_manifest(
+        engine.output_paths.redu_dir_name, config_filepaths, config.to_str());
+    logger->info(
+        "config source manifest: {}",
+        citlali::pipeline::config_source_manifest_path(
+            engine.output_paths.redu_dir_name)
+            .string());
+
+    if constexpr (citlali::pipeline::has_kids_external_plan_v<
+                      decltype(engine)>) {
+        citlali::pipeline::write_kids_external_provenance_file(
+            engine.output_paths.redu_dir_name,
+            citlali::pipeline::kids_external_plan(engine));
+        logger->info(
+            "KIDs external provenance sidecar: {}",
+            citlali::pipeline::kids_external_provenance_path(
+                engine.output_paths.redu_dir_name)
+                .string());
+    }
+
     const auto &plan =
         citlali::pipeline::processed_timestream_plan(engine);
     citlali::pipeline::write_processed_timestream_provenance_file(
