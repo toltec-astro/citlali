@@ -142,8 +142,8 @@
       "legacy_targets": ["Engine::map_fitter"],
       "adapter_direction": "typed-to-legacy",
       "migration_status": "typed-authoritative-with-adapter",
-      "provenance_status": "partial",
-      "exit_gate": "Unity redu03 accepts the immutable 74-leaf request, effective plan, realized lifecycle, required detector-TOD cardinality, and version-one atomic provenance with exact scientific products. Version-two provenance now references atomically replaced observation photometry while leaving source identity authoritative in telescope data. Complete observation-resolved prior/reference decisions and any approved required output cardinalities, validate the version-two candidate, and retire the compatibility snapshot only when its consumers have explicit effective inputs."
+      "provenance_status": "complete",
+      "exit_gate": "Complete: Unity redu03 accepts the immutable 74-leaf request, effective plan, realized lifecycle, required detector-TOD cardinality, and version-one atomic provenance. Matched redu04 at 7e577c819 accepts version-two provenance, atomically replaced observation photometry, telescope-data source identity, TolProj calibrator-flux authority, and exact full-depth scientific products. The map-fitter remains a one-way numerical adapter."
     },
     {
       "id": "astrometry-photometry",
@@ -155,7 +155,7 @@
       "adapter_direction": "typed-to-legacy",
       "migration_status": "mixed-adapter",
       "provenance_status": "partial",
-      "exit_gate": "Per-array Beammap photometry is parsed and validated as one observation value, installed by replacement, and referenced by Beammap provenance. Source identity remains authoritative in telescope data and TolProj owns calibrator selection and flux estimation. Missing or invalid required array flux fails without fallback. Complete the separate astrometry lifecycle/provenance and distinguish requested catalog settings from realized fits."
+      "exit_gate": "Unity Beammap redu04 validates per-array photometry parsed and validated as one observation value, installed by replacement, and recorded in version-two Beammap provenance with exact products. Source identity remains authoritative in telescope data and TolProj owns calibrator selection and flux estimation; missing or invalid required array flux fails without fallback. Complete the separate astrometry lifecycle/provenance and distinguish requested catalog settings from realized fits."
     },
     {
       "id": "kids-external",

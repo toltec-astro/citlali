@@ -69,7 +69,7 @@ but failure now propagates as an invalid-config exception instead of calling
 `exit()` from library code. The project owner confirmed that every runtime
 array flux is required and that no fallback is permitted.
 
-## Preparation Checkpoint
+## Accepted Authority Checkpoint
 
 The boundary audit mechanically expands the 59 reader roots and 59 config
 serializer roots over the fixed-length vector leaves. Both cover all 74 frozen
@@ -82,6 +82,15 @@ SNR, flagging-vector, and sensitivity-band values. It also enforces the vector
 cardinality already required by the existing readers and requires a nonempty
 subdirectory for enabled detector-TOD output. These checks do not add new
 scientific ranges or alter numerical algorithms.
+
+Unity `redu04` at `7e577c819` accepts the complete version-two contract against
+matched `redu03`. The low-level config is byte-identical, the log contains no
+serious issues, and all 12 full-depth scientific products are exact. The
+sidecar records telescope data as source-identity authority, TolProj as
+calibrator-flux authority, all three required installed array fluxes, one
+complete observation, three complete iterations, and the required detector
+TOD write. This closes the Beammap policy and adjacent photometry gate without
+moving source identity or calibrator estimation into Citlali.
 
 ## Target Contract
 
@@ -107,9 +116,9 @@ enabled detector-specific PTC TOD cardinality is already enforced.
 
 Do not redesign Gaussian fitting, prior matching, flagging, or detector-map
 algorithms in this domain. Version-one lifecycle provenance is accepted by
-Unity `redu03`; version-two atomic photometry provenance remains a pending matched
-Beammap gate. Add only the observation-resolved prior, reference, and
-Beammap-specific product facts needed to close the documented domain gates.
-Replace compatibility consumers only where an explicit effective input
-clarifies ownership. Any algorithmic change requires separate scientific
-ownership and validation evidence.
+Unity `redu03`, and version-two atomic photometry provenance is accepted by
+matched `redu04`. Additional Beammap work requires a concrete missing contract
+or measured defect; it must not continue as open-ended subdivision. Replace
+compatibility consumers only where an explicit effective input clarifies
+ownership. Any algorithmic change requires separate scientific ownership and
+validation evidence.

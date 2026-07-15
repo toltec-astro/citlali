@@ -5833,6 +5833,158 @@
         "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained.",
         "Acceptance covers the new Beammap lifecycle and detector-TOD cardinality contract; prior/reference resolution and adjacent beammap_source authority remain incomplete."
       ]
+    },
+    {
+      "record_id": "beammap-148670-refactor-7e577c81-redu04",
+      "recorded_date": "2026-07-15",
+      "mode": "beammap",
+      "status": "accepted",
+      "candidate": {
+        "label": "refactor",
+        "branch": "codex/structural-refactor",
+        "citlali_sha": "7e577c81963a6350e485c95cfb22ba1e61a41d79",
+        "citlali_version": "v4.0.0-3489-g7e577c81",
+        "dirty": false,
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "build": {
+          "host": "unity",
+          "compiler": null,
+          "build_type": "Release",
+          "cmake_flags": null
+        }
+      },
+      "baseline": {
+        "label": "refactor",
+        "citlali_sha": "b530e83874315b1f80a7e4ea238f33655f686870",
+        "citlali_version": "v4.0.0-3486-gb530e838",
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "reduction_id": "redu03"
+      },
+      "config": {
+        "ordered_sources": [
+          {
+            "role": "merged_low_level_citlali_input",
+            "path": "citlali_o148670_0_2_c1.yaml",
+            "precedence": 0,
+            "sha256": "aa956b28465eaef8b23763e877857b5b8929e95ca4fbdc976db6d7b2a775636d"
+          }
+        ],
+        "overlay_sources_retained": false,
+        "canonical_merged_sha256": "aa956b28465eaef8b23763e877857b5b8929e95ca4fbdc976db6d7b2a775636d",
+        "beammap_provenance": {
+          "path": "beammap_provenance.yaml",
+          "schema_version": "citlali-beammap-provenance-v2",
+          "sha256": "0512e4e5cbfc2b260044303142deec573a563182246027933f373659659e6f28",
+          "semantic_audit": {
+            "source_identity_authority": "telescope_data",
+            "calibrator_flux_authority": "tolproj",
+            "required_flux_policy": "fail_reduction",
+            "installed_flux_count": 3,
+            "completed_observation_count": 1,
+            "completed_iteration_count": 3,
+            "detector_count": 5234,
+            "map_count": 5234,
+            "scan_count": 198,
+            "termination_reason": "maximum_iterations",
+            "detector_tod_required": true,
+            "detector_tod_write_count": 1,
+            "detector_tod_output_iteration": 2,
+            "detector_tod_slot_count": 20,
+            "detector_tod_maximum_sample_count": 788,
+            "outputs_completed": true
+          }
+        }
+      },
+      "dataset": {
+        "obsnum": "148670",
+        "identity": "TolTEC commissioning Beammap observation 148670",
+        "content_hash": null
+      },
+      "invocation": {
+        "command": null,
+        "launcher": "tolteca reduce",
+        "runtime_policy": {
+          "n_threads": 16,
+          "parallel_policy": "omp",
+          "kids_solver_parallel_policy": "seq"
+        },
+        "exit_code": 0
+      },
+      "audit": {
+        "finished": true,
+        "serious_log_counts": {},
+        "file_count": 28,
+        "comparable_product_count": 13,
+        "stable_comparable_product_count": 12,
+        "stable_product_counts_by_kind": {
+          "ecsv": 2,
+          "fits": 6,
+          "netcdf": 4
+        },
+        "required_product_inventory_matches": "beammap-148670-refactor-b530e838-redu03 plus required version-two Beammap provenance"
+      },
+      "comparison": {
+        "tool": "tools/baseline/compare_reduction_products.py",
+        "tool_sha": "3cd7250b9",
+        "options": [
+          "--mode",
+          "beammap",
+          "--strict",
+          "--include-timestream",
+          "--max-array-elements",
+          "0",
+          "--exclude",
+          "citlali_profile.ecsv"
+        ],
+        "volatile_allowlist": [
+          "citlali_profile.ecsv",
+          "refactor provenance sidecars"
+        ],
+        "tolerances": {
+          "atol": 2e-08,
+          "rtol": 1e-10,
+          "fraction_floor": 1e-12
+        },
+        "common_products": 12,
+        "skipped_records": 0,
+        "changed_records": 0,
+        "scientific_products_exact": true,
+        "verdict": "accepted_exact",
+        "measured": {
+          "beammap_profile": "beammap-scientific-equivalence-v1",
+          "detector_identity_exact": true,
+          "detector_flags_exact": true,
+          "apt_numeric_max_difference": 0.0,
+          "map_layer_rms_relative_max": 0.0,
+          "complete_detector_tod_compared": true,
+          "split_fits_product_count": 6
+        }
+      },
+      "accepted_differences": [],
+      "performance": {
+        "wall_time_log_seconds": 3661.793,
+        "observation_pipeline_seconds": 3651.816,
+        "mapmaking_interval_seconds": 2994.922,
+        "peak_rss_kb": null,
+        "baseline_wall_time_log_seconds": 3609.307,
+        "baseline_mapmaking_interval_seconds": 3010.775
+      },
+      "artifacts": {
+        "candidate_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced/redu04",
+        "candidate_unity_path": "/work/toltec/commissioning2025-test/2026-refactor/beammap/refactor/reduced/redu04",
+        "baseline_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced/redu03"
+      },
+      "limitations": [
+        "The original ordered TolTECA NN*.yaml overlay sources were not retained in the reduction directory.",
+        "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained.",
+        "Acceptance covers the version-two Beammap source-identity and photometry-ownership contract; generic astrometry remains a separate incomplete authority domain."
+      ]
     }
   ]
 }

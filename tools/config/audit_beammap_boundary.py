@@ -409,7 +409,7 @@ def inventory_state(repo_root: Path) -> dict[str, object]:
         and domain["execution_authority"] == "typed"
         and domain["adapter_direction"] == "typed-to-legacy"
         and domain["migration_status"] == "typed-authoritative-with-adapter"
-        and domain["provenance_status"] == "partial"
+        and domain["provenance_status"] == "complete"
     )
     return {"source": AUTHORITY_SOURCE, "domain": domain, "exact": exact}
 

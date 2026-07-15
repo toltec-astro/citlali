@@ -36,10 +36,11 @@ branch. The exact validated tree will remain available for forensic review.
 - Latest accepted science reduction: final iteration `redu19`, produced by
   `342a021c`; its post-processing provenance records one coadd filter context
   and three filtered maps.
-- Latest accepted Beammap reduction: `redu03`, produced by `b530e8387`; it
-  validates the dedicated Beammap lifecycle/provenance contract and one
-  required detector-TOD write while retaining exact scientific identity with
-  `redu02`.
+- Latest accepted Beammap reduction: `redu04`, produced by `7e577c819`; it
+  validates the version-two source-identity and photometry-ownership contract,
+  atomic per-observation flux replacement, and the previously accepted
+  lifecycle/detector-TOD contract while retaining exact scientific identity
+  with `redu03`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
@@ -50,7 +51,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 375 tests with none skipped or disabled; all
+- CTest discovers and passes all 377 tests with none skipped or disabled; all
   75 config-boundary/preflight tests pass.
 
 These facts are characterization evidence, not a production-equivalence claim.
@@ -1186,7 +1187,7 @@ observation-resolved prior/reference state and adjacent atomic
 `beammap_source.*` handling are completed. No unresolved fallback policy is
 inferred by this gate.
 
-## Atomic Beammap Photometry State Prepared
+## Atomic Beammap Photometry State Accepted
 
 The adjacent photometry safety cut removes the concrete
 cross-observation source-flux hazard without changing successful numerical
@@ -1209,8 +1210,25 @@ v2.
 
 Project-owner decision (2026-07-15): every runtime array requires a positive,
 finite calibrator flux; missing or invalid required flux fails the reduction.
-No fallback is permitted. This candidate needs a matched Unity Beammap run
-before v2 provenance is accepted.
+No fallback is permitted.
+
+Unity Beammap `redu04` was produced by `v4.0.0-3489-g7e577c81` from the same
+byte-identical low-level config as accepted `redu03` (SHA-256
+`aa956b28465eaef8b23763e877857b5b8929e95ca4fbdc976db6d7b2a775636d`).
+The run completed all 198 PTC chunks with zero error-level messages. Its valid
+`citlali-beammap-provenance-v2` sidecar names telescope data and TolProj as the
+respective source-identity and calibrator-flux authorities and records the
+three required installed array fluxes. The strict full-depth comparison reads
+all 12 scientific products, including detector TOD and six split FITS files,
+and finds no missing, extra, skipped, or changed records. The dedicated
+Beammap profile also reports exact detector identity, flags, APT quantities,
+and good/bad signal, weight, and kernel maps.
+
+The total log interval is 3,661.793 seconds versus 3,609.307 seconds for
+`redu03` (+1.45%). The dominant mapmaking interval is 0.53% faster; the
+variation is concentrated in PTC chunk and diagnostics timing. This is within
+the provisional 3-5% runtime budget and does not indicate a provenance-path
+regression. Peak RSS remains unmeasured.
 
 Both local targets build; all 24 focused Beammap/photometry tests, all 377
 CTests, and all 49 reduction-audit tests pass. Full config preflight passes 75

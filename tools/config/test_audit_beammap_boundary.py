@@ -93,12 +93,12 @@ class BeammapBoundaryAuditTest(unittest.TestCase):
             audit.EXPECTED_LIFECYCLE_CALLS,
         )
 
-    def test_inventory_awaits_unity_acceptance(self) -> None:
+    def test_inventory_records_unity_acceptance(self) -> None:
         result = audit.audit(REPO_ROOT)
         self.assertTrue(result["inventory"]["exact"])
         self.assertEqual(
             result["inventory"]["domain"]["provenance_status"],
-            "partial",
+            "complete",
         )
 
 
