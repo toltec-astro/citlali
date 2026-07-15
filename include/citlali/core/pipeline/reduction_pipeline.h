@@ -17,8 +17,6 @@ bool run_reduction_pipeline(
     MapCoords &map_coords, DateObsFactory &&date_obs_factory,
     StageProfileCollector &stage_profile,
     const Logger &logger) {
-    stage_profile.reset();
-
     {
         const auto profile_scope =
             profile_stage(stage_profile, "reduction.prepare_initial_geometry", logger);

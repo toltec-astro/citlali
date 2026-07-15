@@ -6995,6 +6995,7 @@ TEST(pipeline_execution, runs_reduction_pipeline) {
     std::vector<int> map_coords;
     citlali::pipeline::StageProfileCollector stage_profile;
     auto logger = std::make_shared<FakeLogger>();
+    stage_profile.record("session.pre_pipeline", {}, 0.25, logger);
 
     EXPECT_TEMPLATE_TRUE(citlali::pipeline::run_reduction_pipeline<
         false, FakeMapType::RawObs, FakeMapType::FilteredObs,
@@ -7020,6 +7021,7 @@ TEST(pipeline_execution, runs_reduction_pipeline) {
     EXPECT_TRUE(has_profile_stage("reduction.iterations"));
     EXPECT_TRUE(has_profile_stage("observation.pipeline"));
     EXPECT_TRUE(has_profile_stage("map.output"));
+    EXPECT_TRUE(has_profile_stage("session.pre_pipeline"));
 }
 
 TEST(pipeline_execution, writes_raw_coadd_outputs) {
