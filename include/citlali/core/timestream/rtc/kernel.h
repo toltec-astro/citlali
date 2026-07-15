@@ -7,6 +7,7 @@
 #include <boost/math/special_functions/bessel.hpp>
 
 #include <citlali/core/config/mapmaking_config.h>
+#include <citlali/core/pipeline/timestream_invariant_validation.h>
 #include <citlali/core/utils/constants.h>
 #include <citlali/core/utils/pointing.h>
 #include <citlali/core/utils/fits_io.h>
@@ -73,7 +74,8 @@ void Kernel::setup(Eigen::Index n_maps) {
     if (type == "fits") {
         if (img_ext_names.size()!=n_maps && img_ext_names.size()!=1) {
             SPDLOG_INFO("mismatch for number of kernel images");
-            std::exit(EXIT_FAILURE);
+            citlali::pipeline::require_kernel_image_cardinality(
+                img_ext_names.size(), n_maps);
         }
 
         fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> fits_io(filepath);

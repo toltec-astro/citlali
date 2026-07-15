@@ -7,6 +7,7 @@
 #include <citlali/core/pipeline/phdu_observation_metadata.h>
 #include <citlali/core/pipeline/rawobs_tone_frequency_inventory.h>
 #include <citlali/core/pipeline/timestream_scan_context.h>
+#include <citlali/core/pipeline/timestream_invariant_validation.h>
 #include <citlali/core/utils/ecsv_io.h>
 #include <citlali/core/utils/fits_io.h>
 
@@ -160,6 +161,39 @@ TEST(session_failure_boundaries, rejects_beammap_fit_geometry_mismatch) {
     EXPECT_THROW(citlali::pipeline::require_beammap_fit_map_geometry(
                      4, 10, 20, 10, 19, 10, 20),
                  citlali::error::Error);
+}
+
+TEST(session_failure_boundaries, classifies_noncontiguous_grouping_as_io) {
+    EXPECT_NO_THROW(citlali::pipeline::require_group_value_not_seen(
+        false, "nw", 1));
+    try {
+        citlali::pipeline::require_group_value_not_seen(true, "nw", 1);
+        FAIL() << "expected non-contiguous grouping to fail";
+    } catch (const citlali::error::Error &error) {
+        EXPECT_EQ(error.code(), citlali::error::Code::io);
+    }
+}
+
+TEST(session_failure_boundaries, classifies_invalid_weight_counters_as_internal) {
+    EXPECT_NO_THROW(citlali::pipeline::require_valid_weight_counters(
+        10, 8, 7, 1, 2));
+    try {
+        citlali::pipeline::require_valid_weight_counters(10, 8, 9, 1, 2);
+        FAIL() << "expected impossible weight counters to fail";
+    } catch (const citlali::error::Error &error) {
+        EXPECT_EQ(error.code(), citlali::error::Code::internal);
+    }
+}
+
+TEST(session_failure_boundaries, classifies_kernel_image_count_as_config) {
+    EXPECT_NO_THROW(citlali::pipeline::require_kernel_image_cardinality(1, 3));
+    EXPECT_NO_THROW(citlali::pipeline::require_kernel_image_cardinality(3, 3));
+    try {
+        citlali::pipeline::require_kernel_image_cardinality(2, 3);
+        FAIL() << "expected mismatched kernel image count to fail";
+    } catch (const citlali::error::Error &error) {
+        EXPECT_EQ(error.code(), citlali::error::Code::invalid_config);
+    }
 }
 
 TEST(session_failure_boundaries, accepts_valid_required_output_slots) {

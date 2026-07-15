@@ -25,6 +25,7 @@
 
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/engine/io.h>
+#include <citlali/core/pipeline/timestream_invariant_validation.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
 
@@ -2835,7 +2836,8 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                 else {
                     if (seen.find(nw_v) != seen.end()) {
                         logger->error("non-contiguous grouping detected for 'nw' value {}", nw_v);
-                        std::exit(EXIT_FAILURE);
+                        citlali::pipeline::require_group_value_not_seen(
+                            true, "nw", nw_v);
                     }
                     seen.insert(nw_v);
                     nw_i = nw_v;
@@ -3535,10 +3537,11 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
                 n_unflagged, n_dets_high, n_unflagged);
 
             // sanity checks for impossible counter combinations
-            if (n_unflagged < 0 || n_unflagged > n_group_dets ||
-                n_good_dets < 0 || n_good_dets > n_unflagged ||
-                n_dets_low < 0 || n_dets_low > n_unflagged ||
-                n_dets_high < 0 || n_dets_high > n_unflagged) {
+            try {
+                citlali::pipeline::require_valid_weight_counters(
+                    n_group_dets, n_unflagged, n_good_dets,
+                    n_dets_low, n_dets_high);
+            } catch (const citlali::error::Error &) {
                 logger->error(
                     "weight counter invariant failure call={} scan={} array={} "
                     "group_dets={} apt_unflagged={} positive_unflagged={} "
@@ -3553,7 +3556,7 @@ auto PTCProc::reset_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_
                         reset_call_id, scan_index_1based, key, m, det_index,
                         calib.apt["flag"](det_index), in.weights.data(det_index));
                 }
-                std::exit(EXIT_FAILURE);
+                throw;
             }
         }
 

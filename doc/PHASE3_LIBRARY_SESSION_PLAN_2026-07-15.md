@@ -82,10 +82,16 @@ definitions from the public header into a compiled source. The header shrank
 from 946 to 712 lines while retaining small predicates inline. An immediate
 single before/after CLI compile pair was 62.4 versus 63.7 seconds, which shows
 no demonstrated speedup or material regression. CLI, primary test, and safety
-test targets build; all 448 CTests and full config preflight pass. This boundary
+test targets build; all 451 CTests and full config preflight pass. This boundary
 requires a Unity compile and point reduction before acceptance. A larger cold
 tranche may be considered later only if dependency and build evidence justify
 it.
+
+The first mature-implementation contract tranche retires the two PTC weighting
+exits and one RTC kernel setup exit without changing valid-path arithmetic.
+Focused tests cover their canonical I/O, internal, and invalid-config failure
+classes. The session audit now reports 51 library exits. Fruit-loop ingestion
+is the next open tranche and waits for science and Beammap validation capacity.
 
 ## Stop Rules
 

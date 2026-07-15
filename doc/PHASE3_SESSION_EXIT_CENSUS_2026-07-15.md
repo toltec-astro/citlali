@@ -68,18 +68,25 @@ Unsupported polarization/grouping and Beammap pixel-axis requests plus missing
 Wiener template FWHM values now use canonical config errors. The current audit
 reports 54 library exits, all in mature numerical implementations.
 
+The first bounded mature-implementation tranche retires three more exits.
+Non-contiguous PTC network grouping is now a canonical input I/O failure,
+impossible PTC weight counters are an internal failure, and mismatched RTC
+kernel-image cardinality is invalid configuration. Focused tests cover valid
+and invalid contracts; all 451 CTests and full config preflight pass. The
+current audit reports 51 library exits.
+
 ## Remaining Tranche Classification
 
 The 54-exit stop line is split by behavior and validation cost. These are not a
 single mechanical replacement batch.
 
-| Tranche | Exits | Boundary | Minimum validation before acceptance |
-| --- | ---: | --- | --- |
-| Fruit-loop map ingestion | 37 | Required map-file discovery, FITS metadata/schema, grouping identity, WCS, and map cardinality in `TCProc::load_mb` | Focused malformed-input tests plus matched science and Beammap fruit-loop reductions |
-| Fruit-loop grouping/application | 3 | Non-contiguous detector grouping and map/array identity during map-to-TOD feedback | Focused invariant tests plus science and Beammap fruit-loop reductions |
-| Wiener filtering | 11 | Template geometry, kernel-map identity, finite kernel peak, and OpenMP FFTW allocation | Focused template/allocation tests plus the Wiener-enabled mode that exercises each implementation |
-| PTC weighting | 2 | Network-group contiguity and impossible weight-counter state | Focused invariant tests plus a point run; add science when the active weighting policy differs |
-| RTC kernel setup | 1 | FITS kernel image cardinality | Focused invalid-config test plus a kernel-enabled point or Beammap run |
+| Tranche | Exits | Status | Boundary | Minimum validation before acceptance |
+| --- | ---: | --- | --- | --- |
+| Fruit-loop map ingestion | 37 | Open | Required map-file discovery, FITS metadata/schema, grouping identity, WCS, and map cardinality in `TCProc::load_mb` | Focused malformed-input tests plus matched science and Beammap fruit-loop reductions |
+| Fruit-loop grouping/application | 3 | Open | Non-contiguous detector grouping and map/array identity during map-to-TOD feedback | Focused invariant tests plus science and Beammap fruit-loop reductions |
+| Wiener filtering | 11 | Open | Template geometry, kernel-map identity, finite kernel peak, and OpenMP FFTW allocation | Focused template/allocation tests plus the Wiener-enabled mode that exercises each implementation |
+| PTC weighting | 0 of 2 | Retired locally | Network-group contiguity and impossible weight-counter state | Point run; add science when the active weighting policy differs |
+| RTC kernel setup | 0 of 1 | Retired locally | FITS kernel image cardinality | Kernel-enabled point or Beammap run |
 
 The preferred retirement order is PTC weighting, RTC kernel setup, fruit-loop
 map ingestion, fruit-loop application, then Wiener filtering. This order starts

@@ -189,8 +189,18 @@ declarations and small predicates. The header shrank from 946 to 712 lines and
 the new source is linked through `citlali`. One immediate before/after CLI
 compile pair was 62.4 versus 63.7 seconds, so this slice demonstrates neither a
 build-time win nor a material regression. All three local targets build, all
-448 CTests pass, and full config preflight passes. Unity compile and point-run
+451 CTests pass, and full config preflight passes. Unity compile and point-run
 evidence remain required before accepting this Phase 3 boundary.
+
+The first bounded mature-implementation exit tranche is complete locally.
+Two PTC weighting exits now classify non-contiguous network grouping as input
+I/O failure and impossible counters as an internal failure. RTC kernel setup
+classifies mismatched kernel-image cardinality as invalid configuration. Valid
+paths and numerical loops are unchanged; focused contracts cover each error
+class. The dependency audit now reports 51 library exits and zero CLI exits.
+The next production tranche is fruit-loop map ingestion and requires matched
+science and Beammap validation, so it is not stacked onto the pending Unity
+point checkpoint.
 
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution
