@@ -66,6 +66,7 @@ endif()
 add_library(citlali STATIC)
 target_sources(citlali
     PRIVATE
+    "src/citlali/core/config/timestream_enums.cpp"
     #"src/citlali/core/engine/todproc.cpp"
     #"src/citlali/core/engine/kidsproc.cpp"
     "src/citlali/core/engine/calib.cpp"

@@ -72,10 +72,20 @@ test builds, all 448 CTests, and full config preflight pass. Step 3 is accepted
 only after a Unity point reduction confirms unchanged products and profile
 sidecar behavior.
 
-The next bounded task is step 4: identify one concrete observation- or
-scan-lifecycle stale-state hazard and repair that ownership boundary. Broad
-state movement is out of scope. Once that evidence-driven cut is complete, the
-first measured `.cpp` boundary can proceed.
+Step 4 found and repaired one concrete ownership defect: the scientific
+pipeline reset the collector already owned and reset by `ReductionSession`.
+The inner reset is deleted, and a regression test proves pre-pipeline records
+survive. No broader observation or scan state moved without evidence.
+
+The first step 6 candidate moves timestream enum name tables and parse/format
+definitions from the public header into a compiled source. The header shrank
+from 946 to 712 lines while retaining small predicates inline. An immediate
+single before/after CLI compile pair was 62.4 versus 63.7 seconds, which shows
+no demonstrated speedup or material regression. CLI, primary test, and safety
+test targets build; all 448 CTests and full config preflight pass. This boundary
+requires a Unity compile and point reduction before acceptance. A larger cold
+tranche may be considered later only if dependency and build evidence justify
+it.
 
 ## Stop Rules
 

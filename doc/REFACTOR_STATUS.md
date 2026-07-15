@@ -92,8 +92,8 @@ sequential runs, nested-run rejection, CLI policy separation, independent
 header compilation, and multi-translation-unit linkage. Both local test
 targets build, all 448 CTests pass, and full config preflight passes. This is
 the facade checkpoint, not the Phase 3 exit gate: reachable library exits,
-complete internal failure classification, lifecycle ownership cuts, and the
-first measured `.cpp` boundary remain open. The
+complete internal failure classification, remaining lifecycle ownership cuts,
+and validation of the first `.cpp` boundary remain open. The
 [bounded ownership plan](PHASE3_LIBRARY_SESSION_PLAN_2026-07-15.md) records the
 sequence and stop rules.
 
@@ -174,6 +174,23 @@ observation, and map-output records in the supplied collector. Both local build
 targets pass, all 448 CTests pass, and full config preflight passes after the
 atomic cutover. A Unity point reduction must confirm unchanged products and
 profile-sidecar behavior before this Phase 3 gate is accepted as validated.
+
+The first concrete lifecycle cut after profiling removes a duplicate collector
+reset from `run_reduction_pipeline`. Reset policy now belongs only to
+`ReductionSession`, and a regression test proves that records created before
+scientific-pipeline entry survive in the same run-owned collector. This is the
+bounded stale-state repair required by Phase 3 step 4; no observation or scan
+state was moved without a demonstrated hazard.
+
+The first real compiled implementation boundary is also a local candidate.
+Timestream enum name tables and parse/format definitions now compile once in
+`src/citlali/core/config/timestream_enums.cpp`; the public header retains enum
+declarations and small predicates. The header shrank from 946 to 712 lines and
+the new source is linked through `citlali`. One immediate before/after CLI
+compile pair was 62.4 versus 63.7 seconds, so this slice demonstrates neither a
+build-time win nor a material regression. All three local targets build, all
+448 CTests pass, and full config preflight passes. Unity compile and point-run
+evidence remain required before accepting this Phase 3 boundary.
 
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution
