@@ -246,7 +246,9 @@ public:
 
     // timestream grppi pipeline
     template <class KidsProc, class RawObs>
-    void timestream_pipeline(KidsProc &, RawObs &, bool write_outputs = true);
+    void timestream_pipeline(KidsProc &, RawObs &,
+                             citlali::pipeline::StageProfileCollector &,
+                             bool write_outputs = true);
 
     // run the raw time chunk processing
     template <class KidsProc>
@@ -256,7 +258,8 @@ public:
 
     // run the loop pipeline
     template <class KidsProc, class RawObs>
-    void loop_pipeline(KidsProc &, RawObs &);
+    void loop_pipeline(KidsProc &, RawObs &,
+                       citlali::pipeline::StageProfileCollector &);
     void calculate_beammap_detector_sensitivities(
         const std::string &map_parallel_policy);
     void populate_beammap_detector_fit_apt_columns();
@@ -270,26 +273,32 @@ public:
     void finalize_beammap_detector_grouping_outputs(
         const std::string &map_parallel_policy,
         citlali::config::MapGrouping mapmaking_grouping);
-    void finalize_beammap_non_detector_grouping_outputs();
+    void finalize_beammap_non_detector_grouping_outputs(
+        citlali::pipeline::StageProfileCollector &);
 
     // run the iterative stage
     template <class KidsProc, class RawObs>
-    void run_loop(KidsProc &, RawObs &);
+    void run_loop(KidsProc &, RawObs &,
+                  citlali::pipeline::StageProfileCollector &);
     template <class RandomBits, class Generator>
     void run_beammap_mapmaking_pass(bool update_progress,
                                     RandomBits &rands,
-                                    Generator &eng);
+                                    Generator &eng,
+                                    citlali::pipeline::StageProfileCollector &);
     template <class RandomBits, class Generator>
     void run_beammap_mapmaking_stage(bool locator_iter,
                                      bool measurement_iter,
                                      bool detector_grouping,
                                      RandomBits &rands,
-                                     Generator &eng);
+                                     Generator &eng,
+                                     citlali::pipeline::StageProfileCollector &);
     template <class KidsProc, class RawObs>
     bool maybe_run_beammap_source_aware_rtc(KidsProc &, RawObs &,
                                             bool first_measurement_iter,
-                                            bool detector_grouping);
-    void fit_beammap_maps(bool detector_grouping, bool measurement_iter);
+                                            bool detector_grouping,
+                                            citlali::pipeline::StageProfileCollector &);
+    void fit_beammap_maps(bool detector_grouping, bool measurement_iter,
+                          citlali::pipeline::StageProfileCollector &);
     bool can_use_beammap_fit_priors(bool detector_grouping) const;
     void maybe_update_beammap_prior_frame_for_fit(bool can_use_priors);
     void fit_single_beammap_map(Eigen::Index map_index,
@@ -361,10 +370,13 @@ public:
         const BeammapFitIterationStats &fit_stats);
     void log_beammap_fit_iteration_stats(
         const BeammapFitIterationStats &fit_stats);
-    bool update_beammap_convergence_state();
-    bool advance_beammap_iteration_state();
+    bool update_beammap_convergence_state(
+        citlali::pipeline::StageProfileCollector &);
+    bool advance_beammap_iteration_state(
+        citlali::pipeline::StageProfileCollector &);
     void write_or_clear_beammap_ptc_products_for_iter(int completed_iter,
-                                                      bool keep_going);
+                                                      bool keep_going,
+        citlali::pipeline::StageProfileCollector &);
     void process_beammap_ptc_scan(
         int scan_index, bool locator_iter, bool measurement_iter,
         bool detector_grouping,
@@ -377,7 +389,8 @@ public:
                                         bool detector_grouping);
     void run_beammap_ptc_cleaning_pass(bool locator_iter,
                                        bool measurement_iter,
-                                       bool detector_grouping);
+                                       bool detector_grouping,
+        citlali::pipeline::StageProfileCollector &);
     void populate_beammap_maps(
         citlali::config::MapGrouping mapmaking_grouping,
         citlali::config::MapMethod mapmaking_method,
@@ -721,11 +734,16 @@ public:
     void update_final_prior_match_diagnostics();
     void log_final_network_qc_summary();
     void clear_beammap_ptc_diagnostics();
-    void write_beammap_ptc_products(int output_iter);
-    void write_beammap_ptc_chunk_summaries(int output_iter);
-    void write_beammap_ptc_diag_sidecar(int output_iter);
-    void write_beammap_processed_ptc_tod(int output_iter);
-    void write_beammap_detector_ptc_tod_stage(int output_iter);
+    void write_beammap_ptc_products(
+        int output_iter, citlali::pipeline::StageProfileCollector &);
+    void write_beammap_ptc_chunk_summaries(
+        int output_iter, citlali::pipeline::StageProfileCollector &);
+    void write_beammap_ptc_diag_sidecar(
+        int output_iter, citlali::pipeline::StageProfileCollector &);
+    void write_beammap_processed_ptc_tod(
+        int output_iter, citlali::pipeline::StageProfileCollector &);
+    void write_beammap_detector_ptc_tod_stage(
+        int output_iter, citlali::pipeline::StageProfileCollector &);
     BeammapDetectorTodPreflight prepare_detector_specific_ptc_tod_output();
     BeammapDetectorTodPointingSamples sample_detector_tod_pointing(
         Eigen::Index n_scans);

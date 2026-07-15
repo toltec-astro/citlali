@@ -37,7 +37,9 @@ void Beammap::normalize_beammap_maps_after_pass(
 template <class RandomBits, class Generator>
 void Beammap::run_beammap_mapmaking_pass(bool update_progress,
                                          RandomBits &rands,
-                                         Generator &eng) {
+                                         Generator &eng,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     const auto &mapmaking = citlali::pipeline::mapmaking_config(*this);
     const auto mapmaking_grouping = mapmaking.grouping;
     const auto mapmaking_method = mapmaking.method;
@@ -94,7 +96,8 @@ void Beammap::run_beammap_mapmaking_stage(bool locator_iter,
                                           bool measurement_iter,
                                           bool detector_grouping,
                                           RandomBits &rands,
-                                          Generator &eng) {
+                                          Generator &eng,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
     logger->info("starting mapmaking");
 
     if (!citlali::pipeline::mapmaking_enabled(*this)) {
@@ -103,7 +106,7 @@ void Beammap::run_beammap_mapmaking_stage(bool locator_iter,
 
     const auto &scan_band_config =
         citlali::pipeline::beammap_config(*this).scan_band_mask;
-    run_beammap_mapmaking_pass(true, rands, eng);
+    run_beammap_mapmaking_pass(true, rands, eng, stage_profile);
 
     if (scan_band_config.enabled && detector_grouping && locator_iter) {
         auto scan_band_summary = apply_scan_band_mask(omb);
@@ -115,7 +118,7 @@ void Beammap::run_beammap_mapmaking_stage(bool locator_iter,
                 scan_band_summary.n_det_flagged,
                 scan_band_summary.n_det_rejected,
                 scan_band_config.max_flagged_fraction);
-            run_beammap_mapmaking_pass(false, rands, eng);
+            run_beammap_mapmaking_pass(false, rands, eng, stage_profile);
         }
         else {
             logger->info(
@@ -125,5 +128,5 @@ void Beammap::run_beammap_mapmaking_stage(bool locator_iter,
         }
     }
 
-    fit_beammap_maps(detector_grouping, measurement_iter);
+    fit_beammap_maps(detector_grouping, measurement_iter, stage_profile);
 }

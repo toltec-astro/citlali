@@ -10,7 +10,6 @@ template <class KidsProc, class RawObs>
 void Beammap::pipeline(
     KidsProc &kidsproc, RawObs &rawobs,
     citlali::pipeline::StageProfileCollector &stage_profile) {
-    (void)stage_profile;
     // only get kids params if not simulation
     if (!telescope.sim_obs) {
         // add kids models to apt
@@ -52,7 +51,7 @@ void Beammap::pipeline(
 
     // run timestream pipeline
     rtcproc.kernel.clear_source_centers();
-    timestream_pipeline(kidsproc, rawobs);
+    timestream_pipeline(kidsproc, rawobs, stage_profile);
 
     citlali::pipeline::begin_beammap_observation_if_available(
         *this, calib.n_dets, ptcs0.size());
@@ -68,5 +67,5 @@ void Beammap::pipeline(
     det_out_vec.resize(map_indices.n_maps);
 
     // run iterative pipeline
-    loop_pipeline(kidsproc, rawobs);
+    loop_pipeline(kidsproc, rawobs, stage_profile);
 }

@@ -14,7 +14,10 @@ void Beammap::clear_beammap_ptc_diagnostics() {
     }
 }
 
-void Beammap::write_beammap_ptc_chunk_summaries(int output_iter) {
+void Beammap::write_beammap_ptc_chunk_summaries(
+    int output_iter,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     if (!citlali::pipeline::verbose_runtime_enabled(*this)) {
         return;
     }
@@ -30,7 +33,10 @@ void Beammap::write_beammap_ptc_chunk_summaries(int output_iter) {
     }
 }
 
-void Beammap::write_beammap_ptc_diag_sidecar(int output_iter) {
+void Beammap::write_beammap_ptc_diag_sidecar(
+    int output_iter,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     if (output_paths.ptcdiag_filename.empty()) {
         return;
     }
@@ -52,7 +58,10 @@ void Beammap::write_beammap_ptc_diag_sidecar(int output_iter) {
     }
 }
 
-void Beammap::write_beammap_processed_ptc_tod(int output_iter) {
+void Beammap::write_beammap_processed_ptc_tod(
+    int output_iter,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     if (!citlali::pipeline::processed_tod_output_files_available(*this)) {
         return;
     }
@@ -83,7 +92,10 @@ void Beammap::write_beammap_processed_ptc_tod(int output_iter) {
     }
 }
 
-void Beammap::write_beammap_detector_ptc_tod_stage(int output_iter) {
+void Beammap::write_beammap_detector_ptc_tod_stage(
+    int output_iter,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     const auto profile_scope =
         citlali::pipeline::profile_stage(
             "beammap.ptc_output.detector_tod", logger,
@@ -91,13 +103,16 @@ void Beammap::write_beammap_detector_ptc_tod_stage(int output_iter) {
     write_detector_specific_ptc_tod(output_iter);
 }
 
-void Beammap::write_beammap_ptc_products(int output_iter) {
+void Beammap::write_beammap_ptc_products(
+    int output_iter,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     const auto total_profile_scope =
         citlali::pipeline::profile_stage(
             "beammap.ptc_output.total", logger,
             "iter=" + std::to_string(output_iter));
-    write_beammap_ptc_chunk_summaries(output_iter);
-    write_beammap_ptc_diag_sidecar(output_iter);
-    write_beammap_processed_ptc_tod(output_iter);
-    write_beammap_detector_ptc_tod_stage(output_iter);
+    write_beammap_ptc_chunk_summaries(output_iter, stage_profile);
+    write_beammap_ptc_diag_sidecar(output_iter, stage_profile);
+    write_beammap_processed_ptc_tod(output_iter, stage_profile);
+    write_beammap_detector_ptc_tod_stage(output_iter, stage_profile);
 }

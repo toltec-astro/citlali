@@ -11,7 +11,9 @@
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
-bool Beammap::update_beammap_convergence_state() {
+bool Beammap::update_beammap_convergence_state(
+    citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     if (!has_completed_beammap_measurement_iter(current_iter)) {
         return false;
     }
@@ -78,7 +80,8 @@ bool Beammap::update_beammap_convergence_state() {
     return false;
 }
 
-bool Beammap::advance_beammap_iteration_state() {
+bool Beammap::advance_beammap_iteration_state(
+    citlali::pipeline::StageProfileCollector &stage_profile) {
     bool keep_going = true;
 
     // increment loop iteration
@@ -93,7 +96,7 @@ bool Beammap::advance_beammap_iteration_state() {
             logger->info("all maps converged");
             keep_going = false;
         }
-        else if (update_beammap_convergence_state()) {
+        else if (update_beammap_convergence_state(stage_profile)) {
             keep_going = false;
         }
 
@@ -110,7 +113,8 @@ bool Beammap::advance_beammap_iteration_state() {
 }
 
 void Beammap::write_or_clear_beammap_ptc_products_for_iter(int completed_iter,
-                                                           bool keep_going) {
+                                                           bool keep_going,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
     const bool beammap_iter_is_final = !keep_going;
     // The default is the actual last attempted iteration, including early
     // convergence, so the saved PTC reflects the final cleaning state.
@@ -120,7 +124,7 @@ void Beammap::write_or_clear_beammap_ptc_products_for_iter(int completed_iter,
         (beammap_tod_output_iter < 0 && beammap_iter_is_final) ||
         (beammap_tod_output_iter >= 0 && completed_iter == beammap_tod_output_iter);
     if (write_beammap_ptc_this_iter) {
-        write_beammap_ptc_products(completed_iter);
+        write_beammap_ptc_products(completed_iter, stage_profile);
     }
     else {
         clear_beammap_ptc_diagnostics();
@@ -128,7 +132,9 @@ void Beammap::write_or_clear_beammap_ptc_products_for_iter(int completed_iter,
 }
 
 template <class KidsProc, class RawObs>
-void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
+void Beammap::run_loop(
+    KidsProc &kidsproc, RawObs &rawobs,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
     // variable to control iteration
     bool keep_going = true;
 
@@ -161,7 +167,8 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
 
         const bool rerun_source_aware_rtc =
             maybe_run_beammap_source_aware_rtc(
-                kidsproc, rawobs, first_measurement_iter, detector_grouping);
+                kidsproc, rawobs, first_measurement_iter, detector_grouping,
+                stage_profile);
         citlali::pipeline::record_beammap_source_aware_rtc_if_available(
             *this, rerun_source_aware_rtc);
 
@@ -171,14 +178,17 @@ void Beammap::run_loop(KidsProc &kidsproc, RawObs &rawobs) {
 
         // cleaning (separate from mapmaking loop due to jinc mapmaking parallelization)
         run_beammap_ptc_cleaning_pass(
-            locator_iter, measurement_iter, detector_grouping);
+            locator_iter, measurement_iter, detector_grouping,
+            stage_profile);
 
         run_beammap_mapmaking_stage(
-            locator_iter, measurement_iter, detector_grouping, rands, eng);
+            locator_iter, measurement_iter, detector_grouping, rands, eng,
+            stage_profile);
 
         const int completed_iter = current_iter;
-        keep_going = advance_beammap_iteration_state();
-        write_or_clear_beammap_ptc_products_for_iter(completed_iter, keep_going);
+        keep_going = advance_beammap_iteration_state(stage_profile);
+        write_or_clear_beammap_ptc_products_for_iter(
+            completed_iter, keep_going, stage_profile);
         auto termination_reason =
             citlali::pipeline::BeammapTerminationReason::none;
         if (!keep_going) {

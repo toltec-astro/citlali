@@ -26,9 +26,10 @@ void Beammap::finalize_beammap_detector_grouping_outputs(
     update_beammap_final_tod_pointing(map_parallel_policy, mapmaking_grouping);
 }
 
-void Beammap::finalize_beammap_non_detector_grouping_outputs() {
+void Beammap::finalize_beammap_non_detector_grouping_outputs(
+    citlali::pipeline::StageProfileCollector &stage_profile) {
     citlali::pipeline::calculate_map_psd_with_log(
-        omb, logger, "calculating map psd");
+        omb, stage_profile, logger, "calculating map psd");
     citlali::pipeline::calculate_map_histogram_with_log(
-        omb, logger, "calculating map histogram");
+        omb, stage_profile, logger, "calculating map histogram");
 }

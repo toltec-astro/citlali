@@ -87,7 +87,10 @@ void Beammap::fit_single_beammap_map(
                   map_index, good_fits(map_index));
 }
 
-void Beammap::fit_beammap_maps(bool detector_grouping, bool measurement_iter) {
+void Beammap::fit_beammap_maps(
+    bool detector_grouping, bool measurement_iter,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     BeammapFitIterationStats fit_stats(map_fitter.n_params);
 
     logger->info("fitting maps");

@@ -11,14 +11,16 @@
 #include <citlali/core/engine/detail/beammap_loop_finalization_impl.h>
 
 template <class KidsProc, class RawObs>
-void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
+void Beammap::loop_pipeline(
+    KidsProc &kidsproc, RawObs &rawobs,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
     const auto &mapmaking_config = citlali::pipeline::mapmaking_config(*this);
     const bool detector_grouping =
         mapmaking_config.grouping ==
         citlali::config::MapGrouping::detector;
 
     // run iterative stage
-    run_loop(kidsproc, rawobs);
+    run_loop(kidsproc, rawobs, stage_profile);
     ptcproc.fruit_loops_kernel_feedback_enabled = true;
 
     // write map summary
@@ -36,6 +38,6 @@ void Beammap::loop_pipeline(KidsProc &kidsproc, RawObs &rawobs) {
             map_parallel_policy, mapmaking_config.grouping);
     }
     else {
-        finalize_beammap_non_detector_grouping_outputs();
+        finalize_beammap_non_detector_grouping_outputs(stage_profile);
     }
 }

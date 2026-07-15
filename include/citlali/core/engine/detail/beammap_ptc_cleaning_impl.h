@@ -161,7 +161,9 @@ void Beammap::process_beammap_ptc_scan(
 
 void Beammap::run_beammap_ptc_cleaning_pass(bool locator_iter,
                                             bool measurement_iter,
-                                            bool detector_grouping) {
+                                            bool detector_grouping,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     auto ptc_line_audit_mutex = std::make_shared<std::mutex>();
 
     const auto profile_scope =

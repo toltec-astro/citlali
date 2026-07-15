@@ -9,7 +9,9 @@ template <class KidsProc, class RawObs>
 bool Beammap::maybe_run_beammap_source_aware_rtc(KidsProc &kidsproc,
                                                  RawObs &rawobs,
                                                  bool first_measurement_iter,
-                                                 bool detector_grouping) {
+                                                 bool detector_grouping,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
+    (void)stage_profile;
     configure_detector_source_centers_from_previous_fit();
 
     const bool detector_kernel_source_centers_active =
@@ -29,6 +31,6 @@ bool Beammap::maybe_run_beammap_source_aware_rtc(KidsProc &kidsproc,
         citlali::pipeline::profile_stage(
             "beammap.rtc.source_aware_rerun", logger,
             "iter=" + std::to_string(current_iter));
-    timestream_pipeline(kidsproc, rawobs, false);
+    timestream_pipeline(kidsproc, rawobs, stage_profile, false);
     return true;
 }
