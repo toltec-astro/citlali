@@ -46,7 +46,7 @@ void Engine::get_mapmaking_config(CT &config) {
 
     citlali::pipeline::enforce_map_grouping_polarization_policy(
         rtcproc.run_polarization, runtime_config.reduction_type,
-        mapmaking_config.grouping, logger);
+        mapmaking_config.grouping);
 
     std::string map_method{
         std::string(citlali::config::to_string(mapmaking_config.method))};
@@ -61,7 +61,7 @@ void Engine::get_mapmaking_config(CT &config) {
         config, telescope.pixel_axes, mapmaking_config, diagnostics);
     citlali::pipeline::enforce_beammap_pixel_axes_policy(
         runtime_config.reduction_type,
-        mapmaking_config.pixel_axes_frame, logger);
+        mapmaking_config.pixel_axes_frame);
 
     logger->info("getting omb config options");
     const auto output_missing_before =

@@ -59,7 +59,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 432 tests. All 96 config-boundary/preflight
+- CTest discovers and passes all 447 tests. All 96 config-boundary/preflight
   tests pass; the checked leaf contract covers 573 leaves and the generated
   startup schema covers 724 normalized YAML nodes.
 
@@ -90,7 +90,7 @@ prints result diagnostics and translates success to a process exit code.
 Focused tests cover success, exception conversion, failure recovery, two
 sequential runs, nested-run rejection, CLI policy separation, independent
 header compilation, and multi-translation-unit linkage. Both local test
-targets build, all 432 CTests pass, and full config preflight passes. This is
+targets build, all 447 CTests pass, and full config preflight passes. This is
 the facade checkpoint, not the Phase 3 exit gate: reachable library exits,
 run-owned profiling, complete internal failure classification, lifecycle
 ownership cuts, and the first measured `.cpp` boundary remain open. The
@@ -123,6 +123,41 @@ Finite matrices retain the same path; NaN and infinite values now become
 canonical I/O errors that a `ReductionSession` can report without terminating
 the process. Three focused tests cover the contract, and the session audit is
 down to 79 dependency-reachable library exits.
+
+The observation/input setup census group is now complete. Detector-count and
+cross-network sample-rate mismatches, invalid gap-alignment sample rates,
+negative derived extinction, missing polarization calibration groups, invalid
+IIR/Nyquist combinations, and Beammap fit-map shape mismatches all use explicit
+canonical failure categories. Existing valid setup, metadata reads, and
+numerical work are unchanged; the sample-rate path retains one metadata read
+per network. Eight focused contract tests pass, and the session audit is down
+to 71 dependency-reachable library exits.
+
+Required FITS image and PHDU output-slot validation is now session-safe. Nine
+map, Stokes, array, noise-map, and PHDU cardinality exits route through one
+canonical required-output failure helper: the library logs the concrete slot
+diagnostic and throws an output error, while only the CLI selects a process
+exit code. Valid slot lookup and map writing are unchanged. Focused success
+and failure tests pass, including every retired branch, and the session audit
+is down to 62 dependency-reachable library exits.
+
+The FITS/ECSV adapter tranche completes the output census group. CCfits'
+nonstandard `FitsException` hierarchy is caught at operation boundaries and
+classified as input I/O or required-output failure; ECSV input and atomic
+publication use the same categories. Negative-path tests found and fixed the
+distinction between `FitsError` and its sibling open/create exceptions. The
+last apparent exit in this group was inside a fully commented, unused Gaussian
+transfer-function prototype, which was removed as dead code. The audit reached
+57 exits after this tranche.
+
+The final three non-kernel mapmaking preconditions are also session-safe.
+Unsupported polarization/grouping combinations, non-altaz Beammap requests,
+and missing Wiener template FWHM values now throw canonical config errors;
+successful policy and template setup are unchanged. The audit now reports 54
+dependency-reachable library exits, all confined to mature RTC, PTC,
+timestream, and Wiener implementations. Further retirement must proceed by
+measured algorithm-boundary tranche with corresponding mode validation, not by
+mechanical replacement.
 
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution

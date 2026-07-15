@@ -6,16 +6,14 @@ template <class Index, class Logger>
 void require_phdu_output_slots(Index i, Index n_files, Index n_arrays,
                                const Logger &logger) {
     if (i < 0 || i >= n_files) {
-        logger->error("add_phdu index out of range: i={} fits_io_size={}",
-                      static_cast<long long>(i),
-                      static_cast<long long>(n_files));
-        std::exit(EXIT_FAILURE);
+        fail_required_output(logger, fmt::format(
+            "add_phdu index out of range: i={} fits_io_size={}",
+            static_cast<long long>(i), static_cast<long long>(n_files)));
     }
     if (i >= n_arrays) {
-        logger->error(
+        fail_required_output(logger, fmt::format(
             "add_phdu array index out of range: i={} calib.arrays.size={}",
-            static_cast<long long>(i), static_cast<long long>(n_arrays));
-        std::exit(EXIT_FAILURE);
+            static_cast<long long>(i), static_cast<long long>(n_arrays)));
     }
 }
 
@@ -63,4 +61,3 @@ PhduUnitConversionFactors phdu_unit_conversion_factors(
         mjy_beam_to_jy_pixel_factor(factors.beam_area_sr, pixel_size_rad);
     return factors;
 }
-

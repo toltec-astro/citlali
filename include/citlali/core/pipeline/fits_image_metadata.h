@@ -10,6 +10,7 @@
 #include <string>
 #include <tuple>
 
+#include <citlali/core/pipeline/required_output_failure.h>
 
 namespace citlali::pipeline {
 

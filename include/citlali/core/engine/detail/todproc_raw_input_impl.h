@@ -3,6 +3,7 @@
 // Implementation detail included by todproc.h.
 
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/observation_setup_validation.h>
 #include <citlali/core/pipeline/rawobs_detector_inventory.h>
 #include <citlali/core/pipeline/rawobs_tone_frequency_inventory.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
@@ -81,11 +82,8 @@ void TimeOrderedDataProc<EngineType>::check_inputs(const RawObs &rawobs) {
     const Eigen::Index n_dets =
         citlali::pipeline::read_rawobs_detector_count(rawobs, logger);
 
-    // check if number of detectors in apt file is equal to those in files
-    if (n_dets != engine().calib.n_dets) {
-        logger->error("number of detectors in data files and apt file do not match");
-        std::exit(EXIT_FAILURE);
-    }
+    citlali::pipeline::require_matching_detector_count(
+        n_dets, engine().calib.n_dets);
 }
 
 // align tod with telescope

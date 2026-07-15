@@ -8,6 +8,7 @@
 #include <tula/logging.h>
 
 #include <citlali/core/config/post_processing_config.h>
+#include <citlali/core/error/error.h>
 #include <citlali/core/mapmaking/edge_guard_state.h>
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/pipeline/output_policy.h>

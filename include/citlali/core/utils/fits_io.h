@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/error/error.h>
+
 #include <CCfits/CCfits>
 #include <stdexcept>
 
@@ -32,9 +34,10 @@ public:
                 pfits.reset( new CCfits::FITS(filepath, CCfits::Read));
                 logger->info("opened FITS file {}", filepath);
             }
-            catch (CCfits::FITS::CantOpen) {
-                logger->error("unable to open file {}", filepath);
-                std::exit(EXIT_FAILURE);
+            catch (const CCfits::FitsException &error) {
+                throw citlali::error::io(
+                    "unable to open FITS input file " + filepath + ": " +
+                    error.message());
             }
         }
 
@@ -46,9 +49,10 @@ public:
                 // write date
                 pfits->pHDU().writeDate();
             }
-            catch (CCfits::FITS::CantCreate) {
-                logger->error("unable to create file {}", filepath);
-                std::exit(EXIT_FAILURE);
+            catch (const CCfits::FitsException &error) {
+                throw citlali::error::output(
+                    "unable to create required FITS output file " + filepath +
+                    ".fits: " + error.message());
             }
         }
     }
@@ -79,8 +83,8 @@ public:
 
             // write to the hdu
             hdus.back()->write(first_pixel, temp_data.size(), temp_data);
-        } catch (const CCfits::FitsError &e) {
-            throw std::runtime_error(
+        } catch (const CCfits::FitsException &e) {
+            throw citlali::error::output(
                 "failed to add/write FITS HDU '" + hdu_name + "' in " + filepath + ": " + e.message());
         }
     }
@@ -118,9 +122,10 @@ public:
 
             return data;
 
-        } catch (CCfits::FITS::NoSuchHDU) {
-            logger->error("cannot find {} from {}", hdu_name, filepath);
-            std::exit(EXIT_FAILURE);
+        } catch (const CCfits::FitsException &error) {
+            throw citlali::error::io(
+                "cannot read FITS HDU '" + hdu_name + "' in " + filepath +
+                ": " + error.message());
         }
     }
 
@@ -138,8 +143,8 @@ public:
                 // add one to crpix due to FITS convention
                 hdu->addKey("CRPIX"+std::to_string(i+1), wcs.crpix[i] + 1, "WCS: Ref Pixel " +std::to_string(i+1));
             }
-        } catch (const CCfits::FitsError &e) {
-            throw std::runtime_error(
+        } catch (const CCfits::FitsException &e) {
+            throw citlali::error::output(
                 "failed to add WCS keywords in " + filepath + ": " + e.message());
         }
     }

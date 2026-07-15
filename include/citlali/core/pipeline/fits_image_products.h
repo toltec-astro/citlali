@@ -135,19 +135,17 @@ void require_noise_map_write_slots(
     const NoiseList &noise, const FitsIo &noise_fits_io,
     Eigen::Index map_index, Eigen::Index map_i, const Logger &logger) {
     if (!has_noise_fits_slot(noise_fits_io, map_index)) {
-        logger->error(
+        fail_required_output(logger, fmt::format(
             "write_maps noise file index out of range: map_index={} noise_fits_io_size={} map_i={}",
             static_cast<long long>(map_index),
             static_cast<long long>(noise_fits_io->size()),
-            static_cast<long long>(map_i));
-        std::exit(EXIT_FAILURE);
+            static_cast<long long>(map_i)));
     }
     if (!has_noise_map_slot(noise, map_i)) {
-        logger->error(
+        fail_required_output(logger, fmt::format(
             "write_maps noise map index out of range: i={} noise_size={}",
             static_cast<long long>(map_i),
-            static_cast<long long>(noise.size()));
-        std::exit(EXIT_FAILURE);
+            static_cast<long long>(noise.size())));
     }
 }
 
@@ -172,4 +170,3 @@ std::string map_write_error_message(
         map_name, static_cast<long long>(map_i), filepath,
         noise_file_path_or_na(noise, noise_fits_io, map_index), message);
 }
-

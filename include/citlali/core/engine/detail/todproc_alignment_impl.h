@@ -4,6 +4,7 @@
 
 #include <citlali/core/pipeline/timestream_alignment_helpers.h>
 #include <citlali/core/pipeline/timestream_alignment_state.h>
+#include <citlali/core/pipeline/observation_setup_validation.h>
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
@@ -33,14 +34,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             double fsmp_roach;
             fo.getVar("Header.Toltec.SampleFreq").getVar(&fsmp_roach);
 
-            // check if sample rate is the same and exit if not
-            if (fsmp!=-1 && fsmp_roach!=fsmp) {
-                logger->error("mismatched sample rate in toltec{}",roach_index);
-                std::exit(EXIT_FAILURE);
-            }
-            else {
-                fsmp = fsmp_roach;
-            }
+            fsmp = citlali::pipeline::reconcile_sample_rate_hz(
+                fsmp, fsmp_roach, roach_index);
 
             // get dimensions for time matrix
             Eigen::Index n_pts = fo.getVar("Data.Toltec.Ts").getDim(0).getSize();
@@ -176,21 +171,15 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
             // load data file
             NcFile fo(data_item.filepath(), NcFile::read);
 
-            // get roach sample rate and ensure it is consistent across networks
-            fo.getVar("Header.Toltec.SampleFreq").getVar(&f_smp_roach);
-            if (fsmp_ref != -1.0 && f_smp_roach != fsmp_ref) {
-                int roach_index_mismatch = -1;
-                fo.getVar("Header.Toltec.RoachIndex").getVar(&roach_index_mismatch);
-                logger->error("mismatched sample rate in toltec{} ({} vs reference {})",
-                              roach_index_mismatch, f_smp_roach, fsmp_ref);
-                std::exit(EXIT_FAILURE);
-            }
-            fsmp_ref = f_smp_roach;
-
             // get roach index for offsets
             int roach_index;
             fo.getVar("Header.Toltec.RoachIndex").getVar(&roach_index);
             nw_ids[i] = roach_index;
+
+            // get roach sample rate and ensure it is consistent across networks
+            fo.getVar("Header.Toltec.SampleFreq").getVar(&f_smp_roach);
+            fsmp_ref = citlali::pipeline::reconcile_sample_rate_hz(
+                fsmp_ref, f_smp_roach, roach_index);
 
             // get dimensions for time matrix
             Eigen::Index n_pts = fo.getVar("Data.Toltec.Ts").getDim(0).getSize();
@@ -245,10 +234,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
     const double max_init_time = overlap.max_start;
     const double min_final_time = overlap.min_end;
 
-    if (fsmp_ref <= 0.0) {
-        logger->error("invalid or missing sample rate in align_timestreams_gaps");
-        std::exit(EXIT_FAILURE);
-    }
+    citlali::pipeline::require_positive_sample_rate_hz(
+        fsmp_ref, "align_timestreams_gaps");
     double dt = 1.0 / fsmp_ref;
     Eigen::VectorXd t_common = citlali::pipeline::build_common_gap_time_grid(
         max_init_time, min_final_time, dt, "align_timestreams_gaps");

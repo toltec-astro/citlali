@@ -52,11 +52,10 @@ void require_map_data_slots(Eigen::Index i, Eigen::Index signal_size,
                             Eigen::Index weight_size,
                             const Logger &logger) {
     if (!has_map_data_slots(i, signal_size, weight_size)) {
-        logger->error(
+        fail_required_output(logger, fmt::format(
             "write_maps map index out of range: i={} signal_size={} weight_size={}",
             static_cast<long long>(i), static_cast<long long>(signal_size),
-            static_cast<long long>(weight_size));
-        std::exit(EXIT_FAILURE);
+            static_cast<long long>(weight_size)));
     }
 }
 
@@ -66,24 +65,21 @@ void require_map_write_index_slots(
     Eigen::Index stokes_index, Eigen::Index n_stokes,
     Eigen::Index array_id, const Logger &logger) {
     if (!has_output_file_slot(map_index, n_files)) {
-        logger->error(
+        fail_required_output(logger, fmt::format(
             "write_maps file index out of range: map_index={} fits_io_size={} map_i={}",
             static_cast<long long>(map_index), static_cast<long long>(n_files),
-            static_cast<long long>(i));
-        std::exit(EXIT_FAILURE);
+            static_cast<long long>(i)));
     }
     if (!has_stokes_slot(stokes_index, n_stokes)) {
-        logger->error(
+        fail_required_output(logger, fmt::format(
             "write_maps stokes index out of range: stokes_index={} stokes_size={} map_i={}",
             static_cast<long long>(stokes_index),
-            static_cast<long long>(n_stokes), static_cast<long long>(i));
-        std::exit(EXIT_FAILURE);
+            static_cast<long long>(n_stokes), static_cast<long long>(i)));
     }
     if (!has_array_id(array_id)) {
-        logger->error(
+        fail_required_output(logger, fmt::format(
             "write_maps invalid maps_to_arrays array id: maps_to_arrays(i)={} map_i={}",
-            static_cast<long long>(array_id), static_cast<long long>(i));
-        std::exit(EXIT_FAILURE);
+            static_cast<long long>(array_id), static_cast<long long>(i)));
     }
 }
 
@@ -93,10 +89,9 @@ const typename ArrayFwhms::mapped_type &require_array_fwhm_for_id(
     const Logger &logger) {
     const auto it = array_fwhms.find(array_id);
     if (it == array_fwhms.end()) {
-        logger->error(
+        fail_required_output(logger, fmt::format(
             "write_maps missing array FWHM for array_id={}",
-            static_cast<long long>(array_id));
-        std::exit(EXIT_FAILURE);
+            static_cast<long long>(array_id)));
     }
     return it->second;
 }

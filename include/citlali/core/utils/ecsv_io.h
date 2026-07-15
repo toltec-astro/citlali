@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/error/error.h>
+
 #include <tula/algorithm/ei_stats.h>
 #include <tula/algorithm/index.h>
 #include <tula/container.h>
@@ -64,20 +66,20 @@ inline void to_ecsv_from_matrix(std::string filepath, Eigen::DenseBase<Derived> 
         ec.clear();
         fs::rename(temp_path, final_path, ec);
         if (ec) {
-            throw std::runtime_error(
+            throw citlali::error::output(
                 "failed to publish ECSV temp file " + temp_path.string() +
                 " -> " + final_path.string() + ": " + ec.message());
         }
     } catch (const std::exception &e) {
         ec.clear();
         fs::remove(temp_path, ec);
-        throw std::runtime_error(
+        throw citlali::error::output(
             "failed to write required ECSV output " + final_path.string() +
             ": " + e.what());
     } catch (...) {
         ec.clear();
         fs::remove(temp_path, ec);
-        throw std::runtime_error(
+        throw citlali::error::output(
             "failed to write required ECSV output " + final_path.string());
     }
 }
@@ -158,9 +160,12 @@ inline auto to_map_from_ecsv_mixted_type(std::string filepath) {
             table[col] = tbl.col<double>(col);
         }
     }
+    catch(const std::exception &error) {
+        throw citlali::error::io(
+            "cannot open input table " + filepath + ": " + error.what());
+    }
     catch(...) {
-        logger->error("cannot open input table");
-        std::exit(EXIT_FAILURE);
+        throw citlali::error::io("cannot open input table " + filepath);
     }
 
     // return map and header

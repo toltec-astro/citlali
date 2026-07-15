@@ -5,6 +5,7 @@
 
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/config_value.h>
+#include <citlali/core/pipeline/observation_setup_validation.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/raw_timestream_observation_shadow.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
@@ -36,12 +37,8 @@ void setup_observation_extinction(EngineT &engine) {
                 tau_el, engine.telescope.tau_225_GHz);
             // loop through and make sure average tau is not negative (implies wrong model)
             for (auto const& [key, val] : tau_freq) {
-                if (val[0] < 0) {
-                    engine.logger->error(
-                        "calculated mean {} tau {} < 0",
-                        engine.toltec_io.array_name_map[key], val[0]);
-                    std::exit(EXIT_FAILURE);
-                }
+                citlali::pipeline::require_nonnegative_extinction_tau(
+                    val[0], engine.toltec_io.array_name_map[key]);
             }
         }
     }
@@ -73,11 +70,8 @@ template <class EngineT>
 void validate_observation_polarization_inputs(EngineT &engine) {
     // make sure there are matched fg's in apt if reducing in polarized mode
     if (engine.rtcproc.run_polarization) {
-        if ((engine.calib.apt["fg"].array()==-1).all()) {
-            engine.logger->error(
-                "no matched freq groups.  cannot run in polarized mode");
-            std::exit(EXIT_FAILURE);
-        }
+        citlali::pipeline::require_polarization_frequency_groups(
+            (engine.calib.apt["fg"].array() == -1).all());
     }
 }
 
@@ -102,13 +96,10 @@ void setup_observation_timestream_processors(EngineT &engine) {
     }
     if (citlali::pipeline::raw_iir_filter_enabled(engine)) {
         const double nyquist_Hz = engine.telescope.fsmp / 2.0;
-        if (!citlali::pipeline::raw_iir_filter_below_nyquist(engine)) {
-            engine.logger->error(
-                "timestream.raw_time_chunk.IIR_filter.freq_Hz ({}) must be less than Nyquist ({})",
-                citlali::pipeline::raw_iir_filter_frequency_hz(engine),
-                nyquist_Hz);
-            std::exit(EXIT_FAILURE);
-        }
+        citlali::pipeline::require_iir_below_nyquist_hz(
+            citlali::pipeline::raw_iir_filter_below_nyquist(engine),
+            citlali::pipeline::raw_iir_filter_frequency_hz(engine),
+            nyquist_Hz);
     }
 }
 

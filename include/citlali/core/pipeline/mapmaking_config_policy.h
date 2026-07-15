@@ -3,9 +3,11 @@
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/config/timestream_config.h>
+#include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/mapmaking_resolution.h>
 
-#include <cstdlib>
+#include <fmt/format.h>
+
 #include <string>
 #include <string_view>
 #include <vector>
@@ -46,32 +48,27 @@ inline bool map_grouping_disallows_polarization(
             citlali::config::is_detector_map_grouping(map_grouping));
 }
 
-template <class Logger>
 void enforce_map_grouping_polarization_policy(
     bool run_polarization, citlali::config::ReductionType reduction_type,
-    citlali::config::MapGrouping map_grouping, const Logger &logger) {
+    citlali::config::MapGrouping map_grouping) {
     if (!map_grouping_disallows_polarization(
             run_polarization, reduction_type, map_grouping)) {
         return;
     }
-    logger->error(
-        "Detector grouping reductions do not currently support polarimetry mode");
-    std::exit(EXIT_FAILURE);
+    throw citlali::error::invalid_config(
+        "detector grouping reductions do not currently support polarimetry mode");
 }
 
-template <class Logger>
 void enforce_beammap_pixel_axes_policy(
-                                       citlali::config::ReductionType reduction_type,
-                                       citlali::config::MapPixelAxes pixel_axes,
-                                       const Logger &logger) {
+    citlali::config::ReductionType reduction_type,
+    citlali::config::MapPixelAxes pixel_axes) {
     if (!citlali::config::is_beammap_reduction_type(reduction_type) ||
         citlali::config::is_altaz_map_pixel_axes(pixel_axes)) {
         return;
     }
-    logger->error(
+    throw citlali::error::invalid_config(fmt::format(
         "beammap reductions require mapmaking.pixel_axes='altaz'; got '{}'",
-        citlali::config::to_string(pixel_axes));
-    std::exit(EXIT_FAILURE);
+        citlali::config::to_string(pixel_axes)));
 }
 
 template <class RtcProc, class PtcProc>

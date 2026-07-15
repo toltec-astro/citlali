@@ -22,11 +22,11 @@ double map_filter_template_fwhm_or(
     return it == template_fwhm_rad.end() ? fallback_value : it->second;
 }
 
-template <class TemplateFwhmMap, class Logger>
-double map_filter_template_fwhm_or_exit(
+template <class TemplateFwhmMap>
+double require_map_filter_template_fwhm(
     const std::string &template_type,
     const TemplateFwhmMap &template_fwhm_rad,
-    const std::string &array_name, const Logger &logger) {
+    const std::string &array_name) {
     double template_fwhm_rad_value = 0.0;
     const bool template_uses_fwhm =
         map_filter_template_uses_fwhm(template_type);
@@ -37,9 +37,8 @@ double map_filter_template_fwhm_or_exit(
     const bool has_template_fwhm =
         has_map_filter_template_fwhm(template_fwhm_rad, array_name);
     if (!has_template_fwhm) {
-        logger->error("missing Wiener template_fwhm_rad for array {}",
-                      array_name);
-        std::exit(EXIT_FAILURE);
+        throw citlali::error::invalid_config(
+            "missing Wiener template_fwhm_rad for array " + array_name);
     }
 
     return map_filter_template_fwhm_or(
@@ -59,9 +58,9 @@ void build_map_filter_template(WienerFilter &wiener_filter,
         "building Wiener template for {} map {}/{} (array={})",
         map_label, map_number, n_maps, array_name);
     const double template_fwhm_rad =
-        map_filter_template_fwhm_or_exit(
+        require_map_filter_template_fwhm(
             wiener_filter.template_type,
-            wiener_filter.template_fwhm_rad, array_name, logger);
+            wiener_filter.template_fwhm_rad, array_name);
     wiener_filter.make_template(
         map_buffer, apt, template_fwhm_rad, map_index);
     logger->info(
@@ -152,4 +151,3 @@ void calculate_map_filter_noise_products_if_needed(
     map_buffer.calc_median_err();
     map_buffer.calc_median_rms();
 }
-

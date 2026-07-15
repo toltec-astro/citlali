@@ -1,20 +1,15 @@
 #pragma once
 
+#include <citlali/core/pipeline/beammap_fit_validation.h>
+
 // Beammap fit initialization implementation detail.
 // Include this only after Beammap has been declared.
 
 void Beammap::require_beammap_fit_map_geometry(Eigen::Index map_index) const {
-    if (omb.signal[map_index].rows() != omb.n_rows ||
-        omb.signal[map_index].cols() != omb.n_cols ||
-        omb.weight[map_index].rows() != omb.n_rows ||
-        omb.weight[map_index].cols() != omb.n_cols) {
-        logger->error(
-            "beammap fit map={} geometry mismatch: signal={}x{} weight={}x{} expected={}x{}",
-            map_index, omb.signal[map_index].rows(),
-            omb.signal[map_index].cols(), omb.weight[map_index].rows(),
-            omb.weight[map_index].cols(), omb.n_rows, omb.n_cols);
-        std::exit(EXIT_FAILURE);
-    }
+    citlali::pipeline::require_beammap_fit_map_geometry(
+        map_index, omb.signal[map_index].rows(),
+        omb.signal[map_index].cols(), omb.weight[map_index].rows(),
+        omb.weight[map_index].cols(), omb.n_rows, omb.n_cols);
 }
 
 void Beammap::log_beammap_fit_map_stats(Eigen::Index map_index) const {
