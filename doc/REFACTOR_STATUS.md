@@ -38,9 +38,11 @@ branch. The exact validated tree will remain available for forensic review.
   standard `2e-8 + 1e-10 * abs(reference)` tolerance. The only accepted
   differences are inactive RTC-despike config metadata recorded differently
   by the legacy and typed paths.
-- Latest accepted science reduction: final iteration `redu19`, produced by
-  `342a021c`; its post-processing provenance records one coadd filter context
-  and three filtered maps.
+- Latest accepted science reduction: four-iteration sequence `redu20` through
+  final `redu23`, produced by `9ea6d7f01`; all four iterations pass against
+  accepted `redu16` through `redu19`, and the final provenance records explicit-
+  MJD astrometry for both observations, one coadd filter context, and three
+  filtered maps.
 - Latest accepted Beammap reduction: `redu04`, produced by `7e577c819`; it
   validates the version-two source-identity and photometry-ownership contract,
   atomic per-observation flux replacement, and the previously accepted
@@ -1391,6 +1393,31 @@ same nine previously accepted inactive RTC-despike metadata differences; all
 scientific numeric differences remain within the standard OOF tolerance. The
 OOF checkpoint is accepted. Beammap remains the combined astrometry/photometry
 gate, and science remains required for the final Phase 2 snapshot matrix.
+
+## Astrometry Science Interpolation Gate Accepted
+
+Unity science `redu20` through `redu23` was produced by
+`v4.0.0-3496-g9ea6d7f0` from the same byte-identical low-level configuration as
+accepted `redu16` through `redu19`. Final `redu23` completed 248 PTC chunks in a
+711.330-second total log interval with zero error-, critical-, or fatal-level
+records. Every science-applicable required provenance record passes semantic
+audit.
+
+The astrometry sidecar records observations 152390 and 152392 with distinct,
+strictly increasing positive-MJD support pairs and `explicit-mjd-linear`
+effective mode. Each observation was installed and applied five times, once
+during initial geometry and once in each of four fruit-loop iterations, with
+stable telescope sample counts of 151,535 and 151,941. Successful completion
+also proves that each support pair bracketed its complete telescope timestream;
+the unchanged application kernel forbids extrapolation.
+
+Every retained fruit-loop iteration passes the standard strict science gate:
+`redu16`-`redu19` versus `redu20`-`redu23` each has 27 common products and 1,478
+comparison records, with zero missing, extra, skipped, or out-of-tolerance
+records at `2e-8 + 1e-10 * abs(reference)`. A zero-tolerance probe sees only the
+expected tiny OMP run-to-run drift. The science and explicit-MJD interpolation
+checkpoint is accepted. Beammap is the final mode gate for the combined
+astrometry/photometry authority domain.
 
 ## Five-Phase Roadmap
 
