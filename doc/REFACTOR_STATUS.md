@@ -21,8 +21,9 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest accepted point reduction: disabled polarimetry capability provenance
-  `redu60`, produced by `db22bca1f`; external KIDs/config-source provenance
+- Latest accepted point reduction: observation-resolved astrometry provenance
+  `redu61`, produced by `9ea6d7f01`; disabled polarimetry capability provenance
+  `redu60`, external KIDs/config-source provenance
   `redu59`, post-processing authority cleanup `redu58`,
   realized provenance `redu57`, typed source-fitting `redu56`, source-finding `redu55`, map-filter `redu54`,
   enabled-filtering `redu53`,
@@ -1342,6 +1343,28 @@ scientific equivalence. The next gate should include a point reduction, then a
 multi-observation OOF reduction because that fixture exercises observation
 identity and stale-state isolation most directly. Beammap should follow before
 the combined domain is marked complete.
+
+## Astrometry Point Gate Accepted
+
+Unity point `redu61` was produced by `v4.0.0-3496-g9ea6d7f0` from the same
+byte-identical low-level and canonical merged configuration as accepted
+`redu60`. It completed all 12 PTC chunks in a 63.741-second total log interval
+with zero error-, critical-, or fatal-level records. Every applicable required
+provenance record passes semantic audit.
+
+The new `citlali-astrometry-provenance-v1` sidecar records TolTECA as calibration-
+selection authority and Citlali as application authority without claiming
+unavailable support-origin metadata. Observation 152389 has one requested and
+effective zero-valued az/alt correction, constant application mode, one atomic
+installation, one application, and 7,697 telescope samples. The reduction is
+complete.
+
+The strict zero-tolerance comparison against `redu60` reads all 21 scientific
+products and 2,041 records, including complete RTC/PTC timestreams, with zero
+changed, skipped, missing, or extra records. The point checkpoint is accepted.
+The combined astrometry/photometry domain remains partial until a multi-
+observation OOF run validates observation identity and stale-state isolation,
+followed by a Beammap run validating the adjacent accepted photometry contract.
 
 ## Five-Phase Roadmap
 
