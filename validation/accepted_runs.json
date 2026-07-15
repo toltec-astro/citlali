@@ -6447,6 +6447,188 @@
         "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained.",
         "The 63.741-second log interval is one observation and is recorded without a performance conclusion."
       ]
+    },
+    {
+      "record_id": "oof-152385-152387-refactor-9ea6d7f0-redu02",
+      "recorded_date": "2026-07-15",
+      "mode": "oof",
+      "status": "accepted",
+      "candidate": {
+        "label": "refactor",
+        "branch": "codex/structural-refactor",
+        "citlali_sha": "9ea6d7f013c0a40e6159b0da1512897ddb6a7c5c",
+        "citlali_version": "v4.0.0-3496-g9ea6d7f0",
+        "dirty": false,
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "build": {
+          "host": "unity",
+          "compiler": null,
+          "build_type": "Release",
+          "cmake_flags": null
+        }
+      },
+      "baseline": {
+        "label": "refactor",
+        "citlali_sha": "342a021c1d778bf418bc7baaec48b160cca87e39",
+        "citlali_version": "v4.0.0-3477-g342a021c",
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "reduction_id": "redu01"
+      },
+      "config": {
+        "ordered_sources": [
+          {
+            "role": "merged_low_level_citlali_input",
+            "path": "citlali_o152385_0_1_c3.yaml",
+            "precedence": 0,
+            "sha256": "aebfc3b764f4abeca1f7f7cfe60723714f000ca849f60b167cd495294f87bdbc"
+          }
+        ],
+        "overlay_sources_retained": false,
+        "canonical_merged_sha256": "323b3da024802dfb4374c9efb8d03f891eaf0f1f9e6dd18566492ebc1ef57a94",
+        "astrometry_provenance": {
+          "path": "astrometry_provenance.yaml",
+          "schema_version": "citlali-astrometry-provenance-v1",
+          "sha256": "334dd4ba86c20abfd2f7f5dcd1175dd7ad49ac81d9c59fa5d54bac8687774be9",
+          "semantic_audit": {
+            "calibration_selection_authority": "tolteca",
+            "application_authority": "citlali",
+            "support_origin_metadata_available": false,
+            "expected_observation_count": 3,
+            "observation_indices": [
+              0,
+              1,
+              2
+            ],
+            "obsnums": [
+              152385,
+              152386,
+              152387
+            ],
+            "application_modes": [
+              "constant",
+              "constant",
+              "constant"
+            ],
+            "installation_counts": [
+              2,
+              2,
+              2
+            ],
+            "application_counts": [
+              2,
+              2,
+              2
+            ],
+            "telescope_sample_counts": [
+              7859,
+              7884,
+              7868
+            ],
+            "reduction_completed": true
+          }
+        }
+      },
+      "dataset": {
+        "obsnum": "152385-152387",
+        "identity": "TolTEC commissioning OOF sequence 152385, 152386, and 152387",
+        "content_hash": null
+      },
+      "invocation": {
+        "command": null,
+        "launcher": "tolteca reduce",
+        "runtime_policy": {
+          "n_threads": 6,
+          "parallel_policy": "omp",
+          "kids_solver_parallel_policy": "seq"
+        },
+        "exit_code": 0
+      },
+      "audit": {
+        "tool": "tools/baseline/audit_reduction_run.py",
+        "tool_sha": "9ea6d7f013c0a40e6159b0da1512897ddb6a7c5c",
+        "finished": true,
+        "serious_log_counts": {},
+        "file_count": 79,
+        "comparable_product_count": 31,
+        "stable_comparable_product_count": 30,
+        "stable_product_counts_by_kind": {
+          "ecsv": 3,
+          "fits": 9,
+          "netcdf": 18
+        },
+        "ptc_chunk_count": 18,
+        "required_provenance_valid": true
+      },
+      "comparison": {
+        "tool": "tools/baseline/compare_reduction_products.py",
+        "tool_sha": "3cd7250b9a7276ecc64790e97aa015a334368055",
+        "options": [
+          "--mode",
+          "oof",
+          "--include-timestream",
+          "--max-array-elements",
+          "0",
+          "--exclude",
+          "citlali_profile.ecsv",
+          "--atol",
+          "0",
+          "--rtol",
+          "0",
+          "--strict"
+        ],
+        "volatile_allowlist": [
+          "citlali_profile.ecsv",
+          "astrometry_provenance.yaml",
+          "later required provenance sidecars"
+        ],
+        "tolerances": {
+          "atol": 0.0,
+          "rtol": 0.0,
+          "fraction_floor": 1e-12
+        },
+        "common_products": 30,
+        "skipped_records": 0,
+        "changed_records": 0,
+        "scientific_products_exact": true,
+        "verdict": "accepted_exact",
+        "measured": {
+          "record_count": 1941,
+          "all_requested_products_compared": true,
+          "pointing_table_count": 3,
+          "pointing_tables_exact": true,
+          "observation_dates_exact": true,
+          "og_reference_non_tolerance_changes": 9,
+          "og_reference_changes_match_accepted_inactive_rtc_metadata": true,
+          "og_reference_scientific_values_within_tolerance": true
+        }
+      },
+      "accepted_differences": [],
+      "performance": {
+        "wall_time_log_seconds": 40.667,
+        "observation_pipeline_seconds": null,
+        "map_output_seconds": null,
+        "peak_rss_kb": null,
+        "baseline_wall_time_log_seconds": 45.503
+      },
+      "artifacts": {
+        "candidate_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/oof/refactor/reduced/redu02",
+        "candidate_unity_path": "/work/toltec/commissioning2025-test/2026-refactor/oof/refactor/reduced/redu02",
+        "baseline_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/oof/refactor/reduced/redu01",
+        "og_reference_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/oof/citlali/reduced/redu00"
+      },
+      "limitations": [
+        "TolTECA supplied constant zero offsets for all three observations, so this run validates identity, replacement, and repeated application but not positive-MJD interpolation end to end.",
+        "The OOF fixture did not request RTC/PTC timestream products; every configured FITS, NetCDF diagnostic, and ECSV product was compared.",
+        "The original ordered TolTECA NN*.yaml overlay sources were not retained in the accepted baseline directory.",
+        "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained.",
+        "The 40.667-second log interval is one three-observation run and is recorded without a performance conclusion."
+      ]
     }
   ]
 }

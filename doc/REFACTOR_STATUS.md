@@ -29,8 +29,10 @@ branch. The exact validated tree will remain available for forensic review.
   enabled-filtering `redu53`,
   unfiltered `redu51`, and bounded full-noise-output `redu49` remain the
   immediate post-processing, pointing, and noise-products control fixtures.
-- Accepted OOF baseline: OG `redu00` versus refactor `redu01` for observations
-  152385-152387, produced by `342a021c`. All 30 comparable products are
+- Latest accepted OOF reduction: refactor `redu02` for observations
+  152385-152387, produced by `9ea6d7f01`, is exact against accepted refactor
+  `redu01`. The established OG `redu00` versus refactor relationship is
+  unchanged. All 30 comparable products are
   present with no skipped records; pointing-table data and all per-observation
   ECSV/FITS dates are exact, and all scientific numeric differences pass the
   standard `2e-8 + 1e-10 * abs(reference)` tolerance. The only accepted
@@ -1365,6 +1367,30 @@ changed, skipped, missing, or extra records. The point checkpoint is accepted.
 The combined astrometry/photometry domain remains partial until a multi-
 observation OOF run validates observation identity and stale-state isolation,
 followed by a Beammap run validating the adjacent accepted photometry contract.
+
+## Astrometry Multi-Observation OOF Gate Accepted
+
+Unity OOF `redu02` was produced by `v4.0.0-3496-g9ea6d7f0` from the same byte-
+identical low-level configuration as accepted refactor `redu01`. It completed
+all 18 PTC chunks for observations 152385-152387 in a 40.667-second total log
+interval with zero error-, critical-, or fatal-level records. All applicable
+required provenance records pass semantic audit.
+
+The astrometry sidecar contains three contiguous observation identities. Each
+was installed and applied twice, once during initial geometry and once during
+the reduction iteration, with stable per-observation telescope sample counts.
+This closes the multi-observation replacement and stale-state-isolation gate.
+TolTECA supplied a constant zero-offset request for each observation, so this
+fixture does not provide an end-to-end positive-MJD interpolation test; that
+limitation is retained explicitly rather than overstating the evidence.
+
+The strict zero-tolerance comparison against accepted refactor `redu01` reads
+all 30 configured products and 1,941 records with zero changed, skipped,
+missing, or extra records. Direct comparison against OG `redu00` reproduces the
+same nine previously accepted inactive RTC-despike metadata differences; all
+scientific numeric differences remain within the standard OOF tolerance. The
+OOF checkpoint is accepted. Beammap remains the combined astrometry/photometry
+gate, and science remains required for the final Phase 2 snapshot matrix.
 
 ## Five-Phase Roadmap
 
