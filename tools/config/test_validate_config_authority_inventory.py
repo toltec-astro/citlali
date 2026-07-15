@@ -44,6 +44,14 @@ class ConfigAuthorityInventoryValidationTest(unittest.TestCase):
     def test_accepts_explicit_legacy_authority_characterization(self) -> None:
         self.assertEqual(inventory.validate(self.data, self.repo_root), [])
 
+    def test_accepts_legacy_authority_without_typed_mirror(self) -> None:
+        domain = self.data["domains"][0]
+        domain["legacy_targets"] = []
+        domain["adapter_direction"] = "none"
+        domain["migration_status"] = "legacy-authoritative"
+
+        self.assertEqual(inventory.validate(self.data, self.repo_root), [])
+
     def test_rejects_legacy_authority_with_forward_adapter_label(self) -> None:
         domain = self.data["domains"][0]
         domain["adapter_direction"] = "typed-to-legacy"
@@ -51,7 +59,7 @@ class ConfigAuthorityInventoryValidationTest(unittest.TestCase):
         errors = inventory.validate(self.data, self.repo_root)
 
         self.assertIn(
-            "domains[0]: legacy authority requires a legacy-to-typed mirror",
+            "domains[0]: legacy authority requires no adapter or a legacy-to-typed mirror",
             errors,
         )
 

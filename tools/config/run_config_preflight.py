@@ -52,6 +52,8 @@ def main(argv: list[str]) -> int:
         "tools/config/run_compact_compatibility.py",
         "tools/config/audit_compact_surface_coverage.py",
         "tools/config/audit_config_authority_reads.py",
+        "tools/config/audit_config_leaf_contract.py",
+        "tools/config/test_audit_config_leaf_contract.py",
         "tools/config/audit_mapmaking_boundary.py",
         "tools/config/test_audit_mapmaking_boundary.py",
         "tools/config/audit_coadd_boundary.py",
@@ -103,6 +105,7 @@ def main(argv: list[str]) -> int:
             "tools.config.test_audit_raw_timestream_boundary",
             "tools.config.test_audit_raw_timestream_execution_reads",
             "tools.config.test_validate_config_authority_inventory",
+            "tools.config.test_audit_config_leaf_contract",
         ],
         [
             sys.executable,
@@ -128,6 +131,12 @@ def main(argv: list[str]) -> int:
         [
             sys.executable,
             "tools/config/validate_config_authority_inventory.py",
+        ],
+        [
+            sys.executable,
+            "tools/config/audit_config_leaf_contract.py",
+            "--json-out",
+            str(work_dir / "config_leaf_contract.json"),
         ],
         [
             sys.executable,
@@ -261,6 +270,7 @@ def main(argv: list[str]) -> int:
     if args.require_all:
         commands[2].append("--require-all")
         commands[3].append("--require-all")
+        commands[5].append("--require-all")
     if not args.allow_gaps:
         commands[3].append("--fail-on-gaps")
 

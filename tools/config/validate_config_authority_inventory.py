@@ -22,6 +22,7 @@ MIGRATION_STATUSES = {
     "typed-authoritative",
     "typed-authoritative-with-adapter",
     "mixed-adapter",
+    "legacy-authoritative",
     "legacy-authoritative-with-typed-mirror",
     "external-boundary",
 }
@@ -29,6 +30,7 @@ PROVENANCE_STATUSES = {"missing", "partial", "complete"}
 MIGRATION_CONTRACTS = {
     "typed-authoritative": ("typed", "none"),
     "typed-authoritative-with-adapter": ("typed", "typed-to-legacy"),
+    "legacy-authoritative": ("legacy", "none"),
     "legacy-authoritative-with-typed-mirror": (
         "legacy",
         "legacy-to-typed",
@@ -142,9 +144,9 @@ def validate(data: Any, repo_root: Path) -> list[str]:
             errors.append(f"{label}: legacy-to-typed mirror requires legacy_targets")
         if direction == "none" and targets:
             errors.append(f"{label}: legacy_targets require a declared adapter")
-        if authority == "legacy" and direction != "legacy-to-typed":
+        if authority == "legacy" and direction not in {"none", "legacy-to-typed"}:
             errors.append(
-                f"{label}: legacy authority requires a legacy-to-typed mirror"
+                f"{label}: legacy authority requires no adapter or a legacy-to-typed mirror"
             )
         if direction == "legacy-to-typed" and authority != "legacy":
             errors.append(

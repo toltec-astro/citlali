@@ -1445,10 +1445,37 @@ variation without attributing it or treating one uncontrolled Unity comparison
 as a performance conclusion; controlled performance/RSS certification remains
 Phase 4 work.
 
-The combined astrometry/photometry authority domain is complete. All 13 Phase 2
-authority domains now have complete migration/provenance disposition. A final
-F.1 closeout census and document/ledger reconciliation remain before changing
-the active phase to Phase 3.
+The combined astrometry/photometry authority domain is complete. All 13 domains
+in the original operational migration matrix have complete migration and
+provenance disposition. The global F.1 leaf census and document/ledger
+reconciliation remain before changing the active phase to Phase 3.
+
+## F.1 Leaf Census Checkpoint
+
+The owner approved the generated low-level Citlali YAML as Citlali's immutable
+configuration/provenance boundary. TolTECA owns discovery, ordering, and merge
+semantics for upstream `NN*.yaml` authoring files and must eventually record
+that upstream provenance; Citlali records exact source bytes and ordered paths
+from the generated low-level input onward. This is an explicit boundary
+decision, not an inference that Citlali received unavailable source metadata.
+
+The checked F.1 leaf contract resolves the union of `data/config.yaml` and the
+four retained point, OOF, Beammap, and science low-level fixtures. It records
+573 unique leaves, including 572 executable leaves and one explicitly ignored
+deprecated leaf. Every record has a machine-readable authority, typed or
+external owner, unit, allowed value-domain class, mode applicability, lifecycle
+classification, resolution stage, and validation source. The preflight fails
+on an uncovered leaf or drift from the resolved manifest.
+
+This census exposed two real closeout omissions hidden by the earlier broad
+subsystem grouping: 28 `timestream.learning` leaves still execute from a legacy
+options object populated in parallel with the typed request, and 14
+`interface_sync_offset` leaves still execute from an untyped mutable map with
+permissive duplicate handling. They are now explicit `learning` and
+`interface-sync` authority domains. Migrate each through immutable typed
+request, one-way adapter, validation, and existing provenance before declaring
+Phase 2 complete. No scientific algorithm or reduction behavior changed at
+this checkpoint.
 
 ## Five-Phase Roadmap
 

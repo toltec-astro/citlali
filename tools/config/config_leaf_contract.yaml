@@ -1,0 +1,192 @@
+schema: citlali-config-leaf-contract-rules-v1
+description: >
+  Phase 2 F.1 ownership contract for the executable low-level configuration
+  received by Citlali. Rules expand into a checked per-leaf manifest; no
+  unmatched leaf is permitted.
+source_boundary:
+  citlali_input: generated low-level Citlali YAML
+  upstream_authority: tolteca
+  upstream_numbered_sources_available: false
+  decision: >
+    Citlali owns exact provenance from the generated low-level YAML onward.
+    TolTECA owns NN*.yaml discovery, ordering, merge semantics, and future
+    upstream source provenance.
+supported_modes: [pointing, oof, beammap, science]
+state_classes: [requested, effective, observation-resolved, realized]
+
+external_boundaries:
+  tolteca-observation-inputs:
+    typed_owner: TolTECA-generated RawObs input/calibration schema
+    validation_source: include/citlali/core/engine/detail/rawobs_collection_impl.h
+
+authority_rules:
+  - id: deprecated-precompute-pointing
+    patterns: ['timestream.precompute_pointing']
+    authority_domain: timestream-core-output
+    modes: [pointing, oof, beammap, science]
+    state_class: requested
+    resolution_stage: ignored
+    executable: false
+    validation_source: data/config.yaml
+
+  - id: observation-photometry
+    patterns: ['inputs[].cal_items[].beammap_source*']
+    authority_domain: astrometry-photometry
+    modes: [beammap]
+    state_class: observation-resolved
+    resolution_stage: observation
+    validation_source: include/citlali/core/pipeline/beammap_source_flux_config.h
+
+  - id: observation-astrometry
+    patterns: ['inputs[].cal_items[].pointing_offsets*']
+    authority_domain: astrometry-photometry
+    modes: [pointing, oof, beammap, science]
+    state_class: observation-resolved
+    resolution_stage: observation
+    validation_source: include/citlali/core/pipeline/observation_calibration_config.h
+
+  - id: tolteca-observation-inputs
+    patterns: ['inputs*']
+    external_boundary: tolteca-observation-inputs
+    modes: [pointing, oof, beammap, science]
+    state_class: observation-resolved
+    resolution_stage: observation
+    executable: true
+
+  - id: runtime
+    patterns: ['runtime*']
+    authority_domain: runtime
+    modes: [pointing, oof, beammap, science]
+    state_class: requested
+    resolution_stage: startup
+    validation_source: include/citlali/core/config/runtime_config_validation.h
+
+  - id: timestream-core-output
+    patterns:
+      - 'timestream.enabled'
+      - 'timestream.type'
+      - 'timestream.chunking*'
+      - 'timestream.output*'
+    authority_domain: timestream-core-output
+    modes: [pointing, oof, beammap, science]
+    state_class: requested
+    resolution_stage: startup
+    validation_source: include/citlali/core/config/timestream_config_validation.h
+
+  - id: interface-synchronization
+    patterns: ['interface_sync_offset*']
+    authority_domain: interface-sync
+    modes: [pointing, oof, beammap, science]
+    state_class: requested
+    resolution_stage: observation
+    validation_source: include/citlali/core/pipeline/citlali_config_read_sync_offsets.h
+
+  - id: raw-timestream
+    patterns: ['timestream.raw_time_chunk*']
+    authority_domain: raw-timestream
+    modes: [pointing, oof, beammap, science]
+    state_class: requested
+    resolution_stage: observation
+    validation_source: include/citlali/core/config/timestream_config_validation.h
+
+  - id: polarimetry
+    patterns: ['timestream.polarimetry*']
+    authority_domain: polarimetry
+    modes: [pointing, oof, beammap, science]
+    state_class: requested
+    resolution_stage: startup
+    validation_source: include/citlali/core/config/timestream_config_validation.h
+
+  - id: learning
+    patterns: ['timestream.learning*']
+    authority_domain: learning
+    modes: [pointing, oof, beammap, science]
+    state_class: requested
+    resolution_stage: effective-plan
+    validation_source: include/citlali/core/config/timestream_config_validation.h
+
+  - id: processed-timestream
+    patterns:
+      - 'timestream.processed_time_chunk*'
+      - 'timestream.fruit_loops*'
+    authority_domain: processed-timestream
+    modes: [pointing, oof, beammap, science]
+    state_class: requested
+    resolution_stage: effective-plan
+    validation_source: include/citlali/core/config/timestream_config_validation.h
+
+  - id: mapmaking
+    patterns: ['mapmaking*', 'source.map_regime']
+    authority_domain: mapmaking
+    modes: [pointing, oof, beammap, science]
+    state_class: requested
+    resolution_stage: effective-plan
+    validation_source: include/citlali/core/config/mapmaking_config_validation.h
+
+  - id: noise-products
+    patterns: ['noise_maps*']
+    authority_domain: noise-products
+    modes: [pointing, oof, beammap, science]
+    state_class: requested
+    resolution_stage: effective-plan
+    validation_source: include/citlali/core/config/noise_config_validation.h
+
+  - id: coadd
+    patterns: ['coadd*']
+    authority_domain: coadd
+    modes: [pointing, oof, beammap, science]
+    state_class: requested
+    resolution_stage: effective-plan
+    validation_source: include/citlali/core/config/coadd_config_validation.h
+
+  - id: post-processing
+    patterns: ['post_processing*', 'wiener_filter*']
+    authority_domain: post-processing
+    modes: [pointing, oof, beammap, science]
+    state_class: requested
+    resolution_stage: effective-plan
+    validation_source: include/citlali/core/config/post_processing_config_validation.h
+
+  - id: pointing
+    patterns: ['pointing*']
+    authority_domain: pointing
+    modes: [pointing, oof]
+    state_class: requested
+    resolution_stage: effective-plan
+    validation_source: include/citlali/core/config/pointing_config_validation.h
+
+  - id: beammap
+    patterns: ['beammap*']
+    authority_domain: beammap
+    modes: [beammap]
+    state_class: requested
+    resolution_stage: effective-plan
+    validation_source: include/citlali/core/config/beammap_config_validation.h
+
+  - id: kids-external
+    patterns: ['kids*']
+    authority_domain: kids-external
+    modes: [pointing, oof, beammap, science]
+    state_class: requested
+    resolution_stage: external
+    validation_source: include/citlali/core/pipeline/kids_external_config.h
+
+unit_rules:
+  - patterns: ['*modified_julian_date*']
+    unit: MJD-day
+  - patterns: ['*mJy*']
+    unit: mJy
+  - patterns: ['*arcsec*']
+    unit: arcsec
+  - patterns: ['*_Hz', '*_Hz[]', '*_hz', '*_hz[]', '*freq_Hz*', '*fwhm_Hz*']
+    unit: Hz
+  - patterns: ['*_sec', '*_sec[]', 'interface_sync_offset*']
+    unit: s
+  - patterns: ['*_deg', '*_deg[]', 'mapmaking.crval*_J2000', 'mapmaking.tan_ra', 'mapmaking.tan_dec']
+    unit: deg
+  - patterns: ['*_pix', '*_pixels', '*_samples', '*_bins', '*_iters', '*_iterations', '*_count', '*_top_n', 'mapmaking.crpix*']
+    unit: count
+  - patterns: ['timestream.fruit_loops.array_flux_limit[]']
+    unit: map-unit
+  - patterns: ['mapmaking.cunit', 'inputs[].cal_items[].meta.interface', 'inputs[].data_items[].meta.interface']
+    unit: unit-token-or-identifier
