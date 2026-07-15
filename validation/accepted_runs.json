@@ -5722,6 +5722,117 @@
         "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained.",
         "The 8.95% wall-time increase is concentrated outside the stable three-iteration mapmaking interval and is recorded without attributing a code regression."
       ]
+    },
+    {
+      "record_id": "beammap-148670-refactor-b530e838-redu03",
+      "recorded_date": "2026-07-15",
+      "mode": "beammap",
+      "status": "accepted",
+      "candidate": {
+        "label": "refactor",
+        "branch": "codex/structural-refactor",
+        "citlali_sha": "b530e83874315b1f80a7e4ea238f33655f686870",
+        "citlali_version": "v4.0.0-3486-gb530e838",
+        "dirty": false,
+        "dependencies": {"kids_sha": "04088da", "tula_sha": "f30f81d"},
+        "build": {"host": "unity", "compiler": null, "build_type": "Release", "cmake_flags": null}
+      },
+      "baseline": {
+        "label": "refactor",
+        "citlali_sha": "342a021c",
+        "citlali_version": "v4.0.0-3477-g342a021c",
+        "dependencies": {"kids_sha": "04088da", "tula_sha": "f30f81d"},
+        "reduction_id": "redu02"
+      },
+      "config": {
+        "ordered_sources": [{
+          "role": "merged_low_level_citlali_input",
+          "path": "citlali_o148670_0_2_c1.yaml",
+          "precedence": 0,
+          "sha256": "aa956b28465eaef8b23763e877857b5b8929e95ca4fbdc976db6d7b2a775636d"
+        }],
+        "overlay_sources_retained": false,
+        "canonical_merged_sha256": "aa956b28465eaef8b23763e877857b5b8929e95ca4fbdc976db6d7b2a775636d",
+        "beammap_provenance": {
+          "path": "beammap_provenance.yaml",
+          "schema_version": "citlali-beammap-provenance-v1",
+          "sha256": "31c9fba031f2ab3f6d3166d9319f7fb929a8349a5ddf39f0bd847bf0beedde1c",
+          "semantic_audit": {
+            "completed_observation_count": 1,
+            "completed_iteration_count": 3,
+            "detector_count": 5234,
+            "map_count": 5234,
+            "scan_count": 198,
+            "termination_reason": "maximum_iterations",
+            "detector_tod_required": true,
+            "detector_tod_write_count": 1,
+            "detector_tod_output_iteration": 2,
+            "detector_tod_slot_count": 20,
+            "detector_tod_maximum_sample_count": 788,
+            "outputs_completed": true
+          }
+        }
+      },
+      "dataset": {
+        "obsnum": "148670",
+        "identity": "TolTEC commissioning Beammap observation 148670",
+        "content_hash": null
+      },
+      "invocation": {
+        "command": null,
+        "launcher": "tolteca reduce",
+        "runtime_policy": {"n_threads": 16, "parallel_policy": "omp", "kids_solver_parallel_policy": "seq"},
+        "exit_code": 0
+      },
+      "audit": {
+        "finished": true,
+        "serious_log_counts": {},
+        "file_count": 28,
+        "comparable_product_count": 13,
+        "stable_comparable_product_count": 12,
+        "stable_product_counts_by_kind": {"ecsv": 2, "fits": 6, "netcdf": 4},
+        "required_product_inventory_matches": "beammap-148670-refactor-342a021c-redu02 plus required beammap_provenance.yaml"
+      },
+      "comparison": {
+        "tool": "tools/baseline/compare_reduction_products.py",
+        "tool_sha": "3cd7250b9",
+        "options": ["--mode", "beammap", "--strict", "--include-timestream", "--max-array-elements", "0", "--exclude", "citlali_profile.ecsv"],
+        "volatile_allowlist": ["citlali_profile.ecsv", "refactor provenance sidecars"],
+        "tolerances": {"atol": 2e-8, "rtol": 1e-10, "fraction_floor": 1e-12},
+        "common_products": 12,
+        "skipped_records": 0,
+        "changed_records": 0,
+        "scientific_products_exact": true,
+        "verdict": "accepted_exact",
+        "measured": {
+          "beammap_profile": "beammap-scientific-equivalence-v1",
+          "beammap_profile_tool_sha": "aaebe21c6",
+          "detector_identity_exact": true,
+          "detector_flags_exact": true,
+          "apt_numeric_max_difference": 0.0,
+          "map_layer_rms_relative_max": 0.0,
+          "complete_detector_tod_compared": true,
+          "split_fits_product_count": 6
+        }
+      },
+      "accepted_differences": [],
+      "performance": {
+        "wall_time_log_seconds": 3609.307,
+        "observation_pipeline_seconds": null,
+        "map_output_seconds": null,
+        "peak_rss_kb": null,
+        "baseline_wall_time_log_seconds": 3758.004
+      },
+      "artifacts": {
+        "candidate_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced/redu03",
+        "candidate_unity_path": "/work/toltec/commissioning2025-test/2026-refactor/beammap/refactor/reduced/redu03",
+        "baseline_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced/redu02"
+      },
+      "limitations": [
+        "The original ordered TolTECA NN*.yaml overlay sources were not retained in the reduction directory.",
+        "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained.",
+        "Acceptance covers the new Beammap lifecycle and detector-TOD cardinality contract; prior/reference resolution and adjacent beammap_source authority remain incomplete."
+      ]
     }
   ]
 }

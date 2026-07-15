@@ -137,7 +137,9 @@ $HOME/tolteca/bin/python tools/baseline/audit_reduction_run.py \
   /Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced \
   --expected-mode beammap \
   --expected-label refactor \
-  --require-mapmaking-provenance
+  --require-mapmaking-provenance \
+  --require-post-processing-provenance \
+  --require-beammap-provenance
 
 $HOME/tolteca/bin/python tools/baseline/compare_reduction_audits.py \
   /Users/gwilson/work_toltec/local_data/2026-refactor/beammap/citlali/reduced \

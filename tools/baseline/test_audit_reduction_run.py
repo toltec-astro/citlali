@@ -450,11 +450,146 @@ def valid_pointing_v1_document() -> dict[str, object]:
     return document
 
 
+def valid_beammap_document(
+    enabled: bool = True, detector_tod_enabled: bool = True,
+) -> dict[str, object]:
+    observations = []
+    if enabled:
+        iterations = []
+        phases = ("locator", "measurement_start", "measurement")
+        for index, phase in enumerate(phases):
+            terminal = index == len(phases) - 1
+            iterations.append(
+                {
+                    "iteration_index": index,
+                    "phase": phase,
+                    "active_map_count": 5234,
+                    "mapmaking_pass_count": 1,
+                    "source_aware_rtc_rerun": {
+                        "available": True,
+                        "value": index == 1,
+                    },
+                    "fitting_completed": True,
+                    "newly_converged_map_count": 0,
+                    "total_converged_map_count": 0,
+                    "termination_reason": (
+                        "maximum_iterations" if terminal else "none"
+                    ),
+                    "completed": True,
+                }
+            )
+        observations.append(
+            {
+                "observation_index": 0,
+                "obsnum": 148670,
+                "detector_count": 5234,
+                "map_count": 5234,
+                "scan_count": 198,
+                "iterations": iterations,
+                "terminal_iteration": {"available": True, "value": 2},
+                "termination_reason": "maximum_iterations",
+                "detector_tod": {
+                    "required": detector_tod_enabled,
+                    "completed_write_count": (
+                        1 if detector_tod_enabled else 0
+                    ),
+                    "output_iteration": {
+                        "available": detector_tod_enabled,
+                        **({"value": 2} if detector_tod_enabled else {}),
+                    },
+                    "detector_count": {
+                        "available": detector_tod_enabled,
+                        **(
+                            {"value": 5234}
+                            if detector_tod_enabled
+                            else {}
+                        ),
+                    },
+                    "slot_count": {
+                        "available": detector_tod_enabled,
+                        **({"value": 20} if detector_tod_enabled else {}),
+                    },
+                    "maximum_sample_count": {
+                        "available": detector_tod_enabled,
+                        **({"value": 788} if detector_tod_enabled else {}),
+                    },
+                },
+                "outputs_completed": True,
+            }
+        )
+    return {
+        "schema_version": "citlali-beammap-provenance-v1",
+        "initialized": True,
+        "requested": {
+            "iter_max": 3,
+            "detector_tod_output": {"enabled": detector_tod_enabled},
+        },
+        "effective": {
+            "config": {
+                "iter_max": 3 if enabled else 1,
+                "detector_tod_output": {"enabled": detector_tod_enabled},
+            },
+            "resolution": {
+                "mapmaking_enabled": enabled,
+                "requested_max_iterations": 3,
+                "effective_max_iterations": 3 if enabled else 1,
+            },
+        },
+        "observations": observations,
+        "realized": {
+            "reduction_completed": True,
+            "beammap_executed": enabled,
+            "completed_observation_count": {
+                "available": True,
+                "value": len(observations),
+            },
+            "completed_iteration_count": 3 if enabled else 0,
+            "outputs_completed": True,
+        },
+    }
+
+
+def valid_beammap_mapmaking_document() -> dict[str, object]:
+    document = valid_mapmaking_document()
+    document["requested"]["grouping"] = "detector"
+    document["effective"]["config"]["grouping"] = "detector"
+    resolution = document["effective"]["resolution"]
+    resolution.update(
+        {
+            "reduction_type": "beammap",
+            "requested_grouping": "detector",
+            "effective_grouping": "detector",
+            "automatic_grouping_resolved": False,
+        }
+    )
+    document["observations"] = [
+        {
+            "observation_index": 0,
+            "obsnum": 148670,
+            "map_count": 5234,
+            "effective_pixel_size_rad": 4.848136811e-6,
+            "required_map_write_count": 5234,
+            "outputs_completed": True,
+        }
+    ]
+    document["coadd"] = {"available": False}
+    document["realized"]["completed_observation_count"] = {
+        "available": True,
+        "value": 1,
+    }
+    document["realized"]["completed_coadd_count"] = {
+        "available": True,
+        "value": 0,
+    }
+    return document
+
+
 def valid_post_processing_document(
     reduction_type: str = "science",
 ) -> dict[str, object]:
     pointing = reduction_type == "pointing"
-    coadd = not pointing
+    beammap = reduction_type == "beammap"
+    coadd = reduction_type == "science"
     observation_contexts = 2 if pointing else 0
     observation_maps = 6 if pointing else 0
     coadd_contexts = 1 if coadd else 0
@@ -476,13 +611,13 @@ def valid_post_processing_document(
         }
 
     requested = {
-        "map_filtering": {"enabled": True},
-        "source_finding": {"enabled": True},
+        "map_filtering": {"enabled": not beammap},
+        "source_finding": {"enabled": not beammap},
         "source_fitting": {"active": False},
     }
     effective = {
-        "map_filtering": {"enabled": True},
-        "source_finding": {"enabled": True},
+        "map_filtering": {"enabled": not beammap},
+        "source_finding": {"enabled": not beammap},
         "source_fitting": {"active": True},
     }
     return {
@@ -495,15 +630,15 @@ def valid_post_processing_document(
                 "reduction_type": reduction_type,
                 "mapmaking_enabled": True,
                 "coadd_enabled": coadd,
-                "map_filtering_requested": True,
-                "map_filtering_effective": True,
+                "map_filtering_requested": not beammap,
+                "map_filtering_effective": not beammap,
                 "map_filtering_disabled_by_mapmaking": False,
-                "source_finding_requested": True,
-                "source_finding_effective": True,
+                "source_finding_requested": not beammap,
+                "source_finding_effective": not beammap,
                 "source_finding_disabled_by_mapmaking": False,
-                "source_fitting_required_by_reduction": pointing,
-                "source_fitting_required_by_map_filtering": True,
-                "source_fitting_required_by_source_finding": True,
+                "source_fitting_required_by_reduction": pointing or beammap,
+                "source_fitting_required_by_map_filtering": not beammap,
+                "source_fitting_required_by_source_finding": not beammap,
                 "source_fitting_effective": True,
                 "source_fitting_disabled_by_mapmaking": False,
             },
@@ -530,9 +665,9 @@ def valid_post_processing_document(
                 },
             },
             "beammap_fits": {
-                "context_count": 0,
-                "attempt_count": 0,
-                "valid_count": 0,
+                "context_count": 3 if beammap else 0,
+                "attempt_count": 15407 if beammap else 0,
+                "valid_count": 15407 if beammap else 0,
             },
             "outputs_completed": True,
         },
@@ -540,6 +675,70 @@ def valid_post_processing_document(
 
 
 class ProvenanceAuditTest(unittest.TestCase):
+    def test_accepts_complete_beammap_provenance_and_cross_checks(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            documents = {
+                "mapmaking_provenance.yaml": (
+                    valid_beammap_mapmaking_document()
+                ),
+                "beammap_provenance.yaml": valid_beammap_document(),
+                "post_processing_provenance.yaml": (
+                    valid_post_processing_document("beammap")
+                ),
+            }
+            for filename, document in documents.items():
+                (redu / filename).write_text(
+                    yaml.safe_dump(document, sort_keys=False),
+                    encoding="utf-8",
+                )
+
+            records = audit.audit_provenance_sidecars(
+                redu,
+                require_mapmaking=True,
+                require_post_processing=True,
+                require_beammap=True,
+            )
+
+            self.assertTrue(records["mapmaking"]["valid"])
+            self.assertTrue(records["post_processing"]["valid"])
+            self.assertTrue(records["beammap"]["present"])
+            self.assertTrue(records["beammap"]["required"])
+            self.assertTrue(records["beammap"]["valid"])
+
+    def test_rejects_missing_required_beammap_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            records = audit.audit_provenance_sidecars(
+                Path(directory), require_beammap=True
+            )
+
+            self.assertFalse(records["beammap"]["valid"])
+            self.assertFalse(audit.provenance_ok({"provenance": records}))
+
+    def test_rejects_incomplete_beammap_detector_tod(self) -> None:
+        document = valid_beammap_document()
+        document["observations"][0]["detector_tod"][
+            "completed_write_count"
+        ] = 0
+
+        self.assertIn(
+            "beammap observation 0 detector-TOD write cardinality is inconsistent",
+            audit.beammap_provenance_semantic_errors(document),
+        )
+
+    def test_rejects_beammap_post_processing_iteration_drift(self) -> None:
+        post_processing = valid_post_processing_document("beammap")
+        post_processing["realized"]["beammap_fits"]["context_count"] = 2
+
+        self.assertEqual(
+            audit.beammap_post_processing_cross_check_errors(
+                valid_beammap_document(), post_processing
+            ),
+            [
+                "beammap iteration count differs from post-processing fit contexts"
+            ],
+        )
+
     def test_accepts_complete_post_processing_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             redu = Path(directory)

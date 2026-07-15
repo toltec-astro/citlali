@@ -151,6 +151,23 @@ PROVENANCE_SIDECARS = {
         },
         "allow_multiple": False,
     },
+    "beammap": {
+        "filename": "beammap_provenance.yaml",
+        "schema_version": "citlali-beammap-provenance-v1",
+        "required_paths": (
+            ("initialized",),
+            ("requested",),
+            ("effective", "config"),
+            ("effective", "resolution"),
+            ("observations",),
+            ("realized", "reduction_completed"),
+            ("realized", "beammap_executed"),
+            ("realized", "completed_observation_count"),
+            ("realized", "completed_iteration_count"),
+            ("realized", "outputs_completed"),
+        ),
+        "allow_multiple": False,
+    },
     "post_processing": {
         "filename": "post_processing_provenance.yaml",
         "schema_version": "citlali-post-processing-provenance-v1",
@@ -1411,6 +1428,349 @@ def pointing_mapmaking_cross_check_errors(
     return errors
 
 
+def beammap_provenance_semantic_errors(
+    data: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        if data["initialized"] is not True:
+            errors.append("beammap execution plan is not initialized")
+
+        requested = data["requested"]
+        effective = data["effective"]["config"]
+        resolution = data["effective"]["resolution"]
+        observations = data["observations"]
+        realized = data["realized"]
+        if not all(isinstance(value, dict) for value in (requested, effective)):
+            return ["beammap requested/effective config must be mappings"]
+        if not isinstance(observations, list):
+            return ["beammap observations must be a sequence"]
+
+        requested_iterations = requested.get("iter_max")
+        effective_iterations = effective.get("iter_max")
+        if any(
+            type(value) is not int or value <= 0
+            for value in (requested_iterations, effective_iterations)
+        ):
+            errors.append("beammap iteration limits must be positive integers")
+        if resolution.get("requested_max_iterations") != requested_iterations:
+            errors.append("beammap requested iteration resolution is inconsistent")
+        if resolution.get("effective_max_iterations") != effective_iterations:
+            errors.append("beammap effective iteration resolution is inconsistent")
+
+        mapmaking_enabled = resolution.get("mapmaking_enabled")
+        if type(mapmaking_enabled) is not bool:
+            errors.append("beammap mapmaking activation must be boolean")
+        detector_tod_config = effective.get("detector_tod_output")
+        if not isinstance(detector_tod_config, dict) or type(
+            detector_tod_config.get("enabled")
+        ) is not bool:
+            errors.append("beammap detector-TOD activation must be boolean")
+            detector_tod_enabled = False
+        else:
+            detector_tod_enabled = detector_tod_config["enabled"]
+
+        for name in (
+            "reduction_completed",
+            "beammap_executed",
+            "outputs_completed",
+        ):
+            if type(realized.get(name)) is not bool:
+                errors.append(f"beammap realized {name} must be boolean")
+        completed_iterations = realized.get("completed_iteration_count")
+        if type(completed_iterations) is not int or completed_iterations < 0:
+            errors.append(
+                "beammap completed iteration count must be a nonnegative integer"
+            )
+            completed_iterations = 0
+
+        total_iterations = 0
+        seen_obsnums: set[str] = set()
+        for expected_index, observation in enumerate(observations):
+            if not isinstance(observation, dict):
+                errors.append(
+                    f"beammap observation {expected_index} must be a mapping"
+                )
+                continue
+            if observation.get("observation_index") != expected_index:
+                errors.append("beammap observation indices are not contiguous")
+            obsnum = normalized_mapmaking_obsnum(observation.get("obsnum"))
+            if obsnum is None:
+                errors.append(
+                    f"beammap observation {expected_index} has invalid obsnum"
+                )
+            elif obsnum in seen_obsnums:
+                errors.append(f"duplicate beammap obsnum: {obsnum}")
+            else:
+                seen_obsnums.add(obsnum)
+
+            count_names = ("detector_count", "map_count", "scan_count")
+            counts = {name: observation.get(name) for name in count_names}
+            if any(type(value) is not int or value <= 0 for value in counts.values()):
+                errors.append(
+                    f"beammap observation {expected_index} has invalid cardinality"
+                )
+                continue
+            map_count = counts["map_count"]
+            iterations = observation.get("iterations")
+            if not isinstance(iterations, list) or not iterations:
+                errors.append(
+                    f"beammap observation {expected_index} has no iterations"
+                )
+                continue
+
+            previous_converged = 0
+            for iteration_index, iteration in enumerate(iterations):
+                label = (
+                    f"beammap observation {expected_index} iteration "
+                    f"{iteration_index}"
+                )
+                if not isinstance(iteration, dict):
+                    errors.append(f"{label} must be a mapping")
+                    continue
+                if iteration.get("iteration_index") != iteration_index:
+                    errors.append(f"{label} has inconsistent index")
+                if iteration.get("phase") not in (
+                    "legacy",
+                    "locator",
+                    "pre_measurement",
+                    "measurement_start",
+                    "measurement",
+                ):
+                    errors.append(f"{label} has invalid phase")
+                active_maps = iteration.get("active_map_count")
+                pass_count = iteration.get("mapmaking_pass_count")
+                if (
+                    type(active_maps) is not int
+                    or active_maps <= 0
+                    or active_maps > map_count
+                ):
+                    errors.append(f"{label} has invalid active-map count")
+                if type(pass_count) is not int or pass_count <= 0:
+                    errors.append(f"{label} has no completed mapmaking pass")
+                rtc_rerun = iteration.get("source_aware_rtc_rerun")
+                if (
+                    not isinstance(rtc_rerun, dict)
+                    or rtc_rerun.get("available") is not True
+                    or type(rtc_rerun.get("value")) is not bool
+                ):
+                    errors.append(f"{label} has no RTC-rerun decision")
+                if iteration.get("fitting_completed") is not True:
+                    errors.append(f"{label} fitting is incomplete")
+                if iteration.get("completed") is not True:
+                    errors.append(f"{label} lifecycle is incomplete")
+
+                newly_converged = iteration.get("newly_converged_map_count")
+                total_converged = iteration.get("total_converged_map_count")
+                if any(
+                    type(value) is not int or value < 0
+                    for value in (newly_converged, total_converged)
+                ):
+                    errors.append(f"{label} has invalid convergence counts")
+                elif (
+                    total_converged < previous_converged
+                    or total_converged > map_count
+                    or newly_converged
+                    != total_converged - previous_converged
+                ):
+                    errors.append(f"{label} convergence counts are inconsistent")
+                else:
+                    previous_converged = total_converged
+
+                reason = iteration.get("termination_reason")
+                is_terminal = iteration_index == len(iterations) - 1
+                if reason not in (
+                    "none",
+                    "maximum_iterations",
+                    "all_maps_converged",
+                ):
+                    errors.append(f"{label} has invalid termination reason")
+                elif is_terminal and reason == "none":
+                    errors.append(f"{label} lacks terminal state")
+                elif not is_terminal and reason != "none":
+                    errors.append(f"{label} terminates before the final iteration")
+                elif reason == "maximum_iterations" and (
+                    type(effective_iterations) is int
+                    and len(iterations) != effective_iterations
+                ):
+                    errors.append(f"{label} maximum-iteration state is inconsistent")
+                elif reason == "all_maps_converged" and (
+                    total_converged != map_count
+                ):
+                    errors.append(f"{label} convergence termination is incomplete")
+
+            terminal = observation.get("terminal_iteration")
+            terminal_reason = observation.get("termination_reason")
+            if (
+                not isinstance(terminal, dict)
+                or terminal.get("available") is not True
+                or terminal.get("value") != len(iterations) - 1
+            ):
+                errors.append(
+                    f"beammap observation {expected_index} terminal iteration is inconsistent"
+                )
+            if terminal_reason != iterations[-1].get("termination_reason"):
+                errors.append(
+                    f"beammap observation {expected_index} termination reason is inconsistent"
+                )
+
+            detector_tod = observation.get("detector_tod")
+            if not isinstance(detector_tod, dict):
+                errors.append(
+                    f"beammap observation {expected_index} detector TOD is missing"
+                )
+            else:
+                required = detector_tod.get("required")
+                expected_writes = 1 if detector_tod_enabled else 0
+                if required is not detector_tod_enabled:
+                    errors.append(
+                        f"beammap observation {expected_index} detector-TOD policy differs from effective config"
+                    )
+                if detector_tod.get("completed_write_count") != expected_writes:
+                    errors.append(
+                        f"beammap observation {expected_index} detector-TOD write cardinality is inconsistent"
+                    )
+                if expected_writes:
+                    try:
+                        output_iteration = available_count(
+                            detector_tod["output_iteration"],
+                            "detector_tod.output_iteration",
+                        )
+                        detector_count = available_count(
+                            detector_tod["detector_count"],
+                            "detector_tod.detector_count",
+                        )
+                        slot_count = available_count(
+                            detector_tod["slot_count"],
+                            "detector_tod.slot_count",
+                        )
+                        sample_count = available_count(
+                            detector_tod["maximum_sample_count"],
+                            "detector_tod.maximum_sample_count",
+                        )
+                        if output_iteration >= len(iterations):
+                            errors.append(
+                                f"beammap observation {expected_index} detector-TOD iteration is invalid"
+                            )
+                        if detector_count != counts["detector_count"]:
+                            errors.append(
+                                f"beammap observation {expected_index} detector-TOD detector count is inconsistent"
+                            )
+                        if slot_count == 0 or sample_count == 0:
+                            errors.append(
+                                f"beammap observation {expected_index} detector-TOD shape is empty"
+                            )
+                    except (KeyError, ValueError) as exc:
+                        errors.append(
+                            f"beammap observation {expected_index} detector TOD is incomplete: {exc}"
+                        )
+            if observation.get("outputs_completed") is not True:
+                errors.append(
+                    f"beammap observation {expected_index} outputs are incomplete"
+                )
+            total_iterations += len(iterations)
+
+        try:
+            completed_observations = available_count(
+                realized["completed_observation_count"],
+                "completed_observation_count",
+            )
+            if completed_observations != len(observations):
+                errors.append(
+                    "beammap completed observation count is inconsistent"
+                )
+        except (KeyError, ValueError) as exc:
+            errors.append(f"beammap completed observation count is invalid: {exc}")
+        if completed_iterations != total_iterations:
+            errors.append("beammap completed iteration count is inconsistent")
+        if realized.get("reduction_completed") is not True:
+            errors.append("beammap reduction is not complete")
+        if realized.get("outputs_completed") is not True:
+            errors.append("beammap outputs are incomplete")
+        if realized.get("beammap_executed") != mapmaking_enabled:
+            errors.append("beammap execution differs from mapmaking policy")
+        if mapmaking_enabled and not observations:
+            errors.append("enabled beammap has no completed observations")
+        if mapmaking_enabled is False and observations:
+            errors.append("disabled beammap records observation products")
+    except (AttributeError, KeyError, TypeError, ValueError) as exc:
+        errors.append(f"cannot evaluate beammap provenance semantics: {exc}")
+    return errors
+
+
+def beammap_mapmaking_cross_check_errors(
+    beammap: dict[str, Any], mapmaking: dict[str, Any]
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        if mapmaking.get("schema_version") != (
+            "citlali-mapmaking-provenance-v2"
+        ):
+            return ["beammap cross-check requires mapmaking provenance v2"]
+        beammap_resolution = beammap["effective"]["resolution"]
+        mapmaking_effective = mapmaking["effective"]["config"]
+        if beammap_resolution["mapmaking_enabled"] != mapmaking_effective[
+            "enabled"
+        ]:
+            errors.append(
+                "beammap activation differs from mapmaking provenance"
+            )
+        beammap_observations = beammap["observations"]
+        mapmaking_observations = mapmaking["observations"]
+        if len(beammap_observations) != len(mapmaking_observations):
+            errors.append(
+                "beammap observation count differs from mapmaking provenance"
+            )
+            return errors
+        for index, (beammap_obs, mapmaking_obs) in enumerate(
+            zip(beammap_observations, mapmaking_observations)
+        ):
+            if (
+                beammap_obs["observation_index"]
+                != mapmaking_obs["observation_index"]
+                or normalized_mapmaking_obsnum(beammap_obs["obsnum"])
+                != normalized_mapmaking_obsnum(mapmaking_obs["obsnum"])
+                or beammap_obs["map_count"] != mapmaking_obs["map_count"]
+                or beammap_obs["outputs_completed"]
+                != mapmaking_obs["outputs_completed"]
+            ):
+                errors.append(
+                    f"beammap observation {index} differs from mapmaking provenance"
+                )
+    except (KeyError, TypeError, ValueError) as exc:
+        errors.append(
+            f"cannot cross-check beammap and mapmaking provenance: {exc}"
+        )
+    return errors
+
+
+def beammap_post_processing_cross_check_errors(
+    beammap: dict[str, Any], post_processing: dict[str, Any]
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        resolution = post_processing["effective"]["resolution"]
+        if resolution["reduction_type"] != "beammap":
+            errors.append("beammap provenance is paired with non-beammap post-processing")
+        if resolution["mapmaking_enabled"] != beammap["effective"][
+            "resolution"
+        ]["mapmaking_enabled"]:
+            errors.append(
+                "beammap activation differs from post-processing provenance"
+            )
+        if post_processing["realized"]["beammap_fits"][
+            "context_count"
+        ] != beammap["realized"]["completed_iteration_count"]:
+            errors.append(
+                "beammap iteration count differs from post-processing fit contexts"
+            )
+    except (KeyError, TypeError) as exc:
+        errors.append(
+            f"cannot cross-check beammap and post-processing provenance: {exc}"
+        )
+    return errors
+
+
 def post_processing_fit_cardinality_errors(
     cardinality: Any, label: str,
 ) -> list[str]:
@@ -1729,6 +2089,7 @@ def audit_provenance_sidecars(
     require_noise_products: bool = False,
     require_pointing: bool = False,
     require_post_processing: bool = False,
+    require_beammap: bool = False,
 ) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for name, spec in PROVENANCE_SIDECARS.items():
@@ -1740,6 +2101,7 @@ def audit_provenance_sidecars(
             or (name == "noise_products" and require_noise_products)
             or (name == "pointing" and require_pointing)
             or (name == "post_processing" and require_post_processing)
+            or (name == "beammap" and require_beammap)
         )
         paths = find_provenance_files(redu, str(spec["filename"]))
         record: dict[str, Any] = {
@@ -1808,6 +2170,10 @@ def audit_provenance_sidecars(
                     elif name == "post_processing":
                         semantic_errors = (
                             post_processing_provenance_semantic_errors(data)
+                        )
+                    elif name == "beammap":
+                        semantic_errors = beammap_provenance_semantic_errors(
+                            data
                         )
                 item["semantic_errors"] = semantic_errors
                 item["valid"] = bool(
@@ -1981,6 +2347,23 @@ def audit_provenance_sidecars(
             pointing["valid"] = False
             pointing.setdefault("cross_check_errors", []).append(str(exc))
 
+    beammap = result["beammap"]
+    if mapmaking["present"] and beammap["present"] and (
+        mapmaking["valid"] and beammap["valid"]
+    ):
+        try:
+            mapmaking_data = load_yaml(Path(mapmaking["paths"][0]))
+            beammap_data = load_yaml(Path(beammap["paths"][0]))
+            cross_check_errors = beammap_mapmaking_cross_check_errors(
+                beammap_data, mapmaking_data
+            )
+            if cross_check_errors:
+                beammap["valid"] = False
+                beammap["cross_check_errors"] = cross_check_errors
+        except Exception as exc:
+            beammap["valid"] = False
+            beammap.setdefault("cross_check_errors", []).append(str(exc))
+
     post_processing = result["post_processing"]
     if mapmaking["present"] and post_processing["present"] and (
         mapmaking["valid"] and post_processing["valid"]
@@ -2026,6 +2409,27 @@ def audit_provenance_sidecars(
             post_processing.setdefault("cross_check_errors", []).append(
                 str(exc)
             )
+    if beammap["present"] and post_processing["present"] and (
+        beammap["valid"] and post_processing["valid"]
+    ):
+        try:
+            beammap_data = load_yaml(Path(beammap["paths"][0]))
+            post_processing_data = load_yaml(
+                Path(post_processing["paths"][0])
+            )
+            cross_check_errors = (
+                beammap_post_processing_cross_check_errors(
+                    beammap_data, post_processing_data
+                )
+            )
+            if cross_check_errors:
+                beammap["valid"] = False
+                beammap.setdefault("cross_check_errors", []).extend(
+                    cross_check_errors
+                )
+        except Exception as exc:
+            beammap["valid"] = False
+            beammap.setdefault("cross_check_errors", []).append(str(exc))
     return result
 
 
@@ -2239,6 +2643,7 @@ def build_audit(args: argparse.Namespace) -> dict[str, Any]:
             getattr(args, "require_noise_products_provenance", False),
             getattr(args, "require_pointing_provenance", False),
             getattr(args, "require_post_processing_provenance", False),
+            getattr(args, "require_beammap_provenance", False),
         ),
         "products": audit_products(redu, args.top),
     }
@@ -2415,6 +2820,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         help=(
             "Fail unless post_processing_provenance.yaml is present and valid."
         ),
+    )
+    parser.add_argument(
+        "--require-beammap-provenance",
+        action="store_true",
+        help="Fail unless beammap_provenance.yaml is present and valid.",
     )
     parser.add_argument("--json-out", default="", help="Optional path for machine-readable JSON.")
     parser.add_argument("--report-out", default="", help="Optional path for Markdown output.")

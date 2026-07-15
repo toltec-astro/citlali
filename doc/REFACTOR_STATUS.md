@@ -36,9 +36,10 @@ branch. The exact validated tree will remain available for forensic review.
 - Latest accepted science reduction: final iteration `redu19`, produced by
   `342a021c`; its post-processing provenance records one coadd filter context
   and three filtered maps.
-- Latest accepted Beammap reduction: `redu02`, produced by `342a021c`; its
-  post-processing provenance records three detector-fit contexts with 15,407
-  attempted and valid fits.
+- Latest accepted Beammap reduction: `redu03`, produced by `b530e8387`; it
+  validates the dedicated Beammap lifecycle/provenance contract and one
+  required detector-TOD write while retaining exact scientific identity with
+  `redu02`.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
@@ -1153,6 +1154,36 @@ clean with 75 Python tests and all eight compatibility profiles. This is part
 of the pending Beammap Unity validation candidate, not a separately accepted
 domain gate. Prior/reference and split-output fallback policies remain
 unchanged and unresolved owner decisions are not inferred.
+
+## Beammap Lifecycle Gate Accepted
+
+Unity Beammap `redu03` was produced by `v4.0.0-3486-gb530e838` from the same
+low-level configuration as accepted `redu02` (SHA-256
+`aa956b28465eaef8b23763e877857b5b8929e95ca4fbdc976db6d7b2a775636d`).
+The run completed 198 PTC chunks in 3,609.307 seconds with zero error-,
+critical-, or fatal-level log records. The required
+`citlali-beammap-provenance-v1` sidecar records one 5,234-detector/map
+observation, three contiguous completed Beammap iterations, one mapmaking pass
+per iteration, the expected source-aware RTC rerun on iteration one,
+maximum-iteration termination, and exactly one required detector-TOD write at
+iteration two with shape 5,234 detectors by 20 slots and 788 maximum samples.
+
+Against `redu02`, the merged configuration is byte-identical. The accepted
+Beammap profile reports exact detector identity, flags, APT quantities, and
+all good/bad signal, weight, and kernel maps. The strict full-depth comparison
+excludes only volatile `citlali_profile.ecsv` timing, reads all 12 scientific
+products including detector TOD and six split FITS files, and finds no missing,
+extra, skipped, or changed records.
+
+The standard reduction audit now recognizes and can require Beammap provenance.
+It validates observation/iteration lifecycle, terminal state, convergence
+accounting, detector-TOD cardinality and shape, and cross-checks observation
+identity/map count against mapmaking plus iteration count against
+post-processing fit contexts. This closes the pending lifecycle/provenance
+validation checkpoint, but the Beammap authority domain remains partial until
+observation-resolved prior/reference state and adjacent atomic
+`beammap_source.*` handling are completed. No unresolved fallback policy is
+inferred by this gate.
 
 ## Five-Phase Roadmap
 
