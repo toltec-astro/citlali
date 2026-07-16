@@ -476,13 +476,20 @@ def analyze(campaign_path: Path) -> dict[str, Any]:
         )
 
     budget_failures = []
+    pending_qualifications = []
     budget_metrics = {
         "citlali_total_log_seconds": "median_citlali_runtime_ratio_max",
         "peak_rss_kb": "median_peak_rss_ratio_max",
     }
     for metric, budget_name in budget_metrics.items():
         measured_median = metric_summaries[metric]["median"]
-        limit = float(budgets[budget_name])
+        configured_limit = budgets[budget_name]
+        if configured_limit is None:
+            pending_qualifications.append(
+                f"{budget_name}: policy pending; {metric} remains measured"
+            )
+            continue
+        limit = float(configured_limit)
         if measured_median is not None and measured_median > limit:
             budget_failures.append(
                 f"{metric} median ratio {measured_median:.6f} exceeds {limit:.6f}"
@@ -499,6 +506,8 @@ def analyze(campaign_path: Path) -> dict[str, Any]:
         if not protocol_complete
         else "rejected"
         if budget_failures
+        else "pending_policy"
+        if pending_qualifications
         else "accepted"
     )
     return {
@@ -511,6 +520,7 @@ def analyze(campaign_path: Path) -> dict[str, Any]:
         "protocol_complete": protocol_complete,
         "protocol_errors": errors,
         "budget_failures": budget_failures,
+        "pending_qualifications": pending_qualifications,
         "budgets": budgets,
         "run_count": len(runs),
         "warmup_count": len(warmups),
@@ -607,6 +617,10 @@ def render_markdown(result: dict[str, Any], top_stages: int) -> str:
     lines.extend(["", "## Budget Failures", ""])
     lines.extend(f"- {failure}" for failure in result["budget_failures"])
     if not result["budget_failures"]:
+        lines.append("None.")
+    lines.extend(["", "## Pending Qualifications", ""])
+    lines.extend(f"- {item}" for item in result["pending_qualifications"])
+    if not result["pending_qualifications"]:
         lines.append("None.")
     lines.append("")
     return "\n".join(lines)

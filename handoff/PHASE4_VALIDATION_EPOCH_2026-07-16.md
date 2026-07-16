@@ -66,7 +66,9 @@ passing the downloaded `reduNN` directory to the unified entry point.
 The next tranche added the controlled Beammap performance protocol and tooling
 described in `doc/PHASE4_PERFORMANCE_PROTOCOL_2026-07-16.md`. Real same-node
 warmup and alternating paired Unity runs remain pending, as does project-owner
-confirmation of the proposed 5% median peak-RSS ceiling. Build infrastructure
-remains untouched and deferred. All 85 baseline-tool tests and full config
+selection of an evidence-based peak-RSS policy. The template leaves that budget
+unset while still requiring and reporting the measurement; the analyzer marks
+an otherwise complete campaign `pending_policy`. Build infrastructure remains
+untouched and deferred. All 86 baseline-tool tests and full config
 preflight pass; accepted Beammap `redu06` exercises the portable evidence
 extractor, while the live GNU Time wrapper awaits its first Unity warmup.

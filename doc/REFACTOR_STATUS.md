@@ -119,10 +119,13 @@ wall/RSS/I/O data together with Citlali log time, exact config leaves, bounded
 input hashes, runtime policy, binary identity, serious log counts, and
 profile-stage totals. An offline campaign analyzer requires same-node warmups,
 at least three alternating measured Beammap pairs, matched config/input/runtime
-policy, complete measurements, and explicit runtime/RSS budgets; it reports
-paired ratios plus median and IQR. The checked-in campaign remains incomplete
-until real runs are supplied. The 5% wall-time ceiling is established; the
-proposed 5% median peak-RSS ceiling requires project-owner confirmation.
+policy, complete measurements, an explicit runtime budget, and required RSS
+measurement; it reports paired ratios plus median and IQR. The checked-in
+campaign remains incomplete until real runs are supplied. The 5% wall-time
+ceiling is established. Peak RSS is required evidence, but its policy is
+intentionally pending until the first controlled campaign can be judged using
+both relative growth and absolute cluster-node memory headroom.
+
 Profiler overhead is still a separate Phase 4 qualification because the
 current profiler has no enable/disable control. See the
 [controlled performance protocol](PHASE4_PERFORMANCE_PROTOCOL_2026-07-16.md).

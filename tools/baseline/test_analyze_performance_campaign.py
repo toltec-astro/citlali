@@ -27,6 +27,22 @@ class AnalyzePerformanceCampaignTest(unittest.TestCase):
         self.assertEqual(result["verdict"], "rejected")
         self.assertIn("citlali_total_log_seconds", result["budget_failures"][0])
 
+    def test_reports_rss_while_memory_policy_is_pending(self) -> None:
+        with self._campaign(memory_budget=None) as path:
+            result = campaign.analyze(path)
+
+        self.assertEqual(result["verdict"], "pending_policy")
+        self.assertTrue(result["protocol_complete"])
+        self.assertAlmostEqual(
+            result["metric_ratio_summaries"]["peak_rss_kb"]["median"],
+            1.02,
+        )
+        self.assertEqual(len(result["pending_qualifications"]), 1)
+        self.assertIn(
+            "median_peak_rss_ratio_max", result["pending_qualifications"][0]
+        )
+        self.assertFalse(result["budget_failures"])
+
     def test_marks_missing_pair_campaign_incomplete(self) -> None:
         with self._campaign(measured_pairs=2) as path:
             result = campaign.analyze(path)
@@ -83,10 +99,12 @@ class AnalyzePerformanceCampaignTest(unittest.TestCase):
             candidate_runtime: float,
             measured_pairs: int,
             candidate_config_value: str,
+            memory_budget: float | None,
         ) -> None:
             self.candidate_runtime = candidate_runtime
             self.measured_pairs = measured_pairs
             self.candidate_config_value = candidate_config_value
+            self.memory_budget = memory_budget
             self.directory: tempfile.TemporaryDirectory[str] | None = None
 
         def __enter__(self) -> Path:
@@ -142,7 +160,7 @@ class AnalyzePerformanceCampaignTest(unittest.TestCase):
                 },
                 "budgets": {
                     "median_citlali_runtime_ratio_max": 1.05,
-                    "median_peak_rss_ratio_max": 1.05,
+                    "median_peak_rss_ratio_max": self.memory_budget,
                 },
                 "profiler_overhead_evidence": {"status": "pending"},
                 "runs": runs,
@@ -238,9 +256,13 @@ class AnalyzePerformanceCampaignTest(unittest.TestCase):
         candidate_runtime: float = 104.0,
         measured_pairs: int = 3,
         candidate_config_value: str = "1",
+        memory_budget: float | None = 1.05,
     ) -> _Campaign:
         return self._Campaign(
-            candidate_runtime, measured_pairs, candidate_config_value
+            candidate_runtime,
+            measured_pairs,
+            candidate_config_value,
+            memory_budget,
         )
 
 

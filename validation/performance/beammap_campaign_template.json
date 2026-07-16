@@ -36,7 +36,7 @@
   },
   "budgets": {
     "median_citlali_runtime_ratio_max": 1.05,
-    "median_peak_rss_ratio_max": 1.05
+    "median_peak_rss_ratio_max": null
   },
   "profiler_overhead_evidence": {
     "status": "pending",

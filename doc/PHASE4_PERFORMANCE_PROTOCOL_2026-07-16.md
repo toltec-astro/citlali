@@ -129,10 +129,13 @@ profile stages.
 ## Budgets And Open Qualification
 
 The established wall-time budget is a maximum 5% median candidate regression.
-The campaign template currently proposes the same 5% maximum median peak-RSS
-increase as a concrete interpretation of "no material memory increase." The
-project owner must confirm or replace that memory threshold before the real
-campaign is accepted.
+Peak RSS remains a required measurement, but the campaign template deliberately
+leaves its limit unset. The analyzer reports a `pending_policy` verdict after a
+complete, otherwise passing campaign until that limit is chosen from actual
+measurements. The memory decision will consider both relative growth and
+absolute growth against the available memory on the supported cluster nodes;
+it will not assume that a 5% change is inherently material. A known runtime
+budget failure still rejects a campaign even while memory policy is pending.
 
 Profiler overhead remains a separate Phase 4 closeout item. The current
 run-owned profiler has no enable/disable control, so nested stage totals cannot
@@ -143,7 +146,7 @@ config or C++ change is part of this tranche.
 
 ## Local Verification
 
-- All 85 baseline-tool tests pass, including 11 focused campaign/parser tests.
+- All 86 baseline-tool tests pass, including 12 focused campaign/parser tests.
 - Full config preflight passes with all 96 config tests and eight compatibility
   fixtures.
 - The evidence extractor was exercised against accepted Beammap `redu06`. It
