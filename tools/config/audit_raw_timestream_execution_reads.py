@@ -26,9 +26,9 @@ EXCLUDED_FILES = {
     "include/citlali/core/pipeline/timestream_config_adapter_raw_flagging.h",
     "include/citlali/core/pipeline/timestream_config_adapter_raw_line_audit.h",
 }
-EXPECTED_RECORD_COUNT = 44
+EXPECTED_RECORD_COUNT = 43
 EXPECTED_RECORD_SHA256 = (
-    "0241d5632d0ab6057cb09415307bc9894fd5f15ea1c7b26e0b631edf2ce494f6"
+    "d97a62b82e5cc27e06ef1c7fdf160fa5cccea958681b3509c846fc7e88d5903e"
 )
 
 EXECUTOR_OPERATIONS = {

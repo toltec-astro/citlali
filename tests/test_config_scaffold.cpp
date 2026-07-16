@@ -1773,16 +1773,17 @@ TEST(config_scaffold, map_filter_prerequisites_throw_canonical_config_error) {
     citlali::config::MapFilterConfig filter;
     filter.enabled = true;
     filter.template_type = citlali::config::MapFilterTemplateType::kernel;
-    struct {
-        bool run_kernel = false;
-    } rtcproc;
     FakeWienerFilterConfigTarget target;
     auto logger = std::make_shared<FakeLogger>();
 
     EXPECT_THROW(
         citlali::pipeline::apply_map_filter_runtime_policy(
-            noise, filter, rtcproc, 7, "seq", target, logger),
+            noise, filter, false, 7, "seq", target, logger),
         citlali::error::Error);
+
+    EXPECT_NO_THROW(citlali::pipeline::apply_map_filter_runtime_policy(
+        noise, filter, true, 7, "seq", target, logger));
+    EXPECT_EQ(target.map_fitter, 7);
 
     filter.template_type = citlali::config::MapFilterTemplateType::gaussian;
     filter.type = citlali::config::MapFilterType::wiener_filter;
@@ -1790,7 +1791,7 @@ TEST(config_scaffold, map_filter_prerequisites_throw_canonical_config_error) {
     noise.enabled = false;
     EXPECT_THROW(
         citlali::pipeline::apply_map_filter_runtime_policy(
-            noise, filter, rtcproc, 7, "seq", target, logger),
+            noise, filter, false, 7, "seq", target, logger),
         citlali::error::Error);
     EXPECT_EQ(logger->error_calls, 2);
 }
@@ -3791,6 +3792,20 @@ pointing:
 
     EXPECT_TRUE(citlali::pipeline::validate_low_level_config_schema(
         config, diagnostics));
+}
+
+TEST(config_scaffold, accepts_deprecated_required_rtcdiag_switch) {
+    const auto config = tula::config::YamlConfig::from_str(R"yaml(
+timestream:
+  output:
+    rtcdiag:
+      enabled: true
+)yaml");
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    EXPECT_TRUE(citlali::pipeline::validate_low_level_config_schema(
+        config, diagnostics));
+    EXPECT_FALSE(diagnostics.has_errors());
 }
 
 TEST(config_scaffold, leaves_tolteca_input_subtree_to_external_schema) {

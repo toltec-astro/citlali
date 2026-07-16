@@ -51,18 +51,17 @@ void adapt_map_filter_config_one_way(
     }
 }
 
-template <class NoiseConfig, class WienerFilter,
-          class RuntimeTimestreamProc, class MapFitter,
+template <class NoiseConfig, class WienerFilter, class MapFitter,
           class Logger>
 void apply_map_filter_runtime_policy(
     const NoiseConfig &noise_config,
     const citlali::config::MapFilterConfig &map_filter_config,
-    const RuntimeTimestreamProc &rtcproc, const MapFitter &map_fitter,
+    bool raw_kernel_enabled, const MapFitter &map_fitter,
     const std::string &parallel_policy, WienerFilter &wiener_filter,
     const Logger &logger) {
     if (map_filter_config.template_type ==
         citlali::config::MapFilterTemplateType::kernel) {
-        if (!rtcproc.run_kernel) {
+        if (!raw_kernel_enabled) {
             logger->error("wiener filter kernel template requires kernel");
             throw citlali::error::invalid_config(
                 "wiener filter kernel template requires kernel");

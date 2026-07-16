@@ -29,6 +29,15 @@ authority_rules:
     executable: false
     validation_source: data/config.yaml
 
+  - id: deprecated-required-rtcdiag-switch
+    patterns: ['timestream.output.rtcdiag.enabled']
+    authority_domain: timestream-core-output
+    modes: [pointing, oof, beammap, science]
+    state_class: requested
+    resolution_stage: ignored
+    executable: false
+    validation_source: data/config.yaml
+
   - id: observation-photometry
     patterns: ['inputs[].cal_items[].beammap_source*']
     authority_domain: astrometry-photometry
