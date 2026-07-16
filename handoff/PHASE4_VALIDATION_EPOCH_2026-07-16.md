@@ -142,3 +142,16 @@ corrected a documentation defect in `validation/product_contracts.json`:
 RTC/PTC `output_scan_index` is one-based as written and as stated by its NetCDF
 metadata; NetCDF dimension positions remain zero-based. This is a contract-text
 repair with no output or algorithm change.
+
+The canonical architecture-map requirement is now addressed by
+`doc/ARCHITECTURE.md`. It traces the supported `citlali_cli` entry through
+`ReductionSession`, fresh reduction inputs and mode ownership, runtime setup,
+geometry, iteration/observation orchestration, required output publication,
+and structured result reporting. It also records the one-way config state
+flow, explicit lifecycle owners, dependency rules for new work, the frozen
+`Engine` compatibility boundary, and the header-versus-compiled-code policy.
+Active, transitional, unbuilt legacy/experimental, and deferred paths are
+separately classified so an external reviewer or future agent does not mistake
+old main programs, empty `.cpp` placeholders, compact config, enabled
+polarimetry, R execution, or deferred build work for supported architecture.
+No production code or compilation infrastructure changed in this tranche.

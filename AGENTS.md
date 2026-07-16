@@ -3,11 +3,13 @@
 Read these documents before making architectural changes:
 
 1. `doc/REFACTOR_STATUS.md` - current phase, gates, and next actions.
-2. `doc/SCIENTIFIC_CONVENTIONS.md` - identities, units, frames, validity, and
+2. `doc/ARCHITECTURE.md` - active components, ownership, dependencies,
+   compatibility boundaries, and extension rules.
+3. `doc/SCIENTIFIC_CONVENTIONS.md` - identities, units, frames, validity, and
    validation routing.
-3. `handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md` - adopted
+4. `handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md` - adopted
    independent review and completion criteria.
-4. `doc/STRUCTURAL_REFACTOR_PLAN_2026-06-29.md` - original goals and history.
+5. `doc/STRUCTURAL_REFACTOR_PLAN_2026-06-29.md` - original goals and history.
 
 The living status document governs sequencing when these documents differ.
 

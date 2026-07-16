@@ -151,6 +151,18 @@ inventing answers. During that census, the product registry's RTC/PTC
 metadata: it is the one-based original scan number, while dimension positions
 remain zero-based. No product data or schema changed.
 
+The canonical current software map is now
+[`ARCHITECTURE.md`](ARCHITECTURE.md). It records the active target and CLI
+entry, session/result boundary, runtime and scientific data flow, configuration
+state transitions, lifecycle owners, failure and product contracts, and the
+allowed direction for new dependencies. It explicitly distinguishes active,
+transitional, unbuilt legacy/experimental, and deferred paths. In particular,
+`Engine` remains an active but frozen compatibility aggregate, header-defined
+mode and numerical code remains transitional, and the four unbuilt historical
+main programs are not supported entry points. The document does not disguise
+the still header-dominant physical build or authorize the deferred CMake and
+dependency work.
+
 The controlled-performance evidence path is now specified without touching
 deferred compilation infrastructure. A Unity-side wrapper records GNU Time
 wall/RSS/I/O data together with Citlali log time, exact config leaves, bounded
@@ -2041,6 +2053,9 @@ ancestry, patch identity, and evidence links with
 units, frames, indexing, validity, provenance states, and change-to-validation
 routing. Product-specific executable requirements remain in
 `validation/product_contracts.json`.
+`doc/ARCHITECTURE.md` is the canonical human reference for the active software
+entry, component and dependency direction, lifecycle ownership, compatibility
+boundaries, failure flow, source classification, and extension routing.
 `validation/validation_profiles.json` identifies the active immutable
 validation epoch and one profile per supported reduction family; validate it
 with `tools/baseline/validation_profiles.py --list`. Continue to update this
