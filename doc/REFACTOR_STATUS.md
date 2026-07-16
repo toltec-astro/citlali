@@ -2043,7 +2043,23 @@ hash-verifies every vendored file, rejects mixed numbered-config families,
 generates `72_observation.yaml`, preserves operator-owned runtime and expert
 overrides on same-kit reruns, and rejects in-place mode or kit changes. All 96
 TolPROJ tests, Ruff, byte-compilation, and tracked-file audits pass. Phase 4.1
-remains active only for the four refactor-mode TolTECA smoke reductions.
+does not proceed to smoke reductions yet. Project-owner review found that the
+V1 files still expose the full machine policy under generic names and do not
+materially separate routine, advanced, and expert authoring. V1 remains a
+mechanically exact reference and the TolPROJ path remains opt-in, but it is not
+the accepted operator interface.
+
+A science-only V2 prototype is under review in `config/tolteca/v2/science/`.
+It uses mode-specific filenames, keeps the complete 404-leaf policy in a
+clearly internal generated file, and exposes only 62 classified user-facing
+leaves across runtime and two short, sectioned analysis/product files. Routine
+fruit-loop activation, iteration count, cut levels, and iteration retention
+are consolidated in the analysis defaults rather than split across files.
+Advanced and expert overrides have distinct empty files. The direct TolTECA
+merge remains exact against science `redu31`, and the preflight passes 112
+tests including classification-boundary, size-bound, and generator-
+reproducibility gates. No smoke reduction is requested until the science
+structure is accepted and generalized deliberately.
 
 ### Phase 4.2 - Technique And Performance Review
 

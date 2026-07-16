@@ -1,0 +1,68 @@
+# Primary user-facing science product choices.
+# Edit coadds, noise products, filtering, fitting, and retained TOD products here.
+# noise_maps.enabled creates realizations; noise_maps.products.enabled writes summaries.
+# TOD indices are used only when the corresponding output.enabled value is true.
+# Wiener settings apply when map_filtering.type is wiener_filter.
+reduce:
+  steps:
+    0:
+      config:
+        low_level:
+
+          # Coadded maps and noise-map products
+          coadd:
+            enabled: true
+          noise_maps:
+            enabled: true
+            n_noise_maps: 10
+            products:
+              enabled: false
+
+          # Filtered maps and source products
+          post_processing:
+            map_filtering:
+              enabled: true
+              type: wiener_filter
+              normalize_errors: false
+            source_finding:
+              enabled: false
+            source_fitting:
+              model: gaussian
+              bounding_box_arcsec: 10
+              fitting_radius_arcsec: 30
+
+          # User-facing Wiener template choices
+          wiener_filter:
+            template_type: kernel
+            template_fwhm_arcsec:
+              a1100: 18.0
+              a1400: 18.0
+              a2000: 18.0
+            lowpass_only: true
+
+          # Optional retained raw and processed TOD products
+          timestream:
+
+            # Raw calibrated TOD output
+            raw_time_chunk:
+              output:
+                enabled: false
+                indices:
+                - 12
+                - 19
+                - 23
+                - 36
+                - 39
+                - 60
+
+            # Cleaned and weighted TOD output
+            processed_time_chunk:
+              output:
+                enabled: false
+                indices:
+                - 12
+                - 19
+                - 23
+                - 36
+                - 39
+                - 60

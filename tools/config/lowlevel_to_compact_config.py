@@ -248,6 +248,14 @@ def copy_common_sections(
         ("timestream", "fruit_loops", "max_iters"): ("processing", "fruitloops_iters"),
         ("timestream", "fruit_loops", "path"): ("processing", "fruitloops_source"),
         ("timestream", "fruit_loops", "type"): ("processing", "fruitloops_type"),
+        ("timestream", "fruit_loops", "sig2noise_limit"): (
+            "processing",
+            "fruitloops_sig2noise_limit",
+        ),
+        ("timestream", "fruit_loops", "array_flux_limit"): (
+            "processing",
+            "fruitloops_array_flux_limit",
+        ),
         ("timestream", "fruit_loops", "save_all_iters"): ("processing", "fruitloops_save_all_iters"),
         ("timestream", "fruit_loops", "adaptive_support_radius_arcsec"): (
             "processing",

@@ -22,7 +22,7 @@ LIST_DSL_RE = re.compile(
     r"^\[(?:(?P<index>-?\d+)|(?P<start>-?\d*):(?P<stop>-?\d*)?"
     r"(?::(?P<step>-?\d*))?)?\]$"
 )
-REQUIRED_ROLES = {
+DEFAULT_REQUIRED_ROLES = {
     "70_pipeline.yaml",
     "71_runtime.yaml",
     "72_observation.yaml",
@@ -303,7 +303,14 @@ def build_report(
     expected_hash = str(manifest_entry.get("policy_sha256", ""))
     expected_type = MODE_REDUCTION_TYPES[mode]
     actual_type = policy.get("runtime", {}).get("reduction_type")
-    missing_roles = sorted(REQUIRED_ROLES - {path.name for path in files})
+    required_files_value = manifest_entry.get("required_files", DEFAULT_REQUIRED_ROLES)
+    if not isinstance(required_files_value, (list, set, tuple)):
+        raise ModeKitError("manifest required_files must be a list")
+    required_files = {str(value) for value in required_files_value}
+    missing_roles = sorted(required_files - {path.name for path in files})
+    expert_override_file = str(
+        manifest_entry.get("expert_override_file", "90_user_overrides.yaml")
+    )
 
     low_level_prefix = "reduce.steps[0].config.low_level."
     low_level_changes = []
@@ -369,7 +376,7 @@ def build_report(
         "expert_override_changes": [
             change
             for change in low_level_changes
-            if change["source"] == "90_user_overrides.yaml"
+            if change["source"] == expert_override_file
         ],
         "final_low_level_leaves": final_leaves,
         "errors": errors,

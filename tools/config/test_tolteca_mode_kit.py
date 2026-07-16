@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import fnmatch
 import json
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -11,7 +14,9 @@ from tools.config.tolteca_mode_kit import (
     MODE_REDUCTION_TYPES,
     build_report,
     extract_low_level,
+    flatten_leaves,
     merge_files,
+    normalized_path,
     policy_sha256,
     recursive_update,
     validate_modes,
@@ -220,6 +225,124 @@ class ModeKitValidationTest(unittest.TestCase):
             "mapmaking.enabled",
         )
         self.assertEqual(report["expert_override_changes"][0]["authority"], "mapmaking")
+
+
+class ScienceAuthoringPrototypeTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.repo_root = Path(__file__).resolve().parents[2]
+        cls.prototype_root = cls.repo_root / "config/tolteca/v2"
+        cls.science_dir = cls.prototype_root / "science"
+        cls.manifest = cls.prototype_root / "manifest.yaml"
+        cls.contract = cls.repo_root / "tools/config/config_leaf_contract_resolved.json"
+        cls.rules = yaml.safe_load(
+            (cls.repo_root / "tools/config/config_key_classification.yaml").read_text()
+        )
+
+    def classification(self, path: str) -> str:
+        for rule in self.rules["rules"]:
+            if fnmatch.fnmatchcase(path, rule["pattern"]):
+                return rule["classification"]
+        return self.rules["fallback"]["classification"]
+
+    def test_science_prototype_matches_accepted_policy(self) -> None:
+        report = validate_modes(
+            self.prototype_root,
+            self.manifest,
+            self.contract,
+            ["science"],
+        )[0]
+
+        self.assertTrue(report["valid"], json.dumps(report["errors"], indent=2))
+        self.assertTrue(report["policy_matches_manifest"])
+        self.assertEqual(report["leaf_count"], 404)
+        self.assertEqual(
+            report["policy_sha256"],
+            "10095418b09100f15c90af173ee34ea7bfcf12260cec41d80f43f6f50473a347",
+        )
+
+    def test_operator_files_contain_only_user_facing_low_level_leaves(self) -> None:
+        expected_counts = {
+            "71_science_runtime.yaml": 5,
+            "81_science_defaults.yaml": 27,
+            "82_science_products.yaml": 30,
+        }
+        for filename, expected_count in expected_counts.items():
+            patch = yaml.safe_load((self.science_dir / filename).read_text())
+            leaves = flatten_leaves(extract_low_level(patch))
+            classifications = {
+                normalized_path(path): self.classification(normalized_path(path))
+                for path in leaves
+            }
+            self.assertEqual(len(leaves), expected_count, filename)
+            self.assertEqual(
+                {"user-facing"},
+                set(classifications.values()),
+                f"{filename}: {classifications}",
+            )
+
+    def test_fruit_loop_controls_are_consolidated_in_analysis_defaults(self) -> None:
+        defaults = extract_low_level(
+            yaml.safe_load(
+                (self.science_dir / "81_science_defaults.yaml").read_text()
+            )
+        )
+        products = extract_low_level(
+            yaml.safe_load(
+                (self.science_dir / "82_science_products.yaml").read_text()
+            )
+        )
+
+        self.assertEqual(
+            set(defaults["timestream"]["fruit_loops"]),
+            {
+                "enabled",
+                "max_iters",
+                "sig2noise_limit",
+                "array_flux_limit",
+                "save_all_iters",
+            },
+        )
+        self.assertNotIn("fruit_loops", products.get("timestream", {}))
+
+    def test_normal_operator_surface_remains_bounded(self) -> None:
+        line_limits = {
+            "71_science_runtime.yaml": 30,
+            "81_science_defaults.yaml": 90,
+            "82_science_products.yaml": 80,
+        }
+        for filename, limit in line_limits.items():
+            line_count = len((self.science_dir / filename).read_text().splitlines())
+            self.assertLessEqual(line_count, limit, filename)
+
+    def test_checked_prototype_is_generator_reproducible(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            generated_root = Path(tmp) / "v2"
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(
+                        self.repo_root
+                        / "tools/config/generate_science_authoring_prototype.py"
+                    ),
+                    "--source-root",
+                    str(self.repo_root / "config/tolteca"),
+                    "--output-root",
+                    str(generated_root),
+                ],
+                check=True,
+                cwd=self.repo_root,
+            )
+            expected_files = [
+                path.relative_to(self.prototype_root)
+                for path in self.prototype_root.rglob("*.yaml")
+            ]
+            for relative_path in expected_files:
+                self.assertEqual(
+                    (self.prototype_root / relative_path).read_bytes(),
+                    (generated_root / relative_path).read_bytes(),
+                    str(relative_path),
+                )
 
 
 if __name__ == "__main__":

@@ -140,6 +140,15 @@ reinstallation, conflict, CLI-help, scannum, and Beammap calibration coverage.
 Phase 4.1 remains open only until point, OOF, Beammap, and science smoke
 reductions pass with the new files.
 
+Subsequent project-owner review rejected V1 as the final operator interface:
+its merge behavior is correct, but generic filenames and a 500-plus-line base
+file do not make the user/expert distinction sufficiently approachable. Smoke
+runs are therefore deferred. A science-only V2 prototype now separates a
+generated internal policy, site runtime, TolPROJ observation data, routine
+science defaults, product choices, advanced overrides, and expert overrides
+with mode-specific filenames. V2 must be accepted for science before the
+pattern is generalized or TolPROJ's opt-in vendor is updated.
+
 ## Exit Gate
 
 Phase 4.1 is complete when:

@@ -1,0 +1,29 @@
+# Workspace paths and ordinary runtime resources.
+# TolPROJ supplies this file; site operators may adjust it.
+# Set n_threads to the CPU allocation available to this reduction.
+reduce:
+  jobkey: reduced
+
+  # Input data location
+  inputs:
+    0:
+      path: ../data
+
+  # Citlali executable and runtime settings
+  steps:
+    0:
+      path: /work/toltec/citlali_dev/citlali_refactor/build/bin/citlali
+      config:
+        low_level:
+
+          # CPU use, output location, and log verbosity
+          runtime:
+            n_threads: 16
+            output_dir: .
+            use_subdir: true
+            verbose: false
+
+          # KIDs fit-report location
+          kids:
+            solver:
+              fitreportdir: ../data

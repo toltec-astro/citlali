@@ -1,0 +1,83 @@
+# Primary user-facing science analysis defaults.
+# Edit routine mapmaking, calibration, cleaning, weighting, and iteration choices here.
+# Enable one primary cleaner; n_eig_to_cut has one value per active cleaning group.
+# Learning and second-pass flagging are explicit because they can materially affect analysis.
+reduce:
+  steps:
+    0:
+      config:
+        low_level:
+
+          # Map geometry and mapmaking method
+          mapmaking:
+            cunit: mJy/beam
+            method: jinc
+            pixel_axes: radec
+            pixel_size_arcsec: 2.0
+
+          # Timestream calibration, cleaning, weighting, and iterations
+          timestream:
+
+            # High-level raw-data corrections; thresholds remain expert policy
+            raw_time_chunk:
+              despike:
+                enabled: true
+              filter:
+                enabled: true
+              extinction_correction:
+                enabled: true
+              flux_calibration:
+                enabled: true
+
+            # Processed-data cleaner selection, flagging, and map weighting
+            processed_time_chunk:
+              clean:
+                enabled: true
+                grouping:
+                - nw
+
+                # Primary cleaner and per-array PCA depth
+                standard_pca:
+                  enabled: true
+                  n_eig_to_cut:
+                    a1100:
+                    - 10
+                    a1400:
+                    - 10
+                    a2000:
+                    - 10
+
+                # Alternative cleaners; normally leave all disabled
+                null_model:
+                  enabled: false
+                marchenko_pastur:
+                  enabled: false
+                adaptive_selector:
+                  enabled: false
+              flagging:
+                second_pass_local:
+                  enabled: true
+              weighting:
+                type: full
+
+            # Iterative source-model subtraction and retained iteration products
+            fruit_loops:
+              enabled: true
+              max_iters: 4
+
+              # Source-model mask cuts; a pixel is retained when either enabled cut passes
+              # Set a cut to 0 to disable it; the S/N cut also requires noise maps
+              sig2noise_limit: 2.5
+
+              # Flux thresholds in map units, ordered [a1100, a1400, a2000]
+              array_flux_limit:
+              - 1.0
+              - 1.0
+              - 1.0
+
+              # Keep every fruit-loop iteration instead of only the final products
+              save_all_iters: true
+
+            # Cross-iteration learned masks and detector state
+            learning:
+              enabled: true

@@ -9,6 +9,13 @@ Their identities are recorded in `manifest.yaml`. Do not hand-edit the
 repository copies to change a baseline. Generate a successor kit from a named,
 accepted low-level configuration and review the resulting policy-hash change.
 
+These directories are the mechanically exact V1 reference, not the accepted
+final operator interface. Project-owner review found that V1 still exposes too
+much implementation policy under generic filenames. The science-only V2
+authoring prototype is under review in `v2/science/`; TolPROJ still vendors V1
+only, and smoke reductions are deferred until the revised structure is
+accepted.
+
 ## File Roles
 
 Every mode has the same five files:

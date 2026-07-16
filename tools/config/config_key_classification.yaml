@@ -420,6 +420,16 @@ rules:
     classification: user-facing
     owner: compact
     reason: Common source-subtraction iteration control.
+  - id: user-fruitloops-signal-to-noise-cut
+    pattern: timestream.fruit_loops.sig2noise_limit
+    classification: user-facing
+    owner: compact
+    reason: Routine source-model mask threshold; zero disables this cut.
+  - id: user-fruitloops-array-flux-cuts
+    pattern: timestream.fruit_loops.array_flux_limit*
+    classification: user-facing
+    owner: compact
+    reason: Routine per-array source-model mask thresholds; zero disables a cut.
   - id: user-fruitloops-products
     pattern: timestream.fruit_loops.save_all_iters
     classification: user-facing
@@ -661,7 +671,7 @@ rules:
     pattern: timestream.fruit_loops*
     classification: expert
     owner: citlali
-    reason: Fruit-loop flux limits, S/N gates, local-sigma controls, and feedback policy are expert tuning.
+    reason: Adaptive local-sigma controls, interpolation policy, and feedback policy are expert tuning.
   - id: expert-timestream-learning-detail
     pattern: timestream.learning*
     classification: expert

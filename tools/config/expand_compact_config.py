@@ -597,6 +597,8 @@ def apply_processing(
             "fruitloops_iters",
             "fruitloops_source",
             "fruitloops_type",
+            "fruitloops_sig2noise_limit",
+            "fruitloops_array_flux_limit",
             "fruitloops_save_all_iters",
             "fruitloops_support_radius_arcsec",
             "fruitloops_support_radius_fwhm",
@@ -664,6 +666,8 @@ def apply_processing(
     direct_fruitloops = {
         "fruitloops_source": ("timestream", "fruit_loops", "path"),
         "fruitloops_type": ("timestream", "fruit_loops", "type"),
+        "fruitloops_sig2noise_limit": ("timestream", "fruit_loops", "sig2noise_limit"),
+        "fruitloops_array_flux_limit": ("timestream", "fruit_loops", "array_flux_limit"),
         "fruitloops_save_all_iters": ("timestream", "fruit_loops", "save_all_iters"),
         "fruitloops_support_radius_arcsec": ("timestream", "fruit_loops", "adaptive_support_radius_arcsec"),
         "fruitloops_support_radius_fwhm": ("timestream", "fruit_loops", "adaptive_support_radius_fwhm"),
