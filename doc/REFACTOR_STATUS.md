@@ -2049,17 +2049,26 @@ materially separate routine, advanced, and expert authoring. V1 remains a
 mechanically exact reference and the TolPROJ path remains opt-in, but it is not
 the accepted operator interface.
 
-A science-only V2 prototype is under review in `config/tolteca/v2/science/`.
-It uses mode-specific filenames, keeps the complete 404-leaf policy in a
-clearly internal generated file, and exposes only 62 classified user-facing
-leaves across runtime and two short, sectioned analysis/product files. Routine
-fruit-loop activation, iteration count, cut levels, and iteration retention
-are consolidated in the analysis defaults rather than split across files.
-Advanced and expert overrides have distinct empty files. The direct TolTECA
-merge remains exact against science `redu31`, and the preflight passes 112
-tests including classification-boundary, size-bound, and generator-
-reproducibility gates. No smoke reduction is requested until the science
-structure is accepted and generalized deliberately.
+The science-only V2 authoring structure is accepted for an operator trial in
+`config/tolteca/v2/science/` at Citlali commit `1dfd0aabe`. It uses
+mode-specific filenames, keeps the complete 404-leaf policy in a clearly
+internal generated file, and exposes only 62 classified user-facing leaves
+across runtime and two short, sectioned analysis/product files. Routine
+fruit-loop activation, iteration count, S/N and per-array flux cuts, and
+iteration retention are consolidated in the analysis defaults rather than
+split across files. Advanced and expert overrides have distinct empty files.
+The direct TolTECA merge remains exact against science `redu31`, and the
+preflight passes 112 tests including classification-boundary, size-bound, and
+generator-reproducibility gates.
+
+TolPROJ commit `fb1aee6` selects this V2 bundle only for normal science setup
+under `--refactor`; point, automatically detected OOF, and Beammap remain on
+the accepted V1 kit, and all non-refactor commands retain legacy behavior.
+Same-kit science reruns refresh only internal policy and generated observation
+metadata while preserving all five operator files. TolPROJ rejects mixed kit
+filenames and in-place V1-to-V2 conversion. All 97 TolPROJ tests and focused
+Ruff checks pass. A fresh Unity science authoring/smoke trial is the next gate;
+no Citlali compilation is required for this YAML-only integration.
 
 ### Phase 4.2 - Technique And Performance Review
 
