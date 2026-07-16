@@ -152,6 +152,16 @@ is likewise investigated when a performance signal warrants adding an explicit
 control. See the
 [controlled performance protocol](PHASE4_PERFORMANCE_PROTOCOL_2026-07-16.md).
 
+A planned post-refactor re-reduction of approximately 50 historical Beammap
+observations will provide the broader operational performance census. Before
+that work starts, add a lightweight corpus manifest and analyzer around the
+existing evidence extractor. Each run should retain observation/workload,
+config, binary, node, runtime, RSS, stage, I/O, and outcome identity. Analyze
+the distribution against workload and preserve same-observation pairings where
+available; do not treat unlike observations as repeated trials or reduce the
+corpus to an unqualified average. This census is a future release baseline, not
+a Phase 4 closeout prerequisite.
+
 Phase 1 safety stabilization is complete for point, Beammap, science, and OOF.
 OOF refactor `redu01` closes the multi-observation date-header gate and is the
 accepted comparison against OG `redu00`. Do not reopen typed analysis-control

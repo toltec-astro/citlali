@@ -37,6 +37,31 @@ peak RSS near node capacity, or a material change to a measured hot path. A
 suspicious opportunistic result should be confirmed before it is attributed to
 code.
 
+## Planned Beammap Corpus Census
+
+After the refactor, the project owner plans to re-reduce the approximately 50
+existing Beammap observations with one frozen new-code release. This corpus is
+the preferred broad performance characterization because it spans the real
+variation in Beammap scan structure, detector population, observing conditions,
+and output workload. It is not a prerequisite for refactor closeout.
+
+Before launching the corpus, add a lightweight census manifest and analyzer
+that reuse the existing evidence extractor. Retain for every observation:
+
+- observation and input identity, effective-config digest, executable and
+  dependency revisions, node, storage identity, and runtime policy;
+- external and Citlali wall time, peak RSS, filesystem counters, stage totals,
+  success/failure state, and serious log counts;
+- available workload descriptors such as scans, samples, active detectors,
+  generated maps, and retained products.
+
+Report the distribution and its relationship to workload rather than treating
+unlike observations as repeated timing trials. Where a comparable historical
+or future reduction exists for the same observation, preserve that pairing.
+The resulting corpus becomes the operational baseline for later Citlali
+releases and can identify outliers for targeted profiling. Do not add census
+machinery to the runtime hot path solely for this purpose.
+
 ## Campaign Design When Triggered
 
 - Use one Unity node for the entire campaign. Do not allow the scheduler to

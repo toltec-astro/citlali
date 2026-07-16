@@ -91,3 +91,13 @@ campaign is required absent a sustained regression, unexplained stage
 slowdown, memory failure, peak RSS near node capacity, or material hot-path
 change. Use the wrapper for the next naturally required Beammap validation to
 collect RSS and provenance without spending an extra reduction.
+
+The owner also plans a post-refactor re-reduction of approximately 50
+historical Beammap observations. That corpus will span the expected operational
+variation and is the preferred broad performance census. Before it starts, add
+a lightweight manifest/analyzer that reuses the evidence extractor and retains
+observation/workload, config, binary, host, runtime, RSS, I/O, stage, and
+outcome identity per run. Analyze performance against workload and preserve
+same-observation pairings where possible; unlike observations are not repeated
+timing trials. The census will establish a future-release baseline but is not a
+Phase 4 closeout prerequisite.
