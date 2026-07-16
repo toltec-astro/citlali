@@ -2,10 +2,10 @@
 
 ## Purpose
 
-This protocol closes the controlled runtime and peak-memory evidence gap without
-changing Citlali or its deferred build infrastructure. The first required
-campaign is Beammap observation 148670 because Beammap is the longest supported
-mode and the explicit Phase 4 release/performance gate.
+This protocol provides a controlled runtime and peak-memory investigation path
+without changing Citlali or its deferred build infrastructure. If a campaign is
+triggered, Beammap observation 148670 is the first target because Beammap is the
+longest supported mode.
 
 The campaign answers a narrow question: on one Unity node, with matched input,
 configuration, thread policy, dependencies, and storage, is the candidate
@@ -13,7 +13,31 @@ within the accepted runtime and peak-memory budgets relative to the baseline?
 It is not an optimization exercise and does not attribute storage incidents or
 uncontrolled historical timing differences to code.
 
-## Required Design
+## Operational Decision
+
+On 2026-07-16 the project owner accepted the existing Beammap history as
+proportionate operational evidence and deferred a dedicated campaign. Twelve
+accepted refactor checkpoints span 3,397.522 to 4,215.296 seconds with a median
+of 3,594.693 seconds, move in both directions, and show only a 1.9% increase in
+the latest adjacent comparison. One earlier 13.0% total-time increase occurred
+while mapmaking was 1.3% faster and the change was concentrated in PTC and
+diagnostic I/O. Repeated scientific-product validation also passes.
+
+These observations do not establish a controlled OG/refactor runtime ratio,
+but they do not show a sustained performance regression. Serializing only
+Citlali jobs cannot control unrelated traffic on the shared VAST filesystem.
+Requiring eight additional hour-scale reductions without a problem signal
+would therefore cost more than the evidence is worth for this deployment.
+
+The wrapper remains the preferred launcher for the next naturally required
+Beammap validation so peak RSS and complete performance provenance accumulate
+without a dedicated reduction. Run the controlled campaign below only after a
+sustained runtime regression, unexplained stage-level slowdown, memory failure,
+peak RSS near node capacity, or a material change to a measured hot path. A
+suspicious opportunistic result should be confirmed before it is attributed to
+code.
+
+## Campaign Design When Triggered
 
 - Use one Unity node for the entire campaign. Do not allow the scheduler to
   move individual runs to different nodes.
@@ -126,7 +150,7 @@ binary version, or absent wall/RSS metric. For a complete protocol it reports
 each paired ratio, median and IQR, filesystem ratios, and the largest candidate
 profile stages.
 
-## Budgets And Open Qualification
+## Campaign Budgets
 
 The established wall-time budget is a maximum 5% median candidate regression.
 Peak RSS remains a required measurement, but the campaign template deliberately
@@ -137,12 +161,11 @@ absolute growth against the available memory on the supported cluster nodes;
 it will not assume that a 5% change is inherently material. A known runtime
 budget failure still rejects a campaign even while memory policy is pending.
 
-Profiler overhead remains a separate Phase 4 closeout item. The current
-run-owned profiler has no enable/disable control, so nested stage totals cannot
-measure its own cost. This campaign records sidecar size and record counts but
-does not pretend they are overhead evidence. A later bounded point A/B campaign
-may add an explicit profiling control after that interface is approved; no
-config or C++ change is part of this tranche.
+The current run-owned profiler has no enable/disable control, so nested stage
+totals cannot measure its own cost. Campaign evidence records sidecar size and
+record counts but does not pretend they are overhead measurements. No profiling
+control or dedicated A/B run is required without a performance signal; a future
+performance investigation may add one after that interface is approved.
 
 ## Local Verification
 
@@ -161,5 +184,5 @@ config or C++ change is part of this tranche.
   checks passed, and the record captured 131.08 seconds external wall time,
   110.477 seconds Citlali time, and 908,316 KB peak RSS. The active point
   profile then accepted all three gates with zero config or product changes.
-  This pilot qualifies the wrapper; it is not one of the required Beammap
-  campaign warmups.
+  This pilot qualifies the wrapper; no dedicated Beammap campaign is currently
+  required.

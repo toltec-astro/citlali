@@ -65,18 +65,29 @@ passing the downloaded `reduNN` directory to the unified entry point.
 
 The next tranche added the controlled Beammap performance protocol and tooling
 described in `doc/PHASE4_PERFORMANCE_PROTOCOL_2026-07-16.md`. Real same-node
-warmup and alternating paired Unity runs remain pending, as does project-owner
-selection of an evidence-based peak-RSS policy. The template leaves that budget
-unset while still requiring and reporting the measurement; the analyzer marks
-an otherwise complete campaign `pending_policy`. Build infrastructure remains
-untouched and deferred. All 86 baseline-tool tests and full config
-preflight pass; accepted Beammap `redu06` exercises the portable evidence
-extractor.
+warmup and alternating paired Unity runs are now a triggered diagnostic rather
+than a mandatory closeout campaign. The template leaves peak-RSS policy unset
+while still requiring and reporting the measurement; the analyzer marks an
+otherwise complete campaign `pending_policy`. Build infrastructure remains
+untouched and deferred. All 86 baseline-tool tests and full config preflight
+pass; accepted Beammap `redu06` exercises the portable evidence extractor.
 
 The live wrapper subsequently passed a Unity point pilot in `redu67` at
 `7ca0be50c`. The retained and attached records are identical and complete;
 external wall time was 131.08 seconds, Citlali time was 110.477 seconds, and
 peak RSS was 908,316 KB. The active point profile accepted `redu67` against
 immutable baseline `redu66` with no log, config, or product differences. This
-qualifies wrapper integration only and does not count toward the controlled
-Beammap warmup or measured-pair requirements.
+qualifies wrapper integration.
+
+The project owner then accepted the existing Beammap timing history as
+proportionate operational evidence. Twelve accepted refactor checkpoints range
+from 3,397.522 to 4,215.296 seconds, have a 3,594.693-second median, move in both
+directions, and show no sustained regression. The latest adjacent change is
+1.9%; a prior 13.0% total increase occurred while mapmaking was 1.3% faster and
+the increase was concentrated in VAST-sensitive PTC and diagnostics I/O.
+Because unrelated users dominate shared VAST traffic, serializing only Citlali
+jobs would not create a controlled storage environment. No dedicated Beammap
+campaign is required absent a sustained regression, unexplained stage
+slowdown, memory failure, peak RSS near node capacity, or material hot-path
+change. Use the wrapper for the next naturally required Beammap validation to
+collect RSS and provenance without spending an extra reduction.

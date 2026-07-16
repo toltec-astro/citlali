@@ -40,8 +40,8 @@
   },
   "profiler_overhead_evidence": {
     "status": "pending",
-    "required_for_phase4_closeout": true,
-    "note": "The current profiler has no enable/disable control. Measure its overhead in a separate paired point campaign before Phase 4 closeout; do not infer overhead from nested stage totals."
+    "required_for_phase4_closeout": false,
+    "note": "The current profiler has no enable/disable control. Measure its overhead only if a performance signal triggers a dedicated investigation; do not infer overhead from nested stage totals."
   },
   "runs": []
 }

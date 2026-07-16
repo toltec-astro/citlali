@@ -121,10 +121,9 @@ profile-stage totals. An offline campaign analyzer requires same-node warmups,
 at least three alternating measured Beammap pairs, matched config/input/runtime
 policy, complete measurements, an explicit runtime budget, and required RSS
 measurement; it reports paired ratios plus median and IQR. The checked-in
-campaign remains incomplete until real runs are supplied. The 5% wall-time
-ceiling is established. Peak RSS is required evidence, but its policy is
-intentionally pending until the first controlled campaign can be judged using
-both relative growth and absolute cluster-node memory headroom.
+campaign is a diagnostic template rather than a mandatory Phase 4 run. If used,
+the 5% wall-time ceiling applies and peak RSS remains required evidence with an
+evidence-driven limit.
 
 The GNU Time wrapper passed its first live Unity exercise in point `redu67` at
 `7ca0be50c`. It captured matching retained and attached evidence, binary and
@@ -133,10 +132,24 @@ wall time, 110.477 seconds Citlali time, and 908,316 KB peak RSS. The active
 point profile accepted `redu67` against immutable baseline `redu66`: zero
 logged issues, zero differences across 490 config leaves, and zero changes in
 2,064 records from 19 products. This qualifies the wrapper integration but does
-not count as a controlled Beammap campaign warmup or performance conclusion.
+not constitute a Beammap performance conclusion.
 
-Profiler overhead is still a separate Phase 4 qualification because the
-current profiler has no enable/disable control. See the
+The project owner accepted a proportionality exception to a dedicated Beammap
+campaign on 2026-07-16. Twelve accepted refactor checkpoints range from
+3,397.522 to 4,215.296 seconds with a median of 3,594.693 seconds, move in both
+directions, and end with a 1.9% adjacent increase. A prior 13.0% total-time
+increase coincided with 1.3% faster mapmaking and was concentrated in
+VAST-sensitive PTC and diagnostics I/O. This history and repeated scientific
+validation show no sustained regression signal. Serializing Citlali jobs would
+not control unrelated VAST traffic, so eight dedicated hour-scale reductions
+are not justified now.
+
+Future naturally required Beammap validation should use the wrapper to collect
+peak RSS and full provenance. A controlled campaign becomes mandatory only for
+a sustained runtime regression, unexplained stage slowdown, memory failure,
+peak RSS near node capacity, or a material hot-path change. Profiling overhead
+is likewise investigated when a performance signal warrants adding an explicit
+control. See the
 [controlled performance protocol](PHASE4_PERFORMANCE_PROTOCOL_2026-07-16.md).
 
 Phase 1 safety stabilization is complete for point, Beammap, science, and OOF.
@@ -1903,13 +1916,15 @@ Exit gates:
 
 Make strict comparison and active tests pinned CI gates. Add hermetic fixtures,
 version/dependency provenance, current matched mode baselines, and controlled
-beammap timing and peak-memory evidence. Establish polarimetry support or an
-explicit capability policy before release claims.
+performance diagnostics when triggered. Continue collecting timing and
+peak-memory evidence during naturally required Beammap validation. Establish
+polarimetry support or an explicit capability policy before release claims.
 
 Exit gates are the broader structural definition of done in section F.2 of the
-external review: strict scientific equivalence, zero unexpected errors,
-reproducible builds, measured performance, and documented scientific
-conventions.
+external review, with the project-owner performance proportionality exception:
+strict scientific equivalence, zero unexpected errors, reproducible builds,
+operational performance evidence with triggered controlled diagnostics, and
+documented scientific conventions.
 
 ### Phase 5 - Integration And Closeout
 
