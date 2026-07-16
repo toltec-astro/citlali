@@ -479,6 +479,17 @@ cluster-helper changes during the deferral.
 These paths may be narrowed through measured, validated changes. They are not
 grounds for a replacement rewrite.
 
+### Generated Artifacts
+
+Configure-time `citlali_config/config.h`, `citlali_config/gitversion.h`, and
+`citlali_config/default_config.h` under the build tree are generated inputs to
+the active targets, not editable source modules. The checked-in
+`config_leaf_schema_generated.h` is likewise generated from the resolved
+low-level leaf contract, but is retained in source so startup validation can
+compile without invoking Python; `generate_config_schema_header.py --check`
+guards drift. Generated files do not define an independent architecture or
+authority.
+
 ### Unbuilt Legacy Or Experimental Source
 
 The following files are not part of either active CMake production target and

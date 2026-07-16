@@ -163,6 +163,18 @@ main programs are not supported entry points. The document does not disguise
 the still header-dominant physical build or authorize the deferred CMake and
 dependency work.
 
+The broader section-F.2 exit criteria are now mapped in the
+[`Phase 4 closeout census`](PHASE4_CLOSEOUT_CENSUS_2026-07-16.md). Of the 15
+criteria, nine are closed by implementation and evidence, two are closed by an
+explicit owner scope decision or proportionality exception, three are
+compilation-dependent and remain deliberately deferred, and one durable-
+documentation criterion is open. The remaining non-build work is bounded to
+five focused ADRs, replacement of stale root `CODEX.md` instructions, and one
+retained-debt owner/trigger/exit table. After that, Phase 4 non-build work stops
+until the TolTECA build direction is available. The census deliberately avoids
+a percentage claim because the three deferred build criteria are not equal in
+scope to the documentation item.
+
 The controlled-performance evidence path is now specified without touching
 deferred compilation infrastructure. A Unity-side wrapper records GNU Time
 wall/RSS/I/O data together with Citlali log time, exact config leaves, bounded
@@ -2056,6 +2068,9 @@ routing. Product-specific executable requirements remain in
 `doc/ARCHITECTURE.md` is the canonical human reference for the active software
 entry, component and dependency direction, lifecycle ownership, compatibility
 boundaries, failure flow, source classification, and extension routing.
+`doc/PHASE4_CLOSEOUT_CENSUS_2026-07-16.md` maps every adopted F.2 completion
+criterion to evidence, an approved exception, a deliberate deferral, or a
+finite remaining action.
 `validation/validation_profiles.json` identifies the active immutable
 validation epoch and one profile per supported reduction family; validate it
 with `tools/baseline/validation_profiles.py --list`. Continue to update this

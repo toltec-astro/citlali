@@ -155,3 +155,15 @@ separately classified so an external reviewer or future agent does not mistake
 old main programs, empty `.cpp` placeholders, compact config, enabled
 polarimetry, R execution, or deferred build work for supported architecture.
 No production code or compilation infrastructure changed in this tranche.
+
+The adopted broader-refactor checklist is now explicitly reconciled in
+`doc/PHASE4_CLOSEOUT_CENSUS_2026-07-16.md`. Nine of its 15 criteria are closed
+by implementation/evidence, two by an owner-approved scope decision or
+performance proportionality exception, three remain in the deliberately
+deferred compilation package, and one documentation criterion is open. The
+remaining non-build package is five focused ADRs, replacement of contradictory
+historical `CODEX.md` workflow instructions, and a retained-debt table with
+owner, trigger, and exit condition. Once that package is complete, stop
+compilation-independent Phase 4 work rather than resuming structural
+decomposition. The deferred header/build/CI criteria must be reviewed together
+after the TolTECA integration model is known.
