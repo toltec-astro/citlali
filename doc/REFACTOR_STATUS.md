@@ -2052,13 +2052,13 @@ the accepted operator interface.
 The science-only V2 authoring structure is accepted for an operator trial in
 `config/tolteca/v2/science/` at Citlali commit `1dfd0aabe`. It uses
 mode-specific filenames, keeps the complete 404-leaf policy in a clearly
-internal generated file, and exposes only 62 classified user-facing leaves
+internal generated file, and exposes only 61 classified user-facing leaves
 across runtime and two short, sectioned analysis/product files. Routine
 fruit-loop activation, iteration count, S/N and per-array flux cuts, and
 iteration retention are consolidated in the analysis defaults rather than
 split across files. Advanced and expert overrides have distinct empty files.
 The direct TolTECA merge remains exact against science `redu31`, and the
-preflight passes 112 tests including classification-boundary, size-bound, and
+preflight passes 113 tests including classification-boundary, size-bound, and
 generator-reproducibility gates.
 
 TolPROJ commit `fb1aee6` selects this V2 bundle only for normal science setup
@@ -2069,6 +2069,13 @@ metadata while preserving all five operator files. TolPROJ rejects mixed kit
 filenames and in-place V1-to-V2 conversion. All 97 TolPROJ tests and focused
 Ruff checks pass. A fresh Unity science authoring/smoke trial is the next gate;
 no Citlali compilation is required for this YAML-only integration.
+
+Project layout review found that TolPROJ science and OOF reductions live under
+`<root>/<user>/<source>` while shared data live under `<root>/data`. Data input
+and KIDs fit-report paths therefore belong to the generated observation/data
+binding, not the reducer-edited runtime file. The canonical V2 generator now
+places those paths in `72_science_observation.yaml`; TolPROJ supplies
+`../../data` for nested projects.
 
 ### Phase 4.2 - Technique And Performance Review
 

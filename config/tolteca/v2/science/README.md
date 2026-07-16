@@ -10,9 +10,9 @@ file still contains placeholders.
    the complete user-facing fruit-loop block and source-model cut levels.
 2. `82_science_products.yaml` - requested maps, filtering, noise, fitting, and
    retained TOD products.
-3. `71_science_runtime.yaml` - executable, paths, threads, and output layout.
-4. `72_science_observation.yaml` - the structure TolPROJ will populate from
-   project metadata.
+3. `71_science_runtime.yaml` - executable, threads, and output layout.
+4. `72_science_observation.yaml` - data path and observation structure TolPROJ
+   will populate from project metadata and directory layout.
 5. `90_science_advanced_overrides.yaml` - optional additional user-facing
    controls, empty by default.
 6. `99_science_expert_overrides.yaml` - exceptional low-level tuning, empty by

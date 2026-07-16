@@ -263,7 +263,7 @@ class ScienceAuthoringPrototypeTest(unittest.TestCase):
 
     def test_operator_files_contain_only_user_facing_low_level_leaves(self) -> None:
         expected_counts = {
-            "71_science_runtime.yaml": 5,
+            "71_science_runtime.yaml": 4,
             "81_science_defaults.yaml": 27,
             "82_science_products.yaml": 30,
         }
@@ -304,6 +304,23 @@ class ScienceAuthoringPrototypeTest(unittest.TestCase):
             },
         )
         self.assertNotIn("fruit_loops", products.get("timestream", {}))
+
+    def test_generated_data_bindings_belong_to_observation_file(self) -> None:
+        runtime = yaml.safe_load(
+            (self.science_dir / "71_science_runtime.yaml").read_text()
+        )
+        observation = yaml.safe_load(
+            (self.science_dir / "72_science_observation.yaml").read_text()
+        )
+
+        self.assertNotIn("inputs", runtime["reduce"])
+        runtime_low_level = extract_low_level(runtime)
+        self.assertNotIn("kids", runtime_low_level)
+        self.assertEqual(observation["reduce"]["inputs"][0]["path"], "../data")
+        self.assertEqual(
+            extract_low_level(observation)["kids"]["solver"]["fitreportdir"],
+            "../data",
+        )
 
     def test_normal_operator_surface_remains_bounded(self) -> None:
         line_limits = {

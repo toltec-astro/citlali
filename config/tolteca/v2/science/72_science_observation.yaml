@@ -1,9 +1,12 @@
-# Observation selection, APTs, fluxes, and pointing support.
-# TolPROJ generates this file from project metadata.
+# Data location, observation selection, APTs, fluxes, and pointing support.
+# TolPROJ generates this file from project metadata and directory layout.
 reduce:
+
+  # Shared data path and observation selection
   inputs:
     0:
       select: scannum == 2 & (obsnum in [OBSNUM])
+      path: ../data
   steps:
     0:
       config:
@@ -34,3 +37,9 @@ reduce:
           select: obsnum == OBSNUM
           type: array_prop_table
         cal_objs: []
+
+        # Generated paths used while loading observation data
+        low_level:
+          kids:
+            solver:
+              fitreportdir: ../data

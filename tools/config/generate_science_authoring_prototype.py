@@ -37,7 +37,6 @@ RUNTIME_PATHS = (
     "runtime.output_dir",
     "runtime.use_subdir",
     "runtime.verbose",
-    "kids.solver.fitreportdir",
 )
 
 DEFAULT_PATHS = (
@@ -175,12 +174,10 @@ def empty_override_patch() -> dict[str, Any]:
 
 def runtime_patch(merged: Mapping[str, Any], policy: Mapping[str, Any]) -> dict[str, Any]:
     reduce_section = merged["reduce"]
-    inputs = reduce_section["inputs"]
     steps = reduce_section["steps"]
     return {
         "reduce": {
             "jobkey": reduce_section["jobkey"],
-            "inputs": {0: {"path": inputs[0]["path"]}},
             "steps": {
                 0: {
                     "path": steps[0]["path"],
@@ -191,6 +188,25 @@ def runtime_patch(merged: Mapping[str, Any], policy: Mapping[str, Any]) -> dict[
             },
         }
     }
+
+
+def observation_patch(
+    source_mode_dir: Path,
+    merged: Mapping[str, Any],
+    policy: Mapping[str, Any],
+) -> dict[str, Any]:
+    observation = load_yaml(source_mode_dir / "72_observation.yaml")
+    observation["reduce"]["inputs"][0]["path"] = merged["reduce"]["inputs"][0][
+        "path"
+    ]
+    step_config = observation["reduce"]["steps"][0]["config"]
+    low_level = step_config.setdefault("low_level", {})
+    set_path(
+        low_level,
+        "kids.solver.fitreportdir",
+        get_path(policy, "kids.solver.fitreportdir"),
+    )
+    return observation
 
 
 def generate(source_root: Path, output_root: Path) -> None:
@@ -213,23 +229,25 @@ def generate(source_root: Path, output_root: Path) -> None:
         science_dir / FILES["runtime"],
         runtime_patch(merged, policy),
         (
-            "Workspace paths and ordinary runtime resources.",
+            "Citlali executable and ordinary runtime resources.",
             "TolPROJ supplies this file; site operators may adjust it.",
             "Set n_threads to the CPU allocation available to this reduction.",
         ),
         (
-            ("  inputs:\n", ("Input data location",)),
             ("  steps:\n", ("Citlali executable and runtime settings",)),
             ("          runtime:\n", ("CPU use, output location, and log verbosity",)),
-            ("          kids:\n", ("KIDs fit-report location",)),
         ),
     )
     write_yaml(
         science_dir / FILES["observation"],
-        load_yaml(source_mode_dir / "72_observation.yaml"),
+        observation_patch(source_mode_dir, merged, policy),
         (
-            "Observation selection, APTs, fluxes, and pointing support.",
-            "TolPROJ generates this file from project metadata.",
+            "Data location, observation selection, APTs, fluxes, and pointing support.",
+            "TolPROJ generates this file from project metadata and directory layout.",
+        ),
+        (
+            ("  inputs:\n", ("Shared data path and observation selection",)),
+            ("        low_level:\n", ("Generated paths used while loading observation data",)),
         ),
     )
     write_yaml(

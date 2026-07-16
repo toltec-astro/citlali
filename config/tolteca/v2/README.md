@@ -12,14 +12,14 @@ required before a reduction.
 | File | Audience | Purpose |
 | --- | --- | --- |
 | `60_science_internal_policy.yaml` | Citlali maintainers | Complete accepted policy. Generated, hash-checked, and not normally edited. |
-| `71_science_runtime.yaml` | Site operator | Executable, input/output paths, thread count, output layout, and verbosity. |
-| `72_science_observation.yaml` | TolPROJ | Observation selection, APTs, calibrator fluxes, and pointing support. |
+| `71_science_runtime.yaml` | Site operator | Executable, thread count, output layout, and verbosity. |
+| `72_science_observation.yaml` | TolPROJ | Data path, observation selection, APTs, calibrator fluxes, and pointing support. |
 | `81_science_defaults.yaml` | Reducer | Routine mapmaking, calibration, cleaning, weighting, and iteration choices. |
 | `82_science_products.yaml` | Reducer | Coadd, noise, filtering, fitting, and retained TOD product choices. |
 | `90_science_advanced_overrides.yaml` | Advanced reducer | Additional supported user-facing controls omitted from the short defaults. Empty by default. |
 | `99_science_expert_overrides.yaml` | Citlali expert | Detailed algorithm or diagnostic overrides. Empty by default and requires validation rationale. |
 
-The normal operator surface is 62 low-level leaves: five runtime values, 27
+The normal operator surface is 61 low-level leaves: four runtime values, 27
 analysis defaults, and 30 product values. Every one is classified
 `user-facing`. The complete 404-leaf policy remains available in the clearly
 marked internal file, rather than being presented as a normal editing surface.
