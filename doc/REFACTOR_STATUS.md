@@ -139,6 +139,18 @@ present at baseline `376e0022` is explicitly inherited rather than relabeled,
 and later OG `ffc6b907` is recorded as a comparator rather than an imported
 commit. Future non-structural changes require a ledger entry before acceptance.
 
+The canonical human scientific contract is now
+[`SCIENTIFIC_CONVENTIONS.md`](SCIENTIFIC_CONVENTIONS.md). It consolidates the
+validated identity distinctions, sample/detector/map shapes, coordinate frames,
+units, indexing, missing-data rules, requested/effective/observation/realized
+semantics, output-failure policy, and active numerical gates. It explicitly
+keeps enabled polarimetry and R-channel execution outside the validated
+capability boundary and collects unresolved scientific-owner decisions without
+inventing answers. During that census, the product registry's RTC/PTC
+`output_scan_index` description was corrected to match the writer and NetCDF
+metadata: it is the one-based original scan number, while dimension positions
+remain zero-based. No product data or schema changed.
+
 The controlled-performance evidence path is now specified without touching
 deferred compilation infrastructure. A Unity-side wrapper records GNU Time
 wall/RSS/I/O data together with Citlali log time, exact config leaves, bounded
@@ -2025,6 +2037,10 @@ evidence, and disposition. Run
 ledger for intentional post-baseline scientific changes; validate commit
 ancestry, patch identity, and evidence links with
 `tools/baseline/validate_science_change_ledger.py`.
+`doc/SCIENTIFIC_CONVENTIONS.md` is the canonical human reference for identity,
+units, frames, indexing, validity, provenance states, and change-to-validation
+routing. Product-specific executable requirements remain in
+`validation/product_contracts.json`.
 `validation/validation_profiles.json` identifies the active immutable
 validation epoch and one profile per supported reduction family; validate it
 with `tools/baseline/validation_profiles.py --list`. Continue to update this

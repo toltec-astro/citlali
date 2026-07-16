@@ -3,18 +3,21 @@
 Read these documents before making architectural changes:
 
 1. `doc/REFACTOR_STATUS.md` - current phase, gates, and next actions.
-2. `handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md` - adopted
+2. `doc/SCIENTIFIC_CONVENTIONS.md` - identities, units, frames, validity, and
+   validation routing.
+3. `handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md` - adopted
    independent review and completion criteria.
-3. `doc/STRUCTURAL_REFACTOR_PLAN_2026-06-29.md` - original goals and history.
+4. `doc/STRUCTURAL_REFACTOR_PLAN_2026-06-29.md` - original goals and history.
 
 The living status document governs sequencing when these documents differ.
 
 ## Current Direction
 
 The refactor follows the five-phase roadmap in `doc/REFACTOR_STATUS.md`.
-Safety stabilization is the active phase. Pause additional typed
-analysis-control migration, compact-config production rollout, and open-ended
-header subdivision until the active phase gates pass.
+Phase 4 validation, performance, and reproducible-build work is active.
+Compilation-side work remains deferred pending review of TolTECA's revised C++
+integration approach. Pause compact-config production rollout and open-ended
+header subdivision.
 
 Do not broaden mature RTC, PTC, JINC, or Wiener-filter algorithms while fixing
 their contracts. Preserve numerical behavior unless a change is named,
@@ -55,9 +58,9 @@ measured, and recorded as intentional.
 
   `$HOME/tolteca/bin/python tools/config/run_config_preflight.py --require-all`
 
-- Activate and run focused tests as the safety phase adds them. The current
-  absence of discovered tests is a known release blocker, not an acceptable
-  success condition.
+- Run focused tests for the behavior touched. CTest, baseline-tool tests, and
+  the full config preflight are active gates; skipped required data is not a
+  successful validation.
 - The user performs Unity builds and reductions. Do not attempt to use Unity.
 - Do not push. The user controls pushes to GitHub.
 - Leave unrelated dirty files unchanged.
@@ -66,4 +69,3 @@ measured, and recorded as intentional.
 - Update `doc/REFACTOR_STATUS.md` when a phase gate, governing decision, or
   validated snapshot changes. Use dated handoff notes when needed to preserve
   detailed continuity.
-

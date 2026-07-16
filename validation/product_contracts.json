@@ -149,7 +149,7 @@
         "network"
       ],
       "units_policy": "Per-variable NetCDF units are authoritative where present; N/A denotes dimensionless or categorical fields.",
-      "indexing_policy": "output_scan_index and array indices are zero-based; physical detector identity is carried separately.",
+      "indexing_policy": "output_scan_index is the one-based original scan number; NetCDF dimension positions and array indices are zero-based; physical detector identity is carried separately.",
       "missing_value_policy": "Flags and availability variables govern validity; standardized fill attributes are incomplete known debt.",
       "failure_policy": "Fatal when RTC diagnostics are enabled in the active profile."
     },
@@ -162,7 +162,7 @@
         "network"
       ],
       "units_policy": "Per-variable NetCDF units are authoritative where present; N/A denotes dimensionless or categorical fields.",
-      "indexing_policy": "output_scan_index is zero-based; ptc_diag_uid carries stable detector identity.",
+      "indexing_policy": "output_scan_index is the one-based original scan number; NetCDF dimension positions are zero-based; ptc_diag_uid carries stable detector identity.",
       "missing_value_policy": "Detector flags and diagnostic availability govern validity; fill metadata is incomplete known debt.",
       "failure_policy": "Fatal when PTC diagnostics are enabled in the active profile."
     },

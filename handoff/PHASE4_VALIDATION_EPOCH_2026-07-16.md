@@ -129,3 +129,16 @@ and product-family IDs. Later OG `ffc6b907` remains a validation comparator and
 is not falsely listed as an import. Future intentional non-structural changes
 must add an entry and successor validation epoch when products or expected
 numerics change.
+
+The durable scientific-conventions requirement is now addressed by
+`doc/SCIENTIFIC_CONVENTIONS.md`. It records supported reduction intents,
+array/network/detector/map/Stokes identity, sample and detector ordering,
+map/astrometry frames, units, validity and missing-data rules, configuration
+lifecycle states, required-product failure policy, active numerical gates, and
+validation routing. Provisional polarimetry, R-channel, UID-lifetime,
+network-mapping, coordinate, fallback, and schema-metadata questions remain
+explicit owner decisions rather than inferred conventions. The census also
+corrected a documentation defect in `validation/product_contracts.json`:
+RTC/PTC `output_scan_index` is one-based as written and as stated by its NetCDF
+metadata; NetCDF dimension positions remain zero-based. This is a contract-text
+repair with no output or algorithm change.
