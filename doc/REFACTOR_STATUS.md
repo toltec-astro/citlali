@@ -21,11 +21,15 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest accepted point reduction: Phase 3 session/compiled-boundary checkpoint
-  `redu63`, produced by `375aed5d8`, is exact against Phase 2 closeout `redu62`
-  across all 21 stable products and 2,041 complete comparison records. It
-  validates the run-owned profile boundary, first compiled implementation
-  boundary, and valid PTC weighting path without changing scientific products.
+- Latest accepted point reduction: Phase 3 mature-exit checkpoint `redu64`,
+  produced by `6dd0057f8`, is exact against accepted `redu63` across all 21
+  scientific products and 2,041 complete comparison records. It validates the
+  unchanged valid point path after the fruit-loop, Wiener, APT, and telescope
+  failure-contract work. The run has 12 complete PTC chunks, zero logged
+  issues, all required provenance valid, and the same 76 profile stage/context
+  identities. The only provenance hash change is the expected run-local
+  `redu63` to `redu64` output path. `redu63`, produced by `375aed5d8`, remains
+  the accepted run-owned profile and first compiled-boundary checkpoint.
   Observation-resolved astrometry
   provenance `redu61`, disabled polarimetry capability provenance
   `redu60`, external KIDs/config-source provenance
@@ -238,8 +242,8 @@ region; partial FFTW resources are reset before failure. Valid filtering and
 denominator arithmetic are unchanged. All three local targets build, all 455
 CTests pass, full config preflight passes, and the conservative session audit
 now reports zero dependency-reachable library or CLI exits. Standard point,
-Wiener-enabled science, and fruit-loop Beammap validation remain required
-before accepting these final mature tranches.
+focused full-Wiener point, fruit-loop science, and fruit-loop Beammap validation
+remain required before accepting these final mature tranches.
 
 The exit audit now also scans every implementation source under
 `src/citlali/core`, closing a blind spot in the original header-reachability
@@ -248,6 +252,20 @@ invalid Lissajous chunk exit. Manual review confines the remaining textual
 exits to successful CLI help/version handling and two legacy main programs that
 CMake does not build. No supported non-CLI path retains explicit process
 termination.
+
+Unity point `redu64` accepts the standard point path at `6dd0057f8`. Its merged
+configuration is byte-identical to `redu63`; the strict complete-product gate
+opens every RTC/PTC array and reports 21 common products, 2,041 comparison
+records, zero changed records, and zero skipped records. The audit reports 56
+files, 22 stable comparable products, 12 PTC chunks, no logged issues, and all
+required provenance valid. Total log time is 174.880 seconds versus 169.728
+seconds and PTC chunk spacing differs by 0.5%, so no performance regression is
+attributed. The queued science config enables fruit loops but retains
+`wiener_filter.lowpass_only: true`, so it exercises convolution rather than
+Wiener denominator construction. It remains the fruit-loop science gate. A
+focused point run with noise maps enabled and `lowpass_only: false`, plus the
+fruit-loop Beammap, remain the mode-specific acceptance gates for the mature
+exit tranches.
 
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution

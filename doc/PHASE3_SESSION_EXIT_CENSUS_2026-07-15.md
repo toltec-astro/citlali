@@ -127,7 +127,7 @@ acceptance obligations rather than treating a zero static count as sufficient.
 | --- | ---: | --- | --- | --- |
 | Fruit-loop map ingestion | 0 of 37 | Retired locally | Required map-file discovery, FITS metadata/schema, grouping identity, WCS, and map cardinality in `TCProc::load_mb` | Focused malformed-input tests pass; matched science and Beammap fruit-loop reductions pending |
 | Fruit-loop grouping/application | 0 of 3 | Retired locally | Non-contiguous detector grouping and map/array identity during map-to-TOD feedback | Focused invariant tests pass; science and Beammap fruit-loop reductions pending |
-| Wiener filtering | 0 of 11 | Retired locally | Template geometry, kernel-map identity, finite kernel peak, and OpenMP FFTW allocation | Focused tests pass; point convolve and Wiener-enabled science validation pending |
+| Wiener filtering | 0 of 11 | Retired locally | Template geometry, kernel-map identity, finite kernel peak, and OpenMP FFTW allocation | Focused tests and point convolve pass; a focused point run with noise maps and `lowpass_only: false` remains pending |
 | PTC weighting | 0 of 2 | Retired and point-validated | Network-group contiguity and impossible weight-counter state | Add science when the active weighting policy differs |
 | RTC kernel setup | 0 of 1 | Retired locally | FITS kernel image cardinality | Kernel-enabled point or Beammap run |
 

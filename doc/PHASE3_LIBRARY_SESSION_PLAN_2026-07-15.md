@@ -100,8 +100,11 @@ CTests pass, and full config preflight passes. The audit was then widened from
 session-reachable headers to every core implementation source; it exposed and
 retired three APT input exits and one invalid Lissajous chunk exit. Manual
 review confines the remaining textual exits to successful CLI help/version
-handling and two main programs excluded from CMake. Matched point, science, and
-Beammap validation remain before Phase 3 closeout.
+handling and two main programs excluded from CMake. Standard point, full-Wiener
+point with noise maps and `lowpass_only: false`, fruit-loop science, and Beammap
+validation remain before Phase 3 closeout. A science config that selects
+`type: wiener_filter` but retains `lowpass_only: true` exercises the convolution
+path and is not evidence for denominator construction.
 
 ## Stop Rules
 
