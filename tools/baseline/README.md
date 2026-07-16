@@ -3,6 +3,42 @@
 This directory contains lightweight utilities for recording and comparing
 Citlali reduction outputs during the structural refactor.
 
+## Profile-Driven Validation
+
+The normal acceptance entry point is `validate_reduction.py`. It resolves an
+immutable baseline through `validation/accepted_runs.json` and the named
+profile in `validation/validation_profiles.json`, then runs:
+
+1. the completed-run and required-provenance audit;
+2. an exact comparison of the merged low-level Citlali YAML;
+3. the profile-pinned product comparator and tolerances.
+
+List the active profiles:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/validate_reduction.py --list-profiles
+```
+
+Validate a downloaded reduction and retain the delegated JSON results:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/validate_reduction.py \
+  /path/to/candidate/reduNN \
+  --profile phase4-science-152390-152392-v1 \
+  --output-dir /tmp/citlali-science-validation \
+  --json-out /tmp/citlali-science-validation.json \
+  --report-out /tmp/citlali-science-validation.md
+```
+
+Use `--baseline` when the ledger's accepted local path is unavailable on the
+current host. A zero exit status means all three gates passed. This command
+delegates scientific comparison to the existing mode-specific tools; it does
+not introduce a second comparison implementation.
+
+Accepted profiles are versioned snapshots. Future intentional product changes
+create successor validation epochs with a predecessor comparison and recorded
+scientific rationale; they do not rewrite or loosen an old profile.
+
 These tools do not run Citlali and do not require Unity access from Codex. The
 intended workflow is:
 

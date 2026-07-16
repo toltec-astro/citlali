@@ -1,0 +1,175 @@
+{
+  "schema_version": "citlali-validation-profile-registry-v1",
+  "active_epoch_id": "phase4-structural-closeout-2026-07-16",
+  "evolution_policy": {
+    "accepted_snapshots_are_immutable": true,
+    "successor_epoch_required_for_intentional_change": true,
+    "required_successor_evidence": [
+      "new accepted validation-ledger record",
+      "comparison against the predecessor snapshot",
+      "rationale naming affected products, configuration, and scientific meaning",
+      "scientific-owner approval for changed algorithms, defaults, or scientific products"
+    ],
+    "policy": "Future development may intentionally and non-incrementally change products. Preserve the old snapshot and profile, create a successor epoch/profile, and record why the new result is accepted. Never loosen or silently replace an existing profile to make a changed run pass."
+  },
+  "epochs": [
+    {
+      "epoch_id": "phase4-structural-closeout-2026-07-16",
+      "status": "active",
+      "established_date": "2026-07-16",
+      "purpose": "Behavior-preserving structural-refactor closeout snapshots before post-refactor scientific development resumes."
+    }
+  ],
+  "profiles": [
+    {
+      "profile_id": "phase4-point-152389-v1",
+      "epoch_id": "phase4-structural-closeout-2026-07-16",
+      "mode": "point",
+      "status": "active",
+      "baseline_record_id": "point-152389-refactor-2a974e0d-redu66",
+      "audit": {
+        "expected_label": "refactor",
+        "required_provenance": [
+          "processed",
+          "raw",
+          "mapmaking",
+          "coadd",
+          "noise_products",
+          "pointing",
+          "post_processing",
+          "kids_external",
+          "polarimetry",
+          "astrometry",
+          "config_source_manifest"
+        ]
+      },
+      "config": {
+        "policy": "exact",
+        "ignore_paths": []
+      },
+      "products": {
+        "comparator": "reduction_products",
+        "include": [],
+        "exclude": [
+          "citlali_profile.ecsv"
+        ],
+        "include_timestream": true,
+        "max_array_elements": 0,
+        "atol": 0.0,
+        "rtol": 0.0,
+        "frac_floor": 1e-12,
+        "strict": true
+      }
+    },
+    {
+      "profile_id": "phase4-oof-152385-152387-v1",
+      "epoch_id": "phase4-structural-closeout-2026-07-16",
+      "mode": "oof",
+      "status": "active",
+      "baseline_record_id": "oof-152385-152387-refactor-9ea6d7f0-redu02",
+      "audit": {
+        "expected_label": "refactor",
+        "required_provenance": [
+          "processed",
+          "raw",
+          "mapmaking",
+          "coadd",
+          "noise_products",
+          "pointing",
+          "post_processing",
+          "kids_external",
+          "polarimetry",
+          "astrometry",
+          "config_source_manifest"
+        ]
+      },
+      "config": {
+        "policy": "exact",
+        "ignore_paths": []
+      },
+      "products": {
+        "comparator": "reduction_products",
+        "include": [],
+        "exclude": [
+          "citlali_profile.ecsv"
+        ],
+        "include_timestream": true,
+        "max_array_elements": 0,
+        "atol": 0.0,
+        "rtol": 0.0,
+        "frac_floor": 1e-12,
+        "strict": true
+      }
+    },
+    {
+      "profile_id": "phase4-science-152390-152392-v1",
+      "epoch_id": "phase4-structural-closeout-2026-07-16",
+      "mode": "science",
+      "status": "active",
+      "baseline_record_id": "science-152390-152392-refactor-a7a35a00-redu31",
+      "audit": {
+        "expected_label": "refactor",
+        "required_provenance": [
+          "processed",
+          "raw",
+          "mapmaking",
+          "coadd",
+          "noise_products",
+          "post_processing",
+          "kids_external",
+          "polarimetry",
+          "astrometry",
+          "config_source_manifest"
+        ]
+      },
+      "config": {
+        "policy": "exact",
+        "ignore_paths": []
+      },
+      "products": {
+        "comparator": "science_scientific_equivalence",
+        "scientific_profile": "validation/profiles/science_refactor_snapshot_v1.json"
+      }
+    },
+    {
+      "profile_id": "phase4-beammap-148670-v1",
+      "epoch_id": "phase4-structural-closeout-2026-07-16",
+      "mode": "beammap",
+      "status": "active",
+      "baseline_record_id": "beammap-148670-refactor-6dd0057f-redu06",
+      "audit": {
+        "expected_label": "refactor",
+        "required_provenance": [
+          "processed",
+          "raw",
+          "mapmaking",
+          "coadd",
+          "noise_products",
+          "post_processing",
+          "beammap",
+          "kids_external",
+          "polarimetry",
+          "astrometry",
+          "config_source_manifest"
+        ]
+      },
+      "config": {
+        "policy": "exact",
+        "ignore_paths": []
+      },
+      "products": {
+        "comparator": "reduction_products",
+        "include": [],
+        "exclude": [
+          "citlali_profile.ecsv"
+        ],
+        "include_timestream": true,
+        "max_array_elements": 0,
+        "atol": 0.0,
+        "rtol": 0.0,
+        "frac_floor": 1e-12,
+        "strict": true
+      }
+    }
+  ]
+}

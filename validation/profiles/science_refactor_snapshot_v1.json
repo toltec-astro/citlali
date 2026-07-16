@@ -1,0 +1,23 @@
+{
+  "schema_version": "citlali-science-equivalence-profile-v1",
+  "profile_id": "science-refactor-snapshot-v1",
+  "description": "Strict drift-detection bounds for successor runs compared with the accepted Phase 4 refactor science snapshot.",
+  "requirements": {
+    "fits_product_sets_exact": true,
+    "netcdf_product_sets_exact": true,
+    "integer_diagnostics_exact": true
+  },
+  "thresholds": {
+    "map_rms_relative_max": 1e-8,
+    "ptc_weight_rms_relative_max": 1e-9,
+    "detector_median_absolute_max": 5e-5,
+    "detector_median_fractional_max": 0.001,
+    "other_diagnostic_rms_relative_max": 1e-7
+  },
+  "rationale": [
+    "The accepted refactor snapshot is now the predecessor, so the broader historical OG/refactor filtered-map allowance does not apply.",
+    "All map products must remain many orders of magnitude below scientifically relevant changes during behavior-preserving work.",
+    "Discrete flags, counts, identifiers, and classifications must remain exact.",
+    "An intentional scientific change requires a successor validation epoch rather than a wider threshold in this profile."
+  ]
+}

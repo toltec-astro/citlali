@@ -5,6 +5,57 @@ refactor validation checkpoints. Large reduction products remain outside Git;
 each record stores enough identity, policy, and location information to find
 and interpret them.
 
+`validation_profiles.json` names the currently active validation epoch and the
+accepted point, OOF, science, and Beammap snapshots for that epoch. A profile
+pins the provenance requirements, config policy, product comparator, and
+scientific tolerance file. Validate both files with:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/validate_validation_ledger.py
+$HOME/tolteca/bin/python tools/baseline/validation_profiles.py --list
+```
+
+## Validation Epochs
+
+An accepted snapshot is evidence about a named version of the pipeline, not a
+claim that Citlali's products can never evolve. Post-refactor development may
+intentionally make non-incremental changes to algorithms, defaults, schemas,
+or final products.
+
+When an intentional change reaches validation:
+
+1. Preserve the existing ledger record, epoch, profile, and tolerance file.
+2. Compare the new result against the predecessor snapshot and retain the
+   result.
+3. Add a new accepted ledger record that states the affected products,
+   configuration, scientific meaning, and rationale.
+4. Create a successor epoch and profile. Obtain scientific-owner approval when
+   algorithms, defaults, or scientific products change.
+5. Make the successor epoch active without deleting the historical one.
+
+Do not weaken an existing profile or replace its baseline merely to make a
+changed run pass. A bug fix or intentional scientific change can be accepted;
+it must remain distinguishable from behavior-preserving refactor work.
+
+## One Validation Command
+
+Run all three required gates for a downloaded candidate with its named
+profile:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/validate_reduction.py \
+  /path/to/candidate/reduNN \
+  --profile phase4-point-152389-v1 \
+  --output-dir /tmp/citlali-point-validation \
+  --report-out /tmp/citlali-point-validation.md
+```
+
+The command audits completion and required provenance, requires an exact
+low-level config match, and runs the profile's strict or scientific product
+comparator. It uses the accepted record's local artifact path as the baseline.
+Pass `--baseline /path/to/accepted/reduNN` on a host where that path differs.
+Any failed gate rejects the candidate.
+
 ## Rules
 
 - Add a record only after checking run identity, completion, serious log
@@ -21,6 +72,8 @@ and interpret them.
 - Keep local and validation-host paths when known, but do not commit large
   scientific products.
 - Preserve old entries. Correct factual mistakes with a normal reviewed commit.
+- Link current records to their validation epoch and profile. Historical
+  records may predate those additive fields.
 
 ## Required Record Areas
 

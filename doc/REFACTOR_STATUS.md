@@ -101,6 +101,18 @@ strict validation, current baseline/ledger work, controlled performance
 evidence, and scientific-contract documentation that is independent of the
 eventual compilation strategy.
 
+The first compilation-independent Phase 4 tranche establishes a versioned
+validation epoch. Four named profiles pin the current point, OOF, science, and
+Beammap snapshots to their required provenance, exact low-level configuration,
+and mode-appropriate product comparator. Point `redu66` is the zero-tolerance
+structural-closeout snapshot; clean science `redu31` is the current
+scientific-tolerance snapshot. One profile-driven command now performs the run
+audit, config comparison, and product comparison without duplicating the
+existing scientific comparator logic. Accepted snapshots are immutable.
+Future intentional algorithm, default, schema, or product changes create a
+successor epoch with a predecessor comparison and explicit scientific
+rationale instead of silently replacing a baseline or loosening its policy.
+
 Phase 1 safety stabilization is complete for point, Beammap, science, and OOF.
 OOF refactor `redu01` closes the multi-observation date-header gate and is the
 accepted comparison against OG `redu00`. Do not reopen typed analysis-control
@@ -1931,6 +1943,9 @@ silently choose among these:
 accepted checkpoints must record commit, binary version, mode, input/config
 identity, comparator version, tolerances, error count, timing, available memory
 evidence, and disposition. Run
-`tools/baseline/validate_validation_ledger.py` after editing it. Continue to
-update this document and the dated handoff note at phase gates and material
-validation checkpoints.
+`tools/baseline/validate_validation_ledger.py` after editing it.
+`validation/validation_profiles.json` identifies the active immutable
+validation epoch and one profile per supported reduction family; validate it
+with `tools/baseline/validation_profiles.py --list`. Continue to update this
+document and the dated handoff note at phase gates and material validation
+checkpoints.
