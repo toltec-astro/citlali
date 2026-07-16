@@ -156,6 +156,10 @@ config or C++ change is part of this tranche.
 - The analyzer accepts a complete synthetic three-pair campaign, rejects an
   over-budget campaign, and marks missing pairs or mismatched configs/inputs as
   incomplete.
-- The live wrapper cannot be exercised on this macOS host because `/usr/bin/time`
-  is BSD Time. Its GNU Time parser and version check are unit tested; the first
-  Unity warmup is the operational integration check.
+- The live wrapper passed its Unity integration pilot with point `redu67` at
+  `7ca0be50c`: both evidence copies were identical, the command and structural
+  checks passed, and the record captured 131.08 seconds external wall time,
+  110.477 seconds Citlali time, and 908,316 KB peak RSS. The active point
+  profile then accepted all three gates with zero config or product changes.
+  This pilot qualifies the wrapper; it is not one of the required Beammap
+  campaign warmups.

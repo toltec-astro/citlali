@@ -126,6 +126,15 @@ ceiling is established. Peak RSS is required evidence, but its policy is
 intentionally pending until the first controlled campaign can be judged using
 both relative growth and absolute cluster-node memory headroom.
 
+The GNU Time wrapper passed its first live Unity exercise in point `redu67` at
+`7ca0be50c`. It captured matching retained and attached evidence, binary and
+dependency identities, host/storage/runtime policy, 131.08 seconds external
+wall time, 110.477 seconds Citlali time, and 908,316 KB peak RSS. The active
+point profile accepted `redu67` against immutable baseline `redu66`: zero
+logged issues, zero differences across 490 config leaves, and zero changes in
+2,064 records from 19 products. This qualifies the wrapper integration but does
+not count as a controlled Beammap campaign warmup or performance conclusion.
+
 Profiler overhead is still a separate Phase 4 qualification because the
 current profiler has no enable/disable control. See the
 [controlled performance protocol](PHASE4_PERFORMANCE_PROTOCOL_2026-07-16.md).

@@ -71,4 +71,12 @@ unset while still requiring and reporting the measurement; the analyzer marks
 an otherwise complete campaign `pending_policy`. Build infrastructure remains
 untouched and deferred. All 86 baseline-tool tests and full config
 preflight pass; accepted Beammap `redu06` exercises the portable evidence
-extractor, while the live GNU Time wrapper awaits its first Unity warmup.
+extractor.
+
+The live wrapper subsequently passed a Unity point pilot in `redu67` at
+`7ca0be50c`. The retained and attached records are identical and complete;
+external wall time was 131.08 seconds, Citlali time was 110.477 seconds, and
+peak RSS was 908,316 KB. The active point profile accepted `redu67` against
+immutable baseline `redu66` with no log, config, or product differences. This
+qualifies wrapper integration only and does not count toward the controlled
+Beammap warmup or measured-pair requirements.
