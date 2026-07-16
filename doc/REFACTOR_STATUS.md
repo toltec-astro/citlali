@@ -2035,11 +2035,15 @@ implements TolTECA/Tollan list semantics, reports effective authority and
 override provenance, and participates in the full config preflight. That
 preflight passes 107 tests and all four accepted policy hashes. It also exposed
 and closed two existing science cleaner-grouping gaps in the resolved leaf
-contract, which now covers 576 leaves. Phase 4.1 remains active while TolPROJ
-vendors this exact kit behind an opt-in `--refactor` setup path. TolPROJ's
-legacy setup and filenames must remain the default and behaviorally unchanged.
-After both setup paths pass automated tests, the four refactor-mode TolTECA
-smoke reductions remain the final gate.
+contract, which now covers 576 leaves. TolPROJ commit `a33d26a` vendors this
+exact kit behind an opt-in `--refactor` setup path for pointing, automatically
+selected OOF/science, and Beammap project setup. Its default commands retain
+the established `70_reduce.yaml`/`72_reduce.yaml` behavior. The refactor path
+hash-verifies every vendored file, rejects mixed numbered-config families,
+generates `72_observation.yaml`, preserves operator-owned runtime and expert
+overrides on same-kit reruns, and rejects in-place mode or kit changes. All 96
+TolPROJ tests, Ruff, byte-compilation, and tracked-file audits pass. Phase 4.1
+remains active only for the four refactor-mode TolTECA smoke reductions.
 
 ### Phase 4.2 - Technique And Performance Review
 

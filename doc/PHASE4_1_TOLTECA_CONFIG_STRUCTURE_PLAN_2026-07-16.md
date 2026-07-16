@@ -127,12 +127,18 @@ The Citlali-owned portion is implemented under `config/tolteca/`:
   all eight compact-compatibility cases, 100% compact-surface coverage, and all
   typed-boundary audits.
 
-TolPROJ integration is next. Existing TolPROJ behavior remains the default.
-The new kits will be vendored and instantiated only when the operator selects
-`--refactor`; this path will generate `72_observation.yaml` and select the
-refactor executable while the existing `70_reduce.yaml`/`72_reduce.yaml` path
-remains unchanged. Phase 4.1 remains open until both TolPROJ paths are tested
-and point, OOF, Beammap, and science smoke reductions pass with the new files.
+TolPROJ integration is implemented at commit `a33d26a`. Existing behavior
+remains the default. The vendored, hash-checked kits are instantiated only when
+the operator selects `--refactor`; this path generates
+`72_observation.yaml` and selects the refactor executable while the existing
+`70_reduce.yaml`/`72_reduce.yaml` path remains unchanged. Unknown numbered
+overlays and mixed config families fail before installation. Same-mode,
+same-kit reruns preserve operator-owned `71_runtime.yaml` and
+`90_user_overrides.yaml`; mode or kit changes require a fresh directory. All
+96 TolPROJ tests pass, including legacy-default, four-mode installation,
+reinstallation, conflict, CLI-help, scannum, and Beammap calibration coverage.
+Phase 4.1 remains open only until point, OOF, Beammap, and science smoke
+reductions pass with the new files.
 
 ## Exit Gate
 

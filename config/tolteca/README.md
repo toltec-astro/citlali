@@ -81,3 +81,9 @@ hash-checked snapshot and owns project instantiation on Unity: running
 `tolteca setup`, copying the selected mode files, and generating
 `72_observation.yaml` from project metadata. TolPROJ must not import templates
 from a developer Citlali checkout at runtime.
+
+TolPROJ commit `a33d26a` provides this integration as an explicit
+`--refactor` option. Without that option, TolPROJ retains its established
+`70_reduce.yaml`/`72_reduce.yaml` behavior. The refactor installer rejects
+mixed numbered-config families and preserves site edits in `71_runtime.yaml`
+and expert edits in `90_user_overrides.yaml` when the same kit is regenerated.
