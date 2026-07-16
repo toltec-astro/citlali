@@ -53,11 +53,13 @@ branch. The exact validated tree will remain available for forensic review.
   standard `2e-8 + 1e-10 * abs(reference)` tolerance. The only accepted
   differences are inactive RTC-despike config metadata recorded differently
   by the legacy and typed paths.
-- Latest accepted science reduction: four-iteration sequence `redu20` through
-  final `redu23`, produced by `9ea6d7f01`; all four iterations pass against
-  accepted `redu16` through `redu19`, and the final provenance records explicit-
-  MJD astrometry for both observations, one coadd filter context, and three
-  filtered maps.
+- Latest accepted science reduction: clean single-job four-iteration sequence
+  `redu28` through final `redu31`, produced by `a7a35a00`. Its 502-leaf config
+  is exact against accepted `redu23`; all 12 FITS and 15 NetCDF product sets are
+  complete. All 84 map layers pass the science-equivalence gate with maximum
+  relative RMS `7.09e-14`, all integer diagnostics are exact, and all 1,394
+  NetCDF variables pass. The final run has zero logged issues and every required
+  provenance record is valid. This supersedes `redu23` as the science fixture.
 - Latest accepted Beammap reduction: Phase 3 checkpoint `redu06`, produced by
   `6dd0057f8`, is exact against accepted `redu05` across all 12 comparable
   products and 16,453 comparison records, including complete detector TOD,
@@ -75,7 +77,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 456 tests. All 96 config-boundary/preflight
+- CTest discovers and passes all 460 tests. All 96 config-boundary/preflight
   tests pass; the checked leaf contract covers 574 leaves and the generated
   startup schema covers 726 normalized YAML nodes.
 
@@ -326,8 +328,13 @@ publication. A competing Citlali process fails immediately with a required-
 output diagnostic, while reductions using distinct output roots remain
 independent. Focused tests cover contention, automatic release, independent
 roots, and public-header linkage. The CLI build, all 460 CTests, and full config
-preflight pass locally. A clean single-job Unity science rerun remains the
-acceptance gate.
+preflight pass locally. Clean single-job science sequence `redu28` through
+`redu31` then completed normally at pre-lease commit `a7a35a00`: every
+iteration consumed its immediately preceding complete map directory, the final
+run logged no issues, and exact-config scientific equivalence against accepted
+`redu23` passed. This closes the fruit-loop map-input repair gate. The output-
+root lease still requires its first Unity compile and normal reduction to
+exercise VAST lock acquisition before Phase 3 closes.
 
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution
