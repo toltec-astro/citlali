@@ -116,3 +116,10 @@ Criterion 15 is closed and compilation-independent Phase 4 work is done. Phase
 Phase 5 must not begin by silently waiving criteria 6, 7, and 10; it may begin
 only after those criteria are closed or the project owner records a final
 explicit exception based on the reviewed TolTECA integration model.
+
+While the TolTECA build owner is unavailable, the project may perform the
+bounded preparation in
+[`PHASE5_PREPARATION_AND_INTEGRATION_PLAN_2026-07-16.md`](PHASE5_PREPARATION_AND_INTEGRATION_PLAN_2026-07-16.md).
+Preparation inventories source disposition and defines the same-SHA validation
+and integration packet. It does not change compilation infrastructure, close
+the deferred criteria, freeze/tag a candidate, or authorize integration.

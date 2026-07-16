@@ -176,6 +176,16 @@ TolTECA build direction is available. The census deliberately avoids a
 percentage claim because the three deferred build criteria are material and
 not equal in scope.
 
+The TolTECA build owner is unavailable until the week following 2026-07-16.
+The project owner authorized a bounded
+[`Phase 5 preparation lane`](PHASE5_PREPARATION_AND_INTEGRATION_PLAN_2026-07-16.md)
+so closeout planning does not sit idle. This is not formal Phase 5 integration
+and does not waive criteria 6, 7, or 10. The source disposition, final
+same-SHA validation matrix, and integration packet can be prepared now; CMake
+changes, placeholder deletion, final candidate tagging, and integration remain
+blocked on the build review. No additional structural or scientific tranche
+is authorized by this scheduling workaround.
+
 The controlled-performance evidence path is now specified without touching
 deferred compilation infrastructure. A Unity-side wrapper records GNU Time
 wall/RSS/I/O data together with Citlali log time, exact config leaves, bounded
