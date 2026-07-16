@@ -7434,6 +7434,144 @@
         "The simultaneous OG/refactor timing pair is retained only as evidence of no material full-Wiener regression, not as a controlled performance benchmark.",
         "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained."
       ]
+    },
+    {
+      "record_id": "beammap-148670-refactor-6dd0057f-redu06",
+      "recorded_date": "2026-07-16",
+      "mode": "beammap",
+      "status": "accepted",
+      "candidate": {
+        "label": "refactor",
+        "branch": "codex/structural-refactor",
+        "citlali_sha": "6dd0057f81de8cf606ee0622a52d7c906b7e554a",
+        "citlali_version": "v4.0.0-3524-g6dd0057f",
+        "dirty": false,
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "build": {
+          "host": "unity",
+          "compiler": null,
+          "build_type": "Release",
+          "cmake_flags": null
+        }
+      },
+      "baseline": {
+        "label": "refactor",
+        "citlali_sha": "9ea6d7f013c0a40e6159b0da1512897ddb6a7c5c",
+        "citlali_version": "v4.0.0-3496-g9ea6d7f0",
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "reduction_id": "redu05"
+      },
+      "config": {
+        "ordered_sources": [
+          {
+            "role": "merged_low_level_citlali_input",
+            "path": "citlali_o148670_0_2_c1.yaml",
+            "precedence": 0,
+            "sha256": "aa956b28465eaef8b23763e877857b5b8929e95ca4fbdc976db6d7b2a775636d"
+          }
+        ],
+        "overlay_sources_retained": false,
+        "canonical_merged_sha256": "79f3d34d8a5bf000f0c011788f93aecbff397c55ff7d3c66124977754cc67e1b"
+      },
+      "dataset": {
+        "obsnum": "148670",
+        "identity": "TolTEC commissioning Beammap observation 148670",
+        "content_hash": null
+      },
+      "invocation": {
+        "command": null,
+        "launcher": "tolteca reduce",
+        "runtime_policy": {
+          "n_threads": 16,
+          "parallel_policy": "omp",
+          "kids_solver_parallel_policy": "seq"
+        },
+        "exit_code": 0
+      },
+      "audit": {
+        "tool": "tools/baseline/audit_reduction_run.py",
+        "tool_sha": "6dd0057f81de8cf606ee0622a52d7c906b7e554a",
+        "finished": true,
+        "serious_log_counts": {},
+        "file_count": 33,
+        "comparable_product_count": 13,
+        "stable_comparable_product_count": 12,
+        "stable_product_counts_by_kind": {
+          "ecsv": 2,
+          "fits": 6,
+          "netcdf": 4
+        },
+        "ptc_chunk_count": 198,
+        "required_provenance_valid": true
+      },
+      "comparison": {
+        "tool": "tools/baseline/compare_reduction_products.py",
+        "tool_sha": "3cd7250b9a7276ecc64790e97aa015a334368055",
+        "options": [
+          "--mode",
+          "beammap",
+          "--include-timestream",
+          "--max-array-elements",
+          "0",
+          "--exclude",
+          "citlali_profile.ecsv",
+          "--atol",
+          "0",
+          "--rtol",
+          "0",
+          "--strict"
+        ],
+        "volatile_allowlist": [
+          "citlali_profile.ecsv",
+          "versioned provenance sidecars"
+        ],
+        "tolerances": {
+          "atol": 0.0,
+          "rtol": 0.0,
+          "fraction_floor": 1e-12
+        },
+        "common_products": 12,
+        "skipped_records": 0,
+        "changed_records": 0,
+        "scientific_products_exact": true,
+        "verdict": "accepted_exact",
+        "measured": {
+          "record_count": 16453,
+          "matched_config_leaf_count": 529,
+          "complete_detector_tod_compared": true,
+          "split_fits_product_count": 6,
+          "detector_count": 5234,
+          "completed_internal_iteration_count": 3
+        }
+      },
+      "accepted_differences": [],
+      "performance": {
+        "wall_time_log_seconds": 4215.296,
+        "observation_pipeline_seconds": 4201.336279,
+        "mapmaking_interval_seconds": 3087.695,
+        "ptc_first_to_last_chunk_seconds": 342.471,
+        "peak_rss_kb": null,
+        "baseline_wall_time_log_seconds": 4136.44,
+        "baseline_mapmaking_interval_seconds": 2957.212,
+        "baseline_ptc_first_to_last_chunk_seconds": 415.165
+      },
+      "artifacts": {
+        "candidate_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced/redu06",
+        "candidate_unity_path": "/work/toltec/commissioning2025-test/2026-refactor/beammap/refactor/reduced/redu06",
+        "baseline_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced/redu05"
+      },
+      "limitations": [
+        "This accepts the Phase 3 valid Beammap path against the immediately preceding accepted refactor run; OG/refactor scientific equivalence remains established by earlier Beammap gates.",
+        "The 1.9% total-time increase is an uncontrolled Unity/VAST observation and is retained without attribution or a performance conclusion.",
+        "TolTECA did not provide Citlali the original ordered NN*.yaml authoring-source list.",
+        "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained."
+      ]
     }
   ]
 }

@@ -58,10 +58,13 @@ branch. The exact validated tree will remain available for forensic review.
   accepted `redu16` through `redu19`, and the final provenance records explicit-
   MJD astrometry for both observations, one coadd filter context, and three
   filtered maps.
-- Latest accepted Beammap reduction: `redu05`, produced by `9ea6d7f01`; it
-  retains exact version-two source-identity, photometry-ownership, lifecycle,
-  detector-TOD, detector-fit, and split-map products from accepted `redu04`
-  while adding valid astrometry provenance.
+- Latest accepted Beammap reduction: Phase 3 checkpoint `redu06`, produced by
+  `6dd0057f8`, is exact against accepted `redu05` across all 12 comparable
+  products and 16,453 comparison records, including complete detector TOD,
+  diagnostic NetCDF, detector-fit tables, and six split-map FITS products. Its
+  529-leaf config is exact, all required provenance is valid, and the log has
+  zero issues. It accepts the fruit-loop input/feedback and mature Wiener
+  failure-contract tranches for Beammap.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
@@ -72,9 +75,9 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 455 tests. All 96 config-boundary/preflight
-  tests pass; the checked leaf contract covers 573 leaves and the generated
-  startup schema covers 724 normalized YAML nodes.
+- CTest discovers and passes all 456 tests. All 96 config-boundary/preflight
+  tests pass; the checked leaf contract covers 574 leaves and the generated
+  startup schema covers 726 normalized YAML nodes.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -287,6 +290,29 @@ seconds versus 42.9 seconds for OG; the uncontrolled pair shows no performance
 regression. The refactor run has no logged issues and valid required
 provenance. OG's twelve `NetCDF: Not a valid ID` records are its known legacy
 limitation and are not accepted as refactor behavior.
+
+Beammap `redu06` accepts the remaining mature Phase 3 tranches for that mode.
+Its low-level config is byte-identical to accepted `redu05`; both runs complete
+198 PTC chunks and expose the same valid provenance and product inventory. The
+strict zero-tolerance comparison reads every comparable FITS, NetCDF, and ECSV
+product, including complete detector TOD, and reports 12 common products,
+16,453 records, zero changes, and zero skips. Total log time is 4,215.296
+seconds versus 4,136.440 seconds, a 1.9% uncontrolled difference with no
+performance attribution.
+
+The matched science attempt at `6dd0057f8` stopped during configuration before
+creating a `reduNN` directory. TolTECA emitted the historical
+`timestream.output.rtcdiag.enabled` leaf, which the new complete startup schema
+did not recognize. Because that diagnostic prevented installation of the raw
+execution adapter, the later kernel-template check reported the misleading
+secondary error `wiener filter kernel template requires kernel`. Commit
+`7ef43ef93` explicitly classifies the historical switch as an ignored
+compatibility spelling: RTC diagnostics remain required and are always
+written. The Wiener prerequisite now reads typed raw policy instead of mutable
+`rtcproc` state, reducing the checked legacy access census from 44 to 43. The
+exact failed science YAML now passes local configuration and reaches the raw
+data boundary; all 456 CTests and full config preflight pass. A Unity science
+rerun is required before closing the science fruit-loop gate.
 
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution
