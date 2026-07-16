@@ -85,8 +85,9 @@ These facts are characterization evidence, not a production-equivalence claim.
 
 ## Active Phase
 
-**Phase 4 - Validation, performance, and reproducible build** is active as of
-2026-07-16. Phase 3 library/session work is complete: local gates pass and
+**Phase 4.1 - TolTECA operator config structure** is active as of 2026-07-16.
+The project owner added Phase 4.1 and Phase 4.2 between the adopted Phase 4
+evidence package and final Phase 5 integration. Phase 3 library/session work is complete: local gates pass and
 Unity point `redu66` accepts the output-root ownership repair and exact
 scientific behavior at the first compiled boundary. Phase 2 config authority
 and provenance remains complete at Unity point `redu62`.
@@ -171,10 +172,15 @@ compilation-dependent and remain deliberately deferred. The five focused ADRs
 are indexed in `doc/adr/README.md`; root `CODEX.md` is now a concise canonical-
 document redirect; and [`RETAINED_DEBT.md`](RETAINED_DEBT.md) records each
 deliberate limitation with role owner, reopening trigger, and exit condition.
-Compilation-independent Phase 4 work is complete and stops here until the
-TolTECA build direction is available. The census deliberately avoids a
-percentage claim because the three deferred build criteria are material and
-not equal in scope.
+The adopted external-review Phase 4 compilation-independent criteria are
+complete. The project owner subsequently added two explicit pre-integration
+stages: the
+[`four-mode TolTECA authoring structure`](PHASE4_1_TOLTECA_CONFIG_STRUCTURE_PLAN_2026-07-16.md)
+and the
+[`whole-code technique/performance review`](PHASE4_2_TECHNIQUE_PERFORMANCE_REVIEW_PLAN_2026-07-16.md).
+These additions do not change the census counts or waive the three deferred
+build criteria. They do replace the previous instruction to remain idle until
+the TolTECA build direction is available.
 
 The TolTECA build owner is unavailable until the week following 2026-07-16.
 The project owner authorized a bounded
@@ -183,8 +189,8 @@ so closeout planning does not sit idle. This is not formal Phase 5 integration
 and does not waive criteria 6, 7, or 10. The source disposition, final
 same-SHA validation matrix, and integration packet can be prepared now; CMake
 changes, placeholder deletion, final candidate tagging, and integration remain
-blocked on the build review. No additional structural or scientific tranche
-is authorized by this scheduling workaround.
+blocked on the build review. Phase 4.1 and Phase 4.2 are the only additional
+tranches authorized by this scheduling workaround.
 
 The controlled-performance evidence path is now specified without touching
 deferred compilation infrastructure. A Unity-side wrapper records GNU Time
@@ -1945,7 +1951,7 @@ their prior timings. Treat this as an uncontrolled Unity/VAST I/O observation,
 not a Phase 2 code-performance regression. A same-SHA rerun may characterize
 the storage variance but is not required for scientific acceptance.
 
-## Five-Phase Roadmap
+## Roadmap With Owner-Added Bridge Stages
 
 ### Phase 1 - Safety Stabilization
 
@@ -2009,6 +2015,32 @@ strict scientific equivalence, zero unexpected errors, reproducible builds,
 operational performance evidence with triggered controlled diagnostics, and
 documented scientific conventions.
 
+### Phase 4.1 - Four-Mode TolTECA Config Structure
+
+Create a consistent numbered-YAML authoring kit for point, OOF, Beammap, and
+science. Separate stable mode policy, site/runtime values,
+observation/calibration selection, product choices, and user overrides. Keep
+TolTECA as the merge owner and Citlali's generated low-level YAML as the
+execution boundary.
+
+Exit gates are defined in
+[`PHASE4_1_TOLTECA_CONFIG_STRUCTURE_PLAN_2026-07-16.md`](PHASE4_1_TOLTECA_CONFIG_STRUCTURE_PLAN_2026-07-16.md):
+all four kits exist, overlay semantics are hermetically tested, accepted
+low-level equivalence is explicit, and one TolTECA smoke run per mode passes.
+
+### Phase 4.2 - Technique And Performance Review
+
+Review every active subsystem for scientific/numerical appropriateness and
+real-workload efficiency. Produce evidence-labeled dispositions and a finite
+backlog before broad remediation. Intentional science changes use successor
+validation evidence rather than being forced to match OG.
+
+Exit gates are defined in
+[`PHASE4_2_TECHNIQUE_PERFORMANCE_REVIEW_PLAN_2026-07-16.md`](PHASE4_2_TECHNIQUE_PERFORMANCE_REVIEW_PLAN_2026-07-16.md):
+all active components are covered, no unowned P0/P1 finding remains, dominant
+runtime/memory contributors have evidence-backed dispositions, and accepted
+changes receive proportionate tests and mode validation.
+
 ### Phase 5 - Integration And Closeout
 
 Consolidate canonical architecture and scientific-convention documentation,
@@ -2017,9 +2049,9 @@ legacy/stub paths, tag the forensic refactor branch, and integrate the exact
 validated tree. Add install/export support only if external library consumption
 is an accepted project goal.
 
-Core RTC/PTC algorithm cleanup, broad compact-config rollout, and R execution
-are follow-up projects unless their prerequisites are explicitly brought into
-this roadmap.
+Phase 4.2 may recommend bounded RTC/PTC or other algorithm work, but review does
+not authorize a wholesale rewrite. R execution remains a follow-up until its
+measured-channel prerequisites are explicitly approved.
 
 ## Stop And Defer Rules
 

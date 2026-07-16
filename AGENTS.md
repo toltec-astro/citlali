@@ -3,26 +3,32 @@
 Read these documents before making architectural changes:
 
 1. `doc/REFACTOR_STATUS.md` - current phase, gates, and next actions.
-2. `doc/ARCHITECTURE.md` - active components, ownership, dependencies,
+2. `doc/PHASE4_1_TOLTECA_CONFIG_STRUCTURE_PLAN_2026-07-16.md` - active
+   four-mode numbered-YAML authoring work and gates.
+3. `doc/PHASE4_2_TECHNIQUE_PERFORMANCE_REVIEW_PLAN_2026-07-16.md` - subsequent
+   whole-code review rubric, evidence labels, priorities, and stop rules.
+4. `doc/ARCHITECTURE.md` - active components, ownership, dependencies,
    compatibility boundaries, and extension rules.
-3. `doc/SCIENTIFIC_CONVENTIONS.md` - identities, units, frames, validity, and
+5. `doc/SCIENTIFIC_CONVENTIONS.md` - identities, units, frames, validity, and
    validation routing.
-4. `doc/RETAINED_DEBT.md` - deliberate limitations, owners, triggers, and exit
+6. `doc/RETAINED_DEBT.md` - deliberate limitations, owners, triggers, and exit
    conditions.
-5. `handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md` - adopted
+7. `handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md` - adopted
    independent review and completion criteria.
-6. `doc/STRUCTURAL_REFACTOR_PLAN_2026-06-29.md` - original goals and history.
+8. `doc/STRUCTURAL_REFACTOR_PLAN_2026-06-29.md` - original goals and history.
 
 The living status document governs sequencing when these documents differ.
 Durable architecture decisions are indexed in `doc/adr/README.md`.
 
 ## Current Direction
 
-The refactor follows the five-phase roadmap in `doc/REFACTOR_STATUS.md`.
-Phase 4 validation, performance, and reproducible-build work is active.
-Compilation-side work remains deferred pending review of TolTECA's revised C++
-integration approach. Pause compact-config production rollout and open-ended
-header subdivision.
+The refactor follows the roadmap in `doc/REFACTOR_STATUS.md`, including the
+project-owner additions Phase 4.1 and Phase 4.2. Phase 4.1, the four-mode
+TolTECA numbered-config structure, is active. Phase 4.2 performs a bounded
+whole-code technique and performance review after 4.1. Compilation-side work
+remains deferred pending review of TolTECA's revised C++ integration approach.
+Compact-config tooling may support the explicitly gated Phase 4.1 authoring
+work; open-ended header subdivision remains paused.
 
 Do not broaden mature RTC, PTC, JINC, or Wiener-filter algorithms while fixing
 their contracts. Preserve numerical behavior unless a change is named,

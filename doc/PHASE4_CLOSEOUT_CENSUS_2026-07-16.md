@@ -123,3 +123,10 @@ bounded preparation in
 Preparation inventories source disposition and defines the same-SHA validation
 and integration packet. It does not change compilation infrastructure, close
 the deferred criteria, freeze/tag a candidate, or authorize integration.
+
+After this census was closed, the project owner added Phase 4.1 (a four-mode
+TolTECA numbered-config authoring kit) and Phase 4.2 (a comprehensive active-
+subsystem technique/performance review). They are explicit pre-integration
+scope additions, not retroactive F.2 criteria, and therefore do not change the
+10/2/3 census counts. Their governing gates are linked from
+[`REFACTOR_STATUS.md`](REFACTOR_STATUS.md).

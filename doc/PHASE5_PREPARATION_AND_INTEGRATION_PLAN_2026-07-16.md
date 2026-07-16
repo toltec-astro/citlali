@@ -16,7 +16,8 @@ discipline, validation runbook, and review packet. It may not:
 - claim criteria 6, 7, or 10 are closed;
 - delete or activate placeholder source entries before the build review;
 - tag a final candidate or integrate it into the destination branch; or
-- resume open-ended structural or scientific refactoring.
+- perform work outside the explicitly approved Phase 4.1 config structure and
+  Phase 4.2 technique/performance review.
 
 The build review remains the entry gate for final candidate freeze. It must
 either close the three criteria or support explicit project-owner dispositions
@@ -65,8 +66,9 @@ candidate. The final candidate is selected only after:
 1. the TolTECA build approach has been reviewed;
 2. criteria 6, 7, and 10 have a recorded closure or final disposition;
 3. the source cleanup above has been accepted or explicitly declined;
-4. all parallel test-suite work intended for this refactor has landed; and
-5. `git status --short` is empty.
+4. Phase 4.1 and Phase 4.2 have passed their recorded exit gates;
+5. all parallel test-suite work intended for this refactor has landed; and
+6. `git status --short` is empty.
 
 Once selected, record the full commit SHA before compiling. Do not merge,
 rebase, amend, regenerate checked-in artifacts, or make documentation-only
@@ -172,7 +174,8 @@ preparation completed here.
 
 ## Stop Rule
 
-Until the build review occurs, the correct state is **prepared and waiting**.
-Do not fill the interval with more config migration, header splitting,
-numerical cleanup, compact-config rollout, R execution, or unrelated feature
-work on the closeout branch.
+Until the build review occurs, Phase 5 remains prepared but not frozen. Proceed
+through the bounded Phase 4.1 and Phase 4.2 plans. Do not turn either plan into
+open-ended header splitting, stylistic modernization, or a wholesale numerical
+rewrite. Compact tooling is allowed only as support for the four-mode TolTECA
+authoring kit, and R execution remains outside scope.
