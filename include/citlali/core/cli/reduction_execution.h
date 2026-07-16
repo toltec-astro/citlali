@@ -15,6 +15,7 @@
 #include <citlali/core/pipeline/mapmaking_provenance.h>
 #include <citlali/core/pipeline/coadd_provenance.h>
 #include <citlali/core/pipeline/noise_provenance.h>
+#include <citlali/core/pipeline/output_root_lease.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/pointing_provenance.h>
 #include <citlali/core/pipeline/polarimetry_provenance.h>
@@ -141,10 +142,29 @@ citlali::session::ReductionResult run_reduction_processor_session(
     const ConfigFilepaths &config_filepaths,
     citlali::pipeline::StageProfileCollector &stage_profile,
     const Logger &logger) {
-    if (!prepare_and_run_cli_reduction_pipeline<
+    if (!prepare_cli_reduction_runtime(todproc, config, logger)) {
+        if (citlali::pipeline::config_diagnostics(todproc.engine())
+                .has_errors()) {
+            return invalid_config_reduction_result(todproc.engine());
+        }
+        return citlali::session::failed_reduction_result(
+            citlali::session::ReductionStatus::execution_failed,
+            "pipeline.failed", "reduction runtime preparation did not complete");
+    }
+
+    auto &engine = todproc.engine();
+    citlali::pipeline::OutputRootLease output_root_lease(
+        citlali::pipeline::runtime_output_dir(engine));
+    logger->info("acquired exclusive Citlali output root: {}",
+                 output_root_lease.output_root().string());
+
+    auto map_geometry =
+        citlali::pipeline::make_reduction_map_geometry<TodProc>();
+    if (!run_cli_reduction_pipeline<
             IsBeammap, RawObsMap, FilteredObsMap, RawCoaddMap,
             FilteredCoaddMap, FitMaps, KidsDataProc>(
-            todproc, co, config, config_filepaths, stage_profile, logger)) {
+            todproc, co, config, config_filepaths, map_geometry,
+            stage_profile, logger)) {
         if (citlali::pipeline::config_diagnostics(todproc.engine())
                 .has_errors()) {
             return invalid_config_reduction_result(todproc.engine());
@@ -154,7 +174,6 @@ citlali::session::ReductionResult run_reduction_processor_session(
             "pipeline.failed", "reduction pipeline did not complete");
     }
 
-    auto &engine = todproc.engine();
     auto result = citlali::session::successful_reduction_result();
     result.product_roots.emplace_back(engine.output_paths.redu_dir_name);
     citlali::pipeline::write_config_source_manifest(

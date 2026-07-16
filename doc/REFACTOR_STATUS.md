@@ -314,6 +314,21 @@ exact failed science YAML now passes local configuration and reaches the raw
 data boundary; all 456 CTests and full config preflight pass. A Unity science
 rerun is required before closing the science fruit-loop gate.
 
+The first repaired science rerun was invalidated by two Citlali jobs sharing
+the same output root while `fruit_loops.save_all_iters=true`. One job advanced
+to `redu26` and attempted to read `redu25/coadded/raw` while the other job was
+still writing observation products into `redu25`; the resulting missing-map
+diagnostic correctly exposed the incomplete input. This is an output-directory
+ownership failure, not evidence of a numerical or fruit-loop ingestion change.
+Production session execution now holds a nonblocking filesystem lease on the
+configured output root from successful runtime setup through final provenance
+publication. A competing Citlali process fails immediately with a required-
+output diagnostic, while reductions using distinct output roots remain
+independent. Focused tests cover contention, automatic release, independent
+roots, and public-header linkage. The CLI build, all 460 CTests, and full config
+preflight pass locally. A clean single-job Unity science rerun remains the
+acceptance gate.
+
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution
 consumes the effective thread and runtime policy. Remaining direct mutable
@@ -1859,6 +1874,16 @@ this roadmap.
 - Do not implement R execution before a measured-channel data contract exists.
 - Do not add concurrent reductions as a requirement unless the project owner
   explicitly needs them; sequential same-process reentrancy is required.
+- After the refactor, replace the flat fruit-loop `reduNN` iteration sequence
+  with one atomically claimed run directory containing explicit nested
+  iteration identities, for example `redu01/iterations/iter00` through
+  `iterNN`. Treat `redu01` as the stable identity of one user-invoked reduction,
+  not as an iteration number. Add a run manifest that records a stable execution
+  ID, each child iteration ID, the selected final iteration, Citlali version and
+  git revision, and the effective-config digest. Preserve TolTECA-facing final-
+  product compatibility during migration. This is the preferred long-term
+  replacement for coarse output-root exclusion, but it is not part of the
+  bounded Phase 3 repair.
 - Do not squash or rewrite the only validated branch history.
 
 ## Decisions Requiring Scientific Ownership
