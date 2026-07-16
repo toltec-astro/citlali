@@ -62,3 +62,11 @@ memory evidence plus explicit scientific-contract documentation. Do not begin
 build-system modernization until the external TolTECA build direction is
 available. A future candidate is validated by selecting its mode profile and
 passing the downloaded `reduNN` directory to the unified entry point.
+
+The next tranche added the controlled Beammap performance protocol and tooling
+described in `doc/PHASE4_PERFORMANCE_PROTOCOL_2026-07-16.md`. Real same-node
+warmup and alternating paired Unity runs remain pending, as does project-owner
+confirmation of the proposed 5% median peak-RSS ceiling. Build infrastructure
+remains untouched and deferred. All 85 baseline-tool tests and full config
+preflight pass; accepted Beammap `redu06` exercises the portable evidence
+extractor, while the live GNU Time wrapper awaits its first Unity warmup.

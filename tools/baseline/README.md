@@ -39,6 +39,22 @@ Accepted profiles are versioned snapshots. Future intentional product changes
 create successor validation epochs with a predecessor comparison and recorded
 scientific rationale; they do not rewrite or loosen an old profile.
 
+## Controlled Performance Campaigns
+
+Use `run_performance_case.py` on Unity to wrap one baseline or candidate
+reduction with GNU Time. It attaches portable command, host/CPU, config, input,
+runtime-policy, log, stage-profile, I/O, wall-time, and peak-RSS evidence to the
+new `reduNN` directory. Use `analyze_performance_campaign.py` after the paired
+runs are downloaded. The analyzer enforces warmups, alternating order, one
+host/CPU-affinity signature, matched config/input policy, binary identity,
+complete measurements, and the campaign budgets.
+
+The checked-in Beammap template is
+`validation/performance/beammap_campaign_template.json`. The complete protocol
+and Unity command sequence are in
+`doc/PHASE4_PERFORMANCE_PROTOCOL_2026-07-16.md`. Do not use historical or
+concurrent runs to fill a controlled campaign retrospectively.
+
 These tools do not run Citlali and do not require Unity access from Codex. The
 intended workflow is:
 
@@ -358,6 +374,10 @@ installation/interpolation counts without reading large products.
   sidecars, and coarse timing deltas.
 - `compare_reduction_products.py`: reduction-aware product triage report for
   latest/direct `reduNN` pairs, with FITS/netCDF/table numeric differences.
+- `run_performance_case.py`: Unity-side GNU Time wrapper and portable reduction
+  evidence capture for one warmup or measured campaign run.
+- `analyze_performance_campaign.py`: validates a paired performance protocol
+  and reports median/IQR runtime, peak RSS, I/O, and stage timing ratios.
 - `validate_validation_ledger.py`: validates required identity, config hash,
   completion, comparison, and accepted-difference fields in the checked-in
   `validation/accepted_runs.json` ledger.

@@ -113,6 +113,20 @@ Future intentional algorithm, default, schema, or product changes create a
 successor epoch with a predecessor comparison and explicit scientific
 rationale instead of silently replacing a baseline or loosening its policy.
 
+The controlled-performance evidence path is now specified without touching
+deferred compilation infrastructure. A Unity-side wrapper records GNU Time
+wall/RSS/I/O data together with Citlali log time, exact config leaves, bounded
+input hashes, runtime policy, binary identity, serious log counts, and
+profile-stage totals. An offline campaign analyzer requires same-node warmups,
+at least three alternating measured Beammap pairs, matched config/input/runtime
+policy, complete measurements, and explicit runtime/RSS budgets; it reports
+paired ratios plus median and IQR. The checked-in campaign remains incomplete
+until real runs are supplied. The 5% wall-time ceiling is established; the
+proposed 5% median peak-RSS ceiling requires project-owner confirmation.
+Profiler overhead is still a separate Phase 4 qualification because the
+current profiler has no enable/disable control. See the
+[controlled performance protocol](PHASE4_PERFORMANCE_PROTOCOL_2026-07-16.md).
+
 Phase 1 safety stabilization is complete for point, Beammap, science, and OOF.
 OOF refactor `redu01` closes the multi-observation date-header gate and is the
 accepted comparison against OG `redu00`. Do not reopen typed analysis-control

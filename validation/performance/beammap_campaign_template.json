@@ -1,0 +1,47 @@
+{
+  "schema_version": "citlali-performance-campaign-v1",
+  "campaign_id": "phase4-beammap-148670-controlled-v1",
+  "validation_epoch_id": "phase4-structural-closeout-2026-07-16",
+  "validation_profile_id": "phase4-beammap-148670-v1",
+  "mode": "beammap",
+  "build_type": "Release",
+  "required_dependencies": {
+    "kids": "04088da182622c3e879f04314974a7c0d60ee2d6",
+    "tula": "f30f81d97c44bd79618273bb842302ef839c6ab1"
+  },
+  "roles": {
+    "baseline": {
+      "label": "citlali",
+      "version_contains": "SET_BASELINE_GIT_TOKEN"
+    },
+    "candidate": {
+      "label": "refactor",
+      "version_contains": "SET_CANDIDATE_GIT_TOKEN"
+    }
+  },
+  "protocol": {
+    "minimum_measured_pairs": 3,
+    "preferred_measured_pairs": 5,
+    "require_warmup_each_role": true,
+    "require_same_host": true,
+    "require_alternating_first_role": true,
+    "first_measured_role": "baseline",
+    "require_runtime_signature_match": true,
+    "require_profiler_overhead_evidence": false,
+    "config_ignore_paths": [
+      "inputs[].cal_items[].filepath",
+      "inputs[].data_items[].filepath",
+      "runtime.output_dir"
+    ]
+  },
+  "budgets": {
+    "median_citlali_runtime_ratio_max": 1.05,
+    "median_peak_rss_ratio_max": 1.05
+  },
+  "profiler_overhead_evidence": {
+    "status": "pending",
+    "required_for_phase4_closeout": true,
+    "note": "The current profiler has no enable/disable control. Measure its overhead in a separate paired point campaign before Phase 4 closeout; do not infer overhead from nested stage totals."
+  },
+  "runs": []
+}
