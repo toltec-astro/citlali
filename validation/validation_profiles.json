@@ -27,6 +27,7 @@
       "mode": "point",
       "status": "active",
       "baseline_record_id": "point-152389-refactor-2a974e0d-redu66",
+      "product_contract_id": "phase4-point-products-v1",
       "audit": {
         "expected_label": "refactor",
         "required_provenance": [
@@ -67,6 +68,7 @@
       "mode": "oof",
       "status": "active",
       "baseline_record_id": "oof-152385-152387-refactor-9ea6d7f0-redu02",
+      "product_contract_id": "phase4-oof-products-v1",
       "audit": {
         "expected_label": "refactor",
         "required_provenance": [
@@ -107,6 +109,7 @@
       "mode": "science",
       "status": "active",
       "baseline_record_id": "science-152390-152392-refactor-a7a35a00-redu31",
+      "product_contract_id": "phase4-science-products-v1",
       "audit": {
         "expected_label": "refactor",
         "required_provenance": [
@@ -137,6 +140,7 @@
       "mode": "beammap",
       "status": "active",
       "baseline_record_id": "beammap-148670-refactor-6dd0057f-redu06",
+      "product_contract_id": "phase4-beammap-products-v1",
       "audit": {
         "expected_label": "refactor",
         "required_provenance": [

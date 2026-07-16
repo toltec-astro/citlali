@@ -4,12 +4,14 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from tools.baseline import validate_product_contract as contracts
 from tools.baseline import validation_profiles as profiles
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 REGISTRY = REPO_ROOT / "validation/validation_profiles.json"
 LEDGER = REPO_ROOT / "validation/accepted_runs.json"
+PRODUCT_CONTRACTS = REPO_ROOT / "validation/product_contracts.json"
 
 
 class ValidationProfilesTest(unittest.TestCase):
@@ -24,6 +26,26 @@ class ValidationProfilesTest(unittest.TestCase):
         ]
         self.assertEqual({profile["mode"] for profile in active}, profiles.SUPPORTED_MODES)
         self.assertEqual(len(active), len(profiles.SUPPORTED_MODES))
+
+        product_registry = contracts.load_registry(PRODUCT_CONTRACTS)
+        contracts_by_id = {
+            contract["contract_id"]: contract
+            for contract in product_registry["contracts"]
+        }
+        for profile in active:
+            contract = contracts_by_id[profile["product_contract_id"]]
+            self.assertEqual(contract["profile_id"], profile["profile_id"])
+            self.assertEqual(contract["mode"], profile["mode"])
+
+    def test_missing_product_contract_id_is_rejected(self) -> None:
+        registry = self._portable_registry()
+        del registry["profiles"][0]["product_contract_id"]
+
+        with self._write_registry(registry) as path:
+            with self.assertRaisesRegex(
+                profiles.RegistryError, "product_contract_id"
+            ):
+                profiles.validate_registry(path, LEDGER)
 
     def test_unknown_baseline_record_is_rejected(self) -> None:
         registry = self._portable_registry()

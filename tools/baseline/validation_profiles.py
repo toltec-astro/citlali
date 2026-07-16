@@ -148,6 +148,10 @@ def validate_registry(
         baseline_id = _text(
             profile.get("baseline_record_id"), f"{context}.baseline_record_id"
         )
+        _text(
+            profile.get("product_contract_id"),
+            f"{context}.product_contract_id",
+        )
         if baseline_id not in records:
             raise RegistryError(
                 f"{context}.baseline_record_id: unknown ledger record {baseline_id!r}"

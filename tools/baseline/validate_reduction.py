@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the profile-pinned Citlali audit, config, and product validation gates."""
+"""Run the profile-pinned Citlali audit, config, contract, and product gates."""
 
 from __future__ import annotations
 
@@ -27,8 +27,9 @@ except ImportError:
     )
 
 
-SCHEMA_VERSION = "citlali-profile-validation-result-v1"
+SCHEMA_VERSION = "citlali-profile-validation-result-v2"
 REPO_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_PRODUCT_CONTRACTS = REPO_ROOT / "validation/product_contracts.json"
 PROVENANCE_FLAGS = {
     "processed": "--require-processed-provenance",
     "raw": "--require-raw-provenance",
@@ -97,6 +98,25 @@ def build_config_command(
     for path in profile["config"].get("ignore_paths", []):
         command.extend(["--ignore", path])
     return command
+
+
+def build_contract_command(
+    profile: dict[str, Any],
+    candidate: Path,
+    json_out: Path,
+    registry_path: Path = DEFAULT_PRODUCT_CONTRACTS,
+) -> list[str]:
+    return [
+        sys.executable,
+        str(REPO_ROOT / "tools/baseline/validate_product_contract.py"),
+        str(candidate),
+        "--contract",
+        profile["product_contract_id"],
+        "--registry",
+        str(registry_path),
+        "--json-out",
+        str(json_out),
+    ]
 
 
 def build_product_command(
@@ -171,11 +191,16 @@ def run_gate(name: str, command: list[str], json_path: Path) -> dict[str, Any]:
 
 
 def run_validation(
-    profile: dict[str, Any], baseline: Path, candidate: Path, output_dir: Path
+    profile: dict[str, Any],
+    baseline: Path,
+    candidate: Path,
+    output_dir: Path,
+    product_contracts: Path = DEFAULT_PRODUCT_CONTRACTS,
 ) -> dict[str, Any]:
     output_dir.mkdir(parents=True, exist_ok=True)
     audit_json = output_dir / "audit.json"
     config_json = output_dir / "config.json"
+    contract_json = output_dir / "contract.json"
     products_json = output_dir / "products.json"
     gates = [
         run_gate(
@@ -187,6 +212,13 @@ def run_validation(
             "config",
             build_config_command(profile, baseline, candidate, config_json),
             config_json,
+        ),
+        run_gate(
+            "contract",
+            build_contract_command(
+                profile, candidate, contract_json, product_contracts
+            ),
+            contract_json,
         ),
         run_gate(
             "products",
@@ -217,6 +249,13 @@ def gate_detail(gate: dict[str, Any]) -> str:
             return (
                 f"leaves={summary.get('candidate_leaf_count', 'unknown')} "
                 f"differences={summary.get('diff_count', 'unknown')}"
+            )
+        if gate["name"] == "contract":
+            return (
+                f"classified={result.get('classified_product_count', 'unknown')}/"
+                f"{result.get('product_count', 'unknown')} "
+                f"families={len(result.get('entry_results', []))} "
+                f"errors={len(result.get('errors', []))}"
             )
         if gate["name"] == "products":
             if "changed_record_count" in result:
@@ -279,11 +318,16 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         type=Path,
         default=REPO_ROOT / "validation/accepted_runs.json",
     )
+    parser.add_argument(
+        "--product-contracts",
+        type=Path,
+        default=DEFAULT_PRODUCT_CONTRACTS,
+    )
     parser.add_argument("--list-profiles", action="store_true")
     parser.add_argument(
         "--output-dir",
         type=Path,
-        help="Retain the three delegated gate results in this directory.",
+        help="Retain the four delegated gate results in this directory.",
     )
     parser.add_argument("--json-out", type=Path)
     parser.add_argument("--report-out", type=Path)
@@ -326,11 +370,21 @@ def main(argv: list[str]) -> int:
 
         if args.output_dir:
             result = run_validation(
-                profile, baseline, candidate, args.output_dir.expanduser().resolve()
+                profile,
+                baseline,
+                candidate,
+                args.output_dir.expanduser().resolve(),
+                args.product_contracts.expanduser().resolve(),
             )
         else:
             with tempfile.TemporaryDirectory(prefix="citlali-validation-") as directory:
-                result = run_validation(profile, baseline, candidate, Path(directory))
+                result = run_validation(
+                    profile,
+                    baseline,
+                    candidate,
+                    Path(directory),
+                    args.product_contracts.expanduser().resolve(),
+                )
         report = render_markdown(result)
         if args.json_out:
             write_text(

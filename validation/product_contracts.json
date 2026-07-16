@@ -1,0 +1,1228 @@
+{
+  "schema_version": "citlali-product-contract-registry-v1",
+  "policy": {
+    "scope": "Scientific products and diagnostic tables/cubes are classified here. Run indexes, logs, merged configuration, and provenance sidecars remain governed by the reduction audit and validation profile.",
+    "required_output_failure": "fatal",
+    "enabled_conditional_output_failure": "fatal",
+    "optional_diagnostic_failure": "must be reported and must not masquerade as a complete enabled product",
+    "evolution": "Contracts are immutable within a validation epoch. An intentional product or scientific-schema change requires a successor contract and validation profile."
+  },
+  "global_conventions": {
+    "array_identity": [
+      "a1100",
+      "a1400",
+      "a2000"
+    ],
+    "map_axis_order": [
+      "profile-selected longitude-like axis",
+      "profile-selected latitude-like axis",
+      "frequency",
+      "Stokes"
+    ],
+    "map_axis_units": [
+      "arcsec for AltAz offset maps; deg for equatorial maps",
+      "arcsec for AltAz offset maps; deg for equatorial maps",
+      "Hz",
+      "dimensionless index"
+    ],
+    "map_indexing": "FITS/WCS pixel coordinates are one-based in headers; in-memory and diagnostic row/column indices are zero-based unless a product explicitly states otherwise.",
+    "polarimetry": "Only Stokes I is validated. Enabled polarimetry is a planned-unavailable capability and is rejected before execution.",
+    "nonfinite_policy": "Map signal-like planes may be non-finite outside valid coverage. Coverage and weight planes define validity. Fit tables use flag/convergence fields to identify invalid fit values."
+  },
+  "known_contract_debt": [
+    {
+      "debt_id": "diagnostic-netcdf-units",
+      "affected_families": [
+        "map_histogram",
+        "map_psd",
+        "map_diagnostics"
+      ],
+      "fact": "Several diagnostic variables do not carry complete NetCDF units attributes.",
+      "disposition": "Preserve the current schema during this refactor. Add complete versioned units only as an intentional successor product change."
+    },
+    {
+      "debt_id": "ecsv-column-units",
+      "affected_families": [
+        "pointing_fit_table",
+        "beammap_apt_table",
+        "beammap_fit_qc"
+      ],
+      "fact": "Units are recorded in table metadata rather than Astropy column unit fields.",
+      "disposition": "Treat metadata as the current authority. Moving units onto columns is a successor schema change."
+    },
+    {
+      "debt_id": "diagnostic-missing-values",
+      "affected_families": [
+        "detector_stats",
+        "rtc_diagnostics",
+        "ptc_diagnostics"
+      ],
+      "fact": "Many variables have no explicit _FillValue or missing_value attribute.",
+      "disposition": "Current flags and finite-value conventions remain authoritative. Standardized sentinels require a successor schema."
+    }
+  ],
+  "families": {
+    "map_cube_altaz": {
+      "scientific_identity": "Per-array Stokes-I map planes with signal, weights, kernel, coverage, signal-to-noise, and profile-dependent noise products.",
+      "coordinate_frame": "AltAz tangent-plane azimuth/elevation offsets around the configured map center.",
+      "axes": [
+        "azimuth offset",
+        "elevation offset",
+        "frequency",
+        "Stokes"
+      ],
+      "units_policy": "BUNIT is authoritative per HDU: signal/kernel in mJy/beam, weights in inverse squared signal units, noise variance in squared signal units, coverage in seconds, masks and signal-to-noise dimensionless.",
+      "indexing_policy": "FITS/WCS pixel coordinates are one-based; diagnostic row/column indices are zero-based.",
+      "missing_value_policy": "Signal-like pixels may be non-finite where coverage/weight is invalid; coverage_bool identifies supported pixels.",
+      "failure_policy": "Fatal when the map family is enabled in the active profile."
+    },
+    "map_cube_celestial": {
+      "scientific_identity": "Per-array Stokes-I map planes with signal, weights, kernel, coverage, and signal-to-noise products.",
+      "coordinate_frame": "Equatorial J2000 TAN projection centered on the configured science field.",
+      "axes": [
+        "right ascension",
+        "declination",
+        "frequency",
+        "Stokes"
+      ],
+      "units_policy": "BUNIT is authoritative per HDU: signal/kernel in mJy/beam, weights in inverse squared signal units, coverage in seconds, masks and signal-to-noise dimensionless.",
+      "indexing_policy": "FITS/WCS pixel coordinates are one-based; diagnostic row/column indices are zero-based.",
+      "missing_value_policy": "Signal-like pixels may be non-finite where coverage/weight is invalid; coverage_bool identifies supported pixels.",
+      "failure_policy": "Fatal when the map family is enabled in the active profile."
+    },
+    "map_histogram": {
+      "scientific_identity": "Per-array histograms of map pixels and, where generated, noise-map pixel populations.",
+      "coordinate_frame": "Not spatial; values summarize the associated map cube.",
+      "axes": [
+        "histogram bin"
+      ],
+      "units_policy": "Inherits the associated map signal scale by variable identity; complete NetCDF unit attributes are known debt.",
+      "indexing_policy": "Zero-based NetCDF array indexing.",
+      "missing_value_policy": "No explicit fill-value contract; validity follows the associated map population.",
+      "failure_policy": "Fatal when diagnostic products are enabled in the active profile."
+    },
+    "map_psd": {
+      "scientific_identity": "Per-array one- and two-dimensional power spectra for map and noise-map products.",
+      "coordinate_frame": "Spatial-frequency representation of the associated map grid.",
+      "axes": [
+        "spatial frequency",
+        "map row frequency",
+        "map column frequency"
+      ],
+      "units_policy": "Frequency/value units are implicit in the current variable schema; complete NetCDF unit attributes are known debt.",
+      "indexing_policy": "Zero-based NetCDF array indexing.",
+      "missing_value_policy": "No explicit fill-value contract; non-finite values are compared by the numerical product gate.",
+      "failure_policy": "Fatal when diagnostic products are enabled in the active profile."
+    },
+    "map_diagnostics": {
+      "scientific_identity": "Map identity, noise, coverage, edge-guard, coadd, and peak diagnostic scalars.",
+      "coordinate_frame": "References map-grid row/column and the coordinate frame of the associated map.",
+      "axes": [
+        "map",
+        "observation"
+      ],
+      "units_policy": "Variable names and selected attributes carry current units; complete unit metadata is known debt.",
+      "indexing_policy": "Map peak row/column values are zero-based.",
+      "missing_value_policy": "Unavailable diagnostics may be non-finite; integer counts and identity fields must remain present.",
+      "failure_policy": "Fatal when diagnostic products are enabled in the active profile."
+    },
+    "detector_stats": {
+      "scientific_identity": "Detector, array, and chunk statistics plus detector identity/calibration columns.",
+      "coordinate_frame": "Detector and acquisition-chunk domains; fitted detector positions use telescope offsets where present.",
+      "axes": [
+        "detector",
+        "array",
+        "chunk"
+      ],
+      "units_policy": "Per-variable NetCDF units are authoritative where present.",
+      "indexing_policy": "Zero-based NetCDF array indexing; detector identity uses apt_uid rather than row position.",
+      "missing_value_policy": "Detector flags determine usability; explicit standardized fill attributes are incomplete known debt.",
+      "failure_policy": "Fatal when statistics output is enabled in the active profile."
+    },
+    "rtc_diagnostics": {
+      "scientific_identity": "Raw-timestream calibration and cleaning diagnostics by scan, detector, array, and network.",
+      "coordinate_frame": "Telescope/time and detector/network domains; pointing quantities retain their named physical frames.",
+      "axes": [
+        "scan",
+        "detector",
+        "array",
+        "network"
+      ],
+      "units_policy": "Per-variable NetCDF units are authoritative where present; N/A denotes dimensionless or categorical fields.",
+      "indexing_policy": "output_scan_index and array indices are zero-based; physical detector identity is carried separately.",
+      "missing_value_policy": "Flags and availability variables govern validity; standardized fill attributes are incomplete known debt.",
+      "failure_policy": "Fatal when RTC diagnostics are enabled in the active profile."
+    },
+    "ptc_diagnostics": {
+      "scientific_identity": "Processed-timestream weights, cleaning, detector, and scan diagnostics.",
+      "coordinate_frame": "Time/scan and detector/network domains, with named telescope coordinates where emitted.",
+      "axes": [
+        "scan",
+        "detector",
+        "network"
+      ],
+      "units_policy": "Per-variable NetCDF units are authoritative where present; N/A denotes dimensionless or categorical fields.",
+      "indexing_policy": "output_scan_index is zero-based; ptc_diag_uid carries stable detector identity.",
+      "missing_value_policy": "Detector flags and diagnostic availability govern validity; fill metadata is incomplete known debt.",
+      "failure_policy": "Fatal when PTC diagnostics are enabled in the active profile."
+    },
+    "rtc_timestream": {
+      "scientific_identity": "Selected calibrated raw-stage detector timestream samples, flags, telescope data, and metadata.",
+      "coordinate_frame": "Time-ordered detector samples with named telescope coordinate streams.",
+      "axes": [
+        "sample",
+        "detector"
+      ],
+      "units_policy": "signal uses the recorded signal unit; flags are dimensionless; telescope variables carry per-variable units.",
+      "indexing_policy": "Samples and detector rows are zero-based; apt_uid carries stable detector identity.",
+      "missing_value_policy": "flags identify invalid samples; padded/outer-context policy is recorded in the file.",
+      "failure_policy": "Fatal when RTC timestream output is enabled."
+    },
+    "ptc_timestream": {
+      "scientific_identity": "Selected processed detector timestream samples, flags, weights, telescope data, and metadata.",
+      "coordinate_frame": "Time-ordered detector samples with named telescope coordinate streams.",
+      "axes": [
+        "sample",
+        "detector"
+      ],
+      "units_policy": "signal and weights derive from the recorded signal unit; flags are dimensionless.",
+      "indexing_policy": "Samples and detector rows are zero-based; apt_uid carries stable detector identity.",
+      "missing_value_policy": "flags identify invalid samples; weight validity is explicit.",
+      "failure_policy": "Fatal when PTC timestream output is enabled."
+    },
+    "pointing_fit_table": {
+      "scientific_identity": "Per-array pointing-source amplitude, offset, beam-shape, angle, uncertainty, and signal-to-noise fits.",
+      "coordinate_frame": "Telescope azimuth/elevation tangent-plane offsets.",
+      "axes": [
+        "array"
+      ],
+      "units_policy": "Current units are recorded in ECSV table metadata; Astropy column units are known debt.",
+      "indexing_policy": "Rows are keyed by array identity, not positional index.",
+      "missing_value_policy": "Invalid fit values may be non-finite and are interpreted with fit quality and signal-to-noise fields.",
+      "failure_policy": "Fatal when pointing fitting is enabled."
+    },
+    "beammap_detector_cube": {
+      "scientific_identity": "Per-detector signal, weight, and kernel map planes split into accepted and rejected detector groups.",
+      "coordinate_frame": "AltAz tangent-plane azimuth/elevation offsets around the Beammap source.",
+      "axes": [
+        "azimuth offset",
+        "elevation offset",
+        "frequency",
+        "Stokes"
+      ],
+      "units_policy": "Signal/kernel use mJy/beam and weights use inverse squared signal units.",
+      "indexing_policy": "FITS/WCS pixels are one-based; det_N extension identity follows the detector map index and is linked to APT uid fields.",
+      "missing_value_policy": "Invalid pixels may be non-finite; detector-group flags and positive weights determine validity.",
+      "failure_policy": "Fatal for Beammap map output."
+    },
+    "beammap_apt_table": {
+      "scientific_identity": "Final detector identity, calibration, fitted beam, pointing, sensitivity, flag, and KIDs quantities.",
+      "coordinate_frame": "Detector focal-plane/telescope offsets with raw and derotated variants explicitly named.",
+      "axes": [
+        "detector"
+      ],
+      "units_policy": "Current units are recorded in ECSV table metadata; Astropy column units are known debt.",
+      "indexing_policy": "uid is the stable detector identity; rows are not an external detector identifier.",
+      "missing_value_policy": "flag, flag2, convergence, and fit fields govern validity of numerical columns.",
+      "failure_policy": "Fatal for successful Beammap completion."
+    },
+    "beammap_fit_qc": {
+      "scientific_identity": "Per-detector Beammap fit inputs, bounds, priors, convergence, quality, and diagnostic decisions.",
+      "coordinate_frame": "Raw, prior, fitted, and derotated telescope-offset quantities are explicitly named.",
+      "axes": [
+        "detector"
+      ],
+      "units_policy": "Current units are recorded in ECSV table metadata; Astropy column units are known debt.",
+      "indexing_policy": "uid is the stable detector identity; slot indices are zero-based internal candidate slots.",
+      "missing_value_policy": "good_fit, converged, flag, flag2, and no-candidate reason fields govern validity.",
+      "failure_policy": "Fatal when Beammap fit-QC output is enabled in the active profile."
+    },
+    "beammap_detector_tod": {
+      "scientific_identity": "Bounded per-detector source-crossing processed timestream windows and slot metadata.",
+      "coordinate_frame": "Time samples indexed around source crossings with source distance and fitted telescope offsets.",
+      "axes": [
+        "detector",
+        "source-crossing slot",
+        "sample"
+      ],
+      "units_policy": "signal uses the PTC signal unit; source distances and fitted offsets use arcsec; flags are dimensionless.",
+      "indexing_policy": "Detector uid is explicit; slot, scan, and sample bounds are zero-based.",
+      "missing_value_policy": "detector_tod_n_samples bounds valid samples in each padded slot; flags mark invalid samples.",
+      "failure_policy": "Fatal when Beammap detector-TOD output is enabled."
+    },
+    "profile_timing": {
+      "scientific_identity": "Run stage/context elapsed-time instrumentation.",
+      "coordinate_frame": "Not applicable.",
+      "axes": [
+        "profile record"
+      ],
+      "units_policy": "elapsed_s is seconds.",
+      "indexing_policy": "index is a record identifier; naturally concurrent record order is not a scientific contract.",
+      "missing_value_policy": "No missing values expected in emitted rows.",
+      "failure_policy": "Optional operational diagnostic; absence does not invalidate scientific products."
+    },
+    "learning_diagnostics": {
+      "scientific_identity": "Bounded learning-policy diagnostic records for the active fruit-loop iteration.",
+      "coordinate_frame": "Depends on the named diagnostic record; not a map product.",
+      "axes": [
+        "diagnostic record"
+      ],
+      "units_policy": "Column-specific names and values define the current diagnostic schema.",
+      "indexing_policy": "Iteration in the filename is zero-based.",
+      "missing_value_policy": "Optional record types may be absent by policy.",
+      "failure_policy": "Optional diagnostic unless explicitly promoted by a future profile."
+    }
+  },
+  "checks": {
+    "basic_altaz_map": {
+      "min_hdus": 8,
+      "primary_bunit": "mJy/beam",
+      "required_extnames": [
+        "signal_I",
+        "weight_I",
+        "kernel_I",
+        "coverage_I",
+        "coverage_bool_I",
+        "sig2noise_I",
+        "sig2noise_pixel_I"
+      ],
+      "axis_types": [
+        "AZOFFSET",
+        "ELOFFSET",
+        "FREQ",
+        "STOKES"
+      ],
+      "axis_units": [
+        "arcsec",
+        "arcsec",
+        "Hz",
+        null
+      ]
+    },
+    "basic_celestial_map": {
+      "min_hdus": 8,
+      "primary_bunit": "mJy/beam",
+      "required_extnames": [
+        "signal_I",
+        "weight_I",
+        "kernel_I",
+        "coverage_I",
+        "coverage_bool_I",
+        "sig2noise_I",
+        "sig2noise_pixel_I"
+      ],
+      "axis_types": [
+        "RA---TAN",
+        "DEC--TAN",
+        "FREQ",
+        "STOKES"
+      ],
+      "axis_units": [
+        "deg",
+        "deg",
+        "Hz",
+        null
+      ]
+    },
+    "raw_map": {
+      "min_hdus": 10,
+      "primary_bunit": "mJy/beam",
+      "required_extnames": [
+        "signal_I",
+        "weight_I",
+        "weight_formal_I",
+        "noise_variance_I",
+        "kernel_I",
+        "coverage_I",
+        "coverage_bool_I",
+        "sig2noise_I",
+        "sig2noise_pixel_I"
+      ],
+      "axis_types": [
+        "AZOFFSET",
+        "ELOFFSET",
+        "FREQ",
+        "STOKES"
+      ],
+      "axis_units": [
+        "arcsec",
+        "arcsec",
+        "Hz",
+        null
+      ],
+      "ext_bunits": {
+        "signal_I": "mJy/beam",
+        "weight_I": "1/(mJy/beam)^2",
+        "weight_formal_I": "1/(mJy/beam)^2",
+        "noise_variance_I": "(mJy/beam)^2",
+        "kernel_I": "mJy/beam",
+        "coverage_I": "sec",
+        "coverage_bool_I": "N/A",
+        "sig2noise_I": "N/A",
+        "sig2noise_pixel_I": "N/A"
+      }
+    },
+    "filtered_map": {
+      "min_hdus": 13,
+      "primary_bunit": "mJy/beam",
+      "required_extnames": [
+        "signal_I",
+        "weight_I",
+        "weight_formal_I",
+        "noise_variance_I",
+        "kernel_I",
+        "coverage_I",
+        "coverage_bool_I",
+        "sig2noise_I",
+        "sig2noise_pixel_I",
+        "point_source_flux_I",
+        "point_source_uncertainty_I",
+        "sig2noise_point_source_I"
+      ],
+      "axis_types": [
+        "AZOFFSET",
+        "ELOFFSET",
+        "FREQ",
+        "STOKES"
+      ],
+      "axis_units": [
+        "arcsec",
+        "arcsec",
+        "Hz",
+        null
+      ]
+    },
+    "map_histogram": {
+      "required_dimensions": [
+        "n_bins"
+      ],
+      "positive_dimensions": [
+        "n_bins"
+      ],
+      "required_variables": [
+        "{array}_I_bins",
+        "{array}_I_hist",
+        "{array}_I_noise_hist"
+      ]
+    },
+    "map_histogram_signal_only": {
+      "required_dimensions": [
+        "n_bins"
+      ],
+      "positive_dimensions": [
+        "n_bins"
+      ],
+      "required_variables": [
+        "{array}_I_bins",
+        "{array}_I_hist"
+      ]
+    },
+    "map_psd": {
+      "required_dimensions": [
+        "{array}_I_nfreq"
+      ],
+      "positive_dimensions": [
+        "*_I_nfreq"
+      ],
+      "required_variables": [
+        "{array}_I_psd",
+        "{array}_I_psd_freq",
+        "{array}_I_psd_2d",
+        "{array}_I_psd_2d_freq"
+      ]
+    },
+    "map_diagnostics": {
+      "required_dimensions": [
+        "n_maps",
+        "n_obsnums"
+      ],
+      "positive_dimensions": [
+        "n_maps",
+        "n_obsnums"
+      ],
+      "required_variables": [
+        "map_array_name",
+        "map_stokes",
+        "map_name",
+        "map_median_rms",
+        "map_peak_signal",
+        "map_n_valid_pixels"
+      ]
+    },
+    "detector_stats": {
+      "required_dimensions": [
+        "n_dets",
+        "n_arrays",
+        "n_chunks"
+      ],
+      "positive_dimensions": [
+        "n_dets",
+        "n_arrays",
+        "n_chunks"
+      ],
+      "required_variables": [
+        "rms",
+        "stddev",
+        "median",
+        "flagged_frac",
+        "weights",
+        "apt_uid",
+        "apt_array",
+        "apt_flag"
+      ]
+    },
+    "rtc_diagnostics": {
+      "required_dimensions": [
+        "n_scans",
+        "n_dets",
+        "n_arrays",
+        "n_nws_rtcdiag"
+      ],
+      "positive_dimensions": [
+        "n_scans",
+        "n_dets"
+      ],
+      "required_variables": [
+        "output_scan_index",
+        "rtc_diag_array_ids",
+        "rtc_diag_network_ids",
+        "scan_duration_s"
+      ]
+    },
+    "ptc_diagnostics": {
+      "required_dimensions": [
+        "n_scans",
+        "n_dets"
+      ],
+      "positive_dimensions": [
+        "n_scans",
+        "n_dets"
+      ],
+      "required_variables": [
+        "output_scan_index",
+        "ptc_diag_uid",
+        "ptc_diag_array",
+        "ptc_diag_network",
+        "ptc_diag_apt_flag"
+      ]
+    },
+    "timestream": {
+      "required_dimensions": [
+        "n_pts",
+        "n_dets"
+      ],
+      "positive_dimensions": [
+        "n_pts",
+        "n_dets"
+      ],
+      "required_variables": [
+        "signal",
+        "flags",
+        "apt_uid",
+        "apt_array"
+      ]
+    },
+    "pointing_table": {
+      "row_count": "array_count",
+      "required_columns": [
+        "array",
+        "amp",
+        "amp_err",
+        "x_t",
+        "x_t_err",
+        "y_t",
+        "y_t_err",
+        "a_fwhm",
+        "a_fwhm_err",
+        "b_fwhm",
+        "b_fwhm_err",
+        "angle",
+        "angle_err",
+        "sig2noise"
+      ]
+    },
+    "beammap_detector_map": {
+      "min_hdus": 4,
+      "primary_bunit": "mJy/beam",
+      "required_extname_prefixes": [
+        "signal_det_",
+        "weight_det_",
+        "kernel_det_"
+      ],
+      "axis_types": [
+        "AZOFFSET",
+        "ELOFFSET",
+        "FREQ",
+        "STOKES"
+      ],
+      "axis_units": [
+        "arcsec",
+        "arcsec",
+        "Hz",
+        null
+      ]
+    },
+    "beammap_apt": {
+      "min_rows": 1,
+      "required_columns": [
+        "uid",
+        "array",
+        "nw",
+        "flag",
+        "flag2",
+        "amp",
+        "amp_err",
+        "x_t",
+        "y_t",
+        "a_fwhm",
+        "b_fwhm",
+        "angle",
+        "sig2noise",
+        "flxscale",
+        "sens"
+      ]
+    },
+    "beammap_fit_qc": {
+      "min_rows": 1,
+      "required_columns": [
+        "uid",
+        "array",
+        "nw",
+        "good_fit",
+        "converged",
+        "flag",
+        "flag2",
+        "amp",
+        "amp_err",
+        "fit_sig2noise",
+        "map_rms",
+        "map_sig2noise",
+        "x_t",
+        "y_t",
+        "a_fwhm",
+        "b_fwhm",
+        "angle"
+      ]
+    },
+    "beammap_detector_tod": {
+      "required_dimensions": [
+        "n_dets",
+        "n_detector_tod_slots",
+        "n_samples_max"
+      ],
+      "positive_dimensions": [
+        "n_dets",
+        "n_detector_tod_slots",
+        "n_samples_max"
+      ],
+      "required_variables": [
+        "detector_tod_uid",
+        "detector_tod_array",
+        "detector_tod_slot_kind",
+        "detector_tod_scan_index",
+        "detector_tod_n_samples",
+        "detector_tod_source_distance_arcsec",
+        "signal",
+        "flags"
+      ]
+    },
+    "profile_timing": {
+      "min_rows": 1,
+      "required_columns": [
+        "index",
+        "stage",
+        "context",
+        "elapsed_s"
+      ]
+    }
+  },
+  "contracts": [
+    {
+      "contract_id": "phase4-point-products-v1",
+      "profile_id": "phase4-point-152389-v1",
+      "mode": "point",
+      "arrays": [
+        "a1100",
+        "a1400",
+        "a2000"
+      ],
+      "minimum_observations": 1,
+      "entries": [
+        {
+          "entry_id": "raw-maps",
+          "family_id": "map_cube_altaz",
+          "scope": "per_observation_array",
+          "classification": "required",
+          "condition": "mapmaking executes for the observation",
+          "pattern": "{obs}/raw/*_{array}_pointing_{obs}_citlali.fits",
+          "check_id": "raw_map"
+        },
+        {
+          "entry_id": "filtered-maps",
+          "family_id": "map_cube_altaz",
+          "scope": "per_observation_array",
+          "classification": "config_conditional",
+          "condition": "post_processing.map_filtering.enabled=true",
+          "required_when": {
+            "path": "post_processing.map_filtering.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/filtered/*_{array}_pointing_{obs}_filtered_citlali.fits",
+          "check_id": "filtered_map"
+        },
+        {
+          "entry_id": "raw-pointing-table",
+          "family_id": "pointing_fit_table",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "pointing reductions publish a raw fit table",
+          "pattern": "{obs}/raw/ppt_*_pointing_{obs}_citlali.ecsv",
+          "check_id": "pointing_table"
+        },
+        {
+          "entry_id": "filtered-pointing-table",
+          "family_id": "pointing_fit_table",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "post_processing.map_filtering.enabled=true",
+          "required_when": {
+            "path": "post_processing.map_filtering.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/filtered/ppt_*_pointing_{obs}_filtered_citlali.ecsv",
+          "check_id": "pointing_table"
+        },
+        {
+          "entry_id": "raw-histogram",
+          "family_id": "map_histogram",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "raw point map output includes histogram diagnostics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_hist.nc",
+          "check_id": "map_histogram"
+        },
+        {
+          "entry_id": "filtered-histogram",
+          "family_id": "map_histogram",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "post_processing.map_filtering.enabled=true",
+          "required_when": {
+            "path": "post_processing.map_filtering.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/filtered/*_pointing_{obs}_hist_filtered.nc",
+          "check_id": "map_histogram"
+        },
+        {
+          "entry_id": "raw-psd",
+          "family_id": "map_psd",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "raw point map output includes PSD diagnostics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_psd.nc",
+          "check_id": "map_psd"
+        },
+        {
+          "entry_id": "filtered-psd",
+          "family_id": "map_psd",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "post_processing.map_filtering.enabled=true",
+          "required_when": {
+            "path": "post_processing.map_filtering.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/filtered/*_pointing_{obs}_psd_filtered.nc",
+          "check_id": "map_psd"
+        },
+        {
+          "entry_id": "raw-map-diagnostics",
+          "family_id": "map_diagnostics",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "raw point map output includes map diagnostics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_mapdiag.nc",
+          "check_id": "map_diagnostics"
+        },
+        {
+          "entry_id": "filtered-map-diagnostics",
+          "family_id": "map_diagnostics",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "post_processing.map_filtering.enabled=true",
+          "required_when": {
+            "path": "post_processing.map_filtering.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/filtered/*_pointing_{obs}_mapdiag_filtered.nc",
+          "check_id": "map_diagnostics"
+        },
+        {
+          "entry_id": "detector-statistics",
+          "family_id": "detector_stats",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "point processing publishes detector statistics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_stats.nc",
+          "check_id": "detector_stats"
+        },
+        {
+          "entry_id": "rtc-diagnostics",
+          "family_id": "rtc_diagnostics",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "point processing publishes RTC diagnostics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_rtcdiag.nc",
+          "check_id": "rtc_diagnostics"
+        },
+        {
+          "entry_id": "ptc-diagnostics",
+          "family_id": "ptc_diagnostics",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "point processing publishes PTC diagnostics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_ptcdiag.nc",
+          "check_id": "ptc_diagnostics"
+        },
+        {
+          "entry_id": "rtc-timestream",
+          "family_id": "rtc_timestream",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "timestream.raw_time_chunk.output.enabled=true",
+          "required_when": {
+            "path": "timestream.raw_time_chunk.output.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/raw/*_pointing_{obs}_rtc_timestream.nc",
+          "check_id": "timestream"
+        },
+        {
+          "entry_id": "ptc-timestream",
+          "family_id": "ptc_timestream",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "timestream.processed_time_chunk.output.enabled=true",
+          "required_when": {
+            "path": "timestream.processed_time_chunk.output.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/raw/*_pointing_{obs}_ptc_timestream.nc",
+          "check_id": "timestream"
+        },
+        {
+          "entry_id": "profile-timing",
+          "family_id": "profile_timing",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "profiling output is available",
+          "pattern": "citlali_profile.ecsv",
+          "check_id": "profile_timing"
+        },
+        {
+          "entry_id": "learning-diagnostics",
+          "family_id": "learning_diagnostics",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "learning diagnostics are enabled for the iteration",
+          "pattern": "learning_iter_*.csv",
+          "max_matches": null
+        }
+      ]
+    },
+    {
+      "contract_id": "phase4-oof-products-v1",
+      "profile_id": "phase4-oof-152385-152387-v1",
+      "mode": "oof",
+      "arrays": [
+        "a1100",
+        "a1400",
+        "a2000"
+      ],
+      "minimum_observations": 1,
+      "entries": [
+        {
+          "entry_id": "raw-maps",
+          "family_id": "map_cube_altaz",
+          "scope": "per_observation_array",
+          "classification": "required",
+          "condition": "mapmaking executes for each OOF support observation",
+          "pattern": "{obs}/raw/*_{array}_pointing_{obs}_citlali.fits",
+          "check_id": "basic_altaz_map"
+        },
+        {
+          "entry_id": "pointing-table",
+          "family_id": "pointing_fit_table",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "OOF uses the pointing fit path for each support observation",
+          "pattern": "{obs}/raw/ppt_*_pointing_{obs}_citlali.ecsv",
+          "check_id": "pointing_table"
+        },
+        {
+          "entry_id": "histogram",
+          "family_id": "map_histogram",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "OOF map output includes histogram diagnostics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_hist.nc",
+          "check_id": "map_histogram_signal_only"
+        },
+        {
+          "entry_id": "psd",
+          "family_id": "map_psd",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "OOF map output includes PSD diagnostics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_psd.nc",
+          "check_id": "map_psd"
+        },
+        {
+          "entry_id": "map-diagnostics",
+          "family_id": "map_diagnostics",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "OOF map output includes map diagnostics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_mapdiag.nc",
+          "check_id": "map_diagnostics"
+        },
+        {
+          "entry_id": "detector-statistics",
+          "family_id": "detector_stats",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "OOF processing publishes detector statistics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_stats.nc",
+          "check_id": "detector_stats"
+        },
+        {
+          "entry_id": "rtc-diagnostics",
+          "family_id": "rtc_diagnostics",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "OOF processing publishes RTC diagnostics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_rtcdiag.nc",
+          "check_id": "rtc_diagnostics"
+        },
+        {
+          "entry_id": "ptc-diagnostics",
+          "family_id": "ptc_diagnostics",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "OOF processing publishes PTC diagnostics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_ptcdiag.nc",
+          "check_id": "ptc_diagnostics"
+        },
+        {
+          "entry_id": "profile-timing",
+          "family_id": "profile_timing",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "profiling output is available",
+          "pattern": "citlali_profile.ecsv",
+          "check_id": "profile_timing"
+        },
+        {
+          "entry_id": "learning-diagnostics",
+          "family_id": "learning_diagnostics",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "learning diagnostics are enabled for the iteration",
+          "pattern": "learning_iter_*.csv",
+          "max_matches": null
+        }
+      ]
+    },
+    {
+      "contract_id": "phase4-science-products-v1",
+      "profile_id": "phase4-science-152390-152392-v1",
+      "mode": "science",
+      "arrays": [
+        "a1100",
+        "a1400",
+        "a2000"
+      ],
+      "minimum_observations": 1,
+      "entries": [
+        {
+          "entry_id": "observation-raw-maps",
+          "family_id": "map_cube_celestial",
+          "scope": "per_observation_array",
+          "classification": "required",
+          "condition": "mapmaking executes for the observation",
+          "pattern": "{obs}/raw/*_{array}_science_{obs}_citlali.fits",
+          "check_id": "basic_celestial_map"
+        },
+        {
+          "entry_id": "observation-histogram",
+          "family_id": "map_histogram",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "science observation maps include histogram diagnostics",
+          "pattern": "{obs}/raw/*_science_{obs}_hist.nc",
+          "check_id": "map_histogram"
+        },
+        {
+          "entry_id": "observation-psd",
+          "family_id": "map_psd",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "science observation maps include PSD diagnostics",
+          "pattern": "{obs}/raw/*_science_{obs}_psd.nc",
+          "check_id": "map_psd"
+        },
+        {
+          "entry_id": "observation-map-diagnostics",
+          "family_id": "map_diagnostics",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "science observation maps include map diagnostics",
+          "pattern": "{obs}/raw/*_science_{obs}_mapdiag.nc",
+          "check_id": "map_diagnostics"
+        },
+        {
+          "entry_id": "observation-detector-statistics",
+          "family_id": "detector_stats",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "science observation processing publishes detector statistics",
+          "pattern": "{obs}/raw/*_science_{obs}_stats.nc",
+          "check_id": "detector_stats"
+        },
+        {
+          "entry_id": "observation-rtc-diagnostics",
+          "family_id": "rtc_diagnostics",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "science observation processing publishes RTC diagnostics",
+          "pattern": "{obs}/raw/*_science_{obs}_rtcdiag.nc",
+          "check_id": "rtc_diagnostics"
+        },
+        {
+          "entry_id": "observation-ptc-diagnostics",
+          "family_id": "ptc_diagnostics",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "science observation processing publishes PTC diagnostics",
+          "pattern": "{obs}/raw/*_science_{obs}_ptcdiag.nc",
+          "check_id": "ptc_diagnostics"
+        },
+        {
+          "entry_id": "coadded-raw-maps",
+          "family_id": "map_cube_celestial",
+          "scope": "per_array",
+          "classification": "config_conditional",
+          "condition": "coadd.enabled=true",
+          "required_when": {
+            "path": "coadd.enabled",
+            "equals": true
+          },
+          "pattern": "coadded/raw/*_{array}_citlali.fits",
+          "check_id": "basic_celestial_map"
+        },
+        {
+          "entry_id": "coadded-filtered-maps",
+          "family_id": "map_cube_celestial",
+          "scope": "per_array",
+          "classification": "config_conditional",
+          "condition": "coadd and post_processing.map_filtering are enabled",
+          "required_when": {
+            "all": [
+              {
+                "path": "coadd.enabled",
+                "equals": true
+              },
+              {
+                "path": "post_processing.map_filtering.enabled",
+                "equals": true
+              }
+            ]
+          },
+          "pattern": "coadded/filtered/*_{array}_filtered_citlali.fits",
+          "check_id": "basic_celestial_map"
+        },
+        {
+          "entry_id": "coadded-histogram",
+          "family_id": "map_histogram",
+          "scope": "reduction",
+          "classification": "config_conditional",
+          "condition": "coadd.enabled=true",
+          "required_when": {
+            "path": "coadd.enabled",
+            "equals": true
+          },
+          "pattern": "coadded/raw/*_hist.nc",
+          "check_id": "map_histogram"
+        },
+        {
+          "entry_id": "coadded-psd",
+          "family_id": "map_psd",
+          "scope": "reduction",
+          "classification": "config_conditional",
+          "condition": "coadd.enabled=true",
+          "required_when": {
+            "path": "coadd.enabled",
+            "equals": true
+          },
+          "pattern": "coadded/raw/*_psd.nc",
+          "check_id": "map_psd"
+        },
+        {
+          "entry_id": "coadded-map-diagnostics",
+          "family_id": "map_diagnostics",
+          "scope": "reduction",
+          "classification": "config_conditional",
+          "condition": "coadd.enabled=true",
+          "required_when": {
+            "path": "coadd.enabled",
+            "equals": true
+          },
+          "pattern": "coadded/raw/*_mapdiag.nc",
+          "check_id": "map_diagnostics"
+        },
+        {
+          "entry_id": "profile-timing",
+          "family_id": "profile_timing",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "profiling output is available",
+          "pattern": "citlali_profile.ecsv",
+          "check_id": "profile_timing"
+        },
+        {
+          "entry_id": "learning-diagnostics",
+          "family_id": "learning_diagnostics",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "learning diagnostics are enabled for the iteration",
+          "pattern": "learning_iter_*.csv",
+          "max_matches": null
+        }
+      ]
+    },
+    {
+      "contract_id": "phase4-beammap-products-v1",
+      "profile_id": "phase4-beammap-148670-v1",
+      "mode": "beammap",
+      "arrays": [
+        "a1100",
+        "a1400",
+        "a2000"
+      ],
+      "minimum_observations": 1,
+      "entries": [
+        {
+          "entry_id": "good-detector-maps",
+          "family_id": "beammap_detector_cube",
+          "scope": "per_observation_array",
+          "classification": "config_conditional",
+          "condition": "beammap.split_fits_by_flag.enabled=true",
+          "required_when": {
+            "path": "beammap.split_fits_by_flag.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/raw/*_{array}_beammap_{obs}_citlali_flag0_good.fits",
+          "check_id": "beammap_detector_map"
+        },
+        {
+          "entry_id": "bad-detector-maps",
+          "family_id": "beammap_detector_cube",
+          "scope": "per_observation_array",
+          "classification": "config_conditional",
+          "condition": "beammap.split_fits_by_flag.enabled=true",
+          "required_when": {
+            "path": "beammap.split_fits_by_flag.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/raw/*_{array}_beammap_{obs}_citlali_flag1_bad.fits",
+          "check_id": "beammap_detector_map"
+        },
+        {
+          "entry_id": "final-apt",
+          "family_id": "beammap_apt_table",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "Beammap detector fitting completes",
+          "pattern": "{obs}/raw/apt_*_beammap_{obs}_citlali.ecsv",
+          "check_id": "beammap_apt"
+        },
+        {
+          "entry_id": "fit-qc",
+          "family_id": "beammap_fit_qc",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "Beammap detector fitting publishes fit-QC",
+          "pattern": "{obs}/raw/apt_*_beammap_{obs}_citlali_fit_qc.ecsv",
+          "check_id": "beammap_fit_qc"
+        },
+        {
+          "entry_id": "detector-statistics",
+          "family_id": "detector_stats",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "Beammap processing publishes detector statistics",
+          "pattern": "{obs}/raw/*_beammap_{obs}_stats.nc",
+          "check_id": "detector_stats"
+        },
+        {
+          "entry_id": "source-crossing-detector-tod",
+          "family_id": "beammap_detector_tod",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "beammap.detector_tod_output.enabled=true",
+          "required_when": {
+            "path": "beammap.detector_tod_output.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/raw/source_crossing_tod/*_beammap_{obs}_ptc_detector_tod.nc",
+          "check_id": "beammap_detector_tod"
+        },
+        {
+          "entry_id": "source-crossing-rtc-diagnostics",
+          "family_id": "rtc_diagnostics",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "beammap.detector_tod_output.enabled=true",
+          "required_when": {
+            "path": "beammap.detector_tod_output.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/raw/source_crossing_tod/*_beammap_{obs}_rtcdiag.nc",
+          "check_id": "rtc_diagnostics"
+        },
+        {
+          "entry_id": "source-crossing-ptc-diagnostics",
+          "family_id": "ptc_diagnostics",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "beammap.detector_tod_output.enabled=true",
+          "required_when": {
+            "path": "beammap.detector_tod_output.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/raw/source_crossing_tod/*_beammap_{obs}_ptcdiag.nc",
+          "check_id": "ptc_diagnostics"
+        },
+        {
+          "entry_id": "profile-timing",
+          "family_id": "profile_timing",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "profiling output is available",
+          "pattern": "citlali_profile.ecsv",
+          "check_id": "profile_timing"
+        },
+        {
+          "entry_id": "learning-diagnostics",
+          "family_id": "learning_diagnostics",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "learning diagnostics are enabled for the iteration",
+          "pattern": "learning_iter_*.csv",
+          "max_matches": null
+        }
+      ]
+    }
+  ]
+}

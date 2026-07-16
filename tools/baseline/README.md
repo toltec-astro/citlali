@@ -11,7 +11,8 @@ profile in `validation/validation_profiles.json`, then runs:
 
 1. the completed-run and required-provenance audit;
 2. an exact comparison of the merged low-level Citlali YAML;
-3. the profile-pinned product comparator and tolerances.
+3. the profile-pinned scientific product contract; and
+4. the profile-pinned numerical product comparator and tolerances.
 
 List the active profiles:
 
@@ -31,9 +32,19 @@ $HOME/tolteca/bin/python tools/baseline/validate_reduction.py \
 ```
 
 Use `--baseline` when the ledger's accepted local path is unavailable on the
-current host. A zero exit status means all three gates passed. This command
+current host. A zero exit status means all four gates passed. This command
 delegates scientific comparison to the existing mode-specific tools; it does
 not introduce a second comparison implementation.
+
+The product-contract gate reads the candidate's generated `citlali_o*.yaml`.
+Products controlled by explicit output switches are required when requested
+and forbidden when disabled. Unconditional mode products remain required and
+genuinely optional diagnostics may be absent. The versioned registry in
+`validation/product_contracts.json` also records family identity, coordinate
+frame, axes, units policy, indexing, missing-value policy, and write-failure
+policy. See
+`doc/PHASE4_SCIENTIFIC_PRODUCT_CONTRACT_2026-07-16.md` for the contract scope
+and known metadata debt.
 
 Accepted profiles are versioned snapshots. Future intentional product changes
 create successor validation epochs with a predecessor comparison and recorded

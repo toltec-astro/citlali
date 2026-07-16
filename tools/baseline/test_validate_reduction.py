@@ -54,6 +54,22 @@ class ValidateReductionTest(unittest.TestCase):
         self.assertIn("--require-raw-provenance", command)
         self.assertIn("--require-config-source-manifest", command)
 
+    def test_contract_command_uses_profile_contract(self) -> None:
+        profile = profile_by_id(self.registry, "phase4-oof-152385-152387-v1")
+        command = validate.build_contract_command(
+            profile, Path("/candidate"), Path("/result.json")
+        )
+
+        self.assertTrue(command[1].endswith("validate_product_contract.py"))
+        self.assertEqual(
+            command[command.index("--contract") + 1],
+            "phase4-oof-products-v1",
+        )
+        self.assertEqual(
+            Path(command[command.index("--registry") + 1]),
+            REPO_ROOT / "validation/product_contracts.json",
+        )
+
     def test_config_command_requires_one_lowlevel_file(self) -> None:
         profile = profile_by_id(self.registry, "phase4-point-152389-v1")
         with tempfile.TemporaryDirectory() as directory:

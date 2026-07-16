@@ -113,6 +113,19 @@ Future intentional algorithm, default, schema, or product changes create a
 successor epoch with a predecessor comparison and explicit scientific
 rationale instead of silently replacing a baseline or loosening its policy.
 
+The profile command now includes a fourth, versioned scientific-product
+contract gate. `validation/product_contracts.json` classifies all accepted
+FITS, NetCDF, ECSV, and CSV products: point 21/21, OOF 31/31, science 28/28,
+and Beammap 13/13. Configuration-controlled families are evaluated against the
+generated merged low-level YAML in both directions: requested output must be
+present and disabled output must be absent. Products without an independent
+switch remain required companions of their parent output; operational timing
+and bounded learning records remain optional diagnostics. The contract records
+scientific identity, coordinate frame, axes, units, indexing, missing-value,
+and fatal required-write policies while naming existing metadata debt rather
+than inventing semantics. See the
+[scientific product contract](PHASE4_SCIENTIFIC_PRODUCT_CONTRACT_2026-07-16.md).
+
 The controlled-performance evidence path is now specified without touching
 deferred compilation infrastructure. A Unity-side wrapper records GNU Time
 wall/RSS/I/O data together with Citlali log time, exact config leaves, bounded

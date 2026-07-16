@@ -32,11 +32,12 @@ successor comparisons against the accepted refactor snapshot.
 
 ## Entry Point
 
-`tools/baseline/validate_reduction.py` performs three gates:
+`tools/baseline/validate_reduction.py` performs four gates:
 
 1. completion and required-provenance audit;
 2. exact merged low-level YAML comparison;
-3. profile-pinned product comparison.
+3. profile-pinned scientific product-contract validation; and
+4. profile-pinned numerical product comparison.
 
 It resolves the accepted baseline through `validation/accepted_runs.json` and
 `validation/validation_profiles.json`. Use `--baseline` when the ledger's local
@@ -46,7 +47,7 @@ artifact path is unavailable on the current host.
 
 - The validation ledger contains 60 valid records.
 - The profile registry validates with four active modes.
-- All 74 baseline-tool unit tests pass.
+- All 99 baseline-tool unit tests pass.
 - All four profiles pass an end-to-end self-check against their accepted
   snapshots, including complete Beammap products.
 - The unified command also accepts point `redu66` against predecessor `redu65`
@@ -101,3 +102,16 @@ outcome identity per run. Analyze performance against workload and preserve
 same-observation pairings where possible; unlike observations are not repeated
 timing trials. The census will establish a future-release baseline but is not a
 Phase 4 closeout prerequisite.
+
+The scientific product census is now machine-readable in
+`validation/product_contracts.json`. It classifies every FITS, NetCDF, ECSV,
+and CSV product in the four accepted snapshots: point 21/21, OOF 31/31,
+science 28/28, and Beammap 13/13. Explicit output switches are evaluated from
+the generated low-level YAML, so requested products must be present and
+disabled products must be absent. Core companion diagnostics without an
+independent switch remain required; profile timing and bounded learning CSVs
+remain optional. The contracts record scientific identity, frames, axes,
+units policy, indexing, missing-value policy, and fatal required-write policy.
+Known incomplete NetCDF units/fill metadata and ECSV column-unit metadata are
+documented debt, not silently invented semantics. See
+`doc/PHASE4_SCIENTIFIC_PRODUCT_CONTRACT_2026-07-16.md`.
