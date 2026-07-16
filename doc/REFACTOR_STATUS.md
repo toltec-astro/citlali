@@ -91,6 +91,16 @@ Unity point `redu66` accepts the output-root ownership repair and exact
 scientific behavior at the first compiled boundary. Phase 2 config authority
 and provenance remains complete at Unity point `redu62`.
 
+Compilation-side Phase 4 work is explicitly deferred as of 2026-07-16 pending
+review of the TolTECA developer's revised C++ build and integration approach.
+Do not change Citlali CMake structure, presets, dependency management, CI build
+lanes, install/export rules, or cluster build helpers until that direction is
+understood. This is a sequencing decision, not acceptance of the current build
+as the final reproducible-build solution. Phase 4 continues meanwhile through
+strict validation, current baseline/ledger work, controlled performance
+evidence, and scientific-contract documentation that is independent of the
+eventual compilation strategy.
+
 Phase 1 safety stabilization is complete for point, Beammap, science, and OOF.
 OOF refactor `redu01` closes the multi-observation date-header gate and is the
 accepted comparison against OG `redu00`. Do not reopen typed analysis-control
