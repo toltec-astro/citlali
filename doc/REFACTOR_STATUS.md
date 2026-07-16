@@ -62,7 +62,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 454 tests. All 96 config-boundary/preflight
+- CTest discovers and passes all 455 tests. All 96 config-boundary/preflight
   tests pass; the checked leaf contract covers 573 leaves and the generated
   startup schema covers 724 normalized YAML nodes.
 
@@ -228,6 +228,26 @@ and map-to-TOD loops are unchanged. All three local targets build, all 454
 CTests pass, and the session audit is down to 11 library exits, all in serial
 or OpenMP Wiener filtering. This change shares the pending science and Beammap
 fruit-loop acceptance runs.
+
+The Wiener failure-boundary tranche is locally complete. Shared runtime
+contracts cover serial and OpenMP template geometry, pixel spacing,
+kernel/weight identity and shape, finite kernel peaks, and FFTW resource
+creation. The OpenMP allocation path captures exceptions inside each worker,
+synchronizes before worksharing, and rethrows only after leaving the parallel
+region; partial FFTW resources are reset before failure. Valid filtering and
+denominator arithmetic are unchanged. All three local targets build, all 455
+CTests pass, full config preflight passes, and the conservative session audit
+now reports zero dependency-reachable library or CLI exits. Standard point,
+Wiener-enabled science, and fruit-loop Beammap validation remain required
+before accepting these final mature tranches.
+
+The exit audit now also scans every implementation source under
+`src/citlali/core`, closing a blind spot in the original header-reachability
+census. The wider scan found and retired three invalid APT-table exits and one
+invalid Lissajous chunk exit. Manual review confines the remaining textual
+exits to successful CLI help/version handling and two legacy main programs that
+CMake does not build. No supported non-CLI path retains explicit process
+termination.
 
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution

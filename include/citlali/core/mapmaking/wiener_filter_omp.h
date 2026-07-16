@@ -2,9 +2,9 @@
 
 #include <string>
 #include <complex>
-#include <cstdlib>
 #include <chrono>
 #include <algorithm>
+#include <exception>
 #include <map>
 #include <memory>
 #include <vector>
@@ -28,6 +28,7 @@
 #include <citlali/core/utils/gauss_models.h>
 #include <citlali/core/utils/fitting.h>
 #include <citlali/core/mapmaking/edge_guard_state.h>
+#include <citlali/core/pipeline/wiener_filter_validation.h>
 
 namespace mapmaking {
 
@@ -153,23 +154,13 @@ public:
         n_rows = mb.n_rows;
         n_cols = mb.n_cols;
 
-        if (n_rows < 2 || n_cols < 2 ||
-            mb.rows_tan_vec.size() < 2 || mb.cols_tan_vec.size() < 2) {
-            logger->error("invalid map geometry for Wiener template: map_index={} n_rows={} n_cols={} rows_size={} cols_size={}",
-                          map_index, n_rows, n_cols,
-                          static_cast<long long>(mb.rows_tan_vec.size()),
-                          static_cast<long long>(mb.cols_tan_vec.size()));
-            std::exit(EXIT_FAILURE);
-        }
+        citlali::pipeline::require_wiener_template_geometry(
+            n_rows, n_cols, mb.rows_tan_vec.size(), mb.cols_tan_vec.size());
 
         // x and y spacing should be equal
         diff_rows = std::abs(mb.rows_tan_vec(1) - mb.rows_tan_vec(0));
         diff_cols = std::abs(mb.cols_tan_vec(1) - mb.cols_tan_vec(0));
-        if (!std::isfinite(diff_rows) || !std::isfinite(diff_cols) || diff_rows <= 0.0 || diff_cols <= 0.0) {
-            logger->error("invalid tangent-plane spacing for Wiener template: map_index={} diff_rows={} diff_cols={}",
-                          map_index, diff_rows, diff_cols);
-            std::exit(EXIT_FAILURE);
-        }
+        citlali::pipeline::require_wiener_pixel_spacing(diff_rows, diff_cols);
 
         // highpass template
         if (template_type=="highpass") {
@@ -193,14 +184,8 @@ public:
         // kernel template
         else {
             logger->info("creating template from kernel map");
-            if (map_index < 0 || map_index >= static_cast<int>(mb.kernel.size()) ||
-                map_index >= static_cast<int>(mb.weight.size())) {
-                logger->error("kernel template requested but kernel/weight map index is invalid: map_index={} kernel_size={} weight_size={}",
-                              map_index,
-                              static_cast<long long>(mb.kernel.size()),
-                              static_cast<long long>(mb.weight.size()));
-                std::exit(EXIT_FAILURE);
-            }
+            citlali::pipeline::require_wiener_kernel_weight_index(
+                map_index, mb.kernel.size(), mb.weight.size());
             make_kernel_template(mb, map_index, calib_data);
         }
         invalidate_template_fft_cache();
@@ -743,11 +728,17 @@ inline WienerFilter::FFTWContext &WienerFilter::get_thread_fft_context(int rows,
                 ctx.reset();
                 ctx.a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * rows * cols);
                 ctx.b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * rows * cols);
+                if (ctx.a == nullptr || ctx.b == nullptr) {
+                    ctx.reset();
+                    citlali::pipeline::require_wiener_fftw_context(
+                        false, rows, cols);
+                }
                 ctx.pf = fftw_plan_dft_2d(rows, cols, ctx.a, ctx.b, FFTW_FORWARD, FFTW_ESTIMATE);
                 ctx.pr = fftw_plan_dft_2d(rows, cols, ctx.a, ctx.b, FFTW_BACKWARD, FFTW_ESTIMATE);
-                if (ctx.a == nullptr || ctx.b == nullptr || ctx.pf == nullptr || ctx.pr == nullptr) {
-                    SPDLOG_ERROR("failed to create FFTW thread context for rows={} cols={}", rows, cols);
-                    std::exit(EXIT_FAILURE);
+                if (ctx.pf == nullptr || ctx.pr == nullptr) {
+                    ctx.reset();
+                    citlali::pipeline::require_wiener_fftw_context(
+                        false, rows, cols);
                 }
                 ctx.n_rows = rows;
                 ctx.n_cols = cols;
@@ -952,23 +943,13 @@ void WienerFilter::make_airy_template(MB &mb, const double gaussian_template_fwh
 template<class MB, class CD>
 void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_data) {
     logger->info("building kernel template internals for map_index={}", map_index);
-    if (map_index < 0 || map_index >= static_cast<int>(mb.kernel.size()) ||
-        map_index >= static_cast<int>(mb.weight.size())) {
-        logger->error("invalid map index for kernel template: map_index={} kernel_size={} weight_size={}",
-                      map_index,
-                      static_cast<long long>(mb.kernel.size()),
-                      static_cast<long long>(mb.weight.size()));
-        std::exit(EXIT_FAILURE);
-    }
-    if (mb.kernel[map_index].rows() != n_rows || mb.kernel[map_index].cols() != n_cols ||
-        mb.weight[map_index].rows() != n_rows || mb.weight[map_index].cols() != n_cols) {
-        logger->error("kernel/weight dimensions do not match map geometry for map_index={}: kernel=({}, {}) weight=({}, {}) expected=({}, {})",
-                      map_index,
-                      static_cast<long long>(mb.kernel[map_index].rows()), static_cast<long long>(mb.kernel[map_index].cols()),
-                      static_cast<long long>(mb.weight[map_index].rows()), static_cast<long long>(mb.weight[map_index].cols()),
-                      n_rows, n_cols);
-        std::exit(EXIT_FAILURE);
-    }
+    citlali::pipeline::require_wiener_kernel_weight_index(
+        map_index, mb.kernel.size(), mb.weight.size());
+    citlali::pipeline::require_wiener_kernel_geometry(
+        map_index,
+        mb.kernel[map_index].rows(), mb.kernel[map_index].cols(),
+        mb.weight[map_index].rows(), mb.weight[map_index].cols(),
+        n_rows, n_cols);
 
     // collect what we need
     Eigen::MatrixXd temp_kernel = mb.kernel[map_index];
@@ -978,10 +959,8 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
     Eigen::Index peak_row = 0;
     Eigen::Index peak_col = 0;
     const double peak_abs = temp_kernel.cwiseAbs().maxCoeff(&peak_row, &peak_col);
-    if (!std::isfinite(peak_abs)) {
-        logger->error("kernel template peak is non-finite for map_index={}", map_index);
-        std::exit(EXIT_FAILURE);
-    }
+    citlali::pipeline::require_finite_wiener_kernel_peak(
+        peak_abs, map_index);
     const Eigen::Index center_row = n_rows / 2;
     const Eigen::Index center_col = n_cols / 2;
     Eigen::Index shift_row = center_row - peak_row;
@@ -1446,42 +1425,60 @@ void WienerFilter::calc_denominator() {
                 partial.setZero();
             }
 
-            #pragma omp parallel shared(shift_rows_desc, shift_cols_desc, scales_desc, chunk_start, chunk_end, n_rows, n_cols, denom_partials, filter_template, rr) default (none)
+            std::exception_ptr fftw_context_error;
+            #pragma omp parallel shared(shift_rows_desc, shift_cols_desc, scales_desc, chunk_start, chunk_end, n_rows, n_cols, denom_partials, filter_template, rr, fftw_context_error) default (none)
             {
-                auto &ctx = get_thread_fft_context(n_rows, n_cols);
-                const int thread_id = omp_get_thread_num();
-                auto &denom_local = denom_partials[thread_id];
-                Eigen::MatrixXcd in_local(n_rows, n_cols);
-                Eigen::MatrixXcd out_local(n_rows, n_cols);
-                Eigen::MatrixXcd ffdq(n_rows, n_cols);
-                Eigen::MatrixXd in_prod(n_rows, n_cols);
-                Eigen::MatrixXd shifted_template(n_rows, n_cols);
-                Eigen::MatrixXd shifted_rr(n_rows, n_cols);
-
-                #pragma omp for schedule(static)
-                for (Eigen::Index kk = chunk_start; kk < chunk_end; ++kk) {
-                    const auto shift_row = shift_rows_desc[kk];
-                    const auto shift_col = shift_cols_desc[kk];
-
-                    engine_utils::shift_2D_into(filter_template, shift_row, shift_col, shifted_template);
-                    in_prod = filter_template.array() * shifted_template.array();
-                    in_local.real() = in_prod;
-                    in_local.imag().setZero();
-                    engine_utils::fft2_into<engine_utils::forward>(in_local, out_local, ctx.pf, ctx.a, ctx.b);
-                    ffdq = out_local;
-
-                    engine_utils::shift_2D_into(rr, shift_row, shift_col, shifted_rr);
-                    in_prod = rr.array() * shifted_rr.array();
-                    in_local.real() = in_prod;
-                    in_local.imag().setZero();
-                    engine_utils::fft2_into<engine_utils::forward>(in_local, out_local, ctx.pf, ctx.a, ctx.b);
-
-                    in_local.real() = ffdq.real().array() * out_local.real().array() + ffdq.imag().array() * out_local.imag().array();
-                    in_local.imag() = -ffdq.imag().array() * out_local.real().array() + ffdq.real().array() * out_local.imag().array();
-                    engine_utils::fft2_into<engine_utils::inverse>(in_local, out_local, ctx.pr, ctx.a, ctx.b);
-
-                    denom_local.array() += scales_desc[kk] * out_local.real().array();
+                FFTWContext *ctx = nullptr;
+                try {
+                    ctx = &get_thread_fft_context(n_rows, n_cols);
+                } catch (...) {
+                    #pragma omp critical (wfFFTWContextError)
+                    {
+                        if (!fftw_context_error) {
+                            fftw_context_error = std::current_exception();
+                        }
+                    }
                 }
+
+                #pragma omp barrier
+                if (!fftw_context_error) {
+                    const int thread_id = omp_get_thread_num();
+                    auto &denom_local = denom_partials[thread_id];
+                    Eigen::MatrixXcd in_local(n_rows, n_cols);
+                    Eigen::MatrixXcd out_local(n_rows, n_cols);
+                    Eigen::MatrixXcd ffdq(n_rows, n_cols);
+                    Eigen::MatrixXd in_prod(n_rows, n_cols);
+                    Eigen::MatrixXd shifted_template(n_rows, n_cols);
+                    Eigen::MatrixXd shifted_rr(n_rows, n_cols);
+
+                    #pragma omp for schedule(static)
+                    for (Eigen::Index kk = chunk_start; kk < chunk_end; ++kk) {
+                        const auto shift_row = shift_rows_desc[kk];
+                        const auto shift_col = shift_cols_desc[kk];
+
+                        engine_utils::shift_2D_into(filter_template, shift_row, shift_col, shifted_template);
+                        in_prod = filter_template.array() * shifted_template.array();
+                        in_local.real() = in_prod;
+                        in_local.imag().setZero();
+                        engine_utils::fft2_into<engine_utils::forward>(in_local, out_local, ctx->pf, ctx->a, ctx->b);
+                        ffdq = out_local;
+
+                        engine_utils::shift_2D_into(rr, shift_row, shift_col, shifted_rr);
+                        in_prod = rr.array() * shifted_rr.array();
+                        in_local.real() = in_prod;
+                        in_local.imag().setZero();
+                        engine_utils::fft2_into<engine_utils::forward>(in_local, out_local, ctx->pf, ctx->a, ctx->b);
+
+                        in_local.real() = ffdq.real().array() * out_local.real().array() + ffdq.imag().array() * out_local.imag().array();
+                        in_local.imag() = -ffdq.imag().array() * out_local.real().array() + ffdq.real().array() * out_local.imag().array();
+                        engine_utils::fft2_into<engine_utils::inverse>(in_local, out_local, ctx->pr, ctx->a, ctx->b);
+
+                        denom_local.array() += scales_desc[kk] * out_local.real().array();
+                    }
+                }
+            }
+            if (fftw_context_error) {
+                std::rethrow_exception(fftw_context_error);
             }
 
             delta_since_check.setZero();

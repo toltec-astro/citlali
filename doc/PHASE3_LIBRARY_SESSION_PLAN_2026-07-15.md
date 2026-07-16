@@ -68,9 +68,10 @@ reaches every production profiling scope and sidecar operation. The temporary
 process-static collector and implicit adapter are deleted. Sequential-run tests
 prove reset isolation, and a pipeline test verifies representative reduction,
 observation, and map-output records in the supplied collector. Local CLI and
-test builds, all 448 CTests, and full config preflight pass. Step 3 is accepted
-only after a Unity point reduction confirms unchanged products and profile
-sidecar behavior.
+test builds and full config preflight pass. Unity point `redu63` accepts step 3
+with exact scientific products and the same 76 profile stage/context records as
+`redu62`; elapsed values and concurrent chunk completion order are intentionally
+volatile.
 
 Step 4 found and repaired one concrete ownership defect: the scientific
 pipeline reset the collector already owned and reset by `ReductionSession`.
@@ -82,16 +83,25 @@ definitions from the public header into a compiled source. The header shrank
 from 946 to 712 lines while retaining small predicates inline. An immediate
 single before/after CLI compile pair was 62.4 versus 63.7 seconds, which shows
 no demonstrated speedup or material regression. CLI, primary test, and safety
-test targets build; all 451 CTests and full config preflight pass. This boundary
-requires a Unity compile and point reduction before acceptance. A larger cold
+test targets build. Unity compile and point `redu63` accept the boundary with
+zero product differences and no attributable runtime regression. A larger cold
 tranche may be considered later only if dependency and build evidence justify
 it.
 
 The first mature-implementation contract tranche retires the two PTC weighting
 exits and one RTC kernel setup exit without changing valid-path arithmetic.
-Focused tests cover their canonical I/O, internal, and invalid-config failure
-classes. The session audit now reports 51 library exits. Fruit-loop ingestion
-is the next open tranche and waits for science and Beammap validation capacity.
+The following bounded tranches retire all 40 fruit-loop and all eleven Wiener
+exits without changing valid-path arithmetic. Their public validation contracts
+compile in isolation; focused category, recovery, geometry, identity, and
+allocation tests pass. OpenMP allocation failure is captured within workers
+and rethrown only after the parallel region. The conservative session audit now
+reports zero library and zero CLI exits. All three local targets build, all 455
+CTests pass, and full config preflight passes. The audit was then widened from
+session-reachable headers to every core implementation source; it exposed and
+retired three APT input exits and one invalid Lissajous chunk exit. Manual
+review confines the remaining textual exits to successful CLI help/version
+handling and two main programs excluded from CMake. Matched point, science, and
+Beammap validation remain before Phase 3 closeout.
 
 ## Stop Rules
 

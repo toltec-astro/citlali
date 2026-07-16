@@ -6,6 +6,7 @@
 
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/engine/telescope.h>
+#include <citlali/core/error/error.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
 
@@ -70,8 +71,8 @@ void Telescope::get_tel_data(
         // cannot reduce in lissajous mode if chunk less than or equal to zero
         if ((obs_pgm=="Lissajous" || (obs_pgm=="Map" && exec_mode==1)) &&
             chunking.value <= 0) {
-            logger->error("mapping mode is lissajous and time chunk size is zero");
-            std::exit(EXIT_FAILURE);
+            throw citlali::error::invalid_config(
+                "lissajous mapping requires a positive time chunk size");
         }
 
         // get source name

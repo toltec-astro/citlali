@@ -1,10 +1,26 @@
 #include <citlali/core/utils/constants.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/engine/calib.h>
+#include <citlali/core/error/error.h>
 #include <citlali/core/utils/toltec_io.h>
 
 #include <cmath>
 #include <stdexcept>
+
+namespace {
+
+std::string join_column_names(const std::vector<std::string> &names) {
+    std::string result;
+    for (const auto &name : names) {
+        if (!result.empty()) {
+            result += ", ";
+        }
+        result += name;
+    }
+    return result;
+}
+
+}  // namespace
 
 namespace engine {
 
@@ -29,22 +45,24 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
         }
     }
 
-    // exit if any keys are missing
+    // reject tables with missing required columns
     if (!missing_header_keys.empty()) {
-        logger->error("apt table is missing required columns {}", missing_header_keys);
-        std::exit(EXIT_FAILURE);
+        throw citlali::error::io(
+            "APT table is missing required columns: [" +
+            join_column_names(missing_header_keys) + "]");
     }
 
-    // exit if any keys are empty
+    // reject tables with empty required columns
     if (!empty_header_keys.empty()) {
-        logger->error("apt table columns are empty {}", empty_header_keys);
-        std::exit(EXIT_FAILURE);
+        throw citlali::error::io(
+            "APT table columns are empty: [" +
+            join_column_names(empty_header_keys) + "]");
     }
 
-    // exit if apt reference frame is not altaz (required for pointing calculations)
+    // pointing calculations require an altaz APT reference frame
     if (map_with_strs["Radesys"]!="altaz") {
-        logger->error("apt table is not in altaz reference frame");
-        std::exit(EXIT_FAILURE);
+        throw citlali::error::io(
+            "APT table reference frame must be altaz");
     }
 
     // set apt table

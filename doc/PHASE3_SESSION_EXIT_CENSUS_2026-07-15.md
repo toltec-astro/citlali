@@ -8,12 +8,13 @@ $HOME/tolteca/bin/python tools/refactor/audit_session_exits.py \
   --fail-on-growth
 ```
 
-The audit follows Citlali project-header includes from
-`standard_reduction_execution.h`. It is deliberately conservative: dependency
-reachability does not prove that every reported function is runtime-call
-reachable for every mode. It does prove that the reusable boundary still
-exposes those process-termination definitions and gives Phase 3 a mechanical
-no-growth gate.
+The current audit follows Citlali project-header includes from
+`standard_reduction_execution.h` and scans every implementation source under
+`src/citlali/core`. It is deliberately conservative: dependency reachability
+does not prove that every reported function is runtime-call reachable for every
+mode, while source inclusion does not prove that every definition is linked by
+every target. Together they prevent header-only or source-only library exits
+from escaping the mechanical no-growth gate.
 
 ## Starting Result
 
@@ -94,16 +95,39 @@ contract compiles in isolation, focused valid/invalid tests pass, all 454
 CTests pass, and the current audit reports 11 library exits. This tranche uses
 the same pending matched science and Beammap fruit-loop acceptance runs.
 
+The Wiener tranche retires the final eleven exits behind a shared, header-
+isolated runtime-invariant boundary. Serial and OpenMP template geometry,
+pixel spacing, kernel/weight identity and shape, and finite kernel peak checks
+now propagate through `ReductionSession`. FFTW allocation is checked before
+plan creation and partial resources are reset before failure. Because C++
+exceptions may not escape an OpenMP worker, each worker captures allocation
+failure inside the parallel region, all workers synchronize before entering
+the worksharing loop, and the owning thread rethrows only after the region
+ends. Valid FFTW, template, and numerical paths are unchanged. All three local
+targets build, all 455 CTests and full config preflight pass, and the audit now
+reports zero reachable library or CLI exits. Point, science, and Beammap mode
+validation remain required before accepting the final mature tranches.
+
+The closeout audit widened the original header-only baseline scope to include
+all core implementation sources. That correction exposed four exits that the
+first census missed: three invalid APT-table paths in `Calib::get_apt` and one
+invalid Lissajous chunk request in `Telescope::get_tel_data`. They now throw
+canonical I/O or invalid-config errors without changing valid inputs. The only
+remaining textual exits are successful `--help` and `--version` handling in the
+active CLI parser and the same successful paths in `main_old.cpp` and
+`kids_main.cpp`; CMake builds neither legacy main. No supported non-CLI
+execution path retains explicit process termination.
+
 ## Remaining Tranche Classification
 
-The remaining 11-exit stop line is split by behavior and validation cost. These
-are not a single mechanical replacement batch.
+The mature exit census is locally closed. The table retains the tranche-level
+acceptance obligations rather than treating a zero static count as sufficient.
 
 | Tranche | Exits | Status | Boundary | Minimum validation before acceptance |
 | --- | ---: | --- | --- | --- |
 | Fruit-loop map ingestion | 0 of 37 | Retired locally | Required map-file discovery, FITS metadata/schema, grouping identity, WCS, and map cardinality in `TCProc::load_mb` | Focused malformed-input tests pass; matched science and Beammap fruit-loop reductions pending |
 | Fruit-loop grouping/application | 0 of 3 | Retired locally | Non-contiguous detector grouping and map/array identity during map-to-TOD feedback | Focused invariant tests pass; science and Beammap fruit-loop reductions pending |
-| Wiener filtering | 11 | Open | Template geometry, kernel-map identity, finite kernel peak, and OpenMP FFTW allocation | Focused template/allocation tests plus the Wiener-enabled mode that exercises each implementation |
+| Wiener filtering | 0 of 11 | Retired locally | Template geometry, kernel-map identity, finite kernel peak, and OpenMP FFTW allocation | Focused tests pass; point convolve and Wiener-enabled science validation pending |
 | PTC weighting | 0 of 2 | Retired and point-validated | Network-group contiguity and impossible weight-counter state | Add science when the active weighting policy differs |
 | RTC kernel setup | 0 of 1 | Retired locally | FITS kernel image cardinality | Kernel-enabled point or Beammap run |
 
@@ -127,12 +151,12 @@ failure or an already scheduled mode validation makes its evidence cheaper.
    Required failures preserve the Phase 1 ordered-writer cancellation contract.
 4. Mapmaking policy and template setup: all three exits remaining after the
    baseline setup slice are retired as config preconditions.
-5. Mature numerical implementations: the PTC, RTC kernel, and all 40 fruit-loop
-   exits are retired. Eleven serial/OpenMP Wiener exits remain. Convert them
-   only in coherent algorithm-boundary tranches with matched mode validation;
-   do not mechanically replace them en masse.
+5. Mature numerical implementations: the PTC, RTC kernel, all 40 fruit-loop,
+   and all eleven serial/OpenMP Wiener exits are retired locally in coherent
+   boundary tranches. Their matched mode validation remains open.
 
-The checked baseline is per file, so exit counts may decrease but cannot grow
-or move to a new dependency-reachable library file unnoticed. Phase 3 closure
-still requires manual proof for unreachable legacy paths and zero process
-termination on every supported non-CLI execution path.
+The checked baseline is per file, so any new dependency-reachable or core-source
+exit fails the no-growth gate. The source and legacy-main review completes the
+manual stop-line proof. Phase 3 closure still requires the listed matched mode
+validation; every supported non-CLI execution path is now free of explicit
+process termination.

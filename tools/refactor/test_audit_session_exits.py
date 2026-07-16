@@ -43,6 +43,28 @@ class SessionExitAuditTest(unittest.TestCase):
             {"include/citlali/core/detail/worker.h": 1},
         )
 
+    def test_includes_core_library_sources(self) -> None:
+        repo = self.make_repo()
+        source = repo / "src/citlali/core/engine/worker.cpp"
+        source.parent.mkdir(parents=True)
+        source.write_text(
+            "void stop_source() { exit(EXIT_FAILURE); }\n",
+            encoding="utf-8",
+        )
+
+        result = audit_session_exits.audit(
+            repo, ["include/citlali/core/session/entry.h"]
+        )
+
+        self.assertEqual(result["dependency_file_count"], 3)
+        self.assertEqual(result["library_exit_count"], 2)
+        self.assertEqual(
+            result["library_exit_counts_by_file"][
+                "src/citlali/core/engine/worker.cpp"
+            ],
+            1,
+        )
+
     def test_baseline_rejects_growth_and_allows_reduction(self) -> None:
         repo = self.make_repo()
         result = audit_session_exits.audit(

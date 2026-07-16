@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit process exits dependency-reachable from the session entry."""
+"""Audit process exits exposed by the session boundary and core sources."""
 
 from __future__ import annotations
 
@@ -56,9 +56,16 @@ def dependency_files(repo: Path, entries: Iterable[str]) -> list[Path]:
     return sorted(visited)
 
 
+def core_library_sources(repo: Path) -> list[Path]:
+    source_root = repo / "src/citlali/core"
+    if not source_root.is_dir():
+        return []
+    return sorted(path.resolve() for path in source_root.rglob("*.cpp"))
+
+
 def audit(repo: Path, entries: list[str]) -> dict[str, object]:
     repo = repo.resolve()
-    files = dependency_files(repo, entries)
+    files = sorted(set(dependency_files(repo, entries) + core_library_sources(repo)))
     rows: list[dict[str, object]] = []
     for path in files:
         relative = path.relative_to(repo).as_posix()
@@ -96,8 +103,9 @@ def audit(repo: Path, entries: list[str]) -> dict[str, object]:
         "cli_exit_counts_by_file": dict(sorted(cli_counts.items())),
         "exits": rows,
         "scope_note": (
-            "This is conservative project-header dependency reachability, not "
-            "proof that every reported exit is runtime-call reachable."
+            "This combines conservative project-header dependency reachability "
+            "with every core library source file. It is not proof that every "
+            "reported definition is runtime-call reachable."
         ),
     }
 

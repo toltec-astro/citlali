@@ -10,6 +10,7 @@
 #include <citlali/core/pipeline/rawobs_tone_frequency_inventory.h>
 #include <citlali/core/pipeline/timestream_scan_context.h>
 #include <citlali/core/pipeline/timestream_invariant_validation.h>
+#include <citlali/core/pipeline/wiener_filter_validation.h>
 #include <citlali/core/session/reduction_session.h>
 #include <citlali/core/utils/ecsv_io.h>
 #include <citlali/core/utils/fits_io.h>
@@ -18,6 +19,7 @@
 
 #include <Eigen/Core>
 
+#include <limits>
 #include <map>
 #include <memory>
 #include <string>
@@ -262,6 +264,54 @@ TEST(session_failure_boundaries, validates_fruit_loop_feedback_identity) {
     });
     expect_io_failure([] {
         citlali::pipeline::require_fruit_loop_map_index(3, 3);
+    });
+}
+
+TEST(session_failure_boundaries, validates_wiener_filter_boundaries) {
+    EXPECT_NO_THROW(citlali::pipeline::require_wiener_template_geometry(
+        10, 20, 10, 20));
+    EXPECT_NO_THROW(citlali::pipeline::require_wiener_pixel_spacing(
+        1.0, 1.0));
+    EXPECT_NO_THROW(citlali::pipeline::require_wiener_kernel_index(1, 2));
+    EXPECT_NO_THROW(citlali::pipeline::require_wiener_kernel_weight_index(
+        1, 2, 2));
+    EXPECT_NO_THROW(citlali::pipeline::require_wiener_kernel_geometry(
+        1, 10, 20, 10, 20, 10, 20));
+    EXPECT_NO_THROW(citlali::pipeline::require_finite_wiener_kernel_peak(
+        1.0, 1));
+    EXPECT_NO_THROW(citlali::pipeline::require_wiener_fftw_context(
+        true, 10, 20));
+
+    const auto expect_runtime_failure = [](auto action) {
+        try {
+            action();
+            FAIL() << "expected Wiener boundary validation to fail";
+        } catch (const citlali::error::Error &error) {
+            EXPECT_EQ(error.code(), citlali::error::Code::runtime);
+        }
+    };
+    expect_runtime_failure([] {
+        citlali::pipeline::require_wiener_template_geometry(1, 20, 1, 20);
+    });
+    expect_runtime_failure([] {
+        citlali::pipeline::require_wiener_pixel_spacing(0.0, 1.0);
+    });
+    expect_runtime_failure([] {
+        citlali::pipeline::require_wiener_kernel_index(2, 2);
+    });
+    expect_runtime_failure([] {
+        citlali::pipeline::require_wiener_kernel_weight_index(1, 2, 1);
+    });
+    expect_runtime_failure([] {
+        citlali::pipeline::require_wiener_kernel_geometry(
+            1, 10, 19, 10, 20, 10, 20);
+    });
+    expect_runtime_failure([] {
+        citlali::pipeline::require_finite_wiener_kernel_peak(
+            std::numeric_limits<double>::quiet_NaN(), 1);
+    });
+    expect_runtime_failure([] {
+        citlali::pipeline::require_wiener_fftw_context(false, 10, 20);
     });
 }
 

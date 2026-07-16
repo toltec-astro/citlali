@@ -2,7 +2,6 @@
 
 #include <string>
 #include <complex>
-#include <cstdlib>
 #include <cmath>
 #include <limits>
 #include <algorithm>
@@ -26,6 +25,7 @@
 #include <citlali/core/utils/gauss_models.h>
 #include <citlali/core/utils/fitting.h>
 #include <citlali/core/mapmaking/edge_guard_state.h>
+#include <citlali/core/pipeline/wiener_filter_validation.h>
 
 namespace mapmaking {
 
@@ -242,10 +242,8 @@ void WienerFilter::make_kernel_template(MB &mb, const int map_index, CD &calib_d
     Eigen::Index peak_row = 0;
     Eigen::Index peak_col = 0;
     const double peak_abs = temp_kernel.cwiseAbs().maxCoeff(&peak_row, &peak_col);
-    if (!std::isfinite(peak_abs)) {
-        logger->error("kernel template peak is non-finite for map_index={}", map_index);
-        std::exit(EXIT_FAILURE);
-    }
+    citlali::pipeline::require_finite_wiener_kernel_peak(
+        peak_abs, map_index);
     const Eigen::Index center_row = n_rows / 2;
     const Eigen::Index center_col = n_cols / 2;
     Eigen::Index shift_row = center_row - peak_row;
@@ -872,22 +870,13 @@ void WienerFilter::make_template(MB &mb, CD &calib_data, const double template_f
         static_cast<long long>(mb.rows_tan_vec.size()), static_cast<long long>(mb.cols_tan_vec.size()),
         static_cast<long long>(mb.kernel.size()));
 
-    if (n_rows < 2 || n_cols < 2 ||
-        mb.rows_tan_vec.size() < 2 || mb.cols_tan_vec.size() < 2) {
-        logger->error(
-            "invalid map geometry for Wiener template: n_rows={} n_cols={} rows_size={} cols_size={}",
-            static_cast<long long>(n_rows), static_cast<long long>(n_cols),
-            static_cast<long long>(mb.rows_tan_vec.size()), static_cast<long long>(mb.cols_tan_vec.size()));
-        std::exit(EXIT_FAILURE);
-    }
+    citlali::pipeline::require_wiener_template_geometry(
+        n_rows, n_cols, mb.rows_tan_vec.size(), mb.cols_tan_vec.size());
 
     // x and y spacing should be equal
     diff_rows = std::abs(mb.rows_tan_vec(1) - mb.rows_tan_vec(0));
     diff_cols = std::abs(mb.cols_tan_vec(1) - mb.cols_tan_vec(0));
-    if (!std::isfinite(diff_rows) || !std::isfinite(diff_cols) || diff_rows <= 0.0 || diff_cols <= 0.0) {
-        logger->error("invalid tangent-plane pixel spacing: diff_rows={} diff_cols={}", diff_rows, diff_cols);
-        std::exit(EXIT_FAILURE);
-    }
+    citlali::pipeline::require_wiener_pixel_spacing(diff_rows, diff_cols);
 
     // highpass template
     if (template_type=="highpass") {
@@ -911,12 +900,8 @@ void WienerFilter::make_template(MB &mb, CD &calib_data, const double template_f
     // symmetric version of kernel template
     else {
         logger->info("creating template from kernel map");
-        if (mb.kernel.empty() || map_index < 0 || map_index >= static_cast<int>(mb.kernel.size())) {
-            logger->error(
-                "kernel template requested but kernel map is unavailable: map_index={} kernel_size={}",
-                map_index, static_cast<long long>(mb.kernel.size()));
-            std::exit(EXIT_FAILURE);
-        }
+        citlali::pipeline::require_wiener_kernel_index(
+            map_index, mb.kernel.size());
         make_kernel_template(mb, map_index, calib_data);
     }
     invalidate_template_fft_cache();
