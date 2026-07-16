@@ -1,6 +1,7 @@
 #include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/beammap_fit_validation.h>
 #include <citlali/core/pipeline/fits_image_metadata.h>
+#include <citlali/core/pipeline/fruit_loop_feedback_validation.h>
 #include <citlali/core/pipeline/fruit_loop_map_input_validation.h>
 #include <citlali/core/pipeline/map_filtering.h>
 #include <citlali/core/pipeline/mapmaking_config_policy.h>
@@ -232,6 +233,36 @@ TEST(session_failure_boundaries, fruit_loop_map_input_failure_is_recoverable) {
         return citlali::session::successful_reduction_result();
     });
     EXPECT_TRUE(succeeded.succeeded());
+}
+
+TEST(session_failure_boundaries, validates_fruit_loop_feedback_identity) {
+    EXPECT_NO_THROW(citlali::pipeline::require_contiguous_fruit_loop_group(
+        false, "array", 1));
+    EXPECT_NO_THROW(citlali::pipeline::require_fruit_loop_array_identity(
+        true, 1));
+    EXPECT_NO_THROW(citlali::pipeline::require_fruit_loop_map_index(2, 3));
+
+    const auto expect_io_failure = [](auto action) {
+        try {
+            action();
+            FAIL() << "expected fruit-loop feedback validation to fail";
+        } catch (const citlali::error::Error &error) {
+            EXPECT_EQ(error.code(), citlali::error::Code::io);
+        }
+    };
+    expect_io_failure([] {
+        citlali::pipeline::require_contiguous_fruit_loop_group(
+            true, "array", 1);
+    });
+    expect_io_failure([] {
+        citlali::pipeline::require_fruit_loop_array_identity(false, 4);
+    });
+    expect_io_failure([] {
+        citlali::pipeline::require_fruit_loop_map_index(-1, 3);
+    });
+    expect_io_failure([] {
+        citlali::pipeline::require_fruit_loop_map_index(3, 3);
+    });
 }
 
 TEST(session_failure_boundaries, accepts_valid_required_output_slots) {

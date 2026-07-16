@@ -62,7 +62,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 453 tests. All 96 config-boundary/preflight
+- CTest discovers and passes all 454 tests. All 96 config-boundary/preflight
   tests pass; the checked leaf contract covers 573 leaves and the generated
   startup schema covers 724 normalized YAML nodes.
 
@@ -219,6 +219,15 @@ exceptions. Valid loading and numerical processing are unchanged. All three
 local targets build, all 453 CTests pass, full config preflight passes, and the
 session audit is down to 14 library exits with zero CLI exits. Matched science
 and Beammap fruit-loop validation is pending.
+
+The three adjacent fruit-loop feedback exits are also retired locally behind a
+header-isolated invariant boundary. Non-contiguous calibration grouping,
+unknown detector-array identity, and out-of-range map indices now become
+session-owned input-I/O failures before the affected map access. Interpolation
+and map-to-TOD loops are unchanged. All three local targets build, all 454
+CTests pass, and the session audit is down to 11 library exits, all in serial
+or OpenMP Wiener filtering. This change shares the pending science and Beammap
+fruit-loop acceptance runs.
 
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution

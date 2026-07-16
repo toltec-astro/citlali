@@ -33,6 +33,7 @@
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/pointing_config.h>
 #include <citlali/core/config/timestream_config.h>
+#include <citlali/core/pipeline/fruit_loop_feedback_validation.h>
 #include <citlali/core/pipeline/fruit_loop_map_input_validation.h>
 #include <citlali/core/timestream/auxiliary_stream.h>
 #include <citlali/core/utils/utils.h>
@@ -2434,10 +2435,8 @@ auto TCProc::get_grouping(std::string grp, calib_t &calib, int n_dets) {
         // otherwise increment and start the next group
         else {
             grp_i = calib.apt[grp](det_index);
-            if (seen.find(grp_i) != seen.end()) {
-                logger->error("non-contiguous grouping detected for '{}' value {}", grp, grp_i);
-                std::exit(EXIT_FAILURE);
-            }
+            citlali::pipeline::require_contiguous_fruit_loop_group(
+                seen.find(grp_i) != seen.end(), grp, grp_i);
             seen.insert(grp_i);
             j += 1;
             grp_limits[grp_i] = std::tuple<Eigen::Index, Eigen::Index>{i,0};
@@ -2517,16 +2516,12 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
         auto map_index = map_indices(i);
         auto array_id = static_cast<Eigen::Index>(calib.apt["array"](i));
         auto array_it = array_to_index.find(array_id);
-        if (array_it == array_to_index.end()) {
-            logger->error("array {} not found in calib arrays for fruit loops", array_id);
-            std::exit(EXIT_FAILURE);
-        }
+        citlali::pipeline::require_fruit_loop_array_identity(
+            array_it != array_to_index.end(), array_id);
         auto array_pos = array_it->second;
 
-        if (map_index < 0 || map_index >= static_cast<Eigen::Index>(mb.signal.size())) {
-            logger->error("map index {} out of range for fruit loops (signal maps: {})", map_index, mb.signal.size());
-            std::exit(EXIT_FAILURE);
-        }
+        citlali::pipeline::require_fruit_loop_map_index(
+            map_index, mb.signal.size());
 
         double adaptive_support_radius_rad = std::numeric_limits<double>::quiet_NaN();
         bool use_adaptive_support = false;
