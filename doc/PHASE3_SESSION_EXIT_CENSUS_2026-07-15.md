@@ -75,17 +75,28 @@ kernel-image cardinality is invalid configuration. Focused tests cover valid
 and invalid contracts; all 451 CTests and full config preflight pass. The
 current audit reports 51 library exits.
 
+The fruit-loop map-ingestion tranche retires all 37 exits in `TCProc::load_mb`.
+Unsupported requested grouping is invalid configuration; file discovery,
+required FITS metadata and schema, map identity/cardinality, WCS compatibility,
+and filesystem failures are input I/O errors. Optional `GROUPING` and `RADESYS`
+keywords now ignore only `CCfits::HDU::NoSuchKeyword`, so canonical exceptions
+cannot be swallowed by the legacy optional-key boundary. Valid map loading and
+numerical processing are unchanged. Focused category and sequential-session
+recovery tests pass, all 453 CTests and full config preflight pass, and the
+current audit reports 14 library exits. Matched science and Beammap fruit-loop
+reductions remain required before accepting this tranche.
+
 ## Remaining Tranche Classification
 
-The 54-exit stop line is split by behavior and validation cost. These are not a
-single mechanical replacement batch.
+The remaining 14-exit stop line is split by behavior and validation cost. These
+are not a single mechanical replacement batch.
 
 | Tranche | Exits | Status | Boundary | Minimum validation before acceptance |
 | --- | ---: | --- | --- | --- |
-| Fruit-loop map ingestion | 37 | Open | Required map-file discovery, FITS metadata/schema, grouping identity, WCS, and map cardinality in `TCProc::load_mb` | Focused malformed-input tests plus matched science and Beammap fruit-loop reductions |
+| Fruit-loop map ingestion | 0 of 37 | Retired locally | Required map-file discovery, FITS metadata/schema, grouping identity, WCS, and map cardinality in `TCProc::load_mb` | Focused malformed-input tests pass; matched science and Beammap fruit-loop reductions pending |
 | Fruit-loop grouping/application | 3 | Open | Non-contiguous detector grouping and map/array identity during map-to-TOD feedback | Focused invariant tests plus science and Beammap fruit-loop reductions |
 | Wiener filtering | 11 | Open | Template geometry, kernel-map identity, finite kernel peak, and OpenMP FFTW allocation | Focused template/allocation tests plus the Wiener-enabled mode that exercises each implementation |
-| PTC weighting | 0 of 2 | Retired locally | Network-group contiguity and impossible weight-counter state | Point run; add science when the active weighting policy differs |
+| PTC weighting | 0 of 2 | Retired and point-validated | Network-group contiguity and impossible weight-counter state | Add science when the active weighting policy differs |
 | RTC kernel setup | 0 of 1 | Retired locally | FITS kernel image cardinality | Kernel-enabled point or Beammap run |
 
 The preferred retirement order is PTC weighting, RTC kernel setup, fruit-loop
@@ -108,10 +119,11 @@ failure or an already scheduled mode validation makes its evidence cheaper.
    Required failures preserve the Phase 1 ordered-writer cancellation contract.
 4. Mapmaking policy and template setup: all three exits remaining after the
    baseline setup slice are retired as config preconditions.
-5. Mature numerical implementations: 40 exits in `timestream.h`, eleven in the
-   serial/OpenMP Wiener implementations, two in PTC, and one in the RTC kernel.
-   Convert these only in coherent algorithm-boundary tranches with matched
-   mode validation; do not mechanically replace them en masse.
+5. Mature numerical implementations: the PTC, RTC kernel, and 37 fruit-loop
+   map-ingestion exits are retired. Three fruit-loop feedback invariants and
+   eleven serial/OpenMP Wiener exits remain. Convert them only in coherent
+   algorithm-boundary tranches with matched mode validation; do not
+   mechanically replace them en masse.
 
 The checked baseline is per file, so exit counts may decrease but cannot grow
 or move to a new dependency-reachable library file unnoticed. Phase 3 closure

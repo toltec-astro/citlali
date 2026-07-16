@@ -1,6 +1,7 @@
 #include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/beammap_fit_validation.h>
 #include <citlali/core/pipeline/fits_image_metadata.h>
+#include <citlali/core/pipeline/fruit_loop_map_input_validation.h>
 #include <citlali/core/pipeline/map_filtering.h>
 #include <citlali/core/pipeline/mapmaking_config_policy.h>
 #include <citlali/core/pipeline/observation_setup_validation.h>
@@ -8,6 +9,7 @@
 #include <citlali/core/pipeline/rawobs_tone_frequency_inventory.h>
 #include <citlali/core/pipeline/timestream_scan_context.h>
 #include <citlali/core/pipeline/timestream_invariant_validation.h>
+#include <citlali/core/session/reduction_session.h>
 #include <citlali/core/utils/ecsv_io.h>
 #include <citlali/core/utils/fits_io.h>
 
@@ -194,6 +196,42 @@ TEST(session_failure_boundaries, classifies_kernel_image_count_as_config) {
     } catch (const citlali::error::Error &error) {
         EXPECT_EQ(error.code(), citlali::error::Code::invalid_config);
     }
+}
+
+TEST(session_failure_boundaries, classifies_fruit_loop_map_request_as_config) {
+    EXPECT_NO_THROW(citlali::pipeline::require_fruit_loop_map_request(
+        true, "valid request"));
+    try {
+        citlali::pipeline::require_fruit_loop_map_request(
+            false, "unsupported grouping 'invalid'");
+        FAIL() << "expected invalid fruit-loop request to fail";
+    } catch (const citlali::error::Error &error) {
+        EXPECT_EQ(error.code(), citlali::error::Code::invalid_config);
+        EXPECT_NE(std::string(error.what()).find("unsupported grouping"),
+                  std::string::npos);
+    }
+}
+
+TEST(session_failure_boundaries, fruit_loop_map_input_failure_is_recoverable) {
+    citlali::session::ReductionSession session;
+
+    const auto failed = session.run([](auto &) {
+        citlali::pipeline::require_fruit_loop_map_input(
+            false, "missing signal map index 2");
+        return citlali::session::successful_reduction_result();
+    });
+    EXPECT_EQ(failed.status, citlali::session::ReductionStatus::io_failed);
+    ASSERT_EQ(failed.diagnostics.size(), 1);
+    EXPECT_EQ(failed.diagnostics.front().code, "io.failed");
+    EXPECT_NE(failed.diagnostics.front().message.find("missing signal map"),
+              std::string::npos);
+
+    const auto succeeded = session.run([](auto &) {
+        citlali::pipeline::require_fruit_loop_map_input(
+            true, "valid map input");
+        return citlali::session::successful_reduction_result();
+    });
+    EXPECT_TRUE(succeeded.succeeded());
 }
 
 TEST(session_failure_boundaries, accepts_valid_required_output_slots) {

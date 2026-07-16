@@ -15,6 +15,7 @@ target_sources(citlali_test
         test_external_config_provenance.cpp
         reduction_session_header_result.cpp
         reduction_session_header_state.cpp
+        fruit_loop_map_input_validation_header.cpp
         test_kids_input_validation.cpp
         test_reduction_session.cpp
         test_session_failure_boundaries.cpp

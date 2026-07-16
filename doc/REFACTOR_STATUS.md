@@ -62,7 +62,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 451 tests. All 96 config-boundary/preflight
+- CTest discovers and passes all 453 tests. All 96 config-boundary/preflight
   tests pass; the checked leaf contract covers 573 leaves and the generated
   startup schema covers 724 normalized YAML nodes.
 
@@ -208,6 +208,17 @@ class. The dependency audit now reports 51 library exits and zero CLI exits.
 Point `redu63` exercises the unchanged valid PTC weighting path exactly. The
 next production tranche is fruit-loop map ingestion and requires matched
 science and Beammap validation after its local checkpoint.
+
+The fruit-loop map-ingestion tranche is locally complete. All 37 exits in
+`TCProc::load_mb` now become canonical config or input-I/O failures at the
+session boundary. Required file discovery, FITS header/schema, grouping and map
+identity, WCS, and cardinality diagnostics retain their concrete context.
+Optional `GROUPING` and `RADESYS` handling ignores only missing-key exceptions,
+preventing real schema failures from being swallowed after the move to
+exceptions. Valid loading and numerical processing are unchanged. All three
+local targets build, all 453 CTests pass, full config preflight passes, and the
+session audit is down to 14 library exits with zero CLI exits. Matched science
+and Beammap fruit-loop validation is pending.
 
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution

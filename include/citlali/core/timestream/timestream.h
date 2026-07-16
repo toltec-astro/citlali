@@ -33,12 +33,15 @@
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/pointing_config.h>
 #include <citlali/core/config/timestream_config.h>
+#include <citlali/core/pipeline/fruit_loop_map_input_validation.h>
 #include <citlali/core/timestream/auxiliary_stream.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
 #include <citlali/core/utils/toltec_io.h>
 
 #include <citlali/core/mapmaking/map.h>
+
+#include <fmt/core.h>
 
 namespace timestream {
 
@@ -847,8 +850,8 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     fruit_loops_adaptive_threshold.resize(0);
 
     if (expected_map_grouping.empty()) {
-        logger->error("expected map grouping not provided for fruit loops map loading");
-        std::exit(EXIT_FAILURE);
+        citlali::pipeline::fail_fruit_loop_map_request(
+            "expected map grouping was not provided");
     }
 
     // clear map buffer
@@ -895,15 +898,15 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 ext.readKey(key, tmp);
                 out = std::stol(tmp);
             } catch (const CCfits::FitsException &e) {
-                logger->error("failed to read {} from fruit loops map header: {}", key, e.message());
-                std::exit(EXIT_FAILURE);
+                citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                    "failed to read header key '{}': {}", key, e.message()));
             } catch (...) {
-                logger->error("invalid value for {} in fruit loops map header", key);
-                std::exit(EXIT_FAILURE);
+                citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                    "header key '{}' is not an integer", key));
             }
         } catch (const CCfits::FitsException &e) {
-            logger->error("failed to read {} from fruit loops map header: {}", key, e.message());
-            std::exit(EXIT_FAILURE);
+            citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                "failed to read header key '{}': {}", key, e.message()));
         }
     };
 
@@ -916,15 +919,15 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 ext.readKey(key, tmp);
                 out = std::stod(tmp);
             } catch (const CCfits::FitsException &e) {
-                logger->error("failed to read {} from fruit loops map header: {}", key, e.message());
-                std::exit(EXIT_FAILURE);
+                citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                    "failed to read header key '{}': {}", key, e.message()));
             } catch (...) {
-                logger->error("invalid value for {} in fruit loops map header", key);
-                std::exit(EXIT_FAILURE);
+                citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                    "header key '{}' is not numeric", key));
             }
         } catch (const CCfits::FitsException &e) {
-            logger->error("failed to read {} from fruit loops map header: {}", key, e.message());
-            std::exit(EXIT_FAILURE);
+            citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                "failed to read header key '{}': {}", key, e.message()));
         }
     };
 
@@ -971,12 +974,12 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 ext.readKey(key, tmp);
                 out = std::to_string(tmp);
             } catch (const CCfits::FitsException &e) {
-                logger->error("failed to read {} from fruit loops map header: {}", key, e.message());
-                std::exit(EXIT_FAILURE);
+                citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                    "failed to read header key '{}': {}", key, e.message()));
             }
         } catch (const CCfits::FitsException &e) {
-            logger->error("failed to read {} from fruit loops map header: {}", key, e.message());
-            std::exit(EXIT_FAILURE);
+            citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                "failed to read header key '{}': {}", key, e.message()));
         }
     };
 
@@ -995,8 +998,8 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
         expected_n_maps = calib.n_dets;
     }
     else {
-        logger->error("unsupported map grouping '{}' for fruit loops", expected_map_grouping);
-        std::exit(EXIT_FAILURE);
+        citlali::pipeline::fail_fruit_loop_map_request(fmt::format(
+            "unsupported map grouping '{}'", expected_map_grouping));
     }
 
     std::unordered_map<Eigen::Index, Eigen::Index> array_to_index;
@@ -1034,8 +1037,8 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             }
             auto it = array_to_index.find(array_id);
             if (it == array_to_index.end()) {
-                logger->error("array {} not found in calib arrays for fruit loops", array_id);
-                std::exit(EXIT_FAILURE);
+                citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                    "array {} is absent from calibration arrays", array_id));
             }
             return it->second;
         }
@@ -1058,8 +1061,8 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             }
             auto it = nw_to_index.find(group_id);
             if (it == nw_to_index.end()) {
-                logger->error("nw {} not found in calib nws for fruit loops", group_id);
-                std::exit(EXIT_FAILURE);
+                citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                    "network {} is absent from calibration networks", group_id));
             }
             return it->second;
         }
@@ -1069,13 +1072,14 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             }
             auto fg_it = fg_to_index.find(group_id);
             if (fg_it == fg_to_index.end()) {
-                logger->error("fg {} not found in calib fgs for fruit loops", group_id);
-                std::exit(EXIT_FAILURE);
+                citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                    "frequency group {} is absent from calibration groups",
+                    group_id));
             }
             auto arr_it = array_to_index.find(array_id);
             if (arr_it == array_to_index.end()) {
-                logger->error("array {} not found in calib arrays for fruit loops", array_id);
-                std::exit(EXIT_FAILURE);
+                citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                    "array {} is absent from calibration arrays", array_id));
             }
             return fg_it->second + calib.fg.size() * arr_it->second;
         }
@@ -1084,8 +1088,9 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 return std::nullopt;
             }
             if (group_id < 0 || group_id >= expected_n_maps) {
-                logger->error("detector map id {} out of range for fruit loops", group_id);
-                std::exit(EXIT_FAILURE);
+                citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                    "detector map id {} is outside [0, {})",
+                    group_id, expected_n_maps));
             }
             return group_id;
         }
@@ -1134,12 +1139,14 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             }
             std::sort(map_files.begin(), map_files.end());
             if (map_files.empty()) {
-                logger->error("no map FITS found for array {} in {}", toltec_io.array_name_map[arr], filepath);
-                std::exit(EXIT_FAILURE);
+                citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                    "no map FITS found for array '{}' in '{}'",
+                    toltec_io.array_name_map[arr], filepath));
             }
             if (map_files.size() > 1) {
-                logger->error("multiple map FITS found for array {} in {}", toltec_io.array_name_map[arr], filepath);
-                std::exit(EXIT_FAILURE);
+                citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                    "found {} map FITS files for array '{}' in '{}'",
+                    map_files.size(), toltec_io.array_name_map[arr], filepath));
             }
 
             auto map_path = map_files.front();
@@ -1152,18 +1159,23 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 if (!grouping_key.empty()) {
                     auto grouping_lower = to_lower(grouping_key);
                     if (!file_grouping_lower.empty() && grouping_lower != file_grouping_lower) {
-                        logger->error("mismatched GROUPING across fruit loops maps: {} vs {}", file_grouping_lower, grouping_lower);
-                        std::exit(EXIT_FAILURE);
+                        citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                            "GROUPING differs across map files: '{}' versus '{}'",
+                            file_grouping_lower, grouping_lower));
                     }
                     file_grouping_lower = grouping_lower;
                     if (grouping_lower != grouping) {
-                        logger->error("fruit loops maps GROUPING '{}' does not match expected '{}'",
-                                      grouping_key, expected_map_grouping);
-                        std::exit(EXIT_FAILURE);
+                        citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                            "GROUPING '{}' does not match requested '{}'",
+                            grouping_key, expected_map_grouping));
                     }
                 }
-            } catch (...) {
-                // ignore if missing
+            } catch (const CCfits::HDU::NoSuchKeyword &) {
+                // GROUPING is optional for legacy map files.
+            } catch (const CCfits::FitsException &error) {
+                citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                    "failed to read optional GROUPING header: {}",
+                    error.message()));
             }
 
             try {
@@ -1172,18 +1184,23 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 if (!axes_key.empty()) {
                     auto axes_lower = to_lower(axes_key);
                     if (!file_pixel_axes_lower.empty() && axes_lower != file_pixel_axes_lower) {
-                        logger->error("mismatched RADESYS across fruit loops maps: {} vs {}", file_pixel_axes_lower, axes_lower);
-                        std::exit(EXIT_FAILURE);
+                        citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                            "RADESYS differs across map files: '{}' versus '{}'",
+                            file_pixel_axes_lower, axes_lower));
                     }
                     file_pixel_axes_lower = axes_lower;
                     if (!expected_pixel_axes.empty() && axes_lower != to_lower(expected_pixel_axes)) {
-                        logger->error("fruit loops maps RADESYS '{}' does not match expected '{}'",
-                                      axes_key, expected_pixel_axes);
-                        std::exit(EXIT_FAILURE);
+                        citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                            "RADESYS '{}' does not match requested '{}'",
+                            axes_key, expected_pixel_axes));
                     }
                 }
-            } catch (...) {
-                // ignore if missing
+            } catch (const CCfits::HDU::NoSuchKeyword &) {
+                // RADESYS is optional for legacy map files.
+            } catch (const CCfits::FitsException &error) {
+                citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                    "failed to read optional RADESYS header: {}",
+                    error.message()));
             }
 
             // get number of extensions other than primary extension
@@ -1199,8 +1216,8 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             }
 
             if (num_extensions == 0) {
-                logger->error("{} is empty", map_path.string());
-                std::exit(EXIT_FAILURE);
+                citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                    "map FITS '{}' has no extensions", map_path.string()));
             }
 
             // get wcs (should be same for all maps)
@@ -1251,9 +1268,9 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             }
             else {
                 if (tod_mb.wcs.naxis[0] != naxis1 || tod_mb.wcs.naxis[1] != naxis2) {
-                    logger->error("inconsistent map dimensions across fruit loops maps in {}",
-                                  map_path.string());
-                    std::exit(EXIT_FAILURE);
+                    citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                        "map dimensions in '{}' are inconsistent with earlier files",
+                        map_path.string()));
                 }
                 double cdelt0_ref = std::abs(tod_mb.wcs.cdelt[0]);
                 double cdelt1_ref = std::abs(tod_mb.wcs.cdelt[1]);
@@ -1265,18 +1282,18 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 double cdelt1_rel = cdelt1_diff / std::max({cdelt1_ref, cdelt1_new, 1e-12});
                 constexpr double cdelt_rel_tol = 1e-6;
                 if (cdelt0_rel > cdelt_rel_tol || cdelt1_rel > cdelt_rel_tol) {
-                    logger->error("inconsistent CDELT across fruit loops maps in {}: "
-                                  "ref=({}, {}) new=({}, {}) rel_diff=({}, {})",
-                                  map_path.string(),
-                                  tod_mb.wcs.cdelt[0], tod_mb.wcs.cdelt[1], cdelt1, cdelt2,
-                                  cdelt0_rel, cdelt1_rel);
-                    std::exit(EXIT_FAILURE);
+                    citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                        "CDELT in '{}' differs from ({}, {}): new=({}, {}) "
+                        "relative_difference=({}, {})",
+                        map_path.string(), tod_mb.wcs.cdelt[0],
+                        tod_mb.wcs.cdelt[1], cdelt1, cdelt2,
+                        cdelt0_rel, cdelt1_rel));
                 }
                 if (to_lower(tod_mb.wcs.cunit[0]) != to_lower(cunit1) ||
                     to_lower(tod_mb.wcs.cunit[1]) != to_lower(cunit2)) {
-                    logger->error("inconsistent CUNIT across fruit loops maps in {}",
-                                  map_path.string());
-                    std::exit(EXIT_FAILURE);
+                    citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                        "CUNIT in '{}' is inconsistent with earlier files",
+                        map_path.string()));
                 }
             }
 
@@ -1290,8 +1307,9 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                     auto map_index = parse_map_index(extName, "signal", arr);
                     if (map_index) {
                         if (signal_maps[*map_index].has_value()) {
-                            logger->error("duplicate signal map index {} in {}", *map_index, map_path.string());
-                            std::exit(EXIT_FAILURE);
+                            citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                                "duplicate signal map index {} in '{}'",
+                                *map_index, map_path.string()));
                         }
                         signal_maps[*map_index] = fits_io.get_hdu(extName);
                         double pointing_x = 0.0;
@@ -1336,8 +1354,9 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                     auto map_index = parse_map_index(extName, "weight", arr);
                     if (map_index) {
                         if (weight_maps[*map_index].has_value()) {
-                            logger->error("duplicate weight map index {} in {}", *map_index, map_path.string());
-                            std::exit(EXIT_FAILURE);
+                            citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                                "duplicate weight map index {} in '{}'",
+                                *map_index, map_path.string()));
                         }
                         weight_maps[*map_index] = fits_io.get_hdu(extName);
                         logger->info("found {} [{}]", map_path.filename().string(), extName);
@@ -1347,8 +1366,9 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                     auto map_index = parse_map_index(extName, "kernel", arr);
                     if (map_index) {
                         if (kernel_maps[*map_index].has_value()) {
-                            logger->error("duplicate kernel map index {} in {}", *map_index, map_path.string());
-                            std::exit(EXIT_FAILURE);
+                            citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                                "duplicate kernel map index {} in '{}'",
+                                *map_index, map_path.string()));
                         }
                         kernel_maps[*map_index] = fits_io.get_hdu(extName);
                         any_kernel = true;
@@ -1397,8 +1417,9 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 }
 
                 if (num_noise_ext == 0) {
-                    logger->error("{} is empty", noise_files.front().string());
-                    std::exit(EXIT_FAILURE);
+                    citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                        "noise FITS '{}' has no extensions",
+                        noise_files.front().string()));
                 }
 
                 double median_rms = std::numeric_limits<double>::quiet_NaN();
@@ -1423,25 +1444,24 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             }
 
         } catch (const fs::filesystem_error& err) {
-            logger->error("{}", err.what());
-            std::exit(EXIT_FAILURE);
+            citlali::pipeline::fail_fruit_loop_map_input(err.what());
         }
     }
 
     // check if we found any maps
     if (expected_n_maps == 0) {
-        logger->error("no maps expected for fruit loops");
-        std::exit(EXIT_FAILURE);
+        citlali::pipeline::fail_fruit_loop_map_input(
+            "calibration and grouping resolve to zero expected maps");
     }
 
     for (Eigen::Index i=0; i<expected_n_maps; ++i) {
         if (!signal_maps[i].has_value()) {
-            logger->error("missing signal map index {} in {}", i, filepath);
-            std::exit(EXIT_FAILURE);
+            citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                "missing signal map index {} in '{}'", i, filepath));
         }
         if (!weight_maps[i].has_value()) {
-            logger->error("missing weight map index {} in {}", i, filepath);
-            std::exit(EXIT_FAILURE);
+            citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                "missing weight map index {} in '{}'", i, filepath));
         }
         tod_mb.signal.push_back(std::move(*signal_maps[i]));
         tod_mb.weight.push_back(std::move(*weight_maps[i]));
@@ -1483,17 +1503,17 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
         tod_mb.pixel_size_rad = std::abs(tod_mb.wcs.cdelt[0])*ASEC_TO_RAD;
     }
     else {
-        logger->error("unsupported CUNIT '{}' in fruit loops maps", tod_mb.wcs.cunit[0]);
-        std::exit(EXIT_FAILURE);
+        citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+            "unsupported map CUNIT '{}'", tod_mb.wcs.cunit[0]));
     }
 
     if (expected_pixel_size_rad > 0.0) {
         double diff = std::abs(tod_mb.pixel_size_rad - expected_pixel_size_rad);
         double tol = std::max(1e-12, expected_pixel_size_rad * 1e-6);
         if (diff > tol) {
-            logger->error("fruit loops map pixel size {} rad does not match expected {} rad",
-                          tod_mb.pixel_size_rad, expected_pixel_size_rad);
-            std::exit(EXIT_FAILURE);
+            citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                "map pixel size {} rad does not match requested {} rad",
+                tod_mb.pixel_size_rad, expected_pixel_size_rad));
         }
     }
 
@@ -1510,15 +1530,15 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     double expected_col = (tod_mb.n_cols - 1) / 2.0;
     if (std::isfinite(tod_mb.wcs.crpix[0]) && tod_mb.wcs.crpix[0] > 0.0 &&
         std::abs(tod_mb.wcs.crpix[0] - expected_col) > 1.0) {
-        logger->error("fruit loops map CRPIX1 ({}) does not match expected map center ({})",
-                      tod_mb.wcs.crpix[0], expected_col);
-        std::exit(EXIT_FAILURE);
+        citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+            "CRPIX1 {} does not match map center {}",
+            tod_mb.wcs.crpix[0], expected_col));
     }
     if (std::isfinite(tod_mb.wcs.crpix[1]) && tod_mb.wcs.crpix[1] > 0.0 &&
         std::abs(tod_mb.wcs.crpix[1] - expected_row) > 1.0) {
-        logger->error("fruit loops map CRPIX2 ({}) does not match expected map center ({})",
-                      tod_mb.wcs.crpix[1], expected_row);
-        std::exit(EXIT_FAILURE);
+        citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+            "CRPIX2 {} does not match map center {}",
+            tod_mb.wcs.crpix[1], expected_row));
     }
 
     Eigen::MatrixXd ones, zeros;
