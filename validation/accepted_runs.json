@@ -7287,9 +7287,151 @@
         "baseline_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu63"
       },
       "limitations": [
-        "The point fixture uses the OpenMP Wiener implementation for convolve filtering but does not execute Wiener denominator construction; the queued science run supplies that gate.",
+        "The point fixture uses the OpenMP Wiener implementation for convolve filtering but does not execute Wiener denominator construction; a separate focused full-Wiener point run supplies that gate.",
         "Timestream-output provenance differs only in the expected run-local redu63/redu64 output paths.",
         "The 174.880-second wall time remains an uncontrolled Unity/VAST I/O observation and is accepted without a performance attribution.",
+        "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained."
+      ]
+    },
+    {
+      "record_id": "point-152389-refactor-6dd0057f-redu65-full-wiener",
+      "recorded_date": "2026-07-15",
+      "mode": "point",
+      "status": "accepted",
+      "candidate": {
+        "label": "refactor",
+        "branch": "codex/structural-refactor",
+        "citlali_sha": "6dd0057f81de8cf606ee0622a52d7c906b7e554a",
+        "citlali_version": "v4.0.0-3524-g6dd0057f",
+        "dirty": false,
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "build": {
+          "host": "unity",
+          "compiler": null,
+          "build_type": "Release",
+          "cmake_flags": null
+        }
+      },
+      "baseline": {
+        "label": "citlali",
+        "citlali_sha": "ffc6b9070f4744f9778f3db71cdc468846d1da89",
+        "citlali_version": "v4.0.0-423-gffc6b907",
+        "dependencies": {
+          "kids_sha": "04088da",
+          "tula_sha": "f30f81d"
+        },
+        "reduction_id": "redu10"
+      },
+      "config": {
+        "ordered_sources": [
+          {
+            "role": "merged_low_level_citlali_input",
+            "path": "citlali_o152389_0_2_c1.yaml",
+            "precedence": 0,
+            "sha256": "67f6c6e6bade058fdee933fd043cbbba363187c9acbecc0f0a30d04877ce2cd7"
+          }
+        ],
+        "overlay_sources_retained": false,
+        "canonical_merged_sha256": "df8a7c2de39c1ffe166e7ba4af69f80e8df8b0365ffc5a42673dfc995fcfb511"
+      },
+      "dataset": {
+        "obsnum": "152389",
+        "identity": "TolTEC commissioning pointing observation 152389",
+        "content_hash": null
+      },
+      "invocation": {
+        "command": null,
+        "launcher": "tolteca reduce",
+        "runtime_policy": {
+          "n_threads": 6,
+          "parallel_policy": "omp",
+          "kids_solver_parallel_policy": "seq"
+        },
+        "exit_code": 0
+      },
+      "audit": {
+        "tool": "tools/baseline/audit_reduction_run.py",
+        "tool_sha": "9a3901e9193d198dfdbb21e56fb4b0832867e2e8",
+        "finished": true,
+        "serious_log_counts": {},
+        "file_count": 54,
+        "comparable_product_count": 21,
+        "stable_comparable_product_count": 20,
+        "stable_product_counts_by_kind": {
+          "csv": 1,
+          "ecsv": 2,
+          "fits": 6,
+          "netcdf": 11
+        },
+        "ptc_chunk_count": 12,
+        "required_provenance_valid": true
+      },
+      "comparison": {
+        "tool": "tools/baseline/compare_reduction_products.py",
+        "tool_sha": "3cd7250b9a7276ecc64790e97aa015a334368055",
+        "options": [
+          "--mode",
+          "point",
+          "--include",
+          "*/filtered/*",
+          "--max-array-elements",
+          "0",
+          "--exclude",
+          "citlali_profile.ecsv",
+          "--atol",
+          "2e-8",
+          "--rtol",
+          "1e-10",
+          "--strict"
+        ],
+        "volatile_allowlist": [],
+        "tolerances": {
+          "atol": 2e-08,
+          "rtol": 1e-10,
+          "fraction_floor": 1e-12
+        },
+        "common_products": 7,
+        "skipped_records": 0,
+        "changed_records": 0,
+        "scientific_products_exact": false,
+        "scientific_products_within_tolerance": true,
+        "verdict": "accepted_within_strict_tolerance",
+        "measured": {
+          "record_count": 148,
+          "full_wiener_core_call_count": 6,
+          "noise_realization_count": 5,
+          "pointing_fit_table_exact": true,
+          "maximum_signal_map_absolute_difference": 6.337870672723511e-09,
+          "maximum_kernel_map_absolute_difference": 7.987946536863744e-10,
+          "matched_config_leaf_count": 490,
+          "matched_config_path_only_difference_count": 2,
+          "telescope_input_sha256_exact": true
+        }
+      },
+      "accepted_differences": [],
+      "performance": {
+        "wall_time_log_seconds": 248.349,
+        "observation_pipeline_seconds": 242.388812,
+        "map_filter_seconds": 38.86906,
+        "nonuniform_wiener_denominator_seconds": 38.417662651,
+        "ptc_first_to_last_chunk_seconds": 87.75,
+        "peak_rss_kb": null,
+        "baseline_wall_time_log_seconds": 268.039,
+        "baseline_nonuniform_wiener_denominator_seconds": 42.912455376
+      },
+      "artifacts": {
+        "candidate_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu65",
+        "candidate_unity_path": "/work/toltec/commissioning2025-test/2026-refactor/point/refactor/reduced/redu65",
+        "baseline_local_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/point/citlali/reduced/redu10"
+      },
+      "limitations": [
+        "Acceptance is scoped to the seven filtered full-Wiener products and the exact pointing-fit table; a whole-run zero-tolerance OG/refactor comparison also reports known PTC diagnostic and legacy numerical differences unrelated to this failure-contract tranche.",
+        "The OG baseline logs twelve known legacy NetCDF Not-a-valid-ID errors; the refactor candidate logs no issues.",
+        "The focused point uses a Gaussian template. The queued kernel-template science run supplies the fruit-loop map-ingestion and feedback gate.",
+        "The simultaneous OG/refactor timing pair is retained only as evidence of no material full-Wiener regression, not as a controlled performance benchmark.",
         "The exact launcher command, compiler identity, CMake flags, complete raw-dataset content hash, and peak RSS were not retained."
       ]
     }

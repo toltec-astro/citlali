@@ -38,6 +38,12 @@ branch. The exact validated tree will remain available for forensic review.
   enabled-filtering `redu53`,
   unfiltered `redu51`, and bounded full-noise-output `redu49` remain the
   immediate post-processing, pointing, and noise-products control fixtures.
+- Phase 3 full-Wiener point `redu65`, produced by `6dd0057f8`, is accepted
+  against matched OG `redu10` at `ffc6b907`. Both use five noise realizations,
+  a Gaussian template, and `lowpass_only: false`, and both execute all six
+  expected Wiener core calls. The seven filtered products pass the strict
+  scientific-tolerance gate with 148 compared records and no skips; the
+  three-array pointing-fit table is exact. The refactor run has zero issues.
 - Latest accepted OOF reduction: refactor `redu02` for observations
   152385-152387, produced by `9ea6d7f01`, is exact against accepted refactor
   `redu01`. The established OG `redu00` versus refactor relationship is
@@ -241,9 +247,10 @@ synchronizes before worksharing, and rethrows only after leaving the parallel
 region; partial FFTW resources are reset before failure. Valid filtering and
 denominator arithmetic are unchanged. All three local targets build, all 455
 CTests pass, full config preflight passes, and the conservative session audit
-now reports zero dependency-reachable library or CLI exits. Standard point,
-focused full-Wiener point, fruit-loop science, and fruit-loop Beammap validation
-remain required before accepting these final mature tranches.
+now reports zero dependency-reachable library or CLI exits. Standard point and
+focused full-Wiener point are accepted. Fruit-loop science and fruit-loop
+Beammap validation remain required before accepting these final mature
+tranches.
 
 The exit audit now also scans every implementation source under
 `src/citlali/core`, closing a blind spot in the original header-reachability
@@ -263,9 +270,23 @@ seconds and PTC chunk spacing differs by 0.5%, so no performance regression is
 attributed. The queued science config enables fruit loops but retains
 `wiener_filter.lowpass_only: true`, so it exercises convolution rather than
 Wiener denominator construction. It remains the fruit-loop science gate. A
-focused point run with noise maps enabled and `lowpass_only: false`, plus the
-fruit-loop Beammap, remain the mode-specific acceptance gates for the mature
-exit tranches.
+focused point run with noise maps enabled and `lowpass_only: false` supplies the
+full-Wiener denominator gate. The fruit-loop science and Beammap runs remain the
+mode-specific acceptance gates for map ingestion and feedback.
+
+The full-Wiener gate is accepted on matched OG `redu10` and refactor `redu65`.
+Their 490 low-level leaves differ only in the OG/refactor output directory and
+the corresponding telescope-file path; the two telescope inputs have identical
+SHA-256 hashes. Both runs execute six Wiener core calls with five noise maps and
+`lowpass_only: false`. The strict filtered-product comparison reads seven
+products and 148 records with zero changed or skipped records under the
+established `2e-8 + 1e-10 * abs(reference)` profile. The pointing-fit table is
+exact across all columns. Maximum signal and kernel absolute differences are
+`6.34e-9` and `7.99e-10`. Refactor non-uniform denominator work totals 38.4
+seconds versus 42.9 seconds for OG; the uncontrolled pair shows no performance
+regression. The refactor run has no logged issues and valid required
+provenance. OG's twelve `NetCDF: Not a valid ID` records are its known legacy
+limitation and are not accepted as refactor behavior.
 
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution

@@ -106,6 +106,16 @@ validation remain before Phase 3 closeout. A science config that selects
 `type: wiener_filter` but retains `lowpass_only: true` exercises the convolution
 path and is not evidence for denominator construction.
 
+Unity refactor point `redu65` and matched OG point `redu10` close the full-
+Wiener production gate. Their 490-leaf low-level trees differ only in the OG/
+refactor output and telescope-file paths; the two telescope files have the same
+SHA-256. Both runs execute six Wiener core calls with five noise realizations
+and `lowpass_only: false`. All seven filtered products pass the strict
+`2e-8 + 1e-10 * abs(reference)` gate without skipped records, and the complete
+three-array pointing-fit table is exact. The candidate reports no issues. The
+OG run retains its known twelve legacy NetCDF errors. Fruit-loop science and
+Beammap validation remain before Phase 3 closeout.
+
 ## Stop Rules
 
 Phase 3 is complete when the governing exit gates pass and the following are
