@@ -1,0 +1,40 @@
+# Accepted low-level baselines and canonical policy identities for these kits.
+schema_version: citlali-tolteca-mode-kit-manifest-v1
+kit_version: phase4.1-v1
+modes:
+  point:
+    record_id: point-152389-refactor-2a974e0d-redu66
+    baseline_filename: citlali_o152389_0_2_c1.yaml
+    baseline_sha256: 67f6c6e6bade058fdee933fd043cbbba363187c9acbecc0f0a30d04877ce2cd7
+    policy_sha256: f2d124d40ac7ad9e6351a647253050e5146659c666feed07262125e6fa5415c8
+    reduction_type: pointing
+    normalizations:
+    - remove inputs
+    - set runtime.output_dir to .
+  oof:
+    record_id: oof-152385-152387-refactor-9ea6d7f0-redu02
+    baseline_filename: citlali_o152385_0_1_c3.yaml
+    baseline_sha256: aebfc3b764f4abeca1f7f7cfe60723714f000ca849f60b167cd495294f87bdbc
+    policy_sha256: 414a5d16ceba8b6f9163851c139affa486f50397e1ead56fc480ed53475b76f4
+    reduction_type: pointing
+    normalizations:
+    - remove inputs
+    - set runtime.output_dir to .
+  beammap:
+    record_id: beammap-148670-refactor-6dd0057f-redu06
+    baseline_filename: citlali_o148670_0_2_c1.yaml
+    baseline_sha256: aa956b28465eaef8b23763e877857b5b8929e95ca4fbdc976db6d7b2a775636d
+    policy_sha256: 75eaf79fb5ce45b383f48bbb6a4715209fbb25cb29a1ac595a3afb2a7df4e0b0
+    reduction_type: beammap
+    normalizations:
+    - remove inputs
+    - set runtime.output_dir to .
+  science:
+    record_id: science-152390-152392-refactor-a7a35a00-redu31
+    baseline_filename: citlali_o152390_0_2_c2.yaml
+    baseline_sha256: cd860b8b712810f9f8651c325a6f1642e8453aa6148410cf7ff7a7058de286a3
+    policy_sha256: 10095418b09100f15c90af173ee34ea7bfcf12260cec41d80f43f6f50473a347
+    reduction_type: science
+    normalizations:
+    - remove inputs
+    - set runtime.output_dir to .

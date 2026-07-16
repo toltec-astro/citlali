@@ -77,8 +77,8 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 460 tests. All 96 config-boundary/preflight
-  tests pass; the checked leaf contract covers 574 leaves and the generated
+- CTest discovers and passes all 460 tests. The Phase 4.1 config preflight now
+  passes 107 focused tests; the checked leaf contract covers 576 leaves and the generated
   startup schema covers 726 normalized YAML nodes.
 
 These facts are characterization evidence, not a production-equivalence claim.
@@ -2027,6 +2027,19 @@ Exit gates are defined in
 [`PHASE4_1_TOLTECA_CONFIG_STRUCTURE_PLAN_2026-07-16.md`](PHASE4_1_TOLTECA_CONFIG_STRUCTURE_PLAN_2026-07-16.md):
 all four kits exist, overlay semantics are hermetically tested, accepted
 low-level equivalence is explicit, and one TolTECA smoke run per mode passes.
+
+The Citlali-owned kit and validation tranche is complete as of 2026-07-16.
+`config/tolteca/` contains four hash-pinned five-file kits derived from the
+accepted point, OOF, Beammap, and science snapshots. The hermetic merge tool
+implements TolTECA/Tollan list semantics, reports effective authority and
+override provenance, and participates in the full config preflight. That
+preflight passes 107 tests and all four accepted policy hashes. It also exposed
+and closed two existing science cleaner-grouping gaps in the resolved leaf
+contract, which now covers 576 leaves. Phase 4.1 remains active while TolPROJ
+vendors this exact kit behind an opt-in `--refactor` setup path. TolPROJ's
+legacy setup and filenames must remain the default and behaviorally unchanged.
+After both setup paths pass automated tests, the four refactor-mode TolTECA
+smoke reductions remain the final gate.
 
 ### Phase 4.2 - Technique And Performance Review
 

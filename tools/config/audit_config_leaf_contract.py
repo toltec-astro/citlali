@@ -23,6 +23,12 @@ DEFAULT_RULES = "tools/config/config_leaf_contract.yaml"
 DEFAULT_AUTHORITY = "tools/config/config_authority_inventory.json"
 DEFAULT_CASES = "tools/config/compact_compatibility_cases.yaml"
 DEFAULT_MANIFEST = "tools/config/config_leaf_contract_resolved.json"
+CHECKED_MODE_SOURCES = {
+    "pointing": "config/tolteca/point/70_pipeline.yaml",
+    "oof": "config/tolteca/oof/70_pipeline.yaml",
+    "beammap": "config/tolteca/beammap/70_pipeline.yaml",
+    "science": "config/tolteca/science/70_pipeline.yaml",
+}
 
 
 class ContractError(RuntimeError):
@@ -76,6 +82,15 @@ def load_sources(
             missing.append(str(path))
             continue
         sources.append({"label": mode, "mode": mode, "path": path})
+
+    for mode, relative_path in CHECKED_MODE_SOURCES.items():
+        path = (repo_root / relative_path).resolve()
+        if not path.is_file():
+            missing.append(str(path))
+            continue
+        sources.append(
+            {"label": f"mode-kit-{mode}", "mode": mode, "path": path}
+        )
     if missing and require_all:
         raise ContractError("missing config input(s): " + ", ".join(missing))
     return sources, missing

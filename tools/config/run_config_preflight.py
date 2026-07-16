@@ -90,6 +90,9 @@ def main(argv: list[str]) -> int:
         "tools/config/classify_lowlevel_config.py",
         "tools/config/compare_lowlevel_yaml.py",
         "tools/config/validate_config_authority_inventory.py",
+        "tools/config/tolteca_mode_kit.py",
+        "tools/config/generate_tolteca_mode_kits.py",
+        "tools/config/test_tolteca_mode_kit.py",
     ]
     commands: list[list[str]] = [
         [sys.executable, "-m", "py_compile", *scripts],
@@ -115,6 +118,14 @@ def main(argv: list[str]) -> int:
             "tools.config.test_generate_config_schema_header",
             "tools.config.test_audit_learning_boundary",
             "tools.config.test_audit_interface_sync_boundary",
+            "tools.config.test_tolteca_mode_kit",
+        ],
+        [
+            sys.executable,
+            "tools/config/tolteca_mode_kit.py",
+            "validate-all",
+            "--json-out",
+            str(work_dir / "tolteca_mode_kits.json"),
         ],
         [
             sys.executable,
@@ -296,11 +307,11 @@ def main(argv: list[str]) -> int:
         ],
     ]
     if args.require_all:
-        commands[2].append("--require-all")
         commands[3].append("--require-all")
-        commands[5].append("--require-all")
+        commands[4].append("--require-all")
+        commands[6].append("--require-all")
     if not args.allow_gaps:
-        commands[3].append("--fail-on-gaps")
+        commands[4].append("--fail-on-gaps")
 
     for command in commands:
         rc = run(command, cwd=repo_root)

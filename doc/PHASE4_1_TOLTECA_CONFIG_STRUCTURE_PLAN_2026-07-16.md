@@ -56,6 +56,9 @@ mode template.
 The exact filenames may be adjusted if a real TolTECA fixture exposes a merge
 constraint, but the five roles and their precedence remain fixed.
 
+The implemented filenames are `70_pipeline.yaml`, `71_runtime.yaml`,
+`72_observation.yaml`, `80_products.yaml`, and `90_user_overrides.yaml`.
+
 ## Editing Contract
 
 A routine user should usually edit only:
@@ -102,6 +105,34 @@ Citlali's schema requires them.
    TolTECA-owned runtime paths, or record any intentional successor change.
 6. Run one real TolTECA smoke reduction per mode using the new files and apply
    the existing mode validation profile.
+
+## Implementation Status - 2026-07-16
+
+The Citlali-owned portion is implemented under `config/tolteca/`:
+
+- all four mode kits are generated from the named accepted Phase 4 low-level
+  baselines and pinned by baseline and normalized-policy SHA-256 identities;
+- `tolteca_mode_kit.py` reproduces TolTECA/Tollan ordered recursive updates,
+  numeric list indexing, and list-slice operations without a TolTECA runtime
+  dependency;
+- strict validation checks file roles, reduction type, the checked config-leaf
+  contract, and exact accepted policy identity;
+- deployed-project inspection allows deliberate policy drift while retaining
+  unknown-key and reduction-mode failures and reporting final source,
+  authority, owner, and expert overrides;
+- the checked leaf contract now uses the four kits as hermetic observed
+  sources and covers 576 leaves, including two previously omitted science
+  cleaner-grouping leaves; and
+- the full config preflight passes 107 focused tests, all four kit identities,
+  all eight compact-compatibility cases, 100% compact-surface coverage, and all
+  typed-boundary audits.
+
+TolPROJ integration is next. Existing TolPROJ behavior remains the default.
+The new kits will be vendored and instantiated only when the operator selects
+`--refactor`; this path will generate `72_observation.yaml` and select the
+refactor executable while the existing `70_reduce.yaml`/`72_reduce.yaml` path
+remains unchanged. Phase 4.1 remains open until both TolPROJ paths are tested
+and point, OOF, Beammap, and science smoke reductions pass with the new files.
 
 ## Exit Gate
 

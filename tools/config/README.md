@@ -3,6 +3,26 @@
 This directory contains lightweight tools for auditing Citlali's YAML config
 surface during the structural refactor.
 
+## TolTECA Mode Kits
+
+`tolteca_mode_kit.py` provides a hermetic implementation of the numbered YAML
+merge behavior used by TolTECA, including numeric list indexes and ordered
+list-slice operations. It validates the four checked mode kits under
+`config/tolteca/` against their accepted policy hashes and the resolved
+Citlali leaf contract, and it can report effective-value provenance for a
+deployed reduction directory.
+
+```bash
+$HOME/tolteca/bin/python tools/config/tolteca_mode_kit.py validate-all
+$HOME/tolteca/bin/python tools/config/tolteca_mode_kit.py merge \
+  --mode science --mode-dir /path/to/reduction \
+  --json-out /tmp/config-report.json
+```
+
+`generate_tolteca_mode_kits.py` creates a reviewed successor kit from four
+named accepted low-level baselines. See `config/tolteca/README.md` for file
+roles, operator guidance, and the Citlali/TolPROJ ownership boundary.
+
 `config_inventory.py` reads `data/config.yaml`, counts leaf keys, and scans the
 source tree for simple `std::tuple{...}` config-key references. It is a static
 aid only; it does not validate that every dynamic config access was found.

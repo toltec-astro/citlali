@@ -1,0 +1,24 @@
+# Edit deployment paths and runtime resources for this workspace.
+reduce:
+  jobkey: reduced
+  inputs:
+    0:
+      path: ../data
+  steps:
+    0:
+      path: /work/toltec/citlali_dev/citlali_refactor/build/bin/citlali
+      config:
+        low_level:
+          runtime:
+            interp_over_gaps: true
+            meta:
+              version: tolteca...
+            n_threads: 16
+            output_dir: .
+            parallel_policy: omp
+            reduction_type: science
+            use_subdir: true
+            verbose: false
+          kids:
+            solver:
+              fitreportdir: ../data

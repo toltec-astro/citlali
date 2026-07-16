@@ -1,0 +1,34 @@
+# Replace OBSNUM, APT, calibration, and pointing records for this dataset.
+reduce:
+  inputs:
+    0:
+      select: scannum == 2 & (obsnum in [OBSNUM])
+  steps:
+    0:
+      config:
+        cal_items:
+        - beammap_source:
+            fluxes:
+            - array_name: a1100
+              uncertainty_mJy: 0.05
+              value_mJy: 0.0
+            - array_name: a1400
+              uncertainty_mJy: 0.05
+              value_mJy: 0.0
+            - array_name: a2000
+              uncertainty_mJy: 0.05
+              value_mJy: 0.0
+          type: photometry
+        - pointing_offsets:
+          - axes_name: az
+            value_arcsec:
+            - 0.0
+          - axes_name: alt
+            value_arcsec:
+            - 0.0
+          type: astrometry
+        - filepath: ../apts/apt_OBSNUM_matched.ecsv
+          meta:
+            interface: apt
+          select: obsnum == OBSNUM
+          type: array_prop_table

@@ -1,0 +1,91 @@
+# Standard product policy for this mode; values intentionally reassert the baseline.
+reduce:
+  steps:
+    0:
+      config:
+        low_level:
+          coadd:
+            enabled: false
+          noise_maps:
+            enabled: false
+            n_noise_maps: 10
+            randomize_dets: false
+          post_processing:
+            map_filtering:
+              edge_guard:
+                enabled: true
+                fill_mode: core_median
+                guard_radius_fwhm: 1.0
+                hits_core_fraction: 0.15
+                hits_threshold_mode: core_median_fraction
+                taper_min_fraction: 0.25
+                taper_mode: none
+                weight_threshold_mode: coverage_cut
+              enabled: false
+              normalize_errors: true
+              type: wiener_filter
+            map_histogram_n_bins: 50
+            source_finding:
+              enabled: false
+              mode: default
+              source_sigma: 0.0
+              source_window_arcsec: 0
+            source_fitting:
+              bounding_box_arcsec: 12
+              fitting_radius_arcsec: 130
+              gauss_model:
+                amp_limit_factors:
+                - 0.1
+                - 4.0
+                fit_rotation_angle: false
+                fwhm_limit_factors:
+                - 0.2
+                - 3.0
+              model: gaussian
+          wiener_filter:
+            denom_check_iters: 0
+            denom_rel_tol: 0.0001
+            lowpass_only: false
+            max_denom_iters: 0
+            max_loops: 500
+            tail_frac_tol: 0.05
+            template_fwhm_arcsec:
+              a1100: 18.0
+              a1400: 18.0
+              a2000: 18.0
+            template_type: kernel
+          timestream:
+            output:
+              stats:
+                eigenvalues: false
+              subdir_name: source_crossing_tod
+            raw_time_chunk:
+              output:
+                enabled: false
+                mode: mini_outer
+                outer_context_samples: 512
+                selection:
+                  mode: uniform_plus_source_crossing
+                  n_source_dense: 10
+                  n_uniform: 10
+            processed_time_chunk:
+              output:
+                enabled: false
+                mode: mini
+                selection:
+                  mode: uniform_plus_source_crossing
+                  n_source_dense: 10
+                  n_uniform: 10
+            fruit_loops:
+              save_all_iters: false
+          beammap:
+            detector_tod_output:
+              enabled: true
+              n_source_dense: 10
+              n_uniform: 10
+              subdir_name: source_crossing_tod
+            split_fits_by_flag:
+              enabled: true
+              flag_values:
+              - 0
+              - 1
