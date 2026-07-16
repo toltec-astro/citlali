@@ -165,15 +165,16 @@ dependency work.
 
 The broader section-F.2 exit criteria are now mapped in the
 [`Phase 4 closeout census`](PHASE4_CLOSEOUT_CENSUS_2026-07-16.md). Of the 15
-criteria, nine are closed by implementation and evidence, two are closed by an
-explicit owner scope decision or proportionality exception, three are
-compilation-dependent and remain deliberately deferred, and one durable-
-documentation criterion is open. The remaining non-build work is bounded to
-five focused ADRs, replacement of stale root `CODEX.md` instructions, and one
-retained-debt owner/trigger/exit table. After that, Phase 4 non-build work stops
-until the TolTECA build direction is available. The census deliberately avoids
-a percentage claim because the three deferred build criteria are not equal in
-scope to the documentation item.
+criteria, ten are closed by implementation and evidence, two are closed by an
+explicit owner scope decision or proportionality exception, and three are
+compilation-dependent and remain deliberately deferred. The five focused ADRs
+are indexed in `doc/adr/README.md`; root `CODEX.md` is now a concise canonical-
+document redirect; and [`RETAINED_DEBT.md`](RETAINED_DEBT.md) records each
+deliberate limitation with role owner, reopening trigger, and exit condition.
+Compilation-independent Phase 4 work is complete and stops here until the
+TolTECA build direction is available. The census deliberately avoids a
+percentage claim because the three deferred build criteria are material and
+not equal in scope.
 
 The controlled-performance evidence path is now specified without touching
 deferred compilation infrastructure. A Unity-side wrapper records GNU Time
@@ -2071,6 +2072,9 @@ boundaries, failure flow, source classification, and extension routing.
 `doc/PHASE4_CLOSEOUT_CENSUS_2026-07-16.md` maps every adopted F.2 completion
 criterion to evidence, an approved exception, a deliberate deferral, or a
 finite remaining action.
+`doc/RETAINED_DEBT.md` is the canonical owner/trigger/exit register for
+deliberately retained limitations, and `doc/adr/README.md` indexes durable
+architecture decisions.
 `validation/validation_profiles.json` identifies the active immutable
 validation epoch and one profile per supported reduction family; validate it
 with `tools/baseline/validation_profiles.py --list`. Continue to update this

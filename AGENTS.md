@@ -7,11 +7,14 @@ Read these documents before making architectural changes:
    compatibility boundaries, and extension rules.
 3. `doc/SCIENTIFIC_CONVENTIONS.md` - identities, units, frames, validity, and
    validation routing.
-4. `handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md` - adopted
+4. `doc/RETAINED_DEBT.md` - deliberate limitations, owners, triggers, and exit
+   conditions.
+5. `handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md` - adopted
    independent review and completion criteria.
-5. `doc/STRUCTURAL_REFACTOR_PLAN_2026-06-29.md` - original goals and history.
+6. `doc/STRUCTURAL_REFACTOR_PLAN_2026-06-29.md` - original goals and history.
 
 The living status document governs sequencing when these documents differ.
+Durable architecture decisions are indexed in `doc/adr/README.md`.
 
 ## Current Direction
 

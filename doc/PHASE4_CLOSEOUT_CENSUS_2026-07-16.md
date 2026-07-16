@@ -17,15 +17,15 @@ supported by evidence. The living phase decision remains
 
 The 15 required F.2 criteria currently divide as follows:
 
-- **9 closed by implementation and evidence**;
+- **10 closed by implementation and evidence**;
 - **2 closed by an explicit scope decision or proportionality exception**;
 - **3 compilation-dependent criteria deliberately deferred** pending review
   of TolTECA's revised C++ integration approach; and
-- **1 open documentation criterion**, bounded to focused ADRs, removal of the
-  stale `CODEX.md` workflow text, and an explicit retained-debt register.
+- **0 open compilation-independent criteria**.
 
 These counts are not a percentage-complete claim. The three deferred build
-criteria are materially larger than the remaining documentation work.
+criteria remain material unresolved work despite completion of the non-build
+package.
 
 ## Status Vocabulary
 
@@ -56,7 +56,7 @@ criteria are materially larger than the remaining documentation work.
 | 12 | Current strict point, Beammap, science, and OOF gates; enabled polarimetry validated or rejected | **Closed** | `validation/validation_profiles.json` contains four active immutable mode profiles. The unified validator runs completion/provenance, exact config, product-contract, and numerical gates and fails on missing, extra, skipped, changed, or error records. Enabled polarimetry is mechanically rejected before execution until an approved reference contract exists. |
 | 13 | Controlled performance/RSS evidence meets policy or has approved exception | **Closed by exception** | The wrapper records exact run identity, GNU Time wall/RSS/I/O, Citlali time, stages, config/input identity, and runtime policy. Point `redu67` demonstrated the wrapper with 908,316 KB peak RSS and exact products. Twelve Beammap checkpoints show no sustained regression. The owner approved a proportionality exception to a dedicated campaign on shared VAST; Beammap RSS and profiler-overhead experiments are trigger-based requirements for the next natural run or a real regression signal, not Phase 4 prerequisites. |
 | 14 | Intended non-structural/science imports have a checked ledger | **Closed** | `validation/intended_science_changes.json` records the determinism repair, Wiener optimization series, and active-detector PCA optimization with source/integration commits, expected effect, affected modes/products, and accepted evidence. The validator checks ancestry, patch identity where applicable, evidence IDs, and product-family references. |
-| 15 | Durable section-H documentation is current and retained debt has owner/exit condition | **Open** | `AGENTS.md`, [`ARCHITECTURE.md`](ARCHITECTURE.md), [`SCIENTIFIC_CONVENTIONS.md`](SCIENTIFIC_CONVENTIONS.md), [`REFACTOR_STATUS.md`](REFACTOR_STATUS.md), the validation ledger, profiles, product contracts, and science-change ledger exist. The focused ADR set is absent, `CODEX.md` still retains contradictory historical workflow text below its superseded notice, and retained debt is not yet consolidated into one owner/exit table. These are the remaining compilation-independent closeout tasks. |
+| 15 | Durable section-H documentation is current and retained debt has owner/exit condition | **Closed** | `AGENTS.md`, [`ARCHITECTURE.md`](ARCHITECTURE.md), [`SCIENTIFIC_CONVENTIONS.md`](SCIENTIFIC_CONVENTIONS.md), [`REFACTOR_STATUS.md`](REFACTOR_STATUS.md), [`RETAINED_DEBT.md`](RETAINED_DEBT.md), the five focused [`adr`](adr/README.md) records, validation ledger, profiles, product contracts, and science-change ledger form the canonical set. Root `CODEX.md` is now a concise redirect with no contradictory historical workflow. Each retained debt has a role owner, reopening trigger, and observable exit condition. |
 
 ## Deferred Compilation Package
 
@@ -82,45 +82,37 @@ That later review must answer:
 Until those answers exist, do not alter CMake targets, presets, dependency
 fetching, CI build lanes, install/export rules, or cluster build helpers.
 
-## Remaining Compilation-Independent Closeout
+## Completed Compilation-Independent Closeout
 
-The remaining work that can proceed now is finite:
+The finite non-build package is complete:
 
-1. Add five focused ADRs for the immutable config transition, structured
+1. Five focused ADRs record the immutable config transition, structured
    result/output-failure contract, frozen `Engine` and session ownership, first
    compiled-boundary/header policy, and deferred measured R channel.
-2. Replace `CODEX.md` with a concise redirect to `AGENTS.md`,
+2. `CODEX.md` is a concise redirect to `AGENTS.md`,
    [`ARCHITECTURE.md`](ARCHITECTURE.md), and
-   [`REFACTOR_STATUS.md`](REFACTOR_STATUS.md). Historical invalid build
-   instructions do not need to remain in an active root instruction file.
-3. Add one retained-debt table with an engineering/scientific owner, trigger,
-   and exit test for each deliberate limitation.
-4. Run the complete local CTest, config-preflight, baseline-tool, and registry
-   validation gates after the documentation set is coherent.
-5. Stop Phase 4 non-build work. Wait for the build-direction decision instead
-   of inventing another structural tranche.
+   [`REFACTOR_STATUS.md`](REFACTOR_STATUS.md); historical invalid build
+   instructions remain only in Git history.
+3. [`RETAINED_DEBT.md`](RETAINED_DEBT.md) assigns every deliberate limitation
+   a role owner, reopening trigger, and exit test.
+4. The complete local CTest, config-preflight, baseline-tool, registry, and
+   session-exit gates pass after the documentation set was assembled.
+5. Compilation-independent Phase 4 work now stops. The next Phase 4 action is
+   the build-direction review, not another structural tranche.
 
-## Retained Debt Requiring Exit Conditions
+## Retained Debt
 
-The durable debt table should cover at least these items:
-
-| Debt | Owner | Trigger | Exit condition |
-| --- | --- | --- | --- |
-| Broad `Engine` aggregate and pipeline/header coupling | Citlali engineering | A bounded feature or defect needs a narrower owner | New boundary is explicit, tested, mode-validated, and does not add another state bag |
-| Full public-header/private-fragment and compiled-boundary work | Citlali engineering with TolTECA build owner | Revised integration/build direction is available | Supported clean build passes; public/private boundary and measured compile effects are recorded |
-| Dependency and CI reproducibility | Citlali engineering with TolTECA build owner | Same build-direction review | One pinned supported lane builds and runs required tests/config gates from checked-in instructions |
-| Product unit/fill/schema metadata gaps | Citlali engineering and scientific owner | A consumer or successor schema needs explicit machine-readable metadata | Versioned schema and migration policy pass product-contract and mode validation |
-| Enabled polarimetry | Scientific owner and Citlali engineering | Approved data, algorithm, and product contract are available | Enabled reference gate passes; until then preflight rejection remains mandatory |
-| Measured R-channel execution | Scientific owner and Citlali engineering | Measured-channel semantics are approved | Typed shape/unit/alignment/calibration/flag/provenance contract and enabled reference pass |
-| Compact-config rollout | TolTECA/config owner and Citlali engineering | Production authoring migration is requested | Hermetic real overlay tests cover ordering, list/null/alias/unknown-key and multi-step semantics |
-| Fruit-loop run/iteration directory identity | TolTECA and Citlali engineering | Concurrent or auditable saved-iteration workflows are scheduled | One atomically claimed run root owns explicit nested iteration IDs and a run manifest |
-| External library consumption | Project owner | A real non-Citlali client is identified | Install/export/API support is designed against that client and smoke-tested |
-| Concurrent sessions in one process | Project owner and Citlali engineering | A real caller requires it | Logger, FFTW, dependency, memory, output, and mutable-state isolation are explicitly tested |
+[`RETAINED_DEBT.md`](RETAINED_DEBT.md) is the canonical register. It includes
+the broader `Engine`/pipeline/header graph, deferred build and CI work, product
+metadata, polarimetry, measured R, compact config, fruit-loop run identity,
+external library scope, concurrent sessions, triggered performance evidence,
+and the future Beammap corpus. Do not duplicate or silently relax those exit
+conditions here.
 
 ## Phase Boundary
 
-After criterion 15 is closed, compilation-independent Phase 4 work is done.
-Phase 4 as a whole remains active but waiting on the deferred compilation
-package. Phase 5 must not begin by silently waiving criteria 6, 7, and 10; it
-may begin only after those criteria are closed or the project owner records a
-final explicit exception based on the reviewed TolTECA integration model.
+Criterion 15 is closed and compilation-independent Phase 4 work is done. Phase
+4 as a whole remains active but waiting on the deferred compilation package.
+Phase 5 must not begin by silently waiving criteria 6, 7, and 10; it may begin
+only after those criteria are closed or the project owner records a final
+explicit exception based on the reviewed TolTECA integration model.

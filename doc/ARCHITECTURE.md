@@ -20,6 +20,9 @@ Use these companion authorities:
   accepted validation snapshots;
 - [`SCIENTIFIC_CONVENTIONS.md`](SCIENTIFIC_CONVENTIONS.md) for scientific
   identities, units, coordinate frames, indexing, and validity;
+- [`RETAINED_DEBT.md`](RETAINED_DEBT.md) for deliberate limitations, role
+  owners, reopening triggers, and exit conditions;
+- [`adr/README.md`](adr/README.md) for durable consequential decisions;
 - `validation/product_contracts.json` for executable product requirements;
 - `tools/config/config_leaf_contract_resolved.json` for low-level config
   ownership and value domains; and
