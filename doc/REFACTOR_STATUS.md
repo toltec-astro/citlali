@@ -126,6 +126,19 @@ and fatal required-write policies while naming existing metadata debt rather
 than inventing semantics. See the
 [scientific product contract](PHASE4_SCIENTIFIC_PRODUCT_CONTRACT_2026-07-16.md).
 
+The intended post-baseline science-change census is now machine-readable in
+`validation/intended_science_changes.json`. It identifies three accepted
+imports from `gw_dev`: the RTC/PTC parallel determinism fix, the three-commit
+Wiener optimization, and the active-detector PCA optimization. Full source and
+integration commits are recorded. Four patch-equivalent cherry picks are
+verified mechanically by stable Git patch identity; the manually transplanted
+determinism fix is tied to its direct two-run OMP evidence. Every entry records
+its expected behavior and numerical/schema effect, affected modes and product
+families, accepted-run evidence, and limitations. Scientific behavior already
+present at baseline `376e0022` is explicitly inherited rather than relabeled,
+and later OG `ffc6b907` is recorded as a comparator rather than an imported
+commit. Future non-structural changes require a ledger entry before acceptance.
+
 The controlled-performance evidence path is now specified without touching
 deferred compilation infrastructure. A Unity-side wrapper records GNU Time
 wall/RSS/I/O data together with Citlali log time, exact config leaves, bounded
@@ -2008,6 +2021,10 @@ accepted checkpoints must record commit, binary version, mode, input/config
 identity, comparator version, tolerances, error count, timing, available memory
 evidence, and disposition. Run
 `tools/baseline/validate_validation_ledger.py` after editing it.
+`validation/intended_science_changes.json` is the separate source-to-evidence
+ledger for intentional post-baseline scientific changes; validate commit
+ancestry, patch identity, and evidence links with
+`tools/baseline/validate_science_change_ledger.py`.
 `validation/validation_profiles.json` identifies the active immutable
 validation epoch and one profile per supported reduction family; validate it
 with `tools/baseline/validation_profiles.py --list`. Continue to update this

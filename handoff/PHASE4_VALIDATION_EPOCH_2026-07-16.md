@@ -47,7 +47,8 @@ artifact path is unavailable on the current host.
 
 - The validation ledger contains 60 valid records.
 - The profile registry validates with four active modes.
-- All 99 baseline-tool unit tests pass.
+- All 106 baseline-tool unit tests pass, including the science-change ledger
+  integrity checks.
 - All four profiles pass an end-to-end self-check against their accepted
   snapshots, including complete Beammap products.
 - The unified command also accepts point `redu66` against predecessor `redu65`
@@ -115,3 +116,16 @@ units policy, indexing, missing-value policy, and fatal required-write policy.
 Known incomplete NetCDF units/fill metadata and ECSV column-unit metadata are
 documented debt, not silently invented semantics. See
 `doc/PHASE4_SCIENTIFIC_PRODUCT_CONTRACT_2026-07-16.md`.
+
+The intended-science-change manifest required by the external review is now
+`validation/intended_science_changes.json`. Its scope begins after the explicit
+refactor baseline `376e0022`; earlier cleaning and fruit-loop history is
+inherited baseline behavior. The three traced imports are the RTC/PTC
+determinism fix (`991428e70` to `ee429eca0`), Wiener optimizations (three source
+to integration mappings), and PCA active-detector optimization (`b83c87507` to
+`be7974636`). The validator checks full Git objects, baseline/integration
+ancestry, four exact patch identities, accepted-run IDs, repository documents,
+and product-family IDs. Later OG `ffc6b907` remains a validation comparator and
+is not falsely listed as an import. Future intentional non-structural changes
+must add an entry and successor validation epoch when products or expected
+numerics change.

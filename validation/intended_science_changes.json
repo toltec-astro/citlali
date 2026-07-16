@@ -1,0 +1,189 @@
+{
+  "schema_version": "citlali-intended-science-change-ledger-v1",
+  "refactor_baseline": {
+    "commit": "376e002238b1f49aeced8a3f33e8742db141634b",
+    "definition": "Scientific behavior at this commit is inherited starting state. Only non-structural changes imported after this commit belong in this ledger."
+  },
+  "policy": {
+    "scope": "Record every intentional post-baseline algorithm, numerical, default, schema, or scientific-product change imported into the refactor branch.",
+    "future_change_rule": "Add and validate a ledger entry before accepting a future non-structural change. Link its source, expected effect, affected modes/products, and independent evidence.",
+    "baseline_rule": "Earlier cleaning and fruit-loop changes already reachable from the refactor baseline are not post-baseline imports and are not relabeled as refactor changes.",
+    "comparison_rule": "A later OG commit used as a validation comparator is not an imported change unless an integration mapping is recorded here. In particular, ffc6b9070f4744f9778f3db71cdc468846d1da89 is a comparator, not an ancestor or imported commit of this refactor branch."
+  },
+  "changes": [
+    {
+      "change_id": "gw-dev-determinism-import-2026-06-30",
+      "title": "Protect RTC/PTC diagnostic snapshots during parallel scan processing",
+      "recorded_date": "2026-06-30",
+      "status": "accepted",
+      "change_class": "correctness_bug_fix",
+      "source_branch": "gw_dev",
+      "commit_mappings": [
+        {
+          "source_commit": "991428e70c280c4a7d917d9079cd84264c757821",
+          "integration_commit": "ee429eca0827e5ada6936085b400d1cc03d4aa07",
+          "method": "manual_transplant"
+        }
+      ],
+      "rationale": "Parallel scan workers were reading diagnostic maps and vectors while other workers could still mutate them, producing run-to-run drift. The imported fix takes mutex-protected snapshots and clears caches under the same ownership rules used for writes.",
+      "affected_modes": [
+        "point",
+        "oof",
+        "science",
+        "beammap"
+      ],
+      "affected_product_families": [
+        "rtc_diagnostics",
+        "ptc_diagnostics",
+        "rtc_timestream",
+        "ptc_timestream",
+        "map_cube_altaz",
+        "map_cube_celestial",
+        "pointing_fit_table",
+        "beammap_detector_cube",
+        "beammap_apt_table"
+      ],
+      "expected_effect": {
+        "behavior": "OpenMP reductions use stable diagnostic snapshots instead of observing concurrently mutating cache state.",
+        "numerical_or_schema": "No sequential-output or product-schema change is intended. Parallel output should stop drifting run to run and agree with the established sequential point gate under its comparison policy."
+      },
+      "validation_evidence": [
+        {
+          "kind": "document",
+          "path": "handoff/HANDOFF_2026-06-30.md",
+          "finding": "Two byte-identical OMP/6 configurations produced matching manifests, and both matched the protected sequential point baseline after the import."
+        },
+        {
+          "kind": "accepted_run",
+          "record_id": "point-152389-refactor-2a974e0d-redu66",
+          "finding": "The current accepted point snapshot retains exact complete-product and timestream behavior with zero unexpected errors."
+        }
+      ],
+      "limitations": [
+        "The direct run-to-run determinism evidence is the point OMP/6 fixture; other modes are covered by later scientific-equivalence snapshots rather than dedicated repeated-run trials."
+      ]
+    },
+    {
+      "change_id": "gw-dev-wiener-speedups-import-2026-07-01",
+      "title": "Reduce Wiener-filter allocation and FFT overhead",
+      "recorded_date": "2026-07-01",
+      "status": "accepted",
+      "change_class": "performance_optimization",
+      "source_branch": "gw_dev",
+      "commit_mappings": [
+        {
+          "source_commit": "027077a9e3fba53e03ca5b1d83b89fedc9447fca",
+          "integration_commit": "cc1179a48f75ffc990752c5648f57731d793dcb0",
+          "method": "patch_equivalent_cherry_pick",
+          "patch_id": "cdc7c4d5f6b746ca2d2c3333b7df8b49244c0036"
+        },
+        {
+          "source_commit": "ab3eaded48810c13aa61f1bfb7f06309f546325d",
+          "integration_commit": "4705c49cc0c17b6b4fee145c37aaf51029579883",
+          "method": "patch_equivalent_cherry_pick",
+          "patch_id": "1cfdab74cf55965e4959f652ae465ee50e7b4041"
+        },
+        {
+          "source_commit": "e8f7314957d2c43f850c57b69b7a5d3684a654c9",
+          "integration_commit": "63b61ce51164b45f9555f7c670b6187a3f1b9ffd",
+          "method": "patch_equivalent_cherry_pick",
+          "patch_id": "e9d87234d98aa440de38d5a5a64673c05712b1f7"
+        }
+      ],
+      "rationale": "The serial and OpenMP Wiener paths repeatedly allocated FFT outputs and repeated avoidable work in a hot post-processing path. The imported implementation reuses caller-owned buffers, adds bounded denominator controls, and simplifies the OpenMP path.",
+      "affected_modes": [
+        "point",
+        "oof",
+        "science",
+        "beammap"
+      ],
+      "affected_product_families": [
+        "map_cube_altaz",
+        "map_cube_celestial"
+      ],
+      "expected_effect": {
+        "behavior": "Default filtering retains the legacy constant kernel-template tail while reducing transient allocation and redundant FFT work. Optional zero and cosine tail modes intentionally alter the template tail only when explicitly selected.",
+        "numerical_or_schema": "No default output-schema change is intended. Default filtered products must remain within the pinned mode-specific tolerances; explicitly selecting a non-default tail mode is an intentional filtered-map numerical change."
+      },
+      "validation_evidence": [
+        {
+          "kind": "document",
+          "path": "doc/WIENER_FILTER_FOLLOWUPS_2026-07-01.md",
+          "finding": "The implementation and focused FFT, denominator, convergence, and tail-mode checks are recorded with the legacy-preserving default."
+        },
+        {
+          "kind": "accepted_run",
+          "record_id": "point-152389-refactor-6dd0057f-redu65-full-wiener",
+          "finding": "All seven filtered products pass the strict full-Wiener point gate; the simultaneous OG/refactor pair shows no material performance regression."
+        },
+        {
+          "kind": "accepted_run",
+          "record_id": "science-152390-152392-og-ffc6b907-refactor-50235fd6",
+          "finding": "Twenty-one Wiener-filtered science layers remain within the accepted 1.5% scientific bound while raw maps and diagnostics remain substantially tighter."
+        }
+      ],
+      "limitations": [
+        "The historical timing pair is operational evidence, not a controlled performance benchmark.",
+        "Accepted OOF and Beammap snapshots do not independently exercise every optional Wiener template-tail mode."
+      ]
+    },
+    {
+      "change_id": "gw-dev-pca-speedup-import-2026-07-02",
+      "title": "Restrict PCA covariance solves to active detectors",
+      "recorded_date": "2026-07-02",
+      "status": "accepted",
+      "change_class": "performance_and_robustness",
+      "source_branch": "gw_dev",
+      "commit_mappings": [
+        {
+          "source_commit": "b83c87507a9324aa96f786fbb051c728276ef65b",
+          "integration_commit": "be79746365b4641732ed3a6b651f7f5b751f6b3a",
+          "method": "patch_equivalent_cherry_pick",
+          "patch_id": "cb22afe94e99ddb35ddd8eecf587d039caa7ab92"
+        }
+      ],
+      "rationale": "The cleaner previously formed and solved a full detector covariance even for flagged or insufficiently sampled detectors. The imported implementation solves only the active subspace and expands the result back to the stable full-detector shape.",
+      "affected_modes": [
+        "point",
+        "oof",
+        "science",
+        "beammap"
+      ],
+      "affected_product_families": [
+        "ptc_diagnostics",
+        "ptc_timestream",
+        "map_cube_altaz",
+        "map_cube_celestial",
+        "pointing_fit_table",
+        "beammap_detector_cube",
+        "beammap_apt_table",
+        "beammap_fit_qc",
+        "beammap_detector_tod"
+      ],
+      "expected_effect": {
+        "behavior": "PCA cleaning excludes already flagged detectors and detector columns with fewer than two usable samples from covariance construction, while preserving detector-indexed output shapes.",
+        "numerical_or_schema": "No product-schema change is intended. Floating-point results may differ slightly because the covariance solve is performed on the active detector subspace; flags, fit stability, and mode-specific products must remain within the accepted scientific contracts."
+      },
+      "validation_evidence": [
+        {
+          "kind": "accepted_run",
+          "record_id": "beammap-148670-og-b83c8750-refactor-4b0126e7",
+          "finding": "The matched Beammap comparison uses the source PCA commit on OG and accepts all detector flags, map layers, sensitivities, positions, and beam widths under the versioned scientific profile."
+        },
+        {
+          "kind": "accepted_run",
+          "record_id": "science-152390-152392-og-ffc6b907-refactor-59c35e60",
+          "finding": "The science comparison retains exact integer diagnostics and very small accepted map, PTC-weight, detector-median, and other diagnostic differences."
+        },
+        {
+          "kind": "accepted_run",
+          "record_id": "point-152389-refactor-2a974e0d-redu66",
+          "finding": "The current accepted point snapshot retains exact complete-product and timestream behavior across the later structural work."
+        }
+      ],
+      "limitations": [
+        "The import intentionally changes the numerical route for flagged-detector cases, so equivalence is scientific and contract-based rather than a claim of universal bitwise identity."
+      ]
+    }
+  ]
+}

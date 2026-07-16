@@ -50,6 +50,22 @@ Accepted profiles are versioned snapshots. Future intentional product changes
 create successor validation epochs with a predecessor comparison and recorded
 scientific rationale; they do not rewrite or loosen an old profile.
 
+Post-baseline scientific changes are tracked separately in
+`validation/intended_science_changes.json`. The ledger distinguishes inherited
+baseline behavior from later imports and links each import to its source and
+integration commits, expected numerical or schema effect, affected modes and
+product families, and accepted validation evidence. Validate Git ancestry,
+claimed patch identity, evidence references, and product-family references
+with:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/validate_science_change_ledger.py
+```
+
+A later OG revision used as a comparator is not automatically an imported
+change. Future intentional algorithm, default, or product changes must add a
+ledger entry and, where applicable, a successor validation epoch.
+
 ## Controlled Performance Campaigns
 
 Use `run_performance_case.py` on Unity to wrap one baseline or candidate
