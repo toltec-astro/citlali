@@ -21,15 +21,15 @@ branch. The exact validated tree will remain available for forensic review.
 
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
-- Latest accepted point reduction: Phase 3 mature-exit checkpoint `redu64`,
-  produced by `6dd0057f8`, is exact against accepted `redu63` across all 21
-  scientific products and 2,041 complete comparison records. It validates the
-  unchanged valid point path after the fruit-loop, Wiener, APT, and telescope
-  failure-contract work. The run has 12 complete PTC chunks, zero logged
-  issues, all required provenance valid, and the same 76 profile stage/context
-  identities. The only provenance hash change is the expected run-local
-  `redu63` to `redu64` output path. `redu63`, produced by `375aed5d8`, remains
-  the accepted run-owned profile and first compiled-boundary checkpoint.
+- Latest accepted point reduction: Phase 3 exit checkpoint `redu66`, produced
+  by `2a974e0dd`, is exact against full-Wiener checkpoint `redu65` across all 19
+  non-profile scientific products, including complete RTC/PTC timestreams,
+  with zero changed or skipped records. Their 490-leaf configs are exact. Both
+  profiles contain the same multiset of 78 stage/context records; only elapsed
+  values and concurrent completion order differ. The run has 12 complete PTC
+  chunks, zero logged issues, all required provenance valid, and a successful
+  VAST-backed exclusive output-root acquisition. `redu64` remains the accepted
+  mature library-exit checkpoint and `redu63` the first compiled boundary.
   Observation-resolved astrometry
   provenance `redu61`, disabled polarimetry capability provenance
   `redu60`, external KIDs/config-source provenance
@@ -85,14 +85,16 @@ These facts are characterization evidence, not a production-equivalence claim.
 
 ## Active Phase
 
-**Phase 3 - Library, session, and first compiled boundary** is active as of
-2026-07-15. Phase 2 config authority and provenance is complete: local F.1
-gates pass and Unity point `redu62` accepts the final candidate.
+**Phase 4 - Validation, performance, and reproducible build** is active as of
+2026-07-16. Phase 3 library/session work is complete: local gates pass and
+Unity point `redu66` accepts the output-root ownership repair and exact
+scientific behavior at the first compiled boundary. Phase 2 config authority
+and provenance remains complete at Unity point `redu62`.
 
 Phase 1 safety stabilization is complete for point, Beammap, science, and OOF.
 OOF refactor `redu01` closes the multi-observation date-header gate and is the
 accepted comparison against OG `redu00`. Do not reopen typed analysis-control
-migration during Phase 3.
+migration during Phase 4; validation and reproducibility are now the priority.
 
 Operational config migration must proceed one authority domain at a time with
 the one-way requested-to-effective-to-realized contract, focused tests, and the
@@ -333,8 +335,10 @@ preflight pass locally. Clean single-job science sequence `redu28` through
 iteration consumed its immediately preceding complete map directory, the final
 run logged no issues, and exact-config scientific equivalence against accepted
 `redu23` passed. This closes the fruit-loop map-input repair gate. The output-
-root lease still requires its first Unity compile and normal reduction to
-exercise VAST lock acquisition before Phase 3 closes.
+root lease then passed its first Unity/VAST exercise in point `redu66`: the
+parent log records successful exclusive acquisition, the run completed without
+issues, and all non-timing products are exact against `redu65`. This closes the
+Phase 3 output-ownership and compiled-boundary gates.
 
 The runtime domain is the first operational Phase 2 migration. Requested,
 effective, and realized runtime state are now separate in memory, and execution
