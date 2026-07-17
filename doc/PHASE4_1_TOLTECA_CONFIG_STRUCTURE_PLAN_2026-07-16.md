@@ -184,18 +184,24 @@ Beammap, and science smoke reductions pass with the installed V2 files.
 TolPROJ commit `39f724d` adds the reproducible four-mode acceptance-suite layer
 above those installers. The canonical suite contains one portable
 `suite.yaml` plus human-readable point, OOF, Beammap, and science
-`project.yaml` files. Cluster-specific executable, data, APT, prior, and Slurm
-paths are resolved from the normal TolPROJ site config. The installer creates
-one refactor-only workspace, runs `tolteca setup`, installs the verified V2
-mode kits, generates observation overlays and Slurm helpers, and records exact
-source, kit, site, config, and resource identities in `suite.lock.yaml`.
-Mode-aware verification permits point, OOF, and Beammap readiness to be checked
-independently while correctly holding science until the suite's eight pointing
-support products exist. It refuses in-place suite, site, or config drift. The
-suite does not create an OG baseline, copy data, submit jobs, or run Citlali.
-All 103 TolPROJ tests pass. The remaining gate is a fresh Unity installation
-followed by successful point, OOF, Beammap, and science reductions and their
-existing product-profile comparisons.
+`project.yaml` files. Follow-up commit `8310c24` makes the realized dataset
+self-contained. `stage-plan` selects and sizes only files for the declared
+observations; `stage` dereferences source symlinks and atomically copies and
+hashes raw data, matched APTs, and the Beammap prior into each mode directory.
+Point data is completed from the science source so the eight science-support
+pointings are produced inside the suite. Generated YAML uses suite-relative
+data, APT, prior, and pointing paths. The installer creates one refactor-only
+workspace, runs `tolteca setup`, installs the verified V2 mode kits, generates
+observation overlays and Slurm helpers, and records exact source, kit, site,
+config, and managed-file identities in `suite.lock.yaml`. Mode-aware
+verification permits point, OOF, and Beammap readiness to be checked
+independently while correctly holding science until the suite's pointing
+support products exist. It detects missing, changed, conflicting, and
+unexpected staged inputs and refuses in-place suite, site, or config drift.
+The suite does not create an OG baseline, submit jobs, or run Citlali. All 103
+TolPROJ tests pass. The remaining gate is a fresh Unity installation and data
+stage followed by successful point, OOF, Beammap, and science reductions and
+their existing product-profile comparisons.
 
 ## Exit Gate
 
