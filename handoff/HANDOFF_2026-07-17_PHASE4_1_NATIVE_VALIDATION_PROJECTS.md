@@ -54,3 +54,19 @@ project-file identity.
 
 Phase 4.1 remains open until a fresh Unity root is prepared through the normal
 TolPROJ machinery and point, OOF, Beammap, and science smoke reductions pass.
+
+## Unity Setup Follow-Up
+
+TolPROJ commit `d2c90f3` records corrections found during the first setup:
+
+- point and OOF no longer pre-create unused nested `pointings/` directories;
+- Beammap no longer pre-creates `pointings/` or `apts/`;
+- science retains all four working directories because it owns supporting
+  pointing reductions;
+- pointing, science/OOF, and Beammap `02_redu.sh` generators all request the
+  configured partition (`toltec-cpu` on Unity);
+- Python workflow logs use action-specific filenames instead of the generic
+  `logs/tolproj.log`, while SLURM stdout remains `<jobname>-%j.out`.
+
+Verification after this follow-up: 105 tests, full Ruff, and Python
+byte-compilation pass.

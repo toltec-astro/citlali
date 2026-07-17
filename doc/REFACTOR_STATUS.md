@@ -115,6 +115,17 @@ tree, submit jobs, or run Citlali. All 104 TolPROJ tests pass. Phase 4.1 remains
 open until these freshly created Unity projects complete point, OOF, Beammap,
 and science smoke reductions with no unexpected errors.
 
+TolPROJ follow-up commit `d2c90f3` applies the first Unity setup corrections.
+The native skeleton is mode-minimal: point and OOF omit an unused nested
+`pointings/` directory; Beammap omits both unused `pointings/` and `apts/`;
+science retains its pointing-support structure. All generated Citlali
+`02_redu.sh` scripts now request the configured partition (`toltec-cpu` on
+Unity). TolPROJ file logging is action-specific (`copyraw.log`,
+`reducetunes.log`, `matchapts.log`, `pointings.log`, `science.log`, and
+`flxscale.log`) instead of funneling independent steps into `tolproj.log`;
+SLURM stdout remains separately named `<jobname>-%j.out`. All 105 TolPROJ tests,
+full Ruff, and byte-compilation pass.
+
 Compilation-side Phase 4 work is explicitly deferred as of 2026-07-16 pending
 review of the TolTECA developer's revised C++ build and integration approach.
 Do not change Citlali CMake structure, presets, dependency management, CI build
