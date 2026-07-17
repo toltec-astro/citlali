@@ -83,3 +83,14 @@ accepted pointing run. The canonical first-run expectation is
 `science/pointings/reduced/redu00/<obsnum>`; the separate compact `point`
 validation project is not a substitute for science's self-contained pointing
 support. After this repair, 106 tests, full Ruff, and byte-compilation pass.
+
+The first populated Unity tree exposed a more precise product-selection
+contract. TolTECA's `CalObj.load_data_objs()` recursively searches a configured
+directory for `ppt_*.ecsv` and requires exactly one match. An observation-level
+pointing directory contains both `raw/ppt_*.ecsv` and
+`filtered/ppt_*.ecsv`, so the directory exists but TolTECA rejects it as
+ambiguous. TolPROJ commit `704b486` now validates exactly one raw table and
+emits `science/pointings/reduced/reduNN/<obsnum>/raw` in `cal_objs`.
+Beammap-generated pointing references use the same explicit raw-product
+contract. After this correction, 106 tests, full Ruff, and byte-compilation
+pass.

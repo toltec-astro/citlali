@@ -133,6 +133,14 @@ and accepts `--pointing-reduction reduNN` so setup uses the same accepted run as
 pointing flux calibration. This converts a late TolTECA `invalid calobj path`
 failure into an actionable TolPROJ preflight error. All 106 TolPROJ tests pass.
 
+The populated Unity tree then showed that existence alone is insufficient:
+TolTECA recursively requires exactly one `ppt_*.ecsv` under each `cal_objs`
+path, while an observation root can contain both raw and filtered tables.
+TolPROJ commit `704b486` makes the established raw pointing product explicit,
+validates exactly one table under `<obsnum>/raw`, and emits that directory for
+science and Beammap pointing references. All 106 TolPROJ tests, full Ruff, and
+byte-compilation pass.
+
 Compilation-side Phase 4 work is explicitly deferred as of 2026-07-16 pending
 review of the TolTECA developer's revised C++ build and integration approach.
 Do not change Citlali CMake structure, presets, dependency management, CI build
