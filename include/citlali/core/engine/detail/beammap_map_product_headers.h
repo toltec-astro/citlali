@@ -13,14 +13,8 @@ void add_detector_header_keys(HduPtr hdu,
                               Eigen::Index detector_index) {
     for (auto const &key: calib.apt_header_keys) {
         if (!beammap_apt_keys::is_flag2(key)) {
-            try {
-                hdu->addKey("BEAMMAP." + key, calib.apt[key](detector_index),
-                            key + " (" + calib.apt_header_units[key] + ")");
-            }
-            catch (...) {
-                hdu->addKey("BEAMMAP." + key, 0.0,
-                            key + " (" + calib.apt_header_units[key] + ")");
-            }
+            hdu->addKey("BEAMMAP." + key, calib.apt[key](detector_index),
+                        key + " (" + calib.apt_header_units[key] + ")");
         }
         else {
             hdu->addKey("BEAMMAP." + key, flag2(detector_index),

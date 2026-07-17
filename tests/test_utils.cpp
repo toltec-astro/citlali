@@ -5,6 +5,9 @@
 #include <tula/algorithm/index.h>
 #include <tula/formatter/matrix.h>
 #include "citlali/core/mapmaking/wiener_filter.h"
+#include "citlali/core/mapmaking/map.h"
+#include "citlali/core/timestream/rtc/calibrate.h"
+#include "citlali/core/utils/pointing.h"
 #include "citlali/core/utils/utils.h"
 #include "citlali/core/timestream/rtc/filter.h"
 #include <spdlog/sinks/null_sink.h>
@@ -71,6 +74,109 @@ struct KernelTemplateMap {
 };
 
 struct DummyCalibData {};
+
+struct CalibrationFixture {
+    Eigen::VectorXd flux_conversion_factor;
+    std::map<std::string, Eigen::VectorXd> apt;
+};
+
+mapmaking::MapBuffer make_source_finder_map(const Eigen::MatrixXd &signal) {
+    mapmaking::MapBuffer map{"source-finder-test"};
+    map.n_rows = signal.rows();
+    map.n_cols = signal.cols();
+    map.pixel_size_rad = ASEC_TO_RAD;
+    map.cov_cut = 0.0;
+    map.source_sigma = 5.0;
+    map.source_window_rad = 2.0 * ASEC_TO_RAD;
+    map.signal = {signal};
+    map.weight = {Eigen::MatrixXd::Ones(signal.rows(), signal.cols())};
+    map.n_sources = {0};
+    map.row_source_locs.resize(1);
+    map.col_source_locs.resize(1);
+    return map;
+}
+
+TEST(calibration, beam_flux_to_rj_temperature_has_expected_scale) {
+    const double result = engine_utils::mJy_beam_to_uK(1.0, 270e9, 10.0);
+
+    EXPECT_NEAR(result, 167.643394204913, 1e-9);
+    EXPECT_NEAR(engine_utils::mJy_beam_to_uK(2.0, 270e9, 10.0),
+                2.0 * result, 1e-9);
+    EXPECT_NEAR(engine_utils::mJy_beam_to_uK(1.0, 540e9, 10.0),
+                result / 4.0, 1e-9);
+    EXPECT_NEAR(engine_utils::mJy_beam_to_uK(1.0, 270e9, 20.0),
+                result / 4.0, 1e-9);
+    EXPECT_THROW(engine_utils::mJy_beam_to_uK(1.0, 0.0, 10.0),
+                 std::runtime_error);
+}
+
+TEST(calibration, applies_detector_specific_flux_factors) {
+    timestream::TCData<timestream::TCDataKind::RTC, Eigen::MatrixXd> data;
+    data.scans.data.resize(2, 2);
+    data.scans.data << 1.0, 10.0,
+                       2.0, 20.0;
+    data.fcf.data.resize(2);
+
+    CalibrationFixture calib;
+    calib.flux_conversion_factor.resize(2);
+    calib.flux_conversion_factor << 2.0, 3.0;
+    calib.apt["flxscale"].resize(2);
+    calib.apt["flxscale"] << 5.0, 7.0;
+
+    timestream::Calibration calibration;
+    calibration.calibrate_tod(data, calib);
+
+    EXPECT_TRUE(data.fcf.data.isApprox(calib.flux_conversion_factor));
+    EXPECT_TRUE(data.scans.data.col(0).isApprox(
+        (Eigen::Vector2d() << 10.0, 20.0).finished()));
+    EXPECT_TRUE(data.scans.data.col(1).isApprox(
+        (Eigen::Vector2d() << 210.0, 420.0).finished()));
+}
+
+TEST(pointing, rotates_detector_offsets_in_altaz_frame) {
+    std::map<std::string, Eigen::VectorXd> telescope;
+    telescope["TelElAct"] = Eigen::Vector2d::Zero();
+    telescope["alt_phys"] =
+        (Eigen::Vector2d() << 0.1, 0.2).finished();
+    telescope["az_phys"] =
+        (Eigen::Vector2d() << -0.1, -0.2).finished();
+    std::map<std::string, Eigen::VectorXd> offsets;
+    offsets["az"] = Eigen::Vector2d::Constant(1.0);
+    offsets["alt"] = Eigen::Vector2d::Constant(-1.0);
+
+    auto [lat, lon] = engine_utils::calc_det_pointing(
+        telescope, 2.0, 3.0, std::string{"altaz"}, offsets,
+        citlali::config::MapGrouping::array);
+
+    const Eigen::VectorXd expected_lat =
+        telescope["alt_phys"].array() + 2.0 * ASEC_TO_RAD;
+    const Eigen::VectorXd expected_lon =
+        telescope["az_phys"].array() + 3.0 * ASEC_TO_RAD;
+    EXPECT_TRUE(lat.isApprox(expected_lat));
+    EXPECT_TRUE(lon.isApprox(expected_lon));
+}
+
+TEST(source_finder, negative_no_detection_does_not_mutate_signal) {
+    const Eigen::MatrixXd signal = Eigen::MatrixXd::Ones(3, 3);
+    auto map = make_source_finder_map(signal);
+    map.source_finder_mode = "negative";
+
+    EXPECT_FALSE(map.find_sources(0));
+    EXPECT_TRUE(map.signal[0].isApprox(signal));
+}
+
+TEST(source_finder, detects_source_on_map_edge_without_out_of_bounds_access) {
+    Eigen::MatrixXd signal = Eigen::MatrixXd::Zero(3, 3);
+    signal(0, 0) = 10.0;
+    auto map = make_source_finder_map(signal);
+    map.source_finder_mode = "positive";
+
+    EXPECT_TRUE(map.find_sources(0));
+    ASSERT_EQ(map.n_sources[0], 1);
+    ASSERT_EQ(map.row_source_locs[0].size(), 1);
+    EXPECT_EQ(map.row_source_locs[0](0), 0);
+    EXPECT_EQ(map.col_source_locs[0](0), 0);
+}
 
 TEST(utils, fft2_into_matches_fft2_forward_and_inverse) {
     Eigen::MatrixXcd in(4, 3);

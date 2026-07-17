@@ -36,6 +36,7 @@
 #include <citlali/core/pipeline/fruit_loop_feedback_validation.h>
 #include <citlali/core/pipeline/fruit_loop_map_input_validation.h>
 #include <citlali/core/timestream/auxiliary_stream.h>
+#include <citlali/core/utils/fits_io.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
 #include <citlali/core/utils/toltec_io.h>

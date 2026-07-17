@@ -32,41 +32,25 @@ void Pointing::add_pointing_fit_header_keys(CCfits::ExtHDU &hdu,
     for (Eigen::Index j = 0; j < ppt_header.size(); ++j) {
         const auto &key = ppt_header[j];
         const std::string comment = key + " (" + ppt_header_units[key] + ")";
-        try {
-            hdu.addKey("POINTING." + key, ppt_table(map_row, j), comment);
-        } catch (...) {
-            hdu.addKey("POINTING." + key, 0, comment);
-        }
+        hdu.addKey("POINTING." + key, ppt_table(map_row, j), comment);
     }
 
-    try {
-        hdu.addKey(
-            "POINTING.fit_enabled",
-            static_cast<int>(citlali::pipeline::pointing_config(*this).fit_gaussian),
-            "Gaussian fit enabled");
-    } catch (...) {
-        hdu.addKey("POINTING.fit_enabled", 0, "Gaussian fit enabled");
-    }
-    try {
-        hdu.addKey("POINTING.fit_valid", static_cast<int>(fit_valid(map_row)),
-                   "Gaussian fit valid");
-    } catch (...) {
-        hdu.addKey("POINTING.fit_valid", 0, "Gaussian fit valid");
-    }
-    try {
-        hdu.addKey(
-            "POINTING.source_strategy",
-            std::string(citlali::config::to_string(
-                citlali::pipeline::pointing_config(*this).source_strategy)),
-            "Pointing source strategy");
-    } catch (...) {}
-    try {
-        hdu.addKey(
-            "POINTING.source_center_mode",
-            std::string(citlali::config::to_string(
-                citlali::pipeline::pointing_config(*this).fruitloops_center_mode)),
-            "Fruit loops source center mode");
-    } catch (...) {}
+    hdu.addKey(
+        "POINTING.fit_enabled",
+        static_cast<int>(citlali::pipeline::pointing_config(*this).fit_gaussian),
+        "Gaussian fit enabled");
+    hdu.addKey("POINTING.fit_valid", static_cast<int>(fit_valid(map_row)),
+               "Gaussian fit valid");
+    hdu.addKey(
+        "POINTING.source_strategy",
+        std::string(citlali::config::to_string(
+            citlali::pipeline::pointing_config(*this).source_strategy)),
+        "Pointing source strategy");
+    hdu.addKey(
+        "POINTING.source_center_mode",
+        std::string(citlali::config::to_string(
+            citlali::pipeline::pointing_config(*this).fruitloops_center_mode)),
+        "Fruit loops source center mode");
 }
 
 template <typename FitsIoVector>

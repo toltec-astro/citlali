@@ -77,20 +77,26 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 460 tests. The Phase 4.1 config preflight now
-  passes 107 focused tests; the checked leaf contract covers 576 leaves and the generated
-  startup schema covers 726 normalized YAML nodes.
+- CTest discovers and passes all 466 tests. The Phase 4.1 config preflight now
+  passes 113 focused tests; the checked leaf contract covers 576 leaves and the generated
+  startup schema covers 726 normalized YAML nodes. The six new direct tests
+  cover the production rejection of experimental maximum-likelihood
+  mapmaking, analytic flux conversion, detector-specific calibration,
+  detector pointing, and two source-finder safety boundaries.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
 ## Active Phase
 
-**Phase 4.1 - TolTECA operator config structure** is active as of 2026-07-16.
-The project owner added Phase 4.1 and Phase 4.2 between the adopted Phase 4
-evidence package and final Phase 5 integration. Phase 3 library/session work is complete: local gates pass and
-Unity point `redu66` accepts the output-root ownership repair and exact
-scientific behavior at the first compiled boundary. Phase 2 config authority
-and provenance remains complete at Unity point `redu62`.
+**Phase 4.1 - TolTECA operator config structure** is awaiting its Unity
+operator trial, and **Phase 4.2 - technique and performance review** is active
+as of 2026-07-16. The project owner added both stages between the adopted Phase
+4 evidence package and final Phase 5 integration. Phase 4.1 remains frozen
+while the project owner tests its science authoring structure. Phase 3
+library/session work is complete: local gates pass and Unity point `redu66`
+accepts the output-root ownership repair and exact scientific behavior at the
+first compiled boundary. Phase 2 config authority and provenance remains
+complete at Unity point `redu62`.
 
 Compilation-side Phase 4 work is explicitly deferred as of 2026-07-16 pending
 review of the TolTECA developer's revised C++ build and integration approach.
@@ -2091,6 +2097,54 @@ Exit gates are defined in
 all active components are covered, no unowned P0/P1 finding remains, dominant
 runtime/memory contributors have evidence-backed dispositions, and accepted
 changes receive proportionate tests and mode validation.
+
+The comprehensive component census is complete as of 2026-07-16. The
+[`technique and performance evaluation`](PHASE4_2_TECHNIQUE_PERFORMANCE_EVALUATION_2026-07-16.md)
+and machine-readable
+[`component review`](../validation/phase4_2_component_review.json) assign every
+active component to one of 13 review units, reconcile the earlier correctness
+and performance audits with current code, and record evidence-labeled
+dispositions. The production RTC, PTC, naive/JINC mapmaking, fruit-loop,
+point/OOF, Beammap, coadd, and Wiener techniques are retained. No wholesale
+numerical rewrite is justified by the evidence.
+
+The census found one P0 capability defect: experimental
+`maximum_likelihood` mapmaking remained selectable even though it was not a
+validated global noise-aware mapmaker and Beammap did not populate that method.
+Typed validation now rejects it for production while preserving the research
+implementation for an explicit future decision. It also found one P1 output
+contract defect: required pointing and Beammap FITS metadata could silently
+fall back to zero or omission. Those catches are removed so required write
+failures propagate. The next natural point and Beammap runs must validate these
+two behavior-preserving production guards; no dedicated Beammap run is needed.
+
+Current profiles identify three measured Beammap costs: PTC cleaning consumes
+1,565.923 seconds, map population 1,250.498 seconds, and the PTC diagnostic
+sidecar 344.554 seconds in accepted `redu06`. The sidecar holds the global
+NetCDF lock while doing CPU preparation and opens/closes the shared file per
+scan, making it the first bounded implementation improvement. Science
+`redu28` spends 2,799.461 seconds in the aggregate TOD pipeline but cannot yet
+attribute that time to RTC, PTC, or mapmaking. Peak-RSS evidence is also still
+required for Beammap and a naturally scheduled noise-heavy reduction. These
+measurements precede optimization.
+
+Phase 4.2 is approximately 80% complete. Its finite remaining queue is:
+
+1. validate the two local correctness guards on the next natural point and
+   Beammap runs;
+2. add PTC-cleaning and map-population substage scopes, then change only a
+   measured dominant operation;
+3. prepare Beammap sidecar records before taking the NetCDF lock and measure
+   exact-product wall-time impact;
+4. add RTC/PTC/mapmaking attribution to the next required science run;
+5. collect Beammap and noise-heavy peak RSS; and
+6. give source finding an explicit experimental capability statement and a
+   scientifically owned injection/recovery matrix.
+
+Compilation-boundary and build-system work remains deferred pending the
+TolTECA developer's current build design. Header changes still demonstrate the
+cost of that debt: rebuilding the CLI translation unit and link took 60.02
+seconds locally during this review.
 
 ### Phase 5 - Integration And Closeout
 

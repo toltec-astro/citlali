@@ -3174,6 +3174,21 @@ TEST(config_scaffold, validates_typed_mapmaking_method_values) {
     EXPECT_EQ(report.error_count(), 5U);
 }
 
+TEST(config_scaffold, rejects_unvalidated_maximum_likelihood_mapmaking) {
+    citlali::config::MapmakingConfig config;
+    config.method = citlali::config::MapMethod::maximum_likelihood;
+    citlali::config::ValidationReport report;
+
+    citlali::config::validate(config, report);
+
+    ASSERT_FALSE(report.ok());
+    ASSERT_EQ(report.error_count(), 1U);
+    EXPECT_NE(report.format_for_cli().find("mapmaking.method"),
+              std::string::npos);
+    EXPECT_NE(report.format_for_cli().find("under development"),
+              std::string::npos);
+}
+
 TEST(config_scaffold, parses_existing_timestream_enum_values) {
     EXPECT_EQ(citlali::config::parse_tod_type("xs").value(),
               citlali::config::TodType::xs);

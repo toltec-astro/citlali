@@ -1,0 +1,239 @@
+{
+  "schema_version": "citlali-phase4.2-component-review-v1",
+  "review_date": "2026-07-16",
+  "reviewed_revision": "b72df07f5",
+  "evaluation": "doc/PHASE4_2_TECHNIQUE_PERFORMANCE_EVALUATION_2026-07-16.md",
+  "evidence_labels": [
+    "Observed",
+    "Derived",
+    "Suspected",
+    "Owner decision"
+  ],
+  "dispositions": [
+    "Retain",
+    "Clarify",
+    "Measure",
+    "Improve",
+    "Scientific decision required",
+    "Retire"
+  ],
+  "review_units": [
+    {
+      "id": 1,
+      "name": "CLI, session, selection, and failure reporting",
+      "components": [
+        "argument parsing and default-config dump",
+        "standard reduction selection",
+        "ReductionSession and ReductionResult",
+        "canonical error classification",
+        "output-root lease",
+        "CLI exception reporting",
+        "fatal-signal diagnostics"
+      ],
+      "evidence": ["Observed", "Derived"],
+      "disposition": "Retain",
+      "finding_ids": ["42-014"]
+    },
+    {
+      "id": 2,
+      "name": "Config, plans, adapters, validation, and provenance",
+      "components": [
+        "low-level YAML schema",
+        "15 typed authority domains",
+        "requested/effective/realized plans",
+        "one-way legacy adapters",
+        "config leaf and source manifests",
+        "atomic provenance outputs",
+        "TolTECA overlay boundary"
+      ],
+      "evidence": ["Observed", "Owner decision"],
+      "disposition": "Retain",
+      "finding_ids": []
+    },
+    {
+      "id": 3,
+      "name": "Raw input, KIDs, calibration, telescope, and astrometry",
+      "components": [
+        "raw observation collection",
+        "KIDs data conversion",
+        "detector/network/array inventories",
+        "APT and hardware-polarization input",
+        "telescope metadata and stream alignment",
+        "flux and extinction calibration",
+        "detector pointing and astrometry offsets"
+      ],
+      "evidence": ["Observed", "Owner decision", "Derived"],
+      "disposition": "Retain",
+      "finding_ids": ["42-010", "42-012"]
+    },
+    {
+      "id": 4,
+      "name": "RTC processing",
+      "components": [
+        "chunk and outer-context selection",
+        "flagging and despiking",
+        "notch and IIR filtering",
+        "filter edge guard",
+        "downsampling",
+        "flux calibration and extinction correction",
+        "RTC TOD and diagnostic output"
+      ],
+      "evidence": ["Observed"],
+      "disposition": "Retain",
+      "finding_ids": ["42-007", "42-012"]
+    },
+    {
+      "id": 5,
+      "name": "PTC cleaning, weighting, diagnostics, and outputs",
+      "components": [
+        "cleaner grouping",
+        "covariance construction",
+        "Eigen and Spectra eigensolvers",
+        "standard and guarded adaptive PCA selection",
+        "eigenmode removal",
+        "detector weighting and second-pass rejection",
+        "PTC TOD and diagnostic output"
+      ],
+      "evidence": ["Observed", "Derived"],
+      "disposition": "Measure",
+      "finding_ids": ["42-004", "42-006", "42-012"]
+    },
+    {
+      "id": 6,
+      "name": "Map geometry, naive and JINC mapmaking, kernels, and weights",
+      "components": [
+        "map geometry and WCS",
+        "map buffer allocation and lifecycle",
+        "naive weighted accumulation",
+        "JINC footprint accumulation",
+        "kernel, coverage, grid-weight, and polarization accumulation",
+        "normalization and support policy",
+        "maximum-likelihood experimental implementation"
+      ],
+      "evidence": ["Observed", "Derived"],
+      "disposition": "Measure",
+      "finding_ids": ["42-001", "42-005", "42-009", "42-010", "42-012", "42-016"]
+    },
+    {
+      "id": 7,
+      "name": "Fruit-loop feedback and iteration control",
+      "components": [
+        "iteration lifecycle",
+        "source-model feedback",
+        "previous-map identity validation",
+        "learning phases",
+        "convergence and iteration limits",
+        "saved-iteration output layout"
+      ],
+      "evidence": ["Observed", "Owner decision"],
+      "disposition": "Retain",
+      "finding_ids": []
+    },
+    {
+      "id": 8,
+      "name": "Pointing and OOF orchestration and fitting",
+      "components": [
+        "pointing observation pipeline",
+        "OOF routing",
+        "Gaussian map fitting",
+        "pointing offset interpolation and fallback",
+        "fit cardinality and provenance",
+        "pointing products"
+      ],
+      "evidence": ["Observed", "Owner decision"],
+      "disposition": "Retain",
+      "finding_ids": ["42-003", "42-012"]
+    },
+    {
+      "id": 9,
+      "name": "Beammap iteration, priors, fitting, flagging, and products",
+      "components": [
+        "phase and convergence policy",
+        "scan-band and source masking",
+        "iterative PTC and mapmaking passes",
+        "reference and alignment priors",
+        "per-detector Gaussian fitting",
+        "flagging and APT update",
+        "source-aware RTC rerun",
+        "detector TOD, diagnostics, and split FITS products"
+      ],
+      "evidence": ["Observed", "Derived", "Owner decision"],
+      "disposition": "Measure",
+      "finding_ids": ["42-003", "42-004", "42-005", "42-006", "42-011"]
+    },
+    {
+      "id": 10,
+      "name": "Source finding, coadd, filtering, Wiener, and noise products",
+      "components": [
+        "observation and coadd accumulation",
+        "jackknife noise maps",
+        "empirical noise products",
+        "map filtering and Wiener processing",
+        "source finding",
+        "source fitting",
+        "filtered observation and coadd products"
+      ],
+      "evidence": ["Observed", "Derived", "Owner decision"],
+      "disposition": "Retain",
+      "finding_ids": ["42-002", "42-008", "42-012"]
+    },
+    {
+      "id": 11,
+      "name": "FITS, NetCDF, ECSV, manifests, compression, and publication",
+      "components": [
+        "FITS file, image, WCS, and metadata writing",
+        "NetCDF TOD and diagnostic writing",
+        "ECSV and CSV tables",
+        "atomic YAML and table publication",
+        "ordered writer",
+        "product cardinality and contract audit",
+        "compression and chunking"
+      ],
+      "evidence": ["Observed", "Derived"],
+      "disposition": "Improve",
+      "finding_ids": ["42-003", "42-006"]
+    },
+    {
+      "id": 12,
+      "name": "Concurrency, memory, logging, profiling, and libraries",
+      "components": [
+        "GRPPI and OpenMP execution boundaries",
+        "map merge and NetCDF synchronization",
+        "ordered output workers",
+        "run and iteration memory ownership",
+        "noise cube and Beammap state memory",
+        "stage profiling and runtime wrapper",
+        "Eigen, Spectra, Ceres, FFTW, netCDF, and CCfits use",
+        "header and compiled-boundary footprint"
+      ],
+      "evidence": ["Observed", "Derived"],
+      "disposition": "Measure",
+      "finding_ids": ["42-006", "42-008", "42-011", "42-013", "42-014", "42-015"]
+    },
+    {
+      "id": 13,
+      "name": "Tests, validation contracts, and operational diagnostics",
+      "components": [
+        "C++ contract and lifecycle tests",
+        "config preflight and overlay fixtures",
+        "baseline and refactor tooling tests",
+        "strict product comparison",
+        "accepted-run and intended-change ledgers",
+        "stage and wrapper performance evidence",
+        "operational log diagnostics"
+      ],
+      "evidence": ["Observed"],
+      "disposition": "Improve",
+      "finding_ids": ["42-002", "42-012", "42-015"]
+    }
+  ],
+  "coverage": {
+    "expected_review_units": 13,
+    "completed_review_units": 13,
+    "unassigned_active_components": 0,
+    "p0_findings": ["42-001"],
+    "unowned_p0_findings": [],
+    "p1_findings": ["42-002", "42-003"],
+    "unowned_p1_findings": []
+  }
+}
