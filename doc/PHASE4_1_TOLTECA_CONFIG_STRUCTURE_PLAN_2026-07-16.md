@@ -181,26 +181,26 @@ preserves the legacy default, preserves all five operator files on same-kit
 reruns, and passes all 100 tests. Phase 4.1 remains open only until point, OOF,
 Beammap, and science smoke reductions pass with the installed V2 files.
 
-TolPROJ commit `39f724d` adds the reproducible four-mode acceptance-suite layer
-above those installers. The canonical suite contains one portable
-`suite.yaml` plus human-readable point, OOF, Beammap, and science
-`project.yaml` files. Follow-up commit `8310c24` makes the realized dataset
-self-contained. `stage-plan` selects and sizes only files for the declared
-observations; `stage` dereferences source symlinks and atomically copies and
-hashes raw data, matched APTs, and the Beammap prior into each mode directory.
-Point data is completed from the science source so the eight science-support
-pointings are produced inside the suite. Generated YAML uses suite-relative
-data, APT, prior, and pointing paths. The installer creates one refactor-only
-workspace, runs `tolteca setup`, installs the verified V2 mode kits, generates
-observation overlays and Slurm helpers, and records exact source, kit, site,
-config, and managed-file identities in `suite.lock.yaml`. Mode-aware
-verification permits point, OOF, and Beammap readiness to be checked
-independently while correctly holding science until the suite's pointing
-support products exist. It detects missing, changed, conflicting, and
-unexpected staged inputs and refuses in-place suite, site, or config drift.
-The suite does not create an OG baseline, submit jobs, or run Citlali. All 103
-TolPROJ tests pass. The remaining gate is a fresh Unity installation and data
-stage followed by successful point, OOF, Beammap, and science reductions and
+TolPROJ commit `e0754af` replaces the interim custom acceptance-suite installer
+and file-staging implementation from commits `39f724d` and `8310c24`. The
+portable `suite.yaml` now records only the selected observations, scan numbers,
+and validation identities. Initialization uses TolPROJ's database-backed
+project builders to create four native projects. The compact point project
+contains observation 152389; science contains both science observations and
+all eight pointing-support observations, so it is independently
+self-contained. Beammap construction is restricted to observation 148670 and
+uses the existing Beammap classifier to discover its source-matched pointing
+support. All data collection, tune processing, cohort construction, APT
+selection and matching, source-flux estimation, pointing calibration, and V2
+`--refactor` setup then run through existing TolPROJ commands. The suite layer
+does not copy raw files, import precomputed APTs, run `tolteca setup`, or freeze
+mutable `project.yaml` state. Verification checks the portable selection and
+native project structure while allowing normal workflow updates. Beammap copy
+and stage commands accept an explicit suite root so the validation project does
+not replace the production Beammap workspace. The suite remains refactor-only
+and does not submit or run Citlali. All 104 TolPROJ tests pass. The remaining
+gate is fresh native-project initialization on Unity followed by preparation
+through TolPROJ and successful point, OOF, Beammap, and science reductions and
 their existing product-profile comparisons.
 
 ## Exit Gate

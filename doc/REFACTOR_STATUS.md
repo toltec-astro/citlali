@@ -97,25 +97,23 @@ accepts the output-root ownership repair and exact scientific behavior at the
 first compiled boundary. Phase 2 config authority and provenance remains
 complete at Unity point `redu62`.
 
-TolPROJ commit `39f724d` now provides the reproducible Phase 4.1 smoke-suite
-installer. Its portable `suite.yaml` and four mode-specific `project.yaml`
-files contain no cluster paths. Follow-up commit `8310c24` makes the dataset
-self-contained: `stage-plan` inventories only files belonging to the declared
-observations, and `stage` atomically copies and hashes each raw file, matched
-APT, and the Beammap prior into mode-local directories. It dereferences the
-science data symlink and obtains the seven additional science-support pointings
-from that dataset while retaining compact point observation 152389 as the
-primary comparison. Generated observation YAML uses only suite-relative data,
-APT, prior, and pointing-product paths; only the separately built Citlali
-executable remains site-resolved. The exact managed-file inventory and hashes
-are recorded in `suite.lock.yaml`; missing, changed, conflicting, or unexpected
-managed inputs fail verification. Reinstallation refuses changed suite intent,
-site mapping, or installed-file drift rather than silently accepting it. The
-facility deliberately does not provision an OG tree, submit jobs, or execute
-reductions. All 103 TolPROJ tests pass. Phase 4.1 remains open until the suite
-is freshly installed and staged on Unity and its point, OOF, Beammap, and
-science smoke reductions pass their existing validation profiles with no
-unexpected errors.
+TolPROJ commit `e0754af` supersedes the custom suite installer and staging
+layers introduced by commits `39f724d` and `8310c24`. The canonical
+`suite.yaml` now contains only path-free observation selections and validation
+metadata. `tolproj validation-suite init` queries TolPROJ's metadata database
+and uses the existing native project builders to create ordinary `point`,
+`oof`, `beammaps`, and `science` projects. The science project contains its own
+complete pointing support, while the selected-observation Beammap builder
+discovers source-matched pointing support from metadata. Raw discovery and
+copying, tune reduction, cohort construction, APT seed selection and matching,
+Beammap flux estimation, and `--refactor` reduction setup all remain owned by
+the established TolPROJ commands. Native `project.yaml` is deliberately live
+workflow state rather than a hashed immutable artifact. Verification guards
+the portable selection and required native structure without objecting to
+normal status, cohort, or APT updates. The workflow does not provision an OG
+tree, submit jobs, or run Citlali. All 104 TolPROJ tests pass. Phase 4.1 remains
+open until these freshly created Unity projects complete point, OOF, Beammap,
+and science smoke reductions with no unexpected errors.
 
 Compilation-side Phase 4 work is explicitly deferred as of 2026-07-16 pending
 review of the TolTECA developer's revised C++ build and integration approach.

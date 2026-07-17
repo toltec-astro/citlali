@@ -1,0 +1,56 @@
+# Phase 4.1 Native Validation Projects Handoff - 2026-07-17
+
+## Decision
+
+The Citlali validation suite must use native TolPROJ projects and the existing
+TolPROJ workflow. A validation-specific implementation of raw-data staging,
+APT copying, Beammap-prior copying, config installation, or immutable
+`project.yaml` locking would duplicate production behavior and is not retained.
+
+TolPROJ commit `e0754af` implements the corrected design. It supersedes the
+suite implementation in commits `39f724d` and `8310c24` without rewriting
+history.
+
+## Current Shape
+
+The portable artifact is one path-free `suite.yaml` containing the selected
+observations for point, OOF, Beammap, and science. On Unity:
+
+```bash
+tolproj validation-suite init /work/toltec/citlali-validation-data/v1
+tolproj validation-suite verify /work/toltec/citlali-validation-data/v1
+tolproj validation-suite plan /work/toltec/citlali-validation-data/v1
+```
+
+Initialization queries the configured metadata database and creates native
+projects at `point/`, `oof/`, `beammaps/`, and `science/`. The science project
+contains its own eight pointing-support observations. Beammap initialization
+selects only observation 148670, then uses the existing Beammap classifier to
+discover source-matched pointing support.
+
+The generated plan lists only existing TolPROJ commands for copying raw data,
+reducing tunes, building cohorts, selecting and matching APTs, running pointing
+calibration, estimating Beammap flux, and installing the V2 `--refactor`
+numbered configs. The suite command does not execute those operations itself.
+
+## Important Operational Detail
+
+`validation-suite init` requires a fresh empty root. An earlier `/v1` created
+with the superseded installer must be moved aside or intentionally removed on
+Unity before the corrected initializer is run. Do not mix the old pseudo
+projects with the new native projects.
+
+Native `project.yaml` is live TolPROJ state. Cohorts, status flags, APT choices,
+and setup results are expected to change. Suite verification protects the
+portable selection and requested observation membership, not byte-for-byte
+project-file identity.
+
+## Verification
+
+- TolPROJ full suite: 104 tests pass.
+- Focused Ruff checks pass for every touched Python file.
+- Python byte-compilation passes.
+- Citlali compilation is not affected by this TolPROJ-only correction.
+
+Phase 4.1 remains open until a fresh Unity root is prepared through the normal
+TolPROJ machinery and point, OOF, Beammap, and science smoke reductions pass.
