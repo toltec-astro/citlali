@@ -89,7 +89,7 @@ These facts are characterization evidence, not a production-equivalence claim.
 ## Active Phase
 
 **Phase 4.1 - TolTECA operator config structure** is active at its four-mode V2
-integration gate, and **Phase 4.2 - technique and performance review** is
+Unity smoke gate, and **Phase 4.2 - technique and performance review** is
 complete as of 2026-07-17. The project owner added both stages between the
 adopted Phase 4 evidence package and final Phase 5 integration. Phase 3
 library/session work is complete: local gates pass and Unity point `redu66`
@@ -2066,11 +2066,14 @@ and source finding is visible but explicitly experimental and disabled.
 All four unchanged V2 kits merge exactly to their accepted V1 policy hashes.
 The preflight enforces classification, file-size, ownership-disjointness,
 mode-scope, data-binding, and byte-for-byte regeneration gates; it passes 116
-focused tests and every config-authority audit. Citlali remains the canonical
-source. The next gate is to vendor this exact four-mode snapshot into TolPROJ's
-opt-in `--refactor` path while preserving every non-refactor command. A fresh
-Unity smoke reduction for each mode then completes Phase 4.1; no Citlali
-compilation is required for this YAML-only integration.
+focused tests and every config-authority audit. Citlali commit `6b6be9f57` is
+the canonical source. TolPROJ commit `8490f09` vendors that snapshot
+byte-for-byte for all four modes and selects it only under `--refactor`; every
+non-refactor command retains the legacy path. Its manifest-driven installer
+generates mode-named observation files, preserves all five operator files on a
+same-kit rerun, rejects mixed or in-place kit changes, and passes all 100
+TolPROJ tests. A fresh Unity smoke reduction for each mode now completes Phase
+4.1; no Citlali compilation is required for this YAML-only integration.
 
 Project layout review found that TolPROJ science and OOF reductions live under
 `<root>/<user>/<source>` while shared data live under `<root>/data`. Data input

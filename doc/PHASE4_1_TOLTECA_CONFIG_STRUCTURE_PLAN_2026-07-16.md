@@ -174,10 +174,12 @@ Hermetic tests enforce exact identities, user/expert classification, bounded
 file size, disjoint analysis/product ownership, mode-inapplicable exclusions,
 consolidated fruit-loop controls, TolPROJ-owned data binding, and byte-for-byte
 generator reproducibility. The full config preflight passes 116 focused tests,
-all four exact mode identities, and every config-authority audit. The next
-implementation gate is to vendor this exact four-mode V2 snapshot into
-TolPROJ's opt-in `--refactor` path. Phase 4.1 then remains open until point,
-OOF, Beammap, and science smoke reductions pass with the installed V2 files.
+all four exact mode identities, and every config-authority audit. Citlali
+commit `6b6be9f57` is vendored byte-for-byte by TolPROJ commit `8490f09`.
+TolPROJ's manifest-driven `--refactor` path installs all four V2 modes,
+preserves the legacy default, preserves all five operator files on same-kit
+reruns, and passes all 100 tests. Phase 4.1 remains open only until point, OOF,
+Beammap, and science smoke reductions pass with the installed V2 files.
 
 ## Exit Gate
 
