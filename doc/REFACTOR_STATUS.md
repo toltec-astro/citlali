@@ -97,6 +97,21 @@ accepts the output-root ownership repair and exact scientific behavior at the
 first compiled boundary. Phase 2 config authority and provenance remains
 complete at Unity point `redu62`.
 
+TolPROJ commit `39f724d` now provides the reproducible Phase 4.1 smoke-suite
+installer. Its portable `suite.yaml` and four mode-specific `project.yaml`
+files contain no cluster paths; the selected TolPROJ site config resolves the
+refactor executable, shared raw data, two APT sets, Beammap prior, and Slurm
+partition. `validation-suite plan`, `install`, and mode-aware `verify` commands
+realize one refactor-only workspace through the hash-checked V2 kit and record
+an exact `suite.lock.yaml`. Reinstallation refuses changed suite intent, site
+mapping, or installed-file drift rather than silently accepting it. Pointing
+produces all eight support observations required by science while observation
+152389 remains the primary point comparison. The facility deliberately does
+not provision an OG tree, copy raw data, submit jobs, or execute reductions.
+All 103 TolPROJ tests pass. Phase 4.1 remains open until the exported suite is
+installed on Unity and its point, OOF, Beammap, and science smoke reductions
+pass their existing validation profiles with no unexpected errors.
+
 Compilation-side Phase 4 work is explicitly deferred as of 2026-07-16 pending
 review of the TolTECA developer's revised C++ build and integration approach.
 Do not change Citlali CMake structure, presets, dependency management, CI build
