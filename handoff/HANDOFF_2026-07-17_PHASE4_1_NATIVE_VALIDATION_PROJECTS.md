@@ -70,3 +70,16 @@ TolPROJ commit `d2c90f3` records corrections found during the first setup:
 
 Verification after this follow-up: 105 tests, full Ruff, and Python
 byte-compilation pass.
+
+## Science Pointing-Product Ordering
+
+The first suite science attempt exposed that `setup-science-reductions` could
+write `cal_objs` paths before the science project's own pointing reduction had
+created them. TolPROJ commit `9fb4c80` now fails science setup immediately when
+any selected pointing-product directory is missing. It also adds
+`--pointing-reduction reduNN` to science setup, matching the existing option on
+`calibrate-pointing-flxscale`, so both stages can deliberately use the same
+accepted pointing run. The canonical first-run expectation is
+`science/pointings/reduced/redu00/<obsnum>`; the separate compact `point`
+validation project is not a substitute for science's self-contained pointing
+support. After this repair, 106 tests, full Ruff, and byte-compilation pass.

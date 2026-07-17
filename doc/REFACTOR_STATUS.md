@@ -126,6 +126,13 @@ Unity). TolPROJ file logging is action-specific (`copyraw.log`,
 SLURM stdout remains separately named `<jobname>-%j.out`. All 105 TolPROJ tests,
 full Ruff, and byte-compilation pass.
 
+TolPROJ commit `9fb4c80` closes a science setup ordering hole found during the
+first suite attempt. Science setup now verifies that every configured
+`cal_objs` pointing-product directory exists before writing reduction configs,
+and accepts `--pointing-reduction reduNN` so setup uses the same accepted run as
+pointing flux calibration. This converts a late TolTECA `invalid calobj path`
+failure into an actionable TolPROJ preflight error. All 106 TolPROJ tests pass.
+
 Compilation-side Phase 4 work is explicitly deferred as of 2026-07-16 pending
 review of the TolTECA developer's revised C++ build and integration approach.
 Do not change Citlali CMake structure, presets, dependency management, CI build
