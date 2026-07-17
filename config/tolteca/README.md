@@ -1,22 +1,26 @@
 # TolTECA Reduction Mode Kits
 
-These directories are the canonical numbered-YAML authoring structure for the
-four supported Citlali reduction modes. TolTECA still owns discovery and merge
-of `NN_*.yaml`; Citlali still receives one generated low-level configuration.
+These directories contain the versioned numbered-YAML authoring structures for
+the four supported Citlali reduction modes. TolTECA still owns discovery and
+merge of `NN_*.yaml`; Citlali still receives one generated low-level
+configuration.
 
 The checked files are generated from accepted Phase 4 validation snapshots.
 Their identities are recorded in `manifest.yaml`. Do not hand-edit the
 repository copies to change a baseline. Generate a successor kit from a named,
 accepted low-level configuration and review the resulting policy-hash change.
 
-These directories are the mechanically exact V1 reference, not the accepted
-final operator interface. Project-owner review found that V1 still exposes too
-much implementation policy under generic filenames. The science-only V2
-authoring prototype is under review in `v2/science/`; TolPROJ still vendors V1
-only, and smoke reductions are deferred until the revised structure is
-accepted.
+The top-level `point/`, `oof/`, `beammap/`, and `science/` directories are the
+mechanically exact V1 reference. They remain useful for policy archaeology and
+compatibility checks, but are not the accepted operator interface: V1 exposes
+too much implementation policy under generic filenames.
 
-## File Roles
+The canonical human-facing structure is V2 under `v2/`. It uses the same seven
+mode-named roles for all four reductions, keeps the complete accepted policy in
+a generated internal file, and limits ordinary editing to short runtime,
+analysis-default, and product files. See [`v2/README.md`](v2/README.md).
+
+## V1 Reference Roles
 
 Every mode has the same five files:
 
@@ -85,12 +89,12 @@ tests and mode-appropriate TolTECA reductions.
 
 Citlali is the canonical source of these policies. TolPROJ vendors a versioned,
 hash-checked snapshot and owns project instantiation on Unity: running
-`tolteca setup`, copying the selected mode files, and generating
-`72_observation.yaml` from project metadata. TolPROJ must not import templates
-from a developer Citlali checkout at runtime.
+`tolteca setup`, copying the selected mode files, and generating the
+mode-specific `72_MODE_observation.yaml` from project metadata. TolPROJ must
+not import templates from a developer Citlali checkout at runtime.
 
-TolPROJ commit `a33d26a` provides this integration as an explicit
-`--refactor` option. Without that option, TolPROJ retains its established
-`70_reduce.yaml`/`72_reduce.yaml` behavior. The refactor installer rejects
-mixed numbered-config families and preserves site edits in `71_runtime.yaml`
-and expert edits in `90_user_overrides.yaml` when the same kit is regenerated.
+The integration remains an explicit `--refactor` option. Without that option,
+TolPROJ retains its established `70_reduce.yaml`/`72_reduce.yaml` behavior.
+The refactor installer rejects mixed numbered-config families. On a same-kit
+rerun it refreshes repository policy and generated observation metadata while
+preserving the five operator-owned V2 files.

@@ -1,0 +1,9 @@
+# Optional expert-only low-level overrides.
+# Changes here require an explicit rationale and successor validation evidence.
+reduce:
+  steps:
+    0:
+      config:
+
+        # Replace {} with deliberate expert low-level settings
+        low_level: {}

@@ -92,7 +92,7 @@ def main(argv: list[str]) -> int:
         "tools/config/validate_config_authority_inventory.py",
         "tools/config/tolteca_mode_kit.py",
         "tools/config/generate_tolteca_mode_kits.py",
-        "tools/config/generate_science_authoring_prototype.py",
+        "tools/config/generate_tolteca_v2_mode_kits.py",
         "tools/config/test_tolteca_mode_kit.py",
     ]
     commands: list[list[str]] = [

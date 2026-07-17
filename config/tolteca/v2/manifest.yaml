@@ -1,8 +1,80 @@
-# Science-only human-facing authoring prototype; not yet deployed by TolPROJ.
+# Human-facing four-mode authoring kit; canonical source for TolPROJ vendoring.
 schema_version: citlali-tolteca-mode-kit-manifest-v2
-kit_version: phase4.1-v2-science-prototype
-prototype_scope: science-only
+kit_version: phase4.1-v2
+scope: all-supported-modes
 modes:
+  point:
+    record_id: point-152389-refactor-2a974e0d-redu66
+    baseline_filename: citlali_o152389_0_2_c1.yaml
+    baseline_sha256: 67f6c6e6bade058fdee933fd043cbbba363187c9acbecc0f0a30d04877ce2cd7
+    policy_sha256: f2d124d40ac7ad9e6351a647253050e5146659c666feed07262125e6fa5415c8
+    reduction_type: pointing
+    normalizations:
+    - remove inputs
+    - set runtime.output_dir to .
+    required_files:
+    - 60_pointing_internal_policy.yaml
+    - 71_pointing_runtime.yaml
+    - 72_pointing_observation.yaml
+    - 81_pointing_defaults.yaml
+    - 82_pointing_products.yaml
+    - 90_pointing_advanced_overrides.yaml
+    - 99_pointing_expert_overrides.yaml
+    internal_policy_file: 60_pointing_internal_policy.yaml
+    user_facing_files:
+    - 71_pointing_runtime.yaml
+    - 81_pointing_defaults.yaml
+    - 82_pointing_products.yaml
+    - 90_pointing_advanced_overrides.yaml
+    expert_override_file: 99_pointing_expert_overrides.yaml
+  oof:
+    record_id: oof-152385-152387-refactor-9ea6d7f0-redu02
+    baseline_filename: citlali_o152385_0_1_c3.yaml
+    baseline_sha256: aebfc3b764f4abeca1f7f7cfe60723714f000ca849f60b167cd495294f87bdbc
+    policy_sha256: 414a5d16ceba8b6f9163851c139affa486f50397e1ead56fc480ed53475b76f4
+    reduction_type: pointing
+    normalizations:
+    - remove inputs
+    - set runtime.output_dir to .
+    required_files:
+    - 60_oof_internal_policy.yaml
+    - 71_oof_runtime.yaml
+    - 72_oof_observation.yaml
+    - 81_oof_defaults.yaml
+    - 82_oof_products.yaml
+    - 90_oof_advanced_overrides.yaml
+    - 99_oof_expert_overrides.yaml
+    internal_policy_file: 60_oof_internal_policy.yaml
+    user_facing_files:
+    - 71_oof_runtime.yaml
+    - 81_oof_defaults.yaml
+    - 82_oof_products.yaml
+    - 90_oof_advanced_overrides.yaml
+    expert_override_file: 99_oof_expert_overrides.yaml
+  beammap:
+    record_id: beammap-148670-refactor-6dd0057f-redu06
+    baseline_filename: citlali_o148670_0_2_c1.yaml
+    baseline_sha256: aa956b28465eaef8b23763e877857b5b8929e95ca4fbdc976db6d7b2a775636d
+    policy_sha256: 75eaf79fb5ce45b383f48bbb6a4715209fbb25cb29a1ac595a3afb2a7df4e0b0
+    reduction_type: beammap
+    normalizations:
+    - remove inputs
+    - set runtime.output_dir to .
+    required_files:
+    - 60_beammap_internal_policy.yaml
+    - 71_beammap_runtime.yaml
+    - 72_beammap_observation.yaml
+    - 81_beammap_defaults.yaml
+    - 82_beammap_products.yaml
+    - 90_beammap_advanced_overrides.yaml
+    - 99_beammap_expert_overrides.yaml
+    internal_policy_file: 60_beammap_internal_policy.yaml
+    user_facing_files:
+    - 71_beammap_runtime.yaml
+    - 81_beammap_defaults.yaml
+    - 82_beammap_products.yaml
+    - 90_beammap_advanced_overrides.yaml
+    expert_override_file: 99_beammap_expert_overrides.yaml
   science:
     record_id: science-152390-152392-refactor-a7a35a00-redu31
     baseline_filename: citlali_o152390_0_2_c2.yaml

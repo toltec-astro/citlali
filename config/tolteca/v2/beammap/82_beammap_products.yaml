@@ -1,0 +1,34 @@
+# Primary user-facing Beammap product choices.
+# Edit detector TOD, split FITS, line-audit, and retained TOD products here.
+# Detailed detector selection and split-flag policy remain expert-only.
+reduce:
+  steps:
+    0:
+      config:
+        low_level:
+
+          # Detector-resolved Beammap product families
+          beammap:
+
+            # Per-detector TOD sidecar
+            detector_tod_output:
+              enabled: true
+
+            # Per-flag split FITS maps
+            split_fits_by_flag:
+              enabled: true
+
+          # Line diagnostics and optional retained TOD
+          timestream:
+
+            # Raw calibrated TOD and line-audit products
+            raw_time_chunk:
+              line_audit:
+                enabled: true
+              output:
+                enabled: false
+
+            # Cleaned and weighted TOD output
+            processed_time_chunk:
+              output:
+                enabled: false

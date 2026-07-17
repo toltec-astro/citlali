@@ -88,11 +88,10 @@ These facts are characterization evidence, not a production-equivalence claim.
 
 ## Active Phase
 
-**Phase 4.1 - TolTECA operator config structure** is awaiting its Unity
-operator trial, and **Phase 4.2 - technique and performance review** is active
-as of 2026-07-16. The project owner added both stages between the adopted Phase
-4 evidence package and final Phase 5 integration. Phase 4.1 remains frozen
-while the project owner tests its science authoring structure. Phase 3
+**Phase 4.1 - TolTECA operator config structure** is active at its four-mode V2
+integration gate, and **Phase 4.2 - technique and performance review** is
+complete as of 2026-07-17. The project owner added both stages between the
+adopted Phase 4 evidence package and final Phase 5 integration. Phase 3
 library/session work is complete: local gates pass and Unity point `redu66`
 accepts the output-root ownership repair and exact scientific behavior at the
 first compiled boundary. Phase 2 config authority and provenance remains
@@ -2055,35 +2054,30 @@ materially separate routine, advanced, and expert authoring. V1 remains a
 mechanically exact reference and the TolPROJ path remains opt-in, but it is not
 the accepted operator interface.
 
-The science-only V2 authoring structure is accepted for an operator trial in
-`config/tolteca/v2/science/`; its current canonical path binding is at Citlali
-commit `98a933249`. It uses
-mode-specific filenames, keeps the complete 404-leaf policy in a clearly
-internal generated file, and exposes only 61 classified user-facing leaves
-across runtime and two short, sectioned analysis/product files. Routine
-fruit-loop activation, iteration count, S/N and per-array flux cuts, and
-iteration retention are consolidated in the analysis defaults rather than
-split across files. Advanced and expert overrides have distinct empty files.
-The direct TolTECA merge remains exact against science `redu31`, and the
-preflight passes 113 tests including classification-boundary, size-bound, and
-generator-reproducibility gates.
+The V2 authoring structure, first reviewed through science, is now generalized
+under `config/tolteca/v2/` for point, OOF, Beammap, and science. Every mode uses
+seven mode-named files: generated internal policy, site runtime,
+TolPROJ-generated observation binding, routine analysis defaults, product
+choices, advanced overrides, and expert overrides. The ordinary surfaces are
+bounded to 4 runtime leaves, 27-44 analysis leaves, and 5-30 product leaves.
+Mode-inapplicable controls are excluded, fruit-loop controls are consolidated,
+and source finding is visible but explicitly experimental and disabled.
 
-TolPROJ commits `fb1aee6` and `1b6fd14` select this V2 bundle only for normal
-science setup under `--refactor`; point, automatically detected OOF, and
-Beammap remain on the accepted V1 kit, and all non-refactor commands retain
-legacy behavior.
-Same-kit science reruns refresh only internal policy and generated observation
-metadata while preserving all five operator files. TolPROJ rejects mixed kit
-filenames and in-place V1-to-V2 conversion. All 97 TolPROJ tests and focused
-Ruff checks pass. A fresh Unity science authoring/smoke trial is the next gate;
-no Citlali compilation is required for this YAML-only integration.
+All four unchanged V2 kits merge exactly to their accepted V1 policy hashes.
+The preflight enforces classification, file-size, ownership-disjointness,
+mode-scope, data-binding, and byte-for-byte regeneration gates; it passes 116
+focused tests and every config-authority audit. Citlali remains the canonical
+source. The next gate is to vendor this exact four-mode snapshot into TolPROJ's
+opt-in `--refactor` path while preserving every non-refactor command. A fresh
+Unity smoke reduction for each mode then completes Phase 4.1; no Citlali
+compilation is required for this YAML-only integration.
 
 Project layout review found that TolPROJ science and OOF reductions live under
 `<root>/<user>/<source>` while shared data live under `<root>/data`. Data input
 and KIDs fit-report paths therefore belong to the generated observation/data
-binding, not the reducer-edited runtime file. The canonical V2 generator now
-places those paths in `72_science_observation.yaml`; TolPROJ supplies
-`../../data` for nested projects.
+binding, not the reducer-edited runtime file. The canonical V2 generator places
+those paths in the mode-specific generated observation file; TolPROJ supplies
+`../../data` for nested science and OOF projects.
 
 ### Phase 4.2 - Technique And Performance Review
 

@@ -25,7 +25,7 @@ paths, observation selection, calibration records, product choices, and expert
 experiments are not separated consistently. A user has to understand too much
 of the complete low-level schema to make a routine edit safely.
 
-## Proposed Checked-In Kit
+## Original V1 Proposal
 
 Create four ready-to-copy directories under `config/tolteca/`:
 
@@ -56,8 +56,30 @@ mode template.
 The exact filenames may be adjusted if a real TolTECA fixture exposes a merge
 constraint, but the five roles and their precedence remain fixed.
 
-The implemented filenames are `70_pipeline.yaml`, `71_runtime.yaml`,
-`72_observation.yaml`, `80_products.yaml`, and `90_user_overrides.yaml`.
+The implemented V1 filenames are `70_pipeline.yaml`, `71_runtime.yaml`,
+`72_observation.yaml`, `80_products.yaml`, and `90_user_overrides.yaml`. V1 is
+retained as a mechanically exact reference. Project-owner review subsequently
+found that its generic names and large base policy did not make routine versus
+expert editing approachable enough. The accepted V2 structure below supersedes
+V1 for operator use.
+
+## Accepted V2 Structure
+
+Each mode has seven mode-named files under `config/tolteca/v2/MODE/`:
+
+| File role | Owner and normal use |
+| --- | --- |
+| `60_MODE_internal_policy.yaml` | Generated complete accepted policy; Citlali maintainers only |
+| `71_MODE_runtime.yaml` | Executable, thread count, output layout, and verbosity |
+| `72_MODE_observation.yaml` | TolPROJ-generated data, observation, APT, flux, and pointing binding |
+| `81_MODE_defaults.yaml` | Routine mode-specific analysis choices |
+| `82_MODE_products.yaml` | Mode-appropriate requested and retained products |
+| `90_MODE_advanced_overrides.yaml` | Optional supported controls beyond the short routine surface |
+| `99_MODE_expert_overrides.yaml` | Deliberate implementation or diagnostic overrides requiring validation rationale |
+
+Point uses `pointing` in its filenames. TolPROJ refreshes the generated policy
+and observation files on a same-kit setup and preserves the five operator-owned
+files. V2 remains ordinary TolTECA YAML; no runtime translator is introduced.
 
 ## Editing Contract
 
@@ -106,7 +128,7 @@ Citlali's schema requires them.
 6. Run one real TolTECA smoke reduction per mode using the new files and apply
    the existing mode validation profile.
 
-## Implementation Status - 2026-07-16
+## Implementation Status - 2026-07-17
 
 The Citlali-owned portion is implemented under `config/tolteca/`:
 
@@ -137,17 +159,25 @@ same-kit reruns preserve operator-owned `71_runtime.yaml` and
 `90_user_overrides.yaml`; mode or kit changes require a fresh directory. All
 96 TolPROJ tests pass, including legacy-default, four-mode installation,
 reinstallation, conflict, CLI-help, scannum, and Beammap calibration coverage.
-Phase 4.1 remains open only until point, OOF, Beammap, and science smoke
-reductions pass with the new files.
+Subsequent project-owner review rejected V1 as the final operator interface.
+The V2 pattern was first reviewed with science and is now implemented for all
+four modes. The generator produces the same seven roles for pointing, OOF,
+Beammap, and science, with mode-specific routine analysis and product surfaces.
+Every unchanged V2 directory merges exactly to its accepted V1 policy hash:
 
-Subsequent project-owner review rejected V1 as the final operator interface:
-its merge behavior is correct, but generic filenames and a 500-plus-line base
-file do not make the user/expert distinction sufficiently approachable. Smoke
-runs are therefore deferred. A science-only V2 prototype now separates a
-generated internal policy, site runtime, TolPROJ observation data, routine
-science defaults, product choices, advanced overrides, and expert overrides
-with mode-specific filenames. V2 must be accepted for science before the
-pattern is generalized or TolPROJ's opt-in vendor is updated.
+- point: 445 leaves, `f2d124d40ac7ad9e6351a647253050e5146659c666feed07262125e6fa5415c8`;
+- OOF: 444 leaves, `414a5d16ceba8b6f9163851c139affa486f50397e1ead56fc480ed53475b76f4`;
+- Beammap: 485 leaves, `75eaf79fb5ce45b383f48bbb6a4715209fbb25cb29a1ac595a3afb2a7df4e0b0`; and
+- science: 404 leaves, `10095418b09100f15c90af173ee34ea7bfcf12260cec41d80f43f6f50473a347`.
+
+Hermetic tests enforce exact identities, user/expert classification, bounded
+file size, disjoint analysis/product ownership, mode-inapplicable exclusions,
+consolidated fruit-loop controls, TolPROJ-owned data binding, and byte-for-byte
+generator reproducibility. The full config preflight passes 116 focused tests,
+all four exact mode identities, and every config-authority audit. The next
+implementation gate is to vendor this exact four-mode V2 snapshot into
+TolPROJ's opt-in `--refactor` path. Phase 4.1 then remains open until point,
+OOF, Beammap, and science smoke reductions pass with the installed V2 files.
 
 ## Exit Gate
 

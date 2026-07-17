@@ -227,17 +227,50 @@ class ModeKitValidationTest(unittest.TestCase):
         self.assertEqual(report["expert_override_changes"][0]["authority"], "mapmaking")
 
 
-class ScienceAuthoringPrototypeTest(unittest.TestCase):
+class V2AuthoringModeKitsTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.repo_root = Path(__file__).resolve().parents[2]
-        cls.prototype_root = cls.repo_root / "config/tolteca/v2"
-        cls.science_dir = cls.prototype_root / "science"
-        cls.manifest = cls.prototype_root / "manifest.yaml"
+        cls.v2_root = cls.repo_root / "config/tolteca/v2"
+        cls.manifest = cls.v2_root / "manifest.yaml"
         cls.contract = cls.repo_root / "tools/config/config_leaf_contract_resolved.json"
         cls.rules = yaml.safe_load(
             (cls.repo_root / "tools/config/config_key_classification.yaml").read_text()
         )
+        cls.mode_files = {
+            "point": {
+                "runtime": "71_pointing_runtime.yaml",
+                "observation": "72_pointing_observation.yaml",
+                "defaults": "81_pointing_defaults.yaml",
+                "products": "82_pointing_products.yaml",
+                "advanced": "90_pointing_advanced_overrides.yaml",
+                "expert": "99_pointing_expert_overrides.yaml",
+            },
+            "oof": {
+                "runtime": "71_oof_runtime.yaml",
+                "observation": "72_oof_observation.yaml",
+                "defaults": "81_oof_defaults.yaml",
+                "products": "82_oof_products.yaml",
+                "advanced": "90_oof_advanced_overrides.yaml",
+                "expert": "99_oof_expert_overrides.yaml",
+            },
+            "beammap": {
+                "runtime": "71_beammap_runtime.yaml",
+                "observation": "72_beammap_observation.yaml",
+                "defaults": "81_beammap_defaults.yaml",
+                "products": "82_beammap_products.yaml",
+                "advanced": "90_beammap_advanced_overrides.yaml",
+                "expert": "99_beammap_expert_overrides.yaml",
+            },
+            "science": {
+                "runtime": "71_science_runtime.yaml",
+                "observation": "72_science_observation.yaml",
+                "defaults": "81_science_defaults.yaml",
+                "products": "82_science_products.yaml",
+                "advanced": "90_science_advanced_overrides.yaml",
+                "expert": "99_science_expert_overrides.yaml",
+            },
+        }
 
     def classification(self, path: str) -> str:
         for rule in self.rules["rules"]:
@@ -245,94 +278,169 @@ class ScienceAuthoringPrototypeTest(unittest.TestCase):
                 return rule["classification"]
         return self.rules["fallback"]["classification"]
 
-    def test_science_prototype_matches_accepted_policy(self) -> None:
-        report = validate_modes(
-            self.prototype_root,
+    def test_all_v2_modes_match_accepted_policies(self) -> None:
+        reports = validate_modes(
+            self.v2_root,
             self.manifest,
             self.contract,
-            ["science"],
-        )[0]
+            list(MODE_REDUCTION_TYPES),
+        )
 
-        self.assertTrue(report["valid"], json.dumps(report["errors"], indent=2))
-        self.assertTrue(report["policy_matches_manifest"])
-        self.assertEqual(report["leaf_count"], 404)
         self.assertEqual(
-            report["policy_sha256"],
-            "10095418b09100f15c90af173ee34ea7bfcf12260cec41d80f43f6f50473a347",
+            {report["mode"]: report["leaf_count"] for report in reports},
+            {"point": 445, "oof": 444, "beammap": 485, "science": 404},
+        )
+        self.assertTrue(
+            all(report["valid"] and report["policy_matches_manifest"] for report in reports),
+            json.dumps({report["mode"]: report["errors"] for report in reports}, indent=2),
         )
 
     def test_operator_files_contain_only_user_facing_low_level_leaves(self) -> None:
         expected_counts = {
-            "71_science_runtime.yaml": 4,
-            "81_science_defaults.yaml": 27,
-            "82_science_products.yaml": 30,
+            "point": {"runtime": 4, "defaults": 44, "products": 26},
+            "oof": {"runtime": 4, "defaults": 44, "products": 26},
+            "beammap": {"runtime": 4, "defaults": 43, "products": 5},
+            "science": {"runtime": 4, "defaults": 27, "products": 30},
         }
-        for filename, expected_count in expected_counts.items():
-            patch = yaml.safe_load((self.science_dir / filename).read_text())
-            leaves = flatten_leaves(extract_low_level(patch))
-            classifications = {
-                normalized_path(path): self.classification(normalized_path(path))
-                for path in leaves
-            }
-            self.assertEqual(len(leaves), expected_count, filename)
-            self.assertEqual(
-                {"user-facing"},
-                set(classifications.values()),
-                f"{filename}: {classifications}",
-            )
+        for mode, roles in expected_counts.items():
+            for role, expected_count in roles.items():
+                filename = self.mode_files[mode][role]
+                patch = yaml.safe_load((self.v2_root / mode / filename).read_text())
+                leaves = flatten_leaves(extract_low_level(patch))
+                classifications = {
+                    normalized_path(path): self.classification(normalized_path(path))
+                    for path in leaves
+                }
+                self.assertEqual(len(leaves), expected_count, filename)
+                self.assertEqual(
+                    {"user-facing"},
+                    set(classifications.values()),
+                    f"{filename}: {classifications}",
+                )
 
-    def test_fruit_loop_controls_are_consolidated_in_analysis_defaults(self) -> None:
-        defaults = extract_low_level(
-            yaml.safe_load(
-                (self.science_dir / "81_science_defaults.yaml").read_text()
+    def test_analysis_and_product_controls_are_disjoint(self) -> None:
+        for mode, filenames in self.mode_files.items():
+            defaults = extract_low_level(
+                yaml.safe_load((self.v2_root / mode / filenames["defaults"]).read_text())
             )
-        )
-        products = extract_low_level(
-            yaml.safe_load(
-                (self.science_dir / "82_science_products.yaml").read_text()
+            products = extract_low_level(
+                yaml.safe_load((self.v2_root / mode / filenames["products"]).read_text())
             )
-        )
+            default_leaves = set(flatten_leaves(defaults))
+            product_leaves = set(flatten_leaves(products))
+            self.assertFalse(default_leaves & product_leaves, mode)
+            self.assertIn("fruit_loops", defaults["timestream"], mode)
+            self.assertNotIn("fruit_loops", products.get("timestream", {}), mode)
 
-        self.assertEqual(
-            set(defaults["timestream"]["fruit_loops"]),
-            {
+    def test_fruit_loop_controls_are_complete_on_the_analysis_surface(self) -> None:
+        expected = {
+            "point": {
+                "enabled",
+                "max_iters",
+                "sig2noise_limit",
+                "array_flux_limit",
+                "center_keep_radius_arcsec",
+                "adaptive_support_radius_arcsec",
+                "adaptive_support_radius_fwhm",
+                "save_all_iters",
+            },
+            "oof": {
+                "enabled",
+                "max_iters",
+                "sig2noise_limit",
+                "array_flux_limit",
+                "center_keep_radius_arcsec",
+                "adaptive_support_radius_arcsec",
+                "adaptive_support_radius_fwhm",
+                "save_all_iters",
+            },
+            "beammap": {
                 "enabled",
                 "max_iters",
                 "sig2noise_limit",
                 "array_flux_limit",
                 "save_all_iters",
             },
+            "science": {
+                "enabled",
+                "max_iters",
+                "sig2noise_limit",
+                "array_flux_limit",
+                "save_all_iters",
+            },
+        }
+        for mode, filenames in self.mode_files.items():
+            defaults = extract_low_level(
+                yaml.safe_load((self.v2_root / mode / filenames["defaults"]).read_text())
+            )
+            self.assertEqual(
+                set(defaults["timestream"]["fruit_loops"]),
+                expected[mode],
+                mode,
+            )
+
+    def test_mode_specific_surfaces_exclude_inapplicable_controls(self) -> None:
+        for mode in ("point", "oof"):
+            filenames = self.mode_files[mode]
+            defaults = extract_low_level(
+                yaml.safe_load((self.v2_root / mode / filenames["defaults"]).read_text())
+            )
+            self.assertIn("pointing", defaults)
+            self.assertNotIn("beammap", defaults)
+
+        beammap_files = self.mode_files["beammap"]
+        beammap_defaults = extract_low_level(
+            yaml.safe_load(
+                (self.v2_root / "beammap" / beammap_files["defaults"]).read_text()
+            )
         )
-        self.assertNotIn("fruit_loops", products.get("timestream", {}))
+        beammap_products = extract_low_level(
+            yaml.safe_load(
+                (self.v2_root / "beammap" / beammap_files["products"]).read_text()
+            )
+        )
+        self.assertIn("beammap", beammap_defaults)
+        self.assertNotIn("pointing", beammap_defaults)
+        self.assertEqual(
+            set(beammap_products["beammap"]),
+            {"detector_tod_output", "split_fits_by_flag"},
+        )
+        self.assertNotIn("post_processing", beammap_products)
+
+    def test_advanced_and_expert_files_start_empty(self) -> None:
+        for mode, filenames in self.mode_files.items():
+            for role in ("advanced", "expert"):
+                patch = yaml.safe_load((self.v2_root / mode / filenames[role]).read_text())
+                self.assertEqual(extract_low_level(patch), {}, f"{mode}:{role}")
 
     def test_generated_data_bindings_belong_to_observation_file(self) -> None:
-        runtime = yaml.safe_load(
-            (self.science_dir / "71_science_runtime.yaml").read_text()
-        )
-        observation = yaml.safe_load(
-            (self.science_dir / "72_science_observation.yaml").read_text()
-        )
+        for mode, filenames in self.mode_files.items():
+            runtime = yaml.safe_load((self.v2_root / mode / filenames["runtime"]).read_text())
+            observation = yaml.safe_load(
+                (self.v2_root / mode / filenames["observation"]).read_text()
+            )
 
-        self.assertNotIn("inputs", runtime["reduce"])
-        runtime_low_level = extract_low_level(runtime)
-        self.assertNotIn("kids", runtime_low_level)
-        self.assertEqual(observation["reduce"]["inputs"][0]["path"], "../data")
-        self.assertEqual(
-            extract_low_level(observation)["kids"]["solver"]["fitreportdir"],
-            "../data",
-        )
+            self.assertNotIn("inputs", runtime["reduce"])
+            self.assertNotIn("kids", extract_low_level(runtime))
+            self.assertEqual(observation["reduce"]["inputs"][0]["path"], "../data")
+            self.assertEqual(
+                extract_low_level(observation)["kids"]["solver"]["fitreportdir"],
+                "../data",
+            )
 
     def test_normal_operator_surface_remains_bounded(self) -> None:
         line_limits = {
-            "71_science_runtime.yaml": 30,
-            "81_science_defaults.yaml": 90,
-            "82_science_products.yaml": 80,
+            "runtime": 30,
+            "defaults": 130,
+            "products": 80,
         }
-        for filename, limit in line_limits.items():
-            line_count = len((self.science_dir / filename).read_text().splitlines())
-            self.assertLessEqual(line_count, limit, filename)
+        for mode, filenames in self.mode_files.items():
+            for role, limit in line_limits.items():
+                filename = filenames[role]
+                line_count = len((self.v2_root / mode / filename).read_text().splitlines())
+                self.assertLessEqual(line_count, limit, filename)
 
-    def test_checked_prototype_is_generator_reproducible(self) -> None:
+    def test_checked_v2_kits_are_generator_reproducible(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             generated_root = Path(tmp) / "v2"
             subprocess.run(
@@ -340,7 +448,7 @@ class ScienceAuthoringPrototypeTest(unittest.TestCase):
                     sys.executable,
                     str(
                         self.repo_root
-                        / "tools/config/generate_science_authoring_prototype.py"
+                        / "tools/config/generate_tolteca_v2_mode_kits.py"
                     ),
                     "--source-root",
                     str(self.repo_root / "config/tolteca"),
@@ -351,12 +459,12 @@ class ScienceAuthoringPrototypeTest(unittest.TestCase):
                 cwd=self.repo_root,
             )
             expected_files = [
-                path.relative_to(self.prototype_root)
-                for path in self.prototype_root.rglob("*.yaml")
+                path.relative_to(self.v2_root)
+                for path in self.v2_root.rglob("*.yaml")
             ]
             for relative_path in expected_files:
                 self.assertEqual(
-                    (self.prototype_root / relative_path).read_bytes(),
+                    (self.v2_root / relative_path).read_bytes(),
                     (generated_root / relative_path).read_bytes(),
                     str(relative_path),
                 )

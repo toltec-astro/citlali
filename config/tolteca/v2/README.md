@@ -1,50 +1,97 @@
-# Science Authoring Prototype V2
+# Four-Mode Authoring Kit V2
 
-This is a science-only prototype for review. TolPROJ does not install it yet,
-and it has not replaced the accepted four-mode V1 kit.
+This is the human-facing Phase 4.1 configuration structure for pointing, OOF,
+Beammap, and science reductions. The files are ordinary TolTECA YAML. TolTECA
+merges them directly in numeric order and supplies one generated low-level YAML
+document to Citlali; no runtime translator is required.
 
-The prototype remains ordinary TolTECA YAML. `tolteca reduce` merges the files
-directly in numeric order; no translator or generated intermediate step is
-required before a reduction.
+Every mode merges exactly to its accepted Phase 4 policy when the operator
+files are unchanged. The identities are pinned in `manifest.yaml`.
 
-## Files And Audiences
+## File Roles
 
-| File | Audience | Purpose |
+Each mode uses the same seven roles with a mode name in every filename. The
+point directory uses `pointing` in filenames because that is the user-facing
+reduction intent.
+
+| Number and suffix | Audience | Purpose |
 | --- | --- | --- |
-| `60_science_internal_policy.yaml` | Citlali maintainers | Complete accepted policy. Generated, hash-checked, and not normally edited. |
-| `71_science_runtime.yaml` | Site operator | Executable, thread count, output layout, and verbosity. |
-| `72_science_observation.yaml` | TolPROJ | Data path, observation selection, APTs, calibrator fluxes, and pointing support. |
-| `81_science_defaults.yaml` | Reducer | Routine mapmaking, calibration, cleaning, weighting, and iteration choices. |
-| `82_science_products.yaml` | Reducer | Coadd, noise, filtering, fitting, and retained TOD product choices. |
-| `90_science_advanced_overrides.yaml` | Advanced reducer | Additional supported user-facing controls omitted from the short defaults. Empty by default. |
-| `99_science_expert_overrides.yaml` | Citlali expert | Detailed algorithm or diagnostic overrides. Empty by default and requires validation rationale. |
+| `60_MODE_internal_policy.yaml` | Citlali maintainers | Complete accepted policy. Generated, hash-checked, and not normally edited. |
+| `71_MODE_runtime.yaml` | Site operator | Executable, thread count, output layout, and verbosity. |
+| `72_MODE_observation.yaml` | TolPROJ | Data path, observation selection, APTs, calibrator fluxes, and pointing support. |
+| `81_MODE_defaults.yaml` | Reducer | Routine mode-specific analysis choices. |
+| `82_MODE_products.yaml` | Reducer | Mode-appropriate product and retained-data choices. |
+| `90_MODE_advanced_overrides.yaml` | Advanced reducer | Additional supported user-facing settings omitted from the short defaults. Empty by default. |
+| `99_MODE_expert_overrides.yaml` | Citlali expert | Detailed algorithm or diagnostic overrides. Empty by default and requires validation rationale. |
 
-The normal operator surface is 61 low-level leaves: four runtime values, 27
-analysis defaults, and 30 product values. Every one is classified
-`user-facing`. The complete 404-leaf policy remains available in the clearly
-marked internal file, rather than being presented as a normal editing surface.
+TolPROJ owns the observation file and refreshes the internal policy on a
+same-kit setup. It preserves runtime, defaults, products, advanced, and expert
+files so reducer edits are not lost.
 
-All routine fruit-loop choices are consolidated in `81_science_defaults.yaml`,
-including activation, iteration count, S/N and per-array flux cuts, and whether
-to retain every iteration. Product settings in `82_science_products.yaml` are
-limited to reduction outputs outside the fruit-loop lifecycle.
+## Normal Editing
 
-The defaults and products files intentionally reassert accepted values already
-present in the internal policy. Editing them changes the effective policy by
-normal TolTECA precedence. Leaving them untouched reproduces accepted science
-`redu31` exactly, with policy SHA-256
-`10095418b09100f15c90af173ee34ea7bfcf12260cec41d80f43f6f50473a347`.
+Most reducers inspect or edit only:
+
+1. `81_MODE_defaults.yaml` for analysis choices;
+2. `82_MODE_products.yaml` for requested products; and
+3. `71_MODE_runtime.yaml` when the executable or CPU allocation differs.
+
+TolPROJ generates `72_MODE_observation.yaml` from project metadata and the
+actual project directory layout. In the normal science/OOF layout
+`<root>/<user>/<source>`, shared project data resolve through `../../data`.
+
+The normal low-level surfaces remain bounded:
+
+| Mode | Runtime leaves | Analysis leaves | Product leaves |
+| --- | ---: | ---: | ---: |
+| Pointing | 4 | 44 | 26 |
+| OOF | 4 | 44 | 26 |
+| Beammap | 4 | 43 | 5 |
+| Science | 4 | 27 | 30 |
+
+Pointing and OOF expose source strategy, source protection, map geometry,
+cleaning, weighting, fruit loops, and learning. Beammap exposes its iteration,
+convergence, reference-detector, prior, mask, cleaner, and fruit-loop policy,
+but not point/OOF controls. Its product file is intentionally short: detector
+TOD, split FITS, line-audit, and retained RTC/PTC TOD switches. Science keeps
+the previously accepted structure, including consolidated fruit-loop controls.
+
+Source finding is visible where relevant but marked experimental and remains
+disabled in every accepted policy. Detailed thresholds and algorithm internals
+remain available through the explicit advanced or expert files rather than the
+routine surface.
 
 ## Validation
 
-From the Citlali repository root:
+Validate every canonical kit from the Citlali repository root:
 
 ```bash
-$HOME/tolteca/bin/python tools/config/tolteca_mode_kit.py validate \
-  --mode science \
-  --mode-dir config/tolteca/v2/science \
+$HOME/tolteca/bin/python tools/config/tolteca_mode_kit.py validate-all \
+  --config-root config/tolteca/v2 \
   --manifest config/tolteca/v2/manifest.yaml
 ```
 
-The config preflight also checks exact policy identity, classification
-boundaries, size limits for the normal files, and generator reproducibility.
+Inspect a deployed project while allowing deliberate operator changes:
+
+```bash
+$HOME/tolteca/bin/python tools/config/tolteca_mode_kit.py merge \
+  --mode science \
+  --mode-dir /path/to/reduction \
+  --manifest config/tolteca/v2/manifest.yaml \
+  --yaml-out /tmp/science-merged.yaml \
+  --json-out /tmp/science-config-report.json
+```
+
+The full config preflight additionally enforces user/expert classification,
+mode-inapplicable control exclusion, file-size bounds, non-overlapping defaults
+and products, exact accepted hashes, and byte-for-byte generator reproduction.
+
+## Regeneration And TolPROJ
+
+`tools/config/generate_tolteca_v2_mode_kits.py` regenerates all four modes from
+the mechanically exact V1 accepted baselines. Review and validate a generated
+change before replacing this directory.
+
+Citlali is the canonical policy source. TolPROJ vendors an exact, hash-checked
+snapshot and installs it only under `--refactor`; non-refactor setup retains
+the established `70_reduce.yaml`/`72_reduce.yaml` workflow.

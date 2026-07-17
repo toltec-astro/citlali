@@ -1,4 +1,4 @@
-# Primary user-facing science product choices.
+# Primary user-facing OOF product choices.
 # Edit noise products, filtering, fitting, source finding, and retained TOD products here.
 # Source finding remains experimental and disabled in the accepted policy.
 # TOD indices are used only when the corresponding output.enabled value is true.
@@ -8,38 +8,43 @@ reduce:
     0:
       config:
         low_level:
-          coadd:
-            enabled: true
 
           # Noise realizations and empirical summaries
           noise_maps:
-            enabled: true
-            n_noise_maps: 10
+            enabled: false
+            n_noise_maps: 1
+            randomize_dets: true
+            write_realizations: false
             products:
-              enabled: false
+              enabled: true
+              apply_empirical_weights: true
 
           # Filtered maps, source catalogs, and source fits
           post_processing:
             map_filtering:
-              enabled: true
-              type: wiener_filter
+              enabled: false
+              type: convolve
               normalize_errors: false
+            map_histogram_n_bins: 50
 
             # Experimental source catalog; leave disabled for validated production
             source_finding:
               enabled: false
+              mode: default
+              source_sigma: 5.0
+              source_window_arcsec: 10.0
             source_fitting:
               model: gaussian
-              bounding_box_arcsec: 10
-              fitting_radius_arcsec: 30
+              bounding_box_arcsec: 30
+              fitting_radius_arcsec: 40
 
           # User-facing Wiener template choices
           wiener_filter:
-            template_type: kernel
+            template_type: gaussian
             template_fwhm_arcsec:
-              a1100: 18.0
-              a1400: 18.0
-              a2000: 18.0
+              a1100: 2.5
+              a1400: 3.5
+              a2000: 5.0
             lowpass_only: true
 
           # Optional retained raw and processed TOD products
@@ -49,22 +54,10 @@ reduce:
             raw_time_chunk:
               output:
                 enabled: false
-                indices:
-                - 12
-                - 19
-                - 23
-                - 36
-                - 39
-                - 60
+                indices: all
 
             # Cleaned and weighted TOD output
             processed_time_chunk:
               output:
                 enabled: false
-                indices:
-                - 12
-                - 19
-                - 23
-                - 36
-                - 39
-                - 60
+                indices: all

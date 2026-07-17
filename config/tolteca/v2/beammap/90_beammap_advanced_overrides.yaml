@@ -1,0 +1,9 @@
+# Optional advanced overrides for supported user-facing controls not shown in 81/82.
+# Keep this empty unless a documented analysis need requires an additional control.
+reduce:
+  steps:
+    0:
+      config:
+
+        # Replace {} with additional supported user-facing low-level settings
+        low_level: {}

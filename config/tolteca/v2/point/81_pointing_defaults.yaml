@@ -1,4 +1,4 @@
-# Primary user-facing science analysis defaults.
+# Primary user-facing pointing analysis defaults.
 # Edit routine geometry, calibration, cleaning, weighting, and iteration choices here.
 # Enable one primary cleaner; n_eig_to_cut has one value per active cleaning group.
 # Learning and second-pass flagging are explicit when they affect this mode.
@@ -8,24 +8,49 @@ reduce:
       config:
         low_level:
 
+          # Source context used by pointing diagnostics
+          source:
+            map_regime: source_dominant
+
+          # Pointing and OOF source strategy
+          pointing:
+            source_strategy:
+              fit_gaussian: true
+              fruitloops_center_mode: auto
+              header_max_radius_arcsec: 40.0
+              header_require_coverage: true
+              mode: standard
+
           # Map geometry and mapmaking method
           mapmaking:
             cunit: mJy/beam
             method: jinc
-            pixel_axes: radec
-            pixel_size_arcsec: 2.0
+            pixel_axes: altaz
+            pixel_size_arcsec: 1.0
 
           # Timestream chunking, calibration, cleaning, weighting, and iterations
           timestream:
+
+            # Scan chunk duration and subdivision policy
+            chunking:
+              chunk_mode: duration
+              force_chunking: false
+              value: 5
 
             # High-level raw-data corrections; thresholds remain expert policy
             raw_time_chunk:
               despike:
                 enabled: true
+                source_protection:
+                  radius_arcsec: 20.0
               filter:
                 enabled: true
-              extinction_correction:
+              IIR_filter:
+                enabled: false
+              downsample:
                 enabled: true
+              extinction_correction:
+                enabled: false
               flux_calibration:
                 enabled: true
 
@@ -41,11 +66,11 @@ reduce:
                   enabled: true
                   n_eig_to_cut:
                     a1100:
-                    - 10
+                    - 5
                     a1400:
-                    - 10
+                    - 5
                     a2000:
-                    - 10
+                    - 5
 
                 # Alternative cleaners; normally leave all disabled
                 null_model:
@@ -57,23 +82,31 @@ reduce:
               flagging:
                 second_pass_local:
                   enabled: true
+                  source_protection:
+                    radius_arcsec: 20.0
               weighting:
-                type: full
+                type: validated
+                source_mask_radius_arcsec: 30.0
 
             # Iterative source-model subtraction and retained iteration products
             fruit_loops:
-              enabled: true
-              max_iters: 4
+              enabled: false
+              max_iters: 10
 
               # Source-model mask cuts; a pixel is retained when either enabled cut passes
               # Set a cut to 0 to disable it; the S/N cut also requires noise maps
-              sig2noise_limit: 2.5
+              sig2noise_limit: 100
 
               # Flux thresholds in map units, ordered [a1100, a1400, a2000]
               array_flux_limit:
-              - 1.0
-              - 1.0
-              - 1.0
+              - 12
+              - 18
+              - 10
+
+              # Central source region retained during pointing/OOF feedback
+              center_keep_radius_arcsec: 40.0
+              adaptive_support_radius_arcsec: 18.0
+              adaptive_support_radius_fwhm: 1.5
 
               # Keep every fruit-loop iteration instead of only the final products
               save_all_iters: true

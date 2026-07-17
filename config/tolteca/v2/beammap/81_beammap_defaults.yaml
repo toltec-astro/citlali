@@ -1,29 +1,64 @@
-# Primary user-facing science analysis defaults.
+# Primary user-facing Beammap analysis defaults.
 # Edit routine geometry, calibration, cleaning, weighting, and iteration choices here.
 # Enable one primary cleaner; n_eig_to_cut has one value per active cleaning group.
-# Learning and second-pass flagging are explicit when they affect this mode.
 reduce:
   steps:
     0:
       config:
         low_level:
 
+          # Source-dominant Beammap context
+          source:
+            map_regime: source_dominant
+
+          # Beammap iterations, convergence, reference detector, masks, and priors
+          beammap:
+            iter_max: 3
+            iter_tolerance: 0.03
+            convergence_radius_arcsec: 10.0
+            derotate: true
+            subtract_reference_det: true
+            reference_det: -99
+
+            # Detector-map weighting after iteration zero
+            detector_weighting:
+              mode: ptc_after_iter0
+
+            # Optional detector-position prior policy and file
+            priors:
+              enabled: true
+              filepath: /work/toltec/citlali_dev/citlali/data/beammap_priors/beammap_slot_priors_soft_v1.ecsv
+            rfi_mask:
+              enabled: false
+            scan_band_mask:
+              enabled: false
+
           # Map geometry and mapmaking method
           mapmaking:
             cunit: mJy/beam
             method: jinc
-            pixel_axes: radec
-            pixel_size_arcsec: 2.0
+            pixel_axes: altaz
+            pixel_size_arcsec: 1.0
 
           # Timestream chunking, calibration, cleaning, weighting, and iterations
           timestream:
 
+            # Scan chunk duration and subdivision policy
+            chunking:
+              chunk_mode: duration
+              force_chunking: false
+              value: 20
+
             # High-level raw-data corrections; thresholds remain expert policy
             raw_time_chunk:
               despike:
-                enabled: true
+                enabled: false
               filter:
                 enabled: true
+              IIR_filter:
+                enabled: false
+              downsample:
+                enabled: false
               extinction_correction:
                 enabled: true
               flux_calibration:
@@ -34,18 +69,18 @@ reduce:
               clean:
                 enabled: true
                 grouping:
-                - nw
+                - corr_nw
 
                 # Primary cleaner and per-array PCA depth
                 standard_pca:
                   enabled: true
                   n_eig_to_cut:
                     a1100:
-                    - 10
+                    - 3
                     a1400:
-                    - 10
+                    - 3
                     a2000:
-                    - 10
+                    - 3
 
                 # Alternative cleaners; normally leave all disabled
                 null_model:
@@ -56,28 +91,24 @@ reduce:
                   enabled: false
               flagging:
                 second_pass_local:
-                  enabled: true
+                  enabled: false
               weighting:
                 type: full
 
             # Iterative source-model subtraction and retained iteration products
             fruit_loops:
               enabled: true
-              max_iters: 4
+              max_iters: 2
 
               # Source-model mask cuts; a pixel is retained when either enabled cut passes
               # Set a cut to 0 to disable it; the S/N cut also requires noise maps
-              sig2noise_limit: 2.5
+              sig2noise_limit: 0.0
 
               # Flux thresholds in map units, ordered [a1100, a1400, a2000]
               array_flux_limit:
-              - 1.0
-              - 1.0
-              - 1.0
+              - 8.0e-07
+              - 1.0e-06
+              - 6.0e-07
 
               # Keep every fruit-loop iteration instead of only the final products
-              save_all_iters: true
-
-            # Cross-iteration learned masks and detector state
-            learning:
-              enabled: true
+              save_all_iters: false

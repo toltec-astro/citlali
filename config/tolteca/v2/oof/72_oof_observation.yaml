@@ -1,0 +1,44 @@
+# Data location, observation selection, APTs, fluxes, and pointing support.
+# TolPROJ generates this file from project metadata and directory layout.
+reduce:
+
+  # Shared data path and observation selection
+  inputs:
+    0:
+      select: scannum == 1 & (obsnum in [OBSNUM])
+      path: ../data
+  steps:
+    0:
+      config:
+        cal_items:
+        - beammap_source:
+            fluxes:
+            - array_name: a1100
+              uncertainty_mJy: 0.05
+              value_mJy: 0.0
+            - array_name: a1400
+              uncertainty_mJy: 0.05
+              value_mJy: 0.0
+            - array_name: a2000
+              uncertainty_mJy: 0.05
+              value_mJy: 0.0
+          type: photometry
+        - pointing_offsets:
+          - axes_name: az
+            value_arcsec:
+            - 0.0
+          - axes_name: alt
+            value_arcsec:
+            - 0.0
+          type: astrometry
+        - filepath: ../apts/apt_OBSNUM_matched.ecsv
+          meta:
+            interface: apt
+          select: obsnum == OBSNUM
+          type: array_prop_table
+
+        # Generated paths used while loading observation data
+        low_level:
+          kids:
+            solver:
+              fitreportdir: ../data
