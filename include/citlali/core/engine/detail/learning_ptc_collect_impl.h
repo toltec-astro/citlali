@@ -16,6 +16,26 @@ void Engine::collect_ptc_learning_diagnostics(
     }
 
     const auto scan_id = ptcdata.index.data;
+    const auto event_time_unix_sec = [&]() {
+        const auto tel_time_it = ptcdata.tel_data.data.find("TelTime");
+        if (tel_time_it == ptcdata.tel_data.data.end() ||
+            tel_time_it->second.size() == 0) {
+            return ReductionLearningState::nan_value();
+        }
+        const auto &tel_time = tel_time_it->second;
+        Eigen::Index first = 0;
+        while (first < tel_time.size() && !std::isfinite(tel_time(first))) {
+            ++first;
+        }
+        Eigen::Index last = tel_time.size() - 1;
+        while (last >= first && !std::isfinite(tel_time(last))) {
+            --last;
+        }
+        if (first > last || tel_time(first) <= 0.0 || tel_time(last) <= 0.0) {
+            return ReductionLearningState::nan_value();
+        }
+        return tel_time(first) + 0.5 * (tel_time(last) - tel_time(first));
+    }();
     const auto &second_pass =
         citlali::pipeline::processed_time_chunk_config(*this)
             .flagging.second_pass_local;
@@ -155,6 +175,7 @@ void Engine::collect_ptc_learning_diagnostics(
                     std::isfinite(summary.top_candidate_cluster_peak_score)
                         ? summary.top_candidate_cluster_peak_score
                         : 0.0);
+                penalty.event_time_unix_sec = event_time_unix_sec;
                 penalty.scan_local = true;
                 learning.record_detector_penalty(std::move(penalty));
             }

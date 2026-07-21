@@ -353,7 +353,8 @@ $HOME/tolteca/bin/python tools/baseline/compare_reduction_products.py \
   --report-out /tmp/science_product_compare.md
 ```
 
-By default, the product triage skips logs, configs, `learning_iter_*.csv`, and
+By default, the product triage skips logs, configs, `learning_iter_*.csv`,
+`learning_housekeeping_iter_*.csv`, and
 `*_timestream.nc` files so the report stays focused on map/table/diagnostic
 products. Pass `--include-timestream` or explicit `--include`/`--exclude` globs
 for deeper diagnostics.

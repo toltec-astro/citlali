@@ -2,6 +2,7 @@
 
 #include <citlali/core/pipeline/reduction_observation_inputs.h>
 #include <citlali/core/pipeline/reduction_observation_pipeline.h>
+#include <citlali/core/pipeline/learning_housekeeping_qa.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
 #include <cstddef>
@@ -41,6 +42,8 @@ bool run_reduction_observation(
                                            FilteredObsMap, FitMaps>(
             todproc, kidsproc, rawobs, stage_profile, logger);
     }
+    write_learning_housekeeping_qa_if_available(
+        todproc.engine(), rawobs, observation_index == 0, logger);
     return true;
 }
 

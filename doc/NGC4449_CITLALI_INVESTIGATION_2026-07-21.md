@@ -206,16 +206,44 @@ Candidate logging policy:
 Shape mismatches, invalid numerical state, required missing input, and I/O
 failure remain warnings or fatal errors according to their existing contracts.
 
+## Housekeeping Correlation Sidecar
+
+The follow-up review found no array-temperature channel with a statistically
+credible run-wide association after correcting the broad channel/derivative
+screen. Temperature level also covaries strongly with observation order, so a
+simple level correlation is confounded by elapsed time. A few of the most
+severe network pathologies did coincide with point changes in PT2, mixing-
+chamber, or focal-plane thermometry, but the approximately 60-second HK cadence
+is too coarse to establish onset or causality.
+
+The candidate therefore adds diagnostic evidence, not an automatic flagging
+rule. For each deduplicated `busy_network_pathology` action it writes
+`learning_housekeeping_iter_N.csv` rows for seven focal-plane/array
+thermometers and six dilution-fridge channels. Each row identifies the
+observation, zero-based scan, network, array, pathology score, PTC chunk
+midpoint Unix time, HK file, physical channel, kelvin unit, and explicit match
+status. Successful matches publish the nearest sample, signed time offset,
+absolute sample age, previous/next values, first differences, and local
+three-point excursion.
+
+An explicit `toltec_hk` input is preferred when present; otherwise the writer
+looks for exactly one `toltec_hk_*_<obsnum>_*.nc` beside the TolTEC detector
+files. Missing, ambiguous, malformed, unavailable-sentinel, and out-of-range
+cases are represented in the sidecar rather than amplified into warning spam.
+The sidecar is header-only when no qualifying pathology occurs. Its output I/O
+is required when learning diagnostics are enabled, but HK availability never
+changes the learned state or the science flags.
+
 ## Validation And Remaining Work
 
 Local candidate evidence:
 
 - `citlali_cli` builds;
-- all 477 CTests pass, including focused learning, fruit-loop activation,
+- all 480 CTests pass, including focused learning, fruit-loop activation,
   realized-feedback, and map-semantics tests;
 - the full config preflight passes 116 tests and all required audits; and
-- the 23 product-contract, validation-profile, and science-change-ledger tests
-  pass;
+- all 106 baseline-tool tests, including product-contract,
+  validation-profile, and science-change-ledger checks, pass;
 - Unity science validation is required before acceptance.
 
 The Unity successor run should verify:

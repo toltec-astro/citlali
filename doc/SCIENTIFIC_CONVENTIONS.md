@@ -118,6 +118,12 @@ polarimetry is rejected and those products are not scientifically validated.
   row/column indices are zero-based unless a product contract says otherwise.
 - Fruit-loop iteration identifiers and learning-diagnostic filename iteration
   values are zero-based.
+- Learning-housekeeping QA `scan_zero_based` and filename iteration values are
+  zero-based. `event_time_unix_sec` is the midpoint of the first and last
+  finite PTC `TelTime` values in the processed chunk. Housekeeping matches use
+  the nearest recorded Unix timestamp and publish both signed
+  `sample_offset_sec` (`sample - event`) and absolute `sample_age_sec`; no
+  interpolation is implied.
 - FITS/WCS pixel coordinates are one-based. In-memory map rows/columns and
   diagnostic peak row/column values are zero-based.
 
@@ -132,6 +138,14 @@ Telescope streams align with the timestream sample axis after the configured
 interface synchronization, gap handling, filtering, edge-guard, and
 downsampling policy has been resolved. Any auxiliary measured stream must state
 its alignment and must not be treated as a synthetic kernel.
+
+The `learning_housekeeping_iter_*.csv` sidecar is correlation evidence only.
+It records kelvin-valued TolTEC thermometry and dilution-fridge channels near
+busy-network pathology events, including explicit missing/invalid status and
+neighbor differences. It neither changes sample flags nor establishes causal
+timing. Current housekeeping cadence can be approximately 60 seconds, so the
+published sample age is part of the scientific interpretation and must not be
+discarded by downstream QA.
 
 Map products are collections of two-dimensional spatial planes. Array,
 frequency, and Stokes identity are represented by product grouping, FITS

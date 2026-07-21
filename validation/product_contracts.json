@@ -280,6 +280,18 @@
       "indexing_policy": "Iteration in the filename is zero-based.",
       "missing_value_policy": "Optional record types may be absent by policy.",
       "failure_policy": "Optional diagnostic unless explicitly promoted by a future profile."
+    },
+    "learning_housekeeping_qa": {
+      "scientific_identity": "Diagnostic-only nearest-housekeeping matches for deduplicated busy-network learning pathologies.",
+      "coordinate_frame": "Unix time associated with a zero-based observation scan and detector-network identity; not a map product.",
+      "axes": [
+        "pathology action",
+        "housekeeping channel"
+      ],
+      "units_policy": "Temperatures are kelvin; event, sample, offset, and age columns are seconds. Channel identity and match status are explicit.",
+      "indexing_policy": "Iteration in the filename and scan_zero_based are zero-based. sample_offset_sec is sample time minus event time.",
+      "missing_value_policy": "The status column distinguishes missing, ambiguous, malformed, unavailable-sentinel, out-of-range, and matched data; numeric fields are empty when unavailable.",
+      "failure_policy": "Diagnostic input availability never changes flags. Once learning diagnostics are enabled, sidecar output I/O failure is fatal."
     }
   },
   "checks": {
@@ -885,6 +897,15 @@
           "condition": "learning diagnostics are enabled for the iteration",
           "pattern": "learning_iter_*.csv",
           "max_matches": null
+        },
+        {
+          "entry_id": "learning-housekeeping-qa",
+          "family_id": "learning_housekeeping_qa",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "learning diagnostics are enabled and observations are processed",
+          "pattern": "learning_housekeeping_iter_*.csv",
+          "max_matches": null
         }
       ]
     },
@@ -987,6 +1008,15 @@
           "classification": "optional_diagnostic",
           "condition": "learning diagnostics are enabled for the iteration",
           "pattern": "learning_iter_*.csv",
+          "max_matches": null
+        },
+        {
+          "entry_id": "learning-housekeeping-qa",
+          "family_id": "learning_housekeeping_qa",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "learning diagnostics are enabled and observations are processed",
+          "pattern": "learning_housekeeping_iter_*.csv",
           "max_matches": null
         }
       ]
@@ -1155,6 +1185,15 @@
           "condition": "learning diagnostics are enabled for the iteration",
           "pattern": "learning_iter_*.csv",
           "max_matches": null
+        },
+        {
+          "entry_id": "learning-housekeeping-qa",
+          "family_id": "learning_housekeeping_qa",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "learning diagnostics are enabled and observations are processed",
+          "pattern": "learning_housekeeping_iter_*.csv",
+          "max_matches": null
         }
       ]
     },
@@ -1277,6 +1316,15 @@
           "classification": "optional_diagnostic",
           "condition": "learning diagnostics are enabled for the iteration",
           "pattern": "learning_iter_*.csv",
+          "max_matches": null
+        },
+        {
+          "entry_id": "learning-housekeeping-qa",
+          "family_id": "learning_housekeeping_qa",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "learning diagnostics are enabled and observations are processed",
+          "pattern": "learning_housekeeping_iter_*.csv",
           "max_matches": null
         }
       ]

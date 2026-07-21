@@ -77,7 +77,7 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 477 tests. The Phase 4.1 config preflight now
+- CTest discovers and passes all 480 tests. The Phase 4.1 config preflight now
   passes 116 focused tests; the checked leaf contract covers 576 leaves and the generated
   startup schema covers 726 normalized YAML nodes. The six new direct tests
   cover the production rejection of experimental maximum-likelihood
@@ -86,7 +86,8 @@ branch. The exact validated tree will remain available for forensic review.
   NGC4449 candidate tests cover cap-independent effective learning state,
   interval/penalty compaction, diagnostic decoupling, fruit-loop activation and
   realized feedback, Beammap policy isolation, and truthful standardized-map
-  naming.
+  naming. Three additional tests cover the diagnostic-only learning/HK match
+  contract and required sidecar output.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -99,14 +100,16 @@ operational state in input order, and warning amplification that obscured QA.
 The bounded investigation and candidate corrections are recorded in
 `doc/NGC4449_CITLALI_INVESTIGATION_2026-07-21.md`.
 
-Local builds, all 477 CTests, the 116-test config preflight, and 23 baseline
-registry tests pass. The changes are not an accepted scientific snapshot:
+Local builds, all 480 CTests, the 116-test config preflight, and 106 baseline-
+tool tests pass. The changes are not an accepted scientific snapshot:
 applying the full effective learned state intentionally changes the
 previously cap-truncated flags and therefore requires a successor Unity science
 profile and an intended-science-change ledger entry before acceptance. The
 immutable phase-4 v1 product checks remain available for historical artifacts;
 candidate v2 basic-map checks reserve S/N names for empirically calibrated
-products.
+products. A new learning-housekeeping QA sidecar correlates deduplicated
+busy-network pathologies with selected TolTEC thermometry and dilution-fridge
+samples while remaining strictly outside the flagging and learning policy.
 
 ## Active Phase
 

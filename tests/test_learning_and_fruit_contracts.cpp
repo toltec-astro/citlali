@@ -1,10 +1,15 @@
 #include <citlali/core/engine/learning.h>
 #include <citlali/core/pipeline/fits_image_metadata.h>
 #include <citlali/core/pipeline/fruit_loop_activation_validation.h>
+#include <citlali/core/pipeline/learning_housekeeping_qa.h>
 
 #include <gtest/gtest.h>
 
+#include <chrono>
+#include <filesystem>
+#include <fstream>
 #include <string>
+#include <vector>
 
 namespace {
 
@@ -50,6 +55,41 @@ ReductionLearningState::DetectorPenalty detector_penalty(
     record.scan_local = true;
     return record;
 }
+
+struct HousekeepingQaDataItem {
+    std::string interface_name;
+    std::string path;
+    const std::string &interface() const { return interface_name; }
+    const std::string &filepath() const { return path; }
+};
+
+struct HousekeepingQaRawObs {
+    std::vector<HousekeepingQaDataItem> items;
+    const auto &data_items() const { return items; }
+    auto kidsdata() const {
+        std::vector<std::reference_wrapper<const HousekeepingQaDataItem>> kids;
+        for (const auto &item : items) {
+            if (item.interface_name.rfind("toltec", 0) == 0 &&
+                item.interface_name != "toltec_hk") {
+                kids.push_back(std::cref(item));
+            }
+        }
+        return kids;
+    }
+};
+
+struct HousekeepingQaEngine {
+    ReductionLearningState learning;
+    struct {
+        std::string redu_dir_name;
+    } output_paths;
+    struct {
+        int fruit_iter = 0;
+    } iteration;
+    struct {
+        std::string obsnum;
+    } observation_identity;
+};
 
 TEST(ReductionLearningState, DiagnosticCapNeverTruncatesEffectiveState) {
     auto state = make_learning_state();
@@ -172,6 +212,107 @@ TEST(MapImageSemantics, FormalStandardizedSignalIsNotNamedSnr) {
                   citlali::pipeline::formal_standardized_signal_map_description()}
                   .find("not a statistical significance map"),
               std::string::npos);
+}
+
+TEST(LearningHousekeepingQa, MatchesNearestSampleAndPublishesLocalChange) {
+    const std::vector<double> times{100.0, 160.0, 220.0};
+    const std::vector<double> temperatures{0.100, 0.110, 0.102};
+
+    const auto match =
+        citlali::pipeline::match_learning_housekeeping_sample(
+            times, temperatures, 158.0);
+
+    EXPECT_EQ(match.status, "matched");
+    EXPECT_DOUBLE_EQ(match.sample_time_unix_sec, 160.0);
+    EXPECT_DOUBLE_EQ(match.sample_offset_sec, 2.0);
+    EXPECT_DOUBLE_EQ(match.sample_age_sec, 2.0);
+    EXPECT_DOUBLE_EQ(match.delta_from_previous, 0.010);
+    EXPECT_DOUBLE_EQ(match.delta_to_next, -0.008);
+    EXPECT_NEAR(match.local_excursion, 0.009, 1e-12);
+}
+
+TEST(LearningHousekeepingQa, RejectsUnavailableAndOutOfRangeMatches) {
+    const std::vector<double> times{100.0, 160.0, 220.0};
+    const std::vector<double> unavailable{0.100, -1.0, 0.102};
+
+    const auto unavailable_match =
+        citlali::pipeline::match_learning_housekeeping_sample(
+            times, unavailable, 158.0);
+    EXPECT_EQ(unavailable_match.status,
+              "nearest_value_invalid_or_unavailable");
+    EXPECT_FALSE(std::isfinite(unavailable_match.value));
+
+    const auto outside_match =
+        citlali::pipeline::match_learning_housekeeping_sample(
+            times, unavailable, 99.0);
+    EXPECT_EQ(outside_match.status, "event_outside_housekeeping_range");
+    EXPECT_FALSE(std::isfinite(outside_match.sample_time_unix_sec));
+}
+
+TEST(LearningHousekeepingQa, WritesRequiredSidecarFromExplicitInput) {
+    namespace fs = std::filesystem;
+    const auto suffix = std::to_string(
+        std::chrono::steady_clock::now().time_since_epoch().count());
+    const auto directory = fs::temp_directory_path() /
+                           ("citlali-learning-housekeeping-" + suffix);
+    fs::create_directories(directory);
+    const auto hk_path = directory / "toltec_hk_test_152433_00.nc";
+    {
+        netCDF::NcFile file(hk_path.string(), netCDF::NcFile::replace);
+        const auto sample = file.addDim("sample", 3);
+        const auto time = file.addVar(
+            "Data.ToltecThermetry.Time4", netCDF::ncDouble, sample);
+        const auto temperature = file.addVar(
+            "Data.ToltecThermetry.Temperature4", netCDF::ncDouble, sample);
+        const std::vector<double> times{100.0, 160.0, 220.0};
+        const std::vector<double> temperatures{0.100, 0.110, 0.102};
+        time.putVar(times.data());
+        temperature.putVar(temperatures.data());
+    }
+
+    HousekeepingQaEngine engine;
+    engine.output_paths.redu_dir_name = directory.string();
+    engine.observation_identity.obsnum = "152433";
+    engine.learning = make_learning_state(true, 20);
+    auto event = detector_penalty("152433", -1);
+    event.reason = "busy_network_pathology";
+    event.scan = 36;
+    event.nw = 9;
+    event.array = 2;
+    event.score = 139.0;
+    event.event_time_unix_sec = 158.0;
+    engine.learning.record_detector_penalty(event);
+    const HousekeepingQaRawObs rawobs{{
+        {"toltec_hk", hk_path.string()},
+    }};
+
+    EXPECT_NO_THROW(
+        citlali::pipeline::write_learning_housekeeping_qa_if_available(
+            engine, rawobs, true, spdlog::default_logger()));
+
+    const auto output_path = directory / "learning_housekeeping_iter_0.csv";
+    std::ifstream input(output_path);
+    ASSERT_TRUE(input.good());
+    const std::string contents{
+        std::istreambuf_iterator<char>(input),
+        std::istreambuf_iterator<char>()};
+    EXPECT_NE(contents.find("citlali-learning-housekeeping-qa-v1"),
+              std::string::npos);
+    EXPECT_NE(contents.find("\"matched\",160,2,2,0.11"),
+              std::string::npos);
+    EXPECT_NE(contents.find("\"channel_missing\""), std::string::npos);
+
+    const HousekeepingQaRawObs sibling_discovery{{
+        {"toltec0", (directory / "toltec0_test_152433.nc").string()},
+    }};
+    const auto discovered =
+        citlali::pipeline::find_learning_housekeeping_files(
+            sibling_discovery, "152433");
+    ASSERT_EQ(discovered.size(), 1U);
+    EXPECT_EQ(discovered.front(), hk_path.string());
+
+    std::error_code ignored;
+    fs::remove_all(directory, ignored);
 }
 
 }  // namespace

@@ -95,6 +95,10 @@ struct ReductionLearningState {
         int array = -1;
         double factor = 1.0;
         double score = nan_value();
+        // Midpoint of the processed time chunk in Unix seconds.  This is
+        // diagnostic provenance only; it is not part of the learned-state
+        // identity or application policy.
+        double event_time_unix_sec = nan_value();
         bool scan_local = false;
     };
 

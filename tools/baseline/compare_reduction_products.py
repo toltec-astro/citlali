@@ -48,6 +48,7 @@ DEFAULT_EXCLUDE = (
     "*.yml",
     "*.json",
     "learning_iter_*.csv",
+    "learning_housekeeping_iter_*.csv",
     "*/logs/*",
     "index.yaml",
 )
