@@ -77,14 +77,36 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 466 tests. The Phase 4.1 config preflight now
-  passes 113 focused tests; the checked leaf contract covers 576 leaves and the generated
+- CTest discovers and passes all 477 tests. The Phase 4.1 config preflight now
+  passes 116 focused tests; the checked leaf contract covers 576 leaves and the generated
   startup schema covers 726 normalized YAML nodes. The six new direct tests
   cover the production rejection of experimental maximum-likelihood
   mapmaking, analytic flux conversion, detector-specific calibration,
-  detector pointing, and two source-finder safety boundaries.
+  detector pointing, and two source-finder safety boundaries. Eleven additional
+  NGC4449 candidate tests cover cap-independent effective learning state,
+  interval/penalty compaction, diagnostic decoupling, fruit-loop activation and
+  realized feedback, Beammap policy isolation, and truthful standardized-map
+  naming.
 
 These facts are characterization evidence, not a production-equivalence claim.
+
+### NGC4449 Full-Science Candidate Investigation (2026-07-21)
+
+The first five-observation, ten-iteration NGC4449 run exposed four blocking
+Citlali contracts: statically empty fruit-loop feedback, formal-weight
+standardized maps mislabeled as S/N, a diagnostic learning cap that truncated
+operational state in input order, and warning amplification that obscured QA.
+The bounded investigation and candidate corrections are recorded in
+`doc/NGC4449_CITLALI_INVESTIGATION_2026-07-21.md`.
+
+Local builds, all 477 CTests, the 116-test config preflight, and 23 baseline
+registry tests pass. The changes are not an accepted scientific snapshot:
+applying the full effective learned state intentionally changes the
+previously cap-truncated flags and therefore requires a successor Unity science
+profile and an intended-science-change ledger entry before acceptance. The
+immutable phase-4 v1 product checks remain available for historical artifacts;
+candidate v2 basic-map checks reserve S/N names for empirically calibrated
+products.
 
 ## Active Phase
 

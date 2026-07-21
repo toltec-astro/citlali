@@ -549,6 +549,14 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
         return;
     }
 
+    int local_proposal_rejected_detectors = 0;
+    long long local_proposal_rejected_added_samples = 0;
+    long long local_proposal_rejected_eligible_samples = 0;
+    int local_proposal_rejected_raw_events = 0;
+    int local_proposal_rejected_delta_events = 0;
+    double local_proposal_rejected_max_fraction = 0.0;
+    Eigen::Index local_proposal_rejected_max_detector = -1;
+
     // loop through detectors
     for (Eigen::Index det=0; det<n_dets; det++) {
         auto &diag = last_detector_diag[static_cast<std::size_t>(det)];
@@ -1055,12 +1063,24 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
                     static_cast<double>(n_local_added) / static_cast<double>(n_local_eligible);
                 if (local_residual.max_added_flagged_fraction > 0.0 &&
                     local_added_frac > local_residual.max_added_flagged_fraction) {
-                    logger->warn(
+                    logger->debug(
                         "despike local_residual proposal rejected: det={} added_samples={} eligible_samples={} added_fraction={:.4f} max_added_flagged_fraction={:.4f} raw_events={} delta_events={}",
                         det, n_local_added, n_local_eligible, local_added_frac,
                         local_residual.max_added_flagged_fraction,
                         diag.local_raw_accepted_event_count,
                         diag.local_delta_accepted_event_count);
+                    ++local_proposal_rejected_detectors;
+                    local_proposal_rejected_added_samples += n_local_added;
+                    local_proposal_rejected_eligible_samples += n_local_eligible;
+                    local_proposal_rejected_raw_events +=
+                        diag.local_raw_accepted_event_count;
+                    local_proposal_rejected_delta_events +=
+                        diag.local_delta_accepted_event_count;
+                    if (local_added_frac >
+                        local_proposal_rejected_max_fraction) {
+                        local_proposal_rejected_max_fraction = local_added_frac;
+                        local_proposal_rejected_max_detector = det;
+                    }
                 }
                 else {
                     det_flags = (local_proposal.array() == 1).select(1, det_flags);
@@ -1120,6 +1140,18 @@ void Despiker::despike(Eigen::DenseBase<DerivedA> &scans,
             flags.col(det) = det_flags;
         } // end of apt["flag"] loop
     } // end of "for (Eigen::Index det = 0; det < n_dets; det++)" loop
+    if (local_proposal_rejected_detectors > 0) {
+        logger->info(
+            "despike local_residual guard summary: rejected_detectors={} added_samples={} eligible_samples={} raw_events={} delta_events={} max_added_fraction={:.4f} max_fraction_detector={} cap={:.4f}",
+            local_proposal_rejected_detectors,
+            local_proposal_rejected_added_samples,
+            local_proposal_rejected_eligible_samples,
+            local_proposal_rejected_raw_events,
+            local_proposal_rejected_delta_events,
+            local_proposal_rejected_max_fraction,
+            local_proposal_rejected_max_detector,
+            local_residual.max_added_flagged_fraction);
+    }
 }
 
 template<typename DerivedA, typename DerivedB, typename apt_t>

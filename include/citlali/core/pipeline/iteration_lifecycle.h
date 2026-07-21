@@ -3,8 +3,43 @@
 #include <citlali/core/pipeline/reduction_learning_lifecycle.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/weight_validation_lifecycle.h>
+#include <citlali/core/error/error.h>
 
 namespace citlali::pipeline {
+
+template <class Engine>
+void reset_fruit_loop_feedback_samples_if_available(Engine &engine) {
+    if constexpr (requires {
+                      engine.ptcproc.reset_fruit_loop_feedback_samples();
+                  }) {
+        engine.ptcproc.reset_fruit_loop_feedback_samples();
+    }
+}
+
+template <class Engine, class Logger>
+void require_realized_fruit_loop_feedback_if_available(
+    const Engine &engine, const Logger &logger) {
+    if constexpr (requires {
+                      engine.ptcproc.current_fruit_loop_feedback_samples();
+                  }) {
+        const bool model_available =
+            fruit_loop_learning_source_model_available(engine);
+        const auto feedback_samples =
+            engine.ptcproc.current_fruit_loop_feedback_samples();
+        if (model_available) {
+            logger->info(
+                "fruit-loop realized feedback: iteration={} detector_samples={}",
+                engine.iteration.fruit_iter, feedback_samples);
+        }
+        if (model_available &&
+            runtime_reduction_type(engine) !=
+                citlali::config::ReductionType::beammap &&
+            feedback_samples == 0) {
+            throw citlali::error::runtime(
+                "fruit-loop source model selected zero detector-samples; refusing to continue no-op feedback iterations");
+        }
+    }
+}
 
 template <class Engine>
 bool should_log_fruit_loop_iteration_start(const Engine &engine) {
@@ -13,6 +48,7 @@ bool should_log_fruit_loop_iteration_start(const Engine &engine) {
 
 template <class Engine, class Logger>
 void begin_fruit_loop_iteration(Engine &engine, const Logger &logger) {
+    reset_fruit_loop_feedback_samples_if_available(engine);
     if (should_log_fruit_loop_iteration_start(engine)) {
         logger->info("starting fruit loops iteration {}", engine.iteration.fruit_iter);
     }

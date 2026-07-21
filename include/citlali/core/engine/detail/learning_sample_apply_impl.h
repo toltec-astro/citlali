@@ -21,19 +21,9 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
     }
 
     const int scan_id = static_cast<int>(tcdata.index.data);
-    std::vector<ReductionLearningState::LearnedSampleMask> records;
-    {
-        std::lock_guard<std::mutex> lock(*learning.mutex);
-        for (const auto &record : learning.learned_sample_masks) {
-            if (record.obsnum == observation_identity.obsnum &&
-                record.scan == scan_id &&
-                record.iter >= 0 &&
-                record.iter < iteration.fruit_iter &&
-                record.apply_pre_rtc == apply_pre_rtc) {
-                records.push_back(record);
-            }
-        }
-    }
+    const auto records = learning.effective_sample_masks_for(
+        observation_identity.obsnum, scan_id, apply_pre_rtc,
+        iteration.fruit_iter);
     if (records.empty()) {
         return;
     }
@@ -73,13 +63,9 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
     }
 
     for (const auto &record : records) {
-        if (record.source_protected) {
-            ++summary.invalid_records;
-            continue;
-        }
         const Eigen::Index det = citlali::pipeline::learning_find_det_by_uid(calib_scan.apt, record.uid);
-        const long long raw_start = apply_pre_rtc ? record.raw_start : record.ptc_start;
-        const long long raw_stop = apply_pre_rtc ? record.raw_stop : record.ptc_stop;
+        const long long raw_start = record.start;
+        const long long raw_stop = record.stop;
         if (det < 0 || det >= n_dets || raw_start < 0 || raw_stop < raw_start ||
             raw_stop < 0 || raw_start >= n_pts) {
             ++summary.invalid_records;

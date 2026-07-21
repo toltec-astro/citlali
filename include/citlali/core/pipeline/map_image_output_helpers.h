@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 
+#include <cmath>
 #include <string>
 
 namespace citlali::pipeline {
@@ -13,7 +14,8 @@ void add_primary_map_image_hdus(
     FitsEntry &fits_entry, MapBuffer &mb, Eigen::Index i,
     const std::string &map_name, const std::string &stokes_suffix,
     const Wcs &wcs, double source_epoch, bool empirical_weight_calibration,
-    bool is_beammap, const Logger &logger) {
+    bool empirical_noise_products_expected, bool is_beammap,
+    const Logger &logger) {
     add_map_hdu_with_wcs(
         fits_entry, signal_map_hdu_name(map_name, stokes_suffix),
         mb->signal[i], wcs, source_epoch);
@@ -25,11 +27,13 @@ void add_primary_map_image_hdus(
     const std::string weight_unit = map_weight_unit(mb->sig_unit);
     add_weight_map_metadata(
         *fits_entry.hdus.back(), weight_unit, empirical_weight_calibration);
-    if (i < mb->noise_weight_scale.size()) {
+    if (empirical_noise_products_expected &&
+        i < mb->noise_weight_scale.size()) {
         add_empirical_weight_scale_key(
             *fits_entry.hdus.back(), mb->noise_weight_scale(i));
     }
-    if (i < mb->noise_weight_median_ratio.size()) {
+    if (empirical_noise_products_expected &&
+        i < mb->noise_weight_median_ratio.size()) {
         add_weight_variance_median_key(
             *fits_entry.hdus.back(), mb->noise_weight_median_ratio(i));
     }
@@ -40,20 +44,32 @@ void add_primary_map_image_hdus(
     add_image_median_error_key(
         *fits_entry.hdus.back(), median_err, mb->sig_unit);
 
-    if (has_map_image_slot(mb->weight_formal, i, mb->n_rows, mb->n_cols)) {
+    if (empirical_noise_products_expected &&
+        (!has_map_image_slot(mb->weight_formal, i, mb->n_rows, mb->n_cols) ||
+         !has_map_image_slot(mb->noise_variance, i, mb->n_rows, mb->n_cols))) {
+        fail_required_output(
+            logger,
+            fmt::format(
+                "empirical noise products were requested but map index {} lacks formal-weight or noise-variance data",
+                static_cast<long long>(i)));
+    }
+
+    if (empirical_noise_products_expected) {
         add_map_hdu_with_wcs(
             fits_entry, formal_weight_map_hdu_name(map_name, stokes_suffix),
             mb->weight_formal[i], wcs, source_epoch);
         add_formal_weight_map_metadata(*fits_entry.hdus.back(), weight_unit);
-    }
 
-    if (has_map_image_slot(mb->noise_variance, i, mb->n_rows, mb->n_cols)) {
         add_map_hdu_with_wcs(
             fits_entry, noise_variance_map_hdu_name(map_name, stokes_suffix),
             mb->noise_variance[i], wcs, source_epoch);
         const std::string variance_unit = map_variance_unit(mb->sig_unit);
         add_noise_variance_map_metadata(
             *fits_entry.hdus.back(), variance_unit);
+        if (i < mb->median_rms.size() && std::isfinite(mb->median_rms(i))) {
+            add_image_median_rms_key(
+                *fits_entry.hdus.back(), mb->median_rms(i), mb->sig_unit);
+        }
     }
 }
 
@@ -83,7 +99,7 @@ void add_coverage_support_image_hdus(
     FitsEntry &fits_entry, MapBuffer &mb, Eigen::Index i,
     const std::string &map_name, const std::string &stokes_suffix,
     const Wcs &wcs, double source_epoch, bool is_filtered_output,
-    const Logger &logger) {
+    bool empirical_noise_products_expected, const Logger &logger) {
     if (mb->coverage.empty()) {
         return;
     }
@@ -106,22 +122,53 @@ void add_coverage_support_image_hdus(
     add_coverage_mask_map_metadata(*fits_entry.hdus.back());
     add_image_weight_threshold_key(*fits_entry.hdus.back(), weight_threshold);
 
-    Eigen::MatrixXd sig2noise = pixel_snr_image_or_fallback(
-        mb->sig2noise_pixel, i, mb->n_rows, mb->n_cols, mb->signal[i],
-        mb->weight[i]);
-    add_map_hdu_with_wcs(
-        fits_entry, legacy_pixel_snr_map_hdu_name(map_name, stokes_suffix),
-        sig2noise, wcs, source_epoch);
-    add_legacy_pixel_snr_map_metadata(*fits_entry.hdus.back());
+    const bool empirical_snr_available = has_map_image_slot(
+        mb->sig2noise_pixel, i, mb->n_rows, mb->n_cols);
+    if (empirical_noise_products_expected && !empirical_snr_available) {
+        fail_required_output(
+            logger,
+            fmt::format(
+                "empirical noise products were requested but map index {} lacks pixel S/N data",
+                static_cast<long long>(i)));
+    }
+    if (empirical_noise_products_expected) {
+        Eigen::MatrixXd &sig2noise = mb->sig2noise_pixel[i];
+        add_map_hdu_with_wcs(
+            fits_entry, legacy_pixel_snr_map_hdu_name(map_name, stokes_suffix),
+            sig2noise, wcs, source_epoch);
+        add_legacy_pixel_snr_map_metadata(*fits_entry.hdus.back());
 
-    add_map_hdu_with_wcs(
-        fits_entry, pixel_snr_map_hdu_name(map_name, stokes_suffix),
-        sig2noise, wcs, source_epoch);
-    add_pixel_snr_map_metadata(*fits_entry.hdus.back());
+        add_map_hdu_with_wcs(
+            fits_entry, pixel_snr_map_hdu_name(map_name, stokes_suffix),
+            sig2noise, wcs, source_epoch);
+        add_pixel_snr_map_metadata(*fits_entry.hdus.back());
+    }
+    else {
+        Eigen::MatrixXd formal_standardized_signal =
+            standardized_signal_from_weight(mb->signal[i], mb->weight[i]);
+        add_map_hdu_with_wcs(
+            fits_entry,
+            formal_standardized_signal_map_hdu_name(
+                map_name, stokes_suffix),
+            formal_standardized_signal, wcs, source_epoch);
+        add_formal_standardized_signal_map_metadata(
+            *fits_entry.hdus.back());
+    }
 
-    if (is_filtered_output &&
+    const bool point_source_products_available =
         has_map_image_slot(
-            mb->point_source_uncertainty, i, mb->n_rows, mb->n_cols)) {
+            mb->point_source_uncertainty, i, mb->n_rows, mb->n_cols) &&
+        has_map_image_slot(
+            mb->sig2noise_point_source, i, mb->n_rows, mb->n_cols);
+    if (is_filtered_output && empirical_noise_products_expected &&
+        !point_source_products_available) {
+        fail_required_output(
+            logger,
+            fmt::format(
+                "empirical noise products were requested for filtered map index {} but point-source uncertainty or S/N data are absent",
+                static_cast<long long>(i)));
+    }
+    if (is_filtered_output && empirical_noise_products_expected) {
         add_map_hdu_with_wcs(
             fits_entry, point_source_flux_map_hdu_name(
                 map_name, stokes_suffix),

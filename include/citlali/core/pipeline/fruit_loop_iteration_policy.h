@@ -138,10 +138,8 @@ void mirror_jinc_mapmaker_config_to_fruit_loops(const JincMapmaker &jinc_mm,
 template <class Engine, class Logger>
 void configure_fruit_loop_iteration_policy(Engine &engine,
                                            const Logger &logger) {
+    (void) logger;
     auto &config = fruit_loops_config(engine);
-    if (config.enabled && !noise_maps_enabled(engine)) {
-        logger->warn("noise maps are not enabled for fruit loops");
-    }
 
     const auto resolution = resolve_fruit_loop_iteration_policy(
         config, runtime_reduction_type(engine));

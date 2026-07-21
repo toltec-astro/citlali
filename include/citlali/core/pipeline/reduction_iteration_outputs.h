@@ -11,6 +11,8 @@ template <auto RawCoaddMap, auto FilteredCoaddMap, class TodProc,
 void finish_reduction_iteration(TodProc &todproc,
                                 StageProfileCollector &stage_profile,
                                 const Logger &logger) {
+    require_realized_fruit_loop_feedback_if_available(todproc.engine(),
+                                                      logger);
     write_iteration_coadd_outputs_if_needed<RawCoaddMap, FilteredCoaddMap>(
         todproc, stage_profile, logger);
     finalize_iteration_outputs(todproc, logger);

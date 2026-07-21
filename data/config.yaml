@@ -156,8 +156,8 @@ timestream: # timestream reduction parameters
     value: 10.0 # either chunk length or number of chunks for lissajous/rastajous maps (ignored if raster map)
     chunk_mode: duration # how to subdivide chunks, either by time (duration) or number (number)
   learning: # shared RTC/PTC/mapmaking learning state for source-aware weighting and deglitching
-    enabled: false # record learned-state diagnostics; later phases will use this to apply learned masks/weights
-    diagnostics_enabled: true # log and write metadata for the learned-state bookkeeping
+    enabled: false # learn and apply shared RTC/PTC/mapmaking masks and detector exclusions across iterations
+    diagnostics_enabled: true # retain bounded event history and write learning CSVs; disabling this does not disable operational learning
     learn_iters: 2 # initial iterations treated as learning passes before production application
     apply_start_iter: 2 # first fruitloops iteration where learned products are eligible for application
     max_records_per_type: 200000 # cap retained diagnostic records per learned-state record class (0 disables cap)
@@ -525,7 +525,7 @@ timestream: # timestream reduction parameters
     enabled: false # enable or disable fruit loops algorithm (this overrides beammap source fitting if in beammap mode)
     path: null # path for maps.  If null use maps that were generated in previous iter.  If path, use maps in that redu dir.
     type: obsnum/raw # how to apply maps.  options are 'obsnum/raw' and 'obsnum/filtered' (looks for obsnum dir) or 'coadd/raw' or 'coadd/filtered' (same map for all obsnums)
-    sig2noise_limit: 0 # limit on signal-to-noise of pixels to include (0 disables; ignored if noise maps are disabled or none are found in path)
+    sig2noise_limit: 0 # signal / per-array median jackknife RMS threshold (0 disables; nonzero requires enabled noise products and a positive realization count)
     array_flux_limit: [0,0,0] # limit on signal flux density of pixels to include for each array (0 disables; in map units)
     peak_fraction_limit: 0.0 # include pixels above this fraction of the per-map calibration amplitude (0 disables)
     local_snr_floor: 0.0 # include pixels above this multiple of the local annular map sigma (0 disables)
@@ -547,7 +547,7 @@ timestream: # timestream reduction parameters
     interp_mode_override: auto # auto|nearest|bilinear|jinc|trunc ; trunc reproduces legacy integer-cast map sampling
     legacy_center: false # false uses (n-1)/2 center, true uses legacy n/2 center in map->TOD projection
     recompute_weights_after_addback: false # false keeps source-subtracted weights, true recomputes weights after add-back
-    max_iters: 1 # total number of iterations to run for if no convergence is reached
+    max_iters: 1 # total iterations; enabled feedback requires at least 2 and at least one active selection gate
     save_all_iters: false # save all iterations or only the last one to save disk space (overwrites output files for each iter if true)
 post_processing:
   source_fitting: # parameters for source fitting

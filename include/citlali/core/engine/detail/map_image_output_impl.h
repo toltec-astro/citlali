@@ -62,9 +62,13 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
             citlali::config::ReductionType::beammap;
         const bool empirical_weight_calibration =
             citlali::pipeline::empirical_weight_calibration_enabled(*this);
+        const bool empirical_noise_products_expected =
+            citlali::pipeline::noise_maps_enabled(*this) &&
+            citlali::pipeline::noise_product_outputs_enabled(*this);
         citlali::pipeline::add_primary_map_image_hdus(
             fits_io->at(map_index), mb, i, map_name, stokes_suffix, mb->wcs,
-            source_epoch, empirical_weight_calibration, is_beammap, logger);
+            source_epoch, empirical_weight_calibration,
+            empirical_noise_products_expected, is_beammap, logger);
 
         // kernel map
         if (citlali::pipeline::raw_kernel_enabled(*this)) {
@@ -83,7 +87,8 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
                 fits_io, map_fits_outputs.filtered_obs, map_fits_outputs.filtered_coadd);
         citlali::pipeline::add_coverage_support_image_hdus(
             fits_io->at(map_index), mb, i, map_name, stokes_suffix, mb->wcs,
-            source_epoch, is_filtered_output, logger);
+            source_epoch, is_filtered_output,
+            empirical_noise_products_expected, logger);
 
         // write noise maps
         if (citlali::pipeline::should_write_noise_maps(mb->noise,

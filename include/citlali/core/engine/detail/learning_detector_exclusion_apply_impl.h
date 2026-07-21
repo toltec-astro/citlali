@@ -41,9 +41,8 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
 
     const int scan_id = static_cast<int>(tcdata.index.data);
     std::vector<ReductionLearningState::DetectorPenalty> records;
-    {
-        std::lock_guard<std::mutex> lock(*learning.mutex);
-        for (const auto &record : learning.detector_penalties) {
+    for (const auto &record :
+         learning.effective_detector_penalty_records()) {
             if (record.obsnum != observation_identity.obsnum ||
                 !record.scan_local ||
                 record.scan != scan_id ||
@@ -72,7 +71,6 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
             if (is_mapdiag_detector || is_busy_detector || is_network) {
                 records.push_back(record);
             }
-        }
     }
     if (records.empty()) {
         return;

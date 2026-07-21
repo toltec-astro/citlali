@@ -47,6 +47,11 @@ inline std::string pixel_snr_map_hdu_name(const std::string &map_name,
     return "sig2noise_pixel_" + map_name + stokes_suffix;
 }
 
+inline std::string formal_standardized_signal_map_hdu_name(
+    const std::string &map_name, const std::string &stokes_suffix) {
+    return "formal_standardized_signal_" + map_name + stokes_suffix;
+}
+
 inline std::string point_source_flux_map_hdu_name(
     const std::string &map_name, const std::string &stokes_suffix) {
     return "point_source_flux_" + map_name + stokes_suffix;

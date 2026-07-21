@@ -1,12 +1,16 @@
 #pragma once
 
 #include <algorithm>
+#include <cmath>
 #include <cstddef>
+#include <iterator>
 #include <limits>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <sstream>
 #include <string>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -71,6 +75,13 @@ struct ReductionLearningState {
         double source_distance_arcsec = nan_value();
         bool source_protected = false;
         bool apply_pre_rtc = false;
+    };
+
+    struct EffectiveSampleMask {
+        int iter = -1;
+        int uid = -1;
+        long long start = -1;
+        long long stop = -1;
     };
 
     struct DetectorPenalty {
@@ -188,8 +199,25 @@ struct ReductionLearningState {
     int begin_count = 0;
     int finalize_count = 0;
 
-    std::vector<LearnedSampleMask> learned_sample_masks;
-    std::vector<DetectorPenalty> detector_penalties;
+    // Operational learned state is intentionally separate from the bounded
+    // diagnostic event history below.  The effective sample-mask state is an
+    // interval union keyed by observation, scan, application stage, and UID;
+    // detector penalties are reduced to one effective record per scientific
+    // identity.  Neither collection is subject to the diagnostic record cap.
+    using EffectiveSampleMaskKey =
+        std::tuple<std::string, int, bool, int>;
+    using EffectiveDetectorPenaltyKey =
+        std::tuple<std::string, std::string, std::string, int, int, int, int,
+                   bool>;
+    std::map<EffectiveSampleMaskKey, std::vector<EffectiveSampleMask>>
+        effective_sample_masks;
+    std::map<EffectiveDetectorPenaltyKey, DetectorPenalty>
+        effective_detector_penalties;
+
+    // These vectors are diagnostic event history only.  max_records_per_type
+    // bounds their output/memory cost but never truncates effective state.
+    std::vector<LearnedSampleMask> learned_sample_mask_events;
+    std::vector<DetectorPenalty> detector_penalty_events;
     std::vector<HighWeightDetector> high_weight_detectors;
     std::vector<MapPixelOutlier> map_pixel_outliers;
     std::vector<SourceProtectionSummary> source_protection_summaries;
@@ -323,8 +351,10 @@ struct ReductionLearningState {
 
     void clear_records() {
         std::lock_guard<std::mutex> lock(*mutex);
-        learned_sample_masks.clear();
-        detector_penalties.clear();
+        effective_sample_masks.clear();
+        effective_detector_penalties.clear();
+        learned_sample_mask_events.clear();
+        detector_penalty_events.clear();
         high_weight_detectors.clear();
         map_pixel_outliers.clear();
         source_protection_summaries.clear();
@@ -344,8 +374,11 @@ struct ReductionLearningState {
         if (!options.enabled || !learning_active()) {
             return;
         }
-        push_with_cap(learned_sample_masks, std::move(record),
-                      dropped_learned_sample_masks);
+        merge_effective_sample_mask(record);
+        if (options.diagnostics_enabled) {
+            push_with_cap(learned_sample_mask_events, std::move(record),
+                          dropped_learned_sample_masks);
+        }
     }
 
     void record_detector_penalty(DetectorPenalty record,
@@ -355,13 +388,16 @@ struct ReductionLearningState {
             (!learning_active() && !(allow_apply_phase && apply_active()))) {
             return;
         }
-        push_with_cap(detector_penalties, std::move(record),
-                      dropped_detector_penalties);
+        merge_effective_detector_penalty(record);
+        if (options.diagnostics_enabled) {
+            push_with_cap(detector_penalty_events, std::move(record),
+                          dropped_detector_penalties);
+        }
     }
 
     void record_high_weight_detector(HighWeightDetector record) {
         std::lock_guard<std::mutex> lock(*mutex);
-        if (!options.enabled) {
+        if (!options.enabled || !options.diagnostics_enabled) {
             return;
         }
         push_with_cap(high_weight_detectors, std::move(record),
@@ -370,7 +406,7 @@ struct ReductionLearningState {
 
     void record_map_pixel_outlier(MapPixelOutlier record) {
         std::lock_guard<std::mutex> lock(*mutex);
-        if (!options.enabled) {
+        if (!options.enabled || !options.diagnostics_enabled) {
             return;
         }
         push_with_cap(map_pixel_outliers, std::move(record),
@@ -379,7 +415,7 @@ struct ReductionLearningState {
 
     void record_source_protection_summary(SourceProtectionSummary record) {
         std::lock_guard<std::mutex> lock(*mutex);
-        if (!options.enabled) {
+        if (!options.enabled || !options.diagnostics_enabled) {
             return;
         }
         push_with_cap(source_protection_summaries, std::move(record),
@@ -388,7 +424,7 @@ struct ReductionLearningState {
 
     void record_busy_network_summary(BusyNetworkSummary record) {
         std::lock_guard<std::mutex> lock(*mutex);
-        if (!options.enabled) {
+        if (!options.enabled || !options.diagnostics_enabled) {
             return;
         }
         push_with_cap(busy_network_summaries, std::move(record),
@@ -397,7 +433,7 @@ struct ReductionLearningState {
 
     void record_learned_mask_application(LearnedMaskApplicationSummary record) {
         std::lock_guard<std::mutex> lock(*mutex);
-        if (!options.enabled) {
+        if (!options.enabled || !options.diagnostics_enabled) {
             return;
         }
         push_with_cap(learned_mask_applications, std::move(record),
@@ -407,20 +443,29 @@ struct ReductionLearningState {
     std::string summary_string() const {
         std::lock_guard<std::mutex> lock(*mutex);
         std::ostringstream os;
+        std::size_t effective_sample_mask_interval_count = 0;
+        for (const auto &[key, intervals] : effective_sample_masks) {
+            (void) key;
+            effective_sample_mask_interval_count += intervals.size();
+        }
         os << "enabled=" << options.enabled
            << " diagnostics=" << options.diagnostics_enabled
            << " iter=" << current_iter
            << " phase=" << phase_name(current_phase)
            << " reduction_type=" << current_reduction_type
            << " source_model_available=" << current_source_model_available
-           << " sample_masks=" << learned_sample_masks.size()
-           << " detector_penalties=" << detector_penalties.size()
+           << " effective_sample_mask_intervals="
+           << effective_sample_mask_interval_count
+           << " effective_detector_penalties="
+           << effective_detector_penalties.size()
+           << " sample_mask_events=" << learned_sample_mask_events.size()
+           << " detector_penalty_events=" << detector_penalty_events.size()
            << " high_weight_detectors=" << high_weight_detectors.size()
            << " map_pixel_outliers=" << map_pixel_outliers.size()
            << " source_protection_summaries=" << source_protection_summaries.size()
            << " busy_network_summaries=" << busy_network_summaries.size()
            << " learned_mask_applications=" << learned_mask_applications.size()
-           << " dropped_records="
+           << " dropped_diagnostic_records="
            << (dropped_learned_sample_masks + dropped_detector_penalties +
                dropped_high_weight_detectors + dropped_map_pixel_outliers +
                dropped_source_protection_summaries +
@@ -429,7 +474,120 @@ struct ReductionLearningState {
         return os.str();
     }
 
+    std::vector<EffectiveSampleMask> effective_sample_masks_for(
+        const std::string &obsnum, int scan, bool apply_pre_rtc,
+        int before_iter) const {
+        std::lock_guard<std::mutex> lock(*mutex);
+        std::vector<EffectiveSampleMask> result;
+        const EffectiveSampleMaskKey first{
+            obsnum, scan, apply_pre_rtc, std::numeric_limits<int>::min()};
+        auto it = effective_sample_masks.lower_bound(first);
+        for (; it != effective_sample_masks.end(); ++it) {
+            const auto &[record_obsnum, record_scan, record_pre_rtc,
+                         record_uid] = it->first;
+            if (record_obsnum != obsnum || record_scan != scan ||
+                record_pre_rtc != apply_pre_rtc) {
+                break;
+            }
+            for (const auto &interval : it->second) {
+                if (interval.iter >= 0 && interval.iter < before_iter) {
+                    auto record = interval;
+                    record.uid = record_uid;
+                    result.push_back(record);
+                }
+            }
+        }
+        return result;
+    }
+
+    std::vector<DetectorPenalty> effective_detector_penalty_records() const {
+        std::lock_guard<std::mutex> lock(*mutex);
+        std::vector<DetectorPenalty> result;
+        result.reserve(effective_detector_penalties.size());
+        for (const auto &[key, record] : effective_detector_penalties) {
+            (void) key;
+            result.push_back(record);
+        }
+        return result;
+    }
+
+    std::size_t effective_sample_mask_interval_count() const {
+        std::lock_guard<std::mutex> lock(*mutex);
+        std::size_t count = 0;
+        for (const auto &[key, intervals] : effective_sample_masks) {
+            (void) key;
+            count += intervals.size();
+        }
+        return count;
+    }
+
 private:
+    void merge_effective_sample_mask(const LearnedSampleMask &record) {
+        const long long start =
+            record.apply_pre_rtc ? record.raw_start : record.ptc_start;
+        const long long stop =
+            record.apply_pre_rtc ? record.raw_stop : record.ptc_stop;
+        if (record.iter < 0 || record.uid < 0 || start < 0 || stop < start ||
+            record.source_protected) {
+            return;
+        }
+
+        const EffectiveSampleMaskKey key{
+            record.obsnum, record.scan, record.apply_pre_rtc, record.uid};
+        auto &intervals = effective_sample_masks[key];
+        EffectiveSampleMask merged{record.iter, record.uid, start, stop};
+        auto it = std::lower_bound(
+            intervals.begin(), intervals.end(), merged.start,
+            [](const EffectiveSampleMask &interval, long long value) {
+                return interval.start < value;
+            });
+        if (it != intervals.begin()) {
+            auto previous = std::prev(it);
+            if (previous->stop >= merged.start - 1) {
+                it = previous;
+            }
+        }
+        while (it != intervals.end() && it->start <= merged.stop + 1) {
+            if (it->stop < merged.start - 1) {
+                ++it;
+                continue;
+            }
+            merged.start = std::min(merged.start, it->start);
+            merged.stop = std::max(merged.stop, it->stop);
+            merged.iter = std::min(merged.iter, it->iter);
+            it = intervals.erase(it);
+        }
+        intervals.insert(it, merged);
+    }
+
+    void merge_effective_detector_penalty(const DetectorPenalty &record) {
+        if (record.iter < 0) {
+            return;
+        }
+        const EffectiveDetectorPenaltyKey key{
+            record.obsnum, record.producer, record.reason, record.scan,
+            record.uid, record.nw, record.array, record.scan_local};
+        const auto [it, inserted] =
+            effective_detector_penalties.emplace(key, record);
+        if (inserted) {
+            return;
+        }
+        auto &effective = it->second;
+        effective.iter = std::min(effective.iter, record.iter);
+        if (std::isfinite(record.factor)) {
+            if (!std::isfinite(effective.factor)) {
+                effective.factor = record.factor;
+            }
+            else {
+                effective.factor = std::min(effective.factor, record.factor);
+            }
+        }
+        if (std::isfinite(record.score) &&
+            (!std::isfinite(effective.score) || record.score > effective.score)) {
+            effective.score = record.score;
+        }
+    }
+
     template <typename Record>
     void push_with_cap(std::vector<Record> &records, Record &&record,
                        std::size_t &dropped_count) {

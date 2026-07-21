@@ -7,8 +7,7 @@ template <class rtc_t, class ptc_t, class calib_t>
 void Engine::collect_rtc_learning_diagnostics(rtc_t &rtcdata, ptc_t &ptcdata,
                                               calib_t &calib_scan,
                                               const std::vector<timestream::RTCProc::RTCDetectorDiagSummary> &det_summary) {
-    if (!learning.is_enabled() ||
-        !learning.diagnostics_enabled()) {
+    if (!learning.is_enabled()) {
         return;
     }
 
@@ -65,4 +64,3 @@ void Engine::collect_rtc_learning_diagnostics(rtc_t &rtcdata, ptc_t &ptcdata,
         record_event(row.local_delta_event, det, "local_delta_accepted");
     }
 }
-

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <map>
 #include <unordered_map>
 #include <unordered_set>
@@ -683,6 +684,18 @@ public:
     bool run_tod_output, write_evals;
     // run fruit loops
     bool run_fruit_loops;
+    // detector-sample feedback applications in the current reduction
+    // iteration; accumulated once per scan from parallel workers
+    std::shared_ptr<std::atomic<long long>> fruit_loop_feedback_samples =
+        std::make_shared<std::atomic<long long>>(0);
+
+    void reset_fruit_loop_feedback_samples() {
+        fruit_loop_feedback_samples->store(0, std::memory_order_relaxed);
+    }
+
+    [[nodiscard]] long long current_fruit_loop_feedback_samples() const {
+        return fruit_loop_feedback_samples->load(std::memory_order_relaxed);
+    }
     // path for input images
     std::string fruit_loops_path;
     // paths for first set of images
@@ -1115,10 +1128,17 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
     std::vector<double> median_rms_vec(calib.arrays.size(),
                                        std::numeric_limits<double>::quiet_NaN());
     bool found_any_rms = false;
+    const bool s2n_gate_requested =
+        std::isfinite(fruit_loops_sig2noise) &&
+        std::abs(fruit_loops_sig2noise) > 0.0;
 
     // loop through arrays in current obs
     for (const auto &arr: calib.arrays) {
         try {
+            const auto arr_it = array_to_index.find(arr);
+            citlali::pipeline::require_fruit_loop_array_identity(
+                arr_it != array_to_index.end(), arr);
+            bool found_rms_for_array = false;
             std::vector<fs::path> map_files;
             for (const auto& entry : fs::directory_iterator(filepath)) {
                 if (!entry.is_regular_file()) {
@@ -1352,6 +1372,21 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                         logger->info("found {} [{}]", map_path.filename().string(), extName);
                     }
                 }
+                else if (extName.rfind("noise_variance_", 0) == 0 &&
+                         s2n_gate_requested && !found_rms_for_array) {
+                    double median_rms = std::numeric_limits<double>::quiet_NaN();
+                    try {
+                        ext.readKey("MEDRMS", median_rms);
+                    }
+                    catch (const CCfits::HDU::NoSuchKeyword &) {
+                        median_rms = std::numeric_limits<double>::quiet_NaN();
+                    }
+                    if (std::isfinite(median_rms) && median_rms > 0.0) {
+                        median_rms_vec[arr_it->second] = median_rms;
+                        found_rms_for_array = true;
+                        found_any_rms = true;
+                    }
+                }
                 else if (extName.rfind("weight_", 0) == 0) {
                     auto map_index = parse_map_index(extName, "weight", arr);
                     if (map_index) {
@@ -1379,70 +1414,65 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 }
             }
 
-            // get noise maps for median rms
-            std::vector<fs::path> noise_files;
-            for (const auto& entry : fs::directory_iterator(noise_filepath)) {
-                if (!entry.is_regular_file()) {
-                    continue;
+            // Legacy fallback: older products kept MEDRMS only in realization
+            // FITS files.  New products carry it on the main noise-variance
+            // HDU, so writing all realizations is not required for feedback.
+            if (s2n_gate_requested && !found_rms_for_array) {
+                std::vector<fs::path> noise_files;
+                for (const auto& entry : fs::directory_iterator(noise_filepath)) {
+                    if (!entry.is_regular_file()) {
+                        continue;
+                    }
+                    auto path_str = entry.path().string();
+                    if (path_str.find(".fits") == std::string::npos ||
+                        path_str.find("_noise") == std::string::npos ||
+                        path_str.size() < 13 ||
+                        path_str.compare(path_str.size() - 13, 13,
+                                         "_citlali.fits") != 0 ||
+                        path_str.find(toltec_io.array_name_map[arr]) ==
+                            std::string::npos) {
+                        continue;
+                    }
+                    noise_files.push_back(entry.path());
                 }
-                auto path_str = entry.path().string();
-                if (path_str.find(".fits") == std::string::npos) {
-                    continue;
-                }
-                // Accept both raw and filtered noise map filenames.
-                if (path_str.find("_noise") == std::string::npos) {
-                    continue;
-                }
-                if (path_str.size() < 13 ||
-                    path_str.compare(path_str.size() - 13, 13, "_citlali.fits") != 0) {
-                    continue;
-                }
-                if (path_str.find(toltec_io.array_name_map[arr]) == std::string::npos) {
-                    continue;
-                }
-                noise_files.push_back(entry.path());
-            }
-            std::sort(noise_files.begin(), noise_files.end());
-            if (!noise_files.empty()) {
-                // only use the first noise file for this array
-                fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*> noise_io(noise_files.front().string());
-
-                int num_noise_ext = 0;
-                keep_going = true;
-                while (keep_going) {
-                    try {
-                        CCfits::ExtHDU& ext = noise_io.pfits->extension(num_noise_ext + 1);
-                        num_noise_ext++;
-                    } catch (CCfits::FITS::NoSuchHDU) {
-                        keep_going = false;
+                std::sort(noise_files.begin(), noise_files.end());
+                if (!noise_files.empty()) {
+                    fitsIO<file_type_enum::read_fits, CCfits::ExtHDU*>
+                        noise_io(noise_files.front().string());
+                    int num_noise_ext = 0;
+                    keep_going = true;
+                    while (keep_going) {
+                        try {
+                            (void) noise_io.pfits->extension(num_noise_ext + 1);
+                            num_noise_ext++;
+                        }
+                        catch (CCfits::FITS::NoSuchHDU) {
+                            keep_going = false;
+                        }
+                    }
+                    for (int i=0; i<num_noise_ext; ++i) {
+                        CCfits::ExtHDU& ext = noise_io.pfits->extension(i+1);
+                        std::string extName;
+                        ext.readKey("EXTNAME", extName);
+                        if (extName.find("signal") != std::string::npos &&
+                            extName.find("_0_I") != std::string::npos) {
+                            double median_rms =
+                                std::numeric_limits<double>::quiet_NaN();
+                            ext.readKey("MEDRMS", median_rms);
+                            if (std::isfinite(median_rms) && median_rms > 0.0) {
+                                median_rms_vec[arr_it->second] = median_rms;
+                                found_rms_for_array = true;
+                                found_any_rms = true;
+                            }
+                            break;
+                        }
                     }
                 }
-
-                if (num_noise_ext == 0) {
-                    citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
-                        "noise FITS '{}' has no extensions",
-                        noise_files.front().string()));
-                }
-
-                double median_rms = std::numeric_limits<double>::quiet_NaN();
-                for (int i=0; i<num_noise_ext; ++i) {
-                    CCfits::ExtHDU& ext = noise_io.pfits->extension(i+1);
-                    std::string extName;
-                    ext.readKey("EXTNAME", extName);
-                    if (extName.find("signal") != std::string::npos && extName.find("_0_I") != std::string::npos) {
-                        ext.readKey("MEDRMS", median_rms);
-                        found_any_rms = true;
-                        break;
-                    }
-                }
-                auto arr_it = array_to_index.find(arr);
-                if (arr_it != array_to_index.end()) {
-                    median_rms_vec[arr_it->second] = median_rms;
-                }
             }
-            else {
-                logger->warn("no noise FITS found for array {} in {}; fruit loops S/N gating may be disabled",
-                             toltec_io.array_name_map[arr], noise_filepath);
+            if (s2n_gate_requested && !found_rms_for_array) {
+                citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                    "S/N gate requires a finite positive MEDRMS for array '{}' in '{}'",
+                    toltec_io.array_name_map[arr], noise_filepath));
             }
 
         } catch (const fs::filesystem_error& err) {
@@ -1486,11 +1516,8 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
         }
     }
 
-    if (found_any_rms) {
+    if (s2n_gate_requested && found_any_rms) {
         tod_mb.median_rms = Eigen::Map<Eigen::VectorXd>(median_rms_vec.data(), median_rms_vec.size());
-    }
-    else {
-        logger->warn("fruit loops did not load MEDRMS from noise maps in {}; S/N gating will be disabled", noise_filepath);
     }
 
     // set dimensions
@@ -2486,6 +2513,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
     if constexpr (source_type==NegativeMap) {
         factor = -1;
     }
+    long long feedback_samples = 0;
 
     // run kernel through fruit loops
     bool run_kernel = fruit_loops_kernel_feedback_enabled && in.kernel.data.size() !=0;
@@ -2611,6 +2639,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                 }
 
                 if (on_image) {
+                    bool feedback_applied = false;
                     auto sample_kernel_value = [&]() {
                         double kernel_value = 0.0;
                         if (citlali::config::is_fruit_loops_jinc_interp_mode(
@@ -2749,6 +2778,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                     if (run_pix_s2n || run_pix_flux || run_pix_adaptive) {
                         // add/subtract signal pixel from signal timestream
                         in.scans.data(j,i) += factor * signal;
+                        feedback_applied = true;
                         // In non-detector maps the signal and kernel support
                         // are co-centered, so keep the historical behavior:
                         // only feed back the kernel where the signal model is
@@ -2767,10 +2797,20 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                     // support rather than gating it on selected signal pixels.
                     if (detector_map_kernel_feedback && have_kernel_value) {
                         in.kernel.data(j,i) += factor * kernel_value;
+                        feedback_applied = true;
+                    }
+                    if constexpr (source_type==NegativeMap) {
+                        if (feedback_applied) {
+                            ++feedback_samples;
+                        }
                     }
                 }
             }
         }
+    }
+    if constexpr (source_type==NegativeMap) {
+        fruit_loop_feedback_samples->fetch_add(
+            feedback_samples, std::memory_order_relaxed);
     }
 }
 

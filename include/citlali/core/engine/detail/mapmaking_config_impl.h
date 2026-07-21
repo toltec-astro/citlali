@@ -5,6 +5,7 @@
 
 #include <citlali/core/pipeline/mapmaking_config_read.h>
 #include <citlali/core/pipeline/coadd_config_read.h>
+#include <citlali/core/pipeline/fruit_loop_activation_validation.h>
 #include <citlali/core/pipeline/mapmaking_config_policy.h>
 #include <citlali/core/pipeline/noise_config_adapter.h>
 #include <citlali/core/pipeline/noise_config_read.h>
@@ -142,6 +143,15 @@ void Engine::get_mapmaking_config(CT &config) {
         coadd_config, mapmaking_plan.effective.enabled);
     noise_plan.reset_from_request(
         noise_config, mapmaking_plan.effective.enabled);
+    const auto fruit_loop_validation =
+        citlali::pipeline::validate_fruit_loop_activation(
+            timestream_config.fruit_loops, noise_plan.effective,
+            runtime_config.reduction_type);
+    for (const auto &error : fruit_loop_validation.errors()) {
+        logger->error("invalid fruit-loop configuration: {}: {}",
+                      citlali::config::format_path(error.path), error.message);
+        diagnostics.invalid_key_paths().push_back(error.path);
+    }
     citlali::pipeline::adapt_noise_config_one_way(
         noise_plan.effective, coadd_plan.effective.enabled, omb, cmb);
     citlali::pipeline::sync_map_grouping_to_timestream_processors(

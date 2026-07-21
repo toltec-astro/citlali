@@ -197,8 +197,11 @@ std::vector<Eigen::VectorXi> build_common_time_grid_masks(
             }
         }
 
-        logger->warn("{}/{} samples were not aligned to the common time grid",
-                     mask.size() - mask.sum(), mask.size());
+        const auto n_unaligned = mask.size() - mask.sum();
+        if (n_unaligned > 0) {
+            logger->warn("{}/{} samples were not aligned to the common time grid",
+                         n_unaligned, mask.size());
+        }
         masks.push_back(std::move(mask));
     }
 

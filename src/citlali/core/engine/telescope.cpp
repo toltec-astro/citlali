@@ -25,10 +25,10 @@ void Telescope::get_tel_data(
         // check if simulation job key is found.
         try {
             fo.getVar("Header.Sim.Jobkey").getVar(&sim_job_key);
-            logger->warn("found Header.Sim.Jobkey");
+            logger->info("found Header.Sim.Jobkey");
             sim_obs = true;
         } catch (NcException &e) {
-            logger->warn("cannot find Header.Sim.Jobkey. reducing as real data.");
+            logger->info("Header.Sim.Jobkey is absent; treating input as real data");
             sim_obs = false;
         }
 
@@ -98,6 +98,9 @@ void Telescope::get_tel_data(
             project_id = "simu";
         }
 
+        std::vector<std::string> missing_data_keys;
+        std::vector<std::string> missing_header_keys;
+
         // loop through telescope data keys and populate vectors
         for (const auto& pair : tel_data_keys) {
             try {
@@ -109,7 +112,9 @@ void Telescope::get_tel_data(
                 tel_data[pair.second] = data_temp;
 
             } catch (NcException &e) {
-                logger->warn("cannot find {}", pair.first);
+                missing_data_keys.push_back(pair.first);
+                logger->debug("optional telescope data variable is absent: {}",
+                              pair.first);
             }
         }
 
@@ -130,9 +135,17 @@ void Telescope::get_tel_data(
             } catch (NcException &e) {
                 // ignore if simulation
                 if (!sim_obs) {
-                    logger->warn("cannot find {}", pair.first);
+                    missing_header_keys.push_back(pair.first);
+                    logger->debug("optional telescope header is absent: {}",
+                                  pair.first);
                 }
             }
+        }
+
+        if (!missing_data_keys.empty() || !missing_header_keys.empty()) {
+            logger->warn(
+                "telescope input {} omits {} configured data variables and {} configured header values; individual optional names are available at debug level",
+                filepath, missing_data_keys.size(), missing_header_keys.size());
         }
 
         // set tau 225 GHz

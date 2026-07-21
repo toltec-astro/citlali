@@ -11,8 +11,7 @@ void Engine::collect_ptc_learning_diagnostics(
     ptc_t &ptcdata, calib_t &calib_scan,
     const std::vector<timestream::PTCProc::SecondPassDiagSummary> &second_pass_summary,
     const std::vector<timestream::PTCProc::HighWeightDiagSummary> &high_weight_summary) {
-    if (!learning.is_enabled() ||
-        !learning.diagnostics_enabled()) {
+    if (!learning.is_enabled()) {
         return;
     }
 

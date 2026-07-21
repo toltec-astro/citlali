@@ -58,6 +58,10 @@ inline const char *snr_estimator_type_comment() {
     return "S/N estimator type";
 }
 
+inline const char *standardized_signal_estimator_type_comment() {
+    return "Standardization estimator type";
+}
+
 inline double invalid_kernel_fwhm_arcsec() {
     return -99.0;
 }
@@ -118,11 +122,19 @@ inline const char *coverage_mask_map_description() {
 }
 
 inline const char *legacy_pixel_snr_map_description() {
-    return "Legacy pixel S/N: signal times sqrt(weight)";
+    return "Legacy alias of jackknife-calibrated pixel S/N";
 }
 
 inline const char *pixel_snr_map_description() {
     return "Pixel S/N map: signal times sqrt(empirical weight)";
+}
+
+inline const char *formal_standardized_signal_estimator_type() {
+    return "formal_weight_standardized";
+}
+
+inline const char *formal_standardized_signal_map_description() {
+    return "Signal times sqrt(formal mapmaker weight); not a statistical significance map";
 }
 
 inline const char *point_source_flux_map_description() {
@@ -136,4 +148,3 @@ inline const char *point_source_uncertainty_map_description() {
 inline const char *point_source_snr_map_description() {
     return "Point-source S/N from flux divided by jackknife uncertainty";
 }
-

@@ -45,7 +45,7 @@ inline void Engine::write_learning_summary() {
     std::lock_guard<std::mutex> lock(*learning.mutex);
     write_common_header();
 
-    for (const auto &record : learning.learned_sample_masks) {
+    for (const auto &record : learning.learned_sample_mask_events) {
         write_row(citlali::pipeline::learning_summary_sample_mask_row(
             record, text, csv));
     }
@@ -55,7 +55,7 @@ inline void Engine::write_learning_summary() {
             record, text, csv));
     }
 
-    for (const auto &record : learning.detector_penalties) {
+    for (const auto &record : learning.detector_penalty_events) {
         write_row(citlali::pipeline::learning_summary_detector_penalty_row(
             record, text, csv));
     }

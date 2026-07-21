@@ -196,7 +196,7 @@ Units belong to values and products, not to variable names alone.
 | Map weight | inverse square of the associated signal unit |
 | Map noise variance | square of the associated signal unit |
 | Coverage | seconds |
-| Coverage mask and signal-to-noise | dimensionless |
+| Coverage mask, standardized signal, and signal-to-noise | dimensionless |
 | TOD signal | the recorded `signal_unit`/`BUNIT` |
 | PTC weights | inverse square of the recorded signal unit |
 | Flags, IDs, counts, categories | dimensionless or `N/A` metadata |
@@ -215,6 +215,22 @@ For configuration, the `unit` field in
 number must not acquire an inferred unit in processor code. Unit conversions
 belong at checked cold boundaries and their output metadata must name the
 resulting unit.
+
+### Standardized Map Products
+
+The name `sig2noise` is reserved for a statistical-significance estimator with
+an empirical noise calibration. For the current map products that estimator is
+the jackknife-calibrated pixel quantity `signal * sqrt(empirical_weight)`; the
+filtered point-source form is `point_source_flux / point_source_uncertainty`.
+Its FITS metadata names the estimator.
+
+When empirical noise products are unavailable, Citlali may still publish
+`signal * sqrt(formal_mapmaker_weight)`, but it is named
+`formal_standardized_signal`, carries estimator type
+`formal_weight_standardized`, and explicitly states that it is not a
+statistical-significance map. The phase-4 v1 product snapshots predate this
+truthfulness rule and are retained as historical contract debt rather than
+silently reinterpreted.
 
 ## Validity, Missing Data, And Non-Finite Values
 

@@ -809,6 +809,15 @@ struct FakeIterationPtcProc {
     std::string fruit_loops_path = "null";
     int begin_weight_validation_iter = -1;
     int finalize_weight_validation_iter = -1;
+    long long fruit_loop_feedback_samples = 0;
+
+    void reset_fruit_loop_feedback_samples() {
+        fruit_loop_feedback_samples = 0;
+    }
+
+    long long current_fruit_loop_feedback_samples() const {
+        return fruit_loop_feedback_samples;
+    }
 
     void begin_weight_validation_iteration(int iter) {
         begin_weight_validation_iter = iter;
@@ -5850,16 +5859,17 @@ TEST(pipeline_preflight, configures_beammap_fruit_loop_as_single_iteration) {
     EXPECT_TRUE(engine.ptcproc.save_all_iters);
 }
 
-TEST(pipeline_preflight, warns_when_fruit_loop_noise_maps_disabled) {
+TEST(pipeline_preflight, permits_flux_only_fruit_loops_without_noise_warning) {
     FakeEngine engine;
     engine.typed_config.timestream.fruit_loops.enabled = true;
+    engine.typed_config.timestream.fruit_loops.array_flux_limit = {1.0};
     engine.typed_config.noise.enabled = false;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::configure_fruit_loop_iteration_policy(
         engine, logger);
 
-    EXPECT_EQ(logger->warn_calls, 1);
+    EXPECT_EQ(logger->warn_calls, 0);
 }
 
 TEST(pipeline_preflight, preserves_science_fruit_loop_iteration_policy) {
@@ -5966,6 +5976,7 @@ TEST(pipeline_iteration_lifecycle, begins_fruit_loop_iteration_with_source_model
     engine.typed_config.timestream.fruit_loops.enabled = true;
     engine.learning.enabled = true;
     engine.learning.diagnostics = true;
+    engine.ptcproc.fruit_loop_feedback_samples = 17;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::begin_fruit_loop_iteration(engine, logger);
@@ -5973,7 +5984,38 @@ TEST(pipeline_iteration_lifecycle, begins_fruit_loop_iteration_with_source_model
     EXPECT_EQ(engine.ptcproc.begin_weight_validation_iter, 1);
     EXPECT_EQ(engine.learning.begin_calls, 1);
     EXPECT_TRUE(engine.learning.source_model_available);
+    EXPECT_EQ(engine.ptcproc.fruit_loop_feedback_samples, 0);
     EXPECT_EQ(logger->info_calls, 2);
+}
+
+TEST(pipeline_iteration_lifecycle, rejects_realized_zero_sample_feedback) {
+    FakeIterationEngine engine;
+    engine.iteration.fruit_iter = 1;
+    engine.typed_config.timestream.fruit_loops.enabled = true;
+    engine.ptcproc.fruit_loop_feedback_samples = 0;
+    auto logger = std::make_shared<FakeLogger>();
+
+    try {
+        citlali::pipeline::require_realized_fruit_loop_feedback_if_available(
+            engine, logger);
+        FAIL() << "expected zero-feedback rejection";
+    }
+    catch (const citlali::error::Error &error) {
+        EXPECT_EQ(error.code(), citlali::error::Code::runtime);
+    }
+}
+
+TEST(pipeline_iteration_lifecycle, accepts_realized_nonzero_feedback) {
+    FakeIterationEngine engine;
+    engine.iteration.fruit_iter = 1;
+    engine.typed_config.timestream.fruit_loops.enabled = true;
+    engine.ptcproc.fruit_loop_feedback_samples = 42;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_NO_THROW(
+        citlali::pipeline::require_realized_fruit_loop_feedback_if_available(
+            engine, logger));
+    EXPECT_EQ(logger->info_calls, 1);
 }
 
 TEST(pipeline_iteration_lifecycle, uses_configured_fruit_loop_path_as_source_model) {

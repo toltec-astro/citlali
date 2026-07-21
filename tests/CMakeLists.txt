@@ -20,6 +20,7 @@ target_sources(citlali_test
         output_root_lease_header.cpp
         wiener_filter_validation_header.cpp
         test_kids_input_validation.cpp
+        test_learning_and_fruit_contracts.cpp
         test_output_root_lease.cpp
         test_reduction_session.cpp
         test_session_failure_boundaries.cpp

@@ -43,6 +43,13 @@ void add_image_median_error_key(Hdu &hdu, double median_error,
 }
 
 template <class Hdu>
+void add_image_median_rms_key(Hdu &hdu, double median_rms,
+                              const std::string &unit) {
+    hdu.addKey("MEDRMS", median_rms,
+               "Median jackknife-map RMS (" + unit + ")");
+}
+
+template <class Hdu>
 void add_image_weight_threshold_key(Hdu &hdu, double weight_threshold) {
     hdu.addKey("WTTHRESH", weight_threshold, "Weight threshold");
 }
@@ -147,6 +154,15 @@ void add_pixel_snr_map_metadata(Hdu &hdu) {
 }
 
 template <class Hdu>
+void add_formal_standardized_signal_map_metadata(Hdu &hdu) {
+    add_image_unit_type_description_keys(
+        hdu, not_applicable_image_unit(),
+        formal_standardized_signal_estimator_type(),
+        standardized_signal_estimator_type_comment(),
+        formal_standardized_signal_map_description());
+}
+
+template <class Hdu>
 void add_point_source_flux_map_metadata(Hdu &hdu,
                                         const std::string &signal_unit) {
     add_image_unit_description_keys(hdu, signal_unit,
@@ -166,4 +182,3 @@ void add_point_source_snr_map_metadata(Hdu &hdu) {
         hdu, not_applicable_image_unit(), point_source_snr_estimator_type(),
         snr_estimator_type_comment(), point_source_snr_map_description());
 }
-

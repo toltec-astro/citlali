@@ -59,11 +59,20 @@
       ],
       "fact": "Many variables have no explicit _FillValue or missing_value attribute.",
       "disposition": "Current flags and finite-value conventions remain authoritative. Standardized sentinels require a successor schema."
+    },
+    {
+      "debt_id": "legacy-formal-snr-labels",
+      "affected_families": [
+        "map_cube_altaz",
+        "map_cube_celestial"
+      ],
+      "fact": "Phase-4 v1 products without empirical jackknife noise used sig2noise extension names for signal times the square root of formal mapmaker weight. Those historical planes are standardized amplitudes, not calibrated statistical-significance maps.",
+      "disposition": "Keep the immutable v1 checks for accepted historical artifacts. Current writers reserve sig2noise names for jackknife-calibrated products and emit formal_standardized_signal otherwise; successor profiles must use the v2 checks."
     }
   ],
   "families": {
     "map_cube_altaz": {
-      "scientific_identity": "Per-array Stokes-I map planes with signal, weights, kernel, coverage, signal-to-noise, and profile-dependent noise products.",
+      "scientific_identity": "Per-array Stokes-I map planes with signal, weights, kernel, coverage, and estimator-explicit standardized products: jackknife-calibrated signal-to-noise when empirical noise products exist, otherwise explicitly labeled formal-weight-standardized signal.",
       "coordinate_frame": "AltAz tangent-plane azimuth/elevation offsets around the configured map center.",
       "axes": [
         "azimuth offset",
@@ -71,13 +80,13 @@
         "frequency",
         "Stokes"
       ],
-      "units_policy": "BUNIT is authoritative per HDU: signal/kernel in mJy/beam, weights in inverse squared signal units, noise variance in squared signal units, coverage in seconds, masks and signal-to-noise dimensionless.",
+      "units_policy": "BUNIT and ESTTYPE are authoritative per HDU: signal/kernel in mJy/beam, weights in inverse squared signal units, noise variance in squared signal units, coverage in seconds, and masks/standardized products dimensionless. sig2noise names require empirical jackknife calibration.",
       "indexing_policy": "FITS/WCS pixel coordinates are one-based; diagnostic row/column indices are zero-based.",
       "missing_value_policy": "Signal-like pixels may be non-finite where coverage/weight is invalid; coverage_bool identifies supported pixels.",
       "failure_policy": "Fatal when the map family is enabled in the active profile."
     },
     "map_cube_celestial": {
-      "scientific_identity": "Per-array Stokes-I map planes with signal, weights, kernel, coverage, and signal-to-noise products.",
+      "scientific_identity": "Per-array Stokes-I map planes with signal, weights, kernel, coverage, and estimator-explicit standardized products: jackknife-calibrated signal-to-noise when empirical noise products exist, otherwise explicitly labeled formal-weight-standardized signal.",
       "coordinate_frame": "Equatorial J2000 TAN projection centered on the configured science field.",
       "axes": [
         "right ascension",
@@ -85,7 +94,7 @@
         "frequency",
         "Stokes"
       ],
-      "units_policy": "BUNIT is authoritative per HDU: signal/kernel in mJy/beam, weights in inverse squared signal units, coverage in seconds, masks and signal-to-noise dimensionless.",
+      "units_policy": "BUNIT and ESTTYPE are authoritative per HDU: signal/kernel in mJy/beam, weights in inverse squared signal units, coverage in seconds, and masks/standardized products dimensionless. sig2noise names require empirical jackknife calibration.",
       "indexing_policy": "FITS/WCS pixel coordinates are one-based; diagnostic row/column indices are zero-based.",
       "missing_value_policy": "Signal-like pixels may be non-finite where coverage/weight is invalid; coverage_bool identifies supported pixels.",
       "failure_policy": "Fatal when the map family is enabled in the active profile."
@@ -310,6 +319,54 @@
         "coverage_bool_I",
         "sig2noise_I",
         "sig2noise_pixel_I"
+      ],
+      "axis_types": [
+        "RA---TAN",
+        "DEC--TAN",
+        "FREQ",
+        "STOKES"
+      ],
+      "axis_units": [
+        "deg",
+        "deg",
+        "Hz",
+        null
+      ]
+    },
+    "basic_altaz_map_v2": {
+      "min_hdus": 7,
+      "primary_bunit": "mJy/beam",
+      "required_extnames": [
+        "signal_I",
+        "weight_I",
+        "kernel_I",
+        "coverage_I",
+        "coverage_bool_I",
+        "formal_standardized_signal_I"
+      ],
+      "axis_types": [
+        "AZOFFSET",
+        "ELOFFSET",
+        "FREQ",
+        "STOKES"
+      ],
+      "axis_units": [
+        "arcsec",
+        "arcsec",
+        "Hz",
+        null
+      ]
+    },
+    "basic_celestial_map_v2": {
+      "min_hdus": 7,
+      "primary_bunit": "mJy/beam",
+      "required_extnames": [
+        "signal_I",
+        "weight_I",
+        "kernel_I",
+        "coverage_I",
+        "coverage_bool_I",
+        "formal_standardized_signal_I"
       ],
       "axis_types": [
         "RA---TAN",

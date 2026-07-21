@@ -26,6 +26,12 @@ as implementation and test reductions change the plan.
   rather than live shared diagnostic maps. This fixes nondeterministic learned
   sample-mask summaries seen in otherwise identical pointing reductions and
   captures high-weight detector summaries after the selected final weight pass.
+- Full NGC4449 investigation (2026-07-21): the 200,000-row cap was shared by
+  operational state and diagnostic event history, so iteration 0 exhausted it
+  before observation 152433 and later learning. The candidate repair keeps an
+  uncapped online effective interval/penalty state and applies the cap only to
+  optional event history. See
+  `NGC4449_CITLALI_INVESTIGATION_2026-07-21.md`; Unity validation is pending.
 
 ## Phase 1: Shared Learning State
 
@@ -39,6 +45,13 @@ Add a shared reduction-learning state, probably in/near PTCProc, with records fo
 - iteration phase: learn, learn_with_model, apply
 
 No behavior change yet except writing diagnostics.
+
+The original event vectors later became operational inputs as well as
+diagnostics. The NGC4449 scale test showed that this dual role was invalid:
+diagnostic truncation changed science. Effective state and event history are
+now separate candidate interfaces. A sample-mask event represents a
+detector-time interval, while the effective state is the online union of those
+intervals by observation, scan, application stage, and detector UID.
 
 ## Phase 2: Iteration Phase Wiring
 
