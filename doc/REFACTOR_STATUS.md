@@ -220,15 +220,17 @@ validates exactly one table under `<obsnum>/raw`, and emits that directory for
 science and Beammap pointing references. All 106 TolPROJ tests, full Ruff, and
 byte-compilation pass.
 
-Citlali commit `95b7b7f57` establishes config kit `phase4.1-v2.1` after the
-self-contained OOF smoke showed that the prior default produced vacuous
-all-zero pointing-fit tables. OOF now enables diagnostic Gaussian fitting by
-default while preserving PSF-preserving mapmaking and map-centered fruit-loop
-support. TolPROJ commit `2c4ec12` vendors the complete 29-file canonical kit
-byte-for-byte as a new immutable bundle, retains `phase4.1-v2` for historical
-reproducibility, and selects V2.1 only for fresh `--refactor` setups. All 139
-TolPROJ tests and Ruff pass. No Citlali compilation is required for this
-numbered-YAML integration change.
+Citlali commits `95b7b7f57` and `f59c663f8` establish config kit
+`phase4.1-v2.1`. The self-contained OOF smoke showed that the prior default
+produced vacuous all-zero pointing-fit tables, so OOF now enables diagnostic
+Gaussian fitting while preserving PSF-preserving mapmaking and map-centered
+fruit-loop support. Routine standalone, science-support, and Beammap-support
+pointings now default to raw products; Wiener settings remain visible for an
+explicit validation overlay but filtering is disabled. TolPROJ commit
+`16ebe69` vendors the complete 29-file canonical kit byte-for-byte, retains
+`phase4.1-v2` for historical reproducibility, and selects V2.1 only for fresh
+`--refactor` setups. All 139 TolPROJ tests and Ruff pass. No Citlali
+compilation is required for these numbered-YAML integration changes.
 
 Compilation-side Phase 4 work is explicitly deferred as of 2026-07-16 pending
 review of the TolTECA developer's revised C++ build and integration approach.
