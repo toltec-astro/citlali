@@ -203,6 +203,16 @@ validates exactly one table under `<obsnum>/raw`, and emits that directory for
 science and Beammap pointing references. All 106 TolPROJ tests, full Ruff, and
 byte-compilation pass.
 
+Citlali commit `95b7b7f57` establishes config kit `phase4.1-v2.1` after the
+self-contained OOF smoke showed that the prior default produced vacuous
+all-zero pointing-fit tables. OOF now enables diagnostic Gaussian fitting by
+default while preserving PSF-preserving mapmaking and map-centered fruit-loop
+support. TolPROJ commit `2c4ec12` vendors the complete 29-file canonical kit
+byte-for-byte as a new immutable bundle, retains `phase4.1-v2` for historical
+reproducibility, and selects V2.1 only for fresh `--refactor` setups. All 139
+TolPROJ tests and Ruff pass. No Citlali compilation is required for this
+numbered-YAML integration change.
+
 Compilation-side Phase 4 work is explicitly deferred as of 2026-07-16 pending
 review of the TolTECA developer's revised C++ build and integration approach.
 Do not change Citlali CMake structure, presets, dependency management, CI build
