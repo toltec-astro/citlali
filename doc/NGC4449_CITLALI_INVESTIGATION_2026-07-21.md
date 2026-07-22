@@ -261,15 +261,55 @@ The sidecar is header-only when no qualifying pathology occurs. Its output I/O
 is required when learning diagnostics are enabled, but HK availability never
 changes the learned state or the science flags.
 
+## Compensated-Kernel Convolution Failure
+
+The completed continuation exposed a fifth fail-closed contract. Its raw
+`a1400` transfer kernel is strongly compensated: the positive core and lobes
+nearly cancel the negative bowl. The kernel itself remains a meaningful
+transfer-function diagnostic, but `wiener_filter.lowpass_only: true` routes it
+through unit-sum convolution. Dividing by a near-zero algebraic sum amplified
+the filtered `a1400` kernel to approximately `-60`, the filtered signal to
+hundreds of mJy/beam, and its variance by orders of magnitude. No warning was
+issued because the sum was finite and not exactly zero.
+
+The relevant conditioning statistic is
+
+`dc_fraction = abs(sum(template)) / sum(abs(template))`.
+
+Its reciprocal is the componentwise relative condition number of the
+algebraic sum and the L1 amplification introduced by unit-sum normalization.
+For the latest radial templates, the approximate fractions were `0.169`,
+`0.004`, and `0.288` for `a1100`, `a1400`, and `a2000`. The historical
+full-Wiener NGC4449 reduction did not show the amplification even though its
+raw `a1400` kernel was more nearly compensated, isolating the defect to the
+unit-sum convolution path rather than the transfer kernel itself.
+
+Candidate contract:
+
+- serial and OpenMP unit-sum convolution share one runtime check;
+- non-finite, zero-L1, or cancellation-conditioned templates fail the
+  reduction instead of being normalized or silently skipping weight
+  propagation;
+- the minimum DC fraction is `0.05`, limiting the cancellation condition
+  number and unit-sum L1 amplification to 20;
+- the failure reports filter/template type, algebraic sum, L1 norm, measured
+  DC fraction, threshold, and corrective direction; and
+- well-conditioned templates retain the established numerical convolution.
+
+This is a required-output safety boundary, not a replacement filtering
+algorithm. Existing filtered `a1400` products made with the compensated kernel
+and `lowpass_only: true` are quarantined; the corresponding raw products are
+not invalidated by this post-processing defect.
+
 ## Validation And Remaining Work
 
 Local candidate evidence:
 
 - `citlali_cli` builds;
-- all 481 CTests pass, including focused learning, fruit-loop activation,
-  realized-feedback, and map-semantics tests;
-- the full config preflight passes 116 tests and all required audits; and
-- all 106 baseline-tool tests, including product-contract,
+- all 490 CTests pass, including focused learning, fruit-loop activation,
+  realized-feedback, map-semantics, and kernel-conditioning tests;
+- the full config preflight passes 117 tests and all required audits; and
+- all 108 baseline-tool tests, including product-contract,
   validation-profile, and science-change-ledger checks, pass;
 - Unity science validation is required before acceptance.
 
@@ -286,7 +326,9 @@ The Unity successor run should verify:
 8. empirical products retain expected S/N semantics and FITS metadata;
 9. warning counts are small enough for QA and every remaining warning is
    actionable; and
-10. peak RSS and learning-state counts are recorded.
+10. peak RSS and learning-state counts are recorded; and
+11. compensated unit-sum templates fail before filtered products are
+    published, while the NGC4449 full-Wiener successor completes.
 
 Slurm/OpenMP allocation matching is intentionally deferred to the separate
 runtime-resource work requested by the project owner.

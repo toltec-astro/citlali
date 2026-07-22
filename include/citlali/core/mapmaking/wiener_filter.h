@@ -604,10 +604,11 @@ inline const Eigen::MatrixXcd &WienerFilter::get_filter_template_fft_scaled(bool
 
             Eigen::MatrixXcd in(n_rows, n_cols), out(n_rows, n_cols);
             Eigen::MatrixXd kernel = filter_template;
-            const double kernel_sum = kernel.sum();
-            if (kernel_sum != 0.0 && std::isfinite(kernel_sum)) {
-                kernel /= kernel_sum;
-            }
+            const double kernel_sum =
+                citlali::pipeline::require_wiener_unit_sum_kernel(
+                    kernel.sum(), kernel.cwiseAbs().sum(), filter_type,
+                    template_type);
+            kernel /= kernel_sum;
             in.real() = kernel;
             in.imag().setZero();
             engine_utils::fft2_into<engine_utils::forward>(in, out, pf, a, b);
@@ -1377,7 +1378,10 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
     else if (use_convolve) {
         // propagate inverse-variance through smoothing: Var_smooth = (k^2) ⊗ Var
         Eigen::MatrixXd kernel = filter_template;
-        double kernel_sum = kernel.sum();
+        const double kernel_sum =
+            citlali::pipeline::require_wiener_unit_sum_kernel(
+                kernel.sum(), kernel.cwiseAbs().sum(), filter_type,
+                template_type);
         if (kernel_sum == 0.0 || !std::isfinite(kernel_sum)) {
             logger->warn("convolve kernel sum is zero/invalid; skipping weight propagation");
         }

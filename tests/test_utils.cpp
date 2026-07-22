@@ -260,6 +260,45 @@ TEST(wiener_filter, kernel_template_tail_zero_truncates_extrapolated_pixels) {
     EXPECT_DOUBLE_EQ(filter.filter_template.maxCoeff(), 1.0);
 }
 
+TEST(wiener_filter, unit_sum_convolution_rejects_compensated_template) {
+    mapmaking::WienerFilter filter;
+    filter.logger = ensure_citlali_logger();
+    filter.n_rows = 2;
+    filter.n_cols = 2;
+    filter.filter_type = "wiener_filter";
+    filter.template_type = "kernel";
+    filter.filter_template.resize(2, 2);
+    filter.filter_template <<
+        1.0, -0.98,
+        0.0, 0.0;
+    filter.filtered_map = Eigen::MatrixXd::Ones(2, 2);
+
+    try {
+        filter.run_convolve();
+        FAIL() << "expected compensated convolution template to fail";
+    } catch (const citlali::error::Error &error) {
+        EXPECT_EQ(error.code(), citlali::error::Code::runtime);
+        EXPECT_THAT(error.what(),
+                    HasSubstr("unsafe unit-sum convolution template"));
+        EXPECT_THAT(error.what(), HasSubstr("dc_fraction"));
+        EXPECT_THAT(error.what(), HasSubstr("lowpass_only: false"));
+    }
+}
+
+TEST(wiener_filter, unit_sum_convolution_preserves_well_conditioned_behavior) {
+    mapmaking::WienerFilter filter;
+    filter.logger = ensure_citlali_logger();
+    filter.n_rows = 2;
+    filter.n_cols = 2;
+    filter.filter_type = "convolve";
+    filter.template_type = "gaussian";
+    filter.filter_template = Eigen::MatrixXd::Ones(2, 2);
+    filter.filtered_map = Eigen::MatrixXd::Constant(2, 2, 3.0);
+
+    ASSERT_NO_THROW(filter.run_convolve());
+    EXPECT_LT((filter.nume.array() - 3.0).abs().maxCoeff(), 1e-12);
+}
+
 TEST(timestream_filter, notch_settle_samples_are_positive_for_narrow_notches) {
     auto samples = timestream::Filter::notch_settle_samples_for_width(
         122.0703125, 0.25, 0.01);

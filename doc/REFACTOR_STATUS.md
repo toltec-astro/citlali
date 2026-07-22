@@ -84,8 +84,8 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 488 tests. The Phase 4.1 config preflight now
-  passes 116 focused tests; the checked leaf contract covers 578 leaves and the generated
+- CTest discovers and passes all 490 tests. The Phase 4.1 config preflight now
+  passes 117 focused tests; the checked leaf contract covers 578 leaves and the generated
   startup schema covers 728 normalized YAML nodes. The six new direct tests
   cover the production rejection of experimental maximum-likelihood
   mapmaking, analytic flux conversion, detector-specific calibration,
@@ -94,7 +94,9 @@ branch. The exact validated tree will remain available for forensic review.
   interval/penalty compaction, diagnostic decoupling, fruit-loop activation and
   realized feedback, Beammap policy isolation, and truthful standardized-map
   naming. Three additional tests cover the diagnostic-only learning/HK match
-  contract and required sidecar output.
+  contract and required sidecar output. Two additional Wiener tests cover
+  fail-closed compensated-template normalization and unchanged
+  well-conditioned convolution.
 
 These facts are characterization evidence, not a production-equivalence claim.
 
@@ -147,6 +149,21 @@ preflight, and all 108 baseline-tool tests (including 60 reduction-audit
 tests) pass. A matched Unity split versus
 uninterrupted science run is still required; the already-running older binary
 cannot create this new checkpoint.
+
+The completed older-binary continuation then exposed an invalid-success
+boundary in lowpass-only kernel filtering. The latest radial `a1400` template
+has `abs(sum)/sum(abs)` approximately `0.004`; unit-sum convolution therefore
+amplified a compensated transfer kernel by a cancellation condition number of
+about 251 and produced filtered signal/kernel/weight products with no valid
+flux interpretation. A shared serial/OpenMP runtime contract now rejects a
+non-finite, zero-L1, or cancellation-conditioned unit-sum template below a
+`0.05` DC fraction, limiting normalization L1 gain to 20 and reporting all
+conditioning values plus the full-Wiener corrective route. Well-conditioned
+convolution behavior is unchanged. Local serial and OpenMP CLI/test builds,
+all 490 CTests, the 117-test complete config preflight, and all 108 baseline-
+tool tests pass. An NGC4449 full-Wiener Unity successor remains required
+before acceptance; all filtered `a1400` products from the lowpass-only
+NGC4449 series remain quarantined.
 
 ## Active Phase
 

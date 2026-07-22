@@ -279,6 +279,14 @@ TEST(session_failure_boundaries, validates_wiener_filter_boundaries) {
         1, 10, 20, 10, 20, 10, 20));
     EXPECT_NO_THROW(citlali::pipeline::require_finite_wiener_kernel_peak(
         1.0, 1));
+    EXPECT_DOUBLE_EQ(
+        citlali::pipeline::require_wiener_unit_sum_kernel(
+            1.0, 4.0, "convolve", "kernel"),
+        1.0);
+    EXPECT_DOUBLE_EQ(
+        citlali::pipeline::require_wiener_unit_sum_kernel(
+            1.0, 20.0, "wiener_filter", "kernel"),
+        1.0);
     EXPECT_NO_THROW(citlali::pipeline::require_wiener_fftw_context(
         true, 10, 20));
 
@@ -309,6 +317,19 @@ TEST(session_failure_boundaries, validates_wiener_filter_boundaries) {
     expect_runtime_failure([] {
         citlali::pipeline::require_finite_wiener_kernel_peak(
             std::numeric_limits<double>::quiet_NaN(), 1);
+    });
+    expect_runtime_failure([] {
+        citlali::pipeline::require_wiener_unit_sum_kernel(
+            0.0, 4.0, "convolve", "kernel");
+    });
+    expect_runtime_failure([] {
+        citlali::pipeline::require_wiener_unit_sum_kernel(
+            0.19, 4.0, "wiener_filter", "kernel");
+    });
+    expect_runtime_failure([] {
+        citlali::pipeline::require_wiener_unit_sum_kernel(
+            std::numeric_limits<double>::quiet_NaN(), 4.0,
+            "convolve", "kernel");
     });
     expect_runtime_failure([] {
         citlali::pipeline::require_wiener_fftw_context(false, 10, 20);
