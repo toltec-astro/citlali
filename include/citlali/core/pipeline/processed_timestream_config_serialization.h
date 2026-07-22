@@ -75,6 +75,8 @@ inline YAML::Node fruit_loops_config_node(
         config.adaptive_support_radius_arcsec;
     node["adaptive_support_radius_fwhm"] =
         config.adaptive_support_radius_fwhm;
+    node["source_center_mode"] =
+        std::string{citlali::config::to_string(config.source_center_mode)};
     node["weight_feedback"] =
         fruit_loops_weight_feedback_config_node(config.weight_feedback);
     node["center_keep_radius_arcsec"] = config.center_keep_radius_arcsec;

@@ -166,7 +166,8 @@ void add_phdu_ptc_learning_config_section(
     const ArrayId &array_id, const std::string &signal_unit,
     const citlali::config::ProcessedTimeChunkConfig &processed_config,
     const citlali::config::TimestreamFruitLoopsConfig &fruit_config,
-    const citlali::config::PointingConfig &pointing_config) {
+    const citlali::config::PointingConfig &pointing_config,
+    citlali::config::ReductionType reduction_type) {
     citlali::pipeline::add_phdu_reduction_learning_config(
         fits_entry, array_name, logger, reduction_learning);
     citlali::pipeline::add_phdu_weight_corr_penalty_config(
@@ -188,7 +189,7 @@ void add_phdu_ptc_learning_config_section(
             fruit_config, calib.arrays, map_index, array_id);
     citlali::pipeline::add_phdu_fruit_loops_config(
         fits_entry, array_name, logger, fruit_config, pointing_config,
-        fruit_loops_flux_limit, signal_unit);
+        reduction_type, fruit_loops_flux_limit, signal_unit);
 }
 
 template <class FitsEntry, class MapBuffer, class Telescope, class Logger>

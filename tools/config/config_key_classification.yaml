@@ -455,6 +455,11 @@ rules:
     classification: user-facing
     owner: compact
     reason: OOF/pointing central-region policy.
+  - id: user-fruitloops-source-center
+    pattern: timestream.fruit_loops.source_center_mode
+    classification: user-facing
+    owner: compact
+    reason: Explicit source-center authority for bounded science feedback.
   - id: user-learning-enabled
     pattern: timestream.learning.enabled
     classification: user-facing

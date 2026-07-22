@@ -26,6 +26,9 @@ void add_fruit_loops_config_vars(netCDF::NcFile &fo,
                    config.adaptive_support_radius_arcsec);
     add_netcdf_var(fo, "CONFIG.FRUITLOOPS.ADAPT_SUPPORT_FWHM",
                    config.adaptive_support_radius_fwhm);
+    add_netcdf_var<std::string>(
+        fo, "CONFIG.FRUITLOOPS.SOURCE_CENTER_MODE",
+        std::string{citlali::config::to_string(config.source_center_mode)});
     add_netcdf_var(fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.ENABLED",
                    config.weight_feedback.enabled);
     add_netcdf_var<std::string>(

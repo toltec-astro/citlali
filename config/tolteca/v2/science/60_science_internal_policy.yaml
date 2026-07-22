@@ -219,6 +219,7 @@ reduce:
               high_relative_weight: 0.1
               low_relative_weight: 0.02
               reference: p95
+            source_center_mode: auto
           learning:
             apply_max_new_flagged_fraction: 0.02
             apply_sample_masks_enabled: true

@@ -75,6 +75,9 @@ reduce:
               - 1.0
               - 1.0
 
+              # Feedback center: use map_center for known extended science targets
+              source_center_mode: auto
+
               # Keep every fruit-loop iteration instead of only the final products
               save_all_iters: true
 

@@ -8,6 +8,7 @@ void add_phdu_fruit_loops_config(FitsEntry &fits_entry,
                                  const Logger &logger,
                                  const citlali::config::TimestreamFruitLoopsConfig &config,
                                  const citlali::config::PointingConfig &pointing_config,
+                                 citlali::config::ReductionType reduction_type,
                                  double flux_limit,
                                  const std::string &signal_unit) {
     auto &hdu = fits_entry.pfits->pHDU();
@@ -23,9 +24,14 @@ void add_phdu_fruit_loops_config(FitsEntry &fits_entry,
                "Fruit loops path");
     hdu.addKey("CONFIG.FRUITLOOPS.TYPE", config.type,
                "Fruit loops type");
+    const auto source_center_mode =
+        reduction_type == citlali::config::ReductionType::pointing
+            ? std::string{citlali::config::to_string(
+                  pointing_config.fruitloops_center_mode)}
+            : std::string{citlali::config::to_string(
+                  config.source_center_mode)};
     hdu.addKey("CONFIG.FRUITLOOPS.SRCMODE",
-               std::string{citlali::config::to_string(
-                   pointing_config.fruitloops_center_mode)},
+               source_center_mode,
                "Fruit loops source center mode");
     add_double_key("CONFIG.FRUITLOOPS.HDRMAXR",
                    pointing_config.header_max_radius_arcsec,

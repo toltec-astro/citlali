@@ -107,6 +107,14 @@ inline constexpr std::array<EnumName<FruitLoopsMode>, 3>
         {FruitLoopsMode::both, "both"},
     }};
 
+inline constexpr std::array<EnumName<FruitLoopsSourceCenterMode>, 4>
+    fruit_loops_source_center_mode_names{{
+        {FruitLoopsSourceCenterMode::automatic, "auto"},
+        {FruitLoopsSourceCenterMode::header, "header"},
+        {FruitLoopsSourceCenterMode::peak, "peak"},
+        {FruitLoopsSourceCenterMode::map_center, "map_center"},
+    }};
+
 inline constexpr std::array<EnumName<FruitLoopsWeightFeedbackReference>, 7>
     fruit_loops_weight_feedback_reference_names{{
         {FruitLoopsWeightFeedbackReference::p95, "p95"},
@@ -206,6 +214,11 @@ std::optional<FruitLoopsMode> parse_fruit_loops_mode(
     return parse_enum(value, fruit_loops_mode_names);
 }
 
+std::optional<FruitLoopsSourceCenterMode>
+parse_fruit_loops_source_center_mode(std::string_view value) {
+    return parse_enum(value, fruit_loops_source_center_mode_names);
+}
+
 std::optional<FruitLoopsWeightFeedbackReference>
 parse_fruit_loops_weight_feedback_reference(std::string_view value) {
     return parse_enum(value, fruit_loops_weight_feedback_reference_names);
@@ -275,6 +288,10 @@ std::string_view to_string(ProcessedTimeChunkCorrGroupingMetric value) {
 
 std::string_view to_string(FruitLoopsMode value) {
     return enum_name(value, fruit_loops_mode_names);
+}
+
+std::string_view to_string(FruitLoopsSourceCenterMode value) {
+    return enum_name(value, fruit_loops_source_center_mode_names);
 }
 
 std::string_view to_string(FruitLoopsWeightFeedbackReference value) {

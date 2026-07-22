@@ -51,6 +51,8 @@ void apply_fruit_loops_config_to_processor(
         config.adaptive_support_radius_arcsec;
     ptcproc.fruit_loops_adaptive_support_radius_fwhm =
         config.adaptive_support_radius_fwhm;
+    ptcproc.fruit_loops_source_center_mode = std::string{
+        citlali::config::to_string(config.source_center_mode)};
     ptcproc.fruit_loops_weight_feedback_enabled =
         config.weight_feedback.enabled;
     ptcproc.fruit_loops_weight_feedback_reference = std::string{

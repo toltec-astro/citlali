@@ -53,6 +53,7 @@ SCIENCE_DEFAULT_PATHS = (
     "timestream.fruit_loops.max_iters",
     "timestream.fruit_loops.sig2noise_limit",
     "timestream.fruit_loops.array_flux_limit",
+    "timestream.fruit_loops.source_center_mode",
     "timestream.fruit_loops.save_all_iters",
     "timestream.learning.enabled",
 )
@@ -439,6 +440,10 @@ def default_sections(spec: ModeSpec) -> tuple[tuple[str, tuple[str, ...]], ...]:
     )
     if spec.mode == "science":
         return tuple(section for section in common if section[0] != "            chunking:\n") + (
+            (
+                "              source_center_mode:",
+                ("Feedback center: use map_center for known extended science targets",),
+            ),
             ("            learning:\n", ("Cross-iteration learned masks and detector state",)),
         )
     if spec.mode in {"point", "oof"}:
@@ -514,6 +519,15 @@ def generate_mode(
     source_entry = source_manifest["modes"][spec.mode]
     merged, _, _ = merge_files(numbered_yaml_files(source_mode_dir))
     policy = extract_low_level(merged)
+    if spec.mode == "science":
+        # This successor control is intentionally additive to the immutable
+        # accepted V1 science policy. Its auto default preserves prior runtime
+        # behavior while making the center choice available to V2 authors.
+        set_path(
+            policy,
+            "timestream.fruit_loops.source_center_mode",
+            "auto",
+        )
     mode_dir = output_root / spec.mode
     files = spec.files
 

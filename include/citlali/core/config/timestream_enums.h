@@ -91,6 +91,13 @@ enum class FruitLoopsMode {
     both
 };
 
+enum class FruitLoopsSourceCenterMode {
+    automatic,
+    header,
+    peak,
+    map_center
+};
+
 enum class FruitLoopsWeightFeedbackReference {
     p95,
     p90,
@@ -144,6 +151,8 @@ parse_processed_cleaner_mode(std::string_view value);
 std::optional<ProcessedTimeChunkCorrGroupingMetric>
 parse_processed_corr_grouping_metric(std::string_view value);
 std::optional<FruitLoopsMode> parse_fruit_loops_mode(std::string_view value);
+std::optional<FruitLoopsSourceCenterMode>
+parse_fruit_loops_source_center_mode(std::string_view value);
 std::optional<FruitLoopsWeightFeedbackReference>
 parse_fruit_loops_weight_feedback_reference(std::string_view value);
 std::optional<FruitLoopsInterpModeOverride>
@@ -165,6 +174,7 @@ std::string_view to_string(ProcessedTimeChunkWeightGrouping value);
 std::string_view to_string(ProcessedTimeChunkCleanerMode value);
 std::string_view to_string(ProcessedTimeChunkCorrGroupingMetric value);
 std::string_view to_string(FruitLoopsMode value);
+std::string_view to_string(FruitLoopsSourceCenterMode value);
 std::string_view to_string(FruitLoopsWeightFeedbackReference value);
 std::string_view to_string(FruitLoopsInterpModeOverride value);
 std::string_view to_string(

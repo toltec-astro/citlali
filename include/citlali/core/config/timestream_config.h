@@ -503,6 +503,8 @@ struct TimestreamFruitLoopsConfig {
     int local_sigma_min_pixels = 50;
     double adaptive_support_radius_arcsec = 12.0;
     double adaptive_support_radius_fwhm = 1.5;
+    FruitLoopsSourceCenterMode source_center_mode =
+        FruitLoopsSourceCenterMode::automatic;
     FruitLoopsWeightFeedbackConfig weight_feedback;
     double center_keep_radius_arcsec = 0.0;
     FruitLoopsInterpModeOverride interp_mode_override =

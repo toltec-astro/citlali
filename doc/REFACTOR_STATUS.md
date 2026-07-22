@@ -77,9 +77,9 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 480 tests. The Phase 4.1 config preflight now
-  passes 116 focused tests; the checked leaf contract covers 576 leaves and the generated
-  startup schema covers 726 normalized YAML nodes. The six new direct tests
+- CTest discovers and passes all 481 tests. The Phase 4.1 config preflight now
+  passes 116 focused tests; the checked leaf contract covers 577 leaves and the generated
+  startup schema covers 727 normalized YAML nodes. The six new direct tests
   cover the production rejection of experimental maximum-likelihood
   mapmaking, analytic flux conversion, detector-specific calibration,
   detector pointing, and two source-finder safety boundaries. Eleven additional
@@ -100,7 +100,7 @@ operational state in input order, and warning amplification that obscured QA.
 The bounded investigation and candidate corrections are recorded in
 `doc/NGC4449_CITLALI_INVESTIGATION_2026-07-21.md`.
 
-Local builds, all 480 CTests, the 116-test config preflight, and 106 baseline-
+Local builds, all 481 CTests, the 116-test config preflight, and 106 baseline-
 tool tests pass. The changes are not an accepted scientific snapshot:
 applying the full effective learned state intentionally changes the
 previously cap-truncated flags and therefore requires a successor Unity science
@@ -110,6 +110,18 @@ candidate v2 basic-map checks reserve S/N names for empirically calibrated
 products. A new learning-housekeeping QA sidecar correlates deduplicated
 busy-network pathologies with selected TolTEC thermometry and dilution-fridge
 samples while remaining strictly outside the flagging and learning policy.
+
+The first one-observation spatial-feedback control then exposed a separate
+configuration-authority defect: science YAML requested
+`pointing.source_strategy.fruitloops_center_mode: map_center`, but the science
+execution path never loads the pointing plan and therefore continued with
+automatic off-center peaks. A successor typed control,
+`timestream.fruit_loops.source_center_mode`, is now owned by the processed-
+timestream request, serialized in its snapshot and NetCDF config record, and
+adapted directly to the fruit-loop processor. The additive `auto` default
+preserves prior behavior. The NGC4449 successor requests `map_center`; a Unity
+run must confirm the realized log before this becomes accepted science
+evidence.
 
 ## Active Phase
 

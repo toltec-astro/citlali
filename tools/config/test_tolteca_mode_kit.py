@@ -288,7 +288,7 @@ class V2AuthoringModeKitsTest(unittest.TestCase):
 
         self.assertEqual(
             {report["mode"]: report["leaf_count"] for report in reports},
-            {"point": 445, "oof": 444, "beammap": 485, "science": 404},
+            {"point": 445, "oof": 444, "beammap": 485, "science": 405},
         )
         self.assertTrue(
             all(report["valid"] and report["policy_matches_manifest"] for report in reports),
@@ -300,7 +300,7 @@ class V2AuthoringModeKitsTest(unittest.TestCase):
             "point": {"runtime": 4, "defaults": 44, "products": 26},
             "oof": {"runtime": 4, "defaults": 44, "products": 26},
             "beammap": {"runtime": 4, "defaults": 43, "products": 5},
-            "science": {"runtime": 4, "defaults": 27, "products": 30},
+            "science": {"runtime": 4, "defaults": 28, "products": 30},
         }
         for mode, roles in expected_counts.items():
             for role, expected_count in roles.items():
@@ -366,6 +366,7 @@ class V2AuthoringModeKitsTest(unittest.TestCase):
                 "max_iters",
                 "sig2noise_limit",
                 "array_flux_limit",
+                "source_center_mode",
                 "save_all_iters",
             },
         }

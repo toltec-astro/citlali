@@ -112,6 +112,15 @@ void read_fruit_loops_core_config(
                    "adaptive_support_radius_fwhm"},
         typed_config.adaptive_support_radius_fwhm);
 
+    std::string source_center_mode{
+        citlali::config::to_string(typed_config.source_center_mode)};
+    read_optional_parsed_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "fruit_loops", "source_center_mode"},
+        source_center_mode, typed_config.source_center_mode,
+        citlali::config::parse_fruit_loops_source_center_mode,
+        diagnostics, {"auto", "header", "peak", "map_center"});
+
     auto &feedback = typed_config.weight_feedback;
     bool feedback_enabled = feedback.enabled;
     read_optional_mirrored_config_value(

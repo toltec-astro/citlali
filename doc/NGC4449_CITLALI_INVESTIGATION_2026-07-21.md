@@ -60,6 +60,33 @@ This prevents the exact NGC4449 failure before reduction work starts. It does
 not yet implement a scientific convergence statistic for nonzero feedback;
 that remains explicit debt.
 
+### Spatial-center authority found by the control run
+
+The subsequent one-observation, four-iteration spatial control did apply
+millions of detector samples and increased raw 60-arcsec aperture-flux proxies
+by approximately 37%, 29%, and 36% from iteration 0 to 3 for a1100, a1400, and
+a2000. Iteration 3 was still changing by approximately 3--4%, so the feedback
+was active and promising but not yet demonstrably converged.
+
+That run also proved that the intended spatial center was not active. Its YAML
+and merged low-level config requested
+`pointing.source_strategy.fruitloops_center_mode: map_center`, while the
+runtime reported `auto` and selected peaks roughly 201--286 arcsec from the
+map center. The configured adaptive support radius was only 180 arcsec. The
+cause is deterministic: science reductions do not initialize the pointing
+execution plan, so a control owned only by the pointing domain cannot affect
+science fruit-loop execution.
+
+The candidate correction adds
+`timestream.fruit_loops.source_center_mode` to the typed processed-timestream
+request and its one-way processor adapter. It accepts `auto`, `header`, `peak`,
+or `map_center`, records the effective value in processed-timestream and
+NetCDF configuration provenance, and leaves the default at `auto` for
+backward-compatible behavior. Pointing and OOF retain their established
+pointing-strategy override. The full NGC4449 successor explicitly requests
+`map_center`; the run must be stopped if its startup log does not report that
+mode.
+
 ## What The Reported S/N Maps Were
 
 With empirical noise products disabled, the writer used the fallback
@@ -239,7 +266,7 @@ changes the learned state or the science flags.
 Local candidate evidence:
 
 - `citlali_cli` builds;
-- all 480 CTests pass, including focused learning, fruit-loop activation,
+- all 481 CTests pass, including focused learning, fruit-loop activation,
   realized-feedback, and map-semantics tests;
 - the full config preflight passes 116 tests and all required audits; and
 - all 106 baseline-tool tests, including product-contract,

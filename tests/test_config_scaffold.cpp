@@ -18,6 +18,7 @@
 #include <citlali/core/pipeline/coadd_provenance.h>
 #include <citlali/core/pipeline/citlali_config_read.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
+#include <citlali/core/pipeline/fruit_loops_config_read.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/learning_config_adapter.h>
 #include <citlali/core/pipeline/learning_config_read.h>
@@ -847,6 +848,7 @@ struct FakeFruitLoopsAdapterPtcProc {
     int fruit_loops_local_sigma_min_pixels = 0;
     double fruit_loops_adaptive_support_radius_arcsec = 0.0;
     double fruit_loops_adaptive_support_radius_fwhm = 0.0;
+    std::string fruit_loops_source_center_mode;
     bool fruit_loops_weight_feedback_enabled = false;
     std::string fruit_loops_weight_feedback_reference;
     double fruit_loops_weight_feedback_low_relative_weight = 0.0;
@@ -4420,6 +4422,26 @@ TEST(config_scaffold, validates_fruit_loops_values) {
     EXPECT_EQ(report.error_count(), 15U);
 }
 
+TEST(config_scaffold, reads_science_fruit_loops_source_center_mode) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    root["timestream"]["fruit_loops"]["enabled"] = true;
+    root["timestream"]["fruit_loops"]["source_center_mode"] =
+        "map_center";
+    auto yaml_config =
+        tula::config::YamlConfig::from_str(YAML::Dump(root));
+    citlali::config::TimestreamFruitLoopsConfig config;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_fruit_loops_core_config(
+        yaml_config, config, diagnostics);
+
+    EXPECT_FALSE(diagnostics.has_errors());
+    EXPECT_EQ(
+        config.source_center_mode,
+        citlali::config::FruitLoopsSourceCenterMode::map_center);
+}
+
 TEST(config_scaffold, validates_timestream_learning_values) {
     citlali::config::TimestreamLearningConfig config;
     config.learn_iters = -1;
@@ -7388,6 +7410,8 @@ TEST(pipeline_execution, adapts_typed_fruit_loop_policy_one_way) {
     config.local_sigma_min_pixels = 55;
     config.adaptive_support_radius_arcsec = 13.0;
     config.adaptive_support_radius_fwhm = 1.7;
+    config.source_center_mode =
+        citlali::config::FruitLoopsSourceCenterMode::map_center;
     config.weight_feedback.enabled = true;
     config.weight_feedback.reference =
         citlali::config::FruitLoopsWeightFeedbackReference::median;
@@ -7427,6 +7451,7 @@ TEST(pipeline_execution, adapts_typed_fruit_loop_policy_one_way) {
         ptcproc.fruit_loops_adaptive_support_radius_arcsec, 13.0);
     EXPECT_DOUBLE_EQ(
         ptcproc.fruit_loops_adaptive_support_radius_fwhm, 1.7);
+    EXPECT_EQ(ptcproc.fruit_loops_source_center_mode, "map_center");
     EXPECT_TRUE(ptcproc.fruit_loops_weight_feedback_enabled);
     EXPECT_EQ(ptcproc.fruit_loops_weight_feedback_reference, "median");
     EXPECT_DOUBLE_EQ(
@@ -9381,6 +9406,8 @@ TEST(config_scaffold, serializes_processed_config_snapshot_deterministically) {
     citlali::config::TimestreamConfig config;
     config.fruit_loops.enabled = true;
     config.fruit_loops.mode = citlali::config::FruitLoopsMode::both;
+    config.fruit_loops.source_center_mode =
+        citlali::config::FruitLoopsSourceCenterMode::map_center;
     config.fruit_loops.array_flux_limit = {1.0, 2.0};
     config.fruit_loops.weight_feedback.reference =
         citlali::config::FruitLoopsWeightFeedbackReference::median;
@@ -9415,6 +9442,9 @@ TEST(config_scaffold, serializes_processed_config_snapshot_deterministically) {
             snapshot);
 
     EXPECT_TRUE(node["fruit_loops"]["enabled"].as<bool>());
+    EXPECT_EQ(
+        node["fruit_loops"]["source_center_mode"].as<std::string>(),
+        "map_center");
     EXPECT_EQ(node["fruit_loops"]["mode"].as<std::string>(), "both");
     EXPECT_EQ(node["fruit_loops"]["array_flux_limit"].size(), 2U);
     EXPECT_EQ(node["fruit_loops"]["weight_feedback"]["reference"]
