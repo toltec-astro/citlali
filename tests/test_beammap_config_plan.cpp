@@ -1,5 +1,6 @@
 #include <citlali_config/default_config.h>
 #include <citlali/core/config/beammap_config_validation.h>
+#include <citlali/core/engine/detail/beammap_map_product_split_helpers.h>
 #include <citlali/core/pipeline/beammap_config_loading.h>
 #include <citlali/core/pipeline/beammap_config_serialization.h>
 #include <citlali/core/pipeline/beammap_provenance.h>
@@ -22,6 +23,24 @@
 #include <vector>
 
 namespace {
+
+TEST(BeammapSplitMapProducts, CapturesAllInterleavedDetectorIndices) {
+    Eigen::VectorXd flags(12);
+    flags << 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0;
+
+    const auto good_indices =
+        beammap_map_product_split_helpers::map_indices_with_flag(
+            flags, flags.size(), 0);
+    const auto bad_indices =
+        beammap_map_product_split_helpers::map_indices_with_flag(
+            flags, flags.size(), 1);
+    flags.setZero();
+
+    EXPECT_EQ(good_indices,
+              (std::vector<Eigen::Index>{0, 1, 3, 5, 6, 8, 11}));
+    EXPECT_EQ(bad_indices,
+              (std::vector<Eigen::Index>{2, 4, 7, 9, 10}));
+}
 
 void ensure_citlali_test_logger() {
     if (!spdlog::get("citlali_logger")) {

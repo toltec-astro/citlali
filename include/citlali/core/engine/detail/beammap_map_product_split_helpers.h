@@ -5,7 +5,6 @@
 #include <exception>
 #include <filesystem>
 #include <cmath>
-#include <set>
 #include <string>
 #include <vector>
 
@@ -44,18 +43,19 @@ Eigen::Index count_maps_with_flag(const Flags &flags,
 }
 
 template <class Flags>
-Eigen::Index count_maps_with_any_flag(const Flags &flags,
-                                      Eigen::Index n_maps,
-                                      const std::vector<int> &flag_values) {
-    const std::set<int> split_values(flag_values.begin(), flag_values.end());
-    Eigen::Index n_selected_maps = 0;
+std::vector<Eigen::Index> map_indices_with_flag(const Flags &flags,
+                                                Eigen::Index n_maps,
+                                                int flag_value) {
+    std::vector<Eigen::Index> indices;
+    indices.reserve(
+        static_cast<std::size_t>(count_maps_with_flag(
+            flags, n_maps, flag_value)));
     for (Eigen::Index i = 0; i < n_maps; ++i) {
-        const int det_flag = detector_flag(flags, i);
-        if (split_values.count(det_flag) > 0) {
-            ++n_selected_maps;
+        if (detector_flag(flags, i) == flag_value) {
+            indices.push_back(i);
         }
     }
-    return n_selected_maps;
+    return indices;
 }
 
 template <class FitsIo>

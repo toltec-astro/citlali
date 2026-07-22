@@ -811,7 +811,7 @@ public:
         const std::string &dir_name,
         bool detector_grouping,
         int flag_value,
-        Eigen::Index n_flag_maps);
+        const std::vector<Eigen::Index> &detector_indices);
     template <mapmaking::MapType map_type>
     bool should_split_beammap_maps_by_flag(
         bool detector_grouping,

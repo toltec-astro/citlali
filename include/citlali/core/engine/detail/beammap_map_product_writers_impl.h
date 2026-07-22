@@ -42,7 +42,7 @@ void Beammap::write_split_beammap_flag_maps(
     const std::string &dir_name,
     bool detector_grouping,
     int flag_value,
-    Eigen::Index n_flag_maps) {
+    const std::vector<Eigen::Index> &detector_indices) {
     (void)stage_profile;
     tula::logging::progressbar pb(
         [&](const auto &msg) { logger->info("{}", msg); }, 100,
@@ -53,16 +53,9 @@ void Beammap::write_split_beammap_flag_maps(
             "beammap.map_output.split_write_maps", logger,
             "dir=" + dir_name +
                 " flag=" + std::to_string(flag_value) +
-                " maps=" + std::to_string(n_flag_maps));
-    for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
-        const int det_flag =
-            beammap_map_product_split_helpers::detector_flag(
-                calib.apt["flag"], i);
-        if (det_flag != flag_value) {
-            continue;
-        }
-
-        pb.count(n_flag_maps, 1);
+                " maps=" + std::to_string(detector_indices.size()));
+    for (const auto i : detector_indices) {
+        pb.count(detector_indices.size(), 1);
         logger->debug("adding split map for detector {} flag={}", i,
                       flag_value);
         const Eigen::Index signal_hdu_index =
@@ -146,11 +139,17 @@ void Beammap::write_split_beammap_map_products(
             logger, "map output " + dir_name + " split-by-flag before write",
             mb->kernel);
     }
-    const Eigen::Index n_selected_maps =
-        beammap_map_product_split_helpers::count_maps_with_any_flag(
-            calib.apt["flag"], map_indices.n_maps, flag_values);
+    std::vector<std::vector<Eigen::Index>> detector_indices_by_flag;
+    detector_indices_by_flag.reserve(flag_values.size());
+    std::size_t n_selected_maps = 0;
+    for (const auto flag_value : flag_values) {
+        detector_indices_by_flag.push_back(
+            beammap_map_product_split_helpers::map_indices_with_flag(
+                calib.apt["flag"], map_indices.n_maps, flag_value));
+        n_selected_maps += detector_indices_by_flag.back().size();
+    }
 
-    if (n_selected_maps <= 0) {
+    if (n_selected_maps == 0) {
         logger->warn("beammap split_fits_by_flag selected no detector maps; using standard map output");
         write_standard_beammap_map_products<map_type>(
             mb, f_io, n_io, stage_profile, dir_name, detector_grouping);
@@ -163,12 +162,13 @@ void Beammap::write_split_beammap_map_products(
     using split_io_t =
         fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>;
 
-    for (const auto flag_value : flag_values) {
-        const Eigen::Index n_flag_maps =
-            beammap_map_product_split_helpers::count_maps_with_flag(
-                calib.apt["flag"], map_indices.n_maps, flag_value);
+    for (std::size_t split_index = 0;
+         split_index < flag_values.size(); ++split_index) {
+        const int flag_value = flag_values[split_index];
+        const auto &detector_indices =
+            detector_indices_by_flag[split_index];
 
-        if (n_flag_maps <= 0) {
+        if (detector_indices.empty()) {
             logger->warn("beammap split_fits_by_flag: no detector maps found with flag={}; skipping", flag_value);
             continue;
         }
@@ -198,7 +198,7 @@ void Beammap::write_split_beammap_map_products(
         write_split_beammap_flag_maps<map_type>(
             mb, split_f_io, split_n_io, stage_profile, dir_name,
             detector_grouping,
-            flag_value, n_flag_maps);
+            flag_value, detector_indices);
 
         beammap_map_product_split_helpers::log_split_output_filepaths(
             logger, *split_f_io, flag_value);
