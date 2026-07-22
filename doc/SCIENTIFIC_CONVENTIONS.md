@@ -117,7 +117,9 @@ polarimetry is rejected and those products are not scientifically validated.
 - Sample bounds, detector rows, Beammap source-crossing slots, and diagnostic
   row/column indices are zero-based unless a product contract says otherwise.
 - Fruit-loop iteration identifiers and learning-diagnostic filename iteration
-  values are zero-based.
+  values are zero-based and absolute across an exact restart. A checkpoint
+  completed at iteration `N` resumes at `N + 1`; the new job does not relabel
+  that iteration as zero.
 - Learning-housekeeping QA `scan_zero_based` and filename iteration values are
   zero-based. `event_time_unix_sec` is the midpoint of the first and last
   finite PTC `TelTime` values in the processed chunk. Housekeeping matches use
@@ -146,6 +148,16 @@ neighbor differences. It neither changes sample flags nor establishes causal
 timing. Current housekeeping cadence can be approximately 60 seconds, so the
 published sample age is part of the scientific interpretation and must not be
 discarded by downstream QA.
+
+The fruit-loop restart checkpoint stores operational learned state, not QA
+history. Its sample masks are the canonical disjoint interval union keyed by
+observation, zero-based scan, application stage, and detector UID. Its detector
+penalties retain their scientific identity and effective value. Bounded event
+vectors, housekeeping matches, summaries, and dropped-diagnostic counters do
+not affect later flags or weights and are intentionally not restored. Exact
+continuation requires unchanged inputs and science configuration; version 1
+mechanically rejects mismatched ordered observations, fruit-loop map type, and
+learning policy and records the remaining configuration for audit.
 
 Map products are collections of two-dimensional spatial planes. Array,
 frequency, and Stokes identity are represented by product grouping, FITS

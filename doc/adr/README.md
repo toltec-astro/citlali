@@ -18,6 +18,7 @@ duplicate changing implementation inventories or validation snapshots.
 | [0003](0003-session-lifecycle-and-engine-compatibility.md) | Accepted | Sequential session lifecycle and `Engine` as a frozen compatibility boundary |
 | [0004](0004-compiled-boundary-and-header-policy.md) | Accepted | Evidence-driven compiled boundaries and header/hot-path policy |
 | [0005](0005-defer-measured-r-channel-execution.md) | Accepted | Preserve measured R-channel structure while deferring execution until its contract is approved |
+| [0006](0006-fruit-loop-restart-checkpoint.md) | Accepted | Resume fruit loops from a required state-complete iteration checkpoint with absolute iteration identity and fail-closed compatibility checks |
 
 Numbers are never reused. A materially different decision adds a new ADR and
 marks the old record superseded; do not rewrite the historical rationale.

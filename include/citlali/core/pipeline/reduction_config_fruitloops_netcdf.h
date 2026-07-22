@@ -8,6 +8,8 @@ void add_fruit_loops_config_vars(netCDF::NcFile &fo,
     add_netcdf_var(fo, "CONFIG.FRUITLOOPS", config.enabled);
     add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.PATH",
                                 config.path);
+    add_netcdf_var<std::string>(fo, "CONFIG.FRUITLOOPS.RESTART_PATH",
+                                config.restart_path);
     add_netcdf_var(fo, "CONFIG.FRUITLOOPS.S2N",
                    config.sig2noise_limit);
     add_netcdf_var(fo, "CONFIG.FRUITLOOPS.PEAKFRAC",

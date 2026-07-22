@@ -280,7 +280,11 @@ PROVENANCE_SIDECARS = {
     },
     "processed_timestream": {
         "filename": "processed_timestream_provenance.yaml",
-        "schema_version": "citlali-processed-timestream-provenance-v1",
+        "schema_version": "citlali-processed-timestream-provenance-v2",
+        "accepted_schema_versions": (
+            "citlali-processed-timestream-provenance-v1",
+            "citlali-processed-timestream-provenance-v2",
+        ),
         "required_paths": (
             ("initialized",),
             ("requested",),
@@ -473,6 +477,30 @@ def processed_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
         effective = nested_value(data, ("effective", "config"))
         resolutions = nested_value(data, ("effective", "resolutions"))
         realized = nested_value(data, ("realized",))
+
+        if data.get("schema_version") == "citlali-processed-timestream-provenance-v2":
+            restart_record = resolutions.get("fruit_loop_restart")
+            if not isinstance(restart_record, dict):
+                errors.append("effective.fruit_loop_restart is missing")
+            else:
+                restart_path = requested["fruit_loops"].get("restart_path")
+                restart_requested = restart_path not in (None, "", "null")
+                if restart_record.get("available") is not restart_requested:
+                    errors.append(
+                        "fruit-loop restart availability does not match requested restart_path"
+                    )
+                elif restart_requested:
+                    restart = restart_record.get("value", {})
+                    if restart.get("source_reduction_dir") != restart_path:
+                        errors.append(
+                            "fruit-loop restart source does not match requested restart_path"
+                        )
+                    if restart.get("next_iteration") != (
+                        restart.get("completed_iteration", -2) + 1
+                    ):
+                        errors.append(
+                            "fruit-loop restart iteration identity is inconsistent"
+                        )
 
         cleaner = resolutions["cleaner_mode"]["value"]
         if effective["processed_time_chunk"]["clean"]["active"] != cleaner["effective"]:

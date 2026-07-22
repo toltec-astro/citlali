@@ -3,6 +3,7 @@
 #include <citlali/core/pipeline/beammap_provenance_lifecycle.h>
 #include <citlali/core/pipeline/fruit_loop_iteration_state.h>
 #include <citlali/core/pipeline/fruit_loop_iteration_policy.h>
+#include <citlali/core/pipeline/fruit_loop_restart_lifecycle.h>
 #include <citlali/core/pipeline/iteration_buffers.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/iteration_output_layout.h>
@@ -37,6 +38,7 @@ void initialize_reduction_iterations(Engine &engine,
     engine.iteration.fruit_iter = 0;
     reset_reduction_iteration_state(state);
     configure_fruit_loop_iteration_policy(engine, logger);
+    initialize_fruit_loop_restart_if_requested(engine, state, logger);
 }
 
 template <class Engine, class Logger>

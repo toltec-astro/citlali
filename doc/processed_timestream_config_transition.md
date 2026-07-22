@@ -53,7 +53,7 @@ satisfy the provenance or legacy-parser-removal gates below.
 ## Versioned provenance
 
 `processed_timestream_provenance.yaml` uses schema
-`citlali-processed-timestream-provenance-v1` and is written atomically in the
+`citlali-processed-timestream-provenance-v2` and is written atomically in the
 reduction directory after successful completion. It contains:
 
 - `requested`: the accepted canonical typed request after parsing,
@@ -61,7 +61,7 @@ reduction directory after successful completion. It contains:
 - `effective.config`: the processed configuration used by runtime accessors;
 - `effective.resolutions`: explicit availability and decision records for
   cleaner mode, source-mask inheritance, weighting dependencies, fruit-loop
-  interpolation, and iteration policy;
+  interpolation, iteration policy, and exact-restart resolution;
 - `realized`: source-protection activation, completed iteration count, and
   convergence state.
 
@@ -70,6 +70,12 @@ absence versus an explicit value is represented by the corresponding
 resolution record where the typed snapshot cannot itself retain YAML
 presence. An uninitialized plan or any create/write/rename failure fails the
 reduction; no partial provenance document is accepted.
+
+Schema v2 adds the requested `fruit_loops.restart_path` and its effective
+resolution. The restart source is not an ordinary initial-map seed: it names a
+completed reduction containing the required versioned operational-state
+checkpoint. Resolution occurs once at reduction initialization, before the
+absolute resumed iteration begins, and never writes back into the request.
 
 Point provenance was accepted on 2026-07-12. `81020d46` `redu35` contains all
 required v1 sections and availability records, and remains scientifically exact

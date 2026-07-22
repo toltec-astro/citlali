@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/reduction_learning_lifecycle.h>
+#include <citlali/core/pipeline/fruit_loop_restart_lifecycle.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/weight_validation_lifecycle.h>
 #include <citlali/core/error/error.h>
@@ -87,6 +88,7 @@ void finalize_iteration_outputs(TodProc &todproc, const Logger &logger) {
     finalize_fruit_loop_iteration(engine, logger);
 
     make_reduction_iteration_index_file(todproc, logger);
+    write_iteration_restart_checkpoint_if_needed(engine, logger);
     advance_fruit_loop_iteration(engine);
 }
 

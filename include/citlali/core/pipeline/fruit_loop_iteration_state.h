@@ -10,10 +10,14 @@ struct FruitLoopRuntimeState {
 
 struct ReductionIterationState {
     bool fruit_loops_converged = false;
+    bool restarted = false;
+    int start_iteration = 0;
 };
 
 inline void reset_reduction_iteration_state(ReductionIterationState &state) {
     state.fruit_loops_converged = false;
+    state.restarted = false;
+    state.start_iteration = 0;
 }
 
 template <class Engine>

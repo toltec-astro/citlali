@@ -77,9 +77,9 @@ branch. The exact validated tree will remain available for forensic review.
   `redu25` validates the intended disabled-state provenance correction with
   exact scientific products.
 - Local `citlali_cli`/test builds and full config preflight pass.
-- CTest discovers and passes all 481 tests. The Phase 4.1 config preflight now
-  passes 116 focused tests; the checked leaf contract covers 577 leaves and the generated
-  startup schema covers 727 normalized YAML nodes. The six new direct tests
+- CTest discovers and passes all 488 tests. The Phase 4.1 config preflight now
+  passes 116 focused tests; the checked leaf contract covers 578 leaves and the generated
+  startup schema covers 728 normalized YAML nodes. The six new direct tests
   cover the production rejection of experimental maximum-likelihood
   mapmaking, analytic flux conversion, detector-specific calibration,
   detector pointing, and two source-finder safety boundaries. Eleven additional
@@ -122,6 +122,24 @@ adapted directly to the fruit-loop processor. The additive `auto` default
 preserves prior behavior. The NGC4449 successor requests `map_center`; a Unity
 run must confirm the realized log before this becomes accepted science
 evidence.
+
+The project owner then approved state-complete cross-job fruit-loop
+continuation so NGC4449 iterations can be extended without discarding learned
+state. ADR 0006 defines the new required atomic
+`citlali_restart_checkpoint.nc` artifact and explicit
+`timestream.fruit_loops.restart_path`. The checkpoint stores compacted
+operational masks and detector penalties, absolute iteration identity, ordered
+observations, map type, creator version, and the complete learning-policy
+snapshot; bounded diagnostic event history is intentionally excluded. Loading
+is fail-closed for the stored compatibility contract, `path` and
+`restart_path` are mutually exclusive, and `max_iters` is the absolute
+exclusive stop. Local split-run tests show five completed synthetic learning
+iterations plus a two-iteration restart exactly match seven uninterrupted
+iterations. Local CLI/test builds, 488 CTests, the 116-test complete config
+preflight, and all 108 baseline-tool tests (including 60 reduction-audit
+tests) pass. A matched Unity split versus
+uninterrupted science run is still required; the already-running older binary
+cannot create this new checkpoint.
 
 ## Active Phase
 

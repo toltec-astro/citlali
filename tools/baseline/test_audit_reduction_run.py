@@ -120,6 +120,17 @@ def valid_processed_document() -> dict:
     }
 
 
+def valid_processed_v2_document() -> dict:
+    document = valid_processed_document()
+    document["schema_version"] = "citlali-processed-timestream-provenance-v2"
+    document["requested"]["fruit_loops"]["restart_path"] = None
+    document["effective"]["config"]["fruit_loops"]["restart_path"] = None
+    document["effective"]["resolutions"]["fruit_loop_restart"] = {
+        "available": False,
+    }
+    return document
+
+
 def valid_raw_document() -> dict:
     return {
         "schema_version": "citlali-raw-timestream-provenance-v1",
@@ -1729,6 +1740,57 @@ class ProvenanceAuditTest(unittest.TestCase):
             self.assertTrue(processed["required"])
             self.assertTrue(processed["valid"])
             self.assertEqual(len(processed["sha256"]), 64)
+
+    def test_accepts_complete_processed_v2_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "processed_timestream_provenance.yaml").write_text(
+                yaml.safe_dump(valid_processed_v2_document(), sort_keys=False),
+                encoding="utf-8",
+            )
+
+            processed = audit.audit_provenance_sidecars(
+                redu, require_processed=True
+            )["processed_timestream"]
+
+            self.assertTrue(processed["valid"])
+            self.assertEqual(
+                processed["schema_version"],
+                "citlali-processed-timestream-provenance-v2",
+            )
+
+    def test_accepts_consistent_processed_v2_restart_resolution(self) -> None:
+        document = valid_processed_v2_document()
+        restart_path = "/data/prior/redu04"
+        document["requested"]["fruit_loops"]["restart_path"] = restart_path
+        document["effective"]["config"]["fruit_loops"][
+            "restart_path"
+        ] = restart_path
+        document["effective"]["resolutions"]["fruit_loop_restart"] = {
+            "available": True,
+            "value": {
+                "source_reduction_dir": restart_path,
+                "checkpoint_path": restart_path
+                + "/citlali_restart_checkpoint.nc",
+                "creator_version": "test",
+                "completed_iteration": 4,
+                "next_iteration": 5,
+                "effective_sample_mask_intervals": 10,
+                "effective_detector_penalties": 2,
+            },
+        }
+
+        self.assertEqual(
+            audit.processed_provenance_semantic_errors(document), []
+        )
+
+        document["effective"]["resolutions"]["fruit_loop_restart"][
+            "value"
+        ]["next_iteration"] = 6
+        self.assertIn(
+            "fruit-loop restart iteration identity is inconsistent",
+            audit.processed_provenance_semantic_errors(document),
+        )
 
     def test_rejects_missing_processed_sections(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

@@ -489,6 +489,10 @@ struct TimestreamFruitLoopsConfig {
     bool enabled = false;
     bool save_all_iters = false;
     std::string path;
+    // A completed reduction directory containing
+    // citlali_restart_checkpoint.nc.  Unlike path, this requests an exact
+    // continuation of both the fruit-loop map and effective learning state.
+    std::string restart_path;
     std::string type;
     FruitLoopsMode mode = FruitLoopsMode::upper;
     double sig2noise_limit = 0.0;

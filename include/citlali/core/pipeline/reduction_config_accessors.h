@@ -330,6 +330,26 @@ const auto &fruit_loops_config(const Engine &engine) {
 }
 
 template <class Engine>
+auto &learning_config(Engine &engine) {
+    if constexpr (has_processed_timestream_plan_v<Engine>) {
+        if (engine.processed_timestream_plan.initialized) {
+            return engine.processed_timestream_plan.effective.learning;
+        }
+    }
+    return timestream_config(engine).learning;
+}
+
+template <class Engine>
+const auto &learning_config(const Engine &engine) {
+    if constexpr (has_processed_timestream_plan_v<Engine>) {
+        if (engine.processed_timestream_plan.initialized) {
+            return engine.processed_timestream_plan.effective.learning;
+        }
+    }
+    return timestream_config(engine).learning;
+}
+
+template <class Engine>
 auto &processed_timestream_plan(Engine &engine) {
     return engine.processed_timestream_plan;
 }

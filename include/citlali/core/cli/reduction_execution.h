@@ -23,6 +23,7 @@
 #include <citlali/core/pipeline/post_processing_provenance_lifecycle.h>
 #include <citlali/core/pipeline/processed_timestream_provenance.h>
 #include <citlali/core/pipeline/reduction_pipeline.h>
+#include <citlali/core/pipeline/reduction_restart_checkpoint.h>
 #include <citlali/core/session/reduction_result.h>
 #include <spdlog/spdlog.h>
 
@@ -250,6 +251,11 @@ citlali::session::ReductionResult run_reduction_processor_session(
         citlali::pipeline::processed_timestream_provenance_path(
             engine.output_paths.redu_dir_name)
             .string());
+    if (citlali::pipeline::fruit_loops_config(engine).enabled) {
+        result.provenance_artifacts.push_back(
+            citlali::pipeline::reduction_restart_checkpoint_path(
+                engine.output_paths.redu_dir_name));
+    }
 
     auto &mapmaking_plan =
         citlali::pipeline::mapmaking_plan(engine);

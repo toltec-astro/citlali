@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/pipeline/fruit_loop_restart_lifecycle.h>
 #include <citlali/core/pipeline/output_config_copy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/stage_profile.h>
@@ -11,7 +12,8 @@ namespace citlali::pipeline {
 template <class Engine>
 bool should_prepare_iteration_output_layout(const Engine &engine) {
     return fruit_loops_config(engine).save_all_iters ||
-           engine.iteration.fruit_iter == 0;
+           engine.iteration.fruit_iter == 0 ||
+           first_restarted_iteration(engine);
 }
 
 template <class TodProc>

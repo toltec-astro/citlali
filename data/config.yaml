@@ -548,7 +548,8 @@ timestream: # timestream reduction parameters
     interp_mode_override: auto # auto|nearest|bilinear|jinc|trunc ; trunc reproduces legacy integer-cast map sampling
     legacy_center: false # false uses (n-1)/2 center, true uses legacy n/2 center in map->TOD projection
     recompute_weights_after_addback: false # false keeps source-subtracted weights, true recomputes weights after add-back
-    max_iters: 1 # total iterations; enabled feedback requires at least 2 and at least one active selection gate
+    restart_path: null # completed reduNN directory containing citlali_restart_checkpoint.nc; mutually exclusive with path
+    max_iters: 1 # absolute total iteration count (exclusive stop); restart from completed iteration N requires max_iters > N+1
     save_all_iters: false # save all iterations or only the last one to save disk space (overwrites output files for each iter if true)
 post_processing:
   source_fitting: # parameters for source fitting

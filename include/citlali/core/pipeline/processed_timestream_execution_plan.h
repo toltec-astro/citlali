@@ -6,7 +6,9 @@
 #include <citlali/core/pipeline/processed_weighting_resolution.h>
 #include <citlali/core/pipeline/source_protection_activation.h>
 
+#include <cstddef>
 #include <optional>
+#include <string>
 
 namespace citlali::pipeline {
 
@@ -32,6 +34,16 @@ struct ProcessedTimestreamEffectiveResolutionRecord {
     std::optional<ProcessedWeightingResolution> weighting_dependencies;
     std::optional<FruitLoopIterationResolution> fruit_loop_iterations;
     std::optional<FruitLoopInterpolationResolution> fruit_loop_interpolation;
+    struct FruitLoopRestartResolution {
+        std::string source_reduction_dir;
+        std::string checkpoint_path;
+        std::string creator_version;
+        int completed_iteration = -1;
+        int next_iteration = -1;
+        std::size_t effective_sample_mask_intervals = 0;
+        std::size_t effective_detector_penalties = 0;
+    };
+    std::optional<FruitLoopRestartResolution> fruit_loop_restart;
 };
 
 struct ProcessedTimestreamRealizedState {

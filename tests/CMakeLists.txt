@@ -18,6 +18,7 @@ target_sources(citlali_test
         fruit_loop_feedback_validation_header.cpp
         fruit_loop_map_input_validation_header.cpp
         output_root_lease_header.cpp
+        reduction_restart_checkpoint_header.cpp
         wiener_filter_validation_header.cpp
         test_kids_input_validation.cpp
         test_learning_and_fruit_contracts.cpp

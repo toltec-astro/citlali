@@ -11,7 +11,7 @@
 namespace citlali::pipeline {
 
 inline constexpr const char *processed_timestream_provenance_schema_version =
-    "citlali-processed-timestream-provenance-v1";
+    "citlali-processed-timestream-provenance-v2";
 inline constexpr const char *processed_timestream_provenance_filename =
     "processed_timestream_provenance.yaml";
 

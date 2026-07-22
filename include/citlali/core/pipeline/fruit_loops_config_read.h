@@ -33,6 +33,12 @@ void read_fruit_loops_core_config(
         config, std::tuple{"timestream", "fruit_loops", "path"},
         path, typed_config.path, diagnostics);
 
+    std::string restart_path = typed_config.restart_path;
+    read_optional_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "fruit_loops", "restart_path"},
+        restart_path, typed_config.restart_path, diagnostics);
+
     std::string type = typed_config.type;
     read_config_value_if_clean(
         config, std::tuple{"timestream", "fruit_loops", "type"}, type,

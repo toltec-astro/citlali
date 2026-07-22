@@ -237,11 +237,22 @@ Each reduction iteration then:
 5. runs the selected mode's RTC/PTC and mapmaking pipeline when enabled;
 6. writes raw observation products or accumulates the observation into a
    coadd; and
-7. writes iteration coadds, filtering/fitting products, learning records, and
-   finalization outputs.
+7. writes iteration coadds, filtering/fitting products, learning records, the
+   required restart checkpoint when fruit loops are enabled, and finalization
+   outputs.
 
 The next fruit-loop iteration returns to step 1. It does not rerun TolTECA
 merge logic or the initial geometry pass.
+
+An exact fruit-loop continuation is initialized at the iteration boundary from
+an explicit completed reduction directory. The local iteration owner restores
+the compacted operational learning state and absolute next iteration before
+the loop begins. The first resumed pass reads the source map from that completed
+directory and publishes into a newly prepared output layout; following passes
+use the ordinary preceding-output rule. The checkpoint is required and atomic,
+and incompatible observation order, fruit-loop type, learning policy, schema,
+or state fails before science execution. Diagnostic learning history is not
+runtime state and is not restored. See ADR 0006.
 
 ## Scientific Data Flow
 
@@ -326,7 +337,7 @@ low-level schema while preserving that explicit upstream boundary.
 | One sequential run | `ReductionSession` | Own run state and `StageProfileCollector`; reject nested use and classify the final result. |
 | One invocation's inputs | `StandardReductionInputs` and selected processor variant | Load a fresh config/coordinator and construct a fresh mode engine for each run. |
 | Reduction | Selected `TimeOrderedDataProc`, its engine, execution plans, and `OutputRootLease` | Keep output identity and reduction-wide plans bounded to the run. |
-| Fruit-loop iteration | Local `ReductionIterationState` plus temporary compatibility fields in `Engine::iteration` | Local state is authoritative; compatibility fields must not become a new shared owner. |
+| Fruit-loop iteration | Local `ReductionIterationState` plus temporary compatibility fields in `Engine::iteration` | Local state is authoritative; exact restart restores it and compacted learning state at this boundary; compatibility fields must not become a new shared owner. |
 | Observation | Local KIDs processor and `ReductionObservationContext`; observation plans plus compatibility state in `Engine` | Observation-specific calibration, astrometry, photometry, and buffers are replaced or reset at observation boundaries. |
 | Scan/chunk | RTC/PTC processor state, explicit cursors, chunk contexts, and writer tasks | Validate identity and bounds before hot loops; do not use process-lifetime mutable cursors. |
 | Ordered output | `OrderedWriter`, product-specific file owners, atomic publication helpers | Record the first failure, cancel/wake waiting work, and propagate required failures. |

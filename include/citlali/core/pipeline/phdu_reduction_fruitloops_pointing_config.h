@@ -22,6 +22,8 @@ void add_phdu_fruit_loops_config(FitsEntry &fits_entry,
     hdu.addKey("CONFIG.FRUITLOOPS", config.enabled, "Fruit loops");
     hdu.addKey("CONFIG.FRUITLOOPS.PATH", config.path,
                "Fruit loops path");
+    hdu.addKey("CONFIG.FRUITLOOPS.RESTART_PATH", config.restart_path,
+               "Exact fruit-loops restart reduction path");
     hdu.addKey("CONFIG.FRUITLOOPS.TYPE", config.type,
                "Fruit loops type");
     const auto source_center_mode =

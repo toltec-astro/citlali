@@ -55,6 +55,7 @@ inline YAML::Node fruit_loops_config_node(
     node["enabled"] = config.enabled;
     node["save_all_iters"] = config.save_all_iters;
     node["path"] = config.path;
+    node["restart_path"] = config.restart_path;
     node["type"] = config.type;
     node["mode"] = std::string{citlali::config::to_string(config.mode)};
     node["sig2noise_limit"] = config.sig2noise_limit;
@@ -521,6 +522,22 @@ inline YAML::Node fruit_loop_interpolation_resolution_node(
     return node;
 }
 
+inline YAML::Node fruit_loop_restart_resolution_node(
+    const ProcessedTimestreamEffectiveResolutionRecord::
+        FruitLoopRestartResolution &resolution) {
+    YAML::Node node;
+    node["source_reduction_dir"] = resolution.source_reduction_dir;
+    node["checkpoint_path"] = resolution.checkpoint_path;
+    node["creator_version"] = resolution.creator_version;
+    node["completed_iteration"] = resolution.completed_iteration;
+    node["next_iteration"] = resolution.next_iteration;
+    node["effective_sample_mask_intervals"] =
+        resolution.effective_sample_mask_intervals;
+    node["effective_detector_penalties"] =
+        resolution.effective_detector_penalties;
+    return node;
+}
+
 inline YAML::Node source_protection_resolution_node(
     const SourceProtectionActivationResolution &resolution) {
     YAML::Node node;
@@ -551,6 +568,9 @@ inline YAML::Node processed_timestream_effective_resolutions_node(
     node["fruit_loop_interpolation"] = processed_optional_record_node(
         resolutions.fruit_loop_interpolation,
         fruit_loop_interpolation_resolution_node);
+    node["fruit_loop_restart"] = processed_optional_record_node(
+        resolutions.fruit_loop_restart,
+        fruit_loop_restart_resolution_node);
     return node;
 }
 

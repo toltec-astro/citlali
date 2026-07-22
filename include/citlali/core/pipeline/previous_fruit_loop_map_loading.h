@@ -2,6 +2,7 @@
 
 #include <citlali/core/pipeline/fruit_loop_map_io.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
+#include <citlali/core/pipeline/fruit_loop_restart_lifecycle.h>
 #include <citlali/core/pipeline/runtime_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
@@ -11,7 +12,8 @@ namespace citlali::pipeline {
 
 template <class Engine>
 bool should_load_previous_fruit_loop_maps(const Engine &engine) {
-    return engine.iteration.fruit_iter > 0;
+    return engine.iteration.fruit_iter > 0 &&
+           !first_restarted_iteration(engine);
 }
 
 template <class Engine>

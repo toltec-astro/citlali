@@ -4442,6 +4442,39 @@ TEST(config_scaffold, reads_science_fruit_loops_source_center_mode) {
         citlali::config::FruitLoopsSourceCenterMode::map_center);
 }
 
+TEST(config_scaffold, reads_explicit_fruit_loop_restart_path) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    root["timestream"]["fruit_loops"]["enabled"] = true;
+    root["timestream"]["fruit_loops"]["restart_path"] =
+        "/data/reduced/redu04";
+    auto yaml_config =
+        tula::config::YamlConfig::from_str(YAML::Dump(root));
+    citlali::config::TimestreamFruitLoopsConfig config;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_fruit_loops_core_config(
+        yaml_config, config, diagnostics);
+
+    EXPECT_FALSE(diagnostics.has_errors());
+    EXPECT_EQ(config.restart_path, "/data/reduced/redu04");
+}
+
+TEST(config_scaffold, rejects_ambiguous_fruit_loop_seed_and_restart) {
+    citlali::config::TimestreamFruitLoopsConfig config;
+    config.enabled = true;
+    config.path = "/data/maps";
+    config.restart_path = "/data/reduced/redu04";
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+
+    ASSERT_FALSE(report.ok());
+    EXPECT_EQ(report.errors().front().path,
+              (citlali::config::ConfigPath{
+                  "timestream", "fruit_loops", "restart_path"}));
+}
+
 TEST(config_scaffold, validates_timestream_learning_values) {
     citlali::config::TimestreamLearningConfig config;
     config.learn_iters = -1;
@@ -9325,6 +9358,11 @@ TEST(config_scaffold, serializes_versioned_processed_provenance) {
         citlali::pipeline::resolve_fruit_loop_iteration_policy(
             config.fruit_loops,
             citlali::config::ReductionType::beammap);
+    plan.effective_resolutions.fruit_loop_restart =
+        citlali::pipeline::ProcessedTimestreamEffectiveResolutionRecord::
+            FruitLoopRestartResolution{
+                "/data/redu04", "/data/redu04/citlali_restart_checkpoint.nc",
+                "v4-test", 4, 5, 12, 3};
     citlali::pipeline::record_processed_timestream_iteration_result(
         plan, 1, false);
 
@@ -9332,7 +9370,7 @@ TEST(config_scaffold, serializes_versioned_processed_provenance) {
         citlali::pipeline::processed_timestream_provenance_node(plan);
 
     EXPECT_EQ(node["schema_version"].as<std::string>(),
-              "citlali-processed-timestream-provenance-v1");
+              "citlali-processed-timestream-provenance-v2");
     EXPECT_TRUE(node["initialized"].as<bool>());
     EXPECT_EQ(node["requested"]["fruit_loops"]["max_iters"].as<int>(),
               3);
@@ -9343,6 +9381,10 @@ TEST(config_scaffold, serializes_versioned_processed_provenance) {
     EXPECT_TRUE(node["effective"]["resolutions"]
                     ["fruit_loop_iterations"]["available"]
                         .as<bool>());
+    EXPECT_EQ(node["effective"]["resolutions"]["fruit_loop_restart"]
+                  ["value"]["next_iteration"]
+                      .as<int>(),
+              5);
     EXPECT_EQ(node["realized"]["fruit_loop_iterations_completed"]
                        ["value"]
                            .as<int>(),
@@ -9368,7 +9410,7 @@ TEST(config_scaffold, atomically_writes_processed_provenance) {
     EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
     const auto stored = YAML::LoadFile(output_path.string());
     EXPECT_EQ(stored["schema_version"].as<std::string>(),
-              "citlali-processed-timestream-provenance-v1");
+              "citlali-processed-timestream-provenance-v2");
     EXPECT_TRUE(stored["initialized"].as<bool>());
     std::filesystem::remove_all(output_dir);
 }
@@ -9789,6 +9831,28 @@ TEST(pipeline_output_layout, skips_iteration_output_layout_when_not_saved) {
         todproc, config_filepaths, stage_profile, logger);
 
     EXPECT_EQ(todproc.create_output_dir_calls, 0);
+}
+
+TEST(pipeline_output_layout,
+     prepares_first_restarted_output_layout_when_not_saved) {
+    FakeCoaddTodProc todproc;
+    auto &engine = todproc.engine();
+    engine.iteration.fruit_iter = 5;
+    engine.typed_config.timestream.fruit_loops.save_all_iters = false;
+    engine.processed_timestream_plan.effective_resolutions
+        .fruit_loop_restart =
+        citlali::pipeline::ProcessedTimestreamEffectiveResolutionRecord::
+            FruitLoopRestartResolution{
+                "/data/prior/redu04", "/data/prior/redu04/checkpoint.nc",
+                "test", 4, 5, 2, 1};
+    std::vector<std::string> config_filepaths;
+    citlali::pipeline::StageProfileCollector stage_profile;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::prepare_iteration_output_layout_if_needed(
+        todproc, config_filepaths, stage_profile, logger);
+
+    EXPECT_EQ(todproc.create_output_dir_calls, 1);
 }
 
 TEST(pipeline_output_layout, derives_gaps_log_filepath) {

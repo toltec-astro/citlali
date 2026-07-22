@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/config/config_value.h>
 #include <citlali/core/config/config_error.h>
 #include <citlali/core/config/timestream_config.h>
 
@@ -933,6 +934,12 @@ inline void validate(const TimestreamFruitLoopsConfig &config,
         return;
     }
     const ConfigPath path{"timestream", "fruit_loops"};
+    if (has_nonempty_config_value(config.restart_path) &&
+        has_nonempty_config_value(config.path)) {
+        report.add_error(
+            append_config_path(path, {"restart_path"}),
+            "cannot be combined with path; restart_path supplies the initial map and learning state");
+    }
     check_minimum(config.peak_fraction_limit, 0.0,
                   append_config_path(path, {"peak_fraction_limit"}), report);
     check_minimum(config.local_snr_floor, 0.0,
