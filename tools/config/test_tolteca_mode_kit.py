@@ -424,6 +424,22 @@ class V2AuthoringModeKitsTest(unittest.TestCase):
         self.assertEqual(strategy["mode"], "psf_preserve")
         self.assertEqual(strategy["fruitloops_center_mode"], "map_center")
 
+    def test_pointing_defaults_do_not_write_filtered_products(self) -> None:
+        products = extract_low_level(
+            yaml.safe_load(
+                (
+                    self.v2_root
+                    / "point"
+                    / self.mode_files["point"]["products"]
+                ).read_text()
+            )
+        )
+
+        filtering = products["post_processing"]["map_filtering"]
+        self.assertFalse(filtering["enabled"])
+        self.assertEqual(filtering["type"], "wiener_filter")
+        self.assertIn("wiener_filter", products)
+
     def test_advanced_and_expert_files_start_empty(self) -> None:
         for mode, filenames in self.mode_files.items():
             for role in ("advanced", "expert"):

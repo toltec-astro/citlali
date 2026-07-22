@@ -172,7 +172,7 @@ reduce:
               taper_min_fraction: 0.25
               taper_mode: none
               weight_threshold_mode: coverage_cut
-            enabled: true
+            enabled: false
             normalize_errors: false
             type: wiener_filter
           map_histogram_n_bins: 50

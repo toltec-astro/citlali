@@ -22,7 +22,7 @@ reduce:
           # Filtered maps, source catalogs, and source fits
           post_processing:
             map_filtering:
-              enabled: true
+              enabled: false
               type: wiener_filter
               normalize_errors: false
             map_histogram_n_bins: 50

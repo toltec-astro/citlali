@@ -12,5 +12,7 @@ TolPROJ generates `72_pointing_observation.yaml`. Do not edit
 `60_pointing_internal_policy.yaml`; it is the complete accepted compatibility
 policy. Advanced and expert override files are deliberately empty.
 
-Source finding is experimental and disabled. The unchanged files merge exactly
-to accepted point `redu66`.
+Source finding is experimental and disabled. Routine pointings produce raw
+maps and fits; Wiener filtering remains available as an explicit product
+choice but is disabled by default. The predecessor full-Wiener validation
+remains recorded by accepted point `redu66`.

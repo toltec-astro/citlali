@@ -7,7 +7,7 @@ modes:
     record_id: point-152389-refactor-2a974e0d-redu66
     baseline_filename: citlali_o152389_0_2_c1.yaml
     baseline_sha256: 67f6c6e6bade058fdee933fd043cbbba363187c9acbecc0f0a30d04877ce2cd7
-    policy_sha256: f2d124d40ac7ad9e6351a647253050e5146659c666feed07262125e6fa5415c8
+    policy_sha256: 86e4ffa03f37aae32d614e76245ca9710efe27a2c28d56cb53e3bf4753f531ad
     reduction_type: pointing
     normalizations:
     - remove inputs

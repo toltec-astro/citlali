@@ -536,6 +536,15 @@ def generate_mode(
             "pointing.source_strategy.fit_gaussian",
             True,
         )
+    if spec.mode == "point":
+        # Routine calibration pointings consume raw maps. Keep the Wiener
+        # parameters available for explicit validation overlays without
+        # producing filtered products by default.
+        set_path(
+            policy,
+            "post_processing.map_filtering.enabled",
+            False,
+        )
     mode_dir = output_root / spec.mode
     files = spec.files
 
