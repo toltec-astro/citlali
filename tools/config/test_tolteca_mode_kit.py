@@ -408,6 +408,22 @@ class V2AuthoringModeKitsTest(unittest.TestCase):
         )
         self.assertNotIn("post_processing", beammap_products)
 
+    def test_oof_defaults_enable_diagnostic_gaussian_fits(self) -> None:
+        defaults = extract_low_level(
+            yaml.safe_load(
+                (
+                    self.v2_root
+                    / "oof"
+                    / self.mode_files["oof"]["defaults"]
+                ).read_text()
+            )
+        )
+        strategy = defaults["pointing"]["source_strategy"]
+
+        self.assertTrue(strategy["fit_gaussian"])
+        self.assertEqual(strategy["mode"], "psf_preserve")
+        self.assertEqual(strategy["fruitloops_center_mode"], "map_center")
+
     def test_advanced_and_expert_files_start_empty(self) -> None:
         for mode, filenames in self.mode_files.items():
             for role in ("advanced", "expert"):

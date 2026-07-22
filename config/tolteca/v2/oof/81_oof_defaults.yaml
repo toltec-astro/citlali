@@ -15,7 +15,7 @@ reduce:
           # Pointing and OOF source strategy
           pointing:
             source_strategy:
-              fit_gaussian: false
+              fit_gaussian: true
               fruitloops_center_mode: map_center
               header_max_radius_arcsec: 40.0
               header_require_coverage: true

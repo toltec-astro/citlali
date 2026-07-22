@@ -84,13 +84,15 @@ $HOME/tolteca/bin/python tools/config/tolteca_mode_kit.py merge \
 
 The full config preflight additionally enforces user/expert classification,
 mode-inapplicable control exclusion, file-size bounds, non-overlapping defaults
-and products, exact accepted hashes, and byte-for-byte generator reproduction.
+and products, exact versioned policy hashes, and byte-for-byte generator
+reproduction.
 
 ## Regeneration And TolPROJ
 
 `tools/config/generate_tolteca_v2_mode_kits.py` regenerates all four modes from
-the mechanically exact V1 accepted baselines. Review and validate a generated
-change before replacing this directory.
+the mechanically exact V1 accepted baselines plus documented successor
+controls. Review and validate a generated change before replacing this
+directory.
 
 Citlali is the canonical policy source. TolPROJ vendors an exact, hash-checked
 snapshot and installs it only under `--refactor`; non-refactor setup retains

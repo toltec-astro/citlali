@@ -1,6 +1,6 @@
 # Human-facing four-mode authoring kit; canonical source for TolPROJ vendoring.
 schema_version: citlali-tolteca-mode-kit-manifest-v2
-kit_version: phase4.1-v2
+kit_version: phase4.1-v2.1
 scope: all-supported-modes
 modes:
   point:
@@ -31,7 +31,7 @@ modes:
     record_id: oof-152385-152387-refactor-9ea6d7f0-redu02
     baseline_filename: citlali_o152385_0_1_c3.yaml
     baseline_sha256: aebfc3b764f4abeca1f7f7cfe60723714f000ca849f60b167cd495294f87bdbc
-    policy_sha256: 414a5d16ceba8b6f9163851c139affa486f50397e1ead56fc480ed53475b76f4
+    policy_sha256: 00290529029ee30bb7e1cb69c01f972bbbfc5f65c63f40bbb994195281031fdc
     reduction_type: pointing
     normalizations:
     - remove inputs

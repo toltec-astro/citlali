@@ -53,6 +53,13 @@ branch. The exact validated tree will remain available for forensic review.
   standard `2e-8 + 1e-10 * abs(reference)` tolerance. The only accepted
   differences are inactive RTC-despike config metadata recorded differently
   by the legacy and typed paths.
+- Phase 4.1 OOF smoke `redu00` in the self-contained validation suite, produced
+  by `e97de3fd`, intentionally enables diagnostic Gaussian fitting while
+  retaining `psf_preserve` and `map_center`. All three observations completed
+  in 59.4 seconds with zero logged issues, all required provenance valid, and
+  nine valid array fits from nine attempts. Its matched APT differs materially
+  from the older accepted OOF fixture, so this is mode-kit execution evidence,
+  not a numerical replacement for accepted `redu02`.
 - Latest accepted science reduction: clean single-job four-iteration sequence
   `redu28` through final `redu31`, produced by `a7a35a00`. Its 502-leaf config
   is exact against accepted `redu23`; all 12 FITS and 15 NetCDF product sets are

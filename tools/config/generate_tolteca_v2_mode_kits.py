@@ -22,7 +22,7 @@ from tolteca_mode_kit import (
 
 
 SCHEMA_VERSION = "citlali-tolteca-mode-kit-manifest-v2"
-KIT_VERSION = "phase4.1-v2"
+KIT_VERSION = "phase4.1-v2.1"
 
 RUNTIME_PATHS = (
     "runtime.n_threads",
@@ -527,6 +527,14 @@ def generate_mode(
             policy,
             "timestream.fruit_loops.source_center_mode",
             "auto",
+        )
+    if spec.mode == "oof":
+        # OOF Gaussian fits are diagnostic products. The PSF-preserving map
+        # strategy and map-centered fruit-loop support remain unchanged.
+        set_path(
+            policy,
+            "pointing.source_strategy.fit_gaussian",
+            True,
         )
     mode_dir = output_root / spec.mode
     files = spec.files

@@ -13,4 +13,7 @@ TolPROJ generates `72_oof_observation.yaml`. Do not edit
 policy. Advanced and expert override files are deliberately empty.
 
 Source finding is experimental and disabled. The unchanged files merge exactly
-to accepted OOF `redu02`.
+to the accepted OOF policy except for enabled diagnostic Gaussian fitting.
+The fit does not change the PSF-preserving map strategy or map-centered
+fruit-loop support. The self-contained validation-suite OOF `redu00` produced
+nine valid fits from nine attempts with no logged errors.
