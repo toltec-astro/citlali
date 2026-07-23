@@ -1,7 +1,7 @@
 {
   "schema_version": "citlali-product-contract-registry-v1",
   "policy": {
-    "scope": "Scientific products and diagnostic tables/cubes are classified here. Run indexes, logs, merged configuration, and provenance sidecars remain governed by the reduction audit and validation profile.",
+    "scope": "Scientific products, diagnostic tables/cubes, and explicitly required operational state products are classified here. Run indexes, logs, merged configuration, and provenance sidecars remain governed by the reduction audit and validation profile.",
     "required_output_failure": "fatal",
     "enabled_conditional_output_failure": "fatal",
     "optional_diagnostic_failure": "must be reported and must not masquerade as a complete enabled product",
@@ -292,6 +292,19 @@
       "indexing_policy": "Iteration in the filename and scan_zero_based are zero-based. sample_offset_sec is sample time minus event time.",
       "missing_value_policy": "The status column distinguishes missing, ambiguous, malformed, unavailable-sentinel, out-of-range, and matched data; numeric fields are empty when unavailable.",
       "failure_policy": "Diagnostic input availability never changes flags. Once learning diagnostics are enabled, sidecar output I/O failure is fatal."
+    },
+    "reduction_restart_checkpoint": {
+      "scientific_identity": "Atomic operational checkpoint containing absolute fruit-loop iteration identity, observation identity, the effective learning-policy snapshot, and compacted learned state needed for exact continuation.",
+      "coordinate_frame": "Not spatial; observation, detector, scan, and sample identities retain their named acquisition domains.",
+      "axes": [
+        "observation",
+        "effective sample-mask interval",
+        "effective detector penalty"
+      ],
+      "units_policy": "Iteration, observation, detector, scan, network, array, and sample indices are dimensionless; detector-penalty event time is Unix seconds; factors and scores are dimensionless.",
+      "indexing_policy": "completed_iteration and next_iteration are zero-based absolute fruit-loop indices; observation references index the checkpoint observation_id vector.",
+      "missing_value_policy": "Observation identity is required and non-empty. Zero learned masks or penalties are represented by zero count scalars and absent optional state dimensions.",
+      "failure_policy": "Fatal when fruit loops are enabled; the checkpoint is written atomically after each completed iteration."
     }
   },
   "checks": {
@@ -703,6 +716,29 @@
         "context",
         "elapsed_s"
       ]
+    },
+    "reduction_restart_checkpoint": {
+      "required_dimensions": [
+        "observation"
+      ],
+      "positive_dimensions": [
+        "observation"
+      ],
+      "required_variables": [
+        "schema_version",
+        "creator_version",
+        "completed_iteration",
+        "next_iteration",
+        "fruit_loops_type",
+        "learning_policy_yaml",
+        "observation_count",
+        "effective_sample_mask_interval_count",
+        "effective_detector_penalty_count",
+        "observation_id"
+      ],
+      "scalar_equals": {
+        "schema_version": "citlali-reduction-restart-checkpoint-v1"
+      }
     }
   },
   "contracts": [
@@ -1299,6 +1335,151 @@
           },
           "pattern": "{obs}/raw/source_crossing_tod/*_beammap_{obs}_ptcdiag.nc",
           "check_id": "ptc_diagnostics"
+        },
+        {
+          "entry_id": "profile-timing",
+          "family_id": "profile_timing",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "profiling output is available",
+          "pattern": "citlali_profile.ecsv",
+          "check_id": "profile_timing"
+        },
+        {
+          "entry_id": "learning-diagnostics",
+          "family_id": "learning_diagnostics",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "learning diagnostics are enabled for the iteration",
+          "pattern": "learning_iter_*.csv",
+          "max_matches": null
+        },
+        {
+          "entry_id": "learning-housekeeping-qa",
+          "family_id": "learning_housekeeping_qa",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "learning diagnostics are enabled and observations are processed",
+          "pattern": "learning_housekeeping_iter_*.csv",
+          "max_matches": null
+        }
+      ]
+    },
+    {
+      "contract_id": "phase4.1-beammap-products-v2",
+      "profile_id": "phase4.1-beammap-148670-v2",
+      "mode": "beammap",
+      "arrays": [
+        "a1100",
+        "a1400",
+        "a2000"
+      ],
+      "minimum_observations": 1,
+      "entries": [
+        {
+          "entry_id": "good-detector-maps",
+          "family_id": "beammap_detector_cube",
+          "scope": "per_observation_array",
+          "classification": "config_conditional",
+          "condition": "beammap.split_fits_by_flag.enabled=true",
+          "required_when": {
+            "path": "beammap.split_fits_by_flag.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/raw/*_{array}_beammap_{obs}_citlali_flag0_good.fits",
+          "check_id": "beammap_detector_map"
+        },
+        {
+          "entry_id": "bad-detector-maps",
+          "family_id": "beammap_detector_cube",
+          "scope": "per_observation_array",
+          "classification": "config_conditional",
+          "condition": "beammap.split_fits_by_flag.enabled=true",
+          "required_when": {
+            "path": "beammap.split_fits_by_flag.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/raw/*_{array}_beammap_{obs}_citlali_flag1_bad.fits",
+          "check_id": "beammap_detector_map"
+        },
+        {
+          "entry_id": "final-apt",
+          "family_id": "beammap_apt_table",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "Beammap detector fitting completes",
+          "pattern": "{obs}/raw/apt_*_beammap_{obs}_citlali.ecsv",
+          "check_id": "beammap_apt"
+        },
+        {
+          "entry_id": "fit-qc",
+          "family_id": "beammap_fit_qc",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "Beammap detector fitting publishes fit-QC",
+          "pattern": "{obs}/raw/apt_*_beammap_{obs}_citlali_fit_qc.ecsv",
+          "check_id": "beammap_fit_qc"
+        },
+        {
+          "entry_id": "detector-statistics",
+          "family_id": "detector_stats",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "Beammap processing publishes detector statistics",
+          "pattern": "{obs}/raw/*_beammap_{obs}_stats.nc",
+          "check_id": "detector_stats"
+        },
+        {
+          "entry_id": "source-crossing-detector-tod",
+          "family_id": "beammap_detector_tod",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "beammap.detector_tod_output.enabled=true",
+          "required_when": {
+            "path": "beammap.detector_tod_output.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/raw/source_crossing_tod/*_beammap_{obs}_ptc_detector_tod.nc",
+          "check_id": "beammap_detector_tod"
+        },
+        {
+          "entry_id": "source-crossing-rtc-diagnostics",
+          "family_id": "rtc_diagnostics",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "beammap.detector_tod_output.enabled=true",
+          "required_when": {
+            "path": "beammap.detector_tod_output.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/raw/source_crossing_tod/*_beammap_{obs}_rtcdiag.nc",
+          "check_id": "rtc_diagnostics"
+        },
+        {
+          "entry_id": "source-crossing-ptc-diagnostics",
+          "family_id": "ptc_diagnostics",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "beammap.detector_tod_output.enabled=true",
+          "required_when": {
+            "path": "beammap.detector_tod_output.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/raw/source_crossing_tod/*_beammap_{obs}_ptcdiag.nc",
+          "check_id": "ptc_diagnostics"
+        },
+        {
+          "entry_id": "restart-checkpoint",
+          "family_id": "reduction_restart_checkpoint",
+          "scope": "reduction",
+          "classification": "config_conditional",
+          "condition": "timestream.fruit_loops.enabled=true",
+          "required_when": {
+            "path": "timestream.fruit_loops.enabled",
+            "equals": true
+          },
+          "pattern": "citlali_restart_checkpoint.nc",
+          "check_id": "reduction_restart_checkpoint"
         },
         {
           "entry_id": "profile-timing",

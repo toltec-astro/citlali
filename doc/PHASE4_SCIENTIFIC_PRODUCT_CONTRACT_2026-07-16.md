@@ -33,6 +33,12 @@ The active contracts currently evaluate explicit switches for:
 - Beammap split-by-flag maps; and
 - Beammap source-crossing detector-TOD and associated diagnostics.
 
+Successor Beammap contract `phase4.1-beammap-products-v2` also requires the
+atomic reduction restart checkpoint exactly when fruit loops are enabled and
+forbids it when they are disabled. Its inexpensive NetCDF check requires the
+checkpoint schema identity, observation dimension, and core iteration,
+configuration, observation, and learned-state count variables.
+
 Products without an independent output switch are not labeled conditional just
 because their writers are diagnostic in nature. Map histograms, map PSDs,
 detector statistics, and core RTC/PTC diagnostics are required companions of
@@ -74,6 +80,13 @@ The four active contracts cover the accepted snapshots completely:
 Only Stokes I is under the current validated contract. Polarimetry is not
 declared unsupported forever, but enabled polarimetry remains outside the
 validated capability set.
+
+The Phase 4.1 Beammap smoke at `cfae989ce` intentionally adds one required
+operational product. It passes `phase4.1-beammap-products-v2` with 14/14
+products classified, including a
+`citlali-reduction-restart-checkpoint-v1` checkpoint. This V2 contract is
+candidate evidence for a successor profile; it does not replace or weaken the
+active historical Beammap V1 profile.
 
 ## Failure Policy
 

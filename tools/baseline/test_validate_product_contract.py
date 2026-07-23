@@ -213,6 +213,11 @@ class ValidateProductContractTest(unittest.TestCase):
         with netCDF4.Dataset(path, "w") as dataset:
             dim = dataset.createDimension("n_dets", 2)
             dataset.createVariable("signal", "f8", (dim.name,))
+            schema_dim = dataset.createDimension("schema", 1)
+            schema = dataset.createVariable(
+                "schema_version", str, (schema_dim.name,)
+            )
+            schema[0] = "test-schema-v1"
         result = self.validate(
             [
                 self.entry(
@@ -220,13 +225,44 @@ class ValidateProductContractTest(unittest.TestCase):
                     checks={
                         "required_dimensions": ["n_dets"],
                         "positive_dimensions": ["n_dets"],
-                        "required_variables": ["signal"],
+                        "required_variables": ["signal", "schema_version"],
+                        "scalar_equals": {
+                            "schema_version": "test-schema-v1",
+                        },
                     },
                 )
             ]
         )
 
         self.assertTrue(result["passed"], result["errors"])
+
+    @unittest.skipIf(product_contract.netCDF4 is None, "netCDF4 is unavailable")
+    def test_rejects_wrong_netcdf_scalar_identity(self) -> None:
+        import netCDF4
+
+        path = self.reduction / "product.nc"
+        with netCDF4.Dataset(path, "w") as dataset:
+            dim = dataset.createDimension("schema", 1)
+            schema = dataset.createVariable("schema_version", str, (dim.name,))
+            schema[0] = "wrong-schema"
+
+        result = self.validate(
+            [
+                self.entry(
+                    pattern="product.nc",
+                    checks={
+                        "scalar_equals": {
+                            "schema_version": "test-schema-v1",
+                        },
+                    },
+                )
+            ]
+        )
+
+        self.assertFalse(result["passed"])
+        self.assertTrue(
+            any("expected 'test-schema-v1'" in error for error in result["errors"])
+        )
 
 
 if __name__ == "__main__":

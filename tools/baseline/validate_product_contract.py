@@ -356,6 +356,27 @@ def validate_netcdf(
             missing_vars = missing_patterns(variables, required_variables)
             if missing_vars:
                 errors.append(f"missing NetCDF variables {missing_vars}")
+            for name, expected in checks.get("scalar_equals", {}).items():
+                if name not in dataset.variables:
+                    errors.append(f"missing NetCDF scalar variable {name!r}")
+                    continue
+                values = dataset.variables[name][...]
+                if values.size != 1:
+                    errors.append(
+                        f"NetCDF variable {name!r} has {values.size} values; "
+                        "expected one"
+                    )
+                    continue
+                actual = values.reshape(-1)[0]
+                if hasattr(actual, "item"):
+                    actual = actual.item()
+                if isinstance(actual, bytes):
+                    actual = actual.decode("utf-8")
+                if actual != expected:
+                    errors.append(
+                        f"NetCDF scalar {name!r}={actual!r}; "
+                        f"expected {expected!r}"
+                    )
             for name in checks.get("positive_dimensions", []):
                 matches = [
                     value

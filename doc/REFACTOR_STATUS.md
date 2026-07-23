@@ -94,11 +94,11 @@ branch. The exact validated tree will remain available for forensic review.
   the CCfits base exception at required map/header boundaries, and
   `a68bf1737` omits unavailable per-detector FITS keywords while retaining
   `NaN` in the authoritative APT table for compatibility with Unity's older
-  CCfits. All 13 established Beammap product families pass. The legacy
-  version-one registry still reports the new required
-  `citlali_restart_checkpoint.nc` as unclassified; that intentional
-  operational artifact needs a successor product contract rather than a
-  mutation of the immutable historical contract.
+  CCfits. All 13 established Beammap product families pass. The immutable
+  version-one contract continues to describe the historical 13-product
+  snapshot. Successor contract `phase4.1-beammap-products-v2` classifies and
+  schema-checks the required `citlali_restart_checkpoint.nc` and accepts all
+  14/14 current products without changing the active V1 profile.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
