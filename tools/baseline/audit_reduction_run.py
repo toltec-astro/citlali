@@ -114,7 +114,11 @@ PROVENANCE_SIDECARS = {
     },
     "runtime": {
         "filename": "runtime_provenance.yaml",
-        "schema_version": "citlali-runtime-provenance-v1",
+        "schema_version": "citlali-runtime-provenance-v2",
+        "accepted_schema_versions": (
+            "citlali-runtime-provenance-v1",
+            "citlali-runtime-provenance-v2",
+        ),
         "required_paths": (
             ("initialized",),
             ("requested",),

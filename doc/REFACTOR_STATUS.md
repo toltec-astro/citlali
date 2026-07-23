@@ -19,6 +19,17 @@ branch. The exact validated tree will remain available for forensic review.
 
 ## Current Snapshot
 
+- Runtime resource debt D16 has a locally complete cross-repository
+  implementation as of 2026-07-23. TolPROJ now keeps refactor runtime threads
+  and generated Slurm CPUs coherent, rejects oversubscription before its
+  recommended submission path, and preserves legacy defaults. Citlali uses an
+  independent runtime safety net that resolves Slurm, affinity, and hardware
+  availability, caps rather than aborts an allocated job, emits one warning,
+  and writes `citlali-runtime-provenance-v2`. Local build, focused tests, full
+  gates (500 CTests, 119 baseline tests, and 118 config tests), and the 147-test
+  TolPROJ suite pass. Unity smoke evidence will be recorded in
+  [the runtime resource contract](RUNTIME_RESOURCE_CONTRACT_2026-07-23.md);
+  D16 remains open until the two Unity cases pass.
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
 - Latest accepted point reduction: Phase 3 exit checkpoint `redu66`, produced

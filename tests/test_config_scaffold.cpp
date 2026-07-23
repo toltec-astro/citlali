@@ -4636,6 +4636,85 @@ TEST(cli_runtime_setup, derives_fftw_threads) {
     EXPECT_EQ(citlali::cli::fftw_threads_for_runtime(8, true), 1);
 }
 
+TEST(cli_runtime_setup, parses_positive_slurm_cpu_counts) {
+    EXPECT_EQ(citlali::cli::parse_positive_cpu_count("16"), 16);
+    EXPECT_EQ(citlali::cli::parse_positive_cpu_count(nullptr), 0);
+    EXPECT_EQ(citlali::cli::parse_positive_cpu_count(""), 0);
+    EXPECT_EQ(citlali::cli::parse_positive_cpu_count("0"), 0);
+    EXPECT_EQ(citlali::cli::parse_positive_cpu_count("-1"), 0);
+    EXPECT_EQ(citlali::cli::parse_positive_cpu_count("8x"), 0);
+}
+
+TEST(cli_runtime_setup, selects_most_restrictive_scheduler_and_affinity_limit) {
+    const auto availability =
+        citlali::cli::select_runtime_resource_availability(16, 8, 32);
+
+    EXPECT_EQ(availability.slurm_cpus_per_task, 16);
+    EXPECT_EQ(availability.affinity_cpus, 8);
+    EXPECT_EQ(availability.hardware_cpus, 32);
+    EXPECT_EQ(availability.available_threads, 8);
+    EXPECT_EQ(availability.source, "slurm+affinity");
+}
+
+TEST(cli_runtime_setup, caps_requested_threads_to_available_resources) {
+    const auto availability =
+        citlali::cli::select_runtime_resource_availability(8, 8, 16);
+    const auto plan =
+        citlali::config::make_runtime_thread_plan(16, false, availability);
+
+    EXPECT_EQ(plan.requested_threads, 16);
+    EXPECT_EQ(plan.effective_threads, 8);
+    EXPECT_EQ(plan.omp_threads, 8);
+    EXPECT_EQ(plan.fftw_plan_threads, 8);
+    EXPECT_TRUE(plan.adjusted);
+    EXPECT_FALSE(plan.adjustment_reason.empty());
+}
+
+TEST(cli_runtime_setup, preserves_request_below_available_resources) {
+    const auto availability =
+        citlali::cli::select_runtime_resource_availability(16, 16, 16);
+    const auto plan =
+        citlali::config::make_runtime_thread_plan(6, true, availability);
+
+    EXPECT_EQ(plan.requested_threads, 6);
+    EXPECT_EQ(plan.effective_threads, 6);
+    EXPECT_EQ(plan.omp_threads, 6);
+    EXPECT_EQ(plan.fftw_plan_threads, 1);
+    EXPECT_FALSE(plan.adjusted);
+}
+
+TEST(cli_runtime_setup, preserves_request_when_availability_is_unknown) {
+    const auto plan = citlali::config::make_runtime_thread_plan(
+        6, false, citlali::config::RuntimeResourceAvailability{});
+
+    EXPECT_EQ(plan.effective_threads, 6);
+    EXPECT_EQ(plan.omp_threads, 6);
+    EXPECT_FALSE(plan.adjusted);
+}
+
+TEST(cli_runtime_setup, records_cap_and_warns_once) {
+    FakeEngine engine;
+    engine.runtime_config_provenance =
+        citlali::config::make_runtime_config_provenance(
+            engine.typed_config.runtime, false);
+    engine.runtime_config_provenance.requested.n_threads = 16;
+    engine.runtime_config_provenance.effective.values.n_threads = 16;
+    auto logger = std::make_shared<FakeLogger>();
+    const auto availability =
+        citlali::cli::select_runtime_resource_availability(8, 8, 16);
+
+    citlali::cli::resolve_citlali_runtime_resources(
+        engine, logger, availability);
+
+    const auto &provenance = engine.runtime_config_provenance;
+    EXPECT_EQ(provenance.requested.n_threads, 16);
+    EXPECT_EQ(provenance.effective.values.n_threads, 8);
+    EXPECT_EQ(provenance.effective.threads.requested_threads, 16);
+    EXPECT_EQ(provenance.effective.threads.effective_threads, 8);
+    EXPECT_TRUE(provenance.effective.threads.adjusted);
+    EXPECT_EQ(logger->warn_calls, 1);
+}
+
 TEST(cli_runtime_setup, separates_requested_effective_and_realized_runtime) {
     citlali::config::RuntimeConfig requested;
     requested.n_threads = 6;
@@ -4648,6 +4727,7 @@ TEST(cli_runtime_setup, separates_requested_effective_and_realized_runtime) {
     EXPECT_EQ(provenance.requested.n_threads, 6);
     EXPECT_EQ(provenance.effective.values.n_threads, 6);
     EXPECT_EQ(provenance.effective.threads.requested_threads, 6);
+    EXPECT_EQ(provenance.effective.threads.effective_threads, 6);
     EXPECT_EQ(provenance.effective.threads.omp_threads, 6);
     EXPECT_EQ(provenance.effective.threads.eigen_threads, 1);
     EXPECT_EQ(provenance.effective.threads.fftw_plan_threads, 1);
@@ -4709,11 +4789,16 @@ TEST(cli_runtime_setup, serializes_stable_runtime_provenance_schema) {
     const auto node = citlali::pipeline::runtime_provenance_node(provenance);
 
     EXPECT_EQ(node["schema_version"].as<std::string>(),
-              "citlali-runtime-provenance-v1");
+              "citlali-runtime-provenance-v2");
     EXPECT_EQ(node["requested"]["n_threads"].as<int>(), 6);
     EXPECT_EQ(node["requested"]["parallel_policy"].as<std::string>(),
               "omp");
     EXPECT_EQ(node["effective"]["threads"]["fftw_plan"].as<int>(), 1);
+    EXPECT_EQ(node["effective"]["threads"]["effective"].as<int>(), 6);
+    EXPECT_FALSE(node["effective"]["threads"]["adjusted"].as<bool>());
+    EXPECT_EQ(node["effective"]["threads"]["availability"]
+                  ["available_threads"].as<int>(),
+              0);
     EXPECT_TRUE(node["effective"]["threads"]["wiener_filter_omp"].as<bool>());
     EXPECT_TRUE(node["realized"]["threads"]["fftw_initialized"].as<bool>());
     EXPECT_EQ(node["realized"]["parallel_policy"].as<std::string>(), "omp");
@@ -4738,7 +4823,7 @@ TEST(cli_runtime_setup, atomically_writes_runtime_provenance_sidecar) {
     EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
     const auto stored = YAML::LoadFile(output_path.string());
     EXPECT_EQ(stored["schema_version"].as<std::string>(),
-              "citlali-runtime-provenance-v1");
+              "citlali-runtime-provenance-v2");
     EXPECT_TRUE(stored["initialized"].as<bool>());
     std::filesystem::remove_all(output_dir);
 }

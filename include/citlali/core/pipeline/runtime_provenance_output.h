@@ -11,7 +11,7 @@
 namespace citlali::pipeline {
 
 inline constexpr const char *runtime_provenance_schema_version =
-    "citlali-runtime-provenance-v1";
+    "citlali-runtime-provenance-v2";
 inline constexpr const char *runtime_provenance_filename =
     "runtime_provenance.yaml";
 
@@ -40,6 +40,8 @@ inline YAML::Node runtime_provenance_node(
         runtime_config_node(provenance.effective.values);
     root["effective"]["threads"]["requested"] =
         provenance.effective.threads.requested_threads;
+    root["effective"]["threads"]["effective"] =
+        provenance.effective.threads.effective_threads;
     root["effective"]["threads"]["omp"] =
         provenance.effective.threads.omp_threads;
     root["effective"]["threads"]["eigen"] =
@@ -48,6 +50,20 @@ inline YAML::Node runtime_provenance_node(
         provenance.effective.threads.fftw_plan_threads;
     root["effective"]["threads"]["wiener_filter_omp"] =
         provenance.effective.threads.wiener_filter_omp;
+    root["effective"]["threads"]["adjusted"] =
+        provenance.effective.threads.adjusted;
+    root["effective"]["threads"]["adjustment_reason"] =
+        provenance.effective.threads.adjustment_reason;
+    root["effective"]["threads"]["availability"]["slurm_cpus_per_task"] =
+        provenance.effective.threads.availability.slurm_cpus_per_task;
+    root["effective"]["threads"]["availability"]["affinity_cpus"] =
+        provenance.effective.threads.availability.affinity_cpus;
+    root["effective"]["threads"]["availability"]["hardware_cpus"] =
+        provenance.effective.threads.availability.hardware_cpus;
+    root["effective"]["threads"]["availability"]["available_threads"] =
+        provenance.effective.threads.availability.available_threads;
+    root["effective"]["threads"]["availability"]["source"] =
+        provenance.effective.threads.availability.source;
     root["realized"]["threads"]["omp"] =
         provenance.realized.omp_threads;
     root["realized"]["threads"]["eigen"] =
