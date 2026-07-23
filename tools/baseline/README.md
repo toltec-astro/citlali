@@ -558,3 +558,26 @@ $HOME/tolteca/bin/python \
 
 The profile is an OG/refactor scientific-equivalence gate. Continue to use the
 generic comparator for exact same-build determinism checks.
+
+# Fruit-Loop Convergence Evidence
+
+`analyze_fruit_loop_convergence.py` measures consecutive saved fruit-loop
+iterations offline. It verifies low-level configuration and raw-coadd product
+identity, evaluates every configured array independently, and includes
+learning-state stability from the Citlali logs. Candidate stopping rules remain
+explicitly non-production evidence.
+
+```bash
+export NGC4449_ROOT=/path/to/NGC4449
+$HOME/tolteca/bin/python \
+  tools/baseline/analyze_fruit_loop_convergence.py \
+  validation/fruit_loops/ngc4449_full_spatial_learning_study.json \
+  --json-out /tmp/ngc4449-convergence.json \
+  --report-out /tmp/ngc4449-convergence.md
+```
+
+The checked NGC4449 study and its interpretation are documented in
+`doc/FRUIT_LOOP_CONVERGENCE_STUDY_2026-07-23.md`. The tool does not authorize
+production early stopping or replace a scientific validation profile. The
+checked result under `validation/fruit_loops/` records the observed sequence
+without making it a portable input fixture.

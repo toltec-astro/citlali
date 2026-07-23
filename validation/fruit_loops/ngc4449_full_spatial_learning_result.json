@@ -1,0 +1,524 @@
+{
+  "candidate_rule_results": [
+    {
+      "definition": {
+        "aperture_relative_l2_delta_max": 0.04,
+        "consecutive_passes": 2,
+        "map_relative_l2_delta_max": 0.02,
+        "minimum_completed_iteration_id": 2,
+        "peak_fractional_change_max": 0.03,
+        "require_learning_state_stable": true,
+        "rule_id": "exploratory-two-pass-v1",
+        "support_jaccard_min": 0.999,
+        "weight_relative_l2_delta_max": 0.005
+      },
+      "estimated_saved_seconds": 0.0,
+      "evaluations": [
+        {
+          "arrays": [
+            {
+              "array": "a1100",
+              "failures": [
+                "map_relative_l2_delta",
+                "aperture_relative_l2_delta",
+                "peak_fractional_change"
+              ],
+              "passed": false
+            },
+            {
+              "array": "a1400",
+              "failures": [
+                "support_jaccard",
+                "map_relative_l2_delta",
+                "aperture_relative_l2_delta",
+                "peak_fractional_change"
+              ],
+              "passed": false
+            },
+            {
+              "array": "a2000",
+              "failures": [
+                "map_relative_l2_delta",
+                "aperture_relative_l2_delta",
+                "peak_fractional_change"
+              ],
+              "passed": false
+            }
+          ],
+          "consecutive_passes": 0,
+          "current_iteration_id": 1,
+          "eligible": false,
+          "learning_passed": false,
+          "passed": false
+        },
+        {
+          "arrays": [
+            {
+              "array": "a1100",
+              "failures": [
+                "support_jaccard",
+                "map_relative_l2_delta",
+                "aperture_relative_l2_delta",
+                "peak_fractional_change",
+                "weight_relative_l2_delta"
+              ],
+              "passed": false
+            },
+            {
+              "array": "a1400",
+              "failures": [
+                "support_jaccard",
+                "map_relative_l2_delta",
+                "aperture_relative_l2_delta",
+                "peak_fractional_change",
+                "weight_relative_l2_delta"
+              ],
+              "passed": false
+            },
+            {
+              "array": "a2000",
+              "failures": [
+                "support_jaccard",
+                "map_relative_l2_delta",
+                "aperture_relative_l2_delta",
+                "peak_fractional_change",
+                "weight_relative_l2_delta"
+              ],
+              "passed": false
+            }
+          ],
+          "consecutive_passes": 0,
+          "current_iteration_id": 2,
+          "eligible": true,
+          "learning_passed": true,
+          "passed": false
+        },
+        {
+          "arrays": [
+            {
+              "array": "a1100",
+              "failures": [],
+              "passed": true
+            },
+            {
+              "array": "a1400",
+              "failures": [
+                "map_relative_l2_delta"
+              ],
+              "passed": false
+            },
+            {
+              "array": "a2000",
+              "failures": [],
+              "passed": true
+            }
+          ],
+          "consecutive_passes": 0,
+          "current_iteration_id": 3,
+          "eligible": true,
+          "learning_passed": true,
+          "passed": false
+        },
+        {
+          "arrays": [
+            {
+              "array": "a1100",
+              "failures": [],
+              "passed": true
+            },
+            {
+              "array": "a1400",
+              "failures": [],
+              "passed": true
+            },
+            {
+              "array": "a2000",
+              "failures": [],
+              "passed": true
+            }
+          ],
+          "consecutive_passes": 1,
+          "current_iteration_id": 4,
+          "eligible": true,
+          "learning_passed": true,
+          "passed": true
+        }
+      ],
+      "rule_id": "exploratory-two-pass-v1",
+      "saved_iteration_count": 0,
+      "status": "candidate_only_not_production_approved",
+      "stop_iteration_id": null
+    }
+  ],
+  "config_ignore_paths": [],
+  "disposition": "offline_evidence_only",
+  "iterations": [
+    {
+      "config_differences": [],
+      "config_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu00/citlali_o152390_0_2_c5.yaml",
+      "config_sha256": "da67e5e35f462ea65ba852c080b6cff995bb7cb25d069bb25659b9f0f54ee080",
+      "iteration_id": 0,
+      "log": {
+        "available": true,
+        "citlali_version": "v4.0.0-3564-ge97de3fd",
+        "iteration_runtime_seconds": 2775.637816,
+        "learning": {
+          "effective_detector_penalties": 1243,
+          "effective_sample_mask_intervals": 318661,
+          "phase": "learn"
+        },
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu00/citlali.log.gz"
+      },
+      "reduction_dir": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu00"
+    },
+    {
+      "config_differences": [],
+      "config_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu01/citlali_o152390_0_2_c5.yaml",
+      "config_sha256": "da67e5e35f462ea65ba852c080b6cff995bb7cb25d069bb25659b9f0f54ee080",
+      "iteration_id": 1,
+      "log": {
+        "available": true,
+        "citlali_version": "v4.0.0-3564-ge97de3fd",
+        "iteration_runtime_seconds": 3219.205032,
+        "learning": {
+          "effective_detector_penalties": 1244,
+          "effective_sample_mask_intervals": 318835,
+          "phase": "learn_with_model"
+        },
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu01/citlali.log.gz"
+      },
+      "reduction_dir": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu01"
+    },
+    {
+      "config_differences": [],
+      "config_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu02/citlali_o152390_0_2_c5.yaml",
+      "config_sha256": "da67e5e35f462ea65ba852c080b6cff995bb7cb25d069bb25659b9f0f54ee080",
+      "iteration_id": 2,
+      "log": {
+        "available": true,
+        "citlali_version": "v4.0.0-3564-ge97de3fd",
+        "iteration_runtime_seconds": 3274.75762,
+        "learning": {
+          "effective_detector_penalties": 1244,
+          "effective_sample_mask_intervals": 318835,
+          "phase": "apply"
+        },
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu02/citlali.log.gz"
+      },
+      "reduction_dir": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu02"
+    },
+    {
+      "config_differences": [],
+      "config_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu03/citlali_o152390_0_2_c5.yaml",
+      "config_sha256": "da67e5e35f462ea65ba852c080b6cff995bb7cb25d069bb25659b9f0f54ee080",
+      "iteration_id": 3,
+      "log": {
+        "available": true,
+        "citlali_version": "v4.0.0-3564-ge97de3fd",
+        "iteration_runtime_seconds": 3314.47062,
+        "learning": {
+          "effective_detector_penalties": 1244,
+          "effective_sample_mask_intervals": 318835,
+          "phase": "apply"
+        },
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu03/citlali.log.gz"
+      },
+      "reduction_dir": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu03"
+    },
+    {
+      "config_differences": [],
+      "config_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu04/citlali_o152390_0_2_c5.yaml",
+      "config_sha256": "da67e5e35f462ea65ba852c080b6cff995bb7cb25d069bb25659b9f0f54ee080",
+      "iteration_id": 4,
+      "log": {
+        "available": true,
+        "citlali_version": "v4.0.0-3564-ge97de3fd",
+        "iteration_runtime_seconds": 3258.633579,
+        "learning": {
+          "effective_detector_penalties": 1244,
+          "effective_sample_mask_intervals": 318835,
+          "phase": "apply"
+        },
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu04/citlali.log.gz"
+      },
+      "reduction_dir": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu04"
+    }
+  ],
+  "manifest_path": "/Users/gwilson/GitHub/citlali-refactor/validation/fruit_loops/ngc4449_full_spatial_learning_study.json",
+  "product": {
+    "aperture_center": "map_center",
+    "aperture_radius_arcsec": 180.0,
+    "arrays": [
+      "a1100",
+      "a1400",
+      "a2000"
+    ],
+    "coverage_hdu": "coverage_bool_I",
+    "path_pattern": "coadded/raw/*_{array}_citlali.fits",
+    "signal_hdu": "signal_I",
+    "weight_hdu": "weight_I"
+  },
+  "production_change_authorized": false,
+  "protocol_complete": true,
+  "protocol_errors": [],
+  "schema_version": "citlali-fruit-loop-convergence-result-v1",
+  "study_id": "ngc4449-full-spatial-learning-2026-07-22",
+  "transitions": [
+    {
+      "arrays": {
+        "a1100": {
+          "aperture_relative_l2_delta": 0.06025565349025126,
+          "aperture_sum_fractional_change": 1.102789408218805,
+          "common_valid_pixels": 51004,
+          "current_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu01/coadded/raw/toltec_commissioning_a1100_citlali.fits",
+          "map_relative_l2_delta": 0.04550318548351399,
+          "noise_scaled_delta_rms": 0.037574211511734595,
+          "peak_fractional_change": 0.14355968642637956,
+          "pixel_scale_arcsec": 2.00000016,
+          "previous_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu00/coadded/raw/toltec_commissioning_a1100_citlali.fits",
+          "shape": [
+            471,
+            465
+          ],
+          "signal_unit": "mJy/beam",
+          "support_jaccard": 0.9990206448074588,
+          "weight_relative_l2_delta": 0.002486189686172935,
+          "weight_unit": "1/(mJy/beam)^2"
+        },
+        "a1400": {
+          "aperture_relative_l2_delta": 0.05715419804515364,
+          "aperture_sum_fractional_change": 1.0900857706340765,
+          "common_valid_pixels": 51615,
+          "current_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu01/coadded/raw/toltec_commissioning_a1400_citlali.fits",
+          "map_relative_l2_delta": 0.04817847682518332,
+          "noise_scaled_delta_rms": 0.03933485010351295,
+          "peak_fractional_change": 0.1488890630461481,
+          "pixel_scale_arcsec": 2.00000016,
+          "previous_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu00/coadded/raw/toltec_commissioning_a1400_citlali.fits",
+          "shape": [
+            471,
+            465
+          ],
+          "signal_unit": "mJy/beam",
+          "support_jaccard": 0.998433147632312,
+          "weight_relative_l2_delta": 0.003364994711485971,
+          "weight_unit": "1/(mJy/beam)^2"
+        },
+        "a2000": {
+          "aperture_relative_l2_delta": 0.05578115077386801,
+          "aperture_sum_fractional_change": 2.5184443602903945,
+          "common_valid_pixels": 51765,
+          "current_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu01/coadded/raw/toltec_commissioning_a2000_citlali.fits",
+          "map_relative_l2_delta": 0.03695994953926407,
+          "noise_scaled_delta_rms": 0.03138619702962327,
+          "peak_fractional_change": 0.14839078561728666,
+          "pixel_scale_arcsec": 2.00000016,
+          "previous_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu00/coadded/raw/toltec_commissioning_a2000_citlali.fits",
+          "shape": [
+            471,
+            465
+          ],
+          "signal_unit": "mJy/beam",
+          "support_jaccard": 0.9999420491423273,
+          "weight_relative_l2_delta": 0.0013269387532802786,
+          "weight_unit": "1/(mJy/beam)^2"
+        }
+      },
+      "current_iteration_id": 1,
+      "learning_state_stable": false,
+      "previous_iteration_id": 0
+    },
+    {
+      "arrays": {
+        "a1100": {
+          "aperture_relative_l2_delta": 0.2709425712980281,
+          "aperture_sum_fractional_change": 0.27472818645997105,
+          "common_valid_pixels": 50697,
+          "current_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu02/coadded/raw/toltec_commissioning_a1100_citlali.fits",
+          "map_relative_l2_delta": 0.2672602051789385,
+          "noise_scaled_delta_rms": 0.2128363835819306,
+          "peak_fractional_change": 0.07737571413298212,
+          "pixel_scale_arcsec": 2.00000016,
+          "previous_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu01/coadded/raw/toltec_commissioning_a1100_citlali.fits",
+          "shape": [
+            471,
+            465
+          ],
+          "signal_unit": "mJy/beam",
+          "support_jaccard": 0.9844268820753801,
+          "weight_relative_l2_delta": 0.026033203913343548,
+          "weight_unit": "1/(mJy/beam)^2"
+        },
+        "a1400": {
+          "aperture_relative_l2_delta": 0.2391828710801929,
+          "aperture_sum_fractional_change": 0.2188722154432347,
+          "common_valid_pixels": 51149,
+          "current_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu02/coadded/raw/toltec_commissioning_a1400_citlali.fits",
+          "map_relative_l2_delta": 0.257074360209218,
+          "noise_scaled_delta_rms": 0.20637784438942114,
+          "peak_fractional_change": 0.0649479334439782,
+          "pixel_scale_arcsec": 2.00000016,
+          "previous_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu01/coadded/raw/toltec_commissioning_a1400_citlali.fits",
+          "shape": [
+            471,
+            465
+          ],
+          "signal_unit": "mJy/beam",
+          "support_jaccard": 0.9822368168375772,
+          "weight_relative_l2_delta": 0.024021910424346753,
+          "weight_unit": "1/(mJy/beam)^2"
+        },
+        "a2000": {
+          "aperture_relative_l2_delta": 0.1592757247039353,
+          "aperture_sum_fractional_change": 0.4005825547803572,
+          "common_valid_pixels": 51637,
+          "current_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu02/coadded/raw/toltec_commissioning_a2000_citlali.fits",
+          "map_relative_l2_delta": 0.15837382357038532,
+          "noise_scaled_delta_rms": 0.1267091030531173,
+          "peak_fractional_change": 0.03753421831006248,
+          "pixel_scale_arcsec": 2.00000016,
+          "previous_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu01/coadded/raw/toltec_commissioning_a2000_citlali.fits",
+          "shape": [
+            471,
+            465
+          ],
+          "signal_unit": "mJy/beam",
+          "support_jaccard": 0.9962762878641713,
+          "weight_relative_l2_delta": 0.0051687951528331675,
+          "weight_unit": "1/(mJy/beam)^2"
+        }
+      },
+      "current_iteration_id": 2,
+      "learning_state_stable": true,
+      "previous_iteration_id": 1
+    },
+    {
+      "arrays": {
+        "a1100": {
+          "aperture_relative_l2_delta": 0.014528143215456873,
+          "aperture_sum_fractional_change": 0.05901617480883511,
+          "common_valid_pixels": 51191,
+          "current_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu03/coadded/raw/toltec_commissioning_a1100_citlali.fits",
+          "map_relative_l2_delta": 0.009435394644039237,
+          "noise_scaled_delta_rms": 0.007948825455892162,
+          "peak_fractional_change": 0.013892849631998938,
+          "pixel_scale_arcsec": 2.00000016,
+          "previous_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu02/coadded/raw/toltec_commissioning_a1100_citlali.fits",
+          "shape": [
+            471,
+            465
+          ],
+          "signal_unit": "mJy/beam",
+          "support_jaccard": 1.0,
+          "weight_relative_l2_delta": 3.068578546451148e-05,
+          "weight_unit": "1/(mJy/beam)^2"
+        },
+        "a1400": {
+          "aperture_relative_l2_delta": 0.03302153958244085,
+          "aperture_sum_fractional_change": 0.045626892264226275,
+          "common_valid_pixels": 51555,
+          "current_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu03/coadded/raw/toltec_commissioning_a1400_citlali.fits",
+          "map_relative_l2_delta": 0.026314630293932235,
+          "noise_scaled_delta_rms": 0.02235915814165183,
+          "peak_fractional_change": 0.0030546693840221586,
+          "pixel_scale_arcsec": 2.00000016,
+          "previous_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu02/coadded/raw/toltec_commissioning_a1400_citlali.fits",
+          "shape": [
+            471,
+            465
+          ],
+          "signal_unit": "mJy/beam",
+          "support_jaccard": 0.9994959384269402,
+          "weight_relative_l2_delta": 0.0016722429948728293,
+          "weight_unit": "1/(mJy/beam)^2"
+        },
+        "a2000": {
+          "aperture_relative_l2_delta": 0.015549511881864866,
+          "aperture_sum_fractional_change": 0.10371391249493875,
+          "common_valid_pixels": 51699,
+          "current_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu03/coadded/raw/toltec_commissioning_a2000_citlali.fits",
+          "map_relative_l2_delta": 0.010373130796395685,
+          "noise_scaled_delta_rms": 0.008888151199911452,
+          "peak_fractional_change": 0.027095600708900335,
+          "pixel_scale_arcsec": 2.00000016,
+          "previous_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu02/coadded/raw/toltec_commissioning_a2000_citlali.fits",
+          "shape": [
+            471,
+            465
+          ],
+          "signal_unit": "mJy/beam",
+          "support_jaccard": 0.9999806576402321,
+          "weight_relative_l2_delta": 5.2395585795610196e-05,
+          "weight_unit": "1/(mJy/beam)^2"
+        }
+      },
+      "current_iteration_id": 3,
+      "learning_state_stable": true,
+      "previous_iteration_id": 2
+    },
+    {
+      "arrays": {
+        "a1100": {
+          "aperture_relative_l2_delta": 0.004494505547971695,
+          "aperture_sum_fractional_change": 0.021001455706835554,
+          "common_valid_pixels": 51191,
+          "current_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu04/coadded/raw/toltec_commissioning_a1100_citlali.fits",
+          "map_relative_l2_delta": 0.002939506040322911,
+          "noise_scaled_delta_rms": 0.0024648441436100938,
+          "peak_fractional_change": 0.005803321129818451,
+          "pixel_scale_arcsec": 2.00000016,
+          "previous_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu03/coadded/raw/toltec_commissioning_a1100_citlali.fits",
+          "shape": [
+            471,
+            465
+          ],
+          "signal_unit": "mJy/beam",
+          "support_jaccard": 1.0,
+          "weight_relative_l2_delta": 5.525555257040918e-05,
+          "weight_unit": "1/(mJy/beam)^2"
+        },
+        "a1400": {
+          "aperture_relative_l2_delta": 0.004378781167210803,
+          "aperture_sum_fractional_change": 0.013385922095198507,
+          "common_valid_pixels": 51575,
+          "current_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu04/coadded/raw/toltec_commissioning_a1400_citlali.fits",
+          "map_relative_l2_delta": 0.002852349544955087,
+          "noise_scaled_delta_rms": 0.0024661839505004863,
+          "peak_fractional_change": 0.00025969978183919745,
+          "pixel_scale_arcsec": 2.00000016,
+          "previous_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu03/coadded/raw/toltec_commissioning_a1400_citlali.fits",
+          "shape": [
+            471,
+            465
+          ],
+          "signal_unit": "mJy/beam",
+          "support_jaccard": 1.0,
+          "weight_relative_l2_delta": 5.3108705848004354e-05,
+          "weight_unit": "1/(mJy/beam)^2"
+        },
+        "a2000": {
+          "aperture_relative_l2_delta": 0.006499987377311896,
+          "aperture_sum_fractional_change": 0.04158834580948196,
+          "common_valid_pixels": 51700,
+          "current_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu04/coadded/raw/toltec_commissioning_a2000_citlali.fits",
+          "map_relative_l2_delta": 0.004349596072037524,
+          "noise_scaled_delta_rms": 0.0037147399892756457,
+          "peak_fractional_change": 0.009018529411464702,
+          "pixel_scale_arcsec": 2.00000016,
+          "previous_path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/NGC4449/reduced_full_spatial_learning/redu03/coadded/raw/toltec_commissioning_a2000_citlali.fits",
+          "shape": [
+            471,
+            465
+          ],
+          "signal_unit": "mJy/beam",
+          "support_jaccard": 1.0,
+          "weight_relative_l2_delta": 1.3984890755434652e-05,
+          "weight_unit": "1/(mJy/beam)^2"
+        }
+      },
+      "current_iteration_id": 4,
+      "learning_state_stable": true,
+      "previous_iteration_id": 3
+    }
+  ]
+}

@@ -213,7 +213,7 @@ adopted, boundedly adapted, or explicitly deferred.
 
 Compilation-independent Phase 5 readiness is current as of 2026-07-23. The
 existing local path builds `citlali_cli`; all 492 CTests, 118 config-preflight
-tests, and 117 baseline-tool tests pass. The 60-record validation ledger,
+tests, and 119 baseline-tool tests pass. The 60-record validation ledger,
 three-entry intended-science-change ledger, four-profile registry, and
 session-exit audit are valid, with zero supported library exits or growth. The
 [`integration record template`](PHASE5_INTEGRATION_RECORD_TEMPLATE.md) now
@@ -442,6 +442,19 @@ trials, and ranked observations are never silently excluded. Eight focused
 tests cover completeness, identity, pairing, grouping, workload relationships,
 conflicting overrides, and failure behavior. The census itself remains a
 future release baseline, not a Phase 4 closeout prerequisite.
+
+Retained-debt item D15 now has a bounded offline evidence path. The
+[`fruit-loop convergence study`](FRUIT_LOOP_CONVERGENCE_STUDY_2026-07-23.md)
+and manifest-driven analyzer compare consecutive raw coadds for every array,
+check support, weights, aperture and peak behavior, and require stable effective
+learning state before simulating an explicitly non-production stopping rule.
+The five active NGC4449 spatial-feedback iterations pass the study protocol
+but do not demonstrate an early stop: the sequence changes non-monotonically
+when learned state takes effect, and only the final transition passes the
+exploratory all-array rule. The older map-path continuation resets its learning
+lifecycle and is not appended as false state-continuous evidence. Production
+retains `max_iters`; representative checkpoint-complete sequences and
+scientific-owner threshold approval are still required to close D15.
 
 Phase 1 safety stabilization is complete for point, Beammap, science, and OOF.
 OOF refactor `redu01` closes the multi-observation date-header gate and is the

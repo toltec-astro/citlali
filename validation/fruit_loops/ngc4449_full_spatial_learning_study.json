@@ -1,0 +1,53 @@
+{
+  "schema_version": "citlali-fruit-loop-convergence-study-v1",
+  "study_id": "ngc4449-full-spatial-learning-2026-07-22",
+  "config_ignore_paths": [],
+  "product": {
+    "path_pattern": "coadded/raw/*_{array}_citlali.fits",
+    "arrays": [
+      "a1100",
+      "a1400",
+      "a2000"
+    ],
+    "signal_hdu": "signal_I",
+    "weight_hdu": "weight_I",
+    "coverage_hdu": "coverage_bool_I",
+    "aperture_center": "map_center",
+    "aperture_radius_arcsec": 180.0
+  },
+  "iterations": [
+    {
+      "iteration_id": 0,
+      "reduction_dir": "${NGC4449_ROOT}/reduced_full_spatial_learning/redu00"
+    },
+    {
+      "iteration_id": 1,
+      "reduction_dir": "${NGC4449_ROOT}/reduced_full_spatial_learning/redu01"
+    },
+    {
+      "iteration_id": 2,
+      "reduction_dir": "${NGC4449_ROOT}/reduced_full_spatial_learning/redu02"
+    },
+    {
+      "iteration_id": 3,
+      "reduction_dir": "${NGC4449_ROOT}/reduced_full_spatial_learning/redu03"
+    },
+    {
+      "iteration_id": 4,
+      "reduction_dir": "${NGC4449_ROOT}/reduced_full_spatial_learning/redu04"
+    }
+  ],
+  "candidate_rules": [
+    {
+      "rule_id": "exploratory-two-pass-v1",
+      "minimum_completed_iteration_id": 2,
+      "consecutive_passes": 2,
+      "require_learning_state_stable": true,
+      "support_jaccard_min": 0.999,
+      "map_relative_l2_delta_max": 0.02,
+      "aperture_relative_l2_delta_max": 0.04,
+      "peak_fractional_change_max": 0.03,
+      "weight_relative_l2_delta_max": 0.005
+    }
+  ]
+}
