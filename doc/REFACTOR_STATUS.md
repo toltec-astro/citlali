@@ -203,6 +203,14 @@ point `redu62`. Formal Phase 5 integration remains blocked on the deferred
 TolTECA build review; compilation-independent validation-contract and
 integration-packet preparation may continue.
 
+The TolTECA build owner is preparing a Citlali v4.x build approach intended to
+apply here but has not yet provided an implementation for review. The
+[`build integration requirements`](TOLTECA_BUILD_INTEGRATION_REQUIREMENTS_2026-07-23.md)
+define the outcome and evidence expected from that work without prescribing
+its tools or creating a competing build-system rewrite. This tree retains its
+current working CMake path until the implementation can be evaluated and
+adopted, boundedly adapted, or explicitly deferred.
+
 TolPROJ commit `e0754af` supersedes the custom suite installer and staging
 layers introduced by commits `39f724d` and `8310c24`. The canonical
 `suite.yaml` now contains only path-free observation selections and validation

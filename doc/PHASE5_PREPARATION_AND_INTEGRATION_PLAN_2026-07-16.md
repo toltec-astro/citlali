@@ -156,6 +156,9 @@ branch and its tag remain available for forensic history.
 
 ## Decisions Needed After The Build Owner Returns
 
+The required outcomes, requested evidence, non-goals, and bounded adoption
+paths are specified in
+[`TOLTECA_BUILD_INTEGRATION_REQUIREMENTS_2026-07-23.md`](TOLTECA_BUILD_INTEGRATION_REQUIREMENTS_2026-07-23.md).
 The review must answer only the questions that are actually blocking closeout:
 
 1. What C++ build and dependency path will TolTECA support on the collaborating
