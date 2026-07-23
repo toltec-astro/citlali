@@ -44,7 +44,7 @@ following dispositions are based on that target, the canonical
 
 | Source family | Current state | Prepared disposition |
 | --- | --- | --- |
-| `src/citlali/cli/main.cpp` and the seven compiled `citlali` library sources | Active production target | Retain. Any later movement requires ordinary build and affected-mode evidence. |
+| `src/citlali/cli/main.cpp` and the eight compiled `citlali` library sources | Active production target | Retain. Any later movement requires ordinary build and affected-mode evidence. |
 | Headers reached by the active target, including transitional `engine/detail` fragments | Active implementation graph | Retain for the candidate. Public/private physical reorganization is criterion 6 and remains deferred. |
 | `include/citlali/core/pipeline/config_leaf_schema_generated.h` | Checked-in generated startup schema | Retain and continue guarding with `generate_config_schema_header.py --check`. |
 | `src/citlali/main_old.cpp`, `mpi_main.cpp`, `kids_main.cpp`, and `lali_main.cpp` | Unbuilt historical or experimental mains | Recommend deletion in the bounded post-review cleanup. Git preserves their forensic history; they are not supported entry points. |

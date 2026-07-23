@@ -3,32 +3,37 @@
 Read these documents before making architectural changes:
 
 1. `doc/REFACTOR_STATUS.md` - current phase, gates, and next actions.
-2. `doc/PHASE4_1_TOLTECA_CONFIG_STRUCTURE_PLAN_2026-07-16.md` - active
+2. `doc/PHASE5_PREPARATION_AND_INTEGRATION_PLAN_2026-07-16.md` - active
+   compilation-independent closeout lane and final-candidate discipline.
+3. `doc/TOLTECA_BUILD_INTEGRATION_REQUIREMENTS_2026-07-23.md` - required
+   outcomes and evidence for the deferred build/integration review.
+4. `doc/PHASE4_1_TOLTECA_CONFIG_STRUCTURE_PLAN_2026-07-16.md` - completed
    four-mode numbered-YAML authoring work and gates.
-3. `doc/PHASE4_2_TECHNIQUE_PERFORMANCE_REVIEW_PLAN_2026-07-16.md` - subsequent
+5. `doc/PHASE4_2_TECHNIQUE_PERFORMANCE_REVIEW_PLAN_2026-07-16.md` - completed
    whole-code review rubric, evidence labels, priorities, and stop rules.
-4. `doc/ARCHITECTURE.md` - active components, ownership, dependencies,
+6. `doc/ARCHITECTURE.md` - active components, ownership, dependencies,
    compatibility boundaries, and extension rules.
-5. `doc/SCIENTIFIC_CONVENTIONS.md` - identities, units, frames, validity, and
+7. `doc/SCIENTIFIC_CONVENTIONS.md` - identities, units, frames, validity, and
    validation routing.
-6. `doc/RETAINED_DEBT.md` - deliberate limitations, owners, triggers, and exit
+8. `doc/RETAINED_DEBT.md` - deliberate limitations, owners, triggers, and exit
    conditions.
-7. `handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md` - adopted
+9. `handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md` - adopted
    independent review and completion criteria.
-8. `doc/STRUCTURAL_REFACTOR_PLAN_2026-06-29.md` - original goals and history.
+10. `doc/STRUCTURAL_REFACTOR_PLAN_2026-06-29.md` - original goals and history.
 
 The living status document governs sequencing when these documents differ.
 Durable architecture decisions are indexed in `doc/adr/README.md`.
 
 ## Current Direction
 
-The refactor follows the roadmap in `doc/REFACTOR_STATUS.md`, including the
-project-owner additions Phase 4.1 and Phase 4.2. Phase 4.1, the four-mode
-TolTECA numbered-config structure, is active. Phase 4.2 performs a bounded
-whole-code technique and performance review after 4.1. Compilation-side work
-remains deferred pending review of TolTECA's revised C++ integration approach.
-Compact-config tooling may support the explicitly gated Phase 4.1 authoring
-work; open-ended header subdivision remains paused.
+The refactor follows the roadmap in `doc/REFACTOR_STATUS.md`. Project-owner
+additions Phase 4.1 and Phase 4.2 are complete. The accepted four-mode TolTECA
+numbered-config kits remain opt-in through TolPROJ's `--refactor` path, and the
+whole-code review's untriggered optimization candidates remain governed by the
+retained-debt register. Formal Phase 5 integration and compilation-side changes
+remain deferred pending review of TolTECA's revised C++ integration approach.
+Compilation-independent validation-contract and integration-packet preparation
+may continue; open-ended header subdivision remains paused.
 
 Do not broaden mature RTC, PTC, JINC, or Wiener-filter algorithms while fixing
 their contracts. Preserve numerical behavior unless a change is named,

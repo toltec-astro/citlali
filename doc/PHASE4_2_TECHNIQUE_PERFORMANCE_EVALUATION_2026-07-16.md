@@ -1,5 +1,15 @@
 # Phase 4.2 Technique And Performance Evaluation - 2026-07-16
 
+## Completion Note - 2026-07-17
+
+This document originally captured the review at its 80% checkpoint. Phase 4.2
+subsequently closed on 2026-07-17 because every active component had an
+evidence-backed disposition, the production P0/P1 defects were owned and
+repaired, and the remaining measurements or improvements had explicit
+scientific or performance triggers. The original assessment below is retained
+as the review record; the final disposition is recorded in the completion
+addendum at the end.
+
 ## Executive Conclusion
 
 The active Citlali pipeline is not in need of a wholesale numerical rewrite.
@@ -486,3 +496,32 @@ splitting, a new mapmaker, a cleaner rewrite, or a generic benchmark framework.
 The review census is therefore complete, while Phase 4.2 is approximately
 **80% complete**. The remaining work is measurement and bounded remediation,
 not another broad code-reading pass.
+
+## Completion Addendum - 2026-07-17
+
+Phase 4.2 is complete. Closure means the bounded review and disposition work is
+finished; it does not mean every plausible optimization was implemented.
+
+1. Production validation rejects experimental maximum-likelihood mapmaking,
+   and required pointing and Beammap metadata failures propagate. Subsequent
+   accepted point and Beammap reductions exercised the supported paths without
+   unexpected errors.
+2. Existing stage scopes identify PTC cleaning, map population, and Beammap
+   diagnostic output as measurable costs. The accepted reduction history does
+   not show a sustained Citlali regression that would justify changing those
+   mature paths solely for this review.
+3. Moving Beammap diagnostic preparation outside the NetCDF lock and adding
+   finer science attribution remain candidate responses to a measured
+   slowdown, not mandatory speculative optimizations.
+4. Dedicated Beammap/noise-heavy peak-RSS and profiler-overhead campaigning is
+   trigger-deferred under retained-debt item D13. Naturally required runs
+   should continue collecting wrapper evidence.
+5. Source finding is explicitly experimental and disabled in the accepted
+   operator kits. Enabling it requires a scientifically owned
+   injection/recovery matrix; that future capability project does not keep the
+   code-review census open.
+6. The finite P2/P3 findings remain evidence-labeled candidates rather than an
+   authorization for open-ended remediation. No unowned P0/P1 finding remains.
+
+Compilation-boundary and build-system work was never part of this completion
+decision. It remains deferred to the TolTECA build/integration review.

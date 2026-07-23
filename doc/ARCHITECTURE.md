@@ -77,15 +77,15 @@ The active CMake graph has two production targets:
 
 | Target | Role | Active implementation |
 | --- | --- | --- |
-| `citlali` / `citlali::citlali` | Static library and shared include/dependency boundary | Seven compiled implementation files plus the header-defined numerical and orchestration graph |
+| `citlali` / `citlali::citlali` | Static library and shared include/dependency boundary | Eight compiled implementation files plus the header-defined numerical and orchestration graph |
 | `citlali_cli` | Production executable, emitted as `citlali` | `src/citlali/cli/main.cpp`, linked to `citlali::citlali` |
 
-The seven compiled library sources currently cover timestream enum
-definitions, output-root leasing, calibration, telescope data, Gaussian
-models, PTC sensitivity, and map primitives. Mode engines, much of pipeline
-orchestration, and mature numerical code remain template- or header-defined.
-This is the current physical build shape, not the desired final compilation
-boundary.
+The eight compiled library sources currently cover timestream enum
+definitions, output-root leasing, restart-checkpoint publication, calibration,
+telescope data, Gaussian models, PTC sensitivity, and map primitives. Mode
+engines, much of pipeline orchestration, and mature numerical code remain
+template- or header-defined. This is the current physical build shape, not the
+desired final compilation boundary.
 
 The only supported production executable entry is
 `src/citlali/cli/main.cpp`. It:

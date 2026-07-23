@@ -2294,31 +2294,29 @@ Typed validation now rejects it for production while preserving the research
 implementation for an explicit future decision. It also found one P1 output
 contract defect: required pointing and Beammap FITS metadata could silently
 fall back to zero or omission. Those catches are removed so required write
-failures propagate. The next natural point and Beammap runs must validate these
-two behavior-preserving production guards; no dedicated Beammap run is needed.
+failures propagate. Subsequent accepted point and Beammap reductions exercised
+the supported output paths without unexpected errors, closing those
+behavior-preserving production guards.
 
-Current profiles identify three measured Beammap costs: PTC cleaning consumes
+Current profiles identify three measured Beammap costs: PTC cleaning consumed
 1,565.923 seconds, map population 1,250.498 seconds, and the PTC diagnostic
-sidecar 344.554 seconds in accepted `redu06`. The sidecar holds the global
-NetCDF lock while doing CPU preparation and opens/closes the shared file per
-scan, making it the first bounded implementation improvement. Science
-`redu28` spends 2,799.461 seconds in the aggregate TOD pipeline but cannot yet
-attribute that time to RTC, PTC, or mapmaking. Peak-RSS evidence is also still
-required for Beammap and a naturally scheduled noise-heavy reduction. These
-measurements precede optimization.
+sidecar 344.554 seconds in accepted `redu06`. Science `redu28` spent 2,799.461
+seconds in the aggregate TOD pipeline. These measurements provide bounded
+targets if a future performance trigger occurs; the accepted run history does
+not establish a sustained regression that justifies speculative changes to the
+mature numerical or output paths.
 
-Phase 4.2 is approximately 80% complete. Its finite remaining queue is:
-
-1. validate the two local correctness guards on the next natural point and
-   Beammap runs;
-2. add PTC-cleaning and map-population substage scopes, then change only a
-   measured dominant operation;
-3. prepare Beammap sidecar records before taking the NetCDF lock and measure
-   exact-product wall-time impact;
-4. add RTC/PTC/mapmaking attribution to the next required science run;
-5. collect Beammap and noise-heavy peak RSS; and
-6. give source finding an explicit experimental capability statement and a
-   scientifically owned injection/recovery matrix.
+Phase 4.2 closed on 2026-07-17. The production P0/P1 findings are owned and
+repaired, later accepted point and Beammap runs exercise the supported paths,
+and every active component has an evidence-backed disposition. Candidate
+Beammap NetCDF lock narrowing and finer science-stage attribution remain
+responses to a measured slowdown rather than mandatory optimizations. Dedicated
+Beammap/noise-heavy peak-RSS and profiler-overhead campaigning is
+trigger-deferred under retained-debt item D13. Source finding is explicitly
+experimental and disabled in the accepted operator kits; enabling it requires
+a scientifically owned injection/recovery matrix. The
+[`evaluation completion addendum`](PHASE4_2_TECHNIQUE_PERFORMANCE_EVALUATION_2026-07-16.md#completion-addendum---2026-07-17)
+records the final disposition.
 
 Compilation-boundary and build-system work remains deferred pending the
 TolTECA developer's current build design. Header changes still demonstrate the
