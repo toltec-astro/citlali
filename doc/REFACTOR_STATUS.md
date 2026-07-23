@@ -74,6 +74,18 @@ branch. The exact validated tree will remain available for forensic review.
   529-leaf config is exact, all required provenance is valid, and the log has
   zero issues. It accepts the fruit-loop input/feedback and mature Wiener
   failure-contract tranches for Beammap.
+- The Phase 4.1 self-contained Beammap `redu00` produced by `189bbf85d` is
+  rejected. Its final APT marks 196, 27, and 38 bad detectors in a1100, a1400,
+  and a2000, while the split bad-detector FITS files contain only 10, 0, and 0
+  detector maps. The run terminates with `session.unhandled_exception` after
+  writing detector 273. That detector is the first split-map entry with
+  unavailable empirical-template diagnostics; copying its `NaN` APT values
+  into numeric FITS keywords raises a CCfits exception. Commit `e496dcb6e`
+  writes such values as FITS-standard undefined keywords and catches the
+  CCfits base exception at required map/header output boundaries. The real
+  CCfits null-key regression, all 479 main tests, and the local CLI build pass.
+  A successor Unity Beammap run must produce all 261 bad-detector maps and pass
+  the 13-family product contract before the Phase 4.1 Beammap smoke is accepted.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
