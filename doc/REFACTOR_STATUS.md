@@ -74,21 +74,24 @@ branch. The exact validated tree will remain available for forensic review.
   529-leaf config is exact, all required provenance is valid, and the log has
   zero issues. It accepts the fruit-loop input/feedback and mature Wiener
   failure-contract tranches for Beammap.
-- The Phase 4.1 self-contained Beammap `redu00` produced by `189bbf85d` is
-  rejected. Its final APT marks 196, 27, and 38 bad detectors in a1100, a1400,
-  and a2000, while the split bad-detector FITS files contain only 10, 0, and 0
-  detector maps. The run terminates with `session.unhandled_exception` after
-  writing detector 273. That detector is the first split-map entry with
-  unavailable empirical-template diagnostics; copying its `NaN` APT values
-  into numeric FITS keywords raises a CCfits exception. Commit `e496dcb6e`
-  catches the CCfits base exception at required map/header output boundaries
-  and initially represented unavailable values as undefined FITS keywords.
-  Unity's older CCfits lacks that API; commit `a68bf1737` adopts the portable
-  policy of omitting unavailable per-detector header keywords while retaining
-  `NaN` in the authoritative APT table. All 478 main tests and the local CLI
-  build pass. A successor Unity Beammap run must produce all 261 bad-detector
-  maps and pass the 13-family product contract before the Phase 4.1 Beammap
-  smoke is accepted.
+- The Phase 4.1 self-contained Beammap `redu00` produced by `cfae989ce`
+  accepts the split-output correction. It completes 198 PTC chunks and three
+  internal Beammap iterations in 3,779 log seconds with no error-level
+  records, and all required provenance is valid. Its final APT marks 196, 27,
+  and 38 bad detectors in a1100, a1400, and a2000; the split bad-detector FITS
+  files now contain exactly those counts, while the good files contain 2,901,
+  1,186, and 886 detectors. The three iteration fit counts, final
+  network-position flags, and complete kernel-map diagnostic summary are exact
+  against rejected predecessor `189bbf85d`, establishing that the fix changes
+  output completion rather than Beammap science. Commit `e496dcb6e` catches
+  the CCfits base exception at required map/header boundaries, and
+  `a68bf1737` omits unavailable per-detector FITS keywords while retaining
+  `NaN` in the authoritative APT table for compatibility with Unity's older
+  CCfits. All 13 established Beammap product families pass. The legacy
+  version-one registry still reports the new required
+  `citlali_restart_checkpoint.nc` as unclassified; that intentional
+  operational artifact needs a successor product contract rather than a
+  mutation of the immutable historical contract.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
