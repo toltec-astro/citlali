@@ -38,6 +38,13 @@ branch. The exact validated tree will remain available for forensic review.
   enabled-filtering `redu53`,
   unfiltered `redu51`, and bounded full-noise-output `redu49` remain the
   immediate post-processing, pointing, and noise-products control fixtures.
+- The Phase 4.1 self-contained point smoke `pointings_v21/redu00`, produced by
+  `cfae989ce`, accepts the raw-only `phase4.1-v2.1` pointing policy. It
+  completed all 12 PTC chunks in 135 log seconds with no error-level records,
+  and every required provenance sidecar is valid. Requested and effective map
+  filtering are disabled, realized filter-context and filtered-map counts are
+  zero, and no filtered product directory exists. The raw pointing table
+  contains three valid fits from three attempts, one for each array.
 - Phase 3 full-Wiener point `redu65`, produced by `6dd0057f8`, is accepted
   against matched OG `redu10` at `ffc6b907`. Both use five noise realizations,
   a Gaussian template, and `lowpass_only: false`, and both execute all six
@@ -185,14 +192,16 @@ NGC4449 series remain quarantined.
 
 ## Active Phase
 
-**Phase 4.1 - TolTECA operator config structure** is active at its four-mode V2
-Unity smoke gate, and **Phase 4.2 - technique and performance review** is
-complete as of 2026-07-17. The project owner added both stages between the
-adopted Phase 4 evidence package and final Phase 5 integration. Phase 3
-library/session work is complete: local gates pass and Unity point `redu66`
-accepts the output-root ownership repair and exact scientific behavior at the
-first compiled boundary. Phase 2 config authority and provenance remains
-complete at Unity point `redu62`.
+**Phase 4.1 - TolTECA operator config structure** is complete as of 2026-07-23,
+and **Phase 4.2 - technique and performance review** is complete as of
+2026-07-17. The project owner added both stages between the adopted Phase 4
+evidence package and final Phase 5 integration. Phase 3 library/session work
+is complete: local gates pass and Unity point `redu66` accepts the output-root
+ownership repair and exact scientific behavior at the first compiled
+boundary. Phase 2 config authority and provenance remains complete at Unity
+point `redu62`. Formal Phase 5 integration remains blocked on the deferred
+TolTECA build review; compilation-independent validation-contract and
+integration-packet preparation may continue.
 
 TolPROJ commit `e0754af` supersedes the custom suite installer and staging
 layers introduced by commits `39f724d` and `8310c24`. The canonical
@@ -208,9 +217,10 @@ the established TolPROJ commands. Native `project.yaml` is deliberately live
 workflow state rather than a hashed immutable artifact. Verification guards
 the portable selection and required native structure without objecting to
 normal status, cohort, or APT updates. The workflow does not provision an OG
-tree, submit jobs, or run Citlali. All 104 TolPROJ tests pass. Phase 4.1 remains
-open until these freshly created Unity projects complete point, OOF, Beammap,
-and science smoke reductions with no unexpected errors.
+tree, submit jobs, or run Citlali. All 104 TolPROJ tests pass. Freshly created
+Unity projects subsequently completed point, OOF, Beammap, and science smoke
+reductions with their requested products and no unexpected errors, closing
+the Phase 4.1 execution gate.
 
 TolPROJ follow-up commit `d2c90f3` applies the first Unity setup corrections.
 The native skeleton is mode-minimal: point and OOF omit an unused nested
@@ -249,6 +259,17 @@ explicit validation overlay but filtering is disabled. TolPROJ commit
 `phase4.1-v2` for historical reproducibility, and selects V2.1 only for fresh
 `--refactor` setups. All 139 TolPROJ tests and Ruff pass. No Citlali
 compilation is required for these numbered-YAML integration changes.
+
+The four native-project smoke gates are complete. Point
+`pointings_v21/redu00` verifies the V2.1 raw-only policy with three valid array
+fits and no filtered outputs. OOF `redu00` verifies diagnostic Gaussian fits
+under PSF-preserving mapmaking. Science `redu03` verifies the unchanged science
+V2/V2.1 policy across two observations, four fruit-loop iterations, raw and
+filtered coadds, noise products, and learning outputs. Beammap `redu00`
+verifies all 198 PTC chunks, three internal iterations, APT good/bad
+classification, and complete good/bad split FITS products after the required
+split-output correction. All four runs completed without unexpected
+error-level records. This closes Phase 4.1 and retained-debt item D09.
 
 Compilation-side Phase 4 work is explicitly deferred as of 2026-07-16 pending
 review of the TolTECA developer's revised C++ build and integration approach.

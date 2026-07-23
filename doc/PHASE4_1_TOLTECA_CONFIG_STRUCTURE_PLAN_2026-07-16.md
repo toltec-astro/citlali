@@ -178,8 +178,7 @@ all four exact mode identities, and every config-authority audit. Citlali
 commit `6b6be9f57` is vendored byte-for-byte by TolPROJ commit `8490f09`.
 TolPROJ's manifest-driven `--refactor` path installs all four V2 modes,
 preserves the legacy default, preserves all five operator files on same-kit
-reruns, and passes all 100 tests. Phase 4.1 remains open only until point, OOF,
-Beammap, and science smoke reductions pass with the installed V2 files.
+reruns, and passes all 100 tests.
 
 TolPROJ commit `e0754af` replaces the interim custom acceptance-suite installer
 and file-staging implementation from commits `39f724d` and `8310c24`. The
@@ -198,10 +197,9 @@ mutable `project.yaml` state. Verification checks the portable selection and
 native project structure while allowing normal workflow updates. Beammap copy
 and stage commands accept an explicit suite root so the validation project does
 not replace the production Beammap workspace. The suite remains refactor-only
-and does not submit or run Citlali. All 104 TolPROJ tests pass. The remaining
-gate is fresh native-project initialization on Unity followed by preparation
-through TolPROJ and successful point, OOF, Beammap, and science reductions and
-their existing product-profile comparisons.
+and does not submit or run Citlali. All 104 TolPROJ tests pass. Fresh
+native-project initialization, TolPROJ preparation, and successful point, OOF,
+Beammap, and science reductions subsequently completed on Unity.
 
 ## Exit Gate
 
@@ -223,3 +221,28 @@ Phase 4.1 is complete when:
 This closes retained-debt item D09. Later scientific development may version
 the mode policy or product profile; it does not silently edit an accepted
 template in place.
+
+## Completion - 2026-07-23
+
+All exit gates are complete. The canonical successor is
+`phase4.1-v2.1`: it adds diagnostic Gaussian fitting to OOF and makes pointing
+raw-only by default without changing the science or Beammap policies. TolPROJ
+vendors the complete kit as an opt-in framework while preserving its legacy
+default.
+
+Fresh self-contained Unity projects completed all four smoke reductions:
+
+- point `pointings_v21/redu00` completed 12 PTC chunks, produced three valid
+  raw array fits, and realized no filtered products;
+- OOF `redu00` completed three observations and produced nine valid diagnostic
+  array fits;
+- science `redu03` completed two observations and four fruit-loop iterations
+  with the requested raw, coadded, filtered, noise, and learning products; and
+- Beammap `redu00` completed 198 PTC chunks and three internal iterations with
+  complete good/bad detector split products matching its final APT flags.
+
+Each run completed with no unexpected error-level records. The Point, OOF, and
+Beammap runs also pass all provenance requirements available at their
+respective binary snapshots; the science smoke predates required pointing
+provenance and is retained as config-kit execution evidence rather than a
+replacement for the later same-SHA release matrix.
