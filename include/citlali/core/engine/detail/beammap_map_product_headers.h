@@ -9,14 +9,15 @@
 namespace beammap_map_product_headers {
 
 template <class HduPtr>
-void add_detector_header_value(HduPtr hdu, const std::string &key,
+bool add_detector_header_value(HduPtr hdu, const std::string &key,
                                double value, const std::string &comment) {
-    if (std::isfinite(value)) {
-        hdu->addKey(key, value, comment);
+    if (!std::isfinite(value)) {
+        // Missing diagnostics remain NaN in the authoritative APT table.
+        // Omission is portable across the older CCfits used on Unity.
+        return false;
     }
-    else {
-        hdu->addKeyNull(key, comment + "; undefined for this detector");
-    }
+    hdu->addKey(key, value, comment);
+    return true;
 }
 
 template <class HduPtr, class Calib, class Flag2Vector>
