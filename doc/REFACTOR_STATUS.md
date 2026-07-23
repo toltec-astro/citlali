@@ -81,11 +81,14 @@ branch. The exact validated tree will remain available for forensic review.
   writing detector 273. That detector is the first split-map entry with
   unavailable empirical-template diagnostics; copying its `NaN` APT values
   into numeric FITS keywords raises a CCfits exception. Commit `e496dcb6e`
-  writes such values as FITS-standard undefined keywords and catches the
-  CCfits base exception at required map/header output boundaries. The real
-  CCfits null-key regression, all 479 main tests, and the local CLI build pass.
-  A successor Unity Beammap run must produce all 261 bad-detector maps and pass
-  the 13-family product contract before the Phase 4.1 Beammap smoke is accepted.
+  catches the CCfits base exception at required map/header output boundaries
+  and initially represented unavailable values as undefined FITS keywords.
+  Unity's older CCfits lacks that API; commit `a68bf1737` adopts the portable
+  policy of omitting unavailable per-detector header keywords while retaining
+  `NaN` in the authoritative APT table. All 478 main tests and the local CLI
+  build pass. A successor Unity Beammap run must produce all 261 bad-detector
+  maps and pass the 13-family product contract before the Phase 4.1 Beammap
+  smoke is accepted.
 - `redu23` and `redu24` completed all 12 PTC chunks with zero error-level log
   records and complete TOD/diagnostic products. Their common numeric products,
   FITS maps, and pointing tables are exact; only profiling timing differs.
