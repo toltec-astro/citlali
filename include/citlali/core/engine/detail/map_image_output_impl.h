@@ -104,7 +104,7 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
                 mb->wcs, source_epoch, median_rms);
         }
         return first_hdu_index;
-    } catch (const CCfits::FitsError &e) {
+    } catch (const CCfits::FitsException &e) {
         throw std::runtime_error(
             citlali::pipeline::map_write_error_message(
                 map_name, i, fits_io->at(map_index).filepath, mb->noise,

@@ -1,5 +1,6 @@
 #include <citlali_config/default_config.h>
 #include <citlali/core/config/beammap_config_validation.h>
+#include <citlali/core/engine/detail/beammap_map_product_headers.h>
 #include <citlali/core/engine/detail/beammap_map_product_split_helpers.h>
 #include <citlali/core/pipeline/beammap_config_loading.h>
 #include <citlali/core/pipeline/beammap_config_serialization.h>
@@ -9,6 +10,7 @@
 #include <citlali/core/pipeline/beammap_execution_plan.h>
 #include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
 #include <citlali/core/pipeline/post_processing_provenance_lifecycle.h>
+#include <citlali/core/utils/fits_io.h>
 
 #include <gtest/gtest.h>
 #include <spdlog/sinks/null_sink.h>
@@ -23,6 +25,61 @@
 #include <vector>
 
 namespace {
+
+struct RecordingBeammapHeader {
+    std::vector<std::string> numeric_keys;
+    std::vector<std::string> undefined_keys;
+
+    void addKey(const std::string &key, double,
+                const std::string &) {
+        numeric_keys.push_back(key);
+    }
+
+    void addKeyNull(const std::string &key,
+                    const std::string &) {
+        undefined_keys.push_back(key);
+    }
+};
+
+TEST(BeammapMapProductHeaders, WritesNonfiniteValuesAsUndefined) {
+    RecordingBeammapHeader header;
+
+    beammap_map_product_headers::add_detector_header_value(
+        &header, "BEAMMAP.TEMPLATE_AMP", 1.25, "template amplitude");
+    beammap_map_product_headers::add_detector_header_value(
+        &header, "BEAMMAP.TEMPLATE_RESID_RMS",
+        std::numeric_limits<double>::quiet_NaN(), "template residual");
+
+    EXPECT_EQ(header.numeric_keys,
+              (std::vector<std::string>{"BEAMMAP.TEMPLATE_AMP"}));
+    EXPECT_EQ(header.undefined_keys,
+              (std::vector<std::string>{"BEAMMAP.TEMPLATE_RESID_RMS"}));
+}
+
+TEST(BeammapMapProductHeaders, CcfitsAcceptsUndefinedDetectorKeyword) {
+    const auto base_path =
+        std::filesystem::temp_directory_path() /
+        "citlali-beammap-undefined-header-test";
+    const auto fits_path = base_path.string() + ".fits";
+    std::filesystem::remove(fits_path);
+
+    {
+        using FitsOutput =
+            fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>;
+        FitsOutput output(base_path.string());
+        Eigen::MatrixXd image = Eigen::MatrixXd::Zero(1, 1);
+        output.add_hdu("signal_det_273_I", image);
+
+        EXPECT_NO_THROW(
+            beammap_map_product_headers::add_detector_header_value(
+                output.hdus.back(), "BEAMMAP.TEMPLATE_AMP",
+                std::numeric_limits<double>::quiet_NaN(),
+                "template amplitude"));
+    }
+
+    EXPECT_TRUE(std::filesystem::exists(fits_path));
+    std::filesystem::remove(fits_path);
+}
 
 TEST(BeammapSplitMapProducts, CapturesAllInterleavedDetectorIndices) {
     Eigen::VectorXd flags(12);

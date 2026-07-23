@@ -89,7 +89,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     citlali::engine_detail::add_phdu_pointing_telescope_header_section(
         fits_entry, mb, telescope, name, logger, reduction_type,
         citlali::pipeline::pointing_config(*this));
-    } catch (const CCfits::FitsError &e) {
+    } catch (const CCfits::FitsException &e) {
         throw std::runtime_error(
             citlali::pipeline::phdu_write_error_message(
                 name, fits_io->at(i).filepath, e.message()));

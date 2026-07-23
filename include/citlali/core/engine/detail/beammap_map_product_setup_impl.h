@@ -9,27 +9,47 @@ void Beammap::add_beammap_detector_map_header(
     Eigen::Index signal_hdu_index,
     const char *breadcrumb,
     int flag_value) {
-    const Eigen::Index map_index =
-        map_indices.arrays_to_maps(detector_index);
+    try {
+        const Eigen::Index map_index =
+            map_indices.arrays_to_maps(detector_index);
 
-    logger->debug("adding beammap header keys");
-    if (flag_value >= 0) {
-        citlali::pipeline::update_map_output_debug_breadcrumb(
-            breadcrumb, f_io->at(map_index).filepath.c_str(),
-            detector_index, map_index, -1, -1, signal_hdu_index,
-            static_cast<Eigen::Index>(f_io->at(map_index).hdus.size()),
-            flag_value);
+        logger->debug("adding beammap header keys");
+        if (flag_value >= 0) {
+            citlali::pipeline::update_map_output_debug_breadcrumb(
+                breadcrumb, f_io->at(map_index).filepath.c_str(),
+                detector_index, map_index, -1, -1, signal_hdu_index,
+                static_cast<Eigen::Index>(f_io->at(map_index).hdus.size()),
+                flag_value);
+        }
+        else {
+            citlali::pipeline::update_map_output_debug_breadcrumb(
+                breadcrumb, f_io->at(map_index).filepath.c_str(),
+                detector_index, map_index, -1, -1, signal_hdu_index,
+                static_cast<Eigen::Index>(f_io->at(map_index).hdus.size()));
+        }
+        beammap_map_product_headers::add_detector_header_keys(
+            f_io->at(map_index).hdus.at(signal_hdu_index), calib,
+            flag2, detector_index);
+        citlali::pipeline::reset_map_output_debug_breadcrumb();
     }
-    else {
-        citlali::pipeline::update_map_output_debug_breadcrumb(
-            breadcrumb, f_io->at(map_index).filepath.c_str(),
-            detector_index, map_index, -1, -1, signal_hdu_index,
-            static_cast<Eigen::Index>(f_io->at(map_index).hdus.size()));
+    catch (const CCfits::FitsException &error) {
+        citlali::pipeline::reset_map_output_debug_breadcrumb();
+        citlali::pipeline::fail_required_output(
+            logger,
+            fmt::format(
+                "beammap detector header write failed: detector_index={} flag={} error={}",
+                static_cast<long long>(detector_index), flag_value,
+                error.message()));
     }
-    beammap_map_product_headers::add_detector_header_keys(
-        f_io->at(map_index).hdus.at(signal_hdu_index), calib,
-        flag2, detector_index);
-    citlali::pipeline::reset_map_output_debug_breadcrumb();
+    catch (const std::exception &error) {
+        citlali::pipeline::reset_map_output_debug_breadcrumb();
+        citlali::pipeline::fail_required_output(
+            logger,
+            fmt::format(
+                "beammap detector header write failed: detector_index={} flag={} error={}",
+                static_cast<long long>(detector_index), flag_value,
+                error.what()));
+    }
 }
 
 template <mapmaking::MapType map_type>
