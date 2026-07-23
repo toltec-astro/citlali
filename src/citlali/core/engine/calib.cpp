@@ -68,8 +68,9 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
     // set apt table
     apt = apt_temp;
 
-    // run setup on apt table
-    setup();
+    // A matched APT can retain fully flagged placeholder rows for a network
+    // that was absent from this observation. Restrict the table to the raw
+    // interfaces before setup validates its network and array groups.
 
     // vectors to hold roach indices and missing roaches
     std::vector<Eigen::Index> roach_indices, missing;
