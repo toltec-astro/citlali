@@ -213,7 +213,7 @@ adopted, boundedly adapted, or explicitly deferred.
 
 Compilation-independent Phase 5 readiness is current as of 2026-07-23. The
 existing local path builds `citlali_cli`; all 492 CTests, 118 config-preflight
-tests, and 109 baseline-tool tests pass. The 60-record validation ledger,
+tests, and 117 baseline-tool tests pass. The 60-record validation ledger,
 three-entry intended-science-change ledger, four-profile registry, and
 session-exit audit are valid, with zero supported library exits or growth. The
 [`integration record template`](PHASE5_INTEGRATION_RECORD_TEMPLATE.md) now
@@ -430,14 +430,18 @@ control. See the
 [controlled performance protocol](PHASE4_PERFORMANCE_PROTOCOL_2026-07-16.md).
 
 A planned post-refactor re-reduction of approximately 50 historical Beammap
-observations will provide the broader operational performance census. Before
-that work starts, add a lightweight corpus manifest and analyzer around the
-existing evidence extractor. Each run should retain observation/workload,
-config, binary, node, runtime, RSS, stage, I/O, and outcome identity. Analyze
-the distribution against workload and preserve same-observation pairings where
-available; do not treat unlike observations as repeated trials or reduce the
-corpus to an unqualified average. This census is a future release baseline, not
-a Phase 4 closeout prerequisite.
+observations will provide the broader operational performance census. The
+[`corpus plan`](BEAMMAP_CORPUS_PERFORMANCE_CENSUS_PLAN_2026-07-23.md),
+manifest template, and offline analyzer are collection-ready as of 2026-07-23.
+They reuse the existing GNU Time evidence record, verify observation identity
+against Beammap provenance, require one current record per expected
+observation, extract workload and output-volume evidence, report population
+distributions and workload relationships, and preserve only explicit
+same-observation comparisons. Unlike observations are not treated as repeated
+trials, and ranked observations are never silently excluded. Eight focused
+tests cover completeness, identity, pairing, grouping, workload relationships,
+conflicting overrides, and failure behavior. The census itself remains a
+future release baseline, not a Phase 4 closeout prerequisite.
 
 Phase 1 safety stabilization is complete for point, Beammap, science, and OOF.
 OOF refactor `redu01` closes the multi-observation date-header gate and is the

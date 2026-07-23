@@ -82,6 +82,65 @@ and Unity command sequence are in
 `doc/PHASE4_PERFORMANCE_PROTOCOL_2026-07-16.md`. Do not use historical or
 concurrent runs to fill a controlled campaign retrospectively.
 
+## Historical Beammap Corpus
+
+The historical Beammap corpus is a population census, not a controlled paired
+campaign. Use the same `run_performance_case.py` wrapper for each observation,
+with one frozen release binary. The wrapper's campaign fields provide unique
+run bookkeeping; the corpus manifest supplies the authoritative observation
+identity.
+
+For example, from one TolPROJ Beammap project directory on Unity:
+
+```bash
+python "$HOME/work_toltec/citlali_dev/citlali_refactor/tools/baseline/run_performance_case.py" \
+  --campaign-id beammap-historical-release-census-v1 \
+  --case-id beammap-148670 \
+  --role candidate \
+  --phase measured \
+  --pair-index 0 \
+  --build-type Release \
+  --citlali-executable /work/toltec/citlali_dev/citlali_refactor/build/bin/citlali \
+  --reduced-root reduced \
+  --output performance/beammap-148670.json \
+  -- tolteca reduce
+```
+
+After downloading the reduction, add its attached metadata to a copy of
+`validation/performance/beammap_corpus_template.json`:
+
+```json
+{
+  "observation_id": 148670,
+  "metadata": "3c273/reduced/redu00/performance_run.json",
+  "comparisons": [
+    {
+      "label": "previous-release",
+      "metadata": "historical/148670/performance_run.json"
+    }
+  ]
+}
+```
+
+Comparisons are optional and must describe the same observation. Analyze the
+current population with:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/analyze_beammap_corpus.py \
+  /path/to/beammap_corpus.json \
+  --json-out /tmp/beammap_corpus_result.json \
+  --report-out /tmp/beammap_corpus_result.md
+```
+
+The analyzer verifies the observation number from Beammap provenance, requires
+one current record for every expected observation, and reports runtime/RSS/I/O
+distributions, workload-normalized rankings, workload relationships, identity
+groupings, stage summaries, and explicit same-observation ratios. Unlike
+observations are never turned into implicit pairs, and ranked observations are
+not discarded as outliers. See
+`doc/BEAMMAP_CORPUS_PERFORMANCE_CENSUS_PLAN_2026-07-23.md` for the governing
+interpretation and completion policy.
+
 These tools do not run Citlali and do not require Unity access from Codex. The
 intended workflow is:
 
@@ -406,6 +465,9 @@ installation/interpolation counts without reading large products.
   evidence capture for one warmup or measured campaign run.
 - `analyze_performance_campaign.py`: validates a paired performance protocol
   and reports median/IQR runtime, peak RSS, I/O, and stage timing ratios.
+- `analyze_beammap_corpus.py`: validates a heterogeneous Beammap release census
+  and reports population, workload, stage, and explicit same-observation
+  evidence without treating unlike observations as repeats.
 - `validate_validation_ledger.py`: validates required identity, config hash,
   completion, comparison, and accepted-difference fields in the checked-in
   `validation/accepted_runs.json` ledger.

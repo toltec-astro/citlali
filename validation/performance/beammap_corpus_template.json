@@ -1,0 +1,19 @@
+{
+  "schema_version": "citlali-beammap-performance-corpus-v1",
+  "corpus_id": "beammap-historical-release-census-v1",
+  "release": {
+    "label": "SET_RELEASE_LABEL",
+    "version_contains": "SET_CITLALI_GIT_TOKEN",
+    "build_type": "Release",
+    "required_dependencies": {
+      "kids": "SET_KIDS_REVISION",
+      "tula": "SET_TULA_REVISION"
+    }
+  },
+  "protocol": {
+    "expected_observation_ids": [],
+    "require_single_executable": true,
+    "require_single_runtime_signature": true
+  },
+  "observations": []
+}
