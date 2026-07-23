@@ -211,6 +211,17 @@ its tools or creating a competing build-system rewrite. This tree retains its
 current working CMake path until the implementation can be evaluated and
 adopted, boundedly adapted, or explicitly deferred.
 
+Compilation-independent Phase 5 readiness is current as of 2026-07-23. The
+existing local path builds `citlali_cli`; all 492 CTests, 118 config-preflight
+tests, and 109 baseline-tool tests pass. The 60-record validation ledger,
+three-entry intended-science-change ledger, four-profile registry, and
+session-exit audit are valid, with zero supported library exits or growth. The
+[`integration record template`](PHASE5_INTEGRATION_RECORD_TEMPLATE.md) now
+captures the frozen-SHA build decision, local gates, four-mode Unity matrix,
+science/capability disposition, and integration authorization without
+pre-filling unavailable evidence. This readiness does not freeze a candidate
+or close the deferred build criteria.
+
 TolPROJ commit `e0754af` supersedes the custom suite installer and staging
 layers introduced by commits `39f724d` and `8310c24`. The canonical
 `suite.yaml` now contains only path-free observation selections and validation

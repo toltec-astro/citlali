@@ -137,7 +137,10 @@ changes. Existing accepted profiles are never loosened to admit the candidate.
 
 ## Integration Packet
 
-Before tagging or integration, assemble one short closeout record containing:
+Before tagging or integration, copy the
+[`Phase 5 integration record template`](PHASE5_INTEGRATION_RECORD_TEMPLATE.md)
+to a dated closeout record and complete it at the frozen SHA. The record
+contains:
 
 - frozen commit and embedded binary version;
 - source/destination branches and the chosen integration operation;
