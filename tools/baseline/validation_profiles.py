@@ -15,7 +15,8 @@ except ImportError:
     from validate_validation_ledger import LedgerError, validate_ledger
 
 
-REGISTRY_SCHEMA_VERSION = "citlali-validation-profile-registry-v1"
+REGISTRY_SCHEMA_VERSION = "citlali-validation-profile-registry-v2"
+BINDING_POLICY_SCHEMA_VERSION = "citlali-config-binding-policy-registry-v1"
 SUPPORTED_MODES = {"point", "oof", "beammap", "science"}
 SUPPORTED_COMPARATORS = {
     "reduction_products",
@@ -35,6 +36,7 @@ SUPPORTED_PROVENANCE = {
     "post_processing",
     "processed",
     "raw",
+    "runtime",
 }
 
 
@@ -79,6 +81,22 @@ def ledger_records(ledger_path: Path) -> dict[str, dict[str, Any]]:
     return {record["record_id"]: record for record in records}
 
 
+def binding_policy_ids(path: Path) -> set[str]:
+    registry = load_json(path)
+    if registry.get("schema_version") != BINDING_POLICY_SCHEMA_VERSION:
+        raise RegistryError(f"{path}: unsupported schema_version")
+    policies = _list(registry.get("policies"), f"{path}.policies")
+    ids = [
+        _text(
+            _mapping(policy, f"{path}.policies[{index}]").get("policy_id"),
+            f"{path}.policies[{index}].policy_id",
+        )
+        for index, policy in enumerate(policies)
+    ]
+    _unique(ids, f"{path}.policies.policy_id")
+    return set(ids)
+
+
 def validate_registry(
     registry_path: Path,
     ledger_path: Path,
@@ -89,6 +107,15 @@ def validate_registry(
 
     active_epoch_id = _text(
         registry.get("active_epoch_id"), f"{registry_path}.active_epoch_id"
+    )
+    preparing_epoch_value = registry.get("preparing_epoch_id")
+    preparing_epoch_id = (
+        _text(
+            preparing_epoch_value,
+            f"{registry_path}.preparing_epoch_id",
+        )
+        if preparing_epoch_value is not None
+        else None
     )
     evolution = _mapping(
         registry.get("evolution_policy"), f"{registry_path}.evolution_policy"
@@ -105,32 +132,54 @@ def validate_registry(
     epochs = _list(registry.get("epochs"), f"{registry_path}.epochs")
     epoch_ids: list[str] = []
     active_epoch_count = 0
+    preparing_epoch_count = 0
     for index, value in enumerate(epochs):
         context = f"epochs[{index}]"
         epoch = _mapping(value, context)
         epoch_id = _text(epoch.get("epoch_id"), f"{context}.epoch_id")
         status = _text(epoch.get("status"), f"{context}.status")
-        if status not in {"active", "superseded"}:
+        if status not in {"active", "preparing", "superseded"}:
             raise RegistryError(f"{context}.status: unsupported value {status!r}")
         if status == "active":
             active_epoch_count += 1
+        if status == "preparing":
+            preparing_epoch_count += 1
         _text(epoch.get("established_date"), f"{context}.established_date")
         _text(epoch.get("purpose"), f"{context}.purpose")
         epoch_ids.append(epoch_id)
     _unique(epoch_ids, "epochs.epoch_id")
     if active_epoch_id not in epoch_ids:
         raise RegistryError("active_epoch_id does not name a registered epoch")
+    if preparing_epoch_id is not None and preparing_epoch_id not in epoch_ids:
+        raise RegistryError("preparing_epoch_id does not name a registered epoch")
     if active_epoch_count != 1:
         raise RegistryError("registry must contain exactly one active epoch")
-    active_epoch = next(epoch for epoch in epochs if epoch["epoch_id"] == active_epoch_id)
+    expected_preparing_count = 1 if preparing_epoch_id is not None else 0
+    if preparing_epoch_count != expected_preparing_count:
+        raise RegistryError(
+            "registry preparing epochs must agree with preparing_epoch_id"
+        )
+    active_epoch = next(
+        epoch for epoch in epochs if epoch["epoch_id"] == active_epoch_id
+    )
     if active_epoch["status"] != "active":
         raise RegistryError("active_epoch_id names a non-active epoch")
+    if preparing_epoch_id is not None:
+        preparing_epoch = next(
+            epoch for epoch in epochs if epoch["epoch_id"] == preparing_epoch_id
+        )
+        if preparing_epoch["status"] != "preparing":
+            raise RegistryError("preparing_epoch_id names a non-preparing epoch")
 
     records = ledger_records(ledger_path)
     repo_root = registry_path.resolve().parent.parent
+    available_binding_policies = binding_policy_ids(
+        registry_path.resolve().parent / "config_binding_policies.json"
+    )
     profiles = _list(registry.get("profiles"), f"{registry_path}.profiles")
     profile_ids: list[str] = []
     active_modes: list[str] = []
+    preparing_modes: list[str] = []
     for index, value in enumerate(profiles):
         context = f"profiles[{index}]"
         profile = _mapping(value, context)
@@ -142,39 +191,67 @@ def validate_registry(
         if mode not in SUPPORTED_MODES:
             raise RegistryError(f"{context}.mode: unsupported mode {mode!r}")
         status = _text(profile.get("status"), f"{context}.status")
-        if status not in {"active", "superseded"}:
+        if status not in {"active", "preparing", "superseded"}:
             raise RegistryError(f"{context}.status: unsupported value {status!r}")
 
-        baseline_id = _text(
-            profile.get("baseline_record_id"), f"{context}.baseline_record_id"
-        )
+        baseline_value = profile.get("baseline_record_id")
+        baseline_id: str | None = None
+        if baseline_value is not None:
+            baseline_id = _text(
+                baseline_value, f"{context}.baseline_record_id"
+            )
+        elif status != "preparing":
+            raise RegistryError(
+                f"{context}.baseline_record_id: required outside preparing profiles"
+            )
         _text(
             profile.get("product_contract_id"),
             f"{context}.product_contract_id",
         )
-        if baseline_id not in records:
+        if baseline_id is not None and baseline_id not in records:
             raise RegistryError(
                 f"{context}.baseline_record_id: unknown ledger record {baseline_id!r}"
             )
-        baseline_record = records[baseline_id]
-        if baseline_record["mode"] != mode:
-            raise RegistryError(
-                f"{context}: profile mode {mode!r} differs from baseline mode "
-                f"{baseline_record['mode']!r}"
-            )
-        if baseline_record.get("epoch_id") not in {None, epoch_id}:
-            raise RegistryError(
-                f"{context}: baseline record names epoch "
-                f"{baseline_record['epoch_id']!r}"
-            )
-        if baseline_record.get("profile_id") not in {None, profile_id}:
-            raise RegistryError(
-                f"{context}: baseline record names profile "
-                f"{baseline_record['profile_id']!r}"
-            )
+        if baseline_id is not None:
+            baseline_record = records[baseline_id]
+            if baseline_record["mode"] != mode:
+                raise RegistryError(
+                    f"{context}: profile mode {mode!r} differs from baseline mode "
+                    f"{baseline_record['mode']!r}"
+                )
+            if baseline_record.get("epoch_id") not in {None, epoch_id}:
+                raise RegistryError(
+                    f"{context}: baseline record names epoch "
+                    f"{baseline_record['epoch_id']!r}"
+                )
+            if baseline_record.get("profile_id") not in {None, profile_id}:
+                raise RegistryError(
+                    f"{context}: baseline record names profile "
+                    f"{baseline_record['profile_id']!r}"
+                )
 
         audit = _mapping(profile.get("audit"), f"{context}.audit")
-        _text(audit.get("expected_label"), f"{context}.audit.expected_label")
+        expected_mode = audit.get("expected_mode", mode)
+        if expected_mode is not None:
+            expected_mode = _text(
+                expected_mode, f"{context}.audit.expected_mode"
+            )
+            if expected_mode not in SUPPORTED_MODES:
+                raise RegistryError(
+                    f"{context}.audit.expected_mode: unsupported mode "
+                    f"{expected_mode!r}"
+                )
+        elif status != "preparing":
+            raise RegistryError(
+                f"{context}.audit.expected_mode: required outside preparing profiles"
+            )
+        expected_label = audit.get("expected_label")
+        if expected_label is not None:
+            _text(expected_label, f"{context}.audit.expected_label")
+        elif status != "preparing":
+            raise RegistryError(
+                f"{context}.audit.expected_label: required outside preparing profiles"
+            )
         required = [
             _text(item, f"{context}.audit.required_provenance")
             for item in _list(
@@ -191,10 +268,27 @@ def validate_registry(
             )
 
         config = _mapping(profile.get("config"), f"{context}.config")
-        if config.get("policy") != "exact":
-            raise RegistryError(f"{context}.config.policy: only 'exact' is supported")
+        config_policy = config.get("policy")
+        if config_policy not in {"exact", "exact_except_bindings"}:
+            raise RegistryError(
+                f"{context}.config.policy: unsupported value {config_policy!r}"
+            )
         for item in _list(config.get("ignore_paths", []), f"{context}.config.ignore_paths"):
             _text(item, f"{context}.config.ignore_paths")
+        if config_policy == "exact_except_bindings":
+            binding_policy_id = _text(
+                config.get("binding_policy_id"),
+                f"{context}.config.binding_policy_id",
+            )
+            if binding_policy_id not in available_binding_policies:
+                raise RegistryError(
+                    f"{context}.config.binding_policy_id: unknown policy "
+                    f"{binding_policy_id!r}"
+                )
+        elif "binding_policy_id" in config:
+            raise RegistryError(
+                f"{context}.config.binding_policy_id: not allowed for exact policy"
+            )
 
         products = _mapping(profile.get("products"), f"{context}.products")
         comparator = _text(products.get("comparator"), f"{context}.products.comparator")
@@ -228,6 +322,8 @@ def validate_registry(
 
         if status == "active" and epoch_id == active_epoch_id:
             active_modes.append(mode)
+        if status == "preparing" and epoch_id == preparing_epoch_id:
+            preparing_modes.append(mode)
         profile_ids.append(profile_id)
 
     _unique(profile_ids, "profiles.profile_id")
@@ -235,6 +331,18 @@ def validate_registry(
         raise RegistryError(
             "active epoch must contain exactly one active profile for each of "
             f"{sorted(SUPPORTED_MODES)}; got {sorted(active_modes)}"
+        )
+    if preparing_epoch_id is not None and (
+        set(preparing_modes) != SUPPORTED_MODES
+        or len(preparing_modes) != len(SUPPORTED_MODES)
+    ):
+        raise RegistryError(
+            "preparing epoch must contain exactly one preparing profile for each of "
+            f"{sorted(SUPPORTED_MODES)}; got {sorted(preparing_modes)}"
+        )
+    if preparing_epoch_id is None and preparing_modes:
+        raise RegistryError(
+            "preparing profiles require a preparing_epoch_id"
         )
     return registry
 
@@ -257,6 +365,11 @@ def main(argv: list[str]) -> int:
         "--ledger", type=Path, default=Path("validation/accepted_runs.json")
     )
     parser.add_argument("--list", action="store_true", help="List active profiles.")
+    parser.add_argument(
+        "--list-preparing",
+        action="store_true",
+        help="List profiles in the preparing epoch.",
+    )
     args = parser.parse_args(argv)
     try:
         registry = validate_registry(args.registry, args.ledger)
@@ -269,15 +382,30 @@ def main(argv: list[str]) -> int:
         for profile in registry["profiles"]
         if profile["status"] == "active" and profile["epoch_id"] == active_epoch
     ]
+    preparing_epoch = registry["preparing_epoch_id"]
+    preparing = [
+        profile
+        for profile in registry["profiles"]
+        if profile["status"] == "preparing"
+        and profile["epoch_id"] == preparing_epoch
+    ]
     print(
-        f"validation profile registry valid: epoch={active_epoch} "
-        f"profiles={len(active)}"
+        f"validation profile registry valid: active_epoch={active_epoch} "
+        f"active_profiles={len(active)} preparing_profiles={len(preparing)}"
     )
     if args.list:
         for profile in sorted(active, key=lambda item: item["mode"]):
             print(
                 f"{profile['profile_id']}\t{profile['mode']}\t"
                 f"{profile['baseline_record_id']}"
+            )
+    if args.list_preparing:
+        if preparing_epoch is None:
+            return 0
+        for profile in sorted(preparing, key=lambda item: item["mode"]):
+            print(
+                f"{profile['profile_id']}\t{profile['mode']}\t"
+                f"{profile['baseline_record_id'] or 'pending'}"
             )
     return 0
 

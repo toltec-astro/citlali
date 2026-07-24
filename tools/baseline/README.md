@@ -20,6 +20,13 @@ List the active profiles:
 $HOME/tolteca/bin/python tools/baseline/validate_reduction.py --list-profiles
 ```
 
+List the prepared Phase 5 successor profiles:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/validate_reduction.py \
+  --list-preparing-profiles
+```
+
 Validate a downloaded reduction and retain the delegated JSON results:
 
 ```bash
@@ -35,6 +42,28 @@ Use `--baseline` when the ledger's accepted local path is unavailable on the
 current host. A zero exit status means all four gates passed. This command
 delegates scientific comparison to the existing mode-specific tools; it does
 not introduce a second comparison implementation.
+
+Preparing profiles have no accepted ledger baseline and therefore always
+require an explicit `--baseline`. A successful check is reported as
+`prepared gates pass (not accepted)`. The prepared Phase 5 profiles compare
+scientific config exactly while applying the versioned
+`tolteca-native-project-bindings-v1` policy to machine/project path prefixes.
+The bound file or directory identity remains exact, and no path is generally
+ignored.
+
+Validate and render the successor-epoch readiness record with:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/phase5_readiness.py
+```
+
+Add `--require-ready` only at promotion time. The command returns nonzero while
+any fixture or global blocker remains.
+
+Add `--verify-fixtures` to rerun all four declared profile checks in one
+command. Delegated JSON and Markdown reports are retained under
+`--fixture-output-dir`; the command fails if an actual gate result differs from
+the checked readiness record.
 
 The product-contract gate reads the candidate's generated `citlali_o*.yaml`.
 Products controlled by explicit output switches are required when requested

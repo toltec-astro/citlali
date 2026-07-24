@@ -89,6 +89,7 @@ def main(argv: list[str]) -> int:
         "tools/config/test_validate_config_authority_inventory.py",
         "tools/config/classify_lowlevel_config.py",
         "tools/config/compare_lowlevel_yaml.py",
+        "tools/config/test_compare_lowlevel_yaml.py",
         "tools/config/validate_config_authority_inventory.py",
         "tools/config/tolteca_mode_kit.py",
         "tools/config/generate_tolteca_mode_kits.py",
@@ -120,6 +121,7 @@ def main(argv: list[str]) -> int:
             "tools.config.test_audit_learning_boundary",
             "tools.config.test_audit_interface_sync_boundary",
             "tools.config.test_tolteca_mode_kit",
+            "tools.config.test_compare_lowlevel_yaml",
         ],
         [
             sys.executable,

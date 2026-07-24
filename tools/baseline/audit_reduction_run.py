@@ -2698,6 +2698,7 @@ def audit_provenance_sidecars(
     require_config_source_manifest: bool = False,
     require_polarimetry: bool = False,
     require_astrometry: bool = False,
+    require_runtime: bool = False,
 ) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for name, spec in PROVENANCE_SIDECARS.items():
@@ -2713,6 +2714,7 @@ def audit_provenance_sidecars(
             or (name == "kids_external" and require_kids_external)
             or (name == "polarimetry" and require_polarimetry)
             or (name == "astrometry" and require_astrometry)
+            or (name == "runtime" and require_runtime)
             or (
                 name == "config_source_manifest"
                 and require_config_source_manifest
@@ -2748,6 +2750,8 @@ def audit_provenance_sidecars(
                 accepted_schema_versions = spec.get(
                     "accepted_schema_versions", (spec["schema_version"],)
                 )
+                if name == "runtime" and require_runtime:
+                    accepted_schema_versions = (spec["schema_version"],)
                 initialized_ok = data.get("initialized") is not False
                 item.update(
                     {
@@ -3279,6 +3283,7 @@ def build_audit(args: argparse.Namespace) -> dict[str, Any]:
             getattr(args, "require_config_source_manifest", False),
             getattr(args, "require_polarimetry_provenance", False),
             getattr(args, "require_astrometry_provenance", False),
+            getattr(args, "require_runtime_provenance", False),
         ),
         "products": audit_products(redu, args.top),
     }
@@ -3417,6 +3422,14 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--expected-mode", default="", help="Expected validation mode, e.g. beammap.")
     parser.add_argument("--expected-label", default="", help="Expected validation label, e.g. refactor or citlali.")
     parser.add_argument("--top", type=int, default=12, help="Number of largest products to list.")
+    parser.add_argument(
+        "--require-runtime-provenance",
+        action="store_true",
+        help=(
+            "Fail unless runtime_provenance.yaml records a valid requested, "
+            "effective, and realized resource contract."
+        ),
+    )
     parser.add_argument(
         "--require-processed-provenance",
         action="store_true",

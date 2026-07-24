@@ -1,0 +1,36 @@
+{
+  "schema_version": "citlali-config-binding-policy-registry-v1",
+  "policies": [
+    {
+      "policy_id": "tolteca-native-project-bindings-v1",
+      "purpose": "Compare the scientific identity of generated TolTECA bindings without requiring projects to occupy the same filesystem location.",
+      "rules": [
+        {
+          "path": "inputs[].cal_items[].filepath",
+          "comparison": "basename",
+          "rationale": "TolTECA selects the calibration artifact; its filename is the portable identity while its project-root prefix is deployment-specific."
+        },
+        {
+          "path": "inputs[].data_items[].filepath",
+          "comparison": "basename",
+          "rationale": "TolTECA selects each raw or generated input artifact; its filename is the portable identity while its project-root prefix is deployment-specific."
+        },
+        {
+          "path": "kids.solver.fitreportdir",
+          "comparison": "basename",
+          "rationale": "Native TolPROJ layouts have different directory depth, but the KIDs fit-report binding must continue to select the shared data directory."
+        },
+        {
+          "path": "runtime.output_dir",
+          "comparison": "nonempty_string",
+          "rationale": "The output root necessarily changes with the native project location; presence is required but the location is not scientific configuration."
+        },
+        {
+          "path": "beammap.priors.filepath",
+          "comparison": "basename",
+          "rationale": "The Beammap prior artifact name is configuration identity while its installed site prefix is deployment-specific."
+        }
+      ]
+    }
+  ]
+}

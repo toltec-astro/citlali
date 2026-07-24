@@ -85,6 +85,7 @@ $HOME/tolteca/bin/python tools/config/run_config_preflight.py --require-all
 $HOME/tolteca/bin/python -m unittest discover -s tools/baseline -p 'test_*.py'
 $HOME/tolteca/bin/python tools/baseline/validate_validation_ledger.py
 $HOME/tolteca/bin/python tools/baseline/validation_profiles.py --list
+$HOME/tolteca/bin/python tools/baseline/phase5_readiness.py
 $HOME/tolteca/bin/python tools/baseline/validate_science_change_ledger.py
 $HOME/tolteca/bin/python tools/refactor/audit_session_exits.py --fail-on-growth
 ```
@@ -120,20 +121,29 @@ $HOME/tolteca/bin/python tools/baseline/validate_reduction.py \
   --report-out /tmp/citlali-PROFILE_ID.md
 ```
 
-Use these immutable profiles:
+Use the prepared successor profiles:
 
 | Mode | Profile ID |
 | --- | --- |
-| Point | `phase4-point-152389-v1` |
-| OOF | `phase4-oof-152385-152387-v1` |
-| Science | `phase4-science-152390-152392-v1` |
-| Beammap | `phase4-beammap-148670-v1` |
+| Point | `phase5-point-152389-v2` |
+| OOF | `phase5-oof-152385-152387-v2` |
+| Science | `phase5-science-152390-152392-v2` |
+| Beammap | `phase5-beammap-148670-v2` |
 
 Acceptance requires all four delegated gates for every mode: completed-run and
-provenance audit, exact merged low-level config, requested product contract,
-and the profile's numerical comparison. There are no unexpected error-level
-records, missing required products, skipped comparisons, or silent profile
-changes. Existing accepted profiles are never loosened to admit the candidate.
+provenance audit, exact merged low-level config except for the versioned
+environment-binding policy, requested product contract, and the profile's
+numerical comparison. Binding identities remain exact; only their host/project
+prefixes may move. There are no unexpected error-level records, missing
+required products, skipped comparisons, or silent profile changes. Existing
+accepted profiles are never loosened to admit the candidate.
+
+The prepared epoch and current blockers are recorded in
+[`PHASE5_VALIDATION_EPOCH_PREPARATION_2026-07-24.md`](PHASE5_VALIDATION_EPOCH_PREPARATION_2026-07-24.md).
+Preparing profiles require an explicit `--baseline` and cannot be reported as
+accepted. After all four same-SHA runs pass, add immutable accepted-run records,
+pin the four profiles to those records, and promote the successor epoch in one
+reviewed change.
 
 ## Integration Packet
 

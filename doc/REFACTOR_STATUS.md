@@ -19,6 +19,21 @@ branch. The exact validated tree will remain available for forensic review.
 
 ## Current Snapshot
 
+- Phase 5 validation-epoch preparation is complete as of 2026-07-24. The
+  historical four-profile Phase 4 epoch remains active and immutable; a
+  separate four-profile `phase5-v2.1-candidate-2026-07-24` epoch is registered
+  as preparing. Its config comparison is exact except for the versioned
+  `tolteca-native-project-bindings-v1` policy, which permits host/project path
+  prefixes to move while preserving bound file and directory identities.
+  Preparing profiles have no accepted baseline records, require an explicit
+  comparator, and cannot report an accepted verdict. All four available V2.1
+  suite fixtures pass config, product-contract, and product-comparison smoke
+  gates; promotion remains blocked by runtime-provenance V1 in every fixture,
+  missing science pointing provenance, the deferred build review, and the
+  absence of a same-SHA four-mode candidate matrix. The one-command fixture
+  verification matches all recorded outcomes. All 134 baseline-tool tests and
+  the 123-test full config preflight pass. See the
+  [successor-epoch preparation record](PHASE5_VALIDATION_EPOCH_PREPARATION_2026-07-24.md).
 - Runtime resource debt D16 is closed as of 2026-07-24. TolPROJ keeps refactor
   runtime threads and generated Slurm CPUs coherent, rejects oversubscription
   before its recommended submission path, and preserves legacy defaults.
@@ -231,10 +246,11 @@ its tools or creating a competing build-system rewrite. This tree retains its
 current working CMake path until the implementation can be evaluated and
 adopted, boundedly adapted, or explicitly deferred.
 
-Compilation-independent Phase 5 readiness is current as of 2026-07-23. The
-existing local path builds `citlali_cli`; all 492 CTests, 118 config-preflight
-tests, and 119 baseline-tool tests pass. The 60-record validation ledger,
-three-entry intended-science-change ledger, four-profile registry, and
+Compilation-independent Phase 5 readiness is current as of 2026-07-24. The
+existing local path builds `citlali_cli`; its previously established CTest
+  gate remains valid, and the current 123-test config preflight and 134
+baseline-tool tests pass. The 60-record validation ledger, three-entry
+intended-science-change ledger, eight-profile/two-epoch registry, and
 session-exit audit are valid, with zero supported library exits or growth. The
 [`integration record template`](PHASE5_INTEGRATION_RECORD_TEMPLATE.md) now
 captures the frozen-SHA build decision, local gates, four-mode Unity matrix,

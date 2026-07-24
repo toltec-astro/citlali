@@ -1,4 +1,3 @@
-import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -93,6 +92,40 @@ class ValidateReductionTest(unittest.TestCase):
                     profile, baseline, candidate, root / "result.json"
                 )
 
+    def test_preparing_config_uses_versioned_binding_policy(self) -> None:
+        profile = profile_by_id(self.registry, "phase5-point-152389-v2")
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            baseline = root / "baseline"
+            candidate = root / "candidate"
+            baseline.mkdir()
+            candidate.mkdir()
+            (baseline / "citlali_o1.yaml").write_text("a: 1\n", encoding="utf-8")
+            (candidate / "citlali_o1.yaml").write_text("a: 1\n", encoding="utf-8")
+
+            command = validate.build_config_command(
+                profile, baseline, candidate, root / "result.json"
+            )
+
+        self.assertEqual(
+            command[command.index("--binding-policy") + 1],
+            "tolteca-native-project-bindings-v1",
+        )
+        self.assertEqual(
+            Path(command[command.index("--binding-policy-registry") + 1]),
+            REPO_ROOT / "validation/config_binding_policies.json",
+        )
+
+    def test_preparing_audit_requires_runtime_without_path_label(self) -> None:
+        profile = profile_by_id(self.registry, "phase5-point-152389-v2")
+        command = validate.build_audit_command(
+            profile, Path("/candidate"), Path("/result.json")
+        )
+
+        self.assertIn("--require-runtime-provenance", command)
+        self.assertNotIn("--expected-label", command)
+        self.assertNotIn("--expected-mode", command)
+
     def test_report_rejects_any_failed_gate(self) -> None:
         result = {
             "profile_id": "profile",
@@ -126,6 +159,22 @@ class ValidateReductionTest(unittest.TestCase):
         self.assertIn("Verdict: **rejected**", report)
         self.assertIn("`products`: **FAIL**", report)
         self.assertIn("changed product", report)
+
+    def test_preparing_profile_pass_is_not_reported_as_accepted(self) -> None:
+        result = {
+            "profile_id": "profile",
+            "profile_status": "preparing",
+            "epoch_id": "epoch",
+            "mode": "point",
+            "baseline": "/baseline",
+            "candidate": "/candidate",
+            "passed": True,
+            "gates": [],
+        }
+
+        report = validate.render_markdown(result)
+
+        self.assertIn("prepared gates pass (not accepted)", report)
 
 
 if __name__ == "__main__":

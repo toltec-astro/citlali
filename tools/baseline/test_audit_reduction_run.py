@@ -883,6 +883,59 @@ def write_valid_config_source_manifest(redu: Path) -> None:
 
 
 class ProvenanceAuditTest(unittest.TestCase):
+    def test_accepts_required_runtime_v2_provenance(self) -> None:
+        document = {
+            "schema_version": "citlali-runtime-provenance-v2",
+            "initialized": True,
+            "requested": {"n_threads": 6},
+            "effective": {"values": {"n_threads": 6}},
+            "realized": {"threads": {"omp": 6}},
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "runtime_provenance.yaml").write_text(
+                yaml.safe_dump(document, sort_keys=False),
+                encoding="utf-8",
+            )
+
+            record = audit.audit_provenance_sidecars(
+                redu, require_runtime=True
+            )["runtime"]
+
+            self.assertTrue(record["required"])
+            self.assertTrue(record["valid"])
+
+    def test_rejects_missing_required_runtime_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            record = audit.audit_provenance_sidecars(
+                Path(directory), require_runtime=True
+            )["runtime"]
+
+            self.assertTrue(record["required"])
+            self.assertFalse(record["valid"])
+
+    def test_required_runtime_provenance_rejects_v1(self) -> None:
+        document = {
+            "schema_version": "citlali-runtime-provenance-v1",
+            "initialized": True,
+            "requested": {"n_threads": 6},
+            "effective": {"values": {"n_threads": 6}},
+            "realized": {"threads": {"omp": 6}},
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "runtime_provenance.yaml").write_text(
+                yaml.safe_dump(document, sort_keys=False),
+                encoding="utf-8",
+            )
+
+            record = audit.audit_provenance_sidecars(
+                redu, require_runtime=True
+            )["runtime"]
+
+            self.assertFalse(record["schema_ok"])
+            self.assertFalse(record["valid"])
+
     def test_accepts_complete_astrometry_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             redu = Path(directory)

@@ -1,0 +1,103 @@
+{
+  "schema_version": "citlali-phase5-validation-readiness-v1",
+  "epoch_id": "phase5-v2.1-candidate-2026-07-24",
+  "status": "preparing",
+  "evaluated_on": "2026-07-24",
+  "config_binding_policy_id": "tolteca-native-project-bindings-v1",
+  "fixtures": [
+    {
+      "mode": "point",
+      "profile_id": "phase5-point-152389-v2",
+      "evidence_role": "fixture_smoke",
+      "citlali_sha": "cfae989c",
+      "citlali_version": "v4.0.0-3575-gcfae989c",
+      "baseline_path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/point/pointings_v21/reduced/redu00",
+      "local_path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/point/pointings_v21/reduced/redu00",
+      "gates": {
+        "audit": "blocked",
+        "config": "pass",
+        "contract": "pass",
+        "products": "pass"
+      },
+      "promotion_blockers": [
+        "Fixture predates required citlali-runtime-provenance-v2.",
+        "Fixture is mode-kit smoke evidence, not part of a same-SHA four-mode promotion matrix."
+      ]
+    },
+    {
+      "mode": "oof",
+      "profile_id": "phase5-oof-152385-152387-v2",
+      "evidence_role": "fixture_smoke",
+      "citlali_sha": "e97de3fd",
+      "citlali_version": "v4.0.0-3564-ge97de3fd",
+      "baseline_path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/wilson/1146+399/reduced/redu00",
+      "local_path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/wilson/1146+399/reduced/redu00",
+      "gates": {
+        "audit": "blocked",
+        "config": "pass",
+        "contract": "pass",
+        "products": "pass"
+      },
+      "promotion_blockers": [
+        "Fixture predates required citlali-runtime-provenance-v2.",
+        "Fixture is mode-kit smoke evidence, not part of a same-SHA four-mode promotion matrix."
+      ]
+    },
+    {
+      "mode": "science",
+      "profile_id": "phase5-science-152390-152392-v2",
+      "evidence_role": "fixture_smoke",
+      "citlali_sha": "7ca0be50",
+      "citlali_version": "v4.0.0-3535-g7ca0be50",
+      "baseline_path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/science/reduction/NGC4449/reduced/redu03",
+      "local_path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/science/reduction/NGC4449/reduced/redu03",
+      "gates": {
+        "audit": "blocked",
+        "config": "pass",
+        "contract": "pass",
+        "products": "pass"
+      },
+      "promotion_blockers": [
+        "Fixture predates required citlali-runtime-provenance-v2.",
+        "Fixture predates required observation-resolved pointing provenance.",
+        "Fixture is mode-kit smoke evidence, not part of a same-SHA four-mode promotion matrix."
+      ]
+    },
+    {
+      "mode": "beammap",
+      "profile_id": "phase5-beammap-148670-v2",
+      "evidence_role": "fixture_smoke",
+      "citlali_sha": "cfae989c",
+      "citlali_version": "v4.0.0-3575-gcfae989c",
+      "baseline_path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/beammaps/3c273/reduced/redu00",
+      "local_path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/beammaps/3c273/reduced/redu00",
+      "gates": {
+        "audit": "blocked",
+        "config": "pass",
+        "contract": "pass",
+        "products": "pass"
+      },
+      "promotion_blockers": [
+        "Fixture predates required citlali-runtime-provenance-v2.",
+        "Fixture is mode-kit smoke evidence, not part of a same-SHA four-mode promotion matrix."
+      ]
+    }
+  ],
+  "global_blockers": [
+    {
+      "blocker_id": "same-sha-four-mode-matrix",
+      "description": "Point, OOF, science, and Beammap have not yet been run with one frozen Citlali commit and one unchanged dependency environment.",
+      "exit_condition": "All four promotion-candidate runs record the same full Citlali SHA and pass their prepared profiles."
+    },
+    {
+      "blocker_id": "build-integration-review",
+      "description": "The supported TolTECA C++ build and dependency path remains under external review.",
+      "exit_condition": "Record the accepted build path and dependency identity required by the Phase 5 integration plan."
+    },
+    {
+      "blocker_id": "accepted-successor-baselines",
+      "description": "The preparing profiles intentionally have no accepted ledger records or immutable baselines.",
+      "exit_condition": "After the same-SHA matrix passes, add reviewed accepted-run records, pin each profile to its baseline, and activate the successor epoch."
+    }
+  ]
+}

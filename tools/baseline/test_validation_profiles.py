@@ -12,6 +12,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 REGISTRY = REPO_ROOT / "validation/validation_profiles.json"
 LEDGER = REPO_ROOT / "validation/accepted_runs.json"
 PRODUCT_CONTRACTS = REPO_ROOT / "validation/product_contracts.json"
+BINDING_POLICIES = REPO_ROOT / "validation/config_binding_policies.json"
 
 
 class ValidationProfilesTest(unittest.TestCase):
@@ -26,15 +27,27 @@ class ValidationProfilesTest(unittest.TestCase):
         ]
         self.assertEqual({profile["mode"] for profile in active}, profiles.SUPPORTED_MODES)
         self.assertEqual(len(active), len(profiles.SUPPORTED_MODES))
+        preparing = [
+            profile
+            for profile in registry["profiles"]
+            if profile["status"] == "preparing"
+            and profile["epoch_id"] == registry["preparing_epoch_id"]
+        ]
+        self.assertEqual(
+            {profile["mode"] for profile in preparing},
+            profiles.SUPPORTED_MODES,
+        )
+        self.assertTrue(
+            all(profile["baseline_record_id"] is None for profile in preparing)
+        )
 
         product_registry = contracts.load_registry(PRODUCT_CONTRACTS)
         contracts_by_id = {
             contract["contract_id"]: contract
             for contract in product_registry["contracts"]
         }
-        for profile in active:
+        for profile in registry["profiles"]:
             contract = contracts_by_id[profile["product_contract_id"]]
-            self.assertEqual(contract["profile_id"], profile["profile_id"])
             self.assertEqual(contract["mode"], profile["mode"])
 
     def test_missing_product_contract_id_is_rejected(self) -> None:
@@ -73,6 +86,46 @@ class ValidationProfilesTest(unittest.TestCase):
             with self.assertRaisesRegex(profiles.RegistryError, "successor epoch"):
                 profiles.validate_registry(path, LEDGER)
 
+    def test_preparing_profile_may_defer_baseline_record(self) -> None:
+        registry = self._portable_registry()
+        preparing = next(
+            profile
+            for profile in registry["profiles"]
+            if profile["status"] == "preparing"
+        )
+        self.assertIsNone(preparing["baseline_record_id"])
+
+        with self._write_registry(registry) as path:
+            profiles.validate_registry(path, LEDGER)
+
+    def test_active_profile_must_name_accepted_baseline(self) -> None:
+        registry = self._portable_registry()
+        registry["profiles"][0]["baseline_record_id"] = None
+
+        with self._write_registry(registry) as path:
+            with self.assertRaisesRegex(
+                profiles.RegistryError, "required outside preparing"
+            ):
+                profiles.validate_registry(path, LEDGER)
+
+    def test_registry_may_have_no_successor_in_preparation(self) -> None:
+        registry = self._portable_registry()
+        preparing_epoch = registry.pop("preparing_epoch_id")
+        registry["preparing_epoch_id"] = None
+        registry["epochs"] = [
+            epoch
+            for epoch in registry["epochs"]
+            if epoch["epoch_id"] != preparing_epoch
+        ]
+        registry["profiles"] = [
+            profile
+            for profile in registry["profiles"]
+            if profile["epoch_id"] != preparing_epoch
+        ]
+
+        with self._write_registry(registry) as path:
+            profiles.validate_registry(path, LEDGER)
+
     def _portable_registry(self) -> dict:
         registry = copy.deepcopy(json.loads(REGISTRY.read_text(encoding="utf-8")))
         for profile in registry["profiles"]:
@@ -92,6 +145,10 @@ class ValidationProfilesTest(unittest.TestCase):
             self.directory = tempfile.TemporaryDirectory()
             path = Path(self.directory.name) / "registry.json"
             path.write_text(json.dumps(self.registry), encoding="utf-8")
+            (path.parent / "config_binding_policies.json").write_text(
+                BINDING_POLICIES.read_text(encoding="utf-8"),
+                encoding="utf-8",
+            )
             return path
 
         def __exit__(self, *args: object) -> None:

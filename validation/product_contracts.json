@@ -1058,6 +1058,118 @@
       ]
     },
     {
+      "contract_id": "phase5-oof-products-v2",
+      "profile_id": "phase5-oof-152385-152387-v2",
+      "mode": "oof",
+      "arrays": [
+        "a1100",
+        "a1400",
+        "a2000"
+      ],
+      "minimum_observations": 1,
+      "entries": [
+        {
+          "entry_id": "raw-maps",
+          "family_id": "map_cube_altaz",
+          "scope": "per_observation_array",
+          "classification": "required",
+          "condition": "PSF-preserving mapmaking executes for each OOF support observation",
+          "pattern": "{obs}/raw/*_{array}_pointing_{obs}_citlali.fits",
+          "check_id": "basic_altaz_map_v2"
+        },
+        {
+          "entry_id": "pointing-table",
+          "family_id": "pointing_fit_table",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "OOF uses the diagnostic pointing fit path for each support observation",
+          "pattern": "{obs}/raw/ppt_*_pointing_{obs}_citlali.ecsv",
+          "check_id": "pointing_table"
+        },
+        {
+          "entry_id": "histogram",
+          "family_id": "map_histogram",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "OOF map output includes signal-only histogram diagnostics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_hist.nc",
+          "check_id": "map_histogram_signal_only"
+        },
+        {
+          "entry_id": "psd",
+          "family_id": "map_psd",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "OOF map output includes PSD diagnostics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_psd.nc",
+          "check_id": "map_psd"
+        },
+        {
+          "entry_id": "map-diagnostics",
+          "family_id": "map_diagnostics",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "OOF map output includes map diagnostics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_mapdiag.nc",
+          "check_id": "map_diagnostics"
+        },
+        {
+          "entry_id": "detector-statistics",
+          "family_id": "detector_stats",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "OOF processing publishes detector statistics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_stats.nc",
+          "check_id": "detector_stats"
+        },
+        {
+          "entry_id": "rtc-diagnostics",
+          "family_id": "rtc_diagnostics",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "OOF processing publishes RTC diagnostics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_rtcdiag.nc",
+          "check_id": "rtc_diagnostics"
+        },
+        {
+          "entry_id": "ptc-diagnostics",
+          "family_id": "ptc_diagnostics",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "OOF processing publishes PTC diagnostics",
+          "pattern": "{obs}/raw/*_pointing_{obs}_ptcdiag.nc",
+          "check_id": "ptc_diagnostics"
+        },
+        {
+          "entry_id": "profile-timing",
+          "family_id": "profile_timing",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "profiling output is available",
+          "pattern": "citlali_profile.ecsv",
+          "check_id": "profile_timing"
+        },
+        {
+          "entry_id": "learning-diagnostics",
+          "family_id": "learning_diagnostics",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "learning diagnostics are enabled for the iteration",
+          "pattern": "learning_iter_*.csv",
+          "max_matches": null
+        },
+        {
+          "entry_id": "learning-housekeeping-qa",
+          "family_id": "learning_housekeeping_qa",
+          "scope": "reduction",
+          "classification": "optional_diagnostic",
+          "condition": "learning diagnostics are enabled and observations are processed",
+          "pattern": "learning_housekeeping_iter_*.csv",
+          "max_matches": null
+        }
+      ]
+    },
+    {
       "contract_id": "phase4-science-products-v1",
       "profile_id": "phase4-science-152390-152392-v1",
       "mode": "science",

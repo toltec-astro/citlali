@@ -64,7 +64,8 @@ disposition.
 | Config preflight | all required checks pass | `TBD: count/report` |
 | Baseline-tool tests | all discovered tests pass | `TBD: count/report` |
 | Validation ledger | valid | `TBD` |
-| Validation profile registry | four expected profiles | `TBD` |
+| Validation profile registry | successor profile set and lifecycle status valid | `TBD` |
+| Phase 5 readiness | promotion ready with zero blockers | `TBD` |
 | Intended-science-change ledger | valid | `TBD` |
 | Session-exit audit | zero supported library exits/growth | `TBD` |
 | Worktree after gates | clean | `TBD` |
@@ -76,16 +77,17 @@ retain the exact numbered TolTECA YAML inputs used for the run.
 
 | Mode | Required profile | Reduction path | Config digest | Report | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| Point | `phase4-point-152389-v1` | `TBD` | `TBD` | `TBD` | `TBD` |
-| OOF | `phase4-oof-152385-152387-v1` | `TBD` | `TBD` | `TBD` | `TBD` |
-| Science | `phase4-science-152390-152392-v1` | `TBD` | `TBD` | `TBD` | `TBD` |
-| Beammap | `phase4-beammap-148670-v1` | `TBD` | `TBD` | `TBD` | `TBD` |
+| Point | `phase5-point-152389-v2` | `TBD` | `TBD` | `TBD` | `TBD` |
+| OOF | `phase5-oof-152385-152387-v2` | `TBD` | `TBD` | `TBD` | `TBD` |
+| Science | `phase5-science-152390-152392-v2` | `TBD` | `TBD` | `TBD` | `TBD` |
+| Beammap | `phase5-beammap-148670-v2` | `TBD` | `TBD` | `TBD` | `TBD` |
 
 Each verdict requires:
 
 - completed reduction and valid required provenance;
 - zero unexpected error-level records;
-- exact requested low-level config;
+- exact requested low-level config except for the approved versioned
+  environment bindings;
 - requested product inventory and contract;
 - no skipped required comparisons; and
 - numerical results accepted by the immutable profile.
@@ -116,6 +118,8 @@ ledger and successor evidence.
 - [`RETAINED_DEBT.md`](RETAINED_DEBT.md)
 - [`../validation/accepted_runs.json`](../validation/accepted_runs.json)
 - [`../validation/validation_profiles.json`](../validation/validation_profiles.json)
+- [`../validation/config_binding_policies.json`](../validation/config_binding_policies.json)
+- [`../validation/phase5_validation_readiness.json`](../validation/phase5_validation_readiness.json)
 - [`../validation/product_contracts.json`](../validation/product_contracts.json)
 - [`../validation/intended_science_changes.json`](../validation/intended_science_changes.json)
 

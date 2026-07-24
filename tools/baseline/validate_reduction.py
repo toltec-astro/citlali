@@ -30,7 +30,9 @@ except ImportError:
 SCHEMA_VERSION = "citlali-profile-validation-result-v2"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_PRODUCT_CONTRACTS = REPO_ROOT / "validation/product_contracts.json"
+DEFAULT_BINDING_POLICIES = REPO_ROOT / "validation/config_binding_policies.json"
 PROVENANCE_FLAGS = {
+    "runtime": "--require-runtime-provenance",
     "processed": "--require-processed-provenance",
     "raw": "--require-raw-provenance",
     "mapmaking": "--require-mapmaking-provenance",
@@ -72,20 +74,25 @@ def build_audit_command(
         sys.executable,
         str(REPO_ROOT / "tools/baseline/audit_reduction_run.py"),
         str(candidate),
-        "--expected-mode",
-        profile["mode"],
-        "--expected-label",
-        audit["expected_label"],
         "--json-out",
         str(json_out),
     ]
+    expected_mode = audit.get("expected_mode", profile["mode"])
+    if expected_mode:
+        command.extend(["--expected-mode", expected_mode])
+    if audit.get("expected_label"):
+        command.extend(["--expected-label", audit["expected_label"]])
     for name in audit["required_provenance"]:
         command.append(PROVENANCE_FLAGS[name])
     return command
 
 
 def build_config_command(
-    profile: dict[str, Any], baseline: Path, candidate: Path, json_out: Path
+    profile: dict[str, Any],
+    baseline: Path,
+    candidate: Path,
+    json_out: Path,
+    binding_policies: Path = DEFAULT_BINDING_POLICIES,
 ) -> list[str]:
     command = [
         sys.executable,
@@ -97,6 +104,15 @@ def build_config_command(
     ]
     for path in profile["config"].get("ignore_paths", []):
         command.extend(["--ignore", path])
+    if profile["config"]["policy"] == "exact_except_bindings":
+        command.extend(
+            [
+                "--binding-policy-registry",
+                str(binding_policies),
+                "--binding-policy",
+                profile["config"]["binding_policy_id"],
+            ]
+        )
     return command
 
 
@@ -196,6 +212,7 @@ def run_validation(
     candidate: Path,
     output_dir: Path,
     product_contracts: Path = DEFAULT_PRODUCT_CONTRACTS,
+    binding_policies: Path = DEFAULT_BINDING_POLICIES,
 ) -> dict[str, Any]:
     output_dir.mkdir(parents=True, exist_ok=True)
     audit_json = output_dir / "audit.json"
@@ -210,7 +227,13 @@ def run_validation(
         ),
         run_gate(
             "config",
-            build_config_command(profile, baseline, candidate, config_json),
+            build_config_command(
+                profile,
+                baseline,
+                candidate,
+                config_json,
+                binding_policies,
+            ),
             config_json,
         ),
         run_gate(
@@ -229,6 +252,7 @@ def run_validation(
     return {
         "schema_version": SCHEMA_VERSION,
         "profile_id": profile["profile_id"],
+        "profile_status": profile["status"],
         "epoch_id": profile["epoch_id"],
         "mode": profile["mode"],
         "baseline": str(baseline.resolve()),
@@ -246,10 +270,16 @@ def gate_detail(gate: dict[str, Any]) -> str:
             return f"logged issues={sum(issue_counts.values())}"
         if gate["name"] == "config":
             summary = result.get("summary", {})
-            return (
+            detail = (
                 f"leaves={summary.get('candidate_leaf_count', 'unknown')} "
                 f"differences={summary.get('diff_count', 'unknown')}"
             )
+            if summary.get("binding_policy_id"):
+                detail += (
+                    f" binding_matches="
+                    f"{summary.get('binding_match_count', 'unknown')}"
+                )
+            return detail
         if gate["name"] == "contract":
             return (
                 f"classified={result.get('classified_product_count', 'unknown')}/"
@@ -275,6 +305,12 @@ def gate_detail(gate: dict[str, Any]) -> str:
 
 
 def render_markdown(result: dict[str, Any]) -> str:
+    if result["passed"] and result.get("profile_status") == "preparing":
+        verdict = "prepared gates pass (not accepted)"
+    elif result["passed"]:
+        verdict = "accepted"
+    else:
+        verdict = "rejected"
     lines = [
         "# Citlali Profile Validation",
         "",
@@ -283,7 +319,8 @@ def render_markdown(result: dict[str, Any]) -> str:
         f"- Mode: `{result['mode']}`",
         f"- Baseline: `{result['baseline']}`",
         f"- Candidate: `{result['candidate']}`",
-        f"- Verdict: **{'accepted' if result['passed'] else 'rejected'}**",
+        f"- Profile status: `{result.get('profile_status', 'active')}`",
+        f"- Verdict: **{verdict}**",
         "",
         "## Gates",
         "",
@@ -323,7 +360,13 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         type=Path,
         default=DEFAULT_PRODUCT_CONTRACTS,
     )
+    parser.add_argument(
+        "--binding-policies",
+        type=Path,
+        default=DEFAULT_BINDING_POLICIES,
+    )
     parser.add_argument("--list-profiles", action="store_true")
+    parser.add_argument("--list-preparing-profiles", action="store_true")
     parser.add_argument(
         "--output-dir",
         type=Path,
@@ -338,13 +381,26 @@ def main(argv: list[str]) -> int:
     args = parse_args(argv)
     try:
         registry = validate_registry(args.registry, args.ledger)
-        if args.list_profiles:
-            active_epoch = registry["active_epoch_id"]
+        if args.list_profiles or args.list_preparing_profiles:
+            epoch_key = (
+                "preparing_epoch_id"
+                if args.list_preparing_profiles
+                else "active_epoch_id"
+            )
+            expected_status = (
+                "preparing" if args.list_preparing_profiles else "active"
+            )
+            active_epoch = registry[epoch_key]
+            if active_epoch is None:
+                return 0
             for profile in registry["profiles"]:
-                if profile["status"] == "active" and profile["epoch_id"] == active_epoch:
+                if (
+                    profile["status"] == expected_status
+                    and profile["epoch_id"] == active_epoch
+                ):
                     print(
                         f"{profile['profile_id']}\t{profile['mode']}\t"
-                        f"{profile['baseline_record_id']}"
+                        f"{profile['baseline_record_id'] or 'pending'}"
                     )
             return 0
         if not args.profile:
@@ -352,13 +408,22 @@ def main(argv: list[str]) -> int:
         if args.candidate is None:
             raise ValidationError("candidate reduction directory is required")
         profile = profile_by_id(registry, args.profile)
-        if profile["status"] != "active":
-            raise ValidationError(f"profile {args.profile!r} is not active")
+        if profile["status"] == "superseded":
+            raise ValidationError(f"profile {args.profile!r} is superseded")
         records = ledger_records(args.ledger)
-        baseline_record = records[profile["baseline_record_id"]]
-        baseline_value = args.baseline or Path(
-            baseline_record["artifacts"]["candidate_local_path"]
-        )
+        baseline_id = profile.get("baseline_record_id")
+        if args.baseline is not None:
+            baseline_value = args.baseline
+        elif baseline_id:
+            baseline_record = records[baseline_id]
+            baseline_value = Path(
+                baseline_record["artifacts"]["candidate_local_path"]
+            )
+        else:
+            raise ValidationError(
+                f"preparing profile {args.profile!r} has no accepted baseline; "
+                "pass --baseline explicitly"
+            )
         baseline = baseline_value.expanduser().resolve()
         candidate = args.candidate.expanduser().resolve()
         if not baseline.is_dir():
@@ -375,6 +440,7 @@ def main(argv: list[str]) -> int:
                 candidate,
                 args.output_dir.expanduser().resolve(),
                 args.product_contracts.expanduser().resolve(),
+                args.binding_policies.expanduser().resolve(),
             )
         else:
             with tempfile.TemporaryDirectory(prefix="citlali-validation-") as directory:
@@ -384,6 +450,7 @@ def main(argv: list[str]) -> int:
                     candidate,
                     Path(directory),
                     args.product_contracts.expanduser().resolve(),
+                    args.binding_policies.expanduser().resolve(),
                 )
         report = render_markdown(result)
         if args.json_out:
