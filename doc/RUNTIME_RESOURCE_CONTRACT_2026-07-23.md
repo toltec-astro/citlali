@@ -79,7 +79,7 @@ The 2026-07-23 local implementation checkpoint passes the Citlali CLI build,
 all 500 CTests, all 119 baseline-tool tests, all 118 config-preflight tests and
 the complete four-mode preflight, plus all 147 TolPROJ tests and Ruff checks.
 
-Retained-debt item D16 closes only after Unity confirms:
+Retained-debt item D16 required Unity to confirm:
 
 1. a normal generated reduction with matching CPU/thread values; and
 2. an intentionally mismatched direct submission that logs the cap, completes
@@ -92,4 +92,15 @@ effective OpenMP threads without adjustment, and recorded valid
 `citlali-runtime-provenance-v2`. It completed all 12 PTC chunks with no logged
 issues. All comparable non-profile ECSV, FITS, and NetCDF values are exact
 against `pointings_v21/redu00`; only profiling elapsed times differ. The
-intentional mismatch case remains the sole D16 closeout gate.
+intentional mismatch case passed on 2026-07-24 with the same executable and
+pointing project. It requested 12 threads inside an affinity limit of six,
+emitted exactly one resource-cap warning, selected six effective and realized
+OpenMP threads, and recorded the adjustment reason and `12/6` requested/effective
+counts in valid V2 provenance. It completed all 12 PTC chunks. All 670 compared
+records have no missing, extra, or skipped products; every non-profile value is
+exact against `pointings_v21/redu00`, and only elapsed profiling values differ.
+
+The other two warnings in this pointing fixture are established
+configuration/input notices: a configured pointing source strategy with fruit
+loops disabled, and omitted optional telescope fields. They are unrelated to
+resource reconciliation. Both Unity resource cases now pass, closing D16.
