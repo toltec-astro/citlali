@@ -84,3 +84,12 @@ Retained-debt item D16 closes only after Unity confirms:
 1. a normal generated reduction with matching CPU/thread values; and
 2. an intentionally mismatched direct submission that logs the cap, completes
    successfully, and records the expected V2 provenance.
+
+The normal Unity case passed on 2026-07-23 using Citlali `d339053cc`
+(`v4.0.0-3585-gd339053c`) in `pointings_v22/redu00`. The run requested six
+threads, discovered six available CPUs from process affinity, retained six
+effective OpenMP threads without adjustment, and recorded valid
+`citlali-runtime-provenance-v2`. It completed all 12 PTC chunks with no logged
+issues. All comparable non-profile ECSV, FITS, and NetCDF values are exact
+against `pointings_v21/redu00`; only profiling elapsed times differ. The
+intentional mismatch case remains the sole D16 closeout gate.

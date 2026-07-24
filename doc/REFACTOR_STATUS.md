@@ -27,9 +27,14 @@ branch. The exact validated tree will remain available for forensic review.
   availability, caps rather than aborts an allocated job, emits one warning,
   and writes `citlali-runtime-provenance-v2`. Local build, focused tests, full
   gates (500 CTests, 119 baseline tests, and 118 config tests), and the 147-test
-  TolPROJ suite pass. Unity smoke evidence will be recorded in
-  [the runtime resource contract](RUNTIME_RESOURCE_CONTRACT_2026-07-23.md);
-  D16 remains open until the two Unity cases pass.
+  TolPROJ suite pass. The matching Unity case passed at `d339053cc` in
+  `pointings_v22/redu00`: six requested threads matched six affinity-available
+  and six effective OpenMP threads without adjustment; runtime provenance V2
+  is valid, the run completed all 12 PTC chunks with no logged issues, and all
+  non-profile scientific products are exact against `pointings_v21/redu00`.
+  [The runtime resource contract](RUNTIME_RESOURCE_CONTRACT_2026-07-23.md)
+  records the evidence. D16 remains open only for the intentionally mismatched
+  direct-submission case.
 - Refactor baseline: `376e0022`.
 - Production code inspected by the external review: `84670829`.
 - Latest accepted point reduction: Phase 3 exit checkpoint `redu66`, produced
