@@ -19,6 +19,24 @@ branch. The exact validated tree will remain available for forensic review.
 
 ## Current Snapshot
 
+- A 2026-07-24 reliability investigation is active for two long
+  108-observation pointing jobs that received `SIGBUS` on the same a1400 Ceres
+  solve after 45 completed observations. The fitter code is unchanged across
+  the failed and current commits; 512 repeated synthetic fits and an exact
+  138-fit replay from the downloaded scientific maps both pass, including
+  ASan/UBSan instrumentation of the fitter translation unit. Corrected
+  observation-boundary RSS is approximately 0.8--1.1 GiB rather than the
+  step-wide 26/41 GiB Slurm peaks. Current work adds PID-level resource,
+  executable-mapping, and robust signal diagnostics plus a low-level
+  config-slicing/native-run harness. No algorithm or fit policy has changed,
+  and a native Unity failure frame is still required before choosing a fix.
+  TolPROJ now has a tested submission-time executable snapshot and
+  checksum-verified node-local launcher on its development branch. This
+  prevents future queued/running reductions from depending on a mutable
+  `build/bin/citlali`, but is recorded as an operational safeguard rather than
+  proof of the historical `SIGBUS` root cause.
+  See the
+  [investigation handoff](../handoff/CITLALI_MULTI_OBSERVATION_SIGBUS_INVESTIGATION_2026-07-24.md).
 - Phase 5 validation-epoch preparation is complete as of 2026-07-24. The
   historical four-profile Phase 4 epoch remains active and immutable; a
   separate four-profile `phase5-v2.1-candidate-2026-07-24` epoch is registered

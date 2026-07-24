@@ -15,7 +15,8 @@ inline const char *tod_outer_mode_suffix(bool outer_output) {
 }
 
 inline double physical_memory_gb(long long physical_memory_kb) {
-    return static_cast<double>(physical_memory_kb) / 1e7;
+    constexpr double kibibytes_per_gibibyte = 1024.0 * 1024.0;
+    return static_cast<double>(physical_memory_kb) / kibibytes_per_gibibyte;
 }
 
 inline bool should_report_rtc_tod_output(

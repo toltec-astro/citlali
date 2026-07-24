@@ -2,6 +2,7 @@
 
 #include <ceres/ceres.h>
 #include <Eigen/Core>
+#include <spdlog/spdlog.h>
 
 #include <citlali/core/utils/constants.h>
 

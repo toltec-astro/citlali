@@ -11,8 +11,9 @@
 #include <tula/algorithm/ei_stats.h>
 
 #include <citlali/core/utils/constants.h>
-#include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/gauss_models.h>
+#include <citlali/core/utils/process_resource_snapshot.h>
+#include <citlali/core/utils/utils.h>
 
 namespace engine_utils {
 
@@ -349,11 +350,15 @@ auto mapFitter::ceres_fit(const Model &model,
     // output info
     Solver::Summary summary;
     // run the fit
+    citlali::utils::log_process_resource_snapshot(
+        logger, "ceres solve start");
     logger->debug("ceres_fit solve start");
     flush_logger();
     Solve(options, &problem, &summary);
     logger->debug("ceres_fit solve done: usable={} brief={}",
                   summary.IsSolutionUsable(), summary.BriefReport());
+    citlali::utils::log_process_resource_snapshot(
+        logger, "ceres solve done");
     flush_logger();
     if (!summary.IsSolutionUsable()) {
         logger->warn("ceres_fit failed: {}", summary.BriefReport());
