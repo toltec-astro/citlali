@@ -15,6 +15,7 @@ void apply_fruit_loops_config_to_processor(
     const citlali::config::TimestreamFruitLoopsConfig &config,
     PtcProc &ptcproc) {
     ptcproc.run_fruit_loops = config.enabled;
+    ptcproc.fruit_loops_diagnostics_enabled = config.diagnostics_enabled;
     ptcproc.fruit_loops_recompute_weights_after_addback =
         config.recompute_weights_after_addback;
     if (!config.enabled) {

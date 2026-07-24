@@ -831,6 +831,7 @@ struct FakeIterationPtcProc {
 
 struct FakeFruitLoopsAdapterPtcProc {
     bool run_fruit_loops = false;
+    bool fruit_loops_diagnostics_enabled = false;
     bool fruit_loops_recompute_weights_after_addback = false;
     bool save_all_iters = false;
     std::string fruit_loops_path;
@@ -7511,6 +7512,7 @@ TEST(pipeline_execution, uses_typed_fruit_loop_flux_metadata) {
 TEST(pipeline_execution, adapts_typed_fruit_loop_policy_one_way) {
     citlali::config::TimestreamFruitLoopsConfig config;
     config.enabled = true;
+    config.diagnostics_enabled = true;
     config.save_all_iters = true;
     config.recompute_weights_after_addback = true;
     config.path = "/typed/maps";
@@ -7546,6 +7548,7 @@ TEST(pipeline_execution, adapts_typed_fruit_loop_policy_one_way) {
         config, ptcproc);
 
     EXPECT_TRUE(ptcproc.run_fruit_loops);
+    EXPECT_TRUE(ptcproc.fruit_loops_diagnostics_enabled);
     EXPECT_TRUE(ptcproc.save_all_iters);
     EXPECT_TRUE(ptcproc.fruit_loops_recompute_weights_after_addback);
     EXPECT_EQ(ptcproc.fruit_loops_path, "/typed/maps");

@@ -487,6 +487,7 @@ struct FruitLoopsWeightFeedbackConfig {
 
 struct TimestreamFruitLoopsConfig {
     bool enabled = false;
+    bool diagnostics_enabled = false;
     bool save_all_iters = false;
     std::string path;
     // A completed reduction directory containing

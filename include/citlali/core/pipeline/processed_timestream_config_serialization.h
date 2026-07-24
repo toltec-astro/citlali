@@ -53,6 +53,7 @@ inline YAML::Node fruit_loops_config_node(
     const citlali::config::TimestreamFruitLoopsConfig &config) {
     YAML::Node node;
     node["enabled"] = config.enabled;
+    node["diagnostics_enabled"] = config.diagnostics_enabled;
     node["save_all_iters"] = config.save_all_iters;
     node["path"] = config.path;
     node["restart_path"] = config.restart_path;

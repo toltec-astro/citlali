@@ -68,6 +68,25 @@ void Pointing::fit_maps(citlali::pipeline::PointingFitStage stage) {
                 perrors(i,2) = perrors(i,2)*ASEC_TO_DEG;
             }
         }
+        if (citlali::pipeline::fruit_loops_config(*this)
+                .diagnostics_enabled) {
+            const double map_rms =
+                engine_utils::calc_std_dev(omb.signal[i]);
+            const double amplitude_over_map_rms =
+                std::isfinite(map_rms) && map_rms > 0.0
+                    ? params(i, 0) / map_rms
+                    : std::numeric_limits<double>::quiet_NaN();
+            logger->info(
+                "fruit_loop_diag kind=final_map iteration={} stage={} "
+                "array={} map={} "
+                "fit_valid={} amplitude={:.17g} a_fwhm_arcsec={:.17g} "
+                "b_fwhm_arcsec={:.17g} amplitude_over_map_rms={:.17g} "
+                "x_t={:.17g} y_t={:.17g}",
+                iteration.fruit_iter,
+                citlali::pipeline::pointing_fit_stage_name(stage), array, i,
+                good_fit, params(i, 0), params(i, 3), params(i, 4),
+                amplitude_over_map_rms, params(i, 1), params(i, 2));
+        }
     }
     citlali::pipeline::record_pointing_fit_results(
         citlali::pipeline::pointing_plan(*this), stage,

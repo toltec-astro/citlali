@@ -15,6 +15,7 @@ auto Pointing::run(
     const citlali::pipeline::TimestreamOutputFlags &output_flags,
     const citlali::pipeline::TimestreamOutputWriters &output_writers,
     citlali::pipeline::StageProfileCollector &stage_profile) {
+    ptcproc.fruit_loops_diagnostic_iteration = iteration.fruit_iter;
     auto scans_done_mutex = std::make_shared<std::mutex>();
     auto scans_done_count = std::make_shared<int>(0);
     auto ptc_line_audit_mutex = std::make_shared<std::mutex>();
@@ -103,6 +104,10 @@ auto Pointing::run(
         // run cleaning
         logger->info("processed time chunk processing for scan {}", ptcdata.index.data + 1);
         ptcproc.run(ptcdata, ptcdata, calib_scan, telescope.pixel_axes, map_grouping);
+        citlali::pipeline::log_fruit_loop_tod_stage(
+            logger, ptcproc.fruit_loops_diagnostics_enabled &&
+                        fruit_weight_policy.use_noise_weights,
+            "after_cleaning", iteration.fruit_iter, ptcdata, calib_scan);
         timestream::log_kernel_matrix_diag(
             logger, "ptc after processed time chunk cleaning", ptcdata.kernel.data, ptcdata.index.data);
         const auto ptc_second_pass_summary =
@@ -133,6 +138,10 @@ auto Pointing::run(
             // reset weights to median
             calib_scan = ptcproc.reset_weights(ptcdata, calib_scan, map_grouping);
         }
+        citlali::pipeline::log_fruit_loop_detector_weights(
+            logger, ptcproc.fruit_loops_diagnostics_enabled &&
+                        fruit_weight_policy.use_noise_weights,
+            "final", iteration.fruit_iter, ptcdata, calib_scan);
 
         const auto ptc_high_weight_summary =
             ptcproc.snapshot_high_weight_summary(ptcdata.index.data);

@@ -523,6 +523,7 @@ timestream: # timestream reduction parameters
       indices: all # chunk indices to write: "all" or [1,3,7] (1-based)
   fruit_loops: # algorithm to use input maps to subtract out source before cleaning and re-add afterwards
     enabled: false # enable or disable fruit loops algorithm (this overrides beammap source fitting if in beammap mode)
+    diagnostics_enabled: false # emit scan/array feedback-stage summaries for controlled investigations
     path: null # path for maps.  If null use maps that were generated in previous iter.  If path, use maps in that redu dir.
     type: obsnum/raw # how to apply maps.  options are 'obsnum/raw' and 'obsnum/filtered' (looks for obsnum dir) or 'coadd/raw' or 'coadd/filtered' (same map for all obsnums)
     sig2noise_limit: 0 # signal / per-array median jackknife RMS threshold (0 disables; nonzero requires enabled noise products and a positive realization count)

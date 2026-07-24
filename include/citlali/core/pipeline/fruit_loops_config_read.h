@@ -22,6 +22,12 @@ void read_fruit_loops_core_config(
         return;
     }
 
+    bool diagnostics_enabled = typed_config.diagnostics_enabled;
+    read_optional_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "fruit_loops", "diagnostics_enabled"},
+        diagnostics_enabled, typed_config.diagnostics_enabled, diagnostics);
+
     bool save_all_iters = typed_config.save_all_iters;
     read_mirrored_config_value(
         config,

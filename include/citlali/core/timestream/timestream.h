@@ -34,6 +34,7 @@
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/pointing_config.h>
 #include <citlali/core/config/timestream_config.h>
+#include <citlali/core/pipeline/fruit_loop_diagnostics.h>
 #include <citlali/core/pipeline/fruit_loop_feedback_validation.h>
 #include <citlali/core/pipeline/fruit_loop_map_input_validation.h>
 #include <citlali/core/timestream/auxiliary_stream.h>
@@ -684,6 +685,9 @@ public:
     bool run_tod_output, write_evals;
     // run fruit loops
     bool run_fruit_loops;
+    // emit scan-local fruit-loop recurrence diagnostics
+    bool fruit_loops_diagnostics_enabled = false;
+    Eigen::Index fruit_loops_diagnostic_iteration = -1;
     // detector-sample feedback applications in the current reduction
     // iteration; accumulated once per scan from parallel workers
     std::shared_ptr<std::atomic<long long>> fruit_loop_feedback_samples =
@@ -2514,6 +2518,18 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
         factor = -1;
     }
     long long feedback_samples = 0;
+    constexpr std::string_view diagnostic_action =
+        source_type == NegativeMap ? "subtract" : "addback";
+    citlali::pipeline::log_fruit_loop_map_models(
+        logger, fruit_loops_diagnostics_enabled, in.index.data,
+        fruit_loops_diagnostic_iteration, diagnostic_action, mb, map_indices,
+        calib);
+    std::vector<citlali::pipeline::FruitLoopNumericSummary>
+        projected_signal, projected_kernel;
+    if (fruit_loops_diagnostics_enabled) {
+        projected_signal.resize(static_cast<std::size_t>(calib.arrays.size()));
+        projected_kernel.resize(static_cast<std::size_t>(calib.arrays.size()));
+    }
 
     // run kernel through fruit loops
     bool run_kernel = fruit_loops_kernel_feedback_enabled && in.kernel.data.size() !=0;
@@ -2778,6 +2794,10 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                     if (run_pix_s2n || run_pix_flux || run_pix_adaptive) {
                         // add/subtract signal pixel from signal timestream
                         in.scans.data(j,i) += factor * signal;
+                        if (fruit_loops_diagnostics_enabled) {
+                            projected_signal[static_cast<std::size_t>(array_pos)]
+                                .add(signal);
+                        }
                         feedback_applied = true;
                         // In non-detector maps the signal and kernel support
                         // are co-centered, so keep the historical behavior:
@@ -2787,6 +2807,11 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                             auto sampled_kernel = sample_kernel_value();
                             if (sampled_kernel.first) {
                                 in.kernel.data(j,i) += factor * sampled_kernel.second;
+                                if (fruit_loops_diagnostics_enabled) {
+                                    projected_kernel[
+                                        static_cast<std::size_t>(array_pos)]
+                                        .add(sampled_kernel.second);
+                                }
                             }
                         }
                     }
@@ -2797,6 +2822,11 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                     // support rather than gating it on selected signal pixels.
                     if (detector_map_kernel_feedback && have_kernel_value) {
                         in.kernel.data(j,i) += factor * kernel_value;
+                        if (fruit_loops_diagnostics_enabled) {
+                            projected_kernel[
+                                static_cast<std::size_t>(array_pos)]
+                                .add(kernel_value);
+                        }
                         feedback_applied = true;
                     }
                     if constexpr (source_type==NegativeMap) {
@@ -2806,6 +2836,18 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                     }
                 }
             }
+        }
+    }
+    if (fruit_loops_diagnostics_enabled) {
+        for (Eigen::Index array_pos = 0; array_pos < calib.arrays.size();
+             ++array_pos) {
+            citlali::pipeline::log_fruit_loop_projection_summary(
+                logger, true, in.index.data,
+                fruit_loops_diagnostic_iteration,
+                static_cast<Eigen::Index>(calib.arrays(array_pos)),
+                diagnostic_action,
+                projected_signal[static_cast<std::size_t>(array_pos)],
+                projected_kernel[static_cast<std::size_t>(array_pos)]);
         }
     }
     if constexpr (source_type==NegativeMap) {

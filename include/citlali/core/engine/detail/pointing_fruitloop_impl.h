@@ -20,6 +20,9 @@ void Pointing::maybe_subtract_pointing_fruitloop_model(
 
     timestream::log_kernel_matrix_diag(
         logger, "ptc before fruitloops map subtraction", ptcdata.kernel.data, ptcdata.index.data);
+    citlali::pipeline::log_fruit_loop_tod_stage(
+        logger, ptcproc.fruit_loops_diagnostics_enabled,
+        "before_subtraction", iteration.fruit_iter, ptcdata, calib_scan);
     logger->info("subtracting map from tod");
     // subtract map
     ptcproc.map_to_tod<timestream::TCProc::SourceType::NegativeMap>(
@@ -27,6 +30,9 @@ void Pointing::maybe_subtract_pointing_fruitloop_model(
         telescope.pixel_axes, map_grouping);
     timestream::log_kernel_matrix_diag(
         logger, "ptc after fruitloops map subtraction", ptcdata.kernel.data, ptcdata.index.data);
+    citlali::pipeline::log_fruit_loop_tod_stage(
+        logger, ptcproc.fruit_loops_diagnostics_enabled,
+        "after_subtraction", iteration.fruit_iter, ptcdata, calib_scan);
 }
 
 template <class CalibScan>
@@ -48,6 +54,9 @@ void Pointing::run_pointing_fruitloop_noise_pass(
     logger->info("calculating weights for scan {} (fruit loops noise-only pass)",
                  ptcdata.index.data + 1);
     ptcproc.calc_weights(ptcdata, calib_scan.apt, telescope, true);
+    citlali::pipeline::log_fruit_loop_detector_weights(
+        logger, ptcproc.fruit_loops_diagnostics_enabled,
+        "source_subtracted", iteration.fruit_iter, ptcdata, calib_scan);
 
     // reset weights to median
     calib_scan = ptcproc.reset_weights(ptcdata, calib_scan, map_grouping);
@@ -66,6 +75,9 @@ void Pointing::run_pointing_fruitloop_noise_pass(
     ptcproc.map_to_tod<timestream::TCProc::SourceType::Map>(
         ptcproc.tod_mb, ptcdata, calib_scan, map_indices,
         telescope.pixel_axes, map_grouping);
+    citlali::pipeline::log_fruit_loop_tod_stage(
+        logger, ptcproc.fruit_loops_diagnostics_enabled,
+        "after_addback", iteration.fruit_iter, ptcdata, calib_scan);
     timestream::log_kernel_matrix_diag(
         logger, "ptc after fruitloops map addback", ptcdata.kernel.data, ptcdata.index.data);
 }

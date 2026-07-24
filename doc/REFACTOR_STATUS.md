@@ -19,6 +19,19 @@ branch. The exact validated tree will remain available for forensic review.
 
 ## Current Snapshot
 
+- A 2026-07-24 pointing fruit-loop investigation is active. Five controlled
+  observations have exact no-feedback seeds but monotonically brighter and
+  broader fitted sources through four feedback passes. Production
+  subtract/add-back now has opt-in per-scan/array diagnostics; direct
+  signal/kernel round-trip and controlled injected-Gaussian recurrence tests
+  pass, rejecting a basic sign or unconditional double-add error. The frozen
+  obsnum 133410 maps reveal that the low absolute flux cuts select a broad,
+  one-sided positive model: 95--98% of active selected pixels and 57--79% of
+  tapered positive model sum lie beyond 40 arcsec at the seed. Controlled
+  learning, template-taper, and detector-weight ablations are prepared.
+  Production defaults remain unchanged pending full-PTC injected-truth
+  convergence and Unity ablation evidence. See the
+  [investigation record](FRUIT_LOOP_FEEDBACK_INVESTIGATION_2026-07-24.md).
 - A 2026-07-24 reliability investigation is active for two long
   108-observation pointing jobs that received `SIGBUS` on the same a1400 Ceres
   solve after 45 completed observations. The fitter code is unchanged across

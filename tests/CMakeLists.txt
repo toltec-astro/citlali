@@ -14,6 +14,7 @@ target_sources(citlali_test
         test_calib_apt_filtering.cpp
         test_config_scaffold.cpp
         test_external_config_provenance.cpp
+        test_fruit_loop_recurrence.cpp
         reduction_session_header_result.cpp
         reduction_session_header_state.cpp
         fruit_loop_feedback_validation_header.cpp
