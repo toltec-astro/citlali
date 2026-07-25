@@ -28,9 +28,14 @@ branch. The exact validated tree will remain available for forensic review.
   obsnum 133410 maps reveal that the low absolute flux cuts select a broad,
   one-sided positive model: 95--98% of active selected pixels and 57--79% of
   tapered positive model sum lie beyond 40 arcsec at the seed. Controlled
-  learning, template-taper, and detector-weight ablations are prepared.
-  Production defaults remain unchanged pending full-PTC injected-truth
-  convergence and Unity ablation evidence. See the
+  learning, template-taper, and detector-weight Unity ablations are complete:
+  learning and tapering are not material causes, and recomputing post-addback
+  weights is image-array identical to the control. Fruit loops recover source
+  width toward the propagated kernel width but overshoot the matched APT
+  calibrator amplitude, particularly for a1400. The remaining cause class is
+  the production recurrence/cleaner/map-normalization interaction; a generated
+  high-S/N-only support test and full-PTC injected-truth test are the next
+  gates. Production defaults remain unchanged. See the
   [investigation record](FRUIT_LOOP_FEEDBACK_INVESTIGATION_2026-07-24.md).
 - A 2026-07-24 reliability investigation is active for two long
   108-observation pointing jobs that received `SIGBUS` on the same a1400 Ceres

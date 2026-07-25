@@ -44,6 +44,9 @@ VARIANTS = {
             "recompute_weights_after_addback",
         ): True,
     },
+    "snr_only_model": {
+        ("timestream", "fruit_loops", "array_flux_limit"): [0, 0, 0],
+    },
 }
 
 

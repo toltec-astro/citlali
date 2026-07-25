@@ -21,7 +21,9 @@ The generator verifies the seed policy and writes:
 - `weight_feedback_disabled`: only map-template weight taper is disabled;
 - `recompute_weights_after_addback`: only detector weights are recomputed
   after restoring the source model; and
-- `all_three`: all three diagnostic changes together.
+- `all_three`: all three diagnostic changes together; and
+- `snr_only_model`: disables the low absolute-flux gate while retaining the
+  existing S/N threshold, isolating feedback to the high-S/N source model.
 
 Every variant keeps `max_iters: 5` and `save_all_iters: true`, and every
 variant has an independent output root. The unchanged-policy diagnostic is a
@@ -46,6 +48,7 @@ $HOME/tolteca/bin/python tools/fruit_loops/compare_feedback_ablation.py \
   --run weight_feedback_disabled=/path/to/weight_feedback_disabled/reduced \
   --run recompute_weights=/path/to/recompute_weights_after_addback/reduced \
   --run all_three=/path/to/all_three/reduced \
+  --run snr_only_model=/path/to/snr_only_model/reduced \
   --output /path/to/fruit_loop_ablation_metrics.csv
 ```
 
