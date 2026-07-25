@@ -29,12 +29,14 @@ def rms(values: np.ndarray) -> float:
     return float(np.sqrt(np.mean(np.square(values[finite]))))
 
 
-def iteration_config(reduction_dir: Path) -> dict:
+def iteration_config(reduction_dir: Path, fallback: Path | None = None) -> dict:
     candidates = sorted(
         path
         for path in reduction_dir.glob("citlali*.yaml")
         if path.name != "citlali_merged_config.yaml"
     )
+    if not candidates and fallback is not None:
+        candidates = [fallback]
     if len(candidates) != 1:
         raise ValueError(
             f"expected one low-level config in {reduction_dir}, "
@@ -128,9 +130,16 @@ def reduction_rows(label: str, reduced: Path, obsnum: int) -> list[dict]:
             f"saved fruit-loop iterations must be contiguous from zero in "
             f"{reduced}; found {iterations}"
         )
+    fallback_configs = [
+        path
+        for reduction_dir in reduction_dirs
+        for path in reduction_dir.glob("citlali*.yaml")
+        if path.name != "citlali_merged_config.yaml"
+    ]
+    fallback_config = fallback_configs[0] if fallback_configs else None
     for iteration, reduction_dir in zip(iterations, reduction_dirs):
         raw = reduction_dir / str(obsnum) / "raw"
-        config = iteration_config(reduction_dir)
+        config = iteration_config(reduction_dir, fallback_config)
         fruit_config = config["timestream"]["fruit_loops"]
         flux_limits = fruit_config["array_flux_limit"]
         feedback_config = fruit_config.get("weight_feedback", {})

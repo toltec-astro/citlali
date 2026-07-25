@@ -45,6 +45,12 @@ completed first-round variants:
 
 `--matrix all` writes both matrices and remains the default.
 
+The obsnum 133410 follow-up matrix completed on Unity. `snr_only_s200`
+intentionally stopped at the no-op guard because it selected zero
+detector-samples. The other twelve variants completed, and their results are
+recorded in
+`doc/FRUIT_LOOP_FEEDBACK_INVESTIGATION_2026-07-24.md`.
+
 Every variant keeps `save_all_iters: true` and has an independent output root.
 All variants retain five iterations except `full_policy_10_iters`. The
 unchanged-policy diagnostic is a control for the instrumentation and supplies

@@ -2,10 +2,10 @@
 
 Date: 2026-07-24
 
-Status: active; the first five controlled Unity ablations are complete. A
-follow-up model-support, cleaner-strength, and projection matrix plus a
-full-PTC injected-source test remain required before a production default
-change.
+Status: active; both controlled Unity matrices are complete. The evidence
+favors stable transfer-function recovery driven by PTC cleaning rather than a
+feedback arithmetic fault. A full-PTC injected-source test remains required
+before accepting or changing a production policy.
 
 ## Question
 
@@ -98,12 +98,15 @@ cause.
 
 | Candidate | Current disposition |
 |---|---|
-| Fundamental subtract/clean/add-back recurrence | The low-level recurrence and immediate round trip are mathematically correct. The production PTC cleaner/map-normalization interaction is now the dominant remaining cause class. |
+| Fundamental subtract/clean/add-back recurrence | The low-level recurrence and immediate round trip are mathematically correct. The ten-iteration production run reaches a stable fitted-source endpoint. |
 | Learned masks or detector exclusions | Ruled out as the origin. Disabling learning leaves iterations zero and one exact and changes fitted amplitude by at most 0.32% later. |
 | Template weight taper | Ruled out as a material cause for this observation. Disabling it changes final fitted amplitudes by less than 0.001%. |
 | Source-subtracted detector weights | Ruled out for this observation. The recompute policy executed, but all signal, kernel, and weight image arrays remained exactly identical to the control. |
-| Kernel normalization | Captures the recovered PSF-width evolution but does not correct the amplitude overshoot. It is not the sole cause. |
-| Interaction | The remaining interaction is the production recurrence with PTC cleaning/map normalization. Broad one-sided model support remains the next isolated candidate within that interaction. |
+| Broad model support | Ruled out as a material cause. Compact adaptive models use only 3--8% as many projected detector-samples on the first pass yet reproduce final fitted amplitudes within 1%. |
+| PTC cleaning | Dominant driver. Seed attenuation and feedback correction increase strongly with PCA depth. This is expected transfer-function behavior, not by itself a fault. |
+| Projection/mapmaking | Secondary. Bilinear and historical projection variants change final amplitudes by at most 2.7%; naive mapmaking retains a similar growth pattern. |
+| Kernel normalization | Tracks the recovered PSF and much of the amplitude transfer. Real-source endpoints do not equal the matched-APT flux, but cleaner-free fits are farther from that reference, so this does not isolate a kernel fault. |
+| Interaction | No production fault is demonstrated by the real-source matrices. The full-PTC injected-source test is the remaining authority for absolute amplitude and PSF recovery. |
 
 No production default has changed.
 
@@ -209,32 +212,95 @@ peak, the calibrated-flux errors evolve as follows:
 
 This is mixed behavior: the PSF transfer function is recovered, but the
 amplitude recurrence overshoots the calibrated source truth, especially for
-a1400. Extending the iteration count cannot resolve that normalization
-problem.
+a1400. The follow-up cleaner matrix shows that this real-source comparison
+cannot by itself establish a normalization fault: the cleaner-free
+kernel-corrected a1400 fit is about twice the same reference, consistent with
+strong residual-background contamination. Injected truth remains necessary.
 
-## Decision Rules
+## Completed Follow-up Matrix
 
-- If subtraction and add-back differ for samples retained by mapmaking, or by
-  enough to explain the source change, the recurrence has mutated material
-  state. The measured difference is currently confined to a tiny sample set
-  newly flagged during residual-weight resetting.
-- If only learning-disabled runs change after iteration two, learning modifies
-  convergence but does not explain its origin.
-- If disabling template taper changes only broad support while central growth
-  remains, taper is not the root cause.
-- If recomputing weights after add-back removes growth while preserving
-  shrinking changes and source shape, source-subtracted detector weights are
-  the dominant interaction.
-- If the S/N-only and compact-support trajectories approach the calibrated
-  source while the broad-support control overshoots, broad positive model
-  support is causal. A threshold response strengthens that conclusion.
-- If growth scales with zero, one, five, and ten cleaned PCA modes, the PTC
-  transfer function is causal. The source-mask result distinguishes direct
-  source removal from broader cleaner/map-normalization coupling.
-- If projection or mapmaking variants materially change the trajectory at
-  fixed cleaning and support, map/project operator consistency is causal.
-- If the unchanged ten-iteration trajectory does not approach an asymptote,
-  the current policy is unstable rather than merely slowly convergent.
+Twelve variants completed every requested iteration with executable
+`v4.0.0-3592-gdba226d0`. The `snr_only_s200` run stopped cleanly after
+iteration one because all three arrays selected zero detector-samples. Its
+no-op guard behaved as designed. Empty stderr files and no unexpected
+error-level messages were recorded for the twelve completed runs.
+
+The five-iteration control and the first five iterations of the independent
+ten-iteration control are exact for all 45 signal, kernel, and weight image
+arrays. Every support- or projection-only seed is likewise exactly identical
+to the control seed.
+
+### Cleaner-strength response
+
+The fitted-amplitude ratio between the final and seed maps is:
+
+| PTC PCA modes | a1100 | a1400 | a2000 |
+|---:|---:|---:|---:|
+| 0 (cleaning disabled) | 0.878 | 0.773 | 1.096 |
+| 1 | 1.002 | 0.734 | 1.172 |
+| 5 (control) | 1.382 | 1.555 | 1.805 |
+| 10 | 2.023 | 2.646 | 3.065 |
+
+Stronger PCA cleaning progressively attenuates the seed and produces a larger
+feedback correction. At ten modes, the seed kernel-corrected amplitudes are
+about 50% below the matched-APT reference in all arrays; fruit loops recover
+them to -9.8%, +21.0%, and +6.5%. The zero- and one-mode a1400 maps remain
+strongly contaminated and exceed the same reference even before feedback.
+
+A 30-arcsec PTC source mask nearly eliminates growth for a2000 and reverses it
+for a1100 and a1400, while materially changing the seed map. This confirms
+that the cleaner acts on source-bearing samples, but the masked result is a
+mechanistic test rather than a candidate production policy.
+
+### Model-support response
+
+The control projects 1.39 million detector-samples on its first feedback pass.
+The compact 5%-of-peak and local-S/N-5 models project only 52,164 and 48,567
+samples, respectively, yet their final amplitudes differ from the control by
+at most 0.97% and 0.41%. Broad positive off-source support is therefore not
+driving the fitted-source growth.
+
+Global S/N-only selection is too brittle for this dataset:
+
+- S/N 50 selects no a1400 samples after the first pass;
+- S/N 100 selects no a1400 samples at all and no a1100 samples until the third
+  pass; and
+- S/N 200 selects no samples in any array.
+
+The compact adaptive gates maintain support in all arrays and are the more
+useful source-only diagnostic.
+
+### Projection and convergence response
+
+Bilinear projection changes final amplitudes by at most 2.14% relative to the
+Jinc control. The historical truncating projection and center convention
+change them by at most 2.70%. Naive mapmaking changes the seed as expected but
+retains similar final/seed growth. Projection choice is not the origin of the
+observed correction.
+
+The unchanged ten-iteration run converges. Between iterations eight and nine,
+the fitted amplitude changes by -0.043%, -0.008%, and +0.007% for a1100,
+a1400, and a2000. Relative whole-map RMS changes continue shrinking and reach
+1.69%, 1.04%, and 1.16%. Iterations zero through four remain exactly
+reproducible.
+
+## Decision Outcome and Remaining Gate
+
+- Subtraction/add-back differences are confined to a tiny sample set newly
+  flagged during residual-weight resetting and are too small to explain the
+  source change.
+- Learning modifies later convergence by less than 0.32% and does not explain
+  its origin.
+- Template taper and source-subtracted detector weights are not material for
+  this observation.
+- Compact-support trajectories reproduce the broad-support result; broad
+  positive model support is not causal.
+- Growth scales strongly with PCA depth, and source masking materially changes
+  it; PTC source transfer is the dominant mechanism.
+- Projection and mapmaking variants retain the behavior; map/project operator
+  consistency is not the dominant mechanism.
+- The unchanged ten-iteration trajectory reaches an asymptote; the current
+  recurrence is stable on this observation.
 - A production policy is acceptable only after a realistic injected-source
   test with the full PTC cleaner converges to known amplitude and PSF with
   shrinking changes.
@@ -258,8 +324,8 @@ follow-up matrix. The comparison tool reproduces all array/iteration records
 and feedback-support measurements and now discovers runs longer than five
 iterations.
 
-The follow-up Unity products and full-PTC injected-source fixture remain open.
-Existing evidence establishes correct PSF-shape recovery alongside an
-amplitude trajectory that does not converge to the calibrated source
-reference. It narrows the fault to the production
-recurrence/cleaner/map-normalization interaction without changing defaults.
+The full-PTC injected-source fixture remains open. Existing evidence
+establishes stable PSF-shape and amplitude transfer recovery whose size scales
+with cleaner strength. It does not demonstrate a production fruit-loop fault,
+nor does it establish absolute amplitude correctness. Production defaults
+remain unchanged.

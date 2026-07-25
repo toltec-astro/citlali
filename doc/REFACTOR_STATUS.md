@@ -31,13 +31,13 @@ branch. The exact validated tree will remain available for forensic review.
   learning, template-taper, and detector-weight Unity ablations are complete:
   learning and tapering are not material causes, and recomputing post-addback
   weights is image-array identical to the control. Fruit loops recover source
-  width toward the propagated kernel width but overshoot the matched APT
-  calibrator amplitude, particularly for a1400. The remaining cause class is
-  the production recurrence/cleaner/map-normalization interaction. A generated
-  follow-up matrix isolates model support, cleaner strength/source protection,
-  projection/mapmaking, and the ten-iteration asymptote; a full-PTC
-  injected-truth test remains the final policy gate. Production defaults
-  remain unchanged. See the
+  width toward the propagated kernel width. The 13-variant follow-up matrix
+  shows stable ten-iteration convergence and a strong PCA-depth response:
+  cleaner strength, not broad model support or projection choice, controls the
+  correction size. Cleaner-free real-source fits are farther from the
+  matched-APT reference, so the reference mismatch does not establish a
+  fruit-loop fault. A full-PTC injected-truth test remains the final policy
+  gate. Production defaults remain unchanged. See the
   [investigation record](FRUIT_LOOP_FEEDBACK_INVESTIGATION_2026-07-24.md).
 - A 2026-07-24 reliability investigation is active for two long
   108-observation pointing jobs that received `SIGBUS` on the same a1400 Ceres
