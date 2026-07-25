@@ -485,6 +485,12 @@ struct FruitLoopsWeightFeedbackConfig {
     double high_relative_weight = 0.10;
 };
 
+struct FruitLoopsInjectedSourceTestConfig {
+    bool enabled = false;
+    int start_iteration = 1;
+    std::vector<double> array_amplitude_mjy_beam;
+};
+
 struct TimestreamFruitLoopsConfig {
     bool enabled = false;
     bool diagnostics_enabled = false;
@@ -511,6 +517,7 @@ struct TimestreamFruitLoopsConfig {
     FruitLoopsSourceCenterMode source_center_mode =
         FruitLoopsSourceCenterMode::automatic;
     FruitLoopsWeightFeedbackConfig weight_feedback;
+    FruitLoopsInjectedSourceTestConfig injected_source_test;
     double center_keep_radius_arcsec = 0.0;
     FruitLoopsInterpModeOverride interp_mode_override =
         FruitLoopsInterpModeOverride::automatic;

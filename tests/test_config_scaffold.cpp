@@ -811,6 +811,7 @@ struct FakeIterationPtcProc {
     int begin_weight_validation_iter = -1;
     int finalize_weight_validation_iter = -1;
     long long fruit_loop_feedback_samples = 0;
+    long long fruit_loop_injected_source_samples = 0;
 
     void reset_fruit_loop_feedback_samples() {
         fruit_loop_feedback_samples = 0;
@@ -818,6 +819,14 @@ struct FakeIterationPtcProc {
 
     long long current_fruit_loop_feedback_samples() const {
         return fruit_loop_feedback_samples;
+    }
+
+    void reset_fruit_loop_injected_source_samples() {
+        fruit_loop_injected_source_samples = 0;
+    }
+
+    long long current_fruit_loop_injected_source_samples() const {
+        return fruit_loop_injected_source_samples;
     }
 
     void begin_weight_validation_iteration(int iter) {
@@ -4461,6 +4470,48 @@ TEST(config_scaffold, reads_explicit_fruit_loop_restart_path) {
     EXPECT_EQ(config.restart_path, "/data/reduced/redu04");
 }
 
+TEST(config_scaffold, reads_fruit_loop_injected_source_test) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    root["timestream"]["fruit_loops"]["enabled"] = true;
+    root["timestream"]["fruit_loops"]["injected_source_test"]["enabled"] =
+        true;
+    root["timestream"]["fruit_loops"]["injected_source_test"]
+        ["start_iteration"] = 9;
+    root["timestream"]["fruit_loops"]["injected_source_test"]
+        ["array_amplitude_mjy_beam"] =
+            std::vector<double>{1000.0, 2000.0, 3000.0};
+    auto yaml_config =
+        tula::config::YamlConfig::from_str(YAML::Dump(root));
+    citlali::config::TimestreamFruitLoopsConfig config;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_fruit_loops_core_config(
+        yaml_config, config, diagnostics);
+
+    EXPECT_FALSE(diagnostics.has_errors());
+    EXPECT_TRUE(config.injected_source_test.enabled);
+    EXPECT_EQ(config.injected_source_test.start_iteration, 9);
+    EXPECT_EQ(
+        config.injected_source_test.array_amplitude_mjy_beam,
+        (std::vector<double>{1000.0, 2000.0, 3000.0}));
+}
+
+TEST(config_scaffold, validates_fruit_loop_injected_source_test_contract) {
+    citlali::config::TimestreamFruitLoopsConfig config;
+    config.enabled = true;
+    config.injected_source_test.enabled = true;
+    config.injected_source_test.start_iteration = 0;
+    config.injected_source_test.array_amplitude_mjy_beam = {0.0, 0.0};
+    config.max_iters = 1;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 5U);
+}
+
 TEST(config_scaffold, rejects_ambiguous_fruit_loop_seed_and_restart) {
     citlali::config::TimestreamFruitLoopsConfig config;
     config.enabled = true;
@@ -6118,6 +6169,7 @@ TEST(pipeline_iteration_lifecycle, begins_fruit_loop_iteration_with_source_model
     engine.learning.enabled = true;
     engine.learning.diagnostics = true;
     engine.ptcproc.fruit_loop_feedback_samples = 17;
+    engine.ptcproc.fruit_loop_injected_source_samples = 23;
     auto logger = std::make_shared<FakeLogger>();
 
     citlali::pipeline::begin_fruit_loop_iteration(engine, logger);
@@ -6126,6 +6178,7 @@ TEST(pipeline_iteration_lifecycle, begins_fruit_loop_iteration_with_source_model
     EXPECT_EQ(engine.learning.begin_calls, 1);
     EXPECT_TRUE(engine.learning.source_model_available);
     EXPECT_EQ(engine.ptcproc.fruit_loop_feedback_samples, 0);
+    EXPECT_EQ(engine.ptcproc.fruit_loop_injected_source_samples, 0);
     EXPECT_EQ(logger->info_calls, 2);
 }
 
@@ -6157,6 +6210,42 @@ TEST(pipeline_iteration_lifecycle, accepts_realized_nonzero_feedback) {
         citlali::pipeline::require_realized_fruit_loop_feedback_if_available(
             engine, logger));
     EXPECT_EQ(logger->info_calls, 1);
+}
+
+TEST(pipeline_iteration_lifecycle, rejects_realized_zero_sample_injection) {
+    FakeIterationEngine engine;
+    engine.iteration.fruit_iter = 2;
+    engine.typed_config.timestream.fruit_loops.enabled = true;
+    engine.typed_config.timestream.fruit_loops.injected_source_test.enabled =
+        true;
+    engine.typed_config.timestream.fruit_loops.injected_source_test
+        .start_iteration = 2;
+    engine.ptcproc.fruit_loop_feedback_samples = 42;
+    engine.ptcproc.fruit_loop_injected_source_samples = 0;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_THROW(
+        citlali::pipeline::require_realized_fruit_loop_feedback_if_available(
+            engine, logger),
+        citlali::error::Error);
+}
+
+TEST(pipeline_iteration_lifecycle, accepts_realized_nonzero_injection) {
+    FakeIterationEngine engine;
+    engine.iteration.fruit_iter = 2;
+    engine.typed_config.timestream.fruit_loops.enabled = true;
+    engine.typed_config.timestream.fruit_loops.injected_source_test.enabled =
+        true;
+    engine.typed_config.timestream.fruit_loops.injected_source_test
+        .start_iteration = 2;
+    engine.ptcproc.fruit_loop_feedback_samples = 42;
+    engine.ptcproc.fruit_loop_injected_source_samples = 91;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_NO_THROW(
+        citlali::pipeline::require_realized_fruit_loop_feedback_if_available(
+            engine, logger));
+    EXPECT_EQ(logger->info_calls, 2);
 }
 
 TEST(pipeline_iteration_lifecycle, uses_configured_fruit_loop_path_as_source_model) {

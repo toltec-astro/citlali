@@ -82,3 +82,75 @@ $HOME/tolteca/bin/python tools/fruit_loops/compare_feedback_ablation.py \
 The table records fitted source amplitude, widths, S/N, centroid, kernel peak,
 median map weight, absolute and relative successive-map RMS changes, and the
 size and off-source fraction of the flux-selected feedback model.
+
+## Full-PTC injected-source pair
+
+The final transfer test starts from one converged restart checkpoint and runs
+two otherwise identical branches:
+
+- `control` processes the converged, source-subtracted residual normally;
+- `injected` adds a known source to the pristine unit-kernel TOD immediately
+  before the previous map is subtracted.
+
+The resulting PTC input is therefore the real converged residual plus a source
+with known amplitude. The injection repeats on every subsequent iteration.
+Subtracting the control maps from the injected maps isolates the known source
+while retaining the production cleaner, flags, weights, and fruit-loop
+recurrence.
+
+Prepare a five-iteration pair beginning at iteration 9:
+
+```bash
+$HOME/tolteca/bin/python \
+  tools/fruit_loops/prepare_injected_source_pair.py \
+  --input /path/to/full_policy_config.yaml \
+  --restart-path /path/to/full_policy_10_iters/reduced/redu08 \
+  --output-dir /path/to/injected_source_setup \
+  --runtime-output-root /path/to/injected_source_run \
+  --start-iteration 9 \
+  --additional-iterations 5 \
+  --amplitudes-mjy-beam 3981.3 4799.7 6331.6
+```
+
+The amplitudes above are the matched-APT values for the frozen 3C273
+observation 133410. They define the injected truth; they are not used to
+calibrate the output. The generator enables kernel production, diagnostics,
+saved iterations, and exact restart state in both branches. Only
+`injected_source_test.enabled` differs.
+
+Run the generated `control` and `injected` YAML files with the same Citlali
+executable and resources. Their output roots are independent, so they may run
+concurrently.
+
+Because each branch uses a fresh output root, absolute iterations 9--13 are
+normally stored in directories `redu00`--`redu04`. The comparator reads the
+authoritative `FRUITLOOPS_ITER` FITS header rather than treating the directory
+suffix as the iteration number. It also rejects any low-level config difference
+beyond the paired output root and injection enable switch.
+
+After downloading both branches:
+
+```bash
+$HOME/tolteca/bin/python \
+  tools/fruit_loops/compare_injected_source_pair.py \
+  --control /path/to/run/control/reduced \
+  --injected /path/to/run/injected/reduced \
+  --manifest /path/to/injected_source_setup/manifest.yaml \
+  --obsnum 133410 \
+  --output /path/to/injected_source_metrics.csv
+```
+
+The comparator writes CSV and Markdown summaries containing the
+control-subtracted source amplitude, amplitude recovery fraction, source and
+kernel widths, centroid separation, iteration-to-iteration transfer-map
+change, kernel difference, weight difference, and ordinary pointing-fit
+metrics.
+
+This is a diagnostic-only mode. Startup rejects it unless:
+
+- the reduction is pointing/OOF;
+- fruit loops, kernel generation, diagnostics, and saved iterations are
+  enabled;
+- the start iteration is at least one and below `max_iters`; and
+- exactly three finite nonnegative amplitudes are supplied in
+  `[a1100, a1400, a2000]` order.

@@ -928,9 +928,45 @@ inline void validate(const FruitLoopsWeightFeedbackConfig &config,
     }
 }
 
+inline void validate(const FruitLoopsInjectedSourceTestConfig &config,
+                     ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    const ConfigPath path{
+        "timestream", "fruit_loops", "injected_source_test"};
+    check_minimum(
+        config.start_iteration, 1,
+        append_config_path(path, {"start_iteration"}), report);
+    if (config.array_amplitude_mjy_beam.size() != 3) {
+        report.add_error(
+            append_config_path(path, {"array_amplitude_mjy_beam"}),
+            "must contain exactly three values ordered "
+            "[a1100, a1400, a2000]");
+    }
+    bool any_positive = false;
+    for (const double amplitude : config.array_amplitude_mjy_beam) {
+        check_minimum(
+            amplitude, 0.0,
+            append_config_path(path, {"array_amplitude_mjy_beam"}), report);
+        any_positive = any_positive || amplitude > 0.0;
+    }
+    if (!any_positive) {
+        report.add_error(
+            append_config_path(path, {"array_amplitude_mjy_beam"}),
+            "must contain at least one positive amplitude");
+    }
+}
+
 inline void validate(const TimestreamFruitLoopsConfig &config,
                      ValidationReport &report) {
     if (!config.enabled) {
+        if (config.injected_source_test.enabled) {
+            report.add_error(
+                {"timestream", "fruit_loops", "injected_source_test",
+                 "enabled"},
+                "requires timestream.fruit_loops.enabled=true");
+        }
         return;
     }
     const ConfigPath path{"timestream", "fruit_loops"};
@@ -966,6 +1002,28 @@ inline void validate(const TimestreamFruitLoopsConfig &config,
                   append_config_path(path, {"adaptive_support_radius_fwhm"}),
                   report);
     validate(config.weight_feedback, report);
+    validate(config.injected_source_test, report);
+    if (config.injected_source_test.enabled) {
+        if (!config.diagnostics_enabled) {
+            report.add_error(
+                append_config_path(
+                    path, {"injected_source_test", "enabled"}),
+                "requires fruit-loop diagnostics_enabled=true");
+        }
+        if (!config.save_all_iters) {
+            report.add_error(
+                append_config_path(
+                    path, {"injected_source_test", "enabled"}),
+                "requires save_all_iters=true");
+        }
+        if (config.max_iters <=
+            config.injected_source_test.start_iteration) {
+            report.add_error(
+                append_config_path(
+                    path, {"injected_source_test", "start_iteration"}),
+                "must be less than max_iters");
+        }
+    }
     check_minimum(config.center_keep_radius_arcsec, 0.0,
                   append_config_path(path, {"center_keep_radius_arcsec"}),
                   report);
@@ -1078,6 +1136,12 @@ inline void validate(const TimestreamConfig &config, ValidationReport &report) {
     validate(config.raw_time_chunk, report);
     validate(config.processed_time_chunk, report);
     validate(config.fruit_loops, report);
+    if (config.fruit_loops.injected_source_test.enabled &&
+        !config.raw_time_chunk.kernel.enabled) {
+        report.add_error(
+            {"timestream", "fruit_loops", "injected_source_test", "enabled"},
+            "requires timestream.raw_time_chunk.kernel.enabled=true");
+    }
     validate(config.learning, report);
     validate(config.auxiliary_channels, report);
 }

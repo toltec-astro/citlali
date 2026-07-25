@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <citlali/core/mapmaking/naive_mm.h>
+#include <citlali/core/pipeline/fruit_loop_injected_source_test.h>
 #include <citlali/core/timestream/timestream.h>
 
 #include <cmath>
@@ -229,6 +230,86 @@ TEST(fruit_loop_recurrence, injected_gaussian_converges_through_controlled_clean
         estimate.signal[0](kRows / 2, kCols / 2),
         truth_amplitude * (1.0 - std::pow(1.0 - cleaner_transfer, 7)),
         1.0e-10);
+}
+
+TEST(fruit_loop_recurrence,
+     injected_source_test_scales_pristine_kernel_by_array) {
+    PtcData data;
+    data.scans.data = Eigen::MatrixXd::Constant(2, 3, 5.0);
+    data.kernel.data.resize(2, 3);
+    data.kernel.data << 0.0, 0.5, 1.0,
+                        1.0, 0.0, 0.25;
+
+    SyntheticCalib calib;
+    calib.arrays.resize(3);
+    calib.arrays << 0, 1, 2;
+    calib.apt["array"].resize(3);
+    calib.apt["array"] << 0.0, 1.0, 2.0;
+
+    citlali::config::FruitLoopsInjectedSourceTestConfig config;
+    config.enabled = true;
+    config.start_iteration = 4;
+    config.array_amplitude_mjy_beam = {10.0, 20.0, 30.0};
+
+    const auto original_kernel = data.kernel.data;
+    const auto summary =
+        citlali::pipeline::inject_fruit_loop_test_source(
+            data, calib, config, 4, "mJy/beam");
+
+    EXPECT_TRUE(summary.applied);
+    EXPECT_EQ(summary.projected_samples, 4);
+    EXPECT_EQ(summary.arrays[0].projected_samples, 1);
+    EXPECT_EQ(summary.arrays[1].projected_samples, 1);
+    EXPECT_EQ(summary.arrays[2].projected_samples, 2);
+    EXPECT_TRUE(data.kernel.data.isApprox(original_kernel, 0.0));
+    EXPECT_DOUBLE_EQ(data.scans.data(0, 0), 5.0);
+    EXPECT_DOUBLE_EQ(data.scans.data(1, 0), 15.0);
+    EXPECT_DOUBLE_EQ(data.scans.data(0, 1), 15.0);
+    EXPECT_DOUBLE_EQ(data.scans.data(1, 1), 5.0);
+    EXPECT_DOUBLE_EQ(data.scans.data(0, 2), 35.0);
+    EXPECT_DOUBLE_EQ(data.scans.data(1, 2), 12.5);
+}
+
+TEST(fruit_loop_recurrence,
+     injected_source_test_is_exactly_inactive_before_start) {
+    auto data = make_scan();
+    const auto original_signal = data.scans.data;
+    const auto original_kernel = data.kernel.data;
+    auto calib = make_calib();
+
+    citlali::config::FruitLoopsInjectedSourceTestConfig config;
+    config.enabled = true;
+    config.start_iteration = 3;
+    config.array_amplitude_mjy_beam = {10.0};
+
+    const auto summary =
+        citlali::pipeline::inject_fruit_loop_test_source(
+            data, calib, config, 2, "mJy/beam");
+
+    EXPECT_FALSE(summary.applied);
+    EXPECT_EQ(summary.projected_samples, 0);
+    EXPECT_TRUE(data.scans.data.isApprox(original_signal, 0.0));
+    EXPECT_TRUE(data.kernel.data.isApprox(original_kernel, 0.0));
+}
+
+TEST(fruit_loop_recurrence,
+     injected_source_test_rejects_missing_kernel_and_wrong_units) {
+    auto data = make_scan();
+    auto calib = make_calib();
+    citlali::config::FruitLoopsInjectedSourceTestConfig config;
+    config.enabled = true;
+    config.start_iteration = 1;
+    config.array_amplitude_mjy_beam = {10.0};
+
+    EXPECT_THROW(
+        citlali::pipeline::inject_fruit_loop_test_source(
+            data, calib, config, 1, "K"),
+        citlali::error::Error);
+    data.kernel.data.resize(0, 0);
+    EXPECT_THROW(
+        citlali::pipeline::inject_fruit_loop_test_source(
+            data, calib, config, 1, "mJy/beam"),
+        citlali::error::Error);
 }
 
 }  // namespace

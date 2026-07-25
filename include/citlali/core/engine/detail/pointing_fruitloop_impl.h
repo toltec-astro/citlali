@@ -3,8 +3,26 @@
 // Pointing fruit-loop per-scan implementation detail.
 // Include this only after Pointing has been declared.
 
+#include <citlali/core/pipeline/fruit_loop_injected_source_test.h>
 #include <citlali/core/pipeline/mapmaking_dispatch.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
+
+template <class CalibScan>
+void Pointing::maybe_inject_pointing_fruitloop_test_source(
+    TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
+    const CalibScan &calib_scan) {
+    const auto &config =
+        citlali::pipeline::fruit_loops_config(*this).injected_source_test;
+    const auto summary =
+        citlali::pipeline::inject_fruit_loop_test_source(
+            ptcdata, calib_scan, config, iteration.fruit_iter,
+            omb.sig_unit);
+    ptcproc.add_fruit_loop_injected_source_samples(
+        summary.projected_samples);
+    citlali::pipeline::log_fruit_loop_injected_source_summary(
+        logger, iteration.fruit_iter, ptcdata.index.data, summary);
+}
 
 template <class CalibScan>
 void Pointing::maybe_subtract_pointing_fruitloop_model(

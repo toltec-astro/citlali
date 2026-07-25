@@ -43,6 +43,12 @@ void add_fruit_loops_config_vars(netCDF::NcFile &fo,
     add_netcdf_var(
         fo, "CONFIG.FRUITLOOPS.WEIGHT_FEEDBACK.HIGH_RELATIVE_WEIGHT",
         config.weight_feedback.high_relative_weight);
+    add_netcdf_var(
+        fo, "CONFIG.FRUITLOOPS.INJECTED_SOURCE_TEST.ENABLED",
+        config.injected_source_test.enabled);
+    add_netcdf_var(
+        fo, "CONFIG.FRUITLOOPS.INJECTED_SOURCE_TEST.START_ITERATION",
+        config.injected_source_test.start_iteration);
 }
 
 template <class Calib, class ArrayNameMap>
@@ -64,6 +70,21 @@ void add_fruit_loop_flux_config_vars(netCDF::NcFile &fo,
         add_netcdf_var(
             fo, "CONFIG.FRUITLOOPS.FLUX_" + array_name_map[calib.arrays(i)],
             flux_limit);
+        double injected_amplitude = 0.0;
+        const auto array_id = calib.arrays(i);
+        if (array_id >= 0 &&
+            array_id < static_cast<Eigen::Index>(
+                config.injected_source_test
+                    .array_amplitude_mjy_beam.size())) {
+            injected_amplitude =
+                config.injected_source_test.array_amplitude_mjy_beam[
+                    static_cast<std::size_t>(array_id)];
+        }
+        add_netcdf_var(
+            fo,
+            "CONFIG.FRUITLOOPS.INJECTED_SOURCE_TEST.AMPLITUDE_MJY_BEAM_" +
+                array_name_map[array_id],
+            injected_amplitude);
     }
 }
 

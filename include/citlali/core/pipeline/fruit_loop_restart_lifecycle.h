@@ -104,6 +104,16 @@ void initialize_fruit_loop_restart_if_requested(
                 " is not below configured max_iters " +
                 std::to_string(fruit_loops_config(engine).max_iters));
         }
+        const auto &injection =
+            fruit_loops_config(engine).injected_source_test;
+        if (injection.enabled &&
+            injection.start_iteration != summary.next_iteration) {
+            throw citlali::error::runtime(
+                "fruit-loop injected-source restart requires start_iteration " +
+                std::to_string(injection.start_iteration) +
+                " to equal checkpoint next_iteration " +
+                std::to_string(summary.next_iteration));
+        }
         engine.iteration.fruit_iter = summary.next_iteration;
         iteration_state.start_iteration = summary.next_iteration;
         iteration_state.restarted = true;

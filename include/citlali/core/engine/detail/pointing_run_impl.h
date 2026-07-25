@@ -89,6 +89,8 @@ auto Pointing::run(
         const auto fruit_weight_policy =
             citlali::pipeline::fruit_loop_weight_policy(*this);
 
+        maybe_inject_pointing_fruitloop_test_source(
+            ptcdata, calib_scan);
         maybe_subtract_pointing_fruitloop_model(
             ptcdata, calib_scan, map_indices, map_grouping,
             fruit_weight_policy);

@@ -305,15 +305,71 @@ reproducible.
   test with the full PTC cleaner converges to known amplitude and PSF with
   shrinking changes.
 
-The current synthetic injection establishes the recurrence test seam; the
-next implementation increment should replace its controlled scalar cleaner
-with the configured production PTC path or a fixture that exercises that path
-without external Unity data.
+The current synthetic injection establishes the recurrence test seam. The
+production-PTC injected-source pair described below replaces its controlled
+scalar cleaner with the configured production path while retaining the real
+observation background.
+
+## Production-PTC Injected-source Pair
+
+Current development after the follow-up matrix adds an opt-in
+`timestream.fruit_loops.injected_source_test` diagnostic. It does not export
+and reload a multi-gigabyte timestream. Instead, on and after a requested
+iteration it scales the pristine unit-kernel TOD by a declared per-array
+amplitude and adds that source immediately before the previous signal and
+kernel maps are subtracted.
+
+The operation is:
+
+\[
+  d_\mathrm{PTC,in}
+    = d_\mathrm{RTC} + A K_\mathrm{RTC} - M_{n-1},
+\]
+
+where \(d_\mathrm{RTC}-M_{n-1}\) is the ordinary converged residual,
+\(K_\mathrm{RTC}\) is the production unit-source kernel after the same RTC
+operations, and \(A\) is the known injected amplitude. The existing kernel
+TOD is not modified by the injection. No additional full-size matrix is
+allocated.
+
+The authoritative experiment is paired:
+
+1. restart `control` and `injected` from the same completed checkpoint;
+2. retain identical learned masks, exclusions, cleaner policy, weights,
+   mapmaking, and iteration count;
+3. change only `injected_source_test.enabled`;
+4. save every iteration; and
+5. fit the `injected - control` signal map relative to the propagated kernel.
+
+This construction cancels the real residual background to first order while
+preserving any nonlinear interaction between the injected source and the
+production cleaner. It measures:
+
+- recovered amplitude divided by injected amplitude;
+- recovered major/minor FWHM divided by kernel FWHM;
+- recovered-source/kernel centroid separation;
+- shrinking successive transfer-map differences;
+- control/injected kernel and map-weight differences; and
+- ordinary control/injected pointing fits and S/N.
+
+The diagnostic is deliberately fail-closed. It is accepted only for
+pointing/OOF reductions with fruit loops, kernel generation, diagnostics, and
+saved iterations enabled. The start iteration must be at least one and below
+`max_iters`; amplitudes must contain three finite nonnegative values in
+`[a1100, a1400, a2000]` order, with at least one positive value. Runtime also
+requires `mJy/beam`, matching signal/kernel shapes, finite kernel samples, and
+at least one realized nonzero projected sample.
+
+Production defaults remain disabled. The setup and comparison commands are
+documented in `tools/fruit_loops/README.md`. The comparator derives absolute
+iteration identity from the map FITS header, since a restarted run in a fresh
+output root writes absolute iteration 9 to `redu00`, and rejects paired config
+drift beyond the output root and injection enable switch.
 
 ## Local Verification
 
 The investigation code passes the local `citlali_cli` and `citlali_test`
-builds. CTest passes all 505 enabled tests; one unrelated lifecycle test
+builds. CTest passes all 512 enabled tests; one unrelated lifecycle test
 remains disabled. The complete config preflight passes 123 Python unit tests,
 all four mode kits, compact compatibility, schema generation, and every typed
 authority audit.
@@ -324,8 +380,9 @@ follow-up matrix. The comparison tool reproduces all array/iteration records
 and feedback-support measurements and now discovers runs longer than five
 iterations.
 
-The full-PTC injected-source fixture remains open. Existing evidence
-establishes stable PSF-shape and amplitude transfer recovery whose size scales
-with cleaner strength. It does not demonstrate a production fruit-loop fault,
-nor does it establish absolute amplitude correctness. Production defaults
-remain unchanged.
+The full-PTC injected-source implementation and local test seam are complete;
+the paired Unity run remains open. Existing evidence establishes stable
+PSF-shape and amplitude transfer recovery whose size scales with cleaner
+strength. It does not demonstrate a production fruit-loop fault, nor does it
+establish absolute amplitude correctness. Production defaults remain
+unchanged.

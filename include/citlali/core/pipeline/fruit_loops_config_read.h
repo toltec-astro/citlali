@@ -157,6 +157,28 @@ void read_fruit_loops_core_config(
         std::tuple{"timestream", "fruit_loops", "weight_feedback",
                    "high_relative_weight"},
         feedback.high_relative_weight);
+
+    auto &injected = typed_config.injected_source_test;
+    bool injected_enabled = injected.enabled;
+    read_optional_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "fruit_loops", "injected_source_test",
+                   "enabled"},
+        injected_enabled, injected.enabled, diagnostics);
+    int injected_start_iteration = injected.start_iteration;
+    read_optional_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "fruit_loops", "injected_source_test",
+                   "start_iteration"},
+        injected_start_iteration, injected.start_iteration, diagnostics,
+        {}, {1});
+    auto injected_amplitudes = injected.array_amplitude_mjy_beam;
+    read_optional_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "fruit_loops", "injected_source_test",
+                   "array_amplitude_mjy_beam"},
+        injected_amplitudes, injected.array_amplitude_mjy_beam, diagnostics);
+
     read_optional_double(
         std::tuple{"timestream", "fruit_loops", "center_keep_radius_arcsec"},
         typed_config.center_keep_radius_arcsec);

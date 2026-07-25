@@ -692,6 +692,9 @@ public:
     // iteration; accumulated once per scan from parallel workers
     std::shared_ptr<std::atomic<long long>> fruit_loop_feedback_samples =
         std::make_shared<std::atomic<long long>>(0);
+    std::shared_ptr<std::atomic<long long>>
+        fruit_loop_injected_source_samples =
+            std::make_shared<std::atomic<long long>>(0);
 
     void reset_fruit_loop_feedback_samples() {
         fruit_loop_feedback_samples->store(0, std::memory_order_relaxed);
@@ -699,6 +702,18 @@ public:
 
     [[nodiscard]] long long current_fruit_loop_feedback_samples() const {
         return fruit_loop_feedback_samples->load(std::memory_order_relaxed);
+    }
+    void reset_fruit_loop_injected_source_samples() {
+        fruit_loop_injected_source_samples->store(
+            0, std::memory_order_relaxed);
+    }
+    void add_fruit_loop_injected_source_samples(long long samples) {
+        fruit_loop_injected_source_samples->fetch_add(
+            samples, std::memory_order_relaxed);
+    }
+    [[nodiscard]] long long current_fruit_loop_injected_source_samples() const {
+        return fruit_loop_injected_source_samples->load(
+            std::memory_order_relaxed);
     }
     // path for input images
     std::string fruit_loops_path;

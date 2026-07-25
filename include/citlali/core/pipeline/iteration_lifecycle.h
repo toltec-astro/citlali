@@ -15,6 +15,12 @@ void reset_fruit_loop_feedback_samples_if_available(Engine &engine) {
                   }) {
         engine.ptcproc.reset_fruit_loop_feedback_samples();
     }
+    if constexpr (requires {
+                      engine.ptcproc
+                          .reset_fruit_loop_injected_source_samples();
+                  }) {
+        engine.ptcproc.reset_fruit_loop_injected_source_samples();
+    }
 }
 
 template <class Engine, class Logger>
@@ -38,6 +44,28 @@ void require_realized_fruit_loop_feedback_if_available(
             feedback_samples == 0) {
             throw citlali::error::runtime(
                 "fruit-loop source model selected zero detector-samples; refusing to continue no-op feedback iterations");
+        }
+    }
+    if constexpr (requires {
+                      engine.ptcproc
+                          .current_fruit_loop_injected_source_samples();
+                  }) {
+        const auto &injection =
+            fruit_loops_config(engine).injected_source_test;
+        if (injection.enabled &&
+            engine.iteration.fruit_iter >= injection.start_iteration) {
+            const auto injected_samples =
+                engine.ptcproc
+                    .current_fruit_loop_injected_source_samples();
+            logger->info(
+                "fruit-loop injected-source test realized: iteration={} "
+                "projected_samples={}",
+                engine.iteration.fruit_iter, injected_samples);
+            if (injected_samples == 0) {
+                throw citlali::error::runtime(
+                    "fruit-loop injected-source test selected zero projected "
+                    "kernel samples");
+            }
         }
     }
 }

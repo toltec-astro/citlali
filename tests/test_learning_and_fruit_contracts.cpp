@@ -369,6 +369,10 @@ TEST(ReductionRestartCheckpoint,
     fruit.restart_path = directory.path.string();
     fruit.type = "coadd/raw";
     fruit.max_iters = 7;
+    fruit.injected_source_test.enabled = true;
+    fruit.injected_source_test.start_iteration = 5;
+    fruit.injected_source_test.array_amplitude_mjy_beam =
+        {1000.0, 2000.0, 3000.0};
     engine.typed_config.timestream.learning = config;
     engine.processed_timestream_plan =
         citlali::pipeline::make_processed_timestream_execution_plan(
@@ -408,6 +412,17 @@ TEST(ReductionRestartCheckpoint,
     EXPECT_FALSE(citlali::pipeline::first_restarted_iteration(engine));
     EXPECT_TRUE(
         citlali::pipeline::should_load_previous_fruit_loop_maps(engine));
+
+    engine.iteration.fruit_iter = 0;
+    fruit.injected_source_test.start_iteration = 4;
+    engine.processed_timestream_plan =
+        citlali::pipeline::make_processed_timestream_execution_plan(
+            engine.typed_config.timestream);
+    citlali::pipeline::ReductionIterationState invalid_iteration_state;
+    EXPECT_THROW(
+        citlali::pipeline::initialize_fruit_loop_restart_if_requested(
+            engine, invalid_iteration_state, logger),
+        citlali::error::Error);
 }
 
 TEST(FruitLoopActivation, RejectsEnabledNoOpConfiguration) {

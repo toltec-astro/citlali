@@ -81,6 +81,27 @@ void add_phdu_fruit_loops_config(FitsEntry &fits_entry,
     add_double_key("CONFIG.FRUITLOOPS.WFBHIGH",
                    config.weight_feedback.high_relative_weight,
                    "Fruit loops weight feedback high relative weight");
+    hdu.addKey("CONFIG.FRUITLOOPS.INJECT",
+               config.injected_source_test.enabled,
+               "Diagnostic injected-source transfer test");
+    hdu.addKey("CONFIG.FRUITLOOPS.INJITER",
+               config.injected_source_test.start_iteration,
+               "Injected-source first zero-based iteration");
+    double injected_amplitude = 0.0;
+    const int array_position =
+        array_name == "a1100" ? 0 :
+        array_name == "a1400" ? 1 :
+        array_name == "a2000" ? 2 : -1;
+    if (array_position >= 0 &&
+        static_cast<std::size_t>(array_position) <
+            config.injected_source_test.array_amplitude_mjy_beam.size()) {
+        injected_amplitude =
+            config.injected_source_test.array_amplitude_mjy_beam[
+                static_cast<std::size_t>(array_position)];
+    }
+    add_double_key("CONFIG.FRUITLOOPS.INJAMP",
+                   injected_amplitude,
+                   "Injected source amplitude (mJy/beam)");
     add_double_key("CONFIG.FRUITLOOPS.FLUX", flux_limit,
                    "Fruit loops flux (" + signal_unit + ")");
     hdu.addKey("CONFIG.FRUITLOOPS.MAXITER", config.max_iters,

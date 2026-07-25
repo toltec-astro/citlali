@@ -95,6 +95,10 @@ public:
         const std::string &map_grouping,
         const citlali::pipeline::FruitLoopWeightPolicy &fruit_weight_policy);
     template <class CalibScan>
+    void maybe_inject_pointing_fruitloop_test_source(
+        TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
+        const CalibScan &calib_scan);
+    template <class CalibScan>
     void run_pointing_fruitloop_noise_pass(
         TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
         CalibScan &calib_scan,

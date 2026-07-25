@@ -36,8 +36,15 @@ branch. The exact validated tree will remain available for forensic review.
   cleaner strength, not broad model support or projection choice, controls the
   correction size. Cleaner-free real-source fits are farther from the
   matched-APT reference, so the reference mismatch does not establish a
-  fruit-loop fault. A full-PTC injected-truth test remains the final policy
-  gate. Production defaults remain unchanged. See the
+  fruit-loop fault. A diagnostic-only, fail-closed full-PTC injected-source
+  pair is now implemented locally: restart-matched control and injected
+  branches differ only by adding a declared source through the pristine unit
+  kernel before model subtraction, and the comparator fits their difference
+  through every saved iteration. Its local CLI/test builds, all 512 enabled
+  CTests, synthetic analysis-tool recovery, and complete config preflight
+  pass.
+  The paired Unity run remains the final policy gate. Production defaults
+  remain unchanged. See the
   [investigation record](FRUIT_LOOP_FEEDBACK_INVESTIGATION_2026-07-24.md).
 - A 2026-07-24 reliability investigation is active for two long
   108-observation pointing jobs that received `SIGBUS` on the same a1400 Ceres

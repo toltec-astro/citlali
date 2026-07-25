@@ -117,6 +117,14 @@ authority_rules:
     resolution_stage: effective-plan
     validation_source: include/citlali/core/config/timestream_config_validation.h
 
+  - id: fruit-loop-injected-source-test
+    patterns: ['timestream.fruit_loops.injected_source_test*']
+    authority_domain: processed-timestream
+    modes: [pointing, oof]
+    state_class: requested
+    resolution_stage: effective-plan
+    validation_source: include/citlali/core/config/timestream_config_validation.h
+
   - id: processed-timestream
     patterns:
       - 'timestream.processed_time_chunk*'
@@ -186,6 +194,8 @@ authority_rules:
 unit_rules:
   - patterns: ['*modified_julian_date*']
     unit: MJD-day
+  - patterns: ['*array_amplitude_mjy_beam*']
+    unit: mJy/beam
   - patterns: ['*mJy*']
     unit: mJy
   - patterns: ['*arcsec*']

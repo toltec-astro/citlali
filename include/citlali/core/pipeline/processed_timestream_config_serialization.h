@@ -49,6 +49,16 @@ inline YAML::Node fruit_loops_weight_feedback_config_node(
     return node;
 }
 
+inline YAML::Node fruit_loops_injected_source_test_config_node(
+    const citlali::config::FruitLoopsInjectedSourceTestConfig &config) {
+    YAML::Node node;
+    node["enabled"] = config.enabled;
+    node["start_iteration"] = config.start_iteration;
+    node["array_amplitude_mjy_beam"] =
+        processed_config_sequence_node(config.array_amplitude_mjy_beam);
+    return node;
+}
+
 inline YAML::Node fruit_loops_config_node(
     const citlali::config::TimestreamFruitLoopsConfig &config) {
     YAML::Node node;
@@ -81,6 +91,9 @@ inline YAML::Node fruit_loops_config_node(
         std::string{citlali::config::to_string(config.source_center_mode)};
     node["weight_feedback"] =
         fruit_loops_weight_feedback_config_node(config.weight_feedback);
+    node["injected_source_test"] =
+        fruit_loops_injected_source_test_config_node(
+            config.injected_source_test);
     node["center_keep_radius_arcsec"] = config.center_keep_radius_arcsec;
     node["interp_mode_override"] = std::string{
         citlali::config::to_string(config.interp_mode_override)};
