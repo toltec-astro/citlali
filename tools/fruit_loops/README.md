@@ -10,25 +10,45 @@ low-level YAML:
 $HOME/tolteca/bin/python tools/fruit_loops/prepare_feedback_ablation.py \
   --input /path/to/citlali_rc1_fruitloops5_o133410.yaml \
   --output-dir /path/to/setup \
+  --matrix followup \
   --runtime-output-root \
     /work/toltec/commissioning2025-test/2026-ENG-hero-multiyear-pointings-v1/diagnostics/fruitloops5_rc1_ablation/obs133410
 ```
 
-The generator verifies the seed policy and writes:
+The generator verifies the seed policy. `--matrix initial` writes the five
+completed first-round variants:
 
 - `full_policy_diagnostic`: unchanged policy, with diagnostics enabled;
 - `learning_disabled`: only reduction learning is disabled;
 - `weight_feedback_disabled`: only map-template weight taper is disabled;
 - `recompute_weights_after_addback`: only detector weights are recomputed
   after restoring the source model; and
-- `all_three`: all three diagnostic changes together; and
-- `snr_only_model`: disables the low absolute-flux gate while retaining the
-  existing S/N threshold, isolating feedback to the high-S/N source model.
+- `all_three`: all three diagnostic changes together.
 
-Every variant keeps `max_iters: 5` and `save_all_iters: true`, and every
-variant has an independent output root. The unchanged-policy diagnostic is a
-control for the new instrumentation and supplies the same stage-level
-diagnostics as the ablations.
+`--matrix followup` writes the second-round matrix:
+
+| Variant | Isolated question |
+|---|---|
+| `snr_only_model` | Does removing broad absolute-flux support change the trajectory at the existing S/N threshold of 100? |
+| `snr_only_s50` | How does a larger high-S/N source model change the trajectory? |
+| `snr_only_s200` | How does a smaller high-S/N source model change the trajectory? |
+| `adaptive_peak_5pct` | Does a compact, source-centered model selected above 5% of the local peak converge? |
+| `adaptive_local_snr5` | Does an independently defined compact model selected above local S/N 5 converge? |
+| `ptc_cleaning_disabled` | Does growth disappear when the production PTC cleaner is removed? |
+| `ptc_pca_one_mode` | Does growth decrease with weaker PCA cleaning? |
+| `ptc_pca_ten_modes` | Does growth increase with stronger PCA cleaning? |
+| `ptc_source_mask_30arcsec` | Does explicit source protection inside the PTC cleaner change the trajectory? |
+| `projection_bilinear` | Is the map-to-TOD Jinc projection materially involved? |
+| `projection_legacy_trunc` | Does the historical truncating projection and center convention change the trajectory? |
+| `naive_mapmaking` | Is the Jinc mapmaking/projection pair materially involved? |
+| `full_policy_10_iters` | Does the unchanged policy reach an asymptote or continue drifting through ten iterations? |
+
+`--matrix all` writes both matrices and remains the default.
+
+Every variant keeps `save_all_iters: true` and has an independent output root.
+All variants retain five iterations except `full_policy_10_iters`. The
+unchanged-policy diagnostic is a control for the instrumentation and supplies
+the same stage-level diagnostics as the ablations.
 
 Run each generated low-level config with the same executable and resources:
 
@@ -38,8 +58,9 @@ Run each generated low-level config with the same executable and resources:
 
 Do not submit two configs with the same output directory concurrently.
 
-After downloading all `redu00` through `redu04` directories, create one
-comparison table:
+After downloading every saved iteration, create one comparison table. The
+comparison tool discovers contiguous `reduNN` directories, including all ten
+iterations of `full_policy_10_iters`:
 
 ```bash
 $HOME/tolteca/bin/python tools/fruit_loops/compare_feedback_ablation.py \

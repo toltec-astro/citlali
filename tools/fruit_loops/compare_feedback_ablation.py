@@ -111,8 +111,24 @@ def feedback_support_metrics(
 def reduction_rows(label: str, reduced: Path, obsnum: int) -> list[dict]:
     rows: list[dict] = []
     previous_maps: dict[str, np.ndarray] = {}
-    for iteration in range(5):
-        reduction_dir = reduced / f"redu{iteration:02d}"
+    reduction_dirs = sorted(
+        (
+            path
+            for path in reduced.glob("redu[0-9][0-9]*")
+            if path.is_dir() and path.name[4:].isdigit()
+        ),
+        key=lambda path: int(path.name[4:]),
+    )
+    if not reduction_dirs:
+        raise ValueError(f"no saved fruit-loop iterations found in {reduced}")
+    iterations = [int(path.name[4:]) for path in reduction_dirs]
+    expected = list(range(len(reduction_dirs)))
+    if iterations != expected:
+        raise ValueError(
+            f"saved fruit-loop iterations must be contiguous from zero in "
+            f"{reduced}; found {iterations}"
+        )
+    for iteration, reduction_dir in zip(iterations, reduction_dirs):
         raw = reduction_dir / str(obsnum) / "raw"
         config = iteration_config(reduction_dir)
         fruit_config = config["timestream"]["fruit_loops"]

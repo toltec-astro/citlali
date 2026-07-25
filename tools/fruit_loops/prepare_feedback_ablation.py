@@ -47,7 +47,81 @@ VARIANTS = {
     "snr_only_model": {
         ("timestream", "fruit_loops", "array_flux_limit"): [0, 0, 0],
     },
+    "snr_only_s50": {
+        ("timestream", "fruit_loops", "array_flux_limit"): [0, 0, 0],
+        ("timestream", "fruit_loops", "sig2noise_limit"): 50,
+    },
+    "snr_only_s200": {
+        ("timestream", "fruit_loops", "array_flux_limit"): [0, 0, 0],
+        ("timestream", "fruit_loops", "sig2noise_limit"): 200,
+    },
+    "adaptive_peak_5pct": {
+        ("timestream", "fruit_loops", "array_flux_limit"): [0, 0, 0],
+        ("timestream", "fruit_loops", "sig2noise_limit"): 0,
+        ("timestream", "fruit_loops", "peak_fraction_limit"): 0.05,
+        ("timestream", "fruit_loops", "local_snr_floor"): 0,
+    },
+    "adaptive_local_snr5": {
+        ("timestream", "fruit_loops", "array_flux_limit"): [0, 0, 0],
+        ("timestream", "fruit_loops", "sig2noise_limit"): 0,
+        ("timestream", "fruit_loops", "peak_fraction_limit"): 0,
+        ("timestream", "fruit_loops", "local_snr_floor"): 5,
+    },
+    "ptc_cleaning_disabled": {
+        ("timestream", "processed_time_chunk", "clean", "enabled"): False,
+    },
+    "ptc_pca_one_mode": {
+        (
+            "timestream",
+            "processed_time_chunk",
+            "clean",
+            "standard_pca",
+            "n_eig_to_cut",
+        ): {"a1100": [1], "a1400": [1], "a2000": [1]},
+    },
+    "ptc_pca_ten_modes": {
+        (
+            "timestream",
+            "processed_time_chunk",
+            "clean",
+            "standard_pca",
+            "n_eig_to_cut",
+        ): {"a1100": [10], "a1400": [10], "a2000": [10]},
+    },
+    "ptc_source_mask_30arcsec": {
+        (
+            "timestream",
+            "processed_time_chunk",
+            "clean",
+            "mask_radius_arcsec",
+        ): 30,
+    },
+    "projection_bilinear": {
+        ("timestream", "fruit_loops", "interp_mode_override"): "bilinear",
+    },
+    "projection_legacy_trunc": {
+        ("timestream", "fruit_loops", "interp_mode_override"): "trunc",
+        ("timestream", "fruit_loops", "legacy_center"): True,
+    },
+    "naive_mapmaking": {
+        ("mapmaking", "method"): "naive",
+    },
+    "full_policy_10_iters": {
+        ("timestream", "fruit_loops", "max_iters"): 10,
+    },
 }
+
+INITIAL_VARIANTS = (
+    "full_policy_diagnostic",
+    "learning_disabled",
+    "weight_feedback_disabled",
+    "recompute_weights_after_addback",
+    "all_three",
+)
+
+FOLLOWUP_VARIANTS = tuple(
+    name for name in VARIANTS if name not in INITIAL_VARIANTS
+)
 
 
 def nested_get(config: dict, path: tuple[str, ...]) -> object:
@@ -108,9 +182,15 @@ def require_seed_policy(config: dict) -> None:
         raise ValueError("input is not the frozen 133410 policy:\n  " + "\n  ".join(mismatches))
 
 
-def write_manifest(output_dir: Path, source: Path, output_root: str) -> None:
+def write_manifest(
+    output_dir: Path,
+    source: Path,
+    output_root: str,
+    variant_names: tuple[str, ...],
+) -> None:
     rows = []
-    for name, changes in VARIANTS.items():
+    for name in variant_names:
+        changes = VARIANTS[name]
         rows.append(
             {
                 "name": name,
@@ -147,6 +227,12 @@ def main() -> int:
         required=True,
         help="Unity output root; each variant receives its own reduced directory",
     )
+    parser.add_argument(
+        "--matrix",
+        choices=("initial", "followup", "all"),
+        default="all",
+        help="Variant matrix to generate (default: all)",
+    )
     args = parser.parse_args()
 
     source = yaml.safe_load(args.input.read_text())
@@ -154,8 +240,14 @@ def main() -> int:
         raise ValueError("input must contain one YAML mapping")
     require_seed_policy(source)
 
+    variant_names = {
+        "initial": INITIAL_VARIANTS,
+        "followup": FOLLOWUP_VARIANTS,
+        "all": tuple(VARIANTS),
+    }[args.matrix]
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    for name, changes in VARIANTS.items():
+    for name in variant_names:
+        changes = VARIANTS[name]
         config = copy.deepcopy(source)
         for path, value in changes.items():
             nested_set(config, path, value)
@@ -177,8 +269,11 @@ def main() -> int:
         args.output_dir,
         args.input.resolve(),
         args.runtime_output_root,
+        variant_names,
     )
-    print(f"wrote {len(VARIANTS)} configs to {args.output_dir}")
+    print(
+        f"wrote {len(variant_names)} {args.matrix} configs to {args.output_dir}"
+    )
     return 0
 
 

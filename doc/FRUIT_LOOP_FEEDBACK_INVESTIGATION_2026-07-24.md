@@ -3,8 +3,9 @@
 Date: 2026-07-24
 
 Status: active; the first five controlled Unity ablations are complete. A
-high-S/N-only model-support ablation and full-PTC injected-source test remain
-required before a production default change.
+follow-up model-support, cleaner-strength, and projection matrix plus a
+full-PTC injected-source test remain required before a production default
+change.
 
 ## Question
 
@@ -122,11 +123,20 @@ has an independent output root. The unchanged-policy rerun is an
 instrumentation control and provides stage diagnostics unavailable in the
 existing run.
 
-After those five variants completed, the generator gained a sixth one-change
-test:
+After those five variants completed, the generator gained a follow-up matrix.
+It includes:
 
-6. low absolute-flux selection disabled, retaining only the high-S/N model
-   support.
+- high-S/N-only support at thresholds 50, 100, and 200;
+- compact source-centered support using either 5% of local peak or local
+  S/N 5;
+- PTC cleaning disabled, one PCA mode, ten PCA modes, and a 30-arcsec PTC
+  source mask;
+- bilinear projection, the historical truncating projection/center
+  convention, and naive mapmaking; and
+- an unchanged ten-iteration trajectory.
+
+These are subsystem-isolation and dose-response tests. No member is a proposed
+production policy.
 
 The opt-in `timestream.fruit_loops.diagnostics_enabled` path records, for each
 scan and array:
@@ -215,11 +225,16 @@ problem.
 - If recomputing weights after add-back removes growth while preserving
   shrinking changes and source shape, source-subtracted detector weights are
   the dominant interaction.
-- If all three ablations retain comparable growth, the next one-change test
-  must restrict the low absolute-flux model support before altering any
-  production policy. This condition is now met; the generated
-  `snr_only_model` variant sets only `array_flux_limit: [0, 0, 0]`, retaining
-  the existing S/N threshold of 100.
+- If the S/N-only and compact-support trajectories approach the calibrated
+  source while the broad-support control overshoots, broad positive model
+  support is causal. A threshold response strengthens that conclusion.
+- If growth scales with zero, one, five, and ten cleaned PCA modes, the PTC
+  transfer function is causal. The source-mask result distinguishes direct
+  source removal from broader cleaner/map-normalization coupling.
+- If projection or mapmaking variants materially change the trajectory at
+  fixed cleaning and support, map/project operator consistency is causal.
+- If the unchanged ten-iteration trajectory does not approach an asymptote,
+  the current policy is unstable rather than merely slowly convergent.
 - A production policy is acceptable only after a realistic injected-source
   test with the full PTC cleaner converges to known amplitude and PSF with
   shrinking changes.
@@ -238,13 +253,13 @@ all four mode kits, compact compatibility, schema generation, and every typed
 authority audit.
 
 The ablation generator accepts the downloaded frozen obsnum 133410 low-level
-config and produces the initial five independent configs plus the next
-high-S/N-only model-support config. The comparison tool reproduces all
-array/iteration records and feedback-support measurements from the existing
-and completed ablation runs.
+config and can produce either the completed initial matrix or the independent
+follow-up matrix. The comparison tool reproduces all array/iteration records
+and feedback-support measurements and now discovers runs longer than five
+iterations.
 
-The high-S/N-only Unity product and full-PTC injected-source fixture remain
-open. Existing evidence establishes correct PSF-shape recovery alongside an
+The follow-up Unity products and full-PTC injected-source fixture remain open.
+Existing evidence establishes correct PSF-shape recovery alongside an
 amplitude trajectory that does not converge to the calibrated source
 reference. It narrows the fault to the production
 recurrence/cleaner/map-normalization interaction without changing defaults.

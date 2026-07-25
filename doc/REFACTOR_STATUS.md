@@ -33,9 +33,11 @@ branch. The exact validated tree will remain available for forensic review.
   weights is image-array identical to the control. Fruit loops recover source
   width toward the propagated kernel width but overshoot the matched APT
   calibrator amplitude, particularly for a1400. The remaining cause class is
-  the production recurrence/cleaner/map-normalization interaction; a generated
-  high-S/N-only support test and full-PTC injected-truth test are the next
-  gates. Production defaults remain unchanged. See the
+  the production recurrence/cleaner/map-normalization interaction. A generated
+  follow-up matrix isolates model support, cleaner strength/source protection,
+  projection/mapmaking, and the ten-iteration asymptote; a full-PTC
+  injected-truth test remains the final policy gate. Production defaults
+  remain unchanged. See the
   [investigation record](FRUIT_LOOP_FEEDBACK_INVESTIGATION_2026-07-24.md).
 - A 2026-07-24 reliability investigation is active for two long
   108-observation pointing jobs that received `SIGBUS` on the same a1400 Ceres
